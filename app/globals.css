@@ -567,3 +567,32 @@ html,body{max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}button,
  .v34IndicatorGrid{grid-template-columns:1fr}.v34IndicatorGrid>div,.v34IndicatorGrid>div:nth-child(4n),.v34IndicatorGrid>div:nth-child(2n){border-right:0;border-bottom:1px solid #e8edf3}.v34IndicatorGrid>div:last-child{border-bottom:0}
  .v33ManagerTable>div{grid-template-columns:1fr 1fr}.v33ManagerTable time{font-size:8px}.v33ManagerTable>div>*:first-child{grid-column:1/-1}
 }
+
+/* V35 — friends launch polish: calmer brand, compact controls, mobile-first navigation */
+:root{--nivora-ink:#0f1b2d;--nivora-muted:#667085;--nivora-green:#16833d;--nivora-surface:#fff;--nivora-soft:#f5f7fa;--nivora-line:#e4e9ef;--nivora-danger:#9f3a36;--nivora-warn:#a75b16}
+.osHeader.v12Header{height:68px;border-bottom:1px solid var(--nivora-line);box-shadow:0 1px 0 rgba(15,27,45,.02);padding-inline:max(28px,calc((100vw - 1480px)/2));}
+.osLogo{display:inline-flex;align-items:center;gap:0;font-size:25px;letter-spacing:-1.6px;color:var(--nivora-ink);position:relative}.osLogo:before{content:"N";display:grid;place-items:center;width:28px;height:28px;margin-right:9px;border-radius:9px;background:var(--nivora-ink);color:#fff;font-size:14px;font-weight:950;letter-spacing:-1px}.osLogo span{color:#18a34a}
+.osDesktopNav{background:#f3f5f8;border:1px solid #eef1f4;border-radius:13px;padding:4px}.osDesktopNav a{padding:8px 16px;font-weight:750}.osDesktopNav a.on{box-shadow:0 1px 4px rgba(15,27,45,.08)}
+.osAccount>button{background:var(--nivora-ink);box-shadow:0 0 0 4px #f3f5f8}.osAccountMenu{width:238px;border-radius:15px;padding:7px;box-shadow:0 20px 55px rgba(15,27,45,.16)}.osAccountMenu small{padding:10px 11px;border-bottom:1px solid #eef1f4;margin-bottom:4px}.osAccountMenu a,.osAccountMenu button{padding:10px 11px}.osAccountMenu button{margin-top:4px;border-top:1px solid #eef1f4;border-radius:0 0 9px 9px;color:#475467}
+.osMain.v12Main{max-width:1480px;padding-bottom:100px}.osStock{padding-top:12px}.osStockSearch{max-width:580px}.osStockHead{padding:22px 0 14px}.osStockHead>div:last-child>b{color:var(--nivora-ink)}
+/* Make the three user choices read as one compact control console rather than floating islands. */
+.v32QuestionBar{margin:12px 0 0;padding:12px 14px;background:#fff;border:1px solid var(--nivora-line);border-radius:16px 16px 0 0;align-items:end;box-shadow:0 4px 16px rgba(15,27,45,.025)}.v32QuestionBar>div{display:flex;align-items:center;gap:8px}.v32QuestionBar>div>span{margin:0;white-space:nowrap;color:#526174}.v32QuestionBar .osMode{background:#f2f5f8!important;border:1px solid #edf0f4!important;padding:3px!important;border-radius:11px!important}.v32QuestionBar .osMode button{min-height:34px!important;padding:7px 12px!important;font-size:11px!important}.v32QuestionBar .osMode button.on{background:#fff;box-shadow:0 1px 4px rgba(15,27,45,.09)}
+.v28DepthBar{margin:0 0 16px;padding:9px 14px;border:1px solid var(--nivora-line);border-top:0;border-radius:0 0 16px 16px;background:#fff;min-height:50px}.v28DepthBar>div:first-child{color:#526174}.v28DepthToggle{background:#f2f5f8;border:1px solid #edf0f4;padding:3px;border-radius:11px}.v28DepthToggle button{padding:7px 13px}.v28DepthToggle button.on{background:var(--nivora-ink);box-shadow:none}
+/* Calmer semantic severity. Reserve saturated red for errors, not the whole visual hierarchy. */
+.v32Command.bad,.decisionCard.bad,.decisionHero.bad,.decisionCard.sell{border-top-color:#bd6b66!important}.v32Command.bad .v32ActionLine h2,.decisionCard.bad h1,.decisionCard.bad h2,.decisionHero.bad h1,.decisionHero.bad h2,.decisionCard.sell h1,.decisionCard.sell h2{color:var(--nivora-danger)!important}.bad{color:var(--nivora-danger)!important}.mid{color:var(--nivora-warn)!important}
+.v32ActionLine h2{font-size:38px}.v32Command{box-shadow:0 8px 28px rgba(15,27,45,.035)}
+.v31Grid,.v32Command,.v32Institutional,.v32MarketLab{border-color:var(--nivora-line)}.v31GridHead small,.v31Synthesis small,.v31EngineStrip small{letter-spacing:.1em}.v31EngineStrip em{background:#21864a}
+/* Branding should survive deep pages without becoming advertising. */
+.v31GridHead:after{content:"NIVORA · DECISION INTELLIGENCE";flex:none;font-size:8px;font-weight:900;letter-spacing:.12em;color:#98a2b3;padding-top:3px}.osLegalFooter .footerBrand b:before{content:"N";display:inline-grid;place-items:center;width:20px;height:20px;margin-right:7px;border-radius:6px;background:var(--nivora-ink);color:#fff;font-size:10px;vertical-align:middle}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid rgba(23,92,211,.18);outline-offset:2px}
+@media(max-width:760px){
+ .osHeader.v12Header{height:58px;padding-inline:14px}.osHeader .osLogo{font-size:20px}.osLogo:before{width:25px;height:25px;border-radius:8px;font-size:12px;margin-right:7px}.osAccount>button{width:33px;height:33px;box-shadow:none}
+ .osMain.v12Main{padding-inline:10px;padding-bottom:96px}.osStockSearch{top:58px;padding:6px 0}.osStockHead{padding:13px 2px 10px}.liveFresh{flex-wrap:wrap;row-gap:2px}
+ .v32QuestionBar{padding:10px;border-radius:14px 14px 0 0;gap:9px}.v32QuestionBar>div{display:block}.v32QuestionBar>div>span{display:inline-flex;margin:0 0 6px}.v32QuestionBar .osMode{display:flex!important;width:100%;margin:0!important}.v32QuestionBar .osMode button{flex:1;min-height:38px!important;padding:7px 4px!important}
+ .v28DepthBar{padding:9px 10px 10px;margin-bottom:12px;border-radius:0 0 14px 14px;display:grid;grid-template-columns:auto 1fr;align-items:center!important}.v28DepthBar>div:first-child{font-size:11px}.v28DepthToggle{width:100%;justify-self:end}.v28DepthToggle button{flex:1;padding:7px 5px}
+ .v32ActionLine h2{font-size:30px}.v32CommandHero>div{padding:15px 13px}.v31GridHead:after{display:none}.v31GridHead{gap:8px}
+ .osMobileNav{left:8px!important;right:8px!important;bottom:max(8px,env(safe-area-inset-bottom));border-radius:18px;padding:5px;box-shadow:0 14px 40px rgba(15,27,45,.18)}.osMobileNav a{min-height:52px;justify-content:center;font-size:9px;font-weight:750}.osMobileNav a.on{background:var(--nivora-ink)}
+ .osAccountMenu{position:fixed;left:12px;right:12px;top:64px;width:auto;max-height:calc(100vh - 84px);overflow:auto}
+}
+@media(max-width:390px){.osLogo{font-size:19px}.osLogo:before{display:none}.v28DepthBar{grid-template-columns:1fr;gap:7px}.v32ActionLine h2{font-size:28px}.v31EngineStrip{grid-template-columns:1fr 1fr}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
