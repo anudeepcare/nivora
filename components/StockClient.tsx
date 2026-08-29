@@ -37,7 +37,7 @@ const money=(n:any)=>{
 const eps=(n:any)=>{const x=Number(n);return Number.isFinite(x)?`${x<0?"-":""}$${Math.abs(x).toFixed(2)}`:"—"};
 const daysUntil=(d?:string|null)=>{if(!d)return null;return Math.ceil((new Date(d+"T12:00:00").getTime()-Date.now())/86400000)};
 
-function Help({title,children}:{title:string;children:React.ReactNode}){
+function Help({title,children}:{title:string;children?:React.ReactNode}){
   const [open,setOpen]=useState(false);
   const [pos,setPos]=useState<{left:number;top:number;width:number;below:boolean}|null>(null);
   const ref=useRef<HTMLSpanElement>(null);
@@ -101,6 +101,9 @@ export default function StockClient({symbol}:{symbol:string}){
   const[optionsLoading,setOptionsLoading]=useState(false);
   const[perfRange,setPerfRange]=useState<"6M"|"YTD"|"1Y">("6M");
   const[chartMode,setChartMode]=useState<"clean"|"trend">("clean");
+  const[optionView,setOptionView]=useState<"setups"|"positioning">("setups");
+  const[optionSide,setOptionSide]=useState<"bullish"|"bearish">("bullish");
+  const[optionStyle,setOptionStyle]=useState<"conservative"|"balanced"|"aggressive"|"leaps">("balanced");
 
   useEffect(()=>{
     let live=true;
@@ -171,6 +174,27 @@ export default function StockClient({symbol}:{symbol:string}){
     if(f?.label?.includes("Weak"))return{label:"RESEARCH BEFORE BUYING",tone:"bad",text:"The business-quality signals are weak or mixed enough that a lower price alone is not a reason to buy."};
     return d.views.longTerm;
   },[d,mode,company]);
+
+  const proTech=useMemo(()=>{
+    const cs=(d?.candles||[]).filter((x:any)=>Number.isFinite(Number(x.close)));
+    if(cs.length<20)return null;
+    const closes=cs.map((x:any)=>Number(x.close)), highs=cs.map((x:any)=>Number(x.high)), lows=cs.map((x:any)=>Number(x.low)), vols=cs.map((x:any)=>Number(x.volume||0));
+    const last=closes.at(-1)??0;
+    const avg=(a:number[])=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
+    const sma=(n:number)=>closes.length>=n?avg(closes.slice(-n)):null;
+    const s20=sma(20),s50=sma(50),s200=sma(200);
+    const tr=cs.slice(1).map((x:any,i:number)=>Math.max(Number(x.high)-Number(x.low),Math.abs(Number(x.high)-closes[i]),Math.abs(Number(x.low)-closes[i])));
+    const atr14=tr.length>=14?avg(tr.slice(-14)):null;
+    const ret=closes.slice(1).map((x:number,i:number)=>Math.log(x/closes[i])).filter(Number.isFinite);
+    const rv=ret.length>=20?Math.sqrt(avg(ret.slice(-20).map((x:number)=>x*x)))*Math.sqrt(252)*100:null;
+    const mean20=s20, sd20=mean20!=null?Math.sqrt(avg(closes.slice(-20).map((x:number)=>(x-mean20)**2))):null;
+    const upper=mean20!=null&&sd20!=null?mean20+2*sd20:null, lower=mean20!=null&&sd20!=null?mean20-2*sd20:null;
+    const bbPos=upper!=null&&lower!=null&&upper>lower?((last-lower)/(upper-lower))*100:null;
+    const vol20=avg(vols.slice(-20)), volRatio=vol20>0?(vols.at(-1)??0)/vol20:null;
+    const pct=(v:number|null)=>v&&last?((last/v)-1)*100:null;
+    const drawdown=closes.length?((last/Math.max(...closes.slice(-252)))-1)*100:null;
+    return {atr14,atrPct:atr14&&last?atr14/last*100:null,rv,sma20:s20,sma50:s50,sma200:s200,d20:pct(s20),d50:pct(s50),d200:pct(s200),bbPos,volRatio,drawdown};
+  },[d?.candles]);
 
   if(err)return <div className="osError"><b>Couldn’t analyze {symbol}</b><span>{err}</span><button onClick={()=>location.reload()}>Try again</button></div>;
   if(!d||!view)return <div className="osStockLoading"><div className="osLogo">NIVORA<span>.</span></div><b>Analyzing {symbol}</b><span>Building the decision first. Evidence loads after.</span></div>;
@@ -341,7 +365,7 @@ export default function StockClient({symbol}:{symbol:string}){
         <button className={tab==="news"?"on":""} onClick={()=>setTab("news")}>News</button>
         <button className={tab==="earnings"?"on":""} onClick={()=>setTab("earnings")}>Earnings</button>
         <button className={tab==="technical"?"on":""} onClick={()=>setTab("technical")}>Technical</button>
-        {d.assetType!=="crypto"&&<button className={tab==="options"?"on":""} onClick={()=>setTab("options")}>Options / Gamma</button>}
+        {d.assetType!=="crypto"&&<button className={tab==="options"?"on":""} onClick={()=>setTab("options")}>Options Lab</button>}
       </div>
 
       {tab==="overview"&&<div className="v12Overview">
@@ -369,23 +393,53 @@ export default function StockClient({symbol}:{symbol:string}){
 
       {tab==="earnings"&&<div className="v12Earnings"><div className="earnSplit">{latestReport&&<div className="earnNext earnReported"><small>LATEST REPORTED RESULTS</small><h3>{latestEarnNews?.date?new Date(latestEarnNews.date).toLocaleDateString():latestReport.date}</h3><p>{latestEarnNews?.headline||`${latestReport.form} filed — latest reported financial filing`}</p>{latestEarnNews?.url&&<a href={latestEarnNews.url} target="_blank" rel="noreferrer">Read results <ExternalLink size={12}/></a>}</div>}{earn&&<div className="earnNext estimated"><small>NEXT EARNINGS · ESTIMATED</small><h3>{earn.date}</h3><p>{earn.hour||"Time not listed"}{earn.epsEstimate!=null?` · EPS est. ${eps(earn.epsEstimate)}`:""}{earn.revenueEstimate!=null?` · Revenue est. ${money(earn.revenueEstimate)}`:""}</p><p className="earnMeta">Future calendar dates are estimates until confirmed by the company.</p></div>}</div><div className="earnGrid">{(context?.surprises||[]).length?context.surprises.map((x:any,i:number)=><div key={i}><small>{x.period}</small><b className={(x.surprisePercent??0)>=0?"good":"bad"}>{x.surprisePercent!=null?`${x.surprisePercent>=0?"+":""}${Number(x.surprisePercent).toFixed(1)}% surprise`:"Reported"}</b><span>Actual {x.actual??"—"} · Est. {x.estimate??"—"}</span></div>):<p>No earnings-surprise history returned by the connected feed.</p>}</div></div>}
 
-      {tab==="technical"&&<div className="v12Technical"><div className="techIntro"><h3>Technical evidence</h3><p>You do not need these numbers to use NIVORA. Tap the info icon to understand what each metric contributes.</p></div><div className="osTechGrid">{Object.entries(d.engine).map(([k,v]:any)=><div key={k}><div className="metricLabel"><span>{k}</span><Help title={k}>{k==="Trend"?"Multi-horizon direction and slope.":k==="Momentum"?"Speed and persistence of the current move.":k==="Flow"?"Volume/price participation and confirmation.":k==="Structure"?"Higher highs/lows, support and resistance behavior.":k==="RSI"?"Relative Strength Index; helps identify momentum extremes but is never used alone.":k==="MACD"?"Trend/momentum crossover evidence.":k==="Extension"?"How far price has moved away from its recent equilibrium; high extension increases chase risk.":k==="Relative strength"?"Performance versus the relevant benchmark.":k==="Market regime"?"Whether the broad market is supportive, mixed or risk-off.":"Supporting quantitative evidence used by the decision engine."}</Help></div><b>{typeof v==="number"?`${v}/100`:v}</b></div>)}</div><div className="techWhy">{d.why.map((x:string,i:number)=><p key={i}>• {x}</p>)}</div></div>}
+      {tab==="technical"&&<div className="v12Technical v26Technical">
+        <div className="techIntro"><div><small>TECHNICAL LAB</small><h3>Professional evidence, still readable.</h3><p>The main call stays simple. This workspace shows the market mechanics experienced investors may want to inspect.</p></div><Help title="Technical Lab">Technical indicators describe price behavior and risk. They can improve timing, but none can guarantee direction or replace business/catalyst analysis.</Help></div>
+        {proTech&&<div className="proTechGrid">
+          <div><small>ATR · 14D</small><b>{proTech.atrPct!=null?`${proTech.atrPct.toFixed(1)}%`:"—"}</b><span>Typical daily range</span></div>
+          <div><small>REALIZED VOL · 20D</small><b>{proTech.rv!=null?`${proTech.rv.toFixed(0)}%`:"—"}</b><span>Annualized recent volatility</span></div>
+          <div><small>VOLUME VS 20D</small><b>{proTech.volRatio!=null?`${proTech.volRatio.toFixed(1)}×`:"—"}</b><span>Participation today</span></div>
+          <div><small>20D MA</small><b className={(proTech.d20??0)>=0?"good":"bad"}>{proTech.d20!=null?`${proTech.d20>=0?"+":""}${proTech.d20.toFixed(1)}%`:"—"}</b><span>Distance from short trend</span></div>
+          <div><small>50D MA</small><b className={(proTech.d50??0)>=0?"good":"bad"}>{proTech.d50!=null?`${proTech.d50>=0?"+":""}${proTech.d50.toFixed(1)}%`:"—"}</b><span>Distance from intermediate trend</span></div>
+          <div><small>200D MA</small><b className={(proTech.d200??0)>=0?"good":"bad"}>{proTech.d200!=null?`${proTech.d200>=0?"+":""}${proTech.d200.toFixed(1)}%`:"—"}</b><span>Distance from long trend</span></div>
+          <div><small>BOLLINGER POSITION</small><b>{proTech.bbPos!=null?`${Math.round(proTech.bbPos)}%`:"—"}</b><span>0% lower band · 100% upper</span></div>
+          <div><small>52W DRAWDOWN</small><b>{proTech.drawdown!=null?`${proTech.drawdown.toFixed(1)}%`:"—"}</b><span>Distance from recent high</span></div>
+        </div>}
+        <div className="techRead"><small>NIVORA TECHNICAL READ</small><h4>{d.labels.trend} trend · {d.labels.momentum} momentum · {d.labels.risk} risk</h4><p>{d.why?.slice(0,3).join(" ")}</p></div>
+        <div className="osTechGrid">{Object.entries(d.engine).map(([k,v]:any)=><div key={k}><div className="metricLabel"><span>{k}</span><Help title={k}>{k==="Trend"?"Multi-horizon direction and slope.":k==="Momentum"?"Speed and persistence of the current move.":k==="Flow"?"Volume/price participation and confirmation.":k==="Structure"?"Higher highs/lows, support and resistance behavior.":k==="RSI"?"Relative Strength Index; helps identify momentum extremes but is never used alone.":k==="MACD"?"Trend/momentum crossover evidence.":k==="Extension"?"How far price has moved away from its recent equilibrium; high extension increases chase risk.":k==="Relative strength"?"Performance versus the relevant benchmark.":k==="Market regime"?"Whether the broad market is supportive, mixed or risk-off.":"Supporting quantitative evidence used by the decision engine."}</Help></div><b>{typeof v==="number"?`${v}/100`:v}</b></div>)}</div>
+      </div>}
 
-      {tab==="options"&&<div className="gammaPanel v22Options">
-        <div className="gammaHero"><small>OPTIONS INTELLIGENCE</small><h3>Options positioning — translated for beginners.</h3><p>Use this as supporting short-term context around important strikes, volatility and expected move. It does not override the main NIVORA call.</p></div>
+      {tab==="options"&&<div className="gammaPanel v22Options v26Options">
+        <div className="gammaHero"><small>OPTIONS LAB</small><h3>Positioning + contract research in one place.</h3><p>Start with the stock thesis, then use options data to compare structure, liquidity, volatility and leverage. Candidate contracts are ranked research outputs, not automatic trades.</p></div>
+        <div className="optionSubnav"><button className={optionView==="setups"?"on":""} onClick={()=>setOptionView("setups")}>Contract setups</button><button className={optionView==="positioning"?"on":""} onClick={()=>setOptionView("positioning")}>Gamma / positioning</button></div>
         {optionsLoading?<div className="optionsState">Loading shared options snapshot…</div>:
         !optionsData?.enabled?<div className="optionsState"><b>Options data is not available.</b><span>{optionsData?.reason||"Add MARKETDATA_TOKEN in Vercel to enable the options module."}</span><button type="button" className="optionsRetry" onClick={()=>{setOptionsData(null);setOptionsLoading(false)}}>Retry</button></div>:
         <><div className="optionsFresh"><span>{optionsData.dataMode}</span><small>{optionsData.updatedAt?`Provider snapshot ${new Date(optionsData.updatedAt).toLocaleString()}`:"Provider timestamp unavailable"}</small></div>
-        <div className="optionsQuick">
-          <div><div className="metricLabel"><small>CALL WALL</small><Help title="Call wall">The strike with the largest call open interest in the fetched expiration. It can become an important attention area, but it is not guaranteed resistance.</Help></div><b>{optionsData.callWall!=null?`$${optionsData.callWall}`:"—"}</b></div>
-          <div><div className="metricLabel"><small>PUT WALL</small><Help title="Put wall">The strike with the largest put open interest in the fetched expiration. It can become an important attention area, but it is not guaranteed support.</Help></div><b>{optionsData.putWall!=null?`$${optionsData.putWall}`:"—"}</b></div>
-          <div><div className="metricLabel"><small>GAMMA NODE</small><Help title="Gamma node">The strike with the largest open-interest-weighted gamma concentration in this snapshot. This is a positioning proxy, not observed dealer inventory.</Help></div><b>{optionsData.gammaNode!=null?`$${optionsData.gammaNode}`:"—"}</b></div>
-          <div><div className="metricLabel"><small>EXPECTED MOVE</small><Help title="Expected move">Approximation from the nearest at-the-money call + put midpoint in the fetched expiration. It is an options-implied range estimate, not a prediction.</Help></div><b>{optionsData.expectedMovePct!=null?`±${optionsData.expectedMovePct}%`:"—"}</b></div>
-          <div><div className="metricLabel"><small>ATM IV</small><Help title="ATM implied volatility">Average implied volatility around the closest at-the-money strike available in this options snapshot.</Help></div><b>{optionsData.atmIV!=null?`${optionsData.atmIV}%`:"—"}</b></div>
-          <div><div className="metricLabel"><small>PUT/CALL OI</small><Help title="Put/call open interest">Total put open interest divided by total call open interest in the fetched chain. Higher is more put-heavy, but direction cannot be inferred from this ratio alone.</Help></div><b>{optionsData.putCallOI??"—"}</b></div>
-        </div>
-        <div className="optionsRead"><small>PLAIN-ENGLISH READ</small><h4>{optionsData.position}</h4><p>{optionsData.gammaProxy}. {optionsData.note}</p></div>
-        {optionsData.topNodes?.length>0&&<div className="optionsNodes"><small>TOP GAMMA-CONCENTRATION STRIKES</small>{optionsData.topNodes.map((x:any)=><div key={x.strike}><b>${x.strike}</b><span>Call OI {x.callOI.toLocaleString()} · Put OI {x.putOI.toLocaleString()}</span></div>)}</div>}
+        {optionView==="setups"?<div className="contractLab">
+          <div className="contractContext"><div><small>UNDERLYING CALL</small><b className={tone(view.label)}>{view.label}</b><span>Options should express a thesis—not create one.</span></div><div><small>EXPECTED MOVE</small><b>{optionsData.expectedMovePct!=null?`±${optionsData.expectedMovePct}%`:"—"}</b><span>From near-ATM option premium</span></div><div><small>ATM IV</small><b>{optionsData.atmIV!=null?`${optionsData.atmIV}%`:"—"}</b><span>Volatility priced into options</span></div></div>
+          <div className="contractControls"><div><button className={optionSide==="bullish"?"on":""} onClick={()=>setOptionSide("bullish")}>Calls · bullish</button><button className={optionSide==="bearish"?"on":""} onClick={()=>setOptionSide("bearish")}>Puts · bearish</button></div><div><button className={optionStyle==="conservative"?"on":""} onClick={()=>setOptionStyle("conservative")}>Safer</button><button className={optionStyle==="balanced"?"on":""} onClick={()=>setOptionStyle("balanced")}>Balanced</button><button className={optionStyle==="aggressive"?"on":""} onClick={()=>setOptionStyle("aggressive")}>Aggressive</button><button className={optionStyle==="leaps"?"on":""} onClick={()=>setOptionStyle("leaps")}>LEAPS</button></div></div>
+          <div className="styleExplain"><Help title="Contract styles">Safer targets higher delta and better liquidity. Balanced seeks a middle ground. Aggressive accepts lower delta/shorter duration and can lose premium faster. LEAPS favors long duration and higher delta to reduce short-term theta pressure.</Help><span>{optionStyle==="leaps"?"Long-duration candidates for investors seeking stock-like exposure with defined premium risk.":optionStyle==="aggressive"?"Higher leverage and faster premium decay. Treat this as the highest-risk filter.":optionStyle==="conservative"?"Higher-delta candidates with stronger emphasis on liquidity and spread quality.":"A compromise between leverage, duration, liquidity and delta."}</span></div>
+          {(()=>{
+            const list=optionsData.contractSetups?.[optionSide]?.[optionStyle]||[];
+            return list.length?<div className="contractCards">{list.map((x:any,i:number)=><div className={`contractCard ${i===0?"top":""}`} key={`${x.expiration}-${x.strike}-${x.side}`}>
+              <div className="contractHead"><span>{i===0?"TOP RANKED":"ALTERNATIVE"}</span><b>{x.expiration?new Date(x.expiration).toLocaleDateString():"—"} · ${x.strike} {x.side==="call"?"Call":"Put"}</b><em>{x.score}/100</em></div>
+              <div className="contractStats"><div><small>PREMIUM</small><b>{x.premium!=null?`~$${x.premium}`:"—"}</b></div><div><small>DELTA</small><b>{x.delta!=null?Number(x.delta).toFixed(2):"—"}</b></div><div><small>DTE</small><b>{x.dte??"—"}</b></div><div><small>IV</small><b>{x.iv!=null?`${x.iv}%`:"—"}</b></div><div><small>OI</small><b>{Number(x.openInterest||0).toLocaleString()}</b></div><div><small>SPREAD</small><b>{x.spreadPct!=null?`${x.spreadPct}%`:"—"}</b></div><div><small>BREAK-EVEN</small><b>{x.breakEven!=null?`$${x.breakEven}`:"—"}</b></div><div><small>LEVERAGE</small><b>{x.leverage!=null?`${x.leverage}×`:"—"}</b></div></div>
+              <p>{x.score>=75?"Strong candidate quality from the available chain.":x.score>=60?"Usable candidate, but inspect liquidity/IV before acting.":"Lower-quality candidate from this delayed snapshot."}</p>
+            </div>)}</div>:<div className="optionsState"><b>No contracts matched this filter.</b><span>The provider snapshot may not include the required expiration range or liquid contracts.</span></div>
+          })()}
+          <div className="contractFoot"><ShieldCheck size={15}/><p>{optionsData.rankingNote}</p></div>
+        </div>:<div className="positioningLab">
+          <div className="optionsQuick">
+            <div><div className="metricLabel"><small>CALL WALL</small><Help title="Call wall">Largest call open-interest strike in the fetched chain. It is an attention area, not guaranteed resistance.</Help></div><b>{optionsData.callWall!=null?`$${optionsData.callWall}`:"—"}</b></div>
+            <div><div className="metricLabel"><small>PUT WALL</small><Help title="Put wall">Largest put open-interest strike in the fetched chain. It is an attention area, not guaranteed support.</Help></div><b>{optionsData.putWall!=null?`$${optionsData.putWall}`:"—"}</b></div>
+            <div><div className="metricLabel"><small>GAMMA NODE</small><Help title="Gamma node">Largest OI-weighted gamma concentration. This is a proxy; NIVORA does not observe dealer inventory.</Help></div><b>{optionsData.gammaNode!=null?`$${optionsData.gammaNode}`:"—"}</b></div>
+            <div><small>EXPECTED MOVE</small><b>{optionsData.expectedMovePct!=null?`±${optionsData.expectedMovePct}%`:"—"}</b></div>
+            <div><small>ATM IV</small><b>{optionsData.atmIV!=null?`${optionsData.atmIV}%`:"—"}</b></div>
+            <div><small>PUT/CALL OI</small><b>{optionsData.putCallOI??"—"}</b></div>
+          </div>
+          <div className="optionsRead"><small>PLAIN-ENGLISH READ</small><h4>{optionsData.position}</h4><p>{optionsData.gammaProxy}. {optionsData.note}</p></div>
+          {optionsData.topNodes?.length>0&&<div className="optionsNodes"><small>TOP GAMMA-CONCENTRATION STRIKES</small>{optionsData.topNodes.map((x:any)=><div key={x.strike}><b>${x.strike}</b><span>Call OI {x.callOI.toLocaleString()} · Put OI {x.putOI.toLocaleString()}</span></div>)}</div>}
+        </div>}
         </>}
       </div>}
     </section>
