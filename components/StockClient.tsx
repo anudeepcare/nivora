@@ -13,6 +13,8 @@ import {
   PlusCircle,
   ShieldCheck,
   Star,
+  Sparkles,
+  Brain,
 } from "lucide-react";
 import SearchBox from "./SearchBox";
 import PriceChart from "./PriceChart";
@@ -20,6 +22,7 @@ import {supabaseBrowser} from "@/lib/supabase";
 import {buildNivoraIntelligence} from "@/lib/nivora-intelligence";
 
 type Mode="now"|"swing"|"long"|"own";
+type Depth="simple"|"investor"|"pro";
 type Tab="overview"|"thesis"|"fundamentals"|"catalysts"|"news"|"earnings"|"technical"|"options";
 
 const tone=(s:string)=>{
@@ -106,6 +109,8 @@ export default function StockClient({symbol}:{symbol:string}){
   const[optionSide,setOptionSide]=useState<"bullish"|"bearish">("bullish");
   const[optionStyle,setOptionStyle]=useState<"conservative"|"balanced"|"aggressive"|"leaps">("balanced");
   const[optionExpiration,setOptionExpiration]=useState<string|null>(null);
+  const[depth,setDepth]=useState<Depth>("simple");
+  const[answerOpen,setAnswerOpen]=useState<"why"|"change"|"risk"|"evidence"|null>(null);
 
   useEffect(()=>{
     let live=true;
@@ -204,6 +209,18 @@ export default function StockClient({symbol}:{symbol:string}){
     market:d,company,context,options:optionsData,mode
   }),[d,company,context,optionsData,mode]);
 
+  const quickAnswers=useMemo(()=>{
+    if(!intelligence)return null;
+    return {
+      why:`${intelligence.biggestPositive} ${intelligence.biggestRisk?`The main reason not to be more aggressive is: ${intelligence.biggestRisk}`:""}`,
+      change:`The next decision trigger is ${intelligence.nextDecision}. A stronger call also needs better alignment across entry, momentum, flow and catalysts.`,
+      risk:`${intelligence.biggestRisk} ${intelligence.bearTriggers?.[0]?`Key deterioration trigger: ${intelligence.bearTriggers[0]}.`:""}`,
+      evidence:intelligence.contradictions?.length
+        ?`The engine sees disagreement: ${intelligence.contradictions[0]}`
+        :`The major evidence layers are broadly aligned. Confidence is ${intelligence.confidenceLabel.toLowerCase()} with ${intelligence.confidence}/100 evidence coverage.`
+    };
+  },[intelligence]);
+
   if(err)return <div className="osError"><b>Couldn’t analyze {symbol}</b><span>{err}</span><button onClick={()=>location.reload()}>Try again</button></div>;
   if(!d||!view)return <div className="osStockLoading"><div className="osLogo">NIVORA<span>.</span></div><b>Analyzing {symbol}</b><span>Building the decision first. Evidence loads after.</span></div>;
 
@@ -284,12 +301,21 @@ export default function StockClient({symbol}:{symbol:string}){
       <button className={mode==="own"?"on":""} onClick={()=>setMode("own")}>I own it</button>
     </div>
 
-    <section className="v19Performance" aria-label="Quick market context">
+    <div className="v28DepthBar">
+      <div><Sparkles size={15}/><span>View</span><Help title="View depth">Simple gives the answer first. Investor adds the research needed to validate the thesis. Pro exposes the full technical, options and model evidence without changing the underlying NIVORA decision.</Help></div>
+      <div className="v28DepthToggle" role="tablist" aria-label="Analysis depth">
+        <button className={depth==="simple"?"on":""} onClick={()=>setDepth("simple")}>Simple</button>
+        <button className={depth==="investor"?"on":""} onClick={()=>setDepth("investor")}>Investor</button>
+        <button className={depth==="pro"?"on":""} onClick={()=>setDepth("pro")}>Pro</button>
+      </div>
+    </div>
+
+    {depth!=="simple"&&<section className="v19Performance" aria-label="Quick market context">
       <div><div className="metricLabel"><small>PERFORMANCE</small><Help title="Performance">Price return over the selected period using available market history. Performance describes what happened; it does not predict what happens next.</Help></div><b>{selectedReturn==null?"—":`${selectedReturn>=0?"+":""}${selectedReturn}%`}</b><div className="v19Range">{(["6M","YTD","1Y"] as const).map(r=><button key={r} className={perfRange===r?"on":""} onClick={()=>setPerfRange(r)}>{r}</button>)}</div></div>
       <div><div className="metricLabel"><small>52-WEEK POSITION</small><Help title="52-week position">Shows where today’s price sits between the last 52-week low and high. Near the high is not automatically bad; it simply adds price-location context.</Help></div><b>{d.performance?.rangePositionPct!=null?`${d.performance.rangePositionPct}%`:"—"}</b><span>{d.performance?.yearLow!=null&&d.performance?.yearHigh!=null?`Low $${d.performance.yearLow} · High $${d.performance.yearHigh}`:"Waiting for 1-year history"}</span></div>
       <div><div className="metricLabel"><small>RISK / REWARD</small><Help title="Risk / reward">Compares the distance from today’s price to NIVORA’s confirmation level with the distance to its reassessment level. It is a technical planning ratio, not a forecast.</Help></div><b>{rr==null?"—":`${rr.toFixed(1)}×`}</b><span>{upside==null||downside==null?"Waiting for levels":`${upside>=0?"+":""}${upside.toFixed(1)}% to confirmation · ${downside.toFixed(1)}% to reassess`}</span></div>
       <div><div className="metricLabel"><small>DATA CONFIDENCE</small><Help title="Data confidence">Shows whether price history, business data, market context and news/catalyst sources are available. Higher confidence means better evidence coverage—not higher certainty of profit.</Help></div><b className={confidence==="High"?"good":confidence==="Low"?"bad":"mid"}>{confidence}</b><span>Price + business + news + market coverage.</span></div>
-    </section>
+    </section>}
 
     <section className={["osDecision",tone(view.label),"v12Decision","v18Decision"].join(" ")}>
       <div className="osDecisionTop">
@@ -322,6 +348,22 @@ export default function StockClient({symbol}:{symbol:string}){
       </div>
     </section>
 
+    {intelligence&&quickAnswers&&<section className="v28AnswerFirst">
+      <div className="v28AnswerHeadline">
+        <div><small>NIVORA ANSWER</small><b>{intelligence.thesisLabel} · {intelligence.confidenceLabel} confidence</b><p>{intelligence.biggestPositive} <strong>Watch:</strong> {intelligence.biggestRisk}</p></div>
+        <button type="button" onClick={()=>setTab("thesis")}><Brain size={16}/> Full thesis</button>
+      </div>
+      <div className="v28QuestionRow">
+        {[
+          ["why","Why not more aggressive?"],
+          ["change","What changes the call?"],
+          ["risk","Biggest risk?"],
+          ["evidence","Do signals disagree?"]
+        ].map(([key,label])=><button type="button" key={key} className={answerOpen===key?"on":""} onClick={()=>setAnswerOpen(answerOpen===key?null:key as any)}>{label}</button>)}
+      </div>
+      {answerOpen&&<div className="v28AnswerBody">{quickAnswers[answerOpen]}</div>}
+    </section>}
+
     <section className="v18DecisionStrip">
       <div><small>BUSINESS</small><b className={tone(business.label)}>{business.label}</b><Help title="Business quality">Scored from reported growth, profitability, cash generation, balance-sheet evidence and multi-year consistency when SEC data is available.</Help></div>
       <div><small>TREND</small><b className={tone(d.labels.trend)}>{d.labels.trend}</b><Help title="Trend">Uses multiple price horizons and structure. A strong trend can still receive a WAIT if the entry is stretched.</Help></div>
@@ -342,13 +384,13 @@ export default function StockClient({symbol}:{symbol:string}){
       <div><small>MARKET CONTEXT</small><h3>{d.market.regime}</h3><p>{marketContextText}</p></div>
     </section>
 
-    <section className="osChartCard v12Chart">
+    {depth!=="simple"&&<section className="osChartCard v12Chart">
       <div className="osSectionTitle"><div><small>PRICE MAP</small><h3>What price has to do next</h3></div><span>Green = entry/support · Orange = confirmation · Red = reassess</span></div>
       <div className="chartControls"><div><button className={chartMode==="clean"?"on":""} onClick={()=>setChartMode("clean")}>Clean</button><button className={chartMode==="trend"?"on":""} onClick={()=>setChartMode("trend")}>Trend</button></div><Help title="Chart modes">Clean keeps only price, volume and NIVORA levels. Trend adds 20-day and 50-day moving averages for users who want more technical context.</Help></div>
       <PriceChart candles={d.candles} levels={d.levels} showTrend={chartMode==="trend"}/>
-    </section>
+    </section>}
 
-    <section className="beginnerScore v18Score">
+    {depth==="pro"&&<section className="beginnerScore v18Score">
       <div className="beginnerScoreMain">
         <div className="decisionEyebrow"><small>NIVORA SCORE</small><Help title="How is the NIVORA score calculated?">{scoreFormula} The score is a summary, not the decision itself. 80–100 = excellent evidence, 65–79 = promising/selective, 50–64 = mixed, below 50 = weak. The action above can still be WAIT when price is extended.</Help></div>
         <div className="scoreLine"><b>{overallScore}</b><span>/100</span><em>{overallLabel}</em></div>
@@ -360,30 +402,30 @@ export default function StockClient({symbol}:{symbol:string}){
         <div><div className="metricLabel"><small>TIMING NOW</small><Help title="Timing now">Focuses on whether today’s price is attractive relative to the setup—not whether the company is good.</Help></div><b>{d.labels.entry}</b><span>Entry quality at today’s price.</span></div>
         <div><div className="metricLabel"><small>RISK</small><Help title="Risk in the score">The score rewards lower risk and penalizes unusually high downside/extension risk. Position sizing still belongs to the user.</Help></div><b>{d.labels.risk}</b><span>Higher risk means use more caution.</span></div>
       </div>
-    </section>
+    </section>}
 
-    {intelligence&&<section className="v27IntelStrip">
+    {depth!=="simple"&&intelligence&&<section className="v27IntelStrip">
       <div className="intelLead"><small>NIVORA INTELLIGENCE</small><div><b>{intelligence.score}/100</b><span className={tone(intelligence.thesisLabel)}>{intelligence.thesisLabel}</span></div><p>{intelligence.biggestPositive} <strong>Watch:</strong> {intelligence.biggestRisk}</p></div>
       <div><small>NEXT DECISION TRIGGER</small><b>{intelligence.nextDecision}</b></div>
       <div><small>CONFIDENCE</small><b>{intelligence.confidenceLabel}</b><span>{intelligence.confidence}/100 evidence coverage</span></div>
       <button type="button" onClick={()=>setTab("thesis")}>Open full thesis →</button>
     </section>}
 
-    <section className="v12ReasonGrid">
+    {depth!=="simple"&&<section className="v12ReasonGrid">
       <div className="v12Reason goodBox"><small>WHY IT CAN WORK</small><h3>What supports the setup</h3>{positive.length?positive.map((x:string,i:number)=><p key={i}>✓ {x}</p>):<p>Evidence is still loading or mixed.</p>}</div>
       <div className="v12Reason riskBox"><small>WHAT CAN GO WRONG</small><h3>What is holding it back</h3>{risks.length?risks.map((x:string,i:number)=><p key={i}>• {x}</p>):<p>No major risk flag was detected from the connected sources.</p>}</div>
-    </section>
+    </section>}
 
-    <section className="osContext v12Context">
-      <div className="osTabs v12Tabs">
-        <button className={tab==="overview"?"on":""} onClick={()=>setTab("overview")}>Overview</button>
-        <button className={tab==="thesis"?"on":""} onClick={()=>setTab("thesis")}>NIVORA Thesis</button>
-        <button className={tab==="fundamentals"?"on":""} onClick={()=>setTab("fundamentals")}>Fundamentals</button>
-        <button className={tab==="catalysts"?"on":""} onClick={()=>setTab("catalysts")}>Catalysts</button>
-        <button className={tab==="news"?"on":""} onClick={()=>setTab("news")}>News</button>
-        <button className={tab==="earnings"?"on":""} onClick={()=>setTab("earnings")}>Earnings</button>
-        <button className={tab==="technical"?"on":""} onClick={()=>setTab("technical")}>Technical</button>
-        {d.assetType!=="crypto"&&<button className={tab==="options"?"on":""} onClick={()=>setTab("options")}>Options Lab</button>}
+    <section className={["osContext","v12Context",depth==="simple"?"v28SimpleContext":""].join(" ")}>
+      <div className="osTabs v12Tabs v28Tabs">
+        <button className={tab==="overview"?"on":""} onClick={()=>setTab("overview")}>Decision</button>
+        <button className={tab==="thesis"?"on":""} onClick={()=>setTab("thesis")}>Thesis</button>
+        {depth!=="simple"&&<button className={tab==="fundamentals"?"on":""} onClick={()=>setTab("fundamentals")}>Fundamentals</button>}
+        {depth!=="simple"&&<button className={tab==="catalysts"?"on":""} onClick={()=>setTab("catalysts")}>Catalysts</button>}
+        {depth!=="simple"&&<button className={tab==="news"?"on":""} onClick={()=>setTab("news")}>News</button>}
+        {depth!=="simple"&&<button className={tab==="earnings"?"on":""} onClick={()=>setTab("earnings")}>Earnings</button>}
+        {depth==="pro"&&<button className={tab==="technical"?"on":""} onClick={()=>setTab("technical")}>Technical Lab</button>}
+        {d.assetType!=="crypto"&&<button className={tab==="options"?"on":""} onClick={()=>setTab("options")}>{depth==="pro"?"Options Lab":"Options"}</button>}
       </div>
 
       {tab==="overview"&&<div className="v12Overview">

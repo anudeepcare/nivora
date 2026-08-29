@@ -427,3 +427,31 @@ html,body{max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}button,
  .thesisGrid,.scenarioSection{padding:12px}.triggerGrid{grid-template-columns:1fr}.triggerGrid>div{padding:15px 14px}.triggerGrid>div+div{border-left:0;border-top:1px solid #e8edf3}
  .expirationHead{align-items:flex-start;padding:12px;flex-direction:column}.expirationRail{padding:9px 12px 12px}
 }
+
+/* V28 progressive intelligence UX */
+.v28DepthBar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:12px 0 16px}
+.v28DepthBar>div:first-child{display:flex;align-items:center;gap:7px;color:#667085;font-size:12px;font-weight:800}
+.v28DepthToggle{display:flex;gap:4px;background:#eef2f6;border-radius:12px;padding:4px}
+.v28DepthToggle button{border:0;background:transparent;border-radius:9px;padding:8px 13px;font-size:11px;font-weight:850;color:#667085;cursor:pointer}
+.v28DepthToggle button.on{background:#101828;color:#fff;box-shadow:0 1px 3px rgba(16,24,40,.12)}
+
+.v28AnswerFirst{margin:14px 0;border:1px solid #dfe5ec;border-radius:16px;background:#fff;overflow:hidden}
+.v28AnswerHeadline{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;padding:17px 18px}
+.v28AnswerHeadline small{font-size:10px;letter-spacing:.11em;font-weight:900;color:#16833d}
+.v28AnswerHeadline b{display:block;font-size:17px;margin:5px 0}
+.v28AnswerHeadline p{margin:0;color:#667085;font-size:12px;line-height:1.5}
+.v28AnswerHeadline button{display:flex;align-items:center;gap:7px;border:0;background:#101828;color:#fff;border-radius:10px;padding:10px 12px;font-size:11px;font-weight:850;cursor:pointer;white-space:nowrap}
+.v28QuestionRow{display:flex;gap:7px;overflow:auto;padding:11px 18px;border-top:1px solid #e8edf3;background:#f8fafc;scrollbar-width:thin}
+.v28QuestionRow button{flex:none;border:1px solid #dfe5ec;background:#fff;border-radius:999px;padding:7px 10px;font-size:11px;font-weight:800;color:#475467;cursor:pointer}
+.v28QuestionRow button.on{background:#101828;color:#fff;border-color:#101828}
+.v28AnswerBody{padding:13px 18px;border-top:1px solid #e8edf3;font-size:12px;line-height:1.55;color:#475467;background:#fff}
+
+.v28SimpleContext{margin-top:14px}
+.v28SimpleContext .v28Tabs{justify-content:flex-start}
+.v28Tabs{overflow:auto;scrollbar-width:thin}
+@media(max-width:700px){
+  .v28DepthBar{align-items:flex-start;flex-direction:column;margin:10px 0 14px}
+  .v28DepthToggle{width:100%}.v28DepthToggle button{flex:1}
+  .v28AnswerHeadline{padding:14px;flex-direction:column}.v28AnswerHeadline button{width:100%;justify-content:center}
+  .v28QuestionRow{padding:10px 12px}.v28AnswerBody{padding:12px 14px}
+}
