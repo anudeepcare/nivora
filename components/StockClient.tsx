@@ -372,8 +372,12 @@ export default function StockClient({symbol}:{symbol:string}){
   const valuationScore=Number(intelligence?.valuation ?? 50);
   // Institutions must only represent verified reported ownership/13F evidence.
   // Never substitute the price/volume accumulation proxy into this slot.
+  const institutionalPct=Number(institutional?.institutional?.shareChangePct);
+  const institutionalHasPct=institutional?.enabled && Number.isFinite(institutionalPct);
   const institutionalQuick=institutional?.enabled
-    ? (institutional?.institutional?.directionLabel||institutionalLabel)
+    ? (institutionalHasPct
+        ? `${institutionalPct>0?"+":""}${institutionalPct.toFixed(Math.abs(institutionalPct)>=100?0:1)}% QoQ`
+        : (institutional?.institutional?.directionLabel||institutionalLabel))
     : "13F not loaded";
   const institutionalQuickTone=institutional?.enabled ? institutionalTone : "mid";
   const signalRows=[
@@ -607,14 +611,32 @@ export default function StockClient({symbol}:{symbol:string}){
         <div className="v32Institutional">
           <div className="v32InstitutionalHead"><div><small>INSTITUTIONAL INTELLIGENCE</small><h3>{institutionalLabel}</h3><p>{institutional?.disclosure||"Reported institutional ownership is not available from the connected feed for this symbol."}</p></div><Help title="Institutional intelligence">Reported institutional ownership and insider filings are delayed evidence. NIVORA keeps this separate from the daily accumulation proxy so it never presents quarterly filings as real-time institutional buying.</Help></div>
           {institutional?.enabled?<div className="v32InstitutionalGrid v321InstitutionalGrid">
-            <div><small>REPORTED INSTITUTIONS</small><b className={institutionalTone}>{institutional.institutional?.directionLabel||institutionalLabel}</b><span>{institutional.institutional?.increased||0} managers increased · {institutional.institutional?.reduced||0} reduced</span><em>{institutional.institutional?.periodLabel||"Latest available filing period"}</em></div>
-            <div><small>REPORTED SHARE CHANGE</small><b className={Number(institutional.institutional?.netReportedShareChange||0)>0?"good":Number(institutional.institutional?.netReportedShareChange||0)<0?"bad":"mid"}>{institutional.institutional?.netChangeLabel||"Mixed / unavailable"}</b><span>{institutional.institutional?.reportingRows||0} reporting positions in the connected/cached data</span><em>Delayed filing evidence — not today's order flow</em></div>
+            <div><small>QUARTER-OVER-QUARTER</small><b className={Number(institutional.institutional?.shareChangePct||0)>0?"good":Number(institutional.institutional?.shareChangePct||0)<0?"bad":"mid"}>{institutional.institutional?.shareChangePctLabel||institutional.institutional?.directionLabel||institutionalLabel}</b><span>{institutional.institutional?.directionLabel||institutionalLabel} · {institutional.institutional?.increased||0} adding · {institutional.institutional?.reduced||0} trimming</span><em>{institutional.institutional?.periodLabel||"Latest available filing period"}</em></div>
+            <div><small>REPORTED HOLDINGS</small><b className={Number(institutional.institutional?.netReportedShareChange||0)>0?"good":Number(institutional.institutional?.netReportedShareChange||0)<0?"bad":"mid"}>{institutional.institutional?.netChangeLabel||"Mixed / unavailable"}</b><span>{institutional.institutional?.totalShares!=null?`${Number(institutional.institutional.totalShares).toLocaleString()} shares now · ${Number(institutional.institutional.priorTotalShares||0).toLocaleString()} prior`: `${institutional.institutional?.reportingRows||0} reporting managers`}</span><em>{institutional.institutional?.totalValueLabel&&institutional.institutional?.priorTotalValueLabel?`${institutional.institutional.totalValueLabel} reported value · prior ${institutional.institutional.priorTotalValueLabel}`:"Delayed filing evidence — not today's order flow"}</em></div>
+            <div><small>MANAGER BREADTH</small><b className={institutionalTone}>{institutional.institutional?.increased||0} adding · {institutional.institutional?.reduced||0} trimming</b><span>{institutional.institutional?.newManagers!=null?`${institutional.institutional.newManagers} new positions · ${institutional.institutional.exitedManagers||0} exits`: `${institutional.institutional?.reportingRows||0} reporting positions`}</span><em>{institutional.institutional?.unchangedManagers!=null?`${institutional.institutional.unchangedManagers} unchanged · ${institutional.institutional.reportingManagers||0} current managers`:"Latest available ownership evidence"}</em></div>
             <div><small>INSIDERS</small><b className={institutional.insiders?.label==="Net buying"?"good":institutional.insiders?.label==="Net selling"?"bad":"mid"}>{institutional.insiders?.label||"Mixed"}</b><span>{institutional.insiders?.buys||0} buys · {institutional.insiders?.sells||0} sells in available feed</span><em>Reported transactions only</em></div>
             <div><small>TODAY'S ACCUMULATION PROXY</small><b className={marketLab?.accumulationLabel==="Accumulating"?"good":marketLab?.accumulationLabel==="Distribution risk"?"bad":"mid"}>{marketLab?.accumulationLabel||"Insufficient data"}</b><span>{marketLab?`${marketLab.accumulation}/100 from price/volume behavior`:"Needs more price/volume history"}</span><em>Market-behavior proxy, not named-institution flow</em></div>
           </div>:<div className="v32InstitutionalEmpty"><b>Reported institutional filings unavailable.</b><span>{institutional?.reason||"NIVORA could not verify current ownership data from the connected/cache sources."}</span><small>Price/volume accumulation remains available separately; NIVORA will not call that institutional buying.</small></div>}
-          {institutional?.enabled&&Array.isArray(institutional.institutional?.top)&&institutional.institutional.top.length>0&&<div className="v321HolderList">
-            <div><small>TOP REPORTED MANAGERS</small><span>Latest available filing evidence</span></div>
-            {institutional.institutional.top.slice(0,6).map((x:any,i:number)=><div key={`${x.name}-${i}`}><b>{x.name}</b><span>{x.shares!=null?`${Number(x.shares).toLocaleString()} shares`:"Shares unavailable"}</span><em className={Number(x.change||0)>0?"good":Number(x.change||0)<0?"bad":"mid"}>{Number(x.change||0)>0?"Reported increase":Number(x.change||0)<0?"Reported reduction":"No verified change"}</em></div>)}
+          {institutional?.enabled&&<div className="v33InstitutionalDeep">
+            <div className="v33Pulse">
+              <div><small>INSTITUTIONAL SCORE</small><b className={Number(institutional.institutional?.institutionalScore||50)>=60?"good":Number(institutional.institutional?.institutionalScore||50)<45?"bad":"mid"}>{institutional.institutional?.institutionalScore??50}/100</b><span>Quarterly filing trend strength</span></div>
+              <div><small>ADD / TRIM BREADTH</small><b>{Number(institutional.institutional?.addBreadthPct||0).toFixed(0)}% / {Number(institutional.institutional?.trimBreadthPct||0).toFixed(0)}%</b><span>Among managers that changed positions</span></div>
+              <div><small>REPORTED VALUE CHANGE</small><b className={Number(institutional.institutional?.valueChangePct||0)>0?"good":Number(institutional.institutional?.valueChangePct||0)<0?"bad":"mid"}>{institutional.institutional?.valueChangePctLabel||"Unavailable"}</b><span>Value also moves with stock price</span></div>
+            </div>
+            {[
+              ["LARGEST REPORTED HOLDERS",institutional.institutional?.top],
+              ["BIGGEST REPORTED ADDERS",institutional.institutional?.biggestBuyers],
+              ["BIGGEST REPORTED TRIMMERS",institutional.institutional?.biggestSellers],
+              ["NEW REPORTED POSITIONS",institutional.institutional?.newPositions],
+              ["REPORTED EXITS",institutional.institutional?.exits]
+            ].map(([title,list]:any)=>Array.isArray(list)&&list.length>0&&<details className="v33ManagerGroup" key={title} open={title==="LARGEST REPORTED HOLDERS"}>
+              <summary><span>{title}</span><em>{list.length} shown</em></summary>
+              <div className="v33ManagerTable">
+                <div className="head"><span>Manager</span><span>Current</span><span>Prior</span><span>Change</span></div>
+                {list.slice(0,10).map((x:any,i:number)=>{const ch=Number(x.change||0);const cp=Number(x.changePct);return <div key={`${title}-${x.name}-${i}`}><b>{x.name}</b><span>{Number(x.shares||0).toLocaleString()} sh</span><span>{x.priorShares!=null?`${Number(x.priorShares).toLocaleString()} sh`:"—"}</span><em className={ch>0?"good":ch<0?"bad":"mid"}>{ch>0?"+":""}{Math.round(ch).toLocaleString()} {Number.isFinite(cp)?`(${cp>0?"+":""}${cp.toFixed(1)}%)`:""}</em></div>})}
+              </div>
+            </details>)}
+            <div className="v33InstitutionalNote"><b>How to read this</b><span>13F shows what reporting managers held at the filing period—not what they are buying today. Use breadth + share change + named manager changes together. NIVORA keeps today's price/volume accumulation proxy separate.</span></div>
           </div>}
         </div>
         <div className="osList">{company?.fundamentals?.length?company.fundamentals.map((x:any)=><div key={x.label}><span>{x.label}{x.detail&&<small>{x.detail}</small>}</span><b>{x.value}</b></div>):<p>No standardized SEC fundamentals available for this symbol yet.</p>}</div>

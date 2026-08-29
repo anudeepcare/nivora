@@ -16,6 +16,25 @@ function compact(n:number){
   if(a>=1e3)return `${sign}${(a/1e3).toFixed(1)}K shares`;
   return `${sign}${Math.round(a).toLocaleString()} shares`;
 }
+function pctChange(current:number,prior:number){
+  if(!Number.isFinite(current)||!Number.isFinite(prior)||prior<=0)return null;
+  return ((current-prior)/prior)*100;
+}
+function pctLabel(v:number|null){
+  if(v==null||!Number.isFinite(v))return "QoQ unavailable";
+  const sign=v>0?"+":v<0?"−":"";
+  return `${sign}${Math.abs(v).toFixed(Math.abs(v)>=100?0:1)}% QoQ`;
+}
+function money13F(v:number){
+  // SEC Form 13F VALUE is reported in thousands of dollars.
+  const dollars=v*1000;
+  const a=Math.abs(dollars), sign=dollars<0?"−":"";
+  if(a>=1e12)return `${sign}$${(a/1e12).toFixed(2)}T`;
+  if(a>=1e9)return `${sign}$${(a/1e9).toFixed(2)}B`;
+  if(a>=1e6)return `${sign}$${(a/1e6).toFixed(1)}M`;
+  if(a>=1e3)return `${sign}$${(a/1e3).toFixed(1)}K`;
+  return `${sign}$${Math.round(a).toLocaleString()}`;
+}
 function classify(increased:number,reduced:number,net:number){
   if(increased===0&&reduced===0&&net===0)return {label:"Unavailable",directionLabel:"No verified filing trend"};
   if(net>0 && increased>=Math.max(1,reduced))return {label:"Accumulating",directionLabel:"Reported increasing"};
@@ -79,16 +98,34 @@ export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
     const reduced=useProvider?pDec:Number(secCache?.reduced_managers||0);
     const netChange=useProvider?pNet:Number(secCache?.net_share_change||0);
     const reportingRows=useProvider?rows.length:Number(secCache?.reporting_managers||0);
+    const totalShares=useProvider?null:Number(secCache?.total_shares||0);
+    const priorTotalShares=useProvider?null:Number(secCache?.prior_total_shares||0);
+    const totalValue=useProvider?null:Number(secCache?.total_value||0);
+    const priorTotalValue=useProvider?null:Number(secCache?.prior_total_value||0);
+    const shareChangePct=useProvider?null:pctChange(Number(totalShares||0),Number(priorTotalShares||0));
+    const valueChangePct=useProvider?null:pctChange(Number(totalValue||0),Number(priorTotalValue||0));
     const direction=classify(increased,reduced,netChange);
+    const cachedDetail=secCache?.top_holders;
+    const legacyTop=Array.isArray(cachedDetail)?cachedDetail:[];
     const top=useProvider
-      ? rows.slice(0,10).map((x:any)=>({
+      ? rows.slice(0,15).map((x:any)=>({
           name:x.name||x.investorName||x.organization||"Reporting institution",
           shares:Number(x.share??x.shares??0)||null,
+          priorShares:null,
           change:Number(x.change??x.changeInShares??0)||null,
+          changePct:null,
           percent:Number(x.percent??x.percentage??0)||null,
           filingDate:x.filingDate||x.reportDate||x.date||null
         }))
-      : Array.isArray(secCache?.top_holders)?secCache.top_holders:[];
+      : (Array.isArray(cachedDetail?.topHolders)?cachedDetail.topHolders:legacyTop);
+    const biggestBuyers=!useProvider&&Array.isArray(cachedDetail?.biggestBuyers)?cachedDetail.biggestBuyers:top.filter((x:any)=>Number(x.change||0)>0).sort((a:any,b:any)=>Number(b.change||0)-Number(a.change||0));
+    const biggestSellers=!useProvider&&Array.isArray(cachedDetail?.biggestSellers)?cachedDetail.biggestSellers:top.filter((x:any)=>Number(x.change||0)<0).sort((a:any,b:any)=>Number(a.change||0)-Number(b.change||0));
+    const newPositions=!useProvider&&Array.isArray(cachedDetail?.newPositions)?cachedDetail.newPositions:[];
+    const exits=!useProvider&&Array.isArray(cachedDetail?.exits)?cachedDetail.exits:[];
+    const breadthDen=Math.max(1,increased+reduced);
+    const addBreadthPct=(increased/breadthDen)*100;
+    const trimBreadthPct=(reduced/breadthDen)*100;
+    const institutionalScore=Math.max(0,Math.min(100,Math.round(50 + (addBreadthPct-50)*0.65 + Math.max(-20,Math.min(20,(shareChangePct||0)))*1.1)));
 
     const buys=insiders.filter((x:any)=>Number(x.change??0)>0);
     const sells=insiders.filter((x:any)=>Number(x.change??0)<0);
@@ -120,9 +157,23 @@ export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
         reduced,
         netReportedShareChange:netChange,
         netChangeLabel:netChange===0?"No verified net share change":`${compact(netChange)} vs prior available period`,
+        totalShares,
+        priorTotalShares,
+        shareChangePct,
+        shareChangePctLabel:pctLabel(shareChangePct),
+        totalValue,
+        priorTotalValue,
+        totalValueLabel:useProvider?null:money13F(Number(totalValue||0)),
+        priorTotalValueLabel:useProvider?null:money13F(Number(priorTotalValue||0)),
+        valueChangePct,
+        valueChangePctLabel:pctLabel(valueChangePct),
+        newManagers:useProvider?null:Number(secCache?.new_managers||0),
+        exitedManagers:useProvider?null:Number(secCache?.exited_managers||0),
+        unchangedManagers:useProvider?null:Number(secCache?.unchanged_managers||0),
         periodLabel:useProvider?"Provider-reported filing data":secCache?.period_end?`13F period ending ${secCache.period_end}`:"Latest SEC 13F cache",
         confidence:useProvider?"Provider reported":secCache?.match_confidence||"SEC issuer-name matched",
-        top
+        addBreadthPct,trimBreadthPct,institutionalScore,
+        top,biggestBuyers,biggestSellers,newPositions,exits
       },
       insiders:{
         label:insiderTone,

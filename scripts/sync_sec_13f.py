@@ -121,7 +121,30 @@ def build(latest,previous,period):
         prior=sum(v["shares"] for v in prev.values())
         value=sum(v["value"] for v in cur.values())
         prior_value=sum(v["value"] for v in prev.values())
-        top=sorted(cur.items(),key=lambda kv:kv[1]["value"],reverse=True)[:12]
+        def manager_row(mgr,v):
+            prior_v=prev.get(mgr,{})
+            prior_shares=float(prior_v.get("shares",0) or 0)
+            shares=float(v.get("shares",0) or 0)
+            change=shares-prior_shares
+            change_pct=((change/prior_shares)*100) if prior_shares>0 else None
+            status="new" if mgr not in prev else ("increased" if change>0 else "reduced" if change<0 else "unchanged")
+            return {
+                "name":mgr,"shares":shares,"priorShares":prior_shares,"change":change,
+                "changePct":change_pct,"value":float(v.get("value",0) or 0),
+                "priorValue":float(prior_v.get("value",0) or 0),"status":status
+            }
+        all_current=[manager_row(mgr,v) for mgr,v in cur.items()]
+        top=sorted(all_current,key=lambda x:x["value"],reverse=True)[:15]
+        buyers=sorted([x for x in all_current if x["change"]>0],key=lambda x:x["change"],reverse=True)[:15]
+        sellers=sorted([x for x in all_current if x["change"]<0],key=lambda x:x["change"])[:15]
+        new_positions=sorted([x for x in all_current if x["status"]=="new"],key=lambda x:x["value"],reverse=True)[:15]
+        exits=[]
+        for mgr,v in prev.items():
+            if mgr not in cur:
+                exits.append({"name":mgr,"shares":0,"priorShares":float(v.get("shares",0) or 0),
+                              "change":-float(v.get("shares",0) or 0),"changePct":-100.0,
+                              "value":0,"priorValue":float(v.get("value",0) or 0),"status":"exited"})
+        exits=sorted(exits,key=lambda x:x["priorValue"],reverse=True)[:15]
         issuer=next(iter(cur.values())).get("issuer","") if cur else ""
         rows.append({
             "symbol":sym,"period_end":period,"issuer_name":issuer,
@@ -132,8 +155,9 @@ def build(latest,previous,period):
             "new_managers":new,"exited_managers":exited,
             "total_shares":total,"prior_total_shares":prior,
             "net_share_change":total-prior,"total_value":value,"prior_total_value":prior_value,
-            "top_holders":[{"name":mgr,"shares":v["shares"],"value":v["value"],"change":v["shares"]-prev.get(mgr,{}).get("shares",0)} for mgr,v in top],
-            "source_url":LATEST,"synced_at":datetime.utcnow().isoformat()+"Z"
+            "top_holders":{"topHolders":top,"biggestBuyers":buyers,"biggestSellers":sellers,
+                           "newPositions":new_positions,"exits":exits},
+            "source_url":LATEST,"synced_at":datetime.now().astimezone().isoformat()
         })
     return rows
 
