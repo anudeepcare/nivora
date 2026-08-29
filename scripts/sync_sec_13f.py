@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+]#!/usr/bin/env python3
 """
 NIVORA SEC Form 13F cache builder.
 
