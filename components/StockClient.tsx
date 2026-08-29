@@ -373,8 +373,34 @@ export default function StockClient({symbol}:{symbol:string}){
     ["Trend",d.labels.trend,tone(d.labels.trend)],
     ["Entry",d.labels.entry,tone(d.labels.entry)],
     ["Institutions",institutionalLabel,institutionalTone],
-    ["Options",optionsData?.enabled?(intelligence?.dimensions?.derivatives>=60?"Supportive":intelligence?.dimensions?.derivatives<45?"Cautious":"Neutral"):"Not loaded",optionsData?.enabled?(intelligence?.dimensions?.derivatives>=60?"good":intelligence?.dimensions?.derivatives<45?"bad":"mid"):"mid"],
-    ["Valuation",intelligence?.valuation>=65?"Attractive":intelligence?.valuation<45?"Expensive":"Fair",intelligence?.valuation>=65?"good":intelligence?.valuation<45?"bad":"mid"]
+    ["Options",
+  optionsData?.enabled
+    ? (Number(intelligence?.dimensions?.derivatives ?? 50) >= 60
+        ? "Supportive"
+        : Number(intelligence?.dimensions?.derivatives ?? 50) < 45
+          ? "Cautious"
+          : "Neutral")
+    : "Not loaded",
+  optionsData?.enabled
+    ? (Number(intelligence?.dimensions?.derivatives ?? 50) >= 60
+        ? "good"
+        : Number(intelligence?.dimensions?.derivatives ?? 50) < 45
+          ? "bad"
+          : "mid")
+    : "mid"
+],
+["Valuation",
+  Number(intelligence?.valuation ?? 50) >= 65
+    ? "Attractive"
+    : Number(intelligence?.valuation ?? 50) < 45
+      ? "Expensive"
+      : "Fair",
+  Number(intelligence?.valuation ?? 50) >= 65
+    ? "good"
+    : Number(intelligence?.valuation ?? 50) < 45
+      ? "bad"
+      : "mid"
+]
   ];
 
   return <div className="osStock v12Stock v18Stock">
