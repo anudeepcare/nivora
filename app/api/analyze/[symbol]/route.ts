@@ -1,11 +1,10 @@
 import {NextResponse} from "next/server";
 import {clamp,avg,sma,rnd,ema,rsi,atr,stddev,macd,obv,slope,pct} from "@/lib/quant";
+import {sharedJson,nowIso} from "@/lib/shared-cache";
 
-async function series(symbol:string,key:string,size=240,revalidate=300,timeout=4200){
-  const c=new AbortController();const t=setTimeout(()=>c.abort(),timeout);
-  try{const u=`https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(symbol)}&interval=1day&outputsize=${size}&apikey=${key}`;
-    const r=await fetch(u,{next:{revalidate},signal:c.signal});const j=await r.json();if(!j.values)throw new Error(j.message||"Market data unavailable");return j;
-  }finally{clearTimeout(t)}
+async function series(symbol:string,key:string,size=240,revalidate=45,timeout=3200){
+  const u=`https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(symbol)}&interval=1day&outputsize=${size}&apikey=${key}`;
+  return sharedJson(u,["twelve","series",symbol,String(size)],revalidate,timeout);
 }
 function qLabel(n:number,good=67,bad=42){return n>=good?"Strong":n<bad?"Weak":"Mixed"}
 export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
@@ -13,7 +12,7 @@ export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
  if(!key)return NextResponse.json({error:"Add TWELVE_DATA_API_KEY to .env.local to enable live analysis."},{status:503});
  try{
   const isCrypto=symbol.includes("/"); const benchmark=isCrypto?(symbol.startsWith("BTC/")?null:"BTC/USD"):"SPY";
-  const [j,bj]=await Promise.all([series(symbol,key,240,180,4200),benchmark?series(benchmark,key,100,900,1800).catch(()=>null):Promise.resolve(null)]);
+  const [j,bj]=await Promise.all([series(symbol,key,240,45,3200),benchmark?series(benchmark,key,100,90,2200).catch(()=>null):Promise.resolve(null)]);
   const rows=j.values.slice().reverse(),c=rows.map((x:any)=>+x.close),h=rows.map((x:any)=>+x.high),l=rows.map((x:any)=>+x.low),v=rows.map((x:any)=>+x.volume||0),p=c.at(-1)!,prev=c.at(-2)??p;
   const e20=ema(c,20).at(-1)!,e50=ema(c,50).at(-1)!,e200=ema(c,200).at(-1)!,rv=rsi(c),a=atr(rows),v20=sma(v,20),v5=sma(v,5),ret5=p/(c.at(-6)??p)-1,ret20=p/(c.at(-21)??p)-1,ret60=p/(c.at(-61)??p)-1;
   const m=macd(c),sd20=stddev(c,20),bbZ=sd20?(p-sma(c,20))/(2*sd20):0,ov=obv(c,v),obvSlope=slope(ov,10),volumeRatio=v20?v5/v20:1;
@@ -24,6 +23,10 @@ export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
   const momentum=clamp(50+(rv-50)*.75+ret20*125+(m.hist>0?9:-9)+ret5*70,8,94);
   const flow=clamp(50+(volumeRatio-1)*36+(obvSlope>0?10:-10)+(p>(c.at(-6)??p)?7:-7),8,94);
   const low60=Math.min(...l.slice(-60)),high60=Math.max(...h.slice(-60)),structure=clamp(30+70*(p-low60)/(high60-low60||1),8,94);
+  const sixSlice=c.slice(-126),sixStart=sixSlice[0]??p,sixReturn=sixStart?((p/sixStart)-1)*100:0,sixHigh=Math.max(...h.slice(-126)),sixLow=Math.min(...l.slice(-126));
+  let peak=sixSlice[0]??p,maxDrawdown=0;for(const x of sixSlice){if(x>peak)peak=x;const dd=peak?((x/peak)-1)*100:0;if(dd<maxDrawdown)maxDrawdown=dd}
+  const sixMonthScore=clamp(50+sixReturn*.65+(p>e50?10:-10)+(e50>e200?10:-10)+Math.max(-15,maxDrawdown*.35),5,95);
+  const sixMonthLabel=sixMonthScore>=70?"Strong":sixMonthScore<42?"Weak":"Mixed";
   const extATR=Math.abs(p-e20)/(a||p*.02),extension=clamp(extATR*32+Math.max(0,Math.abs(bbZ)-.7)*22,5,94);
   const nearestSupportCandidates=[e20,e50,...l.slice(-80)].filter(x=>x<p).sort((x,y)=>y-x),nearestResCandidates=[...h.slice(-80)].filter(x=>x>p).sort((x,y)=>x-y);
   const support=rnd(nearestSupportCandidates.find(x=>p-x>=a*.35)??p-a*1.35),majorSupport=rnd(nearestSupportCandidates.find(x=>x<support-a*.65)??p-a*2.8);
@@ -49,6 +52,6 @@ export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
   const own=p<invalidation?{label:"REASSESS / REDUCE RISK",tone:"bad",text:`Price is below the technical invalidation area near $${invalidation}. Recheck the business thesis and position risk.`}:p<support?{label:"HOLD / WATCH CLOSELY",tone:"mid",text:`Price is below nearest support. Watch whether $${majorSupport} stabilizes and whether the business thesis remains intact.`}:{label:"HOLD / WATCH",tone:"good",text:`The setup remains healthier while $${support} holds. Avoid adding simply because price is down; wait for a quality entry or confirmation.`};
   const candles=rows.slice(-180).map((x:any)=>({time:x.datetime,open:+x.open,high:+x.high,low:+x.low,close:+x.close,volume:+x.volume||0}));
   const why=[p>e20?"Price is above its 20-day equilibrium.":"Price is below its 20-day equilibrium.",e20>e50?"Short trend leads the intermediate trend.":"Short trend remains below the intermediate trend.",volumeRatio>1.08?"Recent volume is above normal.":"Recent volume is not showing strong confirmation.",extension>=60?"Price is stretched enough that mean-reversion risk matters.":"Price is not unusually stretched."];
-  return NextResponse.json({symbol,name:j.meta?.symbol||symbol,assetType:isCrypto?"crypto":"stock",price:rnd(p),changePct:rnd(pct(p,prev)),volumeRatio:rnd(volumeRatio),market:{benchmark,regime:marketRegime,score:Math.round(marketTrend),relativeStrength,relative20:rnd(rel20)},scores:{trend:Math.round(trend),momentum:Math.round(momentum),flow:Math.round(flow),structure:Math.round(structure),entry:Math.round(entry),risk:Math.round(risk),extension:Math.round(extension)},labels:{trend:qLabel(trend),momentum:qLabel(momentum),flow:qLabel(flow),structure:qLabel(structure),entry:entry>=68?"Good":entry<48?"Poor":"Improving",risk:risk<40?"Lower":risk<70?"Moderate":"High",extension:extension>=65?"Stretched":extension<38?"Normal":"Elevated"},views:{today,swing,longTerm,own},levels:{preferredEntry,support,majorSupport,resistance,breakout,invalidation},engine:{Trend:Math.round(trend),Momentum:Math.round(momentum),Flow:Math.round(flow),Structure:Math.round(structure),RSI:Math.round(rv),MACD:m.hist>0?"Positive":"Negative",Extension:Math.round(extension),"Relative strength":relativeStrength,"Market regime":marketRegime},candles,positives:positives.slice(0,4),risks:risks.slice(0,4),why,riskReward:rnd(rr)},{headers:{"Cache-Control":"public, s-maxage=120, stale-while-revalidate=600"}});
+  return NextResponse.json({symbol,name:j.meta?.symbol||symbol,assetType:isCrypto?"crypto":"stock",price:rnd(p),changePct:rnd(pct(p,prev)),volumeRatio:rnd(volumeRatio),sixMonth:{score:Math.round(sixMonthScore),label:sixMonthLabel,returnPct:rnd(sixReturn),maxDrawdownPct:rnd(maxDrawdown),high:rnd(sixHigh),low:rnd(sixLow),summary:sixMonthLabel==="Strong"?"The 6-month price record is constructive.":sixMonthLabel==="Weak"?"The 6-month price record is weak; rallies need confirmation.":"The 6-month price record is mixed."},freshness:{priceAt:nowIso(),decisionAt:nowIso(),priceTtlSeconds:45,decisionTtlSeconds:45},market:{benchmark,regime:marketRegime,score:Math.round(marketTrend),relativeStrength,relative20:rnd(rel20)},scores:{trend:Math.round(trend),momentum:Math.round(momentum),flow:Math.round(flow),structure:Math.round(structure),entry:Math.round(entry),risk:Math.round(risk),extension:Math.round(extension)},labels:{trend:qLabel(trend),momentum:qLabel(momentum),flow:qLabel(flow),structure:qLabel(structure),entry:entry>=68?"Good":entry<48?"Poor":"Improving",risk:risk<40?"Lower":risk<70?"Moderate":"High",extension:extension>=65?"Stretched":extension<38?"Normal":"Elevated"},views:{today,swing,longTerm,own},levels:{preferredEntry,support,majorSupport,resistance,breakout,invalidation},engine:{Trend:Math.round(trend),Momentum:Math.round(momentum),Flow:Math.round(flow),Structure:Math.round(structure),RSI:Math.round(rv),MACD:m.hist>0?"Positive":"Negative",Extension:Math.round(extension),"Relative strength":relativeStrength,"Market regime":marketRegime},candles,positives:positives.slice(0,4),risks:risks.slice(0,4),why,riskReward:rnd(rr)},{headers:{"Cache-Control":"public, s-maxage=45, stale-while-revalidate=180"}});
  }catch(e:any){return NextResponse.json({error:e.name==="AbortError"?"Market data timed out. Please try again.":e.message||"Analysis failed"},{status:500})}
 }

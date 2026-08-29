@@ -1,0 +1,2 @@
+import {NextResponse} from "next/server";
+export async function GET(){return NextResponse.json({status:"ok",version:"v16",providers:{supabase:Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL&&process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY),marketData:Boolean(process.env.TWELVE_DATA_API_KEY),news:Boolean(process.env.FINNHUB_API_KEY)},freshnessTargets:{priceDecisionSeconds:45,marketSeconds:60,watchlistSeconds:120,newsSeconds:120,secFilingsSeconds:300,earningsSeconds:21600,fundamentalsSeconds:21600}})}

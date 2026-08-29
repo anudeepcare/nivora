@@ -1,4 +1,5 @@
 import {NextResponse} from "next/server";
+import {sharedJson} from "@/lib/shared-cache";
 const aliases:any[]=[
 ["AAPL","Apple Inc.","NASDAQ","stock",["apple"]],["MSFT","Microsoft Corporation","NASDAQ","stock",["microsoft"]],
 ["NVDA","NVIDIA Corporation","NASDAQ","stock",["nvidia","nvdia"]],["MU","Micron Technology, Inc.","NASDAQ","stock",["micron","micron technology"]],
@@ -15,4 +16,4 @@ export async function GET(req:Request){const q=(new URL(req.url).searchParams.ge
 const local=aliases.filter(x=>x[0].toLowerCase().includes(q)||x[1].toLowerCase().includes(q)||x[4].some((a:string)=>a.includes(q))).map(x=>({symbol:x[0],name:x[1],exchange:x[2],type:x[3]}));
 if(local.length>=5||["bitcoin","btc","ethereum","eth","solana","sol","xrp","doge"].some(x=>q.includes(x)))return NextResponse.json({results:local.slice(0,8),cached:true});
 const key=process.env.TWELVE_DATA_API_KEY;if(!key)return NextResponse.json({results:local});
-try{const u=`https://api.twelvedata.com/symbol_search?symbol=${encodeURIComponent(q)}&outputsize=10&apikey=${key}`;const j=await fetch(u,{next:{revalidate:86400}}).then(r=>r.json());const remote=(j.data||[]).map((x:any)=>({symbol:x.symbol,name:x.instrument_name||x.name||x.symbol,exchange:x.exchange,type:x.instrument_type||x.type}));const seen=new Set();return NextResponse.json({results:[...local,...remote].filter(x=>!seen.has(x.symbol)&&seen.add(x.symbol)).slice(0,8)})}catch{return NextResponse.json({results:local})}}
+try{const u=`https://api.twelvedata.com/symbol_search?symbol=${encodeURIComponent(q)}&outputsize=10&apikey=${key}`;const j=await sharedJson(u,["twelve","search",q],86400,2200);const remote=(j.data||[]).map((x:any)=>({symbol:x.symbol,name:x.instrument_name||x.name||x.symbol,exchange:x.exchange,type:x.instrument_type||x.type}));const seen=new Set();return NextResponse.json({results:[...local,...remote].filter(x=>!seen.has(x.symbol)&&seen.add(x.symbol)).slice(0,8)})}catch{return NextResponse.json({results:local})}}
