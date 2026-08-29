@@ -1,6 +1,6 @@
 "use client";
 
-import {useEffect,useMemo,useState} from "react";
+import {useEffect,useMemo,useRef,useState} from "react";
 import Link from "next/link";
 import {
   Activity,
@@ -38,10 +38,20 @@ const eps=(n:any)=>{const x=Number(n);return Number.isFinite(x)?`${x<0?"-":""}$$
 const daysUntil=(d?:string|null)=>{if(!d)return null;return Math.ceil((new Date(d+"T12:00:00").getTime()-Date.now())/86400000)};
 
 function Help({title,children}:{title:string;children:React.ReactNode}){
-  return <details className="metricHelpInline">
-    <summary aria-label={`Explain ${title}`} title={`Explain ${title}`}><Info size={13}/></summary>
-    <div className="metricHelpPop"><b>{title}</b><p>{children}</p></div>
-  </details>;
+  const [open,setOpen]=useState(false);
+  const ref=useRef<HTMLSpanElement>(null);
+  useEffect(()=>{
+    if(!open)return;
+    const close=(e:PointerEvent)=>{if(ref.current&&!ref.current.contains(e.target as Node))setOpen(false)};
+    const esc=(e:KeyboardEvent)=>{if(e.key==="Escape")setOpen(false)};
+    document.addEventListener("pointerdown",close);
+    document.addEventListener("keydown",esc);
+    return()=>{document.removeEventListener("pointerdown",close);document.removeEventListener("keydown",esc)};
+  },[open]);
+  return <span className="metricHelpInline" ref={ref}>
+    <button type="button" aria-label={`Explain ${title}`} aria-expanded={open} onClick={(e:React.MouseEvent<HTMLButtonElement>)=>{e.stopPropagation();setOpen((v:boolean)=>!v)}}><Info size={13}/></button>
+    {open&&<span className="metricHelpPop" role="tooltip"><b>{title}</b><span>{children}</span></span>}
+  </span>;
 }
 
 function metricScore(mode:Mode,business:number,six:number,timing:number,risk:number){
@@ -66,7 +76,10 @@ export default function StockClient({symbol}:{symbol:string}){
   const[mode,setMode]=useState<Mode>("now");
   const[tab,setTab]=useState<Tab>("overview");
   const[watching,setWatching]=useState(false);
+  const[optionsData,setOptionsData]=useState<any>(null);
+  const[optionsLoading,setOptionsLoading]=useState(false);
   const[perfRange,setPerfRange]=useState<"6M"|"YTD"|"1Y">("6M");
+  const[chartMode,setChartMode]=useState<"clean"|"trend">("clean");
 
   useEffect(()=>{
     let live=true;
@@ -104,6 +117,17 @@ export default function StockClient({symbol}:{symbol:string}){
     window.addEventListener("focus",onFocus);
     return()=>{live=false;core?.abort();clearInterval(priceTimer);clearInterval(newsTimer);window.removeEventListener("focus",onFocus)};
   },[symbol]);
+
+
+  useEffect(()=>{
+    if(tab!=="options"||d?.assetType==="crypto"||optionsData||optionsLoading)return;
+    let live=true;setOptionsLoading(true);
+    fetch(`/api/options/${encodeURIComponent(symbol)}`,{cache:"no-store"})
+      .then(r=>r.json()).then(x=>{if(live)setOptionsData(x)})
+      .catch(()=>{if(live)setOptionsData({enabled:false,reason:"Options intelligence could not load."})})
+      .finally(()=>{if(live)setOptionsLoading(false)});
+    return()=>{live=false};
+  },[tab,symbol,d?.assetType,optionsData,optionsLoading]);
 
   async function watch(){
     const s=supabaseBrowser();
@@ -176,17 +200,8 @@ export default function StockClient({symbol}:{symbol:string}){
   const nextCatalystTitle=earn?"Earnings · "+String(earn.date):(filings[0]?.label||"No scheduled catalyst found");
   const nextCatalystDetail=earn?String(earn.hour||"Timing not listed")+(earn.epsEstimate!=null?" · EPS est. "+String(earn.epsEstimate):""):filings[0]?String(filings[0].form)+" filed "+String(filings[0].date):"NIVORA will surface a catalyst when a connected source identifies one.";
   const marketContextText=d.market.benchmark?String(symbol)+" is "+String(d.market.relativeStrength).toLowerCase()+" versus "+String(d.market.benchmark)+" over the recent period.":"Crypto benchmark context is handled separately.";
-  const perfReturn=(range:"6M"|"YTD"|"1Y")=>{
-    const cs=(d.candles||[]).filter((x:any)=>Number.isFinite(Number(x.close)));
-    if(!cs.length)return null;
-    const end=cs[cs.length-1], endPx=Number(end.close);
-    const now=new Date();
-    const cutoff=range==="YTD"?new Date(now.getFullYear(),0,1):new Date(now.getTime()-(range==="1Y"?365:183)*86400000);
-    let base=cs.find((x:any)=>new Date(x.date||x.datetime||x.time)>=cutoff)||cs[0];
-    const basePx=Number(base.close);
-    return basePx?Number((((endPx/basePx)-1)*100).toFixed(1)):null;
-  };
-  const selectedReturn=perfReturn(perfRange);
+  const selectedReturn=perfRange==="6M"?d.performance?.sixMonthPct??d.sixMonth?.returnPct??null:
+    perfRange==="YTD"?d.performance?.ytdPct??null:d.performance?.oneYearPct??null;
   const currentPx=Number(d.price);
   const supportPx=Number(d.levels.support), breakoutPx=Number(d.levels.breakout), invalidPx=Number(d.levels.invalidation);
   const upside=Number.isFinite(currentPx)&&currentPx?((breakoutPx/currentPx-1)*100):null;
@@ -202,7 +217,7 @@ export default function StockClient({symbol}:{symbol:string}){
       <div><b>${d.price}</b><span className={d.changePct>=0?"up":"down"}>{d.changePct>=0?"+":""}{d.changePct}%</span></div>
     </header>
 
-    <div className="liveFresh"><span className="liveDot"/>Near-live decision · shared cache <small>Price/decision refreshes about every 30–45 sec while this page is open. News refreshes about every 2 min.</small></div>
+    <div className="liveFresh"><span className="liveStatus"><span className="liveDot"/>Near-live · shared cache</span><span className="liveCadence">Prices/decision ~30–45 sec · News ~2 min</span></div>
 
     <div className="v20ModeLabel"><span>Choose your goal</span><Help title="Investment horizon">Now emphasizes entry timing. Swing emphasizes price behavior and timing. Long term gives business quality the largest weight. I own it emphasizes business quality and downside risk.</Help></div>
     <div className="osMode v12Mode" aria-label="Investment horizon">
@@ -214,7 +229,7 @@ export default function StockClient({symbol}:{symbol:string}){
 
     <section className="v19Performance" aria-label="Quick market context">
       <div><div className="metricLabel"><small>PERFORMANCE</small><Help title="Performance">Price return over the selected period using available market history. Performance describes what happened; it does not predict what happens next.</Help></div><b>{selectedReturn==null?"—":`${selectedReturn>=0?"+":""}${selectedReturn}%`}</b><div className="v19Range">{(["6M","YTD","1Y"] as const).map(r=><button key={r} className={perfRange===r?"on":""} onClick={()=>setPerfRange(r)}>{r}</button>)}</div></div>
-      <div><div className="metricLabel"><small>PRICE TREND</small><Help title="Price trend">A plain-English summary of recent price behavior. Open Technical for the underlying trend, momentum and structure evidence.</Help></div><b>{d.sixMonth?.label||d.labels.trend}</b><span>Use Trend for direction; Technical has the evidence.</span></div>
+      <div><div className="metricLabel"><small>52-WEEK POSITION</small><Help title="52-week position">Shows where today’s price sits between the last 52-week low and high. Near the high is not automatically bad; it simply adds price-location context.</Help></div><b>{d.performance?.rangePositionPct!=null?`${d.performance.rangePositionPct}%`:"—"}</b><span>{d.performance?.yearLow!=null&&d.performance?.yearHigh!=null?`Low $${d.performance.yearLow} · High $${d.performance.yearHigh}`:"Waiting for 1-year history"}</span></div>
       <div><div className="metricLabel"><small>RISK / REWARD</small><Help title="Risk / reward">Compares the distance from today’s price to NIVORA’s confirmation level with the distance to its reassessment level. It is a technical planning ratio, not a forecast.</Help></div><b>{rr==null?"—":`${rr.toFixed(1)}×`}</b><span>{upside==null||downside==null?"Waiting for levels":`${upside>=0?"+":""}${upside.toFixed(1)}% to confirmation · ${downside.toFixed(1)}% to reassess`}</span></div>
       <div><div className="metricLabel"><small>DATA CONFIDENCE</small><Help title="Data confidence">Shows whether price history, business data, market context and news/catalyst sources are available. Higher confidence means better evidence coverage—not higher certainty of profit.</Help></div><b className={confidence==="High"?"good":confidence==="Low"?"bad":"mid"}>{confidence}</b><span>Price + business + news + market coverage.</span></div>
     </section>
@@ -272,7 +287,8 @@ export default function StockClient({symbol}:{symbol:string}){
 
     <section className="osChartCard v12Chart">
       <div className="osSectionTitle"><div><small>PRICE MAP</small><h3>What price has to do next</h3></div><span>Green = entry/support · Orange = confirmation · Red = reassess</span></div>
-      <PriceChart candles={d.candles} levels={d.levels}/>
+      <div className="chartControls"><div><button className={chartMode==="clean"?"on":""} onClick={()=>setChartMode("clean")}>Clean</button><button className={chartMode==="trend"?"on":""} onClick={()=>setChartMode("trend")}>Trend</button></div><Help title="Chart modes">Clean keeps only price, volume and NIVORA levels. Trend adds 20-day and 50-day moving averages for users who want more technical context.</Help></div>
+      <PriceChart candles={d.candles} levels={d.levels} showTrend={chartMode==="trend"}/>
     </section>
 
     <section className="beginnerScore v18Score">
@@ -317,7 +333,14 @@ export default function StockClient({symbol}:{symbol:string}){
         <div className="osList">{company?.fundamentals?.length?company.fundamentals.map((x:any)=><div key={x.label}><span>{x.label}{x.detail&&<small>{x.detail}</small>}</span><b>{x.value}</b></div>):<p>No standardized SEC fundamentals available for this symbol yet.</p>}</div>
       </div>}
 
-      {tab==="catalysts"&&<div className="v12Catalysts">{earn&&<div className="nextEvent"><CalendarDays size={18}/><div><small>NEXT EARNINGS</small><b>{earn.date}</b><span>{earnDays!=null&&earnDays>=0?`${earnDays} days away`:"Upcoming"}</span></div></div>}<div className="osList links">{filings.length?filings.slice(0,8).map((x:any)=><a href={x.url} target="_blank" rel="noreferrer" key={x.accession}><span><b>{x.label}</b><small>{x.form} · {x.description}</small></span><em className={x.tone}>{x.materiality}</em><small>{x.date}</small><ExternalLink size={13}/></a>):<p>No recent material SEC filings found.</p>}</div></div>}
+      {tab==="catalysts"&&<div className="v12Catalysts">
+        {earn&&<div className="nextEvent"><CalendarDays size={18}/><div><small>NEXT EARNINGS</small><b>{earn.date}</b><span>{earnDays!=null&&earnDays>=0?`${earnDays} days away`:"Upcoming"}</span></div></div>}
+        <div className="catalystIntro"><div><small>RECENT MATERIAL FILINGS</small><Help title="Catalysts">Company filings and scheduled events that may change the investment thesis. A filing is evidence to review, not automatically bullish or bearish.</Help></div><span>Newest first</span></div>
+        <div className="catalystList">{filings.length?filings.slice(0,8).map((x:any)=><a className="catalystRow" href={x.url} target="_blank" rel="noreferrer" key={x.accession}>
+          <div className="catalystMain"><b>{x.label}</b><small>{x.form}{x.description?` · ${x.description}`:""}</small></div>
+          <div className="catalystMeta"><em className={x.tone}>{x.materiality}</em><time>{x.date}</time><ExternalLink size={14}/></div>
+        </a>):<p className="emptyState">No recent material SEC filings found.</p>}</div>
+      </div>}
 
       {tab==="news"&&<div className="v12News">{context?.enabled===false?<div className="connectFeed"><Newspaper size={22}/><b>Connect live news</b><p>Add a Finnhub API key. Price analysis and SEC data continue to work without it.</p></div>:items.length?items.map((x:any,i:number)=><a href={x.url} target="_blank" rel="noreferrer" key={i}><div><span className={`newsTone ${x.tone}`}>{x.tone}</span><small>{x.materiality} materiality · {x.source}</small></div><b>{x.headline}</b><p>{x.summary}</p><ExternalLink size={13}/></a>):<p>No recent company headlines were returned.</p>}</div>}
 
@@ -325,13 +348,25 @@ export default function StockClient({symbol}:{symbol:string}){
 
       {tab==="technical"&&<div className="v12Technical"><div className="techIntro"><h3>Technical evidence</h3><p>You do not need these numbers to use NIVORA. Tap the info icon to understand what each metric contributes.</p></div><div className="osTechGrid">{Object.entries(d.engine).map(([k,v]:any)=><div key={k}><div className="metricLabel"><span>{k}</span><Help title={k}>{k==="Trend"?"Multi-horizon direction and slope.":k==="Momentum"?"Speed and persistence of the current move.":k==="Flow"?"Volume/price participation and confirmation.":k==="Structure"?"Higher highs/lows, support and resistance behavior.":k==="RSI"?"Relative Strength Index; helps identify momentum extremes but is never used alone.":k==="MACD"?"Trend/momentum crossover evidence.":k==="Extension"?"How far price has moved away from its recent equilibrium; high extension increases chase risk.":k==="Relative strength"?"Performance versus the relevant benchmark.":k==="Market regime"?"Whether the broad market is supportive, mixed or risk-off.":"Supporting quantitative evidence used by the decision engine."}</Help></div><b>{typeof v==="number"?`${v}/100`:v}</b></div>)}</div><div className="techWhy">{d.why.map((x:string,i:number)=><p key={i}>• {x}</p>)}</div></div>}
 
-      {tab==="options"&&<div className="gammaPanel">
-        <div className="gammaHero"><small>OPTIONS / GAMMA</small><h3>Gamma levels can improve short-term context — but we will not fake them.</h3><p>Dealer-gamma style “walls” require an options chain with strike, open interest and Greeks. Stock candles alone cannot reliably tell us dealer positioning.</p></div>
-        <div className="gammaGrid"><div><b>What NIVORA will calculate</b><span>Estimated gamma concentration by strike, call/put walls, pin zones, zero-gamma proxy and earnings implied-volatility context.</span></div><div><b>How it will be used</b><span>As a supporting timing layer for short-term entries and event risk — never as the sole BUY/SELL signal.</span></div><div><b>Current status</b><span>Provider-ready. We need a licensed options-chain source before turning on live gamma data.</span></div></div>
-        <div className="gammaNote"><Info size={15}/><p>The Cboe delayed quote website displays Gamma/OI but explicitly prohibits automated extraction from that webpage. NIVORA will use a permitted API/data feed rather than scraping it.</p></div>
+      {tab==="options"&&<div className="gammaPanel v22Options">
+        <div className="gammaHero"><small>OPTIONS INTELLIGENCE</small><h3>Options positioning — translated for beginners.</h3><p>Use this as supporting short-term context around important strikes, volatility and expected move. It does not override the main NIVORA call.</p></div>
+        {optionsLoading?<div className="optionsState">Loading shared options snapshot…</div>:
+        !optionsData?.enabled?<div className="optionsState"><b>Options data is not available yet.</b><span>{optionsData?.reason||"Add MARKETDATA_TOKEN in Vercel to enable the options module."}</span></div>:
+        <><div className="optionsFresh"><span>{optionsData.dataMode}</span><small>{optionsData.updatedAt?`Provider snapshot ${new Date(optionsData.updatedAt).toLocaleString()}`:"Provider timestamp unavailable"}</small></div>
+        <div className="optionsQuick">
+          <div><div className="metricLabel"><small>CALL WALL</small><Help title="Call wall">The strike with the largest call open interest in the fetched expiration. It can become an important attention area, but it is not guaranteed resistance.</Help></div><b>{optionsData.callWall!=null?`$${optionsData.callWall}`:"—"}</b></div>
+          <div><div className="metricLabel"><small>PUT WALL</small><Help title="Put wall">The strike with the largest put open interest in the fetched expiration. It can become an important attention area, but it is not guaranteed support.</Help></div><b>{optionsData.putWall!=null?`$${optionsData.putWall}`:"—"}</b></div>
+          <div><div className="metricLabel"><small>GAMMA NODE</small><Help title="Gamma node">The strike with the largest open-interest-weighted gamma concentration in this snapshot. This is a positioning proxy, not observed dealer inventory.</Help></div><b>{optionsData.gammaNode!=null?`$${optionsData.gammaNode}`:"—"}</b></div>
+          <div><div className="metricLabel"><small>EXPECTED MOVE</small><Help title="Expected move">Approximation from the nearest at-the-money call + put midpoint in the fetched expiration. It is an options-implied range estimate, not a prediction.</Help></div><b>{optionsData.expectedMovePct!=null?`±${optionsData.expectedMovePct}%`:"—"}</b></div>
+          <div><div className="metricLabel"><small>ATM IV</small><Help title="ATM implied volatility">Average implied volatility around the closest at-the-money strike available in this options snapshot.</Help></div><b>{optionsData.atmIV!=null?`${optionsData.atmIV}%`:"—"}</b></div>
+          <div><div className="metricLabel"><small>PUT/CALL OI</small><Help title="Put/call open interest">Total put open interest divided by total call open interest in the fetched chain. Higher is more put-heavy, but direction cannot be inferred from this ratio alone.</Help></div><b>{optionsData.putCallOI??"—"}</b></div>
+        </div>
+        <div className="optionsRead"><small>PLAIN-ENGLISH READ</small><h4>{optionsData.position}</h4><p>{optionsData.gammaProxy}. {optionsData.note}</p></div>
+        {optionsData.topNodes?.length>0&&<div className="optionsNodes"><small>TOP GAMMA-CONCENTRATION STRIKES</small>{optionsData.topNodes.map((x:any)=><div key={x.strike}><b>${x.strike}</b><span>Call OI {x.callOI.toLocaleString()} · Put OI {x.putOI.toLocaleString()}</span></div>)}</div>}
+        </>}
       </div>}
     </section>
 
-    <div className="osDisclaimer">NIVORA is decision support, not a guarantee. The call should change when price, fundamentals, catalysts or risk change. <Link href="/disclaimer">Read disclaimer</Link></div>
+    <div className="osDisclaimer brandedDisclaimer"><b>NIVORA Intelligence</b><span>Complex market data. One clear decision.</span><small>Decision support, not a guarantee. <Link href="/disclaimer">Read disclaimer</Link></small></div>
   </div>;
 }

@@ -29,6 +29,6 @@ export default function AppShell({children}:{children:React.ReactNode}){
    <Link className={active("/watchlist")?"on":""} href="/watchlist"><Star size={19}/><span>Watchlist</span></Link>
    <Link className={active("/portfolio")?"on":""} href="/portfolio"><BriefcaseBusiness size={19}/><span>Portfolio</span></Link>
   </nav>
-  <footer className="osLegalFooter"><span>© 2026 NIVORA</span><Link href="/about">About</Link><Link href="/terms">Terms</Link><Link href="/privacy">Privacy</Link><Link href="/disclaimer">Disclaimer</Link></footer>
+  <footer className="osLegalFooter"><div className="footerBrand"><b>NIVORA Intelligence</b><span>Complex market data. One clear decision.</span></div><div className="footerLinks"><span>© 2026 NIVORA</span><Link href="/about">About</Link><Link href="/terms">Terms</Link><Link href="/privacy">Privacy</Link><Link href="/disclaimer">Disclaimer</Link></div></footer>
  </>
 }
