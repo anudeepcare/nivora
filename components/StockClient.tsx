@@ -236,7 +236,7 @@ export default function StockClient({symbol}:{symbol:string}){
     const dataQuality=Math.round((coverage*.55)+(intelligence.confidence*.45));
     const auditId=`${symbol}-${mode}-${Math.round(Number(d.price||0)*100)}-${intelligence.score}`;
     const validationStatus="Shadow validation enabled";
-    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:"NIVORA V29",generatedAt:new Date(now).toISOString()};
+    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:"NIVORA V30",generatedAt:new Date(now).toISOString()};
   },[d,intelligence,company,context,optionsData,symbol,mode]);
 
   useEffect(()=>{
@@ -344,7 +344,9 @@ export default function StockClient({symbol}:{symbol:string}){
     {depth==="pro"&&enterprise&&<section className="v29ProCockpit">
       <div className="proCockpitHead"><div><small>PRO WORKSPACE</small><h3>Decision evidence & model diagnostics</h3><p>Same NIVORA call, with the underlying factor, data-quality and audit evidence exposed.</p></div><button type="button" onClick={()=>setAuditOpen(!auditOpen)}><ShieldCheck size={15}/>{auditOpen?"Hide audit":"Audit trail"}</button></div>
       <div className="proCockpitGrid">
-        <div><small>MODEL</small><b>{enterprise.engineVersion}</b><span>{mode.toUpperCase()} weighting</span></div>
+        <div><small>MODEL</small><b>{enterprise.engineVersion}</b><span>{mode.toUpperCase()} weighting · regime aware</span></div>
+        <div><small>MARKET REGIME</small><b>{intelligence.regime?.label}</b><span>{intelligence.regime?.score}/100 environment score</span></div>
+        <div><small>VALUATION</small><b>{intelligence.valuation}/100</b><span>Valuation contribution to the current horizon</span></div>
         <div><small>DATA QUALITY</small><b>{enterprise.dataQuality}/100</b><span>{enterprise.coverage}% evidence sources present</span></div>
         <div><small>MODEL CONFIDENCE</small><b>{intelligence.confidence}/100</b><span>{intelligence.confidenceLabel}</span></div>
         <div><small>CONTRADICTIONS</small><b>{intelligence.contradictions.length}</b><span>{intelligence.contradictions[0]||"Evidence broadly aligned"}</span></div>
@@ -398,7 +400,9 @@ export default function StockClient({symbol}:{symbol:string}){
 
     {intelligence&&quickAnswers&&<section className="v28AnswerFirst">
       <div className="v28AnswerHeadline">
-        <div><small>NIVORA ANSWER</small><b>{intelligence.thesisLabel} · {intelligence.confidenceLabel} confidence</b><p>{intelligence.biggestPositive} <strong>Watch:</strong> {intelligence.biggestRisk}</p></div>
+        <div><small>NIVORA ANSWER</small><b>{intelligence.thesisLabel} · {intelligence.confidenceLabel} confidence</b><p>{intelligence.biggestPositive} <strong>Watch:</strong> {intelligence.biggestRisk}</p>
+          <div className="v30Expression"><span>BEST EXPRESSION</span><b>{intelligence.bestExpression?.type}</b><em>{intelligence.bestExpression?.reason}</em></div>
+        </div>
         <button type="button" onClick={()=>setTab("thesis")}><Brain size={16}/> Full thesis</button>
       </div>
       <div className="v28QuestionRow">

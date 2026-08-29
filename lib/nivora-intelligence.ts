@@ -1,3 +1,4 @@
+import {marketRegime,confidenceCalibration,clamp as coreClamp} from "@/lib/nivora-core";
 export type NivoraMode="now"|"swing"|"long"|"own";
 
 const clamp=(n:number,a=0,b=100)=>Math.max(a,Math.min(b,n));
@@ -8,9 +9,20 @@ export function buildNivoraIntelligence({
   market,company,context,options,mode="now"
 }:{market:any,company:any,context:any,options?:any,mode?:NivoraMode}){
   if(!market)return null;
+  const regime=marketRegime(market);
 
   const business=n(company?.fundamentalSignal?.score,
     company?.fundamentalSignal?.label==="Strong"?78:company?.fundamentalSignal?.label?.includes("Weak")?38:52);
+  const valuation=(()=>{
+    const pe=Number(company?.metrics?.peRatio??company?.peRatio);
+    const growth=Number(company?.metrics?.revenueGrowth??company?.revenueGrowth);
+    if(Number.isFinite(pe)&&pe>0){
+      let v=pe<15?78:pe<25?68:pe<40?56:pe<65?44:34;
+      if(Number.isFinite(growth)&&growth>20)v+=8;
+      return clamp(v);
+    }
+    return 52;
+  })();
   const timing=n(market?.scores?.entry,50);
   const trend=n(market?.scores?.trend,50);
   const momentum=n(market?.scores?.momentum,50);
@@ -53,11 +65,13 @@ export function buildNivoraIntelligence({
         ?{business:.12,trend:.22,timing:.20,momentum:.15,flow:.10,catalyst:.08,deriv:.05,safety:.08}
         :{business:.12,trend:.18,timing:.25,momentum:.14,flow:.10,catalyst:.08,deriv:.05,safety:.08};
 
-  const composite=clamp(
+  const baseComposite=
     business*weights.business+trend*weights.trend+timing*weights.timing+
     momentum*weights.momentum+flow*weights.flow+catalystScore*weights.catalyst+
-    derivativeScore*weights.deriv+(100-risk)*weights.safety
-  );
+    derivativeScore*weights.deriv+(100-risk)*weights.safety;
+  const valuationAdj=mode==="long"?(valuation-50)*.08:(valuation-50)*.025;
+  const regimeAdj=(regime.score-50)*(mode==="now"?.08:mode==="swing"?.07:.035);
+  const composite=clamp(baseComposite+valuationAdj+regimeAdj);
 
   const positives:string[]=[];
   const concerns:string[]=[];
@@ -92,7 +106,9 @@ export function buildNivoraIntelligence({
     market?1:0,company?.fundamentalSignal?1:0,company?.fiveYearRecord?1:0,
     context?.enabled?1:0,context?.earnings?1:0,options?.enabled?1:0
   ].reduce((a,b)=>a+b,0);
-  const confidence=clamp(45+evidenceCount*8-(contradictions.length*4));
+  const rawConfidence=clamp(45+evidenceCount*8);
+  const evidenceQuality=clamp(42+evidenceCount*9-(filingRisk?2:0));
+  const confidence=confidenceCalibration(rawConfidence,evidenceQuality,contradictions.length);
   const confidenceLabel=confidence>=80?"High":confidence>=62?"Good":confidence>=45?"Moderate":"Limited";
 
   const thesisLabel=
@@ -138,10 +154,22 @@ export function buildNivoraIntelligence({
   const biggestRisk=concerns[0]||"No major risk dominates the current evidence.";
   const nextDecision=bullTriggers[0]||bearTriggers[0]||"Wait for new price, fundamental or catalyst evidence.";
 
+  const optionsUsable=!!options?.enabled && Number(options?.liquidityQuality??60)>=45;
+  const bestExpression=!optionsUsable
+    ?{type:"Shares / no leverage",label:"Options not preferred",reason:"Options evidence or liquidity is not strong enough to justify leverage."}
+    :risk>=75
+      ?{type:"Shares",label:"Reduce leverage",reason:"Current risk is too high for NIVORA to prefer leveraged exposure."}
+      :mode==="long"&&business>=68
+        ?{type:"Shares or LEAPS",label:"Long-duration expression",reason:"The thesis is long-duration; avoid paying excessive short-dated theta."}
+        :timing>=65&&trend>=60
+          ?{type:"Shares / balanced calls",label:"Selective leverage",reason:"Timing and trend are aligned enough to consider measured leverage."}
+          :{type:"Shares",label:"Wait on leverage",reason:"Underlying thesis may be valid, but options timing is not sufficiently aligned."};
+
   return {
     score:Math.round(composite),thesisLabel,action,confidence:Math.round(confidence),confidenceLabel,
+    regime,valuation:Math.round(valuation),evidenceQuality:Math.round(evidenceQuality),bestExpression,
     dimensions:{
-      business:Math.round(business),timing:Math.round(timing),trend:Math.round(trend),
+      business:Math.round(business),valuation:Math.round(valuation),timing:Math.round(timing),trend:Math.round(trend),
       momentum:Math.round(momentum),flow:Math.round(flow),catalysts:Math.round(catalystScore),
       derivatives:Math.round(derivativeScore),risk:Math.round(risk)
     },

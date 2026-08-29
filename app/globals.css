@@ -467,3 +467,8 @@ html,body{max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}button,
 .v29Audit{display:grid;grid-template-columns:1.2fr 1fr 1fr;border-top:1px solid rgba(255,255,255,.08);background:#111827}.v29Audit>div{padding:16px;border-right:1px solid rgba(255,255,255,.08)}.v29Audit>div:last-child{border:0}.v29Audit p{margin:7px 0;font-size:10px;color:#aab4c4}.v29Audit p b{color:#e5e7eb}.v29Audit p span:last-child{float:right}.auditOk{color:#4ade80;margin-right:6px}.auditBad{color:#f59e0b;margin-right:6px}
 @media(max-width:800px){.proCockpitGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.proCockpitGrid>div:nth-child(3n){border-right:1px solid rgba(255,255,255,.08)}.proCockpitGrid>div:nth-child(2n){border-right:0}.proCockpitGrid>div:nth-last-child(-n+3){border-bottom:1px solid rgba(255,255,255,.08)}.proCockpitGrid>div:nth-last-child(-n+2){border-bottom:0}.v29Audit{grid-template-columns:1fr}.v29Audit>div{border-right:0;border-bottom:1px solid rgba(255,255,255,.08)}}
 @media(max-width:600px){.proCockpitHead{padding:14px;flex-direction:column}.proCockpitHead button{width:100%;justify-content:center}.proCockpitGrid>div{padding:12px}.v29Audit>div{padding:13px}}
+
+/* V30 */
+.v30Expression{display:grid;grid-template-columns:auto auto 1fr;gap:7px;align-items:center;margin-top:11px;padding-top:10px;border-top:1px solid #edf0f4}
+.v30Expression span{font-size:9px;font-weight:900;letter-spacing:.1em;color:#7a8798}.v30Expression b{font-size:11px}.v30Expression em{font-size:10px;font-style:normal;color:#667085}
+@media(max-width:600px){.v30Expression{grid-template-columns:1fr}.v30Expression em{line-height:1.4}}
