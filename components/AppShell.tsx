@@ -1,13 +1,13 @@
 "use client";
 import Link from "next/link";
 import {usePathname,useRouter} from "next/navigation";
-import {createBrowserClient} from "@supabase/ssr";
+import {supabaseBrowser} from "@/lib/supabase";
 import {useEffect,useRef,useState} from "react";
 import {House,Search,Star,BriefcaseBusiness,UserRound,Bell,Settings} from "lucide-react";
 
 export default function AppShell({children}:{children:React.ReactNode}){
  const path=usePathname(),router=useRouter(),[open,setOpen]=useState(false),[email,setEmail]=useState(""),ref=useRef<HTMLDivElement>(null);
- const sb=createBrowserClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!);
+ const sb=supabaseBrowser();
  useEffect(()=>{sb.auth.getSession().then(({data})=>setEmail(data.session?.user.email||""));const h=(e:MouseEvent)=>{if(ref.current&&!ref.current.contains(e.target as Node))setOpen(false)};document.addEventListener("mousedown",h);return()=>document.removeEventListener("mousedown",h)},[]);
  async function logout(){await sb.auth.signOut();router.replace("/login");router.refresh()}
  const active=(p:string)=>path===p||path.startsWith(p+"/");

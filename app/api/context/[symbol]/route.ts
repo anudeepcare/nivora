@@ -4,7 +4,7 @@ const NEG=["miss","misses","lower","lowers","cut","cuts","downgrade","offering",
 const MATERIAL=["earnings","guidance","contract","offering","merger","acquisition","approval","fda","sec","investigation","lawsuit","partnership","buyback","restructur","ceo","cfo"];
 function scoreText(s:string){const x=s.toLowerCase();let n=0;for(const k of POS)if(x.includes(k))n++;for(const k of NEG)if(x.includes(k))n--;return n}
 function materiality(s:string){const x=s.toLowerCase();return MATERIAL.some(k=>x.includes(k))?"High":"Normal"}
-async function get(url:string){const c=new AbortController(),t=setTimeout(()=>c.abort(),4200);try{const r=await fetch(url,{next:{revalidate:900},signal:c.signal});if(!r.ok)return null;return await r.json()}catch{return null}finally{clearTimeout(t)}}
+async function get(url:string){const c=new AbortController(),t=setTimeout(()=>c.abort(),2600);try{const r=await fetch(url,{next:{revalidate:900},signal:c.signal});if(!r.ok)return null;return await r.json()}catch{return null}finally{clearTimeout(t)}}
 function ymd(d:Date){return d.toISOString().slice(0,10)}
 export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){const{symbol:raw}=await params;const symbol=decodeURIComponent(raw).toUpperCase(),key=process.env.FINNHUB_API_KEY;if(!key)return NextResponse.json({enabled:false,source:"Finnhub",news:[],earnings:null,surprises:[],recommendations:[],profile:null,summary:{tone:"neutral",label:"News feed not connected",topReason:"Add a free Finnhub API key for live company news and earnings context."}});
  if(symbol.includes("/"))return NextResponse.json({enabled:true,source:"Finnhub",news:[],earnings:null,surprises:[],recommendations:[],profile:null,summary:{tone:"neutral",label:"Crypto news connector not enabled",topReason:"This build uses the market-data engine for crypto; a crypto-specific news/on-chain source can be added later."}});
@@ -24,5 +24,5 @@ export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
  const top=items[0];
  const latestEarningsNews=items.filter((x:any)=>/(earnings|results|quarter|fiscal year|financial results)/i.test(`${x.headline||""} ${x.summary||""}`)).sort((a:any,b:any)=>String(b.date||"").localeCompare(String(a.date||"")))[0]||null;
  const summary={tone,label:tone==="positive"?"News tone supportive":tone==="negative"?"News tone cautious":"News tone mixed",topReason:top?`${top.materiality==="High"?"Material: ":""}${top.headline}`:"No material headline was found in the recent feed."};
- return NextResponse.json({enabled:true,source:"Finnhub",news:items.slice(0,10),earnings:nextEarnings,latestEarningsNews,surprises:Array.isArray(surprises)?surprises.slice(0,4):[],recommendations:Array.isArray(recs)?recs.slice(0,4):[],profile:profile||null,summary});
+ return NextResponse.json({enabled:true,source:"Finnhub",news:items.slice(0,10),earnings:nextEarnings,latestEarningsNews,surprises:Array.isArray(surprises)?surprises.slice(0,4):[],recommendations:Array.isArray(recs)?recs.slice(0,4):[],profile:profile||null,summary},{headers:{"Cache-Control":"public, s-maxage=300, stale-while-revalidate=1800"}});
 }

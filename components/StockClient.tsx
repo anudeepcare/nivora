@@ -11,9 +11,13 @@ const daysUntil=(d?:string|null)=>{if(!d)return null;return Math.ceil((new Date(
 export default function StockClient({symbol}:{symbol:string}){
  const[d,setD]=useState<any>(null),[company,setCompany]=useState<any>(null),[context,setContext]=useState<any>(null),[err,setErr]=useState(""),[mode,setMode]=useState<Mode>("now"),[tab,setTab]=useState<Tab>("overview"),[technical,setTechnical]=useState(false),[watching,setWatching]=useState(false);
  useEffect(()=>{let live=true;setD(null);setCompany(null);setContext(null);setErr("");const core=new AbortController(),timer=setTimeout(()=>core.abort(),8000);
-  fetch(`/api/analyze/${encodeURIComponent(symbol)}`,{cache:"no-store",signal:core.signal}).then(async r=>{const a=await r.json();if(!r.ok||a.error)throw new Error(a.error||"Analysis unavailable");if(live)setD(a)}).catch(e=>live&&setErr(e.name==="AbortError"?"Market data is taking too long. Try again.":e.message)).finally(()=>clearTimeout(timer));
-  fetch(`/api/company/${encodeURIComponent(symbol)}`).then(r=>r.ok?r.json():null).then(x=>live&&x&&setCompany(x)).catch(()=>{});
-  fetch(`/api/context/${encodeURIComponent(symbol)}`).then(r=>r.ok?r.json():null).then(x=>live&&x&&setContext(x)).catch(()=>{});
+  fetch(`/api/analyze/${encodeURIComponent(symbol)}`,{signal:core.signal}).then(async r=>{const a=await r.json();if(!r.ok||a.error)throw new Error(a.error||"Analysis unavailable");if(!live)return;setD(a);
+    // Decision first: load heavier SEC/news evidence only after the core price decision is visible.
+    Promise.allSettled([
+      fetch(`/api/company/${encodeURIComponent(symbol)}`).then(r=>r.ok?r.json():null).then(x=>live&&x&&setCompany(x)),
+      fetch(`/api/context/${encodeURIComponent(symbol)}`).then(r=>r.ok?r.json():null).then(x=>live&&x&&setContext(x))
+    ]);
+  }).catch(e=>live&&setErr(e.name==="AbortError"?"Market data is taking too long. Try again.":e.message)).finally(()=>clearTimeout(timer));
   return()=>{live=false;core.abort();clearTimeout(timer)}},[symbol]);
  async function watch(){const s=supabaseBrowser();const{data:{user}}=await s.auth.getUser();if(!user)return;let{data:w}=await s.from("watchlists").select("id").eq("user_id",user.id).limit(1).maybeSingle();if(!w){const x=await s.from("watchlists").insert({user_id:user.id,name:"My Watchlist"}).select("id").single();w=x.data}if(w){await s.from("watchlist_items").upsert({watchlist_id:w.id,user_id:user.id,symbol},{onConflict:"watchlist_id,symbol"});setWatching(true)}}
  const view=useMemo(()=>{if(!d)return null;if(mode==="now")return d.views.today;if(mode==="swing")return d.views.swing;if(mode==="own")return d.views.own;const f=company?.fundamentalSignal;if(f?.label==="Strong"&&d.scores.trend>=45)return{label:"ATTRACTIVE / WATCH ENTRY",tone:"good",text:"Business quality looks strong. Use price weakness selectively rather than chasing; valuation and catalysts still matter."};if(f?.label?.includes("Weak"))return{label:"RESEARCH BEFORE BUYING",tone:"bad",text:"The business-quality signals are weak or mixed enough that a lower price alone is not a reason to buy."};return d.views.longTerm},[d,mode,company]);
