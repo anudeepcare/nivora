@@ -259,3 +259,101 @@ html,body{max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}button,
 
 .optionsRetry{align-self:flex-start;margin-top:8px;border:1px solid #d0d5dd;background:#fff;border-radius:9px;padding:7px 11px;font-size:11px;font-weight:800;color:#344054;cursor:pointer}
 .optionsRetry:hover{background:#f8fafc}
+
+/* V24 definitive info-popover positioning.
+   CSS variables intentionally override every older !important rule. */
+@media(min-width:701px){
+  .metricHelpPop{
+    position:fixed!important;
+    left:var(--help-left)!important;
+    top:var(--help-top)!important;
+    width:var(--help-width)!important;
+    right:auto!important;
+    bottom:auto!important;
+    transform:none!important;
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+    z-index:2147483000!important;
+  }
+}
+@media(max-width:700px){
+  .metricHelpPop{
+    position:fixed!important;
+    left:12px!important;
+    right:12px!important;
+    top:auto!important;
+    bottom:calc(82px + env(safe-area-inset-bottom))!important;
+    width:auto!important;
+    max-width:none!important;
+    transform:none!important;
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+    z-index:2147483000!important;
+  }
+}
+
+/* V25 visual cleanup */
+.liveFresh,.liveFresh *{
+  text-decoration:none!important;
+  text-decoration-line:none!important;
+  text-decoration-thickness:0!important;
+  border-bottom:0!important;
+  box-shadow:none!important;
+}
+.liveFresh{
+  position:relative;
+  overflow:visible;
+}
+.liveCadence{
+  display:inline-block!important;
+  width:auto!important;
+  padding-left:0!important;
+  margin-left:0!important;
+  white-space:normal!important;
+}
+
+/* Expanded decision evidence: compact, balanced, no tiny left-side score box. */
+.v19Explain{margin-top:14px!important}
+.v19Explain details{width:100%!important}
+.v19Explain summary{width:max-content;max-width:100%}
+.v19ExplainPanel{
+  display:grid!important;
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  width:100%!important;
+  max-width:none!important;
+  margin:12px 0 0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  background:#f8fafc!important;
+  border:1px solid #e2e8f0!important;
+  border-radius:14px!important;
+}
+.v19ExplainPanel div{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  gap:4px!important;
+  padding:13px 14px!important;
+  border-bottom:0!important;
+  border-right:1px solid #e8edf3!important;
+}
+.v19ExplainPanel div:last-child{border-right:0!important}
+.v19ExplainPanel span{font-size:11px!important;line-height:1.25!important}
+.v19ExplainPanel b{font-size:15px!important;line-height:1.2!important}
+@media(max-width:900px){
+ .v19ExplainPanel{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .v19ExplainPanel div{border-bottom:1px solid #e8edf3!important}
+ .v19ExplainPanel div:nth-child(3n){border-right:0!important}
+ .v19ExplainPanel div:nth-last-child(-n+3){border-bottom:0!important}
+}
+@media(max-width:560px){
+ .v19ExplainPanel{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .v19ExplainPanel div:nth-child(3n){border-right:1px solid #e8edf3!important}
+ .v19ExplainPanel div:nth-child(2n){border-right:0!important}
+ .v19ExplainPanel div:nth-last-child(-n+3){border-bottom:1px solid #e8edf3!important}
+ .v19ExplainPanel div:nth-last-child(-n+2){border-bottom:0!important}
+}

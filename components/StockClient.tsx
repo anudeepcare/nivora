@@ -63,7 +63,15 @@ function Help({title,children}:{title:string;children:React.ReactNode}){
   },[open]);
   return <span className="metricHelpInline" ref={ref}>
     <button type="button" aria-label={`Explain ${title}`} aria-expanded={open} onClick={(e:React.MouseEvent<HTMLButtonElement>)=>{e.stopPropagation();setOpen((v:boolean)=>!v)}}><Info size={13}/></button>
-    {open&&pos&&<span className={`metricHelpPop ${pos.below?"below":"above"}`} style={{left:pos.left,top:pos.top,width:pos.width}} role="tooltip"><b>{title}</b><span>{children}</span></span>}
+    {open&&pos&&<span
+      className={`metricHelpPop ${pos.below?"below":"above"}`}
+      style={{
+        ["--help-left" as any]:`${pos.left}px`,
+        ["--help-top" as any]:`${pos.top}px`,
+        ["--help-width" as any]:`${pos.width}px`
+      }}
+      role="tooltip"
+    ><b>{title}</b><span>{children}</span></span>}
   </span>;
 }
 
@@ -262,13 +270,13 @@ export default function StockClient({symbol}:{symbol:string}){
         <div className="v19Explain">
           <details>
             <summary>Why NIVORA says this</summary>
-            <div className="v19ExplainPanel">
-              <div><span>Business quality</span><b>{businessScore}/100</b></div>
-              <div><span>Recent price record</span><b>{sixScore}/100</b></div>
-              <div><span>Entry quality</span><b>{timingScore}/100</b></div>
+            <div className="v19ExplainPanel" aria-label="Decision evidence">
+              <div><span>Business</span><b>{businessScore}/100</b></div>
+              <div><span>Price trend</span><b>{sixScore}/100</b></div>
+              <div><span>Entry</span><b>{timingScore}/100</b></div>
               <div><span>Risk</span><b>{riskScore}/100</b></div>
-              <div><span>Decision confidence</span><b>{confidence}</b></div>
-              <div><span>Supporting score</span><b>{overallScore}/100</b></div>
+              <div><span>Confidence</span><b>{confidence}</b></div>
+              <div><span>Evidence score</span><b>{overallScore}/100</b></div>
             </div>
           </details>
         </div>
