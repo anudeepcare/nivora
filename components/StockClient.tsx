@@ -22,7 +22,7 @@ import {buildNivoraIntelligence} from "@/lib/nivora-intelligence";
 
 type Mode="now"|"swing"|"long"|"own";
 type Depth="simple"|"investor"|"pro";
-type Tab="overview"|"thesis"|"fundamentals"|"catalysts"|"news"|"earnings"|"technical"|"options";
+type Tab="overview"|"thesis"|"fundamentals"|"institutions"|"catalysts"|"news"|"earnings"|"technical"|"options";
 
 const tone=(s:string)=>{
   const x=(s||"").toUpperCase();
@@ -192,7 +192,7 @@ export default function StockClient({symbol}:{symbol:string}){
   const proTech=useMemo(()=>{
     const cs=(d?.candles||[]).filter((x:any)=>Number.isFinite(Number(x.close)));
     if(cs.length<20)return null;
-    const closes=cs.map((x:any)=>Number(x.close)), highs=cs.map((x:any)=>Number(x.high)), lows=cs.map((x:any)=>Number(x.low)), vols=cs.map((x:any)=>Number(x.volume||0));
+    const closes=cs.map((x:any)=>Number(x.close)), vols=cs.map((x:any)=>Number(x.volume||0));
     const last=closes.at(-1)??0;
     const avg=(a:number[])=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
     const sma=(n:number)=>closes.length>=n?avg(closes.slice(-n)):null;
@@ -207,12 +207,37 @@ export default function StockClient({symbol}:{symbol:string}){
     const vol20=avg(vols.slice(-20)), volRatio=vol20>0?(vols.at(-1)??0)/vol20:null;
     const pct=(v:number|null)=>v&&last?((last/v)-1)*100:null;
     const drawdown=closes.length?((last/Math.max(...closes.slice(-252)))-1)*100:null;
-    return {atr14,atrPct:atr14&&last?atr14/last*100:null,rv,sma20:s20,sma50:s50,sma200:s200,d20:pct(s20),d50:pct(s50),d200:pct(s200),bbPos,volRatio,drawdown};
+    let rsi14:number|null=null;
+    if(closes.length>=15){
+      let gains=0,losses=0;
+      for(let i=closes.length-14;i<closes.length;i++){
+        const ch=closes[i]-closes[i-1];
+        if(ch>0)gains+=ch; else losses+=Math.abs(ch);
+      }
+      const ag=gains/14, al=losses/14;
+      rsi14=al===0?100:100-(100/(1+(ag/al)));
+    }
+    const emaSeries=(arr:number[],period:number)=>{
+      if(!arr.length)return [] as number[];
+      const k=2/(period+1), out=[arr[0]];
+      for(let i=1;i<arr.length;i++)out.push(arr[i]*k+out[i-1]*(1-k));
+      return out;
+    };
+    const e12=emaSeries(closes,12), e26=emaSeries(closes,26);
+    const macdSeries=closes.map((_:number,i:number)=>e12[i]-e26[i]);
+    const signalSeries=emaSeries(macdSeries,9);
+    const macd=macdSeries.at(-1)??null, macdSignal=signalSeries.at(-1)??null;
+    const macdHist=macd!=null&&macdSignal!=null?macd-macdSignal:null;
+    const macdLabel=macdHist==null?"Unavailable":macdHist>0&&macd>(macdSignal??0)?"Bullish":macdHist<0&&macd<(macdSignal??0)?"Bearish":"Mixed";
+    const rsiLabel=rsi14==null?"Unavailable":rsi14>=70?"Overbought":rsi14<=30?"Oversold":rsi14>=55?"Bullish":rsi14<=45?"Bearish":"Neutral";
+    const trendLabel=s20!=null&&s50!=null?(last>s20&&s20>s50?"Bullish":last<s20&&s20<s50?"Bearish":"Mixed"):"Unavailable";
+    const volumeLabel=volRatio==null?"Unavailable":volRatio>=1.35?"Strong participation":volRatio>=.8?"Normal":"Light";
+    return {atr14,atrPct:atr14&&last?atr14/last*100:null,rv,sma20:s20,sma50:s50,sma200:s200,d20:pct(s20),d50:pct(s50),d200:pct(s200),bbPos,volRatio,drawdown,rsi14,rsiLabel,macd,macdSignal,macdHist,macdLabel,trendLabel,volumeLabel};
   },[d?.candles]);
 
   const intelligence=useMemo(()=>buildNivoraIntelligence({
-    market:d,company,context,options:optionsData,mode
-  }),[d,company,context,optionsData,mode]);
+    market:d,company,context,options:optionsData,institutional,mode
+  }),[d,company,context,optionsData,institutional,mode]);
 
   const quickAnswers=useMemo(()=>{
     if(!intelligence)return null;
@@ -241,7 +266,7 @@ export default function StockClient({symbol}:{symbol:string}){
     const dataQuality=Math.round((coverage*.55)+(intelligence.confidence*.45));
     const auditId=`${symbol}-${mode}-${Math.round(Number(d.price||0)*100)}-${intelligence.score}`;
     const validationStatus="Shadow validation enabled";
-    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:"NIVORA V32.1",generatedAt:new Date(now).toISOString()};
+    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:"NIVORA V34",generatedAt:new Date(now).toISOString()};
   },[d,intelligence,company,context,optionsData,institutional,symbol,mode]);
 
   useEffect(()=>{
@@ -380,12 +405,20 @@ export default function StockClient({symbol}:{symbol:string}){
         : (institutional?.institutional?.directionLabel||institutionalLabel))
     : "13F not loaded";
   const institutionalQuickTone=institutional?.enabled ? institutionalTone : "mid";
+  const fmtDate=(value?:string|null)=>{
+    if(!value)return "Unavailable";
+    const dt=new Date(`${value}T12:00:00`);
+    return Number.isNaN(dt.getTime())?String(value):dt.toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"});
+  };
+  const institutionalPeriod=institutional?.institutional?.reportPeriod||institutional?.asOf||null;
+  const institutionalPriorPeriod=institutional?.institutional?.previousPeriodEnd||null;
+  const institutionalDatasetThrough=institutional?.institutional?.datasetThrough||null;
   const signalRows=[
     ["Business",business.label,tone(business.label)],
     ["Trend",d.labels.trend,tone(d.labels.trend)],
     ["Entry",d.labels.entry,tone(d.labels.entry)],
     ["Institutions",institutionalQuick,institutionalQuickTone],
-    ["Options",optionsData?.enabled?(derivativesScore>=60?"Supportive":derivativesScore<45?"Cautious":"Neutral"):"Not loaded",optionsData?.enabled?(derivativesScore>=60?"good":derivativesScore<45?"bad":"mid"):"mid"],
+    ["Options",optionsData?.enabled?(derivativesScore>=60?"Supportive":derivativesScore<45?"Cautious":"Neutral"):"On demand",optionsData?.enabled?(derivativesScore>=60?"good":derivativesScore<45?"bad":"mid"):"mid"],
     ["Valuation",valuationScore>=65?"Attractive":valuationScore<45?"Expensive":"Fair",valuationScore>=65?"good":valuationScore<45?"bad":"mid"]
   ];
 
@@ -469,14 +502,14 @@ export default function StockClient({symbol}:{symbol:string}){
       </div>
 
       <div className="v32Levels">
-        <div><small>{owns?"ADD ZONE":"BUY ZONE"}</small><b>{betterEntryText}</b><span>{owns?"Add only if the thesis remains intact and price stabilizes.":"Prefer stabilization instead of buying simply because price is falling."}</span></div>
+        <div><small>{owns?"ADD ZONE":horizon==="long"?"DCA / ACCUMULATION ZONE":"BUY ZONE"}</small><b>{!owns&&horizon==="long"&&marketLab?`$${marketLab.dcaLow}–$${marketLab.dcaHigh}`:betterEntryText}</b><span>{owns?"Add only if the thesis remains intact and price stabilizes.":horizon==="long"?"Use staged entries only while the business thesis remains intact; this is a confluence zone, not an automatic buy.":"Prefer stabilization instead of buying simply because price is falling."}</span></div>
         <div><small>{owns?"TRIM / STRENGTH ZONE":"CONFIRM"}</small><b>{owns?`$${d.levels.resistance}–$${d.levels.breakout}`:confirmationText}</b><span>{owns?"Consider trimming only when extension/risk rises; this is not an automatic sell target.":"A strong close/retest with improving participation strengthens the setup."}</span></div>
         <div><small>REASSESS</small><b>{invalidationText}</b><span>{owns?"Thesis risk rises here. Recheck business, catalysts and position size.":"Technical thesis materially weakens below this area."}</span></div>
       </div>
 
       <div className="v32Signals">
         <div className="v32SignalsTitle"><small>WHAT NIVORA SEES</small><span>Interpretation first. Tap deeper research only if you need it.</span></div>
-        <div className="v32SignalRail">{signalRows.map(([name,label,cls]:any)=><div key={name}><small>{name}</small><b className={cls}>{label}</b></div>)}</div>
+        <div className="v32SignalRail">{signalRows.map(([name,label,cls]:any)=><button type="button" key={name} className={name==="Institutions"?"v34SignalButton":""} onClick={()=>{if(name==="Institutions"){if(depth==="simple")setDepth("investor");setTab("institutions");requestAnimationFrame(()=>setTimeout(()=>thesisRef.current?.scrollIntoView({behavior:"smooth",block:"start"}),50))}}} disabled={name!=="Institutions"}><small>{name}</small><b className={cls}>{label}</b>{name==="Institutions"&&<em>View 13F details →</em>}</button>)}</div>
       </div>
 
       <div className="v32CommandFooter">
@@ -563,10 +596,11 @@ export default function StockClient({symbol}:{symbol:string}){
         <button className={tab==="overview"?"on":""} onClick={()=>setTab("overview")}>Decision</button>
         <button className={tab==="thesis"?"on":""} onClick={()=>setTab("thesis")}>Thesis</button>
         {depth!=="simple"&&<button className={tab==="fundamentals"?"on":""} onClick={()=>setTab("fundamentals")}>Fundamentals</button>}
+        {depth!=="simple"&&d.assetType!=="crypto"&&<button className={tab==="institutions"?"on":""} onClick={()=>setTab("institutions")}>Institutions</button>}
         {depth!=="simple"&&<button className={tab==="catalysts"?"on":""} onClick={()=>setTab("catalysts")}>Catalysts</button>}
         {depth!=="simple"&&<button className={tab==="news"?"on":""} onClick={()=>setTab("news")}>News</button>}
         {depth!=="simple"&&<button className={tab==="earnings"?"on":""} onClick={()=>setTab("earnings")}>Earnings</button>}
-        {depth==="pro"&&<button className={tab==="technical"?"on":""} onClick={()=>setTab("technical")}>Technical Lab</button>}
+        {depth!=="simple"&&<button className={tab==="technical"?"on":""} onClick={()=>setTab("technical")}>{depth==="pro"?"Technical Lab":"Technical"}</button>}
         {d.assetType!=="crypto"&&<button className={tab==="options"?"on":""} onClick={()=>setTab("options")}>{depth==="pro"?"Options Lab":"Options"}</button>}
       </div>
 
@@ -608,6 +642,19 @@ export default function StockClient({symbol}:{symbol:string}){
 
       {tab==="fundamentals"&&<div className="v12Fund">
         <div className={`fundSignal ${business.tone||"neutral"}`}><small>BUSINESS QUALITY</small><h3>{business.label}{business.score!=null?` · ${business.score}/100`:""}</h3>{(business.reasons||[]).slice(0,4).map((x:string,i:number)=><p key={i}>• {x}</p>)}{five&&<div className="fiveRecord"><small>5-YEAR RECORD</small><b>{five.score}/100 · {five.revenueTrend}</b><p>{five.summary}</p><div>{(five.history||[]).map((y:any)=><span key={y.year}><i>{y.year}</i><strong>{y.revenue!=null?money(y.revenue):"—"}</strong><em>{y.netIncome!=null?`NI ${money(y.netIncome)}`:"NI —"}</em></span>)}</div></div>}</div>
+        <div className="osList">{company?.fundamentals?.length?company.fundamentals.map((x:any)=><div key={x.label}><span>{x.label}{x.detail&&<small>{x.detail}</small>}</span><b>{x.value}</b></div>):<p>No standardized SEC fundamentals available for this symbol yet.</p>}</div>
+      </div>}
+
+      {tab==="institutions"&&<div className="v34InstitutionsPage">
+        <div className="v34InstitutionHero">
+          <div><small>INSTITUTIONAL OWNERSHIP INTELLIGENCE</small><h3>{institutional?.enabled?(institutional.institutional?.shareChangePctLabel||institutional.institutional?.directionLabel||institutionalLabel):"13F data unavailable"}</h3><p>Who reported adding, trimming, opening or exiting positions — translated from delayed SEC 13F evidence.</p></div>
+          <div className="v34InstitutionDates">
+            <div><small>REPORT PERIOD</small><b>{fmtDate(institutionalPeriod)}</b></div>
+            <div><small>COMPARED WITH</small><b>{fmtDate(institutionalPriorPeriod)}</b></div>
+            <div><small>SEC DATASET THROUGH</small><b>{fmtDate(institutionalDatasetThrough)}</b></div>
+          </div>
+        </div>
+        <div className="v34InstitutionDisclosure"><Info size={14}/><span>13F shows reported holdings for a past quarter. It does not prove an institution is buying or selling today. NIVORA separately labels current price/volume accumulation.</span></div>
         <div className="v32Institutional">
           <div className="v32InstitutionalHead"><div><small>INSTITUTIONAL INTELLIGENCE</small><h3>{institutionalLabel}</h3><p>{institutional?.disclosure||"Reported institutional ownership is not available from the connected feed for this symbol."}</p></div><Help title="Institutional intelligence">Reported institutional ownership and insider filings are delayed evidence. NIVORA keeps this separate from the daily accumulation proxy so it never presents quarterly filings as real-time institutional buying.</Help></div>
           {institutional?.enabled?<div className="v32InstitutionalGrid v321InstitutionalGrid">
@@ -632,14 +679,14 @@ export default function StockClient({symbol}:{symbol:string}){
             ].map(([title,list]:any)=>Array.isArray(list)&&list.length>0&&<details className="v33ManagerGroup" key={title} open={title==="LARGEST REPORTED HOLDERS"}>
               <summary><span>{title}</span><em>{list.length} shown</em></summary>
               <div className="v33ManagerTable">
-                <div className="head"><span>Manager</span><span>Current</span><span>Prior</span><span>Change</span></div>
-                {list.slice(0,10).map((x:any,i:number)=>{const ch=Number(x.change||0);const cp=Number(x.changePct);return <div key={`${title}-${x.name}-${i}`}><b>{x.name}</b><span>{Number(x.shares||0).toLocaleString()} sh</span><span>{x.priorShares!=null?`${Number(x.priorShares).toLocaleString()} sh`:"—"}</span><em className={ch>0?"good":ch<0?"bad":"mid"}>{ch>0?"+":""}{Math.round(ch).toLocaleString()} {Number.isFinite(cp)?`(${cp>0?"+":""}${cp.toFixed(1)}%)`:""}</em></div>})}
+                <div className="head"><span>Manager</span><span>Current</span><span>Prior</span><span>Change</span><span>Reported</span></div>
+                {list.slice(0,12).map((x:any,i:number)=>{const ch=Number(x.change||0);const cp=Number(x.changePct);const total=Number(institutional.institutional?.totalShares||0);const poolPct=total>0?Number(x.shares||0)/total*100:null;return <div key={`${title}-${x.name}-${i}`}><b>{x.name}<small>{x.status?String(x.status).replace(/^./,(c:string)=>c.toUpperCase()):""}</small></b><span>{Number(x.shares||0).toLocaleString()} sh{poolPct!=null&&<small>{poolPct.toFixed(poolPct>=10?1:2)}% of reported 13F shares</small>}</span><span>{x.priorShares!=null?`${Number(x.priorShares).toLocaleString()} sh`:"—"}</span><em className={ch>0?"good":ch<0?"bad":"mid"}>{ch>0?"+":""}{Math.round(ch).toLocaleString()} {Number.isFinite(cp)?`(${cp>0?"+":""}${cp.toFixed(1)}%)`:""}</em><time>{x.filingDate?fmtDate(x.filingDate):(x.reportPeriod?fmtDate(x.reportPeriod):fmtDate(institutionalPeriod))}</time></div>})}
               </div>
             </details>)}
-            <div className="v33InstitutionalNote"><b>How to read this</b><span>13F shows what reporting managers held at the filing period—not what they are buying today. Use breadth + share change + named manager changes together. NIVORA keeps today's price/volume accumulation proxy separate.</span></div>
+            <div className="v33InstitutionalNote"><b>How to read this</b><span>13F shows what reporting managers held at the report period—not what they are buying today. Manager percentages shown here are each manager’s share of NIVORA’s aggregated reported 13F shares, not ownership % of the whole company. True company ownership % needs a period-matched shares-outstanding denominator.</span></div>
           </div>}
         </div>
-        <div className="osList">{company?.fundamentals?.length?company.fundamentals.map((x:any)=><div key={x.label}><span>{x.label}{x.detail&&<small>{x.detail}</small>}</span><b>{x.value}</b></div>):<p>No standardized SEC fundamentals available for this symbol yet.</p>}</div>
+
       </div>}
 
       {tab==="catalysts"&&<div className="v12Catalysts">
@@ -656,7 +703,21 @@ export default function StockClient({symbol}:{symbol:string}){
       {tab==="earnings"&&<div className="v12Earnings"><div className="earnSplit">{latestReport&&<div className="earnNext earnReported"><small>LATEST REPORTED RESULTS</small><h3>{latestEarnNews?.date?new Date(latestEarnNews.date).toLocaleDateString():latestReport.date}</h3><p>{latestEarnNews?.headline||`${latestReport.form} filed — latest reported financial filing`}</p>{latestEarnNews?.url&&<a href={latestEarnNews.url} target="_blank" rel="noreferrer">Read results <ExternalLink size={12}/></a>}</div>}{earn&&<div className="earnNext estimated"><small>NEXT EARNINGS · ESTIMATED</small><h3>{earn.date}</h3><p>{earn.hour||"Time not listed"}{earn.epsEstimate!=null?` · EPS est. ${eps(earn.epsEstimate)}`:""}{earn.revenueEstimate!=null?` · Revenue est. ${money(earn.revenueEstimate)}`:""}</p><p className="earnMeta">Future calendar dates are estimates until confirmed by the company.</p></div>}</div><div className="earnGrid">{(context?.surprises||[]).length?context.surprises.map((x:any,i:number)=><div key={i}><small>{x.period}</small><b className={(x.surprisePercent??0)>=0?"good":"bad"}>{x.surprisePercent!=null?`${x.surprisePercent>=0?"+":""}${Number(x.surprisePercent).toFixed(1)}% surprise`:"Reported"}</b><span>Actual {x.actual??"—"} · Est. {x.estimate??"—"}</span></div>):<p>No earnings-surprise history returned by the connected feed.</p>}</div></div>}
 
       {tab==="technical"&&<div className="v12Technical v26Technical">
-        {marketLab&&<div className="v32ConfluenceChart">
+        <div className="v34TechnicalHero">
+          <div><small>TECHNICAL DECISION SUPPORT</small><h3>Momentum, trend and timing — translated.</h3><p>RSI, MACD, moving averages, volatility and DCA zones are supporting evidence. None is a standalone buy/sell signal.</p></div>
+          <div className="v34TechVerdict"><small>CURRENT TECHNICAL READ</small><b className={tone(d.labels.trend)}>{proTech?.trendLabel||d.labels.trend}</b><span>{proTech?.macdLabel||"MACD unavailable"} MACD · {proTech?.rsiLabel||"RSI unavailable"} RSI</span></div>
+        </div>
+        {proTech&&<div className="v34IndicatorGrid">
+          <div><div className="metricLabel"><small>RSI · 14</small><Help title="RSI (14)">Relative Strength Index from 0–100. Above 70 can indicate an overbought/extended condition; below 30 can indicate oversold. NIVORA does not use RSI alone.</Help></div><b className={proTech.rsi14>=70?"bad":proTech.rsi14<=30?"good":"mid"}>{proTech.rsi14!=null?proTech.rsi14.toFixed(1):"—"}</b><span>{proTech.rsiLabel}</span></div>
+          <div><div className="metricLabel"><small>MACD · 12/26/9</small><Help title="MACD">MACD compares fast and slow exponential moving averages. A positive histogram supports bullish momentum; a negative histogram supports bearish momentum.</Help></div><b className={proTech.macdLabel==="Bullish"?"good":proTech.macdLabel==="Bearish"?"bad":"mid"}>{proTech.macdLabel}</b><span>{proTech.macdHist!=null?`Histogram ${proTech.macdHist>=0?"+":""}${proTech.macdHist.toFixed(3)}`:"Unavailable"}</span></div>
+          <div><div className="metricLabel"><small>20D / 50D TREND</small><Help title="Moving-average trend">Compares price with the 20-day and 50-day moving averages. Alignment can confirm trend direction but can lag turning points.</Help></div><b className={proTech.trendLabel==="Bullish"?"good":proTech.trendLabel==="Bearish"?"bad":"mid"}>{proTech.trendLabel}</b><span>{proTech.d20!=null?`${proTech.d20>=0?"+":""}${proTech.d20.toFixed(1)}% vs 20D`:"—"} · {proTech.d50!=null?`${proTech.d50>=0?"+":""}${proTech.d50.toFixed(1)}% vs 50D`:"—"}</span></div>
+          <div><div className="metricLabel"><small>VOLUME</small><Help title="Volume confirmation">Compares current volume with the recent 20-session average. Strong participation can make breakouts or reversals more meaningful.</Help></div><b>{proTech.volRatio!=null?`${proTech.volRatio.toFixed(2)}×`:"—"}</b><span>{proTech.volumeLabel}</span></div>
+          <div><div className="metricLabel"><small>ATR · 14</small><Help title="ATR (14)">Average True Range estimates typical recent daily movement. ATR% helps compare volatility across stocks with different prices.</Help></div><b>{proTech.atrPct!=null?`${proTech.atrPct.toFixed(1)}%`:"—"}</b><span>Typical daily range</span></div>
+          <div><div className="metricLabel"><small>DCA / ACCUMULATION ZONE</small><Help title="DCA / accumulation zone">A technical confluence area derived from NIVORA support/entry structure. It is useful for staged-entry planning only while the fundamental thesis remains intact.</Help></div><b>{marketLab?`$${marketLab.dcaLow}–$${marketLab.dcaHigh}`:"—"}</b><span>{marketLab?"Structure + support confluence":"Insufficient history"}</span></div>
+          <div><div className="metricLabel"><small>BOLLINGER POSITION</small><Help title="Bollinger position">Shows where price sits within a 20-day, two-standard-deviation band. Near the top suggests extension; near the bottom suggests weakness/possible mean reversion.</Help></div><b>{proTech.bbPos!=null?`${Math.max(0,Math.min(100,proTech.bbPos)).toFixed(0)}%`:"—"}</b><span>0% lower band · 100% upper band</span></div>
+          <div><div className="metricLabel"><small>REALIZED VOL · 20D</small><Help title="Realized volatility">Annualized recent realized volatility from daily returns. Higher values imply larger price variability and usually require more conservative sizing.</Help></div><b>{proTech.rv!=null?`${proTech.rv.toFixed(1)}%`:"—"}</b><span>{proTech.drawdown!=null?`${proTech.drawdown.toFixed(1)}% from 52-week high`:"52-week drawdown unavailable"}</span></div>
+        </div>}
+        {depth==="pro"&&marketLab&&<div className="v32ConfluenceChart">
           <div className="v32MarketLabHead"><div><small>CONFLUENCE MAP</small><h3>Fib + structure + NIVORA risk levels</h3><p>Advanced levels are supporting evidence, not standalone buy/sell signals. Wave interpretation is heuristic and confidence-limited.</p></div><Help title="Confluence map">Fibonacci retracements, NIVORA support/entry levels and the current Elliott-style scenario are overlaid so experienced users can see where independent technical evidence clusters.</Help></div>
           <PriceChart candles={d.candles} levels={d.levels} showTrend={true} confluence={marketLab}/>
         </div>}
@@ -671,7 +732,7 @@ export default function StockClient({symbol}:{symbol:string}){
           <div><small>BOLLINGER POSITION</small><b>{proTech.bbPos!=null?`${Math.round(proTech.bbPos)}%`:"—"}</b><span>0% lower band · 100% upper</span></div>
           <div><small>52W DRAWDOWN</small><b>{proTech.drawdown!=null?`${proTech.drawdown.toFixed(1)}%`:"—"}</b><span>Distance from recent high</span></div>
         </div>}
-        {marketLab&&<div className="v32MarketLab">
+        {depth==="pro"&&marketLab&&<div className="v32MarketLab">
           <div className="v32MarketLabHead"><div><small>MARKET INTELLIGENCE</small><h3>Confluence, not indicator clutter.</h3><p>NIVORA turns technical evidence into zones and scenarios instead of asking you to interpret dozens of lines.</p></div></div>
           <div className="v32MarketLabGrid">
             <div><small>ACCUMULATION PROXY</small><b className={marketLab.accumulationLabel==="Accumulating"?"good":marketLab.accumulationLabel==="Distribution risk"?"bad":"mid"}>{marketLab.accumulationLabel}</b><strong>{marketLab.accumulation}/100</strong><span>Price/volume behavior proxy — not a claim that a specific institution is trading today.</span></div>
@@ -681,7 +742,7 @@ export default function StockClient({symbol}:{symbol:string}){
           </div>
         </div>}
         <div className="techRead"><small>NIVORA TECHNICAL READ</small><h4>{d.labels.trend} trend · {d.labels.momentum} momentum · {d.labels.risk} risk</h4><p>{d.why?.slice(0,3).join(" ")}</p></div>
-        <div className="osTechGrid">{Object.entries(d.engine).map(([k,v]:any)=><div key={k}><div className="metricLabel"><span>{k}</span><Help title={k}>{k==="Trend"?"Multi-horizon direction and slope.":k==="Momentum"?"Speed and persistence of the current move.":k==="Flow"?"Volume/price participation and confirmation.":k==="Structure"?"Higher highs/lows, support and resistance behavior.":k==="RSI"?"Relative Strength Index; helps identify momentum extremes but is never used alone.":k==="MACD"?"Trend/momentum crossover evidence.":k==="Extension"?"How far price has moved away from its recent equilibrium; high extension increases chase risk.":k==="Relative strength"?"Performance versus the relevant benchmark.":k==="Market regime"?"Whether the broad market is supportive, mixed or risk-off.":"Supporting quantitative evidence used by the decision engine."}</Help></div><b>{typeof v==="number"?`${v}/100`:v}</b></div>)}</div>
+        {depth==="pro"&&<div className="osTechGrid">{Object.entries(d.engine).map(([k,v]:any)=><div key={k}><div className="metricLabel"><span>{k}</span><Help title={k}>{k==="Trend"?"Multi-horizon direction and slope.":k==="Momentum"?"Speed and persistence of the current move.":k==="Flow"?"Volume/price participation and confirmation.":k==="Structure"?"Higher highs/lows, support and resistance behavior.":k==="RSI"?"Relative Strength Index; helps identify momentum extremes but is never used alone.":k==="MACD"?"Trend/momentum crossover evidence.":k==="Extension"?"How far price has moved away from its recent equilibrium; high extension increases chase risk.":k==="Relative strength"?"Performance versus the relevant benchmark.":k==="Market regime"?"Whether the broad market is supportive, mixed or risk-off.":"Supporting quantitative evidence used by the decision engine."}</Help></div><b>{typeof v==="number"?`${v}/100`:v}</b></div>)}</div>}
       </div>}
 
       {tab==="options"&&<div className="gammaPanel v22Options v26Options">

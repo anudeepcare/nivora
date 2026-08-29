@@ -6,8 +6,8 @@ const n=(x:any,f=50)=>Number.isFinite(Number(x))?Number(x):f;
 const uniq=(xs:string[])=>[...new Set(xs.filter(Boolean))];
 
 export function buildNivoraIntelligence({
-  market,company,context,options,mode="now"
-}:{market:any,company:any,context:any,options?:any,mode?:NivoraMode}){
+  market,company,context,options,institutional,mode="now"
+}:{market:any,company:any,context:any,options?:any,institutional?:any,mode?:NivoraMode}){
   if(!market)return null;
   const regime=marketRegime(market);
 
@@ -57,18 +57,23 @@ export function buildNivoraIntelligence({
   }
   derivativeScore=clamp(derivativeScore);
 
+  const institutionalEnabled=!!institutional?.enabled;
+  const institutionalScore=institutionalEnabled
+    ? clamp(n(institutional?.institutional?.institutionalScore,50))
+    : 50;
+
   const weights=mode==="long"
-    ?{business:.38,trend:.16,timing:.10,momentum:.08,flow:.05,catalyst:.10,deriv:.03,safety:.10}
+    ?{business:.34,trend:.15,timing:.09,momentum:.08,flow:.05,catalyst:.09,deriv:.03,safety:.10,inst:.07}
     :mode==="own"
-      ?{business:.30,trend:.15,timing:.08,momentum:.07,flow:.05,catalyst:.10,deriv:.03,safety:.22}
+      ?{business:.28,trend:.14,timing:.08,momentum:.07,flow:.05,catalyst:.10,deriv:.03,safety:.19,inst:.06}
       :mode==="swing"
-        ?{business:.12,trend:.22,timing:.20,momentum:.15,flow:.10,catalyst:.08,deriv:.05,safety:.08}
-        :{business:.12,trend:.18,timing:.25,momentum:.14,flow:.10,catalyst:.08,deriv:.05,safety:.08};
+        ?{business:.12,trend:.21,timing:.19,momentum:.14,flow:.10,catalyst:.08,deriv:.05,safety:.07,inst:.04}
+        :{business:.12,trend:.17,timing:.24,momentum:.14,flow:.10,catalyst:.08,deriv:.05,safety:.07,inst:.03};
 
   const baseComposite=
     business*weights.business+trend*weights.trend+timing*weights.timing+
     momentum*weights.momentum+flow*weights.flow+catalystScore*weights.catalyst+
-    derivativeScore*weights.deriv+(100-risk)*weights.safety;
+    derivativeScore*weights.deriv+(100-risk)*weights.safety+institutionalScore*weights.inst;
   const valuationAdj=mode==="long"?(valuation-50)*.08:(valuation-50)*.025;
   const regimeAdj=(regime.score-50)*(mode==="now"?.08:mode==="swing"?.07:.035);
   const composite=clamp(baseComposite+valuationAdj+regimeAdj);
@@ -93,6 +98,8 @@ export function buildNivoraIntelligence({
   if(earningsSoon)concerns.push("Earnings are close enough to create event risk.");
   if(options?.enabled&&options.gammaProxy?.startsWith("Positive"))positives.push("Options positioning proxy is relatively supportive.");
   if(options?.enabled&&options.gammaProxy?.startsWith("Negative"))concerns.push("Options positioning proxy is a short-term headwind.");
+  if(institutionalEnabled&&institutionalScore>=65)positives.push("Reported institutional holdings are broadly constructive versus the prior filing period.");
+  if(institutionalEnabled&&institutionalScore<42)concerns.push("Reported institutional holdings show a meaningful reduction versus the prior filing period.");
 
   const contradictions:string[]=[];
   if(business>=70&&timing<48)contradictions.push("Great business, poor entry: fundamentals and timing disagree.");
@@ -101,10 +108,11 @@ export function buildNivoraIntelligence({
   if(newsTone==="positive"&&risk>=72)contradictions.push("Positive news is not enough to offset high technical risk.");
   if(business<45&&trend>=70)contradictions.push("Price strength is outrunning weak business evidence.");
   if(options?.enabled&&options.gammaProxy?.startsWith("Negative")&&trend>=65)contradictions.push("Underlying trend and options-positioning proxy are sending different signals.");
+  if(institutionalEnabled&&institutionalScore<42&&trend>=65)contradictions.push("Price trend is strong while delayed institutional filings show net reduction.");
 
   const evidenceCount=[
     market?1:0,company?.fundamentalSignal?1:0,company?.fiveYearRecord?1:0,
-    context?.enabled?1:0,context?.earnings?1:0,options?.enabled?1:0
+    context?.enabled?1:0,context?.earnings?1:0,options?.enabled?1:0,institutionalEnabled?1:0
   ].reduce((a,b)=>a+b,0);
   const rawConfidence=clamp(45+evidenceCount*8);
   const evidenceQuality=clamp(42+evidenceCount*9-(filingRisk?2:0));
@@ -171,7 +179,7 @@ export function buildNivoraIntelligence({
     dimensions:{
       business:Math.round(business),valuation:Math.round(valuation),timing:Math.round(timing),trend:Math.round(trend),
       momentum:Math.round(momentum),flow:Math.round(flow),catalysts:Math.round(catalystScore),
-      derivatives:Math.round(derivativeScore),risk:Math.round(risk)
+      institutional:Math.round(institutionalScore),derivatives:Math.round(derivativeScore),risk:Math.round(risk)
     },
     positives:uniq(positives).slice(0,6),concerns:uniq(concerns).slice(0,6),
     contradictions:uniq(contradictions).slice(0,5),
@@ -180,8 +188,9 @@ export function buildNivoraIntelligence({
       !company?.fundamentalSignal?"standardized fundamentals":"",
       !company?.fiveYearRecord?"multi-year financial history":"",
       !context?.enabled?"live news/earnings context":"",
+      !institutionalEnabled&&market?.assetType!=="crypto"?"reported institutional holdings":"",
       !options?.enabled?"options positioning":""
     ].filter(Boolean),
-    explanation:`NIVORA's thesis score synthesizes business quality, trend, entry quality, momentum, flow, catalysts, derivatives context and downside risk with different weights for ${mode==="long"?"long-term":mode==="own"?"owned-position":mode==="swing"?"swing":"current-entry"} analysis.`
+    explanation:`NIVORA's thesis score synthesizes business quality, trend, entry quality, momentum, flow, catalysts, delayed institutional holdings, derivatives context and downside risk with different weights for ${mode==="long"?"long-term":mode==="own"?"owned-position":mode==="swing"?"swing":"current-entry"} analysis.`
   };
 }

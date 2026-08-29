@@ -10,7 +10,7 @@ into Supabase.
 This is filing intelligence, NOT real-time institutional order flow.
 """
 import csv, io, json, os, re, sys, urllib.request, zipfile
-from collections import defaultdict
+from collections import defaultdict, Counter
 from datetime import datetime
 
 DATA_PAGE="https://www.sec.gov/data-research/sec-markets-data/form-13f-data-sets"
@@ -65,6 +65,15 @@ def read_tsv(z,member):
     f=io.TextIOWrapper(z.open(member),"utf-8-sig",errors="replace",newline="")
     yield from csv.DictReader(f,delimiter="\t")
 
+def parse_date(value):
+    value=str(value or "").strip()
+    if not value:return None
+    for fmt in ("%Y-%m-%d","%m-%d-%Y","%Y%m%d","%m/%d/%Y"):
+        try:return datetime.strptime(value,fmt).date().isoformat()
+        except: pass
+    m=re.match(r"^(\d{4})-(\d{2})-(\d{2})",value)
+    return "-".join(m.groups()) if m else None
+
 def quarter(url,ticker_map):
     blob=get(url)
     z=zipfile.ZipFile(io.BytesIO(blob))
@@ -72,38 +81,55 @@ def quarter(url,ticker_map):
     info=find_member(z,["infotable.tsv"])
     manager={}
     report_period={}
+    filing_date={}
+    period_counts=Counter()
     for r in read_tsv(z,cover):
         acc=r.get("ACCESSION_NUMBER","")
         manager[acc]=r.get("FILINGMANAGER_NAME","") or r.get("NAME","") or acc
-        report_period[acc]=r.get("REPORTCALENDARORQUARTER","") or r.get("PERIODOFREPORT","")
-    # symbol -> manager -> aggregate
-    agg=defaultdict(lambda:defaultdict(lambda:{"shares":0.0,"value":0.0,"issuer":"","filingDate":None}))
+        p=parse_date(r.get("REPORTCALENDARORQUARTER","") or r.get("PERIODOFREPORT",""))
+        if p:
+            report_period[acc]=p
+            period_counts[p]+=1
+    try:
+        submission=find_member(z,["submission.tsv"])
+        for r in read_tsv(z,submission):
+            acc=r.get("ACCESSION_NUMBER","")
+            fd=parse_date(r.get("FILING_DATE","") or r.get("FILINGDATE","") or r.get("FILEDASOFDATE",""))
+            if acc and fd:filing_date[acc]=fd
+    except Exception:
+        pass
+    if not period_counts:
+        raise RuntimeError("SEC 13F dataset did not contain report-period metadata")
+    target_period=period_counts.most_common(1)[0][0]
+    agg=defaultdict(lambda:defaultdict(lambda:{"shares":0.0,"value":0.0,"issuer":"","filingDate":None,"reportPeriod":target_period}))
     matched=0
     for r in read_tsv(z,info):
         issuer=r.get("NAMEOFISSUER","")
         matches=ticker_map.get(norm(issuer))
         if not matches or len(matches)!=1: continue
         sym,title=matches[0]
-        # Ignore option rows; ownership trend should reflect reported equity holdings.
         if str(r.get("PUTCALL","")).strip(): continue
         acc=r.get("ACCESSION_NUMBER","")
+        if report_period.get(acc)!=target_period: continue
         mgr=manager.get(acc,acc or "Reporting manager")
         try: shares=float(r.get("SSHPRNAMT") or 0)
         except: shares=0.0
         try: value=float(r.get("VALUE") or 0)
         except: value=0.0
-        a=agg[sym][mgr]; a["shares"]+=shares; a["value"]+=value; a["issuer"]=issuer
-        a["filingDate"]=report_period.get(acc)
+        a=agg[sym][mgr]
+        a["shares"]+=shares;a["value"]+=value;a["issuer"]=issuer
+        a["filingDate"]=filing_date.get(acc) or a["filingDate"]
+        a["reportPeriod"]=target_period
         matched+=1
-    print("matched rows",matched,"symbols",len(agg),file=sys.stderr)
-    return agg
+    print("matched rows",matched,"symbols",len(agg),"report period",target_period,file=sys.stderr)
+    return agg,target_period
 
 def period_from_url(url):
     m=re.search(r"(\d{2})([a-z]{3})(\d{4})-(\d{2})([a-z]{3})(\d{4})",url,re.I)
     if not m:return datetime.utcnow().date().isoformat()
     return datetime.strptime(m.group(4)+m.group(5)+m.group(6),"%d%b%Y").date().isoformat()
 
-def build(latest,previous,period):
+def build(latest,previous,period,previous_period,dataset_through):
     rows=[]
     for sym,cur in latest.items():
         prev=previous.get(sym,{})
@@ -131,7 +157,8 @@ def build(latest,previous,period):
             return {
                 "name":mgr,"shares":shares,"priorShares":prior_shares,"change":change,
                 "changePct":change_pct,"value":float(v.get("value",0) or 0),
-                "priorValue":float(prior_v.get("value",0) or 0),"status":status
+                "priorValue":float(prior_v.get("value",0) or 0),"status":status,
+                "filingDate":v.get("filingDate"),"reportPeriod":v.get("reportPeriod")
             }
         all_current=[manager_row(mgr,v) for mgr,v in cur.items()]
         top=sorted(all_current,key=lambda x:x["value"],reverse=True)[:15]
@@ -143,11 +170,13 @@ def build(latest,previous,period):
             if mgr not in cur:
                 exits.append({"name":mgr,"shares":0,"priorShares":float(v.get("shares",0) or 0),
                               "change":-float(v.get("shares",0) or 0),"changePct":-100.0,
-                              "value":0,"priorValue":float(v.get("value",0) or 0),"status":"exited"})
+                              "value":0,"priorValue":float(v.get("value",0) or 0),"status":"exited",
+                              "filingDate":v.get("filingDate"),"reportPeriod":v.get("reportPeriod")})
         exits=sorted(exits,key=lambda x:x["priorValue"],reverse=True)[:15]
         issuer=next(iter(cur.values())).get("issuer","") if cur else ""
         rows.append({
-            "symbol":sym,"period_end":period,"issuer_name":issuer,
+            "symbol":sym,"period_end":period,"previous_period_end":previous_period,
+            "dataset_through":dataset_through,"issuer_name":issuer,
             "source":"SEC Form 13F structured data",
             "match_confidence":"normalized SEC issuer-name exact",
             "reporting_managers":len(cur),"increased_managers":increased,
@@ -180,10 +209,11 @@ def main():
         PREVIOUS=PREVIOUS or auto_previous
     print("latest",LATEST,file=sys.stderr); print("previous",PREVIOUS,file=sys.stderr)
     tickers=load_tickers()
-    latest=quarter(LATEST,tickers)
-    previous=quarter(PREVIOUS,tickers)
-    rows=build(latest,previous,period_from_url(LATEST))
+    latest,latest_period=quarter(LATEST,tickers)
+    previous,previous_period=quarter(PREVIOUS,tickers)
+    dataset_through=period_from_url(LATEST)
+    rows=build(latest,previous,latest_period,previous_period,dataset_through)
     upsert(rows)
-    print(json.dumps({"ok":True,"symbols":len(rows),"period":period_from_url(LATEST)}))
+    print(json.dumps({"ok":True,"symbols":len(rows),"reportPeriod":latest_period,"previousPeriod":previous_period,"datasetThrough":dataset_through}))
 
 if __name__=="__main__":main()

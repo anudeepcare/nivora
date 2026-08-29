@@ -532,3 +532,38 @@ html,body{max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}button,
 /* Red is reserved for risk, but softened so the page reads premium rather than alarmist. */
 .decisionCard.bad,.decisionHero.bad,.decisionCard.sell{border-top-color:#d64b45!important}.decisionCard.bad h1,.decisionCard.bad h2,.decisionHero.bad h1,.decisionHero.bad h2,.decisionCard.sell h1,.decisionCard.sell h2{color:#a9342f!important}.bad{color:#b13b35}
 @media(max-width:700px){.v33Pulse{grid-template-columns:1fr}.v33Pulse>div{border-right:0;border-bottom:1px solid #e8edf3}.v33Pulse>div:last-child{border-bottom:0}.v33ManagerTable>div{grid-template-columns:1fr 1fr}.v33ManagerTable .head{display:none}.v33ManagerTable b{grid-column:1/-1}.v33InstitutionalNote{flex-direction:column;gap:3px}}
+
+
+/* V34 — dedicated institutions + readable technical intelligence */
+.v32SignalRail>button{border:1px solid #e6eaf0;background:#fff;border-radius:10px;padding:9px 10px;text-align:left;min-width:0;color:inherit}
+.v32SignalRail>button:disabled{cursor:default;opacity:1}.v32SignalRail>button:not(:disabled){cursor:pointer}
+.v32SignalRail>button:not(:disabled):hover{border-color:#cfd8e5;box-shadow:0 2px 8px rgba(16,24,40,.05)}
+.v32SignalRail>button em{display:block;margin-top:4px;font-size:8px;font-style:normal;font-weight:800;color:#667085}
+.v34SignalButton{position:relative}
+.v34InstitutionsPage{background:#fff}
+.v34InstitutionHero{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(420px,.8fr);gap:0;border-bottom:1px solid #e8edf3;background:linear-gradient(180deg,#fff,#fbfcfd)}
+.v34InstitutionHero>div:first-child{padding:20px 22px}.v34InstitutionHero>div:first-child>small,.v34TechnicalHero>div:first-child>small{font-size:9px;font-weight:900;letter-spacing:.11em;color:#16833d}
+.v34InstitutionHero h3{font-size:25px;margin:6px 0;color:#101828;letter-spacing:-.5px}.v34InstitutionHero p{margin:0;max-width:720px;color:#667085;font-size:12px;line-height:1.55}
+.v34InstitutionDates{display:grid;grid-template-columns:repeat(3,1fr);border-left:1px solid #e8edf3}.v34InstitutionDates>div{padding:18px 15px;border-right:1px solid #e8edf3}.v34InstitutionDates>div:last-child{border-right:0}.v34InstitutionDates small{display:block;font-size:8px;font-weight:900;letter-spacing:.08em;color:#98a2b3}.v34InstitutionDates b{display:block;margin-top:6px;font-size:12px;line-height:1.35;color:#344054}
+.v34InstitutionDisclosure{display:flex;gap:8px;align-items:flex-start;padding:10px 18px;background:#fff9e8;border-bottom:1px solid #f2e4b8;color:#7a5a16;font-size:10px;line-height:1.45}.v34InstitutionDisclosure svg{flex:none;margin-top:1px}
+.v34InstitutionsPage>.v32Institutional{margin:16px 18px 18px}
+.v34TechnicalHero{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,.38fr);border-bottom:1px solid #e8edf3;background:#fbfcfd}
+.v34TechnicalHero>div{padding:17px 18px}.v34TechnicalHero>div+div{border-left:1px solid #e8edf3}
+.v34TechnicalHero h3{font-size:20px;margin:5px 0 4px;color:#101828}.v34TechnicalHero p{font-size:11px;line-height:1.5;color:#667085;margin:0}
+.v34TechVerdict small{display:block;font-size:8px;font-weight:900;letter-spacing:.1em;color:#98a2b3}.v34TechVerdict b{display:block;font-size:18px;margin:6px 0}.v34TechVerdict span{font-size:10px;color:#667085}
+.v34IndicatorGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid #e8edf3}
+.v34IndicatorGrid>div{padding:14px 15px;border-right:1px solid #e8edf3;border-bottom:1px solid #e8edf3;min-width:0}.v34IndicatorGrid>div:nth-child(4n){border-right:0}.v34IndicatorGrid>div:nth-last-child(-n+4){border-bottom:0}
+.v34IndicatorGrid small{font-size:8.5px;font-weight:900;letter-spacing:.07em;color:#98a2b3}.v34IndicatorGrid b{display:block;font-size:15px;margin:6px 0 3px}.v34IndicatorGrid span{font-size:9.5px;line-height:1.4;color:#667085}
+.v33ManagerTable>div{grid-template-columns:minmax(210px,1.5fr) minmax(120px,.72fr) minmax(110px,.65fr) minmax(145px,.82fr) minmax(95px,.55fr)}
+.v33ManagerTable b small,.v33ManagerTable span small{display:block;margin-top:2px;font-size:7.5px;font-weight:650;color:#98a2b3}.v33ManagerTable time{font-size:8.5px;color:#667085}
+@media(max-width:1000px){
+ .v34InstitutionHero{grid-template-columns:1fr}.v34InstitutionDates{border-left:0;border-top:1px solid #e8edf3}
+ .v34IndicatorGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.v34IndicatorGrid>div:nth-child(4n){border-right:1px solid #e8edf3}.v34IndicatorGrid>div:nth-child(2n){border-right:0}.v34IndicatorGrid>div:nth-last-child(-n+4){border-bottom:1px solid #e8edf3}.v34IndicatorGrid>div:nth-last-child(-n+2){border-bottom:0}
+}
+@media(max-width:700px){
+ .v34InstitutionHero>div:first-child{padding:16px 14px}.v34InstitutionHero h3{font-size:22px}.v34InstitutionDates{grid-template-columns:1fr}.v34InstitutionDates>div{padding:11px 14px;border-right:0;border-bottom:1px solid #e8edf3}.v34InstitutionDates>div:last-child{border-bottom:0}
+ .v34InstitutionsPage>.v32Institutional{margin:12px}
+ .v34TechnicalHero{grid-template-columns:1fr}.v34TechnicalHero>div{padding:14px}.v34TechnicalHero>div+div{border-left:0;border-top:1px solid #e8edf3}
+ .v34IndicatorGrid{grid-template-columns:1fr}.v34IndicatorGrid>div,.v34IndicatorGrid>div:nth-child(4n),.v34IndicatorGrid>div:nth-child(2n){border-right:0;border-bottom:1px solid #e8edf3}.v34IndicatorGrid>div:last-child{border-bottom:0}
+ .v33ManagerTable>div{grid-template-columns:1fr 1fr}.v33ManagerTable time{font-size:8px}.v33ManagerTable>div>*:first-child{grid-column:1/-1}
+}

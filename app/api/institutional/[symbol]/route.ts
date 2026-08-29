@@ -50,7 +50,7 @@ async function cachedSec(symbol:string){
   try{
     const db=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});
     const {data,error}=await db.from("nivora_institutional_snapshots")
-      .select("*").eq("symbol",symbol).order("period_end",{ascending:false}).limit(1).maybeSingle();
+      .select("*").eq("symbol",symbol).order("synced_at",{ascending:false}).order("period_end",{ascending:false}).limit(1).maybeSingle();
     if(error||!data)return null;
     return data;
   }catch{return null}
@@ -170,7 +170,11 @@ export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
         newManagers:useProvider?null:Number(secCache?.new_managers||0),
         exitedManagers:useProvider?null:Number(secCache?.exited_managers||0),
         unchangedManagers:useProvider?null:Number(secCache?.unchanged_managers||0),
-        periodLabel:useProvider?"Provider-reported filing data":secCache?.period_end?`13F period ending ${secCache.period_end}`:"Latest SEC 13F cache",
+        reportPeriod:useProvider?(rows[0]?.reportDate||rows[0]?.date||rows[0]?.filingDate||null):(secCache?.period_end||null),
+        previousPeriodEnd:useProvider?null:(secCache?.previous_period_end||null),
+        datasetThrough:useProvider?null:(secCache?.dataset_through||null),
+        syncedAt:useProvider?null:(secCache?.synced_at||null),
+        periodLabel:useProvider?"Provider-reported filing data":secCache?.period_end?`13F report period ${secCache.period_end}`:"Latest SEC 13F cache",
         confidence:useProvider?"Provider reported":secCache?.match_confidence||"SEC issuer-name matched",
         addBreadthPct,trimBreadthPct,institutionalScore,
         top,biggestBuyers,biggestSellers,newPositions,exits
