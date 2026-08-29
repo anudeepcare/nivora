@@ -455,3 +455,15 @@ html,body{max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}button,
   .v28AnswerHeadline{padding:14px;flex-direction:column}.v28AnswerHeadline button{width:100%;justify-content:center}
   .v28QuestionRow{padding:10px 12px}.v28AnswerBody{padding:12px 14px}
 }
+
+/* V29 Pro cockpit + enterprise evidence */
+.v29ProCockpit{margin:0 0 16px;border:1px solid #d8dee8;border-radius:16px;overflow:hidden;background:#0f172a;color:#e5e7eb}
+.proCockpitHead{display:flex;justify-content:space-between;gap:18px;padding:18px;align-items:flex-start;border-bottom:1px solid rgba(255,255,255,.09)}
+.proCockpitHead small,.v29Audit small{font-size:9px;font-weight:900;letter-spacing:.12em;color:#94a3b8}.proCockpitHead h3{margin:5px 0;font-size:19px;color:#fff}.proCockpitHead p{margin:0;font-size:11px;color:#94a3b8}
+.proCockpitHead button{display:flex;gap:6px;align-items:center;border:1px solid rgba(255,255,255,.16);background:#172033;color:#fff;border-radius:9px;padding:8px 10px;font-size:11px;font-weight:800}
+.proCockpitGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.proCockpitGrid>div{padding:14px 16px;border-right:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08)}.proCockpitGrid>div:nth-child(3n){border-right:0}.proCockpitGrid>div:nth-last-child(-n+3){border-bottom:0}
+.proCockpitGrid small{display:block;font-size:9px;font-weight:900;letter-spacing:.1em;color:#94a3b8}.proCockpitGrid b{display:block;margin:5px 0;font-size:16px;color:#fff}.proCockpitGrid span{font-size:10px;color:#94a3b8;line-height:1.35}.proCockpitGrid .auditId{font-size:10px;overflow-wrap:anywhere}
+.v29Audit{display:grid;grid-template-columns:1.2fr 1fr 1fr;border-top:1px solid rgba(255,255,255,.08);background:#111827}.v29Audit>div{padding:16px;border-right:1px solid rgba(255,255,255,.08)}.v29Audit>div:last-child{border:0}.v29Audit p{margin:7px 0;font-size:10px;color:#aab4c4}.v29Audit p b{color:#e5e7eb}.v29Audit p span:last-child{float:right}.auditOk{color:#4ade80;margin-right:6px}.auditBad{color:#f59e0b;margin-right:6px}
+@media(max-width:800px){.proCockpitGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.proCockpitGrid>div:nth-child(3n){border-right:1px solid rgba(255,255,255,.08)}.proCockpitGrid>div:nth-child(2n){border-right:0}.proCockpitGrid>div:nth-last-child(-n+3){border-bottom:1px solid rgba(255,255,255,.08)}.proCockpitGrid>div:nth-last-child(-n+2){border-bottom:0}.v29Audit{grid-template-columns:1fr}.v29Audit>div{border-right:0;border-bottom:1px solid rgba(255,255,255,.08)}}
+@media(max-width:600px){.proCockpitHead{padding:14px;flex-direction:column}.proCockpitHead button{width:100%;justify-content:center}.proCockpitGrid>div{padding:12px}.v29Audit>div{padding:13px}}

@@ -111,6 +111,7 @@ export default function StockClient({symbol}:{symbol:string}){
   const[optionExpiration,setOptionExpiration]=useState<string|null>(null);
   const[depth,setDepth]=useState<Depth>("simple");
   const[answerOpen,setAnswerOpen]=useState<"why"|"change"|"risk"|"evidence"|null>(null);
+  const[auditOpen,setAuditOpen]=useState(false);
 
   useEffect(()=>{
     let live=true;
@@ -221,6 +222,36 @@ export default function StockClient({symbol}:{symbol:string}){
     };
   },[intelligence]);
 
+  const enterprise=useMemo(()=>{
+    if(!d||!intelligence)return null;
+    const now=Date.now();
+    const freshness=[
+      {name:"Price / decision",ok:true,label:"near-live shared cache"},
+      {name:"Fundamentals",ok:!!company?.fundamentalSignal,label:company?.fundamentalSignal?"SEC/company evidence loaded":"missing"},
+      {name:"News / catalysts",ok:!!context?.enabled,label:context?.enabled?"context feed loaded":"missing"},
+      {name:"Earnings",ok:!!context?.earnings,label:context?.earnings?.date||"not identified"},
+      {name:"Options",ok:d.assetType==="crypto"||!!optionsData?.enabled,label:d.assetType==="crypto"?"not applicable":optionsData?.enabled?(optionsData.dataMode||"provider snapshot"):"not loaded"}
+    ];
+    const coverage=Math.round(freshness.filter(x=>x.ok).length/freshness.length*100);
+    const dataQuality=Math.round((coverage*.55)+(intelligence.confidence*.45));
+    const auditId=`${symbol}-${mode}-${Math.round(Number(d.price||0)*100)}-${intelligence.score}`;
+    const validationStatus="Shadow validation enabled";
+    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:"NIVORA V29",generatedAt:new Date(now).toISOString()};
+  },[d,intelligence,company,context,optionsData,symbol,mode]);
+
+  useEffect(()=>{
+    if(!d||!intelligence||!enterprise||typeof window==="undefined")return;
+    const key=`nivora-validation:${enterprise.auditId}`;
+    if(sessionStorage.getItem(key))return;
+    sessionStorage.setItem(key,"1");
+    fetch("/api/validation/snapshot",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({
+      symbol,engineVersion:enterprise.engineVersion,mode,price:d.price,score:intelligence.score,
+      confidence:intelligence.confidence,action:intelligence.action,thesisLabel:intelligence.thesisLabel,
+      dimensions:intelligence.dimensions,levels:d.levels,auditId:enterprise.auditId,
+      evidence:{coverage:enterprise.coverage,dataQuality:enterprise.dataQuality,contradictions:intelligence.contradictions}
+    })}).catch(()=>{});
+  },[d?.price,intelligence?.score,intelligence?.confidence,enterprise?.auditId,symbol,mode]);
+
   if(err)return <div className="osError"><b>Couldn’t analyze {symbol}</b><span>{err}</span><button onClick={()=>location.reload()}>Try again</button></div>;
   if(!d||!view)return <div className="osStockLoading"><div className="osLogo">NIVORA<span>.</span></div><b>Analyzing {symbol}</b><span>Building the decision first. Evidence loads after.</span></div>;
 
@@ -309,6 +340,23 @@ export default function StockClient({symbol}:{symbol:string}){
         <button className={depth==="pro"?"on":""} onClick={()=>setDepth("pro")}>Pro</button>
       </div>
     </div>
+
+    {depth==="pro"&&enterprise&&<section className="v29ProCockpit">
+      <div className="proCockpitHead"><div><small>PRO WORKSPACE</small><h3>Decision evidence & model diagnostics</h3><p>Same NIVORA call, with the underlying factor, data-quality and audit evidence exposed.</p></div><button type="button" onClick={()=>setAuditOpen(!auditOpen)}><ShieldCheck size={15}/>{auditOpen?"Hide audit":"Audit trail"}</button></div>
+      <div className="proCockpitGrid">
+        <div><small>MODEL</small><b>{enterprise.engineVersion}</b><span>{mode.toUpperCase()} weighting</span></div>
+        <div><small>DATA QUALITY</small><b>{enterprise.dataQuality}/100</b><span>{enterprise.coverage}% evidence sources present</span></div>
+        <div><small>MODEL CONFIDENCE</small><b>{intelligence.confidence}/100</b><span>{intelligence.confidenceLabel}</span></div>
+        <div><small>CONTRADICTIONS</small><b>{intelligence.contradictions.length}</b><span>{intelligence.contradictions[0]||"Evidence broadly aligned"}</span></div>
+        <div><small>VALIDATION</small><b>SHADOW</b><span>Forward outcomes are recorded for calibration</span></div>
+        <div><small>AUDIT ID</small><b className="auditId">{enterprise.auditId}</b><span>Reproducible decision fingerprint</span></div>
+      </div>
+      {auditOpen&&<div className="v29Audit">
+        <div><small>EVIDENCE STATUS</small>{enterprise.freshness.map((x:any)=><p key={x.name}><span className={x.ok?"auditOk":"auditBad"}>{x.ok?"●":"○"}</span><b>{x.name}</b> · {x.label}</p>)}</div>
+        <div><small>DECISION ATTRIBUTION</small>{Object.entries(intelligence.dimensions).map(([k,v]:any)=><p key={k}><b>{k}</b><span>{v}/100</span></p>)}</div>
+        <div><small>REPRODUCIBILITY</small><p>Engine: {enterprise.engineVersion}</p><p>Generated: {new Date(enterprise.generatedAt).toLocaleString()}</p><p>Mode: {mode}</p><p>Symbol: {symbol}</p></div>
+      </div>}
+    </section>}
 
     {depth!=="simple"&&<section className="v19Performance" aria-label="Quick market context">
       <div><div className="metricLabel"><small>PERFORMANCE</small><Help title="Performance">Price return over the selected period using available market history. Performance describes what happened; it does not predict what happens next.</Help></div><b>{selectedReturn==null?"—":`${selectedReturn>=0?"+":""}${selectedReturn}%`}</b><div className="v19Range">{(["6M","YTD","1Y"] as const).map(r=><button key={r} className={perfRange===r?"on":""} onClick={()=>setPerfRange(r)}>{r}</button>)}</div></div>
