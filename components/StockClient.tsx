@@ -4,7 +4,6 @@ import {useEffect,useMemo,useRef,useState} from "react";
 import Link from "next/link";
 import {
   Activity,
-  ArrowLeft,
   BriefcaseBusiness,
   CalendarDays,
   ExternalLink,
@@ -94,6 +93,7 @@ function metricScore(mode:Mode,business:number,six:number,timing:number,risk:num
 }
 
 export default function StockClient({symbol}:{symbol:string}){
+  const thesisRef=useRef<HTMLElement>(null);
   const[d,setD]=useState<any>(null);
   const[company,setCompany]=useState<any>(null);
   const[context,setContext]=useState<any>(null);
@@ -314,7 +314,6 @@ export default function StockClient({symbol}:{symbol:string}){
   const rr=upside!=null&&downside!=null&&downside<0?Math.abs(upside/downside):null;
 
   return <div className="osStock v12Stock v18Stock">
-    <Link href="/dashboard" className="v19NavBack"><ArrowLeft size={15}/> Today</Link>
     <div className="osStockSearch"><SearchBox/></div>
 
     <header className="osStockHead v12StockHead">
@@ -466,7 +465,7 @@ export default function StockClient({symbol}:{symbol:string}){
       <div className="intelLead"><small>NIVORA INTELLIGENCE</small><div><b>{intelligence.score}/100</b><span className={tone(intelligence.thesisLabel)}>{intelligence.thesisLabel}</span></div><p>{intelligence.biggestPositive} <strong>Watch:</strong> {intelligence.biggestRisk}</p></div>
       <div><small>NEXT DECISION TRIGGER</small><b>{intelligence.nextDecision}</b></div>
       <div><small>CONFIDENCE</small><b>{intelligence.confidenceLabel}</b><span>{intelligence.confidence}/100 evidence coverage</span></div>
-      <button type="button" onClick={()=>setTab("thesis")}>Open full thesis →</button>
+      <button type="button" onClick={()=>{setTab("thesis");window.requestAnimationFrame(()=>window.requestAnimationFrame(()=>thesisRef.current?.scrollIntoView({behavior:"smooth",block:"start"})))}}>Open full thesis →</button>
     </section>}
 
     {depth!=="simple"&&<section className="v12ReasonGrid">
@@ -474,7 +473,7 @@ export default function StockClient({symbol}:{symbol:string}){
       <div className="v12Reason riskBox"><small>WHAT CAN GO WRONG</small><h3>What is holding it back</h3>{risks.length?risks.map((x:string,i:number)=><p key={i}>• {x}</p>):<p>No major risk flag was detected from the connected sources.</p>}</div>
     </section>}
 
-    <section className={["osContext","v12Context",depth==="simple"?"v28SimpleContext":""].join(" ")}>
+    <section ref={thesisRef} id="nivora-research" className={["osContext","v12Context",depth==="simple"?"v28SimpleContext":""].join(" ")}>
       <div className="osTabs v12Tabs v28Tabs">
         <button className={tab==="overview"?"on":""} onClick={()=>setTab("overview")}>Decision</button>
         <button className={tab==="thesis"?"on":""} onClick={()=>setTab("thesis")}>Thesis</button>
