@@ -39,18 +39,31 @@ const daysUntil=(d?:string|null)=>{if(!d)return null;return Math.ceil((new Date(
 
 function Help({title,children}:{title:string;children:React.ReactNode}){
   const [open,setOpen]=useState(false);
+  const [pos,setPos]=useState<{left:number;top:number;width:number;below:boolean}|null>(null);
   const ref=useRef<HTMLSpanElement>(null);
   useEffect(()=>{
     if(!open)return;
+    const place=()=>{
+      const el=ref.current;if(!el)return;
+      const r=el.getBoundingClientRect(), vw=window.innerWidth, vh=window.innerHeight;
+      const width=Math.min(300,Math.max(240,vw-24)), pad=12;
+      const left=Math.max(pad,Math.min(r.left+r.width/2-width/2,vw-width-pad));
+      const estimated=150, below=r.bottom+10+estimated<vh-12;
+      const top=below?r.bottom+8:Math.max(12,r.top-estimated-8);
+      setPos({left,top,width,below});
+    };
+    place();
     const close=(e:PointerEvent)=>{if(ref.current&&!ref.current.contains(e.target as Node))setOpen(false)};
     const esc=(e:KeyboardEvent)=>{if(e.key==="Escape")setOpen(false)};
     document.addEventListener("pointerdown",close);
     document.addEventListener("keydown",esc);
-    return()=>{document.removeEventListener("pointerdown",close);document.removeEventListener("keydown",esc)};
+    window.addEventListener("resize",place);
+    window.addEventListener("scroll",place,true);
+    return()=>{document.removeEventListener("pointerdown",close);document.removeEventListener("keydown",esc);window.removeEventListener("resize",place);window.removeEventListener("scroll",place,true)};
   },[open]);
   return <span className="metricHelpInline" ref={ref}>
     <button type="button" aria-label={`Explain ${title}`} aria-expanded={open} onClick={(e:React.MouseEvent<HTMLButtonElement>)=>{e.stopPropagation();setOpen((v:boolean)=>!v)}}><Info size={13}/></button>
-    {open&&<span className="metricHelpPop" role="tooltip"><b>{title}</b><span>{children}</span></span>}
+    {open&&pos&&<span className={`metricHelpPop ${pos.below?"below":"above"}`} style={{left:pos.left,top:pos.top,width:pos.width}} role="tooltip"><b>{title}</b><span>{children}</span></span>}
   </span>;
 }
 
@@ -120,14 +133,16 @@ export default function StockClient({symbol}:{symbol:string}){
 
 
   useEffect(()=>{
-    if(tab!=="options"||d?.assetType==="crypto"||optionsData||optionsLoading)return;
-    let live=true;setOptionsLoading(true);
-    fetch(`/api/options/${encodeURIComponent(symbol)}`,{cache:"no-store"})
-      .then(r=>r.json()).then(x=>{if(live)setOptionsData(x)})
-      .catch(()=>{if(live)setOptionsData({enabled:false,reason:"Options intelligence could not load."})})
-      .finally(()=>{if(live)setOptionsLoading(false)});
-    return()=>{live=false};
-  },[tab,symbol,d?.assetType,optionsData,optionsLoading]);
+    if(tab!=="options"||d?.assetType==="crypto"||optionsData)return;
+    const controller=new AbortController();
+    setOptionsLoading(true);
+    fetch(`/api/options/${encodeURIComponent(symbol)}`,{cache:"no-store",signal:controller.signal})
+      .then(async r=>{const x=await r.json();if(!r.ok)throw new Error(x?.reason||x?.error||`Options request failed (${r.status})`);return x})
+      .then(x=>setOptionsData(x))
+      .catch((e:any)=>{if(e?.name!=="AbortError")setOptionsData({enabled:false,reason:e?.message||"Options intelligence could not load."})})
+      .finally(()=>{if(!controller.signal.aborted)setOptionsLoading(false)});
+    return()=>controller.abort();
+  },[tab,symbol,d?.assetType,optionsData]);
 
   async function watch(){
     const s=supabaseBrowser();
@@ -351,7 +366,7 @@ export default function StockClient({symbol}:{symbol:string}){
       {tab==="options"&&<div className="gammaPanel v22Options">
         <div className="gammaHero"><small>OPTIONS INTELLIGENCE</small><h3>Options positioning — translated for beginners.</h3><p>Use this as supporting short-term context around important strikes, volatility and expected move. It does not override the main NIVORA call.</p></div>
         {optionsLoading?<div className="optionsState">Loading shared options snapshot…</div>:
-        !optionsData?.enabled?<div className="optionsState"><b>Options data is not available yet.</b><span>{optionsData?.reason||"Add MARKETDATA_TOKEN in Vercel to enable the options module."}</span></div>:
+        !optionsData?.enabled?<div className="optionsState"><b>Options data is not available.</b><span>{optionsData?.reason||"Add MARKETDATA_TOKEN in Vercel to enable the options module."}</span><button type="button" className="optionsRetry" onClick={()=>{setOptionsData(null);setOptionsLoading(false)}}>Retry</button></div>:
         <><div className="optionsFresh"><span>{optionsData.dataMode}</span><small>{optionsData.updatedAt?`Provider snapshot ${new Date(optionsData.updatedAt).toLocaleString()}`:"Provider timestamp unavailable"}</small></div>
         <div className="optionsQuick">
           <div><div className="metricLabel"><small>CALL WALL</small><Help title="Call wall">The strike with the largest call open interest in the fetched expiration. It can become an important attention area, but it is not guaranteed resistance.</Help></div><b>{optionsData.callWall!=null?`$${optionsData.callWall}`:"—"}</b></div>
@@ -367,6 +382,5 @@ export default function StockClient({symbol}:{symbol:string}){
       </div>}
     </section>
 
-    <div className="osDisclaimer brandedDisclaimer"><b>NIVORA Intelligence</b><span>Complex market data. One clear decision.</span><small>Decision support, not a guarantee. <Link href="/disclaimer">Read disclaimer</Link></small></div>
   </div>;
 }
