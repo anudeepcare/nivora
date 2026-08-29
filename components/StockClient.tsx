@@ -241,7 +241,7 @@ export default function StockClient({symbol}:{symbol:string}){
     const dataQuality=Math.round((coverage*.55)+(intelligence.confidence*.45));
     const auditId=`${symbol}-${mode}-${Math.round(Number(d.price||0)*100)}-${intelligence.score}`;
     const validationStatus="Shadow validation enabled";
-    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:"NIVORA V32",generatedAt:new Date(now).toISOString()};
+    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:"NIVORA V32.1",generatedAt:new Date(now).toISOString()};
   },[d,intelligence,company,context,optionsData,institutional,symbol,mode]);
 
   useEffect(()=>{
@@ -368,39 +368,21 @@ export default function StockClient({symbol}:{symbol:string}){
     requestAnimationFrame(()=>setTimeout(()=>thesisRef.current?.scrollIntoView({behavior:"smooth",block:"start"}),80));
   };
 
+  const derivativesScore=Number(intelligence?.dimensions?.derivatives ?? 50);
+  const valuationScore=Number(intelligence?.valuation ?? 50);
+  const institutionalQuick=institutional?.enabled
+    ? (institutional?.institutional?.directionLabel||institutionalLabel)
+    : (marketLab?.accumulationLabel ? `${marketLab.accumulationLabel} proxy` : "Not available");
+  const institutionalQuickTone=institutional?.enabled
+    ? institutionalTone
+    : marketLab?.accumulationLabel==="Accumulating"?"good":marketLab?.accumulationLabel==="Distribution risk"?"bad":"mid";
   const signalRows=[
     ["Business",business.label,tone(business.label)],
     ["Trend",d.labels.trend,tone(d.labels.trend)],
     ["Entry",d.labels.entry,tone(d.labels.entry)],
-    ["Institutions",institutionalLabel,institutionalTone],
-    ["Options",
-  optionsData?.enabled
-    ? (Number(intelligence?.dimensions?.derivatives ?? 50) >= 60
-        ? "Supportive"
-        : Number(intelligence?.dimensions?.derivatives ?? 50) < 45
-          ? "Cautious"
-          : "Neutral")
-    : "Not loaded",
-  optionsData?.enabled
-    ? (Number(intelligence?.dimensions?.derivatives ?? 50) >= 60
-        ? "good"
-        : Number(intelligence?.dimensions?.derivatives ?? 50) < 45
-          ? "bad"
-          : "mid")
-    : "mid"
-],
-["Valuation",
-  Number(intelligence?.valuation ?? 50) >= 65
-    ? "Attractive"
-    : Number(intelligence?.valuation ?? 50) < 45
-      ? "Expensive"
-      : "Fair",
-  Number(intelligence?.valuation ?? 50) >= 65
-    ? "good"
-    : Number(intelligence?.valuation ?? 50) < 45
-      ? "bad"
-      : "mid"
-]
+    ["Institutions",institutionalQuick,institutionalQuickTone],
+    ["Options",optionsData?.enabled?(derivativesScore>=60?"Supportive":derivativesScore<45?"Cautious":"Neutral"):"Not loaded",optionsData?.enabled?(derivativesScore>=60?"good":derivativesScore<45?"bad":"mid"):"mid"],
+    ["Valuation",valuationScore>=65?"Attractive":valuationScore<45?"Expensive":"Fair",valuationScore>=65?"good":valuationScore<45?"bad":"mid"]
   ];
 
   return <div className="osStock v12Stock v18Stock">
@@ -624,11 +606,16 @@ export default function StockClient({symbol}:{symbol:string}){
         <div className={`fundSignal ${business.tone||"neutral"}`}><small>BUSINESS QUALITY</small><h3>{business.label}{business.score!=null?` · ${business.score}/100`:""}</h3>{(business.reasons||[]).slice(0,4).map((x:string,i:number)=><p key={i}>• {x}</p>)}{five&&<div className="fiveRecord"><small>5-YEAR RECORD</small><b>{five.score}/100 · {five.revenueTrend}</b><p>{five.summary}</p><div>{(five.history||[]).map((y:any)=><span key={y.year}><i>{y.year}</i><strong>{y.revenue!=null?money(y.revenue):"—"}</strong><em>{y.netIncome!=null?`NI ${money(y.netIncome)}`:"NI —"}</em></span>)}</div></div>}</div>
         <div className="v32Institutional">
           <div className="v32InstitutionalHead"><div><small>INSTITUTIONAL INTELLIGENCE</small><h3>{institutionalLabel}</h3><p>{institutional?.disclosure||"Reported institutional ownership is not available from the connected feed for this symbol."}</p></div><Help title="Institutional intelligence">Reported institutional ownership and insider filings are delayed evidence. NIVORA keeps this separate from the daily accumulation proxy so it never presents quarterly filings as real-time institutional buying.</Help></div>
-          {institutional?.enabled?<div className="v32InstitutionalGrid">
-            <div><small>REPORTED ACTIVITY</small><b className={institutionalTone}>{institutionalLabel}</b><span>{institutional.institutional?.increased||0} increased · {institutional.institutional?.reduced||0} reduced</span></div>
-            <div><small>INSIDERS</small><b>{institutional.insiders?.label||"Mixed"}</b><span>{institutional.insiders?.buys||0} buys · {institutional.insiders?.sells||0} sells in available feed</span></div>
-            <div><small>ACCUMULATION PROXY</small><b className={marketLab?.accumulationLabel==="Accumulating"?"good":marketLab?.accumulationLabel==="Distribution risk"?"bad":"mid"}>{marketLab?.accumulationLabel||"Insufficient data"}</b><span>{marketLab?`${marketLab.accumulation}/100 from price/volume behavior`:"Needs more price/volume history"}</span></div>
-          </div>:<div className="v32InstitutionalEmpty">Institutional feed unavailable. NIVORA will not invent ownership activity.</div>}
+          {institutional?.enabled?<div className="v32InstitutionalGrid v321InstitutionalGrid">
+            <div><small>REPORTED INSTITUTIONS</small><b className={institutionalTone}>{institutional.institutional?.directionLabel||institutionalLabel}</b><span>{institutional.institutional?.increased||0} managers increased · {institutional.institutional?.reduced||0} reduced</span><em>{institutional.institutional?.periodLabel||"Latest available filing period"}</em></div>
+            <div><small>REPORTED SHARE CHANGE</small><b className={Number(institutional.institutional?.netReportedShareChange||0)>0?"good":Number(institutional.institutional?.netReportedShareChange||0)<0?"bad":"mid"}>{institutional.institutional?.netChangeLabel||"Mixed / unavailable"}</b><span>{institutional.institutional?.reportingRows||0} reporting positions in the connected/cached data</span><em>Delayed filing evidence — not today's order flow</em></div>
+            <div><small>INSIDERS</small><b className={institutional.insiders?.label==="Net buying"?"good":institutional.insiders?.label==="Net selling"?"bad":"mid"}>{institutional.insiders?.label||"Mixed"}</b><span>{institutional.insiders?.buys||0} buys · {institutional.insiders?.sells||0} sells in available feed</span><em>Reported transactions only</em></div>
+            <div><small>TODAY'S ACCUMULATION PROXY</small><b className={marketLab?.accumulationLabel==="Accumulating"?"good":marketLab?.accumulationLabel==="Distribution risk"?"bad":"mid"}>{marketLab?.accumulationLabel||"Insufficient data"}</b><span>{marketLab?`${marketLab.accumulation}/100 from price/volume behavior`:"Needs more price/volume history"}</span><em>Market-behavior proxy, not named-institution flow</em></div>
+          </div>:<div className="v32InstitutionalEmpty"><b>Reported institutional filings unavailable.</b><span>{institutional?.reason||"NIVORA could not verify current ownership data from the connected/cache sources."}</span><small>Price/volume accumulation remains available separately; NIVORA will not call that institutional buying.</small></div>}
+          {institutional?.enabled&&Array.isArray(institutional.institutional?.top)&&institutional.institutional.top.length>0&&<div className="v321HolderList">
+            <div><small>TOP REPORTED MANAGERS</small><span>Latest available filing evidence</span></div>
+            {institutional.institutional.top.slice(0,6).map((x:any,i:number)=><div key={`${x.name}-${i}`}><b>{x.name}</b><span>{x.shares!=null?`${Number(x.shares).toLocaleString()} shares`:"Shares unavailable"}</span><em className={Number(x.change||0)>0?"good":Number(x.change||0)<0?"bad":"mid"}>{Number(x.change||0)>0?"Reported increase":Number(x.change||0)<0?"Reported reduction":"No verified change"}</em></div>)}
+          </div>}
         </div>
         <div className="osList">{company?.fundamentals?.length?company.fundamentals.map((x:any)=><div key={x.label}><span>{x.label}{x.detail&&<small>{x.detail}</small>}</span><b>{x.value}</b></div>):<p>No standardized SEC fundamentals available for this symbol yet.</p>}</div>
       </div>}
