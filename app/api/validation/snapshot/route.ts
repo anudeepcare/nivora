@@ -12,7 +12,7 @@ export async function POST(req:Request){
     const db=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});
     const row={
       symbol:String(body.symbol||"").toUpperCase(),
-      engine_version:String(body.engineVersion||"NIVORA V30"),
+      engine_version:String(body.engineVersion||"NIVORA V32"),
       mode:String(body.mode||"now"),
       price:Number(body.price||0),
       score:Number(body.score||0),

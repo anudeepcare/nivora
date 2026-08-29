@@ -1,0 +1,11 @@
+import Link from "next/link";import LegalNav from "@/components/LegalNav";
+export default function FAQ(){return <main className="legalPage"><LegalNav/><h1>NIVORA FAQ</h1>
+<h2>What is NIVORA?</h2><p>NIVORA is investment decision support. It synthesizes business quality, valuation, price behavior, catalysts, institutional evidence, technical structure, options context and risk into one explainable research view.</p>
+<h2>How is NIVORA different from a screener?</h2><p>A screener primarily helps find securities that match filters. NIVORA is designed to interpret multiple evidence layers together and explain what matters for the selected horizon and whether you are looking to buy or already own the position.</p>
+<h2>Why can NIVORA like a company but say WAIT?</h2><p>Company quality and entry quality are different. A strong business can still be trading at an unattractive or extended entry.</p>
+<h2>What changes when I select “I own it”?</h2><p>The decision changes from entry-focused BUY/WAIT language to owner-focused ADD, HOLD, TRIM and REASSESS guidance with position-relevant levels.</p>
+<h2>What does institutional intelligence mean?</h2><p>Reported institutional ownership and insider filings are delayed evidence. NIVORA keeps them separate from its daily price/volume accumulation proxy and does not describe quarterly filings as real-time institutional buying.</p>
+<h2>Does NIVORA use Fibonacci and Elliott Wave?</h2><p>Advanced technical research can use Fibonacci confluence and heuristic wave structure as supporting evidence. They do not override the primary business, price, catalyst and risk thesis.</p>
+<h2>Does a high score guarantee profit?</h2><p>No. Scores summarize current evidence. Validation and forward outcome tracking are used to test the model over time, but no score or scenario guarantees an investment outcome.</p>
+<h2>Is NIVORA financial advice?</h2><p>No. NIVORA is a research and decision-support product. <Link href="/disclaimer">Read the full disclaimer</Link>.</p>
+</main>}

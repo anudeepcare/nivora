@@ -98,7 +98,9 @@ export default function StockClient({symbol}:{symbol:string}){
   const[company,setCompany]=useState<any>(null);
   const[context,setContext]=useState<any>(null);
   const[err,setErr]=useState("");
-  const[mode,setMode]=useState<Mode>("now");
+  const[horizon,setHorizon]=useState<"now"|"swing"|"long">("now");
+  const[owns,setOwns]=useState(false);
+  const mode:Mode=owns?"own":horizon;
   const[tab,setTab]=useState<Tab>("overview");
   const[watching,setWatching]=useState(false);
   const[optionsData,setOptionsData]=useState<any>(null);
@@ -112,13 +114,14 @@ export default function StockClient({symbol}:{symbol:string}){
   const[depth,setDepth]=useState<Depth>("simple");
   const[answerOpen,setAnswerOpen]=useState<"why"|"change"|"risk"|"evidence"|null>(null);
   const[auditOpen,setAuditOpen]=useState(false);
+  const[institutional,setInstitutional]=useState<any>(null);
 
   useEffect(()=>{
     let live=true;
     let core:AbortController|null=null;
 
     const loadCore=async(initial=false)=>{
-      if(initial){setD(null);setCompany(null);setContext(null);setErr("")}
+      if(initial){setD(null);setCompany(null);setContext(null);setInstitutional(null);setErr("")}
       core?.abort();
       core=new AbortController();
       const timer=setTimeout(()=>core?.abort(),6500);
@@ -132,6 +135,7 @@ export default function StockClient({symbol}:{symbol:string}){
           Promise.allSettled([
             fetch(`/api/company/${encodeURIComponent(symbol)}`,{cache:"no-store"}).then(r=>r.ok?r.json():null).then(x=>live&&x&&setCompany(x)),
             fetch(`/api/context/${encodeURIComponent(symbol)}`,{cache:"no-store"}).then(r=>r.ok?r.json():null).then(x=>live&&x&&setContext(x)),
+            fetch(`/api/institutional/${encodeURIComponent(symbol)}`,{cache:"no-store"}).then(r=>r.ok?r.json():null).then(x=>live&&x&&setInstitutional(x)),
           ]);
         }
       }catch(e:any){
@@ -228,6 +232,7 @@ export default function StockClient({symbol}:{symbol:string}){
     const freshness=[
       {name:"Price / decision",ok:true,label:"near-live shared cache"},
       {name:"Fundamentals",ok:!!company?.fundamentalSignal,label:company?.fundamentalSignal?"SEC/company evidence loaded":"missing"},
+      {name:"Institutional",ok:d.assetType==="crypto"||!!institutional?.enabled,label:d.assetType==="crypto"?"not applicable":institutional?.enabled?"reported ownership/insider evidence loaded":"not available"},
       {name:"News / catalysts",ok:!!context?.enabled,label:context?.enabled?"context feed loaded":"missing"},
       {name:"Earnings",ok:!!context?.earnings,label:context?.earnings?.date||"not identified"},
       {name:"Options",ok:d.assetType==="crypto"||!!optionsData?.enabled,label:d.assetType==="crypto"?"not applicable":optionsData?.enabled?(optionsData.dataMode||"provider snapshot"):"not loaded"}
@@ -236,8 +241,8 @@ export default function StockClient({symbol}:{symbol:string}){
     const dataQuality=Math.round((coverage*.55)+(intelligence.confidence*.45));
     const auditId=`${symbol}-${mode}-${Math.round(Number(d.price||0)*100)}-${intelligence.score}`;
     const validationStatus="Shadow validation enabled";
-    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:"NIVORA V30",generatedAt:new Date(now).toISOString()};
-  },[d,intelligence,company,context,optionsData,symbol,mode]);
+    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:"NIVORA V32",generatedAt:new Date(now).toISOString()};
+  },[d,intelligence,company,context,optionsData,institutional,symbol,mode]);
 
   useEffect(()=>{
     if(!d||!intelligence||!enterprise||typeof window==="undefined")return;
@@ -313,6 +318,65 @@ export default function StockClient({symbol}:{symbol:string}){
   const downside=Number.isFinite(currentPx)&&currentPx?((invalidPx/currentPx-1)*100):null;
   const rr=upside!=null&&downside!=null&&downside<0?Math.abs(upside/downside):null;
 
+  const marketLab=(()=>{
+    const cs=(d?.candles||[]).filter((x:any)=>Number.isFinite(Number(x.close))&&Number.isFinite(Number(x.high))&&Number.isFinite(Number(x.low)));
+    if(cs.length<40)return null;
+    const recent=cs.slice(-Math.min(160,cs.length));
+    const highs=recent.map((x:any)=>Number(x.high)), lows=recent.map((x:any)=>Number(x.low)), closes=recent.map((x:any)=>Number(x.close));
+    const hi=Math.max(...highs), lo=Math.min(...lows), range=hi-lo, last=closes.at(-1)??0;
+    const hiIdx=highs.lastIndexOf(hi), loIdx=lows.lastIndexOf(lo), rising=loIdx<hiIdx;
+    const fib=(ratio:number)=>Number((rising?hi-range*ratio:lo+range*ratio).toFixed(2));
+    const fib382=fib(.382),fib50=fib(.5),fib618=fib(.618);
+    const vol=(d?.scores?.flow??50), trend=(d?.scores?.trend??50), momentum=(d?.scores?.momentum??50), structure=(d?.scores?.structure??50);
+    const accumulation=Math.max(0,Math.min(100,Math.round(vol*.48+trend*.22+momentum*.14+structure*.16)));
+    const accumulationLabel=accumulation>=70?"Accumulating":accumulation>=55?"Constructive":accumulation>=42?"Mixed":"Distribution risk";
+    const waveScore=Math.max(20,Math.min(85,Math.round(structure*.45+trend*.35+momentum*.20)));
+    const waveLabel=trend>=62&&structure>=60?"Advancing impulse candidate":trend<42?"Corrective / weak structure":"Developing structure";
+    const waveTarget=trend>=62?Number((hi+range*.272).toFixed(2)):Number((fib382).toFixed(2));
+    const waveInvalidation=trend>=62?fib618:Number(d?.levels?.breakout||hi);
+    const dcaLow=Math.min(Number(d?.levels?.preferredEntry||last),Number(d?.levels?.support||last),fib50);
+    const dcaHigh=Math.max(Number(d?.levels?.preferredEntry||last),Number(d?.levels?.support||last));
+    return {hi,lo,fib382,fib50,fib618,accumulation,accumulationLabel,waveScore,waveLabel,waveTarget,waveInvalidation,dcaLow:Number(dcaLow.toFixed(2)),dcaHigh:Number(dcaHigh.toFixed(2))};
+  })();
+
+  const institutionalLabel=institutional?.enabled
+    ? institutional?.institutional?.label||"Mixed"
+    : "Not available";
+  const institutionalTone=institutionalLabel==="Accumulating"?"good":institutionalLabel==="Reducing"?"bad":"mid";
+
+  const ownerAction=(()=>{
+    if(!owns)return view.label;
+    const b=Number(business?.score??50),r=Number(d.scores?.risk??50),e=Number(d.scores?.entry??50),ext=Number(d.scores?.extension??50),t=Number(d.scores?.trend??50);
+    if(currentPx<=invalidPx||b<38)return"REASSESS / EXIT RISK";
+    if(ext>=78&&currentPx>=Number(d.levels.resistance||Infinity))return"TRIM / HOLD";
+    if(e>=66&&r<70&&t>=50)return"ADD SELECTIVELY";
+    if(r>=78||t<35)return"HOLD / REDUCE RISK";
+    return"HOLD";
+  })();
+
+  const commandReason=owns
+    ? ownerAction.startsWith("ADD")?"The thesis remains intact and the current location is attractive enough for a measured add."
+      : ownerAction.startsWith("TRIM")?"The position remains healthy, but price is extended enough that trimming risk can be more disciplined than adding."
+      : ownerAction.includes("EXIT")?"Price or business evidence has crossed a thesis-risk threshold. Reassess the position before adding more risk."
+      : "The thesis remains intact enough to hold. Use the add, trim and reassessment levels instead of reacting to daily noise."
+    : view.text;
+
+  const commandScore=intelligence?.score??overallScore;
+  const commandConfidence=intelligence?.confidenceLabel||confidence;
+  const openResearch=(nextTab:Tab="thesis")=>{
+    setTab(nextTab);
+    requestAnimationFrame(()=>setTimeout(()=>thesisRef.current?.scrollIntoView({behavior:"smooth",block:"start"}),80));
+  };
+
+  const signalRows=[
+    ["Business",business.label,tone(business.label)],
+    ["Trend",d.labels.trend,tone(d.labels.trend)],
+    ["Entry",d.labels.entry,tone(d.labels.entry)],
+    ["Institutions",institutionalLabel,institutionalTone],
+    ["Options",optionsData?.enabled?(intelligence?.dimensions?.derivatives>=60?"Supportive":intelligence?.dimensions?.derivatives<45?"Cautious":"Neutral"):"Not loaded",optionsData?.enabled?(intelligence?.dimensions?.derivatives>=60?"good":intelligence?.dimensions?.derivatives<45?"bad":"mid"):"mid"],
+    ["Valuation",intelligence?.valuation>=65?"Attractive":intelligence?.valuation<45?"Expensive":"Fair",intelligence?.valuation>=65?"good":intelligence?.valuation<45?"bad":"mid"]
+  ];
+
   return <div className="osStock v12Stock v18Stock">
     <div className="osStockSearch"><SearchBox/></div>
 
@@ -323,12 +387,22 @@ export default function StockClient({symbol}:{symbol:string}){
 
     <div className="liveFresh"><span className="liveStatus"><span className="liveDot"/>Near-live · shared cache</span><span className="liveCadence">Prices/decision ~30–45 sec · News ~2 min</span></div>
 
-    <div className="v20ModeLabel"><span>Choose your goal</span><Help title="Investment horizon">Now emphasizes entry timing. Swing emphasizes price behavior and timing. Long term gives business quality the largest weight. I own it emphasizes business quality and downside risk.</Help></div>
-    <div className="osMode v12Mode" aria-label="Investment horizon">
-      <button className={mode==="now"?"on":""} onClick={()=>setMode("now")}>Now</button>
-      <button className={mode==="swing"?"on":""} onClick={()=>setMode("swing")}>Swing</button>
-      <button className={mode==="long"?"on":""} onClick={()=>setMode("long")}>Long term</button>
-      <button className={mode==="own"?"on":""} onClick={()=>setMode("own")}>I own it</button>
+    <div className="v32QuestionBar">
+      <div>
+        <span>Time horizon</span><Help title="Time horizon">Now prioritizes immediate entry quality. Swing emphasizes price behavior and confirmation. Long term gives business quality and valuation more weight.</Help>
+        <div className="osMode v12Mode v32Horizon" aria-label="Investment horizon">
+          <button className={horizon==="now"?"on":""} onClick={()=>setHorizon("now")}>Now</button>
+          <button className={horizon==="swing"?"on":""} onClick={()=>setHorizon("swing")}>Swing</button>
+          <button className={horizon==="long"?"on":""} onClick={()=>setHorizon("long")}>Long term</button>
+        </div>
+      </div>
+      <div>
+        <span>My position</span><Help title="My position">Looking to buy answers whether a new entry makes sense. I own it changes the decision to ADD, HOLD, TRIM or REASSESS and gives owner-specific levels.</Help>
+        <div className="osMode v12Mode v32Position" aria-label="Position status">
+          <button className={!owns?"on":""} onClick={()=>setOwns(false)}>Looking to buy</button>
+          <button className={owns?"on":""} onClick={()=>setOwns(true)}>I own it</button>
+        </div>
+      </div>
     </div>
 
     <div className="v28DepthBar">
@@ -372,43 +446,42 @@ export default function StockClient({symbol}:{symbol:string}){
       <div><div className="metricLabel"><small>DATA CONFIDENCE</small><Help title="Data confidence">Shows whether price history, business data, market context and news/catalyst sources are available. Higher confidence means better evidence coverage—not higher certainty of profit.</Help></div><b className={confidence==="High"?"good":confidence==="Low"?"bad":"mid"}>{confidence}</b><span>Price + business + news + market coverage.</span></div>
     </section>}
 
-    <section className={["osDecision",tone(view.label),"v12Decision","v18Decision"].join(" ")}>
-      <div className="osDecisionTop">
-        <div className="decisionEyebrow"><small>THE CALL</small><Help title="What does the call mean?">The call translates business quality, price behavior, current timing, risk, market context and catalysts into one action for the horizon you selected. It is decision support, not a guarantee.</Help></div>
-        <h2>{view.label}</h2>
-        <p>{view.text}</p>
-        <div className="decisionWhy">
-          <b>Why?</b>
-          {(positive.length?positive:["Evidence is mixed; waiting for stronger confirmation."]).slice(0,2).map((x:string,i:number)=><span key={i}>✓ {x}</span>)}
-          {risks[0]&&<span className="riskReason">• {risks[0]}</span>}
+    <section className={["v32Command",tone(ownerAction)].join(" ")} aria-label="NIVORA decision">
+      <div className="v32CommandHero">
+        <div>
+          <div className="v32CommandEyebrow"><span>NIVORA DECISION</span><Help title="NIVORA decision">The fastest summary of the current evidence for your selected horizon and position status. It changes as price, fundamentals, catalysts, risk and supporting evidence change.</Help></div>
+          <div className="v32ActionLine"><h2>{ownerAction}</h2><span><b>{commandScore}</b>/100 · {commandConfidence} confidence</span></div>
+          <p>{commandReason}</p>
         </div>
-        <div className="v19Explain">
-          <details>
-            <summary>Why NIVORA says this</summary>
-            <div className="v19ExplainPanel" aria-label="Decision evidence">
-              <div><span>Business</span><b>{businessScore}/100</b></div>
-              <div><span>Price trend</span><b>{sixScore}/100</b></div>
-              <div><span>Entry</span><b>{timingScore}/100</b></div>
-              <div><span>Risk</span><b>{riskScore}/100</b></div>
-              <div><span>Confidence</span><b>{confidence}</b></div>
-              <div><span>Evidence score</span><b>{overallScore}/100</b></div>
-            </div>
-          </details>
-        </div>
+        <div className="v32NextTrigger"><small>NEXT DECISION TRIGGER</small><b>{intelligence?.nextDecision||confirmationText}</b><span>What NIVORA is waiting for next.</span></div>
       </div>
-      <div className="osPlanGrid">
-        <div><div className="metricLabel"><small>BETTER ENTRY</small><Help title="Better entry">A price area where the current risk/reward becomes more attractive. Reaching this area is not enough by itself; NIVORA still prefers stabilization.</Help></div><b>{betterEntryText}</b><span>Prefer stabilization here rather than buying simply because price is falling.</span></div>
-        <div><div className="metricLabel"><small>CONFIRMATION</small><Help title="Confirmation">A price/volume condition that would strengthen the setup. NIVORA prefers a convincing close or retest, not the first spike through resistance.</Help></div><b>{confirmationText}</b><span>Prefer a strong close or breakout retest with improving volume/momentum.</span></div>
-        <div><div className="metricLabel"><small>PROTECT / REASSESS</small><Help title="Protect / reassess">The technical thesis materially weakens below this area. It is not an automatic stop order; recheck fundamentals, news and your position risk.</Help></div><b>{invalidationText}</b><span>Technical thesis weakens here. Recheck fundamentals and catalyst risk.</span></div>
+
+      <div className="v32Levels">
+        <div><small>{owns?"ADD ZONE":"BUY ZONE"}</small><b>{betterEntryText}</b><span>{owns?"Add only if the thesis remains intact and price stabilizes.":"Prefer stabilization instead of buying simply because price is falling."}</span></div>
+        <div><small>{owns?"TRIM / STRENGTH ZONE":"CONFIRM"}</small><b>{owns?`$${d.levels.resistance}–$${d.levels.breakout}`:confirmationText}</b><span>{owns?"Consider trimming only when extension/risk rises; this is not an automatic sell target.":"A strong close/retest with improving participation strengthens the setup."}</span></div>
+        <div><small>REASSESS</small><b>{invalidationText}</b><span>{owns?"Thesis risk rises here. Recheck business, catalysts and position size.":"Technical thesis materially weakens below this area."}</span></div>
+      </div>
+
+      <div className="v32Signals">
+        <div className="v32SignalsTitle"><small>WHAT NIVORA SEES</small><span>Interpretation first. Tap deeper research only if you need it.</span></div>
+        <div className="v32SignalRail">{signalRows.map(([name,label,cls]:any)=><div key={name}><small>{name}</small><b className={cls}>{label}</b></div>)}</div>
+      </div>
+
+      <div className="v32CommandFooter">
+        <div><b>What changes the decision?</b><span>{quickAnswers?.change||intelligence?.nextDecision||"Wait for stronger evidence alignment."}</span></div>
+        <div className="v32CommandActions">
+          <button type="button" onClick={()=>openResearch("thesis")}>Why?</button>
+          <button type="button" onClick={()=>{if(depth==="simple")setDepth("investor");openResearch("thesis")}}>Explore analysis</button>
+        </div>
       </div>
     </section>
 
-    {intelligence&&quickAnswers&&<section className="v28AnswerFirst">
+    {depth!=="simple"&&intelligence&&quickAnswers&&<section className="v28AnswerFirst">
       <div className="v28AnswerHeadline">
         <div><small>NIVORA ANSWER</small><b>{intelligence.thesisLabel} · {intelligence.confidenceLabel} confidence</b><p>{intelligence.biggestPositive} <strong>Watch:</strong> {intelligence.biggestRisk}</p>
           <div className="v30Expression"><span>BEST EXPRESSION</span><b>{intelligence.bestExpression?.type}</b><em>{intelligence.bestExpression?.reason}</em></div>
         </div>
-        <button type="button" onClick={()=>setTab("thesis")}><Brain size={16}/> Full thesis</button>
+        <button type="button" onClick={()=>openResearch("thesis")}><Brain size={16}/> Full thesis</button>
       </div>
       <div className="v28QuestionRow">
         {[
@@ -421,13 +494,13 @@ export default function StockClient({symbol}:{symbol:string}){
       {answerOpen&&<div className="v28AnswerBody">{quickAnswers[answerOpen]}</div>}
     </section>}
 
-    <section className="v18DecisionStrip">
+    {depth!=="simple"&&<section className="v18DecisionStrip">
       <div><small>BUSINESS</small><b className={tone(business.label)}>{business.label}</b><Help title="Business quality">Scored from reported growth, profitability, cash generation, balance-sheet evidence and multi-year consistency when SEC data is available.</Help></div>
       <div><small>TREND</small><b className={tone(d.labels.trend)}>{d.labels.trend}</b><Help title="Trend">Uses multiple price horizons and structure. A strong trend can still receive a WAIT if the entry is stretched.</Help></div>
       <div><small>ENTRY</small><b className={tone(d.labels.entry)}>{d.labels.entry}</b><Help title="Entry quality">Combines price location, support/resistance, momentum, extension and downside risk. This answers “is today a good place to start?”</Help></div>
       <div><small>RISK</small><b className={d.labels.risk==="High"?"bad":d.labels.risk==="Lower"?"good":"mid"}>{d.labels.risk}</b><Help title="Risk">Reflects volatility, extension, downside structure and market context. High risk does not automatically mean a bad company.</Help></div>
       <div><small>CONFIDENCE</small><b className={confidence==="High"?"good":confidence==="Low"?"bad":"mid"}>{confidence}</b><Help title="Decision confidence">Confidence rises when price history, business data, market context and current news/catalyst data are all available. Low confidence means treat the call more cautiously.</Help></div>
-    </section>
+    </section>}
 
     <div className="osMicroActions v12Actions">
       <button onClick={watch}><Star size={16} fill={watching?"currentColor":"none"}/>{watching?"Watching":"Add to watchlist"}</button>
@@ -523,6 +596,14 @@ export default function StockClient({symbol}:{symbol:string}){
 
       {tab==="fundamentals"&&<div className="v12Fund">
         <div className={`fundSignal ${business.tone||"neutral"}`}><small>BUSINESS QUALITY</small><h3>{business.label}{business.score!=null?` · ${business.score}/100`:""}</h3>{(business.reasons||[]).slice(0,4).map((x:string,i:number)=><p key={i}>• {x}</p>)}{five&&<div className="fiveRecord"><small>5-YEAR RECORD</small><b>{five.score}/100 · {five.revenueTrend}</b><p>{five.summary}</p><div>{(five.history||[]).map((y:any)=><span key={y.year}><i>{y.year}</i><strong>{y.revenue!=null?money(y.revenue):"—"}</strong><em>{y.netIncome!=null?`NI ${money(y.netIncome)}`:"NI —"}</em></span>)}</div></div>}</div>
+        <div className="v32Institutional">
+          <div className="v32InstitutionalHead"><div><small>INSTITUTIONAL INTELLIGENCE</small><h3>{institutionalLabel}</h3><p>{institutional?.disclosure||"Reported institutional ownership is not available from the connected feed for this symbol."}</p></div><Help title="Institutional intelligence">Reported institutional ownership and insider filings are delayed evidence. NIVORA keeps this separate from the daily accumulation proxy so it never presents quarterly filings as real-time institutional buying.</Help></div>
+          {institutional?.enabled?<div className="v32InstitutionalGrid">
+            <div><small>REPORTED ACTIVITY</small><b className={institutionalTone}>{institutionalLabel}</b><span>{institutional.institutional?.increased||0} increased · {institutional.institutional?.reduced||0} reduced</span></div>
+            <div><small>INSIDERS</small><b>{institutional.insiders?.label||"Mixed"}</b><span>{institutional.insiders?.buys||0} buys · {institutional.insiders?.sells||0} sells in available feed</span></div>
+            <div><small>ACCUMULATION PROXY</small><b className={marketLab?.accumulationLabel==="Accumulating"?"good":marketLab?.accumulationLabel==="Distribution risk"?"bad":"mid"}>{marketLab?.accumulationLabel||"Insufficient data"}</b><span>{marketLab?`${marketLab.accumulation}/100 from price/volume behavior`:"Needs more price/volume history"}</span></div>
+          </div>:<div className="v32InstitutionalEmpty">Institutional feed unavailable. NIVORA will not invent ownership activity.</div>}
+        </div>
         <div className="osList">{company?.fundamentals?.length?company.fundamentals.map((x:any)=><div key={x.label}><span>{x.label}{x.detail&&<small>{x.detail}</small>}</span><b>{x.value}</b></div>):<p>No standardized SEC fundamentals available for this symbol yet.</p>}</div>
       </div>}
 
@@ -540,6 +621,10 @@ export default function StockClient({symbol}:{symbol:string}){
       {tab==="earnings"&&<div className="v12Earnings"><div className="earnSplit">{latestReport&&<div className="earnNext earnReported"><small>LATEST REPORTED RESULTS</small><h3>{latestEarnNews?.date?new Date(latestEarnNews.date).toLocaleDateString():latestReport.date}</h3><p>{latestEarnNews?.headline||`${latestReport.form} filed — latest reported financial filing`}</p>{latestEarnNews?.url&&<a href={latestEarnNews.url} target="_blank" rel="noreferrer">Read results <ExternalLink size={12}/></a>}</div>}{earn&&<div className="earnNext estimated"><small>NEXT EARNINGS · ESTIMATED</small><h3>{earn.date}</h3><p>{earn.hour||"Time not listed"}{earn.epsEstimate!=null?` · EPS est. ${eps(earn.epsEstimate)}`:""}{earn.revenueEstimate!=null?` · Revenue est. ${money(earn.revenueEstimate)}`:""}</p><p className="earnMeta">Future calendar dates are estimates until confirmed by the company.</p></div>}</div><div className="earnGrid">{(context?.surprises||[]).length?context.surprises.map((x:any,i:number)=><div key={i}><small>{x.period}</small><b className={(x.surprisePercent??0)>=0?"good":"bad"}>{x.surprisePercent!=null?`${x.surprisePercent>=0?"+":""}${Number(x.surprisePercent).toFixed(1)}% surprise`:"Reported"}</b><span>Actual {x.actual??"—"} · Est. {x.estimate??"—"}</span></div>):<p>No earnings-surprise history returned by the connected feed.</p>}</div></div>}
 
       {tab==="technical"&&<div className="v12Technical v26Technical">
+        {marketLab&&<div className="v32ConfluenceChart">
+          <div className="v32MarketLabHead"><div><small>CONFLUENCE MAP</small><h3>Fib + structure + NIVORA risk levels</h3><p>Advanced levels are supporting evidence, not standalone buy/sell signals. Wave interpretation is heuristic and confidence-limited.</p></div><Help title="Confluence map">Fibonacci retracements, NIVORA support/entry levels and the current Elliott-style scenario are overlaid so experienced users can see where independent technical evidence clusters.</Help></div>
+          <PriceChart candles={d.candles} levels={d.levels} showTrend={true} confluence={marketLab}/>
+        </div>}
         <div className="techIntro"><div><small>TECHNICAL LAB</small><h3>Professional evidence, still readable.</h3><p>The main call stays simple. This workspace shows the market mechanics experienced investors may want to inspect.</p></div><Help title="Technical Lab">Technical indicators describe price behavior and risk. They can improve timing, but none can guarantee direction or replace business/catalyst analysis.</Help></div>
         {proTech&&<div className="proTechGrid">
           <div><small>ATR · 14D</small><b>{proTech.atrPct!=null?`${proTech.atrPct.toFixed(1)}%`:"—"}</b><span>Typical daily range</span></div>
@@ -550,6 +635,15 @@ export default function StockClient({symbol}:{symbol:string}){
           <div><small>200D MA</small><b className={(proTech.d200??0)>=0?"good":"bad"}>{proTech.d200!=null?`${proTech.d200>=0?"+":""}${proTech.d200.toFixed(1)}%`:"—"}</b><span>Distance from long trend</span></div>
           <div><small>BOLLINGER POSITION</small><b>{proTech.bbPos!=null?`${Math.round(proTech.bbPos)}%`:"—"}</b><span>0% lower band · 100% upper</span></div>
           <div><small>52W DRAWDOWN</small><b>{proTech.drawdown!=null?`${proTech.drawdown.toFixed(1)}%`:"—"}</b><span>Distance from recent high</span></div>
+        </div>}
+        {marketLab&&<div className="v32MarketLab">
+          <div className="v32MarketLabHead"><div><small>MARKET INTELLIGENCE</small><h3>Confluence, not indicator clutter.</h3><p>NIVORA turns technical evidence into zones and scenarios instead of asking you to interpret dozens of lines.</p></div></div>
+          <div className="v32MarketLabGrid">
+            <div><small>ACCUMULATION PROXY</small><b className={marketLab.accumulationLabel==="Accumulating"?"good":marketLab.accumulationLabel==="Distribution risk"?"bad":"mid"}>{marketLab.accumulationLabel}</b><strong>{marketLab.accumulation}/100</strong><span>Price/volume behavior proxy — not a claim that a specific institution is trading today.</span></div>
+            <div><small>FIBONACCI CONFLUENCE</small><b>${marketLab.fib382} · ${marketLab.fib50} · ${marketLab.fib618}</b><strong>38.2% · 50% · 61.8%</strong><span>Used as supporting zones only when they overlap with structure/support.</span></div>
+            <div><small>DCA / ACCUMULATION ZONE</small><b>${marketLab.dcaLow}–${marketLab.dcaHigh}</b><strong>Confluence zone</strong><span>Combines NIVORA entry/support with the current swing structure. Thesis must remain intact.</span></div>
+            <div><small>ELLIOTT-STYLE WAVE</small><b>{marketLab.waveLabel}</b><strong>{marketLab.waveScore}% confidence</strong><span>Heuristic structure only. Candidate target ${marketLab.waveTarget}; invalidation ${marketLab.waveInvalidation}.</span></div>
+          </div>
         </div>}
         <div className="techRead"><small>NIVORA TECHNICAL READ</small><h4>{d.labels.trend} trend · {d.labels.momentum} momentum · {d.labels.risk} risk</h4><p>{d.why?.slice(0,3).join(" ")}</p></div>
         <div className="osTechGrid">{Object.entries(d.engine).map(([k,v]:any)=><div key={k}><div className="metricLabel"><span>{k}</span><Help title={k}>{k==="Trend"?"Multi-horizon direction and slope.":k==="Momentum"?"Speed and persistence of the current move.":k==="Flow"?"Volume/price participation and confirmation.":k==="Structure"?"Higher highs/lows, support and resistance behavior.":k==="RSI"?"Relative Strength Index; helps identify momentum extremes but is never used alone.":k==="MACD"?"Trend/momentum crossover evidence.":k==="Extension"?"How far price has moved away from its recent equilibrium; high extension increases chase risk.":k==="Relative strength"?"Performance versus the relevant benchmark.":k==="Market regime"?"Whether the broad market is supportive, mixed or risk-off.":"Supporting quantitative evidence used by the decision engine."}</Help></div><b>{typeof v==="number"?`${v}/100`:v}</b></div>)}</div>

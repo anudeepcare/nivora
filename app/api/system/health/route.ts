@@ -12,7 +12,7 @@ export async function GET(){
  const configured=Object.values(env).filter(Boolean).length;
  return NextResponse.json({
   status:configured>=4?"operational":"degraded",
-  architecture:"NIVORA V30",
+  architecture:"NIVORA V32",
   configured,expected:Object.keys(env).length,
   capabilities:env,
   providers:providers.map(p=>({id:p.id,capabilities:p.capabilities,realTime:p.realTime}))

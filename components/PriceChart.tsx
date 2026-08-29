@@ -1,7 +1,7 @@
 "use client";
 import {useEffect,useRef} from "react";
 import {createChart,CandlestickSeries,HistogramSeries,LineSeries,LineStyle} from "lightweight-charts";
-export default function PriceChart({candles,levels,showTrend=false}:{candles:any[],levels:any,showTrend?:boolean}){
+export default function PriceChart({candles,levels,showTrend=false,confluence}:{candles:any[],levels:any,showTrend?:boolean,confluence?:{fib382?:number;fib50?:number;fib618?:number;waveTarget?:number;waveInvalidation?:number}}){
  const el=useRef<HTMLDivElement>(null);
  useEffect(()=>{if(!el.current||!candles?.length)return;
  const mobile=window.matchMedia("(max-width: 760px)").matches;
@@ -16,10 +16,20 @@ export default function PriceChart({candles,levels,showTrend=false}:{candles:any
  }
  const vs=chart.addSeries(HistogramSeries,{priceFormat:{type:"volume"},priceScaleId:""});vs.priceScale().applyOptions({scaleMargins:{top:.84,bottom:0}});vs.setData(candles.map((x:any)=>({time:x.time,value:x.volume,color:x.close>=x.open?"rgba(22,163,74,.20)":"rgba(220,38,38,.18)"})));
  const lines=[["Preferred entry",levels.preferredEntry,"#16a34a"],["Nearest support",levels.support,"#16a34a"],["Major support",levels.majorSupport,"#65a30d"],["Resistance",levels.resistance,"#dc2626"],["Breakout",levels.breakout,"#b45309"],["Invalidation",levels.invalidation,"#7f1d1d"]] as const;
- lines.forEach(([title,price,color])=>cs.createPriceLine({price,color,lineWidth:1,lineStyle:LineStyle.Dashed,axisLabelVisible:!mobile,title:mobile?"":title}));
+ lines.forEach(([title,price,color])=>{if(Number.isFinite(Number(price)))cs.createPriceLine({price:Number(price),color,lineWidth:1,lineStyle:LineStyle.Dashed,axisLabelVisible:!mobile,title:mobile?"":title})});
+ if(confluence){
+   const extra=[
+     ["Fib 38.2%",confluence.fib382,"#64748b"],
+     ["Fib 50%",confluence.fib50,"#64748b"],
+     ["Fib 61.8%",confluence.fib618,"#64748b"],
+     ["Wave target",confluence.waveTarget,"#7c3aed"],
+     ["Wave invalidation",confluence.waveInvalidation,"#be123c"],
+   ] as const;
+   extra.forEach(([title,price,color])=>{if(Number.isFinite(Number(price)))cs.createPriceLine({price:Number(price),color,lineWidth:1,lineStyle:LineStyle.Dotted,axisLabelVisible:!mobile,title:mobile?"":title})});
+ }
  chart.timeScale().fitContent();
  const resize=()=>{if(!el.current)return;const m=window.innerWidth<=760;chart.applyOptions({width:el.current.clientWidth,height:m?280:430,rightPriceScale:{minimumWidth:m?52:70},timeScale:{rightOffset:m?2:5,barSpacing:m?5:7}})};
  const ro=new ResizeObserver(resize);ro.observe(el.current);window.addEventListener("orientationchange",resize);return()=>{ro.disconnect();window.removeEventListener("orientationchange",resize);chart.remove()}
- },[candles,levels,showTrend]);
+ },[candles,levels,showTrend,confluence]);
  return <div ref={el} className="chartCanvas"/>;
 }
