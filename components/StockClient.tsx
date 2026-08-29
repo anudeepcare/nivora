@@ -370,12 +370,12 @@ export default function StockClient({symbol}:{symbol:string}){
 
   const derivativesScore=Number(intelligence?.dimensions?.derivatives ?? 50);
   const valuationScore=Number(intelligence?.valuation ?? 50);
+  // Institutions must only represent verified reported ownership/13F evidence.
+  // Never substitute the price/volume accumulation proxy into this slot.
   const institutionalQuick=institutional?.enabled
     ? (institutional?.institutional?.directionLabel||institutionalLabel)
-    : (marketLab?.accumulationLabel ? `${marketLab.accumulationLabel} proxy` : "Not available");
-  const institutionalQuickTone=institutional?.enabled
-    ? institutionalTone
-    : marketLab?.accumulationLabel==="Accumulating"?"good":marketLab?.accumulationLabel==="Distribution risk"?"bad":"mid";
+    : "13F not loaded";
+  const institutionalQuickTone=institutional?.enabled ? institutionalTone : "mid";
   const signalRows=[
     ["Business",business.label,tone(business.label)],
     ["Trend",d.labels.trend,tone(d.labels.trend)],
