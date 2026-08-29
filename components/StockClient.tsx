@@ -1,67 +1,337 @@
 "use client";
+
 import {useEffect,useMemo,useState} from "react";
-import SearchBox from "./SearchBox";import PriceChart from "./PriceChart";
-import {Star,ChevronDown,ExternalLink,Info,BriefcaseBusiness,Newspaper,CalendarDays,Activity,ShieldCheck,ArrowRight,PlusCircle} from "lucide-react";
-import {supabaseBrowser} from "@/lib/supabase";import Link from "next/link";
-type Mode="now"|"swing"|"long"|"own";type Tab="overview"|"fundamentals"|"catalysts"|"news"|"earnings"|"technical";
-const tone=(s:string)=>{const x=(s||"").toUpperCase();if(x.includes("BUY")||x.includes("CONSTRUCTIVE")||x.includes("HOLD")||x.includes("STRONG"))return"good";if(x.includes("CHASE")||x.includes("AVOID")||x.includes("REDUCE")||x.includes("NOT YET")||x.includes("WEAK"))return"bad";return"mid"};
-const money=(n:any)=>{const x=Number(n);if(!Number.isFinite(x))return String(n??"—");const a=Math.abs(x);return `${x<0?"-":""}$${a>=1e9?(a/1e9).toFixed(2)+"B":a>=1e6?(a/1e6).toFixed(1)+"M":a>=1e3?(a/1e3).toFixed(1)+"K":a.toLocaleString()}`};
+import Link from "next/link";
+import {
+  Activity,
+  ArrowLeft,
+  BriefcaseBusiness,
+  CalendarDays,
+  ExternalLink,
+  Info,
+  Newspaper,
+  PlusCircle,
+  ShieldCheck,
+  Star,
+} from "lucide-react";
+import SearchBox from "./SearchBox";
+import PriceChart from "./PriceChart";
+import {supabaseBrowser} from "@/lib/supabase";
+
+type Mode="now"|"swing"|"long"|"own";
+type Tab="overview"|"fundamentals"|"catalysts"|"news"|"earnings"|"technical"|"options";
+
+const tone=(s:string)=>{
+  const x=(s||"").toUpperCase();
+  if(x.includes("BUY")||x.includes("CONSTRUCTIVE")||x.includes("HOLD")||x.includes("STRONG")||x.includes("ATTRACTIVE"))return"good";
+  if(x.includes("CHASE")||x.includes("AVOID")||x.includes("REDUCE")||x.includes("NOT YET")||x.includes("WEAK")||x.includes("POOR"))return"bad";
+  return"mid";
+};
+
+const money=(n:any)=>{
+  const x=Number(n);
+  if(!Number.isFinite(x))return String(n??"—");
+  const a=Math.abs(x);
+  return `${x<0?"-":""}$${a>=1e9?(a/1e9).toFixed(2)+"B":a>=1e6?(a/1e6).toFixed(1)+"M":a>=1e3?(a/1e3).toFixed(1)+"K":a.toLocaleString()}`;
+};
 const eps=(n:any)=>{const x=Number(n);return Number.isFinite(x)?`${x<0?"-":""}$${Math.abs(x).toFixed(2)}`:"—"};
 const daysUntil=(d?:string|null)=>{if(!d)return null;return Math.ceil((new Date(d+"T12:00:00").getTime()-Date.now())/86400000)};
+
+function Help({title,children}:{title:string;children:React.ReactNode}){
+  return <details className="metricHelpInline">
+    <summary aria-label={`Explain ${title}`} title={`Explain ${title}`}><Info size={13}/></summary>
+    <div className="metricHelpPop"><b>{title}</b><p>{children}</p></div>
+  </details>;
+}
+
+function metricScore(mode:Mode,business:number,six:number,timing:number,risk:number){
+  const safe=100-risk;
+  const weights=mode==="long"
+    ? {business:.50,six:.15,timing:.15,risk:.20}
+    : mode==="own"
+      ? {business:.40,six:.20,timing:.10,risk:.30}
+      : mode==="swing"
+        ? {business:.20,six:.30,timing:.30,risk:.20}
+        : {business:.20,six:.20,timing:.40,risk:.20};
+  return Math.max(0,Math.min(100,Math.round(
+    business*weights.business+six*weights.six+timing*weights.timing+safe*weights.risk
+  )));
+}
+
 export default function StockClient({symbol}:{symbol:string}){
- const[d,setD]=useState<any>(null),[company,setCompany]=useState<any>(null),[context,setContext]=useState<any>(null),[err,setErr]=useState(""),[mode,setMode]=useState<Mode>("now"),[tab,setTab]=useState<Tab>("overview"),[technical,setTechnical]=useState(false),[watching,setWatching]=useState(false);
- useEffect(()=>{let live=true;let core:AbortController|null=null;
-  const loadCore=async(initial=false)=>{if(initial){setD(null);setCompany(null);setContext(null);setErr("")}core?.abort();core=new AbortController();const timer=setTimeout(()=>core?.abort(),6500);try{const r=await fetch(`/api/analyze/${encodeURIComponent(symbol)}`,{signal:core.signal,cache:"no-store"});const a=await r.json();if(!r.ok||a.error)throw new Error(a.error||"Analysis unavailable");if(!live)return;setD(a);if(initial){Promise.allSettled([fetch(`/api/company/${encodeURIComponent(symbol)}`,{cache:"no-store"}).then(r=>r.ok?r.json():null).then(x=>live&&x&&setCompany(x)),fetch(`/api/context/${encodeURIComponent(symbol)}`,{cache:"no-store"}).then(r=>r.ok?r.json():null).then(x=>live&&x&&setContext(x))])}}catch(e:any){if(initial&&live)setErr(e.name==="AbortError"?"Market data is taking too long. Try again.":e.message)}finally{clearTimeout(timer)}};
-  const loadContext=()=>fetch(`/api/context/${encodeURIComponent(symbol)}`,{cache:"no-store"}).then(r=>r.ok?r.json():null).then(x=>live&&x&&setContext(x)).catch(()=>{});
-  loadCore(true);
-  const priceTimer=setInterval(()=>{if(document.visibilityState==="visible")loadCore(false)},30000);
-  const newsTimer=setInterval(()=>{if(document.visibilityState==="visible")loadContext()},120000);
-  const onFocus=()=>{loadCore(false);loadContext()}; window.addEventListener("focus",onFocus);
-  return()=>{live=false;core?.abort();clearInterval(priceTimer);clearInterval(newsTimer);window.removeEventListener("focus",onFocus)}},[symbol]);
- async function watch(){const s=supabaseBrowser();const{data:{user}}=await s.auth.getUser();if(!user)return;let{data:w}=await s.from("watchlists").select("id").eq("user_id",user.id).limit(1).maybeSingle();if(!w){const x=await s.from("watchlists").insert({user_id:user.id,name:"My Watchlist"}).select("id").single();w=x.data}if(w){await s.from("watchlist_items").upsert({watchlist_id:w.id,user_id:user.id,symbol},{onConflict:"watchlist_id,symbol"});setWatching(true)}}
- const view=useMemo(()=>{if(!d)return null;if(mode==="now")return d.views.today;if(mode==="swing")return d.views.swing;if(mode==="own")return d.views.own;const f=company?.fundamentalSignal;if(f?.label==="Strong"&&d.scores.trend>=45)return{label:"ATTRACTIVE / WATCH ENTRY",tone:"good",text:"Business quality looks strong. Use price weakness selectively rather than chasing; valuation and catalysts still matter."};if(f?.label?.includes("Weak"))return{label:"RESEARCH BEFORE BUYING",tone:"bad",text:"The business-quality signals are weak or mixed enough that a lower price alone is not a reason to buy."};return d.views.longTerm},[d,mode,company]);
- if(err)return <div className="osError"><b>Couldn’t analyze {symbol}</b><span>{err}</span><button onClick={()=>location.reload()}>Try again</button></div>;
- if(!d||!view)return <div className="osStockLoading"><div className="osLogo">NIVORA<span>.</span></div><b>Analyzing {symbol}</b><span>Building the decision first. Evidence loads after.</span></div>;
- const business=company?.fundamentalSignal||{label:d.assetType==="crypto"?"Crypto":"Loading",tone:"neutral",reasons:[]},news=context?.summary||{label:context?.enabled===false?"Feed not connected":"Loading",tone:"neutral",topReason:""},earn=context?.earnings,earnDays=daysUntil(earn?.date),filings=company?.filings||[],items=context?.news||[],latestEarnNews=context?.latestEarningsNews,latestReport=latestEarnNews||filings.find((f:any)=>["10-K","10-Q","20-F","6-K"].includes(f.form));
- const catalystLabel=earn?`Earnings ${earnDays!=null&&earnDays>=0?`in ${earnDays}d`:earn.date}`:company?.filingRisk?"Financing watch":filings[0]?filings[0].label:"None found";
- const changeAbs=Math.abs(d.changePct);const topNews=items.find((x:any)=>x.materiality==="High")||items[0];const moveReason=topNews?topNews.headline:changeAbs>=4?"No single material headline was identified yet. Treat the move as price/volume-driven until new evidence appears.":"No unusual move requiring a specific headline explanation was detected.";
- const positive=[...(business?.tone==="good"?(business.reasons||[]).slice(0,2):[]),...(d.positives||[])].filter(Boolean).slice(0,3);
- const risks=[...(company?.filingRisk?[company.filingRisk.label]:[]),...(news.tone==="negative"?[news.topReason]:[]),...(d.risks||[])].filter(Boolean).slice(0,3);
- const five=company?.fiveYearRecord; const businessScore=Number(business?.score??50); const sixScore=Number(d.sixMonth?.score??50); const timingScore=Number(d.scores?.entry??50); const riskScore=Number(d.scores?.risk??50);
- const overallScore=Math.max(0,Math.min(100,Math.round(businessScore*.38+sixScore*.22+timingScore*.25+(100-riskScore)*.15)));
- const overallLabel=overallScore>=78?"High-quality setup":overallScore>=62?"Promising / selective":overallScore>=48?"Mixed / wait":"Weak setup";
- const beginnerReason=view.label.includes("BUY")?"The evidence is strong enough to consider a disciplined entry at the mapped price levels.":view.label.includes("HOLD")?"If you already own it, the current evidence does not require an immediate exit, but the risk levels still matter.":"The stock may still be a good company, but today is not a strong enough entry yet.";
- const fiveRecordText=five ? String(five.years)+"-year record · "+String(five.revenueTrend) : "Loading financial history";
- const sixMonthText=d.sixMonth ? (d.sixMonth.returnPct>=0?"+":"")+String(d.sixMonth.returnPct)+"% return" : "Price history";
- const betterEntryText="$"+String(d.levels.preferredEntry)+"–$"+String(d.levels.support);
- const confirmationText="Above $"+String(d.levels.breakout);
- const invalidationText="Below $"+String(d.levels.invalidation);
- const supportText="Support $"+String(d.levels.support);
- const resistanceText="Resistance $"+String(d.levels.resistance);
- const todayMoveText=changeAbs>=4 ? "Large "+(d.changePct>=0?"move up":"move down")+": "+(d.changePct>=0?"+":"")+String(d.changePct)+"%" : "Today’s move";
- const nextCatalystTitle=earn ? "Earnings · "+String(earn.date) : (filings[0]?.label||"No scheduled catalyst found");
- const nextCatalystDetail=earn ? String(earn.hour||"Timing not listed")+(earn.epsEstimate!=null?" · EPS est. "+String(earn.epsEstimate):"") : filings[0] ? String(filings[0].form)+" filed "+String(filings[0].date) : "NIVORA will surface a catalyst when a connected source identifies one.";
- const marketContextText=d.market.benchmark ? String(symbol)+" is "+String(d.market.relativeStrength).toLowerCase()+" versus "+String(d.market.benchmark)+" over the recent period." : "Crypto benchmark context is handled separately.";
- return <div className="osStock v12Stock">
-  <div className="osStockSearch"><SearchBox/></div>
-  <header className="osStockHead v12StockHead"><div><small>{company?.name||d.name||symbol}</small><h1>{symbol}</h1></div><div><b>${d.price}</b><span className={d.changePct>=0?"up":"down"}>{d.changePct>=0?"+":""}{d.changePct}%</span></div></header>
-  <div className="liveFresh"><span className="liveDot"/>Near-live decision · shared cache <small>Price/decision refreshes about every 30–45 sec while this page is open. News refreshes about every 2 min.</small></div>
-  <div className="osMode v12Mode"><button className={mode==="now"?"on":""} onClick={()=>setMode("now")}>Now</button><button className={mode==="swing"?"on":""} onClick={()=>setMode("swing")}>Swing</button><button className={mode==="long"?"on":""} onClick={()=>setMode("long")}>Long term</button><button className={mode==="own"?"on":""} onClick={()=>setMode("own")}>I own it</button></div>
-  <section className="beginnerScore"><div className="beginnerScoreMain"><small>IF YOU READ ONLY ONE THING</small><div className="scoreLine"><b>{overallScore}</b><span>/100</span><em>{overallLabel}</em></div><h3>{view.label}</h3><p>{beginnerReason}</p></div><div className="beginnerMath"><div><small>BUSINESS</small><b>{business.label}</b><span>{fiveRecordText}</span></div><div><small>6-MONTH CHART</small><b>{d.sixMonth?.label||"Mixed"}</b><span>{sixMonthText}</span></div><div><small>TIMING NOW</small><b>{d.labels.entry}</b><span>Entry quality at today’s price.</span></div><div><small>RISK</small><b>{d.labels.risk}</b><span>Higher risk means use more caution.</span></div></div></section>
-  <section className={["osDecision", tone(view.label), "v12Decision"].join(" ")}><div className="osDecisionTop"><small>THE CALL</small><h2>{view.label}</h2><p>{view.text}</p></div><div className="osPlanGrid"><div><small>BETTER ENTRY</small><b>{betterEntryText}</b><span>Prefer stabilization in this area rather than buying simply because price is falling.</span></div><div><small>CONFIRMATION</small><b>{confirmationText}</b><span>Prefer a strong close or breakout retest with improving volume/momentum — not the first spike.</span></div><div><small>PROTECT / REASSESS</small><b>{invalidationText}</b><span>Technical thesis weakens here. Recheck fundamentals and catalyst risk before deciding what to do.</span></div></div></section>
-  <section className="v12QuickRead"><div><small>BUSINESS</small><b className={tone(business.label)}>{business.label}</b><span>{business.reasons?.[0]||"Fundamental evidence is loading."}</span></div><div><small>TREND</small><b className={tone(d.labels.trend)}>{d.labels.trend}</b><span>Direction and structure.</span></div><div><small>MOMENTUM</small><b className={tone(d.labels.momentum)}>{d.labels.momentum}</b><span>Speed and confirmation of the move.</span></div><div><small>ENTRY</small><b className={tone(d.labels.entry)}>{d.labels.entry}</b><span>How attractive today’s price is.</span></div><div><small>RISK</small><b className={d.labels.risk==="High"?"bad":d.labels.risk==="Lower"?"good":"mid"}>{d.labels.risk}</b><span>Volatility, extension and downside.</span></div><div><small>CATALYST</small><b className={company?.filingRisk?"bad":earn?"mid":"good"}>{catalystLabel}</b><span>{news.label}</span></div></section>
-  <div className="osMicroActions v12Actions"><button onClick={watch}><Star size={16} fill={watching?"currentColor":"none"}/>{watching?"Watching":"Add to watchlist"}</button><Link href={"/portfolio?symbol=" + encodeURIComponent(symbol)}><PlusCircle size={16}/>Track position</Link><span>{supportText}</span><span>{resistanceText}</span></div>
-  <section className="v12ReasonGrid"><div className="v12Reason goodBox"><small>WHY IT CAN WORK</small><h3>What supports the setup</h3>{positive.length?positive.map((x:string,i:number)=><p key={i}>✓ {x}</p>):<p>Evidence is still loading or mixed.</p>}</div><div className="v12Reason riskBox"><small>WHAT CAN GO WRONG</small><h3>What is holding it back</h3>{risks.length?risks.map((x:string,i:number)=><p key={i}>• {x}</p>):<p>No major risk flag was detected from the connected sources.</p>}</div></section>
-  <section className="v12Pulse"><div><small>WHAT CHANGED TODAY</small><h3>{todayMoveText}</h3><p>{moveReason}</p>{topNews?.url&&<a href={topNews.url} target="_blank" rel="noreferrer">Read source <ExternalLink size={13}/></a>}</div><div><small>NEXT CATALYST</small><h3>{nextCatalystTitle}</h3><p>{nextCatalystDetail}</p></div><div><small>MARKET CONTEXT</small><h3>{d.market.regime}</h3><p>{marketContextText}</p></div></section>
-  <section className="osChartCard v12Chart"><div className="osSectionTitle"><div><small>PRICE MAP</small><h3>What price has to do next</h3></div><span>Green = entry/support · Orange = confirmation · Red = reassess</span></div><PriceChart candles={d.candles} levels={d.levels}/></section>
-  <section className="osContext v12Context"><div className="osTabs v12Tabs"><button className={tab==="overview"?"on":""} onClick={()=>setTab("overview")}>Overview</button><button className={tab==="fundamentals"?"on":""} onClick={()=>setTab("fundamentals")}>Fundamentals</button><button className={tab==="catalysts"?"on":""} onClick={()=>setTab("catalysts")}>Catalysts</button><button className={tab==="news"?"on":""} onClick={()=>setTab("news")}>News</button><button className={tab==="earnings"?"on":""} onClick={()=>setTab("earnings")}>Earnings</button><button className={tab==="technical"?"on":""} onClick={()=>setTab("technical")}>Technical</button></div>
-   {tab==="overview"&&<div className="v12Overview"><div><BriefcaseBusiness size={18}/><small>Business</small><b className={tone(business.label)}>{business.label}</b><span>{business.reasons?.[0]||"Loading fundamentals…"}</span></div><div><Activity size={18}/><small>Entry</small><b className={tone(d.labels.entry)}>{d.labels.entry}</b><span>Current location versus support, extension and momentum.</span></div><div><ShieldCheck size={18}/><small>Risk</small><b className={d.labels.risk==="High"?"bad":"mid"}>{d.labels.risk}</b><span>Technical downside plus market regime.</span></div><div><Newspaper size={18}/><small>News</small><b className={news.tone==="positive"?"good":news.tone==="negative"?"bad":"mid"}>{news.label}</b><span>{news.topReason}</span></div></div>}
-   {tab==="fundamentals"&&<div className="v12Fund"><div className={`fundSignal ${business.tone||"neutral"}`}><small>BUSINESS QUALITY</small><h3>{business.label}{business.score!=null?` · ${business.score}/100`:""}</h3>{(business.reasons||[]).slice(0,4).map((x:string,i:number)=><p key={i}>• {x}</p>)}{five&&<div className="fiveRecord"><small>5-YEAR RECORD</small><b>{five.score}/100 · {five.revenueTrend}</b><p>{five.summary}</p><div>{(five.history||[]).map((y:any)=><span key={y.year}><i>{y.year}</i><strong>{y.revenue!=null?money(y.revenue):"—"}</strong><em>{y.netIncome!=null?`NI ${money(y.netIncome)}`:"NI —"}</em></span>)}</div></div>}</div><div className="osList">{company?.fundamentals?.length?company.fundamentals.map((x:any)=><div key={x.label}><span>{x.label}{x.detail&&<small>{x.detail}</small>}</span><b>{x.value}</b></div>):<p>No standardized SEC fundamentals available for this symbol yet.</p>}</div></div>}
-   {tab==="catalysts"&&<div className="v12Catalysts">{earn&&<div className="nextEvent"><CalendarDays size={18}/><div><small>NEXT EARNINGS</small><b>{earn.date}</b><span>{earnDays!=null&&earnDays>=0?`${earnDays} days away`:"Upcoming"}</span></div></div>}<div className="osList links">{filings.length?filings.slice(0,8).map((x:any)=><a href={x.url} target="_blank" rel="noreferrer" key={x.accession}><span><b>{x.label}</b><small>{x.form} · {x.description}</small></span><em className={x.tone}>{x.materiality}</em><small>{x.date}</small><ExternalLink size={13}/></a>):<p>No recent material SEC filings found.</p>}</div></div>}
-   {tab==="news"&&<div className="v12News">{context?.enabled===false?<div className="connectFeed"><Newspaper size={22}/><b>Connect live news</b><p>Add a free Finnhub API key to `.env.local`. Price analysis and SEC data continue to work without it.</p></div>:items.length?items.map((x:any,i:number)=><a href={x.url} target="_blank" rel="noreferrer" key={i}><div><span className={`newsTone ${x.tone}`}>{x.tone}</span><small>{x.materiality} materiality · {x.source}</small></div><b>{x.headline}</b><p>{x.summary}</p><ExternalLink size={13}/></a>):<p>No recent company headlines were returned.</p>}</div>}
-   {tab==="earnings"&&<div className="v12Earnings"><div className="earnSplit">{latestReport&&<div className="earnNext earnReported"><small>LATEST REPORTED RESULTS</small><h3>{latestEarnNews?.date?new Date(latestEarnNews.date).toLocaleDateString():latestReport.date}</h3><p>{latestEarnNews?.headline||`${latestReport.form} filed — latest reported financial filing`}</p>{latestEarnNews?.url&&<a href={latestEarnNews.url} target="_blank" rel="noreferrer">Read results <ExternalLink size={12}/></a>}</div>}{earn&&<div className="earnNext estimated"><small>NEXT EARNINGS · ESTIMATED</small><h3>{earn.date}</h3><p>{earn.hour||"Time not listed"}{earn.epsEstimate!=null?` · EPS est. ${eps(earn.epsEstimate)}`:""}{earn.revenueEstimate!=null?` · Revenue est. ${money(earn.revenueEstimate)}`:""}</p><p className="earnMeta">Future calendar dates are estimates until confirmed by the company.</p></div>}</div><div className="earnGrid">{(context?.surprises||[]).length?context.surprises.map((x:any,i:number)=><div key={i}><small>{x.period}</small><b className={(x.surprisePercent??0)>=0?"good":"bad"}>{x.surprisePercent!=null?`${x.surprisePercent>=0?"+":""}${Number(x.surprisePercent).toFixed(1)}% surprise`:"Reported"}</b><span>Actual {x.actual??"—"} · Est. {x.estimate??"—"}</span></div>):<p>No earnings-surprise history returned by the connected feed.</p>}</div></div>}
-   {tab==="technical"&&<div className="v12Technical"><div className="techIntro"><h3>Technical evidence</h3><p>You do not need these numbers to use NIVORA. They are the evidence underneath the plain-English call.</p></div><div className="osTechGrid">{Object.entries(d.engine).map(([k,v]:any)=><div key={k}><span>{k}<Info size={12}/></span><b>{typeof v==="number"?`${v}/100`:v}</b></div>)}</div><div className="techWhy">{d.why.map((x:string,i:number)=><p key={i}>• {x}</p>)}</div></div>}
-  </section>
-  <div className="osDisclaimer">NIVORA is decision support, not a guarantee. The call should change when price, fundamentals, catalysts or risk change. <Link href="/disclaimer">Read disclaimer</Link></div>
- </div>
+  const[d,setD]=useState<any>(null);
+  const[company,setCompany]=useState<any>(null);
+  const[context,setContext]=useState<any>(null);
+  const[err,setErr]=useState("");
+  const[mode,setMode]=useState<Mode>("now");
+  const[tab,setTab]=useState<Tab>("overview");
+  const[watching,setWatching]=useState(false);
+  const[perfRange,setPerfRange]=useState<"6M"|"YTD"|"1Y">("6M");
+
+  useEffect(()=>{
+    let live=true;
+    let core:AbortController|null=null;
+
+    const loadCore=async(initial=false)=>{
+      if(initial){setD(null);setCompany(null);setContext(null);setErr("")}
+      core?.abort();
+      core=new AbortController();
+      const timer=setTimeout(()=>core?.abort(),6500);
+      try{
+        const r=await fetch(`/api/analyze/${encodeURIComponent(symbol)}`,{signal:core.signal,cache:"no-store"});
+        const a=await r.json();
+        if(!r.ok||a.error)throw new Error(a.error||"Analysis unavailable");
+        if(!live)return;
+        setD(a);
+        if(initial){
+          Promise.allSettled([
+            fetch(`/api/company/${encodeURIComponent(symbol)}`,{cache:"no-store"}).then(r=>r.ok?r.json():null).then(x=>live&&x&&setCompany(x)),
+            fetch(`/api/context/${encodeURIComponent(symbol)}`,{cache:"no-store"}).then(r=>r.ok?r.json():null).then(x=>live&&x&&setContext(x)),
+          ]);
+        }
+      }catch(e:any){
+        if(initial&&live)setErr(e.name==="AbortError"?"Market data is taking too long. Try again.":e.message);
+      }finally{clearTimeout(timer)}
+    };
+
+    const loadContext=()=>fetch(`/api/context/${encodeURIComponent(symbol)}`,{cache:"no-store"})
+      .then(r=>r.ok?r.json():null).then(x=>live&&x&&setContext(x)).catch(()=>{});
+
+    loadCore(true);
+    const priceTimer=setInterval(()=>{if(document.visibilityState==="visible")loadCore(false)},30000);
+    const newsTimer=setInterval(()=>{if(document.visibilityState==="visible")loadContext()},120000);
+    const onFocus=()=>{loadCore(false);loadContext()};
+    window.addEventListener("focus",onFocus);
+    return()=>{live=false;core?.abort();clearInterval(priceTimer);clearInterval(newsTimer);window.removeEventListener("focus",onFocus)};
+  },[symbol]);
+
+  async function watch(){
+    const s=supabaseBrowser();
+    const{data:{user}}=await s.auth.getUser();
+    if(!user)return;
+    let{data:w}=await s.from("watchlists").select("id").eq("user_id",user.id).limit(1).maybeSingle();
+    if(!w){const x=await s.from("watchlists").insert({user_id:user.id,name:"My Watchlist"}).select("id").single();w=x.data}
+    if(w){await s.from("watchlist_items").upsert({watchlist_id:w.id,user_id:user.id,symbol},{onConflict:"watchlist_id,symbol"});setWatching(true)}
+  }
+
+  const view=useMemo(()=>{
+    if(!d)return null;
+    if(mode==="now")return d.views.today;
+    if(mode==="swing")return d.views.swing;
+    if(mode==="own")return d.views.own;
+    const f=company?.fundamentalSignal;
+    if(f?.label==="Strong"&&d.scores.trend>=45)return{label:"ATTRACTIVE / WATCH ENTRY",tone:"good",text:"Business quality looks strong. Use price weakness selectively rather than chasing; valuation and catalysts still matter."};
+    if(f?.label?.includes("Weak"))return{label:"RESEARCH BEFORE BUYING",tone:"bad",text:"The business-quality signals are weak or mixed enough that a lower price alone is not a reason to buy."};
+    return d.views.longTerm;
+  },[d,mode,company]);
+
+  if(err)return <div className="osError"><b>Couldn’t analyze {symbol}</b><span>{err}</span><button onClick={()=>location.reload()}>Try again</button></div>;
+  if(!d||!view)return <div className="osStockLoading"><div className="osLogo">NIVORA<span>.</span></div><b>Analyzing {symbol}</b><span>Building the decision first. Evidence loads after.</span></div>;
+
+  const business=company?.fundamentalSignal||{label:d.assetType==="crypto"?"Crypto":"Loading",tone:"neutral",reasons:[]};
+  const news=context?.summary||{label:context?.enabled===false?"Feed not connected":"Loading",tone:"neutral",topReason:""};
+  const earn=context?.earnings;
+  const earnDays=daysUntil(earn?.date);
+  const filings=company?.filings||[];
+  const items=context?.news||[];
+  const latestEarnNews=context?.latestEarningsNews;
+  const latestReport=latestEarnNews||filings.find((f:any)=>["10-K","10-Q","20-F","6-K"].includes(f.form));
+  const catalystLabel=earn?`Earnings ${earnDays!=null&&earnDays>=0?`in ${earnDays}d`:earn.date}`:company?.filingRisk?"Financing watch":filings[0]?filings[0].label:"None found";
+  const changeAbs=Math.abs(d.changePct);
+  const topNews=items.find((x:any)=>x.materiality==="High")||items[0];
+  const moveReason=topNews?topNews.headline:changeAbs>=4?"No single material headline was identified yet. Treat the move as price/volume-driven until new evidence appears.":"No unusual move requiring a specific headline explanation was detected.";
+  const positive=[...(business?.tone==="good"?(business.reasons||[]).slice(0,2):[]),...(d.positives||[])].filter(Boolean).slice(0,3);
+  const risks=[...(company?.filingRisk?[company.filingRisk.label]:[]),...(news.tone==="negative"?[news.topReason]:[]),...(d.risks||[])].filter(Boolean).slice(0,3);
+
+  const five=company?.fiveYearRecord;
+  const businessScore=Number(business?.score??50);
+  const sixScore=Number(d.sixMonth?.score??50);
+  const timingScore=Number(d.scores?.entry??50);
+  const riskScore=Number(d.scores?.risk??50);
+  const overallScore=metricScore(mode,businessScore,sixScore,timingScore,riskScore);
+  const overallLabel=overallScore>=80?"Excellent evidence":overallScore>=65?"Promising / selective":overallScore>=50?"Mixed / wait":"Weak setup";
+  const confidenceCount=[company?.fundamentalSignal,d?.candles?.length>=60,context!==null,d?.market?.regime].filter(Boolean).length;
+  const confidence=confidenceCount>=4?"High":confidenceCount>=3?"Medium":"Low";
+  const scoreFormula=mode==="long"
+    ? "Long-term mode emphasizes business quality (50%), then 6-month record, timing and risk."
+    : mode==="own"
+      ? "Owner mode emphasizes business quality and downside risk more than fresh-entry timing."
+      : mode==="swing"
+        ? "Swing mode emphasizes 6-month behavior and current timing, while still checking business quality and risk."
+        : "Now mode emphasizes current entry quality, then business quality, 6-month behavior and risk.";
+
+  const beginnerReason=view.label.includes("BUY")
+    ? "The evidence is strong enough to consider a disciplined entry at the mapped price levels."
+    : view.label.includes("HOLD")
+      ? "If you already own it, the current evidence does not require an immediate exit, but the risk levels still matter."
+      : "The stock may still be a good company, but today is not a strong enough entry yet.";
+  const fiveRecordText=five?String(five.years)+"-year record · "+String(five.revenueTrend):"Loading financial history";
+  const sixMonthText=d.sixMonth?(d.sixMonth.returnPct>=0?"+":"")+String(d.sixMonth.returnPct)+"% return":"Price history";
+  const betterEntryText="$"+String(d.levels.preferredEntry)+"–$"+String(d.levels.support);
+  const confirmationText="Above $"+String(d.levels.breakout);
+  const invalidationText="Below $"+String(d.levels.invalidation);
+  const supportText="Support $"+String(d.levels.support);
+  const resistanceText="Resistance $"+String(d.levels.resistance);
+  const todayMoveText=changeAbs>=4?"Large "+(d.changePct>=0?"move up":"move down")+": "+(d.changePct>=0?"+":"")+String(d.changePct)+"%":"Today’s move";
+  const nextCatalystTitle=earn?"Earnings · "+String(earn.date):(filings[0]?.label||"No scheduled catalyst found");
+  const nextCatalystDetail=earn?String(earn.hour||"Timing not listed")+(earn.epsEstimate!=null?" · EPS est. "+String(earn.epsEstimate):""):filings[0]?String(filings[0].form)+" filed "+String(filings[0].date):"NIVORA will surface a catalyst when a connected source identifies one.";
+  const marketContextText=d.market.benchmark?String(symbol)+" is "+String(d.market.relativeStrength).toLowerCase()+" versus "+String(d.market.benchmark)+" over the recent period.":"Crypto benchmark context is handled separately.";
+  const perfReturn=(range:"6M"|"YTD"|"1Y")=>{
+    const cs=(d.candles||[]).filter((x:any)=>Number.isFinite(Number(x.close)));
+    if(!cs.length)return null;
+    const end=cs[cs.length-1], endPx=Number(end.close);
+    const now=new Date();
+    const cutoff=range==="YTD"?new Date(now.getFullYear(),0,1):new Date(now.getTime()-(range==="1Y"?365:183)*86400000);
+    let base=cs.find((x:any)=>new Date(x.date||x.datetime||x.time)>=cutoff)||cs[0];
+    const basePx=Number(base.close);
+    return basePx?Number((((endPx/basePx)-1)*100).toFixed(1)):null;
+  };
+  const selectedReturn=perfReturn(perfRange);
+  const currentPx=Number(d.price);
+  const supportPx=Number(d.levels.support), breakoutPx=Number(d.levels.breakout), invalidPx=Number(d.levels.invalidation);
+  const upside=Number.isFinite(currentPx)&&currentPx?((breakoutPx/currentPx-1)*100):null;
+  const downside=Number.isFinite(currentPx)&&currentPx?((invalidPx/currentPx-1)*100):null;
+  const rr=upside!=null&&downside!=null&&downside<0?Math.abs(upside/downside):null;
+
+  return <div className="osStock v12Stock v18Stock">
+    <Link href="/dashboard" className="v19NavBack"><ArrowLeft size={15}/> Today</Link>
+    <div className="osStockSearch"><SearchBox/></div>
+
+    <header className="osStockHead v12StockHead">
+      <div><small>{company?.name||d.name||symbol}</small><h1>{symbol}</h1></div>
+      <div><b>${d.price}</b><span className={d.changePct>=0?"up":"down"}>{d.changePct>=0?"+":""}{d.changePct}%</span></div>
+    </header>
+
+    <div className="liveFresh"><span className="liveDot"/>Near-live decision · shared cache <small>Price/decision refreshes about every 30–45 sec while this page is open. News refreshes about every 2 min.</small></div>
+
+    <div className="v20ModeLabel"><span>Choose your goal</span><Help title="Investment horizon">Now emphasizes entry timing. Swing emphasizes price behavior and timing. Long term gives business quality the largest weight. I own it emphasizes business quality and downside risk.</Help></div>
+    <div className="osMode v12Mode" aria-label="Investment horizon">
+      <button className={mode==="now"?"on":""} onClick={()=>setMode("now")}>Now</button>
+      <button className={mode==="swing"?"on":""} onClick={()=>setMode("swing")}>Swing</button>
+      <button className={mode==="long"?"on":""} onClick={()=>setMode("long")}>Long term</button>
+      <button className={mode==="own"?"on":""} onClick={()=>setMode("own")}>I own it</button>
+    </div>
+
+    <section className="v19Performance" aria-label="Quick market context">
+      <div><div className="metricLabel"><small>PERFORMANCE</small><Help title="Performance">Price return over the selected period using available market history. Performance describes what happened; it does not predict what happens next.</Help></div><b>{selectedReturn==null?"—":`${selectedReturn>=0?"+":""}${selectedReturn}%`}</b><div className="v19Range">{(["6M","YTD","1Y"] as const).map(r=><button key={r} className={perfRange===r?"on":""} onClick={()=>setPerfRange(r)}>{r}</button>)}</div></div>
+      <div><div className="metricLabel"><small>PRICE TREND</small><Help title="Price trend">A plain-English summary of recent price behavior. Open Technical for the underlying trend, momentum and structure evidence.</Help></div><b>{d.sixMonth?.label||d.labels.trend}</b><span>Use Trend for direction; Technical has the evidence.</span></div>
+      <div><div className="metricLabel"><small>RISK / REWARD</small><Help title="Risk / reward">Compares the distance from today’s price to NIVORA’s confirmation level with the distance to its reassessment level. It is a technical planning ratio, not a forecast.</Help></div><b>{rr==null?"—":`${rr.toFixed(1)}×`}</b><span>{upside==null||downside==null?"Waiting for levels":`${upside>=0?"+":""}${upside.toFixed(1)}% to confirmation · ${downside.toFixed(1)}% to reassess`}</span></div>
+      <div><div className="metricLabel"><small>DATA CONFIDENCE</small><Help title="Data confidence">Shows whether price history, business data, market context and news/catalyst sources are available. Higher confidence means better evidence coverage—not higher certainty of profit.</Help></div><b className={confidence==="High"?"good":confidence==="Low"?"bad":"mid"}>{confidence}</b><span>Price + business + news + market coverage.</span></div>
+    </section>
+
+    <section className={["osDecision",tone(view.label),"v12Decision","v18Decision"].join(" ")}>
+      <div className="osDecisionTop">
+        <div className="decisionEyebrow"><small>THE CALL</small><Help title="What does the call mean?">The call translates business quality, price behavior, current timing, risk, market context and catalysts into one action for the horizon you selected. It is decision support, not a guarantee.</Help></div>
+        <h2>{view.label}</h2>
+        <p>{view.text}</p>
+        <div className="decisionWhy">
+          <b>Why?</b>
+          {(positive.length?positive:["Evidence is mixed; waiting for stronger confirmation."]).slice(0,2).map((x:string,i:number)=><span key={i}>✓ {x}</span>)}
+          {risks[0]&&<span className="riskReason">• {risks[0]}</span>}
+        </div>
+        <div className="v19Explain">
+          <details>
+            <summary>Why NIVORA says this</summary>
+            <div className="v19ExplainPanel">
+              <div><span>Business quality</span><b>{businessScore}/100</b></div>
+              <div><span>Recent price record</span><b>{sixScore}/100</b></div>
+              <div><span>Entry quality</span><b>{timingScore}/100</b></div>
+              <div><span>Risk</span><b>{riskScore}/100</b></div>
+              <div><span>Decision confidence</span><b>{confidence}</b></div>
+              <div><span>Supporting score</span><b>{overallScore}/100</b></div>
+            </div>
+          </details>
+        </div>
+      </div>
+      <div className="osPlanGrid">
+        <div><div className="metricLabel"><small>BETTER ENTRY</small><Help title="Better entry">A price area where the current risk/reward becomes more attractive. Reaching this area is not enough by itself; NIVORA still prefers stabilization.</Help></div><b>{betterEntryText}</b><span>Prefer stabilization here rather than buying simply because price is falling.</span></div>
+        <div><div className="metricLabel"><small>CONFIRMATION</small><Help title="Confirmation">A price/volume condition that would strengthen the setup. NIVORA prefers a convincing close or retest, not the first spike through resistance.</Help></div><b>{confirmationText}</b><span>Prefer a strong close or breakout retest with improving volume/momentum.</span></div>
+        <div><div className="metricLabel"><small>PROTECT / REASSESS</small><Help title="Protect / reassess">The technical thesis materially weakens below this area. It is not an automatic stop order; recheck fundamentals, news and your position risk.</Help></div><b>{invalidationText}</b><span>Technical thesis weakens here. Recheck fundamentals and catalyst risk.</span></div>
+      </div>
+    </section>
+
+    <section className="v18DecisionStrip">
+      <div><small>BUSINESS</small><b className={tone(business.label)}>{business.label}</b><Help title="Business quality">Scored from reported growth, profitability, cash generation, balance-sheet evidence and multi-year consistency when SEC data is available.</Help></div>
+      <div><small>TREND</small><b className={tone(d.labels.trend)}>{d.labels.trend}</b><Help title="Trend">Uses multiple price horizons and structure. A strong trend can still receive a WAIT if the entry is stretched.</Help></div>
+      <div><small>ENTRY</small><b className={tone(d.labels.entry)}>{d.labels.entry}</b><Help title="Entry quality">Combines price location, support/resistance, momentum, extension and downside risk. This answers “is today a good place to start?”</Help></div>
+      <div><small>RISK</small><b className={d.labels.risk==="High"?"bad":d.labels.risk==="Lower"?"good":"mid"}>{d.labels.risk}</b><Help title="Risk">Reflects volatility, extension, downside structure and market context. High risk does not automatically mean a bad company.</Help></div>
+      <div><small>CONFIDENCE</small><b className={confidence==="High"?"good":confidence==="Low"?"bad":"mid"}>{confidence}</b><Help title="Decision confidence">Confidence rises when price history, business data, market context and current news/catalyst data are all available. Low confidence means treat the call more cautiously.</Help></div>
+    </section>
+
+    <div className="osMicroActions v12Actions">
+      <button onClick={watch}><Star size={16} fill={watching?"currentColor":"none"}/>{watching?"Watching":"Add to watchlist"}</button>
+      <Link href={"/portfolio?symbol="+encodeURIComponent(symbol)}><PlusCircle size={16}/>Track position</Link>
+      <span>{supportText}</span><span>{resistanceText}</span>
+    </div>
+
+    <section className="v12Pulse v18Pulse">
+      <div><small>WHAT CHANGED TODAY</small><h3>{todayMoveText}</h3><p>{moveReason}</p>{topNews?.url&&<a href={topNews.url} target="_blank" rel="noreferrer">Read source <ExternalLink size={13}/></a>}</div>
+      <div><small>NEXT CATALYST</small><h3>{nextCatalystTitle}</h3><p>{nextCatalystDetail}</p></div>
+      <div><small>MARKET CONTEXT</small><h3>{d.market.regime}</h3><p>{marketContextText}</p></div>
+    </section>
+
+    <section className="osChartCard v12Chart">
+      <div className="osSectionTitle"><div><small>PRICE MAP</small><h3>What price has to do next</h3></div><span>Green = entry/support · Orange = confirmation · Red = reassess</span></div>
+      <PriceChart candles={d.candles} levels={d.levels}/>
+    </section>
+
+    <section className="beginnerScore v18Score">
+      <div className="beginnerScoreMain">
+        <div className="decisionEyebrow"><small>NIVORA SCORE</small><Help title="How is the NIVORA score calculated?">{scoreFormula} The score is a summary, not the decision itself. 80–100 = excellent evidence, 65–79 = promising/selective, 50–64 = mixed, below 50 = weak. The action above can still be WAIT when price is extended.</Help></div>
+        <div className="scoreLine"><b>{overallScore}</b><span>/100</span><em>{overallLabel}</em></div>
+        <h3>{view.label}</h3><p>{beginnerReason}</p>
+      </div>
+      <div className="beginnerMath">
+        <div><div className="metricLabel"><small>BUSINESS</small><Help title="Business score">Uses reported financial history and quality signals. It is weighted more heavily in Long-term mode.</Help></div><b>{business.label}</b><span>{fiveRecordText}</span></div>
+        <div><div className="metricLabel"><small>6-MONTH CHART</small><Help title="6-month record">Measures the stock’s recent trend, return, drawdown and price structure over roughly six months.</Help></div><b>{d.sixMonth?.label||"Mixed"}</b><span>{sixMonthText}</span></div>
+        <div><div className="metricLabel"><small>TIMING NOW</small><Help title="Timing now">Focuses on whether today’s price is attractive relative to the setup—not whether the company is good.</Help></div><b>{d.labels.entry}</b><span>Entry quality at today’s price.</span></div>
+        <div><div className="metricLabel"><small>RISK</small><Help title="Risk in the score">The score rewards lower risk and penalizes unusually high downside/extension risk. Position sizing still belongs to the user.</Help></div><b>{d.labels.risk}</b><span>Higher risk means use more caution.</span></div>
+      </div>
+    </section>
+
+    <section className="v12ReasonGrid">
+      <div className="v12Reason goodBox"><small>WHY IT CAN WORK</small><h3>What supports the setup</h3>{positive.length?positive.map((x:string,i:number)=><p key={i}>✓ {x}</p>):<p>Evidence is still loading or mixed.</p>}</div>
+      <div className="v12Reason riskBox"><small>WHAT CAN GO WRONG</small><h3>What is holding it back</h3>{risks.length?risks.map((x:string,i:number)=><p key={i}>• {x}</p>):<p>No major risk flag was detected from the connected sources.</p>}</div>
+    </section>
+
+    <section className="osContext v12Context">
+      <div className="osTabs v12Tabs">
+        <button className={tab==="overview"?"on":""} onClick={()=>setTab("overview")}>Overview</button>
+        <button className={tab==="fundamentals"?"on":""} onClick={()=>setTab("fundamentals")}>Fundamentals</button>
+        <button className={tab==="catalysts"?"on":""} onClick={()=>setTab("catalysts")}>Catalysts</button>
+        <button className={tab==="news"?"on":""} onClick={()=>setTab("news")}>News</button>
+        <button className={tab==="earnings"?"on":""} onClick={()=>setTab("earnings")}>Earnings</button>
+        <button className={tab==="technical"?"on":""} onClick={()=>setTab("technical")}>Technical</button>
+        {d.assetType!=="crypto"&&<button className={tab==="options"?"on":""} onClick={()=>setTab("options")}>Options / Gamma</button>}
+      </div>
+
+      {tab==="overview"&&<div className="v12Overview">
+        <div><BriefcaseBusiness size={18}/><div className="metricLabel"><small>Business</small><Help title="Business">Financial quality and consistency. This is intentionally separate from whether today is a good entry.</Help></div><b className={tone(business.label)}>{business.label}</b><span>{business.reasons?.[0]||"Loading fundamentals…"}</span></div>
+        <div><Activity size={18}/><div className="metricLabel"><small>Entry</small><Help title="Entry">How attractive today’s price is relative to support, resistance, extension, momentum and downside risk.</Help></div><b className={tone(d.labels.entry)}>{d.labels.entry}</b><span>Current location versus support, extension and momentum.</span></div>
+        <div><ShieldCheck size={18}/><div className="metricLabel"><small>Risk</small><Help title="Risk">Technical downside and volatility, plus broader market regime.</Help></div><b className={d.labels.risk==="High"?"bad":"mid"}>{d.labels.risk}</b><span>Technical downside plus market regime.</span></div>
+        <div><Newspaper size={18}/><div className="metricLabel"><small>News</small><Help title="News">Material headlines are summarized for tone and impact. Headlines alone do not override price/fundamental evidence.</Help></div><b className={news.tone==="positive"?"good":news.tone==="negative"?"bad":"mid"}>{news.label}</b><span>{news.topReason}</span></div>
+      </div>}
+
+      {tab==="fundamentals"&&<div className="v12Fund">
+        <div className={`fundSignal ${business.tone||"neutral"}`}><small>BUSINESS QUALITY</small><h3>{business.label}{business.score!=null?` · ${business.score}/100`:""}</h3>{(business.reasons||[]).slice(0,4).map((x:string,i:number)=><p key={i}>• {x}</p>)}{five&&<div className="fiveRecord"><small>5-YEAR RECORD</small><b>{five.score}/100 · {five.revenueTrend}</b><p>{five.summary}</p><div>{(five.history||[]).map((y:any)=><span key={y.year}><i>{y.year}</i><strong>{y.revenue!=null?money(y.revenue):"—"}</strong><em>{y.netIncome!=null?`NI ${money(y.netIncome)}`:"NI —"}</em></span>)}</div></div>}</div>
+        <div className="osList">{company?.fundamentals?.length?company.fundamentals.map((x:any)=><div key={x.label}><span>{x.label}{x.detail&&<small>{x.detail}</small>}</span><b>{x.value}</b></div>):<p>No standardized SEC fundamentals available for this symbol yet.</p>}</div>
+      </div>}
+
+      {tab==="catalysts"&&<div className="v12Catalysts">{earn&&<div className="nextEvent"><CalendarDays size={18}/><div><small>NEXT EARNINGS</small><b>{earn.date}</b><span>{earnDays!=null&&earnDays>=0?`${earnDays} days away`:"Upcoming"}</span></div></div>}<div className="osList links">{filings.length?filings.slice(0,8).map((x:any)=><a href={x.url} target="_blank" rel="noreferrer" key={x.accession}><span><b>{x.label}</b><small>{x.form} · {x.description}</small></span><em className={x.tone}>{x.materiality}</em><small>{x.date}</small><ExternalLink size={13}/></a>):<p>No recent material SEC filings found.</p>}</div></div>}
+
+      {tab==="news"&&<div className="v12News">{context?.enabled===false?<div className="connectFeed"><Newspaper size={22}/><b>Connect live news</b><p>Add a Finnhub API key. Price analysis and SEC data continue to work without it.</p></div>:items.length?items.map((x:any,i:number)=><a href={x.url} target="_blank" rel="noreferrer" key={i}><div><span className={`newsTone ${x.tone}`}>{x.tone}</span><small>{x.materiality} materiality · {x.source}</small></div><b>{x.headline}</b><p>{x.summary}</p><ExternalLink size={13}/></a>):<p>No recent company headlines were returned.</p>}</div>}
+
+      {tab==="earnings"&&<div className="v12Earnings"><div className="earnSplit">{latestReport&&<div className="earnNext earnReported"><small>LATEST REPORTED RESULTS</small><h3>{latestEarnNews?.date?new Date(latestEarnNews.date).toLocaleDateString():latestReport.date}</h3><p>{latestEarnNews?.headline||`${latestReport.form} filed — latest reported financial filing`}</p>{latestEarnNews?.url&&<a href={latestEarnNews.url} target="_blank" rel="noreferrer">Read results <ExternalLink size={12}/></a>}</div>}{earn&&<div className="earnNext estimated"><small>NEXT EARNINGS · ESTIMATED</small><h3>{earn.date}</h3><p>{earn.hour||"Time not listed"}{earn.epsEstimate!=null?` · EPS est. ${eps(earn.epsEstimate)}`:""}{earn.revenueEstimate!=null?` · Revenue est. ${money(earn.revenueEstimate)}`:""}</p><p className="earnMeta">Future calendar dates are estimates until confirmed by the company.</p></div>}</div><div className="earnGrid">{(context?.surprises||[]).length?context.surprises.map((x:any,i:number)=><div key={i}><small>{x.period}</small><b className={(x.surprisePercent??0)>=0?"good":"bad"}>{x.surprisePercent!=null?`${x.surprisePercent>=0?"+":""}${Number(x.surprisePercent).toFixed(1)}% surprise`:"Reported"}</b><span>Actual {x.actual??"—"} · Est. {x.estimate??"—"}</span></div>):<p>No earnings-surprise history returned by the connected feed.</p>}</div></div>}
+
+      {tab==="technical"&&<div className="v12Technical"><div className="techIntro"><h3>Technical evidence</h3><p>You do not need these numbers to use NIVORA. Tap the info icon to understand what each metric contributes.</p></div><div className="osTechGrid">{Object.entries(d.engine).map(([k,v]:any)=><div key={k}><div className="metricLabel"><span>{k}</span><Help title={k}>{k==="Trend"?"Multi-horizon direction and slope.":k==="Momentum"?"Speed and persistence of the current move.":k==="Flow"?"Volume/price participation and confirmation.":k==="Structure"?"Higher highs/lows, support and resistance behavior.":k==="RSI"?"Relative Strength Index; helps identify momentum extremes but is never used alone.":k==="MACD"?"Trend/momentum crossover evidence.":k==="Extension"?"How far price has moved away from its recent equilibrium; high extension increases chase risk.":k==="Relative strength"?"Performance versus the relevant benchmark.":k==="Market regime"?"Whether the broad market is supportive, mixed or risk-off.":"Supporting quantitative evidence used by the decision engine."}</Help></div><b>{typeof v==="number"?`${v}/100`:v}</b></div>)}</div><div className="techWhy">{d.why.map((x:string,i:number)=><p key={i}>• {x}</p>)}</div></div>}
+
+      {tab==="options"&&<div className="gammaPanel">
+        <div className="gammaHero"><small>OPTIONS / GAMMA</small><h3>Gamma levels can improve short-term context — but we will not fake them.</h3><p>Dealer-gamma style “walls” require an options chain with strike, open interest and Greeks. Stock candles alone cannot reliably tell us dealer positioning.</p></div>
+        <div className="gammaGrid"><div><b>What NIVORA will calculate</b><span>Estimated gamma concentration by strike, call/put walls, pin zones, zero-gamma proxy and earnings implied-volatility context.</span></div><div><b>How it will be used</b><span>As a supporting timing layer for short-term entries and event risk — never as the sole BUY/SELL signal.</span></div><div><b>Current status</b><span>Provider-ready. We need a licensed options-chain source before turning on live gamma data.</span></div></div>
+        <div className="gammaNote"><Info size={15}/><p>The Cboe delayed quote website displays Gamma/OI but explicitly prohibits automated extraction from that webpage. NIVORA will use a permitted API/data feed rather than scraping it.</p></div>
+      </div>}
+    </section>
+
+    <div className="osDisclaimer">NIVORA is decision support, not a guarantee. The call should change when price, fundamentals, catalysts or risk change. <Link href="/disclaimer">Read disclaimer</Link></div>
+  </div>;
 }
