@@ -68,9 +68,17 @@ def read_tsv(z,member):
 def parse_date(value):
     value=str(value or "").strip()
     if not value:return None
-    for fmt in ("%Y-%m-%d","%m-%d-%Y","%Y%m%d","%m/%d/%Y"):
-        try:return datetime.strptime(value,fmt).date().isoformat()
-        except: pass
+    # SEC Form 13F structured data documents DATE fields as DD-MON-YYYY.
+    # Keep the other formats because historical/data-source representations can vary.
+    for fmt in (
+        "%d-%b-%Y", "%d-%B-%Y",
+        "%Y-%m-%d", "%m-%d-%Y", "%Y%m%d", "%m/%d/%Y",
+        "%Y/%m/%d", "%m/%d/%y"
+    ):
+        try:
+            return datetime.strptime(value,fmt).date().isoformat()
+        except ValueError:
+            pass
     m=re.match(r"^(\d{4})-(\d{2})-(\d{2})",value)
     return "-".join(m.groups()) if m else None
 
@@ -79,49 +87,153 @@ def quarter(url,ticker_map):
     z=zipfile.ZipFile(io.BytesIO(blob))
     cover=find_member(z,["coverpage.tsv"])
     info=find_member(z,["infotable.tsv"])
+
     manager={}
     report_period={}
     filing_date={}
     period_counts=Counter()
+
+    # Manager identity comes from COVERPAGE. The report period may also be here,
+    # but SEC's SUBMISSION table is the authoritative fallback/source for
+    # PERIODOFREPORT and FILING_DATE.
     for r in read_tsv(z,cover):
-        acc=r.get("ACCESSION_NUMBER","")
-        manager[acc]=r.get("FILINGMANAGER_NAME","") or r.get("NAME","") or acc
-        p=parse_date(r.get("REPORTCALENDARORQUARTER","") or r.get("PERIODOFREPORT",""))
+        acc=str(r.get("ACCESSION_NUMBER","") or "").strip()
+        if not acc:
+            continue
+        manager[acc]=(
+            r.get("FILINGMANAGER_NAME","")
+            or r.get("NAME","")
+            or acc
+        )
+        p=parse_date(
+            r.get("REPORTCALENDARORQUARTER","")
+            or r.get("PERIODOFREPORT","")
+        )
         if p:
             report_period[acc]=p
-            period_counts[p]+=1
+
     try:
         submission=find_member(z,["submission.tsv"])
         for r in read_tsv(z,submission):
-            acc=r.get("ACCESSION_NUMBER","")
-            fd=parse_date(r.get("FILING_DATE","") or r.get("FILINGDATE","") or r.get("FILEDASOFDATE",""))
-            if acc and fd:filing_date[acc]=fd
-    except Exception:
-        pass
+            acc=str(r.get("ACCESSION_NUMBER","") or "").strip()
+            if not acc:
+                continue
+
+            # SEC documentation defines PERIODOFREPORT in SUBMISSION as DD-MON-YYYY.
+            p=parse_date(
+                r.get("PERIODOFREPORT","")
+                or r.get("REPORTCALENDARORQUARTER","")
+            )
+            if p:
+                report_period[acc]=p
+
+            fd=parse_date(
+                r.get("FILING_DATE","")
+                or r.get("FILINGDATE","")
+                or r.get("FILEDASOFDATE","")
+            )
+            if fd:
+                filing_date[acc]=fd
+    except Exception as e:
+        print("warning: could not read submission.tsv:",repr(e),file=sys.stderr)
+
+    # Count after merging COVERPAGE + SUBMISSION so each accession is counted once.
+    for p in report_period.values():
+        if p:
+            period_counts[p]+=1
+
     if not period_counts:
-        raise RuntimeError("SEC 13F dataset did not contain report-period metadata")
-    target_period=period_counts.most_common(1)[0][0]
-    agg=defaultdict(lambda:defaultdict(lambda:{"shares":0.0,"value":0.0,"issuer":"","filingDate":None,"reportPeriod":target_period}))
+        # Last-resort fallback keeps the pipeline alive if SEC changes a column name.
+        # For these SEC quarterly download packages, infer the holdings quarter from
+        # the filing-window end date: Jan-May => prior Dec 31, Mar-May => Mar 31, etc.
+        dataset_end=period_from_url(url)
+        dt=datetime.strptime(dataset_end,"%Y-%m-%d").date()
+        if dt.month in (1,2):
+            target_period=f"{dt.year-1}-12-31"
+        elif dt.month in (3,4,5):
+            target_period=f"{dt.year}-03-31"
+        elif dt.month in (6,7,8):
+            target_period=f"{dt.year}-06-30"
+        elif dt.month in (9,10,11):
+            target_period=f"{dt.year}-09-30"
+        else:
+            target_period=f"{dt.year}-12-31"
+        print(
+            "warning: SEC report-period metadata unavailable; "
+            f"using inferred quarter end {target_period}",
+            file=sys.stderr
+        )
+    else:
+        target_period=period_counts.most_common(1)[0][0]
+
+    agg=defaultdict(
+        lambda:defaultdict(
+            lambda:{
+                "shares":0.0,
+                "value":0.0,
+                "issuer":"",
+                "filingDate":None,
+                "reportPeriod":target_period
+            }
+        )
+    )
+
     matched=0
+    skipped_other_period=0
+
     for r in read_tsv(z,info):
         issuer=r.get("NAMEOFISSUER","")
         matches=ticker_map.get(norm(issuer))
-        if not matches or len(matches)!=1: continue
+        if not matches or len(matches)!=1:
+            continue
+
         sym,title=matches[0]
-        if str(r.get("PUTCALL","")).strip(): continue
-        acc=r.get("ACCESSION_NUMBER","")
-        if report_period.get(acc)!=target_period: continue
+
+        # Exclude put/call option rows from common-equity institutional holdings.
+        if str(r.get("PUTCALL","") or "").strip():
+            continue
+
+        acc=str(r.get("ACCESSION_NUMBER","") or "").strip()
+        rp=report_period.get(acc)
+
+        # If the accession has explicit period metadata, enforce target quarter.
+        # If period metadata is absent for this accession, retain it only when the
+        # package-wide period had to be inferred.
+        if rp and rp!=target_period:
+            skipped_other_period+=1
+            continue
+        if not rp and period_counts:
+            continue
+
         mgr=manager.get(acc,acc or "Reporting manager")
-        try: shares=float(r.get("SSHPRNAMT") or 0)
-        except: shares=0.0
-        try: value=float(r.get("VALUE") or 0)
-        except: value=0.0
+
+        try:
+            shares=float(r.get("SSHPRNAMT") or 0)
+        except (TypeError,ValueError):
+            shares=0.0
+
+        try:
+            value=float(r.get("VALUE") or 0)
+        except (TypeError,ValueError):
+            value=0.0
+
         a=agg[sym][mgr]
-        a["shares"]+=shares;a["value"]+=value;a["issuer"]=issuer
+        a["shares"]+=shares
+        a["value"]+=value
+        a["issuer"]=issuer
         a["filingDate"]=filing_date.get(acc) or a["filingDate"]
-        a["reportPeriod"]=target_period
+        a["reportPeriod"]=rp or target_period
         matched+=1
-    print("matched rows",matched,"symbols",len(agg),"report period",target_period,file=sys.stderr)
+
+    print(
+        "matched rows",matched,
+        "symbols",len(agg),
+        "report period",target_period,
+        "accessions",len(report_period),
+        "filing dates",len(filing_date),
+        "skipped other-period rows",skipped_other_period,
+        file=sys.stderr
+    )
     return agg,target_period
 
 def period_from_url(url):
