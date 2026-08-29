@@ -708,8 +708,30 @@ export default function StockClient({symbol}:{symbol:string}){
           <div className="v34TechVerdict"><small>CURRENT TECHNICAL READ</small><b className={tone(d.labels.trend)}>{proTech?.trendLabel||d.labels.trend}</b><span>{proTech?.macdLabel||"MACD unavailable"} MACD · {proTech?.rsiLabel||"RSI unavailable"} RSI</span></div>
         </div>
         {proTech&&<div className="v34IndicatorGrid">
-          <div><div className="metricLabel"><small>RSI · 14</small><Help title="RSI (14)">Relative Strength Index from 0–100. Above 70 can indicate an overbought/extended condition; below 30 can indicate oversold. NIVORA does not use RSI alone.</Help></div><b className={proTech.rsi14>=70?"bad":proTech.rsi14<=30?"good":"mid"}>{proTech.rsi14!=null?proTech.rsi14.toFixed(1):"—"}</b><span>{proTech.rsiLabel}</span></div>
-          <div><div className="metricLabel"><small>MACD · 12/26/9</small><Help title="MACD">MACD compares fast and slow exponential moving averages. A positive histogram supports bullish momentum; a negative histogram supports bearish momentum.</Help></div><b className={proTech.macdLabel==="Bullish"?"good":proTech.macdLabel==="Bearish"?"bad":"mid"}>{proTech.macdLabel}</b><span>{proTech.macdHist!=null?`Histogram ${proTech.macdHist>=0?"+":""}${proTech.macdHist.toFixed(3)}`:"Unavailable"}</span></div>
+<div>
+  <div className="metricLabel">
+    <small>RSI · 14</small>
+    <Help title="RSI (14)">
+      Relative Strength Index from 0–100. Above 70 can indicate an overbought/extended condition; below 30 can indicate oversold. NIVORA does not use RSI alone.
+    </Help>
+  </div>
+
+  <b
+    className={
+      proTech.rsi14 == null
+        ? "mid"
+        : proTech.rsi14 >= 70
+        ? "bad"
+        : proTech.rsi14 <= 30
+        ? "good"
+        : "mid"
+    }
+  >
+    {proTech.rsi14 != null ? proTech.rsi14.toFixed(1) : "—"}
+  </b>
+
+  <span>{proTech.rsiLabel}</span>
+</div>          <div><div className="metricLabel"><small>MACD · 12/26/9</small><Help title="MACD">MACD compares fast and slow exponential moving averages. A positive histogram supports bullish momentum; a negative histogram supports bearish momentum.</Help></div><b className={proTech.macdLabel==="Bullish"?"good":proTech.macdLabel==="Bearish"?"bad":"mid"}>{proTech.macdLabel}</b><span>{proTech.macdHist!=null?`Histogram ${proTech.macdHist>=0?"+":""}${proTech.macdHist.toFixed(3)}`:"Unavailable"}</span></div>
           <div><div className="metricLabel"><small>20D / 50D TREND</small><Help title="Moving-average trend">Compares price with the 20-day and 50-day moving averages. Alignment can confirm trend direction but can lag turning points.</Help></div><b className={proTech.trendLabel==="Bullish"?"good":proTech.trendLabel==="Bearish"?"bad":"mid"}>{proTech.trendLabel}</b><span>{proTech.d20!=null?`${proTech.d20>=0?"+":""}${proTech.d20.toFixed(1)}% vs 20D`:"—"} · {proTech.d50!=null?`${proTech.d50>=0?"+":""}${proTech.d50.toFixed(1)}% vs 50D`:"—"}</span></div>
           <div><div className="metricLabel"><small>VOLUME</small><Help title="Volume confirmation">Compares current volume with the recent 20-session average. Strong participation can make breakouts or reversals more meaningful.</Help></div><b>{proTech.volRatio!=null?`${proTech.volRatio.toFixed(2)}×`:"—"}</b><span>{proTech.volumeLabel}</span></div>
           <div><div className="metricLabel"><small>ATR · 14</small><Help title="ATR (14)">Average True Range estimates typical recent daily movement. ATR% helps compare volatility across stocks with different prices.</Help></div><b>{proTech.atrPct!=null?`${proTech.atrPct.toFixed(1)}%`:"—"}</b><span>Typical daily range</span></div>
