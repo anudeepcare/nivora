@@ -1,0 +1,35 @@
+name: NIVORA SEC 13F Sync
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    # Quarterly refresh check
+    - cron: "0 10 15 2,5,8,11 *"
+
+jobs:
+  sync-sec-13f:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout NIVORA
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests supabase
+
+      - name: Sync SEC 13F data
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: |
+          python scripts/sync_sec_13f.py
