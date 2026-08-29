@@ -50,15 +50,16 @@ try{
  if(opMargin!=null)fundamentals.push({label:"Operating margin",value:`${opMargin.toFixed(1)}%`});
  if(grossMargin!=null)fundamentals.push({label:"Gross margin",value:`${grossMargin.toFixed(1)}%`});
  if(leverage!=null)fundamentals.push({label:"Liabilities / assets",value:`${leverage.toFixed(1)}%`});
- let score=0;const reasons:string[]=[];
- if(revGrowth!=null){if(revGrowth>15){score+=2;reasons.push("Revenue growth is strong.")}else if(revGrowth>0){score+=1;reasons.push("Revenue is growing.")}else{score-=1;reasons.push("Revenue growth is negative.")}}
- if(ni!=null){if(+ni>0){score+=1;reasons.push("The company is profitable on the latest annual filing.")}else{score-=1;reasons.push("Latest annual net income is negative.")}}
- if(fcf!=null){if(fcf>0){score+=1;reasons.push("Free cash flow is positive.")}else{score-=1;reasons.push("Free cash flow is negative.")}}
- if(opMargin!=null&&opMargin>12){score+=1;reasons.push("Operating margin is healthy.")}
- if(leverage!=null){if(leverage<65)score+=1;else if(leverage>85)score-=1}
- if(cash!=null&&liab!=null&&+cash>+liab*.25){score+=1;reasons.push("Cash provides a meaningful balance-sheet cushion.")}
+ let score=0;const reasons:string[]=[];const positiveReasons:string[]=[];const riskReasons:string[]=[];
+ const pos=(x:string)=>{reasons.push(x);positiveReasons.push(x)};const neg=(x:string)=>{reasons.push(x);riskReasons.push(x)};
+ if(revGrowth!=null){if(revGrowth>15){score+=2;pos("Revenue growth is strong.")}else if(revGrowth>0){score+=1;pos("Revenue is growing.")}else{score-=1;neg("Revenue growth is negative.")}}
+ if(ni!=null){if(+ni>0){score+=1;pos("The company is profitable on the latest annual filing.")}else{score-=1;neg("Latest annual net income is negative.")}}
+ if(fcf!=null){if(fcf>0){score+=1;pos("Free cash flow is positive.")}else{score-=1;neg("Free cash flow is negative.")}}
+ if(opMargin!=null&&opMargin>12){score+=1;pos("Operating margin is healthy.")}
+ if(leverage!=null){if(leverage<65){score+=1;pos("Balance-sheet leverage is moderate.")}else if(leverage>85){score-=1;neg("Liabilities are high relative to assets.")}}
+ if(cash!=null&&liab!=null&&+cash>+liab*.25){score+=1;pos("Cash provides a meaningful balance-sheet cushion.")}
  const businessScore=score100(50+score*8+(fiveYearRecord.score-50)*.35);
- const fundamentalSignal=businessScore>=72?{label:"Strong",tone:"good",score:businessScore,reasons}:businessScore<45?{label:"Weak / watch",tone:"bad",score:businessScore,reasons}:{label:"Mixed",tone:"mid",score:businessScore,reasons};
+ const fundamentalSignal=businessScore>=72?{label:"Strong",tone:"good",score:businessScore,reasons,positiveReasons,riskReasons}:businessScore<45?{label:"Weak / watch",tone:"bad",score:businessScore,reasons,positiveReasons,riskReasons}:{label:"Mixed",tone:"mid",score:businessScore,reasons,positiveReasons,riskReasons};
  const r=subs.filings?.recent||{},filings=(r.form||[]).map((form:string,i:number)=>{const description=r.primaryDocDescription?.[i]||r.primaryDocument?.[i]||"SEC filing",classify=classifyFiling(form,description);return{form,date:r.filingDate?.[i],accession:r.accessionNumber?.[i],description,url:`https://www.sec.gov/Archives/edgar/data/${entry.cik_str}/${String(r.accessionNumber?.[i]||"").replaceAll("-","")}/${r.primaryDocument?.[i]||""}`,...classify}}).filter((x:any)=>["8-K","10-Q","10-K","6-K","20-F","40-F","S-3","424B5","4"].includes(x.form)).slice(0,14);
  const filingRisk=filings.find((x:any)=>x.tone==="risk");
  return NextResponse.json({name:entry.title,cik,assetType:"stock",freshness:{fundamentalsAt:nowIso(),fundamentalsTtlSeconds:21600,filingsTtlSeconds:300},fundamentals,fundamentalSignal,fiveYearRecord,filings,filingRisk,rawMetrics:{revGrowth,niGrowth,fcf,opMargin,grossMargin,leverage}});

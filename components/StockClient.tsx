@@ -17,9 +17,10 @@ import {
 import SearchBox from "./SearchBox";
 import PriceChart from "./PriceChart";
 import {supabaseBrowser} from "@/lib/supabase";
+import {buildNivoraIntelligence} from "@/lib/nivora-intelligence";
 
 type Mode="now"|"swing"|"long"|"own";
-type Tab="overview"|"fundamentals"|"catalysts"|"news"|"earnings"|"technical"|"options";
+type Tab="overview"|"thesis"|"fundamentals"|"catalysts"|"news"|"earnings"|"technical"|"options";
 
 const tone=(s:string)=>{
   const x=(s||"").toUpperCase();
@@ -104,6 +105,7 @@ export default function StockClient({symbol}:{symbol:string}){
   const[optionView,setOptionView]=useState<"setups"|"positioning">("setups");
   const[optionSide,setOptionSide]=useState<"bullish"|"bearish">("bullish");
   const[optionStyle,setOptionStyle]=useState<"conservative"|"balanced"|"aggressive"|"leaps">("balanced");
+  const[optionExpiration,setOptionExpiration]=useState<string|null>(null);
 
   useEffect(()=>{
     let live=true;
@@ -144,16 +146,18 @@ export default function StockClient({symbol}:{symbol:string}){
 
 
   useEffect(()=>{
-    if(tab!=="options"||d?.assetType==="crypto"||optionsData)return;
+    if(tab!=="options"||d?.assetType==="crypto")return;
     const controller=new AbortController();
     setOptionsLoading(true);
-    fetch(`/api/options/${encodeURIComponent(symbol)}`,{cache:"no-store",signal:controller.signal})
+    const qs=new URLSearchParams({style:optionStyle,side:optionSide==="bullish"?"call":"put"});
+    if(optionExpiration)qs.set("expiration",optionExpiration);
+    fetch(`/api/options/${encodeURIComponent(symbol)}?${qs.toString()}`,{cache:"no-store",signal:controller.signal})
       .then(async r=>{const x=await r.json();if(!r.ok)throw new Error(x?.reason||x?.error||`Options request failed (${r.status})`);return x})
       .then(x=>setOptionsData(x))
       .catch((e:any)=>{if(e?.name!=="AbortError")setOptionsData({enabled:false,reason:e?.message||"Options intelligence could not load."})})
       .finally(()=>{if(!controller.signal.aborted)setOptionsLoading(false)});
     return()=>controller.abort();
-  },[tab,symbol,d?.assetType,optionsData]);
+  },[tab,symbol,d?.assetType,optionStyle,optionSide,optionExpiration]);
 
   async function watch(){
     const s=supabaseBrowser();
@@ -196,6 +200,10 @@ export default function StockClient({symbol}:{symbol:string}){
     return {atr14,atrPct:atr14&&last?atr14/last*100:null,rv,sma20:s20,sma50:s50,sma200:s200,d20:pct(s20),d50:pct(s50),d200:pct(s200),bbPos,volRatio,drawdown};
   },[d?.candles]);
 
+  const intelligence=useMemo(()=>buildNivoraIntelligence({
+    market:d,company,context,options:optionsData,mode
+  }),[d,company,context,optionsData,mode]);
+
   if(err)return <div className="osError"><b>Couldn’t analyze {symbol}</b><span>{err}</span><button onClick={()=>location.reload()}>Try again</button></div>;
   if(!d||!view)return <div className="osStockLoading"><div className="osLogo">NIVORA<span>.</span></div><b>Analyzing {symbol}</b><span>Building the decision first. Evidence loads after.</span></div>;
 
@@ -211,8 +219,10 @@ export default function StockClient({symbol}:{symbol:string}){
   const changeAbs=Math.abs(d.changePct);
   const topNews=items.find((x:any)=>x.materiality==="High")||items[0];
   const moveReason=topNews?topNews.headline:changeAbs>=4?"No single material headline was identified yet. Treat the move as price/volume-driven until new evidence appears.":"No unusual move requiring a specific headline explanation was detected.";
-  const positive=[...(business?.tone==="good"?(business.reasons||[]).slice(0,2):[]),...(d.positives||[])].filter(Boolean).slice(0,3);
-  const risks=[...(company?.filingRisk?[company.filingRisk.label]:[]),...(news.tone==="negative"?[news.topReason]:[]),...(d.risks||[])].filter(Boolean).slice(0,3);
+  const fundamentalPos=(business?.positiveReasons||[]).filter(Boolean);
+  const fundamentalRisk=(business?.riskReasons||[]).filter(Boolean);
+  const positive=[...fundamentalPos,...(d.positives||[])].filter(Boolean).slice(0,4);
+  const risks=[...fundamentalRisk,...(company?.filingRisk?[company.filingRisk.label]:[]),...(news.tone==="negative"?[news.topReason]:[]),...(d.risks||[])].filter(Boolean).slice(0,4);
 
   const five=company?.fiveYearRecord;
   const businessScore=Number(business?.score??50);
@@ -352,6 +362,13 @@ export default function StockClient({symbol}:{symbol:string}){
       </div>
     </section>
 
+    {intelligence&&<section className="v27IntelStrip">
+      <div className="intelLead"><small>NIVORA INTELLIGENCE</small><div><b>{intelligence.score}/100</b><span className={tone(intelligence.thesisLabel)}>{intelligence.thesisLabel}</span></div><p>{intelligence.biggestPositive} <strong>Watch:</strong> {intelligence.biggestRisk}</p></div>
+      <div><small>NEXT DECISION TRIGGER</small><b>{intelligence.nextDecision}</b></div>
+      <div><small>CONFIDENCE</small><b>{intelligence.confidenceLabel}</b><span>{intelligence.confidence}/100 evidence coverage</span></div>
+      <button type="button" onClick={()=>setTab("thesis")}>Open full thesis →</button>
+    </section>}
+
     <section className="v12ReasonGrid">
       <div className="v12Reason goodBox"><small>WHY IT CAN WORK</small><h3>What supports the setup</h3>{positive.length?positive.map((x:string,i:number)=><p key={i}>✓ {x}</p>):<p>Evidence is still loading or mixed.</p>}</div>
       <div className="v12Reason riskBox"><small>WHAT CAN GO WRONG</small><h3>What is holding it back</h3>{risks.length?risks.map((x:string,i:number)=><p key={i}>• {x}</p>):<p>No major risk flag was detected from the connected sources.</p>}</div>
@@ -360,6 +377,7 @@ export default function StockClient({symbol}:{symbol:string}){
     <section className="osContext v12Context">
       <div className="osTabs v12Tabs">
         <button className={tab==="overview"?"on":""} onClick={()=>setTab("overview")}>Overview</button>
+        <button className={tab==="thesis"?"on":""} onClick={()=>setTab("thesis")}>NIVORA Thesis</button>
         <button className={tab==="fundamentals"?"on":""} onClick={()=>setTab("fundamentals")}>Fundamentals</button>
         <button className={tab==="catalysts"?"on":""} onClick={()=>setTab("catalysts")}>Catalysts</button>
         <button className={tab==="news"?"on":""} onClick={()=>setTab("news")}>News</button>
@@ -373,6 +391,35 @@ export default function StockClient({symbol}:{symbol:string}){
         <div><Activity size={18}/><div className="metricLabel"><small>Entry</small><Help title="Entry">How attractive today’s price is relative to support, resistance, extension, momentum and downside risk.</Help></div><b className={tone(d.labels.entry)}>{d.labels.entry}</b><span>Current location versus support, extension and momentum.</span></div>
         <div><ShieldCheck size={18}/><div className="metricLabel"><small>Risk</small><Help title="Risk">Technical downside and volatility, plus broader market regime.</Help></div><b className={d.labels.risk==="High"?"bad":"mid"}>{d.labels.risk}</b><span>Technical downside plus market regime.</span></div>
         <div><Newspaper size={18}/><div className="metricLabel"><small>News</small><Help title="News">Material headlines are summarized for tone and impact. Headlines alone do not override price/fundamental evidence.</Help></div><b className={news.tone==="positive"?"good":news.tone==="negative"?"bad":"mid"}>{news.label}</b><span>{news.topReason}</span></div>
+      </div>}
+
+      {tab==="thesis"&&intelligence&&<div className="v27Thesis">
+        <div className="thesisHero">
+          <div><small>NIVORA SYNTHESIS ENGINE</small><h3>{intelligence.thesisLabel} · {intelligence.score}/100</h3><p>{intelligence.explanation}</p></div>
+          <div className="thesisAction"><small>CURRENT ACTION</small><b className={tone(intelligence.action)}>{intelligence.action}</b><span>{intelligence.nextDecision}</span></div>
+        </div>
+
+        <div className="thesisDimensions">
+          {Object.entries(intelligence.dimensions).map(([k,v]:any)=><div key={k}><span>{k}</span><b>{v}/100</b><i><em style={{width:`${Math.max(3,Math.min(100,v))}%`}}/></i></div>)}
+        </div>
+
+        <div className="thesisGrid">
+          <div className="thesisCard positive"><small>WHAT SUPPORTS THE THESIS</small>{intelligence.positives.length?intelligence.positives.map((x:string,i:number)=><p key={i}>✓ {x}</p>):<p>No dominant positive evidence yet.</p>}</div>
+          <div className="thesisCard concern"><small>WHAT CAN BREAK IT</small>{intelligence.concerns.length?intelligence.concerns.map((x:string,i:number)=><p key={i}>• {x}</p>):<p>No dominant risk flag right now.</p>}</div>
+          <div className="thesisCard contradiction"><small>CONTRADICTION DETECTOR</small>{intelligence.contradictions.length?intelligence.contradictions.map((x:string,i:number)=><p key={i}>↔ {x}</p>):<p>Major evidence layers are broadly aligned.</p>}</div>
+        </div>
+
+        <div className="scenarioSection">
+          <div className="scenarioTitle"><div><small>SCENARIO ENGINE</small><h3>What could happen next?</h3></div><Help title="Scenario engine">These are evidence-weighted scenarios, not price predictions. Probabilities are normalized from current business, technical, catalyst and risk evidence and should change as evidence changes.</Help></div>
+          <div className="scenarioGrid">{intelligence.scenarios.map((x:any)=><div key={x.name} className={x.name.startsWith("Bull")?"bull":x.name.startsWith("Bear")?"bear":"base"}><span>{x.name}</span><b>{x.probability}%</b><strong>{x.level!=null?`Key level $${x.level}`:"Key level unavailable"}</strong><p>{x.logic}</p></div>)}</div>
+        </div>
+
+        <div className="triggerGrid">
+          <div><small>WHAT WOULD MAKE NIVORA MORE BULLISH</small>{intelligence.bullTriggers.length?intelligence.bullTriggers.map((x:string,i:number)=><p key={i}>+ {x}</p>):<p>Evidence is already relatively aligned.</p>}</div>
+          <div><small>WHAT WOULD MAKE NIVORA MORE CAUTIOUS</small>{intelligence.bearTriggers.length?intelligence.bearTriggers.map((x:string,i:number)=><p key={i}>− {x}</p>):<p>No major deterioration trigger identified.</p>}</div>
+        </div>
+
+        {intelligence.missing.length>0&&<div className="intelMissing"><Info size={15}/><span>Confidence could improve with: {intelligence.missing.join(", ")}.</span></div>}
       </div>}
 
       {tab==="fundamentals"&&<div className="v12Fund">
@@ -417,8 +464,15 @@ export default function StockClient({symbol}:{symbol:string}){
         <><div className="optionsFresh"><span>{optionsData.dataMode}</span><small>{optionsData.updatedAt?`Provider snapshot ${new Date(optionsData.updatedAt).toLocaleString()}`:"Provider timestamp unavailable"}</small></div>
         {optionView==="setups"?<div className="contractLab">
           <div className="contractContext"><div><small>UNDERLYING CALL</small><b className={tone(view.label)}>{view.label}</b><span>Options should express a thesis—not create one.</span></div><div><small>EXPECTED MOVE</small><b>{optionsData.expectedMovePct!=null?`±${optionsData.expectedMovePct}%`:"—"}</b><span>From near-ATM option premium</span></div><div><small>ATM IV</small><b>{optionsData.atmIV!=null?`${optionsData.atmIV}%`:"—"}</b><span>Volatility priced into options</span></div></div>
-          <div className="contractControls"><div><button className={optionSide==="bullish"?"on":""} onClick={()=>setOptionSide("bullish")}>Calls · bullish</button><button className={optionSide==="bearish"?"on":""} onClick={()=>setOptionSide("bearish")}>Puts · bearish</button></div><div><button className={optionStyle==="conservative"?"on":""} onClick={()=>setOptionStyle("conservative")}>Safer</button><button className={optionStyle==="balanced"?"on":""} onClick={()=>setOptionStyle("balanced")}>Balanced</button><button className={optionStyle==="aggressive"?"on":""} onClick={()=>setOptionStyle("aggressive")}>Aggressive</button><button className={optionStyle==="leaps"?"on":""} onClick={()=>setOptionStyle("leaps")}>LEAPS</button></div></div>
+          <div className="contractControls"><div><button className={optionSide==="bullish"?"on":""} onClick={()=>setOptionSide("bullish")}>Calls · bullish</button><button className={optionSide==="bearish"?"on":""} onClick={()=>setOptionSide("bearish")}>Puts · bearish</button></div><div><button className={optionStyle==="conservative"?"on":""} onClick={()=>{setOptionExpiration(null);setOptionStyle("conservative")}}>Safer</button><button className={optionStyle==="balanced"?"on":""} onClick={()=>{setOptionExpiration(null);setOptionStyle("balanced")}}>Balanced</button><button className={optionStyle==="aggressive"?"on":""} onClick={()=>{setOptionExpiration(null);setOptionStyle("aggressive")}}>Aggressive</button><button className={optionStyle==="leaps"?"on":""} onClick={()=>{setOptionExpiration(null);setOptionStyle("leaps")}}>LEAPS</button></div></div>
           <div className="styleExplain"><Help title="Contract styles">Safer targets higher delta and better liquidity. Balanced seeks a middle ground. Aggressive accepts lower delta/shorter duration and can lose premium faster. LEAPS favors long duration and higher delta to reduce short-term theta pressure.</Help><span>{optionStyle==="leaps"?"Long-duration candidates for investors seeking stock-like exposure with defined premium risk.":optionStyle==="aggressive"?"Higher leverage and faster premium decay. Treat this as the highest-risk filter.":optionStyle==="conservative"?"Higher-delta candidates with stronger emphasis on liquidity and spread quality.":"A compromise between leverage, duration, liquidity and delta."}</span></div>
+          {optionsData?.expirations?.length>0&&<div className="expirationLab">
+            <div className="expirationHead"><div><small>EXPIRATION INTELLIGENCE</small><b>{optionsData.selectedExpiration?new Date(`${optionsData.selectedExpiration}T12:00:00`).toLocaleDateString():"Choose a date"}</b><span>{optionsData.expirationFit}</span></div><button className={!optionExpiration?"on":""} onClick={()=>setOptionExpiration(null)}>Auto best-fit</button></div>
+            <div className="expirationRail">
+              {optionsData.expirations.map((x:any)=><button key={x.date} className={(optionExpiration||optionsData.selectedExpiration)===x.date?"on":""} onClick={()=>setOptionExpiration(x.date)}><b>{new Date(`${x.date}T12:00:00`).toLocaleDateString(undefined,{month:"short",day:"numeric",year:x.dte>250?"numeric":undefined})}</b><span>{x.dte} DTE</span></button>)}
+            </div>
+          </div>}
+
           {(()=>{
             const list=optionsData.contractSetups?.[optionSide]?.[optionStyle]||[];
             return list.length?<div className="contractCards">{list.map((x:any,i:number)=><div className={`contractCard ${i===0?"top":""}`} key={`${x.expiration}-${x.strike}-${x.side}`}>

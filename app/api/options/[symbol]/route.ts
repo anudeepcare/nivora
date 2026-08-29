@@ -86,17 +86,32 @@ function rankedSet(rows:Contract[],spot:number,side:"call"|"put",style:"conserva
     .sort((a,b)=>b.score-a.score).slice(0,3);
 }
 
-export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
+export async function GET(req:Request,{params}:{params:Promise<{symbol:string}>}){
   const {symbol:raw}=await params; const symbol=decodeURIComponent(raw).toUpperCase();
+  const q=new URL(req.url).searchParams;
+  const style=(q.get("style")||"balanced") as "conservative"|"balanced"|"aggressive"|"leaps";
+  const requestedExpiration=q.get("expiration");
+  const requestedSide=q.get("side")==="put"?"put":"call";
   const token=process.env.MARKETDATA_TOKEN;
   if(!token)return NextResponse.json({enabled:false,reason:"MARKETDATA_TOKEN is not configured.",source:"MarketData.app"});
   if(symbol.includes("/"))return NextResponse.json({enabled:false,reason:"Options intelligence is currently for optionable US-listed underlyings.",source:"MarketData.app"});
   try{
-    // Default chain avoids pulling every expiration. On free accounts this data is at least 24h delayed.
-    const url=`https://api.marketdata.app/v1/options/chain/${encodeURIComponent(symbol)}/?minOpenInterest=1`;
-    const j=await sharedJson(url,["marketdata","options-chain",symbol],21600,5000,{
-      Authorization:`Bearer ${token}`,Accept:"application/json"
-    });
+    const headers={Authorization:`Bearer ${token}`,Accept:"application/json"};
+    const expUrl=`https://api.marketdata.app/v1/options/expirations/${encodeURIComponent(symbol)}/`;
+    const expJson=await sharedJson(expUrl,["marketdata","options-expirations",symbol],21600,4500,headers);
+    if(expJson?.s==="error")throw new Error(expJson.errmsg||"Options expiration lookup failed");
+    const expirationDates=(Array.isArray(expJson?.expirations)?expJson.expirations:[]).map((x:any)=>String(x)).filter(Boolean).sort();
+    const today=Date.now();
+    const target=style==="aggressive"?35:style==="conservative"?90:style==="leaps"?450:65;
+    const dteFor=(date:string)=>Math.max(0,Math.ceil((new Date(`${date}T16:00:00-04:00`).getTime()-today)/86400000));
+    let selectedExpiration=requestedExpiration&&expirationDates.includes(requestedExpiration)?requestedExpiration:null;
+    if(!selectedExpiration&&expirationDates.length){
+      const viable=expirationDates.filter((x:string)=>dteFor(x)>=7);
+      selectedExpiration=(viable.length?viable:expirationDates).sort((a:string,b:string)=>Math.abs(dteFor(a)-target)-Math.abs(dteFor(b)-target))[0];
+    }
+    if(!selectedExpiration)return NextResponse.json({enabled:true,source:"MarketData.app",status:"no_expirations",expirations:[]});
+    const url=`https://api.marketdata.app/v1/options/chain/${encodeURIComponent(symbol)}/?expiration=${encodeURIComponent(selectedExpiration)}&minOpenInterest=1`;
+    const j=await sharedJson(url,["marketdata","options-chain",symbol,selectedExpiration],21600,5000,headers);
     if(j?.s==="error")throw new Error(j.errmsg||"Options provider error");
     const rows=decode(j);
     if(!rows.length)return NextResponse.json({enabled:true,source:"MarketData.app",status:"no_data",contracts:0,freshness:{checkedAt:nowIso()}});
@@ -156,6 +171,9 @@ export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
     return NextResponse.json({
       enabled:true,source:"MarketData.app",dataMode:"24h delayed on free/trial entitlement",
       contracts:rows.length,underlyingPrice:spot,
+      expirations:expirationDates.map((date:string)=>({date,dte:dteFor(date)})),
+      selectedExpiration,
+      expirationFit:style==="leaps"?"Long-duration expiration closest to ~450 DTE.":style==="aggressive"?"Short-duration expiration closest to ~35 DTE.":style==="conservative"?"Higher-time-cushion expiration closest to ~90 DTE.":"Balanced expiration closest to ~65 DTE.",
       expiration:fmtDate(expirations[0] as number|null),
       updatedAt:maxUpdated?fmtDate(maxUpdated):null,
       callWall:callWall?.strike??null,putWall:putWall?.strike??null,gammaNode:gammaNode?.strike??null,

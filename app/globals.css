@@ -387,3 +387,43 @@ html,body{max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}button,
  .contractCards{padding:12px}.contractCard{padding:14px}.styleExplain{padding:10px 12px}.contractContext>div{padding:13px 12px}
  .contractStats{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+/* V27 proprietary intelligence layer */
+.v27IntelStrip{display:grid;grid-template-columns:2fr 1.35fr 1fr auto;gap:0;border:1px solid #dfe5ec;border-radius:16px;overflow:hidden;background:#fff;margin:16px 0}
+.v27IntelStrip>div,.v27IntelStrip>button{padding:16px 18px;border-right:1px solid #e8edf3}
+.v27IntelStrip>button{border:0;background:#101828;color:#fff;font-weight:850;cursor:pointer;min-width:150px}
+.intelLead>div{display:flex;gap:9px;align-items:baseline;margin:5px 0}.intelLead>div b{font-size:24px}.intelLead>div span{font-size:12px;font-weight:850}
+.v27IntelStrip small,.v27Thesis small,.expirationLab small{font-size:10px;font-weight:900;letter-spacing:.11em;color:#718096}
+.v27IntelStrip p,.v27IntelStrip span{font-size:11px;color:#667085}.v27IntelStrip>div>b{display:block;font-size:14px;margin-top:6px}
+
+.v27Thesis{background:#fff}.thesisHero{display:grid;grid-template-columns:2fr 1fr;border-bottom:1px solid #e8edf3}
+.thesisHero>div{padding:22px}.thesisHero>div+div{border-left:1px solid #e8edf3}.thesisHero h3{font-size:24px;margin:6px 0}.thesisHero p{color:#667085;line-height:1.55;margin:0}
+.thesisAction b{display:block;font-size:22px;margin:8px 0}.thesisAction span{font-size:12px;color:#667085;line-height:1.45}
+.thesisDimensions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid #e8edf3}
+.thesisDimensions>div{padding:14px 16px;border-right:1px solid #e8edf3;border-bottom:1px solid #e8edf3}.thesisDimensions>div:nth-child(4n){border-right:0}.thesisDimensions>div:nth-last-child(-n+4){border-bottom:0}
+.thesisDimensions span{display:block;font-size:10px;text-transform:uppercase;color:#7a8798;font-weight:850}.thesisDimensions b{display:block;margin:5px 0 8px}
+.thesisDimensions i{display:block;height:4px;background:#edf1f5;border-radius:999px;overflow:hidden}.thesisDimensions em{display:block;height:100%;background:#1f8f4c;border-radius:999px}
+.thesisGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:18px;background:#f7f9fc;border-bottom:1px solid #e8edf3}
+.thesisCard{border:1px solid #e1e7ef;border-radius:14px;background:#fff;padding:16px;min-height:150px}.thesisCard p{font-size:12px;line-height:1.5;color:#526074;margin:8px 0}
+.thesisCard.positive{border-top:3px solid #16a34a}.thesisCard.concern{border-top:3px solid #d97706}.thesisCard.contradiction{border-top:3px solid #64748b}
+.scenarioSection{padding:18px;border-bottom:1px solid #e8edf3}.scenarioTitle{display:flex;justify-content:space-between;align-items:flex-start}.scenarioTitle h3{margin:4px 0 12px}
+.scenarioGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.scenarioGrid>div{border:1px solid #e1e7ef;border-radius:14px;padding:15px}.scenarioGrid span{font-size:11px;font-weight:850;color:#667085}.scenarioGrid b{display:block;font-size:28px;margin:4px 0}.scenarioGrid strong{font-size:12px}.scenarioGrid p{font-size:11px;color:#667085;line-height:1.45}
+.scenarioGrid .bull{border-top:3px solid #16a34a}.scenarioGrid .base{border-top:3px solid #64748b}.scenarioGrid .bear{border-top:3px solid #dc2626}
+.triggerGrid{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #e8edf3}.triggerGrid>div{padding:18px}.triggerGrid>div+div{border-left:1px solid #e8edf3}.triggerGrid p{font-size:12px;color:#526074;margin:8px 0}
+.intelMissing{display:flex;gap:7px;align-items:flex-start;padding:13px 18px;background:#fff8e7;color:#8a6217;font-size:11px}
+
+.expirationLab{border-bottom:1px solid #e8edf3}.expirationHead{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:13px 18px;background:#fff}
+.expirationHead>div b{display:block;font-size:15px;margin:3px 0}.expirationHead>div span{font-size:11px;color:#667085}.expirationHead>button{border:1px solid #d0d5dd;background:#fff;padding:7px 10px;border-radius:9px;font-weight:800;font-size:11px}.expirationHead>button.on{background:#101828;color:#fff;border-color:#101828}
+.expirationRail{display:flex;gap:7px;overflow:auto;padding:10px 18px 14px;background:#f8fafc;scrollbar-width:thin}.expirationRail button{flex:none;min-width:94px;border:1px solid #dfe5ec;background:#fff;border-radius:11px;padding:8px 10px;text-align:left}.expirationRail button.on{border-color:#101828;box-shadow:inset 0 0 0 1px #101828}.expirationRail b{display:block;font-size:11px}.expirationRail span{display:block;font-size:10px;color:#7a8798;margin-top:2px}
+
+@media(max-width:900px){
+ .v27IntelStrip{grid-template-columns:1fr 1fr}.v27IntelStrip>button{grid-column:1/-1;border-top:1px solid #e8edf3}.v27IntelStrip>div:nth-child(2){border-right:0}
+ .thesisDimensions{grid-template-columns:repeat(2,minmax(0,1fr))}.thesisDimensions>div:nth-child(4n){border-right:1px solid #e8edf3}.thesisDimensions>div:nth-child(2n){border-right:0}.thesisDimensions>div:nth-last-child(-n+4){border-bottom:1px solid #e8edf3}.thesisDimensions>div:nth-last-child(-n+2){border-bottom:0}
+ .thesisGrid,.scenarioGrid{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+ .v27IntelStrip{grid-template-columns:1fr;margin:12px 0}.v27IntelStrip>div,.v27IntelStrip>button{border-right:0;border-bottom:1px solid #e8edf3;padding:13px 14px}.v27IntelStrip>button{border-bottom:0}
+ .thesisHero{grid-template-columns:1fr}.thesisHero>div{padding:16px 14px}.thesisHero>div+div{border-left:0;border-top:1px solid #e8edf3}.thesisHero h3{font-size:20px}
+ .thesisGrid,.scenarioSection{padding:12px}.triggerGrid{grid-template-columns:1fr}.triggerGrid>div{padding:15px 14px}.triggerGrid>div+div{border-left:0;border-top:1px solid #e8edf3}
+ .expirationHead{align-items:flex-start;padding:12px;flex-direction:column}.expirationRail{padding:9px 12px 12px}
+}
