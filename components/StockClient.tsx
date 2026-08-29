@@ -341,7 +341,7 @@ export default function StockClient({symbol}:{symbol:string}){
       </div>
     </div>
 
-    {depth==="pro"&&enterprise&&<section className="v29ProCockpit">
+    {depth==="pro"&&enterprise&&intelligence&&<section className="v29ProCockpit">
       <div className="proCockpitHead"><div><small>PRO WORKSPACE</small><h3>Decision evidence & model diagnostics</h3><p>Same NIVORA call, with the underlying factor, data-quality and audit evidence exposed.</p></div><button type="button" onClick={()=>setAuditOpen(!auditOpen)}><ShieldCheck size={15}/>{auditOpen?"Hide audit":"Audit trail"}</button></div>
       <div className="proCockpitGrid">
         <div><small>MODEL</small><b>{enterprise.engineVersion}</b><span>{mode.toUpperCase()} weighting · regime aware</span></div>
