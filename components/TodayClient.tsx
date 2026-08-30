@@ -49,13 +49,13 @@ export default function TodayClient(){
     <section className="v36Radar">
       <div className="v36RadarHead"><div><small>{isDiscover?"MARKET OPPORTUNITY ENGINE":"WORTH YOUR ATTENTION"}</small><h2>{isDiscover?"20 decisions. Not 5,000 tickers.":"Best current decisions"}</h2><p>Action first. Exact price plan second. Evidence only when you want to inspect it.</p></div><div className="v36RadarStats"><span><b>{counts.buy}</b> actionable</span><span><b>{counts.watch}</b> watch</span><span><b>{counts.exit}</b> exit risk</span></div></div>
       <div className="v36RadarFilters">{(["All","Best now","Early momentum","Quality pullback","In play","Exit watch"] as RadarFilter[]).map(x=><button key={x} className={filter===x?"on":""} onClick={()=>setFilter(x)}>{x}</button>)}</div>
-      {radarLoading?<div className="softSkeleton">Scanning the NIVORA radar…</div>:visible.length?<div className="v36RadarList">{visible.slice(0,20).map((x:any,i:number)=><Link key={x.symbol} href={`/stock/${encodeURIComponent(x.symbol)}`} className="v36RadarRow">
+      {radarLoading?<div className="softSkeleton">Finding today’s best decision setups…</div>:visible.length?<div className="v36RadarList">{visible.slice(0,20).map((x:any,i:number)=><Link key={x.symbol} href={`/stock/${encodeURIComponent(x.symbol)}`} className="v36RadarRow">
         <div className="v36Rank">{i+1}</div><div className="v36RadarSymbol"><b>{x.symbol}</b><span>{x.category}</span></div>
         <div className="v36RadarAction"><strong className={x.action.includes("BUY")?"good":x.action.includes("EXIT")||x.action.includes("AVOID")?"bad":"mid"}>{x.action}</strong><span>{x.reason}</span></div>
         <div className="v36RadarScore"><b>{x.score}</b><span>{x.confidence}% conf.</span></div>
         <div className="v36RadarLevel"><small>ENTRY</small><b>${x.levels?.entryLow}–${x.levels?.entryHigh}</b></div>
         <div className="v36RadarLevel"><small>TARGET</small><b>${x.levels?.target1}</b></div>
-        <div className="v36RadarLevel"><small>R:R</small><b>{x.levels?.rr}×</b></div>
+        <div className="v36RadarLevel"><small>REWARD / RISK</small><b>{x.levels?.rr}×</b></div>
         <ArrowUpRight size={16}/>
       </Link>)}</div>:<div className="emptyToday"><Eye size={21}/><b>No radar matches returned</b><span>The market-data provider may be rate-limited. NIVORA will show available candidates rather than fabricate rankings.</span></div>}
       {radarPartial&&<p className="v36RadarNote">Partial scan: the free market-data entitlement did not return every symbol. Rankings use only successfully refreshed candidates.</p>}

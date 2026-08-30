@@ -265,7 +265,7 @@ export default function StockClient({symbol}:{symbol:string}){
     const dataQuality=Math.round((coverage*.55)+(intelligence.confidence*.45));
     const auditId=`${symbol}-${mode}-${Math.round(Number(d.price||0)*100)}-${intelligence.score}`;
     const validationStatus="Shadow validation enabled";
-    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:"NIVORA V37",generatedAt:new Date(now).toISOString()};
+    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:"NIVORA V42",generatedAt:new Date(now).toISOString()};
   },[d,intelligence,company,context,optionsData,institutional,symbol,mode]);
 
   useEffect(()=>{
@@ -456,7 +456,7 @@ export default function StockClient({symbol}:{symbol:string}){
   const horizonPlan=(()=>{
     const atr=Math.max(.01,Number(proTech?.atr14||currentPx*.025));
     const pref=Number(d.levels.preferredEntry), sup=Number(d.levels.support), major=Number(d.levels.majorSupport), res=Number(d.levels.resistance), brk=Number(d.levels.breakout), inv=Number(d.levels.invalidation);
-    let entryLow=Math.min(pref,sup),entryHigh=Math.max(pref,sup),confirm=brk,target1=res,target2=brk,stop=inv;
+    let entryLow=Math.min(pref,sup),entryHigh=Math.max(pref,sup),confirm=brk,target1=res,target2=Math.max(brk+atr*1.25,res+atr*1.75),stop=inv;
     if(horizon==="swing"){
       entryLow=Math.max(0,Math.min(major,sup-atr*.55));entryHigh=sup;confirm=res;target1=brk;target2=brk+atr*1.6;stop=Math.min(inv,entryLow-atr*.85);
     }
@@ -482,6 +482,10 @@ export default function StockClient({symbol}:{symbol:string}){
   const dca1=Number(horizonPlan.entryHigh.toFixed(2));
   const dca2=Number(((horizonPlan.entryLow+horizonPlan.entryHigh)/2).toFixed(2));
   const dca3=Number(Math.max(horizonPlan.stop*1.035,horizonPlan.entryLow-(horizonPlan.entryHigh-horizonPlan.entryLow)*.75).toFixed(2));
+  const pullbackTargetLabel=horizonPlan.target1<horizonPlan.confirm?"PULLBACK TARGET":"FIRST TARGET";
+  const breakoutTarget=horizonPlan.target2>horizonPlan.confirm?horizonPlan.target2:Number((horizonPlan.confirm+Math.max(Number(proTech?.atr14||currentPx*.025)*1.25,horizonPlan.confirm*.04)).toFixed(2));
+  const potentialToTarget=currentPx>0?((horizonPlan.target1/currentPx-1)*100):null;
+  const riskToBreak=currentPx>0?((horizonPlan.stop/currentPx-1)*100):null;
 
   const horizonChartLevels={
     entryLow:horizonPlan.entryLow,entryHigh:horizonPlan.entryHigh,confirm:horizonPlan.confirm,
@@ -567,7 +571,6 @@ export default function StockClient({symbol}:{symbol:string}){
       </div>
     </div>
 
-   
 
     {depth==="pro"&&enterprise&&intelligence&&<section className="v29ProCockpit">
       <div className="proCockpitHead"><div><small>PRO WORKSPACE</small><h3>Decision evidence & model diagnostics</h3><p>Same NIVORA call, with the underlying factor, data-quality and audit evidence exposed.</p></div><button type="button" onClick={()=>setAuditOpen(!auditOpen)}><ShieldCheck size={15}/>{auditOpen?"Hide audit":"Audit trail"}</button></div>
@@ -601,7 +604,7 @@ export default function StockClient({symbol}:{symbol:string}){
           <div className="v41Eyebrow"><span>NIVORA SAYS</span><em>{horizon==="now"?"RIGHT NOW":horizon==="swing"?"SWING":"LONG TERM"}</em><em>{owns?"YOU OWN IT":"NEW MONEY"}</em></div>
           <h2>{decisionAction.replace(" / START","").replace(" / REASSESS","")}</h2>
           <p className="v41PlainAnswer">{decisionAction.includes("BUY")||decisionAction.includes("ACCUMULATE")?`NIVORA likes the setup, but the price still matters. The preferred area is $${horizonPlan.entryLow}–$${horizonPlan.entryHigh}.`:decisionAction.includes("HOLD")?`The thesis does not require action today. Keep the position, and only consider adding near $${horizonPlan.entryLow}–$${horizonPlan.entryHigh}.`:`At $${currentPx.toFixed(2)}, NIVORA does not see enough reward for the risk. Wait for a better price or stronger proof.`}</p>
-          <div className="v41DecisionStrength"><div><small>HOW STRONG IS THIS CALL?</small><b>{convictionLabel} · {decisionConviction}%</b><span>Confidence in the evidence behind this decision — not the probability of profit.</span></div><div className="v41SignalMark"><strong>N</strong><b>{commandScore}</b><small>SETUP</small></div></div>
+          <div className="v41DecisionStrength"><div><div className="metricLabel"><small>HOW STRONG IS THIS CALL?</small><Help title="Decision confidence">How consistently the available evidence supports NIVORA’s current decision. It is not the probability the stock will rise or that a trade will make money.</Help></div><b>{convictionLabel} · {decisionConviction}%</b><span>Evidence alignment behind this decision — not probability of profit.</span></div><div className="v41SignalMark"><strong>N</strong><b>{commandScore}</b><small>SETUP</small></div></div>
         </div>
         <aside className="v41AtGlance">
           <small>WHAT SHOULD I DO?</small>
@@ -611,12 +614,12 @@ export default function StockClient({symbol}:{symbol:string}){
         </aside>
       </div>
 
-      <div className="v41Paths">
-        <div className="buy"><small>{owns?"BETTER PLACE TO ADD":"BUY THE PULLBACK"}</small><b>${horizonPlan.entryLow}–${horizonPlan.entryHigh}</b><span>{horizon==="long"?"Preferred accumulation area if the business thesis stays intact.":"Preferred price area if buyers stabilize the stock."}</span></div>
-        <div className="now"><small>PRICE NOW</small><b>${currentPx.toFixed(2)}</b><span>{currentLocation}</span></div>
-        <div className="proof"><small>OR WAIT FOR STRENGTH</small><b>Above ${horizonPlan.confirm}</b><span>Fresh price strength should be supported by participation — not just a brief spike.</span></div>
-        <div className="upside"><small>{owns?"FIRST TRIM / UPSIDE AREA":"FIRST UPSIDE AREA"}</small><b>${horizonPlan.target1}</b><span>{upsideToT1!=null?`${upsideToT1>=0?"+":""}${upsideToT1.toFixed(1)}% from today`:`First objective from the pullback path.`}</span></div>
-        <div className="risk"><small>IF THE THESIS FAILS</small><b>Below ${horizonPlan.stop}</b><span>Reassess the evidence. This is not an automatic stop-loss instruction.</span></div>
+      <div className="v41Paths" aria-label="NIVORA price plan">
+        <div className="buy"><small>{owns?"BETTER PLACE TO ADD":"BEST BUY AREA"}</small><b>${horizonPlan.entryLow}–${horizonPlan.entryHigh}</b><span>{horizon==="long"?"Preferred accumulation area if the business thesis stays intact.":"Best risk/reward area if buyers stabilize the stock."}</span></div>
+        <div className="now"><small>NOW</small><b>${currentPx.toFixed(2)}</b><span>{currentLocation}</span></div>
+        <div className="proof"><small>BUY IF STRENGTH CONFIRMS</small><b>Above $${horizonPlan.confirm}</b><span>If confirmed with participation, the next objective is about $${breakoutTarget}.</span></div>
+        <div className="upside"><small>{owns?"FIRST TRIM AREA":pullbackTargetLabel}</small><b>${horizonPlan.target1}</b><span>{potentialToTarget!=null?`${potentialToTarget>=0?"+":""}${potentialToTarget.toFixed(1)}% from today`:`First objective from the preferred-entry path.`}</span></div>
+        <div className="risk"><small>REASSESS BELOW</small><b>$${horizonPlan.stop}</b><span>{riskToBreak!=null?`${riskToBreak.toFixed(1)}% from today. `:""}Evidence has materially weakened; this is not an automatic stop-loss.</span></div>
       </div>
 
       <div className="v41Why">
@@ -630,9 +633,9 @@ export default function StockClient({symbol}:{symbol:string}){
       </div>
 
       <div className="v41MindChange">
-        <div><small>WHAT MAKES NIVORA MORE INTERESTED?</small><b>${horizonPlan.entryLow}–$${horizonPlan.entryHigh} + stabilization</b><span>Better price, same thesis.</span></div>
-        <div><small>WHAT PROVES STRENGTH?</small><b>Above $${horizonPlan.confirm}</b><span>Price strength with confirmation.</span></div>
-        <div><small>WHAT MAKES NIVORA REASSESS?</small><b>Below $${horizonPlan.stop}</b><span>Price evidence has moved against the current thesis.</span></div>
+        <div><small>BETTER PRICE</small><b>${horizonPlan.entryLow}–$${horizonPlan.entryHigh} + stabilization</b><span>Better price, same thesis.</span></div>
+        <div><small>PROOF OF STRENGTH</small><b>Above $${horizonPlan.confirm}</b><span>Price strength with confirmation.</span></div>
+        <div><small>THESIS WARNING</small><b>Below $${horizonPlan.stop}</b><span>Price evidence has moved against the current thesis.</span></div>
       </div>
 
       <div className="v41Trust"><span><b>Research beta.</b> NIVORA explains evidence; it does not guarantee outcomes. Market and third-party data can be delayed, incomplete or wrong.</span><div><Link href="/about">Methodology</Link><Link href="/terms">Terms</Link><Link href="/disclaimer">Risk disclosure</Link></div></div>
@@ -702,10 +705,10 @@ export default function StockClient({symbol}:{symbol:string}){
       </div>
 
       {tab==="overview"&&<div className="v12Overview">
-        <div><BriefcaseBusiness size={18}/><div className="metricLabel"><small>Business</small><Help title="Business">Financial quality and consistency. This is intentionally separate from whether today is a good entry.</Help></div><b className={tone(business.label)}>{business.label}</b><span>{business.reasons?.[0]||"Loading fundamentals…"}</span></div>
-        <div><Activity size={18}/><div className="metricLabel"><small>Entry</small><Help title="Entry">How attractive today’s price is relative to support, resistance, extension, momentum and downside risk.</Help></div><b className={tone(d.labels.entry)}>{d.labels.entry}</b><span>Current location versus support, extension and momentum.</span></div>
-        <div><ShieldCheck size={18}/><div className="metricLabel"><small>Risk</small><Help title="Risk">Technical downside and volatility, plus broader market regime.</Help></div><b className={d.labels.risk==="High"?"bad":"mid"}>{d.labels.risk}</b><span>Technical downside plus market regime.</span></div>
-        <div><Newspaper size={18}/><div className="metricLabel"><small>News</small><Help title="News">Material headlines are summarized for tone and impact. Headlines alone do not override price/fundamental evidence.</Help></div><b className={news.tone==="positive"?"good":news.tone==="negative"?"bad":"mid"}>{news.label}</b><span>{news.topReason}</span></div>
+        <div><BriefcaseBusiness size={18}/><div className="metricLabel v42OverviewLabel"><small>BUSINESS QUALITY</small><Help title="Business">Financial quality and consistency. This is intentionally separate from whether today is a good entry.</Help></div><b className={tone(business.label)}>{business.label}</b><span>{business.reasons?.[0]||"Loading fundamentals…"}</span></div>
+        <div><Activity size={18}/><div className="metricLabel v42OverviewLabel"><small>PRICE SETUP</small><Help title="Entry">How attractive today’s price is relative to support, resistance, extension, momentum and downside risk.</Help></div><b className={tone(d.labels.entry)}>{d.labels.entry}</b><span>Current location versus support, extension and momentum.</span></div>
+        <div><ShieldCheck size={18}/><div className="metricLabel v42OverviewLabel"><small>RISK</small><Help title="Risk">Technical downside and volatility, plus broader market regime.</Help></div><b className={d.labels.risk==="High"?"bad":"mid"}>{d.labels.risk}</b><span>Technical downside plus market regime.</span></div>
+        <div><Newspaper size={18}/><div className="metricLabel v42OverviewLabel"><small>NEWS / CATALYSTS</small><Help title="News">Material headlines are summarized for tone and impact. Headlines alone do not override price/fundamental evidence.</Help></div><b className={news.tone==="positive"?"good":news.tone==="negative"?"bad":"mid"}>{news.label}</b><span>{news.topReason}</span></div>
       </div>}
 
       {tab==="thesis"&&intelligence&&<div className="v27Thesis">
@@ -740,12 +743,12 @@ export default function StockClient({symbol}:{symbol:string}){
           <div><small>WHAT WOULD MAKE NIVORA MORE CAUTIOUS</small>{intelligence.bearTriggers.length?intelligence.bearTriggers.map((x:string,i:number)=><p key={i}>− {x}</p>):<p>No major deterioration trigger identified.</p>}</div>
         </div>
 
-        {intelligence.missing.length>0&&<div className="intelMissing"><Info size={15}/><span>Confidence could improve with: {intelligence.missing.join(", ")}.</span></div>}
+        {intelligence.missing.length>0&&<div className="intelMissing"><Info size={15}/><span><b>Evidence coverage note:</b> {intelligence.missing.join(", ")} {intelligence.missing.length===1?"is":"are"} not currently available. NIVORA lowers evidence confidence instead of treating missing data as bearish.</span></div>}
       </div>}
 
       {tab==="thesis"&&<div className="v36ThesisTargets">
         <div><small>ANALYST CONSENSUS</small><b className={analystConsensus==="Buy"||analystConsensus==="Positive"?"good":analystConsensus==="Sell"?"bad":"mid"}>{analystConsensus}</b><span>{analystTotal?`${analystBuy} positive · ${analystCounts?.hold||0} hold · ${analystSell} negative`:"No analyst recommendation coverage returned."}</span></div>
-        <div><small>WALL STREET TARGET</small><b>{hasAnalystTarget?`$${targetMean.toFixed(2)} avg`:"Not covered"}</b><span>{hasAnalystTarget&&Number.isFinite(targetLow)&&Number.isFinite(targetHigh)?`$${targetLow.toFixed(2)} low · $${targetHigh.toFixed(2)} high${pt.lastUpdated?` · ${pt.lastUpdated}`:""}`:"No verified target returned — excluded from the decision."}</span></div>
+        <div><small>WALL STREET TARGET</small><b>{hasAnalystTarget?`$${targetMean.toFixed(2)} avg`:"Limited coverage"}</b><span>{hasAnalystTarget&&Number.isFinite(targetLow)&&Number.isFinite(targetHigh)?`$${targetLow.toFixed(2)} low · $${targetHigh.toFixed(2)} high${pt.lastUpdated?` · ${pt.lastUpdated}`:""}`:"No verified target was returned by the connected feed, so NIVORA does not use one here."}</span></div>
         <div><small>NIVORA FAIR VALUE</small><b>${fairValue.low}–${fairValue.high}</b><span>Model estimate, not guaranteed intrinsic value. Uses {fairValue.source.toLowerCase()}.</span></div>
         <div><small>UPSIDE MAP</small><b>{currentPx?`${((horizonPlan.target1/currentPx-1)*100).toFixed(0)}% → ${((horizonPlan.target2/currentPx-1)*100).toFixed(0)}%`:"—"}</b><span>Near objective → stretch objective. Long-term multi-bagger scenarios belong in the valuation view, not today's trade plan.</span></div>
       </div>}

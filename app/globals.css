@@ -707,3 +707,73 @@ body{background:radial-gradient(circle at 50% -15%,#fff 0,#f7f9fa 38%,var(--n41-
  .v41Promise{display:block;padding:16px 18px}.v41Promise>span{display:block;margin:8px 0 10px;font-size:13px}.v36RadarHead{padding:22px 18px!important}.v36RadarRow{grid-template-columns:28px 68px 1fr 46px!important}.v36RadarAction strong{font-size:12px}.v36RadarAction span{font-size:10px}.marketStrip{overflow:hidden}.marketTiles{overflow-x:auto}
  .v41PortfolioHead{display:block}.v41PortfolioHead>a{display:inline-block;margin-top:12px}.v41PortfolioHero{display:block}.v41PortfolioHero>div{border-right:0;border-bottom:1px solid var(--n41-line);padding:20px}.v41PortfolioCounts{display:grid!important}.v41AddPosition{display:block}.v41AddPosition>div{margin-bottom:12px}.v41AddPosition .positionForm{display:grid!important;grid-template-columns:1fr 1fr!important}.v41AddPosition .positionForm button{grid-column:1/-1}.v41ActionTitle>span{display:none}.v41Position{display:block}.v41PositionMain{display:block;padding:18px}.v41PosAction{margin:14px 0;padding:12px 0;border-top:1px solid var(--n41-line);border-bottom:1px solid var(--n41-line)}.v41PosPlan{gap:8px}.v41Position .rowActions{border-left:0;border-top:1px solid var(--n41-line);justify-content:flex-end}.osMobileNav{grid-template-columns:repeat(4,1fr)!important}.osMobileNav a{position:relative}
 }
+
+
+/* V42 — clarity + mobile polish */
+.v28DepthToggle button{color:#667085!important}
+.v28DepthToggle button.on{background:#fff!important;color:#17271f!important;box-shadow:0 5px 16px rgba(16,24,39,.08)!important}
+.v32QuestionBar .osMode button{color:#667085!important}
+.v32QuestionBar .osMode button.on{color:#17271f!important}
+.v42OverviewLabel{display:flex!important;align-items:center!important;gap:5px!important;min-height:18px!important}
+.v42OverviewLabel small{display:block!important;color:#7b8492!important;font-size:8px!important;letter-spacing:.14em!important;font-weight:900!important;text-transform:uppercase!important}
+.v12Overview>div>svg{display:none!important}
+.v12Overview>div{gap:4px!important;min-height:112px!important}
+.v12Context{min-height:0!important}
+.v12Tabs{margin:0!important}
+.v12Overview{min-height:0!important}
+.v41Paths small{line-height:1.25}
+.v41Paths .upside{background:#f7fbf9}
+.v41Paths .upside b{color:#246648}
+.v41Paths .proof span,.v41Paths .risk span,.v41Paths .buy span,.v41Paths .upside span{max-width:250px}
+.v41DecisionStrength .metricLabel{display:flex;align-items:center;gap:5px}
+.v41MindChange>div{min-height:104px}
+.intelMissing{background:#fff9ea!important;color:#765c22!important;border-top:1px solid #f2e3b8!important}
+.intelMissing b{color:#5b4518}
+.v36RadarLevel small{letter-spacing:.11em}
+.v36RadarLevel:nth-of-type(7) small{font-size:0}
+.v36RadarLevel:nth-of-type(7) small:after{content:"REWARD / RISK";font-size:7.5px}
+
+@media(max-width:760px){
+  .v28DepthBar{padding:8px 0 12px!important}
+  .v28DepthToggle button{min-height:42px!important;font-size:11px!important}
+  .v32QuestionBar .osMode button{min-height:44px!important;font-size:11px!important}
+  .v41Decision{border-radius:20px!important;margin:8px 0 16px!important}
+  .v41DecisionCopy{padding:22px 18px 18px!important}
+  .v41Decision h2{font-size:38px!important;line-height:.96!important;letter-spacing:-.045em!important}
+  .v41PlainAnswer{font-size:15px!important;line-height:1.5!important}
+  .v41DecisionStrength{gap:10px!important}
+  .v41DecisionStrength b{font-size:15px!important}
+  .v41SignalMark{margin-left:auto!important}
+  .v41AtGlance{padding:17px 18px!important}
+  .v41AtGlance button{width:100%!important;text-align:center!important;min-height:44px!important}
+  .v41Paths{display:grid!important;grid-template-columns:1fr 1fr!important;overflow:visible!important;scroll-snap-type:none!important}
+  .v41Paths>div{min-width:0!important;min-height:104px!important;padding:15px 14px!important;border-bottom:1px solid var(--n41-line)!important}
+  .v41Paths .buy{grid-column:1/-1!important}
+  .v41Paths .risk{grid-column:1/-1!important}
+  .v41Paths>div:nth-child(2),.v41Paths>div:nth-child(4){border-right:1px solid var(--n41-line)!important}
+  .v41Paths b{font-size:17px!important}
+  .v41Paths span{font-size:10.5px!important}
+  .v41Evidence{grid-template-columns:1fr 1fr!important}
+  .v41Evidence>span{min-height:72px!important;padding:12px!important}
+  .v41MindChange>div{min-height:0!important}
+  .v12Context{border-radius:20px!important}
+  .v12Tabs.v28Tabs{top:56px!important;padding:7px 8px!important}
+  .v12Tabs.v28Tabs button{min-height:42px!important;padding:10px 12px!important}
+  .v12Overview{grid-template-columns:1fr 1fr!important}
+  .v12Overview>div{min-height:118px!important;padding:14px!important}
+  .v12Overview b{font-size:17px!important}
+  .v12Overview span{font-size:10px!important}
+  .osStockSearch{top:56px!important}
+  .metricHelpPop{z-index:300!important}
+}
+
+@media(max-width:420px){
+  .v41Decision h2{font-size:34px!important}
+  .v41Paths{grid-template-columns:1fr!important}
+  .v41Paths .buy,.v41Paths .risk{grid-column:auto!important}
+  .v41Paths>div{border-right:0!important}
+  .v41Evidence{grid-template-columns:1fr 1fr!important}
+  .v12Overview{grid-template-columns:1fr!important}
+  .v12Overview>div{border-right:0!important;border-bottom:1px solid var(--n41-line)!important;min-height:0!important}
+  .v12Overview>div:last-child{border-bottom:0!important}
+}
