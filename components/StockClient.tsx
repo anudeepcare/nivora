@@ -495,22 +495,54 @@ export default function StockClient({symbol}:{symbol:string}){
   };
   const horizonCandles=(d.candles||[]).slice(horizon==="now"?-65:horizon==="swing"?-125:-180);
 
+  // V43 decision calibration: the action is horizon-aware and uses multiple independent
+  // evidence layers. Price location matters, but it is no longer allowed to collapse
+  // every security into the same generic WAIT state.
+  const actionMetrics=(()=>{
+    const trend=Number(d.scores?.trend??50), momentum=Number(d.scores?.momentum??50), flow=Number(d.scores?.flow??50);
+    const entry=Number(d.scores?.entry??50), risk=Number(d.scores?.risk??50), extension=Number(d.scores?.extension??50), structure=Number(d.scores?.structure??50);
+    const catalyst=Number(intelligence?.dimensions?.catalysts??50), valuation=valuationScore;
+    const analyst=analystTotal>=3?analystScore:50;
+    const institutions=institutional?.enabled ? Math.max(25,Math.min(80,50+(Number.isFinite(institutionalPct)?institutionalPct*.7:0))) : 50;
+    const technical=technicalComposite;
+    const score=horizon==="now"
+      ? technical*.30+entry*.20+flow*.12+structure*.10+(100-risk)*.12+businessScore*.06+catalyst*.06+analyst*.04
+      : horizon==="swing"
+        ? technical*.24+entry*.16+businessScore*.15+valuation*.10+flow*.10+catalyst*.10+(100-risk)*.08+analyst*.04+institutions*.03
+        : businessScore*.29+valuation*.18+analyst*.10+institutions*.08+catalyst*.10+technical*.10+entry*.06+(100-risk)*.09;
+    return {trend,momentum,flow,entry,risk,extension,structure,catalyst,valuation,analyst,institutions,technical,score:Math.round(Math.max(0,Math.min(100,score)))};
+  })();
+
   const decisionAction=(()=>{
-    const score=Number(intelligence?.score??overallScore),risk=Number(d.scores?.risk??60),trend=Number(d.scores?.trend??50),flow=Number(d.scores?.flow??50),ext=Number(d.scores?.extension??50);
+    const m=actionMetrics;
+    const inside=currentPx>=horizonPlan.entryLow&&currentPx<=horizonPlan.entryHigh;
+    const justAbove=currentPx>horizonPlan.entryHigh&&currentPx<=horizonPlan.entryHigh*1.045;
+    const between=currentPx>horizonPlan.entryHigh&&currentPx<horizonPlan.confirm;
+    const confirmed=currentPx>=horizonPlan.confirm;
     if(owns){
-      if(currentPx<=horizonPlan.stop||businessScore<38)return"EXIT / REASSESS";
-      if(currentPx>=horizonPlan.target2&&ext>=68)return"TRIM / PROTECT GAINS";
-      if(currentPx>=horizonPlan.target1&&ext>=72)return"TRIM SELECTIVELY";
-      if(currentPx>=horizonPlan.entryLow&&currentPx<=horizonPlan.entryHigh&&score>=68&&risk<72)return"ADD SELECTIVELY";
+      if(currentPx<=horizonPlan.stop||businessScore<35||m.score<34)return"EXIT / REASSESS";
+      if((currentPx>=horizonPlan.target2&&m.extension>=66)||(m.extension>=84&&m.momentum<55))return"TAKE PROFIT / TRIM";
+      if(currentPx>=horizonPlan.target1&&m.extension>=70)return"TRIM SELECTIVELY";
+      if(inside&&m.score>=72&&m.risk<70)return"ADD";
+      if((inside||justAbove)&&m.score>=64&&businessScore>=58&&m.risk<76)return"ADD SELECTIVELY";
+      if(m.risk>=80||m.trend<32||m.score<45)return"HOLD / DON'T ADD";
       return"HOLD";
     }
-    if(currentPx>=horizonPlan.entryLow&&currentPx<=horizonPlan.entryHigh&&score>=70&&risk<72)return horizon==="long"?"ACCUMULATE":"BUY / START";
-    if(currentPx>=horizonPlan.confirm&&trend>=64&&flow>=50&&ext<82)return"BUY BREAKOUT / START";
-    if(currentPx>horizonPlan.entryHigh&&currentPx<horizonPlan.confirm)return"WAIT FOR ENTRY";
-    if(currentPx>horizonPlan.target1||ext>=78)return"DON'T CHASE";
+    if((businessScore<35&&m.technical<45)||(m.risk>=84&&m.technical<48)||m.score<35)return"AVOID";
+    if(inside&&m.score>=76&&m.risk<72&&m.technical>=55)return"BUY NOW";
+    if(inside&&m.score>=65&&m.risk<76)return"START POSITION";
+    if(confirmed&&m.score>=72&&m.trend>=62&&m.flow>=48&&m.extension<82)return"BUY BREAKOUT";
+    if(m.extension>=82||(currentPx>=horizonPlan.target2&&m.score<82))return"DON'T CHASE";
+    if(justAbove&&m.score>=72&&businessScore>=58&&m.technical>=52)return"START POSITION";
+    if(between&&businessScore>=68&&m.score>=61)return"BUY ON PULLBACK";
+    if(between&&m.technical>=58&&m.score>=58)return"WAIT FOR CONFIRMATION";
+    if(currentPx<horizonPlan.entryLow&&m.trend>=56&&m.score>=64)return"START SMALL";
     if(currentPx<horizonPlan.entryLow)return"WAIT FOR STABILITY";
-    return"WAIT / WATCH";
+    if(businessScore>=72&&m.technical<48)return"BUY ON PULLBACK";
+    if(m.score>=58)return"WATCH";
+    return"AVOID";
   })();
+
 
   const decisionWhy=(()=>{
     const good:string[]=[];const watch:string[]=[];
@@ -522,6 +554,34 @@ export default function StockClient({symbol}:{symbol:string}){
     if(Number(d.scores?.risk??50)>=70)watch.push("Risk is elevated");
     return {good:good.slice(0,3),watch:watch.slice(0,2)};
   })();
+
+  const actionIsBuy=["BUY NOW","START POSITION","START SMALL","BUY BREAKOUT","ADD","ADD SELECTIVELY"].some(x=>decisionAction.startsWith(x));
+  const actionIsPullback=decisionAction==="BUY ON PULLBACK";
+  const actionIsHold=decisionAction.startsWith("HOLD");
+  const actionIsRisk=decisionAction.includes("EXIT")||decisionAction==="AVOID"||decisionAction.includes("TRIM")||decisionAction.includes("PROFIT");
+  const actionSummary=actionIsBuy
+    ? (decisionAction==="BUY BREAKOUT"?`Strength has confirmed above NIVORA’s trigger. The setup supports a measured entry while the thesis remains intact.`:`The evidence supports a measured entry. NIVORA still prefers disciplined sizing around the price plan below.`)
+    : actionIsPullback
+      ? `The thesis is constructive, but today’s price is not the best risk/reward. NIVORA prefers a pullback toward $${horizonPlan.entryLow}–$${horizonPlan.entryHigh}.`
+      : actionIsHold
+        ? `No urgent action. The thesis remains intact; use the add and reassessment levels instead of reacting to daily noise.`
+        : decisionAction==="WAIT FOR CONFIRMATION"
+          ? `The setup is developing, but buyers have not provided enough proof yet. A move above $${horizonPlan.confirm} would strengthen the case.`
+          : decisionAction==="WAIT FOR STABILITY"
+            ? `Price is below NIVORA’s planned area. Lower is not automatically better—wait for stabilization before adding risk.`
+            : decisionAction==="DON'T CHASE"
+              ? `Price is extended relative to the current setup. NIVORA would rather miss the trade than pay for poor risk/reward.`
+              : decisionAction==="WATCH"
+                ? `The evidence is mixed. Keep it on the radar, but there is not enough alignment for new money yet.`
+                : actionIsRisk
+                  ? `Risk currently outweighs the evidence for adding capital. Review the thesis before taking new risk.`
+                  : `The evidence is mixed. NIVORA does not see a high-quality action yet.`;
+  const firstUpsideTarget=(()=>{
+    const atr=Math.max(.01,Number(proTech?.atr14||currentPx*.025));
+    const candidates=[horizonPlan.target1,horizonPlan.target2,breakoutTarget].filter(x=>Number.isFinite(x)&&x>currentPx*1.01);
+    return Number((candidates.length?Math.min(...candidates):currentPx+atr*1.5).toFixed(2));
+  })();
+  const upsideToVisibleTarget=currentPx>0?((firstUpsideTarget/currentPx-1)*100):null;
 
   const signalRows=[
     ["Business",business.label,tone(business.label)],
@@ -602,24 +662,25 @@ export default function StockClient({symbol}:{symbol:string}){
       <div className="v41DecisionHero">
         <div className="v41DecisionCopy">
           <div className="v41Eyebrow"><span>NIVORA SAYS</span><em>{horizon==="now"?"RIGHT NOW":horizon==="swing"?"SWING":"LONG TERM"}</em><em>{owns?"YOU OWN IT":"NEW MONEY"}</em></div>
-          <h2>{decisionAction.replace(" / START","").replace(" / REASSESS","")}</h2>
-          <p className="v41PlainAnswer">{decisionAction.includes("BUY")||decisionAction.includes("ACCUMULATE")?`NIVORA likes the setup, but the price still matters. The preferred area is $${horizonPlan.entryLow}–$${horizonPlan.entryHigh}.`:decisionAction.includes("HOLD")?`The thesis does not require action today. Keep the position, and only consider adding near $${horizonPlan.entryLow}–$${horizonPlan.entryHigh}.`:`At $${currentPx.toFixed(2)}, NIVORA does not see enough reward for the risk. Wait for a better price or stronger proof.`}</p>
-          <div className="v41DecisionStrength"><div><div className="metricLabel"><small>HOW STRONG IS THIS CALL?</small><Help title="Decision confidence">How consistently the available evidence supports NIVORA’s current decision. It is not the probability the stock will rise or that a trade will make money.</Help></div><b>{convictionLabel} · {decisionConviction}%</b><span>Evidence alignment behind this decision — not probability of profit.</span></div><div className="v41SignalMark"><strong>N</strong><b>{commandScore}</b><small>SETUP</small></div></div>
+          <h2>{decisionAction.replace(" / REASSESS","")}</h2>
+          <p className="v41PlainAnswer">{actionSummary}</p>
+          <div className="v41DecisionStrength"><div><div className="metricLabel"><small>HOW STRONG IS THIS CALL?</small><Help title="Decision confidence">How consistently the available evidence supports NIVORA’s current decision. It is not the probability the stock will rise or that a trade will make money.</Help></div><b>{convictionLabel} · {decisionConviction}%</b><span>Evidence alignment behind this decision — not probability of profit.</span></div><div className="v41SignalMark"><strong>N</strong><b>{actionMetrics.score}</b><small>DECISION</small></div></div>
         </div>
         <aside className="v41AtGlance">
-          <small>WHAT SHOULD I DO?</small>
-          <b>{decisionAction.includes("BUY")||decisionAction.includes("ACCUMULATE")?`Act only in the preferred price area.`:decisionAction.includes("HOLD")?`No action required today.`:`Wait. Do not force an entry here.`}</b>
-          <span>{currentLocation}</span>
-          <button type="button" onClick={()=>openResearch("thesis")}>Why does NIVORA think this? →</button>
+          <small>WHAT CHANGES THE CALL?</small>
+          <div><span>Better price</span><b>${horizonPlan.entryLow}–${horizonPlan.entryHigh}</b></div>
+          <div><span>Proof of strength</span><b>Above ${horizonPlan.confirm}</b></div>
+          <div><span>Thesis warning</span><b>Below ${horizonPlan.stop}</b></div>
+          <button type="button" onClick={()=>openResearch("thesis")}>See the evidence →</button>
         </aside>
       </div>
 
       <div className="v41Paths" aria-label="NIVORA price plan">
         <div className="buy"><small>{owns?"BETTER PLACE TO ADD":"BEST BUY AREA"}</small><b>${horizonPlan.entryLow}–${horizonPlan.entryHigh}</b><span>{horizon==="long"?"Preferred accumulation area if the business thesis stays intact.":"Best risk/reward area if buyers stabilize the stock."}</span></div>
         <div className="now"><small>NOW</small><b>${currentPx.toFixed(2)}</b><span>{currentLocation}</span></div>
-        <div className="proof"><small>BUY IF STRENGTH CONFIRMS</small><b>Above $${horizonPlan.confirm}</b><span>If confirmed with participation, the next objective is about $${breakoutTarget}.</span></div>
-        <div className="upside"><small>{owns?"FIRST TRIM AREA":pullbackTargetLabel}</small><b>${horizonPlan.target1}</b><span>{potentialToTarget!=null?`${potentialToTarget>=0?"+":""}${potentialToTarget.toFixed(1)}% from today`:`First objective from the preferred-entry path.`}</span></div>
-        <div className="risk"><small>REASSESS BELOW</small><b>$${horizonPlan.stop}</b><span>{riskToBreak!=null?`${riskToBreak.toFixed(1)}% from today. `:""}Evidence has materially weakened; this is not an automatic stop-loss.</span></div>
+        <div className="proof"><small>BUY IF STRENGTH CONFIRMS</small><b>Above ${horizonPlan.confirm}</b><span>If confirmed with participation, the next objective is about ${breakoutTarget}.</span></div>
+        <div className="upside"><small>{owns?"NEXT UPSIDE / TRIM AREA":"NEXT UPSIDE TARGET"}</small><b>${firstUpsideTarget}</b><span>{upsideToVisibleTarget!=null?`About +${upsideToVisibleTarget.toFixed(1)}% from today. Not a guaranteed price.`:`Evidence-based upside reference.`}</span></div>
+        <div className="risk"><small>REASSESS BELOW</small><b>${horizonPlan.stop}</b><span>{riskToBreak!=null?`${riskToBreak.toFixed(1)}% from today. `:""}Evidence has materially weakened; this is not an automatic stop-loss.</span></div>
       </div>
 
       <div className="v41Why">
@@ -633,9 +694,9 @@ export default function StockClient({symbol}:{symbol:string}){
       </div>
 
       <div className="v41MindChange">
-        <div><small>BETTER PRICE</small><b>${horizonPlan.entryLow}–$${horizonPlan.entryHigh} + stabilization</b><span>Better price, same thesis.</span></div>
-        <div><small>PROOF OF STRENGTH</small><b>Above $${horizonPlan.confirm}</b><span>Price strength with confirmation.</span></div>
-        <div><small>THESIS WARNING</small><b>Below $${horizonPlan.stop}</b><span>Price evidence has moved against the current thesis.</span></div>
+        <div><small>BETTER PRICE</small><b>${horizonPlan.entryLow}–${horizonPlan.entryHigh} + stabilization</b><span>Better price, same thesis.</span></div>
+        <div><small>PROOF OF STRENGTH</small><b>Above ${horizonPlan.confirm}</b><span>Price strength with confirmation.</span></div>
+        <div><small>THESIS WARNING</small><b>Below ${horizonPlan.stop}</b><span>Price evidence has moved against the current thesis.</span></div>
       </div>
 
       <div className="v41Trust"><span><b>Research beta.</b> NIVORA explains evidence; it does not guarantee outcomes. Market and third-party data can be delayed, incomplete or wrong.</span><div><Link href="/about">Methodology</Link><Link href="/terms">Terms</Link><Link href="/disclaimer">Risk disclosure</Link></div></div>

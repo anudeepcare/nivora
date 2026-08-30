@@ -777,3 +777,49 @@ body{background:radial-gradient(circle at 50% -15%,#fff 0,#f7f9fa 38%,var(--n41-
   .v12Overview>div{border-right:0!important;border-bottom:1px solid var(--n41-line)!important;min-height:0!important}
   .v12Overview>div:last-child{border-bottom:0!important}
 }
+
+/* ============================================================
+   V43 — Decision Calibration + premium clarity
+   Compact decision hero, readable mobile path, no shouty WAIT UI.
+   ============================================================ */
+.v41DecisionHero{grid-template-columns:minmax(0,1.8fr) minmax(260px,.62fr)!important;min-height:0!important}
+.v41DecisionCopy{padding:28px 34px 25px!important}
+.v41Eyebrow{margin-bottom:12px!important}
+.v41Decision h2{font-size:clamp(30px,3.55vw,52px)!important;line-height:1!important;letter-spacing:-.045em!important;max-width:780px}
+.v41PlainAnswer{font-size:16px!important;line-height:1.55!important;margin:13px 0 20px!important;max-width:760px!important}
+.v41DecisionStrength{gap:14px!important}
+.v41AtGlance{padding:25px 26px!important;gap:8px!important;background:linear-gradient(160deg,#f7faf8,#fcfdfc)!important}
+.v41AtGlance>div{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid #e8eeea}
+.v41AtGlance>div:last-of-type{border-bottom:0}
+.v41AtGlance>div span{font-size:11px;color:#6b7584}
+.v41AtGlance>div b{font-size:13px;letter-spacing:-.01em;text-align:right;color:#17271f}
+.v41AtGlance>button{margin-top:8px!important}
+.v41Paths{grid-template-columns:1.12fr .8fr 1.12fr 1fr 1fr!important}
+.v41Paths>div{min-height:104px!important;padding:17px 18px!important}
+.v41Paths b{font-size:18px!important}
+.v41Why{padding:20px 24px!important}
+.v41MindChange>div{min-height:88px!important;padding:15px 18px!important}
+.v41Decision.mid h2{color:#72550e!important}.v41Decision.good h2{color:#155f43!important}.v41Decision.bad h2{color:#824943!important}
+/* Research should feel like progressive disclosure, not a second dashboard. */
+.v12Context{min-height:0!important}.v12Overview{min-height:0!important}.v12Overview>div{min-height:96px!important}
+.v12Tabs{min-height:0!important}
+@media(max-width:760px){
+ .v41DecisionCopy{padding:20px 17px 17px!important}
+ .v41Decision h2{font-size:clamp(28px,9vw,38px)!important;line-height:1.02!important}
+ .v41PlainAnswer{font-size:14.5px!important;margin:11px 0 16px!important}
+ .v41DecisionStrength span{display:none!important}
+ .v41AtGlance{padding:16px 17px!important}
+ .v41AtGlance>div{padding:8px 0!important}
+ .v41AtGlance>button{width:100%;min-height:44px}
+ .v41Paths{grid-template-columns:1fr 1fr!important}
+ .v41Paths>div{min-height:92px!important;padding:13px!important}
+ .v41Paths .buy,.v41Paths .risk{grid-column:1/-1!important}
+ .v41Paths b{font-size:16px!important}
+ .v41Paths span{font-size:10px!important}
+ .v41Why{padding:18px 15px!important}
+}
+@media(max-width:420px){
+ .v41Decision h2{font-size:30px!important}
+ .v41Paths{grid-template-columns:1fr!important}
+ .v41Paths .buy,.v41Paths .risk{grid-column:auto!important}
+}
