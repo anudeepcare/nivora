@@ -1,1 +1,50 @@
-"use client";import Link from "next/link";import type{InvestorDecision}from"@/lib/nivora-investor";type Levels={entryLow:number;entryHigh:number;support:number;majorSupport:number;resistance:number;breakout:number;assetType?:string};const ht=(x:string)=>x.includes("BULLISH")||x==="CONSTRUCTIVE"?"good":x.includes("BEARISH")||x==="CAUTIOUS"?"bad":"mid";export default function InvestorDecisionHero({decision,price,changePct,owns,levels,onEvidence,timing}:{decision:InvestorDecision;price:number;changePct:number;owns:boolean;levels:Levels;onEvidence:()=>void;timing?:{label:string;reason:string;tone:"good"|"mid"|"bad"}}){const tone=decision.thesisLabel==="BULLISH"?"good":decision.thesisLabel==="BEARISH"?"bad":"mid",at=decision.action==="STRONG BUY"||decision.action==="ACCUMULATE"?"good":decision.action==="AVOID"||decision.action==="REDUCE"||decision.action.includes("EXIT")?"bad":"mid",zoneWidth=price>0?(levels.entryHigh-levels.entryLow)/price:1,zoneLimit=levels.assetType==="crypto"?.10:.07,valid=levels.entryLow>0&&levels.entryHigh>=levels.entryLow&&zoneWidth<=zoneLimit;return <section className={`v48Hero v50Hero ${tone}`}><div className="v50Top"><div><div className="v48Eyebrow"><span>NIVORA INVESTMENT VIEW</span><em>ALL HORIZONS ANALYZED</em></div><h2>{decision.thesisLabel}</h2><p>{decision.thesisState} thesis · {decision.thesisScore}/100 conviction</p></div><div className={`v50Action ${at}`}><small>{owns?"OWNER ACTION":"NEW CAPITAL"}</small><b>{decision.action}</b><span>Best horizon: {decision.bestHorizon}</span></div></div><p className="v48OneLine">{decision.oneLine}</p><div className="v50ScoreStrip"><span><small>BUSINESS</small><b>{decision.companyScore}</b><em>{decision.companyLabel}</em></span><span><small>THESIS</small><b>{decision.thesisScore}</b><em>{decision.thesisState}</em></span><span><small>OPPORTUNITY</small><b>{decision.opportunityScore}</b><em>price + valuation</em></span><span><small>EVIDENCE</small><b>{decision.confidence}</b><em>coverage, not odds</em></span></div><div className="v50Horizons">{decision.horizons.map(h=><div key={h.key} className={ht(h.label)}><small>{h.key}</small><b>{h.label}</b><span>{h.score}/100</span></div>)}</div><div className="v50Timing"><small>ENTRY / EXIT TIMING</small><b className={timing?.tone||"mid"}>{timing?.label||"NEUTRAL"}</b><span>{timing?.reason||"Thesis and price timing are evaluated separately."}</span></div><div className="v50Plan"><div className="buy"><small>TECHNICAL ACCUMULATION ZONE</small><b>{valid?`$${levels.entryLow.toFixed(2)}–$${levels.entryHigh.toFixed(2)}`:"No tight confluence zone"}</b><span>{valid?"A narrow support/structure area for timing — not intrinsic value.":"Support is too broad to present as a precise buy zone."}</span></div><div><small>SUPPORT</small><b>{levels.support>0?`$${levels.support.toFixed(2)}`:"—"}</b><span>{levels.majorSupport>0?`Major $${levels.majorSupport.toFixed(2)}`:"Secondary unavailable"}</span></div><div><small>RESISTANCE</small><b>{levels.resistance>0?`$${levels.resistance.toFixed(2)}`:"—"}</b><span>{levels.breakout>0?`Breakout $${levels.breakout.toFixed(2)}`:"Breakout unavailable"}</span></div><div><small>CURRENT PRICE</small><b>${Number(price).toFixed(2)}</b><span className={changePct>=0?"good":"bad"}>{changePct>=0?"+":""}{Number(changePct).toFixed(2)}% today</span></div></div><div className="v50Why"><div><small>WHY IT CAN WORK</small>{decision.drivers.length?decision.drivers.slice(0,4).map((x,i)=><p key={i}>✓ {x}</p>):<p>No dominant positive evidence.</p>}</div><div><small>WHAT CAN GO WRONG</small>{decision.risks.length?decision.risks.slice(0,4).map((x,i)=><p key={i}>• {x}</p>):<p>No single risk dominates.</p>}</div><div><small>SELL / REASSESS IF</small>{decision.breakers.map((x,i)=><p key={i}>• {x}</p>)}</div></div><div className="v50Changed"><div><small>WHAT CHANGED</small><b>{decision.changed[0]||"No material thesis change detected."}</b><span>Price noise alone does not rewrite conviction.</span></div><button onClick={onEvidence}>Deep research →</button></div><div className="v48Trust"><span><b>Decision-support research.</b> Scores are evidence synthesis, not probability of profit.</span><div><Link href="/about">Methodology</Link><Link href="/disclaimer">Risk disclosure</Link></div></div></section>}
+"use client";
+import type{InvestorDecision,HorizonOutlook}from"@/lib/nivora-investor";
+
+type Levels={entryLow:number;entryHigh:number;support:number;majorSupport:number;resistance:number;breakout:number;assetType?:string};
+type Timing={label:string;reason:string;tone:"good"|"mid"|"bad"};
+const tone=(x:string)=>x.includes("BULLISH")||x.includes("CONSTRUCTIVE")||x.includes("BUY")||x.includes("ACCUMULATE")?"good":x.includes("BEARISH")||x.includes("CAUTIOUS")||x.includes("AVOID")||x.includes("REDUCE")||x.includes("EXIT")?"bad":"mid";
+const money=(x:number)=>Number.isFinite(x)&&x>0?`$${x.toFixed(2)}`:"—";
+
+export default function InvestorDecisionHero({decision,price,changePct,owns,levels,onEvidence,timing}:{decision:InvestorDecision;price:number;changePct:number;owns:boolean;levels:Levels;onEvidence:()=>void;timing?:Timing}){
+ const zoneWidth=price>0?(levels.entryHigh-levels.entryLow)/price:1;
+ const validZone=levels.entryLow>0&&levels.entryHigh>=levels.entryLow&&zoneWidth<=(levels.assetType==="crypto"?.10:.07);
+ const actionTone=tone(decision.action);
+ const topDrivers=decision.drivers.slice(0,3), topRisks=decision.risks.slice(0,3);
+ const entryText=validZone?`$${levels.entryLow.toFixed(2)}–$${levels.entryHigh.toFixed(2)}`:"No tight entry zone";
+ const entryNote=validZone?"Best current technical confluence. It is timing guidance, not fair value.":"Current support is too broad to pretend there is a precise buy price.";
+ return <section className="v52Cockpit">
+   <div className="v52DecisionRow">
+    <div className="v52DecisionMain">
+      <small>NIVORA DECISION</small>
+      <div className="v52TitleLine"><h2 className={tone(decision.thesisLabel)}>{decision.thesisLabel}</h2><span>{decision.thesisScore}/100 conviction</span><span>{decision.thesisState}</span></div>
+      <p>{decision.oneLine}</p>
+    </div>
+    <div className={`v52Action ${actionTone}`}><small>{owns?"WHAT TO DO WITH YOUR POSITION":"WHAT TO DO WITH NEW MONEY"}</small><b>{decision.action}</b><span>{timing?.reason||"Thesis and timing are evaluated separately."}</span></div>
+   </div>
+
+   <div className="v52AnswerGrid">
+    <div className="v52PrimaryAnswer"><small>BEST ENTRY NOW</small><b>{entryText}</b><span>{entryNote}</span></div>
+    <div><small>PRICE NOW</small><b>{money(price)}</b><span className={changePct>=0?"good":"bad"}>{changePct>=0?"+":""}{changePct.toFixed(2)}% today</span></div>
+    <div><small>BREAKOUT / PROOF</small><b>{money(levels.breakout||levels.resistance)}</b><span>Strength above this area improves timing.</span></div>
+    <div><small>REASSESS AREA</small><b>{money(levels.majorSupport||levels.support)}</b><span>Technical warning only; business evidence decides thesis failure.</span></div>
+   </div>
+
+   <div className="v52HorizonWrap">
+    <div className="v52HorizonIntro"><small>FORWARD OUTLOOK</small><b>One thesis, five time horizons</b><span>Price can change timing without rewriting the long-run business view.</span></div>
+    <div className="v52HorizonRail">{decision.horizons.map((h:HorizonOutlook)=><div key={h.key} className={`${tone(h.label)} ${h.key===decision.bestHorizon?"best":""}`} title={h.reason}><small>{h.key}</small><b>{h.label}</b><span>{h.score}</span>{h.key===decision.bestHorizon&&<em>BEST</em>}</div>)}</div>
+   </div>
+
+   <div className="v52ThesisGrid">
+    <div><small>WHY OWN / WATCH</small>{topDrivers.length?topDrivers.map((x,i)=><p key={i}>✓ {x}</p>):<p>No dominant positive evidence yet.</p>}</div>
+    <div><small>WHAT CAN GO WRONG</small>{topRisks.length?topRisks.map((x,i)=><p key={i}>• {x}</p>):<p>No single risk currently dominates.</p>}</div>
+    <div><small>WHAT BREAKS THE THESIS</small>{decision.breakers.slice(0,3).map((x,i)=><p key={i}>• {x}</p>)}</div>
+   </div>
+
+   <div className="v52FooterRow">
+    <div><small>WHAT CHANGED</small><b>{decision.changed[0]||"No material thesis change detected."}</b><span>Daily price noise alone does not change conviction.</span></div>
+    <div className="v52MiniScores"><span><small>BUSINESS</small><b>{decision.companyScore}</b></span><span><small>OPPORTUNITY</small><b>{decision.opportunityScore}</b></span><span><small>DATA COMPLETENESS</small><b>{decision.confidence}%</b></span></div>
+    <button type="button" onClick={onEvidence}>Open full research →</button>
+   </div>
+ </section>
+}

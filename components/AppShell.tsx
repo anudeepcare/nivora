@@ -3,7 +3,7 @@ import Link from "next/link";
 import {usePathname,useRouter} from "next/navigation";
 import {supabaseBrowser} from "@/lib/supabase";
 import {useEffect,useRef,useState} from "react";
-import {Radar,Search,BriefcaseBusiness,UserRound,Bell,Info,ShieldCheck,Star} from "lucide-react";
+import {Search,BriefcaseBusiness,UserRound,Bell,Info,ShieldCheck,Star} from "lucide-react";
 
 export default function AppShell({children}:{children:React.ReactNode}){
  const path=usePathname(),router=useRouter(),[open,setOpen]=useState(false),[email,setEmail]=useState(""),ref=useRef<HTMLDivElement>(null);
@@ -13,9 +13,8 @@ export default function AppShell({children}:{children:React.ReactNode}){
  const active=(p:string)=>path===p||path.startsWith(p+"/");
  return <>
   <header className="osHeader v12Header">
-   <Link className="osLogo v37Logo" href="/dashboard"><span className="v37Wordmark">NIVORA<span>.</span></span><small>Decision Intelligence</small></Link>
+   <Link className="osLogo v37Logo" href="/analyze"><span className="v37Wordmark">NIVORA<span>.</span></span><small>Decision Intelligence</small></Link>
    <nav className="osDesktopNav" aria-label="Primary">
-    <Link className={active("/dashboard")||active("/discover")?"on":""} href="/dashboard">Radar</Link>
     <Link className={active("/analyze")||active("/stock")?"on":""} href="/analyze">Analyze</Link>
     <Link className={active("/portfolio")?"on":""} href="/portfolio">Portfolio</Link>
    </nav>
@@ -23,7 +22,6 @@ export default function AppShell({children}:{children:React.ReactNode}){
   </header>
   <main className="osMain v12Main">{children}</main>
   <nav className="osMobileNav v12MobileNav" aria-label="Mobile navigation">
-   <Link className={active("/dashboard")||active("/discover")?"on":""} href="/dashboard"><Radar size={19}/><span>Radar</span></Link>
    <Link className={active("/analyze")||active("/stock")?"on":""} href="/analyze"><Search size={19}/><span>Analyze</span></Link>
    <Link className={active("/portfolio")?"on":""} href="/portfolio"><BriefcaseBusiness size={19}/><span>Portfolio</span></Link>
   </nav>

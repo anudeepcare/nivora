@@ -1,1 +1,2 @@
-import {redirect} from "next/navigation";export default function Discover(){redirect("/dashboard")}
+import {redirect} from "next/navigation";
+export default function Discover(){redirect("/analyze")}
