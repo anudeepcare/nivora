@@ -633,6 +633,17 @@ export default function StockClient({symbol}:{symbol:string}){
         <div className="danger"><small>{owns?"EXIT / REASSESS":"THESIS BREAK"}</small><b>&lt; ${horizonPlan.stop}</b><span>{downsideToBreak!=null?`${downsideToBreak.toFixed(1)}% from now`:"Recheck the thesis"}</span></div>
       </div>
 
+      <div className="v40PriceRail" aria-label="Decision path">
+        <div className="v40RailHead"><span>DECISION PATH</span><b>Where price is now — and what changes the call</b></div>
+        <div className="v40RailTrack">
+          <span className="break"><small>THESIS BREAK</small><b>${horizonPlan.stop}</b></span>
+          <span className="entry"><small>{owns?"ADD":"ENTRY"}</small><b>${horizonPlan.entryLow}–${horizonPlan.entryHigh}</b></span>
+          <span className="now"><small>NOW</small><b>${currentPx.toFixed(2)}</b></span>
+          <span className="confirm"><small>CONFIRM</small><b>${horizonPlan.confirm}</b></span>
+          <span className="target"><small>TARGET</small><b>${horizonPlan.target1}</b></span>
+        </div>
+      </div>
+
       <div className="v38Why">
         <div className="v38WhyTitle"><span>WHY THIS CALL</span><button type="button" onClick={()=>openResearch("thesis")}>Open thesis</button></div>
         <div className="v38EvidenceChips">
@@ -728,10 +739,15 @@ export default function StockClient({symbol}:{symbol:string}){
           <div className="thesisAction"><small>CURRENT ACTION</small><b className={tone(intelligence.action)}>{intelligence.action}</b><span>{intelligence.nextDecision}</span></div>
         </div>
 
-        <div className="thesisDimensions">
-          {Object.entries(intelligence.dimensions).map(([k,v]:any)=><div key={k}><span>{k}</span><b>{v}/100</b><i><em style={{width:`${Math.max(3,Math.min(100,v))}%`}}/></i></div>)}
+        <div className="v40VerdictGrid">
+          <div className="bull"><small>BULL CASE</small><b>{intelligence.scenarios?.find((x:any)=>String(x.name).startsWith("Bull"))?.probability??"—"}%</b><span>{intelligence.biggestPositive}</span></div>
+          <div className="base"><small>BASE CASE</small><b>{decisionAction}</b><span>{commandReason}</span></div>
+          <div className="bear"><small>BEAR CASE</small><b>{intelligence.scenarios?.find((x:any)=>String(x.name).startsWith("Bear"))?.probability??"—"}%</b><span>{intelligence.biggestRisk}</span></div>
         </div>
-        <div className="v37ProofBar"><div><small>WHY NIVORA</small><b>Decision → price plan → thesis break</b><span>Not another indicator dump.</span></div><div><small>MODEL HONESTY</small><b>Forward validation collecting</b><span>No performance edge is claimed until outcomes prove it.</span></div><div><small>CONTRADICTIONS</small><b>{intelligence.contradictions.length||0} detected</b><span>{intelligence.contradictions[0]||"Evidence is broadly aligned."}</span></div></div>
+        <details className="v40EvidenceDetails">
+          <summary>See how NIVORA reached this decision <span>{intelligence.score}/100 synthesis</span></summary>
+          <div className="thesisDimensions">{Object.entries(intelligence.dimensions).map(([k,v]:any)=><div key={k}><span>{k}</span><b>{v}/100</b><i><em style={{width:`${Math.max(3,Math.min(100,v))}%`}}/></i></div>)}</div>
+        </details>
 
         <div className="thesisGrid">
           <div className="thesisCard positive"><small>WHAT SUPPORTS THE THESIS</small>{intelligence.positives.length?intelligence.positives.map((x:string,i:number)=><p key={i}>✓ {x}</p>):<p>No dominant positive evidence yet.</p>}</div>
@@ -754,9 +770,9 @@ export default function StockClient({symbol}:{symbol:string}){
 
       {tab==="thesis"&&<div className="v36ThesisTargets">
         <div><small>ANALYST CONSENSUS</small><b className={analystConsensus==="Buy"||analystConsensus==="Positive"?"good":analystConsensus==="Sell"?"bad":"mid"}>{analystConsensus}</b><span>{analystTotal?`${analystBuy} positive · ${analystCounts?.hold||0} hold · ${analystSell} negative`:"No analyst recommendation coverage returned."}</span></div>
-        <div><small>ANALYST TARGET</small><b>{hasAnalystTarget?`$${targetMean.toFixed(2)} mean`:"Unavailable"}</b><span>{hasAnalystTarget&&Number.isFinite(targetLow)&&Number.isFinite(targetHigh)?`Range $${targetLow.toFixed(2)}–$${targetHigh.toFixed(2)}${pt.lastUpdated?` · updated ${pt.lastUpdated}`:""}`:"Finnhub target coverage may vary by symbol."}</span></div>
+        <div><small>WALL STREET TARGET</small><b>{hasAnalystTarget?`$${targetMean.toFixed(2)} avg`:"Not covered"}</b><span>{hasAnalystTarget&&Number.isFinite(targetLow)&&Number.isFinite(targetHigh)?`$${targetLow.toFixed(2)} low · $${targetHigh.toFixed(2)} high${pt.lastUpdated?` · ${pt.lastUpdated}`:""}`:"No verified target returned — excluded from the decision."}</span></div>
         <div><small>NIVORA FAIR VALUE</small><b>${fairValue.low}–${fairValue.high}</b><span>Model estimate, not guaranteed intrinsic value. Uses {fairValue.source.toLowerCase()}.</span></div>
-        <div><small>RETURN SCENARIOS</small><b>{currentPx?`${((horizonPlan.target1/currentPx-1)*100).toFixed(0)}% / ${((horizonPlan.target2/currentPx-1)*100).toFixed(0)}%`:"—"}</b><span>Target 1 / Target 2. 1× = $${(currentPx*2).toFixed(2)} · 2× = $${(currentPx*3).toFixed(2)} · 3× = $${(currentPx*4).toFixed(2)}</span></div>
+        <div><small>UPSIDE MAP</small><b>{currentPx?`${((horizonPlan.target1/currentPx-1)*100).toFixed(0)}% → ${((horizonPlan.target2/currentPx-1)*100).toFixed(0)}%`:"—"}</b><span>Near objective → stretch objective. Long-term multi-bagger scenarios belong in the valuation view, not today's trade plan.</span></div>
       </div>}
 
       {tab==="fundamentals"&&<div className="v12Fund">
