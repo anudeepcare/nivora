@@ -266,7 +266,7 @@ export default function StockClient({symbol}:{symbol:string}){
     const dataQuality=Math.round((coverage*.55)+(intelligence.confidence*.45));
     const auditId=`${symbol}-${mode}-${Math.round(Number(d.price||0)*100)}-${intelligence.score}`;
     const validationStatus="Shadow validation enabled";
-    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:"NIVORA V34",generatedAt:new Date(now).toISOString()};
+    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:"NIVORA V36",generatedAt:new Date(now).toISOString()};
   },[d,intelligence,company,context,optionsData,institutional,symbol,mode]);
 
   useEffect(()=>{
@@ -413,11 +413,110 @@ export default function StockClient({symbol}:{symbol:string}){
   const institutionalPeriod=institutional?.institutional?.reportPeriod||institutional?.asOf||null;
   const institutionalPriorPeriod=institutional?.institutional?.previousPeriodEnd||null;
   const institutionalDatasetThrough=institutional?.institutional?.datasetThrough||null;
+
+  const latestAnalyst=Array.isArray(context?.recommendations)?context.recommendations[0]:null;
+  const analystCounts=latestAnalyst?{
+    strongBuy:Number(latestAnalyst.strongBuy||0),buy:Number(latestAnalyst.buy||0),hold:Number(latestAnalyst.hold||0),
+    sell:Number(latestAnalyst.sell||0),strongSell:Number(latestAnalyst.strongSell||0)
+  }:null;
+  const analystTotal=analystCounts?Object.values(analystCounts).reduce((a:number,b:number)=>a+b,0):0;
+  const analystBuy=analystCounts?(analystCounts.strongBuy+analystCounts.buy):0;
+  const analystSell=analystCounts?(analystCounts.sell+analystCounts.strongSell):0;
+  const analystConsensus=analystTotal?
+    (analystBuy/analystTotal>=.62?"Buy":analystSell/analystTotal>=.45?"Sell":analystBuy>analystSell+analystCounts!.hold*.25?"Positive":"Hold"):
+    "Not covered";
+  const analystScore=Number(intelligence?.dimensions?.analyst??50);
+  const pt=context?.priceTarget||{};
+  const targetMean=Number(pt.targetMean);
+  const targetMedian=Number(pt.targetMedian);
+  const targetHigh=Number(pt.targetHigh);
+  const targetLow=Number(pt.targetLow);
+  const hasAnalystTarget=Number.isFinite(targetMean)&&targetMean>0;
+
+  const technicalComposite=Math.max(0,Math.min(100,Math.round(
+    Number(d.scores?.trend??50)*.30+Number(d.scores?.momentum??50)*.24+Number(d.scores?.flow??50)*.18+
+    Number(d.scores?.structure??50)*.16+(100-Number(d.scores?.extension??50))*.12
+  )));
+
+  const fairValue=(()=>{
+    const technicalAnchor=Math.max(Number(d.levels?.breakout||currentPx),Number(marketLab?.waveTarget||currentPx));
+    const businessAnchor=currentPx*(1+Math.max(-.22,Math.min(.28,(businessScore-50)/250)));
+    const mid=hasAnalystTarget
+      ? targetMean*.60+businessAnchor*.25+technicalAnchor*.15
+      : businessAnchor*.60+technicalAnchor*.40;
+    const quality=Math.max(-.04,Math.min(.04,(businessScore-55)/800));
+    return {
+      mid:Number(mid.toFixed(2)),
+      low:Number((mid*(.92+quality)).toFixed(2)),
+      high:Number((mid*(1.08+quality)).toFixed(2)),
+      source:hasAnalystTarget?"Analyst target + business quality + price structure":"Business quality + price structure"
+    };
+  })();
+
+  const horizonPlan=(()=>{
+    const atr=Math.max(.01,Number(proTech?.atr14||currentPx*.025));
+    const pref=Number(d.levels.preferredEntry), sup=Number(d.levels.support), major=Number(d.levels.majorSupport), res=Number(d.levels.resistance), brk=Number(d.levels.breakout), inv=Number(d.levels.invalidation);
+    let entryLow=Math.min(pref,sup),entryHigh=Math.max(pref,sup),confirm=brk,target1=res,target2=brk,stop=inv;
+    if(horizon==="swing"){
+      entryLow=Math.max(0,Math.min(major,sup-atr*.55));entryHigh=sup;confirm=res;target1=brk;target2=brk+atr*1.6;stop=Math.min(inv,entryLow-atr*.85);
+    }
+    if(horizon==="long"){
+      entryLow=Math.max(0,Math.min(Number(marketLab?.dcaLow||major),major));entryHigh=Math.max(Number(marketLab?.dcaHigh||sup),sup);confirm=brk;
+      target1=Math.max(brk,fairValue.low,currentPx*1.10);target2=Math.max(target1+atr,fairValue.mid,currentPx*1.22);stop=Math.min(inv,major-atr*1.15);
+    }
+    const plannedEntry=(entryLow+entryHigh)/2;
+    const reward=Math.max(.01,target1-plannedEntry),riskAmt=Math.max(.01,plannedEntry-stop);
+    const ratio=reward/riskAmt;
+    return {
+      entryLow:Number(entryLow.toFixed(2)),entryHigh:Number(entryHigh.toFixed(2)),confirm:Number(confirm.toFixed(2)),
+      target1:Number(target1.toFixed(2)),target2:Number(target2.toFixed(2)),stop:Number(stop.toFixed(2)),rr:Number(ratio.toFixed(1)),
+      timeframe:horizon==="now"?"Current / daily structure":horizon==="swing"?"Swing / daily-weekly structure":"Long term / weekly-monthly thesis"
+    };
+  })();
+
+  const horizonChartLevels={
+    entryLow:horizonPlan.entryLow,entryHigh:horizonPlan.entryHigh,confirm:horizonPlan.confirm,
+    target1:horizonPlan.target1,target2:horizonPlan.target2,stop:horizonPlan.stop,
+    preferredEntry:horizonPlan.entryLow,support:horizonPlan.entryHigh,majorSupport:Number(d.levels.majorSupport),
+    resistance:horizonPlan.target1,breakout:horizonPlan.confirm,invalidation:horizonPlan.stop
+  };
+  const horizonCandles=(d.candles||[]).slice(horizon==="now"?-65:horizon==="swing"?-125:-180);
+
+  const decisionAction=(()=>{
+    const score=Number(intelligence?.score??overallScore),risk=Number(d.scores?.risk??60),trend=Number(d.scores?.trend??50),flow=Number(d.scores?.flow??50),ext=Number(d.scores?.extension??50);
+    if(owns){
+      if(currentPx<=horizonPlan.stop||businessScore<38)return"EXIT / REASSESS";
+      if(currentPx>=horizonPlan.target2&&ext>=68)return"TRIM / PROTECT GAINS";
+      if(currentPx>=horizonPlan.target1&&ext>=72)return"TRIM SELECTIVELY";
+      if(currentPx>=horizonPlan.entryLow&&currentPx<=horizonPlan.entryHigh&&score>=68&&risk<72)return"ADD SELECTIVELY";
+      return"HOLD";
+    }
+    if(currentPx>=horizonPlan.entryLow&&currentPx<=horizonPlan.entryHigh&&score>=70&&risk<72)return horizon==="long"?"ACCUMULATE":"BUY / START";
+    if(currentPx>=horizonPlan.confirm&&trend>=64&&flow>=50&&ext<82)return"BUY BREAKOUT / START";
+    if(currentPx>horizonPlan.entryHigh&&currentPx<horizonPlan.confirm)return"WAIT FOR ENTRY";
+    if(currentPx>horizonPlan.target1||ext>=78)return"DON'T CHASE";
+    if(currentPx<horizonPlan.entryLow)return"WAIT FOR STABILITY";
+    return"WAIT / WATCH";
+  })();
+
+  const decisionWhy=(()=>{
+    const good:string[]=[];const watch:string[]=[];
+    if(technicalComposite>=68)good.push(`Technical setup ${technicalComposite}/100`);else if(technicalComposite<45)watch.push(`Technical setup only ${technicalComposite}/100`);
+    if(businessScore>=70)good.push(`Business quality ${businessScore}/100`);else if(businessScore<45)watch.push(`Business quality ${businessScore}/100`);
+    if(institutional?.enabled&&institutionalHasPct)good.push(`Institutions ${institutionalPct>=0?"+":""}${institutionalPct.toFixed(1)}% QoQ`);
+    if(analystTotal>=3&&analystConsensus!=="Not covered")good.push(`Analysts: ${analystConsensus}`);
+    if(Number(d.scores?.extension??50)>=70)watch.push("Price is extended");
+    if(Number(d.scores?.risk??50)>=70)watch.push("Risk is elevated");
+    return {good:good.slice(0,3),watch:watch.slice(0,2)};
+  })();
+
   const signalRows=[
     ["Business",business.label,tone(business.label)],
     ["Trend",d.labels.trend,tone(d.labels.trend)],
+    ["Technical",`${technicalComposite}/100`,technicalComposite>=68?"good":technicalComposite<45?"bad":"mid"],
     ["Entry",d.labels.entry,tone(d.labels.entry)],
     ["Institutions",institutionalQuick,institutionalQuickTone],
+    ["Analysts",analystConsensus,analystConsensus==="Buy"||analystConsensus==="Positive"?"good":analystConsensus==="Sell"?"bad":"mid"],
     ["Options",optionsData?.enabled?(derivativesScore>=60?"Supportive":derivativesScore<45?"Cautious":"Neutral"):"On demand",optionsData?.enabled?(derivativesScore>=60?"good":derivativesScore<45?"bad":"mid"):"mid"],
     ["Valuation",valuationScore>=65?"Attractive":valuationScore<45?"Expensive":"Fair",valuationScore>=65?"good":valuationScore<45?"bad":"mid"]
   ];
@@ -491,20 +590,32 @@ export default function StockClient({symbol}:{symbol:string}){
       <div><div className="metricLabel"><small>DATA CONFIDENCE</small><Help title="Data confidence">Shows whether price history, business data, market context and news/catalyst sources are available. Higher confidence means better evidence coverage—not higher certainty of profit.</Help></div><b className={confidence==="High"?"good":confidence==="Low"?"bad":"mid"}>{confidence}</b><span>Price + business + news + market coverage.</span></div>
     </section>}
 
-    <section className={["v32Command",tone(ownerAction)].join(" ")} aria-label="NIVORA decision">
+    <section className={["v32Command",tone(decisionAction)].join(" ")} aria-label="NIVORA decision">
       <div className="v32CommandHero">
         <div>
           <div className="v32CommandEyebrow"><span>NIVORA DECISION</span><Help title="NIVORA decision">The fastest summary of the current evidence for your selected horizon and position status. It changes as price, fundamentals, catalysts, risk and supporting evidence change.</Help></div>
-          <div className="v32ActionLine"><h2>{ownerAction}</h2><span><b>{commandScore}</b>/100 · {commandConfidence} confidence</span></div>
-          <p>{commandReason}</p>
+          <div className="v32ActionLine"><h2>{decisionAction}</h2><span><b>{commandScore}</b>/100 · {commandConfidence} confidence</span></div>
+          <p>{decisionAction.includes("BUY")||decisionAction.includes("ACCUMULATE")?`Current evidence supports a disciplined ${horizon} entry only at NIVORA's mapped levels.`:decisionAction==="HOLD"?"The thesis remains intact; manage the position around the mapped add, trim and reassessment zones.":commandReason}</p>
         </div>
         <div className="v32NextTrigger"><small>NEXT DECISION TRIGGER</small><b>{intelligence?.nextDecision||confirmationText}</b><span>What NIVORA is waiting for next.</span></div>
       </div>
 
-      <div className="v32Levels">
-        <div><small>{owns?"ADD ZONE":horizon==="long"?"DCA / ACCUMULATION ZONE":"BUY ZONE"}</small><b>{!owns&&horizon==="long"&&marketLab?`$${marketLab.dcaLow}–$${marketLab.dcaHigh}`:betterEntryText}</b><span>{owns?"Add only if the thesis remains intact and price stabilizes.":horizon==="long"?"Use staged entries only while the business thesis remains intact; this is a confluence zone, not an automatic buy.":"Prefer stabilization instead of buying simply because price is falling."}</span></div>
-        <div><small>{owns?"TRIM / STRENGTH ZONE":"CONFIRM"}</small><b>{owns?`$${d.levels.resistance}–$${d.levels.breakout}`:confirmationText}</b><span>{owns?"Consider trimming only when extension/risk rises; this is not an automatic sell target.":"A strong close/retest with improving participation strengthens the setup."}</span></div>
-        <div><small>REASSESS</small><b>{invalidationText}</b><span>{owns?"Thesis risk rises here. Recheck business, catalysts and position size.":"Technical thesis materially weakens below this area."}</span></div>
+      <div className="v36DecisionLevels">
+        <div><small>{owns?"ADD ZONE":horizon==="long"?"DCA / BUY ZONE":"BEST ENTRY"}</small><b>${horizonPlan.entryLow}–${horizonPlan.entryHigh}</b><span>{horizonPlan.timeframe}</span></div>
+        <div><small>BREAKOUT / CONFIRM</small><b>Above ${horizonPlan.confirm}</b><span>Require participation and a close/retest—not just the first spike.</span></div>
+        <div><small>{owns?"TRIM 1":"TARGET 1"}</small><b>${horizonPlan.target1}</b><span>First risk/reward objective.</span></div>
+        <div><small>{owns?"TRIM 2":"TARGET 2"}</small><b>${horizonPlan.target2}</b><span>{horizon==="long"?"Longer-term scenario objective.":"Second objective if momentum persists."}</span></div>
+        <div><small>{owns?"EXIT / REASSESS":"THESIS BREAK"}</small><b>Below ${horizonPlan.stop}</b><span>Recheck the thesis before adding more risk.</span></div>
+      </div>
+      <div className="v36DecisionMeta">
+        <div><small>PLANNED R:R</small><b>{horizonPlan.rr}×</b><span>From midpoint of entry zone to Target 1 vs thesis break.</span></div>
+        <div><small>TECHNICAL COMPOSITE</small><b>{technicalComposite}/100</b><span>Trend + momentum + flow + structure + extension.</span></div>
+        <div><small>ANALYST CONSENSUS</small><b>{analystConsensus}</b><span>{analystTotal?`${analystBuy} positive · ${analystCounts?.hold||0} hold · ${analystSell} negative`:"Coverage unavailable"}</span></div>
+        <div><small>NIVORA FAIR VALUE</small><b>${fairValue.low}–${fairValue.high}</b><span>Model estimate · {fairValue.source}.</span></div>
+      </div>
+      <div className="v36WhyNow">
+        <strong>Why this call?</strong>
+        <div>{decisionWhy.good.map((x:string)=><span className="good" key={x}>✓ {x}</span>)}{decisionWhy.watch.map((x:string)=><span className="mid" key={x}>• {x}</span>)}</div>
       </div>
 
       <div className="v32Signals">
@@ -560,9 +671,9 @@ export default function StockClient({symbol}:{symbol:string}){
     </section>
 
     {depth!=="simple"&&<section className="osChartCard v12Chart">
-      <div className="osSectionTitle"><div><small>PRICE MAP</small><h3>What price has to do next</h3></div><span>Green = entry/support · Orange = confirmation · Red = reassess</span></div>
+      <div className="osSectionTitle"><div><small>PRICE MAP</small><h3>What price has to do next</h3></div><span>{horizon==="now"?"Current / daily":horizon==="swing"?"Swing / daily-weekly":"Long term / weekly-monthly"} · levels recalculate with horizon</span></div>
       <div className="chartControls"><div><button className={chartMode==="clean"?"on":""} onClick={()=>setChartMode("clean")}>Clean</button><button className={chartMode==="trend"?"on":""} onClick={()=>setChartMode("trend")}>Trend</button></div><Help title="Chart modes">Clean keeps only price, volume and NIVORA levels. Trend adds 20-day and 50-day moving averages for users who want more technical context.</Help></div>
-      <PriceChart candles={d.candles} levels={d.levels} showTrend={chartMode==="trend"}/>
+      <PriceChart candles={horizonCandles} levels={horizonChartLevels} showTrend={chartMode==="trend"}/>
     </section>}
 
     {depth==="pro"&&<section className="beginnerScore v18Score">
@@ -640,6 +751,13 @@ export default function StockClient({symbol}:{symbol:string}){
         {intelligence.missing.length>0&&<div className="intelMissing"><Info size={15}/><span>Confidence could improve with: {intelligence.missing.join(", ")}.</span></div>}
       </div>}
 
+      {tab==="thesis"&&<div className="v36ThesisTargets">
+        <div><small>ANALYST CONSENSUS</small><b className={analystConsensus==="Buy"||analystConsensus==="Positive"?"good":analystConsensus==="Sell"?"bad":"mid"}>{analystConsensus}</b><span>{analystTotal?`${analystBuy} positive · ${analystCounts?.hold||0} hold · ${analystSell} negative`:"No analyst recommendation coverage returned."}</span></div>
+        <div><small>ANALYST TARGET</small><b>{hasAnalystTarget?`$${targetMean.toFixed(2)} mean`:"Unavailable"}</b><span>{hasAnalystTarget&&Number.isFinite(targetLow)&&Number.isFinite(targetHigh)?`Range $${targetLow.toFixed(2)}–$${targetHigh.toFixed(2)}${pt.lastUpdated?` · updated ${pt.lastUpdated}`:""}`:"Finnhub target coverage may vary by symbol."}</span></div>
+        <div><small>NIVORA FAIR VALUE</small><b>${fairValue.low}–${fairValue.high}</b><span>Model estimate, not guaranteed intrinsic value. Uses {fairValue.source.toLowerCase()}.</span></div>
+        <div><small>RETURN SCENARIOS</small><b>{currentPx?`${((horizonPlan.target1/currentPx-1)*100).toFixed(0)}% / ${((horizonPlan.target2/currentPx-1)*100).toFixed(0)}%`:"—"}</b><span>Target 1 / Target 2. 1× = $${(currentPx*2).toFixed(2)} · 2× = $${(currentPx*3).toFixed(2)} · 3× = $${(currentPx*4).toFixed(2)}</span></div>
+      </div>}
+
       {tab==="fundamentals"&&<div className="v12Fund">
         <div className={`fundSignal ${business.tone||"neutral"}`}><small>BUSINESS QUALITY</small><h3>{business.label}{business.score!=null?` · ${business.score}/100`:""}</h3>{(business.reasons||[]).slice(0,4).map((x:string,i:number)=><p key={i}>• {x}</p>)}{five&&<div className="fiveRecord"><small>5-YEAR RECORD</small><b>{five.score}/100 · {five.revenueTrend}</b><p>{five.summary}</p><div>{(five.history||[]).map((y:any)=><span key={y.year}><i>{y.year}</i><strong>{y.revenue!=null?money(y.revenue):"—"}</strong><em>{y.netIncome!=null?`NI ${money(y.netIncome)}`:"NI —"}</em></span>)}</div></div>}</div>
         <div className="osList">{company?.fundamentals?.length?company.fundamentals.map((x:any)=><div key={x.label}><span>{x.label}{x.detail&&<small>{x.detail}</small>}</span><b>{x.value}</b></div>):<p>No standardized SEC fundamentals available for this symbol yet.</p>}</div>
@@ -704,8 +822,8 @@ export default function StockClient({symbol}:{symbol:string}){
 
       {tab==="technical"&&<div className="v12Technical v26Technical">
         <div className="v34TechnicalHero">
-          <div><small>TECHNICAL DECISION SUPPORT</small><h3>Momentum, trend and timing — translated.</h3><p>RSI, MACD, moving averages, volatility and DCA zones are supporting evidence. None is a standalone buy/sell signal.</p></div>
-          <div className="v34TechVerdict"><small>CURRENT TECHNICAL READ</small><b className={tone(d.labels.trend)}>{proTech?.trendLabel||d.labels.trend}</b><span>{proTech?.macdLabel||"MACD unavailable"} MACD · {proTech?.rsiLabel||"RSI unavailable"} RSI</span></div>
+          <div><small>TECHNICAL DECISION SUPPORT</small><h3>One score first. Indicators underneath.</h3><p>NIVORA blends trend, momentum, flow, structure and extension into one technical composite. RSI, MACD and other indicators explain the score.</p></div>
+          <div className="v34TechVerdict"><small>TECHNICAL COMPOSITE</small><b className={technicalComposite>=68?"good":technicalComposite<45?"bad":"mid"}>{technicalComposite}/100</b><span>{proTech?.trendLabel||d.labels.trend} trend · {proTech?.macdLabel||"MACD unavailable"} MACD · {proTech?.rsiLabel||"RSI unavailable"} RSI</span></div>
         </div>
         {proTech&&<div className="v34IndicatorGrid">
 <div>
@@ -741,7 +859,7 @@ export default function StockClient({symbol}:{symbol:string}){
         </div>}
         {depth==="pro"&&marketLab&&<div className="v32ConfluenceChart">
           <div className="v32MarketLabHead"><div><small>CONFLUENCE MAP</small><h3>Fib + structure + NIVORA risk levels</h3><p>Advanced levels are supporting evidence, not standalone buy/sell signals. Wave interpretation is heuristic and confidence-limited.</p></div><Help title="Confluence map">Fibonacci retracements, NIVORA support/entry levels and the current Elliott-style scenario are overlaid so experienced users can see where independent technical evidence clusters.</Help></div>
-          <PriceChart candles={d.candles} levels={d.levels} showTrend={true} confluence={marketLab}/>
+          <PriceChart candles={horizonCandles} levels={horizonChartLevels} showTrend={true} confluence={marketLab}/>
         </div>}
         <div className="techIntro"><div><small>TECHNICAL LAB</small><h3>Professional evidence, still readable.</h3><p>The main call stays simple. This workspace shows the market mechanics experienced investors may want to inspect.</p></div><Help title="Technical Lab">Technical indicators describe price behavior and risk. They can improve timing, but none can guarantee direction or replace business/catalyst analysis.</Help></div>
         {proTech&&<div className="proTechGrid">
