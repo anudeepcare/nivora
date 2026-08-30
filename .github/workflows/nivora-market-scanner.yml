@@ -1,0 +1,32 @@
+name: NIVORA Market Scanner
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '7 * * * 1-5'
+
+jobs:
+  scan-market:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: Production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - run: pip install requests supabase
+
+      - name: Scan rolling US stock batch
+        env:
+          TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          NIVORA_SCAN_BATCH_SIZE: ${{ vars.NIVORA_SCAN_BATCH_SIZE || '24' }}
+          NIVORA_SCAN_PAUSE_SECONDS: ${{ vars.NIVORA_SCAN_PAUSE_SECONDS || '8' }}
+          NIVORA_SYNC_UNIVERSE: '1'
+
+        run: python scripts/scan_us_market.py
