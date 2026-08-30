@@ -13,9 +13,9 @@ export default function AppShell({children}:{children:React.ReactNode}){
  const active=(p:string)=>path===p||path.startsWith(p+"/");
  return <>
   <header className="osHeader v12Header">
-   <Link className="osLogo" href="/dashboard">NIVORA<span>.</span></Link>
+   <Link className="osLogo v37Logo" href="/dashboard"><span className="v37Wordmark">NIVORA<span>.</span></span><small>Decision Intelligence</small></Link>
    <nav className="osDesktopNav" aria-label="Primary">
-    <Link className={active("/dashboard")?"on":""} href="/dashboard">Today</Link>
+    <Link className={active("/dashboard")?"on":""} href="/dashboard">Radar</Link>
     <Link className={active("/analyze")||active("/stock")?"on":""} href="/analyze">Analyze</Link>
     <Link className={active("/watchlist")?"on":""} href="/watchlist">Watchlist</Link>
     <Link className={active("/portfolio")?"on":""} href="/portfolio">Portfolio</Link>
@@ -24,7 +24,7 @@ export default function AppShell({children}:{children:React.ReactNode}){
   </header>
   <main className="osMain v12Main">{children}</main>
   <nav className="osMobileNav v12MobileNav" aria-label="Mobile navigation">
-   <Link className={active("/dashboard")?"on":""} href="/dashboard"><House size={19}/><span>Today</span></Link>
+   <Link className={active("/dashboard")?"on":""} href="/dashboard"><House size={19}/><span>Radar</span></Link>
    <Link className={active("/analyze")||active("/stock")?"on":""} href="/analyze"><Search size={19}/><span>Analyze</span></Link>
    <Link className={active("/watchlist")?"on":""} href="/watchlist"><Star size={19}/><span>Watchlist</span></Link>
    <Link className={active("/portfolio")?"on":""} href="/portfolio"><BriefcaseBusiness size={19}/><span>Portfolio</span></Link>

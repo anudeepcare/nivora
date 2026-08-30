@@ -266,7 +266,7 @@ export default function StockClient({symbol}:{symbol:string}){
     const dataQuality=Math.round((coverage*.55)+(intelligence.confidence*.45));
     const auditId=`${symbol}-${mode}-${Math.round(Number(d.price||0)*100)}-${intelligence.score}`;
     const validationStatus="Shadow validation enabled";
-    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:"NIVORA V36",generatedAt:new Date(now).toISOString()};
+    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:"NIVORA V37",generatedAt:new Date(now).toISOString()};
   },[d,intelligence,company,context,optionsData,institutional,symbol,mode]);
 
   useEffect(()=>{
@@ -387,7 +387,16 @@ export default function StockClient({symbol}:{symbol:string}){
     : view.text;
 
   const commandScore=intelligence?.score??overallScore;
-  const commandConfidence=intelligence?.confidenceLabel||confidence;
+  const evidenceConfidence=intelligence?.confidenceLabel||confidence;
+  const contradictionCount=Number(intelligence?.contradictions?.length||0);
+  const decisionConviction=Math.max(32,Math.min(92,Math.round(48+Math.abs(commandScore-50)*.72-contradictionCount*7+(technicalComposite>=65&&businessScore>=65?6:0))));
+  const convictionLabel=decisionConviction>=78?"High":decisionConviction>=62?"Good":decisionConviction>=48?"Moderate":"Low";
+  const currentLocation=currentPx>=horizonPlan.entryLow&&currentPx<=horizonPlan.entryHigh?"Inside entry zone":currentPx<horizonPlan.entryLow?"Below planned entry":currentPx>=horizonPlan.target1?"At/above objective":currentPx<horizonPlan.confirm?"Between entry and confirmation":"Above confirmation";
+  const upsideToT1=currentPx>0?((horizonPlan.target1/currentPx-1)*100):null;
+  const downsideToBreak=currentPx>0?((horizonPlan.stop/currentPx-1)*100):null;
+  const dca1=Number(horizonPlan.entryHigh.toFixed(2));
+  const dca2=Number(((horizonPlan.entryLow+horizonPlan.entryHigh)/2).toFixed(2));
+  const dca3=Number(Math.max(horizonPlan.stop*1.035,horizonPlan.entryLow-(horizonPlan.entryHigh-horizonPlan.entryLow)*.75).toFixed(2));
   const openResearch=(nextTab:Tab="thesis")=>{
     setTab(nextTab);
     requestAnimationFrame(()=>setTimeout(()=>thesisRef.current?.scrollIntoView({behavior:"smooth",block:"start"}),80));
@@ -594,8 +603,9 @@ export default function StockClient({symbol}:{symbol:string}){
       <div className="v32CommandHero">
         <div>
           <div className="v32CommandEyebrow"><span>NIVORA DECISION</span><Help title="NIVORA decision">The fastest summary of the current evidence for your selected horizon and position status. It changes as price, fundamentals, catalysts, risk and supporting evidence change.</Help></div>
-          <div className="v32ActionLine"><h2>{decisionAction}</h2><span><b>{commandScore}</b>/100 · {commandConfidence} confidence</span></div>
+          <div className="v32ActionLine"><h2>{decisionAction}</h2><span><b>{commandScore}</b>/100 decision score · {convictionLabel} conviction</span></div>
           <p>{decisionAction.includes("BUY")||decisionAction.includes("ACCUMULATE")?`Current evidence supports a disciplined ${horizon} entry only at NIVORA's mapped levels.`:decisionAction==="HOLD"?"The thesis remains intact; manage the position around the mapped add, trim and reassessment zones.":commandReason}</p>
+          <div className="v37DecisionSentence"><b>Best move:</b> {decisionAction.includes("BUY")||decisionAction.includes("ACCUMULATE")?`Act only inside $${horizonPlan.entryLow}–$${horizonPlan.entryHigh} or after confirmation above $${horizonPlan.confirm}.`:decisionAction.includes("HOLD")?`Hold the thesis, add only near $${horizonPlan.entryLow}–$${horizonPlan.entryHigh}, and reassess below $${horizonPlan.stop}.`:`Wait for either $${horizonPlan.entryLow}–$${horizonPlan.entryHigh} or a confirmed move above $${horizonPlan.confirm}.`}</div>
         </div>
         <div className="v32NextTrigger"><small>NEXT DECISION TRIGGER</small><b>{intelligence?.nextDecision||confirmationText}</b><span>What NIVORA is waiting for next.</span></div>
       </div>
@@ -608,11 +618,12 @@ export default function StockClient({symbol}:{symbol:string}){
         <div><small>{owns?"EXIT / REASSESS":"THESIS BREAK"}</small><b>Below ${horizonPlan.stop}</b><span>Recheck the thesis before adding more risk.</span></div>
       </div>
       <div className="v36DecisionMeta">
-        <div><small>PLANNED R:R</small><b>{horizonPlan.rr}×</b><span>From midpoint of entry zone to Target 1 vs thesis break.</span></div>
+        <div><small>PLANNED R:R</small><b>{horizonPlan.rr}×</b><span>{upsideToT1!=null?`${upsideToT1>=0?"+":""}${upsideToT1.toFixed(1)}% to T1`:"—"} · {downsideToBreak!=null?`${downsideToBreak.toFixed(1)}% to break`:"—"}</span></div>
         <div><small>TECHNICAL COMPOSITE</small><b>{technicalComposite}/100</b><span>Trend + momentum + flow + structure + extension.</span></div>
         <div><small>ANALYST CONSENSUS</small><b>{analystConsensus}</b><span>{analystTotal?`${analystBuy} positive · ${analystCounts?.hold||0} hold · ${analystSell} negative`:"Coverage unavailable"}</span></div>
         <div><small>NIVORA FAIR VALUE</small><b>${fairValue.low}–${fairValue.high}</b><span>Model estimate · {fairValue.source}.</span></div>
       </div>
+      <div className="v37LocationRail"><div><small>CURRENT LOCATION</small><b>{currentLocation}</b><span>${currentPx.toFixed(2)} now</span></div><div><small>{horizon==="long"?"DCA LADDER":"ENTRY PLAN"}</small><b>{horizon==="long"?`$${dca1} · $${dca2} · $${dca3}`:`$${horizonPlan.entryLow}–$${horizonPlan.entryHigh}`}</b><span>{horizon==="long"?"Scale gradually; thesis break still controls risk.":"Do not chase outside the mapped plan."}</span></div><div><small>EVIDENCE QUALITY</small><b>{evidenceConfidence}</b><span>{intelligence?.confidence||0}/100 coverage · separate from conviction</span></div></div>
       <div className="v36WhyNow">
         <strong>Why this call?</strong>
         <div>{decisionWhy.good.map((x:string)=><span className="good" key={x}>✓ {x}</span>)}{decisionWhy.watch.map((x:string)=><span className="mid" key={x}>• {x}</span>)}</div>
@@ -706,11 +717,9 @@ export default function StockClient({symbol}:{symbol:string}){
       <div className="osTabs v12Tabs v28Tabs">
         <button className={tab==="overview"?"on":""} onClick={()=>setTab("overview")}>Decision</button>
         <button className={tab==="thesis"?"on":""} onClick={()=>setTab("thesis")}>Thesis</button>
-        {depth!=="simple"&&<button className={tab==="fundamentals"?"on":""} onClick={()=>setTab("fundamentals")}>Fundamentals</button>}
-        {depth!=="simple"&&d.assetType!=="crypto"&&<button className={tab==="institutions"?"on":""} onClick={()=>setTab("institutions")}>Institutions</button>}
-        {depth!=="simple"&&<button className={tab==="catalysts"?"on":""} onClick={()=>setTab("catalysts")}>Catalysts</button>}
-        {depth!=="simple"&&<button className={tab==="news"?"on":""} onClick={()=>setTab("news")}>News</button>}
-        {depth!=="simple"&&<button className={tab==="earnings"?"on":""} onClick={()=>setTab("earnings")}>Earnings</button>}
+        {depth!=="simple"&&<button className={tab==="fundamentals"?"on":""} onClick={()=>setTab("fundamentals")}>Business</button>}
+        {depth!=="simple"&&d.assetType!=="crypto"&&<button className={tab==="institutions"?"on":""} onClick={()=>setTab("institutions")}>Smart money</button>}
+        {depth!=="simple"&&<button className={tab==="catalysts"?"on":""} onClick={()=>setTab("catalysts")}>Events</button>}
         {depth!=="simple"&&<button className={tab==="technical"?"on":""} onClick={()=>setTab("technical")}>{depth==="pro"?"Technical Lab":"Technical"}</button>}
         {d.assetType!=="crypto"&&<button className={tab==="options"?"on":""} onClick={()=>setTab("options")}>{depth==="pro"?"Options Lab":"Options"}</button>}
       </div>
@@ -731,6 +740,7 @@ export default function StockClient({symbol}:{symbol:string}){
         <div className="thesisDimensions">
           {Object.entries(intelligence.dimensions).map(([k,v]:any)=><div key={k}><span>{k}</span><b>{v}/100</b><i><em style={{width:`${Math.max(3,Math.min(100,v))}%`}}/></i></div>)}
         </div>
+        <div className="v37ProofBar"><div><small>WHY NIVORA</small><b>Decision → price plan → thesis break</b><span>Not another indicator dump.</span></div><div><small>MODEL HONESTY</small><b>Forward validation collecting</b><span>No performance edge is claimed until outcomes prove it.</span></div><div><small>CONTRADICTIONS</small><b>{intelligence.contradictions.length||0} detected</b><span>{intelligence.contradictions[0]||"Evidence is broadly aligned."}</span></div></div>
 
         <div className="thesisGrid">
           <div className="thesisCard positive"><small>WHAT SUPPORTS THE THESIS</small>{intelligence.positives.length?intelligence.positives.map((x:string,i:number)=><p key={i}>✓ {x}</p>):<p>No dominant positive evidence yet.</p>}</div>
@@ -807,13 +817,15 @@ export default function StockClient({symbol}:{symbol:string}){
 
       </div>}
 
-      {tab==="catalysts"&&<div className="v12Catalysts">
-        {earn&&<div className="nextEvent"><CalendarDays size={18}/><div><small>NEXT EARNINGS</small><b>{earn.date}</b><span>{earnDays!=null&&earnDays>=0?`${earnDays} days away`:"Upcoming"}</span></div></div>}
+      {tab==="catalysts"&&<div className="v12Catalysts v37Events">
+        <div className="v37EventsSummary"><div><small>EVENT RISK / OPPORTUNITY</small><h3>{catalystLabel}</h3><p>{intelligence?.dimensions?.catalysts!=null?`Catalyst score ${intelligence.dimensions.catalysts}/100. Events can change the thesis quickly; price confirmation still matters.`:"Event evidence is loading."}</p></div><div><small>NEWS TONE</small><b className={news.tone==="positive"?"good":news.tone==="negative"?"bad":"mid"}>{news.label}</b><span>{news.topReason||"No dominant headline signal."}</span></div></div>
+        {earn&&<div className="nextEvent"><CalendarDays size={18}/><div><small>NEXT EARNINGS</small><b>{earn.date}</b><span>{earnDays!=null&&earnDays>=0?`${earnDays} days away`:"Upcoming"}{earn.epsEstimate!=null?` · EPS est. ${eps(earn.epsEstimate)}`:""}</span></div></div>}
         <div className="catalystIntro"><div><small>RECENT MATERIAL FILINGS</small><Help title="Catalysts">Company filings and scheduled events that may change the investment thesis. A filing is evidence to review, not automatically bullish or bearish.</Help></div><span>Newest first</span></div>
         <div className="catalystList">{filings.length?filings.slice(0,8).map((x:any)=><a className="catalystRow" href={x.url} target="_blank" rel="noreferrer" key={x.accession}>
           <div className="catalystMain"><b>{x.label}</b><small>{x.form}{x.description?` · ${x.description}`:""}</small></div>
           <div className="catalystMeta"><em className={x.tone}>{x.materiality}</em><time>{x.date}</time><ExternalLink size={14}/></div>
         </a>):<p className="emptyState">No recent material SEC filings found.</p>}</div>
+        <div className="v37EventNews"><div className="catalystIntro"><div><small>RECENT MATERIAL NEWS</small></div><span>Context, not a standalone signal</span></div>{items.slice(0,5).map((x:any,i:number)=><a href={x.url} target="_blank" rel="noreferrer" key={i}><div><span className={`newsTone ${x.tone}`}>{x.tone}</span><small>{x.materiality} · {x.source}</small></div><b>{x.headline}</b><p>{x.summary}</p></a>)}</div>
       </div>}
 
       {tab==="news"&&<div className="v12News">{context?.enabled===false?<div className="connectFeed"><Newspaper size={22}/><b>Connect live news</b><p>Add a Finnhub API key. Price analysis and SEC data continue to work without it.</p></div>:items.length?items.map((x:any,i:number)=><a href={x.url} target="_blank" rel="noreferrer" key={i}><div><span className={`newsTone ${x.tone}`}>{x.tone}</span><small>{x.materiality} materiality · {x.source}</small></div><b>{x.headline}</b><p>{x.summary}</p><ExternalLink size={13}/></a>):<p>No recent company headlines were returned.</p>}</div>}

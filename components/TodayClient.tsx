@@ -32,18 +32,20 @@ export default function TodayClient(){
   const visible=useMemo(()=>filter==="All"?radar:radar.filter(x=>x.category===filter),[radar,filter]);
   const counts=useMemo(()=>({buy:radar.filter(x=>x.action==="BUY / START").length,watch:radar.filter(x=>x.action.includes("WATCH")||x.action.includes("CHASE")).length,exit:radar.filter(x=>x.action.includes("EXIT")||x.action.includes("AVOID")).length}),[radar]);
 
-  return <div className="todayPage v36Today">
+  return <div className="todayPage v36Today v37Today">
     <section className="todayHero v36TodayHero">
-      <div><div className="eyebrow">NIVORA TODAY</div><h1>What deserves your money — or attention — today?</h1><p>Decision-first market radar. Find strong entries, early momentum, pullbacks and exit risk before opening a full thesis.</p></div><SearchBox large/>
+      <div><div className="eyebrow">NIVORA RADAR</div><h1>Start with the decision, not the data.</h1><p>Every candidate is ranked into an action, entry plan, target and risk level. Open the thesis only when you want the proof underneath.</p></div><SearchBox large/>
     </section>
 
+
+    <section className="v37Promise" aria-label="Why NIVORA"><div><small>01 · DECIDE</small><b>Buy, wait, hold, trim or exit</b><span>No hunting through 40 indicators.</span></div><div><small>02 · PLAN</small><b>Entry, target, thesis break</b><span>Every call comes with a price map.</span></div><div><small>03 · EXPLAIN</small><b>Why + what changes the call</b><span>Contradictions stay visible.</span></div><div><small>04 · PROVE</small><b>Forward outcomes recorded</b><span>Edge must be earned, not marketed.</span></div></section>
     <section className="marketStrip v36MarketStrip">
       <div className="marketRegime"><small>MARKET REGIME</small><b className={market?.regime==="Risk-on"?"good":market?.regime==="Risk-off"?"bad":"mid"}>{market?.regime||"Loading…"}</b><span>Broad-market context changes how aggressive new entries should be.</span></div>
       <div className="marketTiles">{market?.items?.map((x:any)=><Link key={x.symbol} href={`/stock/${encodeURIComponent(x.symbol)}`}><span>{x.symbol}</span><b className={x.changePct>=0?"good":"bad"}>{x.changePct>=0?"+":""}{x.changePct}%</b><small>{x.trend}</small></Link>)}</div>
     </section>
 
     <section className="v36Radar">
-      <div className="v36RadarHead"><div><small>LIVE DECISION RADAR</small><h2>NIVORA Top Opportunities</h2><p>Ranked from the currently scanned liquid universe using trend, momentum, entry quality, participation and downside risk.</p></div><div className="v36RadarStats"><span><b>{counts.buy}</b> actionable</span><span><b>{counts.watch}</b> watch</span><span><b>{counts.exit}</b> exit risk</span></div></div>
+      <div className="v36RadarHead"><div><small>LIVE DECISION RADAR</small><h2>Top 20 Decision Board</h2><p>Best opportunities and biggest risks from the current scan. Score ranks evidence; action tells you what to do with it.</p></div><div className="v36RadarStats"><span><b>{counts.buy}</b> actionable</span><span><b>{counts.watch}</b> watch</span><span><b>{counts.exit}</b> exit risk</span></div></div>
       <div className="v36RadarFilters">{(["All","Best now","Early momentum","Quality pullback","In play","Exit watch"] as RadarFilter[]).map(x=><button key={x} className={filter===x?"on":""} onClick={()=>setFilter(x)}>{x}</button>)}</div>
       {radarLoading?<div className="softSkeleton">Scanning the NIVORA radar…</div>:visible.length?<div className="v36RadarList">{visible.slice(0,20).map((x:any,i:number)=><Link key={x.symbol} href={`/stock/${encodeURIComponent(x.symbol)}`} className="v36RadarRow">
         <div className="v36Rank">{i+1}</div><div className="v36RadarSymbol"><b>{x.symbol}</b><span>{x.category}</span></div>
