@@ -389,14 +389,6 @@ export default function StockClient({symbol}:{symbol:string}){
   const commandScore=intelligence?.score??overallScore;
   const evidenceConfidence=intelligence?.confidenceLabel||confidence;
   const contradictionCount=Number(intelligence?.contradictions?.length||0);
-  const decisionConviction=Math.max(32,Math.min(92,Math.round(48+Math.abs(commandScore-50)*.72-contradictionCount*7+(technicalComposite>=65&&businessScore>=65?6:0))));
-  const convictionLabel=decisionConviction>=78?"High":decisionConviction>=62?"Good":decisionConviction>=48?"Moderate":"Low";
-  const currentLocation=currentPx>=horizonPlan.entryLow&&currentPx<=horizonPlan.entryHigh?"Inside entry zone":currentPx<horizonPlan.entryLow?"Below planned entry":currentPx>=horizonPlan.target1?"At/above objective":currentPx<horizonPlan.confirm?"Between entry and confirmation":"Above confirmation";
-  const upsideToT1=currentPx>0?((horizonPlan.target1/currentPx-1)*100):null;
-  const downsideToBreak=currentPx>0?((horizonPlan.stop/currentPx-1)*100):null;
-  const dca1=Number(horizonPlan.entryHigh.toFixed(2));
-  const dca2=Number(((horizonPlan.entryLow+horizonPlan.entryHigh)/2).toFixed(2));
-  const dca3=Number(Math.max(horizonPlan.stop*1.035,horizonPlan.entryLow-(horizonPlan.entryHigh-horizonPlan.entryLow)*.75).toFixed(2));
   const openResearch=(nextTab:Tab="thesis")=>{
     setTab(nextTab);
     requestAnimationFrame(()=>setTimeout(()=>thesisRef.current?.scrollIntoView({behavior:"smooth",block:"start"}),80));
@@ -482,6 +474,15 @@ export default function StockClient({symbol}:{symbol:string}){
       timeframe:horizon==="now"?"Current / daily structure":horizon==="swing"?"Swing / daily-weekly structure":"Long term / weekly-monthly thesis"
     };
   })();
+
+  const decisionConviction=Math.max(32,Math.min(92,Math.round(48+Math.abs(commandScore-50)*.72-contradictionCount*7+(technicalComposite>=65&&businessScore>=65?6:0))));
+  const convictionLabel=decisionConviction>=78?"High":decisionConviction>=62?"Good":decisionConviction>=48?"Moderate":"Low";
+  const currentLocation=currentPx>=horizonPlan.entryLow&&currentPx<=horizonPlan.entryHigh?"Inside entry zone":currentPx<horizonPlan.entryLow?"Below planned entry":currentPx>=horizonPlan.target1?"At/above objective":currentPx<horizonPlan.confirm?"Between entry and confirmation":"Above confirmation";
+  const upsideToT1=currentPx>0?((horizonPlan.target1/currentPx-1)*100):null;
+  const downsideToBreak=currentPx>0?((horizonPlan.stop/currentPx-1)*100):null;
+  const dca1=Number(horizonPlan.entryHigh.toFixed(2));
+  const dca2=Number(((horizonPlan.entryLow+horizonPlan.entryHigh)/2).toFixed(2));
+  const dca3=Number(Math.max(horizonPlan.stop*1.035,horizonPlan.entryLow-(horizonPlan.entryHigh-horizonPlan.entryLow)*.75).toFixed(2));
 
   const horizonChartLevels={
     entryLow:horizonPlan.entryLow,entryHigh:horizonPlan.entryHigh,confirm:horizonPlan.confirm,
