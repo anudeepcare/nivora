@@ -13,7 +13,7 @@ import {
   ShieldCheck,
   Star,
   Sparkles,
-  Brain,
+
 } from "lucide-react";
 import SearchBox from "./SearchBox";
 import PriceChart from "./PriceChart";
@@ -568,11 +568,7 @@ export default function StockClient({symbol}:{symbol:string}){
       </div>
     </div>
 
-    {false&&depth!=="simple"&&intelligence&&<section className="v31Grid" aria-label="NIVORA Intelligence Grid">
-      <div className="v31GridHead"><div><small>NIVORA INTELLIGENCE GRID</small><h3>Independent evidence, synthesized into one thesis.</h3><p>Each engine answers a different question. NIVORA combines them for the selected horizon, exposes disagreement, and limits confidence when evidence is incomplete.</p></div><Help title="Intelligence Grid">This is NIVORA’s synthesis architecture—not a claim that every input is AI-generated. Market and company data remain measured inputs; the decision layer combines, weights and explains them.</Help></div>
-      <div className="v31EngineStrip">{[["BUSINESS",intelligence.dimensions.business,"Is the company strong?"],["VALUATION",intelligence.dimensions.valuation,"What are we paying?"],["TREND",intelligence.dimensions.trend,"What is price doing?"],["ENTRY",intelligence.dimensions.timing,"Is now attractive?"],["FLOW",intelligence.dimensions.flow,"Is participation confirming?"],["CATALYSTS",intelligence.dimensions.catalysts,"What can change the thesis?"],["DERIVATIVES",intelligence.dimensions.derivatives,"What does options context add?"],["RISK",100-intelligence.dimensions.risk,"How much safety remains?"]].map(([name,score,q]:any)=><div key={name}><small>{name}</small><b>{score}/100</b><span>{q}</span><i><em style={{width:`${Math.max(0,Math.min(100,Number(score)))}%`}}/></i></div>)}</div>
-      <div className="v31Synthesis"><Brain size={16}/><div><small>SYNTHESIS</small><b>{intelligence.thesisLabel} · {intelligence.score}/100</b><span>{intelligence.contradictions.length?`${intelligence.contradictions.length} evidence contradiction${intelligence.contradictions.length>1?"s":""} detected and reflected in confidence.`:"Major evidence layers are broadly aligned."}</span></div><div className="v31Next"><small>NEXT TRIGGER</small><b>{intelligence.nextDecision}</b></div></div>
-    </section>}
+   
 
     {depth==="pro"&&enterprise&&intelligence&&<section className="v29ProCockpit">
       <div className="proCockpitHead"><div><small>PRO WORKSPACE</small><h3>Decision evidence & model diagnostics</h3><p>Same NIVORA call, with the underlying factor, data-quality and audit evidence exposed.</p></div><button type="button" onClick={()=>setAuditOpen(!auditOpen)}><ShieldCheck size={15}/>{auditOpen?"Hide audit":"Audit trail"}</button></div>
