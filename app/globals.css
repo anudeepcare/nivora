@@ -966,3 +966,8 @@ body{background:radial-gradient(circle at 50% -15%,#fff 0,#f7f9fa 38%,var(--n41-
   .v32QuestionBar{grid-template-columns:1fr!important;gap:6px!important}.v32QuestionBar>div{display:grid!important;grid-template-columns:88px 1fr!important;align-items:center!important}.v32QuestionBar>div>span{grid-column:1!important}.v32QuestionBar>div>.helpWrap,.v32QuestionBar>div>button{display:none}.v32QuestionBar .osMode{grid-column:2!important;margin:0!important}
   #nivora-research>.v12Overview{grid-template-columns:1fr 1fr!important}.v41Decision h2{font-size:27px!important}.v45TodayHero h1{font-size:31px!important}
 }
+
+/* V47 — full-market scanner truthfulness + warm-up UX */
+.v47Warmup{margin:0;padding:34px 30px 38px;display:flex;flex-direction:column;gap:9px;background:linear-gradient(180deg,#fbfdfc,#f7faf8);border-top:1px solid var(--line,#e4e9e6)}
+.v47Warmup b{font-size:20px;letter-spacing:-.02em;color:#10231b}.v47Warmup span{max-width:760px;color:#68758a;line-height:1.55}.v47WarmupBar{height:8px;max-width:620px;background:#e9eeeb;border-radius:999px;overflow:hidden;margin-bottom:8px}.v47WarmupBar i{display:block;height:100%;min-width:2%;border-radius:inherit;background:#168455;transition:width .4s ease}
+@media(max-width:700px){.v47Warmup{padding:24px 20px 28px}.v47Warmup b{font-size:18px}.v45Coverage{align-items:flex-start}.v36RadarHead{gap:16px}}
