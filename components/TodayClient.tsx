@@ -1,5 +1,6 @@
 "use client";
 import {useEffect,useMemo,useState} from "react";
+import {usePathname} from "next/navigation";
 import Link from "next/link";
 import SearchBox from "./SearchBox";
 import {supabaseBrowser} from "@/lib/supabase";
@@ -8,6 +9,7 @@ import {ArrowUpRight,Activity,Eye,ShieldAlert,Zap,Target,TrendingUp,LogOut} from
 type RadarFilter="All"|"Best now"|"Early momentum"|"Quality pullback"|"In play"|"Exit watch";
 
 export default function TodayClient(){
+  const path=usePathname(); const isDiscover=path.startsWith("/discover");
   const[market,setMarket]=useState<any>(null);
   const[scan,setScan]=useState<any[]>([]);
   const[radar,setRadar]=useState<any[]>([]);
@@ -34,18 +36,18 @@ export default function TodayClient(){
 
   return <div className="todayPage v36Today v37Today">
     <section className="todayHero v36TodayHero">
-      <div><div className="eyebrow">NIVORA RADAR</div><h1>Start with the decision, not the data.</h1><p>Every candidate is ranked into an action, entry plan, target and risk level. Open the thesis only when you want the proof underneath.</p></div><SearchBox large/>
+      <div><div className="eyebrow">{isDiscover?"DISCOVER":"NIVORA TODAY"}</div><h1>{isDiscover?"Find what deserves your attention.":"Know what matters before you search."}</h1><p>{isDiscover?"NIVORA scans the market and compresses the best setups into a short decision board — not another wall of filters.":"Market context, your watchlist and the strongest current opportunities — already interpreted for you."}</p></div><SearchBox large/>
     </section>
 
 
-    <section className="v39Promise" aria-label="Why NIVORA"><b>Decision first.</b><span>Action → entry → target → thesis break.</span><Link href="/about">Why NIVORA →</Link></section>
+    <section className="v41Promise" aria-label="Why NIVORA"><div><small>THE NIVORA DIFFERENCE</small><b>Don’t analyze the analysis.</b></div><span>We turn business quality, price behavior, Wall Street, smart money, catalysts and risk into one plan.</span><Link href="/about">How the engine thinks →</Link></section>
     <section className="marketStrip v36MarketStrip">
       <div className="marketRegime"><small>MARKET REGIME</small><b className={market?.regime==="Risk-on"?"good":market?.regime==="Risk-off"?"bad":"mid"}>{market?.regime||"Loading…"}</b><span>Broad-market context changes how aggressive new entries should be.</span></div>
       <div className="marketTiles">{market?.items?.map((x:any)=><Link key={x.symbol} href={`/stock/${encodeURIComponent(x.symbol)}`}><span>{x.symbol}</span><b className={x.changePct>=0?"good":"bad"}>{x.changePct>=0?"+":""}{x.changePct}%</b><small>{x.trend}</small></Link>)}</div>
     </section>
 
     <section className="v36Radar">
-      <div className="v36RadarHead"><div><small>LIVE DECISION RADAR</small><h2>Top 20 Decision Board</h2><p>Best opportunities and biggest risks from the current scan. Score ranks evidence; action tells you what to do with it.</p></div><div className="v36RadarStats"><span><b>{counts.buy}</b> actionable</span><span><b>{counts.watch}</b> watch</span><span><b>{counts.exit}</b> exit risk</span></div></div>
+      <div className="v36RadarHead"><div><small>{isDiscover?"MARKET OPPORTUNITY ENGINE":"WORTH YOUR ATTENTION"}</small><h2>{isDiscover?"20 decisions. Not 5,000 tickers.":"Best current decisions"}</h2><p>Action first. Exact price plan second. Evidence only when you want to inspect it.</p></div><div className="v36RadarStats"><span><b>{counts.buy}</b> actionable</span><span><b>{counts.watch}</b> watch</span><span><b>{counts.exit}</b> exit risk</span></div></div>
       <div className="v36RadarFilters">{(["All","Best now","Early momentum","Quality pullback","In play","Exit watch"] as RadarFilter[]).map(x=><button key={x} className={filter===x?"on":""} onClick={()=>setFilter(x)}>{x}</button>)}</div>
       {radarLoading?<div className="softSkeleton">Scanning the NIVORA radar…</div>:visible.length?<div className="v36RadarList">{visible.slice(0,20).map((x:any,i:number)=><Link key={x.symbol} href={`/stock/${encodeURIComponent(x.symbol)}`} className="v36RadarRow">
         <div className="v36Rank">{i+1}</div><div className="v36RadarSymbol"><b>{x.symbol}</b><span>{x.category}</span></div>
