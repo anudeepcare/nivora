@@ -22,7 +22,7 @@ export async function GET(req:Request){
   const eligible=Number(universeCount||0),scanned=Number(investmentCountRaw||0),coveragePct=eligible?Math.min(100,Math.round(scanned/eligible*1000)/10):0;
   // We allow a clearly-labelled preview after 75 qualified companies so Today/Discover are useful while coverage grows.
   // Full-market language is reserved for >=90% coverage.
-  const previewReady=scanned>=75,fullMarket=eligible>0&&scanned>=Math.max(1,eligible*.90),todayCutoff=new Date(Date.now()-36*3600_000).toISOString();
+  const previewReady=scanned>=1,fullMarket=eligible>0&&scanned>=Math.max(1,eligible*.90),todayCutoff=new Date(Date.now()-36*3600_000).toISOString();
   let items:any[]=[];
   if(previewReady){
     let q=db.from("nivora_investment_scan").select("*").gte("market_cap_m",750).gte("evidence_confidence",55);
@@ -30,7 +30,7 @@ export async function GET(req:Request){
     const {data,error}=await q;if(error)return NextResponse.json({items:[],coverage:{mode:"investment-scan-error",ready:false,error:error.message,scanned,eligibleUniverse:eligible},partial:true});
     items=(data||[]).map(normalize);
     if(mode==="today")items=items.filter((x:any)=>x.previousAction&&(x.changedAt||"")>=todayCutoff&&(x.previousAction!==x.action||Math.abs(Number(x.previousThesisScore||x.thesisScore)-x.thesisScore)>=6)).slice(0,limit);
-    else items=items.filter((x:any)=>x.thesisScore>=52).slice(0,limit);
+    else items=items.slice(0,limit);
   }
   return NextResponse.json({items,coverage:{mode:"thesis-first-investment-scan",ready:previewReady,fullMarket,scanned,fresh48h:Number(state?.investment_fresh_count||0),eligibleUniverse:eligible,coveragePct,lastScanAt:state?.last_investment_scan_at||null,scanRunning:!!state?.scan_running,preview:previewReady&&!fullMarket},partial:!fullMarket},{headers:{"Cache-Control":"public, s-maxage=60, stale-while-revalidate=180"}});
 }

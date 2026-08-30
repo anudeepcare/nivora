@@ -76,8 +76,8 @@ def analyze(sym,market=None):
     technical=n((market or {}).get('technical'),50);risk=n((market or {}).get('risk_score'),60);chg=n((market or {}).get('change_pct'),0)
     thesis=round(clamp(quality*.40+growth*.23+financial*.17+analyst*.12+technical*.08))
     forward_delta=(growth-50)*.45+(analyst-50)*.18+(financial-50)*.18
-    state='Strengthening' if forward_delta>=9 else 'Weakening' if forward_delta<=-10 else 'Intact' if thesis>=62 else 'Mixed'
-    label='BULLISH' if thesis>=68 else 'BEARISH' if thesis<43 else 'NEUTRAL'
+    state='Strengthening' if forward_delta>=8 else 'Weakening' if forward_delta<=-8 else 'Intact' if thesis>=61 else 'Mixed'
+    label='BULLISH' if thesis>=67 else 'BEARISH' if thesis<=44 else 'NEUTRAL'
     opportunity=round(clamp(thesis*.55+valuation*.27+(100-risk)*.10+technical*.08))
     if label=='BEARISH' and thesis<34:action='AVOID'
     elif state=='Weakening' and thesis<52:action='REDUCE / WATCH'

@@ -14,6 +14,7 @@ export default function TodayClient(){
   const[watchScan,setWatchScan]=useState<any[]>([]);
   const[radar,setRadar]=useState<any[]>([]);
   const[coverage,setCoverage]=useState<any>(null);
+  const[currentIdeas,setCurrentIdeas]=useState<any[]>([]);
   const[loading,setLoading]=useState(true);
   const[radarLoading,setRadarLoading]=useState(true);
   const[radarPartial,setRadarPartial]=useState(false);
@@ -27,6 +28,7 @@ export default function TodayClient(){
         const mode=isDiscover?"discover":"today";
         const x=await fetch(`/api/discover?mode=${mode}&limit=${isDiscover?60:12}`).then(r=>r.json());
         if(!alive)return;setRadar(x.items||[]);setCoverage(x.coverage||null);setRadarPartial(!!x.partial);
+        if(!isDiscover){fetch(`/api/discover?mode=discover&limit=8`).then(r=>r.json()).then(y=>{if(alive)setCurrentIdeas(y.items||[])}).catch(()=>{});}
       }catch{}finally{if(alive)setRadarLoading(false)}
     })();
     (async()=>{try{
@@ -80,6 +82,7 @@ export default function TodayClient(){
       {radarPartial&&<p className="v36RadarNote">Coverage is still expanding. Rankings only compare companies with completed thesis-first evidence, and NIVORA labels the board as a preview until broad-universe coverage is reached.</p>}
     </section>
 
+    {!isDiscover&&currentIdeas.length>0&&<section className="v50TodayIdeas"><div className="todayTitle"><div><small>CURRENT INVESTMENT RADAR</small><h2>Best opportunities in current coverage</h2><p>Not trades for today — strongest thesis/opportunity combinations currently covered.</p></div><Link href="/discover">Open Discover →</Link></div><div className="v50IdeaGrid">{currentIdeas.slice(0,6).map((x:any)=><Link key={x.symbol} href={`/stock/${encodeURIComponent(x.symbol)}`}><div><b>{x.symbol}</b><span>{x.thesisLabel} · {x.thesisState}</span></div><strong className={x.thesisLabel==="BULLISH"?"good":x.thesisLabel==="BEARISH"?"bad":"mid"}>{x.action}</strong><small>Thesis {x.thesisScore} · Opportunity {x.opportunityScore}</small></Link>)}</div></section>}
     {!isDiscover&&<section className="todayGrid">
       <div className="todayCard attention"><div className="todayTitle"><div><small>YOUR WATCHLIST</small><h2>Thesis pulse</h2></div><Link href="/watchlist">View all →</Link></div>{loading?<div className="softSkeleton">Checking thesis changes…</div>:watchScan.length?watchScan.slice(0,8).map((x:any)=><Link className="scanRow" key={x.symbol} href={`/stock/${encodeURIComponent(x.symbol)}`}><div><b>{x.symbol}</b><span>{x.thesisState} thesis · {x.thesisScore}/100</span></div><div><strong className={x.action?.includes("BUY")||x.action==="ACCUMULATE"?"good":x.action?.includes("REDUCE")||x.action?.includes("EXIT")||x.action==="AVOID"?"bad":"mid"}>{x.action}</strong><small>{x.opportunityScore}/100 opportunity</small></div></Link>):<div className="emptyToday"><Eye size={21}/><b>No thesis data on your watchlist yet</b><span>Add companies you care about. NIVORA will surface material thesis changes, not daily chart noise.</span><Link href="/analyze">Analyze a stock →</Link></div>}</div>
       <div className="todayCard playbook"><div className="todayTitle"><div><small>DISCOVER MORE</small><h2>Search by investment edge</h2></div><Link href="/discover">Open Discover →</Link></div>

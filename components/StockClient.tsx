@@ -99,10 +99,10 @@ export default function StockClient({symbol}:{symbol:string}){
   const[company,setCompany]=useState<any>(null);
   const[context,setContext]=useState<any>(null);
   const[err,setErr]=useState("");
-  const[horizon,setHorizon]=useState<"now"|"swing"|"long">("swing");
+  const[horizon]=useState<"now"|"swing"|"long">("long");
   const[owns,setOwns]=useState(false);
   const mode:Mode=owns?"own":horizon;
-  const[tab,setTab]=useState<Tab>("overview");
+  const[tab,setTab]=useState<Tab>("thesis");
   const[watching,setWatching]=useState(false);
   const[optionsData,setOptionsData]=useState<any>(null);
   const[optionsLoading,setOptionsLoading]=useState(false);
@@ -112,7 +112,7 @@ export default function StockClient({symbol}:{symbol:string}){
   const[optionSide,setOptionSide]=useState<"bullish"|"bearish">("bullish");
   const[optionStyle,setOptionStyle]=useState<"conservative"|"balanced"|"aggressive"|"leaps">("balanced");
   const[optionExpiration,setOptionExpiration]=useState<string|null>(null);
-  const[depth,setDepth]=useState<Depth>("simple");
+  const[depth]=useState<Depth>("investor");
   const[answerOpen,setAnswerOpen]=useState<"why"|"change"|"risk"|"evidence"|null>(null);
   const[auditOpen,setAuditOpen]=useState(false);
   const[institutional,setInstitutional]=useState<any>(null);
@@ -613,32 +613,7 @@ export default function StockClient({symbol}:{symbol:string}){
 
     <div className="liveFresh"><span className="liveStatus"><span className="liveDot"/>Near-live · shared cache</span><span className="liveCadence">Price ~30–45 sec · News ~2 min · Thesis changes only when evidence changes</span></div>
 
-    <div className="v32QuestionBar">
-      <div>
-        <span>Investment horizon</span><Help title="Investment horizon">Near term is 0–3 months of catalyst/risk context. Investment is 6–18 months and emphasizes earnings, forward change and valuation. Long term is 2–5 years and emphasizes business quality, durability and compounding potential.</Help>
-        <div className="osMode v12Mode v32Horizon" aria-label="Investment horizon">
-          <button className={horizon==="now"?"on":""} onClick={()=>setHorizon("now")}>Near term</button>
-          <button className={horizon==="swing"?"on":""} onClick={()=>setHorizon("swing")}>Investment</button>
-          <button className={horizon==="long"?"on":""} onClick={()=>setHorizon("long")}>Long term</button>
-        </div>
-      </div>
-      <div>
-        <span>My position</span><Help title="My position">Looking to buy answers whether a new entry makes sense. I own it changes the decision to ADD, HOLD, TRIM or REASSESS and gives owner-specific levels.</Help>
-        <div className="osMode v12Mode v32Position" aria-label="Position status">
-          <button className={!owns?"on":""} onClick={()=>setOwns(false)}>Looking to buy</button>
-          <button className={owns?"on":""} onClick={()=>setOwns(true)}>I own it</button>
-        </div>
-      </div>
-    </div>
-
-    <div className="v28DepthBar">
-      <div><Sparkles size={15}/><span>View</span><Help title="View depth">Simple gives the answer first. Investor adds the research needed to validate the thesis. Pro exposes the full technical, options and model evidence without changing the underlying NIVORA decision.</Help></div>
-      <div className="v28DepthToggle" role="tablist" aria-label="Analysis depth">
-        <button className={depth==="simple"?"on":""} onClick={()=>setDepth("simple")}>Simple</button>
-        <button className={depth==="investor"?"on":""} onClick={()=>setDepth("investor")}>Investor</button>
-        <button className={depth==="pro"?"on":""} onClick={()=>setDepth("pro")}>Pro</button>
-      </div>
-    </div>
+    <div className="v50PositionBar"><div><Sparkles size={15}/><span>NIVORA analyzes 3M, 6M, 1Y, 2Y and 3Y automatically.</span></div><button type="button" className={owns?"on":""} onClick={()=>setOwns(!owns)}>{owns?"✓ I own this":"I own this"}</button></div>
 
 
     {depth==="pro"&&enterprise&&intelligence&&<section className="v29ProCockpit">
@@ -667,7 +642,7 @@ export default function StockClient({symbol}:{symbol:string}){
       <div><div className="metricLabel"><small>DATA CONFIDENCE</small><Help title="Data confidence">Shows whether price history, business data, market context and news/catalyst sources are available. Higher confidence means better evidence coverage—not higher certainty of profit.</Help></div><b className={confidence==="High"?"good":confidence==="Low"?"bad":"mid"}>{confidence}</b><span>Price + business + news + market coverage.</span></div>
     </section>}
 
-    {investorDecision&&<InvestorDecisionHero decision={investorDecision} price={Number(d.price)} changePct={Number(d.changePct)} owns={owns} onEvidence={()=>openResearch("thesis")}/>}
+    {investorDecision&&<InvestorDecisionHero decision={investorDecision} price={Number(d.price)} changePct={Number(d.changePct)} owns={owns} levels={{entryLow:horizonPlan.entryLow,entryHigh:horizonPlan.entryHigh,support:Number(d.levels?.support||0),majorSupport:Number(d.levels?.majorSupport||0),resistance:Number(d.levels?.resistance||0),breakout:Number(d.levels?.breakout||0)}} onEvidence={()=>openResearch("thesis")}/>}
 
     {false&&<section className={["v41Decision",tone(decisionAction)].join(" ")} aria-label="Legacy trading decision">
       <div className="v41DecisionHero">
@@ -760,21 +735,13 @@ export default function StockClient({symbol}:{symbol:string}){
       <button type="button" onClick={()=>{setTab("thesis");window.requestAnimationFrame(()=>window.requestAnimationFrame(()=>thesisRef.current?.scrollIntoView({behavior:"smooth",block:"start"})))}}>Open full thesis →</button>
     </section>}
 
-    {depth!=="simple"&&<section className="v12ReasonGrid">
+    {false&&depth!=="simple"&&<section className="v12ReasonGrid">
       <div className="v12Reason goodBox"><small>WHY IT CAN WORK</small><h3>What supports the setup</h3>{positive.length?positive.map((x:string,i:number)=><p key={i}>✓ {x}</p>):<p>Evidence is still loading or mixed.</p>}</div>
       <div className="v12Reason riskBox"><small>WHAT CAN GO WRONG</small><h3>What is holding it back</h3>{risks.length?risks.map((x:string,i:number)=><p key={i}>• {x}</p>):<p>No major risk flag was detected from the connected sources.</p>}</div>
     </section>}
 
     <section ref={thesisRef} id="nivora-research" className={["osContext","v12Context",depth==="simple"?"v28SimpleContext":""].join(" ")}>
-      <div className="osTabs v12Tabs v28Tabs">
-        <button className={tab==="overview"?"on":""} onClick={()=>setTab("overview")}>Decision</button>
-        <button className={tab==="thesis"?"on":""} onClick={()=>setTab("thesis")}>Thesis</button>
-        {depth!=="simple"&&<button className={tab==="fundamentals"?"on":""} onClick={()=>setTab("fundamentals")}>Business</button>}
-        {depth!=="simple"&&d.assetType!=="crypto"&&<button className={tab==="institutions"?"on":""} onClick={()=>setTab("institutions")}>Smart money</button>}
-        {depth!=="simple"&&<button className={tab==="catalysts"?"on":""} onClick={()=>setTab("catalysts")}>Events</button>}
-        {depth!=="simple"&&<button className={tab==="technical"?"on":""} onClick={()=>setTab("technical")}>{depth==="pro"?"Technical Lab":"Technical"}</button>}
-        {d.assetType!=="crypto"&&<button className={tab==="options"?"on":""} onClick={()=>setTab("options")}>{depth==="pro"?"Options Lab":"Options"}</button>}
-      </div>
+      <div className="osTabs v12Tabs v28Tabs v50ResearchTabs"><button className={tab==="thesis"?"on":""} onClick={()=>setTab("thesis")}>Thesis</button><button className={tab==="fundamentals"?"on":""} onClick={()=>setTab("fundamentals")}>Business</button>{d.assetType!=="crypto"&&<button className={tab==="earnings"?"on":""} onClick={()=>setTab("earnings")}>Earnings</button>}{d.assetType!=="crypto"&&<button className={tab==="institutions"?"on":""} onClick={()=>setTab("institutions")}>Ownership</button>}<button className={tab==="catalysts"?"on":""} onClick={()=>setTab("catalysts")}>Catalysts</button><button className={tab==="technical"?"on":""} onClick={()=>setTab("technical")}>Market</button></div>
 
       {tab==="overview"&&<div className="v12Overview">
         <div><BriefcaseBusiness size={18}/><div className="metricLabel v42OverviewLabel"><small>BUSINESS QUALITY</small><Help title="Business">Financial quality and consistency. This is intentionally separate from whether today is a good entry.</Help></div><b className={tone(business.label)}>{business.label}</b><span>{business.reasons?.[0]||"Loading fundamentals…"}</span></div>
