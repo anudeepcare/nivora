@@ -472,6 +472,13 @@ export default function StockClient({symbol}:{symbol:string}){
       entryLow=Math.max(0,Math.min(Number(marketLab?.dcaLow||major),major));entryHigh=Math.max(Number(marketLab?.dcaHigh||sup),sup);confirm=brk;
       target1=Math.max(brk,fairValue.low,currentPx*1.10);target2=Math.max(target1+atr,fairValue.mid,currentPx*1.22);stop=Math.min(inv,major-atr*1.15);
     }
+    // A "buy zone" must be decision-useful, not a huge percentage band.
+    // Clamp the visible zone around its midpoint; wider structural levels remain visible as support/major support.
+    const rawMid=(entryLow+entryHigh)/2;
+    const isCrypto=/BTC|ETH|\//i.test(String(d.symbol||d.name||""));
+    const maxZonePct=isCrypto?.045:.065;
+    const maxHalf=Math.max(currentPx*.012,rawMid*maxZonePct/2);
+    if(entryHigh-entryLow>maxHalf*2){entryLow=Math.max(0,rawMid-maxHalf);entryHigh=rawMid+maxHalf;}
     const plannedEntry=(entryLow+entryHigh)/2;
     const reward=Math.max(.01,target1-plannedEntry),riskAmt=Math.max(.01,plannedEntry-stop);
     const ratioRaw=reward/riskAmt;
@@ -486,6 +493,14 @@ export default function StockClient({symbol}:{symbol:string}){
   const decisionConviction=Math.max(32,Math.min(92,Math.round(48+Math.abs(commandScore-50)*.72-contradictionCount*7+(technicalComposite>=65&&businessScore>=65?6:0))));
   const convictionLabel=decisionConviction>=78?"High":decisionConviction>=62?"Good":decisionConviction>=48?"Moderate":"Low";
   const currentLocation=currentPx>=horizonPlan.entryLow&&currentPx<=horizonPlan.entryHigh?"At a preferred price":currentPx<horizonPlan.entryLow?"Below our planned buy area":currentPx>=horizonPlan.target1?"Near/above our first objective":currentPx<horizonPlan.confirm?"Wait for a better price or stronger proof":"Strength is confirmed";
+  const rsiNow=Number(proTech?.rsi14??d.engine?.RSI??50), extensionNow=Number(d.scores?.extension??50);
+  const timingState=(()=>{
+    if((rsiNow>=76||extensionNow>=82)&&currentPx>=Number(d.levels?.resistance||Infinity))return{label:owns?"TRIM / DO NOT ADD":"DO NOT CHASE",reason:`Price is stretched${Number.isFinite(rsiNow)?` (RSI ${rsiNow.toFixed(0)})`:""} near/above resistance. This is a timing warning, not automatically a broken thesis.`,tone:"bad" as const};
+    if(rsiNow>=70||extensionNow>=74)return{label:"OVEREXTENDED",reason:"Momentum is strong but entry quality is poor. Prefer consolidation, a pullback, or new fundamental evidence before adding.",tone:"mid" as const};
+    if(currentPx>=horizonPlan.entryLow&&currentPx<=horizonPlan.entryHigh&&rsiNow<68)return{label:"ATTRACTIVE ENTRY",reason:"Price is inside the preferred accumulation band without an extreme momentum reading. Thesis must still remain intact.",tone:"good" as const};
+    if(currentPx<horizonPlan.entryLow)return{label:"WAIT FOR STABILITY",reason:"Price is below the planned area. Cheaper is not automatically better; wait for stabilization and intact thesis evidence.",tone:"mid" as const};
+    return{label:"WAIT / WATCH",reason:"The investment thesis and the current entry are not aligned strongly enough for a high-conviction add.",tone:"mid" as const};
+  })();
   const upsideToT1=currentPx>0?((horizonPlan.target1/currentPx-1)*100):null;
   const downsideToBreak=currentPx>0?((horizonPlan.stop/currentPx-1)*100):null;
   const dca1=Number(horizonPlan.entryHigh.toFixed(2));
@@ -642,7 +657,7 @@ export default function StockClient({symbol}:{symbol:string}){
       <div><div className="metricLabel"><small>DATA CONFIDENCE</small><Help title="Data confidence">Shows whether price history, business data, market context and news/catalyst sources are available. Higher confidence means better evidence coverage—not higher certainty of profit.</Help></div><b className={confidence==="High"?"good":confidence==="Low"?"bad":"mid"}>{confidence}</b><span>Price + business + news + market coverage.</span></div>
     </section>}
 
-    {investorDecision&&<InvestorDecisionHero decision={investorDecision} price={Number(d.price)} changePct={Number(d.changePct)} owns={owns} levels={{entryLow:horizonPlan.entryLow,entryHigh:horizonPlan.entryHigh,support:Number(d.levels?.support||0),majorSupport:Number(d.levels?.majorSupport||0),resistance:Number(d.levels?.resistance||0),breakout:Number(d.levels?.breakout||0)}} onEvidence={()=>openResearch("thesis")}/>}
+    {investorDecision&&<InvestorDecisionHero decision={investorDecision} price={Number(d.price)} changePct={Number(d.changePct)} owns={owns} levels={{entryLow:horizonPlan.entryLow,entryHigh:horizonPlan.entryHigh,support:Number(d.levels?.support||0),majorSupport:Number(d.levels?.majorSupport||0),resistance:Number(d.levels?.resistance||0),breakout:Number(d.levels?.breakout||0)}} timing={timingState} onEvidence={()=>openResearch("thesis")}/>}
 
     {false&&<section className={["v41Decision",tone(decisionAction)].join(" ")} aria-label="Legacy trading decision">
       <div className="v41DecisionHero">

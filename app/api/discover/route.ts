@@ -32,5 +32,6 @@ export async function GET(req:Request){
     if(mode==="today")items=items.filter((x:any)=>x.previousAction&&(x.changedAt||"")>=todayCutoff&&(x.previousAction!==x.action||Math.abs(Number(x.previousThesisScore||x.thesisScore)-x.thesisScore)>=6)).slice(0,limit);
     else items=items.slice(0,limit);
   }
-  return NextResponse.json({items,coverage:{mode:"thesis-first-investment-scan",ready:previewReady,fullMarket,scanned,fresh48h:Number(state?.investment_fresh_count||0),eligibleUniverse:eligible,coveragePct,lastScanAt:state?.last_investment_scan_at||null,scanRunning:!!state?.scan_running,preview:previewReady&&!fullMarket},partial:!fullMarket},{headers:{"Cache-Control":"public, s-maxage=60, stale-while-revalidate=180"}});
+  const diagnostic=scanned>0?null:eligible===0?"Market universe is empty — run the market-universe scanner first.":!state?.last_investment_scan_at?"Investment scanner has not completed a successful run yet.":"Investment scanner ran but stored 0 qualified companies — check FINNHUB_API_KEY, workflow logs and market-cap filters.";
+  return NextResponse.json({items,coverage:{mode:"thesis-first-investment-scan",ready:previewReady,fullMarket,scanned,fresh48h:Number(state?.investment_fresh_count||0),eligibleUniverse:eligible,coveragePct,lastScanAt:state?.last_investment_scan_at||null,scanRunning:!!state?.scan_running,preview:previewReady&&!fullMarket,diagnostic},partial:!fullMarket},{headers:{"Cache-Control":"public, s-maxage=60, stale-while-revalidate=180"}});
 }
