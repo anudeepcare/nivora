@@ -265,7 +265,7 @@ export default function StockClient({symbol}:{symbol:string}){
     const dataQuality=Math.round((coverage*.55)+(intelligence.confidence*.45));
     const auditId=`${symbol}-${mode}-${Math.round(Number(d.price||0)*100)}-${intelligence.score}`;
     const validationStatus="Shadow validation enabled";
-    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:"NIVORA V44",generatedAt:new Date(now).toISOString()};
+    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:"NIVORA V45",generatedAt:new Date(now).toISOString()};
   },[d,intelligence,company,context,optionsData,institutional,symbol,mode]);
 
   useEffect(()=>{
@@ -340,7 +340,8 @@ export default function StockClient({symbol}:{symbol:string}){
   const supportPx=Number(d.levels.support), breakoutPx=Number(d.levels.breakout), invalidPx=Number(d.levels.invalidation);
   const upside=Number.isFinite(currentPx)&&currentPx?((breakoutPx/currentPx-1)*100):null;
   const downside=Number.isFinite(currentPx)&&currentPx?((invalidPx/currentPx-1)*100):null;
-  const rr=upside!=null&&downside!=null&&downside<0?Math.abs(upside/downside):null;
+  const rrRaw=upside!=null&&downside!=null&&downside<0&&Math.abs(downside)>=0.4?Math.abs(upside/downside):null;
+  const rr=rrRaw!=null&&Number.isFinite(rrRaw)&&rrRaw>0&&rrRaw<=12?rrRaw:null;
 
   const marketLab=(()=>{
     const cs=(d?.candles||[]).filter((x:any)=>Number.isFinite(Number(x.close))&&Number.isFinite(Number(x.high))&&Number.isFinite(Number(x.low)));
@@ -466,7 +467,8 @@ export default function StockClient({symbol}:{symbol:string}){
     }
     const plannedEntry=(entryLow+entryHigh)/2;
     const reward=Math.max(.01,target1-plannedEntry),riskAmt=Math.max(.01,plannedEntry-stop);
-    const ratio=reward/riskAmt;
+    const ratioRaw=reward/riskAmt;
+    const ratio=Number.isFinite(ratioRaw)&&ratioRaw>0&&ratioRaw<=12&&riskAmt/plannedEntry>=.004?ratioRaw:0;
     return {
       entryLow:Number(entryLow.toFixed(2)),entryHigh:Number(entryHigh.toFixed(2)),confirm:Number(confirm.toFixed(2)),
       target1:Number(target1.toFixed(2)),target2:Number(target2.toFixed(2)),stop:Number(stop.toFixed(2)),rr:Number(ratio.toFixed(1)),
