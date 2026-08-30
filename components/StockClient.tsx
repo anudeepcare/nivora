@@ -101,6 +101,7 @@ export default function StockClient({symbol}:{symbol:string}){
   const[err,setErr]=useState("");
   const[horizon]=useState<"now"|"swing"|"long">("long");
   const[owns,setOwns]=useState(false);
+  const[ownerPosition,setOwnerPosition]=useState<any>(null);
   const mode:Mode=owns?"own":horizon;
   const[tab,setTab]=useState<Tab>("thesis");
   const[watching,setWatching]=useState(false);
@@ -116,6 +117,22 @@ export default function StockClient({symbol}:{symbol:string}){
   const[answerOpen,setAnswerOpen]=useState<"why"|"change"|"risk"|"evidence"|null>(null);
   const[auditOpen,setAuditOpen]=useState(false);
   const[institutional,setInstitutional]=useState<any>(null);
+
+  useEffect(()=>{
+    let active=true;
+    const loadPosition=async()=>{
+      try{
+        const s=supabaseBrowser();
+        const{data:{user}}=await s.auth.getUser();
+        if(!user||!active)return;
+        const{data}=await s.from("portfolio_positions").select("shares,avg_cost,horizon").eq("user_id",user.id).eq("symbol",symbol).maybeSingle();
+        if(!active)return;
+        if(data){setOwnerPosition(data);setOwns(true)}else setOwnerPosition(null);
+      }catch{}
+    };
+    loadPosition();
+    return()=>{active=false};
+  },[symbol]);
 
   useEffect(()=>{
     let live=true;
@@ -241,8 +258,9 @@ export default function StockClient({symbol}:{symbol:string}){
   }),[d,company,context,optionsData,institutional,mode]);
 
   const investorDecision=useMemo(()=>buildInvestorDecision({
-    market:d,company,context,institutional,owns
-  }),[d,company,context,institutional,owns]);
+    market:d,company,context,institutional,owns,
+    position:ownerPosition?{shares:Number(ownerPosition.shares||0),avgCost:Number(ownerPosition.avg_cost||0)}:null
+  }),[d,company,context,institutional,owns,ownerPosition]);
 
   const quickAnswers=useMemo(()=>{
     if(!intelligence)return null;
@@ -628,7 +646,7 @@ export default function StockClient({symbol}:{symbol:string}){
 
     <div className="liveFresh"><span className="liveStatus"><span className="liveDot"/>Near-live · shared cache</span><span className="liveCadence">Price ~30–45 sec · News ~2 min · Thesis changes only when evidence changes</span></div>
 
-    <div className="v50PositionBar"><div><Sparkles size={15}/><span>NIVORA analyzes 3M, 6M, 1Y, 2Y and 3Y automatically.</span></div><button type="button" className={owns?"on":""} onClick={()=>setOwns(!owns)}>{owns?"✓ I own this":"I own this"}</button></div>
+    <div className="v50PositionBar"><div><Sparkles size={15}/><span>NIVORA analyzes 3M, 6M, 1Y, 2Y and 3Y automatically.</span></div><button type="button" className={owns?"on":""} onClick={()=>setOwns(!owns)}>{owns?(ownerPosition?"✓ Position loaded":"✓ I own this"):"I own this"}</button></div>
 
 
     {depth==="pro"&&enterprise&&intelligence&&<section className="v29ProCockpit">
@@ -770,7 +788,7 @@ export default function StockClient({symbol}:{symbol:string}){
           <div><small>NIVORA THESIS ENGINE</small><h3>{investorDecision.thesisLabel} · {investorDecision.thesisScore}/100</h3><p>{investorDecision.oneLine}</p></div>
           <div className="thesisAction"><small>INVESTOR ACTION</small><b className={tone(investorDecision.action)}>{investorDecision.action}</b><span>{investorDecision.horizon} decision horizon</span></div>
         </div>
-        <div className="v48FactorGrid">{Object.entries(investorDecision.factors).map(([k,v]:any)=><div key={k}><small>{k.replace(/([A-Z])/g," $1").toUpperCase()}</small><b>{v}/100</b><i><em style={{width:`${Math.max(3,Math.min(100,v))}%`}}/></i></div>)}</div>
+        <div className="v48FactorGrid">{Object.entries(investorDecision.factors).map(([k,v]:any)=>{const isRisk=k==="risk";const label=isRisk?"RISK PRESSURE":k.replace(/([A-Z])/g," $1").toUpperCase();return <div key={k} className={isRisk&&Number(v)>=70?"factorRiskHigh":""}><small>{label}</small><b>{v}/100</b><i><em style={{width:`${Math.max(3,Math.min(100,v))}%`}}/></i></div>})}</div>
         <div className="thesisGrid">
           <div className="thesisCard positive"><small>WHY THE THESIS CAN WORK</small>{investorDecision.drivers.length?investorDecision.drivers.map((x:string,i:number)=><p key={i}>✓ {x}</p>):<p>No dominant positive evidence yet.</p>}</div>
           <div className="thesisCard concern"><small>WHAT CAN BREAK IT</small>{investorDecision.breakers.map((x:string,i:number)=><p key={i}>• {x}</p>)}</div>
