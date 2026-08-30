@@ -688,10 +688,48 @@ export default function StockClient({symbol}:{symbol:string}){
 
       <div className="v41Paths" aria-label="NIVORA price plan">
         <div className="buy"><small>{owns?"BETTER PLACE TO ADD":"BEST BUY AREA"}</small><b>${horizonPlan.entryLow}–${horizonPlan.entryHigh}</b><span>{horizon==="long"?"Preferred accumulation area if the business thesis stays intact.":"Best risk/reward area if buyers stabilize the stock."}</span></div>
-        <div className="now"><small>NOW</small><b>${currentPx.toFixed(2)}</b><span>{currentLocation}</span></div>
-        <div className="proof"><small>BUY IF STRENGTH CONFIRMS</small><b>Above ${horizonPlan.confirm}</b><span>If confirmed with participation, the next objective is about ${breakoutTarget}.</span></div>
-        <div className="upside"><small>{owns?"NEXT UPSIDE / TRIM AREA":"NEXT UPSIDE TARGET"}</small><b>${firstUpsideTarget}</b><span>{upsideToVisibleTarget!=null?`About +${upsideToVisibleTarget.toFixed(1)}% from today. Not a guaranteed price.`:`Evidence-based upside reference.`}</span></div>
-        <div className="risk"><small>REASSESS BELOW</small><b>${horizonPlan.stop}</b><span>{riskToBreak!=null?`${riskToBreak.toFixed(1)}% from today. `:""}Evidence has materially weakened; this is not an automatic stop-loss.</span></div>
+       <div className="now">
+  <small>NOW</small>
+  <b>${currentPx.toFixed(2)}</b>
+  <span>{currentLocation}</span>
+</div>
+
+<div className="proof">
+  <small>BUY IF STRENGTH CONFIRMS</small>
+  <b>Above ${horizonPlan.confirm}</b>
+  <span>
+    If confirmed with participation, the next objective is about ${breakoutTarget}.
+  </span>
+</div>
+
+<div className="upside">
+  <small>
+    {owns ? "NEXT UPSIDE / TRIM AREA" : "NEXT UPSIDE TARGET"}
+  </small>
+
+  <b>${firstUpsideTarget}</b>
+
+  <span>
+    {typeof upsideToVisibleTarget === "number"
+      ? `About +${upsideToVisibleTarget.toFixed(
+          1
+        )}% from today. Not a guaranteed price.`
+      : "Evidence-based upside reference."}
+  </span>
+</div>
+
+<div className="risk">
+  <small>REASSESS BELOW</small>
+  <b>${horizonPlan.stop}</b>
+
+  <span>
+    {typeof riskToBreak === "number"
+      ? `${riskToBreak.toFixed(
+          1
+        )}% from today. Evidence has materially weakened; this is not an automatic stop-loss.`
+      : "Evidence has materially weakened; this is not an automatic stop-loss."}
+  </span>
+</div>
       </div>
 
       <div className="v41Why">
