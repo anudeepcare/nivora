@@ -13,7 +13,6 @@ import {
   ShieldCheck,
   Star,
   Sparkles,
-
 } from "lucide-react";
 import SearchBox from "./SearchBox";
 import PriceChart from "./PriceChart";
