@@ -18,6 +18,8 @@ import SearchBox from "./SearchBox";
 import PriceChart from "./PriceChart";
 import {supabaseBrowser} from "@/lib/supabase";
 import {buildNivoraIntelligence} from "@/lib/nivora-intelligence";
+import {buildInvestorDecision} from "@/lib/nivora-investor";
+import InvestorDecisionHero from "./InvestorDecisionHero";
 
 type Mode="now"|"swing"|"long"|"own";
 type Depth="simple"|"investor"|"pro";
@@ -97,7 +99,7 @@ export default function StockClient({symbol}:{symbol:string}){
   const[company,setCompany]=useState<any>(null);
   const[context,setContext]=useState<any>(null);
   const[err,setErr]=useState("");
-  const[horizon,setHorizon]=useState<"now"|"swing"|"long">("now");
+  const[horizon,setHorizon]=useState<"now"|"swing"|"long">("swing");
   const[owns,setOwns]=useState(false);
   const mode:Mode=owns?"own":horizon;
   const[tab,setTab]=useState<Tab>("overview");
@@ -238,6 +240,10 @@ export default function StockClient({symbol}:{symbol:string}){
     market:d,company,context,options:optionsData,institutional,mode
   }),[d,company,context,optionsData,institutional,mode]);
 
+  const investorDecision=useMemo(()=>buildInvestorDecision({
+    market:d,company,context,institutional,owns
+  }),[d,company,context,institutional,owns]);
+
   const quickAnswers=useMemo(()=>{
     if(!intelligence)return null;
     return {
@@ -265,7 +271,7 @@ export default function StockClient({symbol}:{symbol:string}){
     const dataQuality=Math.round((coverage*.55)+(intelligence.confidence*.45));
     const auditId=`${symbol}-${mode}-${Math.round(Number(d.price||0)*100)}-${intelligence.score}`;
     const validationStatus="Shadow validation enabled";
-    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:"NIVORA V45",generatedAt:new Date(now).toISOString()};
+    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:"NIVORA V48 Thesis Engine",generatedAt:new Date(now).toISOString()};
   },[d,intelligence,company,context,optionsData,institutional,symbol,mode]);
 
   useEffect(()=>{
@@ -277,9 +283,10 @@ export default function StockClient({symbol}:{symbol:string}){
       symbol,engineVersion:enterprise.engineVersion,mode,price:d.price,score:intelligence.score,
       confidence:intelligence.confidence,action:intelligence.action,thesisLabel:intelligence.thesisLabel,
       dimensions:intelligence.dimensions,levels:d.levels,auditId:enterprise.auditId,
-      evidence:{coverage:enterprise.coverage,dataQuality:enterprise.dataQuality,contradictions:intelligence.contradictions}
+      evidence:{coverage:enterprise.coverage,dataQuality:enterprise.dataQuality,contradictions:intelligence.contradictions},
+      investorDecision:investorDecision?{companyScore:investorDecision.companyScore,thesisScore:investorDecision.thesisScore,opportunityScore:investorDecision.opportunityScore,thesisLabel:investorDecision.thesisLabel,thesisState:investorDecision.thesisState,valuationLabel:investorDecision.valuationLabel,action:investorDecision.action,confidence:investorDecision.confidence,factors:investorDecision.factors}:null
     })}).catch(()=>{});
-  },[d?.price,intelligence?.score,intelligence?.confidence,enterprise?.auditId,symbol,mode]);
+  },[d?.price,intelligence?.score,intelligence?.confidence,enterprise?.auditId,symbol,mode,investorDecision?.thesisScore,investorDecision?.opportunityScore]);
 
   if(err)return <div className="osError"><b>Couldn’t analyze {symbol}</b><span>{err}</span><button onClick={()=>location.reload()}>Try again</button></div>;
   if(!d||!view)return <div className="osStockLoading"><div className="osLogo">NIVORA<span>.</span></div><b>Analyzing {symbol}</b><span>Building the decision first. Evidence loads after.</span></div>;
@@ -604,14 +611,14 @@ export default function StockClient({symbol}:{symbol:string}){
       <div><b>${d.price}</b><span className={d.changePct>=0?"up":"down"}>{d.changePct>=0?"+":""}{d.changePct}%</span></div>
     </header>
 
-    <div className="liveFresh"><span className="liveStatus"><span className="liveDot"/>Near-live · shared cache</span><span className="liveCadence">Prices/decision ~30–45 sec · News ~2 min</span></div>
+    <div className="liveFresh"><span className="liveStatus"><span className="liveDot"/>Near-live · shared cache</span><span className="liveCadence">Price ~30–45 sec · News ~2 min · Thesis changes only when evidence changes</span></div>
 
     <div className="v32QuestionBar">
       <div>
-        <span>Time horizon</span><Help title="Time horizon">Now prioritizes immediate entry quality. Swing emphasizes price behavior and confirmation. Long term gives business quality and valuation more weight.</Help>
+        <span>Investment horizon</span><Help title="Investment horizon">Near term is 0–3 months of catalyst/risk context. Investment is 6–18 months and emphasizes earnings, forward change and valuation. Long term is 2–5 years and emphasizes business quality, durability and compounding potential.</Help>
         <div className="osMode v12Mode v32Horizon" aria-label="Investment horizon">
-          <button className={horizon==="now"?"on":""} onClick={()=>setHorizon("now")}>Now</button>
-          <button className={horizon==="swing"?"on":""} onClick={()=>setHorizon("swing")}>Swing</button>
+          <button className={horizon==="now"?"on":""} onClick={()=>setHorizon("now")}>Near term</button>
+          <button className={horizon==="swing"?"on":""} onClick={()=>setHorizon("swing")}>Investment</button>
           <button className={horizon==="long"?"on":""} onClick={()=>setHorizon("long")}>Long term</button>
         </div>
       </div>
@@ -660,7 +667,9 @@ export default function StockClient({symbol}:{symbol:string}){
       <div><div className="metricLabel"><small>DATA CONFIDENCE</small><Help title="Data confidence">Shows whether price history, business data, market context and news/catalyst sources are available. Higher confidence means better evidence coverage—not higher certainty of profit.</Help></div><b className={confidence==="High"?"good":confidence==="Low"?"bad":"mid"}>{confidence}</b><span>Price + business + news + market coverage.</span></div>
     </section>}
 
-    <section className={["v41Decision",tone(decisionAction)].join(" ")} aria-label="NIVORA decision">
+    {investorDecision&&<InvestorDecisionHero decision={investorDecision} price={Number(d.price)} changePct={Number(d.changePct)} owns={owns} onEvidence={()=>openResearch("thesis")}/>}
+
+    {false&&<section className={["v41Decision",tone(decisionAction)].join(" ")} aria-label="Legacy trading decision">
       <div className="v41DecisionHero">
         <div className="v41DecisionCopy">
           <div className="v41Eyebrow"><span>NIVORA SAYS</span><em>{horizon==="now"?"RIGHT NOW":horizon==="swing"?"SWING":"LONG TERM"}</em><em>{owns?"YOU OWN IT":"NEW MONEY"}</em></div>
@@ -702,7 +711,7 @@ export default function StockClient({symbol}:{symbol:string}){
       </div>
 
       <div className="v41Trust"><span><b>Research beta.</b> NIVORA explains evidence; it does not guarantee outcomes. Market and third-party data can be delayed, incomplete or wrong.</span><div><Link href="/about">Methodology</Link><Link href="/terms">Terms</Link><Link href="/disclaimer">Risk disclosure</Link></div></div>
-    </section>
+    </section>}
 
     {depth!=="simple"&&<section className="v18DecisionStrip">
       <div><small>BUSINESS</small><b className={tone(business.label)}>{business.label}</b><Help title="Business quality">Scored from reported growth, profitability, cash generation, balance-sheet evidence and multi-year consistency when SEC data is available.</Help></div>
@@ -715,11 +724,11 @@ export default function StockClient({symbol}:{symbol:string}){
     <div className="osMicroActions v12Actions">
       <button onClick={watch}><Star size={16} fill={watching?"currentColor":"none"}/>{watching?"Watching":"Add to watchlist"}</button>
       <Link href={"/portfolio?symbol="+encodeURIComponent(symbol)}><PlusCircle size={16}/>Track position</Link>
-      <span>{supportText}</span><span>{resistanceText}</span>
+      {depth!=="simple"&&<><span>{supportText}</span><span>{resistanceText}</span></>}
     </div>
 
     <section className="v12Pulse v18Pulse">
-      <div><small>WHAT CHANGED TODAY</small><h3>{todayMoveText}</h3><p>{moveReason}</p>{topNews?.url&&<a href={topNews.url} target="_blank" rel="noreferrer">Read source <ExternalLink size={13}/></a>}</div>
+      <div><small>WHAT CHANGED TODAY</small><h3>{investorDecision?.changed?.[0]||todayMoveText}</h3><p>{investorDecision?.changed?.length?"NIVORA separates thesis changes from price noise. A price move alone does not rewrite company conviction.":moveReason}</p>{topNews?.url&&<a href={topNews.url} target="_blank" rel="noreferrer">Read source <ExternalLink size={13}/></a>}</div>
       <div><small>NEXT CATALYST</small><h3>{nextCatalystTitle}</h3><p>{nextCatalystDetail}</p></div>
       <div><small>MARKET CONTEXT</small><h3>{d.market.regime}</h3><p>{marketContextText}</p></div>
     </section>
@@ -774,46 +783,24 @@ export default function StockClient({symbol}:{symbol:string}){
         <div><Newspaper size={18}/><div className="metricLabel v42OverviewLabel"><small>NEWS / CATALYSTS</small><Help title="News">Material headlines are summarized for tone and impact. Headlines alone do not override price/fundamental evidence.</Help></div><b className={news.tone==="positive"?"good":news.tone==="negative"?"bad":"mid"}>{news.label}</b><span>{news.topReason}</span></div>
       </div>}
 
-      {tab==="thesis"&&intelligence&&<div className="v27Thesis">
+      {tab==="thesis"&&investorDecision&&<div className="v27Thesis v48Thesis">
         <div className="thesisHero">
-          <div><small>NIVORA SYNTHESIS ENGINE</small><h3>{intelligence.thesisLabel} · {intelligence.score}/100</h3><p>{intelligence.explanation}</p></div>
-          <div className="thesisAction"><small>CURRENT ACTION</small><b className={tone(intelligence.action)}>{intelligence.action}</b><span>{intelligence.nextDecision}</span></div>
+          <div><small>NIVORA THESIS ENGINE</small><h3>{investorDecision.thesisLabel} · {investorDecision.thesisScore}/100</h3><p>{investorDecision.oneLine}</p></div>
+          <div className="thesisAction"><small>INVESTOR ACTION</small><b className={tone(investorDecision.action)}>{investorDecision.action}</b><span>{investorDecision.horizon} decision horizon</span></div>
         </div>
-
-        <div className="v40VerdictGrid">
-          <div className="bull"><small>BULL CASE</small><b>{intelligence.scenarios?.find((x:any)=>String(x.name).startsWith("Bull"))?.probability??"—"}%</b><span>{intelligence.biggestPositive}</span></div>
-          <div className="base"><small>BASE CASE</small><b>{decisionAction}</b><span>{commandReason}</span></div>
-          <div className="bear"><small>BEAR CASE</small><b>{intelligence.scenarios?.find((x:any)=>String(x.name).startsWith("Bear"))?.probability??"—"}%</b><span>{intelligence.biggestRisk}</span></div>
-        </div>
-        <details className="v40EvidenceDetails">
-          <summary>See how NIVORA reached this decision <span>{intelligence.score}/100 synthesis</span></summary>
-          <div className="thesisDimensions">{Object.entries(intelligence.dimensions).map(([k,v]:any)=><div key={k}><span>{k}</span><b>{v}/100</b><i><em style={{width:`${Math.max(3,Math.min(100,v))}%`}}/></i></div>)}</div>
-        </details>
-
+        <div className="v48FactorGrid">{Object.entries(investorDecision.factors).map(([k,v]:any)=><div key={k}><small>{k.replace(/([A-Z])/g," $1").toUpperCase()}</small><b>{v}/100</b><i><em style={{width:`${Math.max(3,Math.min(100,v))}%`}}/></i></div>)}</div>
         <div className="thesisGrid">
-          <div className="thesisCard positive"><small>WHAT SUPPORTS THE THESIS</small>{intelligence.positives.length?intelligence.positives.map((x:string,i:number)=><p key={i}>✓ {x}</p>):<p>No dominant positive evidence yet.</p>}</div>
-          <div className="thesisCard concern"><small>WHAT CAN BREAK IT</small>{intelligence.concerns.length?intelligence.concerns.map((x:string,i:number)=><p key={i}>• {x}</p>):<p>No dominant risk flag right now.</p>}</div>
-          <div className="thesisCard contradiction"><small>CONTRADICTION DETECTOR</small>{intelligence.contradictions.length?intelligence.contradictions.map((x:string,i:number)=><p key={i}>↔ {x}</p>):<p>Major evidence layers are broadly aligned.</p>}</div>
+          <div className="thesisCard positive"><small>WHY THE THESIS CAN WORK</small>{investorDecision.drivers.length?investorDecision.drivers.map((x:string,i:number)=><p key={i}>✓ {x}</p>):<p>No dominant positive evidence yet.</p>}</div>
+          <div className="thesisCard concern"><small>WHAT CAN BREAK IT</small>{investorDecision.breakers.map((x:string,i:number)=><p key={i}>• {x}</p>)}</div>
+          <div className="thesisCard contradiction"><small>WHAT CHANGED</small>{investorDecision.changed.length?investorDecision.changed.map((x:string,i:number)=><p key={i}>↔ {x}</p>):<p>No material thesis change detected. Daily price noise is not treated as a new thesis.</p>}</div>
         </div>
-
-        <div className="scenarioSection">
-          <div className="scenarioTitle"><div><small>SCENARIO ENGINE</small><h3>What could happen next?</h3></div><Help title="Scenario engine">These are evidence-weighted scenarios, not price predictions. Probabilities are normalized from current business, technical, catalyst and risk evidence and should change as evidence changes.</Help></div>
-          <div className="scenarioGrid">{intelligence.scenarios.map((x:any)=><div key={x.name} className={x.name.startsWith("Bull")?"bull":x.name.startsWith("Bear")?"bear":"base"}><span>{x.name}</span><b>{x.probability}%</b><strong>{x.level!=null?`Key level $${x.level}`:"Key level unavailable"}</strong><p>{x.logic}</p></div>)}</div>
+        <div className="v48ValueEvidence">
+          <div><small>COMPANY QUALITY</small><b>{investorDecision.companyScore}/100 · {investorDecision.companyLabel}</b><span>Designed to move slowly and only when business evidence changes.</span></div>
+          <div><small>CURRENT OPPORTUNITY</small><b>{investorDecision.opportunityScore}/100</b><span>Price and valuation can change this without rewriting the company thesis.</span></div>
+          <div><small>ANALYST CONSENSUS</small><b className={analystConsensus==="Buy"||analystConsensus==="Positive"?"good":analystConsensus==="Sell"?"bad":"mid"}>{analystConsensus}</b><span>{analystTotal?`${analystBuy} positive · ${analystCounts?.hold||0} hold · ${analystSell} negative`:"No analyst recommendation coverage returned."}</span></div>
+          <div><small>VERIFIED STREET TARGET</small><b>{investorDecision.streetTarget?`$${investorDecision.streetTarget.mean.toFixed(2)} avg`:"Not available"}</b><span>{investorDecision.streetTarget?`${investorDecision.streetTarget.upsidePct>=0?"+":""}${investorDecision.streetTarget.upsidePct}% from today; external evidence, not NIVORA intrinsic value.`:"NIVORA does not fabricate a fair value from today's price when independent valuation evidence is insufficient."}</span></div>
         </div>
-
-        <div className="triggerGrid">
-          <div><small>WHAT WOULD MAKE NIVORA MORE BULLISH</small>{intelligence.bullTriggers.length?intelligence.bullTriggers.map((x:string,i:number)=><p key={i}>+ {x}</p>):<p>Evidence is already relatively aligned.</p>}</div>
-          <div><small>WHAT WOULD MAKE NIVORA MORE CAUTIOUS</small>{intelligence.bearTriggers.length?intelligence.bearTriggers.map((x:string,i:number)=><p key={i}>− {x}</p>):<p>No major deterioration trigger identified.</p>}</div>
-        </div>
-
-        {intelligence.missing.length>0&&<div className="intelMissing"><Info size={15}/><span><b>Evidence coverage note:</b> {intelligence.missing.join(", ")} {intelligence.missing.length===1?"is":"are"} not currently available. NIVORA lowers evidence confidence instead of treating missing data as bearish.</span></div>}
-      </div>}
-
-      {tab==="thesis"&&<div className="v36ThesisTargets">
-        <div><small>ANALYST CONSENSUS</small><b className={analystConsensus==="Buy"||analystConsensus==="Positive"?"good":analystConsensus==="Sell"?"bad":"mid"}>{analystConsensus}</b><span>{analystTotal?`${analystBuy} positive · ${analystCounts?.hold||0} hold · ${analystSell} negative`:"No analyst recommendation coverage returned."}</span></div>
-        <div><small>WALL STREET TARGET</small><b>{hasAnalystTarget?`$${targetMean.toFixed(2)} avg`:"Limited coverage"}</b><span>{hasAnalystTarget&&Number.isFinite(targetLow)&&Number.isFinite(targetHigh)?`$${targetLow.toFixed(2)} low · $${targetHigh.toFixed(2)} high${pt.lastUpdated?` · ${pt.lastUpdated}`:""}`:"No verified target was returned by the connected feed, so NIVORA does not use one here."}</span></div>
-        <div><small>NIVORA FAIR VALUE</small><b>${fairValue.low}–${fairValue.high}</b><span>Model estimate, not guaranteed intrinsic value. Uses {fairValue.source.toLowerCase()}.</span></div>
-        <div><small>UPSIDE MAP</small><b>{currentPx?`${((horizonPlan.target1/currentPx-1)*100).toFixed(0)}% → ${((horizonPlan.target2/currentPx-1)*100).toFixed(0)}%`:"—"}</b><span>Near objective → stretch objective. Long-term multi-bagger scenarios belong in the valuation view, not today's trade plan.</span></div>
+        <div className="intelMissing"><Info size={15}/><span><b>Model honesty:</b> Thesis confidence is evidence coverage, not probability of profit. NIVORA records forward outcomes separately so model weights can be calibrated with real results.</span></div>
       </div>}
 
       {tab==="fundamentals"&&<div className="v12Fund">
