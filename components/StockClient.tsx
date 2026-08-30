@@ -657,7 +657,7 @@ export default function StockClient({symbol}:{symbol:string}){
       <div><div className="metricLabel"><small>DATA CONFIDENCE</small><Help title="Data confidence">Shows whether price history, business data, market context and news/catalyst sources are available. Higher confidence means better evidence coverage—not higher certainty of profit.</Help></div><b className={confidence==="High"?"good":confidence==="Low"?"bad":"mid"}>{confidence}</b><span>Price + business + news + market coverage.</span></div>
     </section>}
 
-    {investorDecision&&<InvestorDecisionHero decision={investorDecision} price={Number(d.price)} changePct={Number(d.changePct)} owns={owns} levels={{entryLow:horizonPlan.entryLow,entryHigh:horizonPlan.entryHigh,support:Number(d.levels?.support||0),majorSupport:Number(d.levels?.majorSupport||0),resistance:Number(d.levels?.resistance||0),breakout:Number(d.levels?.breakout||0)}} timing={timingState} onEvidence={()=>openResearch("thesis")}/>}
+    {investorDecision&&<InvestorDecisionHero decision={investorDecision} price={Number(d.price)} changePct={Number(d.changePct)} owns={owns} levels={{entryLow:horizonPlan.entryLow,entryHigh:horizonPlan.entryHigh,support:Number(d.levels?.support||0),majorSupport:Number(d.levels?.majorSupport||0),resistance:Number(d.levels?.resistance||0),breakout:Number(d.levels?.breakout||0),assetType:d.assetType}} timing={timingState} onEvidence={()=>openResearch("thesis")}/>}
 
     {false&&<section className={["v41Decision",tone(decisionAction)].join(" ")} aria-label="Legacy trading decision">
       <div className="v41DecisionHero">
