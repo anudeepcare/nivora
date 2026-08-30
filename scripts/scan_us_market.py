@@ -9,7 +9,7 @@ Purpose:
 This is a market pre-screen, not a promise of returns. Full NIVORA company/news/
 smart-money evidence can be inspected after a candidate is surfaced.
 """
-import os, math, time, json, requests
+import os, math, time, json, requests, hashlib, re
 from datetime import datetime, timezone
 from supabase import create_client
 
@@ -57,7 +57,11 @@ def sync_universe():
         ex=(x.get("exchange") or "").upper()
         sym=(x.get("symbol") or "").upper().strip()
         if not sym or "/" in sym or ex not in {"NASDAQ","NYSE","AMEX","NYSE ARCA","CBOE"}:continue
-        if typ and typ not in allowed:continue
+        # Default Discover is an investable-equity universe, not every listed security.
+        # Reject warrants, units, rights, preferred-like suffixes and unknown instrument types.
+        if typ not in allowed:continue
+        if re.search(r"(?:\.W|\.WS|\.WT|\.U|\.UN|\.R|\.RT|\.P[A-Z]?)$", sym):continue
+        if sym.endswith(("-WS","-WT","-W","-U","-R")):continue
         out.append({"symbol":sym,"name":x.get("name") or x.get("instrument_name"),"exchange":ex,"instrument_type":typ,"currency":x.get("currency"),"country":x.get("country") or "United States","active":True,"updated_at":datetime.now(timezone.utc).isoformat()})
     # Deduplicate and upsert in chunks.
     by={x['symbol']:x for x in out};vals=list(by.values())
@@ -72,7 +76,13 @@ def analyze(symbol):
     rows=list(reversed(vals)); c=[float(x['close']) for x in rows];h=[float(x['high']) for x in rows];l=[float(x['low']) for x in rows];v=[float(x.get('volume') or 0) for x in rows]
     if len(c)<55:return None
     p=c[-1];e20=ema(c,20)[-1];e50=ema(c,50)[-1];rv=rsi(c);a=max(.01,atr(rows));ret5=p/(c[-6] if len(c)>5 else p)-1;ret20=p/(c[-21] if len(c)>20 else p)-1
-    vr=(sma(v[-5:],5)/sma(v,20)) if sma(v,20) else 1
+    avg_vol20=sma(v,20); avg_dollar_vol20=avg_vol20*p
+    # Keep the default opportunity board investable and reduce penny/illiquid noise.
+    # These are pre-screen thresholds, not claims about company quality.
+    min_price=float(os.getenv("NIVORA_MIN_PRICE","3"))
+    min_dollar_vol=float(os.getenv("NIVORA_MIN_DOLLAR_VOLUME","2000000"))
+    if p < min_price or avg_dollar_vol20 < min_dollar_vol:return None
+    vr=(sma(v[-5:],5)/avg_vol20) if avg_vol20 else 1
     trend=clamp(50+(14 if p>e20 else -14)+(16 if e20>e50 else -16)+ret20*110,5,95)
     momentum=clamp(50+(rv-50)*.7+ret5*100+(10 if macd_hist(c)>0 else -10),5,95)
     flow=clamp(50+(vr-1)*35+(8 if ret5>0 else -6),5,95)
@@ -107,8 +117,11 @@ def main():
     try:
         st=sb.table("nivora_scan_state").select("*").eq("id",1).single().execute().data or {}
         if SYNC_UNIVERSE and (not st.get('last_universe_sync') or (datetime.now(timezone.utc)-datetime.fromisoformat(st['last_universe_sync'].replace('Z','+00:00'))).total_seconds()>86400):sync_universe()
-        rows=sb.table("nivora_market_universe").select("symbol").eq("active",True).order("symbol").execute().data or []
-        if not rows:raise RuntimeError("Market universe is empty. Run the V45 migration and universe sync first.")
+        rows=sb.table("nivora_market_universe").select("symbol").eq("active",True).execute().data or []
+        if not rows:raise RuntimeError("Market universe is empty. Run the V45/V46 migration and universe sync first.")
+        # Stable hash order prevents the warm-up screen from looking alphabetically biased
+        # while still guaranteeing every eligible symbol is eventually visited.
+        rows.sort(key=lambda x: hashlib.sha1(x['symbol'].encode()).hexdigest())
         cursor=int(st.get('cursor') or 0)%len(rows);symbols=[rows[(cursor+i)%len(rows)]['symbol'] for i in range(min(BATCH,len(rows)))]
         ok=[]
         for i,sym in enumerate(symbols):
@@ -120,6 +133,16 @@ def main():
             pause=float(os.getenv("NIVORA_SCAN_PAUSE_SECONDS","8"))
             if i<len(symbols)-1 and pause>0:time.sleep(pause)
         if ok:
+            now_iso=datetime.now(timezone.utc).isoformat()
+            syms=[x["symbol"] for x in ok]
+            old_rows=sb.table("nivora_market_scan").select("symbol,action,rank_score,scanned_at,changed_at").in_("symbol",syms).execute().data or []
+            old={x["symbol"]:x for x in old_rows}
+            for x in ok:
+                prev=old.get(x["symbol"])
+                x["previous_action"]=prev.get("action") if prev else None
+                x["previous_rank_score"]=prev.get("rank_score") if prev else None
+                materially_changed=(not prev) or prev.get("action")!=x["action"] or abs(float(prev.get("rank_score") or 0)-float(x["rank_score"]))>=6
+                x["changed_at"]=now_iso if materially_changed else (prev.get("changed_at") or prev.get("scanned_at") if prev else now_iso)
             for i in range(0,len(ok),200):sb.table("nivora_market_scan").upsert(ok[i:i+200]).execute()
         new_cursor=(cursor+len(symbols))%len(rows)
         sb.table("nivora_scan_state").update({"cursor":new_cursor,"universe_count":len(rows),"last_scan_at":datetime.now(timezone.utc).isoformat(),"last_batch_size":len(ok),"last_error":None}).eq("id",1).execute()
