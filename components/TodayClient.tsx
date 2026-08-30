@@ -38,7 +38,7 @@ export default function TodayClient(){
     </section>
 
 
-    <section className="v37Promise" aria-label="Why NIVORA"><div><small>01 · DECIDE</small><b>Buy, wait, hold, trim or exit</b><span>No hunting through 40 indicators.</span></div><div><small>02 · PLAN</small><b>Entry, target, thesis break</b><span>Every call comes with a price map.</span></div><div><small>03 · EXPLAIN</small><b>Why + what changes the call</b><span>Contradictions stay visible.</span></div><div><small>04 · PROVE</small><b>Forward outcomes recorded</b><span>Edge must be earned, not marketed.</span></div></section>
+    <section className="v39Promise" aria-label="Why NIVORA"><b>Decision first.</b><span>Action → entry → target → thesis break.</span><Link href="/about">Why NIVORA →</Link></section>
     <section className="marketStrip v36MarketStrip">
       <div className="marketRegime"><small>MARKET REGIME</small><b className={market?.regime==="Risk-on"?"good":market?.regime==="Risk-off"?"bad":"mid"}>{market?.regime||"Loading…"}</b><span>Broad-market context changes how aggressive new entries should be.</span></div>
       <div className="marketTiles">{market?.items?.map((x:any)=><Link key={x.symbol} href={`/stock/${encodeURIComponent(x.symbol)}`}><span>{x.symbol}</span><b className={x.changePct>=0?"good":"bad"}>{x.changePct>=0?"+":""}{x.changePct}%</b><small>{x.trend}</small></Link>)}</div>

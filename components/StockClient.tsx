@@ -600,67 +600,57 @@ export default function StockClient({symbol}:{symbol:string}){
       <div><div className="metricLabel"><small>DATA CONFIDENCE</small><Help title="Data confidence">Shows whether price history, business data, market context and news/catalyst sources are available. Higher confidence means better evidence coverage—not higher certainty of profit.</Help></div><b className={confidence==="High"?"good":confidence==="Low"?"bad":"mid"}>{confidence}</b><span>Price + business + news + market coverage.</span></div>
     </section>}
 
-    <section className={["v32Command",tone(decisionAction)].join(" ")} aria-label="NIVORA decision">
-      <div className="v32CommandHero">
-        <div>
-          <div className="v32CommandEyebrow"><span>NIVORA DECISION</span><Help title="NIVORA decision">The fastest summary of the current evidence for your selected horizon and position status. It changes as price, fundamentals, catalysts, risk and supporting evidence change.</Help></div>
-          <div className="v32ActionLine"><h2>{decisionAction}</h2><span><b>{commandScore}</b>/100 decision score · {convictionLabel} conviction</span></div>
-          <p>{decisionAction.includes("BUY")||decisionAction.includes("ACCUMULATE")?`Current evidence supports a disciplined ${horizon} entry only at NIVORA's mapped levels.`:decisionAction==="HOLD"?"The thesis remains intact; manage the position around the mapped add, trim and reassessment zones.":commandReason}</p>
-          <div className="v37DecisionSentence"><b>Best move:</b> {decisionAction.includes("BUY")||decisionAction.includes("ACCUMULATE")?`Act only inside $${horizonPlan.entryLow}–$${horizonPlan.entryHigh} or after confirmation above $${horizonPlan.confirm}.`:decisionAction.includes("HOLD")?`Hold the thesis, add only near $${horizonPlan.entryLow}–$${horizonPlan.entryHigh}, and reassess below $${horizonPlan.stop}.`:`Wait for either $${horizonPlan.entryLow}–$${horizonPlan.entryHigh} or a confirmed move above $${horizonPlan.confirm}.`}</div>
+    <section className={["v38Decision",tone(decisionAction)].join(" ")} aria-label="NIVORA decision contract">
+      <div className="v38DecisionTop">
+        <div className="v38DecisionMain">
+          <div className="v38Kicker"><span>NIVORA DECISION</span><em>{horizon.toUpperCase()}</em><em>{owns?"OWNER":"NEW POSITION"}</em></div>
+          <div className="v38ActionRow">
+            <div>
+              <h2>{decisionAction}</h2>
+              <p>{decisionAction.includes("BUY")||decisionAction.includes("ACCUMULATE")?`The setup is actionable only at NIVORA's mapped price levels.`:decisionAction==="HOLD"?"The thesis is intact; manage the position instead of reacting to daily noise.":commandReason}</p>
+            </div>
+            <div className="v38ScoreDial" style={{["--v38-score" as any]:`${Math.max(0,Math.min(100,commandScore))}%`}}><b>{commandScore}</b><span>/100</span><small>SETUP</small></div>
+          </div>
+          <div className="v38ActionSummary">
+            <span>BEST MOVE NOW</span>
+            <b>{decisionAction.includes("BUY")||decisionAction.includes("ACCUMULATE")?`Use $${horizonPlan.entryLow}–$${horizonPlan.entryHigh}; otherwise wait for confirmation above $${horizonPlan.confirm}.`:decisionAction.includes("HOLD")?`Hold; add only near $${horizonPlan.entryLow}–$${horizonPlan.entryHigh}; reassess below $${horizonPlan.stop}.`:`Do not force a trade. Wait for $${horizonPlan.entryLow}–$${horizonPlan.entryHigh} or confirmation above $${horizonPlan.confirm}.`}</b>
+          </div>
+          <div className="v38ConfidenceRow"><span><b>{convictionLabel}</b> conviction</span><span><b>{horizonPlan.rr}×</b> R:R</span><span><b>{currentLocation}</b></span></div>
         </div>
-        <div className="v32NextTrigger"><small>NEXT DECISION TRIGGER</small><b>{intelligence?.nextDecision||confirmationText}</b><span>What NIVORA is waiting for next.</span></div>
+        <aside className="v38Next">
+          <small>NEXT DECISION TRIGGER</small>
+          <b>{intelligence?.nextDecision||confirmationText}</b>
+          <span>This is the price condition that changes the call.</span>
+          <button type="button" onClick={()=>openResearch("thesis")}>See full reasoning →</button>
+        </aside>
       </div>
 
-      <div className="v36DecisionLevels">
-        <div><small>{owns?"ADD ZONE":horizon==="long"?"DCA / BUY ZONE":"BEST ENTRY"}</small><b>${horizonPlan.entryLow}–${horizonPlan.entryHigh}</b><span>{horizonPlan.timeframe}</span></div>
-        <div><small>BREAKOUT / CONFIRM</small><b>Above ${horizonPlan.confirm}</b><span>Require participation and a close/retest—not just the first spike.</span></div>
-        <div><small>{owns?"TRIM 1":"TARGET 1"}</small><b>${horizonPlan.target1}</b><span>First risk/reward objective.</span></div>
-        <div><small>{owns?"TRIM 2":"TARGET 2"}</small><b>${horizonPlan.target2}</b><span>{horizon==="long"?"Longer-term scenario objective.":"Second objective if momentum persists."}</span></div>
-        <div><small>{owns?"EXIT / REASSESS":"THESIS BREAK"}</small><b>Below ${horizonPlan.stop}</b><span>Recheck the thesis before adding more risk.</span></div>
-      </div>
-      <div className="v36DecisionMeta">
-        <div><small>PLANNED R:R</small><b>{horizonPlan.rr}×</b><span>{upsideToT1!=null?`${upsideToT1>=0?"+":""}${upsideToT1.toFixed(1)}% to T1`:"—"} · {downsideToBreak!=null?`${downsideToBreak.toFixed(1)}% to break`:"—"}</span></div>
-        <div><small>TECHNICAL COMPOSITE</small><b>{technicalComposite}/100</b><span>Trend + momentum + flow + structure + extension.</span></div>
-        <div><small>ANALYST CONSENSUS</small><b>{analystConsensus}</b><span>{analystTotal?`${analystBuy} positive · ${analystCounts?.hold||0} hold · ${analystSell} negative`:"Coverage unavailable"}</span></div>
-        <div><small>NIVORA FAIR VALUE</small><b>${fairValue.low}–${fairValue.high}</b><span>Model estimate · {fairValue.source}.</span></div>
-      </div>
-      <div className="v37LocationRail"><div><small>CURRENT LOCATION</small><b>{currentLocation}</b><span>${currentPx.toFixed(2)} now</span></div><div><small>{horizon==="long"?"DCA LADDER":"ENTRY PLAN"}</small><b>{horizon==="long"?`$${dca1} · $${dca2} · $${dca3}`:`$${horizonPlan.entryLow}–$${horizonPlan.entryHigh}`}</b><span>{horizon==="long"?"Scale gradually; thesis break still controls risk.":"Do not chase outside the mapped plan."}</span></div><div><small>EVIDENCE QUALITY</small><b>{evidenceConfidence}</b><span>{intelligence?.confidence||0}/100 coverage · separate from conviction</span></div></div>
-      <div className="v36WhyNow">
-        <strong>Why this call?</strong>
-        <div>{decisionWhy.good.map((x:string)=><span className="good" key={x}>✓ {x}</span>)}{decisionWhy.watch.map((x:string)=><span className="mid" key={x}>• {x}</span>)}</div>
+      <div className="v38Plan" aria-label="Decision price plan">
+        <div className="primary"><small>{owns?"ADD ZONE":horizon==="long"?"DCA / BUY ZONE":"BEST ENTRY"}</small><b>${horizonPlan.entryLow}–${horizonPlan.entryHigh}</b><span>{horizonPlan.timeframe}</span></div>
+        <div><small>CONFIRM</small><b>&gt; ${horizonPlan.confirm}</b><span>Close/retest with participation.</span></div>
+        <div><small>{owns?"TRIM 1":"TARGET 1"}</small><b>${horizonPlan.target1}</b><span>{upsideToT1!=null?`${upsideToT1>=0?"+":""}${upsideToT1.toFixed(1)}% from now`:"First objective"}</span></div>
+        <div><small>{owns?"TRIM 2":"TARGET 2"}</small><b>${horizonPlan.target2}</b><span>Second objective if thesis persists.</span></div>
+        <div className="danger"><small>{owns?"EXIT / REASSESS":"THESIS BREAK"}</small><b>&lt; ${horizonPlan.stop}</b><span>{downsideToBreak!=null?`${downsideToBreak.toFixed(1)}% from now`:"Recheck the thesis"}</span></div>
       </div>
 
-      <div className="v32Signals">
-        <div className="v32SignalsTitle"><small>WHAT NIVORA SEES</small><span>Interpretation first. Tap deeper research only if you need it.</span></div>
-        <div className="v32SignalRail">{signalRows.map(([name,label,cls]:any)=><button type="button" key={name} className={name==="Institutions"?"v34SignalButton":""} onClick={()=>{if(name==="Institutions"){if(depth==="simple")setDepth("investor");setTab("institutions");requestAnimationFrame(()=>setTimeout(()=>thesisRef.current?.scrollIntoView({behavior:"smooth",block:"start"}),50))}}} disabled={name!=="Institutions"}><small>{name}</small><b className={cls}>{label}</b>{name==="Institutions"&&<em>View 13F details →</em>}</button>)}</div>
-      </div>
-
-      <div className="v32CommandFooter">
-        <div><b>What changes the decision?</b><span>{quickAnswers?.change||intelligence?.nextDecision||"Wait for stronger evidence alignment."}</span></div>
-        <div className="v32CommandActions">
-          <button type="button" onClick={()=>openResearch("thesis")}>Why?</button>
-          <button type="button" onClick={()=>{if(depth==="simple")setDepth("investor");openResearch("thesis")}}>Explore analysis</button>
+      <div className="v38Why">
+        <div className="v38WhyTitle"><span>WHY THIS CALL</span><button type="button" onClick={()=>openResearch("thesis")}>Open thesis</button></div>
+        <div className="v38EvidenceChips">
+          {decisionWhy.good.map((x:string)=><span className="pos" key={x}>✓ {x}</span>)}
+          {decisionWhy.watch.map((x:string)=><span className="warn" key={x}>• {x}</span>)}
+          {!decisionWhy.good.length&&!decisionWhy.watch.length&&<span>Evidence is mixed; open the thesis for details.</span>}
         </div>
       </div>
+
+      <div className="v38Meta">
+        <div><small>TECHNICAL</small><b>{technicalComposite}/100</b><span>{technicalComposite>=68?"Supportive":technicalComposite<45?"Weak":"Mixed"}</span></div>
+        <div><small>ANALYSTS</small><b>{analystConsensus}</b><span>{analystTotal?`${analystBuy} positive · ${analystCounts?.hold||0} hold · ${analystSell} negative`:"Coverage unavailable"}</span></div>
+        <div><small>INSTITUTIONS</small><b>{institutionalQuick}</b><span>{institutional?.enabled?`${fmtDate(institutionalPeriod)} report period`:"13F not loaded"}</span></div>
+        <div><small>NIVORA FAIR VALUE</small><b>${fairValue.low}–${fairValue.high}</b><span>{fairValue.source}</span></div>
+      </div>
+
+      <div className="v38Trust"><span><b>Decision-support research.</b> Not personalized investment advice. Data and model outputs can be wrong or delayed.</span><div><Link href="/terms">Legal</Link><Link href="/disclaimer">Risk disclosure</Link></div></div>
     </section>
-
-    {depth!=="simple"&&intelligence&&quickAnswers&&<section className="v28AnswerFirst">
-      <div className="v28AnswerHeadline">
-        <div><small>NIVORA ANSWER</small><b>{intelligence.thesisLabel} · {intelligence.confidenceLabel} confidence</b><p>{intelligence.biggestPositive} <strong>Watch:</strong> {intelligence.biggestRisk}</p>
-          <div className="v30Expression"><span>BEST EXPRESSION</span><b>{intelligence.bestExpression?.type}</b><em>{intelligence.bestExpression?.reason}</em></div>
-        </div>
-        <button type="button" onClick={()=>openResearch("thesis")}><Brain size={16}/> Full thesis</button>
-      </div>
-      <div className="v28QuestionRow">
-        {[
-          ["why","Why not more aggressive?"],
-          ["change","What changes the call?"],
-          ["risk","Biggest risk?"],
-          ["evidence","Do signals disagree?"]
-        ].map(([key,label])=><button type="button" key={key} className={answerOpen===key?"on":""} onClick={()=>setAnswerOpen(answerOpen===key?null:key as any)}>{label}</button>)}
-      </div>
-      {answerOpen&&<div className="v28AnswerBody">{quickAnswers[answerOpen]}</div>}
-    </section>}
 
     {depth!=="simple"&&<section className="v18DecisionStrip">
       <div><small>BUSINESS</small><b className={tone(business.label)}>{business.label}</b><Help title="Business quality">Scored from reported growth, profitability, cash generation, balance-sheet evidence and multi-year consistency when SEC data is available.</Help></div>
