@@ -1,12 +1,13 @@
 {
   "name": "nivora",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test:engine": "node --test tests/v54-engine-contract.test.mjs"
+    "test:engine": "rm -rf .engine-test && tsc lib/nivora-investor.ts lib/nivora-cross-sectional.ts lib/nivora-portfolio-risk.ts lib/nivora-factor-integrity.ts --target ES2022 --module commonjs --outDir .engine-test --esModuleInterop --skipLibCheck && node --test tests/v56-behavior.test.mjs tests/v57-integrity.test.mjs",
+    "test": "npm run test:engine"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

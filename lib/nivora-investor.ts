@@ -9,14 +9,17 @@ export type InvestorDecision={
   valuationLabel:"Deeply attractive"|"Attractive"|"Fair"|"Expensive"|"Unclear";
   action:"STRONG BUY"|"ACCUMULATE"|"ADD"|"HOLD"|"HOLD / WATCH"|"WAIT"|"TRIM"|"REDUCE"|"AVOID"|"EXIT / REASSESS";
   actionReason:string;horizon:string;oneLine:string;drivers:string[];risks:string[];breakers:string[];changed:string[];
-  factors:Record<string,number>;horizons:HorizonOutlook[];bestHorizon:string;
+  factors:Record<string,number|null>;factorAvailability:Record<string,boolean>;horizons:HorizonOutlook[];bestHorizon:string;
   streetTarget?:{mean:number;low?:number;high?:number;upsidePct:number}|null;
   expectedReturn?:{oneYearPct:number|null;threeYearCagrPct:number|null;source:"street"|"unavailable"};
   consistency:{ok:boolean;notes:string[]};position?:{shares:number;avgCost:number;pnlPct:number;belowCost:boolean;weightPct?:number|null}|null;
-  archetype:string;dataCompleteness:number;modelConfidenceLabel:"Uncalibrated"|"Calibrated";
+  archetype:string;dataCompleteness:number;modelConfidenceLabel:"Uncalibrated"|"Collecting"|"Calibrated";
   timing:{score:number;label:"ATTRACTIVE"|"SELECTIVE"|"WAIT"|"OVEREXTENDED"|"WEAK";reason:string};
   streetView:{label:"Positive"|"Mixed"|"Cautious"|"Unavailable";score:number|null;note:string};
+  streetDisagreement?:{active:boolean;headline:string;reasons:string[]};
   zones:PriceZone[];valuationBasis:string;vetoes:string[];
+  valuationRange?:{bear:number;base:number;bull:number;method:string;confidence:"High"|"Medium"|"Low"}|null;
+  expectedCagr?:{oneYearPct:number|null;threeYearPct:number|null}|null;
 };
 
 const clamp=(x:number,a=0,b=100)=>Math.max(a,Math.min(b,x));
@@ -25,6 +28,11 @@ const finite=(x:any)=>Number.isFinite(Number(x));
 const uniq=(x:string[])=>[...new Set(x.filter(Boolean))];
 const ol=(s:number):OutlookLabel=>s>=82?"STRONG BULLISH":s>=70?"BULLISH":s>=60?"CONSTRUCTIVE":s>=48?"NEUTRAL":s>=39?"CAUTIOUS":s>=28?"BEARISH":"STRONG BEARISH";
 const range=(center:number|null,width:number|null)=>center!=null&&width!=null&&center>0&&width>0?{low:Math.max(.01,center-width),high:center+width}:null;
+const weighted=(parts:Array<{value:number|null|undefined;weight:number;available?:boolean}>,fallback=50)=>{
+  const usable=parts.filter(p=>p.available!==false&&finite(p.value)&&p.weight>0);
+  const w=usable.reduce((a,p)=>a+p.weight,0);
+  return w?clamp(usable.reduce((a,p)=>a+Number(p.value)*p.weight,0)/w):fallback;
+};
 
 function analyst(context:any){
   const rs=Array.isArray(context?.recommendations)?context.recommendations:[];
@@ -59,7 +67,7 @@ function archetype(context:any,raw:any,assetType:string){
   return"general";
 }
 
-function valuationScore(kind:string,context:any,raw:any){
+export function valuationScore(kind:string,context:any,raw:any){
   const m=context?.metrics||context?.basicMetrics||{};
   const pe=Number(m.peTTM??m.peNormalizedAnnual??m.peBasicExclExtraTTM??m.peBasicExclExtraAnnual);
   const ps=Number(m.psTTM??m.psAnnual);
@@ -86,11 +94,29 @@ function valuationScore(kind:string,context:any,raw:any){
   return{score:50,label:"Unclear" as const,basis:"Independent valuation is not established from the currently available evidence.",available:false};
 }
 
-function buildZones(market:any,thesisLabel:InvestorDecision["thesisLabel"],timingScore:number,valuationAvailable:boolean):PriceZone[]{
+function valuationRange(kind:string,market:any,context:any,raw:any,valuation:number){
+  const px=Number(market?.price),m=context?.metrics||context?.basicMetrics||{};if(!finite(px)||px<=0)return null;
+  const pe=Number(m.peTTM??m.peNormalizedAnnual??m.peBasicExclExtraTTM),ps=Number(m.psTTM??m.psAnnual),pb=Number(m.pbAnnual??m.pbQuarterly),rev=Math.max(-20,Math.min(100,num(raw.revGrowth,0)));
+  let base:number|null=null,method="",confidence:"High"|"Medium"|"Low"="Low";
+  if((kind==="bank"||kind==="insurer")&&finite(pb)&&pb>0){const bvps=px/pb,targetPB=valuation>=65?1.8:valuation>=50?1.35:1.0;base=bvps*targetPB;method="Book value / normalized P-B scenario";confidence="Medium"}
+  else if(kind==="hypergrowth"&&finite(ps)&&ps>0&&rev>0){const salesPerShare=px/ps,targetPS=Math.max(2,Math.min(18,2.5+rev*.18+(finite(raw.opMargin)&&Number(raw.opMargin)>15?1.5:0)));base=salesPerShare*targetPS;method="Growth-adjusted forward sales scenario";confidence="Low"}
+  else if((kind==="compounder"||kind==="general"||kind==="infrastructure")&&finite(pe)&&pe>0){const eps=px/pe,targetPE=Math.max(12,Math.min(40,16+Math.max(0,rev)*.45+(finite(raw.opMargin)&&Number(raw.opMargin)>20?3:0)));base=eps*targetPE;method="Normalized earnings / growth scenario";confidence="Medium"}
+  if(base==null||!finite(base)||base<=0)return null;const uncertainty=kind==="hypergrowth"?.30:kind==="bank"||kind==="insurer"?.20:.24;
+  return{bear:+(base*(1-uncertainty)).toFixed(2),base:+base.toFixed(2),bull:+(base*(1+uncertainty)).toFixed(2),method,confidence};
+}
+
+export function buildZones(market:any,thesisLabel:InvestorDecision["thesisLabel"],timingScore:number,valuationAvailable:boolean,fairRange?:{bear:number;base:number;bull:number}|null):PriceZone[]{
   const px=num(market?.price,0),lv=market?.levels||{},atr=Number(market?.volatility?.atr14),atrPct=Number(market?.volatility?.atrPct);
   const support=Number(lv.support),major=Number(lv.majorSupport),resistance=Number(lv.resistance),breakout=Number(lv.breakout);
   const width=finite(atr)&&atr>0?atr*.28:px>0&&finite(atrPct)?px*(atrPct/100)*.28:null;
   const z:PriceZone[]=[];
+  if(thesisLabel!=="BEARISH"&&fairRange&&px>0){
+    const starter=Math.min(fairRange.base,px); const accumulate=Math.min(fairRange.bear+(fairRange.base-fairRange.bear)*.45,starter);
+    const strong=Math.min(fairRange.bear,accumulate);
+    z.push({label:"Fundamental starter",low:+(starter*.97).toFixed(2),high:+starter.toFixed(2),kind:"starter",confidence:"Medium",basis:"Expected-return zone derived from NIVORA base valuation; technicals refine execution."});
+    z.push({label:"Fundamental accumulate",low:+(accumulate*.96).toFixed(2),high:+accumulate.toFixed(2),kind:"accumulate",confidence:"Medium",basis:"Larger margin-of-safety zone derived from the bear/base valuation distribution."});
+    z.push({label:"Strong accumulate / thesis intact",low:+(strong*.96).toFixed(2),high:+strong.toFixed(2),kind:"strong",confidence:"Low",basis:"Deep valuation zone. Only valid while company-specific thesis breakers remain false."});
+  }
   if(finite(support)&&support>0){const r=range(support,width||Math.max(.01,Math.abs(px-support)*.15));if(r)z.push({label:"Starter / first support",...r,kind:"starter",confidence:timingScore>=58?"Medium":"Low",basis:"Nearest structural support with volatility-adjusted execution width."})}
   if(finite(major)&&major>0){const r=range(major,width||Math.max(.01,Math.abs(px-major)*.12));if(r)z.push({label:"Accumulate / major support",...r,kind:"accumulate",confidence:timingScore>=50?"Medium":"Low",basis:"Deeper structural support; thesis must remain intact."})}
   if(finite(major)&&finite(support)&&major>0&&support>major){const center=(major+support)/2;const r=range(center,width?width*.75:(support-major)*.18);if(r)z.push({label:"Strong accumulate only with intact thesis",...r,kind:"strong",confidence:valuationAvailable?"Medium":"Low",basis:valuationAvailable?"Valuation context plus technical support alignment.":"Technical confluence only; independent fair value is not yet established."})}
@@ -150,6 +176,8 @@ export function buildInvestorDecision({market,company,context,institutional,owns
   const valuation=valuationModel.score,valuationLabel=valuationModel.label;
   const px=num(market.price,0),pt=context?.priceTarget||{},mean=Number(pt.targetMean),low=Number(pt.targetLow),high=Number(pt.targetHigh);
   const hasStreet=px>0&&finite(mean)&&mean>0;
+  const fairRange=valuationRange(kind,market,context,raw,valuation);
+  const expectedCagr=fairRange&&px>0?{oneYearPct:+((fairRange.base/px-1)*100).toFixed(1),threeYearPct:+((Math.pow(fairRange.base/px,1/3)-1)*100).toFixed(1)}:null;
   const upside=hasStreet?(mean/px-1)*100:null;
 
   const risk=num(market?.scores?.risk,60),trend=num(market?.scores?.trend,50),momentum=num(market?.scores?.momentum,50),flow=num(market?.scores?.flow,50),entry=num(market?.scores?.entry,50),extension=num(market?.scores?.extension,50);
@@ -158,13 +186,19 @@ export function buildInvestorDecision({market,company,context,institutional,owns
   const timingLabel:InvestorDecision["timing"]["label"]=extension>=78&&trend>=60?"OVEREXTENDED":trend<38&&momentum<42?"WEAK":timingScore>=68?"ATTRACTIVE":timingScore>=55?"SELECTIVE":"WAIT";
   const timingReason=timingLabel==="OVEREXTENDED"?"The thesis may be valid, but price is stretched; avoid chasing.":timingLabel==="WEAK"?"Price has not stabilized enough to reward aggressive entry.":timingLabel==="ATTRACTIVE"?"Price structure, momentum and extension are aligned for staged entry.":timingLabel==="SELECTIVE"?"Entry is acceptable only with disciplined sizing and thesis confirmation.":"The current price setup does not provide enough timing edge.";
 
-  const opportunityScore=Math.round(clamp(thesisScore*.55+valuation*.22+(100-risk)*.13+timingScore*.10));
+  // Missing valuation is uncertainty, not bearish evidence. Re-normalize available families instead of inserting a zero/neutral penalty.
+  const opportunityScore=Math.round(weighted([
+    {value:thesisScore,weight:.55},
+    {value:valuation,weight:.22,available:valuationModel.available},
+    {value:100-risk,weight:.13},
+    {value:timingScore,weight:.10}
+  ]));
   const hs:any[]=[
-    ["3M",clamp(e.score*.23+streetChange*.18+catalysts*.17+technical*.24+(100-risk)*.18),"Earnings, fresh Street changes, catalysts and market structure dominate the near term."],
-    ["6M",clamp(forward*.32+e.score*.18+streetChange*.12+valuation*.10+technical*.10+companyScore*.18),"Forward evidence and earnings follow-through matter more than daily price action."],
-    ["1Y",clamp(forward*.34+companyScore*.24+financial*.14+e.score*.08+valuation*.12+durability*.08),"Business quality, forward growth, cash economics and valuation dominate the one-year case."],
-    ["2Y",clamp(companyScore*.30+durability*.24+forward*.25+financial*.13+growth*.08),"Durability, forward economics and company quality dominate the two-year case."],
-    ["3Y",clamp(companyScore*.34+durability*.28+growth*.18+financial*.14+forward*.06),"Long-duration compounding depends on durable economics, growth runway and financial strength." ]
+    ["3M",weighted([{value:e.score,weight:.23,available:e.available},{value:streetChange,weight:.18,available:a.available},{value:catalysts,weight:.17},{value:technical,weight:.24},{value:100-risk,weight:.18}]),"Earnings, fresh Street changes, catalysts and market structure dominate the near term."],
+    ["6M",weighted([{value:forward,weight:.32},{value:e.score,weight:.18,available:e.available},{value:streetChange,weight:.12,available:a.available},{value:valuation,weight:.10,available:valuationModel.available},{value:technical,weight:.10},{value:companyScore,weight:.18}]),"Forward evidence and earnings follow-through matter more than daily price action."],
+    ["1Y",weighted([{value:forward,weight:.34},{value:companyScore,weight:.24},{value:financial,weight:.14},{value:e.score,weight:.08,available:e.available},{value:valuation,weight:.12,available:valuationModel.available},{value:durability,weight:.08}]),"Business quality, forward growth, cash economics and valuation dominate the one-year case."],
+    ["2Y",weighted([{value:companyScore,weight:.30},{value:durability,weight:.24},{value:forward,weight:.25},{value:financial,weight:.13},{value:growth,weight:.08}]),"Durability, forward economics and company quality dominate the two-year case."],
+    ["3Y",weighted([{value:companyScore,weight:.34},{value:durability,weight:.28},{value:growth,weight:.18},{value:financial,weight:.14},{value:forward,weight:.06}]),"Long-duration compounding depends on durable economics, growth runway and financial strength." ]
   ];
   const horizons:HorizonOutlook[]=hs.map(([key,score,reason])=>({key,score:Math.round(score),label:ol(score),reason}));
   const bestHorizon=[...horizons].sort((x,y)=>y.score-x.score)[0]?.key||"1Y";
@@ -230,16 +264,24 @@ export function buildInvestorDecision({market,company,context,institutional,owns
   ]);
 
   const streetView:InvestorDecision["streetView"]=!a.available?{label:"Unavailable",score:null,note:"No usable analyst recommendation set is available."}:a.score>=68?{label:"Positive",score:a.score,note:"Street consensus is positive, but NIVORA does not use the raw rating level as valuation or as a dominant thesis input."}:a.score<40?{label:"Cautious",score:a.score,note:"Street consensus is cautious; changes and estimate direction matter more than the raw level."}:{label:"Mixed",score:a.score,note:"Street opinion is mixed."};
+  const streetDisagreementActive=(streetView.label==="Positive"&&thesisLabel==="BEARISH")||(streetView.label==="Cautious"&&thesisLabel==="BULLISH");
+  const streetDisagreement=streetDisagreementActive?{active:true,headline:`NIVORA ${thesisLabel.toLowerCase()} while Wall Street is ${streetView.label.toLowerCase()}`,reasons:uniq([
+    financial<45?"Financial strength is below NIVORA's long-horizon threshold.":"",
+    forward<50?"Forward evidence is not strong enough to confirm the Street view.":"",
+    valuationLabel==="Expensive"?"NIVORA's independent valuation is demanding relative to modeled growth.":"",
+    risk>=72?"Risk pressure remains elevated.":"",
+    company?.filingRisk?"Financing/dilution evidence adds a hard risk constraint.":""
+  ]).slice(0,4)}:{active:false,headline:"",reasons:[]};
 
   const evidence=[market?1:0,company?.fundamentalSignal?1:0,company?.fiveYearRecord?1:0,context?.enabled?1:0,e.available?1:0,a.available?1:0,instEnabled?1:0,valuationModel.available?1:0];
   const dataCompleteness=Math.round(evidence.reduce((x,y)=>x+y,0)/evidence.length*100);
-  const zones=buildZones(market,thesisLabel,timingScore,valuationModel.available);
+  const zones=buildZones(market,thesisLabel,timingScore,valuationModel.available,fairRange);
   const oneLine=thesisLabel==="BULLISH"?`The ${companyLabel.toLowerCase()} business profile and forward evidence support a constructive long-term thesis; ${timingLabel==="OVEREXTENDED"?"price is too extended to chase":timingLabel==="WEAK"?"price has not stabilized yet":"entry quality still matters"}.`:thesisLabel==="BEARISH"?"The fundamental/forward evidence is weak enough that technical strength alone should not justify new capital.":"The investment case is mixed: there is not yet enough aligned evidence to call the long-term thesis strongly bullish or bearish.";
 
   return{
     companyScore,thesisScore,opportunityScore,confidence:dataCompleteness,companyLabel,thesisLabel,thesisState,valuationLabel,action,actionReason,
-    horizon:bestHorizon,oneLine,drivers,risks,breakers,changed,factors:{business:companyScore,financial:Math.round(financial),growth:Math.round(growth),durability:Math.round(durability),forward:Math.round(forward),earnings:e.score,streetChange:Math.round(streetChange),institutional:Math.round(inst),catalysts:Math.round(catalysts),valuation:Math.round(valuation),timing:timingScore,risk:Math.round(risk)},horizons,bestHorizon,
+    horizon:bestHorizon,oneLine,drivers,risks,breakers,changed,factors:{business:companyScore,financial:Math.round(financial),growth:Math.round(growth),durability:Math.round(durability),forward:Math.round(forward),earnings:e.available?e.score:null,streetChange:a.available?Math.round(streetChange):null,institutional:instEnabled?Math.round(inst):null,catalysts:Math.round(catalysts),valuation:valuationModel.available?Math.round(valuation):null,timing:timingScore,risk:Math.round(risk)},factorAvailability:{business:true,financial:true,growth:true,durability:true,forward:true,earnings:e.available,streetChange:a.available,institutional:instEnabled,catalysts:true,valuation:valuationModel.available,timing:true,risk:true},horizons,bestHorizon,
     streetTarget:hasStreet?{mean:Number(mean.toFixed(2)),low:finite(low)?Number(low.toFixed(2)):undefined,high:finite(high)?Number(high.toFixed(2)):undefined,upsidePct:Number((upside||0).toFixed(1))}:null,
-    expectedReturn:{oneYearPct:null,threeYearCagrPct:null,source:"unavailable"},consistency,position:pos,archetype:kind,dataCompleteness,modelConfidenceLabel:"Uncalibrated",timing:{score:timingScore,label:timingLabel,reason:timingReason},streetView,zones,valuationBasis:valuationModel.basis,vetoes
+    expectedReturn:{oneYearPct:null,threeYearCagrPct:null,source:"unavailable"},consistency,position:pos,archetype:kind,dataCompleteness,modelConfidenceLabel:"Uncalibrated",timing:{score:timingScore,label:timingLabel,reason:timingReason},streetView,streetDisagreement,zones,valuationBasis:valuationModel.basis,vetoes,valuationRange:fairRange,expectedCagr
   };
 }

@@ -1,29 +1,20 @@
-# NIVORA V4 Investor
+# NIVORA V57
 
-Beginner-first investor UX with deep analysis underneath.
+Decision-support research product focused on one canonical investment thesis, explainable evidence, valuation-aware execution, owner/portfolio overlays and an immutable validation loop.
 
-## Major V4 changes
-- Search accepts company names, tickers and common crypto names.
-- Fast local aliases for common stocks/crypto before provider fallback.
-- Bitcoin/BTC -> BTC/USD, Ethereum/ETH -> ETH/USD, Solana/SOL -> SOL/USD.
-- Every asset answers Long-term / Swing / Buying Today separately.
-- Plain-English explanations for Quality, Trend, Entry and Risk.
-- Preferred plan compares pullback vs buying now vs breakout confirmation.
-- Breakout logic explicitly avoids treating the first tick over resistance as automatic confirmation.
-- Real candlestick + volume chart and mapped levels.
-- SEC fundamentals + filings/catalysts for US-listed companies.
-- Optional Finnhub news.
-- Watchlist, alerts, profile and authentication retained.
+## V57 principles
+1. Business/forward thesis is independent of technical timing.
+2. Missing evidence is uncertainty, never automatically a zero/bearish score.
+3. Wall Street ratings and targets are external context, not NIVORA fair value.
+4. Cost basis changes position management, not company quality.
+5. Portfolio concentration/correlation changes sizing guidance, not the independent company thesis.
+6. Data Coverage is not predictive confidence. Model Reliability must be earned from benchmark-relative, version-matched forward outcomes.
+7. Relative rank is context and never forces a fixed Buy/Sell distribution.
 
-## Setup
-1. Run `supabase/schema.sql` in a fresh Supabase project, or `supabase/v4_upgrade.sql` if V3 schema is already installed.
-2. `.env.local` already contains the Supabase URL + publishable key previously supplied.
-3. Add your current Twelve Data API key:
-   TWELVE_DATA_API_KEY=...
-4. Optional news:
-   FINNHUB_API_KEY=...
-5. `npm install`
-6. `npm run dev`
+See `V57_DECISION_INTEGRITY_RELEASE.md`, `/methodology`, `/terms` and `/disclaimer`.
 
-## Product rule
-NIVORA is decision support, not a guaranteed-return engine. Scores need historical and forward validation before being treated as a proven edge.
+## Verification
+```bash
+npm test
+npm run build
+```

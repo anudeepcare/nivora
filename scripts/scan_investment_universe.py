@@ -118,7 +118,7 @@ def analyze(sym,market=None,priority=False):
     main_risk='Valuation leaves limited margin of safety.' if valuation<40 else 'Forward growth needs stronger evidence.' if growth<45 else 'Near-term market risk is elevated.' if risk>=75 else 'Execution must continue to support the forward case.'
     evidence=sum([bool(m),bool(recs),bool(profile),tmean>0,market is not None])
     conf=round(clamp(evidence/5*100))
-    return {'symbol':sym,'company_name':profile.get('name') or sym,'market_cap_m':round(cap,2),'company_score':round(quality),'growth_score':round(growth),'financial_score':round(financial),'analyst_score':round(analyst),'valuation_score':round(valuation),'thesis_score':thesis,'opportunity_score':opportunity,'thesis_label':label,'thesis_state':state,'action':action,'reason':reason,'main_risk':main_risk,'target_mean':round(tmean,2) if tmean>0 else None,'target_upside_pct':round(upside,1) if upside is not None else None,'price':round(price,2) if price>0 else None,'change_pct':round(chg,2),'evidence_confidence':conf,'horizon_3m':h3m,'horizon_6m':h6m,'horizon_1y':h1y,'horizon_2y':h2y,'horizon_3y':h3y,'scanned_at':datetime.now(timezone.utc).isoformat()}
+    return {'symbol':sym,'company_name':profile.get('name') or sym,'market_cap_m':round(cap,2),'company_score':round(quality),'growth_score':round(growth),'financial_score':round(financial),'analyst_score':round(analyst),'valuation_score':round(valuation),'thesis_score':thesis,'opportunity_score':opportunity,'thesis_label':label,'thesis_state':state,'action':action,'reason':reason,'main_risk':main_risk,'target_mean':round(tmean,2) if tmean>0 else None,'target_upside_pct':round(upside,1) if upside is not None else None,'price':round(price,2) if price>0 else None,'change_pct':round(chg,2),'evidence_confidence':conf,'horizon_3m':h3m,'horizon_6m':h6m,'horizon_1y':h1y,'horizon_2y':h2y,'horizon_3y':h3y,'sector':profile.get('finnhubIndustry'),'archetype':('bank' if 'bank' in str(profile.get('finnhubIndustry','')).lower() else 'insurer' if 'insurance' in str(profile.get('finnhubIndustry','')).lower() else 'biotech' if any(k in str(profile.get('finnhubIndustry','')).lower() for k in ['biotech','pharma']) else 'miner' if any(k in str(profile.get('finnhubIndustry','')).lower() for k in ['mining','metals']) else 'cyclical' if any(k in str(profile.get('finnhubIndustry','')).lower() for k in ['energy','oil','gas']) else 'hypergrowth' if rev>=25 and op<15 else 'compounder' if fcf>0 and op>=15 else 'general'),'engine_version':'v56-screening','scanned_at':datetime.now(timezone.utc).isoformat()}
 
 def private_priority_symbols():
     """Prioritize symbols users explicitly care about without exposing private holdings client-side."""
@@ -153,7 +153,7 @@ def grade_prior_calls(symbol,current_price):
     """Forward-grade old frozen calls when this symbol is refreshed. No hindsight edits."""
     if not current_price or current_price<=0:return
     try:
-        rows=sb.table('nivora_decision_history').select('id,observed_at,price').eq('symbol',symbol).order('observed_at',desc=False).execute().data or []
+        rows=sb.table('nivora_decision_history').select('id,observed_at,price,benchmark_symbol,source_snapshot,engine_version').eq('symbol',symbol).order('observed_at',desc=False).execute().data or []
         now=datetime.now(timezone.utc)
         horizons=(1,7,30,90,180,365)
         for h in rows:
@@ -164,7 +164,19 @@ def grade_prior_calls(symbol,current_price):
             for days in horizons:
                 if age<days:continue
                 try:
-                    sb.table('nivora_decision_outcomes').upsert({'history_id':h['id'],'symbol':symbol,'horizon_days':days,'evaluated_at':now.isoformat(),'start_price':sp,'end_price':current_price,'return_pct':round((current_price/sp-1)*100,3)},{'on_conflict':'history_id,horizon_days'}).execute()
+                    raw_return=round((current_price/sp-1)*100,3)
+                    bench_symbol=h.get('benchmark_symbol') or 'SPY'
+                    snap=h.get('source_snapshot') or {}
+                    bench_start=n(snap.get('benchmarkPrice'),0) if isinstance(snap,dict) else 0
+                    bench_now=0
+                    try:
+                        br=sb.table('nivora_market_scan').select('price').eq('symbol',bench_symbol).limit(1).execute().data or []
+                        bench_now=n(br[0].get('price'),0) if br else 0
+                    except Exception:pass
+                    bench_return=round((bench_now/bench_start-1)*100,3) if bench_start>0 and bench_now>0 else None
+                    excess=round(raw_return-bench_return,3) if bench_return is not None else None
+                    payload={'history_id':h['id'],'symbol':symbol,'horizon_days':days,'evaluated_at':now.isoformat(),'start_price':sp,'end_price':current_price,'return_pct':raw_return,'benchmark_symbol':bench_symbol,'benchmark_return_pct':bench_return,'excess_return_pct':excess}
+                    sb.table('nivora_decision_outcomes').upsert(payload,{'on_conflict':'history_id,horizon_days'}).execute()
                 except Exception as e:print('outcome skip',symbol,days,str(e)[:80])
     except Exception as e:print('grade skip',symbol,str(e)[:100])
 
@@ -182,7 +194,7 @@ def record_history(rows):
             if last and not material and last.date()==now.date():
                 continue
             row={k:x.get(k) for k in ['symbol','price','company_score','growth_score','financial_score','analyst_score','valuation_score','thesis_score','opportunity_score','evidence_confidence','thesis_label','thesis_state','action','horizon_3m','horizon_6m','horizon_1y','horizon_2y','horizon_3y','reason','main_risk']}
-            row['engine_version']='v55';row['weights_version']='v55-canonical-1';row['valuation_version']='v55-archetype-1';row['archetype']=x.get('archetype');row['benchmark_symbol']='SPY'
+            row['engine_version']='v56-screening';row['weights_version']='v56-screening-1';row['valuation_version']='v56-screening-archetype-1';row['archetype']=x.get('archetype');row['benchmark_symbol']='SPY'
             row['observed_at']=now.isoformat();row['source_snapshot']={'change_pct':x.get('change_pct'),'target_mean':x.get('target_mean'),'target_upside_pct':x.get('target_upside_pct'),'priority_source':x.get('priority_source')}
             sb.table('nivora_decision_history').insert(row).execute()
         except Exception as e:print('history skip',x['symbol'],str(e)[:100])
