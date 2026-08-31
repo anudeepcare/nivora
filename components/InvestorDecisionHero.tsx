@@ -34,7 +34,7 @@ export default function InvestorDecisionHero({decision,price,changePct,owns,onEv
 
    <div className="v54CoreStrip">
     <div><small>BUSINESS <MetricInfo metric="business"/></small><b>{decision.companyScore}</b><span>{decision.companyLabel}</span></div>
-    <div><small>OPPORTUNITY <MetricInfo metric="opportunity"/></small><b>{decision.opportunityScore}</b><span>{decision.valuationLabel==="Unclear"?"Valuation pending":decision.valuationLabel}</span></div>
+    <div><small>OPPORTUNITY <MetricInfo metric="opportunity"/></small><b>{decision.opportunityScore}</b><span>{decision.valuationValidity?.fairValueAllowed?decision.valuationLabel:decision.factorAvailability?.valuation?`Relative valuation: ${decision.valuationLabel}`:"Valuation pending"}</span></div>
     <div><small>TIMING <MetricInfo metric="timing"/></small><b>{decision.timing.score}</b><span>{decision.timing.label}</span></div>
     <div><small>DATA COVERAGE <MetricInfo metric="dataCoverage"/></small><b>{decision.dataCompleteness}%</b><span>Decision-grade: {decision.decisionGradeEvidence??decision.dataCompleteness}% · Reliability: {decision.modelConfidenceLabel} <MetricInfo metric="modelReliability"/></span></div>
    </div>

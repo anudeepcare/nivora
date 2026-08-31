@@ -131,9 +131,18 @@ export function buildZones(market:any,thesisLabel:InvestorDecision["thesisLabel"
     z.push({label:"Fundamental accumulate",low:+(accumulate*.96).toFixed(2),high:+accumulate.toFixed(2),kind:"accumulate",confidence:"Medium",basis:"Larger margin-of-safety zone derived from the bear/base valuation distribution."});
     z.push({label:"Strong accumulate / thesis intact",low:+(strong*.96).toFixed(2),high:+strong.toFixed(2),kind:"strong",confidence:"Low",basis:"Deep valuation zone. Only valid while company-specific thesis breakers remain false."});
   }
-  if(finite(support)&&support>0){const r=range(support,width||Math.max(.01,Math.abs(px-support)*.15));if(r)z.push({label:"Starter / first support",...r,kind:"starter",confidence:timingScore>=58?"Medium":"Low",basis:"Nearest structural support with volatility-adjusted execution width."})}
-  if(finite(major)&&major>0){const r=range(major,width||Math.max(.01,Math.abs(px-major)*.12));if(r)z.push({label:"Accumulate / major support",...r,kind:"accumulate",confidence:timingScore>=50?"Medium":"Low",basis:"Deeper structural support; thesis must remain intact."})}
-  if(finite(major)&&finite(support)&&major>0&&support>major){const center=(major+support)/2;const r=range(center,width?width*.75:(support-major)*.18);if(r)z.push({label:"Strong accumulate only with intact thesis",...r,kind:"strong",confidence:valuationAvailable?"Medium":"Low",basis:valuationAvailable?"Valuation context plus technical support alignment.":"Technical confluence only; independent fair value is not yet established."})}
+  if(finite(major)&&finite(support)&&major>0&&support>major){
+    const gap=support-major;
+    const localWidth=Math.max(.01,Math.min(width||gap*.14,gap*.19));
+    const mid=(support+major)/2;
+    const rs=range(support,localWidth),ra=range(mid,localWidth),rg=range(major,localWidth);
+    if(rs)z.push({label:"Starter / first support",...rs,kind:"starter",confidence:timingScore>=58?"Medium":"Low",basis:"Nearest structural support with volatility-adjusted execution width."});
+    if(ra)z.push({label:"Accumulate / deeper support",...ra,kind:"accumulate",confidence:timingScore>=50?"Medium":"Low",basis:"Deeper structural support between first support and major support; thesis must remain intact."});
+    if(rg)z.push({label:"Strong accumulate only with intact thesis",...rg,kind:"strong",confidence:valuationAvailable?"Medium":"Low",basis:valuationAvailable?"Valuation context plus major technical support alignment.":"Major technical support only; independent fair value is not yet established."});
+  }else{
+    if(finite(support)&&support>0){const r=range(support,width||Math.max(.01,Math.abs(px-support)*.15));if(r)z.push({label:"Starter / first support",...r,kind:"starter",confidence:timingScore>=58?"Medium":"Low",basis:"Nearest structural support with volatility-adjusted execution width."})}
+    if(finite(major)&&major>0){const r=range(major,width||Math.max(.01,Math.abs(px-major)*.12));if(r)z.push({label:"Accumulate / major support",...r,kind:"accumulate",confidence:timingScore>=50?"Medium":"Low",basis:"Deeper structural support; thesis must remain intact."})}
+  }
   if(finite(resistance)&&resistance>0)z.push({label:"Do not chase / resistance",low:resistance,high:finite(breakout)&&breakout>resistance?breakout:resistance,kind:"chase",confidence:"Medium",basis:"Overhead supply / breakout area; price strength is timing evidence, not thesis evidence."});
   if(finite(lv.invalidation)&&Number(lv.invalidation)>0)z.push({label:"Technical risk check",low:Number(lv.invalidation),high:Number(lv.invalidation),kind:"risk",confidence:"Medium",basis:"Technical deterioration level. Fundamental exits require thesis deterioration, not price alone."});
   if(thesisLabel==="BEARISH")return z.map(x=>x.kind==="starter"||x.kind==="accumulate"||x.kind==="strong"?{...x,label:x.label.replace(/Starter|Accumulate|Strong accumulate/gi,"Support context"),confidence:"Low" as const}:x);

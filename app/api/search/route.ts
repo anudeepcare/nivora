@@ -3,7 +3,7 @@ import {sharedJson} from "@/lib/shared-cache";
 const aliases:any[]=[
 ["AAPL","Apple Inc.","NASDAQ","stock",["apple"]],["MSFT","Microsoft Corporation","NASDAQ","stock",["microsoft"]],
 ["NVDA","NVIDIA Corporation","NASDAQ","stock",["nvidia","nvdia"]],["MU","Micron Technology, Inc.","NASDAQ","stock",["micron","micron technology"]],
-["CRM","Salesforce, Inc.","NYSE","stock",["salesforce","sales force"]],["META","Meta Platforms, Inc.","NASDAQ","stock",["meta","facebook"]],
+["CRM","Salesforce, Inc.","NYSE","stock",["salesforce","sales force"]],["SAP","SAP SE","NYSE","stock",["sap","sap se"]],["META","Meta Platforms, Inc.","NASDAQ","stock",["meta","facebook"]],
 ["GOOGL","Alphabet Inc.","NASDAQ","stock",["google","alphabet"]],["AMZN","Amazon.com, Inc.","NASDAQ","stock",["amazon"]],
 ["TSLA","Tesla, Inc.","NASDAQ","stock",["tesla"]],["IREN","IREN Limited","NASDAQ","stock",["iren","iris energy"]],
 ["NBIS","Nebius Group N.V.","NASDAQ","stock",["nebius","nbis"]],["HIMS","Hims & Hers Health, Inc.","NYSE","stock",["hims","hims hers"]],

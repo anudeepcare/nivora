@@ -94,6 +94,13 @@ function metricScore(mode:Mode,business:number,six:number,timing:number,risk:num
   )));
 }
 
+type StockWarmCache={d?:any;company?:any;context?:any;institutional?:any;ts:number};
+const stockWarmCache=new Map<string,StockWarmCache>();
+const CACHE_MAX_AGE=5*60*1000;
+function mergeWarm(symbol:string,patch:Partial<StockWarmCache>){
+  const prev=stockWarmCache.get(symbol)||{ts:0};
+  stockWarmCache.set(symbol,{...prev,...patch,ts:Date.now()});
+}
 export default function StockClient({symbol}:{symbol:string}){
   const thesisRef=useRef<HTMLElement>(null);
   const[d,setD]=useState<any>(null);
@@ -139,37 +146,55 @@ export default function StockClient({symbol}:{symbol:string}){
   useEffect(()=>{
     let live=true;
     let core:AbortController|null=null;
+    const warm=stockWarmCache.get(symbol);
+    const hasWarm=!!warm&&Date.now()-warm.ts<CACHE_MAX_AGE;
+    if(hasWarm){
+      if(warm?.d)setD(warm.d);
+      if(warm?.company)setCompany(warm.company);
+      if(warm?.context)setContext(warm.context);
+      if(warm?.institutional)setInstitutional(warm.institutional);
+      setErr("");
+    }else{
+      setD(null);setCompany(null);setContext(null);setInstitutional(null);setErr("");
+    }
 
-    const loadCore=async(initial=false)=>{
-      if(initial){setD(null);setCompany(null);setContext(null);setInstitutional(null);setErr("")}
+    const fetchJson=async(url:string,signal?:AbortSignal)=>{
+      const r=await fetch(url,{signal});
+      const x=await r.json();
+      if(!r.ok||x?.error)throw new Error(x?.error||`Request failed (${r.status})`);
+      return x;
+    };
+
+    const loadCore=async(showError=false)=>{
       core?.abort();
       core=new AbortController();
-      const timer=setTimeout(()=>core?.abort(),6500);
+      const timer=setTimeout(()=>core?.abort(),5000);
       try{
-        const r=await fetch(`/api/analyze/${encodeURIComponent(symbol)}`,{signal:core.signal,cache:"no-store"});
-        const a=await r.json();
-        if(!r.ok||a.error)throw new Error(a.error||"Analysis unavailable");
+        const a=await fetchJson(`/api/analyze/${encodeURIComponent(symbol)}`,core.signal);
         if(!live)return;
-        setD(a);
-        if(initial){
-          Promise.allSettled([
-            fetch(`/api/company/${encodeURIComponent(symbol)}`,{cache:"no-store"}).then(r=>r.ok?r.json():null).then(x=>live&&x&&setCompany(x)),
-            fetch(`/api/context/${encodeURIComponent(symbol)}`,{cache:"no-store"}).then(r=>r.ok?r.json():null).then(x=>live&&x&&setContext(x)),
-            fetch(`/api/institutional/${encodeURIComponent(symbol)}`,{cache:"no-store"}).then(r=>r.ok?r.json():null).then(x=>live&&x&&setInstitutional(x)),
-          ]);
-        }
+        setD(a);mergeWarm(symbol,{d:a});
       }catch(e:any){
-        if(initial&&live)setErr(e.name==="AbortError"?"Market data is taking too long. Try again.":e.message);
+        if(showError&&live&&!stockWarmCache.get(symbol)?.d)setErr(e.name==="AbortError"?"Market data is taking too long. Try again.":e.message);
       }finally{clearTimeout(timer)}
     };
 
-    const loadContext=()=>fetch(`/api/context/${encodeURIComponent(symbol)}`,{cache:"no-store"})
-      .then(r=>r.ok?r.json():null).then(x=>live&&x&&setContext(x)).catch(()=>{});
+    const loadEvidence=()=>{
+      Promise.allSettled([
+        fetchJson(`/api/company/${encodeURIComponent(symbol)}`).then(x=>{if(live){setCompany(x);mergeWarm(symbol,{company:x})}}),
+        fetchJson(`/api/context/${encodeURIComponent(symbol)}`).then(x=>{if(live){setContext(x);mergeWarm(symbol,{context:x})}}),
+        fetchJson(`/api/institutional/${encodeURIComponent(symbol)}`).then(x=>{if(live){setInstitutional(x);mergeWarm(symbol,{institutional:x})}})
+      ]);
+    };
 
-    loadCore(true);
-    const priceTimer=setInterval(()=>{if(document.visibilityState==="visible")loadCore(false)},30000);
-    const newsTimer=setInterval(()=>{if(document.visibilityState==="visible")loadContext()},120000);
-    const onFocus=()=>{loadCore(false);loadContext()};
+    loadCore(!hasWarm);
+    loadEvidence();
+
+    const priceTimer=setInterval(()=>{if(document.visibilityState==="visible")loadCore(false)},60000);
+    const newsTimer=setInterval(()=>{if(document.visibilityState==="visible")fetchJson(`/api/context/${encodeURIComponent(symbol)}`).then(x=>{if(live){setContext(x);mergeWarm(symbol,{context:x})}}).catch(()=>{})},120000);
+    const onFocus=()=>{
+      const last=stockWarmCache.get(symbol)?.ts||0;
+      if(Date.now()-last>45000)loadCore(false);
+    };
     window.addEventListener("focus",onFocus);
     return()=>{live=false;core?.abort();clearInterval(priceTimer);clearInterval(newsTimer);window.removeEventListener("focus",onFocus)};
   },[symbol]);
@@ -433,7 +458,9 @@ export default function StockClient({symbol}:{symbol:string}){
   };
 
   const derivativesScore=Number(intelligence?.dimensions?.derivatives ?? 50);
-  const valuationScore=Number(intelligence?.valuation ?? 50);
+  const valuationScoreRaw=intelligence?.valuation;
+  const valuationScore=valuationScoreRaw==null||!Number.isFinite(Number(valuationScoreRaw))?null:Number(valuationScoreRaw);
+  const valuationForScoring=valuationScore??50;
   // Institutions must only represent verified reported ownership/13F evidence.
   // Never substitute the price/volume accumulation proxy into this slot.
   const institutionalPct=Number(institutional?.institutional?.shareChangePct);
@@ -556,7 +583,7 @@ export default function StockClient({symbol}:{symbol:string}){
   const actionMetrics=(()=>{
     const trend=Number(d.scores?.trend??50), momentum=Number(d.scores?.momentum??50), flow=Number(d.scores?.flow??50);
     const entry=Number(d.scores?.entry??50), risk=Number(d.scores?.risk??50), extension=Number(d.scores?.extension??50), structure=Number(d.scores?.structure??50);
-    const catalyst=Number(intelligence?.dimensions?.catalysts??50), valuation=valuationScore;
+    const catalyst=Number(intelligence?.dimensions?.catalysts??50), valuation=valuationForScoring;
     const analyst=analystTotal>=3?analystScore:50;
     const institutions=institutional?.enabled ? Math.max(25,Math.min(80,50+(Number.isFinite(institutionalPct)?institutionalPct*.7:0))) : 50;
     const technical=technicalComposite;
@@ -646,7 +673,7 @@ export default function StockClient({symbol}:{symbol:string}){
     ["Institutions",institutionalQuick,institutionalQuickTone],
     ["Analysts",analystConsensus,analystConsensus==="Buy"||analystConsensus==="Positive"?"good":analystConsensus==="Sell"?"bad":"mid"],
     ["Options",optionsData?.enabled?(derivativesScore>=60?"Supportive":derivativesScore<45?"Cautious":"Neutral"):"On demand",optionsData?.enabled?(derivativesScore>=60?"good":derivativesScore<45?"bad":"mid"):"mid"],
-    ["Valuation",valuationScore>=65?"Attractive":valuationScore<45?"Expensive":"Fair",valuationScore>=65?"good":valuationScore<45?"bad":"mid"]
+    ["Valuation",valuationScore==null?"N/A":valuationScore>=65?"Attractive":valuationScore<45?"Expensive":"Fair",valuationScore==null?"mid":valuationScore>=65?"good":valuationScore<45?"bad":"mid"]
   ];
 
   return <div className="osStock v12Stock v18Stock">
@@ -667,7 +694,7 @@ export default function StockClient({symbol}:{symbol:string}){
       <div className="proCockpitGrid">
         <div><small>MODEL</small><b>{enterprise.engineVersion}</b><span>{mode.toUpperCase()} weighting · regime aware</span></div>
         <div><small>MARKET REGIME</small><b>{intelligence.regime?.label}</b><span>{intelligence.regime?.score}/100 environment score</span></div>
-        <div><small>VALUATION</small><b>{intelligence.valuation}/100</b><span>Valuation contribution to the current horizon</span></div>
+        <div><small>VALUATION</small><b>{intelligence.valuation==null?"N/A":`${intelligence.valuation}/100`}</b><span>{intelligence.valuation==null?"Independent valuation is not established; missing evidence is not scored as bearish.":"Relative valuation contribution to the current horizon"}</span></div>
         <div><small>DATA QUALITY</small><b>{enterprise.dataQuality}/100</b><span>{enterprise.coverage}% evidence sources present</span></div>
         <div><small>DATA COVERAGE</small><b>{intelligence.confidence}/100</b><span>{intelligence.confidenceLabel} · model confidence uncalibrated</span></div>
         <div><small>CONTRADICTIONS</small><b>{intelligence.contradictions.length}</b><span>{intelligence.contradictions[0]||"Evidence broadly aligned"}</span></div>
@@ -676,7 +703,7 @@ export default function StockClient({symbol}:{symbol:string}){
       </div>
       {auditOpen&&<div className="v29Audit">
         <div><small>EVIDENCE STATUS</small>{enterprise.freshness.map((x:any)=><p key={x.name}><span className={x.ok?"auditOk":"auditBad"}>{x.ok?"●":"○"}</span><b>{x.name}</b> · {x.label}</p>)}</div>
-        <div><small>DECISION ATTRIBUTION</small>{Object.entries(intelligence.dimensions).map(([k,v]:any)=><p key={k}><b>{k}</b><span>{v}/100</span></p>)}</div>
+        <div><small>DECISION ATTRIBUTION</small>{Object.entries(intelligence.dimensions).map(([k,v]:any)=><p key={k}><b>{k}</b><span>{v==null?"N/A":`${v}/100`}</span></p>)}</div>
         <div><small>REPRODUCIBILITY</small><p>Engine: {enterprise.engineVersion}</p><p>Generated: {new Date(enterprise.generatedAt).toLocaleString()}</p><p>Mode: {mode}</p><p>Symbol: {symbol}</p></div>
       </div>}
     </section>}
