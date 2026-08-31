@@ -10,3 +10,12 @@ test('analyst target absence does not create synthetic Street target',()=>{const
 test('factor correlation audit identifies duplicated signal families',()=>{const rows=Array.from({length:30},(_,i)=>({a:i,b:i*2+1,c:(i%7)*3}));const out=factorCorrelationAudit(rows,['a','b','c']);assert.ok(out.some(x=>x.a==='a'&&x.b==='b'&&Math.abs(x.correlation)>.95));});
 
 test('portfolio concentration changes sizing gate without changing thesis',()=>{const r=analyzePortfolioRisk([{symbol:'A',marketValue:70},{symbol:'B',marketValue:15},{symbol:'C',marketValue:15}]);assert.equal(r.riskLabel,'HIGH');assert.equal(r.sizingGate,'BLOCK ADD');assert.equal(r.maxNewPositionPct,0);});
+
+test("preliminary hypergrowth valuation cannot publish absolute price zones",()=>{
+  const m={...market,price:210,scores:{...market.scores},levels:{...market.levels},volatility:{...market.volatility}};
+  const context={enabled:true,metrics:{psTTM:10},recommendations:[],surprises:[],profile:{finnhubIndustry:"Software"}};
+  const company={fundamentalSignal:{score:72},fiveYearRecord:{score:70},rawMetrics:{revGrowth:40,opMargin:5,fcf:1,leverage:30}};
+  const d=buildInvestorDecision({market:m,company,context,owns:false});
+  assert.ok(d); assert.equal(d.valuationValidity?.zonesAllowed,false); assert.equal(d.valuationRange,null);
+  assert.equal(d.zones.some(z=>z.label.startsWith("Fundamental")),false);
+});

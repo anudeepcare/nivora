@@ -19,6 +19,8 @@ export type InvestorDecision={
   streetDisagreement?:{active:boolean;headline:string;reasons:string[]};
   zones:PriceZone[];valuationBasis:string;vetoes:string[];
   valuationRange?:{bear:number;base:number;bull:number;method:string;confidence:"High"|"Medium"|"Low"}|null;
+  valuationValidity?:{status:"VALID"|"PARTIAL"|"UNSUPPORTED"|"STALE"|"IMPLAUSIBLE";reason:string;fairValueAllowed:boolean;zonesAllowed:boolean};
+  decisionGradeEvidence?:number;
   expectedCagr?:{oneYearPct:number|null;threeYearPct:number|null}|null;
 };
 
@@ -92,6 +94,18 @@ export function valuationScore(kind:string,context:any,raw:any){
     s=clamp(s);return{score:Math.round(s),label:s>=74?"Deeply attractive" as const:s>=62?"Attractive" as const:s<40?"Expensive" as const:"Fair" as const,basis:"Growth-adjusted earnings multiple used as a preliminary cross-check; not a full DCF.",available:true};
   }
   return{score:50,label:"Unclear" as const,basis:"Independent valuation is not established from the currently available evidence.",available:false};
+}
+
+function validateValuationRange(kind:string,market:any,model:{available:boolean;basis:string},fairRange:{bear:number;base:number;bull:number;method:string;confidence:"High"|"Medium"|"Low"}|null){
+  const px=Number(market?.price);
+  if(!model.available)return{status:"UNSUPPORTED" as const,reason:model.basis,fairValueAllowed:false,zonesAllowed:false};
+  if(!fairRange||!finite(px)||px<=0)return{status:"PARTIAL" as const,reason:"A valuation score exists, but NIVORA does not have a decision-grade intrinsic-value range for this archetype.",fairValueAllowed:false,zonesAllowed:false};
+  // Preliminary hypergrowth sales-multiple scenarios are useful as relative valuation evidence, not as absolute price targets.
+  if(kind==="hypergrowth")return{status:"PARTIAL" as const,reason:"The hypergrowth sales-multiple model is preliminary and is not allowed to publish absolute fair-value or accumulation zones.",fairValueAllowed:false,zonesAllowed:false};
+  if(fairRange.confidence==="Low")return{status:"PARTIAL" as const,reason:"Valuation confidence is too low to publish an actionable fair-value range.",fairValueAllowed:false,zonesAllowed:false};
+  const ratio=fairRange.base/px,dispersion=(fairRange.bull-fairRange.bear)/Math.max(.01,fairRange.base);
+  if(!finite(ratio)||ratio<.55||ratio>1.80||dispersion>.65)return{status:"IMPLAUSIBLE" as const,reason:"The modeled fair value failed NIVORA's plausibility gate versus current price or scenario dispersion.",fairValueAllowed:false,zonesAllowed:false};
+  return{status:"VALID" as const,reason:"Archetype, inputs, confidence and price plausibility checks passed.",fairValueAllowed:true,zonesAllowed:true};
 }
 
 function valuationRange(kind:string,market:any,context:any,raw:any,valuation:number){
@@ -176,7 +190,9 @@ export function buildInvestorDecision({market,company,context,institutional,owns
   const valuation=valuationModel.score,valuationLabel=valuationModel.label;
   const px=num(market.price,0),pt=context?.priceTarget||{},mean=Number(pt.targetMean),low=Number(pt.targetLow),high=Number(pt.targetHigh);
   const hasStreet=px>0&&finite(mean)&&mean>0;
-  const fairRange=valuationRange(kind,market,context,raw,valuation);
+  const rawFairRange=valuationRange(kind,market,context,raw,valuation);
+  const valuationValidity=validateValuationRange(kind,market,valuationModel,rawFairRange);
+  const fairRange=valuationValidity.fairValueAllowed?rawFairRange:null;
   const expectedCagr=fairRange&&px>0?{oneYearPct:+((fairRange.base/px-1)*100).toFixed(1),threeYearPct:+((Math.pow(fairRange.base/px,1/3)-1)*100).toFixed(1)}:null;
   const upside=hasStreet?(mean/px-1)*100:null;
 
@@ -275,13 +291,14 @@ export function buildInvestorDecision({market,company,context,institutional,owns
 
   const evidence=[market?1:0,company?.fundamentalSignal?1:0,company?.fiveYearRecord?1:0,context?.enabled?1:0,e.available?1:0,a.available?1:0,instEnabled?1:0,valuationModel.available?1:0];
   const dataCompleteness=Math.round(evidence.reduce((x,y)=>x+y,0)/evidence.length*100);
-  const zones=buildZones(market,thesisLabel,timingScore,valuationModel.available,fairRange);
+  const decisionGradeEvidence=Math.max(0,Math.min(100,dataCompleteness-(valuationModel.available&&!valuationValidity.fairValueAllowed?12:0)));
+  const zones=buildZones(market,thesisLabel,timingScore,valuationValidity.zonesAllowed,fairRange);
   const oneLine=thesisLabel==="BULLISH"?`The ${companyLabel.toLowerCase()} business profile and forward evidence support a constructive long-term thesis; ${timingLabel==="OVEREXTENDED"?"price is too extended to chase":timingLabel==="WEAK"?"price has not stabilized yet":"entry quality still matters"}.`:thesisLabel==="BEARISH"?"The fundamental/forward evidence is weak enough that technical strength alone should not justify new capital.":"The investment case is mixed: there is not yet enough aligned evidence to call the long-term thesis strongly bullish or bearish.";
 
   return{
     companyScore,thesisScore,opportunityScore,confidence:dataCompleteness,companyLabel,thesisLabel,thesisState,valuationLabel,action,actionReason,
     horizon:bestHorizon,oneLine,drivers,risks,breakers,changed,factors:{business:companyScore,financial:Math.round(financial),growth:Math.round(growth),durability:Math.round(durability),forward:Math.round(forward),earnings:e.available?e.score:null,streetChange:a.available?Math.round(streetChange):null,institutional:instEnabled?Math.round(inst):null,catalysts:Math.round(catalysts),valuation:valuationModel.available?Math.round(valuation):null,timing:timingScore,risk:Math.round(risk)},factorAvailability:{business:true,financial:true,growth:true,durability:true,forward:true,earnings:e.available,streetChange:a.available,institutional:instEnabled,catalysts:true,valuation:valuationModel.available,timing:true,risk:true},horizons,bestHorizon,
     streetTarget:hasStreet?{mean:Number(mean.toFixed(2)),low:finite(low)?Number(low.toFixed(2)):undefined,high:finite(high)?Number(high.toFixed(2)):undefined,upsidePct:Number((upside||0).toFixed(1))}:null,
-    expectedReturn:{oneYearPct:null,threeYearCagrPct:null,source:"unavailable"},consistency,position:pos,archetype:kind,dataCompleteness,modelConfidenceLabel:"Uncalibrated",timing:{score:timingScore,label:timingLabel,reason:timingReason},streetView,streetDisagreement,zones,valuationBasis:valuationModel.basis,vetoes,valuationRange:fairRange,expectedCagr
+    expectedReturn:{oneYearPct:null,threeYearCagrPct:null,source:"unavailable"},consistency,position:pos,archetype:kind,dataCompleteness,modelConfidenceLabel:"Uncalibrated",timing:{score:timingScore,label:timingLabel,reason:timingReason},streetView,streetDisagreement,zones,valuationBasis:valuationModel.basis,vetoes,valuationRange:fairRange,valuationValidity,decisionGradeEvidence,expectedCagr
   };
 }

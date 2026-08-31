@@ -36,7 +36,7 @@ export default function InvestorDecisionHero({decision,price,changePct,owns,onEv
     <div><small>BUSINESS <MetricInfo metric="business"/></small><b>{decision.companyScore}</b><span>{decision.companyLabel}</span></div>
     <div><small>OPPORTUNITY <MetricInfo metric="opportunity"/></small><b>{decision.opportunityScore}</b><span>{decision.valuationLabel==="Unclear"?"Valuation pending":decision.valuationLabel}</span></div>
     <div><small>TIMING <MetricInfo metric="timing"/></small><b>{decision.timing.score}</b><span>{decision.timing.label}</span></div>
-    <div><small>DATA COVERAGE <MetricInfo metric="dataCoverage"/></small><b>{decision.dataCompleteness}%</b><span>Reliability: {decision.modelConfidenceLabel} <MetricInfo metric="modelReliability"/></span></div>
+    <div><small>DATA COVERAGE <MetricInfo metric="dataCoverage"/></small><b>{decision.dataCompleteness}%</b><span>Decision-grade: {decision.decisionGradeEvidence??decision.dataCompleteness}% · Reliability: {decision.modelConfidenceLabel} <MetricInfo metric="modelReliability"/></span></div>
    </div>
 
    <div className="v54EntryMap">
@@ -54,7 +54,7 @@ export default function InvestorDecisionHero({decision,price,changePct,owns,onEv
    </div>
 
    <div className={`v54StreetRow ${decision.streetTarget?"":"noTarget"}`}>
-    <div><small>NIVORA VALUATION <MetricInfo metric="valuation"/></small><b>{decision.valuationLabel==="Unclear"?"N/A · insufficient evidence":decision.valuationLabel}</b><span>{decision.valuationRange?`Bear ${money(decision.valuationRange.bear)} · Base ${money(decision.valuationRange.base)} · Bull ${money(decision.valuationRange.bull)} · ${decision.valuationRange.confidence} estimate confidence. ${decision.valuationRange.method}`:`${decision.valuationBasis} Missing valuation is excluded from opportunity/horizon weighting rather than scored as zero.`}</span></div>
+    <div><small>NIVORA VALUATION <MetricInfo metric="valuation"/></small><b>{decision.valuationRange?decision.valuationLabel:"FAIR VALUE · NOT ESTABLISHED"}</b><span>{decision.valuationRange?`Bear ${money(decision.valuationRange.bear)} · Base ${money(decision.valuationRange.base)} · Bull ${money(decision.valuationRange.bull)} · ${decision.valuationRange.confidence} estimate confidence. ${decision.valuationRange.method}`:`${decision.valuationValidity?.reason||decision.valuationBasis} Relative valuation evidence may still inform Opportunity, but NIVORA will not publish absolute accumulation zones until the valuation passes decision-grade checks.`}</span></div>
     <div className={streetDisagrees?"disagree":""}><small>WALL STREET <MetricInfo metric="street"/></small><b>{decision.streetView.label}{decision.streetView.score!=null?` · ${decision.streetView.score}`:""}</b><span>{streetDisagrees?decision.streetDisagreement?.headline:decision.streetView.note}</span>{streetDisagrees&&decision.streetDisagreement?.reasons?.length?<ul>{decision.streetDisagreement.reasons.map((x,i)=><li key={i}>{x}</li>)}</ul>:null}</div>
     {decision.streetTarget&&<div><small>STREET TARGET <MetricInfo metric="street"/></small><b>{money(decision.streetTarget.mean)}</b><span>External consensus · {decision.streetTarget.upsidePct>=0?"+":""}{decision.streetTarget.upsidePct}% vs now. Kept separate from NIVORA valuation.</span></div>}
    </div>
