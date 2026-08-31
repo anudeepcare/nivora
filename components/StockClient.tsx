@@ -270,7 +270,7 @@ export default function StockClient({symbol}:{symbol:string}){
       risk:`${intelligence.biggestRisk} ${intelligence.bearTriggers?.[0]?`Key deterioration trigger: ${intelligence.bearTriggers[0]}.`:""}`,
       evidence:intelligence.contradictions?.length
         ?`The engine sees disagreement: ${intelligence.contradictions[0]}`
-        :`The major evidence layers are broadly aligned. Confidence is ${intelligence.confidenceLabel.toLowerCase()} with ${intelligence.confidence}/100 evidence coverage.`
+        :`The major evidence layers are broadly aligned. Data coverage is ${intelligence.confidence}/100 (${intelligence.confidenceLabel.toLowerCase()}). Statistical model confidence is not yet calibrated.`
     };
   },[intelligence]);
 
@@ -289,7 +289,7 @@ export default function StockClient({symbol}:{symbol:string}){
     const dataQuality=Math.round((coverage*.55)+(intelligence.confidence*.45));
     const auditId=`${symbol}-${mode}-${Math.round(Number(d.price||0)*100)}-${intelligence.score}`;
     const validationStatus="Shadow validation enabled";
-    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:"NIVORA V48 Thesis Engine",generatedAt:new Date(now).toISOString()};
+    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:"NIVORA V54 Canonical Intelligence Engine",generatedAt:new Date(now).toISOString()};
   },[d,intelligence,company,context,optionsData,institutional,symbol,mode]);
 
   useEffect(()=>{
@@ -656,7 +656,7 @@ export default function StockClient({symbol}:{symbol:string}){
         <div><small>MARKET REGIME</small><b>{intelligence.regime?.label}</b><span>{intelligence.regime?.score}/100 environment score</span></div>
         <div><small>VALUATION</small><b>{intelligence.valuation}/100</b><span>Valuation contribution to the current horizon</span></div>
         <div><small>DATA QUALITY</small><b>{enterprise.dataQuality}/100</b><span>{enterprise.coverage}% evidence sources present</span></div>
-        <div><small>MODEL CONFIDENCE</small><b>{intelligence.confidence}/100</b><span>{intelligence.confidenceLabel}</span></div>
+        <div><small>DATA COVERAGE</small><b>{intelligence.confidence}/100</b><span>{intelligence.confidenceLabel} · model confidence uncalibrated</span></div>
         <div><small>CONTRADICTIONS</small><b>{intelligence.contradictions.length}</b><span>{intelligence.contradictions[0]||"Evidence broadly aligned"}</span></div>
         <div><small>VALIDATION</small><b>SHADOW</b><span>Forward outcomes are recorded for calibration</span></div>
         <div><small>AUDIT ID</small><b className="auditId">{enterprise.auditId}</b><span>Reproducible decision fingerprint</span></div>
@@ -764,7 +764,7 @@ export default function StockClient({symbol}:{symbol:string}){
     {depth!=="simple"&&intelligence&&<section className="v27IntelStrip">
       <div className="intelLead"><small>NIVORA INTELLIGENCE</small><div><b>{intelligence.score}/100</b><span className={tone(intelligence.thesisLabel)}>{intelligence.thesisLabel}</span></div><p>{intelligence.biggestPositive} <strong>Watch:</strong> {intelligence.biggestRisk}</p></div>
       <div><small>NEXT DECISION TRIGGER</small><b>{intelligence.nextDecision}</b></div>
-      <div><small>CONFIDENCE</small><b>{intelligence.confidenceLabel}</b><span>{intelligence.confidence}/100 evidence coverage</span></div>
+      <div><small>DATA COVERAGE</small><b>{intelligence.confidenceLabel}</b><span>{intelligence.confidence}/100 coverage · not probability</span></div>
       <button type="button" onClick={()=>{setTab("thesis");window.requestAnimationFrame(()=>window.requestAnimationFrame(()=>thesisRef.current?.scrollIntoView({behavior:"smooth",block:"start"})))}}>Open full thesis →</button>
     </section>}
 

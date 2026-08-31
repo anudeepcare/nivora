@@ -77,20 +77,33 @@ def analyze(sym,market=None,priority=False):
     analyst,analyst_n=analyst_score(recs)
 
     tmean=n(target.get('targetMean'));upside=((tmean/price)-1)*100 if price>0 and tmean>0 else None
-    val_from_pe=50 if pe<=0 else 76 if pe<15 else 68 if pe<25 else 56 if pe<40 else 43 if pe<65 else 30
-    if rev>20:val_from_pe+=7
-    valuation=clamp(val_from_pe*.60+(clamp(50+(upside or 0)*1.1) if upside is not None else 50)*.40)
+    industry=str(profile.get('finnhubIndustry') or '').lower()
+    # V54: Wall Street price target is context only, never NIVORA valuation.
+    if 'bank' in industry or 'insurance' in industry:
+        pb=metric(m,'pbAnnual','pbQuarterly'); valuation=50 if pb<=0 else 76 if pb<1 else 65 if pb<1.8 else 54 if pb<3 else 38
+    elif 'biotech' in industry or 'pharma' in industry or 'mining' in industry or 'metals' in industry:
+        valuation=50  # honest neutral until rNPV/NAV-specific models are available
+    elif rev>=25 and margin<15:
+        ps=metric(m,'psTTM','psAnnual'); ratio=(ps/max(5,rev)*100) if ps>0 else None; valuation=50 if ratio is None else clamp(82-ratio*1.8)
+    else:
+        valuation=50 if pe<=0 else 74 if pe<18 else 64 if pe<28 else 54 if pe<42 else 43 if pe<65 else 31
+        if rev>20: valuation=min(100,valuation+min(12,rev*.25))
 
     technical=n((market or {}).get('technical'),50);risk=n((market or {}).get('risk_score'),60);chg=n((market or {}).get('change_pct'),0)
-    thesis=round(clamp(quality*.40+growth*.23+financial*.17+analyst*.12+technical*.08))
-    forward_delta=(growth-50)*.45+(analyst-50)*.18+(financial-50)*.18
-    state='Strengthening' if forward_delta>=8 else 'Weakening' if forward_delta<=-8 else 'Intact' if thesis>=61 else 'Mixed'
-    label='BULLISH' if thesis>=67 else 'BEARISH' if thesis<=44 else 'NEUTRAL'
-    opportunity=round(clamp(thesis*.55+valuation*.27+(100-risk)*.10+technical*.08))
-    if label=='BEARISH' and thesis<34:action='AVOID'
+    # Canonical principle: thesis is fundamental/forward. Technicals affect opportunity/timing only.
+    street_level=max(35,min(65,analyst))
+    forward=clamp(growth*.52+financial*.26+street_level*.12+50*.10)
+    thesis=round(clamp(quality*.36+growth*.22+financial*.20+forward*.19+street_level*.03))
+    veto=(financial<25) or (growth<25 and forward<35)
+    if veto: thesis=min(thesis,34)
+    forward_delta=(growth-50)*.50+(financial-50)*.20
+    state='Strengthening' if forward_delta>=8 and thesis>=45 else 'Recovering' if forward_delta>=8 else 'Weakening' if forward_delta<=-8 else 'Intact' if thesis>=61 else 'Mixed'
+    label='BULLISH' if thesis>=72 and forward>=56 and not veto else 'BEARISH' if thesis<=41 or forward<=33 or veto else 'NEUTRAL'
+    opportunity=round(clamp(thesis*.57+valuation*.20+(100-risk)*.13+technical*.10))
+    if label=='BEARISH':action='AVOID'
     elif state=='Weakening' and thesis<52:action='REDUCE / WATCH'
-    elif thesis>=80 and opportunity>=80:action='STRONG BUY OPPORTUNITY'
-    elif thesis>=68 and opportunity>=68:action='ACCUMULATE'
+    elif thesis>=82 and opportunity>=76 and technical>=60:action='STRONG BUY OPPORTUNITY'
+    elif thesis>=68 and opportunity>=62:action='ACCUMULATE'
     elif thesis>=58:action='HOLD / WATCH'
     else:action='WATCH'
     # Horizon scores deliberately use different evidence. A stock can be weak in 3M and
@@ -104,7 +117,7 @@ def analyze(sym,market=None,priority=False):
             f"Price action is only a confirmation/risk input, not the thesis.")
     main_risk='Valuation leaves limited margin of safety.' if valuation<40 else 'Forward growth needs stronger evidence.' if growth<45 else 'Near-term market risk is elevated.' if risk>=75 else 'Execution must continue to support the forward case.'
     evidence=sum([bool(m),bool(recs),bool(profile),tmean>0,market is not None])
-    conf=round(clamp(42+evidence*10))
+    conf=round(clamp(evidence/5*100))
     return {'symbol':sym,'company_name':profile.get('name') or sym,'market_cap_m':round(cap,2),'company_score':round(quality),'growth_score':round(growth),'financial_score':round(financial),'analyst_score':round(analyst),'valuation_score':round(valuation),'thesis_score':thesis,'opportunity_score':opportunity,'thesis_label':label,'thesis_state':state,'action':action,'reason':reason,'main_risk':main_risk,'target_mean':round(tmean,2) if tmean>0 else None,'target_upside_pct':round(upside,1) if upside is not None else None,'price':round(price,2) if price>0 else None,'change_pct':round(chg,2),'evidence_confidence':conf,'horizon_3m':h3m,'horizon_6m':h6m,'horizon_1y':h1y,'horizon_2y':h2y,'horizon_3y':h3y,'scanned_at':datetime.now(timezone.utc).isoformat()}
 
 def private_priority_symbols():

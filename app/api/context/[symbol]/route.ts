@@ -11,13 +11,14 @@ export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
  if(symbol.includes("/"))return NextResponse.json({enabled:true,source:"Finnhub",news:[],earnings:null,surprises:[],recommendations:[],profile:null,summary:{tone:"neutral",label:"Crypto news connector not enabled",topReason:"This build uses the market-data engine for crypto; a crypto-specific news/on-chain source can be added later."}});
  const now=new Date(),from=new Date(Date.now()-14*86400000),future=new Date(Date.now()+90*86400000);
  const base="https://finnhub.io/api/v1";
- const [news,calendar,surprises,recs,profile,priceTarget]=await Promise.all([
+ const [news,calendar,surprises,recs,profile,priceTarget,metrics]=await Promise.all([
   get(`${base}/company-news?symbol=${encodeURIComponent(symbol)}&from=${ymd(from)}&to=${ymd(now)}&token=${key}`,["finnhub","news",symbol],120),
   get(`${base}/calendar/earnings?symbol=${encodeURIComponent(symbol)}&from=${ymd(now)}&to=${ymd(future)}&token=${key}`,["finnhub","calendar",symbol],21600),
   get(`${base}/stock/earnings?symbol=${encodeURIComponent(symbol)}&limit=4&token=${key}`,["finnhub","earnings",symbol],21600),
   get(`${base}/stock/recommendation?symbol=${encodeURIComponent(symbol)}&token=${key}`,["finnhub","recs",symbol],86400),
   get(`${base}/stock/profile2?symbol=${encodeURIComponent(symbol)}&token=${key}`,["finnhub","profile",symbol],86400),
-  get(`${base}/stock/price-target?symbol=${encodeURIComponent(symbol)}&token=${key}`,["finnhub","price-target",symbol],21600)
+  get(`${base}/stock/price-target?symbol=${encodeURIComponent(symbol)}&token=${key}`,["finnhub","price-target",symbol],21600),
+  get(`${base}/stock/metric?symbol=${encodeURIComponent(symbol)}&metric=all&token=${key}`,["finnhub","metrics",symbol],21600)
  ]);
  const items=(Array.isArray(news)?news:[]).slice(0,20).map((x:any)=>{const text=`${x.headline||""} ${x.summary||""}`,sc=scoreText(text);return{headline:x.headline,summary:x.summary,url:x.url,date:x.datetime?new Date(x.datetime*1000).toISOString():null,source:x.source,tone:sc>0?"positive":sc<0?"negative":"neutral",materiality:materiality(text),score:sc}}).sort((a:any,b:any)=>(b.materiality==="High"?1:0)-(a.materiality==="High"?1:0)||Math.abs(b.score)-Math.abs(a.score));
  const positive=items.filter((x:any)=>x.tone==="positive").length,negative=items.filter((x:any)=>x.tone==="negative").length;
@@ -26,5 +27,5 @@ export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
  const top=items[0];
  const latestEarningsNews=items.filter((x:any)=>/(earnings|results|quarter|fiscal year|financial results)/i.test(`${x.headline||""} ${x.summary||""}`)).sort((a:any,b:any)=>String(b.date||"").localeCompare(String(a.date||"")))[0]||null;
  const summary={tone,label:tone==="positive"?"News tone supportive":tone==="negative"?"News tone cautious":"News tone mixed",topReason:top?`${top.materiality==="High"?"Material: ":""}${top.headline}`:"No material headline was found in the recent feed."};
- return NextResponse.json({enabled:true,source:"Finnhub",freshness:{newsAt:nowIso(),newsTtlSeconds:120,earningsTtlSeconds:21600},news:items.slice(0,10),earnings:nextEarnings,latestEarningsNews,surprises:Array.isArray(surprises)?surprises.slice(0,4):[],recommendations:Array.isArray(recs)?recs.slice(0,4):[],profile:profile||null,priceTarget:priceTarget||null,summary},{headers:{"Cache-Control":"public, s-maxage=120, stale-while-revalidate=600"}});
+ return NextResponse.json({enabled:true,source:"Finnhub",freshness:{newsAt:nowIso(),newsTtlSeconds:120,earningsTtlSeconds:21600},news:items.slice(0,10),earnings:nextEarnings,latestEarningsNews,surprises:Array.isArray(surprises)?surprises.slice(0,4):[],recommendations:Array.isArray(recs)?recs.slice(0,4):[],profile:profile||null,priceTarget:priceTarget||null,metrics:metrics?.metric||null,summary},{headers:{"Cache-Control":"public, s-maxage=120, stale-while-revalidate=600"}});
 }
