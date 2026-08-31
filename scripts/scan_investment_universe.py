@@ -182,6 +182,7 @@ def record_history(rows):
             if last and not material and last.date()==now.date():
                 continue
             row={k:x.get(k) for k in ['symbol','price','company_score','growth_score','financial_score','analyst_score','valuation_score','thesis_score','opportunity_score','evidence_confidence','thesis_label','thesis_state','action','horizon_3m','horizon_6m','horizon_1y','horizon_2y','horizon_3y','reason','main_risk']}
+            row['engine_version']='v55';row['weights_version']='v55-canonical-1';row['valuation_version']='v55-archetype-1';row['archetype']=x.get('archetype');row['benchmark_symbol']='SPY'
             row['observed_at']=now.isoformat();row['source_snapshot']={'change_pct':x.get('change_pct'),'target_mean':x.get('target_mean'),'target_upside_pct':x.get('target_upside_pct'),'priority_source':x.get('priority_source')}
             sb.table('nivora_decision_history').insert(row).execute()
         except Exception as e:print('history skip',x['symbol'],str(e)[:100])

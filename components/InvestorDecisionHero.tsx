@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import type{InvestorDecision,HorizonOutlook,PriceZone}from"@/lib/nivora-investor";
 
 type Levels={entryLow:number;entryHigh:number;support:number;majorSupport:number;resistance:number;breakout:number;assetType?:string};
@@ -51,7 +52,7 @@ export default function InvestorDecisionHero({decision,price,changePct,owns,onEv
    <div className="v54StreetRow">
     <div><small>NIVORA VALUATION</small><b>{decision.valuationLabel}</b><span>{decision.valuationBasis}</span></div>
     <div className={streetDisagrees?"disagree":""}><small>WALL STREET</small><b>{decision.streetView.label}{decision.streetView.score!=null?` · ${decision.streetView.score}`:""}</b><span>{streetDisagrees?`NIVORA disagrees with the Street. ${decision.streetView.note}`:decision.streetView.note}</span></div>
-    <div><small>STREET TARGET</small><b>{decision.streetTarget?money(decision.streetTarget.mean):"Unavailable"}</b><span>{decision.streetTarget?`Reference only · ${decision.streetTarget.upsidePct>=0?"+":""}${decision.streetTarget.upsidePct}% vs now. Not NIVORA fair value.`:"Not used as a substitute for NIVORA fair value."}</span></div>
+    <div><small>STREET TARGET</small><b>{decision.streetTarget?money(decision.streetTarget.mean):"No verified target"}</b><span>{decision.streetTarget?`External consensus · ${decision.streetTarget.upsidePct>=0?"+":""}${decision.streetTarget.upsidePct}% vs now. Kept separate from NIVORA valuation.`:decision.streetView.label!=="Unavailable"?"Analyst ratings are available, but the connected target-price feed did not return a verified consensus target.":"No verified target-price dataset is available for this security."}</span></div>
    </div>
 
    <div className="v53ThesisGrid">
@@ -62,7 +63,7 @@ export default function InvestorDecisionHero({decision,price,changePct,owns,onEv
 
    <div className="v53FooterRow">
     <div><small>WHAT CHANGED</small><b>{decision.changed[0]||"No material thesis change detected."}</b><span>Daily price noise alone does not change company conviction.</span></div>
-    <div className="v53MiniScores"><span><small>ARCHETYPE</small><b>{decision.archetype}</b></span><span><small>MODEL CONFIDENCE</small><b>—</b></span><span><small>CALIBRATION</small><b>Collecting</b></span></div>
+    <div className="v53MiniScores"><span title="Company archetype selects the appropriate evidence and valuation framework."><small>ARCHETYPE</small><b>{decision.archetype}</b></span><span title="Predictive confidence is intentionally withheld until enough benchmark-relative forward outcomes mature."><small>MODEL CONFIDENCE</small><b>{decision.modelConfidenceLabel}</b></span><span title="NIVORA is collecting immutable forward outcomes by engine version, archetype and horizon."><small>CALIBRATION</small><b>Collecting</b></span><Link href="/methodology">Metric guide →</Link></div>
     <button type="button" onClick={onEvidence}>Open full research →</button>
    </div>
  </section>;
