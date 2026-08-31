@@ -17,7 +17,8 @@ export async function GET(req:Request,{params}:{params:Promise<{symbol:string}>}
  try{
   const isCrypto=symbol.includes("/"); const benchmark=isCrypto?(symbol.startsWith("BTC/")?null:"BTC/USD"):"SPY";
   const [j,bj]=await Promise.all([series(symbol,key,260,45,2800),benchmark?series(benchmark,key,100,90,1800).catch(()=>null):Promise.resolve(null)]);
-  if(!Array.isArray(j?.values)||j.values.length<40)throw new Error(j?.message||`No usable market history returned for ${symbol}`);\n  const rows=j.values.slice().reverse(),c=rows.map((x:any)=>+x.close),h=rows.map((x:any)=>+x.high),l=rows.map((x:any)=>+x.low),v=rows.map((x:any)=>+x.volume||0),p=c.at(-1)!,prev=c.at(-2)??p;
+  if(!Array.isArray(j?.values)||j.values.length<40)throw new Error(j?.message||`No usable market history returned for ${symbol}`);
+  const rows=j.values.slice().reverse(),c=rows.map((x:any)=>+x.close),h=rows.map((x:any)=>+x.high),l=rows.map((x:any)=>+x.low),v=rows.map((x:any)=>+x.volume||0),p=c.at(-1)!,prev=c.at(-2)??p;
   const e20=ema(c,20).at(-1)!,e50=ema(c,50).at(-1)!,e200=ema(c,200).at(-1)!,rv=rsi(c),a=atr(rows),v20=sma(v,20),v5=sma(v,5),ret5=p/(c.at(-6)??p)-1,ret20=p/(c.at(-21)??p)-1,ret60=p/(c.at(-61)??p)-1;
   const m=macd(c),sd20=stddev(c,20),bbZ=sd20?(p-sma(c,20))/(2*sd20):0,ov=obv(c,v),obvSlope=slope(ov,10),volumeRatio=v20?v5/v20:1;
   let bench20=0,bench60=0,marketTrend=50,benchPrice:number|null=null;
