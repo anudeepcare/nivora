@@ -1,0 +1,10 @@
+import {createRequire} from 'node:module';const require=createRequire(import.meta.url);import test from 'node:test';import assert from 'node:assert/strict';
+const {evaluateTradingRisk,DEFAULT_PAPER_RISK_POLICY}=require('../.engine-test/nivora-trading-risk.js');
+const intent={id:'i1',symbol:'IREN',side:'BUY',intentType:'ENTER',referencePrice:50,targetNotional:5000,createdAt:'2026-09-01T14:00:00Z'};
+const ctx={equity:100000,cash:50000,dailyPnlPct:-0.2,currentPositionValue:0,openPositions:4,quote:{price:50,ageSeconds:5,freshness:'LIVE',changePct:2,spreadPct:0.2},duplicate:false};
+test('allows healthy paper trade',()=>{const r=evaluateTradingRisk(intent,ctx,DEFAULT_PAPER_RISK_POLICY);assert.equal(r.allowed,true);assert.ok(r.approvedNotional>0)});
+test('blocks stale quote',()=>assert.equal(evaluateTradingRisk(intent,{...ctx,quote:{...ctx.quote,freshness:'STALE'}},DEFAULT_PAPER_RISK_POLICY).allowed,false));
+test('blocks daily loss breach',()=>assert.equal(evaluateTradingRisk(intent,{...ctx,dailyPnlPct:-4},DEFAULT_PAPER_RISK_POLICY).allowed,false));
+test('blocks duplicate intent',()=>assert.equal(evaluateTradingRisk(intent,{...ctx,duplicate:true},DEFAULT_PAPER_RISK_POLICY).allowed,false));
+test('blocks excessive spread and gap',()=>{assert.equal(evaluateTradingRisk(intent,{...ctx,quote:{...ctx.quote,spreadPct:3}},DEFAULT_PAPER_RISK_POLICY).allowed,false);assert.equal(evaluateTradingRisk(intent,{...ctx,quote:{...ctx.quote,changePct:15}},DEFAULT_PAPER_RISK_POLICY).allowed,false)});
+test('resizes to position and per-trade caps',()=>{const r=evaluateTradingRisk({...intent,targetNotional:50000},{...ctx,currentPositionValue:8000},DEFAULT_PAPER_RISK_POLICY);assert.equal(r.allowed,true);assert.ok(r.approvedNotional<=2000)});

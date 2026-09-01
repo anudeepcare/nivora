@@ -3,7 +3,7 @@ import Link from "next/link";
 import {usePathname,useRouter} from "next/navigation";
 import {supabaseBrowser} from "@/lib/supabase";
 import {useEffect,useRef,useState} from "react";
-import {Search,BriefcaseBusiness,UserRound,Bell,Info,ShieldCheck,Star} from "lucide-react";
+import {Search,BriefcaseBusiness,UserRound,Bell,Info,ShieldCheck,Star,FlaskConical} from "lucide-react";
 
 export default function AppShell({children}:{children:React.ReactNode}){
  const path=usePathname(),router=useRouter(),[open,setOpen]=useState(false),[email,setEmail]=useState(""),ref=useRef<HTMLDivElement>(null);
@@ -17,6 +17,7 @@ export default function AppShell({children}:{children:React.ReactNode}){
    <nav className="osDesktopNav" aria-label="Primary">
     <Link className={active("/analyze")||active("/stock")?"on":""} href="/analyze">Analyze</Link>
     <Link className={active("/portfolio")?"on":""} href="/portfolio">Portfolio</Link>
+    <Link className={active("/trading-lab")?"on":""} href="/trading-lab">Trading Lab</Link>
    </nav>
    <div className="osAccount" ref={ref}><button onClick={()=>setOpen(!open)} aria-label="Account">{(email?.[0]||"N").toUpperCase()}</button>{open&&<div className="osAccountMenu"><small>{email}</small><Link href="/profile"><UserRound size={14}/>Account</Link><Link href="/alerts"><Bell size={14}/>Alerts</Link><Link href="/watchlist"><Star size={14}/>Watchlist</Link><Link href="/about"><Info size={14}/>Why NIVORA</Link><Link href="/terms"><ShieldCheck size={14}/>Legal & privacy</Link><button onClick={logout}>Log out</button></div>}</div>
   </header>
@@ -24,6 +25,7 @@ export default function AppShell({children}:{children:React.ReactNode}){
   <nav className="osMobileNav v12MobileNav" aria-label="Mobile navigation">
    <Link className={active("/analyze")||active("/stock")?"on":""} href="/analyze"><Search size={19}/><span>Analyze</span></Link>
    <Link className={active("/portfolio")?"on":""} href="/portfolio"><BriefcaseBusiness size={19}/><span>Portfolio</span></Link>
+   <Link className={active("/trading-lab")?"on":""} href="/trading-lab"><FlaskConical size={19}/><span>Trading Lab</span></Link>
   </nav>
   <footer className="osLegalFooter"><div className="footerBrand"><b>NIVORA Intelligence</b><span>Complex market data. One clear decision.</span></div><div className="footerLinks"><span>© 2026 NIVORA</span><Link href="/about">Why NIVORA</Link><Link href="/terms">Legal</Link><Link href="/privacy">Privacy</Link></div></footer>
  </>

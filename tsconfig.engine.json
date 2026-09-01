@@ -26,6 +26,12 @@
     "lib/nivora-live-quote.ts",
     "lib/nivora-decision-stability.ts",
     "lib/nivora-live-today.ts",
-    "lib/nivora-scan-freshness.ts"
+    "lib/nivora-scan-freshness.ts",
+    "lib/nivora-trade-intent.ts",
+    "lib/nivora-trading-risk.ts",
+    "lib/nivora-paper-execution.ts",
+    "lib/nivora-broker.ts",
+    "lib/nivora-trading-metrics.ts",
+    "lib/alpaca-paper.ts"
   ]
 }

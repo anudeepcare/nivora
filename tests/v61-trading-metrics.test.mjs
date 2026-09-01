@@ -1,0 +1,5 @@
+import {createRequire} from 'node:module';const require=createRequire(import.meta.url);import test from 'node:test';import assert from 'node:assert/strict';
+const {summarizeTradingPerformance}=require('../.engine-test/nivora-trading-metrics.js');
+test('summarizes realized trading edge',()=>{const r=summarizeTradingPerformance([{pnl:100,returnPct:2,benchmarkReturnPct:1},{pnl:-40,returnPct:-1,benchmarkReturnPct:0},{pnl:60,returnPct:1.5,benchmarkReturnPct:0.5}]);assert.equal(r.trades,3);assert.equal(r.wins,2);assert.equal(r.losses,1);assert.ok(r.winRatePct>60);assert.ok(r.profitFactor>1);assert.ok(r.expectancy>0);assert.ok(r.averageAlphaPct>0)});
+const {buildClosedTradesFromFills}=require('../.engine-test/nivora-trading-metrics.js');
+test('matches long paper fills into realized closed trades',()=>{const r=buildClosedTradesFromFills([{id:'b1',symbol:'IREN',side:'BUY',qty:10,price:50,fees:1},{id:'b2',symbol:'IREN',side:'BUY',qty:10,price:60,fees:1},{id:'s1',symbol:'IREN',side:'SELL',qty:10,price:70,fees:1}]);assert.equal(r.length,1);assert.equal(r[0].sourceFillId,'s1');assert.ok(r[0].pnl>140);assert.ok(r[0].returnPct>20)});
