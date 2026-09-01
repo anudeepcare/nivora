@@ -20,3 +20,22 @@ test("missing absolute fair value does not become valuation zero",()=>{
   assert.notEqual(d.factors.valuation,0);
   assert.ok(d.decisionGradeEvidence < d.dataCompleteness);
 });
+
+test("long-term thesis is explicitly separated from near-term timing",()=>{
+  const company={fundamentalSignal:{score:78},fiveYearRecord:{score:76,revenueTrend:"Strong"},rawMetrics:{revGrowth:38,niGrowth:25,opMargin:18,fcf:2,leverage:35,grossMargin:60}};
+  const context={enabled:true,metrics:{peTTM:34,psTTM:8},recommendations:[{strongBuy:10,buy:8,hold:3,sell:1,strongSell:0},{strongBuy:8,buy:8,hold:4,sell:1,strongSell:0}],surprises:[{surprisePercent:12},{surprisePercent:8},{surprisePercent:4}],profile:{finnhubIndustry:"Software"},summary:{tone:"positive"}};
+  const weakMarket={...market,scores:{...market.scores,trend:25,momentum:28,entry:30,flow:35,extension:35}};
+  const d=buildInvestorDecision({market:weakMarket,company,context});
+  assert.ok(d?.longTermThesis);
+  assert.ok(d.longTermThesis.score>=60);
+  assert.match(d.longTermThesis.nearTerm,/timing weak/i);
+});
+
+test("expectation gap is evidence driven and never a price target",()=>{
+  const company={fundamentalSignal:{score:75},fiveYearRecord:{score:74,revenueTrend:"Strong"},rawMetrics:{revGrowth:45,niGrowth:30,opMargin:20,fcf:3,leverage:25}};
+  const context={enabled:true,metrics:{peTTM:30,psTTM:7},recommendations:[{strongBuy:12,buy:7,hold:2,sell:0,strongSell:0},{strongBuy:7,buy:7,hold:5,sell:1,strongSell:0}],surprises:[{surprisePercent:15},{surprisePercent:6},{surprisePercent:3}],profile:{finnhubIndustry:"Software"},summary:{tone:"positive"}};
+  const d=buildInvestorDecision({market,company,context});
+  assert.ok(d?.expectationGap);
+  assert.equal(d.expectationGap.label,"POSITIVE");
+  assert.doesNotMatch(d.expectationGap.reason,/target price|fair value/i);
+});

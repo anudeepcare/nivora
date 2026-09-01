@@ -22,6 +22,8 @@ export type InvestorDecision={
   valuationValidity?:{status:"VALID"|"PARTIAL"|"UNSUPPORTED"|"STALE"|"IMPLAUSIBLE";reason:string;fairValueAllowed:boolean;zonesAllowed:boolean};
   decisionGradeEvidence?:number;
   expectedCagr?:{oneYearPct:number|null;threeYearPct:number|null}|null;
+  longTermThesis?:{label:"STRONG"|"CONSTRUCTIVE"|"MIXED"|"WEAK";score:number;summary:string;nearTerm:string;longTerm:string};
+  expectationGap?:{label:"POSITIVE"|"BALANCED"|"NEGATIVE"|"UNKNOWN";score:number|null;reason:string};
 };
 
 const clamp=(x:number,a=0,b=100)=>Math.max(a,Math.min(b,x));
@@ -302,12 +304,20 @@ export function buildInvestorDecision({market,company,context,institutional,owns
   const dataCompleteness=Math.round(evidence.reduce((x,y)=>x+y,0)/evidence.length*100);
   const decisionGradeEvidence=Math.max(0,Math.min(100,dataCompleteness-(valuationModel.available&&!valuationValidity.fairValueAllowed?12:0)));
   const zones=buildZones(market,thesisLabel,timingScore,valuationValidity.zonesAllowed,fairRange);
+  const longH=[...horizons].filter(h=>h.key==="1Y"||h.key==="2Y"||h.key==="3Y");
+  const longTermScore=Math.round(longH.reduce((sum,h)=>sum+h.score,0)/Math.max(1,longH.length));
+  const longTermLabel:NonNullable<InvestorDecision["longTermThesis"]>["label"]=longTermScore>=75?"STRONG":longTermScore>=62?"CONSTRUCTIVE":longTermScore>=48?"MIXED":"WEAK";
+  const nearTerm=`3M ${horizons.find(h=>h.key==="3M")?.label||"NEUTRAL"}; timing ${timingLabel.toLowerCase()}.`;
+  const longTerm=`1–3Y evidence is ${longTermLabel.toLowerCase()} (${longTermScore}/100), driven primarily by business quality, forward evidence, durability and financial strength.`;
+  const longTermThesis={label:longTermLabel,score:longTermScore,summary:longTermLabel==="STRONG"?"The long-duration business case is strong even if near-term price action is noisy.":longTermLabel==="CONSTRUCTIVE"?"The long-duration business case is constructive, but execution and valuation still matter.":longTermLabel==="MIXED"?"The long-duration case has meaningful positives and unresolved weaknesses.":"Long-duration evidence is not strong enough to justify conviction.",nearTerm,longTerm};
+  const expectationRaw=(forward-50)*.55+(e.available?(e.score-50)*.20:0)+(a.available?(streetChange-50)*.15:0)+(catalysts-50)*.10;
+  const expectationGap={label:!context?.enabled?"UNKNOWN" as const:expectationRaw>=8?"POSITIVE" as const:expectationRaw<=-8?"NEGATIVE" as const:"BALANCED" as const,score:context?.enabled?Math.round(clamp(50+expectationRaw)):null,reason:!context?.enabled?"Forward expectation evidence is unavailable.":expectationRaw>=8?"Forward growth, execution/revisions and catalysts are improving faster than the neutral baseline.":expectationRaw<=-8?"Forward evidence is deteriorating and expectations may still be too high.":"Forward evidence is broadly balanced; NIVORA does not see a large expectation mismatch yet."};
   const oneLine=thesisLabel==="BULLISH"?`The ${companyLabel.toLowerCase()} business profile and forward evidence support a constructive long-term thesis; ${timingLabel==="OVEREXTENDED"?"price is too extended to chase":timingLabel==="WEAK"?"price has not stabilized yet":"entry quality still matters"}.`:thesisLabel==="BEARISH"?"The fundamental/forward evidence is weak enough that technical strength alone should not justify new capital.":"The investment case is mixed: there is not yet enough aligned evidence to call the long-term thesis strongly bullish or bearish.";
 
   return{
     companyScore,thesisScore,opportunityScore,confidence:dataCompleteness,companyLabel,thesisLabel,thesisState,valuationLabel,action,actionReason,
     horizon:bestHorizon,oneLine,drivers,risks,breakers,changed,factors:{business:companyScore,financial:Math.round(financial),growth:Math.round(growth),durability:Math.round(durability),forward:Math.round(forward),earnings:e.available?e.score:null,streetChange:a.available?Math.round(streetChange):null,institutional:instEnabled?Math.round(inst):null,catalysts:Math.round(catalysts),valuation:valuationModel.available?Math.round(valuation):null,timing:timingScore,risk:Math.round(risk)},factorAvailability:{business:true,financial:true,growth:true,durability:true,forward:true,earnings:e.available,streetChange:a.available,institutional:instEnabled,catalysts:true,valuation:valuationModel.available,timing:true,risk:true},horizons,bestHorizon,
     streetTarget:hasStreet?{mean:Number(mean.toFixed(2)),low:finite(low)?Number(low.toFixed(2)):undefined,high:finite(high)?Number(high.toFixed(2)):undefined,upsidePct:Number((upside||0).toFixed(1))}:null,
-    expectedReturn:{oneYearPct:null,threeYearCagrPct:null,source:"unavailable"},consistency,position:pos,archetype:kind,dataCompleteness,modelConfidenceLabel:"Uncalibrated",timing:{score:timingScore,label:timingLabel,reason:timingReason},streetView,streetDisagreement,zones,valuationBasis:valuationModel.basis,vetoes,valuationRange:fairRange,valuationValidity,decisionGradeEvidence,expectedCagr
+    expectedReturn:{oneYearPct:null,threeYearCagrPct:null,source:"unavailable"},consistency,position:pos,archetype:kind,dataCompleteness,modelConfidenceLabel:"Uncalibrated",timing:{score:timingScore,label:timingLabel,reason:timingReason},streetView,streetDisagreement,zones,valuationBasis:valuationModel.basis,vetoes,valuationRange:fairRange,valuationValidity,decisionGradeEvidence,expectedCagr,longTermThesis,expectationGap
   };
 }

@@ -94,12 +94,16 @@ function metricScore(mode:Mode,business:number,six:number,timing:number,risk:num
   )));
 }
 
-type StockWarmCache={d?:any;company?:any;context?:any;institutional?:any;ts:number};
+type StockWarmCache={d?:any;company?:any;context?:any;institutional?:any;ts:number;evidenceTs?:number};
 const stockWarmCache=new Map<string,StockWarmCache>();
 const CACHE_MAX_AGE=5*60*1000;
 function mergeWarm(symbol:string,patch:Partial<StockWarmCache>){
   const prev=stockWarmCache.get(symbol)||{ts:0};
   stockWarmCache.set(symbol,{...prev,...patch,ts:Date.now()});
+}
+function mergeEvidenceWarm(symbol:string,patch:Partial<StockWarmCache>){
+  const prev=stockWarmCache.get(symbol)||{ts:0};
+  stockWarmCache.set(symbol,{...prev,...patch,ts:Math.max(prev.ts||0,Date.now()),evidenceTs:Date.now()});
 }
 export default function StockClient({symbol}:{symbol:string}){
   const thesisRef=useRef<HTMLElement>(null);
@@ -180,17 +184,18 @@ export default function StockClient({symbol}:{symbol:string}){
 
     const loadEvidence=()=>{
       Promise.allSettled([
-        fetchJson(`/api/company/${encodeURIComponent(symbol)}`).then(x=>{if(live){setCompany(x);mergeWarm(symbol,{company:x})}}),
-        fetchJson(`/api/context/${encodeURIComponent(symbol)}`).then(x=>{if(live){setContext(x);mergeWarm(symbol,{context:x})}}),
-        fetchJson(`/api/institutional/${encodeURIComponent(symbol)}`).then(x=>{if(live){setInstitutional(x);mergeWarm(symbol,{institutional:x})}})
+        fetchJson(`/api/company/${encodeURIComponent(symbol)}`).then(x=>{if(live){setCompany(x);mergeEvidenceWarm(symbol,{company:x})}}),
+        fetchJson(`/api/context/${encodeURIComponent(symbol)}`).then(x=>{if(live){setContext(x);mergeEvidenceWarm(symbol,{context:x})}}),
+        fetchJson(`/api/institutional/${encodeURIComponent(symbol)}`).then(x=>{if(live){setInstitutional(x);mergeEvidenceWarm(symbol,{institutional:x})}})
       ]);
     };
 
     loadCore(!hasWarm);
-    loadEvidence();
+    const evidenceFresh=!!warm?.evidenceTs&&Date.now()-warm.evidenceTs<30*60*1000;
+    if(!evidenceFresh)loadEvidence();
 
     const priceTimer=setInterval(()=>{if(document.visibilityState==="visible")loadCore(false)},60000);
-    const newsTimer=setInterval(()=>{if(document.visibilityState==="visible")fetchJson(`/api/context/${encodeURIComponent(symbol)}`).then(x=>{if(live){setContext(x);mergeWarm(symbol,{context:x})}}).catch(()=>{})},120000);
+    const newsTimer=setInterval(()=>{if(document.visibilityState==="visible")fetchJson(`/api/context/${encodeURIComponent(symbol)}`).then(x=>{if(live){setContext(x);mergeEvidenceWarm(symbol,{context:x})}}).catch(()=>{})},120000);
     const onFocus=()=>{
       const last=stockWarmCache.get(symbol)?.ts||0;
       if(Date.now()-last>45000)loadCore(false);
@@ -826,6 +831,8 @@ export default function StockClient({symbol}:{symbol:string}){
       {tab==="thesis"&&presentedDecision&&<div className="v27Thesis v48Thesis">
         <div className="thesisHero">
           <div><small>NIVORA THESIS ENGINE</small><h3>{presentedDecision.thesisLabel} · {presentedDecision.thesisScore}/100</h3><p>{presentedDecision.oneLine}</p></div>
+          {presentedDecision.longTermThesis&&<div className="thesisCard"><small>LONG-TERM THESIS <Help title="Long-term thesis">Separates 1–3 year business evidence from near-term price action. A weak chart cannot by itself make a durable business thesis bearish.</Help></small><h3>{presentedDecision.longTermThesis.label} · {presentedDecision.longTermThesis.score}/100</h3><p>{presentedDecision.longTermThesis.summary}</p><p><b>Near term:</b> {presentedDecision.longTermThesis.nearTerm}</p><p><b>1–3Y:</b> {presentedDecision.longTermThesis.longTerm}</p></div>}
+          {presentedDecision.expectationGap&&<div className="thesisCard"><small>EXPECTATION GAP <Help title="Expectation gap">Compares forward growth, earnings/revision direction and catalysts with a neutral baseline. It is not a price target.</Help></small><h3>{presentedDecision.expectationGap.label}{presentedDecision.expectationGap.score!=null?` · ${presentedDecision.expectationGap.score}/100`:""}</h3><p>{presentedDecision.expectationGap.reason}</p></div>}
           <div className="thesisAction"><small>INVESTOR ACTION</small><b className={tone(presentedDecision.action)}>{presentedDecision.action}</b><span>{presentedDecision.horizon} decision horizon</span></div>
         </div>
         <div className="v48FactorGrid">{Object.entries(presentedDecision.factors).map(([k,v]:any)=>{const isRisk=k==="risk";const available=v!=null&&Number.isFinite(Number(v));const label=isRisk?"RISK PRESSURE":k.replace(/([A-Z])/g," $1").toUpperCase();const def=(metricDefinitions as any)[k];return <div key={k} className={`${isRisk&&available&&Number(v)>=70?"factorRiskHigh":""} ${!available?"factorUnavailable":""}`}><div className="metricLabel"><small>{label}</small>{def&&<Help title={def.title}>{def.short} {def.uses} Freshness: {def.freshness} Source: {def.source}</Help>}</div><b>{available?`${v}/100`:"N/A"}</b>{available?<i><em style={{width:`${Math.max(3,Math.min(100,Number(v)))}%`}}/></i>:<span className="factorNA">Missing evidence lowers coverage; it is not scored as bearish.</span>}</div>})}</div>
