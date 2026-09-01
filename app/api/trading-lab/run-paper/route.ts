@@ -26,8 +26,8 @@ export async function POST(req:Request){
  const latest=new Map<string,any>();for(const s of snapshots||[])if(!latest.has(s.symbol))latest.set(s.symbol,s);
  const results:any[]=[];
  for(const s of latest.values()){
-  const d=s.decision||{},today=d.today;if(!today)continue;
-  const intent=deriveTradeIntent({symbol:s.symbol,snapshotId:String(s.id),evidenceFingerprint:String(s.evidence_fingerprint||""),price:Number(s.price||0),observedAt:String(s.observed_at),thesisScore:Number(d.thesisScore||0),opportunityScore:Number(d.opportunityScore||0),companyScore:Number(d.companyScore||0),today});if(!intent)continue;
+  const d=s.decision||{},today=d.today;if(!today){results.push({symbol:s.symbol,status:"NO_INTENT",action:"NONE",reason:"Frozen decision has no Today action."});continue;}
+  const intent=deriveTradeIntent({symbol:s.symbol,snapshotId:String(s.id),evidenceFingerprint:String(s.evidence_fingerprint||""),price:Number(s.price||0),observedAt:String(s.observed_at),thesisScore:Number(d.thesisScore||0),opportunityScore:Number(d.opportunityScore||0),companyScore:Number(d.companyScore||0),today});if(!intent){results.push({symbol:s.symbol,status:"NO_INTENT",action:String(today.action||"NO ACTION"),reason:"Today action does not authorize a paper trade intent."});continue;}
   const {data:existing}=await db.from("nivora_v61_trade_intents").select("id").eq("intent_id",intent.id).maybeSingle();if(existing){results.push({symbol:s.symbol,status:"DUPLICATE"});continue}
   const raw=await sharedJson(`https://api.twelvedata.com/quote?symbol=${encodeURIComponent(s.symbol)}&prepost=true&apikey=${twelve}`,["twelve","trade-lab-quote",s.symbol],5,1800);const quote=normalizeTwelveQuote(raw,new Date());
   const pos=positionMap.get(s.symbol);const context={equity:account.equity,cash:account.cash,dailyPnlPct:account.dailyPnlPct,currentPositionValue:Math.abs(pos?.marketValue||0),openPositions:positions.length,duplicate:false,quote:{price:quote.price,ageSeconds:quote.ageSeconds,freshness:quote.freshness,changePct:quote.changePct,spreadPct:null}};

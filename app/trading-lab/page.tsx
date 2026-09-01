@@ -1,7 +1,8 @@
 "use client";
 import {useEffect,useState} from "react";
 import {Activity,ShieldCheck,FlaskConical,TrendingUp} from "lucide-react";
-export default function TradingLab(){const[data,setData]=useState<any>(null),[loading,setLoading]=useState(true);useEffect(()=>{fetch("/api/trading-lab/status").then(r=>r.json()).then(setData).finally(()=>setLoading(false))},[]);const m=data?.metrics||{};return <section className="tradingLabPage">
+import AppShell from "@/components/AppShell";
+export default function TradingLab(){const[data,setData]=useState<any>(null),[loading,setLoading]=useState(true);useEffect(()=>{fetch("/api/trading-lab/status").then(r=>r.json()).then(setData).finally(()=>setLoading(false))},[]);const m=data?.metrics||{};return <AppShell><section className="tradingLabPage">
  <div className="tradingLabHead"><div><div className="eyebrow">NIVORA TRADING LAB · PAPER</div><h1>Prove the edge before risking capital.</h1><p>Trading Lab converts frozen NIVORA decisions into risk-gated paper orders, records every outcome, and measures whether the strategy actually adds value.</p></div><div className="paperBadge"><FlaskConical size={17}/> PAPER ONLY</div></div>
  <div className="tradingLabSafety"><ShieldCheck size={18}/><div><b>No live-money auto execution</b><span>Autonomous execution is restricted to the configured paper account. Any live broker path remains approval-required.</span></div></div>
  {loading?<div className="tradingLabEmpty">Loading Trading Lab…</div>:<><div className="tradingLabGrid">
@@ -14,5 +15,5 @@ export default function TradingLab(){const[data,setData]=useState<any>(null),[lo
   <article><small>EXPECTANCY / TRADE</small><b>{m.trades?`$${m.expectancy}`:"—"}</b><span>Average realized paper P&L</span></article>
   <article><small>AVG ALPHA</small><b>{m.trades?`${m.averageAlphaPct}%`:"—"}</b><span>Trade return minus benchmark return</span></article>
   <article><small>MAX DRAWDOWN</small><b>{m.trades?`$${Math.abs(Number(m.maxDrawdownDollars||0)).toLocaleString()}`:"—"}</b><span>Observed realized-trade curve</span></article>
- </div><div className="tradingLabMethod"><Activity size={18}/><div><b>How a paper order reaches the broker</b><p>NIVORA decision → Trade Intent → fresh quote → portfolio/daily-loss/spread/gap/duplicate gates → protected limit order → Alpaca Paper → audit log → Trading Lab metrics.</p></div><TrendingUp size={18}/></div></>}
- </section>}
+ </div><div className="tradingLabMethod"><Activity size={18}/><div><b>DECISION FUNNEL</b><p>{data?.funnel?.snapshots??0} snapshots → {data?.funnel?.evaluated??0} evaluated → {data?.funnel?.intents??0} intents → {data?.funnel?.authorized??0} authorized → {data?.funnel?.submitted??0} submitted. Every skipped or blocked decision remains visible in the audit trail.</p></div><TrendingUp size={18}/></div><div className="tradingLabMethod"><Activity size={18}/><div><b>How a paper order reaches the broker</b><p>NIVORA decision → Trade Intent → fresh quote → portfolio/daily-loss/spread/gap/duplicate gates → protected limit order → Alpaca Paper → audit log → Trading Lab metrics.</p></div><TrendingUp size={18}/></div></>}
+ </section></AppShell>}
