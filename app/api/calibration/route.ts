@@ -1,10 +1,11 @@
 import {NextResponse} from "next/server";
 import {createClient} from "@supabase/supabase-js";
+import {ENGINE_VERSION} from "@/lib/nivora-version";
 const clamp=(x:number,a=0,b=100)=>Math.max(a,Math.min(b,x));
 function wilson(w:number,n:number){if(!n)return null;const z=1.96,p=w/n,d=1+z*z/n,c=(p+z*z/(2*n))/d,m=z*Math.sqrt((p*(1-p)+z*z/(4*n))/n)/d;return{lowPct:+((c-m)*100).toFixed(1),highPct:+((c+m)*100).toFixed(1)}}
 export async function GET(req:Request){
  const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY;if(!url||!key)return NextResponse.json({status:"unavailable",reason:"Calibration storage is not configured."});
- const db=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});const q=new URL(req.url).searchParams,engine=q.get("engine")||"v59";
+ const db=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});const q=new URL(req.url).searchParams,engine=q.get("engine")||ENGINE_VERSION;
  const [{data:h},{data:o}]=await Promise.all([db.from("nivora_decision_history").select("id,thesis_score,action,archetype,engine_version,weights_version").eq("engine_version",engine).limit(20000),db.from("nivora_decision_outcomes").select("history_id,horizon_days,return_pct,benchmark_return_pct,excess_return_pct").limit(100000)]);
  const history=new Map((h||[]).map((x:any)=>[Number(x.id),x])),result:any={};
  for(const days of [30,90,180,365,730]){const rows=(o||[]).filter((x:any)=>Number(x.horizon_days)===days&&history.has(Number(x.history_id)));const buckets=new Map<string,{n:number,w:number,sum:number,alphaN:number}>();

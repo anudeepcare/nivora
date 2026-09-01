@@ -1,12 +1,12 @@
 {
   "name": "nivora",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test:engine": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node --test tests/v54-engine-contract.test.mjs tests/v56-behavior.test.mjs tests/v57-integrity.test.mjs tests/v57_2-consistency.test.mjs tests/v59-platform.test.mjs tests/v59-provider.test.mjs",
+    "test:engine": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node --test tests/v54-engine-contract.test.mjs tests/v56-behavior.test.mjs tests/v57-integrity.test.mjs tests/v57_2-consistency.test.mjs tests/v59-platform.test.mjs tests/v59-provider.test.mjs tests/v60-market-session.test.mjs tests/v60-provider-observability.test.mjs tests/v60-stability.test.mjs tests/v60-scan-freshness.test.mjs tests/v60-live-today.test.mjs tests/v60-live-api-contract.test.mjs tests/v60-version-surface.test.mjs tests/v59-supabase-builder-contract.test.mjs",
     "test": "npm run test:engine"
   },
   "dependencies": {

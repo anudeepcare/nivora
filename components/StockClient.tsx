@@ -19,6 +19,7 @@ import PriceChart from "./PriceChart";
 import {supabaseBrowser} from "@/lib/supabase";
 import {buildNivoraIntelligence} from "@/lib/nivora-intelligence";
 import {buildInvestorDecision} from "@/lib/nivora-investor";
+import {applyLiveQuoteToToday} from "@/lib/nivora-live-today";
 import InvestorDecisionHero from "./InvestorDecisionHero";
 import {metricDefinitions} from "@/lib/nivora-metrics";
 
@@ -130,6 +131,14 @@ export default function StockClient({symbol}:{symbol:string}){
   const[auditOpen,setAuditOpen]=useState(false);
   const[institutional,setInstitutional]=useState<any>(null);
   const[calibration,setCalibration]=useState<any>(null);
+  const[liveQuote,setLiveQuote]=useState<any>(null);
+
+  useEffect(()=>{
+    let active=true;let timer:any;
+    const loadQuote=()=>fetch(`/api/quote/${encodeURIComponent(symbol)}`,{cache:"no-store"}).then(async r=>{const x=await r.json();if(r.ok&&active&&Number(x?.price)>0)setLiveQuote(x)}).catch(()=>{});
+    loadQuote();timer=setInterval(()=>{if(document.visibilityState==="visible")loadQuote()},10000);
+    return()=>{active=false;clearInterval(timer)};
+  },[symbol]);
 
   useEffect(()=>{
     let active=true;
@@ -207,7 +216,7 @@ export default function StockClient({symbol}:{symbol:string}){
 
   useEffect(()=>{
     let live=true;
-    fetch("/api/calibration?engine=v59",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(x=>{if(live&&x)setCalibration(x)}).catch(()=>{});
+    fetch("/api/calibration?engine=v60",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(x=>{if(live&&x)setCalibration(x)}).catch(()=>{});
     return()=>{live=false};
   },[]);
 
@@ -302,8 +311,9 @@ export default function StockClient({symbol}:{symbol:string}){
   const presentedDecision=useMemo(()=>{
     if(!investorDecision)return null;
     const label=calibration?.status==="calibrating"?"Collecting":calibration?.status==="calibrated"?"Calibrated":"Uncalibrated";
-    return {...investorDecision,modelConfidenceLabel:label as "Uncalibrated"|"Collecting"|"Calibrated"};
-  },[investorDecision,calibration]);
+    const today=applyLiveQuoteToToday(investorDecision.today,liveQuote,owns);
+    return {...investorDecision,today,modelConfidenceLabel:label as "Uncalibrated"|"Collecting"|"Calibrated"};
+  },[investorDecision,calibration,liveQuote,owns]);
 
   const quickAnswers=useMemo(()=>{
     if(!intelligence)return null;
@@ -332,7 +342,7 @@ export default function StockClient({symbol}:{symbol:string}){
     const dataQuality=Math.round((coverage*.55)+(intelligence.confidence*.45));
     const auditId=`${symbol}-${mode}-${Math.round(Number(d.price||0)*100)}-${intelligence.score}`;
     const validationStatus="Shadow validation enabled";
-    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:"v59",generatedAt:new Date(now).toISOString()};
+    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:"v60",generatedAt:new Date(now).toISOString()};
   },[d,intelligence,company,context,optionsData,institutional,symbol,mode]);
 
   useEffect(()=>{
@@ -404,7 +414,8 @@ export default function StockClient({symbol}:{symbol:string}){
   const marketContextText=d.market.benchmark?String(symbol)+" is "+String(d.market.relativeStrength).toLowerCase()+" versus "+String(d.market.benchmark)+" over the recent period.":"Crypto benchmark context is handled separately.";
   const selectedReturn=perfRange==="6M"?d.performance?.sixMonthPct??d.sixMonth?.returnPct??null:
     perfRange==="YTD"?d.performance?.ytdPct??null:d.performance?.oneYearPct??null;
-  const currentPx=Number(d.price);
+  const currentPx=Number(liveQuote?.price||d.price);
+  const displayChangePct=Number(liveQuote?.changePct??d.changePct);
   const supportPx=Number(d.levels.support), breakoutPx=Number(d.levels.breakout), invalidPx=Number(d.levels.invalidation);
   const upside=Number.isFinite(currentPx)&&currentPx?((breakoutPx/currentPx-1)*100):null;
   const downside=Number.isFinite(currentPx)&&currentPx?((invalidPx/currentPx-1)*100):null;
@@ -686,10 +697,10 @@ export default function StockClient({symbol}:{symbol:string}){
 
     <header className="osStockHead v12StockHead">
       <div><small>{company?.name||d.name||symbol}</small><h1>{symbol}</h1></div>
-      <div><b>${d.price}</b><span className={d.changePct>=0?"up":"down"}>{d.changePct>=0?"+":""}{d.changePct}%</span></div>
+      <div><b>${currentPx}</b><span className={displayChangePct>=0?"up":"down"}>{displayChangePct>=0?"+":""}{displayChangePct}%</span></div>
     </header>
 
-    <div className="liveFresh"><span className="liveStatus"><span className="liveDot"/>Near-live · shared cache</span><span className="liveCadence">Price ~30–45 sec · News ~2 min · Thesis changes only when evidence changes</span></div>
+    <div className="liveFresh"><span className="liveStatus"><span className="liveDot"/>{liveQuote?`${String(liveQuote.session||"").replaceAll("_","-")} · ${liveQuote.freshness}`:"QUOTE CONNECTING"}</span><span className="liveCadence">{liveQuote?`${liveQuote.provider} · ${liveQuote.ageSeconds==null?"timestamp unavailable":`${liveQuote.ageSeconds}s old`} · regular close ${liveQuote.regularClose??"—"}`:"Daily analysis stays available while the live quote connects."}</span></div>
 
     <div className="v50PositionBar"><div><Sparkles size={15}/><span>NIVORA analyzes 3M, 6M, 1Y, 2Y and 3Y automatically.</span></div><button type="button" className={owns?"on":""} onClick={()=>setOwns(!owns)}>{owns?(ownerPosition?"✓ Position loaded":"✓ I own this"):"I own this"}</button></div>
 
@@ -720,7 +731,7 @@ export default function StockClient({symbol}:{symbol:string}){
       <div><div className="metricLabel"><small>DATA CONFIDENCE</small><Help title="Data confidence">Shows whether price history, business data, market context and news/catalyst sources are available. Higher confidence means better evidence coverage—not higher certainty of profit.</Help></div><b className={confidence==="High"?"good":confidence==="Low"?"bad":"mid"}>{confidence}</b><span>Price + business + news + market coverage.</span></div>
     </section>}
 
-    {presentedDecision&&<InvestorDecisionHero decision={presentedDecision} price={Number(d.price)} changePct={Number(d.changePct)} owns={owns} levels={{entryLow:horizonPlan.entryLow,entryHigh:horizonPlan.entryHigh,support:Number(d.levels?.support||0),majorSupport:Number(d.levels?.majorSupport||0),resistance:Number(d.levels?.resistance||0),breakout:Number(d.levels?.breakout||0),assetType:d.assetType}} timing={timingState} onEvidence={()=>openResearch("thesis")}/>}
+    {presentedDecision&&<InvestorDecisionHero decision={presentedDecision} price={currentPx} changePct={displayChangePct} owns={owns} levels={{entryLow:horizonPlan.entryLow,entryHigh:horizonPlan.entryHigh,support:Number(d.levels?.support||0),majorSupport:Number(d.levels?.majorSupport||0),resistance:Number(d.levels?.resistance||0),breakout:Number(d.levels?.breakout||0),assetType:d.assetType}} timing={timingState} onEvidence={()=>openResearch("thesis")}/>}
 
     {false&&<section className={["v41Decision",tone(decisionAction)].join(" ")} aria-label="Legacy trading decision">
       <div className="v41DecisionHero">

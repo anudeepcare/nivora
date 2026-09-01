@@ -1,0 +1,2 @@
+import fs from 'node:fs';import test from 'node:test';import assert from 'node:assert/strict';
+for(const file of ['../app/api/health/route.ts','../app/api/calibration/route.ts','../app/api/factor-integrity/route.ts'])test(`${file} uses canonical engine version`,()=>{const s=fs.readFileSync(new URL(file,import.meta.url),'utf8');assert.doesNotMatch(s,/canonicalEngine:"v59"|engine\)\|\|"v59"|engine_version","v59"/);assert.match(s,/ENGINE_VERSION/)});
