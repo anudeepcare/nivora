@@ -1,3 +1,4 @@
+import {deriveTodayAction, type TodayDecision} from "./nivora-today";
 export type ThesisState="Strengthening"|"Recovering"|"Intact"|"Mixed"|"Weakening"|"Broken";
 export type OutlookLabel="STRONG BULLISH"|"BULLISH"|"CONSTRUCTIVE"|"NEUTRAL"|"CAUTIOUS"|"BEARISH"|"STRONG BEARISH";
 export type HorizonOutlook={key:"3M"|"6M"|"1Y"|"2Y"|"3Y";score:number;label:OutlookLabel;reason:string};
@@ -24,6 +25,7 @@ export type InvestorDecision={
   expectedCagr?:{oneYearPct:number|null;threeYearPct:number|null}|null;
   longTermThesis?:{label:"STRONG"|"CONSTRUCTIVE"|"MIXED"|"WEAK";score:number;summary:string;nearTerm:string;longTerm:string};
   expectationGap?:{label:"POSITIVE"|"BALANCED"|"NEGATIVE"|"UNKNOWN";score:number|null;reason:string};
+  today?:TodayDecision;
 };
 
 const clamp=(x:number,a=0,b=100)=>Math.max(a,Math.min(b,x));
@@ -314,8 +316,9 @@ export function buildInvestorDecision({market,company,context,institutional,owns
   const expectationGap={label:!context?.enabled?"UNKNOWN" as const:expectationRaw>=8?"POSITIVE" as const:expectationRaw<=-8?"NEGATIVE" as const:"BALANCED" as const,score:context?.enabled?Math.round(clamp(50+expectationRaw)):null,reason:!context?.enabled?"Forward expectation evidence is unavailable.":expectationRaw>=8?"Forward growth, execution/revisions and catalysts are improving faster than the neutral baseline.":expectationRaw<=-8?"Forward evidence is deteriorating and expectations may still be too high.":"Forward evidence is broadly balanced; NIVORA does not see a large expectation mismatch yet."};
   const oneLine=thesisLabel==="BULLISH"?`The ${companyLabel.toLowerCase()} business profile and forward evidence support a constructive long-term thesis; ${timingLabel==="OVEREXTENDED"?"price is too extended to chase":timingLabel==="WEAK"?"price has not stabilized yet":"entry quality still matters"}.`:thesisLabel==="BEARISH"?"The fundamental/forward evidence is weak enough that technical strength alone should not justify new capital.":"The investment case is mixed: there is not yet enough aligned evidence to call the long-term thesis strongly bullish or bearish.";
 
+  const today=deriveTodayAction({thesisScore,opportunityScore,companyScore,thesisLabel,thesisState,timing:{score:timingScore,label:timingLabel},valuationLabel,vetoes,consistency},owns);
   return{
-    companyScore,thesisScore,opportunityScore,confidence:dataCompleteness,companyLabel,thesisLabel,thesisState,valuationLabel,action,actionReason,
+    companyScore,thesisScore,opportunityScore,confidence:dataCompleteness,companyLabel,thesisLabel,thesisState,valuationLabel,action,actionReason,today,
     horizon:bestHorizon,oneLine,drivers,risks,breakers,changed,factors:{business:companyScore,financial:Math.round(financial),growth:Math.round(growth),durability:Math.round(durability),forward:Math.round(forward),earnings:e.available?e.score:null,streetChange:a.available?Math.round(streetChange):null,institutional:instEnabled?Math.round(inst):null,catalysts:Math.round(catalysts),valuation:valuationModel.available?Math.round(valuation):null,timing:timingScore,risk:Math.round(risk)},factorAvailability:{business:true,financial:true,growth:true,durability:true,forward:true,earnings:e.available,streetChange:a.available,institutional:instEnabled,catalysts:true,valuation:valuationModel.available,timing:true,risk:true},horizons,bestHorizon,
     streetTarget:hasStreet?{mean:Number(mean.toFixed(2)),low:finite(low)?Number(low.toFixed(2)):undefined,high:finite(high)?Number(high.toFixed(2)):undefined,upsidePct:Number((upside||0).toFixed(1))}:null,
     expectedReturn:{oneYearPct:null,threeYearCagrPct:null,source:"unavailable"},consistency,position:pos,archetype:kind,dataCompleteness,modelConfidenceLabel:"Uncalibrated",timing:{score:timingScore,label:timingLabel,reason:timingReason},streetView,streetDisagreement,zones,valuationBasis:valuationModel.basis,vetoes,valuationRange:fairRange,valuationValidity,decisionGradeEvidence,expectedCagr,longTermThesis,expectationGap

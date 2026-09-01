@@ -1,3 +1,4 @@
+import {coalesceRequest} from "./provider-resilience";
 import {unstable_cache} from "next/cache";
 
 export async function sharedJson(url:string,keyParts:string[],revalidate:number,timeout=3500,headers?:Record<string,string>){
@@ -9,6 +10,6 @@ export async function sharedJson(url:string,keyParts:string[],revalidate:number,
       return await r.json();
     } finally { clearTimeout(t); }
   },["nivora",...keyParts],{revalidate});
-  return load();
+  return coalesceRequest(`shared:${keyParts.join(":")}`,load);
 }
 export const nowIso=()=>new Date().toISOString();

@@ -1,0 +1,4 @@
+{
+  "compilerOptions": {"target":"ES2022","module":"commonjs","outDir":".engine-test","esModuleInterop":true,"skipLibCheck":true,"strict":true,"types":[],"lib":["ES2022","DOM"]},
+  "include":["lib/nivora-investor.ts","lib/nivora-cross-sectional.ts","lib/nivora-portfolio-risk.ts","lib/nivora-factor-integrity.ts","lib/nivora-version.ts","lib/nivora-today.ts","lib/nivora-snapshot.ts","lib/nivora-arena.ts","lib/provider-resilience.ts"]
+}

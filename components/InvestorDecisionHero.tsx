@@ -27,7 +27,7 @@ export default function InvestorDecisionHero({decision,price,changePct,owns,onEv
       {!decision.consistency.ok&&<div className="v53Consistency"><b>Decision withheld</b><span>{decision.consistency.notes[0]}</span></div>}
       {decision.vetoes.length>0&&<div className="v54Veto"><b>Risk veto</b><span>{decision.vetoes[0]}</span></div>}
     </div>
-    <div className={`v53Action ${tone(decision.action)}`}><small>{owns?"YOUR POSITION":"NEW MONEY"}</small><b>{decision.action}</b><span>{decision.actionReason}</span></div>
+    <div className={`v53Action ${tone(decision.today?.action||decision.action)}`}><small>TODAY · {owns?"YOUR POSITION":"NEW MONEY"}</small><b>{decision.today?.action||decision.action}</b><span>{decision.today?.reason||decision.actionReason}</span></div>
    </div>
 
    {owns&&decision.position&&<div className="v53OwnerBar"><span><small>AVG COST</small><b>{money(decision.position.avgCost)}</b></span><span><small>PRICE NOW</small><b>{money(price)}</b></span><span><small>UNREALIZED</small><b className={decision.position.pnlPct>=0?"good":"bad"}>{decision.position.pnlPct>=0?"+":""}{decision.position.pnlPct.toFixed(1)}%</b></span><div><b>Cost basis changes position management only. It never changes NIVORA's independent company thesis.</b></div></div>}
@@ -36,7 +36,7 @@ export default function InvestorDecisionHero({decision,price,changePct,owns,onEv
     <div><small>BUSINESS <MetricInfo metric="business"/></small><b>{decision.companyScore}</b><span>{decision.companyLabel}</span></div>
     <div><small>OPPORTUNITY <MetricInfo metric="opportunity"/></small><b>{decision.opportunityScore}</b><span>{decision.valuationValidity?.fairValueAllowed?decision.valuationLabel:decision.factorAvailability?.valuation?`Relative valuation: ${decision.valuationLabel}`:"Valuation pending"}</span></div>
     <div><small>TIMING <MetricInfo metric="timing"/></small><b>{decision.timing.score}</b><span>{decision.timing.label}</span></div>
-    <div><small>DATA COVERAGE <MetricInfo metric="dataCoverage"/></small><b>{decision.dataCompleteness}%</b><span>Decision-grade: {decision.decisionGradeEvidence??decision.dataCompleteness}% · Reliability: {decision.modelConfidenceLabel} <MetricInfo metric="modelReliability"/></span></div>
+    <div><small>DATA COVERAGE <MetricInfo metric="dataCoverage"/></small><b>{decision.dataCompleteness}%</b><span>Decision-grade: {decision.decisionGradeEvidence??decision.dataCompleteness}% · Model confidence: {decision.modelConfidenceLabel} <MetricInfo metric="modelReliability"/></span></div>
    </div>
 
    <div className="v54EntryMap">
