@@ -17,8 +17,9 @@ const entryNotional=(x:TradeIntentInput)=>{
  return Math.round(1500+conviction*35);
 };
 export function deriveTradeIntent(x:TradeIntentInput):TradeIntent|null{
- if(!x.today||x.today.blocked)return null;
+ if(!x.today)return null;
  const a=x.today.action;
+ if(x.today.blocked&&(a==="BUY"||a==="ADD"))return null;
  if(a==="WAIT"||a==="HOLD"||a==="NO ACTION")return null;
  const side:TradeSide=a==="SELL"||a==="TRIM"?"SELL":"BUY";
  const intentType:TradeIntentType=a==="BUY"?"ENTER":a==="ADD"?"ADD":a==="TRIM"?"TRIM":"EXIT";

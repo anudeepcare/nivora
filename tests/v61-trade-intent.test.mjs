@@ -6,3 +6,5 @@ test('ADD creates add intent',()=>{const x=deriveTradeIntent({...base,today:{act
 test('SELL and TRIM create exit intents',()=>{assert.equal(deriveTradeIntent({...base,today:{action:'SELL',blocked:false,reason:'broken',policyVersion:'v60'}})?.intentType,'EXIT');assert.equal(deriveTradeIntent({...base,today:{action:'TRIM',blocked:false,reason:'risk',policyVersion:'v60'}})?.intentType,'TRIM')});
 test('WAIT HOLD and NO ACTION create no trade',()=>{for(const action of ['WAIT','HOLD','NO ACTION'])assert.equal(deriveTradeIntent({...base,today:{action,blocked:false,reason:'none',policyVersion:'v60'}}),null)});
 test('blocked decision never creates new risk',()=>{assert.equal(deriveTradeIntent({...base,today:{action:'BUY',blocked:true,reason:'veto',policyVersion:'v60'}}),null)});
+
+test('blocked SELL can still create a risk-reducing exit intent',()=>{const x=deriveTradeIntent({...base,today:{action:'SELL',blocked:true,reason:'broken thesis',policyVersion:'v60'}});assert.equal(x?.side,'SELL');assert.equal(x?.intentType,'EXIT')});
