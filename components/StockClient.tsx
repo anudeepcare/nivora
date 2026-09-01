@@ -22,6 +22,7 @@ import {buildInvestorDecision} from "@/lib/nivora-investor";
 import {applyLiveQuoteToToday} from "@/lib/nivora-live-today";
 import InvestorDecisionHero from "./InvestorDecisionHero";
 import {metricDefinitions} from "@/lib/nivora-metrics";
+import {ENGINE_VERSION} from "@/lib/nivora-version";
 
 type Mode="now"|"swing"|"long"|"own";
 type Depth="simple"|"investor"|"pro";
@@ -216,7 +217,7 @@ export default function StockClient({symbol}:{symbol:string}){
 
   useEffect(()=>{
     let live=true;
-    fetch("/api/calibration?engine=v60",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(x=>{if(live&&x)setCalibration(x)}).catch(()=>{});
+    fetch(`/api/calibration?engine=${ENGINE_VERSION}`,{cache:"no-store"}).then(r=>r.ok?r.json():null).then(x=>{if(live&&x)setCalibration(x)}).catch(()=>{});
     return()=>{live=false};
   },[]);
 
@@ -310,9 +311,10 @@ export default function StockClient({symbol}:{symbol:string}){
   }),[d,company,context,institutional,owns,ownerPosition]);
   const presentedDecision=useMemo(()=>{
     if(!investorDecision)return null;
-    const label=calibration?.status==="calibrating"?"Collecting":calibration?.status==="calibrated"?"Calibrated":"Uncalibrated";
+    const label=calibration?.status==="collecting"?"Collecting":calibration?.status==="calibrated"?"Calibrated":"Uncalibrated";
     const today=applyLiveQuoteToToday(investorDecision.today,liveQuote,owns);
-    return {...investorDecision,today,modelConfidenceLabel:label as "Uncalibrated"|"Collecting"|"Calibrated"};
+    const ce=calibration?.summary?{scope:String(calibration.summary.scope||"Weight-compatible history"),n:Number(calibration.summary.n||0),hitRatePct:Number(calibration.summary.hitRatePct||0),avgAlphaPct:Number(calibration.summary.avgAlphaPct||0),medianAlphaPct:Number(calibration.summary.medianAlphaPct||0),brierScore:Number(calibration.summary.brierScore||0),expectedCalibrationErrorPct:Number(calibration.summary.expectedCalibrationErrorPct||0),confidence95:calibration.summary.confidence95||null}:null;
+    return {...investorDecision,today,calibrationEvidence:ce,modelConfidenceLabel:label as "Uncalibrated"|"Collecting"|"Calibrated"};
   },[investorDecision,calibration,liveQuote,owns]);
 
   const quickAnswers=useMemo(()=>{
@@ -342,7 +344,7 @@ export default function StockClient({symbol}:{symbol:string}){
     const dataQuality=Math.round((coverage*.55)+(intelligence.confidence*.45));
     const auditId=`${symbol}-${mode}-${Math.round(Number(d.price||0)*100)}-${intelligence.score}`;
     const validationStatus="Shadow validation enabled";
-    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:"v60",generatedAt:new Date(now).toISOString()};
+    return {freshness,coverage,dataQuality,auditId,validationStatus,engineVersion:ENGINE_VERSION,generatedAt:new Date(now).toISOString()};
   },[d,intelligence,company,context,optionsData,institutional,symbol,mode]);
 
   useEffect(()=>{

@@ -3,7 +3,7 @@ import Link from "next/link";
 import {usePathname,useRouter} from "next/navigation";
 import {supabaseBrowser} from "@/lib/supabase";
 import {useEffect,useRef,useState} from "react";
-import {Search,BriefcaseBusiness,UserRound,Bell,Info,ShieldCheck,Star,FlaskConical} from "lucide-react";
+import {Search,BriefcaseBusiness,UserRound,Bell,Info,ShieldCheck,Star,FlaskConical,BarChart3} from "lucide-react";
 
 export default function AppShell({children}:{children:React.ReactNode}){
  const path=usePathname(),router=useRouter(),[open,setOpen]=useState(false),[email,setEmail]=useState(""),ref=useRef<HTMLDivElement>(null);
@@ -19,7 +19,7 @@ export default function AppShell({children}:{children:React.ReactNode}){
     <Link className={active("/portfolio")?"on":""} href="/portfolio">Portfolio</Link>
     <Link className={active("/trading-lab")?"on":""} href="/trading-lab">Trading Lab</Link>
    </nav>
-   <div className="osAccount" ref={ref}><button onClick={()=>setOpen(!open)} aria-label="Account">{(email?.[0]||"N").toUpperCase()}</button>{open&&<div className="osAccountMenu"><small>{email}</small><Link href="/profile"><UserRound size={14}/>Account</Link><Link href="/alerts"><Bell size={14}/>Alerts</Link><Link href="/watchlist"><Star size={14}/>Watchlist</Link><Link href="/about"><Info size={14}/>Why NIVORA</Link><Link href="/terms"><ShieldCheck size={14}/>Legal & privacy</Link><button onClick={logout}>Log out</button></div>}</div>
+   <div className="osAccount" ref={ref}><button onClick={()=>setOpen(!open)} aria-label="Account">{(email?.[0]||"N").toUpperCase()}</button>{open&&<div className="osAccountMenu"><small>{email}</small><Link href="/profile"><UserRound size={14}/>Account</Link><Link href="/alerts"><Bell size={14}/>Alerts</Link><Link href="/watchlist"><Star size={14}/>Watchlist</Link><Link href="/calibration"><BarChart3 size={14}/>Calibration</Link><Link href="/about"><Info size={14}/>Why NIVORA</Link><Link href="/terms"><ShieldCheck size={14}/>Legal & privacy</Link><button onClick={logout}>Log out</button></div>}</div>
   </header>
   <main className="osMain v12Main">{children}</main>
   <nav className="osMobileNav v12MobileNav" aria-label="Mobile navigation">

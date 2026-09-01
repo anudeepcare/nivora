@@ -13,7 +13,7 @@ function MetricInfo({metric}:{metric:keyof typeof metricDefinitions}){const d=me
 function HorizonBadge({h,best}:{h:HorizonOutlook;best:string}){if(h.key!==best||h.score<60)return null;return <em>{h.score>=75?"BEST HORIZON":"STRONGEST"}</em>}
 
 export default function InvestorDecisionHero({decision,price,changePct,owns,onEvidence}:{decision:InvestorDecision;price:number;changePct:number;owns:boolean;levels:Levels;onEvidence:()=>void;timing?:Timing}){
- const topDrivers=decision.drivers.slice(0,3),topRisks=decision.risks.slice(0,3);
+ const topDrivers=decision.drivers.slice(0,3),topRisks=(decision.adversarialRisks||[]).slice(0,3);
  const entryZones=decision.zones.filter(z=>["starter","accumulate","strong"].includes(z.kind)).slice(0,3);
  const chase=decision.zones.find(z=>z.kind==="chase");
  const riskZone=decision.zones.find(z=>z.kind==="risk");
@@ -29,6 +29,7 @@ export default function InvestorDecisionHero({decision,price,changePct,owns,onEv
     </div>
     <div className={`v53Action ${tone(decision.today?.action||decision.action)}`}><small>TODAY · {owns?"YOUR POSITION":"NEW MONEY"}</small><b>{decision.today?.action||decision.action}</b><span>{decision.today?.reason||decision.actionReason}</span></div>
    </div>
+   {decision.actionTriggers&&<div className="v53Consistency"><b>WHAT CHANGES THE ACTION · {decision.actionTriggers.targetAction}</b><span>{decision.actionTriggers.summary}</span>{decision.actionTriggers.blockers.slice(0,2).map((x,i)=><span key={`b-${i}`}>• {x}</span>)}{decision.actionTriggers.requirements.slice(0,3).map((x,i)=><span key={`r-${i}`}>✓ {x}</span>)}</div>}
 
    {owns&&decision.position&&<div className="v53OwnerBar"><span><small>AVG COST</small><b>{money(decision.position.avgCost)}</b></span><span><small>PRICE NOW</small><b>{money(price)}</b></span><span><small>UNREALIZED</small><b className={decision.position.pnlPct>=0?"good":"bad"}>{decision.position.pnlPct>=0?"+":""}{decision.position.pnlPct.toFixed(1)}%</b></span><div><b>Cost basis changes position management only. It never changes NIVORA's independent company thesis.</b></div></div>}
 
@@ -54,16 +55,18 @@ export default function InvestorDecisionHero({decision,price,changePct,owns,onEv
    </div>
 
    <div className={`v54StreetRow ${decision.streetTarget?"":"noTarget"}`}>
-    <div><small>NIVORA VALUATION <MetricInfo metric="valuation"/></small><b>{decision.valuationRange?decision.valuationLabel:"FAIR VALUE · NOT ESTABLISHED"}</b><span>{decision.valuationRange?`Bear ${money(decision.valuationRange.bear)} · Base ${money(decision.valuationRange.base)} · Bull ${money(decision.valuationRange.bull)} · ${decision.valuationRange.confidence} estimate confidence. ${decision.valuationRange.method}`:`${decision.valuationValidity?.reason||decision.valuationBasis} Relative valuation evidence may still inform Opportunity, but NIVORA will not publish absolute accumulation zones until the valuation passes decision-grade checks.`}</span></div>
+    <div><small>NIVORA VALUATION <MetricInfo metric="valuation"/></small><b>{decision.valuationRange?decision.valuationLabel:"FAIR VALUE · NOT ESTABLISHED"}</b><span>{decision.valuationRange?`Bear ${money(decision.valuationRange.bear)} · Base ${money(decision.valuationRange.base)} · Bull ${money(decision.valuationRange.bull)} · ${decision.valuationRange.confidence} estimate confidence. ${decision.valuationRange.method}`:`${decision.valuationValidity?.reason||decision.valuationBasis} Relative valuation evidence may still inform Opportunity, but NIVORA will not publish absolute accumulation zones until the valuation passes decision-grade checks.`}</span><small>VALUATION SANITY · {decision.valuationSanity?.status||"UNAVAILABLE"}</small>{decision.valuationSanity?.warnings?.slice(0,2).map((x,i)=><span key={i}>{x}</span>)}</div>
     <div className={streetDisagrees?"disagree":""}><small>WALL STREET <MetricInfo metric="street"/></small><b>{decision.streetView.label}{decision.streetView.score!=null?` · ${decision.streetView.score}`:""}</b><span>{streetDisagrees?decision.streetDisagreement?.headline:decision.streetView.note}</span>{streetDisagrees&&decision.streetDisagreement?.reasons?.length?<ul>{decision.streetDisagreement.reasons.map((x,i)=><li key={i}>{x}</li>)}</ul>:null}</div>
     {decision.streetTarget&&<div><small>STREET TARGET <MetricInfo metric="street"/></small><b>{money(decision.streetTarget.mean)}</b><span>External consensus · {decision.streetTarget.upsidePct>=0?"+":""}{decision.streetTarget.upsidePct}% vs now. Kept separate from NIVORA valuation.</span></div>}
    </div>
 
    <div className="v53ThesisGrid">
     <div><small>WHY IT CAN WORK</small>{topDrivers.length?topDrivers.map((x,i)=><p key={i}>✓ {x}</p>):<p>No dominant positive evidence yet.</p>}</div>
-    <div><small>WHAT CAN GO WRONG</small>{topRisks.length?topRisks.map((x,i)=><p key={i}>• {x}</p>):<p>No single risk currently dominates.</p>}</div>
+    <div><small>RANKED RISKS</small>{topRisks.length?topRisks.map((x,i)=><p key={i}><b>{x.severity} · {x.category}</b> — {x.evidence}</p>):<p>Risk evidence is still being assembled.</p>}</div>
     <div><small>{owns?"SELL / REASSESS IF":"WHAT BREAKS THE THESIS"}</small>{decision.breakers.slice(0,3).map((x,i)=><p key={i}>• {x}</p>)}</div>
    </div>
+
+   {decision.calibrationEvidence&&<div className="v54StreetRow noTarget"><div><small>CALIBRATION EVIDENCE</small><b>{decision.calibrationEvidence.n} matured observations · {decision.calibrationEvidence.hitRatePct}% benchmark hit rate</b><span>{decision.calibrationEvidence.scope} · Avg alpha {decision.calibrationEvidence.avgAlphaPct>=0?"+":""}{decision.calibrationEvidence.avgAlphaPct}% · Median alpha {decision.calibrationEvidence.medianAlphaPct>=0?"+":""}{decision.calibrationEvidence.medianAlphaPct}% · Brier {decision.calibrationEvidence.brierScore} · ECE {decision.calibrationEvidence.expectedCalibrationErrorPct}%{decision.calibrationEvidence.confidence95?` · 95% hit-rate interval ${decision.calibrationEvidence.confidence95.lowPct}%–${decision.calibrationEvidence.confidence95.highPct}%`:""}</span><Link href="/calibration">Open calibration →</Link></div></div>}
 
    <div className="v53FooterRow">
     <div><small>WHAT CHANGED</small><b>{decision.changed[0]||"No material thesis change detected."}</b><span>Daily price noise alone does not change company conviction.</span></div>

@@ -34,6 +34,10 @@
     "lib/nivora-trading-metrics.ts",
     "lib/nivora-trading-evaluation.ts",
     "lib/alpaca-paper.ts",
-    "lib/nivora-execution-quote.ts"
+    "lib/nivora-execution-quote.ts",
+    "lib/nivora-calibration-v62.ts",
+    "lib/nivora-valuation-sanity.ts",
+    "lib/nivora-adversarial-risk.ts",
+    "lib/nivora-action-triggers.ts"
   ]
 }
