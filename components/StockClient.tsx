@@ -347,7 +347,8 @@ export default function StockClient({symbol}:{symbol:string}){
 
   useEffect(()=>{
     if(!d||!intelligence||!enterprise||typeof window==="undefined")return;
-    const key=`nivora-validation:${enterprise.auditId}`;
+    const todayFingerprint=investorDecision?.today?`${investorDecision.today.action}:${investorDecision.today.score??""}:${investorDecision.today.reason??""}`:"today-pending";
+    const key=`nivora-validation:${enterprise.auditId}:${todayFingerprint}`;
     if(sessionStorage.getItem(key))return;
     sessionStorage.setItem(key,"1");
     fetch("/api/validation/snapshot",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({
@@ -357,7 +358,7 @@ export default function StockClient({symbol}:{symbol:string}){
       evidence:{coverage:enterprise.coverage,dataQuality:enterprise.dataQuality,contradictions:intelligence.contradictions,benchmark:d.market?.benchmark||"SPY",benchmarkPrice:d.market?.benchmarkPrice??null},
       investorDecision:investorDecision?{companyScore:investorDecision.companyScore,thesisScore:investorDecision.thesisScore,opportunityScore:investorDecision.opportunityScore,thesisLabel:investorDecision.thesisLabel,thesisState:investorDecision.thesisState,valuationLabel:investorDecision.valuationLabel,action:investorDecision.action,confidence:investorDecision.confidence,dataCompleteness:investorDecision.dataCompleteness,archetype:investorDecision.archetype,factors:investorDecision.factors,horizons:investorDecision.horizons,drivers:investorDecision.drivers,risks:investorDecision.risks,today:investorDecision.today}:null
     })}).catch(()=>{});
-  },[d?.price,intelligence?.score,intelligence?.confidence,enterprise?.auditId,symbol,mode,investorDecision?.thesisScore,investorDecision?.opportunityScore]);
+  },[d?.price,intelligence?.score,intelligence?.confidence,enterprise?.auditId,symbol,mode,investorDecision?.thesisScore,investorDecision?.opportunityScore,investorDecision?.today]);
 
   if(err)return <div className="osError"><b>Couldn’t analyze {symbol}</b><span>{err}</span><button onClick={()=>location.reload()}>Try again</button></div>;
   if(!d||!view)return <div className="osStockLoading"><div className="osLogo">NIVORA<span>.</span></div><b>Analyzing {symbol}</b><span>Building the decision first. Evidence loads after.</span></div>;
