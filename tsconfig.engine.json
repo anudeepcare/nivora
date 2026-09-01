@@ -33,6 +33,7 @@
     "lib/nivora-broker.ts",
     "lib/nivora-trading-metrics.ts",
     "lib/nivora-trading-evaluation.ts",
-    "lib/alpaca-paper.ts"
+    "lib/alpaca-paper.ts",
+    "lib/nivora-execution-quote.ts"
   ]
 }

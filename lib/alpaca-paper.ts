@@ -21,5 +21,16 @@ export class AlpacaPaperBroker{
  async getFillActivities(after?:string):Promise<Array<{id:string;orderId:string;symbol:string;side:"BUY"|"SELL";qty:number;price:number;transactionTime:string}>>{
   const q=after?`?after=${encodeURIComponent(after)}&direction=asc&page_size=100`:"?direction=asc&page_size=100";const rows=await this.request(`/v2/account/activities/FILL${q}`);return(rows||[]).map((x:any)=>({id:String(x.id),orderId:String(x.order_id||""),symbol:String(x.symbol||"").toUpperCase(),side:String(x.side||"").toUpperCase()==="SELL"?"SELL":"BUY",qty:Number(x.qty||0),price:Number(x.price||0),transactionTime:String(x.transaction_time||x.date||new Date(0).toISOString())}))
  }
+
+ async getLatestExecutionQuote(symbol:string):Promise<{quote:any;trade:any}>{
+  const headers={"APCA-API-KEY-ID":this.key,"APCA-API-SECRET-KEY":this.secret};
+  const [qr,tr]=await Promise.all([
+   fetch(`https://data.alpaca.markets/v2/stocks/${encodeURIComponent(symbol)}/quotes/latest`,{cache:"no-store",headers}),
+   fetch(`https://data.alpaca.markets/v2/stocks/${encodeURIComponent(symbol)}/trades/latest`,{cache:"no-store",headers})
+  ]);
+  const q=await qr.json().catch(()=>null),t=await tr.json().catch(()=>null);
+  if(!qr.ok||!tr.ok)throw new Error(q?.message||t?.message||`Alpaca market data ${qr.status}/${tr.status}`);
+  return{quote:q,trade:t};
+ }
  async submitOrder(order:PaperOrderPlan):Promise<AlpacaPaperOrder>{const o=await this.request("/v2/orders",{method:"POST",body:JSON.stringify({symbol:order.symbol,qty:String(order.quantity),side:order.side.toLowerCase(),type:"limit",time_in_force:"day",limit_price:String(order.limitPrice),client_order_id:order.clientOrderId})});return{id:String(o.id),clientOrderId:String(o.client_order_id||order.clientOrderId),symbol:String(o.symbol),side:String(o.side),status:String(o.status),qty:Number(o.qty||order.quantity),filledQty:Number(o.filled_qty||0),filledAvgPrice:o.filled_avg_price==null?null:Number(o.filled_avg_price),submittedAt:o.submitted_at||null}}
 }

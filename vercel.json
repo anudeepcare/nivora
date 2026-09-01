@@ -1,0 +1,1 @@
+{"crons":[{"path":"/api/trading-lab/run-paper","schedule":"*/5 * * * 1-5"}]}
