@@ -2,6 +2,7 @@ import {deriveTodayAction, type TodayDecision} from "./nivora-today";
 import {checkValuationSanity,consolidateEntryZones} from "./nivora-valuation-sanity";
 import {buildAdversarialRisks,type RankedRisk} from "./nivora-adversarial-risk";
 import {buildActionTriggers,type ActionTriggerResult} from "./nivora-action-triggers";
+import {buildDecisionReality,technicalRealityFromCandles,roundPriceZone,applyRealityGuardToToday} from "./nivora-decision-reality";
 export type ThesisState="Strengthening"|"Recovering"|"Intact"|"Mixed"|"Weakening"|"Broken";
 export type OutlookLabel="STRONG BULLISH"|"BULLISH"|"CONSTRUCTIVE"|"NEUTRAL"|"CAUTIOUS"|"BEARISH"|"STRONG BEARISH";
 export type HorizonOutlook={key:"3M"|"6M"|"1Y"|"2Y"|"3Y";score:number;label:OutlookLabel;reason:string};
@@ -32,6 +33,8 @@ export type InvestorDecision={
   adversarialRisks?:RankedRisk[];
   actionTriggers?:ActionTriggerResult;
   calibrationEvidence?:{scope:string;n:number;hitRatePct:number;avgAlphaPct:number;medianAlphaPct:number;brierScore:number;expectedCalibrationErrorPct:number;confidence95?:{lowPct:number;highPct:number}|null}|null;
+  decisionReality?:ReturnType<typeof buildDecisionReality>;
+  marketDataIntegrity?:{state:string;reason:string;provider?:string|null;ageSeconds?:number|null;disagreementPct?:number|null;tradable?:boolean}|null;
   today?:TodayDecision;
 };
 
@@ -328,7 +331,10 @@ export function buildInvestorDecision({market,company,context,institutional,owns
   const dataCompleteness=Math.round(evidence.reduce((x,y)=>x+y,0)/evidence.length*100);
   const valuationSanity=checkValuationSanity(px,fairRange);
   const decisionGradeEvidence=Math.max(0,Math.min(100,dataCompleteness-(valuationModel.available&&!valuationValidity.fairValueAllowed?12:0)-(valuationSanity.status==="WARN"?6:valuationSanity.status==="FAIL"?15:0)));
-  const zones=consolidateEntryZones(buildZones(market,thesisLabel,timingScore,valuationValidity.zonesAllowed,fairRange));
+  const factorMap={business:companyScore,financial:Math.round(financial),growth:Math.round(growth),durability:Math.round(durability),forward:Math.round(forward),earnings:e.available?e.score:null,streetChange:a.available?Math.round(streetChange):null,institutional:instEnabled?Math.round(inst):null,catalysts:Math.round(catalysts),valuation:valuationModel.available?Math.round(valuation):null,timing:timingScore,risk:Math.round(risk)};
+  const technicalReality=technicalRealityFromCandles(market);
+  const decisionReality=buildDecisionReality({price:px,valuationRange:fairRange,archetype:kind,timingScore,timingLabel,technical:technicalReality,factors:factorMap,newsTone:news||null,thesisScore,opportunityScore,filingRisk:Boolean(company?.filingRisk),vetoCount:vetoes.length});
+  const zones=consolidateEntryZones(buildZones(market,thesisLabel,timingScore,valuationValidity.zonesAllowed,fairRange)).map(z=>roundPriceZone(z,z.confidence,px));
   const longH=[...horizons].filter(h=>h.key==="1Y"||h.key==="2Y"||h.key==="3Y");
   const longTermScore=Math.round(longH.reduce((sum,h)=>sum+h.score,0)/Math.max(1,longH.length));
   const longTermLabel:NonNullable<InvestorDecision["longTermThesis"]>["label"]=longTermScore>=75?"STRONG":longTermScore>=62?"CONSTRUCTIVE":longTermScore>=48?"MIXED":"WEAK";
@@ -339,13 +345,14 @@ export function buildInvestorDecision({market,company,context,institutional,owns
   const expectationGap={label:!context?.enabled?"UNKNOWN" as const:expectationRaw>=8?"POSITIVE" as const:expectationRaw<=-8?"NEGATIVE" as const:"BALANCED" as const,score:context?.enabled?Math.round(clamp(50+expectationRaw)):null,reason:!context?.enabled?"Forward expectation evidence is unavailable.":expectationRaw>=8?"Forward growth, execution/revisions and catalysts are improving faster than the neutral baseline.":expectationRaw<=-8?"Forward evidence is deteriorating and expectations may still be too high.":"Forward evidence is broadly balanced; NIVORA does not see a large expectation mismatch yet."};
   const oneLine=thesisLabel==="BULLISH"?`The ${companyLabel.toLowerCase()} business profile and forward evidence support a constructive long-term thesis; ${timingLabel==="OVEREXTENDED"?"price is too extended to chase":timingLabel==="WEAK"?"price has not stabilized yet":"entry quality still matters"}.`:thesisLabel==="BEARISH"?"The fundamental/forward evidence is weak enough that technical strength alone should not justify new capital.":"The investment case is mixed: there is not yet enough aligned evidence to call the long-term thesis strongly bullish or bearish.";
 
-  const today=deriveTodayAction({thesisScore,opportunityScore,companyScore,thesisLabel,thesisState,timing:{score:timingScore,label:timingLabel},valuationLabel,vetoes,consistency},owns);
+  const rawToday=deriveTodayAction({thesisScore,opportunityScore,companyScore,thesisLabel,thesisState,timing:{score:timingScore,label:timingLabel},valuationLabel,vetoes,consistency},owns);
+  const today=applyRealityGuardToToday(rawToday,owns,decisionReality) as TodayDecision;
   const actionTriggers=buildActionTriggers({action:today.action,owns,thesisScore,opportunityScore,companyScore,timingScore,timingLabel,thesisState,valuationLabel});
   const adversarialRisks=buildAdversarialRisks({archetype:kind,timingScore,factors:{financial:Math.round(financial),growth:Math.round(growth),forward:Math.round(forward),risk:Math.round(risk)},existingRisks:risks,breakers,valuationWarnings:valuationSanity.warnings});
   return{
     companyScore,thesisScore,opportunityScore,confidence:dataCompleteness,companyLabel,thesisLabel,thesisState,valuationLabel,action,actionReason,today,
-    horizon:bestHorizon,oneLine,drivers,risks,breakers,changed,factors:{business:companyScore,financial:Math.round(financial),growth:Math.round(growth),durability:Math.round(durability),forward:Math.round(forward),earnings:e.available?e.score:null,streetChange:a.available?Math.round(streetChange):null,institutional:instEnabled?Math.round(inst):null,catalysts:Math.round(catalysts),valuation:valuationModel.available?Math.round(valuation):null,timing:timingScore,risk:Math.round(risk)},factorAvailability:{business:true,financial:true,growth:true,durability:true,forward:true,earnings:e.available,streetChange:a.available,institutional:instEnabled,catalysts:true,valuation:valuationModel.available,timing:true,risk:true},horizons,bestHorizon,
+    horizon:bestHorizon,oneLine,drivers,risks,breakers,changed,factors:factorMap,factorAvailability:{business:true,financial:true,growth:true,durability:true,forward:true,earnings:e.available,streetChange:a.available,institutional:instEnabled,catalysts:true,valuation:valuationModel.available,timing:true,risk:true},horizons,bestHorizon,
     streetTarget:hasStreet?{mean:Number(mean.toFixed(2)),low:finite(low)?Number(low.toFixed(2)):undefined,high:finite(high)?Number(high.toFixed(2)):undefined,upsidePct:Number((upside||0).toFixed(1))}:null,
-    expectedReturn:{oneYearPct:null,threeYearCagrPct:null,source:"unavailable"},consistency,position:pos,archetype:kind,dataCompleteness,modelConfidenceLabel:"Uncalibrated",timing:{score:timingScore,label:timingLabel,reason:timingReason},streetView,streetDisagreement,zones,valuationBasis:valuationModel.basis,vetoes,valuationRange:fairRange,valuationValidity,valuationSanity,adversarialRisks,actionTriggers,decisionGradeEvidence,expectedCagr,longTermThesis,expectationGap
+    expectedReturn:{oneYearPct:null,threeYearCagrPct:null,source:"unavailable"},consistency,position:pos,archetype:kind,dataCompleteness,modelConfidenceLabel:"Uncalibrated",timing:{score:timingScore,label:timingLabel,reason:timingReason},streetView,streetDisagreement,zones,valuationBasis:valuationModel.basis,vetoes,valuationRange:fairRange,valuationValidity,valuationSanity,adversarialRisks,actionTriggers,decisionReality,decisionGradeEvidence,expectedCagr,longTermThesis,expectationGap
   };
 }

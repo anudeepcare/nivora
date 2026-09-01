@@ -4,6 +4,7 @@ import type {PaperOrderPlan} from "./nivora-paper-execution";
 export type AlpacaPaperAccount={equity:number;cash:number;buyingPower:number;lastEquity:number;dailyPnlPct:number};
 export type AlpacaPaperPosition={symbol:string;qty:number;marketValue:number;avgEntryPrice:number};
 export type AlpacaPaperOrder={id:string;clientOrderId:string;symbol:string;side:string;status:string;qty:number;filledQty:number;filledAvgPrice:number|null;submittedAt:string|null};
+export type AlpacaClock={timestamp:string|null;isOpen:boolean;nextOpen:string|null;nextClose:string|null};
 
 export class AlpacaPaperBroker{
  private key:string;private secret:string;
@@ -32,5 +33,9 @@ export class AlpacaPaperBroker{
   if(!qr.ok||!tr.ok)throw new Error(q?.message||t?.message||`Alpaca market data ${qr.status}/${tr.status}`);
   return{quote:q,trade:t};
  }
+
+ async getClock():Promise<AlpacaClock>{const c=await this.request("/v2/clock");return{timestamp:c?.timestamp||null,isOpen:Boolean(c?.is_open),nextOpen:c?.next_open||null,nextClose:c?.next_close||null}}
+ async getOrder(orderId:string):Promise<AlpacaPaperOrder>{const o=await this.request(`/v2/orders/${encodeURIComponent(orderId)}`);return{id:String(o.id),clientOrderId:String(o.client_order_id||""),symbol:String(o.symbol||""),side:String(o.side||""),status:String(o.status||""),qty:Number(o.qty||0),filledQty:Number(o.filled_qty||0),filledAvgPrice:o.filled_avg_price==null?null:Number(o.filled_avg_price),submittedAt:o.submitted_at||null}}
+ async cancelOrder(orderId:string):Promise<void>{await this.request(`/v2/orders/${encodeURIComponent(orderId)}`,{method:"DELETE"})}
  async submitOrder(order:PaperOrderPlan):Promise<AlpacaPaperOrder>{const o=await this.request("/v2/orders",{method:"POST",body:JSON.stringify({symbol:order.symbol,qty:String(order.quantity),side:order.side.toLowerCase(),type:"limit",time_in_force:"day",limit_price:String(order.limitPrice),client_order_id:order.clientOrderId})});return{id:String(o.id),clientOrderId:String(o.client_order_id||order.clientOrderId),symbol:String(o.symbol),side:String(o.side),status:String(o.status),qty:Number(o.qty||order.quantity),filledQty:Number(o.filled_qty||0),filledAvgPrice:o.filled_avg_price==null?null:Number(o.filled_avg_price),submittedAt:o.submitted_at||null}}
 }

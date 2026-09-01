@@ -137,7 +137,7 @@ export default function StockClient({symbol}:{symbol:string}){
   useEffect(()=>{
     let active=true;let timer:any;
     const loadQuote=()=>fetch(`/api/quote/${encodeURIComponent(symbol)}`,{cache:"no-store"}).then(async r=>{const x=await r.json();if(r.ok&&active&&Number(x?.price)>0)setLiveQuote(x)}).catch(()=>{});
-    loadQuote();timer=setInterval(()=>{if(document.visibilityState==="visible")loadQuote()},10000);
+    loadQuote();timer=setInterval(()=>{if(document.visibilityState==="visible")loadQuote()},12000);
     return()=>{active=false;clearInterval(timer)};
   },[symbol]);
 
@@ -314,7 +314,8 @@ export default function StockClient({symbol}:{symbol:string}){
     const label=calibration?.status==="collecting"?"Collecting":calibration?.status==="calibrated"?"Calibrated":"Uncalibrated";
     const today=applyLiveQuoteToToday(investorDecision.today,liveQuote,owns);
     const ce=calibration?.summary?{scope:String(calibration.summary.scope||"Weight-compatible history"),n:Number(calibration.summary.n||0),hitRatePct:Number(calibration.summary.hitRatePct||0),avgAlphaPct:Number(calibration.summary.avgAlphaPct||0),medianAlphaPct:Number(calibration.summary.medianAlphaPct||0),brierScore:Number(calibration.summary.brierScore||0),expectedCalibrationErrorPct:Number(calibration.summary.expectedCalibrationErrorPct||0),confidence95:calibration.summary.confidence95||null}:null;
-    return {...investorDecision,today,calibrationEvidence:ce,modelConfidenceLabel:label as "Uncalibrated"|"Collecting"|"Calibrated"};
+    const marketDataIntegrity=liveQuote?{state:String(liveQuote.integrityState||liveQuote.freshness||"UNKNOWN"),reason:String(liveQuote.integrityReason||""),provider:liveQuote.provider||null,ageSeconds:liveQuote.ageSeconds??null,disagreementPct:liveQuote.disagreementPct??null,tradable:liveQuote.integrityTradable!==false}:null;
+    return {...investorDecision,today,marketDataIntegrity,calibrationEvidence:ce,modelConfidenceLabel:label as "Uncalibrated"|"Collecting"|"Calibrated"};
   },[investorDecision,calibration,liveQuote,owns]);
 
   const quickAnswers=useMemo(()=>{
@@ -703,7 +704,7 @@ export default function StockClient({symbol}:{symbol:string}){
       <div><b>${currentPx}</b><span className={displayChangePct>=0?"up":"down"}>{displayChangePct>=0?"+":""}{displayChangePct}%</span></div>
     </header>
 
-    <div className="liveFresh"><span className="liveStatus"><span className="liveDot"/>{liveQuote?`${String(liveQuote.session||"").replaceAll("_","-")} · ${liveQuote.freshness}`:"QUOTE CONNECTING"}</span><span className="liveCadence">{liveQuote?`${liveQuote.provider} · ${liveQuote.ageSeconds==null?"timestamp unavailable":`${liveQuote.ageSeconds}s old`} · regular close ${liveQuote.regularClose??"—"}`:"Daily analysis stays available while the live quote connects."}</span></div>
+    <div className="liveFresh"><span className="liveStatus"><span className="liveDot"/>{liveQuote?`${String(liveQuote.session||"").replaceAll("_","-")} · ${liveQuote.integrityState||liveQuote.freshness}`:"QUOTE CONNECTING"}</span><span className="liveCadence">{liveQuote?`${liveQuote.provider} · ${liveQuote.ageSeconds==null?"timestamp unavailable":`${liveQuote.ageSeconds}s old`}${liveQuote.disagreementPct!=null?` · provider gap ${Number(liveQuote.disagreementPct).toFixed(2)}%`:""} · regular close ${liveQuote.regularClose??"—"}`:"Daily analysis stays available while the live quote connects."}</span></div>
 
     <div className="v50PositionBar"><div><Sparkles size={15}/><span>NIVORA analyzes 3M, 6M, 1Y, 2Y and 3Y automatically.</span></div><button type="button" className={owns?"on":""} onClick={()=>setOwns(!owns)}>{owns?(ownerPosition?"✓ Position loaded":"✓ I own this"):"I own this"}</button></div>
 

@@ -4,6 +4,8 @@ export type NivoraLiveQuote={
   symbol:string;price:number;regularClose:number|null;change:number|null;changePct:number|null;
   session:MarketSession;isExtendedHours:boolean;providerTimestamp:string|null;ageSeconds:number|null;
   freshness:QuoteFreshness;provider:string;isRealTime:boolean;
+  integrityState?:string;integrityReason?:string;integrityTradable?:boolean;disagreementPct?:number|null;
+  sources?:Array<{provider:string;price:number;ageSeconds:number|null;freshness:QuoteFreshness}>;
 };
 const num=(v:any)=>{const n=Number(v);return Number.isFinite(n)?n:null};
 export function normalizeTwelveQuote(raw:any,asOf=new Date()):NivoraLiveQuote{

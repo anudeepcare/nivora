@@ -2,10 +2,13 @@ import {NextResponse} from "next/server";
 import {createClient} from "@supabase/supabase-js";
 import {ENGINE_VERSION,WEIGHTS_VERSION} from "@/lib/nivora-version";
 import {summarizeCalibration} from "@/lib/nivora-calibration-v62";
+import {summarizeCalibrationCohorts,type CalibrationRegime} from "@/lib/nivora-calibration-v63";
 export const dynamic="force-dynamic";
 
 const clamp=(x:number,a=0,b=100)=>Math.max(a,Math.min(b,x));
 function wilson(w:number,n:number){if(!n)return null;const z=1.96,p=w/n,d=1+z*z/n,c=(p+z*z/(2*n))/d,m=z*Math.sqrt((p*(1-p)+z*z/(4*n))/n)/d;return{lowPct:+((c-m)*100).toFixed(1),highPct:+((c+m)*100).toFixed(1)}}
+function regime(benchmarkReturn:any):CalibrationRegime{const x=Number(benchmarkReturn);if(!Number.isFinite(x))return"UNKNOWN";return x>=4?"RISK_ON":x<=-4?"RISK_OFF":"NEUTRAL"}
+function horizonLabel(days:number){return days===365?"1Y":days===730?"2Y":`${days}D`}
 
 export async function GET(req:Request){
  const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -16,7 +19,7 @@ export async function GET(req:Request){
   db.from("nivora_decision_history").select("id,thesis_score,action,archetype,engine_version,weights_version").eq("weights_version",WEIGHTS_VERSION).limit(50000),
   db.from("nivora_decision_outcomes").select("history_id,horizon_days,return_pct,benchmark_return_pct,excess_return_pct").limit(200000)
  ]);
- const history=new Map((h||[]).map((x:any)=>[Number(x.id),x])),result:any={};
+ const history=new Map((h||[]).map((x:any)=>[Number(x.id),x])),result:any={},cohortRows:any[]=[];
  for(const days of [30,90,180,365,730]){
   const rows=(o||[]).filter((x:any)=>Number(x.horizon_days)===days&&history.has(Number(x.history_id)));
   const buckets=new Map<string,{n:number,w:number,sum:number,alphaN:number}>();
@@ -26,7 +29,7 @@ export async function GET(req:Request){
    b.n++;if(Number.isFinite(ex)){b.w+=ex>0?1:0;b.sum+=ex;b.alphaN++}buckets.set(k,b)
   }
   const compatible:any[]=[];const exact:any[]=[];
-  for(const x of rows){const hh:any=history.get(Number(x.history_id));const ex=Number.isFinite(Number(x.excess_return_pct))?Number(x.excess_return_pct):Number.isFinite(Number(x.benchmark_return_pct))?Number(x.return_pct||0)-Number(x.benchmark_return_pct):NaN;if(!Number.isFinite(ex))continue;const row={score:Number(hh?.thesis_score||0),alphaPct:ex,archetype:hh?.archetype||"unknown"};compatible.push(row);if(hh?.engine_version===engine)exact.push(row)}
+  for(const x of rows){const hh:any=history.get(Number(x.history_id));const ex=Number.isFinite(Number(x.excess_return_pct))?Number(x.excess_return_pct):Number.isFinite(Number(x.benchmark_return_pct))?Number(x.return_pct||0)-Number(x.benchmark_return_pct):NaN;if(!Number.isFinite(ex))continue;const row={score:Number(hh?.thesis_score||0),alphaPct:ex,archetype:hh?.archetype||"unknown"};compatible.push(row);cohortRows.push({...row,horizon:horizonLabel(days),regime:regime(x.benchmark_return_pct)});if(hh?.engine_version===engine)exact.push(row)}
   result[days]={
    n:rows.length,
    compatibleSummary:summarizeCalibration(compatible,100),
@@ -34,7 +37,7 @@ export async function GET(req:Request){
    buckets:[...buckets.entries()].map(([k,b])=>{const[archetype,score]=k.split("|");return{archetype,score,n:b.n,benchmarkComparableN:b.alphaN,alphaHitRatePct:b.alphaN?+(b.w/b.alphaN*100).toFixed(1):null,avgExcessReturnPct:b.alphaN?+(b.sum/b.alphaN).toFixed(2):null,confidence95:wilson(b.w,b.alphaN)}})
   };
  }
- const summary90=result[90]?.compatibleSummary||summarizeCalibration([],100);
+ const summary90=result[90]?.compatibleSummary||summarizeCalibration([],100);const cohorts=summarizeCalibrationCohorts(cohortRows,30);
  return NextResponse.json({
   status:summary90.status==="CALIBRATED"?"calibrated":"collecting",
   engineVersion:engine,
@@ -43,6 +46,8 @@ export async function GET(req:Request){
   modelConfidence:summary90.status==="CALIBRATED"?"Calibrated":"Uncalibrated",
   summary:{scope:"Weight-compatible history",...summary90},
   note:"Calibration reuses historical decisions only when they share the same thesis-weight contract. Exact-engine results are also shown separately. This is evidence, not a promise of future performance.",
-  outcomes:result
- },{headers:{"Cache-Control":"private, max-age=300"}})
+  outcomes:result,
+  cohorts,
+  cohortPolicy:"Cohorts are segmented by archetype × horizon × benchmark regime. Regime is derived from the benchmark return over the matured outcome window: >= +4% risk-on, <= -4% risk-off, otherwise neutral."
+ },{headers:{"Cache-Control":"private, no-store, max-age=0"}})
 }

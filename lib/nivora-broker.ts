@@ -1,4 +1,4 @@
-export const BROKER_CONTRACT_VERSION="v61-broker-1" as const;
+export const BROKER_CONTRACT_VERSION="v63-broker-1" as const;
 export const ALPACA_PAPER_BASE_URL="https://paper-api.alpaca.markets" as const;
 export type BrokerMode="paper"|"live";
 export type BrokerAuthorization={status:"AUTHORIZED"|"APPROVAL_REQUIRED"|"DISABLED";mayTransmit:boolean;reason:string;version:string};

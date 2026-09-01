@@ -38,6 +38,10 @@
     "lib/nivora-calibration-v62.ts",
     "lib/nivora-valuation-sanity.ts",
     "lib/nivora-adversarial-risk.ts",
-    "lib/nivora-action-triggers.ts"
+    "lib/nivora-action-triggers.ts",
+    "lib/nivora-provider-consensus.ts",
+    "lib/nivora-decision-reality.ts",
+    "lib/nivora-calibration-v63.ts",
+    "lib/nivora-trading-market-data.ts"
   ]
 }

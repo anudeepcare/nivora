@@ -1,6 +1,6 @@
 import type {TodayAction,TodayDecision} from "./nivora-today";
 
-export const TRADING_INTENT_VERSION="v61-trade-intent-1" as const;
+export const TRADING_INTENT_VERSION="v63-trade-intent-1" as const;
 export type TradeSide="BUY"|"SELL";
 export type TradeIntentType="ENTER"|"ADD"|"TRIM"|"EXIT";
 export type TradeIntent={
