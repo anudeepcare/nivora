@@ -347,7 +347,7 @@ export default function StockClient({symbol}:{symbol:string}){
 
   useEffect(()=>{
     if(!d||!intelligence||!enterprise||typeof window==="undefined")return;
-    const todayFingerprint=investorDecision?.today?`${investorDecision.today.action}:${investorDecision.today.score??""}:${investorDecision.today.reason??""}`:"today-pending";
+    const todayFingerprint=investorDecision?.today?`${investorDecision.today.action}:${investorDecision.today.blocked}:${investorDecision.today.policyVersion}:${investorDecision.today.reason}`:"today-pending";
     const key=`nivora-validation:${enterprise.auditId}:${todayFingerprint}`;
     if(sessionStorage.getItem(key))return;
     sessionStorage.setItem(key,"1");
