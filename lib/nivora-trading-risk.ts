@@ -2,13 +2,13 @@ import type {TradeIntent} from "./nivora-trade-intent";
 export const TRADING_RISK_VERSION="v61-paper-risk-1" as const;
 export type PaperRiskPolicy={maxDailyLossPct:number;maxPositionPct:number;maxTradePct:number;maxOpenPositions:number;maxSpreadPct:number;maxGapPct:number;maxQuoteAgeSeconds:number;minCashReservePct:number;minTradeNotional:number};
 export const DEFAULT_PAPER_RISK_POLICY:PaperRiskPolicy={maxDailyLossPct:3,maxPositionPct:10,maxTradePct:5,maxOpenPositions:20,maxSpreadPct:1,maxGapPct:10,maxQuoteAgeSeconds:45,minCashReservePct:10,minTradeNotional:100};
-export type TradingRiskContext={equity:number;cash:number;dailyPnlPct:number;currentPositionValue:number;openPositions:number;duplicate:boolean;quote:{price:number;ageSeconds:number;freshness:"LIVE"|"STALE"|"LAST_TRADE";changePct?:number|null;spreadPct?:number|null}};
+export type TradingRiskContext={equity:number;cash:number;dailyPnlPct:number;currentPositionValue:number;openPositions:number;duplicate:boolean;quote:{price:number;ageSeconds:number|null;freshness:"LIVE"|"STALE"|"LAST_TRADE";changePct?:number|null;spreadPct?:number|null}};
 export type TradingRiskDecision={allowed:boolean;approvedNotional:number;reason:string;code:string;policyVersion:string};
 export function evaluateTradingRisk(intent:Pick<TradeIntent,"side"|"intentType"|"targetNotional">,ctx:TradingRiskContext,p:PaperRiskPolicy=DEFAULT_PAPER_RISK_POLICY):TradingRiskDecision{
  const deny=(code:string,reason:string):TradingRiskDecision=>({allowed:false,approvedNotional:0,code,reason,policyVersion:TRADING_RISK_VERSION});
  if(ctx.duplicate)return deny("DUPLICATE","This evidence/action has already produced an order intent.");
  if(!Number.isFinite(ctx.equity)||ctx.equity<=0)return deny("NO_EQUITY","Paper account equity is unavailable.");
- if(ctx.quote.freshness!=="LIVE"||ctx.quote.ageSeconds>p.maxQuoteAgeSeconds)return deny("STALE_QUOTE","A fresh tradable quote is required before execution.");
+ if(ctx.quote.freshness!=="LIVE"||ctx.quote.ageSeconds==null||ctx.quote.ageSeconds>p.maxQuoteAgeSeconds)return deny("STALE_QUOTE","A fresh tradable quote is required before execution.");
  if((ctx.quote.spreadPct??0)>p.maxSpreadPct)return deny("WIDE_SPREAD","Bid/ask spread exceeds the execution policy.");
  if(intent.side==="BUY"&&Math.abs(ctx.quote.changePct??0)>p.maxGapPct)return deny("GAP_RISK","The current price gap exceeds the paper-entry policy.");
  if(intent.side==="BUY"&&ctx.dailyPnlPct<=-p.maxDailyLossPct)return deny("DAILY_LOSS_LIMIT","Daily loss limit has been reached; no new paper risk is allowed.");
