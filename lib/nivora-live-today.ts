@@ -1,5 +1,6 @@
 import type {TodayDecision} from "./nivora-today";import type {NivoraLiveQuote} from "./nivora-live-quote";
-export function applyLiveQuoteToToday(today:TodayDecision,quote:NivoraLiveQuote|null,owns:boolean):TodayDecision{
+export function applyLiveQuoteToToday(today:TodayDecision|undefined,quote:NivoraLiveQuote|null,owns:boolean):TodayDecision|undefined{
+ if(!today)return undefined;
  if(!quote||quote.freshness!=="LIVE")return today;
  const extended=quote.session==="PRE_MARKET"||quote.session==="AFTER_HOURS";
  const gap=Math.abs(Number(quote.changePct||0));
