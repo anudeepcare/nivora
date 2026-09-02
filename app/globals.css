@@ -1108,3 +1108,17 @@ body{background:radial-gradient(circle at 50% -15%,#fff 0,#f7f9fa 38%,var(--n41-
 @media(max-width:600px){.v641ActionMap{grid-template-columns:1fr}.v641ActionMap article{border-right:0;border-bottom:1px solid #edf0f2;min-height:auto}.v641ActionMap article:last-child{border-bottom:0}.v641Scenarios{padding:17px}.v641ScenarioCards{display:flex;overflow-x:auto;scroll-snap-type:x mandatory}.v641ScenarioCards article{min-width:150px;scroll-snap-align:start}.v641MetricPopover{position:fixed;left:12px;right:12px;bottom:16px;top:auto;transform:none;width:auto;max-height:58vh;overflow:auto}}
 
 .v641Cockpit{overflow:visible}
+
+/* NIVORA V64.2 — real-market BUY calibration */
+.v642BuyAudit{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:18px;padding:16px 22px;border-bottom:1px solid #e6e9ed;background:#fbfcfd}
+.v642BuyAudit.eligible{background:#f3faf6}.v642BuyAudit.waiting{background:#fffdf7}
+.v642BuyAudit b,.v642BuyAudit span{display:block}.v642BuyAudit b{font-size:15px;margin:5px 0;text-transform:capitalize}.v642BuyAudit>div:first-child>span{font-size:10px;line-height:1.45;color:#667085}
+.v642PathChecks{display:grid;grid-template-columns:1fr 1fr;gap:6px}.v642PathChecks span{font-size:9px;line-height:1.35;border:1px solid #e5e9ed;border-radius:9px;background:#fff;padding:8px;color:#475467}
+@media(max-width:600px){.v642BuyAudit{grid-template-columns:1fr;padding:15px 17px}.v642PathChecks{grid-template-columns:1fr}}
+
+.v642DecisionAudit{margin:16px 0;border:1px solid #e3e7eb;border-radius:18px;background:#fff;overflow:hidden}
+.v642DecisionAudit .tradingAuditHead{padding:17px 20px;border-bottom:1px solid #e8ebef}
+.v642AuditGrid{display:grid;grid-template-columns:repeat(4,1fr)}.v642AuditGrid article{padding:16px 18px;border-right:1px solid #e8ebef}.v642AuditGrid article:last-child{border-right:0}.v642AuditGrid b{display:block;font-size:20px;margin:5px 0}.v642AuditGrid span{font-size:10px;line-height:1.4;color:#667085}
+.v642ClosestList{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;padding:12px;background:#f8fafb;border-top:1px solid #e8ebef}.v642ClosestList>span{border:1px solid #e2e7eb;border-radius:10px;background:#fff;padding:9px}.v642ClosestList b,.v642ClosestList em,.v642ClosestList small{display:block}.v642ClosestList em{font-size:8px;font-style:normal;color:#667085;margin:3px 0}.v642ClosestList small{font-size:8px;line-height:1.35;letter-spacing:0;color:#7a8698}
+@media(max-width:760px){.v642AuditGrid{grid-template-columns:1fr 1fr}.v642AuditGrid article:nth-child(2){border-right:0}.v642ClosestList{display:flex;overflow-x:auto}.v642ClosestList>span{min-width:180px}}
+@media(max-width:480px){.v642AuditGrid{grid-template-columns:1fr}.v642AuditGrid article{border-right:0;border-bottom:1px solid #edf0f2}.v642AuditGrid article:last-child{border-bottom:0}}

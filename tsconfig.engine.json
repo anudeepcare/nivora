@@ -56,6 +56,7 @@
     "lib/nivora-bar-integrity.ts",
     "lib/nivora-trade-ticket.ts",
     "lib/nivora-consistency.ts",
-    "lib/nivora-decision-presentation.ts"
+    "lib/nivora-decision-presentation.ts",
+    "lib/nivora-buy-calibration.ts"
   ]
 }

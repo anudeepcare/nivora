@@ -33,6 +33,7 @@ export type ReplayInput = {
 export type ReplayRow = CalibrationRow & {
   symbol: string; asOfDate: string; horizonDays: number;
   action: string; thesisState: string; archetype: string; regime:string;
+  buyPath:string|null;buyTier:string|null;primaryBuyBlocker:string|null;
   entryPrice: number; exitPrice: number | null;
 };
 
@@ -88,6 +89,9 @@ export function replayOne(input: ReplayInput, asOfDate: string, horizonDays: num
     symbol: input.symbol, asOfDate, horizonDays,
     action: decision.today?.action||decision.action, thesisState: decision.thesisState,
     regime:technical.market.regime,
+    buyPath:decision.today?.buyPath||null,
+    buyTier:decision.today?.buyTier||null,
+    primaryBuyBlocker:decision.today?.buyAudit?.primaryBlocker||null,
     entryPrice, exitPrice
   };
 }

@@ -349,7 +349,17 @@ export function buildInvestorDecision({market,company,context,institutional,owns
   const expectationGap={label:!context?.enabled?"UNKNOWN" as const:expectationRaw>=8?"POSITIVE" as const:expectationRaw<=-8?"NEGATIVE" as const:"BALANCED" as const,score:context?.enabled?Math.round(clamp(50+expectationRaw)):null,reason:!context?.enabled?"Forward expectation evidence is unavailable.":expectationRaw>=8?"Forward growth, execution/revisions and catalysts are improving faster than the neutral baseline.":expectationRaw<=-8?"Forward evidence is deteriorating and expectations may still be too high.":"Forward evidence is broadly balanced; NIVORA does not see a large expectation mismatch yet."};
   const oneLine=thesisLabel==="BULLISH"?`The ${companyLabel.toLowerCase()} business profile and forward evidence support a constructive long-term thesis; ${timingLabel==="OVEREXTENDED"?"price is too extended to chase":timingLabel==="WEAK"?"price has not stabilized yet":"entry quality still matters"}.`:thesisLabel==="BEARISH"?"The fundamental/forward evidence is weak enough that technical strength alone should not justify new capital.":"The investment case is mixed: there is not yet enough aligned evidence to call the long-term thesis strongly bullish or bearish.";
 
-  const rawToday=deriveTodayAction({thesisScore,opportunityScore,companyScore,thesisLabel,thesisState,timing:{score:timingScore,label:timingLabel},valuationLabel,vetoes,consistency},owns);
+  const rawToday=deriveTodayAction({
+    thesisScore,opportunityScore,companyScore,thesisLabel,thesisState,
+    timing:{score:timingScore,label:timingLabel},valuationLabel,vetoes,consistency,
+    archetype:kind,
+    factors:{financial:Math.round(financial),growth:Math.round(growth),forward:Math.round(forward),risk:Math.round(risk)},
+    valuationAvailable:valuationModel.available,
+    valuationRobustness:decisionReality.valuationRobustness.label,
+    stabilizationState:decisionReality.stabilization.state,
+    marketModelDisagreement:decisionReality.marketModelDisagreement.level,
+    earlyWarningLevel:decisionReality.earlyWarning.level
+  },owns);
   const realityToday=applyRealityGuardToToday(rawToday,owns,decisionReality) as TodayDecision;
   const adversarialRisks=buildAdversarialRisks({archetype:kind,timingScore,factors:{financial:Math.round(financial),growth:Math.round(growth),forward:Math.round(forward),risk:Math.round(risk)},existingRisks:risks,breakers,valuationWarnings:valuationSanity.warnings});
   const proofBase={validationStatus:"UNVALIDATED" as const,sampleSize:0};
@@ -381,7 +391,7 @@ export function buildInvestorDecision({market,company,context,institutional,owns
     reason:`Decision blocked by cross-system consistency: ${systemConsistency.errors[0]?.message||"inconsistent evidence."}`,
     policyVersion:TODAY_POLICY_VERSION
   };
-  const actionTriggers=buildActionTriggers({action:today.action,owns,thesisScore,opportunityScore,companyScore,timingScore,timingLabel,thesisState,thesisLabel,valuationLabel,vetoes});
+  const actionTriggers=buildActionTriggers({action:today.action,owns,thesisScore,opportunityScore,companyScore,timingScore,timingLabel,thesisState,thesisLabel,valuationLabel,vetoes,buyAudit:today.buyAudit});
   return{
     companyScore,thesisScore,opportunityScore,confidence:dataCompleteness,companyLabel,thesisLabel,thesisState,valuationLabel,action,actionReason,today,
     horizon:bestHorizon,oneLine,drivers,risks,breakers,changed,factors:factorMap,factorAvailability:{business:true,financial:true,growth:true,durability:true,forward:true,earnings:e.available,streetChange:a.available,institutional:instEnabled,catalysts:true,valuation:valuationModel.available,timing:true,risk:true},horizons,bestHorizon,

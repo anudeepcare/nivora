@@ -53,6 +53,7 @@ export default function InvestorDecisionHero({
 }:{decision:InvestorDecision;price:number;changePct:number;owns:boolean;levels:Levels;onEvidence:()=>void;timing?:Timing}){
  const action=decision.today?.action||decision.action;
  const actionReason=decision.today?.reason||decision.actionReason;
+ const buyAudit=decision.today?.buyAudit;
  const proof=decision.metricProofs||{};
  const entryZones=decision.zones.filter(z=>["starter","accumulate","strong"].includes(z.kind)).slice(0,2);
  const preferred=entryZones[0];
@@ -111,6 +112,17 @@ export default function InvestorDecisionHero({
     <span>{decision.breakers[0]||"No decision-grade fundamental invalidation condition is available."}</span>
    </article>
   </div>
+
+  {buyAudit?<div className={`v642BuyAudit ${buyAudit.eligible?"eligible":"waiting"}`}>
+   <div>
+    <small>{buyAudit.eligible?"BUY PATH":"CLOSEST BUY PATH"}</small>
+    <b>{String(buyAudit.eligible?buyAudit.path:buyAudit.closestPath||"No calibrated path").replaceAll("_"," ")}</b>
+    <span>{buyAudit.eligible?`${buyAudit.tier} pathway satisfied. This authorizes staged new capital subject to execution/risk gates.`:`${buyAudit.primaryBlocker||"No calibrated pathway is currently satisfied."}`}</span>
+   </div>
+   <div className="v642PathChecks">
+    {(buyAudit.eligible?buyAudit.paths.find(x=>x.path===buyAudit.path)?.passed:buyAudit.paths[0]?.failed)?.slice(0,4).map((x,i)=><span key={`${x}-${i}`}>{buyAudit.eligible?"✓":"→"} {x}</span>)}
+   </div>
+  </div>:null}
 
   <div className="v64ScoreStrip">
    <article><small>COMPANY QUALITY <MetricInfo metric="business" proof={proof.business}/></small><b>{formatScore(decision.companyScore)}/100</b><span>{decision.companyLabel}{proof.business?.validationStatus==="UNVALIDATED"?" · heuristic":""}</span></article>

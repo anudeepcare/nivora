@@ -31,7 +31,7 @@ export async function GET(){
 
  const [
   tradesResult,intentsResult,ordersResult,snapshotsResult,evaluationsResult,
-  recentOrdersResult,recentFillsResult,runnerHealthResult
+  recentOrdersResult,recentFillsResult,runnerHealthResult,decisionSnapshotsResult
  ]=await Promise.all([
   db.from("nivora_v61_trade_fills").select("realized_pnl,return_pct,benchmark_return_pct").not("realized_pnl","is",null).order("filled_at",{ascending:true}).limit(1000),
   db.from("nivora_v61_trade_intents").select("id",{count:"exact",head:true}),
@@ -40,7 +40,8 @@ export async function GET(){
   db.from("nivora_v61_trade_evaluations").select("snapshot_id,symbol,today_action,status,reason,risk_code,client_order_id,evaluated_at,details").eq("engine_version",ENGINE_VERSION).gte("evaluated_at",since).order("evaluated_at",{ascending:false}).limit(200),
   db.from("nivora_v61_paper_orders").select("id,symbol,client_order_id,status,submitted_at,created_at").order("created_at",{ascending:false}).limit(100),
   db.from("nivora_v61_trade_fills").select("order_id,symbol,side,qty,fill_price,realized_pnl,return_pct,filled_at").order("filled_at",{ascending:false}).limit(200),
-  db.from("nivora_provider_health").select("ok,error_code,latency_ms,checked_at").eq("provider","nivora").eq("capability","paper-runner").order("checked_at",{ascending:false}).limit(1).maybeSingle()
+  db.from("nivora_provider_health").select("ok,error_code,latency_ms,checked_at").eq("provider","nivora").eq("capability","paper-runner").order("checked_at",{ascending:false}).limit(1).maybeSingle(),
+  db.from("nivora_v59_decision_snapshots").select("symbol,observed_at,decision").eq("engine_version",ENGINE_VERSION).order("observed_at",{ascending:false}).limit(1000)
  ]);
 
  let brokerHealth:any={configured,connected:false,equity:null,cash:null,positions:null,clock:null,error:null};
@@ -109,6 +110,24 @@ export async function GET(){
   benchmarkReturnPct:x.benchmark_return_pct==null?null:Number(x.benchmark_return_pct)
  })));
 
+ const snapshotLatest=new Map<string,any>();
+ for(const row of (decisionSnapshotsResult.data||[]) as any[]){
+  const symbol=String(row.symbol||"").toUpperCase();
+  if(symbol&&!snapshotLatest.has(symbol))snapshotLatest.set(symbol,row);
+ }
+ const decisionActions:Record<string,number>={},decisionPaths:Record<string,number>={},decisionBlockers:Record<string,number>={};
+ const decisionDetails:any[]=[];
+ for(const row of snapshotLatest.values()){
+  const d=row.decision||{},today=d.today||{},audit=today.buyAudit||null,action=String(today.action||"MISSING");
+  decisionActions[action]=(decisionActions[action]||0)+1;
+  const path=String(today.buyPath||audit?.path||"");if(path)decisionPaths[path]=(decisionPaths[path]||0)+1;
+  const blocker=String(audit?.primaryBlocker||"");if(blocker)decisionBlockers[blocker]=(decisionBlockers[blocker]||0)+1;
+  decisionDetails.push({symbol:String(row.symbol||"").toUpperCase(),action,observedAt:row.observed_at,buyPath:today.buyPath||null,buyTier:today.buyTier||null,closestPath:audit?.closestPath||null,primaryBlocker:blocker||null,pathDistance:audit?.paths?.[0]?.distance??null,thesisScore:Number(d.thesisScore||0),opportunityScore:Number(d.opportunityScore||0),timingScore:Number(d.timing?.score||0)});
+ }
+ const dominantBlockers=Object.entries(decisionBlockers).sort((a,b)=>b[1]-a[1]).map(([reason,count])=>({reason,count}));
+ const closestToBuy=decisionDetails.filter(x=>x.action!=="BUY"&&x.closestPath&&Number.isFinite(Number(x.pathDistance))).sort((a,b)=>Number(a.pathDistance)-Number(b.pathDistance)).slice(0,10);
+ const decisionAudit={total:decisionDetails.length,actions:decisionActions,buyPaths:decisionPaths,dominantBlockers:dominantBlockers.slice(0,10),closestToBuy};
+
  const runnerHealth=runnerHealthResult.data as any;
  const currentSession=marketSessionAt(new Date());
  const latestOrder=orders[0]||null;
@@ -142,6 +161,7 @@ export async function GET(){
   orders:ordersResult.count||0,
   funnel:{snapshots:snapshotsResult.count||0,evaluated:uniqueSnapshots.size,intents:intentCount,authorized:has("SUBMITTED"),blocked:has("BLOCKED"),submitted:has("SUBMITTED")},
   recentEvaluations,
+  decisionAudit,
   metrics,
   note:"Trading Lab metrics are realized paper results, not a guarantee of future returns."
  },{headers:{"Cache-Control":"private, no-store, max-age=0"}});
