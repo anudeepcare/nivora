@@ -23,6 +23,7 @@ import {applyLiveQuoteToToday} from "@/lib/nivora-live-today";
 import InvestorDecisionHero from "./InvestorDecisionHero";
 import {metricDefinitions} from "@/lib/nivora-metrics";
 import {ENGINE_VERSION} from "@/lib/nivora-version";
+import {formatMoney as displayMoney,formatPercent} from "@/lib/nivora-format";
 
 type Mode="now"|"swing"|"long"|"own";
 type Depth="simple"|"investor"|"pro";
@@ -701,10 +702,10 @@ export default function StockClient({symbol}:{symbol:string}){
 
     <header className="osStockHead v12StockHead">
       <div><small>{company?.name||d.name||symbol}</small><h1>{symbol}</h1></div>
-      <div><b>${currentPx}</b><span className={displayChangePct>=0?"up":"down"}>{displayChangePct>=0?"+":""}{displayChangePct}%</span></div>
+      <div><b>{displayMoney(currentPx)}</b><span className={displayChangePct>=0?"up":"down"}>{formatPercent(displayChangePct)}</span></div>
     </header>
 
-    <div className="liveFresh"><span className="liveStatus"><span className="liveDot"/>{liveQuote?`${String(liveQuote.session||"").replaceAll("_","-")} · ${liveQuote.integrityState||liveQuote.freshness}`:"QUOTE CONNECTING"}</span><span className="liveCadence">{liveQuote?`${liveQuote.provider} · ${liveQuote.ageSeconds==null?"timestamp unavailable":`${liveQuote.ageSeconds}s old`}${liveQuote.disagreementPct!=null?` · provider gap ${Number(liveQuote.disagreementPct).toFixed(2)}%`:""} · regular close ${liveQuote.regularClose??"—"}`:"Daily analysis stays available while the live quote connects."}</span></div>
+    <div className="liveFresh"><span className="liveStatus"><span className="liveDot"/>{liveQuote?`${String(liveQuote.session||"").replaceAll("_"," ")} · ${liveQuote.integrityState==="MARKET_CLOSED"?"LAST PRICE":liveQuote.integrityState||liveQuote.freshness}`:"QUOTE CONNECTING"}</span><span className="liveCadence">{liveQuote?(liveQuote.integrityState==="MARKET_CLOSED"?`${liveQuote.provider} · market closed · regular close ${displayMoney(Number(liveQuote.regularClose))}`:`${liveQuote.provider} · ${liveQuote.ageSeconds==null?"timestamp unavailable":`${liveQuote.ageSeconds}s old`}${liveQuote.disagreementPct!=null?` · provider gap ${Number(liveQuote.disagreementPct).toFixed(2)}%`:""} · regular close ${displayMoney(Number(liveQuote.regularClose))}`):"Daily analysis stays available while the live quote connects."}</span></div>
 
     <div className="v50PositionBar"><div><Sparkles size={15}/><span>NIVORA analyzes 3M, 6M, 1Y, 2Y and 3Y automatically.</span></div><button type="button" className={owns?"on":""} onClick={()=>setOwns(!owns)}>{owns?(ownerPosition?"✓ Position loaded":"✓ I own this"):"I own this"}</button></div>
 

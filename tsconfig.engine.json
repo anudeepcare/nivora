@@ -42,6 +42,18 @@
     "lib/nivora-provider-consensus.ts",
     "lib/nivora-decision-reality.ts",
     "lib/nivora-calibration-v63.ts",
-    "lib/nivora-trading-market-data.ts"
+    "lib/nivora-trading-market-data.ts",
+    "lib/nivora-technical-engine.ts",
+    "lib/nivora-backtest-fundamentals.ts",
+    "lib/nivora-backtest-replay.ts",
+    "lib/nivora-backtest-report.ts",
+    "lib/nivora-validation-gate.ts",
+    "lib/nivora-format.ts",
+    "lib/nivora-metric-proof.ts",
+    "lib/nivora-position-sizing.ts",
+    "lib/nivora-backtest-universe.ts",
+    "lib/nivora-statistics.ts",
+    "lib/nivora-bar-integrity.ts",
+    "lib/nivora-trade-ticket.ts"
   ]
 }

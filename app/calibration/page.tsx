@@ -12,7 +12,7 @@ export default function CalibrationPage(){
  const s=data?.summary||{},days=[30,90,180,365,730];
  return <AppShell><section className="tradingLabPage">
   <div className="tradingLabHead"><div><div className="eyebrow">NIVORA MODEL EVIDENCE</div><h1>Calibration before confidence.</h1><p>NIVORA separates score coverage from proven predictive reliability. Historical evidence is reused only when the thesis-weight contract is compatible.</p></div></div>
-  {loading?<div className="tradingLabEmpty">Loading calibration evidence…</div>:<>
+  {loading?<div className="tradingLabEmpty">Loading calibration evidence…</div>:Number(s.n||0)===0?<div className="v64EmptyEvidence"><small>MODEL EVIDENCE</small><h2>Collecting evidence</h2><b>No measured result yet</b><p>NIVORA has not accumulated enough matured benchmark-comparable observations to publish hit rate, alpha, Brier, ECE or reliability statistics. Backtest, untouched out-of-sample and forward-paper evidence will appear here only when it exists.</p></div>:<>
    <div className="tradingLabGrid">
     <article><small>STATUS</small><b>{String(data?.status||"unknown").toUpperCase()}</b><span>{s.n??0} Weight-compatible matured observations</span></article>
     <article><small>BENCHMARK HIT RATE</small><b>{measured(s.n,pct(s.hitRatePct))}</b><span>{s.confidence95?`95% interval ${pct(s.confidence95.lowPct)}–${pct(s.confidence95.highPct)}`:"Collecting interval"}</span></article>

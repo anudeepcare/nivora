@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "pointInTimeCorrect": true,
+    "includesDelisted": true,
+    "delistingReturnsHandled": true,
+    "source": "Replace with the historical membership/delisting dataset actually used",
+    "asOfDate": "2018-01-01"
+  },
+  "symbols": [
+    {
+      "symbol": "AAPL",
+      "cik": "320193"
+    },
+    {
+      "symbol": "MSFT",
+      "cik": "789019"
+    }
+  ]
+}

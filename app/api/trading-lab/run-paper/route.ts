@@ -9,6 +9,7 @@ import {loadTradingMarketData} from "@/lib/nivora-trading-market-data";
 import {ENGINE_VERSION,TRADING_LAB_VERSION} from "@/lib/nivora-version";
 import {buildClosedTradesFromFills} from "@/lib/nivora-trading-metrics";
 import {explainNoIntent} from "@/lib/nivora-trading-evaluation";
+import {sizePosition} from "@/lib/nivora-position-sizing";
 
 export const dynamic="force-dynamic";
 
@@ -217,7 +218,34 @@ async function run(req:Request,automatic=false){
      automatic
     };
 
-    const risk=evaluateTradingRisk(intent,context,DEFAULT_PAPER_RISK_POLICY);
+    let executableIntent=intent;
+    let sizing:any=null;
+    if(intent.side==="BUY"){
+     const riskZone=Array.isArray(d.zones)?d.zones.find((z:any)=>z?.kind==="risk"&&Number(z?.low)>0):null;
+     const invalidation=Number(riskZone?.low||0);
+     const riskPerTradePct=Number(process.env.TRADING_LAB_RISK_PER_TRADE_PCT||0.5);
+     if(!quote||quote.price<=0||!invalidation||invalidation>=quote.price){
+      await recordEvaluation(snapshot,"BLOCKED",String(today.action||"NO ACTION"),"A valid decision-linked invalidation is required before sizing new paper risk.","POSITION_SIZING",null,{...quoteDetails,invalidation,riskPerTradePct});
+      results.push({symbol:snapshot.symbol,status:"BLOCKED",action:String(today.action||"NO ACTION"),reason:"A valid decision-linked invalidation is required before sizing new paper risk.",riskCode:"POSITION_SIZING"});
+      continue;
+     }
+     sizing=sizePosition({
+      equity:account.equity,
+      entry:quote.price,
+      invalidation,
+      riskPerTradePct,
+      maxPositionPct:DEFAULT_PAPER_RISK_POLICY.maxPositionPct,
+      liquidityCapNotional:account.equity*(DEFAULT_PAPER_RISK_POLICY.maxTradePct/100)
+     });
+     if(!sizing.allowed){
+      await recordEvaluation(snapshot,"BLOCKED",String(today.action||"NO ACTION"),sizing.reason,"POSITION_SIZING",null,{...quoteDetails,sizing,riskPerTradePct});
+      results.push({symbol:snapshot.symbol,status:"BLOCKED",action:String(today.action||"NO ACTION"),reason:sizing.reason,riskCode:"POSITION_SIZING"});
+      continue;
+     }
+     executableIntent={...intent,targetNotional:sizing.notional};
+    }
+
+    const risk=evaluateTradingRisk(executableIntent,context,DEFAULT_PAPER_RISK_POLICY);
     await db.from("nivora_v61_trade_intents").insert({
      intent_id:intent.id,
      symbol:intent.symbol,
@@ -225,14 +253,14 @@ async function run(req:Request,automatic=false){
      evidence_fingerprint:intent.evidenceFingerprint,
      side:intent.side,
      intent_type:intent.intentType,
-     target_notional:intent.targetNotional,
+     target_notional:executableIntent.targetNotional,
      approved_notional:risk.approvedNotional,
      status:risk.allowed?"AUTHORIZED":"BLOCKED",
      risk_code:risk.code,
      risk_reason:risk.reason,
      engine_version:ENGINE_VERSION,
      trading_lab_version:TRADING_LAB_VERSION,
-     source_intent:intent,
+     source_intent:executableIntent,
      source_context:context
     });
 
@@ -243,7 +271,7 @@ async function run(req:Request,automatic=false){
     }
 
     if(!quote||quote.price<=0)throw new Error("Risk authorization occurred without a usable execution quote.");
-    const order=planPaperOrder(intent,risk.approvedNotional,quote.price);
+    const order=planPaperOrder(executableIntent,risk.approvedNotional,quote.price);
     const submitted=await broker.submitOrder(order);
 
     await db.from("nivora_v61_paper_orders").insert({
@@ -261,7 +289,7 @@ async function run(req:Request,automatic=false){
      broker_response:submitted
     });
 
-    await recordEvaluation(snapshot,"SUBMITTED",String(today.action||"NO ACTION"),"Paper order submitted to Alpaca.",risk.code,submitted.clientOrderId,{risk,orderStatus:submitted.status,...quoteDetails});
+    await recordEvaluation(snapshot,"SUBMITTED",String(today.action||"NO ACTION"),"Paper order submitted to Alpaca.",risk.code,submitted.clientOrderId,{risk,sizing,orderStatus:submitted.status,...quoteDetails});
     results.push({symbol:snapshot.symbol,status:"SUBMITTED",action:String(today.action||"NO ACTION"),reason:"Paper order submitted to Alpaca.",clientOrderId:submitted.clientOrderId,integrityState:market.integrity.state});
    }catch(error:any){
     const reason=error?.message||"Unexpected per-symbol paper execution error.";

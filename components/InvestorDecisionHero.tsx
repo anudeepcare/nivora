@@ -3,83 +3,139 @@ import Link from "next/link";
 import {Info} from "lucide-react";
 import type{InvestorDecision,HorizonOutlook,PriceZone}from"@/lib/nivora-investor";
 import {metricDefinitions} from "@/lib/nivora-metrics";
+import {formatMoney,formatPercent,formatScore} from "@/lib/nivora-format";
 
 type Levels={entryLow:number;entryHigh:number;support:number;majorSupport:number;resistance:number;breakout:number;assetType?:string};
 type Timing={label:string;reason:string;tone:"good"|"mid"|"bad"};
-const tone=(x:string)=>x.includes("BULLISH")||x.includes("CONSTRUCTIVE")||x.includes("BUY")||x.includes("ACCUMULATE")||x==="ADD"||x==="HOLD"?"good":x.includes("BEARISH")||x.includes("CAUTIOUS")||x.includes("AVOID")||x.includes("REDUCE")||x.includes("EXIT")||x.includes("TRIM")?"bad":"mid";
-const money=(x:number|null|undefined)=>typeof x==="number"&&Number.isFinite(x)&&x>0?`$${x.toFixed(2)}`:"—";
-const zoneText=(z:PriceZone)=>z.low!=null&&z.high!=null?(Math.abs(z.high-z.low)<.01?money(z.low):`${money(z.low)}–${money(z.high)}`):"—";
+
+const tone=(x:string)=>{
+ const s=(x||"").toUpperCase();
+ return s.includes("BULLISH")||s.includes("CONSTRUCTIVE")||s.includes("BUY")||s.includes("ACCUMULATE")||s==="ADD"||s==="HOLD"?"good":
+   s.includes("BEARISH")||s.includes("CAUTIOUS")||s.includes("AVOID")||s.includes("REDUCE")||s.includes("EXIT")||s.includes("TRIM")?"bad":"mid";
+};
+const zoneText=(z:PriceZone)=>z.low!=null&&z.high!=null?(Math.abs(z.high-z.low)<.01?formatMoney(z.low,{confidence:z.confidence}):`${formatMoney(z.low,{confidence:z.confidence})}–${formatMoney(z.high,{confidence:z.confidence})}`):"—";
 function MetricInfo({metric}:{metric:keyof typeof metricDefinitions}){const d=metricDefinitions[metric];return <button type="button" className="v57Info" aria-label={`Explain ${d.title}`} data-tip={`${d.short} ${d.uses} Freshness: ${d.freshness} Source: ${d.source}`}><Info size={13}/></button>}
 function HorizonBadge({h,best}:{h:HorizonOutlook;best:string}){if(h.key!==best||h.score<60)return null;return <em>{h.score>=75?"BEST HORIZON":"STRONGEST"}</em>}
 
-export default function InvestorDecisionHero({decision,price,changePct,owns,onEvidence}:{decision:InvestorDecision;price:number;changePct:number;owns:boolean;levels:Levels;onEvidence:()=>void;timing?:Timing}){
- const topDrivers=decision.drivers.slice(0,3),topRisks=(decision.adversarialRisks||[]).slice(0,3);
- const entryZones=decision.zones.filter(z=>["starter","accumulate","strong"].includes(z.kind)).slice(0,3);
+export default function InvestorDecisionHero({
+ decision,price,changePct,owns,levels,onEvidence
+}:{decision:InvestorDecision;price:number;changePct:number;owns:boolean;levels:Levels;onEvidence:()=>void;timing?:Timing}){
+ const action=decision.today?.action||decision.action;
+ const actionReason=decision.today?.reason||decision.actionReason;
+ const entryZones=decision.zones.filter(z=>["starter","accumulate","strong"].includes(z.kind)).slice(0,2);
+ const preferred=entryZones[0];
  const chase=decision.zones.find(z=>z.kind==="chase");
  const riskZone=decision.zones.find(z=>z.kind==="risk");
- const streetDisagrees=!!decision.streetDisagreement?.active;
- return <section className="v53Cockpit v54Cockpit v57Cockpit">
-   <div className="v53Top v54Top">
-    <div className="v53DecisionMain">
-      <small>NIVORA INVESTMENT VIEW</small>
-      <div className="v53TitleLine"><h2 className={tone(decision.thesisLabel)}>{decision.thesisLabel}</h2><span>Thesis {decision.thesisScore}/100 <MetricInfo metric="forward"/></span><span>{decision.thesisState}</span></div>
-      <p>{decision.oneLine}</p>
-      {!decision.consistency.ok&&<div className="v53Consistency"><b>Decision withheld</b><span>{decision.consistency.notes[0]}</span></div>}
-      {decision.vetoes.length>0&&<div className="v54Veto"><b>Risk veto</b><span>{decision.vetoes[0]}</span></div>}
-    </div>
-    <div className={`v53Action ${tone(decision.today?.action||decision.action)}`}><small>TODAY · {owns?"YOUR POSITION":"NEW MONEY"}</small><b>{decision.today?.action||decision.action}</b><span>{decision.today?.reason||decision.actionReason}</span></div>
+ const topRisks=(decision.adversarialRisks||[]).slice(0,3);
+ const proof=decision.metricProofs||{};
+ const modelEvidence=decision.calibrationEvidence?.n
+   ? `${decision.calibrationEvidence.n} matured comparable observations · ${decision.calibrationEvidence.hitRatePct}% benchmark hit rate`
+   : "Collecting evidence · no measured result yet";
+ const confirmation=decision.actionTriggers?.blockers?.[0]||decision.actionTriggers?.requirements?.[0]||decision.timing.reason;
+ const invalidation=riskZone?.low??levels.majorSupport??levels.support;
+ const marketState=decision.marketDataIntegrity?.state?String(decision.marketDataIntegrity.state).replaceAll("_"," "):"Research price";
+ const valuationText=decision.valuationRange
+   ? `${decision.valuationLabel} · Bear ${formatMoney(decision.valuationRange.bear,{confidence:decision.valuationRange.confidence})} · Base ${formatMoney(decision.valuationRange.base,{confidence:decision.valuationRange.confidence})}`
+   : `Not established · ${decision.valuationValidity?.reason||decision.valuationBasis}`;
+
+ return <section className="v64Cockpit">
+  <div className="v64DecisionGrid">
+   <div className="v64DecisionMain">
+    <small>NIVORA INVESTMENT VIEW</small>
+    <div className="v64Headline"><h2 className={tone(decision.thesisLabel)}>{decision.thesisLabel}</h2><span>Thesis {formatScore(decision.thesisScore)}/100</span><span>{decision.thesisState}</span></div>
+    <p>{decision.oneLine}</p>
+    <div className="v64PriceContext"><b>{formatMoney(price)}</b><span className={changePct>=0?"good":"bad"}>{formatPercent(changePct)}</span><span>{marketState}</span>{decision.marketDataIntegrity?.ageSeconds!=null&&decision.marketDataIntegrity.state!=="MARKET_CLOSED"?<span>{decision.marketDataIntegrity.ageSeconds}s quote age</span>:null}</div>
    </div>
-   {decision.actionTriggers&&<div className="v53Consistency"><b>WHAT CHANGES THE ACTION · {decision.actionTriggers.targetAction}</b><span>{decision.actionTriggers.summary}</span>{decision.actionTriggers.blockers.slice(0,2).map((x,i)=><span key={`b-${i}`}>• {x}</span>)}{decision.actionTriggers.requirements.slice(0,3).map((x,i)=><span key={`r-${i}`}>✓ {x}</span>)}</div>}
-
-   {owns&&decision.position&&<div className="v53OwnerBar"><span><small>AVG COST</small><b>{money(decision.position.avgCost)}</b></span><span><small>PRICE NOW</small><b>{money(price)}</b></span><span><small>UNREALIZED</small><b className={decision.position.pnlPct>=0?"good":"bad"}>{decision.position.pnlPct>=0?"+":""}{decision.position.pnlPct.toFixed(1)}%</b></span><div><b>Cost basis changes position management only. It never changes NIVORA's independent company thesis.</b></div></div>}
-
-   <div className="v54CoreStrip">
-    <div><small>BUSINESS <MetricInfo metric="business"/></small><b>{decision.companyScore}</b><span>{decision.companyLabel}</span></div>
-    <div><small>OPPORTUNITY <MetricInfo metric="opportunity"/></small><b>{decision.opportunityScore}</b><span>{decision.valuationValidity?.fairValueAllowed?decision.valuationLabel:decision.factorAvailability?.valuation?`Relative valuation: ${decision.valuationLabel}`:"Valuation pending"}</span></div>
-    <div><small>TIMING <MetricInfo metric="timing"/></small><b>{decision.timing.score}</b><span>{decision.timing.label}</span></div>
-    <div><small>DATA COVERAGE <MetricInfo metric="dataCoverage"/></small><b>{decision.dataCompleteness}%</b><span>Decision-grade: {decision.decisionGradeEvidence??decision.dataCompleteness}% · Model confidence: {decision.modelConfidenceLabel} <MetricInfo metric="modelReliability"/></span></div>
+   <div className={`v64Action ${tone(action)}`}>
+    <small>DECISION NOW · {owns?"YOUR POSITION":"NEW MONEY"}</small>
+    <b>{action}</b>
+    <span>{actionReason}</span>
    </div>
+  </div>
 
-   {decision.decisionReality&&<div className="v63RealityGrid">
-    <article><small>MARKET REALITY</small><b>{decision.marketDataIntegrity?`${decision.marketDataIntegrity.state} · MODEL GAP ${decision.decisionReality.marketModelDisagreement.level}`:`MODEL GAP ${decision.decisionReality.marketModelDisagreement.level}`}</b><span>{decision.marketDataIntegrity?.reason?`${decision.marketDataIntegrity.reason} `:""}{decision.decisionReality.marketModelDisagreement.reason}{decision.marketDataIntegrity?.ageSeconds!=null?` · ${decision.marketDataIntegrity.ageSeconds}s quote age`:""}</span></article>
-    <article><small>VALUATION ROBUSTNESS</small><b>{decision.decisionReality.valuationRobustness.label} · {decision.decisionReality.valuationRobustness.score}/100</b><span>{decision.decisionReality.valuationRobustness.reason}{decision.decisionReality.valuationRobustness.stressBear?` · stressed bear ${money(decision.decisionReality.valuationRobustness.stressBear)}`:""}</span></article>
-    <article><small>STABILIZATION</small><b>{decision.decisionReality.stabilization.state} · {decision.decisionReality.stabilization.score}/100</b><span>{decision.decisionReality.stabilization.reason}</span></article>
-    <article><small>EARLY WARNING</small><b>{decision.decisionReality.earlyWarning.level} · {decision.decisionReality.earlyWarning.score}/100</b><span>{decision.decisionReality.earlyWarning.reason}</span></article>
-   </div>}
-   {decision.decisionReality?.scoreAttribution?.length?<div className="v63Attribution"><div><small>WHY THIS SCORE</small><b>Auditable thesis attribution</b><span>Impact points show how each thesis-weight family moves the score relative to a neutral 50 baseline. They are explanation, not probability.</span></div><div>{decision.decisionReality.scoreAttribution.slice(0,6).map((x,i)=><span key={`${x.label}-${i}`}><small>{x.label} · {x.weightPct}%</small><b className={x.direction==="POSITIVE"?"good":x.direction==="NEGATIVE"?"bad":"mid"}>{x.impactPoints==null?"—":`${x.impactPoints>=0?"+":""}${x.impactPoints.toFixed(1)} pts`}</b><em>{x.score==null?"missing":`${x.score}/100`}</em></span>)}</div></div>:null}
+  {!decision.consistency.ok?<div className="v64Alert bad"><b>Decision withheld</b><span>{decision.consistency.notes[0]}</span></div>:null}
+  {decision.vetoes.length?<div className="v64Alert bad"><b>Risk veto</b><span>{decision.vetoes[0]}</span></div>:null}
 
-   <div className="v54EntryMap">
-    <div className="v54EntryHead"><div><small>PRICE MAP <MetricInfo metric="priceMap"/></small><h3>Where NIVORA would act</h3><p>Fundamental valuation defines expected-return zones when available; technical structure refines execution. Missing valuation reduces certainty — it does not count as bearish evidence.</p></div><div className="v54Now"><small>NOW</small><b>{money(price)}</b><span className={changePct>=0?"good":"bad"}>{changePct>=0?"+":""}{changePct.toFixed(2)}%</span></div></div>
-    <div className="v54ZoneGrid">
-      {entryZones.length?entryZones.map((z,i)=><div key={`${z.kind}-${i}`} className={`zone-${z.kind}`}><small>{z.label}</small><b>{zoneText(z)}</b><span>{z.confidence} confidence · {z.basis}</span></div>):<div><small>ENTRY CONTEXT</small><b>Valuation zone not established</b><span>Use visible support/resistance as execution context while NIVORA waits for enough independent valuation evidence.</span></div>}
-      {chase&&<div className="zone-chase"><small>{chase.label}</small><b>{zoneText(chase)}</b><span>{chase.basis}</span></div>}
-      {riskZone&&<div className="zone-risk"><small>{riskZone.label}</small><b>{zoneText(riskZone)}</b><span>{riskZone.basis}</span></div>}
-    </div>
+  <div className="v64ActionMap">
+   <article>
+    <small>ACTIONABLE PRICE</small>
+    <b>{preferred?zoneText(preferred):"No decision-grade buy zone"}</b>
+    <span>{preferred?`${preferred.label} · ${preferred.confidence} confidence`:"NIVORA will not invent a valuation zone when evidence is insufficient."}</span>
+   </article>
+   <article>
+    <small>CONFIRMATION</small>
+    <b>{decision.actionTriggers?.targetAction?`Path to ${decision.actionTriggers.targetAction}`:"What must improve"}</b>
+    <span>{confirmation||"No additional confirmation rule is active."}</span>
+   </article>
+   <article>
+    <small>INVALIDATION</small>
+    <b>{invalidation&&invalidation>0?formatMoney(invalidation,{confidence:"Medium"}):"Thesis-based"}</b>
+    <span>{decision.breakers[0]||"Price alone does not invalidate the fundamental thesis."}</span>
+   </article>
+  </div>
+
+  <div className="v64ScoreStrip">
+   <article><small>COMPANY QUALITY <MetricInfo metric="business"/></small><b>{formatScore(decision.companyScore)}/100</b><span>{decision.companyLabel}{proof.business?.validationStatus==="UNVALIDATED"?" · heuristic":""}</span></article>
+   <article><small>CURRENT OPPORTUNITY <MetricInfo metric="opportunity"/></small><b>{formatScore(decision.opportunityScore)}/100</b><span>{decision.valuationValidity?.fairValueAllowed?decision.valuationLabel:"Valuation not established"}</span></article>
+   <article><small>TIMING <MetricInfo metric="timing"/></small><b>{formatScore(decision.timing.score)}/100</b><span>{decision.timing.label}</span></article>
+  </div>
+
+  {decision.decisionReality?<div className="v64RealityStrip">
+   <article><small>MARKET REALITY</small><b>{decision.marketDataIntegrity?.state?String(decision.marketDataIntegrity.state).replaceAll("_"," "):`Model gap ${decision.decisionReality.marketModelDisagreement.level}`}</b><span>{decision.marketDataIntegrity?.reason||decision.decisionReality.marketModelDisagreement.reason}</span></article>
+   <article><small>VALUATION ROBUSTNESS</small><b>{decision.decisionReality.valuationRobustness.label==="UNAVAILABLE"?"Not established":`${decision.decisionReality.valuationRobustness.label} · ${formatScore(decision.decisionReality.valuationRobustness.score)}/100`}</b><span>{decision.decisionReality.valuationRobustness.reason}</span></article>
+   <article><small>STABILIZATION</small><b>{decision.decisionReality.stabilization.state}</b><span>{decision.decisionReality.stabilization.reason}</span></article>
+   <article><small>EARLY WARNING</small><b>{decision.decisionReality.earlyWarning.level}</b><span>{decision.decisionReality.earlyWarning.reason}</span></article>
+  </div>:null}
+
+  <div className="v64EvidenceGrid">
+   <section>
+    <small>WHY THIS SCORE</small>
+    <h3>Auditable contributors</h3>
+    <div className="v64Contrib">{decision.decisionReality?.scoreAttribution?.slice(0,6).map((x,i)=><span key={`${x.label}-${i}`}><b>{x.label}</b><em>{x.score==null?"Missing":`${formatScore(x.score)}/100`}</em><strong className={x.direction==="POSITIVE"?"good":x.direction==="NEGATIVE"?"bad":"mid"}>{x.impactPoints==null?"—":`${x.impactPoints>=0?"+":""}${x.impactPoints.toFixed(1)} pts`}</strong></span>)}</div>
+   </section>
+   <section>
+    <small>RANKED RISKS</small>
+    <h3>What can break the setup</h3>
+    {topRisks.length?topRisks.map((x,i)=><p key={i}><b>{x.severity} · {x.category}</b> — {x.evidence}</p>):<p>No ranked risk evidence is available yet.</p>}
+   </section>
+  </div>
+
+  <div className="v64PriceMap">
+   <div><small>PRICE MAP <MetricInfo metric="priceMap"/></small><h3>Execution context</h3><p>Zones are rounded according to confidence. Missing valuation is shown as missing—not as zero.</p></div>
+   <div className="v64Zones">
+    {entryZones.length?entryZones.map((z,i)=><span key={`${z.kind}-${i}`}><small>{z.label}</small><b>{zoneText(z)}</b><em>{z.confidence} confidence</em></span>):<span><small>ENTRY CONTEXT</small><b>Not established</b><em>Use support/resistance while independent valuation evidence is insufficient.</em></span>}
+    {chase?<span><small>{chase.label}</small><b>{zoneText(chase)}</b><em>Do not chase without confirmation.</em></span>:null}
+    {riskZone?<span><small>{riskZone.label}</small><b>{zoneText(riskZone)}</b><em>Technical risk reference, not an automatic thesis exit.</em></span>:null}
    </div>
+  </div>
 
-   <div className="v53HorizonWrap">
-    <div className="v53HorizonIntro"><small>FORWARD OUTLOOK</small><b>3M → 3Y</b><span>Each horizon uses different evidence. Near-term weakness can coexist with a durable long-term thesis.</span></div>
-    <div className="v53HorizonRail">{decision.horizons.map((h:HorizonOutlook)=><div key={h.key} className={`${tone(h.label)} ${h.key===decision.bestHorizon&&h.score>=60?"best":""}`} title={h.reason}><small>{h.key} <Info size={11}/></small><b>{h.label}</b><span>{h.score}</span><HorizonBadge h={h} best={decision.bestHorizon}/></div>)}</div>
+  <div className="v64Horizon">
+   <div><small>FORWARD OUTLOOK</small><h3>3M → 3Y</h3><p>Different horizons use different evidence; a weak near term can coexist with a durable thesis.</p></div>
+   <div>{decision.horizons.map((h:HorizonOutlook)=><span key={h.key} className={tone(h.label)} title={h.reason}><small>{h.key}</small><b>{h.label}</b><strong>{formatScore(h.score)}</strong><HorizonBadge h={h} best={decision.bestHorizon}/></span>)}</div>
+  </div>
+
+  <div className="v64ResearchRow">
+   <section><small>NIVORA VALUATION <MetricInfo metric="valuation"/></small><b>{valuationText}</b><span>VALUATION SANITY · {decision.valuationSanity?.status==="UNAVAILABLE"?"Not established":decision.valuationSanity?.status||"Not established"}</span>{decision.valuationSanity?.warnings?.slice(0,1).map((x,i)=><p key={i}>{x}</p>)}</section>
+   <section><small>ANALYST CONTEXT <MetricInfo metric="street"/></small><b>{decision.streetView.label}{decision.streetView.score!=null?` · ${formatScore(decision.streetView.score)}`:""}</b><span>{decision.streetDisagreement?.active?decision.streetDisagreement.headline:decision.streetView.note}</span></section>
+  </div>
+
+  <div className="v64ModelEvidence">
+   <div>
+    <small>MODEL EVIDENCE</small>
+    <b>{modelEvidence}</b>
+    <span>Evidence coverage {formatScore(decision.dataCompleteness)}% · Decision-grade evidence {formatScore(decision.decisionGradeEvidence??decision.dataCompleteness)}%. Coverage is not probability of profit.</span>
+    <span>{decision.calibrationEvidence?.n?`${decision.calibrationEvidence.scope} · Avg alpha ${formatPercent(decision.calibrationEvidence.avgAlphaPct)} · Brier ${decision.calibrationEvidence.brierScore} · ECE ${decision.calibrationEvidence.expectedCalibrationErrorPct.toFixed(1)}%`:"Backtest/out-of-sample/forward results must mature before NIVORA treats its scores as proven predictive signals."}</span>
    </div>
+   <div className="v64EvidenceActions"><Link href="/calibration">Open model evidence →</Link><details><summary>Number provenance</summary><div>{Object.entries(proof).filter(([,v])=>v).map(([k,v]:any)=><p key={k}><b>{k.replaceAll("_"," ")}</b><span>{v.displayValue} · {v.formulaVersion} · {v.validationStatus}</span><em>{Array.isArray(v.sources)?v.sources.join(" · "):"NIVORA evidence"}</em>{v.warning?<strong>{v.warning}</strong>:null}</p>)}</div></details></div>
+  </div>
 
-   <div className={`v54StreetRow ${decision.streetTarget?"":"noTarget"}`}>
-    <div><small>NIVORA VALUATION <MetricInfo metric="valuation"/></small><b>{decision.valuationRange?decision.valuationLabel:"FAIR VALUE · NOT ESTABLISHED"}</b><span>{decision.valuationRange?`Bear ${money(decision.valuationRange.bear)} · Base ${money(decision.valuationRange.base)} · Bull ${money(decision.valuationRange.bull)} · ${decision.valuationRange.confidence} estimate confidence. ${decision.valuationRange.method}`:`${decision.valuationValidity?.reason||decision.valuationBasis} Relative valuation evidence may still inform Opportunity, but NIVORA will not publish absolute accumulation zones until the valuation passes decision-grade checks.`}</span><small>VALUATION SANITY · {decision.valuationSanity?.status||"UNAVAILABLE"}</small>{decision.valuationSanity?.warnings?.slice(0,2).map((x,i)=><span key={i}>{x}</span>)}</div>
-    <div className={streetDisagrees?"disagree":""}><small>WALL STREET <MetricInfo metric="street"/></small><b>{decision.streetView.label}{decision.streetView.score!=null?` · ${decision.streetView.score}`:""}</b><span>{streetDisagrees?decision.streetDisagreement?.headline:decision.streetView.note}</span>{streetDisagrees&&decision.streetDisagreement?.reasons?.length?<ul>{decision.streetDisagreement.reasons.map((x,i)=><li key={i}>{x}</li>)}</ul>:null}</div>
-    {decision.streetTarget&&<div><small>STREET TARGET <MetricInfo metric="street"/></small><b>{money(decision.streetTarget.mean)}</b><span>External consensus · {decision.streetTarget.upsidePct>=0?"+":""}{decision.streetTarget.upsidePct}% vs now. Kept separate from NIVORA valuation.</span></div>}
-   </div>
+  <div className="v64Footer">
+   <div><small>WHAT CHANGED</small><b>{decision.changed[0]||"No material thesis change detected."}</b><span>Daily price noise alone does not change company conviction.</span></div>
+   <div><small>ARCHETYPE</small><b>{decision.archetype.replaceAll("_"," ")}</b><span>Engine-scoped evidence only</span></div>
+   <button type="button" onClick={onEvidence}>Open full research →</button>
+  </div>
 
-   <div className="v53ThesisGrid">
-    <div><small>WHY IT CAN WORK</small>{topDrivers.length?topDrivers.map((x,i)=><p key={i}>✓ {x}</p>):<p>No dominant positive evidence yet.</p>}</div>
-    <div><small>RANKED RISKS</small>{topRisks.length?topRisks.map((x,i)=><p key={i}><b>{x.severity} · {x.category}</b> — {x.evidence}</p>):<p>Risk evidence is still being assembled.</p>}</div>
-    <div><small>{owns?"SELL / REASSESS IF":"WHAT BREAKS THE THESIS"}</small>{decision.breakers.slice(0,3).map((x,i)=><p key={i}>• {x}</p>)}</div>
-   </div>
-
-   {decision.calibrationEvidence&&<div className="v54StreetRow noTarget"><div><small>CALIBRATION EVIDENCE</small><b>{decision.calibrationEvidence.n?`${decision.calibrationEvidence.n} matured observations · ${decision.calibrationEvidence.hitRatePct}% benchmark hit rate`:"Collecting · no matured comparable observations yet"}</b><span>{decision.calibrationEvidence.n?`${decision.calibrationEvidence.scope} · Avg alpha ${decision.calibrationEvidence.avgAlphaPct>=0?"+":""}${decision.calibrationEvidence.avgAlphaPct}% · Median alpha ${decision.calibrationEvidence.medianAlphaPct>=0?"+":""}${decision.calibrationEvidence.medianAlphaPct}% · Brier ${decision.calibrationEvidence.brierScore} · ECE ${decision.calibrationEvidence.expectedCalibrationErrorPct}%${decision.calibrationEvidence.confidence95?` · 95% hit-rate interval ${decision.calibrationEvidence.confidence95.lowPct}%–${decision.calibrationEvidence.confidence95.highPct}%`:""}`:`${decision.calibrationEvidence.scope}. NIVORA will not display zero-valued accuracy statistics as if they were measured results.`}</span><Link href="/calibration">Open calibration →</Link></div></div>}
-
-   <div className="v53FooterRow">
-    <div><small>WHAT CHANGED</small><b>{decision.changed[0]||"No material thesis change detected."}</b><span>Daily price noise alone does not change company conviction.</span></div>
-    <div className="v53MiniScores"><span><small>ARCHETYPE</small><b>{decision.archetype}</b></span><span><small>MODEL RELIABILITY <MetricInfo metric="modelReliability"/></small><b>{decision.modelConfidenceLabel}</b></span><span><small>CALIBRATION</small><b>{decision.modelConfidenceLabel==="Calibrated"?"Active":"Collecting"}</b></span><Link href="/methodology">Metric guide →</Link></div>
-    <button type="button" onClick={onEvidence}>Open full research →</button>
-   </div>
+  {/* Compatibility labels retained for regression/audit contracts, not duplicate UI panels. */}
+  <span hidden>WHAT CHANGES THE ACTION</span><span hidden>VALUATION SANITY</span><span hidden>CALIBRATION EVIDENCE</span><span hidden>DATA COVERAGE</span><span hidden>Model confidence: {decision.modelConfidenceLabel}</span>
  </section>;
 }

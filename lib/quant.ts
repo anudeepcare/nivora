@@ -9,21 +9,31 @@ export function ema(values:number[], period:number){
   for(let i=1;i<values.length;i++) out.push(values[i]*k+out[i-1]*(1-k));
   return out;
 }
-export function rsi(values:number[], period=14){
-  if(values.length<=period) return 50;
+export function rsi(values:number[],period=14){
+  if(values.length<=period)return 50;
   const changes=values.slice(1).map((v,i)=>v-values[i]);
-  let gains=0,losses=0;
-  for(const c of changes.slice(-period)){ if(c>0) gains+=c; else losses-=c; }
-  const ag=gains/period, al=losses/period;
-  if(al===0) return 100;
-  const rs=ag/al; return 100-(100/(1+rs));
+  let avgGain=0,avgLoss=0;
+  for(const ch of changes.slice(0,period)){if(ch>0)avgGain+=ch;else avgLoss-=ch}
+  avgGain/=period;avgLoss/=period;
+  for(const ch of changes.slice(period)){
+    const gain=ch>0?ch:0,loss=ch<0?-ch:0;
+    avgGain=(avgGain*(period-1)+gain)/period;
+    avgLoss=(avgLoss*(period-1)+loss)/period;
+  }
+  if(avgLoss===0)return 100;
+  const rs=avgGain/avgLoss;
+  return 100-(100/(1+rs));
 }
 export function atr(rows:any[],period=14){
   const tr=rows.map((x:any,i:number)=>{
     const h=+x.high,l=+x.low,pc=i?+rows[i-1].close:+x.close;
     return Math.max(h-l,Math.abs(h-pc),Math.abs(l-pc));
   });
-  return avg(tr.slice(-period));
+  if(!tr.length)return 0;
+  if(tr.length<=period)return avg(tr);
+  let a=avg(tr.slice(0,period));
+  for(const v of tr.slice(period))a=(a*(period-1)+v)/period;
+  return a;
 }
 export function stddev(values:number[],period=20){
   const x=values.slice(-Math.min(period,values.length)); if(!x.length)return 0;
