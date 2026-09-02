@@ -68,3 +68,12 @@ export function assessQuoteIntegrity(
     disagreementPct:disagreement==null?null:+disagreement.toFixed(4)
   };
 }
+
+
+export function validateQuoteIdentity(expectedSymbol:string,quote:{symbol?:string|null;provider?:string|null}){
+ const expected=String(expectedSymbol||"").trim().toUpperCase();
+ const actual=String(quote?.symbol||"").trim().toUpperCase();
+ if(!expected||!actual)return{ok:false,reason:"Quote symbol identity is unavailable."};
+ if(expected!==actual)return{ok:false,reason:`Quote symbol mismatch: requested ${expected}, provider returned ${actual}.`};
+ return{ok:true,reason:"Quote symbol matches the requested ticker."};
+}

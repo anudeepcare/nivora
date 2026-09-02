@@ -113,9 +113,9 @@ async function main(){
  });
 
  const artifact={
-  schemaVersion:"v64-backtest-artifact-1",
+  schemaVersion:"v64.1-backtest-artifact-1",
   generatedAt:new Date().toISOString(),
-  engineVersion:"v64",
+  engineVersion:"v64.1",
   benchmarkSymbol,
   start,end,horizonDays,
   costModel:{slippageBps:Number(args.slippageBps||15),commissionBps:Number(args.commissionBps||0)},

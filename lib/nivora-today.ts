@@ -1,5 +1,5 @@
 import {TODAY_POLICY_VERSION} from "./nivora-version";
-export type TodayAction="BUY"|"ADD"|"HOLD"|"WAIT"|"TRIM"|"SELL"|"NO ACTION";
+export type TodayAction="BUY"|"ADD"|"HOLD"|"WAIT"|"AVOID"|"TRIM"|"SELL"|"NO ACTION";
 export type TodayDecision={action:TodayAction;blocked:boolean;reason:string;policyVersion:string};
 
 type DecisionLike={thesisScore:number;opportunityScore:number;companyScore:number;thesisLabel:string;thesisState:string;timing?:{label?:string;score?:number};valuationLabel?:string;vetoes?:string[];consistency?:{ok?:boolean;notes?:string[]}};
@@ -7,9 +7,9 @@ type DecisionLike={thesisScore:number;opportunityScore:number;companyScore:numbe
 export function deriveTodayAction(d:DecisionLike,owns:boolean):TodayDecision{
   const vetoes=d.vetoes||[],consistent=d.consistency?.ok!==false;
   if(d.thesisState==="Broken"||d.thesisScore<29||vetoes.length>=2||!consistent){
-    return{action:owns?"SELL":"WAIT",blocked:true,reason:!consistent?`Decision blocked by consistency gate${d.consistency?.notes?.[0]?`: ${d.consistency.notes[0]}`:"."}`:"Long-term thesis/veto evidence blocks new risk.",policyVersion:TODAY_POLICY_VERSION};
+    return{action:owns?"SELL":"AVOID",blocked:true,reason:!consistent?`Decision blocked by consistency gate${d.consistency?.notes?.[0]?`: ${d.consistency.notes[0]}`:"."}`:"Long-term thesis/veto evidence blocks new risk.",policyVersion:TODAY_POLICY_VERSION};
   }
-  if(d.thesisLabel==="BEARISH")return{action:owns?"SELL":"WAIT",blocked:true,reason:"Bearish fundamental evidence blocks a timing-led buy.",policyVersion:TODAY_POLICY_VERSION};
+  if(d.thesisLabel==="BEARISH")return{action:owns?"SELL":"AVOID",blocked:true,reason:"Bearish fundamental evidence blocks new capital until the thesis materially recovers.",policyVersion:TODAY_POLICY_VERSION};
   const timing=d.timing?.label||"WAIT";
   if(owns){
     if(d.thesisState==="Weakening"&&d.thesisScore<50)return{action:"TRIM",blocked:false,reason:"Thesis is weakening enough to reduce exposure while evidence is reassessed.",policyVersion:TODAY_POLICY_VERSION};

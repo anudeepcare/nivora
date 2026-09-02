@@ -5,6 +5,7 @@ import {buildActionTriggers,type ActionTriggerResult} from "./nivora-action-trig
 import {buildDecisionReality,technicalRealityFromCandles,roundPriceZone,applyRealityGuardToToday} from "./nivora-decision-reality";
 import {buildMetricProof,type MetricProof} from "./nivora-metric-proof";
 import {ENGINE_VERSION,WEIGHTS_VERSION,VALUATION_VERSION,TODAY_POLICY_VERSION} from "./nivora-version";
+import {validateDecisionConsistency,type ConsistencyIssue} from "./nivora-consistency";
 export type ThesisState="Strengthening"|"Recovering"|"Intact"|"Mixed"|"Weakening"|"Broken";
 export type OutlookLabel="STRONG BULLISH"|"BULLISH"|"CONSTRUCTIVE"|"NEUTRAL"|"CAUTIOUS"|"BEARISH"|"STRONG BEARISH";
 export type HorizonOutlook={key:"3M"|"6M"|"1Y"|"2Y"|"3Y";score:number;label:OutlookLabel;reason:string};
@@ -19,7 +20,7 @@ export type InvestorDecision={
   factors:Record<string,number|null>;factorAvailability:Record<string,boolean>;horizons:HorizonOutlook[];bestHorizon:string;
   streetTarget?:{mean:number;low?:number;high?:number;upsidePct:number}|null;
   expectedReturn?:{oneYearPct:number|null;threeYearCagrPct:number|null;source:"street"|"unavailable"};
-  consistency:{ok:boolean;notes:string[]};position?:{shares:number;avgCost:number;pnlPct:number;belowCost:boolean;weightPct?:number|null}|null;
+  consistency:{ok:boolean;notes:string[];errors?:ConsistencyIssue[];warnings?:ConsistencyIssue[]};position?:{shares:number;avgCost:number;pnlPct:number;belowCost:boolean;weightPct?:number|null}|null;
   archetype:string;dataCompleteness:number;modelConfidenceLabel:"Uncalibrated"|"Collecting"|"Calibrated";
   timing:{score:number;label:"ATTRACTIVE"|"SELECTIVE"|"WAIT"|"OVEREXTENDED"|"WEAK";reason:string};
   streetView:{label:"Positive"|"Mixed"|"Cautious"|"Unavailable";score:number|null;note:string};
@@ -349,8 +350,7 @@ export function buildInvestorDecision({market,company,context,institutional,owns
   const oneLine=thesisLabel==="BULLISH"?`The ${companyLabel.toLowerCase()} business profile and forward evidence support a constructive long-term thesis; ${timingLabel==="OVEREXTENDED"?"price is too extended to chase":timingLabel==="WEAK"?"price has not stabilized yet":"entry quality still matters"}.`:thesisLabel==="BEARISH"?"The fundamental/forward evidence is weak enough that technical strength alone should not justify new capital.":"The investment case is mixed: there is not yet enough aligned evidence to call the long-term thesis strongly bullish or bearish.";
 
   const rawToday=deriveTodayAction({thesisScore,opportunityScore,companyScore,thesisLabel,thesisState,timing:{score:timingScore,label:timingLabel},valuationLabel,vetoes,consistency},owns);
-  const today=applyRealityGuardToToday(rawToday,owns,decisionReality) as TodayDecision;
-  const actionTriggers=buildActionTriggers({action:today.action,owns,thesisScore,opportunityScore,companyScore,timingScore,timingLabel,thesisState,valuationLabel});
+  const realityToday=applyRealityGuardToToday(rawToday,owns,decisionReality) as TodayDecision;
   const adversarialRisks=buildAdversarialRisks({archetype:kind,timingScore,factors:{financial:Math.round(financial),growth:Math.round(growth),forward:Math.round(forward),risk:Math.round(risk)},existingRisks:risks,breakers,valuationWarnings:valuationSanity.warnings});
   const proofBase={validationStatus:"UNVALIDATED" as const,sampleSize:0};
   const metricProofs:Record<string,MetricProof>={
@@ -361,10 +361,31 @@ export function buildInvestorDecision({market,company,context,institutional,owns
     valuation:buildMetricProof({metric:"valuation",value:valuationModel.available?Math.round(valuation):null,status:valuationModel.available?"AVAILABLE":"UNAVAILABLE",formulaVersion:VALUATION_VERSION,sources:["Fundamentals","Archetype valuation inputs"],freshness:"Price + filing driven",...proofBase}),
     reliability:buildMetricProof({metric:"reliability",value:null,status:"COLLECTING",formulaVersion:ENGINE_VERSION,sources:["Backtest","Out-of-sample","Forward paper outcomes"],freshness:"Updates as outcomes mature",...proofBase})
   };
+  const systemConsistency=validateDecisionConsistency({
+    thesisLabel,
+    todayAction:realityToday.action,
+    vetoes,
+    zones,
+    valuationRange:fairRange,
+    valuationAvailable:valuationModel.available,
+    valuationScore:valuationModel.available?Math.round(valuation):null,
+    support:Number(market?.levels?.support??NaN),
+    resistance:Number(market?.levels?.resistance??NaN),
+    metricProofs
+  });
+  const finalConsistency={ok:consistency.ok&&systemConsistency.ok,notes:uniq([...consistency.notes,...systemConsistency.notes]),errors:systemConsistency.errors,warnings:systemConsistency.warnings};
+  const today:TodayDecision=systemConsistency.ok?realityToday:{
+    ...realityToday,
+    action:owns?(realityToday.action==="SELL"||realityToday.action==="TRIM"?realityToday.action:"HOLD"):"AVOID",
+    blocked:true,
+    reason:`Decision blocked by cross-system consistency: ${systemConsistency.errors[0]?.message||"inconsistent evidence."}`,
+    policyVersion:TODAY_POLICY_VERSION
+  };
+  const actionTriggers=buildActionTriggers({action:today.action,owns,thesisScore,opportunityScore,companyScore,timingScore,timingLabel,thesisState,thesisLabel,valuationLabel,vetoes});
   return{
     companyScore,thesisScore,opportunityScore,confidence:dataCompleteness,companyLabel,thesisLabel,thesisState,valuationLabel,action,actionReason,today,
     horizon:bestHorizon,oneLine,drivers,risks,breakers,changed,factors:factorMap,factorAvailability:{business:true,financial:true,growth:true,durability:true,forward:true,earnings:e.available,streetChange:a.available,institutional:instEnabled,catalysts:true,valuation:valuationModel.available,timing:true,risk:true},horizons,bestHorizon,
     streetTarget:hasStreet?{mean:Number(mean.toFixed(2)),low:finite(low)?Number(low.toFixed(2)):undefined,high:finite(high)?Number(high.toFixed(2)):undefined,upsidePct:Number((upside||0).toFixed(1))}:null,
-    expectedReturn:{oneYearPct:null,threeYearCagrPct:null,source:"unavailable"},consistency,position:pos,archetype:kind,dataCompleteness,modelConfidenceLabel:"Uncalibrated",timing:{score:timingScore,label:timingLabel,reason:timingReason},streetView,streetDisagreement,zones,valuationBasis:valuationModel.basis,vetoes,valuationRange:fairRange,valuationValidity,valuationSanity,adversarialRisks,actionTriggers,decisionReality,metricProofs,decisionGradeEvidence,expectedCagr,longTermThesis,expectationGap
+    expectedReturn:{oneYearPct:null,threeYearCagrPct:null,source:"unavailable"},consistency:finalConsistency,position:pos,archetype:kind,dataCompleteness,modelConfidenceLabel:"Uncalibrated",timing:{score:timingScore,label:timingLabel,reason:timingReason},streetView,streetDisagreement,zones,valuationBasis:valuationModel.basis,vetoes,valuationRange:fairRange,valuationValidity,valuationSanity,adversarialRisks,actionTriggers,decisionReality,metricProofs,decisionGradeEvidence,expectedCagr,longTermThesis,expectationGap
   };
 }

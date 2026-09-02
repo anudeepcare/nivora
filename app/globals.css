@@ -1086,3 +1086,25 @@ body{background:radial-gradient(circle at 50% -15%,#fff 0,#f7f9fa 38%,var(--n41-
 
 .v64EvidenceActions{display:flex;align-items:center;gap:12px}.v64EvidenceActions details{position:relative}.v64EvidenceActions summary{font-size:10px;font-weight:850;cursor:pointer;color:#344054;list-style:none}.v64EvidenceActions details>div{position:absolute;right:0;top:24px;width:min(520px,82vw);max-height:360px;overflow:auto;background:#fff;border:1px solid #dfe4e8;border-radius:14px;padding:10px;box-shadow:0 18px 45px rgba(16,24,40,.14);z-index:20}.v64EvidenceActions details p{display:grid;grid-template-columns:120px 1fr;gap:4px 10px;margin:0;padding:9px;border-bottom:1px solid #edf0f2}.v64EvidenceActions details p:last-child{border-bottom:0}.v64EvidenceActions details b{font-size:10px;text-transform:capitalize}.v64EvidenceActions details span,.v64EvidenceActions details em,.v64EvidenceActions details strong{font-size:9px;line-height:1.4}.v64EvidenceActions details em,.v64EvidenceActions details strong{grid-column:2;font-style:normal;color:#667085}.v64EvidenceActions details strong{color:#9a6700}
 @media(max-width:600px){.v64EvidenceActions{width:100%;justify-content:space-between}.v64EvidenceActions details>div{position:fixed;left:12px;right:12px;bottom:12px;top:auto;width:auto;max-height:58vh}}
+
+/* NIVORA V64.1 — consistency/correctness */
+.v641ActionMap{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid #e6e9ed}
+.v641ActionMap article{padding:18px 20px;border-right:1px solid #e6e9ed;min-height:118px}
+.v641ActionMap article:last-child{border-right:0}.v641ActionMap b{display:block;font-size:16px;margin:7px 0}.v641ActionMap span{font-size:10px;line-height:1.48;color:#667085}
+.v641Scenarios{display:grid;grid-template-columns:240px 1fr;gap:18px;padding:21px 26px;border-bottom:1px solid #e6e9ed;background:#fbfcfd}
+.v641ScenarioIntro p{font-size:10px;margin:3px 0 0}.v641ScenarioCards{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.v641ScenarioCards article,.v641ScenarioUnavailable{border:1px solid #e3e7eb;border-radius:13px;background:#fff;padding:13px}
+.v641ScenarioCards article b,.v641ScenarioCards article span,.v641ScenarioUnavailable b,.v641ScenarioUnavailable span{display:block}
+.v641ScenarioCards article b{font-size:18px;margin:6px 0}.v641ScenarioCards article span,.v641ScenarioUnavailable span{font-size:10px;color:#667085}
+.v641MetricInfo{position:relative;display:inline-flex;vertical-align:middle;margin-left:4px}
+.v641MetricInfo>button{width:20px;height:20px;border:1px solid #cfd6de;border-radius:6px;background:#fff;display:grid;place-items:center;padding:0;color:#475467}
+.v641MetricInfo>button:hover,.v641MetricInfo>button:focus-visible{background:#f2f4f7;outline:2px solid rgba(23,92,211,.15);outline-offset:1px}
+.v641MetricPopover{position:absolute;z-index:80;left:50%;top:26px;transform:translateX(-50%);width:min(360px,82vw);background:#fff;border:1px solid #dfe4e8;border-radius:14px;padding:13px;box-shadow:0 18px 45px rgba(16,24,40,.16);text-align:left}
+.v641MetricPopover>b{display:block;font-size:13px;color:#101828}.v641MetricPopover>p{font-size:10px;color:#667085;margin:5px 0 10px;line-height:1.45}
+.v641MetricPopover dl{margin:0}.v641MetricPopover dl>div{display:grid;grid-template-columns:76px 1fr;gap:7px;padding:5px 0;border-top:1px solid #f0f2f4}
+.v641MetricPopover dt{font-size:9px;font-weight:900;color:#7a8698;text-transform:uppercase}.v641MetricPopover dd{font-size:9px;color:#475467;margin:0;line-height:1.4}
+.v641MetricPopover em{display:block;margin-top:8px;font-size:9px;font-style:normal;color:#9a6700;line-height:1.4}
+@media(max-width:900px){.v641ActionMap{grid-template-columns:1fr 1fr}.v641ActionMap article:nth-child(2){border-right:0}.v641Scenarios{grid-template-columns:1fr}}
+@media(max-width:600px){.v641ActionMap{grid-template-columns:1fr}.v641ActionMap article{border-right:0;border-bottom:1px solid #edf0f2;min-height:auto}.v641ActionMap article:last-child{border-bottom:0}.v641Scenarios{padding:17px}.v641ScenarioCards{display:flex;overflow-x:auto;scroll-snap-type:x mandatory}.v641ScenarioCards article{min-width:150px;scroll-snap-align:start}.v641MetricPopover{position:fixed;left:12px;right:12px;bottom:16px;top:auto;transform:none;width:auto;max-height:58vh;overflow:auto}}
+
+.v641Cockpit{overflow:visible}

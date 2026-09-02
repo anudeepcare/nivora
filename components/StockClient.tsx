@@ -857,13 +857,6 @@ export default function StockClient({symbol}:{symbol:string}){
           <div className="thesisCard concern"><small>WHAT CAN BREAK IT</small>{presentedDecision.breakers.map((x:string,i:number)=><p key={i}>• {x}</p>)}</div>
           <div className="thesisCard contradiction"><small>WHAT CHANGED</small>{presentedDecision.changed.length?presentedDecision.changed.map((x:string,i:number)=><p key={i}>↔ {x}</p>):<p>No material thesis change detected. Daily price noise is not treated as a new thesis.</p>}</div>
         </div>
-        <div className="v48ValueEvidence">
-          <div><small>COMPANY QUALITY</small><b>{presentedDecision.companyScore}/100 · {presentedDecision.companyLabel}</b><span>Designed to move slowly and only when business evidence changes.</span></div>
-          <div><small>CURRENT OPPORTUNITY</small><b>{presentedDecision.opportunityScore}/100</b><span>Price and valuation can change this without rewriting the company thesis.</span></div>
-          <div><small>ANALYST CONSENSUS</small><b className={analystConsensus==="Buy"||analystConsensus==="Positive"?"good":analystConsensus==="Sell"?"bad":"mid"}>{analystConsensus}</b><span>{analystTotal?`${analystBuy} positive · ${analystCounts?.hold||0} hold · ${analystSell} negative`:"No analyst recommendation coverage returned."}</span></div>
-          {presentedDecision.streetTarget&&<div><div className="metricLabel"><small>VERIFIED STREET TARGET</small><Help title="Street target">External analyst consensus target. It is never substituted for NIVORA fair value and does not directly determine the thesis.</Help></div><b>{`$${presentedDecision.streetTarget.mean.toFixed(2)} avg`}</b><span>{`${presentedDecision.streetTarget.upsidePct>=0?"+":""}${presentedDecision.streetTarget.upsidePct}% from today; external consensus only.`}</span></div>}
-        </div>
-        <div className="v57ReliabilityStrip"><span><b>Data coverage {presentedDecision.dataCompleteness}%</b> · Missing evidence is treated as uncertainty, not a negative score.</span><span><b>Model reliability: {presentedDecision.modelConfidenceLabel}</b> · Benchmark-relative outcomes are collected by engine version and archetype.</span><Link href="/methodology">How metrics work →</Link></div>
       </div>}
 
       {tab==="fundamentals"&&<div className="v12Fund">
