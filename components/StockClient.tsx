@@ -61,6 +61,7 @@ function metricScore(mode:Mode,business:number,six:number,timing:number,risk:num
 }
 
 type StockWarmCache={d?:any;company?:any;context?:any;institutional?:any;ts:number;evidenceTs?:number};
+const CORE_ATTEMPTS=2,CORE_TIMEOUT_MS=4200;
 const stockWarmCache=new Map<string,StockWarmCache>();
 const CACHE_MAX_AGE=5*60*1000;
 function mergeWarm(symbol:string,patch:Partial<StockWarmCache>){
@@ -144,16 +145,22 @@ export default function StockClient({symbol}:{symbol:string}){
     };
 
     const loadCore=async(showError=false)=>{
-      core?.abort();
-      core=new AbortController();
-      const timer=setTimeout(()=>core?.abort(),5000);
-      try{
-        const a=await fetchJson(`/api/analyze/${encodeURIComponent(symbol)}`,core.signal);
-        if(!live)return;
-        setD(a);mergeWarm(symbol,{d:a});
-      }catch(e:any){
-        if(showError&&live&&!stockWarmCache.get(symbol)?.d)setErr(e.name==="AbortError"?"Market data is taking too long. Try again.":e.message);
-      }finally{clearTimeout(timer)}
+      let lastError:any=null;
+      for(let attempt=1;attempt<=CORE_ATTEMPTS;attempt++){
+        core?.abort();
+        core=new AbortController();
+        const timer=setTimeout(()=>core?.abort(),CORE_TIMEOUT_MS);
+        try{
+          const a=await fetchJson(`/api/analyze/${encodeURIComponent(symbol)}`,core.signal);
+          if(!live)return;
+          setD(a);setErr("");mergeWarm(symbol,{d:a});return;
+        }catch(e:any){
+          lastError=e;
+          if(!live)return;
+          if(attempt<CORE_ATTEMPTS)await new Promise(r=>setTimeout(r,180));
+        }finally{clearTimeout(timer)}
+      }
+      if(showError&&live&&!stockWarmCache.get(symbol)?.d)setErr(lastError?.name==="AbortError"?"Live history is temporarily slow. NIVORA retried automatically; try once more.":lastError?.message||"Analysis is temporarily unavailable.");
     };
 
     const loadEvidence=()=>{
@@ -359,8 +366,8 @@ export default function StockClient({symbol}:{symbol:string}){
       : "The stock may still be a good company, but today is not a strong enough entry yet.";
   const fiveRecordText=five?String(five.years)+"-year record · "+String(five.revenueTrend):"Loading financial history";
   const sixMonthText=d.sixMonth?(d.sixMonth.returnPct>=0?"+":"")+String(d.sixMonth.returnPct)+"% return":"Price history";
-  const supportText="Support $"+String(d.levels.support);
-  const resistanceText="Resistance $"+String(d.levels.resistance);
+  const supportText=`Support ${displayMoney(Number(d.levels.support))}`;
+  const resistanceText=`Resistance ${displayMoney(Number(d.levels.resistance))}`;
   const todayMoveText=changeAbs>=4?"Large "+(d.changePct>=0?"move up":"move down")+": "+(d.changePct>=0?"+":"")+String(d.changePct)+"%":"Today’s move";
   const nextCatalystTitle=earn?"Earnings · "+String(earn.date):(filings[0]?.label||"No scheduled catalyst found");
   const nextCatalystDetail=earn?String(earn.hour||"Timing not listed")+(earn.epsEstimate!=null?" · EPS est. "+String(earn.epsEstimate):""):filings[0]?String(filings[0].form)+" filed "+String(filings[0].date):"NIVORA will surface a catalyst when a connected source identifies one.";
@@ -514,6 +521,14 @@ export default function StockClient({symbol}:{symbol:string}){
   };
   const horizonCandles=(d.candles||[]).slice(horizon==="now"?-65:horizon==="swing"?-125:-180);
 
+  const marketStatusLabel=liveQuote
+    ?liveQuote.integrityState==="MARKET_CLOSED"?"Market closed · Last price"
+    :liveQuote.integrityState==="LIVE_VERIFIED"?"Market open · Live verified"
+    :liveQuote.integrityState==="LIVE_SINGLE_SOURCE"?"Market open · Live data"
+    :liveQuote.integrityState==="DISAGREEMENT"?"Live data · Provider check"
+    :liveQuote.integrityState==="STALE"?"Refreshing market quote"
+    :"Market data connecting"
+    :"Quote connecting";
   return <div className="v65Stock">
     <div className="v65StockSearch"><SearchBox/></div>
 
@@ -522,7 +537,7 @@ export default function StockClient({symbol}:{symbol:string}){
       <div><b>{displayMoney(currentPx)}</b><span className={displayChangePct>=0?"up":"down"}>{formatPercent(displayChangePct)}</span></div>
     </header>
 
-    <div className="v65LiveFresh"><span className="v65LiveStatus"><span className="v65LiveDot"/>{liveQuote?`${String(liveQuote.session||"").replaceAll("_"," ")} · ${liveQuote.integrityState==="MARKET_CLOSED"?"LAST PRICE":liveQuote.integrityState||liveQuote.freshness}`:"QUOTE CONNECTING"}</span><span className="v65LiveCadence">{liveQuote?(liveQuote.integrityState==="MARKET_CLOSED"?`${liveQuote.provider} · market closed · regular close ${displayMoney(Number(liveQuote.regularClose))}`:`${liveQuote.provider} · ${liveQuote.ageSeconds==null?"timestamp unavailable":`${liveQuote.ageSeconds}s old`}${liveQuote.disagreementPct!=null?` · provider gap ${Number(liveQuote.disagreementPct).toFixed(2)}%`:""} · regular close ${displayMoney(Number(liveQuote.regularClose))}`):"Daily analysis stays available while the live quote connects."}</span></div>
+    <div className="v65LiveFresh"><span className="v65LiveStatus"><span className="v65LiveDot"/>{marketStatusLabel}</span><span className="v65LiveCadence">{liveQuote?(liveQuote.integrityState==="MARKET_CLOSED"?`${liveQuote.provider} · market closed · regular close ${displayMoney(Number(liveQuote.regularClose))}`:`${liveQuote.provider} · ${liveQuote.ageSeconds==null?"timestamp unavailable":`${liveQuote.ageSeconds}s old`}${liveQuote.disagreementPct!=null?` · provider gap ${Number(liveQuote.disagreementPct).toFixed(2)}%`:""} · regular close ${displayMoney(Number(liveQuote.regularClose))}`):"Daily analysis stays available while the live quote connects."}</span></div>
 
     <div className="v65PositionBar"><div><Sparkles size={15}/><span>NIVORA analyzes 3M, 6M, 1Y, 2Y and 3Y automatically.</span></div><button type="button" className={owns?"on":""} onClick={()=>setOwns(!owns)}>{owns?(ownerPosition?"✓ Position loaded":"✓ I own this"):"I own this"}</button></div>
 
@@ -546,8 +561,8 @@ export default function StockClient({symbol}:{symbol:string}){
       </div>}
     </section>}
 
-    {depth!=="simple"&&<section className="v65ContextStrip" aria-label="Quick market context">
-      <div><div className="metricLabel"><small>PERFORMANCE</small><MetricInfo title="Performance">Price return over the selected period using available market history. Performance describes what happened; it does not predict what happens next.</MetricInfo></div><b>{selectedReturn==null?"—":`${selectedReturn>=0?"+":""}${selectedReturn}%`}</b><div className="v19Range">{(["6M","YTD","1Y"] as const).map(r=><button key={r} className={perfRange===r?"on":""} onClick={()=>setPerfRange(r)}>{r}</button>)}</div></div>
+    {depth!=="simple"&&<section className="v65ContextStrip v659ContextStrip" aria-label="Quick market context">
+      <div><div className="metricLabel"><small>PERFORMANCE</small><MetricInfo title="Performance">Price return over the selected period using available market history. Performance describes what happened; it does not predict what happens next.</MetricInfo></div><b>{selectedReturn==null?"—":`${selectedReturn>=0?"+":""}${selectedReturn}%`}</b><div className="v19Range v659PeriodSwitch">{(["6M","YTD","1Y"] as const).map(r=><button key={r} className={perfRange===r?"on":""} onClick={()=>setPerfRange(r)}>{r}</button>)}</div></div>
       <div><div className="metricLabel"><small>52-WEEK POSITION</small><MetricInfo title="52-week position">Shows where today’s price sits between the last 52-week low and high. Near the high is not automatically bad; it simply adds price-location context.</MetricInfo></div><b>{d.performance?.rangePositionPct!=null?`${d.performance.rangePositionPct}%`:"—"}</b><span>{d.performance?.yearLow!=null&&d.performance?.yearHigh!=null?`Low $${d.performance.yearLow} · High $${d.performance.yearHigh}`:"Waiting for 1-year history"}</span></div>
       <div><div className="metricLabel"><small>RISK / REWARD</small><MetricInfo title="Risk / reward">Compares the distance from today’s price to NIVORA’s confirmation level with the distance to its reassessment level. It is a technical planning ratio, not a forecast.</MetricInfo></div><b>{rr==null?"—":`${rr.toFixed(1)}×`}</b><span>{upside==null||downside==null?"Waiting for levels":`${upside>=0?"+":""}${upside.toFixed(1)}% to confirmation · ${downside.toFixed(1)}% to reassess`}</span></div>
       <div><div className="metricLabel"><small>DATA CONFIDENCE</small><MetricInfo title="Data confidence">Shows whether price history, business data, market context and news/catalyst sources are available. Higher confidence means better evidence coverage—not higher certainty of profit.</MetricInfo></div><b className={confidence==="High"?"good":confidence==="Low"?"bad":"mid"}>{confidence}</b><span>Price + business + news + market coverage.</span></div>

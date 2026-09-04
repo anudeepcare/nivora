@@ -19,20 +19,16 @@ export async function GET(req:Request,{params}:{params:Promise<{symbol:string}>}
  if(!key)return NextResponse.json({error:"Add TWELVE_DATA_API_KEY to .env.local to enable live analysis."},{status:503});
  try{
   const isCrypto=symbol.includes("/"); const benchmark=isCrypto?(symbol.startsWith("BTC/")?null:"BTC/USD"):"SPY";
-  const [j,bj]=await Promise.all([series(symbol,key,260,45,2800),benchmark?series(benchmark,key,100,90,1800).catch(()=>null):Promise.resolve(null)]);
+  const alpacaBarsPromise:Promise<Bar[]|null>=!isCrypto&&process.env.ALPACA_PAPER_API_KEY&&process.env.ALPACA_PAPER_API_SECRET
+   ?new AlpacaPaperBroker(process.env.ALPACA_PAPER_API_KEY,process.env.ALPACA_PAPER_API_SECRET).getRecentBars(symbol,40).catch(()=>null)
+   :Promise.resolve(null);
+  const [j,bj,alpacaBars]=await Promise.all([series(symbol,key,260,45,2800),benchmark?series(benchmark,key,100,90,1800).catch(()=>null):Promise.resolve(null),alpacaBarsPromise]);
   if(!Array.isArray(j?.values)||j.values.length<40)throw new Error(j?.message||`No usable market history returned for ${symbol}`);
   const rows=j.values.slice().reverse();
   const barRows:Bar[]=rows.map((x:any)=>({datetime:String(x.datetime),open:+x.open,high:+x.high,low:+x.low,close:+x.close,volume:+x.volume||0}));
   const benchRows:Bar[]|null=bj?.values?bj.values.slice().reverse().map((x:any)=>({datetime:String(x.datetime),open:+x.open,high:+x.high,low:+x.low,close:+x.close,volume:+x.volume||0})):null;
   const technical=computeTechnicalSnapshot(barRows,benchRows,benchmark);
   if(!technical)throw new Error("Insufficient market history for technical analysis.");
-  let alpacaBars:Bar[]|null=null;
-  if(!isCrypto&&process.env.ALPACA_PAPER_API_KEY&&process.env.ALPACA_PAPER_API_SECRET){
-    try{
-      const broker=new AlpacaPaperBroker(process.env.ALPACA_PAPER_API_KEY,process.env.ALPACA_PAPER_API_SECRET);
-      alpacaBars=await broker.getRecentBars(symbol,40);
-    }catch{}
-  }
   const seriesIntegrity=assessBarSeriesIntegrity(barRows,alpacaBars);
   const c=barRows.map(x=>x.close),h=barRows.map(x=>x.high),l=barRows.map(x=>x.low),v=barRows.map(x=>x.volume);
   const p=technical.price,prev=c.at(-2)??p;

@@ -16,6 +16,15 @@ export const dynamic="force-dynamic";
 
 const unauthorized=()=>NextResponse.json({error:"Unauthorized."},{status:401});
 
+async function refreshTradingMarketData(symbol:string,broker:AlpacaPaperBroker|null,twelveKey:string){
+ let market=await loadTradingMarketData(symbol,broker,twelveKey,new Date());
+ if((market.integrity.state==="STALE"||market.integrity.state==="DELAYED")&&marketSessionAt(new Date())==="REGULAR"){
+  await new Promise(r=>setTimeout(r,250));
+  market=await loadTradingMarketData(symbol,broker,twelveKey,new Date());
+ }
+ return market;
+}
+
 type Snapshot={
  id:string|number;
  symbol:string;
@@ -197,7 +206,7 @@ async function run(req:Request,automatic=false){
      continue;
     }
 
-    const market=await loadTradingMarketData(snapshot.symbol,broker,twelveKey,new Date());
+    const market=await refreshTradingMarketData(snapshot.symbol,broker,twelveKey);
     const quote=market.integrity.chosen;
     const context:TradingRiskContext={
      equity:account.equity,

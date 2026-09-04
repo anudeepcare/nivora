@@ -6,7 +6,7 @@ export function planPaperOrder(intent:Pick<TradeIntent,"id"|"symbol"|"side">,app
  const safePrice=Math.max(.01,Number(price));const qty=Math.floor(Math.max(0,approvedNotional)/safePrice*1000)/1000;
  const buffer=Math.max(0,Math.min(2,limitBufferPct))/100;
  const limit=intent.side==="BUY"?safePrice*(1+buffer):safePrice*(1-buffer);
- return{clientOrderId:`niv_${hash(`${intent.id}|${intent.symbol}|${intent.side}`)}`,symbol:intent.symbol,side:intent.side,quantity:qty,type:"limit",timeInForce:"day",limitPrice:+limit.toFixed(4),referencePrice:safePrice,notional:+(qty*safePrice).toFixed(2),version:PAPER_EXECUTION_VERSION};
+ return{clientOrderId:`niv_${hash(`${intent.id}|${intent.symbol}|${intent.side}`)}`,symbol:intent.symbol,side:intent.side,quantity:qty,type:"limit",timeInForce:"day",limitPrice:+limit.toFixed(2),referencePrice:safePrice,notional:+(qty*safePrice).toFixed(2),version:PAPER_EXECUTION_VERSION};
 }
 export function simulatePaperFill(order:{side:TradeSide;quantity:number;limitPrice:number},marketPrice:number,slippagePct=.08,feePerShare=0){
  const slip=Math.max(0,slippagePct)/100,raw=order.side==="BUY"?marketPrice*(1+slip):marketPrice*(1-slip);

@@ -16,7 +16,13 @@ function locate(anchor:DOMRect):Pos{
  const top=above?Math.max(MARGIN,anchor.top-ESTIMATED_HEIGHT-GAP):Math.min(vh-MARGIN-96,anchor.bottom+GAP);
  return{left,top,above};
 }
-function scoreGuide(score:number):ScoreGuide{
+function scoreGuide(score:number,inverse=false):ScoreGuide{
+ if(inverse){
+  if(score>=75)return{label:"High risk",tone:"bad",detail:"High pressure. Higher is worse for this metric and can block or reduce new capital."};
+  if(score>=60)return{label:"Elevated risk",tone:"bad",detail:"Risk pressure is elevated. Position size and entry quality matter more here."};
+  if(score>=40)return{label:"Moderate risk",tone:"mid",detail:"Risk pressure is meaningful but not extreme."};
+  return{label:"Lower risk",tone:"good",detail:"Lower pressure. This does not mean the investment is risk-free."};
+ }
  if(score>=85)return{label:"Exceptional",tone:"good",detail:"Top-tier evidence. This is a major strength, though it never guarantees an outcome."};
  if(score>=75)return{label:"Strong",tone:"good",detail:"Clearly supportive evidence with a meaningful margin above neutral."};
  if(score>=65)return{label:"Attractive",tone:"good",detail:"Supportive enough to matter, but other gates can still block new capital."};
@@ -26,12 +32,12 @@ function scoreGuide(score:number):ScoreGuide{
  return{label:"Poor",tone:"bad",detail:"Materially weak evidence. Treat this as an important warning or blocker."};
 }
 
-export default function MetricInfo({metric,title,description,score,children}:{metric?:keyof typeof metricDefinitions;title?:string;description?:string;score?:number;proof?:MetricProof;children?:React.ReactNode}){
+export default function MetricInfo({metric,title,description,score,proof,children}:{metric?:keyof typeof metricDefinitions;title?:string;description?:string;score?:number;proof?:MetricProof;children?:React.ReactNode}){
  const[open,setOpen]=useState(false),[pos,setPos]=useState<Pos|null>(null),ref=useRef<HTMLSpanElement>(null),buttonRef=useRef<HTMLButtonElement>(null),id=useId();
- const def=metric?metricDefinitions[metric]:null,label=title||def?.title||"Why this matters",body=description||def?.short||"Supporting evidence for this reading.",guide=Number.isFinite(score)?scoreGuide(Number(score)):null;
+ const def=metric?metricDefinitions[metric]:null,label=title||def?.title||"Why this matters",body=description||def?.short||"Supporting evidence for this reading.",guide=Number.isFinite(score)?scoreGuide(Number(score),metric==="risk"):null;
  const reposition=()=>{const r=buttonRef.current?.getBoundingClientRect();if(r)setPos(locate(r))};
  useLayoutEffect(()=>{if(open)reposition()},[open]);
  useEffect(()=>{if(!open)return;const outside=(e:PointerEvent)=>{const target=e.target as Node;if(!ref.current?.contains(target)&&!(document.getElementById(id)?.contains(target)))setOpen(false)},key=(e:KeyboardEvent)=>{if(e.key==="Escape"){setOpen(false);buttonRef.current?.focus()}},move=()=>reposition();document.addEventListener("pointerdown",outside);document.addEventListener("keydown",key);window.addEventListener("resize",move);window.addEventListener("scroll",move,true);return()=>{document.removeEventListener("pointerdown",outside);document.removeEventListener("keydown",key);window.removeEventListener("resize",move);window.removeEventListener("scroll",move,true)}},[open,id]);
- const sheet=open&&pos&&typeof document!=="undefined"?createPortal(<div id={id} className={`v658MetricSheet ${pos.above?"above":"below"}`} role="dialog" aria-modal="false" aria-label={label} style={{position:"fixed",left:pos.left,top:pos.top}}><div className="v658MetricTitle"><b>{label}</b><button type="button" onClick={()=>setOpen(false)} aria-label="Close explanation">×</button></div><p>{body}</p>{guide?<div className={`v658ScoreBand ${guide.tone}`}><span>{Math.round(Number(score))}/100</span><b>{guide.label}</b><small>{guide.detail}</small></div>:null}{def?.range?<div className="v658MetricSection"><strong>Score guide</strong><span>{def.range}</span></div>:null}{def?.uses?<div className="v658MetricSection"><strong>Why it matters</strong><span>{def.uses}</span></div>:null}{children?<div className="v658MetricSection v658MetricCustom">{children}</div>:null}</div>,document.body):null;
- return <span className="v658MetricInfo" ref={ref}><button ref={buttonRef} className="v658InfoButton" type="button" aria-label={`About ${label}`} aria-expanded={open} aria-controls={id} onClick={e=>{e.stopPropagation();setOpen(v=>!v)}}>i</button>{sheet}</span>;
+ const sheet=open&&pos&&typeof document!=="undefined"?createPortal(<div id={id} className={`v658MetricSheet ${pos.above?"above":"below"}`} role="dialog" aria-modal="false" aria-label={label} style={{position:"fixed",left:pos.left,top:pos.top}}><div className="v658MetricTitle"><b>{label}</b><button type="button" onClick={()=>setOpen(false)} aria-label="Close explanation">×</button></div><p>{body}</p>{guide?<div className={`v658ScoreBand ${guide.tone}`}><span>{Math.round(Number(score))}/100</span><b>{guide.label}</b><small>{guide.detail}</small></div>:null}{def?.range?<div className="v658MetricSection"><strong>Score guide</strong><span>{def.range}</span></div>:null}{def?.uses?<div className="v658MetricSection"><strong>Why it matters</strong><span>{def.uses}</span></div>:null}{proof?.contributors?.length?<div className="v658MetricSection"><strong>Why this score</strong><span>{proof.contributors.slice(0,3).map(x=>`${x.label} ${x.impact>=0?"+":""}${Math.round(x.impact)}`).join(" · ")}</span></div>:null}{children?<div className="v658MetricSection v658MetricCustom">{children}</div>:null}</div>,document.body):null;
+ return <span className="v658MetricInfo v65MetricInfo" ref={ref}><button ref={buttonRef} className="v658InfoButton" type="button" aria-label={`About ${label}`} aria-expanded={open} aria-controls={id} onClick={e=>{e.stopPropagation();setOpen(v=>!v)}}>i</button>{sheet}</span>;
 }

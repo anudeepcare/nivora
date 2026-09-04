@@ -26,8 +26,8 @@ export class AlpacaPaperBroker{
  async getLatestExecutionQuote(symbol:string):Promise<{quote:any;trade:any}>{
   const headers={"APCA-API-KEY-ID":this.key,"APCA-API-SECRET-KEY":this.secret};
   const [qr,tr]=await Promise.all([
-   fetch(`https://data.alpaca.markets/v2/stocks/${encodeURIComponent(symbol)}/quotes/latest`,{cache:"no-store",headers}),
-   fetch(`https://data.alpaca.markets/v2/stocks/${encodeURIComponent(symbol)}/trades/latest`,{cache:"no-store",headers})
+   fetch(`https://data.alpaca.markets/v2/stocks/${encodeURIComponent(symbol)}/quotes/latest`,{cache:"no-store",headers,signal:AbortSignal.timeout(2500)}),
+   fetch(`https://data.alpaca.markets/v2/stocks/${encodeURIComponent(symbol)}/trades/latest`,{cache:"no-store",headers,signal:AbortSignal.timeout(2500)})
   ]);
   const q=await qr.json().catch(()=>null),t=await tr.json().catch(()=>null);
   if(!qr.ok||!tr.ok)throw new Error(q?.message||t?.message||`Alpaca market data ${qr.status}/${tr.status}`);

@@ -828,3 +828,77 @@ small:has(> .v65MetricInfo){display:inline-flex!important;align-items:center!imp
 @media(max-width:760px){.v658VerdictSurface{grid-template-columns:1fr}.v658VerdictAction{grid-column:1;grid-row:auto;border-left:0;border-top:1px solid #e8eeeb;padding:20px}.v658VerdictLead{padding:22px 20px}.v658VerdictHeadline{align-items:flex-start;flex-direction:column;gap:5px}.v658VerdictHeadline h3{font-size:32px}.v658VerdictMetrics{grid-template-columns:1fr}.v658VerdictMetrics article{border-right:0;border-bottom:1px solid #e8eeeb}.v658VerdictMetrics article:last-child{border-bottom:0}.v658HoldingDecision>em{flex-wrap:wrap}}
 /* V65.8.1 — metric help alignment polish */
 .v658MetricLabelRow{display:inline-flex!important;align-items:center!important;gap:6px!important;line-height:1!important;white-space:nowrap}.v658MetricLabelRow .v658MetricInfo{margin-left:0!important;flex:0 0 auto}.v658MetricLabelRow .v658InfoButton{display:inline-flex!important;align-items:center!important;justify-content:center!important;vertical-align:middle!important;transform:none!important}.v658VerdictMetrics article>div{display:flex;justify-content:space-between;gap:12px;align-items:center}.v658VerdictMetrics article>div>small.v658MetricLabelRow{display:inline-flex!important}.v65FactorGrid .metricLabel.v658MetricLabelRow{display:flex!important;justify-content:flex-start!important;width:100%;min-height:18px}.v65FactorGrid .metricLabel.v658MetricLabelRow small{display:inline-block!important;margin:0!important;line-height:15px!important}.v65FactorGrid .v658MetricInfo{position:static!important}
+
+
+/* V65.9 — premium one-glance shell + reliability UX */
+.metricLabel{display:inline-flex!important;align-items:center!important;gap:5px!important;white-space:nowrap!important;line-height:1!important}
+.metricLabel>small,.metricLabel>span{display:inline!important;line-height:1.15!important}
+.metricLabel .v658MetricInfo{margin-left:0!important;flex:0 0 auto!important}
+.v658PortfolioSnapshot article>small{display:inline-flex!important;align-items:center!important;gap:5px!important;white-space:nowrap!important}
+.v658PortfolioSnapshot article>small .v658MetricInfo{margin-left:0!important;flex:0 0 auto!important}
+.v658PortfolioSnapshot article:after{display:none!important}
+.v658PortfolioSnapshot{box-shadow:none!important;border:1px solid #e8eeeb!important;border-radius:18px!important;overflow:hidden!important}
+.v658PortfolioSnapshot article{padding:20px 22px!important;border-right:1px solid #eef2f0!important;background:#fff!important}
+.v658PortfolioSnapshot article:last-child{border-right:0!important}
+.v658PortfolioSnapshot article>b{font-variant-numeric:tabular-nums;letter-spacing:-.035em}
+.v658PortfolioSnapshot article>span{margin-top:5px;color:#7b8782}
+
+/* compact, website-like primary navigation */
+.v65Header{height:60px!important;border-bottom:1px solid #edf1ef!important;box-shadow:0 1px 0 rgba(16,24,40,.015)!important}
+.v65DesktopNav{padding:3px;background:#f6f8f7;border:1px solid #edf1ef;border-radius:12px;gap:2px!important}
+.v65DesktopNav a{padding:7px 12px!important;border-radius:9px!important;font-size:10px!important}
+.v65DesktopNav a.on{background:#fff!important;color:#126b46!important;box-shadow:0 1px 3px rgba(16,24,40,.07)!important}
+
+/* security header: fewer horizontal bands, clearer hierarchy */
+.v65Stock{padding-top:4px}
+.v65StockSearch{margin-bottom:10px!important}
+.v65StockHead{border-radius:18px!important;padding:16px 20px!important;align-items:center!important;box-shadow:0 8px 28px rgba(16,24,40,.035)}
+.v65StockHead h1{font-size:30px!important}
+.v65LiveFresh{margin:7px 2px 0;padding:6px 8px!important;border:0!important;background:transparent!important}
+.v65PositionBar{margin-top:0!important;border:0!important;background:transparent!important;padding:7px 8px 10px!important}
+.v65PositionBar>div{color:#7a8681!important}
+.v65LiveCadence{color:#8b9691!important}
+.v65LiveStatus{color:#3d4d46!important}
+
+/* top market summary: one quiet surface, not four dashboard boxes */
+.v659ContextStrip{display:grid!important;grid-template-columns:1.05fr 1fr 1.15fr .9fr!important;background:#fff!important;border:1px solid #e8eeeb!important;border-radius:18px!important;overflow:hidden!important;margin:8px 0 14px!important;box-shadow:0 8px 26px rgba(16,24,40,.025)!important}
+.v659ContextStrip>div{padding:15px 18px!important;border:0!important;position:relative}
+.v659ContextStrip>div+div:before{content:"";position:absolute;left:0;top:16px;bottom:16px;width:1px;background:#eef2f0}
+.v659ContextStrip .metricLabel{margin-bottom:7px}
+.v659ContextStrip .metricLabel small{font-size:8px!important;letter-spacing:.8px;color:#7c8983!important;font-weight:850}
+.v659ContextStrip>div>b{display:block;font-size:19px!important;line-height:1.1;font-variant-numeric:tabular-nums}
+.v659ContextStrip>div>span{display:block;margin-top:6px;font-size:9px!important;line-height:1.35;color:#8a9691!important}
+.v659PeriodSwitch{display:inline-flex!important;gap:2px!important;margin-top:8px!important;padding:2px!important;background:#f3f6f4!important;border:1px solid #e8eeeb!important;border-radius:9px!important}
+.v659PeriodSwitch button{min-width:34px!important;height:24px!important;padding:0 8px!important;border:0!important;border-radius:7px!important;background:transparent!important;color:#7a8781!important;font-size:9px!important;font-weight:850!important}
+.v659PeriodSwitch button.on{background:#fff!important;color:#126b46!important;box-shadow:0 1px 3px rgba(16,24,40,.08)!important}
+
+/* metric help is always one small circled i directly beside its label */
+.v658MetricInfo{display:inline-flex!important;align-items:center!important;justify-content:center!important;margin-left:4px!important;vertical-align:middle!important;line-height:1!important;flex:0 0 auto!important}
+.v658InfoButton{width:16px!important;height:16px!important;min-width:16px!important;border:1px solid #9eaaa5!important;background:#fff!important;color:#65736d!important;font-size:9px!important;line-height:14px!important}
+.v658MetricSheet{line-height:1.45!important}
+
+@media(max-width:900px){
+ .v659ContextStrip{grid-template-columns:1fr 1fr!important}
+ .v659ContextStrip>div:nth-child(3):before{display:none}
+ .v659ContextStrip>div:nth-child(n+3){border-top:1px solid #eef2f0!important}
+ .v658PortfolioSnapshot{grid-template-columns:1fr 1fr!important}
+ .v658PortfolioSnapshot article:nth-child(2){border-right:0!important}
+ .v658PortfolioSnapshot article:nth-child(n+3){border-top:1px solid #eef2f0!important}
+}
+@media(max-width:620px){
+ .v65Header{height:56px!important;padding:0 14px!important}
+ .v65Logo small{display:none}
+ .v65StockHead{padding:14px 15px!important}
+ .v65StockHead h1{font-size:26px!important}
+ .v65LiveFresh{align-items:flex-start!important;flex-direction:column!important;gap:3px!important}
+ .v65LiveCadence{display:none!important}
+ .v65PositionBar{align-items:center!important;gap:8px!important}
+ .v65PositionBar>div span{font-size:9px!important}
+ .v659ContextStrip{grid-template-columns:1fr!important;border-radius:15px!important}
+ .v659ContextStrip>div{padding:13px 15px!important}
+ .v659ContextStrip>div+div:before{display:none!important}
+ .v659ContextStrip>div+div{border-top:1px solid #eef2f0!important}
+ .v658PortfolioSnapshot{grid-template-columns:1fr!important}
+ .v658PortfolioSnapshot article{border-right:0!important}
+ .v658PortfolioSnapshot article+article{border-top:1px solid #eef2f0!important}
+}
