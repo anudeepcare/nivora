@@ -1,0 +1,5 @@
+"use client";
+export default function PortfolioXRay({pulse,risk}:{pulse:any;risk?:any}){
+ const metrics=[["POSITION CONCENTRATION",`${pulse?.concentration?.top3Pct||0}%`,`Top 3 holdings`],["SECTOR",pulse?.concentration?.largestSector||"Building",pulse?.concentration?.largestSector?`${pulse.concentration.largestSectorPct}% of portfolio`:"Sector metadata still building"],["CRYPTO",`${pulse?.allocations?.cryptoPct||0}%`,"of portfolio"],["CASH",`${pulse?.allocations?.cashPct||0}%`,"available liquidity"]];
+ return <section className="portfolioXRay"><div className="pulseSectionHead"><div><small>PORTFOLIO X-RAY</small><h2>Where your real exposure sits</h2></div><span>{risk?.riskLabel?`${risk.riskLabel} risk overlay`:"Current-value structure"}</span></div><div className="xrayRail">{metrics.map(([a,b,c])=><article key={a}><small>{a}</small><b>{b}</b><span>{c}</span></article>)}</div><p>Correlation and theme concentration appear only when NIVORA has enough reliable market evidence. Missing classification is shown as building — never as a fake “Unknown concentration” conclusion.</p></section>
+}

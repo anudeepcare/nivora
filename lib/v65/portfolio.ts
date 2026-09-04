@@ -94,3 +94,23 @@ export function calculatePortfolioPulse(assets:PricedPortfolioAsset[],snapshots:
   performance:{actualReturnPct,spyReturnPct,qqqReturnPct,alphaVsSpyPct:actualReturnPct!=null&&spyReturnPct!=null?+(actualReturnPct-spyReturnPct).toFixed(2):null,alphaVsQqqPct:actualReturnPct!=null&&qqqReturnPct!=null?+(actualReturnPct-qqqReturnPct).toFixed(2):null}
  };
 }
+
+export type PortfolioPeriod="1D"|"1W"|"1M"|"3M"|"6M"|"YTD"|"1Y"|"2Y"|"3Y"|"4Y"|"ALL";
+function periodTarget(period:PortfolioPeriod,now:Date){
+ const d=new Date(now);d.setUTCHours(23,59,59,999);
+ if(period==="ALL")return null;
+ if(period==="YTD")return new Date(Date.UTC(d.getUTCFullYear(),0,1,23,59,59,999));
+ const n:Record<string,{days?:number;months?:number;years?:number}>={"1D":{days:1},"1W":{days:7},"1M":{months:1},"3M":{months:3},"6M":{months:6},"1Y":{years:1},"2Y":{years:2},"3Y":{years:3},"4Y":{years:4}};
+ const x=n[period]||{};if(x.days)d.setUTCDate(d.getUTCDate()-x.days);if(x.months)d.setUTCMonth(d.getUTCMonth()-x.months);if(x.years)d.setUTCFullYear(d.getUTCFullYear()-x.years);return d;
+}
+export function calculatePortfolioPeriod(history:PortfolioSnapshot[],period:PortfolioPeriod,now=new Date()){
+ const rows=[...history].filter(x=>Number.isFinite(Number(x.totalValue))&&Number(x.totalValue)>0&&Number.isFinite(new Date(x.asOf).getTime())).sort((a,b)=>new Date(a.asOf).getTime()-new Date(b.asOf).getTime());
+ const end=[...rows].reverse().find(x=>new Date(x.asOf).getTime()<=now.getTime())||null,target=periodTarget(period,now);
+ const eligible=target?rows.filter(x=>new Date(x.asOf).getTime()<=target.getTime()):rows;
+ const start=eligible.length?(period==="ALL"?eligible[0]:eligible[eligible.length-1]):null;
+ const pct=(a:number|null|undefined,b:number|null|undefined)=>a!=null&&b!=null&&Number(a)>0&&Number(b)>0?+((Number(b)/Number(a)-1)*100).toFixed(2):null;
+ const enough=Boolean(start&&end&&start.asOf!==end.asOf);
+ const portfolioReturnPct=enough?pct(start!.totalValue,end!.totalValue):null,spyReturnPct=enough?pct(start!.spy,end!.spy):null,qqqReturnPct=enough?pct(start!.qqq,end!.qqq):null;
+ const points=enough?rows.filter(x=>new Date(x.asOf)>=new Date(start!.asOf)&&new Date(x.asOf)<=new Date(end!.asOf)):[];
+ return{period,status:enough?"ACTUAL" as const:"INSUFFICIENT" as const,start:enough?start:null,end:enough?end:null,points,portfolioReturnPct,spyReturnPct,qqqReturnPct,alphaVsSpyPct:portfolioReturnPct!=null&&spyReturnPct!=null?+(portfolioReturnPct-spyReturnPct).toFixed(2):null,alphaVsQqqPct:portfolioReturnPct!=null&&qqqReturnPct!=null?+(portfolioReturnPct-qqqReturnPct).toFixed(2):null};
+}

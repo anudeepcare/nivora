@@ -1,0 +1,5 @@
+"use client";
+const groups=[["ADD","NEW MONEY"],["TRIM_RISK","DO NOT ADD / TRIM RISK"],["WATCH","WATCH"],["AVOID","AVOID"],["HOLD","LEAVE ALONE"]] as const;
+export default function PortfolioActionCenter({actions}:{actions:any[]}){
+ return <section className="portfolioActionCenter"><div className="pulseSectionHead"><div><small>ACTION CENTER</small><h2>What should I do now?</h2></div><span>Portfolio sizing can differ from the company view.</span></div><div className="actionCenterGrid">{groups.map(([key,label])=>{const rows=(actions||[]).filter(x=>x.portfolioAction===key);if(!rows.length)return null;return <article key={key}><small>{label}</small>{rows.slice(0,4).map(x=><div key={x.symbol}><b>{x.symbol}</b><span>{x.reason}</span><em>Company view: {x.companyAction} · {x.weightPct}% weight</em></div>)}</article>})}</div></section>
+}

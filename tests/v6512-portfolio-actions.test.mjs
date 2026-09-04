@@ -1,0 +1,4 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";
+test("Action Center separates new money sizing and thesis decisions",()=>{const s=fs.readFileSync("components/portfolio/PortfolioActionCenter.tsx","utf8");for(const q of ["NEW MONEY","DO NOT ADD","WATCH","TRIM RISK","AVOID"])assert.match(s,new RegExp(q));assert.match(s,/companyAction/)});
+test("X-Ray explains known concentration without Unknown headline",()=>{const s=fs.readFileSync("components/portfolio/PortfolioXRay.tsx","utf8");assert.match(s,/POSITION CONCENTRATION/);assert.match(s,/CRYPTO/);assert.match(s,/CASH/);assert.match(s,/SECTOR/);assert.doesNotMatch(s,/Hidden concentration.*Unknown/i)});
+test("Pulse renders action center and xray",()=>{const s=fs.readFileSync("components/portfolio/PortfolioPulse.tsx","utf8");assert.match(s,/PortfolioActionCenter/);assert.match(s,/PortfolioXRay/)});

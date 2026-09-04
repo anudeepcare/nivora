@@ -6,6 +6,7 @@ import MetricInfo from "@/components/v65/MetricInfo";
 import {supabaseBrowser} from "@/lib/supabase";
 import {calculatePortfolioIntelligence,calculatePortfolioPulse} from "@/lib/v65/portfolio";
 import PortfolioPulse from "@/components/portfolio/PortfolioPulse";
+import HoldingsIntelligence from "@/components/portfolio/HoldingsIntelligence";
 import Link from "next/link";
 import {useSearchParams} from "next/navigation";
 import {Trash2,Pencil,Check,X,Sparkles,ShieldCheck,Search,WalletCards,Bitcoin,Banknote} from "lucide-react";
@@ -17,12 +18,14 @@ function PortfolioContent(){
  const[rows,setRows]=useState<any[]>([]),[quotes,setQuotes]=useState<any>({});
  const[pulseHistory,setPulseHistory]=useState<any[]>([]),[assetType,setAssetType]=useState<AssetType>("EQUITY"),[symbol,setSymbol]=useState(sp.get("symbol")||""),[shares,setShares]=useState(""),[cost,setCost]=useState(""),[horizon,setHorizon]=useState("long"),[msg,setMsg]=useState(""),[edit,setEdit]=useState<any>(null),[portfolioRisk,setPortfolioRisk]=useState<any>(null),[showAdd,setShowAdd]=useState(false);
 
+ const refreshPulseHistory=useCallback(async(uid:string)=>{try{const j=await fetch("/api/portfolio/pulse",{headers:{"x-nivora-user-id":uid},cache:"no-store"}).then(r=>r.json());setPulseHistory(Array.isArray(j?.items)?j.items:[])}catch{}},[]);
  const load=useCallback(async()=>{
   const s=supabaseBrowser();const{data:{user}}=await s.auth.getUser();if(!user)return;
-  fetch("/api/portfolio/pulse",{headers:{"x-nivora-user-id":user.id},cache:"no-store"}).then(r=>r.json()).then(j=>setPulseHistory(Array.isArray(j?.items)?j.items:[])).catch(()=>{});
+  refreshPulseHistory(user.id);
   const{data,error}=await s.from("portfolio_positions").select("*").eq("user_id",user.id).order("updated_at",{ascending:false});
   if(error){setMsg(error.message.includes("asset_type")?"Run supabase/20260904_v65_portfolio_assets.sql once to enable V65 stocks, crypto and cash.":error.message);return}
-  const clean=(data||[]).map((x:any)=>({...x,asset_type:x.asset_type||"EQUITY"}));setRows(clean);
+  const normalized=(data||[]).map((x:any)=>({...x,asset_type:x.asset_type||"EQUITY"}));
+  const cashMap=new Map<string,any>(),clean:any[]=[];for(const x of normalized){if(x.asset_type==="CASH"){const k=String(x.currency||x.symbol||"USD").toUpperCase(),prev=cashMap.get(k);if(prev)prev.cash_amount=Number(prev.cash_amount||0)+Number(x.cash_amount||0);else cashMap.set(k,{...x,currency:k,symbol:k})}else clean.push(x)}clean.push(...cashMap.values());setRows(clean);
   const syms=clean.filter((x:any)=>x.asset_type!=="CASH").map((x:any)=>x.symbol).slice(0,40);
   if(syms.length){
    const encoded=encodeURIComponent(syms.join(","));
@@ -35,7 +38,7 @@ function PortfolioContent(){
    const holdings=clean.filter((x:any)=>x.asset_type!=="CASH").map((x:any)=>({symbol:x.symbol,marketValue:Number(x.shares||0)*Number(m[x.symbol]?.price||x.avg_cost||0),sector:m[x.symbol]?.sector||null,archetype:m[x.symbol]?.archetype||null}));
    const pr=await fetch("/api/portfolio/risk",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId:user.id,holdings})}).then(r=>r.json()).catch(()=>null);setPortfolioRisk(pr?.risk||null);
   }else{setQuotes({});setPortfolioRisk(null);}
- },[]);
+ },[refreshPulseHistory]);
  useEffect(()=>{load()},[load]);
 
  async function add(e:React.FormEvent){
@@ -59,7 +62,7 @@ function PortfolioContent(){
  }),[rows,quotes]);
  const intel=useMemo(()=>calculatePortfolioIntelligence(priced),[priced]);
  const pulse=useMemo(()=>calculatePortfolioPulse(priced,pulseHistory),[priced,pulseHistory]);
- useEffect(()=>{if(!rows.length||!pulse.totalValue)return;let cancelled=false;(async()=>{const sb=supabaseBrowser(),{data:{user}}=await sb.auth.getUser();if(!user||cancelled)return;const holdings=priced.map((x:any)=>x.assetType==="CASH"?{assetType:"CASH",symbol:x.currency,value:Number(x.amount||0)}:{assetType:x.assetType,symbol:x.symbol,value:Number(x.quantity||0)*Number(x.price||0)});await fetch("/api/portfolio/pulse",{method:"POST",headers:{"Content-Type":"application/json","x-nivora-user-id":user.id},body:JSON.stringify({totalValue:pulse.totalValue,holdings})}).catch(()=>null)})();return()=>{cancelled=true}},[rows.length,pulse.totalValue,priced]);
+ useEffect(()=>{if(!rows.length||!pulse.totalValue)return;let cancelled=false;(async()=>{const sb=supabaseBrowser(),{data:{user}}=await sb.auth.getUser();if(!user||cancelled)return;const holdings=priced.map((x:any)=>x.assetType==="CASH"?{assetType:"CASH",symbol:x.currency,value:Number(x.amount||0)}:{assetType:x.assetType,symbol:x.symbol,value:Number(x.quantity||0)*Number(x.price||0)});await fetch("/api/portfolio/pulse",{method:"POST",headers:{"Content-Type":"application/json","x-nivora-user-id":user.id},body:JSON.stringify({totalValue:pulse.totalValue,holdings})}).then(r=>r.ok?refreshPulseHistory(user.id):null).catch(()=>null)})();return()=>{cancelled=true}},[rows.length,pulse.totalValue,priced]);
  const investedRows=rows.filter((x:any)=>x.asset_type!=="CASH");
  const attention=investedRows.filter((x:any)=>/EXIT|AVOID|SELL|TRIM|WAIT/i.test(String(quotes[x.symbol]?.action||""))).length;
  const ranked=investedRows.map((x:any)=>({symbol:x.symbol,type:x.asset_type,q:quotes[x.symbol]||{}}));
@@ -71,7 +74,8 @@ function PortfolioContent(){
  return <section className="portfolioPage v65Portfolio v653Portfolio">
   <div className="v65PortfolioHead"><div><div className="eyebrow">PORTFOLIO</div><h1>Your money, prioritized.</h1><p>See what deserves new capital, what can wait, and what needs attention—without reading a dashboard first.</p></div></div>
 
-  <PortfolioPulse pulse={pulse} risk={portfolioRisk}/>
+  <PortfolioPulse pulse={pulse} risk={portfolioRisk}/> 
+  <HoldingsIntelligence assets={priced} actions={pulse.actions}/>
 
   <div className="v653PortfolioHero v658PortfolioSnapshot">
    <article><small>TOTAL VALUE <MetricInfo title="Total portfolio value">Estimated current value of tracked stocks, crypto and cash.</MetricInfo></small><b>${intel.totalValue.toLocaleString(undefined,{maximumFractionDigits:0})}</b><span>{rows.length.toLocaleString()} tracked asset{rows.length===1?"":"s"}</span></article>
