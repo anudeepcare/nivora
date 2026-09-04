@@ -15,10 +15,11 @@ async function trailingReturns(symbol:string,key:string){
 export async function POST(req:Request){
  const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY;if(!url||!key)return NextResponse.json({status:"unavailable"},{status:503});
  const body=await req.json().catch(()=>({})),userId=String(body?.userId||"");if(!userId)return NextResponse.json({error:"userId required"},{status:400});
- const db=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});const{data:positions}=await db.from("portfolio_positions").select("symbol,shares,avg_cost").eq("user_id",userId);
- const syms=(positions||[]).map((x:any)=>x.symbol);if(!syms.length)return NextResponse.json({status:"ok",risk:analyzePortfolioRisk([])});
+ const db=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});const{data:positions}=await db.from("portfolio_positions").select("symbol,shares,avg_cost,asset_type").eq("user_id",userId);
+ const invested=(positions||[]).filter((x:any)=>String(x.asset_type||"EQUITY")!=="CASH");
+ const syms=invested.map((x:any)=>x.symbol);if(!syms.length)return NextResponse.json({status:"ok",risk:analyzePortfolioRisk([])});
  const{data:scan}=await db.from("nivora_investment_scan").select("symbol,price,sector,archetype").in("symbol",syms);const sm=new Map((scan||[]).map((x:any)=>[x.symbol,x]));
- const base=(positions||[]).map((p:any)=>{const s:any=sm.get(p.symbol),price=Number(s?.price||p.avg_cost||0);return{symbol:String(p.symbol),marketValue:Number(p.shares||0)*price,sector:s?.sector||null,archetype:s?.archetype||null}}).filter((x:any)=>x.marketValue>0);
+ const base=invested.map((p:any)=>{const s:any=sm.get(p.symbol),price=Number(s?.price||p.avg_cost||0);return{symbol:String(p.symbol),marketValue:Number(p.shares||0)*price,sector:s?.sector||null,archetype:s?.archetype||null}}).filter((x:any)=>x.marketValue>0);
  const td=process.env.TWELVE_DATA_API_KEY;
  // Correlation is an execution/portfolio overlay. To control provider cost, calculate it on the largest 12 funded positions and cache daily-return series for one hour.
  const leaders=[...base].sort((a,b)=>b.marketValue-a.marketValue).slice(0,12);

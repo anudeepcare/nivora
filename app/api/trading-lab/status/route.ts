@@ -31,7 +31,7 @@ export async function GET(){
 
  const [
   tradesResult,intentsResult,ordersResult,snapshotsResult,evaluationsResult,
-  recentOrdersResult,recentFillsResult,runnerHealthResult,decisionSnapshotsResult
+  recentOrdersResult,recentFillsResult,runnerHealthResult,decisionSnapshotsResult,recentRunsResult
  ]=await Promise.all([
   db.from("nivora_v61_trade_fills").select("realized_pnl,return_pct,benchmark_return_pct").not("realized_pnl","is",null).order("filled_at",{ascending:true}).limit(1000),
   db.from("nivora_v61_trade_intents").select("id",{count:"exact",head:true}),
@@ -41,7 +41,8 @@ export async function GET(){
   db.from("nivora_v61_paper_orders").select("id,symbol,client_order_id,status,submitted_at,created_at").order("created_at",{ascending:false}).limit(100),
   db.from("nivora_v61_trade_fills").select("order_id,symbol,side,qty,fill_price,realized_pnl,return_pct,filled_at").order("filled_at",{ascending:false}).limit(200),
   db.from("nivora_provider_health").select("ok,error_code,latency_ms,checked_at").eq("provider","nivora").eq("capability","paper-runner").order("checked_at",{ascending:false}).limit(1).maybeSingle(),
-  db.from("nivora_v59_decision_snapshots").select("symbol,observed_at,decision").eq("engine_version",ENGINE_VERSION).order("observed_at",{ascending:false}).limit(1000)
+  db.from("nivora_v59_decision_snapshots").select("id,symbol,observed_at,decision").eq("engine_version",ENGINE_VERSION).order("observed_at",{ascending:false}).limit(1000),
+  db.from("nivora_v65_trading_runs").select("id,automatic,session,started_at,finished_at,status,processed,submitted,blocked,errors,error").eq("engine_version",ENGINE_VERSION).order("started_at",{ascending:false}).limit(20)
  ]);
 
  let brokerHealth:any={configured,connected:false,equity:null,cash:null,positions:null,clock:null,error:null};
@@ -128,6 +129,14 @@ export async function GET(){
  const closestToBuy=decisionDetails.filter(x=>x.action!=="BUY"&&x.closestPath&&Number.isFinite(Number(x.pathDistance))).sort((a,b)=>Number(a.pathDistance)-Number(b.pathDistance)).slice(0,10);
  const decisionAudit={total:decisionDetails.length,actions:decisionActions,buyPaths:decisionPaths,dominantBlockers:dominantBlockers.slice(0,10),closestToBuy};
 
+ const engineSnapshotIds=((decisionSnapshotsResult.data||[]) as any[]).map(x=>Number(x.id)).filter(Boolean).slice(0,500);
+ const maturedOutcomes=engineSnapshotIds.length?await db.from("nivora_v59_arena_outcomes").select("id",{count:"exact",head:true}).in("snapshot_id",engineSnapshotIds):{count:0,error:null};
+ const learning={
+  maturedOutcomes:maturedOutcomes.count||0,
+  state:(maturedOutcomes.count||0)>0?"LEARNING":"NOT_LEARNING_YET",
+  reason:(maturedOutcomes.count||0)>0?`${maturedOutcomes.count} matured version-matched outcomes are available for calibration.`:"No matured version-matched outcomes exist yet; NIVORA must not claim it has learned from Trading Lab."
+ };
+
  const runnerHealth=runnerHealthResult.data as any;
  const currentSession=marketSessionAt(new Date());
  const latestOrder=orders[0]||null;
@@ -161,7 +170,10 @@ export async function GET(){
   orders:ordersResult.count||0,
   funnel:{snapshots:snapshotsResult.count||0,evaluated:uniqueSnapshots.size,intents:intentCount,authorized:has("SUBMITTED"),blocked:has("BLOCKED"),submitted:has("SUBMITTED")},
   recentEvaluations,
+  recentRuns:recentRunsResult.data||[],
+  runAuditStatus:recentRunsResult.error?"migration-required":"ready",
   decisionAudit,
+  learning,
   metrics,
   note:"Trading Lab metrics are realized paper results, not a guarantee of future returns."
  },{headers:{"Cache-Control":"private, no-store, max-age=0"}});

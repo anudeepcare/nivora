@@ -95,11 +95,18 @@ async function run(req:Request,automatic=false){
  const broker=new AlpacaPaperBroker(alpacaKey,alpacaSecret);
  const twelveKey=process.env.TWELVE_DATA_API_KEY||"";
  const session=marketSessionAt(new Date());
+ const runId=crypto.randomUUID(),runStartedAt=new Date().toISOString();
+ await db.from("nivora_v65_trading_runs").insert({id:runId,engine_version:ENGINE_VERSION,trading_lab_version:TRADING_LAB_VERSION,automatic,session,started_at:runStartedAt,status:"RUNNING"}).then(()=>undefined);
+ const finishRun=async(status:string,results:any[]=[],error:string|null=null)=>{
+  const submitted=results.filter(x=>x.status==="SUBMITTED").length,blocked=results.filter(x=>x.status==="BLOCKED").length,errors=results.filter(x=>x.status==="ERROR").length;
+  await db.from("nivora_v65_trading_runs").update({finished_at:new Date().toISOString(),status,processed:results.length,submitted,blocked,errors,results,error}).eq("id",runId).then(()=>undefined);
+ };
 
- // V63 deliberately executes automatic paper orders only during the regular session.
+ // V65 deliberately executes automatic paper orders only during the regular session.
  // Premarket/after-hours prices remain visible research evidence but are not auto-execution liquidity.
  if(session!=="REGULAR"){
   await recordRunnerHealth(db,true,started,`SESSION_${session}`);
+  await finishRun("SKIPPED",[],`SESSION_${session}`);
   return NextResponse.json({status:"skipped",code:"SESSION_NOT_EXECUTABLE",mode:"paper",session,automatic,engineVersion:ENGINE_VERSION,tradingLabVersion:TRADING_LAB_VERSION});
  }
 
@@ -107,6 +114,7 @@ async function run(req:Request,automatic=false){
   const clock=await broker.getClock();
   if(!clock.isOpen){
    await recordRunnerHealth(db,true,started,"BROKER_MARKET_CLOSED");
+   await finishRun("SKIPPED",[],"BROKER_MARKET_CLOSED");
    return NextResponse.json({status:"skipped",code:"BROKER_MARKET_CLOSED",mode:"paper",session,automatic,brokerClock:clock,engineVersion:ENGINE_VERSION,tradingLabVersion:TRADING_LAB_VERSION});
   }
 
@@ -299,9 +307,11 @@ async function run(req:Request,automatic=false){
   }
 
   await recordRunnerHealth(db,true,started,null);
-  return NextResponse.json({status:"ok",mode:"paper",automatic,session,engineVersion:ENGINE_VERSION,tradingLabVersion:TRADING_LAB_VERSION,processed:latest.size,results});
+  await finishRun("OK",results,null);
+  return NextResponse.json({status:"ok",mode:"paper",automatic,session,runId,engineVersion:ENGINE_VERSION,tradingLabVersion:TRADING_LAB_VERSION,processed:latest.size,results});
  }catch(error:any){
   await recordRunnerHealth(db,false,started,error?.message||"RUNNER_ERROR").catch(()=>{});
+  await finishRun("ERROR",[],error?.message||"RUNNER_ERROR").catch(()=>{});
   return NextResponse.json({status:"error",mode:"paper",automatic,session,engineVersion:ENGINE_VERSION,tradingLabVersion:TRADING_LAB_VERSION,error:error?.message||"Paper runner failed."},{status:500});
  }
 }

@@ -37,14 +37,31 @@ export async function GET(req:Request){
    buckets:[...buckets.entries()].map(([k,b])=>{const[archetype,score]=k.split("|");return{archetype,score,n:b.n,benchmarkComparableN:b.alphaN,alphaHitRatePct:b.alphaN?+(b.w/b.alphaN*100).toFixed(1):null,avgExcessReturnPct:b.alphaN?+(b.sum/b.alphaN).toFixed(2):null,confidence95:wilson(b.w,b.alphaN)}})
   };
  }
- const summary90=result[90]?.compatibleSummary||summarizeCalibration([],100);const cohorts=summarizeCalibrationCohorts(cohortRows,30);
+ // V65 exact-engine evidence comes from immutable Arena snapshots/outcomes.
+ const {data:arenaSnaps}=await db.from("nivora_v59_decision_snapshots").select("id,decision").eq("engine_version",engine).order("observed_at",{ascending:false}).limit(2000);
+ const arenaMap=new Map((arenaSnaps||[]).map((x:any)=>[Number(x.id),x]));
+ const arenaIds=[...arenaMap.keys()],arenaOutcomes:any[]=[];
+ for(let i=0;i<arenaIds.length;i+=200){const{data:xs}=await db.from("nivora_v59_arena_outcomes").select("snapshot_id,horizon,alpha_pct,benchmark_return_pct").in("snapshot_id",arenaIds.slice(i,i+200));arenaOutcomes.push(...(xs||[]))}
+ const labelToDays:any={"30D":30,"90D":90,"180D":180,"1Y":365,"2Y":730};
+ for(const [label,days] of Object.entries(labelToDays)){
+  const exactRows=arenaOutcomes.filter((x:any)=>x.horizon===label).map((x:any)=>{const d:any=arenaMap.get(Number(x.snapshot_id))?.decision||{};return{score:Number(d.thesisScore||0),alphaPct:Number(x.alpha_pct||0),archetype:d.archetype||"unknown"}}).filter((x:any)=>Number.isFinite(x.alphaPct));
+  if(result[days])result[days].exactEngineSummary=summarizeCalibration(exactRows,30);
+ }
+ const arenaMaturedN=arenaOutcomes.length;
+ const summary90=result[90]?.compatibleSummary||summarizeCalibration([],100);
+ const exact90=result[90]?.exactEngineSummary||summarizeCalibration([],30);
+ const cohorts=summarizeCalibrationCohorts(cohortRows,30);
  return NextResponse.json({
-  status:summary90.status==="CALIBRATED"?"calibrated":"collecting",
+  status:exact90.status==="CALIBRATED"?"calibrated":arenaMaturedN>0?"forward-validating":"collecting",
   engineVersion:engine,
   weightsVersion:WEIGHTS_VERSION,
   calibrationScope:"WEIGHTS_COMPATIBLE",
-  modelConfidence:summary90.status==="CALIBRATED"?"Calibrated":"Uncalibrated",
+  modelConfidence:exact90.status==="CALIBRATED"?"Exact-engine calibrated":"Uncalibrated",
   summary:{scope:"Weight-compatible history",...summary90},
+  exactEngineSummary90:exact90,
+  learning:{state:arenaMaturedN>0?"LEARNING":"NOT_LEARNING_YET",maturedOutcomes:arenaMaturedN,productionFrozen:true,reason:arenaMaturedN>0?`${arenaMaturedN} exact-engine Arena outcomes have matured. They update evidence, not production weights.`:"No exact-engine Arena outcomes have matured yet."},
+  champion:{engineVersion:engine,weightsVersion:WEIGHTS_VERSION,state:"FROZEN",note:"Production coefficients are immutable for this engine version."},
+  challenger:{state:arenaMaturedN>=30?"ELIGIBLE_FOR_EVALUATION":"COLLECTING",minimumForwardOutcomes:30,currentForwardOutcomes:arenaMaturedN,autoPromote:false,note:"A challenger can be evaluated after sufficient evidence, but promotion always creates a new engine version."},
   note:"Calibration reuses historical decisions only when they share the same thesis-weight contract. Exact-engine results are also shown separately. This is evidence, not a promise of future performance.",
   outcomes:result,
   cohorts,

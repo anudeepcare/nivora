@@ -50,8 +50,9 @@ test("consistency engine catches malformed valuation ordering and support/resist
 });
 test("new Hero uses click/tap metric help and separate risk concepts",()=>{
  const s=fs.readFileSync(new URL("../components/InvestorDecisionHero.tsx",import.meta.url),"utf8");
+ const info=fs.readFileSync(new URL("../components/v65/MetricInfo.tsx",import.meta.url),"utf8");
  const p=fs.readFileSync(new URL("../lib/nivora-decision-presentation.ts",import.meta.url),"utf8");
- assert.match(s,/onClick/);assert.match(s,/aria-expanded/);assert.match(p,/BEAR CASE/);assert.match(p,/BASE CASE/);assert.match(p,/BULL CASE/);
+ assert.match(info,/onClick/);assert.match(info,/aria-expanded/);assert.match(p,/BEAR CASE/);assert.match(p,/BASE CASE/);assert.match(p,/BULL CASE/);
  assert.match(s,/TECHNICAL RISK/);assert.match(s,/THESIS INVALIDATION/);
 });
 test("duplicated legacy overview analyst/quality strip is removed",()=>{

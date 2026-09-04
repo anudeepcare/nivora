@@ -24,10 +24,11 @@ import InvestorDecisionHero from "./InvestorDecisionHero";
 import {metricDefinitions} from "@/lib/nivora-metrics";
 import {ENGINE_VERSION} from "@/lib/nivora-version";
 import {formatMoney as displayMoney,formatPercent} from "@/lib/nivora-format";
+import MetricInfo from "@/components/v65/MetricInfo";
 
 type Mode="now"|"swing"|"long"|"own";
 type Depth="simple"|"investor"|"pro";
-type Tab="overview"|"thesis"|"fundamentals"|"institutions"|"catalysts"|"news"|"earnings"|"technical"|"options";
+type Tab="thesis"|"fundamentals"|"institutions"|"catalysts"|"news"|"earnings"|"technical"|"options";
 
 const tone=(s:string)=>{
   const x=(s||"").toUpperCase();
@@ -44,44 +45,6 @@ const money=(n:any)=>{
 };
 const eps=(n:any)=>{const x=Number(n);return Number.isFinite(x)?`${x<0?"-":""}$${Math.abs(x).toFixed(2)}`:"—"};
 const daysUntil=(d?:string|null)=>{if(!d)return null;return Math.ceil((new Date(d+"T12:00:00").getTime()-Date.now())/86400000)};
-
-function Help({title,children}:{title:string;children?:React.ReactNode}){
-  const [open,setOpen]=useState(false);
-  const [pos,setPos]=useState<{left:number;top:number;width:number;below:boolean}|null>(null);
-  const ref=useRef<HTMLSpanElement>(null);
-  useEffect(()=>{
-    if(!open)return;
-    const place=()=>{
-      const el=ref.current;if(!el)return;
-      const r=el.getBoundingClientRect(), vw=window.innerWidth, vh=window.innerHeight;
-      const width=Math.min(300,Math.max(240,vw-24)), pad=12;
-      const left=Math.max(pad,Math.min(r.left+r.width/2-width/2,vw-width-pad));
-      const estimated=150, below=r.bottom+10+estimated<vh-12;
-      const top=below?r.bottom+8:Math.max(12,r.top-estimated-8);
-      setPos({left,top,width,below});
-    };
-    place();
-    const close=(e:PointerEvent)=>{if(ref.current&&!ref.current.contains(e.target as Node))setOpen(false)};
-    const esc=(e:KeyboardEvent)=>{if(e.key==="Escape")setOpen(false)};
-    document.addEventListener("pointerdown",close);
-    document.addEventListener("keydown",esc);
-    window.addEventListener("resize",place);
-    window.addEventListener("scroll",place,true);
-    return()=>{document.removeEventListener("pointerdown",close);document.removeEventListener("keydown",esc);window.removeEventListener("resize",place);window.removeEventListener("scroll",place,true)};
-  },[open]);
-  return <span className="metricHelpInline" ref={ref}>
-    <button type="button" aria-label={`Explain ${title}`} aria-expanded={open} onClick={(e:React.MouseEvent<HTMLButtonElement>)=>{e.stopPropagation();setOpen((v:boolean)=>!v)}}><Info size={13}/></button>
-    {open&&pos&&<span
-      className={`metricHelpPop ${pos.below?"below":"above"}`}
-      style={{
-        ["--help-left" as any]:`${pos.left}px`,
-        ["--help-top" as any]:`${pos.top}px`,
-        ["--help-width" as any]:`${pos.width}px`
-      }}
-      role="tooltip"
-    ><b>{title}</b><span>{children}</span></span>}
-  </span>;
-}
 
 function metricScore(mode:Mode,business:number,six:number,timing:number,risk:number){
   const safe=100-risk;
@@ -319,18 +282,6 @@ export default function StockClient({symbol}:{symbol:string}){
     return {...investorDecision,today,marketDataIntegrity,calibrationEvidence:ce,modelConfidenceLabel:label as "Uncalibrated"|"Collecting"|"Calibrated"};
   },[investorDecision,calibration,liveQuote,owns]);
 
-  const quickAnswers=useMemo(()=>{
-    if(!intelligence)return null;
-    return {
-      why:`${intelligence.biggestPositive} ${intelligence.biggestRisk?`The main reason not to be more aggressive is: ${intelligence.biggestRisk}`:""}`,
-      change:`The next decision trigger is ${intelligence.nextDecision}. A stronger call also needs better alignment across entry, momentum, flow and catalysts.`,
-      risk:`${intelligence.biggestRisk} ${intelligence.bearTriggers?.[0]?`Key deterioration trigger: ${intelligence.bearTriggers[0]}.`:""}`,
-      evidence:intelligence.contradictions?.length
-        ?`The engine sees disagreement: ${intelligence.contradictions[0]}`
-        :`The major evidence layers are broadly aligned. Data coverage is ${intelligence.confidence}/100 (${intelligence.confidenceLabel.toLowerCase()}). Statistical model confidence is not yet calibrated.`
-    };
-  },[intelligence]);
-
   const enterprise=useMemo(()=>{
     if(!d||!intelligence)return null;
     const now=Date.now();
@@ -408,9 +359,6 @@ export default function StockClient({symbol}:{symbol:string}){
       : "The stock may still be a good company, but today is not a strong enough entry yet.";
   const fiveRecordText=five?String(five.years)+"-year record · "+String(five.revenueTrend):"Loading financial history";
   const sixMonthText=d.sixMonth?(d.sixMonth.returnPct>=0?"+":"")+String(d.sixMonth.returnPct)+"% return":"Price history";
-  const betterEntryText="$"+String(d.levels.preferredEntry)+"–$"+String(d.levels.support);
-  const confirmationText="Above $"+String(d.levels.breakout);
-  const invalidationText="Below $"+String(d.levels.invalidation);
   const supportText="Support $"+String(d.levels.support);
   const resistanceText="Resistance $"+String(d.levels.resistance);
   const todayMoveText=changeAbs>=4?"Large "+(d.changePct>=0?"move up":"move down")+": "+(d.changePct>=0?"+":"")+String(d.changePct)+"%":"Today’s move";
@@ -421,7 +369,7 @@ export default function StockClient({symbol}:{symbol:string}){
     perfRange==="YTD"?d.performance?.ytdPct??null:d.performance?.oneYearPct??null;
   const currentPx=Number(liveQuote?.price||d.price);
   const displayChangePct=Number(liveQuote?.changePct??d.changePct);
-  const supportPx=Number(d.levels.support), breakoutPx=Number(d.levels.breakout), invalidPx=Number(d.levels.invalidation);
+  const breakoutPx=Number(d.levels.breakout), invalidPx=Number(d.levels.invalidation);
   const upside=Number.isFinite(currentPx)&&currentPx?((breakoutPx/currentPx-1)*100):null;
   const downside=Number.isFinite(currentPx)&&currentPx?((invalidPx/currentPx-1)*100):null;
   const rrRaw=upside!=null&&downside!=null&&downside<0&&Math.abs(downside)>=0.4?Math.abs(upside/downside):null;
@@ -463,35 +411,20 @@ export default function StockClient({symbol}:{symbol:string}){
     return"HOLD";
   })();
 
-  const commandReason=owns
-    ? ownerAction.startsWith("ADD")?"The thesis remains intact and the current location is attractive enough for a measured add."
-      : ownerAction.startsWith("TRIM")?"The position remains healthy, but price is extended enough that trimming risk can be more disciplined than adding."
-      : ownerAction.includes("EXIT")?"Price or business evidence has crossed a thesis-risk threshold. Reassess the position before adding more risk."
-      : "The thesis remains intact enough to hold. Use the add, trim and reassessment levels instead of reacting to daily noise."
-    : view.text;
 
   const commandScore=intelligence?.score??overallScore;
-  const evidenceConfidence=intelligence?.confidenceLabel||confidence;
   const contradictionCount=Number(intelligence?.contradictions?.length||0);
   const openResearch=(nextTab:Tab="thesis")=>{
     setTab(nextTab);
     requestAnimationFrame(()=>setTimeout(()=>thesisRef.current?.scrollIntoView({behavior:"smooth",block:"start"}),80));
   };
 
-  const derivativesScore=Number(intelligence?.dimensions?.derivatives ?? 50);
   const valuationScoreRaw=intelligence?.valuation;
   const valuationScore=valuationScoreRaw==null||!Number.isFinite(Number(valuationScoreRaw))?null:Number(valuationScoreRaw);
-  const valuationForScoring=valuationScore??50;
   // Institutions must only represent verified reported ownership/13F evidence.
   // Never substitute the price/volume accumulation proxy into this slot.
   const institutionalPct=Number(institutional?.institutional?.shareChangePct);
   const institutionalHasPct=institutional?.enabled && Number.isFinite(institutionalPct);
-  const institutionalQuick=institutional?.enabled
-    ? (institutionalHasPct
-        ? `${institutionalPct>0?"+":""}${institutionalPct.toFixed(Math.abs(institutionalPct)>=100?0:1)}% QoQ`
-        : (institutional?.institutional?.directionLabel||institutionalLabel))
-    : "13F not loaded";
-  const institutionalQuickTone=institutional?.enabled ? institutionalTone : "mid";
   const fmtDate=(value?:string|null)=>{
     if(!value)return "Unavailable";
     const dt=new Date(`${value}T12:00:00`);
@@ -509,10 +442,6 @@ export default function StockClient({symbol}:{symbol:string}){
   const analystTotal=analystCounts?Object.values(analystCounts).reduce((a:number,b:number)=>a+b,0):0;
   const analystBuy=analystCounts?(analystCounts.strongBuy+analystCounts.buy):0;
   const analystSell=analystCounts?(analystCounts.sell+analystCounts.strongSell):0;
-  const analystConsensus=analystTotal?
-    (analystBuy/analystTotal>=.62?"Buy":analystSell/analystTotal>=.45?"Sell":analystBuy>analystSell+analystCounts!.hold*.25?"Positive":"Hold"):
-    "Not covered";
-  const analystScore=Number(intelligence?.dimensions?.analyst??50);
   const pt=context?.priceTarget||{};
   const targetMean=Number(pt.targetMean);
   const targetMedian=Number(pt.targetMedian);
@@ -568,10 +497,6 @@ export default function StockClient({symbol}:{symbol:string}){
       timeframe:horizon==="now"?"Current / daily structure":horizon==="swing"?"Swing / daily-weekly structure":"Long term / weekly-monthly thesis"
     };
   })();
-
-  const decisionConviction=Math.max(32,Math.min(92,Math.round(48+Math.abs(commandScore-50)*.72-contradictionCount*7+(technicalComposite>=65&&businessScore>=65?6:0))));
-  const convictionLabel=decisionConviction>=78?"High":decisionConviction>=62?"Good":decisionConviction>=48?"Moderate":"Low";
-  const currentLocation=currentPx>=horizonPlan.entryLow&&currentPx<=horizonPlan.entryHigh?"At a preferred price":currentPx<horizonPlan.entryLow?"Below our planned buy area":currentPx>=horizonPlan.target1?"Near/above our first objective":currentPx<horizonPlan.confirm?"Wait for a better price or stronger proof":"Strength is confirmed";
   const rsiNow=Number(proTech?.rsi14??d.engine?.RSI??50), extensionNow=Number(d.scores?.extension??50);
   const timingState=(()=>{
     if((rsiNow>=76||extensionNow>=82)&&currentPx>=Number(d.levels?.resistance||Infinity))return{label:owns?"TRIM / DO NOT ADD":"DO NOT CHASE",reason:`Price is stretched${Number.isFinite(rsiNow)?` (RSI ${rsiNow.toFixed(0)})`:""} near/above resistance. This is a timing warning, not automatically a broken thesis.`,tone:"bad" as const};
@@ -580,15 +505,6 @@ export default function StockClient({symbol}:{symbol:string}){
     if(currentPx<horizonPlan.entryLow)return{label:"WAIT FOR STABILITY",reason:"Price is below the planned area. Cheaper is not automatically better; wait for stabilization and intact thesis evidence.",tone:"mid" as const};
     return{label:"WAIT / WATCH",reason:"The investment thesis and the current entry are not aligned strongly enough for a high-conviction add.",tone:"mid" as const};
   })();
-  const upsideToT1=currentPx>0?((horizonPlan.target1/currentPx-1)*100):null;
-  const downsideToBreak=currentPx>0?((horizonPlan.stop/currentPx-1)*100):null;
-  const dca1=Number(horizonPlan.entryHigh.toFixed(2));
-  const dca2=Number(((horizonPlan.entryLow+horizonPlan.entryHigh)/2).toFixed(2));
-  const dca3=Number(Math.max(horizonPlan.stop*1.035,horizonPlan.entryLow-(horizonPlan.entryHigh-horizonPlan.entryLow)*.75).toFixed(2));
-  const pullbackTargetLabel=horizonPlan.target1<horizonPlan.confirm?"PULLBACK TARGET":"FIRST TARGET";
-  const breakoutTarget=horizonPlan.target2>horizonPlan.confirm?horizonPlan.target2:Number((horizonPlan.confirm+Math.max(Number(proTech?.atr14||currentPx*.025)*1.25,horizonPlan.confirm*.04)).toFixed(2));
-  const potentialToTarget=currentPx>0?((horizonPlan.target1/currentPx-1)*100):null;
-  const riskToBreak=currentPx>0?((horizonPlan.stop/currentPx-1)*100):null;
 
   const horizonChartLevels={
     entryLow:horizonPlan.entryLow,entryHigh:horizonPlan.entryHigh,confirm:horizonPlan.confirm,
@@ -598,116 +514,17 @@ export default function StockClient({symbol}:{symbol:string}){
   };
   const horizonCandles=(d.candles||[]).slice(horizon==="now"?-65:horizon==="swing"?-125:-180);
 
-  // V43 decision calibration: the action is horizon-aware and uses multiple independent
-  // evidence layers. Price location matters, but it is no longer allowed to collapse
-  // every security into the same generic WAIT state.
-  const actionMetrics=(()=>{
-    const trend=Number(d.scores?.trend??50), momentum=Number(d.scores?.momentum??50), flow=Number(d.scores?.flow??50);
-    const entry=Number(d.scores?.entry??50), risk=Number(d.scores?.risk??50), extension=Number(d.scores?.extension??50), structure=Number(d.scores?.structure??50);
-    const catalyst=Number(intelligence?.dimensions?.catalysts??50), valuation=valuationForScoring;
-    const analyst=analystTotal>=3?analystScore:50;
-    const institutions=institutional?.enabled ? Math.max(25,Math.min(80,50+(Number.isFinite(institutionalPct)?institutionalPct*.7:0))) : 50;
-    const technical=technicalComposite;
-    const score=horizon==="now"
-      ? technical*.30+entry*.20+flow*.12+structure*.10+(100-risk)*.12+businessScore*.06+catalyst*.06+analyst*.04
-      : horizon==="swing"
-        ? technical*.24+entry*.16+businessScore*.15+valuation*.10+flow*.10+catalyst*.10+(100-risk)*.08+analyst*.04+institutions*.03
-        : businessScore*.29+valuation*.18+analyst*.10+institutions*.08+catalyst*.10+technical*.10+entry*.06+(100-risk)*.09;
-    return {trend,momentum,flow,entry,risk,extension,structure,catalyst,valuation,analyst,institutions,technical,score:Math.round(Math.max(0,Math.min(100,score)))};
-  })();
+  return <div className="v65Stock">
+    <div className="v65StockSearch"><SearchBox/></div>
 
-  const decisionAction=(()=>{
-    const m=actionMetrics;
-    const inside=currentPx>=horizonPlan.entryLow&&currentPx<=horizonPlan.entryHigh;
-    const justAbove=currentPx>horizonPlan.entryHigh&&currentPx<=horizonPlan.entryHigh*1.045;
-    const between=currentPx>horizonPlan.entryHigh&&currentPx<horizonPlan.confirm;
-    const confirmed=currentPx>=horizonPlan.confirm;
-    if(owns){
-      if(currentPx<=horizonPlan.stop||businessScore<35||m.score<34)return"EXIT / REASSESS";
-      if((currentPx>=horizonPlan.target2&&m.extension>=66)||(m.extension>=84&&m.momentum<55))return"TAKE PROFIT / TRIM";
-      if(currentPx>=horizonPlan.target1&&m.extension>=70)return"TRIM SELECTIVELY";
-      if(inside&&m.score>=72&&m.risk<70)return"ADD";
-      if((inside||justAbove)&&m.score>=64&&businessScore>=58&&m.risk<76)return"ADD SELECTIVELY";
-      if(m.risk>=80||m.trend<32||m.score<45)return"HOLD / DON'T ADD";
-      return"HOLD";
-    }
-    if((businessScore<35&&m.technical<45)||(m.risk>=84&&m.technical<48)||m.score<35)return"AVOID";
-    if(inside&&m.score>=76&&m.risk<72&&m.technical>=55)return"BUY NOW";
-    if(inside&&m.score>=65&&m.risk<76)return"START POSITION";
-    if(confirmed&&m.score>=72&&m.trend>=62&&m.flow>=48&&m.extension<82)return"BUY BREAKOUT";
-    if(m.extension>=82||(currentPx>=horizonPlan.target2&&m.score<82))return"DON'T CHASE";
-    if(justAbove&&m.score>=72&&businessScore>=58&&m.technical>=52)return"START POSITION";
-    if(between&&businessScore>=68&&m.score>=61)return"BUY ON PULLBACK";
-    if(between&&m.technical>=58&&m.score>=58)return"WAIT FOR CONFIRMATION";
-    if(currentPx<horizonPlan.entryLow&&m.trend>=56&&m.score>=64)return"START SMALL";
-    if(currentPx<horizonPlan.entryLow)return"WAIT FOR STABILITY";
-    if(businessScore>=72&&m.technical<48)return"BUY ON PULLBACK";
-    if(m.score>=58)return"WATCH";
-    return"AVOID";
-  })();
-
-
-  const decisionWhy=(()=>{
-    const good:string[]=[];const watch:string[]=[];
-    if(technicalComposite>=68)good.push(`Technical setup ${technicalComposite}/100`);else if(technicalComposite<45)watch.push(`Technical setup only ${technicalComposite}/100`);
-    if(businessScore>=70)good.push(`Business quality ${businessScore}/100`);else if(businessScore<45)watch.push(`Business quality ${businessScore}/100`);
-    if(institutional?.enabled&&institutionalHasPct)good.push(`Institutions ${institutionalPct>=0?"+":""}${institutionalPct.toFixed(1)}% QoQ`);
-    if(analystTotal>=3&&analystConsensus!=="Not covered")good.push(`Analysts: ${analystConsensus}`);
-    if(Number(d.scores?.extension??50)>=70)watch.push("Price is extended");
-    if(Number(d.scores?.risk??50)>=70)watch.push("Risk is elevated");
-    return {good:good.slice(0,3),watch:watch.slice(0,2)};
-  })();
-
-  const actionIsBuy=["BUY NOW","START POSITION","START SMALL","BUY BREAKOUT","ADD","ADD SELECTIVELY"].some(x=>decisionAction.startsWith(x));
-  const actionIsPullback=decisionAction==="BUY ON PULLBACK";
-  const actionIsHold=decisionAction.startsWith("HOLD");
-  const actionIsRisk=decisionAction.includes("EXIT")||decisionAction==="AVOID"||decisionAction.includes("TRIM")||decisionAction.includes("PROFIT");
-  const actionSummary=actionIsBuy
-    ? (decisionAction==="BUY BREAKOUT"?`Strength has confirmed above NIVORA’s trigger. The setup supports a measured entry while the thesis remains intact.`:`The evidence supports a measured entry. NIVORA still prefers disciplined sizing around the price plan below.`)
-    : actionIsPullback
-      ? `The thesis is constructive, but today’s price is not the best risk/reward. NIVORA prefers a pullback toward $${horizonPlan.entryLow}–$${horizonPlan.entryHigh}.`
-      : actionIsHold
-        ? `No urgent action. The thesis remains intact; use the add and reassessment levels instead of reacting to daily noise.`
-        : decisionAction==="WAIT FOR CONFIRMATION"
-          ? `The setup is developing, but buyers have not provided enough proof yet. A move above $${horizonPlan.confirm} would strengthen the case.`
-          : decisionAction==="WAIT FOR STABILITY"
-            ? `Price is below NIVORA’s planned area. Lower is not automatically better—wait for stabilization before adding risk.`
-            : decisionAction==="DON'T CHASE"
-              ? `Price is extended relative to the current setup. NIVORA would rather miss the trade than pay for poor risk/reward.`
-              : decisionAction==="WATCH"
-                ? `The evidence is mixed. Keep it on the radar, but there is not enough alignment for new money yet.`
-                : actionIsRisk
-                  ? `Risk currently outweighs the evidence for adding capital. Review the thesis before taking new risk.`
-                  : `The evidence is mixed. NIVORA does not see a high-quality action yet.`;
-  const firstUpsideTarget=(()=>{
-    const atr=Math.max(.01,Number(proTech?.atr14||currentPx*.025));
-    const candidates=[horizonPlan.target1,horizonPlan.target2,breakoutTarget].filter(x=>Number.isFinite(x)&&x>currentPx*1.01);
-    return Number((candidates.length?Math.min(...candidates):currentPx+atr*1.5).toFixed(2));
-  })();
-  const upsideToVisibleTarget=currentPx>0?((firstUpsideTarget/currentPx-1)*100):null;
-
-  const signalRows=[
-    ["Business",business.label,tone(business.label)],
-    ["Trend",d.labels.trend,tone(d.labels.trend)],
-    ["Technical",`${technicalComposite}/100`,technicalComposite>=68?"good":technicalComposite<45?"bad":"mid"],
-    ["Entry",d.labels.entry,tone(d.labels.entry)],
-    ["Institutions",institutionalQuick,institutionalQuickTone],
-    ["Analysts",analystConsensus,analystConsensus==="Buy"||analystConsensus==="Positive"?"good":analystConsensus==="Sell"?"bad":"mid"],
-    ["Options",optionsData?.enabled?(derivativesScore>=60?"Supportive":derivativesScore<45?"Cautious":"Neutral"):"On demand",optionsData?.enabled?(derivativesScore>=60?"good":derivativesScore<45?"bad":"mid"):"mid"],
-    ["Valuation",valuationScore==null?"N/A":valuationScore>=65?"Attractive":valuationScore<45?"Expensive":"Fair",valuationScore==null?"mid":valuationScore>=65?"good":valuationScore<45?"bad":"mid"]
-  ];
-
-  return <div className="osStock v12Stock v18Stock">
-    <div className="osStockSearch"><SearchBox/></div>
-
-    <header className="osStockHead v12StockHead">
+    <header className="v65StockHead">
       <div><small>{company?.name||d.name||symbol}</small><h1>{symbol}</h1></div>
       <div><b>{displayMoney(currentPx)}</b><span className={displayChangePct>=0?"up":"down"}>{formatPercent(displayChangePct)}</span></div>
     </header>
 
-    <div className="liveFresh"><span className="liveStatus"><span className="liveDot"/>{liveQuote?`${String(liveQuote.session||"").replaceAll("_"," ")} · ${liveQuote.integrityState==="MARKET_CLOSED"?"LAST PRICE":liveQuote.integrityState||liveQuote.freshness}`:"QUOTE CONNECTING"}</span><span className="liveCadence">{liveQuote?(liveQuote.integrityState==="MARKET_CLOSED"?`${liveQuote.provider} · market closed · regular close ${displayMoney(Number(liveQuote.regularClose))}`:`${liveQuote.provider} · ${liveQuote.ageSeconds==null?"timestamp unavailable":`${liveQuote.ageSeconds}s old`}${liveQuote.disagreementPct!=null?` · provider gap ${Number(liveQuote.disagreementPct).toFixed(2)}%`:""} · regular close ${displayMoney(Number(liveQuote.regularClose))}`):"Daily analysis stays available while the live quote connects."}</span></div>
+    <div className="v65LiveFresh"><span className="v65LiveStatus"><span className="v65LiveDot"/>{liveQuote?`${String(liveQuote.session||"").replaceAll("_"," ")} · ${liveQuote.integrityState==="MARKET_CLOSED"?"LAST PRICE":liveQuote.integrityState||liveQuote.freshness}`:"QUOTE CONNECTING"}</span><span className="v65LiveCadence">{liveQuote?(liveQuote.integrityState==="MARKET_CLOSED"?`${liveQuote.provider} · market closed · regular close ${displayMoney(Number(liveQuote.regularClose))}`:`${liveQuote.provider} · ${liveQuote.ageSeconds==null?"timestamp unavailable":`${liveQuote.ageSeconds}s old`}${liveQuote.disagreementPct!=null?` · provider gap ${Number(liveQuote.disagreementPct).toFixed(2)}%`:""} · regular close ${displayMoney(Number(liveQuote.regularClose))}`):"Daily analysis stays available while the live quote connects."}</span></div>
 
-    <div className="v50PositionBar"><div><Sparkles size={15}/><span>NIVORA analyzes 3M, 6M, 1Y, 2Y and 3Y automatically.</span></div><button type="button" className={owns?"on":""} onClick={()=>setOwns(!owns)}>{owns?(ownerPosition?"✓ Position loaded":"✓ I own this"):"I own this"}</button></div>
+    <div className="v65PositionBar"><div><Sparkles size={15}/><span>NIVORA analyzes 3M, 6M, 1Y, 2Y and 3Y automatically.</span></div><button type="button" className={owns?"on":""} onClick={()=>setOwns(!owns)}>{owns?(ownerPosition?"✓ Position loaded":"✓ I own this"):"I own this"}</button></div>
 
 
     {depth==="pro"&&enterprise&&intelligence&&<section className="v29ProCockpit">
@@ -729,65 +546,22 @@ export default function StockClient({symbol}:{symbol:string}){
       </div>}
     </section>}
 
-    {depth!=="simple"&&<section className="v19Performance" aria-label="Quick market context">
-      <div><div className="metricLabel"><small>PERFORMANCE</small><Help title="Performance">Price return over the selected period using available market history. Performance describes what happened; it does not predict what happens next.</Help></div><b>{selectedReturn==null?"—":`${selectedReturn>=0?"+":""}${selectedReturn}%`}</b><div className="v19Range">{(["6M","YTD","1Y"] as const).map(r=><button key={r} className={perfRange===r?"on":""} onClick={()=>setPerfRange(r)}>{r}</button>)}</div></div>
-      <div><div className="metricLabel"><small>52-WEEK POSITION</small><Help title="52-week position">Shows where today’s price sits between the last 52-week low and high. Near the high is not automatically bad; it simply adds price-location context.</Help></div><b>{d.performance?.rangePositionPct!=null?`${d.performance.rangePositionPct}%`:"—"}</b><span>{d.performance?.yearLow!=null&&d.performance?.yearHigh!=null?`Low $${d.performance.yearLow} · High $${d.performance.yearHigh}`:"Waiting for 1-year history"}</span></div>
-      <div><div className="metricLabel"><small>RISK / REWARD</small><Help title="Risk / reward">Compares the distance from today’s price to NIVORA’s confirmation level with the distance to its reassessment level. It is a technical planning ratio, not a forecast.</Help></div><b>{rr==null?"—":`${rr.toFixed(1)}×`}</b><span>{upside==null||downside==null?"Waiting for levels":`${upside>=0?"+":""}${upside.toFixed(1)}% to confirmation · ${downside.toFixed(1)}% to reassess`}</span></div>
-      <div><div className="metricLabel"><small>DATA CONFIDENCE</small><Help title="Data confidence">Shows whether price history, business data, market context and news/catalyst sources are available. Higher confidence means better evidence coverage—not higher certainty of profit.</Help></div><b className={confidence==="High"?"good":confidence==="Low"?"bad":"mid"}>{confidence}</b><span>Price + business + news + market coverage.</span></div>
+    {depth!=="simple"&&<section className="v65ContextStrip" aria-label="Quick market context">
+      <div><div className="metricLabel"><small>PERFORMANCE</small><MetricInfo title="Performance">Price return over the selected period using available market history. Performance describes what happened; it does not predict what happens next.</MetricInfo></div><b>{selectedReturn==null?"—":`${selectedReturn>=0?"+":""}${selectedReturn}%`}</b><div className="v19Range">{(["6M","YTD","1Y"] as const).map(r=><button key={r} className={perfRange===r?"on":""} onClick={()=>setPerfRange(r)}>{r}</button>)}</div></div>
+      <div><div className="metricLabel"><small>52-WEEK POSITION</small><MetricInfo title="52-week position">Shows where today’s price sits between the last 52-week low and high. Near the high is not automatically bad; it simply adds price-location context.</MetricInfo></div><b>{d.performance?.rangePositionPct!=null?`${d.performance.rangePositionPct}%`:"—"}</b><span>{d.performance?.yearLow!=null&&d.performance?.yearHigh!=null?`Low $${d.performance.yearLow} · High $${d.performance.yearHigh}`:"Waiting for 1-year history"}</span></div>
+      <div><div className="metricLabel"><small>RISK / REWARD</small><MetricInfo title="Risk / reward">Compares the distance from today’s price to NIVORA’s confirmation level with the distance to its reassessment level. It is a technical planning ratio, not a forecast.</MetricInfo></div><b>{rr==null?"—":`${rr.toFixed(1)}×`}</b><span>{upside==null||downside==null?"Waiting for levels":`${upside>=0?"+":""}${upside.toFixed(1)}% to confirmation · ${downside.toFixed(1)}% to reassess`}</span></div>
+      <div><div className="metricLabel"><small>DATA CONFIDENCE</small><MetricInfo title="Data confidence">Shows whether price history, business data, market context and news/catalyst sources are available. Higher confidence means better evidence coverage—not higher certainty of profit.</MetricInfo></div><b className={confidence==="High"?"good":confidence==="Low"?"bad":"mid"}>{confidence}</b><span>Price + business + news + market coverage.</span></div>
     </section>}
 
     {presentedDecision&&<InvestorDecisionHero decision={presentedDecision} price={currentPx} changePct={displayChangePct} owns={owns} levels={{entryLow:horizonPlan.entryLow,entryHigh:horizonPlan.entryHigh,support:Number(d.levels?.support||0),majorSupport:Number(d.levels?.majorSupport||0),resistance:Number(d.levels?.resistance||0),breakout:Number(d.levels?.breakout||0),assetType:d.assetType}} timing={timingState} onEvidence={()=>openResearch("thesis")}/>}
 
-    {false&&<section className={["v41Decision",tone(decisionAction)].join(" ")} aria-label="Legacy trading decision">
-      <div className="v41DecisionHero">
-        <div className="v41DecisionCopy">
-          <div className="v41Eyebrow"><span>NIVORA SAYS</span><em>{horizon==="now"?"RIGHT NOW":horizon==="swing"?"SWING":"LONG TERM"}</em><em>{owns?"YOU OWN IT":"NEW MONEY"}</em></div>
-          <h2>{decisionAction.replace(" / REASSESS","")}</h2>
-          <p className="v41PlainAnswer">{actionSummary}</p>
-          <div className="v41DecisionStrength"><div><div className="metricLabel"><small>HOW STRONG IS THIS CALL?</small><Help title="Decision confidence">How consistently the available evidence supports NIVORA’s current decision. It is not the probability the stock will rise or that a trade will make money.</Help></div><b>{convictionLabel} · {decisionConviction}%</b><span>Evidence alignment behind this decision — not probability of profit.</span></div><div className="v41SignalMark"><strong>N</strong><b>{actionMetrics.score}</b><small>DECISION</small></div></div>
-        </div>
-        <aside className="v41AtGlance">
-          <small>WHAT CHANGES THE CALL?</small>
-          <div><span>Better price</span><b>${horizonPlan.entryLow}–${horizonPlan.entryHigh}</b></div>
-          <div><span>Proof of strength</span><b>Above ${horizonPlan.confirm}</b></div>
-          <div><span>Thesis warning</span><b>Below ${horizonPlan.stop}</b></div>
-          <button type="button" onClick={()=>openResearch("thesis")}>See the evidence →</button>
-        </aside>
-      </div>
-
-      <div className="v41Paths" aria-label="NIVORA price plan">
-        <div className="buy"><small>{owns?"BETTER PLACE TO ADD":"BEST BUY AREA"}</small><b>${horizonPlan.entryLow}–${horizonPlan.entryHigh}</b><span>{horizon==="long"?"Preferred accumulation area if the business thesis stays intact.":"Best risk/reward area if buyers stabilize the stock."}</span></div>
-        <div className="now"><small>NOW</small><b>${currentPx.toFixed(2)}</b><span>{currentLocation}</span></div>
-        <div className="proof"><small>BUY IF STRENGTH CONFIRMS</small><b>Above ${horizonPlan.confirm}</b><span>If confirmed with participation, the next objective is about ${breakoutTarget}.</span></div>
-        <div className="upside"><small>{owns?"NEXT UPSIDE / TRIM AREA":"NEXT UPSIDE TARGET"}</small><b>${firstUpsideTarget}</b><span>{upsideToVisibleTarget!=null?`About +${upsideToVisibleTarget?.toFixed(1)}% from today. Not a guaranteed price.`:`Evidence-based upside reference.`}</span></div>
-        <div className="risk"><small>REASSESS BELOW</small><b>${horizonPlan.stop}</b><span>{riskToBreak!=null?`${riskToBreak?.toFixed(1)}% from today. `:""}Evidence has materially weakened; this is not an automatic stop-loss.</span></div>
-      </div>
-
-      <div className="v41Why">
-        <div className="v41WhyHead"><div><small>WHY THIS DECISION</small><b>{businessScore>=65&&technicalComposite<45?"Good business. Poor setup.":businessScore<45&&technicalComposite>=68?"Strong trade setup. Weak business thesis.":decisionWhy.good.length>=decisionWhy.watch.length?"Evidence leans constructive.":"The evidence says patience."}</b></div><button type="button" onClick={()=>openResearch("thesis")}>See full thesis</button></div>
-        <div className="v41Evidence">
-          <span className={businessScore>=65?"pos":businessScore<45?"neg":"mid"}><small>BUSINESS</small><b>{businessScore>=70?"Strong":businessScore<45?"Weak":"Mixed"}</b></span>
-          <span className={technicalComposite>=68?"pos":technicalComposite<45?"neg":"mid"}><small>PRICE SETUP</small><b>{technicalComposite>=68?"Supportive":technicalComposite<45?"Weak":"Mixed"}</b></span>
-          <span className={analystConsensus==="Buy"||analystConsensus==="Positive"?"pos":analystConsensus==="Sell"?"neg":"mid"}><small>WALL STREET</small><b>{analystConsensus}</b></span>
-          <span className={institutionalQuickTone}><small>SMART MONEY</small><b>{institutionalQuick}</b></span>
-        </div>
-      </div>
-
-      <div className="v41MindChange">
-        <div><small>BETTER PRICE</small><b>${horizonPlan.entryLow}–${horizonPlan.entryHigh} + stabilization</b><span>Better price, same thesis.</span></div>
-        <div><small>PROOF OF STRENGTH</small><b>Above ${horizonPlan.confirm}</b><span>Price strength with confirmation.</span></div>
-        <div><small>THESIS WARNING</small><b>Below ${horizonPlan.stop}</b><span>Price evidence has moved against the current thesis.</span></div>
-      </div>
-
-      <div className="v41Trust"><span><b>Research beta.</b> NIVORA explains evidence; it does not guarantee outcomes. Market and third-party data can be delayed, incomplete or wrong.</span><div><Link href="/about">Methodology</Link><Link href="/terms">Terms</Link><Link href="/disclaimer">Risk disclosure</Link></div></div>
-    </section>}
 
     {depth!=="simple"&&<section className="v18DecisionStrip">
-      <div><small>BUSINESS</small><b className={tone(business.label)}>{business.label}</b><Help title="Business quality">Scored from reported growth, profitability, cash generation, balance-sheet evidence and multi-year consistency when SEC data is available.</Help></div>
-      <div><small>TREND</small><b className={tone(d.labels.trend)}>{d.labels.trend}</b><Help title="Trend">Uses multiple price horizons and structure. A strong trend can still receive a WAIT if the entry is stretched.</Help></div>
-      <div><small>ENTRY</small><b className={tone(d.labels.entry)}>{d.labels.entry}</b><Help title="Entry quality">Combines price location, support/resistance, momentum, extension and downside risk. This answers “is today a good place to start?”</Help></div>
-      <div><small>RISK</small><b className={d.labels.risk==="High"?"bad":d.labels.risk==="Lower"?"good":"mid"}>{d.labels.risk}</b><Help title="Risk">Reflects volatility, extension, downside structure and market context. High risk does not automatically mean a bad company.</Help></div>
-      <div><small>CONFIDENCE</small><b className={confidence==="High"?"good":confidence==="Low"?"bad":"mid"}>{confidence}</b><Help title="Decision confidence">Confidence rises when price history, business data, market context and current news/catalyst data are all available. Low confidence means treat the call more cautiously.</Help></div>
+      <div><small>BUSINESS</small><b className={tone(business.label)}>{business.label}</b><MetricInfo title="Business quality">Scored from reported growth, profitability, cash generation, balance-sheet evidence and multi-year consistency when SEC data is available.</MetricInfo></div>
+      <div><small>TREND</small><b className={tone(d.labels.trend)}>{d.labels.trend}</b><MetricInfo title="Trend">Uses multiple price horizons and structure. A strong trend can still receive a WAIT if the entry is stretched.</MetricInfo></div>
+      <div><small>ENTRY</small><b className={tone(d.labels.entry)}>{d.labels.entry}</b><MetricInfo title="Entry quality">Combines price location, support/resistance, momentum, extension and downside risk. This answers “is today a good place to start?”</MetricInfo></div>
+      <div><small>RISK</small><b className={d.labels.risk==="High"?"bad":d.labels.risk==="Lower"?"good":"mid"}>{d.labels.risk}</b><MetricInfo title="Risk">Reflects volatility, extension, downside structure and market context. High risk does not automatically mean a bad company.</MetricInfo></div>
+      <div><small>CONFIDENCE</small><b className={confidence==="High"?"good":confidence==="Low"?"bad":"mid"}>{confidence}</b><MetricInfo title="Decision confidence">Confidence rises when price history, business data, market context and current news/catalyst data are all available. Low confidence means treat the call more cautiously.</MetricInfo></div>
     </section>}
 
     <div className="osMicroActions v12Actions">
@@ -804,54 +578,43 @@ export default function StockClient({symbol}:{symbol:string}){
 
     {depth!=="simple"&&<section className="osChartCard v12Chart">
       <div className="osSectionTitle"><div><small>PRICE MAP</small><h3>What price has to do next</h3></div><span>{horizon==="now"?"Current / daily":horizon==="swing"?"Swing / daily-weekly":"Long term / weekly-monthly"} · levels recalculate with horizon</span></div>
-      <div className="chartControls"><div><button className={chartMode==="clean"?"on":""} onClick={()=>setChartMode("clean")}>Clean</button><button className={chartMode==="trend"?"on":""} onClick={()=>setChartMode("trend")}>Trend</button></div><Help title="Chart modes">Clean keeps only price, volume and NIVORA levels. Trend adds 20-day and 50-day moving averages for users who want more technical context.</Help></div>
+      <div className="chartControls"><div><button className={chartMode==="clean"?"on":""} onClick={()=>setChartMode("clean")}>Clean</button><button className={chartMode==="trend"?"on":""} onClick={()=>setChartMode("trend")}>Trend</button></div><MetricInfo title="Chart modes">Clean keeps only price, volume and NIVORA levels. Trend adds 20-day and 50-day moving averages for users who want more technical context.</MetricInfo></div>
       <PriceChart candles={horizonCandles} levels={horizonChartLevels} showTrend={chartMode==="trend"}/>
     </section>}
 
     {depth==="pro"&&<section className="beginnerScore v18Score">
       <div className="beginnerScoreMain">
-        <div className="decisionEyebrow"><small>NIVORA SCORE</small><Help title="How is the NIVORA score calculated?">{scoreFormula} The score is a summary, not the decision itself. 80–100 = excellent evidence, 65–79 = promising/selective, 50–64 = mixed, below 50 = weak. The action above can still be WAIT when price is extended.</Help></div>
+        <div className="decisionEyebrow"><small>NIVORA SCORE</small><MetricInfo title="How is the NIVORA score calculated?">{scoreFormula} The score is a summary, not the decision itself. 80–100 = excellent evidence, 65–79 = promising/selective, 50–64 = mixed, below 50 = weak. The action above can still be WAIT when price is extended.</MetricInfo></div>
         <div className="scoreLine"><b>{overallScore}</b><span>/100</span><em>{overallLabel}</em></div>
         <h3>{view.label}</h3><p>{beginnerReason}</p>
       </div>
       <div className="beginnerMath">
-        <div><div className="metricLabel"><small>BUSINESS</small><Help title="Business score">Uses reported financial history and quality signals. It is weighted more heavily in Long-term mode.</Help></div><b>{business.label}</b><span>{fiveRecordText}</span></div>
-        <div><div className="metricLabel"><small>6-MONTH CHART</small><Help title="6-month record">Measures the stock’s recent trend, return, drawdown and price structure over roughly six months.</Help></div><b>{d.sixMonth?.label||"Mixed"}</b><span>{sixMonthText}</span></div>
-        <div><div className="metricLabel"><small>TIMING NOW</small><Help title="Timing now">Focuses on whether today’s price is attractive relative to the setup—not whether the company is good.</Help></div><b>{d.labels.entry}</b><span>Entry quality at today’s price.</span></div>
-        <div><div className="metricLabel"><small>RISK</small><Help title="Risk in the score">The score rewards lower risk and penalizes unusually high downside/extension risk. Position sizing still belongs to the user.</Help></div><b>{d.labels.risk}</b><span>Higher risk means use more caution.</span></div>
+        <div><div className="metricLabel"><small>BUSINESS</small><MetricInfo title="Business score">Uses reported financial history and quality signals. It is weighted more heavily in Long-term mode.</MetricInfo></div><b>{business.label}</b><span>{fiveRecordText}</span></div>
+        <div><div className="metricLabel"><small>6-MONTH CHART</small><MetricInfo title="6-month record">Measures the stock’s recent trend, return, drawdown and price structure over roughly six months.</MetricInfo></div><b>{d.sixMonth?.label||"Mixed"}</b><span>{sixMonthText}</span></div>
+        <div><div className="metricLabel"><small>TIMING NOW</small><MetricInfo title="Timing now">Focuses on whether today’s price is attractive relative to the setup—not whether the company is good.</MetricInfo></div><b>{d.labels.entry}</b><span>Entry quality at today’s price.</span></div>
+        <div><div className="metricLabel"><small>RISK</small><MetricInfo title="Risk in the score">The score rewards lower risk and penalizes unusually high downside/extension risk. Position sizing still belongs to the user.</MetricInfo></div><b>{d.labels.risk}</b><span>Higher risk means use more caution.</span></div>
       </div>
     </section>}
 
-    {depth!=="simple"&&intelligence&&<section className="v27IntelStrip">
+    {depth!=="simple"&&intelligence&&<section className="v65IntelStrip">
       <div className="intelLead"><small>NIVORA INTELLIGENCE</small><div><b>{intelligence.score}/100</b><span className={tone(intelligence.thesisLabel)}>{intelligence.thesisLabel}</span></div><p>{intelligence.biggestPositive} <strong>Watch:</strong> {intelligence.biggestRisk}</p></div>
       <div><small>NEXT DECISION TRIGGER</small><b>{intelligence.nextDecision}</b></div>
       <div><small>DATA COVERAGE</small><b>{intelligence.confidenceLabel}</b><span>{intelligence.confidence}/100 coverage · not probability</span></div>
       <button type="button" onClick={()=>{setTab("thesis");window.requestAnimationFrame(()=>window.requestAnimationFrame(()=>thesisRef.current?.scrollIntoView({behavior:"smooth",block:"start"})))}}>Open full thesis →</button>
     </section>}
 
-    {false&&depth!=="simple"&&<section className="v12ReasonGrid">
-      <div className="v12Reason goodBox"><small>WHY IT CAN WORK</small><h3>What supports the setup</h3>{positive.length?positive.map((x:string,i:number)=><p key={i}>✓ {x}</p>):<p>Evidence is still loading or mixed.</p>}</div>
-      <div className="v12Reason riskBox"><small>WHAT CAN GO WRONG</small><h3>What is holding it back</h3>{risks.length?risks.map((x:string,i:number)=><p key={i}>• {x}</p>):<p>No major risk flag was detected from the connected sources.</p>}</div>
-    </section>}
 
-    <section ref={thesisRef} id="nivora-research" className={["osContext","v12Context",depth==="simple"?"v28SimpleContext":""].join(" ")}>
-      <div className="osTabs v12Tabs v28Tabs v50ResearchTabs"><button className={tab==="thesis"?"on":""} onClick={()=>setTab("thesis")}>Thesis</button><button className={tab==="fundamentals"?"on":""} onClick={()=>setTab("fundamentals")}>Business</button>{d.assetType!=="crypto"&&<button className={tab==="earnings"?"on":""} onClick={()=>setTab("earnings")}>Earnings</button>}{d.assetType!=="crypto"&&<button className={tab==="institutions"?"on":""} onClick={()=>setTab("institutions")}>Ownership</button>}<button className={tab==="catalysts"?"on":""} onClick={()=>setTab("catalysts")}>Catalysts</button><button className={tab==="technical"?"on":""} onClick={()=>setTab("technical")}>Market</button></div>
+    <section ref={thesisRef} id="nivora-research" className={["v65Research",depth==="simple"?"v65ResearchSimple":""].join(" ")}>
+      <div className="v65ResearchTabs"><button className={tab==="thesis"?"on":""} onClick={()=>setTab("thesis")}>Thesis</button><button className={tab==="fundamentals"?"on":""} onClick={()=>setTab("fundamentals")}>Business</button>{d.assetType!=="crypto"&&<button className={tab==="earnings"?"on":""} onClick={()=>setTab("earnings")}>Earnings</button>}{d.assetType!=="crypto"&&<button className={tab==="institutions"?"on":""} onClick={()=>setTab("institutions")}>Ownership</button>}<button className={tab==="catalysts"?"on":""} onClick={()=>setTab("catalysts")}>Catalysts</button><button className={tab==="technical"?"on":""} onClick={()=>setTab("technical")}>Market</button></div>
 
-      {tab==="overview"&&<div className="v12Overview">
-        <div><BriefcaseBusiness size={18}/><div className="metricLabel v42OverviewLabel"><small>BUSINESS QUALITY</small><Help title="Business">Financial quality and consistency. This is intentionally separate from whether today is a good entry.</Help></div><b className={tone(business.label)}>{business.label}</b><span>{business.reasons?.[0]||"Loading fundamentals…"}</span></div>
-        <div><Activity size={18}/><div className="metricLabel v42OverviewLabel"><small>PRICE SETUP</small><Help title="Entry">How attractive today’s price is relative to support, resistance, extension, momentum and downside risk.</Help></div><b className={tone(d.labels.entry)}>{d.labels.entry}</b><span>Current location versus support, extension and momentum.</span></div>
-        <div><ShieldCheck size={18}/><div className="metricLabel v42OverviewLabel"><small>RISK</small><Help title="Risk">Technical downside and volatility, plus broader market regime.</Help></div><b className={d.labels.risk==="High"?"bad":"mid"}>{d.labels.risk}</b><span>Technical downside plus market regime.</span></div>
-        <div><Newspaper size={18}/><div className="metricLabel v42OverviewLabel"><small>NEWS / CATALYSTS</small><Help title="News">Material headlines are summarized for tone and impact. Headlines alone do not override price/fundamental evidence.</Help></div><b className={news.tone==="positive"?"good":news.tone==="negative"?"bad":"mid"}>{news.label}</b><span>{news.topReason}</span></div>
-      </div>}
-
-      {tab==="thesis"&&presentedDecision&&<div className="v27Thesis v48Thesis">
+      {tab==="thesis"&&presentedDecision&&<div className="v65Thesis">
         <div className="thesisHero">
           <div><small>NIVORA THESIS ENGINE</small><h3>{presentedDecision.thesisLabel} · {presentedDecision.thesisScore}/100</h3><p>{presentedDecision.oneLine}</p></div>
-          {presentedDecision.longTermThesis&&<div className="thesisCard"><small>LONG-TERM THESIS <Help title="Long-term thesis">Separates 1–3 year business evidence from near-term price action. A weak chart cannot by itself make a durable business thesis bearish.</Help></small><h3>{presentedDecision.longTermThesis.label} · {presentedDecision.longTermThesis.score}/100</h3><p>{presentedDecision.longTermThesis.summary}</p><p><b>Near term:</b> {presentedDecision.longTermThesis.nearTerm}</p><p><b>1–3Y:</b> {presentedDecision.longTermThesis.longTerm}</p></div>}
-          {presentedDecision.expectationGap&&<div className="thesisCard"><small>EXPECTATION GAP <Help title="Expectation gap">Compares forward growth, earnings/revision direction and catalysts with a neutral baseline. It is not a price target.</Help></small><h3>{presentedDecision.expectationGap.label}{presentedDecision.expectationGap.score!=null?` · ${presentedDecision.expectationGap.score}/100`:""}</h3><p>{presentedDecision.expectationGap.reason}</p></div>}
+          {presentedDecision.longTermThesis&&<div className="thesisCard"><small>LONG-TERM THESIS <MetricInfo title="Long-term thesis">Separates 1–3 year business evidence from near-term price action. A weak chart cannot by itself make a durable business thesis bearish.</MetricInfo></small><h3>{presentedDecision.longTermThesis.label} · {presentedDecision.longTermThesis.score}/100</h3><p>{presentedDecision.longTermThesis.summary}</p><p><b>Near term:</b> {presentedDecision.longTermThesis.nearTerm}</p><p><b>1–3Y:</b> {presentedDecision.longTermThesis.longTerm}</p></div>}
+          {presentedDecision.expectationGap&&<div className="thesisCard"><small>EXPECTATION GAP <MetricInfo title="Expectation gap">Compares forward growth, earnings/revision direction and catalysts with a neutral baseline. It is not a price target.</MetricInfo></small><h3>{presentedDecision.expectationGap.label}{presentedDecision.expectationGap.score!=null?` · ${presentedDecision.expectationGap.score}/100`:""}</h3><p>{presentedDecision.expectationGap.reason}</p></div>}
           <div className="thesisAction"><small>INVESTOR ACTION</small><b className={tone(presentedDecision.action)}>{presentedDecision.action}</b><span>{presentedDecision.horizon} decision horizon</span></div>
         </div>
-        <div className="v48FactorGrid">{Object.entries(presentedDecision.factors).map(([k,v]:any)=>{const isRisk=k==="risk";const available=v!=null&&Number.isFinite(Number(v));const label=isRisk?"RISK PRESSURE":k.replace(/([A-Z])/g," $1").toUpperCase();const def=(metricDefinitions as any)[k];return <div key={k} className={`${isRisk&&available&&Number(v)>=70?"factorRiskHigh":""} ${!available?"factorUnavailable":""}`}><div className="metricLabel"><small>{label}</small>{def&&<Help title={def.title}>{def.short} {def.uses} Freshness: {def.freshness} Source: {def.source}</Help>}</div><b>{available?`${v}/100`:"N/A"}</b>{available?<i><em style={{width:`${Math.max(3,Math.min(100,Number(v)))}%`}}/></i>:<span className="factorNA">Missing evidence lowers coverage; it is not scored as bearish.</span>}</div>})}</div>
+        <div className="v65FactorGrid">{Object.entries(presentedDecision.factors).map(([k,v]:any)=>{const isRisk=k==="risk";const available=v!=null&&Number.isFinite(Number(v));const label=isRisk?"RISK PRESSURE":k.replace(/([A-Z])/g," $1").toUpperCase();const def=(metricDefinitions as any)[k];return <div key={k} className={`${isRisk&&available&&Number(v)>=70?"factorRiskHigh":""} ${!available?"factorUnavailable":""}`}><div className="metricLabel"><small>{label}</small>{def&&<MetricInfo title={def.title}>{def.short} {def.uses} Freshness: {def.freshness} Source: {def.source}</MetricInfo>}</div><b>{available?`${v}/100`:"N/A"}</b>{available?<i><em style={{width:`${Math.max(3,Math.min(100,Number(v)))}%`}}/></i>:<span className="factorNA">Missing evidence lowers coverage; it is not scored as bearish.</span>}</div>})}</div>
         <div className="thesisGrid">
           <div className="thesisCard positive"><small>WHY THE THESIS CAN WORK</small>{presentedDecision.drivers.length?presentedDecision.drivers.map((x:string,i:number)=><p key={i}>✓ {x}</p>):<p>No dominant positive evidence yet.</p>}</div>
           <div className="thesisCard concern"><small>WHAT CAN BREAK IT</small>{presentedDecision.breakers.map((x:string,i:number)=><p key={i}>• {x}</p>)}</div>
@@ -875,7 +638,7 @@ export default function StockClient({symbol}:{symbol:string}){
         </div>
         <div className="v34InstitutionDisclosure"><Info size={14}/><span>13F shows reported holdings for a past quarter. It does not prove an institution is buying or selling today. NIVORA separately labels current price/volume accumulation.</span></div>
         <div className="v32Institutional">
-          <div className="v32InstitutionalHead"><div><small>INSTITUTIONAL INTELLIGENCE</small><h3>{institutionalLabel}</h3><p>{institutional?.disclosure||"Reported institutional ownership is not available from the connected feed for this symbol."}</p></div><Help title="Institutional intelligence">Reported institutional ownership and insider filings are delayed evidence. NIVORA keeps this separate from the daily accumulation proxy so it never presents quarterly filings as real-time institutional buying.</Help></div>
+          <div className="v32InstitutionalHead"><div><small>INSTITUTIONAL INTELLIGENCE</small><h3>{institutionalLabel}</h3><p>{institutional?.disclosure||"Reported institutional ownership is not available from the connected feed for this symbol."}</p></div><MetricInfo title="Institutional intelligence">Reported institutional ownership and insider filings are delayed evidence. NIVORA keeps this separate from the daily accumulation proxy so it never presents quarterly filings as real-time institutional buying.</MetricInfo></div>
           {institutional?.enabled?<div className="v32InstitutionalGrid v321InstitutionalGrid">
             <div><small>QUARTER-OVER-QUARTER</small><b className={Number(institutional.institutional?.shareChangePct||0)>0?"good":Number(institutional.institutional?.shareChangePct||0)<0?"bad":"mid"}>{institutional.institutional?.shareChangePctLabel||institutional.institutional?.directionLabel||institutionalLabel}</b><span>{institutional.institutional?.directionLabel||institutionalLabel} · {institutional.institutional?.increased||0} adding · {institutional.institutional?.reduced||0} trimming</span><em>{institutional.institutional?.periodLabel||"Latest available filing period"}</em></div>
             <div><small>REPORTED HOLDINGS</small><b className={Number(institutional.institutional?.netReportedShareChange||0)>0?"good":Number(institutional.institutional?.netReportedShareChange||0)<0?"bad":"mid"}>{institutional.institutional?.netChangeLabel||"Mixed / unavailable"}</b><span>{institutional.institutional?.totalShares!=null?`${Number(institutional.institutional.totalShares).toLocaleString()} shares now · ${Number(institutional.institutional.priorTotalShares||0).toLocaleString()} prior`: `${institutional.institutional?.reportingRows||0} reporting managers`}</span><em>{institutional.institutional?.totalValueLabel&&institutional.institutional?.priorTotalValueLabel?`${institutional.institutional.totalValueLabel} reported value · prior ${institutional.institutional.priorTotalValueLabel}`:"Delayed filing evidence — not today's order flow"}</em></div>
@@ -911,7 +674,7 @@ export default function StockClient({symbol}:{symbol:string}){
       {tab==="catalysts"&&<div className="v12Catalysts v37Events">
         <div className="v37EventsSummary"><div><small>EVENT RISK / OPPORTUNITY</small><h3>{catalystLabel}</h3><p>{intelligence?.dimensions?.catalysts!=null?`Catalyst score ${intelligence.dimensions.catalysts}/100. Events can change the thesis quickly; price confirmation still matters.`:"Event evidence is loading."}</p></div><div><small>NEWS TONE</small><b className={news.tone==="positive"?"good":news.tone==="negative"?"bad":"mid"}>{news.label}</b><span>{news.topReason||"No dominant headline signal."}</span></div></div>
         {earn&&<div className="nextEvent"><CalendarDays size={18}/><div><small>NEXT EARNINGS</small><b>{earn.date}</b><span>{earnDays!=null&&earnDays>=0?`${earnDays} days away`:"Upcoming"}{earn.epsEstimate!=null?` · EPS est. ${eps(earn.epsEstimate)}`:""}</span></div></div>}
-        <div className="catalystIntro"><div><small>RECENT MATERIAL FILINGS</small><Help title="Catalysts">Company filings and scheduled events that may change the investment thesis. A filing is evidence to review, not automatically bullish or bearish.</Help></div><span>Newest first</span></div>
+        <div className="catalystIntro"><div><small>RECENT MATERIAL FILINGS</small><MetricInfo title="Catalysts">Company filings and scheduled events that may change the investment thesis. A filing is evidence to review, not automatically bullish or bearish.</MetricInfo></div><span>Newest first</span></div>
         <div className="catalystList">{filings.length?filings.slice(0,8).map((x:any)=><a className="catalystRow" href={x.url} target="_blank" rel="noreferrer" key={x.accession}>
           <div className="catalystMain"><b>{x.label}</b><small>{x.form}{x.description?` · ${x.description}`:""}</small></div>
           <div className="catalystMeta"><em className={x.tone}>{x.materiality}</em><time>{x.date}</time><ExternalLink size={14}/></div>
@@ -932,9 +695,9 @@ export default function StockClient({symbol}:{symbol:string}){
 <div>
   <div className="metricLabel">
     <small>RSI · 14</small>
-    <Help title="RSI (14)">
+    <MetricInfo title="RSI (14)">
       Relative Strength Index from 0–100. Above 70 can indicate an overbought/extended condition; below 30 can indicate oversold. NIVORA does not use RSI alone.
-    </Help>
+    </MetricInfo>
   </div>
 
   <b
@@ -952,19 +715,19 @@ export default function StockClient({symbol}:{symbol:string}){
   </b>
 
   <span>{proTech.rsiLabel}</span>
-</div>          <div><div className="metricLabel"><small>MACD · 12/26/9</small><Help title="MACD">MACD compares fast and slow exponential moving averages. A positive histogram supports bullish momentum; a negative histogram supports bearish momentum.</Help></div><b className={proTech.macdLabel==="Bullish"?"good":proTech.macdLabel==="Bearish"?"bad":"mid"}>{proTech.macdLabel}</b><span>{proTech.macdHist!=null?`Histogram ${proTech.macdHist>=0?"+":""}${proTech.macdHist.toFixed(3)}`:"Unavailable"}</span></div>
-          <div><div className="metricLabel"><small>20D / 50D TREND</small><Help title="Moving-average trend">Compares price with the 20-day and 50-day moving averages. Alignment can confirm trend direction but can lag turning points.</Help></div><b className={proTech.trendLabel==="Bullish"?"good":proTech.trendLabel==="Bearish"?"bad":"mid"}>{proTech.trendLabel}</b><span>{proTech.d20!=null?`${proTech.d20>=0?"+":""}${proTech.d20.toFixed(1)}% vs 20D`:"—"} · {proTech.d50!=null?`${proTech.d50>=0?"+":""}${proTech.d50.toFixed(1)}% vs 50D`:"—"}</span></div>
-          <div><div className="metricLabel"><small>VOLUME</small><Help title="Volume confirmation">Compares current volume with the recent 20-session average. Strong participation can make breakouts or reversals more meaningful.</Help></div><b>{proTech.volRatio!=null?`${proTech.volRatio.toFixed(2)}×`:"—"}</b><span>{proTech.volumeLabel}</span></div>
-          <div><div className="metricLabel"><small>ATR · 14</small><Help title="ATR (14)">Average True Range estimates typical recent daily movement. ATR% helps compare volatility across stocks with different prices.</Help></div><b>{proTech.atrPct!=null?`${proTech.atrPct.toFixed(1)}%`:"—"}</b><span>Typical daily range</span></div>
-          <div><div className="metricLabel"><small>DCA / ACCUMULATION ZONE</small><Help title="DCA / accumulation zone">A technical confluence area derived from NIVORA support/entry structure. It is useful for staged-entry planning only while the fundamental thesis remains intact.</Help></div><b>{marketLab?`$${marketLab.dcaLow}–$${marketLab.dcaHigh}`:"—"}</b><span>{marketLab?"Structure + support confluence":"Insufficient history"}</span></div>
-          <div><div className="metricLabel"><small>BOLLINGER POSITION</small><Help title="Bollinger position">Shows where price sits within a 20-day, two-standard-deviation band. Near the top suggests extension; near the bottom suggests weakness/possible mean reversion.</Help></div><b>{proTech.bbPos!=null?`${Math.max(0,Math.min(100,proTech.bbPos)).toFixed(0)}%`:"—"}</b><span>0% lower band · 100% upper band</span></div>
-          <div><div className="metricLabel"><small>REALIZED VOL · 20D</small><Help title="Realized volatility">Annualized recent realized volatility from daily returns. Higher values imply larger price variability and usually require more conservative sizing.</Help></div><b>{proTech.rv!=null?`${proTech.rv.toFixed(1)}%`:"—"}</b><span>{proTech.drawdown!=null?`${proTech.drawdown.toFixed(1)}% from 52-week high`:"52-week drawdown unavailable"}</span></div>
+</div>          <div><div className="metricLabel"><small>MACD · 12/26/9</small><MetricInfo title="MACD">MACD compares fast and slow exponential moving averages. A positive histogram supports bullish momentum; a negative histogram supports bearish momentum.</MetricInfo></div><b className={proTech.macdLabel==="Bullish"?"good":proTech.macdLabel==="Bearish"?"bad":"mid"}>{proTech.macdLabel}</b><span>{proTech.macdHist!=null?`Histogram ${proTech.macdHist>=0?"+":""}${proTech.macdHist.toFixed(3)}`:"Unavailable"}</span></div>
+          <div><div className="metricLabel"><small>20D / 50D TREND</small><MetricInfo title="Moving-average trend">Compares price with the 20-day and 50-day moving averages. Alignment can confirm trend direction but can lag turning points.</MetricInfo></div><b className={proTech.trendLabel==="Bullish"?"good":proTech.trendLabel==="Bearish"?"bad":"mid"}>{proTech.trendLabel}</b><span>{proTech.d20!=null?`${proTech.d20>=0?"+":""}${proTech.d20.toFixed(1)}% vs 20D`:"—"} · {proTech.d50!=null?`${proTech.d50>=0?"+":""}${proTech.d50.toFixed(1)}% vs 50D`:"—"}</span></div>
+          <div><div className="metricLabel"><small>VOLUME</small><MetricInfo title="Volume confirmation">Compares current volume with the recent 20-session average. Strong participation can make breakouts or reversals more meaningful.</MetricInfo></div><b>{proTech.volRatio!=null?`${proTech.volRatio.toFixed(2)}×`:"—"}</b><span>{proTech.volumeLabel}</span></div>
+          <div><div className="metricLabel"><small>ATR · 14</small><MetricInfo title="ATR (14)">Average True Range estimates typical recent daily movement. ATR% helps compare volatility across stocks with different prices.</MetricInfo></div><b>{proTech.atrPct!=null?`${proTech.atrPct.toFixed(1)}%`:"—"}</b><span>Typical daily range</span></div>
+          <div><div className="metricLabel"><small>DCA / ACCUMULATION ZONE</small><MetricInfo title="DCA / accumulation zone">A technical confluence area derived from NIVORA support/entry structure. It is useful for staged-entry planning only while the fundamental thesis remains intact.</MetricInfo></div><b>{marketLab?`$${marketLab.dcaLow}–$${marketLab.dcaHigh}`:"—"}</b><span>{marketLab?"Structure + support confluence":"Insufficient history"}</span></div>
+          <div><div className="metricLabel"><small>BOLLINGER POSITION</small><MetricInfo title="Bollinger position">Shows where price sits within a 20-day, two-standard-deviation band. Near the top suggests extension; near the bottom suggests weakness/possible mean reversion.</MetricInfo></div><b>{proTech.bbPos!=null?`${Math.max(0,Math.min(100,proTech.bbPos)).toFixed(0)}%`:"—"}</b><span>0% lower band · 100% upper band</span></div>
+          <div><div className="metricLabel"><small>REALIZED VOL · 20D</small><MetricInfo title="Realized volatility">Annualized recent realized volatility from daily returns. Higher values imply larger price variability and usually require more conservative sizing.</MetricInfo></div><b>{proTech.rv!=null?`${proTech.rv.toFixed(1)}%`:"—"}</b><span>{proTech.drawdown!=null?`${proTech.drawdown.toFixed(1)}% from 52-week high`:"52-week drawdown unavailable"}</span></div>
         </div>}
         {depth==="pro"&&marketLab&&<div className="v32ConfluenceChart">
-          <div className="v32MarketLabHead"><div><small>CONFLUENCE MAP</small><h3>Fib + structure + NIVORA risk levels</h3><p>Advanced levels are supporting evidence, not standalone buy/sell signals. Wave interpretation is heuristic and confidence-limited.</p></div><Help title="Confluence map">Fibonacci retracements, NIVORA support/entry levels and the current Elliott-style scenario are overlaid so experienced users can see where independent technical evidence clusters.</Help></div>
+          <div className="v32MarketLabHead"><div><small>CONFLUENCE MAP</small><h3>Fib + structure + NIVORA risk levels</h3><p>Advanced levels are supporting evidence, not standalone buy/sell signals. Wave interpretation is heuristic and confidence-limited.</p></div><MetricInfo title="Confluence map">Fibonacci retracements, NIVORA support/entry levels and the current Elliott-style scenario are overlaid so experienced users can see where independent technical evidence clusters.</MetricInfo></div>
           <PriceChart candles={horizonCandles} levels={horizonChartLevels} showTrend={true} confluence={marketLab}/>
         </div>}
-        <div className="techIntro"><div><small>TECHNICAL LAB</small><h3>Professional evidence, still readable.</h3><p>The main call stays simple. This workspace shows the market mechanics experienced investors may want to inspect.</p></div><Help title="Technical Lab">Technical indicators describe price behavior and risk. They can improve timing, but none can guarantee direction or replace business/catalyst analysis.</Help></div>
+        <div className="techIntro"><div><small>TECHNICAL LAB</small><h3>Professional evidence, still readable.</h3><p>The main call stays simple. This workspace shows the market mechanics experienced investors may want to inspect.</p></div><MetricInfo title="Technical Lab">Technical indicators describe price behavior and risk. They can improve timing, but none can guarantee direction or replace business/catalyst analysis.</MetricInfo></div>
         {proTech&&<div className="proTechGrid">
           <div><small>ATR · 14D</small><b>{proTech.atrPct!=null?`${proTech.atrPct.toFixed(1)}%`:"—"}</b><span>Typical daily range</span></div>
           <div><small>REALIZED VOL · 20D</small><b>{proTech.rv!=null?`${proTech.rv.toFixed(0)}%`:"—"}</b><span>Annualized recent volatility</span></div>
@@ -985,7 +748,7 @@ export default function StockClient({symbol}:{symbol:string}){
           </div>
         </div>}
         <div className="techRead"><small>NIVORA TECHNICAL READ</small><h4>{d.labels.trend} trend · {d.labels.momentum} momentum · {d.labels.risk} risk</h4><p>{d.why?.slice(0,3).join(" ")}</p></div>
-        {depth==="pro"&&<div className="osTechGrid">{Object.entries(d.engine).map(([k,v]:any)=><div key={k}><div className="metricLabel"><span>{k}</span><Help title={k}>{k==="Trend"?"Multi-horizon direction and slope.":k==="Momentum"?"Speed and persistence of the current move.":k==="Flow"?"Volume/price participation and confirmation.":k==="Structure"?"Higher highs/lows, support and resistance behavior.":k==="RSI"?"Relative Strength Index; helps identify momentum extremes but is never used alone.":k==="MACD"?"Trend/momentum crossover evidence.":k==="Extension"?"How far price has moved away from its recent equilibrium; high extension increases chase risk.":k==="Relative strength"?"Performance versus the relevant benchmark.":k==="Market regime"?"Whether the broad market is supportive, mixed or risk-off.":"Supporting quantitative evidence used by the decision engine."}</Help></div><b>{typeof v==="number"?`${v}/100`:v}</b></div>)}</div>}
+        {depth==="pro"&&<div className="osTechGrid">{Object.entries(d.engine).map(([k,v]:any)=><div key={k}><div className="metricLabel"><span>{k}</span><MetricInfo title={k}>{k==="Trend"?"Multi-horizon direction and slope.":k==="Momentum"?"Speed and persistence of the current move.":k==="Flow"?"Volume/price participation and confirmation.":k==="Structure"?"Higher highs/lows, support and resistance behavior.":k==="RSI"?"Relative Strength Index; helps identify momentum extremes but is never used alone.":k==="MACD"?"Trend/momentum crossover evidence.":k==="Extension"?"How far price has moved away from its recent equilibrium; high extension increases chase risk.":k==="Relative strength"?"Performance versus the relevant benchmark.":k==="Market regime"?"Whether the broad market is supportive, mixed or risk-off.":"Supporting quantitative evidence used by the decision engine."}</MetricInfo></div><b>{typeof v==="number"?`${v}/100`:v}</b></div>)}</div>}
       </div>}
 
       {tab==="options"&&<div className="gammaPanel v22Options v26Options">
@@ -997,7 +760,7 @@ export default function StockClient({symbol}:{symbol:string}){
         {optionView==="setups"?<div className="contractLab">
           <div className="contractContext"><div><small>UNDERLYING CALL</small><b className={tone(view.label)}>{view.label}</b><span>Options should express a thesis—not create one.</span></div><div><small>EXPECTED MOVE</small><b>{optionsData.expectedMovePct!=null?`±${optionsData.expectedMovePct}%`:"—"}</b><span>From near-ATM option premium</span></div><div><small>ATM IV</small><b>{optionsData.atmIV!=null?`${optionsData.atmIV}%`:"—"}</b><span>Volatility priced into options</span></div></div>
           <div className="contractControls"><div><button className={optionSide==="bullish"?"on":""} onClick={()=>setOptionSide("bullish")}>Calls · bullish</button><button className={optionSide==="bearish"?"on":""} onClick={()=>setOptionSide("bearish")}>Puts · bearish</button></div><div><button className={optionStyle==="conservative"?"on":""} onClick={()=>{setOptionExpiration(null);setOptionStyle("conservative")}}>Safer</button><button className={optionStyle==="balanced"?"on":""} onClick={()=>{setOptionExpiration(null);setOptionStyle("balanced")}}>Balanced</button><button className={optionStyle==="aggressive"?"on":""} onClick={()=>{setOptionExpiration(null);setOptionStyle("aggressive")}}>Aggressive</button><button className={optionStyle==="leaps"?"on":""} onClick={()=>{setOptionExpiration(null);setOptionStyle("leaps")}}>LEAPS</button></div></div>
-          <div className="styleExplain"><Help title="Contract styles">Safer targets higher delta and better liquidity. Balanced seeks a middle ground. Aggressive accepts lower delta/shorter duration and can lose premium faster. LEAPS favors long duration and higher delta to reduce short-term theta pressure.</Help><span>{optionStyle==="leaps"?"Long-duration candidates for investors seeking stock-like exposure with defined premium risk.":optionStyle==="aggressive"?"Higher leverage and faster premium decay. Treat this as the highest-risk filter.":optionStyle==="conservative"?"Higher-delta candidates with stronger emphasis on liquidity and spread quality.":"A compromise between leverage, duration, liquidity and delta."}</span></div>
+          <div className="styleExplain"><MetricInfo title="Contract styles">Safer targets higher delta and better liquidity. Balanced seeks a middle ground. Aggressive accepts lower delta/shorter duration and can lose premium faster. LEAPS favors long duration and higher delta to reduce short-term theta pressure.</MetricInfo><span>{optionStyle==="leaps"?"Long-duration candidates for investors seeking stock-like exposure with defined premium risk.":optionStyle==="aggressive"?"Higher leverage and faster premium decay. Treat this as the highest-risk filter.":optionStyle==="conservative"?"Higher-delta candidates with stronger emphasis on liquidity and spread quality.":"A compromise between leverage, duration, liquidity and delta."}</span></div>
           {optionsData?.expirations?.length>0&&<div className="expirationLab">
             <div className="expirationHead"><div><small>EXPIRATION INTELLIGENCE</small><b>{optionsData.selectedExpiration?new Date(`${optionsData.selectedExpiration}T12:00:00`).toLocaleDateString():"Choose a date"}</b><span>{optionsData.expirationFit}</span></div><button className={!optionExpiration?"on":""} onClick={()=>setOptionExpiration(null)}>Auto best-fit</button></div>
             <div className="expirationRail">
@@ -1016,9 +779,9 @@ export default function StockClient({symbol}:{symbol:string}){
           <div className="contractFoot"><ShieldCheck size={15}/><p>{optionsData.rankingNote}</p></div>
         </div>:<div className="positioningLab">
           <div className="optionsQuick">
-            <div><div className="metricLabel"><small>CALL WALL</small><Help title="Call wall">Largest call open-interest strike in the fetched chain. It is an attention area, not guaranteed resistance.</Help></div><b>{optionsData.callWall!=null?`$${optionsData.callWall}`:"—"}</b></div>
-            <div><div className="metricLabel"><small>PUT WALL</small><Help title="Put wall">Largest put open-interest strike in the fetched chain. It is an attention area, not guaranteed support.</Help></div><b>{optionsData.putWall!=null?`$${optionsData.putWall}`:"—"}</b></div>
-            <div><div className="metricLabel"><small>GAMMA NODE</small><Help title="Gamma node">Largest OI-weighted gamma concentration. This is a proxy; NIVORA does not observe dealer inventory.</Help></div><b>{optionsData.gammaNode!=null?`$${optionsData.gammaNode}`:"—"}</b></div>
+            <div><div className="metricLabel"><small>CALL WALL</small><MetricInfo title="Call wall">Largest call open-interest strike in the fetched chain. It is an attention area, not guaranteed resistance.</MetricInfo></div><b>{optionsData.callWall!=null?`$${optionsData.callWall}`:"—"}</b></div>
+            <div><div className="metricLabel"><small>PUT WALL</small><MetricInfo title="Put wall">Largest put open-interest strike in the fetched chain. It is an attention area, not guaranteed support.</MetricInfo></div><b>{optionsData.putWall!=null?`$${optionsData.putWall}`:"—"}</b></div>
+            <div><div className="metricLabel"><small>GAMMA NODE</small><MetricInfo title="Gamma node">Largest OI-weighted gamma concentration. This is a proxy; NIVORA does not observe dealer inventory.</MetricInfo></div><b>{optionsData.gammaNode!=null?`$${optionsData.gammaNode}`:"—"}</b></div>
             <div><small>EXPECTED MOVE</small><b>{optionsData.expectedMovePct!=null?`±${optionsData.expectedMovePct}%`:"—"}</b></div>
             <div><small>ATM IV</small><b>{optionsData.atmIV!=null?`${optionsData.atmIV}%`:"—"}</b></div>
             <div><small>PUT/CALL OI</small><b>{optionsData.putCallOI??"—"}</b></div>

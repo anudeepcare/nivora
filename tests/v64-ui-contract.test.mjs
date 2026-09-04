@@ -14,5 +14,5 @@ test("V64 calibration page does not show repeated empty zero metrics as evidence
 });
 test("V64 CSS contains one-column mobile cockpit breakpoint",()=>{
  const s=fs.readFileSync(new URL("../app/globals.css",import.meta.url),"utf8");
- assert.match(s,/v64DecisionGrid/);assert.match(s,/@media\(max-width:600px\)/);
+ assert.match(s,/v65DecisionGrid/);assert.match(s,/@media\(max-width:600px\)/);
 });

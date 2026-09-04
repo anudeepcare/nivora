@@ -57,6 +57,15 @@
     "lib/nivora-trade-ticket.ts",
     "lib/nivora-consistency.ts",
     "lib/nivora-decision-presentation.ts",
-    "lib/nivora-buy-calibration.ts"
+    "lib/nivora-buy-calibration.ts",
+    "lib/v65/domain.ts",
+    "lib/v65/provenance.ts",
+    "lib/v65/portfolio.ts",
+    "lib/v65/thesis-stability.ts",
+    "lib/v65/trading-state.ts",
+    "lib/v65/action-policy.ts",
+    "lib/v65/outcomes.ts",
+    "lib/v65/challenger.ts",
+    "lib/v65/valuation-fallback.ts"
   ]
 }
