@@ -59,11 +59,8 @@ export default function TradingLab(){
   {runMessage?<div className="v653RunMessage">{runMessage}</div>:null}
 
   {loading?<div className="tradingLabEmpty">Loading paper account…</div>:<>
-   <div className="v654LabPulse"><article><small>CHECKED</small><b>{evaluated.toLocaleString()}</b><span>fresh decisions</span></article><article className={actionable?"good":"mid"}><small>QUALIFIED NOW</small><b>{actionable.toLocaleString()}</b><span>BUY signals now</span></article><article className={orders?"good":"mid"}><small>PAPER ORDERS</small><b>{orders.toLocaleString()}</b><span>{orders?"sent to Alpaca Paper":"none qualified yet"}</span></article></div>
-   <div className="v653LabNumbers v654LabSecondary">
-
-    <article><small>REALIZED RESULT <MetricInfo title="Realized paper result">Completed simulated trades only. This remains blank until there is an actual round-trip paper trade.</MetricInfo></small><b>{trades?money(Number(m.netPnl||0)):"—"}</b><span>{trades?`${m.winRatePct}% win rate · ${trades} trade${trades===1?"":"s"}`:"No completed paper trades yet"}</span></article>
-   </div>
+   <section className="v658PaperPath"><div className="v658PaperPathHead"><div><small>PAPER PATH</small><h2>From decision to proof</h2></div><span>Each step narrows the funnel. Zero is valid when a gate rejects the setup.</span></div><div className="v658PaperFunnel"><article><small>DECISIONS CHECKED</small><b>{evaluated.toLocaleString()}</b><span>fresh decisions evaluated</span></article><i>→</i><article className={actionable?"good":"mid"}><small>BUY SIGNALS</small><b>{actionable.toLocaleString()}</b><span>qualified at decision layer</span></article><i>→</i><article className={orders?"good":"mid"}><small>PAPER ORDERS</small><b>{orders.toLocaleString()}</b><span>{orders?"submitted to Alpaca Paper":"none passed every risk gate"}</span></article><i>→</i><article className={trades?"good":"mid"}><small>COMPLETED TRADES</small><b>{trades.toLocaleString()}</b><span>{trades?`${m.winRatePct}% paper win rate`:"waiting for round trips"}</span></article></div></section>
+   {trades?<div className="v653LabNumbers v654LabSecondary"><article><small>REALIZED RESULT <MetricInfo title="Realized paper result">Completed simulated trades only. This is measured only after a round-trip paper trade closes.</MetricInfo></small><b>{money(Number(m.netPnl||0))}</b><span>{m.winRatePct}% win rate · {trades} trade{trades===1?"":"s"}</span></article></div>:null}
 
    <section className="v653LabActivity">
     <div className="v653SectionHead"><div><small>WHAT HAPPENED</small><h2>{rows.length?"Latest paper decisions":"Nothing has been evaluated yet"}</h2></div>{latest?<span>Updated {when(latest.evaluatedAt)}</span>:null}</div>

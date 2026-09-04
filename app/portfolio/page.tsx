@@ -70,16 +70,16 @@ function PortfolioContent(){
   <div className="v653PortfolioHero">
    <article><small>TOTAL VALUE <MetricInfo title="Total portfolio value">Estimated current value of tracked stocks, crypto and cash.</MetricInfo></small><b>${intel.totalValue.toLocaleString(undefined,{maximumFractionDigits:0})}</b><span>{rows.length.toLocaleString()} tracked asset{rows.length===1?"":"s"}</span></article>
    <article><small>DEPLOYABLE CASH <MetricInfo title="Deployable cash">Cash you explicitly track as available liquidity. It is not given a stock score.</MetricInfo></small><b>${intel.cashValue.toLocaleString(undefined,{maximumFractionDigits:0})}</b><span>{intel.cashPct}% of portfolio</span></article>
-   <article className={attention?"attention":"good"}><small>NEEDS ATTENTION</small><b>{attention.toLocaleString()}</b><span>{attention?"Holdings with WAIT / TRIM / EXIT / AVOID-style flags":"No urgent holding flags"}</span></article>
+   <article className={attention?"attention":"good"}><small>NEEDS ATTENTION <MetricInfo title="Needs attention" description="Holdings whose current NIVORA action asks you to wait, trim, exit or avoid adding. It is a review queue, not an automatic sell signal."/></small><b>{attention.toLocaleString()}</b><span>{attention?"Holdings with WAIT / TRIM / EXIT / AVOID-style flags":"No urgent holding flags"}</span></article>
    <article><small>CONCENTRATION <MetricInfo title="Concentration">Your largest invested position as a share of invested capital.</MetricInfo></small><b>{rows.length?`${intel.largestPositionPct}%`:"—"}</b><span>{intel.effectivePositions} effective positions</span></article>
   </div>
 
   <div className="v653PortfolioActionHead v655PortfolioPriorities"><div><Sparkles size={18}/><div><small>WHAT DESERVES ATTENTION</small><h2>Portfolio priorities</h2></div></div><span>Company decisions stay independent; portfolio risk changes sizing, not the thesis.</span></div>
-  {hasPriorityEvidence?<div className="v653PortfolioActions">
+  {hasPriorityEvidence?<div className="v653PortfolioActions v658PortfolioPriorityGrid">
    {strongest?<article className="good"><small>STRONGEST HOLDING</small><b>{strongest.symbol}</b><span>{Number(strongest.q.thesisScore).toFixed(0)}/100 thesis · {String(strongest.q.action||"Review").replaceAll("_"," ")}</span><Link href={`/stock/${encodeURIComponent(strongest.symbol)}`}>See why →</Link></article>:null}
    {opportunity?<article className="mid"><small>BEST PLACE FOR NEW MONEY</small><b>{opportunity.symbol}</b><span>{Number(opportunity.q.opportunityScore).toFixed(0)}/100 opportunity · {String(opportunity.q.action||"Review").replaceAll("_"," ")}</span><Link href={`/stock/${encodeURIComponent(opportunity.symbol)}`}>See setup →</Link></article>:null}
    {weakest?<article className="bad"><small>REVIEW FIRST</small><b>{weakest.symbol}</b><span>{Number(weakest.q.thesisScore).toFixed(0)}/100 thesis · {String(weakest.q.action||"Review").replaceAll("_"," ")}</span><Link href={`/stock/${encodeURIComponent(weakest.symbol)}`}>Review →</Link></article>:null}
-  </div>:ranked.length?<div className="v654PortfolioPending"><b>Building your portfolio priorities…</b><span>NIVORA has your holdings and prices. Open a few holdings once to populate the deeper thesis/opportunity evidence used for ranking.</span></div>:null}
+  </div>:ranked.length?<div className="v654PortfolioPending"><b>Portfolio evidence is still filling in…</b><span>Prices are available, but deeper thesis/opportunity evidence has not arrived for enough holdings to rank them responsibly yet. NIVORA will show priorities as that evidence becomes available.</span></div>:null}
 
   <button type="button" className="v654AddInvestment" onClick={()=>setShowAdd(v=>!v)}>{showAdd?"Close add form":"+ Add investment"}</button>
   {showAdd?<div className="v65AddAsset v654AddPanel">
