@@ -902,3 +902,11 @@ small:has(> .v65MetricInfo){display:inline-flex!important;align-items:center!imp
  .v658PortfolioSnapshot article{border-right:0!important}
  .v658PortfolioSnapshot article+article{border-top:1px solid #eef2f0!important}
 }
+
+/* V65.10 — Trading Lab five-stage proof funnel */
+.v658PaperFunnel{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:16px!important;align-items:stretch!important;position:relative}
+.v658PaperFunnel article{min-width:0;min-height:108px;position:relative;padding:15px 16px!important}
+.v658PaperFunnel article:not(:last-child):after{content:"→";position:absolute;right:-13px;top:50%;transform:translateY(-50%);z-index:2;width:10px;text-align:center;color:#98a2b3;font-size:15px;font-weight:700}
+.v658PaperFunnel>i{position:absolute!important;display:none!important}
+@media(max-width:980px) and (min-width:761px){.v658PaperFunnel{gap:11px!important}.v658PaperFunnel article{padding:12px!important}.v658PaperFunnel article b{font-size:21px!important}.v658PaperFunnel article span{font-size:7.5px!important}}
+@media(max-width:760px){.v658PaperFunnel{grid-template-columns:1fr!important;gap:8px!important}.v658PaperFunnel article{min-height:0!important}.v658PaperFunnel article:not(:last-child):after{content:"↓";right:14px;top:auto;bottom:-10px;transform:none;background:#fff;border-radius:50%;width:18px;height:18px;line-height:18px}}

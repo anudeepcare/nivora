@@ -186,6 +186,8 @@ export function buildInvestorDecision({market,company,context,institutional,owns
   const base=num(company?.fundamentalSignal?.score,50),five=num(company?.fiveYearRecord?.score,base);
   const rev=num(raw.revGrowth,0),ni=num(raw.niGrowth,0),margin=Number(raw.opMargin),fcf=Number(raw.fcf),lev=Number(raw.leverage),grossMargin=Number(raw.grossMargin);
   const kind=classifyArchetype(context,raw,assetType);
+  const capitalIntensiveGrowth=kind==="ai_infrastructure";
+  const financingRiskOnly=capitalIntensiveGrowth&&!company?.filingRisk;
 
   let financial=50+(finite(fcf)?fcf>0?13:-15:0)+(finite(margin)?clamp((margin-8)*.60,-13,14):0)+(finite(lev)?lev<60?9:lev>85?-15:0:0);
   if(finite(grossMargin)&&grossMargin>45)financial+=5;
@@ -211,16 +213,17 @@ export function buildInvestorDecision({market,company,context,institutional,owns
 
   const vetoes:string[]=[];
   if(company?.filingRisk)vetoes.push("Active financing/dilution filing risk requires explicit review.");
-  if(financial<24)vetoes.push("Financial health is too weak for an aggressive long recommendation.");
+  if(financial<24&&kind!=="ai_infrastructure")vetoes.push("Financial health is too weak for an aggressive long recommendation.");
+  if(capitalIntensiveGrowth&&financial<24&&forward<35)vetoes.push("AI infrastructure financing risk is high and forward evidence is not yet strong enough to offset it.");
   if(growth<24&&forward<35)vetoes.push("Growth and forward evidence are both deteriorating.");
   if(finite(fcf)&&fcf<0&&finite(lev)&&lev>88)vetoes.push("Negative free cash flow plus extreme liabilities creates a capital-risk veto.");
 
   // Fundamental thesis deliberately excludes technical timing and current price.
   let tr=companyScore*.31+durability*.18+forward*.31+e.score*.10+catalysts*.07+(instEnabled?inst:50)*.03;
-  if(financial<35)tr-=11;if(forward<36)tr-=13;if(growth<30)tr-=9;if(financial<45&&growth<40)tr-=6;if(company?.filingRisk)tr-=7;
+  if(financial<35)tr-=capitalIntensiveGrowth?6:11;if(forward<36)tr-=13;if(growth<30)tr-=9;if(financial<45&&growth<40)tr-=6;if(company?.filingRisk)tr-=7;
   if(vetoes.length>=2)tr=Math.min(tr,34);
   const thesisScore=Math.round(clamp(tr));
-  const thesisLabel:InvestorDecision["thesisLabel"]=thesisScore>=72&&forward>=56&&companyScore>=56&&!vetoes.length?"BULLISH":thesisScore<=41||forward<=33||financial<=27||vetoes.length>=2?"BEARISH":"NEUTRAL";
+  const thesisLabel:InvestorDecision["thesisLabel"]=thesisScore>=72&&forward>=56&&companyScore>=56&&!vetoes.length?"BULLISH":thesisScore<=41||forward<=33||(!capitalIntensiveGrowth&&financial<=27)||vetoes.length>=2?"BEARISH":"NEUTRAL";
 
   const delta=(forward-50)*.42+e.trend*.50+a.trend*.55+(instEnabled?(inst-50)*.04:0)+(catalysts-50)*.10;
   let thesisState:ThesisState=thesisScore<27?"Broken":delta<=-8?"Weakening":thesisScore>=60?"Intact":"Mixed";
@@ -277,6 +280,7 @@ export function buildInvestorDecision({market,company,context,institutional,owns
     else{action="HOLD";actionReason="The position remains investable. Average cost affects your P/L, not the independent company thesis."}
   }else{
     if(thesisState==="Broken"||thesisScore<29||vetoes.length>=2){action="AVOID";actionReason="The fundamental/forward evidence is too weak for new capital."}
+    else if(thesisLabel==="BEARISH"&&financingRiskOnly&&growth>=50&&forward>=45){action="WAIT";actionReason="SPECULATIVE / HIGH RISK: growth evidence remains investable, but financing intensity and execution risk are too high for new capital today."}
     else if(thesisLabel==="BEARISH"){action="AVOID";actionReason="A weak fundamental thesis cannot be rescued by an oversold technical setup."}
     else if(timingLabel==="OVEREXTENDED"){action="WAIT";actionReason="The investment thesis may be attractive, but price is extended. Do not chase."}
     else if(thesisScore>=82&&opportunityScore>=76&&companyScore>=72&&timingLabel==="ATTRACTIVE"){action="STRONG BUY";actionReason="Business quality, forward thesis, valuation and entry timing are unusually well aligned."}
@@ -295,7 +299,7 @@ export function buildInvestorDecision({market,company,context,institutional,owns
     a.available&&a.trend>4?"Sell-side opinion has improved recently; NIVORA treats changes as more useful than raw Buy ratings.":""
   ]).slice(0,5);
   const risks=uniq([
-    financial<45?"Financial quality is a weak link in the investment case.":"",
+    financial<45?(capitalIntensiveGrowth?"Capital intensity and financing risk are a weak link; judge them against contracted growth, cash runway and execution.":"Financial quality is a weak link in the investment case."):"",
     growth<42?"Growth evidence is weak or deteriorating.":"",
     forward<45?"Forward evidence is not confirming a strong future thesis.":"",
     company?.filingRisk?"Financing/dilution-related filing risk requires review.":"",

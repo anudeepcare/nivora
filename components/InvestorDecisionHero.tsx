@@ -59,7 +59,7 @@ export default function InvestorDecisionHero({
     <p>{decision.oneLine}</p>
     <div className="v65PriceContext"><b>{formatMoney(price)}</b><span className={changePct>=0?"good":"bad"}>{formatPercent(changePct)}</span><span>{marketState}</span>{decision.marketDataIntegrity?.ageSeconds!=null&&decision.marketDataIntegrity.state!=="MARKET_CLOSED"?<span>{decision.marketDataIntegrity.ageSeconds}s old</span>:null}</div>
    </div>
-   <aside className={`v653Today ${tone(todayDisplay)}`}><small>TODAY</small><b>{todayDisplay}</b><span>{todaySummary}</span></aside>
+   <aside className={`v653Today ${tone(todayDisplay)}`}><small>NEW MONEY · TODAY</small><b>{todayDisplay}</b><span>{todaySummary}</span></aside>
   </div>
 
   {!decision.consistency.ok?<div className="v65Alert bad"><b>Data consistency issue</b><span>{decision.consistency.notes[0]}</span></div>:null}
@@ -67,7 +67,7 @@ export default function InvestorDecisionHero({
 
   <div className="v653QuickPlan">
    <article><small>ENTRY</small><b>{preferredPresentation?.value||"Wait for a cleaner setup"}</b><span>{preferred?`${preferred.label} · ${preferred.confidence} confidence`:confirmation||"No decision-grade entry zone yet."}</span></article>
-   <article><small>IF YOU OWN IT</small><b className={tone(guidance.owner)}>{guidance.owner}</b><span>{ownerSummary}</span></article>
+   <article><small>EXISTING HOLDERS · IF YOU OWN IT</small><b className={tone(guidance.owner)}>{guidance.owner}</b><span>{ownerSummary}</span></article>
    <article><small>REASSESS</small><b>{technicalRisk&&technicalRisk>0?formatMoney(technicalRisk,{confidence:"Medium"}):"Fundamentals first"}</b><span>{decision.breakers[0]||"Reassess if the business/forward evidence materially deteriorates."}</span></article>
   </div>
 
