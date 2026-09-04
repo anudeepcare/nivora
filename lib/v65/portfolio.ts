@@ -67,7 +67,7 @@ export function calculatePortfolioPulse(assets:PricedPortfolioAsset[],snapshots:
  const equityValue=invested.filter(x=>x.assetType==="EQUITY").reduce((a,x)=>a+x.value,0),cryptoValue=invested.filter(x=>x.assetType==="CRYPTO").reduce((a,x)=>a+x.value,0);
  const top=[...invested].sort((a,b)=>b.value-a.value);
  const top3Pct=base.totalValue?top.slice(0,3).reduce((a,x)=>a+x.value,0)/base.totalValue*100:0;
- const sectors:Record<string,number>={};for(const x of invested)if(x.assetType==="EQUITY")sectors[x.sector||"Unknown"]=(sectors[x.sector||"Unknown"]||0)+x.value;
+ const sectors:Record<string,number>={};for(const x of invested)if(x.assetType==="EQUITY"&&String(x.sector||"").trim()){const sector=String(x.sector).trim();sectors[sector]=(sectors[sector]||0)+x.value;}
  const sectorRows=Object.entries(sectors).map(([label,value])=>({label,value,pct:base.totalValue?value/base.totalValue*100:0})).sort((a,b)=>b.value-a.value);
  const actions=invested.map(x=>{
   const raw=String(x.action||"").toUpperCase();let portfolioAction:PortfolioPulseAction="HOLD",reason="Thesis is being tracked.";
@@ -88,7 +88,7 @@ export function calculatePortfolioPulse(assets:PricedPortfolioAsset[],snapshots:
  return{
   ...base,health:{...base.health,score,label},
   allocations:{equityPct:base.totalValue?+(equityValue/base.totalValue*100).toFixed(1):0,cryptoPct:base.cryptoPct,cashPct:base.cashPct},
-  concentration:{largestPositionPct:base.largestPositionPct,top3Pct:+top3Pct.toFixed(1),largestSector:sectorRows[0]?.label||null,largestSectorPct:sectorRows[0]?+sectorRows[0].pct.toFixed(1):0},
+  concentration:{largestPositionPct:base.largestPositionPct,top3Pct:+top3Pct.toFixed(1),top5Pct:base.totalValue?+(top.slice(0,5).reduce((a,x)=>a+x.value,0)/base.totalValue*100).toFixed(1):0,largestSector:sectorRows[0]?.label||null,largestSectorPct:sectorRows[0]?+sectorRows[0].pct.toFixed(1):0,sectorRows:sectorRows.map(x=>({...x,pct:+x.pct.toFixed(1)}))},
   drivers,actions,
   history:{mode:hasActualPerformance?"ACTUAL":"TRACKING_STARTS_NOW",hasActualPerformance,points:ordered},
   performance:{actualReturnPct,spyReturnPct,qqqReturnPct,alphaVsSpyPct:actualReturnPct!=null&&spyReturnPct!=null?+(actualReturnPct-spyReturnPct).toFixed(2):null,alphaVsQqqPct:actualReturnPct!=null&&qqqReturnPct!=null?+(actualReturnPct-qqqReturnPct).toFixed(2):null}

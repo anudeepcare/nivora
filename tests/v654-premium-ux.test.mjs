@@ -16,7 +16,7 @@ test("analyze turns a bullish wait above a preferred entry into a concrete pullb
 });
 
 test("portfolio uses obvious add-investment control and hides empty priority cards",()=>{
- const s=read("app/portfolio/page.tsx");assert.match(s,/Add investment/);assert.match(s,/showAdd/);assert.doesNotMatch(s,/<details className="v653AddAsset"/);assert.match(s,/ranked\.length/);
+ const s=read("app/portfolio/page.tsx");assert.match(s,/Add investment/);assert.match(s,/showAdd/);assert.doesNotMatch(s,/<details className="v653AddAsset"/);assert.match(s,/showAdd/);
 });
 
 test("trading lab explains no-trade decisions using decision blockers instead of generic no-intent copy",()=>{

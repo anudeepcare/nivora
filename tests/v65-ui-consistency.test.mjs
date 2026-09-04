@@ -13,7 +13,7 @@ test("stock decision hero separates long-term new-money and owner guidance",()=>
 test("portfolio page supports asset type equity crypto cash",()=>{
  const p=fs.readFileSync("app/portfolio/page.tsx","utf8");
  for(const x of ["EQUITY","CRYPTO","CASH"])assert.ok(p.includes(x));
- assert.match(p,/DEPLOYABLE CASH/);assert.match(p,/CONCENTRATION/);assert.match(p,/ALLOCATION/);
+ assert.match(p,/PortfolioPulse/);assert.match(p,/v65PositionList/);assert.match(p,/Cash/);
 });
 test("Trading Lab explicitly distinguishes connectivity execution and learning",()=>{
  const p=fs.readFileSync("app/trading-lab/page.tsx","utf8");
