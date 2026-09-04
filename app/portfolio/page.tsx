@@ -74,7 +74,7 @@ function PortfolioContent(){
    <article><small>CONCENTRATION <MetricInfo title="Concentration">Your largest invested position as a share of invested capital.</MetricInfo></small><b>{rows.length?`${intel.largestPositionPct}%`:"—"}</b><span>{intel.effectivePositions} effective positions</span></article>
   </div>
 
-  <div className="v653PortfolioActionHead"><div><Sparkles size={18}/><div><small>WHAT MATTERS NOW</small><h2>Start here.</h2></div></div><span>Independent company decisions; portfolio risk only changes sizing.</span></div>
+  <div className="v653PortfolioActionHead v655PortfolioPriorities"><div><Sparkles size={18}/><div><small>WHAT DESERVES ATTENTION</small><h2>Portfolio priorities</h2></div></div><span>Company decisions stay independent; portfolio risk changes sizing, not the thesis.</span></div>
   {hasPriorityEvidence?<div className="v653PortfolioActions">
    {strongest?<article className="good"><small>STRONGEST HOLDING</small><b>{strongest.symbol}</b><span>{Number(strongest.q.thesisScore).toFixed(0)}/100 thesis · {String(strongest.q.action||"Review").replaceAll("_"," ")}</span><Link href={`/stock/${encodeURIComponent(strongest.symbol)}`}>See why →</Link></article>:null}
    {opportunity?<article className="mid"><small>BEST PLACE FOR NEW MONEY</small><b>{opportunity.symbol}</b><span>{Number(opportunity.q.opportunityScore).toFixed(0)}/100 opportunity · {String(opportunity.q.action||"Review").replaceAll("_"," ")}</span><Link href={`/stock/${encodeURIComponent(opportunity.symbol)}`}>See setup →</Link></article>:null}
