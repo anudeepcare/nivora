@@ -579,10 +579,12 @@ export default function StockClient({symbol}:{symbol:string}){
       <div><small>CONFIDENCE</small><b className={confidence==="High"?"good":confidence==="Low"?"bad":"mid"}>{confidence}</b><MetricInfo title="Decision confidence">Confidence rises when price history, business data, market context and current news/catalyst data are all available. Low confidence means treat the call more cautiously.</MetricInfo></div>
     </section>}
 
-    <div className="osMicroActions v12Actions">
-      <button onClick={watch}><Star size={16} fill={watching?"currentColor":"none"}/>{watching?"Watching":"Add to watchlist"}</button>
-      <Link href={"/portfolio?symbol="+encodeURIComponent(symbol)}><PlusCircle size={16}/>Track position</Link>
-      {depth!=="simple"&&<><span>{supportText}</span><span>{resistanceText}</span></>}
+    <div className="v6510ActionToolbar">
+      <div className="v6510ActionButtons">
+        <button type="button" onClick={watch}><Star size={16} fill={watching?"currentColor":"none"}/>{watching?"Watching":"Add to watchlist"}</button>
+        <Link href={"/portfolio?symbol="+encodeURIComponent(symbol)}><PlusCircle size={16}/>Track position</Link>
+      </div>
+      {depth!=="simple"&&<div className="v6510MarketLevels" aria-label="Market levels"><span>{supportText}</span><span>{resistanceText}</span></div>}
     </div>
 
     <section className="v12Pulse v18Pulse">
