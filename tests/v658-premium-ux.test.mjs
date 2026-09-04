@@ -35,3 +35,19 @@ test('V65.8 trading lab presents the paper path as one readable funnel',()=>{
  assert.match(s,/DECISIONS CHECKED/);
  assert.match(s,/COMPLETED TRADES/);
 });
+
+test('V65.8.1 thesis presents one cohesive investment verdict instead of floating thesis boxes',()=>{
+ const s=read('components/StockClient.tsx');
+ assert.match(s,/v658VerdictSurface/);
+ assert.match(s,/INVESTMENT VERDICT/);
+ assert.match(s,/v658VerdictMetrics/);
+ assert.match(s,/v658VerdictAction/);
+});
+
+test('V65.8.1 portfolio puts thesis and opportunity context beside each holding',()=>{
+ const s=read('app/portfolio/page.tsx');
+ assert.match(s,/v658HoldingDecision/);
+ assert.match(s,/THESIS/);
+ assert.match(s,/OPPORTUNITY/);
+ assert.match(s,/v658PortfolioSnapshot/);
+});
