@@ -6,13 +6,14 @@ import {measureOutcome,scoreBucket} from "@/lib/v65/outcomes";
 export const dynamic="force-dynamic";
 const horizons=[["30D",30],["90D",90],["180D",180],["1Y",365],["2Y",730]] as const;
 const day=86400000;
+type DailyBar={date:string;close:number};
 
 function auth(req:Request){
  const secret=process.env.TRADING_LAB_CRON_SECRET||process.env.CRON_SECRET;
  return Boolean(secret&&req.headers.get("authorization")===`Bearer ${secret}`);
 }
 function isoDate(d:Date){return d.toISOString().slice(0,10)}
-async function series(symbol:string,start:string,end:string,key:string){
+async function series(symbol:string,start:string,end:string,key:string):Promise<DailyBar[]>{
  const u=new URL("https://api.twelvedata.com/time_series");
  u.searchParams.set("symbol",symbol);u.searchParams.set("interval","1day");u.searchParams.set("start_date",start);u.searchParams.set("end_date",end);u.searchParams.set("adjust","all");u.searchParams.set("outputsize","800");u.searchParams.set("apikey",key);
  const r=await fetch(u,{cache:"no-store",signal:AbortSignal.timeout(10000)}),j=await r.json();
@@ -51,7 +52,7 @@ export async function GET(req:Request){
     if(now.getTime()-observed.getTime()<days*day||existingSet.has(`${snap.id}|${horizon}`))continue;
     const target=isoDate(new Date(observed.getTime()+days*day)),endStock=atOrAfter(stock,target),endBench=atOrAfter(bench,target);
     if(!endStock||!endBench){skipped++;continue}
-    const path=stock.filter(x=>x.date<=endStock.date).map(x=>x.close);
+    const path=stock.filter((x:DailyBar)=>x.date<=endStock.date).map((x:DailyBar)=>x.close);
     const m=measureOutcome({entryPrice:Number(snap.price),endPrice:endStock.close,benchmarkStart:benchStart.close,benchmarkEnd:endBench.close,pathPrices:path});
     const {error:ie}=await db.from("nivora_v59_arena_outcomes").upsert({snapshot_id:snap.id,horizon,outcome_at:`${endStock.date}T21:00:00Z`,end_price:endStock.close,raw_return_pct:m.rawReturnPct,benchmark_return_pct:m.benchmarkReturnPct,alpha_pct:m.alphaPct,max_drawdown_pct:m.maxDrawdownPct,hit:m.hit},{onConflict:"snapshot_id,horizon"});
     if(ie)throw ie;inserted++;

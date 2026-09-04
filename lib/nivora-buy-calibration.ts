@@ -5,7 +5,8 @@ export type BuyPath=
  |"GROWTH_MOMENTUM"
  |"FINANCIAL_VALUE"
  |"CATALYST_GROWTH"
- |"BALANCED_STANDARD";
+ |"BALANCED_STANDARD"
+ |"HIGH_CONVICTION_STARTER";
 
 export type BuyTier="STARTER"|"CONFIRMED";
 
@@ -62,7 +63,6 @@ function hardBlocks(x:BuyCalibrationInput){
  if(x.thesisState==="Broken"||x.thesisScore<29)out.push("Long-term thesis is broken or below the minimum capital threshold.");
  if(String(x.thesisLabel).toUpperCase()==="BEARISH")out.push("Bearish fundamental thesis blocks new capital.");
  const timing=String(x.timing?.label||"WAIT").toUpperCase();
- if(timing==="WEAK")out.push("Timing is WEAK; price stabilization is required.");
  if(timing==="OVEREXTENDED")out.push("Timing is OVEREXTENDED; NIVORA will not chase.");
  if(String(x.stabilizationState||"").toUpperCase()==="REQUIRED")out.push("Price stabilization is required before new capital.");
  if(String(x.earlyWarningLevel||"").toUpperCase()==="HIGH")out.push("Fast-moving early-warning risk is HIGH; new capital is withheld.");
@@ -157,14 +157,33 @@ function balanced(x:BuyCalibrationInput):BuyPathResult{
  return{path:"BALANCED_STANDARD",eligible,tier:timing>=65&&x.opportunityScore>=70?"CONFIRMED":"STARTER",passed:p,failed:f,distance:+d.toFixed(2)};
 }
 
+
+function highConvictionStarter(x:BuyCalibrationInput):BuyPathResult{
+ const p:string[]=[],f:string[]=[];let d=0;
+ const timing=n(x.timing?.score,0),financial=n(x.factors?.financial),growth=n(x.factors?.growth),forward=n(x.factors?.forward),risk=n(x.factors?.risk,60);
+ const a=String(x.archetype||"general").toLowerCase(),growthHeavy=a==="hypergrowth"||a==="ai_infrastructure"||a==="pre_scale";
+ d+=yes(x.thesisScore>=80,"Thesis ≥ 80",p,f,Math.max(0,80-x.thesisScore));
+ d+=yes(x.companyScore>=(growthHeavy?72:78),`Company quality ≥ ${growthHeavy?72:78}`,p,f,Math.max(0,(growthHeavy?72:78)-x.companyScore));
+ d+=yes(x.opportunityScore>=60,"Opportunity ≥ 60",p,f,Math.max(0,60-x.opportunityScore));
+ d+=yes(forward>=70,"Forward evidence ≥ 70",p,f,Math.max(0,70-forward));
+ d+=yes(financial>=(growthHeavy?50:55),`Financial quality ≥ ${growthHeavy?50:55}`,p,f,Math.max(0,(growthHeavy?50:55)-financial));
+ if(growthHeavy)d+=yes(growth>=80,"Growth evidence ≥ 80",p,f,Math.max(0,80-growth));
+ d+=yes(risk<=50,"Risk pressure ≤ 50",p,f,Math.max(0,risk-50));
+ d+=yes(timing>=(growthHeavy?38:35),`Timing score ≥ ${growthHeavy?38:35}`,p,f,Math.max(0,(growthHeavy?38:35)-timing)*1.5);
+ d+=yes(String(x.stabilizationState||"").toUpperCase()!=="REQUIRED","No falling-knife stabilization requirement",p,f,String(x.stabilizationState||"").toUpperCase()==="REQUIRED"?20:0);
+ const eligible=f.length===0;
+ return{path:"HIGH_CONVICTION_STARTER",eligible,tier:"STARTER",passed:p,failed:f,distance:+d.toFixed(2)};
+}
+
 function candidatePaths(x:BuyCalibrationInput){
- const a=String(x.archetype||"general").toLowerCase();
- if(a==="compounder"||a==="infrastructure")return[qualityCompounder(x),balanced(x)];
- if(a==="cyclical"||a==="miner")return[cyclicalValue(x),balanced(x)];
- if(a==="hypergrowth"||a==="ai_infrastructure")return[growthMomentum(x),balanced(x)];
- if(a==="pre_scale"||a==="biotech")return[catalystGrowth(x)];
- if(a==="bank"||a==="insurer")return[financialValue(x),balanced(x)];
- return[balanced(x),qualityCompounder(x)];
+ const a=String(x.archetype||"general").toLowerCase(),starter=x.thesisScore>=80?[highConvictionStarter(x)]:[];
+ if(a==="compounder"||a==="infrastructure")return[qualityCompounder(x),...starter,balanced(x)];
+ if(a==="cyclical"||a==="miner")return[cyclicalValue(x),balanced(x),...starter];
+ if(a==="hypergrowth"||a==="ai_infrastructure")return[growthMomentum(x),...starter,balanced(x)];
+ if(a==="pre_scale")return[catalystGrowth(x),...starter];
+ if(a==="biotech")return[catalystGrowth(x)];
+ if(a==="bank"||a==="insurer")return[financialValue(x),balanced(x),...starter];
+ return[balanced(x),qualityCompounder(x),...starter];
 }
 
 export function evaluateBuyCalibration(x:BuyCalibrationInput):BuyCalibrationResult{

@@ -1,4 +1,4 @@
-# NIVORA V65 Release
+# NIVORA V65.1 Release
 
 ## Major product changes
 
@@ -28,3 +28,11 @@
 ## Required deployment step
 
 Run `supabase/20260904_v65_portfolio_assets.sql` and `supabase/20260904_v65_trading_runs.sql` once before using the V65 Portfolio and run-by-run Trading Lab audit.
+
+
+## V65.1 correction
+
+- Fixes strict TypeScript failure in calibration maturity route.
+- Separates PRIMARY LONG-TERM action from TODAY execution action so `BULLISH + WAIT` is no longer the primary user-facing pair.
+- Adds a conservative HIGH_CONVICTION_STARTER pathway for exceptionally strong names with imperfect timing, while keeping falling-knife stabilization, veto, overextension, high early-warning and consistency gates intact.
+- New engine/policy versions prevent V65.1 outcomes from being silently mixed with the earlier V65 policy.

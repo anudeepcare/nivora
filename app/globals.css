@@ -260,11 +260,11 @@ html,body{max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}button,
 
 
 
-.v32Command.good{border-top-color:#16a34a}.v32Command.bad{border-top-color:#dc2626}.v32Command.mid{border-top-color:#d97706}
 
 
 
-.v32Command.good .v32ActionLine h2{color:#16833d}.v32Command.bad .v32ActionLine h2{color:#b42318}.v32Command.mid .v32ActionLine h2{color:#b45309}
+
+
 
 
 
@@ -328,10 +328,10 @@ html,body{max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}button,
 
 
 /* Make the three user choices read as one compact control console rather than floating islands. */
-.v32QuestionBar .osMode button.on{background:#fff;box-shadow:0 1px 4px rgba(15,27,45,.09)}
+
 .v28DepthToggle button.on{background:var(--nivora-ink);box-shadow:none}
 /* Calmer semantic severity. Reserve saturated red for errors, not the whole visual hierarchy. */
-.v32Command.bad,.decisionCard.bad,.decisionHero.bad,.decisionCard.sell{border-top-color:#bd6b66!important}.v32Command.bad .v32ActionLine h2,.decisionCard.bad h1,.decisionCard.bad h2,.decisionHero.bad h1,.decisionHero.bad h2,.decisionCard.sell h1,.decisionCard.sell h2{color:var(--nivora-danger)!important}.bad{color:var(--nivora-danger)!important}.mid{color:var(--nivora-warn)!important}
+.decisionCard.bad,.decisionHero.bad,.decisionCard.sell{border-top-color:#bd6b66!important}.decisionCard.bad h1,.decisionCard.bad h2,.decisionHero.bad h1,.decisionHero.bad h2,.decisionCard.sell h1,.decisionCard.sell h2{color:var(--nivora-danger)!important}.bad{color:var(--nivora-danger)!important}.mid{color:var(--nivora-warn)!important}
 
 .v32Institutional,.v32MarketLab{border-color:var(--nivora-line)}
 /* Branding should survive deep pages without becoming advertising. */
@@ -348,7 +348,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid rgba(
 .v36WhyNow span.good{color:#15703a!important}.v36WhyNow span.mid{color:#8f5a1d!important}
 
 /* Calmer danger treatment for decision states; color supports hierarchy rather than shouting. */
-.v32Command.bad{border-top-color:#b96b66!important}.v32Command.bad .v32ActionLine h2{color:#913d39!important}
+
 /* Today / Radar */
 
 
@@ -367,7 +367,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid rgba(
 
 .v37Moat{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:18px 0;border:1px solid var(--nivora-line);border-radius:16px;overflow:hidden}.v37Moat>div{padding:15px;border-right:1px solid var(--nivora-line);background:#fff}.v37Moat>div:last-child{border-right:0}.v37Moat b{display:block;font-size:9px;letter-spacing:.08em;color:#16833d}.v37Moat span{display:block;margin-top:6px;font-size:11px;line-height:1.4;color:#667085}
 /* Decision color is an accent, not the entire hierarchy. */
-.v32Command.good,.v32Command.mid,.v32Command.bad{border-top-width:3px!important}.v32Command.good{border-top-color:#39955b!important}.v32Command.mid{border-top-color:#b68a43!important}.v32Command.bad{border-top-color:#b56c67!important}.v32Command.good .v32ActionLine h2{color:#246b3e!important}.v32Command.mid .v32ActionLine h2{color:#8b5a1f!important}.v32Command.bad .v32ActionLine h2{color:#874440!important}
+
 @media (max-width:900px){.v37Moat{grid-template-columns:1fr 1fr}.v37Moat>div:nth-child(2){border-right:0}.v37Moat>div:nth-child(-n/**/+2){border-bottom:1px solid var(--nivora-line)}}
 @media (max-width:760px){.v37Logo>small{display:none}.v37Logo .v37Wordmark{font-size:19px}.v37EventsSummary{grid-template-columns:1fr}.v37EventsSummary>div{border-right:0;border-bottom:1px solid var(--nivora-line);padding:13px}.v37Moat{grid-template-columns:1fr}.v37Moat>div{border-right:0!important;border-bottom:1px solid var(--nivora-line)!important}.v37Moat>div:last-child{border-bottom:0!important}}
 .legalPage h2{font-size:20px;letter-spacing:-.35px;color:#101828;margin:28px 0 6px}.legalPage b{color:#344054}
@@ -383,7 +383,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid rgba(
 
 
 /* Controls should read as one compact command bar, not floating form groups. */
-.v32QuestionBar .osMode button.on,.v28DepthToggle button.on{box-shadow:0 1px 5px rgba(16,24,40,.1)!important}
+.v28DepthToggle button.on{box-shadow:0 1px 5px rgba(16,24,40,.1)!important}
 /* make the global brand/value proposition actually visible */
 .osLogo.v37Logo:before{content:"N";width:29px;height:29px;border-radius:9px;background:#101b2d;color:#fff;display:grid;place-items:center;font-size:12px;font-weight:950;letter-spacing:-.4px}
 
@@ -406,7 +406,7 @@ body{background:radial-gradient(circle at 50% -10%,#fff 0,#f7f9fc 38%,#f3f6fa 10
 
 .v38Plan .primary{background:#f0faf5!important}.v38Plan .danger{background:#fff7f5!important}.v38Plan .danger b{color:var(--v40-red)!important}.v38Plan .primary b{color:var(--v40-green)!important}
 .v40RailTrack .now{background:#0b192c;color:#fff;box-shadow:0 8px 22px rgba(8,22,40,.18)}.v40RailTrack .now small{color:#80dda9}.v40RailTrack .entry{color:var(--v40-green)}.v40RailTrack .break{color:var(--v40-red)}.v40RailTrack .confirm{color:var(--v40-amber)}
-.v12Tabs button.on{background:#0b192c!important;color:#fff!important}
+
 .thesisHero{padding:30px!important;background:linear-gradient(180deg,#fbfcfe,#fff)}.thesisHero h3{font-size:30px!important;letter-spacing:-.03em}.v40VerdictGrid .base{background:#f7f9fc}
 
 
@@ -426,20 +426,19 @@ body{background:radial-gradient(circle at 50% -15%,#fff 0,#f7f9fa 38%,var(--n41-
 .osMode button.on{background:#fff!important;box-shadow:0 5px 16px rgba(16,24,39,.08)!important;color:#111827!important}.v28DepthToggle button.on{background:#fff!important;box-shadow:0 5px 16px rgba(16,24,39,.08)!important}
 
 
-.v41Decision.mid h2{color:#8a610b}.v41Decision.bad h2{color:#8e4742}.v41Decision.good h2{color:#126c48}
-.v41Paths .buy{background:var(--n41-green-soft)}.v41Paths .buy b{color:var(--n41-green)}.v41Paths .now{background:#f7f8f9}.v41Paths .proof{background:#fffaf0}.v41Paths .proof b{color:var(--n41-amber)}.v41Paths .risk{background:var(--n41-red-soft)}.v41Paths .risk b{color:var(--n41-red)}
-.v41Evidence .pos b{color:var(--n41-green)}.v41Evidence .neg b,.v41Evidence .bad b{color:var(--n41-red)}.v41Evidence .mid b{color:var(--n41-amber)}
 
-.v18DecisionStrip{display:none!important}.osMicroActions{margin-top:0!important}.v12Pulse{box-shadow:none!important;border-color:var(--n41-line)!important;border-radius:22px!important}.v12Tabs button.on{background:#17271f!important}.thesisHero{background:#fff!important}.v40VerdictGrid .base{background:#f8faf9!important}.osChartCard{border-radius:24px!important;box-shadow:var(--n41-shadow)!important}
+
+
+
+.v18DecisionStrip{display:none!important}.osMicroActions{margin-top:0!important}.v12Pulse{box-shadow:none!important;border-color:var(--n41-line)!important;border-radius:22px!important}.thesisHero{background:#fff!important}.v40VerdictGrid .base{background:#f8faf9!important}.osChartCard{border-radius:24px!important;box-shadow:var(--n41-shadow)!important}
 
 .v36RadarFilters button.on{background:#17271f!important;color:#fff!important}
-.v41Position .rowActions{border-left:1px solid var(--n41-line);padding:10px;display:flex;align-items:center}.v41Position .rowActions button{border:0;background:transparent;padding:8px;border-radius:9px}
-@media (max-width:760px){.v41Position .rowActions{border-left:0;border-top:1px solid var(--n41-line);justify-content:flex-end}}
+
+
 /* V42 — clarity + mobile polish */
 
 .v28DepthToggle button.on{background:#fff!important;color:#17271f!important;box-shadow:0 5px 16px rgba(16,24,39,.08)!important}
 
-.v32QuestionBar .osMode button.on{color:#17271f!important}
 
 
 
@@ -448,18 +447,19 @@ body{background:radial-gradient(circle at 50% -15%,#fff 0,#f7f9fa 38%,var(--n41-
 
 
 
-.v41Paths .upside{background:#f7fbf9}
-.v41Paths .upside b{color:#246648}
-.v41Paths .proof span,.v41Paths .risk span,.v41Paths .buy span,.v41Paths .upside span{max-width:250px}
-.v41DecisionStrength .metricLabel{display:flex;align-items:center;gap:5px}
 
 
 
 
 
 
-@media (max-width:760px){.v41Paths .buy{grid-column:1/-1!important}.v41Paths .risk{grid-column:1/-1!important}}
-@media (max-width:420px){.v41Paths .buy,.v41Paths .risk{grid-column:auto!important}}
+
+
+
+
+
+
+
 /* ============================================================
    V43 — Decision Calibration + premium clarity
    Compact decision hero, readable mobile path, no shouty WAIT UI.
@@ -481,12 +481,12 @@ body{background:radial-gradient(circle at 50% -15%,#fff 0,#f7f9fa 38%,var(--n41-
 
 
 
-.v41Decision.mid h2{color:#72550e!important}.v41Decision.good h2{color:#155f43!important}.v41Decision.bad h2{color:#824943!important}
+
 /* Research should feel like progressive disclosure, not a second dashboard. */
 
 
-@media (max-width:760px){.v41Paths .buy,.v41Paths .risk{grid-column:1/-1!important}}
-@media (max-width:420px){.v41Paths .buy,.v41Paths .risk{grid-column:auto!important}}
+
+
 /* ============================================================
    V44 — SHIP POLISH
    Fixes research-tab overlay/alignment, header strike-through,
@@ -501,7 +501,7 @@ body{background:radial-gradient(circle at 50% -15%,#fff 0,#f7f9fa 38%,var(--n41-
 
 
 
-#nivora-research>.v12Tabs button.on{background:#153126!important;color:#fff!important;box-shadow:0 7px 18px rgba(18,72,51,.12)!important}
+
 #nivora-research>.gammaPanel,#nivora-research>.v12Fund,#nivora-research>.v12Catalysts,#nivora-research>.v26Technical{margin:0!important;position:relative!important;z-index:1!important}
 #nivora-research .gammaHero{padding:24px 26px 18px!important;max-width:none!important;border-bottom:0!important}
 #nivora-research .gammaHero h3{margin:4px 0 8px!important;font-size:22px!important;line-height:1.15!important}
@@ -559,7 +559,7 @@ body{background:radial-gradient(circle at 50% -15%,#fff 0,#f7f9fa 38%,var(--n41-
 
 /* The active mobile destination must remain legible. Earlier versions applied
    a dark tile and then overrode the text back to dark, making it disappear. */
-@media (max-width:760px){html,body{padding-bottom:0!important}.osMobileNav a.on{background:#102236!important;color:#fff!important;box-shadow:0 8px 20px rgba(16,34,54,.16)!important}.osMobileNav a.on svg,.osMobileNav a.on span{color:#fff!important;opacity:1!important}.osMobileNav a.on:before{content:"";position:absolute!important;top:4px!important;width:24px!important;height:3px!important;border-radius:99px!important;background:#21b66f!important}/* Today and Discover are intentionally different products on mobile. *//* Compress the three decision controls before the answer. *//* Decision hero: compact, readable, and no content hidden behind the nav. */.v41Paths .buy,.v41Paths .risk{grid-column:1/-1!important}/* Research tabs no longer cover the first evidence row. */#nivora-research .gammaHero{padding-top:18px!important}}
+@media (max-width:760px){html,body{padding-bottom:0!important}.osMobileNav a.on{background:#102236!important;color:#fff!important;box-shadow:0 8px 20px rgba(16,34,54,.16)!important}.osMobileNav a.on svg,.osMobileNav a.on span{color:#fff!important;opacity:1!important}.osMobileNav a.on:before{content:"";position:absolute!important;top:4px!important;width:24px!important;height:3px!important;border-radius:99px!important;background:#21b66f!important}/* Today and Discover are intentionally different products on mobile. *//* Compress the three decision controls before the answer. *//* Decision hero: compact, readable, and no content hidden behind the nav. *//* Research tabs no longer cover the first evidence row. */#nivora-research .gammaHero{padding-top:18px!important}}
 
 /* V47 — full-market scanner truthfulness + warm-up UX */
 
@@ -570,7 +570,7 @@ body{background:radial-gradient(circle at 50% -15%,#fff 0,#f7f9fa 38%,var(--n41-
    Price changes opportunity; facts change the thesis.
    ============================================================ */
 
-.v48Hero.good .v48Headline h2{color:#087a4a}.v48Hero.bad .v48Headline h2{color:#9f3e36}.v48Action.good b{color:#087a4a}.v48Action.bad b{color:#a23c35}
+
 /* Do not lead Simple users with short-term technical tables. */
 
 @media (max-width:760px){.v12Pulse{grid-template-columns:1fr!important}.v12Pulse>div{min-height:auto!important}}
@@ -588,7 +588,7 @@ body{background:radial-gradient(circle at 50% -15%,#fff 0,#f7f9fa 38%,var(--n41-
 .v52Action.good{background:#f3faf6;border-color:#d2e8da}.v52Action.bad{background:#fff7f6;border-color:#ecd7d4}.v52HorizonRail>div.best{box-shadow:inset 0 0 0 1px currentColor}.v52AnalyzeHints span{min-width:0}
 @media (max-width:760px){.v52AnalyzeHints{grid-template-columns:1fr 1fr!important}}
 /* V53 — intelligence-first cockpit. Keep the visual shell stable; improve hierarchy and owner context. */
-.v53Action.good{background:#f3faf6;border-color:#d2e8da}.v53Action.bad{background:#fff7f6;border-color:#ecd7d4}.v53HorizonRail>div.best{box-shadow:inset 0 0 0 1px currentColor}.v48FactorGrid .factorRiskHigh b{color:#a33a35}.v48FactorGrid .factorRiskHigh i em{background:#b54742!important}
+.v53Action.good{background:#f3faf6;border-color:#d2e8da}.v53Action.bad{background:#fff7f6;border-color:#ecd7d4}.v53HorizonRail>div.best{box-shadow:inset 0 0 0 1px currentColor}
 
 /* ============================================================
    V54 — CANONICAL INTELLIGENCE ENGINE UX
@@ -610,7 +610,7 @@ body{background:radial-gradient(circle at 50% -15%,#fff 0,#f7f9fa 38%,var(--n41-
 /* V57 Decision Integrity + Explainability */
 
 .v54StreetRow .disagree{background:#fff9ed}.v54StreetRow .disagree ul{margin:9px 0 0 18px;padding:0;color:#59677e;font-size:13px;line-height:1.45}.v54StreetRow .disagree li{margin:3px 0}
-.v48FactorGrid .factorUnavailable{background:#fafbfc}.v48FactorGrid .factorUnavailable>b{color:#7b8798}.v48FactorGrid .factorNA{display:block;margin-top:7px;color:#8b96a7;font-size:11px;line-height:1.35}.v48FactorGrid .metricLabel{display:flex;align-items:center;gap:4px}
+
 
 
 @media (max-width:760px){.v54StreetRow .disagree ul{font-size:12px}}
@@ -748,3 +748,5 @@ html,body{background:var(--v65-bg);color:var(--v65-text)}
 .v65RunAudit{margin:16px 0;background:#fff;border:1px solid var(--v65-border);border-radius:18px;overflow:hidden}.v65RunList>div{display:grid;grid-template-columns:1fr repeat(4,.65fr) 1.5fr;gap:8px;align-items:center;padding:10px 16px;border-top:1px solid #edf0f2}.v65RunList span b,.v65RunList span small{display:block}.v65RunList span b{font-size:10px}.v65RunList span small{font-size:8px;color:#667085;margin-top:2px;overflow:hidden;text-overflow:ellipsis}
 @media (max-width:700px){.v65RunList>div{grid-template-columns:1fr 1fr 1fr}.v65RunList>div span:last-child{grid-column:1/-1}}@media (max-width:420px){.v65RunList>div{grid-template-columns:1fr 1fr}}
 .v65ScenarioUnavailable small,.v65ScenarioUnavailable b,.v65ScenarioUnavailable span{display:block}.v65ScenarioUnavailable small{font-size:8px;font-weight:900;letter-spacing:.09em;color:#667085}.v65ScenarioUnavailable b{font-size:15px;margin:5px 0}.v65ValuationDrivers{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:10px}.v65ValuationDrivers em{font-style:normal;font-size:9px;padding:7px 8px;border:1px solid #e5e9ec;border-radius:8px;color:#475467;background:#fff}@media (max-width:520px){.v65ValuationDrivers{grid-template-columns:1fr}}
+
+@media (max-width:600px){.v65DecisionGrid{grid-template-columns:1fr}.v65DecisionMain,.v65Action{min-width:0}.v65Action{border-left:0;border-top:1px solid var(--v65-border)}}

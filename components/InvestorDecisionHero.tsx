@@ -48,21 +48,21 @@ export default function InvestorDecisionHero({
  return <section className="v65Cockpit v65CockpitConsistency v65DecisionCockpit">
   <div className="v65DecisionGrid">
    <div className="v65DecisionMain">
-    <small>NIVORA INVESTMENT VIEW</small>
-    <div className="v65Headline"><h2 className={tone(decision.thesisLabel)}>{decision.thesisLabel}</h2><span>Thesis {formatScore(decision.thesisScore)}/100</span><span>{decision.thesisState}</span></div>
+    <small>PRIMARY DECISION · LONG-TERM</small>
+    <div className="v65Headline"><h2 className={tone(guidance.longTerm)}>{guidance.longTerm.replaceAll("_"," ")}</h2><span>Thesis {formatScore(decision.thesisScore)}/100</span><span>{decision.thesisState}</span></div>
     <p>{decision.oneLine}</p>
     <div className="v65PriceContext"><b>{formatMoney(price)}</b><span className={changePct>=0?"good":"bad"}>{formatPercent(changePct)}</span><span>{marketState}</span>{decision.marketDataIntegrity?.ageSeconds!=null&&decision.marketDataIntegrity.state!=="MARKET_CLOSED"?<span>{decision.marketDataIntegrity.ageSeconds}s quote age</span>:null}</div>
    </div>
-   <div className={`v65Action ${tone(action)}`}>
-    <small>NEW MONEY TODAY</small>
-    <b>{action}</b>
+   <div className={`v65Action ${tone(guidance.newMoney)}`}>
+    <small>TODAY · NEW MONEY</small>
+    <b>{guidance.newMoney.replaceAll("_"," ")}</b>
     <span>{actionReason}</span>
    </div>
   </div>
 
   <div className="v65HorizonActions">
    <article><small>LONG-TERM VIEW <MetricInfo title="Long-term view">Driven mainly by company quality, durability and forward business evidence. Daily price movement alone cannot rewrite this view.</MetricInfo></small><b className={tone(guidance.longTerm)}>{guidance.longTerm.replaceAll("_"," ")}</b><span>{decision.longTermThesis?.summary||`Thesis ${decision.thesisScore}/100 · ${decision.thesisState}`}</span></article>
-   <article><small>NEW MONEY TODAY <MetricInfo title="New-money decision">Combines the slow thesis with current timing, valuation/risk context and confirmation gates. This can say WAIT even while the long-term view is bullish.</MetricInfo></small><b className={tone(guidance.newMoney)}>{guidance.newMoney.replaceAll("_"," ")}</b><span>{actionReason}</span></article>
+   <article><small>NEW MONEY TODAY <MetricInfo title="New-money decision">Combines the slow thesis with current timing, valuation/risk context and confirmation gates. This tells you whether to buy now, start small/in-zone, wait for confirmation, or avoid new capital.</MetricInfo></small><b className={tone(guidance.newMoney)}>{guidance.newMoney.replaceAll("_"," ")}</b><span>{actionReason}</span></article>
    <article><small>IF YOU OWN IT <MetricInfo title="Existing-owner decision">Existing positions are evaluated differently from new money. NIVORA distinguishes ADD, HOLD, TRIM and EXIT rather than reusing the same new-entry label.</MetricInfo></small><b className={tone(guidance.owner)}>{guidance.owner}</b><span>{guidance.owner==="ADD"?"Existing holders can consider staged additions subject to the same risk gates.":guidance.owner==="TRIM"||guidance.owner==="EXIT"?"Risk/thesis evidence supports reducing exposure.":"Existing holders do not need to act solely because today's price moved."}</span></article>
   </div>
   <div className="v65ThesisClock"><span><b>SLOW THESIS</b> Company Quality / Thesis move on filings, earnings, guidance and durable evidence—not quote movement alone.</span><span><b>FAST MARKET</b> Timing / Opportunity / Entry can change with price, volatility and market structure.</span></div>
