@@ -109,3 +109,8 @@ See:
 - `/methodology`
 - `/terms`
 - `/disclaimer`
+
+## V65.6 UX PATCH
+- Replaced double-ring help icons with one plain inline i glyph.
+- Desktop help opens beside the clicked metric; mobile uses a bounded bottom sheet.
+- Buy qualification now explains score, threshold, and exactly which gate is below requirement.
