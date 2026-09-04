@@ -45,7 +45,7 @@ export default function InvestorDecisionHero({
  const waitingToday=!(["BUY_NOW","BUY_IN_ZONE"] as string[]).includes(String(guidance.newMoney));
  const longTermDisplay=(guidance.longTerm==="BUY"||guidance.longTerm==="STARTER_BUY")&&waitingToday?"BUY CANDIDATE":guidance.longTerm.replaceAll("_"," ");
  const bullishCandidate=guidance.longTerm==="BUY"||guidance.longTerm==="STARTER_BUY";
- const abovePreferred=Boolean(preferred&&price>preferred.high);
+ const abovePreferred=preferred?.high!=null && price>preferred.high;
  const todayDisplay=waitingToday&&bullishCandidate&&abovePreferred?"BUY ON PULLBACK":guidance.newMoney.replaceAll("_"," ");
  const riskPressure=Number(decision.factors?.risk??0);
  const todaySummary=todayDisplay==="BUY ON PULLBACK"&&preferredPresentation?`Preferred entry ${preferredPresentation.value}. Current price is above that range, so wait for the pullback instead of chasing.`:guidance.newMoney==="WAIT_FOR_CONFIRMATION"?`Entry is not confirmed yet — timing ${formatScore(decision.timing.score)}/100${riskPressure>=60?` and risk pressure ${formatScore(riskPressure)}/100`:""}. ${confirmation||"Wait for better price structure."}`:actionReason;
