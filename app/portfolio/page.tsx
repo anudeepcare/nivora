@@ -6,7 +6,6 @@ import MetricInfo from "@/components/v65/MetricInfo";
 import {supabaseBrowser} from "@/lib/supabase";
 import {calculatePortfolioIntelligence,calculatePortfolioPulse} from "@/lib/v65/portfolio";
 import PortfolioPulse from "@/components/portfolio/PortfolioPulse";
-import HoldingsIntelligence from "@/components/portfolio/HoldingsIntelligence";
 import Link from "next/link";
 import {useSearchParams} from "next/navigation";
 import {Trash2,Pencil,Check,X,Sparkles,ShieldCheck,Search,WalletCards,Bitcoin,Banknote} from "lucide-react";
@@ -75,7 +74,6 @@ function PortfolioContent(){
   <div className="v65PortfolioHead"><div><div className="eyebrow">PORTFOLIO</div><h1>Your money, prioritized.</h1><p>See what deserves new capital, what can wait, and what needs attention—without reading a dashboard first.</p></div></div>
 
   <PortfolioPulse pulse={pulse} risk={portfolioRisk}/> 
-  <HoldingsIntelligence assets={priced} actions={pulse.actions}/>
 
   <div className="v653PortfolioHero v658PortfolioSnapshot">
    <article><small>TOTAL VALUE <MetricInfo title="Total portfolio value">Estimated current value of tracked stocks, crypto and cash.</MetricInfo></small><b>${intel.totalValue.toLocaleString(undefined,{maximumFractionDigits:0})}</b><span>{rows.length.toLocaleString()} tracked asset{rows.length===1?"":"s"}</span></article>
