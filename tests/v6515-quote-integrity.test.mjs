@@ -1,0 +1,5 @@
+import test from "node:test";import assert from "node:assert/strict";import {assessQuoteIntegrity} from "../.engine-test/nivora-provider-consensus.js";
+const q=(provider,price,age=5,freshness="LIVE",session="REGULAR")=>({provider,symbol:"SAP",price,ageSeconds:age,freshness,session,providerTimestamp:new Date().toISOString(),changePct:null,bid:null,ask:null,spreadPct:null});
+test("extreme provider disagreement never chooses a suspect display quote",()=>{const r=assessQuoteIntegrity(q("alpaca",89,4),q("twelve",217,7));assert.equal(r.state,"DISAGREEMENT");assert.equal(r.tradable,false);assert.equal(r.chosen,null);assert.ok(r.disagreementPct>80)});
+test("agreeing fresh providers produce verified price",()=>{const r=assessQuoteIntegrity(q("alpaca",217,4),q("twelve",217.4,7));assert.equal(r.state,"LIVE_VERIFIED");assert.equal(r.tradable,true);assert.ok(r.chosen)});
+test("stale source is not tradable",()=>{const r=assessQuoteIntegrity(q("alpaca",217,130,"STALE"),null);assert.equal(r.tradable,false);assert.equal(r.state,"STALE")});

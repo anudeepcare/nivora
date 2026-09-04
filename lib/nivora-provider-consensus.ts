@@ -44,8 +44,7 @@ export function assessQuoteIntegrity(
 
   if(pLive&&sLive){
     if(disagreement!=null&&disagreement>maxDisagreementPct){
-      const chosen=(p.ageSeconds??Infinity)<=(s.ageSeconds??Infinity)?p:s;
-      return{state:"DISAGREEMENT",tradable:false,reason:`Live providers disagree by ${disagreement.toFixed(2)}%, above the ${maxDisagreementPct.toFixed(2)}% integrity limit.`,chosen,primary:p,secondary:s,disagreementPct:+disagreement.toFixed(4)};
+      return{state:"DISAGREEMENT",tradable:false,reason:`Live providers disagree by ${disagreement.toFixed(2)}%, above the ${maxDisagreementPct.toFixed(2)}% integrity limit. NIVORA rejected both prices until a provider can be verified.`,chosen:null,primary:p,secondary:s,disagreementPct:+disagreement.toFixed(4)};
     }
     const chosen=(p.ageSeconds??Infinity)<=(s.ageSeconds??Infinity)?p:s;
     return{state:"LIVE_VERIFIED",tradable:true,reason:"Independent live providers agree within the configured integrity tolerance.",chosen,primary:p,secondary:s,disagreementPct:disagreement==null?null:+disagreement.toFixed(4)};

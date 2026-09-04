@@ -21,7 +21,7 @@ export async function GET(req:Request,{params}:{params:Promise<{symbol:string}>}
   const asOf=new Date();
   const market=await loadTradingMarketData(symbol,broker,twelveKey,asOf);
   const {integrity}=market,chosen=integrity.chosen;
-  if(!chosen)return NextResponse.json({error:"Live quote providers returned no usable price.",integrityState:integrity.state,integrityReason:integrity.reason},{status:502,headers:{"Cache-Control":"private, no-store, max-age=0"}});
+  if(!chosen)return NextResponse.json({error:integrity.state==="DISAGREEMENT"?"Price unverified — providers disagree.":"Live quote providers returned no usable price.",integrityState:integrity.state,integrityReason:integrity.reason,disagreementPct:integrity.disagreementPct,integrityTradable:false},{status:502,headers:{"Cache-Control":"private, no-store, max-age=0"}});
 
   const twelveDisplay=market.twelveRaw?normalizeTwelveQuote(market.twelveRaw,asOf):null;
   return NextResponse.json({
