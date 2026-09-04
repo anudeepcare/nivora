@@ -1,0 +1,6 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";
+const pulse=()=>fs.readFileSync("components/portfolio/PortfolioPulse.tsx","utf8");
+test("Pulse is mobile-first and exposes the complete clean time system",()=>{const s=pulse();for(const p of ["1D","1W","1M","3M","6M","YTD","1Y","2Y","3Y","4Y","ALL"])assert.match(s,new RegExp(`"${p}"`));assert.match(s,/PORTFOLIO PULSE/);assert.match(s,/Portfolio Health/);});
+test("Pulse explicitly distinguishes actual history from tracking-start state",()=>{const s=pulse();assert.match(s,/Actual Portfolio Performance/);assert.match(s,/Tracking starts now/);assert.match(s,/Current Holdings Backtest/);});
+test("Portfolio page makes Pulse the first intelligence experience before priorities and holdings",()=>{const s=fs.readFileSync("app/portfolio/page.tsx","utf8");assert.match(s,/PortfolioPulse/);assert.match(s,/calculatePortfolioPulse\(priced,pulseHistory\)/);assert.match(s,/\/api\/portfolio\/pulse/);assert.match(s,/method:"POST"/);assert.ok(s.indexOf("<PortfolioPulse")<s.indexOf("WHAT DESERVES ATTENTION"));});
+test("Pulse CSS has a true narrow-screen layout",()=>{const s=fs.readFileSync("app/globals.css","utf8");assert.match(s,/@media\(max-width:620px\)[\s\S]*\.pulseHero/);});

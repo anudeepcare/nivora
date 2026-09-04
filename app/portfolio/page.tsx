@@ -4,7 +4,8 @@ import AuthGuard from "@/components/AuthGuard";
 import AppShell from "@/components/AppShell";
 import MetricInfo from "@/components/v65/MetricInfo";
 import {supabaseBrowser} from "@/lib/supabase";
-import {calculatePortfolioIntelligence} from "@/lib/v65/portfolio";
+import {calculatePortfolioIntelligence,calculatePortfolioPulse} from "@/lib/v65/portfolio";
+import PortfolioPulse from "@/components/portfolio/PortfolioPulse";
 import Link from "next/link";
 import {useSearchParams} from "next/navigation";
 import {Trash2,Pencil,Check,X,Sparkles,ShieldCheck,Search,WalletCards,Bitcoin,Banknote} from "lucide-react";
@@ -14,10 +15,11 @@ type AssetType="EQUITY"|"CRYPTO"|"CASH";
 function PortfolioContent(){
  const sp=useSearchParams();
  const[rows,setRows]=useState<any[]>([]),[quotes,setQuotes]=useState<any>({});
- const[assetType,setAssetType]=useState<AssetType>("EQUITY"),[symbol,setSymbol]=useState(sp.get("symbol")||""),[shares,setShares]=useState(""),[cost,setCost]=useState(""),[horizon,setHorizon]=useState("long"),[msg,setMsg]=useState(""),[edit,setEdit]=useState<any>(null),[portfolioRisk,setPortfolioRisk]=useState<any>(null),[showAdd,setShowAdd]=useState(false);
+ const[pulseHistory,setPulseHistory]=useState<any[]>([]),[assetType,setAssetType]=useState<AssetType>("EQUITY"),[symbol,setSymbol]=useState(sp.get("symbol")||""),[shares,setShares]=useState(""),[cost,setCost]=useState(""),[horizon,setHorizon]=useState("long"),[msg,setMsg]=useState(""),[edit,setEdit]=useState<any>(null),[portfolioRisk,setPortfolioRisk]=useState<any>(null),[showAdd,setShowAdd]=useState(false);
 
  const load=useCallback(async()=>{
   const s=supabaseBrowser();const{data:{user}}=await s.auth.getUser();if(!user)return;
+  fetch("/api/portfolio/pulse",{headers:{"x-nivora-user-id":user.id},cache:"no-store"}).then(r=>r.json()).then(j=>setPulseHistory(Array.isArray(j?.items)?j.items:[])).catch(()=>{});
   const{data,error}=await s.from("portfolio_positions").select("*").eq("user_id",user.id).order("updated_at",{ascending:false});
   if(error){setMsg(error.message.includes("asset_type")?"Run supabase/20260904_v65_portfolio_assets.sql once to enable V65 stocks, crypto and cash.":error.message);return}
   const clean=(data||[]).map((x:any)=>({...x,asset_type:x.asset_type||"EQUITY"}));setRows(clean);
@@ -53,9 +55,11 @@ function PortfolioContent(){
  const priced=useMemo(()=>rows.map((x:any)=>{
   if(x.asset_type==="CASH")return{assetType:"CASH" as const,currency:x.currency||x.symbol,amount:Number(x.shares||0)};
   const q=quotes[x.symbol],price=Number(q?.price||x.avg_cost||0);
-  return{assetType:x.asset_type==="CRYPTO"?"CRYPTO" as const:"EQUITY" as const,symbol:x.symbol,quantity:Number(x.shares||0),price,thesisScore:q?.thesisScore??null,companyScore:q?.companyScore??null,action:q?.action||"",sector:q?.sector||null};
+  return{assetType:x.asset_type==="CRYPTO"?"CRYPTO" as const:"EQUITY" as const,symbol:x.symbol,quantity:Number(x.shares||0),price,avgCost:Number(x.avg_cost||0),thesisScore:q?.thesisScore??null,companyScore:q?.companyScore??null,opportunityScore:q?.opportunityScore??null,action:q?.action||"",sector:q?.sector||null,archetype:q?.archetype||null};
  }),[rows,quotes]);
  const intel=useMemo(()=>calculatePortfolioIntelligence(priced),[priced]);
+ const pulse=useMemo(()=>calculatePortfolioPulse(priced,pulseHistory),[priced,pulseHistory]);
+ useEffect(()=>{if(!rows.length||!pulse.totalValue)return;let cancelled=false;(async()=>{const sb=supabaseBrowser(),{data:{user}}=await sb.auth.getUser();if(!user||cancelled)return;const holdings=priced.map((x:any)=>x.assetType==="CASH"?{assetType:"CASH",symbol:x.currency,value:Number(x.amount||0)}:{assetType:x.assetType,symbol:x.symbol,value:Number(x.quantity||0)*Number(x.price||0)});await fetch("/api/portfolio/pulse",{method:"POST",headers:{"Content-Type":"application/json","x-nivora-user-id":user.id},body:JSON.stringify({totalValue:pulse.totalValue,holdings})}).catch(()=>null)})();return()=>{cancelled=true}},[rows.length,pulse.totalValue,priced]);
  const investedRows=rows.filter((x:any)=>x.asset_type!=="CASH");
  const attention=investedRows.filter((x:any)=>/EXIT|AVOID|SELL|TRIM|WAIT/i.test(String(quotes[x.symbol]?.action||""))).length;
  const ranked=investedRows.map((x:any)=>({symbol:x.symbol,type:x.asset_type,q:quotes[x.symbol]||{}}));
@@ -66,6 +70,8 @@ function PortfolioContent(){
 
  return <section className="portfolioPage v65Portfolio v653Portfolio">
   <div className="v65PortfolioHead"><div><div className="eyebrow">PORTFOLIO</div><h1>Your money, prioritized.</h1><p>See what deserves new capital, what can wait, and what needs attention—without reading a dashboard first.</p></div></div>
+
+  <PortfolioPulse pulse={pulse} risk={portfolioRisk}/>
 
   <div className="v653PortfolioHero v658PortfolioSnapshot">
    <article><small>TOTAL VALUE <MetricInfo title="Total portfolio value">Estimated current value of tracked stocks, crypto and cash.</MetricInfo></small><b>${intel.totalValue.toLocaleString(undefined,{maximumFractionDigits:0})}</b><span>{rows.length.toLocaleString()} tracked asset{rows.length===1?"":"s"}</span></article>

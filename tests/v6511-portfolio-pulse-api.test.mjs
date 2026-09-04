@@ -1,0 +1,3 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";
+test("snapshot migration is user scoped and daily idempotent",()=>{const s=fs.readFileSync("supabase/20260904_v6511_portfolio_pulse.sql","utf8");assert.match(s,/unique\(user_id,snapshot_day\)/);assert.match(s,/enable row level security/);assert.match(s,/auth\.uid\(\)=user_id/);});
+test("Pulse API supports reading history and upserting today's exact snapshot",()=>{const s=fs.readFileSync("app/api/portfolio/pulse/route.ts","utf8");assert.match(s,/export async function GET/);assert.match(s,/export async function POST/);assert.match(s,/onConflict:"user_id,snapshot_day"/);assert.match(s,/nivora_portfolio_snapshots/);});
