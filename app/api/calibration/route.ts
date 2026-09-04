@@ -42,8 +42,15 @@ export async function GET(req:Request){
  const arenaMap=new Map((arenaSnaps||[]).map((x:any)=>[Number(x.id),x]));
  const arenaIds=[...arenaMap.keys()],arenaOutcomes:any[]=[];
  for(let i=0;i<arenaIds.length;i+=200){const{data:xs}=await db.from("nivora_v59_arena_outcomes").select("snapshot_id,horizon,alpha_pct,benchmark_return_pct").in("snapshot_id",arenaIds.slice(i,i+200));arenaOutcomes.push(...(xs||[]))}
- const labelToDays:any={"30D":30,"90D":90,"180D":180,"1Y":365,"2Y":730};
- for(const [label,days] of Object.entries(labelToDays)){
+ const labelToDays={
+  "30D":30,
+  "90D":90,
+  "180D":180,
+  "1Y":365,
+  "2Y":730
+ } as const;
+ for(const label of Object.keys(labelToDays) as Array<keyof typeof labelToDays>){
+  const days=labelToDays[label];
   const exactRows=arenaOutcomes.filter((x:any)=>x.horizon===label).map((x:any)=>{const d:any=arenaMap.get(Number(x.snapshot_id))?.decision||{};return{score:Number(d.thesisScore||0),alphaPct:Number(x.alpha_pct||0),archetype:d.archetype||"unknown"}}).filter((x:any)=>Number.isFinite(x.alphaPct));
   if(result[days])result[days].exactEngineSummary=summarizeCalibration(exactRows,30);
  }

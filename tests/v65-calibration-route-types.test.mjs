@@ -1,0 +1,2 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";
+test("calibration horizon map preserves numeric literal index types",()=>{const s=fs.readFileSync("app/api/calibration/route.ts","utf8");assert.match(s,/as const;/);assert.match(s,/Object\.keys\(labelToDays\) as Array<keyof typeof labelToDays>/);assert.doesNotMatch(s,/Object\.entries\(labelToDays\)/);});
