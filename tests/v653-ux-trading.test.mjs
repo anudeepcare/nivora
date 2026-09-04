@@ -2,16 +2,17 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
-test('metric help uses inline text, not question mark icon',()=>{
+test('metric help uses a compact inline info control',()=>{
   const s=fs.readFileSync('components/v65/MetricInfo.tsx','utf8');
   assert.doesNotMatch(s,/>\?<\/button>/);
-  assert.match(s,/>Details<\/button>/);
+  assert.doesNotMatch(s,/>Details<\/button>/);
+  assert.match(s,/v654InfoGlyph/);
 });
 
 test('analyze page keeps deep evidence behind one disclosure',()=>{
   const s=fs.readFileSync('components/InvestorDecisionHero.tsx','utf8');
   assert.match(s,/v653DeepResearch/);
-  assert.match(s,/Deep research/);
+  assert.match(s,/Explore full analysis/);
   assert.match(s,/BUY CANDIDATE/);
 });
 

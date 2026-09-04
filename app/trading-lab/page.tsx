@@ -16,6 +16,9 @@ export default function TradingLab(){
  const m=data?.metrics||{},rows:EvalRow[]=data?.recentEvaluations||[];
  const evaluated=Number(data?.funnel?.evaluated||0),orders=Number(data?.orders||0),trades=Number(m?.trades||0),buySignals=Number(data?.decisionAudit?.actions?.BUY||0);
  const latest=rows[0]||null;
+ const actionable=buySignals;
+ const auditRows:any[]=data?.decisionAudit?.closestToBuy||[];
+ const auditBySymbol=new Map(auditRows.map((x:any)=>[String(x.symbol||"").toUpperCase(),x]));
  const blocker=data?.decisionAudit?.dominantBlockers?.[0]?.reason||null;
  const statusTitle=!data?.broker?.connected?"Paper broker needs attention":evaluated===0?"Ready — no decisions evaluated yet":orders===0?"Working — no paper order qualified yet":trades===0?"Orders reached Alpaca Paper":"Paper trading is producing measurable results";
  const statusText=!data?.broker?.connected?(data?.broker?.error||"Alpaca Paper is not connected."):evaluated===0?"Run one paper check below. NIVORA will refresh your portfolio decisions, evaluate every fresh signal and show exactly why each one traded or did not trade.":orders===0?(blocker?`Most common reason no trade qualified: ${blocker}`:"The evaluated signals did not pass the full decision and risk gates yet."):trades===0?"At least one paper order was submitted; fills/results will appear here when Alpaca reports them.":`${trades} completed paper trade${trades===1?"":"s"} are now available for performance measurement.`;
@@ -45,19 +48,18 @@ export default function TradingLab(){
   {runMessage?<div className="v653RunMessage">{runMessage}</div>:null}
 
   {loading?<div className="tradingLabEmpty">Loading paper account…</div>:<>
-   <div className="v653LabNumbers">
-    <article><small>PAPER ACCOUNT <MetricInfo title="Paper account">The simulated Alpaca account used only for testing NIVORA decisions.</MetricInfo></small><b>{data?.broker?.connected?money(Number(data?.broker?.equity||0),false):"Not connected"}</b><span>{data?.broker?.positions??0} open paper positions</span></article>
-    <article><small>DECISIONS CHECKED <MetricInfo title="Decisions checked">Fresh frozen NIVORA decisions that Trading Lab actually evaluated through the execution rules.</MetricInfo></small><b>{evaluated.toLocaleString()}</b><span>{buySignals.toLocaleString()} current BUY signal{buySignals===1?"":"s"}</span></article>
-    <article><small>PAPER ORDERS <MetricInfo title="Paper orders">Orders that passed all risk gates and were sent to Alpaca Paper.</MetricInfo></small><b>{orders.toLocaleString()}</b><span>{data?.lastOrder?.at?`Last order ${when(data.lastOrder.at)}`:"No order has qualified yet"}</span></article>
+   <div className="v654LabPulse"><article><small>CHECKED</small><b>{evaluated.toLocaleString()}</b><span>fresh decisions</span></article><article className={actionable?"good":"mid"}><small>ACTIONABLE</small><b>{actionable.toLocaleString()}</b><span>BUY signals now</span></article><article className={orders?"good":"mid"}><small>PAPER ORDERS</small><b>{orders.toLocaleString()}</b><span>{orders?"sent to Alpaca Paper":"none qualified yet"}</span></article></div>
+   <div className="v653LabNumbers v654LabSecondary">
+
     <article><small>REALIZED RESULT <MetricInfo title="Realized paper result">Completed simulated trades only. This remains blank until there is an actual round-trip paper trade.</MetricInfo></small><b>{trades?money(Number(m.netPnl||0)):"—"}</b><span>{trades?`${m.winRatePct}% win rate · ${trades} trade${trades===1?"":"s"}`:"No completed paper trades yet"}</span></article>
    </div>
 
    <section className="v653LabActivity">
     <div className="v653SectionHead"><div><small>WHAT HAPPENED</small><h2>{rows.length?"Latest paper decisions":"Nothing has been evaluated yet"}</h2></div>{latest?<span>Updated {when(latest.evaluatedAt)}</span>:null}</div>
-    {rows.length?<div className="v653DecisionList">{rows.slice(0,12).map((r,i)=><article key={`${r.symbol}-${r.evaluatedAt}-${i}`}><div><b>{r.symbol}</b><span>{r.action}</span></div><strong className={r.status==="SUBMITTED"?"good":r.status==="BLOCKED"||r.status==="ERROR"?"bad":"mid"}>{String(r.status||"").replaceAll("_"," ")}</strong><p>{r.reason}</p>{r.realizedPnl!=null?<em>{money(r.realizedPnl)}</em>:null}</article>)}</div>:<div className="v653EmptyAction"><Activity size={22}/><b>Run the first paper check.</b><span>It will refresh your portfolio decisions and immediately show which symbols were actionable, blocked, or intentionally ignored.</span></div>}
+    {rows.length?<div className="v653DecisionList">{rows.slice(0,12).map((r,i)=>{const audit:any=auditBySymbol.get(String(r.symbol||"").toUpperCase());const why=audit?.primaryBlocker||r.reason;return <article key={`${r.symbol}-${r.evaluatedAt}-${i}`}><div><b>{r.symbol}</b><span>{r.action}</span></div><strong className={r.status==="SUBMITTED"?"good":r.status==="BLOCKED"||r.status==="ERROR"?"bad":"mid"}>{r.status==="NO_INTENT"?"NO TRADE":String(r.status||"").replaceAll("_"," ")}</strong><p>{why}</p>{audit?.primaryBlocker?<small className="v654Trigger"><b>What would change it</b>{audit.primaryBlocker}</small>:null}{r.realizedPnl!=null?<em>{money(r.realizedPnl)}</em>:null}</article>})}</div>:<div className="v653EmptyAction"><Activity size={22}/><b>Run the first paper check.</b><span>It will refresh your portfolio decisions and immediately show which symbols were actionable, blocked, or intentionally ignored.</span></div>}
    </section>
 
-   <details className="v653LabDetails"><summary>Performance &amp; system details</summary><div className="v653LabDetailsBody">
+   <details className="v653LabDetails"><summary>View performance &amp; system details ↓</summary><div className="v653LabDetailsBody">
     <div><b>Automatic schedule</b><span>{data?.runner?.lastAutomaticRun?"Confirmed":"Not yet observed"} · {data?.runner?.schedule||"—"}</span><small>Last automatic check: {when(data?.runner?.lastAutomaticRun)} · {data?.runner?.lastRunOk===true?"healthy":data?.runner?.lastRunOk===false?"error":"no run recorded yet"}</small></div>
     <div><b>Decision funnel</b><span>{data?.funnel?.snapshots??0} snapshots → {evaluated} evaluated → {data?.funnel?.intents??0} intents → {data?.funnel?.submitted??0} submitted</span><small>{data?.funnel?.blocked??0} blocked by execution/risk gates</small></div>
     <div><b>Track record</b><span>{trades?`${m.winRatePct}% win rate · ${money(Number(m.netPnl||0))} net paper P&L`:"No completed trades yet"}</span><small>{data?.learning?.maturedOutcomes??0} matured benchmark-comparable outcomes</small></div>
