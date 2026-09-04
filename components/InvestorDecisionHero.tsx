@@ -105,7 +105,7 @@ export default function InvestorDecisionHero({
   </div>:null}
 
   <div className="v65ScoreStrip">
-   <article><small>COMPANY QUALITY <MetricInfo metric="business" proof={proof.business}/></small><b>{formatScore(decision.companyScore)}/100</b><span>{decision.companyLabel}{proof.business?.validationStatus==="UNVALIDATED"?" · heuristic":""}</span></article>
+   <article><small>COMPANY QUALITY <MetricInfo metric="business" proof={proof.business}/></small><b>{formatScore(decision.companyScore)}/100</b><span>{decision.companyLabel}</span></article>
    <article><small>CURRENT OPPORTUNITY <MetricInfo metric="opportunity" proof={proof.opportunity}/></small><b>{formatScore(decision.opportunityScore)}/100</b><span>{decision.valuationValidity?.fairValueAllowed?decision.valuationLabel:"Valuation not established"}</span></article>
    <article><small>TIMING <MetricInfo metric="timing" proof={proof.timing}/></small><b>{formatScore(decision.timing.score)}/100</b><span>{decision.timing.label}</span></article>
   </div>
