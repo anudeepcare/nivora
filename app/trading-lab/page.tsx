@@ -8,6 +8,17 @@ import {supabaseBrowser} from "@/lib/supabase";
 type EvalRow={symbol:string;action:string;status:string;reason:string;riskCode?:string|null;evaluatedAt?:string|null;orderStatus?:string|null;fillStatus?:string|null;realizedPnl?:number|null;returnPct?:number|null};
 const when=(x?:string|null)=>x?new Date(x).toLocaleString():"—";
 const money=(x?:number|null,signed=true)=>x==null?"—":`${signed?(x>=0?"+":"-"):""}$${Math.abs(x).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+const friendlyGate=(raw?:string|null)=>{
+ const s=String(raw||"").trim(); if(!s)return "No trade condition was recorded.";
+ const rules:[RegExp,(m:RegExpMatchArray)=>string][]=[
+  [/^Thesis ≥ (\d+)/i,m=>`Long-term thesis needs ${m[1]}+ before new capital.`],
+  [/^Company quality ≥ (\d+)/i,m=>`Business quality needs ${m[1]}+ before new capital.`],
+  [/^Opportunity ≥ (\d+)/i,m=>`Current setup needs ${m[1]}+ across price, timing and risk.`],
+  [/^Timing score ≥ (\d+)/i,m=>`Entry timing needs ${m[1]}+ before the setup is confirmed.`],
+  [/^Risk pressure ≤ (\d+)/i,m=>`Risk pressure must be ${m[1]} or lower.`]
+ ];
+ for(const[r,f]of rules){const m=s.match(r);if(m)return f(m)} return s;
+};
 
 export default function TradingLab(){
  const[data,setData]=useState<any>(null),[loading,setLoading]=useState(true),[running,setRunning]=useState(false),[runMessage,setRunMessage]=useState("");
@@ -21,7 +32,7 @@ export default function TradingLab(){
  const auditBySymbol=new Map(auditRows.map((x:any)=>[String(x.symbol||"").toUpperCase(),x]));
  const blocker=data?.decisionAudit?.dominantBlockers?.[0]?.reason||null;
  const statusTitle=!data?.broker?.connected?"Paper broker needs attention":evaluated===0?"Ready — no decisions evaluated yet":orders===0?"Working — no paper order qualified yet":trades===0?"Orders reached Alpaca Paper":"Paper trading is producing measurable results";
- const statusText=!data?.broker?.connected?(data?.broker?.error||"Alpaca Paper is not connected."):evaluated===0?"Run one paper check below. NIVORA will refresh your portfolio decisions, evaluate every fresh signal and show exactly why each one traded or did not trade.":orders===0?(blocker?`Most common reason no trade qualified: ${blocker}`:"The evaluated signals did not pass the full decision and risk gates yet."):trades===0?"At least one paper order was submitted; fills/results will appear here when Alpaca reports them.":`${trades} completed paper trade${trades===1?"":"s"} are now available for performance measurement.`;
+ const statusText=!data?.broker?.connected?(data?.broker?.error||"Alpaca Paper is not connected."):evaluated===0?"Run one paper check below. NIVORA will refresh your portfolio decisions, evaluate every fresh signal and show exactly why each one traded or did not trade.":orders===0?(blocker?`Most common reason no trade qualified: ${friendlyGate(blocker)}`:"The evaluated signals did not pass the full decision and risk gates yet."):trades===0?"At least one paper order was submitted; fills/results will appear here when Alpaca reports them.":`${trades} completed paper trade${trades===1?"":"s"} are now available for performance measurement.`;
 
  async function runNow(){
   setRunning(true);setRunMessage("Refreshing decisions and running the paper engine…");
@@ -56,7 +67,7 @@ export default function TradingLab(){
 
    <section className="v653LabActivity">
     <div className="v653SectionHead"><div><small>WHAT HAPPENED</small><h2>{rows.length?"Latest paper decisions":"Nothing has been evaluated yet"}</h2></div>{latest?<span>Updated {when(latest.evaluatedAt)}</span>:null}</div>
-    {rows.length?<div className="v653DecisionList">{rows.slice(0,12).map((r,i)=>{const audit:any=auditBySymbol.get(String(r.symbol||"").toUpperCase());const why=audit?.primaryBlocker||r.reason;return <article key={`${r.symbol}-${r.evaluatedAt}-${i}`}><div><b>{r.symbol}</b><span>{r.action}</span></div><strong className={r.status==="SUBMITTED"?"good":r.status==="BLOCKED"||r.status==="ERROR"?"bad":"mid"}>{r.status==="NO_INTENT"?"NO TRADE":String(r.status||"").replaceAll("_"," ")}</strong><p><b className="v655WhyLabel">Why no order</b>{why}</p>{audit?.primaryBlocker?<small className="v654Trigger"><b>What would change it</b>{audit.primaryBlocker}</small>:null}{r.realizedPnl!=null?<em>{money(r.realizedPnl)}</em>:null}</article>})}</div>:<div className="v653EmptyAction"><Activity size={22}/><b>Run the first paper check.</b><span>It will refresh your portfolio decisions and immediately show which symbols were actionable, blocked, or intentionally ignored.</span></div>}
+    {rows.length?<div className="v653DecisionList">{rows.slice(0,12).map((r,i)=>{const audit:any=auditBySymbol.get(String(r.symbol||"").toUpperCase());const why=friendlyGate(audit?.primaryBlocker||r.reason);return <article key={`${r.symbol}-${r.evaluatedAt}-${i}`}><div><b>{r.symbol}</b><span>{r.action}</span></div><strong className={r.status==="SUBMITTED"?"good":r.status==="BLOCKED"||r.status==="ERROR"?"bad":"mid"}>{r.status==="NO_INTENT"?"NO TRADE":String(r.status||"").replaceAll("_"," ")}</strong><p><b className="v655WhyLabel">Why no order</b>{why}</p>{audit?.primaryBlocker?<small className="v654Trigger"><b>What would change it</b>{friendlyGate(audit.primaryBlocker)}</small>:null}{r.realizedPnl!=null?<em>{money(r.realizedPnl)}</em>:null}</article>})}</div>:<div className="v653EmptyAction"><Activity size={22}/><b>Run the first paper check.</b><span>It will refresh your portfolio decisions and immediately show which symbols were actionable, blocked, or intentionally ignored.</span></div>}
    </section>
 
    <details className="v653LabDetails"><summary>View performance &amp; system details ↓</summary><div className="v653LabDetailsBody">

@@ -66,6 +66,7 @@
     "lib/v65/action-policy.ts",
     "lib/v65/outcomes.ts",
     "lib/v65/challenger.ts",
-    "lib/v65/valuation-fallback.ts"
+    "lib/v65/valuation-fallback.ts",
+    "lib/v65/paper-invalidation.ts"
   ]
 }

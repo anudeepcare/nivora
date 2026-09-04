@@ -10,6 +10,7 @@ import {ENGINE_VERSION,TRADING_LAB_VERSION} from "@/lib/nivora-version";
 import {buildClosedTradesFromFills} from "@/lib/nivora-trading-metrics";
 import {explainNoIntent} from "@/lib/nivora-trading-evaluation";
 import {sizePosition} from "@/lib/nivora-position-sizing";
+import {resolvePaperInvalidation} from "@/lib/v65/paper-invalidation";
 
 export const dynamic="force-dynamic";
 
@@ -22,6 +23,7 @@ type Snapshot={
  price:number;
  evidence_fingerprint:string|null;
  decision:any;
+ evidence?:any;
 };
 
 async function recordRunnerHealth(db:SupabaseClient,ok:boolean,started:number,errorCode:string|null=null){
@@ -143,7 +145,7 @@ async function run(req:Request,automatic=false){
 
   const since=new Date(Date.now()-30*60_000).toISOString();
   const {data:snapshots,error}=await db.from("nivora_v59_decision_snapshots")
-   .select("id,symbol,observed_at,price,evidence_fingerprint,decision")
+   .select("id,symbol,observed_at,price,evidence_fingerprint,decision,evidence")
    .eq("engine_version",ENGINE_VERSION)
    .gte("observed_at",since)
    .order("observed_at",{ascending:false})
@@ -229,11 +231,11 @@ async function run(req:Request,automatic=false){
     let executableIntent=intent;
     let sizing:any=null;
     if(intent.side==="BUY"){
-     const riskZone=Array.isArray(d.zones)?d.zones.find((z:any)=>z?.kind==="risk"&&Number(z?.low)>0):null;
-     const invalidation=Number(riskZone?.low||0);
+     const invalidationResult=resolvePaperInvalidation({entry:quote?.price??0,decision:d,evidence:snapshot.evidence});
+     const invalidation=Number(invalidationResult.value||0);
      const riskPerTradePct=Number(process.env.TRADING_LAB_RISK_PER_TRADE_PCT||0.5);
      if(!quote||quote.price<=0||!invalidation||invalidation>=quote.price){
-      await recordEvaluation(snapshot,"BLOCKED",String(today.action||"NO ACTION"),"A valid decision-linked invalidation is required before sizing new paper risk.","POSITION_SIZING",null,{...quoteDetails,invalidation,riskPerTradePct});
+      await recordEvaluation(snapshot,"BLOCKED",String(today.action||"NO ACTION"),"A valid decision-linked invalidation is required before sizing new paper risk.","POSITION_SIZING",null,{...quoteDetails,invalidation,invalidationSource:invalidationResult.source,riskPerTradePct});
       results.push({symbol:snapshot.symbol,status:"BLOCKED",action:String(today.action||"NO ACTION"),reason:"A valid decision-linked invalidation is required before sizing new paper risk.",riskCode:"POSITION_SIZING"});
       continue;
      }
@@ -246,7 +248,7 @@ async function run(req:Request,automatic=false){
       liquidityCapNotional:account.equity*(DEFAULT_PAPER_RISK_POLICY.maxTradePct/100)
      });
      if(!sizing.allowed){
-      await recordEvaluation(snapshot,"BLOCKED",String(today.action||"NO ACTION"),sizing.reason,"POSITION_SIZING",null,{...quoteDetails,sizing,riskPerTradePct});
+      await recordEvaluation(snapshot,"BLOCKED",String(today.action||"NO ACTION"),sizing.reason,"POSITION_SIZING",null,{...quoteDetails,sizing,invalidationSource:invalidationResult.source,riskPerTradePct});
       results.push({symbol:snapshot.symbol,status:"BLOCKED",action:String(today.action||"NO ACTION"),reason:sizing.reason,riskCode:"POSITION_SIZING"});
       continue;
      }

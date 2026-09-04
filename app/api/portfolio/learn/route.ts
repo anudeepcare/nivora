@@ -31,7 +31,7 @@ export async function GET(req:Request){
     continue;
    }
    const observedAt=new Date().toISOString();
-   const evidence={source:"V65_PORTFOLIO_LEARNING",marketDataIntegrity:market?.dataIntegrity||null,benchmark:market?.market?.benchmark||"SPY",companyEvidenceAsOf:company?.asOf||company?.updatedAt||null,contextEvidenceAsOf:context?.asOf||context?.updatedAt||null};
+   const evidence={source:"V65_PORTFOLIO_LEARNING",marketDataIntegrity:market?.dataIntegrity||null,benchmark:market?.market?.benchmark||"SPY",levels:market?.levels||null,companyEvidenceAsOf:company?.asOf||company?.updatedAt||null,contextEvidenceAsOf:context?.asOf||context?.updatedAt||null};
    const frozen=freezeDecision({symbol,observedAt,price:Number(market.price||0),decision,evidence,benchmarkSymbol:String(market?.market?.benchmark||"SPY"),sectorBenchmarkSymbol:null});
    const {data:last}=await db.from("nivora_v59_decision_snapshots").select("evidence_fingerprint").eq("engine_version",ENGINE_VERSION).eq("symbol",symbol).order("observed_at",{ascending:false}).limit(1).maybeSingle();
    if(last?.evidence_fingerprint===frozen.evidenceFingerprint){results.push({symbol,status:"UNCHANGED"});continue}
