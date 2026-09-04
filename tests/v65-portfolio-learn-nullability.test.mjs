@@ -1,0 +1,2 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";
+test("portfolio learning guards nullable investor decisions before dereference",()=>{const s=fs.readFileSync("app/api/portfolio/learn/route.ts","utf8");const build=s.indexOf("const decision=buildInvestorDecision");const guard=s.indexOf("if(!decision)",build);const use=s.indexOf("decision.today",build);assert.ok(build>=0&&guard>build&&use>guard);});

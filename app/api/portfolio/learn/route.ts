@@ -26,6 +26,10 @@ export async function GET(req:Request){
     json(`${origin}/api/context/${encodeURIComponent(symbol)}`)
    ]);
    const decision=buildInvestorDecision({market,company,context,owns:false});
+   if(!decision){
+    results.push({symbol,status:"ERROR",error:"Investor decision unavailable"});
+    continue;
+   }
    const observedAt=new Date().toISOString();
    const evidence={source:"V65_PORTFOLIO_LEARNING",marketDataIntegrity:market?.dataIntegrity||null,benchmark:market?.market?.benchmark||"SPY",companyEvidenceAsOf:company?.asOf||company?.updatedAt||null,contextEvidenceAsOf:context?.asOf||context?.updatedAt||null};
    const frozen=freezeDecision({symbol,observedAt,price:Number(market.price||0),decision,evidence,benchmarkSymbol:String(market?.market?.benchmark||"SPY"),sectorBenchmarkSymbol:null});
