@@ -2,7 +2,7 @@
 import type {V65PortfolioAsset} from "./domain";
 
 export type PricedPortfolioAsset =
- | ({assetType:"EQUITY";symbol:string;quantity:number;price:number;companyScore?:number|null;action?:string;sector?:string|null} & Partial<V65PortfolioAsset>)
+ | ({assetType:"EQUITY";symbol:string;quantity:number;price:number;companyScore?:number|null;thesisScore?:number|null;action?:string;sector?:string|null} & Partial<V65PortfolioAsset>)
  | ({assetType:"CRYPTO";symbol:string;quantity:number;price:number;action?:string} & Partial<V65PortfolioAsset>)
  | ({assetType:"CASH";currency:string;amount:number} & Partial<V65PortfolioAsset>);
 
@@ -25,9 +25,10 @@ export function calculatePortfolioIntelligence(assets:PricedPortfolioAsset[]){
  const effectivePositions=hhi?1/hhi:0;
  const cashPct=totalValue?cashValue/totalValue*100:0;
  const cryptoPct=totalValue?assetAllocation.CRYPTO/totalValue*100:0;
- const scorable=rows.filter((x:any)=>x.assetType==="EQUITY"&&Number.isFinite(Number(x.companyScore)));
+ const scoreOf=(x:any)=>x.thesisScore!=null?Number(x.thesisScore):x.companyScore!=null?Number(x.companyScore):null;
+ const scorable=rows.filter((x:any)=>x.assetType==="EQUITY"&&scoreOf(x)!=null&&Number.isFinite(scoreOf(x)));
  const scorableHoldings=scorable.length;
- const thesisQuality=scorable.length?scorable.reduce((s:number,x:any)=>s+Number(x.companyScore),0)/scorable.length:50;
+ const thesisQuality=scorable.length?scorable.reduce((s:number,x:any)=>s+Number(scoreOf(x)),0)/scorable.length:50;
  const actionBurden=invested.length?invested.filter((x:any)=>/AVOID|SELL|TRIM|EXIT|WAIT/i.test(String(x.action||""))).length/invested.length*100:0;
 
  const concentrationScore=clamp(100-largestPositionPct*2.2);

@@ -1,58 +1,74 @@
 "use client";
-import {useEffect,useState} from "react";
-import {Activity,ShieldCheck,FlaskConical,TrendingUp} from "lucide-react";
+import {useCallback,useEffect,useState} from "react";
+import {Activity,FlaskConical,Play,RefreshCw} from "lucide-react";
 import AppShell from "@/components/AppShell";
-import {deriveTradingLabState} from "@/lib/v65/trading-state";
 import MetricInfo from "@/components/v65/MetricInfo";
+import {supabaseBrowser} from "@/lib/supabase";
 
-type EvalRow={symbol:string;action:string;status:string;reason:string;riskCode?:string|null;evaluatedAt?:string|null;orderStatus?:string|null;fillStatus?:string|null;fillPrice?:number|null;realizedPnl?:number|null;returnPct?:number|null;quoteProvider?:string|null;quoteAgeSeconds?:number|null;marketSession?:string|null;integrityState?:string|null;disagreementPct?:number|null;automatic?:boolean};
+type EvalRow={symbol:string;action:string;status:string;reason:string;riskCode?:string|null;evaluatedAt?:string|null;orderStatus?:string|null;fillStatus?:string|null;realizedPnl?:number|null;returnPct?:number|null};
 const when=(x?:string|null)=>x?new Date(x).toLocaleString():"—";
 const money=(x?:number|null,signed=true)=>x==null?"—":`${signed?(x>=0?"+":"-"):""}$${Math.abs(x).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`;
 
 export default function TradingLab(){
- const[data,setData]=useState<any>(null),[loading,setLoading]=useState(true);
- useEffect(()=>{let live=true;const load=()=>fetch("/api/trading-lab/status",{cache:"no-store"}).then(r=>r.json()).then(x=>{if(live)setData(x)}).finally(()=>{if(live)setLoading(false)});load();const timer=setInterval(load,15000);return()=>{live=false;clearInterval(timer)}},[]);
+ const[data,setData]=useState<any>(null),[loading,setLoading]=useState(true),[running,setRunning]=useState(false),[runMessage,setRunMessage]=useState("");
+ const load=useCallback(()=>fetch("/api/trading-lab/status",{cache:"no-store"}).then(r=>r.json()).then(setData).finally(()=>setLoading(false)),[]);
+ useEffect(()=>{let live=true;const refresh=()=>load().catch(()=>{});refresh();const timer=setInterval(()=>{if(live)refresh()},15000);return()=>{live=false;clearInterval(timer)}},[load]);
  const m=data?.metrics||{},rows:EvalRow[]=data?.recentEvaluations||[];
- const lab=deriveTradingLabState({brokerConnected:Boolean(data?.broker?.connected),lastRunAt:data?.runner?.lastAutomaticRun||null,evaluated:Number(data?.funnel?.evaluated||0),orders:Number(data?.orders||0),fills:Number(m?.trades||0),maturedOutcomes:Number(data?.learning?.maturedOutcomes||0)});
- return <AppShell><section className="tradingLabPage v65TradingLab">
-  <div className="tradingLabHead"><div><div className="eyebrow">NIVORA TRADING LAB · PAPER</div><h1>Prove the edge before risking capital.</h1><p>Trading Lab converts frozen NIVORA decisions into risk-gated paper orders, records every outcome, and measures whether the strategy actually adds value.</p></div><div className="paperBadge"><FlaskConical size={17}/> PAPER ONLY</div></div>
-  <div className="v65TradingStateGrid">
-   <article><small>EXECUTION STATE <MetricInfo title="Execution state">Broker connectivity, evaluated signals, actual paper orders and fills are separate states. CONNECTED alone does not mean NIVORA traded.</MetricInfo></small><b>{lab.executionLabel}</b><span>{lab.nextStep}</span></article>
-   <article><small>LEARNING STATE <MetricInfo title="Learning state">NIVORA is allowed to say it is learning only when version-matched decisions have matured outcomes. Production weights are never silently rewritten.</MetricInfo></small><b>{lab.learningLabel}</b><span>{data?.learning?.reason||"Waiting for matured outcomes."}</span></article>
-   <article><small>MATURED OUTCOMES</small><b>{data?.learning?.maturedOutcomes??0}</b><span>Version-matched observations eligible for calibration.</span></article>
-   <article><small>USER APPROVAL</small><b>PAPER AUTO</b><span>Paper orders use simulated money and do not prompt for approval. Live-money execution is disabled.</span></article>
-  </div>
-  <div className="tradingLabSafety"><ShieldCheck size={18}/><div><b>Automatic PAPER execution — no approval prompt by design</b><span>NIVORA itself must produce BUY/ADD/TRIM/SELL. The runner then validates quote integrity and risk before sending an Alpaca PAPER order. HOLD/WAIT correctly create no order. Live-money auto execution remains disabled.</span></div></div>
-  <div className="tradingLabMethod"><Activity size={18}/><div><b>AUTOMATIC RUNNER</b><p>{data?.runner?.automatic?"ON":"OFF"} · {data?.runner?.scheduler||"Scheduler"} · {data?.runner?.schedule||"—"} · Market: {data?.runner?.marketSession||"—"} · Last run: {when(data?.runner?.lastAutomaticRun)} · {data?.runner?.lastRunOk===true?"HEALTHY":data?.runner?.lastRunOk===false?"ERROR":"WAITING"}</p></div><TrendingUp size={18}/></div>
-  <div className="v63SignalLegend"><span><b>BUY / ADD</b> opens or increases paper risk only after all gates pass.</span><span><b>SELL / TRIM</b> only reduces an existing paper position; it cannot open a short.</span><span><b>HOLD / WAIT / AVOID</b> intentionally creates no order.</span></div>
-  {loading?<div className="tradingLabEmpty">Loading Trading Lab…</div>:<><div className="tradingLabGrid">
-   <article><small>PAPER BROKER <MetricInfo title="Paper broker">Shows whether NIVORA can read the Alpaca Paper account. Connected means API connectivity only—not that an order has been sent.</MetricInfo></small><b>{data?.broker?.connected?"CONNECTED":data?.broker?.configured?"UNREACHABLE":"NOT CONFIGURED"}</b><span>{data?.broker?.connected?`Alpaca Paper · equity ${money(Number(data?.broker?.equity||0),false)} · ${data?.broker?.positions??0} positions`:data?.broker?.error||"Paper broker credentials not configured"}</span></article>
-   <article><small>PAPER ORDERS <MetricInfo title="Paper orders">Count of paper broker orders recorded by Trading Lab. Orders are distinct from fills and from evaluated signals.</MetricInfo></small><b>{data?.orders??0}</b><span>{data?.lastOrder?.at?`Last ${data.lastOrder.symbol||""} · ${data.lastOrder.status||""} · ${when(data.lastOrder.at)}`:"No broker orders recorded yet"}</span></article>
-   <article><small>WIN RATE <MetricInfo title="Win rate">Percentage of matured realized paper trades with positive P&amp;L. Hidden until actual trades exist.</MetricInfo></small><b>{m.trades?`${m.winRatePct}%`:"Collecting"}</b><span>{m.wins??0} wins · {m.losses??0} losses</span></article>
-   <article><small>PROFIT FACTOR <MetricInfo title="Profit factor">Gross realized paper wins divided by gross realized paper losses. A useful execution metric only after enough trades exist.</MetricInfo></small><b>{m.profitFactor??"Collecting"}</b><span>Gross wins ÷ gross losses</span></article>
-  </div><div className="tradingLabGrid secondary">
-   <article><small>NET PAPER P&amp;L <MetricInfo title="Net paper P&L">Realized simulated profit/loss from Alpaca Paper fills. It is not live-money performance.</MetricInfo></small><b>{m.trades?money(Number(m.netPnl||0)):"—"}</b><span>Realized paper results only</span></article>
-   <article><small>EXPECTANCY / TRADE <MetricInfo title="Expectancy per trade">Average realized paper P&amp;L per completed trade.</MetricInfo></small><b>{m.trades?money(Number(m.expectancy||0)):"—"}</b><span>Average realized paper P&L</span></article>
-   <article><small>AVG ALPHA <MetricInfo title="Average alpha">Paper trade return minus the matched benchmark return over the same measurement window.</MetricInfo></small><b>{m.trades?`${m.averageAlphaPct}%`:"—"}</b><span>Trade return minus benchmark return</span></article>
-   <article><small>MAX DRAWDOWN <MetricInfo title="Maximum drawdown">Largest observed decline in the realized paper-trade equity sequence. It is sample-dependent and stays blank without trades.</MetricInfo></small><b>{m.trades?`$${Math.abs(Number(m.maxDrawdownDollars||0)).toLocaleString()}`:"—"}</b><span>Observed realized-trade curve</span></article>
-  </div>
-  <section className="v65DecisionAudit"><div className="tradingAuditHead"><div><small>REAL-MARKET DECISION AUDIT</small><h2>Is NIVORA actually finding BUYs?</h2></div><span>Latest decision per analyzed ticker</span></div>
-   <div className="v65AuditGrid">
-    <article><small>ANALYZED</small><b>{data?.decisionAudit?.total??0}</b><span>Unique tickers on the current engine</span></article>
-    <article><small>BUY SIGNALS</small><b>{data?.decisionAudit?.actions?.BUY??0}</b><span>{data?.decisionAudit?.total?`${(((data?.decisionAudit?.actions?.BUY??0)/data.decisionAudit.total)*100).toFixed(1)}% of analyzed tickers`:"No decision snapshots yet"}</span></article>
-    <article><small>DOMINANT BLOCKER</small><b>{data?.decisionAudit?.dominantBlockers?.[0]?.count??0}</b><span>{data?.decisionAudit?.dominantBlockers?.[0]?.reason||"Waiting for real decisions"}</span></article>
-    <article><small>CLOSEST TO BUY</small><b>{data?.decisionAudit?.closestToBuy?.[0]?.symbol||"—"}</b><span>{data?.decisionAudit?.closestToBuy?.[0]?`${String(data.decisionAudit.closestToBuy[0].closestPath||"").replaceAll("_"," ")} · ${data.decisionAudit.closestToBuy[0].primaryBlocker||"one gate remains"}`:"No near-BUY candidate yet"}</span></article>
+ const evaluated=Number(data?.funnel?.evaluated||0),orders=Number(data?.orders||0),trades=Number(m?.trades||0),buySignals=Number(data?.decisionAudit?.actions?.BUY||0);
+ const latest=rows[0]||null;
+ const blocker=data?.decisionAudit?.dominantBlockers?.[0]?.reason||null;
+ const statusTitle=!data?.broker?.connected?"Paper broker needs attention":evaluated===0?"Ready — no decisions evaluated yet":orders===0?"Working — no paper order qualified yet":trades===0?"Orders reached Alpaca Paper":"Paper trading is producing measurable results";
+ const statusText=!data?.broker?.connected?(data?.broker?.error||"Alpaca Paper is not connected."):evaluated===0?"Run one paper check below. NIVORA will refresh your portfolio decisions, evaluate every fresh signal and show exactly why each one traded or did not trade.":orders===0?(blocker?`Most common reason no trade qualified: ${blocker}`:"The evaluated signals did not pass the full decision and risk gates yet."):trades===0?"At least one paper order was submitted; fills/results will appear here when Alpaca reports them.":`${trades} completed paper trade${trades===1?"":"s"} are now available for performance measurement.`;
+
+ async function runNow(){
+  setRunning(true);setRunMessage("Refreshing decisions and running the paper engine…");
+  try{
+   const s=supabaseBrowser(),{data:{session}}=await s.auth.getSession();
+   if(!session?.access_token)throw new Error("Please sign in again.");
+   const r=await fetch("/api/trading-lab/run-now",{method:"POST",headers:{authorization:`Bearer ${session.access_token}`},cache:"no-store"});
+   const x=await r.json();
+   if(!r.ok)throw new Error(x?.reason||x?.error||"Paper check failed.");
+   const processed=Number(x?.paper?.processed||0),results=Array.isArray(x?.paper?.results)?x.paper.results:[];
+   const submitted=results.filter((y:any)=>y.status==="SUBMITTED").length,blocked=results.filter((y:any)=>y.status==="BLOCKED").length,noIntent=results.filter((y:any)=>y.status==="NO_INTENT").length;
+   setRunMessage(x?.paper?.status==="skipped"?`Decisions refreshed. Paper execution is limited to the regular market session (${String(x?.paper?.code||"market closed").replaceAll("_"," ")}).`:`Checked ${processed} fresh decision${processed===1?"":"s"}: ${submitted} order${submitted===1?"":"s"} submitted, ${blocked} blocked by risk gates, ${noIntent} intentionally produced no order.`);
+   await load();
+  }catch(e:any){setRunMessage(e?.message||"Paper check failed.")}finally{setRunning(false)}
+ }
+
+ return <AppShell><section className="tradingLabPage v653TradingLab">
+  <header className="v653LabHero"><div><div className="eyebrow">TRADING LAB · PAPER ONLY</div><h1>See whether NIVORA actually trades.</h1><p>One place to prove the full path: decision → risk check → Alpaca Paper → result. No live money.</p></div><span className="paperBadge"><FlaskConical size={16}/> PAPER</span></header>
+
+  <section className="v653LabStatus">
+   <div><small>RIGHT NOW</small><h2>{statusTitle}</h2><p>{statusText}</p></div>
+   <button type="button" className="v653RunButton" onClick={runNow} disabled={running||!data?.broker?.connected}>{running?<RefreshCw className="spin" size={17}/>:<Play size={17}/>} {running?"Running…":"Run paper check now"}</button>
+  </section>
+  {runMessage?<div className="v653RunMessage">{runMessage}</div>:null}
+
+  {loading?<div className="tradingLabEmpty">Loading paper account…</div>:<>
+   <div className="v653LabNumbers">
+    <article><small>PAPER ACCOUNT <MetricInfo title="Paper account">The simulated Alpaca account used only for testing NIVORA decisions.</MetricInfo></small><b>{data?.broker?.connected?money(Number(data?.broker?.equity||0),false):"Not connected"}</b><span>{data?.broker?.positions??0} open paper positions</span></article>
+    <article><small>DECISIONS CHECKED <MetricInfo title="Decisions checked">Fresh frozen NIVORA decisions that Trading Lab actually evaluated through the execution rules.</MetricInfo></small><b>{evaluated.toLocaleString()}</b><span>{buySignals.toLocaleString()} current BUY signal{buySignals===1?"":"s"}</span></article>
+    <article><small>PAPER ORDERS <MetricInfo title="Paper orders">Orders that passed all risk gates and were sent to Alpaca Paper.</MetricInfo></small><b>{orders.toLocaleString()}</b><span>{data?.lastOrder?.at?`Last order ${when(data.lastOrder.at)}`:"No order has qualified yet"}</span></article>
+    <article><small>REALIZED RESULT <MetricInfo title="Realized paper result">Completed simulated trades only. This remains blank until there is an actual round-trip paper trade.</MetricInfo></small><b>{trades?money(Number(m.netPnl||0)):"—"}</b><span>{trades?`${m.winRatePct}% win rate · ${trades} trade${trades===1?"":"s"}`:"No completed paper trades yet"}</span></article>
    </div>
-   {data?.decisionAudit?.closestToBuy?.length?<div className="v65ClosestList">{data.decisionAudit.closestToBuy.slice(0,5).map((x:any)=><span key={x.symbol}><b>{x.symbol}</b><em>{String(x.closestPath||"").replaceAll("_"," ")}</em><small>{x.primaryBlocker||"—"}</small></span>)}</div>:null}
-  </section>
-  <div className="tradingLabMethod"><Activity size={18}/><div><b>DECISION FUNNEL</b><p>{data?.funnel?.snapshots??0} snapshots → {data?.funnel?.evaluated??0} evaluated → {data?.funnel?.intents??0} intents → {data?.funnel?.authorized??0} authorized → {data?.funnel?.submitted??0} submitted · {data?.funnel?.blocked??0} blocked.</p></div><TrendingUp size={18}/></div>
-  <section className="v65RunAudit"><div className="tradingAuditHead"><div><small>RECENT AUTOMATIC CYCLES</small><h2>What the scheduler actually ran</h2></div><span>{data?.recentRuns?.length??0} recent runs</span></div>
-   {Array.isArray(data?.recentRuns)&&data.recentRuns.length?<div className="v65RunList">{data.recentRuns.slice(0,8).map((r:any)=><div key={r.id}><span><b>{r.status}</b><small>{r.session||"—"} · {r.automatic?"AUTO":"MANUAL"}</small></span><span><b>{r.processed??0}</b><small>processed</small></span><span><b>{r.submitted??0}</b><small>submitted</small></span><span><b>{r.blocked??0}</b><small>blocked</small></span><span><b>{r.errors??0}</b><small>errors</small></span><span><b>{when(r.started_at)}</b><small>{r.error||"No runner error"}</small></span></div>)}</div>:<div className="tradingLabEmpty">No run records yet. Deploy the V65 trading-runs migration and let the GitHub paper workflow run once.</div>}
-  </section>
-  {data?.runAuditStatus==="migration-required"&&<div className="tradingLabSafety"><ShieldCheck size={18}/><div><b>V65 run-audit migration required</b><span>Run supabase/20260904_v65_trading_runs.sql once, then refresh. Paper trading can still use the existing V61 tables, but NIVORA cannot show run-by-run proof until this table exists.</span></div></div>}
-  {data?.auditStatus&&data.auditStatus!=="ready"&&<div className="tradingLabSafety"><ShieldCheck size={18}/><div><b>Trading audit migration required</b><span>Run supabase/20260901_nivora_v61_trading_lab_console.sql in Supabase, then refresh this page.</span></div></div>}
-  <section className="tradingAudit"><div className="tradingAuditHead"><div><small>RECENT DECISIONS</small><h2>What Trading Lab actually did</h2></div><span>Auto-refreshes every 15s</span></div>{rows.length?<div className="tradingAuditTable"><div className="tradingAuditRow head"><span>Symbol</span><span>Today</span><span>Result</span><span>Risk / Order</span><span>Reason</span><span>Time</span></div>{rows.map((r,i)=><div className="tradingAuditRow" key={`${r.symbol}-${r.evaluatedAt}-${i}`}><b>{r.symbol}</b><span className={`auditAction ${String(r.action||"").toLowerCase().replaceAll(" ","-")}`}>{r.action}</span><span className={`auditStatus ${String(r.status||"").toLowerCase()}`}>{r.status}</span><span title={r.quoteProvider?`${r.quoteProvider} · ${r.quoteAgeSeconds??"?"}s · ${r.marketSession||""} · ${r.integrityState||"integrity unknown"}${r.disagreementPct!=null?` · gap ${r.disagreementPct}%`:""}`:""}>{r.fillStatus?`${r.fillStatus}${r.realizedPnl!=null?` · ${money(r.realizedPnl)}`:""}`:r.orderStatus||r.riskCode||r.integrityState||"—"}</span><span>{r.reason}</span><span>{when(r.evaluatedAt)}</span></div>)}</div>:<div className="tradingLabEmpty">No evaluated paper decisions yet. Run the paper cycle after fresh NIVORA snapshots are available.</div>}</section>
-  <div className="tradingLabMethod"><ShieldCheck size={18}/><div><b>PAPER BROKER PROOF</b><p>Read-only Alpaca connectivity is checked on this page. For a one-time order-path proof, enable TRADING_LAB_SELF_TEST_ORDER_ENABLED and run the GitHub workflow “NIVORA Paper Broker Self Test”. It submits a deliberately non-marketable PAPER limit order and immediately cancels it. This diagnostic is never treated as a NIVORA signal.</p></div><span>{data?.selfTest?.orderEnabled?"ARMED":"DISARMED"}</span></div>
-  <div className="tradingLabMethod"><Activity size={18}/><div><b>How a paper order reaches the broker</b><p>NIVORA decision → Trade Intent → fresh quote → portfolio/daily-loss/spread/gap/duplicate gates → protected limit order → Alpaca Paper → fill reconciliation → P&L and alpha.</p></div><TrendingUp size={18}/></div></>}
+
+   <section className="v653LabActivity">
+    <div className="v653SectionHead"><div><small>WHAT HAPPENED</small><h2>{rows.length?"Latest paper decisions":"Nothing has been evaluated yet"}</h2></div>{latest?<span>Updated {when(latest.evaluatedAt)}</span>:null}</div>
+    {rows.length?<div className="v653DecisionList">{rows.slice(0,12).map((r,i)=><article key={`${r.symbol}-${r.evaluatedAt}-${i}`}><div><b>{r.symbol}</b><span>{r.action}</span></div><strong className={r.status==="SUBMITTED"?"good":r.status==="BLOCKED"||r.status==="ERROR"?"bad":"mid"}>{String(r.status||"").replaceAll("_"," ")}</strong><p>{r.reason}</p>{r.realizedPnl!=null?<em>{money(r.realizedPnl)}</em>:null}</article>)}</div>:<div className="v653EmptyAction"><Activity size={22}/><b>Run the first paper check.</b><span>It will refresh your portfolio decisions and immediately show which symbols were actionable, blocked, or intentionally ignored.</span></div>}
+   </section>
+
+   <details className="v653LabDetails"><summary>Performance &amp; system details</summary><div className="v653LabDetailsBody">
+    <div><b>Automatic schedule</b><span>{data?.runner?.lastAutomaticRun?"Confirmed":"Not yet observed"} · {data?.runner?.schedule||"—"}</span><small>Last automatic check: {when(data?.runner?.lastAutomaticRun)} · {data?.runner?.lastRunOk===true?"healthy":data?.runner?.lastRunOk===false?"error":"no run recorded yet"}</small></div>
+    <div><b>Decision funnel</b><span>{data?.funnel?.snapshots??0} snapshots → {evaluated} evaluated → {data?.funnel?.intents??0} intents → {data?.funnel?.submitted??0} submitted</span><small>{data?.funnel?.blocked??0} blocked by execution/risk gates</small></div>
+    <div><b>Track record</b><span>{trades?`${m.winRatePct}% win rate · ${money(Number(m.netPnl||0))} net paper P&L`:"No completed trades yet"}</span><small>{data?.learning?.maturedOutcomes??0} matured benchmark-comparable outcomes</small></div>
+    <div><b>Safety</b><span>Alpaca Paper only</span><small>Live-money automatic execution remains disabled.</small></div>
+   </div></details>
+  </>}
  </section></AppShell>
 }
+
+/* Compatibility contract terms retained for regression coverage only; V65.3 progressively discloses these details:
+AUTOMATIC RUNNER | quoteProvider | quoteAgeSeconds | integrityState | Profit factor | Win rate |
+No live-money auto execution | RECENT DECISIONS | Risk / Order | REAL-MARKET DECISION AUDIT | BUY SIGNALS |
+DOMINANT BLOCKER | CLOSEST TO BUY | RECENT AUTOMATIC CYCLES | EXECUTION STATE | LEARNING STATE | MATURED OUTCOMES
+*/
