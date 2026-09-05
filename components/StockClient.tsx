@@ -551,7 +551,7 @@ export default function StockClient({symbol}:{symbol:string}){
     :"Quote connecting";
   return <div className="aurynStockPage">
     <StockSecurityHeader company={company?.name||d.name||symbol} symbol={symbol} price={currentPx} changePct={displayChangePct} status={marketStatusLabel} detail={liveQuote?(liveQuote.integrityState==="MARKET_CLOSED"?`${liveQuote.provider} · market closed · regular close ${displayMoney(Number(liveQuote.regularClose))}`:`${liveQuote.provider} · ${liveQuote.ageSeconds==null?"timestamp unavailable":`${liveQuote.ageSeconds}s old`}${liveQuote.disagreementPct!=null?` · provider gap ${Number(liveQuote.disagreementPct).toFixed(2)}%`:""} · regular close ${displayMoney(Number(liveQuote.regularClose))}`):"Daily analysis stays available while the live quote connects."}/>
-    {closedQuoteMismatch?<div className="aurynIntegrityAlert"><b>Quote integrity check</b><span>Provider price did not match the verified regular close, so AURYN is using the regular close for this closed-market decision view.</span></div>:null}
+    {closedQuoteMismatch?<div className="aurynIntegrityAlert" role="status"><b>Quote integrity check</b><span>Provider price did not match the verified regular close. AURYN is using the verified regular close for this closed-market decision view.</span></div>:null}
     {presentedDecision&&<><StockDecisionSummary decision={presentedDecision} owns={owns}/><StockActionPlan entryLow={horizonPlan.entryLow} entryHigh={horizonPlan.entryHigh} reassess={Number(d.levels?.invalidation||d.levels?.majorSupport||0)} confirm={horizonPlan.confirm} breaker={presentedDecision.breakers?.[0]}/></>}
     <div className="v65PositionBar"><div><Sparkles size={15}/><span>AURYN evaluates multiple horizons automatically.</span></div><button type="button" className={owns?"on":""} onClick={()=>setOwns(!owns)}>{owns?(ownerPosition?"✓ Position loaded":"✓ I own this"):"I own this"}</button></div>
 
@@ -627,8 +627,8 @@ export default function StockClient({symbol}:{symbol:string}){
 
     {depth!=="simple"&&intelligence&&<section className="v65IntelStrip">
       <div className="intelLead"><small>AURYN INTELLIGENCE</small><div><b>{intelligence.score}/100</b><span className={tone(intelligence.thesisLabel)}>{intelligence.thesisLabel}</span></div><p>{intelligence.biggestPositive} <strong>Watch:</strong> {intelligence.biggestRisk}</p></div>
-      <div><small>NEXT DECISION TRIGGER</small><b>{intelligence.nextDecision}</b></div>
-      <div><small>DATA COVERAGE</small><b>{intelligence.confidenceLabel}</b><span>{intelligence.confidence}/100 coverage · not probability</span></div>
+      <div className="aurynIntelItem aurynIntelTrigger"><small>NEXT DECISION TRIGGER</small><b>{intelligence.nextDecision}</b></div>
+      <div className="aurynIntelItem aurynIntelCoverage"><small>DATA COVERAGE</small><b>{intelligence.confidenceLabel}</b><span>{intelligence.confidence}/100 coverage · not probability</span></div>
       <button type="button" onClick={()=>{setTab("thesis");window.requestAnimationFrame(()=>window.requestAnimationFrame(()=>thesisRef.current?.scrollIntoView({behavior:"smooth",block:"start"})))}}>Open full thesis →</button>
     </section>}
 
