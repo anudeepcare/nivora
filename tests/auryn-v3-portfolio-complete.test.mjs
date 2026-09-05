@@ -1,0 +1,3 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";const read=p=>fs.readFileSync(p,"utf8");
+test("portfolio pulse uses only V3 presentation classes at its top level",()=>{const s=read("components/portfolio/PortfolioPulse.tsx");assert.match(s,/aurynPortfolioPulse/);assert.doesNotMatch(s,/className="portfolioPulse|portfolioGlass|pulseSectionHead|visualModes|driverBars/);});
+test("portfolio visual analytics uses V3 presentation classes",()=>{const s=read("components/portfolio/PortfolioVisualAnalytics.tsx");assert.match(s,/aurynPortfolioVisuals/);assert.doesNotMatch(s,/portfolioVisuals|portfolioGlass|pulseSectionHead|visualModes|driverBars/);});

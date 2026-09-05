@@ -6,6 +6,7 @@ import {BriefcaseBusiness,FlaskConical,LogOut,Radar,Search as SearchIcon,UserRou
 import {supabaseBrowser} from "@/lib/supabase";
 import AurynLogo from "./AurynLogo";
 import SearchBox from "./SearchBox";
+import ProductFooter from "./ProductFooter";
 
 const nav=[
  {href:"/analyze",label:"Research",icon:SearchIcon},
@@ -37,6 +38,7 @@ export default function AppShell({children}:{children:React.ReactNode}){
    </div>
   </header>
   <main className="aurynAppMain">{children}</main>
+  <ProductFooter/>
   <nav className="aurynBottomNav" aria-label="Mobile primary">{nav.map(n=>{const Icon=n.icon;return <Link key={n.href} className={active(n.href)?"on":""} href={n.href}><Icon size={20}/><span>{n.label}</span></Link>})}</nav>
  </div>
 }

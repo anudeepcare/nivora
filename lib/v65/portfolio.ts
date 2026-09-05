@@ -74,7 +74,7 @@ export function calculatePortfolioPulse(assets:PricedPortfolioAsset[],snapshots:
   const weight=base.totalValue?x.value/base.totalValue*100:0;
   if(/AVOID|EXIT|SELL/.test(raw)){portfolioAction="AVOID";reason="Individual evidence is weak; review before adding capital."}
   else if(weight>=25){portfolioAction="TRIM_RISK";reason=`Position is ${weight.toFixed(1)}% of the portfolio; sizing risk is high even if the thesis remains intact.`}
-  else if(/WAIT|WATCH|TRIM/.test(raw)){portfolioAction="WATCH";reason="Current NIVORA evidence calls for patience or review."}
+  else if(/WAIT|WATCH|TRIM/.test(raw)){portfolioAction="WATCH";reason="Current AURYN evidence calls for patience or review."}
   else if(/BUY|ADD|ACCUMULATE/.test(raw)&&Number(x.opportunityScore||0)>=60){portfolioAction="ADD";reason="Individual evidence is constructive and portfolio sizing is not excessive."}
   return{symbol:x.symbol,portfolioAction,companyAction:raw||"REVIEW",weightPct:+weight.toFixed(1),reason};
  }).sort((a,b)=>({ADD:0,WATCH:1,TRIM_RISK:2,AVOID:3,HOLD:4}[a.portfolioAction]-{ADD:0,WATCH:1,TRIM_RISK:2,AVOID:3,HOLD:4}[b.portfolioAction]));

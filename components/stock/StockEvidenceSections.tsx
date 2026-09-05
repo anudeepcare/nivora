@@ -1,1 +1,1 @@
-export default function StockEvidenceSections({children}:{children:React.ReactNode}){return <div className="aurynEvidenceFrame">{children}</div>}
+export default function StockEvidenceSections({children}:{children:React.ReactNode}){return <div className="aurynStockEvidenceSurface">{children}</div>}
