@@ -1,0 +1,8 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
+const read=p=>fs.readFileSync(p,'utf8');
+test('no visible stale NIVORA/V61 copy in app surfaces',()=>{for(const p of ['app/methodology/page.tsx','components/AppShell.tsx','app/portfolio/page.tsx']){const x=read(p);assert.doesNotMatch(x,/\bNIVORA\b|METHODOLOGY · V61|View allocation & risk/);}});
+test('global header search is a real SearchBox, not decorative link',()=>{const x=read('components/AppShell.tsx');assert.match(x,/SearchBox/);assert.doesNotMatch(x,/aurynQuickSearch[^>]*href="\/analyze"/);});
+test('metric help is subtle question mark rather than circled i',()=>{const x=read('components/v65/MetricInfo.tsx');assert.match(x,/aurynHelpMark/);assert.match(x,/>\?<\/button>/);assert.doesNotMatch(x,/v6516InfoGlyph/);});
+test('stock decision cockpit is explicitly zero-scroll oriented',()=>{const x=read('components/InvestorDecisionHero.tsx');assert.match(x,/aurynZeroScroll/);assert.match(x,/CONVICTION|LONG-TERM VIEW/);assert.match(x,/NEW MONEY/);assert.match(x,/OWNER ACTION|EXISTING HOLDER/);assert.match(x,/aurynEvidencePillars/);});
+test('portfolio removes legacy allocation accordion and adds deep tabs',()=>{const x=read('app/portfolio/page.tsx');assert.doesNotMatch(x,/View allocation & risk/);assert.match(x,/aurynPortfolioNav/);for(const word of ['Overview','Performance','Allocation','Risk','Decisions','Holdings'])assert.ok(x.includes(word));});
+test('mobile css protects overflow and keeps help secondary',()=>{const x=read('app/auryn.css');assert.match(x,/@media\(max-width:720px\)[\s\S]*overflow-x:hidden/s);assert.match(x,/\.aurynHelpMark\{[^}]*opacity:/s);assert.match(x,/\.aurynMobileNav\{[^}]*position:fixed/s);});

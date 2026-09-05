@@ -4,6 +4,7 @@ import {useEffect,useState} from "react";
 import {useRouter} from "next/navigation";
 import {ArrowLeft} from "lucide-react";
 import {supabaseBrowser} from "@/lib/supabase";
+import AurynLogo from "@/components/AurynLogo";
 
 export default function LegalNav(){
   const [signedIn,setSignedIn]=useState<boolean|null>(null);
@@ -26,6 +27,6 @@ export default function LegalNav(){
   }
   return <div className="legalTop">
     <button type="button" className="legalBack" onClick={goBack}><ArrowLeft size={15}/> Back</button>
-    <Link href={fallback} className="osLogo v37Logo"><span className="v37Wordmark">AURYN<span>.</span></span><small>Decision Intelligence</small></Link>
+    <AurynLogo href={fallback}/>
   </div>;
 }

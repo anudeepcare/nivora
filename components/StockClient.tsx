@@ -336,7 +336,7 @@ export default function StockClient({symbol}:{symbol:string}){
   },[d?.price,intelligence?.score,intelligence?.confidence,enterprise?.auditId,symbol,mode,investorDecision?.thesisScore,investorDecision?.opportunityScore,investorDecision?.today]);
 
   if(err)return <div className="osError"><b>Couldn’t analyze {symbol}</b><span>{err}</span><button onClick={()=>location.reload()}>Try again</button></div>;
-  if(!d||!view)return <div className="osStockLoading"><div className="osLogo">AURYN<span>.</span></div><b>Analyzing {symbol}</b><span>Building the decision first. Evidence loads after.</span></div>;
+  if(!d||!view)return <div className="osStockLoading"><div className="aurynLoadingMark">AURYN</div><b>Analyzing {symbol}</b><span>Building the decision first. Evidence loads after.</span></div>;
 
   const business=company?.fundamentalSignal||{label:d.assetType==="crypto"?"Crypto":"Loading",tone:"neutral",reasons:[]};
   const news=context?.summary||{label:context?.enabled===false?"Feed not connected":"Loading",tone:"neutral",topReason:""};
@@ -387,8 +387,11 @@ export default function StockClient({symbol}:{symbol:string}){
   const marketContextText=d.market.benchmark?String(symbol)+" is "+String(d.market.relativeStrength).toLowerCase()+" versus "+String(d.market.benchmark)+" over the recent period.":"Crypto benchmark context is handled separately.";
   const selectedReturn=perfRange==="6M"?d.performance?.sixMonthPct??d.sixMonth?.returnPct??null:
     perfRange==="YTD"?d.performance?.ytdPct??null:d.performance?.oneYearPct??null;
-  const currentPx=Number(liveQuote?.price||d.price);
-  const displayChangePct=Number(liveQuote?.changePct??d.changePct);
+  const rawLivePx=Number(liveQuote?.price);
+  const regularClosePx=Number(liveQuote?.regularClose);
+  const closedQuoteMismatch=liveQuote?.integrityState==="MARKET_CLOSED"&&Number.isFinite(rawLivePx)&&Number.isFinite(regularClosePx)&&regularClosePx>0&&Math.abs(rawLivePx-regularClosePx)/regularClosePx>.12;
+  const currentPx=Number(closedQuoteMismatch?regularClosePx:(liveQuote?.price||d.price));
+  const displayChangePct=Number(closedQuoteMismatch?d.changePct:(liveQuote?.changePct??d.changePct));
   const breakoutPx=Number(d.levels.breakout), invalidPx=Number(d.levels.invalidation);
   const upside=Number.isFinite(currentPx)&&currentPx?((breakoutPx/currentPx-1)*100):null;
   const downside=Number.isFinite(currentPx)&&currentPx?((invalidPx/currentPx-1)*100):null;
@@ -551,6 +554,8 @@ export default function StockClient({symbol}:{symbol:string}){
     </header>
 
     <div className="v65LiveFresh"><span className="v65LiveStatus"><span className="v65LiveDot"/>{marketStatusLabel}</span><span className="v65LiveCadence">{liveQuote?(liveQuote.integrityState==="MARKET_CLOSED"?`${liveQuote.provider} · market closed · regular close ${displayMoney(Number(liveQuote.regularClose))}`:`${liveQuote.provider} · ${liveQuote.ageSeconds==null?"timestamp unavailable":`${liveQuote.ageSeconds}s old`}${liveQuote.disagreementPct!=null?` · provider gap ${Number(liveQuote.disagreementPct).toFixed(2)}%`:""} · regular close ${displayMoney(Number(liveQuote.regularClose))}`):"Daily analysis stays available while the live quote connects."}</span></div>
+    {closedQuoteMismatch?<div className="aurynIntegrityAlert"><b>Quote integrity check</b><span>Provider price did not match the verified regular close, so AURYN is using the regular close for this closed-market decision view.</span></div>:null}
+    <div className="aurynZeroScrollShell">{presentedDecision&&<InvestorDecisionHero decision={presentedDecision} price={currentPx} changePct={displayChangePct} owns={owns} levels={{entryLow:horizonPlan.entryLow,entryHigh:horizonPlan.entryHigh,support:Number(d.levels?.support||0),majorSupport:Number(d.levels?.majorSupport||0),resistance:Number(d.levels?.resistance||0),breakout:Number(d.levels?.breakout||0),assetType:d.assetType}} timing={timingState} onEvidence={()=>openResearch("thesis")}/>}</div>
 
     <div className="v65PositionBar"><div><Sparkles size={15}/><span>AURYN analyzes 3M, 6M, 1Y, 2Y and 3Y automatically.</span></div><button type="button" className={owns?"on":""} onClick={()=>setOwns(!owns)}>{owns?(ownerPosition?"✓ Position loaded":"✓ I own this"):"I own this"}</button></div>
 
@@ -580,8 +585,6 @@ export default function StockClient({symbol}:{symbol:string}){
       <div><div className="metricLabel"><small>RISK / REWARD</small><MetricInfo title="Risk / reward">Compares the distance from today’s price to AURYN’s confirmation level with the distance to its reassessment level. It is a technical planning ratio, not a forecast.</MetricInfo></div><b>{rr==null?"—":`${rr.toFixed(1)}×`}</b><span>{upside==null||downside==null?"Waiting for levels":`${upside>=0?"+":""}${upside.toFixed(1)}% to confirmation · ${downside.toFixed(1)}% to reassess`}</span></div>
       <div><div className="metricLabel"><small>DATA CONFIDENCE</small><MetricInfo title="Data confidence">Shows whether price history, business data, market context and news/catalyst sources are available. Higher confidence means better evidence coverage—not higher certainty of profit.</MetricInfo></div><b className={confidence==="High"?"good":confidence==="Low"?"bad":"mid"}>{confidence}</b><span>Price + business + news + market coverage.</span></div>
     </section>}
-
-    {presentedDecision&&<InvestorDecisionHero decision={presentedDecision} price={currentPx} changePct={displayChangePct} owns={owns} levels={{entryLow:horizonPlan.entryLow,entryHigh:horizonPlan.entryHigh,support:Number(d.levels?.support||0),majorSupport:Number(d.levels?.majorSupport||0),resistance:Number(d.levels?.resistance||0),breakout:Number(d.levels?.breakout||0),assetType:d.assetType}} timing={timingState} onEvidence={()=>openResearch("thesis")}/>}
 
 
     {depth!=="simple"&&<section className="v18DecisionStrip">
