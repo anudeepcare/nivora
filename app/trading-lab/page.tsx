@@ -33,7 +33,7 @@ export default function TradingLab(){
  const auditBySymbol=new Map(auditRows.map((x:any)=>[String(x.symbol||"").toUpperCase(),x]));
  const blocker=data?.decisionAudit?.dominantBlockers?.[0]?.reason||null;
  const statusTitle=!data?.broker?.connected?"Paper broker needs attention":evaluated===0?"Ready — no decisions evaluated yet":orders===0?"Working — no paper order qualified yet":trades===0?"Orders reached Alpaca Paper":"Paper trading is producing measurable results";
- const statusText=!data?.broker?.connected?(data?.broker?.error||"Alpaca Paper is not connected."):evaluated===0?"Run one paper check below. NIVORA will refresh your portfolio decisions, evaluate every fresh signal and show exactly why each one traded or did not trade.":orders===0?(blocker?`Most common reason no trade qualified: ${friendlyGate(blocker)}`:"The evaluated signals did not pass the full decision and risk gates yet."):trades===0?"At least one paper order was submitted; fills/results will appear here when Alpaca reports them.":`${trades} completed paper trade${trades===1?"":"s"} are now available for performance measurement.`;
+ const statusText=!data?.broker?.connected?(data?.broker?.error||"Alpaca Paper is not connected."):evaluated===0?"Run one paper check below. AURYN will refresh your portfolio decisions, evaluate every fresh signal and show exactly why each one traded or did not trade.":orders===0?(blocker?`Most common reason no trade qualified: ${friendlyGate(blocker)}`:"The evaluated signals did not pass the full decision and risk gates yet."):trades===0?"At least one paper order was submitted; fills/results will appear here when Alpaca reports them.":`${trades} completed paper trade${trades===1?"":"s"} are now available for performance measurement.`;
 
  async function runNow(){
   setRunning(true);setRunMessage("Refreshing decisions and running the paper engine…");
@@ -51,7 +51,7 @@ export default function TradingLab(){
  }
 
  return <AppShell><section className="tradingLabPage v653TradingLab">
-  <header className="v653LabHero"><div><div className="eyebrow">TRADING LAB · PAPER ONLY</div><h1>See whether NIVORA actually trades.</h1><p>One place to prove the full path: decision → risk check → Alpaca Paper → result. No live money.</p></div><span className="paperBadge"><FlaskConical size={16}/> PAPER</span></header>
+  <header className="v653LabHero"><div><div className="eyebrow">TRADING LAB · PAPER ONLY</div><h1>See whether AURYN actually trades.</h1><p>One place to prove the full path: decision → risk check → Alpaca Paper → result. No live money.</p></div><span className="paperBadge"><FlaskConical size={16}/> PAPER</span></header>
 
   <section className="v653LabStatus">
    <div><small>RIGHT NOW</small><h2>{statusTitle}</h2><p>{statusText}</p></div>

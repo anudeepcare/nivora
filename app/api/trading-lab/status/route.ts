@@ -134,7 +134,7 @@ export async function GET(){
  const learning={
   maturedOutcomes:maturedOutcomes.count||0,
   state:(maturedOutcomes.count||0)>0?"LEARNING":"NOT_LEARNING_YET",
-  reason:(maturedOutcomes.count||0)>0?`${maturedOutcomes.count} matured version-matched outcomes are available for calibration.`:"No matured version-matched outcomes exist yet; NIVORA must not claim it has learned from Trading Lab."
+  reason:(maturedOutcomes.count||0)>0?`${maturedOutcomes.count} matured version-matched outcomes are available for calibration.`:"No matured version-matched outcomes exist yet; AURYN must not claim it has learned from Trading Lab."
  };
 
  const runnerHealth=runnerHealthResult.data as any;

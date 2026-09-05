@@ -92,7 +92,7 @@ export async function POST(req:Request){
    brokerFinalStatus:test.finalStatus,
    deliberatelyNonMarketableLimit:test.limitPrice,
    referencePrice:quote.price,
-   note:"This diagnostic tests the real Alpaca Paper order endpoint and immediately requests cancellation. It is not a NIVORA investment signal."
+   note:"This diagnostic tests the real Alpaca Paper order endpoint and immediately requests cancellation. It is not a AURYN investment signal."
   },{headers:{"Cache-Control":"private, no-store"}});
  }catch(error:any){
   return NextResponse.json({status:"error",mode:"paper",error:error?.message||"Paper order self-test failed."},{status:500});

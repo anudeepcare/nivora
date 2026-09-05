@@ -61,7 +61,7 @@ export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
   const symbol=decodeURIComponent(raw).toUpperCase();
   if(symbol.includes("/"))return NextResponse.json({
     enabled:false,reason:"Institutional filings are not applicable to crypto.",
-    disclosure:"NIVORA does not infer named institutional buying from crypto price/volume."
+    disclosure:"AURYN does not infer named institutional buying from crypto price/volume."
   });
 
   const [secCache,provider] = await Promise.all([
@@ -92,7 +92,7 @@ export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
     const pNet=providerChanges.reduce((a:number,b:number)=>a+b,0);
 
     // Prefer direct provider rows when the user's entitlement supplies them.
-    // Otherwise use NIVORA's SEC 13F cache produced by the quarterly sync job.
+    // Otherwise use AURYN's SEC 13F cache produced by the quarterly sync job.
     const useProvider=rows.length>0;
     const increased=useProvider?pInc:Number(secCache?.increased_managers||0);
     const reduced=useProvider?pDec:Number(secCache?.reduced_managers||0);
@@ -138,7 +138,7 @@ export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
         enabled:false,
         reason:"No verified institutional snapshot is cached yet for this symbol. Run the SEC 13F sync or connect a provider entitlement with ownership data.",
         source:source||"none",
-        disclosure:"NIVORA will not label price/volume behavior as named institutional buying."
+        disclosure:"AURYN will not label price/volume behavior as named institutional buying."
       });
     }
 
@@ -147,7 +147,7 @@ export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
       source,
       delayed:true,
       asOf:useProvider?(rows[0]?.filingDate||rows[0]?.reportDate||rows[0]?.date||null):(secCache?.period_end||null),
-      disclosure:"Institutional direction describes changes in reported holdings, not real-time buying or selling today. Form 13F is delayed filing evidence; NIVORA keeps it separate from the daily accumulation proxy.",
+      disclosure:"Institutional direction describes changes in reported holdings, not real-time buying or selling today. Form 13F is delayed filing evidence; AURYN keeps it separate from the daily accumulation proxy.",
       institutional:{
         label:direction.label,
         directionLabel:direction.directionLabel,

@@ -26,6 +26,6 @@ export default function LegalNav(){
   }
   return <div className="legalTop">
     <button type="button" className="legalBack" onClick={goBack}><ArrowLeft size={15}/> Back</button>
-    <Link href={fallback} className="osLogo v37Logo"><span className="v37Wordmark">NIVORA<span>.</span></span><small>Decision Intelligence</small></Link>
+    <Link href={fallback} className="osLogo v37Logo"><span className="v37Wordmark">AURYN<span>.</span></span><small>Decision Intelligence</small></Link>
   </div>;
 }

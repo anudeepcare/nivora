@@ -9,5 +9,5 @@ export async function GET(){
  const rows=(data||[]).map((r:any)=>({company:r.company_score,growth:r.growth_score,financial:r.financial_score,street:r.analyst_score,valuation:r.valuation_score,thesis:r.thesis_score,opportunity:r.opportunity_score}));
  const factors=["company","growth","financial","street","valuation"];
  const correlations=factorCorrelationAudit(rows,factors);
- return NextResponse.json({status:rows.length>=50?"active":"collecting",n:rows.length,correlations,uniqueInformationBudget:uniqueInformationBudget(correlations),note:"NIVORA monitors factor-family correlation before applying any orthogonalization. Correlation findings are diagnostic and do not automatically change ratings."},{headers:{"Cache-Control":"private, max-age=900"}})
+ return NextResponse.json({status:rows.length>=50?"active":"collecting",n:rows.length,correlations,uniqueInformationBudget:uniqueInformationBudget(correlations),note:"AURYN monitors factor-family correlation before applying any orthogonalization. Correlation findings are diagnostic and do not automatically change ratings."},{headers:{"Cache-Control":"private, max-age=900"}})
 }

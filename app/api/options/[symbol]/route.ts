@@ -184,7 +184,7 @@ export async function GET(req:Request,{params}:{params:Promise<{symbol:string}>}
       gammaProxy:netProxy>0?"Positive OI-weighted gamma proxy":netProxy<0?"Negative OI-weighted gamma proxy":"Neutral OI-weighted gamma proxy",
       position,topNodes,contractSetups,
       rankingNote:"Contract scores prioritize liquidity, spread quality, delta fit, time-to-expiration and moneyness, with theta/IV penalties. They rank candidates; they are not an instruction to trade.",
-      note:"Gamma is derived from listed option Greeks and open interest. NIVORA does not know dealer inventory, so these are positioning proxies—not guaranteed support/resistance.",
+      note:"Gamma is derived from listed option Greeks and open interest. AURYN does not know dealer inventory, so these are positioning proxies—not guaranteed support/resistance.",
       freshness:{checkedAt:nowIso(),cacheSeconds:21600}
     },{headers:{"Cache-Control":"public, s-maxage=21600, stale-while-revalidate=86400"}});
   }catch(e:any){

@@ -9,6 +9,6 @@ export default function AuthGuard({children}:{children:React.ReactNode}){
     s.auth.getSession().then(({data})=>{if(!alive)return; clearTimeout(timer); if(data.session)setReady(true); else r.replace('/login')}).catch(()=>{if(alive)setReady(true)});
     return()=>{alive=false;clearTimeout(timer)};
   },[r]);
-  if(!ready) return <div className="fastBoot"><div className="fastBootLogo">NIVORA<span>.</span></div><div className="bootLine"/></div>;
+  if(!ready) return <div className="fastBoot"><div className="fastBootLogo">AURYN<span>.</span></div><div className="bootLine"/></div>;
   return <>{children}</>;
 }

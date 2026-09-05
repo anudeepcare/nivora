@@ -71,11 +71,11 @@ function PortfolioContent(){
  const hasPriorityEvidence=Boolean(strongest||opportunity||weakest);
 
  return <section className="portfolioPage v65Portfolio v653Portfolio">
-  <div className="v65PortfolioHead pv2PageIntro"><div><div className="eyebrow">PORTFOLIO</div><h1>Know what matters next.</h1><p>Performance, risk and NIVORA decisions in one view.</p></div></div>
+  <div className="aurynPortfolioIntro"><div><small>OWN</small><h1>Your capital, interpreted.</h1><p>Performance, benchmark context, risk, concentration and the decisions that matter now.</p></div><button type="button" onClick={()=>setShowAdd(v=>!v)}>{showAdd?"Close":"+ Add investment"}</button></div>
 
   <PortfolioPulse pulse={pulse} risk={portfolioRisk}/> 
 
-  <button type="button" className="v654AddInvestment" onClick={()=>setShowAdd(v=>!v)}>{showAdd?"Close add form":"+ Add investment"}</button>
+  
   {showAdd?<div className="v65AddAsset v654AddPanel">
    <div className="v65AssetTabs"><button className={assetType==="EQUITY"?"on":""} onClick={()=>setAssetType("EQUITY")}><WalletCards size={16}/> Stock</button><button className={assetType==="CRYPTO"?"on":""} onClick={()=>setAssetType("CRYPTO")}><Bitcoin size={16}/> Crypto</button><button className={assetType==="CASH"?"on":""} onClick={()=>setAssetType("CASH")}><Banknote size={16}/> Cash</button></div>
    <form className="v65AssetForm" onSubmit={add}><input placeholder={assetType==="CASH"?"Currency (USD)":assetType==="CRYPTO"?"BTC, ETH, SOL…":"Ticker"} value={symbol} onChange={e=>setSymbol(e.target.value)} required={assetType!=="CASH"}/><input placeholder={assetType==="CASH"?"Cash amount":"Qty"} type="number" step="any" value={shares} onChange={e=>setShares(e.target.value)} required/>{assetType!=="CASH"?<input placeholder="Average cost" type="number" step="0.01" value={cost} onChange={e=>setCost(e.target.value)} required/>:null}{assetType!=="CASH"?<select value={horizon} onChange={e=>setHorizon(e.target.value)}><option value="short">Short term</option><option value="swing">Swing</option><option value="long">Long term</option></select>:null}<button>Add {assetType==="EQUITY"?"stock":assetType==="CRYPTO"?"crypto":"cash"}</button></form>

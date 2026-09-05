@@ -17,7 +17,7 @@ import {
 import SearchBox from "./SearchBox";
 import PriceChart from "./PriceChart";
 import {supabaseBrowser} from "@/lib/supabase";
-import {buildNivoraIntelligence} from "@/lib/nivora-intelligence";
+import {buildAurynIntelligence} from "@/lib/nivora-intelligence";
 import {buildInvestorDecision} from "@/lib/nivora-investor";
 import {applyLiveQuoteToToday} from "@/lib/nivora-live-today";
 import InvestorDecisionHero from "./InvestorDecisionHero";
@@ -172,7 +172,7 @@ export default function StockClient({symbol}:{symbol:string}){
           if(attempt<CORE_ATTEMPTS)await new Promise(r=>setTimeout(r,180));
         }finally{clearTimeout(timer)}
       }
-      if(showError&&live&&!stockWarmCache.get(symbol)?.d)setErr(lastError?.name==="AbortError"?"Live history is temporarily slow. NIVORA retried automatically; try once more.":lastError?.message||"Analysis is temporarily unavailable.");
+      if(showError&&live&&!stockWarmCache.get(symbol)?.d)setErr(lastError?.name==="AbortError"?"Live history is temporarily slow. AURYN retried automatically; try once more.":lastError?.message||"Analysis is temporarily unavailable.");
     };
 
     const loadEvidence=()=>{
@@ -285,7 +285,7 @@ export default function StockClient({symbol}:{symbol:string}){
     return {atr14,atrPct:atr14&&last?atr14/last*100:null,rv,sma20:s20,sma50:s50,sma200:s200,d20:pct(s20),d50:pct(s50),d200:pct(s200),bbPos,volRatio,drawdown,rsi14,rsiLabel,macd,macdSignal,macdHist,macdLabel,trendLabel,volumeLabel};
   },[d?.candles]);
 
-  const intelligence=useMemo(()=>buildNivoraIntelligence({
+  const intelligence=useMemo(()=>buildAurynIntelligence({
     market:d,company,context,options:optionsData,institutional,mode
   }),[d,company,context,optionsData,institutional,mode]);
 
@@ -336,7 +336,7 @@ export default function StockClient({symbol}:{symbol:string}){
   },[d?.price,intelligence?.score,intelligence?.confidence,enterprise?.auditId,symbol,mode,investorDecision?.thesisScore,investorDecision?.opportunityScore,investorDecision?.today]);
 
   if(err)return <div className="osError"><b>Couldn’t analyze {symbol}</b><span>{err}</span><button onClick={()=>location.reload()}>Try again</button></div>;
-  if(!d||!view)return <div className="osStockLoading"><div className="osLogo">NIVORA<span>.</span></div><b>Analyzing {symbol}</b><span>Building the decision first. Evidence loads after.</span></div>;
+  if(!d||!view)return <div className="osStockLoading"><div className="osLogo">AURYN<span>.</span></div><b>Analyzing {symbol}</b><span>Building the decision first. Evidence loads after.</span></div>;
 
   const business=company?.fundamentalSignal||{label:d.assetType==="crypto"?"Crypto":"Loading",tone:"neutral",reasons:[]};
   const news=context?.summary||{label:context?.enabled===false?"Feed not connected":"Loading",tone:"neutral",topReason:""};
@@ -383,7 +383,7 @@ export default function StockClient({symbol}:{symbol:string}){
   const resistanceText=`Resistance ${displayMoney(Number(d.levels.resistance))}`;
   const todayMoveText=changeAbs>=4?"Large "+(d.changePct>=0?"move up":"move down")+": "+(d.changePct>=0?"+":"")+String(d.changePct)+"%":"Today’s move";
   const nextCatalystTitle=earn?"Earnings · "+String(earn.date):(filings[0]?.label||"No scheduled catalyst found");
-  const nextCatalystDetail=earn?String(earn.hour||"Timing not listed")+(earn.epsEstimate!=null?" · EPS est. "+String(earn.epsEstimate):""):filings[0]?String(filings[0].form)+" filed "+String(filings[0].date):"NIVORA will surface a catalyst when a connected source identifies one.";
+  const nextCatalystDetail=earn?String(earn.hour||"Timing not listed")+(earn.epsEstimate!=null?" · EPS est. "+String(earn.epsEstimate):""):filings[0]?String(filings[0].form)+" filed "+String(filings[0].date):"AURYN will surface a catalyst when a connected source identifies one.";
   const marketContextText=d.market.benchmark?String(symbol)+" is "+String(d.market.relativeStrength).toLowerCase()+" versus "+String(d.market.benchmark)+" over the recent period.":"Crypto benchmark context is handled separately.";
   const selectedReturn=perfRange==="6M"?d.performance?.sixMonthPct??d.sixMonth?.returnPct??null:
     perfRange==="YTD"?d.performance?.ytdPct??null:d.performance?.oneYearPct??null;
@@ -552,11 +552,11 @@ export default function StockClient({symbol}:{symbol:string}){
 
     <div className="v65LiveFresh"><span className="v65LiveStatus"><span className="v65LiveDot"/>{marketStatusLabel}</span><span className="v65LiveCadence">{liveQuote?(liveQuote.integrityState==="MARKET_CLOSED"?`${liveQuote.provider} · market closed · regular close ${displayMoney(Number(liveQuote.regularClose))}`:`${liveQuote.provider} · ${liveQuote.ageSeconds==null?"timestamp unavailable":`${liveQuote.ageSeconds}s old`}${liveQuote.disagreementPct!=null?` · provider gap ${Number(liveQuote.disagreementPct).toFixed(2)}%`:""} · regular close ${displayMoney(Number(liveQuote.regularClose))}`):"Daily analysis stays available while the live quote connects."}</span></div>
 
-    <div className="v65PositionBar"><div><Sparkles size={15}/><span>NIVORA analyzes 3M, 6M, 1Y, 2Y and 3Y automatically.</span></div><button type="button" className={owns?"on":""} onClick={()=>setOwns(!owns)}>{owns?(ownerPosition?"✓ Position loaded":"✓ I own this"):"I own this"}</button></div>
+    <div className="v65PositionBar"><div><Sparkles size={15}/><span>AURYN analyzes 3M, 6M, 1Y, 2Y and 3Y automatically.</span></div><button type="button" className={owns?"on":""} onClick={()=>setOwns(!owns)}>{owns?(ownerPosition?"✓ Position loaded":"✓ I own this"):"I own this"}</button></div>
 
 
     {depth==="pro"&&enterprise&&intelligence&&<section className="v29ProCockpit">
-      <div className="proCockpitHead"><div><small>PRO WORKSPACE</small><h3>Decision evidence & model diagnostics</h3><p>Same NIVORA call, with the underlying factor, data-quality and audit evidence exposed.</p></div><button type="button" onClick={()=>setAuditOpen(!auditOpen)}><ShieldCheck size={15}/>{auditOpen?"Hide audit":"Audit trail"}</button></div>
+      <div className="proCockpitHead"><div><small>PRO WORKSPACE</small><h3>Decision evidence & model diagnostics</h3><p>Same AURYN call, with the underlying factor, data-quality and audit evidence exposed.</p></div><button type="button" onClick={()=>setAuditOpen(!auditOpen)}><ShieldCheck size={15}/>{auditOpen?"Hide audit":"Audit trail"}</button></div>
       <div className="proCockpitGrid">
         <div><small>MODEL</small><b>{enterprise.engineVersion}</b><span>{mode.toUpperCase()} weighting · regime aware</span></div>
         <div><small>MARKET REGIME</small><b>{intelligence.regime?.label}</b><span>{intelligence.regime?.score}/100 environment score</span></div>
@@ -577,7 +577,7 @@ export default function StockClient({symbol}:{symbol:string}){
     {depth!=="simple"&&<section className="v65ContextStrip v659ContextStrip" aria-label="Quick market context">
       <div><div className="metricLabel"><small>PERFORMANCE</small><MetricInfo title="Performance">Price return over the selected period using available market history. Performance describes what happened; it does not predict what happens next.</MetricInfo></div><b>{selectedReturn==null?"—":`${selectedReturn>=0?"+":""}${selectedReturn}%`}</b><div className="v19Range v659PeriodSwitch">{(["6M","YTD","1Y"] as const).map(r=><button key={r} className={perfRange===r?"on":""} onClick={()=>setPerfRange(r)}>{r}</button>)}</div></div>
       <div><div className="metricLabel"><small>52-WEEK POSITION</small><MetricInfo title="52-week position">Shows where today’s price sits between the last 52-week low and high. Near the high is not automatically bad; it simply adds price-location context.</MetricInfo></div><b>{d.performance?.rangePositionPct!=null?`${d.performance.rangePositionPct}%`:"—"}</b><span>{d.performance?.yearLow!=null&&d.performance?.yearHigh!=null?`Low $${d.performance.yearLow} · High $${d.performance.yearHigh}`:"Waiting for 1-year history"}</span></div>
-      <div><div className="metricLabel"><small>RISK / REWARD</small><MetricInfo title="Risk / reward">Compares the distance from today’s price to NIVORA’s confirmation level with the distance to its reassessment level. It is a technical planning ratio, not a forecast.</MetricInfo></div><b>{rr==null?"—":`${rr.toFixed(1)}×`}</b><span>{upside==null||downside==null?"Waiting for levels":`${upside>=0?"+":""}${upside.toFixed(1)}% to confirmation · ${downside.toFixed(1)}% to reassess`}</span></div>
+      <div><div className="metricLabel"><small>RISK / REWARD</small><MetricInfo title="Risk / reward">Compares the distance from today’s price to AURYN’s confirmation level with the distance to its reassessment level. It is a technical planning ratio, not a forecast.</MetricInfo></div><b>{rr==null?"—":`${rr.toFixed(1)}×`}</b><span>{upside==null||downside==null?"Waiting for levels":`${upside>=0?"+":""}${upside.toFixed(1)}% to confirmation · ${downside.toFixed(1)}% to reassess`}</span></div>
       <div><div className="metricLabel"><small>DATA CONFIDENCE</small><MetricInfo title="Data confidence">Shows whether price history, business data, market context and news/catalyst sources are available. Higher confidence means better evidence coverage—not higher certainty of profit.</MetricInfo></div><b className={confidence==="High"?"good":confidence==="Low"?"bad":"mid"}>{confidence}</b><span>Price + business + news + market coverage.</span></div>
     </section>}
 
@@ -601,20 +601,20 @@ export default function StockClient({symbol}:{symbol:string}){
     </div>
 
     <section className="v12Pulse v18Pulse">
-      <div><small>WHAT CHANGED TODAY</small><h3>{investorDecision?.changed?.[0]||todayMoveText}</h3><p>{investorDecision?.changed?.length?"NIVORA separates thesis changes from price noise. A price move alone does not rewrite company conviction.":moveReason}</p>{topNews?.url&&<a href={topNews.url} target="_blank" rel="noreferrer">Read source <ExternalLink size={13}/></a>}</div>
+      <div><small>WHAT CHANGED TODAY</small><h3>{investorDecision?.changed?.[0]||todayMoveText}</h3><p>{investorDecision?.changed?.length?"AURYN separates thesis changes from price noise. A price move alone does not rewrite company conviction.":moveReason}</p>{topNews?.url&&<a href={topNews.url} target="_blank" rel="noreferrer">Read source <ExternalLink size={13}/></a>}</div>
       <div><small>NEXT CATALYST</small><h3>{nextCatalystTitle}</h3><p>{nextCatalystDetail}</p></div>
       <div><small>MARKET CONTEXT</small><h3>{d.market.regime}</h3><p>{marketContextText}</p></div>
     </section>
 
     {depth!=="simple"&&<section className="osChartCard v12Chart">
       <div className="osSectionTitle"><div><small>PRICE MAP</small><h3>What price has to do next</h3></div><span>{horizon==="now"?"Current / daily":horizon==="swing"?"Swing / daily-weekly":"Long term / weekly-monthly"} · levels recalculate with horizon</span></div>
-      <div className="chartControls"><div><button className={chartMode==="clean"?"on":""} onClick={()=>setChartMode("clean")}>Clean</button><button className={chartMode==="trend"?"on":""} onClick={()=>setChartMode("trend")}>Trend</button></div><MetricInfo title="Chart modes">Clean keeps only price, volume and NIVORA levels. Trend adds 20-day and 50-day moving averages for users who want more technical context.</MetricInfo></div>
+      <div className="chartControls"><div><button className={chartMode==="clean"?"on":""} onClick={()=>setChartMode("clean")}>Clean</button><button className={chartMode==="trend"?"on":""} onClick={()=>setChartMode("trend")}>Trend</button></div><MetricInfo title="Chart modes">Clean keeps only price, volume and AURYN levels. Trend adds 20-day and 50-day moving averages for users who want more technical context.</MetricInfo></div>
       <PriceChart candles={horizonCandles} levels={horizonChartLevels} showTrend={chartMode==="trend"}/>
     </section>}
 
     {depth==="pro"&&<section className="beginnerScore v18Score">
       <div className="beginnerScoreMain">
-        <div className="decisionEyebrow"><small>NIVORA SCORE</small><MetricInfo title="How is the NIVORA score calculated?">{scoreFormula} The score is a summary, not the decision itself. 80–100 = excellent evidence, 65–79 = promising/selective, 50–64 = mixed, below 50 = weak. The action above can still be WAIT when price is extended.</MetricInfo></div>
+        <div className="decisionEyebrow"><small>AURYN SCORE</small><MetricInfo title="How is the AURYN score calculated?">{scoreFormula} The score is a summary, not the decision itself. 80–100 = excellent evidence, 65–79 = promising/selective, 50–64 = mixed, below 50 = weak. The action above can still be WAIT when price is extended.</MetricInfo></div>
         <div className="scoreLine"><b>{overallScore}</b><span>/100</span><em>{overallLabel}</em></div>
         <h3>{view.label}</h3><p>{beginnerReason}</p>
       </div>
@@ -627,7 +627,7 @@ export default function StockClient({symbol}:{symbol:string}){
     </section>}
 
     {depth!=="simple"&&intelligence&&<section className="v65IntelStrip">
-      <div className="intelLead"><small>NIVORA INTELLIGENCE</small><div><b>{intelligence.score}/100</b><span className={tone(intelligence.thesisLabel)}>{intelligence.thesisLabel}</span></div><p>{intelligence.biggestPositive} <strong>Watch:</strong> {intelligence.biggestRisk}</p></div>
+      <div className="intelLead"><small>AURYN INTELLIGENCE</small><div><b>{intelligence.score}/100</b><span className={tone(intelligence.thesisLabel)}>{intelligence.thesisLabel}</span></div><p>{intelligence.biggestPositive} <strong>Watch:</strong> {intelligence.biggestRisk}</p></div>
       <div><small>NEXT DECISION TRIGGER</small><b>{intelligence.nextDecision}</b></div>
       <div><small>DATA COVERAGE</small><b>{intelligence.confidenceLabel}</b><span>{intelligence.confidence}/100 coverage · not probability</span></div>
       <button type="button" onClick={()=>{setTab("thesis");window.requestAnimationFrame(()=>window.requestAnimationFrame(()=>thesisRef.current?.scrollIntoView({behavior:"smooth",block:"start"})))}}>Open full thesis →</button>
@@ -669,16 +669,16 @@ export default function StockClient({symbol}:{symbol:string}){
             <div><small>SEC DATASET THROUGH</small><b>{fmtDate(institutionalDatasetThrough)}</b></div>
           </div>
         </div>
-        <div className="v34InstitutionDisclosure"><Info size={14}/><span>13F shows reported holdings for a past quarter. It does not prove an institution is buying or selling today. NIVORA separately labels current price/volume accumulation.</span></div>
+        <div className="v34InstitutionDisclosure"><Info size={14}/><span>13F shows reported holdings for a past quarter. It does not prove an institution is buying or selling today. AURYN separately labels current price/volume accumulation.</span></div>
         <div className="v32Institutional">
-          <div className="v32InstitutionalHead"><div><small>INSTITUTIONAL INTELLIGENCE</small><h3>{institutionalLabel}</h3><p>{institutional?.disclosure||"Reported institutional ownership is not available from the connected feed for this symbol."}</p></div><MetricInfo title="Institutional intelligence">Reported institutional ownership and insider filings are delayed evidence. NIVORA keeps this separate from the daily accumulation proxy so it never presents quarterly filings as real-time institutional buying.</MetricInfo></div>
+          <div className="v32InstitutionalHead"><div><small>INSTITUTIONAL INTELLIGENCE</small><h3>{institutionalLabel}</h3><p>{institutional?.disclosure||"Reported institutional ownership is not available from the connected feed for this symbol."}</p></div><MetricInfo title="Institutional intelligence">Reported institutional ownership and insider filings are delayed evidence. AURYN keeps this separate from the daily accumulation proxy so it never presents quarterly filings as real-time institutional buying.</MetricInfo></div>
           {institutional?.enabled?<div className="v32InstitutionalGrid v321InstitutionalGrid">
             <div><small>QUARTER-OVER-QUARTER</small><b className={Number(institutional.institutional?.shareChangePct||0)>0?"good":Number(institutional.institutional?.shareChangePct||0)<0?"bad":"mid"}>{institutional.institutional?.shareChangePctLabel||institutional.institutional?.directionLabel||institutionalLabel}</b><span>{institutional.institutional?.directionLabel||institutionalLabel} · {institutional.institutional?.increased||0} adding · {institutional.institutional?.reduced||0} trimming</span><em>{institutional.institutional?.periodLabel||"Latest available filing period"}</em></div>
             <div><small>REPORTED HOLDINGS</small><b className={Number(institutional.institutional?.netReportedShareChange||0)>0?"good":Number(institutional.institutional?.netReportedShareChange||0)<0?"bad":"mid"}>{institutional.institutional?.netChangeLabel||"Mixed / unavailable"}</b><span>{institutional.institutional?.totalShares!=null?`${Number(institutional.institutional.totalShares).toLocaleString()} shares now · ${Number(institutional.institutional.priorTotalShares||0).toLocaleString()} prior`: `${institutional.institutional?.reportingRows||0} reporting managers`}</span><em>{institutional.institutional?.totalValueLabel&&institutional.institutional?.priorTotalValueLabel?`${institutional.institutional.totalValueLabel} reported value · prior ${institutional.institutional.priorTotalValueLabel}`:"Delayed filing evidence — not today's order flow"}</em></div>
             <div><small>MANAGER BREADTH</small><b className={institutionalTone}>{institutional.institutional?.increased||0} adding · {institutional.institutional?.reduced||0} trimming</b><span>{institutional.institutional?.newManagers!=null?`${institutional.institutional.newManagers} new positions · ${institutional.institutional.exitedManagers||0} exits`: `${institutional.institutional?.reportingRows||0} reporting positions`}</span><em>{institutional.institutional?.unchangedManagers!=null?`${institutional.institutional.unchangedManagers} unchanged · ${institutional.institutional.reportingManagers||0} current managers`:"Latest available ownership evidence"}</em></div>
             <div><small>INSIDERS</small><b className={institutional.insiders?.label==="Net buying"?"good":institutional.insiders?.label==="Net selling"?"bad":"mid"}>{institutional.insiders?.label||"Mixed"}</b><span>{institutional.insiders?.buys||0} buys · {institutional.insiders?.sells||0} sells in available feed</span><em>Reported transactions only</em></div>
             <div><small>TODAY'S ACCUMULATION PROXY</small><b className={marketLab?.accumulationLabel==="Accumulating"?"good":marketLab?.accumulationLabel==="Distribution risk"?"bad":"mid"}>{marketLab?.accumulationLabel||"Insufficient data"}</b><span>{marketLab?`${marketLab.accumulation}/100 from price/volume behavior`:"Needs more price/volume history"}</span><em>Market-behavior proxy, not named-institution flow</em></div>
-          </div>:<div className="v32InstitutionalEmpty"><b>Reported institutional filings unavailable.</b><span>{institutional?.reason||"NIVORA could not verify current ownership data from the connected/cache sources."}</span><small>Price/volume accumulation remains available separately; NIVORA will not call that institutional buying.</small></div>}
+          </div>:<div className="v32InstitutionalEmpty"><b>Reported institutional filings unavailable.</b><span>{institutional?.reason||"AURYN could not verify current ownership data from the connected/cache sources."}</span><small>Price/volume accumulation remains available separately; AURYN will not call that institutional buying.</small></div>}
           {institutional?.enabled&&<div className="v33InstitutionalDeep">
             <div className="v33Pulse">
               <div><small>INSTITUTIONAL SCORE</small><b className={Number(institutional.institutional?.institutionalScore||50)>=60?"good":Number(institutional.institutional?.institutionalScore||50)<45?"bad":"mid"}>{institutional.institutional?.institutionalScore??50}/100</b><span>Quarterly filing trend strength</span></div>
@@ -698,7 +698,7 @@ export default function StockClient({symbol}:{symbol:string}){
                 {list.slice(0,12).map((x:any,i:number)=>{const ch=Number(x.change||0);const cp=Number(x.changePct);const total=Number(institutional.institutional?.totalShares||0);const poolPct=total>0?Number(x.shares||0)/total*100:null;return <div key={`${title}-${x.name}-${i}`}><b>{x.name}<small>{x.status?String(x.status).replace(/^./,(c:string)=>c.toUpperCase()):""}</small></b><span>{Number(x.shares||0).toLocaleString()} sh{poolPct!=null&&<small>{poolPct.toFixed(poolPct>=10?1:2)}% of reported 13F shares</small>}</span><span>{x.priorShares!=null?`${Number(x.priorShares).toLocaleString()} sh`:"—"}</span><em className={ch>0?"good":ch<0?"bad":"mid"}>{ch>0?"+":""}{Math.round(ch).toLocaleString()} {Number.isFinite(cp)?`(${cp>0?"+":""}${cp.toFixed(1)}%)`:""}</em><time>{x.filingDate?fmtDate(x.filingDate):(x.reportPeriod?fmtDate(x.reportPeriod):fmtDate(institutionalPeriod))}</time></div>})}
               </div>
             </details>)}
-            <div className="v33InstitutionalNote"><b>How to read this</b><span>13F shows what reporting managers held at the report period—not what they are buying today. Manager percentages shown here are each manager’s share of NIVORA’s aggregated reported 13F shares, not ownership % of the whole company. True company ownership % needs a period-matched shares-outstanding denominator.</span></div>
+            <div className="v33InstitutionalNote"><b>How to read this</b><span>13F shows what reporting managers held at the report period—not what they are buying today. Manager percentages shown here are each manager’s share of AURYN’s aggregated reported 13F shares, not ownership % of the whole company. True company ownership % needs a period-matched shares-outstanding denominator.</span></div>
           </div>}
         </div>
 
@@ -721,7 +721,7 @@ export default function StockClient({symbol}:{symbol:string}){
 
       {tab==="technical"&&<div className="v12Technical v26Technical">
         <div className="v34TechnicalHero">
-          <div><small>TECHNICAL DECISION SUPPORT</small><h3>One score first. Indicators underneath.</h3><p>NIVORA blends trend, momentum, flow, structure and extension into one technical composite. RSI, MACD and other indicators explain the score.</p></div>
+          <div><small>TECHNICAL DECISION SUPPORT</small><h3>One score first. Indicators underneath.</h3><p>AURYN blends trend, momentum, flow, structure and extension into one technical composite. RSI, MACD and other indicators explain the score.</p></div>
           <div className="v34TechVerdict"><small>TECHNICAL COMPOSITE</small><b className={technicalComposite>=68?"good":technicalComposite<45?"bad":"mid"}>{technicalComposite}/100</b><span>{proTech?.trendLabel||d.labels.trend} trend · {proTech?.macdLabel||"MACD unavailable"} MACD · {proTech?.rsiLabel||"RSI unavailable"} RSI</span></div>
         </div>
         {proTech&&<div className="v34IndicatorGrid">
@@ -729,7 +729,7 @@ export default function StockClient({symbol}:{symbol:string}){
   <div className="metricLabel">
     <small>RSI · 14</small>
     <MetricInfo title="RSI (14)">
-      Relative Strength Index from 0–100. Above 70 can indicate an overbought/extended condition; below 30 can indicate oversold. NIVORA does not use RSI alone.
+      Relative Strength Index from 0–100. Above 70 can indicate an overbought/extended condition; below 30 can indicate oversold. AURYN does not use RSI alone.
     </MetricInfo>
   </div>
 
@@ -752,12 +752,12 @@ export default function StockClient({symbol}:{symbol:string}){
           <div><div className="metricLabel"><small>20D / 50D TREND</small><MetricInfo title="Moving-average trend">Compares price with the 20-day and 50-day moving averages. Alignment can confirm trend direction but can lag turning points.</MetricInfo></div><b className={proTech.trendLabel==="Bullish"?"good":proTech.trendLabel==="Bearish"?"bad":"mid"}>{proTech.trendLabel}</b><span>{proTech.d20!=null?`${proTech.d20>=0?"+":""}${proTech.d20.toFixed(1)}% vs 20D`:"—"} · {proTech.d50!=null?`${proTech.d50>=0?"+":""}${proTech.d50.toFixed(1)}% vs 50D`:"—"}</span></div>
           <div><div className="metricLabel"><small>VOLUME</small><MetricInfo title="Volume confirmation">Compares current volume with the recent 20-session average. Strong participation can make breakouts or reversals more meaningful.</MetricInfo></div><b>{proTech.volRatio!=null?`${proTech.volRatio.toFixed(2)}×`:"—"}</b><span>{proTech.volumeLabel}</span></div>
           <div><div className="metricLabel"><small>ATR · 14</small><MetricInfo title="ATR (14)">Average True Range estimates typical recent daily movement. ATR% helps compare volatility across stocks with different prices.</MetricInfo></div><b>{proTech.atrPct!=null?`${proTech.atrPct.toFixed(1)}%`:"—"}</b><span>Typical daily range</span></div>
-          <div><div className="metricLabel"><small>DCA / ACCUMULATION ZONE</small><MetricInfo title="DCA / accumulation zone">A technical confluence area derived from NIVORA support/entry structure. It is useful for staged-entry planning only while the fundamental thesis remains intact.</MetricInfo></div><b>{marketLab?`$${marketLab.dcaLow}–$${marketLab.dcaHigh}`:"—"}</b><span>{marketLab?"Structure + support confluence":"Insufficient history"}</span></div>
+          <div><div className="metricLabel"><small>DCA / ACCUMULATION ZONE</small><MetricInfo title="DCA / accumulation zone">A technical confluence area derived from AURYN support/entry structure. It is useful for staged-entry planning only while the fundamental thesis remains intact.</MetricInfo></div><b>{marketLab?`$${marketLab.dcaLow}–$${marketLab.dcaHigh}`:"—"}</b><span>{marketLab?"Structure + support confluence":"Insufficient history"}</span></div>
           <div><div className="metricLabel"><small>BOLLINGER POSITION</small><MetricInfo title="Bollinger position">Shows where price sits within a 20-day, two-standard-deviation band. Near the top suggests extension; near the bottom suggests weakness/possible mean reversion.</MetricInfo></div><b>{proTech.bbPos!=null?`${Math.max(0,Math.min(100,proTech.bbPos)).toFixed(0)}%`:"—"}</b><span>0% lower band · 100% upper band</span></div>
           <div><div className="metricLabel"><small>REALIZED VOL · 20D</small><MetricInfo title="Realized volatility">Annualized recent realized volatility from daily returns. Higher values imply larger price variability and usually require more conservative sizing.</MetricInfo></div><b>{proTech.rv!=null?`${proTech.rv.toFixed(1)}%`:"—"}</b><span>{proTech.drawdown!=null?`${proTech.drawdown.toFixed(1)}% from 52-week high`:"52-week drawdown unavailable"}</span></div>
         </div>}
         {depth==="pro"&&marketLab&&<div className="v32ConfluenceChart">
-          <div className="v32MarketLabHead"><div><small>CONFLUENCE MAP</small><h3>Fib + structure + NIVORA risk levels</h3><p>Advanced levels are supporting evidence, not standalone buy/sell signals. Wave interpretation is supporting context and should be confirmed with price structure.</p></div><MetricInfo title="Confluence map">Fibonacci retracements, NIVORA support/entry levels and the current Elliott-style scenario are overlaid so experienced users can see where independent technical evidence clusters.</MetricInfo></div>
+          <div className="v32MarketLabHead"><div><small>CONFLUENCE MAP</small><h3>Fib + structure + AURYN risk levels</h3><p>Advanced levels are supporting evidence, not standalone buy/sell signals. Wave interpretation is supporting context and should be confirmed with price structure.</p></div><MetricInfo title="Confluence map">Fibonacci retracements, AURYN support/entry levels and the current Elliott-style scenario are overlaid so experienced users can see where independent technical evidence clusters.</MetricInfo></div>
           <PriceChart candles={horizonCandles} levels={horizonChartLevels} showTrend={true} confluence={marketLab}/>
         </div>}
         <div className="techIntro"><div><small>TECHNICAL LAB</small><h3>Professional evidence, still readable.</h3><p>The main call stays simple. This workspace shows the market mechanics experienced investors may want to inspect.</p></div><MetricInfo title="Technical Lab">Technical indicators describe price behavior and risk. They can improve timing, but none can guarantee direction or replace business/catalyst analysis.</MetricInfo></div>
@@ -772,15 +772,15 @@ export default function StockClient({symbol}:{symbol:string}){
           <div><small>52W DRAWDOWN</small><b>{proTech.drawdown!=null?`${proTech.drawdown.toFixed(1)}%`:"—"}</b><span>Distance from recent high</span></div>
         </div>}
         {depth==="pro"&&marketLab&&<div className="v32MarketLab">
-          <div className="v32MarketLabHead"><div><small>MARKET INTELLIGENCE</small><h3>Confluence, not indicator clutter.</h3><p>NIVORA turns technical evidence into zones and scenarios instead of asking you to interpret dozens of lines.</p></div></div>
+          <div className="v32MarketLabHead"><div><small>MARKET INTELLIGENCE</small><h3>Confluence, not indicator clutter.</h3><p>AURYN turns technical evidence into zones and scenarios instead of asking you to interpret dozens of lines.</p></div></div>
           <div className="v32MarketLabGrid">
             <div><small>ACCUMULATION PROXY</small><b className={marketLab.accumulationLabel==="Accumulating"?"good":marketLab.accumulationLabel==="Distribution risk"?"bad":"mid"}>{marketLab.accumulationLabel}</b><strong>{marketLab.accumulation}/100</strong><span>Price/volume behavior proxy — not a claim that a specific institution is trading today.</span></div>
             <div><small>FIBONACCI CONFLUENCE</small><b>${marketLab.fib382} · ${marketLab.fib50} · ${marketLab.fib618}</b><strong>38.2% · 50% · 61.8%</strong><span>Used as supporting zones only when they overlap with structure/support.</span></div>
-            <div><small>DCA / ACCUMULATION ZONE</small><b>${marketLab.dcaLow}–${marketLab.dcaHigh}</b><strong>Confluence zone</strong><span>Combines NIVORA entry/support with the current swing structure. Thesis must remain intact.</span></div>
+            <div><small>DCA / ACCUMULATION ZONE</small><b>${marketLab.dcaLow}–${marketLab.dcaHigh}</b><strong>Confluence zone</strong><span>Combines AURYN entry/support with the current swing structure. Thesis must remain intact.</span></div>
             <div><small>ELLIOTT-STYLE WAVE</small><b>{marketLab.waveLabel}</b><strong>{marketLab.waveScore}% confidence</strong><span>Heuristic structure only. Candidate target ${marketLab.waveTarget}; invalidation ${marketLab.waveInvalidation}.</span></div>
           </div>
         </div>}
-        <div className="techRead"><small>NIVORA TECHNICAL READ</small><h4>{d.labels.trend} trend · {d.labels.momentum} momentum · {d.labels.risk} risk</h4><p>{d.why?.slice(0,3).join(" ")}</p></div>
+        <div className="techRead"><small>AURYN TECHNICAL READ</small><h4>{d.labels.trend} trend · {d.labels.momentum} momentum · {d.labels.risk} risk</h4><p>{d.why?.slice(0,3).join(" ")}</p></div>
         {depth==="pro"&&<div className="osTechGrid">{Object.entries(d.engine).map(([k,v]:any)=><div key={k}><div className="metricLabel"><span>{k}</span><MetricInfo title={k}>{k==="Trend"?"Multi-horizon direction and slope.":k==="Momentum"?"Speed and persistence of the current move.":k==="Flow"?"Volume/price participation and confirmation.":k==="Structure"?"Higher highs/lows, support and resistance behavior.":k==="RSI"?"Relative Strength Index; helps identify momentum extremes but is never used alone.":k==="MACD"?"Trend/momentum crossover evidence.":k==="Extension"?"How far price has moved away from its recent equilibrium; high extension increases chase risk.":k==="Relative strength"?"Performance versus the relevant benchmark.":k==="Market regime"?"Whether the broad market is supportive, mixed or risk-off.":"Supporting quantitative evidence used by the decision engine."}</MetricInfo></div><b>{typeof v==="number"?`${v}/100`:v}</b></div>)}</div>}
       </div>}
 
@@ -814,7 +814,7 @@ export default function StockClient({symbol}:{symbol:string}){
           <div className="optionsQuick">
             <div><div className="metricLabel"><small>CALL WALL</small><MetricInfo title="Call wall">Largest call open-interest strike in the fetched chain. It is an attention area, not guaranteed resistance.</MetricInfo></div><b>{optionsData.callWall!=null?`$${optionsData.callWall}`:"—"}</b></div>
             <div><div className="metricLabel"><small>PUT WALL</small><MetricInfo title="Put wall">Largest put open-interest strike in the fetched chain. It is an attention area, not guaranteed support.</MetricInfo></div><b>{optionsData.putWall!=null?`$${optionsData.putWall}`:"—"}</b></div>
-            <div><div className="metricLabel"><small>GAMMA NODE</small><MetricInfo title="Gamma node">Largest OI-weighted gamma concentration. This is a proxy; NIVORA does not observe dealer inventory.</MetricInfo></div><b>{optionsData.gammaNode!=null?`$${optionsData.gammaNode}`:"—"}</b></div>
+            <div><div className="metricLabel"><small>GAMMA NODE</small><MetricInfo title="Gamma node">Largest OI-weighted gamma concentration. This is a proxy; AURYN does not observe dealer inventory.</MetricInfo></div><b>{optionsData.gammaNode!=null?`$${optionsData.gammaNode}`:"—"}</b></div>
             <div><small>EXPECTED MOVE</small><b>{optionsData.expectedMovePct!=null?`±${optionsData.expectedMovePct}%`:"—"}</b></div>
             <div><small>ATM IV</small><b>{optionsData.atmIV!=null?`${optionsData.atmIV}%`:"—"}</b></div>
             <div><small>PUT/CALL OI</small><b>{optionsData.putCallOI??"—"}</b></div>
