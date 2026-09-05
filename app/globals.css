@@ -1242,3 +1242,63 @@ small:has(> .v65MetricInfo){display:inline-flex!important;align-items:center!imp
   .v658InfoButton{width:24px!important;height:24px!important;min-width:24px!important;min-height:24px!important;margin-left:4px!important}
   .v6516InfoGlyph{width:20px!important;height:20px!important}
 }
+
+/* =========================================================
+   V65.21 — unified mobile product system
+   One optical rhythm across Analyze / Portfolio / Trading Lab / Alerts.
+   ========================================================= */
+@media(max-width:720px){
+  :root{
+    --m-space-1:4px;--m-space-2:8px;--m-space-3:12px;--m-space-4:16px;--m-space-5:20px;--m-space-6:24px;
+    --m-body:15px;--m-label:12px;--m-value:24px;--m-title:28px;--m-radius:20px;
+    --m-line:#dde6e1;--m-muted:#667085;--m-green:#0b6b47;--m-surface:#fff;
+  }
+  .v65Main{padding:18px 16px calc(82px + env(safe-area-inset-bottom))!important}
+  .stockPage,.portfolioPage,.tradingLab,.simplePage{max-width:100%!important;font-size:var(--m-body)!important;line-height:1.48!important}
+  .stockPage h1,.portfolioPage h1,.tradingLab h1,.simplePage h1{font-size:var(--m-title)!important;line-height:1.08!important;letter-spacing:-.035em!important}
+  .stockPage h2,.portfolioPage h2,.tradingLab h2,.simplePage h2{font-size:22px!important;line-height:1.15!important;letter-spacing:-.025em!important}
+  .stockPage p,.portfolioPage p,.tradingLab p,.simplePage p{font-size:var(--m-body)!important;line-height:1.5!important}
+  .stockPage small,.portfolioPage small,.tradingLab small,.simplePage small{font-size:var(--m-label)!important;line-height:1.3!important}
+  .metricLabel,.pulseSectionHead small,.v653HoldingsHead small,.v65PosMetrics small{font-size:var(--m-label)!important;line-height:1.2!important;letter-spacing:.055em!important;font-weight:800!important}
+  .v658InfoButton{display:inline-grid!important;place-items:center!important;width:24px!important;height:24px!important;min-width:24px!important;min-height:24px!important;vertical-align:middle!important;transform:none!important}
+  .v6516InfoGlyph{display:block!important;width:20px!important;height:20px!important;overflow:visible!important}
+
+  /* Native-feeling dock: three equal destinations, screen edge, no floating overlap. */
+  .v65MobileNav{grid-template-columns:repeat(3,minmax(0,1fr))!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;border-radius:0!important;padding:6px 8px calc(6px + env(safe-area-inset-bottom))!important}
+  .v65MobileNav a{height:58px!important;min-height:58px!important;font-size:12px!important;line-height:1!important;border-radius:12px!important}
+
+  /* Horizontal choices scroll deliberately instead of exposing half controls. */
+  .pulsePeriods,.visualModes,.xrayModes{display:flex!important;max-width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;scrollbar-width:none!important;scroll-snap-type:x proximity!important;-webkit-overflow-scrolling:touch!important}
+  .pulsePeriods::-webkit-scrollbar,.visualModes::-webkit-scrollbar,.xrayModes::-webkit-scrollbar{display:none!important}
+  .pulsePeriods button,.visualModes button,.xrayModes button{flex:0 0 auto!important;white-space:nowrap!important;scroll-snap-align:start!important}
+
+  /* Portfolio holdings: information-dense, not dashboard-tall. */
+  .v65Position{padding:16px!important;border-radius:var(--m-radius)!important;gap:12px!important;margin-bottom:12px!important}
+  .v65PosMain{gap:10px!important;align-items:flex-start!important}
+  .v65PosMain b{font-size:20px!important;line-height:1.1!important}
+  .v65PosMain span{font-size:13px!important;line-height:1.35!important}
+  .v65PosMetrics{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px 18px!important;margin-top:2px!important}
+  .v65PosMetrics>span{min-width:0!important}
+  .v65PosMetrics small{display:block!important;margin-bottom:4px!important}
+  .v65PosMetrics b{font-size:18px!important;line-height:1.2!important}
+  .v658HoldingDecision{grid-column:1/-1!important}
+  .v65Position>a{grid-column:1/-1!important;min-height:40px!important;display:flex!important;align-items:center!important;padding:0 14px!important}
+  .rowActions{min-height:38px!important;margin-top:0!important}
+
+  /* Visual intelligence earns its height; sparse history never creates a blank poster. */
+  .portfolioVisuals{padding:18px!important;border-radius:var(--m-radius)!important}
+  .portfolioVisuals .pulseSectionHead{gap:4px!important}
+  .portfolioVisuals .pulseSectionHead h2{font-size:24px!important}
+  .visualModes{gap:8px!important;margin:14px 0 10px!important;padding-bottom:2px!important}
+  .visualModes button{min-height:42px!important;padding:0 18px!important;font-size:14px!important}
+  .performanceChart{min-height:0!important;height:auto!important;margin-top:8px!important}
+  .performanceChart svg{height:180px!important;max-height:180px!important}
+  .compactUnavailable{min-height:0!important;padding:16px!important;margin-top:8px!important;display:grid!important;gap:6px!important}
+  .compactUnavailable b{font-size:17px!important}.compactUnavailable span{font-size:14px!important;line-height:1.45!important}
+  .allocationTreemap{min-height:130px!important}
+
+  /* Decision qualification cards share one baseline and avoid oversized gaps. */
+  .v653BuyPath{padding:18px!important}
+  .v653BuyPath article{padding:14px 16px!important;min-height:0!important}
+  .v653BuyPath article b{line-height:1.15!important}
+}
