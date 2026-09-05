@@ -1435,3 +1435,22 @@ small:has(> .v65MetricInfo){display:inline-flex!important;align-items:center!imp
   }
   .portfolioPage .v6526RowActions button{width:40px!important;height:40px!important}
 }
+
+/* V65.26.3 — desktop single-row holding actions */
+@media(min-width:761px){
+  .portfolioPage .v653Position{
+    display:grid!important;
+    grid-template-columns:minmax(300px,2fr) minmax(520px,2.6fr) minmax(250px,1.35fr) 76px!important;
+    align-items:center!important;
+    column-gap:24px!important;
+    min-height:112px!important;
+    padding:18px 24px!important;
+  }
+  .portfolioPage .v65PosMain{grid-column:1!important;grid-row:1!important;min-width:0!important}
+  .portfolioPage .v65PosMetrics{grid-column:2!important;grid-row:1!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;align-items:center!important;margin:0!important;gap:22px!important}
+  .portfolioPage .v6522DecisionRow{grid-column:3!important;grid-row:1!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:16px!important;margin:0!important;padding:0!important;border:0!important;min-width:0!important}
+  .portfolioPage .v6522DecisionRow>div{min-width:0!important}
+  .portfolioPage .v6522DecisionRow>a{justify-self:end!important;white-space:nowrap!important}
+  .portfolioPage .v6526RowActions{grid-column:4!important;grid-row:1!important;align-self:center!important;justify-self:end!important;margin:0!important;padding:0!important;border:0!important;width:76px!important;min-width:76px!important;gap:4px!important}
+  .portfolioPage .v6526RowActions button{width:32px!important;height:32px!important;min-width:32px!important;border-radius:8px!important}
+}
