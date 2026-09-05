@@ -1,0 +1,2 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";
+test("landing page classes have V3 product styles",()=>{const css=fs.readFileSync("app/auryn-product.css","utf8");for(const c of ["aurynLanding","aurynHero","aurynHeroCopy","aurynKicker","aurynHeroActions","goldButton","aurynProof","aurynHeroPanel","aurynCall","aurynMiniMetrics","aurynWhy","aurynLandingBand"]){assert.ok(css.includes(`.${c}`),`missing .${c}`)}});
