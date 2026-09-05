@@ -1404,3 +1404,34 @@ small:has(> .v65MetricInfo){display:inline-flex!important;align-items:center!imp
  .v6516ScoreValue{font-size:26px!important;letter-spacing:-.025em!important}
  .v6516ThesisCard small{font-size:12.5px!important;line-height:1.45!important}
 }
+
+/* V65.26.2 — direct holding actions: stable desktop column, quiet mobile footer */
+.portfolioPage .v653Position{position:relative!important}
+.portfolioPage .v6526RowActions{
+  display:flex!important;align-items:center!important;justify-content:flex-end!important;
+  gap:6px!important;min-width:76px!important;margin-left:8px!important;flex:0 0 auto!important;
+}
+.portfolioPage .v6526RowActions button{
+  width:34px!important;height:34px!important;min-width:34px!important;padding:0!important;
+  display:grid!important;place-items:center!important;border:0!important;border-radius:10px!important;
+  background:transparent!important;color:#7b8782!important;cursor:pointer!important;
+  transition:background-color .15s ease,color .15s ease,transform .15s ease!important;
+}
+.portfolioPage .v6526RowActions button:hover{background:#f1f5f3!important;color:#173f32!important}
+.portfolioPage .v6526RowActions button:active{transform:scale(.96)!important}
+.portfolioPage .v6526RowActions button.danger:hover{background:#fff2f0!important;color:#b42318!important}
+@media(min-width:761px){
+  .portfolioPage .v653Position{
+    grid-template-columns:minmax(300px,2.2fr) minmax(430px,2.4fr) minmax(210px,1.25fr) auto 76px!important;
+    column-gap:28px!important;
+  }
+  .portfolioPage .v6522DecisionRow{min-width:0!important}
+  .portfolioPage .v6522DecisionRow>a{white-space:nowrap!important}
+}
+@media(max-width:760px){
+  .portfolioPage .v6526RowActions{
+    width:100%!important;min-width:0!important;margin:14px 0 0!important;padding-top:12px!important;
+    border-top:1px solid #edf1ef!important;justify-content:flex-start!important;gap:10px!important;
+  }
+  .portfolioPage .v6526RowActions button{width:40px!important;height:40px!important}
+}
