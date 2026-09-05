@@ -1,0 +1,111 @@
+
+/* NIVORA V65.25 — authoritative responsive system */
+:root{
+ --nv-body:15px;--nv-label:11px;--nv-value:22px;--nv-section:24px;--nv-radius:20px;
+ --nv-border:#dfe7e3;--nv-border-soft:#e9efec;--nv-text:#111827;--nv-muted:#667085;
+ --nv-subtle:#7b8782;--nv-green:#0b6b47;--nv-green-deep:#084b35;--nv-green-soft:#eef8f3;
+ --nv-canvas:#f8faf9;
+}
+.v65Main{background:linear-gradient(180deg,#fbfcfb 0%,var(--nv-canvas) 100%)!important}
+
+/* Information is deliberately low-attention */
+.v658InfoButton{opacity:.52!important;transition:opacity .15s ease!important}
+.v658InfoButton:hover,.v658InfoButton:focus-visible{opacity:.72!important}
+.v6516InfoGlyph circle{stroke:#8b9691!important;stroke-width:1!important;fill:transparent!important}
+.v6516InfoGlyph .v6520InfoDot,.v6516InfoGlyph .v6520InfoStem{fill:#8b9691!important}
+
+@media (min-width:1024px){
+ body{font-size:15px!important;background:var(--nv-canvas)!important}
+ .v65Header{position:sticky!important;top:0!important;z-index:900!important;display:grid!important;grid-template-columns:1fr auto 1fr!important;align-items:center!important;height:72px!important;padding:0 40px!important;background:rgba(255,255,255,.97)!important;border-bottom:1px solid var(--nv-border-soft)!important}
+ .v65Logo{justify-self:start!important;display:flex!important;align-items:baseline!important;gap:10px!important}
+ .v65Wordmark{font-size:24px!important;font-weight:850!important;letter-spacing:-.035em!important}
+ .v65Logo small{font-size:11px!important}
+ .v65DesktopNav{position:static!important;transform:none!important;justify-self:center!important;display:flex!important;align-items:center!important;height:48px!important;padding:4px!important;gap:2px!important;border:1px solid var(--nv-border)!important;border-radius:15px!important;background:#f5f7f6!important}
+ .v65DesktopNav a{height:40px!important;padding:0 20px!important;display:flex!important;align-items:center!important;justify-content:center!important;border-radius:11px!important;font-size:14px!important;font-weight:700!important;color:#596579!important}
+ .v65DesktopNav a.on{background:#fff!important;color:var(--nv-green-deep)!important;box-shadow:0 3px 10px rgba(15,45,32,.06)!important}
+ .v65Account{justify-self:end!important;position:relative!important}
+ .v65Account>button{width:42px!important;height:42px!important}
+ .v65MobileNav{display:none!important}
+ .v65Main{padding:34px 40px 56px!important;min-height:calc(100vh - 72px)!important}
+
+ .v65Stock{width:100%!important;max-width:1440px!important;margin:0 auto!important}
+ .v65StockHead{min-height:112px!important;padding:24px 28px!important;border:1px solid var(--nv-border)!important;border-radius:22px!important;background:#fff!important}
+ .v65StockHead h1{font-size:34px!important;letter-spacing:-.04em!important}
+ .v65StockHead>div:last-child b{font-size:30px!important}
+ .v65ContextStrip{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;margin:22px 0 20px!important;border:1px solid var(--nv-border)!important;border-radius:20px!important;background:#fff!important;overflow:hidden!important}
+ .v65ContextStrip>div{min-height:126px!important;padding:22px 24px!important;display:flex!important;flex-direction:column!important;justify-content:center!important;border-right:1px solid var(--nv-border-soft)!important}
+ .v65ContextStrip>div:last-child{border-right:0!important}
+ .v65ContextStrip .metricLabel small{font-size:11px!important;font-weight:760!important;letter-spacing:.045em!important;color:#76827c!important}
+ .v65ContextStrip>div>b{margin-top:12px!important;font-size:24px!important;font-weight:720!important;letter-spacing:-.025em!important}
+ .v65ContextStrip>div>span{margin-top:7px!important;font-size:12.5px!important;color:var(--nv-subtle)!important}
+ .v65ContextStrip .v658InfoButton{width:16px!important;height:16px!important;min-width:16px!important;min-height:16px!important;margin-left:2px!important}
+ .v65ContextStrip .v6516InfoGlyph{width:15px!important;height:15px!important}
+ .v653DecisionHero{grid-template-columns:minmax(0,1fr) 320px!important;gap:26px!important;padding:30px 34px!important}
+ .v653Primary h2{font-size:50px!important;letter-spacing:-.045em!important}
+ .v653Primary p{max-width:900px!important;font-size:16px!important;line-height:1.55!important}
+
+ .portfolioPage{width:100%!important;max-width:1480px!important;margin:0 auto!important}
+ .portfolioPage .v653HoldingsHead{display:flex!important;align-items:end!important;justify-content:space-between!important;margin:34px 0 14px!important}
+ .portfolioPage .v653HoldingsHead h2{font-size:28px!important;letter-spacing:-.035em!important}
+ .portfolioPage .v653HoldingsHead>span{font-size:12px!important;color:var(--nv-muted)!important}
+ .portfolioPage .v65PositionList{display:grid!important;gap:12px!important}
+ .portfolioPage .v65Position{position:relative!important;display:grid!important;grid-template-columns:minmax(260px,1.45fr) minmax(360px,1.4fr) minmax(240px,1fr) auto!important;align-items:center!important;gap:28px!important;min-height:108px!important;padding:18px 22px!important;margin:0!important;border:1px solid var(--nv-border)!important;border-radius:18px!important;background:#fff!important}
+ .portfolioPage .v65PosMain{display:flex!important;align-items:center!important;gap:12px!important}
+ .portfolioPage .v6522HoldingSummary b{font-size:20px!important;font-weight:780!important}
+ .portfolioPage .v6523HoldingMeta{font-size:13px!important;color:var(--nv-muted)!important}
+ .portfolioPage .v65PosMetrics{display:grid!important;grid-template-columns:repeat(3,minmax(100px,1fr))!important;gap:18px!important;margin:0!important}
+ .portfolioPage .v65PosMetrics small{display:block!important;margin-bottom:4px!important;font-size:10px!important;letter-spacing:.05em!important;color:#7a8493!important}
+ .portfolioPage .v65PosMetrics b{font-size:17px!important}
+ .portfolioPage .v6523Current{grid-column:auto!important;display:block!important;margin:0!important}
+ .portfolioPage .v6523Current b{font-size:16px!important;color:var(--nv-text)!important}
+ .portfolioPage .v6522DecisionRow{display:grid!important;grid-template-columns:1fr auto!important;align-items:center!important;gap:14px!important;padding:0!important;border:0!important}
+ .portfolioPage .v6522DecisionRow b{font-size:16px!important}
+ .portfolioPage .v6522DecisionRow>a{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:38px!important;padding:0 12px!important;border-radius:999px!important;background:var(--nv-green-soft)!important;color:var(--nv-green)!important;font-size:13px!important;font-weight:760!important;text-decoration:none!important}
+ .portfolioPage .v6523Overflow{position:relative!important;right:auto!important;top:auto!important;justify-self:end!important}
+ .portfolioVisuals{padding:24px!important;border-radius:22px!important}
+ .performanceChart svg{height:250px!important;max-height:250px!important}
+
+ .tradingLab,.tradingLabPage,.simplePage{max-width:1380px!important;margin:0 auto!important}
+ .simplePage{max-width:860px!important}
+}
+
+@media (max-width:720px){
+ :root{--nv-body:15px;--nv-label:11.5px;--nv-value:24px;--nv-section:22px;--nv-radius:20px}
+ body{font-size:var(--nv-body)!important;background:var(--nv-canvas)!important}
+ .v65Header{position:sticky!important;top:0!important;z-index:900!important;display:flex!important;align-items:center!important;justify-content:space-between!important;height:68px!important;padding:0 18px!important;background:rgba(255,255,255,.98)!important;border-bottom:1px solid var(--nv-border-soft)!important}
+ .v65Logo small{display:none!important}.v65Wordmark{font-size:25px!important}.v65DesktopNav{display:none!important}
+ .v65Main{width:100%!important;padding:16px 14px calc(82px + env(safe-area-inset-bottom))!important}
+ .v65MobileNav{position:fixed!important;z-index:1000!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:0!important;padding:6px 8px calc(6px + env(safe-area-inset-bottom))!important;border:0!important;border-top:1px solid var(--nv-border)!important;border-radius:0!important;background:rgba(255,255,255,.99)!important;box-shadow:0 -6px 20px rgba(15,45,32,.05)!important}
+ .v65MobileNav a{height:58px!important;min-height:58px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:4px!important;border-radius:12px!important;font-size:12px!important;font-weight:720!important}
+ .v65MobileNav a.on{background:#eef8f3!important;color:var(--nv-green-deep)!important}
+
+ .v65Stock,.portfolioPage,.tradingLab,.tradingLabPage,.simplePage{font-size:15px!important}
+ .v65Stock p,.portfolioPage p,.tradingLab p,.tradingLabPage p,.simplePage p{font-size:15px!important;line-height:1.5!important}
+ .v65StockHead{padding:18px!important;border-radius:20px!important}.v65StockHead h1{font-size:32px!important}.v65StockHead>div:last-child b{font-size:28px!important}
+ .v65ContextStrip{display:grid!important;grid-template-columns:1fr!important;margin:20px 0!important;border:1px solid var(--nv-border)!important;border-radius:20px!important;background:#fff!important;overflow:hidden!important}
+ .v65ContextStrip>div{min-height:118px!important;padding:18px 20px!important;border-right:0!important;border-bottom:1px solid var(--nv-border-soft)!important}
+ .v65ContextStrip>div:last-child{border-bottom:0!important}
+ .v65ContextStrip .metricLabel small{font-size:11.5px!important;font-weight:720!important;letter-spacing:.04em!important}
+ .v65ContextStrip>div>b{margin-top:12px!important;font-size:28px!important;font-weight:720!important;letter-spacing:-.025em!important}
+ .v65ContextStrip>div>span{margin-top:6px!important;font-size:13.5px!important;line-height:1.45!important;color:var(--nv-subtle)!important}
+ .v65ContextStrip .v658InfoButton{width:15px!important;height:15px!important;min-width:15px!important;min-height:15px!important;margin-left:2px!important;opacity:.46!important}
+ .v65ContextStrip .v6516InfoGlyph{width:14px!important;height:14px!important}
+
+ .portfolioPage .v653HoldingsHead{margin:26px 0 12px!important}.portfolioPage .v653HoldingsHead h2{font-size:27px!important}.portfolioPage .v653HoldingsHead>span{display:none!important}
+ .portfolioPage .v65PositionList{display:grid!important;gap:12px!important}
+ .portfolioPage .v65Position{display:block!important;position:relative!important;min-height:0!important;padding:18px!important;margin:0!important;border:1px solid var(--nv-border)!important;border-radius:20px!important;background:#fff!important}
+ .portfolioPage .v65PosMain{padding-right:34px!important}
+ .portfolioPage .v6522HoldingSummary b{font-size:21px!important;font-weight:760!important}
+ .portfolioPage .v6523HoldingMeta{font-size:13px!important}
+ .portfolioPage .v65PosMetrics{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px 18px!important;margin-top:14px!important}
+ .portfolioPage .v65PosMetrics small{font-size:10.5px!important}.portfolioPage .v65PosMetrics b{font-size:18px!important}
+ .portfolioPage .v6523PrimaryValue{font-size:22px!important}
+ .portfolioPage .v6523Current{grid-column:1/-1!important;display:flex!important;align-items:baseline!important;gap:8px!important}
+ .portfolioPage .v6523Current b{font-size:16px!important}
+ .portfolioPage .v6522DecisionRow{display:grid!important;grid-template-columns:1fr auto!important;align-items:center!important;gap:12px!important;padding-top:12px!important;border-top:1px solid var(--nv-border-soft)!important}
+ .portfolioPage .v6522DecisionRow b{font-size:17px!important}
+ .portfolioPage .v6522DecisionRow>a{font-size:13px!important;background:transparent!important}
+ .portfolioPage .v6523Overflow{position:absolute!important;right:12px!important;top:12px!important}
+ .portfolioVisuals{padding:18px 16px!important;border-radius:20px!important}
+ .performanceChart svg{height:180px!important;max-height:180px!important}
+}
