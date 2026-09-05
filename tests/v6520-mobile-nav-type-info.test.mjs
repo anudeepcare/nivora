@@ -1,0 +1,6 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";
+const read=p=>fs.readFileSync(p,"utf8");
+test("mobile nav has exactly three equal columns and is edge-to-edge at screen bottom",()=>{const x=read("app/globals.css");assert.match(x,/V65\.20[\s\S]*\.v65MobileNav\{[^}]*grid-template-columns:repeat\(3,minmax\(0,1fr\)\)!important[^}]*left:0!important[^}]*right:0!important[^}]*bottom:0!important[^}]*border-radius:0!important/s)});
+test("mobile content reserves docked nav including safe area",()=>{const x=read("app/globals.css");assert.match(x,/V65\.20[\s\S]*\.v65Main\{[^}]*padding-bottom:calc\(78px \+ env\(safe-area-inset-bottom\)\)!important/s)});
+test("info glyph uses geometric SVG paths, not baseline-sensitive SVG text",()=>{const x=read("components/v65/MetricInfo.tsx");assert.doesNotMatch(x,/<text/);assert.match(x,/className="v6520InfoDot"/);assert.match(x,/className="v6520InfoStem"/)});
+test("mobile type hierarchy is consistent and not tiny",()=>{const x=read("app/globals.css");assert.match(x,/V65\.20[\s\S]*\.stockPage small,\.portfolioPage small,\.tradingLab small,\.simplePage small\{font-size:12px!important/s);assert.match(x,/V65\.20[\s\S]*\.v65MobileNav a\{[^}]*font-size:12px!important/s)});
