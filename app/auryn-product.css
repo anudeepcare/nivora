@@ -154,3 +154,53 @@ a{color:inherit;text-decoration:none}button,input,select{font:inherit}button{cur
 .aurynLabDetails{padding:0}.aurynLabDetails summary{list-style:none;cursor:pointer;padding:18px 0;font-size:11px;font-weight:850}.aurynLabDetails summary::-webkit-details-marker{display:none}.aurynLabDetailsBody{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--auryn-line)}.aurynLabDetailsBody>div{padding:16px;border-right:1px solid var(--auryn-line)}.aurynLabDetailsBody>div:last-child{border-right:0}.aurynLabDetailsBody b,.aurynLabDetailsBody span,.aurynLabDetailsBody small{display:block}.aurynLabDetailsBody b{font-size:10px}.aurynLabDetailsBody span{margin:6px 0;color:var(--auryn-text);font-size:11px}.aurynLabDetailsBody small{color:var(--auryn-muted);font-size:9px;line-height:1.4}
 @media(max-width:900px){.aurynHoldingEditRow{grid-template-columns:1fr 1fr}.aurynHoldingEditRow>div:first-child,.aurynHoldingEditRow .aurynInlineActions{grid-column:1/-1}.aurynLabFunnel{grid-template-columns:repeat(2,1fr)}.aurynLabFunnel article{border-bottom:1px solid var(--auryn-line)}.aurynLabFunnel article:nth-child(even){border-right:0}.aurynLabDetailsBody{grid-template-columns:1fr 1fr}.aurynLabDetailsBody>div:nth-child(even){border-right:0}.aurynLabDecisionList article{grid-template-columns:110px 100px minmax(0,1fr)}}
 @media(max-width:560px){.aurynHoldingEditRow{grid-template-columns:1fr;padding:14px}.aurynHoldingEditRow>div:first-child,.aurynHoldingEditRow .aurynInlineActions{grid-column:auto}.aurynDeleteConfirm{align-items:flex-start;flex-direction:column;padding:14px}.aurynLabHero{grid-template-columns:1fr;padding-top:12px}.aurynLabHero h1{font-size:42px}.aurynLabStatus{grid-template-columns:1fr;padding:22px}.aurynLabRunButton{width:100%;justify-content:center}.aurynLabSectionHead{align-items:flex-start;flex-direction:column;gap:5px}.aurynLabSectionHead>span{text-align:left}.aurynLabFunnel{grid-template-columns:1fr}.aurynLabFunnel article{border-right:0}.aurynLabDecisionList article{grid-template-columns:1fr auto}.aurynLabDecisionList article>p,.aurynLabTrigger{grid-column:1/-1}.aurynLabDetailsBody{grid-template-columns:1fr}.aurynLabDetailsBody>div{border-right:0;border-bottom:1px solid var(--auryn-line)}}
+
+
+/* AURYN V3.5 — MOBILE-FIRST RELEASE. Screenshot-driven overrides. */
+@media(max-width:760px){
+ /* iPhone shell: do not let content or browser chrome visually collide with product header */
+ .aurynHeader{height:calc(56px + env(safe-area-inset-top));padding:env(safe-area-inset-top) 16px 0;grid-template-columns:minmax(0,1fr) auto}
+ .aurynHeader .aurynBrand{gap:8px;min-width:0}.aurynHeader .aurynSigil{width:24px;height:24px}.aurynHeader .aurynWord{font-size:19px;letter-spacing:.12em;white-space:nowrap}
+ .aurynHeaderRight{gap:0}.aurynAccount>button{width:36px;height:36px}.aurynAppMain{padding:16px 14px calc(76px + env(safe-area-inset-bottom))}
+ .aurynBottomNav{min-height:62px;padding:5px 8px calc(5px + env(safe-area-inset-bottom));grid-template-columns:repeat(4,minmax(0,1fr))}
+ .aurynBottomNav a{min-height:48px;gap:2px;font-size:9px}.aurynBottomNav a svg{width:19px;height:19px}.aurynBottomNav a.on{background:#2b2720}
+
+ /* Research landing: mobile typography with usable density */
+ .aurynResearchHero{padding:30px 0 28px}.aurynResearchHero .aurynEyebrow{text-align:left;font-size:9px}
+ .aurynResearchHero h1{font-size:clamp(43px,13vw,57px);line-height:.96;margin:12px 0 18px}.aurynResearchHero>p{font-size:15px;line-height:1.55;margin-bottom:22px}
+ .aurynSearch.large form{height:54px}.aurynEvidenceRail{grid-template-columns:1fr 1fr}.aurynEvidenceRail>span{padding:15px 8px}.aurynEvidenceRail b{font-size:14px}.aurynEvidenceRail small{font-size:9px}
+ .aurynResearchGuide{padding:38px 0}.aurynResearchGuide h2{font-size:34px}
+
+ /* Holdings: information-first card rows. Quantity and cost basis are no longer discarded on mobile. */
+ .holdingsIntelHead{align-items:end!important}.holdingsIntelHead h2{font-size:42px!important;line-height:1!important}.holdingsIntelHead>span{font-size:11px!important}
+ .aurynHoldingRow{grid-template-columns:minmax(0,1fr) auto!important;gap:10px 14px!important;padding:17px 4px!important;align-items:start!important}
+ .aurynHoldingName{grid-column:1;grid-row:1}.aurynHoldingName>div>b{font-size:14px!important}.aurynHoldingName>div>span{font-size:10px!important}
+ .aurynHoldingMetric{display:none!important}.aurynHoldingMetric:nth-of-type(3){display:grid!important;grid-column:2;grid-row:1;text-align:right;min-width:0}.aurynHoldingMetric:nth-of-type(3) small{font-size:7px!important}.aurynHoldingMetric:nth-of-type(3) b{max-width:150px;font-size:12px!important;line-height:1.15;white-space:normal}
+ .aurynHoldingFacts{grid-column:1/-1;grid-row:2;display:flex!important;gap:18px;padding-left:28px}.aurynHoldingFacts span{display:grid;gap:2px}.aurynHoldingFacts small{font-size:7px;letter-spacing:.1em;color:var(--auryn-subtle)}.aurynHoldingFacts b{font-size:11px;font-weight:750}
+ .aurynHoldingActions{grid-column:1/-1!important;grid-row:3;display:flex!important;justify-content:flex-end!important;gap:6px!important}.aurynHoldingActions a,.aurynHoldingActions button{width:36px!important;height:36px!important;border-radius:9px!important}.aurynHoldingActions svg{width:15px;height:15px}
+ .aurynHoldingEditRow{grid-template-columns:1fr 1fr!important;padding:14px!important}.aurynHoldingEditRow>div:first-child,.aurynHoldingEditRow .aurynInlineActions{grid-column:1/-1!important}
+ .aurynDeleteConfirm{padding:14px!important}
+
+ /* Mobile thesis: compact hierarchy, no giant desktop card stacked into a phone. */
+ .aurynEvidenceNav{margin:0 -14px;padding:3px 14px 8px;gap:2px}.aurynEvidenceNav button{padding:8px 10px;font-size:11px}
+ .aurynStockEvidenceSurface .v65Thesis{gap:10px}
+ .aurynStockEvidenceSurface .v658VerdictSurface{border-radius:14px}
+ .aurynStockEvidenceSurface .v658VerdictLead{padding:18px 16px!important}
+ .aurynStockEvidenceSurface .v658VerdictLead>small,.aurynStockEvidenceSurface .v658VerdictAction>small{font-size:8px}
+ .aurynStockEvidenceSurface .v658VerdictHeadline{margin:7px 0!important;gap:8px!important;align-items:center!important}
+ .aurynStockEvidenceSurface .v658VerdictHeadline h3{font-size:31px!important;line-height:1!important}
+ .aurynStockEvidenceSurface .v658VerdictHeadline span{font-size:10px!important;padding:4px 7px!important}
+ .aurynStockEvidenceSurface .v658VerdictLead>p{font-size:11px!important;line-height:1.48!important}
+ .aurynStockEvidenceSurface .v658VerdictAction{padding:16px!important}.aurynStockEvidenceSurface .v658VerdictAction>b{font-size:24px!important;margin:5px 0 2px!important}.aurynStockEvidenceSurface .v658VerdictAction>p{margin:8px 0 0!important}
+ .aurynStockEvidenceSurface .v658VerdictMetrics{grid-template-columns:1fr!important}
+ .aurynStockEvidenceSurface .v658VerdictMetrics article{padding:12px 14px!important;border-right:0!important;border-bottom:1px solid var(--auryn-line)}
+ .aurynStockEvidenceSurface .v658VerdictMetrics article:last-child{border-bottom:0}.aurynStockEvidenceSurface .v658VerdictMetrics article>span{font-size:9px!important}
+ .aurynStockEvidenceSurface .v65FactorGrid{grid-template-columns:1fr!important;gap:7px!important}.aurynStockEvidenceSurface .v65FactorGrid>div{padding:12px!important}
+ .aurynStockEvidenceSurface .thesisGrid{grid-template-columns:1fr!important}
+ .aurynHelpMark{width:20px!important;height:20px!important;min-width:20px!important;min-height:20px!important;margin:-4px -3px!important}.aurynHelpMark svg{width:12px!important;height:12px!important}
+}
+@media(max-width:390px){
+ .aurynAppMain{padding-left:12px;padding-right:12px}.aurynHeader{padding-left:12px;padding-right:12px}
+ .aurynResearchHero h1{font-size:43px}.aurynHoldingMetric:nth-of-type(3) b{max-width:132px;font-size:11px!important}
+ .aurynBottomNav a{font-size:8px}
+}
