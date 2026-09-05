@@ -983,3 +983,42 @@ small:has(> .v65MetricInfo){display:inline-flex!important;align-items:center!imp
 
 .portfolioHealthPanel{margin-top:12px;padding:19px;border:1px solid #e1e9e5;border-radius:20px;background:rgba(255,255,255,.88)}.portfolioHealthPanel header{display:flex;align-items:flex-end;justify-content:space-between;gap:20px}.portfolioHealthPanel header small{font-size:10px;font-weight:900;letter-spacing:.7px;color:#16845a}.portfolioHealthPanel h2{margin:3px 0 0}.portfolioHealthPanel h2 b{font-size:32px}.portfolioHealthPanel h2 span{font-size:13px;color:#66756f}.portfolioHealthPanel header p{max-width:540px;margin:0;font-size:13px;color:#66756f}.healthExplainGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}.healthExplainGrid article{padding:14px;border-radius:14px;background:#f7faf8}.healthExplainGrid small{display:block;font-size:10px;font-weight:900;color:#16845a;margin-bottom:7px}.healthExplainGrid b,.healthExplainGrid span{display:block;font-size:12px;line-height:1.45}.healthExplainGrid span{margin-top:5px;color:#66756f}.portfolioHealthPanel footer{margin-top:10px;font-size:10px;color:#7b8882}
 @media(max-width:720px){.portfolioHealthPanel{padding:15px}.portfolioHealthPanel header{align-items:flex-start;flex-direction:column}.portfolioHealthPanel header p{font-size:14px!important}.portfolioHealthPanel h2 b{font-size:34px}.healthExplainGrid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory}.healthExplainGrid article{flex:0 0 82vw;scroll-snap-align:start}.healthExplainGrid small{font-size:12px}.healthExplainGrid b,.healthExplainGrid span{font-size:14px}.portfolioHealthPanel footer{font-size:12px}}
+
+/* V65.16 — final information affordance + Analyze typography contract.
+   SVG owns the visible circle so legacy button rules cannot erase it. */
+.v658InfoButton{border:0!important;background:transparent!important;width:22px!important;height:22px!important;min-width:22px!important;min-height:22px!important;padding:0!important;margin-left:5px!important;overflow:visible!important}
+.v6516InfoGlyph{display:block;width:19px;height:19px;overflow:visible}
+.v6516InfoGlyph circle{fill:#fff;stroke:#74827c;stroke-width:1.55}
+.v6516InfoGlyph text{fill:#53615b;font:800 11px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.v658InfoButton:hover .v6516InfoGlyph circle,.v658InfoButton:focus-visible .v6516InfoGlyph circle{stroke:#126b46;fill:#f2faf6}
+.v658InfoButton:hover .v6516InfoGlyph text,.v658InfoButton:focus-visible .v6516InfoGlyph text{fill:#126b46}
+
+/* Analyze: one readable hierarchy across thesis, factor cards and explanation cards */
+.stockPage .v65ThesisGrid small,.stockPage .v65FactorGrid small{font-size:11px!important;font-weight:850!important;letter-spacing:.055em!important;line-height:1.25!important;color:#5f6f7f!important}
+.stockPage .v65ThesisGrid b,.stockPage .v65FactorGrid b{font-size:18px!important;line-height:1.2!important;letter-spacing:-.2px!important}
+.stockPage .v65ThesisGrid p,.stockPage .v65FactorGrid p{font-size:13px!important;line-height:1.5!important;color:#5d6c80!important}
+.stockPage .v65ExplainGrid,.stockPage .v65ExplainGrid article{font-size:14px!important}
+.stockPage .v65ExplainGrid h3,.stockPage .v65ExplainGrid strong{font-size:14px!important;line-height:1.35!important}
+.stockPage .v65ExplainGrid p,.stockPage .v65ExplainGrid li{font-size:14px!important;line-height:1.55!important}
+@media(min-width:900px){.stockPage .v65ThesisGrid small,.stockPage .v65FactorGrid small{font-size:11px!important}.stockPage .v65ThesisGrid b,.stockPage .v65FactorGrid b{font-size:19px!important}.stockPage .v65ExplainGrid p,.stockPage .v65ExplainGrid li{font-size:14px!important}}
+@media(max-width:620px){.v6516InfoGlyph{width:20px;height:20px}.v658InfoButton{width:24px!important;height:24px!important;min-width:24px!important;min-height:24px!important}.stockPage .v65ThesisGrid small,.stockPage .v65FactorGrid small{font-size:12px!important}.stockPage .v65ThesisGrid b,.stockPage .v65FactorGrid b{font-size:20px!important}.stockPage .v65ExplainGrid p,.stockPage .v65ExplainGrid li{font-size:15px!important}}
+
+/* V65.16 mobile polish — readable, tighter, faster */
+@media(max-width:620px){
+  .stockPage{font-size:16px!important}
+  .stockPage small{font-size:12px!important;line-height:1.25!important;letter-spacing:.07em!important}
+  .stockPage .metricLabel small{font-size:12px!important}
+  .stockPage .metricLabel{gap:6px!important}
+  .stockPage .v65MetricValue,.stockPage .v65SnapshotGrid b{font-size:27px!important;line-height:1.08!important}
+  .stockPage .v65SnapshotGrid>div{padding:22px 16px!important}
+  .stockPage .v65SnapshotGrid p,.stockPage .v65SnapshotGrid span{font-size:13px!important;line-height:1.4!important}
+  .stockPage .v65BuyAudit article{padding:16px!important}
+  .stockPage .v65BuyAudit article b{font-size:16px!important}
+  .stockPage .v65BuyAudit article strong{font-size:25px!important}
+  .stockPage .decisionEyebrow small{font-size:12px!important}
+  .stockPage .v65ExplainGrid p,.stockPage .v65ExplainGrid li{font-size:15px!important;line-height:1.5!important}
+  .stockPage .v65MetricSheet{font-size:15px!important}
+  /* expensive blur was being applied across many mobile surfaces */
+  .stockPage .portfolioGlass,.stockPage [class*="Glass"]{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+  .v65MobileNav{backdrop-filter:blur(10px)!important;-webkit-backdrop-filter:blur(10px)!important}
+}
