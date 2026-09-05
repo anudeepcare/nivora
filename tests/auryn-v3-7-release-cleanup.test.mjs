@@ -1,0 +1,7 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";const r=p=>fs.readFileSync(p,"utf8");
+test("stock thesis no longer uses legacy verdict/factor presentation classes",()=>{const s=r("components/StockClient.tsx");assert.match(s,/StockThesisPanel/);assert.doesNotMatch(s,/v658VerdictSurface|v65FactorGrid|className="v65Thesis"/);});
+test("portfolio holdings use clickable rows without redundant arrow action",()=>{const s=r("components/portfolio/HoldingsIntelligence.tsx");assert.match(s,/useRouter/);assert.match(s,/aurynPositionRow .*clickable/);assert.doesNotMatch(s,/ArrowRight/);});
+test("portfolio add form renders near intro before overview",()=>{const s=r("app/portfolio/page.tsx");const add=s.indexOf("aurynAddPanel"),overview=s.indexOf('id="portfolio-overview"');assert.ok(add>0&&overview>0&&add<overview);});
+test("portfolio risk presentation uses pulse intelligence and help, not API sector/archetype 100 copy",()=>{const page=r("app/portfolio/page.tsx"),graph=r("components/portfolio/PortfolioCompositionGraph.tsx");assert.match(graph,/MetricInfo title="Portfolio map"/);assert.doesNotMatch(page,/sector\/archetype/);assert.match(graph,/pulse\?\.concentration/);});
+test("compact search has no visible Go label",()=>{const s=r("components/SearchBox.tsx");assert.doesNotMatch(s,/"Go"/);});
+test("mobile visual modes use a non-scrolling segmented grid",()=>{const c=r("app/auryn-product.css");assert.match(c,/aurynVisualModes[^}]*grid-template-columns/);});

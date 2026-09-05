@@ -25,6 +25,7 @@ import StockDecisionSummary from "./stock/StockDecisionSummary";
 import StockActionPlan from "./stock/StockActionPlan";
 import StockEvidenceNav from "./stock/StockEvidenceNav";
 import StockEvidenceSections from "./stock/StockEvidenceSections";
+import StockThesisPanel from "./stock/StockThesisPanel";
 import {metricDefinitions} from "@/lib/nivora-metrics";
 import {ENGINE_VERSION} from "@/lib/nivora-version";
 import {formatMoney as displayMoney,formatPercent} from "@/lib/nivora-format";
@@ -553,7 +554,7 @@ export default function StockClient({symbol}:{symbol:string}){
     <StockSecurityHeader company={company?.name||d.name||symbol} symbol={symbol} price={currentPx} changePct={displayChangePct} status={marketStatusLabel} detail={liveQuote?(liveQuote.integrityState==="MARKET_CLOSED"?`${liveQuote.provider} · market closed · regular close ${displayMoney(Number(liveQuote.regularClose))}`:`${liveQuote.provider} · ${liveQuote.ageSeconds==null?"timestamp unavailable":`${liveQuote.ageSeconds}s old`}${liveQuote.disagreementPct!=null?` · provider gap ${Number(liveQuote.disagreementPct).toFixed(2)}%`:""} · regular close ${displayMoney(Number(liveQuote.regularClose))}`):"Daily analysis stays available while the live quote connects."}/>
     {closedQuoteMismatch?<div className="aurynIntegrityAlert" role="status"><b>Quote integrity check</b><span>Provider price did not match the verified regular close. AURYN is using the verified regular close for this closed-market decision view.</span></div>:null}
     {presentedDecision&&<><StockDecisionSummary decision={presentedDecision} owns={owns}/><StockActionPlan entryLow={horizonPlan.entryLow} entryHigh={horizonPlan.entryHigh} reassess={Number(d.levels?.invalidation||d.levels?.majorSupport||0)} confirm={horizonPlan.confirm} breaker={presentedDecision.breakers?.[0]}/></>}
-    <div className="v65PositionBar"><div><Sparkles size={15}/><span>AURYN evaluates multiple horizons automatically.</span></div><button type="button" className={owns?"on":""} onClick={()=>setOwns(!owns)}>{owns?(ownerPosition?"✓ Position loaded":"✓ I own this"):"I own this"}</button></div>
+    <div className="aurynOwnershipBar"><div><Sparkles size={15}/><span>AURYN evaluates multiple horizons automatically.</span></div><button type="button" className={owns?"on":""} onClick={()=>setOwns(!owns)}>{owns?(ownerPosition?"✓ Position loaded":"✓ I own this"):"I own this"}</button></div>
 
 
     {depth==="pro"&&enterprise&&intelligence&&<section className="v29ProCockpit">
@@ -625,35 +626,19 @@ export default function StockClient({symbol}:{symbol:string}){
       </div>
     </section>}
 
-    {depth!=="simple"&&intelligence&&<section className="v65IntelStrip">
-      <div className="intelLead"><small>AURYN INTELLIGENCE</small><div><b>{intelligence.score}/100</b><span className={tone(intelligence.thesisLabel)}>{intelligence.thesisLabel}</span></div><p>{intelligence.biggestPositive} <strong>Watch:</strong> {intelligence.biggestRisk}</p></div>
+    {depth!=="simple"&&intelligence&&<section className="aurynIntelStrip">
+      <div className="aurynIntelLead"><small>AURYN INTELLIGENCE</small><div><b>{intelligence.score}/100</b><span className={tone(intelligence.thesisLabel)}>{intelligence.thesisLabel}</span></div><p>{intelligence.biggestPositive} <strong>Watch:</strong> {intelligence.biggestRisk}</p></div>
       <div className="aurynIntelItem aurynIntelTrigger"><small>NEXT DECISION TRIGGER</small><b>{intelligence.nextDecision}</b></div>
       <div className="aurynIntelItem aurynIntelCoverage"><small>DATA COVERAGE</small><b>{intelligence.confidenceLabel}</b><span>{intelligence.confidence}/100 coverage · not probability</span></div>
       <button type="button" onClick={()=>{setTab("thesis");window.requestAnimationFrame(()=>window.requestAnimationFrame(()=>thesisRef.current?.scrollIntoView({behavior:"smooth",block:"start"})))}}>Open full thesis →</button>
     </section>}
 
 
-    <section ref={thesisRef} id="nivora-research" className={["v65Research",depth==="simple"?"v65ResearchSimple":""].join(" ")}>
+    <section ref={thesisRef} id="nivora-research" className={["aurynStockResearch",depth==="simple"?"simple":""].join(" ")}>
       <StockEvidenceNav tab={tab} setTab={setTab} isCrypto={d.assetType==="crypto"}/>
       <StockEvidenceSections>
 
-      {tab==="thesis"&&presentedDecision&&<div className="v65Thesis">
-        <div className="v658VerdictSurface">
-          <div className="v658VerdictLead"><small>INVESTMENT VERDICT</small><div className="v658VerdictHeadline"><h3>{presentedDecision.thesisLabel}</h3><span>{presentedDecision.thesisScore}/100</span></div><p>{presentedDecision.oneLine}</p></div>
-          <div className="v658VerdictAction"><small>INVESTOR ACTION</small><b className={tone(presentedDecision.action)}>{presentedDecision.action}</b><span>{presentedDecision.horizon} decision horizon</span><p>Use the scores below to see what supports the call and what still needs confirmation.</p></div>
-          <div className="v658VerdictMetrics">
-            <article><div><small className="v658MetricLabelRow">THESIS <MetricInfo title="Thesis score" score={presentedDecision.thesisScore}>Overall alignment of the business, forward evidence and durability behind the investment case.</MetricInfo></small><b>{presentedDecision.thesisScore}/100</b></div><i><em style={{width:`${presentedDecision.thesisScore}%`}}/></i><span>{presentedDecision.thesisLabel} overall evidence</span></article>
-            {presentedDecision.longTermThesis&&<article><div><small className="v658MetricLabelRow">LONG-TERM <MetricInfo title="Long-term thesis" score={presentedDecision.longTermThesis.score}>Separates 1–3 year business evidence from near-term price action.</MetricInfo></small><b>{presentedDecision.longTermThesis.score}/100</b></div><i><em style={{width:`${presentedDecision.longTermThesis.score}%`}}/></i><span>{presentedDecision.longTermThesis.label} · {presentedDecision.longTermThesis.longTerm}</span></article>}
-            {presentedDecision.expectationGap&&<article><div><small className="v658MetricLabelRow">EXPECTATION GAP <MetricInfo title="Expectation gap" score={presentedDecision.expectationGap.score??undefined}>Compares forward growth, earnings/revision direction and catalysts with a neutral baseline. It is not a price target.</MetricInfo></small><b>{presentedDecision.expectationGap.score!=null?`${presentedDecision.expectationGap.score}/100`:"—"}</b></div>{presentedDecision.expectationGap.score!=null&&<i><em style={{width:`${presentedDecision.expectationGap.score}%`}}/></i>}<span>{presentedDecision.expectationGap.label} · {presentedDecision.expectationGap.reason}</span></article>}
-          </div>
-        </div>
-        <div className="v65FactorGrid">{Object.entries(presentedDecision.factors).map(([k,v]:any)=>{const isRisk=k==="risk";const available=v!=null&&Number.isFinite(Number(v));const label=isRisk?"RISK PRESSURE":k.replace(/([A-Z])/g," $1").toUpperCase();const def=(metricDefinitions as any)[k];return <div key={k} className={`${isRisk&&available&&Number(v)>=70?"factorRiskHigh":""} ${!available?"factorUnavailable":""}`}><div className="metricLabel v658MetricLabelRow"><small>{label}</small>{def&&<MetricInfo title={def.title}>{def.short} {def.uses} Freshness: {def.freshness} Source: {def.source}</MetricInfo>}</div><b>{available?`${v}/100`:"N/A"}</b>{available?<i><em style={{width:`${Math.max(3,Math.min(100,Number(v)))}%`}}/></i>:<span className="factorNA">Missing evidence lowers coverage; it is not scored as bearish.</span>}</div>})}</div>
-        <div className="thesisGrid">
-          <div className="thesisCard positive"><small>WHY THE THESIS CAN WORK</small>{presentedDecision.drivers.length?presentedDecision.drivers.map((x:string,i:number)=><p key={i}>✓ {x}</p>):<p>No dominant positive evidence yet.</p>}</div>
-          <div className="thesisCard concern"><small>WHAT CAN BREAK IT</small>{presentedDecision.breakers.map((x:string,i:number)=><p key={i}>• {x}</p>)}</div>
-          <div className="thesisCard contradiction"><small>WHAT CHANGED</small>{presentedDecision.changed.length?presentedDecision.changed.map((x:string,i:number)=><p key={i}>↔ {x}</p>):<p>No material thesis change detected. Daily price noise is not treated as a new thesis.</p>}</div>
-        </div>
-      </div>}
+      {tab==="thesis"&&presentedDecision&&<StockThesisPanel decision={presentedDecision} metricDefinitions={metricDefinitions}/>}
 
       {tab==="fundamentals"&&<div className="v12Fund">
         <div className={`fundSignal ${business.tone||"neutral"}`}><small>BUSINESS QUALITY</small><h3>{business.label}{business.score!=null?` · ${business.score}/100`:""}</h3>{(business.reasons||[]).slice(0,4).map((x:string,i:number)=><p key={i}>• {x}</p>)}{five&&<div className="fiveRecord"><small>5-YEAR RECORD</small><b>{five.score}/100 · {five.revenueTrend}</b><p>{five.summary}</p><div>{(five.history||[]).map((y:any)=><span key={y.year}><i>{y.year}</i><strong>{y.revenue!=null?money(y.revenue):"—"}</strong><em>{y.netIncome!=null?`NI ${money(y.netIncome)}`:"NI —"}</em></span>)}</div></div>}</div>

@@ -15,7 +15,7 @@ export default function SearchBox({large=false,compact=false}:{large?:boolean;co
  function choose(x:R){setOpen(false);setBusy(true);r.push(`/stock/${encodeURIComponent(x.symbol)}`)}
  function submit(e:React.FormEvent){e.preventDefault();if(busy)return;if(items[0])choose(items[0]);else if(q.trim()){setBusy(true);r.push(`/stock/${encodeURIComponent(q.trim().toUpperCase())}`)}}
  return <div className={`aurynSearch ${large?"large":""} ${compact?"compact":""}`}>
-  <form onSubmit={submit}><Search size={18}/><input aria-label="Search investments" value={q} onFocus={()=>setOpen(true)} onChange={e=>{setQ(e.target.value);setOpen(true)}} placeholder="Company, ticker or crypto…"/><button disabled={busy} aria-label="Analyze">{busy?"…":<><span>{compact?"Go":"Analyze"}</span><ArrowRight size={16}/></>}</button></form>
+  <form onSubmit={submit}><Search size={18}/><input aria-label="Search investments" value={q} onFocus={()=>setOpen(true)} onChange={e=>{setQ(e.target.value);setOpen(true)}} placeholder="Company, ticker or crypto…"/>{!compact&&<button disabled={busy} aria-label="Analyze">{busy?"…":<><span>Analyze</span><ArrowRight size={16}/></>}</button>}</form>
   {open&&items.length>0&&<div className="aurynSearchResults">{items.map(x=><button type="button" key={`${x.symbol}-${x.exchange}`} onClick={()=>choose(x)}><span><b>{x.name}</b><small>{x.exchange||x.type||""}</small></span><strong>{x.symbol}</strong></button>)}</div>}
  </div>
 }

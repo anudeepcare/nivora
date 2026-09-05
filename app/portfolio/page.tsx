@@ -2,14 +2,12 @@
 import {useCallback,useEffect,useMemo,useState} from "react";
 import AuthGuard from "@/components/AuthGuard";
 import AppShell from "@/components/AppShell";
-import MetricInfo from "@/components/v65/MetricInfo";
 import {supabaseBrowser} from "@/lib/supabase";
-import {calculatePortfolioIntelligence,calculatePortfolioPulse} from "@/lib/v65/portfolio";
+import {calculatePortfolioPulse} from "@/lib/v65/portfolio";
 import PortfolioPulse from "@/components/portfolio/PortfolioPulse";
 import HoldingsIntelligence from "@/components/portfolio/HoldingsIntelligence";
-import Link from "next/link";
 import {useSearchParams} from "next/navigation";
-import {Trash2,Pencil,Check,X,Sparkles,ShieldCheck,Search,WalletCards,Bitcoin,Banknote} from "lucide-react";
+import {WalletCards,Bitcoin,Banknote} from "lucide-react";
 
 type AssetType="EQUITY"|"CRYPTO"|"CASH";
 
@@ -61,7 +59,6 @@ function PortfolioContent(){
   const q=quotes[x.symbol],price=Number(q?.price||x.avg_cost||0);
   return{assetType:x.asset_type==="CRYPTO"?"CRYPTO" as const:"EQUITY" as const,symbol:x.symbol,quantity:Number(x.shares||0),price,avgCost:Number(x.avg_cost||0),thesisScore:q?.thesisScore??null,companyScore:q?.companyScore??null,opportunityScore:q?.opportunityScore??null,action:q?.action||"",sector:q?.sector||null,archetype:q?.archetype||null,source:x};
  }),[rows,quotes]);
- const intel=useMemo(()=>calculatePortfolioIntelligence(priced),[priced]);
  const pulse=useMemo(()=>calculatePortfolioPulse(priced,pulseHistory),[priced,pulseHistory]);
  useEffect(()=>{if(!rows.length||!pulse.totalValue)return;let cancelled=false;(async()=>{const sb=supabaseBrowser(),{data:{user}}=await sb.auth.getUser();if(!user||cancelled)return;const holdings=priced.map((x:any)=>x.assetType==="CASH"?{assetType:"CASH",symbol:x.currency,value:Number(x.amount||0)}:{assetType:x.assetType,symbol:x.symbol,value:Number(x.quantity||0)*Number(x.price||0)});await fetch("/api/portfolio/pulse",{method:"POST",headers:{"Content-Type":"application/json","x-nivora-user-id":user.id},body:JSON.stringify({totalValue:pulse.totalValue,holdings})}).then(r=>r.ok?refreshPulseHistory(user.id):null).catch(()=>null)})();return()=>{cancelled=true}},[rows.length,pulse.totalValue,priced]);
  const investedRows=rows.filter((x:any)=>x.asset_type!=="CASH");
@@ -76,17 +73,18 @@ function PortfolioContent(){
   <div className="aurynPortfolioIntro"><div><small>OWN</small><h1>Your capital, interpreted.</h1><p>Performance, benchmark context, risk, concentration and the decisions that matter now.</p></div><button type="button" onClick={()=>setShowAdd(v=>!v)}>{showAdd?"Close":"+ Add investment"}</button></div>
 
   <nav className="aurynPortfolioNav" aria-label="Portfolio sections"><a href="#portfolio-overview">Overview</a><a href="#portfolio-performance">Performance</a><a href="#portfolio-allocation">Allocation</a><a href="#portfolio-risk">Risk</a><a href="#portfolio-decisions">Decisions</a><a href="#portfolio-holdings">Holdings</a></nav>
-  <div id="portfolio-overview"><PortfolioPulse pulse={pulse} risk={portfolioRisk}/></div> 
-
-  
   {showAdd?<div className="aurynSection aurynAddPanel">
    <div className="aurynAssetTabs"><button className={assetType==="EQUITY"?"on":""} onClick={()=>setAssetType("EQUITY")}><WalletCards size={16}/> Stock</button><button className={assetType==="CRYPTO"?"on":""} onClick={()=>setAssetType("CRYPTO")}><Bitcoin size={16}/> Crypto</button><button className={assetType==="CASH"?"on":""} onClick={()=>setAssetType("CASH")}><Banknote size={16}/> Cash</button></div>
    <form className="aurynAssetForm" onSubmit={add}><input placeholder={assetType==="CASH"?"Currency (USD)":assetType==="CRYPTO"?"BTC, ETH, SOL…":"Ticker"} value={symbol} onChange={e=>setSymbol(e.target.value)} required={assetType!=="CASH"}/><input placeholder={assetType==="CASH"?"Cash amount":"Qty"} type="number" step="any" value={shares} onChange={e=>setShares(e.target.value)} required/>{assetType!=="CASH"?<input placeholder="Average cost" type="number" step="0.01" value={cost} onChange={e=>setCost(e.target.value)} required/>:null}{assetType!=="CASH"?<select value={horizon} onChange={e=>setHorizon(e.target.value)}><option value="short">Short term</option><option value="swing">Swing</option><option value="long">Long term</option></select>:null}<button>Add {assetType==="EQUITY"?"stock":assetType==="CRYPTO"?"crypto":"cash"}</button></form>
   </div>:null}{msg&&<div className="formError">{msg}</div>}
 
+  <div id="portfolio-overview"><PortfolioPulse pulse={pulse} risk={portfolioRisk}/></div> 
+
+  
+
+
   <HoldingsIntelligence assets={priced} onEdit={x=>{setPendingDelete(null);setEdit(x)}} onRemove={requestRemove} editingId={edit?.id||null} editDraft={edit} onEditDraft={setEdit} onSaveEdit={saveEdit} onCancelEdit={()=>setEdit(null)} pendingDelete={pendingDelete?.id||null} onConfirmRemove={confirmRemove} onCancelRemove={()=>setPendingDelete(null)}/>
 
-  <section className="aurynSection" id="portfolio-allocation"><header><small>ALLOCATION & RISK</small><h2>Where portfolio risk actually lives</h2></header><div className="aurynPortfolioDetails"><div className="aurynAllocation"><div><small>ALLOCATION</small><h2>Where the money is</h2></div>{(["EQUITY","CRYPTO","CASH"] as const).map(k=><article key={k}><span>{k}</span><b>${intel.assetAllocation[k].toLocaleString(undefined,{maximumFractionDigits:0})}</b><em>{intel.totalValue?`${(intel.assetAllocation[k]/intel.totalValue*100).toFixed(1)}%`:"0%"}</em></article>)}</div>{portfolioRisk?<div id="portfolio-risk-detail" className="aurynRiskOverlay"><ShieldCheck size={18}/><div><small>PORTFOLIO RISK</small><b>{portfolioRisk.riskLabel}</b><span>{portfolioRisk.notes?.[0]||"No major concentration warning."}</span></div><span>Largest {portfolioRisk.largestPositionPct}% · sector/archetype {portfolioRisk.largestSectorPct}%</span></div>:null}</div></section>
   <span hidden>PORTFOLIO HEALTH</span><span hidden>AVAILABLE BUYING POWER</span>
  </section>
 }
