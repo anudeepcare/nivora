@@ -1353,3 +1353,37 @@ small:has(> .v65MetricInfo){display:inline-flex!important;align-items:center!imp
   .v658GateChecks article>div>b em{font-size:12px!important;font-weight:700!important;color:#9aa3b2!important}
   .v658GateChecks article>small{display:block!important;margin-top:8px!important;font-size:12px!important;letter-spacing:.08em!important}
 }
+
+/* =========================================================
+   V65.23 — final mobile hierarchy: editorial, not dashboard
+   ========================================================= */
+@media(max-width:720px){
+  .v65Position{position:relative!important;padding:18px!important;gap:13px!important;border-radius:20px!important;box-shadow:none!important}
+  .v6522HoldingSummary b{font-size:21px!important;font-weight:760!important;letter-spacing:-.025em!important}
+  .v6523HoldingMeta{font-size:13px!important;line-height:1.35!important;color:#667085!important;font-weight:500!important}
+  .v65PosMetrics{grid-template-columns:1fr 1fr!important;gap:7px 18px!important;margin-top:2px!important}
+  .v65PosMetrics small{font-size:10.5px!important;letter-spacing:.055em!important;font-weight:720!important;color:#7a8493!important}
+  .v6523PrimaryValue{font-size:22px!important;font-weight:730!important;letter-spacing:-.025em!important}
+  .v6523Current{grid-column:1/-1!important;display:flex!important;align-items:baseline!important;gap:8px!important;margin-top:2px!important}
+  .v6523Current small{margin:0!important}
+  .v6523Current b{font-size:14px!important;font-weight:650!important;color:#455163!important}
+  .v6522DecisionRow{padding-top:12px!important;align-items:center!important}
+  .v6522DecisionRow small{font-size:10px!important;letter-spacing:.075em!important;color:#87908e!important}
+  .v6522DecisionRow b{font-size:17px!important;font-weight:760!important}
+  .v6522DecisionRow>a{min-height:auto!important;padding:7px 10px!important;background:transparent!important;font-size:13px!important}
+  .v6523Overflow{position:absolute!important;right:12px!important;top:12px!important;z-index:2!important}
+  .v6523Overflow summary{list-style:none!important;width:34px!important;height:34px!important;display:grid!important;place-items:center!important;border-radius:999px!important;color:#778196!important;cursor:pointer!important}
+  .v6523Overflow summary::-webkit-details-marker{display:none!important}
+  .v6523Overflow[open] summary{background:#f2f5f3!important}
+  .v6523Overflow>div{position:absolute!important;right:0!important;top:38px!important;width:116px!important;padding:6px!important;border:1px solid #e1e7e4!important;border-radius:12px!important;background:#fff!important;box-shadow:0 10px 30px rgba(15,23,42,.10)!important}
+  .v6523Overflow button{width:100%!important;display:flex!important;align-items:center!important;gap:8px!important;padding:9px!important;border:0!important;background:transparent!important;border-radius:8px!important;font-size:13px!important;font-weight:650!important;text-align:left!important}
+  .v6523Overflow button:hover{background:#f5f7f6!important}
+  .v6523Overflow button.danger{color:#b42318!important}
+
+  /* Analyze summary typography: calm labels, confident values. */
+  .v65MetricStrip .metricLabel{font-size:10.5px!important;font-weight:700!important;letter-spacing:.055em!important;color:#78847f!important}
+  .v65MetricStrip .metricValue{font-size:24px!important;line-height:1.05!important;font-weight:720!important;letter-spacing:-.025em!important}
+  .v65MetricStrip .metricSub{font-size:12.5px!important;line-height:1.4!important;color:#7b8782!important}
+  .v65MetricStrip .v658InfoButton{width:17px!important;height:17px!important;min-width:17px!important;min-height:17px!important;margin-left:3px!important;opacity:.62!important}
+  .v65MetricStrip .v6516InfoGlyph{width:16px!important;height:16px!important}
+}
