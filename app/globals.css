@@ -1387,3 +1387,20 @@ small:has(> .v65MetricInfo){display:inline-flex!important;align-items:center!imp
   .v65MetricStrip .v658InfoButton{width:17px!important;height:17px!important;min-width:17px!important;min-height:17px!important;margin-left:3px!important;opacity:.62!important}
   .v65MetricStrip .v6516InfoGlyph{width:16px!important;height:16px!important}
 }
+
+/* V65.24 — mobile readability + current-price bug */
+@media(max-width:720px){
+ .v65MetricStrip .metricLabel{font-size:12px!important;letter-spacing:.045em!important;line-height:1.25!important}
+ .v65MetricStrip .metricValue{font-size:28px!important;line-height:1.08!important;font-weight:720!important}
+ .v65MetricStrip .metricSub{font-size:13.5px!important;line-height:1.45!important}
+ .v6523Current small{font-size:11px!important}
+ .v6523Current b{font-size:16px!important;font-weight:680!important}
+
+ .v6516ThesisTabs button{font-size:13px!important;font-weight:650!important;letter-spacing:-.005em!important}
+ .v6516ThesisCard p{font-size:16px!important;line-height:1.52!important}
+ .v6516ThesisCard h2,.v6516ThesisCard h3{letter-spacing:-.025em!important}
+ .v6516ScoreDescription{font-size:14px!important;line-height:1.48!important}
+ .v6516ScoreLabel{font-size:11.5px!important;letter-spacing:.05em!important}
+ .v6516ScoreValue{font-size:26px!important;letter-spacing:-.025em!important}
+ .v6516ThesisCard small{font-size:12.5px!important;line-height:1.45!important}
+}
