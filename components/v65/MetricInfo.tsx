@@ -1,6 +1,7 @@
 "use client";
 import {useEffect,useId,useLayoutEffect,useRef,useState} from "react";
 import {createPortal} from "react-dom";
+import {CircleHelp} from "lucide-react";
 import type{MetricProof}from "@/lib/nivora-metric-proof";
 import {metricDefinitions}from "@/lib/nivora-metrics";
 
@@ -39,5 +40,5 @@ export default function MetricInfo({metric,title,description,score,proof,childre
  useLayoutEffect(()=>{if(open)reposition()},[open]);
  useEffect(()=>{if(!open)return;const outside=(e:PointerEvent)=>{const target=e.target as Node;if(!ref.current?.contains(target)&&!(document.getElementById(id)?.contains(target)))setOpen(false)},key=(e:KeyboardEvent)=>{if(e.key==="Escape"){setOpen(false);buttonRef.current?.focus()}},move=()=>reposition();document.addEventListener("pointerdown",outside);document.addEventListener("keydown",key);window.addEventListener("resize",move);window.addEventListener("scroll",move,true);return()=>{document.removeEventListener("pointerdown",outside);document.removeEventListener("keydown",key);window.removeEventListener("resize",move);window.removeEventListener("scroll",move,true)}},[open,id]);
  const sheet=open&&pos&&typeof document!=="undefined"?createPortal(<div id={id} className={`v658MetricSheet ${pos.above?"above":"below"}`} role="dialog" aria-modal="false" aria-label={label} style={{position:"fixed",left:pos.left,top:pos.top}}><div className="v658MetricTitle"><b>{label}</b><button type="button" onClick={()=>setOpen(false)} aria-label="Close explanation">×</button></div><p>{body}</p>{guide?<div className={`v658ScoreBand ${guide.tone}`}><span>{Math.round(Number(score))}/100</span><b>{guide.label}</b><small>{guide.detail}</small></div>:null}{def?.range?<div className="v658MetricSection"><strong>Score guide</strong><span>{def.range}</span></div>:null}{def?.uses?<div className="v658MetricSection"><strong>Why it matters</strong><span>{def.uses}</span></div>:null}{proof?.contributors?.length?<div className="v658MetricSection"><strong>Why this score</strong><span>{proof.contributors.slice(0,3).map(x=>`${x.label} ${x.impact>=0?"+":""}${Math.round(x.impact)}`).join(" · ")}</span></div>:null}{children?<div className="v658MetricSection v658MetricCustom">{children}</div>:null}</div>,document.body):null;
- return <span className="v658MetricInfo v65MetricInfo" ref={ref}><button ref={buttonRef} className="v658InfoButton aurynHelpMark" type="button" aria-label={`About ${label}`} aria-expanded={open} aria-controls={id} onClick={e=>{e.stopPropagation();setOpen(v=>!v)}}>?</button>{sheet}</span>;
+ return <span className="v658MetricInfo v65MetricInfo" ref={ref}><button ref={buttonRef} className="v658InfoButton aurynHelpMark" type="button" aria-label={`About ${label}`} aria-expanded={open} aria-controls={id} onClick={e=>{e.stopPropagation();setOpen(v=>!v)}}><CircleHelp size={14} strokeWidth={1.8}/></button>{sheet}</span>;
 }

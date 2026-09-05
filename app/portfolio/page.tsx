@@ -16,7 +16,7 @@ type AssetType="EQUITY"|"CRYPTO"|"CASH";
 function PortfolioContent(){
  const sp=useSearchParams();
  const[rows,setRows]=useState<any[]>([]),[quotes,setQuotes]=useState<any>({});
- const[pulseHistory,setPulseHistory]=useState<any[]>([]),[assetType,setAssetType]=useState<AssetType>("EQUITY"),[symbol,setSymbol]=useState(sp.get("symbol")||""),[shares,setShares]=useState(""),[cost,setCost]=useState(""),[horizon,setHorizon]=useState("long"),[msg,setMsg]=useState(""),[edit,setEdit]=useState<any>(null),[portfolioRisk,setPortfolioRisk]=useState<any>(null),[showAdd,setShowAdd]=useState(false);
+ const[pulseHistory,setPulseHistory]=useState<any[]>([]),[assetType,setAssetType]=useState<AssetType>("EQUITY"),[symbol,setSymbol]=useState(sp.get("symbol")||""),[shares,setShares]=useState(""),[cost,setCost]=useState(""),[horizon,setHorizon]=useState("long"),[msg,setMsg]=useState(""),[edit,setEdit]=useState<any>(null),[portfolioRisk,setPortfolioRisk]=useState<any>(null),[showAdd,setShowAdd]=useState(false),[pendingDelete,setPendingDelete]=useState<any>(null);
 
  const refreshPulseHistory=useCallback(async(uid:string)=>{try{const j=await fetch("/api/portfolio/pulse",{headers:{"x-nivora-user-id":uid},cache:"no-store"}).then(r=>r.json());setPulseHistory(Array.isArray(j?.items)?j.items:[])}catch{}},[]);
  const load=useCallback(async()=>{
@@ -52,7 +52,8 @@ function PortfolioContent(){
   if(error){setMsg(error.message);return}
   setSymbol("");setShares("");setCost("");setMsg(`${assetType==="CASH"?"Cash":normalized} saved`);load();
  }
- async function remove(x:any){if(!confirm(`Delete ${x.symbol} from your portfolio?`))return;const s=supabaseBrowser();const{error}=await s.from("portfolio_positions").delete().eq("id",x.id);if(error){setMsg(error.message);return}setRows(v=>v.filter(r=>r.id!==x.id));setMsg(`${x.symbol} removed`)}
+ function requestRemove(x:any){setEdit(null);setPendingDelete(x)}
+ async function confirmRemove(){if(!pendingDelete)return;const x=pendingDelete;const s=supabaseBrowser();const{error}=await s.from("portfolio_positions").delete().eq("id",x.id);if(error){setMsg(error.message);return}setRows(v=>v.filter(r=>r.id!==x.id));setPendingDelete(null);setMsg(`${x.symbol} removed`)}
  async function saveEdit(){if(!edit)return;const s=supabaseBrowser();const{error}=await s.from("portfolio_positions").update({shares:+edit.shares,avg_cost:edit.asset_type==="CASH"?1:+edit.avg_cost,horizon:edit.horizon,updated_at:new Date().toISOString()}).eq("id",edit.id);if(error){setMsg(error.message);return}setEdit(null);setMsg("Position updated");load()}
 
  const priced=useMemo(()=>rows.map((x:any)=>{
@@ -83,8 +84,7 @@ function PortfolioContent(){
    <form className="aurynAssetForm" onSubmit={add}><input placeholder={assetType==="CASH"?"Currency (USD)":assetType==="CRYPTO"?"BTC, ETH, SOL…":"Ticker"} value={symbol} onChange={e=>setSymbol(e.target.value)} required={assetType!=="CASH"}/><input placeholder={assetType==="CASH"?"Cash amount":"Qty"} type="number" step="any" value={shares} onChange={e=>setShares(e.target.value)} required/>{assetType!=="CASH"?<input placeholder="Average cost" type="number" step="0.01" value={cost} onChange={e=>setCost(e.target.value)} required/>:null}{assetType!=="CASH"?<select value={horizon} onChange={e=>setHorizon(e.target.value)}><option value="short">Short term</option><option value="swing">Swing</option><option value="long">Long term</option></select>:null}<button>Add {assetType==="EQUITY"?"stock":assetType==="CRYPTO"?"crypto":"cash"}</button></form>
   </div>:null}{msg&&<div className="formError">{msg}</div>}
 
-  {edit?<div className="aurynSection"><div className="aurynEditForm"><b>{edit.symbol}</b><input aria-label="Quantity" type="number" step="any" value={edit.shares} onChange={e=>setEdit({...edit,shares:e.target.value})}/>{edit.asset_type!=="CASH"?<input aria-label="Average cost" type="number" step="0.01" value={edit.avg_cost} onChange={e=>setEdit({...edit,avg_cost:e.target.value})}/>:null}<button onClick={saveEdit}><Check size={16}/> Save</button><button onClick={()=>setEdit(null)}><X size={16}/> Cancel</button></div></div>:null}
-  <HoldingsIntelligence assets={priced} onEdit={setEdit} onRemove={remove}/>
+  <HoldingsIntelligence assets={priced} onEdit={x=>{setPendingDelete(null);setEdit(x)}} onRemove={requestRemove} editingId={edit?.id||null} editDraft={edit} onEditDraft={setEdit} onSaveEdit={saveEdit} onCancelEdit={()=>setEdit(null)} pendingDelete={pendingDelete?.id||null} onConfirmRemove={confirmRemove} onCancelRemove={()=>setPendingDelete(null)}/>
 
   <section className="aurynSection" id="portfolio-allocation"><header><small>ALLOCATION & RISK</small><h2>Where portfolio risk actually lives</h2></header><div className="aurynPortfolioDetails"><div className="aurynAllocation"><div><small>ALLOCATION</small><h2>Where the money is</h2></div>{(["EQUITY","CRYPTO","CASH"] as const).map(k=><article key={k}><span>{k}</span><b>${intel.assetAllocation[k].toLocaleString(undefined,{maximumFractionDigits:0})}</b><em>{intel.totalValue?`${(intel.assetAllocation[k]/intel.totalValue*100).toFixed(1)}%`:"0%"}</em></article>)}</div>{portfolioRisk?<div id="portfolio-risk-detail" className="aurynRiskOverlay"><ShieldCheck size={18}/><div><small>PORTFOLIO RISK</small><b>{portfolioRisk.riskLabel}</b><span>{portfolioRisk.notes?.[0]||"No major concentration warning."}</span></div><span>Largest {portfolioRisk.largestPositionPct}% · sector/archetype {portfolioRisk.largestSectorPct}%</span></div>:null}</div></section>
   <span hidden>PORTFOLIO HEALTH</span><span hidden>AVAILABLE BUYING POWER</span>
