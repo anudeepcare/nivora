@@ -17,7 +17,7 @@ import {
 import SearchBox from "./SearchBox";
 import PriceChart from "./PriceChart";
 import {supabaseBrowser} from "@/lib/supabase";
-import {buildAurynIntelligence} from "@/lib/nivora-intelligence";
+import {buildNivoraIntelligence} from "@/lib/nivora-intelligence";
 import {buildInvestorDecision} from "@/lib/nivora-investor";
 import {applyLiveQuoteToToday} from "@/lib/nivora-live-today";
 import InvestorDecisionHero from "./InvestorDecisionHero";
@@ -285,7 +285,7 @@ export default function StockClient({symbol}:{symbol:string}){
     return {atr14,atrPct:atr14&&last?atr14/last*100:null,rv,sma20:s20,sma50:s50,sma200:s200,d20:pct(s20),d50:pct(s50),d200:pct(s200),bbPos,volRatio,drawdown,rsi14,rsiLabel,macd,macdSignal,macdHist,macdLabel,trendLabel,volumeLabel};
   },[d?.candles]);
 
-  const intelligence=useMemo(()=>buildAurynIntelligence({
+  const intelligence=useMemo(()=>buildNivoraIntelligence({
     market:d,company,context,options:optionsData,institutional,mode
   }),[d,company,context,optionsData,institutional,mode]);
 
