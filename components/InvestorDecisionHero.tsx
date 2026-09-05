@@ -54,12 +54,12 @@ export default function InvestorDecisionHero({
  return <section className="v65Cockpit v65CockpitConsistency v65DecisionCockpit v653DecisionFirst aurynZeroScroll">
   <div className="v653DecisionHero">
    <div className="v653Primary">
-    <small>LONG-TERM VIEW</small>
+    <small>LONG-TERM THESIS</small>
     <div><h2 className={tone(longTermDisplay)}>{longTermDisplay}</h2><span>Thesis {formatScore(decision.thesisScore)}/100</span><span>{decision.thesisState}</span></div>
     <p>{decision.oneLine}</p>
     <div className="v65PriceContext"><b>{formatMoney(price)}</b><span className={changePct>=0?"good":"bad"}>{formatPercent(changePct)}</span><span>{marketState}</span>{decision.marketDataIntegrity?.ageSeconds!=null&&decision.marketDataIntegrity.state!=="MARKET_CLOSED"?<span>{decision.marketDataIntegrity.ageSeconds}s old</span>:null}</div>
    </div>
-   <aside className={`v653Today ${tone(todayDisplay)}`}><small>NEW MONEY</small><b>{todayDisplay}</b><span>{todaySummary}</span></aside>
+   <aside className={`v653Today ${tone(todayDisplay)}`}><small>TODAY'S ACTION · NEW MONEY</small><b>{todayDisplay}</b><span>{todaySummary}</span></aside>
   </div>
 
   {!decision.consistency.ok?<div className="v65Alert bad"><b>Data consistency issue</b><span>{decision.consistency.notes[0]}</span></div>:null}
@@ -70,6 +70,8 @@ export default function InvestorDecisionHero({
    <article><small>OWNER ACTION</small><b className={tone(guidance.owner)}>{guidance.owner}</b><span>{ownerSummary}</span></article>
    <article><small>REASSESS</small><b>{technicalRisk&&technicalRisk>0?formatMoney(technicalRisk,{confidence:"Medium"}):"Fundamentals first"}</b><span>{decision.breakers[0]||"Reassess if the business/forward evidence materially deteriorates."}</span></article>
   </div>
+
+  <div className="aurynScoreGuide"><b>How to read the scores</b><span>Higher is better except Risk, where a higher score means more pressure. Conviction = overall thesis strength; Business = company quality; Entry Quality = attractiveness of today's setup.</span></div>
 
   <div className="aurynEvidencePillars" aria-label="Decision evidence"><article><small>CONVICTION</small><b>{formatScore(decision.thesisScore)}</b><span>{decision.thesisLabel}</span></article><article><small>BUSINESS</small><b>{formatScore(decision.companyScore)}</b><span>{decision.companyLabel}</span></article><article><small>ENTRY QUALITY</small><b>{formatScore(decision.opportunityScore)}</b><span>{decision.timing.label}</span></article><article><small>VALUATION</small><b>{decision.valuationValidity?.fairValueAllowed?decision.valuationLabel:"N/A"}</b><span>{decision.valuationValidity?.fairValueAllowed?"Independent valuation evidence available":"Insufficient independent valuation evidence"}</span></article><article><small>RISK</small><b>{formatScore(Number(decision.factors?.risk??0))}</b><span>Pressure · higher is worse</span></article><article><small>DATA</small><b>{decision.marketDataIntegrity?.state?String(decision.marketDataIntegrity.state).replaceAll("_"," "):"Research"}</b><span>{decision.marketDataIntegrity?.ageSeconds!=null?`${decision.marketDataIntegrity.ageSeconds}s old`:"Evidence coverage shown below"}</span></article></div>
 

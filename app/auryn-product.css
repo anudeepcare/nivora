@@ -286,3 +286,28 @@ a{color:inherit;text-decoration:none}button,input,select{font:inherit}button{cur
 @media(max-width:420px){
  .aurynPositionFacts{grid-template-columns:1fr 1fr;padding-left:27px;row-gap:7px}.aurynPositionActions{margin-top:-2px}.aurynPositionCall{max-width:122px}
 }
+
+/* V3.7.1 final product polish */
+.aurynMobileSearch{display:none}
+.aurynScoreGuide,.aurynThesisScoreGuide{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border:1px solid var(--auryn-line);border-radius:11px;background:#faf7f1;color:var(--auryn-muted);font-size:10px;line-height:1.45}
+.aurynScoreGuide b,.aurynThesisScoreGuide b{flex:0 0 auto;color:var(--auryn-text);font-size:10px}
+.aurynEvidencePillars article{min-width:0}.aurynEvidencePillars article b{font-size:18px}.aurynEvidencePillars article span{font-size:10px;line-height:1.4}
+.aurynPositionRow{grid-template-columns:minmax(180px,1fr) minmax(420px,2.2fr) minmax(150px,.8fr) auto;padding:18px 8px;gap:20px}
+.aurynPositionName b{font-size:16px}.aurynPositionName span{font-size:11px;margin-top:3px}
+.aurynPositionFacts{gap:18px}.aurynPositionFacts small,.aurynPositionCall small{font-size:9px}.aurynPositionFacts b,.aurynPositionCall b{font-size:14px;margin-top:5px}
+.aurynPositionActions button{width:36px;height:36px}.aurynPositionRow.clickable{border-radius:12px;transition:background .15s ease,transform .15s ease}.aurynPositionRow.clickable:hover{background:#f7f2e9;transform:translateY(-1px)}
+.aurynIntegrityAlert{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border:1px solid var(--auryn-line);border-radius:11px;background:#faf7f1}.aurynIntegrityAlert b{white-space:nowrap}.aurynIntegrityAlert span{line-height:1.45}
+.aurynIntelStrip small{font-size:9px}.aurynIntelStrip b{font-size:15px}.aurynIntelStrip span,.aurynIntelStrip p{font-size:10px}.aurynIntelStrip button{font-size:12px}
+.aurynThesisLead>p{font-size:13px}.aurynThesisAction>span{font-size:11px}.aurynThesisAction>p{font-size:10px}.aurynThesisScoreRail article>div>span,.aurynThesisFactors article>div>span{font-size:9px}.aurynThesisScoreRail article>div>b,.aurynThesisFactors article>div>b{font-size:14px}.aurynThesisScoreRail small,.aurynThesisEvidence p{font-size:10px}
+
+@media(max-width:760px){
+ .aurynMobileSearch{display:block;position:sticky;top:62px;z-index:110;padding:8px 14px;background:rgba(247,244,238,.96);border-bottom:1px solid var(--auryn-line);backdrop-filter:blur(14px)}
+ .aurynMobileSearch .aurynSearch form{min-height:42px;background:#fff}
+ .aurynAppMain{padding-top:14px}
+ .aurynEvidenceNav{display:flex;gap:7px;overflow-x:auto;padding:3px 0 10px;scrollbar-width:none}.aurynEvidenceNav::-webkit-scrollbar{display:none}.aurynEvidenceNav button{flex:0 0 auto;padding:10px 13px;font-size:11px;border:1px solid var(--auryn-line);background:#fff}.aurynEvidenceNav button.on{background:var(--auryn-ink);color:#fff;border-color:var(--auryn-ink)}
+ .aurynThesisLead{padding:20px 18px}.aurynThesisHeadline h2{font-size:34px}.aurynThesisHeadline>span{font-size:11px}.aurynThesisLead>p{font-size:13px}.aurynThesisAction{padding:17px 18px}.aurynThesisAction>b{font-size:27px}.aurynThesisAction>span{font-size:11px}.aurynThesisScoreRail article{padding:14px 16px}.aurynThesisScoreRail article>div>span{font-size:10px}.aurynThesisScoreRail article>div>b{font-size:15px}.aurynThesisScoreRail small{font-size:11px}.aurynThesisFactors article{padding:13px}.aurynThesisFactors article>div>span{font-size:10px}.aurynThesisFactors article>div>b{font-size:14px}.aurynThesisEvidence p{font-size:12px}.aurynThesisScoreGuide,.aurynScoreGuide{display:grid;gap:4px;font-size:11px;padding:12px}
+ .aurynIntelStrip>div{padding:15px}.aurynIntelStrip small{font-size:10px}.aurynIntelStrip b{font-size:16px}.aurynIntelStrip span,.aurynIntelStrip p{font-size:12px}.aurynIntelLead>div b{font-size:25px}.aurynIntelStrip button{font-size:13px}
+ .aurynPositionRow{grid-template-columns:minmax(0,1fr) auto;padding:18px 6px;gap:14px 10px}.aurynPositionName{grid-column:1}.aurynPositionCall{grid-column:2;grid-row:1;text-align:right;max-width:170px}.aurynPositionFacts{grid-column:1/-1;grid-row:2;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 22px;padding-left:27px}.aurynPositionActions{grid-column:2;grid-row:3;justify-self:end}.aurynPositionName b{font-size:17px}.aurynPositionName span{font-size:12px}.aurynPositionFacts small,.aurynPositionCall small{font-size:9px}.aurynPositionFacts b,.aurynPositionCall b{font-size:15px}.aurynPositionActions button{width:38px;height:38px}
+ .aurynHoldingsHead h2{font-size:34px}.aurynHoldingsHead>span{font-size:12px}
+}
+@media(max-width:420px){.aurynPositionFacts{display:grid!important}.aurynPositionCall{display:block!important}.aurynEvidenceNav{display:flex}}

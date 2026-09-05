@@ -37,6 +37,7 @@ export default function AppShell({children}:{children:React.ReactNode}){
     </div>
    </div>
   </header>
+  <div className="aurynMobileSearch"><SearchBox compact/></div>
   <main className="aurynAppMain">{children}</main>
   <ProductFooter/>
   <nav className="aurynBottomNav" aria-label="Mobile primary">{nav.map(n=>{const Icon=n.icon;return <Link key={n.href} className={active(n.href)?"on":""} href={n.href}><Icon size={20}/><span>{n.label}</span></Link>})}</nav>

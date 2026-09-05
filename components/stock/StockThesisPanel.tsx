@@ -30,6 +30,8 @@ export default function StockThesisPanel({decision,metricDefinitions}:{decision:
    </div>
   </section>
 
+  <div className="aurynThesisScoreGuide"><b>Score guide</b><span>Higher scores are stronger evidence. Risk pressure is the exception: lower is better. Thesis summarizes the whole case; Long-term isolates 1–3 year evidence; Expectation gap shows whether forward evidence is improving versus a neutral baseline.</span></div>
+
   <section className="aurynThesisFactors" aria-label="Thesis factors">
    {factors.map(([k,v]:any)=>{const available=v!=null&&Number.isFinite(Number(v));const isRisk=k==="risk";const label=(isRisk?"Risk pressure":String(k).replace(/([A-Z])/g," $1")).trim();const def=metricDefinitions?.[k];return <article key={k} className={isRisk&&available&&Number(v)>=70?"risk":""}>
     <div><span>{label} {def&&<MetricInfo title={def.title}>{def.short} {def.uses}</MetricInfo>}</span><b>{available?`${v}/100`:"N/A"}</b></div>
