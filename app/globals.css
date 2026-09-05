@@ -1302,3 +1302,54 @@ small:has(> .v65MetricInfo){display:inline-flex!important;align-items:center!imp
   .v653BuyPath article{padding:14px 16px!important;min-height:0!important}
   .v653BuyPath article b{line-height:1.15!important}
 }
+
+/* =========================================================
+   V65.22 — component-level mobile refinement
+   ========================================================= */
+@media(max-width:720px){
+  /* Information is secondary: thin, small, optically quiet. */
+  .v658InfoButton{width:20px!important;height:20px!important;min-width:20px!important;min-height:20px!important;margin-left:4px!important;opacity:.82!important}
+  .v6516InfoGlyph{width:18px!important;height:18px!important}
+  .v6516InfoGlyph circle{stroke:#77847e!important;stroke-width:1.15!important;fill:transparent!important}
+  .v6516InfoGlyph .v6520InfoDot,.v6516InfoGlyph .v6520InfoStem{fill:#77847e!important}
+  .metricLabel,.v658GateChecks article span{display:inline-flex!important;align-items:center!important;gap:4px!important}
+
+  /* Visual Intelligence: useful modes first, no fake empty-chart poster. */
+  .portfolioVisuals{padding:18px 16px!important}
+  .portfolioVisuals .pulseSectionHead h2{font-size:25px!important;line-height:1.08!important;max-width:300px!important}
+  .visualModes button{min-height:40px!important;padding:0 16px!important;font-size:14px!important;font-weight:760!important}
+  .visualModes button:disabled{opacity:.45!important;background:#f4f6f5!important;color:#7b8681!important;cursor:not-allowed!important}
+  .driverBars{margin-top:10px!important}
+  .driverBars>div{padding:9px 0!important;gap:10px!important}
+  .compactUnavailable{padding:14px!important;background:#f7faf8!important;border-radius:14px!important}
+
+  /* Holdings: one card should read in seconds, not consume a screen. */
+  .v65Position{padding:15px 16px!important;margin-bottom:10px!important;border-radius:18px!important;gap:10px!important}
+  .v65PosMain{display:flex!important;align-items:center!important;gap:10px!important}
+  .v65PosMain>svg{width:18px!important;height:18px!important;flex:none!important}
+  .v6522HoldingSummary{min-width:0!important}
+  .v6522HoldingSummary b{font-size:20px!important;line-height:1.05!important;letter-spacing:-.015em!important}
+  .v6522HoldingSummary span{display:block!important;margin-top:3px!important;font-size:13px!important;line-height:1.25!important;color:#667085!important}
+  .v65PosMetrics{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px 20px!important;margin:4px 0 0!important}
+  .v65PosMetrics span{min-width:0!important}
+  .v65PosMetrics small{font-size:11px!important;font-weight:780!important;letter-spacing:.045em!important;color:#6e7888!important;margin:0 0 3px!important}
+  .v65PosMetrics b{font-size:17px!important;line-height:1.15!important}
+  .v6522DecisionRow{display:grid!important;grid-template-columns:1fr auto!important;align-items:end!important;gap:12px!important;padding-top:11px!important;border-top:1px solid #edf1ef!important}
+  .v6522DecisionRow>div{min-width:0!important}
+  .v6522DecisionRow small{display:block!important;font-size:11px!important;font-weight:800!important;letter-spacing:.05em!important;color:#6f7989!important}
+  .v6522DecisionRow b{display:block!important;margin-top:2px!important;font-size:16px!important;line-height:1.15!important}
+  .v6522DecisionRow em{display:flex!important;gap:6px!important;margin-top:6px!important;flex-wrap:wrap!important}
+  .v6522DecisionRow em i{font-style:normal!important;font-size:10px!important;font-weight:760!important;letter-spacing:.03em!important;padding:3px 7px!important;border-radius:999px!important;background:#f1f5f3!important;color:#68746e!important}
+  .v6522DecisionRow>a{align-self:center!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:38px!important;padding:0 13px!important;border-radius:999px!important;background:#eef8f3!important;color:#08623f!important;font-size:13px!important;font-weight:800!important;text-decoration:none!important}
+  .v6522HoldingActions{display:flex!important;gap:6px!important;padding-top:0!important;margin-top:-2px!important;border:0!important}
+  .v6522HoldingActions button{width:38px!important;height:38px!important;min-height:38px!important;border-radius:10px!important}
+
+  /* Qualification gates: readable investor language, no tiny settings-card feel. */
+  .v658GateChecks{gap:10px!important}
+  .v658GateChecks article{padding:13px 14px!important;min-height:84px!important;border-radius:16px!important}
+  .v658GateChecks article>div{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:10px!important}
+  .v658GateChecks article span{font-size:14px!important;line-height:1.2!important;letter-spacing:0!important;font-weight:760!important;color:#425066!important}
+  .v658GateChecks article>div>b{font-size:24px!important;line-height:1!important;letter-spacing:-.025em!important}
+  .v658GateChecks article>div>b em{font-size:12px!important;font-weight:700!important;color:#9aa3b2!important}
+  .v658GateChecks article>small{display:block!important;margin-top:8px!important;font-size:12px!important;letter-spacing:.08em!important}
+}

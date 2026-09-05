@@ -1,0 +1,7 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";
+const read=p=>fs.readFileSync(p,"utf8");
+test("visual intelligence defaults to Drivers until meaningful history exists",()=>{const x=read("components/portfolio/PortfolioVisualAnalytics.tsx");assert.match(x,/hasMeaningfulHistory/);assert.match(x,/useState<[^>]+>\(hasMeaningfulHistory\?"Performance":"Drivers"\)/);assert.match(x,/disabled=\{x==="Performance"&&!hasMeaningfulHistory\}/);});
+test("portfolio holding subtitle no longer repeats Qty",()=>{const x=read("app/portfolio/page.tsx");assert.doesNotMatch(x,/`Qty \$\{Number\(x\.shares\)/);assert.match(x,/className="v6522HoldingSummary"/);});
+test("holding decision is its own compact row",()=>{const x=read("app/portfolio/page.tsx");assert.match(x,/className="v6522DecisionRow"/);assert.match(x,/className="[^"]*v6522HoldingActions[^"]*"/);});
+test("mobile info icon is subtle not oversized",()=>{const x=read("app/globals.css");assert.match(x,/V65\.22[\s\S]*\.v658InfoButton\{[^}]*width:20px!important[^}]*height:20px!important/s);assert.match(x,/\.v6516InfoGlyph circle\{[^}]*stroke-width:1\.15!important/s);});
+test("qualification cards use readable non-dashboard typography",()=>{const x=read("app/globals.css");assert.match(x,/V65\.22[\s\S]*\.v658GateChecks article span\{[^}]*font-size:14px!important[^}]*letter-spacing:0!important/s);assert.match(x,/\.v658GateChecks article>div>b\{[^}]*font-size:24px!important/s);});
