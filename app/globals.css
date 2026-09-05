@@ -1022,3 +1022,129 @@ small:has(> .v65MetricInfo){display:inline-flex!important;align-items:center!imp
   .stockPage .portfolioGlass,.stockPage [class*="Glass"]{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
   .v65MobileNav{backdrop-filter:blur(10px)!important;-webkit-backdrop-filter:blur(10px)!important}
 }
+
+/* V65.17 desktop density + centering */
+@media(min-width:900px){
+.stockPage{max-width:1400px!important;margin-inline:auto!important}
+.stockPage .v65SnapshotGrid>div{display:flex!important;flex-direction:column!important;justify-content:center!important;min-height:104px!important;padding:18px 20px!important}
+.stockPage .metricLabel{display:flex!important;align-items:center!important;gap:5px!important}
+.stockPage .metricLabel small,.stockPage .v65SnapshotGrid small{font-size:12px!important;letter-spacing:.065em!important}
+.stockPage .v65MetricValue,.stockPage .v65SnapshotGrid b{font-size:22px!important;line-height:1.12!important}
+.stockPage .v65SnapshotGrid p,.stockPage .v65SnapshotGrid span{font-size:13px!important;line-height:1.4!important}
+.stockPage .v65DecisionHero{align-items:center!important}
+.stockPage .v65DecisionHero>div:first-child{padding-block:24px!important}
+.stockPage .v65DecisionHero p{font-size:15px!important;line-height:1.48!important}
+}
+
+/* =========================================================
+   V65.18 — NIVORA premium product system
+   One hierarchy, mathematically centered shell, restrained glass,
+   fast compositing, and less "dashboard" chrome.
+   ========================================================= */
+:root{
+  --n18-body:15px;
+  --n18-body-mobile:16px;
+  --n18-label:11px;
+  --n18-metric:22px;
+  --n18-section:22px;
+  --n18-page:38px;
+  --n18-radius:20px;
+  --n18-border:rgba(211,222,216,.78);
+  --n18-muted:#64716d;
+  --n18-text:#101827;
+  --n18-green:#0e6747;
+  --n18-soft:#f3f8f5;
+  --n18-glass:rgba(255,255,255,.82);
+  --n18-shadow:0 18px 50px rgba(20,42,32,.07);
+}
+
+/* True center independent of logo/avatar widths */
+@media(min-width:721px){
+  .v65Header{position:sticky;isolation:isolate}
+  .v65DesktopNav{position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;display:flex!important;align-items:center!important;justify-content:center!important;height:48px!important;padding:4px!important;border-radius:15px!important;background:rgba(246,249,247,.88)!important;border:1px solid rgba(217,225,221,.82)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.8)!important}
+  .v65DesktopNav a{display:flex!important;align-items:center!important;justify-content:center!important;height:40px!important;padding:0 18px!important;font-size:14px!important;line-height:1!important;border-radius:11px!important}
+  .v65DesktopNav a.on{background:#fff!important;box-shadow:0 4px 14px rgba(16,42,33,.08)!important}
+  .v65DesktopNav a:hover{background:rgba(255,255,255,.72)!important}
+}
+
+/* Shared premium rhythm */
+.stockPage,.portfolioPage,.tradingLabPage{
+  color:var(--n18-text)!important;
+  font-size:var(--n18-body)!important;
+}
+.stockPage h1,.portfolioPage h1,.tradingLabPage h1{font-weight:850!important;letter-spacing:-.035em!important}
+.stockPage h2,.portfolioPage h2,.tradingLabPage h2{font-size:var(--n18-section)!important;letter-spacing:-.025em!important}
+.stockPage p,.portfolioPage p,.tradingLabPage p{color:var(--n18-muted);line-height:1.52}
+.stockPage small,.portfolioPage small,.tradingLabPage small{font-size:var(--n18-label);line-height:1.3}
+.stockPage button,.portfolioPage button,.tradingLabPage button{font-family:inherit}
+
+/* First-impression canvas: airy, not boxed dashboard */
+.v65Main{
+  background:
+    radial-gradient(900px 360px at 50% -80px,rgba(215,239,226,.30),transparent 68%),
+    linear-gradient(180deg,#fbfcfb 0%,#f7f9f8 46%,#f5f7f6 100%)!important;
+}
+.v65Stock,.portfolioPage,.tradingLabPage{max-width:1360px!important;margin-inline:auto!important}
+.v65StockSearch{margin-bottom:12px!important}
+.v65StockHead{border-radius:var(--n18-radius)!important;border:1px solid var(--n18-border)!important;box-shadow:0 8px 28px rgba(16,42,33,.035)!important}
+.v65LiveFresh{border:0!important;background:transparent!important;padding:10px 8px!important}
+.v65PositionBar{border:0!important;background:transparent!important;padding:4px 8px 10px!important}
+.v65SnapshotGrid,.v65DecisionHero,.portfolioGlass,.v653LabStatus,.v658PaperPath,.v653LabActivity{
+  border-color:var(--n18-border)!important;
+  box-shadow:var(--n18-shadow)!important;
+}
+.v65SnapshotGrid{overflow:hidden!important;border-radius:var(--n18-radius)!important}
+.v65SnapshotGrid>div{border-color:rgba(226,233,229,.78)!important}
+.v65DecisionHero{border-radius:24px!important;overflow:hidden!important}
+.v65DecisionHero p{max-width:850px}
+.v653LabHero{margin-top:0!important;padding-top:0!important}
+.tradingLabPage{padding-top:18px!important}
+.tradingLabPage .v653LabHero h1{margin-top:5px!important}
+.portfolioPage{padding-top:4px!important}
+
+/* Large scrolling content stays cheap to composite */
+.stockPage .premiumSurface,.portfolioPage .premiumSurface,.tradingLabPage .premiumSurface{
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+.portfolioGlass{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(255,255,255,.92)!important}
+
+/* Refined mobile glass: only shell/nav gets blur */
+@media(max-width:720px){
+  :root{--n18-body:16px;--n18-section:21px;--n18-metric:25px}
+  .v65Header{height:64px!important;background:rgba(255,255,255,.88)!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important}
+  .v65Main{padding:16px 14px calc(108px + env(safe-area-inset-bottom))!important}
+  .v65MobileNav{left:12px!important;right:12px!important;bottom:calc(10px + env(safe-area-inset-bottom))!important;padding:7px!important;border-radius:22px!important;border:1px solid rgba(202,216,208,.82)!important;background:rgba(249,252,250,.82)!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important;box-shadow:0 14px 40px rgba(12,45,31,.14)!important}
+  .v65MobileNav a{min-height:62px!important;border-radius:16px!important;font-size:13px!important;gap:4px!important}
+  .v65MobileNav a.on{background:rgba(226,243,234,.92)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.8)!important}
+  .stockPage,.portfolioPage,.tradingLabPage{font-size:var(--n18-body)!important}
+  .stockPage small,.portfolioPage small,.tradingLabPage small{font-size:12px!important}
+  .stockPage p,.portfolioPage p,.tradingLabPage p{font-size:15px!important}
+  .stockPage .v65SnapshotGrid>div{padding:20px 16px!important;min-height:auto!important}
+  .stockPage .v65MetricValue,.stockPage .v65SnapshotGrid b{font-size:25px!important}
+  .v65StockHead{padding:18px 16px!important}
+  .v65StockHead h1{font-size:32px!important}
+  .v65StockHead>div:last-child b{font-size:28px!important}
+  .v65DecisionHero{border-radius:22px!important}
+  .tradingLabPage{padding:10px 0 30px!important}
+}
+
+/* Desktop density without tiny labels */
+@media(min-width:900px){
+  .v65Main{padding-top:28px!important}
+  .v65StockHead{padding:20px 22px!important}
+  .v65StockHead h1{font-size:34px!important}
+  .v65StockHead>div:last-child b{font-size:26px!important}
+  .stockPage .v65SnapshotGrid>div{min-height:108px!important;padding:19px 22px!important;justify-content:center!important}
+  .stockPage .metricLabel small,.stockPage .v65SnapshotGrid small{font-size:11px!important}
+  .stockPage .v65MetricValue,.stockPage .v65SnapshotGrid b{font-size:22px!important}
+  .stockPage .v65SnapshotGrid p,.stockPage .v65SnapshotGrid span{font-size:12px!important}
+  .tradingLabPage{padding-top:14px!important}
+  .v653LabHero h1{font-size:42px!important;line-height:1.03!important}
+}
+
+/* polish hover motion — restrained, not dashboard gimmicks */
+@media(hover:hover){
+  .v65DesktopNav a,.v65PositionBar button,.visualModes button,.xrayModes button,.v653RunButton{transition:transform .16s ease,background .16s ease,box-shadow .16s ease,color .16s ease}
+  .v65DesktopNav a:hover,.v65PositionBar button:hover,.visualModes button:hover,.xrayModes button:hover{transform:translateY(-1px)}
+}

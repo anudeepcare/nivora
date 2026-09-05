@@ -64,6 +64,18 @@ type StockWarmCache={d?:any;company?:any;context?:any;institutional?:any;ts:numb
 const CORE_ATTEMPTS=2,CORE_TIMEOUT_MS=4200;
 const stockWarmCache=new Map<string,StockWarmCache>();
 const CACHE_MAX_AGE=5*60*1000;
+let calibrationCache:any=null;
+function scheduleNonCritical(work:()=>void){
+  if(typeof window==="undefined"){work();return()=>{}};
+  const w=window as any;
+  if(typeof w.requestIdleCallback==="function"){
+    const id=w.requestIdleCallback(work,{timeout:900});
+    return()=>w.cancelIdleCallback?.(id);
+  }
+  const id=window.setTimeout(work,260);
+  return()=>window.clearTimeout(id);
+}
+
 function mergeWarm(symbol:string,patch:Partial<StockWarmCache>){
   const prev=stockWarmCache.get(symbol)||{ts:0};
   stockWarmCache.set(symbol,{...prev,...patch,ts:Date.now()});
@@ -102,7 +114,7 @@ export default function StockClient({symbol}:{symbol:string}){
   useEffect(()=>{
     let active=true;let timer:any;
     const loadQuote=()=>fetch(`/api/quote/${encodeURIComponent(symbol)}`,{cache:"no-store"}).then(async r=>{const x=await r.json();if(r.ok&&active&&Number(x?.price)>0)setLiveQuote(x)}).catch(()=>{});
-    loadQuote();timer=setInterval(()=>{if(document.visibilityState==="visible")loadQuote()},12000);
+    loadQuote();timer=setInterval(()=>{if(document.visibilityState==="visible")loadQuote()},20000);
     return()=>{active=false;clearInterval(timer)};
   },[symbol]);
 
@@ -173,7 +185,7 @@ export default function StockClient({symbol}:{symbol:string}){
 
     loadCore(!hasWarm);
     const evidenceFresh=!!warm?.evidenceTs&&Date.now()-warm.evidenceTs<30*60*1000;
-    if(!evidenceFresh)loadEvidence();
+    const cancelEvidence=!evidenceFresh?scheduleNonCritical(()=>loadEvidence()):()=>{};
 
     const priceTimer=setInterval(()=>{if(document.visibilityState==="visible")loadCore(false)},60000);
     const newsTimer=setInterval(()=>{if(document.visibilityState==="visible")fetchJson(`/api/context/${encodeURIComponent(symbol)}`).then(x=>{if(live){setContext(x);mergeEvidenceWarm(symbol,{context:x})}}).catch(()=>{})},120000);
@@ -182,14 +194,15 @@ export default function StockClient({symbol}:{symbol:string}){
       if(Date.now()-last>45000)loadCore(false);
     };
     window.addEventListener("focus",onFocus);
-    return()=>{live=false;core?.abort();clearInterval(priceTimer);clearInterval(newsTimer);window.removeEventListener("focus",onFocus)};
+    return()=>{live=false;cancelEvidence();core?.abort();clearInterval(priceTimer);clearInterval(newsTimer);window.removeEventListener("focus",onFocus)};
   },[symbol]);
 
 
   useEffect(()=>{
     let live=true;
-    fetch(`/api/calibration?engine=${ENGINE_VERSION}`,{cache:"no-store"}).then(r=>r.ok?r.json():null).then(x=>{if(live&&x)setCalibration(x)}).catch(()=>{});
-    return()=>{live=false};
+    if(calibrationCache){setCalibration(calibrationCache);return()=>{live=false};}
+    const cancel=scheduleNonCritical(()=>fetch(`/api/calibration?engine=${ENGINE_VERSION}`,{cache:"force-cache"}).then(r=>r.ok?r.json():null).then(x=>{if(x)calibrationCache=x;if(live&&x)setCalibration(x)}).catch(()=>{}));
+    return()=>{live=false;cancel()};
   },[]);
 
   useEffect(()=>{

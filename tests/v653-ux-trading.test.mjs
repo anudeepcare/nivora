@@ -6,7 +6,7 @@ test('metric help uses a compact inline info control',()=>{
   const s=fs.readFileSync('components/v65/MetricInfo.tsx','utf8');
   assert.doesNotMatch(s,/>\?<\/button>/);
   assert.doesNotMatch(s,/>Details<\/button>/);
-  assert.match(s,/>i<\/button>/);
+  assert.match(s,/v6516InfoGlyph/);
 });
 
 test('analyze page keeps deep evidence behind one disclosure',()=>{

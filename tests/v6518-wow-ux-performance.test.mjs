@@ -1,0 +1,8 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";
+const read=p=>fs.readFileSync(p,"utf8");
+test("desktop nav is mathematically centered and premium",()=>{const x=read("app/globals.css");assert.match(x,/\.v65DesktopNav\{position:absolute!important;left:50%!important;top:50%!important;transform:translate\(-50%,-50%\)!important/);assert.match(x,/\.v65Header\{[^}]*position:sticky/s)});
+test("shared surfaces use one premium type and spacing system",()=>{const x=read("app/globals.css");for(const q of ["--n18-body","--n18-label","--n18-metric","--n18-section","--n18-radius"])assert.ok(x.includes(q));for(const q of [".stockPage",".portfolioPage",".tradingLabPage"])assert.ok(x.includes(q));});
+test("mobile nav uses restrained glass and safe area",()=>{const x=read("app/globals.css");assert.match(x,/\.v65MobileNav\{[^}]*backdrop-filter:blur\(12px\)/s);assert.match(x,/bottom:calc\(10px \+ env\(safe-area-inset-bottom\)\)/)});
+test("Analyze defers below-fold evidence and slows quote polling",()=>{const x=read("components/StockClient.tsx");assert.match(x,/scheduleNonCritical/);assert.match(x,/setInterval\([^,]+,20000\)/s);assert.match(x,/scheduleNonCritical\(\(\)=>loadEvidence\(\)\)/);assert.match(x,/calibrationCache/);});
+test("Trading Lab polling is less aggressive but still fresh",()=>{const x=read("app/trading-lab/page.tsx");assert.match(x,/setInterval\(\(\)=>\{if\(live&&document\.visibilityState==="visible"\)refresh\(\)\},30000\)/);});
+test("large portfolio glass surfaces do not use broad backdrop blur",()=>{const x=read("app/globals.css");assert.match(x,/\.portfolioGlass\{backdrop-filter:none!important;-webkit-backdrop-filter:none!important/);});

@@ -24,7 +24,7 @@ const friendlyGate=(raw?:string|null)=>{
 export default function TradingLab(){
  const[data,setData]=useState<any>(null),[loading,setLoading]=useState(true),[running,setRunning]=useState(false),[runMessage,setRunMessage]=useState("");
  const load=useCallback(()=>fetch("/api/trading-lab/status",{cache:"no-store"}).then(r=>r.json()).then(setData).finally(()=>setLoading(false)),[]);
- useEffect(()=>{let live=true;const refresh=()=>load().catch(()=>{});refresh();const timer=setInterval(()=>{if(live)refresh()},15000);return()=>{live=false;clearInterval(timer)}},[load]);
+ useEffect(()=>{let live=true;const refresh=()=>load().catch(()=>{});refresh();const timer=setInterval(()=>{if(live&&document.visibilityState==="visible")refresh()},30000);return()=>{live=false;clearInterval(timer)}},[load]);
  const m=data?.metrics||{},rows:EvalRow[]=data?.recentEvaluations||[];
  const evaluated=Number(data?.funnel?.evaluated||0),orders=Number(data?.orders||0),trades=Number(m?.trades||0),buySignals=Number(data?.decisionAudit?.actions?.BUY||0);
  const latest=rows[0]||null;

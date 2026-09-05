@@ -3,7 +3,7 @@ const read=p=>fs.readFileSync(p,"utf8");
 
 test("metric help is a subtle inline info glyph, never Details or question-mark text",()=>{
  const s=read("components/v65/MetricInfo.tsx");
- assert.doesNotMatch(s,/>Details</);assert.doesNotMatch(s,/>\?</);assert.match(s,/aria-label={`About \$\{label\}`}/);assert.match(s,/>i<\/button>/);
+ assert.doesNotMatch(s,/>Details</);assert.doesNotMatch(s,/>\?</);assert.match(s,/aria-label={`About \$\{label\}`}/);assert.match(s,/v6516InfoGlyph/);
 });
 
 test("analyze makes full research obviously interactive and exposes real research destinations",()=>{

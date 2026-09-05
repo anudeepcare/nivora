@@ -1,0 +1,1 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";const x=fs.readFileSync("app/globals.css","utf8");test("desktop center and density",()=>{assert.match(x,/max-width:1400px/);assert.match(x,/font-size:22px!important/);assert.match(x,/justify-content:center!important/)})
