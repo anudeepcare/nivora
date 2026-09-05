@@ -1,0 +1,9 @@
+
+:root{
+  --auryn-ink:#15130f;--auryn-ink-2:#211d17;--auryn-paper:#fbf8f1;--auryn-canvas:#f4efe5;
+  --auryn-canvas-2:#eee6d8;--auryn-gold:#b78a49;--auryn-gold-strong:#8f6834;--auryn-gold-soft:#e7cfaa;
+  --auryn-text:#171717;--auryn-muted:#756f65;--auryn-subtle:#9a9388;--auryn-line:#ddd4c5;
+  --auryn-good:#137a54;--auryn-bad:#b4483e;--auryn-warn:#9a6b2e;--auryn-white:#fff;
+  --auryn-radius-sm:10px;--auryn-radius:16px;--auryn-radius-lg:24px;
+  --auryn-shadow:0 16px 45px rgba(34,27,18,.08);--auryn-content:1440px;--mobile-nav-height:70px;
+}

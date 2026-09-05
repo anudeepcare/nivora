@@ -2,18 +2,20 @@
 import {useState} from "react";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
-import {ArrowRight,CheckCircle2,ShieldCheck,Sparkles} from "lucide-react";
+import {ArrowRight} from "lucide-react";
 import {supabaseBrowser} from "@/lib/supabase";
-import AurynLogo from "@/components/AurynLogo";
-
+import AuthShell from "@/components/auth/AuthShell";
 export default function Login(){
  const[email,setEmail]=useState(""),[password,setPassword]=useState(""),[msg,setMsg]=useState(""),[busy,setBusy]=useState(false),r=useRouter();
  async function submit(e:React.FormEvent){e.preventDefault();setBusy(true);setMsg("");try{const result:any=await Promise.race([supabaseBrowser().auth.signInWithPassword({email,password}),new Promise((_,reject)=>setTimeout(()=>reject(new Error("Sign in is taking too long. Check your connection and try again.")),12000))]);setBusy(false);if(result.error)setMsg(result.error.message);else{r.replace("/dashboard");r.refresh()}}catch(e:any){setBusy(false);setMsg(e?.message||"Unable to sign in right now.")}}
- return <main className="osAuth v44Auth">
-  <div className="v44AuthLogo"><AurynLogo href="/"/></div>
-  <section className="v44AuthShell">
-   <aside className="v44AuthStory"><div className="v44AuthMark"><Sparkles size={18}/></div><small>YOUR INVESTMENT INTELLIGENCE</small><h2>Know what to do next. See exactly why.</h2><p>From long-term thesis to today’s entry decision, AURYN puts the answer first and the evidence one step behind it.</p><div className="v44AuthPoints"><span><CheckCircle2 size={16}/>Decision-first stock research</span><span><CheckCircle2 size={16}/>Portfolio and watchlist context</span><span><ShieldCheck size={16}/>Evidence, limitations and risk shown clearly</span></div><div className="v44AuthLegal">Research and decision-support only. No guaranteed outcomes.</div></aside>
-   <form onSubmit={submit} className="v44AuthForm"><small>WELCOME BACK</small><h1>Sign in</h1><p>Continue to your private AURYN workspace.</p><label>Email<input autoFocus autoComplete="email" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/></label><label>Password<input autoComplete="current-password" type="password" value={password} onChange={e=>setPassword(e.target.value)} required/></label><button disabled={busy}>{busy?"Signing in…":<>Continue <ArrowRight size={16}/></>}</button>{msg&&<div className="formError">{msg}</div>}<div className="osAuthSwitch">New to AURYN? <Link href="/register">Create account</Link></div><div className="v44AuthFine"><Link href="/terms">Terms</Link><Link href="/privacy">Privacy</Link><Link href="/disclaimer">Risk disclosure</Link></div></form>
-  </section>
- </main>;
+ return <AuthShell eyebrow="Welcome back" title="Sign in" subtitle="Continue to your private AURYN workspace." storyTitle="Know what to do next. See exactly why." storyBody="AURYN turns company quality, valuation, price behavior, catalysts and risk into one explainable investment decision." points={["Decision-first stock research","Portfolio and watchlist context","Evidence, limitations and risk shown clearly"]}>
+  <form className="aurynForm" onSubmit={submit}>
+   <label className="aurynField">Email<input autoFocus autoComplete="email" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/></label>
+   <label className="aurynField">Password<input autoComplete="current-password" type="password" value={password} onChange={e=>setPassword(e.target.value)} required/></label>
+   <button className="aurynPrimary" disabled={busy}>{busy?"Signing in…":<>Continue <ArrowRight size={16}/></>}</button>
+   {msg&&<div className="formError">{msg}</div>}
+   <div className="aurynAuthSwitch">New to AURYN? <Link href="/register">Create account</Link></div>
+   <div className="aurynFine"><Link href="/terms">Terms</Link><Link href="/privacy">Privacy</Link><Link href="/disclaimer">Risk disclosure</Link></div>
+  </form>
+ </AuthShell>
 }

@@ -1,0 +1,5 @@
+import {formatMoney} from "@/lib/nivora-format";
+export default function StockActionPlan({entryLow,entryHigh,reassess,confirm,breaker}:{entryLow:number;entryHigh:number;reassess:number;confirm?:number|null;breaker?:string}){
+ const range=entryLow&&entryHigh?`${formatMoney(entryLow)}–${formatMoney(entryHigh)}`:"Wait for a cleaner setup";
+ return <section className="aurynActionPlan"><div><small>IDEAL ENTRY</small><b>{range}</b><span>Preferred accumulation area if the thesis remains intact.</span></div><div><small>CONFIRMATION</small><b>{confirm?formatMoney(confirm):"Price structure"}</b><span>A stronger setup can justify new capital above this trigger.</span></div><div><small>REASSESS / BREAK</small><b>{reassess?formatMoney(reassess):"Fundamentals first"}</b><span>{breaker||"Reassess if forward business evidence materially deteriorates."}</span></div></section>
+}

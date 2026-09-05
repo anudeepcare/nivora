@@ -20,7 +20,11 @@ import {supabaseBrowser} from "@/lib/supabase";
 import {buildNivoraIntelligence} from "@/lib/nivora-intelligence";
 import {buildInvestorDecision} from "@/lib/nivora-investor";
 import {applyLiveQuoteToToday} from "@/lib/nivora-live-today";
-import InvestorDecisionHero from "./InvestorDecisionHero";
+import StockSecurityHeader from "./stock/StockSecurityHeader";
+import StockDecisionSummary from "./stock/StockDecisionSummary";
+import StockActionPlan from "./stock/StockActionPlan";
+import StockEvidenceNav from "./stock/StockEvidenceNav";
+import StockEvidenceSections from "./stock/StockEvidenceSections";
 import {metricDefinitions} from "@/lib/nivora-metrics";
 import {ENGINE_VERSION} from "@/lib/nivora-version";
 import {formatMoney as displayMoney,formatPercent} from "@/lib/nivora-format";
@@ -545,19 +549,11 @@ export default function StockClient({symbol}:{symbol:string}){
     :liveQuote.integrityState==="STALE"?"Refreshing market quote"
     :"Market data connecting"
     :"Quote connecting";
-  return <div className="v65Stock">
-    <div className="v65StockSearch"><SearchBox/></div>
-
-    <header className="v65StockHead">
-      <div><small>{company?.name||d.name||symbol}</small><h1>{symbol}</h1></div>
-      <div><b>{displayMoney(currentPx)}</b><span className={displayChangePct>=0?"up":"down"}>{formatPercent(displayChangePct)}</span></div>
-    </header>
-
-    <div className="v65LiveFresh"><span className="v65LiveStatus"><span className="v65LiveDot"/>{marketStatusLabel}</span><span className="v65LiveCadence">{liveQuote?(liveQuote.integrityState==="MARKET_CLOSED"?`${liveQuote.provider} · market closed · regular close ${displayMoney(Number(liveQuote.regularClose))}`:`${liveQuote.provider} · ${liveQuote.ageSeconds==null?"timestamp unavailable":`${liveQuote.ageSeconds}s old`}${liveQuote.disagreementPct!=null?` · provider gap ${Number(liveQuote.disagreementPct).toFixed(2)}%`:""} · regular close ${displayMoney(Number(liveQuote.regularClose))}`):"Daily analysis stays available while the live quote connects."}</span></div>
+  return <div className="aurynStockPage">
+    <StockSecurityHeader company={company?.name||d.name||symbol} symbol={symbol} price={currentPx} changePct={displayChangePct} status={marketStatusLabel} detail={liveQuote?(liveQuote.integrityState==="MARKET_CLOSED"?`${liveQuote.provider} · market closed · regular close ${displayMoney(Number(liveQuote.regularClose))}`:`${liveQuote.provider} · ${liveQuote.ageSeconds==null?"timestamp unavailable":`${liveQuote.ageSeconds}s old`}${liveQuote.disagreementPct!=null?` · provider gap ${Number(liveQuote.disagreementPct).toFixed(2)}%`:""} · regular close ${displayMoney(Number(liveQuote.regularClose))}`):"Daily analysis stays available while the live quote connects."}/>
     {closedQuoteMismatch?<div className="aurynIntegrityAlert"><b>Quote integrity check</b><span>Provider price did not match the verified regular close, so AURYN is using the regular close for this closed-market decision view.</span></div>:null}
-    <div className="aurynZeroScrollShell">{presentedDecision&&<InvestorDecisionHero decision={presentedDecision} price={currentPx} changePct={displayChangePct} owns={owns} levels={{entryLow:horizonPlan.entryLow,entryHigh:horizonPlan.entryHigh,support:Number(d.levels?.support||0),majorSupport:Number(d.levels?.majorSupport||0),resistance:Number(d.levels?.resistance||0),breakout:Number(d.levels?.breakout||0),assetType:d.assetType}} timing={timingState} onEvidence={()=>openResearch("thesis")}/>}</div>
-
-    <div className="v65PositionBar"><div><Sparkles size={15}/><span>AURYN analyzes 3M, 6M, 1Y, 2Y and 3Y automatically.</span></div><button type="button" className={owns?"on":""} onClick={()=>setOwns(!owns)}>{owns?(ownerPosition?"✓ Position loaded":"✓ I own this"):"I own this"}</button></div>
+    {presentedDecision&&<><StockDecisionSummary decision={presentedDecision} owns={owns}/><StockActionPlan entryLow={horizonPlan.entryLow} entryHigh={horizonPlan.entryHigh} reassess={Number(d.levels?.invalidation||d.levels?.majorSupport||0)} confirm={horizonPlan.confirm} breaker={typeof presentedDecision.breakers?.[0]==="string"?presentedDecision.breakers[0]:presentedDecision.breakers?.[0]?.label||presentedDecision.breakers?.[0]?.reason}/></>}
+    <div className="v65PositionBar"><div><Sparkles size={15}/><span>AURYN evaluates multiple horizons automatically.</span></div><button type="button" className={owns?"on":""} onClick={()=>setOwns(!owns)}>{owns?(ownerPosition?"✓ Position loaded":"✓ I own this"):"I own this"}</button></div>
 
 
     {depth==="pro"&&enterprise&&intelligence&&<section className="v29ProCockpit">
@@ -638,7 +634,8 @@ export default function StockClient({symbol}:{symbol:string}){
 
 
     <section ref={thesisRef} id="nivora-research" className={["v65Research",depth==="simple"?"v65ResearchSimple":""].join(" ")}>
-      <div className="v65ResearchTabs"><button className={tab==="thesis"?"on":""} onClick={()=>setTab("thesis")}>Thesis</button><button className={tab==="fundamentals"?"on":""} onClick={()=>setTab("fundamentals")}>Business</button>{d.assetType!=="crypto"&&<button className={tab==="earnings"?"on":""} onClick={()=>setTab("earnings")}>Earnings</button>}{d.assetType!=="crypto"&&<button className={tab==="institutions"?"on":""} onClick={()=>setTab("institutions")}>Ownership</button>}<button className={tab==="catalysts"?"on":""} onClick={()=>setTab("catalysts")}>Catalysts</button><button className={tab==="technical"?"on":""} onClick={()=>setTab("technical")}>Market</button></div>
+      <StockEvidenceNav tab={tab} setTab={setTab} isCrypto={d.assetType==="crypto"}/>
+      <StockEvidenceSections>
 
       {tab==="thesis"&&presentedDecision&&<div className="v65Thesis">
         <div className="v658VerdictSurface">
@@ -827,6 +824,7 @@ export default function StockClient({symbol}:{symbol:string}){
         </div>}
         </>}
       </div>}
+      </StockEvidenceSections>
     </section>
 
   </div>;
