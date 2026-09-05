@@ -1,0 +1,8 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";
+const read=p=>fs.readFileSync(p,"utf8");
+test("mobile nav is fixed, edge-safe, and main content reserves its height",()=>{const x=read("app/globals.css");assert.match(x,/\.v65MobileNav\{[^}]*position:fixed!important[^}]*z-index:1000!important/s);assert.match(x,/\.v65Main\{[^}]*padding-bottom:calc\(112px \+ env\(safe-area-inset-bottom\)\)!important/s)});
+test("mobile info opens as bottom sheet above nav",()=>{const x=read("app/globals.css");assert.match(x,/\.v658MetricSheet\{[^}]*left:12px!important[^}]*right:12px!important[^}]*bottom:calc\(94px \+ env\(safe-area-inset-bottom\)\)!important/s)});
+test("alerts support delete",()=>{const x=read("app/alerts/page.tsx");assert.match(x,/async function removeAlert/);assert.match(x,/\.from\("alerts"\)\.delete\(\)\.eq\("id",id\)/);assert.match(x,/aria-label=\{`Delete alert/);});
+test("portfolio quantity wording is Qty",()=>{const x=read("components/portfolio/HoldingsIntelligence.tsx");assert.doesNotMatch(x,/Units|Shares/);assert.match(x,/crypto\?"Qty":"Qty"/)});
+test("narrow horizontal mode controls are intentional and scrollbar-free",()=>{const x=read("app/globals.css");assert.match(x,/\.visualModes,\.xrayModes,\.pulsePeriods\{[^}]*scrollbar-width:none!important/s);});
+test("core mobile pages use one type scale",()=>{const x=read("app/globals.css");assert.match(x,/\.stockPage,\.portfolioPage,\.tradingLab,\.simplePage\{font-size:16px!important/);assert.match(x,/\.stockPage p,\.portfolioPage p,\.tradingLab p,\.simplePage p\{font-size:15px!important/);});
