@@ -6,6 +6,8 @@ import {buildDecisionReality,technicalRealityFromCandles,roundPriceZone,applyRea
 import {buildMetricProof,type MetricProof} from "./nivora-metric-proof";
 import {ENGINE_VERSION,WEIGHTS_VERSION,VALUATION_VERSION,TODAY_POLICY_VERSION} from "./nivora-version";
 import {validateDecisionConsistency,type ConsistencyIssue} from "./nivora-consistency";
+import {buildCanonicalFactors} from "./auryn/factor-engine";
+import {scoreLabel} from "./auryn/score-label";
 export type ThesisState="Strengthening"|"Recovering"|"Intact"|"Mixed"|"Weakening"|"Broken";
 export type OutlookLabel="STRONG BULLISH"|"BULLISH"|"CONSTRUCTIVE"|"NEUTRAL"|"CAUTIOUS"|"BEARISH"|"STRONG BEARISH";
 export type HorizonOutlook={key:"3M"|"6M"|"1Y"|"2Y"|"3Y";score:number;label:OutlookLabel;reason:string};
@@ -185,34 +187,25 @@ export function buildZones(market:any,thesisLabel:InvestorDecision["thesisLabel"
 export function buildInvestorDecision({market,company,context,institutional,owns=false,position=null}:{market:any,company:any,context:any,institutional?:any,owns?:boolean,position?:PositionContext|null}):InvestorDecision|null{
   if(!market)return null;
   const raw=company?.rawMetrics||{},assetType=String(market?.assetType||company?.assetType||"stock");
-  const base=num(company?.fundamentalSignal?.score,50),five=num(company?.fiveYearRecord?.score,base);
-  const rev=num(raw.revGrowth,0),ni=num(raw.niGrowth,0),margin=Number(raw.opMargin),fcf=Number(raw.fcf),lev=Number(raw.leverage),grossMargin=Number(raw.grossMargin);
-  const kind=classifyArchetype(context,raw,assetType);
+  const canonicalFactors=buildCanonicalFactors({market,company,context,institutional});
+  const assetClass=canonicalFactors.assetClass;
+  const kind=canonicalFactors.archetype==="AI_INFRASTRUCTURE"?"ai_infrastructure":canonicalFactors.archetype==="SEMICONDUCTOR_CYCLICAL"?"cyclical":canonicalFactors.archetype==="BANK"?"bank":canonicalFactors.archetype==="INSURER"?"insurer":canonicalFactors.archetype==="BIOTECH_PREPROFIT"?"biotech":canonicalFactors.archetype==="MINER"?"miner":classifyArchetype(context,raw,assetType);
   const capitalIntensiveGrowth=kind==="ai_infrastructure";
   const financingRiskOnly=capitalIntensiveGrowth&&!company?.filingRisk;
-
-  let financial=50+(finite(fcf)?fcf>0?13:-15:0)+(finite(margin)?clamp((margin-8)*.60,-13,14):0)+(finite(lev)?lev<60?9:lev>85?-15:0:0);
-  if(finite(grossMargin)&&grossMargin>45)financial+=5;
-  if(kind==="hypergrowth"&&finite(margin)&&margin<0)financial-=4;
-  financial=clamp(financial);
-
-  let growth=clamp(50+clamp(rev*.62,-27,28)+clamp(ni*.14,-12,12));
-  if(company?.fiveYearRecord?.revenueTrend==="Strong")growth=clamp(growth+12);
-  if(company?.fiveYearRecord?.revenueTrend==="Improving")growth=clamp(growth+6);
-  if(company?.fiveYearRecord?.revenueTrend==="Weakening")growth=clamp(growth-16);
-
-  const durability=clamp(five*.58+base*.24+financial*.18);
-  const qualityWeights=(kind==="hypergrowth"||kind==="ai_infrastructure"||kind==="pre_scale")?{base:.25,financial:.18,durability:.22,growth:.35}:kind==="cyclical"||kind==="miner"?{base:.27,financial:.33,durability:.29,growth:.11}:kind==="bank"||kind==="insurer"?{base:.30,financial:.36,durability:.28,growth:.06}:{base:.31,financial:.27,durability:.27,growth:.15};
-  const quality=clamp(base*qualityWeights.base+financial*qualityWeights.financial+durability*qualityWeights.durability+growth*qualityWeights.growth);
-
-  const a=analyst(context),e=earnings(context),instEnabled=!!institutional?.enabled,inst=num(institutional?.institutional?.institutionalScore,50);
+  const base=canonicalFactors.business.score??num(company?.fundamentalSignal?.currentScore,50);
+  const five=num(company?.fiveYearRecord?.score,base);
+  const rev=num(raw.revGrowth,0),ni=num(raw.niGrowth,0),margin=Number(raw.opMargin),fcf=Number(raw.fcf),lev=Number(raw.leverage),grossMargin=Number(raw.grossMargin);
+  const financial=canonicalFactors.financial.score??50;
+  const growth=canonicalFactors.growth.score??50;
+  const durability=assetClass==="ETF"?50:clamp(five*.58+base*.24+financial*.18);
+  const a=analyst(context),legacyE=earnings(context),instEnabled=!!institutional?.enabled,inst=num(institutional?.institutional?.institutionalScore,50);
+  const e={score:canonicalFactors.earnings.score??legacyE.score,trend:legacyE.trend,available:canonicalFactors.earnings.score!=null||legacyE.available};
   const news=context?.summary?.tone;
   const catalysts=clamp(50+(news==="positive"?8:news==="negative"?-10:0)+(company?.filingRisk?-22:0));
   const streetChange=clamp(50+a.trend*2.2);
-  // Analyst level is intentionally low-weight. Changes matter more than the structurally bullish sell-side level.
-  const forward=clamp(growth*.43+e.score*.25+streetChange*.18+catalysts*.14);
-  const companyScore=Math.round(quality),companyLabel=companyScore>=82?"Exceptional":companyScore>=70?"Strong":companyScore>=55?"Average":"Weak";
-
+  // Forward is canonical and availability-aware. Analyst recommendation level is not valuation and is not double-counted.
+  const forward=canonicalFactors.future.score??clamp(growth*.58+e.score*.27+catalysts*.15);
+  const companyScore=assetClass==="ETF"?50:Math.round(canonicalFactors.business.score??base),companyLabel=assetClass==="ETF"?"N/A":scoreLabel(companyScore);
   // Forward intelligence: distinguish long-duration business runway and execution from today's price action.
   const strategicText=[context?.profile?.description,context?.profile?.name,context?.summary?.topReason,...(Array.isArray(context?.news)?context.news.slice(0,8).flatMap((x:any)=>[x?.headline,x?.summary]):[])].filter(Boolean).join(" ").toLowerCase();
   const demandEvidence=/\b(demand|backlog|bookings|contracted|contract|customer win|capacity|gpu|ai cloud|data cent(?:er|re)|power|pipeline|market share|adoption)\b/.test(strategicText);
@@ -225,7 +218,7 @@ export function buildInvestorDecision({market,company,context,institutional,owns
   const runwayScore=Math.round(weighted([{value:growth,weight:.42},{value:forward,weight:.30},{value:five,weight:.28}]));
   const executionScore=Math.round(weighted([{value:base,weight:.24},{value:e.score,weight:.22,available:e.available},{value:streetChange,weight:.14,available:a.available},{value:catalysts,weight:.14},{value:growth,weight:.26}]));
   const macroScore=Math.round(clamp(num(market?.market?.score??market?.scores?.market,50)));
-  const strategicScore=Math.round(weighted([{value:runwayScore,weight:.34},{value:executionScore,weight:.26},{value:durability,weight:.22},{value:themeScore,weight:.10},{value:macroScore,weight:.08}]));
+  const strategicScore=Math.round(assetClass==="ETF"?weighted([{value:forward,weight:.45},{value:macroScore,weight:.30},{value:num(market?.scores?.trend,50),weight:.25}]):weighted([{value:runwayScore,weight:.34},{value:executionScore,weight:.26},{value:durability,weight:.22},{value:themeScore,weight:.10},{value:macroScore,weight:.08}]));
   const strategicLabel:NonNullable<InvestorDecision["strategicContext"]>["label"]=strategicScore>=75?"STRONG":strategicScore>=62?"CONSTRUCTIVE":strategicScore>=48?"MIXED":"WEAK";
   const strategicDrivers=uniq([company?.fiveYearRecord?.revenueTrend==="Strong"?"Multi-year revenue trajectory remains strong.":company?.fiveYearRecord?.revenueTrend==="Improving"?"Multi-year revenue trajectory is improving.":"",demandEvidence?`Evidence supports the ${theme.toLowerCase()} demand/runway.`:"",executionEvidence?"Recent evidence includes execution or profitability progress.":"",forward>=60?"Forward growth/revision evidence remains constructive.":""]).slice(0,4);
   const strategicRisks=uniq([structuralHeadwind?"Recent evidence includes a potentially structural execution headwind.":"",capitalIntensiveGrowth&&financial<45?"Capital intensity and financing remain material execution constraints.":"",forward<42?"Forward evidence is not yet confirming the future runway.":"",company?.filingRisk?"Financing/dilution filing risk can change shareholder economics.":""]).slice(0,4);
@@ -239,7 +232,9 @@ export function buildInvestorDecision({market,company,context,institutional,owns
   if(finite(fcf)&&fcf<0&&finite(lev)&&lev>88)vetoes.push("Negative free cash flow plus extreme liabilities creates a capital-risk veto.");
 
   // Fundamental thesis deliberately excludes technical timing and current price.
-  let tr=companyScore*.27+durability*.17+forward*.23+strategicScore*.18+e.score*.05+catalysts*.07+(instEnabled?inst:50)*.03;
+  let tr=assetClass==="ETF"
+    ? forward*.42+strategicScore*.38+macroScore*.20
+    : companyScore*.27+durability*.17+forward*.23+strategicScore*.18+e.score*.05+catalysts*.07+(instEnabled?inst:50)*.03;
   if(financial<35)tr-=capitalIntensiveGrowth?(runwayScore>=62?2:6):11;if(forward<36)tr-=13;if(growth<30)tr-=9;if(financial<45&&growth<40)tr-=6;if(company?.filingRisk)tr-=7;
   if(vetoes.length>=2)tr=Math.min(tr,34);
   const thesisScore=Math.round(clamp(tr));
@@ -356,10 +351,10 @@ export function buildInvestorDecision({market,company,context,institutional,owns
   ]).slice(0,4)}:{active:false,headline:"",reasons:[]};
 
   const evidence=[market?1:0,company?.fundamentalSignal?1:0,company?.fiveYearRecord?1:0,context?.enabled?1:0,e.available?1:0,a.available?1:0,instEnabled?1:0,valuationModel.available?1:0];
-  const dataCompleteness=Math.round(evidence.reduce((x,y)=>x+y,0)/evidence.length*100);
+  const dataCompleteness=Math.round(Math.min(100,Math.max(0,(canonicalFactors.coverage+Math.round(evidence.reduce((x,y)=>x+y,0)/evidence.length*100))/2)));
   const valuationSanity=checkValuationSanity(px,fairRange);
   const decisionGradeEvidence=Math.max(0,Math.min(100,dataCompleteness-(valuationModel.available&&!valuationValidity.fairValueAllowed?12:0)-(valuationSanity.status==="WARN"?6:valuationSanity.status==="FAIL"?15:0)));
-  const factorMap={business:companyScore,financial:Math.round(financial),growth:Math.round(growth),durability:Math.round(durability),forward:Math.round(forward),earnings:e.available?e.score:null,streetChange:a.available?Math.round(streetChange):null,institutional:instEnabled?Math.round(inst):null,catalysts:Math.round(catalysts),valuation:valuationModel.available?Math.round(valuation):null,timing:timingScore,risk:Math.round(risk)};
+  const factorMap={business:assetClass==="ETF"?null:companyScore,financial:assetClass==="ETF"?null:Math.round(financial),growth:assetClass==="ETF"?null:Math.round(growth),durability:assetClass==="ETF"?null:Math.round(durability),forward:Math.round(forward),earnings:assetClass==="ETF"?null:e.available?e.score:null,streetChange:a.available?Math.round(streetChange):null,institutional:instEnabled?Math.round(inst):null,catalysts:Math.round(catalysts),valuation:valuationModel.available?Math.round(valuation):null,timing:timingScore,risk:Math.round(risk)};
   const technicalReality=technicalRealityFromCandles(market);
   const decisionReality=buildDecisionReality({price:px,valuationRange:fairRange,archetype:kind,timingScore,timingLabel,technical:technicalReality,factors:factorMap,newsTone:news||null,thesisScore,opportunityScore,filingRisk:Boolean(company?.filingRisk),vetoCount:vetoes.length});
   const zones=consolidateEntryZones(buildZones(market,thesisLabel,timingScore,valuationValidity.zonesAllowed,fairRange)).map(z=>roundPriceZone(z,z.confidence,px));
@@ -427,7 +422,7 @@ export function buildInvestorDecision({market,company,context,institutional,owns
   const actionTriggers=buildActionTriggers({action:today.action,owns,thesisScore,opportunityScore,companyScore,timingScore,timingLabel,thesisState,thesisLabel,valuationLabel,vetoes,buyAudit:today.buyAudit});
   return{
     companyScore,thesisScore,opportunityScore,confidence:dataCompleteness,companyLabel,thesisLabel,thesisState,valuationLabel,action,actionReason,today,
-    horizon:bestHorizon,oneLine,drivers,risks,breakers,changed,factors:factorMap,factorAvailability:{business:true,financial:true,growth:true,durability:true,forward:true,earnings:e.available,streetChange:a.available,institutional:instEnabled,catalysts:true,valuation:valuationModel.available,timing:true,risk:true},horizons,bestHorizon,
+    horizon:bestHorizon,oneLine,drivers,risks,breakers,changed,factors:factorMap,factorAvailability:{business:assetClass!=="ETF"&&canonicalFactors.business.score!=null,financial:assetClass!=="ETF"&&canonicalFactors.financial.score!=null,growth:assetClass!=="ETF"&&canonicalFactors.growth.score!=null,durability:assetClass!=="ETF",forward:canonicalFactors.future.score!=null,earnings:assetClass!=="ETF"&&e.available,streetChange:a.available,institutional:instEnabled,catalysts:true,valuation:valuationModel.available,timing:true,risk:true},horizons,bestHorizon,
     streetTarget:hasStreet?{mean:Number(mean.toFixed(2)),low:finite(low)?Number(low.toFixed(2)):undefined,high:finite(high)?Number(high.toFixed(2)):undefined,upsidePct:Number((upside||0).toFixed(1))}:null,
     expectedReturn:{oneYearPct:null,threeYearCagrPct:null,source:"unavailable"},consistency:finalConsistency,position:pos,archetype:kind,dataCompleteness,modelConfidenceLabel:"Uncalibrated",timing:{score:timingScore,label:timingLabel,reason:timingReason},streetView,streetDisagreement,zones,valuationBasis:valuationModel.basis,vetoes,valuationRange:fairRange,valuationValidity,valuationSanity,adversarialRisks,actionTriggers,decisionReality,metricProofs,decisionGradeEvidence,expectedCagr,longTermThesis,expectationGap,strategicContext,canonical
   };
