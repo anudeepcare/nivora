@@ -13,14 +13,14 @@ test('locked decision metrics use spacing instead of vertical separators',()=>{
 });
 
 test('PWA manifest uses the canonical v38 logo assets',()=>{
-  assert.match(manifest,/auryn-v38-192\.png/);
-  assert.match(manifest,/auryn-v38-512\.png/);
+  assert.match(manifest,/auryn-v384-192\.png/);
+  assert.match(manifest,/auryn-v384-512\.png/);
   assert.doesNotMatch(manifest,/auryn-v37-/);
 });
 
 test('site metadata publishes canonical AURYN social preview branding',()=>{
   assert.match(layout,/openGraph:/);
-  assert.match(layout,/auryn-v38-512\.png/);
+  assert.match(layout,/auryn-v384-social\.png/);
 });
 
 test('framework favicon uses the same canonical AURYN sigil geometry',()=>{

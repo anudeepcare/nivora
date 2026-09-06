@@ -346,3 +346,15 @@ a{color:inherit;text-decoration:none}button,input,select{font:inherit}button{cur
 .aurynDecisionSummary .aurynMemoSignals{column-gap:22px!important}
 .aurynDecisionSummary .aurynMemoSignals span{padding-right:0!important;border-right:0!important}
 @media(max-width:560px){.aurynDecisionSummary .aurynMemoSignals{column-gap:18px!important}}
+
+/* AURYN V3.8.3 — canonical technical state: strength != entry quality */
+.aurynStockEvidenceSurface .v383TechnicalHero{border-color:var(--auryn-line);background:rgba(255,255,255,.28)}
+.aurynStockEvidenceSurface .v383TechnicalHero>div+div{border-color:var(--auryn-line)}
+.aurynStockEvidenceSurface .v383TechnicalStateGrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border-bottom:1px solid var(--auryn-line);background:rgba(255,255,255,.18)}
+.aurynStockEvidenceSurface .v383TechnicalStateGrid>div{min-width:0;padding:14px 15px;border-right:1px solid var(--auryn-line)}
+.aurynStockEvidenceSurface .v383TechnicalStateGrid>div:last-child{border-right:0}
+.aurynStockEvidenceSurface .v383TechnicalStateGrid small{display:block;color:var(--auryn-subtle);font-size:8px;font-weight:850;letter-spacing:.08em}
+.aurynStockEvidenceSurface .v383TechnicalStateGrid b{display:block;margin:6px 0 3px;font-size:16px;line-height:1.1}
+.aurynStockEvidenceSurface .v383TechnicalStateGrid span{display:block;color:var(--auryn-muted);font-size:9px;line-height:1.35}
+@media(max-width:1000px){.aurynStockEvidenceSurface .v383TechnicalStateGrid{grid-template-columns:repeat(3,minmax(0,1fr))}.aurynStockEvidenceSurface .v383TechnicalStateGrid>div:nth-child(3n){border-right:0}.aurynStockEvidenceSurface .v383TechnicalStateGrid>div:nth-child(-n+3){border-bottom:1px solid var(--auryn-line)}}
+@media(max-width:700px){.aurynStockEvidenceSurface .v383TechnicalStateGrid{grid-template-columns:1fr 1fr}.aurynStockEvidenceSurface .v383TechnicalStateGrid>div,.aurynStockEvidenceSurface .v383TechnicalStateGrid>div:nth-child(3n){padding:12px;border-right:1px solid var(--auryn-line);border-bottom:1px solid var(--auryn-line)}.aurynStockEvidenceSurface .v383TechnicalStateGrid>div:nth-child(2n){border-right:0}.aurynStockEvidenceSurface .v383TechnicalStateGrid>div:nth-last-child(-n+2){border-bottom:0}.aurynStockEvidenceSurface .v383TechnicalStateGrid b{font-size:15px}.aurynStockEvidenceSurface .v383TechnicalStateGrid span{font-size:9px}}

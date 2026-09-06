@@ -10,11 +10,11 @@ export const metadata:Metadata={
  title:{default:"AURYN — Investment Intelligence",template:"%s | AURYN"},
  description,
  applicationName:"AURYN",
- icons:{icon:[{url:"/auryn-v38-icon.svg",type:"image/svg+xml"}],shortcut:"/auryn-v38-icon.svg",apple:"/auryn-v38-apple.png"},
+ icons:{icon:[{url:"/auryn-v38-icon.svg",type:"image/svg+xml"}],shortcut:"/auryn-v38-icon.svg",apple:"/auryn-v384-apple.png"},
  manifest:"/manifest.webmanifest",
  appleWebApp:{capable:true,statusBarStyle:"black-translucent",title:"AURYN"},
- openGraph:{type:"website",siteName:"AURYN",title:"AURYN — Investment Intelligence",description,images:[{url:"/auryn-v38-512.png",width:512,height:512,alt:"AURYN"}]},
- twitter:{card:"summary",title:"AURYN — Investment Intelligence",description,images:["/auryn-v38-512.png"]},
+ openGraph:{type:"website",siteName:"AURYN",title:"AURYN — Investment Intelligence",description,images:[{url:"/auryn-v384-social.png",width:1200,height:1200,alt:"AURYN"}]},
+ twitter:{card:"summary",title:"AURYN — Investment Intelligence",description,images:["/auryn-v384-social.png"]},
 };
 
 export const viewport:Viewport={width:"device-width",initialScale:1,maximumScale:1,viewportFit:"cover",themeColor:"#15130f"};

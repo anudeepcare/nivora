@@ -245,6 +245,20 @@ export default function StockClient({symbol}:{symbol:string}){
   },[d,mode,company]);
 
   const proTech=useMemo(()=>{
+    const i=d?.indicators;
+    const ts=d?.technicalState;
+    if(i){
+      const rsi14=Number(i.rsi14);
+      const macdHist=Number(i.macd?.histogram);
+      const macdLine=Number(i.macd?.line);
+      const macdSignal=Number(i.macd?.signal);
+      const rsiLabel=!Number.isFinite(rsi14)?"Unavailable":rsi14>=70?"Overbought":rsi14<=30?"Oversold":rsi14>=55?"Bullish":rsi14<=45?"Bearish":"Neutral";
+      const macdLabel=!Number.isFinite(macdHist)?"Unavailable":macdHist>0&&macdLine>macdSignal?"Bullish":macdHist<0&&macdLine<macdSignal?"Bearish":"Mixed";
+      const trendLabel=ts?.trend>=67?"Bullish":ts?.trend<42?"Bearish":"Mixed";
+      const vr=Number(i.volumeRatio20);
+      const volumeLabel=!Number.isFinite(vr)?"Unavailable":vr>=1.35?"Strong participation":vr>=.8?"Normal":"Light";
+      return {atr14:Number(i.atr14),atrPct:Number(i.atrPct),rv:i.realizedVol20==null?null:Number(i.realizedVol20),sma20:i.sma20==null?null:Number(i.sma20),sma50:i.sma50==null?null:Number(i.sma50),sma200:i.sma200==null?null:Number(i.sma200),d20:i.distance20Pct==null?null:Number(i.distance20Pct),d50:i.distance50Pct==null?null:Number(i.distance50Pct),d200:i.distance200Pct==null?null:Number(i.distance200Pct),bbPos:i.bollingerPosition==null?null:Number(i.bollingerPosition),volRatio:Number(i.volumeRatio20),drawdown:i.drawdown52wPct==null?null:Number(i.drawdown52wPct),rsi14,rsiLabel,macd:macdLine,macdSignal,macdHist,macdLabel,trendLabel,volumeLabel};
+    }
     const cs=(d?.candles||[]).filter((x:any)=>Number.isFinite(Number(x.close)));
     if(cs.length<20)return null;
     const closes=cs.map((x:any)=>Number(x.close)), vols=cs.map((x:any)=>Number(x.volume||0));
@@ -262,33 +276,8 @@ export default function StockClient({symbol}:{symbol:string}){
     const vol20=avg(vols.slice(-20)), volRatio=vol20>0?(vols.at(-1)??0)/vol20:null;
     const pct=(v:number|null)=>v&&last?((last/v)-1)*100:null;
     const drawdown=closes.length?((last/Math.max(...closes.slice(-252)))-1)*100:null;
-    let rsi14:number|null=null;
-    if(closes.length>=15){
-      let gains=0,losses=0;
-      for(let i=closes.length-14;i<closes.length;i++){
-        const ch=closes[i]-closes[i-1];
-        if(ch>0)gains+=ch; else losses+=Math.abs(ch);
-      }
-      const ag=gains/14, al=losses/14;
-      rsi14=al===0?100:100-(100/(1+(ag/al)));
-    }
-    const emaSeries=(arr:number[],period:number)=>{
-      if(!arr.length)return [] as number[];
-      const k=2/(period+1), out=[arr[0]];
-      for(let i=1;i<arr.length;i++)out.push(arr[i]*k+out[i-1]*(1-k));
-      return out;
-    };
-    const e12=emaSeries(closes,12), e26=emaSeries(closes,26);
-    const macdSeries=closes.map((_:number,i:number)=>e12[i]-e26[i]);
-    const signalSeries=emaSeries(macdSeries,9);
-    const macd=macdSeries.at(-1)??null, macdSignal=signalSeries.at(-1)??null;
-    const macdHist=macd!=null&&macdSignal!=null?macd-macdSignal:null;
-    const macdLabel=macdHist==null?"Unavailable":macdHist>0&&macd>(macdSignal??0)?"Bullish":macdHist<0&&macd<(macdSignal??0)?"Bearish":"Mixed";
-    const rsiLabel=rsi14==null?"Unavailable":rsi14>=70?"Overbought":rsi14<=30?"Oversold":rsi14>=55?"Bullish":rsi14<=45?"Bearish":"Neutral";
-    const trendLabel=s20!=null&&s50!=null?(last>s20&&s20>s50?"Bullish":last<s20&&s20<s50?"Bearish":"Mixed"):"Unavailable";
-    const volumeLabel=volRatio==null?"Unavailable":volRatio>=1.35?"Strong participation":volRatio>=.8?"Normal":"Light";
-    return {atr14,atrPct:atr14&&last?atr14/last*100:null,rv,sma20:s20,sma50:s50,sma200:s200,d20:pct(s20),d50:pct(s50),d200:pct(s200),bbPos,volRatio,drawdown,rsi14,rsiLabel,macd,macdSignal,macdHist,macdLabel,trendLabel,volumeLabel};
-  },[d?.candles]);
+    return {atr14,atrPct:atr14&&last?atr14/last*100:null,rv,sma20:s20,sma50:s50,sma200:s200,d20:pct(s20),d50:pct(s50),d200:pct(s200),bbPos,volRatio,drawdown,rsi14:null,rsiLabel:"Unavailable",macd:null,macdSignal:null,macdHist:null,macdLabel:"Unavailable",trendLabel:d?.labels?.trend||"Unavailable",volumeLabel:volRatio==null?"Unavailable":volRatio>=1.35?"Strong participation":volRatio>=.8?"Normal":"Light"};
+  },[d]);
 
   const intelligence=useMemo(()=>buildNivoraIntelligence({
     market:d,company,context,options:optionsData,institutional,mode
@@ -477,10 +466,10 @@ export default function StockClient({symbol}:{symbol:string}){
   const targetLow=Number(pt.targetLow);
   const hasAnalystTarget=Number.isFinite(targetMean)&&targetMean>0;
 
-  const technicalComposite=Math.max(0,Math.min(100,Math.round(
-    Number(d.scores?.trend??50)*.30+Number(d.scores?.momentum??50)*.24+Number(d.scores?.flow??50)*.18+
-    Number(d.scores?.structure??50)*.16+(100-Number(d.scores?.extension??50))*.12
-  )));
+  const technicalState=d?.technicalState||{
+    strength:Math.max(0,Math.min(100,Math.round(Number(d.scores?.trend??50)*.34+Number(d.scores?.momentum??50)*.27+Number(d.scores?.flow??50)*.17+Number(d.scores?.structure??50)*.16+50*.06))),
+    entryQuality:Number(d.scores?.entry??d.scores?.timing??50),trend:Number(d.scores?.trend??50),momentum:Number(d.scores?.momentum??50),participation:Number(d.scores?.flow??50),structure:Number(d.scores?.structure??50),extensionRisk:Number(d.scores?.extension??50),volatilityRisk:Number(d.scores?.risk??50),state:d.labels?.trend||"Mixed",entryState:d.labels?.entry||"Mixed"
+  };
 
   const fairValue=(()=>{
     const technicalAnchor=Math.max(Number(d.levels?.breakout||currentPx),Number(marketLab?.waveTarget||currentPx));
@@ -705,9 +694,17 @@ export default function StockClient({symbol}:{symbol:string}){
       {tab==="earnings"&&<div className="v12Earnings"><div className="earnSplit">{latestReport&&<div className="earnNext earnReported"><small>LATEST REPORTED RESULTS</small><h3>{latestEarnNews?.date?new Date(latestEarnNews.date).toLocaleDateString():latestReport.date}</h3><p>{latestEarnNews?.headline||`${latestReport.form} filed — latest reported financial filing`}</p>{latestEarnNews?.url&&<a href={latestEarnNews.url} target="_blank" rel="noreferrer">Read results <ExternalLink size={12}/></a>}</div>}{earn&&<div className="earnNext estimated"><small>NEXT EARNINGS · ESTIMATED</small><h3>{earn.date}</h3><p>{earn.hour||"Time not listed"}{earn.epsEstimate!=null?` · EPS est. ${eps(earn.epsEstimate)}`:""}{earn.revenueEstimate!=null?` · Revenue est. ${money(earn.revenueEstimate)}`:""}</p><p className="earnMeta">Future calendar dates are estimates until confirmed by the company.</p></div>}</div><div className="earnGrid">{(context?.surprises||[]).length?context.surprises.map((x:any,i:number)=><div key={i}><small>{x.period}</small><b className={(x.surprisePercent??0)>=0?"good":"bad"}>{x.surprisePercent!=null?`${x.surprisePercent>=0?"+":""}${Number(x.surprisePercent).toFixed(1)}% surprise`:"Reported"}</b><span>Actual {x.actual??"—"} · Est. {x.estimate??"—"}</span></div>):<p>No earnings-surprise history returned by the connected feed.</p>}</div></div>}
 
       {tab==="technical"&&<div className="v12Technical v26Technical">
-        <div className="v34TechnicalHero">
-          <div><small>TECHNICAL DECISION SUPPORT</small><h3>One score first. Indicators underneath.</h3><p>AURYN blends trend, momentum, flow, structure and extension into one technical composite. RSI, MACD and other indicators explain the score.</p></div>
-          <div className="v34TechVerdict"><small>TECHNICAL COMPOSITE</small><b className={technicalComposite>=68?"good":technicalComposite<45?"bad":"mid"}>{technicalComposite}/100</b><span>{proTech?.trendLabel||d.labels.trend} trend · {proTech?.macdLabel||"MACD unavailable"} MACD · {proTech?.rsiLabel||"RSI unavailable"} RSI</span></div>
+        <div className="v34TechnicalHero v383TechnicalHero">
+          <div><small>TECHNICAL DECISION SUPPORT</small><h3>Strength and entry are different questions.</h3><p>AURYN measures trend strength separately from entry quality, then uses RSI, MACD, participation, volatility and extension to explain why. A strong chart can still be a poor place to chase.</p></div>
+          <div className="v34TechVerdict"><small>TECHNICAL STRENGTH</small><b className={technicalState.strength>=68?"good":technicalState.strength<45?"bad":"mid"}>{technicalState.strength}/100</b><span>{technicalState.state} · {proTech?.macdLabel||"MACD unavailable"} MACD · {proTech?.rsiLabel||"RSI unavailable"} RSI</span></div>
+        </div>
+        <div className="v383TechnicalStateGrid">
+          <div><small>ENTRY QUALITY</small><b className={technicalState.entryQuality>=68?"good":technicalState.entryQuality<45?"bad":"mid"}>{technicalState.entryQuality}/100</b><span>{technicalState.entryState}</span></div>
+          <div><small>TREND</small><b>{technicalState.trend}/100</b><span>{technicalState.trend>=67?"Bullish":technicalState.trend<42?"Bearish":"Mixed"}</span></div>
+          <div><small>MOMENTUM</small><b>{technicalState.momentum}/100</b><span>{technicalState.momentum>=67?"Strong":technicalState.momentum<42?"Weak":"Mixed"}</span></div>
+          <div><small>PARTICIPATION</small><b>{technicalState.participation}/100</b><span>{proTech?.volumeLabel||"Volume context"}</span></div>
+          <div><small>EXTENSION RISK</small><b className={technicalState.extensionRisk>=70?"bad":technicalState.extensionRisk<40?"good":"mid"}>{technicalState.extensionRisk}/100</b><span>Higher = more chase risk</span></div>
+          <div><small>VOLATILITY RISK</small><b className={technicalState.volatilityRisk>=70?"bad":technicalState.volatilityRisk<40?"good":"mid"}>{technicalState.volatilityRisk}/100</b><span>Higher = larger price swings</span></div>
         </div>
         {proTech&&<div className="v34IndicatorGrid">
 <div>
