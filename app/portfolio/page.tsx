@@ -11,6 +11,15 @@ import {WalletCards,Bitcoin,Banknote} from "lucide-react";
 
 type AssetType="EQUITY"|"CRYPTO"|"CASH";
 
+function portfolioOwnerAction(q:any){
+ const thesis=Number(q?.thesisScore);const raw=String(q?.ownerAction||q?.action||"").toUpperCase();
+ if(!Number.isFinite(thesis))return raw||"REVIEW";
+ if(thesis>=68)return /ADD|BUY/.test(raw)?"HOLD / ADD":"HOLD";
+ if(thesis>=52)return "WATCH";
+ if(thesis<38&&/SELL|EXIT|AVOID|REDUCE/.test(raw))return "REDUCE / REASSESS";
+ return "WATCH";
+}
+
 function PortfolioContent(){
  const sp=useSearchParams();
  const[rows,setRows]=useState<any[]>([]),[quotes,setQuotes]=useState<any>({});
@@ -57,12 +66,12 @@ function PortfolioContent(){
  const priced=useMemo(()=>rows.map((x:any)=>{
   if(x.asset_type==="CASH")return{assetType:"CASH" as const,currency:x.currency||x.symbol,symbol:x.symbol,amount:Number(x.shares||0),source:x};
   const q=quotes[x.symbol],price=Number(q?.price||x.avg_cost||0);
-  return{assetType:x.asset_type==="CRYPTO"?"CRYPTO" as const:"EQUITY" as const,symbol:x.symbol,quantity:Number(x.shares||0),price,avgCost:Number(x.avg_cost||0),thesisScore:q?.thesisScore??null,companyScore:q?.companyScore??null,opportunityScore:q?.opportunityScore??null,action:q?.action||"",sector:q?.sector||null,archetype:q?.archetype||null,source:x};
+  return{assetType:x.asset_type==="CRYPTO"?"CRYPTO" as const:"EQUITY" as const,symbol:x.symbol,quantity:Number(x.shares||0),price,avgCost:Number(x.avg_cost||0),thesisScore:q?.thesisScore??null,companyScore:q?.companyScore??null,opportunityScore:q?.opportunityScore??null,action:portfolioOwnerAction(q),sector:q?.sector||null,archetype:q?.archetype||null,source:x};
  }),[rows,quotes]);
  const pulse=useMemo(()=>calculatePortfolioPulse(priced,pulseHistory),[priced,pulseHistory]);
  useEffect(()=>{if(!rows.length||!pulse.totalValue)return;let cancelled=false;(async()=>{const sb=supabaseBrowser(),{data:{user}}=await sb.auth.getUser();if(!user||cancelled)return;const holdings=priced.map((x:any)=>x.assetType==="CASH"?{assetType:"CASH",symbol:x.currency,value:Number(x.amount||0)}:{assetType:x.assetType,symbol:x.symbol,value:Number(x.quantity||0)*Number(x.price||0)});await fetch("/api/portfolio/pulse",{method:"POST",headers:{"Content-Type":"application/json","x-nivora-user-id":user.id},body:JSON.stringify({totalValue:pulse.totalValue,holdings})}).then(r=>r.ok?refreshPulseHistory(user.id):null).catch(()=>null)})();return()=>{cancelled=true}},[rows.length,pulse.totalValue,priced]);
  const investedRows=rows.filter((x:any)=>x.asset_type!=="CASH");
- const attention=investedRows.filter((x:any)=>/EXIT|AVOID|SELL|TRIM|WAIT/i.test(String(quotes[x.symbol]?.action||""))).length;
+ const attention=investedRows.filter((x:any)=>/REDUCE|REASSESS|WATCH/i.test(portfolioOwnerAction(quotes[x.symbol]))).length;
  const ranked=investedRows.map((x:any)=>({symbol:x.symbol,type:x.asset_type,q:quotes[x.symbol]||{}}));
  const strongest=[...ranked].filter(x=>Number.isFinite(Number(x.q.thesisScore))).sort((a,b)=>Number(b.q.thesisScore)-Number(a.q.thesisScore))[0]||null;
  const opportunity=[...ranked].filter(x=>Number.isFinite(Number(x.q.opportunityScore))).sort((a,b)=>Number(b.q.opportunityScore)-Number(a.q.opportunityScore))[0]||null;

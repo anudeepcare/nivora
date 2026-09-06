@@ -40,6 +40,8 @@ export type InvestorDecision={
   marketDataIntegrity?:{state:string;reason:string;provider?:string|null;ageSeconds?:number|null;disagreementPct?:number|null;tradable?:boolean}|null;
   metricProofs?:Record<string,MetricProof>;
   today?:TodayDecision;
+  strategicContext?:{score:number;label:"STRONG"|"CONSTRUCTIVE"|"MIXED"|"WEAK";theme:string;runwayScore:number;executionScore:number;macroScore:number;drivers:string[];risks:string[];evidence:string[]};
+  canonical?:{longTerm:{label:"STRONG"|"CONSTRUCTIVE"|"MIXED"|"WEAK";score:number;reason:string};newMoney:{action:"BUY"|"ACCUMULATE"|"WAIT"|"AVOID";reason:string};owner:{action:"ADD"|"HOLD"|"WATCH"|"REDUCE"|"EXIT";reason:string};entry:{action:"ATTRACTIVE"|"SELECTIVE"|"WAIT"|"OVEREXTENDED"|"WEAK";score:number;reason:string}};
 };
 
 const clamp=(x:number,a=0,b=100)=>Math.max(a,Math.min(b,x));
@@ -211,6 +213,24 @@ export function buildInvestorDecision({market,company,context,institutional,owns
   const forward=clamp(growth*.43+e.score*.25+streetChange*.18+catalysts*.14);
   const companyScore=Math.round(quality),companyLabel=companyScore>=82?"Exceptional":companyScore>=70?"Strong":companyScore>=55?"Average":"Weak";
 
+  // Forward intelligence: distinguish long-duration business runway and execution from today's price action.
+  const strategicText=[context?.profile?.description,context?.profile?.name,context?.summary?.topReason,...(Array.isArray(context?.news)?context.news.slice(0,8).flatMap((x:any)=>[x?.headline,x?.summary]):[])].filter(Boolean).join(" ").toLowerCase();
+  const demandEvidence=/\b(demand|backlog|bookings|contracted|contract|customer win|capacity|gpu|ai cloud|data cent(?:er|re)|power|pipeline|market share|adoption)\b/.test(strategicText);
+  const executionEvidence=/\b(raises guidance|raised guidance|beat|profitable|profitability|margin expansion|capacity online|launched|completed|customer win|contracted)\b/.test(strategicText);
+  const structuralHeadwind=/\b(cut guidance|guidance cut|delay|delayed|cancellation|cancelled|accounting issue|investigation|liquidity concern|going concern)\b/.test(strategicText);
+  const theme=kind==="ai_infrastructure"?"AI infrastructure / compute & power":kind==="hypergrowth"?"Secular growth":kind==="compounder"?"Quality compounder":kind==="pre_scale"?"Pre-scale optionality":kind==="cyclical"||kind==="miner"?"Cycle-sensitive":kind.replaceAll("_"," ");
+  let themeScore=50+(demandEvidence?10:0)+(executionEvidence?7:0)-(structuralHeadwind?14:0);
+  if(kind==="ai_infrastructure"&&demandEvidence)themeScore+=5;
+  themeScore=clamp(themeScore);
+  const runwayScore=Math.round(weighted([{value:growth,weight:.42},{value:forward,weight:.30},{value:five,weight:.28}]));
+  const executionScore=Math.round(weighted([{value:base,weight:.24},{value:e.score,weight:.22,available:e.available},{value:streetChange,weight:.14,available:a.available},{value:catalysts,weight:.14},{value:growth,weight:.26}]));
+  const macroScore=Math.round(clamp(num(market?.market?.score??market?.scores?.market,50)));
+  const strategicScore=Math.round(weighted([{value:runwayScore,weight:.34},{value:executionScore,weight:.26},{value:durability,weight:.22},{value:themeScore,weight:.10},{value:macroScore,weight:.08}]));
+  const strategicLabel:NonNullable<InvestorDecision["strategicContext"]>["label"]=strategicScore>=75?"STRONG":strategicScore>=62?"CONSTRUCTIVE":strategicScore>=48?"MIXED":"WEAK";
+  const strategicDrivers=uniq([company?.fiveYearRecord?.revenueTrend==="Strong"?"Multi-year revenue trajectory remains strong.":company?.fiveYearRecord?.revenueTrend==="Improving"?"Multi-year revenue trajectory is improving.":"",demandEvidence?`Evidence supports the ${theme.toLowerCase()} demand/runway.`:"",executionEvidence?"Recent evidence includes execution or profitability progress.":"",forward>=60?"Forward growth/revision evidence remains constructive.":""]).slice(0,4);
+  const strategicRisks=uniq([structuralHeadwind?"Recent evidence includes a potentially structural execution headwind.":"",capitalIntensiveGrowth&&financial<45?"Capital intensity and financing remain material execution constraints.":"",forward<42?"Forward evidence is not yet confirming the future runway.":"",company?.filingRisk?"Financing/dilution filing risk can change shareholder economics.":""]).slice(0,4);
+  const strategicContext={score:strategicScore,label:strategicLabel,theme,runwayScore,executionScore,macroScore,drivers:strategicDrivers,risks:strategicRisks,evidence:uniq([demandEvidence?"Demand/runway language detected in current company context.":"",executionEvidence?"Execution/profitability evidence detected in current company context.":"",company?.fiveYearRecord?.revenueTrend?`Five-year revenue trend: ${company.fiveYearRecord.revenueTrend}.`:"",market?.market?.regime?`Market regime: ${market.market.regime}.`:""]).filter(Boolean)};
+
   const vetoes:string[]=[];
   if(company?.filingRisk)vetoes.push("Active financing/dilution filing risk requires explicit review.");
   if(financial<24&&kind!=="ai_infrastructure")vetoes.push("Financial health is too weak for an aggressive long recommendation.");
@@ -219,8 +239,8 @@ export function buildInvestorDecision({market,company,context,institutional,owns
   if(finite(fcf)&&fcf<0&&finite(lev)&&lev>88)vetoes.push("Negative free cash flow plus extreme liabilities creates a capital-risk veto.");
 
   // Fundamental thesis deliberately excludes technical timing and current price.
-  let tr=companyScore*.31+durability*.18+forward*.31+e.score*.10+catalysts*.07+(instEnabled?inst:50)*.03;
-  if(financial<35)tr-=capitalIntensiveGrowth?6:11;if(forward<36)tr-=13;if(growth<30)tr-=9;if(financial<45&&growth<40)tr-=6;if(company?.filingRisk)tr-=7;
+  let tr=companyScore*.27+durability*.17+forward*.23+strategicScore*.18+e.score*.05+catalysts*.07+(instEnabled?inst:50)*.03;
+  if(financial<35)tr-=capitalIntensiveGrowth?(runwayScore>=62?2:6):11;if(forward<36)tr-=13;if(growth<30)tr-=9;if(financial<45&&growth<40)tr-=6;if(company?.filingRisk)tr-=7;
   if(vetoes.length>=2)tr=Math.min(tr,34);
   const thesisScore=Math.round(clamp(tr));
   const thesisLabel:InvestorDecision["thesisLabel"]=thesisScore>=72&&forward>=56&&companyScore>=56&&!vetoes.length?"BULLISH":thesisScore<=41||forward<=33||(!capitalIntensiveGrowth&&financial<=27)||vetoes.length>=2?"BEARISH":"NEUTRAL";
@@ -344,19 +364,28 @@ export function buildInvestorDecision({market,company,context,institutional,owns
   const decisionReality=buildDecisionReality({price:px,valuationRange:fairRange,archetype:kind,timingScore,timingLabel,technical:technicalReality,factors:factorMap,newsTone:news||null,thesisScore,opportunityScore,filingRisk:Boolean(company?.filingRisk),vetoCount:vetoes.length});
   const zones=consolidateEntryZones(buildZones(market,thesisLabel,timingScore,valuationValidity.zonesAllowed,fairRange)).map(z=>roundPriceZone(z,z.confidence,px));
   const longH=[...horizons].filter(h=>h.key==="1Y"||h.key==="2Y"||h.key==="3Y");
-  const longTermScore=Math.round(longH.reduce((sum,h)=>sum+h.score,0)/Math.max(1,longH.length));
+  const horizonLongScore=Math.round(longH.reduce((sum,h)=>sum+h.score,0)/Math.max(1,longH.length));
+  const longTermScore=Math.round(weighted([{value:horizonLongScore,weight:.58},{value:strategicScore,weight:.42}]));
   const longTermLabel:NonNullable<InvestorDecision["longTermThesis"]>["label"]=longTermScore>=75?"STRONG":longTermScore>=62?"CONSTRUCTIVE":longTermScore>=48?"MIXED":"WEAK";
   const nearTerm=`3M ${horizons.find(h=>h.key==="3M")?.label||"NEUTRAL"}; timing ${timingLabel.toLowerCase()}.`;
   const longTerm=`1–3Y evidence is ${longTermLabel.toLowerCase()} (${longTermScore}/100), driven primarily by business quality, forward evidence, durability and financial strength.`;
   const longTermThesis={label:longTermLabel,score:longTermScore,summary:longTermLabel==="STRONG"?"The long-duration business case is strong even if near-term price action is noisy.":longTermLabel==="CONSTRUCTIVE"?"The long-duration business case is constructive, but execution and valuation still matter.":longTermLabel==="MIXED"?"The long-duration case has meaningful positives and unresolved weaknesses.":"Long-duration evidence is not strong enough to justify conviction.",nearTerm,longTerm};
   const expectationRaw=(forward-50)*.55+(e.available?(e.score-50)*.20:0)+(a.available?(streetChange-50)*.15:0)+(catalysts-50)*.10;
   const expectationGap={label:!context?.enabled?"UNKNOWN" as const:expectationRaw>=8?"POSITIVE" as const:expectationRaw<=-8?"NEGATIVE" as const:"BALANCED" as const,score:context?.enabled?Math.round(clamp(50+expectationRaw)):null,reason:!context?.enabled?"Forward expectation evidence is unavailable.":expectationRaw>=8?"Forward growth, execution/revisions and catalysts are improving faster than the neutral baseline.":expectationRaw<=-8?"Forward evidence is deteriorating and expectations may still be too high.":"Forward evidence is broadly balanced; NIVORA does not see a large expectation mismatch yet."};
-  const oneLine=thesisLabel==="BULLISH"?`The ${companyLabel.toLowerCase()} business profile and forward evidence support a constructive long-term thesis; ${timingLabel==="OVEREXTENDED"?"price is too extended to chase":timingLabel==="WEAK"?"price has not stabilized yet":"entry quality still matters"}.`:thesisLabel==="BEARISH"?"The fundamental/forward evidence is weak enough that technical strength alone should not justify new capital.":"The investment case is mixed: there is not yet enough aligned evidence to call the long-term thesis strongly bullish or bearish.";
+  const oneLine=longTermLabel==="STRONG"?`The long-duration business case is strong; ${timingLabel==="ATTRACTIVE"?"current entry conditions are supportive":"today's entry still needs discipline"}.`:longTermLabel==="CONSTRUCTIVE"?`The long-duration business case is constructive, with ${strategicContext.theme.toLowerCase()} runway balanced against execution, valuation and risk.`:longTermLabel==="WEAK"?"Long-duration business and forward evidence are weak enough that capital preservation matters more than technical strength.":"The long-duration case is mixed: future upside exists, but important execution or financial evidence remains unresolved.";
+
+  const hardBroken=thesisState==="Broken"||vetoes.length>=2||(longTermScore<34&&strategicScore<38&&forward<38);
+  const canonicalNewMoney:NonNullable<InvestorDecision["canonical"]>["newMoney"]=hardBroken?{action:"AVOID",reason:"Structural thesis or hard-veto evidence blocks new capital."}:longTermScore>=74&&opportunityScore>=68&&timingLabel==="ATTRACTIVE"?{action:"BUY",reason:"Long-term quality, forward runway and current entry conditions are aligned."}:longTermScore>=66&&opportunityScore>=60&&(timingLabel==="ATTRACTIVE"||timingLabel==="SELECTIVE")?{action:"ACCUMULATE",reason:"The long-term case is constructive and supports staged capital, but sizing and confirmation still matter."}:{action:"WAIT",reason:longTermScore>=62?"The long-term thesis remains constructive, but current valuation/timing or execution evidence does not yet justify aggressive new capital.":"Future upside is not yet supported by enough aligned evidence for new capital."};
+  const canonicalOwner:NonNullable<InvestorDecision["canonical"]>["owner"]=hardBroken?{action:"EXIT",reason:"Structural thesis deterioration or hard-veto evidence requires reassessment."}:longTermScore<45&&strategicScore<45&&forward<40?{action:"REDUCE",reason:"Long-term, strategic and forward evidence are all weak enough to justify reducing exposure."}:thesisState==="Weakening"&&longTermScore<56?{action:"WATCH",reason:"The thesis is weakening, but evidence has not crossed the structural exit threshold."}:canonicalNewMoney.action==="BUY"&&timingLabel==="ATTRACTIVE"?{action:"ADD",reason:"The existing thesis remains strong and current entry conditions support staged additions."}:{action:"HOLD",reason:"The long-term thesis remains investable; near-term noise alone does not justify reducing the position."};
+  const canonical={longTerm:{label:longTermLabel,score:longTermScore,reason:longTermThesis.summary},newMoney:canonicalNewMoney,owner:canonicalOwner,entry:{action:timingLabel,score:timingScore,reason:timingReason}};
+  // Keep legacy action fields compatible, but make them follow the canonical horizon separation.
+  action=owns?(canonicalOwner.action==="EXIT"?"EXIT / REASSESS":canonicalOwner.action==="REDUCE"?"REDUCE":canonicalOwner.action==="WATCH"?"HOLD / WATCH":canonicalOwner.action==="ADD"?"ADD":"HOLD"):(canonicalNewMoney.action==="BUY"?"ACCUMULATE":canonicalNewMoney.action==="ACCUMULATE"?"ACCUMULATE":canonicalNewMoney.action==="AVOID"?"AVOID":"WAIT");
+  actionReason=owns?canonicalOwner.reason:canonicalNewMoney.reason;
 
   const rawToday=deriveTodayAction({
     thesisScore,opportunityScore,companyScore,thesisLabel,thesisState,
     timing:{score:timingScore,label:timingLabel},valuationLabel,vetoes,consistency,
-    archetype:kind,
+    archetype:kind,strategicScore,longTermScore,
     factors:{financial:Math.round(financial),growth:Math.round(growth),forward:Math.round(forward),risk:Math.round(risk)},
     valuationAvailable:valuationModel.available,
     valuationRobustness:decisionReality.valuationRobustness.label,
@@ -400,6 +429,6 @@ export function buildInvestorDecision({market,company,context,institutional,owns
     companyScore,thesisScore,opportunityScore,confidence:dataCompleteness,companyLabel,thesisLabel,thesisState,valuationLabel,action,actionReason,today,
     horizon:bestHorizon,oneLine,drivers,risks,breakers,changed,factors:factorMap,factorAvailability:{business:true,financial:true,growth:true,durability:true,forward:true,earnings:e.available,streetChange:a.available,institutional:instEnabled,catalysts:true,valuation:valuationModel.available,timing:true,risk:true},horizons,bestHorizon,
     streetTarget:hasStreet?{mean:Number(mean.toFixed(2)),low:finite(low)?Number(low.toFixed(2)):undefined,high:finite(high)?Number(high.toFixed(2)):undefined,upsidePct:Number((upside||0).toFixed(1))}:null,
-    expectedReturn:{oneYearPct:null,threeYearCagrPct:null,source:"unavailable"},consistency:finalConsistency,position:pos,archetype:kind,dataCompleteness,modelConfidenceLabel:"Uncalibrated",timing:{score:timingScore,label:timingLabel,reason:timingReason},streetView,streetDisagreement,zones,valuationBasis:valuationModel.basis,vetoes,valuationRange:fairRange,valuationValidity,valuationSanity,adversarialRisks,actionTriggers,decisionReality,metricProofs,decisionGradeEvidence,expectedCagr,longTermThesis,expectationGap
+    expectedReturn:{oneYearPct:null,threeYearCagrPct:null,source:"unavailable"},consistency:finalConsistency,position:pos,archetype:kind,dataCompleteness,modelConfidenceLabel:"Uncalibrated",timing:{score:timingScore,label:timingLabel,reason:timingReason},streetView,streetDisagreement,zones,valuationBasis:valuationModel.basis,vetoes,valuationRange:fairRange,valuationValidity,valuationSanity,adversarialRisks,actionTriggers,decisionReality,metricProofs,decisionGradeEvidence,expectedCagr,longTermThesis,expectationGap,strategicContext,canonical
   };
 }

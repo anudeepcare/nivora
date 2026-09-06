@@ -1,0 +1,9 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";
+const r=p=>fs.readFileSync(p,"utf8");
+test("stock summary consumes canonical long-term, owner and new-money decisions",()=>{const s=r("components/stock/StockDecisionSummary.tsx");assert.match(s,/decision\.canonical/);assert.doesNotMatch(s,/deriveV65Actions/);assert.match(s,/IF YOU OWN IT/);assert.match(s,/FUTURE/)});
+test("mobile search is suppressed while primary research search is visible",()=>{const s=r("components/AppShell.tsx");assert.match(s,/primarySearchVisible/);assert.match(s,/IntersectionObserver/);assert.match(s,/path!=="\/analyze"/)});
+test("evidence navigation reduces mobile clutter with More group",()=>{const s=r("components/stock/StockEvidenceNav.tsx");assert.match(s,/aurynEvidenceMore/);assert.match(s,/More/);assert.match(s,/aurynEvidenceSecondaryDesktop/)});
+test("portfolio map is interactive and explains selected metric",()=>{const s=r("components/portfolio/PortfolioCompositionGraph.tsx");assert.match(s,/useState/);assert.match(s,/aurynCompositionExplain/);assert.match(s,/View holdings/)});
+test("portfolio presentation derives owner action rather than blindly showing scan action",()=>{const s=r("app/portfolio/page.tsx");assert.match(s,/function portfolioOwnerAction/);assert.match(s,/action:portfolioOwnerAction\(q\)/)});
+test("v38 css compacts footer and increases mobile analytical readability",()=>{const c=r("app/auryn-product.css");assert.match(c,/AURYN V3\.8/);assert.match(c,/aurynProductFooterInner[^}]*padding:24px/);assert.match(c,/aurynMemoSignals b[^}]*font-size:18px/);assert.match(c,/aurynSearchResults[^}]*max-height/)});
+test("PWA assets use exact AURYN sigil family",()=>{const m=r("public/manifest.webmanifest"),l=r("app/layout.tsx");assert.match(m,/auryn-v38-192\.png/);assert.match(m,/auryn-v38-512\.png/);assert.match(l,/auryn-v38-apple\.png/)});

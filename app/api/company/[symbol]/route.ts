@@ -58,8 +58,11 @@ try{
  if(opMargin!=null&&opMargin>12){score+=1;pos("Operating margin is healthy.")}
  if(leverage!=null){if(leverage<65){score+=1;pos("Balance-sheet leverage is moderate.")}else if(leverage>85){score-=1;neg("Liabilities are high relative to assets.")}}
  if(cash!=null&&liab!=null&&+cash>+liab*.25){score+=1;pos("Cash provides a meaningful balance-sheet cushion.")}
- const businessScore=score100(50+score*8+(fiveYearRecord.score-50)*.35);
- const fundamentalSignal=businessScore>=72?{label:"Strong",tone:"good",score:businessScore,reasons,positiveReasons,riskReasons}:businessScore<45?{label:"Weak / watch",tone:"bad",score:businessScore,reasons,positiveReasons,riskReasons}:{label:"Mixed",tone:"mid",score:businessScore,reasons,positiveReasons,riskReasons};
+ const currentFundamentalScore=score100(50+score*8);
+ // Business quality is deliberately multi-year. A single annual/quarterly setback can lower current execution
+ // without erasing a durable five-year record. Current evidence remains visible separately.
+ const businessScore=score100(currentFundamentalScore*.45+fiveYearRecord.score*.55);
+ const fundamentalSignal=businessScore>=72?{label:"Strong",tone:"good",score:businessScore,currentScore:currentFundamentalScore,reasons,positiveReasons,riskReasons}:businessScore<45?{label:"Weak / watch",tone:"bad",score:businessScore,currentScore:currentFundamentalScore,reasons,positiveReasons,riskReasons}:{label:"Mixed",tone:"mid",score:businessScore,currentScore:currentFundamentalScore,reasons,positiveReasons,riskReasons};
  const r=subs.filings?.recent||{},filings=(r.form||[]).map((form:string,i:number)=>{const description=r.primaryDocDescription?.[i]||r.primaryDocument?.[i]||"SEC filing",classify=classifyFiling(form,description);return{form,date:r.filingDate?.[i],accession:r.accessionNumber?.[i],description,url:`https://www.sec.gov/Archives/edgar/data/${entry.cik_str}/${String(r.accessionNumber?.[i]||"").replaceAll("-","")}/${r.primaryDocument?.[i]||""}`,...classify}}).filter((x:any)=>["8-K","10-Q","10-K","6-K","20-F","40-F","S-3","424B5","4"].includes(x.form)).slice(0,14);
  const filingRisk=filings.find((x:any)=>x.tone==="risk");
  return NextResponse.json({name:entry.title,cik,assetType:"stock",freshness:{fundamentalsAt:nowIso(),fundamentalsTtlSeconds:21600,filingsTtlSeconds:300},fundamentals,fundamentalSignal,fiveYearRecord,filings,filingRisk,rawMetrics:{revGrowth,niGrowth,fcf,opMargin,grossMargin,leverage}});
