@@ -341,3 +341,8 @@ a{color:inherit;text-decoration:none}button,input,select{font:inherit}button{cur
  .aurynProductFooter{margin-top:12px}.aurynProductFooterInner{padding:18px 16px 10px;display:block}.aurynProductFooterBrand .aurynBrand{transform:scale(.88);transform-origin:left center}.aurynProductFooterBrand p{display:none}.aurynProductFooter nav{display:flex;flex-wrap:wrap;gap:7px 14px;margin-top:9px}.aurynProductFooter nav>div{display:contents}.aurynProductFooter nav small{display:none}.aurynProductFooter nav a{font-size:10px;color:#b9b0a4}.aurynProductFooterBottom{padding:9px 16px calc(10px + var(--mobile-nav-height) + env(safe-area-inset-bottom));display:block;font-size:8px;line-height:1.45}.aurynProductFooterBottom span:first-child{margin-right:8px}.aurynProductFooterBottom span:last-child{color:#6e685f}
 }
 @media(max-width:420px){.aurynDecisionMain h2{font-size:35px}.aurynMemoReasons{font-size:12px}.aurynEvidenceMore>div{grid-template-columns:1fr 1fr}.aurynProductFooter nav{gap:6px 11px}.aurynProductFooter nav a{font-size:9px}}
+
+/* AURYN V3.8.1 — locked decision-card metric treatment: spacing, never divider rails. */
+.aurynDecisionSummary .aurynMemoSignals{column-gap:22px!important}
+.aurynDecisionSummary .aurynMemoSignals span{padding-right:0!important;border-right:0!important}
+@media(max-width:560px){.aurynDecisionSummary .aurynMemoSignals{column-gap:18px!important}}
