@@ -30,6 +30,8 @@ import {metricDefinitions} from "@/lib/nivora-metrics";
 import {ENGINE_VERSION} from "@/lib/nivora-version";
 import {formatMoney as displayMoney,formatPercent} from "@/lib/nivora-format";
 import MetricInfo from "@/components/v65/MetricInfo";
+import {adaptCurrentEvidenceToV4} from "@/lib/auryn/v4/current-evidence-adapter";
+import {buildAurynV4CoreAnalysis} from "@/lib/auryn/v4/analyze";
 
 type Mode="now"|"swing"|"long"|"own";
 type Depth="simple"|"investor"|"pro";
@@ -109,7 +111,7 @@ export default function StockClient({symbol}:{symbol:string}){
   const[optionSide,setOptionSide]=useState<"bullish"|"bearish">("bullish");
   const[optionStyle,setOptionStyle]=useState<"conservative"|"balanced"|"aggressive"|"leaps">("balanced");
   const[optionExpiration,setOptionExpiration]=useState<string|null>(null);
-  const[depth]=useState<Depth>("investor");
+  const[depth,setDepth]=useState<Depth>("investor");
   const[answerOpen,setAnswerOpen]=useState<"why"|"change"|"risk"|"evidence"|null>(null);
   const[auditOpen,setAuditOpen]=useState(false);
   const[institutional,setInstitutional]=useState<any>(null);
@@ -295,6 +297,16 @@ export default function StockClient({symbol}:{symbol:string}){
     const marketDataIntegrity=liveQuote?{state:String(liveQuote.integrityState||liveQuote.freshness||"UNKNOWN"),reason:String(liveQuote.integrityReason||""),provider:liveQuote.provider||null,ageSeconds:liveQuote.ageSeconds??null,disagreementPct:liveQuote.disagreementPct??null,tradable:liveQuote.integrityTradable!==false}:null;
     return {...investorDecision,today,marketDataIntegrity,calibrationEvidence:ce,modelConfidenceLabel:label as "Uncalibrated"|"Collecting"|"Calibrated"};
   },[investorDecision,calibration,liveQuote,owns]);
+
+  const v4Analysis=useMemo(()=>{
+    if(!d||!presentedDecision)return null;
+    try{
+      const bundle=adaptCurrentEvidenceToV4({
+        symbol,asOf:new Date().toISOString(),market:d,company,context,institutional,legacyDecision:presentedDecision
+      });
+      return buildAurynV4CoreAnalysis(bundle);
+    }catch{return null;}
+  },[symbol,d,company,context,institutional,presentedDecision]);
 
   const enterprise=useMemo(()=>{
     if(!d||!intelligence)return null;
@@ -542,7 +554,8 @@ export default function StockClient({symbol}:{symbol:string}){
   return <div className="aurynStockPage">
     <StockSecurityHeader company={company?.name||d.name||symbol} symbol={symbol} price={currentPx} changePct={displayChangePct} status={marketStatusLabel} detail={liveQuote?(liveQuote.integrityState==="MARKET_CLOSED"?`${liveQuote.provider} · market closed · regular close ${displayMoney(Number(liveQuote.regularClose))}`:`${liveQuote.provider} · ${liveQuote.ageSeconds==null?"timestamp unavailable":`${liveQuote.ageSeconds}s old`}${liveQuote.disagreementPct!=null?` · provider gap ${Number(liveQuote.disagreementPct).toFixed(2)}%`:""} · regular close ${displayMoney(Number(liveQuote.regularClose))}`):"Daily analysis stays available while the live quote connects."} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
     {closedQuoteMismatch?<div className="aurynIntegrityAlert" role="status"><b>Quote integrity check</b><span>Provider price did not match the verified regular close. AURYN is using the verified regular close for this closed-market decision view.</span></div>:null}
-    {presentedDecision&&<><StockDecisionSummary decision={presentedDecision} owns={owns}/><StockActionPlan entryLow={horizonPlan.entryLow} entryHigh={horizonPlan.entryHigh} reassess={Number(d.levels?.invalidation||d.levels?.majorSupport||0)} confirm={horizonPlan.confirm} breaker={presentedDecision.breakers?.[0]}/></>}
+    <div className="aurynDepthSwitch" aria-label="Analysis depth"><span>View</span><button type="button" className={depth==="simple"?"on":""} onClick={()=>setDepth("simple")}>Beginner</button><button type="button" className={depth==="investor"?"on":""} onClick={()=>setDepth("investor")}>Pro</button><button type="button" className={depth==="pro"?"on":""} onClick={()=>setDepth("pro")}>Extreme Pro</button></div>
+    {presentedDecision&&<><StockDecisionSummary decision={presentedDecision} owns={owns} v4={v4Analysis} depth={depth}/><StockActionPlan entryLow={horizonPlan.entryLow} entryHigh={horizonPlan.entryHigh} reassess={Number(d.levels?.invalidation||d.levels?.majorSupport||0)} confirm={horizonPlan.confirm} breaker={presentedDecision.breakers?.[0]}/></>}
     <div className="aurynOwnershipNote"><Sparkles size={14}/><span>AURYN separates long-term thesis, owner action and new-money timing.</span></div>
 
 

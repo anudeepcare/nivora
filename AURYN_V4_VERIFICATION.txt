@@ -1,0 +1,16 @@
+AURYN V4 PRODUCTION SOURCE PACKAGE
+Generated: 2026-09-07
+
+Fresh verification before packaging:
+- npm test: PASS — 321/321 tests, 0 failures
+- npm run audit:v65: PASS
+- Secret check: .env.local excluded from package
+- Build artifacts/caches excluded: .git, node_modules, .next, .engine-test, tsconfig.tsbuildinfo
+
+Production deployment gate still required in normal networked CI/Vercel:
+  npm ci
+  npm test
+  npm run audit:v65
+  npm run build
+
+Local Next.js production build was not executable in this sandbox because the missing npm dependency cache could not be fetched from the registry. This limitation is environmental; it is not represented as a passed build.

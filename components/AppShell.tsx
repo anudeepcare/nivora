@@ -12,7 +12,7 @@ const nav=[
  {href:"/analyze",label:"Research",icon:SearchIcon},
  {href:"/portfolio",label:"Portfolio",icon:BriefcaseBusiness},
  {href:"/alerts",label:"Monitor",icon:Radar},
- {href:"/trading-lab",label:"Lab",icon:FlaskConical},
+ {href:"/trading-lab",label:"Trading Lab",icon:FlaskConical},
 ];
 
 export default function AppShell({children}:{children:React.ReactNode}){

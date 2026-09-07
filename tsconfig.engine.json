@@ -67,6 +67,19 @@
     "lib/v65/outcomes.ts",
     "lib/v65/challenger.ts",
     "lib/v65/valuation-fallback.ts",
-    "lib/v65/paper-invalidation.ts"
+    "lib/v65/paper-invalidation.ts",
+    "lib/auryn/v4/version.ts",
+    "lib/auryn/v4/domain.ts",
+    "lib/auryn/v4/classification.ts",
+    "lib/auryn/v4/model-registry.ts",
+    "lib/auryn/v4/factors.ts",
+    "lib/auryn/v4/moat.ts",
+    "lib/auryn/v4/thesis.ts",
+    "lib/auryn/v4/narrative.ts",
+    "lib/auryn/v4/confidence.ts",
+    "lib/auryn/v4/decision.ts",
+    "lib/auryn/v4/current-evidence-adapter.ts",
+    "lib/auryn/v4/analyze.ts",
+    "lib/auryn/v4/presentation.ts"
   ]
 }

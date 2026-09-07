@@ -12,7 +12,7 @@ export default function HoldingsIntelligence({assets,onEdit,onRemove,editingId,e
    <article className={`aurynPositionRow ${cash?"":"clickable"}`} role={cash?undefined:"link"} aria-label={cash?undefined:`Open ${name} research`} tabIndex={cash?undefined:0} onClick={()=>open(cash,name)} onKeyDown={e=>{if(!cash&&(e.key==="Enter"||e.key===" ")){e.preventDefault();open(false,name)}}}>
     <div className="aurynPositionName">{cash?<Banknote size={18}/>:crypto?<Bitcoin size={18}/>:<WalletCards size={18}/>}<div><b>{name}</b><span>{cash?"Cash":crypto?"Crypto":"Stock"} · {weight.toFixed(1)}%</span></div></div>
     <div className="aurynPositionFacts">
-     {!cash&&<span><small>SHARES</small><b>{Number(x.quantity||0).toLocaleString(undefined,{maximumFractionDigits:4})}</b></span>}
+     {!cash&&<span><small>{crypto?"Qty":"Qty"}</small><b>{Number(x.quantity||0).toLocaleString(undefined,{maximumFractionDigits:4})}</b></span>}
      {!cash&&<span><small>AVG COST</small><b>${Number(x.avgCost||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</b></span>}
      <span><small>VALUE</small><b>${x.value.toLocaleString(undefined,{maximumFractionDigits:0})}</b></span>
      <span><small>RETURN</small><b className={pnl!=null&&pnl<0?"bad":"good"}>{cash?"—":pnl==null?"—":`${pnl>=0?"+":""}$${Math.abs(pnl).toLocaleString(undefined,{maximumFractionDigits:0})}`}</b></span>

@@ -1,6 +1,17 @@
-# NIVORA V65
+# AURYN V4 Production
 
-NIVORA V65 is a mobile-first investment decision and validation platform. It separates slow business/thesis evidence from fast market/timing evidence, supports stocks/crypto/cash portfolios, makes paper execution auditable, and measures whether the engine actually earns predictive reliability.
+AURYN is a mobile-first investment decision and validation platform. The V4 production surface adds a decision-first analyst core on top of the proven V65 evidence, portfolio, calibration and paper-trading foundation. It separates slow business/thesis evidence from fast market/timing evidence and returns one canonical investment decision with horizon-specific context.
+
+## V4 production decision layer
+
+The stock page now runs the canonical V4 analyst core and presents the same underlying decision at three depths:
+
+- **Beginner** — action first, plain-English reasons and horizon calls.
+- **Pro** — the same call plus key factor evidence.
+- **Extreme Pro** — the same call plus analyst-model, model-fit, thesis, moat and evidence-state diagnostics.
+
+The presentation mode never changes the decision engine. V4 primary actions are `STRONG_BUY`, `BUY`, `HOLD`, `REDUCE`, `SELL`, or `INSUFFICIENT_EVIDENCE`; `WAIT_FOR_CONFIRMATION` is not a V4 investment verdict. Decision confidence describes evidence/model quality and is not a probability of profit.
+
 
 ## V65 decision contract
 
@@ -57,10 +68,11 @@ GitHub Actions includes:
 - `.github/workflows/nivora-paper-trading.yml`
 - `.github/workflows/nivora-portfolio-learning.yml`
 - `.github/workflows/nivora-calibration-mature.yml`
-- `.github/workflows/nivora-paper-self-test.yml`
 - `.github/workflows/nivora-market-scanner.yml`
 
 The portfolio-learning job freezes current portfolio-equity decisions. The maturity job later measures 30D / 90D / 180D / 1Y / 2Y benchmark-relative outcomes and refreshes reliability buckets.
+
+For scheduled GitHub jobs, add repository secrets `AURYN_PRODUCTION_URL` (the deployed app origin, for example the Vercel production URL) and `TRADING_LAB_CRON_SECRET` (the same value configured in the deployed app).
 
 Production weights are frozen for the V65 engine. Outcomes may evaluate a challenger, but promotion is never automatic and must create a new engine version.
 
