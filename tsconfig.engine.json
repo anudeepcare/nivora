@@ -80,6 +80,7 @@
     "lib/auryn/v4/decision.ts",
     "lib/auryn/v4/current-evidence-adapter.ts",
     "lib/auryn/v4/analyze.ts",
-    "lib/auryn/v4/presentation.ts"
+    "lib/auryn/v4/presentation.ts",
+    "lib/auryn/market-truth.ts"
   ]
 }

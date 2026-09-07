@@ -2,6 +2,7 @@ import {NextResponse} from "next/server";
 import {normalizeTwelveQuote} from "@/lib/nivora-live-quote";
 import {AlpacaPaperBroker} from "@/lib/alpaca-paper";
 import {loadTradingMarketData} from "@/lib/nivora-trading-market-data";
+import {buildCanonicalMarketSnapshot} from "@/lib/auryn/market-truth";
 import {rateLimitDistributed,requestKey} from "@/lib/rate-limit";
 
 export const dynamic="force-dynamic";
@@ -20,30 +21,33 @@ export async function GET(req:Request,{params}:{params:Promise<{symbol:string}>}
   const broker=alpacaKey&&alpacaSecret?new AlpacaPaperBroker(alpacaKey,alpacaSecret):null;
   const asOf=new Date();
   const market=await loadTradingMarketData(symbol,broker,twelveKey,asOf);
-  const {integrity}=market,chosen=integrity.chosen;
-  if(!chosen)return NextResponse.json({error:integrity.state==="DISAGREEMENT"?"Price unverified — providers disagree.":"Live quote providers returned no usable price.",integrityState:integrity.state,integrityReason:integrity.reason,disagreementPct:integrity.disagreementPct,integrityTradable:false},{status:502,headers:{"Cache-Control":"private, no-store, max-age=0"}});
+  const twelveDisplay=market.twelve&&market.twelveRaw?normalizeTwelveQuote(market.twelveRaw,asOf):null;
+  const snapshot=buildCanonicalMarketSnapshot({symbol,asOf,primary:market.alpaca,secondary:market.twelve,regularClose:twelveDisplay?.regularClose??null});
+  const chosen=snapshot.priceSensitiveAllowed?market.integrity.chosen:null;
 
-  const twelveDisplay=market.twelveRaw?normalizeTwelveQuote(market.twelveRaw,asOf):null;
   return NextResponse.json({
-    symbol,
-    price:chosen.price,
-    regularClose:twelveDisplay?.regularClose??null,
+    ...snapshot,
+    snapshotId:snapshot.snapshotId,
+    priceSensitiveAllowed:snapshot.priceSensitiveAllowed,
+    decisionAllowed:snapshot.decisionAllowed,
+    // Compatibility fields are populated only from canonical/verified market truth.
+    price:snapshot.displayPrice,
+    regularClose:snapshot.regularClose,
     change:twelveDisplay?.change??null,
-    changePct:chosen.changePct??twelveDisplay?.changePct??null,
-    session:chosen.session,
-    isExtendedHours:chosen.session==="PRE_MARKET"||chosen.session==="AFTER_HOURS",
-    providerTimestamp:chosen.providerTimestamp,
-    ageSeconds:chosen.ageSeconds,
-    freshness:chosen.freshness,
-    provider:chosen.provider,
-    isRealTime:chosen.freshness==="LIVE",
-    bid:chosen.bid,
-    ask:chosen.ask,
-    spreadPct:chosen.spreadPct,
-    integrityState:integrity.state,
-    integrityReason:integrity.reason,
-    integrityTradable:integrity.tradable,
-    disagreementPct:integrity.disagreementPct,
-    sources:[market.alpaca,market.twelve].filter(Boolean).map(q=>({provider:q!.provider,price:q!.price,ageSeconds:q!.ageSeconds,freshness:q!.freshness}))
+    changePct:snapshot.priceState==="OFFICIAL_CLOSE"?twelveDisplay?.changePct??null:chosen?.changePct??twelveDisplay?.changePct??null,
+    isExtendedHours:snapshot.session==="PRE_MARKET"||snapshot.session==="AFTER_HOURS",
+    providerTimestamp:chosen?.providerTimestamp??null,
+    ageSeconds:chosen?.ageSeconds??null,
+    freshness:chosen?.freshness??(snapshot.priceState==="OFFICIAL_CLOSE"?"LAST_TRADE":"STALE"),
+    provider:chosen?.provider??(snapshot.priceState==="OFFICIAL_CLOSE"?"official-close":null),
+    isRealTime:snapshot.priceState==="LIVE_VERIFIED"||snapshot.priceState==="LIVE_SINGLE_SOURCE",
+    bid:chosen?.bid??null,
+    ask:chosen?.ask??null,
+    spreadPct:chosen?.spreadPct??null,
+    integrityState:snapshot.priceState,
+    integrityReason:snapshot.reason,
+    integrityTradable:market.integrity.tradable&&snapshot.priceState!=="OFFICIAL_CLOSE",
+    disagreementPct:snapshot.providerAgreementPct,
+    sources:snapshot.sources
   },{headers:{"Cache-Control":"private, no-store, max-age=0"}});
 }

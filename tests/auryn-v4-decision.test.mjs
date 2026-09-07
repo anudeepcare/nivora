@@ -61,3 +61,22 @@ test("SELL is structural: very weak weighted scores with an intact thesis stop a
   assert.notEqual(x.primaryAction,"SELL");
   assert.ok(x.horizonDecisions.every(h=>h.action!=="SELL"));
 });
+
+test("an intact owner thesis does not become an automatic REDUCE solely because new-money valuation/risk is unattractive",()=>{
+  const x=resolveV4Decision({...base,slowScore:68,opportunityScore:42,riskScore:88,technicalScore:45,valuationScore:5,catalystScore:55,sectorScore:60,thesis:{strength:70,direction:"STABLE"},moat:{score:58,direction:"STABLE"}});
+  assert.ok(["HOLD","REDUCE"].includes(x.primaryAction));
+  assert.equal(x.ownerAction,"HOLD");
+});
+
+test("owner action still reduces when structural thesis is actually weakening",()=>{
+  const x=resolveV4Decision({...base,slowScore:45,opportunityScore:35,riskScore:86,technicalScore:40,valuationScore:20,catalystScore:40,sectorScore:45,thesis:{strength:48,direction:"WEAKENING"},moat:{score:45,direction:"ERODING"}});
+  assert.equal(x.ownerAction,"REDUCE");
+});
+
+test("missing valuation alone yields a structural HOLD instead of INSUFFICIENT_EVIDENCE",()=>{
+  const x=resolveV4Decision({...base,valuationScore:null,missingRequired:["VALUATION"]});
+  assert.equal(x.primaryAction,"HOLD");
+  assert.equal(x.ownerAction,"HOLD");
+  assert.ok(x.horizonDecisions.every(h=>h.action!=="INSUFFICIENT_EVIDENCE"));
+  assert.ok(x.reasonCodes.includes("VALUATION_UNAVAILABLE_CAP"));
+});

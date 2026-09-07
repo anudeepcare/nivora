@@ -1,7 +1,7 @@
 "use client";
 import {useEffect,useRef} from "react";
 import {createChart,CandlestickSeries,HistogramSeries,LineSeries,LineStyle} from "lightweight-charts";
-export default function PriceChart({candles,levels,showTrend=false,confluence}:{candles:any[],levels:any,showTrend?:boolean,confluence?:{fib382?:number;fib50?:number;fib618?:number;waveTarget?:number;waveInvalidation?:number}}){
+export default function PriceChart({candles,levels,showTrend=false,confluence}:{candles:any[],levels:any|null,showTrend?:boolean,confluence?:{fib382?:number;fib50?:number;fib618?:number;waveTarget?:number;waveInvalidation?:number}}){
  const el=useRef<HTMLDivElement>(null);
  useEffect(()=>{if(!el.current||!candles?.length)return;
  const mobile=window.matchMedia("(max-width: 760px)").matches;
@@ -15,11 +15,11 @@ export default function PriceChart({candles,levels,showTrend=false,confluence}:{
    ma20.setData(sma(20));ma50.setData(sma(50));
  }
  const vs=chart.addSeries(HistogramSeries,{priceFormat:{type:"volume"},priceScaleId:""});vs.priceScale().applyOptions({scaleMargins:{top:.84,bottom:0}});vs.setData(candles.map((x:any)=>({time:x.time,value:x.volume,color:x.close>=x.open?"rgba(22,163,74,.20)":"rgba(220,38,38,.18)"})));
- const lines=levels?.target1!=null?[
+ const lines:any[]=!levels?[]:levels?.target1!=null?[
    ["Entry low",levels.entryLow,"#16833d"],["Entry high",levels.entryHigh,"#16833d"],
    ["Confirm",levels.confirm,"#b26a19"],["Target 1",levels.target1,"#486b8a"],["Target 2",levels.target2,"#365a78"],
    ["Thesis break",levels.stop,"#8f4541"]
- ] as const:[["Preferred entry",levels.preferredEntry,"#16833d"],["Nearest support",levels.support,"#16833d"],["Major support",levels.majorSupport,"#668f33"],["Resistance",levels.resistance,"#9f3a36"],["Breakout",levels.breakout,"#b26a19"],["Invalidation",levels.invalidation,"#7f3f3f"]] as const;
+ ]:[["Preferred entry",levels.preferredEntry,"#16833d"],["Nearest support",levels.support,"#16833d"],["Major support",levels.majorSupport,"#668f33"],["Resistance",levels.resistance,"#9f3a36"],["Breakout",levels.breakout,"#b26a19"],["Invalidation",levels.invalidation,"#7f3f3f"]];
  for(const [title,price,color] of lines){if(Number.isFinite(Number(price)))cs.createPriceLine({price:Number(price),color,lineWidth:1,lineStyle:LineStyle.Dashed,axisLabelVisible:!mobile,title:mobile?"":title})}
  if(confluence){
    const extra=[

@@ -193,6 +193,7 @@ export interface AurynV4CoreAnalysis {
   moat:MoatAssessment;
   narrative:NarrativeAssessment;
   primaryAction:PrimaryInvestmentAction;
+  ownerAction:PrimaryInvestmentAction;
   horizonDecisions:HorizonDecision[];
   confidence:DecisionConfidence;
   reasonCodes:string[];

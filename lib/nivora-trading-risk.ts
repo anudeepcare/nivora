@@ -9,6 +9,7 @@ export function evaluateTradingRisk(intent:Pick<TradeIntent,"side"|"intentType"|
  if(ctx.duplicate)return deny("DUPLICATE","This evidence/action has already produced an order intent.");
  if(!Number.isFinite(ctx.equity)||ctx.equity<=0)return deny("NO_EQUITY","Paper account equity is unavailable.");
  if(ctx.quote.integrityState&&["DELAYED","STALE","DISAGREEMENT","MARKET_CLOSED"].includes(ctx.quote.integrityState))return deny("QUOTE_INTEGRITY",`Quote integrity is ${ctx.quote.integrityState}; execution is not allowed.`);
+ if(ctx.quote.integrityState==="LIVE_SINGLE_SOURCE")return deny("QUOTE_SINGLE_SOURCE","Autonomous paper execution requires independently verified live market price from aligned providers.");
  if(ctx.quote.freshness!=="LIVE"||ctx.quote.ageSeconds==null||ctx.quote.ageSeconds>p.maxQuoteAgeSeconds)return deny("STALE_QUOTE","A fresh tradable quote is required before execution.");
  if((ctx.quote.spreadPct??0)>p.maxSpreadPct)return deny("WIDE_SPREAD","Bid/ask spread exceeds the execution policy.");
  if(intent.side==="BUY"&&Math.abs(ctx.quote.changePct??0)>p.maxGapPct)return deny("GAP_RISK","The current price gap exceeds the paper-entry policy.");

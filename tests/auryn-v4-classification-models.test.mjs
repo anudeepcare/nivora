@@ -72,3 +72,29 @@ test("power infrastructure archetype stays infrastructure in the investor valuat
   const d=buildInvestorDecision({market,company,context});
   assert.equal(d?.archetype,"infrastructure");
 });
+
+
+test("data-center-first AI description routes to AI infrastructure without ticker hardcoding",()=>{
+  const x=classifyLegacySecurity({assetType:"stock",industry:"Mining",name:"Compute Infra",description:"developer and operator of data center campuses with secured power serving GPU workloads"});
+  assert.equal(x.archetype,"AI_INFRASTRUCTURE");
+});
+
+test("AI infrastructure long-term model does not require a current catalyst feed to form a structural decision",()=>{
+  const c=classifyV4Security({assetType:"stock",description:"GPU cloud compute and powered data center infrastructure",revenue:800,revenueGrowth:70,profitable:false,evidence:[e("p","profile")]});
+  const m=selectAnalystModel(c);
+  assert.equal(m.definition.id,"ai-power-infrastructure");
+  assert.equal(m.definition.requiredFactors.includes("CATALYSTS"),false);
+  assert.equal(m.definition.optionalFactors.includes("CATALYSTS"),true);
+});
+
+test("generic legacy hints never override a more specific source-backed business description",()=>{
+  const power=classifyV4Security({assetType:"stock",industry:"Electrical Equipment",description:"fuel cell distributed power generation for AI data centers",archetypeHint:"compounder",evidence:[e("profile","description")]});
+  assert.equal(power.businessModel,"POWER_UTILITY_INFRA");
+  const ai=classifyV4Security({assetType:"stock",industry:"Mining",description:"developer of powered data center campuses for GPU cloud and HPC hosting",archetypeHint:"general",evidence:[e("profile2","description")]});
+  assert.equal(ai.businessModel,"AI_DATA_CENTER_INFRA");
+});
+
+test("medical equipment and surgical robotics industries route to MEDTECH without ticker hardcoding",()=>{
+  const x=classifyV4Security({assetType:"stock",sector:"Health Care",industry:"Health Care Equipment & Supplies",name:"Robotics Co",description:"robotic surgical system and medical devices",revenue:500,revenueGrowth:25,profitable:false,evidence:[e("profile","industry")]});
+  assert.equal(x.businessModel,"MEDTECH");
+});

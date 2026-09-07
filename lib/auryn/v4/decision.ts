@@ -20,6 +20,7 @@ export interface ResolveV4DecisionInput {
 
 export interface ResolveV4DecisionResult {
   primaryAction:PrimaryInvestmentAction;
+  ownerAction:PrimaryInvestmentAction;
   horizonDecisions:HorizonDecision[];
   reasonCodes:string[];
 }
@@ -31,8 +32,8 @@ const weighted=(parts:Array<[number|null,number]>)=>{
   return w?usable.reduce((s,[v,weight])=>s+v*weight,0)/w:50;
 };
 const actionFromScore=(score:number):PrimaryInvestmentAction=>score>=80?"STRONG_BUY":score>=66?"BUY":score>=50?"HOLD":"REDUCE";
-const fixed=(action:PrimaryInvestmentAction,confidence:DecisionConfidence,reason:string):ResolveV4DecisionResult=>({
-  primaryAction:action,reasonCodes:[reason],horizonDecisions:HORIZONS.map(horizon=>({horizon,action,confidence,reasonCodes:[reason]}))
+const fixed=(action:PrimaryInvestmentAction,confidence:DecisionConfidence,reason:string,ownerAction:PrimaryInvestmentAction=action):ResolveV4DecisionResult=>({
+  primaryAction:action,ownerAction,reasonCodes:[reason],horizonDecisions:HORIZONS.map(horizon=>({horizon,action,confidence,reasonCodes:[reason]}))
 });
 const buy=(a:PrimaryInvestmentAction)=>a==="BUY"||a==="STRONG_BUY";
 
@@ -47,6 +48,7 @@ function applyHorizonGuards(horizon:Horizon,action:PrimaryInvestmentAction,input
     if(buy(out))out="HOLD";
     else if(out==="REDUCE"&&input.slowScore!=null&&input.slowScore>=65)out="HOLD";
   }
+  if(input.valuationScore==null&&(horizon==="SIX_TO_TWELVE_MONTHS"||horizon==="THREE_TO_FIVE_YEARS")&&buy(out))out="HOLD";
   if(input.softConstraints.includes("EXTREME_VALUATION")&&horizon==="SIX_TO_TWELVE_MONTHS"&&buy(out))out="HOLD";
   if(input.softConstraints.includes("NEAR_BINARY_EVENT")&&horizon==="NOW"&&input.businessModel!=="BIOTECH_PHARMA"&&buy(out))out="HOLD";
   return out;
@@ -56,6 +58,7 @@ function reasons(input:ResolveV4DecisionInput,primary:PrimaryInvestmentAction){
   const out:string[]=[];
   if(input.thesis.strength!=null&&input.thesis.strength>=75)out.push("LONG_TERM_THESIS_STRONG");
   if(input.softConstraints.includes("TECHNICAL_INSTABILITY"))out.push("TECHNICAL_WEAKNESS_LIMITS_TIMING");
+  if(input.valuationScore==null||input.missingRequired.includes("VALUATION"))out.push("VALUATION_UNAVAILABLE_CAP");
   if(input.softConstraints.includes("EXTREME_VALUATION"))out.push("VALUATION_CAPS_NEW_RISK");
   if(input.riskScore!=null&&input.riskScore>=85)out.push("RISK_CAP_ACTIVE");
   if(input.modelSuitability<.60)out.push("MODEL_SUITABILITY_CAP");
@@ -65,9 +68,10 @@ function reasons(input:ResolveV4DecisionInput,primary:PrimaryInvestmentAction){
 }
 
 export function resolveV4Decision(input:ResolveV4DecisionInput):ResolveV4DecisionResult{
-  const insufficient=(reason:string)=>fixed("INSUFFICIENT_EVIDENCE",input.confidence,reason);
-  const sellAll=(reason:string)=>fixed("SELL",input.confidence,reason);
-  if(input.missingRequired.length||input.modelSuitability<.40||input.thesis.strength==null||input.slowScore==null||input.riskScore==null)return insufficient("CRITICAL_EVIDENCE_MISSING");
+  const insufficient=(reason:string)=>fixed("INSUFFICIENT_EVIDENCE",input.confidence,reason,"HOLD");
+  const sellAll=(reason:string)=>fixed("SELL",input.confidence,reason,"SELL");
+  const criticalMissing=input.missingRequired.filter(factor=>factor!=="VALUATION");
+  if(criticalMissing.length||input.modelSuitability<.40||input.thesis.strength==null||input.slowScore==null||input.riskScore==null)return insufficient("CRITICAL_EVIDENCE_MISSING");
   if(input.hardVetoes.includes("FRAUD_OR_GOVERNANCE_FAILURE"))return sellAll("HARD_VETO_GOVERNANCE");
   if(input.hardVetoes.includes("SOLVENCY_OR_FINANCING_FAILURE"))return sellAll("HARD_VETO_SOLVENCY");
   if(input.thesis.direction==="BROKEN"||input.thesis.strength<30)return sellAll("THESIS_BROKEN");
@@ -98,11 +102,16 @@ export function resolveV4Decision(input:ResolveV4DecisionInput):ResolveV4Decisio
   else primary="HOLD";
 
   if(input.softConstraints.includes("TECHNICAL_INSTABILITY")&&primary==="STRONG_BUY")primary="BUY";
+  if(input.valuationScore==null&&buy(primary))primary="HOLD";
   if(input.softConstraints.includes("EXTREME_VALUATION")&&buy(primary))primary="HOLD";
   if(input.riskScore>=85&&buy(primary))primary="HOLD";
   if(input.modelSuitability<.60&&buy(primary))primary="HOLD";
 
+  let ownerAction:PrimaryInvestmentAction=primary;
+  if(input.thesis.direction==="WEAKENING"&&input.thesis.strength!=null&&input.thesis.strength<58)ownerAction="REDUCE";
+  else if(primary==="REDUCE"&&input.thesis.direction!=="WEAKENING"&&input.thesis.strength!=null&&input.thesis.strength>=55)ownerAction="HOLD";
+
   const reasonCodes=reasons(input,primary);
   const horizonDecisions=HORIZONS.map(horizon=>({horizon,action:guardedByHorizon[horizon],confidence:input.confidence,reasonCodes:[...reasonCodes]}));
-  return{primaryAction:primary,horizonDecisions,reasonCodes};
+  return{primaryAction:primary,ownerAction,horizonDecisions,reasonCodes};
 }

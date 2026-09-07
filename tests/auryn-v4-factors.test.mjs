@@ -73,3 +73,25 @@ test("AI infrastructure valuation derives sales multiple from market cap and rep
   assert.match(x.basis,/derived.*sales|sales multiple/i);
   assert.ok(x.score>0&&x.score<=100);
 });
+
+test("legacy adapter treats unsupported zero valuation as unavailable evidence",()=>{
+  const x=adaptCurrentEvidenceToV4({
+    symbol:"BE",asOf:"2026-09-07T20:00:00Z",
+    market:{assetType:"stock",scores:{risk:70}},
+    company:{rawMetrics:{revGrowth:40},fundamentalSignal:{currentScore:70}},
+    context:{profile:{name:"PowerCo",finnhubIndustry:"Electrical Equipment",description:"distributed power infrastructure for data centers"}},
+    legacyDecision:{valuationLabel:"Unclear",valuationValidity:{status:"UNSUPPORTED",reason:"valuation inputs unavailable",fairValueAllowed:false,zonesAllowed:false},valuationBasis:"Independent valuation is not established from the currently available evidence.",factors:{valuation:0,growth:70,risk:70}}
+  });
+  assert.equal(x.observations.some(o=>o.factor==="VALUATION"),false);
+});
+
+test("legacy adapter can use source-backed news context to classify an AI infrastructure company when profile description is absent",()=>{
+  const x=adaptCurrentEvidenceToV4({
+    symbol:"INFRA",asOf:"2026-09-07T20:00:00Z",
+    market:{assetType:"stock",scores:{risk:65}},
+    company:{rawMetrics:{revenue:500_000_000,revGrowth:80},fundamentalSignal:{currentScore:68}},
+    context:{profile:{name:"InfraCo",finnhubIndustry:"Mining"},news:[{headline:"InfraCo expands GPU cloud capacity at powered data center campus",summary:"New HPC hosting capacity is expected online next year."}]},
+    legacyDecision:{factors:{growth:80,risk:65}}
+  });
+  assert.match(String(x.classificationInput.description||""),/GPU cloud capacity|HPC hosting/i);
+});

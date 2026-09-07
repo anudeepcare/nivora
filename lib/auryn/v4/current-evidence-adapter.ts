@@ -58,8 +58,15 @@ export function adaptCurrentEvidenceToV4(input:CurrentEvidenceAdapterInput):Anal
   const fundamentals=mean(fundamentalParts);
   if(fundamentals!=null)addObs("FUNDAMENTALS_EARNINGS",fundamentals,"Margins, cash generation, leverage and earnings execution available in the current evidence set.","legacy:company:fundamentals","HEURISTIC","TTM");
 
-  if(finite(factors.valuation))addObs("VALUATION",factors.valuation,"Current AURYN valuation factor migrated with its existing evidence limitations.","legacy:decision:valuation","HEURISTIC","POINT_IN_TIME");
-  else{
+  const valuationProofStatus=String(legacy?.metricProofs?.valuation?.status??"").toUpperCase();
+  const valuationValidityStatus=String(legacy?.valuationValidity?.status??"").toUpperCase();
+  const valuationExplicitlyUnavailable=legacy?.factorAvailability?.valuation===false||valuationProofStatus==="UNAVAILABLE"||valuationValidityStatus==="UNSUPPORTED"||valuationValidityStatus==="STALE";
+  if(!valuationExplicitlyUnavailable&&finite(factors.valuation)){
+    const valuationReason=String(legacy?.valuationBasis||"Current AURYN relative-valuation evidence.");
+    const qualifier=valuationValidityStatus&&valuationValidityStatus!=="VALID"?` ${String(legacy?.valuationValidity?.reason||"")}`:"";
+    addObs("VALUATION",factors.valuation,`${valuationReason}${qualifier}`.trim(),"legacy:decision:valuation",valuationValidityStatus==="VALID"?"MEASURED":"HEURISTIC","POINT_IN_TIME");
+  }
+  else if(!valuationExplicitlyUnavailable){
     const map:Record<string,number>={"Deeply attractive":85,"Attractive":72,"Fair":55,"Expensive":30};
     const v=map[String(legacy?.valuationLabel??"")];
     if(finite(v))addObs("VALUATION",v,"Legacy valuation label mapped conservatively for V4 migration.","legacy:decision:valuationLabel","HEURISTIC","POINT_IN_TIME");
@@ -109,7 +116,12 @@ export function adaptCurrentEvidenceToV4(input:CurrentEvidenceAdapterInput):Anal
   const profile=context?.profile??{};
   const industry=profile?.finnhubIndustry??profile?.industry??company?.industry??null;
   const sector=profile?.sector??company?.sector??context?.sector??null;
-  const description=profile?.description??company?.description??context?.summary?.description??null;
+  const sourceBackedContextText=[
+    context?.summary?.description,
+    context?.summary?.topReason,
+    ...(Array.isArray(context?.news)?context.news.slice(0,6).flatMap((x:any)=>[x?.headline??x?.title,x?.summary]):[])
+  ].filter((x:unknown)=>typeof x==="string"&&x.trim()).join(" ").slice(0,2400);
+  const description=profile?.description??company?.description??context?.summary?.description??(sourceBackedContextText||null);
   const latestHistoryRevenue=Array.isArray(company?.fiveYearRecord?.history)?[...company.fiveYearRecord.history].reverse().find((x:any)=>finite(x?.revenue))?.revenue:null;
   const revenue=finite(raw?.revenue)?Number(raw.revenue):finite(company?.revenue)?Number(company.revenue):finite(latestHistoryRevenue)?Number(latestHistoryRevenue):null;
   const revenueGrowth=finite(raw?.revGrowth)?Number(raw.revGrowth):finite(company?.revenueGrowth)?Number(company.revenueGrowth):null;

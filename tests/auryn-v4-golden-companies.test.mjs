@@ -68,8 +68,8 @@ test("broken thesis sells even when valuation is cheap and technicals look stron
   assert.ok(x.reasonCodes.includes("THESIS_BROKEN"));
 });
 
-test("missing critical model evidence is INSUFFICIENT_EVIDENCE, not HOLD",()=>{
-  const observations=bundle().observations.filter(o=>o.factor!=="VALUATION");
+test("missing critical business evidence is INSUFFICIENT_EVIDENCE, not HOLD",()=>{
+  const observations=bundle().observations.filter(o=>o.factor!=="BUSINESS_QUALITY");
   const x=buildAurynV4CoreAnalysis(bundle({observations,evidenceRefs:refsFor(observations)}));
   assert.equal(x.primaryAction,"INSUFFICIENT_EVIDENCE");
   assert.ok(x.reasonCodes.includes("CRITICAL_EVIDENCE_MISSING"));

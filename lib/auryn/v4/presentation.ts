@@ -12,6 +12,7 @@ export function explainReasonCode(code:string){
   const reasons:Record<string,string>={
     LONG_TERM_THESIS_STRONG:"The long-term thesis is supported by strong slow-moving business evidence.",
     TECHNICAL_WEAKNESS_LIMITS_TIMING:"Technical weakness limits near-term timing, but does not by itself invalidate the long-term thesis.",
+    VALUATION_UNAVAILABLE_CAP:"AURYN can still judge the structural thesis, but new-money buying is capped until decision-grade valuation evidence is available.",
     VALUATION_CAPS_NEW_RISK:"Valuation is demanding enough to cap how aggressively new capital should be deployed.",
     RISK_CAP_ACTIVE:"Risk is elevated enough to prevent a more aggressive buy decision.",
     MODEL_SUITABILITY_CAP:"AURYN has reduced conviction because this security does not fit the selected analyst model strongly enough.",

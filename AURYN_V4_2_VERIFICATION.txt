@@ -1,0 +1,20 @@
+AURYN V4.2 MARKET TRUTH PRODUCTION SOURCE
+Generated: 2026-09-07
+
+VERIFIED
+- npm test: 364/364 PASS
+- npm run audit:v65: PASS
+- git diff --check: PASS
+
+ENVIRONMENT LIMITATION
+- npm run build could not execute in the sandbox because node_modules/Next.js are not installed: `next: not found`.
+- Required deployment gate: npm ci && npm test && npm run audit:v65 && npm run build
+
+PACKAGE EXCLUSIONS
+- .env.local / .env
+- .git
+- node_modules
+- .next
+- .engine-test
+- tsconfig.tsbuildinfo
+- *.log

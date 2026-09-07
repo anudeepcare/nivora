@@ -34,8 +34,7 @@ export function assessQuoteIntegrity(
   if(!any)return{state:"STALE",tradable:false,reason:"No quote provider returned usable market data.",chosen:null,primary:p,secondary:s,disagreementPct:null};
 
   if(any.session==="CLOSED"||any.session==="OVERNIGHT"){
-    const chosen=p??s;
-    return{state:"MARKET_CLOSED",tradable:false,reason:"The U.S. market session is closed; the last trade is context only.",chosen,primary:p,secondary:s,disagreementPct:p&&s?pctDiff(p.price,s.price):null};
+    return{state:"MARKET_CLOSED",tradable:false,reason:"The U.S. market session is closed; provider trades are context only until a regular close is verified.",chosen:null,primary:p,secondary:s,disagreementPct:p&&s?pctDiff(p.price,s.price):null};
   }
 
   const pLive=!!p&&p.freshness==="LIVE"&&p.ageSeconds!=null&&p.price>0;
@@ -52,6 +51,10 @@ export function assessQuoteIntegrity(
 
   if(pLive||sLive){
     const chosen=pLive?p:s!;
+    const singleSourceConflictLimit=Math.max(5,maxDisagreementPct*4);
+    if(p&&s&&disagreement!=null&&disagreement>singleSourceConflictLimit){
+      return{state:"DISAGREEMENT",tradable:false,reason:`The fresh ${chosen.provider} quote conflicts with another timestamped provider by ${disagreement.toFixed(2)}%, above the ${singleSourceConflictLimit.toFixed(2)}% single-source safety limit. AURYN rejected the price until market truth can be re-verified.`,chosen:null,primary:p,secondary:s,disagreementPct:+disagreement.toFixed(4)};
+    }
     return{state:"LIVE_SINGLE_SOURCE",tradable:true,reason:`${chosen.provider} is fresh; the secondary provider is unavailable or stale, so quote confidence is reduced.`,chosen,primary:p,secondary:s,disagreementPct:disagreement==null?null:+disagreement.toFixed(4)};
   }
 
@@ -61,7 +64,7 @@ export function assessQuoteIntegrity(
     state:hasTimestamp?"STALE":"DELAYED",
     tradable:false,
     reason:hasTimestamp?"All available quotes are older than the tradable freshness policy.":"Provider timestamps are unavailable, so NIVORA cannot verify quote freshness.",
-    chosen:freshest,
+    chosen:null,
     primary:p,
     secondary:s,
     disagreementPct:disagreement==null?null:+disagreement.toFixed(4)

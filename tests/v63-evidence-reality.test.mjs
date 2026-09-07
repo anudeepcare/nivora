@@ -114,3 +114,18 @@ test("stock cockpit exposes V63 reality layer",()=>{
   assert.match(s,/EARLY WARNING/);
   assert.match(s,/WHY THIS SCORE/);
 });
+
+test("quote integrity blocks a fresh provider when another timestamped provider materially disagrees",()=>{
+  const x=assessQuoteIntegrity(q("alpaca",93,2),q("twelvedata",111,600,"STALE"));
+  assert.equal(x.state,"DISAGREEMENT");
+  assert.equal(x.tradable,false);
+  assert.equal(x.chosen,null);
+});
+
+test("autonomous paper execution requires independently verified live price",()=>{
+  const intent={side:"BUY",intentType:"ENTER",targetNotional:1000};
+  const ctx={equity:100000,cash:50000,dailyPnlPct:0,currentPositionValue:0,openPositions:2,duplicate:false,quote:{price:100,ageSeconds:2,freshness:"LIVE",changePct:0,spreadPct:.1,integrityState:"LIVE_SINGLE_SOURCE"}};
+  const r=evaluateTradingRisk(intent,ctx);
+  assert.equal(r.allowed,false);
+  assert.equal(r.code,"QUOTE_SINGLE_SOURCE");
+});

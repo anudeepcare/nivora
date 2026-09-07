@@ -13,7 +13,7 @@ export function classifySecurity(x:any):{assetClass:AssetClass;archetype:Busines
  // semiconductor designer remains a semiconductor even when its products serve data centers.
  if(/semiconductor|memory/.test(text))return{assetClass:"EQUITY",archetype:"SEMICONDUCTOR_CYCLICAL"};
  if(/fuel cell|power generation|distributed power|onsite power/.test(text))return{assetClass:"EQUITY",archetype:"POWER_INFRASTRUCTURE"};
- if(/ai cloud|gpu cloud|gpu compute|ai data cent(?:er|re)|data cent(?:er|re).*(?:ai|hpc|gpu)|high[- ]performance computing|hpc|accelerated compute hosting|hyperscale data cent(?:er|re)/.test(text))return{assetClass:"EQUITY",archetype:"AI_INFRASTRUCTURE"};
+ if(/ai cloud|gpu cloud|gpu compute|ai data cent(?:er|re)|data cent(?:er|re).*\b(?:ai|hpc|gpu)|high[- ]performance computing|\bhpc\b|accelerated compute hosting|hyperscale data cent(?:er|re)/.test(text))return{assetClass:"EQUITY",archetype:"AI_INFRASTRUCTURE"};
  if(/mining|metals/.test(industry))return{assetClass:"COMMODITY_MINER",archetype:"MINER"};
  return{assetClass:"EQUITY",archetype:"GENERAL"};
 }
