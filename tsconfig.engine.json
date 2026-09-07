@@ -84,6 +84,7 @@
     "lib/auryn/market-truth.ts",
     "lib/auryn/v5/version.ts",
     "lib/auryn/v5/domain.ts",
+    "lib/auryn/v5/format.ts",
     "lib/auryn/v5/metrics.ts",
     "lib/auryn/v5/technical-patterns.ts",
     "lib/auryn/v5/scenarios.ts",

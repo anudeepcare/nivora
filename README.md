@@ -1,6 +1,14 @@
-# AURYN V5 Decision OS
+# AURYN V5.1 Pro Reliability Decision OS
 
-AURYN V5 is a canonical investment-decision and paper-execution platform. It preserves the proven Market Truth, portfolio, calibration and Alpaca-paper infrastructure, but replaces competing stock-page verdicts and independently calculated price levels with one immutable V5 analysis snapshot.
+AURYN V5.1 is a canonical investment-decision and paper-execution platform with a global reliability/formatting hardening pass. It preserves the proven Market Truth, portfolio, calibration and Alpaca-paper infrastructure, but replaces competing stock-page verdicts and independently calculated price levels with one immutable V5 analysis snapshot.
+
+## V5.1 reliability contract
+
+- Last completed regular-session price semantics are resolved independently from provider `previous_close` fields.
+- Price, change, plan levels, validation evidence and paper sizing share one canonical snapshot boundary.
+- HOLD/DO NOT CHASE never masquerades as an active DCA instruction; REDUCE/SELL never averages down.
+- Strong Buy is confidence-gated and cannot conflict with weak immediate horizons without CIO arbitration.
+- Professional metrics use centralized precision/labels and one shared score-band vocabulary across stock tabs.
 
 ## V5 canonical decision contract
 

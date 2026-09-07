@@ -1,6 +1,7 @@
 "use client";
 import type {CanonicalAnalysisSnapshot} from "@/lib/auryn/v5/domain";
 import {formatInvestmentAction,newMoneyGuidance,ownerGuidance} from "@/lib/auryn/v4/presentation";
+import {formatProfessionalMetricValue} from "@/lib/auryn/v5/format";
 
 type Depth="simple"|"investor"|"pro";
 const tone=(x:string)=>/BUY|STRONG|ADD/.test(x)?"good":/SELL|REDUCE|AVOID/.test(x)?"bad":"mid";
@@ -15,7 +16,7 @@ export default function StockV5Decision({snapshot,owns,depth,onDepthChange}:{sna
    <p>{d.summary}</p>
    {marketBlocked&&<div className="aurynMarketTruthGate"><b>EXECUTION BLOCKED</b><span>{snapshot.marketTruth.reason} Structural research remains available; AURYN will not publish or route price-sensitive actions from an unverified snapshot.</span></div>}
    <div className="aurynV4Horizons" aria-label="Decision by horizon">{d.horizonDecisions.map(h=><span key={h.horizon}><small>{hLabel(h.horizon)}</small><b className={tone(formatInvestmentAction(h.action))}>{formatInvestmentAction(h.action)}</b></span>)}</div>
-   {depth!=="simple"&&<div className="aurynMemoSignals">{keyMetrics.slice(0,depth==="pro"?6:4).map(m=><span key={m.id}><small>{m.label.toUpperCase()}</small><b>{m.available?`${m.value}${m.unit||""}`:"N/A"}</b><em>{m.state}</em></span>)}</div>}
+   {depth!=="simple"&&<div className="aurynMemoSignals">{keyMetrics.slice(0,depth==="pro"?6:4).map(m=><span key={m.id}><small>{m.label.toUpperCase()}</small><b>{formatProfessionalMetricValue(m)}</b><em>{m.state}</em></span>)}</div>}
    <div className="aurynMemoReasons">{d.why.map((x,i)=><span key={i}>✓ {x}</span>)}{d.watch.map((x,i)=><span key={`w-${i}`} className="risk">Watch · {x}</span>)}</div>
   </div>
   <aside className="aurynDecisionSide">

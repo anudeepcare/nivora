@@ -2,12 +2,12 @@
 import MetricInfo from "@/components/v65/MetricInfo";
 import type {CanonicalAnalysisSnapshot,ProfessionalMetric} from "@/lib/auryn/v5/domain";
 import {formatInvestmentAction,newMoneyGuidance} from "@/lib/auryn/v4/presentation";
+import {formatRiskBand,formatScoreBand} from "@/lib/auryn/v5/format";
 
-const scoreWord=(v:number,isRisk=false)=>isRisk?(v<=35?"Low":v<=55?"Moderate":v<=74?"Elevated":"High"):(v>=85?"Exceptional":v>=75?"Strong":v>=65?"Good":v>=50?"Mixed":v>=40?"Weak":"Poor");
 const tone=(s:string)=>{const x=String(s||"").toUpperCase();if(/BUY|ADD|ACCUMULATE|CONSTRUCTIVE|HOLD|STRONG|ATTRACTIVE|STRENGTHEN/.test(x))return"good";if(/AVOID|REDUCE|EXIT|SELL|WEAK|POOR|BROKEN|EROD/.test(x))return"bad";return"mid"};
 const factorOrder=["businessQuality","growth","moat","fundamentals","valuation","entryQuality","catalysts","sector","riskPressure"];
 const factorLabel:Record<string,string>={businessQuality:"Business",growth:"Growth",moat:"Moat",fundamentals:"Fundamentals",valuation:"Valuation",entryQuality:"Timing / entry",catalysts:"Catalysts",sector:"Sector",riskPressure:"Risk pressure"};
-const fmtMetric=(m:ProfessionalMetric)=>m.available&&Number.isFinite(Number(m.value))?`${Math.round(Number(m.value))}/100 · ${scoreWord(Number(m.value),m.id==="riskPressure")}`:"N/A";
+const fmtMetric=(m:ProfessionalMetric)=>m.available&&Number.isFinite(Number(m.value))?`${Math.round(Number(m.value))}/100 · ${m.id==="riskPressure"?formatRiskBand(Number(m.value)):formatScoreBand(Number(m.value))}`:"N/A";
 
 export default function StockThesisPanel({decision,v5,marketTruth}:{decision:any;metricDefinitions?:any;v5:CanonicalAnalysisSnapshot;marketTruth?:any}){
  const v4=v5.v4;
@@ -25,10 +25,10 @@ export default function StockThesisPanel({decision,v5,marketTruth}:{decision:any
  const marketBlocked=v5.executionPlan.state==="BLOCKED"||marketTruth?.priceSensitiveAllowed===false;
  return <div className="aurynStockTabPage aurynThesis">
   <section className="aurynThesisVerdict">
-   <div className="aurynThesisLead"><div className="aurynEyebrow">Canonical long-term thesis</div><div className="aurynThesisHeadline"><h2>{v4.thesis.direction.replaceAll("_"," ")}</h2><span>{thesisScore==null?"N/A":`${Math.round(thesisScore)}/100 · ${scoreWord(thesisScore)}`}</span></div><p>{v4.thesis.companyState}. This tab explains the same V5 decision shown above; it does not calculate a second verdict.</p></div>
+   <div className="aurynThesisLead"><div className="aurynEyebrow">Canonical long-term thesis</div><div className="aurynThesisHeadline"><h2>{v4.thesis.direction.replaceAll("_"," ")}</h2><span>{thesisScore==null?"N/A":`${Math.round(thesisScore)}/100 · ${formatScoreBand(thesisScore)}`}</span></div><p>{v4.thesis.companyState}. This tab explains the same V5 decision shown above; it does not calculate a second verdict.</p></div>
    <aside className="aurynThesisAction"><div className="aurynEyebrow">AURYN decision</div><b className={tone(action)}>{action}</b><span>{marketBlocked?"Price-sensitive action blocked":`${newMoneyGuidance(canonicalAction)} for new capital`}</span><p>{marketBlocked?"The structural thesis remains readable, but AURYN will not publish entry or target timing from an unverified market price.":"Technical weakness can change timing and sizing. Only structural deterioration can turn an intact long-term case into a SELL."}</p></aside>
    <div className="aurynThesisScoreRail">
-    <article><div><span>Thesis strength <MetricInfo title="Thesis strength">Slow-moving business, growth, moat and fundamental evidence from the canonical snapshot.</MetricInfo></span><b>{thesisScore==null?"N/A":`${Math.round(thesisScore)}/100 · ${scoreWord(thesisScore)}`}</b></div>{thesisScore!=null&&<i><em style={{width:`${Math.max(3,Math.min(100,thesisScore))}%`}}/></i>}<small>{v4.thesis.direction.replaceAll("_"," ")} · structural evidence.</small></article>
+    <article><div><span>Thesis strength <MetricInfo title="Thesis strength">Slow-moving business, growth, moat and fundamental evidence from the canonical snapshot.</MetricInfo></span><b>{thesisScore==null?"N/A":`${Math.round(thesisScore)}/100 · ${formatScoreBand(thesisScore)}`}</b></div>{thesisScore!=null&&<i><em style={{width:`${Math.max(3,Math.min(100,thesisScore))}%`}}/></i>}<small>{v4.thesis.direction.replaceAll("_"," ")} · structural evidence.</small></article>
     <article><div><span>Moat / durability <MetricInfo title="Moat / durability">Competitive durability is shown only when evidence exists. Heuristic evidence remains clearly labeled in Extreme Pro.</MetricInfo></span><b>{moatScore==null?"N/A":`${Math.round(moatScore)}/100 · ${v4.moat.direction}`}</b></div>{moatScore!=null&&<i><em style={{width:`${Math.max(3,Math.min(100,moatScore))}%`}}/></i>}<small>{moatMetric?.interpretation||"Competitive durability evidence unavailable."}</small></article>
     <article><div><span>Evidence confidence <MetricInfo title="Evidence confidence">Coverage, freshness, source quality and evidence agreement. This is not a probability of profit.</MetricInfo></span><b>{v5.decision.confidenceScore}/100 · {v5.decision.confidenceLabel}</b></div><i><em style={{width:`${v5.decision.confidenceScore}%`}}/></i><small>Evidence quality and agreement across this V5 snapshot.</small></article>
    </div>

@@ -1,5 +1,5 @@
 import {NextResponse} from "next/server";
-import {normalizeTwelveQuote} from "@/lib/nivora-live-quote";
+import {normalizeTwelveQuote,resolveTwelveRegularClose} from "@/lib/nivora-live-quote";
 import {AlpacaPaperBroker} from "@/lib/alpaca-paper";
 import {loadTradingMarketData} from "@/lib/nivora-trading-market-data";
 import {buildCanonicalMarketSnapshot} from "@/lib/auryn/market-truth";
@@ -22,7 +22,9 @@ export async function GET(req:Request,{params}:{params:Promise<{symbol:string}>}
   const asOf=new Date();
   const market=await loadTradingMarketData(symbol,broker,twelveKey,asOf);
   const twelveDisplay=market.twelve&&market.twelveRaw?normalizeTwelveQuote(market.twelveRaw,asOf):null;
-  const snapshot=buildCanonicalMarketSnapshot({symbol,asOf,primary:market.alpaca,secondary:market.twelve,regularClose:twelveDisplay?.regularClose??null});
+  const regularClose=market.twelveRaw?resolveTwelveRegularClose(market.twelveRaw,asOf):(twelveDisplay?.regularClose??null);
+  const regularCloseTimestamp=twelveDisplay&&!twelveDisplay.isExtendedHours?twelveDisplay.providerTimestamp:null;
+  const snapshot=buildCanonicalMarketSnapshot({symbol,asOf,primary:market.alpaca,secondary:market.twelve,regularClose,regularCloseTimestamp});
   const chosen=snapshot.priceSensitiveAllowed?market.integrity.chosen:null;
 
   return NextResponse.json({

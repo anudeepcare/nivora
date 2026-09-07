@@ -21,3 +21,29 @@ test('preliminary heuristic valuation score of zero is treated as unavailable, n
  assert.equal(d.primaryAction,'HOLD');
  assert.notEqual(d.horizonDecisions.find(h=>h.horizon==='THREE_TO_FIVE_YEARS')?.action,'REDUCE');
 });
+
+test('strong buy thesis gives existing owners an add-capable posture instead of contradictory HOLD-only guidance',()=>{
+ const d=resolveV5CioDecision({v4:v4(94,'STRENGTHENING',92,40,75,'BUY'),technical:{...tech,technicalState:{...tech.technicalState,strength:82,entryQuality:72,momentum:85,structure:80,participation:78,volatilityRisk:45}},marketTruth:market(true)});
+ assert.equal(d.primaryAction,'STRONG_BUY');
+ assert.ok(['BUY','STRONG_BUY'].includes(d.ownerAction));
+});
+
+test('headline new-money action cannot be STRONG BUY when near-term timing is HOLD/REDUCE',()=>{
+ const weakTiming={...tech,technicalState:{...tech.technicalState,strength:33,entryQuality:54,trend:30,momentum:42,participation:45,structure:38,volatilityRisk:82}};
+ const d=resolveV5CioDecision({v4:v4(94,'STRENGTHENING',92,55,33,'BUY'),technical:weakTiming,marketTruth:market(true)});
+ assert.equal(d.horizonDecisions.find(x=>x.horizon==='SIX_TO_TWELVE_MONTHS')?.action,'STRONG_BUY');
+ assert.equal(d.horizonDecisions.find(x=>x.horizon==='THREE_TO_FIVE_YEARS')?.action,'STRONG_BUY');
+ assert.ok(['HOLD','BUY'].includes(d.primaryAction));
+ assert.notEqual(d.primaryAction,'STRONG_BUY');
+});
+
+test('STRONG BUY requires HIGH decision confidence and is capped to BUY at medium confidence',()=>{
+ const strongTech={...tech,technicalState:{...tech.technicalState,strength:86,entryQuality:78,trend:84,momentum:88,participation:82,structure:86,volatilityRisk:35}};
+ const x=v4(96,'STRENGTHENING',94,35,86,'BUY');
+ x.confidence={...x.confidence,score:74,label:'MEDIUM'};
+ const d=resolveV5CioDecision({v4:x,technical:strongTech,marketTruth:market(true)});
+ assert.equal(d.confidenceLabel,'MEDIUM');
+ assert.equal(d.primaryAction,'BUY');
+ assert.notEqual(d.horizonDecisions.find(h=>h.horizon==='SIX_TO_TWELVE_MONTHS')?.action,'STRONG_BUY');
+ assert.notEqual(d.horizonDecisions.find(h=>h.horizon==='THREE_TO_FIVE_YEARS')?.action,'STRONG_BUY');
+});

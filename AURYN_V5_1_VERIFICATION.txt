@@ -1,0 +1,31 @@
+AURYN V5.1 PRO RELIABILITY — SOURCE VERIFICATION
+Date: 2026-09-07
+Engine: auryn-v5.1-pro-reliability-1
+
+SOURCE TREE VERIFICATION
+- npm test: PASS — 424 / 424
+- TypeScript engine compilation: PASS as part of npm test
+- V65 production/dead-code audit: PASS
+- V5 deterministic reliability matrix remains part of the passing automated suite (16,384 scenario combinations)
+
+BUILD ENVIRONMENT LIMITATION
+- npm run build: NOT EXECUTED SUCCESSFULLY in this sandbox
+- Exact result: `sh: 1: next: not found` (exit 127)
+- Reason: this isolated packaging environment does not contain installed Next.js/runtime dependencies.
+- Required final deployment gate in a normal environment: `npm ci && npm test && npm run audit:v65 && npm run build`
+
+V5.1 HARDENING COVERAGE
+- closed/holiday regular-close semantics and price timestamping
+- centralized professional metric rounding / semantic formatting
+- one canonical score vocabulary across stock tabs
+- decision-aware HOLD/BUY/REDUCE/SELL execution-plan behavior
+- Strong Buy confidence/arbitration gates
+- one V5 execution-plan source for toolbar, chart, validation, learning and paper sizing
+- V5 canonical underlying call on Options
+- normalized Earnings/Options values
+- V5 score/invalidation preference in paper-learning pipeline
+
+SAFETY / SCOPE
+- Autonomous live-money execution is NOT enabled.
+- Alpaca Paper remains the autonomous validation path.
+- Software tests establish consistency/fail-closed invariants; they do not guarantee profitable investment outcomes.

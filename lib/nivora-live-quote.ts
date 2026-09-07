@@ -8,6 +8,15 @@ export type NivoraLiveQuote={
   sources?:Array<{provider:string;price:number;ageSeconds:number|null;freshness:QuoteFreshness}>;
 };
 const num=(v:any)=>{const n=Number(v);return Number.isFinite(n)?n:null};
+export function resolveTwelveRegularClose(raw:any,asOf=new Date()){
+  const session=marketSessionAt(asOf);
+  const close=num(raw?.close)??num(raw?.price);
+  const previous=num(raw?.previous_close);
+  const extended=Boolean(raw?.is_extended_hours);
+  if(session==='CLOSED'||session==='OVERNIGHT')return extended?(previous??close):(close??previous);
+  if(session==='PRE_MARKET'||session==='AFTER_HOURS')return previous??close;
+  return previous??close;
+}
 export function normalizeTwelveQuote(raw:any,asOf=new Date()):NivoraLiveQuote{
   const ts=num(raw?.timestamp);const providerDate=ts!=null?new Date(ts*1000):null;
   const providerTimestamp=providerDate&&Number.isFinite(providerDate.getTime())?providerDate.toISOString():null;

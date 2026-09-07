@@ -188,9 +188,9 @@ async function run(req:Request,automatic=false){
      evidenceFingerprint:String(snapshot.evidence_fingerprint||""),
      price:Number(snapshot.price||0),
      observedAt:String(snapshot.observed_at),
-     thesisScore:Number(d.thesisScore||0),
-     opportunityScore:Number(d.opportunityScore||0),
-     companyScore:Number(d.companyScore||0),
+     thesisScore:Number(v5Meta?.thesisStrength??d.thesisScore??0),
+     opportunityScore:Number(v5Meta?.entryQuality??d.opportunityScore??0),
+     companyScore:Number(v5Meta?.businessQuality??d.companyScore??0),
      today
     });
 

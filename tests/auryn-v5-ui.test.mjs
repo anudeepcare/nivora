@@ -57,7 +57,7 @@ test('Business and technical tab headline scores are sourced from the same canon
   const s=read('components/StockClient.tsx');
   assert.match(s,/const canonicalBusinessScore=/);
   assert.match(s,/score={canonicalBusinessScore}/);
-  assert.match(s,/\{business\.label\}\{canonicalBusinessScore!=null\?` · \$\{canonicalBusinessScore\}\/100`/);
+  assert.match(s,/\{canonicalBusinessLabel\}\{canonicalBusinessScore!=null\?` · \$\{canonicalBusinessScore\}\/100`/);
   assert.match(s,/score={technicalState\.strength}/);
 });
 

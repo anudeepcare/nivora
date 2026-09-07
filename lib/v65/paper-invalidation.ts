@@ -1,4 +1,4 @@
-export type PaperInvalidationSource="decision-risk-zone"|"evidence-invalidation"|"evidence-major-support"|"none";
+export type PaperInvalidationSource="v5-execution-plan"|"decision-risk-zone"|"evidence-invalidation"|"evidence-major-support"|"none";
 export type PaperInvalidationResult={value:number|null;source:PaperInvalidationSource};
 
 const validBelow=(x:unknown,entry:number)=>{
@@ -13,6 +13,8 @@ const validBelow=(x:unknown,entry:number)=>{
  */
 export function resolvePaperInvalidation({entry,decision,evidence}:{entry:number;decision:any;evidence?:any}):PaperInvalidationResult{
  if(!Number.isFinite(entry)||entry<=0)return{value:null,source:"none"};
+ const v5Invalidation=validBelow(evidence?.v5?.executionPlan?.invalidation,entry);
+ if(v5Invalidation!=null)return{value:v5Invalidation,source:"v5-execution-plan"};
  const risk=Array.isArray(decision?.zones)?decision.zones.find((z:any)=>z?.kind==="risk"):null;
  const fromDecision=validBelow(risk?.low,entry);
  if(fromDecision!=null)return{value:fromDecision,source:"decision-risk-zone"};

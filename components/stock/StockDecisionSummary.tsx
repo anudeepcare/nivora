@@ -1,8 +1,8 @@
 import {formatScore} from "@/lib/nivora-format";
 import type {AurynV4CoreAnalysis,CanonicalFactorKey} from "@/lib/auryn/v4/domain";
 import {explainReasonCode,formatInvestmentAction,horizonLabel,newMoneyGuidance,ownerGuidance} from "@/lib/auryn/v4/presentation";
+import {formatScoreBand} from "@/lib/auryn/v5/format";
 
-const scoreWord=(v:number)=>v>=85?"Exceptional":v>=75?"Strong":v>=65?"Good":v>=50?"Mixed":v>=40?"Weak":"Poor";
 const actionTone=(x:string)=>/BUY|ADD|ACCUMULATE|STRONG/.test(x)?"good":/AVOID|REDUCE|EXIT|SELL|WEAK/.test(x)?"bad":"mid";
 type Depth="simple"|"investor"|"pro";
 
@@ -24,7 +24,7 @@ function V4Decision({v4,owns,depth,onDepthChange,marketTruth}:{v4:AurynV4CoreAna
    <p>{summary}</p>
    {marketBlocked&&<div className="aurynMarketTruthGate"><b>MARKET PRICE UNVERIFIED</b><span>{marketTruth?.reason||"Independent market sources are not sufficiently aligned."} Structural thesis evidence remains available, but entry, target, stop and risk/reward calculations are blocked until price verification recovers.</span></div>}
    <div className="aurynV4Horizons" aria-label="Decision by horizon">{horizons.map((h,i)=>{const horizonAction=marketBlocked&&(h.horizon==="NOW"||h.horizon==="SWING")?"VERIFY PRICE":formatInvestmentAction(h.action);return <span key={h.horizon}><small>{horizonCopy[i]||horizonLabel(h.horizon)}</small><b className={actionTone(horizonAction)}>{horizonAction}</b></span>})}</div>
-   {depth!=="simple"&&<div className="aurynMemoSignals">{visibleFactors.slice(0,depth==="pro"?9:4).map(x=><span key={x.key}><small>{x.label}</small><b>{Math.round(Number(x.value))}/100</b><em>{x.key==="RISK"?"Higher = more risk":scoreWord(Number(x.value))}{depth==="pro"&&x.state?` · ${x.state.toLowerCase()}`:""}</em></span>)}</div>}
+   {depth!=="simple"&&<div className="aurynMemoSignals">{visibleFactors.slice(0,depth==="pro"?9:4).map(x=><span key={x.key}><small>{x.label}</small><b>{Math.round(Number(x.value))}/100</b><em>{x.key==="RISK"?"Higher = more risk":formatScoreBand(Number(x.value))}{depth==="pro"&&x.state?` · ${x.state.toLowerCase()}`:""}</em></span>)}</div>}
    <div className="aurynMemoReasons">{reasons.map((text,i)=><span key={`${text}-${i}`} className={/risk|broken|missing|weak|valuation/i.test(text)?"risk":""}>{/risk|broken|missing|weak|valuation/i.test(text)?"Watch · ":"✓ "}{text}</span>)}</div>
    {depth==="pro"&&<div className="aurynV4ModelAudit"><span><small>ANALYST MODEL</small><b>{v4.analystModel.id}</b></span><span><small>MODEL FIT</small><b>{Math.round(v4.analystModel.suitability*100)}/100</b></span><span><small>THESIS</small><b>{v4.thesis.strength==null?"—":`${v4.thesis.strength}/100`} · {v4.thesis.direction}</b></span><span><small>MOAT</small><b>{v4.moat.score==null?"Not established":`${Math.round(v4.moat.score)}/100 · ${v4.moat.direction}`}</b></span><span><small>EVIDENCE STATE</small><b>{v4.confidence.validationState}</b></span><span><small>ENGINE</small><b>{v4.engineVersion}</b></span></div>}
   </div>
@@ -48,12 +48,12 @@ export default function StockDecisionSummary({decision,owns,v4,depth="investor",
  return <section className="aurynDecisionSummary">
   <div className="aurynDecisionMain">
    <div className="aurynEyebrow">AURYN · LONG-TERM THESIS</div>
-   <div className="aurynDecisionTitle"><h2>{longTerm.label}</h2><span>{longTerm.score}/100 · {scoreWord(longTerm.score)}</span></div>
+   <div className="aurynDecisionTitle"><h2>{longTerm.label}</h2><span>{longTerm.score}/100 · {formatScoreBand(Number(longTerm.score))}</span></div>
    <p>{decision.oneLine}</p>
    <div className="aurynMemoSignals">
-    <span><small>CONVICTION</small><b>{formatScore(decision.thesisScore)}/100</b><em>{scoreWord(decision.thesisScore)}</em></span>
-    <span><small>BUSINESS</small><b>{formatScore(decision.companyScore)}/100</b><em>{scoreWord(decision.companyScore)}</em></span>
-    <span><small>FUTURE</small><b>{formatScore(strategic?.score??longTerm.score)}/100</b><em>{strategic?.label?String(strategic.label).toLowerCase().replace(/^./,(x:string)=>x.toUpperCase()):scoreWord(longTerm.score)}</em></span>
+    <span><small>CONVICTION</small><b>{formatScore(decision.thesisScore)}/100</b><em>{formatScoreBand(Number(decision.thesisScore))}</em></span>
+    <span><small>BUSINESS</small><b>{formatScore(decision.companyScore)}/100</b><em>{formatScoreBand(Number(decision.companyScore))}</em></span>
+    <span><small>FUTURE</small><b>{formatScore(strategic?.score??longTerm.score)}/100</b><em>{strategic?.label?String(strategic.label).toLowerCase().replace(/^./,(x:string)=>x.toUpperCase()):formatScoreBand(Number(longTerm.score))}</em></span>
     <span><small>ENTRY</small><b>{formatScore(entry.score)}/100</b><em>{entry.action}</em></span>
    </div>
    <div className="aurynMemoReasons">{drivers.map((x:string)=><span key={x}>✓ {x}</span>)}{risks.map((x:any,i:number)=><span key={i} className="risk">Watch · {String(x)}</span>)}</div>

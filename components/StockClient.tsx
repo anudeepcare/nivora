@@ -36,6 +36,8 @@ import MetricInfo from "@/components/v65/MetricInfo";
 import {adaptCurrentEvidenceToV4} from "@/lib/auryn/v4/current-evidence-adapter";
 import {buildAurynV4CoreAnalysis} from "@/lib/auryn/v4/analyze";
 import {buildAurynV5Analysis} from "@/lib/auryn/v5/analyze";
+import {formatInvestmentAction} from "@/lib/auryn/v4/presentation";
+import {formatScoreBand} from "@/lib/auryn/v5/format";
 
 type Mode="now"|"swing"|"long"|"own";
 type Depth="simple"|"investor"|"pro";
@@ -55,8 +57,11 @@ const money=(n:any)=>{
   return `${x<0?"-":""}$${a>=1e9?(a/1e9).toFixed(2)+"B":a>=1e6?(a/1e6).toFixed(1)+"M":a>=1e3?(a/1e3).toFixed(1)+"K":a.toLocaleString()}`;
 };
 const eps=(n:any)=>{const x=Number(n);return Number.isFinite(x)?`${x<0?"-":""}$${Math.abs(x).toFixed(2)}`:"—"};
+const formatEpsValue=(n:any)=>{const x=Number(n);return Number.isFinite(x)?x.toFixed(2):"—"};
+const formatOptionPercent=(n:any,d=1)=>{const x=Number(n);return Number.isFinite(x)?`${x.toFixed(d)}%`:"—"};
+const formatOptionPrice=(n:any)=>{const x=Number(n);return Number.isFinite(x)?displayMoney(x):"—"};
+const formatOptionNumber=(n:any,d=2)=>{const x=Number(n);return Number.isFinite(x)?x.toFixed(d):"—"};
 const daysUntil=(d?:string|null)=>{if(!d)return null;return Math.ceil((new Date(d+"T12:00:00").getTime()-Date.now())/86400000)};
-const scoreBand=(v:any)=>{const n=Number(v);return !Number.isFinite(n)?"N/A":n>=75?"Strong":n>=60?"Good":n>=45?"Mixed":n>=30?"Weak":"Poor"};
 
 function metricScore(mode:Mode,business:number,six:number,timing:number,risk:number){
   const safe=100-risk;
@@ -334,6 +339,22 @@ export default function StockClient({symbol}:{symbol:string}){
     }catch{return null;}
   },[symbol,marketTruth,canonicalMarket,v4Analysis]);
 
+  const canonicalValidationLevels=useMemo(()=>{
+    const plan=v5Analysis?.executionPlan;
+    if(!plan||plan.state!=="READY")return d?.levels||{};
+    return{
+      preferredEntry:plan.initialEntry?.low??null,
+      support:plan.initialEntry?.high??null,
+      majorSupport:plan.invalidation??null,
+      resistance:plan.targets[0]?.price??plan.confirmation??null,
+      breakout:plan.confirmation??null,
+      invalidation:plan.invalidation??null,
+      dcaZones:plan.dcaZones,
+      intent:plan.intent,
+      snapshotId:plan.snapshotId
+    };
+  },[v5Analysis,d?.levels]);
+
   const enterprise=useMemo(()=>{
     if(!d||!intelligence)return null;
     const now=Date.now();
@@ -361,8 +382,8 @@ export default function StockClient({symbol}:{symbol:string}){
     fetch("/api/validation/snapshot",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({
       symbol,engineVersion:enterprise.engineVersion,mode,price:canonicalDecisionPrice,score:intelligence.score,
       confidence:intelligence.confidence,action:intelligence.action,thesisLabel:intelligence.thesisLabel,
-      dimensions:intelligence.dimensions,levels:d.levels,auditId:enterprise.auditId,
-      evidence:{coverage:enterprise.coverage,dataQuality:enterprise.dataQuality,contradictions:intelligence.contradictions,benchmark:d.market?.benchmark||"SPY",benchmarkPrice:d.market?.benchmarkPrice??null,v5:v5Analysis?{snapshotId:v5Analysis.snapshotId,engineVersion:v5Analysis.engineVersion,action:v5Analysis.decision.primaryAction,ownerAction:v5Analysis.decision.ownerAction,executionState:v5Analysis.executionPlan.state,priceState:v5Analysis.marketTruth.priceState}:null},
+      dimensions:intelligence.dimensions,levels:canonicalValidationLevels,auditId:enterprise.auditId,
+      evidence:{coverage:enterprise.coverage,dataQuality:enterprise.dataQuality,contradictions:intelligence.contradictions,benchmark:d.market?.benchmark||"SPY",benchmarkPrice:d.market?.benchmarkPrice??null,v5:v5Analysis?{snapshotId:v5Analysis.snapshotId,engineVersion:v5Analysis.engineVersion,action:v5Analysis.decision.primaryAction,ownerAction:v5Analysis.decision.ownerAction,executionState:v5Analysis.executionPlan.state,priceState:v5Analysis.marketTruth.priceState,executionPlan:v5Analysis.executionPlan,thesisStrength:v5Analysis.metrics.find((m:any)=>m.id==="thesisStrength")?.value??null,businessQuality:v5Analysis.metrics.find((m:any)=>m.id==="businessQuality")?.value??null,entryQuality:v5Analysis.metrics.find((m:any)=>m.id==="entryQuality")?.value??null}:null},
       investorDecision:investorDecision?{companyScore:investorDecision.companyScore,thesisScore:investorDecision.thesisScore,opportunityScore:investorDecision.opportunityScore,thesisLabel:investorDecision.thesisLabel,thesisState:investorDecision.thesisState,valuationLabel:investorDecision.valuationLabel,action:investorDecision.action,confidence:investorDecision.confidence,dataCompleteness:investorDecision.dataCompleteness,archetype:investorDecision.archetype,factors:investorDecision.factors,horizons:investorDecision.horizons,drivers:investorDecision.drivers,risks:investorDecision.risks,today:investorDecision.today}:null
     })}).catch(()=>{});
   },[d?.price,canonicalDecisionPrice,priceSensitiveAllowed,intelligence?.score,intelligence?.confidence,enterprise?.auditId,symbol,mode,investorDecision?.thesisScore,investorDecision?.opportunityScore,investorDecision?.today,v5Analysis?.snapshotId,v5Analysis?.decision.primaryAction,v5Analysis?.executionPlan.state]);
@@ -373,6 +394,7 @@ export default function StockClient({symbol}:{symbol:string}){
   const business=company?.fundamentalSignal||{label:d.assetType==="crypto"?"Crypto":"Loading",tone:"neutral",reasons:[]};
   const canonicalBusinessMetric=v5Analysis?.metrics.find(m=>m.id==="businessQuality");
   const canonicalBusinessScore=canonicalBusinessMetric?.available&&Number.isFinite(Number(canonicalBusinessMetric.value))?Math.round(Number(canonicalBusinessMetric.value)):null;
+  const canonicalBusinessLabel=canonicalBusinessScore==null?"N/A":formatScoreBand(canonicalBusinessScore);
   const news=context?.summary||{label:context?.enabled===false?"Feed not connected":"Loading",tone:"neutral",topReason:""};
   const earn=context?.earnings;
   const earnDays=daysUntil(earn?.date);
@@ -413,8 +435,10 @@ export default function StockClient({symbol}:{symbol:string}){
       : "The stock may still be a good company, but today is not a strong enough entry yet.";
   const fiveRecordText=five?String(five.years)+"-year record · "+String(five.revenueTrend):"Loading financial history";
   const sixMonthText=d.sixMonth?(d.sixMonth.returnPct>=0?"+":"")+String(d.sixMonth.returnPct)+"% return":"Price history";
-  const supportText=`Support ${displayMoney(Number(d.levels.support))}`;
-  const resistanceText=`Resistance ${displayMoney(Number(d.levels.resistance))}`;
+  const canonicalPlan=v5Analysis?.executionPlan;
+  const canonicalPlanZone=canonicalPlan?.initialEntry??null;
+  const supportText=canonicalPlanZone?`${canonicalPlan?.intent==="ACCUMULATE"?"Plan zone":"Watch zone"} ${displayMoney(canonicalPlanZone.low)}–${displayMoney(canonicalPlanZone.high)}`:`Support ${displayMoney(Number(d.levels.support))}`;
+  const resistanceText=canonicalPlan?.confirmation!=null?`Confirm ${displayMoney(canonicalPlan.confirmation)}`:`Resistance ${displayMoney(Number(d.levels.resistance))}`;
   const todayMoveText=changeAbs>=4?"Large "+(d.changePct>=0?"move up":"move down")+": "+(d.changePct>=0?"+":"")+String(d.changePct)+"%":"Today’s move";
   const nextCatalystTitle=earn?"Earnings · "+String(earn.date):(filings[0]?.label||"No scheduled catalyst found");
   const nextCatalystDetail=earn?String(earn.hour||"Timing not listed")+(earn.epsEstimate!=null?" · EPS est. "+String(earn.epsEstimate):""):filings[0]?String(filings[0].form)+" filed "+String(filings[0].date):"AURYN will surface a catalyst when a connected source identifies one.";
@@ -587,7 +611,7 @@ export default function StockClient({symbol}:{symbol:string}){
     :marketTruth.priceState==="UNVERIFIED"?"PRICE UNVERIFIED"
     :"Price unavailable";
   const marketDetail=marketTruth
-    ?`${String(marketTruth.reason||"")}${marketTruth.asOf?` · as of ${new Date(marketTruth.asOf).toLocaleString()}`:""}${marketTruth.providerAgreementPct!=null?` · provider gap ${Number(marketTruth.providerAgreementPct).toFixed(2)}%`:""}`
+    ?`${String(marketTruth.reason||"")}${(marketTruth.decisionPriceAsOf||marketTruth.asOf)?` · price as of ${new Date(marketTruth.decisionPriceAsOf||marketTruth.asOf).toLocaleString()}`:""}${marketTruth.providerAgreementPct!=null?` · provider gap ${Number(marketTruth.providerAgreementPct).toFixed(2)}%`:""}`
     :"AURYN is verifying independent market sources before displaying a current price.";
   return <div className="aurynStockPage">
     <StockSecurityHeader company={company?.name||d.name||symbol} symbol={symbol} price={priceSensitiveAllowed?canonicalDecisionPrice:null} changePct={priceSensitiveAllowed?displayChangePct:null} status={marketStatusLabel} detail={marketDetail} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
@@ -612,7 +636,7 @@ export default function StockClient({symbol}:{symbol:string}){
 
       {tab==="fundamentals"&&<div className="aurynStockTabPage v12Fund">
         <StockTabContext marketTruth={marketTruth} label="BUSINESS" title="Business quality & durability" score={canonicalBusinessScore} state={v4Analysis?.thesis.direction} action={v5Analysis?.decision.primaryAction} detail="Business evidence supports the same canonical AURYN decision; price timing is evaluated separately."/>
-        <div className={`fundSignal ${business.tone||"neutral"}`}><small>BUSINESS QUALITY</small><h3>{business.label}{canonicalBusinessScore!=null?` · ${canonicalBusinessScore}/100`:""}</h3>{(business.reasons||[]).slice(0,4).map((x:string,i:number)=><p key={i}>• {x}</p>)}{five&&<div className="fiveRecord"><small>5-YEAR RECORD</small><b>{five.score}/100 · {scoreBand(five.score)}</b><p>{five.summary}</p><small>Revenue trend: {five.revenueTrend}</small><div>{(five.history||[]).map((y:any)=><span key={y.year}><i>{y.year}</i><strong>{y.revenue!=null?money(y.revenue):"—"}</strong><em>{y.netIncome!=null?`NI ${money(y.netIncome)}`:"NI —"}</em></span>)}</div></div>}</div>
+        <div className={`fundSignal ${business.tone||"neutral"}`}><small>BUSINESS QUALITY</small><h3>{canonicalBusinessLabel}{canonicalBusinessScore!=null?` · ${canonicalBusinessScore}/100`:""}</h3>{(business.reasons||[]).slice(0,4).map((x:string,i:number)=><p key={i}>• {x}</p>)}{five&&<div className="fiveRecord"><small>5-YEAR RECORD</small><b>{five.score}/100 · {formatScoreBand(Number(five.score))}</b><p>{five.summary}</p><small>Revenue trend: {five.revenueTrend}</small><div>{(five.history||[]).map((y:any)=><span key={y.year}><i>{y.year}</i><strong>{y.revenue!=null?money(y.revenue):"—"}</strong><em>{y.netIncome!=null?`NI ${money(y.netIncome)}`:"NI —"}</em></span>)}</div></div>}</div>
         <div className="osList">{company?.fundamentals?.length?company.fundamentals.map((x:any)=><div key={x.label}><span>{x.label}{x.detail&&<small>{x.detail}</small>}</span><b>{x.value}</b></div>):<p>No standardized SEC fundamentals available for this symbol yet.</p>}</div>
       </div>}
 
@@ -662,7 +686,7 @@ export default function StockClient({symbol}:{symbol:string}){
       </div>}
 
       {tab==="catalysts"&&<div className="aurynStockTabPage v12Catalysts v37Events">
-        <StockTabContext marketTruth={marketTruth} label="CATALYSTS" title="Events that can change the thesis" score={v4Analysis?.factors.CATALYSTS?.score} state={catalystLabel} action={v5Analysis?.decision.primaryAction} detail="Catalysts can accelerate or weaken the thesis; they are interpreted inside the same V4 evidence state."/>
+        <StockTabContext marketTruth={marketTruth} label="CATALYSTS" title="Events that can change the thesis" score={v4Analysis?.factors.CATALYSTS?.score} state={catalystLabel} action={v5Analysis?.decision.primaryAction} detail="Catalysts can accelerate or weaken the thesis; they are interpreted inside the same canonical V5 evidence state."/>
         <div className="v37EventsSummary"><div><small>EVENT RISK / OPPORTUNITY</small><h3>{catalystLabel}</h3><p>{intelligence?.dimensions?.catalysts!=null?`Catalyst score ${intelligence.dimensions.catalysts}/100. Events can change the thesis quickly; price confirmation still matters.`:"Event evidence is loading."}</p></div><div><small>NEWS TONE</small><b className={news.tone==="positive"?"good":news.tone==="negative"?"bad":"mid"}>{news.label}</b><span>{news.topReason||"No dominant headline signal."}</span></div></div>
         {earn&&<div className="nextEvent"><CalendarDays size={18}/><div><small>NEXT EARNINGS</small><b>{earn.date}</b><span>{earnDays!=null&&earnDays>=0?`${earnDays} days away`:"Upcoming"}{earn.epsEstimate!=null?` · EPS est. ${eps(earn.epsEstimate)}`:""}</span></div></div>}
         <div className="catalystIntro"><div><small>RECENT MATERIAL FILINGS</small><MetricInfo title="Catalysts">Company filings and scheduled events that may change the investment thesis. A filing is evidence to review, not automatically bullish or bearish.</MetricInfo></div><span>Newest first</span></div>
@@ -675,7 +699,7 @@ export default function StockClient({symbol}:{symbol:string}){
 
       {tab==="news"&&<div className="aurynStockTabPage v12News">{context?.enabled===false?<div className="connectFeed"><Newspaper size={22}/><b>Connect live news</b><p>Add a Finnhub API key. Price analysis and SEC data continue to work without it.</p></div>:items.length?items.map((x:any,i:number)=><a href={x.url} target="_blank" rel="noreferrer" key={i}><div><span className={`newsTone ${x.tone}`}>{x.tone}</span><small>{x.materiality} materiality · {x.source}</small></div><b>{x.headline}</b><p>{x.summary}</p><ExternalLink size={13}/></a>):<p>No recent company headlines were returned.</p>}</div>}
 
-      {tab==="earnings"&&<div className="aurynStockTabPage v12Earnings"><StockTabContext marketTruth={marketTruth} label="EARNINGS" title="Execution, revisions & reported results" score={v4Analysis?.factors.FUNDAMENTALS_EARNINGS?.score} state={v4Analysis?.thesis.direction} action={v5Analysis?.decision.primaryAction} detail="Earnings execution is a contributor to the canonical thesis, not a separate buy/sell system."/><div className="earnSplit">{latestReport&&<div className="earnNext earnReported"><small>LATEST REPORTED RESULTS</small><h3>{latestEarnNews?.date?new Date(latestEarnNews.date).toLocaleDateString():latestReport.date}</h3><p>{latestEarnNews?.headline||`${latestReport.form} filed — latest reported financial filing`}</p>{latestEarnNews?.url&&<a href={latestEarnNews.url} target="_blank" rel="noreferrer">Read results <ExternalLink size={12}/></a>}</div>}{earn&&<div className="earnNext estimated"><small>NEXT EARNINGS · ESTIMATED</small><h3>{earn.date}</h3><p>{earn.hour||"Time not listed"}{earn.epsEstimate!=null?` · EPS est. ${eps(earn.epsEstimate)}`:""}{earn.revenueEstimate!=null?` · Revenue est. ${money(earn.revenueEstimate)}`:""}</p><p className="earnMeta">Future calendar dates are estimates until confirmed by the company.</p></div>}</div><div className="earnGrid">{(context?.surprises||[]).length?context.surprises.map((x:any,i:number)=><div key={i}><small>{x.period}</small><b className={(x.surprisePercent??0)>=0?"good":"bad"}>{x.surprisePercent!=null?`${x.surprisePercent>=0?"+":""}${Number(x.surprisePercent).toFixed(1)}% surprise`:"Reported"}</b><span>Actual {x.actual??"—"} · Est. {x.estimate??"—"}</span></div>):<p>No earnings-surprise history returned by the connected feed.</p>}</div></div>}
+      {tab==="earnings"&&<div className="aurynStockTabPage v12Earnings"><StockTabContext marketTruth={marketTruth} label="EARNINGS" title="Execution, revisions & reported results" score={v4Analysis?.factors.FUNDAMENTALS_EARNINGS?.score} state={v4Analysis?.thesis.direction} action={v5Analysis?.decision.primaryAction} detail="Earnings execution is a contributor to the canonical thesis, not a separate buy/sell system."/><div className="earnSplit">{latestReport&&<div className="earnNext earnReported"><small>LATEST REPORTED RESULTS</small><h3>{latestEarnNews?.date?new Date(latestEarnNews.date).toLocaleDateString():latestReport.date}</h3><p>{latestEarnNews?.headline||`${latestReport.form} filed — latest reported financial filing`}</p>{latestEarnNews?.url&&<a href={latestEarnNews.url} target="_blank" rel="noreferrer">Read results <ExternalLink size={12}/></a>}</div>}{earn&&<div className="earnNext estimated"><small>NEXT EARNINGS · ESTIMATED</small><h3>{earn.date}</h3><p>{earn.hour||"Time not listed"}{earn.epsEstimate!=null?` · EPS est. ${eps(earn.epsEstimate)}`:""}{earn.revenueEstimate!=null?` · Revenue est. ${money(earn.revenueEstimate)}`:""}</p><p className="earnMeta">Future calendar dates are estimates until confirmed by the company.</p></div>}</div><div className="earnGrid">{(context?.surprises||[]).length?context.surprises.map((x:any,i:number)=><div key={i}><small>{x.period}</small><b className={(x.surprisePercent??0)>=0?"good":"bad"}>{x.surprisePercent!=null?`${x.surprisePercent>=0?"+":""}${Number(x.surprisePercent).toFixed(1)}% surprise`:"Reported"}</b><span>Actual {formatEpsValue(x.actual)} · Est. {formatEpsValue(x.estimate)}</span></div>):<p>No earnings-surprise history returned by the connected feed.</p>}</div></div>}
 
       {tab==="technical"&&<div className="aurynStockTabPage v12Technical v26Technical">
         {v5Analysis&&<ScenarioMapPanel scenario={v5Analysis.scenario}/>}
@@ -720,7 +744,7 @@ export default function StockClient({symbol}:{symbol:string}){
           <div><div className="metricLabel"><small>20D / 50D TREND</small><MetricInfo title="Moving-average trend">Compares price with the 20-day and 50-day moving averages. Alignment can confirm trend direction but can lag turning points.</MetricInfo></div><b className={proTech.trendLabel==="Bullish"?"good":proTech.trendLabel==="Bearish"?"bad":"mid"}>{proTech.trendLabel}</b><span>{proTech.d20!=null?`${proTech.d20>=0?"+":""}${proTech.d20.toFixed(1)}% vs 20D`:"—"} · {proTech.d50!=null?`${proTech.d50>=0?"+":""}${proTech.d50.toFixed(1)}% vs 50D`:"—"}</span></div>
           <div><div className="metricLabel"><small>VOLUME</small><MetricInfo title="Volume confirmation">Compares current volume with the recent 20-session average. Strong participation can make breakouts or reversals more meaningful.</MetricInfo></div><b>{proTech.volRatio!=null?`${proTech.volRatio.toFixed(2)}×`:"—"}</b><span>{proTech.volumeLabel}</span></div>
           <div><div className="metricLabel"><small>ATR · 14</small><MetricInfo title="ATR (14)">Average True Range estimates typical recent daily movement. ATR% helps compare volatility across stocks with different prices.</MetricInfo></div><b>{proTech.atrPct!=null?`${proTech.atrPct.toFixed(1)}%`:"—"}</b><span>Typical daily range</span></div>
-          <div><div className="metricLabel"><small>DCA / ACCUMULATION ZONE</small><MetricInfo title="DCA / accumulation zone">A technical confluence area derived from AURYN support/entry structure. It is useful for staged-entry planning only while the fundamental thesis remains intact.</MetricInfo></div><b>{!priceSensitiveAllowed?"BLOCKED":v5Analysis?.executionPlan.initialEntry?`$${v5Analysis.executionPlan.initialEntry.low}–$${v5Analysis.executionPlan.initialEntry.high}`:"—"}</b><span>{!priceSensitiveAllowed?"Price-sensitive technical zones are hidden until Market Truth verifies the underlying price.":v5Analysis?.executionPlan.initialEntry?"Canonical V5 initial-entry zone":"Insufficient history"}</span></div>
+          <div><div className="metricLabel"><small>{v5Analysis?.executionPlan.intent==="ACCUMULATE"?"DCA / INITIAL ENTRY":"STRUCTURAL WATCH ZONE"}</small><MetricInfo title="Canonical execution zone">This level comes from the single V5 ExecutionPlan. DCA multipliers appear only when AURYN has an active buy decision and decision-grade valuation.</MetricInfo></div><b>{!priceSensitiveAllowed?"BLOCKED":v5Analysis?.executionPlan.initialEntry?`${displayMoney(v5Analysis.executionPlan.initialEntry.low)}–${displayMoney(v5Analysis.executionPlan.initialEntry.high)}`:"—"}</b><span>{!priceSensitiveAllowed?"Price-sensitive technical zones are hidden until Market Truth verifies the underlying price.":v5Analysis?.executionPlan.intent==="ACCUMULATE"?"Canonical V5 entry zone; staged DCA is enabled only while thesis and valuation remain valid.":v5Analysis?.executionPlan.initialEntry?"Structural watch level only; this is not an instruction to average down.":"No active structural zone"}</span></div>
           <div><div className="metricLabel"><small>BOLLINGER POSITION</small><MetricInfo title="Bollinger position">Shows where price sits within a 20-day, two-standard-deviation band. Near the top suggests extension; near the bottom suggests weakness/possible mean reversion.</MetricInfo></div><b>{proTech.bbPos!=null?`${Math.max(0,Math.min(100,proTech.bbPos)).toFixed(0)}%`:"—"}</b><span>0% lower band · 100% upper band</span></div>
           <div><div className="metricLabel"><small>REALIZED VOL · 20D</small><MetricInfo title="Realized volatility">Annualized recent realized volatility from daily returns. Higher values imply larger price variability and usually require more conservative sizing.</MetricInfo></div><b>{proTech.rv!=null?`${proTech.rv.toFixed(1)}%`:"—"}</b><span>{proTech.drawdown!=null?`${proTech.drawdown.toFixed(1)}% from 52-week high`:"52-week drawdown unavailable"}</span></div>
         </div>}
@@ -740,7 +764,7 @@ export default function StockClient({symbol}:{symbol:string}){
             <div><small>ELLIOTT-STYLE WAVE</small><b>{marketLab.waveLabel}</b><strong>{marketLab.waveScore}% confidence</strong><span>Heuristic structure only. Candidate target ${marketLab.waveTarget}; invalidation ${marketLab.waveInvalidation}.</span></div></>:<div className="aurynPriceSensitiveBlock"><small>MARKET TRUTH GATE</small><b>PRICE LEVELS BLOCKED</b><span>Price-sensitive technical zones are hidden until Market Truth verifies the underlying price.</span></div>}
           </div>
         </div>}
-        {depth==="pro"&&<div className="osTechGrid">{Object.entries(d.engine).map(([k,v]:any)=><div key={k}><div className="metricLabel"><span>{k}</span><MetricInfo title={k}>{k==="Trend"?"Multi-horizon direction and slope.":k==="Momentum"?"Speed and persistence of the current move.":k==="Flow"?"Volume/price participation and confirmation.":k==="Structure"?"Higher highs/lows, support and resistance behavior.":k==="RSI"?"Relative Strength Index; helps identify momentum extremes but is never used alone.":k==="MACD"?"Trend/momentum crossover evidence.":k==="Extension"?"How far price has moved away from its recent equilibrium; high extension increases chase risk.":k==="Relative strength"?"Performance versus the relevant benchmark.":k==="Market regime"?"Whether the broad market is supportive, mixed or risk-off.":"Supporting quantitative evidence used by the decision engine."}</MetricInfo></div><b>{typeof v==="number"?`${v}/100`:v}</b></div>)}</div>}
+        {depth==="pro"&&!v5Analysis&&<div className="osTechGrid">{Object.entries(d.engine).map(([k,v]:any)=><div key={k}><div className="metricLabel"><span>{k}</span><MetricInfo title={k}>{k==="Trend"?"Multi-horizon direction and slope.":k==="Momentum"?"Speed and persistence of the current move.":k==="Flow"?"Volume/price participation and confirmation.":k==="Structure"?"Higher highs/lows, support and resistance behavior.":k==="RSI"?"Relative Strength Index; helps identify momentum extremes but is never used alone.":k==="MACD"?"Trend/momentum crossover evidence.":k==="Extension"?"How far price has moved away from its recent equilibrium; high extension increases chase risk.":k==="Relative strength"?"Performance versus the relevant benchmark.":k==="Market regime"?"Whether the broad market is supportive, mixed or risk-off.":"Supporting quantitative evidence used by the decision engine."}</MetricInfo></div><b>{typeof v==="number"?`${v}/100`:v}</b></div>)}</div>}
       </div>}
 
       {tab==="options"&&<div className="aurynStockTabPage gammaPanel v22Options v26Options">
@@ -752,7 +776,7 @@ export default function StockClient({symbol}:{symbol:string}){
         !optionsData?.enabled?<div className="optionsState"><b>Options data is not available.</b><span>{optionsData?.reason||"Add MARKETDATA_TOKEN in Vercel to enable the options module."}</span><button type="button" className="optionsRetry" onClick={()=>{setOptionsData(null);setOptionsLoading(false)}}>Retry</button></div>:
         <><div className="optionsFresh"><span>{optionsData.dataMode}</span><small>{optionsData.updatedAt?`Provider snapshot ${new Date(optionsData.updatedAt).toLocaleString()}`:"Provider timestamp unavailable"}</small></div>
         {optionView==="setups"?<div className="contractLab">
-          <div className="contractContext"><div><small>UNDERLYING CALL</small><b className={tone(view.label)}>{view.label}</b><span>Options should express a thesis—not create one.</span></div><div><small>EXPECTED MOVE</small><b>{optionsData.expectedMovePct!=null?`±${optionsData.expectedMovePct}%`:"—"}</b><span>From near-ATM option premium</span></div><div><small>ATM IV</small><b>{optionsData.atmIV!=null?`${optionsData.atmIV}%`:"—"}</b><span>Volatility priced into options</span></div></div>
+          <div className="contractContext"><div><small>UNDERLYING CALL</small><b className={tone(v5Analysis?formatInvestmentAction(v5Analysis.decision.primaryAction):"VERIFY")}>{v5Analysis?formatInvestmentAction(v5Analysis.decision.primaryAction):"VERIFY"}</b><span>Options express the same V5 thesis—they never create a separate directional call.</span></div><div><small>EXPECTED MOVE</small><b>{optionsData.expectedMovePct!=null?`±${formatOptionPercent(optionsData.expectedMovePct)}`:"—"}</b><span>From near-ATM option premium</span></div><div><small>ATM IV</small><b>{formatOptionPercent(optionsData.atmIV)}</b><span>Volatility priced into options</span></div></div>
           <div className="contractControls"><div><button className={optionSide==="bullish"?"on":""} onClick={()=>setOptionSide("bullish")}>Calls · bullish</button><button className={optionSide==="bearish"?"on":""} onClick={()=>setOptionSide("bearish")}>Puts · bearish</button></div><div><button className={optionStyle==="conservative"?"on":""} onClick={()=>{setOptionExpiration(null);setOptionStyle("conservative")}}>Safer</button><button className={optionStyle==="balanced"?"on":""} onClick={()=>{setOptionExpiration(null);setOptionStyle("balanced")}}>Balanced</button><button className={optionStyle==="aggressive"?"on":""} onClick={()=>{setOptionExpiration(null);setOptionStyle("aggressive")}}>Aggressive</button><button className={optionStyle==="leaps"?"on":""} onClick={()=>{setOptionExpiration(null);setOptionStyle("leaps")}}>LEAPS</button></div></div>
           <div className="styleExplain"><MetricInfo title="Contract styles">Safer targets higher delta and better liquidity. Balanced seeks a middle ground. Aggressive accepts lower delta/shorter duration and can lose premium faster. LEAPS favors long duration and higher delta to reduce short-term theta pressure.</MetricInfo><span>{optionStyle==="leaps"?"Long-duration candidates for investors seeking stock-like exposure with defined premium risk.":optionStyle==="aggressive"?"Higher leverage and faster premium decay. Treat this as the highest-risk filter.":optionStyle==="conservative"?"Higher-delta candidates with stronger emphasis on liquidity and spread quality.":"A compromise between leverage, duration, liquidity and delta."}</span></div>
           {optionsData?.expirations?.length>0&&<div className="expirationLab">
@@ -765,23 +789,23 @@ export default function StockClient({symbol}:{symbol:string}){
           {(()=>{
             const list=optionsData.contractSetups?.[optionSide]?.[optionStyle]||[];
             return list.length?<div className="contractCards">{list.map((x:any,i:number)=><div className={`contractCard ${i===0?"top":""}`} key={`${x.expiration}-${x.strike}-${x.side}`}>
-              <div className="contractHead"><span>{i===0?"TOP RANKED":"ALTERNATIVE"}</span><b>{x.expiration?new Date(x.expiration).toLocaleDateString():"—"} · ${x.strike} {x.side==="call"?"Call":"Put"}</b><em>{x.score}/100</em></div>
-              <div className="contractStats"><div><small>PREMIUM</small><b>{x.premium!=null?`~$${x.premium}`:"—"}</b></div><div><small>DELTA</small><b>{x.delta!=null?Number(x.delta).toFixed(2):"—"}</b></div><div><small>DTE</small><b>{x.dte??"—"}</b></div><div><small>IV</small><b>{x.iv!=null?`${x.iv}%`:"—"}</b></div><div><small>OI</small><b>{Number(x.openInterest||0).toLocaleString()}</b></div><div><small>SPREAD</small><b>{x.spreadPct!=null?`${x.spreadPct}%`:"—"}</b></div><div><small>BREAK-EVEN</small><b>{x.breakEven!=null?`$${x.breakEven}`:"—"}</b></div><div><small>LEVERAGE</small><b>{x.leverage!=null?`${x.leverage}×`:"—"}</b></div></div>
+              <div className="contractHead"><span>{i===0?"TOP RANKED":"ALTERNATIVE"}</span><b>{x.expiration?new Date(x.expiration).toLocaleDateString():"—"} · {formatOptionPrice(x.strike)} {x.side==="call"?"Call":"Put"}</b><em>{Math.round(Number(x.score||0))}/100</em></div>
+              <div className="contractStats"><div><small>PREMIUM</small><b>{x.premium!=null?`~${formatOptionPrice(x.premium)}`:"—"}</b></div><div><small>DELTA</small><b>{formatOptionNumber(x.delta,2)}</b></div><div><small>DTE</small><b>{x.dte!=null?Math.round(Number(x.dte)):"—"}</b></div><div><small>IV</small><b>{formatOptionPercent(x.iv)}</b></div><div><small>OI</small><b>{Number(x.openInterest||0).toLocaleString()}</b></div><div><small>SPREAD</small><b>{formatOptionPercent(x.spreadPct)}</b></div><div><small>BREAK-EVEN</small><b>{formatOptionPrice(x.breakEven)}</b></div><div><small>LEVERAGE</small><b>{x.leverage!=null?`${formatOptionNumber(x.leverage,1)}×`:"—"}</b></div></div>
               <p>{x.score>=75?"Strong candidate quality from the available chain.":x.score>=60?"Usable candidate, but inspect liquidity/IV before acting.":"Lower-quality candidate from this delayed snapshot."}</p>
             </div>)}</div>:<div className="optionsState"><b>No contracts matched this filter.</b><span>The provider snapshot may not include the required expiration range or liquid contracts.</span></div>
           })()}
           <div className="contractFoot"><ShieldCheck size={15}/><p>{optionsData.rankingNote}</p></div>
         </div>:<div className="positioningLab">
           <div className="optionsQuick">
-            <div><div className="metricLabel"><small>CALL WALL</small><MetricInfo title="Call wall">Largest call open-interest strike in the fetched chain. It is an attention area, not guaranteed resistance.</MetricInfo></div><b>{optionsData.callWall!=null?`$${optionsData.callWall}`:"—"}</b></div>
-            <div><div className="metricLabel"><small>PUT WALL</small><MetricInfo title="Put wall">Largest put open-interest strike in the fetched chain. It is an attention area, not guaranteed support.</MetricInfo></div><b>{optionsData.putWall!=null?`$${optionsData.putWall}`:"—"}</b></div>
-            <div><div className="metricLabel"><small>GAMMA NODE</small><MetricInfo title="Gamma node">Largest OI-weighted gamma concentration. This is a proxy; AURYN does not observe dealer inventory.</MetricInfo></div><b>{optionsData.gammaNode!=null?`$${optionsData.gammaNode}`:"—"}</b></div>
-            <div><small>EXPECTED MOVE</small><b>{optionsData.expectedMovePct!=null?`±${optionsData.expectedMovePct}%`:"—"}</b></div>
-            <div><small>ATM IV</small><b>{optionsData.atmIV!=null?`${optionsData.atmIV}%`:"—"}</b></div>
-            <div><small>PUT/CALL OI</small><b>{optionsData.putCallOI??"—"}</b></div>
+            <div><div className="metricLabel"><small>CALL WALL</small><MetricInfo title="Call wall">Largest call open-interest strike in the fetched chain. It is an attention area, not guaranteed resistance.</MetricInfo></div><b>{formatOptionPrice(optionsData.callWall)}</b></div>
+            <div><div className="metricLabel"><small>PUT WALL</small><MetricInfo title="Put wall">Largest put open-interest strike in the fetched chain. It is an attention area, not guaranteed support.</MetricInfo></div><b>{formatOptionPrice(optionsData.putWall)}</b></div>
+            <div><div className="metricLabel"><small>GAMMA NODE</small><MetricInfo title="Gamma node">Largest OI-weighted gamma concentration. This is a proxy; AURYN does not observe dealer inventory.</MetricInfo></div><b>{formatOptionPrice(optionsData.gammaNode)}</b></div>
+            <div><small>EXPECTED MOVE</small><b>{optionsData.expectedMovePct!=null?`±${formatOptionPercent(optionsData.expectedMovePct)}`:"—"}</b></div>
+            <div><small>ATM IV</small><b>{formatOptionPercent(optionsData.atmIV)}</b></div>
+            <div><small>PUT/CALL OI</small><b>{optionsData.putCallOI!=null?formatOptionNumber(optionsData.putCallOI,2):"—"}</b></div>
           </div>
           <div className="optionsRead"><small>PLAIN-ENGLISH READ</small><h4>{optionsData.position}</h4><p>{optionsData.gammaProxy}. {optionsData.note}</p></div>
-          {optionsData.topNodes?.length>0&&<div className="optionsNodes"><small>TOP GAMMA-CONCENTRATION STRIKES</small>{optionsData.topNodes.map((x:any)=><div key={x.strike}><b>${x.strike}</b><span>Call OI {x.callOI.toLocaleString()} · Put OI {x.putOI.toLocaleString()}</span></div>)}</div>}
+          {optionsData.topNodes?.length>0&&<div className="optionsNodes"><small>TOP GAMMA-CONCENTRATION STRIKES</small>{optionsData.topNodes.map((x:any)=><div key={x.strike}><b>{formatOptionPrice(x.strike)}</b><span>Call OI {x.callOI.toLocaleString()} · Put OI {x.putOI.toLocaleString()}</span></div>)}</div>}
         </div>}
         </>}
       </div>}
