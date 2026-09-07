@@ -2,6 +2,7 @@ import {NextResponse} from "next/server";
 import {createClient,type SupabaseClient} from "@supabase/supabase-js";
 import {AlpacaPaperBroker} from "@/lib/alpaca-paper";
 import {deriveTradeIntent} from "@/lib/nivora-trade-intent";
+import {mapV5ActionToToday} from "@/lib/auryn/v5/reliability";
 import {evaluateTradingRisk,DEFAULT_PAPER_RISK_POLICY,type TradingRiskContext} from "@/lib/nivora-trading-risk";
 import {planPaperOrder} from "@/lib/nivora-paper-execution";
 import {marketSessionAt} from "@/lib/nivora-market-session";
@@ -171,7 +172,9 @@ async function run(req:Request,automatic=false){
   for(const snapshot of latest.values()){
    try{
     const d=snapshot.decision||{};
-    const today=d.today;
+    const pos=positionMap.get(snapshot.symbol);
+    const v5Meta=snapshot.evidence?.v5;
+    const today=v5Meta?.action?mapV5ActionToToday(v5Meta.action as any,Boolean(pos)):d.today;
     if(!today){
      const x=explainNoIntent(undefined,false);
      await recordEvaluation(snapshot,"NO_INTENT","NONE",x.reason,x.code);
@@ -179,10 +182,9 @@ async function run(req:Request,automatic=false){
      continue;
     }
 
-    const pos=positionMap.get(snapshot.symbol);
     const intent=deriveTradeIntent({
      symbol:snapshot.symbol,
-     snapshotId:String(snapshot.id),
+     snapshotId:String(v5Meta?.snapshotId||snapshot.id),
      evidenceFingerprint:String(snapshot.evidence_fingerprint||""),
      price:Number(snapshot.price||0),
      observedAt:String(snapshot.observed_at),

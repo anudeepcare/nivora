@@ -20,7 +20,9 @@ test('StockClient no longer mixes live quote price with analysis price for curre
 
 test('price-sensitive action plan is suppressed when market truth is blocked',()=>{
   const s=read('components/StockClient.tsx');
-  assert.match(s,/priceSensitiveAllowed\s*&&\s*<StockActionPlan/);
+  assert.match(s,/<ExecutionPlanPanel plan={v5Analysis\.executionPlan}\/>/);
+  const plan=read('components/stock/v5/ExecutionPlanPanel.tsx');
+  assert.match(plan,/plan\.state==="BLOCKED"/);
   assert.match(s,/PRICE UNVERIFIED/);
 });
 
@@ -33,7 +35,8 @@ test('all research tabs receive canonical market truth context',()=>{
 test('technical price zones fail closed when canonical market price is unverified',()=>{
   const s=read('components/StockClient.tsx');
   assert.match(s,/Price-sensitive technical zones are hidden until Market Truth verifies the underlying price/);
-  assert.match(s,/levels=\{priceSensitiveAllowed\?horizonChartLevels:null\}/);
+  assert.match(s,/levels={v5ChartLevels}/);
+  assert.match(s,/plan\.state!=="READY"/);
 });
 
 test('options contract setups fail closed when the underlying canonical price is unverified',()=>{

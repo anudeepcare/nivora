@@ -1,17 +1,44 @@
-# AURYN V4 Production
+# AURYN V5 Decision OS
 
-AURYN is a mobile-first investment decision and validation platform. The V4 production surface adds a decision-first analyst core on top of the proven V65 evidence, portfolio, calibration and paper-trading foundation. It separates slow business/thesis evidence from fast market/timing evidence and returns one canonical investment decision with horizon-specific context.
+AURYN V5 is a canonical investment-decision and paper-execution platform. It preserves the proven Market Truth, portfolio, calibration and Alpaca-paper infrastructure, but replaces competing stock-page verdicts and independently calculated price levels with one immutable V5 analysis snapshot.
 
-## V4 production decision layer
+## V5 canonical decision contract
 
-The stock page now runs the canonical V4 analyst core and presents the same underlying decision at three depths:
+Every stock surface follows one chain:
 
-- **Beginner** — action first, plain-English reasons and horizon calls.
-- **Pro** — the same call plus key factor evidence.
-- **Extreme Pro** — the same call plus analyst-model, model-fit, thesis, moat and evidence-state diagnostics.
+`Market Truth -> Canonical Evidence -> Professional Metrics / Patterns -> Scenario Map -> AURYN CIO -> One Decision -> One Execution Plan -> Paper Broker Gate`.
 
-The presentation mode never changes the decision engine. V4 primary actions are `STRONG_BUY`, `BUY`, `HOLD`, `REDUCE`, `SELL`, or `INSUFFICIENT_EVIDENCE`; `WAIT_FOR_CONFIRMATION` is not a V4 investment verdict. Decision confidence describes evidence/model quality and is not a probability of profit.
+Core V5 rules:
 
+- One primary action: `STRONG_BUY`, `BUY`, `HOLD`, `REDUCE`, `SELL`, or `INSUFFICIENT_EVIDENCE`.
+- Separate NOW, SWING, 6–12M and 3–5Y horizon calls.
+- Separate new-money and existing-owner guidance.
+- Technical weakness changes timing/sizing; it does not independently break an intact long-term thesis.
+- SELL requires structural deterioration, a hard veto, or materially negative expected-return evidence.
+- Missing metrics remain `N/A`; unsupported valuation is never converted into `0/100` bearish certainty.
+- Entry, DCA1/2/3, confirmation, invalidation and targets come from one V5 `ExecutionPlan`.
+- All stock tabs explain the same V5 snapshot; they do not calculate a second verdict.
+- If Market Truth is unverified, price-sensitive output and paper execution fail closed.
+
+## Professional metric and setup engine
+
+Extreme Pro exposes interpreted evidence across trend, momentum, volume/flow, volatility, structure, relative strength, business quality, fundamentals, valuation, thesis/moat, catalysts/sector and risk. Current V5 technical evidence includes RSI, MACD, stochastic, CCI, MFI, CMF, OBV slope, ROC, ATR, realized volatility, Bollinger position/width, Keltner position, squeeze state, Donchian position, ADX/DMI, Ichimoku cloud context, 20/50/200-day positioning, anchored VWAP, approximate volume-profile POC, relative volume, drawdown and benchmark-relative strength where the underlying data exist.
+
+The pattern/scenario layer detects deterministic structure such as early/confirmed reversals, higher-low behavior, bases, breakout states and double-bottom candidates, then produces bull/base/bear scenarios. Elliott-style wave context is supporting and explicitly non-deterministic.
+
+## Analysis depth
+
+- **Beginner** — the V5 call, plain-English reasons and what to do.
+- **Pro** — the same call plus key factors, scenario and execution context.
+- **Extreme Pro** — the same call plus grouped professional metrics, source scope and technical diagnostics.
+
+Changing depth never changes the underlying decision. Developer engine/model identifiers are not shown in the normal decision UI.
+
+## Validation and execution status
+
+AURYN V5 remains **Alpaca Paper only** for autonomous execution. The paper runner can consume V5 snapshot/action metadata, but live-money automatic execution is intentionally disabled. Broker execution requires market-data/risk gates and must correspond to the snapshot that generated the intent.
+
+V5 includes a deterministic 16,384-case reliability matrix covering price verification, valuation availability, thesis state, risk, timing, ownership, company strength, macro/lifecycle and liquidity combinations. This is a software/invariant stress harness, not proof of future investment profitability.
 
 ## V65 decision contract
 

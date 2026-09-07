@@ -1,0 +1,25 @@
+AURYN V5 DECISION OS — VERIFICATION
+Date: 2026-09-07
+Engine: auryn-v5-decision-os-1
+
+SOURCE TREE VERIFICATION
+- npm test: PASS — 397 / 397
+- V5 focused tests: PASS — 33 / 33 before final full-suite run
+- Deterministic V5 reliability matrix: 16,384 scenarios, 0 invariant violations
+- npm run audit:v65: PASS
+- TypeScript engine compilation: PASS as part of npm test
+
+BUILD ENVIRONMENT LIMITATION
+- npm run build: NOT EXECUTED SUCCESSFULLY in this sandbox
+- Exact result: `sh: 1: next: not found` (exit 127)
+- Reason: project runtime dependencies / Next.js binary are not installed in this isolated packaging environment.
+- Required deployment gate in a normal networked environment: `npm ci && npm test && npm run audit:v65 && npm run build`
+
+SAFETY / SCOPE
+- Autonomous live-money execution is NOT enabled.
+- Alpaca paper execution remains the validation path.
+- Passing tests and reliability scenarios establish software invariants; they do not guarantee profitable investment outcomes.
+
+PACKAGE VERIFICATION
+- Clean ZIP exclusion scan: PASS (no .git, node_modules, .next, .engine-test, .env or .env.local)
+- Extracted package npm test: PASS — 397 / 397

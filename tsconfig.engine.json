@@ -81,6 +81,15 @@
     "lib/auryn/v4/current-evidence-adapter.ts",
     "lib/auryn/v4/analyze.ts",
     "lib/auryn/v4/presentation.ts",
-    "lib/auryn/market-truth.ts"
+    "lib/auryn/market-truth.ts",
+    "lib/auryn/v5/version.ts",
+    "lib/auryn/v5/domain.ts",
+    "lib/auryn/v5/metrics.ts",
+    "lib/auryn/v5/technical-patterns.ts",
+    "lib/auryn/v5/scenarios.ts",
+    "lib/auryn/v5/execution-plan.ts",
+    "lib/auryn/v5/cio.ts",
+    "lib/auryn/v5/analyze.ts",
+    "lib/auryn/v5/reliability.ts"
   ]
 }

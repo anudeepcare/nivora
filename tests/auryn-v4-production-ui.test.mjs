@@ -3,25 +3,26 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 const read=p=>fs.readFileSync(p,"utf8");
 
-test("stock page computes the V4 canonical analysis from current evidence",()=>{
+test("V4 evidence migration feeds the V5 canonical analysis",()=>{
   const s=read("components/StockClient.tsx");
   assert.match(s,/adaptCurrentEvidenceToV4/);
   assert.match(s,/buildAurynV4CoreAnalysis/);
   assert.match(s,/const v4Analysis=useMemo/);
-  assert.match(s,/v4=\{v4Analysis\}/);
+  assert.match(s,/buildAurynV5Analysis/);
+  assert.match(s,/v4:v4Analysis/);
 });
 
 test("one institutional brain exposes beginner pro and extreme pro depth inside the canonical decision",()=>{
   const page=read("components/StockClient.tsx");
-  const decision=read("components/stock/StockDecisionSummary.tsx");
+  const decision=read("components/stock/v5/StockV5Decision.tsx");
   assert.match(page,/const\[depth,setDepth\]=useState<Depth>/);
   assert.match(page,/depth=\{depth\} onDepthChange=\{setDepth\}/);
   for(const x of ["Beginner","Pro","Extreme Pro"])assert.match(decision,new RegExp(`>${x}<`));
 });
 
-test("decision summary is V4 decision-first with multiple horizons and confidence not probability",()=>{
-  const s=read("components/stock/StockDecisionSummary.tsx");
-  assert.match(s,/AURYN V4 · DECISION/);
+test("decision summary is V5 decision-first with multiple horizons and confidence not probability",()=>{
+  const s=read("components/stock/v5/StockV5Decision.tsx");
+  assert.match(s,/AURYN V5 · DECISION OS/);
   assert.match(s,/DECISION CONFIDENCE/);
   assert.match(s,/NOW/);
   assert.match(s,/SWING/);
@@ -32,17 +33,16 @@ test("decision summary is V4 decision-first with multiple horizons and confidenc
   assert.doesNotMatch(s,/win probability|profit probability|chance of profit/i);
 });
 
-test("V4 decision and depth controls have responsive production styles",()=>{
-  const c=read("app/globals.css");
-  assert.match(c,/\.aurynDepthSwitch\{/);
-  assert.match(c,/\.aurynV4Horizons\{/);
-  assert.match(c,/\.aurynV4ModelAudit\{/);
-  assert.match(c,/@media\(max-width:700px\)[\s\S]*\.aurynV4Horizons/);
+test("V5 decision and depth controls have responsive production styles",()=>{
+  const c=read("app/auryn-product.css");
+  assert.match(c,/\.aurynDecisionDepth\{/);
+  assert.match(c,/\.aurynExecutionPlanV5\{/);
+  assert.match(c,/@media\(max-width:700px\)[\s\S]*\.aurynDecisionDepth/);
 });
 
-test("stock research tabs consume the V4 canonical decision and use one aligned page shell",()=>{
+test("stock research tabs consume the V5 canonical decision and use one aligned page shell",()=>{
   const s=read("components/StockClient.tsx");
-  assert.match(s,/StockThesisPanel decision=\{presentedDecision\} v4=\{v4Analysis\}/);
+  assert.match(s,/StockThesisPanel decision=\{presentedDecision\} v5=\{v5Analysis\}/);
   assert.match(s,/className="aurynStockTabPage v12Fund"/);
   assert.match(s,/className="aurynStockTabPage v12Earnings"/);
   assert.match(s,/className="aurynStockTabPage v12Technical v26Technical"/);
