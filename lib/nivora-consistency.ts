@@ -12,7 +12,7 @@ export type DecisionConsistencyInput={
  support?:number|null;resistance?:number|null;
  metricProofs?:Record<string,unknown>|null;
 };
-const finite=(x:any)=>Number.isFinite(Number(x));
+const finite=(x:any)=>x!==null&&x!==undefined&&x!==""&&typeof x!=="boolean"&&Number.isFinite(Number(x));
 
 export function validateDecisionConsistency(x:DecisionConsistencyInput){
  const errors:ConsistencyIssue[]=[],warnings:ConsistencyIssue[]=[];

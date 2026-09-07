@@ -52,3 +52,24 @@ test("legacy adapter may expose a conservative moat proxy only when source-backe
   assert.ok(moat.evidenceIds.length>0);
   assert.equal(x.moatSignals.length,1);
 });
+
+test("legacy adapter never converts null valuation or revenue into zero evidence",()=>{
+  const x=adaptCurrentEvidenceToV4({
+    symbol:"IREN",asOf:"2026-09-07T20:00:00Z",
+    market:{assetType:"stock",scores:{risk:80}},
+    company:{rawMetrics:{revenue:null,revGrowth:63,opMargin:null,fcf:null},fundamentalSignal:{currentScore:56}},
+    context:{profile:{name:"IREN",finnhubIndustry:"Capital Markets",description:"data center operator providing AI cloud GPU compute and bitcoin mining infrastructure"}},
+    legacyDecision:{archetype:"ai_infrastructure",valuationLabel:"Unclear",factors:{valuation:null,growth:63,risk:80},strategicContext:{theme:"AI infrastructure / compute & power",runwayScore:82,executionScore:63,evidence:["AI infrastructure demand evidence","Data-center capacity evidence"]}}
+  });
+  assert.equal(x.observations.some(o=>o.factor==="VALUATION"),false);
+  assert.equal(x.classificationInput.revenue,null);
+});
+
+import {valuationScore} from "../.engine-test/nivora-investor.js";
+
+test("AI infrastructure valuation derives sales multiple from market cap and reported revenue when provider P/S is missing",()=>{
+  const x=valuationScore("ai_infrastructure",{profile:{marketCapitalization:5000},metrics:{}},{revenue:1_000_000_000,revGrowth:60,opMargin:8,fcf:-50});
+  assert.equal(x.available,true);
+  assert.match(x.basis,/derived.*sales|sales multiple/i);
+  assert.ok(x.score>0&&x.score<=100);
+});

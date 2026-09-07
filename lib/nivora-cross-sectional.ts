@@ -1,6 +1,6 @@
 export type PeerObservation={symbol:string;sector?:string|null;archetype?:string|null;thesisScore:number;qualityScore?:number|null;valuationScore?:number|null;forwardScore?:number|null};
 export type RelativeRank={universePercentile:number|null;peerPercentile:number|null;zScore:number|null;peerN:number;universeN:number;note:string};
-const finite=(x:any)=>Number.isFinite(Number(x));
+const finite=(x:any)=>x!==null&&x!==undefined&&x!==""&&typeof x!=="boolean"&&Number.isFinite(Number(x));
 const pct=(xs:number[],x:number)=>xs.length<5?null:Math.round(xs.filter(v=>v<=x).length/xs.length*100);
 export function relativeRank(rows:PeerObservation[],subject:PeerObservation):RelativeRank{
  const universe=rows.filter(r=>finite(r.thesisScore)).map(r=>Number(r.thesisScore));

@@ -8,7 +8,7 @@ type Depth="simple"|"investor"|"pro";
 
 const factorLabel:Partial<Record<CanonicalFactorKey,string>>={BUSINESS_QUALITY:"BUSINESS",MOAT:"MOAT",VALUATION:"VALUATION",TECHNICALS:"TECHNICALS",GROWTH_INFLECTION:"GROWTH",FUNDAMENTALS_EARNINGS:"FUNDAMENTALS",CATALYSTS:"CATALYSTS",SECTOR_INDUSTRY:"SECTOR",RISK:"RISK"};
 
-function V4Decision({v4,owns,depth}:{v4:AurynV4CoreAnalysis;owns:boolean;depth:Depth}){
+function V4Decision({v4,owns,depth,onDepthChange}:{v4:AurynV4CoreAnalysis;owns:boolean;depth:Depth;onDepthChange?:(depth:Depth)=>void}){
  const action=formatInvestmentAction(v4.primaryAction);
  const reasons=v4.reasonCodes.slice(0,depth==="simple"?3:5).map(explainReasonCode);
  const horizons=v4.horizonDecisions;
@@ -18,7 +18,7 @@ function V4Decision({v4,owns,depth}:{v4:AurynV4CoreAnalysis;owns:boolean;depth:D
  const summary=v4.primaryAction==="INSUFFICIENT_EVIDENCE"?reasons[0]:`${v4.classification.businessModel.replaceAll("_"," ")} · ${v4.classification.lifecycle.replaceAll("_"," ")}. ${reasons[0]}`;
  return <section className="aurynDecisionSummary aurynV4DecisionSummary">
   <div className="aurynDecisionMain">
-   <div className="aurynEyebrow">AURYN V4 · DECISION</div>
+   <div className="aurynDecisionTopline"><div className="aurynEyebrow">AURYN V4 · DECISION</div>{onDepthChange&&<div className="aurynDecisionDepth" aria-label="Analysis depth"><button type="button" className={depth==="simple"?"on":""} onClick={()=>onDepthChange("simple")}>Beginner</button><button type="button" className={depth==="investor"?"on":""} onClick={()=>onDepthChange("investor")}>Pro</button><button type="button" className={depth==="pro"?"on":""} onClick={()=>onDepthChange("pro")}>Extreme Pro</button></div>}</div>
    <div className="aurynDecisionTitle"><h2 className={actionTone(action)}>{action}</h2><span><small>DECISION CONFIDENCE</small> {v4.confidence.score}/100 · {v4.confidence.label}</span></div>
    <p>{summary}</p>
    <div className="aurynV4Horizons" aria-label="Decision by horizon">{horizons.map((h,i)=><span key={h.horizon}><small>{horizonCopy[i]||horizonLabel(h.horizon)}</small><b className={actionTone(h.action)}>{formatInvestmentAction(h.action)}</b></span>)}</div>
@@ -33,8 +33,8 @@ function V4Decision({v4,owns,depth}:{v4:AurynV4CoreAnalysis;owns:boolean;depth:D
  </section>;
 }
 
-export default function StockDecisionSummary({decision,owns,v4,depth="investor"}:{decision:any;owns:boolean;v4?:AurynV4CoreAnalysis|null;depth?:Depth}){
- if(v4)return <V4Decision v4={v4} owns={owns} depth={depth}/>;
+export default function StockDecisionSummary({decision,owns,v4,depth="investor",onDepthChange}:{decision:any;owns:boolean;v4?:AurynV4CoreAnalysis|null;depth?:Depth;onDepthChange?:(depth:Depth)=>void}){
+ if(v4)return <V4Decision v4={v4} owns={owns} depth={depth} onDepthChange={onDepthChange}/>;
  const c=decision.canonical;
  const longTerm=c?.longTerm||{label:decision.longTermThesis?.label||decision.thesisLabel,score:decision.longTermThesis?.score||decision.thesisScore,reason:decision.oneLine};
  const newMoney=c?.newMoney||{action:decision.today?.action||decision.action,reason:decision.today?.reason||decision.actionReason};

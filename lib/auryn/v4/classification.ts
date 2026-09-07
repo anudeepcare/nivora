@@ -1,14 +1,14 @@
 import type {BusinessModel,EvidenceRef,LifecycleStage,SecurityClassification,SecurityClassificationInput} from "./domain";
 
 const finite=(v:unknown):v is number=>typeof v==="number"&&Number.isFinite(v);
-const text=(x:SecurityClassificationInput)=>[x.name,x.description,x.sector,x.industry].filter(Boolean).join(" ").toLowerCase();
+const text=(x:SecurityClassificationInput)=>[x.name,x.description,x.sector,x.industry,x.strategicTheme,x.archetypeHint].filter(Boolean).join(" ").toLowerCase();
 
 const rules:[BusinessModel,RegExp][]=[
   ["SPACE_SATELLITE",/satellite|constellation|direct[- ]to[- ]device|space[- ]based/],
+  ["AI_DATA_CENTER_INFRA",/ai cloud|gpu cloud|data cent(?:er|re)|hyperscale|gpu compute capacity|ai infrastructure hosting|high[- ]performance computing|\bhpc\b/],
   ["SEMICONDUCTOR_MEMORY_CYCLICAL",/\bdram\b|\bnand\b|memory semiconductor|memory producer/],
-  ["SEMICONDUCTOR_DESIGNER",/fabless|semiconductor design|\bgpu\b|accelerator|chip designer/],
+  ["SEMICONDUCTOR_DESIGNER",/fabless|semiconductor design|\bgpu\b|accelerator|chip designer|accelerated compute/],
   ["NETWORKING_COMPUTE_INFRA",/networking silicon|ethernet|optical interconnect|switching|compute fabric/],
-  ["AI_DATA_CENTER_INFRA",/ai cloud|gpu cloud|data cent(?:er|re)|accelerated compute|hyperscale/],
   ["POWER_UTILITY_INFRA",/utility|power generation|fuel cell|grid|electric power/],
   ["MARKETPLACE_ADTECH",/ad[- ]tech|advertising platform|marketplace|app monetization/],
   ["SAAS_SOFTWARE",/\bsaas\b|software platform|cloud software|subscription software/],
@@ -26,6 +26,13 @@ const rules:[BusinessModel,RegExp][]=[
 ];
 
 function classifyBusinessModel(input:SecurityClassificationInput){
+  const hint=String(input.archetypeHint||"").toLowerCase();
+  const hintMap:Record<string,BusinessModel>={
+    ai_infrastructure:"AI_DATA_CENTER_INFRA",infrastructure:"POWER_UTILITY_INFRA",power_infrastructure:"POWER_UTILITY_INFRA",
+    semiconductor_cyclical:"SEMICONDUCTOR_MEMORY_CYCLICAL",compounder:"GENERAL_COMPOUNDER",hypergrowth:"GENERAL_COMPOUNDER",
+    bank:"BANK",insurer:"INSURER",biotech:"BIOTECH_PHARMA",miner:"MINER_COMMODITY",pre_scale:"SPACE_SATELLITE"
+  };
+  if(hintMap[hint])return{model:hintMap[hint],specific:true};
   const t=text(input);
   for(const [model,re] of rules){if(re.test(t))return{model,specific:true};}
   const industry=(input.industry||"").toLowerCase();
@@ -43,7 +50,7 @@ function lifecycleOf(x:SecurityClassificationInput,businessModel:BusinessModel):
   const growth=finite(x.revenueGrowth)?Number(x.revenueGrowth):null;
   const op=finite(x.operatingMargin)?Number(x.operatingMargin):null;
   const fcf=finite(x.fcf)?Number(x.fcf):null;
-  if((rev==null||rev<=0)&&x.profitable===false)return "PRE_COMMERCIAL";
+  if(rev!=null&&rev<=0&&x.profitable===false)return "PRE_COMMERCIAL";
   if(x.profitable===false&&["SPACE_SATELLITE","BIOTECH_PHARMA"].includes(businessModel)&&growth!=null&&growth>40)return "VALIDATION";
   if(growth!=null&&growth>=35&&((op!=null&&op>0)||(fcf!=null&&fcf>0)))return "INFLECTION";
   if(growth!=null&&growth>=30)return "HYPERGROWTH";
@@ -82,7 +89,7 @@ function cyclicalityOf(model:BusinessModel):SecurityClassification["cyclicality"
 }
 
 function profitabilityOf(input:SecurityClassificationInput,lifecycle:LifecycleStage):SecurityClassification["profitabilityStage"]{
-  if((input.revenue==null||input.revenue<=0)&&input.profitable===false)return "PRE_REVENUE";
+  if(input.revenue!=null&&input.revenue<=0&&input.profitable===false)return "PRE_REVENUE";
   if(input.profitable===false)return "PRE_PROFIT";
   if(input.profitable===true&&["MATURITY","COMPOUNDER"].includes(lifecycle))return "MATURE";
   if(input.profitable===true)return "PROFITABLE";

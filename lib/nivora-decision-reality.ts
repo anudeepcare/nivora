@@ -4,7 +4,7 @@ export type StabilizationState="CONFIRMED"|"WATCH"|"REQUIRED";
 export type ScoreAttribution={label:string;weightPct:number;score:number|null;impactPoints:number|null;direction:"POSITIVE"|"NEGATIVE"|"NEUTRAL";evidence:string};
 
 const clamp=(x:number,a=0,b=100)=>Math.max(a,Math.min(b,x));
-const finite=(x:any)=>Number.isFinite(Number(x));
+const finite=(x:any)=>x!==null&&x!==undefined&&x!==""&&typeof x!=="boolean"&&Number.isFinite(Number(x));
 const n=(x:any,f=0)=>finite(x)?Number(x):f;
 const round=(x:number,d=1)=>+x.toFixed(d);
 

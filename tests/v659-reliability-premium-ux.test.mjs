@@ -50,13 +50,12 @@ test('metric info stays an inline title unit and portfolio snapshot has no decor
  assert.match(css,/\.v658PortfolioSnapshot article:after\{[^}]*display:none/s);
 });
 
-test('top market context uses compact segmented periods and reduced divider treatment',()=>{
- const css=fs.readFileSync('app/globals.css','utf8');
- assert.match(css,/\.v659ContextStrip/);
- assert.match(css,/\.v659PeriodSwitch/);
+test('stock page no longer renders the detached top market context strip',()=>{
  const s=fs.readFileSync('components/StockClient.tsx','utf8');
- assert.match(s,/v659ContextStrip/);
- assert.match(s,/v659PeriodSwitch/);
+ assert.doesNotMatch(s,/v659ContextStrip/);
+ assert.doesNotMatch(s,/v659PeriodSwitch/);
+ assert.match(s,/StockDecisionSummary/);
+ assert.match(s,/StockEvidenceNav/);
 });
 
 test('user-facing live status does not expose LIVE_SINGLE_SOURCE debug wording',()=>{

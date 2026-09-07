@@ -1,6 +1,6 @@
 export type FactorRow=Record<string,number|null|undefined>;
 export type FactorCorrelation={a:string;b:string;correlation:number;n:number;severity:"LOW"|"WATCH"|"HIGH"};
-const finite=(x:any)=>Number.isFinite(Number(x));
+const finite=(x:any)=>x!==null&&x!==undefined&&x!==""&&typeof x!=="boolean"&&Number.isFinite(Number(x));
 function corr(x:number[],y:number[]){const n=Math.min(x.length,y.length);if(n<8)return null;const mx=x.reduce((s,v)=>s+v,0)/n,my=y.reduce((s,v)=>s+v,0)/n;let c=0,vx=0,vy=0;for(let i=0;i<n;i++){const dx=x[i]-mx,dy=y[i]-my;c+=dx*dy;vx+=dx*dx;vy+=dy*dy}return vx&&vy?c/Math.sqrt(vx*vy):null}
 export function factorCorrelationAudit(rows:FactorRow[],keys:string[],threshold=.55):FactorCorrelation[]{
  const out:FactorCorrelation[]=[];

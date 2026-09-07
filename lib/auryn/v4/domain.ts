@@ -84,6 +84,8 @@ export interface SecurityClassificationInput {
   operatingMargin?:number|null;
   fcf?:number|null;
   profitable?:boolean|null;
+  archetypeHint?:string|null;
+  strategicTheme?:string|null;
 }
 
 export interface SecurityClassification {

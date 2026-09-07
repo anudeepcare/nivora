@@ -15,7 +15,7 @@ export interface CurrentEvidenceAdapterInput {
   priorMoat?:AnalystEvidenceBundle["priorMoat"];
 }
 
-const finite=(x:unknown)=>Number.isFinite(Number(x));
+const finite=(x:unknown)=>x!==null&&x!==undefined&&x!==""&&typeof x!=="boolean"&&Number.isFinite(Number(x));
 const clamp=(n:number)=>Math.max(0,Math.min(100,n));
 const mean=(xs:number[])=>xs.length?xs.reduce((a,b)=>a+b,0)/xs.length:null;
 
@@ -110,12 +110,13 @@ export function adaptCurrentEvidenceToV4(input:CurrentEvidenceAdapterInput):Anal
   const industry=profile?.finnhubIndustry??profile?.industry??company?.industry??null;
   const sector=profile?.sector??company?.sector??context?.sector??null;
   const description=profile?.description??company?.description??context?.summary?.description??null;
-  const revenue=finite(raw?.revenue)?Number(raw.revenue):finite(company?.revenue)?Number(company.revenue):null;
+  const latestHistoryRevenue=Array.isArray(company?.fiveYearRecord?.history)?[...company.fiveYearRecord.history].reverse().find((x:any)=>finite(x?.revenue))?.revenue:null;
+  const revenue=finite(raw?.revenue)?Number(raw.revenue):finite(company?.revenue)?Number(company.revenue):finite(latestHistoryRevenue)?Number(latestHistoryRevenue):null;
   const revenueGrowth=finite(raw?.revGrowth)?Number(raw.revGrowth):finite(company?.revenueGrowth)?Number(company.revenueGrowth):null;
   const operatingMargin=finite(raw?.opMargin)?Number(raw.opMargin):null;
   const fcf=finite(raw?.fcf)?Number(raw.fcf):null;
   const profitable=typeof company?.profitable==="boolean"?company.profitable:operatingMargin!=null?operatingMargin>0:fcf!=null?fcf>0:null;
-  const classificationInput:SecurityClassificationInput={assetType:market?.assetType??company?.assetType??"stock",sector,industry,name:profile?.name??company?.name??input.symbol,description,revenue,revenueGrowth,operatingMargin,fcf,profitable};
+  const classificationInput:SecurityClassificationInput={assetType:market?.assetType??company?.assetType??"stock",sector,industry,name:profile?.name??company?.name??input.symbol,description,revenue,revenueGrowth,operatingMargin,fcf,profitable,archetypeHint:legacy?.archetype??null,strategicTheme:legacy?.strategicContext?.theme??null};
 
   const slowEvidenceFingerprint=JSON.stringify({
     currentScore:company?.fundamentalSignal?.currentScore??null,

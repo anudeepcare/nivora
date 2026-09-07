@@ -11,10 +11,12 @@ test("stock page computes the V4 canonical analysis from current evidence",()=>{
   assert.match(s,/v4=\{v4Analysis\}/);
 });
 
-test("one institutional brain exposes beginner pro and extreme pro depth",()=>{
-  const s=read("components/StockClient.tsx");
-  assert.match(s,/const\[depth,setDepth\]=useState<Depth>/);
-  for(const x of ["Beginner","Pro","Extreme Pro"])assert.match(s,new RegExp(`>${x}<`));
+test("one institutional brain exposes beginner pro and extreme pro depth inside the canonical decision",()=>{
+  const page=read("components/StockClient.tsx");
+  const decision=read("components/stock/StockDecisionSummary.tsx");
+  assert.match(page,/const\[depth,setDepth\]=useState<Depth>/);
+  assert.match(page,/depth=\{depth\} onDepthChange=\{setDepth\}/);
+  for(const x of ["Beginner","Pro","Extreme Pro"])assert.match(decision,new RegExp(`>${x}<`));
 });
 
 test("decision summary is V4 decision-first with multiple horizons and confidence not probability",()=>{
@@ -36,4 +38,20 @@ test("V4 decision and depth controls have responsive production styles",()=>{
   assert.match(c,/\.aurynV4Horizons\{/);
   assert.match(c,/\.aurynV4ModelAudit\{/);
   assert.match(c,/@media\(max-width:700px\)[\s\S]*\.aurynV4Horizons/);
+});
+
+test("stock research tabs consume the V4 canonical decision and use one aligned page shell",()=>{
+  const s=read("components/StockClient.tsx");
+  assert.match(s,/StockThesisPanel decision=\{presentedDecision\} v4=\{v4Analysis\}/);
+  assert.match(s,/className="aurynStockTabPage v12Fund"/);
+  assert.match(s,/className="aurynStockTabPage v12Earnings"/);
+  assert.match(s,/className="aurynStockTabPage v12Technical v26Technical"/);
+  assert.doesNotMatch(s,/className="techRead"/);
+});
+
+test("analysis depth is compact inside the decision surface and global duplicate strips are removed",()=>{
+  const s=read("components/StockClient.tsx");
+  assert.doesNotMatch(s,/className="aurynDepthSwitch"/);
+  assert.doesNotMatch(s,/className="v65ContextStrip v659ContextStrip"/);
+  assert.match(s,/depth=\{depth\} onDepthChange=\{setDepth\}/);
 });

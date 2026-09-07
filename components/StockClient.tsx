@@ -26,6 +26,7 @@ import StockActionPlan from "./stock/StockActionPlan";
 import StockEvidenceNav from "./stock/StockEvidenceNav";
 import StockEvidenceSections from "./stock/StockEvidenceSections";
 import StockThesisPanel from "./stock/StockThesisPanel";
+import StockTabContext from "./stock/StockTabContext";
 import {metricDefinitions} from "@/lib/nivora-metrics";
 import {ENGINE_VERSION} from "@/lib/nivora-version";
 import {formatMoney as displayMoney,formatPercent} from "@/lib/nivora-format";
@@ -554,45 +555,9 @@ export default function StockClient({symbol}:{symbol:string}){
   return <div className="aurynStockPage">
     <StockSecurityHeader company={company?.name||d.name||symbol} symbol={symbol} price={currentPx} changePct={displayChangePct} status={marketStatusLabel} detail={liveQuote?(liveQuote.integrityState==="MARKET_CLOSED"?`${liveQuote.provider} · market closed · regular close ${displayMoney(Number(liveQuote.regularClose))}`:`${liveQuote.provider} · ${liveQuote.ageSeconds==null?"timestamp unavailable":`${liveQuote.ageSeconds}s old`}${liveQuote.disagreementPct!=null?` · provider gap ${Number(liveQuote.disagreementPct).toFixed(2)}%`:""} · regular close ${displayMoney(Number(liveQuote.regularClose))}`):"Daily analysis stays available while the live quote connects."} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
     {closedQuoteMismatch?<div className="aurynIntegrityAlert" role="status"><b>Quote integrity check</b><span>Provider price did not match the verified regular close. AURYN is using the verified regular close for this closed-market decision view.</span></div>:null}
-    <div className="aurynDepthSwitch" aria-label="Analysis depth"><span>View</span><button type="button" className={depth==="simple"?"on":""} onClick={()=>setDepth("simple")}>Beginner</button><button type="button" className={depth==="investor"?"on":""} onClick={()=>setDepth("investor")}>Pro</button><button type="button" className={depth==="pro"?"on":""} onClick={()=>setDepth("pro")}>Extreme Pro</button></div>
-    {presentedDecision&&<><StockDecisionSummary decision={presentedDecision} owns={owns} v4={v4Analysis} depth={depth}/><StockActionPlan entryLow={horizonPlan.entryLow} entryHigh={horizonPlan.entryHigh} reassess={Number(d.levels?.invalidation||d.levels?.majorSupport||0)} confirm={horizonPlan.confirm} breaker={presentedDecision.breakers?.[0]}/></>}
+    {presentedDecision&&<><StockDecisionSummary decision={presentedDecision} owns={owns} v4={v4Analysis} depth={depth} onDepthChange={setDepth}/><StockActionPlan entryLow={horizonPlan.entryLow} entryHigh={horizonPlan.entryHigh} reassess={Number(d.levels?.invalidation||d.levels?.majorSupport||0)} confirm={horizonPlan.confirm} breaker={presentedDecision.breakers?.[0]}/></>}
     <div className="aurynOwnershipNote"><Sparkles size={14}/><span>AURYN separates long-term thesis, owner action and new-money timing.</span></div>
 
-
-    {depth==="pro"&&enterprise&&intelligence&&<section className="v29ProCockpit">
-      <div className="proCockpitHead"><div><small>PRO WORKSPACE</small><h3>Decision evidence & model diagnostics</h3><p>Same AURYN call, with the underlying factor, data-quality and audit evidence exposed.</p></div><button type="button" onClick={()=>setAuditOpen(!auditOpen)}><ShieldCheck size={15}/>{auditOpen?"Hide audit":"Audit trail"}</button></div>
-      <div className="proCockpitGrid">
-        <div><small>MODEL</small><b>{enterprise.engineVersion}</b><span>{mode.toUpperCase()} weighting · regime aware</span></div>
-        <div><small>MARKET REGIME</small><b>{intelligence.regime?.label}</b><span>{intelligence.regime?.score}/100 environment score</span></div>
-        <div><small>VALUATION</small><b>{intelligence.valuation==null?"N/A":`${intelligence.valuation}/100`}</b><span>{intelligence.valuation==null?"Independent valuation is not established; missing evidence is not scored as bearish.":"Relative valuation contribution to the current horizon"}</span></div>
-        <div><small>DATA QUALITY</small><b>{enterprise.dataQuality}/100</b><span>{enterprise.coverage}% evidence sources present</span></div>
-        <div><small>DATA COVERAGE</small><b>{intelligence.confidence}/100</b><span>{intelligence.confidenceLabel} · model confidence uncalibrated</span></div>
-        <div><small>CONTRADICTIONS</small><b>{intelligence.contradictions.length}</b><span>{intelligence.contradictions[0]||"Evidence broadly aligned"}</span></div>
-        <div><small>VALIDATION</small><b>SHADOW</b><span>Forward outcomes are recorded for calibration</span></div>
-        <div><small>AUDIT ID</small><b className="auditId">{enterprise.auditId}</b><span>Reproducible decision fingerprint</span></div>
-      </div>
-      {auditOpen&&<div className="v29Audit">
-        <div><small>EVIDENCE STATUS</small>{enterprise.freshness.map((x:any)=><p key={x.name}><span className={x.ok?"auditOk":"auditBad"}>{x.ok?"●":"○"}</span><b>{x.name}</b> · {x.label}</p>)}</div>
-        <div><small>DECISION ATTRIBUTION</small>{Object.entries(intelligence.dimensions).map(([k,v]:any)=><p key={k}><b>{k}</b><span>{v==null?"N/A":`${v}/100`}</span></p>)}</div>
-        <div><small>REPRODUCIBILITY</small><p>Engine: {enterprise.engineVersion}</p><p>Generated: {new Date(enterprise.generatedAt).toLocaleString()}</p><p>Mode: {mode}</p><p>Symbol: {symbol}</p></div>
-      </div>}
-    </section>}
-
-    {depth!=="simple"&&<section className="v65ContextStrip v659ContextStrip" aria-label="Quick market context">
-      <div><div className="metricLabel"><small>PERFORMANCE</small><MetricInfo title="Performance">Price return over the selected period using available market history. Performance describes what happened; it does not predict what happens next.</MetricInfo></div><b>{selectedReturn==null?"—":`${selectedReturn>=0?"+":""}${selectedReturn}%`}</b><div className="v19Range v659PeriodSwitch">{(["6M","YTD","1Y"] as const).map(r=><button key={r} className={perfRange===r?"on":""} onClick={()=>setPerfRange(r)}>{r}</button>)}</div></div>
-      <div><div className="metricLabel"><small>52-WEEK POSITION</small><MetricInfo title="52-week position">Shows where today’s price sits between the last 52-week low and high. Near the high is not automatically bad; it simply adds price-location context.</MetricInfo></div><b>{d.performance?.rangePositionPct!=null?`${d.performance.rangePositionPct}%`:"—"}</b><span>{d.performance?.yearLow!=null&&d.performance?.yearHigh!=null?`Low $${d.performance.yearLow} · High $${d.performance.yearHigh}`:"Waiting for 1-year history"}</span></div>
-      <div><div className="metricLabel"><small>RISK / REWARD</small><MetricInfo title="Risk / reward">Compares the distance from today’s price to AURYN’s confirmation level with the distance to its reassessment level. It is a technical planning ratio, not a forecast.</MetricInfo></div><b>{rr==null?"—":`${rr.toFixed(1)}×`}</b><span>{upside==null||downside==null?"Waiting for levels":`${upside>=0?"+":""}${upside.toFixed(1)}% to confirmation · ${downside.toFixed(1)}% to reassess`}</span></div>
-      <div><div className="metricLabel"><small>DATA CONFIDENCE</small><MetricInfo title="Data confidence">Shows whether price history, business data, market context and news/catalyst sources are available. Higher confidence means better evidence coverage—not higher certainty of profit.</MetricInfo></div><b className={confidence==="High"?"good":confidence==="Low"?"bad":"mid"}>{confidence}</b><span>Price + business + news + market coverage.</span></div>
-    </section>}
-
-
-    {depth!=="simple"&&<section className="v18DecisionStrip">
-      <div><small>BUSINESS</small><b className={tone(business.label)}>{business.label}</b><MetricInfo title="Business quality">Scored from reported growth, profitability, cash generation, balance-sheet evidence and multi-year consistency when SEC data is available.</MetricInfo></div>
-      <div><small>TREND</small><b className={tone(d.labels.trend)}>{d.labels.trend}</b><MetricInfo title="Trend">Uses multiple price horizons and structure. A strong trend can still receive a WAIT if the entry is stretched.</MetricInfo></div>
-      <div><small>ENTRY</small><b className={tone(d.labels.entry)}>{d.labels.entry}</b><MetricInfo title="Entry quality">Combines price location, support/resistance, momentum, extension and downside risk. This answers “is today a good place to start?”</MetricInfo></div>
-      <div><small>RISK</small><b className={d.labels.risk==="High"?"bad":d.labels.risk==="Lower"?"good":"mid"}>{d.labels.risk}</b><MetricInfo title="Risk">Reflects volatility, extension, downside structure and market context. High risk does not automatically mean a bad company.</MetricInfo></div>
-      <div><small>CONFIDENCE</small><b className={confidence==="High"?"good":confidence==="Low"?"bad":"mid"}>{confidence}</b><MetricInfo title="Decision confidence">Confidence rises when price history, business data, market context and current news/catalyst data are all available. Low confidence means treat the call more cautiously.</MetricInfo></div>
-    </section>}
 
     <div className="v6510ActionToolbar">
       <div className="v6510ActionButtons">
@@ -602,52 +567,20 @@ export default function StockClient({symbol}:{symbol:string}){
       {depth!=="simple"&&<div className="v6510MarketLevels" aria-label="Market levels"><span>{supportText}</span><span>{resistanceText}</span></div>}
     </div>
 
-    <section className="v12Pulse v18Pulse">
-      <div><small>WHAT CHANGED TODAY</small><h3>{investorDecision?.changed?.[0]||todayMoveText}</h3><p>{investorDecision?.changed?.length?"AURYN separates thesis changes from price noise. A price move alone does not rewrite company conviction.":moveReason}</p>{topNews?.url&&<a href={topNews.url} target="_blank" rel="noreferrer">Read source <ExternalLink size={13}/></a>}</div>
-      <div><small>NEXT CATALYST</small><h3>{nextCatalystTitle}</h3><p>{nextCatalystDetail}</p></div>
-      <div><small>MARKET CONTEXT</small><h3>{d.market.regime}</h3><p>{marketContextText}</p></div>
-    </section>
-
-    {depth!=="simple"&&<section className="osChartCard v12Chart">
-      <div className="osSectionTitle"><div><small>PRICE MAP</small><h3>What price has to do next</h3></div><span>{horizon==="now"?"Current / daily":horizon==="swing"?"Swing / daily-weekly":"Long term / weekly-monthly"} · levels recalculate with horizon</span></div>
-      <div className="chartControls"><div><button className={chartMode==="clean"?"on":""} onClick={()=>setChartMode("clean")}>Clean</button><button className={chartMode==="trend"?"on":""} onClick={()=>setChartMode("trend")}>Trend</button></div><MetricInfo title="Chart modes">Clean keeps only price, volume and AURYN levels. Trend adds 20-day and 50-day moving averages for users who want more technical context.</MetricInfo></div>
-      <PriceChart candles={horizonCandles} levels={horizonChartLevels} showTrend={chartMode==="trend"}/>
-    </section>}
-
-    {depth==="pro"&&<section className="beginnerScore v18Score">
-      <div className="beginnerScoreMain">
-        <div className="decisionEyebrow"><small>AURYN SCORE</small><MetricInfo title="How is the AURYN score calculated?">{scoreFormula} The score is a summary, not the decision itself. 80–100 = excellent evidence, 65–79 = promising/selective, 50–64 = mixed, below 50 = weak. The action above can still be WAIT when price is extended.</MetricInfo></div>
-        <div className="scoreLine"><b>{overallScore}</b><span>/100</span><em>{overallLabel}</em></div>
-        <h3>{view.label}</h3><p>{beginnerReason}</p>
-      </div>
-      <div className="beginnerMath">
-        <div><div className="metricLabel"><small>BUSINESS</small><MetricInfo title="Business score">Uses reported financial history and quality signals. It is weighted more heavily in Long-term mode.</MetricInfo></div><b>{business.label}</b><span>{fiveRecordText}</span></div>
-        <div><div className="metricLabel"><small>6-MONTH CHART</small><MetricInfo title="6-month record">Measures the stock’s recent trend, return, drawdown and price structure over roughly six months.</MetricInfo></div><b>{d.sixMonth?.label||"Mixed"}</b><span>{sixMonthText}</span></div>
-        <div><div className="metricLabel"><small>TIMING NOW</small><MetricInfo title="Timing now">Focuses on whether today’s price is attractive relative to the setup—not whether the company is good.</MetricInfo></div><b>{d.labels.entry}</b><span>Entry quality at today’s price.</span></div>
-        <div><div className="metricLabel"><small>RISK</small><MetricInfo title="Risk in the score">The score rewards lower risk and penalizes unusually high downside/extension risk. Position sizing still belongs to the user.</MetricInfo></div><b>{d.labels.risk}</b><span>Higher risk means use more caution.</span></div>
-      </div>
-    </section>}
-
-    {depth!=="simple"&&intelligence&&<section className="aurynIntelStrip">
-      <div className="aurynIntelLead"><small>AURYN INTELLIGENCE</small><div><b>{intelligence.score}/100</b><span className={tone(intelligence.thesisLabel)}>{intelligence.thesisLabel}</span></div><p>{intelligence.biggestPositive} <strong>Watch:</strong> {intelligence.biggestRisk}</p></div>
-      <div className="aurynIntelItem aurynIntelTrigger"><small>NEXT DECISION TRIGGER</small><b>{intelligence.nextDecision}</b></div>
-      <div className="aurynIntelItem aurynIntelCoverage"><small>DATA COVERAGE</small><b>{intelligence.confidenceLabel}</b><span>{intelligence.confidence}/100 coverage · not probability</span></div>
-      <button type="button" onClick={()=>{setTab("thesis");window.requestAnimationFrame(()=>window.requestAnimationFrame(()=>thesisRef.current?.scrollIntoView({behavior:"smooth",block:"start"})))}}>Open full thesis →</button>
-    </section>}
-
-
     <section ref={thesisRef} id="nivora-research" className={["aurynStockResearch",depth==="simple"?"simple":""].join(" ")}>
       <StockEvidenceNav tab={tab} setTab={setTab} isCrypto={d.assetType==="crypto"}/>
       <StockEvidenceSections>
 
-      {tab==="thesis"&&presentedDecision&&<StockThesisPanel decision={presentedDecision} metricDefinitions={metricDefinitions}/>}
+      {tab==="thesis"&&presentedDecision&&<StockThesisPanel decision={presentedDecision} v4={v4Analysis} metricDefinitions={metricDefinitions}/>}
 
-      {tab==="fundamentals"&&<div className="v12Fund">
+      {tab==="fundamentals"&&<div className="aurynStockTabPage v12Fund">
+        <StockTabContext label="BUSINESS" title="Business quality & durability" score={v4Analysis?.factors.BUSINESS_QUALITY?.score} state={v4Analysis?.thesis.direction} action={v4Analysis?.primaryAction} detail="Business evidence supports the same canonical AURYN decision; price timing is evaluated separately."/>
         <div className={`fundSignal ${business.tone||"neutral"}`}><small>BUSINESS QUALITY</small><h3>{business.label}{business.score!=null?` · ${business.score}/100`:""}</h3>{(business.reasons||[]).slice(0,4).map((x:string,i:number)=><p key={i}>• {x}</p>)}{five&&<div className="fiveRecord"><small>5-YEAR RECORD</small><b>{five.score}/100 · {five.revenueTrend}</b><p>{five.summary}</p><div>{(five.history||[]).map((y:any)=><span key={y.year}><i>{y.year}</i><strong>{y.revenue!=null?money(y.revenue):"—"}</strong><em>{y.netIncome!=null?`NI ${money(y.netIncome)}`:"NI —"}</em></span>)}</div></div>}</div>
         <div className="osList">{company?.fundamentals?.length?company.fundamentals.map((x:any)=><div key={x.label}><span>{x.label}{x.detail&&<small>{x.detail}</small>}</span><b>{x.value}</b></div>):<p>No standardized SEC fundamentals available for this symbol yet.</p>}</div>
       </div>}
 
-      {tab==="institutions"&&<div className="v34InstitutionsPage">
+      {tab==="institutions"&&<div className="aurynStockTabPage v34InstitutionsPage">
+        <StockTabContext label="OWNERSHIP" title="Ownership & positioning evidence" score={v4Analysis?.factors.POSITIONING?.score} state={institutionalLabel} action={v4Analysis?.primaryAction} detail="Ownership evidence is delayed context and feeds the same canonical decision without pretending to be real-time order flow."/>
         <div className="v34InstitutionHero">
           <div><small>INSTITUTIONAL OWNERSHIP INTELLIGENCE</small><h3>{institutional?.enabled?(institutional.institutional?.shareChangePctLabel||institutional.institutional?.directionLabel||institutionalLabel):"13F data unavailable"}</h3><p>Who reported adding, trimming, opening or exiting positions — translated from delayed SEC 13F evidence.</p></div>
           <div className="v34InstitutionDates">
@@ -691,7 +624,8 @@ export default function StockClient({symbol}:{symbol:string}){
 
       </div>}
 
-      {tab==="catalysts"&&<div className="v12Catalysts v37Events">
+      {tab==="catalysts"&&<div className="aurynStockTabPage v12Catalysts v37Events">
+        <StockTabContext label="CATALYSTS" title="Events that can change the thesis" score={v4Analysis?.factors.CATALYSTS?.score} state={catalystLabel} action={v4Analysis?.primaryAction} detail="Catalysts can accelerate or weaken the thesis; they are interpreted inside the same V4 evidence state."/>
         <div className="v37EventsSummary"><div><small>EVENT RISK / OPPORTUNITY</small><h3>{catalystLabel}</h3><p>{intelligence?.dimensions?.catalysts!=null?`Catalyst score ${intelligence.dimensions.catalysts}/100. Events can change the thesis quickly; price confirmation still matters.`:"Event evidence is loading."}</p></div><div><small>NEWS TONE</small><b className={news.tone==="positive"?"good":news.tone==="negative"?"bad":"mid"}>{news.label}</b><span>{news.topReason||"No dominant headline signal."}</span></div></div>
         {earn&&<div className="nextEvent"><CalendarDays size={18}/><div><small>NEXT EARNINGS</small><b>{earn.date}</b><span>{earnDays!=null&&earnDays>=0?`${earnDays} days away`:"Upcoming"}{earn.epsEstimate!=null?` · EPS est. ${eps(earn.epsEstimate)}`:""}</span></div></div>}
         <div className="catalystIntro"><div><small>RECENT MATERIAL FILINGS</small><MetricInfo title="Catalysts">Company filings and scheduled events that may change the investment thesis. A filing is evidence to review, not automatically bullish or bearish.</MetricInfo></div><span>Newest first</span></div>
@@ -702,11 +636,12 @@ export default function StockClient({symbol}:{symbol:string}){
         <div className="v37EventNews"><div className="catalystIntro"><div><small>RECENT MATERIAL NEWS</small></div><span>Context, not a standalone signal</span></div>{items.slice(0,5).map((x:any,i:number)=><a href={x.url} target="_blank" rel="noreferrer" key={i}><div><span className={`newsTone ${x.tone}`}>{x.tone}</span><small>{x.materiality} · {x.source}</small></div><b>{x.headline}</b><p>{x.summary}</p></a>)}</div>
       </div>}
 
-      {tab==="news"&&<div className="v12News">{context?.enabled===false?<div className="connectFeed"><Newspaper size={22}/><b>Connect live news</b><p>Add a Finnhub API key. Price analysis and SEC data continue to work without it.</p></div>:items.length?items.map((x:any,i:number)=><a href={x.url} target="_blank" rel="noreferrer" key={i}><div><span className={`newsTone ${x.tone}`}>{x.tone}</span><small>{x.materiality} materiality · {x.source}</small></div><b>{x.headline}</b><p>{x.summary}</p><ExternalLink size={13}/></a>):<p>No recent company headlines were returned.</p>}</div>}
+      {tab==="news"&&<div className="aurynStockTabPage v12News">{context?.enabled===false?<div className="connectFeed"><Newspaper size={22}/><b>Connect live news</b><p>Add a Finnhub API key. Price analysis and SEC data continue to work without it.</p></div>:items.length?items.map((x:any,i:number)=><a href={x.url} target="_blank" rel="noreferrer" key={i}><div><span className={`newsTone ${x.tone}`}>{x.tone}</span><small>{x.materiality} materiality · {x.source}</small></div><b>{x.headline}</b><p>{x.summary}</p><ExternalLink size={13}/></a>):<p>No recent company headlines were returned.</p>}</div>}
 
-      {tab==="earnings"&&<div className="v12Earnings"><div className="earnSplit">{latestReport&&<div className="earnNext earnReported"><small>LATEST REPORTED RESULTS</small><h3>{latestEarnNews?.date?new Date(latestEarnNews.date).toLocaleDateString():latestReport.date}</h3><p>{latestEarnNews?.headline||`${latestReport.form} filed — latest reported financial filing`}</p>{latestEarnNews?.url&&<a href={latestEarnNews.url} target="_blank" rel="noreferrer">Read results <ExternalLink size={12}/></a>}</div>}{earn&&<div className="earnNext estimated"><small>NEXT EARNINGS · ESTIMATED</small><h3>{earn.date}</h3><p>{earn.hour||"Time not listed"}{earn.epsEstimate!=null?` · EPS est. ${eps(earn.epsEstimate)}`:""}{earn.revenueEstimate!=null?` · Revenue est. ${money(earn.revenueEstimate)}`:""}</p><p className="earnMeta">Future calendar dates are estimates until confirmed by the company.</p></div>}</div><div className="earnGrid">{(context?.surprises||[]).length?context.surprises.map((x:any,i:number)=><div key={i}><small>{x.period}</small><b className={(x.surprisePercent??0)>=0?"good":"bad"}>{x.surprisePercent!=null?`${x.surprisePercent>=0?"+":""}${Number(x.surprisePercent).toFixed(1)}% surprise`:"Reported"}</b><span>Actual {x.actual??"—"} · Est. {x.estimate??"—"}</span></div>):<p>No earnings-surprise history returned by the connected feed.</p>}</div></div>}
+      {tab==="earnings"&&<div className="aurynStockTabPage v12Earnings"><StockTabContext label="EARNINGS" title="Execution, revisions & reported results" score={v4Analysis?.factors.FUNDAMENTALS_EARNINGS?.score} state={v4Analysis?.thesis.direction} action={v4Analysis?.primaryAction} detail="Earnings execution is a contributor to the canonical thesis, not a separate buy/sell system."/><div className="earnSplit">{latestReport&&<div className="earnNext earnReported"><small>LATEST REPORTED RESULTS</small><h3>{latestEarnNews?.date?new Date(latestEarnNews.date).toLocaleDateString():latestReport.date}</h3><p>{latestEarnNews?.headline||`${latestReport.form} filed — latest reported financial filing`}</p>{latestEarnNews?.url&&<a href={latestEarnNews.url} target="_blank" rel="noreferrer">Read results <ExternalLink size={12}/></a>}</div>}{earn&&<div className="earnNext estimated"><small>NEXT EARNINGS · ESTIMATED</small><h3>{earn.date}</h3><p>{earn.hour||"Time not listed"}{earn.epsEstimate!=null?` · EPS est. ${eps(earn.epsEstimate)}`:""}{earn.revenueEstimate!=null?` · Revenue est. ${money(earn.revenueEstimate)}`:""}</p><p className="earnMeta">Future calendar dates are estimates until confirmed by the company.</p></div>}</div><div className="earnGrid">{(context?.surprises||[]).length?context.surprises.map((x:any,i:number)=><div key={i}><small>{x.period}</small><b className={(x.surprisePercent??0)>=0?"good":"bad"}>{x.surprisePercent!=null?`${x.surprisePercent>=0?"+":""}${Number(x.surprisePercent).toFixed(1)}% surprise`:"Reported"}</b><span>Actual {x.actual??"—"} · Est. {x.estimate??"—"}</span></div>):<p>No earnings-surprise history returned by the connected feed.</p>}</div></div>}
 
-      {tab==="technical"&&<div className="v12Technical v26Technical">
+      {tab==="technical"&&<div className="aurynStockTabPage v12Technical v26Technical">
+        <StockTabContext label="TECHNICALS" title="Timing, trend & confluence" score={v4Analysis?.factors.TECHNICALS?.score} state={d.labels.trend} action={v4Analysis?.primaryAction} detail="Technicals refine entry, sizing and near-term risk. They do not rewrite an intact long-term business thesis by themselves."/>
         <div className="v34TechnicalHero v383TechnicalHero">
           <div><small>TECHNICAL DECISION SUPPORT</small><h3>Strength and entry are different questions.</h3><p>AURYN measures trend strength separately from entry quality, then uses RSI, MACD, participation, volatility and extension to explain why. A strong chart can still be a poor place to chase.</p></div>
           <div className="v34TechVerdict"><small>TECHNICAL STRENGTH</small><b className={technicalState.strength>=68?"good":technicalState.strength<45?"bad":"mid"}>{technicalState.strength}/100</b><span>{technicalState.state} · {proTech?.macdLabel||"MACD unavailable"} MACD · {proTech?.rsiLabel||"RSI unavailable"} RSI</span></div>
@@ -755,17 +690,6 @@ export default function StockClient({symbol}:{symbol:string}){
           <div className="v32MarketLabHead"><div><small>CONFLUENCE MAP</small><h3>Fib + structure + AURYN risk levels</h3><p>Advanced levels are supporting evidence, not standalone buy/sell signals. Wave interpretation is supporting context and should be confirmed with price structure.</p></div><MetricInfo title="Confluence map">Fibonacci retracements, AURYN support/entry levels and the current Elliott-style scenario are overlaid so experienced users can see where independent technical evidence clusters.</MetricInfo></div>
           <PriceChart candles={horizonCandles} levels={horizonChartLevels} showTrend={true} confluence={marketLab}/>
         </div>}
-        <div className="techIntro"><div><small>TECHNICAL LAB</small><h3>Professional evidence, still readable.</h3><p>The main call stays simple. This workspace shows the market mechanics experienced investors may want to inspect.</p></div><MetricInfo title="Technical Lab">Technical indicators describe price behavior and risk. They can improve timing, but none can guarantee direction or replace business/catalyst analysis.</MetricInfo></div>
-        {proTech&&<div className="proTechGrid">
-          <div><small>ATR · 14D</small><b>{proTech.atrPct!=null?`${proTech.atrPct.toFixed(1)}%`:"—"}</b><span>Typical daily range</span></div>
-          <div><small>REALIZED VOL · 20D</small><b>{proTech.rv!=null?`${proTech.rv.toFixed(0)}%`:"—"}</b><span>Annualized recent volatility</span></div>
-          <div><small>VOLUME VS 20D</small><b>{proTech.volRatio!=null?`${proTech.volRatio.toFixed(1)}×`:"—"}</b><span>Participation today</span></div>
-          <div><small>20D MA</small><b className={(proTech.d20??0)>=0?"good":"bad"}>{proTech.d20!=null?`${proTech.d20>=0?"+":""}${proTech.d20.toFixed(1)}%`:"—"}</b><span>Distance from short trend</span></div>
-          <div><small>50D MA</small><b className={(proTech.d50??0)>=0?"good":"bad"}>{proTech.d50!=null?`${proTech.d50>=0?"+":""}${proTech.d50.toFixed(1)}%`:"—"}</b><span>Distance from intermediate trend</span></div>
-          <div><small>200D MA</small><b className={(proTech.d200??0)>=0?"good":"bad"}>{proTech.d200!=null?`${proTech.d200>=0?"+":""}${proTech.d200.toFixed(1)}%`:"—"}</b><span>Distance from long trend</span></div>
-          <div><small>BOLLINGER POSITION</small><b>{proTech.bbPos!=null?`${Math.round(proTech.bbPos)}%`:"—"}</b><span>0% lower band · 100% upper</span></div>
-          <div><small>52W DRAWDOWN</small><b>{proTech.drawdown!=null?`${proTech.drawdown.toFixed(1)}%`:"—"}</b><span>Distance from recent high</span></div>
-        </div>}
         {depth==="pro"&&marketLab&&<div className="v32MarketLab">
           <div className="v32MarketLabHead"><div><small>MARKET INTELLIGENCE</small><h3>Confluence, not indicator clutter.</h3><p>AURYN turns technical evidence into zones and scenarios instead of asking you to interpret dozens of lines.</p></div></div>
           <div className="v32MarketLabGrid">
@@ -775,11 +699,11 @@ export default function StockClient({symbol}:{symbol:string}){
             <div><small>ELLIOTT-STYLE WAVE</small><b>{marketLab.waveLabel}</b><strong>{marketLab.waveScore}% confidence</strong><span>Heuristic structure only. Candidate target ${marketLab.waveTarget}; invalidation ${marketLab.waveInvalidation}.</span></div>
           </div>
         </div>}
-        <div className="techRead"><small>AURYN TECHNICAL READ</small><h4>{d.labels.trend} trend · {d.labels.momentum} momentum · {d.labels.risk} risk</h4><p>{d.why?.slice(0,3).join(" ")}</p></div>
         {depth==="pro"&&<div className="osTechGrid">{Object.entries(d.engine).map(([k,v]:any)=><div key={k}><div className="metricLabel"><span>{k}</span><MetricInfo title={k}>{k==="Trend"?"Multi-horizon direction and slope.":k==="Momentum"?"Speed and persistence of the current move.":k==="Flow"?"Volume/price participation and confirmation.":k==="Structure"?"Higher highs/lows, support and resistance behavior.":k==="RSI"?"Relative Strength Index; helps identify momentum extremes but is never used alone.":k==="MACD"?"Trend/momentum crossover evidence.":k==="Extension"?"How far price has moved away from its recent equilibrium; high extension increases chase risk.":k==="Relative strength"?"Performance versus the relevant benchmark.":k==="Market regime"?"Whether the broad market is supportive, mixed or risk-off.":"Supporting quantitative evidence used by the decision engine."}</MetricInfo></div><b>{typeof v==="number"?`${v}/100`:v}</b></div>)}</div>}
       </div>}
 
-      {tab==="options"&&<div className="gammaPanel v22Options v26Options">
+      {tab==="options"&&<div className="aurynStockTabPage gammaPanel v22Options v26Options">
+        <StockTabContext label="OPTIONS" title="Positioning & contract research" score={null} state={optionsData?.enabled?"Provider data":"Evidence dependent"} action={v4Analysis?.primaryAction} detail="Options express the underlying AURYN thesis and risk plan; they never create a separate directional call."/>
         <div className="gammaHero"><small>OPTIONS LAB</small><h3>Positioning + contract research in one place.</h3><p>Start with the stock thesis, then use options data to compare structure, liquidity, volatility and leverage. Candidate contracts are ranked research outputs, not automatic trades.</p></div>
         <div className="optionSubnav"><button className={optionView==="setups"?"on":""} onClick={()=>setOptionView("setups")}>Contract setups</button><button className={optionView==="positioning"?"on":""} onClick={()=>setOptionView("positioning")}>Gamma / positioning</button></div>
         {optionsLoading?<div className="optionsState">Loading shared options snapshot…</div>:

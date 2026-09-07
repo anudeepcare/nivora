@@ -43,3 +43,21 @@ test("missing required evidence produces INSUFFICIENT_EVIDENCE instead of neutra
   const x=resolveV4Decision({...base,missingRequired:["FUNDAMENTALS_EARNINGS"]});
   assert.equal(x.primaryAction,"INSUFFICIENT_EVIDENCE");
 });
+
+test("score weakness alone cannot produce SELL while the structural thesis is intact",()=>{
+  const x=resolveV4Decision({...base,slowScore:56,opportunityScore:42,riskScore:80,technicalScore:45,valuationScore:null,catalystScore:55,sectorScore:60,thesis:{strength:58,direction:"STABLE"},moat:{score:55,direction:"STABLE"}});
+  assert.notEqual(x.primaryAction,"SELL");
+  assert.notEqual(x.horizonDecisions.find(h=>h.horizon==="THREE_TO_FIVE_YEARS").action,"SELL");
+});
+
+test("strong intact long-term thesis downgrades medium-term weakness to HOLD rather than REDUCE",()=>{
+  const x=resolveV4Decision({...base,slowScore:76,opportunityScore:48,riskScore:78,technicalScore:38,valuationScore:null,catalystScore:58,sectorScore:60,thesis:{strength:78,direction:"STABLE"},moat:{score:76,direction:"STABLE"},softConstraints:["TECHNICAL_INSTABILITY"]});
+  assert.equal(x.primaryAction,"HOLD");
+  assert.ok(["HOLD","BUY","STRONG_BUY"].includes(x.horizonDecisions.find(h=>h.horizon==="THREE_TO_FIVE_YEARS").action));
+});
+
+test("SELL is structural: very weak weighted scores with an intact thesis stop at REDUCE",()=>{
+  const x=resolveV4Decision({...base,slowScore:35,opportunityScore:20,riskScore:90,technicalScore:10,valuationScore:10,catalystScore:15,sectorScore:20,thesis:{strength:40,direction:"STABLE"},moat:{score:35,direction:"ERODING"}});
+  assert.notEqual(x.primaryAction,"SELL");
+  assert.ok(x.horizonDecisions.every(h=>h.action!=="SELL"));
+});

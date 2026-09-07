@@ -1,6 +1,6 @@
 export type PortfolioHolding={symbol:string;marketValue:number;sector?:string|null;archetype?:string|null;returns?:number[]};
 export type PortfolioRisk={concentrationPct:number;largestPositionPct:number;largestSectorPct:number;effectivePositions:number;correlationWarning:string|null;riskLabel:"LOW"|"MODERATE"|"HIGH";sizingGate:"NORMAL"|"REDUCED"|"BLOCK ADD";maxNewPositionPct:number;notes:string[]};
-const finite=(x:any)=>Number.isFinite(Number(x));
+const finite=(x:any)=>x!==null&&x!==undefined&&x!==""&&typeof x!=="boolean"&&Number.isFinite(Number(x));
 function corr(a:number[]=[],b:number[]=[]){const n=Math.min(a.length,b.length);if(n<20)return null;const x=a.slice(-n),y=b.slice(-n),mx=x.reduce((s,v)=>s+v,0)/n,my=y.reduce((s,v)=>s+v,0)/n;let c=0,vx=0,vy=0;for(let i=0;i<n;i++){const dx=x[i]-mx,dy=y[i]-my;c+=dx*dy;vx+=dx*dx;vy+=dy*dy}return vx&&vy?c/Math.sqrt(vx*vy):null}
 export function analyzePortfolioRisk(holdings:PortfolioHolding[]):PortfolioRisk{
  const clean=holdings.filter(h=>finite(h.marketValue)&&h.marketValue>0),total=clean.reduce((s,h)=>s+h.marketValue,0);if(!total)return{concentrationPct:0,largestPositionPct:0,largestSectorPct:0,effectivePositions:0,correlationWarning:null,riskLabel:"LOW",sizingGate:"NORMAL",maxNewPositionPct:5,notes:["No funded positions available for portfolio-risk analysis."]};

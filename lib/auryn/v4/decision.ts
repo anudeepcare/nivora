@@ -30,7 +30,7 @@ const weighted=(parts:Array<[number|null,number]>)=>{
   const w=usable.reduce((s,[,weight])=>s+weight,0);
   return w?usable.reduce((s,[v,weight])=>s+v*weight,0)/w:50;
 };
-const actionFromScore=(score:number):PrimaryInvestmentAction=>score>=80?"STRONG_BUY":score>=66?"BUY":score>=50?"HOLD":score>=35?"REDUCE":"SELL";
+const actionFromScore=(score:number):PrimaryInvestmentAction=>score>=80?"STRONG_BUY":score>=66?"BUY":score>=50?"HOLD":"REDUCE";
 const fixed=(action:PrimaryInvestmentAction,confidence:DecisionConfidence,reason:string):ResolveV4DecisionResult=>({
   primaryAction:action,reasonCodes:[reason],horizonDecisions:HORIZONS.map(horizon=>({horizon,action,confidence,reasonCodes:[reason]}))
 });
@@ -87,11 +87,14 @@ export function resolveV4Decision(input:ResolveV4DecisionInput):ResolveV4Decisio
 
   const medium=guardedByHorizon.SIX_TO_TWELVE_MONTHS;
   const long=guardedByHorizon.THREE_TO_FIVE_YEARS;
+  const intactLongThesis=input.thesis.direction!=="WEAKENING"&&input.thesis.strength!=null&&input.thesis.strength>=62;
   let primary:PrimaryInvestmentAction=medium;
   if(medium==="STRONG_BUY"&&long==="STRONG_BUY")primary="STRONG_BUY";
   else if((["BUY","STRONG_BUY"] as PrimaryInvestmentAction[]).includes(medium)&&(["BUY","STRONG_BUY"] as PrimaryInvestmentAction[]).includes(long))primary="BUY";
-  else if(medium==="SELL"||long==="SELL")primary="REDUCE";
-  else if(medium==="REDUCE"||long==="REDUCE")primary="REDUCE";
+  else if(intactLongThesis&&(["BUY","STRONG_BUY"] as PrimaryInvestmentAction[]).includes(long)&&medium==="REDUCE")primary="HOLD";
+  else if(intactLongThesis&&long==="HOLD"&&medium==="REDUCE")primary="HOLD";
+  else if(medium==="REDUCE"&&long==="REDUCE")primary="REDUCE";
+  else if(medium==="REDUCE"||long==="REDUCE")primary=input.thesis.direction==="WEAKENING"||input.slowScore<50?"REDUCE":"HOLD";
   else primary="HOLD";
 
   if(input.softConstraints.includes("TECHNICAL_INSTABILITY")&&primary==="STRONG_BUY")primary="BUY";

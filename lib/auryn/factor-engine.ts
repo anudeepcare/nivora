@@ -2,7 +2,7 @@ import{scoreLabel}from"./score-label";
 import{classifySecurity}from"./classification";
 export type Factor={score:number|null;label:string;coverage:number;reason:string};
 const clamp=(n:number)=>Math.max(0,Math.min(100,n));
-const finite=(x:any)=>Number.isFinite(Number(x));
+const finite=(x:any)=>x!==null&&x!==undefined&&x!==""&&typeof x!=="boolean"&&Number.isFinite(Number(x));
 const renormal=(xs:{value:number;weight:number;available?:boolean}[])=>{const a=xs.filter(x=>x.available!==false&&finite(x.value));const w=a.reduce((s,x)=>s+x.weight,0);return w?clamp(a.reduce((s,x)=>s+x.value*x.weight,0)/w):null};
 const factor=(score:number|null,coverage:number,reason:string):Factor=>score==null?{score:null,label:"N/A",coverage,reason}:{score:Math.round(score),label:scoreLabel(score),coverage,reason};
 

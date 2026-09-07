@@ -1,0 +1,24 @@
+AURYN V4.1 verification
+Date: 2026-09-07
+
+PASS  npm test
+      332 tests / 332 passed / 0 failed
+
+PASS  npm run audit:v65
+      V65 dead-code audit PASS
+
+PASS  git diff --check
+
+ENVIRONMENT LIMITATION  npm run build
+      next: not found
+      Dependencies are intentionally not bundled in this source ZIP.
+      Run: npm ci && npm run build
+      in Vercel or another normal networked Node environment.
+
+Packaging exclusions:
+- .env.local and other non-example environment files
+- .git
+- node_modules
+- .next
+- .engine-test
+- caches and OS metadata

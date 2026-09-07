@@ -48,7 +48,7 @@ export type InvestorDecision={
 
 const clamp=(x:number,a=0,b=100)=>Math.max(a,Math.min(b,x));
 const num=(x:any,f=50)=>Number.isFinite(Number(x))?Number(x):f;
-const finite=(x:any)=>Number.isFinite(Number(x));
+const finite=(x:any)=>x!==null&&x!==undefined&&x!==""&&typeof x!=="boolean"&&Number.isFinite(Number(x));
 const uniq=(x:string[])=>[...new Set(x.filter(Boolean))];
 const ol=(s:number):OutlookLabel=>s>=82?"STRONG BULLISH":s>=70?"BULLISH":s>=60?"CONSTRUCTIVE":s>=48?"NEUTRAL":s>=39?"CAUTIOUS":s>=28?"BEARISH":"STRONG BEARISH";
 const range=(center:number|null,width:number|null)=>center!=null&&width!=null&&center>0&&width>0?{low:Math.max(.01,center-width),high:center+width}:null;
@@ -105,7 +105,11 @@ export function classifyArchetype(context:any,raw:any,assetType:string){
 export function valuationScore(kind:string,context:any,raw:any){
   const m=context?.metrics||context?.basicMetrics||{};
   const pe=Number(m.peTTM??m.peNormalizedAnnual??m.peBasicExclExtraTTM??m.peBasicExclExtraAnnual);
-  const ps=Number(m.psTTM??m.psAnnual);
+  const reportedRevenue=Number(raw?.revenue);
+  const marketCapMillions=Number(context?.profile?.marketCapitalization);
+  const providerPs=Number(m.psTTM??m.psAnnual);
+  const derivedPs=finite(marketCapMillions)&&marketCapMillions>0&&finite(reportedRevenue)&&reportedRevenue>0?(marketCapMillions*1_000_000)/reportedRevenue:NaN;
+  const ps=finite(providerPs)&&providerPs>0?providerPs:derivedPs;
   const pb=Number(m.pbAnnual??m.pbQuarterly);
   const rev=num(raw.revGrowth,0);
   const fcf=Number(raw.fcf),op=Number(raw.opMargin);
@@ -120,9 +124,10 @@ export function valuationScore(kind:string,context:any,raw:any){
     return{score:50,label:"Unclear" as const,basis:"Cyclical/miner valuation requires normalized cycle earnings or NAV evidence; trailing multiples are intentionally not treated as fair value.",available:false};
   }
   if(kind==="hypergrowth"||kind==="ai_infrastructure"){
-    if(finite(ps)&&ps>0&&rev>0){const g=Math.max(5,rev);const ratio=ps/g*100;const s=clamp(82-ratio*1.8+(finite(op)&&op>10?5:0));return{score:Math.round(s),label:s>=72?"Deeply attractive" as const:s>=62?"Attractive" as const:s<38?"Expensive" as const:"Fair" as const,basis:"Growth-adjusted sales multiple (preliminary hypergrowth model).",available:true}}
+    if(finite(ps)&&ps>0&&rev>0){const g=Math.max(5,rev);const ratio=ps/g*100;const s=clamp(82-ratio*1.8+(finite(op)&&op>10?5:0));return{score:Math.round(s),label:s>=72?"Deeply attractive" as const:s>=62?"Attractive" as const:s<38?"Expensive" as const:"Fair" as const,basis:finite(providerPs)&&providerPs>0?"Growth-adjusted provider sales multiple (preliminary high-growth model).":"Growth-adjusted derived sales multiple using market capitalization and reported revenue (preliminary high-growth model).",available:true}}
     return{score:50,label:"Unclear" as const,basis:"Hypergrowth valuation needs a usable sales multiple and growth evidence.",available:false};
   }
+  if(kind==="infrastructure"&&finite(ps)&&ps>0&&rev>0){const g=Math.max(5,rev);const ratio=ps/g*100;const s=clamp(76-ratio*1.5+(finite(op)&&op>8?4:0));return{score:Math.round(s),label:s>=70?"Deeply attractive" as const:s>=60?"Attractive" as const:s<38?"Expensive" as const:"Fair" as const,basis:finite(providerPs)&&providerPs>0?"Provider sales multiple cross-check for capital-intensive infrastructure.":"Derived sales multiple using market capitalization and reported revenue for capital-intensive infrastructure.",available:true}}
   if(finite(pe)&&pe>0){
     const growthAdj=rev>0?Math.min(15,rev*.30):0;let s=pe<18?74:pe<28?64:pe<42?54:pe<65?43:31;s+=growthAdj;if(finite(fcf)&&fcf<0)s-=8;
     s=clamp(s);return{score:Math.round(s),label:s>=74?"Deeply attractive" as const:s>=62?"Attractive" as const:s<40?"Expensive" as const:"Fair" as const,basis:"Growth-adjusted earnings multiple used as a preliminary cross-check; not a full DCF.",available:true};
@@ -189,7 +194,7 @@ export function buildInvestorDecision({market,company,context,institutional,owns
   const raw=company?.rawMetrics||{},assetType=String(market?.assetType||company?.assetType||"stock");
   const canonicalFactors=buildCanonicalFactors({market,company,context,institutional});
   const assetClass=canonicalFactors.assetClass;
-  const kind=canonicalFactors.archetype==="AI_INFRASTRUCTURE"?"ai_infrastructure":canonicalFactors.archetype==="SEMICONDUCTOR_CYCLICAL"?"cyclical":canonicalFactors.archetype==="BANK"?"bank":canonicalFactors.archetype==="INSURER"?"insurer":canonicalFactors.archetype==="BIOTECH_PREPROFIT"?"biotech":canonicalFactors.archetype==="MINER"?"miner":classifyArchetype(context,raw,assetType);
+  const kind=canonicalFactors.archetype==="AI_INFRASTRUCTURE"?"ai_infrastructure":canonicalFactors.archetype==="POWER_INFRASTRUCTURE"?"infrastructure":canonicalFactors.archetype==="SEMICONDUCTOR_CYCLICAL"?"cyclical":canonicalFactors.archetype==="BANK"?"bank":canonicalFactors.archetype==="INSURER"?"insurer":canonicalFactors.archetype==="BIOTECH_PREPROFIT"?"biotech":canonicalFactors.archetype==="MINER"?"miner":classifyArchetype(context,raw,assetType);
   const capitalIntensiveGrowth=kind==="ai_infrastructure";
   const financingRiskOnly=capitalIntensiveGrowth&&!company?.filingRisk;
   const base=canonicalFactors.business.score??num(company?.fundamentalSignal?.currentScore,50);

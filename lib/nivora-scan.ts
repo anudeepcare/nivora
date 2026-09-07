@@ -5,7 +5,7 @@ export type ScanGeometry={
   rr:number|null;geometryValid:boolean;geometryReason?:string;
 };
 
-const finite=(x:any)=>Number.isFinite(Number(x));
+const finite=(x:any)=>x!==null&&x!==undefined&&x!==""&&typeof x!=="boolean"&&Number.isFinite(Number(x));
 const round=(x:number,d=2)=>Number(x.toFixed(d));
 
 export function validateLongGeometry({entryLow,entryHigh,target1,target2,stop}:Omit<ScanGeometry,"rr"|"geometryValid"|"geometryReason">):ScanGeometry{
