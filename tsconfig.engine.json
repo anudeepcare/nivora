@@ -110,6 +110,7 @@
     "lib/auryn/v8/version.ts",
     "lib/auryn/v8/reality-audit.ts",
     "lib/auryn/v82/security-master.ts",
-    "lib/auryn/v82/provider-coverage.ts"
+    "lib/auryn/v82/provider-coverage.ts",
+    "lib/auryn/v83/audit-helpers.ts"
   ]
 }

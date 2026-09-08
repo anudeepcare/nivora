@@ -1,3 +1,18 @@
+# AURYN V8.3 — Canonical State & Audit Scalability
+
+AURYN V8.3 hardens the 500-symbol live audit and canonical Market Truth checks. Nullable prices remain null instead of being coerced to zero; provider 429/rate-limit responses are preserved as transient retry states; the audit obeys `Retry-After`/backoff; and real canonical/analyze price mismatches remain hard criticals.
+
+Run after deployment:
+
+```bash
+AURYN_BASE_URL=https://getauryn.vercel.app npm run audit:v83-live
+AURYN_BASE_URL=https://getauryn.vercel.app npm run audit:v83-live -- --limit=500 | tee audit-500-v83.txt
+```
+
+See `AURYN_V8_3_RELEASE.md`.
+
+---
+
 # AURYN V8.2 — Security Master & Provider Coverage
 
 AURYN V8.2 adds a deterministic Security Master and explicit provider-coverage quarantine on top of V8.1 Market Truth. Broad 500-symbol audits now separate supported common-equity analysis from warrants, rights, preferreds, units and temporary securities; expected provider/history gaps no longer masquerade as generic server failures; true canonical/analyze price mismatches remain hard criticals.

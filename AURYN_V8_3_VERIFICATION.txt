@@ -1,0 +1,16 @@
+AURYN V8.3 — Canonical State & Audit Scalability
+
+Fresh source-tree verification before packaging:
+- Full regression suite: 524/524 PASS
+- Fixed 100-ticker offline Reality Audit: 100/100 PASS
+- V65 production/dead-code audit: PASS
+- Next production build attempt: NOT EXECUTED successfully in sandbox because `next` is not installed (`sh: next: not found`). Run `npm ci && npm test && npm run audit:v65 && npm run build` in Vercel/normal CI.
+
+V8.3 hardening:
+- null/undefined audit prices no longer coerce to numeric 0
+- blocked Market Truth is only critical when a real finite decisionPrice leaks
+- canonical/analyze price mismatch remains hard critical
+- upstream provider 429 becomes PROVIDER_RATE_LIMITED / HTTP 429, not missing history
+- live audit retries 429 using Retry-After/backoff
+- rate-limit retries are reported separately from critical failures
+- quarantine states remain separate from critical reliability defects
