@@ -304,3 +304,25 @@ See:
 - Replaced double-ring help icons with one plain inline i glyph.
 - Desktop help opens beside the clicked metric; mobile uses a bounded bottom sheet.
 - Buy qualification now explains score, threshold, and exactly which gate is below requirement.
+## V9.2 — Historical Data Backfill
+Normalize recorded provider payloads:
+```bash
+npm run normalize:v92 -- --input=/path/raw-provider-bundle.json --output=/path/replay-bundle.json
+```
+
+Fetch a real price + SEC backfill (requires `TWELVE_DATA_API_KEY` and `SEC_USER_AGENT`):
+```bash
+npm run backfill:v92 -- --symbols=/path/security-master.json --start-date=2016-01-01 --end-date=2026-09-08 --benchmark=SPY --output=/path/auryn-v92-replay.json
+```
+
+Audit a replay bundle:
+```bash
+npm run audit:v92-data -- --input=/path/auryn-v92-replay.json --min-symbol-coverage=95 --min-years=5 --require-decision-grade
+```
+
+Master release gate:
+```bash
+npm run gate:v92
+AURYN_V92_REPLAY_BUNDLE=/path/auryn-v92-replay.json npm run gate:v92 -- --require-data
+```
+The second command is the mandatory gate before V9.3. V9.2 never promotes research signals into the production CIO automatically.

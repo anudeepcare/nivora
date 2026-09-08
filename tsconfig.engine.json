@@ -132,6 +132,11 @@
     "lib/auryn/v91/transforms.ts",
     "lib/auryn/v91/contexts.ts",
     "lib/auryn/v91/factory.ts",
-    "lib/auryn/v91/materialize.ts"
+    "lib/auryn/v91/materialize.ts",
+    "lib/auryn/v92/domain.ts",
+    "lib/auryn/v92/twelve-data.ts",
+    "lib/auryn/v92/sec-companyfacts.ts",
+    "lib/auryn/v92/assemble.ts",
+    "lib/auryn/v92/integrity.ts"
   ]
 }

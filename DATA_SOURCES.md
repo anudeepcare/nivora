@@ -16,3 +16,9 @@ NIVORA keeps providers behind server routes so a provider can be changed without
 
 ## Options / Gamma — MarketData.app
 Server-side only via `MARKETDATA_TOKEN`. V22 fetches a standard option chain lazily when the Options tab is opened, caches it for six hours, and derives OI/gamma positioning proxies. Free/trial data is at least 24 hours delayed.
+
+## V9.2 historical research backfill
+- **Twelve Data `time_series`**: adjusted daily OHLCV. V9.2 requests explicit `start_date`, `end_date`, `interval=1day`, and `adjust=all`; provider payloads are normalized before V9.1 sees them.
+- **SEC `data.sec.gov/api/xbrl/companyfacts`**: historical financial-statement facts. AURYN uses the SEC filing date (`filed`) as the point-in-time availability boundary and keeps the economic period end separate.
+- **Historical universe / delistings**: must be supplied explicitly. Current-constituent lists are not treated as survivorship-safe history.
+- **Optional research families** (earnings revisions, macro vintages, options, news/catalysts): remain missing until a provider can supply verifiable historical availability timestamps.
