@@ -1,3 +1,22 @@
+# AURYN V9.1 — Historical Observation Factory
+
+V9.1 creates compact point-in-time historical **base observations**, then materializes deterministic **candidate shards** for the V9 Feature Tournament. It enforces adjusted-price, `availableAt`, survivorship/universe and delisting-return quality rules before historical evidence can be treated as decision-grade.
+
+```bash
+# 1) Replay historical data into compact base observations
+npm run observations:v91 -- --input=/absolute/path/replay-bundle.json --output=/absolute/path/base-observations.jsonl
+
+# 2) Materialize a bounded V9 candidate shard
+npm run materialize:v91 -- --base=/absolute/path/base-observations.jsonl --output=/absolute/path/feature-observations.jsonl --candidate-start=0 --candidate-limit=500
+
+# 3) Run the V9 tournament on that shard
+npm run research:v9 -- --observations=/absolute/path/feature-observations.jsonl
+```
+
+The compact design avoids expanding 46,464 hypotheses across every stock/date into billions of stored rows. Missing historical evidence stays missing, and no observation/tournament command changes production CIO weights or broker permissions. See `AURYN_V9_1_RELEASE.md` and `docs/V9_1_HISTORICAL_REPLAY_CONTRACT.md`.
+
+---
+
 # AURYN V9 — Research Lab & Feature Tournament
 
 AURYN V9 adds an isolated research plane on top of V8.4. It generates 46,464 candidate feature hypotheses and subjects historical observations to chronological out-of-sample, transaction-cost, regime-stability and false-discovery gates. Research candidates cannot silently mutate the production CIO or broker path.

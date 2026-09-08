@@ -12,8 +12,9 @@ if(!observationsPath){
  process.exit(0);
 }
 const full=path.resolve(observationsPath);
-const parsed=JSON.parse(fs.readFileSync(full,'utf8'));
-if(!Array.isArray(parsed))throw new Error('Observation file must contain a JSON array.');
+const text=fs.readFileSync(full,'utf8').trim();
+const parsed=!text?[]:text.startsWith('[')?JSON.parse(text):text.split(/\r?\n/).filter(Boolean).map(line=>JSON.parse(line));
+if(!Array.isArray(parsed))throw new Error('Observation file must contain a JSON array or JSONL rows.');
 const ids=[...new Set(parsed.map(x=>String(x.featureId||'')).filter(Boolean))];
 const catalogIds=new Set(generateFeatureCatalog().map(x=>x.id));
 const unknown=ids.filter(id=>!catalogIds.has(id));

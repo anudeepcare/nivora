@@ -122,6 +122,16 @@
     "lib/auryn/v9/evaluation.ts",
     "lib/auryn/v9/promotion.ts",
     "lib/auryn/v9/tournament.ts",
-    "lib/auryn/v9/production-registry.ts"
+    "lib/auryn/v9/production-registry.ts",
+    "lib/auryn/v91/version.ts",
+    "lib/auryn/v91/domain.ts",
+    "lib/auryn/v91/quality.ts",
+    "lib/auryn/v91/point-in-time.ts",
+    "lib/auryn/v91/outcomes.ts",
+    "lib/auryn/v91/base-metrics.ts",
+    "lib/auryn/v91/transforms.ts",
+    "lib/auryn/v91/contexts.ts",
+    "lib/auryn/v91/factory.ts",
+    "lib/auryn/v91/materialize.ts"
   ]
 }

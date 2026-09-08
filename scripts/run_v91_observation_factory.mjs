@@ -1,0 +1,20 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
+const valueArg=(name)=>{const p=`--${name}=`;const a=process.argv.find(x=>x.startsWith(p));return a?a.slice(p.length):'';};
+const inputPath=valueArg('input')||process.env.AURYN_V91_REPLAY_BUNDLE||'';
+const outputPath=valueArg('output')||process.env.AURYN_V91_BASE_OBSERVATIONS||'';
+if(!inputPath||!outputPath)throw new Error('Usage: npm run observations:v91 -- --input=/path/replay-bundle.json --output=/path/base-observations.jsonl');
+const {buildHistoricalBaseObservations}=await import('../.engine-test/auryn/v91/factory.js');
+const {AURYN_V91_OBSERVATION_VERSION}=await import('../.engine-test/auryn/v91/version.js');
+const bundle=JSON.parse(fs.readFileSync(path.resolve(inputPath),'utf8'));
+const cadence=(valueArg('cadence')||'WEEKLY').toUpperCase();
+const minHistoryRaw=Number(valueArg('min-history')||252);
+const costRaw=Number(valueArg('default-cost-bps')||10);
+const maxSymbolsRaw=valueArg('max-symbols')?Number(valueArg('max-symbols')):undefined;
+const result=buildHistoricalBaseObservations(bundle,{cadence,minHistoryBars:minHistoryRaw,defaultCostBps:costRaw,maxSymbols:maxSymbolsRaw,startDate:valueArg('start-date')||undefined,endDate:valueArg('end-date')||undefined});
+const out=path.resolve(outputPath);fs.mkdirSync(path.dirname(out),{recursive:true});
+const jsonl=result.baseObservations.map(x=>JSON.stringify(x)).join('\n');fs.writeFileSync(out,jsonl+(jsonl?'\n':''));
+const manifestPath=valueArg('manifest')?path.resolve(valueArg('manifest')):`${out}.manifest.json`;
+fs.writeFileSync(manifestPath,JSON.stringify(result.manifest,null,2)+'\n');
+console.log(JSON.stringify({version:AURYN_V91_OBSERVATION_VERSION,state:'BASE_OBSERVATIONS_COMPLETE',output:out,manifest:manifestPath,baseObservations:result.baseObservations.length,quality:result.manifest.quality,survivorshipSafe:result.manifest.survivorshipSafe,note:'Compact point-in-time base observations only. No production weights or broker permissions are changed.'},null,2));

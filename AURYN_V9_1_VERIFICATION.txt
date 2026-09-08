@@ -1,0 +1,24 @@
+AURYN V9.1 HISTORICAL OBSERVATION FACTORY — RELEASE VERIFICATION
+Date: 2026-09-08
+
+Source-tree gates (fresh):
+- npm test: PASS — 575/575
+- npm run test:v91-core: PASS — 31/31
+- npm run test:v9-core: PASS — 9/9
+- npm run audit:v8-reality: PASS — 100/100
+- npm run audit:v65: PASS
+- npm run research:v9: PASS — CATALOG_ONLY, 46,464 deterministic candidates
+
+End-to-end synthetic pipeline smoke (wiring only, not alpha evidence):
+- Current synthetic replay fixture -> base observations: 148 rows, DECISION_GRADE fixture
+- Candidate shard (50 candidates) -> feature observations: 2,911 rows
+- V9 tournament: completed, no unknown catalog features, 0 production candidates
+
+Build environment note:
+- npm run build cannot execute in this sandbox because the Next.js binary/dependencies are not installed here (`next: not found`).
+- Vercel / an environment with npm dependencies installed remains the production Next.js build gate.
+
+Production safety:
+- V9.1 is research-only.
+- No Market Truth, CIO weight, execution plan, broker permission, or production feature registry is automatically modified.
+- Historical data must be supplied as a normalized point-in-time replay bundle; V9.1 does not fabricate or download licensed history by itself.
