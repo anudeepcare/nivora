@@ -22,9 +22,9 @@ test('V6 separates current evidence confidence from historical model proof',()=>
   assert.match(x.decisionStrength.note,/not.*probability/i);
 });
 
-test('V7 stock hero preserves V6 model proof while adding canonical trust without probability claims',()=>{
+test('V8 stock hero preserves V6 model proof while adding reality-audited trust without probability claims',()=>{
   const src=fs.readFileSync('components/stock/v5/StockV5Decision.tsx','utf8');
-  assert.match(src,/AURYN V7/);
+  assert.match(src,/AURYN V8/);
   assert.match(src,/EVIDENCE CONFIDENCE/);
   assert.match(src,/MODEL PROOF/);
   assert.match(src,/SYSTEM TRUST/);

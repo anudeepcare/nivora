@@ -20,9 +20,9 @@ test("one institutional brain exposes beginner pro and extreme pro depth inside 
   for(const x of ["Beginner","Pro","Extreme Pro"])assert.match(decision,new RegExp(`>${x}<`));
 });
 
-test("decision summary is V7 trust-first with multiple horizons and evidence confidence not probability",()=>{
+test("decision summary is V8 reality-audited with multiple horizons and evidence confidence not probability",()=>{
   const s=read("components/stock/v5/StockV5Decision.tsx");
-  assert.match(s,/AURYN V7 · TRUST & PRECISION/);
+  assert.match(s,/AURYN V8 · REALITY AUDITED/);
   assert.match(s,/EVIDENCE CONFIDENCE/);
   assert.match(s,/NOW/);
   assert.match(s,/SWING/);

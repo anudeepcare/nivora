@@ -1,3 +1,15 @@
+# AURYN V8 — Reality Audit & CIO Consistency
+
+AURYN V8 hardens the V7 Trust & Precision OS with a fixed **100-ticker Reality Audit**, evidence-aware business/lifecycle classification, deterministic CIO horizon arbitration, and clearer strength-vs-trend semantics. It preserves the existing Market Truth, one canonical decision, one ExecutionPlan, Setup Map, Canonical Trust Audit, Portfolio CIO, Alpaca Paper and Model Proof architecture.
+
+The V8 offline release gate must classify and route exactly 100 real tickers with zero critical violations. Missing lifecycle evidence now returns `UNKNOWN` instead of silently becoming `MATURITY`; digital-health platform businesses such as HIMS/TDOC/DOCS use a dedicated archetype; frontier satellite companies cannot be treated as mature without positive evidence; and broad bearish horizon consensus cannot hide behind a HOLD headline just because valuation is unavailable.
+
+Normal UI separates **Thesis Strength** from **Thesis Trend** and **Moat Strength** from **Moat Trend**. Evidence Confidence remains input quality, not probability of profit. Live-money autonomous execution remains disabled; Alpaca Paper remains the execution proving ground.
+
+See `AURYN_V8_RELEASE.md`, `docs/superpowers/specs/2026-09-07-auryn-v8-reality-audit-cio-consistency-design.md`, and `docs/V8_LIVE_100_AUDIT.md`.
+
+---
+
 # AURYN V7 — Trust & Precision OS
 
 AURYN V7 is the 9.5-target trust-and-precision hardening layer on top of V6 Proof OS. The production chain is:

@@ -1,0 +1,33 @@
+AURYN V8 — Reality Audit & CIO Consistency
+Verification date: 2026-09-07
+Engine: auryn-v8-reality-audit-cio-1
+
+SOURCE TREE VERIFICATION
+- npm test: PASS — 501/501 tests
+- npm run audit:v8-reality: PASS — 100/100 golden tickers, zero critical violations
+- npm run audit:v65: PASS — V65 dead-code audit PASS
+- npm run build: NOT EXECUTED SUCCESSFULLY IN THIS SANDBOX
+  Reason: project dependencies are not installed here; `next` is unavailable (`sh: 1: next: not found`).
+  Required deployment gate: npm ci && npm test && npm run audit:v8-reality && npm run audit:v65 && npm run build
+
+V8 REALITY CONTRACT
+- Exactly 100 unique offline golden-universe tickers.
+- DIGITAL_HEALTH_PLATFORM prevents HIMS/TDOC/DOCS-style companies from defaulting to BIOTECH_PHARMA.
+- Missing lifecycle evidence returns UNKNOWN instead of silently defaulting to MATURITY.
+- SPACE_SATELLITE frontier names require positive evidence before MATURITY is allowed.
+- REIT/bank/insurer legal/business identity takes precedence over generic technology/infrastructure wording.
+- Analyst model and valuation method must be compatible with archetype.
+- CIO arbitration reconciles horizon consensus with primary and owner actions.
+- Weak thesis strength and stable thesis direction are presented as separate concepts.
+- Missing valuation remains unavailable rather than bearish zero.
+- V7 Market Truth, Canonical Trust Audit, one ExecutionPlan, Setup Map, paper-broker fail-closed behavior and Model Proof are preserved.
+
+LIVE 100-TICKER AUDIT
+- NOT RUN IN THIS OFFLINE PACKAGING ENVIRONMENT.
+- Reason: deployment URL/provider credentials are intentionally not embedded in the source ZIP.
+- Runner included: npm run audit:v8-live
+- Instructions: docs/V8_LIVE_100_AUDIT.md
+- A live result is valid only for the deployment/timestamp where it actually runs.
+
+PACKAGE VERIFICATION
+The final ZIP is re-extracted and re-tested after packaging. See the release response for exact extracted-package results.

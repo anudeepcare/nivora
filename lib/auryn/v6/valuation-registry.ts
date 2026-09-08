@@ -4,7 +4,7 @@ export type ValuationMethod='DCF_FCF_EARNINGS'|'GROWTH_EV_SALES_FCF'|'CYCLE_NORM
 export interface ValuationMethodAssessment{method:ValuationMethod;state:'MEASURED'|'PARTIAL'|'UNAVAILABLE';score:number|null;decisionGrade:boolean;requiredInputs:string[];explanation:string;}
 
 const methodFor=(m:BusinessModel):ValuationMethod=>{
-  if(['SAAS_SOFTWARE','MARKETPLACE_ADTECH','FINTECH_PAYMENTS'].includes(m))return'GROWTH_EV_SALES_FCF';
+  if(['SAAS_SOFTWARE','MARKETPLACE_ADTECH','FINTECH_PAYMENTS','DIGITAL_HEALTH_PLATFORM'].includes(m))return'GROWTH_EV_SALES_FCF';
   if(m==='SEMICONDUCTOR_MEMORY_CYCLICAL')return'CYCLE_NORMALIZED';
   if(['AI_DATA_CENTER_INFRA','POWER_UTILITY_INFRA','NETWORKING_COMPUTE_INFRA'].includes(m))return'AI_INFRA_SOTP_CAPACITY';
   if(m==='SPACE_SATELLITE')return'FRONTIER_SCENARIO_RUNWAY';

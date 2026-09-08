@@ -16,8 +16,8 @@ test('StockClient builds and persists V7 canonical trust state',()=>{
  assert.match(stock,/canonicalDecision:v7Analysis\?serializeV7Decision\(v7Analysis\):null/);
 });
 
-test('decision hero identifies V7 and exposes trust only as useful reliability state',()=>{
- assert.match(hero,/AURYN V7 · TRUST & PRECISION/);
+test('decision hero identifies V8 and exposes trust only as useful reliability state',()=>{
+ assert.match(hero,/AURYN V8 · REALITY AUDITED/);
  assert.match(hero,/SYSTEM TRUST/);
  assert.doesNotMatch(hero,/ENGINE\s*VERSION/i);
 });

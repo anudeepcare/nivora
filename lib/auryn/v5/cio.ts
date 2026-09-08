@@ -47,9 +47,16 @@ export function resolveV5CioDecision({v4,technical,marketTruth}:{v4:AurynV4CoreA
     else if(nowPositive||swingPositive)primary='BUY';
     else primary='HOLD';
   }
+  const hActions:[Horizon,PrimaryInvestmentAction][]=[['NOW',marketTruth.priceSensitiveAllowed?nowAction:'HOLD'],['SWING',marketTruth.priceSensitiveAllowed?swingAction:'HOLD'],['SIX_TO_TWELVE_MONTHS',midAction],['THREE_TO_FIVE_YEARS',longHorizon]];
+  // Missing valuation caps bullish conviction, but it must never hide broad structural bearishness.
+  // If at least three horizons are REDUCE/SELL, including a long horizon, and the thesis itself is weak,
+  // the CIO resolves to REDUCE instead of presenting a contradictory HOLD headline.
+  const bearish=(a:PrimaryInvestmentAction)=>a==='REDUCE'||a==='SELL';
+  const bearishCount=hActions.filter(([,a])=>bearish(a)).length;
+  const longBearish=bearish(midAction)&&bearish(longHorizon);
+  if(bearishCount>=3&&longBearish&&thesis<50&&dir!=='STRENGTHENING')primary='REDUCE';
   let owner:PrimaryInvestmentAction=primary==='REDUCE'&&thesis<50?'REDUCE':'HOLD';
   if((primary==='BUY'||primary==='STRONG_BUY')&&thesis>=65&&dir!=='WEAKENING'&&(!finite(risk)||risk<88))owner='BUY';
   const summary=marketTruth.priceSensitiveAllowed?`${primary.replaceAll('_',' ')} reflects structural thesis, valuation state, timing and risk from one canonical snapshot.`:`Research view preserved, but execution is blocked until market price is independently verified.`;
-  const hActions:[Horizon,PrimaryInvestmentAction][]=[['NOW',marketTruth.priceSensitiveAllowed?nowAction:'HOLD'],['SWING',marketTruth.priceSensitiveAllowed?swingAction:'HOLD'],['SIX_TO_TWELVE_MONTHS',midAction],['THREE_TO_FIVE_YEARS',longHorizon]];
   return{primaryAction:primary,ownerAction:owner,horizonDecisions:hActions.map(([horizon,action])=>({horizon,action,confidence:v4.confidence,reasonCodes:[]})),summary,why:[`Thesis ${Math.round(thesis)}/100 and ${dir.toLowerCase().replaceAll('_',' ')}.`,val==null?'Valuation is not decision-grade, so new-money conviction is capped.':`Valuation evidence is ${Math.round(val)}/100.`,technical?`Technical strength ${Math.round(technical.technicalState.strength)}/100; entry quality ${Math.round(technical.technicalState.entryQuality)}/100.`:'Technical evidence is unavailable.'],watch:[finite(risk)&&risk>=75?'Risk pressure is elevated and reduces sizing/aggressiveness.':'Monitor thesis breakers rather than reacting to price noise alone.'],confidenceLabel:v4.confidence.label,confidenceScore:v4.confidence.score};
 }

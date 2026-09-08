@@ -24,6 +24,7 @@ export type BusinessModel=
   | "FINTECH_PAYMENTS"
   | "REIT"
   | "BIOTECH_PHARMA"
+  | "DIGITAL_HEALTH_PLATFORM"
   | "MEDTECH"
   | "ENERGY"
   | "INDUSTRIAL"
@@ -42,7 +43,8 @@ export type LifecycleStage=
   | "SCALE"
   | "COMPOUNDER"
   | "MATURITY"
-  | "DECLINE_OR_REINVENTION";
+  | "DECLINE_OR_REINVENTION"
+  | "UNKNOWN";
 
 export type CanonicalFactorKey=
   | "BUSINESS_QUALITY"

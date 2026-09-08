@@ -106,6 +106,8 @@
     "lib/auryn/v7/version.ts",
     "lib/auryn/v7/domain.ts",
     "lib/auryn/v7/analyze.ts",
-    "lib/auryn/v7/learning.ts"
+    "lib/auryn/v7/learning.ts",
+    "lib/auryn/v8/version.ts",
+    "lib/auryn/v8/reality-audit.ts"
   ]
 }
