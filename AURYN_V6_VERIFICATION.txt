@@ -1,0 +1,23 @@
+AURYN V6 — 9+ Proof OS verification
+Date: 2026-09-07
+Engine: auryn-v6-proof-os-1
+
+Source-tree verification:
+- npm test: PASS — 456/456 tests
+- npm run audit:v65: PASS
+
+First clean-package extraction verification:
+- npm test: PASS — 456/456 tests
+- npm run audit:v65: PASS
+- secret/cache artifact scan: PASS
+
+Build environment limitation:
+- npm run build could not complete in this sandbox because the project dependencies are not installed and the `next` binary is unavailable (`sh: next: not found`).
+- Run `npm ci && npm test && npm run audit:v65 && npm run build` in Vercel/normal CI before deployment.
+
+V6 safety/proof state:
+- Live-money autonomous execution remains disabled.
+- Alpaca Paper / shadow validation remain the execution proving ground.
+- Model Proof starts UNPROVEN until exact V6 archetype-scoped outcomes mature.
+- Evidence Confidence is not probability of profit.
+- Production weights do not self-modify and challenger promotion is not automatic.

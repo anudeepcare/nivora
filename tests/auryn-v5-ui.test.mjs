@@ -38,7 +38,7 @@ test('V5 stock surface never falls back to the legacy V4 hero or a second action
   const s=read('components/StockClient.tsx');
   assert.doesNotMatch(s,/v5Analysis\?\s*<StockV5Decision[\s\S]*:\s*<StockDecisionSummary/);
   assert.doesNotMatch(s,/v5Analysis\?\s*<ExecutionPlanPanel[\s\S]*:\s*priceSensitiveAllowed\s*&&\s*<StockActionPlan/);
-  assert.match(s,/V5 CANONICAL ANALYSIS/);
+  assert.match(s,/AURYN V6 CANONICAL ANALYSIS/);
 });
 
 test('Thesis normal UI exposes evidence confidence, not internal analyst model identifiers',()=>{

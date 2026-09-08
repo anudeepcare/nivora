@@ -21,6 +21,14 @@ export async function POST(req:Request){
       await Promise.resolve(db.from("nivora_v59_decision_snapshots").insert({symbol,observed_at:frozen.observedAt,price:frozen.price,engine_version:frozen.engineVersion,weights_version:frozen.weightsVersion,valuation_version:frozen.valuationVersion,today_policy_version:frozen.todayPolicyVersion,evidence_fingerprint:frozen.evidenceFingerprint,benchmark_symbol:frozen.benchmarkSymbol,sector_benchmark_symbol:frozen.sectorBenchmarkSymbol,decision:frozen.decision,evidence:frozen.evidence})).then(()=>undefined).catch(()=>undefined);
     }
   }
+  const canonicalDecision=body?.canonicalDecision;
+  if(canonicalDecision?.engineVersion&&canonicalDecision?.snapshotId&&symbol){
+    const fingerprint=`${canonicalDecision.snapshotId}:${canonicalDecision.primaryAction}:${canonicalDecision.evidenceConfidence?.score??"na"}`;
+    const{data:lastCanonical}=await db.from("nivora_v59_decision_snapshots").select("id,evidence_fingerprint").eq("symbol",symbol).eq("engine_version",String(canonicalDecision.engineVersion)).order("observed_at",{ascending:false}).limit(1).maybeSingle();
+    if(lastCanonical?.evidence_fingerprint!==fingerprint){
+      await db.from("nivora_v59_decision_snapshots").insert({symbol,observed_at:new Date().toISOString(),price:canonicalPrice,engine_version:canonicalDecision.engineVersion,weights_version:"auryn-v6-proof-weights-1",valuation_version:"auryn-v6-valuation-registry-1",today_policy_version:"auryn-v6-cio-1",evidence_fingerprint:fingerprint,benchmark_symbol:String(body?.evidence?.benchmark||"SPY"),sector_benchmark_symbol:body?.evidence?.sectorBenchmark||null,decision:canonicalDecision,evidence:{...(body.evidence||{}),canonicalSnapshotId:canonicalDecision.snapshotId}});
+    }
+  }
   return NextResponse.json({enabled:true,saved:true,engineVersion});
  }catch(e:any){return NextResponse.json({enabled:false,error:e?.message||"Validation snapshot failed"},{status:500})}
 }

@@ -1,4 +1,28 @@
-# AURYN V5.1 Pro Reliability Decision OS
+# AURYN V6 — 9+ Proof OS
+
+AURYN V6 adds institutional proof, model-health governance, multi-timeframe confirmation, archetype-specific valuation-method discipline and portfolio-CIO sizing on top of the V5.1 Market Truth / canonical Decision OS foundation.
+
+The production chain is:
+
+`Market Truth → Canonical Evidence → Specialist Engines → CIO Decision → One Execution Plan → Portfolio CIO → Paper Broker / Immutable Learning → Model Proof`.
+
+## V6 proof contract
+
+- Current **Evidence Confidence** is not probability of profit.
+- **Model Proof** is version-matched matured historical/forward evidence and begins `UNPROVEN`.
+- Proof is scoped by company archetype on the stock page so unrelated cohorts do not lend confidence.
+- Promotion requires sample size, positive benchmark-relative alpha, controlled drawdown, multi-regime evidence and a monotonic Strong Buy → Buy → Hold → Reduce → Sell action ladder.
+- Auto-promotion and self-tuning remain disabled.
+- Daily and weekly technical regimes are analyzed separately and reconciled explicitly.
+- Valuation method is selected by business model/lifecycle; missing valuation remains unavailable/partial rather than `0/100`.
+- Portfolio CIO may cap/block an ADD because of concentration/correlation while preserving the standalone company thesis.
+- The exact visible V6 decision/execution plan is frozen for learning; it is not reconstructed later from legacy fields.
+
+See `AURYN_V6_RELEASE.md` for the release contract and `docs/superpowers/specs/2026-09-07-auryn-v6-nine-plus-proof-os-design.md` for the architecture.
+
+---
+
+## V5.1 canonical foundation retained by V6
 
 AURYN V5.1 is a canonical investment-decision and paper-execution platform with a global reliability/formatting hardening pass. It preserves the proven Market Truth, portfolio, calibration and Alpaca-paper infrastructure, but replaces competing stock-page verdicts and independently calculated price levels with one immutable V5 analysis snapshot.
 

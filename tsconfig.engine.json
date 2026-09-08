@@ -91,6 +91,16 @@
     "lib/auryn/v5/execution-plan.ts",
     "lib/auryn/v5/cio.ts",
     "lib/auryn/v5/analyze.ts",
-    "lib/auryn/v5/reliability.ts"
+    "lib/auryn/v5/reliability.ts",
+    "lib/auryn/v6/version.ts",
+    "lib/auryn/v6/domain.ts",
+    "lib/auryn/v6/proof.ts",
+    "lib/auryn/v6/timeframes.ts",
+    "lib/auryn/v6/valuation-registry.ts",
+    "lib/auryn/v6/portfolio-cio.ts",
+    "lib/auryn/v6/analyze.ts",
+    "lib/auryn/v6/model-health.ts",
+    "lib/auryn/v6/learning.ts",
+    "lib/auryn/v6/portfolio-adapter.ts"
   ]
 }
