@@ -1,3 +1,18 @@
+# AURYN V8.4 — Live Session Alignment
+
+AURYN V8.4 makes live-market, regular-close, daily-analysis-anchor, decision and execution prices explicit by role and timestamp. It fixes the false live-session `canonical/analyze price gap` failures exposed by the 100-stock regular-market audit without weakening Market Truth or execution safety. It also removes provider partial daily candles from completed-bar technicals during market hours and replaces alphabetical 500-symbol sampling with deterministic diversified sampling.
+
+Run after deployment:
+
+```bash
+AURYN_BASE_URL=https://getauryn.vercel.app npm run audit:v84-live | tee audit-100-v84-live.txt
+AURYN_BASE_URL=https://getauryn.vercel.app npm run audit:v84-live -- --limit=500 | tee audit-500-v84-live.txt
+```
+
+See `AURYN_V8_4_RELEASE.md`.
+
+---
+
 # AURYN V8.3 — Canonical State & Audit Scalability
 
 AURYN V8.3 hardens the 500-symbol live audit and canonical Market Truth checks. Nullable prices remain null instead of being coerced to zero; provider 429/rate-limit responses are preserved as transient retry states; the audit obeys `Retry-After`/backoff; and real canonical/analyze price mismatches remain hard criticals.

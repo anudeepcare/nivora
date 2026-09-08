@@ -63,6 +63,19 @@ export function marketCalendarAt(at=new Date()){
   return{...p,date:key,session,calendarState,isTradingDay,regularCloseMinutes:closeMinutes};
 }
 
+
+export function lastCompletedRegularSessionDate(at=new Date()):string|null{
+  const p=nyParts(at),cal=marketCalendarAt(at),mins=p.hour*60+p.minute;
+  if(cal.isTradingDay&&mins>=cal.regularCloseMinutes)return cal.date;
+  const cursor=new Date(Date.UTC(p.year,p.month-1,p.day));
+  for(let i=0;i<14;i++){
+    cursor.setUTCDate(cursor.getUTCDate()-1);
+    const y=cursor.getUTCFullYear(),m=cursor.getUTCMonth()+1,d=cursor.getUTCDate(),key=iso(y,m,d),w=dow(y,m,d);
+    if(w!==0&&w!==6&&!holidayDatesForYear(y).has(key))return key;
+  }
+  return null;
+}
+
 export function marketSessionAt(at=new Date()):MarketSession{return marketCalendarAt(at).session;}
 
 export function quoteFreshness(ageSeconds:number,session:MarketSession):QuoteFreshness{

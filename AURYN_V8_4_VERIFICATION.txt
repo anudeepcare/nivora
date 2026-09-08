@@ -1,0 +1,17 @@
+AURYN V8.4 — Live Session Alignment verification record
+Date: 2026-09-08
+
+Source-tree verification before packaging:
+- Focused V8.4 tests: 11/11 PASS
+- Full regression suite: 535/535 PASS
+- Offline V8 Reality Audit: 100/100 PASS
+- V65 production/dead-code audit: PASS
+- TypeScript engine compile: PASS
+- Next.js production build: NOT EXECUTED in this sandbox because the `next` binary/dependencies are not installed (`next: not found`). Vercel/normal CI remains the build gate.
+
+Key V8.4 invariants:
+- live-vs-completed-daily-bar movement is not treated as corruption during an open session
+- closed-session regular close vs completed-bar mismatch remains critical
+- execution price exists only for independently verified execution-tradable live Market Truth
+- daily technicals exclude today's partial daily candle during PRE_MARKET/REGULAR
+- expanded 500-symbol audit selection is deterministic and diversified rather than alphabetical

@@ -1,7 +1,9 @@
 import * as goldenModule from '../.engine-test/auryn/v8/reality-audit.js';
 import * as auditHelperModule from '../.engine-test/auryn/v83/audit-helpers.js';
+import * as priceAlignmentModule from '../.engine-test/auryn/v84/price-alignment.js';
 const {V8_GOLDEN_UNIVERSE}=goldenModule;
-const {finiteNumberOrNull,blockedDecisionPriceLeak,canonicalAnalyzeGapPct}=auditHelperModule;
+const {finiteNumberOrNull,blockedDecisionPriceLeak}=auditHelperModule;
+const {evaluatePriceAlignment}=priceAlignmentModule;
 const base=String(process.env.AURYN_BASE_URL||'').replace(/\/$/,'');
 if(!base){console.error('AURYN_BASE_URL is required, e.g. https://your-app.vercel.app');process.exitCode=1;process.exit();}
 const token=process.env.AURYN_AUDIT_TOKEN||'';
@@ -53,7 +55,8 @@ const rows=[];let critical=0;let symbols=[];
 try{symbols=await loadSymbols();}catch(e){console.error(`critical: unable to load live audit universe: ${e?.message||e}`);process.exitCode=1;process.exit();}
 if(symbols.length<requestedLimit){console.error(`critical: requested ${requestedLimit} live symbols but only ${symbols.length} supported symbols are available`);process.exitCode=1;process.exit();}
 
-let researchSafe=0,executionReady=0,officialClose=0,blocked=0,quarantined=0;
+let researchSafe=0,executionReady=0,officialClose=0,blocked=0,quarantined=0,intradayDivergences=0,alignmentWarnings=0;
+const priceStates={};const executionBlockReasons={};
 for(let i=0;i<symbols.length;i++){
   const symbol=symbols[i];const issues=[];let quarantineCode=null;
   try{
@@ -84,6 +87,11 @@ for(let i=0;i<symbols.length;i++){
     if(researchAllowed)researchSafe++; else blocked++;
     if(executionTradable)executionReady++;
     if(priceState==='OFFICIAL_CLOSE')officialClose++;
+    priceStates[priceState]=(priceStates[priceState]||0)+1;
+    if(!executionTradable){
+      const key=String(snap?.reason||priceState||'UNKNOWN').slice(0,180);
+      executionBlockReasons[key]=(executionBlockReasons[key]||0)+1;
+    }
 
     if(researchAllowed&&decisionPrice===null)issues.push('critical: priceSensitiveAllowed without finite decisionPrice');
     if(blockedDecisionPriceLeak(researchAllowed,snap?.decisionPrice))issues.push('critical: blocked Market Truth still exposes a finite decisionPrice');
@@ -92,10 +100,18 @@ for(let i=0;i<symbols.length;i++){
     if(executionTradable&&providerGap!==null&&providerGap>1)issues.push(`critical: execution-tradable snapshot despite provider gap ${providerGap.toFixed(2)}%`);
 
     if(!quarantineCode){
-      const analyzePrice=finiteNumberOrNull(analyze?.price);
-      if(analyzePrice===null)issues.push('critical: analyze price unavailable');
-      const gap=canonicalAnalyzeGapPct(decisionPrice,analyzePrice);
-      if(researchAllowed&&gap!==null&&gap>3)issues.push(`critical: canonical/analyze price gap ${gap.toFixed(2)}%`);
+      const analysisAnchorPrice=finiteNumberOrNull(analyze?.analysisAnchorPrice??analyze?.price);
+      if(analysisAnchorPrice===null)issues.push('critical: analysis anchor price unavailable');
+      const alignment=evaluatePriceAlignment({
+        session:String(snap?.session||'CLOSED'),priceState,priceUse:String(snap?.priceUse||'BLOCKED'),researchAllowed,
+        decisionPrice:snap?.decisionPrice,decisionPriceRole:String(snap?.decisionPriceRole||'NONE'),executionTradable,executionPrice:snap?.executionPrice,
+        regularClosePrice:snap?.regularClosePrice??snap?.regularClose,regularCloseAsOf:snap?.regularCloseAsOf??null,
+        analysisAnchorPrice,analysisAnchorAsOf:analyze?.analysisAnchorAsOf??analyze?.freshness?.priceAt??null,
+        analysisAnchorRole:analyze?.analysisAnchorRole??null
+      });
+      for(const issue of alignment.criticalIssues)issues.push(`critical: ${issue}`);
+      alignmentWarnings+=alignment.warnings.length;
+      if(alignment.intradayMovePct!=null&&alignment.intradayMovePct>3)intradayDivergences++;
     }
   }catch(e){issues.push(`critical: ${e?.message||e}`);}
   const criticalIssues=issues.filter(x=>/^critical:/i.test(x));critical+=criticalIssues.length;
@@ -103,5 +119,5 @@ for(let i=0;i<symbols.length;i++){
   console.log(`${String(i+1).padStart(3,' ')}/${symbols.length} ${symbol}: ${issues.length?issues.join(' | '):'PASS'}`);
 }
 const passed=rows.filter(r=>r.status==='PASS').length;
-console.log(JSON.stringify({requested:requestedLimit,total:rows.length,passed,quarantined,critical,researchSafe,executionReady,officialClose,blocked,rateLimitRetries,rows},null,2));
+console.log(JSON.stringify({requested:requestedLimit,total:rows.length,passed,quarantined,critical,researchSafe,executionReady,officialClose,blocked,rateLimitRetries,intradayDivergences,alignmentWarnings,priceStates,executionBlockReasons,rows},null,2));
 if(critical>0)process.exitCode=1;
