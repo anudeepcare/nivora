@@ -114,6 +114,14 @@
     "lib/auryn/v83/audit-helpers.ts",
     "lib/auryn/v84/price-alignment.ts",
     "lib/auryn/v84/audit-sampling.ts",
-    "lib/auryn/v84/completed-bars.ts"
+    "lib/auryn/v84/completed-bars.ts",
+    "lib/auryn/v9/version.ts",
+    "lib/auryn/v9/domain.ts",
+    "lib/auryn/v9/feature-registry.ts",
+    "lib/auryn/v9/statistics.ts",
+    "lib/auryn/v9/evaluation.ts",
+    "lib/auryn/v9/promotion.ts",
+    "lib/auryn/v9/tournament.ts",
+    "lib/auryn/v9/production-registry.ts"
   ]
 }

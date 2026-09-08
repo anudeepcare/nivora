@@ -1,0 +1,8 @@
+{
+  "version": "v9-initial-empty-production-registry",
+  "featureIds": [],
+  "featureCount": 0,
+  "autoPromoted": false,
+  "createdFromExplicitApprovals": true,
+  "note": "V9 launches with no research feature auto-promoted into the production CIO."
+}

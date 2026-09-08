@@ -1,0 +1,19 @@
+AURYN V9 — Research Lab & Feature Tournament
+
+Release verification on source tree:
+- Full regression suite: 544/544 PASS
+- V8 offline Reality Audit: 100/100 PASS
+- V65 production/dead-code audit: PASS
+- V9 candidate catalog: 46,464 deterministic hypotheses
+- V9 research state without observation dataset: CATALOG_ONLY / no alpha claim
+- Production research feature registry: empty by default; auto-promotion OFF
+
+Production build attempt:
+- npm run build: NOT EXECUTED SUCCESSFULLY in this sandbox
+- reason: Next.js executable is not installed here (next: not found)
+- required Vercel/CI gate: npm ci && npm test && npm run audit:v65 && npm run build
+
+Safety:
+- V8.4 Market Truth / execution gates remain unchanged.
+- V9 does not automatically mutate production CIO weights.
+- PRODUCTION_CANDIDATE is not PROMOTED without explicit approval/versioning.

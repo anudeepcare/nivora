@@ -1,3 +1,17 @@
+# AURYN V9 — Research Lab & Feature Tournament
+
+AURYN V9 adds an isolated research plane on top of V8.4. It generates 46,464 candidate feature hypotheses and subjects historical observations to chronological out-of-sample, transaction-cost, regime-stability and false-discovery gates. Research candidates cannot silently mutate the production CIO or broker path.
+
+```bash
+npm run research:v9
+# or with point-in-time observations:
+AURYN_V9_OBSERVATIONS=/path/to/observations.json npm run research:v9
+```
+
+Open `/research-lab` for the research catalog and promotion discipline. See `AURYN_V9_RELEASE.md` and `docs/V9_RESEARCH_DATA_CONTRACT.md`.
+
+---
+
 # AURYN V8.4 — Live Session Alignment
 
 AURYN V8.4 makes live-market, regular-close, daily-analysis-anchor, decision and execution prices explicit by role and timestamp. It fixes the false live-session `canonical/analyze price gap` failures exposed by the 100-stock regular-market audit without weakening Market Truth or execution safety. It also removes provider partial daily candles from completed-bar technicals during market hours and replaces alphabetical 500-symbol sampling with deterministic diversified sampling.

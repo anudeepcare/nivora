@@ -12,6 +12,7 @@ const fingerprint = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i
 function buildCanonicalMarketSnapshot(input) {
     const asOf = input.asOf ?? new Date(), symbol = String(input.symbol || "").toUpperCase();
     const calendar = (0, nivora_market_session_1.marketCalendarAt)(asOf), regularClose = finitePrice(input.regularClose), maxGap = input.maxDisagreementPct ?? 1;
+    const regularCloseAsOf = input.regularCloseTimestamp ?? null;
     const integrity = (0, nivora_provider_consensus_1.assessQuoteIntegrity)(input.primary ?? null, input.secondary ?? null, maxGap);
     const sources = [input.primary, input.secondary].filter((x) => Boolean(x)).map(x => ({ provider: x.provider, price: x.price, providerTimestamp: x.providerTimestamp, ageSeconds: x.ageSeconds, freshness: x.freshness }));
     const rawProviderGapPct = integrity.disagreementPct == null ? null : round4(integrity.disagreementPct);
@@ -19,7 +20,9 @@ function buildCanonicalMarketSnapshot(input) {
     // Closed-market quotes can refer to different stale/extended contexts, so keep that gap diagnostic-only.
     const providerAgreementPct = (calendar.session === "REGULAR" || calendar.session === "PRE_MARKET" || calendar.session === "AFTER_HOURS") ? rawProviderGapPct : null;
     const contextProviderGapPct = rawProviderGapPct;
-    let priceState = "UNAVAILABLE", decisionPrice = null, displayPrice = null, extendedPrice = null, decisionPriceAsOf = null, priceSensitiveAllowed = false, executionTradable = false;
+    let priceState = "UNAVAILABLE", decisionPrice = null, displayPrice = null, extendedPrice = null, decisionPriceAsOf = null;
+    let liveMarketPrice = null, liveMarketPriceAsOf = null, executionPrice = null, executionPriceAsOf = null;
+    let decisionPriceRole = "NONE", priceSensitiveAllowed = false, executionTradable = false;
     let priceUse = "BLOCKED";
     let reason = "No verified market price is available.";
     if (calendar.session === "REGULAR" || calendar.session === "PRE_MARKET" || calendar.session === "AFTER_HOURS") {
@@ -28,8 +31,13 @@ function buildCanonicalMarketSnapshot(input) {
             decisionPrice = integrity.chosen.price;
             displayPrice = decisionPrice;
             decisionPriceAsOf = integrity.chosen.providerTimestamp ?? asOf.toISOString();
+            decisionPriceRole = "LIVE_MARKET";
+            liveMarketPrice = decisionPrice;
+            liveMarketPriceAsOf = decisionPriceAsOf;
             priceSensitiveAllowed = true;
             executionTradable = true;
+            executionPrice = decisionPrice;
+            executionPriceAsOf = decisionPriceAsOf;
             priceUse = "LIVE_EXECUTION";
             reason = "Independent fresh providers agree within the market-truth tolerance.";
         }
@@ -44,6 +52,9 @@ function buildCanonicalMarketSnapshot(input) {
                 decisionPrice = integrity.chosen.price;
                 displayPrice = decisionPrice;
                 decisionPriceAsOf = integrity.chosen.providerTimestamp ?? asOf.toISOString();
+                decisionPriceRole = "LIVE_MARKET";
+                liveMarketPrice = decisionPrice;
+                liveMarketPriceAsOf = decisionPriceAsOf;
                 priceSensitiveAllowed = true;
                 executionTradable = false;
                 priceUse = "RESEARCH_LIVE_SINGLE_SOURCE";
@@ -63,7 +74,8 @@ function buildCanonicalMarketSnapshot(input) {
         priceState = "OFFICIAL_CLOSE";
         decisionPrice = regularClose;
         displayPrice = regularClose;
-        decisionPriceAsOf = input.regularCloseTimestamp ?? null;
+        decisionPriceAsOf = regularCloseAsOf;
+        decisionPriceRole = "REGULAR_CLOSE";
         priceSensitiveAllowed = true;
         executionTradable = false;
         priceUse = "RESEARCH_CLOSE";
@@ -75,6 +87,6 @@ function buildCanonicalMarketSnapshot(input) {
         priceState = sources.length ? "UNVERIFIED" : "UNAVAILABLE";
         reason = "The market is closed and a verified regular close is unavailable; price-sensitive analysis is blocked.";
     }
-    const snapshotId = `${symbol}-${calendar.date}-${fingerprint(JSON.stringify({ priceState, priceUse, decisionPrice, regularClose, providerAgreementPct, sources: sources.map(s => [s.provider, s.price, s.providerTimestamp]) }))}`;
-    return { snapshotId, symbol, asOf: asOf.toISOString(), session: calendar.session, calendarState: calendar.calendarState, priceState, decisionPrice, displayPrice, regularClose, extendedPrice, decisionPriceAsOf, providerAgreementPct, contextProviderGapPct, sources, priceSensitiveAllowed, decisionAllowed: priceSensitiveAllowed, executionTradable, priceUse, reason };
+    const snapshotId = `${symbol}-${calendar.date}-${fingerprint(JSON.stringify({ priceState, priceUse, decisionPrice, decisionPriceRole, regularClose, regularCloseAsOf, providerAgreementPct, sources: sources.map(s => [s.provider, s.price, s.providerTimestamp]) }))}`;
+    return { snapshotId, symbol, asOf: asOf.toISOString(), session: calendar.session, calendarState: calendar.calendarState, priceState, decisionPrice, displayPrice, decisionPriceAsOf, decisionPriceRole, regularClose, regularClosePrice: regularClose, regularCloseAsOf, liveMarketPrice, liveMarketPriceAsOf, executionPrice, executionPriceAsOf, extendedPrice, providerAgreementPct, contextProviderGapPct, sources, priceSensitiveAllowed, decisionAllowed: priceSensitiveAllowed, executionTradable, priceUse, reason };
 }
