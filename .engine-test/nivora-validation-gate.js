@@ -1,0 +1,33 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.evaluateValidationEvidence = evaluateValidationEvidence;
+function evaluateValidationEvidence(x) {
+    const passed = [], failed = [];
+    const gate = (ok, label) => { (ok ? passed : failed).push(label); return ok; };
+    const historical = gate(x.historicalN >= 1000, "Historical sample ≥ 1,000");
+    const alpha = gate(x.avgAlphaPct > 0, "Positive benchmark-relative alpha");
+    const calibration = gate(x.brierScore <= .25 && x.ecePct <= 10, "Calibration quality within preregistered limits");
+    const drawdown = gate(x.maxDrawdownPct >= -30, "Maximum drawdown within preregistered limit");
+    const breadth = gate(x.regimesPassed >= 3 && x.archetypesPassed >= 3, "Evidence spans ≥3 regimes and ≥3 archetypes");
+    const dataQuality = gate(x.dataQualityPassed !== false, "Historical data quality / survivorship-bias controls passed");
+    const base = historical && alpha && calibration && drawdown && breadth && dataQuality;
+    const oos = gate(x.oosN >= 500, "Untouched out-of-sample sample ≥ 500");
+    const forward = gate(x.forwardN >= 100, "Forward-live comparable sample ≥ 100");
+    let status = "UNVALIDATED";
+    if (base)
+        status = "BACKTESTED";
+    if (base && oos)
+        status = "OUT_OF_SAMPLE_VERIFIED";
+    if (base && oos && x.forwardN > 0 && x.forwardN < 100)
+        status = "FORWARD_VALIDATING";
+    if (base && oos && forward)
+        status = "VALIDATED";
+    if (!alpha && status !== "UNVALIDATED")
+        status = "UNVALIDATED";
+    const headline = status === "VALIDATED" ? "Historical, out-of-sample and forward evidence passed the preregistered gates." :
+        status === "FORWARD_VALIDATING" ? "Historical and out-of-sample evidence passed; forward-live evidence is still accumulating." :
+            status === "OUT_OF_SAMPLE_VERIFIED" ? "Untouched out-of-sample evidence passed; forward validation is next." :
+                status === "BACKTESTED" ? "Historical backtest gates passed; untouched out-of-sample evidence is still required." :
+                    "The current evidence does not meet the minimum validation bar.";
+    return { status, passed, failed, headline };
+}

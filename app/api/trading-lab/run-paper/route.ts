@@ -215,6 +215,12 @@ async function run(req:Request,automatic=false){
     }
 
     const market=await refreshTradingMarketData(snapshot.symbol,broker,twelveKey);
+    if(market.integrity.state!=="LIVE_VERIFIED"){
+     const reason="Paper execution requires two independently verified live providers; single-source, stale, closed-session, or disagreeing quotes are research-only.";
+     await recordEvaluation(snapshot,"BLOCKED",String(today.action||"NO ACTION"),reason,"QUOTE_INTEGRITY",null,{integrityState:market.integrity.state,integrityTradable:false,disagreementPct:market.integrity.disagreementPct,automatic});
+     results.push({symbol:snapshot.symbol,status:"BLOCKED",action:String(today.action||"NO ACTION"),reason,riskCode:"QUOTE_INTEGRITY",integrityState:market.integrity.state});
+     continue;
+    }
     const quote=market.integrity.chosen;
     const context:TradingRiskContext={
      equity:account.equity,
@@ -240,7 +246,7 @@ async function run(req:Request,automatic=false){
      marketSession:quote?.session??session,
      spreadPct:quote?.spreadPct??null,
      integrityState:market.integrity.state,
-     integrityTradable:market.integrity.tradable,
+     integrityTradable:market.integrity.state==="LIVE_VERIFIED",
      disagreementPct:market.integrity.disagreementPct,
      automatic
     };

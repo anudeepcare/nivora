@@ -32,6 +32,8 @@ export async function GET(req:Request,{params}:{params:Promise<{symbol:string}>}
     snapshotId:snapshot.snapshotId,
     priceSensitiveAllowed:snapshot.priceSensitiveAllowed,
     decisionAllowed:snapshot.decisionAllowed,
+    executionTradable:snapshot.executionTradable,
+    priceUse:snapshot.priceUse,
     // Compatibility fields are populated only from canonical/verified market truth.
     price:snapshot.displayPrice,
     regularClose:snapshot.regularClose,
@@ -48,8 +50,9 @@ export async function GET(req:Request,{params}:{params:Promise<{symbol:string}>}
     spreadPct:chosen?.spreadPct??null,
     integrityState:snapshot.priceState,
     integrityReason:snapshot.reason,
-    integrityTradable:market.integrity.tradable&&snapshot.priceState!=="OFFICIAL_CLOSE",
+    integrityTradable:snapshot.executionTradable,
     disagreementPct:snapshot.providerAgreementPct,
+    contextProviderGapPct:snapshot.contextProviderGapPct,
     sources:snapshot.sources
   },{headers:{"Cache-Control":"private, no-store, max-age=0"}});
 }

@@ -1,0 +1,31 @@
+AURYN V8.1 — Market Truth Hotfix + 500-Symbol Live Audit
+Verification date: 2026-09-07
+Engine: auryn-v8.1-market-truth-hotfix-1
+
+SOURCE-TREE RELEASE GATE
+- Full automated regression suite: 508/508 PASS
+- Offline 100-ticker Reality Audit: 100/100 PASS
+- V65 production/dead-code audit: PASS
+- V8.1 focused Market Truth tests: PASS
+- Paper execution requires independently verified LIVE_VERIFIED providers: enforced
+- Official close / single-source research pricing is non-execution-tradable: enforced
+- Live audit supports 1–500 symbols: implemented
+
+BUILD ENVIRONMENT LIMITATION
+- npm run build could not execute in this sandbox because project dependencies are intentionally not installed here and the `next` executable is unavailable (`next: not found`).
+- Run `npm ci && npm test && npm run audit:v8-reality && npm run audit:v65 && npm run build` in Vercel/normal CI.
+
+LIVE VALIDATION
+- The first deployed V8 100-ticker audit exposed a closed-market audit-semantics defect. V8.1 fixes that defect by separating research-safe pricing from execution tradability.
+- The 100/500 live-provider audit is NOT claimed as passed in this sandbox because production provider credentials are not packaged and the live-market validation should be run against the deployed Vercel app.
+- Tomorrow during the live market, run:
+  AURYN_BASE_URL=https://getauryn.vercel.app npm run audit:v81-live
+  AURYN_BASE_URL=https://getauryn.vercel.app npm run audit:v81-live -- --limit=500
+
+EXTRACTED PACKAGE VERIFICATION
+- Full automated regression suite from extracted ZIP: 508/508 PASS
+- Offline 100-ticker Reality Audit from extracted ZIP: 100/100 PASS
+- V65 production/dead-code audit from extracted ZIP: PASS
+
+PACKAGE SAFETY
+- Do not package .env, .env.local, .git, node_modules, .next, .engine-test, or tsconfig.tsbuildinfo.

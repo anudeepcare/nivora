@@ -1,3 +1,18 @@
+# AURYN V8.1 — Market Truth Hotfix + 500-Symbol Live Audit
+
+AURYN V8.1 separates **research-safe pricing** from **execution-tradable pricing**. Closed-market official closes and single-source live quotes may support research, but only independently verified live providers can authorize autonomous Alpaca Paper execution. The deployed audit can now validate 100 or 500 symbols and no longer misclassifies an official-close research snapshot as a tradable live quote.
+
+Run tomorrow during the live market:
+
+```bash
+AURYN_BASE_URL=https://getauryn.vercel.app npm run audit:v81-live
+AURYN_BASE_URL=https://getauryn.vercel.app npm run audit:v81-live -- --limit=500
+```
+
+See `AURYN_V8_1_RELEASE.md` and `docs/V8_1_LIVE_500_AUDIT.md`.
+
+---
+
 # AURYN V8 — Reality Audit & CIO Consistency
 
 AURYN V8 hardens the V7 Trust & Precision OS with a fixed **100-ticker Reality Audit**, evidence-aware business/lifecycle classification, deterministic CIO horizon arbitration, and clearer strength-vs-trend semantics. It preserves the existing Market Truth, one canonical decision, one ExecutionPlan, Setup Map, Canonical Trust Audit, Portfolio CIO, Alpaca Paper and Model Proof architecture.

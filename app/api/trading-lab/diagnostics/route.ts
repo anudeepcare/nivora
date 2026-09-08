@@ -80,7 +80,7 @@ export async function POST(req:Request){
   const x=await inspect();
   if(x.session!=="REGULAR"||!x.clock.isOpen)return NextResponse.json({status:"skipped",code:"MARKET_CLOSED",session:x.session,clock:x.clock});
   const quote=x.market.integrity.chosen;
-  if(!quote||!x.market.integrity.tradable||quote.freshness!=="LIVE")return NextResponse.json({status:"blocked",code:"QUOTE_INTEGRITY",quoteIntegrity:x.market.integrity},{status:409});
+  if(!quote||x.market.integrity.state!=="LIVE_VERIFIED"||quote.freshness!=="LIVE")return NextResponse.json({status:"blocked",code:"QUOTE_INTEGRITY",quoteIntegrity:x.market.integrity},{status:409});
   const test=await submitSelfTestOrder(x.b,x.symbol,quote.price);
   return NextResponse.json({
    status:"ok",
