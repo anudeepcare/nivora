@@ -1,0 +1,15 @@
+AURYN V8.2 SECURITY MASTER & PROVIDER COVERAGE
+
+Source-tree verification before packaging:
+- Full engine/regression suite: 517/517 PASS
+- V8 offline Reality Audit: 100/100 PASS
+- V65 production/dead-code audit: PASS
+- Security Master sample from uploaded broad-audit output: 256 symbols parsed; 14 special securities identified and quarantined by type
+- Next production build: NOT EXECUTED in this sandbox because the `next` binary/dependencies are not installed (`next: not found`). Run `npm ci && npm test && npm run audit:v65 && npm run build` in Vercel/CI.
+
+V8.2 behavior:
+- special instruments are not processed as ordinary common stocks
+- provider 404/no-history/insufficient-history states are explicit quarantines
+- live audit separates PASS / QUARANTINED / CRITICAL
+- canonical/analyze price mismatch remains critical
+- autonomous live-money execution remains disabled

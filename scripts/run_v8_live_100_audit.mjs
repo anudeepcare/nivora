@@ -8,7 +8,9 @@ const requestedLimit=Math.max(1,Math.min(500,Number(cliLimit||process.env.V8_LIV
 const delayMs=Math.max(0,Number(process.env.V8_LIVE_AUDIT_DELAY_MS||1400));
 const headers=token?{Authorization:`Bearer ${token}`}:{ };
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-async function json(path){const r=await fetch(`${base}${path}`,{headers,cache:'no-store'});let j={};try{j=await r.json()}catch{};if(!r.ok)throw new Error(`${r.status} ${path}: ${j?.error||r.statusText}`);return j;}
+async function requestJson(path){const r=await fetch(`${base}${path}`,{headers,cache:'no-store'});let j={};try{j=await r.json()}catch{};return{ok:r.ok,status:r.status,json:j,statusText:r.statusText};}
+async function json(path){const x=await requestJson(path);if(!x.ok)throw new Error(`${x.status} ${path}: ${x.json?.error||x.statusText}`);return x.json;}
+const QUARANTINE_CODES=new Set(['UNSUPPORTED_INSTRUMENT','PROVIDER_COVERAGE_MISSING','MARKET_HISTORY_UNAVAILABLE','INSUFFICIENT_HISTORY']);
 
 async function loadSymbols(){
   const golden=V8_GOLDEN_UNIVERSE.map(x=>x.symbol);
@@ -20,15 +22,26 @@ async function loadSymbols(){
 
 const rows=[];let critical=0;let symbols=[];
 try{symbols=await loadSymbols();}catch(e){console.error(`critical: unable to load live audit universe: ${e?.message||e}`);process.exitCode=1;process.exit();}
-if(symbols.length<requestedLimit){console.error(`critical: requested ${requestedLimit} live symbols but only ${symbols.length} are available`);process.exitCode=1;process.exit();}
+if(symbols.length<requestedLimit){console.error(`critical: requested ${requestedLimit} live symbols but only ${symbols.length} supported symbols are available`);process.exitCode=1;process.exit();}
 
-let researchSafe=0,executionReady=0,officialClose=0,blocked=0;
+let researchSafe=0,executionReady=0,officialClose=0,blocked=0,quarantined=0;
 for(let i=0;i<symbols.length;i++){
-  const symbol=symbols[i];const issues=[];
+  const symbol=symbols[i];const issues=[];let quarantineCode=null;
   try{
-    const quote=await json(`/api/quote/${encodeURIComponent(symbol)}`);
+    const quoteResponse=await requestJson(`/api/quote/${encodeURIComponent(symbol)}`);
+    if(!quoteResponse.ok)throw new Error(`${quoteResponse.status} /api/quote/${encodeURIComponent(symbol)}: ${quoteResponse.json?.error||quoteResponse.statusText}`);
+    const quote=quoteResponse.json;
     await sleep(delayMs);
-    const analyze=await json(`/api/analyze/${encodeURIComponent(symbol)}`);
+    const analyzeResponse=await requestJson(`/api/analyze/${encodeURIComponent(symbol)}`);
+    const analyze=analyzeResponse.json;
+    const code=String(analyze?.code||'');
+    if(!analyzeResponse.ok&&QUARANTINE_CODES.has(code)){
+      quarantineCode=code;quarantined++;
+      issues.push(`quarantine: ${code}${analyze?.error?` — ${analyze.error}`:''}`);
+    }else if(!analyzeResponse.ok){
+      throw new Error(`${analyzeResponse.status} /api/analyze/${encodeURIComponent(symbol)}: ${analyze?.error||analyzeResponse.statusText}`);
+    }
+
     const snap=quote?.snapshot??quote?.marketTruth??quote;
     const qSymbol=String(snap?.symbol??quote?.symbol??'').toUpperCase();
     if(qSymbol&&qSymbol!==symbol)issues.push(`critical: quote symbol ${qSymbol} != ${symbol}`);
@@ -49,16 +62,19 @@ for(let i=0;i<symbols.length;i++){
     if(priceState==='OFFICIAL_CLOSE'&&executionTradable)issues.push('critical: official close incorrectly marked execution-tradable');
     if(executionTradable&&Number.isFinite(providerGap)&&providerGap>1)issues.push(`critical: execution-tradable snapshot despite provider gap ${providerGap.toFixed(2)}%`);
 
-    const analyzePrice=Number(analyze?.price);
-    if(!Number.isFinite(analyzePrice))issues.push('critical: analyze price unavailable');
-    if(researchAllowed&&Number.isFinite(decisionPrice)&&Number.isFinite(analyzePrice)){
-      const gap=Math.abs(analyzePrice-decisionPrice)/Math.max(0.01,Math.abs(decisionPrice))*100;
-      if(gap>3)issues.push(`critical: canonical/analyze price gap ${gap.toFixed(2)}%`);
+    if(!quarantineCode){
+      const analyzePrice=Number(analyze?.price);
+      if(!Number.isFinite(analyzePrice))issues.push('critical: analyze price unavailable');
+      if(researchAllowed&&Number.isFinite(decisionPrice)&&Number.isFinite(analyzePrice)){
+        const gap=Math.abs(analyzePrice-decisionPrice)/Math.max(0.01,Math.abs(decisionPrice))*100;
+        if(gap>3)issues.push(`critical: canonical/analyze price gap ${gap.toFixed(2)}%`);
+      }
     }
   }catch(e){issues.push(`critical: ${e?.message||e}`);}
   const criticalIssues=issues.filter(x=>/^critical:/i.test(x));critical+=criticalIssues.length;
-  rows.push({symbol,issues});
+  rows.push({symbol,status:criticalIssues.length?'CRITICAL':quarantineCode?'QUARANTINED':'PASS',issues});
   console.log(`${String(i+1).padStart(3,' ')}/${symbols.length} ${symbol}: ${issues.length?issues.join(' | '):'PASS'}`);
 }
-console.log(JSON.stringify({requested:requestedLimit,total:rows.length,passed:rows.filter(r=>!r.issues.length).length,critical,researchSafe,executionReady,officialClose,blocked,rows},null,2));
+const passed=rows.filter(r=>r.status==='PASS').length;
+console.log(JSON.stringify({requested:requestedLimit,total:rows.length,passed,quarantined,critical,researchSafe,executionReady,officialClose,blocked,rows},null,2));
 if(critical>0)process.exitCode=1;

@@ -1,3 +1,18 @@
+# AURYN V8.2 — Security Master & Provider Coverage
+
+AURYN V8.2 adds a deterministic Security Master and explicit provider-coverage quarantine on top of V8.1 Market Truth. Broad 500-symbol audits now separate supported common-equity analysis from warrants, rights, preferreds, units and temporary securities; expected provider/history gaps no longer masquerade as generic server failures; true canonical/analyze price mismatches remain hard criticals.
+
+Run after deployment:
+
+```bash
+AURYN_BASE_URL=https://getauryn.vercel.app npm run audit:v82-live
+AURYN_BASE_URL=https://getauryn.vercel.app npm run audit:v82-live -- --limit=500 | tee audit-500-v82.txt
+```
+
+See `AURYN_V8_2_RELEASE.md`.
+
+---
+
 # AURYN V8.1 — Market Truth Hotfix + 500-Symbol Live Audit
 
 AURYN V8.1 separates **research-safe pricing** from **execution-tradable pricing**. Closed-market official closes and single-source live quotes may support research, but only independently verified live providers can authorize autonomous Alpaca Paper execution. The deployed audit can now validate 100 or 500 symbols and no longer misclassifies an official-close research snapshot as a tradable live quote.
