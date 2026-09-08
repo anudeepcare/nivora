@@ -174,6 +174,12 @@ async function run(req:Request,automatic=false){
     const d=snapshot.decision||{};
     const pos=positionMap.get(snapshot.symbol);
     const v5Meta=snapshot.evidence?.v5;
+    if(v5Meta?.trustState==="BLOCK"){
+     const reason="Canonical trust audit blocked execution; the snapshot/decision/plan chain is not internally consistent.";
+     await recordEvaluation(snapshot,"NO_INTENT","NONE",reason,"CANONICAL_TRUST");
+     results.push({symbol:snapshot.symbol,status:"NO_INTENT",action:"NONE",reason});
+     continue;
+    }
     const today=v5Meta?.action?mapV5ActionToToday(v5Meta.action as any,Boolean(pos)):d.today;
     if(!today){
      const x=explainNoIntent(undefined,false);

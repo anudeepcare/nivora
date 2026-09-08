@@ -63,9 +63,12 @@ const factorMap:Partial<Record<CanonicalFactorKey,{id:string;label:string;family
   BUSINESS_QUALITY:{id:'businessQuality',label:'Business quality',family:'BUSINESS',role:'DECISION'},
   GROWTH_INFLECTION:{id:'growthInflection',label:'Growth inflection',family:'BUSINESS',role:'DECISION'},
   FUNDAMENTALS_EARNINGS:{id:'fundamentals',label:'Fundamentals & earnings',family:'FUNDAMENTALS',role:'DECISION'},
+  NARRATIVE_EXPECTATIONS:{id:'narrative',label:'Narrative / expectations',family:'NARRATIVE',role:'CONTEXT'},
   VALUATION:{id:'valuation',label:'Valuation',family:'VALUATION',role:'DECISION'},
+  POSITIONING:{id:'positioning',label:'Ownership / positioning',family:'POSITIONING',role:'CONTEXT'},
   CATALYSTS:{id:'catalysts',label:'Catalysts',family:'CATALYSTS',role:'CONTEXT'},
   SECTOR_INDUSTRY:{id:'sector',label:'Sector / industry',family:'SECTOR',role:'CONTEXT'},
+  MACRO_REGIME:{id:'macro',label:'Macro / regime',family:'MACRO',role:'CONTEXT'},
   RISK:{id:'riskPressure',label:'Risk pressure',family:'RISK',role:'RISK',inverse:true},
 };
 export function buildProfessionalMetrics({technical,v4,bars=[]}:{technical:TechnicalSnapshot|null|undefined;v4:AurynV4CoreAnalysis;bars?:Bar[]}):ProfessionalMetric[]{
@@ -77,6 +80,7 @@ export function buildProfessionalMetrics({technical,v4,bars=[]}:{technical:Techn
     addNum('rsi14','RSI · 14','MOMENTUM','TIMING',rsi,rsiState,rsiState==='OVERBOUGHT'?'Momentum is strong, but short-term chase risk is elevated; RSI alone is not a sell signal.':rsiState==='OVERSOLD'?'Price is stretched to the downside; oversold alone is not a buy signal without thesis and structure confirmation.':'RSI describes current momentum regime.','verified bars',true,null,'Daily');
     const mh=i.macd?.histogram;
     addNum('macdHistogram','MACD histogram','MOMENTUM','TIMING',finite(mh)?mh:null,finite(mh)?(mh>0?'BULLISH':mh<0?'BEARISH':'NEUTRAL'):'N/A','MACD measures trend-momentum convergence; histogram direction is supporting timing evidence.','verified bars',true,null,'Daily');
+    addNum('technicalStrength','Technical strength','TREND','TIMING',t.strength,scoreState(t.strength),'Composite technical state across trend, momentum, participation, structure, extension and volatility.','technical engine',true,'/100','Daily');
     addNum('trend','Trend strength','TREND','TIMING',t.trend,scoreState(t.trend),'Composite of moving-average structure, medium-term return and relative trend.','technical engine',true,'/100','Daily');
     addNum('entryQuality','Entry quality','STRUCTURE','TIMING',t.entryQuality,scoreState(t.entryQuality),'Rates current entry quality separately from long-term company quality.','technical engine',true,'/100','Daily');
     addNum('participation','Participation','VOLUME_FLOW','TIMING',t.participation,scoreState(t.participation),'Volume and flow confirmation for the current move.','technical engine',true,'/100','Daily');

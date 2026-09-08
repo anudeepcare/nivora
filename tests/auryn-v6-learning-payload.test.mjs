@@ -24,9 +24,9 @@ test('validation route persists canonical V6 snapshot as its own immutable engin
  assert.match(src,/evidence_fingerprint/);
 });
 
-test('stock client sends canonical V6 decision with the validation event',()=>{
+test('stock client upgrades the canonical validation event to V7 trust semantics',()=>{
  const src=fs.readFileSync('components/StockClient.tsx','utf8');
- assert.match(src,/canonicalDecision:v6Analysis\?serializeV6Decision\(v6Analysis\):null/);
+ assert.match(src,/canonicalDecision:v7Analysis\?serializeV7Decision\(v7Analysis\):null/);
 });
 
 test('scheduled maturity includes V6 exact-engine outcomes',()=>{

@@ -1,3 +1,17 @@
+# AURYN V7 — Trust & Precision OS
+
+AURYN V7 is the 9.5-target trust-and-precision hardening layer on top of V6 Proof OS. The production chain is:
+
+`Market Truth → Canonical Evidence → Specialist Engines → CIO Decision → One ExecutionPlan → AURYN Setup Map → Portfolio CIO → Canonical Trust Audit → Paper Broker / Immutable Learning → Model Proof`.
+
+V7 adds a runtime **Canonical Trust Audit** that fails closed when Market Truth, decision, execution plan or Setup Map disagree. A trust block suppresses price-sensitive execution levels, is rejected by validation learning, and cannot reach the Alpaca paper runner. The signature **AURYN Setup Map** uses the same canonical plan as the hero, Technicals tab and broker path; it never invents a second trigger, DCA zone, target or invalidation.
+
+All professional metrics remain available through Beginner / Pro / Extreme Pro depth, but one centralized formatting/interpretation contract prevents raw floating-point clutter. Mobile behavior is preserved and protected rather than redesigned. V6 Model Proof remains archetype-scoped and must be earned from exact matured outcomes; Evidence Confidence is **not probability of profit** and this software does not guarantee market returns. Live-money autonomous execution remains disabled; autonomous execution is Alpaca Paper only.
+
+See `AURYN_V7_RELEASE.md` and `docs/superpowers/specs/2026-09-07-auryn-v7-trust-precision-os-design.md`.
+
+---
+
 # AURYN V6 — 9+ Proof OS
 
 AURYN V6 adds institutional proof, model-health governance, multi-timeframe confirmation, archetype-specific valuation-method discipline and portfolio-CIO sizing on top of the V5.1 Market Truth / canonical Decision OS foundation.

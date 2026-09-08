@@ -101,6 +101,11 @@
     "lib/auryn/v6/analyze.ts",
     "lib/auryn/v6/model-health.ts",
     "lib/auryn/v6/learning.ts",
-    "lib/auryn/v6/portfolio-adapter.ts"
+    "lib/auryn/v6/portfolio-adapter.ts",
+    "lib/auryn/v7/trust-audit.ts",
+    "lib/auryn/v7/version.ts",
+    "lib/auryn/v7/domain.ts",
+    "lib/auryn/v7/analyze.ts",
+    "lib/auryn/v7/learning.ts"
   ]
 }

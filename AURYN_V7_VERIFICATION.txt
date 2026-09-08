@@ -1,0 +1,28 @@
+AURYN V7 — Trust & Precision OS
+Verification date: 2026-09-07
+Engine: auryn-v7-trust-precision-1
+
+SOURCE TREE VERIFICATION
+- npm test: PASS — 488/488 tests
+- npm run audit:v65: PASS — V65 dead-code audit PASS
+- npm run build: NOT EXECUTED SUCCESSFULLY IN THIS SANDBOX
+  Reason: project dependencies are not installed here; `next` executable is unavailable (`sh: 1: next: not found`).
+  Required deployment gate in Vercel/normal CI: npm ci && npm test && npm run audit:v65 && npm run build
+
+V7 TRUST CONTRACT
+- One Market Truth snapshot
+- One CIO decision
+- One canonical ExecutionPlan
+- AURYN Setup Map consumes the exact ExecutionPlan levels
+- Runtime Canonical Trust Audit verifies snapshot/price/plan/scenario alignment
+- Trust BLOCK suppresses price-sensitive execution, validation learning and Alpaca paper intent
+- Missing valuation never becomes bearish zero; active accumulation requires decision-grade valuation
+- WATCH/REDUCE/SELL cannot carry active DCA tiers
+- Professional metric formatting is centralized and interpreted
+- Mobile behavior is preserved and protected
+- Evidence Confidence is not probability of profit
+- Model Proof must be earned from exact matured cohorts
+- Live-money autonomous execution remains disabled
+
+PACKAGE VERIFICATION
+The final ZIP is re-extracted and re-tested after packaging. See assistant release response for the exact extracted-package result.

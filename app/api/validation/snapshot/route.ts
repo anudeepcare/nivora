@@ -4,7 +4,9 @@ import {NextResponse} from "next/server";import {createClient} from "@supabase/s
 export const runtime="nodejs";
 export async function POST(req:Request){
  try{
-  const body=await req.json();const canonicalPrice=Number(body.price);
+  const body=await req.json();
+  if(body?.evidence?.v5?.trustState==="BLOCK")return NextResponse.json({enabled:false,error:"CANONICAL_TRUST_BLOCK",reason:"Validation history will not learn from an internally inconsistent canonical snapshot."},{status:422});
+  const canonicalPrice=Number(body.price);
   if(!(Number.isFinite(canonicalPrice)&&canonicalPrice>0))return NextResponse.json({enabled:false,error:"INVALID_CANONICAL_PRICE",reason:"Validation history requires a verified positive canonical market price."},{status:422});
   const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY;if(!url||!key)return NextResponse.json({enabled:false,reason:"Validation persistence is not configured."});
   const db=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});const engineVersion=String(body.engineVersion||ENGINE_VERSION);
@@ -26,7 +28,7 @@ export async function POST(req:Request){
     const fingerprint=`${canonicalDecision.snapshotId}:${canonicalDecision.primaryAction}:${canonicalDecision.evidenceConfidence?.score??"na"}`;
     const{data:lastCanonical}=await db.from("nivora_v59_decision_snapshots").select("id,evidence_fingerprint").eq("symbol",symbol).eq("engine_version",String(canonicalDecision.engineVersion)).order("observed_at",{ascending:false}).limit(1).maybeSingle();
     if(lastCanonical?.evidence_fingerprint!==fingerprint){
-      await db.from("nivora_v59_decision_snapshots").insert({symbol,observed_at:new Date().toISOString(),price:canonicalPrice,engine_version:canonicalDecision.engineVersion,weights_version:"auryn-v6-proof-weights-1",valuation_version:"auryn-v6-valuation-registry-1",today_policy_version:"auryn-v6-cio-1",evidence_fingerprint:fingerprint,benchmark_symbol:String(body?.evidence?.benchmark||"SPY"),sector_benchmark_symbol:body?.evidence?.sectorBenchmark||null,decision:canonicalDecision,evidence:{...(body.evidence||{}),canonicalSnapshotId:canonicalDecision.snapshotId}});
+      await db.from("nivora_v59_decision_snapshots").insert({symbol,observed_at:new Date().toISOString(),price:canonicalPrice,engine_version:canonicalDecision.engineVersion,weights_version:"auryn-v7-trust-weights-1",valuation_version:"auryn-v6-valuation-registry-1",today_policy_version:"auryn-v7-cio-trust-1",evidence_fingerprint:fingerprint,benchmark_symbol:String(body?.evidence?.benchmark||"SPY"),sector_benchmark_symbol:body?.evidence?.sectorBenchmark||null,decision:canonicalDecision,evidence:{...(body.evidence||{}),canonicalSnapshotId:canonicalDecision.snapshotId}});
     }
   }
   return NextResponse.json({enabled:true,saved:true,engineVersion});
