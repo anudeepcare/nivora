@@ -4,7 +4,7 @@
 
 **Goal:** Add auditable provider adapters and an automated historical-data release gate upstream of V9.1.
 
-**Architecture:** Provider-specific modules normalize raw Twelve Data and SEC payloads into V9.1's HistoricalReplayBundle. A deterministic bundle assembler and integrity reporter sit above adapters; CLI scripts expose normalize/backfill/audit/gate workflows without touching production CIO or broker state.
+**Architecture:** Provider-specific modules normalize Twelve Data prices/corporate actions/earnings, SEC facts, explicit point-in-time revision/sector rows, and FRED/ALFRED macro vintages into V9.1's HistoricalReplayBundle. A deterministic bundle assembler and integrity reporter sit above adapters; CLI scripts expose normalize/backfill/audit/gate workflows without touching production CIO or broker state.
 
 **Tech Stack:** TypeScript, Node.js, Node test runner, existing AURYN V9/V9.1 research modules.
 
@@ -59,3 +59,14 @@
 - [ ] Run `npm run audit:v8-reality` and `npm run audit:v65`.
 - [ ] Run adapter→bundle→V9.1→V9 tournament smoke fixture.
 - [ ] Package clean ZIP, extract it, and rerun the same gates from exact ZIP.
+
+### Canonical hardening added after initial implementation review
+- [x] Corporate-action split/dividend adapters and corruption audit.
+- [x] Earnings history adapter plus point-in-time `surprise_streak`.
+- [x] Explicit-availability revision/sector adapter.
+- [x] FRED/ALFRED vintage adapter using `realtime_start`.
+- [x] Global macro resolution through `__MACRO__`.
+- [x] Active-window benchmark session-gap denominator.
+- [x] Canonical family gate for FUNDAMENTALS/EARNINGS/REVISION/SECTOR/MACRO/CORPORATE_ACTIONS.
+- [x] End-to-end gate fixture proving complete bundle PASS and missing-family BLOCKED.
+- [ ] Real replay bundle passes `gate:v92 -- --require-data`; this remains the milestone gate before V9.3.

@@ -310,14 +310,25 @@ Normalize recorded provider payloads:
 npm run normalize:v92 -- --input=/path/raw-provider-bundle.json --output=/path/replay-bundle.json
 ```
 
-Fetch a real price + SEC backfill (requires `TWELVE_DATA_API_KEY` and `SEC_USER_AGENT`):
+Fetch the canonical historical families. Corporate actions and earnings are explicit opt-ins because those Twelve Data endpoints consume extra credits; revision/sector history must come from a verified point-in-time event file; FRED requires `FRED_API_KEY`:
 ```bash
-npm run backfill:v92 -- --symbols=/path/security-master.json --start-date=2016-01-01 --end-date=2026-09-08 --benchmark=SPY --output=/path/auryn-v92-replay.json
+npm run backfill:v92 -- \
+  --symbols=/path/security-master.json \
+  --start-date=2016-01-01 --end-date=2026-09-08 --benchmark=SPY \
+  --with-corporate-actions --with-earnings \
+  --research-events=/path/point-in-time-research-events.json \
+  --fred-series=/path/fred-series.json \
+  --universe=/path/universe-history.json \
+  --output=/path/auryn-v92-replay.json
 ```
 
-Audit a replay bundle:
+Audit a replay bundle against the canonical family gate:
 ```bash
-npm run audit:v92-data -- --input=/path/auryn-v92-replay.json --min-symbol-coverage=95 --min-years=5 --require-decision-grade
+npm run audit:v92-data -- \
+  --input=/path/auryn-v92-replay.json \
+  --min-symbol-coverage=95 --min-years=5 --require-decision-grade \
+  --required-families=FUNDAMENTALS,EARNINGS,REVISION,SECTOR,MACRO,CORPORATE_ACTIONS \
+  --max-session-gap-pct=1
 ```
 
 Master release gate:
@@ -325,4 +336,4 @@ Master release gate:
 npm run gate:v92
 AURYN_V92_REPLAY_BUNDLE=/path/auryn-v92-replay.json npm run gate:v92 -- --require-data
 ```
-The second command is the mandatory gate before V9.3. V9.2 never promotes research signals into the production CIO automatically.
+The second command is mandatory before V9.3. A code-only PASS is not a V9.2 milestone PASS when the real replay bundle is missing. V9.2 never promotes research signals into the production CIO automatically.

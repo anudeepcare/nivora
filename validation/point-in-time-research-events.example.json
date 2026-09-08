@@ -1,0 +1,6 @@
+{
+  "events": [
+    {"symbol":"AAPL","family":"REVISION","metric":"eps_revision_breadth","value":0.25,"periodEnd":"2024-06-30","availableAt":"2024-05-01"},
+    {"symbol":"AAPL","family":"SECTOR","metric":"sector_relative_strength","value":1.12,"availableAt":"2024-05-01"}
+  ]
+}

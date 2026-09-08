@@ -1,4 +1,4 @@
-import type {HistoricalBar,HistoricalReplayBundle,HistoricalSecurity,HistoricalUniverseSnapshot,PointInTimeMetric} from '../v91/domain';
+import type {HistoricalBar,HistoricalCorporateAction,HistoricalReplayBundle,HistoricalSecurity,HistoricalUniverseSnapshot,PointInTimeMetric} from '../v91/domain';
 
 export const AURYN_V92_VERSION='auryn-v9.2-historical-backfill-1';
 
@@ -16,6 +16,8 @@ export type V92AssemblyInput={
   facts?:PointInTimeMetric[];
   events?:PointInTimeMetric[];
   universeSnapshots?:HistoricalUniverseSnapshot[];
+  corporateActions?:HistoricalCorporateAction[];
+  adapterCoverage?:Record<string,string[]>;
   pointInTimeUniverse?:boolean;
   includesDelisted?:boolean;
   delistingReturnsHandled?:boolean;
@@ -39,6 +41,13 @@ export type V92IntegrityReport={
     barsBySymbol:Record<string,number>;
     factMetrics:Record<string,number>;
     missingSecurityBars:string[];
+    corporateActions:number;
+    corporateActionCorruptionCount:number;
+    sessionGapCount:number;
+    sessionExpectedCount:number;
+    sessionGapsBySymbol:Record<string,string[]>;
+    familyRows:Record<string,number>;
+    adapterCoverage:Record<string,number>;
   };
   bundle:Pick<HistoricalReplayBundle,'meta'>;
 };

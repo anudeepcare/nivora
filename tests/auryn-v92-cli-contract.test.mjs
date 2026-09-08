@@ -21,3 +21,30 @@ test('V9.2 ingestion scripts remain isolated from production decision and broker
   const s=read(name); assert.doesNotMatch(s,/(?:production-registry|v5\/cio|nivora-broker|run-paper)/i,`${name} must be research only`);
  }
 });
+
+test('V9.2 real-data gate can require canonical research families and corporate-action verification',()=>{
+ const audit=read('run_v92_data_audit.mjs'),gate=read('run_v92_release_gate.mjs');
+ assert.match(audit,/required-families/i);
+ assert.match(audit,/corporateActionCorruptionCount/);
+ assert.match(gate,/FUNDAMENTALS/);
+ assert.match(gate,/EARNINGS/);
+ assert.match(gate,/REVISION/);
+ assert.match(gate,/SECTOR/);
+ assert.match(gate,/MACRO/);
+ assert.match(gate,/CORPORATE_ACTIONS/);
+});
+
+
+test('V9.2 backfill wires opt-in corporate actions, earnings, explicit research events and FRED vintages',()=>{
+ const s=read('run_v92_backfill.mjs');
+ assert.match(s,/with-corporate-actions/);
+ assert.match(s,/with-earnings/);
+ assert.match(s,/research-events/);
+ assert.match(s,/fred-series/);
+ assert.match(s,/FRED_API_KEY/);
+ assert.match(s,/normalizeTwelveDataSplits/);
+ assert.match(s,/normalizeTwelveDataDividends/);
+ assert.match(s,/normalizeTwelveDataEarnings/);
+ assert.match(s,/normalizePointInTimeResearchRows/);
+ assert.match(s,/normalizeFredVintageObservations/);
+});

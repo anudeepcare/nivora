@@ -8,7 +8,7 @@ export function latestMetricAsOf(rows:PointInTimeMetric[],symbol:string,metric:s
 }
 
 export function resolvePointInTimeMetrics(facts:PointInTimeMetric[]=[],events:PointInTimeMetric[]=[],symbol:string,asOf:string):Record<string,number>{
- const rows=[...facts,...events].filter(r=>r.symbol===symbol&&finite(r.value)&&r.availableAt<=asOf)
+ const rows=[...facts,...events].filter(r=>(r.symbol===symbol||r.symbol==='__MACRO__')&&finite(r.value)&&r.availableAt<=asOf)
    .sort((a,b)=>a.availableAt.localeCompare(b.availableAt)||(a.periodEnd??'').localeCompare(b.periodEnd??'')||a.metric.localeCompare(b.metric));
  const out:Record<string,number>={};
  for(const r of rows)out[r.metric]=r.value;

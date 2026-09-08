@@ -22,3 +22,33 @@ test('V9.2 integrity audit blocks false survivorship claims and duplicate contra
  assert.ok(r.hardFailures.some(x=>/survivorship|universe/i.test(x)));
  assert.ok(r.hardFailures.some(x=>/contradict|duplicate/i.test(x)));
 });
+
+test('V9.2 integrity reports benchmark-session gaps, family coverage and zero corporate-action corruption',()=>{
+ const b=bundle();
+ b.corporateActions=[{symbol:'AAA',type:'DIVIDEND',date:'2024-01-03',ratio:null,amount:.25,availableAt:'2024-01-03',source:'TEST'}];
+ b.adapterCoverage={CORPORATE_ACTIONS:['AAA','OLD'],FUNDAMENTALS:['AAA','OLD'],EARNINGS:['AAA'],REVISION:['AAA'],SECTOR:['AAA','OLD'],MACRO:['__MACRO__']};
+ b.events.push({symbol:'AAA',metric:'eps_revision_breadth',value:.2,availableAt:'2024-01-02'});
+ b.events.push({symbol:'AAA',metric:'sector_relative_strength',value:1.1,availableAt:'2024-01-02'});
+ b.events.push({symbol:'__MACRO__',metric:'fed_funds_rate',value:5.25,availableAt:'2024-01-02'});
+ const r=mod.auditV92ReplayBundle(b);
+ assert.equal(r.coverage.corporateActions,1);
+ assert.equal(r.coverage.corporateActionCorruptionCount,0);
+ assert.equal(r.coverage.familyRows.REVISION,1);
+ assert.equal(r.coverage.familyRows.SECTOR,1);
+ assert.equal(r.coverage.familyRows.MACRO,1);
+ assert.ok('sessionGapCount' in r.coverage);
+ assert.equal(r.coverage.sessionExpectedCount,3,'expected sessions must respect each security active window');
+});
+
+test('V9.2 integrity blocks split-adjustment corruption instead of trusting adjusted=true blindly',()=>{
+ const b=bundle();
+ b.securities=[{symbol:'AAA'}];
+ b.dailyBars=[bar('AAA','2024-06-07',400),bar('AAA','2024-06-10',101)];
+ b.benchmarkBars=[bar('SPY','2024-06-07',500),bar('SPY','2024-06-10',501)];
+ b.corporateActions=[{symbol:'AAA',type:'SPLIT',date:'2024-06-10',ratio:.25,amount:null,availableAt:'2024-06-10',source:'TEST'}];
+ b.meta.pointInTimeUniverse=false;b.meta.includesDelisted=false;b.meta.delistingReturnsHandled=false;b.universeSnapshots=[];
+ const r=mod.auditV92ReplayBundle(b);
+ assert.equal(r.status,'BLOCKED');
+ assert.ok(r.hardFailures.some(x=>/split|corporate action|adjust/i.test(x)));
+ assert.ok(r.coverage.corporateActionCorruptionCount>0);
+});

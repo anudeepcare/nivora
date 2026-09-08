@@ -76,6 +76,27 @@ export function lastCompletedRegularSessionDate(at=new Date()):string|null{
   return null;
 }
 
+function nyLocalToUtcIso(y:number,m:number,d:number,hour:number,minute=0){
+  const target=Date.UTC(y,m-1,d,hour,minute);
+  let guess=target;
+  for(let i=0;i<3;i++){
+    const p=nyParts(new Date(guess));
+    const represented=Date.UTC(p.year,p.month-1,p.day,p.hour,p.minute);
+    const delta=target-represented;
+    guess+=delta;
+    if(delta===0)break;
+  }
+  return new Date(guess).toISOString();
+}
+
+export function lastCompletedRegularSessionCloseTimestamp(at=new Date()):string|null{
+  const date=lastCompletedRegularSessionDate(at);
+  if(!date)return null;
+  const [y,m,d]=date.split("-").map(Number);
+  const hour=isEarlyCloseDate(y,m,d)?13:16;
+  return nyLocalToUtcIso(y,m,d,hour,0);
+}
+
 export function marketSessionAt(at=new Date()):MarketSession{return marketCalendarAt(at).session;}
 
 export function quoteFreshness(ageSeconds:number,session:MarketSession):QuoteFreshness{

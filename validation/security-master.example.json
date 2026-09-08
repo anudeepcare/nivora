@@ -1,0 +1,7 @@
+{
+  "securities": [
+    {"symbol":"AAPL","cik":320193,"sector":"Technology","activeFrom":"1980-12-12"},
+    {"symbol":"MSFT","cik":789019,"sector":"Technology","activeFrom":"1986-03-13"},
+    {"symbol":"OLD","sector":"Industrials","activeFrom":"2010-01-01","activeTo":"2022-06-30","delistedDate":"2022-06-30","delistingReturnPct":-35.0}
+  ]
+}

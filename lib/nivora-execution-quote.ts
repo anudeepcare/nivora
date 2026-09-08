@@ -1,6 +1,6 @@
 import {marketSessionAt,quoteFreshness,type MarketSession,type QuoteFreshness} from "./nivora-market-session";
 import {normalizeTwelveQuote} from "./nivora-live-quote";
-export type ExecutionQuote={symbol:string;price:number;bid:number|null;ask:number|null;spreadPct:number|null;changePct:number|null;providerTimestamp:string|null;ageSeconds:number|null;session:MarketSession;freshness:QuoteFreshness;provider:"alpaca"|"twelvedata";isRealTime:boolean};
+export type ExecutionQuote={symbol:string;price:number;bid:number|null;ask:number|null;spreadPct:number|null;changePct:number|null;providerTimestamp:string|null;ageSeconds:number|null;session:MarketSession;freshness:QuoteFreshness;provider:"alpaca"|"twelvedata";isRealTime:boolean;exchange?:string|null;currency?:string|null};
 const n=(v:any)=>{const x=Number(v);return Number.isFinite(x)?x:null};
 export function normalizeAlpacaQuote(symbol:string,quoteRaw:any,tradeRaw:any,asOf=new Date()):ExecutionQuote{
  const q=quoteRaw?.quote||quoteRaw||{},t=tradeRaw?.trade||tradeRaw||{},bid=n(q.bp??q.bid_price),ask=n(q.ap??q.ask_price),trade=n(t.p??t.price);
@@ -17,5 +17,5 @@ export function normalizeAlpacaQuote(symbol:string,quoteRaw:any,tradeRaw:any,asO
 
 export function normalizeTwelveExecutionQuote(raw:any,asOf=new Date()):ExecutionQuote{
  const q=normalizeTwelveQuote(raw,asOf);
- return{symbol:q.symbol,price:q.price,bid:null,ask:null,spreadPct:null,changePct:q.changePct,providerTimestamp:q.providerTimestamp,ageSeconds:q.ageSeconds,session:q.session,freshness:q.freshness,provider:"twelvedata",isRealTime:q.isRealTime};
+ return{symbol:q.symbol,price:q.price,bid:null,ask:null,spreadPct:null,changePct:q.changePct,providerTimestamp:q.providerTimestamp,ageSeconds:q.ageSeconds,session:q.session,freshness:q.freshness,provider:"twelvedata",isRealTime:q.isRealTime,exchange:String(raw?.exchange||raw?.mic_code||"")||null,currency:String(raw?.currency||"").toUpperCase()||null};
 }

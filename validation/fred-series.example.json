@@ -1,0 +1,5 @@
+{
+  "series": [
+    {"seriesId":"FEDFUNDS","metric":"fed_funds_rate"}
+  ]
+}

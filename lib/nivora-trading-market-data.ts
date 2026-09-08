@@ -2,9 +2,11 @@
 import type {AlpacaPaperBroker} from "./alpaca-paper";
 import {normalizeAlpacaQuote,normalizeTwelveExecutionQuote,type ExecutionQuote} from "./nivora-execution-quote";
 import {assessQuoteIntegrity,validateQuoteIdentity,type QuoteIntegrity} from "./nivora-provider-consensus";
+import {providerMarketHint} from "./auryn/v82/security-master";
 
 async function fetchTwelveRaw(symbol:string,key:string){
- const u=`https://api.twelvedata.com/quote?symbol=${encodeURIComponent(symbol)}&prepost=true&apikey=${key}`;
+ const hint=providerMarketHint(symbol);
+ const u=`https://api.twelvedata.com/quote?symbol=${encodeURIComponent(symbol)}${hint.exchange?`&exchange=${encodeURIComponent(hint.exchange)}`:""}&prepost=true&apikey=${key}`;
  const r=await fetch(u,{cache:"no-store",signal:AbortSignal.timeout(4500)});
  const body=await r.json().catch(()=>null);
  if(!r.ok||body?.status==="error"||(!body?.close&&!body?.price))throw new Error(body?.message||`Twelve Data ${r.status}`);
@@ -25,6 +27,9 @@ export async function loadTradingMarketData(symbol:string,broker:AlpacaPaperBrok
  if(twelveKey)work.push(fetchTwelveRaw(symbol,twelveKey).then(raw=>{twelveRaw=raw;twelve=normalizeTwelveExecutionQuote(raw,asOf)}).catch(()=>{}));
  await Promise.all(work);
  if(alpaca&&!validateQuoteIdentity(symbol,alpaca).ok)alpaca=null;
- if(twelve&&!validateQuoteIdentity(symbol,twelve).ok)twelve=null;
+ if(twelve){
+  const identity=validateQuoteIdentity(symbol,twelve,providerMarketHint(symbol));
+  if(!identity.ok){twelve=null;twelveRaw=null;}
+ }
  return{integrity:assessQuoteIntegrity(alpaca,twelve),alpaca,twelve,twelveRaw};
 }

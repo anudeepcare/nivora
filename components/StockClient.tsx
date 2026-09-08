@@ -631,8 +631,15 @@ export default function StockClient({symbol}:{symbol:string}){
   const horizonCandles=(d.candles||[]).slice(horizon==="now"?-65:horizon==="swing"?-125:-180);
 
   const marketStatusLabel=!marketTruth?"Verifying market price"
+    :marketTruth.priceState==="OFFICIAL_CLOSE"&&marketTruth.session==="AFTER_HOURS"?"After-hours · Verified regular close"
+    :marketTruth.priceState==="OFFICIAL_CLOSE"&&marketTruth.session==="PRE_MARKET"?"Pre-market · Verified regular close"
+    :marketTruth.priceState==="OFFICIAL_CLOSE"&&marketTruth.session==="OVERNIGHT"?"Overnight · Verified regular close"
     :marketTruth.priceState==="OFFICIAL_CLOSE"?"Market closed · Verified regular close"
+    :marketTruth.priceState==="LIVE_VERIFIED"&&marketTruth.session==="AFTER_HOURS"?"After-hours · Live verified"
+    :marketTruth.priceState==="LIVE_VERIFIED"&&marketTruth.session==="PRE_MARKET"?"Pre-market · Live verified"
     :marketTruth.priceState==="LIVE_VERIFIED"?"Market open · Live verified"
+    :marketTruth.priceState==="LIVE_SINGLE_SOURCE"&&marketTruth.session==="AFTER_HOURS"?"After-hours · Verified source"
+    :marketTruth.priceState==="LIVE_SINGLE_SOURCE"&&marketTruth.session==="PRE_MARKET"?"Pre-market · Verified source"
     :marketTruth.priceState==="LIVE_SINGLE_SOURCE"?"Market open · Verified source"
     :marketTruth.priceState==="UNVERIFIED"?"PRICE UNVERIFIED"
     :"Price unavailable";

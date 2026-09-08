@@ -32,6 +32,16 @@ export type PointInTimeMetric={
 
 export type HistoricalUniverseSnapshot={date:string;symbols:string[]};
 
+export type HistoricalCorporateAction={
+  symbol:string;
+  type:'SPLIT'|'DIVIDEND';
+  date:string;
+  ratio:number|null;
+  amount:number|null;
+  availableAt:string;
+  source:string;
+};
+
 export type HistoricalReplayBundle={
   meta:{
     datasetId:string;
@@ -50,6 +60,8 @@ export type HistoricalReplayBundle={
   facts?:PointInTimeMetric[];
   events?:PointInTimeMetric[];
   universeSnapshots?:HistoricalUniverseSnapshot[];
+  corporateActions?:HistoricalCorporateAction[];
+  adapterCoverage?:Record<string,string[]>;
 };
 
 export type HistoricalQualityReport={

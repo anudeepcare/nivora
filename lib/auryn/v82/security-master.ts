@@ -59,3 +59,11 @@ export function classifySecuritySymbol(raw:string):SecurityClassification{
 export function isSupportedEquitySecurity(x:SecurityClassification){
   return x.supportedForEquityAnalysis&&(x.kind==="COMMON_STOCK"||x.kind==="CLASS_SHARE");
 }
+
+export type ProviderMarketHint={exchange?:string;currency?:string};
+const PROVIDER_MARKET_HINTS:Record<string,ProviderMarketHint>={
+  SAP:{exchange:"NYSE",currency:"USD"},
+};
+export function providerMarketHint(raw:string):ProviderMarketHint{
+  return PROVIDER_MARKET_HINTS[clean(raw)]??{};
+}

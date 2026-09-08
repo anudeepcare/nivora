@@ -20,3 +20,10 @@ test('V9.2 only marks survivorship safety inputs true when explicit dated univer
  const r=mod.assembleHistoricalReplayBundle(input);
  assert.equal(r.meta.pointInTimeUniverse,true);assert.equal(r.meta.includesDelisted,true);assert.equal(r.meta.delistingReturnsHandled,true);
 });
+
+test('V9.2 preserves corporate-action evidence and adapter coverage in the replay bundle',()=>{
+ const input={datasetId:'ca',source:'TEST',benchmarkSymbol:'SPY',securities:[{symbol:'AAA'}],dailyBars:[bar('AAA','2024-01-02',100)],benchmarkBars:[bar('SPY','2024-01-02',400)],corporateActions:[{symbol:'AAA',type:'DIVIDEND',date:'2024-01-02',ratio:null,amount:.25,availableAt:'2024-01-02',source:'TEST'}],adapterCoverage:{CORPORATE_ACTIONS:['AAA'],EARNINGS:['AAA'],FUNDAMENTALS:['AAA'],REVISION:['AAA'],SECTOR:['AAA'],MACRO:['__MACRO__']}};
+ const r=mod.assembleHistoricalReplayBundle(input);
+ assert.equal(r.corporateActions.length,1);
+ assert.deepEqual(r.adapterCoverage.CORPORATE_ACTIONS,['AAA']);
+});

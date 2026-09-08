@@ -12,7 +12,10 @@ The ingestion plane never imports or mutates production CIO, broker, live featur
 1. **Twelve Data daily bars**: use `time_series`, `interval=1day`, explicit `start_date` + `end_date`, and `adjust=all`. Adapter requires positive OHLC, non-negative volume, ascending dates, and records the returned exchange/timezone metadata.
 2. **SEC Company Facts**: use `data.sec.gov/api/xbrl/companyfacts/CIK##########.json`. Facts are mapped by known taxonomy concepts and use the filing date (`filed`) as `availableAt`; period end (`end`) remains only the economic period. Amendments/re-filings therefore become visible only after their filing date.
 3. **Security master / universe inputs**: normalized from explicit research input. V9.2 must not claim survivorship safety unless dated universe membership, removed/delisted names, and delisting handling are actually present.
-4. **Optional provider payloads**: earnings/revisions, macro vintages, options, and news may be supplied through normalized point-in-time rows, but they are not upgraded to decision-grade unless `availableAt` is verified.
+4. **Twelve Data corporate actions + earnings**: retain split/dividend events independently from adjusted bars; normalize full earnings-release history and derive point-in-time surprise streaks. Network fetching is opt-in because these endpoints consume additional credits.
+5. **Revision / sector rows**: accept only explicit point-in-time research rows with a verified `availableAt`; never backdate a current analyst snapshot.
+6. **FRED/ALFRED macro vintages**: use `realtime_start` as public availability so later macro revisions cannot leak backward.
+7. **Security master / universe inputs** remain mandatory for survivorship-safe claims, including dated membership, removed/delisted names, and delisting handling.
 
 ## Backfill modes
 - `normalize:v92`: normalize provider payload files into a replay bundle without network access.
@@ -37,13 +40,13 @@ Warnings / limited quality:
 - missing delisted names / delisting returns
 - sparse fundamentals
 - provider coverage gaps
-- optional families absent (options/news/revisions/macro)
+- provider coverage gaps for a required canonical family (the strict real-data gate blocks release even if the structural audit itself can still emit a report)
 
 ## Success criteria
 - Deterministic adapter output for identical inputs.
 - Twelve Data adapter emits adjusted ascending daily bars and refuses malformed responses.
 - SEC adapter maps facts with `availableAt=filed`, never `periodEnd`.
-- Integrity report exposes coverage by symbol/year/family and survivorship limitations.
+- Integrity report exposes coverage by symbol/year/family, expected-vs-missing benchmark sessions, corporate-action corruption, and survivorship limitations.
 - A V9.2 replay bundle passes unchanged into V9.1.
 - No research adapter imports production decision/execution mutation paths.
-- Master release gate prints PASS/BLOCKED with explicit sub-gates.
+- Master release gate prints PASS/BLOCKED with explicit sub-gates and requires `FUNDAMENTALS,EARNINGS,REVISION,SECTOR,MACRO,CORPORATE_ACTIONS` for a real V9.2 release.

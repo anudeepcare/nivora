@@ -137,6 +137,9 @@
     "lib/auryn/v92/twelve-data.ts",
     "lib/auryn/v92/sec-companyfacts.ts",
     "lib/auryn/v92/assemble.ts",
-    "lib/auryn/v92/integrity.ts"
+    "lib/auryn/v92/integrity.ts",
+    "lib/auryn/v92/corporate-actions.ts",
+    "lib/auryn/v92/research-events.ts",
+    "lib/auryn/v92/fred.ts"
   ]
 }
