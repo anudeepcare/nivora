@@ -13,12 +13,12 @@ import {buildPortfolioCioActions} from "@/lib/auryn/v6/portfolio-adapter";
 type AssetType="EQUITY"|"CRYPTO"|"CASH";
 
 function portfolioOwnerAction(q:any){
- const thesis=Number(q?.thesisScore);const raw=String(q?.ownerAction||q?.action||"").toUpperCase();
- if(!Number.isFinite(thesis))return raw||"REVIEW";
- if(thesis>=68)return /ADD|BUY/.test(raw)?"HOLD / ADD":"HOLD";
- if(thesis>=52)return "WATCH";
- if(thesis<38&&/SELL|EXIT|AVOID|REDUCE/.test(raw))return "REDUCE / REASSESS";
- return "WATCH";
+ const raw=String(q?.canonicalOwnerAction||"").toUpperCase();
+ if(/EXIT|SELL/.test(raw))return "REDUCE / REASSESS";
+ if(/REDUCE/.test(raw))return "REDUCE / REASSESS";
+ if(/ADD|BUY/.test(raw))return "HOLD / ADD";
+ if(/HOLD/.test(raw))return "HOLD";
+ return "REVIEW";
 }
 
 function PortfolioContent(){
@@ -37,11 +37,12 @@ function PortfolioContent(){
   const syms=clean.filter((x:any)=>x.asset_type!=="CASH").map((x:any)=>x.symbol).slice(0,40);
   if(syms.length){
    const encoded=encodeURIComponent(syms.join(","));
-   const[technical,investment]=await Promise.all([
+   const[technical,investment,canonical]=await Promise.all([
     fetch(`/api/scan?symbols=${encoded}&limit=40`,{cache:"no-store"}).then(r=>r.json()).catch(()=>({items:[]})),
-    fetch(`/api/investment?symbols=${encoded}`,{cache:"no-store"}).then(r=>r.json()).catch(()=>({items:[]}))
+    fetch(`/api/investment?symbols=${encoded}`,{cache:"no-store"}).then(r=>r.json()).catch(()=>({items:[]})),
+    fetch(`/api/decision/summaries?symbols=${encoded}`,{cache:"no-store"}).then(r=>r.json()).catch(()=>({items:[]}))
    ]);
-   const m:any={};for(const x of technical.items||[])m[x.symbol]={...x};for(const x of investment.items||[])m[x.symbol]={...(m[x.symbol]||{}),...x};
+   const m:any={};for(const x of technical.items||[])m[x.symbol]={...x};for(const x of investment.items||[])m[x.symbol]={...(m[x.symbol]||{}),...x};for(const x of canonical.items||[])m[x.symbol]={...(m[x.symbol]||{}),...x};
    setQuotes(m);
    const holdings=clean.filter((x:any)=>x.asset_type!=="CASH").map((x:any)=>({symbol:x.symbol,marketValue:Number(x.shares||0)*Number(m[x.symbol]?.price||x.avg_cost||0),sector:m[x.symbol]?.sector||null,archetype:m[x.symbol]?.archetype||null}));
    const pr=await fetch("/api/portfolio/risk",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId:user.id,holdings})}).then(r=>r.json()).catch(()=>null);setPortfolioRisk(pr?.risk||null);
@@ -66,7 +67,7 @@ function PortfolioContent(){
 
  const priced=useMemo(()=>rows.map((x:any)=>{
   if(x.asset_type==="CASH")return{assetType:"CASH" as const,currency:x.currency||x.symbol,symbol:x.symbol,amount:Number(x.shares||0),source:x};
-  const q=quotes[x.symbol],price=Number(q?.price||x.avg_cost||0);
+  const q=quotes[x.symbol],price=Number(q?.displayPrice??q?.price??x.avg_cost??0);
   return{assetType:x.asset_type==="CRYPTO"?"CRYPTO" as const:"EQUITY" as const,symbol:x.symbol,quantity:Number(x.shares||0),price,avgCost:Number(x.avg_cost||0),thesisScore:q?.thesisScore??null,companyScore:q?.companyScore??null,opportunityScore:q?.opportunityScore??null,action:portfolioOwnerAction(q),sector:q?.sector||null,archetype:q?.archetype||null,source:x};
  }),[rows,quotes]);
  const pulse=useMemo(()=>calculatePortfolioPulse(priced,pulseHistory),[priced,pulseHistory]);

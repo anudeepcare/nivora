@@ -2,6 +2,7 @@ import {NextResponse} from "next/server";
 import {ema,rsi,pct,rnd,clamp,atr,macd,sma} from "@/lib/quant";
 import {sharedJson,nowIso} from "@/lib/shared-cache";
 import {validateLongGeometry,classifyScanAction,categoryForScan,rankScanCandidate} from "@/lib/nivora-scan";
+import {loadCanonicalMarketSnapshots} from "@/lib/auryn/market-data-gateway";
 
 // Fallback only. Full-market Discover reads the persisted scanner table when the
 // background universe scanner is configured. This seed keeps the product useful
@@ -71,7 +72,10 @@ export async function GET(req:Request){
   const symbols=[...new Set((requested.length?requested:(radar?DISCOVERY_SEED:[])))].slice(0,max);
   if(!symbols.length)return NextResponse.json({items:[],coverage:{mode:"none",scanned:0}});
   const settled=await Promise.allSettled(symbols.map(s=>one(s,key)));
-  const items=settled.map(x=>x.status==="fulfilled"?x.value:null).filter(Boolean).sort((a:any,b:any)=>b.rankScore-a.rankScore||b.score-a.score);
+  const baseItems=settled.map(x=>x.status==="fulfilled"?x.value:null).filter(Boolean);
+  const alpacaKey=process.env.ALPACA_PAPER_API_KEY||"",alpacaSecret=process.env.ALPACA_PAPER_API_SECRET||"";
+  const markets=await loadCanonicalMarketSnapshots(baseItems.map((x:any)=>({symbol:x.symbol,twelveKey:key,alpacaKey,alpacaSecret,asOf:new Date()})),6);
+  const items=baseItems.map((x:any)=>{const mt=markets.get(x.symbol)?.snapshot;return{...x,signalRole:"DISCOVERY_SIGNAL",analysisAnchorPrice:x.price,price:mt?.displayPrice??null,priceRole:mt?.priceUse??"UNAVAILABLE",snapshotId:mt?.snapshotId??null,marketTruth:mt??null};}).sort((a:any,b:any)=>b.rankScore-a.rankScore||b.score-a.score);
   return NextResponse.json({items,requested:symbols.length,returned:items.length,partial:items.length<symbols.length,
     coverage:{mode:requested.length?"requested-symbols":"seed-fallback",scanned:items.length,eligibleUniverse:null,fullMarket:false},
     freshness:{at:nowIso(),ttlSeconds:600}},

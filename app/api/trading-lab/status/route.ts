@@ -41,7 +41,7 @@ export async function GET(){
   db.from("nivora_v61_paper_orders").select("id,symbol,client_order_id,status,submitted_at,created_at").order("created_at",{ascending:false}).limit(100),
   db.from("nivora_v61_trade_fills").select("order_id,symbol,side,qty,fill_price,realized_pnl,return_pct,filled_at").order("filled_at",{ascending:false}).limit(200),
   db.from("nivora_provider_health").select("ok,error_code,latency_ms,checked_at").eq("provider","nivora").eq("capability","paper-runner").order("checked_at",{ascending:false}).limit(1).maybeSingle(),
-  db.from("nivora_v59_decision_snapshots").select("id,symbol,observed_at,decision").eq("engine_version",ENGINE_VERSION).order("observed_at",{ascending:false}).limit(1000),
+  db.from("nivora_v59_decision_snapshots").select("id,symbol,observed_at,decision,evidence").eq("engine_version",ENGINE_VERSION).order("observed_at",{ascending:false}).limit(1000),
   db.from("nivora_v65_trading_runs").select("id,automatic,session,started_at,finished_at,status,processed,submitted,blocked,errors,error").eq("engine_version",ENGINE_VERSION).order("started_at",{ascending:false}).limit(20)
  ]);
 
@@ -119,11 +119,11 @@ export async function GET(){
  const decisionActions:Record<string,number>={},decisionPaths:Record<string,number>={},decisionBlockers:Record<string,number>={};
  const decisionDetails:any[]=[];
  for(const row of snapshotLatest.values()){
-  const d=row.decision||{},today=d.today||{},audit=today.buyAudit||null,action=String(today.action||"MISSING");
+  const d=row.decision||{},today=d.today||{},audit=today.buyAudit||null,v931=row.evidence?.v931||null,action=String(v931?.newMoneyAction||today.action||"MISSING");
   decisionActions[action]=(decisionActions[action]||0)+1;
   const path=String(today.buyPath||audit?.path||"");if(path)decisionPaths[path]=(decisionPaths[path]||0)+1;
   const blocker=String(audit?.primaryBlocker||"");if(blocker)decisionBlockers[blocker]=(decisionBlockers[blocker]||0)+1;
-  decisionDetails.push({symbol:String(row.symbol||"").toUpperCase(),action,observedAt:row.observed_at,buyPath:today.buyPath||null,buyTier:today.buyTier||null,closestPath:audit?.closestPath||null,primaryBlocker:blocker||null,pathDistance:audit?.paths?.[0]?.distance??null,thesisScore:Number(d.thesisScore||0),opportunityScore:Number(d.opportunityScore||0),timingScore:Number(d.timing?.score||0)});
+  decisionDetails.push({symbol:String(row.symbol||"").toUpperCase(),action,ownerAction:v931?.ownerAction||null,canonicalPrimaryAction:v931?.canonicalPrimaryAction||null,v931SnapshotId:v931?.snapshotId||null,executionAction:v931?.executionAction||null,observedAt:row.observed_at,buyPath:today.buyPath||null,buyTier:today.buyTier||null,closestPath:audit?.closestPath||null,primaryBlocker:blocker||null,pathDistance:audit?.paths?.[0]?.distance??null,thesisScore:Number(d.thesisScore||0),opportunityScore:Number(d.opportunityScore||0),timingScore:Number(d.timing?.score||0)});
  }
  const dominantBlockers=Object.entries(decisionBlockers).sort((a,b)=>b[1]-a[1]).map(([reason,count])=>({reason,count}));
  const closestToBuy=decisionDetails.filter(x=>x.action!=="BUY"&&x.closestPath&&Number.isFinite(Number(x.pathDistance))).sort((a,b)=>Number(a.pathDistance)-Number(b.pathDistance)).slice(0,10);

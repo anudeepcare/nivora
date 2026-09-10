@@ -11,8 +11,11 @@ test('analyze API labels price as a completed daily-bar analysis anchor with its
   assert.doesNotMatch(src,/freshness:\{priceAt:nowIso\(\),decisionAt:nowIso\(\)/);
 });
 
-test('quote API timestamps the regular close by the last completed trading session, not by the live provider quote timestamp',()=>{
-  const src=fs.readFileSync('app/api/quote/[symbol]/route.ts','utf8');
-  assert.match(src,/lastCompletedRegularSessionDate/);
-  assert.doesNotMatch(src,/regularCloseTimestamp=twelveDisplay&&!twelveDisplay\.isExtendedHours\?twelveDisplay\.providerTimestamp:null/);
+test('quote API delegates regular-close timestamping to the canonical gateway and uses the last completed trading session',()=>{
+  const route=fs.readFileSync('app/api/quote/[symbol]/route.ts','utf8');
+  const gateway=fs.readFileSync('lib/auryn/market-data-gateway.ts','utf8');
+  assert.match(route,/market-data-gateway/);
+  assert.match(gateway,/lastCompletedRegularSessionDate/);
+  assert.match(gateway,/lastCompletedRegularSessionCloseTimestamp/);
+  assert.doesNotMatch(gateway,/regularCloseTimestamp=twelveDisplay&&!twelveDisplay\.isExtendedHours\?twelveDisplay\.providerTimestamp:null/);
 });

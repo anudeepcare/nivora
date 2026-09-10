@@ -36,7 +36,7 @@ export function materializeFeatureShard(baseObservations:HistoricalBaseObservati
    if(!finite(transformed)||Math.abs(transformed)<1e-12){manifest.skippedTransform++;continue;}
    const signal=applyResearchContext(candidate.context,transformed,{regime:row.regime,metrics:row.metrics});
    if(!finite(signal)||Math.abs(signal)<1e-12){manifest.skippedMissingContext++;continue;}
-   observations.push({featureId:candidate.id,symbol:row.symbol,asOf:row.asOf,archetype:row.archetype,regime:row.regime,horizon:candidate.horizon,signal,forwardReturnPct:outcome.forwardReturnPct,benchmarkReturnPct:outcome.benchmarkReturnPct,maxDrawdownPct:outcome.maxDrawdownPct,costBps:row.costBps});
+   observations.push({featureId:candidate.id,symbol:row.symbol,asOf:row.asOf,archetype:row.archetype,sector:row.sector,regime:row.regime,horizon:candidate.horizon,signal,forwardReturnPct:outcome.forwardReturnPct,benchmarkReturnPct:outcome.benchmarkReturnPct,maxDrawdownPct:outcome.maxDrawdownPct,costBps:row.costBps});
   }
  }
  observations.sort((a,b)=>a.asOf.localeCompare(b.asOf)||a.symbol.localeCompare(b.symbol)||a.featureId.localeCompare(b.featureId));

@@ -140,6 +140,23 @@
     "lib/auryn/v92/integrity.ts",
     "lib/auryn/v92/corporate-actions.ts",
     "lib/auryn/v92/research-events.ts",
-    "lib/auryn/v92/fred.ts"
+    "lib/auryn/v92/fred.ts",
+    "lib/auryn/v93/version.ts",
+    "lib/auryn/v93/domain.ts",
+    "lib/auryn/v93/policy.ts",
+    "lib/auryn/v93/folds.ts",
+    "lib/auryn/v93/metrics.ts",
+    "lib/auryn/v93/promotion.ts",
+    "lib/auryn/v93/tournament.ts",
+    "lib/auryn/v93/report.ts",
+    "lib/auryn/v93/runner.ts",
+    "lib/auryn/v931/domain.ts",
+    "lib/auryn/v931/decision-snapshot.ts",
+    "lib/auryn/v931/setup-state.ts",
+    "lib/auryn/v931/decision-kernel.ts",
+    "lib/auryn/v931/explanation.ts",
+    "lib/auryn/v931/astra.ts",
+    "lib/auryn/v931/reliability.ts",
+    "lib/auryn/market-data-gateway.ts"
   ]
 }

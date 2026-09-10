@@ -120,7 +120,9 @@ test('stock UI labels premarket and after-hours explicitly instead of claiming t
 });
 
 test('quote API never pairs a verified regular-close display with an extended-hours percent change',()=>{
-  const src=fs.readFileSync('app/api/quote/[symbol]/route.ts','utf8');
-  assert.match(src,/priceState==="OFFICIAL_CLOSE"\?null/);
+  const route=fs.readFileSync('app/api/quote/[symbol]/route.ts','utf8');
+  const gateway=fs.readFileSync('lib/auryn/market-data-gateway.ts','utf8');
+  assert.match(route,/market-data-gateway/);
+  assert.match(gateway,/priceState==='OFFICIAL_CLOSE'\?null/);
 });
 

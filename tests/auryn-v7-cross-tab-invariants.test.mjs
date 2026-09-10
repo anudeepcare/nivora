@@ -8,10 +8,10 @@ test('canonical professional metrics include ownership, narrative and macro cont
  assert.match(s,/MACRO_REGIME:\{id:'macro'/);
 });
 
-test('every decision-bearing stock tab references the same V5 action',()=>{
+test('every decision-bearing stock tab references the same V9.3.1 institutional action with V5 only as fallback',()=>{
  const s=read('components/StockClient.tsx');
- const matches=s.match(/action={v5Analysis\?\.decision\.primaryAction}/g)||[];
- assert.ok(matches.length>=6,`expected canonical action on all major tabs, saw ${matches.length}`);
+ const matches=s.match(/action=\{institutionalDecision\?\.newMoneyAction\?\?v5Analysis\?\.decision\.primaryAction\}/g)||[];
+ assert.ok(matches.length>=6,`expected V9.3.1 canonical action on all major tabs, saw ${matches.length}`);
  assert.doesNotMatch(s,/action={presentedDecision\?\.today|action={investorDecision/);
 });
 

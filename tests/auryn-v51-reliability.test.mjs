@@ -73,10 +73,12 @@ test('canonical analysis resolves CIO decision before building the execution pla
   assert.match(s,/ownerAction:decision\.ownerAction/);
 });
 
-test('quote route resolves the official regular close from Twelve quote semantics instead of raw previous_close',()=>{
-  const s=fs.readFileSync(new URL('../app/api/quote/[symbol]/route.ts',import.meta.url),'utf8');
-  assert.match(s,/resolveTwelveRegularClose/);
-  assert.doesNotMatch(s,/regularClose:twelveDisplay\?\.regularClose/);
+test('canonical quote gateway resolves the official regular close from Twelve quote semantics instead of raw previous_close',()=>{
+  const route=fs.readFileSync(new URL('../app/api/quote/[symbol]/route.ts',import.meta.url),'utf8');
+  const gateway=fs.readFileSync(new URL('../lib/auryn/market-data-gateway.ts',import.meta.url),'utf8');
+  assert.match(route,/market-data-gateway/);
+  assert.match(gateway,/resolveTwelveRegularClose/);
+  assert.doesNotMatch(gateway,/regularClose:twelveDisplay\?\.regularClose/);
 });
 
 test('execution plan UI labels WATCH as structural watch levels and never calls it active DCA',()=>{

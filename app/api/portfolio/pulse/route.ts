@@ -1,5 +1,6 @@
 import {NextResponse} from "next/server";
 import {createClient} from "@supabase/supabase-js";
+import {loadCanonicalMarketSnapshots} from "@/lib/auryn/market-data-gateway";
 
 function db(){
  const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -16,9 +17,9 @@ export async function GET(req:Request){
 export async function POST(req:Request){
  const client=db(),uid=userId(req);if(!client)return NextResponse.json({status:"unavailable"},{status:503});if(!uid)return NextResponse.json({error:"user required"},{status:401});
  const b=await req.json().catch(()=>({})),totalValue=Number(b.totalValue);if(!Number.isFinite(totalValue)||totalValue<0)return NextResponse.json({error:"valid totalValue required"},{status:400});
- const td=process.env.TWELVE_DATA_API_KEY;
- const quote=async(symbol:string)=>{if(!td)return null;try{const r=await fetch(`https://api.twelvedata.com/price?symbol=${symbol}&apikey=${td}`,{cache:"no-store",signal:AbortSignal.timeout(1800)}),j=await r.json(),v=Number(j?.price);return Number.isFinite(v)&&v>0?v:null}catch{return null}};
- const [spy,qqq]=await Promise.all([quote("SPY"),quote("QQQ")]);
+ const twelveKey=process.env.TWELVE_DATA_API_KEY||"",alpacaKey=process.env.ALPACA_PAPER_API_KEY||"",alpacaSecret=process.env.ALPACA_PAPER_API_SECRET||"";
+ const markets=await loadCanonicalMarketSnapshots(["SPY","QQQ"].map(symbol=>({symbol,twelveKey,alpacaKey,alpacaSecret,asOf:new Date()})),2);
+ const spy=markets.get("SPY")?.snapshot.displayPrice??null,qqq=markets.get("QQQ")?.snapshot.displayPrice??null;
  const now=new Date(),row={user_id:uid,as_of:now.toISOString(),snapshot_day:now.toISOString().slice(0,10),total_value:totalValue,spy_price:spy,qqq_price:qqq,holdings:Array.isArray(b.holdings)?b.holdings:[],engine_version:"v65.11"};
  const{error}=await client.from("nivora_portfolio_snapshots").upsert(row,{onConflict:"user_id,snapshot_day"});
  if(error)return NextResponse.json({status:"error",error:error.message},{status:500});

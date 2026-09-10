@@ -1,3 +1,7 @@
+
+## AURYN V9.3 — Deterministic Feature Tournament
+V9.3 upgrades the research plane into a full 46,464-hypothesis deterministic tournament with purged walk-forward OOS testing, transaction-cost stress, bootstrap confidence, regime/archetype/sector stability and global FDR control. Survivors are research-only `V94_CANDIDATE` records; no production CIO or broker path is changed. See `AURYN_V9_3_RELEASE.md`.
+
 # AURYN V9.1 — Historical Observation Factory
 
 V9.1 creates compact point-in-time historical **base observations**, then materializes deterministic **candidate shards** for the V9 Feature Tournament. It enforces adjusted-price, `availableAt`, survivorship/universe and delisting-return quality rules before historical evidence can be treated as decision-grade.

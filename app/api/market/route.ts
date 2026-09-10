@@ -1,3 +1,14 @@
-import {NextResponse} from "next/server";import {ema,pct,rnd} from "@/lib/quant";import {sharedJson,nowIso} from "@/lib/shared-cache";
-async function one(symbol:string,key:string){const u=`https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(symbol)}&interval=1day&outputsize=80&apikey=${key}`;const j=await sharedJson(u,["twelve","market",symbol],60,2600);if(!j.values)return null;const r=j.values.slice().reverse(),c=r.map((x:any)=>+x.close),p=c.at(-1)!,e20=ema(c,20).at(-1)!,e50=ema(c,50).at(-1)!;const score=(p>e20?1:-1)+(e20>e50?1:-1);return{symbol,price:rnd(p),changePct:rnd(pct(p,c.at(-2)??p)),trend:score>=2?"Strong":score<=-2?"Weak":"Mixed"}}
-export async function GET(){const key=process.env.TWELVE_DATA_API_KEY;if(!key)return NextResponse.json({items:[],regime:"Unavailable"});try{const items=(await Promise.all([one("SPY",key),one("QQQ",key),one("IWM",key),one("BTC/USD",key)])).filter(Boolean);const equity=items.filter((x:any)=>["SPY","QQQ","IWM"].includes(x.symbol));const strong=equity.filter((x:any)=>x.trend==="Strong").length,weak=equity.filter((x:any)=>x.trend==="Weak").length;const regime=strong>=2?"Risk-on":weak>=2?"Risk-off":"Mixed";return NextResponse.json({items,regime,freshness:{at:nowIso(),ttlSeconds:60}},{headers:{"Cache-Control":"public, s-maxage=60, stale-while-revalidate=180"}})}catch{return NextResponse.json({items:[],regime:"Unavailable"})}}
+import {NextResponse} from "next/server";
+import {loadCanonicalMarketSnapshots} from "@/lib/auryn/market-data-gateway";
+import {nowIso} from "@/lib/shared-cache";
+const pct=(a:number,b:number)=>b?((a/b)-1)*100:0;const rnd=(n:number)=>Math.round(n*100)/100;
+export async function GET(){
+ const twelveKey=process.env.TWELVE_DATA_API_KEY||"",alpacaKey=process.env.ALPACA_PAPER_API_KEY||"",alpacaSecret=process.env.ALPACA_PAPER_API_SECRET||"";
+ if(!twelveKey&&!alpacaKey)return NextResponse.json({items:[],regime:"Unavailable"});
+ try{
+  const symbols=['SPY','QQQ','IWM'];const results=await loadCanonicalMarketSnapshots(symbols.map(symbol=>({symbol,twelveKey,alpacaKey,alpacaSecret,asOf:new Date()})),3);
+  const items=symbols.map(symbol=>{const s=results.get(symbol)?.snapshot;if(!s||s.displayPrice==null)return null;const base=s.regularClose??s.displayPrice;const move=pct(s.displayPrice,base);const trend=move>.2?'Strong':move<-.2?'Weak':'Mixed';return{symbol,price:rnd(s.displayPrice),changePct:rnd(move),trend,marketTruth:s,priceRole:s.priceUse,snapshotId:s.snapshotId};}).filter(Boolean);
+  const strong=items.filter((x:any)=>x.trend==='Strong').length,weak=items.filter((x:any)=>x.trend==='Weak').length;const regime=strong>=2?'Risk-on':weak>=2?'Risk-off':'Mixed';
+  return NextResponse.json({items,regime,freshness:{at:nowIso(),ttlSeconds:20},truth:'CANONICAL_MARKET_GATEWAY'},{headers:{"Cache-Control":"private, no-store, max-age=0"}});
+ }catch{return NextResponse.json({items:[],regime:"Unavailable"},{status:503})}
+}

@@ -174,13 +174,33 @@ async function run(req:Request,automatic=false){
     const d=snapshot.decision||{};
     const pos=positionMap.get(snapshot.symbol);
     const v5Meta=snapshot.evidence?.v5;
+    const v931Meta=snapshot.evidence?.v931;
+    const normalizedAction=(x:any)=>String(x||"").trim().toUpperCase().replaceAll(" ","_");
+    if(!v931Meta?.snapshotId||!v931Meta?.canonicalPrimaryAction){
+     const reason="V9.3.1 canonical decision metadata is missing; Trading Lab fails closed until a fresh institutional decision snapshot is persisted.";
+     await recordEvaluation(snapshot,"BLOCKED","NONE",reason,"CANONICAL_DECISION_MISSING",null,{v931Meta:v931Meta??null});
+     results.push({symbol:snapshot.symbol,status:"BLOCKED",action:"NONE",reason,riskCode:"CANONICAL_DECISION_MISSING"});
+     continue;
+    }
+    if(normalizedAction(v5Meta?.action)!==normalizedAction(v931Meta.canonicalPrimaryAction)){
+     const reason=`Persisted V9.3.1 canonical action ${normalizedAction(v931Meta.canonicalPrimaryAction)||"MISSING"} diverges from the internal V5 action ${normalizedAction(v5Meta?.action)||"MISSING"}; execution is blocked.`;
+     await recordEvaluation(snapshot,"BLOCKED",String(v931Meta.newMoneyAction||"NONE"),reason,"CANONICAL_DECISION_DIVERGENCE",null,{v931Meta,v5Action:v5Meta?.action??null});
+     results.push({symbol:snapshot.symbol,status:"BLOCKED",action:String(v931Meta.newMoneyAction||"NONE"),reason,riskCode:"CANONICAL_DECISION_DIVERGENCE"});
+     continue;
+    }
+    if(v931Meta.executionAction!=="READY"){
+     const reason="The persisted V9.3.1 institutional decision did not authorize execution for its canonical snapshot; a fresh execution-ready decision is required.";
+     await recordEvaluation(snapshot,"BLOCKED",String(v931Meta.newMoneyAction||"NONE"),reason,"CANONICAL_EXECUTION_BLOCKED",null,{v931Meta});
+     results.push({symbol:snapshot.symbol,status:"BLOCKED",action:String(v931Meta.newMoneyAction||"NONE"),reason,riskCode:"CANONICAL_EXECUTION_BLOCKED"});
+     continue;
+    }
     if(v5Meta?.trustState==="BLOCK"){
      const reason="Canonical trust audit blocked execution; the snapshot/decision/plan chain is not internally consistent.";
      await recordEvaluation(snapshot,"NO_INTENT","NONE",reason,"CANONICAL_TRUST");
      results.push({symbol:snapshot.symbol,status:"NO_INTENT",action:"NONE",reason});
      continue;
     }
-    const today=v5Meta?.action?mapV5ActionToToday(v5Meta.action as any,Boolean(pos)):d.today;
+    const today=v931Meta?.canonicalPrimaryAction?mapV5ActionToToday(v931Meta.canonicalPrimaryAction as any,Boolean(pos)):d.today;
     if(!today){
      const x=explainNoIntent(undefined,false);
      await recordEvaluation(snapshot,"NO_INTENT","NONE",x.reason,x.code);
@@ -190,7 +210,7 @@ async function run(req:Request,automatic=false){
 
     const intent=deriveTradeIntent({
      symbol:snapshot.symbol,
-     snapshotId:String(v5Meta?.snapshotId||snapshot.id),
+     snapshotId:String(v931Meta?.snapshotId||v5Meta?.snapshotId||snapshot.id),
      evidenceFingerprint:String(snapshot.evidence_fingerprint||""),
      price:Number(snapshot.price||0),
      observedAt:String(snapshot.observed_at),
@@ -248,7 +268,11 @@ async function run(req:Request,automatic=false){
      integrityState:market.integrity.state,
      integrityTradable:market.integrity.state==="LIVE_VERIFIED",
      disagreementPct:market.integrity.disagreementPct,
-     automatic
+     automatic,
+     v931SnapshotId:String(v931Meta.snapshotId),
+     canonicalAction:String(v931Meta.canonicalPrimaryAction),
+     canonicalOwnerAction:String(v931Meta.ownerAction||""),
+     canonicalNewMoneyAction:String(v931Meta.newMoneyAction||"")
     };
 
     let executableIntent=intent;

@@ -3,12 +3,14 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 const read=p=>fs.readFileSync(new URL(`../${p}`,import.meta.url),'utf8');
 
-test('quote route returns canonical market snapshot fields instead of requiring chosen stale quote',()=>{
-  const s=read('app/api/quote/[symbol]/route.ts');
-  assert.match(s,/buildCanonicalMarketSnapshot/);
-  assert.match(s,/snapshotId/);
-  assert.match(s,/priceSensitiveAllowed/);
-  assert.doesNotMatch(s,/if\(!chosen\)return NextResponse\.json/);
+test('quote route returns canonical market snapshot fields through the centralized gateway instead of requiring a chosen stale quote',()=>{
+  const route=read('app/api/quote/[symbol]/route.ts');
+  const gateway=read('lib/auryn/market-data-gateway.ts');
+  assert.match(route,/market-data-gateway/);
+  assert.match(gateway,/buildCanonicalMarketSnapshot/);
+  assert.match(route,/snapshot/);
+  assert.match(gateway,/priceSensitiveAllowed|CanonicalMarketSnapshot/);
+  assert.doesNotMatch(route,/if\(!chosen\)return NextResponse\.json/);
 });
 
 test('StockClient no longer mixes live quote price with analysis price for currentPx',()=>{

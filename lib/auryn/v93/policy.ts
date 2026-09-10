@@ -1,0 +1,27 @@
+import type {V93Policy} from './domain';
+
+export const V93_POLICY:V93Policy={
+  version:'AURYN_V93_POLICY_1',
+  seed:9303001,
+  foldCount:4,
+  initialTrainFraction:.5,
+  minTotalN:240,
+  minOosN:80,
+  minFoldTestN:15,
+  minStabilityGroupN:10,
+  minPositiveFoldPct:75,
+  minRegimes:2,
+  minRegimePositivePct:60,
+  minArchetypes:2,
+  minArchetypePositivePct:60,
+  minSectors:2,
+  minSectorPositivePct:60,
+  minOosIC:.02,
+  minOosHitRatePct:52,
+  minAvgDrawdownPct:-25,
+  costStressMultiplier:2,
+  fdrAlpha:.05,
+  bootstrapIterations:1000,
+  bootstrapConfidence:.95,
+  purgeCalendarDays:{'1D':3,'5D':10,'20D':35,'90D':100,'180D':200,'1Y':380},
+};
