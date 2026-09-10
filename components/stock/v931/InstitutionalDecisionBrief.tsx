@@ -1,13 +1,15 @@
 import type {InstitutionalDecision} from '@/lib/auryn/v931/domain';
 import type {ExecutionPlan} from '@/lib/auryn/v5/domain';
 import {formatMoney} from '@/lib/nivora-format';
+import MarketTimeframeTape from '@/components/market/MarketTimeframeTape';
+import MarketActionMap from '@/components/market/MarketActionMap';
 
 const tone=(s:string)=>/BUY|ADD|ATTRACTIVE|READY|STRONG|CONSTRUCTIVE|TRENDING|CONFIRMED|POSITIVE/.test(String(s||'').toUpperCase())?'good':/SELL|EXIT|REDUCE|UNATTRACTIVE|DAMAGED|FAILED|NEGATIVE|WEAK/.test(String(s||'').toUpperCase())?'bad':'mid';
 const pretty=(s:string)=>String(s||'').replaceAll('_',' ');
 const money=(v:number|null|undefined)=>Number.isFinite(Number(v))?formatMoney(Number(v)):'—';
 const zone=(p:ExecutionPlan|null|undefined)=>p?.initialEntry?`${money(p.initialEntry.low)}–${money(p.initialEntry.high)}`:'—';
 
-export default function InstitutionalDecisionBrief({decision,marketTruth,executionPlan,support}:{decision:InstitutionalDecision;marketTruth:any;executionPlan?:ExecutionPlan|null;support?:number|null}){
+export default function InstitutionalDecisionBrief({decision,marketTruth,executionPlan,support,marketIntelligence}:{decision:InstitutionalDecision;marketTruth:any;executionPlan?:ExecutionPlan|null;support?:number|null;marketIntelligence?:any}){
  const session=pretty(String(marketTruth?.session||'')).toUpperCase();
  const marketStatus=session&&session!=='REGULAR'?`${session} · RESEARCH ACTIVE`:'RESEARCH ACTIVE';
  const primaryReason=decision.drivers[0]||'AURYN is waiting for stronger decision-grade evidence.';
@@ -34,14 +36,15 @@ export default function InstitutionalDecisionBrief({decision,marketTruth,executi
    </div>
   </div>
 
-  <div className="v933LevelRail" aria-label="Decision levels">
+  {marketIntelligence?<MarketTimeframeTape marketIntelligence={marketIntelligence}/>:null}
+  {marketIntelligence?.actionMap||marketIntelligence?.levels?<MarketActionMap marketIntelligence={marketIntelligence}/>:<div className="v933LevelRail" aria-label="Decision levels">
    <span><small>PREFERRED ENTRY</small><b>{zone(executionPlan)}</b></span>
    <span><small>CONFIRM</small><b>{money(executionPlan?.confirmation)}</b></span>
    <span><small>SUPPORT</small><b>{money(support)}</b></span>
    <span><small>T1</small><b>{money(t1)}</b></span>
    <span><small>T2</small><b>{money(t2)}</b></span>
    <span><small>RISK</small><b>{money(executionPlan?.invalidation)}</b></span>
-  </div>
+  </div>}
 
   <div className="v933Story">
    <article>

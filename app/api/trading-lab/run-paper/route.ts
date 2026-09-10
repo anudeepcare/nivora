@@ -175,11 +175,18 @@ async function run(req:Request,automatic=false){
     const pos=positionMap.get(snapshot.symbol);
     const v5Meta=snapshot.evidence?.v5;
     const v931Meta=snapshot.evidence?.v931;
+    const v934Meta=snapshot.evidence?.v934;
     const normalizedAction=(x:any)=>String(x||"").trim().toUpperCase().replaceAll(" ","_");
     if(!v931Meta?.snapshotId||!v931Meta?.canonicalPrimaryAction){
      const reason="V9.3.1 canonical decision metadata is missing; Trading Lab fails closed until a fresh institutional decision snapshot is persisted.";
      await recordEvaluation(snapshot,"BLOCKED","NONE",reason,"CANONICAL_DECISION_MISSING",null,{v931Meta:v931Meta??null});
      results.push({symbol:snapshot.symbol,status:"BLOCKED",action:"NONE",reason,riskCode:"CANONICAL_DECISION_MISSING"});
+     continue;
+    }
+    if(!v934Meta?.snapshotId||!v934Meta?.marketTruthSnapshotId||!v934Meta?.levels){
+     const reason="V9.3.4 canonical market-intelligence metadata is missing; Trading Lab fails closed until a fresh multi-timeframe intelligence snapshot is persisted.";
+     await recordEvaluation(snapshot,"BLOCKED",String(v931Meta.newMoneyAction||"NONE"),reason,"MARKET_INTELLIGENCE_MISSING",null,{v934Meta:v934Meta??null});
+     results.push({symbol:snapshot.symbol,status:"BLOCKED",action:String(v931Meta.newMoneyAction||"NONE"),reason,riskCode:"MARKET_INTELLIGENCE_MISSING"});
      continue;
     }
     if(normalizedAction(v5Meta?.action)!==normalizedAction(v931Meta.canonicalPrimaryAction)){
@@ -272,13 +279,21 @@ async function run(req:Request,automatic=false){
      v931SnapshotId:String(v931Meta.snapshotId),
      canonicalAction:String(v931Meta.canonicalPrimaryAction),
      canonicalOwnerAction:String(v931Meta.ownerAction||""),
-     canonicalNewMoneyAction:String(v931Meta.newMoneyAction||"")
+     canonicalNewMoneyAction:String(v931Meta.newMoneyAction||""),
+     v934SnapshotId:String(v934Meta.snapshotId||""),
+     v934MarketTruthSnapshotId:String(v934Meta.marketTruthSnapshotId||""),
+     v934Alignment:String(v934Meta.alignment||""),
+     v934Timeframes:v934Meta.timeframes??null,
+     v934Levels:v934Meta.levels??null
     };
 
     let executableIntent=intent;
     let sizing:any=null;
     if(intent.side==="BUY"){
-     const invalidationResult=resolvePaperInvalidation({entry:quote?.price??0,decision:d,evidence:snapshot.evidence});
+     const v934Invalidation=Number(v934Meta?.actionMap?.invalidation??v934Meta?.levels?.invalidation);
+     const invalidationResult=Number.isFinite(v934Invalidation)&&v934Invalidation>0
+      ? {value:v934Invalidation,source:"V934_MARKET_INTELLIGENCE"}
+      : resolvePaperInvalidation({entry:quote?.price??0,decision:d,evidence:snapshot.evidence});
      const invalidation=Number(invalidationResult.value||0);
      const riskPerTradePct=Number(process.env.TRADING_LAB_RISK_PER_TRADE_PCT||0.5);
      if(!quote||quote.price<=0||!invalidation||invalidation>=quote.price){

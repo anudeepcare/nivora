@@ -37,7 +37,7 @@ test('scheduled reliability workflow continuously audits open and closed market 
  const src=read(path);
  assert.match(src,/workflow_dispatch:/);
  assert.match(src,/schedule:/);
- assert.match(src,/audit:v931-live/);
+ assert.match(src,/audit:v934-live/);
  assert.match(src,/AURYN_BASE_URL/);
  assert.match(src,/upload-artifact/);
  assert.match(src,/weekend|closed-market/i);

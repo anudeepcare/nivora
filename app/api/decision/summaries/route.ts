@@ -33,7 +33,7 @@ export async function GET(req:Request){
  const twelveKey=process.env.TWELVE_DATA_API_KEY||"",alpacaKey=process.env.ALPACA_PAPER_API_KEY||"",alpacaSecret=process.env.ALPACA_PAPER_API_SECRET||"";
  const markets=await loadCanonicalMarketSnapshots(symbols.map(symbol=>({symbol,twelveKey,alpacaKey,alpacaSecret,asOf:new Date()})),6);
  const items=symbols.map(symbol=>{
-  const row=latest.get(symbol),v931=row?.evidence?.v931||null,legacy=row?.decision||null,snapshot=markets.get(symbol)?.snapshot||null;
+  const row=latest.get(symbol),v934=row?.evidence?.v934||null,v931=row?.evidence?.v931||null,legacy=row?.decision||null,snapshot=markets.get(symbol)?.snapshot||null;
   const canonicalAction=v931?.newMoneyAction??legacy?.primaryAction??null;
   const canonicalOwnerAction=v931?.ownerAction??legacy?.ownerAction??null;
   return{
@@ -46,6 +46,11 @@ export async function GET(req:Request){
    canonicalOwnerAction,
    longTermAction:v931?.longTermAction??null,
    setupState:v931?.setupState??null,
+   marketIntelligenceSnapshotId:v934?.snapshotId??null,
+   marketIntelligence:v934,
+   timeframes:v934?.timeframes??null,
+   actionMap:v934?.actionMap??null,
+   levels:v934?.levels??null,
    decisionScore:v931?.decisionScore??legacy?.decisionStrength?.score??null,
    evidenceCompleteness:v931?.evidenceCompleteness??legacy?.evidenceConfidence?.score??null,
    thesisScore:legacy?.thesis?.strength??null,
@@ -63,5 +68,5 @@ export async function GET(req:Request){
    marketTruth:snapshot
   };
  });
- return NextResponse.json({items,contract:"AURYN_V9_3_1_CANONICAL_SURFACE",decisionSemantics:"CANONICAL_LAST_VERIFIED",generatedAt:new Date().toISOString()},{headers:{"Cache-Control":"private, no-store, max-age=0"}});
+ return NextResponse.json({items,contract:"AURYN_V9_3_4_CANONICAL_SURFACE",decisionSemantics:"CANONICAL_LAST_VERIFIED",generatedAt:new Date().toISOString()},{headers:{"Cache-Control":"private, no-store, max-age=0"}});
 }

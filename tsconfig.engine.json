@@ -157,6 +157,15 @@
     "lib/auryn/v931/explanation.ts",
     "lib/auryn/v931/astra.ts",
     "lib/auryn/v931/reliability.ts",
-    "lib/auryn/market-data-gateway.ts"
+    "lib/auryn/market-data-gateway.ts",
+    "lib/auryn/v934/domain.ts",
+    "lib/auryn/v934/indicators.ts",
+    "lib/auryn/v934/timeframes.ts",
+    "lib/auryn/v934/zones.ts",
+    "lib/auryn/v934/intelligence-snapshot.ts",
+    "lib/auryn/v934/version.ts",
+    "lib/auryn/v934/projections.ts",
+    "lib/auryn/v934/decision-bridge.ts",
+    "lib/auryn/v934/twelve-multitimeframe.ts"
   ]
 }

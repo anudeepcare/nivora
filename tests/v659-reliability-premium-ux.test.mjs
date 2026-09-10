@@ -24,10 +24,10 @@ test('paper runner retries market data once when an open-session quote is stale'
  assert.match(s,/STALE|DELAYED/);
 });
 
-test('analysis route does not serially wait for optional Alpaca bar integrity after Twelve Data',()=>{
+test('analysis route loads V9.3.4 market bars and optional Alpaca integrity in parallel',()=>{
  const s=fs.readFileSync('app/api/analyze/[symbol]/route.ts','utf8');
  assert.match(s,/alpacaBarsPromise/);
- assert.match(s,/Promise\.all\(\[series\(symbol/);
+ assert.match(s,/const \[v934Bars,v934Bench,marketGateway,alpacaBars\]=await Promise\.all\(\[/);
 });
 
 test('stock core loader allows one bounded retry before presenting a fatal timeout',()=>{

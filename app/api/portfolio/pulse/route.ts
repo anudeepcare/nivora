@@ -23,5 +23,5 @@ export async function POST(req:Request){
  const now=new Date(),row={user_id:uid,as_of:now.toISOString(),snapshot_day:now.toISOString().slice(0,10),total_value:totalValue,spy_price:spy,qqq_price:qqq,holdings:Array.isArray(b.holdings)?b.holdings:[],engine_version:"v65.11"};
  const{error}=await client.from("nivora_portfolio_snapshots").upsert(row,{onConflict:"user_id,snapshot_day"});
  if(error)return NextResponse.json({status:"error",error:error.message},{status:500});
- return NextResponse.json({status:"ok",snapshot:row});
+ return NextResponse.json({status:"ok",snapshot:row,contract:"AURYN_V9_3_4_PORTFOLIO_SNAPSHOT",marketIntelligenceSnapshots:(Array.isArray(row.holdings)?row.holdings:[]).filter((x:any)=>x?.marketIntelligence?.snapshotId).length});
 }

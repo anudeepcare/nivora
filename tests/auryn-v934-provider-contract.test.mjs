@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
+const mod=await import('../.engine-test/auryn/v934/twelve-multitimeframe.js').catch(()=>({}));
+const {parseTwelveBars,resampleSequential,aggregateCompletedWeeks}=mod;
+
+test('provider adapter requests 15m extended-hours plus completed 4h and daily data with explicit timezone and market hint',async()=>{const urls=[];const fetchJson=async(url)=>{urls.push(url);return {values:[]}};await mod.loadV934MarketBars({symbol:'SAP',key:'x',asOf:new Date('2026-09-10T14:00:00.000Z'),fetchJson});assert.ok(urls.some(x=>x.includes('interval=15min')&&x.includes('prepost=true')));assert.ok(urls.some(x=>x.includes('interval=4h')));assert.ok(urls.some(x=>x.includes('interval=1day')));assert.ok(urls.every(x=>x.includes('timezone=UTC')));assert.ok(urls.every(x=>x.includes('exchange=NYSE')));});
+
+test('analyze route publishes one V9.3.4 marketIntelligence snapshot',()=>{const src=fs.readFileSync('app/api/analyze/[symbol]/route.ts','utf8');assert.match(src,/loadV934MarketBars/);assert.match(src,/buildAurynMarketIntelligenceSnapshot/);assert.match(src,/marketIntelligence/);});
+
+test('15-minute bars resample deterministically to completed hourly chunks',()=>{const rows=Array.from({length:9},(_,i)=>({datetime:`2026-09-10 ${String(13+Math.floor(i/4)).padStart(2,'0')}:${String((i%4)*15).padStart(2,'0')}:00`,open:100+i,high:101+i,low:99+i,close:100.5+i,volume:1000+i}));const parsed=parseTwelveBars({values:rows});const full=resampleSequential(parsed,4,false);const preview=resampleSequential(parsed,4,true);assert.equal(full.length,2);assert.equal(preview.length,3);assert.equal(full[0].open,100);assert.equal(full[0].close,103.5);});
+
+test('weekly aggregation excludes an unfinished current week',()=>{const days=['2026-08-31','2026-09-01','2026-09-02','2026-09-03','2026-09-04','2026-09-08','2026-09-09'];const rows=days.map((datetime,i)=>({datetime,open:100+i,high:102+i,low:99+i,close:101+i,volume:1000}));const weeks=aggregateCompletedWeeks(rows,new Date('2026-09-09T22:00:00.000Z'));assert.equal(weeks.length,1);assert.equal(weeks[0].datetime,'2026-09-04');});

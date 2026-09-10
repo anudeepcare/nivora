@@ -6,16 +6,15 @@ import {AlpacaPaperBroker} from "@/lib/alpaca-paper";
 import {sharedJson,nowIso} from "@/lib/shared-cache";
 import {rateLimitDistributed,requestKey} from "@/lib/rate-limit";
 import {classifySecuritySymbol,isSupportedEquitySecurity} from "@/lib/auryn/v82/security-master";
+import {loadV934MarketBars} from "@/lib/auryn/v934/twelve-multitimeframe";
+import {buildAurynMarketIntelligenceSnapshot} from "@/lib/auryn/v934/intelligence-snapshot";
+import {loadCanonicalMarketSnapshot} from "@/lib/auryn/market-data-gateway";
+import {buildCanonicalMarketSnapshot} from "@/lib/auryn/market-truth";
+import {lastCompletedRegularSessionCloseTimestamp} from "@/lib/nivora-market-session";
 import {assessHistoryCoverage} from "@/lib/auryn/v82/provider-coverage";
 import {marketCalendarAt} from "@/lib/nivora-market-session";
 import {completedDailyBars} from "@/lib/auryn/v84/completed-bars";
 
-const EXCHANGE_HINTS:Record<string,string>={SAP:"NYSE"};
-async function series(symbol:string,key:string,size=240,revalidate=45,timeout=3200){
-  const exchange=EXCHANGE_HINTS[symbol];
-  const u=`https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(symbol)}&interval=1day&outputsize=${size}${exchange?`&exchange=${encodeURIComponent(exchange)}`:""}&apikey=${key}`;
-  return sharedJson(u,["twelve","series",symbol,String(size)],revalidate,timeout);
-}
 function qLabel(n:number,good=67,bad=42){return n>=good?"Strong":n<bad?"Weak":"Mixed"}
 export async function GET(req:Request,{params}:{params:Promise<{symbol:string}>}){
  const rl=await rateLimitDistributed(`analyze:${requestKey(req)}`,45,60_000);if(!rl.ok)return NextResponse.json({error:"Too many analysis requests. Please wait a moment."},{status:429,headers:{"Retry-After":"60"}});
@@ -29,20 +28,26 @@ export async function GET(req:Request,{params}:{params:Promise<{symbol:string}>}
   const alpacaBarsPromise:Promise<Bar[]|null>=!isCrypto&&process.env.ALPACA_PAPER_API_KEY&&process.env.ALPACA_PAPER_API_SECRET
    ?new AlpacaPaperBroker(process.env.ALPACA_PAPER_API_KEY,process.env.ALPACA_PAPER_API_SECRET).getRecentBars(symbol,40).catch(()=>null)
    :Promise.resolve(null);
-  const [j,bj,alpacaBars]=await Promise.all([series(symbol,key,260,45,2800),benchmark?series(benchmark,key,100,90,1800).catch(()=>null):Promise.resolve(null),alpacaBarsPromise]);
+  const asOf=new Date();
+  const fetchJson=(url:string,keyParts:string[],revalidate:number,timeout:number)=>sharedJson(url,keyParts,revalidate,timeout);
+  const [v934Bars,v934Bench,marketGateway,alpacaBars]=await Promise.all([
+    loadV934MarketBars({symbol,key,asOf,fetchJson}),
+    benchmark?loadV934MarketBars({symbol:benchmark,key,asOf,fetchJson}).catch(()=>null):Promise.resolve(null),
+    loadCanonicalMarketSnapshot({symbol,twelveKey:key,alpacaKey:process.env.ALPACA_PAPER_API_KEY||'',alpacaSecret:process.env.ALPACA_PAPER_API_SECRET||'',asOf}).catch(()=>null),
+    alpacaBarsPromise
+  ]);
+  const j=v934Bars.rawDaily,bj=v934Bench?.rawDaily??null;
   const coverage=assessHistoryCoverage(symbol,j);
   if(coverage.code==="PROVIDER_RATE_LIMITED")return NextResponse.json({error:coverage.reason,code:coverage.code,analysisStatus:"RETRY",security,coverage,researchSafe:false,executionTradable:false},{status:429,headers:{"Retry-After":"60","Cache-Control":"private, no-store, max-age=0"}});
   if(!coverage.analysisAllowed)return NextResponse.json({error:coverage.reason,code:coverage.code,analysisStatus:"QUARANTINED",security,coverage,researchSafe:false,executionTradable:false},{status:422,headers:{"Cache-Control":"private, no-store, max-age=0"}});
-  const calendar=marketCalendarAt(new Date());
-  const rows=j.values.slice().reverse();
-  const allBarRows:Bar[]=rows.map((x:any)=>({datetime:String(x.datetime),open:+x.open,high:+x.high,low:+x.low,close:+x.close,volume:+x.volume||0}));
-  // Daily technicals are intentionally anchored to completed bars. If a provider includes today's
-  // partial daily candle during pre-market/regular hours, remove it rather than pretending it is final.
-  const barRows:Bar[]=completedDailyBars(allBarRows,calendar);
-  const allBenchRows:Bar[]|null=bj?.values?bj.values.slice().reverse().map((x:any)=>({datetime:String(x.datetime),open:+x.open,high:+x.high,low:+x.low,close:+x.close,volume:+x.volume||0})):null;
-  const benchRows:Bar[]|null=allBenchRows?completedDailyBars(allBenchRows,calendar):null;
+  const calendar=marketCalendarAt(asOf);
+  const barRows:Bar[]=v934Bars.confirmed["1D"]??[];
+  const benchRows:Bar[]|null=(v934Bench?.confirmed["1D"]??null) as Bar[]|null;
   const technical=computeTechnicalSnapshot(barRows,benchRows,benchmark);
   if(!technical)throw new Error("Insufficient market history for technical analysis.");
+  const fallbackClose=barRows.at(-1)?.close??null;
+  const marketTruth=marketGateway?.snapshot??buildCanonicalMarketSnapshot({symbol,asOf,primary:null,secondary:null,regularClose:fallbackClose,regularCloseTimestamp:fallbackClose!=null?lastCompletedRegularSessionCloseTimestamp(asOf):null});
+  const marketIntelligence=buildAurynMarketIntelligenceSnapshot({symbol,marketTruth,confirmedBars:v934Bars.confirmed,benchmarkBars:v934Bench?.confirmed??{},previewBars:v934Bars.preview,benchmark});
   const analysisAnchor=barRows.at(-1)??null,analysisAnchorPrice=analysisAnchor?.close??technical.price,analysisAnchorAsOf=analysisAnchor?.datetime??null;
   const seriesIntegrity=assessBarSeriesIntegrity(barRows,alpacaBars);
   const c=barRows.map(x=>x.close),h=barRows.map(x=>x.high),l=barRows.map(x=>x.low),v=barRows.map(x=>x.volume);
@@ -81,7 +86,7 @@ export async function GET(req:Request,{params}:{params:Promise<{symbol:string}>}
   const own=p<invalidation?{label:"REASSESS / REDUCE RISK",tone:"bad",text:`Price is below the technical invalidation area near $${invalidation}. Recheck the business thesis and position risk.`}:p<support?{label:"HOLD / WATCH CLOSELY",tone:"mid",text:`Price is below nearest support. Watch whether $${majorSupport} stabilizes and whether the business thesis remains intact.`}:{label:"HOLD / WATCH",tone:"good",text:`The setup remains healthier while $${support} holds. Avoid adding simply because price is down; wait for a quality entry or confirmation.`};
   const candles=barRows.slice(-180).map((x:any)=>({time:x.datetime,open:+x.open,high:+x.high,low:+x.low,close:+x.close,volume:+x.volume||0}));
   const why=[p>e20?"Price is above its 20-day equilibrium.":"Price is below its 20-day equilibrium.",e20>e50?"Short trend leads the intermediate trend.":"Short trend remains below the intermediate trend.",volumeRatio>1.08?"Recent volume is above normal.":"Recent volume is not showing strong confirmation.",extension>=60?"Price is stretched enough that mean-reversion risk matters.":"Price is not unusually stretched."];
-  return NextResponse.json({symbol,name:j.meta?.symbol||symbol,assetType:isCrypto?"crypto":"stock",security,analysisStatus:"OK",price:rnd(analysisAnchorPrice),priceRole:"ANALYSIS_ANCHOR",analysisAnchorPrice:rnd(analysisAnchorPrice),analysisAnchorAsOf,analysisAnchorRole:"COMPLETED_DAILY_BAR",changePct:rnd(pct(p,prev)),volumeRatio:rnd(volumeRatio),technicalState:technical.technicalState,indicators:technical.indicators,indicatorVersion:technical.indicatorVersion,technicalStateVersion:technical.technicalStateVersion,sixMonth:{score:Math.round(sixMonthScore),label:sixMonthLabel,returnPct:rnd(sixReturn),maxDrawdownPct:rnd(maxDrawdown),high:rnd(sixHigh),low:rnd(sixLow),summary:sixMonthLabel==="Strong"?"The 6-month price record is constructive.":sixMonthLabel==="Weak"?"The 6-month price record is weak; rallies need confirmation.":"The 6-month price record is mixed."},performance:{sixMonthPct:rnd(sixReturn),ytdPct:rnd(ytdReturn),oneYearPct:rnd(oneYearReturn),yearHigh:rnd(yearHigh),yearLow:rnd(yearLow),rangePositionPct:Math.round(clamp(rangePosition,0,100))},freshness:{priceAt:analysisAnchorAsOf,decisionAt:nowIso(),priceTtlSeconds:86400,decisionTtlSeconds:45},dataIntegrity:{historicalBars:seriesIntegrity},volatility:{atr14:rnd(a),atrPct:rnd(a/p*100)},market:{benchmark,benchmarkPrice:benchPrice!=null?rnd(benchPrice):null,regime:marketRegime,score:Math.round(marketTrend),relativeStrength,relative20:rnd(rel20)},scores:{trend:Math.round(trend),momentum:Math.round(momentum),flow:Math.round(flow),structure:Math.round(structure),entry:Math.round(entry),risk:Math.round(risk),extension:Math.round(extension)},labels:{trend:qLabel(trend),momentum:qLabel(momentum),flow:qLabel(flow),structure:qLabel(structure),entry:entry>=68?"Good":entry<48?"Poor":"Improving",risk:risk<40?"Lower":risk<70?"Moderate":"High",extension:extension>=65?"Stretched":extension<38?"Normal":"Elevated"},views:{today,swing,longTerm,own},levels:{preferredEntry,support,majorSupport,resistance,breakout,invalidation},engine:{Trend:Math.round(trend),Momentum:Math.round(momentum),Flow:Math.round(flow),Structure:Math.round(structure),Extension:Math.round(extension),"Relative strength":relativeStrength,"Market regime":marketRegime,"Indicator version":technical.indicatorVersion},candles,positives:positives.slice(0,4),risks:risks.slice(0,4),why,riskReward:rnd(rr)},{headers:{"Cache-Control":"private, no-store, max-age=0"}});
+  return NextResponse.json({symbol,name:j?.meta?.symbol||symbol,assetType:isCrypto?"crypto":"stock",security,analysisStatus:"OK",marketTruth,marketIntelligence,price:rnd(analysisAnchorPrice),priceRole:"ANALYSIS_ANCHOR",analysisAnchorPrice:rnd(analysisAnchorPrice),analysisAnchorAsOf,analysisAnchorRole:"COMPLETED_DAILY_BAR",changePct:rnd(pct(p,prev)),volumeRatio:rnd(volumeRatio),technicalState:technical.technicalState,indicators:technical.indicators,indicatorVersion:technical.indicatorVersion,technicalStateVersion:technical.technicalStateVersion,sixMonth:{score:Math.round(sixMonthScore),label:sixMonthLabel,returnPct:rnd(sixReturn),maxDrawdownPct:rnd(maxDrawdown),high:rnd(sixHigh),low:rnd(sixLow),summary:sixMonthLabel==="Strong"?"The 6-month price record is constructive.":sixMonthLabel==="Weak"?"The 6-month price record is weak; rallies need confirmation.":"The 6-month price record is mixed."},performance:{sixMonthPct:rnd(sixReturn),ytdPct:rnd(ytdReturn),oneYearPct:rnd(oneYearReturn),yearHigh:rnd(yearHigh),yearLow:rnd(yearLow),rangePositionPct:Math.round(clamp(rangePosition,0,100))},freshness:{priceAt:analysisAnchorAsOf,decisionAt:nowIso(),priceTtlSeconds:86400,decisionTtlSeconds:45},dataIntegrity:{historicalBars:seriesIntegrity},volatility:{atr14:rnd(a),atrPct:rnd(a/p*100)},market:{benchmark,benchmarkPrice:benchPrice!=null?rnd(benchPrice):null,regime:marketRegime,score:Math.round(marketTrend),relativeStrength,relative20:rnd(rel20)},scores:{trend:Math.round(trend),momentum:Math.round(momentum),flow:Math.round(flow),structure:Math.round(structure),entry:Math.round(entry),risk:Math.round(risk),extension:Math.round(extension)},labels:{trend:qLabel(trend),momentum:qLabel(momentum),flow:qLabel(flow),structure:qLabel(structure),entry:entry>=68?"Good":entry<48?"Poor":"Improving",risk:risk<40?"Lower":risk<70?"Moderate":"High",extension:extension>=65?"Stretched":extension<38?"Normal":"Elevated"},views:{today,swing,longTerm,own},levels:{preferredEntry,support,majorSupport,resistance,breakout,invalidation},engine:{Trend:Math.round(trend),Momentum:Math.round(momentum),Flow:Math.round(flow),Structure:Math.round(structure),Extension:Math.round(extension),"Relative strength":relativeStrength,"Market regime":marketRegime,"Indicator version":technical.indicatorVersion},candles,positives:positives.slice(0,4),risks:risks.slice(0,4),why,riskReward:rnd(rr)},{headers:{"Cache-Control":"private, no-store, max-age=0"}});
  }catch(e:any){
   const coverage=assessHistoryCoverage(symbol,{message:e?.message||String(e)});
   if(coverage.code==="PROVIDER_RATE_LIMITED")return NextResponse.json({error:coverage.reason,code:coverage.code,analysisStatus:"RETRY",security,coverage,researchSafe:false,executionTradable:false},{status:429,headers:{"Retry-After":"60","Cache-Control":"private, no-store, max-age=0"}});

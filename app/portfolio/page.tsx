@@ -68,12 +68,12 @@ function PortfolioContent(){
  const priced=useMemo(()=>rows.map((x:any)=>{
   if(x.asset_type==="CASH")return{assetType:"CASH" as const,currency:x.currency||x.symbol,symbol:x.symbol,amount:Number(x.shares||0),source:x};
   const q=quotes[x.symbol],price=Number(q?.displayPrice??q?.price??x.avg_cost??0);
-  return{assetType:x.asset_type==="CRYPTO"?"CRYPTO" as const:"EQUITY" as const,symbol:x.symbol,quantity:Number(x.shares||0),price,avgCost:Number(x.avg_cost||0),thesisScore:q?.thesisScore??null,companyScore:q?.companyScore??null,opportunityScore:q?.opportunityScore??null,action:portfolioOwnerAction(q),sector:q?.sector||null,archetype:q?.archetype||null,source:x};
+  return{assetType:x.asset_type==="CRYPTO"?"CRYPTO" as const:"EQUITY" as const,symbol:x.symbol,quantity:Number(x.shares||0),price,avgCost:Number(x.avg_cost||0),thesisScore:q?.thesisScore??null,companyScore:q?.companyScore??null,opportunityScore:q?.opportunityScore??null,action:portfolioOwnerAction(q),sector:q?.sector||null,archetype:q?.archetype||null,marketIntelligence:q?.marketIntelligence??null,levels:q?.levels??null,source:x};
  }),[rows,quotes]);
  const pulse=useMemo(()=>calculatePortfolioPulse(priced,pulseHistory),[priced,pulseHistory]);
  const v6PortfolioActions=useMemo(()=>portfolioRisk?buildPortfolioCioActions({positions:priced.map((x:any)=>x.assetType==="CASH"?{symbol:x.currency||x.symbol,value:Number(x.amount||0),assetType:"CASH",archetype:null,rawAction:"HOLD"}:{symbol:x.symbol,value:Number(x.quantity||0)*Number(x.price||0),assetType:x.assetType,archetype:x.archetype||null,rawAction:x.action||"HOLD"}),portfolioRisk}):pulse.actions,[priced,portfolioRisk,pulse.actions]);
  const portfolioPulse=useMemo(()=>({...pulse,actions:v6PortfolioActions}),[pulse,v6PortfolioActions]);
- useEffect(()=>{if(!rows.length||!pulse.totalValue)return;let cancelled=false;(async()=>{const sb=supabaseBrowser(),{data:{user}}=await sb.auth.getUser();if(!user||cancelled)return;const holdings=priced.map((x:any)=>x.assetType==="CASH"?{assetType:"CASH",symbol:x.currency,value:Number(x.amount||0)}:{assetType:x.assetType,symbol:x.symbol,value:Number(x.quantity||0)*Number(x.price||0)});await fetch("/api/portfolio/pulse",{method:"POST",headers:{"Content-Type":"application/json","x-nivora-user-id":user.id},body:JSON.stringify({totalValue:pulse.totalValue,holdings})}).then(r=>r.ok?refreshPulseHistory(user.id):null).catch(()=>null)})();return()=>{cancelled=true}},[rows.length,pulse.totalValue,priced]);
+ useEffect(()=>{if(!rows.length||!pulse.totalValue)return;let cancelled=false;(async()=>{const sb=supabaseBrowser(),{data:{user}}=await sb.auth.getUser();if(!user||cancelled)return;const holdings=priced.map((x:any)=>x.assetType==="CASH"?{assetType:"CASH",symbol:x.currency,value:Number(x.amount||0)}:{assetType:x.assetType,symbol:x.symbol,value:Number(x.quantity||0)*Number(x.price||0),marketIntelligence:x.marketIntelligence??null});await fetch("/api/portfolio/pulse",{method:"POST",headers:{"Content-Type":"application/json","x-nivora-user-id":user.id},body:JSON.stringify({totalValue:pulse.totalValue,holdings})}).then(r=>r.ok?refreshPulseHistory(user.id):null).catch(()=>null)})();return()=>{cancelled=true}},[rows.length,pulse.totalValue,priced]);
  const investedRows=rows.filter((x:any)=>x.asset_type!=="CASH");
  const attention=investedRows.filter((x:any)=>/REDUCE|REASSESS|WATCH/i.test(portfolioOwnerAction(quotes[x.symbol]))).length;
  const ranked=investedRows.map((x:any)=>({symbol:x.symbol,type:x.asset_type,q:quotes[x.symbol]||{}}));
@@ -95,6 +95,8 @@ function PortfolioContent(){
 
   
 
+
+  <section className="v934PortfolioIntel" aria-label="Portfolio market intelligence"><div><small>MARKET INTELLIGENCE</small><h2>One market view across every holding.</h2></div><p>{investedRows.length?`${investedRows.filter((x:any)=>quotes[x.symbol]?.marketIntelligence?.timeframes?.["1D"]?.confirmed==="BUY").length} daily constructive · ${investedRows.filter((x:any)=>quotes[x.symbol]?.marketIntelligence?.timeframes?.["1D"]?.confirmed==="SELL").length} daily defensive. Open any holding for the same 15M / 1H / 4H / 1D / 1W evidence and action map.`:"Add a holding to build the canonical multi-timeframe portfolio view."}</p></section>
 
   <HoldingsIntelligence assets={priced} onEdit={x=>{setPendingDelete(null);setEdit(x)}} onRemove={requestRemove} editingId={edit?.id||null} editDraft={edit} onEditDraft={setEdit} onSaveEdit={saveEdit} onCancelEdit={()=>setEdit(null)} pendingDelete={pendingDelete?.id||null} onConfirmRemove={confirmRemove} onCancelRemove={()=>setPendingDelete(null)}/>
 

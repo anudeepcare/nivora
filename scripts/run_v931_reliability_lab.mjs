@@ -25,7 +25,7 @@ for(const f of sourceFiles){const s=fs.readFileSync(f,'utf8');check(`source:${f}
 for(const f of decisionSurfaceFiles){const s=fs.readFileSync(f,'utf8');check(`surface:${f}:canonical-decision`,f.includes('decision/summaries')?/market-data-gateway/.test(s):/decision\/summaries/.test(s),'must consume the canonical decision/Market Truth projection');}
 check('source:market:no-direct-current-provider',!/api\.twelvedata\.com\/time_series/.test(fs.readFileSync('app/api/market/route.ts','utf8')));
 check('source:portfolio-pulse:no-direct-price-provider',!/api\.twelvedata\.com\/price/.test(fs.readFileSync('app/api/portfolio/pulse/route.ts','utf8')));
-check('surface:decision-summaries:canonical-contract',/AURYN_V9_3_1_CANONICAL_SURFACE/.test(fs.readFileSync('app/api/decision/summaries/route.ts','utf8')));
+check('surface:decision-summaries:canonical-contract',/AURYN_V9_3_4_CANONICAL_SURFACE/.test(fs.readFileSync('app/api/decision/summaries/route.ts','utf8')),'V9.3.4 supersedes the V9.3.1 canonical surface contract');
 check('surface:watchlist:no-scanner-call',!/x\.action&&<strong/.test(fs.readFileSync('app/watchlist/page.tsx','utf8')));
 check('surface:investment:stored-action-only',/storedAction:x\.action/.test(fs.readFileSync('app/api/investment/route.ts','utf8')));
 const failures=checks.filter(x=>!x.ok);const report={version:'auryn-v9.3.1',generatedAt:new Date().toISOString(),status:failures.length?'FAIL':'PASS',checks,failures};

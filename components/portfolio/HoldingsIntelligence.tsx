@@ -1,6 +1,8 @@
 "use client";
 import {useRouter} from "next/navigation";
 import {Bitcoin,Banknote,WalletCards,Pencil,Trash2,Check,X} from "lucide-react";
+const tf=(mi:any,key:string)=>mi?.timeframes?.[key]?.confirmed??"—";
+const level=(mi:any,key:string)=>{const x=Number(mi?.levels?.[key]);return Number.isFinite(x)?`$${x.toFixed(2)}`:"—"};
 
 export default function HoldingsIntelligence({assets,onEdit,onRemove,editingId,editDraft,onEditDraft,onSaveEdit,onCancelEdit,pendingDelete,onConfirmRemove,onCancelRemove}:{assets:any[];onEdit?:(x:any)=>void;onRemove?:(x:any)=>void;editingId?:string|number|null;editDraft?:any;onEditDraft?:(x:any)=>void;onSaveEdit?:()=>void;onCancelEdit?:()=>void;pendingDelete?:string|number|null;onConfirmRemove?:()=>void;onCancelRemove?:()=>void}){
  const router=useRouter();
@@ -10,7 +12,7 @@ export default function HoldingsIntelligence({assets,onEdit,onRemove,editingId,e
  return <section id="portfolio-holdings" className="aurynHoldingsSection"><div className="aurynHoldingsHead"><div><div className="aurynEyebrow">Positions</div><h2>Your holdings</h2></div><span>{rows.length} tracked assets</span></div>
   <div className="aurynPositionList">{rows.map((x:any)=>{const cash=x.assetType==="CASH",crypto=x.assetType==="CRYPTO",name=cash?(x.currency||x.symbol||"USD"):x.symbol,weight=total?x.value/total*100:0,pnl=!cash&&Number(x.avgCost)>0?(Number(x.price)-Number(x.avgCost))*Number(x.quantity):null,action=cash?"LIQUIDITY":String(x.action||"REVIEW").replaceAll("_"," "),source=x.source||x,isEditing=editingId!=null&&String(source.id)===String(editingId),isDeleting=pendingDelete!=null&&String(source.id)===String(pendingDelete);return <div className={`aurynPositionGroup ${isEditing||isDeleting?"active":""}`} key={`${x.assetType}-${name}`}>
    <article className={`aurynPositionRow ${cash?"":"clickable"}`} role={cash?undefined:"link"} aria-label={cash?undefined:`Open ${name} research`} tabIndex={cash?undefined:0} onClick={()=>open(cash,name)} onKeyDown={e=>{if(!cash&&(e.key==="Enter"||e.key===" ")){e.preventDefault();open(false,name)}}}>
-    <div className="aurynPositionName">{cash?<Banknote size={18}/>:crypto?<Bitcoin size={18}/>:<WalletCards size={18}/>}<div><b>{name}</b><span>{cash?"Cash":crypto?"Crypto":"Stock"} · {weight.toFixed(1)}%</span></div></div>
+    <div className="aurynPositionName">{cash?<Banknote size={18}/>:crypto?<Bitcoin size={18}/>:<WalletCards size={18}/>}<div><b>{name}</b><span>{cash?"Cash":crypto?"Crypto":"Stock"} · {weight.toFixed(1)}%</span>{!cash&&x.marketIntelligence?<span className="v934HoldingTape" data-market-intelligence-snapshot={x.marketIntelligence.snapshotId||""}>4H {tf(x.marketIntelligence,"4H")} · 1D {tf(x.marketIntelligence,"1D")} · 1W {tf(x.marketIntelligence,"1W")} · Confirm {level(x.marketIntelligence,"confirm")}</span>:null}</div></div>
     <div className="aurynPositionFacts">
      {!cash&&<span><small>{crypto?"Qty":"Qty"}</small><b>{Number(x.quantity||0).toLocaleString(undefined,{maximumFractionDigits:4})}</b></span>}
      {!cash&&<span><small>AVG COST</small><b>${Number(x.avgCost||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</b></span>}
