@@ -2,6 +2,7 @@ import {NextResponse} from 'next/server';
 import {sharedJson} from '@/lib/shared-cache';
 import {loadV934LiveContext} from '@/lib/auryn/v934/twelve-multitimeframe';
 import {computeTimeframeTechnicalState} from '@/lib/auryn/v934/timeframes';
+import type {AurynTimeframe,TimeframeTechnicalState} from '@/lib/auryn/v934/domain';
 import {rateLimitDistributed,requestKey} from '@/lib/rate-limit';
 
 export const dynamic='force-dynamic';
@@ -15,11 +16,11 @@ export async function GET(req:Request,{params}:{params:Promise<{symbol:string}>}
  const fetchJson=(url:string,keyParts:string[],revalidate:number,timeout:number)=>sharedJson(url,keyParts,revalidate,timeout);
  try{
   const bars=await loadV934LiveContext({symbol,key,asOf,fetchJson});
-  const bench=null;
-  const confirmed:any={},livePreview:any={};
+  const confirmed:Partial<Record<AurynTimeframe,TimeframeTechnicalState>>={};
+  const livePreview:Partial<Record<AurynTimeframe,TimeframeTechnicalState>>={};
   for(const tf of ['15M','1H','4H'] as const){
-   const c=bars.confirmed[tf];if(c?.length){const s=computeTimeframeTechnicalState(c,bench?.confirmed?.[tf]??null,tf,benchmark);if(s)confirmed[tf]=s}
-   const p=bars.preview[tf];if(p?.length){const s=computeTimeframeTechnicalState(p,bench?.preview?.[tf]??null,tf,benchmark);if(s)livePreview[tf]=s}
+   const c=bars.confirmed[tf];if(c?.length){const s=computeTimeframeTechnicalState(c,null,tf,benchmark);if(s)confirmed[tf]=s}
+   const p=bars.preview[tf];if(p?.length){const s=computeTimeframeTechnicalState(p,null,tf,benchmark);if(s)livePreview[tf]=s}
   }
   return NextResponse.json({version:'auryn-v9.3.4.2-live',symbol,asOf:asOf.toISOString(),confirmed,livePreview,coverage:bars.coverage,status:'OK'},{headers:{'Cache-Control':'private, max-age=0, stale-while-revalidate=20'}});
  }catch(error){

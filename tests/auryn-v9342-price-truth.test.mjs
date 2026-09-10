@@ -117,3 +117,9 @@ test('progressive market-intelligence endpoint publishes the V9.3.4.2 contract v
   const src=fs.readFileSync('app/api/market-intelligence/live/[symbol]/route.ts','utf8');
   assert.match(src,/auryn-v9\.3\.4\.2-live/);
 });
+
+test('progressive live route never optional-chains through an impossible null benchmark object',()=>{
+  const src=fs.readFileSync('app/api/market-intelligence/live/[symbol]/route.ts','utf8');
+  assert.doesNotMatch(src,/bench\?\.(confirmed|preview)/,'a const-null benchmark narrows to never under Next production type checking');
+  assert.match(src,/computeTimeframeTechnicalState\([^\n]+,null,tf,benchmark\)/,'live tactical states should explicitly run without benchmark bars when none are loaded');
+});
