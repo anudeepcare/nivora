@@ -36,6 +36,34 @@ function dailyPreviewFrom15m(confirmedDaily:Bar[],raw15:Bar[],asOf:Date):Bar[]|n
 }
 function url(symbol:string,key:string,interval:'15min'|'4h'|'1day',size:number,prepost=false){const hint=providerMarketHint(symbol);return `https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(symbol)}&interval=${interval}&outputsize=${size}&timezone=UTC${prepost?'&prepost=true':''}${hint.exchange?`&exchange=${encodeURIComponent(hint.exchange)}`:''}&apikey=${key}`}
 
+export async function loadV934DecisionBars(input:{symbol:string;key:string;asOf:Date;fetchJson:Fetcher}){
+  const symbol=String(input.symbol).toUpperCase();
+  const fourHourPromise=input.fetchJson(url(symbol,input.key,'4h',240,false),['twelve','v9341',symbol,'4h'],180,2600);
+  const dailyPromise=input.fetchJson(url(symbol,input.key,'1day',340,false),['twelve','v9341',symbol,'1day'],60,3000);
+  const [fourHour,daily]=await Promise.allSettled([fourHourPromise,dailyPromise]);
+  let rawDaily=daily.status==='fulfilled'?daily.value:null;
+  let dailyError=daily.status==='rejected'?String(daily.reason):null;
+  if(!rawDaily&&dailyError){
+    try{
+      rawDaily=await input.fetchJson(url(symbol,input.key,'1day',260,false),['twelve','v9341',symbol,'1day','retry'],60,2200);
+      dailyError=null;
+    }catch(error){dailyError=`${dailyError}; retry: ${String(error)}`;}
+  }
+  const raw4h=fourHour.status==='fulfilled'?fourHour.value:null;
+  const all4h=parseTwelveBars(raw4h),allDaily=parseTwelveBars(rawDaily),calendar=marketCalendarAt(input.asOf);
+  const h4=completedIntraday(all4h,240,input.asOf),day=completedDailyBars(allDaily,calendar),week=aggregateCompletedWeeks(day,input.asOf);
+  const confirmed:TimeframeBarSet={'4H':h4,'1D':day,'1W':week};
+  return{confirmed,preview:{} as TimeframeBarSet,rawDaily,coverage:{'15M':0,'1H':0,'4H':h4.length,'1D':day.length,'1W':week.length},errors:{'15M':null,'4H':fourHour.status==='rejected'?String(fourHour.reason):null,'1D':dailyError}};
+}
+
+export async function loadV934LiveContext(input:{symbol:string;key:string;asOf:Date;fetchJson:Fetcher}){
+  const symbol=String(input.symbol).toUpperCase();
+  const raw=await input.fetchJson(url(symbol,input.key,'15min',840,true),['twelve','v9341',symbol,'15min','live'],20,5000);
+  const all15=parseTwelveBars(raw),d15=completedIntraday(all15,15,input.asOf),h1=resampleSequential(d15,4,false);
+  const preview:TimeframeBarSet={'15M':all15,'1H':resampleSequential(all15,4,true),'4H':resampleSequential(all15,16,true)};
+  return{confirmed:{'15M':d15,'1H':h1} as TimeframeBarSet,preview,coverage:{'15M':d15.length,'1H':h1.length},raw15:raw};
+}
+
 export async function loadV934MarketBars(input:{symbol:string;key:string;asOf:Date;fetchJson:Fetcher}){
   const symbol=String(input.symbol).toUpperCase();const reqs=[
     input.fetchJson(url(symbol,input.key,'15min',1200,true),['twelve','v934',symbol,'15min'],30,3500),

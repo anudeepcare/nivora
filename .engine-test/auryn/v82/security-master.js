@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.classifySecuritySymbol = classifySecuritySymbol;
 exports.isSupportedEquitySecurity = isSupportedEquitySecurity;
+exports.providerMarketHint = providerMarketHint;
 const clean = (symbol) => String(symbol || "").trim().toUpperCase();
 function classifySecuritySymbol(raw) {
     const symbol = clean(raw);
@@ -41,4 +42,10 @@ function classifySecuritySymbol(raw) {
 }
 function isSupportedEquitySecurity(x) {
     return x.supportedForEquityAnalysis && (x.kind === "COMMON_STOCK" || x.kind === "CLASS_SHARE");
+}
+const PROVIDER_MARKET_HINTS = {
+    SAP: { exchange: "NYSE", currency: "USD" },
+};
+function providerMarketHint(raw) {
+    return PROVIDER_MARKET_HINTS[clean(raw)] ?? {};
 }

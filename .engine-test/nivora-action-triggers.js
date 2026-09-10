@@ -22,7 +22,7 @@ function buildActionTriggers(d) {
             return {
                 currentAction: d.action, targetAction: "HOLD",
                 requirements: ["Thesis must recover and no hard veto may remain.", "Forward evidence must stop deteriorating."],
-                blockers, summary: "Risk must improve before NIVORA stops reducing exposure."
+                blockers, summary: "Risk must improve before AURYN stops reducing exposure."
             };
         if (d.action === "ADD" && audit?.eligible)
             return {

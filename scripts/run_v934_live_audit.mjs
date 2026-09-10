@@ -1,3 +1,4 @@
+import {finiteNumber,validConsensusScore,selectAuditSymbols,comparablePriceGap} from './v934_live_audit_utils.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -11,9 +12,9 @@ const delayMs=Math.max(0,Number(process.env.AURYN_V934_LIVE_DELAY_MS||350));
 const maxRetries=Math.max(0,Math.min(4,Number(process.env.AURYN_V934_LIVE_MAX_RETRIES||2)));
 const reportPath=process.env.AURYN_AUDIT_REPORT||path.join('artifacts',`v934-live-${new Date().toISOString().replace(/[:.]/g,'-')}.json`);
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-const finite=x=>{const n=Number(x);return Number.isFinite(n)?n:null};
+const finite=finiteNumber;
 const pctGap=(a,b)=>a!=null&&b!=null&&Math.max(Math.abs(a),Math.abs(b))>0?Math.abs(a-b)/Math.max(Math.abs(a),Math.abs(b))*100:null;
-const supportedAnalysisMiss=new Set(['UNSUPPORTED_INSTRUMENT','PROVIDER_COVERAGE_MISSING','MARKET_HISTORY_UNAVAILABLE','INSUFFICIENT_HISTORY']);
+const supportedAnalysisMiss=new Set(['UNSUPPORTED_INSTRUMENT','PROVIDER_COVERAGE_MISSING','MARKET_HISTORY_UNAVAILABLE','INSUFFICIENT_HISTORY','PROVIDER_TEMPORARY_FAILURE']);
 const outsideRegular=new Set(['CLOSED','WEEKEND','HOLIDAY','AFTER_HOURS','PRE_MARKET','PREMARKET','OVERNIGHT']);
 
 async function requestJson(route){
@@ -31,7 +32,7 @@ async function loadSymbols(){
  const u=await mustJson(`/api/audit/universe?limit=${limit}`);
  const symbols=Array.isArray(u?.symbols)?u.symbols.map(x=>String(x||'').trim().toUpperCase()).filter(Boolean):[];
  const golden=['SPY','QQQ','IWM','AAPL','MSFT','NVDA','AMZN','META','GOOGL','AVGO','TSLA','AMD','JPM','XOM','UNH','IREN','BE','ASTS','SAP'];
- return [...new Set([...symbols,...golden])].slice(0,limit);
+ return selectAuditSymbols(symbols,limit);
 }
 async function loadBatches(symbols,route){
  const out=new Map();
@@ -70,7 +71,7 @@ function validateIntelligence(symbol,analyze,quote,summary,issues){
  for(const tf of ['15M','1H','4H','1D','1W']){
   const state=confirmed[tf]; if(!state)continue;
   if(!['BUY','NEUTRAL','SELL'].includes(String(state.rating)))issues.push(`critical: ${tf} confirmed rating invalid`);
-  const score=finite(state.score);if(score==null||score<0||score>100)issues.push(`critical: ${tf} confirmed score invalid`);
+  const score=finite(state.score);if(!validConsensusScore(score))issues.push(`critical: ${tf} confirmed score invalid`);
   if(!state.asOf)issues.push(`critical: ${tf} confirmed asOf missing`);
  }
  if(!mi.summary||typeof mi.summary.researchActive!=='boolean')issues.push('critical: marketIntelligence researchActive missing');
@@ -102,12 +103,14 @@ try{scans=await loadBatches(symbols,'/api/scan');}catch(error){console.warn(`sca
 const rows=[];let critical=0,warnings=0,researchSafe=0,executionReady=0,closedResearchSafe=0,intelligenceReady=0;
 const sessions={},priceStates={},providerGaps=[],timeframeCoverage={'15M':0,'1H':0,'4H':0,'1D':0,'1W':0};
 for(let i=0;i<symbols.length;i++){
- const symbol=symbols[i],issues=[];let quote=null,analyze=null;
+ const symbol=symbols[i],issues=[];let quote=null,analyze=null,tactical=null;
  try{
   const qr=await requestJson(`/api/quote/${encodeURIComponent(symbol)}`);if(!qr.ok)throw new Error(`${qr.status} quote: ${qr.json?.error||qr.statusText}`);quote=qr.json?.snapshot??qr.json?.marketTruth??qr.json;
   await sleep(delayMs);
   const ar=await requestJson(`/api/analyze/${encodeURIComponent(symbol)}`);
   if(ar.ok)analyze=ar.json;else if(!supportedAnalysisMiss.has(String(ar.json?.code||'')))issues.push(`critical: analyze ${ar.status}: ${ar.json?.error||ar.statusText}`);else issues.push(`warning: analyze unavailable: ${ar.json?.code||ar.status}`);
+  const tr=await requestJson(`/api/market-intelligence/live/${encodeURIComponent(symbol)}`);
+  if(tr.ok)tactical=tr.json;else issues.push(`warning: tactical context unavailable: ${tr.status||'network'}`);
  }catch(error){issues.push(`critical: ${error?.message||error}`);}
 
  if(quote){
@@ -130,7 +133,7 @@ for(let i=0;i<symbols.length;i++){
 
   const summary=summaries.get(symbol);
   if(summary){
-   const sPrice=finite(summary.displayPrice),crossSurfacePriceGapPct=pctGap(displayPrice,sPrice);
+   const sPrice=finite(summary.displayPrice),crossSurfacePriceGapPct=comparablePriceGap(displayPrice,sPrice,quote.snapshotId,summary.marketSnapshotId,quote.asOf||quote.decisionPriceAsOf,summary.asOf||summary.marketAsOf);
    if(String(summary.symbol||'').toUpperCase()!==symbol)issues.push('critical: decision summary symbol mismatch');
    if(crossSurfacePriceGapPct!=null){const sameSnapshot=quote.snapshotId&&summary.marketSnapshotId&&quote.snapshotId===summary.marketSnapshotId;const tolerance=sameSnapshot?0.0001:0.5;if(crossSurfacePriceGapPct>tolerance)issues.push(`critical: crossSurfacePriceGapPct ${crossSurfacePriceGapPct.toFixed(3)}% > ${tolerance}%`);}
    if(summary.executionTradable&&summary.priceState!=='LIVE_VERIFIED')issues.push('critical: summary execution truth diverges from LIVE_VERIFIED invariant');
@@ -145,14 +148,15 @@ for(let i=0;i<symbols.length;i++){
    const anchor=finite(analyze.analysisAnchorPrice??analyze.price);if(anchor==null)issues.push('critical: analysis completed without a finite completed-bar anchor');
    if(analyze.analysisAnchorRole&&String(analyze.analysisAnchorRole).toUpperCase().includes('LIVE'))issues.push(`critical: structural analysis anchor is mislabeled live (${analyze.analysisAnchorRole})`);
    const mi=validateIntelligence(symbol,analyze,quote,summary,issues);
-   if(mi){intelligenceReady++;for(const tf of Object.keys(timeframeCoverage))if(mi.confirmed?.[tf])timeframeCoverage[tf]++;}
+   if(mi){intelligenceReady++;for(const tf of ['4H','1D','1W'])if(mi.confirmed?.[tf])timeframeCoverage[tf]++;}
   }
+  if(tactical){for(const tf of ['15M','1H']){const st=tactical.confirmed?.[tf]||tactical.livePreview?.[tf];if(st){timeframeCoverage[tf]++;if(!['BUY','NEUTRAL','SELL'].includes(String(st.rating)))issues.push(`critical: tactical ${tf} rating invalid`);if(!validConsensusScore(st.score))issues.push(`critical: tactical ${tf} score invalid`);}}}
  }
  const criticalIssues=issues.filter(x=>x.startsWith('critical:')),warningIssues=issues.filter(x=>!x.startsWith('critical:'));critical+=criticalIssues.length;warnings+=warningIssues.length;
- rows.push({symbol,status:criticalIssues.length?'CRITICAL':issues.length?'WARN':'PASS',session:quote?.session??null,priceState:quote?.priceState??null,displayPrice:finite(quote?.displayPrice),providerAgreementPct:finite(quote?.providerAgreementPct??quote?.disagreementPct),marketSnapshotId:quote?.snapshotId??null,marketIntelligenceSnapshotId:analyze?.marketIntelligence?.snapshotId??null,confirmedTimeframes:analyze?.marketIntelligence?.coverage?.confirmed??[],issues});
+ rows.push({symbol,status:criticalIssues.length?'CRITICAL':issues.length?'WARN':'PASS',session:quote?.session??null,priceState:quote?.priceState??null,displayPrice:finite(quote?.displayPrice),providerAgreementPct:finite(quote?.providerAgreementPct??quote?.disagreementPct),marketSnapshotId:quote?.snapshotId??null,marketIntelligenceSnapshotId:analyze?.marketIntelligence?.snapshotId??null,confirmedTimeframes:analyze?.marketIntelligence?.coverage?.confirmed??[],tacticalTimeframes:Object.keys(tactical?.confirmed||{}),issues});
  console.log(`${String(i+1).padStart(3,' ')}/${symbols.length} ${symbol}: ${criticalIssues.length?'CRITICAL':issues.length?'WARN':'PASS'}${issues.length?` · ${issues.join(' | ')}`:''}`);
 }
-const report={version:'auryn-v9.3.4',kind:'REAL_WORLD_24X7_MARKET_INTELLIGENCE_AUDIT',baseUrl:base,generatedAt:new Date().toISOString(),requested:limit,total:rows.length,status:critical?'FAIL':'PASS',critical,warnings,researchSafe,executionReady,closedResearchSafe,intelligenceReady,sessions,priceStates,timeframeCoverage,providerAgreementPct:{samples:providerGaps.length,max:providerGaps.length?Math.max(...providerGaps):null,avg:providerGaps.length?providerGaps.reduce((a,b)=>a+b,0)/providerGaps.length:null},rows};
+const report={version:'auryn-v9.3.4.1',kind:'REAL_WORLD_24X7_MARKET_INTELLIGENCE_AUDIT',baseUrl:base,generatedAt:new Date().toISOString(),requested:limit,total:rows.length,status:critical?'FAIL':'PASS',critical,warnings,researchSafe,executionReady,closedResearchSafe,intelligenceReady,sessions,priceStates,timeframeCoverage,providerAgreementPct:{samples:providerGaps.length,max:providerGaps.length?Math.max(...providerGaps):null,avg:providerGaps.length?providerGaps.reduce((a,b)=>a+b,0)/providerGaps.length:null},rows};
 fs.mkdirSync(path.dirname(reportPath),{recursive:true});fs.writeFileSync(reportPath,JSON.stringify(report,null,2));
 console.log(JSON.stringify(report,null,2));console.log(`AURYN V9.3.4 live audit report: ${reportPath}`);
 if(critical>0)process.exitCode=1;

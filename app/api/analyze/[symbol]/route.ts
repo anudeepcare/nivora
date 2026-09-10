@@ -6,7 +6,7 @@ import {AlpacaPaperBroker} from "@/lib/alpaca-paper";
 import {sharedJson,nowIso} from "@/lib/shared-cache";
 import {rateLimitDistributed,requestKey} from "@/lib/rate-limit";
 import {classifySecuritySymbol,isSupportedEquitySecurity} from "@/lib/auryn/v82/security-master";
-import {loadV934MarketBars} from "@/lib/auryn/v934/twelve-multitimeframe";
+import {loadV934DecisionBars} from "@/lib/auryn/v934/twelve-multitimeframe";
 import {buildAurynMarketIntelligenceSnapshot} from "@/lib/auryn/v934/intelligence-snapshot";
 import {loadCanonicalMarketSnapshot} from "@/lib/auryn/market-data-gateway";
 import {buildCanonicalMarketSnapshot} from "@/lib/auryn/market-truth";
@@ -30,24 +30,28 @@ export async function GET(req:Request,{params}:{params:Promise<{symbol:string}>}
    :Promise.resolve(null);
   const asOf=new Date();
   const fetchJson=(url:string,keyParts:string[],revalidate:number,timeout:number)=>sharedJson(url,keyParts,revalidate,timeout);
+  const benchPromise=benchmark&&benchmark!==symbol?Promise.race([loadV934DecisionBars({symbol:benchmark,key,asOf,fetchJson}).catch(()=>null),new Promise<null>(resolve=>setTimeout(()=>resolve(null),2800))]):Promise.resolve(null);
+  const alpacaBarsFast=Promise.race([alpacaBarsPromise,new Promise<null>(resolve=>setTimeout(()=>resolve(null),900))]);
   const [v934Bars,v934Bench,marketGateway,alpacaBars]=await Promise.all([
-    loadV934MarketBars({symbol,key,asOf,fetchJson}),
-    benchmark?loadV934MarketBars({symbol:benchmark,key,asOf,fetchJson}).catch(()=>null):Promise.resolve(null),
+    loadV934DecisionBars({symbol,key,asOf,fetchJson}),
+    benchPromise,
     loadCanonicalMarketSnapshot({symbol,twelveKey:key,alpacaKey:process.env.ALPACA_PAPER_API_KEY||'',alpacaSecret:process.env.ALPACA_PAPER_API_SECRET||'',asOf}).catch(()=>null),
-    alpacaBarsPromise
+    alpacaBarsFast
   ]);
   const j=v934Bars.rawDaily,bj=v934Bench?.rawDaily??null;
+  if(!j&&v934Bars.errors?.["1D"])return NextResponse.json({error:"Market history provider is temporarily unavailable. AURYN kept live price/research shell active and will retry automatically.",code:"PROVIDER_TEMPORARY_FAILURE",analysisStatus:"RETRY",security,providerDiagnostics:v934Bars.errors,researchSafe:Boolean(marketGateway?.snapshot?.priceSensitiveAllowed),executionTradable:false},{status:503,headers:{"Retry-After":"5","Cache-Control":"private, no-store, max-age=0"}});
   const coverage=assessHistoryCoverage(symbol,j);
   if(coverage.code==="PROVIDER_RATE_LIMITED")return NextResponse.json({error:coverage.reason,code:coverage.code,analysisStatus:"RETRY",security,coverage,researchSafe:false,executionTradable:false},{status:429,headers:{"Retry-After":"60","Cache-Control":"private, no-store, max-age=0"}});
   if(!coverage.analysisAllowed)return NextResponse.json({error:coverage.reason,code:coverage.code,analysisStatus:"QUARANTINED",security,coverage,researchSafe:false,executionTradable:false},{status:422,headers:{"Cache-Control":"private, no-store, max-age=0"}});
   const calendar=marketCalendarAt(asOf);
   const barRows:Bar[]=v934Bars.confirmed["1D"]??[];
-  const benchRows:Bar[]|null=(v934Bench?.confirmed["1D"]??null) as Bar[]|null;
+  const benchRows:Bar[]|null=(benchmark===symbol?barRows:(v934Bench?.confirmed["1D"]??null)) as Bar[]|null;
   const technical=computeTechnicalSnapshot(barRows,benchRows,benchmark);
   if(!technical)throw new Error("Insufficient market history for technical analysis.");
   const fallbackClose=barRows.at(-1)?.close??null;
   const marketTruth=marketGateway?.snapshot??buildCanonicalMarketSnapshot({symbol,asOf,primary:null,secondary:null,regularClose:fallbackClose,regularCloseTimestamp:fallbackClose!=null?lastCompletedRegularSessionCloseTimestamp(asOf):null});
-  const marketIntelligence=buildAurynMarketIntelligenceSnapshot({symbol,marketTruth,confirmedBars:v934Bars.confirmed,benchmarkBars:v934Bench?.confirmed??{},previewBars:v934Bars.preview,benchmark});
+  const benchmarkConfirmed=benchmark===symbol?v934Bars.confirmed:(v934Bench?.confirmed??{});
+  const marketIntelligence=buildAurynMarketIntelligenceSnapshot({symbol,marketTruth,confirmedBars:v934Bars.confirmed,benchmarkBars:benchmarkConfirmed,previewBars:{},benchmark});
   const analysisAnchor=barRows.at(-1)??null,analysisAnchorPrice=analysisAnchor?.close??technical.price,analysisAnchorAsOf=analysisAnchor?.datetime??null;
   const seriesIntegrity=assessBarSeriesIntegrity(barRows,alpacaBars);
   const c=barRows.map(x=>x.close),h=barRows.map(x=>x.high),l=barRows.map(x=>x.low),v=barRows.map(x=>x.volume);

@@ -85,7 +85,7 @@ function metricScore(mode:Mode,business:number,six:number,timing:number,risk:num
 }
 
 type StockWarmCache={d?:any;company?:any;context?:any;institutional?:any;ts:number;evidenceTs?:number};
-const CORE_ATTEMPTS=2,CORE_TIMEOUT_MS=4200;
+const CORE_ATTEMPTS=1,CORE_TIMEOUT_MS=6000;
 const stockWarmCache=new Map<string,StockWarmCache>();
 const CACHE_MAX_AGE=5*60*1000;
 let calibrationCache:any=null;
@@ -135,6 +135,8 @@ export default function StockClient({symbol}:{symbol:string}){
   const[calibration,setCalibration]=useState<any>(null);
   const[modelHealth,setModelHealth]=useState<any>(null);
   const[liveQuote,setLiveQuote]=useState<any>(null);
+  const[liveMarketContext,setLiveMarketContext]=useState<any>(null);
+  const[coreRetry,setCoreRetry]=useState(0);
   const[previousSetupState,setPreviousSetupState]=useState<SetupState|null>(null);
 
   useEffect(()=>{
@@ -147,6 +149,17 @@ export default function StockClient({symbol}:{symbol:string}){
     loadQuote();timer=setInterval(()=>{if(document.visibilityState==="visible")loadQuote()},20000);
     return()=>{active=false;clearInterval(timer)};
   },[symbol]);
+
+  useEffect(()=>{
+    if(!d?.marketIntelligence?.snapshotId){setLiveMarketContext(null);return;}
+    let active=true;const controller=new AbortController();let timer:any;
+    const load=()=>fetch(`/api/market-intelligence/live/${encodeURIComponent(symbol)}`,{cache:"no-store",signal:controller.signal})
+      .then(async r=>{const x=await r.json();if(active&&r.ok&&x?.status!=="UNAVAILABLE")setLiveMarketContext(x)})
+      .catch(()=>{});
+    const start=window.setTimeout(load,180);
+    timer=window.setInterval(()=>{if(document.visibilityState==="visible")load()},60000);
+    return()=>{active=false;window.clearTimeout(start);window.clearInterval(timer);controller.abort()};
+  },[symbol,d?.marketIntelligence?.snapshotId]);
 
   useEffect(()=>{
     let active=true;
@@ -167,7 +180,8 @@ export default function StockClient({symbol}:{symbol:string}){
   useEffect(()=>{
     let live=true;
     let core:AbortController|null=null;
-    const warm=stockWarmCache.get(symbol);
+    let warm=stockWarmCache.get(symbol);
+    if(!warm&&typeof window!=="undefined"){try{const raw=sessionStorage.getItem(`auryn:core:${symbol}`);if(raw){const parsed=JSON.parse(raw);if(parsed?.d&&Date.now()-Number(parsed.ts||0)<15*60*1000){warm=parsed;stockWarmCache.set(symbol,parsed)}}}catch{}}
     const hasWarm=!!warm&&Date.now()-warm.ts<CACHE_MAX_AGE;
     if(hasWarm){
       if(warm?.d)setD(warm.d);
@@ -176,7 +190,7 @@ export default function StockClient({symbol}:{symbol:string}){
       if(warm?.institutional)setInstitutional(warm.institutional);
       setErr("");
     }else{
-      setD(null);setCompany(null);setContext(null);setInstitutional(null);setErr("");
+      setD(null);setCompany(null);setContext(null);setInstitutional(null);setLiveMarketContext(null);setErr("");
     }
 
     const fetchJson=async(url:string,signal?:AbortSignal)=>{
@@ -195,14 +209,14 @@ export default function StockClient({symbol}:{symbol:string}){
         try{
           const a=await fetchJson(`/api/analyze/${encodeURIComponent(symbol)}`,core.signal);
           if(!live)return;
-          setD(a);setErr("");mergeWarm(symbol,{d:a});return;
+          setD(a);setErr("");mergeWarm(symbol,{d:a});try{sessionStorage.setItem(`auryn:core:${symbol}`,JSON.stringify({d:a,ts:Date.now()}))}catch{}return;
         }catch(e:any){
           lastError=e;
           if(!live)return;
           if(attempt<CORE_ATTEMPTS)await new Promise(r=>setTimeout(r,180));
         }finally{clearTimeout(timer)}
       }
-      if(showError&&live&&!stockWarmCache.get(symbol)?.d)setErr(lastError?.name==="AbortError"?"Live history is temporarily slow. AURYN retried automatically; try once more.":lastError?.message||"Analysis is temporarily unavailable.");
+      if(showError&&live&&!stockWarmCache.get(symbol)?.d)setErr(lastError?.name==="AbortError"?"Live history is temporarily slow. AURYN kept the verified price active; retry research when ready.":lastError?.message||"Analysis is temporarily unavailable.");
     };
 
     const loadEvidence=()=>{
@@ -217,15 +231,15 @@ export default function StockClient({symbol}:{symbol:string}){
     const evidenceFresh=!!warm?.evidenceTs&&Date.now()-warm.evidenceTs<30*60*1000;
     const cancelEvidence=!evidenceFresh?scheduleNonCritical(()=>loadEvidence()):()=>{};
 
-    const priceTimer=setInterval(()=>{if(document.visibilityState==="visible")loadCore(false)},60000);
+    const priceTimer=setInterval(()=>{if(document.visibilityState==="visible")loadCore(false)},300000);
     const newsTimer=setInterval(()=>{if(document.visibilityState==="visible")fetchJson(`/api/context/${encodeURIComponent(symbol)}`).then(x=>{if(live){setContext(x);mergeEvidenceWarm(symbol,{context:x})}}).catch(()=>{})},120000);
     const onFocus=()=>{
       const last=stockWarmCache.get(symbol)?.ts||0;
-      if(Date.now()-last>45000)loadCore(false);
+      if(Date.now()-last>240000)loadCore(false);
     };
     window.addEventListener("focus",onFocus);
     return()=>{live=false;cancelEvidence();core?.abort();clearInterval(priceTimer);clearInterval(newsTimer);window.removeEventListener("focus",onFocus)};
-  },[symbol]);
+  },[symbol,coreRetry]);
 
 
   useEffect(()=>{
@@ -311,6 +325,14 @@ export default function StockClient({symbol}:{symbol:string}){
     return Number.isFinite(px)&&px>0?px:null;
   },[marketTruth]);
   const priceSensitiveAllowed=Boolean(marketTruth?.priceSensitiveAllowed&&canonicalDecisionPrice!=null);
+  const marketIntelligenceView=useMemo(()=>{
+    const base=d?.marketIntelligence;if(!base)return null;if(!liveMarketContext)return base;
+    const confirmed={...base.confirmed,...(liveMarketContext.confirmed||{})};
+    const livePreview={...base.livePreview,...(liveMarketContext.livePreview||{})};
+    const requested=base.coverage?.requested||['15M','1H','4H','1D','1W'];
+    const covered=requested.filter((tf:string)=>Boolean(confirmed?.[tf]));
+    return{...base,confirmed,livePreview,coverage:{...base.coverage,confirmed:covered,missing:requested.filter((tf:string)=>!confirmed?.[tf])},tacticalContextAsOf:liveMarketContext.asOf||null};
+  },[d?.marketIntelligence,liveMarketContext]);
   const canonicalMarket=useMemo(()=>{
     if(!d)return d;
     return canonicalDecisionPrice!=null?{...d,price:canonicalDecisionPrice,canonicalMarketSnapshot:marketTruth}:{...d,canonicalMarketSnapshot:marketTruth};
@@ -465,8 +487,20 @@ export default function StockClient({symbol}:{symbol:string}){
     })}).catch(()=>{});
   },[d?.price,canonicalDecisionPrice,priceSensitiveAllowed,intelligence?.score,intelligence?.confidence,enterprise?.auditId,symbol,mode,investorDecision?.thesisScore,investorDecision?.opportunityScore,investorDecision?.today,v5Analysis?.snapshotId,v5Analysis?.decision.primaryAction,v5Analysis?.executionPlan.state,v7Analysis?.trust.state,institutionalDecision?.snapshotId,institutionalDecision?.newMoneyAction,institutionalDecision?.ownerAction,institutionalDecision?.setupState,decisionSnapshot?.snapshotId,d?.marketIntelligence?.snapshotId]);
 
-  if(err)return <div className="osError"><b>Couldn’t analyze {symbol}</b><span>{err}</span><button onClick={()=>location.reload()}>Try again</button></div>;
-  if(!d||!view)return <div className="osStockLoading"><div className="aurynLoadingMark">AURYN</div><b>Analyzing {symbol}</b><span>Building the decision first. Evidence loads after.</span></div>;
+  if(!d||!view){
+    const partialStatus=!marketTruth?"Verifying market price":marketTruth.priceState==="OFFICIAL_CLOSE"?"Market closed · verified reference":marketTruth.session==="PRE_MARKET"?"Pre-market · verified source":marketTruth.session==="AFTER_HOURS"?"After-hours · verified source":"Market open · verified source";
+    const partialDetail=marketTruth?`${String(marketTruth.reason||"")}${marketTruth.decisionPriceAsOf?` · price as of ${new Date(marketTruth.decisionPriceAsOf).toLocaleString()}`:""}`:"Price verification loads independently from the research engine.";
+    const partialChange=Number(liveQuote?.changePct);
+    return <div className="aurynStockPage aurynProgressiveStock">
+      <StockSecurityHeader company={symbol} symbol={symbol} price={priceSensitiveAllowed?canonicalDecisionPrice:null} changePct={priceSensitiveAllowed&&Number.isFinite(partialChange)?partialChange:null} status={partialStatus} detail={partialDetail} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
+      <section className={`aurynProgressiveResearch ${err?"degraded":"loading"}`}>
+        <small>{err?"RESEARCH TEMPORARILY UPDATING":"BUILDING CONFIRMED RESEARCH"}</small>
+        <h2>{err?"Live price is active. Historical intelligence is retrying.":`Building ${symbol} without blocking the live price.`}</h2>
+        <p>{err||"Confirmed 4H, daily and weekly structure load first. Tactical 15M/1H context follows separately."}</p>
+        {err?<button type="button" onClick={()=>{setErr("");setCoreRetry(x=>x+1)}}>Retry research</button>:null}
+      </section>
+    </div>;
+  }
 
   const business=company?.fundamentalSignal||{label:d.assetType==="crypto"?"Crypto":"Loading",tone:"neutral",reasons:[]};
   const canonicalMetricScore=(id:string)=>{const m=v5Analysis?.metrics.find(x=>x.id===id);return m?.available&&Number.isFinite(Number(m.value))?Math.round(Number(m.value)):null;};
@@ -700,7 +734,7 @@ export default function StockClient({symbol}:{symbol:string}){
   return <div className="aurynStockPage">
     <StockSecurityHeader company={company?.name||d.name||symbol} symbol={symbol} price={priceSensitiveAllowed?canonicalDecisionPrice:null} changePct={priceSensitiveAllowed?displayChangePct:null} status={marketStatusLabel} detail={marketDetail} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
     {marketTruth&&!priceSensitiveAllowed?<div className="aurynIntegrityAlert aurynMarketTruthAlert" role="alert"><b>PRICE UNVERIFIED</b><span>{marketTruth.reason||"Independent market sources are not sufficiently aligned."} AURYN has disabled entry, confirmation, target, stop and risk/reward output until the canonical price is verified.</span></div>:null}
-    {institutionalDecision?<InstitutionalDecisionBrief decision={institutionalDecision} marketTruth={marketTruth} executionPlan={v5Analysis?.executionPlan??null} support={v5Analysis?.technical?.levels?.support??null} marketIntelligence={d?.marketIntelligence??null}/>:null}
+    {institutionalDecision?<InstitutionalDecisionBrief decision={institutionalDecision} marketTruth={marketTruth} executionPlan={v5Analysis?.executionPlan??null} support={v5Analysis?.technical?.levels?.support??null} marketIntelligence={marketIntelligenceView??d?.marketIntelligence??null}/>:null}
     {v5Analysis?<>{canonicalTrustBlocked?<div className="aurynIntegrityAlert aurynTrustBlock" role="alert"><b>CANONICAL TRUST BLOCK</b><span>{v7Analysis?.trust.blockers[0]||"AURYN detected an internal snapshot/plan inconsistency."} Price-sensitive execution levels are suppressed until the canonical chain is aligned.</span></div>:null}</>:<section className="aurynV5Unavailable"><small>AURYN CANONICAL ANALYSIS</small><b>COLLECTING VERIFIED EVIDENCE</b><span>AURYN will not publish a fallback verdict while the canonical snapshot is unavailable.</span></section>}
     <div className="aurynOwnershipNote"><Sparkles size={14}/><span>AURYN separates long-term thesis, owner action and new-money timing.</span></div>
 
@@ -787,7 +821,7 @@ export default function StockClient({symbol}:{symbol:string}){
       {tab==="earnings"&&<div className="aurynStockTabPage v12Earnings"><StockTabContext marketTruth={marketTruth} label="EARNINGS" title="Execution, revisions & reported results" score={canonicalMetricScore("fundamentals")} state={v4Analysis?.thesis.direction} action={institutionalDecision?.newMoneyAction??v5Analysis?.decision.primaryAction} detail={institutionalDecision?.pillars.earningsRevisions.why||"Earnings and forward-fundamental evidence is loading into the canonical AURYN decision."}/><div className="earnSplit">{latestReport&&<div className="earnNext earnReported"><small>LATEST REPORTED RESULTS</small><h3>{latestEarnNews?.date?new Date(latestEarnNews.date).toLocaleDateString():latestReport.date}</h3><p>{latestEarnNews?.headline||`${latestReport.form} filed — latest reported financial filing`}</p>{latestEarnNews?.url&&<a href={latestEarnNews.url} target="_blank" rel="noreferrer">Read results <ExternalLink size={12}/></a>}</div>}{earn&&<div className="earnNext estimated"><small>NEXT EARNINGS · ESTIMATED</small><h3>{earn.date}</h3><p>{earn.hour||"Time not listed"}{earn.epsEstimate!=null?` · EPS est. ${eps(earn.epsEstimate)}`:""}{earn.revenueEstimate!=null?` · Revenue est. ${money(earn.revenueEstimate)}`:""}</p><p className="earnMeta">Future calendar dates are estimates until confirmed by the company.</p></div>}</div><div className="earnGrid">{(context?.surprises||[]).length?context.surprises.map((x:any,i:number)=><div key={i}><small>{x.period}</small><b className={(x.surprisePercent??0)>=0?"good":"bad"}>{x.surprisePercent!=null?`${x.surprisePercent>=0?"+":""}${Number(x.surprisePercent).toFixed(1)}% surprise`:"Reported"}</b><span>Actual {formatEpsValue(x.actual)} · Est. {formatEpsValue(x.estimate)}</span></div>):<p>No earnings-surprise history returned by the connected feed.</p>}</div></div>}
 
       {tab==="technical"&&<div className="aurynStockTabPage v12Technical v26Technical">
-        {d?.marketIntelligence?<section className="v934TechnicalCore" data-market-intelligence-snapshot={d.marketIntelligence.snapshotId}><div className="aurynEyebrow">MULTI-TIMEFRAME MARKET STATE</div><MarketTimeframeTape marketIntelligence={d.marketIntelligence}/><MarketActionMap marketIntelligence={d.marketIntelligence}/></section>:null}
+        {d?.marketIntelligence?<section className="v934TechnicalCore" data-market-intelligence-snapshot={d.marketIntelligence.snapshotId}><div className="aurynEyebrow">MULTI-TIMEFRAME MARKET STATE</div><MarketTimeframeTape marketIntelligence={marketIntelligenceView??d.marketIntelligence}/><MarketActionMap marketIntelligence={d.marketIntelligence}/></section>:null}
         {v5Analysis&&!canonicalTrustBlocked&&<ScenarioMapPanel scenario={v5Analysis.scenario} mode="compact"/>}
         <StockTabContext marketTruth={marketTruth} label="TECHNICALS" title="Timing, trend & confluence" score={technicalState.strength} state={d.labels.trend} action={institutionalDecision?.newMoneyAction??v5Analysis?.decision.primaryAction} detail={institutionalDecision?.pillars.marketStructure.why||"Completed-bar market structure is loading into the canonical AURYN decision."}/>
         <div className="v34TechnicalHero v383TechnicalHero">

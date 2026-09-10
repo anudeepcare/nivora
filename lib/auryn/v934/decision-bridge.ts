@@ -30,6 +30,6 @@ export function deriveV934DecisionTechnical(snapshot:AurynMarketIntelligenceSnap
   reclaimLevel:Number.isFinite(confirm)?confirm:null,invalidation:Number.isFinite(invalidation)?invalidation:null,
   confirmedPrice:Number.isFinite(confirmedPrice)?confirmedPrice:null,
   confirmedDailyRating:daily?.rating??null,livePreviewRating:live?.rating??null,
-  why:why?`${why}. Confirmed completed bars drive the decision; live preview ${live?.rating??'unavailable'} cannot silently rewrite it.`:'Multi-timeframe confirmed structure is unavailable.'
+  why:why?`${why}. Confirmed completed bars drive the decision; tactical intraday context is displayed separately and cannot silently rewrite it.`:'Multi-timeframe confirmed structure is unavailable.'
  };
 }

@@ -30,10 +30,14 @@ test('analysis route loads V9.3.4 market bars and optional Alpaca integrity in p
  assert.match(s,/const \[v934Bars,v934Bench,marketGateway,alpacaBars\]=await Promise\.all\(\[/);
 });
 
-test('stock core loader allows one bounded retry before presenting a fatal timeout',()=>{
+test('stock core loader uses one browser request while server-side history handles bounded retry',()=>{
  const s=fs.readFileSync('components/StockClient.tsx','utf8');
- assert.match(s,/CORE_ATTEMPTS\s*=\s*2/);
- assert.match(s,/for\s*\(let attempt=1;attempt<=CORE_ATTEMPTS;attempt\+\+\)/);
+ assert.match(s,/CORE_ATTEMPTS\s*=\s*1/);
+ assert.match(s,/CORE_TIMEOUT_MS\s*=\s*6000/);
+ assert.match(s,/aurynProgressiveResearch/);
+ const route=fs.readFileSync('app/api/analyze/[symbol]/route.ts','utf8');
+ assert.match(route,/loadV934DecisionBars/);
+ assert.match(route,/PROVIDER_TEMPORARY_FAILURE/);
 });
 
 

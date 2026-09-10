@@ -19,7 +19,7 @@ function assessQuoteIntegrity(primary, secondary, maxDisagreementPct = .75) {
     const disagreement = p && s && p.price > 0 && s.price > 0 ? pctDiff(p.price, s.price) : null;
     if (pLive && sLive) {
         if (disagreement != null && disagreement > maxDisagreementPct) {
-            return { state: "DISAGREEMENT", tradable: false, reason: `Live providers disagree by ${disagreement.toFixed(2)}%, above the ${maxDisagreementPct.toFixed(2)}% integrity limit. NIVORA rejected both prices until a provider can be verified.`, chosen: null, primary: p, secondary: s, disagreementPct: +disagreement.toFixed(4) };
+            return { state: "DISAGREEMENT", tradable: false, reason: `Live providers disagree by ${disagreement.toFixed(2)}%, above the ${maxDisagreementPct.toFixed(2)}% integrity limit. AURYN rejected both prices until a provider can be verified.`, chosen: null, primary: p, secondary: s, disagreementPct: +disagreement.toFixed(4) };
         }
         const chosen = (p.ageSeconds ?? Infinity) <= (s.ageSeconds ?? Infinity) ? p : s;
         return { state: "LIVE_VERIFIED", tradable: true, reason: "Independent live providers agree within the configured integrity tolerance.", chosen, primary: p, secondary: s, disagreementPct: disagreement == null ? null : +disagreement.toFixed(4) };
@@ -37,19 +37,27 @@ function assessQuoteIntegrity(primary, secondary, maxDisagreementPct = .75) {
     return {
         state: hasTimestamp ? "STALE" : "DELAYED",
         tradable: false,
-        reason: hasTimestamp ? "All available quotes are older than the tradable freshness policy." : "Provider timestamps are unavailable, so NIVORA cannot verify quote freshness.",
+        reason: hasTimestamp ? "All available quotes are older than the tradable freshness policy." : "Provider timestamps are unavailable, so AURYN cannot verify quote freshness.",
         chosen: null,
         primary: p,
         secondary: s,
         disagreementPct: disagreement == null ? null : +disagreement.toFixed(4)
     };
 }
-function validateQuoteIdentity(expectedSymbol, quote) {
+function validateQuoteIdentity(expectedSymbol, quote, hint = {}) {
     const expected = String(expectedSymbol || "").trim().toUpperCase();
     const actual = String(quote?.symbol || "").trim().toUpperCase();
     if (!expected || !actual)
         return { ok: false, reason: "Quote symbol identity is unavailable." };
     if (expected !== actual)
         return { ok: false, reason: `Quote symbol mismatch: requested ${expected}, provider returned ${actual}.` };
-    return { ok: true, reason: "Quote symbol matches the requested ticker." };
+    const actualExchange = String(quote?.exchange || "").trim().toUpperCase();
+    const expectedExchange = String(hint.exchange || "").trim().toUpperCase();
+    if (actualExchange && expectedExchange && !actualExchange.includes(expectedExchange) && !expectedExchange.includes(actualExchange))
+        return { ok: false, reason: `Quote exchange mismatch: requested ${expectedExchange}, provider returned ${actualExchange}.` };
+    const actualCurrency = String(quote?.currency || "").trim().toUpperCase();
+    const expectedCurrency = String(hint.currency || "").trim().toUpperCase();
+    if (actualCurrency && expectedCurrency && actualCurrency !== expectedCurrency)
+        return { ok: false, reason: `Quote currency mismatch: requested ${expectedCurrency}, provider returned ${actualCurrency}.` };
+    return { ok: true, reason: "Quote identity matches the requested security." };
 }

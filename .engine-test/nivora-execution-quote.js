@@ -19,5 +19,5 @@ function normalizeAlpacaQuote(symbol, quoteRaw, tradeRaw, asOf = new Date()) {
 }
 function normalizeTwelveExecutionQuote(raw, asOf = new Date()) {
     const q = (0, nivora_live_quote_1.normalizeTwelveQuote)(raw, asOf);
-    return { symbol: q.symbol, price: q.price, bid: null, ask: null, spreadPct: null, changePct: q.changePct, providerTimestamp: q.providerTimestamp, ageSeconds: q.ageSeconds, session: q.session, freshness: q.freshness, provider: "twelvedata", isRealTime: q.isRealTime };
+    return { symbol: q.symbol, price: q.price, bid: null, ask: null, spreadPct: null, changePct: q.changePct, providerTimestamp: q.providerTimestamp, ageSeconds: q.ageSeconds, session: q.session, freshness: q.freshness, provider: "twelvedata", isRealTime: q.isRealTime, exchange: String(raw?.exchange || raw?.mic_code || "") || null, currency: String(raw?.currency || "").toUpperCase() || null };
 }
