@@ -34,14 +34,14 @@ test('V9.3.4.1 confirmed decision history excludes blocking 15-minute fetches', 
   assert.ok(!urls.some(x=>x.includes('interval=15min')),'15-minute request must not block core decision path');
 });
 
-test('V9.3.4.1 live context is a separate 15-minute request', async()=>{
+test('V9.3.4.1 live context remains separate from the core and may enrich 4H progressively', async()=>{
   const mod=await import('../.engine-test/auryn/v934/twelve-multitimeframe.js');
   const urls=[];
   const fetchJson=async url=>{urls.push(url);return {values:[]}};
   const r=await mod.loadV934LiveContext({symbol:'QQQ',key:'x',asOf:new Date('2026-09-10T18:45:00Z'),fetchJson});
-  assert.equal(urls.length,1);
-  assert.match(urls[0],/interval=15min/);
-  assert.match(urls[0],/prepost=true/);
+  assert.equal(urls.filter(x=>x.includes('interval=15min')).length,1);
+  assert.ok(urls.some(x=>x.includes('interval=15min')&&x.includes('prepost=true')));
+  assert.ok(urls.some(x=>x.includes('interval=4h')),'4H enrichment may load progressively instead of blocking the core');
   assert.ok(r.preview);
 });
 

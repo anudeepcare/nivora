@@ -30,12 +30,16 @@ export async function GET(req:Request,{params}:{params:Promise<{symbol:string}>}
    :Promise.resolve(null);
   const asOf=new Date();
   const fetchJson=(url:string,keyParts:string[],revalidate:number,timeout:number)=>sharedJson(url,keyParts,revalidate,timeout);
-  const benchPromise=benchmark&&benchmark!==symbol?Promise.race([loadV934DecisionBars({symbol:benchmark,key,asOf,fetchJson}).catch(()=>null),new Promise<null>(resolve=>setTimeout(()=>resolve(null),2800))]):Promise.resolve(null);
-  const alpacaBarsFast=Promise.race([alpacaBarsPromise,new Promise<null>(resolve=>setTimeout(()=>resolve(null),900))]);
+  const benchPromise=benchmark&&benchmark!==symbol?Promise.race([loadV934DecisionBars({symbol:benchmark,key,asOf,fetchJson}).catch(()=>null),new Promise<null>(resolve=>setTimeout(()=>resolve(null),900))]):Promise.resolve(null);
+  const alpacaBarsFast=Promise.race([alpacaBarsPromise,new Promise<null>(resolve=>setTimeout(()=>resolve(null),600))]);
+  const marketGatewayPromise=Promise.race([
+    loadCanonicalMarketSnapshot({symbol,twelveKey:key,alpacaKey:process.env.ALPACA_PAPER_API_KEY||'',alpacaSecret:process.env.ALPACA_PAPER_API_SECRET||'',asOf}).catch(()=>null),
+    new Promise<null>(resolve=>setTimeout(()=>resolve(null),1200))
+  ]);
   const [v934Bars,v934Bench,marketGateway,alpacaBars]=await Promise.all([
     loadV934DecisionBars({symbol,key,asOf,fetchJson}),
     benchPromise,
-    loadCanonicalMarketSnapshot({symbol,twelveKey:key,alpacaKey:process.env.ALPACA_PAPER_API_KEY||'',alpacaSecret:process.env.ALPACA_PAPER_API_SECRET||'',asOf}).catch(()=>null),
+    marketGatewayPromise,
     alpacaBarsFast
   ]);
   const j=v934Bars.rawDaily,bj=v934Bench?.rawDaily??null;

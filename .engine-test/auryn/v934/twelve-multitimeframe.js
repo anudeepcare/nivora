@@ -3,6 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.parseTwelveBars = parseTwelveBars;
 exports.resampleSequential = resampleSequential;
 exports.aggregateCompletedWeeks = aggregateCompletedWeeks;
+exports.loadV934DecisionBars = loadV934DecisionBars;
+exports.loadV934LiveContext = loadV934LiveContext;
 exports.loadV934MarketBars = loadV934MarketBars;
 const nivora_market_session_1 = require("../../nivora-market-session");
 const completed_bars_1 = require("../v84/completed-bars");
@@ -76,6 +78,35 @@ function dailyPreviewFrom15m(confirmedDaily, raw15, asOf) {
     return base.concat(bar);
 }
 function url(symbol, key, interval, size, prepost = false) { const hint = (0, security_master_1.providerMarketHint)(symbol); return `https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(symbol)}&interval=${interval}&outputsize=${size}&timezone=UTC${prepost ? '&prepost=true' : ''}${hint.exchange ? `&exchange=${encodeURIComponent(hint.exchange)}` : ''}&apikey=${key}`; }
+async function loadV934DecisionBars(input) {
+    const symbol = String(input.symbol).toUpperCase();
+    const fourHourPromise = input.fetchJson(url(symbol, input.key, '4h', 240, false), ['twelve', 'v9341', symbol, '4h'], 180, 2600);
+    const dailyPromise = input.fetchJson(url(symbol, input.key, '1day', 340, false), ['twelve', 'v9341', symbol, '1day'], 60, 3000);
+    const [fourHour, daily] = await Promise.allSettled([fourHourPromise, dailyPromise]);
+    let rawDaily = daily.status === 'fulfilled' ? daily.value : null;
+    let dailyError = daily.status === 'rejected' ? String(daily.reason) : null;
+    if (!rawDaily && dailyError) {
+        try {
+            rawDaily = await input.fetchJson(url(symbol, input.key, '1day', 260, false), ['twelve', 'v9341', symbol, '1day', 'retry'], 60, 2200);
+            dailyError = null;
+        }
+        catch (error) {
+            dailyError = `${dailyError}; retry: ${String(error)}`;
+        }
+    }
+    const raw4h = fourHour.status === 'fulfilled' ? fourHour.value : null;
+    const all4h = parseTwelveBars(raw4h), allDaily = parseTwelveBars(rawDaily), calendar = (0, nivora_market_session_1.marketCalendarAt)(input.asOf);
+    const h4 = completedIntraday(all4h, 240, input.asOf), day = (0, completed_bars_1.completedDailyBars)(allDaily, calendar), week = aggregateCompletedWeeks(day, input.asOf);
+    const confirmed = { '4H': h4, '1D': day, '1W': week };
+    return { confirmed, preview: {}, rawDaily, coverage: { '15M': 0, '1H': 0, '4H': h4.length, '1D': day.length, '1W': week.length }, errors: { '15M': null, '4H': fourHour.status === 'rejected' ? String(fourHour.reason) : null, '1D': dailyError } };
+}
+async function loadV934LiveContext(input) {
+    const symbol = String(input.symbol).toUpperCase();
+    const raw = await input.fetchJson(url(symbol, input.key, '15min', 840, true), ['twelve', 'v9341', symbol, '15min', 'live'], 20, 5000);
+    const all15 = parseTwelveBars(raw), d15 = completedIntraday(all15, 15, input.asOf), h1 = resampleSequential(d15, 4, false);
+    const preview = { '15M': all15, '1H': resampleSequential(all15, 4, true), '4H': resampleSequential(all15, 16, true) };
+    return { confirmed: { '15M': d15, '1H': h1 }, preview, coverage: { '15M': d15.length, '1H': h1.length }, raw15: raw };
+}
 async function loadV934MarketBars(input) {
     const symbol = String(input.symbol).toUpperCase();
     const reqs = [

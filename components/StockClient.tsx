@@ -85,9 +85,9 @@ function metricScore(mode:Mode,business:number,six:number,timing:number,risk:num
 }
 
 type StockWarmCache={d?:any;company?:any;context?:any;institutional?:any;ts:number;evidenceTs?:number};
-const CORE_ATTEMPTS=1,CORE_TIMEOUT_MS=6000;
+const CORE_ATTEMPTS=1,CORE_TIMEOUT_MS=4500;
 const stockWarmCache=new Map<string,StockWarmCache>();
-const CACHE_MAX_AGE=5*60*1000;
+const CACHE_MAX_AGE=15*60*1000;
 let calibrationCache:any=null;
 const modelHealthCache=new Map<string,any>();
 function scheduleNonCritical(work:()=>void){
@@ -231,7 +231,7 @@ export default function StockClient({symbol}:{symbol:string}){
     const evidenceFresh=!!warm?.evidenceTs&&Date.now()-warm.evidenceTs<30*60*1000;
     const cancelEvidence=!evidenceFresh?scheduleNonCritical(()=>loadEvidence()):()=>{};
 
-    const priceTimer=setInterval(()=>{if(document.visibilityState==="visible")loadCore(false)},300000);
+    const priceTimer=setInterval(()=>{if(document.visibilityState==="visible")loadCore(false)},900000);
     const newsTimer=setInterval(()=>{if(document.visibilityState==="visible")fetchJson(`/api/context/${encodeURIComponent(symbol)}`).then(x=>{if(live){setContext(x);mergeEvidenceWarm(symbol,{context:x})}}).catch(()=>{})},120000);
     const onFocus=()=>{
       const last=stockWarmCache.get(symbol)?.ts||0;

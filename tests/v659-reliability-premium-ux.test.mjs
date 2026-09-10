@@ -33,7 +33,8 @@ test('analysis route loads V9.3.4 market bars and optional Alpaca integrity in p
 test('stock core loader uses one browser request while server-side history handles bounded retry',()=>{
  const s=fs.readFileSync('components/StockClient.tsx','utf8');
  assert.match(s,/CORE_ATTEMPTS\s*=\s*1/);
- assert.match(s,/CORE_TIMEOUT_MS\s*=\s*6000/);
+ const timeout=s.match(/CORE_TIMEOUT_MS\s*=\s*(\d+)/);
+ assert.ok(timeout&&Number(timeout[1])<=4500,'core browser timeout must stay at or below 4.5s');
  assert.match(s,/aurynProgressiveResearch/);
  const route=fs.readFileSync('app/api/analyze/[symbol]/route.ts','utf8');
  assert.match(route,/loadV934DecisionBars/);

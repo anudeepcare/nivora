@@ -1,4 +1,4 @@
-export const GOLDEN_AUDIT_SYMBOLS=['SPY','QQQ','IWM','AAPL','MSFT','NVDA','IREN','BE','ASTS','SAP'];
+export const GOLDEN_AUDIT_SYMBOLS=['SPY','QQQ','IWM','AAPL','MSFT','NVDA','IREN','BE','ASTS','SAP','MU','NBIS','SKHY'];
 export function finiteNumber(value){
   if(value===null||value===undefined||value==='')return null;
   const n=Number(value);return Number.isFinite(n)?n:null;

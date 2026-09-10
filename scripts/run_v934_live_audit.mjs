@@ -31,7 +31,6 @@ async function mustJson(route){const r=await requestJson(route);if(!r.ok)throw n
 async function loadSymbols(){
  const u=await mustJson(`/api/audit/universe?limit=${limit}`);
  const symbols=Array.isArray(u?.symbols)?u.symbols.map(x=>String(x||'').trim().toUpperCase()).filter(Boolean):[];
- const golden=['SPY','QQQ','IWM','AAPL','MSFT','NVDA','AMZN','META','GOOGL','AVGO','TSLA','AMD','JPM','XOM','UNH','IREN','BE','ASTS','SAP'];
  return selectAuditSymbols(symbols,limit);
 }
 async function loadBatches(symbols,route){
@@ -147,6 +146,11 @@ for(let i=0;i<symbols.length;i++){
   if(analyze){
    const anchor=finite(analyze.analysisAnchorPrice??analyze.price);if(anchor==null)issues.push('critical: analysis completed without a finite completed-bar anchor');
    if(analyze.analysisAnchorRole&&String(analyze.analysisAnchorRole).toUpperCase().includes('LIVE'))issues.push(`critical: structural analysis anchor is mislabeled live (${analyze.analysisAnchorRole})`);
+   const regularClose=finite(quote?.regularClosePrice??quote?.regularClose);
+   const closeAsOf=String(quote?.regularCloseAsOf||quote?.decisionPriceAsOf||'').slice(0,10);
+   const anchorAsOf=String(analyze?.analysisAnchorAsOf||'').slice(0,10);
+   const closeAnchorGap=pctGap(regularClose,anchor);
+   if(String(quote?.session||'')==='AFTER_HOURS'&&closeAsOf&&anchorAsOf&&closeAsOf===anchorAsOf&&closeAnchorGap!=null&&closeAnchorGap>0.5)issues.push(`critical: regular close differs from same-session daily anchor by ${closeAnchorGap.toFixed(3)}%`);
    const mi=validateIntelligence(symbol,analyze,quote,summary,issues);
    if(mi){intelligenceReady++;for(const tf of ['4H','1D','1W'])if(mi.confirmed?.[tf])timeframeCoverage[tf]++;}
   }
@@ -156,7 +160,7 @@ for(let i=0;i<symbols.length;i++){
  rows.push({symbol,status:criticalIssues.length?'CRITICAL':issues.length?'WARN':'PASS',session:quote?.session??null,priceState:quote?.priceState??null,displayPrice:finite(quote?.displayPrice),providerAgreementPct:finite(quote?.providerAgreementPct??quote?.disagreementPct),marketSnapshotId:quote?.snapshotId??null,marketIntelligenceSnapshotId:analyze?.marketIntelligence?.snapshotId??null,confirmedTimeframes:analyze?.marketIntelligence?.coverage?.confirmed??[],tacticalTimeframes:Object.keys(tactical?.confirmed||{}),issues});
  console.log(`${String(i+1).padStart(3,' ')}/${symbols.length} ${symbol}: ${criticalIssues.length?'CRITICAL':issues.length?'WARN':'PASS'}${issues.length?` · ${issues.join(' | ')}`:''}`);
 }
-const report={version:'auryn-v9.3.4.1',kind:'REAL_WORLD_24X7_MARKET_INTELLIGENCE_AUDIT',baseUrl:base,generatedAt:new Date().toISOString(),requested:limit,total:rows.length,status:critical?'FAIL':'PASS',critical,warnings,researchSafe,executionReady,closedResearchSafe,intelligenceReady,sessions,priceStates,timeframeCoverage,providerAgreementPct:{samples:providerGaps.length,max:providerGaps.length?Math.max(...providerGaps):null,avg:providerGaps.length?providerGaps.reduce((a,b)=>a+b,0)/providerGaps.length:null},rows};
+const report={version:'auryn-v9.3.4.2',kind:'REAL_WORLD_24X7_MARKET_INTELLIGENCE_AUDIT',baseUrl:base,generatedAt:new Date().toISOString(),requested:limit,total:rows.length,status:critical?'FAIL':'PASS',critical,warnings,researchSafe,executionReady,closedResearchSafe,intelligenceReady,sessions,priceStates,timeframeCoverage,providerAgreementPct:{samples:providerGaps.length,max:providerGaps.length?Math.max(...providerGaps):null,avg:providerGaps.length?providerGaps.reduce((a,b)=>a+b,0)/providerGaps.length:null},rows};
 fs.mkdirSync(path.dirname(reportPath),{recursive:true});fs.writeFileSync(reportPath,JSON.stringify(report,null,2));
-console.log(JSON.stringify(report,null,2));console.log(`AURYN V9.3.4 live audit report: ${reportPath}`);
+console.log(JSON.stringify(report,null,2));console.log(`AURYN V9.3.4.2 live audit report: ${reportPath}`);
 if(critical>0)process.exitCode=1;

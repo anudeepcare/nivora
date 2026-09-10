@@ -63,6 +63,9 @@ export function isSupportedEquitySecurity(x:SecurityClassification){
 export type ProviderMarketHint={exchange?:string;currency?:string};
 const PROVIDER_MARKET_HINTS:Record<string,ProviderMarketHint>={
   SAP:{exchange:"NYSE",currency:"USD"},
+  MU:{exchange:"NASDAQ",currency:"USD"},
+  NBIS:{exchange:"NASDAQ",currency:"USD"},
+  SKHY:{exchange:"NASDAQ",currency:"USD"},
 };
 export function providerMarketHint(raw:string):ProviderMarketHint{
   return PROVIDER_MARKET_HINTS[clean(raw)]??{};
