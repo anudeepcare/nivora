@@ -21,8 +21,6 @@ import {buildNivoraIntelligence} from "@/lib/nivora-intelligence";
 import {buildInvestorDecision} from "@/lib/nivora-investor";
 import {applyLiveQuoteToToday} from "@/lib/nivora-live-today";
 import StockSecurityHeader from "./stock/StockSecurityHeader";
-import StockV5Decision from "./stock/v5/StockV5Decision";
-import ExecutionPlanPanel from "./stock/v5/ExecutionPlanPanel";
 import ProfessionalMetricExplorer from "./stock/v5/ProfessionalMetricExplorer";
 import ScenarioMapPanel from "./stock/v5/ScenarioMapPanel";
 import StockEvidenceNav from "./stock/StockEvidenceNav";
@@ -48,7 +46,6 @@ import {buildInstitutionalDecisionKernel} from "@/lib/auryn/v931/decision-kernel
 import type {GroundedEvidence,SetupState} from "@/lib/auryn/v931/domain";
 
 type Mode="now"|"swing"|"long"|"own";
-type Depth="simple"|"investor"|"pro";
 type Tab="thesis"|"fundamentals"|"institutions"|"catalysts"|"news"|"earnings"|"technical"|"options";
 
 const tone=(s:string)=>{
@@ -130,7 +127,6 @@ export default function StockClient({symbol}:{symbol:string}){
   const[optionSide,setOptionSide]=useState<"bullish"|"bearish">("bullish");
   const[optionStyle,setOptionStyle]=useState<"conservative"|"balanced"|"aggressive"|"leaps">("balanced");
   const[optionExpiration,setOptionExpiration]=useState<string|null>(null);
-  const[depth,setDepth]=useState<Depth>("investor");
   const[answerOpen,setAnswerOpen]=useState<"why"|"change"|"risk"|"evidence"|null>(null);
   const[auditOpen,setAuditOpen]=useState(false);
   const[institutional,setInstitutional]=useState<any>(null);
@@ -691,10 +687,9 @@ export default function StockClient({symbol}:{symbol:string}){
   return <div className="aurynStockPage">
     <StockSecurityHeader company={company?.name||d.name||symbol} symbol={symbol} price={priceSensitiveAllowed?canonicalDecisionPrice:null} changePct={priceSensitiveAllowed?displayChangePct:null} status={marketStatusLabel} detail={marketDetail} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
     {marketTruth&&!priceSensitiveAllowed?<div className="aurynIntegrityAlert aurynMarketTruthAlert" role="alert"><b>PRICE UNVERIFIED</b><span>{marketTruth.reason||"Independent market sources are not sufficiently aligned."} AURYN has disabled entry, confirmation, target, stop and risk/reward output until the canonical price is verified.</span></div>:null}
-    {institutionalDecision?<InstitutionalDecisionBrief decision={institutionalDecision} marketTruth={marketTruth} depth={depth} onDepthChange={setDepth}/>:null}
-    {depth!=="simple"&&institutionalDecision&&decisionSnapshot?<AstraAnalystPanel symbol={symbol} snapshotId={decisionSnapshot.snapshotId} canonicalAction={String(v5Analysis?.decision.primaryAction||institutionalDecision.newMoneyAction)} evidence={institutionalEvidence}/>:null}
-    {v5Analysis?<>{canonicalTrustBlocked?<div className="aurynIntegrityAlert aurynTrustBlock" role="alert"><b>CANONICAL TRUST BLOCK</b><span>{v7Analysis?.trust.blockers[0]||"AURYN detected an internal snapshot/plan inconsistency."} Price-sensitive execution levels are suppressed until the canonical chain is aligned.</span></div>:null}
-    {depth==="pro"&&v5Analysis?<details className="v931LegacyDiagnostics"><summary>Extreme Pro · model diagnostics & scenario map</summary><div className="v931LegacyDiagnosticsBody">{!canonicalTrustBlocked?<ExecutionPlanPanel plan={v5Analysis.executionPlan}/>:null}<StockV5Decision snapshot={v5Analysis} v6={v6Analysis} v7={v7Analysis} owns={owns} depth={depth} onDepthChange={setDepth}/>{!canonicalTrustBlocked?<ScenarioMapPanel scenario={v5Analysis.scenario} mode="compact"/>:null}</div></details>:null}</>:<section className="aurynV5Unavailable"><small>AURYN V8 CANONICAL ANALYSIS</small><b>COLLECTING VERIFIED EVIDENCE</b><span>AURYN will not fall back to a second decision engine while the canonical snapshot is unavailable.</span></section>}
+    {institutionalDecision?<InstitutionalDecisionBrief decision={institutionalDecision} marketTruth={marketTruth}/>:null}
+    {institutionalDecision&&decisionSnapshot?<AstraAnalystPanel symbol={symbol} snapshotId={decisionSnapshot.snapshotId} canonicalAction={String(v5Analysis?.decision.primaryAction||institutionalDecision.newMoneyAction)} evidence={institutionalEvidence}/>:null}
+    {v5Analysis?<>{canonicalTrustBlocked?<div className="aurynIntegrityAlert aurynTrustBlock" role="alert"><b>CANONICAL TRUST BLOCK</b><span>{v7Analysis?.trust.blockers[0]||"AURYN detected an internal snapshot/plan inconsistency."} Price-sensitive execution levels are suppressed until the canonical chain is aligned.</span></div>:null}</>:<section className="aurynV5Unavailable"><small>AURYN CANONICAL ANALYSIS</small><b>COLLECTING VERIFIED EVIDENCE</b><span>AURYN will not publish a fallback verdict while the canonical snapshot is unavailable.</span></section>}
     <div className="aurynOwnershipNote"><Sparkles size={14}/><span>AURYN separates long-term thesis, owner action and new-money timing.</span></div>
 
 
@@ -703,10 +698,10 @@ export default function StockClient({symbol}:{symbol:string}){
         <button type="button" onClick={watch}><Star size={16} fill={watching?"currentColor":"none"}/>{watching?"Watching":"Add to watchlist"}</button>
         <Link href={"/portfolio?symbol="+encodeURIComponent(symbol)}><PlusCircle size={16}/>Track position</Link>
       </div>
-      {depth!=="simple"&&!canonicalTrustBlocked&&priceSensitiveAllowed&&<div className="v6510MarketLevels" aria-label="Market levels"><span>{supportText}</span><span>{resistanceText}</span></div>}
+      {!canonicalTrustBlocked&&priceSensitiveAllowed&&<div className="v6510MarketLevels" aria-label="Market levels"><span>{supportText}</span><span>{resistanceText}</span></div>}
     </div>
 
-    <section ref={thesisRef} id="nivora-research" className={["aurynStockResearch",depth==="simple"?"simple":""].join(" ")}>
+    <section ref={thesisRef} id="auryn-research" className="aurynStockResearch">
       <StockEvidenceNav tab={tab} setTab={setTab} isCrypto={d.assetType==="crypto"}/>
       <StockEvidenceSections>
 
@@ -826,23 +821,13 @@ export default function StockClient({symbol}:{symbol:string}){
           <div><div className="metricLabel"><small>BOLLINGER POSITION</small><MetricInfo title="Bollinger position">Shows where price sits within a 20-day, two-standard-deviation band. Near the top suggests extension; near the bottom suggests weakness/possible mean reversion.</MetricInfo></div><b>{proTech.bbPos!=null?`${Math.max(0,Math.min(100,proTech.bbPos)).toFixed(0)}%`:"—"}</b><span>0% lower band · 100% upper band</span></div>
           <div><div className="metricLabel"><small>REALIZED VOL · 20D</small><MetricInfo title="Realized volatility">Annualized recent realized volatility from daily returns. Higher values imply larger price variability and usually require more conservative sizing.</MetricInfo></div><b>{proTech.rv!=null?`${proTech.rv.toFixed(1)}%`:"—"}</b><span>{proTech.drawdown!=null?`${proTech.drawdown.toFixed(1)}% from 52-week high`:"52-week drawdown unavailable"}</span></div>
         </div>}
-        {depth==="pro"&&v5Analysis&&<div className="v32ConfluenceChart v5CanonicalConfluence">
-          <div className="v32MarketLabHead"><div><small>CANONICAL STRUCTURE MAP</small><h3>Price structure + one AURYN execution plan</h3><p>The chart uses the exact same entry, confirmation, invalidation and target levels shown in the canonical execution plan. It does not calculate a second set of levels.</p></div><MetricInfo title="Canonical structure map">Price structure is supporting timing evidence. All actionable levels come from the single canonical execution plan attached to this market snapshot.</MetricInfo></div>
-          <PriceChart candles={v5Analysis.bars.slice(horizon==="now"?-65:horizon==="swing"?-125:-180)} levels={v5ChartLevels} showTrend={true}/>
-        </div>}
-        {depth==="pro"&&!v5Analysis&&marketLab&&<div className="v32ConfluenceChart">
-          <div className="v32MarketLabHead"><div><small>CONFLUENCE MAP</small><h3>Fib + structure + AURYN risk levels</h3><p>Advanced levels are supporting evidence, not standalone buy/sell signals. Wave interpretation is supporting context and should be confirmed with price structure.</p></div><MetricInfo title="Confluence map">Fibonacci retracements, AURYN support/entry levels and the current Elliott-style scenario are overlaid so experienced users can see where independent technical evidence clusters.</MetricInfo></div>
-          <PriceChart candles={horizonCandles} levels={priceSensitiveAllowed?horizonChartLevels:null} showTrend={true} confluence={priceSensitiveAllowed?marketLab:undefined}/>
-        </div>}
-        {depth==="pro"&&!v5Analysis&&marketLab&&<div className="v32MarketLab">
-          <div className="v32MarketLabHead"><div><small>MARKET INTELLIGENCE</small><h3>Confluence, not indicator clutter.</h3><p>AURYN turns technical evidence into zones and scenarios instead of asking you to interpret dozens of lines.</p></div></div>
-          <div className="v32MarketLabGrid">
-            <div><small>ACCUMULATION PROXY</small><b className={marketLab.accumulationLabel==="Accumulating"?"good":marketLab.accumulationLabel==="Distribution risk"?"bad":"mid"}>{marketLab.accumulationLabel}</b><strong>{marketLab.accumulation}/100</strong><span>Price/volume behavior proxy — not a claim that a specific institution is trading today.</span></div>
-            {priceSensitiveAllowed?<><div><small>FIBONACCI CONFLUENCE</small><b>${marketLab.fib382} · ${marketLab.fib50} · ${marketLab.fib618}</b><strong>38.2% · 50% · 61.8%</strong><span>Used as supporting zones only when they overlap with structure/support.</span></div>
-            <div><small>ELLIOTT-STYLE WAVE</small><b>{marketLab.waveLabel}</b><strong>{marketLab.waveScore}% confidence</strong><span>Heuristic structure only. Candidate target ${marketLab.waveTarget}; invalidation ${marketLab.waveInvalidation}.</span></div></>:<div className="aurynPriceSensitiveBlock"><small>MARKET TRUTH GATE</small><b>PRICE LEVELS BLOCKED</b><span>Price-sensitive technical zones are hidden until Market Truth verifies the underlying price.</span></div>}
+        {v5Analysis?<details className="v932SupportDisclosure v932TechnicalDeep"><summary>Advanced technical evidence & model metrics</summary>
+          <div className="v32ConfluenceChart v5CanonicalConfluence">
+            <div className="v32MarketLabHead"><div><small>CANONICAL STRUCTURE MAP</small><h3>Price structure + one AURYN execution plan</h3><p>The chart uses the same entry, confirmation, invalidation and target levels attached to this canonical snapshot.</p></div><MetricInfo title="Canonical structure map">Price structure is supporting timing evidence. All actionable levels come from the same canonical execution plan.</MetricInfo></div>
+            <PriceChart candles={v5Analysis.bars.slice(horizon==="now"?-65:horizon==="swing"?-125:-180)} levels={v5ChartLevels} showTrend={true}/>
           </div>
-        </div>}
-        {depth==="pro"&&!v5Analysis&&<div className="osTechGrid">{Object.entries(d.engine).map(([k,v]:any)=><div key={k}><div className="metricLabel"><span>{k}</span><MetricInfo title={k}>{k==="Trend"?"Multi-horizon direction and slope.":k==="Momentum"?"Speed and persistence of the current move.":k==="Flow"?"Volume/price participation and confirmation.":k==="Structure"?"Higher highs/lows, support and resistance behavior.":k==="RSI"?"Relative Strength Index; helps identify momentum extremes but is never used alone.":k==="MACD"?"Trend/momentum crossover evidence.":k==="Extension"?"How far price has moved away from its recent equilibrium; high extension increases chase risk.":k==="Relative strength"?"Performance versus the relevant benchmark.":k==="Market regime"?"Whether the broad market is supportive, mixed or risk-off.":"Supporting quantitative evidence used by the decision engine."}</MetricInfo></div><b>{typeof v==="number"?`${v}/100`:v}</b></div>)}</div>}
+          <ProfessionalMetricExplorer metrics={v5Analysis.metrics}/>
+        </details>:null}
       </div>}
 
       {tab==="options"&&<div className="aurynStockTabPage gammaPanel v22Options v26Options">
@@ -888,7 +873,6 @@ export default function StockClient({symbol}:{symbol:string}){
         </>}
       </div>}
       </StockEvidenceSections>
-      {depth==="pro"&&v5Analysis&&<ProfessionalMetricExplorer metrics={v5Analysis.metrics}/>}
     </section>
 
   </div>;

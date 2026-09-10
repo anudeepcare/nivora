@@ -3,13 +3,14 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 const read=p=>fs.readFileSync(new URL(`../${p}`,import.meta.url),'utf8');
 
-test('stock page builds one V5 canonical snapshot and uses it for hero, execution plan and tab context',()=>{
+test('stock page builds one V5 canonical snapshot and projects it through the single institutional view',()=>{
   const s=read('components/StockClient.tsx');
   assert.match(s,/buildAurynV5Analysis/);
   assert.match(s,/const v5Analysis=useMemo/);
-  assert.match(s,/StockV5Decision/);
-  assert.match(s,/ExecutionPlanPanel/);
-  assert.match(s,/snapshot={v5Analysis}/);
+  assert.match(s,/InstitutionalDecisionBrief/);
+  assert.doesNotMatch(s,/<StockV5Decision/);
+  assert.doesNotMatch(s,/<ExecutionPlanPanel/);
+  assert.match(s,/ScenarioMapPanel scenario={v5Analysis\.scenario} mode="full"/);
 });
 
 test('V5 hero removes developer engine/model-fit metadata from the primary decision surface',()=>{
@@ -34,11 +35,11 @@ test('technical tab exposes V5 setup and bull/base/bear scenario map from the ca
   assert.match(stock,/ScenarioMapPanel/); assert.match(stock,/scenario={v5Analysis\.scenario}/);
 });
 
-test('V5 stock surface never falls back to the legacy V4 hero or a second action-plan calculator',()=>{
+test('V5 stock surface never falls back to a legacy hero or a second action-plan calculator',()=>{
   const s=read('components/StockClient.tsx');
-  assert.doesNotMatch(s,/v5Analysis\?\s*<StockV5Decision[\s\S]*:\s*<StockDecisionSummary/);
-  assert.doesNotMatch(s,/v5Analysis\?\s*<ExecutionPlanPanel[\s\S]*:\s*priceSensitiveAllowed\s*&&\s*<StockActionPlan/);
-  assert.match(s,/AURYN V8 CANONICAL ANALYSIS/);
+  assert.doesNotMatch(s,/<StockV5Decision|<StockDecisionSummary|<StockActionPlan/);
+  assert.doesNotMatch(s,/<ExecutionPlanPanel/);
+  assert.match(s,/AURYN CANONICAL ANALYSIS/);
 });
 
 test('Thesis normal UI exposes evidence confidence, not internal analyst model identifiers',()=>{
@@ -47,10 +48,11 @@ test('Thesis normal UI exposes evidence confidence, not internal analyst model i
   assert.match(s,/Evidence quality|Evidence confidence/i);
 });
 
-test('V5 technical tab suppresses legacy independently-calculated confluence/wave levels',()=>{
+test('V5 technical tab removes legacy independently-calculated confluence/wave fallbacks',()=>{
   const s=read('components/StockClient.tsx');
-  assert.match(s,/depth==="pro"&&!v5Analysis&&marketLab&&<div className="v32ConfluenceChart"/);
-  assert.match(s,/depth==="pro"&&!v5Analysis&&marketLab&&<div className="v32MarketLab"/);
+  assert.doesNotMatch(s,/className="v32MarketLab"/);
+  assert.doesNotMatch(s,/className="osTechGrid"/);
+  assert.match(s,/levels={v5ChartLevels}/);
 });
 
 test('Business and technical tab headline scores are sourced from the same canonical values shown in their detail blocks',()=>{

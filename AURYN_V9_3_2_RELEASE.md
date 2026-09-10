@@ -1,23 +1,24 @@
-# AURYN V9.3.2 — Unified Mobile-First Institutional UX
+# AURYN V9.3.2 — One-View Premium Institutional UX
 
 ## Milestone
-Every stock surface presents one synchronized institutional research story driven by the existing V9.3.1 canonical decision and Market Truth contracts.
+Every stock surface presents one synchronized, mobile-first institutional research experience driven by the V9.3.1 canonical decision and 24/7 Market Truth contracts, with one expert view instead of Beginner / Pro / Extreme Pro modes.
 
 ## What changed
-- Rebuilt the institutional call from a gray KPI dashboard into an editorial decision hero.
-- Replaced six large pillar cards with ranked decision-driver rows.
-- Replaced the Evidence Quality banner with compact, explicitly uncalibrated evidence metadata.
+- Rebuilt the canonical AURYN call in the dark premium editorial style preferred from the earlier AURYN decision surface.
+- Removed Beginner / Pro / Extreme Pro selectors from the stock experience. There is one expert-quality view for everyone.
+- Removed the duplicate legacy V5/V8 black decision hero so the app publishes one canonical call only.
 - Kept New Money, Owner, Long Term and Execution in one compact action strip.
-- Added a cleaner Why / Counter-Evidence / What Changed / Next Trigger / Invalidation narrative flow.
-- Reworked the stock masthead for canonical 24/7 price + market state without a detached status strip.
-- Evidence tabs no longer repeat a separate AURYN verdict.
-- Evidence navigation is sticky and horizontally scrollable on mobile.
-- Canonical Setup Map remains available in Technicals as collapsed supporting evidence, not a competing hero.
-- Legacy V5 decision/plan/scenario diagnostics remain collapsed under Extreme Pro.
-- Astra review is available in Pro and Extreme Pro but remains grounded and non-authoritative.
-- Added VS Code tasks and CLI aliases for quick reliability, full release gate, and 30/100/500-symbol live audits.
+- Shows the top three decision forces first; all six pillars and model attribution remain available under a single clean **Full evidence & model trace** disclosure.
+- Preserved explicit Evidence Quality wording as uncalibrated and **not a probability of profit**.
+- Preserved Why This Call, strongest counter-evidence, What Changed, next decision trigger and invalidation/risk.
+- Thesis no longer publishes a competing second AURYN decision.
+- Technicals keeps the canonical Setup Map and advanced metrics only as collapsed supporting evidence, so setup detail cannot compete with the primary call.
+- Removed obsolete independent technical/confluence fallback panels and orphaned CSS.
+- Astra remains grounded and non-authoritative, and raw credential/configuration names are never rendered to end users when the analyst service is unavailable.
+- Mobile keeps the same hierarchy as desktop: single-column narrative/evidence, compact action layout, horizontally scrollable sticky tabs, no 375px horizontal overflow.
+- Existing V9.3.1 DecisionSnapshot, Market Truth, Trading Lab fail-closed behavior, feature tournament, historical-data gates and execution safety are unchanged.
 
-## Local commands
+## Developer workflow
 - `npm run verify:quick`
 - `npm run verify:release`
 - `AURYN_BASE_URL=https://getauryn.vercel.app npm run audit:live:30`
@@ -26,15 +27,16 @@ Every stock surface presents one synchronized institutional research story drive
 
 In VS Code use **Terminal → Run Task…** and select the matching AURYN task.
 
-## Verification status before packaging
-- V9.3.2 UX contract: 10/10 PASS
-- V9.3.1 focused contract: 29/29 PASS
-- V9.3.1 Reliability Lab: PASS
-- Full AURYN regression: 652/652 PASS
-- V8 Reality Audit: 100/100 PASS
-- V9.2 core: 44/44 PASS
-- V9.3 core: 27/27 PASS
-- V65 dead-code audit: PASS
+## Acceptance contract
+- Exactly one canonical institutional decision surface.
+- No Beginner / Pro / Extreme Pro stock-depth controls.
+- No duplicate legacy decision hero.
+- Top decision forces visible before lower-value diagnostics.
+- Full expert evidence remains available on demand.
+- Evidence tabs explain the same canonical decision rather than creating new verdicts.
+- Canonical Technical Setup Map is supporting evidence only.
+- Astra cannot expose raw secrets/configuration errors or override deterministic AURYN authority.
+- 375px mobile layout must not horizontally overflow.
 
 ## Production build status
-The sandbox did not have Next.js dependencies installed. `npm run build` returned `next: not found`, and `npm ci` hit a transport timeout. Therefore this package is not labeled production-build-verified until Vercel completes `next build` successfully.
+A local Next.js production build cannot be claimed from this sandbox because Next.js dependencies are not installed and the package transport repeatedly timed out. Vercel must complete `next build` successfully before this exact release is labeled production-build-verified.

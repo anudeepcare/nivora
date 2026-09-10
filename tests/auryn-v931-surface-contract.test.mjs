@@ -53,17 +53,18 @@ test('stock-wide institutional brief sits above evidence tabs so every stock tab
  assert.match(brief,/STRONGEST COUNTER-EVIDENCE/);
 });
 
-test('normal stock experience is decision-first while legacy diagnostic hero is Extreme Pro only',()=>{
+test('stock experience has one canonical expert view with no legacy decision duplicate',()=>{
  const stock=read('components/StockClient.tsx');
  const brief=read('components/stock/v931/InstitutionalDecisionBrief.tsx');
- assert.match(stock,/InstitutionalDecisionBrief decision=\{institutionalDecision\} marketTruth=\{marketTruth\} depth=\{depth\} onDepthChange=\{setDepth\}/);
- assert.match(stock,/depth==="pro"&&v5Analysis\?<details[^>]*v931LegacyDiagnostics/s);
+ assert.match(stock,/InstitutionalDecisionBrief decision=\{institutionalDecision\} marketTruth=\{marketTruth\}/);
+ assert.doesNotMatch(stock,/const\[depth,setDepth\]/);
+ assert.doesNotMatch(stock,/<StockV5Decision/);
+ assert.doesNotMatch(stock,/Extreme Pro · model diagnostics/);
+ assert.doesNotMatch(brief,/Beginner|Extreme Pro|Research depth/);
  assert.match(brief,/EVIDENCE QUALITY/);
  assert.match(brief,/not a probability/i);
  assert.match(brief,/DECISION ATTRIBUTION/);
- assert.match(brief,/WHAT CHANGED/);
- assert.match(brief,/Beginner/);
- assert.match(brief,/Extreme Pro/);
+ assert.match(brief,/Full evidence & model trace/);
 });
 
 test('evidence tabs explain the same institutional decision with pillar-specific rationale instead of generic tab copy',()=>{

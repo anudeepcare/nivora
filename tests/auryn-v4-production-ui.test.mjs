@@ -12,12 +12,13 @@ test("V4 evidence migration feeds the V5 canonical analysis",()=>{
   assert.match(s,/v4:v4Analysis/);
 });
 
-test("one institutional brain exposes beginner pro and extreme pro depth inside the canonical decision",()=>{
+test("one institutional brain exposes one canonical expert view without depth modes",()=>{
   const page=read("components/StockClient.tsx");
-  const decision=read("components/stock/v5/StockV5Decision.tsx");
-  assert.match(page,/const\[depth,setDepth\]=useState<Depth>/);
-  assert.match(page,/depth=\{depth\} onDepthChange=\{setDepth\}/);
-  for(const x of ["Beginner","Pro","Extreme Pro"])assert.match(decision,new RegExp(`>${x}<`));
+  const decision=read("components/stock/v931/InstitutionalDecisionBrief.tsx");
+  assert.match(page,/InstitutionalDecisionBrief decision=\{institutionalDecision\} marketTruth=\{marketTruth\}/);
+  assert.doesNotMatch(page,/const\[depth,setDepth\]|onDepthChange=\{setDepth\}/);
+  assert.doesNotMatch(decision,/Beginner|Extreme Pro|Research depth/);
+  assert.match(decision,/Full evidence & model trace/);
 });
 
 test("decision summary is V8 reality-audited with multiple horizons and evidence confidence not probability",()=>{
@@ -49,9 +50,9 @@ test("stock research tabs consume the V5 canonical decision and use one aligned 
   assert.doesNotMatch(s,/className="techRead"/);
 });
 
-test("analysis depth is compact inside the decision surface and global duplicate strips are removed",()=>{
+test("single-view decision surface removes global and local depth switches",()=>{
   const s=read("components/StockClient.tsx");
   assert.doesNotMatch(s,/className="aurynDepthSwitch"/);
   assert.doesNotMatch(s,/className="v65ContextStrip v659ContextStrip"/);
-  assert.match(s,/depth=\{depth\} onDepthChange=\{setDepth\}/);
+  assert.doesNotMatch(s,/depth=\{depth\} onDepthChange=\{setDepth\}/);
 });

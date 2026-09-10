@@ -20,12 +20,12 @@ test('StockClient no longer mixes live quote price with analysis price for curre
   assert.match(s,/priceSensitiveAllowed/);
 });
 
-test('price-sensitive action plan is suppressed when market truth is blocked',()=>{
+test('price-sensitive actions and levels remain suppressed when market truth is blocked',()=>{
   const s=read('components/StockClient.tsx');
-  assert.match(s,/<ExecutionPlanPanel plan={v5Analysis\.executionPlan}\/>/);
-  const plan=read('components/stock/v5/ExecutionPlanPanel.tsx');
-  assert.match(plan,/plan\.state==="BLOCKED"/);
   assert.match(s,/PRICE UNVERIFIED/);
+  assert.match(s,/!canonicalTrustBlocked&&priceSensitiveAllowed&&<div className="v6510MarketLevels"/);
+  assert.match(s,/!priceSensitiveAllowed\?<div className="optionsState marketTruthBlocked"/);
+  assert.match(s,/Price-sensitive technical zones are hidden until Market Truth verifies the underlying price/);
 });
 
 test('all research tabs receive canonical market truth context',()=>{

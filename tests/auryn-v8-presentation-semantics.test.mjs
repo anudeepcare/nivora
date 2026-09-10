@@ -20,9 +20,11 @@ test('user-facing archetype/lifecycle copy is humanized rather than raw enum ide
   assert.doesNotMatch(src,/v4\.thesis\.companyState\}\. This tab/);
 });
 
-test('primary stock surface identifies the V8 reality-audited decision layer',()=>{
+test('primary stock surface identifies the current institutional decision layer while preserving V8 engine provenance',()=>{
   const hero=fs.readFileSync('components/stock/v5/StockV5Decision.tsx','utf8');
   assert.match(hero,/AURYN V8 · REALITY AUDITED/);
   const client=fs.readFileSync('components/StockClient.tsx','utf8');
-  assert.match(client,/AURYN V8 CANONICAL ANALYSIS/);
+  const current=fs.readFileSync('components/stock/v931/InstitutionalDecisionBrief.tsx','utf8');
+  assert.match(client,/InstitutionalDecisionBrief/);
+  assert.match(current,/AURYN INSTITUTIONAL CALL/);
 });
