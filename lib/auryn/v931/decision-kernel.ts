@@ -1,4 +1,5 @@
-import {V931_VERSION,type InstitutionalDecision,type Pillar,type PillarEvidence,type PillarKey,type SetupState} from './domain';
+import {V931_VERSION,type InstitutionalDecision,type InstitutionalLongTermAction,type InstitutionalNewMoneyAction,type InstitutionalOwnerAction,type Pillar,type PillarEvidence,type PillarKey,type SetupState} from './domain';
+import type {PrimaryInvestmentAction} from '../v4/domain';
 import {resolveSetupTransition} from './setup-state';
 
 const clamp=(n:number)=>Math.max(0,Math.min(100,Math.round(Number.isFinite(n)?n:50)));
@@ -12,18 +13,18 @@ function pillar(key:PillarKey,score:number|null,evidence?:PillarEvidence|null):P
 const actionText=(x:string)=>x.replaceAll('_',' ');
 const round1=(n:number)=>Math.round(n*10)/10;
 
-export function buildInstitutionalDecisionKernel(input:{snapshotId:string;symbol:string;marketPrice:number|null;executionTradable:boolean;previousSetupState:SetupState|null;scores:{business:number|null;earningsRevisions:number|null;valuation:number|null;marketStructure:number|null;catalystsRegime:number|null;riskAsymmetry:number|null};pillarEvidence?:Partial<Record<PillarKey,PillarEvidence>>;technical:{trend:number;momentum:number;flow:number;structure:number;nearResistance:boolean;confirmedBreakout:boolean;structuralBreak:boolean;reclaimLevel:number|null;invalidation:number|null};evidenceCompleteness:number;canonicalAction?:string|null;canonicalOwnerAction?:string|null}):InstitutionalDecision{
+export function buildInstitutionalDecisionKernel(input:{snapshotId:string;symbol:string;marketPrice:number|null;executionTradable:boolean;previousSetupState:SetupState|null;scores:{business:number|null;earningsRevisions:number|null;valuation:number|null;marketStructure:number|null;catalystsRegime:number|null;riskAsymmetry:number|null};pillarEvidence?:Partial<Record<PillarKey,PillarEvidence>>;technical:{trend:number;momentum:number;flow:number;structure:number;nearResistance:boolean;confirmedBreakout:boolean;structuralBreak:boolean;reclaimLevel:number|null;invalidation:number|null};evidenceCompleteness:number;canonicalAction?:PrimaryInvestmentAction|null;canonicalOwnerAction?:PrimaryInvestmentAction|null}):InstitutionalDecision{
  const pe=input.pillarEvidence||{};
  const pillars={business:pillar('business',input.scores.business,pe.business),earningsRevisions:pillar('earningsRevisions',input.scores.earningsRevisions,pe.earningsRevisions),valuation:pillar('valuation',input.scores.valuation,pe.valuation),marketStructure:pillar('marketStructure',input.scores.marketStructure,pe.marketStructure),catalystsRegime:pillar('catalystsRegime',input.scores.catalystsRegime,pe.catalystsRegime),riskAsymmetry:pillar('riskAsymmetry',input.scores.riskAsymmetry,pe.riskAsymmetry)};
  const vals=Object.values(pillars).filter(p=>p.score!=null) as Array<Pillar&{score:number}>;
  const denom=vals.reduce((s,p)=>s+weights[p.key],0)||1;
  const score=clamp(vals.reduce((s,p)=>s+p.score*weights[p.key],0)/denom);
  const transition=resolveSetupTransition({...input.technical,previous:input.previousSetupState});
- let newMoney=score>=78&&['BREAKOUT_READY','BREAKOUT_CONFIRMED','TRENDING'].includes(transition.state)?'BUY':score>=68&&!['DAMAGED','FAILED_RECLAIM'].includes(transition.state)?'START_SMALL':'WAIT';
- let owner=score>=78?'ADD':score>=48?'HOLD':score>=34?'REDUCE':'EXIT';
+ let newMoney:InstitutionalNewMoneyAction=score>=78&&['BREAKOUT_READY','BREAKOUT_CONFIRMED','TRENDING'].includes(transition.state)?'BUY':score>=68&&!['DAMAGED','FAILED_RECLAIM'].includes(transition.state)?'START_SMALL':'WAIT';
+ let owner:InstitutionalOwnerAction=score>=78?'ADD':score>=48?'HOLD':score>=34?'REDUCE':'EXIT';
  if(input.canonicalAction){const c=actionText(input.canonicalAction);newMoney=c==='STRONG BUY'?'BUY':c==='BUY'?'BUY':c==='REDUCE'||c==='SELL'?'WAIT':'WAIT';}
  if(input.canonicalOwnerAction){const c=actionText(input.canonicalOwnerAction);owner=c==='BUY'||c==='STRONG BUY'?'ADD':c==='REDUCE'?'REDUCE':c==='SELL'?'EXIT':'HOLD';}
- const longTerm=(pillars.business.score??50)>=75&&(pillars.earningsRevisions.score??50)>=58?'ATTRACTIVE':(pillars.business.score??50)<42?'UNATTRACTIVE':'SELECTIVE';
+ const longTerm:InstitutionalLongTermAction=(pillars.business.score??50)>=75&&(pillars.earningsRevisions.score??50)>=58?'ATTRACTIVE':(pillars.business.score??50)<42?'UNATTRACTIVE':'SELECTIVE';
  const attribution=Object.values(pillars).map(p=>({pillar:p.key,label:p.label,score:p.score,weight:weights[p.key],contribution:p.score==null?0:round1((p.score-50)*weights[p.key]),direction:p.impact})).sort((a,b)=>Math.abs(b.contribution)-Math.abs(a.contribution));
  const ordered=[...vals].sort((a,b)=>Math.abs((b.score??50)-50)-Math.abs((a.score??50)-50));
  const drivers=ordered.filter(p=>p.score>=60).slice(0,3).map(p=>p.why);
