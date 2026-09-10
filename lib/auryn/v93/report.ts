@@ -14,9 +14,9 @@ export function stableStringify(value:unknown){return JSON.stringify(canonicaliz
 
 export function deterministicFingerprint(value:unknown){
   const text=stableStringify(value);
-  let h=14695981039346656037n;
-  const prime=1099511628211n;
-  const mask=0xffffffffffffffffn;
+  let h=BigInt("14695981039346656037");
+  const prime=BigInt("1099511628211");
+  const mask=BigInt("0xffffffffffffffff");
   for(let i=0;i<text.length;i++){
     h^=BigInt(text.charCodeAt(i));
     h=(h*prime)&mask;
