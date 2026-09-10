@@ -44,7 +44,13 @@
     "audit:v931-reliability": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node scripts/run_v931_reliability_lab.mjs",
     "gate:v931": "node scripts/run_v931_release_gate.mjs",
     "audit:v931-live": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node scripts/run_v931_live_reliability_audit.mjs",
-    "gate:v931:release": "AURYN_REQUIRE_LIVE=1 node scripts/run_v931_release_gate.mjs"
+    "gate:v931:release": "AURYN_REQUIRE_LIVE=1 node scripts/run_v931_release_gate.mjs",
+    "test:v932": "node scripts/test-v932-ux.mjs",
+    "verify:quick": "npm run test:v932 && npm run test:v931-core && npm run audit:v931-reliability",
+    "verify:release": "npm run test:v932 && npm run gate:v931",
+    "audit:live:30": "npm run audit:v931-live -- --limit=30",
+    "audit:live:100": "npm run audit:v931-live -- --limit=100",
+    "audit:live:500": "npm run audit:v931-live -- --limit=500"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

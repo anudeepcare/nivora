@@ -3,5 +3,12 @@ export default function StockSecurityHeader({company,symbol,price,changePct,stat
  const hasPrice=price!=null&&Number.isFinite(Number(price))&&Number(price)>0;
  const hasChange=hasPrice&&changePct!=null&&Number.isFinite(Number(changePct));
  const verifying=!hasPrice&&/verifying/i.test(status);
- return <><header className="aurynStockHeader"><div><small>{company||symbol}</small><h1>{symbol}</h1>{onToggleOwn&&<button type="button" className={`aurynOwnChip ${owns?"on":""}`} onClick={onToggleOwn}>{owns?(positionLoaded?"✓ Position loaded":"✓ I own this"):"+ I own this"}</button>}</div><div className={`aurynStockQuote ${hasPrice?"":"unverified"}`}><b>{hasPrice?formatMoney(Number(price)):verifying?"VERIFYING PRICE…":"PRICE UNVERIFIED"}</b>{hasChange&&<span className={Number(changePct)>=0?"up":"down"}>{formatPercent(Number(changePct))}</span>}</div></header><div className="aurynStockFresh"><span>{status}</span><span>{detail}</span></div></>
+ return <header className="aurynStockMasthead">
+   <div className="aurynStockIdentity"><small>{company||symbol}</small><div><h1>{symbol}</h1>{onToggleOwn&&<button type="button" className={`aurynOwnChip ${owns?"on":""}`} onClick={onToggleOwn}>{owns?(positionLoaded?"✓ Position loaded":"✓ I own this"):"+ I own this"}</button>}</div></div>
+   <div className={`aurynStockMarket ${hasPrice?"":"unverified"}`}>
+    <div><b>{hasPrice?formatMoney(Number(price)):verifying?"VERIFYING PRICE…":"PRICE UNVERIFIED"}</b>{hasChange&&<span className={Number(changePct)>=0?"up":"down"}>{formatPercent(Number(changePct))}</span>}</div>
+    <small>{status}</small>
+    <p>{detail}</p>
+   </div>
+  </header>;
 }
