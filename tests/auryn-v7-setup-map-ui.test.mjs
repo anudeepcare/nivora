@@ -12,8 +12,8 @@ test('signature AURYN Setup Map supports compact summary and full bull/base/bear
 
 test('Technicals renders the canonical scenario object once as supporting evidence',()=>{
  const s=read('components/StockClient.tsx');
- assert.doesNotMatch(s,/ScenarioMapPanel scenario={v5Analysis\.scenario} mode="compact"/);
- assert.match(s,/ScenarioMapPanel scenario={v5Analysis\.scenario} mode="full"/);
+ assert.match(s,/ScenarioMapPanel scenario={v5Analysis\.scenario} mode="compact"/);
+ assert.doesNotMatch(s,/ScenarioMapPanel scenario={v5Analysis\.scenario} mode="full"/);
  assert.equal((s.match(/buildScenarioMap/g)||[]).length,0);
 });
 

@@ -49,8 +49,9 @@ test('stock-wide institutional brief sits above evidence tabs so every stock tab
  assert.ok(s.indexOf('<InstitutionalDecisionBrief')<s.indexOf('<StockEvidenceNav'));
  const brief=read('components/stock/v931/InstitutionalDecisionBrief.tsx');
  for(const x of ['Business quality','Earnings & revisions','Valuation / expected return','Market structure','Catalysts / regime','Risk / asymmetry']) assert.match(read('lib/auryn/v931/decision-kernel.ts'),new RegExp(x.replace(/[&/]/g,'\\$&'),'i'));
- assert.match(brief,/NEXT DECISION TRIGGER/);
- assert.match(brief,/STRONGEST COUNTER-EVIDENCE/);
+ assert.match(brief,/WHAT UPGRADES IT/);
+ assert.match(brief,/WHAT BREAKS IT/);
+ assert.match(brief,/PREFERRED ENTRY/);
 });
 
 test('stock experience has one canonical expert view with no legacy decision duplicate',()=>{
@@ -61,10 +62,10 @@ test('stock experience has one canonical expert view with no legacy decision dup
  assert.doesNotMatch(stock,/<StockV5Decision/);
  assert.doesNotMatch(stock,/Extreme Pro · model diagnostics/);
  assert.doesNotMatch(brief,/Beginner|Extreme Pro|Research depth/);
- assert.match(brief,/EVIDENCE QUALITY/);
+ assert.match(brief,/Evidence quality/i);
  assert.match(brief,/not a probability/i);
- assert.match(brief,/DECISION ATTRIBUTION/);
- assert.match(brief,/Full evidence & model trace/);
+ assert.doesNotMatch(brief,/<details|Full evidence & model trace|DECISION ATTRIBUTION/);
+ assert.doesNotMatch(stock,/AstraAnalystPanel/);
 });
 
 test('evidence tabs explain the same institutional decision with pillar-specific rationale instead of generic tab copy',()=>{

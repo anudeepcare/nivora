@@ -18,7 +18,8 @@ test("one institutional brain exposes one canonical expert view without depth mo
   assert.match(page,/InstitutionalDecisionBrief decision=\{institutionalDecision\} marketTruth=\{marketTruth\}/);
   assert.doesNotMatch(page,/const\[depth,setDepth\]|onDepthChange=\{setDepth\}/);
   assert.doesNotMatch(decision,/Beginner|Extreme Pro|Research depth/);
-  assert.match(decision,/Full evidence & model trace/);
+  assert.match(decision,/PREFERRED ENTRY/);
+  assert.doesNotMatch(decision,/<details|<summary|Full evidence & model trace/);
 });
 
 test("decision summary is V8 reality-audited with multiple horizons and evidence confidence not probability",()=>{

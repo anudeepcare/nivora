@@ -10,7 +10,7 @@ test('stock page builds one V5 canonical snapshot and projects it through the si
   assert.match(s,/InstitutionalDecisionBrief/);
   assert.doesNotMatch(s,/<StockV5Decision/);
   assert.doesNotMatch(s,/<ExecutionPlanPanel/);
-  assert.match(s,/ScenarioMapPanel scenario={v5Analysis\.scenario} mode="full"/);
+  assert.match(s,/ScenarioMapPanel scenario={v5Analysis\.scenario} mode="compact"/);
 });
 
 test('V5 hero removes developer engine/model-fit metadata from the primary decision surface',()=>{

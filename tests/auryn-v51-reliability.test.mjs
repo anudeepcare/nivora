@@ -121,11 +121,12 @@ test('Ichimoku cloud position renders as a professional semantic state instead o
   assert.equal(formatProfessionalMetricValue(metric('ichimokuPosition',-1)),'Below cloud');
 });
 
-test('legacy technical grid is removed while the canonical explorer remains available on demand',()=>{
+test('technical tab stays canonical and directly readable without a global metric-dump expander',()=>{
   const s=fs.readFileSync(new URL('../components/StockClient.tsx',import.meta.url),'utf8');
   assert.doesNotMatch(s,/className="osTechGrid"/);
-  assert.match(s,/ProfessionalMetricExplorer metrics={v5Analysis\.metrics}/);
-  assert.match(s,/Advanced technical evidence & model metrics/);
+  assert.doesNotMatch(s,/ProfessionalMetricExplorer metrics={v5Analysis\.metrics}|Advanced technical evidence & model metrics/);
+  assert.match(s,/PriceChart candles={v5Analysis\.bars\.slice/);
+  assert.match(s,/levels={v5ChartLevels}/);
 });
 
 test('closed-market snapshot carries the timestamp of the verified close instead of presenting request time as price time',()=>{

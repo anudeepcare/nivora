@@ -16,18 +16,18 @@ check('institutional hero exists once in stock shell',()=>{
   assert.equal((stock.match(/<InstitutionalDecisionBrief/g)||[]).length,1);
 });
 check('primary decision brief uses one premium canonical view',()=>{
-  assert.match(brief,/v932ActionStrip/);
-  assert.match(brief,/v932DriverList/);
+  assert.match(brief,/v933Actions/);
+  assert.match(brief,/v933LevelRail/);
   assert.doesNotMatch(brief,/Beginner|Extreme Pro|Research depth|v932Depth/);
   assert.doesNotMatch(brief,/depth===|onDepthChange/);
-  assert.match(brief,/v932DeepEvidence/);
+  assert.doesNotMatch(brief,/<details|Full evidence & model trace/);
 });
 check('decision narrative includes why, counter evidence, change and triggers',()=>{
-  assert.match(brief,/v932DecisionNarrative/);
+  assert.match(brief,/v933Story/);
   assert.match(brief,/WHY THIS CALL/);
-  assert.match(brief,/STRONGEST COUNTER-EVIDENCE/);
+  assert.match(brief,/WHAT BREAKS IT/);
   assert.match(brief,/WHAT CHANGED/);
-  assert.match(brief,/NEXT DECISION TRIGGER/);
+  assert.match(brief,/WHAT UPGRADES IT/);
 });
 check('tab context does not repeat canonical AURYN action',()=>{
   assert.doesNotMatch(tab,/AURYN \{action/);
@@ -38,7 +38,7 @@ check('evidence nav is mobile-first sticky and scrollable',()=>{
 });
 check('primary v932 presentation avoids gray KPI card grid',()=>{
   assert.doesNotMatch(css,/\.v932DriverList[^\n]*grid-template-columns:repeat\(3/);
-  assert.match(css,/\.v932DriverRow/);
+  assert.match(css,/\.v933Story/);
 });
 check('legacy duplicate decision hero is not rendered in stock shell',()=>{
   assert.doesNotMatch(stock,/<StockV5Decision/);
@@ -47,11 +47,11 @@ check('legacy duplicate decision hero is not rendered in stock shell',()=>{
 });
 check('technical setup map is canonical but subordinate supporting evidence',()=>{
   const technical=stock.match(/tab==="technical"[\s\S]*?tab==="options"/i)?.[0]||'';
-  assert.match(technical,/v932SupportDisclosure/);
-  assert.match(technical,/ScenarioMapPanel scenario=\{v5Analysis\.scenario\} mode="full"/);
+  assert.doesNotMatch(technical,/<details|v932SupportDisclosure/);
+  assert.match(technical,/ScenarioMapPanel scenario=\{v5Analysis\.scenario\} mode="compact"/);
 });
 check('375px mobile contract exists',()=>{
-  assert.match(css,/@media\(max-width:430px\)[\s\S]*?\.v932DecisionBrief/);
+  assert.match(css,/@media\(max-width:430px\)[\s\S]*?\.v933Core/);
   assert.match(css,/overflow-x:hidden/);
 });
 check('VS Code and CLI reliability workflow exists',()=>{
@@ -65,15 +65,12 @@ check('canonical call uses dark editorial premium treatment',()=>{
   assert.match(css,/\.v932DecisionCard\{[^}]*background:var\(--auryn-ink\)/s);
   assert.match(css,/\.v932Hero h2\{[^}]*color:var\(--auryn-gold-soft\)/s);
 });
-check('astra never exposes deployment secret names in product UI',()=>{
-  const astra=read('components/stock/v931/AstraAnalystPanel.tsx');
-  assert.doesNotMatch(astra,/OPENAI_API_KEY/);
-  assert.match(astra,/Analyst review is unavailable in this deployment/);
+check('Astra is optional infrastructure and not rendered in the stock UX',()=>{
+  assert.doesNotMatch(stock,/AstraAnalystPanel|institutionalEvidence/);
 });
-check('one view keeps expert evidence progressively disclosed',()=>{
-  assert.match(brief,/Full evidence & model trace/);
-  assert.match(brief,/DECISION ATTRIBUTION/);
-  assert.match(brief,/STRONGEST COUNTER-EVIDENCE/);
+check('one view keeps essential decision evidence directly visible',()=>{
+  for(const x of ['PREFERRED ENTRY','CONFIRM','SUPPORT','T1','T2','RISK','WHY THIS CALL','WHAT UPGRADES IT','WHAT BREAKS IT']) assert.match(brief,new RegExp(x));
+  assert.doesNotMatch(brief,/<details|<summary/);
 });
 
 let failed=0;

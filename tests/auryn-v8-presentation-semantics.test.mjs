@@ -26,5 +26,5 @@ test('primary stock surface identifies the current institutional decision layer 
   const client=fs.readFileSync('components/StockClient.tsx','utf8');
   const current=fs.readFileSync('components/stock/v931/InstitutionalDecisionBrief.tsx','utf8');
   assert.match(client,/InstitutionalDecisionBrief/);
-  assert.match(current,/AURYN INSTITUTIONAL CALL/);
+  assert.match(current,/AURYN CALL/);
 });
