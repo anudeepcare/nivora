@@ -1,0 +1,10 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";
+const css=fs.readFileSync("app/auryn-themes.css","utf8"), search=fs.readFileSync("components/SearchBox.tsx","utf8"), profile=fs.readFileSync("app/profile/page.tsx","utf8");
+test("premium editions replace the old raw palette set",()=>{for(const x of ["classic","noir","sapphire","racing","bordeaux","arctic","porcelain"])assert.match(css,new RegExp(`data-theme="${x}"`));});
+test("semantic tokens protect hero and metric contrast",()=>{for(const x of ["--auryn-hero-title:","--auryn-hero-copy:","--auryn-metric-bg:","--auryn-metric-ink:","--auryn-chart-grid:","--auryn-chart-label:"])assert.match(css,new RegExp(x));assert.match(css,/\.aurynDecisionHero[\s\S]*color:var\(--auryn-hero-title\)/);});
+test("financial semantic colors are invariant",()=>{assert.match(css,/:root,\[data-theme="classic"\]\{[^}]*--auryn-positive:#0b835f;[^}]*--auryn-negative:#c54b42/);});
+test("search row uses div slots not nested generic spans",()=>{assert.match(search,/<div className="aurynSearchResultText">/);assert.match(search,/<div className="aurynSearchTicker">/);assert.match(search,/<div className="aurynSearchMeta">/);});
+test("mobile search result has two line content and pinned open action",()=>{assert.match(css,/\.aurynSearchResultText\{[^}]*display:grid/);assert.match(css,/\.aurynSearchOpen\{[^}]*margin-left:auto/);});
+test("technicals has dedicated semantic surface and aligned metric grid",()=>{for(const x of [".aurynTechnicalMetricGrid",".aurynTechnicalMetric",".aurynTechnicalViz"])assert.match(css,new RegExp(x.replace(".","\\.")));});
+test("settings expose named premium editions",()=>{for(const x of ["AURYN Classic","Noir Champagne","Midnight Sapphire","British Racing Green","Bordeaux Reserve","Arctic Graphite","Porcelain Bronze"])assert.match(profile,new RegExp(x));});
+test("legacy v954 global override block is removed",()=>{assert.doesNotMatch(css,/V9\.5\.4 global theme coverage/);});

@@ -1,6 +1,6 @@
 "use client";
 import {useEffect} from "react";
-export const THEMES=["classic","midnight","slate","emerald","obsidian","ocean","burgundy"] as const;
+export const THEMES=["classic","noir","sapphire","racing","bordeaux","arctic","porcelain"] as const;
 export const TEXT_SIZES=["compact","standard","large"] as const;
 export const DENSITIES=["comfortable","compact"] as const;
 export const NUMBER_FORMATS=["standard","abbreviated"] as const;

@@ -4,13 +4,13 @@ import AuthGuard from "@/components/AuthGuard";import AppShell from "@/component
 import {applyAurynAppearance,readAurynAppearance,type AurynAppearance} from "@/components/ThemeProvider";
 import {supabaseBrowser} from "@/lib/supabase";
 const themes=[
- {value:"classic",name:"Auryn Classic",note:"Warm ivory · black · antique gold",sw:["#f7f5f0","#15130f","#b27b31"]},
- {value:"midnight",name:"Midnight",note:"Deep charcoal · ivory · warm gold",sw:["#0e1013","#16191e","#d3a45c"]},
- {value:"slate",name:"Slate",note:"Cool light · graphite · restrained bronze",sw:["#eef1f4","#18212a","#7f694a"]},
- {value:"emerald",name:"Emerald",note:"Warm light · forest · heritage gold",sw:["#f1f4ef","#102019","#8c6a32"]},
- {value:"obsidian",name:"Obsidian Gold",note:"Black · warm graphite · luminous gold",sw:["#090a0b","#1a1a18","#d5a552"]},
- {value:"ocean",name:"Ocean",note:"Pearl · navy · mineral blue",sw:["#f3f7f8","#102a3c","#397d9d"]},
- {value:"burgundy",name:"Burgundy",note:"Porcelain · wine · muted brass",sw:["#f8f3f1","#451d28","#a67c42"]},
+ {value:"classic",name:"AURYN Classic",note:"Ivory · ink · heritage gold",sw:["#f7f5f0","#171613","#b27b31"]},
+ {value:"noir",name:"Noir Champagne",note:"Obsidian · pearl · champagne",sw:["#0b0b0c","#f3ede1","#c6a56b"]},
+ {value:"sapphire",name:"Midnight Sapphire",note:"Midnight navy · pearl · sapphire",sw:["#0b1320","#eef3f7","#3f719b"]},
+ {value:"racing",name:"British Racing Green",note:"Deep racing green · parchment · brass",sw:["#0c211b","#f4f0e5","#b08a4d"]},
+ {value:"bordeaux",name:"Bordeaux Reserve",note:"Wine · porcelain · antique brass",sw:["#451d28","#f8f3f1","#a67c42"]},
+ {value:"arctic",name:"Arctic Graphite",note:"Cool pearl · graphite · steel",sw:["#f1f4f6","#17212a","#6f8797"]},
+ {value:"porcelain",name:"Porcelain Bronze",note:"Porcelain · espresso · bronze",sw:["#faf7f1","#30261e","#9b7040"]},
 ] as const;
 const sizes=[["compact","Compact"],["standard","Standard"],["large","Large"]] as const;
 const densities=[["comfortable","Comfortable"],["compact","Compact"]] as const;
