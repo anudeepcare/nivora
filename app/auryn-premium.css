@@ -496,3 +496,33 @@ html,body{overflow-x:hidden}
 @media(min-width:761px){.aurynAuthMobileBrand{display:none}}
 
 @media(max-width:760px){.v34IndicatorGrid>div{min-height:0!important;height:auto!important;grid-template-columns:minmax(100px,.72fr) minmax(0,1.28fr)!important}}
+
+
+/* =========================================================
+   AURYN FINAL — DECISION FOOTER ALIGNMENT
+   Keeps actions and market levels visually attached to the decision
+   instead of creating a dead band before the long-term thesis.
+   ========================================================= */
+.v947DecisionFooter{width:min(calc(100% - (var(--v941-gutter,52px) * 2)),var(--v941-content-max,1680px));margin:10px auto 16px;display:grid;gap:9px}
+.v947DecisionFooter .aurynOwnershipNote{padding:0!important;margin:0!important;min-height:0!important}
+.v947DecisionFooter .v6510ActionToolbar{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:16px;width:100%;min-height:0;padding:0}
+.v947DecisionFooter .v6510ActionButtons{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.v947DecisionFooter .v6510ActionButtons button,.v947DecisionFooter .v6510ActionButtons a{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 14px;border:1px solid #d9d2c7;border-radius:999px;background:#fff;color:#1d2430;font-size:11px;font-weight:800;text-decoration:none;box-shadow:0 4px 14px rgba(30,24,18,.025)}
+.v947DecisionFooter .v6510MarketLevels{justify-self:end;display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap}
+.v947DecisionFooter .v6510MarketLevels span{padding:7px 10px;border-radius:999px;background:#f3f1ed;color:#61708a;font-size:10px;font-weight:800;white-space:nowrap}
+
+@media(min-width:901px){
+ .v936DecisionLogic{display:grid!important;grid-template-columns:1fr 1fr!important;gap:16px!important;margin-bottom:0!important}
+ .v936DecisionLogic article{padding-bottom:4px!important}
+ .v947DecisionFooter{margin-top:6px!important;margin-bottom:18px!important}
+ .v947DecisionFooter .v6510ActionToolbar{grid-template-columns:auto 1fr!important}
+}
+@media(max-width:760px){
+ .v947DecisionFooter{width:100%!important;margin:8px 0 12px!important;gap:7px!important}
+ .v947DecisionFooter .aurynOwnershipNote{font-size:8px!important}
+ .v947DecisionFooter .v6510ActionToolbar{grid-template-columns:1fr!important;gap:7px!important}
+ .v947DecisionFooter .v6510ActionButtons{display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important}
+ .v947DecisionFooter .v6510ActionButtons button,.v947DecisionFooter .v6510ActionButtons a{justify-content:center!important;min-height:38px!important;padding:0 10px!important;font-size:9px!important}
+ .v947DecisionFooter .v6510MarketLevels{justify-self:stretch!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important}
+ .v947DecisionFooter .v6510MarketLevels span{text-align:center!important;font-size:8px!important;overflow:hidden!important;text-overflow:ellipsis!important}
+}
