@@ -290,3 +290,53 @@
   .aurynBottomNav{left:max(8px,env(safe-area-inset-left))!important;right:max(8px,env(safe-area-inset-right))!important}
  }
 }
+
+
+/* ============================================================
+   V9.5.0 — CENTERED iOS TAB BAR
+   Safe area positions the floating dock; it never increases dock height.
+   ============================================================ */
+@media(max-width:760px){
+ .aurynAppMain{padding-bottom:calc(80px + env(safe-area-inset-bottom))!important}
+ .aurynBottomNav{
+  position:fixed!important;
+  left:12px!important;right:12px!important;
+  bottom:calc(8px + env(safe-area-inset-bottom))!important;
+  width:auto!important;
+  height:64px!important;min-height:64px!important;max-height:64px!important;
+  display:grid!important;grid-template-columns:repeat(4,1fr)!important;
+  align-items:center!important;
+  padding:6px!important;
+  border:1px solid rgba(255,255,255,.11)!important;
+  border-radius:22px!important;
+  background:rgba(27,26,23,.72)!important;
+  -webkit-backdrop-filter:blur(28px) saturate(180%)!important;
+  backdrop-filter:blur(28px) saturate(180%)!important;
+  box-shadow:0 12px 30px rgba(0,0,0,.20),inset 0 1px 0 rgba(255,255,255,.06)!important;
+  overflow:hidden!important
+ }
+ .aurynBottomNav a{
+  width:100%!important;height:52px!important;min-height:52px!important;
+  display:flex!important;flex-direction:column!important;
+  justify-content:center!important;align-items:center!important;
+  gap:2px!important;margin:0!important;padding:3px 2px!important;
+  border-radius:17px!important;background:transparent!important;
+  font-size:8.5px!important;line-height:1!important;text-align:center!important
+ }
+ .aurynBottomNav a svg{width:20px!important;height:20px!important;flex:0 0 20px!important}
+ .aurynBottomNav a.active{
+  border-radius:17px!important;
+  background:rgba(196,151,83,.16)!important;
+  box-shadow:inset 0 0 0 1px rgba(224,190,132,.05)!important
+ }
+}
+@media(display-mode:standalone) and (max-width:760px){
+ .aurynAppMain{padding-bottom:calc(80px + env(safe-area-inset-bottom))!important}
+ .aurynBottomNav{
+  left:12px!important;right:12px!important;
+  bottom:calc(8px + env(safe-area-inset-bottom))!important;
+  height:64px!important;min-height:64px!important;max-height:64px!important;
+  padding:6px!important;
+  background:rgba(27,26,23,.72)!important
+ }
+}

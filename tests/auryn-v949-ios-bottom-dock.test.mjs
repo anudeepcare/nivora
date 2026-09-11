@@ -5,16 +5,16 @@ const css=fs.readFileSync("app/auryn-mobile.css","utf8");
 
 test("glass dock is compact instead of a tall panel",()=>{
  const blocks=[...css.matchAll(/\.aurynBottomNav\{([^}]*)\}/g)].map(x=>x[1]);
- const b=blocks.findLast(x=>/min-height:52px/.test(x))||"";
- assert.match(b,/min-height:52px/);
+ const b=blocks.findLast(x=>/min-height:64px/.test(x))||"";
+ assert.match(b,/min-height:64px/);
  assert.match(b,/padding:4px 5px calc\(4px \+ env\(safe-area-inset-bottom\)\)/);
 });
 test("dock floats close to the home indicator with narrow side gutters",()=>{
  const blocks=[...css.matchAll(/\.aurynBottomNav\{([^}]*)\}/g)].map(x=>x[1]);
- const b=blocks.findLast(x=>/min-height:52px/.test(x))||"";
- assert.match(b,/bottom:4px/);
- assert.match(b,/left:8px/);
- assert.match(b,/right:8px/);
+ const b=blocks.findLast(x=>/min-height:64px/.test(x))||"";
+ assert.match(b,/bottom:calc\(8px \+ env\(safe-area-inset-bottom\)\)/);
+ assert.match(b,/left:12px/);
+ assert.match(b,/right:12px/);
 });
 test("dock is lighter glass and active item is compact",()=>{
  assert.match(css,/background:rgba\(21,19,15,.78\)/);
@@ -23,5 +23,5 @@ test("dock is lighter glass and active item is compact",()=>{
 });
 test("main page only reserves compact dock clearance",()=>{
  const b=css.match(/\.aurynAppMain\{([^}]*)\}/)?.[1]||"";
- assert.match(b,/padding-bottom:68px/);
+ assert.match(b,/padding-bottom:calc\(80px \+ env\(safe-area-inset-bottom\)\)/);
 });
