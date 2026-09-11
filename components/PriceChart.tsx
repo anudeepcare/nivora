@@ -5,7 +5,8 @@ export default function PriceChart({candles,levels,showTrend=false,confluence}:{
  const el=useRef<HTMLDivElement>(null);
  useEffect(()=>{if(!el.current||!candles?.length)return;
  const mobile=window.matchMedia("(max-width: 760px)").matches;
- const chart=createChart(el.current,{width:el.current.clientWidth,height:mobile?280:430,layout:{background:{color:"#ffffff"},textColor:"#667085",fontSize:mobile?11:12},grid:{vertLines:{color:"#f2f4f7"},horzLines:{color:"#f2f4f7"}},rightPriceScale:{borderColor:"#eaecf0",minimumWidth:mobile?52:70},timeScale:{borderColor:"#eaecf0",timeVisible:false,rightOffset:mobile?2:5,barSpacing:mobile?5:7}});
+ const chartHeight=Math.round(el.current.clientHeight);
+ const chart=createChart(el.current,{width:el.current.clientWidth,height:chartHeight>120?chartHeight:(mobile?280:430),layout:{background:{color:"#ffffff"},textColor:"#667085",fontSize:mobile?11:12},grid:{vertLines:{color:"#f2f4f7"},horzLines:{color:"#f2f4f7"}},rightPriceScale:{borderColor:"#eaecf0",minimumWidth:mobile?52:70},timeScale:{borderColor:"#eaecf0",timeVisible:false,rightOffset:mobile?2:5,barSpacing:mobile?5:7}});
  const cs=chart.addSeries(CandlestickSeries,{upColor:"#16a34a",downColor:"#dc2626",borderVisible:false,wickUpColor:"#16a34a",wickDownColor:"#dc2626",priceLineVisible:true,lastValueVisible:true});
  cs.setData(candles.map((x:any)=>({time:x.time,open:x.open,high:x.high,low:x.low,close:x.close})));
  if(showTrend){
@@ -32,7 +33,7 @@ export default function PriceChart({candles,levels,showTrend=false,confluence}:{
    for(const [title,price,color] of extra){if(Number.isFinite(Number(price)))cs.createPriceLine({price:Number(price),color,lineWidth:1,lineStyle:LineStyle.Dotted,axisLabelVisible:!mobile,title:mobile?"":title})}
  }
  chart.timeScale().fitContent();
- const resize=()=>{if(!el.current)return;const m=window.innerWidth<=760;chart.applyOptions({width:el.current.clientWidth,height:m?280:430,rightPriceScale:{minimumWidth:m?52:70},timeScale:{rightOffset:m?2:5,barSpacing:m?5:7}})};
+ const resize=()=>{if(!el.current)return;const m=window.innerWidth<=760;const nextHeight=Math.round(el.current.clientHeight);chart.applyOptions({width:el.current.clientWidth,height:nextHeight>120?nextHeight:(m?280:430),rightPriceScale:{minimumWidth:m?52:70},timeScale:{rightOffset:m?2:5,barSpacing:m?5:7}})};
  const ro=new ResizeObserver(resize);ro.observe(el.current);window.addEventListener("orientationchange",resize);return()=>{ro.disconnect();window.removeEventListener("orientationchange",resize);chart.remove()}
  },[candles,levels,showTrend,confluence]);
  return <div ref={el} className="chartCanvas"/>;

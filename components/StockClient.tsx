@@ -88,6 +88,22 @@ const CORE_ATTEMPTS=1,CORE_TIMEOUT_MS=4500;
 const stockWarmCache=new Map<string,StockWarmCache>();
 const CACHE_MAX_AGE=15*60*1000;
 const STALE_CACHE_MAX_AGE=7*24*60*60*1000;
+const inflightJson=new Map<string,Promise<any>>();
+const responseJsonCache=new Map<string,{ts:number;data:any}>();
+function sharedJson(url:string,signal?:AbortSignal,ttlMs=15000){
+  const cached=responseJsonCache.get(url);
+  if(cached&&Date.now()-cached.ts<ttlMs)return Promise.resolve(cached.data);
+  const pending=inflightJson.get(url);
+  if(pending)return pending;
+  const request=fetch(url,{signal}).then(async r=>{
+    const x=await r.json();
+    if(!r.ok||x?.error)throw new Error(x?.error||`Request failed (${r.status})`);
+    responseJsonCache.set(url,{ts:Date.now(),data:x});
+    return x;
+  }).finally(()=>inflightJson.delete(url));
+  inflightJson.set(url,request);
+  return request;
+}
 let calibrationCache:any=null;
 const modelHealthCache=new Map<string,any>();
 function scheduleNonCritical(work:()=>void){
@@ -146,7 +162,7 @@ export default function StockClient({symbol}:{symbol:string}){
 
   useEffect(()=>{
     let active=true;let timer:any;
-    const loadCanonical=()=>fetch(`/api/canonical/${encodeURIComponent(symbol)}`,{cache:"no-store"}).then(async r=>{const x=await r.json();if(!r.ok||!active)return;setCanonicalV935(x);if(x?.market)setLiveQuote({...x.market,price:x.market.displayPrice,changePct:null,providerTimestamp:x.market.decisionPriceAsOf??x.market.asOf})}).catch(()=>{});
+    const loadCanonical=()=>sharedJson(`/api/canonical/${encodeURIComponent(symbol)}`,undefined,10000).then((x:any)=>{if(!active)return;setCanonicalV935(x);if(x?.market)setLiveQuote({...x.market,price:x.market.displayPrice,changePct:null,providerTimestamp:x.market.decisionPriceAsOf??x.market.asOf})}).catch(()=>{});
     loadCanonical();timer=setInterval(()=>{if(document.visibilityState==="visible")loadCanonical()},30000);
     return()=>{active=false;clearInterval(timer)};
   },[symbol]);
@@ -201,11 +217,9 @@ export default function StockClient({symbol}:{symbol:string}){
       setD(null);setCompany(null);setContext(null);setInstitutional(null);setLiveMarketContext(null);setErr("");
     }
 
-    const fetchJson=async(url:string,signal?:AbortSignal)=>{
-      const r=await fetch(url,{signal});
-      const x=await r.json();
-      if(!r.ok||x?.error)throw new Error(x?.error||`Request failed (${r.status})`);
-      return x;
+    const fetchJson=(url:string,signal?:AbortSignal)=>{
+      const ttl=url.includes("/api/company/")||url.includes("/api/institutional/")?5*60*1000:url.includes("/api/context/")?60*1000:url.includes("/api/analyze/")?10*1000:15*1000;
+      return sharedJson(url,signal,ttl);
     };
 
     const loadCore=async(showError=false)=>{

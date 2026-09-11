@@ -62,7 +62,7 @@ export default function AurynResearchOverview({decision,marketTruth,marketIntell
  const freshness=marketTruth?.decisionPriceAsOf||marketTruth?.asOf||marketTruth?.providerTimestamp||null;
  const entryScore=n(entryQuality);
  return <section className="v936Overview" data-snapshot-id={decision.snapshotId}>
-  <div className="v936HeroGrid">
+  <div className="v936HeroGrid v938FirstViewport">
    <article className={`v936CallHero action-${actionClass(decision.newMoneyAction)}`}>
     <div className="v936HeroGlow" aria-hidden="true"/>
     <small>AURYN CALL</small>
@@ -105,9 +105,9 @@ export default function AurynResearchOverview({decision,marketTruth,marketIntell
 
   <div className="v936InsightGrid">
    <article className="v936ScenarioCard"><div className="v936CardTitle"><small>MARKET OUTLOOK</small><b>Scenario value</b><span>Decision-grade values only · unavailable evidence stays N/A</span></div><div className="v936ScenarioValues">
-    <span className="bull"><span className="v936AnimalMark"><BullMark/></span><em>BULL VALUE</em><b>{money(bullValue.value)}</b><strong>{delta(currentPrice,bullValue.value)!=null?`${delta(currentPrice,bullValue.value)!>=0?"+":""}${delta(currentPrice,bullValue.value)!.toFixed(1)}% vs current`:"N/A"}</strong><small>{bullValue.range||scenario?.bull?.summary||"N/A"}</small></span>
-    <span className="base"><span className="v936AnimalMark"><BaseMark/></span><em>BASE VALUE</em><b>{money(baseValue.value)}</b><strong>{delta(currentPrice,baseValue.value)!=null?`${delta(currentPrice,baseValue.value)!>=0?"+":""}${delta(currentPrice,baseValue.value)!.toFixed(1)}% vs current`:"N/A"}</strong><small>{baseValue.range||scenario?.base?.summary||"N/A"}</small></span>
-    <span className="bear"><span className="v936AnimalMark"><BearMark/></span><em>BEAR VALUE</em><b>{money(bearValue.value)}</b><strong>{delta(currentPrice,bearValue.value)!=null?`${delta(currentPrice,bearValue.value)!>=0?"+":""}${delta(currentPrice,bearValue.value)!.toFixed(1)}% vs current`:"N/A"}</strong><small>{bearValue.range||scenario?.bear?.summary||"N/A"}</small></span>
+    <span className="v938ScenarioTile bull"><span className="v936AnimalMark"><BullMark/></span><span className="v938ScenarioCopy"><em>BULL VALUE</em><b>{money(bullValue.value)}</b><strong>{delta(currentPrice,bullValue.value)!=null?`${delta(currentPrice,bullValue.value)!>=0?"+":""}${delta(currentPrice,bullValue.value)!.toFixed(1)}% vs current`:"N/A"}</strong><small>{bullValue.range||scenario?.bull?.summary||"N/A"}</small></span></span>
+    <span className="v938ScenarioTile base"><span className="v936AnimalMark"><BaseMark/></span><span className="v938ScenarioCopy"><em>BASE VALUE</em><b>{money(baseValue.value)}</b><strong>{delta(currentPrice,baseValue.value)!=null?`${delta(currentPrice,baseValue.value)!>=0?"+":""}${delta(currentPrice,baseValue.value)!.toFixed(1)}% vs current`:"N/A"}</strong><small>{baseValue.range||scenario?.base?.summary||"N/A"}</small></span></span>
+    <span className="v938ScenarioTile bear"><span className="v936AnimalMark"><BearMark/></span><span className="v938ScenarioCopy"><em>BEAR VALUE</em><b>{money(bearValue.value)}</b><strong>{delta(currentPrice,bearValue.value)!=null?`${delta(currentPrice,bearValue.value)!>=0?"+":""}${delta(currentPrice,bearValue.value)!.toFixed(1)}% vs current`:"N/A"}</strong><small>{bearValue.range||scenario?.bear?.summary||"N/A"}</small></span></span>
    </div></article>
    <article className="v936ExplainCard"><small>WHAT THIS MEANS</small><h4>{setup.title}</h4><p>{setup.meaning}</p><strong>{setup.actionImplication}</strong></article>
    <article className="v936ExplainCard"><small>PATTERN EVIDENCE</small><h4>{pattern?.title||pretty(scenario?.setup||"No dominant pattern")}</h4><p>{pattern?.meaning||"Pattern evidence is supporting context and never determines the investment action by itself."}</p><strong>{pattern?.actionImplication||decision.nextDecisionTrigger}</strong></article>
