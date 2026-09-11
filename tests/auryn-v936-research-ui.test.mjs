@@ -26,3 +26,8 @@ test('overview relies on existing canonical evidence and introduces no provider 
  assert.doesNotMatch(p,/fetch\(/);
  assert.doesNotMatch(p,/twelvedata|alpaca/i);
 });
+
+test('premium overview only imports lucide icons supported by the pinned icon package',()=>{
+ const p=read('components/premium/AurynResearchOverview.tsx');
+ assert.doesNotMatch(p,/\bWaveform\b/);
+});

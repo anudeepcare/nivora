@@ -1,6 +1,6 @@
 "use client";
 
-import {Activity,ArrowUpRight,BarChart3,CheckCircle2,Flag,Shield,Target,TrendingUp,TriangleAlert,UsersRound,Waveform} from "lucide-react";
+import {Activity,ArrowUpRight,BarChart3,CheckCircle2,Flag,Shield,Target,TrendingUp,TriangleAlert,UsersRound} from "lucide-react";
 import PriceChart from "@/components/PriceChart";
 import {describeSetupState} from "@/lib/auryn/v934/setup-explanations";
 import {buildOpportunityLens} from "@/lib/auryn/v936/opportunity";
@@ -57,7 +57,7 @@ export default function AurynResearchOverview({decision,marketTruth,marketIntell
   <div className="v936SectionHead"><div><small>KEY METRICS</small><h3>Decision map</h3></div><span>One canonical snapshot · no duplicate levels</span></div>
   <div className="v936MetricGrid">
    <Metric icon={TrendingUp} label="Market Setup" value={setup.title} sub={scenario?.structure||scoreBand(n(decision.pillars.marketStructure.score))}/>
-   <Metric icon={Waveform} label="Pattern Evidence" value={pattern?.title||pretty(scenario?.setup||"No dominant pattern")} sub={scenario?.bull?.confidence?`${scenario.bull.confidence} confidence`:"Supporting evidence"}/>
+   <Metric icon={Activity} label="Pattern Evidence" value={pattern?.title||pretty(scenario?.setup||"No dominant pattern")} sub={scenario?.bull?.confidence?`${scenario.bull.confidence} confidence`:"Supporting evidence"}/>
    <Metric icon={Target} label={String(decision.setupState).includes("DAMAGED")?"Recovery Zone":"Preferred Entry"} value={eLow!=null&&eHigh!=null?`${money(eLow)} – ${money(eHigh)}`:"—"} sub="Preferred range"/>
    <Metric icon={CheckCircle2} label="Confirm / Reclaim" value={money(confirm)} sub="Above to confirm" toneName="good"/>
    <Metric icon={Shield} label="Support" value={money(support)} sub="Key support"/>
