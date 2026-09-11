@@ -69,8 +69,8 @@ export function buildCanonicalMarketSnapshot(input:{symbol:string;asOf?:Date;pri
       }else useLive(true,false);
     }else if(integrity.state==="DISAGREEMENT"){
       priceState="UNVERIFIED";reason=`Fresh providers disagree materially${providerAgreementPct==null?"":` (${providerAgreementPct.toFixed(2)}%)`}; AURYN blocked the live decision price.`;
-    }else{
-      priceState=sources.length?"UNVERIFIED":"UNAVAILABLE";reason=sources.length?"Available regular-session provider quotes are stale or timestamp-unverified; AURYN blocked the live decision price.":"No provider returned a usable regular-session market price.";
+    }else if(!useRegularClose(`Regular-session quotes are stale or timestamp-unverified; AURYN uses the last verified regular close for research and keeps execution blocked until a fresh live quote is verified.`)){
+      priceState=sources.length?"UNVERIFIED":"UNAVAILABLE";reason=sources.length?"Available regular-session provider quotes are stale or timestamp-unverified and no verified regular close is available.":"No provider returned a usable regular-session market price and no verified regular close is available.";
     }
   }else if(calendar.session==="PRE_MARKET"||calendar.session==="AFTER_HOURS"){
     const sessionLabel=calendar.session==="PRE_MARKET"?"Pre-market":"After-hours";

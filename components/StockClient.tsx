@@ -520,7 +520,7 @@ export default function StockClient({symbol}:{symbol:string}){
   if(!d||!view){
     const durable=canonicalV935?.research;
     const durableMap=durable?.actionMap||durable?.levels||null;
-    const partialStatus=!marketTruth?"Verifying market price":marketTruth.priceState==="OFFICIAL_CLOSE"?"Market closed · verified reference":marketTruth.session==="PRE_MARKET"?"Pre-market · verified source":marketTruth.session==="AFTER_HOURS"?"After-hours · verified source":"Market open · verified source";
+    const partialStatus=!marketTruth?"Verifying market price":marketTruth.priceState==="OFFICIAL_CLOSE"?(marketTruth.session==="REGULAR"?"Reference price · live verification pending":"Market closed · verified reference"):marketTruth.session==="PRE_MARKET"?"Pre-market · verified source":marketTruth.session==="AFTER_HOURS"?"After-hours · verified source":"Market open · verified source";
     const partialDetail=marketTruth?`${String(marketTruth.reason||"")}${marketTruth.decisionPriceAsOf?` · price as of ${new Date(marketTruth.decisionPriceAsOf).toLocaleString()}`:""}`:"Price verification loads independently from the research engine.";
     const partialChange=Number(liveQuote?.changePct);
     return <div className="aurynStockPage aurynProgressiveStock">
@@ -756,6 +756,7 @@ export default function StockClient({symbol}:{symbol:string}){
     :marketTruth.priceState==="OFFICIAL_CLOSE"&&marketTruth.session==="AFTER_HOURS"?"After-hours · Verified regular close"
     :marketTruth.priceState==="OFFICIAL_CLOSE"&&marketTruth.session==="PRE_MARKET"?"Pre-market · Verified regular close"
     :marketTruth.priceState==="OFFICIAL_CLOSE"&&marketTruth.session==="OVERNIGHT"?"Overnight · Verified regular close"
+    :marketTruth.priceState==="OFFICIAL_CLOSE"&&marketTruth.session==="REGULAR"?"Reference price · Live verification pending"
     :marketTruth.priceState==="OFFICIAL_CLOSE"?"Market closed · Verified regular close"
     :marketTruth.priceState==="LIVE_VERIFIED"&&marketTruth.session==="AFTER_HOURS"?"After-hours · Live verified"
     :marketTruth.priceState==="LIVE_VERIFIED"&&marketTruth.session==="PRE_MARKET"?"Pre-market · Live verified"
