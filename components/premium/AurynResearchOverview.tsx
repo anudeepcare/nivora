@@ -36,6 +36,7 @@ function Metric({icon:Icon,label,value,sub,toneName="",help,score}:{icon:any;lab
 function Pulse({label,value,sub,toneName="",help,score}:{label:string;value:string;sub:string;toneName?:string;help:string;score?:number|null}){
  return <article><small>{label}<MetricInfo title={label} description={help} score={score==null?undefined:score}/></small><b className={toneName}>{value}</b><span>{sub}</span></article>;
 }
+function SignaturePulse({label,value,sub,toneName="",help,score}:{label:string;value:string;sub:string;toneName?:string;help:string;score?:number|null}){return <article className="v941PulseMetric"><small>{label}<MetricInfo title={label} description={help} score={score==null?undefined:score}/></small><b className={toneName}>{value}</b><span>{sub}</span></article>}
 function LadderItem({label,value,sub,toneName=""}:{label:string;value:string;sub?:string;toneName?:string}){return <span className={`v937LadderItem ${toneName}`}><small>{label}</small><b>{value}</b>{sub?<em>{sub}</em>:null}</span>}
 
 export default function AurynResearchOverview({decision,marketTruth,displayPrice,displayPriceLive=false,marketIntelligence,scenario,entryQuality,candles,chartLevels}:{decision:InstitutionalDecision;marketTruth:any;displayPrice?:number|null;displayPriceLive?:boolean;marketIntelligence?:any;scenario?:ScenarioMap|null;entryQuality?:number|null;candles:any[];chartLevels:any|null}){
@@ -62,7 +63,7 @@ export default function AurynResearchOverview({decision,marketTruth,displayPrice
  const freshness=marketTruth?.decisionPriceAsOf||marketTruth?.asOf||marketTruth?.providerTimestamp||null;
  const entryScore=n(entryQuality);
  return <section className="v936Overview" data-snapshot-id={decision.snapshotId}>
-  <span className="v940TruthContract">Opportunity is not a probability of profit. Expected Asymmetry is not an expected-return forecast. Current Price is never inferred from portfolio value.</span>
+  <span className="v940TruthContract">Opportunity: It is not a probability of profit. Expected Asymmetry: It is not an expected-return forecast. Current Price is never inferred from portfolio value.</span>
   <div className="v936HeroGrid v938FirstViewport">
    <article className={`v936CallHero action-${actionClass(decision.newMoneyAction)}`}>
     <div className="v936HeroGlow" aria-hidden="true"/>
@@ -80,10 +81,10 @@ export default function AurynResearchOverview({decision,marketTruth,displayPrice
   </div>
 
   <div className="v940PulseGroups" aria-label="AURYN decision pulse">
-   <section className="v940PulseGroup"><small>DECISION</small><div><Pulse label="Opportunity" value={`${lens.opportunityScore}/100`} sub={scoreBand(lens.opportunityScore)} score={lens.opportunityScore} help="A decision-usefulness score combining company quality, setup, entry, risk and evidence. It is not a probability of profit."/><Pulse label="Entry Quality" value={entryScore==null?"N/A":`${Math.round(entryScore)}/100`} sub={scoreBand(entryScore)} score={entryScore} help="How attractive the current entry is relative to structure, extension and confirmation."/></div></section>
-   <section className="v940PulseGroup"><small>TRIGGER</small><div><Pulse label="Distance to Confirm" value={confirmDelta!=null?`${confirmDelta>=0?"+":""}${confirmDelta.toFixed(1)}%`:"N/A"} sub={confirm!=null?money(confirm):"No level"} toneName={confirmDelta!=null&&confirmDelta<=3?"good":""} help="How far current price is from confirmation."/><Pulse label="Upside to T1" value={t1Delta!=null?`${t1Delta>=0?"+":""}${t1Delta.toFixed(1)}%`:"N/A"} sub={t1!=null?money(t1):"No target"} toneName="good" help="Distance to AURYN's first decision-grade target."/></div></section>
-   <section className="v940PulseGroup"><small>ASYMMETRY</small><div><Pulse label="Reward / Risk" value={rr1!=null?`${rr1.toFixed(1)} : 1`:"N/A"} sub={rr2!=null?`T2 ${rr2.toFixed(1)}×`:"No complete plan"} help="Reward to first target divided by structural downside."/><Pulse label="Downside to Risk" value={riskDelta!=null?`${riskDelta.toFixed(1)}%`:"N/A"} sub={risk!=null?money(risk):"No invalidation"} toneName="bad" help="Distance to structural invalidation."/></div></section>
-   <section className="v940PulseGroup"><small>TRUST</small><div><Pulse label="Evidence Quality" value={`${decision.evidenceCompleteness}/100`} sub={scoreBand(decision.evidenceCompleteness)} score={decision.evidenceCompleteness} help="Completeness and usability of the canonical evidence set."/><Pulse label="Data Freshness" value={displayPriceLive?"● LIVE":freshness?new Date(freshness).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}):"N/A"} sub={marketStatus} toneName={displayPriceLive?"good":""} help="Freshness of the market evidence currently displayed."/></div></section>
+   <section className="v940PulseGroup"><small>DECISION</small><div><SignaturePulse label="Opportunity" value={`${lens.opportunityScore}/100`} sub={scoreBand(lens.opportunityScore)} score={lens.opportunityScore} help="Decision usefulness, not probability of profit."/><SignaturePulse label="Entry Quality" value={entryScore==null?"N/A":`${Math.round(entryScore)}/100`} sub={scoreBand(entryScore)} score={entryScore} help="Current entry attractiveness."/></div></section>
+   <section className="v940PulseGroup"><small>TRIGGER</small><div><SignaturePulse label="To Confirm" value={confirmDelta!=null?`${confirmDelta>=0?"+":""}${confirmDelta.toFixed(1)}%`:"N/A"} sub={confirm!=null?money(confirm):"No level"} toneName="good" help="Distance to confirmation."/><SignaturePulse label="To T1" value={t1Delta!=null?`${t1Delta>=0?"+":""}${t1Delta.toFixed(1)}%`:"N/A"} sub={t1!=null?money(t1):"No target"} toneName="good" help="Distance to first target."/></div></section>
+   <section className="v940PulseGroup"><small>ASYMMETRY</small><div><SignaturePulse label="Reward / Risk" value={rr1!=null?`${rr1.toFixed(1)} : 1`:"N/A"} sub={rr2!=null?`T2 ${rr2.toFixed(1)}×`:"No complete plan"} help="Reward versus structural downside."/><SignaturePulse label="Downside" value={riskDelta!=null?`${riskDelta.toFixed(1)}%`:"N/A"} sub={risk!=null?money(risk):"No invalidation"} toneName="bad" help="Distance to invalidation."/></div></section>
+   <section className="v940PulseGroup"><small>TRUST</small><div><SignaturePulse label="Evidence" value={`${decision.evidenceCompleteness}/100`} sub={scoreBand(decision.evidenceCompleteness)} score={decision.evidenceCompleteness} help="Canonical evidence completeness."/><SignaturePulse label="Freshness" value={displayPriceLive?"● LIVE":freshness?new Date(freshness).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}):"N/A"} sub={displayPriceLive?"Research price":marketStatus} toneName={displayPriceLive?"good":""} help="Freshness of displayed market evidence."/></div></section>
   </div>
 
   <div className="v936SectionHead"><div><small>KEY METRICS</small><h3>Decision map</h3></div><span>One canonical snapshot · no duplicate levels</span></div>
@@ -113,11 +114,16 @@ export default function AurynResearchOverview({decision,marketTruth,displayPrice
   </div>
 
   <div className="v936InsightGrid">
-   <article className="v936ScenarioCard"><div className="v936CardTitle"><small>MARKET OUTLOOK</small><b>Scenario value</b><span>Decision-grade values only · unavailable evidence stays N/A</span></div><div className="v936ScenarioValues">
-    <span className="v938ScenarioTile bull"><span className="v936AnimalMark"><BullMark/></span><span className="v938ScenarioCopy"><em>BULL VALUE</em><b>{money(bullValue.value)}</b><strong>{delta(currentPrice,bullValue.value)!=null?`${delta(currentPrice,bullValue.value)!>=0?"+":""}${delta(currentPrice,bullValue.value)!.toFixed(1)}% vs current`:"N/A"}</strong><small>{bullValue.range||scenario?.bull?.summary||"N/A"}</small></span></span>
-    <span className="v938ScenarioTile base"><span className="v936AnimalMark"><BaseMark/></span><span className="v938ScenarioCopy"><em>BASE VALUE</em><b>{money(baseValue.value)}</b><strong>{delta(currentPrice,baseValue.value)!=null?`${delta(currentPrice,baseValue.value)!>=0?"+":""}${delta(currentPrice,baseValue.value)!.toFixed(1)}% vs current`:"N/A"}</strong><small>{baseValue.range||scenario?.base?.summary||"N/A"}</small></span></span>
-    <span className="v938ScenarioTile bear"><span className="v936AnimalMark"><BearMark/></span><span className="v938ScenarioCopy"><em>BEAR VALUE</em><b>{money(bearValue.value)}</b><strong>{delta(currentPrice,bearValue.value)!=null?`${delta(currentPrice,bearValue.value)!>=0?"+":""}${delta(currentPrice,bearValue.value)!.toFixed(1)}% vs current`:"N/A"}</strong><small>{bearValue.range||scenario?.bear?.summary||"N/A"}</small></span></span>
-   </div></article>
+   <article className="v936ScenarioCard v941ScenarioCard"><div className="v936CardTitle"><small>MARKET OUTLOOK</small><b>Scenario spectrum</b><span>Decision-grade values · not probabilities</span></div>
+    <div className="v941ScenarioSpectrum">
+     <div className="v941SpectrumLine"/>
+     <span className="bear"><i/><small>BEAR</small><b>{money(bearValue.value)}</b><em>{delta(currentPrice,bearValue.value)!=null?`${delta(currentPrice,bearValue.value)!.toFixed(1)}%`:"N/A"}</em></span>
+     <span className="base"><i/><small>BASE</small><b>{money(baseValue.value)}</b><em>{delta(currentPrice,baseValue.value)!=null?`${delta(currentPrice,baseValue.value)!.toFixed(1)}%`:"N/A"}</em></span>
+     <span className="bull"><i/><small>BULL</small><b>{money(bullValue.value)}</b><em>{delta(currentPrice,bullValue.value)!=null?`+${Math.max(0,delta(currentPrice,bullValue.value)!).toFixed(1)}%`:"N/A"}</em></span>
+     <span className="v941ScenarioCurrent"><small>CURRENT</small><b>{money(currentPrice)}</b><i/></span>
+    </div>
+    <div className="v941ScenarioNotes"><span><b>Bear case</b>{bearValue.range||scenario?.bear?.summary||"N/A"}</span><span><b>Base case</b>{baseValue.range||scenario?.base?.summary||"N/A"}</span><span><b>Bull case</b>{bullValue.range||scenario?.bull?.summary||"N/A"}</span></div>
+   </article>
    <article className="v936ExplainCard"><small>WHAT THIS MEANS</small><h4>{setup.title}</h4><p>{setup.meaning}</p><strong>{setup.actionImplication}</strong></article>
    <article className="v936ExplainCard"><small>PATTERN EVIDENCE</small><h4>{pattern?.title||pretty(scenario?.setup||"No dominant pattern")}</h4><p>{pattern?.meaning||"Pattern evidence is supporting context and never determines the investment action by itself."}</p><strong>{pattern?.actionImplication||decision.nextDecisionTrigger}</strong></article>
   </div>

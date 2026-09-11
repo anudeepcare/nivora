@@ -36,7 +36,9 @@ test("mobile signature contract is explicitly designed for narrow screens",()=>{
  assert.match(css,/\.v940PulseGroups/);
 });
 
-test("technical surface gets signature micro visual treatment",()=>{
- assert.match(css,/\.v34IndicatorGrid>div::after/);
+test("technical surface gets signature metric-specific visual treatment",()=>{
+ assert.match(css,/\.v941RsiTrack::after/);
+ assert.match(css,/\.v941VolumeTrack::after/);
+ assert.match(css,/\.v941BollingerTrack::after/);
  assert.match(css,/\.v34TechnicalScoreGrid/);
 });

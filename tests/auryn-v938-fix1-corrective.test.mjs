@@ -19,11 +19,12 @@ test("long actions use a smaller display size without shrinking short calls",()=
   assert.match(css,/\.v936CallHero\.action-reduce h2/);
 });
 
-test("scenario outlook renders three isolated tiles",()=>{
-  assert.match(overview,/v938ScenarioTile bull/);
-  assert.match(overview,/v938ScenarioTile base/);
-  assert.match(overview,/v938ScenarioTile bear/);
-  assert.match(css,/\.v938ScenarioTile\{/);
+test("scenario outlook preserves distinct bear base bull states in the signature spectrum",()=>{
+  assert.match(overview,/v941ScenarioSpectrum/);
+  assert.match(overview,/className="bear"/);
+  assert.match(overview,/className="base"/);
+  assert.match(overview,/className="bull"/);
+  assert.match(css,/\.v941ScenarioSpectrum/);
 });
 
 test("missing price cannot become a fake zero return",()=>{
