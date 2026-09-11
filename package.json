@@ -69,7 +69,9 @@
     "test:v936": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node --test tests/auryn-v936-opportunity.test.mjs tests/auryn-v936-research-ui.test.mjs tests/auryn-v936-mobile-shell.test.mjs tests/auryn-v936-cross-product-ui.test.mjs tests/auryn-v936-release.test.mjs",
     "gate:v936": "node scripts/run_v936_release_gate.mjs",
     "test:v937": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node --test tests/auryn-v937-premium-ux.test.mjs tests/v6512-portfolio-periods.test.mjs tests/v61-paper-execution.test.mjs tests/v61-broker-safety.test.mjs tests/v61-trading-metrics.test.mjs tests/v61-trading-api-contract.test.mjs tests/v61-trading-ui-contract.test.mjs tests/v61-trading-evaluation.test.mjs tests/v61-auto-paper-runner.test.mjs tests/v642-live-decision-audit.test.mjs",
-    "gate:v937": "npm run test:v937 && npm run test:v936"
+    "gate:v937": "npm run test:v937 && npm run test:v936",
+    "test:v938": "node --test tests/auryn-v938-reliability-ui.test.mjs && npm run test:v937",
+    "gate:v938": "npm run test:v938 && npm run test:v936"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

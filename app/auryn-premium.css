@@ -115,3 +115,93 @@ body{color:var(--v936-text);font-family:Inter,ui-sans-serif,system-ui,-apple-sys
 @media(max-width:1250px){.aurynStockMasthead{grid-template-columns:1fr 1fr!important}.aurynSecurityFacts{grid-column:1/-1;border-left:0;border-top:1px solid var(--v936-line);padding:10px 0 0}.v936PulseGrid{grid-template-columns:repeat(4,minmax(0,1fr))}.v936PulseGrid article:nth-child(5){border-left:0}.v937EvidenceGrid{grid-template-columns:repeat(4,minmax(0,1fr))}.aurynCapitalQueueRow{grid-template-columns:.7fr 1.7fr .7fr .8fr}.aurynCapitalQueueRow>span:last-child{grid-column:2/-1}.aurynThesisFactors{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
 @media(max-width:760px){.aurynSecurityFacts{grid-template-columns:repeat(2,minmax(0,1fr));overflow:hidden}.aurynSecurityFacts>span{padding:6px 8px}.v936PulseGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible}.v936PulseGrid article{min-width:0!important}.v936PulseGrid article:nth-child(odd){border-left:0}.v937DecisionMap{grid-template-columns:1fr}.v937Ladder{grid-template-columns:repeat(2,minmax(0,1fr))}.v937Ladder.risk{grid-template-columns:1fr}.v937LadderItem+.v937LadderItem:before{display:none}.v937EvidenceGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.aurynCapitalQueueRow{grid-template-columns:1fr 1fr;gap:9px}.aurynCapitalQueueRow>span:nth-child(2),.aurynCapitalQueueRow>span:last-child{grid-column:1/-1}.aurynPositionFacts{grid-template-columns:repeat(2,minmax(0,1fr))!important}.aurynPositionTrigger{grid-column:1/-1}.aurynThesisFactors{grid-template-columns:repeat(2,minmax(0,1fr))!important}.aurynThesisEvidence{grid-template-columns:1fr!important}}
 @supports (content-visibility:auto){.aurynStockEvidenceSurface,.aurynCapitalPriorities,.aurynHoldingsSection,.aurynPortfolioEvidenceDeep{content-visibility:auto;contain-intrinsic-size:800px}}
+
+
+/* AURYN V9.3.8 — reliability, mobile density, viewport fit */
+@media(min-width:901px){
+  .aurynStockMasthead{padding-top:8px!important;padding-bottom:10px!important;min-height:112px!important}
+  .aurynStockPage{gap:10px!important}
+  .aurynStockResearch{margin-top:0!important}
+  .aurynEvidenceNav{padding-top:6px!important;padding-bottom:6px!important}
+  .aurynStockEvidenceSurface{padding-top:8px!important}
+  .v936Overview{gap:10px!important}
+  .v936HeroGrid{height:min(342px,calc(100vh - 485px));min-height:300px!important}
+  .v936CallHero{min-height:0!important;height:100%;padding:24px 28px 20px!important}
+  .v936CallHero h2{font-size:clamp(54px,4.5vw,72px)!important;margin:12px 0 12px!important}
+  .v936CallHero>p{font-size:15px!important;line-height:1.45!important}
+  .v936ActionRow{margin-top:13px!important}
+  .v936HeroMeta{padding-top:12px!important;margin-top:auto!important}
+  .v936ChartCard{height:100%;padding:12px!important}
+  .v936ChartHead{padding:2px 4px 7px!important}
+  .v936ChartCard .chartCanvas{min-height:0!important;height:calc(100% - 42px)!important}
+  .v936PulseGrid article{padding:10px 12px!important}
+  .v936PulseGrid b{font-size:16px!important}
+}
+.v936ScenarioValues{align-items:stretch!important}
+.v936ScenarioValues>span{grid-template-columns:38px minmax(0,1fr)!important;grid-template-rows:auto auto auto auto!important;align-content:start!important;padding-right:10px!important}
+.v936ScenarioValues b{font-size:clamp(19px,1.55vw,24px)!important;white-space:nowrap!important}
+.v936ScenarioValues strong,.v936ScenarioValues small{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.25!important}
+
+/* Dense professional holdings: all facts stay on one desktop row */
+@media(min-width:901px){
+ .aurynPositionRow{grid-template-columns:minmax(205px,.95fr) minmax(640px,3.1fr) minmax(145px,.7fr) minmax(155px,.8fr) auto!important;gap:14px!important;padding:12px 8px!important;align-items:center!important}
+ .aurynPositionFacts{grid-template-columns:repeat(7,minmax(70px,1fr))!important;gap:12px!important}
+ .aurynPositionName b{font-size:14px!important}.aurynPositionName span{font-size:9px!important;margin-top:2px!important}
+ .aurynPositionFacts small,.aurynPositionCall small{font-size:7px!important}.aurynPositionFacts b,.aurynPositionCall b{font-size:12px!important;margin-top:3px!important}
+ .aurynPositionActions button{width:30px!important;height:30px!important}
+ .aurynPositionTrigger{min-width:0!important}.aurynPositionTrigger b{font-size:9px!important}
+}
+
+/* Mobile: compact app chrome, identity, call, tabs and evidence */
+@media(max-width:760px){
+ body{padding-top:env(safe-area-inset-top)!important}
+ .aurynHeader{height:52px!important;min-height:52px!important;padding:0 16px!important}
+ .aurynHeader .aurynWord{font-size:18px!important}
+ .aurynMobileSearch{padding:7px 12px!important}
+ .aurynSearch form{height:42px!important;border-radius:15px!important}
+ .aurynAppMain{padding-top:8px!important}
+ .aurynStockMasthead{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:8px 12px!important;padding:4px 0 10px!important}
+ .aurynStockIdentityWrap{gap:9px!important;min-width:0!important}
+ .aurynSecurityLogo{width:48px!important;height:48px!important;flex-basis:48px!important;border-radius:13px!important}
+ .aurynSecurityLogo img{width:30px!important;height:30px!important}
+ .aurynStockIdentity h1{font-size:30px!important;line-height:1!important}
+ .aurynStockIdentity>p{font-size:8px!important;max-width:160px!important}
+ .aurynStockIdentity>small{font-size:10px!important}
+ .aurynStockMarket{min-width:0!important;text-align:left!important}
+ .aurynStockMarket>div>b{font-size:27px!important}
+ .aurynStockMarket>p{font-size:8px!important;line-height:1.35!important;-webkit-line-clamp:2!important}
+ .aurynSecurityFacts{grid-column:1/-1!important;padding-top:6px!important;margin-top:2px!important}
+ .aurynSecurityFacts>span{padding:4px 7px!important}.aurynSecurityFacts small{font-size:7px!important}.aurynSecurityFacts b{font-size:10px!important}
+ .aurynEvidenceNav{position:sticky!important;top:52px!important;display:flex!important;gap:18px!important;min-height:42px!important;padding:0 12px!important;scroll-snap-type:x proximity!important}
+ .aurynEvidenceNav button{flex:0 0 auto!important;min-height:42px!important;padding:7px 1px!important;font-size:11px!important;white-space:nowrap!important;scroll-snap-align:center!important}
+ .v936Overview{padding-top:4px!important;gap:10px!important}
+ .v936CallHero{padding:18px 16px 14px!important;border-radius:17px!important}
+ .v936CallHero h2{font-size:43px!important;margin:8px 0 8px!important}
+ .v936CallHero>p{font-size:12px!important;line-height:1.42!important;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+ .v936ActionRow{margin-top:11px!important}.v936ActionRow small{font-size:7px!important}.v936ActionRow b{font-size:10px!important;margin-top:4px!important}
+ .v936HeroMeta{display:none!important}
+ .v936ChartCard{padding:8px!important}.v936ChartCard .chartCanvas{min-height:220px!important;height:220px!important}
+ .v936PulseGrid article{flex-basis:132px!important;padding:10px 11px!important}.v936PulseGrid b{font-size:16px!important}
+ .v937EvidenceGrid .v936Metric{min-height:76px!important;padding:9px!important}.v937EvidenceGrid .v936MetricIcon{width:28px!important;height:28px!important;flex-basis:28px!important}
+ .v936Metric{min-height:78px!important}
+ .v936ScenarioValues>span,.v936ScenarioValues>span+span{grid-template-columns:32px minmax(0,1fr)!important;padding:8px 0!important}
+ .v936AnimalMark{width:28px!important;height:28px!important}.v936AnimalMark svg{width:27px!important;height:23px!important}
+ .v936ScenarioValues b{font-size:20px!important}
+ .aurynProgressiveResearch{padding:18px 16px!important;min-height:0!important;border-radius:16px!important}
+ .aurynProgressiveResearch h2{font-size:21px!important;line-height:1.2!important;margin:8px 0!important}
+ .aurynProgressiveResearch p{font-size:11px!important;line-height:1.45!important;margin-bottom:0!important}
+ .v12Technical article,.v26Technical article{min-height:0!important;height:auto!important}
+ .v12Technical,.v26Technical{gap:8px!important}
+ .aurynPositionRow{padding:10px 2px!important}
+ .aurynPositionFacts{grid-template-columns:repeat(3,minmax(0,1fr))!important;padding-left:0!important;gap:7px!important}
+ .aurynPositionFacts span:nth-child(n+7){display:none!important}
+ .aurynPositionActions{grid-column:2!important;grid-row:1!important;align-self:start!important}
+ .aurynPositionCall{grid-column:1!important;grid-row:3!important;text-align:left!important}
+ .aurynPositionTrigger{grid-column:1/-1!important;grid-row:4!important}
+}
+@media(max-width:420px){
+ .aurynStockMasthead{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)!important}
+ .aurynStockIdentity h1{font-size:28px!important}
+ .aurynStockMarket>div>b{font-size:25px!important}
+ .aurynPositionFacts{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}

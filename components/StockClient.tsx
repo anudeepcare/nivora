@@ -147,7 +147,7 @@ export default function StockClient({symbol}:{symbol:string}){
   useEffect(()=>{
     let active=true;let timer:any;
     const loadCanonical=()=>fetch(`/api/canonical/${encodeURIComponent(symbol)}`,{cache:"no-store"}).then(async r=>{const x=await r.json();if(!r.ok||!active)return;setCanonicalV935(x);if(x?.market)setLiveQuote({...x.market,price:x.market.displayPrice,changePct:null,providerTimestamp:x.market.decisionPriceAsOf??x.market.asOf})}).catch(()=>{});
-    loadCanonical();timer=setInterval(()=>{if(document.visibilityState==="visible")loadCanonical()},20000);
+    loadCanonical();timer=setInterval(()=>{if(document.visibilityState==="visible")loadCanonical()},30000);
     return()=>{active=false;clearInterval(timer)};
   },[symbol]);
 
@@ -227,12 +227,20 @@ export default function StockClient({symbol}:{symbol:string}){
       if(showError&&live&&!stockWarmCache.get(symbol)?.d)setErr(lastError?.name==="AbortError"?"Live history is temporarily slow. AURYN kept the verified price active; retry research when ready.":lastError?.message||"Analysis is temporarily unavailable.");
     };
 
-    const loadEvidence=()=>{
-      Promise.allSettled([
-        fetchJson(`/api/company/${encodeURIComponent(symbol)}`).then(x=>{if(live){setCompany(x);mergeEvidenceWarm(symbol,{company:x})}}),
-        fetchJson(`/api/context/${encodeURIComponent(symbol)}`).then(x=>{if(live){setContext(x);mergeEvidenceWarm(symbol,{context:x})}}),
-        fetchJson(`/api/institutional/${encodeURIComponent(symbol)}`).then(x=>{if(live){setInstitutional(x);mergeEvidenceWarm(symbol,{institutional:x})}})
-      ]);
+    const loadEvidence=async()=>{
+      // V9.3.8: intentionally stagger non-critical provider-backed evidence.
+      // The first screen already has canonical price/decision data; bursting company,
+      // context and institutional requests together can exceed upstream minute limits.
+      const jobs=[
+        ()=>fetchJson(`/api/company/${encodeURIComponent(symbol)}`).then(x=>{if(live){setCompany(x);mergeEvidenceWarm(symbol,{company:x})}}),
+        ()=>fetchJson(`/api/context/${encodeURIComponent(symbol)}`).then(x=>{if(live){setContext(x);mergeEvidenceWarm(symbol,{context:x})}}),
+        ()=>fetchJson(`/api/institutional/${encodeURIComponent(symbol)}`).then(x=>{if(live){setInstitutional(x);mergeEvidenceWarm(symbol,{institutional:x})}})
+      ];
+      for(const job of jobs){
+        if(!live)return;
+        try{await job()}catch{}
+        await new Promise(r=>setTimeout(r,220));
+      }
     };
 
     if(!hasFreshWarm)loadCore(!hasUsableWarm);
@@ -240,7 +248,7 @@ export default function StockClient({symbol}:{symbol:string}){
     const cancelEvidence=!evidenceFresh?scheduleNonCritical(()=>loadEvidence()):()=>{};
 
     const priceTimer=setInterval(()=>{if(document.visibilityState==="visible")loadCore(false)},900000);
-    const newsTimer=setInterval(()=>{if(document.visibilityState==="visible")fetchJson(`/api/context/${encodeURIComponent(symbol)}`).then(x=>{if(live){setContext(x);mergeEvidenceWarm(symbol,{context:x})}}).catch(()=>{})},120000);
+    const newsTimer=setInterval(()=>{if(document.visibilityState==="visible")fetchJson(`/api/context/${encodeURIComponent(symbol)}`).then(x=>{if(live){setContext(x);mergeEvidenceWarm(symbol,{context:x})}}).catch(()=>{})},300000);
     const onFocus=()=>{
       const last=stockWarmCache.get(symbol)?.ts||0;
       if(Date.now()-last>CACHE_MAX_AGE)loadCore(false);
