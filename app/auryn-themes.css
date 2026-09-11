@@ -80,3 +80,16 @@ html,body,.aurynAppShell,.aurynAppMain,.aurynMobileSearch,.aurynStockPage,.auryn
  .aurynSearchCompany{font-size:13px!important}
  .aurynSearchMeta{font-size:10px!important}
 }
+
+
+/* V9.5.3 — mobile search overlay containment */
+.aurynSearchResults{z-index:1000!important;overflow:auto!important;overscroll-behavior:contain!important}
+.aurynSearchResults>button>.aurynSearchResultText{display:grid!important}
+.aurynSearchResults>button>.aurynSearchOpen{display:inline-flex!important}
+@media(max-width:760px){
+ .aurynResearchHero .aurynSearchResults{max-height:min(232px,28vh)!important;padding:5px!important;border-radius:12px!important}
+ .aurynSearchResults>button{min-height:58px!important;height:58px!important;padding:8px 11px!important;overflow:hidden!important}
+ .aurynSearchResults>button>.aurynSearchResultText{grid-template-columns:auto minmax(0,1fr)!important;grid-template-areas:"ticker company" "meta meta"!important;align-content:center!important}
+ .aurynSearchResults>button>.aurynSearchOpen{margin-left:auto!important;flex:0 0 auto!important}
+ .aurynSearchCompany,.aurynSearchMeta{overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+}

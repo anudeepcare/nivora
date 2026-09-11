@@ -10,7 +10,7 @@ test("fast quote lane exists and is explicitly research-only",()=>{
   const src=read("lib/auryn/fast-quote.ts");
   assert.match(src,/researchOnly:true/);
   assert.match(src,/executionVerified:false/);
-  assert.match(src,/api\.twelvedata\.com\/price/);
+  assert.match(src,/api\.twelvedata\.com\/quote/);
 });
 
 test("server quote route keeps provider key server-side and responds quickly",()=>{

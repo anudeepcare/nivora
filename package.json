@@ -103,7 +103,9 @@
     "test:v951": "node --test tests/auryn-v951-theme-system.test.mjs tests/auryn-v950-centered-ios-tabbar.test.mjs tests/auryn-v947-final-mobile-ux.test.mjs",
     "gate:v951": "npm run test:v951 && npm run test:v942 && npm run test:v936",
     "test:v952": "node --test tests/auryn-v952-search-readability.test.mjs tests/auryn-v951-theme-system.test.mjs tests/auryn-v950-centered-ios-tabbar.test.mjs",
-    "gate:v952": "npm run test:v952 && npm run test:v942 && npm run test:v936"
+    "gate:v952": "npm run test:v952 && npm run test:v942 && npm run test:v936",
+    "test:v953": "node --test tests/auryn-v953-afterhours-market-truth-search.test.mjs tests/auryn-v952-search-readability.test.mjs tests/auryn-v939-fast-market-data.test.mjs tests/auryn-v950-centered-ios-tabbar.test.mjs",
+    "gate:v953": "npm run test:v953 && npm run test:v942 && npm run test:v936"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

@@ -379,7 +379,9 @@ export default function StockClient({symbol}:{symbol:string}){
   const priceSensitiveAllowed=Boolean(marketTruth?.priceSensitiveAllowed&&canonicalDecisionPrice!=null);
   const fastQuotePrice=useMemo(()=>{const px=Number(fastQuote?.price);return Number.isFinite(px)&&px>0?px:null},[fastQuote]);
   const fastQuoteAgeMs=fastQuote?.retrievedAt?Date.now()-new Date(fastQuote.retrievedAt).getTime():Number.POSITIVE_INFINITY;
-  const fastQuoteFresh=fastQuotePrice!=null&&fastQuoteAgeMs<30000;
+  const fastQuoteProviderAgeMs=fastQuote?.providerTimestamp?Date.now()-new Date(fastQuote.providerTimestamp).getTime():Number.POSITIVE_INFINITY;
+  const fastQuoteProviderFresh=Number.isFinite(fastQuoteProviderAgeMs)&&fastQuoteProviderAgeMs>=0&&fastQuoteProviderAgeMs<15*60*1000&&fastQuote?.freshness!=="STALE";
+  const fastQuoteFresh=fastQuotePrice!=null&&fastQuoteAgeMs<30000&&fastQuoteProviderFresh;
   const researchDisplayPrice=fastQuoteFresh?fastQuotePrice:canonicalDecisionPrice;
   const researchDisplayChangePct=fastQuoteFresh&&Number.isFinite(Number(fastQuote?.changePct))?Number(fastQuote.changePct):priceSensitiveAllowed&&Number.isFinite(Number(liveQuote?.changePct))?Number(liveQuote.changePct):null;
   const marketIntelligenceView=useMemo(()=>{
