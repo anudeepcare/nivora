@@ -511,3 +511,20 @@ a{color:inherit;text-decoration:none}button,input,select{font:inherit}button{cur
  .aurynPortfolioIntro h1{font-size:31px!important}
  .aurynPositionFacts{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
+
+@media(max-width:760px){
+ .aurynPortfolioPage .aurynPortfolioIntro{width:100%!important;max-width:100%!important;grid-template-columns:1fr!important;align-items:start!important;overflow:hidden!important}
+ .aurynPortfolioPage .aurynPortfolioIntro>div{min-width:0!important;width:100%!important}
+ .aurynPortfolioPage .aurynPortfolioIntro h1{max-width:100%!important;width:100%!important;font-size:34px!important;line-height:.98!important;overflow-wrap:anywhere!important;word-break:normal!important}
+ .aurynPortfolioPage .aurynPortfolioIntro p{max-width:100%!important}
+ .aurynPortfolioPage .aurynMobileAddInvestment{justify-self:start!important;max-width:none!important;width:auto!important}
+ .aurynPortfolioPage .aurynPortfolioNav{width:100%!important;max-width:100%!important}
+ .aurynPortfolioPage .aurynPortfolioHero,.aurynPortfolioPage .aurynPortfolioPulse{max-width:100%!important;overflow:hidden!important}
+}
+
+@media(max-width:760px){
+ .aurynPortfolioIntro{display:grid!important;grid-template-columns:1fr!important;gap:12px!important;align-items:start!important;padding-top:8px!important}
+ .aurynPortfolioIntro h1{font-size:32px!important;line-height:1!important;max-width:100%!important;overflow-wrap:anywhere!important}
+ .aurynPortfolioIntro p{max-width:100%!important}
+ .aurynBottomNav{padding-bottom:calc(8px + env(safe-area-inset-bottom))!important;min-height:calc(var(--mobile-nav-height) + env(safe-area-inset-bottom))!important}
+}

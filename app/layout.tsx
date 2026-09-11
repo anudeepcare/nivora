@@ -2,6 +2,7 @@ import "./globals.css";
 import "./auryn-tokens.css";
 import "./auryn-product.css";
 import "./auryn-premium.css";
+import "./auryn-mobile.css";
 import type {Metadata,Viewport} from "next";
 
 const description="AURYN turns market evidence into clear, explainable investment decisions and portfolio intelligence.";

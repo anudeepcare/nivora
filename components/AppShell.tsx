@@ -24,6 +24,7 @@ export default function AppShell({children}:{children:React.ReactNode}){
   const close=(e:MouseEvent)=>{if(menuRef.current&&!menuRef.current.contains(e.target as Node))setOpen(false)};
   document.addEventListener("mousedown",close);return()=>document.removeEventListener("mousedown",close);
  },[]);
+ useEffect(()=>{setOpen(false)},[path]);
  useEffect(()=>{
   if(path!=="/analyze"){setPrimarySearchVisible(false);return}
   let observer:IntersectionObserver|null=null;const timer=window.setTimeout(()=>{const el=document.querySelector(".aurynResearchHero .aurynSearch.large");if(!el){setPrimarySearchVisible(false);return}observer=new IntersectionObserver(([entry])=>setPrimarySearchVisible(entry.isIntersecting),{threshold:.35});observer.observe(el)},50);

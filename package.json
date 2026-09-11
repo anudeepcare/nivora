@@ -83,7 +83,11 @@
     "test:v941": "node --test tests/auryn-v941-visual-hierarchy.test.mjs && npm run test:v940",
     "gate:v941": "npm run test:v941 && npm run test:v936",
     "test:v942": "node --test tests/auryn-v942-mobile-technicals-portfolio.test.mjs && npm run test:v941",
-    "gate:v942": "npm run test:v942 && npm run test:v936"
+    "gate:v942": "npm run test:v942 && npm run test:v936",
+    "test:v944": "node --test tests/auryn-v943-pwa-mobile-layout.test.mjs tests/auryn-v944-mobile-first-app.test.mjs && npm run test:v942",
+    "gate:v944": "npm run test:v944 && npm run test:v936",
+    "test:v943": "node --test tests/auryn-v943-mobile-system.test.mjs && npm run test:v942",
+    "gate:v943": "npm run test:v943 && npm run test:v936"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

@@ -1,0 +1,68 @@
+/* AURYN V9.4.3 — authoritative mobile/PWA layer.
+   Loaded last. This file owns mobile geometry so legacy responsive rules
+   cannot independently guess safe-area/header/search/nav offsets. */
+@media(max-width:760px){
+ html,body{width:100%;max-width:100%;min-height:100%;overflow-x:hidden!important}
+ body{min-height:100dvh;background:#f7f5f0}
+ *{box-sizing:border-box}
+ .aurynHeader{position:sticky!important;top:0!important;z-index:300!important;height:calc(58px + env(safe-area-inset-top))!important;min-height:calc(58px + env(safe-area-inset-top))!important;padding-top:env(safe-area-inset-top)!important;padding-left:16px!important;padding-right:16px!important;padding-bottom:0!important;background:#15130f!important}
+ .aurynHeaderRight{min-width:0}.aurynQuickSearch{display:none!important}
+ .aurynMobileSearch{display:block!important;position:relative!important;top:auto!important;z-index:80!important;margin:0!important;padding:10px 12px!important;background:#f7f5f0!important}
+ .aurynMobileSearch .aurynSearch,.aurynMobileSearch form{width:100%!important;max-width:100%!important}
+ .aurynAppMain{width:100%!important;max-width:100%!important;min-height:0!important;padding:10px 12px!important;padding-bottom:calc(82px + env(safe-area-inset-bottom))!important;overflow-x:hidden!important}
+ .aurynBottomNav{position:fixed!important;left:0!important;right:0!important;bottom:0!important;z-index:250!important;min-height:64px!important;padding:7px!important;padding-bottom:calc(8px + env(safe-area-inset-bottom))!important;background:rgba(21,19,15,.98)!important}
+ .aurynAccountMenu{position:fixed!important;right:12px!important;left:auto!important;top:calc(62px + env(safe-area-inset-top))!important;width:260px!important;max-width:calc(100vw - 24px)!important;z-index:500!important}
+
+ /* Public/Auth shell: never inherit authenticated app geometry */
+ .aurynAuthPage{width:100%!important;min-height:100dvh!important;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)!important;overflow-x:hidden!important;background:#f7f5f0!important}
+ .aurynAuthShell{display:block!important;width:100%!important;max-width:none!important;min-height:100dvh!important;border:0!important;border-radius:0!important;overflow-x:hidden!important}
+ .aurynAuthStory{padding:24px 20px 18px!important;min-height:0!important}
+ .aurynAuthPanel{width:100%!important;max-width:520px!important;margin:0 auto!important;padding:28px 20px 36px!important}
+ .aurynAuthPanel h1{font-size:40px!important;line-height:1!important}.aurynForm,.aurynField,.aurynField input{width:100%!important;max-width:100%!important}
+
+ /* Stock shell */
+ .aurynStockPage{width:100%!important;max-width:100%!important;padding:0!important;overflow-x:hidden!important}
+ .aurynStockMasthead{display:grid!important;grid-template-areas:"identity market" "facts facts"!important;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr)!important;gap:10px 12px!important;width:100%!important;max-width:100%!important;min-height:0!important;margin:0!important;padding:8px 0 12px!important;overflow:visible!important}
+ .aurynStockIdentityWrap{grid-area:identity!important;display:flex!important;visibility:visible!important;opacity:1!important;min-width:0!important;gap:9px!important;align-items:flex-start!important}
+ .aurynStockIdentity{display:block!important;visibility:visible!important;min-width:0!important}.aurynStockIdentity>div{display:flex!important;flex-wrap:wrap!important;gap:6px!important}.aurynStockIdentity h1{display:block!important;margin:0!important;font-size:30px!important;line-height:1!important}.aurynStockIdentity>small{display:block!important;font-size:9px!important;line-height:1.25!important;margin-top:3px!important}.aurynStockIdentity>p{font-size:7px!important;line-height:1.25!important}
+ .aurynSecurityLogo{display:flex!important;width:46px!important;height:46px!important;flex:0 0 46px!important}
+ .aurynOwnChip{font-size:8px!important;padding:5px 8px!important;white-space:nowrap!important}
+ .aurynStockMarket{grid-area:market!important;display:block!important;visibility:visible!important;opacity:1!important;min-width:0!important;text-align:right!important}
+ .aurynStockMarket>div{display:flex!important;justify-content:flex-end!important;flex-wrap:wrap!important;gap:5px!important}.aurynStockMarket>div>b{display:block!important;font-size:24px!important;line-height:1!important}.aurynStockMarket>div>span{font-size:10px!important}
+ .aurynStockMarket>small{display:block!important;font-size:7px!important;line-height:1.2!important;margin-top:4px!important}.aurynStockMarket>p{display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important;font-size:7px!important;line-height:1.25!important;margin:3px 0 0!important}
+ .aurynSecurityFacts{grid-area:facts!important;width:100%!important;max-width:100%!important;overflow-x:auto!important}
+ .aurynEvidenceNav{position:sticky!important;top:calc(58px + env(safe-area-inset-top))!important;z-index:70!important;width:calc(100% + 24px)!important;max-width:none!important;margin-left:-12px!important;margin-right:-12px!important;overflow-x:auto!important;white-space:nowrap!important}
+ .v936Overview,.aurynStockResearch{width:100%!important;max-width:100%!important;margin-left:0!important;margin-right:0!important}
+
+ /* Mobile Technicals are rows, not equal-height card grids */
+ .v34IndicatorGrid{display:grid!important;grid-template-columns:1fr!important;gap:0!important;width:100%!important;padding:6px 10px!important;border-radius:14px!important;overflow:hidden!important}
+ .v34IndicatorGrid>div{display:grid!important;grid-template-columns:minmax(96px,.72fr) minmax(0,1.28fr)!important;grid-template-rows:auto auto!important;column-gap:12px!important;row-gap:3px!important;align-items:center!important;min-height:0!important;height:auto!important;padding:11px 2px!important;border:0!important;border-bottom:1px solid #e9e3d9!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+ .v34IndicatorGrid>div:last-child{border-bottom:0!important}.v34IndicatorGrid .metricLabel{grid-column:1!important;grid-row:1!important}.v34IndicatorGrid>div>b{grid-column:1!important;grid-row:2!important;font-size:16px!important}.v34IndicatorGrid>div>span{grid-column:2!important;grid-row:2!important;font-size:8.5px!important;line-height:1.3!important;margin:0!important}
+ .v942RsiScale,.v942VolumeScale,.v942BollingerScale,.v942MacdHistogram{grid-column:2!important;grid-row:1!important;margin:0!important}
+ .v34TechnicalScoreGrid{grid-template-columns:1fr 1fr!important}
+
+ /* All authenticated surfaces obey viewport */
+ .aurynPortfolioPage{width:100%!important;max-width:100%!important;overflow-x:hidden!important;padding-left:0!important;padding-right:0!important}
+ .aurynAlertsPage{width:100%!important;max-width:100%!important;overflow-x:hidden!important}
+ .aurynTradingLab{width:100%!important;max-width:100%!important;overflow-x:hidden!important}
+ .simplePage{width:100%!important;max-width:100%!important;overflow-x:hidden!important}
+ .aurynPortfolioPage .aurynPortfolioIntro{display:grid!important;grid-template-columns:1fr!important;width:100%!important;max-width:100%!important;overflow:hidden!important;gap:10px!important}
+ .aurynPortfolioPage .aurynPortfolioIntro>div{min-width:0!important;width:100%!important}.aurynPortfolioPage .aurynPortfolioIntro h1{width:100%!important;max-width:100%!important;font-size:33px!important;line-height:1!important;overflow-wrap:anywhere!important}.aurynPortfolioPage .aurynPortfolioIntro p{max-width:100%!important}
+ .aurynPortfolioNav{display:flex!important;width:100%!important;max-width:100%!important;overflow-x:auto!important;white-space:nowrap!important;gap:20px!important;scrollbar-width:none!important}.aurynPortfolioNav a{flex:0 0 auto!important}
+ .aurynMobileAddInvestment{justify-self:start!important;width:auto!important;max-width:none!important}
+ .aurynPositionRow{width:100%!important;max-width:100%!important;overflow:visible!important}.aurynPositionFacts{grid-template-columns:1fr 1fr!important}
+ .aurynAllocationLayout,.aurynPerformanceGrid,.aurynPulseHero,.aurynSection{width:100%!important;max-width:100%!important;min-width:0!important}
+ .aurynInlineForm{display:grid!important;grid-template-columns:1fr!important;width:100%!important}.aurynInlineForm input,.aurynInlineForm button{width:100%!important;max-width:100%!important}
+ .profileCard{width:100%!important;max-width:100%!important}.profileCard input{width:100%!important;max-width:100%!important}
+}
+@media(max-width:430px){
+ .aurynAppMain{padding-left:12px!important;padding-right:12px!important}
+ .aurynStockMasthead{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)!important}
+ .aurynStockMarket>div>b{font-size:23px!important}
+}
+@media(max-width:393px){
+ .aurynStockIdentity h1{font-size:28px!important}.aurynSecurityLogo{width:42px!important;height:42px!important;flex-basis:42px!important}.aurynStockMarket>div>b{font-size:22px!important}
+}
+@media(max-width:390px){
+ .aurynPortfolioPage .aurynPortfolioIntro h1{font-size:31px!important}.v34IndicatorGrid>div{grid-template-columns:minmax(92px,.7fr) minmax(0,1.3fr)!important}
+}
