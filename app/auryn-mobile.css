@@ -47,22 +47,23 @@
  .aurynMobileSearch svg{width:17px!important;height:17px!important}
  .aurynAppMain{
   width:100%!important;max-width:100%!important;min-height:0!important;margin:0!important;
-  padding:5px var(--m-gutter) 76px!important;
-  padding-bottom:76px!important;
+  padding:5px var(--m-gutter) 68px!important;
+  padding-bottom:68px!important;
   overflow-x:clip!important
  }
  .aurynBottomNav{
-  position:fixed!important;left:10px!important;right:10px!important;bottom:8px!important;z-index:700!important;
+  position:fixed!important;left:8px!important;right:8px!important;bottom:4px!important;z-index:700!important;
   display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
-  min-height:56px!important;
-  padding:4px 6px calc(6px + env(safe-area-inset-bottom))!important;
-  padding-bottom:calc(6px + env(safe-area-inset-bottom))!important;
+  min-height:52px!important;
+  padding:4px 5px calc(4px + env(safe-area-inset-bottom))!important;
+  padding-bottom:calc(4px + env(safe-area-inset-bottom))!important;
   border:1px solid rgba(255,255,255,.08)!important;border-radius:18px!important;
-  background:rgba(21,19,15,.86)!important;
+  background:rgba(21,19,15,.78)!important;
   -webkit-backdrop-filter:blur(22px) saturate(145%)!important;backdrop-filter:blur(22px) saturate(145%)!important;
   box-shadow:0 12px 32px rgba(0,0,0,.24)!important
  }
- .aurynBottomNav a{min-width:0!important;min-height:48px!important;border-radius:13px!important;font-size:9px!important;gap:2px!important}
+ .aurynBottomNav a{min-width:0!important;min-height:44px!important;border-radius:12px!important;font-size:8.5px!important;gap:1px!important}
+ .aurynBottomNav a.active{background:rgba(199,153,83,.12)!important}
  .aurynBottomNav a svg{width:20px!important;height:20px!important}
 
  /* ---------- route bounds ---------- */
@@ -276,14 +277,16 @@
   min-height:calc(50px + env(safe-area-inset-top))!important;
   padding-top:env(safe-area-inset-top)!important
  }
- .aurynAppMain{padding-bottom:76px!important}
+ .aurynAppMain{padding-bottom:68px!important}
  .aurynBottomNav{
-  bottom:8px!important;
-  padding-bottom:calc(6px + env(safe-area-inset-bottom))!important
+  left:8px!important;right:8px!important;bottom:4px!important;min-height:52px!important;
+  padding:4px 5px calc(4px + env(safe-area-inset-bottom))!important;
+  padding-bottom:calc(4px + env(safe-area-inset-bottom))!important;
+  background:rgba(21,19,15,.78)!important
  }
 }
 @supports(padding:max(0px)){
  @media(max-width:760px){
-  .aurynBottomNav{left:max(10px,env(safe-area-inset-left))!important;right:max(10px,env(safe-area-inset-right))!important}
+  .aurynBottomNav{left:max(8px,env(safe-area-inset-left))!important;right:max(8px,env(safe-area-inset-right))!important}
  }
 }

@@ -23,22 +23,22 @@ test("header paints under iOS status area while toolbar content starts below it"
 
 test("content reserve does not add bottom safe area a second time",()=>{
   const block=css.match(/\.aurynAppMain\{([^}]*)\}/)?.[1]||"";
-  assert.match(block,/padding-bottom:76px/);
+  assert.match(block,/padding-bottom:68px/);
   assert.doesNotMatch(block,/safe-area-inset-bottom/);
 });
 
 test("bottom nav owns the bottom safe area exactly once",()=>{
   const block=css.match(/\.aurynBottomNav\{([^}]*)\}/)?.[1]||"";
-  assert.match(block,/bottom:8px/);
-  assert.match(block,/padding-bottom:calc\(6px \+ env\(safe-area-inset-bottom\)\)/);
+  assert.match(block,/bottom:4px/);
+  assert.match(block,/padding-bottom:calc\(4px \+ env\(safe-area-inset-bottom\)\)/);
 });
 
 test("bottom nav uses glass rather than a full-height black slab",()=>{
   const block=css.match(/\.aurynBottomNav\{([^}]*)\}/)?.[1]||"";
   assert.match(block,/backdrop-filter:blur\(22px\)/);
   assert.match(block,/border-radius:18px/);
-  assert.match(block,/left:10px/);
-  assert.match(block,/right:10px/);
+  assert.match(block,/left:8px/);
+  assert.match(block,/right:8px/);
 });
 
 test("standalone mode has explicit top and bottom chrome ownership",()=>{
