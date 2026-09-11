@@ -11,7 +11,7 @@ export default function SearchBox({large=false,compact=false}:{large?:boolean;co
  const localMatches=useMemo(()=>{const x=q.trim().toLowerCase();if(!x)return[];return local.filter(i=>i.symbol.toLowerCase().includes(x)||i.name.toLowerCase().includes(x)).slice(0,5)},[q]);
  const items=useMemo(()=>{const seen=new Set<string>();return[...localMatches,...remote].filter(x=>!seen.has(x.symbol)&&seen.add(x.symbol)).slice(0,7)},[localMatches,remote]);
  useEffect(()=>{if(q.trim().length<2){setRemote([]);return}const c=new AbortController();const t=setTimeout(async()=>{try{const x=await fetch(`/api/search?q=${encodeURIComponent(q)}`,{signal:c.signal}).then(z=>z.json());setRemote(x.results||[]);setOpen(true)}catch{}},140);return()=>{clearTimeout(t);c.abort()}},[q]);
- useEffect(()=>{items.slice(0,3).forEach(x=>r.prefetch(`/stock/${encodeURIComponent(x.symbol)}`))},[items,r]);
+ useEffect(()=>{items.slice(0,1).forEach(x=>{r.prefetch(`/stock/${encodeURIComponent(x.symbol)}`);fetch(`/api/quote/${encodeURIComponent(x.symbol)}`,{cache:"force-cache"}).catch(()=>{})})},[items,r]);
  function choose(x:R){setOpen(false);setBusy(true);r.push(`/stock/${encodeURIComponent(x.symbol)}`)}
  function submit(e:React.FormEvent){e.preventDefault();if(busy)return;if(items[0])choose(items[0]);else if(q.trim()){setBusy(true);r.push(`/stock/${encodeURIComponent(q.trim().toUpperCase())}`)}}
  return <div className={`aurynSearch ${large?"large":""} ${compact?"compact":""}`}>

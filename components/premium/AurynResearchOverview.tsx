@@ -38,7 +38,7 @@ function Pulse({label,value,sub,toneName="",help,score}:{label:string;value:stri
 }
 function LadderItem({label,value,sub,toneName=""}:{label:string;value:string;sub?:string;toneName?:string}){return <span className={`v937LadderItem ${toneName}`}><small>{label}</small><b>{value}</b>{sub?<em>{sub}</em>:null}</span>}
 
-export default function AurynResearchOverview({decision,marketTruth,marketIntelligence,scenario,entryQuality,candles,chartLevels}:{decision:InstitutionalDecision;marketTruth:any;marketIntelligence?:any;scenario?:ScenarioMap|null;entryQuality?:number|null;candles:any[];chartLevels:any|null}){
+export default function AurynResearchOverview({decision,marketTruth,displayPrice,displayPriceLive=false,marketIntelligence,scenario,entryQuality,candles,chartLevels}:{decision:InstitutionalDecision;marketTruth:any;displayPrice?:number|null;displayPriceLive?:boolean;marketIntelligence?:any;scenario?:ScenarioMap|null;entryQuality?:number|null;candles:any[];chartLevels:any|null}){
  const map=marketIntelligence?.actionMap??marketIntelligence?.levels??chartLevels??{};
  const daily=marketIntelligence?.confirmed?.["1D"]??null;
  const tf=(key:string)=>marketIntelligence?.confirmed?.[key]?.rating??marketIntelligence?.timeframes?.[key]?.confirmed??null;
@@ -54,10 +54,10 @@ export default function AurynResearchOverview({decision,marketTruth,marketIntell
  const patternLabel=scenario?.setup&&String(scenario.setup)!==String(decision.setupState)?String(scenario.setup):null;
  const pattern=patternLabel?describeSetupState({setup:patternLabel,newMoneyAction:decision.newMoneyAction,confirm,invalidation:risk}):null;
  const lens=buildOpportunityLens({action:decision.newMoneyAction,hardVeto:decision.hardVetoReasons.length>0,scores:{business:n(decision.pillars.business.score),earningsRevisions:n(decision.pillars.earningsRevisions.score),valuation:n(decision.pillars.valuation.score),marketStructure:n(decision.pillars.marketStructure.score),catalystsRegime:n(decision.pillars.catalystsRegime.score),riskAsymmetry:n(decision.pillars.riskAsymmetry.score),entryQuality:n(entryQuality),relativeStrength:relPct==null?null:Math.max(0,Math.min(100,50+relPct*2.2)),participation,rewardRisk:rr1,volatilityRisk:atrPct==null?null:Math.max(0,Math.min(100,atrPct*10))}});
- const currentPrice=n(marketTruth?.decisionPrice??marketTruth?.price??marketTruth?.regularPrice??marketTruth?.officialClose);
+ const currentPrice=n(displayPrice??marketTruth?.decisionPrice??marketTruth?.price??marketTruth?.regularPrice??marketTruth?.officialClose);
  const bullValue=scenarioValue(scenario?.bull),baseValue=scenarioValue(scenario?.base),bearValue=scenarioValue(scenario?.bear);
  const confirmDelta=delta(currentPrice,confirm),t1Delta=delta(currentPrice,t1),riskDelta=delta(currentPrice,risk);
- const marketStatus=marketTruth?.session?`${pretty(marketTruth.session)} · ${marketTruth?.priceState==="OFFICIAL_CLOSE"?"verified close":"verified market truth"}`:"verified market truth";
+ const marketStatus=displayPriceLive?`${pretty(marketTruth?.session||"REGULAR")} · live research price`:marketTruth?.session?`${pretty(marketTruth.session)} · ${marketTruth?.priceState==="OFFICIAL_CLOSE"?"verified close":"verified market truth"}`:"verified market truth";
  const heroReason=decision.newMoneyAction==="START_SMALL"?`Positive evidence supports a partial position${tfSummary?` while confirmed structure reads ${tfSummary}`:""}.`:decision.policyReasons?.[0]||decision.drivers?.[0]||`AURYN is waiting for stronger alignment across evidence, setup and asymmetry.`;
  const freshness=marketTruth?.decisionPriceAsOf||marketTruth?.asOf||marketTruth?.providerTimestamp||null;
  const entryScore=n(entryQuality);

@@ -16,9 +16,11 @@ test("gateway does not fetch Alpaca bars when Twelve already supplied a usable r
   assert.match(gateway,/const regularClose=twelveClose\?\?await alpacaRegularClose/);
 });
 
-test("first render uses canonical reference price independently from deep analyze",()=>{
+test("first render uses a market price independently from deep analyze while canonical decision price stays separate",()=>{
   assert.match(stock,/const durable=canonicalV935\?\.research/);
-  assert.match(stock,/price=\{priceSensitiveAllowed\?canonicalDecisionPrice:null\}/);
+  assert.match(stock,/const researchDisplayPrice=/);
+  assert.match(stock,/const canonicalDecisionPrice=/);
+  assert.match(stock,/price=\{researchDisplayPrice\}/);
 });
 
 test("same URL requests are coalesced and cached",()=>{

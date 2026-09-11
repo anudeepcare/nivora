@@ -151,6 +151,7 @@ export default function StockClient({symbol}:{symbol:string}){
   const[calibration,setCalibration]=useState<any>(null);
   const[modelHealth,setModelHealth]=useState<any>(null);
   const[liveQuote,setLiveQuote]=useState<any>(null);
+  const[fastQuote,setFastQuote]=useState<any>(null);
   const[canonicalV935,setCanonicalV935]=useState<any>(null);
   const[liveMarketContext,setLiveMarketContext]=useState<any>(null);
   const[coreRetry,setCoreRetry]=useState(0);
@@ -158,6 +159,27 @@ export default function StockClient({symbol}:{symbol:string}){
 
   useEffect(()=>{
     try{const saved=localStorage.getItem(`auryn:v931:setup:${symbol}`) as SetupState|null;setPreviousSetupState(saved||null)}catch{setPreviousSetupState(null)}
+  },[symbol]);
+
+  useEffect(()=>{
+    let active=true;
+    const storageKey=`auryn:fastquote:${symbol}`;
+    try{
+      const raw=sessionStorage.getItem(storageKey);
+      if(raw){
+        const cached=JSON.parse(raw);
+        if(cached?.price&&Date.now()-Number(cached.cachedAt||0)<15000)setFastQuote(cached);
+      }
+    }catch{}
+    const load=()=>sharedJson(`/api/quote/${encodeURIComponent(symbol)}`,undefined,2200).then((q:any)=>{
+      if(!active||!q?.price)return;
+      const next={...q,cachedAt:Date.now()};
+      setFastQuote(next);
+      try{sessionStorage.setItem(storageKey,JSON.stringify(next))}catch{}
+    }).catch(()=>{});
+    load();
+    const timer=window.setInterval(()=>{if(document.visibilityState==="visible")load()},5000);
+    return()=>{active=false;window.clearInterval(timer)};
   },[symbol]);
 
   useEffect(()=>{
@@ -355,6 +377,11 @@ export default function StockClient({symbol}:{symbol:string}){
     return Number.isFinite(px)&&px>0?px:null;
   },[marketTruth]);
   const priceSensitiveAllowed=Boolean(marketTruth?.priceSensitiveAllowed&&canonicalDecisionPrice!=null);
+  const fastQuotePrice=useMemo(()=>{const px=Number(fastQuote?.price);return Number.isFinite(px)&&px>0?px:null},[fastQuote]);
+  const fastQuoteAgeMs=fastQuote?.retrievedAt?Date.now()-new Date(fastQuote.retrievedAt).getTime():Number.POSITIVE_INFINITY;
+  const fastQuoteFresh=fastQuotePrice!=null&&fastQuoteAgeMs<30000;
+  const researchDisplayPrice=fastQuoteFresh?fastQuotePrice:canonicalDecisionPrice;
+  const researchDisplayChangePct=fastQuoteFresh&&Number.isFinite(Number(fastQuote?.changePct))?Number(fastQuote.changePct):priceSensitiveAllowed&&Number.isFinite(Number(liveQuote?.changePct))?Number(liveQuote.changePct):null;
   const marketIntelligenceView=useMemo(()=>{
     const base=d?.marketIntelligence;if(!base)return null;if(!liveMarketContext)return base;
     const confirmed={...base.confirmed,...(liveMarketContext.confirmed||{})};
@@ -524,7 +551,7 @@ export default function StockClient({symbol}:{symbol:string}){
     const partialDetail=marketTruth?`${String(marketTruth.reason||"")}${marketTruth.decisionPriceAsOf?` · price as of ${new Date(marketTruth.decisionPriceAsOf).toLocaleString()}`:""}`:"Price verification loads independently from the research engine.";
     const partialChange=Number(liveQuote?.changePct);
     return <div className="aurynStockPage aurynProgressiveStock">
-      <StockSecurityHeader company={symbol} symbol={symbol} price={priceSensitiveAllowed?canonicalDecisionPrice:null} changePct={priceSensitiveAllowed&&Number.isFinite(partialChange)?partialChange:null} status={partialStatus} detail={partialDetail} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
+      <StockSecurityHeader company={symbol} symbol={symbol} price={researchDisplayPrice} changePct={researchDisplayChangePct} status={fastQuoteFresh?"LIVE MARKET PRICE":partialStatus} detail={fastQuoteFresh?`Updated ${new Date(fastQuote.retrievedAt).toLocaleTimeString()} · ${String(fastQuote.provider||"market provider")} · execution verification runs separately.`:partialDetail} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
       {durable?.action?<section className="v935DurableResearch" data-canonical-snapshot={canonicalV935?.snapshotId||""}>
         <div><small>LAST VERIFIED AURYN DECISION</small><h2>{String(durable.action).replaceAll("_"," ")}</h2><p>{durable.state==="STALE_VERIFIED"?"Verified research is preserved while AURYN refreshes the newest completed-bar evidence.":"Verified research is available while deeper evidence refreshes in the background."}</p></div>
         <div className="v935DurableActions"><span>OWNER <b>{durable.ownerAction||"—"}</b></span><span>LONG TERM <b>{durable.longTermAction||"—"}</b></span><span>SETUP <b>{String(durable.setupState||"—").replaceAll("_"," ")}</b></span></div>
@@ -596,7 +623,7 @@ export default function StockClient({symbol}:{symbol:string}){
   // One canonical market price drives every price-sensitive surface. When market truth is blocked,
   // structural research may still use the daily analysis internally, but the UI must not present it as current.
   const currentPx=Number(canonicalDecisionPrice??d.price);
-  const displayChangePct=priceSensitiveAllowed&&Number.isFinite(Number(liveQuote?.changePct))?Number(liveQuote.changePct):Number(d.changePct);
+  const displayChangePct=researchDisplayChangePct;
   const breakoutPx=Number(d.levels.breakout), invalidPx=Number(d.levels.invalidation);
   const upside=Number.isFinite(currentPx)&&currentPx?((breakoutPx/currentPx-1)*100):null;
   const downside=Number.isFinite(currentPx)&&currentPx?((invalidPx/currentPx-1)*100):null;
@@ -752,7 +779,8 @@ export default function StockClient({symbol}:{symbol:string}){
   })();
   const horizonCandles=(d.candles||[]).slice(horizon==="now"?-65:horizon==="swing"?-125:-180);
 
-  const marketStatusLabel=!marketTruth?"Verifying market price"
+  const marketStatusLabel=fastQuoteFresh?"LIVE MARKET PRICE"
+    :!marketTruth?"Verifying market price"
     :marketTruth.priceState==="OFFICIAL_CLOSE"&&marketTruth.session==="AFTER_HOURS"?"After-hours · Verified regular close"
     :marketTruth.priceState==="OFFICIAL_CLOSE"&&marketTruth.session==="PRE_MARKET"?"Pre-market · Verified regular close"
     :marketTruth.priceState==="OFFICIAL_CLOSE"&&marketTruth.session==="OVERNIGHT"?"Overnight · Verified regular close"
@@ -766,9 +794,11 @@ export default function StockClient({symbol}:{symbol:string}){
     :marketTruth.priceState==="LIVE_SINGLE_SOURCE"?"Market open · Verified source"
     :marketTruth.priceState==="UNVERIFIED"?"PRICE UNVERIFIED"
     :"Price unavailable";
-  const marketDetail=marketTruth
-    ?`${String(marketTruth.reason||"")}${(marketTruth.decisionPriceAsOf||marketTruth.asOf)?` · price as of ${new Date(marketTruth.decisionPriceAsOf||marketTruth.asOf).toLocaleString()}`:""}${marketTruth.providerAgreementPct!=null?` · provider gap ${Number(marketTruth.providerAgreementPct).toFixed(2)}%`:""}`
-    :"AURYN is verifying independent market sources before displaying a current price.";
+  const marketDetail=fastQuoteFresh
+    ?`Updated ${new Date(fastQuote.retrievedAt).toLocaleTimeString()} · ${String(fastQuote.provider||"market provider")} · execution verification runs separately.`
+    :marketTruth
+      ?`${String(marketTruth.reason||"")}${(marketTruth.decisionPriceAsOf||marketTruth.asOf)?` · price as of ${new Date(marketTruth.decisionPriceAsOf||marketTruth.asOf).toLocaleString()}`:""}${marketTruth.providerAgreementPct!=null?` · provider gap ${Number(marketTruth.providerAgreementPct).toFixed(2)}%`:""}`
+      :"AURYN is verifying independent market sources before displaying a current price.";
   const yearlyBars=(d?.candles||[]).slice(-252);
   const yearlyHigh=yearlyBars.length?Math.max(...yearlyBars.map((x:any)=>Number(x.high)).filter(Number.isFinite)):null;
   const yearlyLow=yearlyBars.length?Math.min(...yearlyBars.map((x:any)=>Number(x.low)).filter(Number.isFinite)):null;
@@ -789,10 +819,11 @@ export default function StockClient({symbol}:{symbol:string}){
     requestAnimationFrame(()=>window.setTimeout(()=>thesisRef.current?.scrollIntoView({behavior:"smooth",block:"start"}),40));
   };
   return <div className="aurynStockPage">
-    <StockSecurityHeader company={company?.name||d.name||symbol} symbol={symbol} price={priceSensitiveAllowed?canonicalDecisionPrice:null} changePct={priceSensitiveAllowed?displayChangePct:null} status={marketStatusLabel} detail={marketDetail} logoUrl={context?.profile?.logo||null} marketFacts={securityMarketFacts} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
+    <StockSecurityHeader company={company?.name||d.name||symbol} symbol={symbol} price={researchDisplayPrice} changePct={displayChangePct} status={marketStatusLabel} detail={marketDetail} logoUrl={context?.profile?.logo||null} marketFacts={securityMarketFacts} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
     <StockEvidenceNav tab={tab} setTab={handleEvidenceTab} isCrypto={d.assetType==="crypto"}/>
-    {marketTruth&&!priceSensitiveAllowed?<div className="aurynIntegrityAlert aurynMarketTruthAlert" role="alert"><b>PRICE UNVERIFIED</b><span>{marketTruth.reason||"Independent market sources are not sufficiently aligned."} AURYN has disabled entry, confirmation, target, stop and risk/reward output until the canonical price is verified.</span></div>:null}
-    {institutionalDecision?<AurynResearchOverview decision={institutionalDecision} marketTruth={marketTruth} marketIntelligence={marketIntelligenceView??d?.marketIntelligence??null} scenario={v5Analysis?.scenario??null} entryQuality={technicalState.entryQuality} candles={(v5Analysis?.bars||d?.candles||[]).slice(-180)} chartLevels={v5ChartLevels??canonicalValidationLevels}/>:null}
+    {marketTruth&&!priceSensitiveAllowed&&!fastQuoteFresh?<div className="aurynIntegrityAlert aurynMarketTruthAlert" role="alert"><b>PRICE UNVERIFIED</b><span>{marketTruth.reason||"Independent market sources are not sufficiently aligned."} AURYN has disabled entry, confirmation, target, stop and risk/reward output until the canonical price is verified.</span></div>:null}
+    {marketTruth&&!priceSensitiveAllowed&&fastQuoteFresh?<div className="aurynIntegrityNote"><b>Research price live</b><span>Execution-grade verification is still pending; AURYN keeps automated execution blocked without hiding the live research price.</span></div>:null}
+    {institutionalDecision?<AurynResearchOverview decision={institutionalDecision} marketTruth={marketTruth} displayPrice={researchDisplayPrice} displayPriceLive={fastQuoteFresh} marketIntelligence={marketIntelligenceView??d?.marketIntelligence??null} scenario={v5Analysis?.scenario??null} entryQuality={technicalState.entryQuality} candles={(v5Analysis?.bars||d?.candles||[]).slice(-180)} chartLevels={v5ChartLevels??canonicalValidationLevels}/>:null}
     {v5Analysis?<>{canonicalTrustBlocked?<div className="aurynIntegrityAlert aurynTrustBlock" role="alert"><b>CANONICAL TRUST BLOCK</b><span>{v7Analysis?.trust.blockers[0]||"AURYN detected an internal snapshot/plan inconsistency."} Price-sensitive execution levels are suppressed until the canonical chain is aligned.</span></div>:null}</>:<section className="aurynV5Unavailable"><small>AURYN CANONICAL ANALYSIS</small><b>COLLECTING VERIFIED EVIDENCE</b><span>AURYN will not publish a fallback verdict while the canonical snapshot is unavailable.</span></section>}
     <div className="aurynOwnershipNote"><Sparkles size={14}/><span>AURYN separates long-term thesis, owner action and new-money timing.</span></div>
 

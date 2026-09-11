@@ -7,14 +7,18 @@ import {metricDefinitions}from "@/lib/nivora-metrics";
 
 type Pos={left:number;top:number;above:boolean};
 type ScoreGuide={label:string;tone:"bad"|"mid"|"good";detail:string};
-const WIDTH=340,ESTIMATED_HEIGHT=270,GAP=10,MARGIN=14;
+const WIDTH=340,GAP=10,MARGIN=14;
 
-function locate(anchor:DOMRect):Pos{
+function locate(anchor:DOMRect,width:number,height:number):Pos{
  const vw=window.innerWidth,vh=window.innerHeight;
- const left=Math.max(MARGIN,Math.min(anchor.left+anchor.width/2-WIDTH/2,vw-WIDTH-MARGIN));
+ width=Math.min(width||WIDTH,Math.max(180,vw-MARGIN*2));
+ height=Math.min(height||220,Math.max(96,vh-MARGIN*2));
+ const left=Math.max(MARGIN,Math.min(anchor.left+anchor.width/2-width/2,vw-width-MARGIN));
  const roomBelow=vh-anchor.bottom-MARGIN;
- const above=roomBelow<ESTIMATED_HEIGHT&&anchor.top>ESTIMATED_HEIGHT+MARGIN;
- const top=above?Math.max(MARGIN,anchor.top-ESTIMATED_HEIGHT-GAP):Math.min(vh-MARGIN-96,anchor.bottom+GAP);
+ const roomAbove=anchor.top-MARGIN;
+ const above=roomBelow<height+GAP&&roomAbove>roomBelow;
+ let top=above?anchor.top-height-GAP:anchor.bottom+GAP;
+ top=Math.max(MARGIN,Math.min(top,vh-height-MARGIN));
  return{left,top,above};
 }
 function scoreGuide(score:number,inverse=false):ScoreGuide{
@@ -34,11 +38,11 @@ function scoreGuide(score:number,inverse=false):ScoreGuide{
 }
 
 export default function MetricInfo({metric,title,description,score,proof,children}:{metric?:keyof typeof metricDefinitions;title?:string;description?:string;score?:number;proof?:MetricProof;children?:React.ReactNode}){
- const[open,setOpen]=useState(false),[pos,setPos]=useState<Pos|null>(null),ref=useRef<HTMLSpanElement>(null),buttonRef=useRef<HTMLButtonElement>(null),id=useId();
+ const[open,setOpen]=useState(false),[pos,setPos]=useState<Pos|null>(null),ref=useRef<HTMLSpanElement>(null),buttonRef=useRef<HTMLButtonElement>(null),sheetRef=useRef<HTMLDivElement>(null),id=useId();
  const def=metric?metricDefinitions[metric]:null,label=title||def?.title||"Why this matters",body=description||def?.short||"Supporting evidence for this reading.",guide=Number.isFinite(score)?scoreGuide(Number(score),metric==="risk"):null;
- const reposition=()=>{const r=buttonRef.current?.getBoundingClientRect();if(r)setPos(locate(r))};
- useLayoutEffect(()=>{if(open)reposition()},[open]);
+ const reposition=()=>{const anchor=buttonRef.current?.getBoundingClientRect();if(!anchor)return;const sheet=sheetRef.current?.getBoundingClientRect();setPos(locate(anchor,sheet?.width||WIDTH,sheet?.height||220))};
+ useLayoutEffect(()=>{if(!open){setPos(null);return}reposition();const raf=requestAnimationFrame(reposition);return()=>cancelAnimationFrame(raf)},[open,children,body,guide?.label]);
  useEffect(()=>{if(!open)return;const outside=(e:PointerEvent)=>{const target=e.target as Node;if(!ref.current?.contains(target)&&!(document.getElementById(id)?.contains(target)))setOpen(false)},key=(e:KeyboardEvent)=>{if(e.key==="Escape"){setOpen(false);buttonRef.current?.focus()}},move=()=>reposition();document.addEventListener("pointerdown",outside);document.addEventListener("keydown",key);window.addEventListener("resize",move);window.addEventListener("scroll",move,true);return()=>{document.removeEventListener("pointerdown",outside);document.removeEventListener("keydown",key);window.removeEventListener("resize",move);window.removeEventListener("scroll",move,true)}},[open,id]);
- const sheet=open&&pos&&typeof document!=="undefined"?createPortal(<div id={id} className={`v658MetricSheet ${pos.above?"above":"below"}`} role="dialog" aria-modal="false" aria-label={label} style={{position:"fixed",left:pos.left,top:pos.top}}><div className="v658MetricTitle"><b>{label}</b><button type="button" onClick={()=>setOpen(false)} aria-label="Close explanation">×</button></div><p>{body}</p>{guide?<div className={`v658ScoreBand ${guide.tone}`}><span>{Math.round(Number(score))}/100</span><b>{guide.label}</b><small>{guide.detail}</small></div>:null}{def?.range?<div className="v658MetricSection"><strong>Score guide</strong><span>{def.range}</span></div>:null}{def?.uses?<div className="v658MetricSection"><strong>Why it matters</strong><span>{def.uses}</span></div>:null}{proof?.contributors?.length?<div className="v658MetricSection"><strong>Why this score</strong><span>{proof.contributors.slice(0,3).map(x=>`${x.label} ${x.impact>=0?"+":""}${Math.round(x.impact)}`).join(" · ")}</span></div>:null}{children?<div className="v658MetricSection v658MetricCustom">{children}</div>:null}</div>,document.body):null;
+ const sheet=open&&typeof document!=="undefined"?createPortal(<div ref={sheetRef} id={id} className={`v658MetricSheet ${pos?.above?"above":"below"}`} role="dialog" aria-modal="false" aria-label={label} style={{position:"fixed",left:pos?.left??MARGIN,top:pos?.top??MARGIN,visibility:pos?"visible":"hidden"}}><div className="v658MetricTitle"><b>{label}</b><button type="button" onClick={()=>setOpen(false)} aria-label="Close explanation">×</button></div><p>{body}</p>{guide?<div className={`v658ScoreBand ${guide.tone}`}><span>{Math.round(Number(score))}/100</span><b>{guide.label}</b><small>{guide.detail}</small></div>:null}{def?.range?<div className="v658MetricSection"><strong>Score guide</strong><span>{def.range}</span></div>:null}{def?.uses?<div className="v658MetricSection"><strong>Why it matters</strong><span>{def.uses}</span></div>:null}{proof?.contributors?.length?<div className="v658MetricSection"><strong>Why this score</strong><span>{proof.contributors.slice(0,3).map(x=>`${x.label} ${x.impact>=0?"+":""}${Math.round(x.impact)}`).join(" · ")}</span></div>:null}{children?<div className="v658MetricSection v658MetricCustom">{children}</div>:null}</div>,document.body):null;
  return <span className="v658MetricInfo v65MetricInfo" ref={ref}><button ref={buttonRef} className="v658InfoButton aurynHelpMark" type="button" aria-label={`About ${label}`} aria-expanded={open} aria-controls={id} onClick={e=>{e.stopPropagation();setOpen(v=>!v)}}><CircleHelp className="v6516InfoGlyph" size={14} strokeWidth={1.8}/></button>{sheet}</span>;
 }
