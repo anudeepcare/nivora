@@ -4,13 +4,13 @@ import AuthGuard from "@/components/AuthGuard";import AppShell from "@/component
 import {applyAurynAppearance,readAurynAppearance,type AurynAppearance} from "@/components/ThemeProvider";
 import {supabaseBrowser} from "@/lib/supabase";
 const themes=[
- {value:"classic",name:"AURYN Classic",note:"Ivory · ink · heritage gold",sw:["#f7f5f0","#171613","#b27b31"]},
- {value:"noir",name:"Noir Champagne",note:"Obsidian · pearl · champagne",sw:["#0b0b0c","#f3ede1","#c6a56b"]},
- {value:"sapphire",name:"Midnight Sapphire",note:"Midnight navy · pearl · sapphire",sw:["#0b1320","#eef3f7","#3f719b"]},
- {value:"racing",name:"British Racing Green",note:"Deep racing green · parchment · brass",sw:["#0c211b","#f4f0e5","#b08a4d"]},
- {value:"bordeaux",name:"Bordeaux Reserve",note:"Wine · porcelain · antique brass",sw:["#451d28","#f8f3f1","#a67c42"]},
- {value:"arctic",name:"Arctic Graphite",note:"Cool pearl · graphite · steel",sw:["#f1f4f6","#17212a","#6f8797"]},
- {value:"porcelain",name:"Porcelain Bronze",note:"Porcelain · espresso · bronze",sw:["#faf7f1","#30261e","#9b7040"]},
+ {value:"classic",name:"Classic",note:"Warm ivory · ink · gold",sw:["#f7f5f0","#171613","#b27b31"]},
+ {value:"noir",name:"Noir",note:"Obsidian · pearl · champagne",sw:["#0b0b0c","#f3ede1","#c6a56b"]},
+ {value:"sapphire",name:"Sapphire",note:"Deep navy · pearl · blue",sw:["#0d1825","#f2f5f7","#5f8db5"]},
+ {value:"racing",name:"Racing Green",note:"Deep green · parchment · brass",sw:["#0f241e","#f5f1e7","#b68b4b"]},
+ {value:"bordeaux",name:"Bordeaux",note:"Wine · porcelain · brass",sw:["#4a202b","#fbf7f4","#a8793f"]},
+ {value:"arctic",name:"Arctic",note:"Pearl · graphite · steel",sw:["#f1f4f6","#18232c","#758c9c"]},
+ {value:"porcelain",name:"Bronze",note:"Porcelain · espresso · bronze",sw:["#faf7f1","#30261e","#a37543"]},
 ] as const;
 const sizes=[["compact","Compact"],["standard","Standard"],["large","Large"]] as const;
 const densities=[["comfortable","Comfortable"],["compact","Compact"]] as const;

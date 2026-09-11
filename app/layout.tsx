@@ -22,4 +22,5 @@ export const metadata:Metadata={
 };
 
 export const viewport:Viewport={width:"device-width",initialScale:1,maximumScale:1,viewportFit:"cover",themeColor:"#15130f"};
-export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="en"><body><ThemeProvider>{children}</ThemeProvider></body></html>}
+const appearanceBoot=`(function(){try{var theme=localStorage.getItem('auryn-theme')||'classic';var size=localStorage.getItem('auryn-text-size')||'standard';var density=localStorage.getItem('auryn-density')||'comfortable';var numberFormat=localStorage.getItem('auryn-number-format')||'standard';var themes=['classic','noir','sapphire','racing','bordeaux','arctic','porcelain'];if(themes.indexOf(theme)<0)theme='classic';document.documentElement.dataset.theme=theme;document.documentElement.dataset.textSize=size;document.documentElement.dataset.density=density;document.documentElement.dataset.numberFormat=numberFormat;}catch(e){}})();`;
+export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="en" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{__html:appearanceBoot}}/></head><body><ThemeProvider>{children}</ThemeProvider></body></html>}

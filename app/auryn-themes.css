@@ -1,112 +1,122 @@
-/* V9.5.5 semantic theme architecture. Geometry remains owned by product CSS. */
+/* AURYN V9.5.6 — deterministic theme contract. Paint only; approved geometry stays in product/mobile CSS. */
 :root,[data-theme="classic"]{
- --auryn-bg:#f7f5f0;--auryn-surface:#fffdfa;--auryn-surface-soft:#f2eee6;--auryn-ink:#171613;--auryn-muted:#756f66;--auryn-border:#e3dbcf;--auryn-accent:#a8742d;--auryn-accent-soft:#ead9bd;--auryn-chrome:#15130f;--auryn-chrome-text:#f7efe1;--auryn-input:#1b1915;--auryn-glass:rgba(27,26,23,.86);--auryn-hero-a:#17130d;--auryn-hero-b:#5a3e18;--auryn-hero-title:#f2d9a8;--auryn-hero-copy:#eee7dc;--auryn-hero-muted:#bdb3a5;--auryn-metric-bg:#fffdfa;--auryn-metric-ink:#171613;--auryn-chart-grid:#e6e9ed;--auryn-chart-label:#667085;
- --auryn-positive:#0b835f;--auryn-negative:#c54b42;--auryn-warning:#ad7323;
+ --auryn-page-bg:#f7f5f0;--auryn-page-ink:#171613;--auryn-page-muted:#756f66;
+ --auryn-card-bg:#fffdfa;--auryn-card-ink:#171613;--auryn-card-muted:#746e65;
+ --auryn-soft-bg:#f2eee6;--auryn-soft-ink:#29251f;--auryn-border:#e3dbcf;
+ --auryn-chrome:#15130f;--auryn-chrome-ink:#f7efe1;--auryn-input:#1b1915;--auryn-input-ink:#faf4e8;
+ --auryn-accent:#a8742d;--auryn-accent-soft:#ead9bd;
+ --auryn-hero-bg-a:#17130d;--auryn-hero-bg-b:#5a3e18;--auryn-hero-ink:#f2d9a8;--auryn-hero-copy:#eee7dc;--auryn-hero-muted:#bdb3a5;
+ --auryn-chart-bg:#fff;--auryn-chart-ink:#344054;--auryn-chart-grid:#e6e9ed;
+ --auryn-positive:#0b835f;--auryn-negative:#c54b42;--auryn-warning:#ad7323;--auryn-glass:rgba(27,26,23,.86)
 }
-[data-theme="noir"]{--auryn-bg:#0b0b0c;--auryn-surface:#151516;--auryn-surface-soft:#1d1d1f;--auryn-ink:#f3ede1;--auryn-muted:#aaa195;--auryn-border:#37332e;--auryn-accent:#c6a56b;--auryn-accent-soft:#ead7b3;--auryn-chrome:#050506;--auryn-chrome-text:#fff8eb;--auryn-input:#121213;--auryn-glass:rgba(8,8,9,.88);--auryn-hero-a:#0a0a0b;--auryn-hero-b:#49371f;--auryn-hero-title:#f1d9aa;--auryn-hero-copy:#f3ede1;--auryn-hero-muted:#b8ad9d;--auryn-metric-bg:#171718;--auryn-metric-ink:#f3ede1;--auryn-chart-grid:#34363a;--auryn-chart-label:#bac0c8}
-[data-theme="sapphire"]{--auryn-bg:#0b1320;--auryn-surface:#111d2b;--auryn-surface-soft:#182638;--auryn-ink:#eef3f7;--auryn-muted:#a4b0bd;--auryn-border:#2b4055;--auryn-accent:#6d9bc1;--auryn-accent-soft:#bcd4e6;--auryn-chrome:#07101b;--auryn-chrome-text:#f4f8fb;--auryn-input:#0d1723;--auryn-glass:rgba(7,16,27,.88);--auryn-hero-a:#08111d;--auryn-hero-b:#173b59;--auryn-hero-title:#dcebf5;--auryn-hero-copy:#eef3f7;--auryn-hero-muted:#a8b8c7;--auryn-metric-bg:#111d2b;--auryn-metric-ink:#eef3f7;--auryn-chart-grid:#2d4052;--auryn-chart-label:#b9c8d4}
-[data-theme="racing"]{--auryn-bg:#0c211b;--auryn-surface:#122b23;--auryn-surface-soft:#19372d;--auryn-ink:#f4f0e5;--auryn-muted:#b0aa9c;--auryn-border:#365044;--auryn-accent:#b08a4d;--auryn-accent-soft:#e3c992;--auryn-chrome:#071713;--auryn-chrome-text:#faf5e8;--auryn-input:#0b1b17;--auryn-glass:rgba(7,23,19,.88);--auryn-hero-a:#081a15;--auryn-hero-b:#3e3420;--auryn-hero-title:#efd59d;--auryn-hero-copy:#f4f0e5;--auryn-hero-muted:#bcb4a3;--auryn-metric-bg:#122b23;--auryn-metric-ink:#f4f0e5;--auryn-chart-grid:#345047;--auryn-chart-label:#becbc5}
-[data-theme="bordeaux"]{--auryn-bg:#f8f3f1;--auryn-surface:#fffdfc;--auryn-surface-soft:#f0e4e1;--auryn-ink:#28191d;--auryn-muted:#77686c;--auryn-border:#dfd0cc;--auryn-accent:#986b35;--auryn-accent-soft:#ead4b4;--auryn-chrome:#451d28;--auryn-chrome-text:#fff7ee;--auryn-input:#35171f;--auryn-glass:rgba(69,29,40,.88);--auryn-hero-a:#32141d;--auryn-hero-b:#6b3b2c;--auryn-hero-title:#f1d7a5;--auryn-hero-copy:#fff5ec;--auryn-hero-muted:#d5c1b9;--auryn-metric-bg:#fffdfc;--auryn-metric-ink:#28191d;--auryn-chart-grid:#eadfdb;--auryn-chart-label:#77686c}
-[data-theme="arctic"]{--auryn-bg:#f1f4f6;--auryn-surface:#fbfcfd;--auryn-surface-soft:#e7edf1;--auryn-ink:#17212a;--auryn-muted:#687783;--auryn-border:#d3dce2;--auryn-accent:#647f91;--auryn-accent-soft:#cbd9e1;--auryn-chrome:#17212a;--auryn-chrome-text:#f7fafc;--auryn-input:#18232c;--auryn-glass:rgba(23,33,42,.86);--auryn-hero-a:#18232c;--auryn-hero-b:#425766;--auryn-hero-title:#eef5f8;--auryn-hero-copy:#f5f8fa;--auryn-hero-muted:#c1ccd3;--auryn-metric-bg:#fbfcfd;--auryn-metric-ink:#17212a;--auryn-chart-grid:#dce3e8;--auryn-chart-label:#647583}
-[data-theme="porcelain"]{--auryn-bg:#faf7f1;--auryn-surface:#fffdf9;--auryn-surface-soft:#f1ebe1;--auryn-ink:#30261e;--auryn-muted:#776d63;--auryn-border:#e2d8ca;--auryn-accent:#9b7040;--auryn-accent-soft:#e6cfac;--auryn-chrome:#30261e;--auryn-chrome-text:#fff8ec;--auryn-input:#29211b;--auryn-glass:rgba(48,38,30,.86);--auryn-hero-a:#29211b;--auryn-hero-b:#6b4a29;--auryn-hero-title:#f0d4a4;--auryn-hero-copy:#fff8ed;--auryn-hero-muted:#d3c6b7;--auryn-metric-bg:#fffdf9;--auryn-metric-ink:#30261e;--auryn-chart-grid:#e8e0d5;--auryn-chart-label:#74695e}
-
-/* Theme application: paint only. */
-html,body,.aurynAppShell,.aurynAppMain,.aurynMobileSearch,.aurynStockPage,.aurynPortfolioPage,.aurynResearchHome,.simplePage,.aurynAuthPage,.aurynAuthShell,.aurynAuthPanel{background-color:var(--auryn-bg)!important;color:var(--auryn-ink)!important}
-.aurynHeader{background-color:var(--auryn-chrome)!important}
-.aurynHeader .aurynWord,.aurynHeader a{color:var(--auryn-chrome-text)!important}
-.aurynBottomNav{background:var(--auryn-glass)!important}
-.aurynBottomNav a.active{color:var(--auryn-accent-soft)!important}
-.aurynEvidenceNav,.aurynPortfolioNav{background-color:var(--auryn-bg)!important;border-color:var(--auryn-border)!important}
-.aurynEvidenceNav a,.aurynEvidenceNav button,.aurynPortfolioNav a{color:var(--auryn-ink)!important}
-.aurynEvidenceNav .active,.aurynPortfolioNav .active{border-color:var(--auryn-accent)!important}
-.aurynStockMobileMasthead,.aurynSecurityFacts,.aurynStockMobileFacts{border-color:var(--auryn-border)!important}
-.aurynStockMobileIdentity strong,.aurynStockMobileMeta span,.aurynStockMobileFacts small,.aurynStockMarket p,.aurynStockMarket small{color:var(--auryn-muted)!important}
-.aurynStockMobilePrice small,.aurynEyebrow,.eyebrow{color:var(--auryn-accent)!important}
-.v936CallHero{background:linear-gradient(135deg,var(--auryn-hero-a),var(--auryn-hero-b))!important}
-.v936ChartCard,.aurynPositionGroup,.profileCard,.aurynPortfolioMetrics,.aurynCompositionExplain,.aurynCapitalQueueRow,.v34IndicatorGrid,.aurynAuthPanel input{background-color:var(--auryn-surface)!important;border-color:var(--auryn-border)!important}
-.profileCard,.simplePage,.aurynPortfolioPage,.aurynResearchHome{color:var(--auryn-ink)!important}
-.profileCard label,.aurynPortfolioPage p,.simplePage p{color:var(--auryn-muted)!important}
-.up,.positive{color:var(--auryn-positive)!important}.down,.negative{color:var(--auryn-negative)!important}
-
-/* Standard fixes only the microcopy friends flagged as hard to read. No geometry changes. */
-[data-text-size="standard"] .aurynStockMobileMeta span{font-size:7.5px!important;color:color-mix(in srgb,var(--auryn-muted) 88%,var(--auryn-ink))!important}
-[data-text-size="standard"] .aurynStockMobileFacts small{font-size:6.5px!important;color:color-mix(in srgb,var(--auryn-muted) 88%,var(--auryn-ink))!important}
-[data-text-size="standard"] .v936ActionRow small,[data-text-size="standard"] .v940HeroProof small{font-size:6.5px!important}
-[data-text-size="compact"]{--auryn-readable-scale:.94}
-[data-text-size="large"]{--auryn-readable-scale:1.10}
-[data-text-size="compact"] .aurynStockMobileMeta span,[data-text-size="compact"] .aurynStockMobileFacts small{font-size:6px!important}
-[data-text-size="large"] .aurynStockMobileMeta span{font-size:8.5px!important}
-[data-text-size="large"] .aurynStockMobileFacts small{font-size:7.5px!important}
-[data-text-size="large"] .v936ActionRow small,[data-text-size="large"] .v940HeroProof small{font-size:7.5px!important}
-
-/* Settings — uses existing card geometry, only appearance controls. */
-.aurynAppearanceChoices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:8px 0 18px}
-.aurynAppearanceChoice{border:1px solid var(--auryn-border);background:var(--auryn-surface);color:var(--auryn-ink);border-radius:12px;padding:12px;text-align:left;cursor:pointer}
-.aurynAppearanceChoice.on{outline:2px solid var(--auryn-accent);outline-offset:1px}
-.aurynThemeSwatches{display:flex;gap:4px;margin-top:8px}.aurynThemeSwatches i{width:16px;height:16px;border-radius:50%;border:1px solid rgba(127,120,110,.2)}
-.aurynTextChoices{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 18px}.aurynTextChoices button{border:1px solid var(--auryn-border);background:var(--auryn-surface);color:var(--auryn-ink);border-radius:999px;padding:8px 12px;font-weight:700}.aurynTextChoices button.on{background:var(--auryn-chrome);color:var(--auryn-chrome-text)}
-@media(max-width:430px){.aurynAppearanceChoices{grid-template-columns:1fr 1fr}}
-
-
-/* V9.5.2 — Search readability. Visual hierarchy only; search geometry/layout remains locked. */
-.aurynSearch input{color:var(--auryn-chrome-text)!important;font-weight:550!important}
-.aurynSearch input::placeholder{color:color-mix(in srgb,var(--auryn-chrome-text) 64%,transparent)!important;opacity:1!important}
-.aurynSearchResults{background:var(--auryn-surface)!important;border-color:var(--auryn-border)!important}
-.aurynSearchResults>button{min-height:58px!important;padding:9px 13px!important;color:var(--auryn-ink)!important;border-color:var(--auryn-border)!important;align-items:center!important}
-.aurynSearchResultText{display:grid!important;grid-template-columns:auto minmax(0,1fr)!important;grid-template-areas:"ticker company" "meta meta"!important;column-gap:9px!important;row-gap:3px!important;align-items:baseline!important;min-width:0!important;text-align:left!important}
-.aurynSearchTicker{grid-area:ticker!important;font-size:16px!important;line-height:1!important;color:var(--auryn-accent)!important;letter-spacing:.01em!important}
-.aurynSearchCompany{grid-area:company!important;font-size:13px!important;line-height:1.1!important;color:var(--auryn-ink)!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
-.aurynSearchMeta{grid-area:meta!important;font-size:10px!important;line-height:1.15!important;color:var(--auryn-muted)!important;letter-spacing:.02em!important}
-.aurynSearchOpen{display:inline-flex!important;align-items:center!important;gap:4px!important;font-size:10px!important;font-weight:750!important;color:var(--auryn-muted)!important;white-space:nowrap!important}
-.aurynSearchResults>button:hover .aurynSearchOpen,.aurynSearchResults>button:focus-visible .aurynSearchOpen{color:var(--auryn-accent)!important}
-@media(max-width:760px){
- .aurynSearchResults>button{min-height:58px!important}
- .aurynSearchTicker{font-size:16px!important}
- .aurynSearchCompany{font-size:13px!important}
- .aurynSearchMeta{font-size:10px!important}
+[data-theme="noir"]{
+ --auryn-page-bg:#0b0b0c;--auryn-page-ink:#f3ede1;--auryn-page-muted:#aaa195;
+ --auryn-card-bg:#171718;--auryn-card-ink:#f4efe5;--auryn-card-muted:#aaa195;
+ --auryn-soft-bg:#222224;--auryn-soft-ink:#f0eadf;--auryn-border:#37332e;
+ --auryn-chrome:#050506;--auryn-chrome-ink:#fff8eb;--auryn-input:#121213;--auryn-input-ink:#f7f0e4;
+ --auryn-accent:#c6a56b;--auryn-accent-soft:#ead7b3;
+ --auryn-hero-bg-a:#080809;--auryn-hero-bg-b:#49371f;--auryn-hero-ink:#f1d9aa;--auryn-hero-copy:#f3ede1;--auryn-hero-muted:#b8ad9d;
+ --auryn-chart-bg:#fbfaf7;--auryn-chart-ink:#344054;--auryn-chart-grid:#e5e7eb;
+ --auryn-positive:#29a579;--auryn-negative:#e06459;--auryn-warning:#d39a47;--auryn-glass:rgba(8,8,9,.90)
 }
-
-
-/* V9.5.3 — mobile search overlay containment */
-.aurynSearchResults{z-index:1000!important;overflow:auto!important;overscroll-behavior:contain!important}
-.aurynSearchResults>button>.aurynSearchResultText{display:grid!important}
-.aurynSearchResults>button>.aurynSearchOpen{display:inline-flex!important}
-@media(max-width:760px){
- .aurynResearchHero .aurynSearchResults{max-height:min(232px,28vh)!important;padding:5px!important;border-radius:12px!important}
- .aurynSearchResults>button{min-height:58px!important;height:58px!important;padding:8px 11px!important;overflow:hidden!important}
- .aurynSearchResults>button>.aurynSearchResultText{grid-template-columns:auto minmax(0,1fr)!important;grid-template-areas:"ticker company" "meta meta"!important;align-content:center!important}
- .aurynSearchResults>button>.aurynSearchOpen{margin-left:auto!important;flex:0 0 auto!important}
- .aurynSearchCompany,.aurynSearchMeta{overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+[data-theme="sapphire"]{
+ --auryn-page-bg:#0d1825;--auryn-page-ink:#eef3f7;--auryn-page-muted:#a8b5c1;
+ --auryn-card-bg:#142437;--auryn-card-ink:#f2f5f7;--auryn-card-muted:#b0bdc8;
+ --auryn-soft-bg:#1b3046;--auryn-soft-ink:#f0f5f8;--auryn-border:#30485e;
+ --auryn-chrome:#09121d;--auryn-chrome-ink:#f6f9fb;--auryn-input:#0d1723;--auryn-input-ink:#f3f7fa;
+ --auryn-accent:#6f9dc3;--auryn-accent-soft:#c4d9e8;
+ --auryn-hero-bg-a:#09131f;--auryn-hero-bg-b:#214766;--auryn-hero-ink:#e6f0f7;--auryn-hero-copy:#f2f5f7;--auryn-hero-muted:#b4c1cc;
+ --auryn-chart-bg:#fbfcfd;--auryn-chart-ink:#344054;--auryn-chart-grid:#e3e8ee;
+ --auryn-positive:#42bd8d;--auryn-negative:#ec6f67;--auryn-warning:#d5a25c;--auryn-glass:rgba(9,18,29,.90)
+}
+[data-theme="racing"]{
+ --auryn-page-bg:#0f241e;--auryn-page-ink:#f5f1e7;--auryn-page-muted:#b7aea0;
+ --auryn-card-bg:#173129;--auryn-card-ink:#f6f2e8;--auryn-card-muted:#b9b2a5;
+ --auryn-soft-bg:#203d34;--auryn-soft-ink:#f3efe6;--auryn-border:#3b584d;
+ --auryn-chrome:#081913;--auryn-chrome-ink:#fff7e9;--auryn-input:#0b1b17;--auryn-input-ink:#f7f2e8;
+ --auryn-accent:#b68b4b;--auryn-accent-soft:#e6ce9d;
+ --auryn-hero-bg-a:#091b15;--auryn-hero-bg-b:#4a3a22;--auryn-hero-ink:#f1d8a3;--auryn-hero-copy:#f5f1e7;--auryn-hero-muted:#c3b9aa;
+ --auryn-chart-bg:#fbfcfa;--auryn-chart-ink:#344054;--auryn-chart-grid:#e3e8e4;
+ --auryn-positive:#42b985;--auryn-negative:#e36a61;--auryn-warning:#d2a052;--auryn-glass:rgba(8,25,19,.90)
+}
+[data-theme="bordeaux"]{
+ --auryn-page-bg:#f8f3f1;--auryn-page-ink:#2b1b20;--auryn-page-muted:#786b6e;
+ --auryn-card-bg:#fffdfc;--auryn-card-ink:#2b1b20;--auryn-card-muted:#786b6e;
+ --auryn-soft-bg:#f1e5e2;--auryn-soft-ink:#342226;--auryn-border:#dfd0cc;
+ --auryn-chrome:#4a202b;--auryn-chrome-ink:#fff8ef;--auryn-input:#35171f;--auryn-input-ink:#fff8ef;
+ --auryn-accent:#9b6f38;--auryn-accent-soft:#ead3b0;
+ --auryn-hero-bg-a:#32141d;--auryn-hero-bg-b:#70402e;--auryn-hero-ink:#f1d7a5;--auryn-hero-copy:#fff5ec;--auryn-hero-muted:#d5c1b9;
+ --auryn-chart-bg:#fff;--auryn-chart-ink:#344054;--auryn-chart-grid:#e8e3e1;
+ --auryn-positive:#177b5d;--auryn-negative:#b94743;--auryn-warning:#a97732;--auryn-glass:rgba(69,29,40,.88)
+}
+[data-theme="arctic"]{
+ --auryn-page-bg:#f1f4f6;--auryn-page-ink:#17212a;--auryn-page-muted:#687783;
+ --auryn-card-bg:#fbfcfd;--auryn-card-ink:#17212a;--auryn-card-muted:#687783;
+ --auryn-soft-bg:#e7edf1;--auryn-soft-ink:#1d2a34;--auryn-border:#d3dce2;
+ --auryn-chrome:#17212a;--auryn-chrome-ink:#f7fafc;--auryn-input:#18232c;--auryn-input-ink:#f7fafc;
+ --auryn-accent:#647f91;--auryn-accent-soft:#cbd9e1;
+ --auryn-hero-bg-a:#18232c;--auryn-hero-bg-b:#425766;--auryn-hero-ink:#eef5f8;--auryn-hero-copy:#f5f8fa;--auryn-hero-muted:#c1ccd3;
+ --auryn-chart-bg:#fff;--auryn-chart-ink:#344054;--auryn-chart-grid:#dce3e8;
+ --auryn-positive:#087c66;--auryn-negative:#c34d49;--auryn-warning:#9b742f;--auryn-glass:rgba(23,33,42,.88)
+}
+[data-theme="porcelain"]{
+ --auryn-page-bg:#faf7f1;--auryn-page-ink:#30261e;--auryn-page-muted:#776d63;
+ --auryn-card-bg:#fffdf9;--auryn-card-ink:#30261e;--auryn-card-muted:#776d63;
+ --auryn-soft-bg:#f1ebe1;--auryn-soft-ink:#382b21;--auryn-border:#e2d8ca;
+ --auryn-chrome:#30261e;--auryn-chrome-ink:#fff8ec;--auryn-input:#29211b;--auryn-input-ink:#fff8ec;
+ --auryn-accent:#9b7040;--auryn-accent-soft:#e6cfac;
+ --auryn-hero-bg-a:#29211b;--auryn-hero-bg-b:#6b4a29;--auryn-hero-ink:#f0d4a4;--auryn-hero-copy:#fff8ed;--auryn-hero-muted:#d3c6b7;
+ --auryn-chart-bg:#fff;--auryn-chart-ink:#344054;--auryn-chart-grid:#e8e0d5;
+ --auryn-positive:#137b5f;--auryn-negative:#be5048;--auryn-warning:#9d7138;--auryn-glass:rgba(48,38,30,.88)
 }
 
-[data-theme="obsidian"]{--auryn-bg:#090a0b;--auryn-surface:#151617;--auryn-surface-soft:#1d1e1d;--auryn-ink:#f4efe4;--auryn-muted:#aaa296;--auryn-border:#34322d;--auryn-accent:#d5a552;--auryn-accent-soft:#f0d39d;--auryn-chrome:#050606;--auryn-chrome-text:#fff7e7;--auryn-positive:#48c991;--auryn-negative:#ef7469;--auryn-input:#121311;--auryn-glass:rgba(8,9,9,.82);--auryn-hero-a:#080909;--auryn-hero-b:#493318}
-[data-theme="ocean"]{--auryn-bg:#f3f7f8;--auryn-surface:#ffffff;--auryn-surface-soft:#e7eff2;--auryn-ink:#132531;--auryn-muted:#6d7e88;--auryn-border:#cfdae0;--auryn-accent:#397d9d;--auryn-accent-soft:#c8e1ec;--auryn-chrome:#102a3c;--auryn-chrome-text:#f6fbfd;--auryn-positive:#087c66;--auryn-negative:#c34d49;--auryn-input:#132b3a;--auryn-glass:rgba(16,42,60,.76);--auryn-hero-a:#102a3c;--auryn-hero-b:#24556b}
-[data-theme="burgundy"]{--auryn-bg:#f8f3f1;--auryn-surface:#fffdfc;--auryn-surface-soft:#f0e4e1;--auryn-ink:#28191d;--auryn-muted:#806f73;--auryn-border:#e0d1cd;--auryn-accent:#a67c42;--auryn-accent-soft:#ead4b4;--auryn-chrome:#451d28;--auryn-chrome-text:#fff7ee;--auryn-positive:#177b5d;--auryn-negative:#b64745;--auryn-input:#35171f;--auryn-glass:rgba(69,29,40,.76);--auryn-hero-a:#32141d;--auryn-hero-b:#6b3b2c}
+/* Compatibility aliases consumed by the locked product CSS. */
+:root{--auryn-bg:var(--auryn-page-bg);--auryn-ink:var(--auryn-page-ink);--auryn-muted:var(--auryn-page-muted);--auryn-surface:var(--auryn-card-bg);--auryn-surface-soft:var(--auryn-soft-bg);--auryn-chrome-text:var(--auryn-chrome-ink);--auryn-hero-a:var(--auryn-hero-bg-a);--auryn-hero-b:var(--auryn-hero-bg-b);--auryn-hero-title:var(--auryn-hero-ink);--auryn-metric-bg:var(--auryn-card-bg);--auryn-metric-ink:var(--auryn-card-ink);--auryn-chart-label:var(--auryn-chart-ink)}
+[data-theme]{--auryn-bg:var(--auryn-page-bg);--auryn-ink:var(--auryn-page-ink);--auryn-muted:var(--auryn-page-muted);--auryn-surface:var(--auryn-card-bg);--auryn-surface-soft:var(--auryn-soft-bg);--auryn-chrome-text:var(--auryn-chrome-ink);--auryn-hero-a:var(--auryn-hero-bg-a);--auryn-hero-b:var(--auryn-hero-bg-b);--auryn-hero-title:var(--auryn-hero-ink);--auryn-metric-bg:var(--auryn-card-bg);--auryn-metric-ink:var(--auryn-card-ink);--auryn-chart-label:var(--auryn-chart-ink)}
 
+/* Surface contract: every painted surface owns its foreground too. */
+html,body,.aurynAppShell,.aurynAppMain,.aurynMobileSearch,.aurynStockPage,.aurynPortfolioPage,.aurynResearchHome,.simplePage,.aurynAuthPage,.aurynAuthShell{background:var(--auryn-page-bg)!important;color:var(--auryn-page-ink)!important}
+.aurynHeader{background:var(--auryn-chrome)!important;color:var(--auryn-chrome-ink)!important}.aurynHeader .aurynWord,.aurynHeader a{color:var(--auryn-chrome-ink)!important}.aurynBottomNav{background:var(--auryn-glass)!important}.aurynBottomNav a.active{color:var(--auryn-accent-soft)!important}
+.aurynEvidenceNav,.aurynPortfolioNav{background:var(--auryn-page-bg)!important;border-color:var(--auryn-border)!important}.aurynEvidenceNav a,.aurynEvidenceNav button,.aurynPortfolioNav a{color:var(--auryn-page-ink)!important}.aurynEvidenceNav .active,.aurynPortfolioNav .active{border-color:var(--auryn-accent)!important}
+.aurynStockMobileMasthead,.aurynSecurityFacts,.aurynStockMobileFacts{border-color:var(--auryn-border)!important}.aurynStockMobileIdentity strong,.aurynStockMobileMeta span,.aurynStockMobileFacts small,.aurynStockMarket p,.aurynStockMarket small{color:var(--auryn-page-muted)!important}.aurynStockMobilePrice small,.aurynEyebrow,.eyebrow{color:var(--auryn-accent)!important}
 
-/* Protected semantic roles: themes cannot make decision content unreadable. */
-.v936CallHero,.aurynDecisionHero{background:linear-gradient(135deg,var(--auryn-hero-a),var(--auryn-hero-b))!important;color:var(--auryn-hero-copy)!important}
-.v936CallHero h1,.v936CallHero h2,.v936CallHero .v936CallTitle,.aurynDecisionHero h1,.aurynDecisionHero h2{color:var(--auryn-hero-title)!important}
-.v936CallHero p,.v936CallHero .v936CallCopy,.aurynDecisionHero p{color:var(--auryn-hero-copy)!important}
-.v936CallHero small,.v936CallHero .muted,.aurynDecisionHero small{color:var(--auryn-hero-muted)!important}
-.aurynPortfolioHero,.aurynPortfolioIntelligence{color:var(--auryn-hero-copy)!important}
-.aurynPortfolioHero h1,.aurynPortfolioHero h2,.aurynPortfolioIntelligence h1,.aurynPortfolioIntelligence h2{color:var(--auryn-hero-title)!important}
-.aurynPortfolioMetrics,.v940MetricGroup,.v34IndicatorGrid,.aurynDecisionMapCard,.aurynTechnicalMetric{background:var(--auryn-metric-bg)!important;color:var(--auryn-metric-ink)!important;border-color:var(--auryn-border)!important}
-.aurynTechnicalMetricGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--auryn-border)}
-.aurynTechnicalMetric{min-width:0}
-.aurynTechnicalViz{color:var(--auryn-metric-ink);border-color:var(--auryn-border)}
-/* Financial meaning is theme invariant. */
-.up,.positive,.aurynPositive{color:var(--auryn-positive)!important}.down,.negative,.aurynNegative{color:var(--auryn-negative)!important}
-/* Search result is an isolated component; no generic descendant span rules participate. */
-.aurynSearchResults>button{display:flex!important;align-items:center!important;gap:12px!important;overflow:hidden!important}
-.aurynSearchResultText{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"ticker" "company" "meta"!important;gap:2px!important;flex:1 1 auto!important;min-width:0!important}
-.aurynSearchTicker{grid-area:ticker!important;font-weight:800!important;line-height:1.05!important}
-.aurynSearchCompany{grid-area:company!important;display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
-.aurynSearchMeta{grid-area:meta!important;display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
-.aurynSearchOpen{display:inline-flex!important;align-items:center!important;gap:4px!important;margin-left:auto!important;flex:0 0 auto!important;color:var(--auryn-accent)!important}
-@media(max-width:760px){
- .aurynSearchResults{max-height:min(232px,28vh)!important;overflow:auto!important;overscroll-behavior:contain!important;z-index:1000!important}
- .aurynSearchResults>button{min-height:72px!important;height:72px!important;padding:9px 12px!important}
- .aurynSearchOpen{font-size:12px!important}
- .aurynTechnicalMetricGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
-}
+/* Dark decision hero is protected independently from page theme. */
+.v936CallHero,.aurynDecisionHero{background:linear-gradient(135deg,var(--auryn-hero-bg-a),var(--auryn-hero-bg-b))!important;color:var(--auryn-hero-copy)!important}.v936CallHero h1,.v936CallHero h2,.v936CallHero .v936CallTitle,.aurynDecisionHero h1,.aurynDecisionHero h2{color:var(--auryn-hero-ink)!important}.v936CallHero p,.v936CallHero .v936CallCopy,.aurynDecisionHero p{color:var(--auryn-hero-copy)!important}.v936CallHero small,.v936CallHero .muted,.aurynDecisionHero small,.v936HeroMeta{color:var(--auryn-hero-muted)!important}.v936CallHero .good{color:var(--auryn-positive)!important}.v936CallHero .bad{color:var(--auryn-negative)!important}
+
+/* Standard cards: paired background + foreground, never inherited from dark page. */
+.v936Metric,.v936ScenarioCard,.v936ExplainCard,.v940PulseGroup,.v937DecisionMap>section,.v34IndicatorGrid,.profileCard,.aurynPositionGroup,.aurynCompositionExplain,.aurynCapitalQueueRow,.aurynAuthPanel,.v940PendingSnapshot,.aurynV5Unavailable,.aurynIntegrityAlert{background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important}
+.v936Metric small,.v936Metric em,.v936ScenarioCard p,.v936ScenarioCard span,.v936ExplainCard p,.v940PulseGroup span,.v940PulseGroup small,.profileCard p,.profileCard label,.aurynPositionGroup small,.aurynCompositionExplain p,.aurynCapitalQueueRow p{color:var(--auryn-card-muted)!important}
+.v936Metric b,.v936ScenarioCard h4,.v936ScenarioCard b,.v936ExplainCard h4,.v940PulseGroup b,.profileCard h2,.aurynPositionGroup b,.aurynCompositionExplain h3,.aurynCapitalQueueRow b{color:var(--auryn-card-ink)!important}
+
+/* Soft/internal surfaces. */
+.v937LadderItem,.v940HeroProof,.v383TechnicalStateGrid>*,.v34TechnicalScoreGrid>*,.aurynV4ModelAudit>span{background:var(--auryn-soft-bg)!important;color:var(--auryn-soft-ink)!important;border-color:var(--auryn-border)!important}
+.v937LadderItem small,.v937LadderItem em,.v940HeroProof small,.v383TechnicalStateGrid small,.v34TechnicalScoreGrid small{color:var(--auryn-card-muted)!important}
+
+/* Decision rail remains deliberately white/readable across all themes. */
+.v940DecisionRail{background:var(--auryn-chart-bg)!important;color:var(--auryn-chart-ink)!important;border-color:var(--auryn-border)!important}.v940DecisionRail small{color:#667085!important}
+
+/* Charts keep a high-readability trading surface while the surrounding card follows the edition. */
+.v936ChartCard,.chartCanvas{background:var(--auryn-chart-bg)!important;color:var(--auryn-chart-ink)!important;border-color:var(--auryn-border)!important}.v936ChartHead b,.v936ChartHead span{color:var(--auryn-chart-ink)!important}.v936ChartHead small{color:var(--auryn-accent)!important}
+
+/* Technicals: clean contract, no washed-out inherited text. */
+.v34TechnicalHero,.v383TechnicalHero,.v934TechnicalCore,.v933TechnicalChart{color:var(--auryn-page-ink)!important;border-color:var(--auryn-border)!important}.v34TechnicalHero p,.v383TechnicalHero p,.v934TechnicalCore p{color:var(--auryn-page-muted)!important}
+.v34IndicatorGrid,.v34TechnicalScoreGrid,.v383TechnicalStateGrid{background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important}.v34IndicatorGrid article,.v34IndicatorGrid>div,.v34TechnicalScoreGrid article,.v383TechnicalStateGrid article{color:var(--auryn-card-ink)!important}.v34IndicatorGrid small,.v34IndicatorGrid p,.v34TechnicalScoreGrid small,.v383TechnicalStateGrid small{color:var(--auryn-card-muted)!important}
+.aurynTechnicalMetricGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--auryn-border)}.aurynTechnicalMetric{min-width:0;background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important}.aurynTechnicalViz{color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important}
+
+/* Portfolio cards. */
+.aurynPortfolioHero,.aurynPortfolioIntelligence{background:linear-gradient(135deg,var(--auryn-hero-bg-a),var(--auryn-hero-bg-b))!important;color:var(--auryn-hero-copy)!important}.aurynPortfolioHero h1,.aurynPortfolioHero h2,.aurynPortfolioIntelligence h1,.aurynPortfolioIntelligence h2{color:var(--auryn-hero-ink)!important}.aurynPortfolioHero p,.aurynPortfolioIntelligence p{color:var(--auryn-hero-muted)!important}.aurynPortfolioMetrics{background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important}
+
+/* Form/search chrome. Results themselves are isolated in SearchBox.module.css. */
+.aurynSearch input{color:var(--auryn-input-ink)!important;font-weight:550!important}.aurynSearch input::placeholder{color:color-mix(in srgb,var(--auryn-input-ink) 62%,transparent)!important;opacity:1!important}.aurynAuthPanel input{background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important}
+
+/* Financial semantics do not change with the decorative theme. */
+.up,.positive,.aurynPositive,.good{color:var(--auryn-positive)!important}.down,.negative,.aurynNegative,.bad{color:var(--auryn-negative)!important}
+
+/* Appearance selector hierarchy. */
+.aurynAppearanceChoices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:8px 0 18px}.aurynAppearanceChoice{display:grid;grid-template-columns:1fr;gap:4px;min-width:0;border:1px solid var(--auryn-border);background:var(--auryn-card-bg);color:var(--auryn-card-ink);border-radius:12px;padding:13px;text-align:left;cursor:pointer}.aurynAppearanceChoice.on{outline:2px solid var(--auryn-accent);outline-offset:1px}.aurynThemeName{display:block;font-size:16px;font-weight:800;line-height:1.1;color:var(--auryn-card-ink)}.aurynThemeNote{display:block;font-size:11px;line-height:1.35;color:var(--auryn-card-muted)}.aurynThemeSwatches{display:flex;gap:5px;margin-top:6px}.aurynThemeSwatches i{width:16px;height:16px;border-radius:50%;border:1px solid rgba(127,120,110,.28)}.aurynTextChoices{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 18px}.aurynTextChoices button{border:1px solid var(--auryn-border);background:var(--auryn-card-bg);color:var(--auryn-card-ink);border-radius:999px;padding:8px 12px;font-weight:700}.aurynTextChoices button.on{background:var(--auryn-chrome);color:var(--auryn-chrome-ink)}
+
+/* Readability preference changes supporting copy only; geometry remains locked. */
+[data-text-size="standard"] .aurynStockMobileMeta span{font-size:7.5px!important;color:color-mix(in srgb,var(--auryn-page-muted) 88%,var(--auryn-page-ink))!important}[data-text-size="standard"] .aurynStockMobileFacts small{font-size:6.5px!important;color:color-mix(in srgb,var(--auryn-page-muted) 88%,var(--auryn-page-ink))!important}[data-text-size="standard"] .v936ActionRow small,[data-text-size="standard"] .v940HeroProof small{font-size:6.5px!important}[data-text-size="compact"]{--auryn-readable-scale:.94}[data-text-size="large"]{--auryn-readable-scale:1.10}[data-text-size="compact"] .aurynStockMobileMeta span,[data-text-size="compact"] .aurynStockMobileFacts small{font-size:6px!important}[data-text-size="large"] .aurynStockMobileMeta span{font-size:8.5px!important}[data-text-size="large"] .aurynStockMobileFacts small{font-size:7.5px!important}[data-text-size="large"] .v936ActionRow small,[data-text-size="large"] .v940HeroProof small{font-size:7.5px!important}
+
+@media(max-width:760px){.aurynTechnicalMetricGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.aurynAppearanceChoices{grid-template-columns:1fr 1fr}.aurynThemeName{font-size:14px}.aurynThemeNote{font-size:10px}}
+@media(max-width:390px){.aurynAppearanceChoices{grid-template-columns:1fr}}

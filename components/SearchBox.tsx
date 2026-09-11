@@ -2,6 +2,7 @@
 import {useEffect,useMemo,useState} from "react";
 import {useRouter} from "next/navigation";
 import {ArrowRight,Search} from "lucide-react";
+import styles from "./SearchBox.module.css";
 type R={symbol:string,name:string,exchange?:string,type?:string};
 const local:R[]=[
  {symbol:"MU",name:"Micron Technology",exchange:"NASDAQ",type:"stock"},{symbol:"NVDA",name:"NVIDIA",exchange:"NASDAQ",type:"stock"},{symbol:"AAPL",name:"Apple",exchange:"NASDAQ",type:"stock"},{symbol:"MSFT",name:"Microsoft",exchange:"NASDAQ",type:"stock"},{symbol:"CRM",name:"Salesforce",exchange:"NYSE",type:"stock"},{symbol:"SAP",name:"SAP SE",exchange:"NYSE",type:"stock"},{symbol:"IREN",name:"IREN Limited",exchange:"NASDAQ",type:"stock"},{symbol:"NBIS",name:"Nebius Group",exchange:"NASDAQ",type:"stock"},{symbol:"HIMS",name:"Hims & Hers",exchange:"NYSE",type:"stock"},{symbol:"APP",name:"AppLovin",exchange:"NASDAQ",type:"stock"},{symbol:"BTC/USD",name:"Bitcoin",exchange:"CRYPTO",type:"crypto"},{symbol:"ETH/USD",name:"Ethereum",exchange:"CRYPTO",type:"crypto"},{symbol:"SOL/USD",name:"Solana",exchange:"CRYPTO",type:"crypto"}
@@ -16,6 +17,6 @@ export default function SearchBox({large=false,compact=false}:{large?:boolean;co
  function submit(e:React.FormEvent){e.preventDefault();if(busy)return;if(items[0])choose(items[0]);else if(q.trim()){setBusy(true);r.push(`/stock/${encodeURIComponent(q.trim().toUpperCase())}`)}}
  return <div className={`aurynSearch ${large?"large":""} ${compact?"compact":""}`}>
   <form onSubmit={submit}><Search size={18}/><input aria-label="Search investments" value={q} onFocus={()=>setOpen(true)} onChange={e=>{setQ(e.target.value);setOpen(true)}} placeholder="Company, ticker or crypto…"/>{!compact&&<button disabled={busy} aria-label="Analyze">{busy?"…":<><span>Analyze</span><ArrowRight size={16}/></>}</button>}</form>
-  {open&&items.length>0&&<div className="aurynSearchResults">{items.map(x=><button type="button" key={`${x.symbol}-${x.exchange}`} onClick={()=>choose(x)}><div className="aurynSearchResultText"><div className="aurynSearchTicker">{x.symbol}</div><div className="aurynSearchCompany">{x.name||x.symbol}</div><div className="aurynSearchMeta">{[x.exchange,x.type].filter(Boolean).join(" · ")}</div></div><div className="aurynSearchOpen">Open <ArrowRight size={13}/></div></button>)}</div>}
+  {open&&items.length>0&&<div className={styles.results} role="listbox" aria-label="Search results">{items.map(x=><button className={styles.resultRow} type="button" role="option" key={`${x.symbol}-${x.exchange}`} onClick={()=>choose(x)}><div className={styles.resultText}><div className={styles.ticker}>{x.symbol}</div><div className={styles.company}>{x.name||x.symbol}</div><div className={styles.meta}>{[x.exchange,x.type].filter(Boolean).join(" · ")}</div></div><div className={styles.open}>Open <ArrowRight size={13}/></div></button>)}</div>}
  </div>
 }
