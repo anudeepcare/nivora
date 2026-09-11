@@ -746,9 +746,27 @@ export default function StockClient({symbol}:{symbol:string}){
   const marketDetail=marketTruth
     ?`${String(marketTruth.reason||"")}${(marketTruth.decisionPriceAsOf||marketTruth.asOf)?` · price as of ${new Date(marketTruth.decisionPriceAsOf||marketTruth.asOf).toLocaleString()}`:""}${marketTruth.providerAgreementPct!=null?` · provider gap ${Number(marketTruth.providerAgreementPct).toFixed(2)}%`:""}`
     :"AURYN is verifying independent market sources before displaying a current price.";
+  const yearlyBars=(d?.candles||[]).slice(-252);
+  const yearlyHigh=yearlyBars.length?Math.max(...yearlyBars.map((x:any)=>Number(x.high)).filter(Number.isFinite)):null;
+  const yearlyLow=yearlyBars.length?Math.min(...yearlyBars.map((x:any)=>Number(x.low)).filter(Number.isFinite)):null;
+  const latestVolume=yearlyBars.length?Number(yearlyBars.at(-1)?.volume):null;
+  const capMillions=Number(context?.profile?.marketCapitalization);
+  const securityMarketFacts={
+    marketCap:Number.isFinite(capMillions)&&capMillions>0?capMillions*1_000_000:null,
+    volume:Number.isFinite(latestVolume)&&latestVolume>0?latestVolume:null,
+    week52High:Number.isFinite(yearlyHigh as number)?yearlyHigh:null,
+    week52Low:Number.isFinite(yearlyLow as number)?yearlyLow:null,
+    sector:context?.profile?.finnhubIndustry||company?.sector||null,
+    industry:context?.profile?.industry||null,
+    exchange:context?.profile?.exchange||null,
+  };
+  const handleEvidenceTab=(next:Tab)=>{
+    setTab(next);
+    requestAnimationFrame(()=>window.setTimeout(()=>thesisRef.current?.scrollIntoView({behavior:"smooth",block:"start"}),40));
+  };
   return <div className="aurynStockPage">
-    <StockSecurityHeader company={company?.name||d.name||symbol} symbol={symbol} price={priceSensitiveAllowed?canonicalDecisionPrice:null} changePct={priceSensitiveAllowed?displayChangePct:null} status={marketStatusLabel} detail={marketDetail} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
-    <StockEvidenceNav tab={tab} setTab={setTab} isCrypto={d.assetType==="crypto"}/>
+    <StockSecurityHeader company={company?.name||d.name||symbol} symbol={symbol} price={priceSensitiveAllowed?canonicalDecisionPrice:null} changePct={priceSensitiveAllowed?displayChangePct:null} status={marketStatusLabel} detail={marketDetail} logoUrl={context?.profile?.logo||null} marketFacts={securityMarketFacts} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
+    <StockEvidenceNav tab={tab} setTab={handleEvidenceTab} isCrypto={d.assetType==="crypto"}/>
     {marketTruth&&!priceSensitiveAllowed?<div className="aurynIntegrityAlert aurynMarketTruthAlert" role="alert"><b>PRICE UNVERIFIED</b><span>{marketTruth.reason||"Independent market sources are not sufficiently aligned."} AURYN has disabled entry, confirmation, target, stop and risk/reward output until the canonical price is verified.</span></div>:null}
     {institutionalDecision?<AurynResearchOverview decision={institutionalDecision} marketTruth={marketTruth} marketIntelligence={marketIntelligenceView??d?.marketIntelligence??null} scenario={v5Analysis?.scenario??null} entryQuality={technicalState.entryQuality} candles={(v5Analysis?.bars||d?.candles||[]).slice(-180)} chartLevels={v5ChartLevels??canonicalValidationLevels}/>:null}
     {v5Analysis?<>{canonicalTrustBlocked?<div className="aurynIntegrityAlert aurynTrustBlock" role="alert"><b>CANONICAL TRUST BLOCK</b><span>{v7Analysis?.trust.blockers[0]||"AURYN detected an internal snapshot/plan inconsistency."} Price-sensitive execution levels are suppressed until the canonical chain is aligned.</span></div>:null}</>:<section className="aurynV5Unavailable"><small>AURYN CANONICAL ANALYSIS</small><b>COLLECTING VERIFIED EVIDENCE</b><span>AURYN will not publish a fallback verdict while the canonical snapshot is unavailable.</span></section>}

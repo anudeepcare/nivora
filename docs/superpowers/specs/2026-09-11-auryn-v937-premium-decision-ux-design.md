@@ -1,0 +1,3 @@
+# AURYN V9.3.7 Premium Decision UX Design
+
+Approved scope: dense above-the-fold research, universal logo fallback, optional market facts, semantic BUY/START SMALL/HOLD/WAIT/REDUCE/SELL hero treatments, contextual metric help, scroll-to-evidence navigation, decision/risk ladders, scenario value deltas, scannable thesis scorecards, real multi-period portfolio history, ranked Capital Queue, current-price holdings intelligence, performance containment, and Trading Lab verification. One canonical AURYN brain remains authoritative; missing evidence stays N/A and no historical performance or probabilities are fabricated.

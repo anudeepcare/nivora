@@ -76,7 +76,13 @@ export function calculatePortfolioPulse(assets:PricedPortfolioAsset[],snapshots:
   else if(weight>=25){portfolioAction="TRIM_RISK";reason=`Position is ${weight.toFixed(1)}% of the portfolio; sizing risk is high even if the thesis remains intact.`}
   else if(/WAIT|WATCH|TRIM/.test(raw)){portfolioAction="WATCH";reason="Current AURYN evidence calls for patience or review."}
   else if(/BUY|ADD|ACCUMULATE/.test(raw)&&Number(x.opportunityScore||0)>=60){portfolioAction="ADD";reason="Individual evidence is constructive and portfolio sizing is not excessive."}
-  return{symbol:x.symbol,portfolioAction,companyAction:raw||"REVIEW",weightPct:+weight.toFixed(1),reason};
+  const confirm=Number((x as any)?.marketIntelligence?.levels?.confirm??(x as any)?.marketIntelligence?.actionMap?.confirm);
+  const invalidation=Number((x as any)?.marketIntelligence?.levels?.invalidation??(x as any)?.marketIntelligence?.actionMap?.invalidation);
+  const nextTrigger=String((x as any)?.nextTrigger||"").trim()||
+    (Number.isFinite(confirm)&&confirm>0?`Confirm above $${confirm.toFixed(2)}`:Number.isFinite(invalidation)&&invalidation>0?`Reassess below $${invalidation.toFixed(2)}`:"Wait for new decision-grade evidence");
+  const urgency=portfolioAction==="AVOID"||portfolioAction==="TRIM_RISK"?"HIGH":portfolioAction==="WATCH"?"MEDIUM":portfolioAction==="ADD"?"OPPORTUNITY":"LOW";
+  const portfolioImpact=weight>=15?"HIGH":weight>=7?"MEDIUM":"LOW";
+  return{symbol:x.symbol,portfolioAction,companyAction:raw||"REVIEW",weightPct:+weight.toFixed(1),reason,nextTrigger,urgency,portfolioImpact};
  }).sort((a,b)=>({ADD:0,WATCH:1,TRIM_RISK:2,AVOID:3,HOLD:4}[a.portfolioAction]-{ADD:0,WATCH:1,TRIM_RISK:2,AVOID:3,HOLD:4}[b.portfolioAction]));
  const ordered=[...snapshots].filter(x=>Number.isFinite(Number(x.totalValue))&&Number(x.totalValue)>0).sort((a,b)=>a.asOf.localeCompare(b.asOf));
  const first=ordered[0],last=ordered[ordered.length-1],hasActualPerformance=ordered.length>=2&&first.asOf!==last.asOf;
@@ -112,5 +118,5 @@ export function calculatePortfolioPeriod(history:PortfolioSnapshot[],period:Port
  const enough=Boolean(start&&end&&start.asOf!==end.asOf);
  const portfolioReturnPct=enough?pct(start!.totalValue,end!.totalValue):null,spyReturnPct=enough?pct(start!.spy,end!.spy):null,qqqReturnPct=enough?pct(start!.qqq,end!.qqq):null;
  const points=enough?rows.filter(x=>new Date(x.asOf)>=new Date(start!.asOf)&&new Date(x.asOf)<=new Date(end!.asOf)):[];
- return{period,status:enough?"ACTUAL" as const:"INSUFFICIENT" as const,start:enough?start:null,end:enough?end:null,points,portfolioReturnPct,spyReturnPct,qqqReturnPct,alphaVsSpyPct:portfolioReturnPct!=null&&spyReturnPct!=null?+(portfolioReturnPct-spyReturnPct).toFixed(2):null,alphaVsQqqPct:portfolioReturnPct!=null&&qqqReturnPct!=null?+(portfolioReturnPct-qqqReturnPct).toFixed(2):null};
+ return{period,status:enough?"ACTUAL" as const:"INSUFFICIENT" as const,start:enough?start:null,end:enough?end:null,availableFrom:rows[0]?.asOf??null,availableTo:end?.asOf??null,requestedFrom:target?.toISOString()??null,points,portfolioReturnPct,spyReturnPct,qqqReturnPct,alphaVsSpyPct:portfolioReturnPct!=null&&spyReturnPct!=null?+(portfolioReturnPct-spyReturnPct).toFixed(2):null,alphaVsQqqPct:portfolioReturnPct!=null&&qqqReturnPct!=null?+(portfolioReturnPct-qqqReturnPct).toFixed(2):null};
 }
