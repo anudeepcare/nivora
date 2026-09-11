@@ -78,34 +78,52 @@ function dailyPreviewFrom15m(confirmedDaily, raw15, asOf) {
     return base.concat(bar);
 }
 function url(symbol, key, interval, size, prepost = false) { const hint = (0, security_master_1.providerMarketHint)(symbol); return `https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(symbol)}&interval=${interval}&outputsize=${size}&timezone=UTC${prepost ? '&prepost=true' : ''}${hint.exchange ? `&exchange=${encodeURIComponent(hint.exchange)}` : ''}&apikey=${key}`; }
+const wait = (ms) => new Promise(resolve => setTimeout(() => resolve(null), ms));
 async function loadV934DecisionBars(input) {
     const symbol = String(input.symbol).toUpperCase();
-    const fourHourPromise = input.fetchJson(url(symbol, input.key, '4h', 240, false), ['twelve', 'v9341', symbol, '4h'], 180, 2600);
-    const dailyPromise = input.fetchJson(url(symbol, input.key, '1day', 340, false), ['twelve', 'v9341', symbol, '1day'], 60, 3000);
-    const [fourHour, daily] = await Promise.allSettled([fourHourPromise, dailyPromise]);
-    let rawDaily = daily.status === 'fulfilled' ? daily.value : null;
-    let dailyError = daily.status === 'rejected' ? String(daily.reason) : null;
-    if (!rawDaily && dailyError) {
+    // Daily/weekly structure is the first-render contract. 4H is useful but must never hold the page hostage.
+    const fourHourWork = input.fetchJson(url(symbol, input.key, '4h', 180, false), ['twelve', 'v9342', symbol, '4h'], 300, 1800)
+        .then(value => ({ value, error: null }))
+        .catch(error => ({ value: null, error: String(error) }));
+    let rawDaily = null, dailyError = null;
+    try {
+        rawDaily = await input.fetchJson(url(symbol, input.key, '1day', 300, false), ['twelve', 'v9342', symbol, '1day'], 120, 1900);
+    }
+    catch (error) {
+        dailyError = String(error);
         try {
-            rawDaily = await input.fetchJson(url(symbol, input.key, '1day', 260, false), ['twelve', 'v9341', symbol, '1day', 'retry'], 60, 2200);
+            rawDaily = await input.fetchJson(url(symbol, input.key, '1day', 220, false), ['twelve', 'v9342', symbol, '1day', 'retry'], 120, 1300);
             dailyError = null;
         }
-        catch (error) {
-            dailyError = `${dailyError}; retry: ${String(error)}`;
+        catch (retry) {
+            dailyError = `${dailyError}; retry: ${String(retry)}`;
         }
     }
-    const raw4h = fourHour.status === 'fulfilled' ? fourHour.value : null;
+    const fourHour = await Promise.race([fourHourWork, wait(450)]);
+    const raw4h = fourHour && 'value' in fourHour ? fourHour.value : null;
+    const fourHourError = fourHour && 'error' in fourHour ? fourHour.error : null;
     const all4h = parseTwelveBars(raw4h), allDaily = parseTwelveBars(rawDaily), calendar = (0, nivora_market_session_1.marketCalendarAt)(input.asOf);
     const h4 = completedIntraday(all4h, 240, input.asOf), day = (0, completed_bars_1.completedDailyBars)(allDaily, calendar), week = aggregateCompletedWeeks(day, input.asOf);
     const confirmed = { '4H': h4, '1D': day, '1W': week };
-    return { confirmed, preview: {}, rawDaily, coverage: { '15M': 0, '1H': 0, '4H': h4.length, '1D': day.length, '1W': week.length }, errors: { '15M': null, '4H': fourHour.status === 'rejected' ? String(fourHour.reason) : null, '1D': dailyError } };
+    return { confirmed, preview: {}, rawDaily, coverage: { '15M': 0, '1H': 0, '4H': h4.length, '1D': day.length, '1W': week.length }, errors: { '15M': null, '4H': fourHourError, '1D': dailyError } };
 }
 async function loadV934LiveContext(input) {
     const symbol = String(input.symbol).toUpperCase();
-    const raw = await input.fetchJson(url(symbol, input.key, '15min', 840, true), ['twelve', 'v9341', symbol, '15min', 'live'], 20, 5000);
-    const all15 = parseTwelveBars(raw), d15 = completedIntraday(all15, 15, input.asOf), h1 = resampleSequential(d15, 4, false);
-    const preview = { '15M': all15, '1H': resampleSequential(all15, 4, true), '4H': resampleSequential(all15, 16, true) };
-    return { confirmed: { '15M': d15, '1H': h1 }, preview, coverage: { '15M': d15.length, '1H': h1.length }, raw15: raw };
+    // Tactical context is progressive and non-blocking. 4H is fetched here too so first render can stay daily/weekly-fast.
+    const [fifteen, four] = await Promise.allSettled([
+        input.fetchJson(url(symbol, input.key, '15min', 360, true), ['twelve', 'v9342', symbol, '15min', 'live'], 30, 2600),
+        input.fetchJson(url(symbol, input.key, '4h', 180, false), ['twelve', 'v9342', symbol, '4h', 'live'], 300, 2200)
+    ]);
+    const raw15 = fifteen.status === 'fulfilled' ? fifteen.value : null, raw4h = four.status === 'fulfilled' ? four.value : null;
+    const all15 = parseTwelveBars(raw15), d15 = completedIntraday(all15, 15, input.asOf), h1 = resampleSequential(d15, 4, false), all4h = parseTwelveBars(raw4h), h4 = completedIntraday(all4h, 240, input.asOf);
+    const preview = {};
+    if (all15.length) {
+        preview['15M'] = all15;
+        preview['1H'] = resampleSequential(all15, 4, true);
+    }
+    if (all4h.length)
+        preview['4H'] = all4h;
+    return { confirmed: { '15M': d15, '1H': h1, '4H': h4 }, preview, coverage: { '15M': d15.length, '1H': h1.length, '4H': h4.length }, raw15, raw4h, errors: { '15M': fifteen.status === 'rejected' ? String(fifteen.reason) : null, '4H': four.status === 'rejected' ? String(four.reason) : null } };
 }
 async function loadV934MarketBars(input) {
     const symbol = String(input.symbol).toUpperCase();

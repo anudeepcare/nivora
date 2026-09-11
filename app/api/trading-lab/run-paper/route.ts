@@ -2,7 +2,7 @@ import {NextResponse} from "next/server";
 import {createClient,type SupabaseClient} from "@supabase/supabase-js";
 import {AlpacaPaperBroker} from "@/lib/alpaca-paper";
 import {deriveTradeIntent} from "@/lib/nivora-trade-intent";
-import {mapV5ActionToToday} from "@/lib/auryn/v5/reliability";
+import {mapInstitutionalActionToToday} from "@/lib/auryn/v9343/execution-policy";
 import {evaluateTradingRisk,DEFAULT_PAPER_RISK_POLICY,type TradingRiskContext} from "@/lib/nivora-trading-risk";
 import {planPaperOrder} from "@/lib/nivora-paper-execution";
 import {marketSessionAt} from "@/lib/nivora-market-session";
@@ -189,10 +189,10 @@ async function run(req:Request,automatic=false){
      results.push({symbol:snapshot.symbol,status:"BLOCKED",action:String(v931Meta.newMoneyAction||"NONE"),reason,riskCode:"MARKET_INTELLIGENCE_MISSING"});
      continue;
     }
-    if(normalizedAction(v5Meta?.action)!==normalizedAction(v931Meta.canonicalPrimaryAction)){
-     const reason=`Persisted V9.3.1 canonical action ${normalizedAction(v931Meta.canonicalPrimaryAction)||"MISSING"} diverges from the internal V5 action ${normalizedAction(v5Meta?.action)||"MISSING"}; execution is blocked.`;
-     await recordEvaluation(snapshot,"BLOCKED",String(v931Meta.newMoneyAction||"NONE"),reason,"CANONICAL_DECISION_DIVERGENCE",null,{v931Meta,v5Action:v5Meta?.action??null});
-     results.push({symbol:snapshot.symbol,status:"BLOCKED",action:String(v931Meta.newMoneyAction||"NONE"),reason,riskCode:"CANONICAL_DECISION_DIVERGENCE"});
+    if(Array.isArray(v931Meta.hardVetoReasons)&&v931Meta.hardVetoReasons.length&&!["AVOID"].includes(normalizedAction(v931Meta.newMoneyAction))){
+     const reason=`Canonical decision carries unresolved hard vetoes: ${v931Meta.hardVetoReasons.join(", ")}.`;
+     await recordEvaluation(snapshot,"BLOCKED",String(v931Meta.newMoneyAction||"NONE"),reason,"CANONICAL_HARD_VETO",null,{v931Meta,v5Action:v5Meta?.action??null});
+     results.push({symbol:snapshot.symbol,status:"BLOCKED",action:String(v931Meta.newMoneyAction||"NONE"),reason,riskCode:"CANONICAL_HARD_VETO"});
      continue;
     }
     if(v931Meta.executionAction!=="READY"){
@@ -207,7 +207,7 @@ async function run(req:Request,automatic=false){
      results.push({symbol:snapshot.symbol,status:"NO_INTENT",action:"NONE",reason});
      continue;
     }
-    const today=v931Meta?.canonicalPrimaryAction?mapV5ActionToToday(v931Meta.canonicalPrimaryAction as any,Boolean(pos)):d.today;
+    const today=v931Meta?.newMoneyAction?mapInstitutionalActionToToday(v931Meta.newMoneyAction,v931Meta.ownerAction||"HOLD",Boolean(pos)):d.today;
     if(!today){
      const x=explainNoIntent(undefined,false);
      await recordEvaluation(snapshot,"NO_INTENT","NONE",x.reason,x.code);
@@ -295,7 +295,8 @@ async function run(req:Request,automatic=false){
       ? {value:v934Invalidation,source:"V934_MARKET_INTELLIGENCE"}
       : resolvePaperInvalidation({entry:quote?.price??0,decision:d,evidence:snapshot.evidence});
      const invalidation=Number(invalidationResult.value||0);
-     const riskPerTradePct=Number(process.env.TRADING_LAB_RISK_PER_TRADE_PCT||0.5);
+     const baseRiskPerTradePct=Number(process.env.TRADING_LAB_RISK_PER_TRADE_PCT||0.5);
+     const riskPerTradePct=String(v931Meta?.newMoneyAction||"")==="START_SMALL"?baseRiskPerTradePct*0.5:baseRiskPerTradePct;
      if(!quote||quote.price<=0||!invalidation||invalidation>=quote.price){
       await recordEvaluation(snapshot,"BLOCKED",String(today.action||"NO ACTION"),"A valid decision-linked invalidation is required before sizing new paper risk.","POSITION_SIZING",null,{...quoteDetails,invalidation,invalidationSource:invalidationResult.source,riskPerTradePct});
       results.push({symbol:snapshot.symbol,status:"BLOCKED",action:String(today.action||"NO ACTION"),reason:"A valid decision-linked invalidation is required before sizing new paper risk.",riskCode:"POSITION_SIZING"});

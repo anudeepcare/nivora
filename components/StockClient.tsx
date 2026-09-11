@@ -21,7 +21,6 @@ import {buildNivoraIntelligence} from "@/lib/nivora-intelligence";
 import {buildInvestorDecision} from "@/lib/nivora-investor";
 import {applyLiveQuoteToToday} from "@/lib/nivora-live-today";
 import StockSecurityHeader from "./stock/StockSecurityHeader";
-import ScenarioMapPanel from "./stock/v5/ScenarioMapPanel";
 import StockEvidenceNav from "./stock/StockEvidenceNav";
 import StockEvidenceSections from "./stock/StockEvidenceSections";
 import StockThesisPanel from "./stock/StockThesisPanel";
@@ -88,6 +87,7 @@ type StockWarmCache={d?:any;company?:any;context?:any;institutional?:any;ts:numb
 const CORE_ATTEMPTS=1,CORE_TIMEOUT_MS=4500;
 const stockWarmCache=new Map<string,StockWarmCache>();
 const CACHE_MAX_AGE=15*60*1000;
+const STALE_CACHE_MAX_AGE=7*24*60*60*1000;
 let calibrationCache:any=null;
 const modelHealthCache=new Map<string,any>();
 function scheduleNonCritical(work:()=>void){
@@ -181,9 +181,16 @@ export default function StockClient({symbol}:{symbol:string}){
     let live=true;
     let core:AbortController|null=null;
     let warm=stockWarmCache.get(symbol);
-    if(!warm&&typeof window!=="undefined"){try{const raw=sessionStorage.getItem(`auryn:core:${symbol}`);if(raw){const parsed=JSON.parse(raw);if(parsed?.d&&Date.now()-Number(parsed.ts||0)<15*60*1000){warm=parsed;stockWarmCache.set(symbol,parsed)}}}catch{}}
-    const hasWarm=!!warm&&Date.now()-warm.ts<CACHE_MAX_AGE;
-    if(hasWarm){
+    if(!warm&&typeof window!=="undefined"){
+      try{
+        const raw=localStorage.getItem(`auryn:core:${symbol}`)||sessionStorage.getItem(`auryn:core:${symbol}`);
+        if(raw){const parsed=JSON.parse(raw);if(parsed?.d&&Date.now()-Number(parsed.ts||0)<STALE_CACHE_MAX_AGE){warm=parsed;stockWarmCache.set(symbol,parsed)}}
+      }catch{}
+    }
+    const warmAge=warm?Date.now()-Number(warm.ts||0):Number.POSITIVE_INFINITY;
+    const hasUsableWarm=!!warm&&warmAge<STALE_CACHE_MAX_AGE;
+    const hasFreshWarm=!!warm&&warmAge<CACHE_MAX_AGE;
+    if(hasUsableWarm){
       if(warm?.d)setD(warm.d);
       if(warm?.company)setCompany(warm.company);
       if(warm?.context)setContext(warm.context);
@@ -209,7 +216,7 @@ export default function StockClient({symbol}:{symbol:string}){
         try{
           const a=await fetchJson(`/api/analyze/${encodeURIComponent(symbol)}`,core.signal);
           if(!live)return;
-          setD(a);setErr("");mergeWarm(symbol,{d:a});try{sessionStorage.setItem(`auryn:core:${symbol}`,JSON.stringify({d:a,ts:Date.now()}))}catch{}return;
+          setD(a);setErr("");mergeWarm(symbol,{d:a});try{const payload=JSON.stringify({d:a,ts:Date.now()});localStorage.setItem(`auryn:core:${symbol}`,payload);sessionStorage.setItem(`auryn:core:${symbol}`,payload)}catch{}return;
         }catch(e:any){
           lastError=e;
           if(!live)return;
@@ -227,7 +234,7 @@ export default function StockClient({symbol}:{symbol:string}){
       ]);
     };
 
-    loadCore(!hasWarm);
+    if(!hasFreshWarm)loadCore(!hasUsableWarm);
     const evidenceFresh=!!warm?.evidenceTs&&Date.now()-warm.evidenceTs<30*60*1000;
     const cancelEvidence=!evidenceFresh?scheduleNonCritical(()=>loadEvidence()):()=>{};
 
@@ -235,7 +242,7 @@ export default function StockClient({symbol}:{symbol:string}){
     const newsTimer=setInterval(()=>{if(document.visibilityState==="visible")fetchJson(`/api/context/${encodeURIComponent(symbol)}`).then(x=>{if(live){setContext(x);mergeEvidenceWarm(symbol,{context:x})}}).catch(()=>{})},120000);
     const onFocus=()=>{
       const last=stockWarmCache.get(symbol)?.ts||0;
-      if(Date.now()-last>240000)loadCore(false);
+      if(Date.now()-last>CACHE_MAX_AGE)loadCore(false);
     };
     window.addEventListener("focus",onFocus);
     return()=>{live=false;cancelEvidence();core?.abort();clearInterval(priceTimer);clearInterval(newsTimer);window.removeEventListener("focus",onFocus)};
@@ -481,7 +488,7 @@ export default function StockClient({symbol}:{symbol:string}){
       symbol,engineVersion:enterprise.engineVersion,mode,price:canonicalDecisionPrice,score:intelligence.score,
       confidence:intelligence.confidence,action:intelligence.action,thesisLabel:intelligence.thesisLabel,
       dimensions:intelligence.dimensions,levels:canonicalValidationLevels,auditId:enterprise.auditId,
-      evidence:{coverage:enterprise.coverage,dataQuality:enterprise.dataQuality,contradictions:intelligence.contradictions,benchmark:d.market?.benchmark||"SPY",benchmarkPrice:d.market?.benchmarkPrice??null,v934:d?.marketIntelligence?projectMarketIntelligence(d.marketIntelligence):null,v931:institutionalDecision?{snapshotId:institutionalDecision.snapshotId,newMoneyAction:institutionalDecision.newMoneyAction,ownerAction:institutionalDecision.ownerAction,longTermAction:institutionalDecision.longTermAction,canonicalPrimaryAction:institutionalDecision.canonicalPrimaryAction,executionAction:institutionalDecision.executionAction,setupState:institutionalDecision.setupState,decisionScore:institutionalDecision.decisionScore,evidenceCompleteness:institutionalDecision.evidenceCompleteness,nextDecisionTrigger:institutionalDecision.nextDecisionTrigger,invalidationTrigger:institutionalDecision.invalidationTrigger}:null,v5:v5Analysis&&v7Analysis?{snapshotId:v5Analysis.snapshotId,engineVersion:v7Analysis.engineVersion,action:v5Analysis.decision.primaryAction,ownerAction:v5Analysis.decision.ownerAction,executionState:v5Analysis.executionPlan.state,priceState:v5Analysis.marketTruth.priceState,executionPlan:v5Analysis.executionPlan,trustState:v7Analysis.trust.state,trustScore:v7Analysis.trust.score,thesisStrength:v5Analysis.metrics.find((m:any)=>m.id==="thesisStrength")?.value??null,businessQuality:v5Analysis.metrics.find((m:any)=>m.id==="businessQuality")?.value??null,entryQuality:v5Analysis.metrics.find((m:any)=>m.id==="entryQuality")?.value??null}:null},
+      evidence:{coverage:enterprise.coverage,dataQuality:enterprise.dataQuality,contradictions:intelligence.contradictions,benchmark:d.market?.benchmark||"SPY",benchmarkPrice:d.market?.benchmarkPrice??null,v934:d?.marketIntelligence?projectMarketIntelligence(d.marketIntelligence):null,v931:institutionalDecision?{snapshotId:institutionalDecision.snapshotId,newMoneyAction:institutionalDecision.newMoneyAction,ownerAction:institutionalDecision.ownerAction,longTermAction:institutionalDecision.longTermAction,canonicalPrimaryAction:institutionalDecision.canonicalPrimaryAction,legacyChallengerAction:institutionalDecision.legacyChallengerAction,hardVetoReasons:institutionalDecision.hardVetoReasons,policyReasons:institutionalDecision.policyReasons,executionAction:institutionalDecision.executionAction,setupState:institutionalDecision.setupState,decisionScore:institutionalDecision.decisionScore,evidenceCompleteness:institutionalDecision.evidenceCompleteness,nextDecisionTrigger:institutionalDecision.nextDecisionTrigger,invalidationTrigger:institutionalDecision.invalidationTrigger}:null,v5:v5Analysis&&v7Analysis?{snapshotId:v5Analysis.snapshotId,engineVersion:v7Analysis.engineVersion,action:v5Analysis.decision.primaryAction,ownerAction:v5Analysis.decision.ownerAction,executionState:v5Analysis.executionPlan.state,priceState:v5Analysis.marketTruth.priceState,executionPlan:v5Analysis.executionPlan,trustState:v7Analysis.trust.state,trustScore:v7Analysis.trust.score,thesisStrength:v5Analysis.metrics.find((m:any)=>m.id==="thesisStrength")?.value??null,businessQuality:v5Analysis.metrics.find((m:any)=>m.id==="businessQuality")?.value??null,entryQuality:v5Analysis.metrics.find((m:any)=>m.id==="entryQuality")?.value??null}:null},
       investorDecision:investorDecision?{companyScore:investorDecision.companyScore,thesisScore:investorDecision.thesisScore,opportunityScore:investorDecision.opportunityScore,thesisLabel:investorDecision.thesisLabel,thesisState:investorDecision.thesisState,valuationLabel:investorDecision.valuationLabel,action:investorDecision.action,confidence:investorDecision.confidence,dataCompleteness:investorDecision.dataCompleteness,archetype:investorDecision.archetype,factors:investorDecision.factors,horizons:investorDecision.horizons,drivers:investorDecision.drivers,risks:investorDecision.risks,today:investorDecision.today}:null,
       canonicalDecision:v7Analysis?serializeV7Decision(v7Analysis):null
     })}).catch(()=>{});
@@ -734,7 +741,7 @@ export default function StockClient({symbol}:{symbol:string}){
   return <div className="aurynStockPage">
     <StockSecurityHeader company={company?.name||d.name||symbol} symbol={symbol} price={priceSensitiveAllowed?canonicalDecisionPrice:null} changePct={priceSensitiveAllowed?displayChangePct:null} status={marketStatusLabel} detail={marketDetail} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
     {marketTruth&&!priceSensitiveAllowed?<div className="aurynIntegrityAlert aurynMarketTruthAlert" role="alert"><b>PRICE UNVERIFIED</b><span>{marketTruth.reason||"Independent market sources are not sufficiently aligned."} AURYN has disabled entry, confirmation, target, stop and risk/reward output until the canonical price is verified.</span></div>:null}
-    {institutionalDecision?<InstitutionalDecisionBrief decision={institutionalDecision} marketTruth={marketTruth} executionPlan={v5Analysis?.executionPlan??null} support={v5Analysis?.technical?.levels?.support??null} marketIntelligence={marketIntelligenceView??d?.marketIntelligence??null}/>:null}
+    {institutionalDecision?<InstitutionalDecisionBrief decision={institutionalDecision} marketTruth={marketTruth} executionPlan={v5Analysis?.executionPlan??null} support={v5Analysis?.technical?.levels?.support??null} marketIntelligence={marketIntelligenceView??d?.marketIntelligence??null} scenario={v5Analysis?.scenario??null} entryQuality={technicalState.entryQuality}/>:null}
     {v5Analysis?<>{canonicalTrustBlocked?<div className="aurynIntegrityAlert aurynTrustBlock" role="alert"><b>CANONICAL TRUST BLOCK</b><span>{v7Analysis?.trust.blockers[0]||"AURYN detected an internal snapshot/plan inconsistency."} Price-sensitive execution levels are suppressed until the canonical chain is aligned.</span></div>:null}</>:<section className="aurynV5Unavailable"><small>AURYN CANONICAL ANALYSIS</small><b>COLLECTING VERIFIED EVIDENCE</b><span>AURYN will not publish a fallback verdict while the canonical snapshot is unavailable.</span></section>}
     <div className="aurynOwnershipNote"><Sparkles size={14}/><span>AURYN separates long-term thesis, owner action and new-money timing.</span></div>
 
@@ -822,7 +829,6 @@ export default function StockClient({symbol}:{symbol:string}){
 
       {tab==="technical"&&<div className="aurynStockTabPage v12Technical v26Technical">
         {d?.marketIntelligence?<section className="v934TechnicalCore" data-market-intelligence-snapshot={d.marketIntelligence.snapshotId}><div className="aurynEyebrow">MULTI-TIMEFRAME MARKET STATE</div><MarketTimeframeTape marketIntelligence={marketIntelligenceView??d.marketIntelligence}/><MarketActionMap marketIntelligence={d.marketIntelligence}/></section>:null}
-        {v5Analysis&&!canonicalTrustBlocked&&<ScenarioMapPanel scenario={v5Analysis.scenario} mode="compact"/>}
         <StockTabContext marketTruth={marketTruth} label="TECHNICALS" title="Timing, trend & confluence" score={technicalState.strength} state={d.labels.trend} action={institutionalDecision?.newMoneyAction??v5Analysis?.decision.primaryAction} detail={institutionalDecision?.pillars.marketStructure.why||"Completed-bar market structure is loading into the canonical AURYN decision."}/>
         <div className="v34TechnicalHero v383TechnicalHero">
           <div><small>TECHNICAL DECISION SUPPORT</small><h3>Strength and entry are different questions.</h3><p>AURYN measures trend strength separately from entry quality, then uses RSI, MACD, participation, volatility and extension to explain why. A strong chart can still be a poor place to chase.</p></div>

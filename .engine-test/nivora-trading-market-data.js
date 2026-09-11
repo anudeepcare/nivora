@@ -7,7 +7,7 @@ const security_master_1 = require("./auryn/v82/security-master");
 async function fetchTwelveRaw(symbol, key) {
     const hint = (0, security_master_1.providerMarketHint)(symbol);
     const u = `https://api.twelvedata.com/quote?symbol=${encodeURIComponent(symbol)}${hint.exchange ? `&exchange=${encodeURIComponent(hint.exchange)}` : ""}&prepost=true&apikey=${key}`;
-    const r = await fetch(u, { cache: "no-store", signal: AbortSignal.timeout(4500) });
+    const r = await fetch(u, { cache: "no-store", signal: AbortSignal.timeout(2200) });
     const body = await r.json().catch(() => null);
     if (!r.ok || body?.status === "error" || (!body?.close && !body?.price))
         throw new Error(body?.message || `Twelve Data ${r.status}`);

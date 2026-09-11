@@ -13,11 +13,19 @@ function resolve(mi:any){
   invalidation:map?.invalidation??levels?.invalidation??null
  };
 }
-export default function MarketActionMap({marketIntelligence}:{marketIntelligence:any}){
- if(!marketIntelligence)return null;const x=resolve(marketIntelligence);const entry=Number.isFinite(Number(x.entryLow))&&Number.isFinite(Number(x.entryHigh))?`${money(x.entryLow)}–${money(x.entryHigh)}`:'—';
+export default function MarketActionMap({marketIntelligence,newMoneyAction,setup}:{marketIntelligence:any;newMoneyAction?:string|null;setup?:string|null}){
+ if(!marketIntelligence)return null;
+ const x=resolve(marketIntelligence);
+ const entry=Number.isFinite(Number(x.entryLow))&&Number.isFinite(Number(x.entryHigh))?`${money(x.entryLow)}–${money(x.entryHigh)}`:'—';
+ const daily=String(marketIntelligence?.confirmed?.['1D']?.rating||'').toUpperCase();
+ const state=String(setup||'').toUpperCase();
+ const action=String(newMoneyAction||'').toUpperCase();
+ const recovery=/DAMAGED|BREAKDOWN|FAILED|WEAKENING/.test(state)||daily==='SELL'||action==='AVOID';
+ const entryLabel=recovery?'RECOVERY / WATCH ZONE':'PREFERRED ENTRY';
+ const confirmLabel=recovery?'RECLAIM / CONFIRM':'CONFIRM';
  return <div className="v934ActionMap" data-market-intelligence-snapshot={marketIntelligence.snapshotId||''} aria-label="Canonical market action map">
-  <span><small>PREFERRED ENTRY</small><b>{entry}</b></span>
-  <span><small>CONFIRM</small><b>{money(x.confirm)}</b></span>
+  <span><small>{entryLabel}</small><b>{entry}</b></span>
+  <span><small>{confirmLabel}</small><b>{money(x.confirm)}</b></span>
   <span><small>SUPPORT</small><b>{money(x.support)}</b></span>
   <span><small>MAJOR SUPPORT</small><b>{money(x.majorSupport)}</b></span>
   <span><small>T1</small><b>{money(x.t1)}</b></span>

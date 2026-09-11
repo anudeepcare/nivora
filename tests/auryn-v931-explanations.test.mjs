@@ -6,8 +6,8 @@ import {validateExpertExplanation} from '../.engine-test/auryn/v931/explanation.
 test('decision kernel emits six meaningful pillars plus owner/new-money/long-term/execution actions',()=>{
  const d=buildInstitutionalDecisionKernel({snapshotId:'s1',symbol:'IREN',marketPrice:47,executionTradable:false,previousSetupState:'REPAIRING',scores:{business:82,earningsRevisions:77,valuation:64,marketStructure:58,catalystsRegime:69,riskAsymmetry:67},technical:{trend:58,momentum:72,flow:66,structure:61,nearResistance:true,confirmedBreakout:false,structuralBreak:false,reclaimLevel:48.39,invalidation:42.10},evidenceCompleteness:94});
  assert.equal(Object.keys(d.pillars).length,6);
- assert.ok(['WAIT','START_SMALL','BUY','ACCUMULATE'].includes(d.newMoneyAction));
- assert.ok(['HOLD','ADD','REDUCE','EXIT'].includes(d.ownerAction));
+ assert.ok(['STRONG_BUY','BUY','START_SMALL','WAIT','AVOID'].includes(d.newMoneyAction));
+ assert.ok(['ADD','HOLD','WATCH','REDUCE','EXIT'].includes(d.ownerAction));
  assert.equal(d.executionAction,'BLOCKED');
  assert.ok(d.nextDecisionTrigger.includes('48.39'));
  assert.ok(d.drivers.length>0);

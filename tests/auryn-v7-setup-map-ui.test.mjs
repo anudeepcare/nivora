@@ -10,11 +10,13 @@ test('signature AURYN Setup Map supports compact summary and full bull/base/bear
  assert.match(s,/intent/);
 });
 
-test('Technicals renders the canonical scenario object once as supporting evidence',()=>{
+test('V5 scenario is projected once into the canonical first-screen setup evidence without a duplicate Technicals map',()=>{
  const s=read('components/StockClient.tsx');
- assert.match(s,/ScenarioMapPanel scenario={v5Analysis\.scenario} mode="compact"/);
- assert.doesNotMatch(s,/ScenarioMapPanel scenario={v5Analysis\.scenario} mode="full"/);
+ assert.match(s,/scenario={v5Analysis\?\.scenario\?\?null}/);
+ assert.doesNotMatch(s,/<ScenarioMapPanel/);
  assert.equal((s.match(/buildScenarioMap/g)||[]).length,0);
+ const brief=read('components/stock/v931/InstitutionalDecisionBrief.tsx');
+ assert.match(brief,/PATTERN EVIDENCE/);
 });
 
 test('scenario map mobile CSS stacks cases and has no fixed-width overflow',()=>{

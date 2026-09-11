@@ -35,10 +35,10 @@ export class AlpacaPaperBroker{
  }
 
 
- async getRecentBars(symbol:string,limit=40):Promise<Array<{datetime:string;open:number;high:number;low:number;close:number;volume:number}>>{
+ async getRecentBars(symbol:string,limit=40,timeoutMs=4500):Promise<Array<{datetime:string;open:number;high:number;low:number;close:number;volume:number}>>{
   const headers={"APCA-API-KEY-ID":this.key,"APCA-API-SECRET-KEY":this.secret};
   const u=`https://data.alpaca.markets/v2/stocks/${encodeURIComponent(symbol)}/bars?timeframe=1Day&limit=${Math.max(5,Math.min(200,limit))}&adjustment=all&feed=iex`;
-  const r=await fetch(u,{cache:"no-store",headers,signal:AbortSignal.timeout(4500)});
+  const r=await fetch(u,{cache:"no-store",headers,signal:AbortSignal.timeout(timeoutMs)});
   const body=await r.json().catch(()=>null);
   if(!r.ok||!Array.isArray(body?.bars))throw new Error(body?.message||`Alpaca bars ${r.status}`);
   return body.bars.map((b:any)=>({datetime:String(b.t||"").slice(0,10),open:Number(b.o),high:Number(b.h),low:Number(b.l),close:Number(b.c),volume:Number(b.v||0)}));

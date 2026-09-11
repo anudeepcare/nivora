@@ -38,29 +38,36 @@ function url(symbol:string,key:string,interval:'15min'|'4h'|'1day',size:number,p
 
 const wait=(ms:number)=>new Promise<null>(resolve=>setTimeout(()=>resolve(null),ms));
 
-export async function loadV934DecisionBars(input:{symbol:string;key:string;asOf:Date;fetchJson:Fetcher}){
+export async function loadV934DecisionBars(input:{symbol:string;key:string;asOf:Date;fetchJson:Fetcher;fallbackDailyBars?:Promise<Bar[]|null>|Bar[]|null}){
   const symbol=String(input.symbol).toUpperCase();
-  // Daily/weekly structure is the first-render contract. 4H is useful but must never hold the page hostage.
-  const fourHourWork=input.fetchJson(url(symbol,input.key,'4h',180,false),['twelve','v9342',symbol,'4h'],300,1800)
+  const sessionDate=lastCompletedRegularSessionDate(input.asOf)||marketCalendarAt(input.asOf).date;
+  // Confirmed daily/weekly research changes only when a regular session completes. Cache by that session date
+  // instead of refetching the same history every few minutes. 4H is enrichment and never blocks first render.
+  const fourHourWork=input.fetchJson(url(symbol,input.key,'4h',180,false),['twelve','v9343',symbol,'4h',sessionDate],900,1400)
     .then(value=>({value,error:null as string|null}))
     .catch(error=>({value:null,error:String(error)}));
-  let rawDaily:any=null,dailyError:string|null=null;
+  let rawDaily:any=null,dailyError:string|null=null,dailySource:'TWELVE'|'ALPACA_FALLBACK'='TWELVE';
   try{
-    rawDaily=await input.fetchJson(url(symbol,input.key,'1day',300,false),['twelve','v9342',symbol,'1day'],120,1900);
-  }catch(error){
-    dailyError=String(error);
-    try{
-      rawDaily=await input.fetchJson(url(symbol,input.key,'1day',220,false),['twelve','v9342',symbol,'1day','retry'],120,1300);
-      dailyError=null;
-    }catch(retry){dailyError=`${dailyError}; retry: ${String(retry)}`;}
+    rawDaily=await input.fetchJson(url(symbol,input.key,'1day',300,false),['twelve','v9343',symbol,'1day','session',sessionDate],86400,1200);
+  }catch(error){dailyError=String(error);}
+
+  let allDaily=parseTwelveBars(rawDaily);
+  if(allDaily.length<40&&input.fallbackDailyBars){
+    const fallback=await Promise.race([Promise.resolve(input.fallbackDailyBars).catch(()=>null),wait(900)]);
+    if(Array.isArray(fallback)&&fallback.length>=40){
+      allDaily=fallback.slice();
+      dailySource='ALPACA_FALLBACK';
+      rawDaily={meta:{symbol,source:'alpaca-fallback'},values:fallback.map(b=>({datetime:b.datetime,open:b.open,high:b.high,low:b.low,close:b.close,volume:b.volume}))};
+    }
   }
-  const fourHour=await Promise.race([fourHourWork,wait(450)]);
+
+  const fourHour=await Promise.race([fourHourWork,wait(300)]);
   const raw4h=fourHour&&'value' in fourHour?fourHour.value:null;
   const fourHourError=fourHour&&'error' in fourHour?fourHour.error:null;
-  const all4h=parseTwelveBars(raw4h),allDaily=parseTwelveBars(rawDaily),calendar=marketCalendarAt(input.asOf);
+  const all4h=parseTwelveBars(raw4h),calendar=marketCalendarAt(input.asOf);
   const h4=completedIntraday(all4h,240,input.asOf),day=completedDailyBars(allDaily,calendar),week=aggregateCompletedWeeks(day,input.asOf);
   const confirmed:TimeframeBarSet={'4H':h4,'1D':day,'1W':week};
-  return{confirmed,preview:{} as TimeframeBarSet,rawDaily,coverage:{'15M':0,'1H':0,'4H':h4.length,'1D':day.length,'1W':week.length},errors:{'15M':null,'4H':fourHourError,'1D':dailyError}};
+  return{confirmed,preview:{} as TimeframeBarSet,rawDaily,dailySource,coverage:{'15M':0,'1H':0,'4H':h4.length,'1D':day.length,'1W':week.length},errors:{'15M':null,'4H':fourHourError,'1D':day.length>=40?null:dailyError}};
 }
 
 export async function loadV934LiveContext(input:{symbol:string;key:string;asOf:Date;fetchJson:Fetcher}){

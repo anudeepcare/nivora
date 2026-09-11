@@ -64,11 +64,12 @@ test('stock page never collapses to a full-screen analysis error and loads tacti
 
 test('decision UX clearly separates technical state from investment action and market plan',()=>{
   const src=read('components/stock/v931/InstitutionalDecisionBrief.tsx');
-  assert.match(src,/Technical structure/);
-  assert.match(src,/new money remains/);
+  assert.match(src,/MARKET SETUP/);
+  assert.match(src,/ACTION IMPLICATION/);
+  assert.match(src,/newMoneyAction/);
   assert.match(src,/v934DecisionPlan/);
   assert.match(src,/MARKET PLAN/);
-  assert.match(src,/DECISION LOGIC/);
+  assert.match(src,/Decision logic/);
 });
 
 test('V9.3.4 live audit uses corrected helpers and golden-first selection',()=>{

@@ -28,10 +28,12 @@ test('deterministic reliability matrix covers at least 10,000 real-world combina
 });
 
 import fs from 'node:fs';
-test('validation and paper runner carry V5 canonical snapshot/action into the execution pipeline',()=>{
+test('paper runner preserves V5 evidence as challenger context while V9.3.4.3 owns execution action',()=>{
  const stock=fs.readFileSync(new URL('../components/StockClient.tsx',import.meta.url),'utf8');
  assert.match(stock,/v5:v5Analysis&&v7Analysis\?\{snapshotId:v5Analysis\.snapshotId/);
  const runner=fs.readFileSync(new URL('../app/api/trading-lab/run-paper/route.ts',import.meta.url),'utf8');
- assert.match(runner,/mapV5ActionToToday/);
+ assert.match(runner,/mapInstitutionalActionToToday/);
+ assert.doesNotMatch(runner,/mapV5ActionToToday/);
  assert.match(runner,/snapshot\.evidence\?\.v5/);
+ assert.match(runner,/hardVetoReasons/);
 });

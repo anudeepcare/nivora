@@ -74,14 +74,16 @@ test('evidence tabs explain the same institutional decision with pillar-specific
  assert.match(stock,/action=\{institutionalDecision\?\.newMoneyAction\?\?v5Analysis\?\.decision\.primaryAction\}/);
 });
 
-test('Trading Lab is bound to the persisted V9.3.1 canonical decision and blocks internal decision divergence',()=>{
+test('Trading Lab is bound to the persisted canonical decision and treats V5 as challenger only',()=>{
  const stock=read('components/StockClient.tsx');
  const run=read('app/api/trading-lab/run-paper/route.ts');
  const status=read('app/api/trading-lab/status/route.ts');
  assert.match(stock,/canonicalPrimaryAction:institutionalDecision\.canonicalPrimaryAction/);
  assert.match(stock,/executionAction:institutionalDecision\.executionAction/);
  assert.match(run,/v931Meta/);
- assert.match(run,/CANONICAL_DECISION_DIVERGENCE/);
+ assert.doesNotMatch(run,/CANONICAL_DECISION_DIVERGENCE/);
+ assert.match(run,/CANONICAL_HARD_VETO|hardVetoReasons/);
+ assert.match(run,/mapInstitutionalActionToToday/);
  assert.match(status,/select\("id,symbol,observed_at,decision,evidence"\)/);
  assert.match(status,/v931\?\.newMoneyAction/);
 });

@@ -166,6 +166,8 @@
     "lib/auryn/v934/version.ts",
     "lib/auryn/v934/projections.ts",
     "lib/auryn/v934/decision-bridge.ts",
+    "lib/auryn/v934/setup-explanations.ts",
+    "lib/auryn/v9343/execution-policy.ts",
     "lib/auryn/v934/twelve-multitimeframe.ts"
   ]
 }

@@ -6,7 +6,7 @@ const domain=fs.readFileSync('lib/auryn/v931/domain.ts','utf8');
 const tab=fs.readFileSync('components/stock/StockTabContext.tsx','utf8');
 
 test('V9.3.1 institutional actions are narrow unions, not generic strings',()=>{
-  assert.match(domain,/export type InstitutionalNewMoneyAction='BUY'\|'START_SMALL'\|'WAIT'/);
+  assert.match(domain,/export type InstitutionalNewMoneyAction='STRONG_BUY'\|'BUY'\|'START_SMALL'\|'WAIT'\|'AVOID'/);
   assert.match(domain,/newMoneyAction:InstitutionalNewMoneyAction/);
 });
 

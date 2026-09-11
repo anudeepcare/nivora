@@ -16,7 +16,9 @@ test('institutional decision brief uses V9.3.4 action map rather than legacy exe
  const src=read('components/stock/v931/InstitutionalDecisionBrief.tsx');
  assert.match(src,/marketIntelligence/);
  assert.match(src,/actionMap/);
- assert.match(src,/PREFERRED ENTRY/);assert.match(src,/CONFIRM/);assert.match(src,/T1/);assert.match(src,/T2/);assert.match(src,/RISK/);
+ assert.match(src,/MarketActionMap/);
+ const map=read('components/market/MarketActionMap.tsx');
+ assert.match(map,/PREFERRED ENTRY|RECOVERY \/ WATCH ZONE/);assert.match(map,/CONFIRM/);assert.match(map,/T1/);assert.match(map,/T2/);assert.match(map,/RISK \/ INVALIDATION/);
 });
 
 test('portfolio holdings surface canonical market intelligence state and next level',()=>{

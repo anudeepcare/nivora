@@ -45,6 +45,9 @@ function isSupportedEquitySecurity(x) {
 }
 const PROVIDER_MARKET_HINTS = {
     SAP: { exchange: "NYSE", currency: "USD" },
+    MU: { exchange: "NASDAQ", currency: "USD" },
+    NBIS: { exchange: "NASDAQ", currency: "USD" },
+    SKHY: { exchange: "NASDAQ", currency: "USD" },
 };
 function providerMarketHint(raw) {
     return PROVIDER_MARKET_HINTS[clean(raw)] ?? {};

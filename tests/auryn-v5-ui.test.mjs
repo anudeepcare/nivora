@@ -10,7 +10,8 @@ test('stock page builds one V5 canonical snapshot and projects it through the si
   assert.match(s,/InstitutionalDecisionBrief/);
   assert.doesNotMatch(s,/<StockV5Decision/);
   assert.doesNotMatch(s,/<ExecutionPlanPanel/);
-  assert.match(s,/ScenarioMapPanel scenario={v5Analysis\.scenario} mode="compact"/);
+  assert.match(s,/scenario={v5Analysis\?\.scenario\?\?null}/);
+  assert.doesNotMatch(s,/ScenarioMapPanel scenario={v5Analysis\.scenario}/);
 });
 
 test('V5 hero removes developer engine/model-fit metadata from the primary decision surface',()=>{
@@ -28,11 +29,15 @@ test('execution plan owns staged DCA labels and metric explorer groups professio
   assert.match(metrics,/Momentum|MOMENTUM/); assert.match(metrics,/Volatility|VOLATILITY/); assert.match(metrics,/Trend|TREND/); assert.match(metrics,/Business|BUSINESS/);
 });
 
-test('technical tab exposes V5 setup and bull/base/bear scenario map from the canonical snapshot',()=>{
+test('legacy V5 scenario remains available as evidence but the first-screen canonical setup owns presentation',()=>{
   const s=read('components/stock/v5/ScenarioMapPanel.tsx');
   assert.match(s,/BULL CASE/); assert.match(s,/BASE CASE/); assert.match(s,/BEAR CASE/); assert.match(s,/SETUP/);
   const stock=read('components/StockClient.tsx');
-  assert.match(stock,/ScenarioMapPanel/); assert.match(stock,/scenario={v5Analysis\.scenario}/);
+  assert.match(stock,/scenario={v5Analysis\?\.scenario\?\?null}/);
+  assert.doesNotMatch(stock,/<ScenarioMapPanel/);
+  const brief=read('components/stock/v931/InstitutionalDecisionBrief.tsx');
+  assert.match(brief,/PATTERN EVIDENCE/);
+  assert.match(brief,/describeSetupState/);
 });
 
 test('V5 stock surface never falls back to a legacy hero or a second action-plan calculator',()=>{

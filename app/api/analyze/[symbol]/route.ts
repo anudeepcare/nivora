@@ -26,7 +26,7 @@ export async function GET(req:Request,{params}:{params:Promise<{symbol:string}>}
  try{
   const benchmark=isCrypto?(symbol.startsWith("BTC/")?null:"BTC/USD"):"SPY";
   const alpacaBarsPromise:Promise<Bar[]|null>=!isCrypto&&process.env.ALPACA_PAPER_API_KEY&&process.env.ALPACA_PAPER_API_SECRET
-   ?new AlpacaPaperBroker(process.env.ALPACA_PAPER_API_KEY,process.env.ALPACA_PAPER_API_SECRET).getRecentBars(symbol,40).catch(()=>null)
+   ?new AlpacaPaperBroker(process.env.ALPACA_PAPER_API_KEY,process.env.ALPACA_PAPER_API_SECRET).getRecentBars(symbol,200,1600).catch(()=>null)
    :Promise.resolve(null);
   const asOf=new Date();
   const fetchJson=(url:string,keyParts:string[],revalidate:number,timeout:number)=>sharedJson(url,keyParts,revalidate,timeout);
@@ -37,14 +37,14 @@ export async function GET(req:Request,{params}:{params:Promise<{symbol:string}>}
     new Promise<null>(resolve=>setTimeout(()=>resolve(null),1200))
   ]);
   const [v934Bars,v934Bench,marketGateway,alpacaBars]=await Promise.all([
-    loadV934DecisionBars({symbol,key,asOf,fetchJson}),
+    loadV934DecisionBars({symbol,key,asOf,fetchJson,fallbackDailyBars:alpacaBarsPromise}),
     benchPromise,
     marketGatewayPromise,
     alpacaBarsFast
   ]);
   const j=v934Bars.rawDaily,bj=v934Bench?.rawDaily??null;
-  if(!j&&v934Bars.errors?.["1D"])return NextResponse.json({error:"Market history provider is temporarily unavailable. AURYN kept live price/research shell active and will retry automatically.",code:"PROVIDER_TEMPORARY_FAILURE",analysisStatus:"RETRY",security,providerDiagnostics:v934Bars.errors,researchSafe:Boolean(marketGateway?.snapshot?.priceSensitiveAllowed),executionTradable:false},{status:503,headers:{"Retry-After":"5","Cache-Control":"private, no-store, max-age=0"}});
   const coverage=assessHistoryCoverage(symbol,j);
+  if(!coverage.analysisAllowed&&v934Bars.errors?.["1D"])return NextResponse.json({error:"Confirmed market history is temporarily unavailable from both configured history paths. AURYN will keep the verified price active and retry research in the background.",code:"PROVIDER_TEMPORARY_FAILURE",analysisStatus:"RETRY",security,providerDiagnostics:v934Bars.errors,researchSafe:Boolean(marketGateway?.snapshot?.priceSensitiveAllowed),executionTradable:false},{status:503,headers:{"Retry-After":"15","Cache-Control":"private, no-store, max-age=0"}});
   if(coverage.code==="PROVIDER_RATE_LIMITED")return NextResponse.json({error:coverage.reason,code:coverage.code,analysisStatus:"RETRY",security,coverage,researchSafe:false,executionTradable:false},{status:429,headers:{"Retry-After":"60","Cache-Control":"private, no-store, max-age=0"}});
   if(!coverage.analysisAllowed)return NextResponse.json({error:coverage.reason,code:coverage.code,analysisStatus:"QUARANTINED",security,coverage,researchSafe:false,executionTradable:false},{status:422,headers:{"Cache-Control":"private, no-store, max-age=0"}});
   const calendar=marketCalendarAt(asOf);
