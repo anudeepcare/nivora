@@ -1,0 +1,11 @@
+AURYN V9.6.2 verification
+2026-09-11
+
+PASS: V9.6.2 Technical Intelligence tests
+PASS: V9.6.1 Technicals regression
+PASS: V9.6 theme regression
+PASS: V9.5.6 PWA/theme contract
+PASS: V9.5.7 search/personalization
+PASS: V9.5.8 theme surface/font scaling
+
+Combined targeted result: 34 tests passed, 0 failed.

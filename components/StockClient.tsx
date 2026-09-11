@@ -912,51 +912,94 @@ export default function StockClient({symbol}:{symbol:string}){
 
       {tab==="technical"&&<div className="aurynStockTabPage v12Technical v26Technical">
         {d?.marketIntelligence?<section className="v934TechnicalCore" data-market-intelligence-snapshot={d.marketIntelligence.snapshotId}><div className="aurynEyebrow">MULTI-TIMEFRAME MARKET STATE</div><MarketTimeframeTape marketIntelligence={marketIntelligenceView??d.marketIntelligence}/><MarketActionMap marketIntelligence={d.marketIntelligence}/></section>:null}
-        <StockTabContext marketTruth={marketTruth} label="TECHNICALS" title="Timing, trend & confluence" score={technicalState.strength} state={d.labels.trend} action={institutionalDecision?.newMoneyAction??v5Analysis?.decision.primaryAction} detail={institutionalDecision?.pillars.marketStructure.why||"Completed-bar market structure is loading into the canonical AURYN decision."}/>
-        <div className="v34TechnicalHero v383TechnicalHero">
-          <div><small>TECHNICAL DECISION SUPPORT</small><h3>Strength and entry are different questions.</h3><p>AURYN measures trend strength separately from entry quality, then uses RSI, MACD, participation, volatility and extension to explain why. A strong chart can still be a poor place to chase.</p></div>
-          <div className="v34TechVerdict"><small>TECHNICAL STRENGTH</small><b className={technicalState.strength>=68?"good":technicalState.strength<45?"bad":"mid"}>{technicalState.strength}/100</b><span>{technicalState.state} · {proTech?.macdLabel||"MACD unavailable"} MACD · {proTech?.rsiLabel||"RSI unavailable"} RSI</span></div>
-        </div>
-        <div className="v383TechnicalStateGrid v34TechnicalScoreGrid">
-          <div><small>ENTRY QUALITY</small><b className={technicalState.entryQuality>=68?"good":technicalState.entryQuality<45?"bad":"mid"}>{technicalState.entryQuality}/100</b><span>{technicalState.entryState}</span></div>
-          <div><small>TREND</small><b>{technicalState.trend}/100</b><span>{technicalState.trend>=67?"Bullish":technicalState.trend<42?"Bearish":"Mixed"}</span></div>
-          <div><small>MOMENTUM</small><b>{technicalState.momentum}/100</b><span>{technicalState.momentum>=67?"Strong":technicalState.momentum<42?"Weak":"Mixed"}</span></div>
-          <div><small>PARTICIPATION</small><b>{technicalState.participation}/100</b><span>{proTech?.volumeLabel||"Volume context"}</span></div>
-          <div><small>EXTENSION RISK</small><b className={technicalState.extensionRisk>=70?"bad":technicalState.extensionRisk<40?"good":"mid"}>{technicalState.extensionRisk}/100</b><span>Higher = more chase risk</span></div>
-          <div><small>VOLATILITY RISK</small><b className={technicalState.volatilityRisk>=70?"bad":technicalState.volatilityRisk<40?"good":"mid"}>{technicalState.volatilityRisk}/100</b><span>Higher = larger price swings</span></div>
-        </div>
-        {proTech&&<div className="v34IndicatorGrid">
-<div className="v941RsiTrack">
-  <div className="metricLabel">
-    <small>RSI · 14</small>
-    <MetricInfo title="RSI (14)">
-      Relative Strength Index from 0–100. Above 70 can indicate an overbought/extended condition; below 30 can indicate oversold. AURYN does not use RSI alone.
-    </MetricInfo>
-  </div>
+        <div className="v962TechnicalExperience">
+          <StockTabContext marketTruth={marketTruth} label="TECHNICALS" title="Timing, trend & confluence" score={technicalState.strength} state={d.labels.trend} action={institutionalDecision?.newMoneyAction??v5Analysis?.decision.primaryAction} detail={institutionalDecision?.pillars.marketStructure.why||"Completed-bar market structure is loading into the canonical AURYN decision."}/>
 
-  <b
-    className={
-      proTech.rsi14 == null
-        ? "mid"
-        : proTech.rsi14 >= 70
-        ? "bad"
-        : proTech.rsi14 <= 30
-        ? "good"
-        : "mid"
-    }
-  >
-    {proTech.rsi14 != null ? proTech.rsi14.toFixed(1) : "—"}
-  </b>
-  <div className="v942RsiScale" style={{"--pos":`${Math.max(0,Math.min(100,proTech.rsi14??50))}%`} as React.CSSProperties}><i/><em>30</em><em>50</em><em>70</em></div>
-  <span>{proTech.rsiLabel}</span>
-</div>          <div><div className="metricLabel"><small>MACD · 12/26/9</small><MetricInfo title="MACD">MACD compares fast and slow exponential moving averages. A positive histogram supports bullish momentum; a negative histogram supports bearish momentum.</MetricInfo></div><b className={proTech.macdLabel==="Bullish"?"good":proTech.macdLabel==="Bearish"?"bad":"mid"}>{proTech.macdLabel}</b><div className={`v942MacdHistogram ${proTech.macdHist!=null&&proTech.macdHist<0?"negative":"positive"}`}><i/><span/></div><span>{proTech.macdHist!=null?`Histogram ${proTech.macdHist>=0?"+":""}${proTech.macdHist.toFixed(3)}`:"Unavailable"}</span></div>
-          <div><div className="metricLabel"><small>20D / 50D TREND</small><MetricInfo title="Moving-average trend">Compares price with the 20-day and 50-day moving averages. Alignment can confirm trend direction but can lag turning points.</MetricInfo></div><b className={proTech.trendLabel==="Bullish"?"good":proTech.trendLabel==="Bearish"?"bad":"mid"}>{proTech.trendLabel}</b><span>{proTech.d20!=null?`${proTech.d20>=0?"+":""}${proTech.d20.toFixed(1)}% vs 20D`:"—"} · {proTech.d50!=null?`${proTech.d50>=0?"+":""}${proTech.d50.toFixed(1)}% vs 50D`:"—"}</span></div>
-          <div className="v941VolumeTrack"><div className="metricLabel"><small>VOLUME</small><MetricInfo title="Volume confirmation">Compares current volume with the recent 20-session average. Strong participation can make breakouts or reversals more meaningful.</MetricInfo></div><b>{proTech.volRatio!=null?`${proTech.volRatio.toFixed(2)}×`:"—"}</b><div className="v942VolumeScale" style={{"--pos":`${Math.max(0,Math.min(100,(proTech.volRatio??1)*50))}%`} as React.CSSProperties}><i/><em>1×</em></div><span>{proTech.volumeLabel}</span></div>
-          <div><div className="metricLabel"><small>ATR · 14</small><MetricInfo title="ATR (14)">Average True Range estimates typical recent daily movement. ATR% helps compare volatility across stocks with different prices.</MetricInfo></div><b>{proTech.atrPct!=null?`${proTech.atrPct.toFixed(1)}%`:"—"}</b><span>Typical daily range</span></div>
-          <div><div className="metricLabel"><small>{v5Analysis?.executionPlan.intent==="ACCUMULATE"?"DCA / INITIAL ENTRY":"STRUCTURAL WATCH ZONE"}</small><MetricInfo title="Canonical execution zone">This level comes from the single canonical execution plan. DCA multipliers appear only when AURYN has an active buy decision and decision-grade valuation.</MetricInfo></div><b>{!priceSensitiveAllowed?"BLOCKED":v5Analysis?.executionPlan.initialEntry?`${displayMoney(v5Analysis.executionPlan.initialEntry.low)}–${displayMoney(v5Analysis.executionPlan.initialEntry.high)}`:"—"}</b><span>{!priceSensitiveAllowed?"Price-sensitive technical zones are hidden until Market Truth verifies the underlying price.":v5Analysis?.executionPlan.intent==="ACCUMULATE"?"Canonical entry zone; staged DCA is enabled only while thesis and valuation remain valid.":v5Analysis?.executionPlan.initialEntry?"Structural watch level only; this is not an instruction to average down.":"No active structural zone"}</span></div>
-          <div className="v941BollingerTrack"><div className="metricLabel"><small>BOLLINGER POSITION</small><MetricInfo title="Bollinger position">Shows where price sits within a 20-day, two-standard-deviation band. Near the top suggests extension; near the bottom suggests weakness/possible mean reversion.</MetricInfo></div><b>{proTech.bbPos!=null?`${Math.max(0,Math.min(100,proTech.bbPos)).toFixed(0)}%`:"—"}</b><div className="v942BollingerScale" style={{"--pos":`${Math.max(0,Math.min(100,proTech.bbPos??50))}%`} as React.CSSProperties}><i/><em>LOWER</em><em>MID</em><em>UPPER</em></div><span>Position inside the 20D band</span></div>
-          <div><div className="metricLabel"><small>REALIZED VOL · 20D</small><MetricInfo title="Realized volatility">Annualized recent realized volatility from daily returns. Higher values imply larger price variability and usually require more conservative sizing.</MetricInfo></div><b>{proTech.rv!=null?`${proTech.rv.toFixed(1)}%`:"—"}</b><span>{proTech.drawdown!=null?`${proTech.drawdown.toFixed(1)}% from 52-week high`:"52-week drawdown unavailable"}</span></div>
-        </div>}
+          <section className="v962TechnicalRead">
+            <div className="v962ReadNarrative">
+              <small>TECHNICAL READ</small>
+              <h3>Timing, trend &amp; confluence</h3>
+              <p>{
+                technicalState.trend>=67
+                  ? technicalState.momentum>=60&&technicalState.participation>=55
+                    ? "Trend, momentum and participation are aligned. The setup is technically constructive, but entry quality still determines whether price is worth chasing."
+                    : "Trend remains strong, but momentum and participation are not fully confirming yet. Strength and entry remain different questions."
+                  : technicalState.trend<42
+                    ? "Trend structure is weak. AURYN is prioritizing stabilization and confirmation before treating strength as durable."
+                    : "Trend structure is mixed. Confirmation matters more than a single indicator while the setup remains unresolved."
+              }</p>
+              <div className="v962ReadChips">
+                <span className={technicalState.trend>=67?"good":technicalState.trend<42?"bad":"mid"}>Trend · {technicalState.trend>=67?"Bullish":technicalState.trend<42?"Bearish":"Mixed"}</span>
+                <span className={technicalState.momentum>=67?"good":technicalState.momentum<42?"bad":"mid"}>Momentum · {technicalState.momentum>=67?"Strong":technicalState.momentum<42?"Weak":"Mixed"}</span>
+                <span className={technicalState.volatilityRisk>=70?"bad":technicalState.volatilityRisk<40?"good":"mid"}>Risk · {technicalState.volatilityRisk>=70?"Elevated":technicalState.volatilityRisk<40?"Controlled":"Moderate"}</span>
+              </div>
+            </div>
+            <div className="v962ReadScore">
+              <small>TECHNICAL STRENGTH</small>
+              <div className="v962ScoreGauge" style={{"--score":`${technicalState.strength}%`} as React.CSSProperties}><i/></div>
+              <div><b className={technicalState.strength>=68?"good":technicalState.strength<45?"bad":"mid"}>{technicalState.strength}</b><span>/100</span></div>
+              <strong>{technicalState.strength>=68?"Constructive":technicalState.strength<45?"Defensive":"Mixed"}</strong>
+            </div>
+            <div className="v962ReadTakeaway">
+              <small>WHAT IT MEANS</small>
+              <p>{technicalState.strength>=68
+                ? "The chart has useful technical strength. AURYN still requires entry quality and confirmation before strength becomes a reason to deploy new capital."
+                : technicalState.strength<45
+                  ? "Technical evidence is defensive. Improvement in structure and participation is needed before the setup becomes actionable."
+                  : "Evidence is balanced. Wait for stronger agreement between trend, momentum and participation before upgrading the setup."}</p>
+            </div>
+          </section>
+
+          <section className="v962FactorSection">
+            <div className="v962SectionLabel">KEY FACTOR SCORES</div>
+            <div className="v962ScoreRail">
+              <div><small>ENTRY QUALITY</small><b className={technicalState.entryQuality>=68?"good":technicalState.entryQuality<45?"bad":"mid"}>{technicalState.entryQuality}<em>/100</em></b><span>{technicalState.entryState}</span><i style={{"--v":`${technicalState.entryQuality}%`} as React.CSSProperties}/></div>
+              <div><small>TREND</small><b>{technicalState.trend}<em>/100</em></b><span>{technicalState.trend>=67?"Bullish":technicalState.trend<42?"Bearish":"Mixed"}</span><i style={{"--v":`${technicalState.trend}%`} as React.CSSProperties}/></div>
+              <div><small>MOMENTUM</small><b>{technicalState.momentum}<em>/100</em></b><span>{technicalState.momentum>=67?"Strong":technicalState.momentum<42?"Weak":"Mixed"}</span><i style={{"--v":`${technicalState.momentum}%`} as React.CSSProperties}/></div>
+              <div><small>PARTICIPATION</small><b>{technicalState.participation}<em>/100</em></b><span>{proTech?.volumeLabel||"Volume context"}</span><i style={{"--v":`${technicalState.participation}%`} as React.CSSProperties}/></div>
+              <div><small>EXTENSION RISK</small><b className={technicalState.extensionRisk>=70?"bad":technicalState.extensionRisk<40?"good":"mid"}>{technicalState.extensionRisk}<em>/100</em></b><span>Higher = more chase risk</span><i style={{"--v":`${technicalState.extensionRisk}%`} as React.CSSProperties}/></div>
+              <div><small>VOLATILITY RISK</small><b className={technicalState.volatilityRisk>=70?"bad":technicalState.volatilityRisk<40?"good":"mid"}>{technicalState.volatilityRisk}<em>/100</em></b><span>Higher = larger swings</span><i style={{"--v":`${technicalState.volatilityRisk}%`} as React.CSSProperties}/></div>
+            </div>
+          </section>
+
+          {proTech&&<section className="v962Drivers">
+            <div className="v962SectionLabel">WHAT IS DRIVING THE SCORE</div>
+            <div className="v962DriverStack">
+              <article className="v962DriverRow">
+                <div className="v962DriverIdentity"><span className="v962DriverIcon">↗</span><div><small>MOMENTUM</small><h4>Momentum</h4><p>Short-term price strength</p></div></div>
+                <div className="v962DriverCall"><b className={technicalState.momentum>=67?"good":technicalState.momentum<42?"bad":"mid"}>{technicalState.momentum>=67?"Strong":technicalState.momentum<42?"Weak":"Mixed"}</b><p>{proTech.macdLabel==="Bullish"?"Momentum is supported by MACD; RSI shows whether price is becoming extended.":"RSI is holding up, but MACD has not confirmed the recent strength."}</p></div>
+                <div className="v962DriverMetric v941RsiTrack"><div className="metricLabel"><small>RSI · 14</small><MetricInfo title="RSI (14)">Relative Strength Index from 0–100. Above 70 can indicate extension; below 30 can indicate oversold conditions.</MetricInfo></div><b>{proTech.rsi14!=null?proTech.rsi14.toFixed(1):"—"}</b><div className="v942RsiScale" style={{"--pos":`${Math.max(0,Math.min(100,proTech.rsi14??50))}%`} as React.CSSProperties}><i/><em>30</em><em>50</em><em>70</em></div></div>
+                <div className="v962DriverMetric"><div className="metricLabel"><small>MACD · 12/26/9</small><MetricInfo title="MACD">MACD compares fast and slow exponential moving averages.</MetricInfo></div><b className={proTech.macdLabel==="Bullish"?"good":proTech.macdLabel==="Bearish"?"bad":"mid"}>{proTech.macdLabel}</b><div className={`v942MacdHistogram ${proTech.macdHist!=null&&proTech.macdHist<0?"negative":"positive"}`}><i/><span/></div><span>{proTech.macdHist!=null?`Histogram ${proTech.macdHist>=0?"+":""}${proTech.macdHist.toFixed(3)}`:"Unavailable"}</span></div>
+              </article>
+
+              <article className="v962DriverRow">
+                <div className="v962DriverIdentity"><span className="v962DriverIcon">⌁</span><div><small>TREND</small><h4>Trend</h4><p>Price trend &amp; structure</p></div></div>
+                <div className="v962DriverCall"><b className={proTech.trendLabel==="Bullish"?"good":proTech.trendLabel==="Bearish"?"bad":"mid"}>{proTech.trendLabel==="Bullish"?"Strong":proTech.trendLabel==="Bearish"?"Weak":"Mixed"}</b><p>{proTech.trendLabel==="Bullish"?"Price remains supported by the key moving-average structure.":"Moving-average structure is not fully aligned; confirmation remains important."}</p></div>
+                <div className="v962DriverMetric"><div className="metricLabel"><small>20D / 50D TREND</small><MetricInfo title="Moving-average trend">Compares price with the 20-day and 50-day moving averages.</MetricInfo></div><b className={proTech.trendLabel==="Bullish"?"good":proTech.trendLabel==="Bearish"?"bad":"mid"}>{proTech.trendLabel}</b><span>{proTech.d20!=null?`${proTech.d20>=0?"+":""}${proTech.d20.toFixed(1)}% vs 20D`:"—"} · {proTech.d50!=null?`${proTech.d50>=0?"+":""}${proTech.d50.toFixed(1)}% vs 50D`:"—"}</span></div>
+                <div className="v962DriverMetric v941BollingerTrack"><div className="metricLabel"><small>BOLLINGER POSITION</small><MetricInfo title="Bollinger position">Shows where price sits within a 20-day, two-standard-deviation band.</MetricInfo></div><b>{proTech.bbPos!=null?`${Math.max(0,Math.min(100,proTech.bbPos)).toFixed(0)}%`:"—"}</b><div className="v942BollingerScale" style={{"--pos":`${Math.max(0,Math.min(100,proTech.bbPos??50))}%`} as React.CSSProperties}><i/><em>LOWER</em><em>MID</em><em>UPPER</em></div></div>
+              </article>
+
+              <article className="v962DriverRow">
+                <div className="v962DriverIdentity"><span className="v962DriverIcon">▥</span><div><small>PARTICIPATION</small><h4>Participation</h4><p>Volume &amp; market activity</p></div></div>
+                <div className="v962DriverCall"><b className={technicalState.participation>=67?"good":technicalState.participation<42?"bad":"mid"}>{technicalState.participation>=67?"Strong":technicalState.participation<42?"Light":"Moderate"}</b><p>{(proTech.volRatio??1)>=1?"Volume is confirming the move with above-normal participation.":"Volume is below normal, so the move has limited participation confirmation."}</p></div>
+                <div className="v962DriverMetric v941VolumeTrack"><div className="metricLabel"><small>VOLUME vs 20D</small><MetricInfo title="Volume confirmation">Compares current volume with the recent 20-session average.</MetricInfo></div><b>{proTech.volRatio!=null?`${proTech.volRatio.toFixed(2)}×`:"—"}</b><div className="v942VolumeScale" style={{"--pos":`${Math.max(0,Math.min(100,(proTech.volRatio??1)*50))}%`} as React.CSSProperties}><i/><em>1×</em></div></div>
+                <div className="v962DriverMetric"><div className="metricLabel"><small>REALIZED VOL · 20D</small><MetricInfo title="Realized volatility">Annualized recent realized volatility from daily returns.</MetricInfo></div><b>{proTech.rv!=null?`${proTech.rv.toFixed(1)}%`:"—"}</b><span>{proTech.drawdown!=null?`${proTech.drawdown.toFixed(1)}% from 52-week high`:"52-week drawdown unavailable"}</span></div>
+              </article>
+
+              <article className="v962DriverRow">
+                <div className="v962DriverIdentity"><span className="v962DriverIcon">◇</span><div><small>ENTRY &amp; RISK</small><h4>Entry &amp; Risk</h4><p>Volatility &amp; structural zone</p></div></div>
+                <div className="v962DriverCall"><b className={technicalState.entryQuality>=68?"good":technicalState.entryQuality<45?"bad":"mid"}>{technicalState.entryQuality>=68?"Favorable":technicalState.entryQuality<45?"Caution":"Watch"}</b><p>{technicalState.entryQuality>=68?"Entry quality is constructive, but risk controls still govern sizing.":"Price needs either a better structural location or stronger confirmation before entry quality improves."}</p></div>
+                <div className="v962DriverMetric"><div className="metricLabel"><small>ATR · 14</small><MetricInfo title="ATR (14)">Average True Range estimates typical recent daily movement.</MetricInfo></div><b>{proTech.atrPct!=null?`${proTech.atrPct.toFixed(1)}%`:"—"}</b><span>Typical daily range</span></div>
+                <div className="v962DriverMetric"><div className="metricLabel"><small>{v5Analysis?.executionPlan.intent==="ACCUMULATE"?"DCA / INITIAL ENTRY":"STRUCTURAL WATCH ZONE"}</small><MetricInfo title="Canonical execution zone">This level comes from the single canonical execution plan.</MetricInfo></div><b>{!priceSensitiveAllowed?"BLOCKED":v5Analysis?.executionPlan.initialEntry?`${displayMoney(v5Analysis.executionPlan.initialEntry.low)}–${displayMoney(v5Analysis.executionPlan.initialEntry.high)}`:"—"}</b><span>{!priceSensitiveAllowed?"Hidden until Market Truth verifies price.":v5Analysis?.executionPlan.initialEntry?"Canonical structural zone":"No active structural zone"}</span></div>
+              </article>
+            </div>
+          </section>}
+
+          <section className="v962BottomLine">
+            <div><small>BOTTOM LINE</small><h4>{technicalState.strength>=68?"Constructive, but confirmation still matters.":technicalState.strength<45?"Defensive until structure improves.":"Mixed evidence — wait for better agreement."}</h4><p>{technicalState.strength>=68?"The trend is doing useful work; momentum, participation and entry quality determine whether that strength is actionable.":"AURYN is separating chart strength from entry quality so one good indicator cannot overrule the full evidence set."}</p></div>
+            <div className="v962BottomStats"><span>Entry <b>{technicalState.entryQuality}/100</b></span><span>Confirm <b>{v5Analysis?.executionPlan.confirmation?displayMoney(v5Analysis.executionPlan.confirmation):"—"}</b></span></div>
+          </section>
+        </div>
         {v5Analysis?<div className="v933TechnicalChart">
           <div className="v32MarketLabHead"><div><small>PRICE STRUCTURE</small><h3>Levels on the chart</h3><p>The chart uses the same preferred entry, confirmation, risk and target levels shown in the AURYN call above.</p></div></div>
           <PriceChart candles={v5Analysis.bars.slice(horizon==="now"?-65:horizon==="swing"?-125:-180)} levels={v5ChartLevels} showTrend={true}/>
