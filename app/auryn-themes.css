@@ -1,183 +1,79 @@
-/* AURYN V9.5.6 — deterministic theme contract. Paint only; approved geometry stays in product/mobile CSS. */
+/* AURYN V9.6 — SINGLE SEMANTIC THEME CONTRACT */
 :root,[data-theme="classic"]{
- --auryn-page-bg:#f7f5f0;--auryn-page-ink:#171613;--auryn-page-muted:#756f66;
- --auryn-card-bg:#fffdfa;--auryn-card-ink:#171613;--auryn-card-muted:#746e65;
- --auryn-soft-bg:#f2eee6;--auryn-soft-ink:#29251f;--auryn-border:#e3dbcf;
- --auryn-chrome:#15130f;--auryn-chrome-ink:#f7efe1;--auryn-input:#1b1915;--auryn-input-ink:#faf4e8;
- --auryn-accent:#a8742d;--auryn-accent-soft:#ead9bd;
- --auryn-hero-bg-a:#17130d;--auryn-hero-bg-b:#5a3e18;--auryn-hero-ink:#f2d9a8;--auryn-hero-copy:#eee7dc;--auryn-hero-muted:#bdb3a5;
- --auryn-chart-bg:#fff;--auryn-chart-ink:#344054;--auryn-chart-grid:#e6e9ed;
- --auryn-positive:#0b835f;--auryn-negative:#c54b42;--auryn-warning:#ad7323;--auryn-glass:rgba(27,26,23,.86)
+ --auryn-page-bg:#f7f5f0;--auryn-page-ink:#171613;--auryn-page-muted:#6f6a62;--auryn-card-bg:#fffdfa;--auryn-card-ink:#171613;--auryn-card-muted:#6e685f;--auryn-soft-bg:#f2eee6;--auryn-soft-ink:#29251f;--auryn-border:#ded6ca;--auryn-chrome:#15130f;--auryn-chrome-ink:#f8f0e2;--auryn-input:#1b1915;--auryn-input-ink:#faf4e8;--auryn-accent:#a8742d;--auryn-accent-soft:#ead9bd;--auryn-hero-bg-a:#17130d;--auryn-hero-bg-b:#5a3e18;--auryn-hero-ink:#f2d9a8;--auryn-hero-copy:#f4eee5;--auryn-hero-muted:#c7bcad;--auryn-footer-bg:#f1ede5;--auryn-footer-ink:#302c27;--auryn-footer-muted:#777066;--auryn-chart-bg:#ffffff;--auryn-chart-ink:#344054;--auryn-chart-grid:#e5e9ee;--auryn-positive:#0b835f;--auryn-negative:#c54b42;--auryn-warning:#ad7323;--auryn-glass:rgba(20,20,20,.91)
 }
 [data-theme="noir"]{
- --auryn-page-bg:#0b0b0c;--auryn-page-ink:#f3ede1;--auryn-page-muted:#aaa195;
- --auryn-card-bg:#f7f4ee;--auryn-card-ink:#1b1a18;--auryn-card-muted:#6f6961;
- --auryn-soft-bg:#eee9df;--auryn-soft-ink:#25211c;--auryn-border:#d8d0c3;
- --auryn-chrome:#050506;--auryn-chrome-ink:#fff8eb;--auryn-input:#121213;--auryn-input-ink:#f7f0e4;
- --auryn-accent:#c6a56b;--auryn-accent-soft:#ead7b3;
- --auryn-hero-bg-a:#080809;--auryn-hero-bg-b:#49371f;--auryn-hero-ink:#f1d9aa;--auryn-hero-copy:#f3ede1;--auryn-hero-muted:#b8ad9d;
- --auryn-chart-bg:#fbfaf7;--auryn-chart-ink:#344054;--auryn-chart-grid:#e5e7eb;
- --auryn-positive:#29a579;--auryn-negative:#e06459;--auryn-warning:#d39a47;--auryn-glass:rgba(8,8,9,.90)
+ --auryn-page-bg:#f4f2ee;--auryn-page-ink:#181817;--auryn-page-muted:#69655f;--auryn-card-bg:#fffefd;--auryn-card-ink:#181817;--auryn-card-muted:#69655f;--auryn-soft-bg:#ece9e3;--auryn-soft-ink:#242321;--auryn-border:#d7d2ca;--auryn-chrome:#09090a;--auryn-chrome-ink:#f6f0e5;--auryn-input:#111112;--auryn-input-ink:#f7f1e6;--auryn-accent:#a98b59;--auryn-accent-soft:#e5d3b1;--auryn-hero-bg-a:#09090a;--auryn-hero-bg-b:#40311e;--auryn-hero-ink:#f0d7a5;--auryn-hero-copy:#f3ede3;--auryn-hero-muted:#bdb3a5;--auryn-footer-bg:#eae6df;--auryn-footer-ink:#242321;--auryn-footer-muted:#6c675f;--auryn-chart-bg:#ffffff;--auryn-chart-ink:#344054;--auryn-chart-grid:#e5e9ee;--auryn-positive:#0b835f;--auryn-negative:#c54b42;--auryn-warning:#ad7323;--auryn-glass:rgba(20,20,20,.91)
 }
 [data-theme="sapphire"]{
- --auryn-page-bg:#0d1825;--auryn-page-ink:#eef3f7;--auryn-page-muted:#a8b5c1;
- --auryn-card-bg:#f7f9fb;--auryn-card-ink:#17212b;--auryn-card-muted:#667482;
- --auryn-soft-bg:#eaf0f5;--auryn-soft-ink:#1d2b38;--auryn-border:#cbd7e1;
- --auryn-chrome:#09121d;--auryn-chrome-ink:#f6f9fb;--auryn-input:#0d1723;--auryn-input-ink:#f3f7fa;
- --auryn-accent:#6f9dc3;--auryn-accent-soft:#c4d9e8;
- --auryn-hero-bg-a:#09131f;--auryn-hero-bg-b:#214766;--auryn-hero-ink:#e6f0f7;--auryn-hero-copy:#f2f5f7;--auryn-hero-muted:#b4c1cc;
- --auryn-chart-bg:#fbfcfd;--auryn-chart-ink:#344054;--auryn-chart-grid:#e3e8ee;
- --auryn-positive:#42bd8d;--auryn-negative:#ec6f67;--auryn-warning:#d5a25c;--auryn-glass:rgba(9,18,29,.90)
+ --auryn-page-bg:#f3f7fb;--auryn-page-ink:#17212b;--auryn-page-muted:#627180;--auryn-card-bg:#ffffff;--auryn-card-ink:#17212b;--auryn-card-muted:#667482;--auryn-soft-bg:#e9f0f6;--auryn-soft-ink:#1d2b38;--auryn-border:#cbd8e2;--auryn-chrome:#0b1724;--auryn-chrome-ink:#f5f8fb;--auryn-input:#101b28;--auryn-input-ink:#f4f7fa;--auryn-accent:#4f7fa7;--auryn-accent-soft:#c8dceb;--auryn-hero-bg-a:#0b1724;--auryn-hero-bg-b:#214866;--auryn-hero-ink:#eaf3f9;--auryn-hero-copy:#f4f8fb;--auryn-hero-muted:#bcc9d4;--auryn-footer-bg:#eaf1f6;--auryn-footer-ink:#1d2b38;--auryn-footer-muted:#687785;--auryn-chart-bg:#ffffff;--auryn-chart-ink:#344054;--auryn-chart-grid:#e5e9ee;--auryn-positive:#0b835f;--auryn-negative:#c54b42;--auryn-warning:#ad7323;--auryn-glass:rgba(20,20,20,.91)
 }
 [data-theme="racing"]{
- --auryn-page-bg:#0f241e;--auryn-page-ink:#f5f1e7;--auryn-page-muted:#b7aea0;
- --auryn-card-bg:#f8f6ef;--auryn-card-ink:#17231e;--auryn-card-muted:#6e756e;
- --auryn-soft-bg:#e9eee8;--auryn-soft-ink:#1d2d26;--auryn-border:#ccd8cf;
- --auryn-chrome:#081913;--auryn-chrome-ink:#fff7e9;--auryn-input:#0b1b17;--auryn-input-ink:#f7f2e8;
- --auryn-accent:#b68b4b;--auryn-accent-soft:#e6ce9d;
- --auryn-hero-bg-a:#091b15;--auryn-hero-bg-b:#4a3a22;--auryn-hero-ink:#f1d8a3;--auryn-hero-copy:#f5f1e7;--auryn-hero-muted:#c3b9aa;
- --auryn-chart-bg:#fbfcfa;--auryn-chart-ink:#344054;--auryn-chart-grid:#e3e8e4;
- --auryn-positive:#42b985;--auryn-negative:#e36a61;--auryn-warning:#d2a052;--auryn-glass:rgba(8,25,19,.90)
+ --auryn-page-bg:#f3f6f1;--auryn-page-ink:#17231e;--auryn-page-muted:#68736c;--auryn-card-bg:#fffefb;--auryn-card-ink:#17231e;--auryn-card-muted:#69736d;--auryn-soft-bg:#e8eee9;--auryn-soft-ink:#1d2d26;--auryn-border:#ccd8cf;--auryn-chrome:#0b2119;--auryn-chrome-ink:#fff8eb;--auryn-input:#10251e;--auryn-input-ink:#f8f4ea;--auryn-accent:#9b7439;--auryn-accent-soft:#e3cca0;--auryn-hero-bg-a:#0b2119;--auryn-hero-bg-b:#4a3a22;--auryn-hero-ink:#f0d6a1;--auryn-hero-copy:#f7f3e9;--auryn-hero-muted:#c6bcad;--auryn-footer-bg:#e8eee8;--auryn-footer-ink:#1d2d26;--auryn-footer-muted:#68736c;--auryn-chart-bg:#ffffff;--auryn-chart-ink:#344054;--auryn-chart-grid:#e5e9ee;--auryn-positive:#0b835f;--auryn-negative:#c54b42;--auryn-warning:#ad7323;--auryn-glass:rgba(20,20,20,.91)
 }
 [data-theme="bordeaux"]{
- --auryn-page-bg:#f8f3f1;--auryn-page-ink:#2b1b20;--auryn-page-muted:#786b6e;
- --auryn-card-bg:#fffdfc;--auryn-card-ink:#2b1b20;--auryn-card-muted:#786b6e;
- --auryn-soft-bg:#f1e5e2;--auryn-soft-ink:#342226;--auryn-border:#dfd0cc;
- --auryn-chrome:#4a202b;--auryn-chrome-ink:#fff8ef;--auryn-input:#35171f;--auryn-input-ink:#fff8ef;
- --auryn-accent:#9b6f38;--auryn-accent-soft:#ead3b0;
- --auryn-hero-bg-a:#32141d;--auryn-hero-bg-b:#70402e;--auryn-hero-ink:#f1d7a5;--auryn-hero-copy:#fff5ec;--auryn-hero-muted:#d5c1b9;
- --auryn-chart-bg:#fff;--auryn-chart-ink:#344054;--auryn-chart-grid:#e8e3e1;
- --auryn-positive:#177b5d;--auryn-negative:#b94743;--auryn-warning:#a97732;--auryn-glass:rgba(69,29,40,.88)
+ --auryn-page-bg:#faf5f4;--auryn-page-ink:#2b1b20;--auryn-page-muted:#76696d;--auryn-card-bg:#fffefd;--auryn-card-ink:#2b1b20;--auryn-card-muted:#786b6e;--auryn-soft-bg:#f2e7e5;--auryn-soft-ink:#342226;--auryn-border:#dfd0cc;--auryn-chrome:#4a202b;--auryn-chrome-ink:#fff8ef;--auryn-input:#35171f;--auryn-input-ink:#fff8ef;--auryn-accent:#93662f;--auryn-accent-soft:#ead3b0;--auryn-hero-bg-a:#32141d;--auryn-hero-bg-b:#70402e;--auryn-hero-ink:#f1d7a5;--auryn-hero-copy:#fff5ec;--auryn-hero-muted:#d5c1b9;--auryn-footer-bg:#f1e7e5;--auryn-footer-ink:#342226;--auryn-footer-muted:#796b6e;--auryn-chart-bg:#ffffff;--auryn-chart-ink:#344054;--auryn-chart-grid:#e5e9ee;--auryn-positive:#0b835f;--auryn-negative:#c54b42;--auryn-warning:#ad7323;--auryn-glass:rgba(20,20,20,.91)
 }
 [data-theme="arctic"]{
- --auryn-page-bg:#f1f4f6;--auryn-page-ink:#17212a;--auryn-page-muted:#687783;
- --auryn-card-bg:#fbfcfd;--auryn-card-ink:#17212a;--auryn-card-muted:#687783;
- --auryn-soft-bg:#e7edf1;--auryn-soft-ink:#1d2a34;--auryn-border:#d3dce2;
- --auryn-chrome:#17212a;--auryn-chrome-ink:#f7fafc;--auryn-input:#18232c;--auryn-input-ink:#f7fafc;
- --auryn-accent:#647f91;--auryn-accent-soft:#cbd9e1;
- --auryn-hero-bg-a:#18232c;--auryn-hero-bg-b:#425766;--auryn-hero-ink:#eef5f8;--auryn-hero-copy:#f5f8fa;--auryn-hero-muted:#c1ccd3;
- --auryn-chart-bg:#fff;--auryn-chart-ink:#344054;--auryn-chart-grid:#dce3e8;
- --auryn-positive:#087c66;--auryn-negative:#c34d49;--auryn-warning:#9b742f;--auryn-glass:rgba(23,33,42,.88)
+ --auryn-page-bg:#f2f5f7;--auryn-page-ink:#17212a;--auryn-page-muted:#657580;--auryn-card-bg:#ffffff;--auryn-card-ink:#17212a;--auryn-card-muted:#687783;--auryn-soft-bg:#e7edf1;--auryn-soft-ink:#1d2a34;--auryn-border:#d0dae1;--auryn-chrome:#17212a;--auryn-chrome-ink:#f7fafc;--auryn-input:#18232c;--auryn-input-ink:#f7fafc;--auryn-accent:#5e7889;--auryn-accent-soft:#cbd9e1;--auryn-hero-bg-a:#18232c;--auryn-hero-bg-b:#425766;--auryn-hero-ink:#eef5f8;--auryn-hero-copy:#f5f8fa;--auryn-hero-muted:#c1ccd3;--auryn-footer-bg:#e7edf1;--auryn-footer-ink:#1d2a34;--auryn-footer-muted:#667682;--auryn-chart-bg:#ffffff;--auryn-chart-ink:#344054;--auryn-chart-grid:#e5e9ee;--auryn-positive:#0b835f;--auryn-negative:#c54b42;--auryn-warning:#ad7323;--auryn-glass:rgba(20,20,20,.91)
 }
 [data-theme="porcelain"]{
- --auryn-page-bg:#faf7f1;--auryn-page-ink:#30261e;--auryn-page-muted:#776d63;
- --auryn-card-bg:#fffdf9;--auryn-card-ink:#30261e;--auryn-card-muted:#776d63;
- --auryn-soft-bg:#f1ebe1;--auryn-soft-ink:#382b21;--auryn-border:#e2d8ca;
- --auryn-chrome:#30261e;--auryn-chrome-ink:#fff8ec;--auryn-input:#29211b;--auryn-input-ink:#fff8ec;
- --auryn-accent:#9b7040;--auryn-accent-soft:#e6cfac;
- --auryn-hero-bg-a:#29211b;--auryn-hero-bg-b:#6b4a29;--auryn-hero-ink:#f0d4a4;--auryn-hero-copy:#fff8ed;--auryn-hero-muted:#d3c6b7;
- --auryn-chart-bg:#fff;--auryn-chart-ink:#344054;--auryn-chart-grid:#e8e0d5;
- --auryn-positive:#137b5f;--auryn-negative:#be5048;--auryn-warning:#9d7138;--auryn-glass:rgba(48,38,30,.88)
+ --auryn-page-bg:#fbf8f2;--auryn-page-ink:#30261e;--auryn-page-muted:#746a61;--auryn-card-bg:#fffefa;--auryn-card-ink:#30261e;--auryn-card-muted:#776d63;--auryn-soft-bg:#f1ebe1;--auryn-soft-ink:#382b21;--auryn-border:#e2d8ca;--auryn-chrome:#30261e;--auryn-chrome-ink:#fff8ec;--auryn-input:#29211b;--auryn-input-ink:#fff8ec;--auryn-accent:#95683a;--auryn-accent-soft:#e6cfac;--auryn-hero-bg-a:#29211b;--auryn-hero-bg-b:#6b4a29;--auryn-hero-ink:#f0d4a4;--auryn-hero-copy:#fff8ed;--auryn-hero-muted:#d3c6b7;--auryn-footer-bg:#f1ebe1;--auryn-footer-ink:#382b21;--auryn-footer-muted:#776d63;--auryn-chart-bg:#ffffff;--auryn-chart-ink:#344054;--auryn-chart-grid:#e5e9ee;--auryn-positive:#0b835f;--auryn-negative:#c54b42;--auryn-warning:#ad7323;--auryn-glass:rgba(20,20,20,.91)
 }
+:root,[data-theme]{--auryn-bg:var(--auryn-page-bg);--auryn-ink:var(--auryn-page-ink);--auryn-muted:var(--auryn-page-muted);--auryn-surface:var(--auryn-card-bg);--auryn-surface-soft:var(--auryn-soft-bg);--auryn-chrome-text:var(--auryn-chrome-ink);--auryn-hero-a:var(--auryn-hero-bg-a);--auryn-hero-b:var(--auryn-hero-bg-b);--auryn-hero-title:var(--auryn-hero-ink);--auryn-metric-bg:var(--auryn-card-bg);--auryn-metric-ink:var(--auryn-card-ink);--auryn-chart-label:var(--auryn-chart-ink);--auryn-readable-scale:1}
+html,body,.aurynAppShell,.aurynAppMain,.aurynStockPage,.aurynPortfolioPage,.aurynMonitorPage,.aurynTradingLabPage,.aurynResearchHome,.simplePage,.aurynAuthPage,.aurynAuthShell{background:var(--auryn-page-bg)!important;color:var(--auryn-page-ink)!important}
+.aurynHeader{background:var(--auryn-chrome)!important;color:var(--auryn-chrome-ink)!important}.aurynHeader :where(a,button,.aurynWord){color:var(--auryn-chrome-ink)!important}.aurynHeader .active{border-color:var(--auryn-accent-soft)!important}
+.aurynMobileSearch{background:var(--auryn-page-bg)!important;border-color:var(--auryn-border)!important}.aurynBottomNav{background:var(--auryn-glass)!important}.aurynBottomNav a{color:color-mix(in srgb,var(--auryn-chrome-ink) 62%,transparent)!important}.aurynBottomNav a.active{color:var(--auryn-accent-soft)!important}
+.aurynStockMobileMasthead,.aurynSecurityFacts,.aurynStockMobileFacts,.aurynStockHead{color:var(--auryn-page-ink)!important;border-color:var(--auryn-border)!important}.aurynStockMobileIdentity :where(h1,h2,strong,b),.aurynStockHead :where(h1,h2,h3,b,strong),.aurynStockMarket :where(h1,h2,b,strong){color:var(--auryn-page-ink)!important}.aurynStockMobileIdentity :where(p,span,small),.aurynStockMobileMeta :where(span,small),.aurynStockMobileFacts small,.aurynStockMarket :where(p,small,span){color:var(--auryn-page-muted)!important}.aurynStockMobilePrice small,.aurynEyebrow,.eyebrow{color:var(--auryn-accent)!important}
+.aurynEvidenceNav,.aurynPortfolioNav{background:var(--auryn-page-bg)!important;border-color:var(--auryn-border)!important}.aurynEvidenceNav :where(a,button),.aurynPortfolioNav :where(a,button){color:var(--auryn-page-ink)!important}.aurynEvidenceNav .active,.aurynPortfolioNav .active{color:var(--auryn-page-ink)!important;border-color:var(--auryn-accent)!important}
+.v936CallHero,.aurynDecisionHero,.aurynPortfolioHero,.aurynPortfolioIntelligence{background:linear-gradient(135deg,var(--auryn-hero-bg-a),var(--auryn-hero-bg-b))!important;color:var(--auryn-hero-copy)!important}.v936CallHero :where(h1,h2,h3,.v936CallTitle),.aurynDecisionHero :where(h1,h2,h3),.aurynPortfolioHero :where(h1,h2),.aurynPortfolioIntelligence :where(h1,h2){color:var(--auryn-hero-ink)!important}.v936CallHero :where(p,.v936CallCopy),.aurynDecisionHero p,.aurynPortfolioHero p,.aurynPortfolioIntelligence p{color:var(--auryn-hero-copy)!important}.v936CallHero :where(small,.muted,.v936HeroMeta),.aurynDecisionHero small,.aurynPortfolioHero small,.aurynPortfolioIntelligence small{color:var(--auryn-hero-muted)!important}.aurynDecisionHero{color:var(--auryn-hero-title)!important}
+.aurynStockEvidenceSurface>.v65Evidence,.aurynStockEvidenceSurface>.v12Fund,.aurynStockEvidenceSurface>.v34InstitutionsPage,.aurynStockEvidenceSurface>.v12Technical,.aurynStockEvidenceSurface>.v26Technical,.aurynStockEvidenceSurface>.gammaPanel,.aurynStockEvidenceSurface>.v12News,.aurynStockEvidenceSurface>.v12Earnings{background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important;box-shadow:none!important}
+.aurynStockTabPage{color:var(--auryn-page-ink)!important}.aurynStockTabPage :where(h1,h2,h3,h4,b,strong){color:var(--auryn-page-ink)}.aurynStockTabPage :where(p,span,em,time){color:var(--auryn-page-muted)}
+.v936Metric,.v936ScenarioCard,.v936ExplainCard,.v940PulseGroup,.v937DecisionMap>section,.profileCard,.aurynPositionGroup,.aurynCompositionExplain,.aurynCapitalQueueRow,.aurynAuthPanel,.v940PendingSnapshot,.aurynV5Unavailable,.aurynIntegrityAlert{background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important}.v936Metric :where(h1,h2,h3,b,strong),.v936ScenarioCard :where(h1,h2,h3,b,strong),.v936ExplainCard :where(h1,h2,h3,b,strong),.v940PulseGroup :where(h1,h2,h3,b,strong),.profileCard :where(h1,h2,h3,b,strong){color:var(--auryn-card-ink)!important}.v936Metric :where(p,span,small,em),.v936ScenarioCard :where(p,span,small,em),.v936ExplainCard :where(p,span,small,em),.v940PulseGroup :where(p,span,small,em),.profileCard :where(p,span,small,label){color:var(--auryn-card-muted)!important}
+.v940DecisionRail,.v936ChartCard,.chartCanvas{background:var(--auryn-chart-bg)!important;color:var(--auryn-chart-ink)!important;border-color:var(--auryn-border)!important}
+.up,.positive,.aurynPositive,.good{color:var(--auryn-positive)!important}.down,.negative,.aurynNegative,.bad{color:var(--auryn-negative)!important}.mid,.warning{color:var(--auryn-warning)!important}
 
-/* Compatibility aliases consumed by the locked product CSS. */
-:root{--auryn-bg:var(--auryn-page-bg);--auryn-ink:var(--auryn-page-ink);--auryn-muted:var(--auryn-page-muted);--auryn-surface:var(--auryn-card-bg);--auryn-surface-soft:var(--auryn-soft-bg);--auryn-chrome-text:var(--auryn-chrome-ink);--auryn-hero-a:var(--auryn-hero-bg-a);--auryn-hero-b:var(--auryn-hero-bg-b);--auryn-hero-title:var(--auryn-hero-ink);--auryn-metric-bg:var(--auryn-card-bg);--auryn-metric-ink:var(--auryn-card-ink);--auryn-chart-label:var(--auryn-chart-ink)}
-[data-theme]{--auryn-bg:var(--auryn-page-bg);--auryn-ink:var(--auryn-page-ink);--auryn-muted:var(--auryn-page-muted);--auryn-surface:var(--auryn-card-bg);--auryn-surface-soft:var(--auryn-soft-bg);--auryn-chrome-text:var(--auryn-chrome-ink);--auryn-hero-a:var(--auryn-hero-bg-a);--auryn-hero-b:var(--auryn-hero-bg-b);--auryn-hero-title:var(--auryn-hero-ink);--auryn-metric-bg:var(--auryn-card-bg);--auryn-metric-ink:var(--auryn-card-ink);--auryn-chart-label:var(--auryn-chart-ink)}
+/* TECHNICALS — V9.6: Market State → Verdict → Factors → Indicator Board */
+.aurynStockEvidenceSurface>.v12Technical,.aurynStockEvidenceSurface>.v26Technical{padding:28px!important;background:var(--auryn-page-bg)!important;border:1px solid var(--auryn-border)!important;border-radius:24px!important}
+.v934TechnicalCore{margin:0 0 22px!important;padding:20px 22px!important;background:var(--auryn-soft-bg)!important;color:var(--auryn-soft-ink)!important;border:1px solid var(--auryn-border)!important;border-radius:18px!important;box-shadow:none!important}.v934TechnicalCore :where(h1,h2,h3,b,strong){color:var(--auryn-soft-ink)!important}.v934TechnicalCore :where(p,span,small,em){color:var(--auryn-card-muted)!important}
+.v34TechnicalHero,.v383TechnicalHero{display:grid!important;grid-template-columns:minmax(0,1fr) 300px!important;margin:0!important;padding:0!important;background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;border:1px solid var(--auryn-border)!important;border-radius:18px 18px 0 0!important;overflow:hidden!important}.v34TechnicalHero>div:first-child,.v383TechnicalHero>div:first-child{padding:24px!important}.v34TechnicalHero h3,.v383TechnicalHero h3{margin:5px 0 7px!important;color:var(--auryn-card-ink)!important}.v34TechnicalHero p,.v383TechnicalHero p,.v34TechVerdict span{color:var(--auryn-card-muted)!important}.v34TechVerdict{display:flex!important;flex-direction:column!important;justify-content:center!important;padding:24px!important;background:var(--auryn-soft-bg)!important;border-left:1px solid var(--auryn-border)!important}.v34TechVerdict b{font-size:30px!important;line-height:1!important}
+.v383TechnicalStateGrid,.v34TechnicalScoreGrid{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:0!important;margin:0 0 18px!important;background:var(--auryn-card-bg)!important;border:1px solid var(--auryn-border)!important;border-top:0!important;border-radius:0 0 18px 18px!important;overflow:hidden!important}.v383TechnicalStateGrid>*,.v34TechnicalScoreGrid>*{min-width:0!important;padding:17px 16px!important;background:var(--auryn-soft-bg)!important;color:var(--auryn-soft-ink)!important;border:0!important;border-right:1px solid var(--auryn-border)!important}.v383TechnicalStateGrid>*:last-child,.v34TechnicalScoreGrid>*:last-child{border-right:0!important}.v383TechnicalStateGrid>* b,.v34TechnicalScoreGrid>* b{display:block!important;margin:4px 0!important;color:var(--auryn-card-ink)}.v383TechnicalStateGrid>* span,.v34TechnicalScoreGrid>* span,.v383TechnicalStateGrid>* small,.v34TechnicalScoreGrid>* small{color:var(--auryn-card-muted)!important}
+.v34IndicatorGrid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important;margin:0 0 22px!important;padding:0!important;background:transparent!important;border:0!important}.v34IndicatorGrid>div{min-width:0!important;min-height:138px!important;padding:18px!important;background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;border:1px solid var(--auryn-border)!important;border-radius:16px!important;box-shadow:0 8px 22px rgba(18,24,31,.035)!important}.v34IndicatorGrid>div b{display:block!important;margin:7px 0!important;color:var(--auryn-card-ink)}.v34IndicatorGrid>div span,.v34IndicatorGrid>div small{color:var(--auryn-card-muted)!important}.v34IndicatorGrid :where(.v942RsiScale,.v942VolumeScale,.v942BollingerScale,.v942MacdHistogram){margin-top:10px!important}
+.v933TechnicalChart{padding:22px!important;background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;border:1px solid var(--auryn-border)!important;border-radius:18px!important}.v933TechnicalChart :where(h1,h2,h3,b,strong){color:var(--auryn-card-ink)!important}.v933TechnicalChart :where(p,span,small){color:var(--auryn-card-muted)!important}
+.aurynTechnicalMetricGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.aurynTechnicalMetric,.aurynTechnicalViz{background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important}
 
-/* Surface contract: every painted surface owns its foreground too. */
-html,body,.aurynAppShell,.aurynAppMain,.aurynMobileSearch,.aurynStockPage,.aurynPortfolioPage,.aurynResearchHome,.simplePage,.aurynAuthPage,.aurynAuthShell{background:var(--auryn-page-bg)!important;color:var(--auryn-page-ink)!important}
-.aurynHeader{background:var(--auryn-chrome)!important;color:var(--auryn-chrome-ink)!important}.aurynHeader .aurynWord,.aurynHeader a{color:var(--auryn-chrome-ink)!important}.aurynBottomNav{background:var(--auryn-glass)!important}.aurynBottomNav a.active{color:var(--auryn-accent-soft)!important}
-.aurynEvidenceNav,.aurynPortfolioNav{background:var(--auryn-page-bg)!important;border-color:var(--auryn-border)!important}.aurynEvidenceNav a,.aurynEvidenceNav button,.aurynPortfolioNav a{color:var(--auryn-page-ink)!important}.aurynEvidenceNav .active,.aurynPortfolioNav .active{border-color:var(--auryn-accent)!important}
-.aurynStockMobileMasthead,.aurynSecurityFacts,.aurynStockMobileFacts{border-color:var(--auryn-border)!important}.aurynStockMobileIdentity strong,.aurynStockMobileMeta span,.aurynStockMobileFacts small,.aurynStockMarket p,.aurynStockMarket small{color:var(--auryn-page-muted)!important}.aurynStockMobilePrice small,.aurynEyebrow,.eyebrow{color:var(--auryn-accent)!important}
+/* PORTFOLIO + EVIDENCE READING SURFACES */
+.aurynPortfolioPage :where(.aurynPortfolioMetrics,.aurynPortfolioBrief,.aurynPortfolioXRay,.aurynPortfolioHealth,.aurynCapitalQueueRow,.aurynCompositionExplain),.aurynThesisFactors article,.aurynThesisEvidence article,.v937EvidenceGrid article,.aurynV4ModelAudit>span,.aurynMemoSignals>span,.aurynMarketTruthGate{background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important}.aurynPortfolioPage :where(.aurynPortfolioMetrics,.aurynPortfolioBrief,.aurynPortfolioXRay,.aurynPortfolioHealth,.aurynCapitalQueueRow,.aurynCompositionExplain) :where(h1,h2,h3,b,strong),.aurynThesisFactors article :where(h1,h2,h3,b,strong),.aurynThesisEvidence article :where(h1,h2,h3,b,strong),.v937EvidenceGrid article :where(h1,h2,h3,b,strong){color:var(--auryn-card-ink)!important}.aurynPortfolioPage :where(.aurynPortfolioMetrics,.aurynPortfolioBrief,.aurynPortfolioXRay,.aurynPortfolioHealth,.aurynCapitalQueueRow,.aurynCompositionExplain) :where(p,span,small,em),.aurynThesisFactors article :where(p,span,small,em),.aurynThesisEvidence article :where(p,span,small,em),.v937EvidenceGrid article :where(p,span,small,em){color:var(--auryn-card-muted)!important}
 
-/* Dark decision hero is protected independently from page theme. */
-.v936CallHero,.aurynDecisionHero{background:linear-gradient(135deg,var(--auryn-hero-bg-a),var(--auryn-hero-bg-b))!important;color:var(--auryn-hero-copy)!important}.v936CallHero h1,.v936CallHero h2,.v936CallHero .v936CallTitle,.aurynDecisionHero h1,.aurynDecisionHero h2{color:var(--auryn-hero-ink)!important}.v936CallHero p,.v936CallHero .v936CallCopy,.aurynDecisionHero p{color:var(--auryn-hero-copy)!important}.v936CallHero small,.v936CallHero .muted,.aurynDecisionHero small,.v936HeroMeta{color:var(--auryn-hero-muted)!important}.v936CallHero .good{color:var(--auryn-positive)!important}.v936CallHero .bad{color:var(--auryn-negative)!important}
+/* FOOTER owns its palette; it never inherits a dark page foreground. */
+.aurynProductFooter{background:var(--auryn-footer-bg)!important;color:var(--auryn-footer-ink)!important;border-color:var(--auryn-border)!important}.aurynProductFooterBrand,.aurynProductFooterBrand :where(a,b,strong){color:var(--auryn-footer-ink)!important}.aurynProductFooterBrand p,.aurynProductFooterBottom{color:var(--auryn-footer-muted)!important}.aurynProductFooter nav :where(small,a){color:var(--auryn-footer-ink)!important}.aurynProductFooter nav small{opacity:.66!important}.aurynProductFooter svg{color:var(--auryn-accent)!important}
 
-/* Standard cards: paired background + foreground, never inherited from dark page. */
-.v936Metric,.v936ScenarioCard,.v936ExplainCard,.v940PulseGroup,.v937DecisionMap>section,.v34IndicatorGrid,.profileCard,.aurynPositionGroup,.aurynCompositionExplain,.aurynCapitalQueueRow,.aurynAuthPanel,.v940PendingSnapshot,.aurynV5Unavailable,.aurynIntegrityAlert{background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important}
-.v936Metric small,.v936Metric em,.v936ScenarioCard p,.v936ScenarioCard span,.v936ExplainCard p,.v940PulseGroup span,.v940PulseGroup small,.profileCard p,.profileCard label,.aurynPositionGroup small,.aurynCompositionExplain p,.aurynCapitalQueueRow p{color:var(--auryn-card-muted)!important}
-.v936Metric b,.v936ScenarioCard h4,.v936ScenarioCard b,.v936ExplainCard h4,.v940PulseGroup b,.profileCard h2,.aurynPositionGroup b,.aurynCompositionExplain h3,.aurynCapitalQueueRow b{color:var(--auryn-card-ink)!important}
+/* FORMS + APPEARANCE */
+.aurynSearch input{color:var(--auryn-input-ink)!important}.aurynSearch input::placeholder{color:color-mix(in srgb,var(--auryn-input-ink) 62%,transparent)!important;opacity:1!important}.aurynAuthPanel input{background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important}
+.aurynAppearanceChoices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:8px 0 18px}.aurynAppearanceChoice{display:grid;gap:4px;border:1px solid var(--auryn-border);background:var(--auryn-card-bg);color:var(--auryn-card-ink);border-radius:14px;padding:14px;text-align:left}.aurynAppearanceChoice.on{outline:2px solid var(--auryn-accent);outline-offset:1px}.aurynThemeName{font-size:16px;font-weight:800;color:var(--auryn-card-ink)}.aurynThemeNote{font-size:11px;color:var(--auryn-card-muted)}.aurynThemeSwatches{display:flex;gap:5px;margin-top:6px}.aurynThemeSwatches i{width:16px;height:16px;border-radius:50%;border:1px solid rgba(80,75,68,.22)}.aurynTextChoices{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 18px}.aurynTextChoices button{border:1px solid var(--auryn-border);background:var(--auryn-card-bg);color:var(--auryn-card-ink);border-radius:999px;padding:8px 12px;font-weight:700}.aurynTextChoices button.on{background:var(--auryn-chrome);color:var(--auryn-chrome-ink)}
+[data-motion="reduced"] *,[data-motion="reduced"] *::before,[data-motion="reduced"] *::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
 
-/* Soft/internal surfaces. */
-.v937LadderItem,.v940HeroProof,.v383TechnicalStateGrid>*,.v34TechnicalScoreGrid>*,.aurynV4ModelAudit>span{background:var(--auryn-soft-bg)!important;color:var(--auryn-soft-ink)!important;border-color:var(--auryn-border)!important}
-.v937LadderItem small,.v937LadderItem em,.v940HeroProof small,.v383TechnicalStateGrid small,.v34TechnicalScoreGrid small{color:var(--auryn-card-muted)!important}
+/* READABILITY: a visible preference across the product, not only microcopy. */
+[data-text-size="compact"]{--auryn-readable-scale:.94}
+[data-text-size="large"]{--auryn-readable-scale:1.18}
+[data-text-size="large"] .aurynAppMain p,[data-text-size="large"] .aurynAppMain small{font-size:118%!important;line-height:1.52!important}
+[data-text-size="large"] .aurynEvidenceNav,[data-text-size="large"] .aurynPortfolioNav{font-size:1.08em!important}
+[data-text-size="large"] .aurynAppMain :where(.v936Metric em,.v34IndicatorGrid span,.v34TechnicalScoreGrid span,.v383TechnicalStateGrid span,.aurynThemeNote){font-size:118%!important;line-height:1.48!important}
+[data-text-size="large"] .aurynProductFooter{font-size:1.12em!important}
+[data-text-size="large"] .aurynProductFooter :where(p,a,span,small){line-height:1.5!important}
+[data-text-size="compact"] .aurynAppMain p,[data-text-size="compact"] .aurynAppMain small{font-size:94%!important}
+[data-density="compact"] .v936Metric,[data-density="compact"] .aurynCapitalQueueRow{padding-top:8px!important;padding-bottom:8px!important}
 
-/* Decision rail remains deliberately white/readable across all themes. */
-.v940DecisionRail{background:var(--auryn-chart-bg)!important;color:var(--auryn-chart-ink)!important;border-color:var(--auryn-border)!important}.v940DecisionRail small{color:#667085!important}
-
-/* Charts keep a high-readability trading surface while the surrounding card follows the edition. */
-.v936ChartCard,.chartCanvas{background:var(--auryn-chart-bg)!important;color:var(--auryn-chart-ink)!important;border-color:var(--auryn-border)!important}.v936ChartHead b,.v936ChartHead span{color:var(--auryn-chart-ink)!important}.v936ChartHead small{color:var(--auryn-accent)!important}
-
-/* Technicals: clean contract, no washed-out inherited text. */
-.v34TechnicalHero,.v383TechnicalHero,.v934TechnicalCore,.v933TechnicalChart{color:var(--auryn-page-ink)!important;border-color:var(--auryn-border)!important}.v34TechnicalHero p,.v383TechnicalHero p,.v934TechnicalCore p{color:var(--auryn-page-muted)!important}
-.v34IndicatorGrid,.v34TechnicalScoreGrid,.v383TechnicalStateGrid{background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important}.v34IndicatorGrid article,.v34IndicatorGrid>div,.v34TechnicalScoreGrid article,.v383TechnicalStateGrid article{color:var(--auryn-card-ink)!important}.v34IndicatorGrid small,.v34IndicatorGrid p,.v34TechnicalScoreGrid small,.v383TechnicalStateGrid small{color:var(--auryn-card-muted)!important}
-.aurynTechnicalMetricGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--auryn-border)}.aurynTechnicalMetric{min-width:0;background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important}.aurynTechnicalViz{color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important}
-
-/* Portfolio cards. */
-.aurynPortfolioHero,.aurynPortfolioIntelligence{background:linear-gradient(135deg,var(--auryn-hero-bg-a),var(--auryn-hero-bg-b))!important;color:var(--auryn-hero-copy)!important}.aurynPortfolioHero h1,.aurynPortfolioHero h2,.aurynPortfolioIntelligence h1,.aurynPortfolioIntelligence h2{color:var(--auryn-hero-ink)!important}.aurynPortfolioHero p,.aurynPortfolioIntelligence p{color:var(--auryn-hero-muted)!important}.aurynPortfolioMetrics{background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important}
-
-/* Form/search chrome. Results themselves are isolated in SearchBox.module.css. */
-.aurynSearch input{color:var(--auryn-input-ink)!important;font-weight:550!important}.aurynSearch input::placeholder{color:color-mix(in srgb,var(--auryn-input-ink) 62%,transparent)!important;opacity:1!important}.aurynAuthPanel input{background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important}
-
-/* Financial semantics do not change with the decorative theme. */
-.up,.positive,.aurynPositive,.good{color:var(--auryn-positive)!important}.down,.negative,.aurynNegative,.bad{color:var(--auryn-negative)!important}
-
-/* Appearance selector hierarchy. */
-.aurynAppearanceChoices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:8px 0 18px}.aurynAppearanceChoice{display:grid;grid-template-columns:1fr;gap:4px;min-width:0;border:1px solid var(--auryn-border);background:var(--auryn-card-bg);color:var(--auryn-card-ink);border-radius:12px;padding:13px;text-align:left;cursor:pointer}.aurynAppearanceChoice.on{outline:2px solid var(--auryn-accent);outline-offset:1px}.aurynThemeName{display:block;font-size:16px;font-weight:800;line-height:1.1;color:var(--auryn-card-ink)}.aurynThemeNote{display:block;font-size:11px;line-height:1.35;color:var(--auryn-card-muted)}.aurynThemeSwatches{display:flex;gap:5px;margin-top:6px}.aurynThemeSwatches i{width:16px;height:16px;border-radius:50%;border:1px solid rgba(127,120,110,.28)}.aurynTextChoices{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 18px}.aurynTextChoices button{border:1px solid var(--auryn-border);background:var(--auryn-card-bg);color:var(--auryn-card-ink);border-radius:999px;padding:8px 12px;font-weight:700}.aurynTextChoices button.on{background:var(--auryn-chrome);color:var(--auryn-chrome-ink)}
-
-/* Readability preference changes supporting copy only; geometry remains locked. */
-[data-text-size="standard"] .aurynStockMobileMeta span{font-size:7.5px!important;color:color-mix(in srgb,var(--auryn-page-muted) 88%,var(--auryn-page-ink))!important}[data-text-size="standard"] .aurynStockMobileFacts small{font-size:6.5px!important;color:color-mix(in srgb,var(--auryn-page-muted) 88%,var(--auryn-page-ink))!important}[data-text-size="standard"] .v936ActionRow small,[data-text-size="standard"] .v940HeroProof small{font-size:6.5px!important}[data-text-size="compact"]{--auryn-readable-scale:.94}[data-text-size="large"]{--auryn-readable-scale:1.18}[data-text-size="compact"] .aurynStockMobileMeta span,[data-text-size="compact"] .aurynStockMobileFacts small{font-size:6px!important}[data-text-size="large"] .aurynStockMobileMeta span{font-size:8.5px!important}[data-text-size="large"] .aurynStockMobileFacts small{font-size:7.5px!important}[data-text-size="large"] .v936ActionRow small,[data-text-size="large"] .v940HeroProof small{font-size:7.5px!important}
-
-@media(max-width:760px){.aurynTechnicalMetricGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.aurynAppearanceChoices{grid-template-columns:1fr 1fr}.aurynThemeName{font-size:14px}.aurynThemeNote{font-size:10px}}
+@media(max-width:1000px){.v383TechnicalStateGrid,.v34TechnicalScoreGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important}.v34IndicatorGrid,.aurynTechnicalMetricGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:760px){
+ .aurynStockEvidenceSurface>.v12Technical,.aurynStockEvidenceSurface>.v26Technical{padding:14px!important;border-radius:18px!important}
+ .v34TechnicalHero,.v383TechnicalHero{grid-template-columns:1fr!important}.v34TechVerdict{border-left:0!important;border-top:1px solid var(--auryn-border)!important;padding:18px!important}
+ .v383TechnicalStateGrid,.v34TechnicalScoreGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.v383TechnicalStateGrid>*,.v34TechnicalScoreGrid>*{border-bottom:1px solid var(--auryn-border)!important}
+ .v34IndicatorGrid,.aurynTechnicalMetricGrid{grid-template-columns:1fr!important;gap:10px!important}.v34IndicatorGrid>div{min-height:0!important;padding:16px!important}
+ .aurynAppearanceChoices{grid-template-columns:1fr 1fr}.aurynThemeName{font-size:14px}.aurynThemeNote{font-size:10px}
+}
 @media(max-width:390px){.aurynAppearanceChoices{grid-template-columns:1fr}}
 
+.aurynProductFooter .aurynBrand,.aurynProductFooter .aurynWord{color:var(--auryn-footer-ink)!important}.aurynProductFooter .aurynSigil{fill:var(--auryn-accent)!important}.aurynProductFooter .aurynCut{fill:var(--auryn-footer-bg)!important}
 
-/* V9.5.7 — Surface ownership + Appearance Studio. */
-.aurynAppearanceStudio h3{margin:20px 0 4px;font-size:14px;color:var(--auryn-card-ink)}
-.aurynAppearancePreview{overflow:hidden;margin:14px 0 20px;border:1px solid var(--auryn-border);border-radius:16px;background:var(--auryn-page-bg);box-shadow:0 12px 30px rgba(16,20,24,.06)}
-.aurynPreviewChrome{height:38px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;background:var(--auryn-chrome);color:var(--auryn-chrome-ink);font:700 12px Georgia,serif;letter-spacing:.14em}.aurynPreviewChrome i{width:18px;height:18px;border:1px solid var(--auryn-accent);border-radius:50%}
-.aurynPreviewBody{padding:16px;display:grid;gap:5px;background:linear-gradient(135deg,var(--auryn-hero-bg-a),var(--auryn-hero-bg-b));color:var(--auryn-hero-copy)}.aurynPreviewBody small{font-size:7px;font-weight:900;letter-spacing:.15em;color:var(--auryn-accent-soft)}.aurynPreviewBody b{font:650 27px Georgia,serif;color:var(--auryn-hero-ink)}.aurynPreviewBody span{font-size:10px;color:var(--auryn-hero-copy)}.aurynPreviewBody>div{display:flex;gap:5px;margin-top:5px}.aurynPreviewBody>div i{width:28px;height:4px;border-radius:9px;background:var(--auryn-accent)}
-/* Common evidence surfaces always own their foreground; no dark-page inheritance. */
-.aurynThesisFactors article,.aurynThesisEvidence article,.v937EvidenceGrid article,.v940PulseGroup article,.aurynV4ModelAudit>span,.aurynMemoSignals>span,.aurynMarketTruthGate{color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important}
-.aurynThesisFactors article,.aurynThesisEvidence article,.v937EvidenceGrid article{background:var(--auryn-card-bg)!important}
-.aurynThesisFactors article small,.aurynThesisEvidence article p,.v937EvidenceGrid article small,.v937EvidenceGrid article p,.aurynV4ModelAudit small{color:var(--auryn-card-muted)!important}
-.aurynThesisFactors article b,.aurynThesisEvidence article b,.v937EvidenceGrid article b,.aurynV4ModelAudit b{color:var(--auryn-card-ink)!important}
-[data-motion="reduced"] *,[data-motion="reduced"] *::before,[data-motion="reduced"] *::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
-[data-density="compact"] .v936Metric,[data-density="compact"] .v940PulseGroup article,[data-density="compact"] .aurynCapitalQueueRow{padding-top:8px!important;padding-bottom:8px!important}
-@media(max-width:760px){.aurynAppearancePreview{margin-top:10px}.aurynPreviewBody{padding:13px}.aurynPreviewBody b{font-size:24px}.aurynAppearanceStudio h3{margin-top:16px}}
-
-
-/* V9.5.8 — ROOT THEME SURFACE CONTRACT
-   Theme colors never paint a translucent shell over legacy white content.
-   Every evidence/portfolio surface owns both background and foreground. */
-.aurynStockEvidenceSurface>.v65Evidence,
-.aurynStockEvidenceSurface>.v12Fund,
-.aurynStockEvidenceSurface>.v34InstitutionsPage,
-.aurynStockEvidenceSurface>.v12Technical,
-.aurynStockEvidenceSurface>.v26Technical,
-.aurynStockEvidenceSurface>.gammaPanel,
-.aurynStockEvidenceSurface>.v12News,
-.aurynStockEvidenceSurface>.v12Earnings{
- background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;
- border-color:var(--auryn-border)!important;box-shadow:0 10px 34px rgba(18,24,31,.035)!important
-}
-.aurynStockEvidenceSurface>.v65Evidence :where(h1,h2,h3,h4,b,strong),
-.aurynStockEvidenceSurface>.v12Fund :where(h1,h2,h3,h4,b,strong),
-.aurynStockEvidenceSurface>.v34InstitutionsPage :where(h1,h2,h3,h4,b,strong),
-.aurynStockEvidenceSurface>.v12Technical :where(h1,h2,h3,h4,b,strong),
-.aurynStockEvidenceSurface>.v26Technical :where(h1,h2,h3,h4,b,strong),
-.aurynStockEvidenceSurface>.gammaPanel :where(h1,h2,h3,h4,b,strong),
-.aurynStockEvidenceSurface>.v12News :where(h1,h2,h3,h4,b,strong),
-.aurynStockEvidenceSurface>.v12Earnings :where(h1,h2,h3,h4,b,strong){color:var(--auryn-card-ink)}
-.aurynStockEvidenceSurface :where(p,span,em,time){color:var(--auryn-card-muted)}
-
-/* Technicals has exactly three visual layers: reading card, soft score rail, white/chart metric surface. */
-.v34TechnicalHero,.v383TechnicalHero{background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important}
-.v34TechnicalHero h3,.v383TechnicalHero h3{color:var(--auryn-card-ink)!important}.v34TechnicalHero p,.v383TechnicalHero p,.v34TechVerdict span{color:var(--auryn-card-muted)!important}
-.v383TechnicalStateGrid>*,.v34TechnicalScoreGrid>*{background:var(--auryn-soft-bg)!important;color:var(--auryn-soft-ink)!important;border-color:var(--auryn-border)!important}
-.v383TechnicalStateGrid>* b,.v34TechnicalScoreGrid>* b{color:var(--auryn-soft-ink)}.v383TechnicalStateGrid>* span,.v34TechnicalScoreGrid>* span{color:var(--auryn-card-muted)!important}
-.v34IndicatorGrid{background:var(--auryn-card-bg)!important;border-color:var(--auryn-border)!important}
-.v34IndicatorGrid>div{background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important}
-.v34IndicatorGrid>div b{color:var(--auryn-card-ink)}.v34IndicatorGrid>div span{color:var(--auryn-card-muted)!important}
-.v934TechnicalCore{background:var(--auryn-soft-bg)!important;color:var(--auryn-soft-ink)!important;border-color:var(--auryn-border)!important}
-.v934TechnicalCore :where(b,strong){color:var(--auryn-soft-ink)}.v934TechnicalCore :where(p,span,small){color:var(--auryn-card-muted)}
-
-/* Portfolio translation: keep editorial canvas calm; use edition color in chrome, hero and accents. */
-.aurynPortfolioPage :where(.aurynPortfolioMetrics,.aurynPortfolioBrief,.aurynPortfolioXRay,.aurynPortfolioHealth,.aurynCapitalQueueRow,.aurynCompositionExplain){background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important}
-.aurynPortfolioPage :where(.aurynPortfolioMetrics,.aurynPortfolioBrief,.aurynPortfolioXRay,.aurynPortfolioHealth,.aurynCapitalQueueRow,.aurynCompositionExplain) :where(h1,h2,h3,b,strong){color:var(--auryn-card-ink)}
-.aurynPortfolioPage :where(.aurynPortfolioMetrics,.aurynPortfolioBrief,.aurynPortfolioXRay,.aurynPortfolioHealth,.aurynCapitalQueueRow,.aurynCompositionExplain) :where(p,span,small,em){color:var(--auryn-card-muted)}
-
-/* Readability is a real preference, not a token change with no visible effect. */
-[data-text-size="large"] .aurynAppMain p,[data-text-size="large"] .aurynAppMain small{font-size:118%!important;line-height:1.5!important}
-[data-text-size="large"] .aurynAppMain :where(.v936Metric em,.v34IndicatorGrid span,.v34TechnicalScoreGrid span,.v383TechnicalStateGrid span,.aurynThemeNote){font-size:118%!important;line-height:1.45!important}
-[data-text-size="compact"] .aurynAppMain p,[data-text-size="compact"] .aurynAppMain small{font-size:94%!important}
+.v383TechnicalStateGrid>*{background:var(--auryn-soft-bg)!important}.v34TechnicalScoreGrid>*{background:var(--auryn-soft-bg)!important}.v34IndicatorGrid>div{background:var(--auryn-card-bg)!important}

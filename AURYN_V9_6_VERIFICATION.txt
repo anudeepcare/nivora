@@ -1,0 +1,13 @@
+AURYN V9.6 verification
+Date: 2026-09-11
+
+PASS: tests/auryn-v960-theme-technicals.test.mjs
+PASS: tests/auryn-v956-pwa-theme-contract.test.mjs
+PASS: tests/auryn-v957-search-personalization.test.mjs
+PASS: tests/auryn-v958-theme-surface-fontscale.test.mjs
+Combined result: 25 tests, 25 passed, 0 failed.
+
+Production build: NOT VERIFIED in this sandbox.
+Reason: the uploaded source did not contain an executable local Next.js installation. `npm run build` returned `next: Permission denied`; dependency restoration did not complete within the execution window.
+
+No engine/market-data files were intentionally modified.
