@@ -4,6 +4,7 @@ import "./auryn-product.css";
 import "./auryn-premium.css";
 import "./auryn-mobile.css";
 import "./auryn-mobile-v944.css";
+import "./auryn-mobile-v945.css";
 import type {Metadata,Viewport} from "next";
 
 const description="AURYN turns market evidence into clear, explainable investment decisions and portfolio intelligence.";
@@ -15,7 +16,7 @@ export const metadata:Metadata={
  applicationName:"AURYN",
  icons:{icon:[{url:"/auryn-v38-icon.svg",type:"image/svg+xml"}],shortcut:"/auryn-v38-icon.svg",apple:"/auryn-v384-apple.png"},
  manifest:"/manifest.webmanifest",
- appleWebApp:{capable:true,statusBarStyle:"black-translucent",title:"AURYN"},
+ appleWebApp:{capable:true,statusBarStyle:"black",title:"AURYN"},
  openGraph:{type:"website",siteName:"AURYN",title:"AURYN — Investment Intelligence",description,images:[{url:"/auryn-v384-social.png",width:1200,height:1200,alt:"AURYN"}]},
  twitter:{card:"summary",title:"AURYN — Investment Intelligence",description,images:["/auryn-v384-social.png"]},
 };

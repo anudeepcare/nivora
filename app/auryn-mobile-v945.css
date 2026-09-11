@@ -1,0 +1,279 @@
+/* AURYN V9.4.5 — iPhone PWA root-cause fix.
+   Fixes the actual standalone-mode failure: translucent iOS status area +
+   sticky header + scrolling content. Header is now viewport-fixed and the
+   shell owns one exact top reserve. Portfolio is structurally one-column. */
+
+@media(max-width:760px){
+  .aurynAppShell{
+    width:100%!important;
+    max-width:100%!important;
+    min-height:100dvh!important;
+    padding-top:calc(56px + env(safe-area-inset-top))!important;
+    overflow-x:clip!important;
+    background:#f7f5f0!important;
+  }
+
+  .aurynHeader{
+    position:fixed!important;
+    top:0!important;left:0!important;right:0!important;
+    z-index:600!important;
+    width:100%!important;max-width:100%!important;
+    height:calc(56px + env(safe-area-inset-top))!important;
+    min-height:calc(56px + env(safe-area-inset-top))!important;
+    padding:env(safe-area-inset-top) 16px 8px!important;
+    margin:0!important;
+    background:#15130f!important;
+  }
+
+  .aurynMobileSearch{
+    position:relative!important;
+    top:auto!important;
+    margin:0!important;
+    width:100%!important;
+    max-width:100%!important;
+  }
+
+  .aurynAppMain{
+    width:100%!important;
+    max-width:100%!important;
+    margin:0!important;
+    overflow-x:clip!important;
+  }
+
+  /* Portfolio root: every direct section must obey the mobile viewport. */
+  .aurynPortfolioPage{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    overflow-x:clip!important;
+  }
+  .aurynPortfolioPage>*{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+  }
+  .aurynPortfolioPage h1,.aurynPortfolioPage h2,.aurynPortfolioPage p{
+    max-width:100%!important;
+    white-space:normal!important;
+    overflow-wrap:anywhere!important;
+    word-break:normal!important;
+  }
+
+  /* Hero must actually become one column; clipping was masking the desktop grid. */
+  .aurynPortfolioPulse{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+  }
+  .aurynPortfolioSummary{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:0!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    overflow:hidden!important;
+    border-radius:20px!important;
+  }
+  .aurynPortfolioLead{
+    width:100%!important;
+    min-width:0!important;
+    padding:22px 18px 18px!important;
+  }
+  .aurynPortfolioLead h1{
+    font-size:44px!important;
+    line-height:.96!important;
+    max-width:100%!important;
+  }
+  .aurynPortfolioLead p{
+    margin-top:14px!important;
+    font-size:11px!important;
+    line-height:1.45!important;
+  }
+  .aurynPortfolioCondition{
+    width:100%!important;
+    min-width:0!important;
+    padding:18px!important;
+    border-left:0!important;
+    border-top:1px solid rgba(255,255,255,.08)!important;
+  }
+
+  /* Allocation is not clipped: it reflows. */
+  .aurynPortfolioComposition{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    overflow:visible!important;
+  }
+  .aurynCompositionBody{
+    display:grid!important;
+    grid-template-columns:108px minmax(0,1fr)!important;
+    gap:12px!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+  }
+  .aurynAllocationLegend,.aurynConcentrationBars{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+  }
+  .aurynConcentrationBars{grid-column:1/-1!important}
+  .aurynCompositionExplain{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+  }
+
+  /* Performance: cards and tabs fit instead of extending right. */
+  .aurynPortfolioPeriods{
+    width:100%!important;
+    max-width:100%!important;
+    overflow-x:auto!important;
+    overscroll-behavior-x:contain!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+  .aurynPortfolioMetrics{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    overflow:hidden!important;
+  }
+  .aurynPortfolioMetrics article{
+    width:auto!important;
+    min-width:0!important;
+    max-width:100%!important;
+  }
+
+  /* Visual intelligence: reflow rather than "overflow:hidden". */
+  .aurynPortfolioVisuals{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    overflow:visible!important;
+  }
+  .aurynPortfolioSectionHead{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+  }
+  .aurynPortfolioSectionHead h2{
+    width:100%!important;
+    max-width:100%!important;
+    white-space:normal!important;
+    overflow-wrap:anywhere!important;
+  }
+  .aurynVisualModes{
+    display:flex!important;
+    width:100%!important;
+    max-width:100%!important;
+    overflow-x:auto!important;
+  }
+  .aurynDriverBars,.aurynAllocationMap,.aurynRiskBars{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+  }
+  .aurynDriverBars>div{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+  }
+
+  /* Capital queue text wraps and rows stay inside the viewport. */
+  .aurynCapitalPriorities{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+  }
+  .aurynCapitalQueueRow{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    gap:10px 12px!important;
+    padding:14px!important;
+    overflow:visible!important;
+  }
+  .aurynCapitalQueueRow>span{
+    min-width:0!important;
+    max-width:100%!important;
+  }
+  .aurynCapitalQueueRow>span:nth-child(2),
+  .aurynCapitalQueueRow>span:nth-child(5){
+    grid-column:1/-1!important;
+  }
+  .aurynCapitalQueueRow b,.aurynCapitalQueueRow em{
+    display:block!important;
+    max-width:100%!important;
+    white-space:normal!important;
+    overflow-wrap:anywhere!important;
+  }
+
+  /* Market intelligence. */
+  .v934PortfolioIntel{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    overflow:visible!important;
+  }
+  .v934PortfolioIntel>div,.v934PortfolioIntel p{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+  }
+
+  /* Holdings: compact cards, not tall desktop tables. */
+  .aurynHoldingsSection{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+  }
+  .aurynPositionRow{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    gap:8px 10px!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    padding:12px!important;
+  }
+  .aurynPositionFacts{display:none!important}
+  .aurynPositionMobileSummary{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    grid-column:1/-1!important;
+    min-width:0!important;
+    gap:7px 14px!important;
+  }
+  .aurynPositionTrigger{
+    grid-column:1/-1!important;
+    min-width:0!important;
+    max-width:100%!important;
+  }
+  .aurynPositionTrigger b{
+    white-space:normal!important;
+    overflow-wrap:anywhere!important;
+  }
+
+  /* Auth: no inherited app-like empty status/header space. */
+  .aurynAuthPage{
+    padding:0!important;
+    min-height:100dvh!important;
+  }
+  .aurynAuthPanel{
+    padding:calc(env(safe-area-inset-top) + 14px) 20px calc(env(safe-area-inset-bottom) + 24px)!important;
+  }
+}
+
+@media(max-width:390px){
+  .aurynPortfolioMetrics{grid-template-columns:1fr!important}
+  .aurynCompositionBody{grid-template-columns:96px minmax(0,1fr)!important}
+}

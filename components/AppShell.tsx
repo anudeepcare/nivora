@@ -31,7 +31,7 @@ export default function AppShell({children}:{children:React.ReactNode}){
   return()=>{window.clearTimeout(timer);observer?.disconnect()};
  },[path]);
  async function logout(){await supabaseBrowser().auth.signOut();router.replace("/login");router.refresh()}
- return <div>
+ return <div className="aurynAppShell">
   <header className="aurynHeader">
    <AurynLogo compact/>
    <nav className="aurynDesktopNav" aria-label="Primary">{nav.map(n=><Link key={n.href} className={active(n.href)?"on":""} href={n.href}>{n.label}</Link>)}</nav>
