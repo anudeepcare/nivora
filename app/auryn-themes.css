@@ -77,3 +77,137 @@ html,body,.aurynAppShell,.aurynAppMain,.aurynStockPage,.aurynPortfolioPage,.aury
 .aurynProductFooter .aurynBrand,.aurynProductFooter .aurynWord{color:var(--auryn-footer-ink)!important}.aurynProductFooter .aurynSigil{fill:var(--auryn-accent)!important}.aurynProductFooter .aurynCut{fill:var(--auryn-footer-bg)!important}
 
 .v383TechnicalStateGrid>*{background:var(--auryn-soft-bg)!important}.v34TechnicalScoreGrid>*{background:var(--auryn-soft-bg)!important}.v34IndicatorGrid>div{background:var(--auryn-card-bg)!important}
+
+/* TECHNICALS V9.6.1 — PREMIUM ANALYTICAL COMPOSITION
+   Presentation-only refinement. Existing evidence, scores, indicators and logic are untouched. */
+.aurynStockEvidenceSurface>.v12Technical,
+.aurynStockEvidenceSurface>.v26Technical{
+  padding:34px!important;
+  background:var(--auryn-card-bg)!important;
+  border:1px solid var(--auryn-border)!important;
+  border-radius:26px!important;
+}
+.v934TechnicalCore{
+  margin:0 0 28px!important;
+  padding:22px 26px!important;
+  background:var(--auryn-soft-bg)!important;
+  border:1px solid var(--auryn-border)!important;
+  border-radius:18px!important;
+}
+.v34TechnicalHero,.v383TechnicalHero{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 260px!important;
+  align-items:stretch!important;
+  margin:0 0 14px!important;
+  background:var(--auryn-card-bg)!important;
+  border:1px solid var(--auryn-border)!important;
+  border-radius:18px!important;
+  overflow:hidden!important;
+}
+.v34TechnicalHero>div:first-child,.v383TechnicalHero>div:first-child{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  min-height:148px!important;
+  padding:24px 28px!important;
+}
+.v34TechnicalHero h3,.v383TechnicalHero h3{
+  margin:6px 0 8px!important;
+  font-size:25px!important;
+  line-height:1.15!important;
+}
+.v34TechnicalHero p,.v383TechnicalHero p{
+  max-width:900px!important;
+  margin:0!important;
+  line-height:1.55!important;
+}
+.v34TechVerdict{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  gap:7px!important;
+  padding:24px!important;
+  background:var(--auryn-soft-bg)!important;
+  border-left:1px solid var(--auryn-border)!important;
+}
+.v34TechVerdict b{font-size:32px!important;line-height:1!important}
+.v383TechnicalStateGrid,.v34TechnicalScoreGrid{
+  display:grid!important;
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  gap:10px!important;
+  margin:0 0 24px!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  overflow:visible!important;
+}
+.v383TechnicalStateGrid>*,.v34TechnicalScoreGrid>*{
+  min-width:0!important;
+  min-height:100px!important;
+  padding:15px 16px!important;
+  background:var(--auryn-card-bg)!important;
+  color:var(--auryn-card-ink)!important;
+  border:1px solid var(--auryn-border)!important;
+  border-radius:14px!important;
+  box-shadow:0 5px 16px rgba(18,24,31,.025)!important;
+}
+.v383TechnicalStateGrid>* b,.v34TechnicalScoreGrid>* b{
+  display:block!important;
+  margin:7px 0 4px!important;
+  font-size:21px!important;
+  line-height:1.05!important;
+}
+.v34IndicatorGrid{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:14px!important;
+  margin:0 0 26px!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+}
+.v34IndicatorGrid>div{
+  min-width:0!important;
+  min-height:156px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  padding:18px 20px!important;
+  background:var(--auryn-card-bg)!important;
+  color:var(--auryn-card-ink)!important;
+  border:1px solid var(--auryn-border)!important;
+  border-radius:16px!important;
+  box-shadow:0 8px 24px rgba(18,24,31,.035)!important;
+}
+.v34IndicatorGrid>div>b{
+  display:block!important;
+  margin:8px 0!important;
+  font-size:24px!important;
+  line-height:1.08!important;
+}
+.v34IndicatorGrid>div>span,.v34IndicatorGrid>div>small{
+  color:var(--auryn-card-muted)!important;
+  line-height:1.45!important;
+}
+.v34IndicatorGrid>div :where(.v942RsiScale,.v942VolumeScale,.v942BollingerScale,.v942MacdHistogram){
+  margin-top:auto!important;
+  padding-top:14px!important;
+}
+.v933TechnicalChart{
+  margin-top:0!important;
+  padding:24px!important;
+  background:var(--auryn-card-bg)!important;
+  border:1px solid var(--auryn-border)!important;
+  border-radius:18px!important;
+}
+@media(max-width:1100px){
+  .v383TechnicalStateGrid,.v34TechnicalScoreGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .v34IndicatorGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:760px){
+  .aurynStockEvidenceSurface>.v12Technical,.aurynStockEvidenceSurface>.v26Technical{padding:14px!important}
+  .v34TechnicalHero,.v383TechnicalHero{grid-template-columns:1fr!important}
+  .v34TechVerdict{border-left:0!important;border-top:1px solid var(--auryn-border)!important}
+  .v383TechnicalStateGrid,.v34TechnicalScoreGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .v34IndicatorGrid{grid-template-columns:1fr!important;gap:10px!important}
+  .v34IndicatorGrid>div{min-height:0!important}
+}
