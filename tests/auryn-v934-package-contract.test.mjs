@@ -8,7 +8,7 @@ test('V9.3.4 is part of quick/full verification and full engine regression',()=>
  assert.match(pkg.scripts?.['test:v934-core']||'',/auryn-v934-timeframes/);
  assert.match(pkg.scripts?.['test:v934-core']||'',/auryn-v934-reliability/);
  assert.match(pkg.scripts?.['verify:quick']||'',/test:v934-core/);
- assert.match(pkg.scripts?.['verify:release']||'',/gate:v934/);
+ assert.match(pkg.scripts?.['verify:release']||'',/gate:v93(?:4|5)/);
  const engine=pkg.scripts?.['test:engine']||'';
  for(const f of ['auryn-v934-timeframes.test.mjs','auryn-v934-zones.test.mjs','auryn-v934-snapshot.test.mjs','auryn-v934-provider-contract.test.mjs','auryn-v934-cross-surface.test.mjs','auryn-v934-decision-bridge.test.mjs','auryn-v934-ui-contract.test.mjs','auryn-v934-session-matrix.test.mjs','auryn-v934-reliability.test.mjs','auryn-v934-live-validation.test.mjs','auryn-v934-package-contract.test.mjs']) assert.match(engine,new RegExp(f.replaceAll('.','\\.')));
 });

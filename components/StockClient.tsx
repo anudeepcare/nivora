@@ -135,6 +135,7 @@ export default function StockClient({symbol}:{symbol:string}){
   const[calibration,setCalibration]=useState<any>(null);
   const[modelHealth,setModelHealth]=useState<any>(null);
   const[liveQuote,setLiveQuote]=useState<any>(null);
+  const[canonicalV935,setCanonicalV935]=useState<any>(null);
   const[liveMarketContext,setLiveMarketContext]=useState<any>(null);
   const[coreRetry,setCoreRetry]=useState(0);
   const[previousSetupState,setPreviousSetupState]=useState<SetupState|null>(null);
@@ -145,8 +146,8 @@ export default function StockClient({symbol}:{symbol:string}){
 
   useEffect(()=>{
     let active=true;let timer:any;
-    const loadQuote=()=>fetch(`/api/quote/${encodeURIComponent(symbol)}`,{cache:"no-store"}).then(async r=>{const x=await r.json();if(r.ok&&active)setLiveQuote(x)}).catch(()=>{});
-    loadQuote();timer=setInterval(()=>{if(document.visibilityState==="visible")loadQuote()},20000);
+    const loadCanonical=()=>fetch(`/api/canonical/${encodeURIComponent(symbol)}`,{cache:"no-store"}).then(async r=>{const x=await r.json();if(!r.ok||!active)return;setCanonicalV935(x);if(x?.market)setLiveQuote({...x.market,price:x.market.displayPrice,changePct:null,providerTimestamp:x.market.decisionPriceAsOf??x.market.asOf})}).catch(()=>{});
+    loadCanonical();timer=setInterval(()=>{if(document.visibilityState==="visible")loadCanonical()},20000);
     return()=>{active=false;clearInterval(timer)};
   },[symbol]);
 
@@ -488,24 +489,31 @@ export default function StockClient({symbol}:{symbol:string}){
       symbol,engineVersion:enterprise.engineVersion,mode,price:canonicalDecisionPrice,score:intelligence.score,
       confidence:intelligence.confidence,action:intelligence.action,thesisLabel:intelligence.thesisLabel,
       dimensions:intelligence.dimensions,levels:canonicalValidationLevels,auditId:enterprise.auditId,
-      evidence:{coverage:enterprise.coverage,dataQuality:enterprise.dataQuality,contradictions:intelligence.contradictions,benchmark:d.market?.benchmark||"SPY",benchmarkPrice:d.market?.benchmarkPrice??null,v934:d?.marketIntelligence?projectMarketIntelligence(d.marketIntelligence):null,v931:institutionalDecision?{snapshotId:institutionalDecision.snapshotId,newMoneyAction:institutionalDecision.newMoneyAction,ownerAction:institutionalDecision.ownerAction,longTermAction:institutionalDecision.longTermAction,canonicalPrimaryAction:institutionalDecision.canonicalPrimaryAction,legacyChallengerAction:institutionalDecision.legacyChallengerAction,hardVetoReasons:institutionalDecision.hardVetoReasons,policyReasons:institutionalDecision.policyReasons,executionAction:institutionalDecision.executionAction,setupState:institutionalDecision.setupState,decisionScore:institutionalDecision.decisionScore,evidenceCompleteness:institutionalDecision.evidenceCompleteness,nextDecisionTrigger:institutionalDecision.nextDecisionTrigger,invalidationTrigger:institutionalDecision.invalidationTrigger}:null,v5:v5Analysis&&v7Analysis?{snapshotId:v5Analysis.snapshotId,engineVersion:v7Analysis.engineVersion,action:v5Analysis.decision.primaryAction,ownerAction:v5Analysis.decision.ownerAction,executionState:v5Analysis.executionPlan.state,priceState:v5Analysis.marketTruth.priceState,executionPlan:v5Analysis.executionPlan,trustState:v7Analysis.trust.state,trustScore:v7Analysis.trust.score,thesisStrength:v5Analysis.metrics.find((m:any)=>m.id==="thesisStrength")?.value??null,businessQuality:v5Analysis.metrics.find((m:any)=>m.id==="businessQuality")?.value??null,entryQuality:v5Analysis.metrics.find((m:any)=>m.id==="entryQuality")?.value??null}:null},
+      evidence:{coverage:enterprise.coverage,dataQuality:enterprise.dataQuality,contradictions:intelligence.contradictions,benchmark:d.market?.benchmark||"SPY",benchmarkPrice:d.market?.benchmarkPrice??null,v935:canonicalV935?{contract:canonicalV935.contract,snapshotId:canonicalV935.snapshotId,marketSnapshotId:canonicalV935.market?.snapshotId??null,researchState:canonicalV935.research?.state??null}:null,v934:d?.marketIntelligence?projectMarketIntelligence(d.marketIntelligence):null,v931:institutionalDecision?{snapshotId:institutionalDecision.snapshotId,newMoneyAction:institutionalDecision.newMoneyAction,ownerAction:institutionalDecision.ownerAction,longTermAction:institutionalDecision.longTermAction,canonicalPrimaryAction:institutionalDecision.canonicalPrimaryAction,legacyChallengerAction:institutionalDecision.legacyChallengerAction,hardVetoReasons:institutionalDecision.hardVetoReasons,policyReasons:institutionalDecision.policyReasons,executionAction:institutionalDecision.executionAction,setupState:institutionalDecision.setupState,decisionScore:institutionalDecision.decisionScore,evidenceCompleteness:institutionalDecision.evidenceCompleteness,nextDecisionTrigger:institutionalDecision.nextDecisionTrigger,invalidationTrigger:institutionalDecision.invalidationTrigger}:null,v5:v5Analysis&&v7Analysis?{snapshotId:v5Analysis.snapshotId,engineVersion:v7Analysis.engineVersion,action:v5Analysis.decision.primaryAction,ownerAction:v5Analysis.decision.ownerAction,executionState:v5Analysis.executionPlan.state,priceState:v5Analysis.marketTruth.priceState,executionPlan:v5Analysis.executionPlan,trustState:v7Analysis.trust.state,trustScore:v7Analysis.trust.score,thesisStrength:v5Analysis.metrics.find((m:any)=>m.id==="thesisStrength")?.value??null,businessQuality:v5Analysis.metrics.find((m:any)=>m.id==="businessQuality")?.value??null,entryQuality:v5Analysis.metrics.find((m:any)=>m.id==="entryQuality")?.value??null}:null},
       investorDecision:investorDecision?{companyScore:investorDecision.companyScore,thesisScore:investorDecision.thesisScore,opportunityScore:investorDecision.opportunityScore,thesisLabel:investorDecision.thesisLabel,thesisState:investorDecision.thesisState,valuationLabel:investorDecision.valuationLabel,action:investorDecision.action,confidence:investorDecision.confidence,dataCompleteness:investorDecision.dataCompleteness,archetype:investorDecision.archetype,factors:investorDecision.factors,horizons:investorDecision.horizons,drivers:investorDecision.drivers,risks:investorDecision.risks,today:investorDecision.today}:null,
       canonicalDecision:v7Analysis?serializeV7Decision(v7Analysis):null
     })}).catch(()=>{});
-  },[d?.price,canonicalDecisionPrice,priceSensitiveAllowed,intelligence?.score,intelligence?.confidence,enterprise?.auditId,symbol,mode,investorDecision?.thesisScore,investorDecision?.opportunityScore,investorDecision?.today,v5Analysis?.snapshotId,v5Analysis?.decision.primaryAction,v5Analysis?.executionPlan.state,v7Analysis?.trust.state,institutionalDecision?.snapshotId,institutionalDecision?.newMoneyAction,institutionalDecision?.ownerAction,institutionalDecision?.setupState,decisionSnapshot?.snapshotId,d?.marketIntelligence?.snapshotId]);
+  },[d?.price,canonicalDecisionPrice,priceSensitiveAllowed,intelligence?.score,intelligence?.confidence,enterprise?.auditId,symbol,mode,investorDecision?.thesisScore,investorDecision?.opportunityScore,investorDecision?.today,v5Analysis?.snapshotId,v5Analysis?.decision.primaryAction,v5Analysis?.executionPlan.state,v7Analysis?.trust.state,institutionalDecision?.snapshotId,institutionalDecision?.newMoneyAction,institutionalDecision?.ownerAction,institutionalDecision?.setupState,decisionSnapshot?.snapshotId,d?.marketIntelligence?.snapshotId,canonicalV935?.snapshotId]);
 
   if(!d||!view){
+    const durable=canonicalV935?.research;
+    const durableMap=durable?.actionMap||durable?.levels||null;
     const partialStatus=!marketTruth?"Verifying market price":marketTruth.priceState==="OFFICIAL_CLOSE"?"Market closed · verified reference":marketTruth.session==="PRE_MARKET"?"Pre-market · verified source":marketTruth.session==="AFTER_HOURS"?"After-hours · verified source":"Market open · verified source";
     const partialDetail=marketTruth?`${String(marketTruth.reason||"")}${marketTruth.decisionPriceAsOf?` · price as of ${new Date(marketTruth.decisionPriceAsOf).toLocaleString()}`:""}`:"Price verification loads independently from the research engine.";
     const partialChange=Number(liveQuote?.changePct);
     return <div className="aurynStockPage aurynProgressiveStock">
       <StockSecurityHeader company={symbol} symbol={symbol} price={priceSensitiveAllowed?canonicalDecisionPrice:null} changePct={priceSensitiveAllowed&&Number.isFinite(partialChange)?partialChange:null} status={partialStatus} detail={partialDetail} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
-      <section className={`aurynProgressiveResearch ${err?"degraded":"loading"}`}>
+      {durable?.action?<section className="v935DurableResearch" data-canonical-snapshot={canonicalV935?.snapshotId||""}>
+        <div><small>LAST VERIFIED AURYN DECISION</small><h2>{String(durable.action).replaceAll("_"," ")}</h2><p>{durable.state==="STALE_VERIFIED"?"Verified research is preserved while AURYN refreshes the newest completed-bar evidence.":"Verified research is available while deeper evidence refreshes in the background."}</p></div>
+        <div className="v935DurableActions"><span>OWNER <b>{durable.ownerAction||"—"}</b></span><span>LONG TERM <b>{durable.longTermAction||"—"}</b></span><span>SETUP <b>{String(durable.setupState||"—").replaceAll("_"," ")}</b></span></div>
+        {durableMap?<div className="v935DurableLevels"><span>ENTRY <b>{durableMap.preferredEntry?.low!=null?`${displayMoney(durableMap.preferredEntry.low)}–${displayMoney(durableMap.preferredEntry.high)}`:"—"}</b></span><span>CONFIRM <b>{displayMoney(durableMap.confirm??durableMap.breakout??null)}</b></span><span>T1 <b>{displayMoney(durableMap.t1??null)}</b></span><span>T2 <b>{displayMoney(durableMap.t2??null)}</b></span><span>RISK <b>{displayMoney(durableMap.invalidation??null)}</b></span></div>:null}
+        <small className="v935RefreshState">Refreshing latest evidence in background{err?" · provider temporarily delayed":""}</small>
+      </section>:<section className={`aurynProgressiveResearch ${err?"degraded":"loading"}`}>
         <small>{err?"RESEARCH TEMPORARILY UPDATING":"BUILDING CONFIRMED RESEARCH"}</small>
         <h2>{err?"Live price is active. Historical intelligence is retrying.":`Building ${symbol} without blocking the live price.`}</h2>
-        <p>{err||"Confirmed 4H, daily and weekly structure load first. Tactical 15M/1H context follows separately."}</p>
+        <p>{err||"Confirmed daily and weekly structure load first. Tactical context follows separately."}</p>
         {err?<button type="button" onClick={()=>{setErr("");setCoreRetry(x=>x+1)}}>Retry research</button>:null}
-      </section>
+      </section>}
     </div>;
   }
 

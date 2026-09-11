@@ -12,8 +12,8 @@ function Content(){
   const{data}=await s.from("alerts").select("*").eq("user_id",user.id).order("created_at",{ascending:false});const base=data||[];
   if(!base.length){setItems([]);return}
   const syms=[...new Set(base.map((x:any)=>String(x.symbol||"").toUpperCase()).filter(Boolean))].slice(0,40);
-  const q=await fetch(`/api/decision/summaries?symbols=${encodeURIComponent(syms.join(","))}`,{cache:"no-store"}).then(r=>r.json()).catch(()=>({items:[]}));
-  const bySymbol=Object.fromEntries((q.items||[]).map((x:any)=>[x.symbol,x]));setItems(base.map((x:any)=>({...x,decision:bySymbol[String(x.symbol||"").toUpperCase()]||null})));
+  const q=await fetch(`/api/canonical?symbols=${encodeURIComponent(syms.join(","))}`,{cache:"no-store"}).then(r=>r.json()).catch(()=>({items:[]}));
+  const bySymbol=Object.fromEntries((q.items||[]).map((x:any)=>{const r=x.research||{},mt=x.market||{};return[x.security?.symbol,{canonicalAction:r.action,canonicalOwnerAction:r.ownerAction,setupState:r.setupState,displayPrice:mt.displayPrice,marketIntelligence:r.marketIntelligenceSnapshotId?{snapshotId:r.marketIntelligenceSnapshotId,timeframes:r.timeframes,levels:r.levels}:null,canonicalSnapshotId:x.snapshotId,degraded:x.degraded}]}));setItems(base.map((x:any)=>({...x,decision:bySymbol[String(x.symbol||"").toUpperCase()]||null})));
  }
  useEffect(()=>{load()},[]);
  async function add(e:React.FormEvent){e.preventDefault();const s=supabaseBrowser();const{data:{user}}=await s.auth.getUser();if(!user)return;await s.from("alerts").insert({user_id:user.id,symbol:symbol.toUpperCase(),alert_type:"price",target_price:+price});setSymbol("");setPrice("");load()}

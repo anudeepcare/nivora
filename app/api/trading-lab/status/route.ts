@@ -85,6 +85,8 @@ export async function GET(){
    marketSession:e.details?.marketSession||null,
    integrityState:e.details?.integrityState||null,
    disagreementPct:e.details?.disagreementPct??null,
+   canonicalSnapshotId:e.details?.v935CanonicalSnapshotId||null,
+   canonicalMarketSnapshotId:e.details?.v935MarketSnapshotId||null,
    marketIntelligenceSnapshotId:e.details?.v934SnapshotId||null,
    marketIntelligenceTimeframes:e.details?.v934Timeframes||null,
    marketIntelligenceLevels:e.details?.v934Levels||null,
@@ -122,11 +124,11 @@ export async function GET(){
  const decisionActions:Record<string,number>={},decisionPaths:Record<string,number>={},decisionBlockers:Record<string,number>={};
  const decisionDetails:any[]=[];
  for(const row of snapshotLatest.values()){
-  const d=row.decision||{},today=d.today||{},audit=today.buyAudit||null,v931=row.evidence?.v931||null,v934=row.evidence?.v934||null,action=String(v931?.newMoneyAction||today.action||"MISSING");
+  const d=row.decision||{},today=d.today||{},audit=today.buyAudit||null,v935=row.evidence?.v935||null,v931=row.evidence?.v931||null,v934=row.evidence?.v934||null,action=String(v931?.newMoneyAction||today.action||"MISSING");
   decisionActions[action]=(decisionActions[action]||0)+1;
   const path=String(today.buyPath||audit?.path||"");if(path)decisionPaths[path]=(decisionPaths[path]||0)+1;
   const blocker=String(audit?.primaryBlocker||"");if(blocker)decisionBlockers[blocker]=(decisionBlockers[blocker]||0)+1;
-  decisionDetails.push({symbol:String(row.symbol||"").toUpperCase(),action,ownerAction:v931?.ownerAction||null,canonicalPrimaryAction:v931?.canonicalPrimaryAction||null,v931SnapshotId:v931?.snapshotId||null,marketIntelligenceSnapshotId:v934?.snapshotId||null,marketIntelligence:v934,executionAction:v931?.executionAction||null,observedAt:row.observed_at,buyPath:today.buyPath||null,buyTier:today.buyTier||null,closestPath:audit?.closestPath||null,primaryBlocker:blocker||null,pathDistance:audit?.paths?.[0]?.distance??null,thesisScore:Number(d.thesisScore||0),opportunityScore:Number(d.opportunityScore||0),timingScore:Number(d.timing?.score||0)});
+  decisionDetails.push({symbol:String(row.symbol||"").toUpperCase(),action,canonicalSnapshotId:v935?.snapshotId||null,ownerAction:v931?.ownerAction||null,canonicalPrimaryAction:v931?.canonicalPrimaryAction||null,v931SnapshotId:v931?.snapshotId||null,marketIntelligenceSnapshotId:v934?.snapshotId||null,marketIntelligence:v934,executionAction:v931?.executionAction||null,observedAt:row.observed_at,buyPath:today.buyPath||null,buyTier:today.buyTier||null,closestPath:audit?.closestPath||null,primaryBlocker:blocker||null,pathDistance:audit?.paths?.[0]?.distance??null,thesisScore:Number(d.thesisScore||0),opportunityScore:Number(d.opportunityScore||0),timingScore:Number(d.timing?.score||0)});
  }
  const dominantBlockers=Object.entries(decisionBlockers).sort((a,b)=>b[1]-a[1]).map(([reason,count])=>({reason,count}));
  const closestToBuy=decisionDetails.filter(x=>x.action!=="BUY"&&x.closestPath&&Number.isFinite(Number(x.pathDistance))).sort((a,b)=>Number(a.pathDistance)-Number(b.pathDistance)).slice(0,10);

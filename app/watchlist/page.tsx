@@ -16,8 +16,8 @@ function Content(){
   const{data}=await s.from("watchlist_items").select("id,symbol,created_at").eq("user_id",user.id).order("created_at",{ascending:false});const base=data||[];
   if(base.length){
    const symbols=base.slice(0,40).map((x:any)=>x.symbol).join(",");
-   const q=await fetch(`/api/decision/summaries?symbols=${encodeURIComponent(symbols)}`,{cache:"no-store"}).then(r=>r.json()).catch(()=>({items:[]}));
-   const m=Object.fromEntries((q.items||[]).map((x:any)=>[x.symbol,x]));setItems(base.map((x:any)=>({...x,...m[x.symbol]})));
+   const q=await fetch(`/api/canonical?symbols=${encodeURIComponent(symbols)}`,{cache:"no-store"}).then(r=>r.json()).catch(()=>({items:[]}));
+   const m=Object.fromEntries((q.items||[]).map((x:any)=>{const r=x.research||{},mt=x.market||{};return[x.security?.symbol,{canonicalAction:r.action,canonicalOwnerAction:r.ownerAction,setupState:r.setupState,decisionAsOf:r.observedAt,displayPrice:mt.displayPrice,priceUse:mt.priceUse,canonicalSnapshotId:x.snapshotId,degraded:x.degraded}]}));setItems(base.map((x:any)=>({...x,...m[x.symbol]})));
   }else setItems([]);setLoading(false);
  },[]);
  useEffect(()=>{load()},[load]);

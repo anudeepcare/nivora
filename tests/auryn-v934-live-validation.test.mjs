@@ -7,7 +7,7 @@ const esc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
 test('V9.3.4 exposes a deployed 30/100/500 market-intelligence audit',()=>{
  const pkg=JSON.parse(read('package.json'));
  assert.match(pkg.scripts?.['audit:v934-live']||'',/run_v934_live_audit/);
- for(const n of ['30','100','500']) assert.match(pkg.scripts?.[`audit:live:${n}`]||'',/audit:v934-live/);
+ for(const n of ['30','100','500']) assert.match(pkg.scripts?.[`audit:live:${n}`]||'',/audit:v93(?:4|5)-live/);
  const src=read('scripts/run_v934_live_audit.mjs');
  for(const token of ['AURYN_BASE_URL','/api/audit/universe','/api/quote/','/api/analyze/','/api/decision/summaries','/api/scan','marketIntelligence','marketTruthSnapshotId','confirmed','actionMap','researchActive','providerAgreementPct']) assert.match(src,new RegExp(esc(token)));
  assert.match(src,/15M/);assert.match(src,/4H/);assert.match(src,/1D/);assert.match(src,/1W/);

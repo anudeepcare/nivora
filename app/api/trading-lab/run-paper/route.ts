@@ -176,7 +176,14 @@ async function run(req:Request,automatic=false){
     const v5Meta=snapshot.evidence?.v5;
     const v931Meta=snapshot.evidence?.v931;
     const v934Meta=snapshot.evidence?.v934;
+    const v935Meta=snapshot.evidence?.v935;
     const normalizedAction=(x:any)=>String(x||"").trim().toUpperCase().replaceAll(" ","_");
+    if(!v935Meta?.snapshotId||v935Meta?.contract!=="AURYN_V9_3_5_CANONICAL_SNAPSHOT"){
+     const reason="V9.3.5 canonical snapshot provenance is missing; Trading Lab fails closed until a fresh consolidated AURYN snapshot is persisted.";
+     await recordEvaluation(snapshot,"BLOCKED",String(v931Meta?.newMoneyAction||"NONE"),reason,"V935_CANONICAL_SNAPSHOT_MISSING",null,{v935Meta:v935Meta??null});
+     results.push({symbol:snapshot.symbol,status:"BLOCKED",action:String(v931Meta?.newMoneyAction||"NONE"),reason,riskCode:"V935_CANONICAL_SNAPSHOT_MISSING"});
+     continue;
+    }
     if(!v931Meta?.snapshotId||!v931Meta?.canonicalPrimaryAction){
      const reason="V9.3.1 canonical decision metadata is missing; Trading Lab fails closed until a fresh institutional decision snapshot is persisted.";
      await recordEvaluation(snapshot,"BLOCKED","NONE",reason,"CANONICAL_DECISION_MISSING",null,{v931Meta:v931Meta??null});
@@ -276,6 +283,8 @@ async function run(req:Request,automatic=false){
      integrityTradable:market.integrity.state==="LIVE_VERIFIED",
      disagreementPct:market.integrity.disagreementPct,
      automatic,
+     v935CanonicalSnapshotId:String(v935Meta.snapshotId||""),
+     v935MarketSnapshotId:String(v935Meta.marketSnapshotId||""),
      v931SnapshotId:String(v931Meta.snapshotId),
      canonicalAction:String(v931Meta.canonicalPrimaryAction),
      canonicalOwnerAction:String(v931Meta.ownerAction||""),

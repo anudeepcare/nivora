@@ -37,12 +37,8 @@ function PortfolioContent(){
   const syms=clean.filter((x:any)=>x.asset_type!=="CASH").map((x:any)=>x.symbol).slice(0,40);
   if(syms.length){
    const encoded=encodeURIComponent(syms.join(","));
-   const[technical,investment,canonical]=await Promise.all([
-    fetch(`/api/scan?symbols=${encoded}&limit=40`,{cache:"no-store"}).then(r=>r.json()).catch(()=>({items:[]})),
-    fetch(`/api/investment?symbols=${encoded}`,{cache:"no-store"}).then(r=>r.json()).catch(()=>({items:[]})),
-    fetch(`/api/decision/summaries?symbols=${encoded}`,{cache:"no-store"}).then(r=>r.json()).catch(()=>({items:[]}))
-   ]);
-   const m:any={};for(const x of technical.items||[])m[x.symbol]={...x};for(const x of investment.items||[])m[x.symbol]={...(m[x.symbol]||{}),...x};for(const x of canonical.items||[])m[x.symbol]={...(m[x.symbol]||{}),...x};
+   const canonical=await fetch(`/api/canonical?symbols=${encoded}`,{cache:"no-store"}).then(r=>r.json()).catch(()=>({items:[]}));
+   const m:any={};for(const snap of canonical.items||[]){const symbol=String(snap?.security?.symbol||"").toUpperCase();if(!symbol)continue;const r=snap.research||{},mt=snap.market||{};m[symbol]={symbol,canonicalAction:r.action,canonicalOwnerAction:r.ownerAction,longTermAction:r.longTermAction,setupState:r.setupState,decisionAsOf:r.observedAt,decisionSnapshotId:r.decisionSnapshotId,thesisScore:r.thesisScore,opportunityScore:r.opportunityScore,archetype:r.archetype,displayPrice:mt.displayPrice,priceUse:mt.priceUse,priceState:mt.priceState,session:mt.session,marketSnapshotId:mt.snapshotId,marketIntelligence:r.marketIntelligenceSnapshotId?{snapshotId:r.marketIntelligenceSnapshotId,timeframes:r.timeframes,actionMap:r.actionMap,levels:r.levels}:null,levels:r.levels,canonicalSnapshotId:snap.snapshotId,degraded:snap.degraded};}
    setQuotes(m);
    const holdings=clean.filter((x:any)=>x.asset_type!=="CASH").map((x:any)=>({symbol:x.symbol,marketValue:Number(x.shares||0)*Number(m[x.symbol]?.price||x.avg_cost||0),sector:m[x.symbol]?.sector||null,archetype:m[x.symbol]?.archetype||null}));
    const pr=await fetch("/api/portfolio/risk",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId:user.id,holdings})}).then(r=>r.json()).catch(()=>null);setPortfolioRisk(pr?.risk||null);
