@@ -52,3 +52,10 @@ test('all portfolio periods remain available in the UI',()=>{
  for(const period of ['1D','1W','1M','3M','6M','YTD','1Y','2Y','3Y','4Y','ALL']) assert.match(p,new RegExp(`"${period}"`));
  assert.match(p,/availableFrom/);
 });
+
+test('nullable latest volume is narrowed before numeric comparison',()=>{
+ const c=read('components/StockClient.tsx');
+ assert.match(c,/const latestVolumeRaw=/);
+ assert.match(c,/const latestVolume=Number\.isFinite\(latestVolumeRaw\)&&latestVolumeRaw>0\?latestVolumeRaw:null/);
+ assert.match(c,/volume:latestVolume/);
+});

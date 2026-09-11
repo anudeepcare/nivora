@@ -749,11 +749,12 @@ export default function StockClient({symbol}:{symbol:string}){
   const yearlyBars=(d?.candles||[]).slice(-252);
   const yearlyHigh=yearlyBars.length?Math.max(...yearlyBars.map((x:any)=>Number(x.high)).filter(Number.isFinite)):null;
   const yearlyLow=yearlyBars.length?Math.min(...yearlyBars.map((x:any)=>Number(x.low)).filter(Number.isFinite)):null;
-  const latestVolume=yearlyBars.length?Number(yearlyBars.at(-1)?.volume):null;
+  const latestVolumeRaw=yearlyBars.length?Number(yearlyBars.at(-1)?.volume):NaN;
+  const latestVolume=Number.isFinite(latestVolumeRaw)&&latestVolumeRaw>0?latestVolumeRaw:null;
   const capMillions=Number(context?.profile?.marketCapitalization);
   const securityMarketFacts={
     marketCap:Number.isFinite(capMillions)&&capMillions>0?capMillions*1_000_000:null,
-    volume:Number.isFinite(latestVolume)&&latestVolume>0?latestVolume:null,
+    volume:latestVolume,
     week52High:Number.isFinite(yearlyHigh as number)?yearlyHigh:null,
     week52Low:Number.isFinite(yearlyLow as number)?yearlyLow:null,
     sector:context?.profile?.finnhubIndustry||company?.sector||null,
