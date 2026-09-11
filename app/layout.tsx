@@ -5,6 +5,7 @@ import "./auryn-premium.css";
 import "./auryn-mobile.css";
 import "./auryn-mobile-v944.css";
 import "./auryn-mobile-v945.css";
+import "./auryn-mobile-v946.css";
 import type {Metadata,Viewport} from "next";
 
 const description="AURYN turns market evidence into clear, explainable investment decisions and portfolio intelligence.";

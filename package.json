@@ -89,7 +89,9 @@
     "test:v943": "node --test tests/auryn-v943-mobile-system.test.mjs && npm run test:v942",
     "gate:v943": "npm run test:v943 && npm run test:v936",
     "test:v945": "node --test tests/auryn-v945-pwa-rootcause.test.mjs && npm run test:v944",
-    "gate:v945": "npm run test:v945 && npm run test:v936"
+    "gate:v945": "npm run test:v945 && npm run test:v936",
+    "test:v946": "node --test tests/auryn-v946-mobile-chrome-polish.test.mjs && npm run test:v945",
+    "gate:v946": "npm run test:v946 && npm run test:v936"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",
