@@ -79,7 +79,7 @@ function PortfolioContent(){
  const hasPriorityEvidence=Boolean(strongest||opportunity||weakest);
 
  return <section className="aurynPortfolioPage">
-  <div className="aurynPortfolioIntro"><div><small>OWN</small><h1>Your capital, interpreted.</h1><p>Performance, benchmark context, risk, concentration and the decisions that matter now.</p></div><button type="button" onClick={()=>setShowAdd(v=>!v)}>{showAdd?"Close":"+ Add investment"}</button></div>
+  <div className="aurynPortfolioIntro"><div><small>OWN</small><h1>Your capital, interpreted.</h1><p>Performance, benchmark context, risk, concentration and the decisions that matter now.</p></div><button className="aurynMobileAddInvestment" type="button" onClick={()=>setShowAdd(v=>!v)}>{showAdd?"Close":"+ Add investment"}</button></div>
 
   <nav className="aurynPortfolioNav" aria-label="Portfolio sections"><a href="#portfolio-overview">Overview</a><a href="#portfolio-performance">Performance</a><a href="#portfolio-allocation">Allocation</a><a href="#portfolio-risk">Risk</a><a href="#portfolio-decisions">Decisions</a><a href="#portfolio-holdings">Holdings</a></nav>
   {showAdd?<div className="aurynSection aurynAddPanel">

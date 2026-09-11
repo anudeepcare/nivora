@@ -486,3 +486,28 @@ a{color:inherit;text-decoration:none}button,input,select{font:inherit}button{cur
 .v935DurableActions,.v935DurableLevels{display:flex;gap:28px;flex-wrap:wrap;margin-top:24px;padding-top:18px;border-top:1px solid rgba(255,255,255,.08)}
 .v935DurableActions span,.v935DurableLevels span{display:flex;flex-direction:column;gap:6px;font-size:10px;letter-spacing:.12em;color:#91887a}.v935DurableActions b,.v935DurableLevels b{font-size:15px;letter-spacing:0;color:#f4e8d3}.v935RefreshState{display:block;margin-top:18px!important;color:#8f8679!important}
 @media(max-width:600px){.v935DurableResearch{margin:18px 14px;padding:24px 20px;border-radius:20px}.v935DurableResearch h2{font-size:36px}.v935DurableActions,.v935DurableLevels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.v935DurableLevels span:first-child{grid-column:1/-1}}
+
+
+/* AURYN V9.4.2 — MOBILE PORTFOLIO REPAIR */
+.aurynPortfolioPage{overflow-x:hidden}
+.aurynPositionMenu{display:none;position:relative}.aurynPositionMenu summary{list-style:none;cursor:pointer}.aurynPositionMenu summary::-webkit-details-marker{display:none}
+.aurynPositionMenu>div{position:absolute;right:0;top:38px;z-index:20;min-width:170px;padding:6px;border:1px solid #ddd5c8;border-radius:12px;background:#fff;box-shadow:0 14px 34px rgba(25,20,14,.14)}
+.aurynPositionMenu button{display:flex!important;width:100%!important;height:auto!important;align-items:center;gap:8px;padding:9px 10px!important;border:0!important;background:transparent!important;text-align:left}.aurynPositionMenu button.danger{color:#b74238}
+@media(max-width:760px){
+ .aurynPortfolioPage{overflow-x:hidden!important;padding-left:14px!important;padding-right:14px!important}
+ .aurynPortfolioIntro{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:10px!important;align-items:end!important;padding-top:14px!important}
+ .aurynPortfolioIntro h1{font-size:34px!important;line-height:.98!important;max-width:270px!important}.aurynPortfolioIntro p{font-size:11px!important;line-height:1.4!important;max-width:270px!important}
+ .aurynMobileAddInvestment{display:flex!important;align-items:center!important;justify-content:center!important;min-width:46px!important;max-width:120px!important;padding:10px 12px!important;border-radius:12px!important;white-space:nowrap!important;overflow:visible!important}
+ .aurynPortfolioNav{display:flex!important;overflow-x:auto!important;overflow-y:hidden!important;white-space:nowrap!important;scrollbar-width:none!important;gap:22px!important;padding:10px 2px!important}.aurynPortfolioNav::-webkit-scrollbar{display:none}.aurynPortfolioNav a{flex:0 0 auto!important}
+ .aurynPositionRow{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:10px!important;padding:15px 4px!important}
+ .aurynPositionName{grid-column:1!important;grid-row:1!important}.aurynPositionActions{grid-column:2!important;grid-row:1!important;display:flex!important;align-items:start!important}
+ .aurynPositionActions>button{display:none!important}.aurynPositionMenu{display:block!important}.aurynPositionMenu summary{display:grid;width:34px;height:34px;place-items:center;border:1px solid #dcd4c7;border-radius:10px;background:#fff}
+ .aurynPositionFacts{grid-column:1/-1!important;grid-row:2!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:11px 18px!important;padding:7px 0!important}
+ .aurynPositionFacts span:nth-child(n){display:block!important}.aurynPositionFacts small{font-size:8px!important}.aurynPositionFacts b{font-size:15px!important}
+ .aurynPositionCall{grid-column:1!important;grid-row:3!important;text-align:left!important}.aurynPositionTrigger{grid-column:1/-1!important;grid-row:4!important}
+ .aurynAllocationLayout{grid-template-columns:1fr!important}.aurynConcentrationBars{min-width:0!important}
+}
+@media(max-width:430px){
+ .aurynPortfolioIntro h1{font-size:31px!important}
+ .aurynPositionFacts{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}

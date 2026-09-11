@@ -1,6 +1,6 @@
 "use client";
 import {useRouter} from "next/navigation";
-import {Bitcoin,Banknote,WalletCards,Pencil,Trash2,Check,X} from "lucide-react";
+import {Bitcoin,Banknote,WalletCards,Pencil,Trash2,Check,X,MoreHorizontal,ExternalLink} from "lucide-react";
 const tf=(mi:any,key:string)=>mi?.timeframes?.[key]?.confirmed??"—";
 const levelNum=(mi:any,key:string)=>{const x=Number(mi?.levels?.[key]??mi?.actionMap?.[key]);return Number.isFinite(x)&&x>0?x:null};
 const finiteNum=(v:any)=>v==null||v===""?null:Number.isFinite(Number(v))?Number(v):null;
@@ -26,7 +26,7 @@ export default function HoldingsIntelligence({assets,onEdit,onRemove,editingId,e
     </div>
     <div className="aurynPositionCall"><small>AURYN</small><b>{action}</b></div>
     {!cash?<div className="aurynPositionTrigger"><small>NEXT TRIGGER</small><b>{nextTrigger}</b></div>:null}
-    <div className="aurynPositionActions" onClick={e=>e.stopPropagation()}>{onEdit&&<button type="button" aria-label={`Edit ${name}`} title="Edit position" onClick={()=>onEdit(source)}><Pencil size={14}/></button>}{onRemove&&<button type="button" aria-label={`Delete ${name}`} title="Delete position" onClick={()=>onRemove(source)}><Trash2 size={14}/></button>}</div>
+    <div className="aurynPositionActions" onClick={e=>e.stopPropagation()}>{onEdit&&<button type="button" aria-label={`Edit ${name}`} title="Edit position" onClick={()=>onEdit(source)}><Pencil size={14}/></button>}{onRemove&&<button type="button" aria-label={`Delete ${name}`} title="Delete position" onClick={()=>onRemove(source)}><Trash2 size={14}/></button>}<details className="aurynPositionMenu"><summary aria-label={`Actions for ${name}`}><MoreHorizontal size={17}/></summary><div><button type="button" onClick={()=>open(cash,name)}><ExternalLink size={14}/> View research</button>{onEdit?<button type="button" onClick={()=>onEdit(source)}><Pencil size={14}/> Edit position</button>:null}{onRemove?<button type="button" className="danger" onClick={()=>onRemove(source)}><Trash2 size={14}/> Delete position</button>:null}</div></details></div>
    </article>
    {isEditing&&editDraft?<div className="aurynPositionEdit"><div><small>EDIT POSITION</small><b>{name}</b></div><label><span>{cash?"Amount":"Quantity"}</span><input aria-label="Quantity" type="number" step="any" value={editDraft.shares} onChange={e=>onEditDraft?.({...editDraft,shares:e.target.value})}/></label>{!cash?<label><span>Average cost</span><input aria-label="Average cost" type="number" step="0.01" value={editDraft.avg_cost} onChange={e=>onEditDraft?.({...editDraft,avg_cost:e.target.value})}/></label>:<span/>}<div className="aurynPositionInlineActions"><button className="primary" type="button" onClick={onSaveEdit}><Check size={15}/> Save</button><button type="button" onClick={onCancelEdit}><X size={15}/> Cancel</button></div></div>:null}
    {isDeleting?<div className="aurynPositionDeleteConfirm"><div><small>REMOVE POSITION?</small><b>Delete {name} from this portfolio?</b><span>This removes the tracked position; it does not place a broker order.</span></div><div className="aurynPositionInlineActions"><button className="danger" type="button" onClick={onConfirmRemove}><Trash2 size={15}/> Delete</button><button type="button" onClick={onCancelRemove}><X size={15}/> Keep</button></div></div>:null}
