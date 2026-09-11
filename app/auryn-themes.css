@@ -1,0 +1,63 @@
+/* AURYN appearance system — COLOR + READABILITY TOKENS ONLY.
+   Deliberately does not alter layout, spacing, widths, positioning, or component order. */
+:root,[data-theme="classic"]{
+ --auryn-bg:#f7f5f0;--auryn-surface:#fffdfa;--auryn-surface-soft:#f2eee6;--auryn-ink:#171613;
+ --auryn-muted:#8f887e;--auryn-border:#e3dbcf;--auryn-accent:#b27b31;--auryn-accent-soft:#ead9bd;
+ --auryn-chrome:#15130f;--auryn-chrome-text:#f6eddc;--auryn-positive:#087f58;--auryn-negative:#c54b3f;
+ --auryn-glass:rgba(27,26,23,.72);--auryn-hero-a:#17130d;--auryn-hero-b:#5a3e18;
+}
+[data-theme="midnight"]{
+ --auryn-bg:#0e1013;--auryn-surface:#16191e;--auryn-surface-soft:#1d2128;--auryn-ink:#f4f0e8;
+ --auryn-muted:#9ba2ad;--auryn-border:#2b3038;--auryn-accent:#d3a45c;--auryn-accent-soft:#49391f;
+ --auryn-chrome:#090b0e;--auryn-chrome-text:#fff8e8;--auryn-positive:#45c994;--auryn-negative:#ef7167;
+ --auryn-glass:rgba(14,16,19,.78);--auryn-hero-a:#090b0e;--auryn-hero-b:#3b2b16;
+}
+[data-theme="slate"]{
+ --auryn-bg:#eef1f4;--auryn-surface:#fbfcfd;--auryn-surface-soft:#e6ebf0;--auryn-ink:#17202a;
+ --auryn-muted:#6f7b88;--auryn-border:#d4dce4;--auryn-accent:#7f694a;--auryn-accent-soft:#e0d5c5;
+ --auryn-chrome:#18212a;--auryn-chrome-text:#f7f9fb;--auryn-positive:#167b60;--auryn-negative:#b64c47;
+ --auryn-glass:rgba(24,33,42,.76);--auryn-hero-a:#18212a;--auryn-hero-b:#39495a;
+}
+[data-theme="emerald"]{
+ --auryn-bg:#f1f4ef;--auryn-surface:#fbfdf9;--auryn-surface-soft:#e5ece3;--auryn-ink:#152019;
+ --auryn-muted:#758078;--auryn-border:#d4ded2;--auryn-accent:#8c6a32;--auryn-accent-soft:#dfd3b8;
+ --auryn-chrome:#102019;--auryn-chrome-text:#f7f2e5;--auryn-positive:#087954;--auryn-negative:#b84d43;
+ --auryn-glass:rgba(16,32,25,.76);--auryn-hero-a:#102019;--auryn-hero-b:#274a36;
+}
+
+/* Theme application: paint only. */
+html,body,.aurynAppShell,.aurynAppMain,.aurynMobileSearch,.aurynStockPage,.aurynPortfolioPage,.aurynResearchHome,.simplePage,.aurynAuthPage,.aurynAuthShell,.aurynAuthPanel{background-color:var(--auryn-bg)!important;color:var(--auryn-ink)!important}
+.aurynHeader{background-color:var(--auryn-chrome)!important}
+.aurynHeader .aurynWord,.aurynHeader a{color:var(--auryn-chrome-text)!important}
+.aurynBottomNav{background:var(--auryn-glass)!important}
+.aurynBottomNav a.active{color:var(--auryn-accent-soft)!important}
+.aurynEvidenceNav,.aurynPortfolioNav{background-color:var(--auryn-bg)!important;border-color:var(--auryn-border)!important}
+.aurynEvidenceNav a,.aurynEvidenceNav button,.aurynPortfolioNav a{color:var(--auryn-ink)!important}
+.aurynEvidenceNav .active,.aurynPortfolioNav .active{border-color:var(--auryn-accent)!important}
+.aurynStockMobileMasthead,.aurynSecurityFacts,.aurynStockMobileFacts{border-color:var(--auryn-border)!important}
+.aurynStockMobileIdentity strong,.aurynStockMobileMeta span,.aurynStockMobileFacts small,.aurynStockMarket p,.aurynStockMarket small{color:var(--auryn-muted)!important}
+.aurynStockMobilePrice small,.aurynEyebrow,.eyebrow{color:var(--auryn-accent)!important}
+.v936CallHero{background:linear-gradient(135deg,var(--auryn-hero-a),var(--auryn-hero-b))!important}
+.v936ChartCard,.aurynPositionGroup,.profileCard,.aurynPortfolioMetrics,.aurynCompositionExplain,.aurynCapitalQueueRow,.v34IndicatorGrid,.aurynAuthPanel input{background-color:var(--auryn-surface)!important;border-color:var(--auryn-border)!important}
+.profileCard,.simplePage,.aurynPortfolioPage,.aurynResearchHome{color:var(--auryn-ink)!important}
+.profileCard label,.aurynPortfolioPage p,.simplePage p{color:var(--auryn-muted)!important}
+.up,.positive{color:var(--auryn-positive)!important}.down,.negative{color:var(--auryn-negative)!important}
+
+/* Standard fixes only the microcopy friends flagged as hard to read. No geometry changes. */
+[data-text-size="standard"] .aurynStockMobileMeta span{font-size:7.5px!important;color:color-mix(in srgb,var(--auryn-muted) 88%,var(--auryn-ink))!important}
+[data-text-size="standard"] .aurynStockMobileFacts small{font-size:6.5px!important;color:color-mix(in srgb,var(--auryn-muted) 88%,var(--auryn-ink))!important}
+[data-text-size="standard"] .v936ActionRow small,[data-text-size="standard"] .v940HeroProof small{font-size:6.5px!important}
+[data-text-size="compact"]{--auryn-readable-scale:.94}
+[data-text-size="large"]{--auryn-readable-scale:1.10}
+[data-text-size="compact"] .aurynStockMobileMeta span,[data-text-size="compact"] .aurynStockMobileFacts small{font-size:6px!important}
+[data-text-size="large"] .aurynStockMobileMeta span{font-size:8.5px!important}
+[data-text-size="large"] .aurynStockMobileFacts small{font-size:7.5px!important}
+[data-text-size="large"] .v936ActionRow small,[data-text-size="large"] .v940HeroProof small{font-size:7.5px!important}
+
+/* Settings — uses existing card geometry, only appearance controls. */
+.aurynAppearanceChoices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:8px 0 18px}
+.aurynAppearanceChoice{border:1px solid var(--auryn-border);background:var(--auryn-surface);color:var(--auryn-ink);border-radius:12px;padding:12px;text-align:left;cursor:pointer}
+.aurynAppearanceChoice.on{outline:2px solid var(--auryn-accent);outline-offset:1px}
+.aurynThemeSwatches{display:flex;gap:4px;margin-top:8px}.aurynThemeSwatches i{width:16px;height:16px;border-radius:50%;border:1px solid rgba(127,120,110,.2)}
+.aurynTextChoices{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 18px}.aurynTextChoices button{border:1px solid var(--auryn-border);background:var(--auryn-surface);color:var(--auryn-ink);border-radius:999px;padding:8px 12px;font-weight:700}.aurynTextChoices button.on{background:var(--auryn-chrome);color:var(--auryn-chrome-text)}
+@media(max-width:430px){.aurynAppearanceChoices{grid-template-columns:1fr 1fr}}

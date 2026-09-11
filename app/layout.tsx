@@ -3,7 +3,9 @@ import "./auryn-tokens.css";
 import "./auryn-product.css";
 import "./auryn-premium.css";
 import "./auryn-mobile.css";
+import "./auryn-themes.css";
 import type {Metadata,Viewport} from "next";
+import ThemeProvider from "@/components/ThemeProvider";
 
 const description="AURYN turns market evidence into clear, explainable investment decisions and portfolio intelligence.";
 
@@ -20,4 +22,4 @@ export const metadata:Metadata={
 };
 
 export const viewport:Viewport={width:"device-width",initialScale:1,maximumScale:1,viewportFit:"cover",themeColor:"#15130f"};
-export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="en"><body>{children}</body></html>}
+export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="en"><body><ThemeProvider>{children}</ThemeProvider></body></html>}

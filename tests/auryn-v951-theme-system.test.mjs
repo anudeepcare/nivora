@@ -1,0 +1,13 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import fs from "node:fs";
+const profile=fs.readFileSync("app/profile/page.tsx","utf8");
+const provider=fs.readFileSync("components/ThemeProvider.tsx","utf8");
+const css=fs.readFileSync("app/auryn-themes.css","utf8");
+const layout=fs.readFileSync("app/layout.tsx","utf8");
+test("profile exposes curated theme and text-size settings",()=>{assert.match(profile,/Appearance/);for(const theme of ["classic","midnight","slate","emerald"])assert.match(profile,new RegExp(`value:"${theme}"`));for(const size of ["compact","standard","large"])assert.match(profile,new RegExp(`\\["${size}","`));});
+test("theme provider persists settings locally and applies root attributes",()=>{assert.match(provider,/localStorage/);assert.match(provider,/document\.documentElement\.dataset\.theme/);assert.match(provider,/document\.documentElement\.dataset\.textSize/);});
+test("layout mounts theme provider once",()=>assert.match(layout,/ThemeProvider/));
+test("themes are token-only and define four curated palettes",()=>{for(const theme of ["classic","midnight","slate","emerald"])assert.match(css,new RegExp(`data-theme="${theme}"`));assert.match(css,/--auryn-bg:/);assert.match(css,/--auryn-surface:/);assert.match(css,/--auryn-accent:/);});
+test("readability increases only secondary microcopy in standard mode",()=>{assert.match(css,/data-text-size="standard"/);assert.match(css,/\.aurynStockMobileMeta span/);assert.match(css,/\.aurynStockMobileFacts small/);});
+test("theme stylesheet is loaded",()=>assert.match(layout,/import "\.\/auryn-themes\.css";/));
