@@ -11,8 +11,8 @@
 }
 [data-theme="noir"]{
  --auryn-page-bg:#0b0b0c;--auryn-page-ink:#f3ede1;--auryn-page-muted:#aaa195;
- --auryn-card-bg:#171718;--auryn-card-ink:#f4efe5;--auryn-card-muted:#aaa195;
- --auryn-soft-bg:#222224;--auryn-soft-ink:#f0eadf;--auryn-border:#37332e;
+ --auryn-card-bg:#f7f4ee;--auryn-card-ink:#1b1a18;--auryn-card-muted:#6f6961;
+ --auryn-soft-bg:#eee9df;--auryn-soft-ink:#25211c;--auryn-border:#d8d0c3;
  --auryn-chrome:#050506;--auryn-chrome-ink:#fff8eb;--auryn-input:#121213;--auryn-input-ink:#f7f0e4;
  --auryn-accent:#c6a56b;--auryn-accent-soft:#ead7b3;
  --auryn-hero-bg-a:#080809;--auryn-hero-bg-b:#49371f;--auryn-hero-ink:#f1d9aa;--auryn-hero-copy:#f3ede1;--auryn-hero-muted:#b8ad9d;
@@ -21,8 +21,8 @@
 }
 [data-theme="sapphire"]{
  --auryn-page-bg:#0d1825;--auryn-page-ink:#eef3f7;--auryn-page-muted:#a8b5c1;
- --auryn-card-bg:#142437;--auryn-card-ink:#f2f5f7;--auryn-card-muted:#b0bdc8;
- --auryn-soft-bg:#1b3046;--auryn-soft-ink:#f0f5f8;--auryn-border:#30485e;
+ --auryn-card-bg:#f7f9fb;--auryn-card-ink:#17212b;--auryn-card-muted:#667482;
+ --auryn-soft-bg:#eaf0f5;--auryn-soft-ink:#1d2b38;--auryn-border:#cbd7e1;
  --auryn-chrome:#09121d;--auryn-chrome-ink:#f6f9fb;--auryn-input:#0d1723;--auryn-input-ink:#f3f7fa;
  --auryn-accent:#6f9dc3;--auryn-accent-soft:#c4d9e8;
  --auryn-hero-bg-a:#09131f;--auryn-hero-bg-b:#214766;--auryn-hero-ink:#e6f0f7;--auryn-hero-copy:#f2f5f7;--auryn-hero-muted:#b4c1cc;
@@ -31,8 +31,8 @@
 }
 [data-theme="racing"]{
  --auryn-page-bg:#0f241e;--auryn-page-ink:#f5f1e7;--auryn-page-muted:#b7aea0;
- --auryn-card-bg:#173129;--auryn-card-ink:#f6f2e8;--auryn-card-muted:#b9b2a5;
- --auryn-soft-bg:#203d34;--auryn-soft-ink:#f3efe6;--auryn-border:#3b584d;
+ --auryn-card-bg:#f8f6ef;--auryn-card-ink:#17231e;--auryn-card-muted:#6e756e;
+ --auryn-soft-bg:#e9eee8;--auryn-soft-ink:#1d2d26;--auryn-border:#ccd8cf;
  --auryn-chrome:#081913;--auryn-chrome-ink:#fff7e9;--auryn-input:#0b1b17;--auryn-input-ink:#f7f2e8;
  --auryn-accent:#b68b4b;--auryn-accent-soft:#e6ce9d;
  --auryn-hero-bg-a:#091b15;--auryn-hero-bg-b:#4a3a22;--auryn-hero-ink:#f1d8a3;--auryn-hero-copy:#f5f1e7;--auryn-hero-muted:#c3b9aa;
@@ -116,7 +116,7 @@ html,body,.aurynAppShell,.aurynAppMain,.aurynMobileSearch,.aurynStockPage,.auryn
 .aurynAppearanceChoices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:8px 0 18px}.aurynAppearanceChoice{display:grid;grid-template-columns:1fr;gap:4px;min-width:0;border:1px solid var(--auryn-border);background:var(--auryn-card-bg);color:var(--auryn-card-ink);border-radius:12px;padding:13px;text-align:left;cursor:pointer}.aurynAppearanceChoice.on{outline:2px solid var(--auryn-accent);outline-offset:1px}.aurynThemeName{display:block;font-size:16px;font-weight:800;line-height:1.1;color:var(--auryn-card-ink)}.aurynThemeNote{display:block;font-size:11px;line-height:1.35;color:var(--auryn-card-muted)}.aurynThemeSwatches{display:flex;gap:5px;margin-top:6px}.aurynThemeSwatches i{width:16px;height:16px;border-radius:50%;border:1px solid rgba(127,120,110,.28)}.aurynTextChoices{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 18px}.aurynTextChoices button{border:1px solid var(--auryn-border);background:var(--auryn-card-bg);color:var(--auryn-card-ink);border-radius:999px;padding:8px 12px;font-weight:700}.aurynTextChoices button.on{background:var(--auryn-chrome);color:var(--auryn-chrome-ink)}
 
 /* Readability preference changes supporting copy only; geometry remains locked. */
-[data-text-size="standard"] .aurynStockMobileMeta span{font-size:7.5px!important;color:color-mix(in srgb,var(--auryn-page-muted) 88%,var(--auryn-page-ink))!important}[data-text-size="standard"] .aurynStockMobileFacts small{font-size:6.5px!important;color:color-mix(in srgb,var(--auryn-page-muted) 88%,var(--auryn-page-ink))!important}[data-text-size="standard"] .v936ActionRow small,[data-text-size="standard"] .v940HeroProof small{font-size:6.5px!important}[data-text-size="compact"]{--auryn-readable-scale:.94}[data-text-size="large"]{--auryn-readable-scale:1.10}[data-text-size="compact"] .aurynStockMobileMeta span,[data-text-size="compact"] .aurynStockMobileFacts small{font-size:6px!important}[data-text-size="large"] .aurynStockMobileMeta span{font-size:8.5px!important}[data-text-size="large"] .aurynStockMobileFacts small{font-size:7.5px!important}[data-text-size="large"] .v936ActionRow small,[data-text-size="large"] .v940HeroProof small{font-size:7.5px!important}
+[data-text-size="standard"] .aurynStockMobileMeta span{font-size:7.5px!important;color:color-mix(in srgb,var(--auryn-page-muted) 88%,var(--auryn-page-ink))!important}[data-text-size="standard"] .aurynStockMobileFacts small{font-size:6.5px!important;color:color-mix(in srgb,var(--auryn-page-muted) 88%,var(--auryn-page-ink))!important}[data-text-size="standard"] .v936ActionRow small,[data-text-size="standard"] .v940HeroProof small{font-size:6.5px!important}[data-text-size="compact"]{--auryn-readable-scale:.94}[data-text-size="large"]{--auryn-readable-scale:1.18}[data-text-size="compact"] .aurynStockMobileMeta span,[data-text-size="compact"] .aurynStockMobileFacts small{font-size:6px!important}[data-text-size="large"] .aurynStockMobileMeta span{font-size:8.5px!important}[data-text-size="large"] .aurynStockMobileFacts small{font-size:7.5px!important}[data-text-size="large"] .v936ActionRow small,[data-text-size="large"] .v940HeroProof small{font-size:7.5px!important}
 
 @media(max-width:760px){.aurynTechnicalMetricGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.aurynAppearanceChoices{grid-template-columns:1fr 1fr}.aurynThemeName{font-size:14px}.aurynThemeNote{font-size:10px}}
 @media(max-width:390px){.aurynAppearanceChoices{grid-template-columns:1fr}}
@@ -135,3 +135,49 @@ html,body,.aurynAppShell,.aurynAppMain,.aurynMobileSearch,.aurynStockPage,.auryn
 [data-motion="reduced"] *,[data-motion="reduced"] *::before,[data-motion="reduced"] *::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
 [data-density="compact"] .v936Metric,[data-density="compact"] .v940PulseGroup article,[data-density="compact"] .aurynCapitalQueueRow{padding-top:8px!important;padding-bottom:8px!important}
 @media(max-width:760px){.aurynAppearancePreview{margin-top:10px}.aurynPreviewBody{padding:13px}.aurynPreviewBody b{font-size:24px}.aurynAppearanceStudio h3{margin-top:16px}}
+
+
+/* V9.5.8 — ROOT THEME SURFACE CONTRACT
+   Theme colors never paint a translucent shell over legacy white content.
+   Every evidence/portfolio surface owns both background and foreground. */
+.aurynStockEvidenceSurface>.v65Evidence,
+.aurynStockEvidenceSurface>.v12Fund,
+.aurynStockEvidenceSurface>.v34InstitutionsPage,
+.aurynStockEvidenceSurface>.v12Technical,
+.aurynStockEvidenceSurface>.v26Technical,
+.aurynStockEvidenceSurface>.gammaPanel,
+.aurynStockEvidenceSurface>.v12News,
+.aurynStockEvidenceSurface>.v12Earnings{
+ background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;
+ border-color:var(--auryn-border)!important;box-shadow:0 10px 34px rgba(18,24,31,.035)!important
+}
+.aurynStockEvidenceSurface>.v65Evidence :where(h1,h2,h3,h4,b,strong),
+.aurynStockEvidenceSurface>.v12Fund :where(h1,h2,h3,h4,b,strong),
+.aurynStockEvidenceSurface>.v34InstitutionsPage :where(h1,h2,h3,h4,b,strong),
+.aurynStockEvidenceSurface>.v12Technical :where(h1,h2,h3,h4,b,strong),
+.aurynStockEvidenceSurface>.v26Technical :where(h1,h2,h3,h4,b,strong),
+.aurynStockEvidenceSurface>.gammaPanel :where(h1,h2,h3,h4,b,strong),
+.aurynStockEvidenceSurface>.v12News :where(h1,h2,h3,h4,b,strong),
+.aurynStockEvidenceSurface>.v12Earnings :where(h1,h2,h3,h4,b,strong){color:var(--auryn-card-ink)}
+.aurynStockEvidenceSurface :where(p,span,em,time){color:var(--auryn-card-muted)}
+
+/* Technicals has exactly three visual layers: reading card, soft score rail, white/chart metric surface. */
+.v34TechnicalHero,.v383TechnicalHero{background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important}
+.v34TechnicalHero h3,.v383TechnicalHero h3{color:var(--auryn-card-ink)!important}.v34TechnicalHero p,.v383TechnicalHero p,.v34TechVerdict span{color:var(--auryn-card-muted)!important}
+.v383TechnicalStateGrid>*,.v34TechnicalScoreGrid>*{background:var(--auryn-soft-bg)!important;color:var(--auryn-soft-ink)!important;border-color:var(--auryn-border)!important}
+.v383TechnicalStateGrid>* b,.v34TechnicalScoreGrid>* b{color:var(--auryn-soft-ink)}.v383TechnicalStateGrid>* span,.v34TechnicalScoreGrid>* span{color:var(--auryn-card-muted)!important}
+.v34IndicatorGrid{background:var(--auryn-card-bg)!important;border-color:var(--auryn-border)!important}
+.v34IndicatorGrid>div{background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important}
+.v34IndicatorGrid>div b{color:var(--auryn-card-ink)}.v34IndicatorGrid>div span{color:var(--auryn-card-muted)!important}
+.v934TechnicalCore{background:var(--auryn-soft-bg)!important;color:var(--auryn-soft-ink)!important;border-color:var(--auryn-border)!important}
+.v934TechnicalCore :where(b,strong){color:var(--auryn-soft-ink)}.v934TechnicalCore :where(p,span,small){color:var(--auryn-card-muted)}
+
+/* Portfolio translation: keep editorial canvas calm; use edition color in chrome, hero and accents. */
+.aurynPortfolioPage :where(.aurynPortfolioMetrics,.aurynPortfolioBrief,.aurynPortfolioXRay,.aurynPortfolioHealth,.aurynCapitalQueueRow,.aurynCompositionExplain){background:var(--auryn-card-bg)!important;color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important}
+.aurynPortfolioPage :where(.aurynPortfolioMetrics,.aurynPortfolioBrief,.aurynPortfolioXRay,.aurynPortfolioHealth,.aurynCapitalQueueRow,.aurynCompositionExplain) :where(h1,h2,h3,b,strong){color:var(--auryn-card-ink)}
+.aurynPortfolioPage :where(.aurynPortfolioMetrics,.aurynPortfolioBrief,.aurynPortfolioXRay,.aurynPortfolioHealth,.aurynCapitalQueueRow,.aurynCompositionExplain) :where(p,span,small,em){color:var(--auryn-card-muted)}
+
+/* Readability is a real preference, not a token change with no visible effect. */
+[data-text-size="large"] .aurynAppMain p,[data-text-size="large"] .aurynAppMain small{font-size:118%!important;line-height:1.5!important}
+[data-text-size="large"] .aurynAppMain :where(.v936Metric em,.v34IndicatorGrid span,.v34TechnicalScoreGrid span,.v383TechnicalStateGrid span,.aurynThemeNote){font-size:118%!important;line-height:1.45!important}
+[data-text-size="compact"] .aurynAppMain p,[data-text-size="compact"] .aurynAppMain small{font-size:94%!important}
