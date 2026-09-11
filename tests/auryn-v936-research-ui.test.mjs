@@ -10,7 +10,7 @@ test('premium research overview exists and owns hero chart metrics and scenario 
  assert.match(p,/AURYN CALL/);
  assert.match(p,/PriceChart/);
  assert.match(p,/KEY METRICS/);
- assert.match(p,/Scenario balance/);
+ assert.match(p,/Scenario value/);
  assert.match(p,/Pattern/);
  assert.match(p,/Reward \/ Risk/);
 });
@@ -30,4 +30,41 @@ test('overview relies on existing canonical evidence and introduces no provider 
 test('premium overview only imports lucide icons supported by the pinned icon package',()=>{
  const p=read('components/premium/AurynResearchOverview.tsx');
  assert.doesNotMatch(p,/\bWaveform\b/);
+});
+
+test('premium overview renders decision-grade bear base bull values instead of percentage scenario balance',()=>{
+ const p=read('components/premium/AurynResearchOverview.tsx');
+ assert.match(p,/Scenario value/);
+ assert.match(p,/scenarioValue/);
+ assert.match(p,/BULL VALUE/);
+ assert.match(p,/BASE VALUE/);
+ assert.match(p,/BEAR VALUE/);
+ assert.doesNotMatch(p,/lens\.scenarioBalance\.bull}%/);
+});
+
+test('premium overview includes premium investor experience metrics without creating a second decision engine',()=>{
+ const p=read('components/premium/AurynResearchOverview.tsx');
+ assert.match(p,/Distance to Confirm/);
+ assert.match(p,/Upside to T1/);
+ assert.match(p,/Downside to Risk/);
+ assert.match(p,/Evidence Quality/);
+ assert.match(p,/Opportunity/);
+ assert.doesNotMatch(p,/fetch\(/);
+});
+
+test('security masthead supports premium company logo treatment with deterministic fallback',()=>{
+ const p=read('components/stock/StockSecurityHeader.tsx');
+ assert.match(p,/SecurityLogo/);
+ assert.match(p,/AAPL:"apple"/);
+ assert.match(p,/cdn\.simpleicons\.org/);
+ assert.match(p,/aurynSecurityLogoFallback/);
+});
+
+test('research navigation follows mockup hierarchy with Overview first and sits before premium overview',()=>{
+ const nav=read('components/stock/StockEvidenceNav.tsx');
+ const stock=read('components/StockClient.tsx');
+ assert.match(nav,/\['thesis','Overview'\]/);
+ const navIndex=stock.indexOf('<StockEvidenceNav');
+ const overviewIndex=stock.indexOf('<AurynResearchOverview');
+ assert.ok(navIndex>=0 && overviewIndex>=0 && navIndex<overviewIndex,'evidence nav must render before premium overview');
 });
