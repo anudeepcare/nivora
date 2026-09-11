@@ -120,3 +120,18 @@ html,body,.aurynAppShell,.aurynAppMain,.aurynMobileSearch,.aurynStockPage,.auryn
 
 @media(max-width:760px){.aurynTechnicalMetricGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.aurynAppearanceChoices{grid-template-columns:1fr 1fr}.aurynThemeName{font-size:14px}.aurynThemeNote{font-size:10px}}
 @media(max-width:390px){.aurynAppearanceChoices{grid-template-columns:1fr}}
+
+
+/* V9.5.7 — Surface ownership + Appearance Studio. */
+.aurynAppearanceStudio h3{margin:20px 0 4px;font-size:14px;color:var(--auryn-card-ink)}
+.aurynAppearancePreview{overflow:hidden;margin:14px 0 20px;border:1px solid var(--auryn-border);border-radius:16px;background:var(--auryn-page-bg);box-shadow:0 12px 30px rgba(16,20,24,.06)}
+.aurynPreviewChrome{height:38px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;background:var(--auryn-chrome);color:var(--auryn-chrome-ink);font:700 12px Georgia,serif;letter-spacing:.14em}.aurynPreviewChrome i{width:18px;height:18px;border:1px solid var(--auryn-accent);border-radius:50%}
+.aurynPreviewBody{padding:16px;display:grid;gap:5px;background:linear-gradient(135deg,var(--auryn-hero-bg-a),var(--auryn-hero-bg-b));color:var(--auryn-hero-copy)}.aurynPreviewBody small{font-size:7px;font-weight:900;letter-spacing:.15em;color:var(--auryn-accent-soft)}.aurynPreviewBody b{font:650 27px Georgia,serif;color:var(--auryn-hero-ink)}.aurynPreviewBody span{font-size:10px;color:var(--auryn-hero-copy)}.aurynPreviewBody>div{display:flex;gap:5px;margin-top:5px}.aurynPreviewBody>div i{width:28px;height:4px;border-radius:9px;background:var(--auryn-accent)}
+/* Common evidence surfaces always own their foreground; no dark-page inheritance. */
+.aurynThesisFactors article,.aurynThesisEvidence article,.v937EvidenceGrid article,.v940PulseGroup article,.aurynV4ModelAudit>span,.aurynMemoSignals>span,.aurynMarketTruthGate{color:var(--auryn-card-ink)!important;border-color:var(--auryn-border)!important}
+.aurynThesisFactors article,.aurynThesisEvidence article,.v937EvidenceGrid article{background:var(--auryn-card-bg)!important}
+.aurynThesisFactors article small,.aurynThesisEvidence article p,.v937EvidenceGrid article small,.v937EvidenceGrid article p,.aurynV4ModelAudit small{color:var(--auryn-card-muted)!important}
+.aurynThesisFactors article b,.aurynThesisEvidence article b,.v937EvidenceGrid article b,.aurynV4ModelAudit b{color:var(--auryn-card-ink)!important}
+[data-motion="reduced"] *,[data-motion="reduced"] *::before,[data-motion="reduced"] *::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+[data-density="compact"] .v936Metric,[data-density="compact"] .v940PulseGroup article,[data-density="compact"] .aurynCapitalQueueRow{padding-top:8px!important;padding-bottom:8px!important}
+@media(max-width:760px){.aurynAppearancePreview{margin-top:10px}.aurynPreviewBody{padding:13px}.aurynPreviewBody b{font-size:24px}.aurynAppearanceStudio h3{margin-top:16px}}
