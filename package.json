@@ -77,7 +77,9 @@
     "test:v938fix2": "node --test tests/auryn-v938-fix2-market-truth-speed.test.mjs && npm run test:v938fix1",
     "gate:v938fix2": "npm run test:v938fix2 && npm run test:v936",
     "test:v939": "node --test tests/auryn-v939-fast-market-data.test.mjs tests/auryn-v939-metric-help-position.test.mjs && npm run test:v938fix2",
-    "gate:v939": "npm run test:v939 && npm run test:v936"
+    "gate:v939": "npm run test:v939 && npm run test:v936",
+    "test:v940": "node --test tests/auryn-v940-signature-experience.test.mjs && npm run test:v939",
+    "gate:v940": "npm run test:v940 && npm run test:v936"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

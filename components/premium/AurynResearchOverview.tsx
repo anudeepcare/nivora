@@ -62,6 +62,7 @@ export default function AurynResearchOverview({decision,marketTruth,displayPrice
  const freshness=marketTruth?.decisionPriceAsOf||marketTruth?.asOf||marketTruth?.providerTimestamp||null;
  const entryScore=n(entryQuality);
  return <section className="v936Overview" data-snapshot-id={decision.snapshotId}>
+  <span className="v940TruthContract">Opportunity is not a probability of profit. Expected Asymmetry is not an expected-return forecast. Current Price is never inferred from portfolio value.</span>
   <div className="v936HeroGrid v938FirstViewport">
    <article className={`v936CallHero action-${actionClass(decision.newMoneyAction)}`}>
     <div className="v936HeroGlow" aria-hidden="true"/>
@@ -69,6 +70,7 @@ export default function AurynResearchOverview({decision,marketTruth,displayPrice
     <h2 className={tone(decision.newMoneyAction)}>{pretty(decision.newMoneyAction)}</h2>
     <p>{heroReason}</p>
     <div className="v936ActionRow"><span><small>NEW MONEY</small><b>{pretty(decision.newMoneyAction)}</b></span><span><small>OWNER</small><b>{pretty(decision.ownerAction)}</b></span><span><small>LONG TERM</small><b className={tone(decision.longTermAction)}>{pretty(decision.longTermAction)}</b></span></div>
+    <div className="v940HeroProof" aria-label="Decision proof"><span><small>Opportunity</small><b>{lens.opportunityScore}</b></span><span><small>Evidence</small><b>{decision.evidenceCompleteness}</b></span><span><small>Entry</small><b>{entryScore==null?"—":Math.round(entryScore)}</b></span><span><small>Confirm</small><b>{money(confirm)}</b></span></div>
     <div className="v936HeroMeta"><span>{marketStatus}</span><span>Evidence quality {decision.evidenceCompleteness}/100 · uncalibrated</span></div>
    </article>
    <article className="v936ChartCard">
@@ -77,18 +79,25 @@ export default function AurynResearchOverview({decision,marketTruth,displayPrice
    </article>
   </div>
 
-  <div className="v936PulseGrid" aria-label="AURYN decision pulse">
-   <Pulse label="Current Price" value={money(currentPrice)} sub={marketStatus} help="The canonical verified market price used for all price-sensitive AURYN levels. It is never inferred from portfolio value."/>
-   <Pulse label="Opportunity" value={`${lens.opportunityScore}/100`} sub={scoreBand(lens.opportunityScore)} score={lens.opportunityScore} help="A decision-usefulness score combining company quality, setup, entry, risk and evidence. It is not a probability of profit."/>
-   <Pulse label="Entry Quality" value={entryScore==null?"N/A":`${Math.round(entryScore)}/100`} sub={scoreBand(entryScore)} score={entryScore} help="How attractive the current entry is relative to structure, extension and confirmation. A good company can still have poor entry quality."/>
-   <Pulse label="Distance to Confirm" value={confirmDelta!=null?`${confirmDelta>=0?"+":""}${confirmDelta.toFixed(1)}%`:"N/A"} sub={confirm!=null?money(confirm):"No level"} toneName={confirmDelta!=null&&confirmDelta<=3?"good":""} help="How far current price is from the confirmation/reclaim level. Smaller positive distance means price is closer to proving the setup."/>
-   <Pulse label="Reward / Risk" value={rr1!=null?`${rr1.toFixed(1)} : 1`:"N/A"} sub={rr2!=null?`T2 ${rr2.toFixed(1)}×`:"No complete plan"} help="Expected reward to the first target divided by planned downside to invalidation. Higher is better only when the levels themselves are trustworthy."/>
-   <Pulse label="Evidence Quality" value={`${decision.evidenceCompleteness}/100`} sub={scoreBand(decision.evidenceCompleteness)} score={decision.evidenceCompleteness} help="How complete and usable the evidence is for this canonical snapshot. This is confidence in the evidence set, not confidence that price will rise."/>
-   <Pulse label="Upside to T1" value={t1Delta!=null?`${t1Delta>=0?"+":""}${t1Delta.toFixed(1)}%`:"N/A"} sub={t1!=null?money(t1):"No target"} toneName="good" help="Price distance from the current verified price to AURYN's first decision-grade target."/>
-   <Pulse label="Downside to Risk" value={riskDelta!=null?`${riskDelta.toFixed(1)}%`:"N/A"} sub={risk!=null?money(risk):"No invalidation"} toneName="bad" help="Price distance from the current verified price to structural invalidation. It describes setup downside, not guaranteed maximum loss."/>
+  <div className="v940PulseGroups" aria-label="AURYN decision pulse">
+   <section className="v940PulseGroup"><small>DECISION</small><div><Pulse label="Opportunity" value={`${lens.opportunityScore}/100`} sub={scoreBand(lens.opportunityScore)} score={lens.opportunityScore} help="A decision-usefulness score combining company quality, setup, entry, risk and evidence. It is not a probability of profit."/><Pulse label="Entry Quality" value={entryScore==null?"N/A":`${Math.round(entryScore)}/100`} sub={scoreBand(entryScore)} score={entryScore} help="How attractive the current entry is relative to structure, extension and confirmation."/></div></section>
+   <section className="v940PulseGroup"><small>TRIGGER</small><div><Pulse label="Distance to Confirm" value={confirmDelta!=null?`${confirmDelta>=0?"+":""}${confirmDelta.toFixed(1)}%`:"N/A"} sub={confirm!=null?money(confirm):"No level"} toneName={confirmDelta!=null&&confirmDelta<=3?"good":""} help="How far current price is from confirmation."/><Pulse label="Upside to T1" value={t1Delta!=null?`${t1Delta>=0?"+":""}${t1Delta.toFixed(1)}%`:"N/A"} sub={t1!=null?money(t1):"No target"} toneName="good" help="Distance to AURYN's first decision-grade target."/></div></section>
+   <section className="v940PulseGroup"><small>ASYMMETRY</small><div><Pulse label="Reward / Risk" value={rr1!=null?`${rr1.toFixed(1)} : 1`:"N/A"} sub={rr2!=null?`T2 ${rr2.toFixed(1)}×`:"No complete plan"} help="Reward to first target divided by structural downside."/><Pulse label="Downside to Risk" value={riskDelta!=null?`${riskDelta.toFixed(1)}%`:"N/A"} sub={risk!=null?money(risk):"No invalidation"} toneName="bad" help="Distance to structural invalidation."/></div></section>
+   <section className="v940PulseGroup"><small>TRUST</small><div><Pulse label="Evidence Quality" value={`${decision.evidenceCompleteness}/100`} sub={scoreBand(decision.evidenceCompleteness)} score={decision.evidenceCompleteness} help="Completeness and usability of the canonical evidence set."/><Pulse label="Data Freshness" value={displayPriceLive?"● LIVE":freshness?new Date(freshness).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}):"N/A"} sub={marketStatus} toneName={displayPriceLive?"good":""} help="Freshness of the market evidence currently displayed."/></div></section>
   </div>
 
   <div className="v936SectionHead"><div><small>KEY METRICS</small><h3>Decision map</h3></div><span>One canonical snapshot · no duplicate levels</span></div>
+  <div className="v940DecisionRail" aria-label="Visual decision map">
+   <div className="v940RailLine"/>
+   {risk!=null?<span className="v940RailPoint risk" style={{left:"3%"}}><i/><small>THESIS</small><b>{money(risk)}</b></span>:null}
+   {major!=null?<span className="v940RailPoint support" style={{left:"20%"}}><i/><small>MAJOR SUPPORT</small><b>{money(major)}</b></span>:null}
+   {eLow!=null?<span className="v940RailPoint entry" style={{left:"38%"}}><i/><small>ENTRY RANGE</small><b>{eLow!=null&&eHigh!=null?`${money(eLow)}–${money(eHigh)}`:money(eLow)}</b></span>:null}
+   {currentPrice!=null?<span className="v940CurrentMarker" style={{left:"49%"}}><small>CURRENT</small><b>{money(currentPrice)}</b><i/></span>:null}
+   {confirm!=null?<span className="v940RailPoint confirm" style={{left:"58%"}}><i/><small>CONFIRM</small><b>{money(confirm)}</b></span>:null}
+   {t1!=null?<span className="v940RailPoint target" style={{left:"78%"}}><i/><small>T1</small><b>{money(t1)}</b></span>:null}
+   {t2!=null?<span className="v940RailPoint target" style={{left:"96%"}}><i/><small>T2</small><b>{money(t2)}</b></span>:null}
+   <div className="v940RailZones"><span>RISK ZONE ←</span><span>ACCUMULATION</span><span>GROWTH ZONE →</span></div>
+  </div>
   <div className="v937DecisionMap">
    <section><header><span>Decision ladder</span><MetricInfo title="Decision ladder" description="The preferred sequence for a new-money setup: enter only in the preferred zone, look for confirmation, then manage toward targets."/></header><div className="v937Ladder"><LadderItem label="ENTRY" value={eLow!=null&&eHigh!=null?`${money(eLow)} – ${money(eHigh)}`:"N/A"} sub="Preferred zone"/><LadderItem label="CONFIRM" value={money(confirm)} sub="Reclaim / breakout" toneName="good"/><LadderItem label="T1" value={money(t1)} sub={t1Delta!=null?`${t1Delta>=0?"+":""}${t1Delta.toFixed(1)}% from now`:"First objective"}/><LadderItem label="T2" value={money(t2)} sub="Extended objective"/></div></section>
    <section><header><span>Risk ladder</span><MetricInfo title="Risk ladder" description="Structural levels that should hold if the setup is healthy. Invalidation is the level where the current setup thesis materially weakens."/></header><div className="v937Ladder risk"><LadderItem label="SUPPORT" value={money(support)} sub="Key support"/><LadderItem label="MAJOR SUPPORT" value={money(major)} sub="Stronger support"/><LadderItem label="INVALIDATION" value={money(risk)} sub={riskDelta!=null?`${riskDelta.toFixed(1)}% from now`:"Structural risk"} toneName="bad"/></div></section>
