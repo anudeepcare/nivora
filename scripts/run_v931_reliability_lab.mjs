@@ -22,7 +22,7 @@ const transition=auditDecisionTransition({previousAction:'BUY',nextAction:'HOLD'
 const sourceFiles=['app/api/quote/[symbol]/route.ts','app/api/market/route.ts','app/api/portfolio/pulse/route.ts','app/api/scan/route.ts'];
 const decisionSurfaceFiles=['app/api/decision/summaries/route.ts','app/watchlist/page.tsx','app/portfolio/page.tsx','app/alerts/page.tsx'];
 for(const f of sourceFiles){const s=fs.readFileSync(f,'utf8');check(`source:${f}:gateway`,/market-data-gateway/.test(s),'must consume canonical market gateway');}
-for(const f of decisionSurfaceFiles){const s=fs.readFileSync(f,'utf8');check(`surface:${f}:canonical-decision`,f.includes('decision/summaries')?/market-data-gateway/.test(s):/decision\/summaries/.test(s),'must consume the canonical decision/Market Truth projection');}
+for(const f of decisionSurfaceFiles){const s=fs.readFileSync(f,'utf8');const ok=f.includes('decision/summaries')?/market-data-gateway/.test(s):(/decision\/summaries/.test(s)||/\/api\/canonical/.test(s));check(`surface:${f}:canonical-decision`,ok,'must consume the canonical decision/Market Truth projection');}
 check('source:market:no-direct-current-provider',!/api\.twelvedata\.com\/time_series/.test(fs.readFileSync('app/api/market/route.ts','utf8')));
 check('source:portfolio-pulse:no-direct-price-provider',!/api\.twelvedata\.com\/price/.test(fs.readFileSync('app/api/portfolio/pulse/route.ts','utf8')));
 check('surface:decision-summaries:canonical-contract',/AURYN_V9_3_4_CANONICAL_SURFACE/.test(fs.readFileSync('app/api/decision/summaries/route.ts','utf8')),'V9.3.4 supersedes the V9.3.1 canonical surface contract');

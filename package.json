@@ -46,8 +46,8 @@
     "audit:v931-live": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node scripts/run_v931_live_reliability_audit.mjs",
     "gate:v931:release": "AURYN_REQUIRE_LIVE=1 node scripts/run_v931_release_gate.mjs",
     "test:v932": "node scripts/test-v932-ux.mjs",
-    "verify:quick": "npm run test:v935 && npm run test:v9343 && npm run test:v9342 && npm run test:v9341 && npm run test:v934-core && npm run test:v931-core && npm run audit:v931-reliability",
-    "verify:release": "npm run gate:v935",
+    "verify:quick": "npm run test:v936 && npm run test:v935 && npm run test:v9343 && npm run test:v9342 && npm run test:v9341 && npm run test:v934-core && npm run test:v931-core && npm run audit:v931-reliability",
+    "verify:release": "npm run gate:v936",
     "audit:live:30": "npm run audit:v935-live -- --limit=30",
     "audit:live:100": "npm run audit:v935-live -- --limit=100",
     "audit:live:500": "npm run audit:v935-live -- --limit=500",
@@ -65,7 +65,9 @@
     "test:v935": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node --test tests/auryn-v935-core.test.mjs",
     "audit:v935-live": "node scripts/run_v935_live_audit.mjs",
     "gate:v935": "node scripts/run_v935_release_gate.mjs",
-    "gate:v935:release": "AURYN_REQUIRE_LIVE=1 node scripts/run_v935_release_gate.mjs"
+    "gate:v935:release": "AURYN_REQUIRE_LIVE=1 node scripts/run_v935_release_gate.mjs",
+    "test:v936": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node --test tests/auryn-v936-opportunity.test.mjs tests/auryn-v936-research-ui.test.mjs tests/auryn-v936-mobile-shell.test.mjs tests/auryn-v936-cross-product-ui.test.mjs tests/auryn-v936-release.test.mjs",
+    "gate:v936": "node scripts/run_v936_release_gate.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

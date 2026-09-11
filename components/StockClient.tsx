@@ -37,7 +37,7 @@ import {buildAurynV7Analysis} from "@/lib/auryn/v7/analyze";
 import {serializeV7Decision} from "@/lib/auryn/v7/learning";
 import {formatInvestmentAction} from "@/lib/auryn/v4/presentation";
 import {formatScoreBand} from "@/lib/auryn/v5/format";
-import InstitutionalDecisionBrief from "./stock/v931/InstitutionalDecisionBrief";
+import AurynResearchOverview from "./premium/AurynResearchOverview";
 import {buildDecisionSnapshot} from "@/lib/auryn/v931/decision-snapshot";
 import {buildInstitutionalDecisionKernel} from "@/lib/auryn/v931/decision-kernel";
 import type {SetupState} from "@/lib/auryn/v931/domain";
@@ -749,7 +749,7 @@ export default function StockClient({symbol}:{symbol:string}){
   return <div className="aurynStockPage">
     <StockSecurityHeader company={company?.name||d.name||symbol} symbol={symbol} price={priceSensitiveAllowed?canonicalDecisionPrice:null} changePct={priceSensitiveAllowed?displayChangePct:null} status={marketStatusLabel} detail={marketDetail} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
     {marketTruth&&!priceSensitiveAllowed?<div className="aurynIntegrityAlert aurynMarketTruthAlert" role="alert"><b>PRICE UNVERIFIED</b><span>{marketTruth.reason||"Independent market sources are not sufficiently aligned."} AURYN has disabled entry, confirmation, target, stop and risk/reward output until the canonical price is verified.</span></div>:null}
-    {institutionalDecision?<InstitutionalDecisionBrief decision={institutionalDecision} marketTruth={marketTruth} executionPlan={v5Analysis?.executionPlan??null} support={v5Analysis?.technical?.levels?.support??null} marketIntelligence={marketIntelligenceView??d?.marketIntelligence??null} scenario={v5Analysis?.scenario??null} entryQuality={technicalState.entryQuality}/>:null}
+    {institutionalDecision?<AurynResearchOverview decision={institutionalDecision} marketTruth={marketTruth} marketIntelligence={marketIntelligenceView??d?.marketIntelligence??null} scenario={v5Analysis?.scenario??null} entryQuality={technicalState.entryQuality} candles={(v5Analysis?.bars||d?.candles||[]).slice(-180)} chartLevels={v5ChartLevels??canonicalValidationLevels}/>:null}
     {v5Analysis?<>{canonicalTrustBlocked?<div className="aurynIntegrityAlert aurynTrustBlock" role="alert"><b>CANONICAL TRUST BLOCK</b><span>{v7Analysis?.trust.blockers[0]||"AURYN detected an internal snapshot/plan inconsistency."} Price-sensitive execution levels are suppressed until the canonical chain is aligned.</span></div>:null}</>:<section className="aurynV5Unavailable"><small>AURYN CANONICAL ANALYSIS</small><b>COLLECTING VERIFIED EVIDENCE</b><span>AURYN will not publish a fallback verdict while the canonical snapshot is unavailable.</span></section>}
     <div className="aurynOwnershipNote"><Sparkles size={14}/><span>AURYN separates long-term thesis, owner action and new-money timing.</span></div>
 

@@ -59,7 +59,7 @@ test('stock page no longer renders the detached top market context strip',()=>{
  const s=fs.readFileSync('components/StockClient.tsx','utf8');
  assert.doesNotMatch(s,/v659ContextStrip/);
  assert.doesNotMatch(s,/v659PeriodSwitch/);
- assert.match(s,/InstitutionalDecisionBrief/);
+ assert.match(s,/AurynResearchOverview/);
  assert.doesNotMatch(s,/<StockV5Decision/);
  assert.match(s,/StockEvidenceNav/);
 });

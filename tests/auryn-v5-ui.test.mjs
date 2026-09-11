@@ -7,7 +7,7 @@ test('stock page builds one V5 canonical snapshot and projects it through the si
   const s=read('components/StockClient.tsx');
   assert.match(s,/buildAurynV5Analysis/);
   assert.match(s,/const v5Analysis=useMemo/);
-  assert.match(s,/InstitutionalDecisionBrief/);
+  assert.match(s,/AurynResearchOverview/);
   assert.doesNotMatch(s,/<StockV5Decision/);
   assert.doesNotMatch(s,/<ExecutionPlanPanel/);
   assert.match(s,/scenario={v5Analysis\?\.scenario\?\?null}/);
@@ -35,8 +35,8 @@ test('legacy V5 scenario remains available as evidence but the first-screen cano
   const stock=read('components/StockClient.tsx');
   assert.match(stock,/scenario={v5Analysis\?\.scenario\?\?null}/);
   assert.doesNotMatch(stock,/<ScenarioMapPanel/);
-  const brief=read('components/stock/v931/InstitutionalDecisionBrief.tsx');
-  assert.match(brief,/PATTERN EVIDENCE/);
+  const brief=read('components/premium/AurynResearchOverview.tsx');
+  assert.match(brief,/PATTERN EVIDENCE|Pattern Evidence/);
   assert.match(brief,/describeSetupState/);
 });
 

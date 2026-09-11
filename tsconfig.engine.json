@@ -168,6 +168,8 @@
     "lib/auryn/v934/decision-bridge.ts",
     "lib/auryn/v934/setup-explanations.ts",
     "lib/auryn/v9343/execution-policy.ts",
-    "lib/auryn/v934/twelve-multitimeframe.ts"
+    "lib/auryn/v934/twelve-multitimeframe.ts",
+    "lib/auryn/v936/domain.ts",
+    "lib/auryn/v936/opportunity.ts"
   ]
 }

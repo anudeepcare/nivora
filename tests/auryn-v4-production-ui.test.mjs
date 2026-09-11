@@ -14,11 +14,11 @@ test("V4 evidence migration feeds the V5 canonical analysis",()=>{
 
 test("one institutional brain exposes one canonical expert view without depth modes",()=>{
   const page=read("components/StockClient.tsx");
-  const decision=read("components/stock/v931/InstitutionalDecisionBrief.tsx");
-  assert.match(page,/InstitutionalDecisionBrief decision=\{institutionalDecision\} marketTruth=\{marketTruth\}/);
+  const decision=read("components/premium/AurynResearchOverview.tsx");
+  assert.match(page,/AurynResearchOverview decision=\{institutionalDecision\} marketTruth=\{marketTruth\}/);
   assert.doesNotMatch(page,/const\[depth,setDepth\]|onDepthChange=\{setDepth\}/);
   assert.doesNotMatch(decision,/Beginner|Extreme Pro|Research depth/);
-  assert.match(decision,/PREFERRED ENTRY/);
+  assert.match(decision,/Entry Zone|Recovery Zone/);
   assert.doesNotMatch(decision,/<details|<summary|Full evidence & model trace/);
 });
 
