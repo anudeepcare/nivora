@@ -1,0 +1,3 @@
+export type ResearchState="RESEARCH_READY"|"TEMPORARY_PROVIDER_FAILURE"|"INSUFFICIENT_EVIDENCE";
+export function classifyResearchFailure(x:any):Exclude<ResearchState,"RESEARCH_READY">{const s=Number(x?.status||0),c=String(x?.code||"").toUpperCase();return s===429||s>=500||c.includes("RATE_LIMIT")||c.includes("TEMPORARY")||c.includes("TIMEOUT")?"TEMPORARY_PROVIDER_FAILURE":"INSUFFICIENT_EVIDENCE"}
+export function validateResearchDecision(d:any){return Boolean(d?.snapshotId&&d?.newMoneyAction&&d?.ownerAction&&d?.longTermAction&&Number.isFinite(Number(d?.decisionScore))&&Number.isFinite(Number(d?.evidenceCompleteness))&&d?.setupState)}

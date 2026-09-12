@@ -5,6 +5,8 @@ import {fingerprintShadowSnapshot,OUTCOME_HORIZONS,outcomeDueAt} from "@/lib/aur
 import {callsNeededForBatch} from "@/lib/auryn/v99/rate-budget";
 import {retryDelaySeconds} from "@/lib/auryn/v99/jobs";
 import {assertShadowDecisionReady} from "@/lib/auryn/v991/shadow-mapping";
+import {runAutonomousCanonicalResearch} from "@/lib/auryn/v995/autonomous-research";
+import {persistAutonomousResearch} from "@/lib/auryn/v995/persist-research";
 export const dynamic="force-dynamic";export const runtime="nodejs";
 function authorized(req:Request){const s=process.env.CRON_SECRET;return Boolean(s)&&req.headers.get("authorization")===`Bearer ${s}`}
 function db(){const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY;return url&&key?createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}}):null}
@@ -17,7 +19,7 @@ export async function GET(req:Request){
  if(leaseErr)return NextResponse.json({error:leaseErr.message},{status:500});
  const job=Array.isArray(leased)?leased[0]:leased;if(!job)return NextResponse.json({status:"idle"});
  const symbols=(job.symbols||[]).map((x:any)=>String(x).toUpperCase()).filter(Boolean);
- const tokens=callsNeededForBatch(symbols.length,2);
+ const tokens=callsNeededForBatch(symbols.length,8);
  const {data:budget,error:budgetErr}=await client.rpc("auryn_acquire_provider_tokens",{requested:tokens,background_limit:42});
  if(budgetErr||budget!==true){
    await client.from("auryn_validation_jobs").update({status:"PENDING",available_at:new Date(Date.now()+60_000).toISOString(),leased_at:null,lease_expires_at:null}).eq("id",job.id);
@@ -28,7 +30,14 @@ export async function GET(req:Request){
  let saved=0;const failures:any[]=[];
  for(const symbol of symbols){
    try{
-     const snap:any=await loadAurynCanonicalSnapshot(symbol);
+     let snap:any=await loadAurynCanonicalSnapshot(symbol);
+     if(String(snap?.research?.state||"")==="ANALYSIS_REQUIRED"){
+       const generated=await runAutonomousCanonicalResearch(symbol,{origin:new URL(req.url).origin});
+       if(generated.state==="TEMPORARY_PROVIDER_FAILURE")throw new Error(`TEMPORARY_PROVIDER_FAILURE:${generated.reason}`);
+       if(generated.state!=="RESEARCH_READY")throw new Error(`INSUFFICIENT_EVIDENCE:${generated.reason}`);
+       await persistAutonomousResearch(client,symbol,generated);
+       snap=await loadAurynCanonicalSnapshot(symbol);
+     }
      const price=priceOf(snap),market=snap?.market||{};
      const decision=assertShadowDecisionReady(snap);
      if(price==null)throw new Error("CANONICAL_MARKET_PRICE_NOT_READY");

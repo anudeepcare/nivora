@@ -1,6 +1,7 @@
 import {NextResponse} from "next/server";
 import {createClient} from "@supabase/supabase-js";
-import {chunkSymbols,type ValidationRunKind} from "@/lib/auryn/v99/jobs";
+import {type ValidationRunKind} from "@/lib/auryn/v99/jobs";
+import {researchJobBatches} from "@/lib/auryn/v995/research-jobs";
 import {buildExchangeStratifiedUniverse} from "@/lib/auryn/v994/universe-schema";
 import {canResumeRun,nextRunAttempt,runIdentityKey,jobAttemptIdempotencyKey} from "@/lib/auryn/v992/run-lifecycle";
 import {loadValidationUniversePages} from "@/lib/auryn/v993/universe-loader";
@@ -36,7 +37,7 @@ export async function GET(req:Request){
    if(created.error||!created.data)return NextResponse.json({error:created.error?.message||"Unable to create immutable validation run"},{status:500});
    run=created.data;
  }
- const batches=chunkSymbols(symbols,8);
+ const batches=researchJobBatches(symbols);
  const rows=batches.map((batch,i)=>({run_id:run.id,idempotency_key:jobAttemptIdempotencyKey(kind,evaluationDate,modelVersion,attempt,i),job_kind:"SHADOW_CAPTURE",batch_no:i,symbols:batch,status:"PENDING"}));
  const {error:jobErr}=await client.from("auryn_validation_jobs").upsert(rows,{onConflict:"idempotency_key",ignoreDuplicates:true});
  if(jobErr)return NextResponse.json({error:jobErr.message},{status:500});

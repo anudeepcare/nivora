@@ -188,6 +188,10 @@
     "lib/auryn/v991/universe.ts",
     "lib/auryn/v992/run-lifecycle.ts",
     "lib/auryn/v993/universe-loader.ts",
-    "lib/auryn/v994/universe-schema.ts"
+    "lib/auryn/v994/universe-schema.ts",
+    "lib/auryn/v995/research-jobs.ts",
+    "lib/auryn/v995/research-contract.ts",
+    "lib/auryn/v995/autonomous-research.ts",
+    "lib/auryn/v995/persist-research.ts"
   ]
 }

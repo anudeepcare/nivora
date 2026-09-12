@@ -1,0 +1,3 @@
+V9.9.5 focused gate: npm run test:v995 => 21/21 PASS.
+Full historical suite: npm test => 721/737 PASS, 16 known baseline failures unchanged.
+Production acceptance remains intentionally unclaimed until eight untouched live equities complete 8/8 after deployment.
