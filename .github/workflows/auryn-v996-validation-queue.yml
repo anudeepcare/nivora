@@ -1,0 +1,32 @@
+name: AURYN V9.9.6 Validation Queue
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/15 * * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: auryn-v996-validation-queue
+  cancel-in-progress: false
+
+jobs:
+  drain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Drain bounded validation work
+        env:
+          AURYN_BASE_URL: ${{ secrets.AURYN_BASE_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          AURYN_QUEUE_BURST: "4"
+        run: node scripts/auryn-v996-queue-pump.mjs
