@@ -87,7 +87,11 @@ export function auditAurynDecisions(input:AurynDecisionAuditRow[]){
    spreads:{bearMedianPct:quantile(validScenario.map(x=>x.bearSpread),.5),bullMedianPct:quantile(validScenario.map(x=>x.bullSpread),.5),baseDistanceMedianPct:quantile(validScenario.map(x=>x.baseDistance),.5)},
    independence:{flag:scenarioFlag,reason:scenarioFlag==="WATCH"?"Base case is within ±5% of spot for at least 75% of valid audited scenarios; review for price anchoring before calibration.":"No high-concentration base-price anchoring flag in this sample."}
   },
-  diagnostics:{decisionDispersion:{flag:total>=10&&dominantShare>=80?"WATCH":"OK",dominantAction:String(dominant[0]),dominantSharePct:dominantShare,reason:total>=10&&dominantShare>=80?"One new-money action represents at least 80% of audited decisions. Diagnose gates before changing thresholds.":"No extreme action concentration flag in this sample."}}
+  diagnostics:{
+   decisionDispersion:{flag:total>=10&&dominantShare>=80?"WATCH":"OK",dominantAction:String(dominant[0]),dominantSharePct:dominantShare,reason:total>=10&&dominantShare>=80?"One new-money action represents at least 80% of audited decisions. Diagnose gates before changing thresholds.":"No extreme action concentration flag in this sample."},
+   highQualityWait:contradiction(rows,r=>String(r.longTermAction).toUpperCase()==="ATTRACTIVE"&&String(r.newMoneyAction).toUpperCase()==="WAIT"),
+   highQualityAvoid:contradiction(rows,r=>String(r.longTermAction).toUpperCase()==="ATTRACTIVE"&&String(r.newMoneyAction).toUpperCase()==="AVOID")
+  }
  };
  const fingerprint=createHash("sha256").update(JSON.stringify(canonical)).digest("hex");
  return {...canonical,fingerprint};

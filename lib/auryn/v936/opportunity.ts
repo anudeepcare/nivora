@@ -9,7 +9,7 @@ const volQuality=(v:number|null)=>v==null?null:clamp(100-v);
 export function buildOpportunityLens(input:Input):OpportunityLens{
  const s=input.scores;
  const candidates:[string,number|null,number][]=[
-  ['Business',finite(s.business),16],['Earnings / revisions',finite(s.earningsRevisions),14],['Valuation',finite(s.valuation),12],['Market structure',finite(s.marketStructure),16],['Catalysts / regime',finite(s.catalystsRegime),8],['Risk / asymmetry',finite(s.riskAsymmetry),12],['Entry quality',finite(s.entryQuality),8],['Relative strength',finite(s.relativeStrength),5],['Participation',finite(s.participation),5],['Reward / risk',rrScore(finite(s.rewardRisk)),3],['Volatility',volQuality(finite(s.volatilityRisk)),1]
+  ['Business',finite(s.business),22],['Earnings / revisions',finite(s.earningsRevisions),18],['Valuation',finite(s.valuation),15],['Market structure',finite(s.marketStructure),10],['Catalysts / regime',finite(s.catalystsRegime),7],['Risk / asymmetry',finite(s.riskAsymmetry),13],['Entry quality',finite(s.entryQuality),5],['Relative strength',finite(s.relativeStrength),3],['Participation',finite(s.participation),3],['Reward / risk',rrScore(finite(s.rewardRisk)),2],['Volatility',volQuality(finite(s.volatilityRisk)),2]
  ];
  const totalWeight=candidates.reduce((a,x)=>a+x[2],0);
  const available=candidates.filter(([,v])=>v!=null) as [string,number,number][];

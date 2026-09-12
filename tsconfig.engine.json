@@ -172,6 +172,8 @@
     "lib/auryn/v936/domain.ts",
     "lib/auryn/v936/opportunity.ts",
     "lib/auryn-decision-audit.ts",
-    "lib/auryn-node-shim.d.ts"
+    "lib/auryn-node-shim.d.ts",
+    "lib/auryn/v97/domain.ts",
+    "lib/auryn/v97/cio-engine.ts"
   ]
 }

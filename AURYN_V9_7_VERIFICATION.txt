@@ -1,0 +1,30 @@
+AURYN V9.7 CIO Engine verification
+Date: 2026-09-12
+
+V9.7 release gate:
+- TypeScript engine compile: PASS
+- Targeted/relevant tests: 36 passed, 0 failed
+- Includes V9.7 CIO core, integration, calibration, V9.3.1 canonical kernel, V9.3.4.3 action reachability, V9.3.6 opportunity, and V9.6.3 audit regression.
+
+Full historical repository suite:
+- 737 tests
+- 721 passed
+- 16 failed
+- These 16 failures are the same pre-existing historical failures present in the V9.6.3 baseline and are outside the V9.7 engine files.
+
+Production Next build:
+- NOT VERIFIED in this sandbox.
+- `npm run build` exits 127 because local `next` is not executable (`next: Permission denied`).
+
+UX lock:
+- No app/* or components/* file changed in V9.7.
+- V9.7 changes are confined to engine/audit logic, tests, engine compile config, package scripts, and release/spec documentation.
+
+CIO assessment:
+- Architecture / decision separation: 9.0/10
+- Thesis stability / deterioration logic: 9.0/10
+- Decision differentiation: 8.8/10
+- Explainability / counterfactuals: 9.0/10
+- Empirical historical calibration: 6.5/10 (point-in-time 30-year validation not yet available)
+- Overall current engine: 8.6/10
+- Target after point-in-time calibration + outcome validation: 9.0+/10

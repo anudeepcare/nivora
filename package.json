@@ -116,7 +116,9 @@
     "gate:v957": "npm run test:v957",
     "audit:v963-decisions": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node scripts/run_v963_decision_scenario_audit.mjs",
     "gate:v963": "npm run test:v963 && node scripts/run_v963_release_gate.mjs && npm run gate:v957",
-    "test:v963": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node --test tests/auryn-v963-pwa-quality.test.mjs tests/auryn-v963-decision-scenario-audit.test.mjs tests/auryn-v963-release-gate.test.mjs"
+    "test:v963": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node --test tests/auryn-v963-pwa-quality.test.mjs tests/auryn-v963-decision-scenario-audit.test.mjs tests/auryn-v963-release-gate.test.mjs",
+    "test:v970": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node --test tests/auryn-v970-cio-engine.test.mjs tests/auryn-v970-decision-integration.test.mjs tests/auryn-v970-calibration.test.mjs tests/auryn-v931-core.test.mjs tests/auryn-v931-explanations.test.mjs tests/auryn-v936-opportunity.test.mjs tests/auryn-v963-decision-scenario-audit.test.mjs tests/auryn-v9343-debias-policy.test.mjs tests/auryn-v9343-distribution-audit.test.mjs",
+    "gate:v970": "npm run test:v970"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",
