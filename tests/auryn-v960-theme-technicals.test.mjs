@@ -37,7 +37,9 @@ test("stock tabs, navigation and footer explicitly own foreground",()=>{
  assert.match(css,/\.aurynProductFooter\{[^}]*background:var\(--auryn-footer-bg\)[^}]*color:var\(--auryn-footer-ink\)/s);
 });
 
-test("Large readability is global and visibly stronger",()=>{
+test("Large readability is strong without shrinking or resizing core surfaces",()=>{
  assert.match(css,/\[data-text-size="large"\]\{--auryn-readable-scale:1\.18/);
- for(const marker of [".aurynAppMain p",".aurynEvidenceNav",".aurynProductFooter"]) assert.ok(css.includes(marker),marker);
+ assert.ok(css.includes(".aurynSupportText"));
+ assert.ok(css.includes(".aurynProductFooter"));
+ assert.ok(!css.includes('[data-text-size="large"] .aurynAppMain p'));
 });

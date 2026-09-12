@@ -340,3 +340,16 @@
   background:rgba(27,26,23,.72)!important
  }
 }
+
+/* V9.6.3 — mobile masthead + evidence navigation quality pass. */
+@media(max-width:760px){
+ .aurynStockMobilePrimary{grid-template-columns:minmax(0,1fr) minmax(118px,auto)!important;column-gap:12px!important}
+ .aurynStockMobilePrice{max-width:160px!important}
+ .aurynStockMobilePrice small{max-width:none!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.25!important}
+ .aurynStockMobileMeta{grid-template-columns:1fr!important;gap:3px!important;padding-left:48px!important;padding-right:0!important}
+ .aurynStockMobileMeta span{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.3!important}
+ .aurynStockMobileMeta span:last-child{text-align:left!important}
+ .aurynEvidenceNav{scroll-snap-type:x proximity!important;scroll-padding-inline:8px!important;padding-right:18px!important}
+ .aurynEvidenceNav button,.aurynEvidenceNav a{scroll-snap-align:start!important}
+ .aurynEvidenceNav:after{content:""!important;position:sticky!important;right:0!important;flex:0 0 18px!important;width:18px!important;align-self:stretch!important;pointer-events:none!important;background:linear-gradient(90deg,transparent,var(--auryn-page-bg))!important}
+}

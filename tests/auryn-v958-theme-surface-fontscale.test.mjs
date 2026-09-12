@@ -13,10 +13,10 @@ test('technicals owns all three visual layers',()=>{
  assert.match(css,/\.v383TechnicalStateGrid>\*[^\{]*\{[^}]*background:var\(--auryn-soft-bg\)!important/s);
  assert.match(css,/\.v34IndicatorGrid>div[^\{]*\{[^}]*background:var\(--auryn-card-bg\)!important/s);
 });
-test('large text is a meaningful app-wide readability mode',()=>{
+test('large text preserves core product scale and enlarges supporting copy',()=>{
  assert.match(css,/data-text-size="large"[^\{]*\{[^}]*--auryn-readable-scale:1\.18/);
- assert.match(css,/data-text-size="large"[^\n]*aurynAppMain[^\n]*p[^\{]*\{[^}]*font-size:118%!important/s);
- assert.match(css,/data-text-size="large"[^\n]*aurynAppMain[^\n]*small[^\{]*\{[^}]*font-size:118%!important/s);
+ assert.doesNotMatch(css,/data-text-size="large"[^\n]*aurynAppMain[^\n]*p[^\{]*\{[^}]*font-size:118%!important/s);
+ assert.match(css,/data-text-size="large"[^\n]*aurynSupportText[^\{]*\{[^}]*font-size:118%!important/s);
 });
 test('dark editions use calm light reading surfaces rather than translucent gray overlays',()=>{
  for(const theme of ['noir','sapphire','racing']){

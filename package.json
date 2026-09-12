@@ -113,7 +113,10 @@
     "test:v956": "node --test tests/auryn-v956-pwa-theme-contract.test.mjs tests/auryn-v950-centered-ios-tabbar.test.mjs tests/auryn-v942-mobile-technicals-portfolio.test.mjs tests/auryn-v936-research-ui.test.mjs",
     "gate:v956": "npm run test:v956",
     "test:v957": "node --test tests/auryn-v957-search-personalization.test.mjs tests/auryn-v956-pwa-theme-contract.test.mjs tests/auryn-v950-centered-ios-tabbar.test.mjs tests/auryn-v942-mobile-technicals-portfolio.test.mjs tests/auryn-v936-research-ui.test.mjs",
-    "gate:v957": "npm run test:v957"
+    "gate:v957": "npm run test:v957",
+    "audit:v963-decisions": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node scripts/run_v963_decision_scenario_audit.mjs",
+    "gate:v963": "npm run test:v963 && node scripts/run_v963_release_gate.mjs && npm run gate:v957",
+    "test:v963": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node --test tests/auryn-v963-pwa-quality.test.mjs tests/auryn-v963-decision-scenario-audit.test.mjs tests/auryn-v963-release-gate.test.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

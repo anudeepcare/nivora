@@ -170,6 +170,8 @@
     "lib/auryn/v9343/execution-policy.ts",
     "lib/auryn/v934/twelve-multitimeframe.ts",
     "lib/auryn/v936/domain.ts",
-    "lib/auryn/v936/opportunity.ts"
+    "lib/auryn/v936/opportunity.ts",
+    "lib/auryn-decision-audit.ts",
+    "lib/auryn-node-shim.d.ts"
   ]
 }

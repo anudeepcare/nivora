@@ -1,0 +1,30 @@
+AURYN V9.6.3 verification
+Date: 2026-09-12
+
+FRESH V9.6.3 RELEASE GATE
+Command: npm run gate:v963
+Result: PASS
+- V9.6.3 focused tests: 12/12 passed
+- Existing V9.5.7 PWA/theme/search regression gate: 36/36 passed
+- Decision/scenario audit gate failures: []
+- Deterministic audit fingerprint: a38656e7670643f08a91837cb83bf0b46b83795b73d06198b518a639038bb929
+
+ENGINE REGRESSION CHECKS
+- npm run test:v9343: 21/21 passed
+- npm run test:v936: 20/20 passed
+- V9.6/V9.6.1/V9.6.2 targeted Technicals/theme/PWA suite used during implementation: 31/31 passed
+
+HISTORICAL FULL-SUITE STATUS
+- Untouched V9.6.2 baseline `npm test`: 737 tests, 721 pass, 16 fail.
+- V9.6.3 `npm test`: 737 tests, 721 pass, 16 fail.
+- Failure-name diff: identical (no additional V9.6.3 full-suite failures).
+- These 16 failures pre-date V9.6.3 and are outside this release scope.
+
+PRODUCTION NEXT BUILD
+- Not verified in this sandbox.
+- The source ZIP did not contain an executable local Next.js installation.
+- `npm ci --ignore-scripts --no-audit --no-fund` was attempted; dependency restoration timed out in this environment.
+
+SCOPE SAFETY
+- No existing production decision-threshold, score-weight, Market Truth, provider-selection, scenario-generation, portfolio-calculation, or price-level source file was modified.
+- Engine additions are diagnostic-only: lib/auryn-decision-audit.ts plus audit/gate scripts and fixtures.

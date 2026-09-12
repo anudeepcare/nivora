@@ -53,15 +53,11 @@ html,body,.aurynAppShell,.aurynAppMain,.aurynStockPage,.aurynPortfolioPage,.aury
 .aurynAppearanceChoices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:8px 0 18px}.aurynAppearanceChoice{display:grid;gap:4px;border:1px solid var(--auryn-border);background:var(--auryn-card-bg);color:var(--auryn-card-ink);border-radius:14px;padding:14px;text-align:left}.aurynAppearanceChoice.on{outline:2px solid var(--auryn-accent);outline-offset:1px}.aurynThemeName{font-size:16px;font-weight:800;color:var(--auryn-card-ink)}.aurynThemeNote{font-size:11px;color:var(--auryn-card-muted)}.aurynThemeSwatches{display:flex;gap:5px;margin-top:6px}.aurynThemeSwatches i{width:16px;height:16px;border-radius:50%;border:1px solid rgba(80,75,68,.22)}.aurynTextChoices{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 18px}.aurynTextChoices button{border:1px solid var(--auryn-border);background:var(--auryn-card-bg);color:var(--auryn-card-ink);border-radius:999px;padding:8px 12px;font-weight:700}.aurynTextChoices button.on{background:var(--auryn-chrome);color:var(--auryn-chrome-ink)}
 [data-motion="reduced"] *,[data-motion="reduced"] *::before,[data-motion="reduced"] *::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
 
-/* READABILITY: a visible preference across the product, not only microcopy. */
+/* READABILITY: preserve the approved product baseline. Preferences only affect supporting copy. */
 [data-text-size="compact"]{--auryn-readable-scale:.94}
 [data-text-size="large"]{--auryn-readable-scale:1.18}
-[data-text-size="large"] .aurynAppMain p,[data-text-size="large"] .aurynAppMain small{font-size:118%!important;line-height:1.52!important}
-[data-text-size="large"] .aurynEvidenceNav,[data-text-size="large"] .aurynPortfolioNav{font-size:1.08em!important}
-[data-text-size="large"] .aurynAppMain :where(.v936Metric em,.v34IndicatorGrid span,.v34TechnicalScoreGrid span,.v383TechnicalStateGrid span,.aurynThemeNote){font-size:118%!important;line-height:1.48!important}
-[data-text-size="large"] .aurynProductFooter{font-size:1.12em!important}
-[data-text-size="large"] .aurynProductFooter :where(p,a,span,small){line-height:1.5!important}
-[data-text-size="compact"] .aurynAppMain p,[data-text-size="compact"] .aurynAppMain small{font-size:94%!important}
+[data-text-size="large"] :where(.aurynSupportText,.aurynSecondaryText,.aurynHelperText,.aurynProductFooter p,.aurynProductFooter a,.aurynProductFooter span,.aurynProductFooter small,.aurynThemeNote){font-size:118%!important;line-height:1.5!important}
+[data-text-size="compact"] :where(.aurynSupportText,.aurynSecondaryText,.aurynHelperText,.aurynProductFooter p,.aurynProductFooter a,.aurynProductFooter span,.aurynProductFooter small,.aurynThemeNote){font-size:94%!important}
 [data-density="compact"] .v936Metric,[data-density="compact"] .aurynCapitalQueueRow{padding-top:8px!important;padding-bottom:8px!important}
 
 @media(max-width:1000px){.v383TechnicalStateGrid,.v34TechnicalScoreGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important}.v34IndicatorGrid,.aurynTechnicalMetricGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
@@ -235,3 +231,10 @@ html,body,.aurynAppShell,.aurynAppMain,.aurynStockPage,.aurynPortfolioPage,.aury
 
 @media(max-width:1100px){.v962TechnicalRead{grid-template-columns:minmax(0,1fr) 220px!important}.v962ReadTakeaway{grid-column:1/-1!important;border-left:0!important;border-top:1px solid var(--auryn-border)!important}.v962ScoreRail{grid-template-columns:repeat(3,minmax(0,1fr))!important}.v962ScoreRail>div:nth-child(3){border-right:0!important}.v962ScoreRail>div:nth-child(-n+3){border-bottom:1px solid var(--auryn-border)!important}.v962DriverRow{grid-template-columns:180px minmax(220px,1fr) 1fr 1fr!important}}
 @media(max-width:760px){.v962TechnicalExperience{max-width:none!important}.v962TechnicalRead{grid-template-columns:1fr!important}.v962ReadNarrative{padding:20px!important}.v962ReadNarrative h3{font-size:24px!important}.v962ReadScore{border-left:0!important;border-top:1px solid var(--auryn-border)!important;padding:20px!important}.v962ReadTakeaway{grid-column:auto!important}.v962ScoreRail{grid-template-columns:repeat(2,minmax(0,1fr))!important}.v962ScoreRail>div{border-bottom:1px solid var(--auryn-border)!important}.v962ScoreRail>div:nth-child(even){border-right:0!important}.v962ScoreRail>div:nth-last-child(-n+2){border-bottom:0!important}.v962DriverRow{grid-template-columns:1fr!important}.v962DriverIdentity,.v962DriverCall,.v962DriverMetric{padding:16px!important}.v962DriverCall,.v962DriverMetric{border-left:0!important;border-top:1px solid var(--auryn-border)!important}.v962BottomLine{align-items:flex-start!important;flex-direction:column!important}.v962BottomStats{width:100%!important}.v962BottomStats span{flex:1!important}}
+
+/* V9.6.3 — iOS standalone root/chrome ownership. Theme layer loads last, so it must own the transparent status area. */
+@media(display-mode:standalone) and (max-width:760px){
+ html,body{background:var(--auryn-chrome)!important}
+ .aurynAppShell{background:var(--auryn-page-bg)!important}
+ .aurynHeader{background:var(--auryn-chrome)!important}
+}
