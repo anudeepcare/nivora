@@ -186,6 +186,7 @@
     "lib/auryn/v99/outcomes.ts",
     "lib/auryn/v991/shadow-mapping.ts",
     "lib/auryn/v991/universe.ts",
-    "lib/auryn/v992/run-lifecycle.ts"
+    "lib/auryn/v992/run-lifecycle.ts",
+    "lib/auryn/v993/universe-loader.ts"
   ]
 }

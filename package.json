@@ -127,7 +127,8 @@
     "test:v991": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node --test tests/auryn-v991-shadow-integrity.test.mjs tests/auryn-v991-route-contract.test.mjs tests/auryn-v990-validation-lab.test.mjs tests/auryn-v990-jobs-rate-budget.test.mjs tests/auryn-v990-schema-contract.test.mjs tests/auryn-v990-cron-routes.test.mjs tests/auryn-v990-shadow-cio.test.mjs tests/auryn-v980-three-clock.test.mjs tests/auryn-v980-fundamental-scenarios.test.mjs tests/auryn-v980-valuation-audit.test.mjs tests/auryn-v980-cio-integration.test.mjs tests/auryn-v970-cio-engine.test.mjs tests/auryn-v970-decision-integration.test.mjs",
     "gate:v991": "npm run test:v991",
     "test:v992": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node --test tests/auryn-v992-run-lifecycle.test.mjs tests/auryn-v992-orchestrator-contract.test.mjs tests/auryn-v991-shadow-integrity.test.mjs tests/auryn-v991-route-contract.test.mjs tests/auryn-v990-validation-lab.test.mjs tests/auryn-v990-jobs-rate-budget.test.mjs tests/auryn-v990-schema-contract.test.mjs tests/auryn-v990-cron-routes.test.mjs tests/auryn-v990-shadow-cio.test.mjs",
-    "gate:v992": "npm run test:v992"
+    "gate:v992": "npm run test:v992",
+    "test:v993": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node --test tests/auryn-v993-universe-loader.test.mjs tests/auryn-v992-run-lifecycle.test.mjs tests/auryn-v992-orchestrator-contract.test.mjs tests/auryn-v991-shadow-integrity.test.mjs tests/auryn-v991-route-contract.test.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",
