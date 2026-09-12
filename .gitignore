@@ -3,4 +3,6 @@ node_modules
 .env*
 !.env.example
 .DS_Store
-.vercel
+
+.engine-test/
+tsconfig.tsbuildinfo

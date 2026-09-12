@@ -1,0 +1,26 @@
+name: AURYN Paper Trading Runner
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/15 13-22 * * 1-5'
+
+concurrency:
+  group: auryn-paper-trading
+  cancel-in-progress: false
+
+jobs:
+  run-paper:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Run autonomous paper evaluation
+        env:
+          AURYN_PRODUCTION_URL: ${{ secrets.AURYN_PRODUCTION_URL }}
+          TRADING_LAB_CRON_SECRET: ${{ secrets.TRADING_LAB_CRON_SECRET }}
+        run: |
+          test -n "$AURYN_PRODUCTION_URL"
+          test -n "$TRADING_LAB_CRON_SECRET"
+          curl --fail --silent --show-error --retry 2 --max-time 90 \
+            -H "Authorization: Bearer $TRADING_LAB_CRON_SECRET" \
+            "${AURYN_PRODUCTION_URL%/}/api/trading-lab/run-paper"

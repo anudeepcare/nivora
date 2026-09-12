@@ -1,0 +1,11 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {"label":"AURYN — Start Local App","type":"shell","command":"npm run dev","problemMatcher":[],"isBackground":true},
+    {"label":"AURYN — Fast Reliability Gate","type":"shell","command":"npm run verify:quick","problemMatcher":[]},
+    {"label":"AURYN — Full Release Gate","type":"shell","command":"npm run verify:release","problemMatcher":[]},
+    {"label":"AURYN — Live Audit 30","type":"shell","command":"npm run audit:live:30","options":{"env":{"AURYN_BASE_URL":"https://getauryn.vercel.app"}},"problemMatcher":[]},
+    {"label":"AURYN — Live Audit 100","type":"shell","command":"npm run audit:live:100","options":{"env":{"AURYN_BASE_URL":"https://getauryn.vercel.app"}},"problemMatcher":[]},
+    {"label":"AURYN — Live Audit 500","type":"shell","command":"npm run audit:live:500","options":{"env":{"AURYN_BASE_URL":"https://getauryn.vercel.app"}},"problemMatcher":[]}
+  ]
+}

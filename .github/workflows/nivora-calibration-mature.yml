@@ -1,0 +1,29 @@
+name: AURYN Calibration Maturation
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '35 6 * * *'
+
+concurrency:
+  group: auryn-calibration-mature
+  cancel-in-progress: false
+
+jobs:
+  mature:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Mature decision outcomes
+        env:
+          AURYN_PRODUCTION_URL: ${{ secrets.AURYN_PRODUCTION_URL }}
+          TRADING_LAB_CRON_SECRET: ${{ secrets.TRADING_LAB_CRON_SECRET }}
+        run: |
+          test -n "$AURYN_PRODUCTION_URL"
+          test -n "$TRADING_LAB_CRON_SECRET"
+          curl --fail --silent --show-error --retry 2 --max-time 180 \
+            -H "Authorization: Bearer $TRADING_LAB_CRON_SECRET" \
+            "${AURYN_PRODUCTION_URL%/}/api/calibration/mature"
+          curl --fail --silent --show-error --retry 2 --max-time 180 \
+            -H "Authorization: Bearer $TRADING_LAB_CRON_SECRET" \
+            "${AURYN_PRODUCTION_URL%/}/api/model-health/mature"

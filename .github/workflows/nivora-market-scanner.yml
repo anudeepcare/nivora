@@ -1,4 +1,4 @@
-name: NIVORA Market Scanner
+name: AURYN Market Scanner
 
 on:
   workflow_dispatch:

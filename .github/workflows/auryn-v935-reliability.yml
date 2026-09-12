@@ -1,0 +1,36 @@
+name: AURYN V9.3.5 Reliability
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Canonical live-audit symbol count"
+        required: false
+        default: "30"
+  schedule:
+    - cron: '45 12 * * 1-5'
+    - cron: '15 16 * * 1-5'
+    - cron: '15 21 * * 1-5'
+    - cron: '15 2 * * 2-6'
+    - cron: '15 16 * * 6'
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run test:v935
+      - name: Live canonical audit
+        env:
+          AURYN_BASE_URL: ${{ secrets.AURYN_BASE_URL }}
+          AURYN_AUDIT_TOKEN: ${{ secrets.AURYN_AUDIT_TOKEN }}
+        run: npm run audit:v935-live -- --limit=${{ inputs.limit || '30' }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: auryn-v935-audit
+          path: artifacts/*.json

@@ -1,0 +1,50 @@
+name: AURYN V9.3.4 Market Intelligence Reliability
+
+on:
+  workflow_dispatch:
+    inputs:
+      audit_limit:
+        description: "Real-world symbol count (1-500)"
+        required: false
+        default: "30"
+  schedule:
+    # Premarket, regular session, after-hours, overnight-reference, and weekend/closed-market coverage.
+    # Scheduled probes stay at 30 symbols to avoid wasting provider credits; use manual 100/500 for release proof.
+    - cron: "30 12 * * 1-5"
+    - cron: "30 15 * * 1-5"
+    - cron: "20 21 * * 1-5"
+    - cron: "30 2 * * 2-6"
+    - cron: "0 16 * * 6"
+
+permissions:
+  contents: read
+
+jobs:
+  reliability:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      AURYN_BASE_URL: ${{ secrets.AURYN_BASE_URL }}
+      AURYN_AUDIT_TOKEN: ${{ secrets.AURYN_AUDIT_TOKEN }}
+      AURYN_AUDIT_REPORT: artifacts/v934-live-audit.json
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Deterministic V9.3.4 core
+        run: npm run test:v934-core
+      - name: Preserved V9.3.1 Reliability Lab
+        run: npm run audit:v931-reliability
+      - name: Real-world 24/7 market-intelligence audit
+        run: npm run audit:v934-live -- --limit=${{ github.event.inputs.audit_limit || '30' }}
+      - name: Upload reliability evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auryn-v934-reliability-${{ github.run_id }}
+          path: artifacts/
+          if-no-files-found: warn
+          retention-days: 30
