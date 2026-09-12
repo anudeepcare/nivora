@@ -1,7 +1,8 @@
 import {NextResponse} from "next/server";
 import {createClient} from "@supabase/supabase-js";
-import {chunkSymbols,jobIdempotencyKey,type ValidationRunKind} from "@/lib/auryn/v99/jobs";
+import {chunkSymbols,type ValidationRunKind} from "@/lib/auryn/v99/jobs";
 import {buildStratifiedUniverse} from "@/lib/auryn/v991/universe";
+import {canResumeRun,nextRunAttempt,runIdentityKey,jobAttemptIdempotencyKey} from "@/lib/auryn/v992/run-lifecycle";
 export const dynamic="force-dynamic";export const runtime="nodejs";
 function authorized(req:Request){const s=process.env.CRON_SECRET;return Boolean(s)&&req.headers.get("authorization")===`Bearer ${s}`}
 function db(){const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY;return url&&key?createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}}):null}
@@ -23,11 +24,20 @@ export async function GET(req:Request){
  await client.from("auryn_validation_universe").upsert(symbols.map((symbol,i)=>({symbol,active:true,priority:i+1,source:"v9.9.1-stratified"})),{onConflict:"symbol"});
  if(!symbols.length)return NextResponse.json({error:"Validation universe is empty"},{status:503});
  const modelVersion="auryn-v9.8";
- const {data:run,error:runErr}=await client.from("auryn_validation_runs").upsert({run_kind:kind,evaluation_date:evaluationDate,model_version:modelVersion,status:"RUNNING",expected_symbols:symbols.length,started_at:new Date().toISOString()},{onConflict:"run_kind,evaluation_date,model_version"}).select("id,status").single();
- if(runErr||!run)return NextResponse.json({error:runErr?.message||"Unable to create run"},{status:500});
+ const {data:priorRuns,error:priorErr}=await client.from("auryn_validation_runs").select("id,status,attempt,run_identity").eq("run_kind",kind).eq("evaluation_date",evaluationDate).eq("model_version",modelVersion).order("attempt",{ascending:false});
+ if(priorErr)return NextResponse.json({error:priorErr.message},{status:500});
+ const resumable=(priorRuns||[]).find((r:any)=>canResumeRun(String(r.status)));
+ let run:any=resumable||null,attempt=Number(resumable?.attempt||0);
+ if(!run){
+   attempt=nextRunAttempt(priorRuns||[]);
+   const identity=runIdentityKey(kind,evaluationDate,modelVersion,attempt);
+   const created=await client.from("auryn_validation_runs").insert({run_kind:kind,evaluation_date:evaluationDate,model_version:modelVersion,status:"RUNNING",expected_symbols:symbols.length,started_at:new Date().toISOString(),attempt,run_identity:identity}).select("id,status,attempt,run_identity").single();
+   if(created.error||!created.data)return NextResponse.json({error:created.error?.message||"Unable to create immutable validation run"},{status:500});
+   run=created.data;
+ }
  const batches=chunkSymbols(symbols,8);
- const rows=batches.map((batch,i)=>({run_id:run.id,idempotency_key:jobIdempotencyKey(kind,evaluationDate,i),job_kind:"SHADOW_CAPTURE",batch_no:i,symbols:batch,status:"PENDING"}));
+ const rows=batches.map((batch,i)=>({run_id:run.id,idempotency_key:jobAttemptIdempotencyKey(kind,evaluationDate,modelVersion,attempt,i),job_kind:"SHADOW_CAPTURE",batch_no:i,symbols:batch,status:"PENDING"}));
  const {error:jobErr}=await client.from("auryn_validation_jobs").upsert(rows,{onConflict:"idempotency_key",ignoreDuplicates:true});
  if(jobErr)return NextResponse.json({error:jobErr.message},{status:500});
- return NextResponse.json({status:"queued",runId:run.id,kind,evaluationDate,symbols:symbols.length,batches:batches.length,backgroundBudgetPerMinute:42});
+ return NextResponse.json({status:"queued",runId:run.id,attempt,runIdentity:run.run_identity??runIdentityKey(kind,evaluationDate,modelVersion,attempt),resumed:Boolean(resumable),kind,evaluationDate,symbols:symbols.length,batches:batches.length,backgroundBudgetPerMinute:42});
 }

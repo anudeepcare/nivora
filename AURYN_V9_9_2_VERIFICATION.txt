@@ -1,0 +1,5 @@
+AURYN V9.9.2 verification — 2026-09-12
+npm run test:v992: 30/30 PASS
+npm test baseline: 721/737 PASS, same 16 known baseline failures as V9.9.1.
+Patch scope: validation run lifecycle only. No intentional UX/CSS/PWA/CIO formula/threshold changes.
+Verified: terminal runs immutable; same-day retry gets new attempt/identity; job idempotency is attempt-aware; orchestrator no longer upserts terminal runs.

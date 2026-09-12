@@ -1,0 +1,2 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";
+test("orchestrator never upserts a validation run by date/model identity",()=>{const s=fs.readFileSync("app/api/validation/orchestrate/route.ts","utf8");assert.doesNotMatch(s,/auryn_validation_runs"\)\.upsert/);assert.match(s,/canResumeRun/);assert.match(s,/nextRunAttempt/);assert.match(s,/jobAttemptIdempotencyKey/)});
