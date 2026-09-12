@@ -1,0 +1,17 @@
+AURYN V9.8 verification — 2026-09-12
+
+Fresh V9.8 release gate:
+44 tests passed, 0 failed.
+Includes V9.8 three-clock, fundamental scenario, anti-anchoring and CIO integration tests plus V9.7/V9.6.3 canonical decision regressions.
+
+Full historical repository suite:
+737 total
+721 passed
+16 failed
+The same 16 historical failures were already present in the V9.7/V9.6.3 baseline; no additional full-suite failures were introduced.
+
+UX lock:
+No app/*, components/*, CSS, PWA or layout files changed.
+
+Important scope:
+V9.8 supplies the independent valuation architecture and anti-anchoring controls. It does not invent independent intrinsic values when the required fundamental valuation inputs are absent. Business-model-specific fundamental adapters remain the next data/calibration layer.

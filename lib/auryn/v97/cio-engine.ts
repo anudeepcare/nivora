@@ -19,6 +19,7 @@ export function buildAurynCioAssessment(input:{
   scores:CioScoreInputs;
   technical:CioTechnicalInputs;
   evidenceCompleteness:number;
+  independentValuation?:{marketPrice:number;baseValue:number;horizonYears:number;confidence:number}|null;
 }):AurynCioAssessment{
   const s=input.scores,t=input.technical;
   // Slow brain: business economics dominate. Tactical price action never enters this score.
@@ -44,10 +45,17 @@ export function buildAurynCioAssessment(input:{
   const deteriorationState:AurynCioAssessment["deterioration"]["state"]=
     deterioration>=75?"SEVERE":deterioration>=58?"DETERIORATING":deterioration>=32?"WATCH":"STABLE";
 
+  // Valuation clock: an independently produced Base value may strengthen/weaken deployment.
+  // Current price is used only here, after Base value already exists, to measure expected annual return.
+  const iv=input.independentValuation;
+  const independentExpectedReturn=iv&&iv.marketPrice>0&&iv.baseValue>0&&iv.horizonYears>0
+    ?((iv.baseValue/iv.marketPrice)**(1/iv.horizonYears)-1)*100:null;
+  const independentValuationScore=independentExpectedReturn==null?null:clamp(50+independentExpectedReturn*2);
+  const valuationForDeployment=independentValuationScore==null?s.valuation:weighted([[s.valuation,.35],[independentValuationScore,.65]]);
   // Fast brain: deployment/timing. Valuation and asymmetry matter more than perfect technical confirmation.
   const technicalComposite=weighted([[t.trend,.35],[t.structure,.30],[t.momentum,.20],[t.flow,.15]]);
   const deploymentQuality=round(weighted([
-    [s.valuation,.25],
+    [valuationForDeployment,.25],
     [s.marketStructure,.18],
     [s.riskAsymmetry,.23],
     [s.catalystsRegime,.10],

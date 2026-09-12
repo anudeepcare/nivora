@@ -1,0 +1,5 @@
+import test from "node:test";import assert from "node:assert/strict";
+import {buildAurynCioAssessment} from "../.engine-test/auryn/v97/cio-engine.js";
+const input={scores:{business:85,earningsRevisions:75,valuation:55,marketStructure:55,catalystsRegime:55,riskAsymmetry:60},technical:{trend:60,momentum:55,flow:50,structure:60,structuralBreak:false},evidenceCompleteness:90,independentValuation:{marketPrice:100,baseValue:145,horizonYears:3,confidence:85}};
+test("independent expected return can strengthen deployment without changing compounder quality",()=>{const a=buildAurynCioAssessment(input),b=buildAurynCioAssessment({...input,independentValuation:{...input.independentValuation,baseValue:90}});assert.equal(a.compounderQuality,b.compounderQuality);assert.ok(a.deploymentQuality>b.deploymentQuality)});
+test("technical shock changes deployment but not independent valuation contribution or thesis quality",()=>{const a=buildAurynCioAssessment(input),b=buildAurynCioAssessment({...input,technical:{...input.technical,trend:15,momentum:15,flow:15,structure:20}});assert.equal(a.compounderQuality,b.compounderQuality);assert.ok(b.deploymentQuality<a.deploymentQuality)});
