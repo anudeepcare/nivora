@@ -120,7 +120,10 @@
     "test:v970": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node --test tests/auryn-v970-cio-engine.test.mjs tests/auryn-v970-decision-integration.test.mjs tests/auryn-v970-calibration.test.mjs tests/auryn-v931-core.test.mjs tests/auryn-v931-explanations.test.mjs tests/auryn-v936-opportunity.test.mjs tests/auryn-v963-decision-scenario-audit.test.mjs tests/auryn-v9343-debias-policy.test.mjs tests/auryn-v9343-distribution-audit.test.mjs",
     "gate:v970": "npm run test:v970",
     "test:v980": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node --test tests/auryn-v980-three-clock.test.mjs tests/auryn-v980-fundamental-scenarios.test.mjs tests/auryn-v980-valuation-audit.test.mjs tests/auryn-v980-cio-integration.test.mjs tests/auryn-v970-cio-engine.test.mjs tests/auryn-v970-decision-integration.test.mjs tests/auryn-v970-calibration.test.mjs tests/auryn-v931-core.test.mjs tests/auryn-v931-explanations.test.mjs tests/auryn-v936-opportunity.test.mjs tests/auryn-v963-decision-scenario-audit.test.mjs tests/auryn-v9343-debias-policy.test.mjs tests/auryn-v9343-distribution-audit.test.mjs",
-    "gate:v980": "npm run test:v980"
+    "gate:v980": "npm run test:v980",
+    "test:v990": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node --test tests/auryn-v990-validation-lab.test.mjs tests/auryn-v990-jobs-rate-budget.test.mjs tests/auryn-v990-schema-contract.test.mjs tests/auryn-v990-cron-routes.test.mjs tests/auryn-v990-shadow-cio.test.mjs tests/auryn-v980-three-clock.test.mjs tests/auryn-v980-fundamental-scenarios.test.mjs tests/auryn-v980-valuation-audit.test.mjs tests/auryn-v980-cio-integration.test.mjs tests/auryn-v970-cio-engine.test.mjs tests/auryn-v970-decision-integration.test.mjs tests/auryn-v9343-debias-policy.test.mjs tests/auryn-v9343-distribution-audit.test.mjs",
+    "validate:auryn": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node scripts/run_v990_validation_lab.mjs && npm run test:v990",
+    "gate:v990": "npm run validate:auryn"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

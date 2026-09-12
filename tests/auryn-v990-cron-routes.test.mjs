@@ -1,0 +1,3 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";
+for(const f of ["orchestrate","worker","watchdog","model-health","outcomes"])test(`${f} validation route requires cron auth`,()=>{const s=fs.readFileSync(`app/api/validation/${f}/route.ts`,"utf8");assert.match(s,/CRON_SECRET/);assert.match(s,/authorization/i)});
+test("vercel schedules autonomous validation jobs",()=>{const v=JSON.parse(fs.readFileSync("vercel.json","utf8"));assert.ok(v.crons.length>=4);assert.ok(v.crons.some(x=>x.path.includes("orchestrate")));assert.ok(v.crons.some(x=>x.path.includes("watchdog")))});

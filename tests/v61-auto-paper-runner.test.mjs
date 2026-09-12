@@ -2,7 +2,7 @@ import test from "node:test";import assert from "node:assert/strict";import fs f
 import {normalizeAlpacaQuote} from "../.engine-test/nivora-execution-quote.js";
 test("Alpaca quote carries session spread and live timestamp",()=>{const now=new Date("2026-09-01T17:00:00Z");const q=normalizeAlpacaQuote("IREN",{quote:{bp:"31.00",ap:"31.06",t:"2026-09-01T16:59:55Z"}},{trade:{p:"31.03",t:"2026-09-01T16:59:56Z"}},now);assert.equal(q.provider,"alpaca");assert.equal(q.session,"REGULAR");assert.equal(q.freshness,"LIVE");assert.ok(q.spreadPct>0);assert.ok(q.ageSeconds<=5)});
 test("automatic runner is GitHub scheduled and Vercel Hobby safe",()=>{
- const v=JSON.parse(fs.readFileSync(new URL("../vercel.json",import.meta.url)));assert.deepEqual(v,{});
+ const v=JSON.parse(fs.readFileSync(new URL("../vercel.json",import.meta.url)));assert.ok(!JSON.stringify(v).includes("/api/trading-lab/run-paper"));
  const wf=fs.readFileSync(new URL("../.github/workflows/nivora-paper-trading.yml",import.meta.url),"utf8");
  assert.match(wf,/cron:/);assert.match(wf,/api\/trading-lab\/run-paper/);
  const r=fs.readFileSync(new URL("../app/api/trading-lab/run-paper/route.ts",import.meta.url),"utf8");assert.match(r,/export async function GET/);assert.match(r,/SESSION_NOT_EXECUTABLE|BROKER_MARKET_CLOSED/);

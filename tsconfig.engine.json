@@ -177,6 +177,12 @@
     "lib/auryn/v97/cio-engine.ts",
     "lib/auryn/v98/three-clock.ts",
     "lib/auryn/v98/fundamental-scenarios.ts",
-    "lib/auryn/v98/valuation-audit.ts"
+    "lib/auryn/v98/valuation-audit.ts",
+    "lib/auryn/v99/golden-fixtures.ts",
+    "lib/auryn/v99/validation-lab.ts",
+    "lib/auryn/v99/jobs.ts",
+    "lib/auryn/v99/rate-budget.ts",
+    "lib/auryn/v99/shadow-cio.ts",
+    "lib/auryn/v99/outcomes.ts"
   ]
 }

@@ -1,0 +1,44 @@
+AURYN V9.9 Autonomous Validation Lab — Verification
+Date: 2026-09-12
+
+FRESH V9.9 VALIDATION GATE
+Command: npm run validate:auryn
+Result: PASS
+Tests: 45
+Passed: 45
+Failed: 0
+
+FULL HISTORICAL REPOSITORY SUITE
+Command: npm test
+Tests: 737
+Passed: 721
+Failed: 16
+
+The 16 full-suite failures are the same pre-existing failures present in the frozen V9.8 baseline. V9.9 initially exposed two legacy tests that asserted vercel.json must be empty; those tests were updated to preserve their real invariant (paper trading remains GitHub-scheduled) while allowing the newly approved Validation Lab cron routes. After that contract update, the full suite returned to the V9.8 baseline of 16 failures.
+
+UX LOCK
+Comparison against AURYN_V9_8_THREE_CLOCK_VALUATION.zip:
+Changed component files: 0
+Changed CSS files: 0
+
+AUTONOMOUS INFRASTRUCTURE CONTRACTS VERIFIED
+- V9.9 deterministic Validation Lab
+- Golden CIO fixtures
+- Three-clock isolation
+- Fundamental valuation independence
+- No fabricated scenario when intrinsic inputs are missing
+- Background budget 42/min under provider ceiling 55/min
+- Deterministic job identities/backoff
+- Supabase schema contract
+- Atomic provider-token RPC
+- Atomic validation-job lease RPC
+- Cron route authentication contracts
+- Vercel autonomous schedules
+- Immutable shadow snapshot fingerprint
+- Deterministic outcome horizons
+
+PRODUCTION BUILD
+Not certified in this sandbox because node_modules / Next dependencies are not installed in the working environment. Deploy through the normal Vercel build after running the supplied Supabase migration and environment-variable checks.
+
+IMPORTANT SCOPE
+V9.9 captures autonomous canonical Shadow CIO evidence and outcomes. It does not claim historical alpha proof. Point-in-time historical replay remains the next scientific milestone.

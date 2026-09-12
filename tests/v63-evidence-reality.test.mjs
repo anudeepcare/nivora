@@ -91,7 +91,7 @@ test("trading risk blocks provider disagreement even when both raw quotes are fr
 
 test("Vercel Hobby config has no cron and GitHub owns paper schedule",()=>{
   const v=JSON.parse(fs.readFileSync(new URL("../vercel.json",import.meta.url),"utf8"));
-  assert.deepEqual(v,{});
+  assert.ok(!JSON.stringify(v).includes("/api/trading-lab/run-paper"));
   const wf=fs.readFileSync(new URL("../.github/workflows/nivora-paper-trading.yml",import.meta.url),"utf8");
   assert.match(wf,/TRADING_LAB_CRON_SECRET/);
   assert.match(wf,/api\/trading-lab\/run-paper/);
