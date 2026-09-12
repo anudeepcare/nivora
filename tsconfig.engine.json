@@ -192,6 +192,7 @@
     "lib/auryn/v995/research-jobs.ts",
     "lib/auryn/v995/research-contract.ts",
     "lib/auryn/v995/autonomous-research.ts",
-    "lib/auryn/v995/persist-research.ts"
+    "lib/auryn/v995/persist-research.ts",
+    "lib/auryn/v996/finalization.ts"
   ]
 }

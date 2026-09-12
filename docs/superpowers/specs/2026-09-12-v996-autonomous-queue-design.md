@@ -1,0 +1,2 @@
+# AURYN V9.9.6 Autonomous Queue + Completion Gate Design
+GitHub Actions is only the clock/queue pump. Supabase remains durable source of truth. Each bounded invocation calls the one-symbol V9.9.5 worker several times sequentially, honors deferred/idle/failure responses, then invokes watchdog/finalizer. PASS requires terminal jobs plus database evidence integrity: expected distinct snapshots, positive prices, non-null three actions, decision score, evidence completeness, setup state, and both fingerprints. `vercel.json` remains `{}`. No CIO/UX/universe changes.

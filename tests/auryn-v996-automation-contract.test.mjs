@@ -1,0 +1,4 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";
+test("finalizer uses evidence integrity evaluator",()=>{const s=fs.readFileSync("app/api/validation/finalize/route.ts","utf8");assert.match(s,/evaluateRunCompletion/);assert.match(s,/auryn_shadow_snapshots/)});
+test("queue pump is bounded and honors deferred idle",()=>{const s=fs.readFileSync("scripts/auryn-v996-queue-pump.mjs","utf8");assert.match(s,/MAX_WORKERS/);assert.match(s,/deferred/);assert.match(s,/idle/);assert.ok(s.includes("/api/validation/finalize"))});
+test("GitHub queue scheduler has concurrency and no Vercel cron",()=>{const y=fs.readFileSync(".github/workflows/auryn-v996-validation-queue.yml","utf8");assert.match(y,/concurrency:/);assert.match(y,/schedule:/);assert.deepEqual(JSON.parse(fs.readFileSync("vercel.json","utf8")),{})});

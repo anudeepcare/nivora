@@ -1,0 +1,4 @@
+Focused V9.9.6 gate: 20/20 PASS
+Full historical suite: 721/737 PASS, 16 known baseline failures unchanged.
+vercel.json: '{}\n'
+Live autonomous queue execution is intentionally not claimed until deployed with GitHub secrets.
