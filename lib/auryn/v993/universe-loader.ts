@@ -1,4 +1,4 @@
-export const validationUniverseColumns="symbol,sector,asset_type,name,priority";
+export const validationUniverseColumns="symbol,name,exchange,instrument_type,currency,country";
 export function validationUniversePageRanges(total=6000,pageSize=1000){
  const out:Array<[number,number]>=[];for(let from=0;from<total;from+=pageSize)out.push([from,Math.min(total-1,from+pageSize-1)]);return out;
 }

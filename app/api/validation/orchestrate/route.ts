@@ -1,7 +1,7 @@
 import {NextResponse} from "next/server";
 import {createClient} from "@supabase/supabase-js";
 import {chunkSymbols,type ValidationRunKind} from "@/lib/auryn/v99/jobs";
-import {buildStratifiedUniverse} from "@/lib/auryn/v991/universe";
+import {buildExchangeStratifiedUniverse} from "@/lib/auryn/v994/universe-schema";
 import {canResumeRun,nextRunAttempt,runIdentityKey,jobAttemptIdempotencyKey} from "@/lib/auryn/v992/run-lifecycle";
 import {loadValidationUniversePages} from "@/lib/auryn/v993/universe-loader";
 export const dynamic="force-dynamic";export const runtime="nodejs";
@@ -19,10 +19,10 @@ export async function GET(req:Request){
  const evaluationDate=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Chicago",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
  let sourceUniverse:any[]=[];
  try{sourceUniverse=await loadValidationUniversePages(client,6000,1000)}catch(e:any){return NextResponse.json({error:`Validation universe source unavailable: ${String(e?.message||e)}`},{status:503})}
- const symbols=buildStratifiedUniverse(sourceUniverse.map((x:any)=>({symbol:String(x.symbol||"").toUpperCase(),sector:x.sector??x.sector_name??x.industry??null,asset_type:x.asset_type??x.type??null,name:x.name??x.company_name??null,priority:x.priority??100})),300);
+ const symbols=buildExchangeStratifiedUniverse(sourceUniverse.map((x:any)=>({symbol:String(x.symbol||"").toUpperCase(),name:x.name??null,exchange:x.exchange??null,instrument_type:x.instrument_type??null,currency:x.currency??null,country:x.country??null})),300);
  if(symbols.length<250)return NextResponse.json({error:`Validation universe too small after eligibility filters (${symbols.length})`},{status:503});
  await client.from("auryn_validation_universe").update({active:false}).eq("active",true);
- await client.from("auryn_validation_universe").upsert(symbols.map((symbol,i)=>({symbol,active:true,priority:i+1,source:"v9.9.1-stratified"})),{onConflict:"symbol"});
+ await client.from("auryn_validation_universe").upsert(symbols.map((symbol,i)=>({symbol,active:true,priority:i+1,source:"v9.9.4-exchange-stratified"})),{onConflict:"symbol"});
  if(!symbols.length)return NextResponse.json({error:"Validation universe is empty"},{status:503});
  const modelVersion="auryn-v9.8";
  const {data:priorRuns,error:priorErr}=await client.from("auryn_validation_runs").select("id,status,attempt,run_identity").eq("run_kind",kind).eq("evaluation_date",evaluationDate).eq("model_version",modelVersion).order("attempt",{ascending:false});

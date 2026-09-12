@@ -1,3 +1,3 @@
 import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";
 test("worker fails closed on missing canonical decision",()=>{const s=fs.readFileSync("app/api/validation/worker/route.ts","utf8");assert.match(s,/assertShadowDecisionReady\(snap\)/);assert.match(s,/CANONICAL_MARKET_PRICE_NOT_READY/)});
-test("orchestrator uses stratified universe instead of alphabetical limit",()=>{const s=fs.readFileSync("app/api/validation/orchestrate/route.ts","utf8");assert.match(s,/buildStratifiedUniverse/);assert.doesNotMatch(s,/order\("symbol"\)\.limit\(300\)/)});
+test("orchestrator uses stratified universe instead of alphabetical limit",()=>{const s=fs.readFileSync("app/api/validation/orchestrate/route.ts","utf8");assert.match(s,/build(?:StratifiedUniverse|ExchangeStratifiedUniverse)/);assert.doesNotMatch(s,/order\("symbol"\)\.limit\(300\)/)});
