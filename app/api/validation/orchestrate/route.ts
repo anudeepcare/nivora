@@ -1,6 +1,7 @@
 import {NextResponse} from "next/server";
 import {createClient} from "@supabase/supabase-js";
 import {chunkSymbols,jobIdempotencyKey,type ValidationRunKind} from "@/lib/auryn/v99/jobs";
+import {buildStratifiedUniverse} from "@/lib/auryn/v991/universe";
 export const dynamic="force-dynamic";export const runtime="nodejs";
 function authorized(req:Request){const s=process.env.CRON_SECRET;return Boolean(s)&&req.headers.get("authorization")===`Bearer ${s}`}
 function db(){const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY;return url&&key?createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}}):null}
@@ -14,12 +15,12 @@ export async function GET(req:Request){
  if(!["PREMARKET","DAILY_CLOSE","AFTER_HOURS","NIGHTLY","WEEKLY"].includes(kind))return NextResponse.json({error:"Invalid run kind"},{status:400});
  if(!allowed(kind,force))return NextResponse.json({status:"skipped",reason:"Outside guarded America/Chicago schedule window",kind});
  const evaluationDate=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Chicago",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
- let {data:universe}=await client.from("auryn_validation_universe").select("symbol,priority").eq("active",true).order("priority").order("symbol").limit(300);
- if((universe||[]).length<250){
-   const {data:fallback}=await client.from("nivora_market_universe").select("symbol").eq("active",true).order("symbol").limit(300);
-   if(fallback?.length){await client.from("auryn_validation_universe").upsert(fallback.map((x:any)=>({symbol:String(x.symbol).toUpperCase(),source:"nivora_market_universe"})),{onConflict:"symbol",ignoreDuplicates:true});universe=fallback as any;}
- }
- const symbols=[...new Set((universe||[]).map((x:any)=>String(x.symbol||"").toUpperCase()).filter(Boolean))].slice(0,300);
+ const {data:sourceUniverse,error:sourceErr}=await client.from("nivora_market_universe").select("*").eq("active",true).range(0,5999);
+ if(sourceErr)return NextResponse.json({error:`Validation universe source unavailable: ${sourceErr.message}`},{status:503});
+ const symbols=buildStratifiedUniverse((sourceUniverse||[]).map((x:any)=>({symbol:String(x.symbol||"").toUpperCase(),sector:x.sector??x.sector_name??x.industry??null,asset_type:x.asset_type??x.type??null,name:x.name??x.company_name??null,priority:x.priority??100})),300);
+ if(symbols.length<250)return NextResponse.json({error:`Validation universe too small after eligibility filters (${symbols.length})`},{status:503});
+ await client.from("auryn_validation_universe").update({active:false}).eq("active",true);
+ await client.from("auryn_validation_universe").upsert(symbols.map((symbol,i)=>({symbol,active:true,priority:i+1,source:"v9.9.1-stratified"})),{onConflict:"symbol"});
  if(!symbols.length)return NextResponse.json({error:"Validation universe is empty"},{status:503});
  const modelVersion="auryn-v9.8";
  const {data:run,error:runErr}=await client.from("auryn_validation_runs").upsert({run_kind:kind,evaluation_date:evaluationDate,model_version:modelVersion,status:"RUNNING",expected_symbols:symbols.length,started_at:new Date().toISOString()},{onConflict:"run_kind,evaluation_date,model_version"}).select("id,status").single();

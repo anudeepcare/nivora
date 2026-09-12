@@ -1,6 +1,6 @@
 # AURYN — Canonical Project Context
 
-**Canonical release:** V9.9 Autonomous Validation Lab  
+**Canonical release:** V9.9.1 Autonomous Validation Integrity Patch  
 **Frozen investment-engine baseline:** V9.8 Three-Clock Valuation  
 **Date:** 2026-09-12
 
@@ -101,3 +101,15 @@ When starting a new conversation, upload the latest AURYN ZIP and say:
 **“Continue AURYN from AURYN_CANONICAL_CONTEXT.md.”**
 
 Read this file before proposing or implementing further AURYN changes.
+
+## V9.9.1 validation integrity patch
+First live V9.9 smoke run exposed two validation-layer defects before broad release:
+1. the validation universe was alphabetically seeded, causing A-symbol concentration and derivative-like instruments;
+2. Shadow CIO persisted market price while CIO decision fields were NULL when no READY canonical research projection existed.
+
+V9.9.1 fixes both:
+- the orchestrator builds a deterministic sector-stratified 300-symbol cohort from the full `nivora_market_universe`;
+- warrants/units/rights/preferred-like symbol forms are excluded;
+- the worker fails closed with `CANONICAL_DECISION_NOT_READY` rather than storing NULL CIO decisions;
+- positive canonical market price is required before persistence;
+- the original smoke run `f6a04031-a3bf-44f1-93f2-9f44cc140cd2` is test evidence only and must not be used for scientific model evaluation.

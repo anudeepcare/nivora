@@ -182,20 +182,9 @@ insert into public.auryn_model_registry(model_version,role,enabled,config)
 values('auryn-v9.8','CHAMPION',true,'{"source":"V9.8 Three-Clock Valuation","promotion":"human-approved"}'::jsonb)
 on conflict(model_version) do nothing;
 
--- Seed from the existing market universe when available. The orchestrator tops this up to 300.
-do $$
-begin
-  if to_regclass('public.nivora_market_universe') is not null then
-    execute $seed$
-      insert into public.auryn_validation_universe(symbol,source)
-      select upper(symbol),'nivora_market_universe'
-      from public.nivora_market_universe
-      where active=true and symbol is not null
-      order by symbol
-      limit 300
-      on conflict(symbol) do nothing
-    $seed$;
-  end if;
-end $$;
+-- V9.9.1: validation-universe population is intentionally performed by the
+-- stratified orchestrator. Do not seed the first 300 symbols alphabetically.
+-- This prevents warrants/units and alphabetic concentration from becoming the
+-- scientific validation cohort.
 
 commit;

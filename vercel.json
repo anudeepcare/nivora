@@ -1,1 +1,60 @@
-{}
+{
+  "crons": [
+    {
+      "path": "/api/validation/orchestrate?kind=PREMARKET",
+      "schedule": "15 12 * * 1-5"
+    },
+    {
+      "path": "/api/validation/orchestrate?kind=PREMARKET",
+      "schedule": "15 13 * * 1-5"
+    },
+    {
+      "path": "/api/validation/orchestrate?kind=DAILY_CLOSE",
+      "schedule": "20 20 * * 1-5"
+    },
+    {
+      "path": "/api/validation/orchestrate?kind=DAILY_CLOSE",
+      "schedule": "20 21 * * 1-5"
+    },
+    {
+      "path": "/api/validation/orchestrate?kind=AFTER_HOURS",
+      "schedule": "30 23 * * 1-5"
+    },
+    {
+      "path": "/api/validation/orchestrate?kind=AFTER_HOURS",
+      "schedule": "30 0 * * 2-6"
+    },
+    {
+      "path": "/api/validation/orchestrate?kind=NIGHTLY",
+      "schedule": "15 4 * * *"
+    },
+    {
+      "path": "/api/validation/orchestrate?kind=NIGHTLY",
+      "schedule": "15 5 * * *"
+    },
+    {
+      "path": "/api/validation/orchestrate?kind=WEEKLY",
+      "schedule": "0 14 * * 6"
+    },
+    {
+      "path": "/api/validation/orchestrate?kind=WEEKLY",
+      "schedule": "0 15 * * 6"
+    },
+    {
+      "path": "/api/validation/worker",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/validation/watchdog",
+      "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/validation/outcomes",
+      "schedule": "17 * * * *"
+    },
+    {
+      "path": "/api/validation/model-health",
+      "schedule": "45 5 * * *"
+    }
+  ]
+}

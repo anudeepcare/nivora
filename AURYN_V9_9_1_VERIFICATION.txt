@@ -1,0 +1,27 @@
+AURYN V9.9.1 Validation Integrity Patch — Verification
+Date: 2026-09-12
+
+Fresh V9.9.1 gate:
+  npm run test:v991
+  43 tests / 43 passed / 0 failed
+
+Full historical repository suite:
+  npm test
+  737 tests / 721 passed / 16 failed
+  This matches the known V9.8/V9.9 baseline failure count; V9.9.1 did not add a full-suite regression.
+
+V9.9.1-specific verified contracts:
+- actual canonical research projection mapping
+- fail-closed canonical decision requirement
+- derivative-like validation-symbol exclusion
+- deterministic stratified universe breadth
+- worker fail-closed route contract
+- orchestrator no longer alphabetically limits the first 300
+
+Scope:
+- no intentional UX/CSS/PWA changes
+- no CIO formula/threshold changes
+- no investment-engine tuning
+- validation integrity only
+
+Production deployment still requires the normal Vercel build with project dependencies/environment variables.

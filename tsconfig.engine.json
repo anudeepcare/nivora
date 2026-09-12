@@ -183,6 +183,8 @@
     "lib/auryn/v99/jobs.ts",
     "lib/auryn/v99/rate-budget.ts",
     "lib/auryn/v99/shadow-cio.ts",
-    "lib/auryn/v99/outcomes.ts"
+    "lib/auryn/v99/outcomes.ts",
+    "lib/auryn/v991/shadow-mapping.ts",
+    "lib/auryn/v991/universe.ts"
   ]
 }

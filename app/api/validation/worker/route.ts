@@ -4,6 +4,7 @@ import {loadAurynCanonicalSnapshot} from "@/lib/auryn/v935/canonical";
 import {fingerprintShadowSnapshot,OUTCOME_HORIZONS,outcomeDueAt} from "@/lib/auryn/v99/shadow-cio";
 import {callsNeededForBatch} from "@/lib/auryn/v99/rate-budget";
 import {retryDelaySeconds} from "@/lib/auryn/v99/jobs";
+import {assertShadowDecisionReady} from "@/lib/auryn/v991/shadow-mapping";
 export const dynamic="force-dynamic";export const runtime="nodejs";
 function authorized(req:Request){const s=process.env.CRON_SECRET;return Boolean(s)&&req.headers.get("authorization")===`Bearer ${s}`}
 function db(){const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY;return url&&key?createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}}):null}
@@ -28,9 +29,10 @@ export async function GET(req:Request){
  for(const symbol of symbols){
    try{
      const snap:any=await loadAurynCanonicalSnapshot(symbol);
-     const price=priceOf(snap),research=snap?.research||{},market=snap?.market||{};
-     const decision={newMoney:research.action??null,owner:research.ownerAction??null,longTerm:research.longTermAction??null,decisionScore:research.decisionScore??null,evidenceCompleteness:research.evidenceCompleteness??null,setupState:research.setupState??null};
-     const input={modelVersion:run.model_version,symbol,evaluationDate:run.evaluation_date,runKind:run.run_kind,marketPrice:price,decision,evidenceFingerprint:String(research.fingerprint||snap?.snapshotId||"")};
+     const price=priceOf(snap),market=snap?.market||{};
+     const decision=assertShadowDecisionReady(snap);
+     if(price==null)throw new Error("CANONICAL_MARKET_PRICE_NOT_READY");
+     const input={modelVersion:run.model_version,symbol,evaluationDate:run.evaluation_date,runKind:run.run_kind,marketPrice:price,decision,evidenceFingerprint:decision.evidenceFingerprint};
      const fp=fingerprintShadowSnapshot(input);
      const row={run_id:job.run_id,model_version:run.model_version,symbol,evaluation_date:run.evaluation_date,run_kind:run.run_kind,observed_at:new Date().toISOString(),market_price:price,new_money_action:decision.newMoney,owner_action:decision.owner,long_term_action:decision.longTerm,decision_score:decision.decisionScore,evidence_completeness:decision.evidenceCompleteness,setup_state:decision.setupState,market_state:market?.priceState??market?.session??null,bear_value:null,base_value:null,bull_value:null,snapshot_fingerprint:fp,evidence_fingerprint:input.evidenceFingerprint,canonical_snapshot:snap};
      let {data:inserted,error}=await client.from("auryn_shadow_snapshots").insert(row).select("id").single();
