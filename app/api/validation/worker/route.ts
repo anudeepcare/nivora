@@ -26,7 +26,7 @@ export async function GET(req:Request){
    return NextResponse.json({status:"deferred",reason:"background provider budget unavailable",tokens});
  }
  const {data:run}=await client.from("auryn_validation_runs").select("run_kind,evaluation_date,model_version").eq("id",job.run_id).single();
- if(!run){await client.from("auryn_validation_jobs").update({status:"FAILED",error:"RUN_NOT_FOUND"}).eq("id",job.id);return NextResponse.json({error:"Run not found"},{status:500});}
+ if(!run){await client.from("auryn_validation_jobs").update({status:"FAILED",completed_at:new Date().toISOString(),lease_expires_at:null,error:"RUN_NOT_FOUND",metrics:{saved:0,failed:1,quarantined:true}}).eq("id",job.id);return NextResponse.json({status:"skipped",reason:"RUN_NOT_FOUND",jobId:job.id});}
  let saved=0;const failures:any[]=[];
  for(const symbol of symbols){
    try{
