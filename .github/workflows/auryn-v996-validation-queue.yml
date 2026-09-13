@@ -3,7 +3,7 @@ name: AURYN V9.9.6 Validation Queue
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "*/10 * * * *"
 
 permissions:
   contents: read
@@ -28,5 +28,5 @@ jobs:
         env:
           AURYN_BASE_URL: ${{ secrets.AURYN_BASE_URL }}
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
-          AURYN_QUEUE_BURST: "4"
+          AURYN_QUEUE_BURST: "10"
         run: node scripts/auryn-v996-queue-pump.mjs
