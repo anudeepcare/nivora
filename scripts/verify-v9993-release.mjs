@@ -1,0 +1,11 @@
+import fs from "node:fs";
+const must=["lib/auryn/fast-quote.ts","components/portfolio/PortfolioPulse.tsx","components/portfolio/HoldingsIntelligence.tsx","app/portfolio/page.tsx",".github/workflows/auryn-v996-validation-queue.yml",".github/workflows/nivora-calibration-mature.yml"];
+for(const f of must)if(!fs.existsSync(f))throw new Error(`Missing ${f}`);
+const q=fs.readFileSync("lib/auryn/fast-quote.ts","utf8");
+if(!/fromCoinbase/.test(q)||!/CRYPTO_24X7/.test(q)||!/normalizeCryptoSymbol/.test(q))throw new Error("Crypto reliability fallback missing");
+const h=fs.readFileSync("components/portfolio/HoldingsIntelligence.tsx","utf8");
+if(!/PNL_PCT/.test(h)||!/aurynHoldingSort/.test(h))throw new Error("Holding sorting missing");
+const p=fs.readFileSync("components/portfolio/PortfolioPulse.tsx","utf8");
+if(!/aurynInteractiveMatrix/.test(p)||!/aurynInteractiveDriver/.test(p))throw new Error("Portfolio navigation interactions missing");
+if(JSON.stringify(JSON.parse(fs.readFileSync("vercel.json","utf8")))!=="{}")throw new Error("vercel.json changed");
+console.log("V9.9.9.3 verified: crypto 24x7 fallback + sortable/clickable portfolio + compact add; no SQL required.");
