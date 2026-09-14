@@ -393,8 +393,13 @@ export default function StockClient({symbol}:{symbol:string}){
   const stableDisplayAgeMs=stableDisplayQuote?.retrievedAt?Date.now()-new Date(stableDisplayQuote.retrievedAt).getTime():stableDisplayQuote?.cachedAt?Date.now()-Number(stableDisplayQuote.cachedAt):Number.POSITIVE_INFINITY;
   const stableProviderTimestamp=stableDisplayQuote?.providerTimestamp?new Date(stableDisplayQuote.providerTimestamp).getTime():NaN;
   const stableProviderFresh=Number.isFinite(stableProviderTimestamp)&&Date.now()-stableProviderTimestamp>=0&&Date.now()-stableProviderTimestamp<15*60*1000&&stableDisplayQuote?.freshness!=="STALE";
-  const stableLiveFresh=stableDisplayPrice!=null&&stableDisplayAgeMs<DISPLAY_QUOTE_GRACE_MS&&stableProviderFresh;
-  const researchDisplayPrice=stableLiveFresh?stableDisplayPrice:canonicalDecisionPrice;
+  const displayQuoteAuthority=stableDisplayPrice!=null&&stableDisplayAgeMs<DISPLAY_QUOTE_GRACE_MS
+    ?{kind:"LAST_GOOD_LIVE" as const,quote:stableDisplayQuote,price:stableDisplayPrice}
+    :canonicalDecisionPrice!=null?{kind:"CANONICAL_VERIFIED" as const,quote:marketTruth,price:canonicalDecisionPrice}:null;
+  // A transient quote refresh/failure must never downgrade a recently accepted live display
+  // back to canonical research truth. Execution verification remains independently gated.
+  const stableLiveFresh=displayQuoteAuthority?.kind==="LAST_GOOD_LIVE";
+  const researchDisplayPrice=displayQuoteAuthority?.price??null;
   const researchDisplayChangePct=stableLiveFresh&&Number.isFinite(Number(stableDisplayQuote?.changePct))?Number(stableDisplayQuote.changePct):priceSensitiveAllowed&&Number.isFinite(Number(liveQuote?.changePct))?Number(liveQuote.changePct):null;
   const marketIntelligenceView=useMemo(()=>{
     const base=d?.marketIntelligence;if(!base)return null;if(!liveMarketContext)return base;

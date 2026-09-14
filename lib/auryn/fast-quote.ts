@@ -4,18 +4,20 @@ import {normalizeAlpacaQuote} from "../nivora-execution-quote";
 import {marketSessionAt,quoteFreshness,type MarketSession,type QuoteFreshness} from "../nivora-market-session";
 
 export const MAX_RESEARCH_QUOTE_AGE_SECONDS=15*60;
+export const MAX_REGULAR_RESEARCH_QUOTE_AGE_SECONDS=60;
 
 export type FastResearchQuote={
   symbol:string;price:number;changePct:number|null;
   provider:"alpaca"|"twelvedata-price";providerTimestamp:string|null;retrievedAt:string;latencyMs:number;
   ageSeconds:number|null;session:MarketSession;freshness:QuoteFreshness;
-  researchOnly:true;executionVerified:false;
+  researchOnly:true;executionVerified:false;providerAgreementPct?:number|null;
 };
 const finitePositive=(v:unknown)=>{const n=Number(v);return Number.isFinite(n)&&n>0?n:null};
 export function assertResearchQuoteFresh(q:{price:number;providerTimestamp:string|null;ageSeconds:number|null;session:MarketSession;freshness:QuoteFreshness}){
  if(!Number.isFinite(q.price)||q.price<=0)throw new Error("Provider returned no usable price.");
  if(!q.providerTimestamp||q.ageSeconds==null)throw new Error("Provider quote has no verifiable timestamp.");
- if(q.ageSeconds>MAX_RESEARCH_QUOTE_AGE_SECONDS||q.freshness==="STALE")throw new Error(`Provider quote is stale (${q.ageSeconds}s).`);
+ const maxAge=q.session==="REGULAR"?MAX_REGULAR_RESEARCH_QUOTE_AGE_SECONDS:MAX_RESEARCH_QUOTE_AGE_SECONDS;
+ if(q.ageSeconds>maxAge||q.freshness==="STALE")throw new Error(`Provider quote is stale (${q.ageSeconds}s; max ${maxAge}s for ${q.session}).`);
  return q;
 }
 async function fromTwelve(symbol:string,key:string,asOf:Date):Promise<Omit<FastResearchQuote,"latencyMs">>{
@@ -47,5 +49,16 @@ export async function loadFastResearchQuote(input:{symbol:string;twelveKey?:stri
  if(input.alpacaKey&&input.alpacaSecret&&!symbol.includes("/"))attempts.push(fromAlpaca(symbol,input.alpacaKey,input.alpacaSecret,asOf));
  if(input.twelveKey)attempts.push(fromTwelve(symbol,input.twelveKey,asOf));
  if(!attempts.length)throw new Error("No fast market-data provider is configured.");
- const quote=await Promise.any(attempts);return{...quote,latencyMs:Math.max(0,Date.now()-started)};
+ const settled=await Promise.allSettled(attempts);
+ const quotes=settled.filter((x):x is PromiseFulfilledResult<Omit<FastResearchQuote,"latencyMs">>=>x.status==="fulfilled").map(x=>x.value);
+ if(!quotes.length)throw new Error("No fresh market-data provider returned a usable quote.");
+ let quote=quotes[0],providerAgreementPct:number|null=null;
+ if(quotes.length>1){
+   const [a,b]=quotes,mid=(a.price+b.price)/2;
+   providerAgreementPct=mid>0?Math.abs(a.price-b.price)/mid*100:null;
+   if(providerAgreementPct!=null&&providerAgreementPct>1.5)throw new Error(`Fresh provider disagreement ${providerAgreementPct.toFixed(2)}%; refusing unstable display price.`);
+   const ta=a.providerTimestamp?new Date(a.providerTimestamp).getTime():0,tb=b.providerTimestamp?new Date(b.providerTimestamp).getTime():0;
+   quote=tb>ta?b:a;
+ }
+ return{...quote,providerAgreementPct,latencyMs:Math.max(0,Date.now()-started)};
 }
