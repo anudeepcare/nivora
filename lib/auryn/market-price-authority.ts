@@ -1,6 +1,6 @@
 
 export type DisplaySession="PRE_MARKET"|"REGULAR"|"AFTER_HOURS"|"OVERNIGHT"|"CLOSED"|"CRYPTO_24X7";
-export type DisplayLabel="PRE-MARKET PRICE"|"LIVE MARKET PRICE"|"AFTER-HOURS PRICE"|"LAST OFFICIAL CLOSE"|"PRICE VERIFYING";
+export type DisplayLabel="PRE-MARKET PRICE"|"LIVE MARKET PRICE"|"AFTER-HOURS PRICE"|"LAST MARKET PRICE"|"LAST OFFICIAL CLOSE"|"PRICE VERIFYING";
 export type DisplayFreshness="LIVE"|"RECENT"|"STALE"|"VERIFYING";
 export type DisplayConfidence="VERIFIED"|"SINGLE_SOURCE"|"CONTESTED";
 export type MarketPriceCandidate={
@@ -30,7 +30,13 @@ export function selectMarketDisplayQuote(input:{
    const t=ms(c.providerTimestamp);if(!Number.isFinite(t)||!Number.isFinite(now)||t>now+5000)return false;
    const age=(now-t)/1000;return age>=0&&age<=maxAgeSeconds(input.session)&&c.freshness!=="STALE";
  }).sort((a,b)=>ms(b.providerTimestamp)-ms(a.providerTimestamp));
- if(!valid.length)return{symbol,price:null,session:input.session,label:"PRICE VERIFYING",asOf:null,source:null,freshness:"VERIFYING",confidence:"CONTESTED",providerAgreementPct:null,reason:"No sufficiently fresh session-appropriate market price is available."};
+ if(!valid.length){
+   // Session fallback: outside the regular session a real, timestamped last market price is
+   // more useful and more truthful than an endless VERIFYING state. It is never labeled LIVE.
+   const fallback=(input.candidates||[]).filter(c=>String(c.symbol||"").toUpperCase()===symbol&&n(c.price)!=null&&Number.isFinite(ms(c.providerTimestamp))).filter(c=>{const age=(now-ms(c.providerTimestamp))/1000;return age>=0&&age<=86400}).sort((a,b)=>ms(b.providerTimestamp)-ms(a.providerTimestamp))[0];
+   if(fallback&&input.session!=="REGULAR")return{symbol,price:Number(fallback.price),session:input.session,label:"LAST MARKET PRICE",asOf:fallback.providerTimestamp,source:fallback.provider,freshness:"RECENT",confidence:"SINGLE_SOURCE",providerAgreementPct:null,reason:"No fresh session quote is available; displaying the most recent timestamped market price."};
+   return{symbol,price:null,session:input.session,label:"PRICE VERIFYING",asOf:null,source:null,freshness:"VERIFYING",confidence:"CONTESTED",providerAgreementPct:null,reason:"No sufficiently fresh session-appropriate market price is available."};
+ }
  if(valid.length===1){const q=valid[0];return{symbol,price:Number(q.price),session:input.session,label:labelFor(input.session),asOf:q.providerTimestamp,source:q.provider,freshness:"LIVE",confidence:"SINGLE_SOURCE",providerAgreementPct:null,reason:"One fresh provider is available."};}
  const a=valid[0],b=valid[1],mid=(Number(a.price)+Number(b.price))/2,gap=mid>0?Math.abs(Number(a.price)-Number(b.price))/mid*100:null;
  if(gap!=null&&gap>limit)return{symbol,price:null,session:input.session,label:"PRICE VERIFYING",asOf:null,source:null,freshness:"VERIFYING",confidence:"CONTESTED",providerAgreementPct:gap,reason:`Fresh providers disagree by ${gap.toFixed(2)}%.`};

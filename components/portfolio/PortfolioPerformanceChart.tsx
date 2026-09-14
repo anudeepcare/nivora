@@ -17,9 +17,9 @@ export default function PortfolioPerformanceChart({points}:{points:Point[]}){
    <defs><linearGradient id="aurynPortfolioFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopOpacity=".24"/><stop offset="100%" stopOpacity=".015"/></linearGradient></defs>
    {[25,50,75].map(y=><line key={y} className="grid" x1="4" y1={y} x2="96" y2={y}/>)}
    <line className="zero" x1="4" y1={90-((0-min)/span)*80} x2="96" y2={90-((0-min)/span)*80}/>
-   {shown.PORTFOLIO?<><path className="portfolioArea" d={areaPath}/><path className="series portfolio" d={portfolioPath} fill="none" vectorEffect="non-scaling-stroke"/></>:null}
-   {shown.SPY?<path className="series spy" d={path("SPY")} fill="none" vectorEffect="non-scaling-stroke"/>:null}
-   {shown.QQQ?<path className="series qqq" d={path("QQQ")} fill="none" vectorEffect="non-scaling-stroke"/>:null}
+   {shown.PORTFOLIO?<><path className="portfolioArea" d={areaPath}/><path className="series portfolio" d={portfolioPath} fill="none" strokeWidth={3.2} vectorEffect="non-scaling-stroke"/></>:null}
+   {shown.SPY?<path className="series spy benchmark" d={path("SPY")} fill="none" strokeWidth={1.7} vectorEffect="non-scaling-stroke"/>:null}
+   {shown.QQQ?<path className="series qqq benchmark" d={path("QQQ")} fill="none" strokeWidth={1.7} strokeDasharray="5 3" vectorEffect="non-scaling-stroke"/>:null}
    {hover!=null?<line className="hoverLine" x1={xy(0,active).x} y1="8" x2={xy(0,active).x} y2="90"/>:null}
   </svg>
   <div className="aurynChartTooltip"><b>{date.toLocaleDateString(undefined,{month:"short",day:"numeric"})}</b>{keys.filter(k=>shown[k]&&pt[k]!=null).map(k=><span key={k}><i className={k.toLowerCase()}/>{k==="PORTFOLIO"?"Portfolio":k}<strong>{pt[k]!>=0?"+":""}{pt[k]!.toFixed(2)}%</strong></span>)}</div>
