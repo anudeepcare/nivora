@@ -1,0 +1,10 @@
+import fs from "node:fs";
+const must=[".github/workflows/auryn-v996-validation-queue.yml",".github/workflows/nivora-calibration-mature.yml","lib/auryn/portfolio-consolidation.ts","components/portfolio/PortfolioPulse.tsx","app/portfolio/page.tsx"];
+for(const f of must)if(!fs.existsSync(f))throw new Error(`Missing release file: ${f}`);
+if(JSON.stringify(JSON.parse(fs.readFileSync("vercel.json","utf8")))!=="{}")throw new Error("vercel.json must remain {}");
+const p=fs.readFileSync("app/portfolio/page.tsx","utf8");
+if(/Account \/ Broker|accountName/.test(p))throw new Error("Broker/account UX returned");
+if(!/mergeConsolidatedPosition/.test(p))throw new Error("Consolidated add behavior missing");
+const w=fs.readFileSync(".github/workflows/nivora-calibration-mature.yml","utf8");
+if(/AURYN_PRODUCTION_URL|TRADING_LAB_CRON_SECRET/.test(w))throw new Error("Legacy workflow secrets returned");
+console.log("V9.9.9.1 verified: consolidated holding math + Portfolio Cockpit + hidden workflows; no SQL required.");

@@ -10,9 +10,9 @@ function userId(req:Request){return String(req.headers.get("x-nivora-user-id")||
 
 export async function GET(req:Request){
  const client=db(),uid=userId(req);if(!client)return NextResponse.json({status:"unavailable"},{status:503});if(!uid)return NextResponse.json({error:"user required"},{status:401});
- const{data,error}=await client.from("nivora_portfolio_snapshots").select("as_of,total_value,invested_value,cash_value,cost_basis,unrealized_pnl,spy_price,qqq_price,holdings").eq("user_id",uid).order("as_of",{ascending:true}).limit(1600);
+ const{data,error}=await client.from("nivora_portfolio_snapshots").select("as_of,total_value,spy_price,qqq_price,holdings").eq("user_id",uid).order("as_of",{ascending:true}).limit(1600);
  if(error)return NextResponse.json({status:"error",error:error.message},{status:500});
- return NextResponse.json({status:"ok",items:(data||[]).map((x:any)=>({asOf:x.as_of,totalValue:Number(x.total_value),investedValue:x.invested_value==null?null:Number(x.invested_value),cashValue:x.cash_value==null?null:Number(x.cash_value),costBasis:x.cost_basis==null?null:Number(x.cost_basis),unrealizedPnl:x.unrealized_pnl==null?null:Number(x.unrealized_pnl),spy:x.spy_price==null?null:Number(x.spy_price),qqq:x.qqq_price==null?null:Number(x.qqq_price),holdings:x.holdings||[]}))},{headers:{"Cache-Control":"private, no-store"}});
+ return NextResponse.json({status:"ok",items:(data||[]).map((x:any)=>({asOf:x.as_of,totalValue:Number(x.total_value),spy:x.spy_price==null?null:Number(x.spy_price),qqq:x.qqq_price==null?null:Number(x.qqq_price),holdings:x.holdings||[]}))},{headers:{"Cache-Control":"private, no-store"}});
 }
 export async function POST(req:Request){
  const client=db(),uid=userId(req);if(!client)return NextResponse.json({status:"unavailable"},{status:503});if(!uid)return NextResponse.json({error:"user required"},{status:401});
@@ -20,11 +20,7 @@ export async function POST(req:Request){
  const twelveKey=process.env.TWELVE_DATA_API_KEY||"",alpacaKey=process.env.ALPACA_PAPER_API_KEY||"",alpacaSecret=process.env.ALPACA_PAPER_API_SECRET||"";
  const markets=await loadCanonicalMarketSnapshots(["SPY","QQQ"].map(symbol=>({symbol,twelveKey,alpacaKey,alpacaSecret,asOf:new Date()})),2);
  const spy=markets.get("SPY")?.snapshot.displayPrice??null,qqq=markets.get("QQQ")?.snapshot.displayPrice??null;
- const holdings=Array.isArray(b.holdings)?b.holdings:[];
- const investedValue=holdings.filter((x:any)=>x.assetType!=="CASH").reduce((a:number,x:any)=>a+Number(x.value||0),0);
- const cashValue=holdings.filter((x:any)=>x.assetType==="CASH").reduce((a:number,x:any)=>a+Number(x.value||0),0);
- const costBasis=Number.isFinite(Number(b.costBasis))?Number(b.costBasis):null;
- const now=new Date(),row={user_id:uid,as_of:now.toISOString(),snapshot_day:now.toISOString().slice(0,10),total_value:totalValue,invested_value:investedValue,cash_value:cashValue,cost_basis:costBasis,unrealized_pnl:costBasis==null?null:investedValue-costBasis,spy_price:spy,qqq_price:qqq,holdings,engine_version:"v999"};
+ const now=new Date(),row={user_id:uid,as_of:now.toISOString(),snapshot_day:now.toISOString().slice(0,10),total_value:totalValue,spy_price:spy,qqq_price:qqq,holdings:Array.isArray(b.holdings)?b.holdings:[],engine_version:"v65.11"};
  const{error}=await client.from("nivora_portfolio_snapshots").upsert(row,{onConflict:"user_id,snapshot_day"});
  if(error)return NextResponse.json({status:"error",error:error.message},{status:500});
  return NextResponse.json({status:"ok",snapshot:row,contract:"AURYN_V9_3_4_PORTFOLIO_SNAPSHOT",marketIntelligenceSnapshots:(Array.isArray(row.holdings)?row.holdings:[]).filter((x:any)=>x?.marketIntelligence?.snapshotId).length});
