@@ -1,0 +1,5 @@
+Focused V9.9.7 gate exit: 0
+Historical suite exit: 1
+Expected historical baseline: 721/737 with 16 known failures.
+vercel.json: '{}\n'
+Live scheduler timing cannot be proven until deployed; GitHub scheduled starts remain externally controlled and may be delayed, so V9.9.7 compensates by doing bounded catch-up work per wake-up.
