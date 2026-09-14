@@ -8,6 +8,7 @@ import PortfolioBrief from "./PortfolioBrief";
 import PortfolioXRay from "./PortfolioXRay";
 import PortfolioHealth from "./PortfolioHealth";
 import PortfolioCompositionGraph from "./PortfolioCompositionGraph";
+import {rankPortfolioActions} from "@/lib/auryn/portfolio-priority";
 
 const PERIODS=["1D","1W","1M","3M","6M","YTD","1Y","2Y","3Y","4Y","ALL"] as const;
 const fmtDate=(s?:string|null)=>s?new Date(s).toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"}):"—";
@@ -16,7 +17,7 @@ const actionRank:Record<string,number>={AVOID:0,TRIM_RISK:1,WATCH:2,ADD:3,HOLD:4
 export default function PortfolioPulse({pulse,risk}:{pulse:any;risk?:any}){
  const[period,setPeriod]=useState<(typeof PERIODS)[number]>("1M"),[deepOpen,setDeepOpen]=useState(false);
  const r=useMemo(()=>calculatePortfolioPeriod(pulse?.history?.points||[],period as PortfolioPeriod),[pulse,period]);
- const actions=useMemo(()=>[...(pulse?.actions||[])].filter((x:any)=>x.portfolioAction).sort((a:any,b:any)=>(actionRank[a.portfolioAction]??9)-(actionRank[b.portfolioAction]??9)||Number(b.weightPct||0)-Number(a.weightPct||0)),[pulse]);
+ const actions=useMemo(()=>rankPortfolioActions([...(pulse?.actions||[])].filter((x:any)=>x.portfolioAction)),[pulse]);
  const cash=Number(pulse?.allocations?.cashPct||0),health=Number(pulse?.health?.score||0),largest=Number(pulse?.concentration?.largestPositionPct||0);
  const actual=r?.status==="ACTUAL",portfolioReturn=actual&&Number.isFinite(Number(r?.portfolioReturnPct))?Number(r.portfolioReturnPct):null,spy=actual&&Number.isFinite(Number(r?.spyReturnPct))?Number(r.spyReturnPct):null,qqq=actual&&Number.isFinite(Number(r?.qqqReturnPct))?Number(r.qqqReturnPct):null,alpha=actual&&Number.isFinite(Number(r?.alphaVsSpyPct))?Number(r.alphaVsSpyPct):null;
  const totalPnl=(pulse?.drivers||[]).reduce((a:number,x:any)=>a+Number(x.pnl||0),0),cost=Number(pulse?.totalValue||0)-totalPnl;

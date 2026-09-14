@@ -1,0 +1,4 @@
+Focused V9.9.9: 13/13 passed.
+Historical regression: 721/737 passed; same 16 known pre-existing baseline failures.
+V9.9.8 market-price tests included in focused gate.
+Exactly one V9.9.9 Supabase migration required.
