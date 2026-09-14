@@ -1,0 +1,12 @@
+import fs from "node:fs";
+const must=[".github/workflows/auryn-v996-validation-queue.yml",".github/workflows/nivora-calibration-mature.yml","lib/auryn/market-price-authority.ts","lib/auryn/fast-quote.ts","lib/nivora-execution-quote.ts","components/StockClient.tsx"];
+for(const f of must)if(!fs.existsSync(f))throw new Error(`Missing release file: ${f}`);
+if(JSON.stringify(JSON.parse(fs.readFileSync("vercel.json","utf8")))!=="{}")throw new Error("vercel.json must remain {}");
+const m=fs.readFileSync(".github/workflows/nivora-calibration-mature.yml","utf8");
+if(/AURYN_PRODUCTION_URL|TRADING_LAB_CRON_SECRET/.test(m))throw new Error("Legacy maturation secrets returned");
+const f=fs.readFileSync("lib/auryn/fast-quote.ts","utf8");
+if(/Promise\.any\(attempts\)/.test(f))throw new Error("First-response-wins quote race returned");
+if(!/selectMarketDisplayQuote/.test(f))throw new Error("Market price authority not integrated");
+const e=fs.readFileSync("lib/nivora-execution-quote.ts","utf8");
+if(!/normalizeAlpacaMarketPrice/.test(e))throw new Error("Trade-first market display normalizer missing");
+console.log("V9.9.8 release verified: one market-price authority; workflows present; no manual SQL required.");

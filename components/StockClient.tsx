@@ -393,13 +393,15 @@ export default function StockClient({symbol}:{symbol:string}){
   const stableDisplayAgeMs=stableDisplayQuote?.retrievedAt?Date.now()-new Date(stableDisplayQuote.retrievedAt).getTime():stableDisplayQuote?.cachedAt?Date.now()-Number(stableDisplayQuote.cachedAt):Number.POSITIVE_INFINITY;
   const stableProviderTimestamp=stableDisplayQuote?.providerTimestamp?new Date(stableDisplayQuote.providerTimestamp).getTime():NaN;
   const stableProviderFresh=Number.isFinite(stableProviderTimestamp)&&Date.now()-stableProviderTimestamp>=0&&Date.now()-stableProviderTimestamp<15*60*1000&&stableDisplayQuote?.freshness!=="STALE";
+  const liveSession=marketTruth?.session==="REGULAR"||marketTruth?.session==="PRE_MARKET"||marketTruth?.session==="AFTER_HOURS";
   const displayQuoteAuthority=stableDisplayPrice!=null&&stableDisplayAgeMs<DISPLAY_QUOTE_GRACE_MS
     ?{kind:"LAST_GOOD_LIVE" as const,quote:stableDisplayQuote,price:stableDisplayPrice}
-    :canonicalDecisionPrice!=null?{kind:"CANONICAL_VERIFIED" as const,quote:marketTruth,price:canonicalDecisionPrice}:null;
-  // A transient quote refresh/failure must never downgrade a recently accepted live display
-  // back to canonical research truth. Execution verification remains independently gated.
-  const stableLiveFresh=displayQuoteAuthority?.kind==="LAST_GOOD_LIVE";
-  const researchDisplayPrice=displayQuoteAuthority?.price??null;
+    :!liveSession&&canonicalDecisionPrice!=null?{kind:"CANONICAL_VERIFIED" as const,quote:marketTruth,price:canonicalDecisionPrice}:null;
+  const displayAuthority=displayQuoteAuthority;
+  // During an active trading session, canonical research truth is never allowed to impersonate
+  // the visible market price. If live authority is missing, the UI shows PRICE VERIFYING.
+  const stableLiveFresh=displayAuthority?.kind==="LAST_GOOD_LIVE";
+  const researchDisplayPrice=displayAuthority?.price??null;
   const researchDisplayChangePct=stableLiveFresh&&Number.isFinite(Number(stableDisplayQuote?.changePct))?Number(stableDisplayQuote.changePct):priceSensitiveAllowed&&Number.isFinite(Number(liveQuote?.changePct))?Number(liveQuote.changePct):null;
   const marketIntelligenceView=useMemo(()=>{
     const base=d?.marketIntelligence;if(!base)return null;if(!liveMarketContext)return base;
@@ -570,7 +572,7 @@ export default function StockClient({symbol}:{symbol:string}){
     const partialDetail=marketTruth?`${String(marketTruth.reason||"")}${marketTruth.decisionPriceAsOf?` · price as of ${new Date(marketTruth.decisionPriceAsOf).toLocaleString()}`:""}`:"Price verification loads independently from the research engine.";
     const partialChange=Number(liveQuote?.changePct);
     return <div className="aurynStockPage aurynProgressiveStock">
-      <StockSecurityHeader company={symbol} symbol={symbol} price={researchDisplayPrice} changePct={researchDisplayChangePct} status={stableLiveFresh?(fastQuoteFresh?"LIVE MARKET PRICE":"RECENT LIVE PRICE"):partialStatus} detail={stableLiveFresh?`Updated ${new Date(stableDisplayQuote.retrievedAt||stableDisplayQuote.cachedAt).toLocaleTimeString()} · ${String(stableDisplayQuote.provider||"market provider")} · execution verification runs separately.`:partialDetail} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
+      <StockSecurityHeader company={symbol} symbol={symbol} price={researchDisplayPrice} changePct={researchDisplayChangePct} status={stableLiveFresh?String(stableDisplayQuote?.label||"LIVE MARKET PRICE"):liveSession?"PRICE VERIFYING":partialStatus} detail={stableLiveFresh?`Updated ${new Date(stableDisplayQuote.providerTimestamp||stableDisplayQuote.retrievedAt||stableDisplayQuote.cachedAt).toLocaleTimeString()} · ${String(stableDisplayQuote.provider||"market provider")} · ${String(stableDisplayQuote.confidence||"SINGLE_SOURCE").replaceAll("_"," ").toLowerCase()} · execution verification runs separately.`:liveSession?"AURYN is waiting for a fresh session-appropriate market price; canonical research price is not substituted.":partialDetail} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
       {durable?.action?<section className="v935DurableResearch" data-canonical-snapshot={canonicalV935?.snapshotId||""}>
         <div><small>LAST VERIFIED AURYN DECISION</small><h2>{String(durable.action).replaceAll("_"," ")}</h2><p>{durable.state==="STALE_VERIFIED"?"Verified research is preserved while AURYN refreshes the newest completed-bar evidence.":"Verified research is available while deeper evidence refreshes in the background."}</p></div>
         <div className="v935DurableActions"><span>OWNER <b>{durable.ownerAction||"—"}</b></span><span>LONG TERM <b>{durable.longTermAction||"—"}</b></span><span>SETUP <b>{String(durable.setupState||"—").replaceAll("_"," ")}</b></span></div>
@@ -798,7 +800,8 @@ export default function StockClient({symbol}:{symbol:string}){
   })();
   const horizonCandles=(d.candles||[]).slice(horizon==="now"?-65:horizon==="swing"?-125:-180);
 
-  const marketStatusLabel=stableLiveFresh?(fastQuoteFresh?"LIVE MARKET PRICE":"RECENT LIVE PRICE")
+  const marketStatusLabel=stableLiveFresh?String(stableDisplayQuote?.label||"LIVE MARKET PRICE")
+    :liveSession?"PRICE VERIFYING"
     :!marketTruth?"Verifying market price"
     :marketTruth.priceState==="OFFICIAL_CLOSE"&&marketTruth.session==="AFTER_HOURS"?"After-hours · Verified regular close"
     :marketTruth.priceState==="OFFICIAL_CLOSE"&&marketTruth.session==="PRE_MARKET"?"Pre-market · Verified regular close"
@@ -814,7 +817,9 @@ export default function StockClient({symbol}:{symbol:string}){
     :marketTruth.priceState==="UNVERIFIED"?"PRICE UNVERIFIED"
     :"Price unavailable";
   const marketDetail=stableLiveFresh
-    ?`Updated ${new Date(stableDisplayQuote.retrievedAt||stableDisplayQuote.cachedAt).toLocaleTimeString()} · ${String(stableDisplayQuote.provider||"market provider")} · execution verification runs separately.`
+    ?`Updated ${new Date(stableDisplayQuote.providerTimestamp||stableDisplayQuote.retrievedAt||stableDisplayQuote.cachedAt).toLocaleTimeString()} · ${String(stableDisplayQuote.provider||"market provider")} · ${String(stableDisplayQuote.confidence||"SINGLE_SOURCE").replaceAll("_"," ").toLowerCase()} · execution verification runs separately.`
+    :liveSession
+      ?"AURYN is waiting for a fresh session-appropriate market price; canonical research price is not substituted."
     :marketTruth
       ?`${String(marketTruth.reason||"")}${(marketTruth.decisionPriceAsOf||marketTruth.asOf)?` · price as of ${new Date(marketTruth.decisionPriceAsOf||marketTruth.asOf).toLocaleString()}`:""}${marketTruth.providerAgreementPct!=null?` · provider gap ${Number(marketTruth.providerAgreementPct).toFixed(2)}%`:""}`
       :"AURYN is verifying independent market sources before displaying a current price.";

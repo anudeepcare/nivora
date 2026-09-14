@@ -1,0 +1,15 @@
+Focused V9.9.8 exit: 0
+Focused summary:
+# tests 12
+# pass 12
+# fail 0
+
+Historical suite exit: 1
+Historical summary:
+# tests 737
+# pass 721
+# fail 16
+
+Expected historical baseline remains 721/737 with 16 known pre-existing failures.
+vercel.json: '{}\n'
+No Supabase migration added; no manual SQL required.

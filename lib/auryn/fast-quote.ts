@@ -1,7 +1,8 @@
 import {providerMarketHint} from "./v82/security-master";
 import {AlpacaPaperBroker} from "../alpaca-paper";
-import {normalizeAlpacaQuote} from "../nivora-execution-quote";
+import {normalizeAlpacaMarketPrice} from "../nivora-execution-quote";
 import {marketSessionAt,quoteFreshness,type MarketSession,type QuoteFreshness} from "../nivora-market-session";
+import {selectMarketDisplayQuote} from "./market-price-authority";
 
 export const MAX_RESEARCH_QUOTE_AGE_SECONDS=15*60;
 export const MAX_REGULAR_RESEARCH_QUOTE_AGE_SECONDS=60;
@@ -11,6 +12,8 @@ export type FastResearchQuote={
   provider:"alpaca"|"twelvedata-price";providerTimestamp:string|null;retrievedAt:string;latencyMs:number;
   ageSeconds:number|null;session:MarketSession;freshness:QuoteFreshness;
   researchOnly:true;executionVerified:false;providerAgreementPct?:number|null;
+  label?:"PRE-MARKET PRICE"|"LIVE MARKET PRICE"|"AFTER-HOURS PRICE"|"LAST OFFICIAL CLOSE"|"PRICE VERIFYING";
+  confidence?:"VERIFIED"|"SINGLE_SOURCE"|"CONTESTED";
 };
 const finitePositive=(v:unknown)=>{const n=Number(v);return Number.isFinite(n)&&n>0?n:null};
 export function assertResearchQuoteFresh(q:{price:number;providerTimestamp:string|null;ageSeconds:number|null;session:MarketSession;freshness:QuoteFreshness}){
@@ -39,7 +42,7 @@ async function fromTwelve(symbol:string,key:string,asOf:Date):Promise<Omit<FastR
 async function fromAlpaca(symbol:string,key:string,secret:string,asOf:Date):Promise<Omit<FastResearchQuote,"latencyMs">>{
  if(!key||!secret||symbol.includes("/"))throw new Error("Alpaca fast quote is unavailable.");
  const broker=new AlpacaPaperBroker(key,secret);const raw=await broker.getLatestExecutionQuote(symbol);
- const q=normalizeAlpacaQuote(symbol,raw.quote,raw.trade,asOf);const price=finitePositive(q.price);
+ const q=normalizeAlpacaMarketPrice(symbol,raw.quote,raw.trade,asOf);const price=finitePositive(q.price);
  const out={symbol,price:price??0,changePct:q.changePct,provider:"alpaca" as const,providerTimestamp:q.providerTimestamp,retrievedAt:asOf.toISOString(),ageSeconds:q.ageSeconds,session:q.session,freshness:q.freshness,researchOnly:true as const,executionVerified:false as const};
  assertResearchQuoteFresh(out);return out;
 }
@@ -52,13 +55,11 @@ export async function loadFastResearchQuote(input:{symbol:string;twelveKey?:stri
  const settled=await Promise.allSettled(attempts);
  const quotes=settled.filter((x):x is PromiseFulfilledResult<Omit<FastResearchQuote,"latencyMs">>=>x.status==="fulfilled").map(x=>x.value);
  if(!quotes.length)throw new Error("No fresh market-data provider returned a usable quote.");
- let quote=quotes[0],providerAgreementPct:number|null=null;
- if(quotes.length>1){
-   const [a,b]=quotes,mid=(a.price+b.price)/2;
-   providerAgreementPct=mid>0?Math.abs(a.price-b.price)/mid*100:null;
-   if(providerAgreementPct!=null&&providerAgreementPct>1.5)throw new Error(`Fresh provider disagreement ${providerAgreementPct.toFixed(2)}%; refusing unstable display price.`);
-   const ta=a.providerTimestamp?new Date(a.providerTimestamp).getTime():0,tb=b.providerTimestamp?new Date(b.providerTimestamp).getTime():0;
-   quote=tb>ta?b:a;
- }
- return{...quote,providerAgreementPct,latencyMs:Math.max(0,Date.now()-started)};
+ const authority=selectMarketDisplayQuote({
+   symbol,session:marketSessionAt(asOf),asOf:asOf.toISOString(),
+   candidates:quotes.map(q=>({symbol:q.symbol,price:q.price,provider:q.provider,providerTimestamp:q.providerTimestamp,retrievedAt:q.retrievedAt,session:q.session,freshness:q.freshness,kind:"TRADE"}))
+ });
+ if(authority.price==null)throw new Error(`${authority.label}: ${authority.reason}`);
+ const quote=quotes.find(q=>q.provider===authority.source&&q.providerTimestamp===authority.asOf)??quotes[0];
+ return{...quote,price:authority.price,providerAgreementPct:authority.providerAgreementPct,label:authority.label,confidence:authority.confidence,latencyMs:Math.max(0,Date.now()-started)};
 }
