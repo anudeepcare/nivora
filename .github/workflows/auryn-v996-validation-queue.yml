@@ -1,4 +1,4 @@
-name: AURYN V9.9.6 Validation Queue
+name: AURYN V9.9.7 Autonomous Market Cycle
 
 on:
   workflow_dispatch:
@@ -9,13 +9,13 @@ permissions:
   contents: read
 
 concurrency:
-  group: auryn-v996-validation-queue
+  group: auryn-v997-market-cycle
   cancel-in-progress: false
 
 jobs:
   drain:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 12
 
     steps:
       - uses: actions/checkout@v4
@@ -24,9 +24,12 @@ jobs:
         with:
           node-version: 22
 
-      - name: Drain bounded validation work
+      - name: Run session orchestration and drain durable validation queue
         env:
           AURYN_BASE_URL: ${{ secrets.AURYN_BASE_URL }}
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
           AURYN_QUEUE_BURST: "10"
-        run: node scripts/auryn-v996-queue-pump.mjs
+          AURYN_QUEUE_MAX_RUNTIME_MS: "480000"
+          AURYN_QUEUE_MAX_JOBS: "40"
+          AURYN_QUEUE_SPACING_MS: "6000"
+        run: node scripts/auryn-v997-market-cycle.mjs
