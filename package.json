@@ -142,7 +142,8 @@
     "test:v9992": "node --test tests/auryn-v9992-premium-portfolio-ux.test.mjs tests/auryn-v9991-portfolio-cockpit.test.mjs tests/auryn-v9991-consolidation.test.mjs tests/auryn-v998-market-price-authority.test.mjs tests/auryn-v998-alpaca-trade-price.test.mjs",
     "test:v9981": "node --test tests/auryn-v9981-market-data-reliability.test.mjs tests/auryn-v998-market-price-authority.test.mjs tests/auryn-v998-alpaca-trade-price.test.mjs tests/auryn-v9991-consolidation.test.mjs tests/auryn-v9992-premium-portfolio-ux.test.mjs",
     "test:v9993": "node --test tests/auryn-v9993-interactions-crypto.test.mjs tests/auryn-v9981-market-data-reliability.test.mjs tests/auryn-v9992-premium-portfolio-ux.test.mjs tests/auryn-v9991-consolidation.test.mjs",
-    "test:v9994": "node --test tests/auryn-v9994-session-price-portfolio-visuals.test.mjs tests/auryn-v9993-interactions-crypto.test.mjs tests/auryn-v9981-market-data-reliability.test.mjs tests/auryn-v9992-premium-portfolio-ux.test.mjs tests/auryn-v9991-consolidation.test.mjs"
+    "test:v9994": "node --test tests/auryn-v9994-session-price-portfolio-visuals.test.mjs tests/auryn-v9993-interactions-crypto.test.mjs tests/auryn-v9981-market-data-reliability.test.mjs tests/auryn-v9992-premium-portfolio-ux.test.mjs tests/auryn-v9991-consolidation.test.mjs",
+    "test:v9995": "node --test tests/auryn-v9995-canonical-market-truth.test.mjs tests/auryn-v9994-session-price-portfolio-visuals.test.mjs tests/auryn-v9993-interactions-crypto.test.mjs tests/auryn-v9981-market-data-reliability.test.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

@@ -99,3 +99,27 @@ export function buildCanonicalMarketSnapshot(input:{symbol:string;asOf?:Date;pri
   const snapshotId=`${symbol}-${calendar.date}-${fingerprint(JSON.stringify({priceState,priceUse,decisionPrice,decisionPriceRole,regularClose,regularCloseAsOf,providerAgreementPct,sources:sources.map(s=>[s.provider,s.price,s.providerTimestamp])}))}`;
   return{snapshotId,symbol,asOf:asOf.toISOString(),session:calendar.session,calendarState:calendar.calendarState,priceState,decisionPrice,displayPrice,decisionPriceAsOf,decisionPriceRole,regularClose,regularClosePrice:regularClose,regularCloseAsOf,liveMarketPrice,liveMarketPriceAsOf,executionPrice,executionPriceAsOf,extendedPrice,providerAgreementPct,contextProviderGapPct,sources,priceSensitiveAllowed,decisionAllowed:priceSensitiveAllowed,executionTradable,priceUse,reason};
 }
+
+
+// V9.9.9.5 unified display truth
+export type CanonicalMarketTruth={
+ price:number|null; provider:string|null; priceTimestamp:string|null; checkedAt:string;
+ session:string; freshness:"LIVE"|"PRE_MARKET"|"AFTER_HOURS"|"MARKET_CLOSED"|"RECENT"|"VERIFYING"|"CRYPTO_24X7";
+ confidence:string; ageSeconds:number|null; label:string;
+};
+const age=(stamp:string|null,checked:string)=>{if(!stamp)return null;const a=(new Date(checked).getTime()-new Date(stamp).getTime())/1000;return Number.isFinite(a)?Math.max(0,Math.round(a)):null};
+export function buildMarketTruth(q:any,canonical:any,checkedAt=new Date().toISOString()):CanonicalMarketTruth{
+ const price=Number.isFinite(Number(q?.price))?Number(q.price):null,priceTimestamp=q?.providerTimestamp||q?.retrievedAt||canonical?.decisionPriceAsOf||canonical?.asOf||null;
+ const session=String(q?.session||canonical?.session||"CLOSED"),a=age(priceTimestamp,checkedAt),raw=String(q?.label||"");
+ let freshness:CanonicalMarketTruth["freshness"]="VERIFYING",label="PRICE VERIFYING";
+ if(session==="CRYPTO_24X7"){freshness="CRYPTO_24X7";label="24/7 LIVE"}
+ else if(price!=null&&raw==="PRE-MARKET PRICE"){freshness="PRE_MARKET";label="PRE-MARKET"}
+ else if(price!=null&&raw==="AFTER-HOURS PRICE"){freshness="AFTER_HOURS";label="AFTER-HOURS"}
+ else if(price!=null&&raw==="LIVE MARKET PRICE"){freshness="LIVE";label="LIVE MARKET PRICE"}
+ else if(price!=null&&(raw==="LAST MARKET PRICE"||raw==="LAST OFFICIAL CLOSE"||session==="CLOSED"||session==="OVERNIGHT")){freshness=a!=null&&a<21600?"RECENT":"MARKET_CLOSED";label=freshness==="RECENT"?"RECENT · LAST MARKET PRICE":"MARKET CLOSED · LAST MARKET PRICE"}
+ else if(price!=null){freshness="RECENT";label="RECENT · LAST MARKET PRICE"}
+ return{price,provider:q?.provider||canonical?.source||null,priceTimestamp,checkedAt,session,freshness,confidence:String(q?.confidence||canonical?.confidence||"SINGLE_SOURCE"),ageSeconds:a,label};
+}
+export function formatLocalTime(stamp:string|null){if(!stamp)return"—";return new Intl.DateTimeFormat(undefined,{hour:"numeric",minute:"2-digit",second:"2-digit",timeZoneName:"short"}).format(new Date(stamp))}
+export function formatAge(seconds:number|null){if(seconds==null)return"unknown age";if(seconds<60)return`${seconds}s ago`;if(seconds<3600)return`${Math.floor(seconds/60)}m ago`;return`${Math.floor(seconds/3600)}h ${Math.floor(seconds%3600/60)}m ago`}
+export function formatMarketTruth(t:CanonicalMarketTruth){return{status:t.label,detail:t.priceTimestamp?`Price as of ${formatLocalTime(t.priceTimestamp)} · ${t.provider||"market provider"} · ${formatAge(t.ageSeconds)} · checked ${formatLocalTime(t.checkedAt)}`:`Checked ${formatLocalTime(t.checkedAt)} · waiting for a verified market price`}}

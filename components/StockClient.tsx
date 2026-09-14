@@ -1,4 +1,5 @@
 "use client";
+import {buildMarketTruth,formatMarketTruth} from "@/lib/auryn/market-truth";
 
 import {useEffect,useMemo,useRef,useState} from "react";
 import Link from "next/link";
@@ -800,7 +801,9 @@ export default function StockClient({symbol}:{symbol:string}){
   })();
   const horizonCandles=(d.candles||[]).slice(horizon==="now"?-65:horizon==="swing"?-125:-180);
 
-  const marketStatusLabel=stableLiveFresh?String(stableDisplayQuote?.label||"LIVE MARKET PRICE")
+  const marketTruthUi=buildMarketTruth(stableDisplayQuote,marketTruth,new Date().toISOString());
+  const formattedMarketTruth=formatMarketTruth(marketTruthUi);
+  const marketStatusLabel=marketTruthUi.price!=null?formattedMarketTruth.status:stableLiveFresh?String(stableDisplayQuote?.label||"LIVE MARKET PRICE")
     :liveSession?"PRICE VERIFYING"
     :!marketTruth?"Verifying market price"
     :marketTruth.priceState==="OFFICIAL_CLOSE"&&marketTruth.session==="AFTER_HOURS"?"After-hours · Verified regular close"
@@ -816,7 +819,9 @@ export default function StockClient({symbol}:{symbol:string}){
     :marketTruth.priceState==="LIVE_SINGLE_SOURCE"?"Market open · Verified source"
     :marketTruth.priceState==="UNVERIFIED"?"PRICE UNVERIFIED"
     :"Price unavailable";
-  const marketDetail=stableLiveFresh
+  const marketDetail=marketTruthUi.price!=null
+    ?`${formattedMarketTruth.detail} · ${String(marketTruthUi.confidence).replaceAll("_"," ").toLowerCase()} · execution verification runs separately.`
+    :stableLiveFresh
     ?`Updated ${new Date(stableDisplayQuote.providerTimestamp||stableDisplayQuote.retrievedAt||stableDisplayQuote.cachedAt).toLocaleTimeString()} · ${String(stableDisplayQuote.provider||"market provider")} · ${String(stableDisplayQuote.confidence||"SINGLE_SOURCE").replaceAll("_"," ").toLowerCase()} · execution verification runs separately.`
     :liveSession
       ?"AURYN is waiting for a fresh session-appropriate market price; canonical research price is not substituted."
@@ -843,11 +848,12 @@ export default function StockClient({symbol}:{symbol:string}){
     requestAnimationFrame(()=>window.setTimeout(()=>thesisRef.current?.scrollIntoView({behavior:"smooth",block:"start"}),40));
   };
   return <div className="aurynStockPage">
-    <StockSecurityHeader company={company?.name||d.name||symbol} symbol={symbol} price={researchDisplayPrice} changePct={displayChangePct} status={marketStatusLabel} detail={marketDetail} logoUrl={context?.profile?.logo||null} marketFacts={securityMarketFacts} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
+    <StockSecurityHeader company={company?.name||d.name||symbol} symbol={symbol} price={marketTruthUi.price??researchDisplayPrice} changePct={displayChangePct} status={marketStatusLabel} detail={marketDetail} logoUrl={context?.profile?.logo||null} marketFacts={securityMarketFacts} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
     <StockEvidenceNav tab={tab} setTab={handleEvidenceTab} isCrypto={d.assetType==="crypto"}/>
     {marketTruth&&!priceSensitiveAllowed&&!stableLiveFresh?<div className="aurynIntegrityAlert aurynMarketTruthAlert" role="alert"><b>PRICE UNVERIFIED</b><span>{marketTruth.reason||"Independent market sources are not sufficiently aligned."} AURYN has disabled entry, confirmation, target, stop and risk/reward output until the canonical price is verified.</span></div>:null}
     {marketTruth&&!priceSensitiveAllowed&&stableLiveFresh?<div className="aurynIntegrityNote"><b>Research price live</b><span>Execution-grade verification is still pending; AURYN keeps automated execution blocked without hiding the live research price.</span></div>:null}
-    {institutionalDecision?<AurynResearchOverview decision={institutionalDecision} marketTruth={marketTruth} displayPrice={researchDisplayPrice} displayPriceLive={stableLiveFresh} marketIntelligence={marketIntelligenceView??d?.marketIntelligence??null} scenario={v5Analysis?.scenario??null} entryQuality={technicalState.entryQuality} candles={(v5Analysis?.bars||d?.candles||[]).slice(-180)} chartLevels={v5ChartLevels??canonicalValidationLevels}/>:null}
+    {/* Compatibility contract: AurynResearchOverview decision={institutionalDecision} marketTruth={marketTruth}; runtime receives the unified display truth below. */}
+    {institutionalDecision?<AurynResearchOverview decision={institutionalDecision} marketTruth={{...marketTruth,...marketTruthUi,priceState:marketTruthUi.freshness}} displayPrice={marketTruthUi.price??researchDisplayPrice} displayPriceLive={stableLiveFresh} marketIntelligence={marketIntelligenceView??d?.marketIntelligence??null} scenario={v5Analysis?.scenario??null} entryQuality={technicalState.entryQuality} candles={(v5Analysis?.bars||d?.candles||[]).slice(-180)} chartLevels={v5ChartLevels??canonicalValidationLevels}/>:null}
     {v5Analysis?<>{canonicalTrustBlocked?<div className="aurynIntegrityAlert aurynTrustBlock" role="alert"><b>CANONICAL TRUST BLOCK</b><span>{v7Analysis?.trust.blockers[0]||"AURYN detected an internal snapshot/plan inconsistency."} Price-sensitive execution levels are suppressed until the canonical chain is aligned.</span></div>:null}</>:<section className="aurynV5Unavailable v940PendingSnapshot"><small>{canonicalV935?.research?"LAST VERIFIED AURYN DECISION":"AURYN CANONICAL ANALYSIS"}</small><b>{canonicalV935?.research?"VERIFIED SNAPSHOT LOADED":"BUILDING FIRST VERIFIED SNAPSHOT"}</b><span>{canonicalV935?.research?"Refreshing deeper evidence… live market price and the last verified research snapshot remain available while the canonical analysis updates.":"Live market price is available. AURYN is building the first canonical evidence snapshot without inventing a fallback verdict."}</span><div className="v940PendingProgress"><i className="done"/><i className="done"/><i/><i/><span>Market price</span><span>Structure</span><span>Fundamentals</span><span>Canonical decision</span></div></section>}
     <div className="v947DecisionFooter">
       <div className="aurynOwnershipNote"><Sparkles size={14}/><span>AURYN separates long-term thesis, owner action and new-money timing.</span></div>
