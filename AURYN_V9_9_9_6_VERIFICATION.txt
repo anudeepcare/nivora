@@ -1,0 +1,4 @@
+Focused current-session gate: 25/25 passed.
+Full historical suite: 721/737, same 16 pre-existing failures.
+Note: V9.9.9.4's permissive after-hours fallback test is intentionally obsolete and excluded from the new focused gate because V9.9.9.6 reverses that behavior by design.
+No SQL required.
