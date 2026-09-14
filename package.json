@@ -134,7 +134,8 @@
     "test:v996": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node --test tests/auryn-v996-finalization.test.mjs tests/auryn-v996-automation-contract.test.mjs tests/auryn-v995-one-symbol-jobs.test.mjs tests/auryn-v995-autonomous-contract.test.mjs tests/auryn-v995-worker-contract.test.mjs tests/auryn-v994-universe-schema.test.mjs tests/auryn-v993-universe-loader.test.mjs tests/auryn-v992-run-lifecycle.test.mjs",
     "test:v9961": "npm run test:v996 && node --test tests/auryn-v9961-orphan-job-resilience.test.mjs",
     "test:v9962": "npm run test:v9961 && node --test tests/auryn-v9962-throughput.test.mjs",
-    "test:v997": "npm run test:v9962 && rm -rf .engine-test && tsc -p tsconfig.engine.json && node --test tests/auryn-v997-automation.test.mjs tests/auryn-v997-universe.test.mjs tests/auryn-v997-session-contract.test.mjs tests/auryn-v997-finalization-contract.test.mjs"
+    "test:v997": "npm run test:v9962 && rm -rf .engine-test && tsc -p tsconfig.engine.json && node --test tests/auryn-v997-automation.test.mjs tests/auryn-v997-universe.test.mjs tests/auryn-v997-session-contract.test.mjs tests/auryn-v997-finalization-contract.test.mjs",
+    "test:v9971": "npm run test:v997 && node --test tests/auryn-v9971-price-stability.test.mjs && node scripts/verify-v9971-release.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

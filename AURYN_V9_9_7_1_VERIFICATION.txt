@@ -1,0 +1,8 @@
+Focused V9.9.7.1 gate: PASS
+V9.9.7 inherited gates: PASS
+Price stability regression: 3/3 PASS
+Historical suite: 721/737 PASS, 16 known baseline failures unchanged
+Vercel cron config: {}
+Supabase migrations required by V9.9.7.1: 0
+Manual SQL required by V9.9.7.1: 0
+Production Next.js build was not executed in the packaging environment because node_modules/Next CLI are intentionally absent from the release ZIP; deployment build remains Vercel's gate.
