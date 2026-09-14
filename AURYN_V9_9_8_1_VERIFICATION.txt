@@ -1,0 +1,12 @@
+Focused:
+# tests 25
+# pass 25
+# fail 0
+
+Historical:
+# tests 737
+# pass 721
+# fail 16
+
+Historical baseline preserved: 721/737, same 16 known failures.
+No SQL required.

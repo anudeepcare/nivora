@@ -1,5 +1,5 @@
 
-export type DisplaySession="PRE_MARKET"|"REGULAR"|"AFTER_HOURS"|"OVERNIGHT"|"CLOSED";
+export type DisplaySession="PRE_MARKET"|"REGULAR"|"AFTER_HOURS"|"OVERNIGHT"|"CLOSED"|"CRYPTO_24X7";
 export type DisplayLabel="PRE-MARKET PRICE"|"LIVE MARKET PRICE"|"AFTER-HOURS PRICE"|"LAST OFFICIAL CLOSE"|"PRICE VERIFYING";
 export type DisplayFreshness="LIVE"|"RECENT"|"STALE"|"VERIFYING";
 export type DisplayConfidence="VERIFIED"|"SINGLE_SOURCE"|"CONTESTED";
@@ -13,8 +13,8 @@ export type MarketDisplayQuote={
 };
 const n=(v:unknown)=>{const x=Number(v);return Number.isFinite(x)&&x>0?x:null};
 const ms=(v:string|null|undefined)=>{if(!v)return NaN;const x=new Date(v).getTime();return Number.isFinite(x)?x:NaN};
-const maxAgeSeconds=(session:DisplaySession)=>session==="REGULAR"?60:(session==="PRE_MARKET"||session==="AFTER_HOURS"?180:900);
-const labelFor=(session:DisplaySession):DisplayLabel=>session==="REGULAR"?"LIVE MARKET PRICE":session==="PRE_MARKET"?"PRE-MARKET PRICE":session==="AFTER_HOURS"?"AFTER-HOURS PRICE":"LAST OFFICIAL CLOSE";
+const maxAgeSeconds=(session:DisplaySession)=>session==="REGULAR"?180:(session==="PRE_MARKET"||session==="AFTER_HOURS"||session==="CRYPTO_24X7"?300:900);
+const labelFor=(session:DisplaySession):DisplayLabel=>session==="REGULAR"?"LIVE MARKET PRICE":session==="PRE_MARKET"?"PRE-MARKET PRICE":session==="AFTER_HOURS"?"AFTER-HOURS PRICE":session==="CRYPTO_24X7"?"LIVE MARKET PRICE":"LAST OFFICIAL CLOSE";
 
 export function selectMarketDisplayQuote(input:{
  symbol:string;session:DisplaySession;asOf:string;candidates?:MarketPriceCandidate[];

@@ -22,8 +22,8 @@ export async function GET(req:Request,{params}:{params:Promise<{symbol:string}>}
       "Cache-Control":"private, max-age=2, stale-while-revalidate=6",
       "Server-Timing":`fastquote;dur=${Date.now()-started}`
     }});
-  }catch(error){
-    return NextResponse.json({symbol,status:"UNAVAILABLE",reason:String(error),researchOnly:true,executionVerified:false},{status:503,headers:{
+  }catch(error:any){
+    return NextResponse.json({symbol,status:"UNAVAILABLE",reason:String(error?.message||error),diagnostics:Array.isArray(error?.diagnostics)?error.diagnostics:[],researchOnly:true,executionVerified:false},{status:503,headers:{
       "Cache-Control":"private, max-age=1, stale-while-revalidate=3",
       "Server-Timing":`fastquote;dur=${Date.now()-started}`
     }});

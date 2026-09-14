@@ -185,7 +185,7 @@ export default function StockClient({symbol}:{symbol:string}){
       }).catch(()=>{});
     };
     load();
-    const timer=window.setInterval(()=>{if(document.visibilityState==="visible")load()},4000);
+    const timer=window.setInterval(()=>{if(document.visibilityState==="visible")load()},12000);
     return()=>{active=false;quoteRequestSeq.current++;window.clearInterval(timer)};
   },[symbol]);
 
