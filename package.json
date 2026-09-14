@@ -138,7 +138,8 @@
     "test:v9971": "npm run test:v997 && node --test tests/auryn-v9971-price-stability.test.mjs && node scripts/verify-v9971-release.mjs",
     "test:v9972": "node --test tests/auryn-v9972-market-truth-arbiter.test.mjs",
     "test:v998": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node --test tests/auryn-v998-market-price-authority.test.mjs tests/auryn-v998-alpaca-trade-price.test.mjs tests/auryn-v9972-market-truth-arbiter.test.mjs",
-    "test:v9991": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node --test tests/auryn-v9991-portfolio-cockpit.test.mjs tests/auryn-v9991-consolidation.test.mjs tests/auryn-v998-market-price-authority.test.mjs tests/auryn-v998-alpaca-trade-price.test.mjs"
+    "test:v9991": "rm -rf .engine-test && tsc -p tsconfig.engine.json && node --test tests/auryn-v9991-portfolio-cockpit.test.mjs tests/auryn-v9991-consolidation.test.mjs tests/auryn-v998-market-price-authority.test.mjs tests/auryn-v998-alpaca-trade-price.test.mjs",
+    "test:v9992": "node --test tests/auryn-v9992-premium-portfolio-ux.test.mjs tests/auryn-v9991-portfolio-cockpit.test.mjs tests/auryn-v9991-consolidation.test.mjs tests/auryn-v998-market-price-authority.test.mjs tests/auryn-v998-alpaca-trade-price.test.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

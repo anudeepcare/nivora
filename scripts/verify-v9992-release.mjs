@@ -1,0 +1,11 @@
+import fs from "node:fs";
+const must=[".github/workflows/auryn-v996-validation-queue.yml",".github/workflows/nivora-calibration-mature.yml","components/portfolio/PortfolioPulse.tsx","components/portfolio/PortfolioPerformanceChart.tsx","lib/auryn/portfolio-consolidation.ts"];
+for(const f of must)if(!fs.existsSync(f))throw new Error(`Missing ${f}`);
+if(JSON.stringify(JSON.parse(fs.readFileSync("vercel.json","utf8")))!=="{}")throw new Error("vercel.json changed");
+const p=fs.readFileSync("components/portfolio/PortfolioPulse.tsx","utf8");
+if(/Capital Queue/.test(p))throw new Error("Duplicate Capital Queue returned");
+if(/import PortfolioVisualAnalytics/.test(p))throw new Error("Duplicate visual analytics returned");
+if(!/Position Matrix/.test(p)||!/aurynAllocationDonut/.test(p))throw new Error("Premium portfolio surfaces missing");
+const w=fs.readFileSync(".github/workflows/nivora-calibration-mature.yml","utf8");
+if(/AURYN_PRODUCTION_URL|TRADING_LAB_CRON_SECRET/.test(w))throw new Error("Legacy workflow secrets returned");
+console.log("V9.9.9.2 verified: premium portfolio UX, consolidated holdings, hidden workflows; no SQL required.");
