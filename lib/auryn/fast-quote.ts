@@ -4,7 +4,7 @@ import {AlpacaPaperBroker} from "../alpaca-paper";
 // V9.9.8.1 additionally retains the fresh quote candidate instead of discarding it.
 import {marketSessionAt,type MarketSession,type QuoteFreshness} from "../nivora-market-session";
 import {normalizeTwelveQuote} from "../nivora-live-quote";
-import {selectMarketDisplayQuote,type DisplaySession,type DisplayLabel,type MarketPriceCandidate} from "./market-price-authority";
+import {selectMarketDisplayQuote,marketPriceMaxAgeSeconds,type DisplaySession,type DisplayLabel,type MarketPriceCandidate} from "./market-price-authority";
 
 export const MAX_REGULAR_RESEARCH_QUOTE_AGE_SECONDS=180;
 export const MAX_RESEARCH_QUOTE_AGE_SECONDS=15*60;
@@ -31,8 +31,8 @@ function providerSession(body:any,fallback:DisplaySession,crypto=false):DisplayS
  if(body?.is_market_open===true&&fallback==="REGULAR")return "REGULAR";
  return fallback;
 }
-const sessionTradeMaxAge=(session:DisplaySession)=>session==="REGULAR"?180:session==="PRE_MARKET"||session==="AFTER_HOURS"?900:86400;
-const sessionQuoteMaxAge=(session:DisplaySession)=>session==="REGULAR"?90:session==="PRE_MARKET"||session==="AFTER_HOURS"?300:86400;
+const sessionTradeMaxAge=(session:DisplaySession)=>marketPriceMaxAgeSeconds(session);
+const sessionQuoteMaxAge=(session:DisplaySession)=>marketPriceMaxAgeSeconds(session);
 
 async function fromTwelve(symbol:string,key:string,asOf:Date,crypto:boolean){
  if(!key)throw new Error("Twelve Data is not configured.");

@@ -13,7 +13,8 @@ export type MarketDisplayQuote={
 };
 const n=(v:unknown)=>{const x=Number(v);return Number.isFinite(x)&&x>0?x:null};
 const ms=(v:string|null|undefined)=>{if(!v)return NaN;const x=new Date(v).getTime();return Number.isFinite(x)?x:NaN};
-const maxAgeSeconds=(session:DisplaySession)=>session==="REGULAR"?180:(session==="PRE_MARKET"||session==="AFTER_HOURS"||session==="CRYPTO_24X7"?300:900);
+export const marketPriceMaxAgeSeconds=(session:DisplaySession)=>session==="REGULAR"?180:(session==="PRE_MARKET"||session==="AFTER_HOURS"?900:session==="CRYPTO_24X7"?300:900);
+const maxAgeSeconds=marketPriceMaxAgeSeconds;
 const labelFor=(session:DisplaySession):DisplayLabel=>session==="REGULAR"?"LIVE MARKET PRICE":session==="PRE_MARKET"?"PRE-MARKET PRICE":session==="AFTER_HOURS"?"AFTER-HOURS PRICE":session==="CRYPTO_24X7"?"LIVE MARKET PRICE":"LAST OFFICIAL CLOSE";
 
 export function selectMarketDisplayQuote(input:{
