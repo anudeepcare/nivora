@@ -33,7 +33,8 @@ export function buildFundamentalAnalyst(input:FundamentalAnalystInput){
  const fcfYield=fcf!=null&&marketCap!=null&&marketCap>0?fcf/marketCap*100:null;
  const growthModels=["GROWTH_EV_SALES_FCF","AI_INFRA_SOTP_CAPACITY","BANK_PB_ROE_NIM","REIT_FFO_AFFO","BIOTECH_SCENARIO_PIPELINE","ENERGY_CYCLE_NAV","CYCLE_NORMALIZED","GENERAL_RELATIVE"];
  // V9.9.9.12 safety policy: do not publish a generic DCF as fair value for an archetype whose required method is not implemented with its required inputs.
- const decisionGrade=method==="DCF_FCF_EARNINGS"&&fcf!=null&&fcf>0&&revenue!=null&&revenue>0&&marketCap!=null&&marketCap>0&&price!=null&&price>0;
+ const independentCrossChecks=0; // historical/peer/forward-normalized cross-check adapters are not yet source-backed in this snapshot.
+ const decisionGrade=method==="DCF_FCF_EARNINGS"&&independentCrossChecks>=1&&fcf!=null&&fcf>0&&revenue!=null&&revenue>0&&marketCap!=null&&marketCap>0&&price!=null&&price>0;
  const valuationState=decisionGrade?"MEASURED":(fcf!=null||revenue!=null?"PARTIAL":"UNAVAILABLE");
  let fundamentalScenario:any=null;
  if(decisionGrade&&fcf!=null&&revenue!=null&&marketCap!=null&&price!=null){
@@ -47,5 +48,5 @@ export function buildFundamentalAnalyst(input:FundamentalAnalystInput){
  const marginOfSafety=fairValue==null?null:(price!=null&&price>0?(fairValue/price-1)*100:null);
  const valuationScore=marginOfSafety==null?null:score(50+marginOfSafety*1.15);
  const relativeContext={vsHistory:null,vsPeers:null,growthAdjusted:null,fcfYield};
- return{companyDimensions,trajectory,businessModel:input.businessModel??null,method,valuationState,decisionGrade,missingMethodInputs:decisionGrade?[]:growthModels.includes(method)?["method-specific forward/relative valuation inputs required"]:[],fundamentalScenario,fairValue,marginOfSafety,valuationScore,relativeContext};
+ return{companyDimensions,trajectory,independentCrossChecks,businessModel:input.businessModel??null,method,valuationState,decisionGrade,missingMethodInputs:decisionGrade?[]:growthModels.includes(method)?["method-specific forward/relative valuation inputs required"]:[],fundamentalScenario,fairValue,marginOfSafety,valuationScore,relativeContext};
 }

@@ -154,7 +154,8 @@
     "test:v99912": "node --test tests/auryn-v99912-intelligence-fidelity.test.mjs && npm run test:v999111",
     "test:v999121": "node --test tests/auryn-v999121-technical-props.test.mjs && npm run test:v99912",
     "test:v99913": "node --test tests/auryn-v99913-mockup-fidelity.test.mjs && npm run test:v999121",
-    "test:v99914": "node --test tests/auryn-v99914-exact-approved-mock.test.mjs && npm run test:v99913"
+    "test:v99914": "node --test tests/auryn-v99914-exact-approved-mock.test.mjs && npm run test:v99913",
+    "test:v99915": "node --test tests/auryn-v99915-functional-credibility.test.mjs && npm run test:v99914"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

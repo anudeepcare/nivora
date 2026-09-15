@@ -1,0 +1,2 @@
+# AURYN V9.9.9.15 — Functional Credibility
+Fixes the production issues observed after V9.9.9.14: chart ranges now fetch range-specific provider bars, overview action buttons navigate to real research tabs, score rings are replaced by small non-numeric indicators to prevent overlap, generic DCF cannot publish decision-grade fair value without an independent cross-check, partial valuation suppresses numeric score/scenario dollars, and chart labels receive a larger right-side gutter. Existing CIO and Market Truth semantics are unchanged.

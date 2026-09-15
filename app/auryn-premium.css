@@ -611,3 +611,10 @@ html,body{overflow-x:hidden}
 .v99914BottomGrid>article{padding:15px}.v99914BottomGrid .v2AnalystRow{padding:6px 0}.v99914BottomGrid .v2AnalystRow>i{flex-basis:23px;height:23px}
 @media(max-width:1100px){.v99914Hero{grid-template-columns:1fr 1fr}.v99914Hero .v2Structure{grid-column:1/-1}}
 @media(max-width:760px){.v99914Hero{grid-template-columns:1fr}.v99914Ranges{overflow-x:auto}.v99914Hero .v2Structure{grid-column:auto}.v99914ContextBadge{min-width:72px}}
+
+/* V99915 functional credibility */
+.v99915IndicatorIcon{--score:0%;width:34px;height:34px;flex:0 0 34px;display:grid;place-items:center;border-radius:50%;background:conic-gradient(#17855e var(--score),#e8e4dc 0);position:relative}.v99915IndicatorIcon:after{content:"";position:absolute;inset:5px;border-radius:50%;background:#fff}.v99915IndicatorIcon i{position:relative;z-index:1;width:7px;height:7px;border-radius:50%;background:#17855e}.v99915IndicatorIcon.partial{background:conic-gradient(#c57a18 35%,#e8e4dc 0)}.v99915IndicatorIcon.partial i{background:#c57a18}
+.v2AnalystCard header>div:first-child{min-width:0;flex:1}.v2AnalystCard header{gap:10px}.v2CardLead{min-height:42px}.v99914ContextBadge{flex:0 0 auto;max-width:105px}.v2AnalystCard h3,.v2AnalystCard p,.v2MetricStrip small,.v2MetricStrip b{overflow-wrap:anywhere}
+.v99915ChartStage{height:calc(100% - 34px);position:relative;min-height:250px}.v99915ChartStage>.chartCanvas{height:100%}.v99915ChartStage.loading:after{content:"";position:absolute;inset:0;background:rgba(255,255,255,.42);pointer-events:none}.v99915ChartLoading{position:absolute;top:8px;right:8px;z-index:4;padding:5px 8px;border-radius:8px;background:#fff;border:1px solid #e5ded4;font-size:8px;font-weight:800}
+.v2TextAction{display:inline-flex;align-items:center;max-width:100%;white-space:normal;line-height:1.3;text-align:left;padding:4px 0}.v99914BottomGrid>article{overflow:hidden}.v99914BottomGrid .v2AnalystRow small{overflow-wrap:anywhere}
+@media(max-width:760px){.v99915IndicatorIcon{width:30px;height:30px;flex-basis:30px}.v99915ChartStage{min-height:235px}.v99914ContextBadge{max-width:90px}}
