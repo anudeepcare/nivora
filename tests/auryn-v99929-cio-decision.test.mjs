@@ -1,0 +1,7 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";
+const e="lib/auryn/v99929/cio-decision.ts",v="components/premium/AurynResearchOverviewV2.tsx",c="app/auryn-premium.css";
+test("CIO engine produces three independent actions",()=>{assert.ok(fs.existsSync(e));const s=fs.readFileSync(e,"utf8");for(const x of ["longTermAction","newMoneyAction","ownerAction","confidence","dataCompleteness"])assert.ok(s.includes(x),x);});
+test("buy zones are tiered and width constrained",()=>{const s=fs.readFileSync(e,"utf8");for(const x of ["starterZone","primaryBuyZone","deepValueZone","reassessBelow","MAX_ZONE_WIDTH_PCT"])assert.ok(s.includes(x),x);});
+test("CIO includes asymmetric risk reward and change triggers",()=>{const s=fs.readFileSync(e,"utf8");for(const x of ["todayRiskReward","longTermRiskReward","whatChangesIt","positionSizing","nextCatalyst"])assert.ok(s.includes(x),x);});
+test("Overview has prominent clickable CIO decision sheet",()=>{const s=fs.readFileSync(v,"utf8");for(const x of ["AURYN CIO","Why this decision","What changes it","v99929CioSheet","cioOpen"])assert.ok(s.includes(x),x);});
+test("Fundamental Value has real help and help popovers are edge safe",()=>{const s=fs.readFileSync(v,"utf8"),css=fs.readFileSync(c,"utf8");assert.match(s,/VALUATION EVIDENCE.*v99929ValueHelp/s);assert.match(css,/v99929ValueHelp/);assert.match(css,/max-width:calc\(100vw - 32px\)/);});

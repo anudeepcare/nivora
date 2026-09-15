@@ -797,3 +797,14 @@ html,body{overflow-x:hidden}
  .v99928HelpPopover{position:fixed;left:14px;right:14px;bottom:18px;top:auto;transform:none;width:auto;max-width:none}
  .v99928HelpPopover:before{display:none}
 }
+
+/* V9.9.9.29 — CIO decision layer */
+.v99929Cio{margin:16px 0;padding:22px;border:1px solid #d9cdbb;border-radius:22px;background:linear-gradient(115deg,#17140f,#342613 72%,#513516);color:#fff;display:grid;grid-template-columns:.72fr 1.5fr;gap:18px 28px;box-shadow:0 12px 32px rgba(49,35,18,.10)}
+.v99929CioTitle small,.v99929CioActions small,.v99929CioLevels small{font-size:8px;letter-spacing:.13em;font-weight:850;color:#d7ad63}.v99929CioTitle h2{margin:4px 0;font:600 32px/1 var(--auryn-display-font,Georgia,serif);color:#f8dfad}.v99929CioTitle span{font-size:11px;color:#c9c0b3}
+.v99929CioActions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:rgba(255,255,255,.13);border-radius:14px;overflow:hidden}.v99929CioActions span{padding:13px;background:rgba(16,13,9,.45);display:flex;flex-direction:column;gap:5px}.v99929CioActions b{font-size:12px;color:#f6e0b5}
+.v99929CioLevels{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.v99929CioLevels span{padding:11px 13px;border:1px solid rgba(255,255,255,.12);border-radius:12px;display:flex;flex-direction:column;gap:4px}.v99929CioLevels b{font-size:13px;white-space:nowrap}
+.v99929CioButtons{grid-column:1/-1;display:flex;gap:8px}.v99929CioButtons button{padding:9px 13px;border:1px solid rgba(255,255,255,.22);border-radius:99px;background:rgba(255,255,255,.08);color:#fff;font-size:11px;font-weight:700;cursor:pointer}
+.v99929CioBackdrop{position:fixed;inset:0;z-index:200;background:rgba(18,15,11,.36);display:grid;place-items:center;padding:20px;backdrop-filter:blur(4px)}.v99929CioSheet{position:relative;width:min(680px,calc(100vw - 32px));max-height:80vh;overflow:auto;padding:26px;border-radius:22px;background:#fffdf9;box-shadow:0 30px 90px rgba(0,0,0,.25)}.v99929CioSheet>.close{position:absolute;right:15px;top:15px;width:32px;height:32px;border:0;border-radius:50%;font-size:22px}.v99929CioSheet>small{font-size:9px;letter-spacing:.14em;font-weight:850;color:#a16b1b}.v99929CioSheet h2{margin:5px 0 18px;font:600 30px/1.1 var(--auryn-display-font,Georgia,serif)}.v99929CioSheet p{font-size:13px;line-height:1.55;color:#514b43}
+.v99929WhyGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.v99929WhyGrid span{padding:12px;border:1px solid #e5ddd1;border-radius:12px;display:flex;flex-direction:column;gap:4px}.v99929WhyGrid small{font-size:8px;color:#8a8175}.v99929WhyGrid b{font-size:15px}
+.v99929ValueHelp{margin-left:5px}.v99928HelpPopover{max-width:calc(100vw - 32px)}
+@media(max-width:800px){.v99929Cio{grid-template-columns:1fr}.v99929CioActions{grid-template-columns:repeat(2,1fr)}.v99929CioLevels{grid-template-columns:repeat(2,1fr)}.v99929WhyGrid{grid-template-columns:repeat(2,1fr)}}
