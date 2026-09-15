@@ -1,0 +1,2 @@
+# AURYN V9.9.9.14 — Exact Approved Mock
+Production implementation contract based on the final approved mock: compact hero proportions, chart range controls, exact Price Structure labels, dense analyst cards, PARTIAL valuation suppression, scenario evidence state, combined thesis/support nodes, entry range, and dense bottom insight/action cards. No invented valuation/estimate data; missing evidence remains explicit.
