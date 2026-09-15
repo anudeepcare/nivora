@@ -1,0 +1,4 @@
+Hotfix regression tests: 2/2 passed.
+The exact Vercel compile mismatch is removed by using the canonical DisplayLabel type instead of a duplicated literal union.
+Full npm install/build could not be reproduced in the isolated artifact runtime because dependencies are not bundled; Vercel will perform the authoritative Next.js build.
+No SQL required.

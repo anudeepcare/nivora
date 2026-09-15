@@ -3,7 +3,7 @@ import {AlpacaPaperBroker} from "../alpaca-paper";
 // V9.9.8 normalizeAlpacaMarketPrice remains the trade-first semantic baseline;
 // V9.9.8.1 additionally retains the fresh quote candidate instead of discarding it.
 import {marketSessionAt,type MarketSession,type QuoteFreshness} from "../nivora-market-session";
-import {selectMarketDisplayQuote,type DisplaySession,type MarketPriceCandidate} from "./market-price-authority";
+import {selectMarketDisplayQuote,type DisplaySession,type DisplayLabel,type MarketPriceCandidate} from "./market-price-authority";
 
 export const MAX_REGULAR_RESEARCH_QUOTE_AGE_SECONDS=180;
 export const MAX_RESEARCH_QUOTE_AGE_SECONDS=15*60;
@@ -11,7 +11,7 @@ export type ProviderDiagnostic={provider:string;status:"OK"|"RATE_LIMIT"|"TIMEOU
 export type FastResearchQuote={
  symbol:string;price:number;changePct:number|null;provider:"alpaca"|"twelvedata-price"|"coinbase";providerTimestamp:string|null;retrievedAt:string;latencyMs:number;
  ageSeconds:number|null;session:MarketSession|"CRYPTO_24X7";freshness:QuoteFreshness;researchOnly:true;executionVerified:false;
- providerAgreementPct?:number|null;label?:"PRE-MARKET PRICE"|"LIVE MARKET PRICE"|"AFTER-HOURS PRICE"|"LAST MARKET PRICE"|"LAST OFFICIAL CLOSE"|"PRICE VERIFYING";
+ providerAgreementPct?:number|null;label?:DisplayLabel;
  confidence?:"VERIFIED"|"SINGLE_SOURCE"|"CONTESTED";diagnostics?:ProviderDiagnostic[];
 };
 const finitePositive=(v:unknown)=>{const n=Number(v);return Number.isFinite(n)&&n>0?n:null};
@@ -20,7 +20,16 @@ export const isCryptoSymbol=(s:string)=>/^(BTC|ETH|SOL|DOGE|XRP|ADA|AVAX|LINK|LT
 const age=(stamp:string|null,asOf:Date)=>stamp?Math.max(0,Math.round((asOf.getTime()-new Date(stamp).getTime())/1000)):null;
 const classifyError=(e:any):ProviderDiagnostic["status"]=>{const m=String(e?.message||e||"");return /429|rate.?limit|credits|quota/i.test(m)?"RATE_LIMIT":/timeout|aborted/i.test(m)?"TIMEOUT":/stale/i.test(m)?"STALE":/unavailable|not configured/i.test(m)?"UNAVAILABLE":"ERROR"};
 function providerTimestamp(body:any){const epoch=Number(body?.timestamp);return Number.isFinite(epoch)&&epoch>0?new Date(epoch*1000).toISOString():null}
-function providerSession(body:any,fallback:DisplaySession,crypto=false):DisplaySession{if(crypto)return "CRYPTO_24X7";if(body?.is_market_open===true)return "REGULAR";if(body?.is_market_open===false)return "CLOSED";return fallback}
+function providerSession(body:any,fallback:DisplaySession,crypto=false):DisplaySession{
+ if(crypto)return "CRYPTO_24X7";
+ // AURYN exchange calendar owns PRE_MARKET / REGULAR / AFTER_HOURS.
+ // Provider is_market_open commonly means regular session only and must never collapse
+ // an active extended-hours session into CLOSED.
+ if(fallback==="PRE_MARKET"||fallback==="AFTER_HOURS")return fallback;
+ if(fallback==="CLOSED"||fallback==="OVERNIGHT")return fallback;
+ if(body?.is_market_open===true&&fallback==="REGULAR")return "REGULAR";
+ return fallback;
+}
 const sessionTradeMaxAge=(session:DisplaySession)=>session==="REGULAR"?180:session==="PRE_MARKET"||session==="AFTER_HOURS"?900:86400;
 const sessionQuoteMaxAge=(session:DisplaySession)=>session==="REGULAR"?90:session==="PRE_MARKET"||session==="AFTER_HOURS"?300:86400;
 
