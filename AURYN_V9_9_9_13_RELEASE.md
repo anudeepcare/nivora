@@ -1,0 +1,2 @@
+# AURYN V9.9.9.13 — Literal Mockup Fidelity
+Reworks Overview V2 presentation to follow the approved analyst mockup rather than reinterpret it: score rings, trajectory/state badges, six dense Business metrics, five Valuation metrics, five Timing metrics, Current-aware Scenario Spectrum with Bear/Base/Bull deltas and case cards, Decision Map zones/current marker/collision connectors, and concise analyst rows/actions for Catalysts/Risks/What's Changed/AURYN View. Underlying CIO, Market Truth and V9.9.9.12 valuation safety remain unchanged.
