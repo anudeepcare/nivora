@@ -36,7 +36,7 @@ const sessionQuoteMaxAge=(session:DisplaySession)=>session==="REGULAR"?90:sessio
 
 async function fromTwelve(symbol:string,key:string,asOf:Date,crypto:boolean){
  if(!key)throw new Error("Twelve Data is not configured.");
- const hint=providerMarketHint(symbol),url=`https://api.twelvedata.com/quote?symbol=${encodeURIComponent(symbol)}${!crypto&&hint.exchange?`&exchange=${encodeURIComponent(hint.exchange)}`:""}${!crypto?"&prepost=true":""}&apikey=${key}`;
+ const hint=providerMarketHint(symbol),url=`https://api.twelvedata.com/quote?symbol=${encodeURIComponent(symbol)}${!crypto&&hint.exchange?`&exchange=${encodeURIComponent(hint.exchange)}`:""}${!crypto?"&interval=1min&prepost=true":""}&apikey=${key}`;
  const r=await fetch(url,{cache:"no-store",signal:AbortSignal.timeout(3500)}),body=await r.json().catch(()=>null);
  if(!r.ok||body?.status==="error")throw new Error(`${r.status} ${body?.message||"Twelve quote unavailable"}`);
  const normalized=normalizeTwelveQuote(body,asOf),price=finitePositive(normalized.price),stamp=normalized.providerTimestamp,a=age(stamp,asOf);

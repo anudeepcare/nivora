@@ -1,0 +1,2 @@
+# AURYN V9.9.9.19 — Intraday Premarket Price Authority
+V18 requested `prepost=true` but Twelve `/quote` defaults to `interval=1day`; Twelve documents real-time extended-hours pre/post as available only on supported intraday intervals (1min/5min/15min/30min). V19 explicitly requests `interval=1min&prepost=true`, keeps normalized extended_price/extended_timestamp and session authority, and surfaces provider rejection diagnostics in the price-verifying detail so entitlement/rate-limit/staleness failures are visible instead of opaque.

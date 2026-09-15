@@ -160,6 +160,7 @@ export default function StockClient({symbol}:{symbol:string}){
   const[liveQuote,setLiveQuote]=useState<any>(null);
   const[fastQuote,setFastQuote]=useState<any>(null);
   const[stableDisplayQuote,setStableDisplayQuote]=useState<any>(null);
+  const[quoteDiagnostic,setQuoteDiagnostic]=useState<string>("");
   const quoteRequestSeq=useRef(0);
   const[canonicalV935,setCanonicalV935]=useState<any>(null);
   const[liveMarketContext,setLiveMarketContext]=useState<any>(null);
@@ -184,12 +185,12 @@ export default function StockClient({symbol}:{symbol:string}){
     }catch{}
     const load=()=>{
       const seq=++quoteRequestSeq.current;
-      return sharedJson(`/api/quote/${encodeURIComponent(symbol)}`,undefined,2200).then((q:any)=>{
+      return fetch(`/api/quote/${encodeURIComponent(symbol)}`,{cache:"no-store"}).then(async r=>{const q=await r.json();if(!r.ok||q?.error){const ds=Array.isArray(q?.diagnostics)?q.diagnostics.map((d:any)=>`${d.provider}: ${d.status}${d.detail?` (${d.detail})`:""}`).join(" · "):String(q?.reason||q?.error||"provider unavailable");throw new Error(ds)}return q}).then((q:any)=>{
         if(!active||seq!==quoteRequestSeq.current||!q?.price)return;
         const next={...q,cachedAt:Date.now()};
-        setFastQuote(next);setStableDisplayQuote(next);
+        setQuoteDiagnostic("");setFastQuote(next);setStableDisplayQuote(next);
         try{sessionStorage.setItem(storageKey,JSON.stringify(next))}catch{}
-      }).catch(()=>{});
+      }).catch((e:any)=>{if(active&&seq===quoteRequestSeq.current)setQuoteDiagnostic(String(e?.message||"market provider unavailable"))});
     };
     load();
     const timer=window.setInterval(()=>{if(document.visibilityState==="visible")load()},12000);
@@ -579,7 +580,7 @@ export default function StockClient({symbol}:{symbol:string}){
     const partialDetail=marketTruth?`${String(marketTruth.reason||"")}${marketTruth.decisionPriceAsOf?` · price as of ${new Date(marketTruth.decisionPriceAsOf).toLocaleString()}`:""}`:"Price verification loads independently from the research engine.";
     const partialChange=Number(liveQuote?.changePct);
     return <div className="aurynStockPage aurynProgressiveStock">
-      <StockSecurityHeader company={symbol} symbol={symbol} price={researchDisplayPrice} changePct={researchDisplayChangePct} status={stableLiveFresh?String(stableDisplayQuote?.label||"LIVE MARKET PRICE"):liveSession?"PRICE VERIFYING":partialStatus} detail={stableLiveFresh?`Updated ${new Date(stableDisplayQuote.providerTimestamp||stableDisplayQuote.retrievedAt||stableDisplayQuote.cachedAt).toLocaleTimeString()} · ${String(stableDisplayQuote.provider||"market provider")} · ${String(stableDisplayQuote.confidence||"SINGLE_SOURCE").replaceAll("_"," ").toLowerCase()} · execution verification runs separately.`:liveSession?"AURYN is waiting for a fresh session-appropriate market price; canonical research price is not substituted.":partialDetail} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
+      <StockSecurityHeader company={symbol} symbol={symbol} price={researchDisplayPrice} changePct={researchDisplayChangePct} status={stableLiveFresh?String(stableDisplayQuote?.label||"LIVE MARKET PRICE"):liveSession?"PRICE VERIFYING":partialStatus} detail={stableLiveFresh?`Updated ${new Date(stableDisplayQuote.providerTimestamp||stableDisplayQuote.retrievedAt||stableDisplayQuote.cachedAt).toLocaleTimeString()} · ${String(stableDisplayQuote.provider||"market provider")} · ${String(stableDisplayQuote.confidence||"SINGLE_SOURCE").replaceAll("_"," ").toLowerCase()} · execution verification runs separately.`:liveSession?`AURYN is waiting for a fresh session-appropriate market price; canonical research price is not substituted.${quoteDiagnostic?` Provider status: ${quoteDiagnostic}`:""}`:partialDetail} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
       {durable?.action?<section className="v935DurableResearch" data-canonical-snapshot={canonicalV935?.snapshotId||""}>
         <div><small>LAST VERIFIED AURYN DECISION</small><h2>{String(durable.action).replaceAll("_"," ")}</h2><p>{durable.state==="STALE_VERIFIED"?"Verified research is preserved while AURYN refreshes the newest completed-bar evidence.":"Verified research is available while deeper evidence refreshes in the background."}</p></div>
         <div className="v935DurableActions"><span>OWNER <b>{durable.ownerAction||"—"}</b></span><span>LONG TERM <b>{durable.longTermAction||"—"}</b></span><span>SETUP <b>{String(durable.setupState||"—").replaceAll("_"," ")}</b></span></div>
@@ -830,7 +831,7 @@ export default function StockClient({symbol}:{symbol:string}){
     :stableLiveFresh
     ?`Updated ${new Date(stableDisplayQuote.providerTimestamp||stableDisplayQuote.retrievedAt||stableDisplayQuote.cachedAt).toLocaleTimeString()} · ${String(stableDisplayQuote.provider||"market provider")} · ${String(stableDisplayQuote.confidence||"SINGLE_SOURCE").replaceAll("_"," ").toLowerCase()} · execution verification runs separately.`
     :liveSession
-      ?"AURYN is waiting for a fresh session-appropriate market price; canonical research price is not substituted."
+      ?`AURYN is waiting for a fresh session-appropriate market price; canonical research price is not substituted.${quoteDiagnostic?` Provider status: ${quoteDiagnostic}`:""}`
     :marketTruth
       ?`${String(marketTruth.reason||"")}${(marketTruth.decisionPriceAsOf||marketTruth.asOf)?` · price as of ${new Date(marketTruth.decisionPriceAsOf||marketTruth.asOf).toLocaleString()}`:""}${marketTruth.providerAgreementPct!=null?` · provider gap ${Number(marketTruth.providerAgreementPct).toFixed(2)}%`:""}`
       :"AURYN is verifying independent market sources before displaying a current price.";
