@@ -3,6 +3,7 @@ import {AlpacaPaperBroker} from "../alpaca-paper";
 // V9.9.8 normalizeAlpacaMarketPrice remains the trade-first semantic baseline;
 // V9.9.8.1 additionally retains the fresh quote candidate instead of discarding it.
 import {marketSessionAt,type MarketSession,type QuoteFreshness} from "../nivora-market-session";
+import {normalizeTwelveQuote} from "../nivora-live-quote";
 import {selectMarketDisplayQuote,type DisplaySession,type DisplayLabel,type MarketPriceCandidate} from "./market-price-authority";
 
 export const MAX_REGULAR_RESEARCH_QUOTE_AGE_SECONDS=180;
@@ -36,15 +37,20 @@ const sessionQuoteMaxAge=(session:DisplaySession)=>session==="REGULAR"?90:sessio
 async function fromTwelve(symbol:string,key:string,asOf:Date,crypto:boolean){
  if(!key)throw new Error("Twelve Data is not configured.");
  const hint=providerMarketHint(symbol),url=`https://api.twelvedata.com/quote?symbol=${encodeURIComponent(symbol)}${!crypto&&hint.exchange?`&exchange=${encodeURIComponent(hint.exchange)}`:""}&apikey=${key}`;
- const r=await fetch(url,{cache:"no-store",signal:AbortSignal.timeout(3500)}),body=await r.json().catch(()=>null),price=finitePositive(body?.close??body?.price);
- if(!r.ok||body?.status==="error"||price==null)throw new Error(`${r.status} ${body?.message||"Twelve quote unavailable"}`);
- const stamp=providerTimestamp(body),a=age(stamp,asOf),fallback=(crypto?"CRYPTO_24X7":marketSessionAt(asOf)) as DisplaySession,session=providerSession(body,fallback,crypto);
+ const r=await fetch(url,{cache:"no-store",signal:AbortSignal.timeout(3500)}),body=await r.json().catch(()=>null);
+ if(!r.ok||body?.status==="error")throw new Error(`${r.status} ${body?.message||"Twelve quote unavailable"}`);
+ const normalized=normalizeTwelveQuote(body,asOf),price=finitePositive(normalized.price),stamp=normalized.providerTimestamp,a=age(stamp,asOf);
+ if(price==null)throw new Error("Twelve quote has no usable current price");
  if(!stamp||a==null)throw new Error("Twelve quote has no timestamp");
- const lastMarketCandidate={symbol,price,provider:"twelvedata-price",providerTimestamp:stamp,retrievedAt:asOf.toISOString(),session,freshness:a<=sessionTradeMaxAge(session)?"LIVE":"RECENT",kind:"TRADE"} as MarketPriceCandidate;
- const candidate=a<=sessionTradeMaxAge(session)?lastMarketCandidate:null;
- return{candidate,lastMarketCandidate,changePct:Number.isFinite(Number(body?.percent_change))?Number(body.percent_change):null};
+ const fallback=(crypto?"CRYPTO_24X7":marketSessionAt(asOf)) as DisplaySession,session=providerSession(body,fallback,crypto);
+ // normalizeTwelveQuote understands Twelve's split extended-hours payload:
+ // close/timestamp = regular session, extended_price/extended_timestamp = current pre/post market.
+ const kind:MarketPriceCandidate["kind"]="TRADE";
+ const maxAge=normalized.isExtendedHours?sessionTradeMaxAge(session):sessionTradeMaxAge(session);
+ const lastMarketCandidate={symbol,price,provider:"twelvedata-price",providerTimestamp:stamp,retrievedAt:asOf.toISOString(),session,freshness:a<=maxAge?"LIVE":"RECENT",kind} as MarketPriceCandidate;
+ const candidate=a<=maxAge?lastMarketCandidate:null;
+ return{candidate,lastMarketCandidate,changePct:normalized.changePct,normalized,extendedPrice:body?.extended_price??null,extendedTimestamp:body?.extended_timestamp??null};
 }
-
 
 async function fromCoinbase(symbol:string,asOf:Date){
  const normalized=normalizeCryptoSymbol(symbol),[base,quote]=normalized.split("/"),product=`${base}-${quote==="USDT"?"USD":quote}`;
