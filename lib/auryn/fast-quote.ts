@@ -89,7 +89,13 @@ export async function loadFastResearchQuote(input:{symbol:string;twelveKey?:stri
  if(!candidates.length){const err=new Error("No usable market price. "+diagnostics.map(d=>`${d.provider}:${d.status}`).join(", "));(err as any).diagnostics=diagnostics;throw err}
  const session=(crypto?"CRYPTO_24X7":marketSessionAt(asOf)) as DisplaySession;
  // Prefer executed trades for cross-provider agreement. If only one provider is healthy, it is allowed to display.
- const trades=candidates.filter(c=>c.kind==="TRADE"),pool=trades.length?trades:candidates;
+ const trades=candidates.filter(c=>c.kind==="TRADE");
+ // During PRE_MARKET / AFTER_HOURS, do not let a stale prior-session trade hide a fresh quote midpoint.
+ // The authority function will independently reject stale candidates by timestamp/session.
+ const activeSessionPool=(session==="PRE_MARKET"||session==="AFTER_HOURS")
+   ?candidates.filter(c=>c.session===session&&(c.kind==="TRADE"||c.kind==="QUOTE_MID"))
+   :trades.length?trades:candidates;
+ const pool=activeSessionPool.length?activeSessionPool:candidates;
  const authority=selectMarketDisplayQuote({symbol,session,asOf:asOf.toISOString(),candidates:pool});
  if(authority.price==null){const err=new Error(`${authority.label}: ${authority.reason}`);(err as any).diagnostics=diagnostics;throw err}
  const chosen=pool.find(q=>q.provider===authority.source&&q.providerTimestamp===authority.asOf)??pool[0],baseProvider=chosen.provider.startsWith("alpaca")?"alpaca":chosen.provider==="coinbase"?"coinbase":"twelvedata-price";

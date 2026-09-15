@@ -618,3 +618,10 @@ html,body{overflow-x:hidden}
 .v99915ChartStage{height:calc(100% - 34px);position:relative;min-height:250px}.v99915ChartStage>.chartCanvas{height:100%}.v99915ChartStage.loading:after{content:"";position:absolute;inset:0;background:rgba(255,255,255,.42);pointer-events:none}.v99915ChartLoading{position:absolute;top:8px;right:8px;z-index:4;padding:5px 8px;border-radius:8px;background:#fff;border:1px solid #e5ded4;font-size:8px;font-weight:800}
 .v2TextAction{display:inline-flex;align-items:center;max-width:100%;white-space:normal;line-height:1.3;text-align:left;padding:4px 0}.v99914BottomGrid>article{overflow:hidden}.v99914BottomGrid .v2AnalystRow small{overflow-wrap:anywhere}
 @media(max-width:760px){.v99915IndicatorIcon{width:30px;height:30px;flex-basis:30px}.v99915ChartStage{min-height:235px}.v99914ContextBadge{max-width:90px}}
+
+/* V99916 recovery: readable insights and stable desktop density */
+.v99916Insights{grid-template-columns:1fr 1fr 1fr 1.12fr!important;gap:14px!important}.v99916Insights>article{min-height:310px!important;padding:20px!important}.v99916Insights>article>small{font-size:9px!important}.v99916Insights h3{font-size:18px!important;margin:12px 0!important}.v99916Insights p{font-size:12px!important;line-height:1.55!important}.v99916Insights .v2AnalystRow{gap:10px!important;padding:10px 0!important}.v99916Insights .v2AnalystRow b{font-size:10px!important}.v99916Insights .v2AnalystRow small{font-size:9px!important;line-height:1.4!important}.v99916Insights .v2TextAction{font-size:10px!important;padding:8px 0!important}
+.v2DecisionVisuals>article{min-height:430px}.v99914PartialScenario{min-height:260px}.v99914PartialScenario>b{font-size:16px}.v99914PartialScenario p{font-size:11px;max-width:600px}.v2DecisionMap p{font-size:11px!important;line-height:1.5!important}
+[data-auryn-section]{scroll-margin-top:110px}
+@media(max-width:1100px){.v99916Insights{grid-template-columns:1fr 1fr!important}.v99916Insights>article{min-height:260px!important}}
+@media(max-width:760px){.v99916Insights{grid-template-columns:1fr!important}.v99916Insights>article{min-height:auto!important}.v2DecisionVisuals>article{min-height:auto}}
