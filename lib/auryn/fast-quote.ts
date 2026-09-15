@@ -51,6 +51,17 @@ async function fromTwelve(symbol:string,key:string,asOf:Date,crypto:boolean){
  const candidate=a<=maxAge?lastMarketCandidate:null;
  return{candidate,lastMarketCandidate,changePct:normalized.changePct,normalized,extendedPrice:body?.extended_price??null,extendedTimestamp:body?.extended_timestamp??null};
 }
+async function fromTwelveIntradayLast(symbol:string,key:string,asOf:Date){
+ if(!key)throw new Error("Twelve Data is not configured.");
+ const hint=providerMarketHint(symbol),url=`https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(symbol)}&interval=1min&outputsize=3&timezone=UTC&prepost=true${hint.exchange?`&exchange=${encodeURIComponent(hint.exchange)}`:""}&apikey=${key}`;
+ const r=await fetch(url,{cache:"no-store",signal:AbortSignal.timeout(3500)}),body=await r.json().catch(()=>null);
+ if(!r.ok||body?.status==="error")throw new Error(`${r.status} ${body?.message||"Twelve intraday unavailable"}`);
+ const row=Array.isArray(body?.values)?body.values[0]:null,price=finitePositive(row?.close),rawTime=String(row?.datetime||"");
+ const stamp=rawTime?(rawTime.includes("T")?rawTime:rawTime.replace(" ","T")+"Z"):null,a=age(stamp,asOf),session=marketSessionAt(asOf) as DisplaySession;
+ if(price==null||!stamp||a==null)throw new Error("Twelve intraday has no usable timestamped price");
+ const candidate:MarketPriceCandidate={symbol,price,provider:"twelve-intraday",providerTimestamp:stamp,retrievedAt:asOf.toISOString(),session,freshness:a<=marketPriceMaxAgeSeconds(session)?"LIVE":"RECENT",kind:"TRADE"};
+ return{candidate:a<=marketPriceMaxAgeSeconds(session)?candidate:null,lastMarketCandidate:candidate,changePct:null,intradayAgeSeconds:a};
+}
 
 async function fromCoinbase(symbol:string,asOf:Date){
  const normalized=normalizeCryptoSymbol(symbol),[base,quote]=normalized.split("/"),product=`${base}-${quote==="USDT"?"USD":quote}`;
@@ -86,7 +97,7 @@ export async function loadFastResearchQuote(input:{symbol:string;twelveKey?:stri
  const jobs:{provider:string;run:()=>Promise<any>}[]=[];
  if(crypto)jobs.push({provider:"coinbase",run:()=>fromCoinbase(symbol,asOf)});
  if(!crypto&&input.alpacaKey&&input.alpacaSecret)jobs.push({provider:"alpaca",run:()=>fromAlpaca(symbol,input.alpacaKey!,input.alpacaSecret!,asOf)});
- if(input.twelveKey)jobs.push({provider:"twelvedata-price",run:()=>fromTwelve(symbol,input.twelveKey!,asOf,crypto)});
+ if(input.twelveKey){jobs.push({provider:"twelvedata-price",run:()=>fromTwelve(symbol,input.twelveKey!,asOf,crypto)});if(!crypto)jobs.push({provider:"twelve-intraday",run:()=>fromTwelveIntradayLast(symbol,input.twelveKey!,asOf)});}
  if(!jobs.length)throw new Error("No fast market-data provider is configured.");
  const settled=await Promise.all(jobs.map(async j=>{try{return{provider:j.provider,ok:true,value:await j.run()}}catch(error:any){return{provider:j.provider,ok:false,error}}}));
  const diagnostics:ProviderDiagnostic[]=settled.map(x=>{if(!x.ok)return{provider:x.provider,status:classifyError((x as any).error),detail:String((x as any).error?.message||(x as any).error)};const v=(x as any).value,c=v.candidate??v.candidates?.[0]??v.lastMarketCandidate;return{provider:x.provider,status:"OK",detail:v.normalized?.isExtendedHours?"fresh extended-hours market data available":"fresh market data available",price:c?.price??null,ageSeconds:age(c?.providerTimestamp??null,asOf),kind:c?.kind??null}});

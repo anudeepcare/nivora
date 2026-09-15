@@ -185,7 +185,7 @@ export default function StockClient({symbol}:{symbol:string}){
     }catch{}
     const load=()=>{
       const seq=++quoteRequestSeq.current;
-      return fetch(`/api/quote/${encodeURIComponent(symbol)}`,{cache:"no-store"}).then(async r=>{const q=await r.json();if(!r.ok||q?.error){const ds=Array.isArray(q?.diagnostics)?q.diagnostics.map((d:any)=>`${d.provider}: ${d.status}${d.detail?` (${d.detail})`:""}`).join(" · "):String(q?.reason||q?.error||"provider unavailable");throw new Error(ds)}return q}).then((q:any)=>{
+      return fetch(`/api/quote/${encodeURIComponent(symbol)}`,{cache:"no-store"}).then(async r=>{const q=await r.json();if(!r.ok||q?.error){const ds=Array.isArray(q?.diagnostics)?q.diagnostics.map((d:any)=>`${d.provider}: ${d.status}${d.price!=null?` $${Number(d.price).toFixed(2)}`:""}${d.ageSeconds!=null?` age ${Math.round(Number(d.ageSeconds))}s`:""}${d.detail?` (${d.detail})`:""}`).join(" · "):"";throw new Error(`${String(q?.reason||q?.error||"provider unavailable")}${ds?` · ${ds}`:""}`)}return q}).then((q:any)=>{
         if(!active||seq!==quoteRequestSeq.current||!q?.price)return;
         const next={...q,cachedAt:Date.now()};
         setQuoteDiagnostic("");setFastQuote(next);setStableDisplayQuote(next);

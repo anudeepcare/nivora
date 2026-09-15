@@ -26,11 +26,13 @@ export function selectMarketDisplayQuote(input:{
    const p=n(input.officialClose?.price);
    if(p!=null&&Number.isFinite(ms(input.officialClose?.asOf)))return{symbol,price:p,session:input.session,label:"LAST OFFICIAL CLOSE",asOf:input.officialClose!.asOf,source:input.officialClose!.source,freshness:"RECENT",confidence:"VERIFIED",providerAgreementPct:null,reason:"Market closed; displaying the last official close."};
  }
- const valid=(input.candidates||[]).filter(c=>{
+ const validRaw=(input.candidates||[]).filter(c=>{
    if(String(c.symbol||"").toUpperCase()!==symbol||n(c.price)==null||c.session!==input.session)return false;
    const t=ms(c.providerTimestamp);if(!Number.isFinite(t)||!Number.isFinite(now)||t>now+5000)return false;
    const age=(now-t)/1000;return age>=0&&age<=maxAgeSeconds(input.session)&&c.freshness!=="STALE";
  }).sort((a,b)=>ms(b.providerTimestamp)-ms(a.providerTimestamp));
+ const family=(p:string)=>p.startsWith("twelve")||p.startsWith("twelvedata")?"twelvedata":p.startsWith("alpaca")?"alpaca":p;
+ const valid=validRaw.filter((c,i,all)=>all.findIndex(x=>family(x.provider)===family(c.provider))===i);
  if(!valid.length){
    // Active sessions never promote a stale morning/regular-session observation to the primary price.
    // A regular close may be supplied separately as reference context, but not as current pre/after-hours price.

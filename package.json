@@ -160,7 +160,8 @@
     "test:v99917": "node --test tests/auryn-v99917-twelve-extended-price.test.mjs && npm run test:v99916 && npm run test:v9342",
     "test:v99918": "node --test tests/auryn-v99918-twelve-prepost-contract.test.mjs && npm run test:v99917",
     "test:v99919": "node --test tests/auryn-v99919-twelve-intraday-quote-contract.test.mjs && npm run test:v99918",
-    "test:v99920": "node --test tests/auryn-v99920-price-freshness-unification.test.mjs && npm run test:v99919"
+    "test:v99920": "node --test tests/auryn-v99920-price-freshness-unification.test.mjs && npm run test:v99919",
+    "test:v99921": "node --test tests/auryn-v99921-twelve-intraday-fallback.test.mjs tests/auryn-v99921-provider-family-dedupe.test.mjs && npm run test:v99920"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",
