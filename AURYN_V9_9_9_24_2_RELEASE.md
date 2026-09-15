@@ -1,0 +1,2 @@
+# AURYN V9.9.9.24.2 — QuoteFreshness Compile Hotfix
+`FastResearchQuote.freshness` uses the existing `QuoteFreshness` contract: LIVE | STALE | LAST_TRADE. V24 incorrectly introduced RECENT in the LAST_AVAILABLE return branch. V24.2 uses LAST_TRADE for the underlying freshness while retaining LAST_AVAILABLE as the separate user-facing display state. No provider selection, price selection, refresh timing, execution gating, or UX state behavior changes.

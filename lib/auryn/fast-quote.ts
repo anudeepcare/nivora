@@ -129,7 +129,7 @@ export async function loadFastResearchQuote(input:{symbol:string;twelveKey?:stri
    const lastAge=lastAvailable?age(lastAvailable.providerTimestamp,asOf):null;
    if(lastAvailable&&lastAge!=null&&lastAge<=86400){
      const baseProvider=lastAvailable.provider.startsWith("alpaca")?"alpaca":lastAvailable.provider==="coinbase"?"coinbase":"twelvedata-price";
-     return{symbol,price:lastAvailable.price,changePct:null,provider:baseProvider as any,providerTimestamp:lastAvailable.providerTimestamp,retrievedAt:asOf.toISOString(),latencyMs:Math.max(0,Date.now()-started),ageSeconds:lastAge,session:session as any,freshness:"RECENT",researchOnly:true,executionVerified:false,providerAgreementPct:null,label:"LAST MARKET PRICE",confidence:"SINGLE_SOURCE",displayState:"LAST_AVAILABLE",diagnostics};
+     return{symbol,price:lastAvailable.price,changePct:null,provider:baseProvider as any,providerTimestamp:lastAvailable.providerTimestamp,retrievedAt:asOf.toISOString(),latencyMs:Math.max(0,Date.now()-started),ageSeconds:lastAge,session:session as any,freshness:"LAST_TRADE",researchOnly:true,executionVerified:false,providerAgreementPct:null,label:"LAST MARKET PRICE",confidence:"SINGLE_SOURCE",displayState:"LAST_AVAILABLE",diagnostics};
    }
    const err=new Error(`${authority.label}: ${authority.reason}`);(err as any).diagnostics=diagnostics;throw err
  }

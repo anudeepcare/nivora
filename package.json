@@ -165,7 +165,8 @@
     "test:v99922": "node --test tests/auryn-v99922-price-provider-fallback.test.mjs && npm run test:v99921",
     "test:v99923": "node --test tests/auryn-v99923-reference-price-fallback.test.mjs && npm run test:v99922",
     "test:v99924": "node --test tests/auryn-v99924-price-state-machine.test.mjs && npm run test:v99923",
-    "test:v999241": "node --test tests/auryn-v999241-compile-hotfix.test.mjs && npm run test:v99924"
+    "test:v999241": "node --test tests/auryn-v999241-compile-hotfix.test.mjs && npm run test:v99924",
+    "test:v999242": "node --test tests/auryn-v999242-compile-hotfix.test.mjs && npm run test:v999241"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",
