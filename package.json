@@ -157,7 +157,8 @@
     "test:v99914": "node --test tests/auryn-v99914-exact-approved-mock.test.mjs && npm run test:v99913",
     "test:v99915": "node --test tests/auryn-v99915-functional-credibility.test.mjs && npm run test:v99914",
     "test:v99916": "node --test tests/auryn-v99916-recovery.test.mjs && npm run test:v99915",
-    "test:v99917": "node --test tests/auryn-v99917-twelve-extended-price.test.mjs && npm run test:v99916 && npm run test:v9342"
+    "test:v99917": "node --test tests/auryn-v99917-twelve-extended-price.test.mjs && npm run test:v99916 && npm run test:v9342",
+    "test:v99918": "node --test tests/auryn-v99918-twelve-prepost-contract.test.mjs && npm run test:v99917"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

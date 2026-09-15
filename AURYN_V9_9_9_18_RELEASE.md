@@ -1,0 +1,2 @@
+# AURYN V9.9.9.18 — Permanent Twelve Pre/Post Contract Fix
+Root cause confirmed against Twelve Data's current official API contract: extended-hours fields are returned only when `prepost=true` is requested. V9.9.9.17 correctly normalized `extended_price` and `extended_timestamp` but the request never asked Twelve to return them. V9.9.9.18 adds `prepost=true` to the U.S. equity `/quote` request and intraday 1D/1W chart requests, retains session-aware authority and Alpaca quote-mid fallback, and enriches provider diagnostics. Execution verification remains separate.

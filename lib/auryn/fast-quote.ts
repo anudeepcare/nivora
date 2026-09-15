@@ -36,7 +36,7 @@ const sessionQuoteMaxAge=(session:DisplaySession)=>session==="REGULAR"?90:sessio
 
 async function fromTwelve(symbol:string,key:string,asOf:Date,crypto:boolean){
  if(!key)throw new Error("Twelve Data is not configured.");
- const hint=providerMarketHint(symbol),url=`https://api.twelvedata.com/quote?symbol=${encodeURIComponent(symbol)}${!crypto&&hint.exchange?`&exchange=${encodeURIComponent(hint.exchange)}`:""}&apikey=${key}`;
+ const hint=providerMarketHint(symbol),url=`https://api.twelvedata.com/quote?symbol=${encodeURIComponent(symbol)}${!crypto&&hint.exchange?`&exchange=${encodeURIComponent(hint.exchange)}`:""}${!crypto?"&prepost=true":""}&apikey=${key}`;
  const r=await fetch(url,{cache:"no-store",signal:AbortSignal.timeout(3500)}),body=await r.json().catch(()=>null);
  if(!r.ok||body?.status==="error")throw new Error(`${r.status} ${body?.message||"Twelve quote unavailable"}`);
  const normalized=normalizeTwelveQuote(body,asOf),price=finitePositive(normalized.price),stamp=normalized.providerTimestamp,a=age(stamp,asOf);
@@ -89,7 +89,7 @@ export async function loadFastResearchQuote(input:{symbol:string;twelveKey?:stri
  if(input.twelveKey)jobs.push({provider:"twelvedata-price",run:()=>fromTwelve(symbol,input.twelveKey!,asOf,crypto)});
  if(!jobs.length)throw new Error("No fast market-data provider is configured.");
  const settled=await Promise.all(jobs.map(async j=>{try{return{provider:j.provider,ok:true,value:await j.run()}}catch(error:any){return{provider:j.provider,ok:false,error}}}));
- const diagnostics:ProviderDiagnostic[]=settled.map(x=>x.ok?{provider:x.provider,status:"OK",detail:"fresh market data available"}:{provider:x.provider,status:classifyError((x as any).error),detail:String((x as any).error?.message||(x as any).error)});
+ const diagnostics:ProviderDiagnostic[]=settled.map(x=>{if(!x.ok)return{provider:x.provider,status:classifyError((x as any).error),detail:String((x as any).error?.message||(x as any).error)};const v=(x as any).value,c=v.candidate??v.candidates?.[0]??v.lastMarketCandidate;return{provider:x.provider,status:"OK",detail:v.normalized?.isExtendedHours?"fresh extended-hours market data available":"fresh market data available",price:c?.price??null,ageSeconds:age(c?.providerTimestamp??null,asOf),kind:c?.kind??null}});
  const candidates:MarketPriceCandidate[]=[],changeByProvider=new Map<string,number|null>();
  for(const x of settled)if(x.ok){const v=(x as any).value;if(v.candidate)candidates.push(v.candidate);if(v.candidates)candidates.push(...v.candidates);if(v.lastMarketCandidate&&!candidates.some(c=>c.provider===v.lastMarketCandidate.provider&&c.providerTimestamp===v.lastMarketCandidate.providerTimestamp))candidates.push(v.lastMarketCandidate);changeByProvider.set(x.provider,v.changePct??null)}
  if(!candidates.length){const err=new Error("No usable market price. "+diagnostics.map(d=>`${d.provider}:${d.status}`).join(", "));(err as any).diagnostics=diagnostics;throw err}
