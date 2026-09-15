@@ -14,6 +14,10 @@ const n=(v:any)=>{if(v==null||v==="")return null;const x=Number(v);return Number
 const money=(v:any)=>n(v)==null?"—":formatMoney(Number(v));
 const tone=(s:any)=>/STRONG_BUY|BUY|ADD|ATTRACTIVE|BULL|TRENDING|READY|CONFIRMED/.test(String(s||"").toUpperCase())?"good":/AVOID|SELL|EXIT|REDUCE|UNATTRACTIVE|DAMAGED|FAILED/.test(String(s||"").toUpperCase())?"bad":"mid";
 const scoreBand=(x:number|null)=>x==null?"Unavailable":x>=75?"Strong":x>=60?"Constructive":x>=45?"Mixed":"Weak";
+const companyBand=(x:number|null)=>x==null?"EVIDENCE PENDING":x>=85?"ELITE COMPOUNDER":x>=72?"HIGH QUALITY":x>=58?"SOLID":x>=43?"MIXED":"CHALLENGED";
+const valueBand=(x:number|null)=>x==null?"UNAVAILABLE":x>=75?"ATTRACTIVE":x>=60?"REASONABLE":x>=45?"FAIR / RICH":"EXPENSIVE";
+const timingBand=(x:number|null)=>x==null?"UNAVAILABLE":x>=75?"STRONG":x>=60?"CONSTRUCTIVE":x>=45?"MIXED":"DEFENSIVE";
+
 const scenarioValue=(leg:any)=>{const lo=n(leg?.targetLow),hi=n(leg?.targetHigh);if(lo!=null&&hi!=null)return{value:(lo+hi)/2,range:Math.abs(hi-lo)>.01?`${money(lo)} – ${money(hi)}`:null};if(lo!=null)return{value:lo,range:null};if(hi!=null)return{value:hi,range:null};return{value:null,range:null};};
 const delta=(from:number|null,to:number|null)=>from!=null&&to!=null&&from>0?(to/from-1)*100:null;
 const normalizedPosition=(value:number|null,values:Array<number|null>,minPct=4,maxPct=96)=>{if(value==null)return null;const finite=values.filter((x):x is number=>x!=null&&Number.isFinite(x));if(finite.length<2)return 50;const lo=Math.min(...finite),hi=Math.max(...finite);if(hi<=lo)return 50;return minPct+((value-lo)/(hi-lo))*(maxPct-minPct);};
@@ -40,7 +44,7 @@ function Pulse({label,value,sub,toneName="",help,score}:{label:string;value:stri
 function SignaturePulse({label,value,sub,toneName="",help,score}:{label:string;value:string;sub:string;toneName?:string;help:string;score?:number|null}){return <article className="v941PulseMetric"><small>{label}<MetricInfo title={label} description={help} score={score==null?undefined:score}/></small><b className={toneName}>{value}</b><span>{sub}</span></article>}
 function LadderItem({label,value,sub,toneName=""}:{label:string;value:string;sub?:string;toneName?:string}){return <span className={`v937LadderItem ${toneName}`}><small>{label}</small><b>{value}</b>{sub?<em>{sub}</em>:null}</span>}
 
-export default function AurynResearchOverview({decision,marketTruth,displayPrice,displayPriceLive=false,marketIntelligence,scenario,entryQuality,candles,chartLevels}:{decision:InstitutionalDecision;marketTruth:any;displayPrice?:number|null;displayPriceLive?:boolean;marketIntelligence?:any;scenario?:ScenarioMap|null;entryQuality?:number|null;candles:any[];chartLevels:any|null}){
+export default function AurynResearchOverview({decision,marketTruth,displayPrice,displayPriceLive=false,marketIntelligence,scenario,fundamentalScenario=null,entryQuality,candles,chartLevels}:{decision:InstitutionalDecision;marketTruth:any;displayPrice?:number|null;displayPriceLive?:boolean;marketIntelligence?:any;scenario?:ScenarioMap|null;fundamentalScenario?:any|null;entryQuality?:number|null;candles:any[];chartLevels:any|null}){
  const map=marketIntelligence?.actionMap??marketIntelligence?.levels??chartLevels??{};
  const daily=marketIntelligence?.confirmed?.["1D"]??null;
  const tf=(key:string)=>marketIntelligence?.confirmed?.[key]?.rating??marketIntelligence?.timeframes?.[key]?.confirmed??null;
@@ -60,6 +64,8 @@ export default function AurynResearchOverview({decision,marketTruth,displayPrice
  const bullValue=scenarioValue(scenario?.bull),baseValue=scenarioValue(scenario?.base),bearValue=scenarioValue(scenario?.bear);
  const decisionScale=[risk,major,support,eLow,eHigh,currentPrice,confirm,t1,t2];
  const pricePosition=(value:number|null)=>normalizedPosition(value,decisionScale);
+ const decisionLabelLane=(value:number|null,peers:Array<number|null>)=>{const p=pricePosition(value);if(p==null)return 0;const close=peers.filter(v=>v!==value).map(v=>pricePosition(v)).filter((x):x is number=>x!=null&&Math.abs(x-p)<7).length;return close?1:0;};
+
  const scenarioScale=[bearValue.value,baseValue.value,bullValue.value,currentPrice];
  const scenarioPosition=(value:number|null)=>normalizedPosition(value,scenarioScale,7,93);
 
@@ -68,6 +74,15 @@ export default function AurynResearchOverview({decision,marketTruth,displayPrice
  const heroReason=decision.newMoneyAction==="START_SMALL"?`Positive evidence supports a partial position${tfSummary?` while confirmed structure reads ${tfSummary}`:""}.`:decision.policyReasons?.[0]||decision.drivers?.[0]||`AURYN is waiting for stronger alignment across evidence, setup and asymmetry.`;
  const freshness=marketTruth?.decisionPriceAsOf||marketTruth?.asOf||marketTruth?.providerTimestamp||null;
  const entryScore=n(entryQuality);
+ const companyScore=n(decision.pillars.business.score);
+ const valuationScore=n(decision.pillars.valuation.score);
+ const timingScore=entryScore!=null?entryScore:n(decision.pillars.marketStructure.score);
+ const businessTrajectory=companyScore==null?"Evidence history pending":`Business trajectory · ${scoreBand(companyScore)} current quality`;
+ const marginSafety=valuationScore==null?"Margin of safety unavailable":`Margin of safety · ${valueBand(valuationScore)}`;
+ const marketSetup=`Market setup · ${timingBand(timingScore)}`;
+ const analystCatalysts=[decision.pillars.catalystsRegime.why].filter(Boolean);
+ const analystRisks=[...(decision.counterEvidence||[]),...(decision.hardVetoReasons||[])].filter(Boolean).slice(0,3);
+ const analystSummary=`${companyBand(companyScore)} business evidence. Valuation is ${valueBand(valuationScore).toLowerCase()}. Market timing is ${timingBand(timingScore).toLowerCase()}. New money: ${pretty(decision.newMoneyAction)} · Owner: ${pretty(decision.ownerAction)} · Long term: ${pretty(decision.longTermAction)}.`;
  return <section className="v936Overview" data-snapshot-id={decision.snapshotId}>
   <span className="v940TruthContract">Opportunity: It is not a probability of profit. Expected Asymmetry: It is not an expected-return forecast. Current Price is never inferred from portfolio value.</span>
   <div className="v936HeroGrid v938FirstViewport">
@@ -93,12 +108,18 @@ export default function AurynResearchOverview({decision,marketTruth,displayPrice
    <section className="v940PulseGroup"><small>TRUST</small><div><SignaturePulse label="Evidence" value={`${decision.evidenceCompleteness}/100`} sub={scoreBand(decision.evidenceCompleteness)} score={decision.evidenceCompleteness} help="Canonical evidence completeness."/><SignaturePulse label="Freshness" value={displayPriceLive?"● LIVE":freshness?new Date(freshness).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}):"N/A"} sub={displayPriceLive?"Research price":marketStatus} toneName={displayPriceLive?"good":""} help="Freshness of displayed market evidence."/></div></section>
   </div>
 
-  <div className="v936SectionHead"><div><small>KEY METRICS</small><h3>Decision map</h3></div><span>One canonical snapshot · no duplicate levels</span></div>
+  <section className="v9998AnalystClocks" aria-label="AURYN analyst view">
+   <article><header><small>1. COMPANY</small><b>{companyScore==null?"N/A":`${Math.round(companyScore)}/100`}</b></header><h3>{companyBand(companyScore)}</h3><p>{businessTrajectory}</p><span>{decision.pillars.business.why||"Fundamental business evidence is still building."}</span></article>
+   <article><header><small>2. VALUE</small><b>{valuationScore==null?"N/A":`${Math.round(valuationScore)}/100`}</b></header><h3>{valueBand(valuationScore)}</h3><p>{marginSafety}</p><span>{decision.pillars.valuation.why||"Independent valuation evidence is still building."}</span></article>
+   <article><header><small>3. TIMING</small><b>{timingScore==null?"N/A":`${Math.round(timingScore)}/100`}</b></header><h3>{timingBand(timingScore)}</h3><p>{marketSetup}</p><span>{decision.pillars.marketStructure.why||"Confirmed market structure is still building."}</span></article>
+  </section>
+
+  <div className="v936SectionHead"><div><small>EXECUTION</small><h3>Decision map</h3></div><span>Where price sits in the canonical investment plan</span></div>
   <div className="v940DecisionRail" aria-label="Visual decision map">
    <div className="v940RailLine"/>
    {risk!=null?<span className="v940RailPoint risk" style={{left:`${pricePosition(risk)}%`}}><i/><small>THESIS</small><b>{money(risk)}</b></span>:null}
-   {major!=null?<span className="v940RailPoint support" style={{left:`${pricePosition(major)}%`}}><i/><small>MAJOR SUPPORT</small><b>{money(major)}</b></span>:null}
-   {eLow!=null?<span className="v940RailPoint entry" style={{left:`${pricePosition(eLow)}%`}}><i/><small>ENTRY RANGE</small><b>{eLow!=null&&eHigh!=null?`${money(eLow)}–${money(eHigh)}`:money(eLow)}</b></span>:null}
+   {major!=null?<span className={`v940RailPoint support lane-${decisionLabelLane(major,[risk,eLow,eHigh,confirm,t1,t2])}`} style={{left:`${pricePosition(major)}%`}}><i/><small>MAJOR SUPPORT</small><b>{money(major)}</b></span>:null}
+   {eLow!=null?<span className={`v940RailPoint entry lane-${decisionLabelLane(eLow,[risk,major,confirm,t1,t2])}`} style={{left:`${pricePosition(eLow)}%`}}><i/><small>ENTRY RANGE</small><b>{eLow!=null&&eHigh!=null?`${money(eLow)}–${money(eHigh)}`:money(eLow)}</b></span>:null}
    {currentPrice!=null?<span className="v940CurrentMarker" style={{left:`${pricePosition(currentPrice)}%`}}><small>CURRENT</small><b>{money(currentPrice)}</b><i/></span>:null}
    {confirm!=null?<span className="v940RailPoint confirm" style={{left:`${pricePosition(confirm)}%`}}><i/><small>CONFIRM</small><b>{money(confirm)}</b></span>:null}
    {t1!=null?<span className="v940RailPoint target" style={{left:`${pricePosition(t1)}%`}}><i/><small>T1</small><b>{money(t1)}</b></span>:null}
@@ -120,19 +141,19 @@ export default function AurynResearchOverview({decision,marketTruth,displayPrice
   </div>
 
   <div className="v936InsightGrid">
-   <article className="v936ScenarioCard v941ScenarioCard"><div className="v936CardTitle"><small>MARKET OUTLOOK</small><b>Scenario spectrum</b><span>Decision-grade values · not probabilities</span></div>
-    <div className="v941ScenarioSpectrum">
-     <div className="v941SpectrumLine"/>
-     <span className="bear" style={{left:`${scenarioPosition(bearValue.value)}%`}}><i/><small>BEAR</small><b>{money(bearValue.value)}</b><em>{delta(currentPrice,bearValue.value)!=null?`${delta(currentPrice,bearValue.value)!.toFixed(1)}%`:"N/A"}</em></span>
-     <span className="base" style={{left:`${scenarioPosition(baseValue.value)}%`}}><i/><small>BASE</small><b>{money(baseValue.value)}</b><em>{delta(currentPrice,baseValue.value)!=null?`${delta(currentPrice,baseValue.value)!.toFixed(1)}%`:"N/A"}</em></span>
-     <span className="bull" style={{left:`${scenarioPosition(bullValue.value)}%`}}><i/><small>BULL</small><b>{money(bullValue.value)}</b><em>{delta(currentPrice,bullValue.value)!=null?`+${Math.max(0,delta(currentPrice,bullValue.value)!).toFixed(1)}%`:"N/A"}</em></span>
-     <span className="v941ScenarioCurrent" style={{left:`${scenarioPosition(currentPrice)}%`}}><small>CURRENT</small><b>{money(currentPrice)}</b><i/></span>
-    </div>
-    <div className="v941ScenarioNotes"><span><b>Bear case</b>{bearValue.range||scenario?.bear?.summary||"N/A"}</span><span><b>Base case</b>{baseValue.range||scenario?.base?.summary||"N/A"}</span><span><b>Bull case</b>{bullValue.range||scenario?.bull?.summary||"N/A"}</span></div>
+   <article className="v936ScenarioCard v941ScenarioCard v9998FundamentalScenario"><div className="v936CardTitle"><small>VALUATION OUTLOOK</small><b>Scenario spectrum</b><span>Fundamental value scenarios · not probabilities</span></div>
+    {fundamentalScenario?<div className="v9998ScenarioReady"><span><small>BEAR</small><b>{money(fundamentalScenario.bear?.value)}</b></span><span><small>BASE</small><b>{money(fundamentalScenario.base?.value)}</b></span><span><small>BULL</small><b>{money(fundamentalScenario.bull?.value)}</b></span><p>{fundamentalScenario.basis||"Independent fundamental valuation"}</p></div>:<div className="v9998ScenarioUnavailable"><b>Independent fundamental valuation unavailable</b><span>AURYN will not reuse technical targets as fair value. Bear / Base / Bull values appear only when decision-grade fundamental valuation inputs are available.</span></div>}
    </article>
    <article className="v936ExplainCard"><small>WHAT THIS MEANS</small><h4>{setup.title}</h4><p>{setup.meaning}</p><strong>{setup.actionImplication}</strong></article>
    <article className="v936ExplainCard"><small>PATTERN EVIDENCE</small><h4>{pattern?.title||pretty(scenario?.setup||"No dominant pattern")}</h4><p>{pattern?.meaning||"Pattern evidence is supporting context and never determines the investment action by itself."}</p><strong>{pattern?.actionImplication||decision.nextDecisionTrigger}</strong></article>
   </div>
+
+  <section className="v9998AnalystBottom">
+   <article><small>KEY CATALYSTS</small>{analystCatalysts.length?analystCatalysts.map((x,i)=><p key={i}>↑ {x}</p>):<p>No decision-grade catalyst loaded.</p>}</article>
+   <article><small>KEY RISKS</small>{analystRisks.length?analystRisks.map((x,i)=><p key={i}>⚠ {x}</p>):<p>No material canonical risk loaded.</p>}</article>
+   <article><small>WHAT'S CHANGED</small><b>{decision.changeExplanation?.changed?"Decision evidence changed":"No canonical decision-state change"}</b><p>{decision.changeExplanation?.changed?decision.changeExplanation.trigger:"Comparable fundamental history will appear here as canonical snapshots mature. Price action alone is not treated as a business change."}</p></article>
+   <article><small>AURYN VIEW</small><b>{pretty(decision.newMoneyAction)}</b><p>{analystSummary}</p></article>
+  </section>
 
   <div className="v936DecisionLogic">
    <article><small>WHAT UPGRADES IT</small><h4>Next decision trigger</h4><p>{decision.nextDecisionTrigger}</p></article>
