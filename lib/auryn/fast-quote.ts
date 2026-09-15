@@ -13,7 +13,7 @@ export type FastResearchQuote={
  symbol:string;price:number;changePct:number|null;provider:"alpaca"|"twelvedata-price"|"coinbase";providerTimestamp:string|null;retrievedAt:string;latencyMs:number;
  ageSeconds:number|null;session:MarketSession|"CRYPTO_24X7";freshness:QuoteFreshness;researchOnly:true;executionVerified:false;
  providerAgreementPct?:number|null;label?:DisplayLabel;
- confidence?:"VERIFIED"|"SINGLE_SOURCE"|"CONTESTED";diagnostics?:ProviderDiagnostic[];
+ confidence?:"VERIFIED"|"SINGLE_SOURCE"|"CONTESTED";displayState?:"LIVE"|"LAST_AVAILABLE";diagnostics?:ProviderDiagnostic[];
 };
 const finitePositive=(v:unknown)=>{const n=Number(v);return Number.isFinite(n)&&n>0?n:null};
 export const normalizeCryptoSymbol=(s:string)=>String(s||"").toUpperCase().replace("-","/").replace(/^(BTC|ETH|SOL|DOGE|XRP|ADA|AVAX|LINK|LTC|BCH|DOT|MATIC|SHIB)$/, "$1/USD");
@@ -124,7 +124,15 @@ export async function loadFastResearchQuote(input:{symbol:string;twelveKey?:stri
    :trades.length?trades:candidates;
  const pool=activeSessionPool.length?activeSessionPool:candidates;
  const authority=selectMarketDisplayQuote({symbol,session,asOf:asOf.toISOString(),candidates:pool});
- if(authority.price==null){const err=new Error(`${authority.label}: ${authority.reason}`);(err as any).diagnostics=diagnostics;throw err}
+ if(authority.price==null){
+   const lastAvailable=[...candidates].filter(c=>c.price>0&&c.providerTimestamp&&Number.isFinite(new Date(c.providerTimestamp).getTime())).sort((a,b)=>new Date(b.providerTimestamp!).getTime()-new Date(a.providerTimestamp!).getTime())[0]??null;
+   const lastAge=lastAvailable?age(lastAvailable.providerTimestamp,asOf):null;
+   if(lastAvailable&&lastAge!=null&&lastAge<=86400){
+     const baseProvider=lastAvailable.provider.startsWith("alpaca")?"alpaca":lastAvailable.provider==="coinbase"?"coinbase":"twelvedata-price";
+     return{symbol,price:lastAvailable.price,changePct:null,provider:baseProvider as any,providerTimestamp:lastAvailable.providerTimestamp,retrievedAt:asOf.toISOString(),latencyMs:Math.max(0,Date.now()-started),ageSeconds:lastAge,session:session as any,freshness:"RECENT",researchOnly:true,executionVerified:false,providerAgreementPct:null,label:"LAST MARKET PRICE",confidence:"SINGLE_SOURCE",displayState:"LAST_AVAILABLE",diagnostics};
+   }
+   const err=new Error(`${authority.label}: ${authority.reason}`);(err as any).diagnostics=diagnostics;throw err
+ }
  const chosen=pool.find(q=>q.provider===authority.source&&q.providerTimestamp===authority.asOf)??pool[0],baseProvider=chosen.provider.startsWith("alpaca")?"alpaca":chosen.provider==="coinbase"?"coinbase":"twelvedata-price";
- return{symbol,price:authority.price,changePct:changeByProvider.get(baseProvider)??null,provider:baseProvider as any,providerTimestamp:authority.asOf,retrievedAt:asOf.toISOString(),latencyMs:Math.max(0,Date.now()-started),ageSeconds:age(authority.asOf,asOf),session:session as any,freshness:"LIVE",researchOnly:true,executionVerified:false,providerAgreementPct:authority.providerAgreementPct,label:authority.label,confidence:authority.confidence,diagnostics};
+ return{symbol,price:authority.price,changePct:changeByProvider.get(baseProvider)??null,provider:baseProvider as any,providerTimestamp:authority.asOf,retrievedAt:asOf.toISOString(),latencyMs:Math.max(0,Date.now()-started),ageSeconds:age(authority.asOf,asOf),session:session as any,freshness:"LIVE",researchOnly:true,executionVerified:false,providerAgreementPct:authority.providerAgreementPct,label:authority.label,confidence:authority.confidence,displayState:"LIVE",diagnostics};
 }

@@ -163,7 +163,8 @@
     "test:v99920": "node --test tests/auryn-v99920-price-freshness-unification.test.mjs && npm run test:v99919",
     "test:v99921": "node --test tests/auryn-v99921-twelve-intraday-fallback.test.mjs tests/auryn-v99921-provider-family-dedupe.test.mjs && npm run test:v99920",
     "test:v99922": "node --test tests/auryn-v99922-price-provider-fallback.test.mjs && npm run test:v99921",
-    "test:v99923": "node --test tests/auryn-v99923-reference-price-fallback.test.mjs && npm run test:v99922"
+    "test:v99923": "node --test tests/auryn-v99923-reference-price-fallback.test.mjs && npm run test:v99922",
+    "test:v99924": "node --test tests/auryn-v99924-price-state-machine.test.mjs && npm run test:v99923"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",
