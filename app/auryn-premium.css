@@ -844,3 +844,40 @@ html,body{overflow-x:hidden}
 .v99925Roadmap>header>div:first-child>small{color:#765b32}
 @media(max-width:900px){.v99932CallActions{grid-template-columns:repeat(2,1fr)!important}.v99932CallLevels{grid-template-columns:1fr 1fr}.v99932CallLevels span:last-child{grid-column:span 2}}
 @media(max-width:700px){.v99932ValuationHead{flex-direction:column}.v99932ValuationRead{min-width:0;width:100%}.v99932ValuationSnapshot .v99931PartialEvidence{grid-template-columns:1fr}}
+
+/* V9.9.9.33 — premium research density + semantic status */
+.v99933FirstScreen{grid-template-columns:43fr 40fr 17fr!important;gap:12px!important;align-items:stretch}
+.v99933FirstScreen>.v2Call,.v99933FirstScreen>.v2Chart,.v99933FirstScreen>.v2Structure{min-height:0!important;height:380px!important}
+.v99933FirstScreen .v99932CallDecision{padding:22px 24px!important}
+.v99933FirstScreen .v99932CallDecision h1{font-size:54px!important;line-height:.94!important;margin:10px 0 12px!important}
+.v99933FirstScreen .v99932CallDecision>p{font-size:11px!important;line-height:1.45!important;max-width:92%;margin:0 0 10px!important}
+.v99933FirstScreen .v99932CallActions span{padding:9px 10px!important}.v99933FirstScreen .v99932CallLevels span{padding:8px 10px!important}
+.v99933FirstScreen .v99932CallButtons{margin-top:7px!important}.v99933FirstScreen .v99932CallDecision footer{padding-top:9px!important}
+.v99933FirstScreen .v2Chart{padding:16px!important}.v99933FirstScreen .v99915ChartStage{height:290px!important}
+.v99933FirstScreen .v2Structure{padding:16px!important}.v99933FirstScreen .v2Structure>div{padding:8px 10px!important}
+
+/* semantic hero treatments: premium tint, not dashboard blocks */
+.v99933CallState{position:relative;overflow:hidden;transition:background .2s ease,border-color .2s ease}
+.v99933CallState:after{content:"";position:absolute;right:-60px;bottom:-90px;width:300px;height:260px;border-radius:50%;opacity:.16;filter:blur(4px);pointer-events:none}
+.v99933CallState.buy{background:linear-gradient(135deg,#12291f 0%,#1f513c 62%,#b9a061 160%)!important;border-color:#397c62!important}.v99933CallState.buy:after{background:#78d7a9}
+.v99933CallState.wait{background:linear-gradient(135deg,#2b1d0d 0%,#65451d 72%,#aa7b31 145%)!important;border-color:#9a7133!important}.v99933CallState.wait:after{background:#e6b45d}
+.v99933CallState.hold{background:linear-gradient(135deg,#28231c 0%,#5d4a31 72%,#a78a59 145%)!important;border-color:#8b7551!important}.v99933CallState.hold:after{background:#c9ae7a}
+.v99933CallState.avoid{background:linear-gradient(135deg,#351516 0%,#70252b 70%,#b45b4c 145%)!important;border-color:#a9484b!important}.v99933CallState.avoid:after{background:#e6887b}
+.v99933CallState>*{position:relative;z-index:1}
+
+/* compact analyst intelligence */
+.v99933AnalystGrid{gap:12px!important;margin-top:12px!important}
+.v99933AnalystCard{min-height:190px!important;height:auto!important;padding:16px 18px!important;border-top-width:3px!important;position:relative;overflow:visible}
+.v99933AnalystCard.positive{border-top-color:#1b8b65!important;background:linear-gradient(180deg,#fbfffd,#fff 34%)!important}
+.v99933AnalystCard.caution{border-top-color:#c88622!important;background:linear-gradient(180deg,#fffaf1,#fff 34%)!important}
+.v99933AnalystCard.negative{border-top-color:#d64a46!important;background:linear-gradient(180deg,#fff7f6,#fff 34%)!important}
+.v99933AnalystCard.neutral{border-top-color:#8b8175!important}
+.v99933AnalystCard header h3{font-size:17px!important;margin-top:5px!important}.v99933AnalystCard .v2CardLead{margin:6px 0!important}
+.v99933AnalystCard .v2CardLead>p{font-size:12px!important}.v99933AnalystCard .v99914ContextBadge{padding:6px 9px!important}
+.v99933Insight{min-height:32px!important;margin:7px 0 10px!important;font-size:10.5px!important;line-height:1.42!important;color:#5e574e!important}
+.v99933AnalystCard .v2MetricStrip{margin-top:auto!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.v99933AnalystCard .v2MetricStrip span{padding:7px 8px!important;min-width:0!important}.v99933AnalystCard .v2MetricStrip small{font-size:7px!important;line-height:1.15!important}.v99933AnalystCard .v2MetricStrip b{font-size:12px!important}
+.v99933AnalystCard .v99915IndicatorIcon{transform:scale(.78);transform-origin:top right}
+
+@media(max-width:1100px){.v99933FirstScreen{grid-template-columns:1fr 1fr!important}.v99933FirstScreen>.v2Structure{grid-column:1/-1;height:auto!important}.v99933AnalystGrid{grid-template-columns:1fr 1fr!important}}
+@media(max-width:700px){.v99933FirstScreen{grid-template-columns:1fr!important}.v99933FirstScreen>.v2Call,.v99933FirstScreen>.v2Chart{height:auto!important}.v99933FirstScreen>.v2Structure{grid-column:auto}.v99933AnalystGrid{grid-template-columns:1fr!important}.v99933AnalystCard{min-height:0!important}.v99933AnalystCard .v2MetricStrip{grid-template-columns:repeat(3,1fr)!important}}
