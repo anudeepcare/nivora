@@ -144,6 +144,10 @@ export async function GET(){
  };
 
  const runnerHealth=runnerHealthResult.data as any;
+ const latestRun=(recentRunsResult.data||[])[0] as any||null;
+ const latestRunStartedAt=latestRun?.started_at||null;
+ const currentRunEvaluations=latestRunStartedAt?recentEvaluations.filter((x:any)=>x.evaluatedAt&&new Date(x.evaluatedAt).getTime()>=new Date(latestRunStartedAt).getTime()):[];
+ const previousEvaluations=latestRunStartedAt?recentEvaluations.filter((x:any)=>!x.evaluatedAt||new Date(x.evaluatedAt).getTime()<new Date(latestRunStartedAt).getTime()):recentEvaluations;
  const currentSession=marketSessionAt(new Date());
  const latestOrder=orders[0]||null;
 
@@ -176,6 +180,9 @@ export async function GET(){
   orders:ordersResult.count||0,
   funnel:{snapshots:snapshotsResult.count||0,evaluated:uniqueSnapshots.size,intents:intentCount,authorized:has("SUBMITTED"),blocked:has("BLOCKED"),submitted:has("SUBMITTED")},
   recentEvaluations,
+  currentRunEvaluations,
+  previousEvaluations,
+  latestRunStartedAt,
   recentRuns:recentRunsResult.data||[],
   runAuditStatus:recentRunsResult.error?"migration-required":"ready",
   decisionAudit,
