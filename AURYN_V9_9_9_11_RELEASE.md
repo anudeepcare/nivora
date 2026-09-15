@@ -1,0 +1,2 @@
+# AURYN V9.9.9.11 — Research Overview V2
+Hard replacement of the legacy Overview presentation with a dedicated decision-first V2 component following the approved mockup: Call + chart + price structure; Business/Valuation/Timing; Fundamental Scenario + Decision Map; Catalysts/Risks/What's Changed/AURYN View. Fixes missing-fair-value invariant so Building cannot become -100% margin or 0 valuation. Existing CIO, Market Truth, deeper tabs, portfolio and autonomous workflows are protected.

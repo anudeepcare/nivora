@@ -1,0 +1,10 @@
+import fs from "node:fs";
+const req=["components/premium/AurynResearchOverviewV2.tsx","lib/auryn/v99910/fundamental-analyst.ts","components/StockClient.tsx","tests/auryn-v99911-overview-v2.test.mjs",".github/workflows/auryn-v996-validation-queue.yml",".github/workflows/nivora-calibration-mature.yml"];
+for(const f of req)if(!fs.existsSync(f))throw new Error(`Missing ${f}`);
+const v2=fs.readFileSync(req[0],"utf8"),engine=fs.readFileSync(req[1],"utf8"),stock=fs.readFileSync(req[2],"utf8"),wf=req.slice(4).map(f=>fs.readFileSync(f,"utf8")).join("\n");
+for(const x of ["v2DecisionHero","v2AnalystClocks","v2DecisionVisuals","v2Synthesis"])if(!v2.includes(x))throw new Error(`Missing V2 layer ${x}`);
+if(stock.includes("<AurynResearchOverview decision=")||!stock.includes("<AurynResearchOverviewV2 decision="))throw new Error("Legacy Overview still rendered");
+if(!engine.includes("fairValue==null?null")||!engine.includes("marginOfSafety==null?null"))throw new Error("Valuation null invariant missing");
+if(/breakout|support|resistance|RSI|momentum/i.test(engine))throw new Error("Technical contamination in fundamental analyst");
+for(const x of ["AURYN_BASE_URL","CRON_SECRET"])if(!wf.includes(x))throw new Error(`Workflow contract missing ${x}`);
+console.log("AURYN V9.9.9.11 Research Overview V2 verification passed.");

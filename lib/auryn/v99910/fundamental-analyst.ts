@@ -29,7 +29,8 @@ export function buildFundamentalAnalyst(input:FundamentalAnalystInput){
    fundamentalScenario={bear,base,bull,confidence,basis:"SEC free-cash-flow capitalization / five-year DCF policy",assumptions:{observedRevenueGrowthPct:finite(r.revGrowth)?Number(r.revGrowth):null,currentFcf:fcf,baseDiscountRate:10,baseTerminalGrowth:2.5,horizonYears:5},source:"SEC company facts + AURYN valuation policy",independentOfTechnicalLevels:true};
  }
  const fairValue=fundamentalScenario?.base?.value??null;
- const marginOfSafety=finite(fairValue)&&finite(input.currentPrice)&&Number(input.currentPrice)>0?(Number(fairValue)/Number(input.currentPrice)-1)*100:null;
+ // Invariant: missing fair value is unknown, never zero. Unknown fair value cannot imply -100% margin or a bearish score.
+ const marginOfSafety=fairValue==null?null:(finite(input.currentPrice)&&Number(input.currentPrice)>0?(Number(fairValue)/Number(input.currentPrice)-1)*100:null);
  const valuationScore=marginOfSafety==null?null:score(50+marginOfSafety*1.4);
  return{companyDimensions,trajectory,fundamentalScenario,fairValue,marginOfSafety,valuationScore};
 }

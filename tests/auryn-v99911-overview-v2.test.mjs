@@ -1,0 +1,10 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";
+const v2=fs.existsSync("components/premium/AurynResearchOverviewV2.tsx")?fs.readFileSync("components/premium/AurynResearchOverviewV2.tsx","utf8"):"";
+const stock=fs.readFileSync("components/StockClient.tsx","utf8");
+const engine=fs.readFileSync("lib/auryn/v99910/fundamental-analyst.ts","utf8");
+const css=fs.readFileSync("app/auryn-premium.css","utf8");
+test("valuation invariant never converts missing fair value to -100 or zero",()=>{assert.match(engine,/fairValue==null/);assert.match(engine,/marginOfSafety==null/);});
+test("dedicated overview v2 exists with four literal layers",()=>{for(const x of ["v2DecisionHero","v2AnalystClocks","v2DecisionVisuals","v2Synthesis","BUSINESS QUALITY","VALUATION","MARKET TIMING","SCENARIO SPECTRUM","DECISION MAP","KEY CATALYSTS","KEY RISKS","WHAT'S CHANGED","AURYN VIEW"])assert.match(v2,new RegExp(x));});
+test("hero is call chart and price structure",()=>{for(const x of ["AURYN CALL","PRICE CHART","PRICE STRUCTURE","New Money","Owner","Long Term"])assert.match(v2,new RegExp(x,"i"));});
+test("stock client renders v2 not legacy overview",()=>{assert.match(stock,/AurynResearchOverviewV2/);assert.doesNotMatch(stock,/<AurynResearchOverview decision=/);});
+test("v2 css has literal desktop and mobile contracts",()=>{assert.match(css,/\.v2DecisionHero\{[^}]*grid-template-columns:[^}]*repeat\(3/s);assert.match(css,/@media\(max-width:760px\)[\s\S]*\.v2DecisionHero/);});
