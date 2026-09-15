@@ -1,0 +1,2 @@
+# AURYN V9.9.9.11.1 — Overview V2 Compile Hotfix
+Root cause: StockClient retained the legacy `scenario` prop after switching to `AurynResearchOverviewV2`, whose interface intentionally removed that prop. TypeScript correctly rejected the call. This hotfix removes only the obsolete prop and adds a source-contract regression test/verifier. No decision, valuation, Market Truth, UI, portfolio or workflow semantics changed.
