@@ -740,3 +740,43 @@ html,body{overflow-x:hidden}
  .v2Rail>span i{display:none!important}
  .v2CurrentMapMarker{position:static!important;display:inline-block;transform:none!important;margin-bottom:8px}
 }
+
+/* V9.9.9.27 — Confluence-first UX */
+.v99927HelpPopover{position:sticky;top:12px;z-index:30;margin:12px 0 16px;padding:16px 18px;border:1px solid #ddcfb9;border-radius:16px;background:rgba(255,253,249,.98);box-shadow:0 14px 38px rgba(57,43,23,.12);display:flex;justify-content:space-between;gap:18px;max-width:760px}
+.v99927HelpPopover div{display:flex;flex-direction:column;gap:4px}.v99927HelpPopover small{font-size:9px;font-weight:800;letter-spacing:.13em;color:#9b681d}.v99927HelpPopover b{font-size:16px}.v99927HelpPopover p{margin:2px 0 0;font-size:12px;line-height:1.5;color:#665f55}.v99927HelpPopover>button{width:30px;height:30px;border:0;border-radius:50%;background:#f1ece4;font-size:20px;cursor:pointer}
+.v99927CoreGrid{align-items:stretch}
+.v99927CoreGrid .v2Scenario,.v99927CoreGrid .v2DecisionMap{min-height:0!important;padding:24px!important}
+.v99927CoreGrid .v2Scenario header,.v99927CoreGrid .v2DecisionMap header{margin-bottom:10px}
+.v99927CoreGrid .v99925PartialValuation{min-height:0!important;padding:20px!important;gap:16px}
+.v99927CoreGrid .v99925PartialValuation h3{font-size:20px}
+.v99927CoreGrid .v99925PartialValuation p{font-size:12px;line-height:1.45}
+.v99927CoreGrid .v99925EvidenceGrid span{padding:9px 10px}
+.v99927CoreGrid .v2DecisionMapBody{padding-top:28px}
+.v99927CoreGrid .v2Rail{height:82px;margin-top:18px}
+.v99927CoreGrid .v2DecisionMap>p{margin-top:10px;font-size:12px;line-height:1.45}
+
+.v99927ConfluenceMap{display:grid;grid-template-columns:.9fr 1.25fr 1fr 1.15fr 1.45fr;gap:10px;margin:18px 0 14px}
+.v99927Zone{min-width:0;padding:16px;border:1px solid rgba(126,110,83,.14);border-radius:16px;display:flex;flex-direction:column;gap:5px;background:#fff}
+.v99927Zone small{font-size:9px;font-weight:850;letter-spacing:.1em}.v99927Zone b{font-size:17px;line-height:1.2;white-space:normal}.v99927Zone span{font-size:10px;line-height:1.35;color:#766f65}
+.v99927Zone.risk{background:#fff3f1;border-top:4px solid #d94d45}.v99927Zone.risk small{color:#bd403a}
+.v99927Zone.entry{background:#eef8f3;border-top:4px solid #19885f}.v99927Zone.entry small{color:#157653}
+.v99927Zone.current{background:#f3f0e9;border-top:4px solid #27241f}.v99927Zone.current small{color:#27241f}
+.v99927Zone.confirm{background:#fff7e9;border-top:4px solid #b9761d}.v99927Zone.confirm small{color:#a76614}
+.v99927Zone.target{background:#eff5fd;border-top:4px solid #3176c6}.v99927Zone.target small{color:#2867ad}
+.v99927CurrentPosition{box-shadow:0 8px 22px rgba(49,42,32,.08)}
+.v99927EvidenceBar{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));border:1px solid rgba(126,110,83,.13);border-radius:14px;overflow:hidden}
+.v99927EvidenceBar span{min-width:0;padding:10px;border-right:1px solid rgba(126,110,83,.11);display:flex;flex-direction:column;gap:3px}.v99927EvidenceBar span:last-child{border:0}.v99927EvidenceBar small{font-size:9px;color:#827a70;white-space:nowrap}.v99927EvidenceBar b{font-size:13px;white-space:nowrap}
+.v99925Roadmap{padding:24px!important}.v99925Roadmap>header{margin-bottom:14px!important}.v99925Wave{margin-top:12px;padding:14px 16px}
+
+@media(max-width:1100px){
+ .v99927ConfluenceMap{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .v99927Zone.target{grid-column:span 2}
+ .v99927EvidenceBar{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(max-width:700px){
+ .v99927HelpPopover{position:fixed;left:12px;right:12px;bottom:16px;top:auto;max-width:none}
+ .v99927ConfluenceMap{grid-template-columns:1fr}
+ .v99927Zone.target{grid-column:auto}
+ .v99927EvidenceBar{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .v99927CoreGrid .v2Scenario,.v99927CoreGrid .v2DecisionMap{padding:18px!important}
+}
