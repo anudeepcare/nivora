@@ -691,3 +691,52 @@ html,body{overflow-x:hidden}
  .v99925ThesisGrid{grid-template-columns:1fr}
  .v99925ThesisGrid article.next{grid-column:auto}
 }
+
+/* V9.9.9.26 — Readability + evidence-density polish */
+.v99926PillarGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px!important}
+.v99926PillarGrid .v2AnalystCard{padding:22px 22px 18px;min-height:255px}
+.v99926PillarGrid .v2AnalystCard>header small{font-size:10px;letter-spacing:.12em}
+.v99926PillarGrid .v2AnalystCard h3{font-size:20px}
+.v99926PillarGrid .v2MetricStrip{display:grid;grid-template-columns:repeat(4,minmax(105px,1fr));gap:0;overflow:visible}
+.v99926PillarGrid .v2MetricStrip span{padding:12px 10px 4px;min-width:105px}
+.v99926PillarGrid .v2MetricStrip small{min-height:auto;font-size:11px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v99926PillarGrid .v2MetricStrip b{font-size:16px;line-height:1.2;white-space:nowrap}
+.v99926PillarGrid .v2CardSummary{font-size:12px;line-height:1.5;min-height:38px}
+.v99926Help{display:inline-grid;place-items:center;width:17px;height:17px;margin-left:5px;padding:0;border:1px solid rgba(127,113,91,.35);border-radius:50%;background:transparent;color:#887d6d;font:700 10px/1 system-ui;vertical-align:1px;cursor:help}
+.v99926Help:hover{background:#f0eadf;color:#9a641b;border-color:#c79b59}
+
+/* Decision map: readability beats plotting every nearly-identical point. Near levels are clustered in TS. */
+.v2DecisionMapBody{padding-top:52px}
+.v2CurrentMapMarker{top:0;font-size:8px;padding:7px 10px}
+.v2CurrentMapMarker b{font-size:13px}
+.v2Rail{height:118px;margin-top:36px;top:24px}
+.v2Rail>span{top:-13px;min-width:94px}
+.v2Rail>span small{display:block;font-size:9px!important;line-height:1.1;white-space:nowrap;font-weight:800;letter-spacing:.04em}
+.v2Rail>span b{display:block;margin-top:3px;font-size:14px!important;line-height:1.1;white-space:nowrap}
+.v2Rail>span i{width:18px;height:18px;border-width:4px}
+.v2RailConnector{display:none!important}
+.v2DecisionZones span{font-size:8px;padding:8px}
+
+/* More visual hierarchy / color without turning Research into a trading terminal. */
+.v99925Roadmap{background:linear-gradient(180deg,var(--auryn-card,#fffdfa),rgba(248,246,241,.96))}
+.v99925RoadmapEvidence span:nth-child(1),.v99925RoadmapEvidence span:nth-child(2){background:rgba(51,120,199,.035)}
+.v99925RoadmapEvidence span:nth-child(3),.v99925RoadmapEvidence span:nth-child(4){background:rgba(31,148,104,.035)}
+.v99925Wave{border:1px solid rgba(31,148,104,.12)}
+.v99925ThesisGrid article:nth-child(1),.v99925ThesisGrid article:nth-child(3),.v99925ThesisGrid article:nth-child(4){border-top:3px solid rgba(31,148,104,.55)}
+.v99925ThesisGrid article:nth-child(2){border-top:3px solid rgba(190,124,32,.55)}
+.v99925ThesisGrid article:nth-child(5){border-top:3px solid rgba(205,73,66,.55)}
+.v99925ThesisGrid article:nth-child(6){border-top:3px solid rgba(51,120,199,.5)}
+
+@media(max-width:1050px){
+ .v99926PillarGrid{grid-template-columns:1fr!important}
+ .v99926PillarGrid .v2MetricStrip{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .v99926PillarGrid .v2MetricStrip span{min-width:0}
+}
+@media(max-width:700px){
+ .v99926PillarGrid .v2MetricStrip{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .v99926PillarGrid .v2MetricStrip small{white-space:normal}
+ .v2Rail{display:grid!important;grid-template-columns:1fr 1fr;height:auto!important;border:0!important;top:0!important;gap:8px;margin:16px 0!important}
+ .v2Rail>span{position:static!important;transform:none!important;min-width:0;padding:10px;border:1px solid #e7ded2;border-radius:12px;text-align:left!important}
+ .v2Rail>span i{display:none!important}
+ .v2CurrentMapMarker{position:static!important;display:inline-block;transform:none!important;margin-bottom:8px}
+}
