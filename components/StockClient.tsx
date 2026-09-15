@@ -595,6 +595,15 @@ export default function StockClient({symbol}:{symbol:string}){
     })}).catch(()=>{});
   },[d?.price,canonicalDecisionPrice,priceSensitiveAllowed,intelligence?.score,intelligence?.confidence,enterprise?.auditId,symbol,mode,investorDecision?.thesisScore,investorDecision?.opportunityScore,investorDecision?.today,v5Analysis?.snapshotId,v5Analysis?.decision.primaryAction,v5Analysis?.executionPlan.state,v7Analysis?.trust.state,institutionalDecision?.snapshotId,institutionalDecision?.newMoneyAction,institutionalDecision?.ownerAction,institutionalDecision?.setupState,decisionSnapshot?.snapshotId,d?.marketIntelligence?.snapshotId,canonicalV935?.snapshotId]);
 
+  const formatPriceObservedAt=(stamp:string|null)=>{
+    if(!stamp)return "Update time unavailable";
+    const d=new Date(stamp);if(!Number.isFinite(d.getTime()))return "Update time unavailable";
+    const exact=new Intl.DateTimeFormat("en-US",{timeZone:"America/New_York",month:"short",day:"numeric",hour:"numeric",minute:"2-digit",second:"2-digit",hour12:true,timeZoneName:"short"}).format(d);
+    const ageSec=Math.max(0,Math.round((Date.now()-d.getTime())/1000));
+    const age=ageSec<60?`${ageSec}s ago`:ageSec<3600?`${Math.floor(ageSec/60)}m ago`:ageSec<86400?`${Math.floor(ageSec/3600)}h ago`:`${Math.floor(ageSec/86400)}d ago`;
+    return `${exact} · ${age}`;
+  };
+
   if(!d||!view){
     const durable=canonicalV935?.research;
     const durableMap=durable?.actionMap||durable?.levels||null;
@@ -830,14 +839,6 @@ export default function StockClient({symbol}:{symbol:string}){
   })();
   const horizonCandles=(d.candles||[]).slice(horizon==="now"?-65:horizon==="swing"?-125:-180);
 
-  const formatPriceObservedAt=(stamp:string|null)=>{
-    if(!stamp)return "Update time unavailable";
-    const d=new Date(stamp);if(!Number.isFinite(d.getTime()))return "Update time unavailable";
-    const exact=new Intl.DateTimeFormat("en-US",{timeZone:"America/New_York",month:"short",day:"numeric",hour:"numeric",minute:"2-digit",second:"2-digit",hour12:true,timeZoneName:"short"}).format(d);
-    const ageSec=Math.max(0,Math.round((Date.now()-d.getTime())/1000));
-    const age=ageSec<60?`${ageSec}s ago`:ageSec<3600?`${Math.floor(ageSec/60)}m ago`:ageSec<86400?`${Math.floor(ageSec/3600)}h ago`:`${Math.floor(ageSec/86400)}d ago`;
-    return `${exact} · ${age}`;
-  };
   const marketTruthUi=buildMarketTruth(aurynPriceState.isLive?stableDisplayQuote:null,marketTruth,new Date().toISOString());
   const formattedMarketTruth=formatMarketTruth(marketTruthUi);
   const marketStatusLabel=aurynPriceState.status;
