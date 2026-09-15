@@ -808,3 +808,7 @@ html,body{overflow-x:hidden}
 .v99929WhyGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.v99929WhyGrid span{padding:12px;border:1px solid #e5ddd1;border-radius:12px;display:flex;flex-direction:column;gap:4px}.v99929WhyGrid small{font-size:8px;color:#8a8175}.v99929WhyGrid b{font-size:15px}
 .v99929ValueHelp{margin-left:5px}.v99928HelpPopover{max-width:calc(100vw - 32px)}
 @media(max-width:800px){.v99929Cio{grid-template-columns:1fr}.v99929CioActions{grid-template-columns:repeat(2,1fr)}.v99929CioLevels{grid-template-columns:repeat(2,1fr)}.v99929WhyGrid{grid-template-columns:repeat(2,1fr)}}
+
+/* V9.9.9.30 — regime truth gate */
+.v99930RegimeRebuild{min-height:220px;padding:28px;border:1px solid #e1d4bd;border-radius:18px;background:linear-gradient(135deg,#fff9ef,#f6f2e9);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:7px}
+.v99930RegimeRebuild small{font-size:9px;font-weight:850;letter-spacing:.14em;color:#a56c18}.v99930RegimeRebuild b{font-size:20px}.v99930RegimeRebuild span,.v99930RegimeRebuild p{max-width:680px;font-size:12px;line-height:1.5;color:#70685d}.v99930RegimeRebuild p{margin:0}

@@ -171,7 +171,8 @@
     "test:v99926": "node --test tests/auryn-v99926-readability-evidence.test.mjs && npm run test:v99925",
     "test:v99927": "node --test tests/auryn-v99927-confluence-ux.test.mjs && npm run test:v99926",
     "test:v99928": "node --test tests/auryn-v99928-unified-experience.test.mjs && npm run test:v99927",
-    "test:v99929": "node --test tests/auryn-v99929-cio-decision.test.mjs && npm run test:v99928"
+    "test:v99929": "node --test tests/auryn-v99929-cio-decision.test.mjs && npm run test:v99928",
+    "test:v99930": "node --test tests/auryn-v99930-regime-truth.test.mjs && npm run test:v99929"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",
