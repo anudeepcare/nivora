@@ -1,0 +1,2 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";
+test("recent regime callbacks have explicit strict types",()=>{const s=fs.readFileSync("lib/auryn/v99930/regime-structure.ts","utf8");assert.match(s,/filter\(\(x:number\|null\):x is number/);assert.match(s,/const highs:number\[\]/);assert.match(s,/const lows:number\[\]/);assert.match(s,/const closes:number\[\]/);});

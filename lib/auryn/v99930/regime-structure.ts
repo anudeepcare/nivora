@@ -7,7 +7,9 @@ const wmaLocal=(a:number[],p:number)=>{if(a.length<p)return null;const x=a.slice
 export function rebuildRecentRegime(r:any,current:number,recentWeeks=52){
  const weekly=Array.isArray(r?.weeklyBars)?r.weeklyBars.slice(-recentWeeks):[];
  if(weekly.length<20)return null;
- const highs=weekly.map((b:any)=>n(b.high)).filter((x):x is number=>x!=null),lows=weekly.map((b:any)=>n(b.low)).filter((x):x is number=>x!=null),closes=weekly.map((b:any)=>n(b.close)).filter((x):x is number=>x!=null);
+ const highs:number[]=weekly.map((b:any)=>n(b.high)).filter((x:number|null):x is number=>x!=null);
+ const lows:number[]=weekly.map((b:any)=>n(b.low)).filter((x:number|null):x is number=>x!=null);
+ const closes:number[]=weekly.map((b:any)=>n(b.close)).filter((x:number|null):x is number=>x!=null);
  if(!highs.length||!lows.length||closes.length<20)return null;
  const swingHigh=Math.max(...highs),swingLow=Math.min(...lows),range=swingHigh-swingLow;
  if(range<=0||range/current>1.5)return null;
