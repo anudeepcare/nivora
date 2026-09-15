@@ -4,6 +4,7 @@ import "./auryn-product.css";
 import "./auryn-premium.css";
 import "./auryn-mobile.css";
 import "./auryn-themes.css";
+import "./auryn-unified-ui.css";
 import type {Metadata,Viewport} from "next";
 import ThemeProvider from "@/components/ThemeProvider";
 

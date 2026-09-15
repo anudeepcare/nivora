@@ -780,3 +780,20 @@ html,body{overflow-x:hidden}
  .v99927EvidenceBar{grid-template-columns:repeat(2,minmax(0,1fr))}
  .v99927CoreGrid .v2Scenario,.v99927CoreGrid .v2DecisionMap{padding:18px!important}
 }
+
+/* V9.9.9.28 — anchored help + collision-proof execution map */
+.v99928HelpWrap{position:relative;display:inline-flex;vertical-align:middle}
+.v99928HelpPopover{position:absolute;z-index:80;left:50%;top:27px;transform:translateX(-50%);width:min(390px,70vw);padding:15px 42px 15px 16px;border:1px solid #d8cbb7;border-radius:14px;background:#fffdf9;box-shadow:0 16px 42px rgba(42,34,23,.16);text-align:left;text-transform:none;letter-spacing:normal}
+.v99928HelpPopover:before{content:"";position:absolute;top:-6px;left:50%;width:11px;height:11px;transform:translateX(-50%) rotate(45deg);background:#fffdf9;border-left:1px solid #d8cbb7;border-top:1px solid #d8cbb7}
+.v99928HelpPopover small{display:block!important;margin:0 0 5px;font-size:8px!important;font-weight:850;letter-spacing:.12em!important;color:#9b681d!important;white-space:nowrap!important}
+.v99928HelpPopover b{display:block;font-size:14px;line-height:1.25;color:#1f1c18}.v99928HelpPopover p{margin:6px 0 0;font-size:11px;line-height:1.5;color:#696157;font-weight:450;white-space:normal}
+.v99928HelpPopover>button{position:absolute;right:9px;top:9px;width:25px;height:25px;border:0;border-radius:50%;background:#f1ece4;font-size:17px;line-height:1;cursor:pointer}
+.v99927HelpPopover{display:none!important}
+/* After semantic clustering, give each execution node enough visual ownership. */
+.v99927CoreGrid .v2Rail>span{min-width:112px}
+.v99927CoreGrid .v2Rail>span small{font-size:8px!important;letter-spacing:.05em}
+.v99927CoreGrid .v2Rail>span b{font-size:13px!important}
+@media(max-width:700px){
+ .v99928HelpPopover{position:fixed;left:14px;right:14px;bottom:18px;top:auto;transform:none;width:auto;max-width:none}
+ .v99928HelpPopover:before{display:none}
+}

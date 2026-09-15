@@ -169,7 +169,8 @@
     "test:v999242": "node --test tests/auryn-v999242-compile-hotfix.test.mjs && npm run test:v999241",
     "test:v99925": "node --test tests/auryn-v99925-long-term-roadmap.test.mjs tests/auryn-v99925-investment-roadmap-ux.test.mjs tests/auryn-v99925-multiyear-data-contract.test.mjs && npm run test:v999242",
     "test:v99926": "node --test tests/auryn-v99926-readability-evidence.test.mjs && npm run test:v99925",
-    "test:v99927": "node --test tests/auryn-v99927-confluence-ux.test.mjs && npm run test:v99926"
+    "test:v99927": "node --test tests/auryn-v99927-confluence-ux.test.mjs && npm run test:v99926",
+    "test:v99928": "node --test tests/auryn-v99928-unified-experience.test.mjs && npm run test:v99927"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

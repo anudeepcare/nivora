@@ -1,0 +1,34 @@
+/* AURYN V9.9.9.28 — one app, one typography system */
+:root{
+ --auryn-ui-font:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+ --auryn-display-font:Georgia,"Times New Roman",serif;
+ --auryn-ui-text:#211f1b;
+ --auryn-ui-muted:#756f66;
+}
+html,body,button,input,select,textarea{font-family:var(--auryn-ui-font);font-variant-numeric:tabular-nums}
+.aurynStockPage,.aurynPortfolioPage,.aurynMonitorPage,.aurynTradingLabPage,.aurynOverviewV2,
+.aurynStockPage button,.aurynPortfolioPage button,.aurynMonitorPage button,.aurynTradingLabPage button,.aurynOverviewV2 button,
+.aurynStockPage input,.aurynPortfolioPage input,.aurynMonitorPage input,.aurynTradingLabPage input{
+ font-family:var(--auryn-ui-font);
+}
+.aurynStockPage h1,.aurynPortfolioPage h1,.aurynMonitorPage h1,.aurynTradingLabPage h1,
+.aurynOverviewV2 .v2Call h1,.aurynOverviewV2 .v2Scenario h2,.aurynOverviewV2 .v2DecisionMap h2,
+.aurynOverviewV2 .v99925Roadmap h2,.aurynOverviewV2 .v99925Thesis h2{
+ font-family:var(--auryn-display-font);
+ font-weight:600;
+ letter-spacing:-.025em;
+}
+.aurynStockPage h2:not(.v2Scenario h2):not(.v2DecisionMap h2):not(.v99925Roadmap h2):not(.v99925Thesis h2),
+.aurynStockPage h3,.aurynPortfolioPage h2,.aurynPortfolioPage h3,.aurynMonitorPage h2,.aurynMonitorPage h3,
+.aurynTradingLabPage h2,.aurynTradingLabPage h3,.aurynOverviewV2 .v2AnalystCard h3{
+ font-family:var(--auryn-ui-font);
+ font-weight:750;
+ letter-spacing:-.015em;
+}
+.aurynStockPage p,.aurynPortfolioPage p,.aurynMonitorPage p,.aurynTradingLabPage p,.aurynOverviewV2 p{
+ font-family:var(--auryn-ui-font);
+ line-height:1.5;
+}
+.aurynStockPage small,.aurynPortfolioPage small,.aurynMonitorPage small,.aurynTradingLabPage small,.aurynOverviewV2 small{
+ font-family:var(--auryn-ui-font);
+}
