@@ -180,7 +180,8 @@
     "test:v99932": "node --test tests/auryn-v99932-one-decision-horizon.test.mjs && npm run test:v999311",
     "test:v99933": "node --test tests/auryn-v99933-premium-research-ux.test.mjs && npm run test:v99932",
     "test:v99934": "node --test tests/auryn-v99934-tab-dedup-performance.test.mjs && npm run test:v99933",
-    "test:v99935": "node --test tests/auryn-v99935-overview-actions-catalyst-ux.test.mjs && npm run test:v99934"
+    "test:v99935": "node --test tests/auryn-v99935-overview-actions-catalyst-ux.test.mjs && npm run test:v99934",
+    "test:v99936": "node --test tests/auryn-v99936-upside-sequence.test.mjs && npm run test:v99935"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

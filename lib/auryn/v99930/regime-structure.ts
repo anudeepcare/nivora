@@ -14,11 +14,12 @@ export function rebuildRecentRegime(r:any,current:number,recentWeeks=52){
  const swingHigh=Math.max(...highs),swingLow=Math.min(...lows),range=swingHigh-swingLow;
  if(range<=0||range/current>1.5)return null;
  const fib50=swingHigh-range*.5,fib618=swingHigh-range*.618,fib786=swingHigh-range*.786;
+ const extension1272=swingLow+range*1.272,extension1618=swingLow+range*1.618;
  const wma20=wmaLocal(closes,20),wma50=wmaLocal(closes,Math.min(50,closes.length));
  const entryLow=Math.min(fib618,fib50),entryHigh=Math.max(fib618,fib50);
  const invalidation=Math.min(swingLow,fib786),confirm=Math.max(entryHigh,wma50??entryHigh);
  const score=Math.round(Math.max(0,Math.min(100,50+(current>(wma20??current)?8:-8)+(current>(wma50??current)?10:-10)+(current>=entryLow&&current<=entryHigh?8:0))));
- return{...r,state:score>=62?"ACCUMULATION":score>=45?"NEUTRAL":"DEFENSIVE",score,swingHigh,swingLow,fib50,fib618,fib786,entryLow,entryHigh,support:fib786,invalidation,confirm,priorHigh:swingHigh,wma20,wma50,regimeSource:"RECENT_REGIME",anchorWeeks:weekly.length};
+ return{...r,state:score>=62?"ACCUMULATION":score>=45?"NEUTRAL":"DEFENSIVE",score,swingHigh,swingLow,fib50,fib618,fib786,entryLow,entryHigh,support:fib786,invalidation,confirm,priorHigh:swingHigh,extension1272,extension1618,wma20,wma50,regimeSource:"RECENT_REGIME",anchorWeeks:weekly.length};
 }
 
 export function validateRegimeStructure(r:any,currentInput:any){
@@ -35,11 +36,11 @@ export function validateRegimeStructure(r:any,currentInput:any){
  if(!anchorValidated){
   const rebuilt=rebuildRecentRegime(r,current,52);
   if(rebuilt&&n(rebuilt.invalidation)!=null&&Number(rebuilt.invalidation)<current){
-   return{state:"VALID",activeRegime:rebuilt,historicalContext,contextOnly:true,anchorValidated:true,extensionsAllowed:false,thesisBreakBelowCurrent:true,reclaimAboveCurrent:n(rebuilt.confirm)!=null&&Number(rebuilt.confirm)>current,reason:"Active structure rebuilt from the most recent comparable weekly regime."};
+   return{state:"VALID",activeRegime:rebuilt,historicalContext,contextOnly:true,anchorValidated:true,extensionsAllowed:n(rebuilt.priorHigh)!=null&&Math.abs(Number(rebuilt.priorHigh)-current)/current<=1.5,thesisBreakBelowCurrent:true,reclaimAboveCurrent:n(rebuilt.confirm)!=null&&Number(rebuilt.confirm)>current,reason:"Active structure rebuilt from the most recent comparable weekly regime."};
   }
   return{state:"REGIME_REBUILDING",activeRegime:null,historicalContext,contextOnly:true,anchorValidated:false,extensionsAllowed:false,thesisBreakBelowCurrent,reclaimAboveCurrent,reason:"Historical price regime is not comparable with the current structure. AURYN is selecting a valid weekly anchor."};
  }
  const activeRegime={...r,invalidation:n(r.invalidation),confirm:n(r.confirm),support:n(r.support),entryLow:n(r.entryLow),entryHigh:n(r.entryHigh)};
- const extensionsAllowed=Boolean(anchorValidated&&reclaimAboveCurrent&&dist(r.priorHigh)<=1.5);
+ const extensionsAllowed=Boolean(anchorValidated&&n(r.priorHigh)!=null&&dist(r.priorHigh)<=1.5);
  return{state:"VALID",activeRegime,historicalContext,contextOnly:false,anchorValidated:true,extensionsAllowed,thesisBreakBelowCurrent,reclaimAboveCurrent,reason:null};
 }

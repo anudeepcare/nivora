@@ -40,7 +40,7 @@ const buildConfluenceZones=(r:any,current:number|null)=>{
  zones.push(
   {key:"current",label:"CURRENT POSITION",value:money(current),tone:"current",detail:r?.trendChannel?`${pretty(r.trendChannel)} weekly channel`:"Current weekly position"},
   {key:"pivot",label:pivotLabel,value:money(pivot),tone:"confirm",detail:current!=null&&pivot!=null&&current>=pivot?"Former resistance now acts as a hold-above reference":"Fib / WMA / HMA trend confirmation"},
-  {key:"upside",label:"UPSIDE SEQUENCE",value:r?.priorHigh!=null?`${money(r.priorHigh)} → ${money(r.extension1272)} → ${money(r.extension1618)}`:"Building",tone:"target",detail:"Prior high → 1.272 → 1.618 · conditional sequence"}
+  {key:"upside",label:"UPSIDE SEQUENCE",value:(()=>{const upsideValues=[r?.priorHigh,r?.extension1272,r?.extension1618].map(num).filter((x):x is number=>x!=null);return upsideValues.length?upsideValues.map(money).join(" → "):"Building"})(),tone:"target",detail:r?.extension1272!=null&&r?.extension1618!=null?"Prior high → 1.272 → 1.618 · conditional sequence":"Prior high shown; extensions publish only after regime validation"}
  );
  return zones;
 };
