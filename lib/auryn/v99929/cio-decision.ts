@@ -28,7 +28,7 @@ export function buildCioDecision(x:any){
   reassessBelow!=null?`Downgrade the mapped long-term structure on a sustained weekly loss of $${reassessBelow.toFixed(2)}.`:null,
   valuation==null?`Reassess when decision-grade fundamental valuation becomes available.`:null,
   `Reassess on material earnings, margin, estimate or balance-sheet deterioration.`
- ].filter(Boolean);
+ ].filter((x): x is string => Boolean(x));
  const nextCatalyst=x.nextCatalyst??"Next earnings / material estimate revision";
  return{longTermAction,newMoneyAction,ownerAction,confidence,dataCompleteness,starterZone,primaryBuyZone,deepValueZone,reassessBelow,todayRiskReward,longTermRiskReward,whatChangesIt,positionSizing,nextCatalyst};
 }
