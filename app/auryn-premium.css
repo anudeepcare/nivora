@@ -625,3 +625,69 @@ html,body{overflow-x:hidden}
 [data-auryn-section]{scroll-margin-top:110px}
 @media(max-width:1100px){.v99916Insights{grid-template-columns:1fr 1fr!important}.v99916Insights>article{min-height:260px!important}}
 @media(max-width:760px){.v99916Insights{grid-template-columns:1fr!important}.v99916Insights>article{min-height:auto!important}.v2DecisionVisuals>article{min-height:auto}}
+
+
+/* V9.9.9.25 — Investment Roadmap */
+.v2AnalystClocks{grid-template-columns:repeat(4,minmax(0,1fr))}
+.v2AnalystCard{min-width:0}
+.v2MetricStrip{overflow:hidden}
+.v2MetricStrip span{min-width:0}
+.v2MetricStrip small{white-space:normal;line-height:1.05}
+
+.v99925PartialValuation{min-height:290px;padding:28px;border-radius:24px;background:linear-gradient(145deg,#f7f9fc,#f3f7fb);display:grid;grid-template-columns:1.1fr 1fr;gap:24px;align-content:center}
+.v99925PartialValuation h3{margin:6px 0 8px;font:700 24px/1.1 var(--auryn-serif,Georgia,serif)}
+.v99925PartialValuation p{color:var(--auryn-muted,#756f66);line-height:1.55}
+.v99925EvidenceGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.v99925EvidenceGrid span{padding:12px;border:1px solid rgba(128,111,82,.16);border-radius:14px;background:rgba(255,255,255,.72);display:flex;flex-direction:column;gap:5px}
+.v99925EvidenceGrid small,.v99925TruthNote{font-size:11px;color:var(--auryn-muted,#817a70)}
+.v99925TruthNote{grid-column:1/-1}
+
+.v99925Roadmap,.v99925Thesis{margin-top:18px;padding:30px;border:1px solid var(--auryn-border,#dfd6c7);border-radius:26px;background:var(--auryn-card,#fffdfa)}
+.v99925Roadmap>header,.v99925Thesis>header{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:28px}
+.v99925Roadmap h2,.v99925Thesis h2{font:700 clamp(28px,2.2vw,40px)/1.05 var(--auryn-serif,Georgia,serif);margin:5px 0}
+.v99925Roadmap header p{margin:0;color:var(--auryn-muted,#847d72)}
+.v99925RoadmapState{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.v99925RoadmapState b{font-size:14px;letter-spacing:.08em;color:#167b58}
+.v99925RoadmapState span{font:700 22px/1 var(--auryn-serif,Georgia,serif)}
+
+.v99925RoadmapRail{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));position:relative;padding:30px 4px 22px;gap:8px}
+.v99925RoadmapRail:before{content:"";position:absolute;left:2%;right:2%;top:43px;height:6px;border-radius:99px;background:linear-gradient(90deg,#d9544d 0 14%,#1f9468 14% 55%,#bf7b21 55% 70%,#3378c7 70% 100%);opacity:.88}
+.v99925RoadmapLevel{position:relative;z-index:1;text-align:center;min-width:0}
+.v99925RoadmapLevel i{display:block;width:18px;height:18px;margin:5px auto 13px;border:4px solid currentColor;border-radius:50%;background:#fff}
+.v99925RoadmapLevel span{display:flex;flex-direction:column;gap:3px}
+.v99925RoadmapLevel small{font-size:9px;font-weight:800;letter-spacing:.08em;white-space:normal}
+.v99925RoadmapLevel b{font-size:15px}
+.v99925RoadmapLevel.risk{color:#c94741}.v99925RoadmapLevel.entry{color:#16845e}.v99925RoadmapLevel.confirm{color:#b56f18}.v99925RoadmapLevel.target,.v99925RoadmapLevel.stretch{color:#2d70bf}
+
+.v99925RoadmapEvidence{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));margin-top:14px;border:1px solid rgba(128,111,82,.14);border-radius:16px;overflow:hidden}
+.v99925RoadmapEvidence span{padding:14px 16px;border-right:1px solid rgba(128,111,82,.12);display:flex;flex-direction:column;gap:5px}
+.v99925RoadmapEvidence span:last-child{border:0}.v99925RoadmapEvidence small{color:var(--auryn-muted,#817a70);font-size:10px}.v99925RoadmapEvidence b{font-size:15px}
+.v99925Wave{margin-top:16px;padding:18px 20px;border-radius:16px;background:rgba(31,148,104,.06);display:grid;grid-template-columns:minmax(220px,.65fr) 1.35fr;gap:20px;align-items:center}
+.v99925Wave div{display:flex;flex-direction:column;gap:4px}.v99925Wave small{font-size:9px;font-weight:800;letter-spacing:.12em}.v99925Wave b{font-size:16px}.v99925Wave span,.v99925Wave p{color:var(--auryn-muted,#817a70);font-size:12px;line-height:1.5}.v99925Wave p{margin:0}
+
+.v99925ThesisGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.v99925ThesisGrid article{padding:18px;border:1px solid rgba(128,111,82,.15);border-radius:16px;background:rgba(255,255,255,.48)}
+.v99925ThesisGrid article.next{grid-column:span 3;background:linear-gradient(100deg,rgba(31,148,104,.08),rgba(51,120,199,.06))}
+.v99925ThesisGrid small{font-size:9px;font-weight:800;letter-spacing:.12em;color:#9b681d}.v99925ThesisGrid p{margin:8px 0 0;font-size:13px;line-height:1.55;color:#393631}
+
+@media(max-width:1100px){
+ .v2AnalystClocks{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .v99925RoadmapRail{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+ .v99925RoadmapRail:before{display:none}
+ .v99925RoadmapLevel{padding:12px;border:1px solid rgba(128,111,82,.13);border-radius:14px;text-align:left}
+ .v99925RoadmapLevel i{display:none}.v99925RoadmapLevel span{align-items:flex-start}
+ .v99925RoadmapEvidence{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .v99925ThesisGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .v99925ThesisGrid article.next{grid-column:span 2}
+}
+@media(max-width:700px){
+ .v2AnalystClocks{grid-template-columns:1fr}
+ .v99925PartialValuation{grid-template-columns:1fr;padding:20px}
+ .v99925Roadmap,.v99925Thesis{padding:20px 16px;border-radius:20px}
+ .v99925Roadmap>header{display:block}.v99925RoadmapState{align-items:flex-start;margin-top:12px}
+ .v99925RoadmapRail{grid-template-columns:1fr 1fr}
+ .v99925RoadmapEvidence{grid-template-columns:1fr 1fr}
+ .v99925Wave{grid-template-columns:1fr}
+ .v99925ThesisGrid{grid-template-columns:1fr}
+ .v99925ThesisGrid article.next{grid-column:auto}
+}
