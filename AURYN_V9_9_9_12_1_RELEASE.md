@@ -1,0 +1,2 @@
+# AURYN V9.9.9.12.1 — Technical Prop Compile Hotfix
+Root cause: V9.9.9.12 attempted to read `marketLab.relativeStrengthPct`, but the locally derived marketLab object has no such property. The hotfix removes that invalid typed access and leaves Relative Strength unavailable until it is wired from a real canonical benchmark source. Trend, momentum and participation remain sourced from `technicalState`. No valuation/CIO/Market Truth/UI policy changes.

@@ -151,7 +151,8 @@
     "test:v99910": "node --test tests/auryn-v99910-fundamental-analyst.test.mjs && npm run test:v9999",
     "test:v99911": "node --test tests/auryn-v99911-overview-v2.test.mjs && npm run test:v99910",
     "test:v999111": "node --test tests/auryn-v999111-v2-props.test.mjs && npm run test:v99911",
-    "test:v99912": "node --test tests/auryn-v99912-intelligence-fidelity.test.mjs && npm run test:v999111"
+    "test:v99912": "node --test tests/auryn-v99912-intelligence-fidelity.test.mjs && npm run test:v999111",
+    "test:v999121": "node --test tests/auryn-v999121-technical-props.test.mjs && npm run test:v99912"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",
