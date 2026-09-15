@@ -823,3 +823,24 @@ html,body{overflow-x:hidden}
 .v99931PartialEvidence>div>small{font-size:8px;font-weight:850;letter-spacing:.12em;color:#8d6b37}
 .v99931PartialEvidence span{display:flex;justify-content:space-between;gap:10px;font-size:11px;line-height:1.3}.v99931PartialEvidence em{font-style:normal;color:#797167}.v99931PartialEvidence b{font-size:11px}
 @media(max-width:700px){.v99931PartialEvidence{grid-template-columns:1fr}}
+
+/* V9.9.9.32 — one decision, adaptive valuation, horizon-aware roadmap */
+.v99932CallDecision{display:flex!important;flex-direction:column}
+.v99932CallDecision>p{margin-bottom:14px!important}
+.v99932CallActions{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.v99932CallActions span{min-width:0}.v99932CallActions small{display:block;font-size:7px;letter-spacing:.13em;color:#d2ad68;margin-bottom:5px}.v99932CallActions b{white-space:normal}
+.v99932CallLevels{display:grid;grid-template-columns:1.35fr .8fr 1fr;gap:1px;margin-top:14px;border:1px solid rgba(255,255,255,.12);border-radius:12px;overflow:hidden}.v99932CallLevels span{padding:10px 12px;background:rgba(255,255,255,.035);display:flex;flex-direction:column;gap:3px}.v99932CallLevels small{font-size:7px;letter-spacing:.12em;color:#cfa85e}.v99932CallLevels b{font-size:11px;color:#f5dfb6;white-space:nowrap}
+.v99932CallButtons{display:flex;gap:7px;margin-top:10px}.v99932CallButtons button{padding:7px 10px;border:1px solid rgba(255,255,255,.2);border-radius:99px;background:rgba(255,255,255,.07);color:#fff;font-size:9px;font-weight:700;cursor:pointer}
+.v99932CallDecision footer{margin-top:auto!important}
+
+.v99932CoreDecisionRow{align-items:stretch}
+.v99932CoreDecisionRow>.v2Scenario,.v99932CoreDecisionRow>.v2DecisionMap{min-height:0!important;height:auto!important;padding:22px!important}
+.v99932CoreDecisionRow .v2DecisionMapBody{padding-top:20px!important}.v99932CoreDecisionRow .v2Rail{height:70px!important;margin-top:12px!important}.v99932CoreDecisionRow .v2DecisionZones{margin-top:6px!important}.v99932CoreDecisionRow .v2DecisionMap>p{margin-top:8px!important}
+.v99932ValuationSnapshot{padding:18px;border-radius:18px;background:linear-gradient(135deg,#f8fbff,#f2f6fa);display:grid;grid-template-columns:1fr;gap:12px;min-height:0}
+.v99932ValuationHead{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.v99932ValuationHead>div>small{font-size:9px;letter-spacing:.08em}.v99932ValuationHead h3{margin:5px 0 0;font-size:20px}.v99932ValuationRead{padding:9px 11px;border:1px solid #d9dfe5;border-radius:11px;background:#fff;display:flex;flex-direction:column;gap:3px;min-width:150px}.v99932ValuationRead small{font-size:7px;letter-spacing:.12em;color:#89785e}.v99932ValuationRead b{font-size:10px}
+.v99932ValuationSnapshot .v99931PartialEvidence{grid-template-columns:1fr 1fr;gap:8px}.v99932ValuationSnapshot .v99931PartialEvidence>div{padding:10px}.v99932ValuationSnapshot>p{margin:0;font-size:10px;color:#706a62}.v99932ValuationSnapshot .v2TextAction{margin-top:0!important}
+
+.v99927Zone.deep{background:#f4f7f8;border-top:4px solid #71808c}.v99927Zone.deep small{color:#596874}
+.v99925Roadmap>header>div:first-child>small{color:#765b32}
+@media(max-width:900px){.v99932CallActions{grid-template-columns:repeat(2,1fr)!important}.v99932CallLevels{grid-template-columns:1fr 1fr}.v99932CallLevels span:last-child{grid-column:span 2}}
+@media(max-width:700px){.v99932ValuationHead{flex-direction:column}.v99932ValuationRead{min-width:0;width:100%}.v99932ValuationSnapshot .v99931PartialEvidence{grid-template-columns:1fr}}

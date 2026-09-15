@@ -1,0 +1,10 @@
+import fs from "node:fs";
+const v=fs.readFileSync("components/premium/AurynResearchOverviewV2.tsx","utf8"),c=fs.readFileSync("app/auryn-premium.css","utf8"),n=fs.readFileSync("lib/auryn/v99925/investment-narrative.ts","utf8"),s=fs.readFileSync("components/StockClient.tsx","utf8");
+for(const x of ["v99932CallDecision","POSITION SIZE","SETUP INVALIDATION","Why this decision","What changes it"])if(!v.includes(x))throw new Error(`single call missing ${x}`);
+if(v.includes('className="v99929Cio"')||v.includes("AURYN CIO"))throw new Error("duplicate CIO hero/branding remains");
+for(const x of ["v99932ValuationSnapshot","VALUATION SNAPSHOT","AVAILABLE NOW","STILL NEEDED"])if(!v.includes(x))throw new Error(`valuation missing ${x}`);
+for(const x of ["WEEKLY PRICE STRUCTURE","ACTIVE WEEKLY SUPPORT","DEEP CYCLE SUPPORT","LONG-TERM STRUCTURAL FAILURE","HOLD ABOVE","FUTURE RECLAIM","Volume participation","Accumulation / Distribution"])if(!v.includes(x))throw new Error(`roadmap semantics missing ${x}`);
+if(!v.includes("regimeTruth.extensionsAllowed"))throw new Error("extension gating missing");
+for(const x of ["activeEntry","setupInvalidation","deepCycleSupport"])if(!n.includes(x))throw new Error(`narrative horizon missing ${x}`);
+for(const x of ["aurynPriceState","LAST_AVAILABLE","LAST_VERIFIED","longTermBars"])if(!s.includes(x))throw new Error(`price/canonical regression ${x}`);
+console.log("AURYN V9.9.9.32 one-decision horizon-aware release verification passed.");
