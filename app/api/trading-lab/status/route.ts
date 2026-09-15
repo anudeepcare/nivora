@@ -4,6 +4,7 @@ import {summarizeTradingPerformance} from "@/lib/nivora-trading-metrics";
 import {ENGINE_VERSION,TRADING_LAB_VERSION} from "@/lib/nivora-version";
 import {marketSessionAt} from "@/lib/nivora-market-session";
 import {AlpacaPaperBroker} from "@/lib/alpaca-paper";
+import {AUTONOMOUS_RESEARCH_ENGINE_VERSION} from "@/lib/auryn/v995/persist-research";
 
 export const dynamic="force-dynamic";
 
@@ -36,12 +37,12 @@ export async function GET(){
   db.from("nivora_v61_trade_fills").select("realized_pnl,return_pct,benchmark_return_pct").not("realized_pnl","is",null).order("filled_at",{ascending:true}).limit(1000),
   db.from("nivora_v61_trade_intents").select("id",{count:"exact",head:true}),
   db.from("nivora_v61_paper_orders").select("id",{count:"exact",head:true}),
-  db.from("nivora_v59_decision_snapshots").select("id",{count:"exact",head:true}).eq("engine_version",ENGINE_VERSION).gte("observed_at",since),
+  db.from("nivora_v59_decision_snapshots").select("id",{count:"exact",head:true}).eq("engine_version",AUTONOMOUS_RESEARCH_ENGINE_VERSION).gte("observed_at",since),
   db.from("nivora_v61_trade_evaluations").select("snapshot_id,symbol,today_action,status,reason,risk_code,client_order_id,evaluated_at,details").eq("engine_version",ENGINE_VERSION).gte("evaluated_at",since).order("evaluated_at",{ascending:false}).limit(200),
   db.from("nivora_v61_paper_orders").select("id,symbol,client_order_id,status,submitted_at,created_at").order("created_at",{ascending:false}).limit(100),
   db.from("nivora_v61_trade_fills").select("order_id,symbol,side,qty,fill_price,realized_pnl,return_pct,filled_at").order("filled_at",{ascending:false}).limit(200),
   db.from("nivora_provider_health").select("ok,error_code,latency_ms,checked_at").eq("provider","nivora").eq("capability","paper-runner").order("checked_at",{ascending:false}).limit(1).maybeSingle(),
-  db.from("nivora_v59_decision_snapshots").select("id,symbol,observed_at,decision,evidence").eq("engine_version",ENGINE_VERSION).order("observed_at",{ascending:false}).limit(1000),
+  db.from("nivora_v59_decision_snapshots").select("id,symbol,observed_at,decision,evidence").eq("engine_version",AUTONOMOUS_RESEARCH_ENGINE_VERSION).order("observed_at",{ascending:false}).limit(1000),
   db.from("nivora_v65_trading_runs").select("id,automatic,session,started_at,finished_at,status,processed,submitted,blocked,errors,error").eq("engine_version",ENGINE_VERSION).order("started_at",{ascending:false}).limit(20)
  ]);
 

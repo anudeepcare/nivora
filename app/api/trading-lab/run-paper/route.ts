@@ -12,6 +12,7 @@ import {buildClosedTradesFromFills} from "@/lib/nivora-trading-metrics";
 import {explainNoIntent} from "@/lib/nivora-trading-evaluation";
 import {sizePosition} from "@/lib/nivora-position-sizing";
 import {resolvePaperInvalidation} from "@/lib/v65/paper-invalidation";
+import {AUTONOMOUS_RESEARCH_ENGINE_VERSION} from "@/lib/auryn/v995/persist-research";
 
 export const dynamic="force-dynamic";
 
@@ -88,7 +89,7 @@ async function reconcileFills(db:SupabaseClient,broker:AlpacaPaperBroker){
 
 async function run(req:Request,automatic=false){
  const started=Date.now();
- const secret=process.env.TRADING_LAB_CRON_SECRET||process.env.CRON_SECRET;
+ const secret=process.env.CRON_SECRET||process.env.TRADING_LAB_CRON_SECRET;
  if(!secret||req.headers.get("authorization")!==`Bearer ${secret}`)return unauthorized();
 
  if(process.env.TRADING_LAB_PAPER_ENABLED!=="true"){
@@ -156,7 +157,7 @@ async function run(req:Request,automatic=false){
   const since=new Date(Date.now()-30*60_000).toISOString();
   const {data:snapshots,error}=await db.from("nivora_v59_decision_snapshots")
    .select("id,symbol,observed_at,price,evidence_fingerprint,decision,evidence")
-   .eq("engine_version",ENGINE_VERSION)
+   .eq("engine_version",AUTONOMOUS_RESEARCH_ENGINE_VERSION)
    .gte("observed_at",since)
    .order("observed_at",{ascending:false})
    .limit(50);
@@ -179,7 +180,7 @@ async function run(req:Request,automatic=false){
     const v935Meta=snapshot.evidence?.v935;
     const normalizedAction=(x:any)=>String(x||"").trim().toUpperCase().replaceAll(" ","_");
     if(!v935Meta?.snapshotId||v935Meta?.contract!=="AURYN_V9_3_5_CANONICAL_SNAPSHOT"){
-     const reason="V9.3.5 canonical snapshot provenance is missing; Trading Lab fails closed until a fresh consolidated AURYN snapshot is persisted.";
+     const reason="Canonical research snapshot is not ready yet; Trading Lab safely waits for the next completed AURYN research cycle.";
      await recordEvaluation(snapshot,"BLOCKED",String(v931Meta?.newMoneyAction||"NONE"),reason,"V935_CANONICAL_SNAPSHOT_MISSING",null,{v935Meta:v935Meta??null});
      results.push({symbol:snapshot.symbol,status:"BLOCKED",action:String(v931Meta?.newMoneyAction||"NONE"),reason,riskCode:"V935_CANONICAL_SNAPSHOT_MISSING"});
      continue;

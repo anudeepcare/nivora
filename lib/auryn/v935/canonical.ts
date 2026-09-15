@@ -2,12 +2,12 @@ import {createClient} from "@supabase/supabase-js";
 import {loadCanonicalMarketSnapshot} from "@/lib/auryn/market-data-gateway";
 import {classifySecuritySymbol} from "@/lib/auryn/v82/security-master";
 import type {AurynCanonicalSnapshot,CanonicalResearchProjection,CanonicalSecurityIdentity} from "./domain";
+import {buildV935Provenance,V935_CANONICAL_CONTRACT,V935_CANONICAL_VERSION} from "./provenance";
 
 function db(){
  const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY;
  return url&&key?createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}}):null;
 }
-function hashText(s:string){let h=2166136261>>>0;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return h.toString(36)}
 function num(v:any){const n=Number(v);return Number.isFinite(n)?n:null}
 function identity(symbol:string):CanonicalSecurityIdentity{
  const x:any=classifySecuritySymbol(symbol);
@@ -33,8 +33,8 @@ export async function loadAurynCanonicalSnapshot(symbolRaw:string):Promise<Auryn
  const research=researchFromRow(row); const security=identity(symbol);
  const degraded=!market||research.state!=="READY";
  const degradedReason=!market?"MARKET_TRUTH_REFRESHING":research.state==="ANALYSIS_REQUIRED"?"ANALYSIS_REQUIRED":research.state==="STALE_VERIFIED"?"RESEARCH_REFRESH_RECOMMENDED":null;
- const basis=JSON.stringify({symbol,market:market?.snapshotId??null,research:research.decisionSnapshotId??research.fingerprint??null});
- return {contract:"AURYN_V9_3_5_CANONICAL_SNAPSHOT",version:"auryn-v9.3.5",snapshotId:`${symbol}-v935-${hashText(basis)}`,generatedAt,security,market,research,degraded,degradedReason};
+ const provenance=buildV935Provenance({symbol,marketSnapshotId:market?.snapshotId??null,researchSnapshotId:research.decisionSnapshotId??null,fingerprint:research.fingerprint??null,generatedAt});
+ return {contract:V935_CANONICAL_CONTRACT,version:V935_CANONICAL_VERSION,snapshotId:provenance.snapshotId,generatedAt,security,market,research,degraded,degradedReason};
 }
 export async function loadAurynCanonicalSnapshots(symbols:string[],concurrency=6){
  const unique=[...new Set(symbols.map(x=>x.trim().toUpperCase()).filter(Boolean))].slice(0,50);const out=new Map<string,AurynCanonicalSnapshot>();let i=0;

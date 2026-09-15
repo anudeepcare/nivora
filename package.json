@@ -182,7 +182,8 @@
     "test:v99934": "node --test tests/auryn-v99934-tab-dedup-performance.test.mjs && npm run test:v99933",
     "test:v99935": "node --test tests/auryn-v99935-overview-actions-catalyst-ux.test.mjs && npm run test:v99934",
     "test:v99936": "node --test tests/auryn-v99936-upside-sequence.test.mjs && npm run test:v99935",
-    "test:v99937": "node --test tests/auryn-v99937-automation-wave-ux.test.mjs && npm run test:v99936"
+    "test:v99937": "node --test tests/auryn-v99937-automation-wave-ux.test.mjs && npm run test:v99936",
+    "test:v99938": "node --test tests/auryn-v99938-trading-lab-canonical.test.mjs && npm run test:v99937"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

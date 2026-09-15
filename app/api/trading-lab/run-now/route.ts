@@ -4,7 +4,7 @@ import {createClient} from "@supabase/supabase-js";
 export const dynamic="force-dynamic";
 
 export async function POST(req:Request){
- const url=process.env.NEXT_PUBLIC_SUPABASE_URL,serviceKey=process.env.SUPABASE_SERVICE_ROLE_KEY,secret=process.env.TRADING_LAB_CRON_SECRET||process.env.CRON_SECRET;
+ const url=process.env.NEXT_PUBLIC_SUPABASE_URL,serviceKey=process.env.SUPABASE_SERVICE_ROLE_KEY,secret=process.env.CRON_SECRET||process.env.TRADING_LAB_CRON_SECRET;
  if(!url||!serviceKey||!secret)return NextResponse.json({status:"unavailable",reason:"Trading Lab server configuration is incomplete."},{status:503});
  const auth=req.headers.get("authorization")||"",token=auth.startsWith("Bearer ")?auth.slice(7):"";
  if(!token)return NextResponse.json({error:"Unauthorized."},{status:401});
