@@ -923,3 +923,9 @@ html,body{overflow-x:hidden}
 
 @media(max-width:900px){.v99935Synthesis{grid-template-columns:1fr!important}.v99935Synthesis>article{min-height:0!important}.v99935AurynView{grid-template-columns:1fr!important}.v99935CatalystHero{grid-template-columns:1fr!important}.v99935CatalystHero>div+div{border-left:0!important;border-top:1px solid #e7dfd4!important}}
 @media(max-width:700px){.v99935DecisionActions{align-items:flex-start;flex-direction:column}.v99935ActionButtons{width:100%}.v99935ActionButtons button{flex:1}.v99935CatalystPage{width:100%!important;padding:12px 0 32px!important}.v99935CatalystHero,.v99935CatalystSection,.v99935CatalystPage .nextEvent{border-radius:12px!important}}
+
+/* V9.9.9.37 — investor-friendly weekly trend context */
+.v99937Wave{display:grid!important;grid-template-columns:260px 1fr auto!important;gap:18px!important;align-items:center!important}
+.v99937Wave>div:first-child b{font-size:15px!important}.v99937WaveRead p{margin:0 0 5px!important;font-size:10px!important;line-height:1.4!important}.v99937WaveRead span{font-size:8px!important;color:#7d756b!important}
+.v99937Wave details{position:relative}.v99937Wave summary{cursor:pointer;list-style:none;white-space:nowrap;font-size:8px;font-weight:850;color:#996516;border:1px solid #d9cfbf;border-radius:999px;padding:7px 9px;background:#fff}.v99937Wave details p{position:absolute;right:0;bottom:34px;width:310px;padding:12px;border:1px solid #d9cfbf;border-radius:12px;background:#fff;box-shadow:0 10px 30px rgba(30,25,20,.12);z-index:5;font-size:9px!important;line-height:1.45!important}
+@media(max-width:800px){.v99937Wave{grid-template-columns:1fr!important}.v99937Wave details p{left:0;right:auto;width:min(310px,80vw)}}

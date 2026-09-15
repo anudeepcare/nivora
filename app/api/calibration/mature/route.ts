@@ -9,7 +9,7 @@ const day=86400000;
 type DailyBar={date:string;close:number};
 
 function auth(req:Request){
- const secret=process.env.TRADING_LAB_CRON_SECRET||process.env.CRON_SECRET;
+ const secret=process.env.CRON_SECRET||process.env.TRADING_LAB_CRON_SECRET;
  return Boolean(secret&&req.headers.get("authorization")===`Bearer ${secret}`);
 }
 function isoDate(d:Date){return d.toISOString().slice(0,10)}

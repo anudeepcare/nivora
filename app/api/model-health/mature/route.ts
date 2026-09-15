@@ -5,7 +5,7 @@ import {measureOutcome} from '@/lib/v65/outcomes';
 export const dynamic='force-dynamic';
 const horizons=[['30D',30],['90D',90],['180D',180],['1Y',365],['2Y',730]] as const,day=86400000;
 type DailyBar={date:string;close:number};
-const auth=(req:Request)=>{const secret=process.env.TRADING_LAB_CRON_SECRET||process.env.CRON_SECRET;return Boolean(secret&&req.headers.get('authorization')===`Bearer ${secret}`)};
+const auth=(req:Request)=>{const secret=process.env.CRON_SECRET||process.env.TRADING_LAB_CRON_SECRET;return Boolean(secret&&req.headers.get('authorization')===`Bearer ${secret}`)};
 const iso=(d:Date)=>d.toISOString().slice(0,10);
 async function series(symbol:string,start:string,end:string,key:string):Promise<DailyBar[]>{const u=new URL('https://api.twelvedata.com/time_series');u.searchParams.set('symbol',symbol);u.searchParams.set('interval','1day');u.searchParams.set('start_date',start);u.searchParams.set('end_date',end);u.searchParams.set('adjust','all');u.searchParams.set('outputsize','800');u.searchParams.set('apikey',key);const r=await fetch(u,{cache:'no-store',signal:AbortSignal.timeout(10000)}),j=await r.json();if(!r.ok||!Array.isArray(j?.values))throw new Error(j?.message||`No daily series for ${symbol}`);return j.values.slice().reverse().map((x:any)=>({date:String(x.datetime).slice(0,10),close:Number(x.close)})).filter((x:any)=>Number.isFinite(x.close)&&x.close>0)}
 const atOrAfter=(rows:DailyBar[],date:string)=>rows.find(x=>x.date>=date)||null;

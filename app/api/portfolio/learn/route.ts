@@ -5,7 +5,7 @@ import {freezeDecision} from "@/lib/nivora-snapshot";
 import {ENGINE_VERSION} from "@/lib/nivora-version";
 
 export const dynamic="force-dynamic";
-function auth(req:Request){const secret=process.env.TRADING_LAB_CRON_SECRET||process.env.CRON_SECRET;return Boolean(secret&&req.headers.get("authorization")===`Bearer ${secret}`)}
+function auth(req:Request){const secret=process.env.CRON_SECRET||process.env.TRADING_LAB_CRON_SECRET;return Boolean(secret&&req.headers.get("authorization")===`Bearer ${secret}`)}
 async function json(url:string){const r=await fetch(url,{cache:"no-store",signal:AbortSignal.timeout(12000)}),x=await r.json();if(!r.ok||x?.error)throw new Error(x?.error||`${r.status} ${url}`);return x}
 
 export async function GET(req:Request){

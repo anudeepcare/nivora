@@ -1,0 +1,10 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";
+const wf=p=>fs.readFileSync(`.github/workflows/${p}`,"utf8"),v=fs.readFileSync("components/premium/AurynResearchOverviewV2.tsx","utf8");
+test("surviving HTTP workflows share AURYN_BASE_URL and CRON_SECRET",()=>{for(const p of ["auryn-v996-validation-queue.yml","nivora-calibration-mature.yml","nivora-portfolio-learning.yml"]){const s=wf(p);assert.ok(s.includes("AURYN_BASE_URL"));assert.ok(s.includes("CRON_SECRET"));assert.ok(!s.includes("AURYN_PRODUCTION_URL"));assert.ok(!s.includes("TRADING_LAB_CRON_SECRET"));}});
+test("calibration uses canonical cron auth header",()=>{const s=wf("nivora-calibration-mature.yml");assert.ok(s.includes('Authorization: Bearer $CRON_SECRET'));});
+test("server endpoints prefer canonical CRON_SECRET over stale legacy secret",()=>{for(const p of ["app/api/calibration/mature/route.ts","app/api/model-health/mature/route.ts","app/api/portfolio/learn/route.ts"]){const s=fs.readFileSync(p,"utf8");assert.ok(s.includes("process.env.CRON_SECRET||process.env.TRADING_LAB_CRON_SECRET"),p);}});
+test("portfolio learning uses canonical cron auth header",()=>{const s=wf("nivora-portfolio-learning.yml");assert.ok(s.includes('Authorization: Bearer $CRON_SECRET'));});
+test("obsolete disabled workflows are removed",()=>{for(const p of ["auryn-v931-reliability.yml","auryn-v935-reliability.yml","nivora-market-scanner.yml","nivora-paper-trading.yml"])assert.ok(!fs.existsSync(`.github/workflows/${p}`),p);});
+test("SEC 13F remains independent quarterly sync",()=>{const s=wf("sec-13f-sync.yml");assert.ok(s.includes("sync_sec_13f.py"));assert.ok(s.includes("2,5,8,11"));});
+test("wave UI uses investor language",()=>{for(const x of ["Possible new uptrend","Uptrend developing","Uptrend confirmed","Trend unclear","Downtrend risk increasing","What confirms this?"])assert.ok(v.includes(x),x);assert.ok(!v.includes("Wave candidate ·"));});
+test("wave explanation references actual evidence",()=>{for(const x of ["Volume participation","Weekly HMA","50-WMA","Confluence"])assert.ok(v.includes(x),x);});
