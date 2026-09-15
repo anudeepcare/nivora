@@ -1,0 +1,2 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";
+test("regime truth declarations precede confluence zone use",()=>{const s=fs.readFileSync("components/premium/AurynResearchOverviewV2.tsx","utf8");const use=s.indexOf("const confluenceZones="),truth=s.indexOf("const structuralTruthValid="),active=s.indexOf("const activeLongTerm");assert.ok(truth>=0&&active>=0&&use>truth&&use>active,{use,truth,active});});
