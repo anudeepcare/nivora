@@ -62,6 +62,16 @@ async function fromTwelveIntradayLast(symbol:string,key:string,asOf:Date){
  const candidate:MarketPriceCandidate={symbol,price,provider:"twelve-intraday",providerTimestamp:stamp,retrievedAt:asOf.toISOString(),session,freshness:a<=marketPriceMaxAgeSeconds(session)?"LIVE":"RECENT",kind:"TRADE"};
  return{candidate:a<=marketPriceMaxAgeSeconds(session)?candidate:null,lastMarketCandidate:candidate,changePct:null,intradayAgeSeconds:a};
 }
+async function fromFinnhub(symbol:string,key:string,asOf:Date){
+ if(!key)throw new Error("Finnhub is not configured.");
+ const url=`https://finnhub.io/api/v1/quote?symbol=${encodeURIComponent(symbol)}&token=${key}`;
+ const r=await fetch(url,{cache:"no-store",signal:AbortSignal.timeout(3000)}),body=await r.json().catch(()=>null);
+ if(!r.ok)throw new Error(`${r.status} Finnhub quote unavailable`);
+ const price=finitePositive(body?.c),stamp=Number.isFinite(Number(body?.t))&&Number(body.t)>0?new Date(Number(body.t)*1000).toISOString():null,a=age(stamp,asOf),session=marketSessionAt(asOf) as DisplaySession;
+ if(price==null||!stamp||a==null)throw new Error("Finnhub quote has no usable timestamped price");
+ const candidate:MarketPriceCandidate={symbol,price,provider:"finnhub",providerTimestamp:stamp,retrievedAt:asOf.toISOString(),session,freshness:a<=marketPriceMaxAgeSeconds(session)?"LIVE":"RECENT",kind:"TRADE"};
+ return{candidate:a<=marketPriceMaxAgeSeconds(session)?candidate:null,lastMarketCandidate:candidate,changePct:Number.isFinite(Number(body?.dp))?Number(body.dp):null};
+}
 
 async function fromCoinbase(symbol:string,asOf:Date){
  const normalized=normalizeCryptoSymbol(symbol),[base,quote]=normalized.split("/"),product=`${base}-${quote==="USDT"?"USD":quote}`;
@@ -92,15 +102,15 @@ async function fromAlpaca(symbol:string,key:string,secret:string,asOf:Date){
  return{candidates,lastMarketCandidate,changePct:null};
 }
 
-export async function loadFastResearchQuote(input:{symbol:string;twelveKey?:string;alpacaKey?:string;alpacaSecret?:string;asOf?:Date}):Promise<FastResearchQuote>{
+export async function loadFastResearchQuote(input:{symbol:string;twelveKey?:string;alpacaKey?:string;alpacaSecret?:string;finnhubKey?:string;asOf?:Date}):Promise<FastResearchQuote>{
  const rawSymbol=String(input.symbol||"").toUpperCase(),asOf=input.asOf??new Date(),started=Date.now(),crypto=isCryptoSymbol(rawSymbol),symbol=crypto?normalizeCryptoSymbol(rawSymbol):rawSymbol;if(!symbol)throw new Error("Symbol is required.");
  const jobs:{provider:string;run:()=>Promise<any>}[]=[];
  if(crypto)jobs.push({provider:"coinbase",run:()=>fromCoinbase(symbol,asOf)});
  if(!crypto&&input.alpacaKey&&input.alpacaSecret)jobs.push({provider:"alpaca",run:()=>fromAlpaca(symbol,input.alpacaKey!,input.alpacaSecret!,asOf)});
- if(input.twelveKey){jobs.push({provider:"twelvedata-price",run:()=>fromTwelve(symbol,input.twelveKey!,asOf,crypto)});if(!crypto)jobs.push({provider:"twelve-intraday",run:()=>fromTwelveIntradayLast(symbol,input.twelveKey!,asOf)});}
+ if(input.twelveKey){jobs.push({provider:"twelvedata-price",run:()=>fromTwelve(symbol,input.twelveKey!,asOf,crypto)});if(!crypto)jobs.push({provider:"twelve-intraday",run:()=>fromTwelveIntradayLast(symbol,input.twelveKey!,asOf)});}if(input.finnhubKey&&!crypto)jobs.push({provider:"finnhub",run:()=>fromFinnhub(symbol,input.finnhubKey!,asOf)});
  if(!jobs.length)throw new Error("No fast market-data provider is configured.");
  const settled=await Promise.all(jobs.map(async j=>{try{return{provider:j.provider,ok:true,value:await j.run()}}catch(error:any){return{provider:j.provider,ok:false,error}}}));
- const diagnostics:ProviderDiagnostic[]=settled.map(x=>{if(!x.ok)return{provider:x.provider,status:classifyError((x as any).error),detail:String((x as any).error?.message||(x as any).error)};const v=(x as any).value,c=v.candidate??v.candidates?.[0]??v.lastMarketCandidate;return{provider:x.provider,status:"OK",detail:v.normalized?.isExtendedHours?"fresh extended-hours market data available":"fresh market data available",price:c?.price??null,ageSeconds:age(c?.providerTimestamp??null,asOf),kind:c?.kind??null}});
+ const diagnostics:ProviderDiagnostic[]=settled.map(x=>{if(!x.ok)return{provider:x.provider,status:classifyError((x as any).error),detail:String((x as any).error?.message||(x as any).error)};const v=(x as any).value,c=v.candidate??v.candidates?.[0]??v.lastMarketCandidate;return{provider:x.provider,status:"OK",detail:v.normalized?.isExtendedHours?(v.candidate?"fresh extended-hours market data available":"extended-hours observation outside freshness window"):(v.candidate?"fresh market data available":"market observation outside freshness window"),price:c?.price??null,ageSeconds:age(c?.providerTimestamp??null,asOf),kind:c?.kind??null}});
  const candidates:MarketPriceCandidate[]=[],changeByProvider=new Map<string,number|null>();
  for(const x of settled)if(x.ok){const v=(x as any).value;if(v.candidate)candidates.push(v.candidate);if(v.candidates)candidates.push(...v.candidates);if(v.lastMarketCandidate&&!candidates.some(c=>c.provider===v.lastMarketCandidate.provider&&c.providerTimestamp===v.lastMarketCandidate.providerTimestamp))candidates.push(v.lastMarketCandidate);changeByProvider.set(x.provider,v.changePct??null)}
  if(!candidates.length){const err=new Error("No usable market price. "+diagnostics.map(d=>`${d.provider}:${d.status}`).join(", "));(err as any).diagnostics=diagnostics;throw err}

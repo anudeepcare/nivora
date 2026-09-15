@@ -16,6 +16,7 @@ export async function GET(req:Request,{params}:{params:Promise<{symbol:string}>}
       twelveKey:process.env.TWELVE_DATA_API_KEY||"",
       alpacaKey:process.env.ALPACA_PAPER_API_KEY||"",
       alpacaSecret:process.env.ALPACA_PAPER_API_SECRET||"",
+      finnhubKey:process.env.FINNHUB_API_KEY||"",
       asOf:new Date()
     });
     return NextResponse.json(quote,{headers:{
