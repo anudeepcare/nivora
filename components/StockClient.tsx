@@ -25,7 +25,6 @@ import {applyLiveQuoteToToday} from "@/lib/nivora-live-today";
 import StockSecurityHeader from "./stock/StockSecurityHeader";
 import StockEvidenceNav from "./stock/StockEvidenceNav";
 import StockEvidenceSections from "./stock/StockEvidenceSections";
-import StockThesisPanel from "./stock/StockThesisPanel";
 import StockTabContext from "./stock/StockTabContext";
 import {metricDefinitions} from "@/lib/nivora-metrics";
 import {ENGINE_VERSION} from "@/lib/nivora-version";
@@ -168,8 +167,8 @@ export default function StockClient({symbol}:{symbol:string}){
   const[coreRetry,setCoreRetry]=useState(0);
   const[previousSetupState,setPreviousSetupState]=useState<SetupState|null>(null);
 
-  useEffect(()=>{let cancelled=false;setOverviewChartLoading(true);fetch(`/api/chart/${encodeURIComponent(symbol)}?range=${overviewChartRange}`,{cache:"no-store"}).then(r=>r.ok?r.json():Promise.reject(new Error("chart"))).then(j=>{if(!cancelled&&Array.isArray(j?.candles)&&j.candles.length)setOverviewChartBars(j.candles)}).catch(()=>{if(!cancelled)setOverviewChartBars(null)}).finally(()=>{if(!cancelled)setOverviewChartLoading(false)});return()=>{cancelled=true}},[symbol,overviewChartRange]);
-  useEffect(()=>{let cancelled=false;fetch(`/api/chart/${encodeURIComponent(symbol)}?range=5Y`,{cache:"force-cache"}).then(r=>r.ok?r.json():Promise.reject(new Error("long-term chart"))).then(j=>{if(!cancelled&&Array.isArray(j?.candles))setLongTermBars(j.candles)}).catch(()=>{if(!cancelled)setLongTermBars([])});return()=>{cancelled=true}},[symbol]);
+  useEffect(()=>{if(tab!=="thesis")return;let cancelled=false;setOverviewChartLoading(true);fetch(`/api/chart/${encodeURIComponent(symbol)}?range=${overviewChartRange}`,{cache:"no-store"}).then(r=>r.ok?r.json():Promise.reject(new Error("chart"))).then(j=>{if(!cancelled&&Array.isArray(j?.candles)&&j.candles.length)setOverviewChartBars(j.candles)}).catch(()=>{if(!cancelled)setOverviewChartBars(null)}).finally(()=>{if(!cancelled)setOverviewChartLoading(false)});return()=>{cancelled=true}},[symbol,overviewChartRange,tab]);
+  useEffect(()=>{if(tab!=="thesis")return;let cancelled=false;fetch(`/api/chart/${encodeURIComponent(symbol)}?range=5Y`,{cache:"force-cache"}).then(r=>r.ok?r.json():Promise.reject(new Error("long-term chart"))).then(j=>{if(!cancelled&&Array.isArray(j?.candles))setLongTermBars(j.candles)}).catch(()=>{if(!cancelled)setLongTermBars([])});return()=>{cancelled=true}},[symbol,tab]);
   useEffect(()=>{
     try{const saved=localStorage.getItem(`auryn:v931:setup:${symbol}`) as SetupState|null;setPreviousSetupState(saved||null)}catch{setPreviousSetupState(null)}
   },[symbol]);
@@ -291,8 +290,7 @@ export default function StockClient({symbol}:{symbol:string}){
       // context and institutional requests together can exceed upstream minute limits.
       const jobs=[
         ()=>fetchJson(`/api/company/${encodeURIComponent(symbol)}`).then(x=>{if(live){setCompany(x);mergeEvidenceWarm(symbol,{company:x})}}),
-        ()=>fetchJson(`/api/context/${encodeURIComponent(symbol)}`).then(x=>{if(live){setContext(x);mergeEvidenceWarm(symbol,{context:x})}}),
-        ()=>fetchJson(`/api/institutional/${encodeURIComponent(symbol)}`).then(x=>{if(live){setInstitutional(x);mergeEvidenceWarm(symbol,{institutional:x})}})
+        ()=>fetchJson(`/api/context/${encodeURIComponent(symbol)}`).then(x=>{if(live){setContext(x);mergeEvidenceWarm(symbol,{context:x})}})
       ];
       for(const job of jobs){
         if(!live)return;
@@ -322,6 +320,15 @@ export default function StockClient({symbol}:{symbol:string}){
     const cancel=scheduleNonCritical(()=>fetch(`/api/calibration?engine=${ENGINE_VERSION}`,{cache:"force-cache"}).then(r=>r.ok?r.json():null).then(x=>{if(x)calibrationCache=x;if(live&&x)setCalibration(x)}).catch(()=>{}));
     return()=>{live=false;cancel()};
   },[]);
+
+  useEffect(()=>{
+    if(tab!=="institutions"||d?.assetType==="crypto")return;
+    let active=true;
+    sharedJson(`/api/institutional/${encodeURIComponent(symbol)}`,undefined,5*60*1000)
+      .then((x:any)=>{if(active){setInstitutional(x);mergeEvidenceWarm(symbol,{institutional:x})}})
+      .catch(()=>{});
+    return()=>{active=false};
+  },[tab,symbol,d?.assetType]);
 
   useEffect(()=>{
     if(tab!=="options"||d?.assetType==="crypto")return;
@@ -884,9 +891,9 @@ export default function StockClient({symbol}:{symbol:string}){
     {marketTruth&&!priceSensitiveAllowed&&!stableLiveFresh?<div className="aurynIntegrityAlert aurynMarketTruthAlert" role="alert"><b>PRICE UNVERIFIED</b><span>{marketTruth.reason||"Independent market sources are not sufficiently aligned."} AURYN has disabled entry, confirmation, target, stop and risk/reward output until the canonical price is verified.</span></div>:null}
     {marketTruth&&!priceSensitiveAllowed&&stableLiveFresh?<div className="aurynIntegrityNote"><b>Research price live</b><span>Execution-grade verification is still pending; AURYN keeps automated execution blocked without hiding the live research price.</span></div>:null}
     {/* Compatibility contract: AurynResearchOverview decision={institutionalDecision} marketTruth={marketTruth}; runtime receives the unified display truth below. */}
-    <div ref={overviewRef}>{institutionalDecision?<AurynResearchOverviewV2 decision={institutionalDecision} marketTruth={{...marketTruth,...marketTruthUi,priceState:marketTruthUi.freshness}} displayPrice={aurynPriceState.price} displayPriceLive={aurynPriceState.isLive} marketIntelligence={marketIntelligenceView??d?.marketIntelligence??null} fundamentalScenario={analystFundamentals.fundamentalScenario} analystFundamentals={analystFundamentals} technicalEvidence={{trend:technicalState.trend,momentum:technicalState.momentum,participation:technicalState.participation,relativeStrengthPct:null,volatilityRisk:technicalState.volatilityRisk}} entryQuality={technicalState.entryQuality} chartRange={overviewChartRange} chartLoading={overviewChartLoading} onChartRangeChange={setOverviewChartRange} onOpenCatalysts={()=>handleEvidenceTab("catalysts","catalysts")} onOpenRisks={()=>handleEvidenceTab("fundamentals","risks")} onOpenDetails={()=>handleEvidenceTab("earnings","earnings")} onOpenThesis={()=>handleEvidenceTab("fundamentals","thesis")} onOpenValuation={()=>handleEvidenceTab("fundamentals","valuation")} candles={overviewChartBars??(v5Analysis?.bars||d?.candles||[]).slice(-180)} longTermCandles={longTermBars.length?longTermBars:(v5Analysis?.bars||d?.candles||[])} chartLevels={v5ChartLevels??canonicalValidationLevels}/>:null}</div>
-    {v5Analysis?<>{canonicalTrustBlocked?<div className="aurynIntegrityAlert aurynTrustBlock" role="alert"><b>CANONICAL TRUST BLOCK</b><span>{v7Analysis?.trust.blockers[0]||"AURYN detected an internal snapshot/plan inconsistency."} Price-sensitive execution levels are suppressed until the canonical chain is aligned.</span></div>:null}</>:<section className="aurynV5Unavailable v940PendingSnapshot"><small>{canonicalV935?.research?"LAST VERIFIED AURYN DECISION":"AURYN CANONICAL ANALYSIS"}</small><b>{canonicalV935?.research?"VERIFIED SNAPSHOT LOADED":"BUILDING FIRST VERIFIED SNAPSHOT"}</b><span>{canonicalV935?.research?"Refreshing deeper evidence… live market price and the last verified research snapshot remain available while the canonical analysis updates.":"Live market price is available. AURYN is building the first canonical evidence snapshot without inventing a fallback verdict."}</span><div className="v940PendingProgress"><i className="done"/><i className="done"/><i/><i/><span>Market price</span><span>Structure</span><span>Fundamentals</span><span>Canonical decision</span></div></section>}
-    <div className="v947DecisionFooter">
+    <div ref={overviewRef}>{tab==="thesis"&&institutionalDecision?<AurynResearchOverviewV2 decision={institutionalDecision} marketTruth={{...marketTruth,...marketTruthUi,priceState:marketTruthUi.freshness}} displayPrice={aurynPriceState.price} displayPriceLive={aurynPriceState.isLive} marketIntelligence={marketIntelligenceView??d?.marketIntelligence??null} fundamentalScenario={analystFundamentals.fundamentalScenario} analystFundamentals={analystFundamentals} technicalEvidence={{trend:technicalState.trend,momentum:technicalState.momentum,participation:technicalState.participation,relativeStrengthPct:null,volatilityRisk:technicalState.volatilityRisk}} entryQuality={technicalState.entryQuality} chartRange={overviewChartRange} chartLoading={overviewChartLoading} onChartRangeChange={setOverviewChartRange} onOpenCatalysts={()=>handleEvidenceTab("catalysts","catalysts")} onOpenRisks={()=>handleEvidenceTab("fundamentals","risks")} onOpenDetails={()=>handleEvidenceTab("earnings","earnings")} onOpenThesis={()=>handleEvidenceTab("fundamentals","thesis")} onOpenValuation={()=>handleEvidenceTab("fundamentals","valuation")} candles={overviewChartBars??(v5Analysis?.bars||d?.candles||[]).slice(-180)} longTermCandles={longTermBars.length?longTermBars:(v5Analysis?.bars||d?.candles||[])} chartLevels={v5ChartLevels??canonicalValidationLevels}/>:null}</div>
+    {tab==="thesis"&&(v5Analysis?<>{canonicalTrustBlocked?<div className="aurynIntegrityAlert aurynTrustBlock" role="alert"><b>CANONICAL TRUST BLOCK</b><span>{v7Analysis?.trust.blockers[0]||"AURYN detected an internal snapshot/plan inconsistency."} Price-sensitive execution levels are suppressed until the canonical chain is aligned.</span></div>:null}</>:<section className="aurynV5Unavailable v940PendingSnapshot"><small>{canonicalV935?.research?"LAST VERIFIED AURYN DECISION":"AURYN CANONICAL ANALYSIS"}</small><b>{canonicalV935?.research?"VERIFIED SNAPSHOT LOADED":"BUILDING FIRST VERIFIED SNAPSHOT"}</b><span>{canonicalV935?.research?"Refreshing deeper evidence… live market price and the last verified research snapshot remain available while the canonical analysis updates.":"Live market price is available. AURYN is building the first canonical evidence snapshot without inventing a fallback verdict."}</span><div className="v940PendingProgress"><i className="done"/><i className="done"/><i/><i/><span>Market price</span><span>Structure</span><span>Fundamentals</span><span>Canonical decision</span></div></section>)}
+    {tab==="thesis"&&<div className="v947DecisionFooter">
       <div className="aurynOwnershipNote"><Sparkles size={14}/><span>AURYN separates long-term thesis, owner action and new-money timing.</span></div>
       <div className="v6510ActionToolbar">
         <div className="v6510ActionButtons">
@@ -895,17 +902,20 @@ export default function StockClient({symbol}:{symbol:string}){
         </div>
         {!canonicalTrustBlocked&&priceSensitiveAllowed&&<div className="v6510MarketLevels" aria-label="Market levels"><span>{supportText}</span><span>{resistanceText}</span></div>}
       </div>
-    </div>
+    </div>}
 
     <section ref={thesisRef} id="auryn-research" className="aurynStockResearch">
       <StockEvidenceSections>
 
-      {tab==="thesis"&&presentedDecision&&(v5Analysis?<StockThesisPanel decision={presentedDecision} v5={v5Analysis} metricDefinitions={metricDefinitions} marketTruth={marketTruth}/>:<div className="aurynV5Unavailable"><small>THESIS</small><b>CANONICAL SNAPSHOT PENDING</b><span>Structural evidence is loading into the canonical snapshot; AURYN will not publish a legacy fallback verdict.</span></div>)}
-
-      {tab==="fundamentals"&&<div data-auryn-section="valuation" className="aurynStockTabPage v12Fund">
-        <StockTabContext marketTruth={marketTruth} label="BUSINESS" title="Business quality & durability" score={canonicalBusinessScore} state={v4Analysis?.thesis.direction} action={institutionalDecision?.newMoneyAction??v5Analysis?.decision.primaryAction} detail={institutionalDecision?.pillars.business.why||"Business evidence is loading into the canonical AURYN decision."}/>
-        <div className={`fundSignal ${business.tone||"neutral"}`}><small>BUSINESS QUALITY</small><h3>{canonicalBusinessLabel}{canonicalBusinessScore!=null?` · ${canonicalBusinessScore}/100`:""}</h3>{(business.reasons||[]).slice(0,4).map((x:string,i:number)=><p key={i}>• {x}</p>)}{five&&<div className="fiveRecord"><small>5-YEAR RECORD</small><b>{five.score}/100 · {formatScoreBand(Number(five.score))}</b><p>{five.summary}</p><small>Revenue trend: {five.revenueTrend}</small><div>{(five.history||[]).map((y:any)=><span key={y.year}><i>{y.year}</i><strong>{y.revenue!=null?money(y.revenue):"—"}</strong><em>{y.netIncome!=null?`NI ${money(y.netIncome)}`:"NI —"}</em></span>)}</div></div>}</div>
-        <div className="osList">{company?.fundamentals?.length?company.fundamentals.map((x:any)=><div key={x.label}><span>{x.label}{x.detail&&<small>{x.detail}</small>}</span><b>{x.value}</b></div>):<p>No standardized SEC fundamentals available for this symbol yet.</p>}</div>
+      {tab==="fundamentals"&&<div data-auryn-section="valuation" className="aurynStockTabPage v12Fund v99934BusinessThesis">
+        <header className="v99934TabHero"><small>LONG-TERM COMPANY THESIS</small><h2>{canonicalBusinessLabel}{canonicalBusinessScore!=null?` · ${canonicalBusinessScore}/100`:""}</h2><p>This tab answers whether the underlying business deserves long-term ownership. Entry timing and technical price levels stay on Overview and Technicals.</p></header>
+        <div className="v99934BusinessQuestions">
+          <article><small>WHY OWN IT</small><h3>Business case</h3>{(business.reasons||[]).filter(Boolean).slice(0,3).map((x:string,i:number)=><p key={i}>✓ {x}</p>)}{!(business.reasons||[]).length?<p>Decision-grade business evidence is still building.</p>:null}</article>
+          <article><small>WHAT MUST GO RIGHT</small><h3>Operating proof</h3><p>Growth must translate into durable profitability, cash generation and execution quality.</p>{canonicalBusinessScore!=null&&canonicalBusinessScore<60?<p>Current business quality is below AURYN's strong-quality threshold; improvement must be demonstrated rather than assumed.</p>:<p>Maintain or improve the operating factors supporting the current business-quality score.</p>}</article>
+          <article><small>WHAT BREAKS THE BUSINESS THESIS</small><h3>Fundamental invalidation</h3><p>Sustained deterioration in growth, profitability, cash generation, balance-sheet resilience or competitive durability.</p><p>Price volatility by itself does not break the business thesis.</p></article>
+        </div>
+        {five&&<section className="v99934FiveYear"><div><small>5-YEAR BUSINESS RECORD</small><h3>{five.score}/100 · {formatScoreBand(Number(five.score))}</h3><p>{five.summary}</p><span>Revenue trend: <b>{five.revenueTrend}</b></span></div><div className="v99934FiveYearGrid">{(five.history||[]).map((y:any)=><span key={y.year}><i>{y.year}</i><strong>{y.revenue!=null?money(y.revenue):"—"}</strong><em>{y.netIncome!=null?`NI ${money(y.netIncome)}`:"NI —"}</em></span>)}</div></section>}
+        <section className="v99934Fundamentals"><header><small>OPERATING EVIDENCE</small><h3>Reported fundamentals</h3></header><div className="osList">{company?.fundamentals?.length?company.fundamentals.map((x:any)=><div key={x.label}><span>{x.label}{x.detail&&<small>{x.detail}</small>}</span><b>{x.value}</b></div>):<p>No standardized SEC fundamentals available for this symbol yet.</p>}</div></section>
       </div>}
 
       {tab==="institutions"&&<div className="aurynStockTabPage v34InstitutionsPage">
@@ -964,8 +974,6 @@ export default function StockClient({symbol}:{symbol:string}){
         </a>):<p className="emptyState">No recent material SEC filings found.</p>}</div>
         <div className="v37EventNews"><div className="catalystIntro"><div><small>RECENT MATERIAL NEWS</small></div><span>Context, not a standalone signal</span></div>{items.slice(0,5).map((x:any,i:number)=><a href={x.url} target="_blank" rel="noreferrer" key={i}><div><span className={`newsTone ${x.tone}`}>{x.tone}</span><small>{x.materiality} · {x.source}</small></div><b>{x.headline}</b><p>{x.summary}</p></a>)}</div>
       </div>}
-
-      {tab==="news"&&<div className="aurynStockTabPage v12News">{context?.enabled===false?<div className="connectFeed"><Newspaper size={22}/><b>Connect live news</b><p>Add a Finnhub API key. Price analysis and SEC data continue to work without it.</p></div>:items.length?items.map((x:any,i:number)=><a href={x.url} target="_blank" rel="noreferrer" key={i}><div><span className={`newsTone ${x.tone}`}>{x.tone}</span><small>{x.materiality} materiality · {x.source}</small></div><b>{x.headline}</b><p>{x.summary}</p><ExternalLink size={13}/></a>):<p>No recent company headlines were returned.</p>}</div>}
 
       {tab==="earnings"&&<div data-auryn-section="earnings" className="aurynStockTabPage v12Earnings"><StockTabContext marketTruth={marketTruth} label="EARNINGS" title="Execution, revisions & reported results" score={canonicalMetricScore("fundamentals")} state={v4Analysis?.thesis.direction} action={institutionalDecision?.newMoneyAction??v5Analysis?.decision.primaryAction} detail={institutionalDecision?.pillars.earningsRevisions.why||"Earnings and forward-fundamental evidence is loading into the canonical AURYN decision."}/><div className="earnSplit">{latestReport&&<div className="earnNext earnReported"><small>LATEST REPORTED RESULTS</small><h3>{latestEarnNews?.date?new Date(latestEarnNews.date).toLocaleDateString():latestReport.date}</h3><p>{latestEarnNews?.headline||`${latestReport.form} filed — latest reported financial filing`}</p>{latestEarnNews?.url&&<a href={latestEarnNews.url} target="_blank" rel="noreferrer">Read results <ExternalLink size={12}/></a>}</div>}{earn&&<div className="earnNext estimated"><small>NEXT EARNINGS · ESTIMATED</small><h3>{earn.date}</h3><p>{earn.hour||"Time not listed"}{earn.epsEstimate!=null?` · EPS est. ${eps(earn.epsEstimate)}`:""}{earn.revenueEstimate!=null?` · Revenue est. ${money(earn.revenueEstimate)}`:""}</p><p className="earnMeta">Future calendar dates are estimates until confirmed by the company.</p></div>}</div><div className="earnGrid">{(context?.surprises||[]).length?context.surprises.map((x:any,i:number)=><div key={i}><small>{x.period}</small><b className={(x.surprisePercent??0)>=0?"good":"bad"}>{x.surprisePercent!=null?`${x.surprisePercent>=0?"+":""}${Number(x.surprisePercent).toFixed(1)}% surprise`:"Reported"}</b><span>Actual {formatEpsValue(x.actual)} · Est. {formatEpsValue(x.estimate)}</span></div>):<p>No earnings-surprise history returned by the connected feed.</p>}</div></div>}
 

@@ -1,0 +1,10 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";
+const s=fs.readFileSync("components/StockClient.tsx","utf8");
+test("Overview renders only on Overview tab",()=>{assert.match(s,/tab==="thesis"&&institutionalDecision\?<AurynResearchOverviewV2/);});
+test("legacy thesis panel is not a second overview",()=>{assert.ok(!s.includes("<StockThesisPanel"));assert.ok(!s.includes('import StockThesisPanel'));});
+test("overview chart and 5Y roadmap fetch only while Overview is active",()=>{assert.match(s,/if\(tab!=="thesis"\)return;/);assert.match(s,/\[symbol,overviewChartRange,tab\]/);assert.match(s,/\[symbol,tab\]/);});
+test("Business tab is thesis detail not canonical decision dashboard",()=>{for(const x of ["WHY OWN IT","WHAT MUST GO RIGHT","WHAT BREAKS THE BUSINESS THESIS","5-YEAR BUSINESS RECORD"])assert.ok(s.includes(x),x);assert.ok(!/tab==="fundamentals"[\s\S]{0,800}StockTabContext/.test(s));});
+test("unreachable News tab is removed",()=>{assert.ok(!s.includes('tab==="news"'));});
+test("institutional provider is lazy-loaded only for Ownership",()=>{assert.match(s,/if\(tab!=="institutions"\|\|d\?\.assetType==="crypto"\)return;/);});
+test("obsolete stock presentation components are removed",()=>{for(const p of ["components/stock/StockThesisPanel.tsx","components/stock/StockActionPlan.tsx","components/stock/StockDecisionSummary.tsx","components/stock/v5/StockV5Decision.tsx","components/stock/v931/AstraAnalystPanel.tsx","components/stock/v931/InstitutionalDecisionBrief.tsx"])assert.ok(!fs.existsSync(p),p);});
+test("each specialist tab retains its domain context",()=>{for(const x of ['label="EARNINGS"','label="OWNERSHIP"','label="CATALYSTS"','label="TECHNICALS"','OPTIONS LAB'])assert.ok(s.includes(x),x);});

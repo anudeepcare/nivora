@@ -881,3 +881,18 @@ html,body{overflow-x:hidden}
 
 @media(max-width:1100px){.v99933FirstScreen{grid-template-columns:1fr 1fr!important}.v99933FirstScreen>.v2Structure{grid-column:1/-1;height:auto!important}.v99933AnalystGrid{grid-template-columns:1fr 1fr!important}}
 @media(max-width:700px){.v99933FirstScreen{grid-template-columns:1fr!important}.v99933FirstScreen>.v2Call,.v99933FirstScreen>.v2Chart{height:auto!important}.v99933FirstScreen>.v2Structure{grid-column:auto}.v99933AnalystGrid{grid-template-columns:1fr!important}.v99933AnalystCard{min-height:0!important}.v99933AnalystCard .v2MetricStrip{grid-template-columns:repeat(3,1fr)!important}}
+
+/* V9.9.9.34 — specialist tabs: one job each */
+.v99934BusinessThesis{display:flex;flex-direction:column;gap:18px}
+.v99934TabHero{padding:24px 26px;border:1px solid #dfd5c6;border-radius:18px;background:linear-gradient(135deg,#fffdf9,#f7f2e9)}
+.v99934TabHero>small,.v99934BusinessQuestions article>small,.v99934FiveYear small,.v99934Fundamentals header small{font-size:8px;font-weight:850;letter-spacing:.14em;color:#9b6519}
+.v99934TabHero h2{font-family:Georgia,serif;font-size:32px;margin:6px 0}.v99934TabHero p{max-width:800px;margin:0;color:#71695f;font-size:12px;line-height:1.5}
+.v99934BusinessQuestions{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.v99934BusinessQuestions article{padding:18px;border:1px solid #dfd7cb;border-radius:16px;background:#fff}
+.v99934BusinessQuestions article:first-child{border-top:3px solid #218963}.v99934BusinessQuestions article:nth-child(2){border-top:3px solid #bd7a1c}.v99934BusinessQuestions article:nth-child(3){border-top:3px solid #ce4d47}
+.v99934BusinessQuestions h3{font-size:17px;margin:7px 0 10px}.v99934BusinessQuestions p{font-size:11px;line-height:1.5;color:#625b52;margin:6px 0}
+.v99934FiveYear{padding:20px;border:1px solid #dfd7cb;border-radius:16px;background:#fff;display:grid;grid-template-columns:280px 1fr;gap:20px;align-items:center}
+.v99934FiveYear h3{font-size:18px;margin:6px 0}.v99934FiveYear p,.v99934FiveYear span{font-size:11px;color:#6c655c}
+.v99934FiveYearGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.v99934FiveYearGrid span{padding:10px;border:1px solid #e6ded2;border-radius:10px;display:flex;flex-direction:column;gap:3px}.v99934FiveYearGrid i{font-style:normal;font-size:8px}.v99934FiveYearGrid strong{font-size:12px;color:#191714}.v99934FiveYearGrid em{font-style:normal;font-size:8px}
+.v99934Fundamentals{padding:20px;border:1px solid #dfd7cb;border-radius:16px;background:#fff}.v99934Fundamentals h3{margin:5px 0 14px;font-size:18px}
+@media(max-width:800px){.v99934BusinessQuestions{grid-template-columns:1fr}.v99934FiveYear{grid-template-columns:1fr}.v99934FiveYearGrid{grid-template-columns:repeat(2,1fr)}}
