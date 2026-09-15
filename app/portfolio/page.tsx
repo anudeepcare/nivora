@@ -26,6 +26,7 @@ function PortfolioContent(){
  const sp=useSearchParams();
  const[rows,setRows]=useState<any[]>([]),[quotes,setQuotes]=useState<any>({});
  const[pulseHistory,setPulseHistory]=useState<any[]>([]),[assetType,setAssetType]=useState<AssetType>("EQUITY"),[symbol,setSymbol]=useState(sp.get("symbol")||""),[shares,setShares]=useState(""),[cost,setCost]=useState(""),[horizon,setHorizon]=useState("long"),[msg,setMsg]=useState(""),[edit,setEdit]=useState<any>(null),[portfolioRisk,setPortfolioRisk]=useState<any>(null),[showAdd,setShowAdd]=useState(false),[pendingDelete,setPendingDelete]=useState<any>(null);
+ const[activePortfolioSection,setActivePortfolioSection]=useState("portfolio-overview");
 
  const refreshPulseHistory=useCallback(async(uid:string)=>{try{const j=await fetch("/api/portfolio/pulse",{headers:{"x-nivora-user-id":uid},cache:"no-store"}).then(r=>r.json());setPulseHistory(Array.isArray(j?.items)?j.items:[])}catch{}},[]);
  const load=useCallback(async()=>{
@@ -46,6 +47,13 @@ function PortfolioContent(){
   }else{setQuotes({});setPortfolioRisk(null);}
  },[refreshPulseHistory]);
  useEffect(()=>{load()},[load]);
+ useEffect(()=>{
+  const ids=["portfolio-overview","portfolio-performance","portfolio-allocation","portfolio-risk","portfolio-decisions","portfolio-holdings"];
+  const nodes=ids.map(id=>document.getElementById(id)).filter(Boolean) as HTMLElement[];
+  if(!nodes.length)return;
+  const observer=new IntersectionObserver(entries=>{const visible=entries.filter(x=>x.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(visible?.target?.id)setActivePortfolioSection(visible.target.id)},{rootMargin:"-22% 0px -62% 0px",threshold:[0,.15,.35,.6]});
+  nodes.forEach(n=>observer.observe(n));return()=>observer.disconnect();
+ },[rows.length]);
 
  async function mergeConsolidatedPosition(sb:any,userId:string,payload:any){
   const {data:matches,error:readError}=await sb.from("portfolio_positions").select("*").eq("user_id",userId).eq("symbol",payload.symbol).order("updated_at",{ascending:true});
@@ -96,7 +104,7 @@ function PortfolioContent(){
  return <section className="aurynPortfolioPage">
   <div className="aurynPortfolioIntro"><div><small>OWN</small><h1>Your capital, interpreted.</h1><p>Performance, benchmark context, risk, concentration and the decisions that matter now.</p></div><button className="aurynMobileAddInvestment" type="button" onClick={()=>setShowAdd(v=>!v)}>{showAdd?"Close":"+ Add investment"}</button></div>
 
-  <nav className="aurynPortfolioNav" aria-label="Portfolio sections"><a href="#portfolio-overview">Overview</a><a href="#portfolio-performance">Performance</a><a href="#portfolio-allocation">Allocation</a><a href="#portfolio-risk">Risk</a><a href="#portfolio-decisions">Decisions</a><a href="#portfolio-holdings">Holdings</a></nav>
+  <nav className="aurynPortfolioNav aurynPortfolioScrollSpy" aria-label="Portfolio sections">{[["portfolio-overview","Overview"],["portfolio-performance","Performance"],["portfolio-allocation","Allocation"],["portfolio-risk","Risk"],["portfolio-decisions","Decisions"],["portfolio-holdings","Holdings"]].map(([id,label])=><a key={id} href={`#${id}`} className={activePortfolioSection===id?"active":""} aria-current={activePortfolioSection===id?"location":undefined}>{label}</a>)}</nav>
   {showAdd?<div className="aurynSection aurynAddPanel">
    <div className="aurynAssetTabs"><button className={assetType==="EQUITY"?"on":""} onClick={()=>setAssetType("EQUITY")}><WalletCards size={16}/> Stock</button><button className={assetType==="CRYPTO"?"on":""} onClick={()=>setAssetType("CRYPTO")}><Bitcoin size={16}/> Crypto</button><button className={assetType==="CASH"?"on":""} onClick={()=>setAssetType("CASH")}><Banknote size={16}/> Cash</button></div>
    <form className="aurynAssetForm" onSubmit={add}><input placeholder={assetType==="CASH"?"Currency (USD)":assetType==="CRYPTO"?"BTC, ETH, SOL…":"Ticker"} value={symbol} onChange={e=>setSymbol(e.target.value)} required={assetType!=="CASH"}/><input placeholder={assetType==="CASH"?"Cash amount":"Qty"} type="number" step="any" value={shares} onChange={e=>setShares(e.target.value)} required/>{assetType!=="CASH"?<input placeholder="Average cost" type="number" step="0.01" value={cost} onChange={e=>setCost(e.target.value)} required/>:null}{assetType!=="CASH"?<select value={horizon} onChange={e=>setHorizon(e.target.value)}><option value="short">Short term</option><option value="swing">Swing</option><option value="long">Long term</option></select>:null}<button className="aurynCompactAddButton">+ Add {assetType==="EQUITY"?"stock":assetType==="CRYPTO"?"crypto":"cash"}</button></form>
@@ -109,7 +117,7 @@ function PortfolioContent(){
 
   <section className="v934PortfolioIntel" aria-label="Portfolio market intelligence"><div><small>MARKET INTELLIGENCE</small><h2>One market view across every holding.</h2></div><p>{investedRows.length?`${investedRows.filter((x:any)=>quotes[x.symbol]?.marketIntelligence?.timeframes?.["1D"]?.confirmed==="BUY").length} daily constructive · ${investedRows.filter((x:any)=>quotes[x.symbol]?.marketIntelligence?.timeframes?.["1D"]?.confirmed==="SELL").length} daily defensive. Open any holding for the same 15M / 1H / 4H / 1D / 1W evidence and action map.`:"Add a holding to build the canonical multi-timeframe portfolio view."}</p></section>
 
-  <HoldingsIntelligence assets={priced} onEdit={x=>{setPendingDelete(null);setEdit(x)}} onRemove={requestRemove} editingId={edit?.id||null} editDraft={edit} onEditDraft={setEdit} onSaveEdit={saveEdit} onCancelEdit={()=>setEdit(null)} pendingDelete={pendingDelete?.id||null} onConfirmRemove={confirmRemove} onCancelRemove={()=>setPendingDelete(null)}/>
+  <div id="portfolio-holdings" className="aurynScrollTarget"><HoldingsIntelligence assets={priced} onEdit={x=>{setPendingDelete(null);setEdit(x)}} onRemove={requestRemove} editingId={edit?.id||null} editDraft={edit} onEditDraft={setEdit} onSaveEdit={saveEdit} onCancelEdit={()=>setEdit(null)} pendingDelete={pendingDelete?.id||null} onConfirmRemove={confirmRemove} onCancelRemove={()=>setPendingDelete(null)}/></div>
 
   <span hidden>PORTFOLIO HEALTH</span><span hidden>AVAILABLE BUYING POWER</span>
  </section>

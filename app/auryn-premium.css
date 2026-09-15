@@ -526,3 +526,17 @@ html,body{overflow-x:hidden}
  .v947DecisionFooter .v6510MarketLevels{justify-self:stretch!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important}
  .v947DecisionFooter .v6510MarketLevels span{text-align:center!important;font-size:8px!important;overflow:hidden!important;text-overflow:ellipsis!important}
 }
+
+/* V9997 visual integrity — geometry is data-driven in component; CSS only strengthens hierarchy. */
+.v940RailLine{height:7px;top:77px;box-shadow:0 1px 0 rgba(0,0,0,.08),0 4px 12px rgba(25,35,31,.08)}
+.v940RailPoint i{width:17px;height:17px;border-width:4px;margin-top:5px}
+.v940RailPoint b{font-size:11px;font-weight:900}
+.v940CurrentMarker{border-width:2px;padding:7px 10px;box-shadow:0 10px 24px rgba(24,31,28,.14)}
+.v941SpectrumLine{height:7px;box-shadow:0 1px 0 rgba(0,0,0,.08),0 4px 12px rgba(25,35,31,.08)}
+.v941ScenarioSpectrum>span>i{width:18px;height:18px;border-width:4px;margin-top:16px}
+.v941ScenarioCurrent{border-width:2px;padding:7px 10px;z-index:5;box-shadow:0 10px 24px rgba(24,31,28,.14)}
+.aurynPortfolioScrollSpy{position:sticky;top:0;z-index:30;overflow-x:auto;scrollbar-width:none;backdrop-filter:blur(14px)}
+.aurynPortfolioScrollSpy::-webkit-scrollbar{display:none}
+.aurynPortfolioScrollSpy a.active{font-weight:900;border-color:currentColor;box-shadow:inset 0 -2px currentColor}
+.aurynScrollTarget{scroll-margin-top:92px}
+@media(max-width:760px){.v940RailPoint b{font-size:9px}.v941ScenarioSpectrum b{font-size:15px}.aurynPortfolioScrollSpy{top:0}}

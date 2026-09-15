@@ -144,7 +144,8 @@
     "test:v9993": "node --test tests/auryn-v9993-interactions-crypto.test.mjs tests/auryn-v9981-market-data-reliability.test.mjs tests/auryn-v9992-premium-portfolio-ux.test.mjs tests/auryn-v9991-consolidation.test.mjs",
     "test:v9994": "node --test tests/auryn-v9994-session-price-portfolio-visuals.test.mjs tests/auryn-v9993-interactions-crypto.test.mjs tests/auryn-v9981-market-data-reliability.test.mjs tests/auryn-v9992-premium-portfolio-ux.test.mjs tests/auryn-v9991-consolidation.test.mjs",
     "test:v9995": "node --test tests/auryn-v9995-canonical-market-truth.test.mjs tests/auryn-v9994-session-price-portfolio-visuals.test.mjs tests/auryn-v9993-interactions-crypto.test.mjs tests/auryn-v9981-market-data-reliability.test.mjs",
-    "test:v9996": "node --test tests/auryn-v9996-session-current-price.test.mjs tests/auryn-v9995-canonical-market-truth.test.mjs tests/auryn-v9993-interactions-crypto.test.mjs tests/auryn-v9981-market-data-reliability.test.mjs"
+    "test:v9996": "node --test tests/auryn-v9996-session-current-price.test.mjs tests/auryn-v9995-canonical-market-truth.test.mjs tests/auryn-v9993-interactions-crypto.test.mjs tests/auryn-v9981-market-data-reliability.test.mjs",
+    "test:v9997": "node --test tests/auryn-v9997-visual-integrity.test.mjs && npm run test:v9996"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

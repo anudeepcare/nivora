@@ -16,6 +16,7 @@ const tone=(s:any)=>/STRONG_BUY|BUY|ADD|ATTRACTIVE|BULL|TRENDING|READY|CONFIRMED
 const scoreBand=(x:number|null)=>x==null?"Unavailable":x>=75?"Strong":x>=60?"Constructive":x>=45?"Mixed":"Weak";
 const scenarioValue=(leg:any)=>{const lo=n(leg?.targetLow),hi=n(leg?.targetHigh);if(lo!=null&&hi!=null)return{value:(lo+hi)/2,range:Math.abs(hi-lo)>.01?`${money(lo)} – ${money(hi)}`:null};if(lo!=null)return{value:lo,range:null};if(hi!=null)return{value:hi,range:null};return{value:null,range:null};};
 const delta=(from:number|null,to:number|null)=>from!=null&&to!=null&&from>0?(to/from-1)*100:null;
+const normalizedPosition=(value:number|null,values:Array<number|null>,minPct=4,maxPct=96)=>{if(value==null)return null;const finite=values.filter((x):x is number=>x!=null&&Number.isFinite(x));if(finite.length<2)return 50;const lo=Math.min(...finite),hi=Math.max(...finite);if(hi<=lo)return 50;return minPct+((value-lo)/(hi-lo))*(maxPct-minPct);};
 const actionClass=(action:any)=>{
  const a=String(action||"").toUpperCase();
  if(/STRONG_BUY|BUY|ADD|ACCUMULATE/.test(a))return"buy";
@@ -57,6 +58,11 @@ export default function AurynResearchOverview({decision,marketTruth,displayPrice
  const lens=buildOpportunityLens({action:decision.newMoneyAction,hardVeto:decision.hardVetoReasons.length>0,scores:{business:n(decision.pillars.business.score),earningsRevisions:n(decision.pillars.earningsRevisions.score),valuation:n(decision.pillars.valuation.score),marketStructure:n(decision.pillars.marketStructure.score),catalystsRegime:n(decision.pillars.catalystsRegime.score),riskAsymmetry:n(decision.pillars.riskAsymmetry.score),entryQuality:n(entryQuality),relativeStrength:relPct==null?null:Math.max(0,Math.min(100,50+relPct*2.2)),participation,rewardRisk:rr1,volatilityRisk:atrPct==null?null:Math.max(0,Math.min(100,atrPct*10))}});
  const currentPrice=n(displayPrice??marketTruth?.decisionPrice??marketTruth?.price??marketTruth?.regularPrice??marketTruth?.officialClose);
  const bullValue=scenarioValue(scenario?.bull),baseValue=scenarioValue(scenario?.base),bearValue=scenarioValue(scenario?.bear);
+ const decisionScale=[risk,major,support,eLow,eHigh,currentPrice,confirm,t1,t2];
+ const pricePosition=(value:number|null)=>normalizedPosition(value,decisionScale);
+ const scenarioScale=[bearValue.value,baseValue.value,bullValue.value,currentPrice];
+ const scenarioPosition=(value:number|null)=>normalizedPosition(value,scenarioScale,7,93);
+
  const confirmDelta=delta(currentPrice,confirm),t1Delta=delta(currentPrice,t1),riskDelta=delta(currentPrice,risk);
  const marketStatus=displayPriceLive?`${pretty(marketTruth?.session||"REGULAR")} · live research price`:marketTruth?.session?`${pretty(marketTruth.session)} · ${marketTruth?.priceState==="OFFICIAL_CLOSE"?"verified close":"verified market truth"}`:"verified market truth";
  const heroReason=decision.newMoneyAction==="START_SMALL"?`Positive evidence supports a partial position${tfSummary?` while confirmed structure reads ${tfSummary}`:""}.`:decision.policyReasons?.[0]||decision.drivers?.[0]||`AURYN is waiting for stronger alignment across evidence, setup and asymmetry.`;
@@ -90,14 +96,14 @@ export default function AurynResearchOverview({decision,marketTruth,displayPrice
   <div className="v936SectionHead"><div><small>KEY METRICS</small><h3>Decision map</h3></div><span>One canonical snapshot · no duplicate levels</span></div>
   <div className="v940DecisionRail" aria-label="Visual decision map">
    <div className="v940RailLine"/>
-   {risk!=null?<span className="v940RailPoint risk" style={{left:"3%"}}><i/><small>THESIS</small><b>{money(risk)}</b></span>:null}
-   {major!=null?<span className="v940RailPoint support" style={{left:"20%"}}><i/><small>MAJOR SUPPORT</small><b>{money(major)}</b></span>:null}
-   {eLow!=null?<span className="v940RailPoint entry" style={{left:"38%"}}><i/><small>ENTRY RANGE</small><b>{eLow!=null&&eHigh!=null?`${money(eLow)}–${money(eHigh)}`:money(eLow)}</b></span>:null}
-   {currentPrice!=null?<span className="v940CurrentMarker" style={{left:"49%"}}><small>CURRENT</small><b>{money(currentPrice)}</b><i/></span>:null}
-   {confirm!=null?<span className="v940RailPoint confirm" style={{left:"58%"}}><i/><small>CONFIRM</small><b>{money(confirm)}</b></span>:null}
-   {t1!=null?<span className="v940RailPoint target" style={{left:"78%"}}><i/><small>T1</small><b>{money(t1)}</b></span>:null}
-   {t2!=null?<span className="v940RailPoint target" style={{left:"96%"}}><i/><small>T2</small><b>{money(t2)}</b></span>:null}
-   <div className="v940RailZones"><span>RISK ZONE ←</span><span>ACCUMULATION</span><span>GROWTH ZONE →</span></div>
+   {risk!=null?<span className="v940RailPoint risk" style={{left:`${pricePosition(risk)}%`}}><i/><small>THESIS</small><b>{money(risk)}</b></span>:null}
+   {major!=null?<span className="v940RailPoint support" style={{left:`${pricePosition(major)}%`}}><i/><small>MAJOR SUPPORT</small><b>{money(major)}</b></span>:null}
+   {eLow!=null?<span className="v940RailPoint entry" style={{left:`${pricePosition(eLow)}%`}}><i/><small>ENTRY RANGE</small><b>{eLow!=null&&eHigh!=null?`${money(eLow)}–${money(eHigh)}`:money(eLow)}</b></span>:null}
+   {currentPrice!=null?<span className="v940CurrentMarker" style={{left:`${pricePosition(currentPrice)}%`}}><small>CURRENT</small><b>{money(currentPrice)}</b><i/></span>:null}
+   {confirm!=null?<span className="v940RailPoint confirm" style={{left:`${pricePosition(confirm)}%`}}><i/><small>CONFIRM</small><b>{money(confirm)}</b></span>:null}
+   {t1!=null?<span className="v940RailPoint target" style={{left:`${pricePosition(t1)}%`}}><i/><small>T1</small><b>{money(t1)}</b></span>:null}
+   {t2!=null?<span className="v940RailPoint target" style={{left:`${pricePosition(t2)}%`}}><i/><small>T2</small><b>{money(t2)}</b></span>:null}
+   <div className="v940RailZones"><span>THESIS RISK ←</span><span>ENTRY / SETUP</span><span>CONFIRM / TARGETS →</span></div>
   </div>
   <div className="v937DecisionMap">
    <section><header><span>Decision ladder</span><MetricInfo title="Decision ladder" description="The preferred sequence for a new-money setup: enter only in the preferred zone, look for confirmation, then manage toward targets."/></header><div className="v937Ladder"><LadderItem label="ENTRY" value={eLow!=null&&eHigh!=null?`${money(eLow)} – ${money(eHigh)}`:"N/A"} sub="Preferred zone"/><LadderItem label="CONFIRM" value={money(confirm)} sub="Reclaim / breakout" toneName="good"/><LadderItem label="T1" value={money(t1)} sub={t1Delta!=null?`${t1Delta>=0?"+":""}${t1Delta.toFixed(1)}% from now`:"First objective"}/><LadderItem label="T2" value={money(t2)} sub="Extended objective"/></div></section>
@@ -117,10 +123,10 @@ export default function AurynResearchOverview({decision,marketTruth,displayPrice
    <article className="v936ScenarioCard v941ScenarioCard"><div className="v936CardTitle"><small>MARKET OUTLOOK</small><b>Scenario spectrum</b><span>Decision-grade values · not probabilities</span></div>
     <div className="v941ScenarioSpectrum">
      <div className="v941SpectrumLine"/>
-     <span className="bear"><i/><small>BEAR</small><b>{money(bearValue.value)}</b><em>{delta(currentPrice,bearValue.value)!=null?`${delta(currentPrice,bearValue.value)!.toFixed(1)}%`:"N/A"}</em></span>
-     <span className="base"><i/><small>BASE</small><b>{money(baseValue.value)}</b><em>{delta(currentPrice,baseValue.value)!=null?`${delta(currentPrice,baseValue.value)!.toFixed(1)}%`:"N/A"}</em></span>
-     <span className="bull"><i/><small>BULL</small><b>{money(bullValue.value)}</b><em>{delta(currentPrice,bullValue.value)!=null?`+${Math.max(0,delta(currentPrice,bullValue.value)!).toFixed(1)}%`:"N/A"}</em></span>
-     <span className="v941ScenarioCurrent"><small>CURRENT</small><b>{money(currentPrice)}</b><i/></span>
+     <span className="bear" style={{left:`${scenarioPosition(bearValue.value)}%`}}><i/><small>BEAR</small><b>{money(bearValue.value)}</b><em>{delta(currentPrice,bearValue.value)!=null?`${delta(currentPrice,bearValue.value)!.toFixed(1)}%`:"N/A"}</em></span>
+     <span className="base" style={{left:`${scenarioPosition(baseValue.value)}%`}}><i/><small>BASE</small><b>{money(baseValue.value)}</b><em>{delta(currentPrice,baseValue.value)!=null?`${delta(currentPrice,baseValue.value)!.toFixed(1)}%`:"N/A"}</em></span>
+     <span className="bull" style={{left:`${scenarioPosition(bullValue.value)}%`}}><i/><small>BULL</small><b>{money(bullValue.value)}</b><em>{delta(currentPrice,bullValue.value)!=null?`+${Math.max(0,delta(currentPrice,bullValue.value)!).toFixed(1)}%`:"N/A"}</em></span>
+     <span className="v941ScenarioCurrent" style={{left:`${scenarioPosition(currentPrice)}%`}}><small>CURRENT</small><b>{money(currentPrice)}</b><i/></span>
     </div>
     <div className="v941ScenarioNotes"><span><b>Bear case</b>{bearValue.range||scenario?.bear?.summary||"N/A"}</span><span><b>Base case</b>{baseValue.range||scenario?.base?.summary||"N/A"}</span><span><b>Bull case</b>{bullValue.range||scenario?.bull?.summary||"N/A"}</span></div>
    </article>
