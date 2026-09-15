@@ -563,3 +563,10 @@ html,body{overflow-x:hidden}
 .v9998AnalystBottom{margin-top:14px}.v9998AnalystBottom>article{min-height:150px}
 @media(max-width:900px){.v9999DecisionVisuals{grid-template-columns:1fr}.v9998AnalystClocks>article:nth-child(3) .v9999ClockMetrics{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:760px){.v9999ClockMetrics,.v9998AnalystClocks>article:nth-child(3) .v9999ClockMetrics{grid-template-columns:repeat(3,minmax(0,1fr))}.v9999DecisionVisuals{grid-template-columns:1fr;gap:9px;margin:12px 0}.v9999DecisionColumn{padding:13px 10px 4px}.v9999DecisionColumn .v940DecisionRail{min-height:220px;overflow-x:auto}.v9998AnalystBottom>article{min-height:0}}
+
+/* V99910 fundamental analyst engine */
+.v9998AnalystClocks>article:first-child .v9999ClockMetrics{grid-template-columns:repeat(6,minmax(0,1fr))}
+.v99910ScenarioAssumptions{grid-column:1/-1;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;margin-top:10px;border-top:1px solid #e7dfd4}
+.v99910ScenarioAssumptions span{padding:9px 7px;text-align:center;font-size:7px;color:#837b70}.v99910ScenarioAssumptions b{display:block;margin-top:3px;font-size:10px;color:#27231e}
+@media(max-width:900px){.v9998AnalystClocks>article:first-child .v9999ClockMetrics{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){.v99910ScenarioAssumptions{grid-template-columns:1fr 1fr}.v99910ScenarioAssumptions span:last-child{grid-column:1/-1}}

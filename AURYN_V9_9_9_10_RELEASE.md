@@ -1,0 +1,2 @@
+# AURYN V9.9.9.10 — Fundamental Analyst Engine
+Adds source-backed business dimensions and an independent FCF-based five-year fundamental valuation scenario when required SEC economics are available. The engine uses no technical levels. Bear/Base/Bull expose model assumptions and confidence. Missing inputs show valuation building rather than fake technical fair value. Existing CIO, Market Truth, portfolio, and autonomous workflow semantics are preserved.
