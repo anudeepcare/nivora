@@ -552,3 +552,14 @@ html,body{overflow-x:hidden}
 .v9998AnalystBottom{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:18px 0 26px}.v9998AnalystBottom>article{padding:18px;border:1px solid #e3dbcf;border-radius:16px;background:#fffdf9}.v9998AnalystBottom small{display:block;margin-bottom:11px;font-size:8px;font-weight:950;letter-spacing:.15em;color:#9b6c2c}.v9998AnalystBottom b{display:block;margin-bottom:8px;font-size:14px}.v9998AnalystBottom p{margin:7px 0;font-size:10px;line-height:1.45;color:#655f57}
 @media(max-width:900px){.v9998AnalystBottom{grid-template-columns:1fr 1fr}}
 @media(max-width:760px){.v9998AnalystClocks{grid-template-columns:1fr;gap:9px;margin:12px 0}.v9998AnalystClocks>article{padding:15px 16px}.v9998AnalystClocks header b{font-size:21px}.v9998AnalystBottom{grid-template-columns:1fr;gap:9px}.v9998ScenarioReady{grid-template-columns:1fr 1fr 1fr;padding:10px}.v9998ScenarioReady b{font-size:17px}.v940RailPoint.lane-1{top:92px}}
+
+/* V9999 final analyst UX — compact decision-first hierarchy */
+.v9999ClockMetrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:15px;border-top:1px solid #ebe4da}
+.v9999ClockMetrics i{min-width:0;padding:11px 9px 0;border-right:1px solid #eee7dd;font-style:normal}.v9999ClockMetrics i:last-child{border-right:0}.v9999ClockMetrics small{display:block;font-size:7px;line-height:1.25;color:#8a8278}.v9999ClockMetrics b{display:block;margin-top:4px;font-size:13px}
+.v9998AnalystClocks>article:nth-child(3) .v9999ClockMetrics{grid-template-columns:repeat(5,minmax(0,1fr))}
+.v9999DecisionVisuals{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:14px;margin:18px 0}
+.v9999DecisionVisuals>div{min-width:0}.v9999DecisionVisuals .v936ScenarioCard{height:100%;box-sizing:border-box;margin:0}.v9999DecisionColumn{padding:18px 18px 8px;border:1px solid #e3dbcf;border-radius:17px;background:#fffdf9;overflow:hidden}
+.v9999DecisionColumn .v936SectionHead{margin:0 0 4px}.v9999DecisionColumn .v940DecisionRail{margin:0;min-height:205px}.v9999DecisionColumn .v937DecisionMap{display:none}
+.v9998AnalystBottom{margin-top:14px}.v9998AnalystBottom>article{min-height:150px}
+@media(max-width:900px){.v9999DecisionVisuals{grid-template-columns:1fr}.v9998AnalystClocks>article:nth-child(3) .v9999ClockMetrics{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){.v9999ClockMetrics,.v9998AnalystClocks>article:nth-child(3) .v9999ClockMetrics{grid-template-columns:repeat(3,minmax(0,1fr))}.v9999DecisionVisuals{grid-template-columns:1fr;gap:9px;margin:12px 0}.v9999DecisionColumn{padding:13px 10px 4px}.v9999DecisionColumn .v940DecisionRail{min-height:220px;overflow-x:auto}.v9998AnalystBottom>article{min-height:0}}

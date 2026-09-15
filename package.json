@@ -146,7 +146,8 @@
     "test:v9995": "node --test tests/auryn-v9995-canonical-market-truth.test.mjs tests/auryn-v9994-session-price-portfolio-visuals.test.mjs tests/auryn-v9993-interactions-crypto.test.mjs tests/auryn-v9981-market-data-reliability.test.mjs",
     "test:v9996": "node --test tests/auryn-v9996-session-current-price.test.mjs tests/auryn-v9995-canonical-market-truth.test.mjs tests/auryn-v9993-interactions-crypto.test.mjs tests/auryn-v9981-market-data-reliability.test.mjs",
     "test:v9997": "node --test tests/auryn-v9997-visual-integrity.test.mjs && npm run test:v9996",
-    "test:v9998": "node --test tests/auryn-v9998-analyst-layer.test.mjs && npm run test:v9997"
+    "test:v9998": "node --test tests/auryn-v9998-analyst-layer.test.mjs && npm run test:v9997",
+    "test:v9999": "node --test tests/auryn-v9999-final-analyst-ux.test.mjs && npm run test:v9998"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

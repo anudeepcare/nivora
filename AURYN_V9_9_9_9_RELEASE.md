@@ -1,0 +1,2 @@
+# AURYN V9.9.9.9 — Final Analyst UX
+Decision-first Overview matching the approved analyst mockup direction. Company/Value/Timing contain compact decision metrics; redundant standalone technical metric cards are removed from Overview; fundamental Scenario Spectrum and execution Decision Map share one visual row; Catalysts/Risks/What's Changed/AURYN View remain compact. Technical targets are never reused as fundamental fair value. CIO, Market Truth, portfolio and autonomous workflow semantics are unchanged.
