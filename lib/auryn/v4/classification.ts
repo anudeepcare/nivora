@@ -20,7 +20,7 @@ const rules:[BusinessModel,RegExp][]=[
   ["ENERGY",/\boil\b|\bgas\b|\blng\b|upstream|midstream|refining|oilfield services/],
   ["DEFENSE",/defense|aerospace systems|missile|military systems|unmanned aircraft/],
   ["REIT",/\breit\b|real estate investment trust/],
-  ["BANK",/\bbank\b|banking|investment banking/],
+
   ["INSURER",/insurance|insurer|underwriting/],
   ["CONSUMER",/consumer|retail|restaurant|beverage|apparel|e[- ]commerce/],
   ["INDUSTRIAL",/industrial|machinery|logistics equipment|automation|electrical equipment/]
@@ -41,7 +41,8 @@ function classifyBusinessModel(input:SecurityClassificationInput){
   // Legal/entity identity outranks thematic descriptions. A data-center REIT is still a REIT.
   if(asset.includes("reit")||industry.includes("reit")||/real estate investment trust|\breit\b/.test(t))return{model:"REIT" as BusinessModel,specific:true};
   if(industry.includes("insurance")||/insurer|insurance underwriting/.test(t))return{model:"INSURER" as BusinessModel,specific:true};
-  if(industry.includes("bank")||/commercial bank|investment bank|banking services/.test(t))return{model:"BANK" as BusinessModel,specific:true};
+  const financialIdentity=sector.includes("financial")||sector.includes("bank")||industry.includes("bank")||industry.includes("financial services");
+  if(financialIdentity&&(industry.includes("bank")||/commercial bank|investment bank|bank holding/.test(industry)))return{model:"BANK" as BusinessModel,specific:true};
 
   // Explicit legacy archetype hints are accepted only after legal/entity identity checks;
   // generic hints such as "general"/"compounder" are intentionally not mapped.
@@ -52,7 +53,7 @@ function classifyBusinessModel(input:SecurityClassificationInput){
   if(industry.includes("medical")||industry.includes("health care equipment"))return{model:"MEDTECH" as BusinessModel,specific:true};
   if(industry.includes("software"))return{model:"SAAS_SOFTWARE" as BusinessModel,specific:true};
   if(industry.includes("semiconductor"))return{model:"SEMICONDUCTOR_DESIGNER" as BusinessModel,specific:true};
-  if(sector.includes("financial"))return{model:"BANK" as BusinessModel,specific:true};
+  if(sector.includes("financial")&&/bank|credit services|capital markets/.test(industry))return{model:"BANK" as BusinessModel,specific:true};
   if(sector.includes("real estate"))return{model:"REIT" as BusinessModel,specific:true};
   if(sector.includes("health")&&industry.includes("biotech"))return{model:"BIOTECH_PHARMA" as BusinessModel,specific:true};
   return{model:"GENERAL_COMPOUNDER" as BusinessModel,specific:false};

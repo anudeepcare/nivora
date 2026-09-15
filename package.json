@@ -174,7 +174,8 @@
     "test:v99929": "node --test tests/auryn-v99929-cio-decision.test.mjs && npm run test:v99928",
     "test:v99930": "node --test tests/auryn-v99930-regime-truth.test.mjs && npm run test:v99929",
     "test:v999301": "node --test tests/auryn-v999301-declaration-order.test.mjs && npm run test:v99930",
-    "test:v999302": "node --test tests/auryn-v999302-nullable-trigger-type.test.mjs && npm run test:v999301"
+    "test:v999302": "node --test tests/auryn-v999302-nullable-trigger-type.test.mjs && npm run test:v999301",
+    "test:v99931": "node --test tests/auryn-v99931-canonical-truth-ux.test.mjs tests/auryn-v99931-screenshot-regressions.test.mjs && npm run test:v999302"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",
