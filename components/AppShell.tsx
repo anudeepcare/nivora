@@ -2,7 +2,7 @@
 import Link from "next/link";
 import {usePathname,useRouter} from "next/navigation";
 import {useEffect,useRef,useState} from "react";
-import {BriefcaseBusiness,FlaskConical,LogOut,Radar,Search as SearchIcon,UserRound} from "lucide-react";
+import {BriefcaseBusiness,FlaskConical,LogOut,Radar,Search as SearchIcon,UserRound,Bookmark,Settings2,HelpCircle} from "lucide-react";
 import {supabaseBrowser} from "@/lib/supabase";
 import AurynLogo from "./AurynLogo";
 import SearchBox from "./SearchBox";
@@ -44,7 +44,15 @@ export default function AppShell({children}:{children:React.ReactNode}){
    </div>
   </header>
   {(!primarySearchVisible||path!=="/analyze")&&<div className="aurynMobileSearch"><SearchBox compact/></div>}
-  <main className="aurynAppMain">{children}</main>
+  <div className="aurynOSWorkspace">
+   <aside className="aurynOSSidebar" aria-label="Workspace navigation">
+    <div className="aurynOSSidebarLabel">WORKSPACE</div>
+    {nav.map(n=>{const Icon=n.icon;return <Link key={n.href} href={n.href} className={active(n.href)?"aurynOSNavLink active":"aurynOSNavLink"}><Icon size={19}/><span>{n.label}</span></Link>})}
+    <Link href="/watchlist" className={active("/watchlist")?"aurynOSNavLink active":"aurynOSNavLink"}><Bookmark size={19}/>Watchlist</Link>
+    <div className="aurynOSSidebarBottom"><Link href="/profile" className="aurynOSNavLink"><Settings2 size={19}/>Settings</Link><Link href="/about" className="aurynOSNavLink"><HelpCircle size={19}/>About AURYN</Link></div>
+   </aside>
+   <main className="aurynAppMain">{children}</main>
+  </div>
   <ProductFooter/>
   <nav className="aurynBottomNav" aria-label="Mobile primary">{nav.map(n=>{const Icon=n.icon;return <Link key={n.href} className={active(n.href)?"on":""} href={n.href}><Icon size={20}/><span>{n.label}</span></Link>})}</nav>
  </div>

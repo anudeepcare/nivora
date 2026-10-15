@@ -8,6 +8,7 @@ import "./auryn-unified-ui.css";
 import "./auryn-refresh.css";
 import "./auryn-experience-2026.css";
 import "./auryn-next.css";
+import "./auryn-intelligence-os.css";
 import type {Metadata,Viewport} from "next";
 import ThemeProvider from "@/components/ThemeProvider";
 

@@ -1,0 +1,27 @@
+/* AURYN Intelligence OS: global workspace layer, designed to preserve existing application behavior. */
+:root{--os-navy:#0a192f;--os-blue:#2563eb;--os-line:#e1e7f0;--os-muted:#65758b;--os-bg:#f5f7fb;--os-radius:16px}
+*,*::before,*::after{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:clip}
+.aurynAppShell{background:var(--os-bg)!important}
+.aurynHeader{background:var(--os-navy)!important;height:70px!important;box-shadow:none!important;border-bottom:1px solid #253550!important}
+.aurynDesktopNav{display:none!important}
+.aurynOSWorkspace{display:grid;grid-template-columns:228px minmax(0,1fr);max-width:1920px;margin:auto;min-height:calc(100vh - 70px);align-items:stretch}
+.aurynOSSidebar{position:sticky;top:0;align-self:start;height:calc(100vh - 70px);min-height:560px;background:#fff;border-right:1px solid var(--os-line);padding:26px 14px;display:flex;flex-direction:column;gap:5px}
+.aurynOSSidebarLabel{font:700 10px/1.4 Inter,system-ui,sans-serif;letter-spacing:.16em;color:#8390a4;padding:4px 14px 15px}
+.aurynOSNavLink{display:flex;align-items:center;gap:12px;min-height:46px;padding:10px 14px;border-radius:11px;color:#43526b!important;text-decoration:none!important;font:650 14px/1.3 Inter,system-ui,sans-serif!important;transition:background .15s,color .15s}
+.aurynOSNavLink:hover{background:#f0f4fc;color:#153b80!important}
+.aurynOSNavLink.active{background:#eaf1ff;color:#174ea6!important}
+.aurynOSSidebarBottom{margin-top:auto;border-top:1px solid var(--os-line);padding-top:15px;display:grid;gap:5px}
+.aurynOSWorkspace>.aurynAppMain{width:100%!important;max-width:1600px!important;min-width:0!important;padding:clamp(18px,2.2vw,34px)!important;margin:0 auto!important}
+.aurynOSWorkspace .aurynAppMain :is(.v2Chart,.v2Structure,.v2DecisionMap,.v99925Roadmap,.aurynPremiumCard){border-radius:var(--os-radius)!important;box-shadow:0 3px 16px rgba(15,35,70,.045)!important}
+.aurynOSWorkspace .aurynAppMain :is(.v99932Call,.v2DecisionCall){border-radius:var(--os-radius)!important}
+.aurynOSWorkspace .aurynAppMain :is(.v2DecisionMap,.v2Chart,.v2Structure){min-width:0!important;overflow-wrap:anywhere}
+.aurynOSWorkspace .aurynAppMain :is(img,svg,canvas){max-width:100%}
+.aurynOSWorkspace .aurynAppMain :is(input,select,textarea,button){max-width:100%}
+.aurynOSWorkspace .aurynAppMain :is(button,a){touch-action:manipulation}
+.aurynOSWorkspace .aurynAppMain :is(.aurynDecisionLevels,.v99932CallLevels){min-width:0}
+.aurynOSWorkspace .aurynAppMain :is(.aurynDecisionLevel,.aurynDecisionCurrent){min-width:0;overflow-wrap:anywhere}
+@media(max-width:1100px){.aurynOSWorkspace{grid-template-columns:70px minmax(0,1fr)}.aurynOSSidebar{padding:20px 9px}.aurynOSSidebarLabel,.aurynOSNavLink span{display:none}.aurynOSNavLink{justify-content:center;padding:11px;gap:0}.aurynOSSidebarBottom{margin-top:auto}}
+@media(max-width:760px){.aurynOSWorkspace{display:block;min-height:0}.aurynOSSidebar{display:none}.aurynOSWorkspace>.aurynAppMain{padding:16px 12px calc(112px + env(safe-area-inset-bottom))!important}.aurynHeader{height:60px!important}.aurynBottomNav{z-index:100!important}.aurynOSWorkspace .aurynAppMain :is(.v2DecisionMapBody,.aurynDecisionLevels){min-width:0}.aurynOSWorkspace .aurynAppMain :is(.v2Chart,.v2Structure){width:100%;max-width:100%;overflow:hidden}.aurynOSWorkspace .aurynAppMain :is(.v99932CallLevels,.aurynDecisionLevels){gap:8px!important}}
+@media(max-width:420px){.aurynOSWorkspace>.aurynAppMain{padding-inline:10px!important}.aurynOSWorkspace .aurynAppMain :is(.v2DecisionMap,.v2Chart,.v2Structure,.v99925Roadmap){padding:12px!important}.aurynOSWorkspace .aurynAppMain :is(.v99932CallLevels,.aurynDecisionLevels){grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(prefers-reduced-motion:reduce){.aurynOSNavLink{transition:none}}
