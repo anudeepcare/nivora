@@ -1,0 +1,57 @@
+/* AURYN NEXT — distinctive product-wide visual system, v9.9.9.41 */
+:root{--auryn-ink:#101b2d;--auryn-gold:#5275e8;--auryn-gold-soft:#dce7ff;--auryn-line:#e0e7f0;--auryn-muted:#5b6b80;--auryn-subtle:#718096;--surface:#fff;--auryn-green:#087d6a;--auryn-red:#bb4053}
+html,html[data-theme="classic"]{background:#edf2f8!important;color-scheme:light}
+body{background:linear-gradient(180deg,#eaf0fa 0,#f4f7fb 370px,#f6f8fc 100%)!important;color:#17253b!important;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important}
+.aurynAppShell{background:transparent!important;min-height:100vh}
+.aurynHeader{height:74px!important;background:#101b2d!important;border-bottom:1px solid #29384f!important;box-shadow:0 8px 28px rgba(13,28,51,.13)!important;padding-inline:clamp(16px,3.4vw,58px)!important}
+.aurynDesktopNav{background:#1a2a42!important;border:1px solid #2b3b53!important;border-radius:14px!important;padding:5px!important;gap:4px!important}
+.aurynDesktopNav a{border-radius:10px!important;color:#bdcbe0!important;padding:11px 17px!important;font-weight:650!important;font-family:inherit!important}
+.aurynDesktopNav a.on{background:#e8efff!important;color:#203e83!important;box-shadow:none!important;border:0!important}
+.aurynHeaderRight .aurynAccount>button{background:#273c5d!important;border-color:#5473a1!important;color:#fff!important}
+.aurynQuickSearch input,.aurynMobileSearch input{background:#172940!important;color:#f6f9ff!important;border-color:#334761!important}
+.aurynAppMain{max-width:1660px!important;margin-inline:auto!important}
+.aurynAppMain h1,.aurynAppMain h2,.aurynAppMain h3{font-family:Inter,ui-sans-serif,system-ui,sans-serif!important;letter-spacing:-.045em!important}
+.aurynAppMain h1{font-weight:790!important}
+.aurynAppMain h2{font-weight:750!important}
+.aurynAppMain :is(button,a,input,select){font-family:inherit}
+.aurynAppMain :is(article,section,aside){min-width:0}
+.aurynAppMain :is(.v2DecisionHero,.v99925Roadmap,.v2DecisionMap,.v2Chart,.v2Structure,.aurynPremiumCard,.aurynDecisionSummary){box-shadow:0 12px 34px rgba(24,46,78,.055)!important}
+.aurynAppMain :is(.v2Chart,.v2Structure,.v2DecisionMap,.v99925Roadmap,.aurynPremiumCard){background:#fff!important;border:1px solid #dce5f1!important;border-radius:20px!important}
+.aurynAppMain .v99932Call,.aurynAppMain .v2DecisionCall,.aurynAppMain .v2DecisionHero>div:first-child{background:linear-gradient(135deg,#162840,#263e65)!important;color:#f4f8ff!important;border-color:#334e77!important;border-radius:20px!important}
+.aurynAppMain .v99932Call :is(h2,h3),.aurynAppMain .v2DecisionCall :is(h2,h3){color:#fff!important}
+.aurynAppMain .v99932Call p,.aurynAppMain .v2DecisionCall p{color:#d7e3f4!important}
+.aurynAppMain .v99932Call strong,.aurynAppMain .v2DecisionCall strong{color:#bcd2ff!important}
+.aurynAppMain .v2DecisionMapBody.aurynDecisionLevels{gap:12px!important}
+.aurynAppMain .aurynDecisionLevel,.aurynAppMain .aurynDecisionCurrent{border-radius:13px!important;box-shadow:none!important}
+.aurynAppMain .aurynDecisionCurrent{background:#1d3150!important}
+.aurynAppMain .v2Structure>div{border-radius:9px!important}
+.aurynAppMain .v99914Ranges button{border-radius:9px!important}
+.aurynAppMain .v99914Ranges button.on{background:#233a5d!important;color:#fff!important}
+.aurynAppMain .v2Chart svg{max-width:100%}
+.aurynAppMain .aurynStockEvidenceSurface{max-width:100%;overflow-x:clip}
+.aurynAppMain :is(.v2DecisionHero,.aurynPremiumGrid,.aurynPremiumMetrics)>*{min-width:0}
+.aurynBottomNav{background:#101b2d!important;border-top:1px solid #34435c!important;box-shadow:0 -10px 30px rgba(14,27,47,.15)!important}
+.aurynBottomNav a{color:#b1bfd2!important}.aurynBottomNav a.on{background:#2c456c!important;color:#fff!important}
+.aurynMobileSearch{background:#edf2f8!important}
+@media(max-width:1000px){.aurynAppMain{padding-inline:18px!important}.aurynDesktopNav a{padding:9px 10px!important}}
+@media(max-width:760px){
+ .aurynHeader{height:60px!important;padding:0 16px!important}.aurynAppMain{padding:18px 12px calc(112px + env(safe-area-inset-bottom))!important;width:100%!important;overflow-x:clip}
+ .aurynAppMain h1{font-size:clamp(27px,8vw,39px)!important;line-height:1.09!important}.aurynAppMain h2{font-size:clamp(20px,6vw,29px)!important;line-height:1.17!important}
+ .aurynAppMain :is(.v2DecisionHero,.v99925Roadmap,.v2DecisionMap,.v2Chart,.v2Structure,.aurynPremiumCard){border-radius:15px!important}
+ .aurynAppMain :is(.v2DecisionMap,.v99925Roadmap,.v2Chart,.v2Structure){padding:15px!important}
+ .aurynAppMain .v2DecisionHero{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:12px!important}
+ .aurynAppMain .v2DecisionHero>*{width:100%!important;max-width:100%!important;min-width:0!important}
+ .aurynAppMain .v2DecisionMapBody.aurynDecisionLevels{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .aurynAppMain .v99925Roadmap>header{display:flex!important;flex-direction:column!important;align-items:flex-start!important}
+ .aurynAppMain .v99925Roadmap h2{font-size:27px!important}
+ .aurynAppMain .v99932Call{padding:20px!important}
+ .aurynAppMain .v99932Call h2{font-size:clamp(36px,12vw,54px)!important}
+ .aurynAppMain .v99932CallLevels{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .aurynAppMain .v2Chart{overflow:hidden!important}
+ .aurynAppMain .v99914Ranges{flex-wrap:wrap!important}
+ .aurynBottomNav{left:10px!important;right:10px!important;bottom:calc(8px + env(safe-area-inset-bottom))!important;border-radius:18px!important;min-height:62px!important;padding:5px!important}
+ .aurynBottomNav a{font-size:10px!important;gap:4px!important}
+ .aurynAppMain :is(table,.aurynEvidenceNav){max-width:100%;overflow-x:auto}
+}
+@media(max-width:380px){.aurynAppMain .v2DecisionMapBody.aurynDecisionLevels{grid-template-columns:1fr!important}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
