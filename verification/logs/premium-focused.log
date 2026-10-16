@@ -1,0 +1,42 @@
+✔ all thirty holdings are requested and kept, with no batch truncation (4.311258ms)
+✔ canonical aliases map quotes back to original holdings without losing BTC/USD (0.22191ms)
+✔ a missing returned symbol is explicitly unavailable instead of disappearing (0.293717ms)
+✔ LIVE labels expire and invalid or future provider timestamps are never live (30.320481ms)
+✔ explicit crypto asset types normalize bare symbols without changing equity identity (0.501686ms)
+✔ batch errors retain successful prices and explicitly identify the remaining holdings (0.695574ms)
+✔ large portfolios receive completed batches before every holding finishes (0.660472ms)
+✔ closed equities keep the latest official close while weekend crypto stays live (1.218862ms)
+✔ non-USD quotes are unavailable for portfolio USD price coverage (0.584679ms)
+✔ bounded rotation eventually visits all thirty holdings and skips current closed equities (1.019034ms)
+✔ canonical crypto uses real trade time on weekends and never enables execution (0.378152ms)
+✔ canonical crypto rejects missing, invalid, stale and future timestamps (0.314127ms)
+✔ crypto requests preserve the quoted currency and use no paid fallback calls (0.476218ms)
+✔ a current crypto trade received during a request is evaluated at response time (0.326135ms)
+✔ refresh controller pauses hidden pages, throttles focus retries and disposes its timer (0.515206ms)
+✔ refresh controller prevents overlap and rotates a bounded batch after initial load (0.467074ms)
+✔ refresh errors back off for a minute and retain prior timestamped prices (0.426564ms)
+✔ exact ticker wins over a company name prefix (61.229105ms)
+✔ empty search has no promoted ticker list (15.468191ms)
+✔ search discards invalid results, deduplicates and caps count (18.914873ms)
+✔ recent research is bounded, validated and never invented (23.082377ms)
+✔ SEC annual diluted shares retain exact period, unit and filing source (3.922851ms)
+✔ SEC shares reject mismatched period, future filing, superseded filing and monetary units (1.396505ms)
+✔ SEC share duplicates with conflicting values are unavailable, never arbitrarily selected (0.301358ms)
+✔ flat cash flow with zero terminal growth discounts to the perpetuity value without a debt adjustment (1.402815ms)
+✔ editable growth, equity discount rate, dilution and cash deductions change real cash-flow estimates (0.544079ms)
+✔ negative FCF, unsupported sectors, crypto and unknown classification cannot publish a generic DCF (4.404697ms)
+✔ MSFT and APP use the same explicit cash-flow arithmetic only with sufficient evidence (0.374156ms)
+✔ missing SEC share evidence cannot silently infer shares from cap/price or undated provider shares (0.395578ms)
+✔ currency, duration, continuity, as-of and source gates reject invalid cash inputs (1.509324ms)
+✔ terminal growth at or above equity discount rate and nonfinite assumptions fail explicitly (0.345062ms)
+✔ missing, future or stale price timestamp and foreign quote currency suppress comparison, not cash estimates (0.454035ms)
+✔ source-backed FCF yield requires explicit matching quote currency and identifies its denominator (0.285564ms)
+✔ discontinued operations preserve labeled reported figures but cannot unlock a continuing-business valuation (0.656576ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 516.415112

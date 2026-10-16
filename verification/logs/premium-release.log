@@ -1,0 +1,4528 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> auryn-investment-intelligence@1.0.0 test:release
+> node scripts/test-redesign-release.mjs
+
+Current release acceptance: 167 complete test files.
+TAP version 13
+# Subtest: GET portfolio/pulse rejects forged user id without bearer
+ok 1 - GET portfolio/pulse rejects forged user id without bearer
+  ---
+  duration_ms: 77.007739
+  type: 'test'
+  ...
+# Subtest: POST portfolio/pulse rejects forged user id without bearer
+ok 2 - POST portfolio/pulse rejects forged user id without bearer
+  ---
+  duration_ms: 22.302326
+  type: 'test'
+  ...
+# Subtest: GET trading-lab/status rejects forged user id without bearer
+ok 3 - GET trading-lab/status rejects forged user id without bearer
+  ---
+  duration_ms: 37.270982
+  type: 'test'
+  ...
+# Subtest: POST trading-lab/run-now rejects forged user id without bearer
+ok 4 - POST trading-lab/run-now rejects forged user id without bearer
+  ---
+  duration_ms: 13.469322
+  type: 'test'
+  ...
+# Subtest: trading-lab/status rejects ordinary user even with editable admin metadata
+ok 5 - trading-lab/status rejects ordinary user even with editable admin metadata
+  ---
+  duration_ms: 26.107858
+  type: 'test'
+  ...
+# Subtest: trading-lab/run-now rejects ordinary user even with editable admin metadata
+ok 6 - trading-lab/run-now rejects ordinary user even with editable admin metadata
+  ---
+  duration_ms: 11.228911
+  type: 'test'
+  ...
+# Subtest: verified identity is used; invalid tokens fail closed; only trusted admin roles and explicit ids qualify
+ok 7 - verified identity is used; invalid tokens fail closed; only trusted admin roles and explicit ids qualify
+  ---
+  duration_ms: 14.032499
+  type: 'test'
+  ...
+# Subtest: pulse read and write bind database ownership to verified identity, ignoring forged header
+ok 8 - pulse read and write bind database ownership to verified identity, ignoring forged header
+  ---
+  duration_ms: 19.07225
+  type: 'test'
+  ...
+# Subtest: pulse rejects null, empty and nonnumeric balance instead of coercing to zero
+ok 9 - pulse rejects null, empty and nonnumeric balance instead of coercing to zero
+  ---
+  duration_ms: 30.443944
+  type: 'test'
+  ...
+# Subtest: one weak quarter does not turn a strong multi-year business into reduce
+ok 10 - one weak quarter does not turn a strong multi-year business into reduce
+  ---
+  duration_ms: 5.49666
+  type: 'test'
+  ...
+# Subtest: capital intensive AI growth separates runway from financing risk
+ok 11 - capital intensive AI growth separates runway from financing risk
+  ---
+  duration_ms: 0.990963
+  type: 'test'
+  ...
+# Subtest: technicals change entry action more than long-term thesis
+ok 12 - technicals change entry action more than long-term thesis
+  ---
+  duration_ms: 1.851352
+  type: 'test'
+  ...
+# Subtest: space frontier company routes to SPACE_SATELLITE and VALIDATION
+ok 13 - space frontier company routes to SPACE_SATELLITE and VALIDATION
+  ---
+  duration_ms: 2.104919
+  type: 'test'
+  ...
+# Subtest: memory semiconductor is not classified like a software compounder
+ok 14 - memory semiconductor is not classified like a software compounder
+  ---
+  duration_ms: 0.446363
+  type: 'test'
+  ...
+# Subtest: classification confidence stays modest when evidence is generic
+ok 15 - classification confidence stays modest when evidence is generic
+  ---
+  duration_ms: 0.611899
+  type: 'test'
+  ...
+# Subtest: model registry selects frontier model for a satellite validation company
+ok 16 - model registry selects frontier model for a satellite validation company
+  ---
+  duration_ms: 0.237633
+  type: 'test'
+  ...
+# Subtest: model registry selects memory-cycle model before generic technology
+ok 17 - model registry selects memory-cycle model before generic technology
+  ---
+  duration_ms: 0.193308
+  type: 'test'
+  ...
+# Subtest: legacy AI infrastructure archetype synchronizes V4 classification even when provider industry is generic
+ok 18 - legacy AI infrastructure archetype synchronizes V4 classification even when provider industry is generic
+  ---
+  duration_ms: 0.165746
+  type: 'test'
+  ...
+# Subtest: AI infrastructure model does not require a fragile point valuation to issue a decision
+ok 19 - AI infrastructure model does not require a fragile point valuation to issue a decision
+  ---
+  duration_ms: 0.190863
+  type: 'test'
+  ...
+# Subtest: hybrid mining company with explicit AI/HPC data-center business stays AI infrastructure
+ok 20 - hybrid mining company with explicit AI/HPC data-center business stays AI infrastructure
+  ---
+  duration_ms: 0.372243
+  type: 'test'
+  ...
+# Subtest: power infrastructure archetype stays infrastructure in the investor valuation path
+ok 21 - power infrastructure archetype stays infrastructure in the investor valuation path
+  ---
+  duration_ms: 4.255536
+  type: 'test'
+  ...
+# Subtest: data-center-first AI description routes to AI infrastructure without ticker hardcoding
+ok 22 - data-center-first AI description routes to AI infrastructure without ticker hardcoding
+  ---
+  duration_ms: 0.320907
+  type: 'test'
+  ...
+# Subtest: AI infrastructure long-term model does not require a current catalyst feed to form a structural decision
+ok 23 - AI infrastructure long-term model does not require a current catalyst feed to form a structural decision
+  ---
+  duration_ms: 0.166688
+  type: 'test'
+  ...
+# Subtest: generic legacy hints never override a more specific source-backed business description
+ok 24 - generic legacy hints never override a more specific source-backed business description
+  ---
+  duration_ms: 0.157975
+  type: 'test'
+  ...
+# Subtest: medical equipment and surgical robotics industries route to MEDTECH without ticker hardcoding
+ok 25 - medical equipment and surgical robotics industries route to MEDTECH without ticker hardcoding
+  ---
+  duration_ms: 0.166487
+  type: 'test'
+  ...
+# Subtest: confidence falls when model suitability and coverage are weak
+ok 26 - confidence falls when model suitability and coverage are weak
+  ---
+  duration_ms: 0.985395
+  type: 'test'
+  ...
+# Subtest: strong evidence can produce STRONG_BUY without WAIT
+ok 27 - strong evidence can produce STRONG_BUY without WAIT
+  ---
+  duration_ms: 0.572762
+  type: 'test'
+  ...
+# Subtest: weak technicals can constrain NOW while long-term remains BUY
+ok 28 - weak technicals can constrain NOW while long-term remains BUY
+  ---
+  duration_ms: 0.185516
+  type: 'test'
+  ...
+# Subtest: broken thesis sells even when valuation looks cheap
+ok 29 - broken thesis sells even when valuation looks cheap
+  ---
+  duration_ms: 0.145787
+  type: 'test'
+  ...
+# Subtest: missing required evidence produces INSUFFICIENT_EVIDENCE instead of neutral HOLD
+ok 30 - missing required evidence produces INSUFFICIENT_EVIDENCE instead of neutral HOLD
+  ---
+  duration_ms: 0.158075
+  type: 'test'
+  ...
+# Subtest: score weakness alone cannot produce SELL while the structural thesis is intact
+ok 31 - score weakness alone cannot produce SELL while the structural thesis is intact
+  ---
+  duration_ms: 0.247908
+  type: 'test'
+  ...
+# Subtest: strong intact long-term thesis downgrades medium-term weakness to HOLD rather than REDUCE
+ok 32 - strong intact long-term thesis downgrades medium-term weakness to HOLD rather than REDUCE
+  ---
+  duration_ms: 0.16134
+  type: 'test'
+  ...
+# Subtest: SELL is structural: very weak weighted scores with an intact thesis stop at REDUCE
+ok 33 - SELL is structural: very weak weighted scores with an intact thesis stop at REDUCE
+  ---
+  duration_ms: 0.151655
+  type: 'test'
+  ...
+# Subtest: an intact owner thesis does not become an automatic REDUCE solely because new-money valuation/risk is unattractive
+ok 34 - an intact owner thesis does not become an automatic REDUCE solely because new-money valuation/risk is unattractive
+  ---
+  duration_ms: 0.227698
+  type: 'test'
+  ...
+# Subtest: owner action still reduces when structural thesis is actually weakening
+ok 35 - owner action still reduces when structural thesis is actually weakening
+  ---
+  duration_ms: 0.284332
+  type: 'test'
+  ...
+# Subtest: missing valuation alone yields a structural HOLD instead of INSUFFICIENT_EVIDENCE
+ok 36 - missing valuation alone yields a structural HOLD instead of INSUFFICIENT_EVIDENCE
+  ---
+  duration_ms: 0.191184
+  type: 'test'
+  ...
+# Subtest: missing required evidence is reported rather than filled with 50
+ok 37 - missing required evidence is reported rather than filled with 50
+  ---
+  duration_ms: 2.3885
+  type: 'test'
+  ...
+# Subtest: missing optional factor renormalizes only over available active weights
+ok 38 - missing optional factor renormalizes only over available active weights
+  ---
+  duration_ms: 0.298824
+  type: 'test'
+  ...
+# Subtest: legacy adapter does not manufacture moat or positioning scores
+ok 39 - legacy adapter does not manufacture moat or positioning scores
+  ---
+  duration_ms: 1.3721
+  type: 'test'
+  ...
+# Subtest: legacy adapter may expose a conservative moat proxy only when source-backed durability evidence exists
+ok 40 - legacy adapter may expose a conservative moat proxy only when source-backed durability evidence exists
+  ---
+  duration_ms: 1.767327
+  type: 'test'
+  ...
+# Subtest: legacy adapter never converts null valuation or revenue into zero evidence
+ok 41 - legacy adapter never converts null valuation or revenue into zero evidence
+  ---
+  duration_ms: 0.39054
+  type: 'test'
+  ...
+# Subtest: AI infrastructure valuation derives sales multiple from market cap and reported revenue when provider P/S is missing
+ok 42 - AI infrastructure valuation derives sales multiple from market cap and reported revenue when provider P/S is missing
+  ---
+  duration_ms: 0.576196
+  type: 'test'
+  ...
+# Subtest: legacy adapter treats unsupported zero valuation as unavailable evidence
+ok 43 - legacy adapter treats unsupported zero valuation as unavailable evidence
+  ---
+  duration_ms: 0.341127
+  type: 'test'
+  ...
+# Subtest: legacy adapter can use source-backed news context to classify an AI infrastructure company when profile description is absent
+ok 44 - legacy adapter can use source-backed news context to classify an AI infrastructure company when profile description is absent
+  ---
+  duration_ms: 0.452713
+  type: 'test'
+  ...
+# Subtest: great company with weak technicals stays an investment BUY while NOW is HOLD
+ok 45 - great company with weak technicals stays an investment BUY while NOW is HOLD
+  ---
+  duration_ms: 3.252004
+  type: 'test'
+  ...
+# Subtest: frontier satellite validation case recognizes asymmetric BUY without STRONG_BUY
+ok 46 - frontier satellite validation case recognizes asymmetric BUY without STRONG_BUY
+  ---
+  duration_ms: 0.451551
+  type: 'test'
+  ...
+# Subtest: memory semiconductor cycle inflection routes to cycle model and BUY
+ok 47 - memory semiconductor cycle inflection routes to cycle model and BUY
+  ---
+  duration_ms: 0.55901
+  type: 'test'
+  ...
+# Subtest: technically strong stock cannot rescue a deteriorating long-term business
+ok 48 - technically strong stock cannot rescue a deteriorating long-term business
+  ---
+  duration_ms: 0.54487
+  type: 'test'
+  ...
+# Subtest: excellent company at extreme valuation is HOLD for new investment risk
+ok 49 - excellent company at extreme valuation is HOLD for new investment risk
+  ---
+  duration_ms: 0.475877
+  type: 'test'
+  ...
+# Subtest: broken thesis sells even when valuation is cheap and technicals look strong
+ok 50 - broken thesis sells even when valuation is cheap and technicals look strong
+  ---
+  duration_ms: 0.360696
+  type: 'test'
+  ...
+# Subtest: missing critical business evidence is INSUFFICIENT_EVIDENCE, not HOLD
+ok 51 - missing critical business evidence is INSUFFICIENT_EVIDENCE, not HOLD
+  ---
+  duration_ms: 1.118603
+  type: 'test'
+  ...
+# Subtest: V4 actions render as clear human decisions
+ok 52 - V4 actions render as clear human decisions
+  ---
+  duration_ms: 1.736872
+  type: 'test'
+  ...
+# Subtest: V4 reason codes become decision-first plain English
+ok 53 - V4 reason codes become decision-first plain English
+  ---
+  duration_ms: 0.487815
+  type: 'test'
+  ...
+# Subtest: owner guidance stays decisive and consistent with V4 action
+ok 54 - owner guidance stays decisive and consistent with V4 action
+  ---
+  duration_ms: 0.207609
+  type: 'test'
+  ...
+# Subtest: unchanged slow evidence fingerprint preserves prior thesis strength
+ok 55 - unchanged slow evidence fingerprint preserves prior thesis strength
+  ---
+  duration_ms: 0.837265
+  type: 'test'
+  ...
+# Subtest: new slow evidence can strengthen thesis
+ok 56 - new slow evidence can strengthen thesis
+  ---
+  duration_ms: 0.151806
+  type: 'test'
+  ...
+# Subtest: moat direction is UNKNOWN when moat evidence is absent
+ok 57 - moat direction is UNKNOWN when moat evidence is absent
+  ---
+  duration_ms: 0.237233
+  type: 'test'
+  ...
+# Subtest: contrarian edge requires cited evidence
+ok 58 - contrarian edge requires cited evidence
+  ---
+  duration_ms: 0.171315
+  type: 'test'
+  ...
+# Subtest: positive edge is allowed only when AURYN thesis contains evidence IDs
+ok 59 - positive edge is allowed only when AURYN thesis contains evidence IDs
+  ---
+  duration_ms: 0.638319
+  type: 'test'
+  ...
+# Subtest: strong thesis plus weak chart is not converted into SELL
+ok 60 - strong thesis plus weak chart is not converted into SELL
+  ---
+  duration_ms: 1.314985
+  type: 'test'
+  ...
+# Subtest: missing valuation caps new-money action at HOLD rather than insufficient evidence
+ok 61 - missing valuation caps new-money action at HOLD rather than insufficient evidence
+  ---
+  duration_ms: 0.216783
+  type: 'test'
+  ...
+# Subtest: broken structural thesis is a SELL even if chart is strong
+ok 62 - broken structural thesis is a SELL even if chart is strong
+  ---
+  duration_ms: 0.157705
+  type: 'test'
+  ...
+# Subtest: unverified market truth preserves research judgment but blocks execution through canonical snapshot
+ok 63 - unverified market truth preserves research judgment but blocks execution through canonical snapshot
+  ---
+  duration_ms: 1.650463
+  type: 'test'
+  ...
+# Subtest: preliminary heuristic valuation score of zero is treated as unavailable, not bearish certainty
+ok 64 - preliminary heuristic valuation score of zero is treated as unavailable, not bearish certainty
+  ---
+  duration_ms: 0.230402
+  type: 'test'
+  ...
+# Subtest: strong buy thesis gives existing owners an add-capable posture instead of contradictory HOLD-only guidance
+ok 65 - strong buy thesis gives existing owners an add-capable posture instead of contradictory HOLD-only guidance
+  ---
+  duration_ms: 0.15501
+  type: 'test'
+  ...
+# Subtest: headline new-money action cannot be STRONG BUY when near-term timing is HOLD/REDUCE
+ok 66 - headline new-money action cannot be STRONG BUY when near-term timing is HOLD/REDUCE
+  ---
+  duration_ms: 0.425813
+  type: 'test'
+  ...
+# Subtest: STRONG BUY requires HIGH decision confidence and is capped to BUY at medium confidence
+ok 67 - STRONG BUY requires HIGH decision confidence and is capped to BUY at medium confidence
+  ---
+  duration_ms: 0.191154
+  type: 'test'
+  ...
+# Subtest: RSI is interpreted, not merely displayed
+ok 68 - RSI is interpreted, not merely displayed
+  ---
+  duration_ms: 2.204177
+  type: 'test'
+  ...
+# Subtest: risk metrics use inverse semantics and valuation missing stays unavailable
+ok 69 - risk metrics use inverse semantics and valuation missing stays unavailable
+  ---
+  duration_ms: 0.252986
+  type: 'test'
+  ...
+# Subtest: metric registry exposes technical, business and thesis families with decision roles
+ok 70 - metric registry exposes technical, business and thesis families with decision roles
+  ---
+  duration_ms: 0.274098
+  type: 'test'
+  ...
+# Subtest: Extreme Pro metric universe includes advanced momentum, flow, volatility and structure evidence when bars exist
+ok 71 - Extreme Pro metric universe includes advanced momentum, flow, volatility and structure evidence when bars exist
+  ---
+  duration_ms: 1.138862
+  type: 'test'
+  ...
+# Subtest: preliminary heuristic valuation zero is displayed as N/A rather than 0/100 bearish certainty
+ok 72 - preliminary heuristic valuation zero is displayed as N/A rather than 0/100 bearish certainty
+  ---
+  duration_ms: 0.265114
+  type: 'test'
+  ...
+# Subtest: Extreme Pro includes deeper trend, cloud, anchored VWAP, volume-profile and squeeze diagnostics
+ok 73 - Extreme Pro includes deeper trend, cloud, anchored VWAP, volume-profile and squeeze diagnostics
+  ---
+  duration_ms: 1.072154
+  type: 'test'
+  ...
+# Subtest: one execution plan owns all staged entry/DCA levels and snapshot id
+ok 74 - one execution plan owns all staged entry/DCA levels and snapshot id
+  ---
+  duration_ms: 1.445989
+  type: 'test'
+  ...
+# Subtest: unverified market truth blocks every price-sensitive level
+ok 75 - unverified market truth blocks every price-sensitive level
+  ---
+  duration_ms: 0.554634
+  type: 'test'
+  ...
+# Subtest: weak or broken thesis does not publish aggressive averaging plan
+ok 76 - weak or broken thesis does not publish aggressive averaging plan
+  ---
+  duration_ms: 0.241269
+  type: 'test'
+  ...
+# Subtest: pattern engine can identify an early reversal/higher-low setup without ticker rules
+ok 77 - pattern engine can identify an early reversal/higher-low setup without ticker rules
+  ---
+  duration_ms: 1.369376
+  type: 'test'
+  ...
+# Subtest: pattern engine detects a double-bottom candidate when two lows form near one another
+ok 78 - pattern engine detects a double-bottom candidate when two lows form near one another
+  ---
+  duration_ms: 0.321908
+  type: 'test'
+  ...
+# Subtest: scenario map has deterministic bull/base/bear boundaries and wave context is supporting only
+ok 79 - scenario map has deterministic bull/base/bear boundaries and wave context is supporting only
+  ---
+  duration_ms: 0.631599
+  type: 'test'
+  ...
+# Subtest: execution snapshot gate rejects unverified or mismatched market truth
+ok 80 - execution snapshot gate rejects unverified or mismatched market truth
+  ---
+  duration_ms: 0.748843
+  type: 'test'
+  ...
+# Subtest: V5 actions map into paper-lab actions without manufacturing trades
+ok 81 - V5 actions map into paper-lab actions without manufacturing trades
+  ---
+  duration_ms: 0.16142
+  type: 'test'
+  ...
+# Subtest: deterministic reliability matrix covers at least 10,000 real-world combinations with zero invariant violations
+ok 82 - deterministic reliability matrix covers at least 10,000 real-world combinations with zero invariant violations
+  ---
+  duration_ms: 4.876338
+  type: 'test'
+  ...
+# Subtest: paper runner preserves V5 evidence as challenger context while V9.3.4.3 owns execution action
+ok 83 - paper runner preserves V5 evidence as challenger context while V9.3.4.3 owns execution action
+  ---
+  duration_ms: 0.794942
+  type: 'test'
+  ...
+# Subtest: V6 learning serializer freezes the exact visible decision and execution plan
+ok 84 - V6 learning serializer freezes the exact visible decision and execution plan
+  ---
+  duration_ms: 0.99565
+  type: 'test'
+  ...
+# Subtest: validation route persists canonical V6 snapshot as its own immutable engine cohort
+ok 85 - validation route persists canonical V6 snapshot as its own immutable engine cohort
+  ---
+  duration_ms: 0.262099
+  type: 'test'
+  ...
+# Subtest: stock client upgrades the canonical validation event to V7 trust semantics
+ok 86 - stock client upgrades the canonical validation event to V7 trust semantics
+  ---
+  duration_ms: 0.675294
+  type: 'test'
+  ...
+# Subtest: scheduled maturity includes V6 exact-engine outcomes
+ok 87 - scheduled maturity includes V6 exact-engine outcomes
+  ---
+  duration_ms: 0.178736
+  type: 'test'
+  ...
+# Subtest: model health converts exact Arena snapshots/outcomes into proof evidence
+ok 88 - model health converts exact Arena snapshots/outcomes into proof evidence
+  ---
+  duration_ms: 1.164381
+  type: 'test'
+  ...
+# Subtest: model health API is exact-engine scoped and uses V6 proof engine
+ok 89 - model health API is exact-engine scoped and uses V6 proof engine
+  ---
+  duration_ms: 0.313977
+  type: 'test'
+  ...
+# Subtest: portfolio CIO can block a standalone BUY without changing company action
+ok 90 - portfolio CIO can block a standalone BUY without changing company action
+  ---
+  duration_ms: 3.913778
+  type: 'test'
+  ...
+# Subtest: moderate portfolio risk reduces sizing but preserves add eligibility
+ok 91 - moderate portfolio risk reduces sizing but preserves add eligibility
+  ---
+  duration_ms: 0.294282
+  type: 'test'
+  ...
+# Subtest: large existing position blocks additional exposure even when standalone call is strong buy
+ok 92 - large existing position blocks additional exposure even when standalone call is strong buy
+  ---
+  duration_ms: 0.17508
+  type: 'test'
+  ...
+# Subtest: sell/reduce company calls are never upgraded by a low-risk portfolio
+ok 93 - sell/reduce company calls are never upgraded by a low-risk portfolio
+  ---
+  duration_ms: 0.163002
+  type: 'test'
+  ...
+# Subtest: hold remains hold and does not manufacture an add instruction
+ok 94 - hold remains hold and does not manufacture an add instruction
+  ---
+  duration_ms: 0.111556
+  type: 'test'
+  ...
+# Subtest: model proof stays UNPROVEN without exact-engine matured evidence
+ok 95 - model proof stays UNPROVEN without exact-engine matured evidence
+  ---
+  duration_ms: 1.079444
+  type: 'test'
+  ...
+# Subtest: action ladder detects monotonic alpha ordering
+ok 96 - action ladder detects monotonic alpha ordering
+  ---
+  duration_ms: 0.794832
+  type: 'test'
+  ...
+# Subtest: promotion gate blocks a challenger when action ladder is not monotonic
+ok 97 - promotion gate blocks a challenger when action ladder is not monotonic
+  ---
+  duration_ms: 0.453745
+  type: 'test'
+  ...
+# Subtest: validated proof requires enough exact sample, positive alpha, drawdown control and multi-regime evidence
+ok 98 - validated proof requires enough exact sample, positive alpha, drawdown control and multi-regime evidence
+  ---
+  duration_ms: 0.60565
+  type: 'test'
+  ...
+# Subtest: ELITE proof is reserved for broad, strong and stable exact-engine evidence
+ok 99 - ELITE proof is reserved for broad, strong and stable exact-engine evidence
+  ---
+  duration_ms: 1.353512
+  type: 'test'
+  ...
+# Subtest: V6 proof/portfolio reliability matrix adds thousands of institutional decision cases with no invariant violations
+ok 100 - V6 proof/portfolio reliability matrix adds thousands of institutional decision cases with no invariant violations
+  ---
+  duration_ms: 346.102405
+  type: 'test'
+  ...
+# Subtest: weekly aggregation is deterministic and preserves OHLCV semantics
+ok 101 - weekly aggregation is deterministic and preserves OHLCV semantics
+  ---
+  duration_ms: 7.731412
+  type: 'test'
+  ...
+# Subtest: multi-timeframe regime marks bullish daily and weekly structure aligned
+ok 102 - multi-timeframe regime marks bullish daily and weekly structure aligned
+  ---
+  duration_ms: 4.012074
+  type: 'test'
+  ...
+# Subtest: multi-timeframe regime identifies daily weakness against stronger weekly structure
+ok 103 - multi-timeframe regime identifies daily weakness against stronger weekly structure
+  ---
+  duration_ms: 2.722307
+  type: 'test'
+  ...
+# Subtest: valuation method registry selects archetype-specific methods
+ok 104 - valuation method registry selects archetype-specific methods
+  ---
+  duration_ms: 0.96867
+  type: 'test'
+  ...
+# Subtest: missing valuation stays unavailable and never becomes a bearish zero
+ok 105 - missing valuation stays unavailable and never becomes a bearish zero
+  ---
+  duration_ms: 0.210503
+  type: 'test'
+  ...
+# Subtest: preliminary heuristic valuation is PARTIAL and cannot publish decision-grade fair value
+ok 106 - preliminary heuristic valuation is PARTIAL and cannot publish decision-grade fair value
+  ---
+  duration_ms: 0.144475
+  type: 'test'
+  ...
+# Subtest: measured valuation is decision grade but still labeled with its archetype method
+ok 107 - measured valuation is decision grade but still labeled with its archetype method
+  ---
+  duration_ms: 0.212686
+  type: 'test'
+  ...
+# Subtest: V7 wraps V6 with canonical trust audit and version
+ok 108 - V7 wraps V6 with canonical trust audit and version
+  ---
+  duration_ms: 1.097211
+  type: 'test'
+  ...
+# Subtest: V7 blocks when scenario and execution plan disagree
+ok 109 - V7 blocks when scenario and execution plan disagree
+  ---
+  duration_ms: 0.557379
+  type: 'test'
+  ...
+# Subtest: scenario map actionable bull case is derived from the canonical execution plan
+ok 110 - scenario map actionable bull case is derived from the canonical execution plan
+  ---
+  duration_ms: 0.891896
+  type: 'test'
+  ...
+# Subtest: blocked execution plan blocks all scenario price levels
+ok 111 - blocked execution plan blocks all scenario price levels
+  ---
+  duration_ms: 0.232185
+  type: 'test'
+  ...
+# Subtest: watch intent never calls its canonical structural zone an active buy zone
+ok 112 - watch intent never calls its canonical structural zone an active buy zone
+  ---
+  duration_ms: 0.318493
+  type: 'test'
+  ...
+# Subtest: canonical trust audit passes when snapshot, plan and scenario are aligned
+ok 113 - canonical trust audit passes when snapshot, plan and scenario are aligned
+  ---
+  duration_ms: 1.132924
+  type: 'test'
+  ...
+# Subtest: scenario/plan mismatch is a runtime trust blocker
+ok 114 - scenario/plan mismatch is a runtime trust blocker
+  ---
+  duration_ms: 0.253858
+  type: 'test'
+  ...
+# Subtest: non-accumulate intent cannot carry DCA zones
+ok 115 - non-accumulate intent cannot carry DCA zones
+  ---
+  duration_ms: 0.194068
+  type: 'test'
+  ...
+# Subtest: canonical market price and execution price must agree
+ok 116 - canonical market price and execution price must agree
+  ---
+  duration_ms: 0.190443
+  type: 'test'
+  ...
+# Subtest: missing valuation cannot coexist with active accumulation
+ok 117 - missing valuation cannot coexist with active accumulation
+  ---
+  duration_ms: 0.167429
+  type: 'test'
+  ...
+# Subtest: V8 golden universe contains exactly 100 real ticker fixtures
+ok 118 - V8 golden universe contains exactly 100 real ticker fixtures
+  ---
+  duration_ms: 0.681413
+  type: 'test'
+  ...
+# Subtest: 100-ticker offline Reality Audit has zero critical classification/model/lifecycle violations
+ok 119 - 100-ticker offline Reality Audit has zero critical classification/model/lifecycle violations
+  ---
+  duration_ms: 4.159391
+  type: 'test'
+  ...
+# Subtest: ASTS-style broad bearish horizon consensus cannot be hidden behind HOLD just because valuation is unavailable
+ok 120 - ASTS-style broad bearish horizon consensus cannot be hidden behind HOLD just because valuation is unavailable
+  ---
+  duration_ms: 1.428272
+  type: 'test'
+  ...
+# Subtest: HIMS-style healthy long-horizon HOLD can coexist with near-term REDUCE without forcing portfolio exit
+ok 121 - HIMS-style healthy long-horizon HOLD can coexist with near-term REDUCE without forcing portfolio exit
+  ---
+  duration_ms: 0.233227
+  type: 'test'
+  ...
+# Subtest: digital-health platform is not misclassified as biotech/pharma
+ok 122 - digital-health platform is not misclassified as biotech/pharma
+  ---
+  duration_ms: 1.474762
+  type: 'test'
+  ...
+# Subtest: frontier satellite with missing lifecycle metrics never defaults to maturity
+ok 123 - frontier satellite with missing lifecycle metrics never defaults to maturity
+  ---
+  duration_ms: 0.340065
+  type: 'test'
+  ...
+# Subtest: generic company with insufficient lifecycle evidence is UNKNOWN rather than MATURITY
+ok 124 - generic company with insufficient lifecycle evidence is UNKNOWN rather than MATURITY
+  ---
+  duration_ms: 0.658058
+  type: 'test'
+  ...
+# Subtest: data-center REIT remains REIT instead of becoming AI infrastructure
+ok 125 - data-center REIT remains REIT instead of becoming AI infrastructure
+  ---
+  duration_ms: 0.15485
+  type: 'test'
+  ...
+# Subtest: upstream 404 and missing history become clean provider coverage states
+ok 126 - upstream 404 and missing history become clean provider coverage states
+  ---
+  duration_ms: 1.250719
+  type: 'test'
+  ...
+# Subtest: short history is explicit and non-executable rather than a generic failure
+ok 127 - short history is explicit and non-executable rather than a generic failure
+  ---
+  duration_ms: 0.233617
+  type: 'test'
+  ...
+# Subtest: adequate history passes coverage gate
+ok 128 - adequate history passes coverage gate
+  ---
+  duration_ms: 0.151265
+  type: 'test'
+  ...
+# Subtest: security master classifies special instruments exposed by the 500-stock audit
+ok 129 - security master classifies special instruments exposed by the 500-stock audit
+  ---
+  duration_ms: 1.223919
+  type: 'test'
+  ...
+# Subtest: ordinary equities and class shares remain supported
+ok 130 - ordinary equities and class shares remain supported
+  ---
+  duration_ms: 0.275299
+  type: 'test'
+  ...
+# Subtest: special instruments fail closed for common-equity analysis
+ok 131 - special instruments fail closed for common-equity analysis
+  ---
+  duration_ms: 0.168901
+  type: 'test'
+  ...
+# Subtest: audit numeric parsing preserves null/undefined instead of coercing them to zero
+ok 132 - audit numeric parsing preserves null/undefined instead of coercing them to zero
+  ---
+  duration_ms: 0.812778
+  type: 'test'
+  ...
+# Subtest: blocked Market Truth is critical only when it truly exposes a finite numeric decisionPrice
+ok 133 - blocked Market Truth is critical only when it truly exposes a finite numeric decisionPrice
+  ---
+  duration_ms: 0.145877
+  type: 'test'
+  ...
+# Subtest: canonical/analyze price mismatch remains a hard critical when both prices are decision-usable
+ok 134 - canonical/analyze price mismatch remains a hard critical when both prices are decision-usable
+  ---
+  duration_ms: 0.144224
+  type: 'test'
+  ...
+# Subtest: 500-stock live audit retries 429 responses using Retry-After/backoff instead of marking the ticker immediately critical
+ok 135 - 500-stock live audit retries 429 responses using Retry-After/backoff instead of marking the ticker immediately critical
+  ---
+  duration_ms: 0.481786
+  type: 'test'
+  ...
+# Subtest: audit exposes rate-limit retries separately from true critical failures in summary
+ok 136 - audit exposes rate-limit retries separately from true critical failures in summary
+  ---
+  duration_ms: 0.163953
+  type: 'test'
+  ...
+# Subtest: upstream provider 429 is transient rate-limit state, not missing-history quarantine
+ok 137 - upstream provider 429 is transient rate-limit state, not missing-history quarantine
+  ---
+  duration_ms: 0.902341
+  type: 'test'
+  ...
+# Subtest: analyze route preserves upstream provider-rate limits as HTTP 429 so the audit can retry them
+ok 138 - analyze route preserves upstream provider-rate limits as HTTP 429 so the audit can retry them
+  ---
+  duration_ms: 0.212115
+  type: 'test'
+  ...
+# Subtest: 500-style audit sampling is deterministic and broadly distributed instead of alphabetically concentrated
+ok 139 - 500-style audit sampling is deterministic and broadly distributed instead of alphabetically concentrated
+  ---
+  duration_ms: 8.421665
+  type: 'test'
+  ...
+# Subtest: audit universe endpoint uses diversified selector and paginates fallback universe instead of taking an alphabetical prefix
+ok 140 - audit universe endpoint uses diversified selector and paginates fallback universe instead of taking an alphabetical prefix
+  ---
+  duration_ms: 0.341177
+  type: 'test'
+  ...
+# Subtest: regular-session technical analysis excludes a provider partial candle for the current trading day
+ok 141 - regular-session technical analysis excludes a provider partial candle for the current trading day
+  ---
+  duration_ms: 0.741993
+  type: 'test'
+  ...
+# Subtest: after-hours analysis may include the completed current regular-session daily candle
+ok 142 - after-hours analysis may include the completed current regular-session daily candle
+  ---
+  duration_ms: 0.130464
+  type: 'test'
+  ...
+# Subtest: regular-session live price may diverge materially from completed daily anchor without becoming a critical error
+ok 143 - regular-session live price may diverge materially from completed daily anchor without becoming a critical error
+  ---
+  duration_ms: 1.508902
+  type: 'test'
+  ...
+# Subtest: closed-session official close and completed daily anchor mismatch remains critical
+ok 144 - closed-session official close and completed daily anchor mismatch remains critical
+  ---
+  duration_ms: 0.27564
+  type: 'test'
+  ...
+# Subtest: execution price is present only for independently verified execution-tradable live state
+ok 145 - execution price is present only for independently verified execution-tradable live state
+  ---
+  duration_ms: 0.16195
+  type: 'test'
+  ...
+# Subtest: Market Truth exposes explicit live/close/decision/execution price roles
+ok 146 - Market Truth exposes explicit live/close/decision/execution price roles
+  ---
+  duration_ms: 13.680792
+  type: 'test'
+  ...
+# Subtest: feature evaluation is chronological, cost-adjusted and reports OOS evidence
+ok 147 - feature evaluation is chronological, cost-adjusted and reports OOS evidence
+  ---
+  duration_ms: 10.914741
+  type: 'test'
+  ...
+# Subtest: information coefficient rewards signal/forward-alpha alignment
+ok 148 - information coefficient rewards signal/forward-alpha alignment
+  ---
+  duration_ms: 3.382327
+  type: 'test'
+  ...
+# Subtest: Benjamini-Hochberg controls false-discovery q values monotonically
+ok 149 - Benjamini-Hochberg controls false-discovery q values monotonically
+  ---
+  duration_ms: 0.357
+  type: 'test'
+  ...
+# Subtest: V9 generates a deterministic 20k+ unique hypothesis catalog across professional families
+ok 150 - V9 generates a deterministic 20k+ unique hypothesis catalog across professional families
+  ---
+  duration_ms: 83.546439
+  type: 'test'
+  ...
+# Subtest: only explicitly approved production candidates enter the production feature registry
+ok 151 - only explicitly approved production candidates enter the production feature registry
+  ---
+  duration_ms: 1.17109
+  type: 'test'
+  ...
+# Subtest: V9 research artifacts are deterministic for identical inputs
+ok 152 - V9 research artifacts are deterministic for identical inputs
+  ---
+  duration_ms: 18.060991
+  type: 'test'
+  ...
+# Subtest: tournament rejects in-sample-only winners and surfaces robust OOS candidates
+ok 153 - tournament rejects in-sample-only winners and surfaces robust OOS candidates
+  ---
+  duration_ms: 27.323986
+  type: 'test'
+  ...
+# Subtest: promotion gate requires OOS positive lower bound, breadth, sample and FDR significance
+ok 154 - promotion gate requires OOS positive lower bound, breadth, sample and FDR significance
+  ---
+  duration_ms: 0.204554
+  type: 'test'
+  ...
+# Subtest: V9.1 reconstructs a broad signed price/volume metric core using completed history only
+ok 155 - V9.1 reconstructs a broad signed price/volume metric core using completed history only
+  ---
+  duration_ms: 11.072776
+  type: 'test'
+  ...
+# Subtest: V9.1 never uses bars after the requested historical index
+ok 156 - V9.1 never uses bars after the requested historical index
+  ---
+  duration_ms: 3.496886
+  type: 'test'
+  ...
+# Subtest: V9.1 external point-in-time metrics stay sparse and do not invent unavailable fundamentals
+ok 157 - V9.1 external point-in-time metrics stay sparse and do not invent unavailable fundamentals
+  ---
+  duration_ms: 0.833569
+  type: 'test'
+  ...
+# Subtest: V9.1 builds deterministic compact base observations with sparse point-in-time metrics and multiple outcomes
+ok 158 - V9.1 builds deterministic compact base observations with sparse point-in-time metrics and multiple outcomes
+  ---
+  duration_ms: 337.30493
+  type: 'test'
+  ...
+# Subtest: V9.1 drops incomplete forward horizons instead of extrapolating them
+ok 159 - V9.1 drops incomplete forward horizons instead of extrapolating them
+  ---
+  duration_ms: 156.889274
+  type: 'test'
+  ...
+# Subtest: V9.1 default weekly cadence reduces storage and manifest reports missing evidence honestly
+ok 160 - V9.1 default weekly cadence reduces storage and manifest reports missing evidence honestly
+  ---
+  duration_ms: 191.784652
+  type: 'test'
+  ...
+# Subtest: V9.1 refuses INVALID bundles rather than producing research rows
+ok 161 - V9.1 refuses INVALID bundles rather than producing research rows
+  ---
+  duration_ms: 1.223097
+  type: 'test'
+  ...
+# Subtest: V9.1 selects deterministic bounded candidate shards from the full V9 catalog
+ok 162 - V9.1 selects deterministic bounded candidate shards from the full V9 catalog
+  ---
+  duration_ms: 68.7031
+  type: 'test'
+  ...
+# Subtest: V9.1 materializes feature observations from compact history without future leakage
+ok 163 - V9.1 materializes feature observations from compact history without future leakage
+  ---
+  duration_ms: 14.08433
+  type: 'test'
+  ...
+# Subtest: V9.1 context shards skip rows when required same-date confirmation is missing
+ok 164 - V9.1 context shards skip rows when required same-date confirmation is missing
+  ---
+  duration_ms: 24.690463
+  type: 'test'
+  ...
+# Subtest: V9.1 does not fabricate feature rows when the candidate horizon outcome is unavailable
+ok 165 - V9.1 does not fabricate feature rows when the candidate horizon outcome is unavailable
+  ---
+  duration_ms: 10.446295
+  type: 'test'
+  ...
+# Subtest: V9.1 point-in-time resolver hides later revisions until their availableAt
+ok 166 - V9.1 point-in-time resolver hides later revisions until their availableAt
+  ---
+  duration_ms: 6.531396
+  type: 'test'
+  ...
+# Subtest: V9.1 combines facts and events only when they were public by asOf
+ok 167 - V9.1 combines facts and events only when they were public by asOf
+  ---
+  duration_ms: 0.693371
+  type: 'test'
+  ...
+# Subtest: V9.1 maps research horizons to trading sessions exactly
+ok 168 - V9.1 maps research horizons to trading sessions exactly
+  ---
+  duration_ms: 0.193798
+  type: 'test'
+  ...
+# Subtest: V9.1 labels forward return, benchmark return and drawdown on exact future sessions
+ok 169 - V9.1 labels forward return, benchmark return and drawdown on exact future sessions
+  ---
+  duration_ms: 0.330441
+  type: 'test'
+  ...
+# Subtest: V9.1 drops outcomes when future or aligned benchmark history is incomplete
+ok 170 - V9.1 drops outcomes when future or aligned benchmark history is incomplete
+  ---
+  duration_ms: 0.135962
+  type: 'test'
+  ...
+# Subtest: V9.1 can incorporate an explicit delisting return instead of erasing failed securities
+ok 171 - V9.1 can incorporate an explicit delisting return instead of erasing failed securities
+  ---
+  duration_ms: 0.137554
+  type: 'test'
+  ...
+# Subtest: V9.1 grades a complete adjusted point-in-time bundle decision grade
+ok 172 - V9.1 grades a complete adjusted point-in-time bundle decision grade
+  ---
+  duration_ms: 1.146034
+  type: 'test'
+  ...
+# Subtest: V9.1 rejects unadjusted historical bars instead of silently backtesting them
+ok 173 - V9.1 rejects unadjusted historical bars instead of silently backtesting them
+  ---
+  duration_ms: 0.265304
+  type: 'test'
+  ...
+# Subtest: V9.1 exposes survivorship limitations instead of calling current-only data decision grade
+ok 174 - V9.1 exposes survivorship limitations instead of calling current-only data decision grade
+  ---
+  duration_ms: 0.216061
+  type: 'test'
+  ...
+# Subtest: V9.1 rejects facts/events without an availability timestamp
+ok 175 - V9.1 rejects facts/events without an availability timestamp
+  ---
+  duration_ms: 0.213166
+  type: 'test'
+  ...
+# Subtest: V9.1 rejects duplicate or invalid OHLC bars
+ok 176 - V9.1 rejects duplicate or invalid OHLC bars
+  ---
+  duration_ms: 0.27583
+  type: 'test'
+  ...
+# Subtest: V9.1 implements all eight historical-only transforms deterministically
+ok 177 - V9.1 implements all eight historical-only transforms deterministically
+  ---
+  duration_ms: 1.123039
+  type: 'test'
+  ...
+# Subtest: V9.1 transforms refuse insufficient history instead of fabricating signals
+ok 178 - V9.1 transforms refuse insufficient history instead of fabricating signals
+  ---
+  duration_ms: 0.195471
+  type: 'test'
+  ...
+# Subtest: V9.1 context confirmations require same-date evidence and never silently fall back to NONE
+ok 179 - V9.1 context confirmations require same-date evidence and never silently fall back to NONE
+  ---
+  duration_ms: 0.42411
+  type: 'test'
+  ...
+# Subtest: V9.2 assembles deterministic V9.1 replay bundles without inventing survivorship claims
+ok 180 - V9.2 assembles deterministic V9.1 replay bundles without inventing survivorship claims
+  ---
+  duration_ms: 7.544872
+  type: 'test'
+  ...
+# Subtest: V9.2 only marks survivorship safety inputs true when explicit dated universe and delisting policy are supplied
+ok 181 - V9.2 only marks survivorship safety inputs true when explicit dated universe and delisting policy are supplied
+  ---
+  duration_ms: 0.210493
+  type: 'test'
+  ...
+# Subtest: V9.2 preserves corporate-action evidence and adapter coverage in the replay bundle
+ok 182 - V9.2 preserves corporate-action evidence and adapter coverage in the replay bundle
+  ---
+  duration_ms: 0.403861
+  type: 'test'
+  ...
+# Subtest: V9.2 normalizes Twelve Data split and dividend histories with explicit event dates
+ok 183 - V9.2 normalizes Twelve Data split and dividend histories with explicit event dates
+  ---
+  duration_ms: 1.414852
+  type: 'test'
+  ...
+# Subtest: V9.2 corporate-action audit catches an unadjusted split signature
+ok 184 - V9.2 corporate-action audit catches an unadjusted split signature
+  ---
+  duration_ms: 6.41237
+  type: 'test'
+  ...
+# Subtest: V9.2 rejects impossible corporate-action values instead of silently trusting them
+ok 185 - V9.2 rejects impossible corporate-action values instead of silently trusting them
+  ---
+  duration_ms: 0.553853
+  type: 'test'
+  ...
+# Subtest: V9.2 corporate-action request builders do not send contradictory provider bounds
+ok 186 - V9.2 corporate-action request builders do not send contradictory provider bounds
+  ---
+  duration_ms: 0.41045
+  type: 'test'
+  ...
+# Subtest: V9.2 canonical data gate passes only when every required family and integrity condition is present
+ok 187 - V9.2 canonical data gate passes only when every required family and integrity condition is present
+  ---
+  duration_ms: 140.136161
+  type: 'test'
+  ...
+# Subtest: V9.1 replay applies global macro rows to each stock without leaking future vintages
+ok 188 - V9.1 replay applies global macro rows to each stock without leaking future vintages
+  ---
+  duration_ms: 8.218048
+  type: 'test'
+  ...
+# Subtest: V9.2 integrity audit returns machine-readable coverage and passes valid survivorship-safe bundle
+ok 189 - V9.2 integrity audit returns machine-readable coverage and passes valid survivorship-safe bundle
+  ---
+  duration_ms: 8.114348
+  type: 'test'
+  ...
+# Subtest: V9.2 integrity audit blocks false survivorship claims and duplicate contradictory facts
+ok 190 - V9.2 integrity audit blocks false survivorship claims and duplicate contradictory facts
+  ---
+  duration_ms: 0.418221
+  type: 'test'
+  ...
+# Subtest: V9.2 integrity reports benchmark-session gaps, family coverage and zero corporate-action corruption
+ok 191 - V9.2 integrity reports benchmark-session gaps, family coverage and zero corporate-action corruption
+  ---
+  duration_ms: 0.549857
+  type: 'test'
+  ...
+# Subtest: V9.2 integrity blocks split-adjustment corruption instead of trusting adjusted=true blindly
+ok 192 - V9.2 integrity blocks split-adjustment corruption instead of trusting adjusted=true blindly
+  ---
+  duration_ms: 0.34943
+  type: 'test'
+  ...
+# Subtest: V9.2 sample replay at known historical dates exposes only evidence public by each as-of date
+ok 193 - V9.2 sample replay at known historical dates exposes only evidence public by each as-of date
+  ---
+  duration_ms: 54.003935
+  type: 'test'
+  ...
+# Subtest: V9.2 normalizer assembles corporate actions, earnings, revisions, sector and macro families into one replay bundle
+ok 194 - V9.2 normalizer assembles corporate actions, earnings, revisions, sector and macro families into one replay bundle
+  ---
+  duration_ms: 77.879326
+  type: 'test'
+  ...
+# Subtest: V9.2 turns historical earnings releases into point-in-time events only on the release date
+ok 195 - V9.2 turns historical earnings releases into point-in-time events only on the release date
+  ---
+  duration_ms: 7.412546
+  type: 'test'
+  ...
+# Subtest: V9.2 revision and sector adapters require explicit public availability and never infer it from period end
+ok 196 - V9.2 revision and sector adapters require explicit public availability and never infer it from period end
+  ---
+  duration_ms: 0.761742
+  type: 'test'
+  ...
+# Subtest: V9.2 ALFRED/FRED macro adapter uses realtime_start as availability so revised macro data cannot leak backward
+ok 197 - V9.2 ALFRED/FRED macro adapter uses realtime_start as availability so revised macro data cannot leak backward
+  ---
+  duration_ms: 0.790565
+  type: 'test'
+  ...
+# Subtest: V9.2 derives point-in-time earnings surprise streak without using future releases
+ok 198 - V9.2 derives point-in-time earnings surprise streak without using future releases
+  ---
+  duration_ms: 0.364651
+  type: 'test'
+  ...
+# Subtest: V9.2 release documents point-in-time data gate and no automatic production promotion
+ok 199 - V9.2 release documents point-in-time data gate and no automatic production promotion
+  ---
+  duration_ms: 1.506256
+  type: 'test'
+  ...
+# Subtest: V9.2 master gate reports PASS or BLOCKED and optionally audits a real replay bundle
+ok 200 - V9.2 master gate reports PASS or BLOCKED and optionally audits a real replay bundle
+  ---
+  duration_ms: 0.34322
+  type: 'test'
+  ...
+# Subtest: V9.2 master gate invokes the compiled audit:v92-data command for real datasets
+ok 201 - V9.2 master gate invokes the compiled audit:v92-data command for real datasets
+  ---
+  duration_ms: 0.1821
+  type: 'test'
+  ...
+# Subtest: V9.2 SEC adapter uses filing date for public availability, never period end
+ok 202 - V9.2 SEC adapter uses filing date for public availability, never period end
+  ---
+  duration_ms: 7.421398
+  type: 'test'
+  ...
+# Subtest: V9.2 SEC adapter maps supported units deterministically and ignores unsupported facts
+ok 203 - V9.2 SEC adapter maps supported units deterministically and ignores unsupported facts
+  ---
+  duration_ms: 0.977792
+  type: 'test'
+  ...
+# Subtest: V9.2 SEC adapter rejects rows without a filing date rather than leaking period-end knowledge
+ok 204 - V9.2 SEC adapter rejects rows without a filing date rather than leaking period-end knowledge
+  ---
+  duration_ms: 0.4244
+  type: 'test'
+  ...
+# Subtest: V9.2 derives growth and margins only from annual filing anchors, never Q3/YTD facts
+ok 205 - V9.2 derives growth and margins only from annual filing anchors, never Q3/YTD facts
+  ---
+  duration_ms: 0.724656
+  type: 'test'
+  ...
+# Subtest: V9.2 builds Twelve Data historical request with explicit bounds and adjust=all
+ok 206 - V9.2 builds Twelve Data historical request with explicit bounds and adjust=all
+  ---
+  duration_ms: 1.067585
+  type: 'test'
+  ...
+# Subtest: V9.2 normalizes reverse provider payload into ascending explicitly adjusted bars
+ok 207 - V9.2 normalizes reverse provider payload into ascending explicitly adjusted bars
+  ---
+  duration_ms: 7.336793
+  type: 'test'
+  ...
+# Subtest: V9.2 refuses provider error payloads and invalid OHLC geometry
+ok 208 - V9.2 refuses provider error payloads and invalid OHLC geometry
+  ---
+  duration_ms: 0.522315
+  type: 'test'
+  ...
+# Subtest: V9.3 creates four deterministic chronological expanding walk-forward folds
+ok 209 - V9.3 creates four deterministic chronological expanding walk-forward folds
+  ---
+  duration_ms: 10.219282
+  type: 'test'
+  ...
+# Subtest: V9.3 purges training labels far enough from the OOS boundary for the horizon
+ok 210 - V9.3 purges training labels far enough from the OOS boundary for the horizon
+  ---
+  duration_ms: 0.832456
+  type: 'test'
+  ...
+# Subtest: V9.3 metrics use purged OOS rows, bootstrap deterministically and report robustness breadth
+ok 211 - V9.3 metrics use purged OOS rows, bootstrap deterministically and report robustness breadth
+  ---
+  duration_ms: 23.827736
+  type: 'test'
+  ...
+# Subtest: V9.3 exposes when an apparent OOS edge does not survive 2x transaction-cost stress
+ok 212 - V9.3 exposes when an apparent OOS edge does not survive 2x transaction-cost stress
+  ---
+  duration_ms: 5.025281
+  type: 'test'
+  ...
+# Subtest: V9.1 materialization carries sector into V9.3 feature observations
+ok 213 - V9.1 materialization carries sector into V9.3 feature observations
+  ---
+  duration_ms: 0.757224
+  type: 'test'
+  ...
+# Subtest: V9.3 runner is deterministic and keeps partial development runs explicitly non-release
+ok 214 - V9.3 runner is deterministic and keeps partial development runs explicitly non-release
+  ---
+  duration_ms: 184.834221
+  type: 'test'
+  ...
+# Subtest: V9.3 canonical serialization ignores object key insertion order
+ok 215 - V9.3 canonical serialization ignores object key insertion order
+  ---
+  duration_ms: 0.203342
+  type: 'test'
+  ...
+# Subtest: V9.3 promotes only a feature that passes every automated gate
+ok 216 - V9.3 promotes only a feature that passes every automated gate
+  ---
+  duration_ms: 7.245897
+  type: 'test'
+  ...
+# Subtest: V9.3 applies BH across the complete submitted catalog and can reject a nominal p-value
+ok 217 - V9.3 applies BH across the complete submitted catalog and can reject a nominal p-value
+  ---
+  duration_ms: 0.270672
+  type: 'test'
+  ...
+# Subtest: V9.3 dispositions missing evidence instead of silently excluding hypotheses from FDR scope
+ok 218 - V9.3 dispositions missing evidence instead of silently excluding hypotheses from FDR scope
+  ---
+  duration_ms: 0.338262
+  type: 'test'
+  ...
+# Subtest: Astra uses Responses API structured outputs and cannot override deterministic authority
+ok 219 - Astra uses Responses API structured outputs and cannot override deterministic authority
+  ---
+  duration_ms: 1.77817
+  type: 'test'
+  ...
+# Subtest: Astra route uses official Responses endpoint and fail-closed validation
+ok 220 - Astra route uses official Responses endpoint and fail-closed validation
+  ---
+  duration_ms: 0.199846
+  type: 'test'
+  ...
+# Subtest: DecisionSnapshot fingerprint is deterministic and stable across object key ordering
+ok 221 - DecisionSnapshot fingerprint is deterministic and stable across object key ordering
+  ---
+  duration_ms: 7.195452
+  type: 'test'
+  ...
+# Subtest: setup state machine prevents threshold chatter and forbids multi-state teleporting
+ok 222 - setup state machine prevents threshold chatter and forbids multi-state teleporting
+  ---
+  duration_ms: 0.309359
+  type: 'test'
+  ...
+# Subtest: setup transition attribution records measured evidence rather than generic metric names
+ok 223 - setup transition attribution records measured evidence rather than generic metric names
+  ---
+  duration_ms: 0.327757
+  type: 'test'
+  ...
+# Subtest: decision kernel emits six meaningful pillars plus owner/new-money/long-term/execution actions
+ok 224 - decision kernel emits six meaningful pillars plus owner/new-money/long-term/execution actions
+  ---
+  duration_ms: 1.754234
+  type: 'test'
+  ...
+# Subtest: expert explanation gate rejects generic prose and unsupported numbers
+ok 225 - expert explanation gate rejects generic prose and unsupported numbers
+  ---
+  duration_ms: 0.90955
+  type: 'test'
+  ...
+# Subtest: institutional kernel carries specific pillar rationale, attribution, and never mislabels evidence coverage as predictive probability
+ok 226 - institutional kernel carries specific pillar rationale, attribution, and never mislabels evidence coverage as predictive probability
+  ---
+  duration_ms: 0.887447
+  type: 'test'
+  ...
+# Subtest: cross-surface invariant catches any canonical mismatch
+ok 227 - cross-surface invariant catches any canonical mismatch
+  ---
+  duration_ms: 0.743493
+  type: 'test'
+  ...
+# Subtest: decision transition requires a causal attribution
+ok 228 - decision transition requires a causal attribution
+  ---
+  duration_ms: 0.147799
+  type: 'test'
+  ...
+# Subtest: release scripts expose a permanent reliability lab and gate
+ok 229 - release scripts expose a permanent reliability lab and gate
+  ---
+  duration_ms: 0.355037
+  type: 'test'
+  ...
+# Subtest: market intelligence projection keeps one snapshot identity and actionable levels
+ok 230 - market intelligence projection keeps one snapshot identity and actionable levels
+  ---
+  duration_ms: 0.925294
+  type: 'test'
+  ...
+# Subtest: validation snapshot persists the V9.3.4 projection beside the canonical decision
+ok 231 - validation snapshot persists the V9.3.4 projection beside the canonical decision
+  ---
+  duration_ms: 0.643045
+  type: 'test'
+  ...
+# Subtest: decision summaries publish persisted V9.3.4 intelligence instead of inventing a second technical view
+ok 232 - decision summaries publish persisted V9.3.4 intelligence instead of inventing a second technical view
+  ---
+  duration_ms: 0.184384
+  type: 'test'
+  ...
+# Subtest: trading lab requires canonical V9.3.4 intelligence and uses its invalidation when available
+ok 233 - trading lab requires canonical V9.3.4 intelligence and uses its invalidation when available
+  ---
+  duration_ms: 0.294547
+  type: 'test'
+  ...
+# Subtest: confirmed multi-timeframe state drives decision technical inputs, not live preview
+ok 234 - confirmed multi-timeframe state drives decision technical inputs, not live preview
+  ---
+  duration_ms: 1.03742
+  type: 'test'
+  ...
+# Subtest: structural break uses completed daily price and canonical invalidation
+ok 235 - structural break uses completed daily price and canonical invalidation
+  ---
+  duration_ms: 0.162001
+  type: 'test'
+  ...
+# Subtest: identical confirmed inputs produce identical bridge even if live preview changes
+ok 236 - identical confirmed inputs produce identical bridge even if live preview changes
+  ---
+  duration_ms: 0.157254
+  type: 'test'
+  ...
+# Subtest: stock institutional decision consumes V9.3.4 bridge rather than old daily-only market structure when available
+ok 237 - stock institutional decision consumes V9.3.4 bridge rather than old daily-only market structure when available
+  ---
+  duration_ms: 0.514734
+  type: 'test'
+  ...
+# Subtest: provider adapter requests 15m extended-hours plus completed 4h and daily data with explicit timezone and market hint
+ok 238 - provider adapter requests 15m extended-hours plus completed 4h and daily data with explicit timezone and market hint
+  ---
+  duration_ms: 13.734541
+  type: 'test'
+  ...
+# Subtest: analyze route publishes one V9.3.4 marketIntelligence snapshot from the fast confirmed decision path
+ok 239 - analyze route publishes one V9.3.4 marketIntelligence snapshot from the fast confirmed decision path
+  ---
+  duration_ms: 0.386083
+  type: 'test'
+  ...
+# Subtest: 15-minute bars resample deterministically to completed hourly chunks
+ok 240 - 15-minute bars resample deterministically to completed hourly chunks
+  ---
+  duration_ms: 0.416378
+  type: 'test'
+  ...
+# Subtest: weekly aggregation excludes an unfinished current week
+ok 241 - weekly aggregation excludes an unfinished current week
+  ---
+  duration_ms: 0.934667
+  type: 'test'
+  ...
+# Subtest: session matrix distinguishes premarket regular after-hours and closed reference states
+ok 242 - session matrix distinguishes premarket regular after-hours and closed reference states
+  ---
+  duration_ms: 13.804945
+  type: 'test'
+  ...
+# Subtest: weekends and exchange holidays are closed rather than pretending to have a live equity session
+ok 243 - weekends and exchange holidays are closed rather than pretending to have a live equity session
+  ---
+  duration_ms: 0.342549
+  type: 'test'
+  ...
+# Subtest: early-close day transitions to after-hours at 1pm New York time
+ok 244 - early-close day transitions to after-hours at 1pm New York time
+  ---
+  duration_ms: 0.37719
+  type: 'test'
+  ...
+# Subtest: snapshot fingerprint is deterministic for identical market and completed bars
+ok 245 - snapshot fingerprint is deterministic for identical market and completed bars
+  ---
+  duration_ms: 19.29075
+  type: 'test'
+  ...
+# Subtest: live preview never rewrites confirmed daily state or structural levels
+ok 246 - live preview never rewrites confirmed daily state or structural levels
+  ---
+  duration_ms: 4.378161
+  type: 'test'
+  ...
+# Subtest: closed market remains research active from canonical market truth
+ok 247 - closed market remains research active from canonical market truth
+  ---
+  duration_ms: 1.250476
+  type: 'test'
+  ...
+# Subtest: indicator fixtures produce bounded deterministic values
+ok 248 - indicator fixtures produce bounded deterministic values
+  ---
+  duration_ms: 2.602674
+  type: 'test'
+  ...
+# Subtest: same bars and timeframe always produce identical technical state
+ok 249 - same bars and timeframe always produce identical technical state
+  ---
+  duration_ms: 4.993543
+  type: 'test'
+  ...
+# Subtest: insufficient history fails closed instead of fabricating a strong rating
+ok 250 - insufficient history fails closed instead of fabricating a strong rating
+  ---
+  duration_ms: 0.139547
+  type: 'test'
+  ...
+# Subtest: different timeframes can legitimately carry different confirmed states
+ok 251 - different timeframes can legitimately carry different confirmed states
+  ---
+  duration_ms: 2.602524
+  type: 'test'
+  ...
+# Subtest: structural price map is deterministic and publishes evidence for every actionable level
+ok 252 - structural price map is deterministic and publishes evidence for every actionable level
+  ---
+  duration_ms: 6.599968
+  type: 'test'
+  ...
+# Subtest: action map ordering is coherent for a normal long setup
+ok 253 - action map ordering is coherent for a normal long setup
+  ---
+  duration_ms: 1.22567
+  type: 'test'
+  ...
+# Subtest: identical completed bars keep levels stable regardless of a hypothetical live price tick
+ok 254 - identical completed bars keep levels stable regardless of a hypothetical live price tick
+  ---
+  duration_ms: 1.532015
+  type: 'test'
+  ...
+# Subtest: modern Twelve after-hours schema uses current regular close, not previous trading-day close
+ok 255 - modern Twelve after-hours schema uses current regular close, not previous trading-day close
+  ---
+  duration_ms: 17.320674
+  type: 'test'
+  ...
+# Subtest: modern Twelve premarket schema keeps prior regular close and uses extended price as live context
+ok 256 - modern Twelve premarket schema keeps prior regular close and uses extended price as live context
+  ---
+  duration_ms: 0.623115
+  type: 'test'
+  ...
+# Subtest: legacy is_extended_hours schema remains supported
+ok 257 - legacy is_extended_hours schema remains supported
+  ---
+  duration_ms: 0.455947
+  type: 'test'
+  ...
+# Subtest: after-hours non-extended quote close is today regular close instead of stale previous_close
+ok 258 - after-hours non-extended quote close is today regular close instead of stale previous_close
+  ---
+  duration_ms: 0.287106
+  type: 'test'
+  ...
+# Subtest: stock core does not wait on tactical 15M history and uses bounded first-render timeouts
+ok 259 - stock core does not wait on tactical 15M history and uses bounded first-render timeouts
+  ---
+  duration_ms: 0.332965
+  type: 'test'
+  ...
+# Subtest: decision bars return daily/weekly core without waiting for a slow 4H request
+ok 260 - decision bars return daily/weekly core without waiting for a slow 4H request
+  ---
+  duration_ms: 304.030505
+  type: 'test'
+  ...
+# Subtest: progressive market context can deliver 4H independently of tactical 15M availability
+ok 261 - progressive market context can deliver 4H independently of tactical 15M availability
+  ---
+  duration_ms: 1.081516
+  type: 'test'
+  ...
+# Subtest: new ADR and cross-listed golden symbols have explicit US venue/currency identity
+ok 262 - new ADR and cross-listed golden symbols have explicit US venue/currency identity
+  ---
+  duration_ms: 0.769802
+  type: 'test'
+  ...
+# Subtest: analyze first render bounds optional benchmark and market-truth waits
+ok 263 - analyze first render bounds optional benchmark and market-truth waits
+  ---
+  duration_ms: 0.298544
+  type: 'test'
+  ...
+# Subtest: live audit permanently includes MU NBIS and SKHY price-identity sentinels
+ok 264 - live audit permanently includes MU NBIS and SKHY price-identity sentinels
+  ---
+  duration_ms: 0.355277
+  type: 'test'
+  ...
+# Subtest: live audit detects a same-session official close that disagrees with the completed daily anchor
+ok 265 - live audit detects a same-session official close that disagrees with the completed daily anchor
+  ---
+  duration_ms: 0.235059
+  type: 'test'
+  ...
+# Subtest: V9.3.4 release gate includes the V9.3.4.2 price-truth suite
+ok 266 - V9.3.4 release gate includes the V9.3.4.2 price-truth suite
+  ---
+  duration_ms: 0.151024
+  type: 'test'
+  ...
+# Subtest: live quote provider deadline is bounded for a fast first price render
+ok 267 - live quote provider deadline is bounded for a fast first price render
+  ---
+  duration_ms: 0.156943
+  type: 'test'
+  ...
+# Subtest: progressive market-intelligence endpoint publishes the V9.3.4.2 contract version
+ok 268 - progressive market-intelligence endpoint publishes the V9.3.4.2 contract version
+  ---
+  duration_ms: 0.103033
+  type: 'test'
+  ...
+# Subtest: progressive live route never optional-chains through an impossible null benchmark object
+ok 269 - progressive live route never optional-chains through an impossible null benchmark object
+  ---
+  duration_ms: 0.183522
+  type: 'test'
+  ...
+# Subtest: legacy HOLD cannot force an otherwise qualified V9.3.4 decision back to WAIT
+ok 270 - legacy HOLD cannot force an otherwise qualified V9.3.4 decision back to WAIT
+  ---
+  duration_ms: 1.795175
+  type: 'test'
+  ...
+# Subtest: missing valuation lowers completeness but does not act like a bearish zero
+ok 271 - missing valuation lowers completeness but does not act like a bearish zero
+  ---
+  duration_ms: 0.295589
+  type: 'test'
+  ...
+# Subtest: confirmed structural invalidation is a hard veto even when other pillars are strong
+ok 272 - confirmed structural invalidation is a hard veto even when other pillars are strong
+  ---
+  duration_ms: 0.294657
+  type: 'test'
+  ...
+# Subtest: owner policy can express WATCH rather than compressing everything into HOLD
+ok 273 - owner policy can express WATCH rather than compressing everything into HOLD
+  ---
+  duration_ms: 0.224253
+  type: 'test'
+  ...
+# Subtest: all new-money actions are reachable without quotas
+ok 274 - all new-money actions are reachable without quotas
+  ---
+  duration_ms: 1.24639
+  type: 'test'
+  ...
+# Subtest: Trading Lab treats legacy V5 as challenger, not an automatic divergence veto
+ok 275 - Trading Lab treats legacy V5 as challenger, not an automatic divergence veto
+  ---
+  duration_ms: 0.260437
+  type: 'test'
+  ...
+# Subtest: decision distribution audit proves every action is reachable and is deterministic
+ok 276 - decision distribution audit proves every action is reachable and is deterministic
+  ---
+  duration_ms: 126.991121
+  type: 'test'
+  ...
+# Subtest: distribution audit has no legacy HOLD wait-veto reason
+ok 277 - distribution audit has no legacy HOLD wait-veto reason
+  ---
+  duration_ms: 62.750016
+  type: 'test'
+  ...
+# Subtest: BREAKOUT_READY explains confirmation and is not an automatic BUY
+ok 278 - BREAKOUT_READY explains confirmation and is not an automatic BUY
+  ---
+  duration_ms: 1.304158
+  type: 'test'
+  ...
+# Subtest: DOUBLE_BOTTOM explains seller exhaustion and neckline confirmation
+ok 279 - DOUBLE_BOTTOM explains seller exhaustion and neckline confirmation
+  ---
+  duration_ms: 0.343671
+  type: 'test'
+  ...
+# Subtest: TREND_BREAKDOWN explains damaged structure without equating it to SELL
+ok 280 - TREND_BREAKDOWN explains damaged structure without equating it to SELL
+  ---
+  duration_ms: 0.182891
+  type: 'test'
+  ...
+# Subtest: unknown setup stays factual and does not invent pattern meaning
+ok 281 - unknown setup stays factual and does not invent pattern meaning
+  ---
+  duration_ms: 0.163303
+  type: 'test'
+  ...
+# Subtest: opportunity lens is deterministic
+ok 282 - opportunity lens is deterministic
+  ---
+  duration_ms: 1.575181
+  type: 'test'
+  ...
+# Subtest: missing valuation lowers coverage without becoming a bearish zero
+ok 283 - missing valuation lowers coverage without becoming a bearish zero
+  ---
+  duration_ms: 0.265765
+  type: 'test'
+  ...
+# Subtest: scenario balance sums to 100 and is explicitly uncalibrated
+ok 284 - scenario balance sums to 100 and is explicitly uncalibrated
+  ---
+  duration_ms: 0.243151
+  type: 'test'
+  ...
+# Subtest: hard veto prevents opportunity from being presented as high conviction
+ok 285 - hard veto prevents opportunity from being presented as high conviction
+  ---
+  duration_ms: 0.21539
+  type: 'test'
+  ...
+# Subtest: reward risk improves opportunity only when it is finite and plausible
+ok 286 - reward risk improves opportunity only when it is finite and plausible
+  ---
+  duration_ms: 0.221019
+  type: 'test'
+  ...
+# Subtest: audit reports decision distributions and dominant blockers
+ok 287 - audit reports decision distributions and dominant blockers
+  ---
+  duration_ms: 8.989118
+  type: 'test'
+  ...
+# Subtest: audit detects contradictions without changing decisions
+ok 288 - audit detects contradictions without changing decisions
+  ---
+  duration_ms: 0.47814
+  type: 'test'
+  ...
+# Subtest: scenario audit measures anchoring and invalid geometry
+ok 289 - scenario audit measures anchoring and invalid geometry
+  ---
+  duration_ms: 0.32964
+  type: 'test'
+  ...
+# Subtest: audit fingerprint is deterministic for canonical metrics
+ok 290 - audit fingerprint is deterministic for canonical metrics
+  ---
+  duration_ms: 0.76736
+  type: 'test'
+  ...
+# Subtest: score histograms and closest upgrades are present
+ok 291 - score histograms and closest upgrades are present
+  ---
+  duration_ms: 0.252836
+  type: 'test'
+  ...
+# Subtest: package exposes V9.6.3 audit command
+ok 292 - package exposes V9.6.3 audit command
+  ---
+  duration_ms: 0.366855
+  type: 'test'
+  ...
+# Subtest: V9.6.3 release gate verifies deterministic audit fixture
+ok 293 - V9.6.3 release gate verifies deterministic audit fixture
+  ---
+  duration_ms: 2573.000035
+  type: 'test'
+  ...
+# Subtest: audit CLI writes machine-readable non-mutating report
+ok 294 - audit CLI writes machine-readable non-mutating report
+  ---
+  duration_ms: 2421.87219
+  type: 'test'
+  ...
+# Subtest: opportunity lens rewards quality without letting timing fully erase it
+ok 295 - opportunity lens rewards quality without letting timing fully erase it
+  ---
+  duration_ms: 1.647047
+  type: 'test'
+  ...
+# Subtest: audit reports high-quality WAIT concentration separately
+ok 296 - audit reports high-quality WAIT concentration separately
+  ---
+  duration_ms: 7.419833
+  type: 'test'
+  ...
+# Subtest: high quality business can remain attractive while new money waits
+ok 297 - high quality business can remain attractive while new money waits
+  ---
+  duration_ms: 1.334402
+  type: 'test'
+  ...
+# Subtest: one weak fundamental family does not break a durable thesis
+ok 298 - one weak fundamental family does not break a durable thesis
+  ---
+  duration_ms: 0.422278
+  type: 'test'
+  ...
+# Subtest: corroborated business and earnings deterioration breaks the thesis
+ok 299 - corroborated business and earnings deterioration breaks the thesis
+  ---
+  duration_ms: 0.258855
+  type: 'test'
+  ...
+# Subtest: technical weakness affects deployment more than compounder quality
+ok 300 - technical weakness affects deployment more than compounder quality
+  ---
+  duration_ms: 0.219206
+  type: 'test'
+  ...
+# Subtest: identical evidence is deterministic
+ok 301 - identical evidence is deterministic
+  ---
+  duration_ms: 0.809773
+  type: 'test'
+  ...
+# Subtest: diverse evidence produces differentiated capital actions
+ok 302 - diverse evidence produces differentiated capital actions
+  ---
+  duration_ms: 0.327726
+  type: 'test'
+  ...
+# Subtest: high-quality company is not made long-term unattractive by mixed technicals
+ok 303 - high-quality company is not made long-term unattractive by mixed technicals
+  ---
+  duration_ms: 1.961965
+  type: 'test'
+  ...
+# Subtest: strong quality with acceptable deployment can start small before perfect breakout
+ok 304 - strong quality with acceptable deployment can start small before perfect breakout
+  ---
+  duration_ms: 0.340776
+  type: 'test'
+  ...
+# Subtest: corroborated deterioration drives defensive owner action
+ok 305 - corroborated deterioration drives defensive owner action
+  ---
+  duration_ms: 0.243061
+  type: 'test'
+  ...
+# Subtest: independent expected return can strengthen deployment without changing compounder quality
+ok 306 - independent expected return can strengthen deployment without changing compounder quality
+  ---
+  duration_ms: 1.082018
+  type: 'test'
+  ...
+# Subtest: technical shock changes deployment but not independent valuation contribution or thesis quality
+ok 307 - technical shock changes deployment but not independent valuation contribution or thesis quality
+  ---
+  duration_ms: 0.232796
+  type: 'test'
+  ...
+# Subtest: intrinsic scenarios are invariant to current market price
+ok 308 - intrinsic scenarios are invariant to current market price
+  ---
+  duration_ms: 0.871955
+  type: 'test'
+  ...
+# Subtest: missing independent base value does not fabricate a scenario from market price
+ok 309 - missing independent base value does not fabricate a scenario from market price
+  ---
+  duration_ms: 0.140579
+  type: 'test'
+  ...
+# Subtest: technical shocks do not rewrite thesis clock
+ok 310 - technical shocks do not rewrite thesis clock
+  ---
+  duration_ms: 1.465307
+  type: 'test'
+  ...
+# Subtest: corroborated fundamental deterioration reduces thesis persistence
+ok 311 - corroborated fundamental deterioration reduces thesis persistence
+  ---
+  duration_ms: 0.177073
+  type: 'test'
+  ...
+# Subtest: anti anchoring audit measures base proximity bands
+ok 312 - anti anchoring audit measures base proximity bands
+  ---
+  duration_ms: 0.761621
+  type: 'test'
+  ...
+# Subtest: suspicious clustering is flagged instead of silently moved
+ok 313 - suspicious clustering is flagged instead of silently moved
+  ---
+  duration_ms: 0.206467
+  type: 'test'
+  ...
+# Subtest: background budget preserves interactive headroom
+ok 314 - background budget preserves interactive headroom
+  ---
+  duration_ms: 0.705959
+  type: 'test'
+  ...
+# Subtest: job identities are deterministic and retry delays back off
+ok 315 - job identities are deterministic and retry delays back off
+  ---
+  duration_ms: 0.948369
+  type: 'test'
+  ...
+# Subtest: shadow snapshot fingerprint is deterministic
+ok 316 - shadow snapshot fingerprint is deterministic
+  ---
+  duration_ms: 1.118211
+  type: 'test'
+  ...
+# Subtest: outcome horizons are deterministic
+ok 317 - outcome horizons are deterministic
+  ---
+  duration_ms: 0.644377
+  type: 'test'
+  ...
+# Subtest: validation lab is deterministic and checks core invariants
+ok 318 - validation lab is deterministic and checks core invariants
+  ---
+  duration_ms: 2.063987
+  type: 'test'
+  ...
+# Subtest: maps the actual canonical research projection
+ok 319 - maps the actual canonical research projection
+  ---
+  duration_ms: 1.308083
+  type: 'test'
+  ...
+# Subtest: fails closed when canonical CIO decision is absent
+ok 320 - fails closed when canonical CIO decision is absent
+  ---
+  duration_ms: 0.400645
+  type: 'test'
+  ...
+# Subtest: validation universe excludes derivative-like symbols
+ok 321 - validation universe excludes derivative-like symbols
+  ---
+  duration_ms: 0.529627
+  type: 'test'
+  ...
+# Subtest: stratified universe is not alphabetical and preserves category breadth
+ok 322 - stratified universe is not alphabetical and preserves category breadth
+  ---
+  duration_ms: 0.393485
+  type: 'test'
+  ...
+# Subtest: terminal validation runs are immutable and cannot resume
+ok 323 - terminal validation runs are immutable and cannot resume
+  ---
+  duration_ms: 0.683506
+  type: 'test'
+  ...
+# Subtest: same-day retry advances attempt and changes run identity
+ok 324 - same-day retry advances attempt and changes run identity
+  ---
+  duration_ms: 0.200387
+  type: 'test'
+  ...
+# Subtest: job idempotency includes immutable run attempt
+ok 325 - job idempotency includes immutable run attempt
+  ---
+  duration_ms: 0.199927
+  type: 'test'
+  ...
+# Subtest: universe loader never selects star
+ok 326 - universe loader never selects star
+  ---
+  duration_ms: 0.657356
+  type: 'test'
+  ...
+# Subtest: universe loader pages deterministically
+ok 327 - universe loader pages deterministically
+  ---
+  duration_ms: 0.797344
+  type: 'test'
+  ...
+# Subtest: loader uses only actual nivora_market_universe columns
+ok 328 - loader uses only actual nivora_market_universe columns
+  ---
+  duration_ms: 0.677407
+  type: 'test'
+  ...
+# Subtest: eligibility keeps US common stocks and rejects derivative-like instruments
+ok 329 - eligibility keeps US common stocks and rejects derivative-like instruments
+  ---
+  duration_ms: 0.4509
+  type: 'test'
+  ...
+# Subtest: exchange-stratified selection is deterministic and not alphabetic
+ok 330 - exchange-stratified selection is deterministic and not alphabetic
+  ---
+  duration_ms: 0.961899
+  type: 'test'
+  ...
+# Subtest: vercel.json stays cron-free for Hobby
+ok 331 - vercel.json stays cron-free for Hobby
+  ---
+  duration_ms: 0.176903
+  type: 'test'
+  ...
+# Subtest: provider failures retry and incomplete decisions fail closed
+ok 332 - provider failures retry and incomplete decisions fail closed
+  ---
+  duration_ms: 0.8081
+  type: 'test'
+  ...
+# Subtest: autonomous research uses one symbol per durable job
+ok 333 - autonomous research uses one symbol per durable job
+  ---
+  duration_ms: 1.075378
+  type: 'test'
+  ...
+# Subtest: PASS requires all expected jobs and complete distinct shadow evidence
+ok 334 - PASS requires all expected jobs and complete distinct shadow evidence
+  ---
+  duration_ms: 0.77455
+  type: 'test'
+  ...
+# Subtest: open jobs remain RUNNING
+ok 335 - open jobs remain RUNNING
+  ---
+  duration_ms: 0.155261
+  type: 'test'
+  ...
+# Subtest: terminal missing or incomplete evidence cannot PASS
+ok 336 - terminal missing or incomplete evidence cannot PASS
+  ---
+  duration_ms: 0.127099
+  type: 'test'
+  ...
+# Subtest: seeded cohort is deterministic and rotates by session/date
+ok 337 - seeded cohort is deterministic and rotates by session/date
+  ---
+  duration_ms: 10.791472
+  type: 'test'
+  ...
+# Subtest: regular market selects newest agreeing live trade candidate
+ok 338 - regular market selects newest agreeing live trade candidate
+  ---
+  duration_ms: 1.012053
+  type: 'test'
+  ...
+# Subtest: material disagreement refuses a display price
+ok 339 - material disagreement refuses a display price
+  ---
+  duration_ms: 0.17481
+  type: 'test'
+  ...
+# Subtest: regular market rejects stale candidates
+ok 340 - regular market rejects stale candidates
+  ---
+  duration_ms: 0.175701
+  type: 'test'
+  ...
+# Subtest: after hours uses after-hours label
+ok 341 - after hours uses after-hours label
+  ---
+  duration_ms: 0.15461
+  type: 'test'
+  ...
+# Subtest: overnight official close is explicit, never called live
+ok 342 - overnight official close is explicit, never called live
+  ---
+  duration_ms: 0.119768
+  type: 'test'
+  ...
+# Subtest: adding shares recalculates weighted average
+ok 343 - adding shares recalculates weighted average
+  ---
+  duration_ms: 1.200704
+  type: 'test'
+  ...
+# Subtest: first position remains itself
+ok 344 - first position remains itself
+  ---
+  duration_ms: 0.78756
+  type: 'test'
+  ...
+# Subtest: selected 5Y chart and roadmap share one in-flight request
+ok 345 - selected 5Y chart and roadmap share one in-flight request
+  ---
+  duration_ms: 1.624133
+  type: 'test'
+  ...
+# Subtest: Overview reentry and back navigation reuse a completed response without extending its TTL
+ok 346 - Overview reentry and back navigation reuse a completed response without extending its TTL
+  ---
+  duration_ms: 0.317692
+  type: 'test'
+  ...
+# Subtest: ranges and distinct securities, including exchange-qualified symbols, never share responses
+ok 347 - ranges and distinct securities, including exchange-qualified symbols, never share responses
+  ---
+  duration_ms: 0.548225
+  type: 'test'
+  ...
+# Subtest: one unmount cannot cancel another subscriber to the same response
+ok 348 - one unmount cannot cancel another subscriber to the same response
+  ---
+  duration_ms: 1.425037
+  type: 'test'
+  ...
+# Subtest: Strict Mode cleanup followed by synchronous resubscription keeps one network request
+ok 349 - Strict Mode cleanup followed by synchronous resubscription keeps one network request
+  ---
+  duration_ms: 0.305675
+  type: 'test'
+  ...
+# Subtest: last unmount aborts the underlying request and never caches a late response
+ok 350 - last unmount aborts the underlying request and never caches a late response
+  ---
+  duration_ms: 0.591359
+  type: 'test'
+  ...
+# Subtest: already-aborted callers receive no cached data and start no request
+ok 351 - already-aborted callers receive no cached data and start no request
+  ---
+  duration_ms: 0.297482
+  type: 'test'
+  ...
+# Subtest: failed HTTP and provider responses are retryable and are not cached
+ok 352 - failed HTTP and provider responses are retryable and are not cached
+  ---
+  duration_ms: 0.582696
+  type: 'test'
+  ...
+# Subtest: bounded completed-response cache evicts the least recently used security
+ok 353 - bounded completed-response cache evicts the least recently used security
+  ---
+  duration_ms: 0.39715
+  type: 'test'
+  ...
+# Subtest: cache reads preserve source freshness and timestamps verbatim
+ok 354 - cache reads preserve source freshness and timestamps verbatim
+  ---
+  duration_ms: 0.248729
+  type: 'test'
+  ...
+# Subtest: context and ownership refreshes do not renew core or company evidence clocks
+ok 355 - context and ownership refreshes do not renew core or company evidence clocks
+  ---
+  duration_ms: 0.670576
+  type: 'test'
+  ...
+# Subtest: warm research memory is bounded and expires without retimestamping persisted evidence
+ok 356 - warm research memory is bounded and expires without retimestamping persisted evidence
+  ---
+  duration_ms: 0.310962
+  type: 'test'
+  ...
+# Subtest: unversioned or older company evidence is rejected even if its cache timestamp is recent
+ok 357 - unversioned or older company evidence is rejected even if its cache timestamp is recent
+  ---
+  duration_ms: 0.15527
+  type: 'test'
+  ...
+# Subtest: client ID recovery uses encoded read-only paper endpoint and normalizes fills
+ok 358 - client ID recovery uses encoded read-only paper endpoint and normalizes fills
+  ---
+  duration_ms: 81.315562
+  type: 'test'
+  ...
+# Subtest: only a definitive broker 404 is not found; transport and auth failures stay errors
+ok 359 - only a definitive broker 404 is not found; transport and auth failures stay errors
+  ---
+  duration_ms: 74.028506
+  type: 'test'
+  ...
+# Subtest: cancel sends one encoded DELETE and accepts an empty 204 without claiming a fill
+ok 360 - cancel sends one encoded DELETE and accepts an empty 204 without claiming a fill
+  ---
+  duration_ms: 16.558344
+  type: 'test'
+  ...
+# Subtest: an ambiguous cancel transport error never retries the mutation
+ok 361 - an ambiguous cancel transport error never retries the mutation
+  ---
+  duration_ms: 18.126874
+  type: 'test'
+  ...
+# Subtest: order reads share the caller deadline instead of renewing an eight-second timeout per batch
+ok 362 - order reads share the caller deadline instead of renewing an eight-second timeout per batch
+  ---
+  duration_ms: 15.12521
+  type: 'test'
+  ...
+# Subtest: manual history exposes verified fills and requires a separate cancellation review before DELETE
+ok 363 - manual history exposes verified fills and requires a separate cancellation review before DELETE
+  ---
+  duration_ms: 106.070688
+  type: 'test'
+  ...
+# Subtest: an unknown submission reconciles only its original request and clears the lock after broker verification
+ok 364 - an unknown submission reconciles only its original request and clears the lock after broker verification
+  ---
+  duration_ms: 33.668838
+  type: 'test'
+  ...
+# Subtest: missing reconciliation retains the pending request instead of enabling a replacement
+ok 365 - missing reconciliation retains the pending request instead of enabling a replacement
+  ---
+  duration_ms: 25.185676
+  type: 'test'
+  ...
+# Subtest: GET reconciles an unknown owned submission by client ID and records partial fills without submitting
+ok 366 - GET reconciles an unknown owned submission by client ID and records partial fills without submitting
+  ---
+  duration_ms: 85.472177
+  type: 'test'
+  ...
+# Subtest: filled status and fill price are reconciled without offering cancellation
+ok 367 - filled status and fill price are reconciled without offering cancellation
+  ---
+  duration_ms: 26.966371
+  type: 'test'
+  ...
+# Subtest: unknown not found, unavailable broker and mismatched identity stay unresolved and never retry
+ok 368 - unknown not found, unavailable broker and mismatched identity stay unresolved and never retry
+  ---
+  duration_ms: 124.822215
+  type: 'test'
+  ...
+# Subtest: GET and cancellation reject non-admin before storage or broker access
+ok 369 - GET and cancellation reject non-admin before storage or broker access
+  ---
+  duration_ms: 26.354382
+  type: 'test'
+  ...
+# Subtest: history and targeted reconciliation never access another user order
+ok 370 - history and targeted reconciliation never access another user order
+  ---
+  duration_ms: 11.579112
+  type: 'test'
+  ...
+# Subtest: targeted reconciliation finds an owned request outside recent history
+ok 371 - targeted reconciliation finds an owned request outside recent history
+  ---
+  duration_ms: 13.175033
+  type: 'test'
+  ...
+# Subtest: read failure, missing broker credentials and rate limits do not reach broker
+ok 372 - read failure, missing broker credentials and rate limits do not reach broker
+  ---
+  duration_ms: 33.846602
+  type: 'test'
+  ...
+# Subtest: unrecordable broker result cannot enable cancellation
+ok 373 - unrecordable broker result cannot enable cancellation
+  ---
+  duration_ms: 11.343812
+  type: 'test'
+  ...
+# Subtest: cancellation requires explicit confirmation and owned audited request before broker access
+ok 374 - cancellation requires explicit confirmation and owned audited request before broker access
+  ---
+  duration_ms: 45.14057
+  type: 'test'
+  ...
+# Subtest: cancellation verifies broker identity and persists a claim before exactly one cancellation
+ok 375 - cancellation verifies broker identity and persists a claim before exactly one cancellation
+  ---
+  duration_ms: 9.187339
+  type: 'test'
+  ...
+# Subtest: audit failure, concurrent cancellation claim and terminal broker order prevent cancellation
+ok 376 - audit failure, concurrent cancellation claim and terminal broker order prevent cancellation
+  ---
+  duration_ms: 73.958463
+  type: 'test'
+  ...
+# Subtest: ambiguous cancellation is persisted and refresh never cancels again
+ok 377 - ambiguous cancellation is persisted and refresh never cancels again
+  ---
+  duration_ms: 9.036474
+  type: 'test'
+  ...
+# Subtest: cancellation can reduce exposure when new paper submissions are disabled
+ok 378 - cancellation can reduce exposure when new paper submissions are disabled
+  ---
+  duration_ms: 9.036575
+  type: 'test'
+  ...
+# Subtest: a canceled order preserves any partial fill and makes no further cancellation request
+ok 379 - a canceled order preserves any partial fill and makes no further cancellation request
+  ---
+  duration_ms: 9.657047
+  type: 'test'
+  ...
+# Subtest: done_for_day remains reconcilable and can advance to a final expired order
+ok 380 - done_for_day remains reconcilable and can advance to a final expired order
+  ---
+  duration_ms: 13.767452
+  type: 'test'
+  ...
+# Subtest: manual route rejects unauthorized users and disabled execution
+ok 381 - manual route rejects unauthorized users and disabled execution
+  ---
+  duration_ms: 123.79551
+  type: 'test'
+  ...
+# Subtest: preview never claims or submits an order
+ok 382 - preview never claims or submits an order
+  ---
+  duration_ms: 17.557604
+  type: 'test'
+  ...
+# Subtest: claim precedes submission and repeated request is idempotent
+ok 383 - claim precedes submission and repeated request is idempotent
+  ---
+  duration_ms: 15.878509
+  type: 'test'
+  ...
+# Subtest: audit storage failure prevents transmission
+ok 384 - audit storage failure prevents transmission
+  ---
+  duration_ms: 29.554536
+  type: 'test'
+  ...
+# Subtest: uncertain broker transport is persisted and never retransmitted with same id
+ok 385 - uncertain broker transport is persisted and never retransmitted with same id
+  ---
+  duration_ms: 14.008932
+  type: 'test'
+  ...
+# Subtest: claim collision explicitly requires reconciliation
+ok 386 - claim collision explicitly requires reconciliation
+  ---
+  duration_ms: 18.045078
+  type: 'test'
+  ...
+# Subtest: valid paper limit ticket preserves exact user quantity
+ok 387 - valid paper limit ticket preserves exact user quantity
+  ---
+  duration_ms: 1.068107
+  type: 'test'
+  ...
+# Subtest: rejects missing, negative and fractional quantities
+ok 388 - rejects missing, negative and fractional quantities
+  ---
+  duration_ms: 0.298563
+  type: 'test'
+  ...
+# Subtest: rejects arbitrary sides and invalid symbols
+ok 389 - rejects arbitrary sides and invalid symbols
+  ---
+  duration_ms: 0.146948
+  type: 'test'
+  ...
+# Subtest: requires fresh regular-session execution quote
+ok 390 - requires fresh regular-session execution quote
+  ---
+  duration_ms: 0.273887
+  type: 'test'
+  ...
+# Subtest: prevents cash overspend and oversized buys
+ok 391 - prevents cash overspend and oversized buys
+  ---
+  duration_ms: 0.163613
+  type: 'test'
+  ...
+# Subtest: prevents short sales
+ok 392 - prevents short sales
+  ---
+  duration_ms: 0.125376
+  type: 'test'
+  ...
+# Subtest: rejects a limit price far from verified quote
+ok 393 - rejects a limit price far from verified quote
+  ---
+  duration_ms: 0.15441
+  type: 'test'
+  ...
+# Subtest: allows a verified cash-funded buy and owned sell
+ok 394 - allows a verified cash-funded buy and owned sell
+  ---
+  duration_ms: 0.111796
+  type: 'test'
+  ...
+# Subtest: requires broker-enforced no leverage and no shorting protections
+ok 395 - requires broker-enforced no leverage and no shorting protections
+  ---
+  duration_ms: 0.221869
+  type: 'test'
+  ...
+# Subtest: accounts for broker reserved buying power and available shares
+ok 396 - accounts for broker reserved buying power and available shares
+  ---
+  duration_ms: 0.374146
+  type: 'test'
+  ...
+# Subtest: holding identity links to its encoded research route without wrapping edit or remove actions
+ok 397 - holding identity links to its encoded research route without wrapping edit or remove actions
+  ---
+  duration_ms: 252.577608
+  type: 'test'
+  ...
+# Subtest: priced holding shows the share price, value and absolute plus percentage gain
+ok 398 - priced holding shows the share price, value and absolute plus percentage gain
+  ---
+  duration_ms: 96.497266
+  type: 'test'
+  ...
+# Subtest: missing quote never invents value or gains from average cost
+ok 399 - missing quote never invents value or gains from average cost
+  ---
+  duration_ms: 229.799209
+  type: 'test'
+  ...
+# Subtest: missing cost and zero cost have distinct honest P/L states
+ok 400 - missing cost and zero cost have distinct honest P/L states
+  ---
+  duration_ms: 171.815199
+  type: 'test'
+  ...
+# Subtest: USD cash remains recorded cash with no research link or investment gain
+ok 401 - USD cash remains recorded cash with no research link or investment gain
+  ---
+  duration_ms: 45.66487
+  type: 'test'
+  ...
+# Subtest: a foreign-currency quote is not mislabeled as a USD share price
+ok 402 - a foreign-currency quote is not mislabeled as a USD share price
+  ---
+  duration_ms: 43.96938
+  type: 'test'
+  ...
+# Subtest: expanding details reveals canonical research and preserves stale warnings
+ok 403 - expanding details reveals canonical research and preserves stale warnings
+  ---
+  duration_ms: 75.102663
+  type: 'test'
+  ...
+# Subtest: holdings filtering and value sorting keep unpriced positions last without changing the source order
+ok 404 - holdings filtering and value sorting keep unpriced positions last without changing the source order
+  ---
+  duration_ms: 36.22736
+  type: 'test'
+  ...
+# Subtest: all thirty holdings are requested and kept, with no batch truncation
+ok 405 - all thirty holdings are requested and kept, with no batch truncation
+  ---
+  duration_ms: 5.518624
+  type: 'test'
+  ...
+# Subtest: canonical aliases map quotes back to original holdings without losing BTC/USD
+ok 406 - canonical aliases map quotes back to original holdings without losing BTC/USD
+  ---
+  duration_ms: 0.37023
+  type: 'test'
+  ...
+# Subtest: a missing returned symbol is explicitly unavailable instead of disappearing
+ok 407 - a missing returned symbol is explicitly unavailable instead of disappearing
+  ---
+  duration_ms: 0.328038
+  type: 'test'
+  ...
+# Subtest: LIVE labels expire and invalid or future provider timestamps are never live
+ok 408 - LIVE labels expire and invalid or future provider timestamps are never live
+  ---
+  duration_ms: 30.504587
+  type: 'test'
+  ...
+# Subtest: explicit crypto asset types normalize bare symbols without changing equity identity
+ok 409 - explicit crypto asset types normalize bare symbols without changing equity identity
+  ---
+  duration_ms: 0.557508
+  type: 'test'
+  ...
+# Subtest: batch errors retain successful prices and explicitly identify the remaining holdings
+ok 410 - batch errors retain successful prices and explicitly identify the remaining holdings
+  ---
+  duration_ms: 0.624117
+  type: 'test'
+  ...
+# Subtest: large portfolios receive completed batches before every holding finishes
+ok 411 - large portfolios receive completed batches before every holding finishes
+  ---
+  duration_ms: 0.543507
+  type: 'test'
+  ...
+# Subtest: closed equities keep the latest official close while weekend crypto stays live
+ok 412 - closed equities keep the latest official close while weekend crypto stays live
+  ---
+  duration_ms: 1.609901
+  type: 'test'
+  ...
+# Subtest: non-USD quotes are unavailable for portfolio USD price coverage
+ok 413 - non-USD quotes are unavailable for portfolio USD price coverage
+  ---
+  duration_ms: 0.223071
+  type: 'test'
+  ...
+# Subtest: bounded rotation eventually visits all thirty holdings and skips current closed equities
+ok 414 - bounded rotation eventually visits all thirty holdings and skips current closed equities
+  ---
+  duration_ms: 0.899456
+  type: 'test'
+  ...
+# Subtest: canonical crypto uses real trade time on weekends and never enables execution
+ok 415 - canonical crypto uses real trade time on weekends and never enables execution
+  ---
+  duration_ms: 0.382558
+  type: 'test'
+  ...
+# Subtest: canonical crypto rejects missing, invalid, stale and future timestamps
+ok 416 - canonical crypto rejects missing, invalid, stale and future timestamps
+  ---
+  duration_ms: 0.292805
+  type: 'test'
+  ...
+# Subtest: crypto requests preserve the quoted currency and use no paid fallback calls
+ok 417 - crypto requests preserve the quoted currency and use no paid fallback calls
+  ---
+  duration_ms: 0.715513
+  type: 'test'
+  ...
+# Subtest: a current crypto trade received during a request is evaluated at response time
+ok 418 - a current crypto trade received during a request is evaluated at response time
+  ---
+  duration_ms: 0.319224
+  type: 'test'
+  ...
+# Subtest: refresh controller pauses hidden pages, throttles focus retries and disposes its timer
+ok 419 - refresh controller pauses hidden pages, throttles focus retries and disposes its timer
+  ---
+  duration_ms: 0.648814
+  type: 'test'
+  ...
+# Subtest: refresh controller prevents overlap and rotates a bounded batch after initial load
+ok 420 - refresh controller prevents overlap and rotates a bounded batch after initial load
+  ---
+  duration_ms: 0.371692
+  type: 'test'
+  ...
+# Subtest: refresh errors back off for a minute and retain prior timestamped prices
+ok 421 - refresh errors back off for a minute and retain prior timestamped prices
+  ---
+  duration_ms: 0.384771
+  type: 'test'
+  ...
+# Subtest: retaining a last price does not retain superseded research decisions
+ok 422 - retaining a last price does not retain superseded research decisions
+  ---
+  duration_ms: 0.135151
+  type: 'test'
+  ...
+# Subtest: missing, zero, negative and malformed quotes remain unavailable
+ok 423 - missing, zero, negative and malformed quotes remain unavailable
+  ---
+  duration_ms: 0.809142
+  type: 'test'
+  ...
+# Subtest: cost basis is never substituted for market price
+ok 424 - cost basis is never substituted for market price
+  ---
+  duration_ms: 0.1752
+  type: 'test'
+  ...
+# Subtest: cash is shares and unsupported currencies are not silently valued as USD
+ok 425 - cash is shares and unsupported currencies are not silently valued as USD
+  ---
+  duration_ms: 0.102482
+  type: 'test'
+  ...
+# Subtest: partial valuation labels total unavailable and P/L covers priced assets only
+ok 426 - partial valuation labels total unavailable and P/L covers priced assets only
+  ---
+  duration_ms: 0.698898
+  type: 'test'
+  ...
+# Subtest: edit and add share validation rejects negative or absent quantities and costs
+ok 427 - edit and add share validation rejects negative or absent quantities and costs
+  ---
+  duration_ms: 0.16189
+  type: 'test'
+  ...
+# Subtest: stale or unverified research cannot contribute current calls or thesis scores
+ok 428 - stale or unverified research cannot contribute current calls or thesis scores
+  ---
+  duration_ms: 0.210823
+  type: 'test'
+  ...
+# Subtest: missing cost basis and entirely unpriced holdings do not invent unrealized profit
+ok 429 - missing cost basis and entirely unpriced holdings do not invent unrealized profit
+  ---
+  duration_ms: 0.156833
+  type: 'test'
+  ...
+# Subtest: invalid quantities and non-USD quotes cannot enter USD totals
+ok 430 - invalid quantities and non-USD quotes cannot enter USD totals
+  ---
+  duration_ms: 0.131505
+  type: 'test'
+  ...
+# Subtest: complete financial inputs do not hide the unimplemented independent valuation cross-check
+ok 431 - complete financial inputs do not hide the unimplemented independent valuation cross-check
+  ---
+  duration_ms: 1.485477
+  type: 'test'
+  ...
+# Subtest: unimplemented sector models disclose a model gap rather than a refreshable quote failure
+ok 432 - unimplemented sector models disclose a model gap rather than a refreshable quote failure
+  ---
+  duration_ms: 0.207158
+  type: 'test'
+  ...
+# Subtest: missing business history is unknown instead of a stable trajectory
+ok 433 - missing business history is unknown instead of a stable trajectory
+  ---
+  duration_ms: 0.125867
+  type: 'test'
+  ...
+# Subtest: account action and auth listener trigger only one sign-out navigation
+ok 434 - account action and auth listener trigger only one sign-out navigation
+  ---
+  duration_ms: 41.930999
+  type: 'test'
+  ...
+# Subtest: already signed out does not reload login
+ok 435 - already signed out does not reload login
+  ---
+  duration_ms: 4.289353
+  type: 'test'
+  ...
+# Subtest: preferences normalize corrupt and legacy storage
+ok 436 - preferences normalize corrupt and legacy storage
+  ---
+  duration_ms: 0.876513
+  type: 'test'
+  ...
+# Subtest: system mode follows the operating system
+ok 437 - system mode follows the operating system
+  ---
+  duration_ms: 0.136323
+  type: 'test'
+  ...
+# Subtest: auth redirects only allow known local destinations
+ok 438 - auth redirects only allow known local destinations
+  ---
+  duration_ms: 0.133298
+  type: 'test'
+  ...
+# Subtest: initial social auth render offers email without unverified provider buttons
+ok 439 - initial social auth render offers email without unverified provider buttons
+  ---
+  duration_ms: 79.857143
+  type: 'test'
+  ...
+# Subtest: provider parsing accepts only explicit supported boolean capabilities
+ok 440 - provider parsing accepts only explicit supported boolean capabilities
+  ---
+  duration_ms: 7.428096
+  type: 'test'
+  ...
+# Subtest: settings request uses only the public API key and releases its timeout
+ok 441 - settings request uses only the public API key and releases its timeout
+  ---
+  duration_ms: 8.806295
+  type: 'test'
+  ...
+# Subtest: legacy public anon keys remain supported
+ok 442 - legacy public anon keys remain supported
+  ---
+  duration_ms: 7.615755
+  type: 'test'
+  ...
+# Subtest: missing or invalid public configuration never starts a request
+ok 443 - missing or invalid public configuration never starts a request
+  ---
+  duration_ms: 25.254381
+  type: 'test'
+  ...
+# Subtest: HTTP, network, JSON and response-shape failures never enable providers
+ok 444 - HTTP, network, JSON and response-shape failures never enable providers
+  ---
+  duration_ms: 23.9747
+  type: 'test'
+  ...
+# Subtest: timeout aborts a pending settings request and fails closed
+ok 445 - timeout aborts a pending settings request and fails closed
+  ---
+  duration_ms: 5.35713
+  type: 'test'
+  ...
+# Subtest: caller cancellation aborts the request and removes its listener
+ok 446 - caller cancellation aborts the request and removes its listener
+  ---
+  duration_ms: 13.007276
+  type: 'test'
+  ...
+# Subtest: social options render exactly the enabled providers and keep the email path
+ok 447 - social options render exactly the enabled providers and keep the email path
+  ---
+  duration_ms: 14.355638
+  type: 'test'
+  ...
+# Subtest: failed verification explains the email fallback without actionable social options
+ok 448 - failed verification explains the email fallback without actionable social options
+  ---
+  duration_ms: 12.427915
+  type: 'test'
+  ...
+# Subtest: starting OAuth disables all social choices and shows connecting status
+ok 449 - starting OAuth disables all social choices and shows connecting status
+  ---
+  duration_ms: 12.859786
+  type: 'test'
+  ...
+# Subtest: saving a symbol includes the owning watchlist and authenticated user
+ok 450 - saving a symbol includes the owning watchlist and authenticated user
+  ---
+  duration_ms: 1.502502
+  type: 'test'
+  ...
+# Subtest: missing list is created before its item
+ok 451 - missing list is created before its item
+  ---
+  duration_ms: 0.218635
+  type: 'test'
+  ...
+# Subtest: read failure prevents writes
+ok 452 - read failure prevents writes
+  ---
+  duration_ms: 0.487724
+  type: 'test'
+  ...
+# Subtest: write failure is propagated to UI
+ok 453 - write failure is propagated to UI
+  ---
+  duration_ms: 0.210302
+  type: 'test'
+  ...
+# Subtest: exact ticker wins over a company name prefix
+ok 454 - exact ticker wins over a company name prefix
+  ---
+  duration_ms: 56.94709
+  type: 'test'
+  ...
+# Subtest: empty search has no promoted ticker list
+ok 455 - empty search has no promoted ticker list
+  ---
+  duration_ms: 11.837207
+  type: 'test'
+  ...
+# Subtest: search discards invalid results, deduplicates and caps count
+ok 456 - search discards invalid results, deduplicates and caps count
+  ---
+  duration_ms: 14.547543
+  type: 'test'
+  ...
+# Subtest: recent research is bounded, validated and never invented
+ok 457 - recent research is bounded, validated and never invented
+  ---
+  duration_ms: 15.674859
+  type: 'test'
+  ...
+# Subtest: overview withholds execution prices when the final trust/price gate is closed
+ok 458 - overview withholds execution prices when the final trust/price gate is closed
+  ---
+  duration_ms: 13.430084
+  type: 'test'
+  ...
+# Subtest: watch plan is described as structural context rather than an active entry
+ok 459 - watch plan is described as structural context rather than an active entry
+  ---
+  duration_ms: 17.799676
+  type: 'test'
+  ...
+# Subtest: reduce and exit plans cannot render new entry instructions from retained level data
+ok 460 - reduce and exit plans cannot render new entry instructions from retained level data
+  ---
+  duration_ms: 9.729776
+  type: 'test'
+  ...
+# Subtest: missing canonical market levels remain unavailable rather than zero dollars
+ok 461 - missing canonical market levels remain unavailable rather than zero dollars
+  ---
+  duration_ms: 0.860068
+  type: 'test'
+  ...
+# Subtest: overview explains canonical setup and decision triggers without inventing another call
+ok 462 - overview explains canonical setup and decision triggers without inventing another call
+  ---
+  duration_ms: 5.030604
+  type: 'test'
+  ...
+# Subtest: pattern evidence is disclosed only when its source snapshot matches the current market snapshot
+ok 463 - pattern evidence is disclosed only when its source snapshot matches the current market snapshot
+  ---
+  duration_ms: 9.139349
+  type: 'test'
+  ...
+# Subtest: annual visualizations keep zero and losses, while excluding unbridged predecessor periods
+ok 464 - annual visualizations keep zero and losses, while excluding unbridged predecessor periods
+  ---
+  duration_ms: 25.686394
+  type: 'test'
+  ...
+# Subtest: annual charts do not infer a trend from missing sources, partial periods or mismatched facts
+ok 465 - annual charts do not infer a trend from missing sources, partial periods or mismatched facts
+  ---
+  duration_ms: 3.036912
+  type: 'test'
+  ...
+# Subtest: annual chart series never bridges currency or cash-flow accounting bases
+ok 466 - annual chart series never bridges currency or cash-flow accounting bases
+  ---
+  duration_ms: 0.230432
+  type: 'test'
+  ...
+# Subtest: overview contains one canonical summary and sends scenario work to valuation
+ok 467 - overview contains one canonical summary and sends scenario work to valuation
+  ---
+  duration_ms: 7.762072
+  type: 'test'
+  ...
+# Subtest: reported metrics carry accessible definitions and expandable original source evidence
+ok 468 - reported metrics carry accessible definitions and expandable original source evidence
+  ---
+  duration_ms: 3.274425
+  type: 'test'
+  ...
+# Subtest: durability counts exclude predecessor periods outside the comparable reporting cohort
+ok 469 - durability counts exclude predecessor periods outside the comparable reporting cohort
+  ---
+  duration_ms: 16.702897
+  type: 'test'
+  ...
+# Subtest: canonical actions explain new money, existing ownership and the multi-year horizon independently
+ok 470 - canonical actions explain new money, existing ownership and the multi-year horizon independently
+  ---
+  duration_ms: 17.275677
+  type: 'test'
+  ...
+# Subtest: model confidence is explained as evidence quality rather than a probability of success
+ok 471 - model confidence is explained as evidence quality rather than a probability of success
+  ---
+  duration_ms: 7.286746
+  type: 'test'
+  ...
+# Subtest: durability is not relabeled as moat and missing dimension values are not zero-score bars
+ok 472 - durability is not relabeled as moat and missing dimension values are not zero-score bars
+  ---
+  duration_ms: 7.687692
+  type: 'test'
+  ...
+# Subtest: decision map names price invalidation as a setup level
+ok 473 - decision map names price invalidation as a setup level
+  ---
+  duration_ms: 5.373474
+  type: 'test'
+  ...
+# Subtest: unavailable fundamental valuation explains what inputs are missing
+ok 474 - unavailable fundamental valuation explains what inputs are missing
+  ---
+  duration_ms: 6.172071
+  type: 'test'
+  ...
+# Subtest: missing company data stays unavailable without a fake score, zero or currency
+ok 475 - missing company data stays unavailable without a fake score, zero or currency
+  ---
+  duration_ms: 3.952913
+  type: 'test'
+  ...
+# Subtest: financial facts preserve reported currency, source period, losses and zero values
+ok 476 - financial facts preserve reported currency, source period, losses and zero values
+  ---
+  duration_ms: 11.606915
+  type: 'test'
+  ...
+# Subtest: unknown currency is disclosed and history never assumes dollars
+ok 477 - unknown currency is disclosed and history never assumes dollars
+  ---
+  duration_ms: 3.831152
+  type: 'test'
+  ...
+# Subtest: financial history discloses period comparability rather than turning a partial record into moat proof
+ok 478 - financial history discloses period comparability rather than turning a partial record into moat proof
+  ---
+  duration_ms: 3.286012
+  type: 'test'
+  ...
+# Subtest: heuristic moat scores and unresolved drivers are withheld
+ok 479 - heuristic moat scores and unresolved drivers are withheld
+  ---
+  duration_ms: 2.286907
+  type: 'test'
+  ...
+# Subtest: explicit moat drivers and risks render only with resolvable source evidence
+ok 480 - explicit moat drivers and risks render only with resolvable source evidence
+  ---
+  duration_ms: 2.468158
+  type: 'test'
+  ...
+# Subtest: resolved moat observations do not legitimize an aggregate score without its own source evidence
+ok 481 - resolved moat observations do not legitimize an aggregate score without its own source evidence
+  ---
+  duration_ms: 1.807425
+  type: 'test'
+  ...
+# Subtest: derived financial metrics use annual currency and provenance from matching source inputs
+ok 482 - derived financial metrics use annual currency and provenance from matching source inputs
+  ---
+  duration_ms: 3.566159
+  type: 'test'
+  ...
+# Subtest: reported totals and continuing operations retain their own amounts, source links and history labels
+ok 483 - reported totals and continuing operations retain their own amounts, source links and history labels
+  ---
+  duration_ms: 3.504076
+  type: 'test'
+  ...
+# Subtest: nearby Fibonacci and average levels form one explicit overlap, not a confidence score
+ok 484 - nearby Fibonacci and average levels form one explicit overlap, not a confidence score
+  ---
+  duration_ms: 78.446192
+  type: 'test'
+  ...
+# Subtest: a single touch cannot be presented as a two-close hold
+ok 485 - a single touch cannot be presented as a two-close hold
+  ---
+  duration_ms: 20.617543
+  type: 'test'
+  ...
+# Subtest: missing calendar weeks cannot count as a consecutive two-week hold
+ok 486 - missing calendar weeks cannot count as a consecutive two-week hold
+  ---
+  duration_ms: 14.413274
+  type: 'test'
+  ...
+# Subtest: observations cannot claim a hold before automatic anchors were confirmed
+ok 487 - observations cannot claim a hold before automatic anchors were confirmed
+  ---
+  duration_ms: 10.245683
+  type: 'test'
+  ...
+# Subtest: weekly commentary uses the dated close and makes no automatic buy or success probability
+ok 488 - weekly commentary uses the dated close and makes no automatic buy or success probability
+  ---
+  duration_ms: 10.330549
+  type: 'test'
+  ...
+# Subtest: missing anchors keep observations unavailable instead of manufacturing support
+ok 489 - missing anchors keep observations unavailable instead of manufacturing support
+  ---
+  duration_ms: 11.464182
+  type: 'test'
+  ...
+# Subtest: extensions are off by default and invalid values cannot reach the chart
+ok 490 - extensions are off by default and invalid values cannot reach the chart
+  ---
+  duration_ms: 9.75298
+  type: 'test'
+  ...
+# Subtest: overlay toggles remove actual series and logarithmic scale remains explicit
+ok 491 - overlay toggles remove actual series and logarithmic scale remains explicit
+  ---
+  duration_ms: 7.433825
+  type: 'test'
+  ...
+# Subtest: insufficient history never creates a zero-valued 200-week line
+ok 492 - insufficient history never creates a zero-valued 200-week line
+  ---
+  duration_ms: 10.213926
+  type: 'test'
+  ...
+# Subtest: a current average cannot be applied retroactively to manufacture a prior support test
+ok 493 - a current average cannot be applied retroactively to manufacture a prior support test
+  ---
+  duration_ms: 8.787526
+  type: 'test'
+  ...
+# Subtest: missing prior-week average evidence withholds a two-week confluence hold
+ok 494 - missing prior-week average evidence withholds a two-week confluence hold
+  ---
+  duration_ms: 7.345994
+  type: 'test'
+  ...
+# Subtest: a prior overlap may differ in price while retaining its dated test
+ok 495 - a prior overlap may differ in price while retaining its dated test
+  ---
+  duration_ms: 7.797576
+  type: 'test'
+  ...
+# Subtest: empty data leaves unavailable values null instead of inventing anchors or averages
+ok 496 - empty data leaves unavailable values null instead of inventing anchors or averages
+  ---
+  duration_ms: 2.415168
+  type: 'test'
+  ...
+# Subtest: calendar Monday aggregation crosses the year boundary and uses chronological OHLC after daily deduplication
+ok 497 - calendar Monday aggregation crosses the year boundary and uses chronological OHLC after daily deduplication
+  ---
+  duration_ms: 6.173182
+  type: 'test'
+  ...
+# Subtest: the whole current UTC week remains excluded even after Friday close
+ok 498 - the whole current UTC week remains excluded even after Friday close
+  ---
+  duration_ms: 0.307807
+  type: 'test'
+  ...
+# Subtest: malformed dates, inconsistent dates, nonnumeric or nonpositive prices and impossible OHLC are rejected
+ok 499 - malformed dates, inconsistent dates, nonnumeric or nonpositive prices and impossible OHLC are rejected
+  ---
+  duration_ms: 0.343871
+  type: 'test'
+  ...
+# Subtest: ISO dates and Unix seconds or milliseconds describe the same UTC daily observation
+ok 500 - ISO dates and Unix seconds or milliseconds describe the same UTC daily observation
+  ---
+  duration_ms: 0.310722
+  type: 'test'
+  ...
+# Subtest: millisecond timestamps before 2001 are not mistaken for far-future Unix seconds
+ok 501 - millisecond timestamps before 2001 are not mistaken for far-future Unix seconds
+  ---
+  duration_ms: 0.23553
+  type: 'test'
+  ...
+# Subtest: historical results do not change when future and current-week observations are appended
+ok 502 - historical results do not change when future and current-week observations are appended
+  ---
+  duration_ms: 0.651829
+  type: 'test'
+  ...
+# Subtest: 50-week and 200-week SMA use exactly their full windows of weekly closes
+ok 503 - 50-week and 200-week SMA use exactly their full windows of weekly closes
+  ---
+  duration_ms: 2.83392
+  type: 'test'
+  ...
+# Subtest: WMA explicitly weights the newest close most heavily within the complete window
+ok 504 - WMA explicitly weights the newest close most heavily within the complete window
+  ---
+  duration_ms: 2.713201
+  type: 'test'
+  ...
+# Subtest: 199 weeks never produce a shortened 200-week average
+ok 505 - 199 weeks never produce a shortened 200-week average
+  ---
+  duration_ms: 2.802424
+  type: 'test'
+  ...
+# Subtest: missing calendar weeks invalidate every moving-average window spanning the gap without filling
+ok 506 - missing calendar weeks invalidate every moving-average window spanning the gap without filling
+  ---
+  duration_ms: 2.155453
+  type: 'test'
+  ...
+# Subtest: averages resume after enough consecutive completed weeks following a gap
+ok 507 - averages resume after enough consecutive completed weeks following a gap
+  ---
+  duration_ms: 1.037341
+  type: 'test'
+  ...
+# Subtest: manual upward swing computes retracements back from its high and extensions forward from its low
+ok 508 - manual upward swing computes retracements back from its high and extensions forward from its low
+  ---
+  duration_ms: 0.494625
+  type: 'test'
+  ...
+# Subtest: manual downward swing retraces up from its low and extends downward in trend direction
+ok 509 - manual downward swing retraces up from its low and extends downward in trend direction
+  ---
+  duration_ms: 0.281068
+  type: 'test'
+  ...
+# Subtest: log scale applies the same geometry to logarithms in both swing directions
+ok 510 - log scale applies the same geometry to logarithms in both swing directions
+  ---
+  duration_ms: 0.269651
+  type: 'test'
+  ...
+# Subtest: manual anchor dates map to their containing calendar week
+ok 511 - manual anchor dates map to their containing calendar week
+  ---
+  duration_ms: 0.235019
+  type: 'test'
+  ...
+# Subtest: reversed, missing, same-week and price-inconsistent manual anchors withhold Fibonacci
+ok 512 - reversed, missing, same-week and price-inconsistent manual anchors withhold Fibonacci
+  ---
+  duration_ms: 0.488836
+  type: 'test'
+  ...
+# Subtest: unconfirmed most-recent extremes cannot replace the latest confirmed opposite pivots
+ok 513 - unconfirmed most-recent extremes cannot replace the latest confirmed opposite pivots
+  ---
+  duration_ms: 0.395077
+  type: 'test'
+  ...
+# Subtest: auto pivots need two consecutive weeks on both sides, so a missing week cannot confirm them
+ok 514 - auto pivots need two consecutive weeks on both sides, so a missing week cannot confirm them
+  ---
+  duration_ms: 0.251624
+  type: 'test'
+  ...
+# Subtest: a monotonic series can provide averages without inventing Fibonacci pivots
+ok 515 - a monotonic series can provide averages without inventing Fibonacci pivots
+  ---
+  duration_ms: 2.002185
+  type: 'test'
+  ...
+# Subtest: coverage warns when the last source observation is over fourteen days old
+ok 516 - coverage warns when the last source observation is over fourteen days old
+  ---
+  duration_ms: 0.237443
+  type: 'test'
+  ...
+# Subtest: daily-only coverage identifies the limit of certifying complete boundary weeks
+ok 517 - daily-only coverage identifies the limit of certifying complete boundary weeks
+  ---
+  duration_ms: 0.181009
+  type: 'test'
+  ...
+# Subtest: invalid asOf cannot silently fall back to the current clock or admit observations
+ok 518 - invalid asOf cannot silently fall back to the current clock or admit observations
+  ---
+  duration_ms: 0.088922
+  type: 'test'
+  ...
+# Subtest: calculation does not reorder or mutate the supplied daily bars or options
+ok 519 - calculation does not reorder or mutate the supplied daily bars or options
+  ---
+  duration_ms: 0.175501
+  type: 'test'
+  ...
+# Subtest: SEC annual diluted shares retain exact period, unit and filing source
+ok 520 - SEC annual diluted shares retain exact period, unit and filing source
+  ---
+  duration_ms: 3.05565
+  type: 'test'
+  ...
+# Subtest: SEC shares reject mismatched period, future filing, superseded filing and monetary units
+ok 521 - SEC shares reject mismatched period, future filing, superseded filing and monetary units
+  ---
+  duration_ms: 1.064601
+  type: 'test'
+  ...
+# Subtest: SEC share duplicates with conflicting values are unavailable, never arbitrarily selected
+ok 522 - SEC share duplicates with conflicting values are unavailable, never arbitrarily selected
+  ---
+  duration_ms: 0.263541
+  type: 'test'
+  ...
+# Subtest: flat cash flow with zero terminal growth discounts to the perpetuity value without a debt adjustment
+ok 523 - flat cash flow with zero terminal growth discounts to the perpetuity value without a debt adjustment
+  ---
+  duration_ms: 3.399541
+  type: 'test'
+  ...
+# Subtest: editable growth, equity discount rate, dilution and cash deductions change real cash-flow estimates
+ok 524 - editable growth, equity discount rate, dilution and cash deductions change real cash-flow estimates
+  ---
+  duration_ms: 0.529076
+  type: 'test'
+  ...
+# Subtest: negative FCF, unsupported sectors, crypto and unknown classification cannot publish a generic DCF
+ok 525 - negative FCF, unsupported sectors, crypto and unknown classification cannot publish a generic DCF
+  ---
+  duration_ms: 1.274884
+  type: 'test'
+  ...
+# Subtest: MSFT and APP use the same explicit cash-flow arithmetic only with sufficient evidence
+ok 526 - MSFT and APP use the same explicit cash-flow arithmetic only with sufficient evidence
+  ---
+  duration_ms: 0.34356
+  type: 'test'
+  ...
+# Subtest: missing SEC share evidence cannot silently infer shares from cap/price or undated provider shares
+ok 527 - missing SEC share evidence cannot silently infer shares from cap/price or undated provider shares
+  ---
+  duration_ms: 0.395237
+  type: 'test'
+  ...
+# Subtest: currency, duration, continuity, as-of and source gates reject invalid cash inputs
+ok 528 - currency, duration, continuity, as-of and source gates reject invalid cash inputs
+  ---
+  duration_ms: 1.265921
+  type: 'test'
+  ...
+# Subtest: terminal growth at or above equity discount rate and nonfinite assumptions fail explicitly
+ok 529 - terminal growth at or above equity discount rate and nonfinite assumptions fail explicitly
+  ---
+  duration_ms: 0.372654
+  type: 'test'
+  ...
+# Subtest: missing, future or stale price timestamp and foreign quote currency suppress comparison, not cash estimates
+ok 530 - missing, future or stale price timestamp and foreign quote currency suppress comparison, not cash estimates
+  ---
+  duration_ms: 0.4645
+  type: 'test'
+  ...
+# Subtest: source-backed FCF yield requires explicit matching quote currency and identifies its denominator
+ok 531 - source-backed FCF yield requires explicit matching quote currency and identifies its denominator
+  ---
+  duration_ms: 0.287717
+  type: 'test'
+  ...
+# Subtest: discontinued operations preserve labeled reported figures but cannot unlock a continuing-business valuation
+ok 532 - discontinued operations preserve labeled reported figures but cannot unlock a continuing-business valuation
+  ---
+  duration_ms: 0.526102
+  type: 'test'
+  ...
+# Subtest: preserves a reported non-USD currency and withholds USD valuation inputs
+ok 533 - preserves a reported non-USD currency and withholds USD valuation inputs
+  ---
+  duration_ms: 152.558689
+  type: 'test'
+  ...
+# Subtest: prefers a newer revenue concept over obsolete first-priority tags
+ok 534 - prefers a newer revenue concept over obsolete first-priority tags
+  ---
+  duration_ms: 52.041941
+  type: 'test'
+  ...
+# Subtest: a quarterly fact inside an annual filing cannot become annual revenue
+ok 535 - a quarterly fact inside an annual filing cannot become annual revenue
+  ---
+  duration_ms: 34.767846
+  type: 'test'
+  ...
+# Subtest: quarter selection rejects YTD values and prior-year comparisons with a different duration
+ok 536 - quarter selection rejects YTD values and prior-year comparisons with a different duration
+  ---
+  duration_ms: 43.978972
+  type: 'test'
+  ...
+# Subtest: YTD-only disclosure remains unavailable as a standalone quarter or annual amount
+ok 537 - YTD-only disclosure remains unavailable as a standalone quarter or annual amount
+  ---
+  duration_ms: 29.157461
+  type: 'test'
+  ...
+# Subtest: restated periods use the latest filing independent of input order and retain provenance
+ok 538 - restated periods use the latest filing independent of input order and retain provenance
+  ---
+  duration_ms: 29.303247
+  type: 'test'
+  ...
+# Subtest: ratios and cash flow never combine different annual periods or currencies
+ok 539 - ratios and cash flow never combine different annual periods or currencies
+  ---
+  duration_ms: 25.270506
+  type: 'test'
+  ...
+# Subtest: current assets and current liabilities are not substituted for total balance-sheet fields
+ok 540 - current assets and current liabilities are not substituted for total balance-sheet fields
+  ---
+  duration_ms: 30.239479
+  type: 'test'
+  ...
+# Subtest: currency and reporting-basis changes do not manufacture predecessor growth or five-year durability
+ok 541 - currency and reporting-basis changes do not manufacture predecessor growth or five-year durability
+  ---
+  duration_ms: 24.009542
+  type: 'test'
+  ...
+# Subtest: growth is withheld across an unbridged concept or currency transition
+ok 542 - growth is withheld across an unbridged concept or currency transition
+  ---
+  duration_ms: 23.845338
+  type: 'test'
+  ...
+# Subtest: missing financial evidence lowers coverage without creating bearish scores
+ok 543 - missing financial evidence lowers coverage without creating bearish scores
+  ---
+  duration_ms: 23.70492
+  type: 'test'
+  ...
+# Subtest: reported fiscal year is derived from the fact period, not a later filing context
+ok 544 - reported fiscal year is derived from the fact period, not a later filing context
+  ---
+  duration_ms: 27.284648
+  type: 'test'
+  ...
+# Subtest: a restated revenue period cannot mix with earnings from the superseded filing
+ok 545 - a restated revenue period cannot mix with earnings from the superseded filing
+  ---
+  duration_ms: 28.426616
+  type: 'test'
+  ...
+# Subtest: discontinued earnings cannot imply continuing-business profitability
+ok 546 - discontinued earnings cannot imply continuing-business profitability
+  ---
+  duration_ms: 22.848948
+  type: 'test'
+  ...
+# Subtest: discontinued cash flow is withheld from current-business FCF without a matching continuing capex basis
+ok 547 - discontinued cash flow is withheld from current-business FCF without a matching continuing capex basis
+  ---
+  duration_ms: 22.849668
+  type: 'test'
+  ...
+# Subtest: a changed reporting cohort excludes predecessor years absent from the latest restatement
+ok 548 - a changed reporting cohort excludes predecessor years absent from the latest restatement
+  ---
+  duration_ms: 30.049326
+  type: 'test'
+  ...
+# Subtest: all company responses identify the currency-safe evidence contract including no-match and crypto
+ok 549 - all company responses identify the currency-safe evidence contract including no-match and crypto
+  ---
+  duration_ms: 58.007395
+  type: 'test'
+  ...
+# Subtest: actual NBIS SEC facts retain RUB predecessor history and the latest USD continuing-operation cohort
+ok 550 - actual NBIS SEC facts retain RUB predecessor history and the latest USD continuing-operation cohort
+  ---
+  duration_ms: 28.445172
+  type: 'test'
+  ...
+# Subtest: SEC requests use the configured fair-access user agent
+ok 551 - SEC requests use the configured fair-access user agent
+  ---
+  duration_ms: 17.719938
+  type: 'test'
+  ...
+# Subtest: history does not claim a reporting basis for unavailable earnings or cash flow
+ok 552 - history does not claim a reporting basis for unavailable earnings or cash flow
+  ---
+  duration_ms: 19.711046
+  type: 'test'
+  ...
+# Subtest: equal continuing and reported earnings do not invent a discontinued-operations adjustment
+ok 553 - equal continuing and reported earnings do not invent a discontinued-operations adjustment
+  ---
+  duration_ms: 17.025656
+  type: 'test'
+  ...
+# Subtest: technical snapshot exposes canonical indicator diagnostics and separated strength vs entry
+ok 554 - technical snapshot exposes canonical indicator diagnostics and separated strength vs entry
+  ---
+  duration_ms: 3.775248
+  type: 'test'
+  ...
+# Subtest: entry quality penalizes extension without converting technical trend to bearish
+ok 555 - entry quality penalizes extension without converting technical trend to bearish
+  ---
+  duration_ms: 1.136588
+  type: 'test'
+  ...
+# Subtest: Labor Day 2026 is a market holiday, never REGULAR
+ok 556 - Labor Day 2026 is a market holiday, never REGULAR
+  ---
+  duration_ms: 14.487955
+  type: 'test'
+  ...
+# Subtest: Thanksgiving and Christmas are closed
+ok 557 - Thanksgiving and Christmas are closed
+  ---
+  duration_ms: 0.49814
+  type: 'test'
+  ...
+# Subtest: day after Thanksgiving honors 1pm ET early close
+ok 558 - day after Thanksgiving honors 1pm ET early close
+  ---
+  duration_ms: 0.392333
+  type: 'test'
+  ...
+# Subtest: normal trading weekday still returns REGULAR
+ok 559 - normal trading weekday still returns REGULAR
+  ---
+  duration_ms: 0.31635
+  type: 'test'
+  ...
+# Subtest: agreeing fresh providers produce one verified decision price
+ok 560 - agreeing fresh providers produce one verified decision price
+  ---
+  duration_ms: 1.143829
+  type: 'test'
+  ...
+# Subtest: single fresh provider is explicit and lower-confidence but usable for research
+ok 561 - single fresh provider is explicit and lower-confidence but usable for research
+  ---
+  duration_ms: 0.460094
+  type: 'test'
+  ...
+# Subtest: 16 percent provider disagreement fails closed with no chosen price
+ok 562 - 16 percent provider disagreement fails closed with no chosen price
+  ---
+  duration_ms: 0.332924
+  type: 'test'
+  ...
+# Subtest: 80 percent provider disagreement fails closed
+ok 563 - 80 percent provider disagreement fails closed
+  ---
+  duration_ms: 0.297412
+  type: 'test'
+  ...
+# Subtest: stale-only open-session quotes never become display or decision price
+ok 564 - stale-only open-session quotes never become display or decision price
+  ---
+  duration_ms: 0.633361
+  type: 'test'
+  ...
+# Subtest: holiday uses official regular close rather than stale provider trade
+ok 565 - holiday uses official regular close rather than stale provider trade
+  ---
+  duration_ms: 0.571739
+  type: 'test'
+  ...
+# Subtest: single-source live price with an extreme discontinuity from regular close fails closed until independently confirmed
+ok 566 - single-source live price with an extreme discontinuity from regular close fails closed until independently confirmed
+  ---
+  duration_ms: 0.491871
+  type: 'test'
+  ...
+# Subtest: V4.2 exposes a market-truth engine version for reproducible audits
+ok 567 - V4.2 exposes a market-truth engine version for reproducible audits
+  ---
+  duration_ms: 1.932531
+  type: 'test'
+  ...
+# Subtest: great company can remain bullish while timing is overextended
+ok 568 - great company can remain bullish while timing is overextended
+  ---
+  duration_ms: 6.606706
+  type: 'test'
+  ...
+# Subtest: technical weakness alone does not rewrite thesis
+ok 569 - technical weakness alone does not rewrite thesis
+  ---
+  duration_ms: 1.470044
+  type: 'test'
+  ...
+# Subtest: owner loss does not alter independent thesis
+ok 570 - owner loss does not alter independent thesis
+  ---
+  duration_ms: 1.922136
+  type: 'test'
+  ...
+# Subtest: zones include valuation-derived accumulation
+ok 571 - zones include valuation-derived accumulation
+  ---
+  duration_ms: 0.240868
+  type: 'test'
+  ...
+# Subtest: relative ranking does not force action
+ok 572 - relative ranking does not force action
+  ---
+  duration_ms: 0.536898
+  type: 'test'
+  ...
+# Subtest: portfolio risk detects concentration
+ok 573 - portfolio risk detects concentration
+  ---
+  duration_ms: 0.342799
+  type: 'test'
+  ...
+# Subtest: missing valuation is N/A, not zero bearish evidence
+ok 574 - missing valuation is N/A, not zero bearish evidence
+  ---
+  duration_ms: 5.292113
+  type: 'test'
+  ...
+# Subtest: analyst target absence does not create synthetic Street target
+ok 575 - analyst target absence does not create synthetic Street target
+  ---
+  duration_ms: 1.671023
+  type: 'test'
+  ...
+# Subtest: factor correlation audit identifies duplicated signal families
+ok 576 - factor correlation audit identifies duplicated signal families
+  ---
+  duration_ms: 0.418212
+  type: 'test'
+  ...
+# Subtest: portfolio concentration changes sizing gate without changing thesis
+ok 577 - portfolio concentration changes sizing gate without changing thesis
+  ---
+  duration_ms: 0.327106
+  type: 'test'
+  ...
+# Subtest: preliminary hypergrowth valuation cannot publish absolute price zones
+ok 578 - preliminary hypergrowth valuation cannot publish absolute price zones
+  ---
+  duration_ms: 0.847029
+  type: 'test'
+  ...
+# Subtest: technical entry tiers are monotonic and non-overlapping
+ok 579 - technical entry tiers are monotonic and non-overlapping
+  ---
+  duration_ms: 0.960867
+  type: 'test'
+  ...
+# Subtest: missing absolute fair value does not become valuation zero
+ok 580 - missing absolute fair value does not become valuation zero
+  ---
+  duration_ms: 5.029052
+  type: 'test'
+  ...
+# Subtest: long-term thesis is explicitly separated from near-term timing
+ok 581 - long-term thesis is explicitly separated from near-term timing
+  ---
+  duration_ms: 2.722275
+  type: 'test'
+  ...
+# Subtest: expectation gap is evidence driven and never a price target
+ok 582 - expectation gap is evidence driven and never a price target
+  ---
+  duration_ms: 0.702284
+  type: 'test'
+  ...
+# Subtest: V61 Trading Lab preserves V59 scoring weights
+ok 583 - V61 Trading Lab preserves V59 scoring weights
+  ---
+  duration_ms: 0.703666
+  type: 'test'
+  ...
+# Subtest: Today policy cannot bypass a broken thesis
+ok 584 - Today policy cannot bypass a broken thesis
+  ---
+  duration_ms: 0.278794
+  type: 'test'
+  ...
+# Subtest: Today distinguishes ADD for owners from BUY for new capital
+ok 585 - Today distinguishes ADD for owners from BUY for new capital
+  ---
+  duration_ms: 0.521395
+  type: 'test'
+  ...
+# Subtest: frozen snapshot fingerprint is deterministic for identical evidence
+ok 586 - frozen snapshot fingerprint is deterministic for identical evidence
+  ---
+  duration_ms: 0.37031
+  type: 'test'
+  ...
+# Subtest: Arena grades benchmark-relative return
+ok 587 - Arena grades benchmark-relative return
+  ---
+  duration_ms: 0.17459
+  type: 'test'
+  ...
+# Subtest: Reliability remains collecting below minimum sample
+ok 588 - Reliability remains collecting below minimum sample
+  ---
+  duration_ms: 0.187278
+  type: 'test'
+  ...
+# Subtest: identical in-flight provider requests are coalesced
+ok 589 - identical in-flight provider requests are coalesced
+  ---
+  duration_ms: 16.815123
+  type: 'test'
+  ...
+# Subtest: provider health exposes degraded state after failures
+ok 590 - provider health exposes degraded state after failures
+  ---
+  duration_ms: 0.841821
+  type: 'test'
+  ...
+# Subtest: large extended-hours gap blocks chasing without changing thesis
+ok 591 - large extended-hours gap blocks chasing without changing thesis
+  ---
+  duration_ms: 0.82797
+  type: 'test'
+  ...
+# Subtest: owner add becomes hold during large extended-hours gap
+ok 592 - owner add becomes hold during large extended-hours gap
+  ---
+  duration_ms: 0.129162
+  type: 'test'
+  ...
+# Subtest: classifies US equity premarket regular after-hours and closed sessions
+ok 593 - classifies US equity premarket regular after-hours and closed sessions
+  ---
+  duration_ms: 14.926908
+  type: 'test'
+  ...
+# Subtest: marks live quotes stale by session-sensitive age
+ok 594 - marks live quotes stale by session-sensitive age
+  ---
+  duration_ms: 0.209652
+  type: 'test'
+  ...
+# Subtest: normalizes Twelve extended-hours quote without inventing overnight data
+ok 595 - normalizes Twelve extended-hours quote without inventing overnight data
+  ---
+  duration_ms: 0.844335
+  type: 'test'
+  ...
+# Subtest: provider health exposes request and coalescing metrics
+ok 596 - provider health exposes request and coalescing metrics
+  ---
+  duration_ms: 12.504739
+  type: 'test'
+  ...
+# Subtest: freshness distribution reports universe percentages
+ok 597 - freshness distribution reports universe percentages
+  ---
+  duration_ms: 1.538726
+  type: 'test'
+  ...
+# Subtest: distinguishes evidence-backed action changes from noisy flips
+ok 598 - distinguishes evidence-backed action changes from noisy flips
+  ---
+  duration_ms: 0.701051
+  type: 'test'
+  ...
+# Subtest: computes action flip rate and unexplained flip rate
+ok 599 - computes action flip rate and unexplained flip rate
+  ---
+  duration_ms: 0.191565
+  type: 'test'
+  ...
+# Subtest: paper mode can auto-submit
+ok 600 - paper mode can auto-submit
+  ---
+  duration_ms: 0.691868
+  type: 'test'
+  ...
+# Subtest: live mode always requires approval even if autoSubmit requested
+ok 601 - live mode always requires approval even if autoSubmit requested
+  ---
+  duration_ms: 0.212065
+  type: 'test'
+  ...
+# Subtest: Alpaca base URL is hard locked to paper trading
+ok 602 - Alpaca base URL is hard locked to paper trading
+  ---
+  duration_ms: 0.105567
+  type: 'test'
+  ...
+# Subtest: paper order has deterministic id and protected limit
+ok 603 - paper order has deterministic id and protected limit
+  ---
+  duration_ms: 0.878926
+  type: 'test'
+  ...
+# Subtest: paper fill models bounded slippage and fees
+ok 604 - paper fill models bounded slippage and fees
+  ---
+  duration_ms: 0.18834
+  type: 'test'
+  ...
+# Subtest: BUY creates long entry intent
+ok 605 - BUY creates long entry intent
+  ---
+  duration_ms: 0.869081
+  type: 'test'
+  ...
+# Subtest: ADD creates add intent
+ok 606 - ADD creates add intent
+  ---
+  duration_ms: 0.150514
+  type: 'test'
+  ...
+# Subtest: SELL and TRIM create exit intents
+ok 607 - SELL and TRIM create exit intents
+  ---
+  duration_ms: 0.129182
+  type: 'test'
+  ...
+# Subtest: WAIT HOLD and NO ACTION create no trade
+ok 608 - WAIT HOLD and NO ACTION create no trade
+  ---
+  duration_ms: 0.171815
+  type: 'test'
+  ...
+# Subtest: blocked decision never creates new risk
+ok 609 - blocked decision never creates new risk
+  ---
+  duration_ms: 0.111736
+  type: 'test'
+  ...
+# Subtest: blocked SELL can still create a risk-reducing exit intent
+ok 610 - blocked SELL can still create a risk-reducing exit intent
+  ---
+  duration_ms: 0.112578
+  type: 'test'
+  ...
+# Subtest: SELL with no paper position explains there is nothing to exit
+ok 611 - SELL with no paper position explains there is nothing to exit
+  ---
+  duration_ms: 0.751457
+  type: 'test'
+  ...
+# Subtest: HOLD explains no trade is authorized
+ok 612 - HOLD explains no trade is authorized
+  ---
+  duration_ms: 0.132837
+  type: 'test'
+  ...
+# Subtest: summarizes realized trading edge
+ok 613 - summarizes realized trading edge
+  ---
+  duration_ms: 1.090451
+  type: 'test'
+  ...
+# Subtest: matches long paper fills into realized closed trades
+ok 614 - matches long paper fills into realized closed trades
+  ---
+  duration_ms: 0.263151
+  type: 'test'
+  ...
+# Subtest: allows healthy paper trade
+ok 615 - allows healthy paper trade
+  ---
+  duration_ms: 0.911975
+  type: 'test'
+  ...
+# Subtest: blocks stale quote
+ok 616 - blocks stale quote
+  ---
+  duration_ms: 0.152306
+  type: 'test'
+  ...
+# Subtest: blocks daily loss breach
+ok 617 - blocks daily loss breach
+  ---
+  duration_ms: 0.120098
+  type: 'test'
+  ...
+# Subtest: blocks duplicate intent
+ok 618 - blocks duplicate intent
+  ---
+  duration_ms: 0.094019
+  type: 'test'
+  ...
+# Subtest: blocks excessive spread and gap
+ok 619 - blocks excessive spread and gap
+  ---
+  duration_ms: 0.143053
+  type: 'test'
+  ...
+# Subtest: resizes to position and per-trade caps
+ok 620 - resizes to position and per-trade caps
+  ---
+  duration_ms: 0.109582
+  type: 'test'
+  ...
+# Subtest: calibration reports sample size hit rate alpha brier and ECE
+ok 621 - calibration reports sample size hit rate alpha brier and ECE
+  ---
+  duration_ms: 1.132282
+  type: 'test'
+  ...
+# Subtest: valuation sanity warns when even bear case is far above spot
+ok 622 - valuation sanity warns when even bear case is far above spot
+  ---
+  duration_ms: 0.297822
+  type: 'test'
+  ...
+# Subtest: overlapping entry bands consolidate rather than show false precision
+ok 623 - overlapping entry bands consolidate rather than show false precision
+  ---
+  duration_ms: 1.244649
+  type: 'test'
+  ...
+# Subtest: adversarial risk never returns an empty risk panel
+ok 624 - adversarial risk never returns an empty risk panel
+  ---
+  duration_ms: 0.277482
+  type: 'test'
+  ...
+# Subtest: WAIT explains exact path to BUY
+ok 625 - WAIT explains exact path to BUY
+  ---
+  duration_ms: 0.290752
+  type: 'test'
+  ...
+# Subtest: transition-aware archetypes separate AI infrastructure and pre-scale milestone companies
+ok 626 - transition-aware archetypes separate AI infrastructure and pre-scale milestone companies
+  ---
+  duration_ms: 0.725808
+  type: 'test'
+  ...
+# Subtest: quote integrity verifies agreeing live providers
+ok 627 - quote integrity verifies agreeing live providers
+  ---
+  duration_ms: 1.098933
+  type: 'test'
+  ...
+# Subtest: quote integrity blocks material provider disagreement
+ok 628 - quote integrity blocks material provider disagreement
+  ---
+  duration_ms: 0.151335
+  type: 'test'
+  ...
+# Subtest: quote integrity uses a single fresh provider but reports reduced confidence
+ok 629 - quote integrity uses a single fresh provider but reports reduced confidence
+  ---
+  duration_ms: 0.109342
+  type: 'test'
+  ...
+# Subtest: decision reality detects falling knife and market-model disagreement
+ok 630 - decision reality detects falling knife and market-model disagreement
+  ---
+  duration_ms: 0.635464
+  type: 'test'
+  ...
+# Subtest: low-confidence price zones do not pretend to cent precision
+ok 631 - low-confidence price zones do not pretend to cent precision
+  ---
+  duration_ms: 0.213497
+  type: 'test'
+  ...
+# Subtest: calibration cohorts stay segmented by archetype horizon and regime
+ok 632 - calibration cohorts stay segmented by archetype horizon and regime
+  ---
+  duration_ms: 0.696866
+  type: 'test'
+  ...
+# Subtest: reality guard withholds BUY during required stabilization
+ok 633 - reality guard withholds BUY during required stabilization
+  ---
+  duration_ms: 0.352954
+  type: 'test'
+  ...
+# Subtest: trading risk blocks provider disagreement even when both raw quotes are fresh
+ok 634 - trading risk blocks provider disagreement even when both raw quotes are fresh
+  ---
+  duration_ms: 0.273786
+  type: 'test'
+  ...
+# Subtest: Vercel Hobby config has no cron and GitHub owns paper schedule
+ok 635 - Vercel Hobby config has no cron and GitHub owns paper schedule
+  ---
+  duration_ms: 0.442998
+  type: 'test'
+  ...
+# Subtest: paper diagnostics endpoint and broker cancel path exist
+ok 636 - paper diagnostics endpoint and broker cancel path exist
+  ---
+  duration_ms: 0.314307
+  type: 'test'
+  ...
+# Subtest: stock cockpit exposes V63 reality layer
+ok 637 - stock cockpit exposes V63 reality layer
+  ---
+  duration_ms: 0.225745
+  type: 'test'
+  ...
+# Subtest: quote integrity blocks a fresh provider when another timestamped provider materially disagrees
+ok 638 - quote integrity blocks a fresh provider when another timestamped provider materially disagrees
+  ---
+  duration_ms: 0.143433
+  type: 'test'
+  ...
+# Subtest: autonomous paper execution requires independently verified live price
+ok 639 - autonomous paper execution requires independently verified live price
+  ---
+  duration_ms: 0.255549
+  type: 'test'
+  ...
+# Subtest: replayOne never uses a bar dated after asOfDate for entry
+ok 640 - replayOne never uses a bar dated after asOfDate for entry
+  ---
+  duration_ms: 9.331925
+  type: 'test'
+  ...
+# Subtest: replayOne returns null when there is not enough forward data for the horizon
+ok 641 - replayOne returns null when there is not enough forward data for the horizon
+  ---
+  duration_ms: 3.74217
+  type: 'test'
+  ...
+# Subtest: replayOne returns null when there is not enough trailing history for a decision
+ok 642 - replayOne returns null when there is not enough trailing history for a decision
+  ---
+  duration_ms: 0.695122
+  type: 'test'
+  ...
+# Subtest: pointInTimeFundamentals excludes facts filed after asOfDate
+ok 643 - pointInTimeFundamentals excludes facts filed after asOfDate
+  ---
+  duration_ms: 0.260777
+  type: 'test'
+  ...
+# Subtest: walkForwardSplit never overlaps in-sample and out-of-sample dates
+ok 644 - walkForwardSplit never overlaps in-sample and out-of-sample dates
+  ---
+  duration_ms: 0.333396
+  type: 'test'
+  ...
+# Subtest: applyCosts reduces alpha by the full round-trip cost
+ok 645 - applyCosts reduces alpha by the full round-trip cost
+  ---
+  duration_ms: 0.276261
+  type: 'test'
+  ...
+# Subtest: buildBacktestReport flags insufficient sample size below minimum
+ok 646 - buildBacktestReport flags insufficient sample size below minimum
+  ---
+  duration_ms: 1.071712
+  type: 'test'
+  ...
+# Subtest: universe manifest surfaces survivorship-bias quality rather than assuming it away
+ok 647 - universe manifest surfaces survivorship-bias quality rather than assuming it away
+  ---
+  duration_ms: 0.228309
+  type: 'test'
+  ...
+# Subtest: historical bar integrity verifies close agreement
+ok 648 - historical bar integrity verifies close agreement
+  ---
+  duration_ms: 1.092813
+  type: 'test'
+  ...
+# Subtest: historical bar integrity flags material provider disagreement
+ok 649 - historical bar integrity flags material provider disagreement
+  ---
+  duration_ms: 0.213697
+  type: 'test'
+  ...
+# Subtest: historical bar integrity rejects malformed OHLC
+ok 650 - historical bar integrity rejects malformed OHLC
+  ---
+  duration_ms: 0.165936
+  type: 'test'
+  ...
+# Subtest: live analysis cross-checks recent daily bars when Alpaca data is configured
+ok 651 - live analysis cross-checks recent daily bars when Alpaca data is configured
+  ---
+  duration_ms: 0.4038
+  type: 'test'
+  ...
+# Subtest: professional number formatter uses separators and avoids fake precision
+ok 652 - professional number formatter uses separators and avoids fake precision
+  ---
+  duration_ms: 13.041767
+  type: 'test'
+  ...
+# Subtest: unavailable metric proof has no zero score
+ok 653 - unavailable metric proof has no zero score
+  ---
+  duration_ms: 0.348939
+  type: 'test'
+  ...
+# Subtest: heuristic metric proof says it is heuristic until validated
+ok 654 - heuristic metric proof says it is heuristic until validated
+  ---
+  duration_ms: 0.1551
+  type: 'test'
+  ...
+# Subtest: position sizing caps loss by risk budget
+ok 655 - position sizing caps loss by risk budget
+  ---
+  duration_ms: 0.884834
+  type: 'test'
+  ...
+# Subtest: position sizing blocks invalid invalidation
+ok 656 - position sizing blocks invalid invalidation
+  ---
+  duration_ms: 0.279406
+  type: 'test'
+  ...
+# Subtest: liquidity cap can reduce position below raw risk budget
+ok 657 - liquidity cap can reduce position below raw risk budget
+  ---
+  duration_ms: 0.131455
+  type: 'test'
+  ...
+# Subtest: paper runner sizes BUY/ADD from equity and invalidation before risk authorization
+ok 658 - paper runner sizes BUY/ADD from equity and invalidation before risk authorization
+  ---
+  duration_ms: 0.30993
+  type: 'test'
+  ...
+# Subtest: RSI uses Wilder smoothing and matches a fixed reference sequence
+ok 659 - RSI uses Wilder smoothing and matches a fixed reference sequence
+  ---
+  duration_ms: 0.810204
+  type: 'test'
+  ...
+# Subtest: ATR uses Wilder smoothing rather than a flat trailing mean
+ok 660 - ATR uses Wilder smoothing rather than a flat trailing mean
+  ---
+  duration_ms: 0.301849
+  type: 'test'
+  ...
+# Subtest: canonical technical engine returns the same scored contract needed by live and replay
+ok 661 - canonical technical engine returns the same scored contract needed by live and replay
+  ---
+  duration_ms: 2.762375
+  type: 'test'
+  ...
+# Subtest: bootstrap mean CI is deterministic and contains the sample mean for stable data
+ok 662 - bootstrap mean CI is deterministic and contains the sample mean for stable data
+  ---
+  duration_ms: 8.640107
+  type: 'test'
+  ...
+# Subtest: permutation test detects a large mean edge
+ok 663 - permutation test detects a large mean edge
+  ---
+  duration_ms: 8.431627
+  type: 'test'
+  ...
+# Subtest: BUY creates a portable broker-neutral plan without pretending it was executed
+ok 664 - BUY creates a portable broker-neutral plan without pretending it was executed
+  ---
+  duration_ms: 1.051732
+  type: 'test'
+  ...
+# Subtest: WAIT creates no order ticket
+ok 665 - WAIT creates no order ticket
+  ---
+  duration_ms: 0.145957
+  type: 'test'
+  ...
+# Subtest: validation gate is UNVALIDATED without evidence
+ok 666 - validation gate is UNVALIDATED without evidence
+  ---
+  duration_ms: 0.813899
+  type: 'test'
+  ...
+# Subtest: historical evidence can become BACKTESTED but not OOS verified
+ok 667 - historical evidence can become BACKTESTED but not OOS verified
+  ---
+  duration_ms: 0.191905
+  type: 'test'
+  ...
+# Subtest: OOS evidence requires enough untouched observations and positive alpha
+ok 668 - OOS evidence requires enough untouched observations and positive alpha
+  ---
+  duration_ms: 0.357942
+  type: 'test'
+  ...
+# Subtest: VALIDATED requires forward evidence too
+ok 669 - VALIDATED requires forward evidence too
+  ---
+  duration_ms: 0.145406
+  type: 'test'
+  ...
+# Subtest: negative alpha can never validate
+ok 670 - negative alpha can never validate
+  ---
+  duration_ms: 0.274037
+  type: 'test'
+  ...
+# Subtest: validation cannot become VALIDATED when historical universe quality is limited
+ok 671 - validation cannot become VALIDATED when historical universe quality is limited
+  ---
+  duration_ms: 0.155692
+  type: 'test'
+  ...
+# Subtest: BUY and ADD are deterministically reachable under coherent evidence
+ok 672 - BUY and ADD are deterministically reachable under coherent evidence
+  ---
+  duration_ms: 1.445828
+  type: 'test'
+  ...
+# Subtest: bearish new-money state is AVOID, not a misleading WAIT
+ok 673 - bearish new-money state is AVOID, not a misleading WAIT
+  ---
+  duration_ms: 0.146408
+  type: 'test'
+  ...
+# Subtest: hard veto new-money state is AVOID and cannot create a trade intent
+ok 674 - hard veto new-money state is AVOID and cannot create a trade intent
+  ---
+  duration_ms: 0.346735
+  type: 'test'
+  ...
+# Subtest: bearish/veto trigger language does not advertise Path to BUY
+ok 675 - bearish/veto trigger language does not advertise Path to BUY
+  ---
+  duration_ms: 0.426333
+  type: 'test'
+  ...
+# Subtest: WAIT turns entry zone into watch zone while BUY makes it actionable
+ok 676 - WAIT turns entry zone into watch zone while BUY makes it actionable
+  ---
+  duration_ms: 12.081451
+  type: 'test'
+  ...
+# Subtest: collapsed low-confidence price ranges render as approximate single levels
+ok 677 - collapsed low-confidence price ranges render as approximate single levels
+  ---
+  duration_ms: 0.219746
+  type: 'test'
+  ...
+# Subtest: valuation scenario display includes bear/base/bull and upside/downside
+ok 678 - valuation scenario display includes bear/base/bull and upside/downside
+  ---
+  duration_ms: 0.42368
+  type: 'test'
+  ...
+# Subtest: consistency engine catches contradictory new-money states
+ok 679 - consistency engine catches contradictory new-money states
+  ---
+  duration_ms: 0.302169
+  type: 'test'
+  ...
+# Subtest: consistency engine catches malformed valuation ordering and support/resistance
+ok 680 - consistency engine catches malformed valuation ordering and support/resistance
+  ---
+  duration_ms: 0.228409
+  type: 'test'
+  ...
+# Subtest: new Hero uses click/tap metric help and separate risk concepts
+ok 681 - new Hero uses click/tap metric help and separate risk concepts
+  ---
+  duration_ms: 0.572301
+  type: 'test'
+  ...
+# Subtest: duplicated legacy overview analyst/quality strip is removed
+ok 682 - duplicated legacy overview analyst/quality strip is removed
+  ---
+  duration_ms: 1.260072
+  type: 'test'
+  ...
+# Subtest: canonical Today policy has reachable, distinct action states
+ok 683 - canonical Today policy has reachable, distinct action states
+  ---
+  duration_ms: 1.881556
+  type: 'test'
+  ...
+# Subtest: quote identity rejects cross-ticker contamination
+ok 684 - quote identity rejects cross-ticker contamination
+  ---
+  duration_ms: 1.06978
+  type: 'test'
+  ...
+# Subtest: quote identity accepts case-insensitive matching symbol
+ok 685 - quote identity accepts case-insensitive matching symbol
+  ---
+  duration_ms: 0.191735
+  type: 'test'
+  ...
+# Subtest: backtest reports BUY performance separately from overall model scores
+ok 686 - backtest reports BUY performance separately from overall model scores
+  ---
+  duration_ms: 10.500011
+  type: 'test'
+  ...
+# Subtest: backtest never calls a BUY cohort proven when its alpha interval includes zero
+ok 687 - backtest never calls a BUY cohort proven when its alpha interval includes zero
+  ---
+  duration_ms: 4.179561
+  type: 'test'
+  ...
+# Subtest: live decision-audit route summarizes latest real snapshot BUY blockers
+ok 688 - live decision-audit route summarizes latest real snapshot BUY blockers
+  ---
+  duration_ms: 1.081808
+  type: 'test'
+  ...
+# Subtest: high early-warning risk cannot authorize a new BUY path
+ok 689 - high early-warning risk cannot authorize a new BUY path
+  ---
+  duration_ms: 2.078798
+  type: 'test'
+  ...
+# Subtest: quality compounder can earn a starter BUY without requiring perfect short-term timing
+ok 690 - quality compounder can earn a starter BUY without requiring perfect short-term timing
+  ---
+  duration_ms: 1.180765
+  type: 'test'
+  ...
+# Subtest: cyclical value path requires financial strength and at least selective timing
+ok 691 - cyclical value path requires financial strength and at least selective timing
+  ---
+  duration_ms: 0.245504
+  type: 'test'
+  ...
+# Subtest: growth momentum path does not require absolute valuation when archetype valuation is legitimately unavailable
+ok 692 - growth momentum path does not require absolute valuation when archetype valuation is legitimately unavailable
+  ---
+  duration_ms: 0.265555
+  type: 'test'
+  ...
+# Subtest: falling-knife stabilization guard still blocks a strong growth name
+ok 693 - falling-knife stabilization guard still blocks a strong growth name
+  ---
+  duration_ms: 0.319705
+  type: 'test'
+  ...
+# Subtest: hard veto remains an absolute new-money block
+ok 694 - hard veto remains an absolute new-money block
+  ---
+  duration_ms: 0.184354
+  type: 'test'
+  ...
+# Subtest: buy audit reports the exact closest blocker rather than generic WAIT
+ok 695 - buy audit reports the exact closest blocker rather than generic WAIT
+  ---
+  duration_ms: 0.246205
+  type: 'test'
+  ...
+# Subtest: distribution audit counts actions, paths and dominant blockers
+ok 696 - distribution audit counts actions, paths and dominant blockers
+  ---
+  duration_ms: 0.519191
+  type: 'test'
+  ...
+# Subtest: bullish but weak timing separates long-term buy from wait today
+ok 697 - bullish but weak timing separates long-term buy from wait today
+  ---
+  duration_ms: 0.909952
+  type: 'test'
+  ...
+# Subtest: overextended bullish name says do not chase rather than generic wait
+ok 698 - overextended bullish name says do not chase rather than generic wait
+  ---
+  duration_ms: 0.141861
+  type: 'test'
+  ...
+# Subtest: outcome measurement computes benchmark alpha and max drawdown
+ok 699 - outcome measurement computes benchmark alpha and max drawdown
+  ---
+  duration_ms: 0.801601
+  type: 'test'
+  ...
+# Subtest: score bucket is stable and explicit
+ok 700 - score bucket is stable and explicit
+  ---
+  duration_ms: 0.170143
+  type: 'test'
+  ...
+# Subtest: challenger cannot auto-promote on backtest alone
+ok 701 - challenger cannot auto-promote on backtest alone
+  ---
+  duration_ms: 0.28274
+  type: 'test'
+  ...
+# Subtest: challenger promotion requires stronger out-of-sample and forward evidence
+ok 702 - challenger promotion requires stronger out-of-sample and forward evidence
+  ---
+  duration_ms: 0.138425
+  type: 'test'
+  ...
+# Subtest: mixed equity crypto cash portfolio is valued correctly and cash is not thesis-scored
+ok 703 - mixed equity crypto cash portfolio is valued correctly and cash is not thesis-scored
+  ---
+  duration_ms: 1.549242
+  type: 'test'
+  ...
+# Subtest: portfolio health has no arbitrary minimum floor
+ok 704 - portfolio health has no arbitrary minimum floor
+  ---
+  duration_ms: 0.203523
+  type: 'test'
+  ...
+# Subtest: strong compounder can earn a starter path with imperfect but non-falling-knife timing
+ok 705 - strong compounder can earn a starter path with imperfect but non-falling-knife timing
+  ---
+  duration_ms: 1.638284
+  type: 'test'
+  ...
+# Subtest: strong growth name can earn a starter path with imperfect timing when no falling-knife guard is active
+ok 706 - strong growth name can earn a starter path with imperfect timing when no falling-knife guard is active
+  ---
+  duration_ms: 0.24912
+  type: 'test'
+  ...
+# Subtest: required stabilization still blocks starter capital
+ok 707 - required stabilization still blocks starter capital
+  ---
+  duration_ms: 0.23579
+  type: 'test'
+  ...
+# Subtest: price-only movement cannot rewrite slow thesis metric
+ok 708 - price-only movement cannot rewrite slow thesis metric
+  ---
+  duration_ms: 0.816103
+  type: 'test'
+  ...
+# Subtest: new fundamental evidence can update slow thesis metric
+ok 709 - new fundamental evidence can update slow thesis metric
+  ---
+  duration_ms: 0.146838
+  type: 'test'
+  ...
+# Subtest: connected broker with zero evaluated signals is not called trading or learning
+ok 710 - connected broker with zero evaluated signals is not called trading or learning
+  ---
+  duration_ms: 0.971965
+  type: 'test'
+  ...
+# Subtest: learning requires matured outcomes
+ok 711 - learning requires matured outcomes
+  ---
+  duration_ms: 0.176062
+  type: 'test'
+  ...
+# Subtest: AI infrastructure uses capacity/forward economics fallback instead of empty fair value
+ok 712 - AI infrastructure uses capacity/forward economics fallback instead of empty fair value
+  ---
+  duration_ms: 0.971123
+  type: 'test'
+  ...
+# Subtest: biotech fallback does not invent absolute price target
+ok 713 - biotech fallback does not invent absolute price target
+  ---
+  duration_ms: 0.230362
+  type: 'test'
+  ...
+# Subtest: Pulse produces immediate health, allocation, contribution and truthful history state
+ok 714 - Pulse produces immediate health, allocation, contribution and truthful history state
+  ---
+  duration_ms: 1.807326
+  type: 'test'
+  ...
+# Subtest: Pulse does not call cost-basis return period performance
+ok 715 - Pulse does not call cost-basis return period performance
+  ---
+  duration_ms: 0.344032
+  type: 'test'
+  ...
+# Subtest: Pulse marks snapshot history actual only when at least two dated snapshots exist
+ok 716 - Pulse marks snapshot history actual only when at least two dated snapshots exist
+  ---
+  duration_ms: 6.516373
+  type: 'test'
+  ...
+# Subtest: 1W selects the nearest snapshot at or before the target and computes alpha
+ok 717 - 1W selects the nearest snapshot at or before the target and computes alpha
+  ---
+  duration_ms: 1.420631
+  type: 'test'
+  ...
+# Subtest: YTD begins from first snapshot on or before Jan 1
+ok 718 - YTD begins from first snapshot on or before Jan 1
+  ---
+  duration_ms: 0.315529
+  type: 'test'
+  ...
+# Subtest: ALL uses oldest snapshot
+ok 719 - ALL uses oldest snapshot
+  ---
+  duration_ms: 0.187919
+  type: 'test'
+  ...
+# Subtest: returns insufficient rather than fabricating period history
+ok 720 - returns insufficient rather than fabricating period history
+  ---
+  duration_ms: 0.136363
+  type: 'test'
+  ...
+# Subtest: benchmark gap leaves benchmark and alpha null
+ok 721 - benchmark gap leaves benchmark and alpha null
+  ---
+  duration_ms: 0.180038
+  type: 'test'
+  ...
+# Subtest: supports every public period
+ok 722 - supports every public period
+  ---
+  duration_ms: 0.535996
+  type: 'test'
+  ...
+# Subtest: extreme provider disagreement never chooses a suspect display quote
+ok 723 - extreme provider disagreement never chooses a suspect display quote
+  ---
+  duration_ms: 1.317718
+  type: 'test'
+  ...
+# Subtest: agreeing fresh providers produce verified price
+ok 724 - agreeing fresh providers produce verified price
+  ---
+  duration_ms: 0.184434
+  type: 'test'
+  ...
+# Subtest: stale source is not tradable
+ok 725 - stale source is not tradable
+  ---
+  duration_ms: 0.168651
+  type: 'test'
+  ...
+# Subtest: null thesis values are not converted into fake 0/100 quality
+ok 726 - null thesis values are not converted into fake 0/100 quality
+  ---
+  duration_ms: 1.247384
+  type: 'test'
+  ...
+# Subtest: portfolio thesis quality uses actual thesis evidence when available
+ok 727 - portfolio thesis quality uses actual thesis evidence when available
+  ---
+  duration_ms: 0.525211
+  type: 'test'
+  ...
+# Subtest: paper invalidation prefers the decision risk zone
+ok 728 - paper invalidation prefers the decision risk zone
+  ---
+  duration_ms: 0.912626
+  type: 'test'
+  ...
+# Subtest: paper invalidation uses frozen market evidence when the decision risk zone is missing
+ok 729 - paper invalidation uses frozen market evidence when the decision risk zone is missing
+  ---
+  duration_ms: 0.146457
+  type: 'test'
+  ...
+# Subtest: paper invalidation can use major support as a conservative paper-only fallback
+ok 730 - paper invalidation can use major support as a conservative paper-only fallback
+  ---
+  duration_ms: 0.137705
+  type: 'test'
+  ...
+# Subtest: context help is portaled and viewport positioned instead of clipped inside metric cards
+ok 731 - context help is portaled and viewport positioned instead of clipped inside metric cards
+  ---
+  duration_ms: 0.360075
+  type: 'test'
+  ...
+# Subtest: key investor metrics publish plain-English score ranges
+ok 732 - key investor metrics publish plain-English score ranges
+  ---
+  duration_ms: 0.315488
+  type: 'test'
+  ...
+# Subtest: portfolio learning freezes technical levels so paper sizing can reproduce invalidation
+ok 733 - portfolio learning freezes technical levels so paper sizing can reproduce invalidation
+  ---
+  duration_ms: 0.178876
+  type: 'test'
+  ...
+# Subtest: paper runner reads frozen evidence and resolves paper invalidation before sizing
+ok 734 - paper runner reads frozen evidence and resolves paper invalidation before sizing
+  ---
+  duration_ms: 0.173839
+  type: 'test'
+  ...
+# Subtest: paper equity limit prices are normalized to two decimals before broker submission
+ok 735 - paper equity limit prices are normalized to two decimals before broker submission
+  ---
+  duration_ms: 1.310667
+  type: 'test'
+  ...
+# Subtest: Alpaca execution quote prefers the freshest quote timestamp over an older last trade
+ok 736 - Alpaca execution quote prefers the freshest quote timestamp over an older last trade
+  ---
+  duration_ms: 20.374799
+  type: 'test'
+  ...
+# Subtest: paper runner retries market data once when an open-session quote is stale
+ok 737 - paper runner retries market data once when an open-session quote is stale
+  ---
+  duration_ms: 0.729123
+  type: 'test'
+  ...
+# Subtest: analysis route loads V9.3.4 market bars and optional Alpaca integrity in parallel
+ok 738 - analysis route loads V9.3.4 market bars and optional Alpaca integrity in parallel
+  ---
+  duration_ms: 0.339434
+  type: 'test'
+  ...
+# Subtest: stock core loader uses one browser request while server-side history handles bounded retry
+ok 739 - stock core loader uses one browser request while server-side history handles bounded retry
+  ---
+  duration_ms: 0.794971
+  type: 'test'
+  ...
+# Subtest: metric help treats risk pressure as inverse and exposes score contributors
+ok 740 - metric help treats risk pressure as inverse and exposes score contributors
+  ---
+  duration_ms: 0.2358
+  type: 'test'
+  ...
+# Subtest: metric info stays an inline title unit and portfolio snapshot has no decorative underline
+ok 741 - metric info stays an inline title unit and portfolio snapshot has no decorative underline
+  ---
+  duration_ms: 1.509343
+  type: 'test'
+  ...
+# Subtest: stock page no longer renders the detached top market context strip
+ok 742 - stock page no longer renders the detached top market context strip
+  ---
+  duration_ms: 0.559771
+  type: 'test'
+  ...
+# Subtest: user-facing live status does not expose LIVE_SINGLE_SOURCE debug wording
+ok 743 - user-facing live status does not expose LIVE_SINGLE_SOURCE debug wording
+  ---
+  duration_ms: 1.057601
+  type: 'test'
+  ...
+# Subtest: watchlist displays only ready canonical research lenses
+ok 744 - watchlist displays only ready canonical research lenses
+  ---
+  duration_ms: 310.215277
+  type: 'test'
+  ...
+# Subtest: watchlist logo and identity open encoded research without nesting remove controls
+ok 745 - watchlist logo and identity open encoded research without nesting remove controls
+  ---
+  duration_ms: 134.366283
+  type: 'test'
+  ...
+# Subtest: missing and foreign quotes stay unavailable instead of becoming dollar values
+ok 746 - missing and foreign quotes stay unavailable instead of becoming dollar values
+  ---
+  duration_ms: 195.52045
+  type: 'test'
+  ...
+# Subtest: stale quotes cannot claim current alert target attainment
+ok 747 - stale quotes cannot claim current alert target attainment
+  ---
+  duration_ms: 79.349356
+  type: 'test'
+  ...
+# Subtest: paused alerts keep their target and offer resume
+ok 748 - paused alerts keep their target and offer resume
+  ---
+  duration_ms: 89.967508
+  type: 'test'
+  ...
+# Subtest: an absent saved alert target is unavailable, never a zero-dollar threshold
+ok 749 - an absent saved alert target is unavailable, never a zero-dollar threshold
+  ---
+  duration_ms: 74.988562
+  type: 'test'
+  ...
+# Subtest: empty history explains unavailable evidence without a price target
+ok 750 - empty history explains unavailable evidence without a price target
+  ---
+  duration_ms: 230.99924
+  type: 'test'
+  ...
+# Subtest: loading and failed history retain readable recoverable states
+ok 751 - loading and failed history retain readable recoverable states
+  ---
+  duration_ms: 128.037114
+  type: 'test'
+  ...
+# Subtest: controls identify average calculation and scale and keep advanced details discoverable
+ok 752 - controls identify average calculation and scale and keep advanced details discoverable
+  ---
+  duration_ms: 52.695738
+  type: 'test'
+  ...
+1..752
+# tests 752
+# suites 0
+# pass 752
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 33678.287964

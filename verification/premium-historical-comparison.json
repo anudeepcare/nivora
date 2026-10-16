@@ -1,0 +1,14 @@
+{
+  "previous": {
+    "passed": 649,
+    "failed": 82
+  },
+  "current": {
+    "passed": 649,
+    "failed": 82
+  },
+  "newFailureNames": [],
+  "resolvedFailureNames": [],
+  "failureNamesUnchanged": true,
+  "note": "Original aggregate preserved; this comparison does not waive any failures."
+}

@@ -118,6 +118,7 @@ test('warm research memory is bounded and expires without retimestamping persist
 test('unversioned or older company evidence is rejected even if its cache timestamp is recent',()=>{
   assert.equal(isCurrentCompanyEvidence({rawMetrics:{revenue:1_000_000},dataQuality:{valuationCurrency:'USD'}}),false);
   assert.equal(isCurrentCompanyEvidence({dataQuality:{contractVersion:'sec-company-evidence-v1'}}),false);
+  assert.equal(isCurrentCompanyEvidence({dataQuality:{contractVersion:'sec-company-evidence-v2'}}),false);
   assert.equal(isCurrentCompanyEvidence(null),false);
-  assert.equal(isCurrentCompanyEvidence({dataQuality:{contractVersion:'sec-company-evidence-v2',status:'UNAVAILABLE'}}),true);
+  assert.equal(isCurrentCompanyEvidence({dataQuality:{contractVersion:'sec-company-evidence-v3',status:'UNAVAILABLE'}}),true);
 });

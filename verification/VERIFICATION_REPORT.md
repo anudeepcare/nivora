@@ -1,18 +1,18 @@
 # AURYN current verification
 
-Current update: weekly Fibonacci research and shared product UX, October 16, 2026 UTC. Read **WEEKLY_UX_REPORT.md** for scope, methods, evidence and limitations.
+Current revision: **mobile-first premium product redesign, 16 October 2026 UTC**. Read `PREMIUM_UX_REPORT.md` for the exact scope and limitations. Earlier reports remain historical evidence.
 
-| Gate | Current result |
+| Gate | Result |
 | --- | --- |
-| Release acceptance | **696 passed / 0 failed / 0 skipped**, 161 complete test files |
-| Production build / TypeScript | **PASS** |
-| Research browser | **88 tab/theme/width cases**, 8 request-reuse/control cases, no runtime errors |
-| Global route/layout browser | **208 cases**, no overflow/runtime errors or phone inputs below 16px |
-| Client interaction and populated portfolio | **36 checks passed**, mocked services |
-| Historical aggregate | **649 passed / 82 failed**, failure names unchanged from preceding research update |
+| Release acceptance | **752 passed, 0 failed, 0 skipped** across 167 complete test files |
+| Production build and TypeScript | **PASS** |
+| Global route/layout browser | **208 cases**, two themes, no page overflow/runtime errors or phone inputs below 16px |
+| Research browser | **88 tab/theme/width cases** plus 8 chart/control/request-reuse cases; no runtime errors |
+| Client interactions and populated portfolio | **41 checks passed**, intercepted services |
+| Multi-company valuation/evidence | **20 cases** at 375/390/1280/1920px; synthetic MSFT/APP inputs and blocked missing/unsupported states |
+| Historical aggregate | **649 passed / 82 failed**; failure names unchanged from the previous package |
+| Archive | Complete source inventory and per-file hashes in `SOURCE_MANIFEST.json`; no earlier packaged source path removed |
 
-**This is the complete updated source package, not certification of fully operational commercial production or live trading.** Actual deployment, external end-to-end acceptance, physical iPhone/Safari behavior and remaining investment-model features are disclosed in `WEEKLY_UX_REPORT.md` and `LIVE_READINESS.md`.
+**This is the complete updated source package. It is not certification of fully operational live production.** Actual deployment, email/login/CRUD, paper execution/fill/cancellation, and physical iPhone Safari remain unverified for this revision. Existing external configuration blockers are in `LIVE_READINESS.md`. Scenario values are exploratory and do not unlock canonical fair value or order gates.
 
-Current logs use the `weekly-` and `polish-` prefixes. `weekly-tested-source-hashes.json` records the tested code; `weekly-source-completeness.json` compares preserved paths; root `SOURCE_MANIFEST.json` inventories every packaged file. Earlier reports and screenshots remain historical evidence, not fresh verification of every old claim. `PRE_WEEKLY_VERIFICATION_REPORT.md` preserves the preceding report.
-
-Root **FIBONACCI_RESEARCH.md** explains calculation choices, **PRODUCT_DIRECTION.md** distinguishes implemented and proposed capabilities, and **DEPLOYMENT.md** provides GitHub/Vercel steps. No new provider subscription is required. This update has not been pushed or deployed by this session.
+Current evidence uses the `premium-` prefix. `premium-tested-source-hashes.json` binds the verification to the application/test/configuration files. `premium-source-completeness.json` checks retained paths. `PRE_PREMIUM_VERIFICATION_REPORT.md` preserves the preceding report. `PREMIUM_VISUAL_REVIEW.html` indexes actual screenshots and approved design boards. `DEPLOYMENT.md` provides the GitHub/Vercel steps. No new subscription was added; this session has not pushed or deployed the ZIP.

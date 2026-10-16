@@ -1,9 +1,8 @@
 "use client";
 
-import {useMemo,useState} from "react";
+import AssetLogo from "@/components/AssetLogo";
 import {formatMoney,formatPercent} from "@/lib/nivora-format";
 
-const brandSlugs:Record<string,string>={AAPL:"apple",MSFT:"microsoft",GOOGL:"google",GOOG:"google",AMZN:"amazon",META:"meta",NVDA:"nvidia",TSLA:"tesla",NFLX:"netflix",AMD:"amd",INTC:"intel",CRM:"salesforce",ORCL:"oracle",ADBE:"adobe",PYPL:"paypal",UBER:"uber",SHOP:"shopify",SPOT:"spotify",IBM:"ibm",CSCO:"cisco"};
 
 type MarketFacts={
  marketCap?:number|null;
@@ -20,13 +19,7 @@ function compact(v:number|null|undefined){
  return new Intl.NumberFormat("en-US",{notation:"compact",maximumFractionDigits:x>=1e9?2:1}).format(x);
 }
 function SecurityLogo({symbol,company,logoUrl}:{symbol:string;company?:string;logoUrl?:string|null}){
- const key=String(symbol||"").toUpperCase();
- const slug=brandSlugs[key];
- const candidates=useMemo(()=>[logoUrl,slug?`https://cdn.simpleicons.org/${slug}/111111`:null,`https://financialmodelingprep.com/image-stock/${encodeURIComponent(key)}.png`].filter((x):x is string=>Boolean(x)),[logoUrl,key,slug]);
- const[index,setIndex]=useState(0),failed=index>=candidates.length;
- return <span className={`aurynSecurityLogo ${failed?"aurynSecurityLogoFallback":""}`} aria-label={`${company||key} logo`}>
-  {failed?<b>{key.slice(0,2)}</b>:<img key={candidates[index]} src={candidates[index]} alt="" loading="eager" referrerPolicy="no-referrer" onError={()=>setIndex(i=>i+1)}/>} 
- </span>;
+ return <span className="aurynSecurityLogo"><AssetLogo symbol={symbol} name={company} logoUrl={logoUrl} size={48}/></span>;
 }
 
 export default function StockSecurityHeader({company,symbol,price,changePct,status,detail,logoUrl,marketFacts,owns=false,positionLoaded=false,onToggleOwn}:{company?:string;symbol:string;price:number|null;changePct:number|null;status:string;detail:string;logoUrl?:string|null;marketFacts?:MarketFacts;owns?:boolean;positionLoaded?:boolean;onToggleOwn?:()=>void}){

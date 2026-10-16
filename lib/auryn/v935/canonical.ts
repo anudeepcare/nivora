@@ -1,6 +1,8 @@
 import {createClient} from "@supabase/supabase-js";
 import {loadCanonicalMarketSnapshot} from "@/lib/auryn/market-data-gateway";
 import {classifySecuritySymbol} from "@/lib/auryn/v82/security-master";
+import {loadCanonicalCryptoSnapshot} from "@/lib/auryn/canonical-crypto";
+import {isCryptoQuoteSymbol,normalizeQuoteSymbol} from "@/lib/auryn/quote-symbol";
 import type {AurynCanonicalSnapshot,CanonicalResearchProjection,CanonicalSecurityIdentity} from "./domain";
 import {buildV935Provenance,V935_CANONICAL_CONTRACT,V935_CANONICAL_VERSION} from "./provenance";
 
@@ -11,8 +13,8 @@ function db(){
 function num(v:any){const n=Number(v);return Number.isFinite(n)?n:null}
 function identity(symbol:string):CanonicalSecurityIdentity{
  const x:any=classifySecuritySymbol(symbol);
- const assetType=symbol.includes("/")?"CRYPTO":x?.assetType==="EQUITY"||x?.type==="EQUITY"?"EQUITY":"EQUITY";
- return {symbol,assetType,exchange:x?.exchange??null,mic:x?.mic??x?.micCode??null,currency:x?.currency??(assetType==="EQUITY"?"USD":null)};
+ const assetType=isCryptoQuoteSymbol(symbol)?"CRYPTO":x?.assetType==="EQUITY"||x?.type==="EQUITY"?"EQUITY":"EQUITY";
+ return {symbol,assetType,exchange:assetType==="CRYPTO"?null:x?.exchange??null,mic:assetType==="CRYPTO"?null:x?.mic??x?.micCode??null,currency:assetType==="CRYPTO"?symbol.split('/')[1]:x?.currency??"USD"};
 }
 function researchFromRow(row:any):CanonicalResearchProjection{
  if(!row)return {state:"ANALYSIS_REQUIRED",observedAt:null,decisionSnapshotId:null,fingerprint:null,action:null,ownerAction:null,longTermAction:null,setupState:null,decisionScore:null,evidenceCompleteness:null,marketIntelligenceSnapshotId:null,timeframes:null,actionMap:null,levels:null,thesisScore:null,opportunityScore:null,archetype:null};
@@ -25,14 +27,15 @@ async function latestDecision(symbol:string){
  return data||null;
 }
 export async function loadAurynCanonicalSnapshot(symbolRaw:string):Promise<AurynCanonicalSnapshot>{
- const symbol=symbolRaw.trim().toUpperCase(); const generatedAt=new Date().toISOString();
+ const symbol=normalizeQuoteSymbol(symbolRaw); const generatedAt=new Date().toISOString();
  const rowPromise=latestDecision(symbol).catch(()=>null);
  const twelveKey=process.env.TWELVE_DATA_API_KEY||"",alpacaKey=process.env.ALPACA_PAPER_API_KEY||"",alpacaSecret=process.env.ALPACA_PAPER_API_SECRET||"";
- const marketPromise=(twelveKey||alpacaKey)?loadCanonicalMarketSnapshot({symbol,twelveKey,alpacaKey,alpacaSecret,asOf:new Date()}).then(x=>x.snapshot).catch(()=>null):Promise.resolve(null);
+ const marketPromise=isCryptoQuoteSymbol(symbol)?loadCanonicalCryptoSnapshot(symbol):(twelveKey||alpacaKey)?loadCanonicalMarketSnapshot({symbol,twelveKey,alpacaKey,alpacaSecret,asOf:new Date()}).then(x=>x.snapshot).catch(()=>null):Promise.resolve(null);
  const [row,market]=await Promise.all([rowPromise,marketPromise]);
  const research=researchFromRow(row); const security=identity(symbol);
- const degraded=!market||research.state!=="READY";
- const degradedReason=!market?"MARKET_TRUTH_REFRESHING":research.state==="ANALYSIS_REQUIRED"?"ANALYSIS_REQUIRED":research.state==="STALE_VERIFIED"?"RESEARCH_REFRESH_RECOMMENDED":null;
+ const marketUnavailable=!market||market.displayPrice==null;
+ const degraded=marketUnavailable||research.state!=="READY";
+ const degradedReason=marketUnavailable?"MARKET_TRUTH_REFRESHING":research.state==="ANALYSIS_REQUIRED"?"ANALYSIS_REQUIRED":research.state==="STALE_VERIFIED"?"RESEARCH_REFRESH_RECOMMENDED":null;
  const provenance=buildV935Provenance({symbol,marketSnapshotId:market?.snapshotId??null,researchSnapshotId:research.decisionSnapshotId??null,fingerprint:research.fingerprint??null,generatedAt});
  return {contract:V935_CANONICAL_CONTRACT,version:V935_CANONICAL_VERSION,snapshotId:provenance.snapshotId,generatedAt,security,market,research,degraded,degradedReason};
 }

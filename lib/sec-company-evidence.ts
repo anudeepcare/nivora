@@ -109,6 +109,18 @@ function evidence(key:string,point:SecCompanyFact) {
   return {key,...rest,period:point.scope==='POINT_IN_TIME'?point.periodEnd:`${point.periodStart} – ${point.periodEnd}`};
 }
 
+// Shares are a count, not a monetary fact. Keep their unit separate and only
+// pair the annual diluted denominator with the exact cash-flow filing/period.
+function annualDilutedShareEvidence(payload:any,anchor:SecCompanyFact|null,asOf:string) {
+  if(!anchor||anchor.taxonomy!=='us-gaap'||anchor.scope!=='ANNUAL'||!anchor.accession||!anchor.sourceUrl)return null;
+  const concept='WeightedAverageNumberOfDilutedSharesOutstanding';
+  const rows=(payload?.facts??payload??{})['us-gaap']?.[concept]?.units?.shares;
+  if(!Array.isArray(rows))return null;
+  const matched=rows.filter((row:any)=>typeof row?.val==='number'&&Number.isFinite(row.val)&&row.val>0&&row.start===anchor.periodStart&&row.end===anchor.periodEnd&&row.accn===anchor.accession&&row.filed===anchor.filedAt&&validDate(row.filed)&&row.filed<=asOf&&row.end<=asOf&&ANNUAL_FORMS.has(row.form));
+  if(!matched.length||new Set(matched.map((row:any)=>row.val)).size!==1)return null;
+  return {key:'dilutedShares',value:matched[0].val,currency:null,unit:'shares',periodStart:anchor.periodStart,periodEnd:anchor.periodEnd,filedAt:anchor.filedAt,accession:anchor.accession,form:anchor.form,concept,taxonomy:'us-gaap',scope:'ANNUAL' as const,source:'SEC' as const,basis:'GAAP' as const,sourceUrl:anchor.sourceUrl,period:`${anchor.periodStart} – ${anchor.periodEnd}`};
+}
+
 export function buildSecCompanyEvidence(payload:any,options:{cik?:string;asOf?:string}={}) {
   const points=normalizeFacts(payload,options.cik??'',(options.asOf??new Date().toISOString()).slice(0,10));
   const annual=points.filter(p=>p.scope==='ANNUAL');
@@ -154,7 +166,8 @@ export function buildSecCompanyEvidence(payload:any,options:{cik?:string;asOf?:s
 
   const qNet=businessFact('netIncome',quarterRevenue),qOp=periodFact(quarters,'operatingIncome',quarterRevenue),qGross=periodFact(quarters,'grossProfit',quarterRevenue);
   const latestQuarter=quarterRevenue?{period:`Quarter ended ${quarterRevenue.periodEnd}`,periodStart:quarterRevenue.periodStart,periodEnd:quarterRevenue.periodEnd,filedAt:quarterRevenue.filedAt,currency:quarterRevenue.currency,unit:quarterRevenue.unit,accession:quarterRevenue.accession,sourceUrl:quarterRevenue.sourceUrl,revenue:quarterRevenue.value,revenueGrowth:growth(quarterRevenue,priorPeriod(quarters,quarterRevenue),quarters),netIncome:value(qNet),opMargin:ratio(qOp,quarterRevenue),grossMargin:ratio(qGross,quarterRevenue)}:null;
-  const evidenceRows=[annualRevenue&&evidence('revenue',annualRevenue),annualNetIncome&&evidence('netIncome',annualNetIncome),reportedNetIncome&&evidence('reportedNetIncome',reportedNetIncome),operatingCashFlow&&evidence('operatingCashFlow',operatingCashFlow),reportedOperatingCashFlow&&evidence('reportedOperatingCashFlow',reportedOperatingCashFlow),capex&&evidence('capex',capex),cash&&evidence('cash',cash),assets&&evidence('assets',assets),liabilities&&evidence('liabilities',liabilities),operatingIncome&&evidence('operatingIncome',operatingIncome),grossProfit&&evidence('grossProfit',grossProfit),quarterRevenue&&evidence('quarterRevenue',quarterRevenue),qNet&&evidence('quarterNetIncome',qNet)].filter((p):p is NonNullable<typeof p>=>p!==null);
+  const dilutedShares=annualDilutedShareEvidence(payload,operatingCashFlow??reportedOperatingCashFlow,(options.asOf??new Date().toISOString()).slice(0,10));
+  const evidenceRows=[annualRevenue&&evidence('revenue',annualRevenue),annualNetIncome&&evidence('netIncome',annualNetIncome),reportedNetIncome&&evidence('reportedNetIncome',reportedNetIncome),operatingCashFlow&&evidence('operatingCashFlow',operatingCashFlow),reportedOperatingCashFlow&&evidence('reportedOperatingCashFlow',reportedOperatingCashFlow),capex&&evidence('capex',capex),cash&&evidence('cash',cash),assets&&evidence('assets',assets),liabilities&&evidence('liabilities',liabilities),operatingIncome&&evidence('operatingIncome',operatingIncome),grossProfit&&evidence('grossProfit',grossProfit),quarterRevenue&&evidence('quarterRevenue',quarterRevenue),qNet&&evidence('quarterNetIncome',qNet),dilutedShares].filter((p):p is NonNullable<typeof p>=>p!==null);
 
   // Historical rows retain original currencies but only a continuous, comparable
   // current reporting cohort is eligible for growth and durability scoring.
@@ -220,6 +233,6 @@ export function buildSecCompanyEvidence(payload:any,options:{cik?:string;asOf?:s
   if(!quarterRevenue)warnings.push('No verified standalone quarter is available. Year-to-date disclosures are not treated as quarterly results.');
   const available=Object.values(rawMetrics).filter(v=>v!==null).length,total=Object.keys(rawMetrics).length;
   if(available<total)warnings.push('Some metrics lack matching periods, currencies or source facts. Missing evidence lowers coverage, not business quality.');
-  const dataQuality={contractVersion:'sec-company-evidence-v2',status:available===0?'UNAVAILABLE':available>=6?'SUFFICIENT':'PARTIAL',reportedCurrency,valuationCurrency:'USD',earningsBasis:annualNetIncome?.metric==='continuingNetIncome'?'CONTINUING_OPERATIONS':annualNetIncome?'REPORTED':'UNAVAILABLE',cashFlowBasis:operatingCashFlow?.metric==='continuingOperatingCashFlow'?'CONTINUING_OPERATIONS':operatingCashFlow?'REPORTED':'UNAVAILABLE',comparableHistory,warnings,coverage:{available,total,percent:Math.round(available/total*100)},latestPeriodEnd:currentReporter?.periodEnd??null,latestFiledAt:currentReporter?.filedAt??null};
+  const dataQuality={contractVersion:'sec-company-evidence-v3',status:available===0?'UNAVAILABLE':available>=6?'SUFFICIENT':'PARTIAL',reportedCurrency,valuationCurrency:'USD',earningsBasis:annualNetIncome?.metric==='continuingNetIncome'?'CONTINUING_OPERATIONS':annualNetIncome?'REPORTED':'UNAVAILABLE',cashFlowBasis:operatingCashFlow?.metric==='continuingOperatingCashFlow'?'CONTINUING_OPERATIONS':operatingCashFlow?'REPORTED':'UNAVAILABLE',comparableHistory,warnings,coverage:{available,total,percent:Math.round(available/total*100)},latestPeriodEnd:currentReporter?.periodEnd??null,latestFiledAt:currentReporter?.filedAt??null};
   return {evidence:evidenceRows,latestQuarter,fundamentals,fundamentalSignal,fiveYearRecord,rawMetrics,reportedMetrics,dataQuality};
 }

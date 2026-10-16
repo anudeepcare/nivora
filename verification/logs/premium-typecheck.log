@@ -1,0 +1,2 @@
+components/ResearchHome.tsx(20,158): error TS2339: Property 'asset_type' does not exist on type '{ symbol: any; } | { symbol: any; asset_type: any; }'.
+  Property 'asset_type' does not exist on type '{ symbol: any; }'.

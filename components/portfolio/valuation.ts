@@ -1,7 +1,13 @@
 /** Presentation boundary: missing quotes and non-USD cash must never become USD market value. */
 export function positivePrice(value:unknown):number|null { if(value==null||value==='')return null;const n=Number(value);return Number.isFinite(n)&&n>0?n:null; }
-export function positionValue(row:any,market:any):number|null {if(row.asset_type==='CASH')return String(row.currency||row.symbol).toUpperCase()==='USD'?Number(row.shares):null;const price=positivePrice(market?.displayPrice);return price==null?null:Number(row.shares)*price;}
-export function valuationSummary(rows:any[],quotes:Record<string,any>){let knownValue=0,unrealized=0,missing=0;for(const row of rows){const value=positionValue(row,quotes[row.symbol]?.market);if(value==null){missing++;continue}knownValue+=value;if(row.asset_type!=='CASH')unrealized+=value-Number(row.shares)*Number(row.avg_cost);}return{knownValue,unrealized,missing,totalValue:missing?null:knownValue};}
+function nonnegativeNumber(value:unknown):number|null {if(value==null||(typeof value!=='string'&&typeof value!=='number')||String(value).trim()==='')return null;const n=Number(value);return Number.isFinite(n)&&n>=0?n:null;}
+export function positionValue(row:any,market:any):number|null {
+ const quantity=nonnegativeNumber(row.shares);if(quantity==null)return null;
+ if(row.asset_type==='CASH')return String(row.currency||row.symbol).toUpperCase()==='USD'?quantity:null;
+ if(market?.currency&&String(market.currency).toUpperCase()!=='USD')return null;
+ const price=positivePrice(market?.displayPrice),value=price==null?null:quantity*price;return value!=null&&Number.isFinite(value)?value:null;
+}
+export function valuationSummary(rows:any[],quotes:Record<string,any>){let knownValue=0,unrealized:number|null=null,missing=0;for(const row of rows){const value=positionValue(row,quotes[row.symbol]?.market);if(value==null){missing++;continue}knownValue+=value;const cost=nonnegativeNumber(row.avg_cost);if(row.asset_type!=='CASH'&&cost!=null)unrealized=(unrealized??0)+value-Number(row.shares)*cost;}return{knownValue,unrealized,missing,totalValue:missing?null:knownValue};}
 export function validPosition(quantity:unknown,cost:unknown){return String(quantity).trim()!==''&&String(cost).trim()!==''&&Number.isFinite(Number(quantity))&&Number(quantity)>0&&Number.isFinite(Number(cost))&&Number(cost)>=0;}
 
 /** Retained research may be useful history, but only READY evidence supplies current calls. */

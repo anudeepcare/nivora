@@ -59,3 +59,16 @@ node verification/polish-browser.cjs
 Both accept `AURYN_TEST_URL`, `PLAYWRIGHT_MODULE_PATH`, `CHROMIUM_EXECUTABLE_PATH` and JSON `CHROMIUM_ARGS` overrides. Historical harnesses remain in the archive; their selectors may require updates for the newly collapsed daily technical section. The new weekly harness supersedes `product-browser.cjs` for current research interactions. Do not treat a mocked browser pass as actual login, database or order verification.
 
 `node verification/polish-interactions.cjs` additionally exercises fixture-backed portfolio/watchlist/alert/profile/onboarding/sign-out and paper-review presentation, plus populated portfolio layouts. Its service writes are intercepted; it does not submit an actual order or validate live RLS. The output is `polish-interaction-report.json`.
+
+## Current premium product checks
+
+With the fixture production server on port 3102, run sequentially:
+
+```sh
+node verification/premium-global-browser.cjs
+node verification/premium-research-browser.cjs
+node verification/premium-interactions.cjs
+node verification/premium-company-browser.cjs
+```
+
+These scripts supersede the earlier presentation selectors while preserving the original harnesses as historical records. They cover 208 global route/theme/width cases, 88 research tab cases plus eight chart/control/request-reuse cases, 41 interactions and populated portfolio checks, and 20 valuation/evidence cases at 375/390/1280/1920 pixels. MSFT and APP scenario fixtures are deliberately synthetic. No displayed scenario is actual company valuation evidence. The IREN missing-data and BTC unsupported-method cases must stay blocked. Reports use the `premium-` prefix. Screenshot and data fixtures are not shipped into the product runtime.

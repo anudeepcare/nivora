@@ -21,3 +21,14 @@ test('stale or unverified research cannot contribute current calls or thesis sco
  assert.equal(project({state:'READY',action:'BUY',ownerAction:'HOLD',thesisScore:80}).ownerAction,'HOLD');
  assert.equal(project({state:'READY',action:'BUY',ownerAction:'HOLD',thesisScore:80}).thesisScore,80);
 });
+test('missing cost basis and entirely unpriced holdings do not invent unrealized profit',()=>{
+ const row={symbol:'A',shares:10,asset_type:'EQUITY'};
+ assert.equal(valuationSummary([row],{A:{market:{displayPrice:120}}}).unrealized,null);
+ assert.equal(valuationSummary([{...row,avg_cost:100}],{}).unrealized,null);
+ assert.equal(valuationSummary([{...row,avg_cost:0}],{A:{market:{displayPrice:120}}}).unrealized,1200);
+});
+test('invalid quantities and non-USD quotes cannot enter USD totals',()=>{
+ for(const shares of [null,undefined,'',NaN,Infinity,-1])assert.equal(positionValue({asset_type:'EQUITY',shares},{displayPrice:10}),null);
+ assert.equal(positionValue({asset_type:'CRYPTO',shares:1},{displayPrice:60000,currency:'USDT'}),null);
+ assert.equal(positionValue({asset_type:'CRYPTO',shares:1},{displayPrice:60000,currency:'USD'}),60000);
+});

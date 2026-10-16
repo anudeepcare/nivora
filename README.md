@@ -4,13 +4,17 @@ Start with **PROJECT_STRUCTURE.md**, **DEPLOYMENT.md** and **verification/VERIFI
 
 This package contains the complete application source, redesigned routes, preserved research/investment engines, Supabase SQL, paper-trading integrations, approved reference material, executable tests and verification evidence. It is not a claim of fully verified production operation: some live service connections and read isolation are now verified; end-to-end authentication, broker execution and deployment of this rebuilt source still require acceptance. Historical source-contract suites remain separately reported. The precise status is recorded in the verification report.
 
-## October 16 weekly research and product UX update
+## October 16 premium product update
+
+Read **PREMIUM_UX_RELEASE.md** for the current mobile-first design, search/portfolio fixes, quote-refresh budget and exploratory valuation boundary. The approved concept boards are included under `docs/redesign/approved-2026-10-16/`. Detailed explanations open on demand; financial data stays on high-contrast surfaces.
+
+## Previous weekly research update
 
 Weekly Fibonacci research is now available in Technicals and the expandable Overview study: inspect swing anchors, select simple/weighted 50/200-week averages, choose linear/logarithmic geometry, and read support/reclaim/hold explanations. The shared product finish improves typography, contrast, touch targets, form readability, navigation and card spacing across the existing routes in both themes. See **FIBONACCI_RESEARCH.md** for exact rules and **verification/WEEKLY_UX_REPORT.md** for fresh evidence and limits. No additional paid dependency or provider is required.
 
 ## October 15 product research update
 
-This update corrects SEC reporting currency and annual/quarter selection, distinguishes continuing operations and comparable history, adds source-backed business evidence, explains the three action horizons, makes missing valuation implementation explicit, and reduces duplicate research/chart requests. Mobile research puts decision context before the chart. No additional subscription was purchased.
+This update corrects SEC reporting currency and annual/quarter selection, distinguishes continuing operations and comparable history, adds source-backed business evidence, explains the three action horizons, makes missing valuation implementation explicit, and reduces duplicate research/chart requests. The current premium revision puts chart, independent research lenses and concise canonical context together near the top. No additional subscription was purchased.
 
 Read **PRODUCT_DIRECTION.md** for the affordable product sequence, including validated valuation, proposed DCA/signal rules and the path from paper testing to a later customer product. These proposed features are not advertised as implemented. Read **verification/PRODUCT_REVIEW_REPORT.md** for current results and limitations.
 

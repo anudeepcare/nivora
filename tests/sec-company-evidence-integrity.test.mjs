@@ -149,7 +149,7 @@ test('a changed reporting cohort excludes predecessor years absent from the late
 test('all company responses identify the currency-safe evidence contract including no-match and crypto', async()=>{
   for(const symbol of ['TEST','MISSING','BTC/USD']) {
     const c=await company(payload({}),symbol);
-    assert.equal(c.dataQuality.contractVersion,'sec-company-evidence-v2',symbol);
+    assert.equal(c.dataQuality.contractVersion,'sec-company-evidence-v3',symbol);
     assert.equal(c.rawMetrics.revenue,null,symbol);
     assert.equal(c.dataQuality.coverage.percent,0,symbol);
   }

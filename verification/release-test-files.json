@@ -159,5 +159,11 @@
   "tests/v653-portfolio-integrity.test.mjs",
   "tests/v657-context-help-paper-path.test.mjs",
   "tests/v659-reliability-premium-ux.test.mjs",
-  "tests/weekly-structure-view.test.mjs"
+  "tests/weekly-structure-view.test.mjs",
+  "tests/research-discovery.test.mjs",
+  "tests/portfolio-holdings-view.test.mjs",
+  "tests/portfolio-quote-freshness.test.mjs",
+  "tests/research-valuation-workbench.test.mjs",
+  "tests/watchlist-compact-view.test.mjs",
+  "tests/research-premium-surfaces.test.mjs"
 ]

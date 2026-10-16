@@ -4,6 +4,11 @@ import "./portfolio-redesign.css";
 import "./secondary-redesign.css";
 import "./weekly-structure.css";
 import "./product-polish.css";
+import "./portfolio-refinement.css";
+import "./watchlist-refinement.css";
+import "./valuation-workbench.css";
+import "./evidence-surfaces.css";
+import "./research-surfaces.css";
 import type {Metadata,Viewport} from "next";
 import ThemeProvider from "@/components/ThemeProvider";
 

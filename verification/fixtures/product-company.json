@@ -695,7 +695,7 @@
     "leverage": 63.04281370167168
   },
   "dataQuality": {
-    "contractVersion": "sec-company-evidence-v2",
+    "contractVersion": "sec-company-evidence-v3",
     "status": "PARTIAL",
     "reportedCurrency": "USD",
     "valuationCurrency": "USD",

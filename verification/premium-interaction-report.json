@@ -1,0 +1,170 @@
+{
+  "fixture": "Offline mocked auth and empty service responses; not live integration validation",
+  "reports": [
+    {
+      "name": "Portfolio add persists quantity and cost",
+      "passed": true
+    },
+    {
+      "name": "Portfolio edit persists",
+      "passed": true
+    },
+    {
+      "name": "Portfolio remove persists",
+      "passed": true
+    },
+    {
+      "name": "Watchlist save includes owning list",
+      "passed": true
+    },
+    {
+      "name": "Watchlist remove persists",
+      "passed": true
+    },
+    {
+      "name": "Alert creation and pause persist",
+      "passed": true
+    },
+    {
+      "name": "Profile save persists",
+      "passed": true
+    },
+    {
+      "name": "Appearance survives reload",
+      "passed": true
+    },
+    {
+      "name": "Onboarding preferences persist",
+      "passed": true
+    },
+    {
+      "name": "Paper order requires review before submission",
+      "passed": true
+    },
+    {
+      "name": "Paper submission displays recorded status, not a fill claim",
+      "passed": true
+    },
+    {
+      "name": "Populated portfolio light 320 Overview fits",
+      "passed": true
+    },
+    {
+      "name": "Populated portfolio light 320 Holdings fits",
+      "passed": true
+    },
+    {
+      "name": "Populated portfolio light 320 Allocation fits",
+      "passed": true
+    },
+    {
+      "name": "Populated portfolio light 390 Overview fits",
+      "passed": true
+    },
+    {
+      "name": "Populated portfolio light 390 Holdings fits",
+      "passed": true
+    },
+    {
+      "name": "Populated portfolio light 390 Allocation fits",
+      "passed": true
+    },
+    {
+      "name": "Populated portfolio light 768 Overview fits",
+      "passed": true
+    },
+    {
+      "name": "Populated portfolio light 768 Holdings fits",
+      "passed": true
+    },
+    {
+      "name": "Populated portfolio light 768 Allocation fits",
+      "passed": true
+    },
+    {
+      "name": "Populated portfolio light 1440 Overview fits",
+      "passed": true
+    },
+    {
+      "name": "Populated portfolio light 1440 Holdings fits",
+      "passed": true
+    },
+    {
+      "name": "Populated portfolio light 1440 Allocation fits",
+      "passed": true
+    },
+    {
+      "name": "Populated portfolio dark 320 Overview fits",
+      "passed": true
+    },
+    {
+      "name": "Populated portfolio dark 320 Holdings fits",
+      "passed": true
+    },
+    {
+      "name": "Populated portfolio dark 320 Allocation fits",
+      "passed": true
+    },
+    {
+      "name": "Populated portfolio dark 390 Overview fits",
+      "passed": true
+    },
+    {
+      "name": "Populated portfolio dark 390 Holdings fits",
+      "passed": true
+    },
+    {
+      "name": "Populated portfolio dark 390 Allocation fits",
+      "passed": true
+    },
+    {
+      "name": "Populated portfolio dark 768 Overview fits",
+      "passed": true
+    },
+    {
+      "name": "Populated portfolio dark 768 Holdings fits",
+      "passed": true
+    },
+    {
+      "name": "Populated portfolio dark 768 Allocation fits",
+      "passed": true
+    },
+    {
+      "name": "Populated portfolio dark 1440 Overview fits",
+      "passed": true
+    },
+    {
+      "name": "Populated portfolio dark 1440 Holdings fits",
+      "passed": true
+    },
+    {
+      "name": "Populated portfolio dark 1440 Allocation fits",
+      "passed": true
+    },
+    {
+      "name": "Research home has one search field",
+      "passed": true
+    },
+    {
+      "name": "Exact APP ticker is first, ahead of Apple",
+      "passed": true
+    },
+    {
+      "name": "Metric explanation opens as accessible dialog",
+      "passed": true
+    },
+    {
+      "name": "Metric explanation closes with Escape",
+      "passed": true
+    },
+    {
+      "name": "Help search filters questions",
+      "passed": true
+    },
+    {
+      "name": "Sign out returns to login",
+      "passed": true
+    }
+  ],
+  "errors": []
+}
