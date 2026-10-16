@@ -2,15 +2,15 @@ import {NextResponse} from "next/server";
 import {AlpacaPaperBroker} from "@/lib/alpaca-paper";
 import {loadTradingMarketData} from "@/lib/nivora-trading-market-data";
 import {marketSessionAt} from "@/lib/nivora-market-session";
-import type {PaperOrderPlan} from "@/lib/nivora-paper-execution";
 import {ENGINE_VERSION,TRADING_LAB_VERSION} from "@/lib/nivora-version";
+
+import {authorizePaperCron} from "@/lib/server/paper-operations";
 
 export const dynamic="force-dynamic";
 const unauthorized=()=>NextResponse.json({error:"Unauthorized."},{status:401});
 
 function auth(req:Request){
- const secret=process.env.TRADING_LAB_CRON_SECRET||process.env.CRON_SECRET;
- return Boolean(secret&&req.headers.get("authorization")===`Bearer ${secret}`);
+ return authorizePaperCron(req);
 }
 
 function broker(){
@@ -31,29 +31,6 @@ async function inspect(){
  return{b,symbol,account,positions,clock,market,session:marketSessionAt(new Date())};
 }
 
-async function submitSelfTestOrder(b:AlpacaPaperBroker,symbol:string,price:number){
- // Deliberately far from market so the paper order proves broker submission/cancel
- // without intentionally creating a position.
- const limitPrice=Math.max(.01,Math.floor(price*.50*100)/100);
- const order:PaperOrderPlan={
-  clientOrderId:`niv_diag_${Date.now().toString(36)}`,
-  symbol,
-  side:"BUY",
-  quantity:1,
-  type:"limit",
-  timeInForce:"day",
-  limitPrice,
-  referencePrice:price,
-  notional:+limitPrice.toFixed(2),
-  version:"v63-paper-diagnostic-1"
- };
- const submitted=await b.submitOrder(order);
- await b.cancelOrder(submitted.id);
- let finalStatus="cancel_requested";
- try{finalStatus=(await b.getOrder(submitted.id)).status}catch{}
- return{submitted,finalStatus,limitPrice};
-}
-
 export async function GET(req:Request){
  if(!auth(req))return unauthorized();
  try{
@@ -65,7 +42,7 @@ export async function GET(req:Request){
    tradingLabVersion:TRADING_LAB_VERSION,
    broker:{connected:true,equity:x.account.equity,cash:x.account.cash,positions:x.positions.length,clock:x.clock},
    quote:{symbol:x.symbol,state:x.market.integrity.state,tradable:x.market.integrity.tradable,reason:x.market.integrity.reason,provider:x.market.integrity.chosen?.provider??null,price:x.market.integrity.chosen?.price??null,ageSeconds:x.market.integrity.chosen?.ageSeconds??null,disagreementPct:x.market.integrity.disagreementPct},
-   selfTest:{orderEnabled:process.env.TRADING_LAB_SELF_TEST_ORDER_ENABLED==="true",note:"GET is read-only. POST can submit and immediately cancel a deliberately non-marketable Alpaca Paper limit order only when explicitly enabled."}
+   selfTest:{orderEnabled:false,note:"GET is read-only. Use the audited manual paper ticket for a controlled order lifecycle."}
   },{headers:{"Cache-Control":"private, no-store"}});
  }catch(error:any){
   return NextResponse.json({status:"error",mode:"paper",error:error?.message||"Paper diagnostics failed."},{status:500});
@@ -74,27 +51,5 @@ export async function GET(req:Request){
 
 export async function POST(req:Request){
  if(!auth(req))return unauthorized();
- if(process.env.TRADING_LAB_PAPER_ENABLED!=="true")return NextResponse.json({status:"disabled",reason:"Paper execution is disabled."},{status:409});
- if(process.env.TRADING_LAB_SELF_TEST_ORDER_ENABLED!=="true")return NextResponse.json({status:"disabled",reason:"Set TRADING_LAB_SELF_TEST_ORDER_ENABLED=true to arm the paper-order diagnostic."},{status:409});
- try{
-  const x=await inspect();
-  if(x.session!=="REGULAR"||!x.clock.isOpen)return NextResponse.json({status:"skipped",code:"MARKET_CLOSED",session:x.session,clock:x.clock});
-  const quote=x.market.integrity.chosen;
-  if(!quote||x.market.integrity.state!=="LIVE_VERIFIED"||quote.freshness!=="LIVE")return NextResponse.json({status:"blocked",code:"QUOTE_INTEGRITY",quoteIntegrity:x.market.integrity},{status:409});
-  const test=await submitSelfTestOrder(x.b,x.symbol,quote.price);
-  return NextResponse.json({
-   status:"ok",
-   mode:"paper",
-   proof:"ALPACA_ORDER_SUBMIT_AND_CANCEL",
-   symbol:x.symbol,
-   brokerOrderId:test.submitted.id,
-   brokerInitialStatus:test.submitted.status,
-   brokerFinalStatus:test.finalStatus,
-   deliberatelyNonMarketableLimit:test.limitPrice,
-   referencePrice:quote.price,
-   note:"This diagnostic tests the real Alpaca Paper order endpoint and immediately requests cancellation. It is not a AURYN investment signal."
-  },{headers:{"Cache-Control":"private, no-store"}});
- }catch(error:any){
-  return NextResponse.json({status:"error",mode:"paper",error:error?.message||"Paper order self-test failed."},{status:500});
- }
+ return NextResponse.json({status:"disabled",code:"USE_AUDITED_PAPER_TICKET",reason:"Use the administrator's reviewed manual paper ticket for a controlled, audited lifecycle. Diagnostic GET remains read-only."},{status:409});
 }

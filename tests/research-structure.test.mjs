@@ -162,11 +162,13 @@ test('manual upward swing computes retracements back from its high and extension
   assert.equal(result.anchors.confirmedAt, null);
   assert.equal(result.reason, null);
   assert.deepEqual(result.levels.map(({ ratio, price, kind }) => ({ ratio, price, kind })), [
+    { ratio: 0, price: 200, kind: 'ENDPOINT' },
     { ratio: 0.236, price: 176.4, kind: 'RETRACEMENT' },
     { ratio: 0.382, price: 161.8, kind: 'RETRACEMENT' },
     { ratio: 0.5, price: 150, kind: 'RETRACEMENT' },
     { ratio: 0.618, price: 138.2, kind: 'RETRACEMENT' },
     { ratio: 0.786, price: 121.39999999999999, kind: 'RETRACEMENT' },
+    { ratio: 1, price: 100, kind: 'ENDPOINT' },
     { ratio: 1.272, price: 227.2, kind: 'EXTENSION' },
     { ratio: 1.618, price: 261.8, kind: 'EXTENSION' },
   ]);

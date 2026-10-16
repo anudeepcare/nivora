@@ -10,6 +10,8 @@ import {renderToStaticMarkup} from 'react-dom/server';
 const require=createRequire(import.meta.url),root=path.resolve('.'),cache=new Map();
 function load(file){
  const full=path.resolve(root,file);
+ // CSS modules export class names; their stylesheet syntax is not JavaScript.
+ if(full.endsWith('.module.css'))return Object.fromEntries([...fs.readFileSync(full,'utf8').matchAll(/\.([A-Za-z_][\w-]*)/g)].map(([,name])=>[name,name]));
  if(cache.has(full))return cache.get(full).exports;
  const mod={exports:{}};cache.set(full,mod);
  const output=ts.transpileModule(fs.readFileSync(full,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.ReactJSX,esModuleInterop:true}}).outputText;

@@ -195,6 +195,7 @@
     "lib/auryn/v995/persist-research.ts",
     "lib/auryn/v996/finalization.ts",
     "lib/auryn/market-price-authority.ts",
-    "lib/auryn/portfolio-consolidation.ts"
+    "lib/auryn/portfolio-consolidation.ts",
+    "lib/auryn/workspace/model.ts"
   ]
 }

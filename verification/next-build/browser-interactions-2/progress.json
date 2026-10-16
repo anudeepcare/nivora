@@ -1,0 +1,5 @@
+{
+  "completed": 22,
+  "failed": 1,
+  "last": "sign-in, reset request and registration confirmation use intercepted auth only"
+}

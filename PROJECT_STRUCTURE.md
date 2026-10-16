@@ -1,3 +1,19 @@
+# Current upgrade additions
+
+The archive contains the full existing project, not just patches. `SOURCE_MANIFEST.json` is the exact file inventory. New principal paths:
+
+- `lib/auryn/v931/canonical-assessment.ts`: shared decision construction.
+- `lib/research-financial-assessment.ts`, `lib/server/company-source-reviews.ts`: sourced financials and trusted review.
+- `lib/auryn/planning/`: allocation, purchase/stress previews, journal and replay.
+- `lib/auryn/workspace/`: personal research persistence/model.
+- `lib/server/paper-operations.ts`: audited paper safeguards and reconciliation.
+- `components/ResearchWorkspace.tsx`, `components/PlanningWorkbench.tsx`, `components/research/AccumulationVisuals.tsx`: new user surfaces.
+- `app/api/company-review/`, `app/api/research-workspace/`, `app/api/trading-lab/control/`, `app/api/trading-lab/reconcile/`: server routes.
+- `supabase/migrations/20261016*.sql`: three new incremental migrations.
+- `verification/next-build/`: current reports, 104-item ledger and selected visual comparisons.
+
+## Retained baseline structure
+
 # Complete AURYN source package
 
 Open the **AURYN** folder after extracting the ZIP. `package.json` is in that folder; run installation/build commands there. The ZIP contains the actual multi-file Next.js application, not a website export or a patch.

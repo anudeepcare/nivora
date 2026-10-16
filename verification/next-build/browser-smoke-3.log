@@ -1,0 +1,19 @@
+Routes: fixture light 390
+Routes: fixture light 1440
+Research: light 390
+Research: light 1440
+FAIL portfolio add/edit/remove and holding research link Expected values to be strictly equal:
+
+10 !== 12
+
+FAIL profile and appearance save/reload Expected values to be strictly equal:
+
+'light' !== 'dark'
+
+FAIL paper ticket preview precedes mocked acceptance locator.click: Timeout 12000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('button', { name: 'Review paper order', exact: true })[22m
+[2m    - locator resolved to <button disabled class="secondaryPrimary">Review paper order</button>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[
+{"out":"/workspace/scratch/0397d872aad5/auryn-next/verification/next-build/browser-smoke-3","cases":93,"passed":90,"failed":3,"runtimeErrors":0,"unlabeledControlCases":11,"smallTargetCases":38,"fatalError":null}

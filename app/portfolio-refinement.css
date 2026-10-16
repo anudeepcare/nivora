@@ -216,3 +216,8 @@
  .pmPortfolioReview > summary h2, .pmCapitalPriorities > summary h2 { font-size: 15px; }
 }
 @media (prefers-reduced-motion: reduce) { .pmPortfolioPage * { scroll-behavior: auto !important; } }
+
+@media(max-width:767px){
+ .pmPage .pmHoldingsToolbar :is(input,select){font-size:16px;min-height:44px}
+ .pmPage .pmHoldingActions>button{width:44px;min-height:44px}
+}

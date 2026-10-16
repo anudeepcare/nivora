@@ -15,7 +15,7 @@
 .surfacePrimary:hover{background:color-mix(in srgb,var(--auryn-accent) 86%,#06162b)!important}
 .surfaceChartControls{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:12px;flex-wrap:wrap}
 .surfaceChart .researchRanges{margin:0;gap:4px;display:flex;flex-wrap:wrap;padding:4px;background:var(--auryn-soft-bg);border-radius:12px}
-.surfaceChart .researchRanges button{font-size:.75rem;min-width:44px;min-height:40px;padding:6px 9px;border:0;border-radius:8px;background:transparent}
+.surfaceChart .researchRanges button{font-size:.75rem;min-width:44px;min-height:44px;padding:6px 9px;border:0;border-radius:8px;background:transparent}
 .surfaceChart .researchRanges button[aria-pressed=true]{background:var(--auryn-accent);color:white;box-shadow:0 2px 6px #2468ff24}
 .surfaceIndicator{display:flex;align-items:center;gap:8px;font-size:.75rem;color:var(--auryn-page-muted)}
 .surfaceIndicator select{min-height:44px;font-size:.8125rem;padding:8px 10px;max-width:180px;border-radius:10px}
@@ -137,7 +137,7 @@
   .surfaceChartActions{gap:6px}.surfaceChartActions>button{padding:8px;width:44px}.surfaceChartActions>button span{display:none}
   .surfaceChartControls{align-items:center;margin-bottom:4px}
   .surfaceChart .researchRanges{gap:2px;width:100%;justify-content:space-between;padding:3px}
-  .surfaceChart .researchRanges button{flex:1;min-width:0;min-height:44px;font-size:.6875rem;padding:6px 2px}
+  .surfaceChart .researchRanges button{flex:1;min-width:44px;min-height:44px;font-size:.6875rem;padding:6px 2px}
   .surfaceIndicator{width:100%;font-size:.75rem;justify-content:space-between;margin:0}
   .surfaceIndicator select{font-size:16px;max-width:220px;padding:7px 10px}
   .surfaceChart .researchChartStage{height:260px}
@@ -157,7 +157,7 @@
   .surfaceConfidence{font-size:.6875rem!important}.surfaceAnalystSummary>header{margin-bottom:14px!important;gap:6px!important}
   .surfaceSummaryFoot{align-items:stretch;flex-direction:column;gap:8px;margin-top:16px}.surfaceSummaryFoot>button{justify-content:space-between}
   .surfaceHighlightGrid,.surfaceTrends{grid-template-columns:1fr;gap:12px}
-  .surfaceHighlight>header{gap:6px!important}.surfaceHighlight>header>button{min-height:36px;width:32px}
+  .surfaceHighlight>header{gap:6px!important}.surfaceHighlight>header>button{min-height:44px;min-width:44px;width:44px}
   .researchOverviewPremium>.surfaceDisclosure,.researchBusinessPremium>.surfaceDisclosure{padding:8px 18px;border-radius:14px}
   .surfaceDisclosure>summary{font-size:.8125rem!important;gap:8px;flex-wrap:wrap}.surfaceDisclosure>summary>span{display:none}
   .surfaceBusinessHeading{align-items:flex-start}.surfaceBusinessHeading h2{font-size:1.3rem}.surfaceBusinessHeading>div>small{font-size:.625rem}
@@ -169,7 +169,7 @@
 }
 @media(max-width:359px){
   .researchOverviewPremium .researchCard,.researchBusinessPremium .researchCard{padding:14px}
-  .surfaceChartActions{gap:2px}.surfaceChartActions>button{width:40px;min-height:44px}
+  .surfaceChartActions{gap:2px}.surfaceChartActions>button{width:44px;min-width:44px;min-height:44px}
   .surfaceChart header h2{font-size:1rem}.surfaceChart header .metricHelpButton{width:32px}
   .surfaceLens{gap:8px;padding-inline:12px}.surfaceLensLabel{flex-basis:92px;font-size:.75rem}
   .surfaceMetric>h3{font-size:1.125rem}.surfaceMetric>header>small{font-size:.6875rem}

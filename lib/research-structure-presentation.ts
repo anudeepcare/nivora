@@ -46,7 +46,7 @@ export function buildStructurePresentation(model:ResearchStructure){
 
 /** Only user-selected, valid chart studies reach the canvas. */
 export function buildStructureOverlays(model:ResearchStructure,{fib=true,averages=true,extensions=false}:{fib?:boolean;averages?:boolean;extensions?:boolean}={}):StructureChartOverlays{
- const lines=model.levels.filter(x=>valid(x.price)&&(x.kind==='EXTENSION'?extensions:fib)).map(x=>({label:`${x.kind==='EXTENSION'?'Extension':'Fib'} ${(x.ratio*100).toFixed(1)}%`,price:x.price,color:x.kind==='EXTENSION'?'#a78bfa':x.ratio===.618||x.ratio===.786?'#d99c32':'#7895b7'}));
+ const lines=model.levels.filter(x=>valid(x.price)&&(x.kind==='EXTENSION'?extensions:fib)).map(x=>({label:`${x.custom?'Custom':x.kind==='ENDPOINT'?'Anchor':x.kind==='EXTENSION'?'Extension':'Fib'} ${x.ratio.toFixed(3)} · ${(x.ratio*100).toFixed(1)}%`,price:x.price,color:x.custom?'#b778ce':x.kind==='EXTENSION'?'#a78bfa':x.ratio===.618||x.ratio===.786?'#d99c32':'#7895b7'}));
  const series=averages?Object.values(model.movingAverages).filter(x=>valid(x.value)&&x.points.length).map(x=>({label:`${x.period}-week ${model.averageType}`,color:x.period===50?'#4e8fff':'#d99c32',points:x.points})):[];
  return {scale:model.scale,lines,series};
 }

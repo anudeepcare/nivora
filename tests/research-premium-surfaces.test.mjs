@@ -8,7 +8,10 @@ import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 const require=createRequire(import.meta.url),cache=new Map();
 function load(file){
- const full=path.resolve(file);if(cache.has(full))return cache.get(full).exports;
+ const full=path.resolve(file);
+ // CSS modules export class names; their stylesheet syntax is not JavaScript.
+ if(full.endsWith('.module.css'))return Object.fromEntries([...fs.readFileSync(full,'utf8').matchAll(/\.([A-Za-z_][\w-]*)/g)].map(([,name])=>[name,name]));
+ if(cache.has(full))return cache.get(full).exports;
  const module={exports:{}};cache.set(full,module);
  const js=ts.transpileModule(fs.readFileSync(full,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.ReactJSX,esModuleInterop:true}}).outputText;
  new Function('require','module','exports',js)(id=>{

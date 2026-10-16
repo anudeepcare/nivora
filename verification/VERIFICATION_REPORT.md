@@ -1,3 +1,9 @@
+# Historical verification report
+
+This file records the earlier chart/mobile release. For the current intelligence upgrade use `../RELEASE_REPORT.md` and `next-build/requirements.json`. The old test counts and live observations below do not certify this update.
+
+---
+
 # AURYN current verification
 
 Current revision: **chart interaction, short-range history and mobile glass-menu fixes — 16 October 2026 UTC**.

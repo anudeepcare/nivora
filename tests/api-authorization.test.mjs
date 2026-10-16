@@ -11,16 +11,16 @@ function load(file, imports, env) {
 function harness(user=null,extra={}) {
  const env={NEXT_PUBLIC_SUPABASE_URL:'https://example.invalid',SUPABASE_SERVICE_ROLE_KEY:'test',CRON_SECRET:'test-cron',...extra};
  const client={auth:{getUser:async()=>({data:{user},error:null})},from:()=>{throw Error('Unauthorized database access')} };
- const imports={'next/server':{NextResponse:{json:(body,init)=>Response.json(body,init)}},'@supabase/supabase-js':{createClient:()=>client},'@/lib/auryn/market-data-gateway':{},'@/lib/nivora-trading-metrics':{},'@/lib/nivora-version':{},'@/lib/nivora-market-session':{},'@/lib/alpaca-paper':{},'@/lib/auryn/v995/persist-research':{}};
+ const imports={'next/server':{NextResponse:{json:(body,init)=>Response.json(body,init)}},'@supabase/supabase-js':{createClient:()=>client},'@/lib/auryn/market-data-gateway':{},'@/lib/nivora-trading-metrics':{},'@/lib/nivora-version':{},'@/lib/nivora-market-session':{},'@/lib/alpaca-paper':{},'@/lib/auryn/v995/persist-research':{},'@/lib/server/paper-operations':{}};
  if(fs.existsSync('lib/server/authorization.ts'))imports['@/lib/server/authorization']=load('lib/server/authorization.ts',imports,env);
  return {loadRoute:path=>load(`app/api/${path}/route.ts`,imports,env),imports,client};
 }
-for(const [path,method] of [['portfolio/pulse','GET'],['portfolio/pulse','POST'],['trading-lab/status','GET'],['trading-lab/run-now','POST']]) {
+for(const [path,method] of [['portfolio/pulse','GET'],['portfolio/pulse','POST'],['trading-lab/status','GET'],['trading-lab/run-now','POST'],['trading-lab/control','POST'],['trading-lab/reconcile','POST']]) {
  test(`${method} ${path} rejects forged user id without bearer`,async()=>{
   const h=harness();const response=await h.loadRoute(path)[method](new Request('https://example.invalid/api/'+path,{method,headers:{'x-nivora-user-id':'victim'}}));assert.equal(response.status,401);
  });
 }
-for(const path of ['trading-lab/status','trading-lab/run-now'])test(`${path} rejects ordinary user even with editable admin metadata`,async()=>{
+for(const path of ['trading-lab/status','trading-lab/run-now','trading-lab/control','trading-lab/reconcile'])test(`${path} rejects ordinary user even with editable admin metadata`,async()=>{
  const h=harness({id:'regular',user_metadata:{role:'admin'}});const method=path.endsWith('status')?'GET':'POST';
  const response=await h.loadRoute(path)[method](new Request('https://example.invalid/api/'+path,{method,headers:{authorization:'Bearer valid'}}));assert.equal(response.status,403);
 });

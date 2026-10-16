@@ -1,0 +1,20 @@
+✔ market intelligence projection keeps one snapshot identity and actionable levels (1.091276ms)
+✔ server snapshot retains raw market intelligence for faithful projection (0.953784ms)
+✔ decision summaries preserve the shared canonical projection and withhold missing analysis (73.379117ms)
+✔ trading lab requires canonical V9.3.4 intelligence and uses its invalidation when available (0.467087ms)
+✔ missing, zero, negative and malformed quotes remain unavailable (1.217192ms)
+✔ cost basis is never substituted for market price (0.28518ms)
+✔ cash is shares and unsupported currencies are not silently valued as USD (0.165834ms)
+✔ partial valuation labels total unavailable and P/L covers priced assets only (1.193527ms)
+✔ edit and add share validation rejects negative or absent quantities and costs (0.269617ms)
+✔ stale or unverified research cannot contribute current calls or thesis scores (0.262827ms)
+✔ missing cost basis and entirely unpriced holdings do not invent unrealized profit (0.2443ms)
+✔ invalid quantities and non-USD quotes cannot enter USD totals (0.218191ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 404.887528

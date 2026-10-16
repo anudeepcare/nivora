@@ -1,6 +1,7 @@
 import {NextResponse} from "next/server";
 import {authorizeRequest} from "@/lib/server/authorization";
 
+export const maxDuration=120;
 export const dynamic="force-dynamic";
 
 export async function POST(req:Request){
@@ -10,10 +11,8 @@ export async function POST(req:Request){
  if(!url||!serviceKey||!secret)return NextResponse.json({status:"unavailable",reason:"Trading Lab server configuration is incomplete."},{status:503});
  const origin=new URL(req.url).origin,headers={authorization:`Bearer ${secret}`};
  try{
-  const learnResponse=await fetch(`${origin}/api/portfolio/learn`,{method:"GET",headers,cache:"no-store",signal:AbortSignal.timeout(180000)});
-  const learning=await learnResponse.json().catch(()=>({status:"error",reason:`Portfolio refresh returned ${learnResponse.status}`}));
-  const runResponse=await fetch(`${origin}/api/trading-lab/run-paper`,{method:"POST",headers,cache:"no-store",signal:AbortSignal.timeout(180000)});
+  const runResponse=await fetch(`${origin}/api/trading-lab/run-paper`,{method:"POST",headers,cache:"no-store",signal:AbortSignal.timeout(110000)});
   const paper=await runResponse.json().catch(()=>({status:"error",reason:`Paper runner returned ${runResponse.status}`}));
-  return NextResponse.json({status:runResponse.ok?"ok":"error",paper,learning,requestedBy:user.id},{status:runResponse.ok?200:runResponse.status,headers:{"Cache-Control":"private, no-store"}});
+  return NextResponse.json({status:runResponse.ok?"ok":"error",paper,requestedBy:user.id},{status:runResponse.ok?200:runResponse.status,headers:{"Cache-Control":"private, no-store"}});
  }catch(e:any){return NextResponse.json({status:"error",reason:e?.message||"Paper check failed."},{status:500});}
 }

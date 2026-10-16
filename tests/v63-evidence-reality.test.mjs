@@ -98,10 +98,15 @@ test("Vercel Hobby config has no cron and GitHub owns paper schedule",()=>{
   assert.match(wf,/cron:/);
 });
 
-test("paper diagnostics endpoint and broker cancel path exist",()=>{
+test("paper diagnostics directs mutations to the audited manual lifecycle",async()=>{
   const r=fs.readFileSync(new URL("../app/api/trading-lab/diagnostics/route.ts",import.meta.url),"utf8");
-  assert.match(r,/TRADING_LAB_SELF_TEST_ORDER_ENABLED/);
-  assert.match(r,/submitSelfTestOrder/);
+  const ts=(await import('typescript')).default,vm=await import('node:vm');
+  let transmissions=0;
+  const exports={},imports={"next/server":{NextResponse:{json:(body,init)=>Response.json(body,init)}},"@/lib/server/paper-operations":{authorizePaperCron:()=>true},"@/lib/alpaca-paper":{AlpacaPaperBroker:class{async submitOrder(){transmissions++}}}};
+  const compiled=ts.transpileModule(r,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
+  vm.runInNewContext(compiled,{exports,require:n=>imports[n]||{},Request,Response});
+  const result=await exports.POST(new Request('https://app/api/trading-lab/diagnostics',{method:'POST'}));
+  assert.equal(result.status,409);assert.equal((await result.json()).code,'USE_AUDITED_PAPER_TICKET');assert.equal(transmissions,0);
   const b=fs.readFileSync(new URL("../lib/alpaca-paper.ts",import.meta.url),"utf8");
   assert.match(b,/cancelOrder/);
 });

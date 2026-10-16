@@ -1,6 +1,7 @@
 import {NextResponse} from "next/server";
 import {createClient} from "@supabase/supabase-js";
 import {sharedJson} from "@/lib/shared-cache";
+import {summarizeInsiderTransactions} from "@/lib/insider-transactions";
 
 export const runtime="nodejs";
 
@@ -115,7 +116,8 @@ export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
           change:Number(x.change??x.changeInShares??0)||null,
           changePct:null,
           percent:Number(x.percent??x.percentage??0)||null,
-          filingDate:x.filingDate||x.reportDate||x.date||null
+          filingDate:x.filingDate||null,
+          reportPeriod:x.reportDate||null
         }))
       : (Array.isArray(cachedDetail?.topHolders)?cachedDetail.topHolders:legacyTop);
     const biggestBuyers=!useProvider&&Array.isArray(cachedDetail?.biggestBuyers)?cachedDetail.biggestBuyers:top.filter((x:any)=>Number(x.change||0)>0).sort((a:any,b:any)=>Number(b.change||0)-Number(a.change||0));
@@ -127,9 +129,7 @@ export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
     const trimBreadthPct=(reduced/breadthDen)*100;
     const institutionalScore=Math.max(0,Math.min(100,Math.round(50 + (addBreadthPct-50)*0.65 + Math.max(-20,Math.min(20,(shareChangePct||0)))*1.1)));
 
-    const buys=insiders.filter((x:any)=>Number(x.change??0)>0);
-    const sells=insiders.filter((x:any)=>Number(x.change??0)<0);
-    const insiderTone=buys.length>sells.length*1.3?"Net buying":sells.length>buys.length*1.3?"Net selling":"Mixed";
+    const insiderSummary=summarizeInsiderTransactions(insiders);
 
     const hasInstitutional=useProvider||Boolean(secCache);
     const source=useProvider?"Finnhub reported ownership":secCache?"SEC Form 13F quarterly cache":provider.source;
@@ -143,7 +143,8 @@ export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
     }
 
     return NextResponse.json({
-      enabled:hasInstitutional,
+      enabled:hasInstitutional||insiders.length>0,
+      hasInstitutional,
       source,
       delayed:true,
       asOf:useProvider?(rows[0]?.filingDate||rows[0]?.reportDate||rows[0]?.date||null):(secCache?.period_end||null),
@@ -170,7 +171,7 @@ export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
         newManagers:useProvider?null:Number(secCache?.new_managers||0),
         exitedManagers:useProvider?null:Number(secCache?.exited_managers||0),
         unchangedManagers:useProvider?null:Number(secCache?.unchanged_managers||0),
-        reportPeriod:useProvider?(rows[0]?.reportDate||rows[0]?.date||rows[0]?.filingDate||null):(secCache?.period_end||null),
+        reportPeriod:useProvider?(rows[0]?.reportDate||null):(secCache?.period_end||null),
         previousPeriodEnd:useProvider?null:(secCache?.previous_period_end||null),
         datasetThrough:useProvider?null:(secCache?.dataset_through||null),
         syncedAt:useProvider?null:(secCache?.synced_at||null),
@@ -179,17 +180,7 @@ export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
         addBreadthPct,trimBreadthPct,institutionalScore,
         top,biggestBuyers,biggestSellers,newPositions,exits
       },
-      insiders:{
-        label:insiderTone,
-        buys:buys.length,
-        sells:sells.length,
-        recent:insiders.slice(0,10).map((x:any)=>({
-          name:x.name||"Insider",
-          change:Number(x.change??0)||0,
-          transactionPrice:Number(x.transactionPrice??0)||null,
-          date:x.transactionDate||x.filingDate||null
-        }))
-      }
+      insiders:insiderSummary
     });
   }catch(e:any){
     return NextResponse.json({enabled:false,reason:e?.message||"Institutional intelligence is temporarily unavailable."});

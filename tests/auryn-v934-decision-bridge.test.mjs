@@ -9,5 +9,23 @@ test('structural break uses completed daily price and canonical invalidation',()
 
 test('identical confirmed inputs produce identical bridge even if live preview changes',()=>{const a=deriveV934DecisionTechnical(snap);const b=deriveV934DecisionTechnical({...snap,livePreview:{'1D':st('BUY',80,90,90,90,110)}});assert.equal(a.marketStructureScore,b.marketStructureScore);assert.equal(a.trend,b.trend);assert.equal(a.nearResistance,b.nearResistance);});
 
-import fs from 'node:fs';
-test('stock institutional decision consumes V9.3.4 bridge rather than old daily-only market structure when available',()=>{const src=fs.readFileSync('components/StockClient.tsx','utf8');assert.match(src,/deriveV934DecisionTechnical/);assert.match(src,/marketStructureScore/);assert.match(src,/v934Technical\?\.why/);});
+import {buildCanonicalAssessment} from '../.engine-test/auryn/v931/canonical-assessment.js';
+test('shared client and worker adapter uses confirmed structure despite changing preview',()=>{
+ const input={symbol:'TEST',marketTruth:{snapshotId:'m1',decisionPrice:100,asOf:'2026-10-16T15:00:00Z',executionTradable:false},v5:{metrics:[],v4:{classification:{businessModel:'GENERAL_COMPOUNDER'}},decision:{primaryAction:'HOLD',ownerAction:'HOLD'},technical:null},company:null,context:null,marketData:{marketIntelligence:snap}};
+ const a=buildCanonicalAssessment(input),b=buildCanonicalAssessment({...input,marketData:{marketIntelligence:{...snap,livePreview:{'1D':st('BUY',80,90,90,90,110)}}}});
+ assert.equal(a.decision.pillars.marketStructure.score,b.decision.pillars.marketStructure.score);
+ assert.equal(a.decision.pillars.marketStructure.score,64);
+ assert.equal(a.decision.longTermAction,'UNASSESSED');
+});
+
+test('absent canonical levels stay unavailable rather than zero-price triggers',()=>{
+ const r=deriveV934DecisionTechnical({...snap,actionMap:{confirm:null,invalidation:null}});
+ assert.equal(r.reclaimLevel,null);assert.equal(r.invalidation,null);assert.equal(r.nearResistance,false);
+});
+
+test('an empty technical payload contributes neither neutral points nor a measured setup',()=>{
+ const input={symbol:'TEST',marketTruth:{snapshotId:'m1',decisionPrice:100,asOf:'2026-10-16T15:00:00Z',executionTradable:false},v5:{metrics:[],v4:{classification:{businessModel:'GENERAL_COMPOUNDER'}},decision:{primaryAction:'HOLD',ownerAction:'HOLD'},technical:null},company:null,context:null,marketData:{marketIntelligence:{confirmed:{},livePreview:{},actionMap:{}}}};
+ const r=buildCanonicalAssessment(input).decision;
+ assert.equal(r.pillars.marketStructure.score,null);assert.equal(r.evidenceCompleteness,0);assert.equal(r.setupState,'UNASSESSED');assert.equal(r.horizons.swing,'UNASSESSED');
+ assert.doesNotMatch(r.changeExplanation.trigger,/measured setup evidence/);
+});

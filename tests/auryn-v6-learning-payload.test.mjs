@@ -16,17 +16,18 @@ test('V6 learning serializer freezes the exact visible decision and execution pl
  assert.equal(x.evidenceConfidence.score,74);
 });
 
-test('validation route persists canonical V6 snapshot as its own immutable engine cohort',()=>{
- const src=fs.readFileSync('app/api/validation/snapshot/route.ts','utf8');
- assert.match(src,/canonicalDecision/);
- assert.match(src,/engine_version:canonicalDecision\.engineVersion/);
- assert.match(src,/decision:canonicalDecision/);
- assert.match(src,/evidence_fingerprint/);
-});
-
-test('stock client upgrades the canonical validation event to V7 trust semantics',()=>{
- const src=fs.readFileSync('components/StockClient.tsx','utf8');
- assert.match(src,/canonicalDecision:v7Analysis\?serializeV7Decision\(v7Analysis\):null/);
+// Browser-authored V6/V7 writes were retired: canonical-write-boundary.test.mjs
+// now exercises the authenticated server recalculation boundary. Historical serializers stay tested above.
+import {persistAutonomousResearch,AUTONOMOUS_RESEARCH_ENGINE_VERSION} from '../.engine-test/auryn/v995/persist-research.js';
+test('server research persistence freezes policy and market provenance together',async()=>{
+ const rows=[];const db={from:name=>{assert.equal(name,'nivora_v59_decision_snapshots');return {insert:async row=>{rows.push(structuredClone(row));return {error:null};}}}};
+ const decision={policyVersion:AUTONOMOUS_RESEARCH_ENGINE_VERSION,snapshotId:'server-1',newMoneyAction:'WAIT',ownerAction:'HOLD',longTermAction:'SELECTIVE',decisionScore:60,evidenceCompleteness:80,setupState:'REPAIRING'};
+ const mi={snapshotId:'market-intelligence-1',marketTruthSnapshotId:'market-1',actionMap:{invalidation:90}};
+ await persistAutonomousResearch(db,'TEST',{state:'RESEARCH_READY',decision,marketTruth:{snapshotId:'market-1',decisionPrice:100},marketIntelligence:mi});
+ decision.newMoneyAction='BUY';
+ assert.equal(rows[0].decision.newMoneyAction,'WAIT');assert.equal(rows[0].engine_version,AUTONOMOUS_RESEARCH_ENGINE_VERSION);
+ assert.equal(rows[0].evidence.v995.policyVersion,AUTONOMOUS_RESEARCH_ENGINE_VERSION);assert.equal(rows[0].evidence.v934.snapshotId,'market-intelligence-1');
+ assert.equal(rows[0].evidence.v935.marketSnapshotId,'market-1');
 });
 
 test('scheduled maturity includes V6 exact-engine outcomes',()=>{

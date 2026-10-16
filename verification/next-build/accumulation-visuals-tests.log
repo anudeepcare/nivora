@@ -1,0 +1,12 @@
+✔ planning controls explain 1x, experimental caps, personal evidence and preview boundary (321.576524ms)
+✔ workbench shows reconciled before/after cash and current source-backed evidence (137.697324ms)
+✔ replay starts unavailable and journal makes local persistence limits explicit (124.616265ms)
+✔ accumulation overview shows preview status without fabricating historical signals (106.195198ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1159.187936

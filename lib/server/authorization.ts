@@ -2,7 +2,7 @@ import {createClient, type User} from "@supabase/supabase-js";
 import {NextResponse} from "next/server";
 
 type Authorization = {user:User;response?:never}|{user?:never;response:NextResponse};
-const reject=(status:number,reason:string):Authorization=>({response:NextResponse.json({status:"error",error:reason,reason},{status,headers:{"Cache-Control":"private, no-store"}})});
+const reject=(status:number,reason:string):Authorization=>({response:NextResponse.json({status:"error",error:reason,reason,code:status===403?"TRUSTED_ADMIN_MAPPING_REQUIRED":status===401?"AUTHENTICATION_REQUIRED":"AUTHENTICATION_UNAVAILABLE",access:{authentication:status===403?"authenticated":status===401?"unauthenticated":"unavailable",administrator:status===403?"denied":"unknown"}},{status,headers:{"Cache-Control":"private, no-store"}})});
 
 /** Always validate with Auth; never trust a client-supplied id or editable metadata. */
 export async function authorizeRequest(req:Request,adminOnly=false):Promise<Authorization>{

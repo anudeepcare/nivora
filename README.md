@@ -1,3 +1,11 @@
+# AURYN Intelligence OS — complete source package
+
+Start with **START_HERE.md**, **RELEASE_REPORT.md** and **GIT_AND_VERCEL.md**. The October 16 intelligence upgrade includes the full application source and a 104-item scope ledger. It is not all-scope or deployed production acceptance: specific implementation and external-service gaps remain documented. Three incremental SQL migrations are included and have not been applied live.
+
+The current production build and 907-test acceptance gate passed. Current browser and historical-suite results are recorded in the release report. Older counts and provider observations below belong to previous releases.
+
+## Retained historical project notes
+
 # AURYN Intelligence OS — rebuilt source
 
 Start with **PROJECT_STRUCTURE.md**, **DEPLOYMENT.md** and **verification/VERIFICATION_REPORT.md**.

@@ -1,0 +1,3 @@
+Routes: public light 390
+Routes: public light 1440
+{"out":"/workspace/scratch/0397d872aad5/auryn-next/verification/next-build/browser-public-release","cases":27,"passed":27,"failed":0,"runtimeErrors":0,"unlabeledControlCases":0,"smallTargetCases":0,"fatalError":null}

@@ -1,0 +1,46 @@
+✔ execution snapshot gate rejects unverified or mismatched market truth (1.221238ms)
+✔ V5 actions map into paper-lab actions without manufacturing trades (0.319801ms)
+✔ deterministic reliability matrix covers at least 10,000 real-world combinations with zero invariant violations (10.31464ms)
+✔ legacy V5 challenger cannot override canonical new-capital policy (4.336876ms)
+✔ V6 learning serializer freezes the exact visible decision and execution plan (1.219997ms)
+✔ server research persistence freezes policy and market provenance together (1.216862ms)
+✔ scheduled maturity includes V6 exact-engine outcomes (0.374902ms)
+✔ market intelligence projection keeps one snapshot identity and actionable levels (1.281587ms)
+✔ server snapshot retains raw market intelligence for faithful projection (1.278292ms)
+✔ decision summaries publish persisted V9.3.4 intelligence instead of inventing a second technical view (0.399378ms)
+✔ trading lab requires canonical V9.3.4 intelligence and uses its invalidation when available (0.296957ms)
+✔ confirmed multi-timeframe state drives decision technical inputs, not live preview (1.686383ms)
+✔ structural break uses completed daily price and canonical invalidation (0.314533ms)
+✔ identical confirmed inputs produce identical bridge even if live preview changes (0.263208ms)
+✖ shared client and worker adapter uses confirmed structure despite changing preview (16.032349ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 14
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 263.456998
+
+✖ failing tests:
+
+test at tests/auryn-v934-decision-bridge.test.mjs:13:1
+✖ shared client and worker adapter uses confirmed structure despite changing preview (16.032349ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  64 !== 63
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/tests/auryn-v934-decision-bridge.test.mjs:17:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 64,
+    expected: 63,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

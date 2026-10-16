@@ -18,15 +18,18 @@ test('legacy HOLD cannot force an otherwise qualified V9.3.4 decision back to WA
 
 test('missing valuation lowers completeness but does not act like a bearish zero',()=>{
   const d=build({scores:{business:82,earningsRevisions:78,valuation:null,marketStructure:76,catalystsRegime:60,riskAsymmetry:72},evidenceCompleteness:78,canonicalAction:'HOLD'});
-  assert.notEqual(d.newMoneyAction,'WAIT');
+  assert.equal(d.newMoneyAction,'WAIT');
+  assert.equal(d.longTermAction,'ATTRACTIVE');
   assert.equal(d.pillars.valuation.state,'UNAVAILABLE');
   assert.ok(d.evidenceCompleteness<90);
 });
 
-test('confirmed structural invalidation is a hard veto even when other pillars are strong',()=>{
+test('confirmed structural invalidation blocks tactical capital without a fundamental veto',()=>{
   const d=build({technical:technical({structuralBreak:true,confirmedBreakout:false,nearResistance:false})});
-  assert.equal(d.newMoneyAction,'AVOID');
-  assert.ok(d.hardVetoReasons.some(x=>/structural/i.test(x)));
+  assert.equal(d.newMoneyAction,'WAIT');
+  assert.equal(d.longTermAction,'ATTRACTIVE');
+  assert.equal(d.executionAction,'BLOCKED');
+  assert.equal(d.hardVetoReasons.length,0);
 });
 
 test('owner policy can express WATCH rather than compressing everything into HOLD',()=>{
@@ -37,9 +40,9 @@ test('owner policy can express WATCH rather than compressing everything into HOL
 test('all new-money actions are reachable without quotas',()=>{
   const strong=build({scores:{business:92,earningsRevisions:90,valuation:86,marketStructure:90,catalystsRegime:76,riskAsymmetry:84},technical:technical({trend:86,momentum:82,flow:78,structure:88,confirmedBreakout:true}),evidenceCompleteness:96,canonicalAction:'HOLD'}).newMoneyAction;
   const buy=build({scores:{business:76,earningsRevisions:70,valuation:64,marketStructure:70,catalystsRegime:56,riskAsymmetry:62},technical:technical({trend:68,momentum:66,flow:62,structure:68,confirmedBreakout:false}),evidenceCompleteness:88,canonicalAction:'HOLD'}).newMoneyAction;
-  const small=build({scores:{business:72,earningsRevisions:64,valuation:null,marketStructure:63,catalystsRegime:52,riskAsymmetry:58},technical:technical({trend:60,momentum:61,flow:55,structure:62,confirmedBreakout:false}),evidenceCompleteness:72,canonicalAction:'HOLD'}).newMoneyAction;
+  const small=build({scores:{business:72,earningsRevisions:64,valuation:60,marketStructure:63,catalystsRegime:52,riskAsymmetry:58},technical:technical({trend:60,momentum:61,flow:55,structure:62,confirmedBreakout:false}),evidenceCompleteness:72,canonicalAction:'HOLD'}).newMoneyAction;
   const wait=build({scores:{business:62,earningsRevisions:54,valuation:52,marketStructure:51,catalystsRegime:50,riskAsymmetry:50},technical:technical({trend:50,momentum:50,flow:50,structure:50,nearResistance:false,confirmedBreakout:false}),evidenceCompleteness:82,canonicalAction:'HOLD'}).newMoneyAction;
-  const avoid=build({scores:{business:34,earningsRevisions:32,valuation:40,marketStructure:28,catalystsRegime:42,riskAsymmetry:24},technical:technical({trend:20,momentum:30,flow:30,structure:25,nearResistance:false,confirmedBreakout:false,structuralBreak:true}),evidenceCompleteness:90,canonicalAction:'SELL'}).newMoneyAction;
+  const avoid=build({scores:{business:25,earningsRevisions:24,valuation:40,marketStructure:28,catalystsRegime:42,riskAsymmetry:24},technical:technical({trend:20,momentum:30,flow:30,structure:25,nearResistance:false,confirmedBreakout:false,structuralBreak:true}),evidenceCompleteness:90,canonicalAction:'SELL'}).newMoneyAction;
   assert.deepEqual(new Set([strong,buy,small,wait,avoid]),new Set(['STRONG_BUY','BUY','START_SMALL','WAIT','AVOID']));
 });
 

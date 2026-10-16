@@ -1,0 +1,215 @@
+Routes: fixture light 390
+FAIL route light 390 / page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /login page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/login
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/login", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /register page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/register
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/register", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /forgot-password page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/forgot-password
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/forgot-password", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /onboarding page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/onboarding
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/onboarding", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /personalization page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/personalization
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/personalization", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /analyze page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/analyze
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/analyze", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /portfolio page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/portfolio
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/portfolio", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /watchlist page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/watchlist
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/watchlist", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /alerts page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/alerts
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/alerts", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /trading-lab page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/trading-lab
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/trading-lab", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /profile page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/profile
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/profile", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /faq page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/faq
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/faq", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /about page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/about
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/about", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /methodology page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/methodology
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/methodology", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /terms page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/terms
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/terms", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /privacy page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/privacy
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/privacy", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /disclaimer page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/disclaimer
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/disclaimer", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /calibration page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/calibration
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/calibration", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /research-lab page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/research-lab
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/research-lab", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /stock/NBIS page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/stock/NBIS
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/stock/NBIS", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /reset-password page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/reset-password
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/reset-password", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /auth/callback page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/auth/callback
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/auth/callback", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /dashboard page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/dashboard
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/dashboard", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /discover page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/discover
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/discover", waiting until "domcontentloaded"[22m
+
+FAIL route light 390 /not-a-real-route page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/not-a-real-route
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/not-a-real-route", waiting until "domcontentloaded"[22m
+
+Routes: fixture light 1440
+FAIL route light 1440 / page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /login page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/login
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/login", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /register page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/register
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/register", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /forgot-password page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/forgot-password
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/forgot-password", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /onboarding page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/onboarding
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/onboarding", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /personalization page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/personalization
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/personalization", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /analyze page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/analyze
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/analyze", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /portfolio page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/portfolio
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/portfolio", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /watchlist page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/watchlist
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/watchlist", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /alerts page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/alerts
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/alerts", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /trading-lab page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/trading-lab
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/trading-lab", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /profile page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/profile
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/profile", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /faq page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/faq
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/faq", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /about page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/about
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/about", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /methodology page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/methodology
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/methodology", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /terms page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/terms
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/terms", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /privacy page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/privacy
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/privacy", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /disclaimer page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/disclaimer
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/disclaimer", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /calibration page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/calibration
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/calibration", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /research-lab page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/research-lab
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/research-lab", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /stock/NBIS page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/stock/NBIS
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/stock/NBIS", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /reset-password page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/reset-password
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/reset-password", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /auth/callback page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/auth/callback
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/auth/callback", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /dashboard page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/dashboard
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/dashboard", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /discover page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/discover
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/discover", waiting until "domcontentloaded"[22m
+
+FAIL route light 1440 /not-a-real-route page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/not-a-real-route
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/not-a-real-route", waiting until "domcontentloaded"[22m
+
+Research: light 390
+FAIL research opens light 390 page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/stock/NBIS
+Call log:
+[2m  - navigating to "http://127.0.0.1:3102/stock/NBIS", waiting until "domcontentloaded"[22m
+

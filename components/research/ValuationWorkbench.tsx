@@ -3,9 +3,10 @@
 import {useId,useState} from 'react';
 import MetricHelp from '@/components/MetricHelp';
 import {CASH_FLOW_PRESETS,VALUATION_METHOD_REFERENCES,calculateCashFlowScenario,extractValuationEvidence,type CashFlowAssumptions,type ValuationWorkbenchInput} from '@/lib/research-valuation-workbench';
+import type {FinancialAssessment} from '@/lib/research-financial-assessment';
 
 type ScenarioKey='bear'|'base'|'bull';
-type Props=ValuationWorkbenchInput&{onOpenFinancials?:()=>void};
+type Props=ValuationWorkbenchInput&{onOpenFinancials?:()=>void;financialAssessment?:FinancialAssessment|null};
 const keys:ScenarioKey[]=['bear','base','bull'];
 const money=(v:number|null)=>v===null?'Not available':new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:2}).format(v);
 const compact=(v:number|null)=>v===null?'Not available':new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',notation:'compact',maximumFractionDigits:2}).format(v);
@@ -29,6 +30,7 @@ function Workbench(props:Props) {
   const [shareError,setShareError]=useState('');
   const [edited,setEdited]=useState(false);
   const evidence=extractValuationEvidence({...props,reviewedShares});
+  const canonical=props.financialAssessment?.valuation;
   const results={bear:calculateCashFlowScenario(evidence,scenarios.bear),base:calculateCashFlowScenario(evidence,scenarios.base),bull:calculateCashFlowScenario(evidence,scenarios.bull)};
   const active=results[selected];
   const displayCash=evidence.fcf!==null?evidence:evidence.reportedCashFlow;
@@ -51,6 +53,12 @@ function Workbench(props:Props) {
     setReviewedShares({value,asOf:shareDate});setShareError('');setEdited(true);
   };
   return <section className="valuationWorkbench" aria-labelledby={`${id}-title`} data-auryn-section="valuation">
+    {canonical&&<article className="researchCard valuationCanonical"><header className="valuationHeading"><div><span className="valuationEyebrow">SHARED RESEARCH ASSESSMENT</span><h2>Canonical valuation</h2><p>{canonical.method.replaceAll('_',' ')}</p></div><span className="valuationStatus">{canonical.decisionGrade?'Conditional policy estimates':'Evidence incomplete'}</span></header><p>{canonical.why}</p>
+      {canonical.scenarios&&<><div className="valuationSourceMetrics">{keys.map(key=><div key={key}><span>{key} case</span><strong>{money(canonical.scenarios![key].value)}</strong><small>{canonical.scenarios![key].assumptions.growthPct}% cash growth · {canonical.scenarios![key].assumptions.discountRatePct}% equity discount rate</small></div>)}</div><p>Current listed-share denominator: {sharesText(canonical.shares)}. {canonical.scope} economics ended {canonical.periodEnd}. All future assumptions are AURYN policy estimates.</p>
+        {canonical.impliedExpectations&&<p><strong>Price-implied cash-flow growth: </strong>{canonical.impliedExpectations.growthPct===null?'No solution between −50% and +50%.':`${canonical.impliedExpectations.growthPct.toFixed(1)}% annually for five years.`} All other base assumptions remain fixed. This is not a company forecast.</p>}
+        <details className="valuationDetails"><summary>Independent method check and sensitivity</summary>{canonical.crossChecks.map(check=><p key={check.family}>{check.method}: {money(check.valuePerShare)}. {check.limitations}</p>)}<div className="valuationTableWrap" role="region" aria-label="Canonical cash-flow sensitivity" tabIndex={0}><table><thead><tr><th>Growth</th><th>Equity discount rate</th><th>Value / listed share</th></tr></thead><tbody>{canonical.sensitivity.map(row=><tr key={`${row.growthPct}-${row.discountRatePct}`}><td>{row.growthPct}%</td><td>{row.discountRatePct}%</td><td>{money(row.valuePerShare)}</td></tr>)}</tbody></table></div><p>{canonical.warnings.join(' ')}</p></details></>}
+      {canonical.missingInputs.length>0&&<ul>{canonical.missingInputs.map((item,index)=><li key={`${item.metric}-${index}`}>{item.reason}</li>)}</ul>}
+    </article>}
     <header className="valuationHeading">
       <div><span className="valuationEyebrow">CASH FLOW · FIVE-YEAR MODEL</span><h2 id={`${id}-title`}>Valuation scenarios</h2><p>Change the assumptions. See how the estimate responds.</p></div>
       <span className="valuationStatus">Exploratory model</span>

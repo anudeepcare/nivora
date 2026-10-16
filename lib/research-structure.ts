@@ -7,6 +7,7 @@ export type ResearchStructureOptions = {
   direction?: 'UP' | 'DOWN';
   scale?: 'linear' | 'log';
   averageType?: 'SMA' | 'WMA';
+  custom686?: boolean;
 };
 
 export type ResearchWeeklyBar = {
@@ -20,7 +21,7 @@ export type ResearchWeeklyBar = {
 };
 
 export type ResearchAnchor = { time: string; price: number; type: 'LOW' | 'HIGH' };
-export type ResearchFibLevel = { ratio: number; price: number; label: string; kind: 'RETRACEMENT' | 'EXTENSION' };
+export type ResearchFibLevel = { ratio: number; price: number; label: string; kind: 'ENDPOINT' | 'RETRACEMENT' | 'EXTENSION'; custom?: boolean };
 export type ResearchMovingAverage = { period: 50 | 200; value: number | null; points: Array<{ time: string; value: number }> };
 export type ResearchStructure = {
   weeklyBars: ResearchWeeklyBar[];
@@ -142,21 +143,22 @@ function autoAnchors(bars: ResearchWeeklyBar[]): { anchors: ResearchStructure['a
   return { anchors: null, reason: 'No ordered pair of opposite weekly pivots is confirmed by two consecutive completed weeks on each side.' };
 }
 
-function fibonacci(anchors: NonNullable<ResearchStructure['anchors']>, scale: 'linear' | 'log'): ResearchFibLevel[] {
+function fibonacci(anchors: NonNullable<ResearchStructure['anchors']>, scale: 'linear' | 'log', custom686 = false): ResearchFibLevel[] {
   const start = scale === 'log' ? Math.log(anchors.start.price) : anchors.start.price;
   const end = scale === 'log' ? Math.log(anchors.end.price) : anchors.end.price;
   const restore = (value: number): number => scale === 'log' ? Math.exp(value) : value;
   return [
-    ...[0.236, 0.382, 0.5, 0.618, 0.786].map((ratio): ResearchFibLevel => ({
+    ...[0, 0.236, 0.382, 0.5, 0.618, ...(custom686 ? [0.686] : []), 0.786, 1].map((ratio): ResearchFibLevel => ({
       ratio,
       price: restore(end + (start - end) * ratio),
-      label: ratio === 0.5 ? '50% retracement (convention, not a Fibonacci ratio)' : `${(ratio * 100).toFixed(1)}% retracement`,
-      kind: 'RETRACEMENT',
+      label: `${ratio.toFixed(3)} · ${(ratio * 100).toFixed(1)}% ${ratio === 0 ? 'swing end' : ratio === 1 ? 'swing start' : ratio === 0.5 ? 'retracement (common convention)' : ratio === 0.686 ? 'custom retracement' : 'retracement'}`,
+      kind: ratio === 0 || ratio === 1 ? 'ENDPOINT' : 'RETRACEMENT',
+      ...(ratio === 0.686 ? { custom: true } : {}),
     })),
     ...[1.272, 1.618].map((ratio): ResearchFibLevel => ({
       ratio,
       price: restore(start + (end - start) * ratio),
-      label: `${(ratio * 100).toFixed(1)}% conditional extension`,
+      label: `${ratio.toFixed(3)} · ${(ratio * 100).toFixed(1)}% conditional extension`,
       kind: 'EXTENSION',
     })),
   ].filter((level) => positive(level.price));
@@ -245,9 +247,73 @@ export function buildResearchStructure(input: unknown, options: ResearchStructur
   result.anchors = selection.anchors;
   result.reason = bars.length ? selection.reason : 'No valid completed historical weeks are available.';
   if (result.anchors) {
-    result.levels = fibonacci(result.anchors, scale);
+    result.levels = fibonacci(result.anchors, scale, options.custom686 === true);
     result.warnings.push('Extensions are conditional two-anchor geometry in the swing direction, not price predictions or probabilities.');
-    if (result.levels.length < 7) result.warnings.push('Nonpositive or nonfinite extension prices were omitted.');
+    if (result.levels.length < (options.custom686 ? 10 : 9)) result.warnings.push('Nonpositive or nonfinite extension prices were omitted.');
   }
   return result;
+}
+
+/** A personal overlay never replaces or changes the reproducible automatic study. */
+export function buildResearchStructureStudies(input: unknown, options: ResearchStructureOptions = {}) {
+  return {
+    automatic: buildResearchStructure(input, { ...options, mode: 'auto' }),
+    personal: options.mode === 'manual' ? buildResearchStructure(input, options) : null,
+  };
+}
+
+export type ResearchSetupMarker = {
+  id: string;
+  ruleVersion: 'auryn-weekly-reclaim-v1';
+  label: 'AURYN weekly reclaim';
+  signalWeek: string;
+  firstKnownAt: string;
+  anchors: NonNullable<ResearchStructure['anchors']>;
+  reclaimPrice: number;
+  invalidationPrice: number;
+  invalidation: string;
+  invalidatedAt: string | null;
+  conditions: string[];
+};
+
+/**
+ * Replay the automatic, linear 0.618 reclaim rule, independent of personal chart settings.
+ * Each prefix ends BEFORE the signal week. Anchor confirmation is therefore available at
+ * that week's start; the crossing is first known only at the following UTC Monday.
+ * No marker is drawn on the earlier pivot, and later pivots cannot rewrite its inputs.
+ */
+export function buildResearchSetupMarkers(model: ResearchStructure): ResearchSetupMarker[] {
+  const bars = model.weeklyBars;
+  const markers: ResearchSetupMarker[] = [];
+  const signalledSwings = new Set<string>();
+  for (let index = 1; index < bars.length; index += 1) {
+    const current = bars[index], prior = bars[index - 1];
+    const knownAt = dateString(Date.parse(current.time) + WEEK);
+    for (const marker of markers) {
+      if (marker.invalidatedAt === null && current.close < marker.invalidationPrice) marker.invalidatedAt = knownAt;
+    }
+    if (Date.parse(current.time) - Date.parse(prior.time) !== WEEK) continue;
+    const anchors = autoAnchors(bars.slice(0, index)).anchors;
+    if (!anchors || anchors.direction !== 'UP' || !anchors.confirmedAt || anchors.confirmedAt > current.time) continue;
+    const swingKey = `${anchors.start.time}:${anchors.end.time}`;
+    if (signalledSwings.has(swingKey)) continue;
+    const reclaimPrice = anchors.end.price + (anchors.start.price - anchors.end.price) * .618;
+    if (!(prior.close <= reclaimPrice && current.low <= reclaimPrice && current.close > reclaimPrice)) continue;
+    signalledSwings.add(swingKey);
+    markers.push({
+      id: `auryn-weekly-reclaim-v1:${swingKey}:${current.time}`,
+      ruleVersion: 'auryn-weekly-reclaim-v1', label: 'AURYN weekly reclaim',
+      signalWeek: current.time, firstKnownAt: knownAt, anchors, reclaimPrice,
+      invalidationPrice: anchors.start.price,
+      invalidation: `A subsequent completed weekly close below ${anchors.start.price} invalidates this chart setup.`,
+      invalidatedAt: null,
+      conditions: [
+        'An upward pair of automatic pivots, each with two consecutive completed weeks on both sides, was known before the signal week began.',
+        'The immediately preceding weekly close was at or below the fixed linear 0.618 (61.8%) retracement.',
+        'The signal week traded at or below that level and closed above it; both weeks are consecutive.',
+        'Only the first qualifying reclaim per anchor pair is recorded. The signal is first known at the next UTC Monday, never on the earlier pivot.',
+      ],
+    });
+  }
+  return markers;
 }

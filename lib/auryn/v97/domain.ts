@@ -18,8 +18,8 @@ export type CioTechnicalInputs={
 };
 
 export type AurynCioAssessment={
-  compounderQuality:number;
-  deterioration:{score:number;state:"STABLE"|"WATCH"|"DETERIORATING"|"SEVERE";corroboratingWeaknesses:string[]};
+  compounderQuality:number|null;
+  deterioration:{score:number;state:"UNASSESSED"|"STABLE"|"WATCH"|"DETERIORATING"|"SEVERE";corroboratingWeaknesses:string[]};
   deploymentQuality:number;
   agreement:number;
   confidence:number;

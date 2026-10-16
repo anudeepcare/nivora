@@ -5,6 +5,7 @@ import {AlpacaPaperBroker} from '@/lib/alpaca-paper';
 import {loadCanonicalMarketSnapshot} from '@/lib/auryn/market-data-gateway';
 import {validateManualTicket,checkManualRisk,manualClientOrderId,manualOrderSnapshot,isManualTerminal,canCancelManualOrder} from '@/lib/manual-paper.mjs';
 import {rateLimitDistributed,requestKey} from '@/lib/rate-limit';
+import {withPaperLease,assertPaperLease,reservePaperCapacity,reconcilePaperOrders} from '@/lib/server/paper-operations';
 export const dynamic='force-dynamic';
 const json=(data:any,status=200)=>NextResponse.json(data,{status,headers:{'Cache-Control':'private, no-store'}});
 function database(){const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY;return url&&key?createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}}):null;}
@@ -81,22 +82,37 @@ export async function POST(req:Request){
  const db=database(),key=process.env.ALPACA_PAPER_API_KEY,secret=process.env.ALPACA_PAPER_API_SECRET;if(!db||!key||!secret)return json({error:'Paper broker and audit storage must be configured.'},503);
  let ticket;const body=await req.json().catch(()=>null);
  try{ticket=validateManualTicket(body)}catch(e:any){return json({error:e.message},400)}
+ const owner=crypto.randomUUID();
+ const execute=async()=>{
  try{
   const {data:existing,error:readError}=await db.from('auryn_manual_paper_orders').select('*').eq('id',ticket.requestId).eq('user_id',auth.user.id).maybeSingle();
   if(readError)return json({error:'Manual paper audit storage is unavailable. Apply the required migration.'},503);
   if(existing)return json({order:existing,replayed:true});
   const broker=new AlpacaPaperBroker(key,secret);
-  const [account,positions,clock,configuration,quote]=await Promise.all([broker.getAccount(),broker.getPositions(),broker.getClock(),broker.getAccountConfiguration(),loadCanonicalMarketSnapshot({symbol:ticket.symbol,twelveKey:process.env.TWELVE_DATA_API_KEY,alpacaKey:key,alpacaSecret:secret})]);
+  if(body?.preview!==true)await reconcilePaperOrders(db,broker);
+  const openOrders=await broker.getOpenOrders();
+  const [rawAccount,rawPositions,clock,configuration,quote,asset]=await Promise.all([broker.getAccount(),broker.getPositions(),broker.getClock(),broker.getAccountConfiguration(),loadCanonicalMarketSnapshot({symbol:ticket.symbol,twelveKey:process.env.TWELVE_DATA_API_KEY,alpacaKey:key,alpacaSecret:secret}),broker.getAsset(ticket.symbol)]);
+  if(rawAccount.tradingBlocked||rawAccount.status!=="ACTIVE"||!asset.tradable||asset.status!=="active")return json({error:'The paper account or asset is not eligible for orders.'},409);
+  const {account,positions}=reservePaperCapacity(rawAccount,rawPositions,openOrders);
   let risk;try{risk=checkManualRisk(ticket,{market:quote.snapshot,account,positions,clockOpen:clock.isOpen,configuration})}catch(e:any){return json({error:e.message},409)}
-  if(body?.preview===true)return json({preview:{...ticket,...risk,userId:auth.user.id,mode:'paper',type:'limit',timeInForce:'day'}});
+  if(ticket.side==='BUY'&&(positions.filter(p=>p.symbol===ticket.symbol).reduce((n,p)=>n+Number(p.marketValue||0),0)+risk.notional>account.equity*.1||account.cash-risk.notional<account.equity*.1||account.dailyPnlPct<=-3||(positions.length>=20&&!positions.some(p=>p.symbol===ticket.symbol))))return json({error:'This order exceeds paper position, cash reserve, daily-loss, or position-count limits.'},409);
+  const reviewBudget=body?.reviewBudget;
+  if(reviewBudget!=null&&(typeof reviewBudget!=='number'||!Number.isFinite(reviewBudget)||reviewBudget<=0||risk.notional>reviewBudget))return json({error:'The reviewed order exceeds the proposed budget. Reduce quantity or return to planning.'},409);
+  if(body?.preview===true)return json({preview:{...ticket,...risk,...(reviewBudget!=null?{reviewBudget}:{}),userId:auth.user.id,mode:'paper',type:'limit',timeInForce:'day'}});
   if(body?.confirmed!==true)return json({error:'Review and confirm the paper order first.'},400);
   const record={id:ticket.requestId,user_id:auth.user.id,symbol:ticket.symbol,side:ticket.side,quantity:ticket.quantity,limit_price:ticket.limitPrice,status:'SUBMITTING',detail:'User-confirmed paper order; not an automated engine decision.'};
+  await assertPaperLease(db,owner);
   const {error:claimError}=await db.from('auryn_manual_paper_orders').insert(record);
   if(claimError)return json({error:'The request is already recorded or audit storage is unavailable. Refresh history before retrying.',reconcile:true},409);
   try{
+   await assertPaperLease(db,owner);
+   if(Date.now()-Date.parse(risk.quoteAsOf)>60_000)throw Error('STALE_EXECUTION_QUOTE');
    const order=await broker.submitOrder({clientOrderId:manualClientOrderId(ticket.requestId),symbol:ticket.symbol,side:ticket.side,quantity:ticket.quantity,type:'limit',timeInForce:'day',limitPrice:ticket.limitPrice,referencePrice:risk.referencePrice,notional:risk.notional,version:'manual-paper-v1'});
    const {error:auditError}=await db.from('auryn_manual_paper_orders').update({status:order.status,broker_order_id:order.id,detail:'Broker response recorded. Submission does not guarantee a fill.'}).eq('id',ticket.requestId).eq('user_id',auth.user.id).eq('status','SUBMITTING');
    return json({order:{...record,status:order.status,broker_order_id:order.id},warning:auditError?'Broker accepted the order, but audit update failed. Check Alpaca Paper before placing another order.':null});
   }catch{await db.from('auryn_manual_paper_orders').update({status:'UNKNOWN',detail:'Submission outcome is uncertain. Check the Alpaca Paper account before placing another order.'}).eq('id',ticket.requestId).eq('user_id',auth.user.id).eq('status','SUBMITTING');return json({error:'Submission outcome is uncertain. Check Alpaca Paper before placing another order. Do not retry as a new order.'},502);}
- }catch{return json({error:'Paper broker or market data is unavailable. No new order was submitted.'},503);}
+ }catch{return json({error:'Paper broker, audit storage, or market data is unavailable. Refresh history before trying again.'},503);}
+ };
+ if(body?.preview===true)return execute();
+ try{return await withPaperLease(db,owner,execute)}catch(e:any){return json({error:'Paper execution is paused, busy, or requires its control migration.',code:e?.message||'PAPER_CONTROL_UNAVAILABLE'},409);}
 }

@@ -1,0 +1,48 @@
+✔ legacy HOLD cannot force an otherwise qualified V9.3.4 decision back to WAIT (2.223934ms)
+✔ missing valuation lowers completeness but does not act like a bearish zero (0.35334ms)
+✔ confirmed structural invalidation blocks tactical capital without a fundamental veto (0.215818ms)
+✔ owner policy can express WATCH rather than compressing everything into HOLD (0.227205ms)
+✔ all new-money actions are reachable without quotas (1.121532ms)
+✔ Trading Lab treats legacy V5 as challenger, not an automatic divergence veto (0.317327ms)
+✖ decision distribution audit proves every action is reachable and is deterministic (142.227349ms)
+✔ distribution audit has no legacy HOLD wait-veto reason (63.063698ms)
+✔ a broken price setup pauses deployment without breaking a sound business (2.250053ms)
+✔ price-derived risk and catalysts cannot alter slow business quality (0.197822ms)
+✔ no fundamentals abstains instead of inventing a bearish or neutral business opinion (0.176549ms)
+✔ no observed pillars yields an unavailable score and zero coverage despite caller claim (0.252041ms)
+✔ new capital is withheld when valuation or asymmetry is unknown (0.243559ms)
+✔ six-to-twelve month outlook requires dated forward evidence instead of copying long term (0.418095ms)
+✔ named corroborated fundamental weakness can still produce an avoid decision (0.227355ms)
+✔ unknown-score decisions can persist only as explicit abstentions (0.160446ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 15
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 300.995789
+
+✖ failing tests:
+
+test at tests/auryn-v9343-distribution-audit.test.mjs:7:1
+✖ decision distribution audit proves every action is reachable and is deterministic (142.227349ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'auryn-intelligence-2026-10-16'
+  - 'auryn-v9.3.4.3'
+           ^
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/tests/auryn-v9343-distribution-audit.test.mjs:9:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'auryn-intelligence-2026-10-16',
+    expected: 'auryn-v9.3.4.3',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

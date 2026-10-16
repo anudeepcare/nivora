@@ -27,13 +27,9 @@ test('deterministic reliability matrix covers at least 10,000 real-world combina
  assert.ok(r.dimensions.includes('ownership'));
 });
 
-import fs from 'node:fs';
-test('paper runner preserves V5 evidence as challenger context while V9.3.4.3 owns execution action',()=>{
- const stock=fs.readFileSync(new URL('../components/StockClient.tsx',import.meta.url),'utf8');
- assert.match(stock,/v5:v5Analysis&&v7Analysis\?\{snapshotId:v5Analysis\.snapshotId/);
- const runner=fs.readFileSync(new URL('../app/api/trading-lab/run-paper/route.ts',import.meta.url),'utf8');
- assert.match(runner,/mapInstitutionalActionToToday/);
- assert.doesNotMatch(runner,/mapV5ActionToToday/);
- assert.match(runner,/snapshot\.evidence\?\.v5/);
- assert.match(runner,/hardVetoReasons/);
+import {buildInstitutionalDecisionKernel} from '../.engine-test/auryn/v931/decision-kernel.js';
+test('legacy V5 challenger cannot override canonical new-capital policy',()=>{
+ const input={snapshotId:'shared',symbol:'TEST',marketPrice:100,executionTradable:false,previousSetupState:null,scores:{business:90,earningsRevisions:85,valuation:80,marketStructure:80,catalystsRegime:70,riskAsymmetry:80},technical:{trend:80,momentum:80,flow:80,structure:80,nearResistance:false,confirmedBreakout:true,structuralBreak:false,reclaimLevel:90,invalidation:80},evidenceCompleteness:100};
+ const a=buildInstitutionalDecisionKernel({...input,canonicalAction:'HOLD'}),b=buildInstitutionalDecisionKernel({...input,canonicalAction:'SELL'});
+ assert.equal(a.newMoneyAction,b.newMoneyAction);assert.equal(a.legacyChallengerAction,'HOLD');assert.equal(b.legacyChallengerAction,'SELL');
 });

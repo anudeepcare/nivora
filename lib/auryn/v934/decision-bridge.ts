@@ -14,8 +14,8 @@ export function deriveV934DecisionTechnical(snapshot:AurynMarketIntelligenceSnap
  const weekly=snapshot?.confirmed?.['1W'] as TimeframeTechnicalState|undefined;
  const live=snapshot?.livePreview?.['1D'] as TimeframeTechnicalState|undefined;
  const map=snapshot?.actionMap;
- const confirmedPrice=Number(daily?.price);
- const confirm=Number(map?.confirm),invalidation=Number(map?.invalidation);
+ const confirmedPrice=typeof daily?.price==="number"?daily.price:NaN;
+ const confirm=typeof map?.confirm==="number"?map.confirm:NaN,invalidation=typeof map?.invalidation==="number"?map.invalidation:NaN;
  const trend=weighted(snapshot,s=>s.trend.score);
  const momentum=weighted(snapshot,s=>s.momentum.score);
  const flow=weighted(snapshot,s=>s.participation.score);

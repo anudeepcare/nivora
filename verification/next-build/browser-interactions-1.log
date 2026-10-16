@@ -1,0 +1,20 @@
+FAIL portfolio add/edit/remove and holding research link Expected values to be strictly equal:
+
+10 !== 12
+
+FAIL complete research journey: discover, evidence, compare, saved view, Ask and Today locator.selectOption: Timeout 12000ms exceeded.
+Call log:
+[2m  - waiting for getByLabel('Your horizon', { exact: true })[22m
+
+FAIL research alert preferences, deduplication and read history locator.uncheck: Clicking the checkbox did not change its state
+Call log:
+[2m  - waiting for getByLabel('Enable research alerts', { exact: true })[22m
+[2m    - locator resolved to <input checked type="checkbox"/>[22m
+[2m  - attempting click action[22m
+[2m    - waiting for element to be visible, enabled and stable[22m
+[2m    - element is vi
+FAIL supported accumulation caps, pause, original journal and review locator.selectOption: Timeout 12000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('region', { name: 'Accumulation & portfolio planning', exact: true }).getByLabel('Requested allocation', { exact: true })[22m
+
+{"out":"/workspace/scratch/0397d872aad5/auryn-next/verification/next-build/browser-interactions-1","cases":21,"passed":17,"failed":4,"runtimeErrors":0,"unlabeledControlCases":0,"smallTargetCases":2,"fatalError":null}

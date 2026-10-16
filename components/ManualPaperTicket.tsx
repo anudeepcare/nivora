@@ -9,6 +9,7 @@ export default function ManualPaperTicket({connected,onSubmitted}:{connected:boo
  const [symbol,setSymbol]=useState(''),[side,setSide]=useState('BUY'),[quantity,setQuantity]=useState(''),[limit,setLimit]=useState('');
  const [preview,setPreview]=useState<any>(null),[items,setItems]=useState<any[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');
  const [historyError,setHistoryError]=useState(''),[uncertain,setUncertain]=useState(false),[historyBusy,setHistoryBusy]=useState(false),[cancelReview,setCancelReview]=useState<any>(null);
+ const [planContext,setPlanContext]=useState<{symbol:string;amount:number|null;snapshot:string;policy:string}|null>(null);
  const request=async(method='GET',body?:any,requestId?:string)=>{
   const {data:{session}}=await supabaseBrowser().auth.getSession();if(!session)throw Error('Please sign in again.');
   const url='/api/trading-lab/manual'+(requestId?`?requestId=${encodeURIComponent(requestId)}`:'');
@@ -20,10 +21,17 @@ export default function ManualPaperTicket({connected,onSubmitted}:{connected:boo
   try{const result=await request();setItems(result.items||[]);setHistoryError('')}catch(e:any){setHistoryError(e.message)}finally{setHistoryBusy(false)}
  },[]);
  useEffect(()=>{
+  if(typeof window!=='undefined'){
+   const query=new URLSearchParams(window.location.search),candidate=(query.get('planSymbol')||query.get('symbol')||'').toUpperCase();
+   if(/^[A-Z][A-Z0-9.\-]{0,9}$/.test(candidate)){
+    const amount=Number(query.get('planAmount')||query.get('amount'));
+    setSymbol(candidate);setPlanContext({symbol:candidate,amount:Number.isFinite(amount)&&amount>0&&amount<=1e9?amount:null,snapshot:(query.get('planSnapshot')||query.get('snapshot')||'').slice(0,200),policy:(query.get('planPolicy')||'').slice(0,100)});
+   }
+  }
   supabaseBrowser().auth.getSession().then(({data})=>{try{const raw=localStorage.getItem('auryn-pending-paper-request:'+data.session?.user.id);const pending=raw?JSON.parse(raw):null;if(pending&&pending.userId===data.session?.user.id){setPreview(pending);setUncertain(true);setError('A previous request needs reconciliation. Check its broker status before placing another order.')}}catch{}});
   load();
  },[load]);
- async function review(e:React.FormEvent){e.preventDefault();setBusy(true);setError('');setNotice('');try{const result=await request('POST',{symbol,side,quantity:Number(quantity),limitPrice:Number(limit),requestId:crypto.randomUUID(),preview:true});setPreview(result.preview)}catch(e:any){setError(e.message)}finally{setBusy(false)}}
+ async function review(e:React.FormEvent){e.preventDefault();setBusy(true);setError('');setNotice('');try{const result=await request('POST',{symbol,side,quantity:Number(quantity),limitPrice:Number(limit),requestId:crypto.randomUUID(),preview:true,...(planContext?.symbol===symbol&&planContext.amount?{reviewBudget:planContext.amount}:{})});setPreview(result.preview)}catch(e:any){setError(e.message)}finally{setBusy(false)}}
  async function submit(){
   if(!preview||busy)return;setBusy(true);setError('');
   try{
@@ -55,6 +63,7 @@ export default function ManualPaperTicket({connected,onSubmitted}:{connected:boo
  return <div className="secondarySplit">
   <section className="secondaryCard">
    <h2>Paper order</h2><p>Alpaca simulated funds · US stocks · limit orders only.</p>
+   {planContext&&<aside className="secondaryNotice" aria-label="Pending plan review"><h3>Pending plan review</h3><p>{planContext.symbol}{planContext.amount?` · proposed budget ${price(planContext.amount)}`:''}</p><p>This link is a planning reference. Review the current research and enter quantity and limit price. The server checks a fresh canonical quote and account limits again; this manual order does not inherit the referenced strategy's approval.</p>{planContext.snapshot&&<details><summary>Referenced research</summary><p>{planContext.snapshot}</p>{planContext.policy&&<p>{planContext.policy}</p>}</details>}</aside>}
    {error&&<p role="alert" className="secondaryNotice">{error}</p>}{notice&&<p role="status" className="secondaryNotice">{notice}</p>}
    {preview?<section className="paperReview" aria-label="Review paper order">
     <h3>Review your paper order</h3><dl className="secondaryFacts">{[['Symbol',preview.symbol],['Side',preview.side],['Quantity',preview.quantity],['Limit price',price(preview.limitPrice)],['Maximum order value',price(preview.notional)],['Time in force','Day'],['Quote as of',when(preview.quoteAsOf)]].map(([label,value])=><div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
@@ -66,7 +75,7 @@ export default function ManualPaperTicket({connected,onSubmitted}:{connected:boo
     <label className="aurynField">Side<select value={side} onChange={e=>setSide(e.target.value)}><option value="BUY">Buy</option><option value="SELL">Sell</option></select></label>
     <label className="aurynField">Quantity<input required type="number" min="1" max="10000" step="1" value={quantity} onChange={e=>setQuantity(e.target.value)}/></label>
     <label className="aurynField">Limit price ($)<input required type="number" min="0.01" step="0.01" value={limit} onChange={e=>setLimit(e.target.value)}/></label>
-    <p className="secondaryCaption">Day order · regular session only. Requires broker-enforced no-short and 1× margin settings. Buys are cash funded and limited to 10% of account equity. Sells cannot exceed owned shares. Limit price must be within 2% of the verified quote.</p>
+    <p className="secondaryCaption">Day order · regular session only. Requires broker-enforced no-short and 1× margin settings. Buys respect the 10% position limit, 10% cash reserve and daily-loss limit. Sells cannot exceed available owned shares. Limit price must be within 2% of the verified quote.</p>
     <button className="secondaryPrimary" disabled={busy||!connected}>{busy?'Verifying order…':'Review paper order'}</button>
     {!connected&&<p className="secondaryCaption">Connect the configured Alpaca Paper account to review an order.</p>}
    </form>}

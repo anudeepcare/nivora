@@ -1,36 +1,30 @@
-import {ENGINE_VERSION,VALUATION_VERSION,WEIGHTS_VERSION,TODAY_POLICY_VERSION} from "@/lib/nivora-version";
-import {freezeDecision} from "@/lib/nivora-snapshot";
-import {NextResponse} from "next/server";import {createClient} from "@supabase/supabase-js";
-export const runtime="nodejs";
-export async function POST(req:Request){
- try{
-  const body=await req.json();
-  if(body?.evidence?.v5?.trustState==="BLOCK")return NextResponse.json({enabled:false,error:"CANONICAL_TRUST_BLOCK",reason:"Validation history will not learn from an internally inconsistent canonical snapshot."},{status:422});
-  const canonicalPrice=Number(body.price);
-  if(!(Number.isFinite(canonicalPrice)&&canonicalPrice>0))return NextResponse.json({enabled:false,error:"INVALID_CANONICAL_PRICE",reason:"Validation history requires a verified positive canonical market price."},{status:422});
-  const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY;if(!url||!key)return NextResponse.json({enabled:false,reason:"Validation persistence is not configured."});
-  const db=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});const engineVersion=String(body.engineVersion||ENGINE_VERSION);
-  const row={symbol:String(body.symbol||"").toUpperCase(),engine_version:engineVersion,mode:String(body.mode||"long"),price:canonicalPrice,score:Number(body.score||0),confidence:Number(body.confidence||0),action:String(body.action||""),thesis_label:String(body.thesisLabel||""),factors:body.dimensions||{},levels:body.levels||{},evidence:body.evidence||{},audit_id:String(body.auditId||""),observed_at:new Date().toISOString()};
-  const{error}=await db.from("nivora_validation_snapshots").insert(row);if(error)throw error;
-  const d=body.investorDecision,symbol=row.symbol;
-  if(d&&symbol){
-    const{data:last}=await db.from("nivora_decision_history").select("observed_at,thesis_score,action").eq("symbol",symbol).eq("engine_version",engineVersion).order("observed_at",{ascending:false}).limit(1).maybeSingle();
-    const now=new Date(),sameDay=last?.observed_at&&new Date(last.observed_at).toISOString().slice(0,10)===now.toISOString().slice(0,10),material=!last||String(last.action)!==String(d.action)||Math.abs(Number(last.thesis_score||0)-Number(d.thesisScore||0))>=5;
-    if(!sameDay||material){
-      const hz=new Map((d.horizons||[]).map((h:any)=>[h.key,Number(h.score)]));const f=d.factors||{};
-      await db.from("nivora_decision_history").insert({symbol,observed_at:now.toISOString(),price:canonicalPrice,company_score:Number(d.companyScore||0),growth_score:f.growth==null?null:Number(f.growth),financial_score:f.financial==null?null:Number(f.financial),analyst_score:f.streetChange==null?null:Number(f.streetChange),valuation_score:f.valuation==null?null:Number(f.valuation),thesis_score:Number(d.thesisScore||0),opportunity_score:Number(d.opportunityScore||0),evidence_confidence:Number(d.dataCompleteness||d.confidence||0),thesis_label:String(d.thesisLabel||""),thesis_state:String(d.thesisState||""),action:String(d.action||""),horizon_3m:hz.get("3M")??null,horizon_6m:hz.get("6M")??null,horizon_1y:hz.get("1Y")??null,horizon_2y:hz.get("2Y")??null,horizon_3y:hz.get("3Y")??null,reason:(d.drivers||[])[0]||null,main_risk:(d.risks||[])[0]||null,engine_version:engineVersion,weights_version:WEIGHTS_VERSION,valuation_version:VALUATION_VERSION,archetype:d.archetype||null,benchmark_symbol:String(body?.evidence?.benchmark||"SPY"),source_snapshot:{factors:f,dataCompleteness:d.dataCompleteness,decisionGradeEvidence:d.decisionGradeEvidence??null,today:d.today||null,todayPolicyVersion:TODAY_POLICY_VERSION,levels:body.levels||{},auditId:body.auditId||null,benchmarkPrice:body?.evidence?.benchmarkPrice??null}});
-      const frozen=freezeDecision({symbol,observedAt:now.toISOString(),price:canonicalPrice,decision:d,evidence:{...(body.evidence||{}),levels:body.levels||{},auditId:body.auditId||null},benchmarkSymbol:String(body?.evidence?.benchmark||"SPY"),sectorBenchmarkSymbol:body?.evidence?.sectorBenchmark||null});
-      await Promise.resolve(db.from("nivora_v59_decision_snapshots").insert({symbol,observed_at:frozen.observedAt,price:frozen.price,engine_version:frozen.engineVersion,weights_version:frozen.weightsVersion,valuation_version:frozen.valuationVersion,today_policy_version:frozen.todayPolicyVersion,evidence_fingerprint:frozen.evidenceFingerprint,benchmark_symbol:frozen.benchmarkSymbol,sector_benchmark_symbol:frozen.sectorBenchmarkSymbol,decision:frozen.decision,evidence:frozen.evidence})).then(()=>undefined).catch(()=>undefined);
-    }
-  }
-  const canonicalDecision=body?.canonicalDecision;
-  if(canonicalDecision?.engineVersion&&canonicalDecision?.snapshotId&&symbol){
-    const fingerprint=`${canonicalDecision.snapshotId}:${canonicalDecision.primaryAction}:${canonicalDecision.evidenceConfidence?.score??"na"}`;
-    const{data:lastCanonical}=await db.from("nivora_v59_decision_snapshots").select("id,evidence_fingerprint").eq("symbol",symbol).eq("engine_version",String(canonicalDecision.engineVersion)).order("observed_at",{ascending:false}).limit(1).maybeSingle();
-    if(lastCanonical?.evidence_fingerprint!==fingerprint){
-      await db.from("nivora_v59_decision_snapshots").insert({symbol,observed_at:new Date().toISOString(),price:canonicalPrice,engine_version:canonicalDecision.engineVersion,weights_version:"auryn-v7-trust-weights-1",valuation_version:"auryn-v6-valuation-registry-1",today_policy_version:"auryn-v7-cio-trust-1",evidence_fingerprint:fingerprint,benchmark_symbol:String(body?.evidence?.benchmark||"SPY"),sector_benchmark_symbol:body?.evidence?.sectorBenchmark||null,decision:canonicalDecision,evidence:{...(body.evidence||{}),canonicalSnapshotId:canonicalDecision.snapshotId}});
-    }
-  }
-  return NextResponse.json({enabled:true,saved:true,engineVersion});
- }catch(e:any){return NextResponse.json({enabled:false,error:e?.message||"Validation snapshot failed"},{status:500})}
+import { NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+import { authorizeRequest } from '@/lib/server/authorization';
+import { rateLimitDistributed } from '@/lib/rate-limit';
+import { runAutonomousCanonicalResearch } from '@/lib/auryn/v995/autonomous-research';
+import { persistAutonomousResearch } from '@/lib/auryn/v995/persist-research';
+export const runtime='nodejs';
+export const maxDuration=60;
+
+/** Clients request a refresh. They cannot author the shared research or trading evidence. */
+export async function POST(req:Request) {
+  const auth=await authorizeRequest(req);
+  if(auth.response)return auth.response;
+  let body:any;
+  try{body=await req.json();}catch{return NextResponse.json({error:'Invalid JSON.'},{status:400});}
+  const symbol=typeof body?.symbol==='string'?body.symbol.trim().toUpperCase():'';
+  if(!/^[A-Z0-9][A-Z0-9.-]{0,14}(\/[A-Z]{2,6})?$/.test(symbol))return NextResponse.json({error:'A supported symbol is required.'},{status:400});
+  const quota=await rateLimitDistributed(`canonical-refresh:${auth.user.id}`,4,60_000);
+  if(!quota.ok)return NextResponse.json({error:'Research refresh limit reached.'},{status:429,headers:{'Retry-After':'60'}});
+  const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if(!url||!key)return NextResponse.json({enabled:false,error:'Research persistence is not configured.'},{status:503});
+  try {
+    const origin=process.env.AURYN_BASE_URL||new URL(req.url).origin;
+    const result=await runAutonomousCanonicalResearch(symbol,{origin});
+    if(result.state!=='RESEARCH_READY')return NextResponse.json({enabled:true,saved:false,...result},{status:result.state==='TEMPORARY_PROVIDER_FAILURE'?503:422});
+    const client=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});
+    const saved=await persistAutonomousResearch(client,symbol,result);
+    return NextResponse.json({enabled:true,saved:true,snapshotId:saved.canonicalSnapshotId,decision:result.decision},{headers:{'Cache-Control':'private, no-store'}});
+  } catch { return NextResponse.json({enabled:false,error:'Canonical research could not be saved. Existing history is unchanged.'},{status:503}); }
 }

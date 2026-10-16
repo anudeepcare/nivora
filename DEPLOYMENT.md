@@ -1,3 +1,11 @@
+# Current upgrade deployment
+
+Use [GIT_AND_VERCEL.md](GIT_AND_VERCEL.md) and [RELEASE_REPORT.md](RELEASE_REPORT.md) for the October 16 intelligence upgrade. **This upgrade introduces three incremental SQL migrations and server-side authorization configuration.** Earlier no-migration statements and live-service observations below describe earlier releases only; they do not certify this ZIP.
+
+---
+
+# Historical deployment notes (retained for provenance)
+
 # GitHub and Vercel deployment
 
 ## Latest chart and mobile-menu fixes

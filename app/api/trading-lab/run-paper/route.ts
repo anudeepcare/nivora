@@ -14,6 +14,9 @@ import {sizePosition} from "@/lib/nivora-position-sizing";
 import {resolvePaperInvalidation} from "@/lib/v65/paper-invalidation";
 import {AUTONOMOUS_RESEARCH_ENGINE_VERSION} from "@/lib/auryn/v995/persist-research";
 
+import {authorizePaperCron,normalizePaperEvidence,withPaperLease,assertPaperLease,reservePaperCapacity,stablePaperIntentId,submitAuditedPaperOrder,reconcilePaperOrders} from "@/lib/server/paper-operations";
+
+export const maxDuration=120;
 export const dynamic="force-dynamic";
 
 const unauthorized=()=>NextResponse.json({error:"Unauthorized."},{status:401});
@@ -44,19 +47,21 @@ async function recordRunnerHealth(db:SupabaseClient,ok:boolean,started:number,er
   ok,
   latency_ms:Math.max(0,Date.now()-started),
   error_code:errorCode
- }).then(()=>undefined);
+ });
 }
 
 async function reconcileFills(db:SupabaseClient,broker:AlpacaPaperBroker){
  const activities=await broker.getFillActivities(new Date(Date.now()-30*24*60*60_000).toISOString());
  if(activities.length){
   const orderIds=[...new Set(activities.map(a=>a.orderId).filter(Boolean))];
-  const {data:knownOrders}=orderIds.length
+  const {data:knownOrders,error:knownOrderError}=orderIds.length
    ?await db.from("nivora_v61_paper_orders").select("id,broker_order_id").in("broker_order_id",orderIds)
-   :{data:[] as any[]};
+   :{data:[] as any[],error:null};
+  if(knownOrderError)throw Error("PAPER_ORDER_AUDIT_UNAVAILABLE");
   const orderMap=new Map((knownOrders||[]).map((o:any)=>[String(o.broker_order_id),Number(o.id)]));
   for(const a of activities){
-   await db.from("nivora_v61_trade_fills").upsert({
+   if(!orderMap.has(a.orderId))continue; // Manual and external broker fills are not automated strategy results.
+   const write=await db.from("nivora_v61_trade_fills").upsert({
     order_id:orderMap.get(a.orderId)||null,
     broker_fill_id:a.id,
     symbol:a.symbol,
@@ -67,11 +72,13 @@ async function reconcileFills(db:SupabaseClient,broker:AlpacaPaperBroker){
     fees:0,
     evidence:{broker:"alpaca",paper:true}
    },{onConflict:"broker_fill_id"});
+   if(write.error)throw Error("PAPER_FILL_AUDIT_UNAVAILABLE");
   }
  }
- const {data:allFills}=await db.from("nivora_v61_trade_fills")
-  .select("broker_fill_id,symbol,side,qty,fill_price,fees,filled_at")
+ const {data:allFills,error:fillError}=await db.from("nivora_v61_trade_fills")
+  .select("broker_fill_id,symbol,side,qty,fill_price,fees,filled_at").not("order_id","is",null)
   .order("filled_at",{ascending:true});
+ if(fillError)throw Error("PAPER_FILL_AUDIT_UNAVAILABLE");
  const closed=buildClosedTradesFromFills((allFills||[]).map((f:any)=>({
   id:String(f.broker_fill_id||""),
   symbol:f.symbol,
@@ -81,20 +88,17 @@ async function reconcileFills(db:SupabaseClient,broker:AlpacaPaperBroker){
   fees:Number(f.fees||0)
  })));
  for(const c of closed){
-  await db.from("nivora_v61_trade_fills")
+  const update=await db.from("nivora_v61_trade_fills")
    .update({realized_pnl:c.pnl,return_pct:c.returnPct})
    .eq("broker_fill_id",c.sourceFillId);
+  if(update.error)throw Error("PAPER_FILL_AUDIT_UNAVAILABLE");
  }
 }
 
 async function run(req:Request,automatic=false){
  const started=Date.now();
- const secret=process.env.CRON_SECRET||process.env.TRADING_LAB_CRON_SECRET;
- if(!secret||req.headers.get("authorization")!==`Bearer ${secret}`)return unauthorized();
+ if(!authorizePaperCron(req))return unauthorized();
 
- if(process.env.TRADING_LAB_PAPER_ENABLED!=="true"){
-  return NextResponse.json({status:"disabled",reason:"Set TRADING_LAB_PAPER_ENABLED=true to enable autonomous paper execution."});
- }
 
  const url=process.env.NEXT_PUBLIC_SUPABASE_URL;
  const serviceKey=process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -102,19 +106,27 @@ async function run(req:Request,automatic=false){
 
  const alpacaKey=process.env.ALPACA_PAPER_API_KEY||"";
  const alpacaSecret=process.env.ALPACA_PAPER_API_SECRET||"";
- if(!alpacaKey||!alpacaSecret)return NextResponse.json({error:"Alpaca Paper credentials are not configured."},{status:503});
+
 
  const db=createClient(url,serviceKey,{auth:{persistSession:false,autoRefreshToken:false}});
- const broker=new AlpacaPaperBroker(alpacaKey,alpacaSecret);
+
  const twelveKey=process.env.TWELVE_DATA_API_KEY||"";
  const session=marketSessionAt(new Date());
  const runId=crypto.randomUUID(),runStartedAt=new Date().toISOString();
- await db.from("nivora_v65_trading_runs").insert({id:runId,engine_version:ENGINE_VERSION,trading_lab_version:TRADING_LAB_VERSION,automatic,session,started_at:runStartedAt,status:"RUNNING"}).then(()=>undefined);
+ const runInsert=await db.from("nivora_v65_trading_runs").insert({id:runId,engine_version:ENGINE_VERSION,trading_lab_version:TRADING_LAB_VERSION,automatic,session,started_at:runStartedAt,status:"RUNNING"});
+ if(runInsert.error)return NextResponse.json({status:"unavailable",code:"RUN_AUDIT_UNAVAILABLE",reason:"Paper run audit storage requires its migration."},{status:503});
  const finishRun=async(status:string,results:any[]=[],error:string|null=null)=>{
   const submitted=results.filter(x=>x.status==="SUBMITTED").length,blocked=results.filter(x=>x.status==="BLOCKED").length,errors=results.filter(x=>x.status==="ERROR").length;
-  await db.from("nivora_v65_trading_runs").update({finished_at:new Date().toISOString(),status,processed:results.length,submitted,blocked,errors,results,error}).eq("id",runId).then(()=>undefined);
+  const audit=await db.from("nivora_v65_trading_runs").update({finished_at:new Date().toISOString(),status,processed:results.length,submitted,blocked,errors,results,error}).eq("id",runId);
+  if(audit.error)throw Error("RUN_AUDIT_UNAVAILABLE");
  };
 
+ if(process.env.TRADING_LAB_PAPER_ENABLED!=="true"){
+  await finishRun("DISABLED",[],"PAPER_DISABLED");return NextResponse.json({status:"disabled",runId,code:"PAPER_DISABLED",mode:"paper",reason:"Paper execution is disabled."});
+ }
+ if(!alpacaKey||!alpacaSecret){await finishRun("ERROR",[],"BROKER_NOT_CONFIGURED");return NextResponse.json({status:"unavailable",runId,code:"BROKER_NOT_CONFIGURED"},{status:503});}
+ const broker=new AlpacaPaperBroker(alpacaKey,alpacaSecret);
+ const execute=async()=>{
  // V65 deliberately executes automatic paper orders only during the regular session.
  // Premarket/after-hours prices remain visible research evidence but are not auto-execution liquidity.
  if(session!=="REGULAR"){
@@ -133,7 +145,8 @@ async function run(req:Request,automatic=false){
 
   const recordEvaluation=async(snapshot:Snapshot,status:string,action:string,reason:string,riskCode:string|null=null,clientOrderId:string|null=null,details:any={})=>{
    const {error}=await db.from("nivora_v61_trade_evaluations").upsert({
-    evaluation_key:`${String(snapshot.id)}:${status}`,
+    evaluation_key:`${runId}:${String(snapshot.id)}:${status}`,
+    run_id:runId,
     snapshot_id:String(snapshot.id),
     symbol:String(snapshot.symbol||"").toUpperCase(),
     evaluated_at:new Date().toISOString(),
@@ -144,15 +157,18 @@ async function run(req:Request,automatic=false){
     client_order_id:clientOrderId,
     engine_version:ENGINE_VERSION,
     trading_lab_version:TRADING_LAB_VERSION,
-    details
+    details:{...details,automatic,runId,evidenceFingerprint:snapshot.evidence_fingerprint,policyVersion:DEFAULT_PAPER_RISK_POLICY,modelVersion:AUTONOMOUS_RESEARCH_ENGINE_VERSION}
    },{onConflict:"evaluation_key"});
    if(error)throw error;
   };
 
-  const account=await broker.getAccount();
-  const positions=await broker.getPositions();
-  const positionMap=new Map(positions.map(p=>[p.symbol,p]));
+  await reconcilePaperOrders(db,broker);
   await reconcileFills(db,broker);
+  const openOrders=await broker.getOpenOrders();
+  const [account,positions,configuration]=await Promise.all([broker.getAccount(),broker.getPositions(),broker.getAccountConfiguration()]);
+  if(account.tradingBlocked||account.status!=="ACTIVE"||configuration.suspend_trade||configuration.no_shorting!==true||Number(configuration.max_margin_multiplier)!==1)throw Error("PAPER_ACCOUNT_NOT_TRADABLE");
+  let capacity=reservePaperCapacity(account,positions,openOrders);
+  let positionMap=new Map(capacity.positions.map(p=>[p.symbol,p]));
 
   const since=new Date(Date.now()-30*60_000).toISOString();
   const {data:snapshots,error}=await db.from("nivora_v59_decision_snapshots")
@@ -172,11 +188,15 @@ async function run(req:Request,automatic=false){
   const results:any[]=[];
   for(const snapshot of latest.values()){
    try{
+    if(Date.now()-started>70_000){results.push({status:"DEFERRED",reason:"Run time budget reached; remaining snapshots will be evaluated by a later run."});break;}
+    await assertPaperLease(db,runId);
+    const normalized=normalizePaperEvidence(snapshot,new Date());
+    if(!normalized.ok){await recordEvaluation(snapshot,"BLOCKED",String(snapshot.evidence?.v931?.newMoneyAction||"NONE"),normalized.code,normalized.code);results.push({symbol:snapshot.symbol,status:"BLOCKED",reason:normalized.code,riskCode:normalized.code});continue;}
     const d=snapshot.decision||{};
     const pos=positionMap.get(snapshot.symbol);
     const v5Meta=snapshot.evidence?.v5;
     const v931Meta=snapshot.evidence?.v931;
-    const v934Meta=snapshot.evidence?.v934;
+    const v934Meta=normalized.marketIntelligence;
     const v935Meta=snapshot.evidence?.v935;
     const normalizedAction=(x:any)=>String(x||"").trim().toUpperCase().replaceAll(" ","_");
     if(!v935Meta?.snapshotId||v935Meta?.contract!=="AURYN_V9_3_5_CANONICAL_SNAPSHOT"){
@@ -223,7 +243,7 @@ async function run(req:Request,automatic=false){
      continue;
     }
 
-    const intent=deriveTradeIntent({
+    let intent=deriveTradeIntent({
      symbol:snapshot.symbol,
      snapshotId:String(v931Meta?.snapshotId||v5Meta?.snapshotId||snapshot.id),
      evidenceFingerprint:String(snapshot.evidence_fingerprint||""),
@@ -242,7 +262,9 @@ async function run(req:Request,automatic=false){
      continue;
     }
 
-    const {data:existing}=await db.from("nivora_v61_trade_intents").select("id").eq("intent_id",intent.id).maybeSingle();
+    intent={...intent,id:stablePaperIntentId(snapshot,String(today.action))};
+    const {data:existing,error:existingError}=await db.from("nivora_v61_trade_intents").select("id").eq("intent_id",intent.id).maybeSingle();
+    if(existingError)throw Error("PAPER_INTENT_AUDIT_UNAVAILABLE");
     if(existing){
      await recordEvaluation(snapshot,"DUPLICATE",String(today.action||"NO ACTION"),"This evidence/action already produced a trade intent.","DUPLICATE");
      results.push({symbol:snapshot.symbol,status:"DUPLICATE",action:String(today.action||"NO ACTION"),reason:"This evidence/action already produced a trade intent."});
@@ -250,6 +272,7 @@ async function run(req:Request,automatic=false){
     }
 
     const market=await refreshTradingMarketData(snapshot.symbol,broker,twelveKey);
+    const quoteLoadedAt=Date.now();
     if(market.integrity.state!=="LIVE_VERIFIED"){
      const reason="Paper execution requires two independently verified live providers; single-source, stale, closed-session, or disagreeing quotes are research-only.";
      await recordEvaluation(snapshot,"BLOCKED",String(today.action||"NO ACTION"),reason,"QUOTE_INTEGRITY",null,{integrityState:market.integrity.state,integrityTradable:false,disagreementPct:market.integrity.disagreementPct,automatic});
@@ -258,11 +281,11 @@ async function run(req:Request,automatic=false){
     }
     const quote=market.integrity.chosen;
     const context:TradingRiskContext={
-     equity:account.equity,
-     cash:account.cash,
+     equity:capacity.account.equity,
+     cash:Math.min(capacity.account.cash,capacity.account.buyingPower),
      dailyPnlPct:account.dailyPnlPct,
      currentPositionValue:Math.abs(pos?.marketValue||0),
-     openPositions:positions.length,
+     openPositions:capacity.positions.length,
      duplicate:false,
      quote:{
       price:quote?.price??0,
@@ -329,7 +352,7 @@ async function run(req:Request,automatic=false){
     }
 
     const risk=evaluateTradingRisk(executableIntent,context,DEFAULT_PAPER_RISK_POLICY);
-    await db.from("nivora_v61_trade_intents").insert({
+    const intentRecord={
      intent_id:intent.id,
      symbol:intent.symbol,
      snapshot_id:intent.snapshotId,
@@ -345,7 +368,7 @@ async function run(req:Request,automatic=false){
      trading_lab_version:TRADING_LAB_VERSION,
      source_intent:executableIntent,
      source_context:context
-    });
+    };
 
     if(!risk.allowed){
      await recordEvaluation(snapshot,"BLOCKED",String(today.action||"NO ACTION"),risk.reason,risk.code,null,{risk,...quoteDetails});
@@ -354,23 +377,17 @@ async function run(req:Request,automatic=false){
     }
 
     if(!quote||quote.price<=0)throw new Error("Risk authorization occurred without a usable execution quote.");
-    const order=planPaperOrder(executableIntent,risk.approvedNotional,quote.price);
-    const submitted=await broker.submitOrder(order);
-
-    await db.from("nivora_v61_paper_orders").insert({
-     intent_id:intent.id,
-     broker:"alpaca",
-     broker_order_id:submitted.id,
-     client_order_id:submitted.clientOrderId,
-     symbol:submitted.symbol,
-     side:submitted.side,
-     qty:submitted.qty,
-     limit_price:order.limitPrice,
-     status:submitted.status,
-     submitted_at:submitted.submittedAt||new Date().toISOString(),
-     order_payload:order,
-     broker_response:submitted
-    });
+    const order={...planPaperOrder(executableIntent,risk.approvedNotional,quote.price),clientOrderId:intent.id};
+    const asset=await broker.getAsset(snapshot.symbol);
+    if(!asset.tradable||asset.status!=="active"||(!asset.fractionable&&!Number.isInteger(order.quantity)))throw Error("PAPER_ASSET_NOT_ELIGIBLE");
+    if(intent.side==="SELL"&&order.quantity>Number(pos?.availableQty??pos?.qty??0))throw Error("PAPER_SELL_QUANTITY_RESERVED");
+    if(order.quantity<=0)throw Error("PAPER_ORDER_QUANTITY_INVALID");
+    const outcome=await submitAuditedPaperOrder({db,broker,intent:intentRecord,order,runId,assertLease:async()=>{await assertPaperLease(db,runId);if((quote.ageSeconds??Infinity)+(Date.now()-quoteLoadedAt)/1000>DEFAULT_PAPER_RISK_POLICY.maxQuoteAgeSeconds)throw Error("STALE_EXECUTION_QUOTE");}});
+    const submitted=outcome.order;
+    if(!submitted){await recordEvaluation(snapshot,"DUPLICATE",String(today.action),"The intended order was already claimed.","DUPLICATE");results.push({symbol:snapshot.symbol,status:"DUPLICATE"});continue;}
+    // Reserve the whole intended quantity until the next run refreshes account state; this is conservative for immediate fills.
+    capacity=reservePaperCapacity(capacity.account,capacity.positions,[{...submitted,qty:order.quantity,filledQty:0,status:"accepted",limitPrice:order.limitPrice}],"new");
+    positionMap=new Map(capacity.positions.map(p=>[p.symbol,p]));
 
     await recordEvaluation(snapshot,"SUBMITTED",String(today.action||"NO ACTION"),"Paper order submitted to Alpaca.",risk.code,submitted.clientOrderId,{risk,sizing,orderStatus:submitted.status,...quoteDetails});
     results.push({symbol:snapshot.symbol,status:"SUBMITTED",action:String(today.action||"NO ACTION"),reason:"Paper order submitted to Alpaca.",clientOrderId:submitted.clientOrderId,integrityState:market.integrity.state});
@@ -378,16 +395,23 @@ async function run(req:Request,automatic=false){
     const reason=error?.message||"Unexpected per-symbol paper execution error.";
     await recordEvaluation(snapshot,"ERROR",String(snapshot.decision?.today?.action||"NONE"),reason,"EXECUTION_ERROR").catch(()=>{});
     results.push({symbol:snapshot.symbol,status:"ERROR",action:String(snapshot.decision?.today?.action||"NONE"),reason});
+    if(/UNCERTAIN|AUDIT|LEASE|CONTROL|RECONCILIATION/.test(reason))break;
    }
   }
 
-  await recordRunnerHealth(db,true,started,null);
-  await finishRun("OK",results,null);
-  return NextResponse.json({status:"ok",mode:"paper",automatic,session,runId,engineVersion:ENGINE_VERSION,tradingLabVersion:TRADING_LAB_VERSION,processed:latest.size,results});
+  const failed=results.some(x=>x.status==="ERROR"),code=failed?"PARTIAL_FAILURE":latest.size===0?"NO_FRESH_RESEARCH":results.some(x=>x.status==="DEFERRED")?"RUN_BUDGET_REACHED":null;
+  await recordRunnerHealth(db,!failed,started,code);
+  await finishRun(failed?"PARTIAL_ERROR":"OK",results,code);
+  return NextResponse.json({status:failed?"partial-error":"ok",code,mode:"paper",automatic,session,runId,engineVersion:ENGINE_VERSION,tradingLabVersion:TRADING_LAB_VERSION,processed:latest.size,results});
  }catch(error:any){
   await recordRunnerHealth(db,false,started,error?.message||"RUNNER_ERROR").catch(()=>{});
   await finishRun("ERROR",[],error?.message||"RUNNER_ERROR").catch(()=>{});
   return NextResponse.json({status:"error",mode:"paper",automatic,session,engineVersion:ENGINE_VERSION,tradingLabVersion:TRADING_LAB_VERSION,error:error?.message||"Paper runner failed."},{status:500});
+ }
+ };
+ try{return await withPaperLease(db,runId,execute)}catch(error:any){
+  const code=String(error?.message||"PAPER_CONTROL_UNAVAILABLE");await finishRun("BLOCKED",[],code).catch(()=>{});
+  return NextResponse.json({status:"blocked",mode:"paper",runId,code,reason:code},{status:code==="PAPER_BUSY_OR_PAUSED"?409:503});
  }
 }
 

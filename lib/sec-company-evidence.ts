@@ -1,5 +1,5 @@
 /** SEC facts retain their unit, exact period and filing throughout selection and arithmetic. */
-type Scope = 'ANNUAL' | 'QUARTER' | 'POINT_IN_TIME';
+type Scope = 'ANNUAL' | 'YTD' | 'QUARTER' | 'POINT_IN_TIME';
 type Metric = keyof typeof TAGS;
 const TAGS = {
   revenue:['RevenueFromContractWithCustomerExcludingAssessedTax','Revenues','SalesRevenueNet','Revenue','RevenueFromContractsWithCustomers'],
@@ -15,7 +15,21 @@ const TAGS = {
   capex:['PaymentsToAcquirePropertyPlantAndEquipment','PurchaseOfPropertyPlantAndEquipment','PurchaseOfPropertyPlantAndEquipmentClassifiedAsInvestingActivities'],
   grossProfit:['GrossProfit','GrossProfitLoss'],
   operatingIncome:['OperatingIncomeLoss','ProfitLossFromOperatingActivities'],
+  currentDebt:['LongTermDebtCurrent','LongTermDebtAndCapitalLeaseObligationsCurrent'],
+  noncurrentDebt:['LongTermDebtNoncurrent','LongTermDebtAndCapitalLeaseObligationsNoncurrent'],
+  longTermDebtIncludingCurrent:['LongTermDebtAndFinanceLeaseObligationsIncludingCurrentMaturities'],
+  shortTermBorrowings:['ShortTermBorrowings'],
+  debtIssued:['ProceedsFromIssuanceOfLongTermDebt'],
+  debtRepaid:['RepaymentsOfLongTermDebt'],
+  shortTermDebtNet:['ProceedsFromRepaymentsOfShortTermDebt'],
+  preferredDividends:['PaymentsOfDividendsPreferredStockAndPreferenceStock'],
+  stockCompensation:['ShareBasedCompensation'],
+  dividends:['PaymentsOfDividendsCommonStock'],
+  acquisitions:['PaymentsToAcquireBusinessesNetOfCashAcquired'],
+  financeLeasePrincipal:['FinanceLeasePrincipalPayments'],
+  equity:['StockholdersEquity'],
 };
+const INSTANTS=new Set(['cash','assets','liabilities','currentDebt','noncurrentDebt','longTermDebtIncludingCurrent','shortTermBorrowings','equity']);
 const ANNUAL_FORMS = new Set(['10-K','10-K/A','20-F','20-F/A','40-F','40-F/A']);
 const FORMS = new Set([...ANNUAL_FORMS,'10-Q','10-Q/A','6-K','6-K/A']);
 const DAY = 86400000;
@@ -30,7 +44,10 @@ const clampScore = (value:number) => Math.max(0,Math.min(100,Math.round(value)))
 const last = <T>(values:T[]) => values.length?values[values.length-1]:null;
 const value = (point:SecCompanyFact|null) => point?.value??null;
 
-function normalizeFacts(payload:any,cik:string,asOf:string) {
+export type FinancialIssue={code:'CONFLICT'|'MISSING'|'UNSUPPORTED';metric:string;periodEnd:string|null;reason:string;status?:'UNRESOLVED'|'SUPERSEDED';filedAt?:string;currency?:string;taxonomy?:string;periodStart?:string|null;resolvedAt?:string;resolvedAccession?:string|null};
+export type FinancialFact={id:string;metric:string;value:number;currency:string|null;unit:string;periodStart:string|null;periodEnd:string;filedAt:string;accession:string|null;form:string;concept:string;taxonomy:string;scope:Scope|'TTM';source:'SEC';sourceUrl:string|null;sourceUrls:string[];basis:'GAAP'|'IFRS';kind:'REPORTED_FACT'|'DERIVED';inputIds:string[];calculation:string|null};
+
+function normalizeFacts(payload:any,cik:string,asOf:string,issues:FinancialIssue[]) {
   const out:SecCompanyFact[]=[];
   const facts=payload?.facts??payload??{};
   for(const taxonomy of ['us-gaap','ifrs-full']) for(const metric of Object.keys(TAGS) as Metric[]) {
@@ -41,8 +58,8 @@ function normalizeFacts(payload:any,cik:string,asOf:string) {
           if(typeof row?.val!=='number'||!Number.isFinite(row.val)||!validDate(row.end)||!validDate(row.filed)||row.filed>asOf||row.end>asOf||!FORMS.has(row.form)) continue;
           const start=validDate(row.start)?row.start:null;
           const duration=start?days(start,row.end):null;
-          const instant=['cash','assets','liabilities'].includes(metric);
-          const scope:Scope|null=instant?(row.start==null?'POINT_IN_TIME':null):duration!=null&&duration>=330&&duration<=400&&ANNUAL_FORMS.has(row.form)?'ANNUAL':duration!=null&&duration>=70&&duration<=110?'QUARTER':null;
+          const instant=INSTANTS.has(metric);
+          const scope:Scope|null=instant?(row.start==null?'POINT_IN_TIME':null):duration!=null&&duration>=330&&duration<=400&&ANNUAL_FORMS.has(row.form)?'ANNUAL':duration!=null&&duration>=70&&duration<=110?'QUARTER':duration!=null&&((duration>=150&&duration<=210)||(duration>=240&&duration<=310))?'YTD':null;
           if(!scope)continue;
           const accession=typeof row.accn==='string'&&/^\d{10}-\d{2}-\d{6}$/.test(row.accn)?row.accn:null;
           const numericCik=/^\d+$/.test(cik)?String(Number(cik)):null;
@@ -52,7 +69,20 @@ function normalizeFacts(payload:any,cik:string,asOf:string) {
       }
     });
   }
-  return out;
+  const groupKey=(p:SecCompanyFact)=>[p.metric,p.currency,p.taxonomy,p.periodStart,p.periodEnd,p.scope].join('|');
+  const filingGroups=new Map<string,SecCompanyFact[]>();
+  for(const p of out){const key=`${groupKey(p)}|${p.filedAt}|${p.accession}`;filingGroups.set(key,[...(filingGroups.get(key)??[]),p]);}
+  const conflicts=new Map<string,string>();
+  for(const rows of filingGroups.values())if(new Set(rows.map(p=>p.value)).size>1){
+    const p=rows[0],key=groupKey(p);conflicts.set(key,[conflicts.get(key)??'',p.filedAt].sort().at(-1)!);
+  }
+  for(const rows of filingGroups.values())if(new Set(rows.map(p=>p.value)).size>1){
+    const p=rows[0],key=groupKey(p),later=out.filter(x=>groupKey(x)===key&&x.filedAt>conflicts.get(key)!);
+    const latestDate=later.map(x=>x.filedAt).sort().at(-1),latest=later.filter(x=>x.filedAt===latestDate);
+    const resolved=latest.length>0&&new Set(latest.map(x=>x.value)).size===1;
+    issues.push({code:'CONFLICT',metric:p.metric,periodEnd:p.periodEnd,periodStart:p.periodStart,currency:p.currency,taxonomy:p.taxonomy,filedAt:p.filedAt,status:resolved?'SUPERSEDED':'UNRESOLVED',...(resolved?{resolvedAt:latestDate,resolvedAccession:latest[0].accession}:{}),reason:resolved?`Historical ${p.metric} conflict in ${p.accession??p.filedAt} was superseded by unambiguous same-basis evidence filed ${latestDate}.`:`Conflicting ${p.metric} values in filing ${p.accession??p.filedAt}; no value is selected from that filing or an older one.`});
+  }
+  return out.filter(p=>!conflicts.has(groupKey(p))||p.filedAt>conflicts.get(groupKey(p))!);
 }
 
 // Fresh periods and restatements outrank concept aliases. USD is only a tie breaker
@@ -109,6 +139,60 @@ function evidence(key:string,point:SecCompanyFact) {
   return {key,...rest,period:point.scope==='POINT_IN_TIME'?point.periodEnd:`${point.periodStart} – ${point.periodEnd}`};
 }
 
+const nextDay=(date:string)=>new Date(Date.parse(date)+DAY).toISOString().slice(0,10);
+function financialFacts(points:SecCompanyFact[],payload:any,cik:string,asOf:string,issues:FinancialIssue[]):FinancialFact[]{
+  const toFact=(p:SecCompanyFact):FinancialFact=>({id:`sec:${p.metric}:${p.periodStart??''}:${p.periodEnd}:${p.currency}:${p.accession??p.filedAt}:${p.concept}`,metric:p.metric,value:p.value,currency:p.currency,unit:p.unit,periodStart:p.periodStart,periodEnd:p.periodEnd,filedAt:p.filedAt,accession:p.accession,form:p.form,concept:p.concept,taxonomy:p.taxonomy,scope:p.scope,source:'SEC',sourceUrl:p.sourceUrl,sourceUrls:p.sourceUrl?[p.sourceUrl]:[],basis:p.basis,kind:'REPORTED_FACT',inputIds:[],calculation:null});
+  const selected=new Map<string,SecCompanyFact>();
+  for(const p of [...points].sort(rank))selected.set([p.metric,p.periodStart,p.periodEnd,p.currency,p.taxonomy,p.scope].join('|'),p);
+  const out=[...selected.values()].map(toFact);
+  const shareTags=[['dei','EntityCommonStockSharesOutstanding','sharesOutstanding'],['us-gaap','CommonStockSharesOutstanding','sharesOutstanding'],['us-gaap','WeightedAverageNumberOfDilutedSharesOutstanding','dilutedShares'],['us-gaap','WeightedAverageNumberOfSharesOutstandingBasic','basicAverageShares']] as const;
+  for(const [taxonomy,concept,metric] of shareTags){
+    const rows=(payload?.facts??payload??{})[taxonomy]?.[concept]?.units?.shares;
+    if(!Array.isArray(rows))continue;
+    const groups=new Map<string,any[]>();
+    for(const row of rows){
+      if(typeof row.val!=='number'||!Number.isFinite(row.val)||row.val<=0||!validDate(row.end)||!validDate(row.filed)||row.end>asOf||row.filed>asOf||!FORMS.has(row.form))continue;
+      const instant=metric==='sharesOutstanding',duration=validDate(row.start)?days(row.start,row.end):null;
+      if(instant?row.start!=null:duration==null||duration<330||duration>400||!ANNUAL_FORMS.has(row.form))continue;
+      const key=[row.start??'',row.end].join('|');groups.set(key,[...(groups.get(key)??[]),row]);
+    }
+    for(const rows of groups.values()){
+      const filed=rows.map(r=>r.filed).sort().at(-1),current=rows.filter(r=>r.filed===filed);
+      if(new Set(current.map(r=>r.val)).size>1){issues.push({code:'CONFLICT',metric,periodEnd:current[0].end,reason:`Conflicting reported ${metric}.`});continue;}
+      const r=current[0],accession=typeof r.accn==='string'&&/^\d{10}-\d{2}-\d{6}$/.test(r.accn)?r.accn:null;
+      const sourceUrl=accession&&/^\d+$/.test(cik)?`https://www.sec.gov/Archives/edgar/data/${Number(cik)}/${accession.replaceAll('-','')}/${accession}-index.html`:null;
+      out.push({id:`sec:${metric}:${r.start??''}:${r.end}:shares:${accession??r.filed}:${concept}`,metric,value:r.val,currency:null,unit:'shares',periodStart:r.start??null,periodEnd:r.end,filedAt:r.filed,accession,form:r.form,concept,taxonomy,scope:metric==='sharesOutstanding'?'POINT_IN_TIME':'ANNUAL',source:'SEC',sourceUrl,sourceUrls:sourceUrl?[sourceUrl]:[],basis:'GAAP',kind:'REPORTED_FACT',inputIds:[],calculation:null});
+    }
+  }
+  const sameBasis=(a:FinancialFact,b:FinancialFact)=>a.metric===b.metric&&a.currency===b.currency&&a.taxonomy===b.taxonomy&&a.concept===b.concept;
+  const derive=(anchor:FinancialFact,inputs:FinancialFact[],scope:'QUARTER'|'TTM',start:string,value:number,calculation:string)=>{
+    const inputIds=[...new Set(inputs.flatMap(p=>p.inputIds.length?p.inputIds:[p.id]))].sort(),sourceUrls=[...new Set(inputs.flatMap(p=>p.sourceUrls))].sort();
+    return {...anchor,id:`derived:${scope}:${anchor.metric}:${start}:${anchor.periodEnd}:${inputIds.join(';')}`,value,scope,periodStart:start,filedAt:inputs.map(p=>p.filedAt).sort().at(-1)!,accession:null,kind:'DERIVED' as const,inputIds,sourceUrls,calculation};
+  };
+  const durations=out.filter(p=>p.unit!=='shares'&&p.scope!=='POINT_IN_TIME');
+  for(const current of durations.filter(p=>p.scope==='YTD'||p.scope==='ANNUAL')){
+    const prior=durations.filter(p=>sameBasis(p,current)&&p.periodStart===current.periodStart&&p.periodEnd<current.periodEnd&&days(p.periodEnd,current.periodEnd)-1>=70&&days(p.periodEnd,current.periodEnd)-1<=110).sort((a,b)=>a.periodEnd.localeCompare(b.periodEnd)).at(-1);
+    if(prior&&!out.some(p=>sameBasis(p,current)&&p.scope==='QUARTER'&&p.periodStart===nextDay(prior.periodEnd)&&p.periodEnd===current.periodEnd))out.push(derive(current,[current,prior],'QUARTER',nextDay(prior.periodEnd),current.value-prior.value,'CUMULATIVE_CURRENT_MINUS_PRIOR'));
+  }
+  for(const current of durations.filter(p=>p.scope==='YTD'||p.scope==='QUARTER')){
+    if(!current.periodStart)continue;
+    const annual=durations.filter(p=>sameBasis(p,current)&&p.scope==='ANNUAL'&&nextDay(p.periodEnd)===current.periodStart).sort((a,b)=>a.filedAt.localeCompare(b.filedAt)).at(-1);
+    if(!annual?.periodStart)continue;
+    const prior=durations.filter(p=>sameBasis(p,current)&&p.periodStart===annual.periodStart&&p.periodEnd<annual.periodEnd&&Math.abs(days(p.periodStart!,p.periodEnd)-days(current.periodStart!,current.periodEnd))<=14).sort((a,b)=>a.filedAt.localeCompare(b.filedAt)).at(-1);
+    if(!prior||days(nextDay(prior.periodEnd),current.periodEnd)<330||days(nextDay(prior.periodEnd),current.periodEnd)>400)continue;
+    out.push(derive(current,[annual,current,prior],'TTM',nextDay(prior.periodEnd),annual.value+current.value-prior.value,'LATEST_ANNUAL_PLUS_CURRENT_YTD_MINUS_PRIOR_YTD'));
+  }
+  const quarterFacts=out.filter(p=>p.scope==='QUARTER'&&p.unit!=='shares');
+  for(const latest of quarterFacts){
+    if(out.some(p=>sameBasis(p,latest)&&p.scope==='TTM'&&p.periodEnd===latest.periodEnd))continue;
+    const sequence=quarterFacts.filter(p=>sameBasis(p,latest)&&p.periodEnd<=latest.periodEnd).sort((a,b)=>a.periodEnd.localeCompare(b.periodEnd)).slice(-4);
+    if(sequence.length!==4||!sequence[0].periodStart||sequence.some((p,i)=>i>0&&p.periodStart!==nextDay(sequence[i-1].periodEnd)))continue;
+    const duration=days(sequence[0].periodStart,latest.periodEnd);
+    if(duration>=330&&duration<=400)out.push(derive(latest,sequence,'TTM',sequence[0].periodStart,sequence.reduce((sum,p)=>sum+p.value,0),'SUM_FOUR_CONTIGUOUS_QUARTERS'));
+  }
+  return out.filter(p=>!issues.some(i=>i.code==='CONFLICT'&&i.metric===p.metric&&p.unit==='shares'&&i.periodEnd!==null&&p.periodEnd<=i.periodEnd)).sort((a,b)=>a.periodEnd.localeCompare(b.periodEnd)||a.metric.localeCompare(b.metric)||a.id.localeCompare(b.id));
+}
+
 // Shares are a count, not a monetary fact. Keep their unit separate and only
 // pair the annual diluted denominator with the exact cash-flow filing/period.
 function annualDilutedShareEvidence(payload:any,anchor:SecCompanyFact|null,asOf:string) {
@@ -122,7 +206,9 @@ function annualDilutedShareEvidence(payload:any,anchor:SecCompanyFact|null,asOf:
 }
 
 export function buildSecCompanyEvidence(payload:any,options:{cik?:string;asOf?:string}={}) {
-  const points=normalizeFacts(payload,options.cik??'',(options.asOf??new Date().toISOString()).slice(0,10));
+  const asOf=(options.asOf??new Date().toISOString()).slice(0,10),issues:FinancialIssue[]=[];
+  const points=normalizeFacts(payload,options.cik??'',asOf,issues);
+  const normalized=financialFacts(points,payload,options.cik??'',asOf,issues);
   const annual=points.filter(p=>p.scope==='ANNUAL');
   const quarters=points.filter(p=>p.scope==='QUARTER');
   const instants=points.filter(p=>p.scope==='POINT_IN_TIME');
@@ -224,7 +310,7 @@ export function buildSecCompanyEvidence(payload:any,options:{cik?:string;asOf?:s
   const currentFundamentalScore=observations?clampScore(50+currentScore*8):null;
   const businessScore=currentFundamentalScore===null?fiveYearRecord.score:fiveYearRecord.score===null?currentFundamentalScore:clampScore(currentFundamentalScore*.45+fiveYearRecord.score*.55);
   const fundamentalSignal={label:businessScore===null?'Limited':businessScore>=72?'Strong':businessScore<45?'Weak / watch':'Mixed',tone:businessScore===null?'neutral':businessScore>=72?'good':businessScore<45?'bad':'mid',score:businessScore,currentScore:currentFundamentalScore,reasons,positiveReasons,riskReasons};
-  const warnings:string[]=[];
+  const warnings:string[]=issues.map(issue=>issue.reason);
   if(reportedCurrency&&reportedCurrency!=='USD')warnings.push(`Financial statements are reported in ${reportedCurrency}. USD valuation inputs are unavailable because no verified currency conversion is applied.`);
   if(!comparableHistory)warnings.push('Reporting currency, taxonomy, concept or annual coverage changed. Prior reporting periods may describe a different business basis; unbridged periods are excluded from growth and durability.');
   if(hasDiscontinuedReporting)warnings.push('Discontinued operations are present. Current-business profitability and cash-generation use continuing-operations facts; only periods in the latest comparable reporting cohort support durability. Consolidated FCF is excluded from valuation when continuing capex cannot be verified.');
@@ -234,5 +320,6 @@ export function buildSecCompanyEvidence(payload:any,options:{cik?:string;asOf?:s
   const available=Object.values(rawMetrics).filter(v=>v!==null).length,total=Object.keys(rawMetrics).length;
   if(available<total)warnings.push('Some metrics lack matching periods, currencies or source facts. Missing evidence lowers coverage, not business quality.');
   const dataQuality={contractVersion:'sec-company-evidence-v3',status:available===0?'UNAVAILABLE':available>=6?'SUFFICIENT':'PARTIAL',reportedCurrency,valuationCurrency:'USD',earningsBasis:annualNetIncome?.metric==='continuingNetIncome'?'CONTINUING_OPERATIONS':annualNetIncome?'REPORTED':'UNAVAILABLE',cashFlowBasis:operatingCashFlow?.metric==='continuingOperatingCashFlow'?'CONTINUING_OPERATIONS':operatingCashFlow?'REPORTED':'UNAVAILABLE',comparableHistory,warnings,coverage:{available,total,percent:Math.round(available/total*100)},latestPeriodEnd:currentReporter?.periodEnd??null,latestFiledAt:currentReporter?.filedAt??null};
-  return {evidence:evidenceRows,latestQuarter,fundamentals,fundamentalSignal,fiveYearRecord,rawMetrics,reportedMetrics,dataQuality};
+  const financials={version:'financial-evidence-v4' as const,asOf,availabilityBasis:'SEC filing date; intraday acceptance time unavailable',facts:normalized,issues};
+  return {evidence:evidenceRows,financials,latestQuarter,fundamentals,fundamentalSignal,fiveYearRecord,rawMetrics,reportedMetrics,dataQuality};
 }

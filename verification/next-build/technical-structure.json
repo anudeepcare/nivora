@@ -1,0 +1,62 @@
+{
+  "scope": "F01-F08 technical structure",
+  "date": "2026-10-16",
+  "files": [
+    "lib/research-structure.ts",
+    "lib/research-structure-presentation.ts",
+    "components/research/WeeklyStructure.tsx",
+    "components/market/MarketTimeframeTape.tsx",
+    "components/research/TechnicalStudies.module.css",
+    "tests/approved-technical-structure.test.mjs",
+    "tests/research-structure.test.mjs",
+    "tests/weekly-structure-view.test.mjs"
+  ],
+  "requirements": {
+    "F01": "Decimal and percentage retracements, anchor endpoints, supported extensions, visible calculation formula.",
+    "F02": "Opt-in custom 0.686 / 68.6%; 0.500 labeled common convention.",
+    "F03": "Automatic confirmed weekly pivots remain separate from a personal overlay; dates and completed UTC-week status shown.",
+    "F04": "Existing exact-window SMA/WMA and confluence tests retained; no guaranteed price targets.",
+    "F05": "Intraday missing coverage reasons separate from weekly history and policy-withheld action levels.",
+    "F06": "Versioned AURYN reclaim rule replay with frozen then-known anchors, first-known UTC timestamp and dated invalidation; no signal on the earlier pivot.",
+    "F07": "Existing PriceChart/history/zoom/scroll code unchanged; history regression tests pass. Browser verification remains for consolidated release.",
+    "F08": "Technical interpretation explicitly separate from business, fundamental valuation and execution permission."
+  },
+  "verification": {
+    "redBeforeImplementation": {
+      "tests": 8,
+      "failed": 8,
+      "reason": "Expected absent endpoint/custom/personal-separation/marker/availability behavior"
+    },
+    "scopedTests": {
+      "command": "node --test tests/approved-technical-structure.test.mjs tests/research-structure.test.mjs tests/research-structure-presentation.test.mjs tests/weekly-structure-view.test.mjs tests/chart-history-repair.test.mjs",
+      "passed": 55,
+      "failed": 0
+    },
+    "strictHelperTypecheck": "passed",
+    "strictScopedTsxTypecheck": "passed using temporary config extending project tsconfig with technical components and dependencies",
+    "whitespace": "git diff --check passed",
+    "wholeProjectTypecheck": {
+      "status": "blocked at time of check by in-progress peer subsystem",
+      "error": "lib/auryn/v931/canonical-assessment.ts(5,42): TS2307 cannot find ../../research-financial-assessment"
+    },
+    "fullReleaseSuite": "Reserved for parent consolidated run to avoid shared .engine-test races",
+    "browser": "Not run by technical subagent"
+  },
+  "limitations": [
+    "Historical replay uses supplied OHLC history, which can be revised by providers; UI discloses it is not an immutable live alert record.",
+    "UTC calendar completion does not certify exchange-session or adjustment completeness.",
+    "Setup rule is research-only and not claimed to have validated predictive performance.",
+    "Exact provider cause is displayed only when the snapshot supplies it; otherwise absence is explained without inventing an entitlement failure."
+  ],
+  "integration": {
+    "newTestManifestEntry": "tests/approved-technical-structure.test.mjs",
+    "newEngineConfigEntries": [],
+    "newPropsRequired": false,
+    "exports": [
+      "buildResearchStructureStudies",
+      "buildResearchSetupMarkers",
+      "ResearchSetupMarker"
+    ],
+    "suggestion": "Render existing multi-timeframe disclosure even when marketIntelligence is null so its explicit missing-snapshot state is visible."
+  }
+}

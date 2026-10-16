@@ -1,3 +1,5 @@
+import {INTELLIGENCE_POLICY_VERSION} from "../v931/domain";
+import {projectMarketIntelligence} from "../v934/projections";
 import {createClient} from "@supabase/supabase-js";
 import {loadCanonicalMarketSnapshot} from "@/lib/auryn/market-data-gateway";
 import {classifySecuritySymbol} from "@/lib/auryn/v82/security-master";
@@ -10,16 +12,28 @@ function db(){
  const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY;
  return url&&key?createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}}):null;
 }
-function num(v:any){const n=Number(v);return Number.isFinite(n)?n:null}
+function num(v:any){return typeof v==="number"&&Number.isFinite(v)?v:null}
 function identity(symbol:string):CanonicalSecurityIdentity{
  const x:any=classifySecuritySymbol(symbol);
  const assetType=isCryptoQuoteSymbol(symbol)?"CRYPTO":x?.assetType==="EQUITY"||x?.type==="EQUITY"?"EQUITY":"EQUITY";
  return {symbol,assetType,exchange:assetType==="CRYPTO"?null:x?.exchange??null,mic:assetType==="CRYPTO"?null:x?.mic??x?.micCode??null,currency:assetType==="CRYPTO"?symbol.split('/')[1]:x?.currency??"USD"};
 }
-function researchFromRow(row:any):CanonicalResearchProjection{
+export function researchFromRow(row:any):CanonicalResearchProjection{
  if(!row)return {state:"ANALYSIS_REQUIRED",observedAt:null,decisionSnapshotId:null,fingerprint:null,action:null,ownerAction:null,longTermAction:null,setupState:null,decisionScore:null,evidenceCompleteness:null,marketIntelligenceSnapshotId:null,timeframes:null,actionMap:null,levels:null,thesisScore:null,opportunityScore:null,archetype:null};
- const v934=row?.evidence?.v934||null,v931=row?.evidence?.v931||null,legacy=row?.decision||null,age=Date.now()-new Date(row.observed_at||0).getTime();
- return {state:age<=7*24*3600_000?"READY":"STALE_VERIFIED",observedAt:row.observed_at??null,decisionSnapshotId:v931?.snapshotId??legacy?.snapshotId??null,fingerprint:row.evidence_fingerprint??null,action:v931?.newMoneyAction??legacy?.primaryAction??null,ownerAction:v931?.ownerAction??legacy?.ownerAction??null,longTermAction:v931?.longTermAction??null,setupState:v931?.setupState??null,decisionScore:num(v931?.decisionScore??legacy?.decisionStrength?.score),evidenceCompleteness:num(v931?.evidenceCompleteness??legacy?.evidenceConfidence?.score),marketIntelligenceSnapshotId:v934?.snapshotId??null,timeframes:v934?.timeframes??null,actionMap:v934?.actionMap??null,levels:v934?.levels??null,thesisScore:num(legacy?.thesis?.strength),opportunityScore:num(row?.evidence?.investorDecision?.opportunityScore??legacy?.opportunityScore),archetype:legacy?.classification?.businessModel??null};
+ const raw=row?.evidence?.v934??null;
+ const v934=raw?.confirmed&&raw?.actionMap?projectMarketIntelligence(raw):raw;
+ const v931=row?.evidence?.v931??null,legacy=row?.decision??null;
+ const age=Date.now()-new Date(row.observed_at??'').getTime();
+ const trusted=v931?.policyVersion===INTELLIGENCE_POLICY_VERSION&&row?.evidence?.v995?.autonomous===true&&row.evidence.v995.policyVersion===INTELLIGENCE_POLICY_VERSION;
+ const state=!trusted?'ANALYSIS_REQUIRED':Number.isFinite(age)&&age>=0&&age<=7*24*3600_000?'READY':'STALE_VERIFIED';
+ return {state,observedAt:row.observed_at??null,decisionSnapshotId:v931?.snapshotId??legacy?.snapshotId??null,
+ fingerprint:row.evidence_fingerprint??null,policyVersion:v931?.policyVersion??null,decision:trusted?v931:null,
+ financialEvidence:trusted?row.evidence.financialEvidence??null:null,events:trusted&&Array.isArray(row.evidence.events)?row.evidence.events:[],
+ action:trusted?v931.newMoneyAction:null,ownerAction:trusted?v931.ownerAction:null,longTermAction:trusted?v931.longTermAction:null,
+ setupState:trusted?v931.setupState??null:null,decisionScore:trusted?num(v931.decisionScore):null,evidenceCompleteness:trusted?num(v931.evidenceCompleteness):null,
+ marketIntelligenceSnapshotId:v934?.snapshotId??null,timeframes:v934?.timeframes??null,actionMap:v934?.actionMap??null,levels:v934?.levels??null,
+ thesisScore:trusted?num(v931.dimensions?.business?.score):null,opportunityScore:trusted?num(v931.decisionScore):null,
+ archetype:row.evidence.financialEvidence?.thesis?.businessModel??legacy?.classification?.businessModel??null};
 }
 async function latestDecision(symbol:string){
  const client=db();if(!client)return null;

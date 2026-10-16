@@ -4,6 +4,7 @@ export interface CanonicalSecurityIdentity{
  symbol:string; assetType:"EQUITY"|"CRYPTO"|"UNKNOWN"; exchange:string|null; mic:string|null; currency:string|null;
 }
 export interface CanonicalResearchProjection{
+ events?:import("../v931/research-events").CanonicalResearchEvent[];policyVersion?:string|null;decision?:import("../v931/domain").InstitutionalDecision|null;financialEvidence?:any|null;
  state:CanonicalResearchState; observedAt:string|null; decisionSnapshotId:string|null; fingerprint:string|null;
  action:CanonicalAction; ownerAction:CanonicalAction; longTermAction:CanonicalAction; setupState:string|null;
  decisionScore:number|null; evidenceCompleteness:number|null; marketIntelligenceSnapshotId:string|null;

@@ -1,0 +1,9 @@
+# AURYN current source handoff — read this first
+
+The user approved the entire scope in `docs/superpowers/specs/2026-10-16-approved-build.md` and subsequently requested the accumulation visuals described in `verification/next-build/requirements.json`. Do not ask the user to repeat those requirements or buy another provider without a concrete need/cost review.
+
+This archive contains the complete source, not a certificate that all requirements or production acceptance are complete. Start with `START_HERE.md`, `RELEASE_REPORT.md`, `GIT_AND_VERCEL.md`, and `verification/next-build/REMAINING_GAPS.md`. Read the per-item ledger before deciding what remains. Do not relabel unavailable/partial capabilities as delivered.
+
+Current app/build evidence is in `verification/next-build/verify-release-final.log`, browser-release reports and `build-source.json`. Preserve working changes and the latest approved visual direction. Re-run affected gates if source changes; do not repeatedly redesign/research or rerun unrelated checks. The user requested low credit use, concise updates and one complete deliverable.
+
+All prior source, approved boards, historical context and tests are retained. No deployment, live migration or broker order was performed. The actual owner UUID, production configuration and externally supplied evidence cannot be inferred from fixture data.

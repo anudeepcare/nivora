@@ -4,8 +4,9 @@ import {ArrowUpRight, ChevronRight} from "lucide-react";
 import AssetLogo from "@/components/AssetLogo";
 import MetricHelp from "@/components/MetricHelp";
 import {buildBusinessEvidence, formatReportedAmount, researchSourceUrl} from "@/lib/research-evidence";
+import type {FinancialAssessment} from "@/lib/research-financial-assessment";
 
-type Props={company?:any;analystFundamentals?:any;v4Analysis?:any;symbol:string;onNavigate?:(tab:"financials"|"risk"|"valuation")=>void};
+type Props={company?:any;analystFundamentals?:any;financialAssessment?:FinancialAssessment|null;v4Analysis?:any;symbol:string;onNavigate?:(tab:"financials"|"risk"|"valuation")=>void};
 type Metric=ReturnType<typeof buildBusinessEvidence>["metrics"][number];
 type AnnualKey="revenue"|"operatingCashFlow";
 type AnnualPoint={year:string;periodEnd:string;filedAt:string;currency:string;value:number;sourceUrl:string;basis:string};
@@ -63,13 +64,22 @@ function AnnualTrend({company,metric,label}:{company:any;metric:AnnualKey;label:
   </>:<div className="surfaceTrendMissing"><strong>Comparable trend unavailable</strong><p>At least two sourced, comparable annual periods are needed.</p></div>}</article>;
 }
 
-export default function BusinessEvidence({company,analystFundamentals,v4Analysis,symbol,onNavigate}:Props) {
+export default function BusinessEvidence({company,analystFundamentals,financialAssessment,v4Analysis,symbol,onNavigate}:Props) {
   const evidence=buildBusinessEvidence(company,analystFundamentals,v4Analysis);
+  const thesis=(financialAssessment??analystFundamentals?.financialAssessment)?.thesis as FinancialAssessment['thesis']|undefined;
   const available=evidence.metrics.filter(metric=>metric.value!=null);
   const observations=[...evidence.moat.drivers.map(reason=>({...reason,kind:"Advantage"})),...evidence.moat.threats.map(reason=>({...reason,kind:"Risk"}))];
   return <div className="researchTabBody researchBusinessEvidence researchBusinessPremium" data-auryn-section="thesis">
     <header className="surfaceBusinessHeading"><div><small>Business · Reported evidence</small><h2>Know the company</h2></div><div className="surfaceCompanyIdentity"><AssetLogo symbol={symbol} name={company?.name} logoUrl={company?.logo}/><span><b>{company?.name||symbol}</b><small>{symbol}</small></span></div></header>
     {available.length?<div className="surfaceBusinessMetrics">{available.map(metric=><ReportedMetricTile key={metric.key} metric={metric}/>)}</div>:<div className="surfaceInlineNote">Revenue, earnings and cash flow are unavailable in the current company record.</div>}
+    {thesis&&<details className="researchCard surfaceDisclosure" open><summary>Living business thesis <span>{thesis.businessModel.replaceAll('_',' ')}</span></summary><div className="surfaceDisclosureBody">
+      <p>{thesis.why}</p>
+      {thesis.reasonsToOwn.length>0&&<><h3>Supporting observations</h3><ul>{thesis.reasonsToOwn.map(claim=><li key={claim.id}>{claim.text} <a href={claim.sourceUrl} target="_blank" rel="noreferrer">{claim.source} · {claim.publishedAt} ↗</a></li>)}</ul></>}
+      {thesis.counterarguments.length>0&&<><h3>Counterevidence</h3><ul>{thesis.counterarguments.map(claim=><li key={claim.id}>{claim.text} <a href={claim.sourceUrl} target="_blank" rel="noreferrer">{claim.source} · {claim.publishedAt} ↗</a></li>)}</ul></>}
+      {thesis.guidanceReviews.length>0&&<><h3>Guidance versus delivery</h3><ul>{thesis.guidanceReviews.map(review=><li key={`${review.milestoneId}-${review.expected.id}`}><a href={review.expected.sourceUrl} target="_blank" rel="noreferrer">Guidance: {review.expected.text}</a> · {review.state.replaceAll('_',' ')}{review.actual&&<> · <a href={review.actual.sourceUrl} target="_blank" rel="noreferrer">Reported outcome: {review.actual.text}</a></>}</li>)}</ul></>}
+      {thesis.missingDimensions.length>0&&<><h3>Source evidence needed</h3><p>{thesis.missingDimensions.map(d=>d.replace(/([a-z])([A-Z])/g,'$1 $2')).join(' · ')}.</p></>}
+      <h3>Business-specific invalidation conditions</h3><ul>{thesis.invalidationConditions.map(condition=><li key={condition}>{condition}</li>)}</ul><p>These are review conditions, not claims that a business failure has occurred.</p>
+    </div></details>}
     <div className="surfaceTrends"><AnnualTrend company={company} metric="revenue" label="Revenue trend"/><AnnualTrend company={company} metric="operatingCashFlow" label="Operating cash flow trend"/></div>
     <article className="researchCard surfaceMoat"><header><div><h3>{evidence.moat.assessed?"Competitive moat evidence":"Moat unassessed"} <MetricHelp term="moat"/></h3><p>Dated observations behind a durable advantage.</p></div>{evidence.moat.score!=null&&<span className="surfaceModelBadge">{evidence.moat.score}/100 · source-backed model</span>}</header>
       {observations.length?<div className="surfaceMoatRows">{observations.map((reason,index)=><details key={`${reason.kind}-${index}`} className="surfaceMoatRow"><summary><span className={reason.kind==="Risk"?"surfaceRiskTag":"surfaceAdvantageTag"}>{reason.kind}</span><span>{reason.text}</span><ChevronRight size={17}/></summary><div className="surfaceMoatSources">{reason.sources.map((source,i)=><p key={i}>{source.url?<a href={source.url} target="_blank" rel="noreferrer">{source.source} · {source.date} ↗</a>:`${source.source} · ${source.date}`}</p>)}</div></details>)}</div>:<p>No dated, source-backed moat assessment is available. Financial consistency alone does not prove a competitive advantage.</p>}

@@ -1,0 +1,12 @@
+✔ provider calendar is explicitly estimated, filings require a known publication and source (8.502456ms)
+✔ an impossible calendar date cannot become an event (0.154498ms)
+✔ guidance cannot appear before publication or be labeled delivered (0.215908ms)
+✔ external estimates remain forecasts and unclassified claims do not become delivered events (0.1556ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 368.46476

@@ -67,7 +67,7 @@ export default function AurynResearchOverviewV2({symbol="Research", company, val
     <article className="researchCard researchChart surfaceChart">
       <header><div><small>Market history</small><h2>Price chart <MetricHelp term="price"/></h2></div><div className="surfaceChartActions">
         <button type="button" aria-label={watching?"Investment is on your watchlist":"Add investment to watchlist"} aria-pressed={watching} onClick={onAddWatchlist}>{watching?<Check size={17}/>:<Star size={17}/>}<span>{watching?"Watching":"Watch"}</span></button>
-        <button type="button" className="surfacePrimary" onClick={onTrackPosition}><Plus size={17}/><span>Track position</span></button>
+        <button type="button" className="surfacePrimary" aria-label="Track position in portfolio" onClick={onTrackPosition}><Plus size={17}/><span>Track position</span></button>
         <button type="button" aria-label="Expand price chart" onClick={()=>chartDialog.current?.showModal()}><Expand size={18}/></button>
       </div></header>
       <div className="surfaceChartControls"><div className="researchRanges" aria-label="Chart period">{["1D","1W","1M","3M","6M","1Y","3Y","5Y"].map(range=><button type="button" aria-pressed={chartRange===range} onClick={()=>onChartRangeChange?.(range)} key={range}>{range}</button>)}</div><label className="surfaceIndicator">Indicators<select aria-label="Chart indicators" value={showMovingAverages?"moving":"none"} onChange={event=>setShowMovingAverages(event.target.value==="moving")}><option value="none">Price & volume</option><option value="moving">20 / 50 bar averages</option></select></label></div>

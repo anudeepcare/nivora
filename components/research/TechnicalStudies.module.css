@@ -1,0 +1,15 @@
+.markerTable small {
+  display: block;
+  margin-top: 4px;
+  color: var(--auryn-page-muted);
+  white-space: normal;
+}
+
+.timeframeTape > span {
+  min-width: 0;
+}
+
+.timeframeTape b {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}

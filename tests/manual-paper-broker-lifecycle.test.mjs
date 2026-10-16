@@ -26,3 +26,13 @@ test('an ambiguous cancel transport error never retries the mutation',async()=>{
 test('order reads share the caller deadline instead of renewing an eight-second timeout per batch',async()=>{
  const signal=AbortSignal.abort();const h=brokerHarness([Response.json({id:'broker-1'}),Response.json({id:'broker-1'})]);await h.broker.getOrder('broker-1',signal);await h.broker.getOrderByClientOrderId('manual-1',signal);assert.equal(h.requests[0].init.signal,signal);assert.equal(h.requests[1].init.signal,signal);assert.equal(h.requests[1].init.signal.aborted,true);
 });
+test('fill reconciliation follows page tokens and fails closed on an unbounded backlog',async()=>{
+ const full=Array.from({length:100},(_,i)=>({id:`fill-${i}`,order_id:'order',symbol:'A',side:'buy',qty:'1',price:'2',transaction_time:'2026-10-16T14:00:00Z'}));
+ const h=brokerHarness([Response.json(full),Response.json([{...full[0],id:'last'}])]);
+ const fills=await h.broker.getFillActivities('2026-10-01T00:00:00Z');assert.equal(fills.length,101);assert.match(h.requests[1].url,/page_token=fill-99/);
+ const repeated=brokerHarness([Response.json(full),Response.json(full)]);await assert.rejects(()=>repeated.broker.getFillActivities(),/pagination|backlog/i);
+});
+test('broker account capability and pending order prices are available to execution risk checks',async()=>{
+ const h=brokerHarness([Response.json({equity:'1000',cash:'200',trading_blocked:true,status:'ACTIVE'}),Response.json([{id:'open',client_order_id:'client',symbol:'A',side:'buy',qty:'3',filled_qty:'1',limit_price:'20',status:'partially_filled'}])]);
+ assert.equal((await h.broker.getAccount()).tradingBlocked,true);const orders=await h.broker.getOpenOrders();assert.equal(orders[0].limitPrice,20);assert.equal(orders[0].filledQty,1);
+});
