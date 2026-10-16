@@ -72,3 +72,10 @@ export function answerEvidence(question:string,current:ResearchSnapshot,previous
  if(question==='summary'){const selected=current.evidence.filter(e=>e.role==='reason'||e.id==='action').slice(0,4);return {...base,supported:!!selected.length,text:selected.length?selected.map(e=>`${e.label}: ${e.value.replaceAll('_',' ')}.`).join(' '):'The saved snapshot has no sourced assessment to explain.',citations:selected.map(e=>cite(current,e))};}
  return {...base,supported:false,text:'This question is outside the saved evidence. Choose assessment, decision changes, or counterargument. Ask AURYN does not predict prices, change the canonical decision, or authorize trades.',citations:[]};
 }
+
+export type ContributionSettings={amount:number;cadence:'weekly'|'monthly';budgetCap:number;maxPositionPct:number;paused:boolean};
+/** Preferences only. Saving does not authorize an order or persist a suggested multiplier. */
+export function validateContribution(raw:any):ContributionSettings {
+ if(!raw||typeof raw!=='object'||Array.isArray(raw)||![raw.amount,raw.budgetCap,raw.maxPositionPct].every(n=>typeof n==='number'&&Number.isFinite(n))||raw.amount<0||raw.amount>1e9||raw.budgetCap<0||raw.budgetCap>1e9||raw.maxPositionPct<=0||raw.maxPositionPct>100||!['weekly','monthly'].includes(raw.cadence)||typeof raw.paused!=='boolean')throw Error('Enter valid amounts, a weekly or monthly schedule, and a position limit between 0 and 100%.');
+ return {amount:raw.amount,cadence:raw.cadence,budgetCap:raw.budgetCap,maxPositionPct:raw.maxPositionPct,paused:raw.paused};
+}

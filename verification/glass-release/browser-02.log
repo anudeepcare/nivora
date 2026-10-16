@@ -1,0 +1,29 @@
+FAIL light 320 research Financials locator.click: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for locator('.au-morepanel').getByRole('button', { name: 'Financials', exact: true })[22m
+
+FAIL light 390 research Financials locator.click: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for locator('.au-morepanel').getByRole('button', { name: 'Financials', exact: true })[22m
+
+FAIL light 1024 research Financials locator.click: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for locator('.au-morepanel').getByRole('button', { name: 'Financials', exact: true })[22m
+
+FAIL weekly Fibonacci controls, custom ratio and expansion work locator.waitFor: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for getByText('0.686', { exact: true }) to be visible[22m
+
+FAIL saved note and comparison remain available locator.waitFor: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for getByText(/watch reason saved to your account/) to be visible[22m
+
+FAIL account navigation opens and outside click closes it locator.click: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for locator('h1').first()[22m
+[2m    - locator resolved to <h1>Your shortlist.</h1>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into vi
+{"passed":90,"failed":6,"runtimeErrors":0}

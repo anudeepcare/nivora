@@ -189,5 +189,7 @@
   "tests/product-recovery-technicals.test.mjs",
   "tests/product-recovery-data.test.mjs",
   "tests/product-recovery-financials.test.mjs",
-  "tests/product-recovery-planning.test.mjs"
+  "tests/product-recovery-planning.test.mjs",
+  "tests/decision-first-presentation.test.mjs",
+  "tests/glass-contribution.test.mjs"
 ]

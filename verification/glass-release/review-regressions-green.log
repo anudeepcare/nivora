@@ -1,0 +1,16 @@
+✔ overview withholds execution prices when the final trust/price gate is closed (25.480544ms)
+✔ watch plan is described as structural context rather than an active entry (21.896432ms)
+✔ reduce and exit plans cannot render new entry instructions from retained level data (12.522805ms)
+✔ missing canonical market levels remain unavailable rather than zero dollars (0.995005ms)
+✔ overview explains canonical setup and decision triggers without inventing another call (4.321832ms)
+✔ pattern evidence is disclosed only when its source snapshot matches the current market snapshot (8.5114ms)
+✔ glass valuation never restores a price comparison rejected by the evidence engine (3.570195ms)
+✔ glass valuation uses canonical upside and fair-value-denominated safety margin (2.722338ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 789.79565

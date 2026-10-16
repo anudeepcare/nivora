@@ -27,7 +27,7 @@ function load(file){
 }
 const Overview=load('components/premium/AurynResearchOverviewV2.tsx').default;
 const decision={newMoneyAction:'AVOID',ownerAction:'HOLD',longTermAction:'UNATTRACTIVE',confidenceScore:83,evidenceCompleteness:65,pillars:{business:{score:72,why:'Reported financial record'},valuation:{score:null},marketStructure:{score:40},catalystsRegime:{why:'Catalyst evidence'}},drivers:[],counterEvidence:[],hardVetoReasons:[]};
-const renderOverview=extra=>renderToStaticMarkup(React.createElement(Overview,{decision,marketTruth:{},displayPrice:150,candles:[],chartLevels:{invalidation:91.5},executionLevelsAllowed:true,executionIntent:'WATCH',...extra}));
+const renderOverview=extra=>renderToStaticMarkup(React.createElement(Overview,{decision,canonical:{research:{state:'READY'}},marketTruth:{},displayPrice:150,candles:[],chartLevels:{invalidation:91.5},executionLevelsAllowed:true,executionIntent:'WATCH',...extra}));
 const renderBusiness=props=>{
  const file='components/research/BusinessEvidence.tsx';
  assert.ok(fs.existsSync(file),'Business evidence view is available');
@@ -47,12 +47,12 @@ test('durability counts exclude predecessor periods outside the comparable repor
 test('canonical actions explain new money, existing ownership and the multi-year horizon independently',()=>{
  const html=renderOverview();
  assert.match(html,/New money · today/);
- assert.match(html,/Do not commit new money/);
+ assert.match(html,/>Avoid</);
  assert.match(html,/Existing position/);
- assert.match(html,/Retain existing exposure/);
+ assert.match(html,/>Hold</);
  assert.match(html,/Multi-year outlook/);
  assert.match(html,/does not establish that the business thesis is broken/);
- for(const action of ['AVOID','HOLD','UNATTRACTIVE'])assert.match(html,new RegExp(action));
+ for(const action of ['Avoid','Hold','UNATTRACTIVE'])assert.match(html,new RegExp(action));
 });
 test('model confidence is explained as evidence quality rather than a probability of success',()=>{
  const html=renderOverview();
@@ -62,13 +62,14 @@ test('model confidence is explained as evidence quality rather than a probabilit
 });
 test('durability is not relabeled as moat and missing dimension values are not zero-score bars',()=>{
  const html=renderOverview({analystFundamentals:{companyDimensions:{durability:93,growth:null}}});
- assert.match(html,/Financial durability/);
+ assert.match(html,/Why the business can endure/);
+ assert.doesNotMatch(html,/93\/100/);
  assert.doesNotMatch(html,/>Moat</);
  assert.doesNotMatch(html,/<progress[^>]*value="0"[^>]*aria-label="Growth"/);
 });
 test('decision map names price invalidation as a setup level',()=>{
  const html=renderOverview();
- assert.match(html,/SETUP INVALIDATION/);
+ assert.match(html,/Setup invalidation/);
  assert.doesNotMatch(html,/>THESIS(?: \/ SUPPORT)?</);
 });
 test('unavailable fundamental valuation explains what inputs are missing',()=>{

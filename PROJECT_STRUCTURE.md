@@ -1,3 +1,21 @@
+## Approved glass build additions (2026-10-16)
+
+| Path | Purpose |
+|---|---|
+| `app/approved-glass.css` | Frozen approved visual language |
+| `app/glass-integration.css` | Production wiring, responsive and theme adjustments |
+| `components/glass/` | Shared panels, headings, rows and status primitives |
+| `components/research/ContributionEditor.tsx` and `useContributionSettings.ts` | Validated, owner/symbol-scoped saved contribution preferences |
+| `components/research/Glass*.tsx` | Sourced valuation, risk, ownership, events and research-lab presentation |
+| `components/ResearchWorkspace.tsx` | Today, Discover, Saved, Alerts and evidence explanations |
+| `app/api/research-workspace/` | Authenticated research and contribution persistence |
+| `docs/design/approved-glass-2026-10-16/` | Approved reference, manifest and offline preview |
+| `verification/glass-release/` | Current reports, review evidence and visual comparison |
+| `scripts/verify-approved-glass-browser.mjs` | Local production-browser fixture verification |
+| `scripts/package_release.py` | Full source packaging and per-file byte verification |
+
+The existing engines, API adapters, source reviews, portfolio workflows and migration files remain in the complete source tree below.
+
 # Current upgrade additions
 
 The archive contains the full existing project, not just patches. `SOURCE_MANIFEST.json` is the exact file inventory. New principal paths:

@@ -1,3 +1,5 @@
+> **Latest build: approved liquid glass, 2026-10-16.** Start with `START_HERE.md` and `RELEASE_REPORT.md`. Current verification is in `verification/glass-release/`; older release narratives below are historical. Complete source is included; this ZIP has not been deployed.
+
 # AURYN Intelligence OS — complete source package
 
 Start with **START_HERE.md**, **RELEASE_REPORT.md** and **GIT_AND_VERCEL.md**. The product-recovery build includes the full intelligence upgrade plus data integrity, clean research surfaces, financial charts, persistent chart/planner state and connected contribution proposals. Current software and provider checks are recorded in the release report. Some approved implementation and deployed acceptance gaps remain; this is not an all-capabilities production certificate.

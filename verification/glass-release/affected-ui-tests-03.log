@@ -1,0 +1,45 @@
+✔ F01: every level exposes decimal and percentage, including the two anchor endpoints (15.445677ms)
+✔ F02: custom 0.686 is opt-in, labeled custom, and computed from the selected anchors (0.588485ms)
+✔ F03: choosing a personal swing preserves a separate reproducible automatic study (1.378235ms)
+✔ F06: reclaim marker is first known after the signal week closes, using anchors already known at its start (0.832983ms)
+✔ F06: future bars and personal settings cannot backdate, rewrite or manufacture historical signals (1.428298ms)
+✔ F06: a missing week cannot serve as the adjacent close required by a reclaim marker (0.372337ms)
+✔ weekly controls expose opt-in custom level, completed-bar status and independent research boundary (373.016103ms)
+✔ F05: missing intraday studies explain absence without inventing ratings or action levels (37.744418ms)
+✔ overview withholds execution prices when the final trust/price gate is closed (34.678856ms)
+✔ watch plan is described as structural context rather than an active entry (29.253587ms)
+✔ reduce and exit plans cannot render new entry instructions from retained level data (17.33421ms)
+✔ missing canonical market levels remain unavailable rather than zero dollars (1.196217ms)
+✔ overview explains canonical setup and decision triggers without inventing another call (7.320763ms)
+✔ pattern evidence is disclosed only when its source snapshot matches the current market snapshot (11.939987ms)
+✔ annual visualizations keep zero and losses, while excluding unbridged predecessor periods (43.940589ms)
+✔ annual charts do not infer a trend from missing sources, partial periods or mismatched facts (9.138543ms)
+✔ annual chart series never bridges currency or cash-flow accounting bases (0.354541ms)
+✔ overview contains one canonical summary and sends scenario work to valuation (10.371093ms)
+✔ reported metrics carry accessible definitions and expandable original source evidence (5.167089ms)
+✔ durability counts exclude predecessor periods outside the comparable reporting cohort (19.286718ms)
+✔ canonical actions explain new money, existing ownership and the multi-year horizon independently (16.951819ms)
+✔ model confidence is explained as evidence quality rather than a probability of success (24.42826ms)
+✔ durability is not relabeled as moat and missing dimension values are not zero-score bars (8.975784ms)
+✔ decision map names price invalidation as a setup level (6.815581ms)
+✔ unavailable fundamental valuation explains what inputs are missing (6.356877ms)
+✔ missing company data stays unavailable without a fake score, zero or currency (53.593206ms)
+✔ financial facts preserve reported currency, source period, losses and zero values (7.450233ms)
+✔ unknown currency is disclosed and history never assumes dollars (4.822102ms)
+✔ financial history discloses period comparability rather than turning a partial record into moat proof (9.630134ms)
+✔ heuristic moat scores and unresolved drivers are withheld (4.559767ms)
+✔ explicit moat drivers and risks render only with resolvable source evidence (4.662618ms)
+✔ resolved moat observations do not legitimize an aggregate score without its own source evidence (4.7724ms)
+✔ derived financial metrics use annual currency and provenance from matching source inputs (4.258826ms)
+✔ reported totals and continuing operations retain their own amounts, source links and history labels (6.864007ms)
+✔ empty history explains unavailable evidence without a price target (442.416646ms)
+✔ loading and failed history retain readable recoverable states (321.9385ms)
+✔ controls identify average calculation and scale and keep advanced details discoverable (92.739874ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 37
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1231.901652

@@ -1,0 +1,184 @@
+/* Frozen approved reference styles; React uses the same au-* component classes. */
+
+.aurynGlass{--a-bg:#f3f5f8;--a-card:#fff;--a-ink:#17283d;--a-muted:#617185;--a-line:#e4e9f0;--a-blue:#315fd6;--a-pale:#edf2ff;--a-green:#157663;--a-gsoft:#eaf5f0;--a-amber:#916214;--a-asoft:#fcf3df;--a-red:#b4484d;font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--a-ink);color-scheme:light;isolation:isolate}
+.aurynGlass *{box-sizing:border-box}.aurynGlass button,.aurynGlass input,.aurynGlass select{font:inherit}.aurynGlass button{cursor:pointer}.aurynGlass button:focus-visible,.aurynGlass input:focus-visible,.aurynGlass select:focus-visible{outline:3px solid #8daaff;outline-offset:3px}.aurynGlass button{color:inherit}.aurynGlass h1,.aurynGlass h2,.aurynGlass h3,.aurynGlass p{margin:0}.aurynGlass h1{font-size:28px;letter-spacing:-1px;line-height:1.15;font-weight:650}.aurynGlass h2{font-size:18px;letter-spacing:-.4px;font-weight:630}.aurynGlass h3{font-size:14px;font-weight:650}.aurynGlass svg{display:block}.aurynGlass .au-reviewbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 4px;color:var(--a-ink)}.aurynGlass .au-reviewbar strong{margin-right:auto;font-size:13px}.aurynGlass .au-reviewbar select{max-width:100%;background:var(--a-card);border:1px solid var(--a-line);border-radius:9px;padding:8px;color:var(--a-ink)}.aurynGlass .au-reviewbar label{font-size:12px;display:flex;gap:6px;align-items:center}.aurynGlass .au-app{container:auryn/inline-size;background:var(--a-bg);border:1px solid var(--a-line);border-radius:20px;overflow:clip;width:100%;position:relative;box-shadow:0 18px 50px #17283d08}.aurynGlass .au-app.au-phone{max-width:390px;margin:auto}.aurynGlass .au-sample{background:#e9eef8;color:#465b7b;font-size:11px;text-align:center;padding:7px 12px;letter-spacing:.2px}.aurynGlass .au-shell{display:grid;grid-template-columns:168px minmax(0,1fr)}.aurynGlass .au-side{border-right:1px solid var(--a-line);background:#f8faff;padding:24px 12px;display:flex;flex-direction:column;gap:26px}.aurynGlass .au-brand{display:flex;align-items:center;gap:8px;font-size:19px;letter-spacing:2px;font-weight:650;padding:0 10px}.aurynGlass .au-brandmark{display:grid;place-items:center;background:var(--a-ink);color:white;width:29px;height:29px;border-radius:9px;font-size:17px;letter-spacing:0}.aurynGlass .au-side nav{display:grid;gap:5px}.aurynGlass .au-nav{display:flex;gap:10px;align-items:center;text-align:left;border:0;background:none;width:100%;padding:11px 12px;border-radius:11px;color:var(--a-muted)}.aurynGlass .au-nav[data-active=true]{background:#e8eefc;color:var(--a-blue);font-weight:600}.aurynGlass .au-nav svg{width:17px;height:17px;flex-shrink:0}.aurynGlass .au-row>*{min-width:0}.aurynGlass .au-row>.au-pill{flex-shrink:0}.aurynGlass .au-security>div,.aurynGlass .au-security>span:not(.au-logo){min-width:0;overflow-wrap:anywhere}.aurynGlass .au-sidefoot{margin-top:auto;font-size:11px;color:var(--a-muted);padding:10px}.aurynGlass .au-main{min-width:0}.aurynGlass .au-top{display:flex;gap:12px;align-items:center;padding:16px 24px;border-bottom:1px solid var(--a-line);background:#ffffffdd;backdrop-filter:blur(20px)}.aurynGlass .au-search{display:flex;align-items:center;gap:9px;text-align:left;background:#f1f4f8;border:1px solid transparent;border-radius:11px;color:var(--a-muted);padding:9px 12px;flex:1;min-width:0}.aurynGlass .au-search svg{width:17px;height:17px}.aurynGlass .au-search kbd{margin-left:auto;background:white;border:1px solid var(--a-line);padding:0 5px;border-radius:4px;font:11px inherit}.aurynGlass .au-icon{display:grid;place-items:center;background:white;border:1px solid var(--a-line);width:36px;height:36px;border-radius:11px;flex-shrink:0}.aurynGlass .au-icon svg{width:17px;height:17px}.aurynGlass .au-mobile-menu{display:none}.aurynGlass .au-content{padding:24px;min-width:0}.aurynGlass .au-muted{color:var(--a-muted)}.aurynGlass .au-small{font-size:12px}.aurynGlass .au-eyebrow{font-size:10px;letter-spacing:1.3px;font-weight:650;text-transform:uppercase;color:var(--a-muted)}.aurynGlass .au-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px}.aurynGlass .au-head p{color:var(--a-muted);font-size:13px;margin-top:7px}.aurynGlass .au-row{display:flex;align-items:center;justify-content:space-between;gap:12px}.aurynGlass .au-stack{display:grid;gap:16px}.aurynGlass .au-columns{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(230px,1fr);gap:16px;align-items:start}.aurynGlass .au-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.aurynGlass .au-three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.aurynGlass .au-panel{border:1px solid var(--a-line);background:var(--a-card);border-radius:16px;padding:20px;min-width:0}.aurynGlass .au-panelhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px}.aurynGlass .au-divider{border:0;border-top:1px solid var(--a-line);margin:16px 0}.aurynGlass .au-btn{border:1px solid var(--a-line);background:white;border-radius:10px;padding:9px 13px;display:inline-flex;gap:7px;align-items:center;justify-content:center;font-size:12px;font-weight:550;white-space:normal;min-height:36px}.aurynGlass .au-btn svg{width:15px;height:15px}.aurynGlass .au-primary{background:var(--a-blue);border-color:var(--a-blue);color:white}.aurynGlass .au-link{border:0;background:transparent;color:var(--a-blue);padding:4px 0;font-size:12px;font-weight:600}.aurynGlass .au-pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:4px 8px;background:#f0f3f7;border-radius:7px;white-space:nowrap;font-weight:550}.aurynGlass .au-good{color:var(--a-green);background:var(--a-gsoft)}.aurynGlass .au-warn{color:var(--a-amber);background:var(--a-asoft)}.aurynGlass .au-bad{color:var(--a-red);background:#faeeef}.aurynGlass .au-blue{color:var(--a-blue);background:var(--a-pale)}.aurynGlass .au-positive{color:var(--a-green)}.aurynGlass .au-negative{color:var(--a-red)}.aurynGlass .au-metric{font-size:25px;letter-spacing:-.8px;line-height:1.2;font-weight:620;font-variant-numeric:tabular-nums}.aurynGlass .au-mega{font-size:36px;letter-spacing:-1.4px;line-height:1.15;font-weight:620;font-variant-numeric:tabular-nums}.aurynGlass .au-help{border:1px solid #bdc9d7;color:#687d93;background:none;width:17px;height:17px;display:inline-grid;place-items:center;border-radius:50%;font-size:10px;vertical-align:middle;margin-left:5px;padding:0}.aurynGlass .au-logo{display:grid;place-items:center;width:42px;height:42px;border-radius:13px;color:white;background:#315fd6;font-weight:650;font-size:20px;flex-shrink:0;box-shadow:inset 0 0 0 1px #ffffff28}.aurynGlass .au-logo.small{width:34px;height:34px;border-radius:10px;font-size:16px}.aurynGlass .au-security{display:flex;align-items:center;gap:12px}.aurynGlass .au-quote{text-align:right;font-variant-numeric:tabular-nums}.aurynGlass .au-stockhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px}.aurynGlass .au-stockhead h1{font-size:23px;letter-spacing:-.7px}.aurynGlass .au-stockhead .au-metric{font-size:27px}.aurynGlass .au-tabs{display:flex;gap:2px;flex-wrap:wrap;border-bottom:1px solid var(--a-line);margin:0 0 20px}.aurynGlass .au-tab{border:0;border-bottom:2px solid transparent;background:none;padding:10px 11px;color:var(--a-muted);font-size:12px}.aurynGlass .au-tab[aria-pressed=true]{color:var(--a-blue);border-bottom-color:var(--a-blue);font-weight:650}.aurynGlass .au-more{border:0;background:transparent;color:var(--a-muted);font:12px inherit;max-width:124px;padding:8px 4px}.aurynGlass .au-decision{border-radius:17px;border:1px solid #e2e8f0;background:linear-gradient(120deg,#fff 30%,#f5f7fd);padding:20px;margin-bottom:16px}.aurynGlass .au-decisiongrid{display:grid;grid-template-columns:1fr auto;gap:15px;align-items:start}.aurynGlass .au-action{font-size:34px;font-weight:650;letter-spacing:-1.2px;line-height:1.2;margin:4px 0 6px;color:var(--a-amber)}.aurynGlass .au-owner{text-align:right;border-left:1px solid var(--a-line);padding-left:20px;min-width:110px}.aurynGlass .au-owner strong{display:block;font-size:20px;margin:4px 0}.aurynGlass .au-lenses{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:18px}.aurynGlass .au-lens{background:#ffffffba;border:1px solid var(--a-line);border-radius:10px;padding:11px 12px}.aurynGlass .au-lens strong{display:block;font-size:13px;margin:3px 0 7px}.aurynGlass .au-track{height:4px;background:#e9eef4;border-radius:10px;overflow:hidden}.aurynGlass .au-track span{display:block;height:100%;background:var(--a-blue);border-radius:10px}.aurynGlass .au-chart{position:relative;margin:8px 0 0;height:200px;touch-action:pan-y}.aurynGlass .au-chart svg{height:100%;width:100%;overflow:visible}.aurynGlass .au-chartaxis{position:absolute;right:0;top:0;height:100%;display:flex;flex-direction:column;justify-content:space-between;color:var(--a-muted);font-size:10px;pointer-events:none}.aurynGlass .au-chartplot{position:absolute;inset:6px 42px 10px 0}.aurynGlass .au-chartmonths{display:flex;justify-content:space-between;color:var(--a-muted);font-size:10px;margin-right:42px}.aurynGlass .au-ranges{display:flex;gap:3px;flex-wrap:wrap}.aurynGlass .au-ranges button{border:0;background:none;padding:5px 8px;color:var(--a-muted);font-size:11px;border-radius:6px}.aurynGlass .au-ranges button[aria-pressed=true]{background:var(--a-pale);color:var(--a-blue);font-weight:600}.aurynGlass .au-levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:18px;padding-top:14px;border-top:1px solid var(--a-line)}.aurynGlass .au-levels strong{display:block;font-size:15px;margin:2px 0;font-variant-numeric:tabular-nums}.aurynGlass .au-dca{background:linear-gradient(145deg,#f9fbff,#edf3ff);border-color:#dce5fa}.aurynGlass .au-dcarail{display:flex;justify-content:space-between;gap:4px;margin:17px 0 14px}.aurynGlass .au-dcarail span{display:flex;flex:1;align-items:center;justify-content:center;font-size:11px;background:#dde6f7;color:#61738d;border-radius:6px;height:27px}.aurynGlass .au-dcarail span.active{background:#315fd6;color:white}.aurynGlass .au-note{padding:13px 15px;border-radius:10px;background:#edf2f9;font-size:12px;display:flex;gap:10px;align-items:start}.aurynGlass .au-note svg{width:16px;height:16px;flex-shrink:0;margin-top:2px}.aurynGlass .au-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.aurynGlass .au-facts .au-metric{font-size:22px;margin:8px 0 5px}.aurynGlass .au-spark{height:32px;width:100%;margin-top:8px}.aurynGlass .au-spark svg{height:100%;width:100%}.aurynGlass .au-list{display:grid}.aurynGlass .au-listrow{padding:13px 0;border-bottom:1px solid var(--a-line);display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;color:var(--a-ink);min-width:0}.aurynGlass button.au-listrow{background:none;border-width:0 0 1px;width:100%}.aurynGlass .au-listrow:last-child{border-bottom:0;padding-bottom:0}.aurynGlass .au-listrow:first-child{padding-top:0}.aurynGlass .au-listrow .au-meta{display:block;font-size:11px;color:var(--a-muted);margin-top:3px}.aurynGlass .au-listrow .au-end{margin-left:auto;text-align:right;font-variant-numeric:tabular-nums}.aurynGlass .au-listrow strong{font-weight:600}.aurynGlass .au-compact{gap:6px}.aurynGlass .au-chiprow{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0 18px}.aurynGlass .au-chip{border:1px solid var(--a-line);background:white;border-radius:20px;padding:7px 12px;font-size:12px}.aurynGlass .au-chip[aria-pressed=true]{background:var(--a-ink);color:white;border-color:var(--a-ink)}.aurynGlass .au-technical{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.aurynGlass .au-reading{padding:14px;background:white;border:1px solid var(--a-line);border-radius:12px}.aurynGlass .au-reading .au-metric{font-size:21px;margin:9px 0 7px}.aurynGlass .au-reading p{font-size:11px;color:var(--a-muted);margin-top:8px}.aurynGlass .au-tablewrap{overflow-x:auto}.aurynGlass table{width:100%;border-collapse:collapse;font-size:12px;text-align:left}.aurynGlass th{color:var(--a-muted);font-weight:500;font-size:11px}.aurynGlass th,.aurynGlass td{padding:12px 8px;border-bottom:1px solid var(--a-line)}.aurynGlass th:first-child,.aurynGlass td:first-child{padding-left:0}.aurynGlass th:last-child,.aurynGlass td:last-child{text-align:right;padding-right:0;font-variant-numeric:tabular-nums}.aurynGlass .au-bars{height:90px;display:flex;gap:14px;align-items:end;margin:15px 0 5px}.aurynGlass .au-bars>div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:end;height:100%;gap:5px;font-size:10px;color:var(--a-muted)}.aurynGlass .au-bars span{display:block;width:100%;max-width:36px;background:#aac2f7;border-radius:5px 5px 0 0}.aurynGlass .au-bars>div:last-child span{background:var(--a-blue)}.aurynGlass .au-timeline{display:grid;gap:18px}.aurynGlass .au-event{display:flex;gap:14px}.aurynGlass .au-date{min-width:44px;border:1px solid var(--a-line);border-radius:10px;text-align:center;padding:7px;color:var(--a-muted);font-size:10px;align-self:start}.aurynGlass .au-date strong{display:block;font-size:18px;color:var(--a-ink)}.aurynGlass .au-event p{font-size:12px;color:var(--a-muted);margin-top:4px}.aurynGlass .au-dock{display:none}.aurynGlass .au-footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:24px;font-size:10px;color:var(--a-muted)}.aurynGlass .au-empty{text-align:center;padding:35px 20px}.aurynGlass .au-empty>svg{margin:0 auto 14px;color:var(--a-blue);width:30px;height:30px}.aurynGlass .au-empty p{max-width:340px;margin:9px auto 18px;color:var(--a-muted);font-size:13px}.aurynGlass .au-input{width:100%;background:white;border:1px solid #ccd6e3;border-radius:10px;padding:11px;color:var(--a-ink);min-width:0}.aurynGlass .au-field{display:grid;gap:6px;font-size:12px;color:var(--a-muted);margin:14px 0}.aurynGlass .au-modal{margin:24px auto auto;border:1px solid var(--a-line);border-radius:20px;padding:24px;width:min(470px,calc(100% - 32px));max-height:90%;overflow:auto;color:var(--a-ink);background:white;box-shadow:0 28px 100px #17283d35}.aurynGlass .au-modal::backdrop{background:#17283d50;backdrop-filter:blur(4px)}.aurynGlass .au-modal h2{font-size:21px}.aurynGlass .au-modal p{font-size:13px;color:var(--a-muted);margin:10px 0}.aurynGlass .au-toast{display:none;margin:0 24px 14px;background:#eaf5f0;color:var(--a-green);border-radius:10px;padding:11px 14px;font-size:12px}.aurynGlass .au-toast.show{display:block}.aurynGlass .au-status{display:flex;gap:8px;padding:10px 13px;border-radius:9px;background:var(--a-asoft);color:var(--a-amber);font-size:12px;margin-bottom:16px}.aurynGlass .au-dot{width:6px;height:6px;background:var(--a-green);border-radius:50%;display:inline-block;vertical-align:middle;margin-right:4px}.aurynGlass .au-auth{max-width:380px;margin:25px auto;padding:28px;background:white;border:1px solid var(--a-line);border-radius:20px}.aurynGlass .au-progress{display:flex;height:9px;border-radius:10px;overflow:hidden;gap:2px;background:#eaf0f6;margin:14px 0}.aurynGlass .au-progress span{background:#315fd6}.aurynGlass .au-check{display:flex;align-items:center;gap:9px;font-size:12px;margin:12px 0}.aurynGlass .au-check input{accent-color:var(--a-blue)}.aurynGlass .au-summary{margin:10px 0;color:var(--a-muted);font-size:12px}.aurynGlass .au-valuetrack{position:relative;height:55px;margin:24px 10px 8px;background:linear-gradient(to right,#e7effb,#d4e2fd 60%,#f8ebd3);border-radius:10px}.aurynGlass .au-valuetrack span{position:absolute;top:10px;text-align:center;font-size:10px;transform:translateX(-50%)}.aurynGlass .au-valuetrack strong{display:block;font-size:12px}.aurynGlass .au-valuetrack i{position:absolute;top:-8px;bottom:-8px;left:72%;width:2px;background:var(--a-ink)}.aurynGlass .au-bullet{padding-left:17px;color:var(--a-muted);font-size:12px;display:grid;gap:8px;margin:10px 0}.aurynGlass .au-skeleton{height:13px;width:70%;border-radius:6px;background:#e7edf5;margin:12px 0}.aurynGlass .au-support{margin-top:16px}.aurynGlass .au-policy{color:var(--a-muted);font-size:12px;margin-top:14px}.aurynGlass .au-visuallyhidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+@container auryn (max-width:750px){.aurynGlass .au-shell{grid-template-columns:1fr}.aurynGlass .au-side{display:none}.aurynGlass .au-mobile-menu{display:grid}.aurynGlass .au-top{padding:12px 16px}.aurynGlass .au-content{padding:20px 16px}.aurynGlass .au-columns{grid-template-columns:1fr}.aurynGlass .au-dock{display:grid;grid-template-columns:repeat(4,1fr);padding:9px 8px;background:#ffffffeb;backdrop-filter:blur(20px);border-top:1px solid var(--a-line);gap:3px}.aurynGlass .au-dock button{border:0;background:none;display:grid;justify-items:center;gap:3px;padding:6px 0;font-size:10px;color:var(--a-muted);border-radius:10px}.aurynGlass .au-dock button[data-active=true]{color:var(--a-blue);background:#edf2ff}.aurynGlass .au-dock svg{height:18px;width:18px}.aurynGlass .au-search kbd{display:none}.aurynGlass .au-top .au-profile{display:none}.aurynGlass .au-stockhead h1{font-size:20px}.aurynGlass .au-stockhead .au-metric{font-size:23px}.aurynGlass .au-logo{width:38px;height:38px;border-radius:11px}.aurynGlass .au-owner{min-width:90px;padding-left:12px}.aurynGlass .au-action{font-size:30px}.aurynGlass .au-tabs{gap:0}.aurynGlass .au-tab{padding:10px 8px}.aurynGlass .au-panel{padding:17px}.aurynGlass .au-two{gap:12px}.aurynGlass .au-lens{padding:10px 8px}.aurynGlass .au-lenses{gap:7px}.aurynGlass .au-lens strong{font-size:12px}.aurynGlass .au-lens .au-small{font-size:10px}.aurynGlass .au-decision{padding:17px}.aurynGlass .au-head{align-items:start}.aurynGlass h1{font-size:25px}.aurynGlass .au-facts{gap:10px}.aurynGlass .au-facts .au-metric{font-size:19px}.aurynGlass .au-head .au-btn{padding:8px 10px}.aurynGlass .au-three{grid-template-columns:1fr}.aurynGlass .au-three.au-scenarios{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.aurynGlass .au-scenarios .au-panel{padding:11px}.aurynGlass .au-scenarios .au-metric{font-size:20px}.aurynGlass .au-scenarios p{font-size:10px}.aurynGlass .au-footer{font-size:10px}.aurynGlass .au-reading{padding:12px}.aurynGlass .au-chiprow{gap:5px}.aurynGlass .au-chip{padding:7px 10px}.aurynGlass .au-toast{margin:0 16px 12px}}
+@container auryn (max-width:370px){.aurynGlass .au-two{grid-template-columns:1fr}.aurynGlass .au-security{gap:8px}.aurynGlass .au-stockhead h1{font-size:17px}.aurynGlass .au-stockhead .au-metric{font-size:21px}.aurynGlass .au-content{padding:16px 12px}.aurynGlass .au-facts{grid-template-columns:1fr}.aurynGlass .au-owner{min-width:75px}.aurynGlass .au-decisiongrid{gap:8px}.aurynGlass .au-top{gap:7px}.aurynGlass .au-technical{grid-template-columns:1fr}}
+@container auryn (max-width:750px){.aurynGlass .au-two{grid-template-columns:1fr}.aurynGlass .au-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:center}.aurynGlass .au-tab{font-size:11px;padding:10px 2px;min-width:0}.aurynGlass .au-more{font-size:11px;padding:8px 0;min-width:0;width:100%}.aurynGlass .au-columns:has(>.au-dca){display:flex;flex-direction:column}.aurynGlass .au-columns:has(>.au-dca)>*{width:100%}.aurynGlass .au-columns>.au-dca{order:-1}.aurynGlass .au-dca{display:grid;grid-template-columns:1fr auto;gap:10px 12px}.aurynGlass .au-dca .au-panelhead{grid-column:1/-1;margin:0}.aurynGlass .au-dca>.au-row{grid-column:1/-1}.aurynGlass .au-dca>.au-row.au-small,.aurynGlass .au-dca>.au-dcarail,.aurynGlass .au-dca>.au-divider,.aurynGlass .au-dca>.au-track{display:none}.aurynGlass .au-dca>.au-small{grid-column:1/-1}.aurynGlass .au-dca>.au-policy{margin:0;align-self:center;font-size:10px}.aurynGlass .au-dca .au-mega{font-size:26px}.aurynGlass .au-dca .au-metric{font-size:24px}.aurynGlass .au-dca>.au-btn{padding:7px 10px}.aurynGlass .au-dca .au-small{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.aurynGlass *{scroll-behavior:auto!important}}
+.aurynGlass{--a-bg:#eff3f9;--a-card:#fff;--a-ink:#162a44;--a-muted:#566b85;--a-line:#e6ecf4;--a-blue:#2866ef;--a-pale:#edf3ff;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+.aurynGlass .au-app{border-radius:28px;border:1px solid #e2e8f2;background:radial-gradient(ellipse at 3% 3%,#dce9fb 0,transparent 34%),radial-gradient(ellipse at 98% 22%,#e9e5f8 0,transparent 28%),linear-gradient(155deg,#f0f5fb,#f7f9fc 70%);box-shadow:0 20px 65px #2137590d,inset 0 1px 0 white}
+.aurynGlass .au-sample{color:#566c87;background:#edf3fbb3;font-size:10px;letter-spacing:.45px;border-bottom:1px solid #ffffffb3;padding:6px 14px}
+.aurynGlass .au-shell{grid-template-columns:162px minmax(0,1fr)}
+.aurynGlass .au-side{background:#f9fbff75;backdrop-filter:blur(24px) saturate(145%);-webkit-backdrop-filter:blur(24px) saturate(145%);border-right:1px solid #ffffffbc;padding:24px 10px;gap:30px}
+.aurynGlass .au-brand{padding:0 9px;gap:8px;letter-spacing:2.1px;font-size:19px;font-weight:650;color:#172b49}
+.aurynGlass .au-brandimage{width:29px;height:32px;display:block;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 4px 5px #2866ef16)}
+.aurynGlass .au-brandmark{background:none;box-shadow:none;border-radius:0;width:29px;height:32px}
+.aurynGlass .au-nav{padding:12px 11px;border:1px solid transparent;border-radius:15px;color:#58708e;transition:background 150ms,box-shadow 150ms,color 150ms;min-height:44px;font-size:12px;font-weight:500}
+.aurynGlass .au-nav:hover{background:#ffffffa8;color:#244975}
+.aurynGlass .au-nav[data-active=true]{background:linear-gradient(145deg,#fff,#f4f8ff);border-color:#fff;box-shadow:0 4px 13px #355d9e0b,inset 0 1px 0 #fff;color:#245dd4;font-weight:650}
+.aurynGlass .au-nav svg{width:18px;height:18px;stroke-width:1.7}
+.aurynGlass .au-top{margin:12px 16px 0;padding:9px 10px;border:1px solid #ffffffed;border-radius:19px;background:#ffffff9e;backdrop-filter:blur(26px) saturate(160%);-webkit-backdrop-filter:blur(26px) saturate(160%);box-shadow:0 6px 25px #29497506,inset 0 1px 0 #fff;gap:9px}
+.aurynGlass .au-search{border:1px solid #dce5f060;background:#eef3f9b8;border-radius:13px;color:#5d718a;padding:10px 12px;min-height:39px;font-size:12px;transition:background 150ms}
+.aurynGlass .au-search:hover{background:#e7eef8}
+.aurynGlass .au-search kbd{background:#ffffffca;color:#60738e;border-color:#dce5f0;padding:1px 5px}
+.aurynGlass .au-icon{border:1px solid #ffffff;background:linear-gradient(145deg,#ffffffef,#f5f8fdc9);border-radius:50%;box-shadow:0 2px 6px #2c426607;width:36px;height:36px;color:#345576}
+.aurynGlass .au-mobile-brand{display:none}
+.aurynGlass .au-content{padding:24px 24px 20px}
+.aurynGlass .au-stockhead{margin-bottom:15px}
+.aurynGlass .au-stockhead h1{font-weight:640;letter-spacing:-.7px;font-size:23px}
+.aurynGlass .au-stockhead .au-quote .au-metric{font-weight:560;font-size:29px;letter-spacing:-1px}
+.aurynGlass .au-logo{border:1px solid #ffffff83;border-radius:14px;box-shadow:0 5px 10px #2d466e12,inset 0 1px 0 #ffffff55}
+.aurynGlass .au-tabs{position:relative;display:flex;flex-wrap:nowrap;gap:3px;width:fit-content;max-width:100%;padding:4px;margin:0 0 19px;border:1px solid #fff;border-radius:14px;background:#e8eef67d;box-shadow:inset 0 1px 3px #45648b04,0 4px 12px #213b6003;backdrop-filter:blur(16px)}
+.aurynGlass .au-tab{border:0;border-radius:10px;color:#5b6d85;padding:9px 13px;font-size:12px;font-weight:500;white-space:nowrap;min-height:36px;transition:background 150ms,box-shadow 150ms,color 150ms}
+.aurynGlass .au-tab:hover{background:#ffffff7a}
+.aurynGlass .au-tab[aria-pressed=true]{background:linear-gradient(160deg,#fff,#f9fbff);box-shadow:0 2px 6px #2545670c,inset 0 1px 0 #fff;color:#235ed7;font-weight:650}
+.aurynGlass .au-morewrap{position:relative;min-width:0;display:flex}
+.aurynGlass .au-more{border:0;background:none;display:flex;align-items:center;justify-content:center;gap:5px;color:#5b6d85;font-size:12px;padding:8px 12px;border-radius:10px;min-height:36px;min-width:62px}
+.aurynGlass .au-more svg{width:12px;height:12px}
+.aurynGlass .au-more[aria-expanded=true],.aurynGlass .au-more.au-current{color:#235ed7;background:white;box-shadow:0 2px 6px #2545670c}
+.aurynGlass .au-morepanel{position:absolute;top:calc(100% + 11px);right:0;z-index:30;min-width:205px;padding:6px;background:#fff;border:1px solid #e5ebf3;border-radius:16px;box-shadow:0 18px 45px #19355926,0 2px 7px #19355908}
+.aurynGlass .au-morepanel button{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;min-height:42px;padding:10px 12px;border:0;border-radius:10px;background:#fff;font-size:12px;text-align:left;color:#334d6c}
+.aurynGlass .au-morepanel button:hover,.aurynGlass .au-morepanel button[aria-current=page]{background:#eff4ff;color:#235ed7}
+.aurynGlass .au-morepanel svg{width:14px;height:14px;color:#92a3ba}
+.aurynGlass .au-decision{position:relative;background:linear-gradient(120deg,#fff 30%,#f6f9ff);border:1px solid #fff;box-shadow:0 5px 22px #29436907,inset 0 0 0 1px #e4ebf764;border-radius:21px;padding:20px}
+.aurynGlass .au-action{font-size:36px;font-weight:560;color:#90651e;letter-spacing:-1.1px;margin:5px 0 6px}
+.aurynGlass .au-eyebrow{font-size:10px;font-weight:600;letter-spacing:1.1px;color:#59708d}
+.aurynGlass .au-owner{border-color:#e3eaf5;min-width:119px;padding-left:20px}
+.aurynGlass .au-owner strong{font-size:21px;font-weight:560;color:#24415f}
+.aurynGlass .au-decisiongrid>div>p{font-size:13px;color:#3e526d}
+.aurynGlass .au-lenses{background:#f1f5fb88;border:1px solid #edf1f7;border-radius:13px;padding:12px 0;gap:0;margin-top:17px}
+.aurynGlass .au-lens{background:none;border:0;border-right:1px solid #dce5f2;border-radius:0;padding:0 13px}
+.aurynGlass .au-lens:last-child{border-right:0}
+.aurynGlass .au-lens strong{font-size:13px;font-weight:620;margin:3px 0 4px}
+.aurynGlass .au-lens .au-small{font-size:11px}
+.aurynGlass .au-panel{background:#ffffff;border:1px solid #e8edf5;border-radius:20px;padding:19px;box-shadow:0 4px 20px #2d446604}
+.aurynGlass .au-panel h2{font-weight:610;font-size:17px;letter-spacing:-.3px}
+.aurynGlass .au-panel h3{font-weight:610}
+.aurynGlass .au-panelhead{margin-bottom:15px}
+.aurynGlass .au-dca{position:relative;background:linear-gradient(150deg,#f9fcff,#edf4ff);border:1px solid #dce7fb;box-shadow:0 6px 26px #315fa507,inset 0 1px 0 #fff}
+.aurynGlass .au-dca .au-mega{font-weight:530;color:#244d88;font-size:39px}
+.aurynGlass .au-dca .au-metric{font-weight:560}
+.aurynGlass .au-dcarail{gap:5px}
+.aurynGlass .au-dcarail span{background:#dce7f766;color:#5e7392;border-radius:8px;height:28px}
+.aurynGlass .au-dcarail span.active{background:#3466d4;color:#fff;box-shadow:0 3px 8px #2866ef20}
+.aurynGlass .au-btn{background:linear-gradient(150deg,#fff,#f8faff);border-color:#e0e7f1;border-radius:12px;min-height:38px;padding:9px 13px;font-weight:560;box-shadow:0 2px 4px #29476703;transition:transform 120ms,box-shadow 120ms,background 120ms}
+.aurynGlass .au-btn:hover{box-shadow:0 4px 11px #2947670d;background:#f2f6ff}
+.aurynGlass .au-btn:active,.aurynGlass .au-icon:active{transform:scale(.975)}
+.aurynGlass .au-primary{color:#fff;background:linear-gradient(145deg,#3679fa,#285de0);border-color:#3971e1;box-shadow:0 4px 10px #2866ef24,inset 0 1px 0 #ffffff30}
+.aurynGlass .au-primary:hover{background:linear-gradient(145deg,#2d70ef,#2055d6);box-shadow:0 5px 13px #2866ef30}
+.aurynGlass .au-pill{border-radius:8px;font-weight:550;padding:4px 8px}
+.aurynGlass .au-help{border:0;background:#eaf0f8;color:#597393;width:19px;height:19px;font-weight:550;font-size:11px}
+.aurynGlass .au-chart{height:185px}
+.aurynGlass .au-chartplot{inset:7px 43px 9px 0}
+.aurynGlass .au-chartaxis{font-size:11px}
+.aurynGlass .au-chartmonths{font-size:11px}
+.aurynGlass .au-ranges{background:#f1f5fb;border-radius:9px;padding:3px;gap:2px}
+.aurynGlass .au-ranges button{border-radius:7px;padding:5px 9px;color:#61758e}
+.aurynGlass .au-ranges button[aria-pressed=true]{background:#fff;box-shadow:0 1px 4px #274a7b12;color:#285fd7}
+.aurynGlass .au-levels{padding-top:13px;margin-top:16px}
+.aurynGlass .au-levels strong{font-size:16px;font-weight:580}
+.aurynGlass .au-note{background:#eaf0fa9e;border:1px solid #f7faff;border-radius:13px;padding:13px 15px;color:#405a7a;font-size:12px}
+.aurynGlass .au-note strong{font-weight:620;color:#24415f}
+.aurynGlass .au-facts .au-metric{font-size:23px;font-weight:570}
+.aurynGlass .au-facts>div{border-right:1px solid #e8edf4;padding-right:14px}
+.aurynGlass .au-facts>div:last-child{border:0;padding-right:0}
+.aurynGlass .au-reading{border-radius:17px;padding:17px;box-shadow:0 3px 15px #28456e04;border-color:#e7edf6}
+.aurynGlass .au-reading .au-metric{font-weight:560;font-size:24px}
+.aurynGlass .au-chip{border-color:#e2e9f4;border-radius:12px;background:#ffffffce;min-height:36px}
+.aurynGlass .au-chip[aria-pressed=true]{background:#203e68;color:#fff;border-color:#203e68}
+.aurynGlass .au-listrow{padding:15px 0}
+.aurynGlass button.au-listrow{transition:background 120ms;border-radius:8px}
+.aurynGlass button.au-listrow:hover{background:#f6f9ff}
+.aurynGlass .au-input{border-radius:12px;border-color:#dce5f0;padding:12px;background:#f8fafd;color:#243d5b}
+.aurynGlass .au-modal{border-radius:24px;border:1px solid #fff;background:#fcfdff;box-shadow:0 24px 80px #21395835;padding:25px;max-height:85%;margin:22px auto auto}
+.aurynGlass .au-modal::backdrop{background:#1f355c29;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
+.aurynGlass .au-date{border-radius:13px;background:#f3f7ff;border:1px solid #e5ecf8;padding:8px}
+.aurynGlass .au-toast{background:#e7f5ee;border:1px solid #dceee3;border-radius:13px}
+.aurynGlass .au-footer{font-size:10px;opacity:.9}
+.aurynGlass .au-reviewbar strong{letter-spacing:.15px}
+.aurynGlass .au-reviewbar .au-btn,.aurynGlass .au-reviewbar select{border-radius:11px;font-size:12px}
+@container auryn (max-width:750px){
+.aurynGlass .au-shell{grid-template-columns:1fr}
+.aurynGlass .au-app{border-radius:27px}
+.aurynGlass .au-side{display:none}
+.aurynGlass .au-top{padding:8px;margin:10px 12px 0;border-radius:18px;gap:7px}
+.aurynGlass .au-mobile-brand{display:grid;place-items:center;background:none;border:0;padding:0;flex-shrink:0;width:29px;height:36px}
+.aurynGlass .au-mobile-brand .au-brandimage{width:25px;height:29px}
+.aurynGlass .au-mobile-menu{order:4}
+.aurynGlass .au-top .au-icon{width:33px;height:33px}
+.aurynGlass .au-search{font-size:11px;padding:9px;gap:6px;min-height:36px;border-radius:11px}
+.aurynGlass .au-search svg{width:14px;height:14px;flex-shrink:0}
+.aurynGlass .au-content{padding:20px 14px 18px}
+.aurynGlass .au-stockhead{gap:8px;margin-bottom:12px}
+.aurynGlass .au-stockhead h1{font-size:19px;letter-spacing:-.5px}
+.aurynGlass .au-stockhead .au-quote .au-metric{font-size:25px;letter-spacing:-.9px}
+.aurynGlass .au-stockhead .au-logo{width:37px;height:37px;border-radius:12px;font-size:18px}
+.aurynGlass .au-security{gap:9px}
+.aurynGlass .au-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));width:100%;gap:1px;margin-bottom:16px;border-radius:13px;padding:3px}
+.aurynGlass .au-tab{font-size:10.5px;padding:9px 1px;min-height:37px;border-radius:9px}
+.aurynGlass .au-more{font-size:11px;min-width:0;padding:9px 2px;width:100%;gap:3px;min-height:37px}
+.aurynGlass .au-more svg{width:10px;height:10px}
+.aurynGlass .au-morepanel{min-width:210px}
+.aurynGlass .au-decision{padding:17px 15px;border-radius:20px;margin-bottom:13px}
+.aurynGlass .au-action{font-size:32px;margin:5px 0}
+.aurynGlass .au-decisiongrid{gap:10px}
+.aurynGlass .au-decisiongrid>div>p{font-size:12px}
+.aurynGlass .au-owner{min-width:95px;padding-left:11px}
+.aurynGlass .au-owner strong{font-size:19px}
+.aurynGlass .au-owner .au-eyebrow{font-size:9px;letter-spacing:.8px}
+.aurynGlass .au-lenses{margin-top:15px;padding:11px 0}
+.aurynGlass .au-lens{padding:0 8px}
+.aurynGlass .au-lens strong{font-size:12px;line-height:1.35;min-height:32px;margin:4px 0}
+.aurynGlass .au-lens .au-small{font-size:10px}
+.aurynGlass .au-panel{padding:17px;border-radius:19px}
+.aurynGlass .au-panel h2{font-size:16px}
+.aurynGlass .au-dca{padding:15px;gap:8px 10px}
+.aurynGlass .au-dca .au-mega{font-size:29px;font-weight:560}
+.aurynGlass .au-dca .au-metric{font-size:24px}
+.aurynGlass .au-dca .au-panelhead h3{font-size:13px}
+.aurynGlass .au-dca>.au-btn{width:fit-content;min-height:36px}
+.aurynGlass .au-dca>.au-policy{font-size:10px;max-width:140px;text-align:right}
+.aurynGlass .au-chart{height:164px}
+.aurynGlass .au-chartplot{inset:7px 42px 8px 0}
+.aurynGlass .au-chartaxis,.aurynGlass .au-chartmonths{font-size:10px}
+.aurynGlass .au-ranges button{padding:5px 8px;min-height:30px;font-size:10px}
+.aurynGlass .au-levels{gap:7px;margin-top:14px;padding-top:12px}
+.aurynGlass .au-levels strong{font-size:16px}
+.aurynGlass .au-levels .au-small{font-size:11px}
+.aurynGlass .au-facts{gap:9px}
+.aurynGlass .au-facts>div{padding-right:8px}
+.aurynGlass .au-facts .au-metric{font-size:20px}
+.aurynGlass .au-facts .au-small{font-size:11px}
+.aurynGlass .au-note{padding:12px;border-radius:13px;font-size:12px}
+.aurynGlass .au-dock{position:relative;margin:0 12px 13px;padding:6px;gap:4px;border:1px solid #fff;border-radius:23px;background:linear-gradient(155deg,#ffffffeb,#f1f6ffc9);box-shadow:0 8px 25px #23497b10,inset 0 1px 0 #fff;backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%)}
+.aurynGlass .au-dock button{border-radius:17px;padding:8px 2px;font-size:10px;gap:4px;color:#5d7494;min-height:48px;transition:background 150ms}
+.aurynGlass .au-dock button[data-active=true]{background:linear-gradient(145deg,#e3edff,#eaf1ff);color:#245cce;box-shadow:inset 0 1px 0 #ffffffc4}
+.aurynGlass .au-dock svg{width:19px;height:19px;stroke-width:1.7}
+.aurynGlass .au-footer{margin-top:18px}
+}
+@container auryn (max-width:370px){
+.aurynGlass .au-content{padding:16px 11px}
+.aurynGlass .au-top{margin:9px 9px 0;padding:7px;gap:5px}
+.aurynGlass .au-top>[data-route=alerts]{display:none}
+.aurynGlass .au-stockhead h1{font-size:17px}
+.aurynGlass .au-stockhead .au-quote .au-metric{font-size:22px}
+.aurynGlass .au-stockhead .au-small{font-size:10px}
+.aurynGlass .au-stockhead .au-logo{width:32px;height:32px;font-size:16px}
+.aurynGlass .au-tabs .au-tab{font-size:10px;padding:9px 0}
+.aurynGlass .au-lens{padding:0 7px}
+.aurynGlass .au-lens strong{font-size:11px}
+.aurynGlass .au-lens .au-small{font-size:9px}
+.aurynGlass .au-facts{grid-template-columns:1fr}
+.aurynGlass .au-facts>div{border-right:0;border-bottom:1px solid #e7edf5;padding:0 0 12px}
+}
+@media(prefers-reduced-motion:reduce){.aurynGlass *{transition:none!important;animation:none!important}}
+@media(prefers-reduced-transparency:reduce){.aurynGlass .au-side,.aurynGlass .au-top,.aurynGlass .au-tabs,.aurynGlass .au-dock{background:#f8faff;backdrop-filter:none;-webkit-backdrop-filter:none}}
+
+.aurynGlass .au-tabs{z-index:5}
+.aurynGlass .au-facts>div>.au-small:first-child{display:block;position:relative;min-height:22px;padding-right:21px}
+.aurynGlass .au-facts>div>.au-small:first-child .au-help{position:absolute;right:0;top:0;margin:0}
+.aurynGlass .au-facts .au-metric+span{display:block;min-height:20px}
+@container auryn (max-width:750px){.aurynGlass .au-facts>div>.au-small:first-child{min-height:37px}.aurynGlass .au-facts .au-metric+span{min-height:48px}}
+@container auryn (max-width:370px){.aurynGlass .au-facts>div>.au-small:first-child{min-height:22px}.aurynGlass .au-facts .au-metric+span{min-height:20px}}
+

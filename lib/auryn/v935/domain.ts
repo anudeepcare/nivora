@@ -1,7 +1,7 @@
 export type CanonicalResearchState="READY"|"STALE_VERIFIED"|"ANALYSIS_REQUIRED";
 export type CanonicalAction=string|null;
 export interface CanonicalSecurityIdentity{
- symbol:string; assetType:"EQUITY"|"CRYPTO"|"UNKNOWN"; exchange:string|null; mic:string|null; currency:string|null;
+ symbol:string; name?:string|null; logoUrl?:string|null; assetType:"EQUITY"|"CRYPTO"|"UNKNOWN"; exchange:string|null; mic:string|null; currency:string|null;
 }
 export interface CanonicalResearchProjection{
  events?:import("../v931/research-events").CanonicalResearchEvent[];policyVersion?:string|null;decision?:import("../v931/domain").InstitutionalDecision|null;financialEvidence?:any|null;

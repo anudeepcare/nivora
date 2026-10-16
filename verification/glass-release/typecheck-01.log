@@ -1,0 +1,171 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+components/StockClient.tsx(637,13): error TS17008: JSX element 'div' has no corresponding closing tag.
+components/StockClient.tsx(651,3): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(653,52): error TS1005: '}' expected.
+components/StockClient.tsx(653,120): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(654,42): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(654,44): error TS1109: Expression expected.
+components/StockClient.tsx(654,70): error TS1003: Identifier expected.
+components/StockClient.tsx(654,77): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(654,95): error TS1005: '}' expected.
+components/StockClient.tsx(654,189): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(654,371): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(654,470): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(657,38): error TS1005: '}' expected.
+components/StockClient.tsx(657,122): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(663,59): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(666,36): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(667,54): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(679,34): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(679,72): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(679,113): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(680,71): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(681,35): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(681,61): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(696,54): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(701,32): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(701,57): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(701,101): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(714,54): error TS1003: Identifier expected.
+components/StockClient.tsx(714,75): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(715,54): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(715,64): error TS1003: Identifier expected.
+components/StockClient.tsx(717,23): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(718,5): error TS1109: Expression expected.
+components/StockClient.tsx(718,46): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(719,18): error TS1003: Identifier expected.
+components/StockClient.tsx(721,36): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(721,78): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(721,121): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(723,86): error TS1003: Identifier expected.
+components/StockClient.tsx(724,30): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(728,41): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(728,73): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(728,105): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(730,26): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(730,41): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(730,82): error TS1003: Identifier expected.
+components/StockClient.tsx(731,27): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(732,33): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(735,124): error TS1005: '}' expected.
+components/StockClient.tsx(735,185): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(736,3): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(743,25): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(744,5): error TS1109: Expression expected.
+components/StockClient.tsx(746,18): error TS1003: Identifier expected.
+components/StockClient.tsx(746,32): error TS1003: Identifier expected.
+components/StockClient.tsx(747,11): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(747,26): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(748,9): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(748,17): error TS1003: Identifier expected.
+components/StockClient.tsx(748,22): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(749,9): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(749,17): error TS1003: Identifier expected.
+components/StockClient.tsx(751,3): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(756,45): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(757,20): error TS1005: '}' expected.
+components/StockClient.tsx(758,30): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(758,45): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(758,89): error TS1005: '}' expected.
+components/StockClient.tsx(758,112): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(759,3): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(767,38): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(768,5): error TS1109: Expression expected.
+components/StockClient.tsx(770,90): error TS1005: '}' expected.
+components/StockClient.tsx(770,128): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(771,3): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(778,14): error TS1005: '}' expected.
+components/StockClient.tsx(780,3): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(781,92): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(789,65): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(791,76): error TS1005: '}' expected.
+components/StockClient.tsx(791,149): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(792,13): error TS1005: '}' expected.
+components/StockClient.tsx(794,3): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(796,23): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(797,5): error TS1109: Expression expected.
+components/StockClient.tsx(804,10): error TS1005: '}' expected.
+components/StockClient.tsx(808,5): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(809,3): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(811,25): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(812,5): error TS1109: Expression expected.
+components/StockClient.tsx(816,55): error TS1005: '}' expected.
+components/StockClient.tsx(817,5): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(819,76): error TS1005: '}' expected.
+components/StockClient.tsx(821,5): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(828,26): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(828,73): error TS1005: '}' expected.
+components/StockClient.tsx(828,99): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(832,52): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(832,65): error TS1003: Identifier expected.
+components/StockClient.tsx(832,90): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(834,15): error TS1005: '}' expected.
+components/StockClient.tsx(837,5): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(838,3): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(840,25): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(841,5): error TS1109: Expression expected.
+components/StockClient.tsx(841,15): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(841,33): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(841,49): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(841,102): error TS1005: '}' expected.
+components/StockClient.tsx(841,333): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(842,14): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(842,32): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(842,49): error TS1005: '}' expected.
+components/StockClient.tsx(842,216): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(843,17): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(843,51): error TS1003: Identifier expected.
+components/StockClient.tsx(843,82): error TS1003: Identifier expected.
+components/StockClient.tsx(843,97): error TS1005: '}' expected.
+components/StockClient.tsx(843,264): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(844,38): error TS1003: Identifier expected.
+components/StockClient.tsx(844,51): error TS1005: '}' expected.
+components/StockClient.tsx(844,222): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(845,17): error TS1005: '}' expected.
+components/StockClient.tsx(845,164): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(846,3): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(849,13): error TS1005: '}' expected.
+components/StockClient.tsx(853,3): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(865,73): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(866,72): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(868,71): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(871,14): error TS1005: '}' expected.
+components/StockClient.tsx(871,56): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(878,3): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(881,24): error TS1005: '}' expected.
+components/StockClient.tsx(889,3): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(890,75): error TS1005: '}' expected.
+components/StockClient.tsx(890,256): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(892,37): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(893,5): error TS1109: Expression expected.
+components/StockClient.tsx(893,129): error TS1005: '}' expected.
+components/StockClient.tsx(893,140): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(895,144): error TS1005: '}' expected.
+components/StockClient.tsx(895,178): error TS1005: '}' expected.
+components/StockClient.tsx(895,186): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(895,189): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(896,16): error TS1005: '}' expected.
+components/StockClient.tsx(896,26): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(898,7): error TS1109: Expression expected.
+components/StockClient.tsx(898,69): error TS1005: '}' expected.
+components/StockClient.tsx(898,100): error TS1005: '}' expected.
+components/StockClient.tsx(898,166): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(898,197): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(899,24): error TS1109: Expression expected.
+components/StockClient.tsx(899,103): error TS1005: '}' expected.
+components/StockClient.tsx(899,114): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(899,132): error TS1109: Expression expected.
+components/StockClient.tsx(899,230): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(899,231): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(900,12): error TS1109: Expression expected.
+components/StockClient.tsx(900,145): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(901,5): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(902,3): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(903,53): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(904,17): error TS1005: '}' expected.
+components/StockClient.tsx(905,40): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+components/StockClient.tsx(905,125): error TS1005: '}' expected.
+components/StockClient.tsx(905,148): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(906,3): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(1002,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/StockClient.tsx(1003,1): error TS1005: '</' expected.

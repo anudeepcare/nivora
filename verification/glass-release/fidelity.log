@@ -1,0 +1,1 @@
+[{"width":320,"matches":39,"differences":[{"selector":".au-content","property":"padding","approved":"16px 11px","actual":"16px 11px 22px"}]},{"width":390,"matches":39,"differences":[{"selector":".au-content","property":"padding","approved":"20px 14px 18px","actual":"20px 14px 22px"}]},{"width":1024,"matches":40,"differences":[]}]

@@ -1,12 +1,13 @@
-# AURYN — product recovery source
+# AURYN — approved glass build
 
-This ZIP contains the complete application source, lockfile, tests, database migrations, workflows, approved design references and verification evidence. It includes the earlier intelligence upgrade and the latest recovery of research UX, financial metrics, chart state, Today/Discover and contribution planning.
+This archive contains the complete application source, package lock, migrations, workflows, tests, approved reference and verification reports. It includes the preceding intelligence and recovery work.
 
-1. Read `RELEASE_REPORT.md` for tested behavior and explicit remaining gaps.
-2. Follow `GIT_AND_VERCEL.md`. Copy the contents of `AURYN/` into your existing checkout; preserve `.git` and private environment files. The instructions address your `restore-auryn` / non-fast-forward push problem.
-3. Open `verification/product-recovery/visual-review/index.html` for current app captures and approved reference boards. Browser account/quote/decision data is synthetic; four company financial captures use saved real production responses.
-4. Read `verification/product-recovery/connections.json` for read-only connection checks. Stock/crypto prices, Finnhub profile/logo, and an active Alpaca Paper account responded. Supabase research tables exist with RLS. Paper safety schema, owner authorization and deployed execution are not yet accepted.
-5. `verification/next-build/requirements.json` retains the 104-item approved scope. `verification/next-build/REMAINING_GAPS.md` explains incomplete forward evidence, portfolio risk metadata and account benchmark histories. Missing source evidence is never replaced with invented metrics.
-6. `SOURCE_MANIFEST.json` hashes every delivered file except itself. The packager verifies archive CRC, hashes and tracked source preservation.
+1. Read `RELEASE_REPORT.md` and `verification/glass-release/VERIFICATION_REPORT.md` for current results and limits. Older reports are historical.
+2. Follow `GIT_AND_VERCEL.md`. Copy the **contents** of `AURYN/` into your existing checkout, including `.github`; preserve `.git` and private `.env.local`. Do not create a nested `AURYN/AURYN` folder.
+3. Open `docs/design/approved-glass-2026-10-16/preview.html` for the approved interactive reference. Open `verification/glass-release/visual-review/index.html` for side-by-side comparisons with actual application captures.
+4. Run `npm ci` and `npm run verify:release` with your real environment. The ZIP excludes installed dependencies and generated `.next` output; deployment rebuilds from the complete source.
+5. Read the migration status in `GIT_AND_VERCEL.md` before deploying. The paper-safety migration remains required; this build does not activate automation.
 
-The latest source has not been pushed or deployed. No orders were submitted and no account roles were changed. Two research migrations were applied; the paper migration remains pending. Old release reports are retained as historical context, not current certification. Start with this file and the current release report.
+No source was pushed or deployed, no broker order was submitted, and no account role was changed in this glass build. Live deployment, owner authorization, email delivery and paper execution require acceptance with the actual account. Previous read-only service checks are included and dated; browser fixtures do not certify live integrations.
+
+`SOURCE_MANIFEST.json` hashes every delivered file except itself. The packager checks the archive against those hashes and the tracked source inventory. Private credentials, `.git`, caches and installed dependencies are intentionally excluded. No new paid data provider was added.

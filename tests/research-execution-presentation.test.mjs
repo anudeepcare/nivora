@@ -31,7 +31,7 @@ const Overview=load('components/premium/AurynResearchOverviewV2.tsx').default;
 const ActionMap=load('components/market/MarketActionMap.tsx').default;
 const decision={newMoneyAction:'HOLD',ownerAction:'HOLD',longTermAction:'HOLD',confidenceScore:61,evidenceCompleteness:65,pillars:{business:{score:65,why:'Business evidence'},valuation:{score:50},marketStructure:{score:40},catalystsRegime:{why:'Catalyst evidence'}},drivers:[],counterEvidence:[],hardVetoReasons:[]};
 const levels={entryLow:101.25,entryHigh:103.75,confirm:110.5,target1:119.25,invalidation:91.5};
-const render=extra=>renderToStaticMarkup(React.createElement(Overview,{decision,marketTruth:{priceSensitiveAllowed:true},displayPrice:150,candles:[],chartLevels:levels,executionLevelsAllowed:true,executionIntent:'WATCH',...extra}));
+const render=extra=>renderToStaticMarkup(React.createElement(Overview,{decision,canonical:{research:{state:'READY'}},marketTruth:{priceSensitiveAllowed:true},displayPrice:150,candles:[],chartLevels:levels,executionLevelsAllowed:true,executionIntent:'WATCH',...extra}));
 test('overview withholds execution prices when the final trust/price gate is closed',()=>{
  const html=render({executionLevelsAllowed:false});
  for(const value of ['101.25','103.75','110.50','119.25','91.50'])assert.ok(!html.includes(value),`blocked level ${value} leaked into overview`);
@@ -67,4 +67,16 @@ test('pattern evidence is disclosed only when its source snapshot matches the cu
  assert.match(ready,/tested a similar support area twice/);
  const stale=render({scenario,marketTruth:{snapshotId:'snapshot-b',priceSensitiveAllowed:true}});
  assert.doesNotMatch(stale,/tested a similar support area twice/);
+});
+
+const GlassValuation=load('components/research/GlassValuation.tsx').default;
+const scenarios=Object.fromEntries(['bear','base','bull'].map(k=>[k,{value:120,assumptions:{growthPct:5,discountRatePct:10,terminalGrowthPct:2,dilutionPct:1}}]));
+const valuation={scenarios,upsidePct:null,marginOfSafetyPct:null,priceComparisonAsOf:null,sensitivity:[],method:'DCF',missingInputs:[],warnings:[],why:'Price comparison is unverified'};
+test('glass valuation never restores a price comparison rejected by the evidence engine',()=>{
+ const html=renderToStaticMarkup(React.createElement(GlassValuation,{assessment:{valuation},price:80,evidence:{},onFinancials(){}}));
+ assert.match(html,/Valuation unverified/);assert.doesNotMatch(html,/Potential margin of safety|50.0% upside/);
+});
+test('glass valuation uses canonical upside and fair-value-denominated safety margin',()=>{
+ const html=renderToStaticMarkup(React.createElement(GlassValuation,{assessment:{valuation:{...valuation,upsidePct:17.6,marginOfSafetyPct:15,priceComparisonAsOf:'2026-10-16T12:00:00Z'}},price:1,evidence:{},onFinancials(){}}));
+ assert.match(html,/Limited margin of safety/);assert.match(html,/17.6% upside/);assert.doesNotMatch(html,/11900/);
 });

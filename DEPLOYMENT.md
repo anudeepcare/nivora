@@ -1,3 +1,5 @@
+> **Current delivery:** use `GIT_AND_VERCEL.md` for the approved glass build, migration status and safe branch push. Rebuild with real environment values; fixture output is not deployable.
+
 # Current upgrade deployment
 
 Use [GIT_AND_VERCEL.md](GIT_AND_VERCEL.md) and [RELEASE_REPORT.md](RELEASE_REPORT.md) for the October 16 intelligence upgrade. **This upgrade introduces three incremental SQL migrations and server-side authorization configuration. The two research migrations are applied in the connected project; the paper-safety migration is still pending.** Earlier no-migration statements and live-service observations below describe earlier releases only; they do not certify this ZIP.

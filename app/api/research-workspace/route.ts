@@ -5,7 +5,7 @@ import {createClient,type SupabaseClient} from '@supabase/supabase-js';
 import {authorizeRequest} from '@/lib/server/authorization';
 import {loadAurynCanonicalSnapshot} from '@/lib/auryn/v935/canonical';
 import {saveWatchlistSymbol} from '@/lib/watchlist.mjs';
-import {answerEvidence,buildAlerts,DEFAULT_PREFERENCES,normalizedSymbol,snapshotFromCanonical,validatePreferences,validateView,validateWatch,validatePlanningRecord,type ResearchSnapshot,type ResearchAlert,type AlertPreferences} from '@/lib/auryn/workspace/model';
+import {answerEvidence,buildAlerts,DEFAULT_PREFERENCES,normalizedSymbol,snapshotFromCanonical,validatePreferences,validateView,validateWatch,validatePlanningRecord,validateContribution,type ResearchSnapshot,type ResearchAlert,type AlertPreferences} from '@/lib/auryn/workspace/model';
 export const dynamic='force-dynamic';
 const table='auryn_research_workspace';
 const reply=(body:unknown,status=200)=>NextResponse.json(body,{status,headers:{'Cache-Control':'private, no-store'}});
@@ -13,19 +13,23 @@ function userClient(req:Request){const url=process.env.NEXT_PUBLIC_SUPABASE_URL,
 async function readRows(db:SupabaseClient,userId:string){const {data,error}=await db.from(table).select('kind,key,payload,updated_at').eq('user_id',userId).in('kind',['watch','view','preferences','snapshot','alert']).order('updated_at',{ascending:false}).limit(600);if(error)throw Error('Personal research storage is unavailable. The research workspace schema must be installed before saves can be made.');return data||[];}
 async function write(db:SupabaseClient,userId:string,kind:string,key:string,payload:unknown,ignoreDuplicates=false){const {error}=await db.from(table).upsert({user_id:userId,kind,key,payload,updated_at:new Date().toISOString()},{onConflict:'user_id,kind,key',ignoreDuplicates});if(error)throw Error('Your research could not be saved. Please retry.');}
 function snapshots(rows:any[],symbol:string){return rows.filter(r=>r.kind==='snapshot'&&r.payload.symbol===symbol).map(r=>r.payload as ResearchSnapshot).sort((a,b)=>Date.parse(b.observedAt||'0')-Date.parse(a.observedAt||'0'));}
-export async function GET(req:Request){const auth=await authorizeRequest(req);if(auth.response)return auth.response;try{const db=userClient(req),params=new URL(req.url).searchParams;if(params.get('scope')==='planning'){
+export async function GET(req:Request){const auth=await authorizeRequest(req);if(auth.response)return auth.response;try{const db=userClient(req),params=new URL(req.url).searchParams;if(params.get('scope')==='contribution'){
+ const symbol=normalizedSymbol(params.get('symbol'));const result=await db.from(table).select('payload').eq('user_id',auth.user.id).eq('kind','allocation-plan').eq('key',`contribution:${symbol}`).maybeSingle();if(result.error)throw Error('Your contribution settings could not be loaded.');return reply({settings:result.data?validateContribution(result.data.payload.plan):null});}
+ if(params.get('scope')==='planning'){
  const symbol=normalizedSymbol(params.get('symbol'));const decisions=await db.from(table).select('payload').eq('user_id',auth.user.id).eq('kind','decision-journal').eq('payload->>symbol',symbol).order('updated_at',{ascending:false}).limit(1000);
  if(decisions.error)throw Error('Personal research storage is unavailable. Install the workspace schema before saving journal records.');const ids=(decisions.data||[]).map(r=>r.payload.id),reviews=ids.length?await db.from(table).select('payload').eq('user_id',auth.user.id).eq('kind','decision-review').in('payload->>decisionId',ids).order('updated_at',{ascending:false}).limit(1000):{data:[],error:null};if(reviews.error)throw Error('Decision reviews could not be loaded.');return reply({decisions:decisions.data?.map(r=>r.payload)||[],reviews:reviews.data?.map(r=>r.payload)||[],truncated:decisions.data?.length===1000||reviews.data?.length===1000});}
  const [research,watchResult,positionResult]=await Promise.allSettled([
- readRows(db,auth.user.id),db.from('watchlist_items').select('symbol').eq('user_id',auth.user.id),db.from('portfolio_positions').select('symbol,asset_type').eq('user_id',auth.user.id).neq('asset_type','CASH')]);
+ readRows(db,auth.user.id),db.from('watchlist_items').select('symbol').eq('user_id',auth.user.id),db.from('portfolio_positions').select('*').eq('user_id',auth.user.id)]);
  const result=workspaceReadResult(research,watchResult.status==='fulfilled'?watchResult.value:{data:null,error:true},positionResult.status==='fulfilled'?positionResult.value:{data:null,error:true});
+ result.portfolioSymbols=result.portfolioSymbols.filter(symbol=>!['USD','CASH'].includes(symbol));
  const symbols=[...new Set<string>([...result.watchSymbols,...result.portfolioSymbols])].slice(0,20);
  const current=await Promise.allSettled(symbols.map(async symbol=>{const raw=await loadStoredCanonicalSnapshot(symbol);if(!raw.research.decision||!raw.research.observedAt)return null;return snapshotFromCanonical(raw,`current-${symbol}-${raw.research.observedAt}`);}));
  for(const item of current)if(item.status==='fulfilled'&&item.value&&!result.rows.some(r=>r.kind==='snapshot'&&r.payload.symbol===item.value!.symbol&&r.payload.observedAt===item.value!.observedAt))result.rows.unshift({kind:'snapshot',key:item.value.snapshotId,payload:item.value,updated_at:item.value.observedAt,current:true});
- return reply(result);}catch(e){return reply({error:e instanceof Error?e.message:'Workspace unavailable.',storage:'unavailable'},503);}}
+ return reply({...result,positions:positionResult.status==='fulfilled'&&!positionResult.value.error?(positionResult.value.data??[]).map(row=>({symbol:row.symbol,asset_type:row.asset_type,shares:row.shares,avg_cost:row.avg_cost,currency:row.currency})):null});}catch(e){return reply({error:e instanceof Error?e.message:'Workspace unavailable.',storage:'unavailable'},503);}}
 export async function POST(req:Request){const auth=await authorizeRequest(req);if(auth.response)return auth.response;
  try{if(Number(req.headers.get('content-length')||0)>65536)return reply({error:'Request is too large.'},413);const raw=await req.text();if(raw.length>65536)return reply({error:'Request is too large.'},413);let body:any;try{body=JSON.parse(raw);}catch{return reply({error:'Send a valid JSON request.'},400);}
  const db=userClient(req),userId=auth.user.id;
+ if(body.op==='contribution'){const symbol=normalizedSymbol(body.symbol),settings=validateContribution(body.settings);await write(db,userId,'allocation-plan',`contribution:${symbol}`,{symbol,plan:settings});return reply({saved:true,settings});}
  if(body.op==='save-planning'){
   const payload=validatePlanningRecord(body.kind,body.key,body.payload);
   if(body.kind==='decision-review'){const original=await db.from(table).select('key').eq('user_id',userId).eq('kind','decision-journal').eq('key',payload.decisionId).maybeSingle();if(original.error)throw Error('Decision journal storage is unavailable.');if(!original.data)return reply({error:'The original decision does not belong to this journal.'},404);}

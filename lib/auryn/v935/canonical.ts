@@ -44,9 +44,9 @@ export async function loadAurynCanonicalSnapshot(symbolRaw:string):Promise<Auryn
  const symbol=normalizeQuoteSymbol(symbolRaw); const generatedAt=new Date().toISOString();
  const rowPromise=latestDecision(symbol).catch(()=>null);
  const twelveKey=process.env.TWELVE_DATA_API_KEY||"",alpacaKey=process.env.ALPACA_PAPER_API_KEY||"",alpacaSecret=process.env.ALPACA_PAPER_API_SECRET||"";
- const marketPromise=isCryptoQuoteSymbol(symbol)?loadCanonicalCryptoSnapshot(symbol):(twelveKey||alpacaKey)?loadCanonicalMarketSnapshot({symbol,twelveKey,alpacaKey,alpacaSecret,asOf:new Date()}).then(x=>x.snapshot).catch(()=>null):Promise.resolve(null);
+ const marketPromise=isCryptoQuoteSymbol(symbol)?loadCanonicalCryptoSnapshot(symbol):(twelveKey||alpacaKey)?loadCanonicalMarketSnapshot({symbol,twelveKey,alpacaKey,alpacaSecret,asOf:new Date()}).then(x=>({...x.snapshot,displayChangePct:x.displayQuote.changePct,companyName:x.providerRaw.twelve?.name??null})).catch(()=>null):Promise.resolve(null);
  const [row,market]=await Promise.all([rowPromise,marketPromise]);
- const research=researchFromRow(row); const security=identity(symbol);
+ const research=researchFromRow(row); const security={...identity(symbol),name:(market as any)?.companyName??null};
  const marketUnavailable=!market||market.displayPrice==null;
  const degraded=marketUnavailable||research.state!=="READY";
  const degradedReason=marketUnavailable?"MARKET_TRUTH_REFRESHING":research.state==="ANALYSIS_REQUIRED"?"ANALYSIS_REQUIRED":research.state==="STALE_VERIFIED"?"RESEARCH_REFRESH_RECOMMENDED":null;

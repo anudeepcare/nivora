@@ -1,0 +1,12 @@
+✔ first-glance action preserves canonical meaning and withholds stale calls (0.824539ms)
+✔ generic metric descriptions cannot masquerade as a company risk (0.383171ms)
+✔ DCA indicator distinguishes missing evidence from a measured cash allocation (0.230338ms)
+✔ chart fit resets for replacement data unless the user changed its view (0.115309ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 330.537669

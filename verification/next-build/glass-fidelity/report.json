@@ -1,0 +1,478 @@
+{
+  "scope": "Computed layout tokens compared at identical viewport widths. Data-driven heights and chart graphics intentionally differ; this is not pixel identity.",
+  "comparisons": [
+    {
+      "width": 320,
+      "matches": 39,
+      "differences": [
+        {
+          "selector": ".au-content",
+          "property": "padding",
+          "approved": "16px 11px",
+          "actual": "16px 11px 22px"
+        }
+      ],
+      "reference": {
+        ".au-top": {
+          "width": 302,
+          "x": 9,
+          "padding": "7px",
+          "borderRadius": "18px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "5px",
+          "display": "flex"
+        },
+        ".au-content": {
+          "width": 320,
+          "x": 0,
+          "padding": "16px 11px",
+          "borderRadius": "0px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "normal",
+          "display": "block"
+        },
+        ".au-side": {
+          "width": 0,
+          "x": 0,
+          "padding": "24px 10px",
+          "borderRadius": "0px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "30px",
+          "display": "none"
+        },
+        ".au-tabs": {
+          "width": 298,
+          "x": 11,
+          "padding": "3px",
+          "borderRadius": "13px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "1px",
+          "display": "grid"
+        },
+        ".au-decision": {
+          "width": 298,
+          "x": 11,
+          "padding": "17px 15px",
+          "borderRadius": "20px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "normal",
+          "display": "block"
+        },
+        ".au-columns": {
+          "width": 298,
+          "x": 11,
+          "padding": "0px",
+          "borderRadius": "0px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "16px",
+          "display": "flex"
+        },
+        ".au-panel": {
+          "width": 298,
+          "x": 11,
+          "padding": "17px",
+          "borderRadius": "19px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "normal",
+          "display": "block"
+        },
+        ".au-dock": {
+          "width": 296,
+          "x": 12,
+          "padding": "6px",
+          "borderRadius": "23px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "4px",
+          "display": "grid"
+        }
+      },
+      "actual": {
+        ".au-top": {
+          "width": 302,
+          "x": 9,
+          "padding": "7px",
+          "borderRadius": "18px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "5px",
+          "display": "flex"
+        },
+        ".au-content": {
+          "width": 320,
+          "x": 0,
+          "padding": "16px 11px 22px",
+          "borderRadius": "0px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "normal",
+          "display": "block"
+        },
+        ".au-side": {
+          "width": 0,
+          "x": 0,
+          "padding": "24px 10px",
+          "borderRadius": "0px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "30px",
+          "display": "none"
+        },
+        ".au-tabs": {
+          "width": 298,
+          "x": 11,
+          "padding": "3px",
+          "borderRadius": "13px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "1px",
+          "display": "grid"
+        },
+        ".au-decision": {
+          "width": 298,
+          "x": 11,
+          "padding": "17px 15px",
+          "borderRadius": "20px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "normal",
+          "display": "block"
+        },
+        ".au-columns": {
+          "width": 298,
+          "x": 11,
+          "padding": "0px",
+          "borderRadius": "0px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "16px",
+          "display": "flex"
+        },
+        ".au-panel": {
+          "width": 298,
+          "x": 11,
+          "padding": "17px",
+          "borderRadius": "19px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "normal",
+          "display": "block"
+        },
+        ".au-dock": {
+          "width": 296,
+          "x": 12,
+          "padding": "6px",
+          "borderRadius": "23px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "4px",
+          "display": "grid"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "matches": 39,
+      "differences": [
+        {
+          "selector": ".au-content",
+          "property": "padding",
+          "approved": "20px 14px 18px",
+          "actual": "20px 14px 22px"
+        }
+      ],
+      "reference": {
+        ".au-top": {
+          "width": 366,
+          "x": 12,
+          "padding": "8px",
+          "borderRadius": "18px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "7px",
+          "display": "flex"
+        },
+        ".au-content": {
+          "width": 390,
+          "x": 0,
+          "padding": "20px 14px 18px",
+          "borderRadius": "0px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "normal",
+          "display": "block"
+        },
+        ".au-side": {
+          "width": 0,
+          "x": 0,
+          "padding": "24px 10px",
+          "borderRadius": "0px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "30px",
+          "display": "none"
+        },
+        ".au-tabs": {
+          "width": 362,
+          "x": 14,
+          "padding": "3px",
+          "borderRadius": "13px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "1px",
+          "display": "grid"
+        },
+        ".au-decision": {
+          "width": 362,
+          "x": 14,
+          "padding": "17px 15px",
+          "borderRadius": "20px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "normal",
+          "display": "block"
+        },
+        ".au-columns": {
+          "width": 362,
+          "x": 14,
+          "padding": "0px",
+          "borderRadius": "0px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "16px",
+          "display": "flex"
+        },
+        ".au-panel": {
+          "width": 362,
+          "x": 14,
+          "padding": "17px",
+          "borderRadius": "19px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "normal",
+          "display": "block"
+        },
+        ".au-dock": {
+          "width": 366,
+          "x": 12,
+          "padding": "6px",
+          "borderRadius": "23px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "4px",
+          "display": "grid"
+        }
+      },
+      "actual": {
+        ".au-top": {
+          "width": 366,
+          "x": 12,
+          "padding": "8px",
+          "borderRadius": "18px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "7px",
+          "display": "flex"
+        },
+        ".au-content": {
+          "width": 390,
+          "x": 0,
+          "padding": "20px 14px 22px",
+          "borderRadius": "0px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "normal",
+          "display": "block"
+        },
+        ".au-side": {
+          "width": 0,
+          "x": 0,
+          "padding": "24px 10px",
+          "borderRadius": "0px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "30px",
+          "display": "none"
+        },
+        ".au-tabs": {
+          "width": 362,
+          "x": 14,
+          "padding": "3px",
+          "borderRadius": "13px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "1px",
+          "display": "grid"
+        },
+        ".au-decision": {
+          "width": 362,
+          "x": 14,
+          "padding": "17px 15px",
+          "borderRadius": "20px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "normal",
+          "display": "block"
+        },
+        ".au-columns": {
+          "width": 362,
+          "x": 14,
+          "padding": "0px",
+          "borderRadius": "0px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "16px",
+          "display": "flex"
+        },
+        ".au-panel": {
+          "width": 362,
+          "x": 14,
+          "padding": "17px",
+          "borderRadius": "19px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "normal",
+          "display": "block"
+        },
+        ".au-dock": {
+          "width": 366,
+          "x": 12,
+          "padding": "6px",
+          "borderRadius": "23px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "4px",
+          "display": "grid"
+        }
+      }
+    },
+    {
+      "width": 1024,
+      "matches": 40,
+      "differences": [],
+      "reference": {
+        ".au-top": {
+          "width": 830,
+          "x": 178,
+          "padding": "9px 10px",
+          "borderRadius": "19px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "9px",
+          "display": "flex"
+        },
+        ".au-content": {
+          "width": 862,
+          "x": 162,
+          "padding": "24px 24px 20px",
+          "borderRadius": "0px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "normal",
+          "display": "block"
+        },
+        ".au-side": {
+          "width": 162,
+          "x": 0,
+          "padding": "24px 10px",
+          "borderRadius": "0px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "30px",
+          "display": "flex"
+        },
+        ".au-tabs": {
+          "width": 427.34375,
+          "x": 186,
+          "padding": "4px",
+          "borderRadius": "14px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "3px",
+          "display": "flex"
+        },
+        ".au-decision": {
+          "width": 814,
+          "x": 186,
+          "padding": "20px",
+          "borderRadius": "21px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "normal",
+          "display": "block"
+        },
+        ".au-columns": {
+          "width": 814,
+          "x": 186,
+          "padding": "0px",
+          "borderRadius": "0px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "16px",
+          "display": "grid"
+        },
+        ".au-panel": {
+          "width": 496.859375,
+          "x": 186,
+          "padding": "19px",
+          "borderRadius": "20px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "normal",
+          "display": "block"
+        },
+        ".au-dock": {
+          "width": 0,
+          "x": 0,
+          "padding": "0px",
+          "borderRadius": "0px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "normal",
+          "display": "none"
+        }
+      },
+      "actual": {
+        ".au-top": {
+          "width": 830,
+          "x": 178,
+          "padding": "9px 10px",
+          "borderRadius": "19px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "9px",
+          "display": "flex"
+        },
+        ".au-content": {
+          "width": 862,
+          "x": 162,
+          "padding": "24px 24px 20px",
+          "borderRadius": "0px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "normal",
+          "display": "block"
+        },
+        ".au-side": {
+          "width": 162,
+          "x": 0,
+          "padding": "24px 10px",
+          "borderRadius": "0px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "30px",
+          "display": "flex"
+        },
+        ".au-tabs": {
+          "width": 436.09375,
+          "x": 186,
+          "padding": "4px",
+          "borderRadius": "14px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "3px",
+          "display": "flex"
+        },
+        ".au-decision": {
+          "width": 814,
+          "x": 186,
+          "padding": "20px",
+          "borderRadius": "21px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "normal",
+          "display": "block"
+        },
+        ".au-columns": {
+          "width": 814,
+          "x": 186,
+          "padding": "0px",
+          "borderRadius": "0px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "16px",
+          "display": "grid"
+        },
+        ".au-panel": {
+          "width": 496.859375,
+          "x": 186,
+          "padding": "19px",
+          "borderRadius": "20px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "normal",
+          "display": "block"
+        },
+        ".au-dock": {
+          "width": 0,
+          "x": 0,
+          "padding": "0px",
+          "borderRadius": "0px",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "gap": "normal",
+          "display": "none"
+        }
+      }
+    }
+  ]
+}
