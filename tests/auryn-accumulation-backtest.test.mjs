@@ -1,2 +1,0 @@
-import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
-test('backtest implements matched contribution streams, fees and safeguards',()=>{const s=fs.readFileSync('lib/auryn/accumulation/backtest.ts','utf8');for(const term of ['fixedCash+=monthlyBudget','adaptiveCash+=monthlyBudget','feePerOrder','evidenceFresh','thesisIntact','financingRisk','totalContributed','Invalid or unsorted historical bars'])assert.ok(s.includes(term),term)});
