@@ -1,0 +1,12 @@
+FAIL chart preserves canvas across unrelated preferences and period changes Expected values to be strictly equal:
+
+null !== 'stable'
+
+FAIL saved research view and explanation remain accessible locator.selectOption: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('region', { name: 'Personal research workspace', exact: true }).getByLabel('Company', { exact: true })[22m
+
+FAIL DCA contribution proposal caps cash and saves an immutable original locator.click: Error: strict mode violation: getByRole('button', { name: 'Build a plan', exact: true }) resolved to 2 elements:
+    1) <button type="button" class="researchPlanAction">Build a plan</button> aka getByRole('button', { name: 'Build a plan' }).first()
+    2) <button type="button" class="clearPrimary">Build a plan</button> aka getByLabel
+{"passed":36,"failed":3,"runtimeErrors":0}

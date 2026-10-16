@@ -185,5 +185,9 @@
   "tests/weekly-structure-view.test.mjs",
   "tests/company-source-review.test.mjs",
   "tests/company-source-review-migration.test.mjs",
-  "tests/insider-classification.test.mjs"
+  "tests/insider-classification.test.mjs",
+  "tests/product-recovery-technicals.test.mjs",
+  "tests/product-recovery-data.test.mjs",
+  "tests/product-recovery-financials.test.mjs",
+  "tests/product-recovery-planning.test.mjs"
 ]

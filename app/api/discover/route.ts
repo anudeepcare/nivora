@@ -1,3 +1,4 @@
+import {discoveryRows} from '@/lib/auryn/workspace/recovery';
 import {NextResponse} from "next/server";
 import {createClient} from "@supabase/supabase-js";
 import {freshnessDistribution} from "@/lib/nivora-scan-freshness";
@@ -15,6 +16,11 @@ function normalize(x:any){return{
 export async function GET(req:Request){
   const db=serverDb();if(!db)return NextResponse.json({items:[],coverage:{mode:"scanner-not-configured",ready:false,scanned:0,eligibleUniverse:0},partial:true});
   const url=new URL(req.url),mode=url.searchParams.get("mode")||"discover";const limit=Math.max(1,Math.min(100,Number(url.searchParams.get("limit")||40)));
+  // Prefer the store used by the current canonical research pipeline.
+  const snapshotResult=await db.from('nivora_v59_decision_snapshots').select('symbol,observed_at,assessment:evidence->v931,financial:evidence->financialEvidence').gte('observed_at',new Date(Date.now()-7*86400000).toISOString()).order('observed_at',{ascending:false}).limit(200);
+  const recorded=discoveryRows(snapshotResult.data??[]);
+  if(recorded.length){const names=await db.from('nivora_market_universe').select('symbol,name').in('symbol',recorded.slice(0,limit).map(x=>x.symbol));const bySymbol=new Map((names.data??[]).map(x=>[x.symbol,x.name]));for(const item of recorded)item.name=bySymbol.get(item.symbol)||item.name;}
+  if(recorded.length&&mode!=='today')return NextResponse.json({items:recorded.slice(0,limit),coverage:{mode:'current-research',ready:true,fullMarket:false,scanned:recorded.length,lastScanAt:recorded[0]?.scannedAt,preview:true},partial:true},{headers:{'Cache-Control':'public, s-maxage=60, stale-while-revalidate=120'}});
   const now=Date.now(),cut24=new Date(now-24*3600_000).toISOString(),cut7=new Date(now-7*24*3600_000).toISOString(),cut30=new Date(now-30*24*3600_000).toISOString();
   const [{data:state},{count:universeCount},{count:investmentCountRaw},{count:fresh24},{count:fresh7},{count:fresh30}]=await Promise.all([
     db.from("nivora_scan_state").select("*").eq("id",1).maybeSingle(),
@@ -31,7 +37,7 @@ export async function GET(req:Request){
   const previewReady=scanned>=1,fullMarket=eligible>0&&scanned>=Math.max(1,eligible*.90),todayCutoff=new Date(Date.now()-36*3600_000).toISOString();
   let items:any[]=[];
   if(previewReady){
-    let q=db.from("nivora_investment_scan").select("*").gte("market_cap_m",750).gte("evidence_confidence",55);
+    let q=db.from("nivora_investment_scan").select("*").gte("market_cap_m",750).gte("evidence_confidence",55).gte("scanned_at",cut7);
     q=mode==="today"?q.order("changed_at",{ascending:false}).limit(120):q.order("opportunity_score",{ascending:false}).limit(Math.max(limit*4,120));
     const {data,error}=await q;if(error)return NextResponse.json({items:[],coverage:{mode:"investment-scan-error",ready:false,error:error.message,scanned,eligibleUniverse:eligible},partial:true});
     items=(data||[]).map(normalize);

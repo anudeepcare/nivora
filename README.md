@@ -1,8 +1,8 @@
 # AURYN Intelligence OS — complete source package
 
-Start with **START_HERE.md**, **RELEASE_REPORT.md** and **GIT_AND_VERCEL.md**. The October 16 intelligence upgrade includes the full application source and a 104-item scope ledger. It is not all-scope or deployed production acceptance: specific implementation and external-service gaps remain documented. Three incremental SQL migrations are included and have not been applied live.
+Start with **START_HERE.md**, **RELEASE_REPORT.md** and **GIT_AND_VERCEL.md**. The product-recovery build includes the full intelligence upgrade plus data integrity, clean research surfaces, financial charts, persistent chart/planner state and connected contribution proposals. Current software and provider checks are recorded in the release report. Some approved implementation and deployed acceptance gaps remain; this is not an all-capabilities production certificate.
 
-The current production build and 907-test acceptance gate passed. Current browser and historical-suite results are recorded in the release report. Older counts and provider observations below belong to previous releases.
+The two research migrations are applied in the connected Supabase project. The paper-safety migration still needs deployment. Older counts and configuration statements below are historical.
 
 ## Retained historical project notes
 

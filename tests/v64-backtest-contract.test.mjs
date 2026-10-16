@@ -4,7 +4,7 @@ const {pointInTimeFundamentals}=require('../.engine-test/nivora-backtest-fundame
 const {buildBacktestReport,applyCosts,walkForwardSplit}=require('../.engine-test/nivora-backtest-report.js');
 const {validateUniverseManifest}=require('../.engine-test/nivora-backtest-universe.js');
 
-function fakeBars(n,startPrice=100){const out=[];let p=startPrice;const day=new Date('2020-01-01');for(let i=0;i<n;i++){p*=(1+((Math.sin(i/7)+1)/2-0.48)*0.03);const d=new Date(day);d.setDate(d.getDate()+i);out.push({datetime:d.toISOString().slice(0,10),open:p,high:p*1.01,low:p*0.99,close:p,volume:1000000});}return out;}
+function fakeBars(n,startPrice=100){const out=[];let p=startPrice;const day=new Date('2020-01-01');for(let i=0;i<n;i++){p*=(1+((Math.sin(i/7)+1)/2-0.48)*0.03);const d=new Date(day);d.setUTCDate(d.getUTCDate()+i);out.push({datetime:d.toISOString().slice(0,10),open:p,high:p*1.01,low:p*0.99,close:p,volume:1000000});}return out;}
 
 test('replayOne never uses a bar dated after asOfDate for entry',()=>{
   const bars=fakeBars(400);
@@ -40,7 +40,7 @@ test('pointInTimeFundamentals excludes facts filed after asOfDate', () => {
 });
 
 test('walkForwardSplit never overlaps in-sample and out-of-sample dates',()=>{
-  const dates=Array.from({length:100},(_,i)=>{const d=new Date('2020-01-01');d.setDate(d.getDate()+i*7);return d.toISOString().slice(0,10);});
+  const dates=Array.from({length:100},(_,i)=>{const d=new Date('2020-01-01');d.setUTCDate(d.getUTCDate()+i*7);return d.toISOString().slice(0,10);});
   const {inSample,outOfSample}=walkForwardSplit(dates,0.6);
   const overlap=inSample.filter(d=>outOfSample.includes(d));
   assert.equal(overlap.length,0);

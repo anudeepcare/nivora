@@ -18,15 +18,16 @@ export function deriveV934DecisionTechnical(snapshot:AurynMarketIntelligenceSnap
  const confirm=typeof map?.confirm==="number"?map.confirm:NaN,invalidation=typeof map?.invalidation==="number"?map.invalidation:NaN;
  const trend=weighted(snapshot,s=>s.trend.score);
  const momentum=weighted(snapshot,s=>s.momentum.score);
- const flow=weighted(snapshot,s=>s.participation.score);
- const structure=weighted(snapshot,s=>(clamp((s.score+100)/2)+clamp(s.relativeStrength?.score??50))/2);
- const marketStructureScore=clamp((trend*.32)+(momentum*.23)+(flow*.2)+(structure*.25));
+ const flowAvailable=Object.values(snapshot?.confirmed??{}).some((s:any)=>s.participation?.available!==false&&Number.isFinite(s.participation?.score));
+ const flow=weighted(snapshot,s=>s.participation.available===false?NaN:s.participation.score);
+ const structure=weighted(snapshot,s=>s.relativeStrength?.available===false||s.relativeStrength?.relativePct===null?clamp((s.score+100)/2):(clamp((s.score+100)/2)+clamp(s.relativeStrength?.score??50))/2);
+ const marketStructureScore=clamp(((trend*.32)+(momentum*.23)+(flowAvailable?flow*.2:0)+(structure*.25))/(flowAvailable?1:.8));
  const nearResistance=Number.isFinite(confirmedPrice)&&Number.isFinite(confirm)&&confirmedPrice>=confirm*.94&&confirmedPrice<=confirm*1.02;
- const confirmedBreakout=Boolean(daily&&Number.isFinite(confirmedPrice)&&Number.isFinite(confirm)&&confirmedPrice>=confirm&&daily.rating==='BUY'&&daily.participation.score>=60);
+ const confirmedBreakout=Boolean(daily&&Number.isFinite(confirmedPrice)&&Number.isFinite(confirm)&&confirmedPrice>=confirm&&daily.rating==='BUY'&&daily.participation.available!==false&&daily.participation.score>=60);
  const structuralBreak=Number.isFinite(confirmedPrice)&&Number.isFinite(invalidation)&&confirmedPrice<invalidation;
  const why=[daily?ratingLabel('1D',daily):null,four?ratingLabel('4H',four):null,weekly?ratingLabel('1W',weekly):null].filter(Boolean).join(' · ');
  return{
-  marketStructureScore,trend,momentum,flow,structure,nearResistance,confirmedBreakout,structuralBreak,
+  marketStructureScore,trend,momentum,flow,flowAvailable,structure,nearResistance,confirmedBreakout,structuralBreak,
   reclaimLevel:Number.isFinite(confirm)?confirm:null,invalidation:Number.isFinite(invalidation)?invalidation:null,
   confirmedPrice:Number.isFinite(confirmedPrice)?confirmedPrice:null,
   confirmedDailyRating:daily?.rating??null,livePreviewRating:live?.rating??null,

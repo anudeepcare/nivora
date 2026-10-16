@@ -53,6 +53,12 @@ export async function loadAurynCanonicalSnapshot(symbolRaw:string):Promise<Auryn
  const provenance=buildV935Provenance({symbol,marketSnapshotId:market?.snapshotId??null,researchSnapshotId:research.decisionSnapshotId??null,fingerprint:research.fingerprint??null,generatedAt});
  return {contract:V935_CANONICAL_CONTRACT,version:V935_CANONICAL_VERSION,snapshotId:provenance.snapshotId,generatedAt,security,market,research,degraded,degradedReason};
 }
+/** Workspace reads reuse persisted evidence without buying a fresh quote per symbol. */
+export async function loadStoredCanonicalSnapshot(symbolRaw:string):Promise<AurynCanonicalSnapshot>{
+ const symbol=normalizeQuoteSymbol(symbolRaw),generatedAt=new Date().toISOString(),row=await latestDecision(symbol),research=researchFromRow(row),security=identity(symbol);
+ const provenance=buildV935Provenance({symbol,marketSnapshotId:null,researchSnapshotId:research.decisionSnapshotId??null,fingerprint:research.fingerprint??null,generatedAt});
+ return {contract:V935_CANONICAL_CONTRACT,version:V935_CANONICAL_VERSION,snapshotId:provenance.snapshotId,generatedAt,security,market:null,research,degraded:research.state!=='READY',degradedReason:research.state==='READY'?null:'RESEARCH_REFRESH_RECOMMENDED'};
+}
 export async function loadAurynCanonicalSnapshots(symbols:string[],concurrency=6){
  const unique=[...new Set(symbols.map(x=>x.trim().toUpperCase()).filter(Boolean))].slice(0,50);const out=new Map<string,AurynCanonicalSnapshot>();let i=0;
  async function worker(){while(i<unique.length){const idx=i++;const s=unique[idx];out.set(s,await loadAurynCanonicalSnapshot(s))}}

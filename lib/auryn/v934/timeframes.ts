@@ -13,15 +13,17 @@ const label=(n:number)=>n>=67?'Strong':n<42?'Weak':'Mixed';
 const annual=(tf:AurynTimeframe)=>tf==='15M'?26*252:tf==='1H'?6.5*252:tf==='4H'?1.625*252:tf==='1W'?52:252;
 const retLookback=(tf:AurynTimeframe)=>tf==='15M'?26:tf==='1H'?20:tf==='4H'?15:tf==='1W'?13:20;
 
-export function computeTimeframeTechnicalState(rows:Bar[],benchRows:Bar[]|null,timeframe:AurynTimeframe,benchmark:string|null):TimeframeTechnicalState|null{
+export function computeTimeframeTechnicalState(rows:Bar[],benchRows:Bar[]|null,timeframe:AurynTimeframe,benchmark:string|null,options:{assetType?:'stock'|'crypto'}={}):TimeframeTechnicalState|null{
   if(!Array.isArray(rows)||rows.length<40)return null;
+  if(rows.some((x,i)=>![x.open,x.high,x.low,x.close].every(v=>typeof v==='number'&&Number.isFinite(v)&&v>0)||x.high<Math.max(x.open,x.close)||x.low>Math.min(x.open,x.close)||!Number.isFinite(Date.parse(x.datetime))||(i>0&&Date.parse(x.datetime)<=Date.parse(rows[i-1].datetime))))return null;
+  const volumeAvailable=rows.slice(-21).every(x=>Number.isFinite(x.volume)&&x.volume>=0)&&rows.slice(-21,-1).some(x=>x.volume>0);
   const closes=rows.map(x=>x.close),price=closes.at(-1)!;const components:IndicatorComponent[]=[];
   for(const n of [10,20,30,50,100,200]){
     const s=smaN(closes,n),e=emaN(closes,n);components.push(component(`SMA_${n}`,`SMA ${n}`,'MOVING_AVERAGE',s,maRating(price,s),s==null?`Need ${n} bars.`:`Price ${price>=s?'above':'below'} SMA ${n}.`));components.push(component(`EMA_${n}`,`EMA ${n}`,'MOVING_AVERAGE',e,maRating(price,e),e==null?`Need ${n} bars.`:`Price ${price>=e?'above':'below'} EMA ${n}.`));
   }
   const rsi=computeRsi14(closes),macd=computeMacd(closes),stoch=computeStochastic(rows),cci=computeCci(rows),wr=computeWilliamsR(rows),roc=computeRoc(closes),mom=computeMomentum(closes),adx=computeAdx(rows),atr=computeAtr(rows);
   const mean20=smaN(closes,20)??price;const last20=closes.slice(-20),sd=Math.sqrt(last20.reduce((a,v)=>a+(v-mean20)**2,0)/Math.max(1,last20.length));const bbZ=sd?(price-mean20)/(2*sd):0;
-  const obv=computeObv(rows),obvSlope=linearSlope(obv,10);const v20=rows.slice(-21,-1).reduce((a,b)=>a+b.volume,0)/Math.max(1,rows.slice(-21,-1).length),vr=v20?rows.at(-1)!.volume/v20:1;
+  const obv=volumeAvailable?computeObv(rows.slice(-21)):[],obvSlope=volumeAvailable?linearSlope(obv,10):0;const v20=rows.slice(-21,-1).reduce((a,b)=>a+b.volume,0)/Math.max(1,rows.slice(-21,-1).length),vr=v20?rows.at(-1)!.volume/v20:1;
   components.push(component('RSI_14','RSI 14','OSCILLATOR',rsi,rsi>=55&&rsi<75?'BUY':rsi<=45&&rsi>25?'SELL':'NEUTRAL',`RSI ${rnd(rsi,1)}.`));
   components.push(component('MACD','MACD 12/26/9','OSCILLATOR',macd.histogram,macd.histogram>0&&macd.line>macd.signal?'BUY':macd.histogram<0&&macd.line<macd.signal?'SELL':'NEUTRAL',`MACD histogram ${rnd(macd.histogram,3)}.`));
   components.push(component('STOCH','Stochastic 14/3','OSCILLATOR',stoch.k,stoch.k>stoch.d&&stoch.k<80?'BUY':stoch.k<stoch.d&&stoch.k>20?'SELL':'NEUTRAL',`%K ${rnd(stoch.k,1)} vs %D ${rnd(stoch.d,1)}.`));
@@ -31,15 +33,18 @@ export function computeTimeframeTechnicalState(rows:Bar[],benchRows:Bar[]|null,t
   components.push(component('MOM_10','Momentum 10','OSCILLATOR',mom,scoreRating(mom,0.001,-0.001),`10-bar momentum ${rnd(mom,2)}.`));
   components.push(component('ADX_DMI','ADX / DMI','OSCILLATOR',adx.adx,adx.adx<18?'NEUTRAL':adx.plusDi>adx.minusDi?'BUY':'SELL',`ADX ${rnd(adx.adx,1)}, +DI ${rnd(adx.plusDi,1)}, -DI ${rnd(adx.minusDi,1)}.`));
   components.push(component('BOLLINGER','Bollinger position','VOLATILITY',bbZ,bbZ>.15?'BUY':bbZ<-.15?'SELL':'NEUTRAL',`Price is ${rnd(bbZ,2)} half-band units from the 20-bar mean.`));
-  components.push(component('OBV','OBV participation','PARTICIPATION',obvSlope,obvSlope>0?'BUY':obvSlope<0?'SELL':'NEUTRAL',`OBV slope ${rnd(obvSlope,1)}.`));
-  components.push(component('VOLUME','Relative volume','PARTICIPATION',vr,vr>=1.2?'BUY':vr<.7?'SELL':'NEUTRAL',`Current volume is ${rnd(vr,2)}x the prior 20-bar average.`));
+  components.push(component('OBV','OBV participation','PARTICIPATION',volumeAvailable?obvSlope:null,obvSlope>0?'BUY':obvSlope<0?'SELL':'NEUTRAL',volumeAvailable?`OBV slope ${rnd(obvSlope,1)}.`:'Volume history unavailable.'));
+  components.push(component('VOLUME','Relative volume','PARTICIPATION',volumeAvailable?vr:null,!volumeAvailable?'NEUTRAL':vr>=1.2?'BUY':vr<.7?'SELL':'NEUTRAL',volumeAvailable?`Current volume is ${rnd(vr,2)}x the prior 20-bar average.`:'Volume history unavailable.'));
 
   const look=retLookback(timeframe),base=closes.at(-1-Math.min(look,closes.length-1))??price,ret=base?((price/base)-1)*100:null;let benchRet:number|null=null,relative:number|null=null;
-  if(benchRows&&benchRows.length>look){const bc=benchRows.map(x=>x.close),bp=bc.at(-1)!,bb=bc.at(-1-look)??bp;benchRet=bb?((bp/bb)-1)*100:null;if(ret!=null&&benchRet!=null)relative=ret-benchRet}
+  const dates=rows.slice(-look-1).map(x=>x.datetime),benchmarkMap=new Map((benchRows??[]).filter(x=>Number.isFinite(x.close)&&x.close>0).map(x=>[x.datetime,x.close]));
+  const benchmarkAvailable=!!benchmark&&dates.length===look+1&&dates.every(date=>benchmarkMap.has(date));
+  if(benchmarkAvailable){const bp=benchmarkMap.get(dates.at(-1)!)!,bb=benchmarkMap.get(dates[0])!;benchRet=(bp/bb-1)*100;if(ret!=null)relative=ret-benchRet;}
+
   const relRating:TechnicalRating=relative==null?'NEUTRAL':relative>=2?'BUY':relative<=-2?'SELL':'NEUTRAL';components.push(component('RELATIVE_STRENGTH',`Relative strength vs ${benchmark||'benchmark'}`,'RELATIVE_STRENGTH',relative,relRating,relative==null?'Benchmark evidence unavailable.':`${rnd(relative,2)} pts vs ${benchmark}.`));
 
   const eligible=components.filter(x=>x.value!=null),sum=eligible.reduce((a,x)=>a+points(x.rating),0),score=eligible.length?Math.round(sum/eligible.length*100):0;const counts={buy:eligible.filter(x=>x.rating==='BUY').length,neutral:eligible.filter(x=>x.rating==='NEUTRAL').length,sell:eligible.filter(x=>x.rating==='SELL').length};
   const ma=eligible.filter(x=>x.family==='MOVING_AVERAGE'),osc=eligible.filter(x=>x.family==='OSCILLATOR'),part=eligible.filter(x=>x.family==='PARTICIPATION');const fam=(x:IndicatorComponent[])=>clamp(50+(x.length?x.reduce((a,v)=>a+points(v.rating),0)/x.length*45:0),5,95);
-  const atrPct=price?atr/price*100:0,rv=computeRealizedVol(closes,annual(timeframe)),volRegime=atrPct>4?'HIGH':atrPct<1?'LOW':'NORMAL';
-  return{timeframe,asOf:String(rows.at(-1)!.datetime),price:rnd(price),rating:ratingFromScore(score),score,counts,components,trend:{score:Math.round(fam(ma)),label:label(fam(ma))},momentum:{score:Math.round(fam(osc)),label:label(fam(osc))},participation:{score:Math.round(fam(part)),label:label(fam(part))},relativeStrength:{benchmark,score:Math.round(clamp(50+(relative??0)*4,5,95)),returnPct:ret==null?null:rnd(ret),benchmarkReturnPct:benchRet==null?null:rnd(benchRet),relativePct:relative==null?null:rnd(relative)},volatility:{atr:rnd(atr),atrPct:rnd(atrPct),realizedVolPct:rv==null?null:rnd(rv),regime:volRegime},sourceBarCount:rows.length,confirmed:true};
+  const atrPct=price?atr/price*100:0,rv=computeRealizedVol(closes,options.assetType==='crypto'?(timeframe==='15M'?96*365:timeframe==='1H'?24*365:timeframe==='4H'?6*365:timeframe==='1W'?52:365):annual(timeframe)),volRegime=atrPct>4?'HIGH':atrPct<1?'LOW':'NORMAL';
+  return{timeframe,asOf:String(rows.at(-1)!.datetime),price:rnd(price),rating:ratingFromScore(score),score,counts,components,trend:{score:Math.round(fam(ma)),label:label(fam(ma))},momentum:{score:Math.round(fam(osc)),label:label(fam(osc))},participation:{score:Math.round(fam(part)),label:volumeAvailable?label(fam(part)):'Unavailable',available:volumeAvailable},relativeStrength:{benchmark,available:benchmarkAvailable,score:Math.round(clamp(50+(relative??0)*4,5,95)),returnPct:ret==null?null:rnd(ret),benchmarkReturnPct:benchRet==null?null:rnd(benchRet),relativePct:relative==null?null:rnd(relative)},volatility:{atr:rnd(atr),atrPct:rnd(atrPct),realizedVolPct:rv==null?null:rnd(rv),regime:volRegime},sourceBarCount:rows.length,confirmed:true};
 }

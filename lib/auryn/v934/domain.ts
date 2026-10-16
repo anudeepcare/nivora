@@ -9,8 +9,8 @@ export type IndicatorComponent={
 export type TimeframeTechnicalState={
   timeframe:AurynTimeframe;asOf:string;price:number;rating:TechnicalRating;score:number;
   counts:{buy:number;neutral:number;sell:number};components:IndicatorComponent[];
-  trend:{score:number;label:string};momentum:{score:number;label:string};participation:{score:number;label:string};
-  relativeStrength:{benchmark:string|null;score:number;returnPct:number|null;benchmarkReturnPct:number|null;relativePct:number|null};
+  trend:{score:number;label:string};momentum:{score:number;label:string};participation:{score:number;label:string;available?:boolean};
+  relativeStrength:{available?:boolean;benchmark:string|null;score:number;returnPct:number|null;benchmarkReturnPct:number|null;relativePct:number|null};
   volatility:{atr:number;atrPct:number;realizedVolPct:number|null;regime:'LOW'|'NORMAL'|'HIGH'};
   sourceBarCount:number;confirmed:true;
 };

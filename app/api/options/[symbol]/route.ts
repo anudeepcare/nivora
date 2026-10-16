@@ -1,3 +1,4 @@
+import {providerNumber,optionQuoteEligible} from '@/lib/auryn/workspace/recovery';
 import {NextResponse} from "next/server";
 import {sharedJson,nowIso} from "@/lib/shared-cache";
 
@@ -8,7 +9,7 @@ type Contract={
   underlyingPrice:number|null; expiration:number|null; updated:number|null;
 };
 
-const num=(x:any)=>{const n=Number(x);return Number.isFinite(n)?n:null};
+const num=providerNumber;
 const arr=(x:any)=>Array.isArray(x)?x:[];
 const fmtDate=(unix:number|null)=>unix?new Date(unix*1000).toISOString():null;
 
@@ -81,7 +82,7 @@ function candidate(x:Contract,spot:number,style:"conservative"|"balanced"|"aggre
 function rankedSet(rows:Contract[],spot:number,side:"call"|"put",style:"conservative"|"balanced"|"aggressive"|"leaps"){
   const min=style==="leaps"?250:style==="aggressive"?14:30;
   const max=style==="leaps"?900:style==="aggressive"?75:180;
-  return rows.filter(x=>x.side===side&&(dte(x.expiration)??-1)>=min&&(dte(x.expiration)??9999)<=max&&x.mid!=null&&x.mid>0)
+  return rows.filter(x=>optionQuoteEligible(x)&&x.side===side&&(dte(x.expiration)??-1)>=min&&(dte(x.expiration)??9999)<=max&&x.mid!=null&&x.mid>0)
     .map(x=>candidate(x,spot,style))
     .sort((a,b)=>b.score-a.score).slice(0,3);
 }
@@ -111,7 +112,7 @@ export async function GET(req:Request,{params}:{params:Promise<{symbol:string}>}
     }
     if(!selectedExpiration)return NextResponse.json({enabled:true,source:"MarketData.app",status:"no_expirations",expirations:[]});
     const url=`https://api.marketdata.app/v1/options/chain/${encodeURIComponent(symbol)}/?expiration=${encodeURIComponent(selectedExpiration)}&minOpenInterest=1`;
-    const j=await sharedJson(url,["marketdata","options-chain",symbol,selectedExpiration],21600,5000,headers);
+    const j=await sharedJson(url,["marketdata","options-chain",symbol,selectedExpiration],300,5000,headers);
     if(j?.s==="error")throw new Error(j.errmsg||"Options provider error");
     const rows=decode(j);
     if(!rows.length)return NextResponse.json({enabled:true,source:"MarketData.app",status:"no_data",contracts:0,freshness:{checkedAt:nowIso()}});
@@ -145,7 +146,8 @@ export async function GET(req:Request,{params}:{params:Promise<{symbol:string}>}
     }
     const expectedMovePct=atm&&spot?((Number(atm.callMid)+Number(atm.putMid))/spot)*100:null;
     const atmIV=atm?.ivs?.length?atm.ivs.reduce((a:number,b:number)=>a+b,0)/atm.ivs.length:null;
-    const maxUpdated=Math.max(...rows.map(x=>x.updated||0));
+    const datedRows=rows.map(x=>x.updated).filter((x):x is number=>x!=null&&x>0);
+    const maxUpdated=datedRows.length?Math.min(...datedRows):0;
     const expirations=[...new Set(rows.map(x=>x.expiration).filter(Boolean))].sort((a:any,b:any)=>a-b);
     const topNodes=levels.sort((a,b)=>b.gammaWeight-a.gammaWeight).slice(0,5).map(x=>({
       strike:x.strike,callOI:x.callOI,putOI:x.putOI,gammaConcentration:Number(x.gammaWeight.toFixed(4))
@@ -169,7 +171,7 @@ export async function GET(req:Request,{params}:{params:Promise<{symbol:string}>}
       }
     };
     return NextResponse.json({
-      enabled:true,source:"MarketData.app",dataMode:"24h delayed on free/trial entitlement",
+      enabled:true,source:"MarketData.app",dataMode:"Provider snapshot · see quote timestamps",
       contracts:rows.length,underlyingPrice:spot,
       expirations:expirationDates.map((date:string)=>({date,dte:dteFor(date)})),
       selectedExpiration,
@@ -185,8 +187,8 @@ export async function GET(req:Request,{params}:{params:Promise<{symbol:string}>}
       position,topNodes,contractSetups,
       rankingNote:"Contract scores prioritize liquidity, spread quality, delta fit, time-to-expiration and moneyness, with theta/IV penalties. They rank candidates; they are not an instruction to trade.",
       note:"Gamma is derived from listed option Greeks and open interest. AURYN does not know dealer inventory, so these are positioning proxies—not guaranteed support/resistance.",
-      freshness:{checkedAt:nowIso(),cacheSeconds:21600}
-    },{headers:{"Cache-Control":"public, s-maxage=21600, stale-while-revalidate=86400"}});
+      freshness:{checkedAt:nowIso(),cacheSeconds:300,oldestContractAt:maxUpdated?fmtDate(maxUpdated):null,undatedContracts:rows.length-datedRows.length,rankingMaxAgeSeconds:3600}
+    },{headers:{"Cache-Control":"public, s-maxage=60, stale-while-revalidate=60"}});
   }catch(e:any){
     return NextResponse.json({enabled:false,source:"MarketData.app",reason:e?.message||"Options data unavailable"},{status:200});
   }

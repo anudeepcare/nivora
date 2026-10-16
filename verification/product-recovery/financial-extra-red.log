@@ -1,0 +1,59 @@
+✔ financial trends derive cash flow only from compatible reporting periods (7.019836ms)
+✔ missing or mismatched capex does not become free cash flow (0.152525ms)
+✔ available periods are retained when revenue is missing and zero remains a measured value (0.162229ms)
+✖ a missing annual period cannot be presented as year-over-year growth (1.05207ms)
+✖ cash flow from separate restatement filings is not combined without reconciliation (0.253784ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 3
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 325.650765
+
+✖ failing tests:
+
+test at tests/product-recovery-financials.test.mjs:8:1
+✖ a missing annual period cannot be presented as year-over-year growth (1.05207ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 39.99999999999999
+  - null
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/tests/product-recovery-financials.test.mjs:8:157)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 39.99999999999999,
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/product-recovery-financials.test.mjs:9:1
+✖ cash flow from separate restatement filings is not combined without reconciliation (0.253784ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  30 !== null
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/tests/product-recovery-financials.test.mjs:9:271)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 30,
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

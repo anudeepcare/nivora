@@ -19,8 +19,9 @@ export function analyzeTechnicalPatterns(bars:Bar[],technical:TechnicalSnapshot|
   if(last2.length===2){
     const [a,b]=last2; const sep=b.i-a.i; const diff=Math.abs(b.p-a.p)/Math.max(a.p,b.p);
     if(sep>=5&&sep<=35&&diff<=.06){
+      const neckline=Math.max(...bars.slice(a.i,b.i+1).map(x=>x.high));
       const score=clamp(70+(1-diff/.06)*18+(technical.scores.momentum-50)*.15);
-      out.push({type:'DOUBLE_BOTTOM',state:px>Math.max(a.p,b.p)*1.08?'CONFIRMED':'FORMING',confidence:conf(score),score:Math.round(score),summary:'Two significant lows formed in the same structural zone; confirmation requires reclaiming intervening resistance.',trigger:technical.levels.resistance,invalidation:Math.min(a.p,b.p),target:technical.levels.breakout,supportingMetrics:['structure','momentum','volumeRatio20']});
+      out.push({type:'DOUBLE_BOTTOM',state:px>neckline?'CONFIRMED':'FORMING',confidence:conf(score),score:Math.round(score),summary:'Two significant lows formed in the same structural zone; confirmation requires reclaiming intervening resistance.',trigger:neckline,invalidation:Math.min(a.p,b.p),target:neckline+(neckline-Math.min(a.p,b.p)),supportingMetrics:['structure','momentum','volumeRatio20']});
     }
     if(b.p>a.p*1.025){
       const score=clamp(58+(technical.scores.momentum-50)*.25+(technical.scores.flow-50)*.15);
@@ -34,9 +35,10 @@ export function analyzeTechnicalPatterns(bars:Bar[],technical:TechnicalSnapshot|
       out.push({type:'BASE_BUILDING',state:px>=technical.levels.resistance*.99?'WATCH':'FORMING',confidence:conf(score),score:Math.round(score),summary:'Price is building a constructive base with improving swing structure; breakout quality still depends on participation.',trigger:technical.levels.resistance,invalidation:technical.levels.majorSupport,target:technical.levels.breakout,supportingMetrics:['structure','participation','resistance']});
     }
   }
-  if(px>technical.levels.resistance&&technical.indicators.volumeRatio20>=1.2){
+  const priorResistance=Math.max(...bars.slice(-21,-1).map(x=>x.high));
+  if(px>priorResistance&&technical.indicators.volumeRatio20!=null&&technical.indicators.volumeRatio20>=1.2){
     const score=clamp(60+technical.scores.flow*.25+technical.scores.momentum*.2-25);
-    out.push({type:'BREAKOUT_CONFIRMED',state:'CONFIRMED',confidence:conf(score),score:Math.round(score),summary:'Price is above structural resistance with above-normal participation.',trigger:technical.levels.resistance,invalidation:technical.levels.support,target:technical.levels.breakout,supportingMetrics:['volumeRatio20','momentum','resistance']});
+    out.push({type:'BREAKOUT_CONFIRMED',state:'CONFIRMED',confidence:conf(score),score:Math.round(score),summary:'Price is above structural resistance with above-normal participation.',trigger:priorResistance,invalidation:technical.levels.support,target:technical.levels.breakout,supportingMetrics:['volumeRatio20','momentum','resistance']});
   }else if(px>=technical.levels.resistance*.94&&technical.scores.momentum>=60){
     const score=clamp(52+technical.scores.momentum*.25+technical.scores.flow*.15-20);
     out.push({type:'BREAKOUT_READY',state:'WATCH',confidence:conf(score),score:Math.round(score),summary:'Momentum is constructive near resistance, but price has not yet produced a confirmed breakout.',trigger:technical.levels.resistance,invalidation:technical.levels.support,target:technical.levels.breakout,supportingMetrics:['momentum','participation','resistance']});

@@ -19,6 +19,6 @@ export function applyAurynAppearance(next:Partial<Preferences>){
  window.dispatchEvent(new CustomEvent('auryn-appearance',{detail:value}));
 }
 export default function ThemeProvider({children}:{children:React.ReactNode}){
- useEffect(()=>{const sync=()=>applyAurynAppearance(readAurynAppearance());sync();const media=window.matchMedia('(prefers-color-scheme: dark)');media.addEventListener('change',sync);window.addEventListener('storage',sync);return()=>{media.removeEventListener('change',sync);window.removeEventListener('storage',sync)}},[]);
+ useEffect(()=>{const sync=()=>applyAurynAppearance(readAurynAppearance());sync();const media=window.matchMedia('(prefers-color-scheme: dark)');media.addEventListener('change',sync);const storage=(event:StorageEvent)=>{if(event.key&&Object.values(keys).includes(event.key))sync();};window.addEventListener('storage',storage);return()=>{media.removeEventListener('change',sync);window.removeEventListener('storage',storage)}},[]);
  return <>{children}</>;
 }

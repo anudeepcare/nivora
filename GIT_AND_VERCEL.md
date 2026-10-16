@@ -20,35 +20,45 @@ npm audit --omit=dev
 
 `verify:release` runs the complete current acceptance manifest and production build. `test:historical:all` also exists and reports incompatible historical contracts; its baseline and new-failure investigation are included, not silently ignored. Do not deploy the fixture public configuration used in screenshots.
 
-## 3. Commit and push
+## 3. Commit and push without the earlier branch error
 
-These commands assume your intended production branch is `main`. Confirm the branch with `git branch --show-current`; switch to main before copying source if necessary. Do not use force-push.
+Your earlier terminal was on `restore-auryn`, while `git push origin main` tried to push a different local branch. Run these from the existing checkout **after copying the ZIP source and preserving unrelated changes**. This creates a review branch from your current work; it does not overwrite remote main.
 
 ```bash
 git status --short
+git fetch origin
+git switch -c auryn-product-recovery
 git add -A
 git add -f .github/workflows/auryn-v996-validation-queue.yml .github/workflows/nivora-calibration-mature.yml
 git diff --cached --stat
-git commit -m "Upgrade AURYN evidence, accumulation planning and paper safeguards"
-git push origin main
+git commit -m "Recover AURYN research UX, data integrity and accumulation planning"
+git rebase origin/main
+npm run verify:release
+git push -u origin HEAD
 ```
 
-Verify the pushed commit:
+If that branch already exists, use `git switch auryn-product-recovery`. If Git says there is nothing to commit, continue with fetch/rebase/verification. If rebase reports a conflict, resolve the named files, `git add` those files and `git rebase --continue`; use `git rebase --abort` to return to the pre-rebase state if needed. Do not choose all local or all remote files blindly. Do not force-push.
+
+Open a pull request from `auryn-product-recovery` into `main`, review it, then merge. Vercel's Git integration deploys the merged main commit. If you intentionally want to update main directly after successful rebase and verification, the command is `git push origin HEAD:main`; a rejection means the remote moved, so fetch/rebase/test again.
 
 ```bash
 git fetch origin
 git log -1 --oneline
 git rev-parse HEAD
-git rev-parse origin/main
+git rev-parse origin/auryn-product-recovery
 ```
 
-The two hashes should match. Running `npm` commands alone does not update GitHub. An extracted ZIP is not a Git checkout; use your existing clone, or first clone `https://github.com/anudeepcare/nivora.git` into a new directory and copy the package there.
+After the branch push, the last two hashes should match. After a PR merge, compare Vercel's deployed commit to `origin/main` (a merge/squash may have a different hash). Running npm commands does not update GitHub. An extracted ZIP is not a Git checkout: keep your existing `.git`, or clone the repository first and overlay `AURYN/` contents without nesting them.
 
-## 4. Apply the three new database migrations
+## 4. Apply the database migration status
 
-Use the existing Supabase project. Back up/review the database and its migration history first; this build has not changed the live database. Do not re-run the entire legacy schema on an established database.
+Use the existing Supabase project `culqkfmyqfpcuklonnog`. Review its migration history first; do not re-run the entire legacy schema.
 
-Apply these **new files in order** using the Supabase SQL editor, or your established Supabase CLI migration workflow after reviewing `supabase migration list` and `supabase db push --dry-run`:
+The research-workspace and company-source-review migrations were applied during this work and their tables have RLS enabled. The connected migration history records versions `20261016195707` and `20261016195621` respectively; local source filenames retain their original timestamps. Reconcile that mapping in your normal migration workflow before a broad CLI push.
+
+The **paper-safety migration remains required**. An attempt returned connector error `Invalid or expired requestState`; a subsequent read confirmed its two new tables are absent. Its prerequisites are present. Apply that file using the SQL editor or your established migration workflow; it starts paper controls paused.
+
+For a new environment, apply these **new files in order** using the Supabase SQL editor, or your established Supabase CLI migration workflow after reviewing `supabase migration list` and `supabase db push --dry-run`:
 
 1. `supabase/migrations/20261016155025_auryn_paper_execution_safety.sql`
 2. `supabase/migrations/20261016155712_auryn_research_workspace.sql`

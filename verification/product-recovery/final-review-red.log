@@ -1,0 +1,139 @@
+✔ optional research storage failure preserves existing watchlist and holdings (2.068091ms)
+✔ discovery selects latest security evidence and excludes stale snapshots (0.582016ms)
+✔ options numeric conversion preserves missing values and rejects booleans (0.194906ms)
+✔ options ranking needs a dated two-sided liquid quote and a measured delta (0.345508ms)
+✖ independent ownership feeds never fabricate zero missing aggregates (14.251475ms)
+✔ absent benchmark produces no relative-strength claim or numeric relative return (3.339502ms)
+✔ benchmark must cover the same comparison dates (1.146857ms)
+✔ zero-volume history does not manufacture volume evidence (7.849825ms)
+✔ unchanged prices are neutral rather than extreme overbought RSI and MFI (1.109282ms)
+✔ positive money flow with no negative flow reaches 100 (0.461629ms)
+✔ short histories do not claim a 52-week observation window (0.24528ms)
+✔ 52-week window and annualization account for crypto calendar (0.986071ms)
+✔ current Ichimoku cloud requires displaced history (0.854667ms)
+✔ breakout confirmation evaluates a previously established level (0.93163ms)
+✔ invalid or unordered bars cannot generate an apparently valid technical assessment (0.580584ms)
+✔ context-only volatility and oversold studies are not independent positive or negative votes (7.14606ms)
+✖ canonical multi-timeframe path requires aligned benchmark dates and measured volume (2.933704ms)
+✖ canonical multi-timeframe RSI handles unchanged prices neutrally (1.086458ms)
+✖ API-shaped technical coverage does not restore a synthetic participation score (0.703044ms)
+✖ anchored VWAP and volume profile require volume across their own entire windows (1.063184ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 15
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 526.833796
+
+✖ failing tests:
+
+test at tests/product-recovery-data.test.mjs:30:1
+✖ independent ownership feeds never fabricate zero missing aggregates (14.251475ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/tests/product-recovery-data.test.mjs:30:143)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/product-recovery-technicals.test.mjs:54:1
+✖ canonical multi-timeframe path requires aligned benchmark dates and measured volume (2.933704ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  11.83 !== null
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/tests/product-recovery-technicals.test.mjs:54:289)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 11.83,
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/product-recovery-technicals.test.mjs:55:1
+✖ canonical multi-timeframe RSI handles unchanged prices neutrally (1.086458ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  100 !== 50
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/tests/product-recovery-technicals.test.mjs:55:155)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 100,
+    expected: 50,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/product-recovery-technicals.test.mjs:56:1
+✖ API-shaped technical coverage does not restore a synthetic participation score (0.703044ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  50 !== null
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/tests/product-recovery-technicals.test.mjs:56:307)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 50,
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/product-recovery-technicals.test.mjs:57:1
+✖ anchored VWAP and volume profile require volume across their own entire windows (1.063184ms)
+  AssertionError [ERR_ASSERTION]: anchoredVwapDistance
+  + actual - expected
+  
+  + 5.292479108635106
+  - null
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/tests/product-recovery-technicals.test.mjs:57:236)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 5.292479108635106,
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

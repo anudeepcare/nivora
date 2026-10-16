@@ -4,3 +4,4 @@
 .paperLink{display:inline-block;min-height:44px;padding:11px 15px;border:1px solid rgba(78,125,202,.35);border-radius:10px;color:inherit;text-decoration:none;font-weight:700;background:rgba(74,123,206,.10)}.paperLink:focus-visible{outline:3px solid #4c8df6;outline-offset:3px}
 
 @media(max-width:767px){.workbench input,.workbench select,.workbench textarea{font-size:16px}}
+.policyMode{padding:16px 18px;border:1px solid var(--border);border-radius:16px;background:var(--surface);margin:14px 0}.policyMode p{font-size:13px;color:var(--muted);line-height:1.6;margin:8px 0 0}.heading h2{font-size:25px;letter-spacing:-.7px}.grid{gap:18px}.workbench{padding:4px}.details{border-radius:16px}.workbench select:disabled{opacity:.7}

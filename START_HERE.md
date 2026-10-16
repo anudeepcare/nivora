@@ -1,14 +1,12 @@
-# AURYN — October 16 intelligence upgrade
+# AURYN — product recovery source
 
-This is the complete project source, based on GitHub commit `bbdce50b92384acefb3db79978423da92a75e1ea`. It includes source, lockfile, tests, migrations, original workflows, approved design boards, current verification reports and deployment instructions. It is not a claim that all 104 requirements or deployed production acceptance are complete.
+This ZIP contains the complete application source, lockfile, tests, database migrations, workflows, approved design references and verification evidence. It includes the earlier intelligence upgrade and the latest recovery of research UX, financial metrics, chart state, Today/Discover and contribution planning.
 
-1. Read `RELEASE_REPORT.md` for current verification and the remaining implementation/live-service gaps.
-2. Read `GIT_AND_VERCEL.md` before copying into your existing Git checkout or deploying. Keep your `.git` history and private environment files. **Three new migrations are required.**
-3. `verification/next-build/REQUIREMENTS_STATUS.md` and `requirements.json` account for every approved requirement, with source/test evidence and boundaries. The approved scope itself is in `docs/superpowers/specs/2026-10-16-approved-build.md`.
-4. `docs/intelligence/ARCHITECTURE.md` explains the new data, decision, workspace and paper paths; `POLICY_AND_EVIDENCE.md` explains research limits.
-5. `verification/next-build/visual-review/index.html` opens selected actual current app captures and the approved reference boards. QA data is synthetic and is not wired into normal production providers.
-6. `SOURCE_MANIFEST.json` hashes every delivered file except itself. `scripts/package_release.py` verifies all archive bytes and complete tracked application/workflow/migration preservation.
+1. Read `RELEASE_REPORT.md` for tested behavior and explicit remaining gaps.
+2. Follow `GIT_AND_VERCEL.md`. Copy the contents of `AURYN/` into your existing checkout; preserve `.git` and private environment files. The instructions address your `restore-auryn` / non-fast-forward push problem.
+3. Open `verification/product-recovery/visual-review/index.html` for current app captures and approved reference boards. Browser account/quote/decision data is synthetic; four company financial captures use saved real production responses.
+4. Read `verification/product-recovery/connections.json` for read-only connection checks. Stock/crypto prices, Finnhub profile/logo, and an active Alpaca Paper account responded. Supabase research tables exist with RLS. Paper safety schema, owner authorization and deployed execution are not yet accepted.
+5. `verification/next-build/requirements.json` retains the 104-item approved scope. `verification/next-build/REMAINING_GAPS.md` explains incomplete forward evidence, portfolio risk metadata and account benchmark histories. Missing source evidence is never replaced with invented metrics.
+6. `SOURCE_MANIFEST.json` hashes every delivered file except itself. The packager verifies archive CRC, hashes and tracked source preservation.
 
-`docs/handoff/START_HERE_AURYN_WORK_INSTRUCTIONS.md` and older release notes are retained as historical project context. Their dates/counts/old no-migration claims do not certify this update. The seven October 16 approved boards and the current scope/report are authoritative.
-
-No Git push, Vercel deployment, live database migration or paper/live order was made by this build session. `npm run verify:release` checks the project; it does not update GitHub. Follow the explicit commit/push commands in `GIT_AND_VERCEL.md`.
+The latest source has not been pushed or deployed. No orders were submitted and no account roles were changed. Two research migrations were applied; the paper migration remains pending. Old release reports are retained as historical context, not current certification. Start with this file and the current release report.

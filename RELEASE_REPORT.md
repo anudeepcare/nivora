@@ -1,51 +1,57 @@
-# AURYN intelligence upgrade — release report
+# AURYN product recovery — release report
 
-**Complete source package; not a completed production acceptance or all-requirements certificate.** Based on `bbdce50b92384acefb3db79978423da92a75e1ea` on `codex/auryn-intelligence-upgrade`. Verification date: October 16, 2026. No commit/push/deployment/live database change/order occurred in this session.
+Complete source package, including the earlier intelligence upgrade and the latest approved recovery. **The local software checks pass; some approved capabilities and production acceptance remain incomplete.** This is not a certificate that every metric, entitlement or broker flow is available.
 
-## Delivered implementation
+Baseline: `bbdce50b92384acefb3db79978423da92a75e1ea`, branch `codex/auryn-intelligence-upgrade`. Verification: October 16, 2026. No remote push, Vercel deployment, account-role change or order submission occurred. Two research database migrations were applied; the paper-safety migration remains pending after a connector request-state error.
 
-- Shared canonical decision adapter with independent business, valuation, timing, evidence and execution dimensions. Chart weakness alone no longer means a broken business thesis; missing inputs abstain.
-- SEC period/filing/restatement normalization, source-linked financial assessment, mature-company bear/base/bull valuation, independent earnings cross-check, sensitivity and implied expectations, and a trusted append-only source-review workflow.
-- Fibonacci/weekly studies, custom levels, reproducible anchors, completed-bar timing and first-known setup markers, with range/scroll controls.
-- Experimental capped accumulation policies, portfolio purchase previews, immutable decision/review journal, equal-budget replay/walk-forward evaluator, and the latest screenshot-inspired summary/history/comparison graphics.
-- Personalized Today/discovery, watch reasons, saved views, peer evidence comparison, deduplicated in-app alerts and guided evidence Q&A.
-- Paper-operation authorization, paused control state, database run leases, idempotent intentions, cash/exposure constraints, audited submission and broker reconciliation paths.
-- Responsive premium surfaces, light/dark tokens, metric help and corrected mobile touch targets. Original source/workflows and all existing integrations retained.
+## What changed
 
-## Important gaps
+- Cleaner mobile-first research: concise takeaway and business/valuation/timing lenses, a persistent interactive chart, financial trend graphics, compact technical summaries and optional evidence details. Mobile navigation has four global destinations; further research tabs live in More. Light/dark styling and logo fallbacks are retained.
+- Today shows saved holdings/watchlist quotes, recorded research changes and dated events. Discover reads the current canonical snapshot store instead of relying on an empty legacy table. Available metrics and observation dates are displayed; unsupported/stale records are not promoted to buy calls.
+- Shared canonical financial and planning evidence: business and long-term thesis remain separate from technical entry timing. Reported financial charts use compatible periods, currencies and filings. Conflicting/restated values remain flagged. Specialist valuation methods without operating evidence remain unavailable.
+- Accumulation proposals use the same stock/portfolio evidence and recorded cash/exposure. Automatic 0/0.5/1/2x proposals and optional manual multipliers remain subject to cash, concentration, budget, funding/thesis and pause gates. Journal originals are immutable. These are research cash-allocation previews, not leverage, orders or validated return promises.
+- Technical integrity fixes cover missing volume/benchmarks, date alignment, flat RSI/MFI, crypto annualization, displaced Ichimoku history, full-window VWAP/profile evidence, prior-level breakout confirmation and missing-data weights through the canonical path.
+- Charts preserve canvas, zoom and draft planning state through range/section changes; wheel scrolling moves the page. Metric help, URL section restoration, saved research and custom Fibonacci controls are verified.
+- Ownership, news, options and optional storage failures retain independent availability states. Missing values are not invented zeros or confident scores. Existing Supabase, Twelve Data, Finnhub, SEC and Alpaca Paper paths remain in the source.
 
-The per-item ledger accounts for all 104 approved requirements. **B02, H02 and H04 remain partial:** researched 6–12-month production evidence; fully connected sector/theme/shared-risk and correlation metadata; broader benchmark/account-performance histories. See `verification/next-build/REMAINING_GAPS.md`. They are not described as finished.
-
-Actual owner authorization, production secrets/configuration, three live migrations, vendor entitlements and a controlled Alpaca Paper lifecycle remain unverified. Read-only inspection does not unlock or verify those operations. Source-reviewed IREN/ASTS operating evidence is not populated, specialized numerical valuation methods remain unsupported, and no real unseen-period investment-performance study was completed.
-
-## Current software verification
+## Verification
 
 | Check | Result | Evidence |
 |---|---|---|
-| Dependency installation | Completed; lockfile retained | `verification/next-build/install.log`, patched-install log |
-| Current acceptance + production build | **907 passed, 0 failed, 0 skipped; build passed** | `verification/next-build/verify-release-final.log` |
-| TypeScript | Passed in the final Next.js production build | Same log |
-| Standalone lint | No lint script configured | `package.json`; not falsely reported as a separate lint pass |
-| Production dependency audit | **0 known vulnerabilities at check time** | `verification/next-build/dependency-audit-final.json` |
-| Historical inventory | **1,475 / 1,791 passed; 316 failed** | `historical-current.log`, `HISTORICAL_REVIEW.md`, comparison JSON |
-| Isolated PostgreSQL policies | Included in acceptance; no skips | Paper/workspace/source-review migration tests |
-| Responsive/browser | **661/661 fixture checks +27/27 anonymous local checks passed; zero runtime errors or unlabeled-control cases** | `verification/next-build/browser-release/report.json` |
-| Secret-pattern/source diff checks | No selected secret patterns; diff whitespace check passed | Package preflight; not a guarantee no possible sensitive string exists |
+| Current full release suite | **936 passed, 0 failed, 0 skipped** | `verification/product-recovery/verify-release-final.log` |
+| Production build / TypeScript | **Passed**; final CSS contrast correction rebuilt separately | Same log; `verification/product-recovery/build-final.log` |
+| Responsive browser | **112 passed, 0 failed, 0 client runtime errors** | `verification/next-build/recovery-browser-final/report.json` |
+| Browser scope | 320/390/1440px, light/dark; 7 routes and 10 research sections, 6 interaction flows, 4 production financial-response renders | Same report |
+| Final independent review | Five important findings fixed with regressions; no critical finding reported within scope | `verification/product-recovery/FINAL_REVIEW.md` |
+| Direct provider connections | Stock/crypto quote responses; Finnhub profile/logo; Alpaca Paper ACTIVE, unblocked, clock returned | `verification/product-recovery/connections.json` |
+| Supabase research storage | Workspace/source-review tables exist with RLS enabled | Deployment status below |
+| Historical inventory | Earlier 1,475/1,791 passed; 316 failed, separately investigated; not rerun or relabeled as current success | `verification/next-build/HISTORICAL_REVIEW.md` |
+| Production dependency audit | Earlier check found zero known production vulnerabilities; not a future guarantee | `verification/next-build/dependency-audit-final.json` |
+| Full-source archive | CRC, every manifest hash and tracked source preservation checked by packager | `SOURCE_MANIFEST.json` and package result |
 
-Runtime: Node 24.19.0, npm 11.9.0, Next.js 15.5.28, TypeScript from lockfile. PostCSS override 8.5.30. Build uses public-only synthetic Supabase configuration for local browser QA; `.next` is excluded, so Vercel must rebuild using the real deployment environment. No service-role/provider/broker credential is in the package.
+The final desktop wordmark contrast correction passed 40 additional browser checks with zero client runtime errors after its final production build. Its report is `verification/next-build/recovery-brand-final/report.json`. No standalone lint script is configured; the build/typecheck is not called a separate lint pass. Node 24.19.0 / Next.js 15.5.28 were used. No new paid provider was added.
 
-Commands actually run: `npm ci`, `npm run verify:release`, `npm run test:historical:all`, `npm audit --omit=dev --json`, `npx tsc --noEmit --incremental false`, `git diff --check`, and the localhost-only `scripts/verify-next-build-browser.mjs`. Separate intermediate red/green logs are retained as development evidence, not presented as final successes.
+Browser QA uses a production build with public-only synthetic Supabase settings and intercepted account/database/quote/decision/broker responses. Four MSFT/IREN/ASTS/APP financial-response renders use saved real public production responses, while their surrounding account/quotes/decisions remain fixtures. This tests rendering, not source accuracy or investment performance. `.next`, local secrets and installed dependencies are excluded; deployment must rebuild with the real environment.
 
-## Browser boundaries
+## Connections and deployment status
 
-Final browser reports: 661 fixture cases and 27 public/anonymous cases passed, zero failures, zero runtime errors, zero unlabeled-control cases, no unhandled fixture requests. The 44px target audit still records 200 route/tab observations with smaller desktop/tablet controls; it is an advisory count, not an accessibility certification. No small-target warnings remained in the tested mobile widths.
+| Connection | Confirmed | Still required |
+|---|---|---|
+| Twelve Data | Existing private credentials returned MSFT and BTC/USD quotes | Deployed environment parity, every symbol/endpoint entitlement and quota behavior |
+| Finnhub | Profile, company name and logo response | Ownership/options/estimate entitlements are independent; missing feeds remain unavailable |
+| SEC/company evidence | Real public production company responses retrieved for four companies | Source conflict review, company-specific operating/forward facts and supported valuations |
+| Supabase | Reachable; workspace and company-source-review migrations applied with RLS | Live owner-to-owner isolation acceptance, auth/email flow, paper migration |
+| Alpaca Paper | Account ACTIVE, trading/account not blocked; read-only clock responds | Trusted administrator setup, scheduler/config parity and controlled order/acknowledgment/fill/reconciliation acceptance |
+| Vercel | Existing production remains separate | Push/merge this source, rebuild with real configuration, verify deployed commit and flows |
 
-Production Chromium renders with synthetic intercepted account/database/market/broker data test the requested 320/375/390/430/768/1280/1440/1920 widths and both themes. The runner tests research tabs, holdings CRUD, search/keyboard/help, watch reasons, alert preferences/deduplication, profile/onboarding, comparisons/Ask/Today, accumulation caps/pause/journal/replay, chart controls and mocked paper confirmation. An additional anonymous local pass exercises real locally served public pages and unauthorized API denials.
+Research migration live versions are `20261016195707` and `20261016195621`, corresponding to the workspace and source-review source files. The paper migration attempt returned `Invalid or expired requestState`; a subsequent read confirmed `auryn_paper_control` and `auryn_manual_paper_orders` are absent. Apply `supabase/migrations/20261016155025_auryn_paper_execution_safety.sql`; it begins paused. Follow `GIT_AND_VERCEL.md` rather than rerunning the legacy schema. Credentials are not shipped in this ZIP.
 
-This is not live Supabase RLS, actual email delivery, a subscribed provider integration or a real broker lifecycle. Physical iPhones, Safari/Firefox, assistive technology and a human usability study were not tested. Approved boards are illustrative collages; no pixel-perfect claim is made. Curated current captures and reference comparisons are in `verification/next-build/visual-review/index.html`; bulk duplicate captures are excluded from the ZIP to keep it practical.
+## Explicit remaining scope
 
-## Delivery and deployment
+The approved 104-item ledger is preserved. B02 researched 6–12-month evidence, H02 complete sector/theme/correlation exposure metadata, and H04 complete transaction/benchmark account-performance history remain partial. Specialized infrastructure/space/pipeline valuation, cited moat/operating facts, and calibrated future-return probabilities are not manufactured from price or generic ratios. See `verification/next-build/REMAINING_GAPS.md`.
 
-Read `START_HERE.md`, then `GIT_AND_VERCEL.md`. The package includes the complete source and lockfile, all required workflows, all migrations, safe environment example, tests and reports. `SOURCE_MANIFEST.json` lists file hashes. The packager verifies ZIP CRC and every archived byte against source hashes and checks tracked application/workflow/migration preservation. Dependency directories, compiled caches, credentials and nested archives are excluded.
+No real Alpaca Paper order/fill lifecycle, production owner role, physical iPhone/Safari, screen-reader audit or independent unseen-period investment-performance study was verified. The older 661-fixture/27-anonymous results and historical reports are prior upgrade evidence; the current recovery report above supersedes their release claims. Approved boards are illustrative references, not exact pixel exports.
 
-A downloaded ZIP or a successful npm build does not update GitHub. Copy its `AURYN/` contents into the intended checkout, verify, review, commit and push following the provided commands. Keep paper paused until migrations, trusted owner mapping and live safety checks pass.
+## Delivery
+
+Start with `START_HERE.md`, then `GIT_AND_VERCEL.md`. The ZIP includes all source, the lockfile, workflows, migrations, executable tests, approved boards, current reports and curated visual comparisons. It is not just a patch or build output. Never overwrite your `.git` or private `.env.local` when copying it. The Git instructions address the earlier restore-branch/non-fast-forward issue without force-pushing.

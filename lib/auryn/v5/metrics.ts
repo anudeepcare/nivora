@@ -1,4 +1,5 @@
 import type {AurynV4CoreAnalysis,CanonicalFactorKey} from '../v4/domain';
+import {atr as wilderAtr} from '../../quant';
 import type {Bar,TechnicalSnapshot} from '../../nivora-technical-engine';
 import type {MetricDirection,MetricFamily,MetricRole,ProfessionalMetric} from './domain';
 
@@ -32,27 +33,28 @@ const calcAdvanced=(bars:Bar[])=>{
   const roc20=c.length>=21?(p/(c.at(-21)??p)-1)*100:null;
   const low14=Math.min(...l.slice(-14)),high14=Math.max(...h.slice(-14)); const stochasticK=high14>low14?((p-low14)/(high14-low14))*100:null;
   const tp20=tp.slice(-20),tpMean=avg(tp20),md=avg(tp20.map(x=>Math.abs(x-tpMean))),cci20=md?((tp.at(-1)!-tpMean)/(.015*md)):null;
-  let posMF=0,negMF=0;for(let i=Math.max(1,bars.length-14);i<bars.length;i++){const mf=tp[i]*v[i];if(tp[i]>=tp[i-1])posMF+=mf;else negMF+=mf;}const mfr=negMF===0?(posMF>0?100:1):posMF/negMF;const mfi14=100-(100/(1+mfr));
+  let posMF=0,negMF=0;for(let i=Math.max(1,bars.length-14);i<bars.length;i++){const mf=tp[i]*v[i];if(tp[i]>tp[i-1])posMF+=mf;else if(tp[i]<tp[i-1])negMF+=mf;}const volumeValid=bars.slice(-20).every(x=>Number.isFinite(x.volume)&&x.volume>=0)&&v20.some(x=>x>0);const mfi14=!volumeValid?null:negMF===0?(posMF>0?100:50):100-(100/(1+posMF/negMF));
   let mfv=0,vol=0;for(const b of last20){const range=Number(b.high)-Number(b.low);const mult=range?((Number(b.close)-Number(b.low))-(Number(b.high)-Number(b.close)))/range:0;mfv+=mult*Number(b.volume||0);vol+=Number(b.volume||0);}const cmf20=vol?mfv/vol:null;
-  let obv=0;const obvs:number[]=[0];for(let i=1;i<c.length;i++){obv+=c[i]>c[i-1]?v[i]:c[i]<c[i-1]?-v[i]:0;obvs.push(obv);}const obvN=Math.min(10,obvs.length-1);const obvSlope=obvN>0?(obvs.at(-1)!-obvs.at(-(obvN+1))!)/Math.max(1,avg(v.slice(-obvN))):null;
+  let obv=0;const obvs:number[]=[0];for(let i=1;i<c.length;i++){obv+=c[i]>c[i-1]?v[i]:c[i]<c[i-1]?-v[i]:0;obvs.push(obv);}const obvN=Math.min(10,obvs.length-1);const obvSlope=volumeValid&&obvN>0?(obvs.at(-1)!-obvs.at(-(obvN+1))!)/Math.max(1,avg(v.slice(-obvN))):null;
   const vwapDen=v20.reduce((a,b)=>a+b,0),vwap20=vwapDen?tp.slice(-20).reduce((sum,x,i)=>sum+x*v20[i],0)/vwapDen:null;const vwap20Distance=vwap20?((p/vwap20)-1)*100:null;
   const volumeDryUp=avg(v.slice(-20))?avg(v.slice(-5))/avg(v.slice(-20)):null;
-  const atr=bars.slice(-14).reduce((sum,b,i,arr)=>{const idx=bars.length-arr.length+i;const prev=idx>0?Number(bars[idx-1].close):Number(b.close);return sum+Math.max(Number(b.high)-Number(b.low),Math.abs(Number(b.high)-prev),Math.abs(Number(b.low)-prev));},0)/Math.min(14,bars.length);
-  const e20=ema(c.slice(-60),20),kUpper=e20!=null?e20+2*atr:null,kLower=e20!=null?e20-2*atr:null,keltnerPosition=kUpper!=null&&kLower!=null&&kUpper>kLower?((p-kLower)/(kUpper-kLower))*100:null;
+  const atr=wilderAtr(bars,14);
+  const e20=ema(c,20),kUpper=e20!=null?e20+2*atr:null,kLower=e20!=null?e20-2*atr:null,keltnerPosition=kUpper!=null&&kLower!=null&&kUpper>kLower?((p-kLower)/(kUpper-kLower))*100:null;
   const {adx,plusDI,minusDI}=calcAdx(bars,14),dmiSpread=plusDI!=null&&minusDI!=null?plusDI-minusDI:null;
-  const conv9=bars.length>=9?(Math.max(...h.slice(-9))+Math.min(...l.slice(-9)))/2:null;
-  const base26=bars.length>=26?(Math.max(...h.slice(-26))+Math.min(...l.slice(-26)))/2:null;
-  const spanB52=bars.length>=52?(Math.max(...h.slice(-52))+Math.min(...l.slice(-52)))/2:null;
+  const cloudH=h.slice(0,-26),cloudL=l.slice(0,-26);
+  const conv9=cloudH.length>=9?(Math.max(...cloudH.slice(-9))+Math.min(...cloudL.slice(-9)))/2:null;
+  const base26=cloudH.length>=26?(Math.max(...cloudH.slice(-26))+Math.min(...cloudL.slice(-26)))/2:null;
+  const spanB52=cloudH.length>=52?(Math.max(...cloudH.slice(-52))+Math.min(...cloudL.slice(-52)))/2:null;
   const spanA=conv9!=null&&base26!=null?(conv9+base26)/2:null;
   const cloudTop=spanA!=null&&spanB52!=null?Math.max(spanA,spanB52):null,cloudBottom=spanA!=null&&spanB52!=null?Math.min(spanA,spanB52):null;
   const ichimokuPosition=cloudTop==null||cloudBottom==null?null:p>cloudTop?1:p<cloudBottom?-1:0;
   const last60=bars.slice(-60); let anchorIdx=0;for(let i=1;i<last60.length;i++)if(Number(last60[i].low)<Number(last60[anchorIdx].low))anchorIdx=i;
-  const anchored=last60.slice(anchorIdx);const avDen=anchored.reduce((sum,b)=>sum+Number(b.volume||0),0);const avwap=avDen?anchored.reduce((sum,b)=>sum+((Number(b.high)+Number(b.low)+Number(b.close))/3)*Number(b.volume||0),0)/avDen:null;const anchoredVwapDistance=avwap?((p/avwap)-1)*100:null;
+  const anchored=last60.slice(anchorIdx);const anchoredValid=anchored.every(x=>Number.isFinite(x.volume)&&x.volume>=0)&&anchored.some(x=>x.volume>0);const avDen=anchored.reduce((sum,b)=>sum+Number(b.volume||0),0);const avwap=avDen?anchored.reduce((sum,b)=>sum+((Number(b.high)+Number(b.low)+Number(b.close))/3)*Number(b.volume||0),0)/avDen:null;const anchoredVwapDistance=avwap?((p/avwap)-1)*100:null;
   const profile=bars.slice(-60);const pLo=Math.min(...profile.map(b=>Number(b.low))),pHi=Math.max(...profile.map(b=>Number(b.high)));let profilePoc:number|null=null;
-  if(pHi>pLo){const bins=20,vols=Array(bins).fill(0);for(const b of profile){const typical=(Number(b.high)+Number(b.low)+Number(b.close))/3;const idx=Math.min(bins-1,Math.max(0,Math.floor((typical-pLo)/(pHi-pLo)*bins)));vols[idx]+=Number(b.volume||0);}const idx=vols.indexOf(Math.max(...vols));profilePoc=pLo+(idx+.5)*(pHi-pLo)/bins;}
+  if(profile.every(x=>Number.isFinite(x.volume)&&x.volume>=0)&&pHi>pLo&&profile.some(b=>b.volume>0)){const bins=20,vols=Array(bins).fill(0);for(const b of profile){const typical=(Number(b.high)+Number(b.low)+Number(b.close))/3;const idx=Math.min(bins-1,Math.max(0,Math.floor((typical-pLo)/(pHi-pLo)*bins)));vols[idx]+=Number(b.volume||0);}const idx=vols.indexOf(Math.max(...vols));profilePoc=pLo+(idx+.5)*(pHi-pLo)/bins;}
   const volumeProfilePocDistance=profilePoc?((p/profilePoc)-1)*100:null;
   const bbUpper=mean20+2*sd20,bbLower=mean20-2*sd20;const squeezeState=kUpper!=null&&kLower!=null?(bbUpper<kUpper&&bbLower>kLower?1:0):null;
-  return{stochasticK,cci20,mfi14,cmf20,obvSlope,roc20,bollingerWidth,donchianPosition,vwap20Distance,volumeDryUp,keltnerPosition,adx,dmiSpread,ichimokuPosition,anchoredVwapDistance,volumeProfilePocDistance,squeezeState};
+  return{stochasticK,cci20,mfi14,cmf20:volumeValid?cmf20:null,obvSlope,roc20,bollingerWidth,donchianPosition,vwap20Distance:volumeValid?vwap20Distance:null,volumeDryUp:volumeValid?volumeDryUp:null,keltnerPosition,adx,dmiSpread,ichimokuPosition,anchoredVwapDistance:anchoredValid?anchoredVwapDistance:null,volumeProfilePocDistance,squeezeState};
 };
 const scoreState=(v:number,inverse=false):MetricDirection=>{
   const n=inverse?100-v:v;
@@ -71,9 +73,9 @@ const factorMap:Partial<Record<CanonicalFactorKey,{id:string;label:string;family
   MACRO_REGIME:{id:'macro',label:'Macro / regime',family:'MACRO',role:'CONTEXT'},
   RISK:{id:'riskPressure',label:'Risk pressure',family:'RISK',role:'RISK',inverse:true},
 };
-export function buildProfessionalMetrics({technical,v4,bars=[]}:{technical:TechnicalSnapshot|null|undefined;v4:AurynV4CoreAnalysis;bars?:Bar[]}):ProfessionalMetric[]{
+export function buildProfessionalMetrics({technical,v4,bars=[]}:{technical:(TechnicalSnapshot & {technicalCoverage?:TechnicalSnapshot["coverage"]})|null|undefined;v4:AurynV4CoreAnalysis;bars?:Bar[]}):ProfessionalMetric[]{
   const out:ProfessionalMetric[]=[];
-  const addNum=(id:string,label:string,family:MetricFamily,role:MetricRole,value:number|null,state:MetricDirection,interpretation:string,source:string,higherIsBetter:boolean|null=true,unit:string|null=null,timeframe:string|null=null)=>push(out,{id,label,family,role,value,unit,state,interpretation,available:value!=null,higherIsBetter,source,timeframe,decisionImpact:value==null?'UNAVAILABLE':state==='BEARISH'||state==='WEAK'||state==='HIGH'?'NEGATIVE':state==='BULLISH'||state==='STRONG'||state==='OVERSOLD'?'POSITIVE':'CONTEXT'});
+  const addNum=(id:string,label:string,family:MetricFamily,role:MetricRole,value:number|null,state:MetricDirection,interpretation:string,source:string,higherIsBetter:boolean|null=true,unit:string|null=null,timeframe:string|null=null)=>push(out,{id,label,family,role,value,unit,state,interpretation,available:value!=null,higherIsBetter,source,timeframe,decisionImpact:value==null?'UNAVAILABLE':role==='CONTEXT'||state==='OVERSOLD'||state==='OVERBOUGHT'?'CONTEXT':state==='BEARISH'||state==='WEAK'||state==='HIGH'?'NEGATIVE':state==='BULLISH'||state==='STRONG'?'POSITIVE':'CONTEXT'});
   if(technical){
     const i=technical.indicators,t=technical.technicalState,rsi=finite(i.rsi14)?i.rsi14:null;
     const rsiState:MetricDirection=rsi==null?'N/A':rsi>=70?'OVERBOUGHT':rsi<=30?'OVERSOLD':rsi>=55?'BULLISH':rsi<=45?'BEARISH':'NEUTRAL';
@@ -83,7 +85,7 @@ export function buildProfessionalMetrics({technical,v4,bars=[]}:{technical:Techn
     addNum('technicalStrength','Technical strength','TREND','TIMING',t.strength,scoreState(t.strength),'Composite technical state across trend, momentum, participation, structure, extension and volatility.','technical engine',true,'/100','Daily');
     addNum('trend','Trend strength','TREND','TIMING',t.trend,scoreState(t.trend),'Composite of moving-average structure, medium-term return and relative trend.','technical engine',true,'/100','Daily');
     addNum('entryQuality','Entry quality','STRUCTURE','TIMING',t.entryQuality,scoreState(t.entryQuality),'Rates current entry quality separately from long-term company quality.','technical engine',true,'/100','Daily');
-    addNum('participation','Participation','VOLUME_FLOW','TIMING',t.participation,scoreState(t.participation),'Volume and flow confirmation for the current move.','technical engine',true,'/100','Daily');
+    addNum('participation','Participation','VOLUME_FLOW','TIMING',(technical.coverage?.volume===false||technical.technicalCoverage?.volume===false)?null:t.participation,(technical.coverage?.volume===false||technical.technicalCoverage?.volume===false)?'N/A':scoreState(t.participation),'Volume and flow confirmation for the current move.','technical engine',true,'/100','Daily');
     addNum('volumeRatio20','Relative volume · 20D','VOLUME_FLOW','TIMING',finite(i.volumeRatio20)?i.volumeRatio20:null,finite(i.volumeRatio20)?(i.volumeRatio20>=1.35?'STRONG':i.volumeRatio20<.7?'WEAK':'NEUTRAL'):'N/A','Current volume relative to the 20-day average; stronger participation improves breakout quality.','verified bars',true,'x','Daily');
     addNum('atrPct','ATR · 14','VOLATILITY','RISK',finite(i.atrPct)?i.atrPct:null,finite(i.atrPct)?(i.atrPct>=7?'HIGH':i.atrPct<=2?'LOW':'NEUTRAL'):'N/A','Typical daily range as a percentage of price; higher ATR requires wider risk bands and smaller sizing.','verified bars',false,'%','Daily');
     addNum('realizedVol20','Realized volatility · 20D','VOLATILITY','RISK',finite(i.realizedVol20)?i.realizedVol20:null,finite(i.realizedVol20)?(i.realizedVol20>=70?'HIGH':i.realizedVol20<=25?'LOW':'NEUTRAL'):'N/A','Annualized recent realized volatility.','verified bars',false,'%','Daily');

@@ -1,7 +1,7 @@
 import {NextResponse} from "next/server";
 import {createClient} from "@supabase/supabase-js";
 import {sharedJson} from "@/lib/shared-cache";
-import {summarizeInsiderTransactions} from "@/lib/insider-transactions";
+import {summarizeInsiderTransactions,applyOwnershipAvailability} from "@/lib/insider-transactions";
 
 export const runtime="nodejs";
 
@@ -69,7 +69,7 @@ export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
     cachedSec(symbol),
     (async()=>{
       const token=process.env.FINNHUB_API_KEY;
-      if(!token)return {rows:[] as any[],insiders:[] as any[],source:null as string|null};
+      if(!token)return {rows:[] as any[],insiders:[] as any[],source:null as string|null,hasInsiderFeed:false};
       const [ownership,insider]=await Promise.allSettled([
         sharedJson(`https://finnhub.io/api/v1/stock/ownership?symbol=${encodeURIComponent(symbol)}&limit=60&token=${token}`,["finnhub","ownership",symbol],21600,4500),
         sharedJson(`https://finnhub.io/api/v1/stock/insider-transactions?symbol=${encodeURIComponent(symbol)}&from=${isoDaysAgo(180)}&to=${new Date().toISOString().slice(0,10)}&token=${token}`,["finnhub","insider",symbol],3600,4500)
@@ -79,7 +79,7 @@ export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
       return {
         rows:Array.isArray(own?.ownership)?own.ownership:Array.isArray(own?.data)?own.data:[],
         insiders:Array.isArray(ins?.data)?ins.data:[],
-        source:"Finnhub"
+        source:"Finnhub",hasInsiderFeed:insider.status==="fulfilled"&&Array.isArray(ins?.data)
       };
     })()
   ]);
@@ -133,7 +133,7 @@ export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
 
     const hasInstitutional=useProvider||Boolean(secCache);
     const source=useProvider?"Finnhub reported ownership":secCache?"SEC Form 13F quarterly cache":provider.source;
-    if(!hasInstitutional && insiders.length===0){
+    if(!hasInstitutional && !provider.hasInsiderFeed){
       return NextResponse.json({
         enabled:false,
         reason:"No verified institutional snapshot is cached yet for this symbol. Run the SEC 13F sync or connect a provider entitlement with ownership data.",
@@ -143,13 +143,13 @@ export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
     }
 
     return NextResponse.json({
-      enabled:hasInstitutional||insiders.length>0,
+      enabled:hasInstitutional||provider.hasInsiderFeed,
       hasInstitutional,
       source,
       delayed:true,
       asOf:useProvider?(rows[0]?.filingDate||rows[0]?.reportDate||rows[0]?.date||null):(secCache?.period_end||null),
       disclosure:"Institutional direction describes changes in reported holdings, not real-time buying or selling today. Form 13F is delayed filing evidence; AURYN keeps it separate from the daily accumulation proxy.",
-      institutional:{
+      ...applyOwnershipAvailability({
         label:direction.label,
         directionLabel:direction.directionLabel,
         reportingRows,
@@ -179,8 +179,7 @@ export async function GET(_:Request,{params}:{params:Promise<{symbol:string}>}){
         confidence:useProvider?"Provider reported":secCache?.match_confidence||"SEC issuer-name matched",
         addBreadthPct,trimBreadthPct,institutionalScore,
         top,biggestBuyers,biggestSellers,newPositions,exits
-      },
-      insiders:insiderSummary
+      },insiderSummary,hasInstitutional,provider.hasInsiderFeed)
     });
   }catch(e:any){
     return NextResponse.json({enabled:false,reason:e?.message||"Institutional intelligence is temporarily unavailable."});

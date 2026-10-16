@@ -1,3 +1,5 @@
+import {workspaceReadResult} from '@/lib/auryn/workspace/recovery';
+import {loadStoredCanonicalSnapshot} from '@/lib/auryn/v935/canonical';
 import {NextResponse} from 'next/server';
 import {createClient,type SupabaseClient} from '@supabase/supabase-js';
 import {authorizeRequest} from '@/lib/server/authorization';
@@ -14,7 +16,13 @@ function snapshots(rows:any[],symbol:string){return rows.filter(r=>r.kind==='sna
 export async function GET(req:Request){const auth=await authorizeRequest(req);if(auth.response)return auth.response;try{const db=userClient(req),params=new URL(req.url).searchParams;if(params.get('scope')==='planning'){
  const symbol=normalizedSymbol(params.get('symbol'));const decisions=await db.from(table).select('payload').eq('user_id',auth.user.id).eq('kind','decision-journal').eq('payload->>symbol',symbol).order('updated_at',{ascending:false}).limit(1000);
  if(decisions.error)throw Error('Personal research storage is unavailable. Install the workspace schema before saving journal records.');const ids=(decisions.data||[]).map(r=>r.payload.id),reviews=ids.length?await db.from(table).select('payload').eq('user_id',auth.user.id).eq('kind','decision-review').in('payload->>decisionId',ids).order('updated_at',{ascending:false}).limit(1000):{data:[],error:null};if(reviews.error)throw Error('Decision reviews could not be loaded.');return reply({decisions:decisions.data?.map(r=>r.payload)||[],reviews:reviews.data?.map(r=>r.payload)||[],truncated:decisions.data?.length===1000||reviews.data?.length===1000});}
- const rows=await readRows(db,auth.user.id);const [watch,positions]=await Promise.all([db.from('watchlist_items').select('symbol').eq('user_id',auth.user.id),db.from('portfolio_positions').select('symbol,asset_type').eq('user_id',auth.user.id).neq('asset_type','CASH')]);return reply({rows,watchSymbols:watch.data?.map(r=>r.symbol)||[],portfolioSymbols:positions.data?.map(r=>r.symbol)||[],storage:'account',limitations:[...(rows.length===600?['History is limited to the 600 most recently updated research records.']:[]),...(watch.error?['Saved watchlist could not be loaded.']:[]),...(positions.error?['Portfolio attention coverage is unavailable.']:[])]});}catch(e){return reply({error:e instanceof Error?e.message:'Workspace unavailable.',storage:'unavailable'},503);}}
+ const [research,watchResult,positionResult]=await Promise.allSettled([
+ readRows(db,auth.user.id),db.from('watchlist_items').select('symbol').eq('user_id',auth.user.id),db.from('portfolio_positions').select('symbol,asset_type').eq('user_id',auth.user.id).neq('asset_type','CASH')]);
+ const result=workspaceReadResult(research,watchResult.status==='fulfilled'?watchResult.value:{data:null,error:true},positionResult.status==='fulfilled'?positionResult.value:{data:null,error:true});
+ const symbols=[...new Set<string>([...result.watchSymbols,...result.portfolioSymbols])].slice(0,20);
+ const current=await Promise.allSettled(symbols.map(async symbol=>{const raw=await loadStoredCanonicalSnapshot(symbol);if(!raw.research.decision||!raw.research.observedAt)return null;return snapshotFromCanonical(raw,`current-${symbol}-${raw.research.observedAt}`);}));
+ for(const item of current)if(item.status==='fulfilled'&&item.value&&!result.rows.some(r=>r.kind==='snapshot'&&r.payload.symbol===item.value!.symbol&&r.payload.observedAt===item.value!.observedAt))result.rows.unshift({kind:'snapshot',key:item.value.snapshotId,payload:item.value,updated_at:item.value.observedAt,current:true});
+ return reply(result);}catch(e){return reply({error:e instanceof Error?e.message:'Workspace unavailable.',storage:'unavailable'},503);}}
 export async function POST(req:Request){const auth=await authorizeRequest(req);if(auth.response)return auth.response;
  try{if(Number(req.headers.get('content-length')||0)>65536)return reply({error:'Request is too large.'},413);const raw=await req.text();if(raw.length>65536)return reply({error:'Request is too large.'},413);let body:any;try{body=JSON.parse(raw);}catch{return reply({error:'Send a valid JSON request.'},400);}
  const db=userClient(req),userId=auth.user.id;

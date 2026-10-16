@@ -12,7 +12,7 @@ export function computeRsi14(x:number[],period=14){
   if(x.length<=period)return 50;
   let gain=0,loss=0;for(let i=1;i<=period;i++){const d=x[i]-x[i-1];if(d>0)gain+=d;else loss-=d}gain/=period;loss/=period;
   for(let i=period+1;i<x.length;i++){const d=x[i]-x[i-1],g=d>0?d:0,l=d<0?-d:0;gain=(gain*(period-1)+g)/period;loss=(loss*(period-1)+l)/period}
-  if(loss===0)return 100;const rs=gain/loss;return 100-100/(1+rs);
+  if(loss===0)return gain===0?50:100;const rs=gain/loss;return 100-100/(1+rs);
 }
 export function computeMacd(x:number[]){
   if(x.length<26)return {line:0,signal:0,histogram:0};

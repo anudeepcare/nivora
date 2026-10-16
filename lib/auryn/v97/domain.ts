@@ -13,6 +13,7 @@ export type CioTechnicalInputs={
   trend:number;
   momentum:number;
   flow:number;
+  flowAvailable?:boolean;
   structure:number;
   structuralBreak:boolean;
 };

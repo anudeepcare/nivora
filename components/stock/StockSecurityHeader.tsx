@@ -1,75 +1,11 @@
 "use client";
-
-import AssetLogo from "@/components/AssetLogo";
-import {formatMoney,formatPercent} from "@/lib/nivora-format";
-
-
-type MarketFacts={
- marketCap?:number|null;
- volume?:number|null;
- week52High?:number|null;
- week52Low?:number|null;
- sector?:string|null;
- industry?:string|null;
- exchange?:string|null;
-};
-
-function compact(v:number|null|undefined){
- const x=Number(v);if(!Number.isFinite(x)||x<=0)return null;
- return new Intl.NumberFormat("en-US",{notation:"compact",maximumFractionDigits:x>=1e9?2:1}).format(x);
-}
-function SecurityLogo({symbol,company,logoUrl}:{symbol:string;company?:string;logoUrl?:string|null}){
- return <span className="aurynSecurityLogo"><AssetLogo symbol={symbol} name={company} logoUrl={logoUrl} size={48}/></span>;
-}
-
+import Link from 'next/link';
+import {ChevronLeft} from 'lucide-react';
+import AssetLogo from '@/components/AssetLogo';
+import MetricHelp from '@/components/MetricHelp';
+import {formatMoney,formatPercent} from '@/lib/nivora-format';
+type MarketFacts={marketCap?:number|null;volume?:number|null;week52High?:number|null;week52Low?:number|null;sector?:string|null;industry?:string|null;exchange?:string|null};
 export default function StockSecurityHeader({company,symbol,price,changePct,status,detail,logoUrl,marketFacts,owns=false,positionLoaded=false,onToggleOwn}:{company?:string;symbol:string;price:number|null;changePct:number|null;status:string;detail:string;logoUrl?:string|null;marketFacts?:MarketFacts;owns?:boolean;positionLoaded?:boolean;onToggleOwn?:()=>void}){
- const hasPrice=price!=null&&Number.isFinite(Number(price))&&Number(price)>0;
- const hasChange=hasPrice&&changePct!=null&&Number.isFinite(Number(changePct));
- const verifying=!hasPrice&&/verifying/i.test(status);
- const marketCap=Number(marketFacts?.marketCap),volume=Number(marketFacts?.volume),week52High=Number(marketFacts?.week52High),week52Low=Number(marketFacts?.week52Low);
- const facts=[
-  Number.isFinite(marketCap)&&marketCap>0?{label:"Mkt Cap",desktopLabel:"Market Cap",value:compact(marketCap)}:null,
-  Number.isFinite(volume)&&volume>0?{label:"Volume",desktopLabel:"Volume",value:compact(volume)}:null,
-  Number.isFinite(week52High)&&week52High>0?{label:"52W High",desktopLabel:"52W High",value:formatMoney(week52High)}:null,
-  Number.isFinite(week52Low)&&week52Low>0?{label:"52W Low",desktopLabel:"52W Low",value:formatMoney(week52Low)}:null,
- ].filter((x):x is {label:string;desktopLabel:string;value:string}=>Boolean(x?.value));
- const descriptor=[marketFacts?.sector,marketFacts?.industry,marketFacts?.exchange].filter(Boolean).join(" · ");
- const ownText=owns?(positionLoaded?"✓ Position":"✓ Owned"):"+ Own";
- const priceText=hasPrice?formatMoney(Number(price)):verifying?"VERIFYING…":"UNVERIFIED";
-
- return <>
-  <header className="aurynStockMobileMasthead" aria-label={`${symbol} market summary`}>
-   <div className="aurynStockMobilePrimary">
-    <div className="aurynStockMobileIdentity">
-     <SecurityLogo symbol={symbol} company={company} logoUrl={logoUrl}/>
-     <div>
-      <div className="aurynStockMobileTickerRow"><h1 className="aurynStockMobileTicker">{symbol}</h1>{onToggleOwn?<button type="button" className={`aurynOwnChip ${owns?"on":""}`} onClick={onToggleOwn}>{ownText}</button>:null}</div>
-      <strong>{company||symbol}</strong>
-     </div>
-    </div>
-    <div className={`aurynStockMobilePrice ${hasPrice?"":"unverified"}`}>
-     <div><b>{priceText}</b>{hasChange?<span className={Number(changePct)>=0?"up":"down"}>{formatPercent(Number(changePct))}</span>:null}</div>
-     <small>{status}</small>
-    </div>
-   </div>
-   <div className="aurynStockMobileMeta">
-    <span>{descriptor||company||symbol}</span>
-    <span>{detail}</span>
-   </div>
-   {facts.length?<div className="aurynStockMobileFacts" aria-label="Company market facts">{facts.map(x=><span key={x.desktopLabel}><small>{x.label}</small><b>{x.value}</b></span>)}</div>:null}
-  </header>
-
-  <header className="aurynStockMasthead aurynStockDesktopMasthead">
-   <div className="aurynStockIdentityWrap">
-    <SecurityLogo symbol={symbol} company={company} logoUrl={logoUrl}/>
-    <div className="aurynStockIdentity"><div><h1>{symbol}</h1>{onToggleOwn&&<button type="button" className={`aurynOwnChip ${owns?"on":""}`} onClick={onToggleOwn}>{owns?(positionLoaded?"✓ Position loaded":"✓ I own this"):"+ I own this"}</button>}</div><small>{company||symbol}</small>{descriptor?<p>{descriptor}</p>:null}</div>
-   </div>
-   <div className={`aurynStockMarket ${hasPrice?"":"unverified"}`}>
-    <div><b>{hasPrice?formatMoney(Number(price)):verifying?"VERIFYING PRICE…":"PRICE UNVERIFIED"}</b>{hasChange&&<span className={Number(changePct)>=0?"up":"down"}>{formatPercent(Number(changePct))}</span>}</div>
-    <small>{status}</small>
-    <p>{detail}</p>
-   </div>
-   {facts.length?<div className="aurynSecurityFacts" aria-label="Company market facts">{facts.map(x=><span key={x.desktopLabel}><small>{x.desktopLabel}</small><b>{x.value}</b></span>)}</div>:null}
-  </header>
- </>;
+ const valid=price!=null&&Number.isFinite(price)&&price>0;
+ return <header className="clearSecurityHeader"><div className="clearSecurityIdentity"><Link href="/analyze" aria-label="Back to research" className="clearBack"><ChevronLeft size={21}/></Link><AssetLogo symbol={symbol} name={company} logoUrl={logoUrl} size={42}/><div><h1>{company||symbol}</h1><span>{symbol}{marketFacts?.exchange?` · ${marketFacts.exchange}`:''}</span></div>{onToggleOwn&&<button className={`aurynOwnChip ${owns?'on':''}`} onClick={onToggleOwn}>{owns?(positionLoaded?'Position':'Owned'):'+ Own'}</button>}</div><div className="clearSecurityQuote"><div><strong>{valid?formatMoney(price):'—'}</strong>{valid&&changePct!=null&&Number.isFinite(changePct)&&<span className={changePct>=0?'up':'down'}>{formatPercent(changePct)}</span>}<MetricHelp term="price"/></div><small>{valid?status:'Price unavailable'}{detail?` · ${detail}`:''}</small></div></header>;
 }

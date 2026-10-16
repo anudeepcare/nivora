@@ -20,7 +20,7 @@ export function rsi(values:number[],period=14){
     avgGain=(avgGain*(period-1)+gain)/period;
     avgLoss=(avgLoss*(period-1)+loss)/period;
   }
-  if(avgLoss===0)return 100;
+  if(avgLoss===0)return avgGain===0?50:100;
   const rs=avgGain/avgLoss;
   return 100-(100/(1+rs));
 }

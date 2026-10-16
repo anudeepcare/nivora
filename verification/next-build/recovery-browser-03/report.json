@@ -1,0 +1,113 @@
+{
+  "startedAt": "2026-10-16T20:21:41.607Z",
+  "mode": "fixture",
+  "scope": "Local production Chromium with intercepted synthetic auth/database/market/paper services. No actual login delivery, RLS, provider entitlement, broker order or investment-performance certification.",
+  "baseUrl": "http://127.0.0.1:3102",
+  "widths": [
+    390,
+    1440
+  ],
+  "themes": [
+    "light"
+  ],
+  "groups": [
+    "routes",
+    "research",
+    "interactions"
+  ],
+  "node": "v24.19.0",
+  "browserVersion": "153.0.8010.0",
+  "release": {
+    ".next/BUILD_ID": "8WYKPYi-gnLeZkJa9RYEI",
+    "package-lock.json": "9aaea5c0a52a2ecc9280bb63cf1c5995b1a163381fa07715cc914b18f2d8b99f",
+    "gitHead": "bbdce50b92384acefb3db79978423da92a75e1ea"
+  },
+  "cases": [
+    {
+      "name": "light 390 /dashboard",
+      "theme": "light",
+      "width": 390,
+      "route": "/dashboard",
+      "passed": false,
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/dashboard\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3102/dashboard\", waiting until \"load\"\u001b[22m\n"
+    },
+    {
+      "name": "light 390 /discover",
+      "theme": "light",
+      "width": 390,
+      "route": "/discover",
+      "passed": false,
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/discover\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3102/discover\", waiting until \"load\"\u001b[22m\n"
+    },
+    {
+      "name": "light 390 /portfolio",
+      "theme": "light",
+      "width": 390,
+      "route": "/portfolio",
+      "passed": false,
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/portfolio\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3102/portfolio\", waiting until \"load\"\u001b[22m\n"
+    },
+    {
+      "name": "light 390 /watchlist",
+      "theme": "light",
+      "width": 390,
+      "route": "/watchlist",
+      "passed": false,
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/watchlist\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3102/watchlist\", waiting until \"load\"\u001b[22m\n"
+    },
+    {
+      "name": "light 390 /alerts",
+      "theme": "light",
+      "width": 390,
+      "route": "/alerts",
+      "passed": false,
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/alerts\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3102/alerts\", waiting until \"load\"\u001b[22m\n"
+    },
+    {
+      "name": "light 390 /analyze",
+      "theme": "light",
+      "width": 390,
+      "route": "/analyze",
+      "passed": false,
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/analyze\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3102/analyze\", waiting until \"load\"\u001b[22m\n"
+    },
+    {
+      "name": "light 390 /trading-lab",
+      "theme": "light",
+      "width": 390,
+      "route": "/trading-lab",
+      "passed": false,
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3102/trading-lab\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3102/trading-lab\", waiting until \"load\"\u001b[22m\n"
+    }
+  ],
+  "runtimeErrors": [],
+  "requestCounts": {
+    "GET /dashboard": 1,
+    "GET /discover": 1,
+    "GET /portfolio": 1,
+    "GET /watchlist": 1,
+    "GET /alerts": 1,
+    "GET /analyze": 1,
+    "GET /trading-lab": 1,
+    "GET /stock/MSFT": 1
+  },
+  "blockedExternal": [],
+  "unhandledFixtures": [],
+  "warnings": [],
+  "notVerified": [
+    "Deployed owner/admin mapping",
+    "Live cross-user Supabase RLS",
+    "Real signup/password-reset email delivery",
+    "Vendor entitlements and freshness",
+    "Actual paper submission, broker fill and reconciliation",
+    "Physical devices, Safari/Firefox and assistive technology",
+    "Human usability approval",
+    "Investment performance or model calibration"
+  ],
+  "finishedAt": "2026-10-16T20:21:41.779Z",
+  "summary": {
+    "passed": 0,
+    "failed": 7,
+    "runtimeErrors": 0
+  }
+}

@@ -1,0 +1,163 @@
+{
+  "startedAt": "2026-10-16T20:29:09.813Z",
+  "mode": "fixture",
+  "scope": "Local production Chromium with intercepted synthetic auth/database/market/paper services. No actual login delivery, RLS, provider entitlement, broker order or investment-performance certification.",
+  "baseUrl": "http://127.0.0.1:3102",
+  "widths": [
+    390,
+    1440
+  ],
+  "themes": [
+    "light"
+  ],
+  "groups": [
+    "routes",
+    "research",
+    "interactions"
+  ],
+  "node": "v24.19.0",
+  "browserVersion": "153.0.8010.0",
+  "release": {
+    ".next/BUILD_ID": "psIRumKgTaB5rYfdUJhK2",
+    "package-lock.json": "9aaea5c0a52a2ecc9280bb63cf1c5995b1a163381fa07715cc914b18f2d8b99f",
+    "gitHead": "bbdce50b92384acefb3db79978423da92a75e1ea"
+  },
+  "cases": [
+    {
+      "name": "chart and unsaved planner survive a research section round trip",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'Full range'\n- 'Zoom 1.3×'\n"
+    },
+    {
+      "name": "chart preserves canvas across unrelated preferences and period changes",
+      "passed": true
+    },
+    {
+      "name": "section URL survives reload and metric help opens and closes",
+      "passed": true
+    },
+    {
+      "name": "weekly settings are optional and changes retain the chart",
+      "passed": true
+    },
+    {
+      "name": "saved research view and explanation remain accessible",
+      "passed": true
+    },
+    {
+      "name": "DCA contribution proposal caps cash and saves an immutable original",
+      "passed": false,
+      "error": "locator.selectOption: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: 'Your accumulation plan', exact: true }).getByLabel('Requested allocation', { exact: true })\u001b[22m\n"
+    }
+  ],
+  "runtimeErrors": [],
+  "requestCounts": {
+    "GET /stock/MSFT": 2,
+    "GET /_next/static/css/06d5a35261f1f10b.css": 4,
+    "GET /_next/static/css/d239bc770918689e.css": 4,
+    "GET /_next/static/css/34c887b1e38a88e8.css": 4,
+    "GET /_next/static/css/2516a7c1e62a01b4.css": 4,
+    "GET /_next/static/css/ac1f5b84ee69107f.css": 4,
+    "GET /_next/static/chunks/webpack-1552c15abdb6b45d.js": 4,
+    "GET /_next/static/chunks/4bd1b696-f785427dddbba9fb.js": 4,
+    "GET /_next/static/chunks/1255-dc3ddf72a1dc71a7.js": 4,
+    "GET /_next/static/chunks/main-app-b8ebc991fc6c6414.js": 4,
+    "GET /_next/static/chunks/app/layout-9e806dd5decbc3f9.js": 4,
+    "GET /_next/static/chunks/app/error-e6a52c594721b341.js": 4,
+    "GET /_next/static/chunks/2619-3c9e02e22d10480a.js": 4,
+    "GET /_next/static/chunks/app/page-2c0e1a6bbed05e86.js": 4,
+    "GET /_next/static/chunks/44530001-50318953f9db2bed.js": 4,
+    "GET /_next/static/chunks/d0709137-705e021045f60f10.js": 4,
+    "GET /_next/static/chunks/8370-c7fbb5729bf8ed01.js": 4,
+    "GET /_next/static/chunks/4120-96cd4c79e8091c1a.js": 4,
+    "GET /_next/static/chunks/5496-a7743086f6aae1ed.js": 4,
+    "GET /_next/static/chunks/app/stock/%5Bsymbol%5D/page-8df365006cfa121e.js": 4,
+    "GET /api/chart/MSFT?range=3M": 4,
+    "GET /api/chart/MSFT?range=5Y": 4,
+    "GET /api/quote/MSFT": 3,
+    "GET /api/canonical/MSFT": 4,
+    "GET /api/analyze/MSFT": 1,
+    "GET /auth/v1/user": 15,
+    "GET /analyze?_rsc=A6x-NTTofiNmwWjj": 3,
+    "GET /disclaimer?_rsc=A6x-NTTofiNmwWjj": 3,
+    "GET /dashboard?_rsc=A6x-NTTofiNmwWjj": 3,
+    "GET /discover?_rsc=A6x-NTTofiNmwWjj": 3,
+    "GET /portfolio?_rsc=A6x-NTTofiNmwWjj": 3,
+    "GET /api/company/MSFT?evidenceContract=sec-company-evidence-v3": 3,
+    "GET /api/calibration?engine=v65.2": 4,
+    "GET /rest/v1/portfolio_positions?select=shares%2Cavg_cost%2Chorizon&user_id=eq.00000000-0000-0000-0000-000000000001&symbol=eq.MSFT": 3,
+    "GET /_next/static/chunks/537-d589eba7ce730b20.js": 4,
+    "GET /_next/static/chunks/863-571a988e218d9180.js": 4,
+    "GET /_next/static/chunks/8455-8a90f8592e0d9503.js": 4,
+    "GET /_next/static/chunks/app/discover/page-7e0a7088de09caed.js": 4,
+    "GET /_next/static/css/56c8b42d512aef2b.css": 4,
+    "GET /watchlist?_rsc=A6x-NTTofiNmwWjj": 3,
+    "GET /_next/static/chunks/app/analyze/page-85563e011f3927eb.js": 4,
+    "GET /_next/static/chunks/app/dashboard/page-f76e3322d5b0a7f3.js": 4,
+    "GET /_next/static/chunks/7045-7ea2fe00430c502d.js": 4,
+    "GET /_next/static/chunks/app/portfolio/page-0100b951dea67e28.js": 4,
+    "GET /_next/static/css/3042b8b6da6dd4cf.css": 4,
+    "GET /_next/static/chunks/app/watchlist/page-972198582e8fe838.js": 4,
+    "GET /api/model-health?archetype=GENERAL_COMPOUNDER": 4,
+    "POST /api/validation/snapshot": 2,
+    "GET /api/market-intelligence/live/MSFT": 3,
+    "GET /api/context/MSFT": 3,
+    "GET /_next/static/chunks/1621.3a0a23c47e887ff1.js": 2,
+    "GET /api/research-workspace?scope=planning&symbol=MSFT": 4,
+    "GET /rest/v1/portfolio_positions?select=*&user_id=eq.00000000-0000-0000-0000-000000000001": 3,
+    "GET /api/canonical?symbols=MSFT": 3,
+    "GET /_next/static/chunks/4932.18e258a2d201338a.js": 1,
+    "GET /_next/static/css/5f009dd30c810c44.css": 1,
+    "GET /api/chart/MSFT?range=1W": 1,
+    "GET /api/chart/MSFT?range=1D": 1,
+    "GET /stock/MSFT?section=financials": 1,
+    "GET /api/research-workspace": 2,
+    "POST /api/research-workspace": 2,
+    "GET /stock/QA-MATURE": 1,
+    "GET /api/chart/QA-MATURE?range=3M": 1,
+    "GET /api/chart/QA-MATURE?range=5Y": 1,
+    "GET /api/quote/QA-MATURE": 1,
+    "GET /api/canonical/QA-MATURE": 2,
+    "GET /api/analyze/QA-MATURE": 1,
+    "GET /image-stock/QA-MATURE.png": 2,
+    "GET /analyze?_rsc=xETrSp50Mm5Hd3Mu": 1,
+    "GET /disclaimer?_rsc=xETrSp50Mm5Hd3Mu": 1,
+    "GET /dashboard?_rsc=xETrSp50Mm5Hd3Mu": 1,
+    "GET /discover?_rsc=xETrSp50Mm5Hd3Mu": 1,
+    "GET /portfolio?_rsc=xETrSp50Mm5Hd3Mu": 1,
+    "GET /api/company/QA-MATURE?evidenceContract=sec-company-evidence-v3": 1,
+    "GET /rest/v1/portfolio_positions?select=shares%2Cavg_cost%2Chorizon&user_id=eq.00000000-0000-0000-0000-000000000001&symbol=eq.QA-MATURE": 1,
+    "GET /watchlist?_rsc=xETrSp50Mm5Hd3Mu": 1,
+    "GET /api/market-intelligence/live/QA-MATURE": 1,
+    "GET /api/context/QA-MATURE": 1,
+    "GET /api/research-workspace?scope=planning&symbol=QA-MATURE": 2
+  },
+  "blockedExternal": [
+    {
+      "host": "financialmodelingprep.com",
+      "path": "/image-stock/QA-MATURE.png"
+    },
+    {
+      "host": "financialmodelingprep.com",
+      "path": "/image-stock/QA-MATURE.png"
+    }
+  ],
+  "unhandledFixtures": [],
+  "warnings": [],
+  "notVerified": [
+    "Deployed owner/admin mapping",
+    "Live cross-user Supabase RLS",
+    "Real signup/password-reset email delivery",
+    "Vendor entitlements and freshness",
+    "Actual paper submission, broker fill and reconciliation",
+    "Physical devices, Safari/Firefox and assistive technology",
+    "Human usability approval",
+    "Investment performance or model calibration"
+  ],
+  "finishedAt": "2026-10-16T20:29:26.831Z",
+  "summary": {
+    "passed": 4,
+    "failed": 2,
+    "runtimeErrors": 0
+  }
+}

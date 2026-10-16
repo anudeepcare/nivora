@@ -18,8 +18,8 @@ export function buildCanonicalAssessment(input:{symbol:string;marketTruth:any;v5
   const bridge=Object.keys(confirmed).length?deriveV934DecisionTechnical({...d.marketIntelligence,confirmed}):null;
   const ts=v5.technical?.technicalState;
   const px=number(marketTruth.decisionPrice),resistance=number(v5.technical?.levels?.resistance),invalidation=number(v5.technical?.levels?.invalidation);
-  const technical=bridge?{trend:bridge.trend,momentum:bridge.momentum,flow:bridge.flow,structure:bridge.structure,nearResistance:bridge.nearResistance,confirmedBreakout:bridge.confirmedBreakout,structuralBreak:bridge.structuralBreak,reclaimLevel:bridge.reclaimLevel,invalidation:bridge.invalidation}:{
-    trend:ts?.trend??50,momentum:ts?.momentum??50,flow:ts?.participation??50,structure:ts?.structure??50,
+  const technical=bridge?{trend:bridge.trend,momentum:bridge.momentum,flow:bridge.flow,flowAvailable:bridge.flowAvailable,structure:bridge.structure,nearResistance:bridge.nearResistance,confirmedBreakout:bridge.confirmedBreakout,structuralBreak:bridge.structuralBreak,reclaimLevel:bridge.reclaimLevel,invalidation:bridge.invalidation}:{
+    trend:ts?.trend??50,momentum:ts?.momentum??50,flow:ts?.participation??50,flowAvailable:v5.technical?.coverage?.volume!==false&&v5.technical?.technicalCoverage?.volume!==false&&number(ts?.participation)!=null,structure:ts?.structure??50,
     nearResistance:px!=null&&resistance!=null&&px>=resistance*.94&&px<=resistance*1.03,
     confirmedBreakout:px!=null&&resistance!=null&&px>resistance&&(ts?.participation??0)>=60,
     structuralBreak:px!=null&&invalidation!=null&&px<invalidation,reclaimLevel:resistance,invalidation};

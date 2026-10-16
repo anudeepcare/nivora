@@ -1,3 +1,5 @@
+> Current product-recovery verification supersedes old counts: see `../../RELEASE_REPORT.md` and `../product-recovery/`. The approved requirement statuses and implementation gaps below remain explicit.
+
 # Approved-scope evidence ledger
 
 NOT ALL REQUIREMENTS FULFILLED: partial implementations and live/data verification blockers remain explicitly listed. Complete source archive, not deployed production acceptance.

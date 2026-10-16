@@ -1,0 +1,34 @@
+✔ overview withholds execution prices when the final trust/price gate is closed (15.320772ms)
+✔ watch plan is described as structural context rather than an active entry (24.952925ms)
+✔ reduce and exit plans cannot render new entry instructions from retained level data (13.875871ms)
+✔ missing canonical market levels remain unavailable rather than zero dollars (1.619819ms)
+✔ overview explains canonical setup and decision triggers without inventing another call (7.116334ms)
+✔ pattern evidence is disclosed only when its source snapshot matches the current market snapshot (10.151158ms)
+✔ annual visualizations keep zero and losses, while excluding unbridged predecessor periods (41.545958ms)
+✔ annual charts do not infer a trend from missing sources, partial periods or mismatched facts (3.915234ms)
+✔ annual chart series never bridges currency or cash-flow accounting bases (0.436573ms)
+✔ overview contains one canonical summary and sends scenario work to valuation (17.757314ms)
+✔ reported metrics carry accessible definitions and expandable original source evidence (4.82884ms)
+✔ durability counts exclude predecessor periods outside the comparable reporting cohort (18.677812ms)
+✔ canonical actions explain new money, existing ownership and the multi-year horizon independently (17.121297ms)
+✔ model confidence is explained as evidence quality rather than a probability of success (7.291702ms)
+✔ durability is not relabeled as moat and missing dimension values are not zero-score bars (13.390255ms)
+✔ decision map names price invalidation as a setup level (7.815775ms)
+✔ unavailable fundamental valuation explains what inputs are missing (5.685915ms)
+✔ missing company data stays unavailable without a fake score, zero or currency (64.334051ms)
+✔ financial facts preserve reported currency, source period, losses and zero values (5.625875ms)
+✔ unknown currency is disclosed and history never assumes dollars (5.491744ms)
+✔ financial history discloses period comparability rather than turning a partial record into moat proof (4.102109ms)
+✔ heuristic moat scores and unresolved drivers are withheld (2.223498ms)
+✔ explicit moat drivers and risks render only with resolvable source evidence (3.692015ms)
+✔ resolved moat observations do not legitimize an aggregate score without its own source evidence (2.443543ms)
+✔ derived financial metrics use annual currency and provenance from matching source inputs (5.442275ms)
+✔ reported totals and continuing operations retain their own amounts, source links and history labels (5.9474ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 953.21404

@@ -51,3 +51,13 @@ export function paperReviewHref(input:{symbol:string;amount:number;snapshotId:st
   if(!/^[A-Z][A-Z0-9.-]{0,9}$/.test(input.symbol)||!Number.isFinite(input.amount)||input.amount<=0||!input.snapshotId||!input.policyVersion)return null;
   return '/trading-lab?'+new URLSearchParams({view:'manual',planSymbol:input.symbol,planAmount:String(input.amount),planSnapshot:input.snapshotId,planPolicy:input.policyVersion}).toString();
 }
+
+/** A transparent research heuristic. It does not optimize or predict investment returns. */
+export function suggestMultiplier(evidence:PlanningEvidence,strategy:AllocationPlan['strategy']):{multiplier:Multiplier;reason:string}{
+ if(!evidence.evidenceReady||!evidence.snapshotId||!evidence.references.length||evidence.thesis!=='intact'||!['normal','elevated'].includes(evidence.fundingRisk)||!['supported','neutral','expensive'].includes(evidence.valuation))return{multiplier:0,reason:'Review the business, valuation and funding evidence before allocating.'};
+ if(strategy==='tactical'&&evidence.tacticalSetup!=='confirmed')return{multiplier:0,reason:'The tactical setup is not confirmed. The business assessment remains separate.'};
+ if(evidence.fundingRisk==='elevated')return{multiplier:.5,reason:'Elevated funding risk calls for a smaller contribution.'};
+ if(evidence.valuation==='expensive')return{multiplier:.5,reason:'An expensive valuation reduces the research policy to half your usual contribution.'};
+ if(evidence.valuation==='neutral')return{multiplier:1,reason:'An intact thesis with neutral valuation keeps your usual contribution.'};
+ return{multiplier:2,reason:'An intact thesis, supporting valuation and normal funding risk permit a 2x research proposal, subject to your cash and exposure limits.'};
+}

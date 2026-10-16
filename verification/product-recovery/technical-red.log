@@ -1,0 +1,324 @@
+✖ absent benchmark produces no relative-strength claim or numeric relative return (4.346086ms)
+✖ benchmark must cover the same comparison dates (0.986576ms)
+✖ zero-volume history does not manufacture volume evidence (2.320876ms)
+✖ unchanged prices are neutral rather than extreme overbought RSI and MFI (0.715927ms)
+✖ positive money flow with no negative flow reaches 100 (0.795735ms)
+✖ short histories do not claim a 52-week observation window (0.705171ms)
+✖ 52-week window and annualization account for crypto calendar (1.556267ms)
+✖ current Ichimoku cloud requires displaced history (0.659093ms)
+✖ breakout confirmation evaluates a previously established level (6.303375ms)
+✖ invalid or unordered bars cannot generate an apparently valid technical assessment (1.981124ms)
+✖ context-only volatility and oversold studies are not independent positive or negative votes (6.864623ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 0
+ℹ fail 11
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 467.47422
+
+✖ failing tests:
+
+test at tests/product-recovery-technicals.test.mjs:13:1
+✖ absent benchmark produces no relative-strength claim or numeric relative return (4.346086ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  11.83 !== null
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/tests/product-recovery-technicals.test.mjs:14:61)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 11.83,
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/product-recovery-technicals.test.mjs:16:1
+✖ benchmark must cover the same comparison dates (0.986576ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  -2.55 !== null
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/tests/product-recovery-technicals.test.mjs:17:67)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: -2.55,
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/product-recovery-technicals.test.mjs:20:1
+✖ zero-volume history does not manufacture volume evidence (2.320876ms)
+  AssertionError [ERR_ASSERTION]: volumeRatio20
+  
+  1 !== null
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/tests/product-recovery-technicals.test.mjs:22:167)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/product-recovery-technicals.test.mjs:25:1
+✖ unchanged prices are neutral rather than extreme overbought RSI and MFI (0.715927ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  100 !== 50
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/tests/product-recovery-technicals.test.mjs:26:79)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 100,
+    expected: 50,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/product-recovery-technicals.test.mjs:28:1
+✖ positive money flow with no negative flow reaches 100 (0.795735ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 99.00990099009901
+  - 100
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/tests/product-recovery-technicals.test.mjs:28:73)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 99.00990099009901,
+    expected: 100,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/product-recovery-technicals.test.mjs:29:1
+✖ short histories do not claim a 52-week observation window (0.705171ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  -0.62 !== null
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/tests/product-recovery-technicals.test.mjs:29:77)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: -0.62,
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/product-recovery-technicals.test.mjs:30:1
+✖ 52-week window and annualization account for crypto calendar (1.556267ms)
+  TypeError: Cannot read properties of undefined (reading 'annualization')
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/tests/product-recovery-technicals.test.mjs:31:157)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at tests/product-recovery-technicals.test.mjs:33:1
+✖ current Ichimoku cloud requires displaced history (0.659093ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== null
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/tests/product-recovery-technicals.test.mjs:34:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/product-recovery-technicals.test.mjs:38:1
+✖ breakout confirmation evaluates a previously established level (6.303375ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(p)
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/tests/product-recovery-technicals.test.mjs:41:132)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/product-recovery-technicals.test.mjs:43:1
+✖ invalid or unordered bars cannot generate an apparently valid technical assessment (1.981124ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + {
+  +   changePct: 0.53,
+  +   indicatorVersion: 'wilder-v1',
+  +   indicators: {
+  +     atr14: NaN,
+  +     atrPct: NaN,
+  +     bollingerPosition: 91.19,
+  +     distance200Pct: null,
+  +     distance20Pct: 5.29,
+  +     distance50Pct: 14.89,
+  +     drawdown52wPct: -0.53,
+  +     macd: {
+  +       histogram: NaN,
+  +       line: NaN,
+  +       signal: 7
+  +     },
+  +     realizedVol20: 0.29,
+  +     rsi14: 100,
+  +     sma200: null,
+  +     sma20: 179.5,
+  +     sma50: 164.5,
+  +     volumeRatio20: 1
+  +   },
+  +   labels: {
+  +     entry: 'Improving',
+  +     extension: 'Elevated',
+  +     flow: 'Strong',
+  +     momentum: 'Strong',
+  +     risk: 'High',
+  +     structure: 'Strong',
+  +     trend: 'Mixed'
+  +   },
+  +   levels: {
+  +     breakout: NaN,
+  +     invalidation: NaN,
+  +     majorSupport: NaN,
+  +     preferredEntry: NaN,
+  +     resistance: NaN,
+  +     support: NaN
+  +   },
+  +   market: {
+  +     benchmark: null,
+  +     benchmarkPrice: null,
+  +     regime: 'Mixed',
+  +     relative20: 11.83,
+  +     relativeStrength: 'Leading',
+  +     score: 50
+  +   },
+  +   price: 189,
+  +   riskReward: NaN,
+  +   scores: {
+  +     entry: NaN,
+  +     extension: NaN,
+  +     flow: 67,
+  +     momentum: 94,
+  +     risk: NaN,
+  +     structure: 94,
+  +     timing: NaN,
+  +     trend: 61
+  +   },
+  +   technicalState: {
+  +     entryQuality: NaN,
+  +     entryState: 'Poor / wait',
+  +     extensionRisk: NaN,
+  +     momentum: 94,
+  +     participation: 67,
+  +     state: 'Strong bullish',
+  +     strength: 76,
+  +     structure: 94,
+  +     trend: 61,
+  +     volatilityRisk: NaN
+  +   },
+  +   technicalStateVersion: 'auryn-tech-v2',
+  +   volatility: {
+  +     atr14: NaN,
+  +     atrPct: NaN
+  +   },
+  +   volumeRatio: 1
+  + }
+  - null
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/tests/product-recovery-technicals.test.mjs:44:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { price: 189, changePct: 0.53, volumeRatio: 1, scores: { trend: 61, momentum: 94, flow: 67, structure: 94, entry: NaN, timing: NaN, risk: NaN, extension: NaN }, labels: { trend: 'Mixed', momentum: 'Strong', flow: 'Strong', structure: 'Strong', entry: 'Improving', risk: 'High', extension: 'Elevated' }, levels: { preferredEntry: NaN, support: NaN, majorSupport: NaN, resistance: NaN, breakout: NaN, invalidation: NaN }, volatility: { atr14: NaN, atrPct: NaN }, market: { benchmark: null, benchmarkPrice: null, regime: 'Mixed', score: 50, relativeStrength: 'Leading', relative20: 11.83 }, riskReward: NaN, indicators: { rsi14: 100, atr14: NaN, atrPct: NaN, realizedVol20: 0.29, volumeRatio20: 1, sma20: 179.5, sma50: 164.5, sma200: null, distance20Pct: 5.29, distance50Pct: 14.89, distance200Pct: null, bollingerPosition: 91.19, drawdown52wPct: -0.53, macd: [Object] }, technicalState: { strength: 76, entryQuality: NaN, trend: 61, momentum: 94, participation: 67, structure: 94, extensionRisk: NaN, volatilityRisk: NaN, state: 'Strong bullish', entryState: 'Poor / wait' }, indicatorVersion: 'wilder-v1', technicalStateVersion: 'auryn-tech-v2' },
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/product-recovery-technicals.test.mjs:47:1
+✖ context-only volatility and oversold studies are not independent positive or negative votes (6.864623ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'POSITIVE'
+  - 'CONTEXT'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/tests/product-recovery-technicals.test.mjs:49:71)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'POSITIVE',
+    expected: 'CONTEXT',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

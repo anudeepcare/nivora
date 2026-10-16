@@ -44,7 +44,7 @@ export function buildAurynCioAssessment(input:{
   const independentValuationScore=independentExpectedReturn==null?null:clamp(50+independentExpectedReturn*2);
   const valuationForDeployment=independentValuationScore==null?s.valuation:weighted([[s.valuation,.35],[independentValuationScore,.65]]);
   // Fast brain: deployment/timing. Valuation and asymmetry matter more than perfect technical confirmation.
-  const technicalComposite=weighted([[t.trend,.35],[t.structure,.30],[t.momentum,.20],[t.flow,.15]]);
+  const technicalComposite=weighted([[t.trend,.35],[t.structure,.30],[t.momentum,.20],[t.flowAvailable===false?null:t.flow,.15]]);
   const deploymentQuality=round(weighted([
     [valuationForDeployment,.25],
 

@@ -14,7 +14,7 @@ function pillar(key:PillarKey,score:number|null,evidence?:PillarEvidence|null):P
 const actionText=(x:string)=>x.replaceAll('_',' ');
 const round1=(n:number)=>Math.round(n*10)/10;
 
-export function buildInstitutionalDecisionKernel(input:{snapshotId:string;symbol:string;marketPrice:number|null;executionTradable:boolean;previousSetupState:SetupState|null;scores:{business:number|null;earningsRevisions:number|null;valuation:number|null;marketStructure:number|null;catalystsRegime:number|null;riskAsymmetry:number|null};pillarEvidence?:Partial<Record<PillarKey,PillarEvidence>>;technical:{trend:number;momentum:number;flow:number;structure:number;nearResistance:boolean;confirmedBreakout:boolean;structuralBreak:boolean;reclaimLevel:number|null;invalidation:number|null};evidenceCompleteness:number;horizonEvidence?:{sixToTwelveMonths?:HorizonEvidence};canonicalAction?:PrimaryInvestmentAction|null;canonicalOwnerAction?:PrimaryInvestmentAction|null}):InstitutionalDecision{
+export function buildInstitutionalDecisionKernel(input:{snapshotId:string;symbol:string;marketPrice:number|null;executionTradable:boolean;previousSetupState:SetupState|null;scores:{business:number|null;earningsRevisions:number|null;valuation:number|null;marketStructure:number|null;catalystsRegime:number|null;riskAsymmetry:number|null};pillarEvidence?:Partial<Record<PillarKey,PillarEvidence>>;technical:{trend:number;momentum:number;flow:number;flowAvailable?:boolean;structure:number;nearResistance:boolean;confirmedBreakout:boolean;structuralBreak:boolean;reclaimLevel:number|null;invalidation:number|null};evidenceCompleteness:number;horizonEvidence?:{sixToTwelveMonths?:HorizonEvidence};canonicalAction?:PrimaryInvestmentAction|null;canonicalOwnerAction?:PrimaryInvestmentAction|null}):InstitutionalDecision{
  const pe=input.pillarEvidence||{};
  const pillars={business:pillar('business',input.scores.business,pe.business),earningsRevisions:pillar('earningsRevisions',input.scores.earningsRevisions,pe.earningsRevisions),valuation:pillar('valuation',input.scores.valuation,pe.valuation),marketStructure:pillar('marketStructure',input.scores.marketStructure,pe.marketStructure),catalystsRegime:pillar('catalystsRegime',input.scores.catalystsRegime,pe.catalystsRegime),riskAsymmetry:pillar('riskAsymmetry',input.scores.riskAsymmetry,pe.riskAsymmetry)};
  const vals=Object.values(pillars).filter(p=>p.score!=null) as Array<Pillar&{score:number}>;
@@ -30,7 +30,7 @@ export function buildInstitutionalDecisionKernel(input:{snapshotId:string;symbol
  if(business!=null&&earnings!=null&&business<30&&earnings<30)hardVetoReasons.push('FUNDAMENTAL_THESIS_BREAK');
  const cio=buildAurynCioAssessment({
   scores:{business,earningsRevisions:earnings,valuation,marketStructure,catalystsRegime:pillars.catalystsRegime.score,riskAsymmetry},
-  technical:{trend:input.technical.trend,momentum:input.technical.momentum,flow:input.technical.flow,structure:input.technical.structure,structuralBreak:input.technical.structuralBreak},
+  technical:{trend:input.technical.trend,momentum:input.technical.momentum,flow:input.technical.flow,flowAvailable:input.technical.flowAvailable,structure:input.technical.structure,structuralBreak:input.technical.structuralBreak},
   evidenceCompleteness:input.evidenceCompleteness
  });
  let newMoney:InstitutionalNewMoneyAction=hardVetoReasons.length?'AVOID':cio.newMoneyAction;

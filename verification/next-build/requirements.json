@@ -2267,5 +2267,12 @@
       "verified-local": 81,
       "blocked": 9
     }
+  },
+  "latestRecoveryVerification": {
+    "releaseTests": "verification/product-recovery/verify-release-final.log",
+    "browser": "verification/next-build/recovery-browser-final/report.json",
+    "finalCssBrowser": "verification/next-build/recovery-brand-final/report.json",
+    "review": "verification/product-recovery/FINAL_REVIEW.md",
+    "scope": "Prior linked evidence is retained as history. Current report is RELEASE_REPORT.md; partial capabilities and external acceptance remain explicit."
   }
 }

@@ -10,7 +10,8 @@ The archive contains the full existing project, not just patches. `SOURCE_MANIFE
 - `components/ResearchWorkspace.tsx`, `components/PlanningWorkbench.tsx`, `components/research/AccumulationVisuals.tsx`: new user surfaces.
 - `app/api/company-review/`, `app/api/research-workspace/`, `app/api/trading-lab/control/`, `app/api/trading-lab/reconcile/`: server routes.
 - `supabase/migrations/20261016*.sql`: three new incremental migrations.
-- `verification/next-build/`: current reports, 104-item ledger and selected visual comparisons.
+- `verification/product-recovery/`: latest release logs, read-only connection results, final review and visual comparison.
+- `verification/next-build/`: approved 104-item ledger, historical upgrade evidence and current recovery browser reports.
 
 ## Retained baseline structure
 

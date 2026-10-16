@@ -12,3 +12,16 @@ export function summarizeInsiderTransactions(rows:any[]){
  const buys=count('purchase'),sells=count('sale');
  return {label:recent.length?'Classified reported transactions':'Unavailable',buys:recent.length?buys:null,sells:recent.length?sells:null,grants:count('grant'),exercises:count('exercise'),other:count('other'),unclassified:count('unclassified'),recent:recent.slice(0,10),disclosure:'Counts describe reported transaction types, not net share flow or insider conviction. Grants, exercises, gifts and withholding are separate from purchases and sales. Transaction and filing dates can differ.'};
 }
+
+/** Ownership and insider entitlements are independent. Missing is never a measured zero. */
+export function applyOwnershipAvailability(institutional:Record<string,any>,insiders:ReturnType<typeof summarizeInsiderTransactions>,hasInstitutional:boolean,hasInsiderFeed:boolean){
+ const ownership={...institutional,available:hasInstitutional};
+ if(!hasInstitutional){
+  for(const key of ['reportingRows','reportingManagers','increased','reduced','netReportedShareChange','totalShares','priorTotalShares','shareChangePct','totalValue','priorTotalValue','valueChangePct','newManagers','exitedManagers','unchangedManagers','addBreadthPct','trimBreadthPct','institutionalScore']) (ownership as Record<string,any>)[key]=null;
+  Object.assign(ownership,{label:'Unavailable',directionLabel:'Ownership feed unavailable',netChangeLabel:'Unavailable',totalValueLabel:null,priorTotalValueLabel:null,top:[],biggestBuyers:[],biggestSellers:[],newPositions:[],exits:[]});
+ }
+ const transactions={...insiders,available:hasInsiderFeed};
+ if(!hasInsiderFeed) Object.assign(transactions,{label:'Unavailable',reason:'Insider transactions feed unavailable',buys:null,sells:null,grants:null,exercises:null,other:null,unclassified:null,recent:[]});
+ else if(!insiders.recent.length) Object.assign(transactions,{label:'No transactions returned',buys:0,sells:0});
+ return {institutional:ownership,insiders:transactions};
+}

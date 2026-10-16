@@ -1,0 +1,11 @@
+FAIL chart and unsaved planner survive a research section round trip Expected values to be strictly equal:
++ actual - expected
+
++ 'Full range'
+- 'Zoom 1.3×'
+
+FAIL DCA contribution proposal caps cash and saves an immutable original locator.selectOption: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('region', { name: 'Your accumulation plan', exact: true }).getByLabel('Requested allocation', { exact: true })[22m
+
+{"passed":4,"failed":2,"runtimeErrors":0}
