@@ -3,11 +3,11 @@ import {navigateToLogin} from '@/lib/client-auth-navigation';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 import {useEffect,useRef,useState} from 'react';
-import {BriefcaseBusiness,FlaskConical,LogOut,Radar,Search,UserRound,Star,Settings,X,HelpCircle,BookOpen} from 'lucide-react';
+import {BriefcaseBusiness,ChartNoAxesCombined,FlaskConical,LogOut,Radar,Search,UserRound,Star,Settings,X,HelpCircle,BookOpen} from 'lucide-react';
 import {supabaseBrowser} from '@/lib/supabase';
 import AurynLogo from './AurynLogo';
 import SearchBox from './SearchBox';
-const nav=[{href:'/analyze',label:'Research',icon:Search},{href:'/portfolio',label:'Portfolio',icon:BriefcaseBusiness},{href:'/alerts',label:'Monitor',icon:Radar},{href:'/trading-lab',label:'Trading Lab',icon:FlaskConical}];
+const nav=[{href:'/analyze',label:'Research',icon:Search},{href:'/portfolio',label:'Portfolio',icon:BriefcaseBusiness},{href:'/accumulation',label:'Accumulation',icon:ChartNoAxesCombined},{href:'/alerts',label:'Monitor',icon:Radar},{href:'/trading-lab',label:'Trading Lab',icon:FlaskConical}];
 export default function AppShell({children}:{children:React.ReactNode}){
  const path=usePathname(),menuRef=useRef<HTMLDivElement>(null),[open,setOpen]=useState(false),[email,setEmail]=useState('');
  const home=path==='/analyze'||path==='/dashboard';
