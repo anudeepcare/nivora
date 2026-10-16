@@ -1,3 +1,4 @@
+import {authorizeRequest} from "@/lib/server/authorization";
 import {NextResponse} from "next/server";
 import {createClient} from "@supabase/supabase-js";
 import {analyzePortfolioRisk} from "@/lib/nivora-portfolio-risk";
@@ -13,11 +14,12 @@ async function trailingReturns(symbol:string,key:string){
 }
 
 export async function POST(req:Request){
+ const auth=await authorizeRequest(req);if(auth.response)return auth.response;
  const body=await req.json().catch(()=>({}));
  const supplied=Array.isArray(body?.holdings)?body.holdings.map((h:any)=>({symbol:String(h?.symbol||"").toUpperCase(),marketValue:Number(h?.marketValue||0),sector:h?.sector||null,archetype:h?.archetype||null})).filter((h:any)=>h.symbol&&Number.isFinite(h.marketValue)&&h.marketValue>0):[];
  let base:any[]=supplied;
  if(!base.length){
-  const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY,userId=String(body?.userId||"");
+  const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY,userId=auth.user.id;
   if(!url||!key)return NextResponse.json({status:"unavailable"},{status:503});
   if(!userId)return NextResponse.json({error:"userId required"},{status:400});
   const db=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});

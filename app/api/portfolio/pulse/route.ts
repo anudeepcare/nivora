@@ -1,3 +1,4 @@
+import {authorizeRequest} from "@/lib/server/authorization";
 import {NextResponse} from "next/server";
 import {createClient} from "@supabase/supabase-js";
 import {loadCanonicalMarketSnapshots} from "@/lib/auryn/market-data-gateway";
@@ -6,17 +7,18 @@ function db(){
  const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY;
  return url&&key?createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}}):null;
 }
-function userId(req:Request){return String(req.headers.get("x-nivora-user-id")||"").trim()}
 
 export async function GET(req:Request){
- const client=db(),uid=userId(req);if(!client)return NextResponse.json({status:"unavailable"},{status:503});if(!uid)return NextResponse.json({error:"user required"},{status:401});
+ const auth=await authorizeRequest(req);if(auth.response)return auth.response;
+ const uid=auth.user.id,client=db();if(!client)return NextResponse.json({status:"unavailable"},{status:503});
  const{data,error}=await client.from("nivora_portfolio_snapshots").select("as_of,total_value,spy_price,qqq_price,holdings").eq("user_id",uid).order("as_of",{ascending:true}).limit(1600);
  if(error)return NextResponse.json({status:"error",error:error.message},{status:500});
  return NextResponse.json({status:"ok",items:(data||[]).map((x:any)=>({asOf:x.as_of,totalValue:Number(x.total_value),spy:x.spy_price==null?null:Number(x.spy_price),qqq:x.qqq_price==null?null:Number(x.qqq_price),holdings:x.holdings||[]}))},{headers:{"Cache-Control":"private, no-store"}});
 }
 export async function POST(req:Request){
- const client=db(),uid=userId(req);if(!client)return NextResponse.json({status:"unavailable"},{status:503});if(!uid)return NextResponse.json({error:"user required"},{status:401});
- const b=await req.json().catch(()=>({})),totalValue=Number(b.totalValue);if(!Number.isFinite(totalValue)||totalValue<0)return NextResponse.json({error:"valid totalValue required"},{status:400});
+ const auth=await authorizeRequest(req);if(auth.response)return auth.response;
+ const uid=auth.user.id,client=db();if(!client)return NextResponse.json({status:"unavailable"},{status:503});
+ const b=await req.json().catch(()=>({})),totalValue=Number(b.totalValue);if(typeof b.totalValue!=="number"||!Number.isFinite(totalValue)||totalValue<0)return NextResponse.json({error:"valid totalValue required"},{status:400});
  const twelveKey=process.env.TWELVE_DATA_API_KEY||"",alpacaKey=process.env.ALPACA_PAPER_API_KEY||"",alpacaSecret=process.env.ALPACA_PAPER_API_SECRET||"";
  const markets=await loadCanonicalMarketSnapshots(["SPY","QQQ"].map(symbol=>({symbol,twelveKey,alpacaKey,alpacaSecret,asOf:new Date()})),2);
  const spy=markets.get("SPY")?.snapshot.displayPrice??null,qqq=markets.get("QQQ")?.snapshot.displayPrice??null;

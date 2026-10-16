@@ -1,16 +1,13 @@
 import {NextResponse} from "next/server";
-import {createClient} from "@supabase/supabase-js";
+import {authorizeRequest} from "@/lib/server/authorization";
 
 export const dynamic="force-dynamic";
 
 export async function POST(req:Request){
+ const auth=await authorizeRequest(req,true);if(auth.response)return auth.response;
+ const user=auth.user;
  const url=process.env.NEXT_PUBLIC_SUPABASE_URL,serviceKey=process.env.SUPABASE_SERVICE_ROLE_KEY,secret=process.env.CRON_SECRET||process.env.TRADING_LAB_CRON_SECRET;
  if(!url||!serviceKey||!secret)return NextResponse.json({status:"unavailable",reason:"Trading Lab server configuration is incomplete."},{status:503});
- const auth=req.headers.get("authorization")||"",token=auth.startsWith("Bearer ")?auth.slice(7):"";
- if(!token)return NextResponse.json({error:"Unauthorized."},{status:401});
- const db=createClient(url,serviceKey,{auth:{persistSession:false,autoRefreshToken:false}});
- const {data:{user},error}=await db.auth.getUser(token);
- if(error||!user)return NextResponse.json({error:"Unauthorized."},{status:401});
  const origin=new URL(req.url).origin,headers={authorization:`Bearer ${secret}`};
  try{
   const learnResponse=await fetch(`${origin}/api/portfolio/learn`,{method:"GET",headers,cache:"no-store",signal:AbortSignal.timeout(180000)});

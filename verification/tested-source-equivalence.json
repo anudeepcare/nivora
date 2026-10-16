@@ -1,0 +1,5 @@
+{
+  "checked_source_files": 884,
+  "differences_from_clean_tested_build": [],
+  "scope": "All app/components/lib/scripts/tests/supabase/workflow/public files plus package, lock and build configuration. Verification reports and documentation are updated after test execution."
+}

@@ -1,4 +1,5 @@
 "use client";
+import {saveWatchlistSymbol} from "@/lib/watchlist.mjs";
 import {buildFundamentalAnalyst} from "@/lib/auryn/v99910/fundamental-analyst";
 import {buildMarketTruth,formatMarketTruth} from "@/lib/auryn/market-truth";
 
@@ -48,7 +49,7 @@ import MarketTimeframeTape from "./market/MarketTimeframeTape";
 import MarketActionMap from "./market/MarketActionMap";
 
 type Mode="now"|"swing"|"long"|"own";
-type Tab="thesis"|"fundamentals"|"institutions"|"catalysts"|"news"|"earnings"|"technical"|"options";
+type Tab="financials"|"valuation"|"risk"|"thesis"|"fundamentals"|"institutions"|"catalysts"|"news"|"earnings"|"technical"|"options";
 
 const tone=(s:string)=>{
   const x=(s||"").toUpperCase();
@@ -58,16 +59,16 @@ const tone=(s:string)=>{
 };
 
 const money=(n:any)=>{
-  const x=Number(n);
+  const x=n==null||n===""?NaN:Number(n);
   if(!Number.isFinite(x))return String(n??"—");
   const a=Math.abs(x);
   return `${x<0?"-":""}$${a>=1e9?(a/1e9).toFixed(2)+"B":a>=1e6?(a/1e6).toFixed(1)+"M":a>=1e3?(a/1e3).toFixed(1)+"K":a.toLocaleString()}`;
 };
-const eps=(n:any)=>{const x=Number(n);return Number.isFinite(x)?`${x<0?"-":""}$${Math.abs(x).toFixed(2)}`:"—"};
-const formatEpsValue=(n:any)=>{const x=Number(n);return Number.isFinite(x)?x.toFixed(2):"—"};
-const formatOptionPercent=(n:any,d=1)=>{const x=Number(n);return Number.isFinite(x)?`${x.toFixed(d)}%`:"—"};
-const formatOptionPrice=(n:any)=>{const x=Number(n);return Number.isFinite(x)?displayMoney(x):"—"};
-const formatOptionNumber=(n:any,d=2)=>{const x=Number(n);return Number.isFinite(x)?x.toFixed(d):"—"};
+const eps=(n:any)=>{const x=n==null||n===""?NaN:Number(n);return Number.isFinite(x)?`${x<0?"-":""}$${Math.abs(x).toFixed(2)}`:"—"};
+const formatEpsValue=(n:any)=>{const x=n==null||n===""?NaN:Number(n);return Number.isFinite(x)?x.toFixed(2):"—"};
+const formatOptionPercent=(n:any,d=1)=>{const x=n==null||n===""?NaN:Number(n);return Number.isFinite(x)?`${x.toFixed(d)}%`:"—"};
+const formatOptionPrice=(n:any)=>{const x=n==null||n===""?NaN:Number(n);return Number.isFinite(x)?displayMoney(x):"—"};
+const formatOptionNumber=(n:any,d=2)=>{const x=n==null||n===""?NaN:Number(n);return Number.isFinite(x)?x.toFixed(d):"—"};
 const daysUntil=(d?:string|null)=>{if(!d)return null;return Math.ceil((new Date(d+"T12:00:00").getTime()-Date.now())/86400000)};
 
 function metricScore(mode:Mode,business:number,six:number,timing:number,risk:number){
@@ -95,6 +96,9 @@ const responseJsonCache=new Map<string,{ts:number;data:any}>();
 function sharedJson(url:string,signal?:AbortSignal,ttlMs=15000){
   const cached=responseJsonCache.get(url);
   if(cached&&Date.now()-cached.ts<ttlMs)return Promise.resolve(cached.data);
+  // Abortable requests belong to their effect; sharing them lets Strict Mode cleanup
+  // cancel a new subscriber before it receives its own research response.
+  if(signal)return fetch(url,{signal}).then(async r=>{const x=await r.json();if(!r.ok||x?.error)throw new Error(x?.error||`Request failed (${r.status})`);if(!signal.aborted)responseJsonCache.set(url,{ts:Date.now(),data:x});return x;});
   const pending=inflightJson.get(url);
   if(pending)return pending;
   const request=fetch(url,{signal}).then(async r=>{
@@ -140,6 +144,7 @@ export default function StockClient({symbol}:{symbol:string}){
   const mode:Mode=owns?"own":horizon;
   const[tab,setTab]=useState<Tab>("thesis");
   const[watching,setWatching]=useState(false);
+  const[watchError,setWatchError]=useState("");
   const[optionsData,setOptionsData]=useState<any>(null);
   const[optionsLoading,setOptionsLoading]=useState(false);
   const[perfRange,setPerfRange]=useState<"6M"|"YTD"|"1Y">("6M");
@@ -167,7 +172,7 @@ export default function StockClient({symbol}:{symbol:string}){
   const[coreRetry,setCoreRetry]=useState(0);
   const[previousSetupState,setPreviousSetupState]=useState<SetupState|null>(null);
 
-  useEffect(()=>{if(tab!=="thesis")return;let cancelled=false;setOverviewChartLoading(true);fetch(`/api/chart/${encodeURIComponent(symbol)}?range=${overviewChartRange}`,{cache:"no-store"}).then(r=>r.ok?r.json():Promise.reject(new Error("chart"))).then(j=>{if(!cancelled&&Array.isArray(j?.candles)&&j.candles.length)setOverviewChartBars(j.candles)}).catch(()=>{if(!cancelled)setOverviewChartBars(null)}).finally(()=>{if(!cancelled)setOverviewChartLoading(false)});return()=>{cancelled=true}},[symbol,overviewChartRange,tab]);
+  useEffect(()=>{if(tab!=="thesis")return;let cancelled=false;setOverviewChartLoading(true);setOverviewChartBars([]);fetch(`/api/chart/${encodeURIComponent(symbol)}?range=${overviewChartRange}`,{cache:"no-store"}).then(r=>r.ok?r.json():Promise.reject(new Error("chart"))).then(j=>{if(!cancelled)setOverviewChartBars(Array.isArray(j?.candles)?j.candles:[])}).catch(()=>{if(!cancelled)setOverviewChartBars([])}).finally(()=>{if(!cancelled)setOverviewChartLoading(false)});return()=>{cancelled=true}},[symbol,overviewChartRange,tab]);
   useEffect(()=>{if(tab!=="thesis")return;let cancelled=false;fetch(`/api/chart/${encodeURIComponent(symbol)}?range=5Y`,{cache:"force-cache"}).then(r=>r.ok?r.json():Promise.reject(new Error("long-term chart"))).then(j=>{if(!cancelled&&Array.isArray(j?.candles))setLongTermBars(j.candles)}).catch(()=>{if(!cancelled)setLongTermBars([])});return()=>{cancelled=true}},[symbol,tab]);
   useEffect(()=>{
     try{const saved=localStorage.getItem(`auryn:v931:setup:${symbol}`) as SetupState|null;setPreviousSetupState(saved||null)}catch{setPreviousSetupState(null)}
@@ -281,7 +286,7 @@ export default function StockClient({symbol}:{symbol:string}){
           if(attempt<CORE_ATTEMPTS)await new Promise(r=>setTimeout(r,180));
         }finally{clearTimeout(timer)}
       }
-      if(showError&&live&&!stockWarmCache.get(symbol)?.d)setErr(lastError?.name==="AbortError"?"Live history is temporarily slow. AURYN kept the verified price active; retry research when ready.":lastError?.message||"Analysis is temporarily unavailable.");
+      if(showError&&live&&!stockWarmCache.get(symbol)?.d)setErr(lastError?.name==="AbortError"?"Confirmed history is temporarily unavailable. Retry research when ready; quote verification is independent.":lastError?.message||"Analysis is temporarily unavailable.");
     };
 
     const loadEvidence=async()=>{
@@ -345,12 +350,14 @@ export default function StockClient({symbol}:{symbol:string}){
   },[tab,symbol,d?.assetType,optionStyle,optionSide,optionExpiration]);
 
   async function watch(){
-    const s=supabaseBrowser();
-    const{data:{user}}=await s.auth.getUser();
-    if(!user)return;
-    let{data:w}=await s.from("watchlists").select("id").eq("user_id",user.id).limit(1).maybeSingle();
-    if(!w){const x=await s.from("watchlists").insert({user_id:user.id,name:"My Watchlist"}).select("id").single();w=x.data}
-    if(w){await s.from("watchlist_items").upsert({watchlist_id:w.id,user_id:user.id,symbol},{onConflict:"watchlist_id,symbol"});setWatching(true)}
+    setWatchError("");
+    try {
+      const s=supabaseBrowser();
+      const {data:{user},error:authError}=await s.auth.getUser();
+      if(authError||!user)throw new Error("Sign in again to save this symbol.");
+      await saveWatchlistSymbol(s,user.id,symbol);
+      setWatching(true);
+    }catch(e:any){setWatchError(e?.message||"Unable to save. Please try again.");}
   }
 
   const view=useMemo(()=>{
@@ -536,39 +543,36 @@ export default function StockClient({symbol}:{symbol:string}){
   },[v6Analysis]);
   const canonicalTrustBlocked=v7Analysis?.trust.state==="BLOCK";
 
+  const executionLevelsAllowed=priceSensitiveAllowed&&!canonicalTrustBlocked&&v5Analysis?.executionPlan.state==="READY";
+  const executionIntent=v5Analysis?.executionPlan.intent??"BLOCKED";
+  const executionEntryLabel=executionIntent==="ACCUMULATE"?"Initial entry":executionIntent==="WATCH"?"Structural watch zone":"No new entry";
   const canonicalValidationLevels=useMemo(()=>{
+    const plan=v5Analysis?.executionPlan;
+    if(!executionLevelsAllowed||!plan||plan.state!=="READY")return null;
+    const permitsEntry=plan.intent==="ACCUMULATE"||plan.intent==="WATCH";
     const map=d?.marketIntelligence?.actionMap;
     if(map){
-      const low=Number(map.preferredEntry?.low),high=Number(map.preferredEntry?.high);
+      const value=(x:any)=>x==null||x===""||!Number.isFinite(Number(x))?null:Number(x);
+      const low=permitsEntry?value(map.preferredEntry?.low):null,high=permitsEntry?value(map.preferredEntry?.high):null;
+      const confirmation=permitsEntry?value(map.confirm):null,t1=permitsEntry?value(map.t1):null,t2=permitsEntry?value(map.t2):null;
       return{
-        preferredEntry:Number.isFinite(low)&&Number.isFinite(high)?(low+high)/2:null,
-        preferredEntryLow:Number.isFinite(low)?low:null,
-        preferredEntryHigh:Number.isFinite(high)?high:null,
-        support:map.support??null,
-        majorSupport:map.majorSupport??null,
-        resistance:map.confirm??null,
-        breakout:map.confirm??null,
-        confirmation:map.confirm??null,
-        t1:map.t1??null,t2:map.t2??null,
-        invalidation:map.invalidation??null,
-        actionMap:map,
+        entryLow:low,entryHigh:high,preferredEntry:low!=null&&high!=null?(low+high)/2:null,
+        preferredEntryLow:low,preferredEntryHigh:high,support:value(map.support),majorSupport:value(map.majorSupport),
+        confirm:confirmation,confirmation,breakout:confirmation,resistance:confirmation,
+        target1:t1,target2:t2,t1,t2,stop:value(map.invalidation),invalidation:value(map.invalidation),
+        entryLabel:plan.intent==="ACCUMULATE"?"Entry":"Watch zone",intent:plan.intent,
         snapshotId:d.marketIntelligence.snapshotId
       };
     }
-    const plan=v5Analysis?.executionPlan;
-    if(!plan||plan.state!=="READY")return d?.levels||{};
+    const low=permitsEntry?plan.initialEntry?.low??null:null,high=permitsEntry?plan.initialEntry?.high??null:null;
+    const confirmation=permitsEntry?plan.confirmation:null,t1=permitsEntry?plan.targets[0]?.price??null:null,t2=permitsEntry?plan.targets[1]?.price??null:null;
     return{
-      preferredEntry:plan.initialEntry?.low??null,
-      support:plan.initialEntry?.high??null,
-      majorSupport:plan.invalidation??null,
-      resistance:plan.targets[0]?.price??plan.confirmation??null,
-      breakout:plan.confirmation??null,
-      invalidation:plan.invalidation??null,
-      dcaZones:plan.dcaZones,
-      intent:plan.intent,
-      snapshotId:plan.snapshotId
+      entryLow:low,entryHigh:high,preferredEntry:low,preferredEntryLow:low,preferredEntryHigh:high,
+      support:high,majorSupport:plan.invalidation,confirm:confirmation,confirmation,breakout:confirmation,resistance:t1??confirmation,
+      target1:t1,target2:t2,t1,t2,stop:plan.invalidation,invalidation:plan.invalidation,
+      entryLabel:plan.intent==="ACCUMULATE"?"Entry":"Watch zone",dcaZones:plan.dcaZones,intent:plan.intent,snapshotId:plan.snapshotId
     };
-  },[v5Analysis,d?.levels,d?.marketIntelligence]);
+  },[v5Analysis,d?.marketIntelligence,executionLevelsAllowed]);
 
   const enterprise=useMemo(()=>{
     if(!d||!intelligence)return null;
@@ -624,11 +628,11 @@ export default function StockClient({symbol}:{symbol:string}){
       {durable?.action?<section className="v935DurableResearch" data-canonical-snapshot={canonicalV935?.snapshotId||""}>
         <div><small>LAST VERIFIED AURYN DECISION</small><h2>{String(durable.action).replaceAll("_"," ")}</h2><p>{durable.state==="STALE_VERIFIED"?"Verified research is preserved while AURYN refreshes the newest completed-bar evidence.":"Verified research is available while deeper evidence refreshes in the background."}</p></div>
         <div className="v935DurableActions"><span>OWNER <b>{durable.ownerAction||"—"}</b></span><span>LONG TERM <b>{durable.longTermAction||"—"}</b></span><span>SETUP <b>{String(durable.setupState||"—").replaceAll("_"," ")}</b></span></div>
-        {durableMap?<div className="v935DurableLevels"><span>ENTRY <b>{durableMap.preferredEntry?.low!=null?`${displayMoney(durableMap.preferredEntry.low)}–${displayMoney(durableMap.preferredEntry.high)}`:"—"}</b></span><span>CONFIRM <b>{displayMoney(durableMap.confirm??durableMap.breakout??null)}</b></span><span>T1 <b>{displayMoney(durableMap.t1??null)}</b></span><span>T2 <b>{displayMoney(durableMap.t2??null)}</b></span><span>RISK <b>{displayMoney(durableMap.invalidation??null)}</b></span></div>:null}
+        {durableMap&&priceSensitiveAllowed?<div className="v935DurableLevels"><span>ENTRY <b>{durableMap.preferredEntry?.low!=null?`${displayMoney(durableMap.preferredEntry.low)}–${displayMoney(durableMap.preferredEntry.high)}`:"—"}</b></span><span>CONFIRM <b>{displayMoney(durableMap.confirm??durableMap.breakout??null)}</b></span><span>T1 <b>{displayMoney(durableMap.t1??null)}</b></span><span>T2 <b>{displayMoney(durableMap.t2??null)}</b></span><span>RISK <b>{displayMoney(durableMap.invalidation??null)}</b></span></div>:null}
         <small className="v935RefreshState">Refreshing latest evidence in background{err?" · provider temporarily delayed":""}</small>
       </section>:<section className={`aurynProgressiveResearch ${err?"degraded":"loading"}`}>
         <small>{err?"RESEARCH TEMPORARILY UPDATING":"BUILDING CONFIRMED RESEARCH"}</small>
-        <h2>{err?"Live price is active. Historical intelligence is retrying.":`Building ${symbol} without blocking the live price.`}</h2>
+        <h2>{err?"Research is temporarily unavailable.":`Building ${symbol} without blocking the live price.`}</h2>
         <p>{err||"Confirmed daily and weekly structure load first. Tactical context follows separately."}</p>
         {err?<button type="button" onClick={()=>{setErr("");setCoreRetry(x=>x+1)}}>Retry research</button>:null}
       </section>}
@@ -836,16 +840,8 @@ export default function StockClient({symbol}:{symbol:string}){
     preferredEntry:horizonPlan.entryLow,support:horizonPlan.entryHigh,majorSupport:Number(d.levels.majorSupport),
     resistance:horizonPlan.target1,breakout:horizonPlan.confirm,invalidation:horizonPlan.stop
   };
-  const v5ChartLevels=(()=>{
-    const plan=v5Analysis?.executionPlan;
-    if(!plan||plan.state!=="READY"||!plan.initialEntry)return null;
-    const t1=plan.targets[0]?.price??null,t2=plan.targets[1]?.price??t1;
-    return {
-      entryLow:plan.initialEntry.low,entryHigh:plan.initialEntry.high,confirm:plan.confirmation,
-      target1:t1,target2:t2,stop:plan.invalidation,preferredEntry:plan.initialEntry.low,
-      support:plan.initialEntry.high,majorSupport:plan.invalidation,resistance:t1,breakout:plan.confirmation,invalidation:plan.invalidation
-    };
-  })();
+  // The current canonical map owns every displayed chart level; the V5 plan is its verified fallback.
+  const v5ChartLevels=executionLevelsAllowed?canonicalValidationLevels:null;
   const horizonCandles=(d.candles||[]).slice(horizon==="now"?-65:horizon==="swing"?-125:-180);
 
   const marketTruthUi=buildMarketTruth(aurynPriceState.isLive?stableDisplayQuote:null,marketTruth,new Date().toISOString());
@@ -887,181 +883,32 @@ export default function StockClient({symbol}:{symbol:string}){
   };
   return <div className="aurynStockPage">
     <StockSecurityHeader company={company?.name||d.name||symbol} symbol={symbol} price={aurynPriceState.price} changePct={displayChangePct} status={marketStatusLabel} detail={marketDetail} logoUrl={context?.profile?.logo||null} marketFacts={securityMarketFacts} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
+    {tab!=="thesis"&&institutionalDecision&&<div className="researchToolbar" aria-label="Canonical investment decision"><span>Canonical decision <b>{institutionalDecision.newMoneyAction.replaceAll("_"," ")}</b></span><span>Owner: {institutionalDecision.ownerAction.replaceAll("_"," ")} · Long term: {institutionalDecision.longTermAction.replaceAll("_"," ")}</span></div>}
     <StockEvidenceNav tab={tab} setTab={handleEvidenceTab} isCrypto={d.assetType==="crypto"}/>
     {marketTruth&&!priceSensitiveAllowed&&!stableLiveFresh?<div className="aurynIntegrityAlert aurynMarketTruthAlert" role="alert"><b>PRICE UNVERIFIED</b><span>{marketTruth.reason||"Independent market sources are not sufficiently aligned."} AURYN has disabled entry, confirmation, target, stop and risk/reward output until the canonical price is verified.</span></div>:null}
     {marketTruth&&!priceSensitiveAllowed&&stableLiveFresh?<div className="aurynIntegrityNote"><b>Research price live</b><span>Execution-grade verification is still pending; AURYN keeps automated execution blocked without hiding the live research price.</span></div>:null}
     {/* Compatibility contract: AurynResearchOverview decision={institutionalDecision} marketTruth={marketTruth}; runtime receives the unified display truth below. */}
-    <div ref={overviewRef}>{tab==="thesis"&&institutionalDecision?<AurynResearchOverviewV2 decision={institutionalDecision} marketTruth={{...marketTruth,...marketTruthUi,priceState:marketTruthUi.freshness}} displayPrice={aurynPriceState.price} displayPriceLive={aurynPriceState.isLive} marketIntelligence={marketIntelligenceView??d?.marketIntelligence??null} fundamentalScenario={analystFundamentals.fundamentalScenario} analystFundamentals={analystFundamentals} technicalEvidence={{trend:technicalState.trend,momentum:technicalState.momentum,participation:technicalState.participation,relativeStrengthPct:null,volatilityRisk:technicalState.volatilityRisk}} entryQuality={technicalState.entryQuality} chartRange={overviewChartRange} chartLoading={overviewChartLoading} onChartRangeChange={setOverviewChartRange} onOpenCatalysts={()=>handleEvidenceTab("catalysts","catalysts")} onOpenRisks={()=>handleEvidenceTab("fundamentals","risks")} onOpenDetails={()=>handleEvidenceTab("earnings","earnings")} onOpenThesis={()=>handleEvidenceTab("fundamentals","thesis")} onOpenValuation={()=>handleEvidenceTab("fundamentals","valuation")} onAddWatchlist={watch} onTrackPosition={()=>{window.location.href="/portfolio?symbol="+encodeURIComponent(symbol)}} watching={watching} candles={overviewChartBars??(v5Analysis?.bars||d?.candles||[]).slice(-180)} longTermCandles={longTermBars.length?longTermBars:(v5Analysis?.bars||d?.candles||[])} chartLevels={v5ChartLevels??canonicalValidationLevels}/>:null}</div>
-    {tab==="thesis"&&(v5Analysis?<>{canonicalTrustBlocked?<div className="aurynIntegrityAlert aurynTrustBlock" role="alert"><b>CANONICAL TRUST BLOCK</b><span>{v7Analysis?.trust.blockers[0]||"AURYN detected an internal snapshot/plan inconsistency."} Price-sensitive execution levels are suppressed until the canonical chain is aligned.</span></div>:null}</>:<section className="aurynV5Unavailable v940PendingSnapshot"><small>{canonicalV935?.research?"LAST VERIFIED AURYN DECISION":"AURYN CANONICAL ANALYSIS"}</small><b>{canonicalV935?.research?"VERIFIED SNAPSHOT LOADED":"BUILDING FIRST VERIFIED SNAPSHOT"}</b><span>{canonicalV935?.research?"Refreshing deeper evidence… live market price and the last verified research snapshot remain available while the canonical analysis updates.":"Live market price is available. AURYN is building the first canonical evidence snapshot without inventing a fallback verdict."}</span><div className="v940PendingProgress"><i className="done"/><i className="done"/><i/><i/><span>Market price</span><span>Structure</span><span>Fundamentals</span><span>Canonical decision</span></div></section>)}
+    {watchError&&<p role="alert" className="formError">{watchError}</p>}
+    <div id="research-tab-panel" role="tabpanel" aria-labelledby={`research-tab-${tab}`} tabIndex={0}><div ref={overviewRef}>{tab==="thesis"&&institutionalDecision?<AurynResearchOverviewV2 decision={institutionalDecision} marketTruth={{...marketTruth,...marketTruthUi,priceState:marketTruthUi.freshness}} displayPrice={aurynPriceState.price} displayPriceLive={aurynPriceState.isLive} marketIntelligence={marketIntelligenceView??d?.marketIntelligence??null} fundamentalScenario={analystFundamentals.fundamentalScenario} analystFundamentals={analystFundamentals} technicalEvidence={{trend:technicalState.trend,momentum:technicalState.momentum,participation:technicalState.participation,relativeStrengthPct:null,volatilityRisk:technicalState.volatilityRisk}} entryQuality={technicalState.entryQuality} chartRange={overviewChartRange} chartLoading={overviewChartLoading} onChartRangeChange={setOverviewChartRange} onOpenCatalysts={()=>handleEvidenceTab("catalysts","catalysts")} onOpenRisks={()=>handleEvidenceTab("risk")} onOpenDetails={()=>handleEvidenceTab("earnings","earnings")} onOpenThesis={()=>handleEvidenceTab("fundamentals","thesis")} onOpenValuation={()=>handleEvidenceTab("valuation")} onAddWatchlist={watch} onTrackPosition={()=>{window.location.href="/portfolio?symbol="+encodeURIComponent(symbol)}} watching={watching} candles={overviewChartBars??(v5Analysis?.bars||d?.candles||[]).slice(-180)} longTermCandles={longTermBars.length?longTermBars:(v5Analysis?.bars||d?.candles||[])} scenario={v5Analysis?.scenario??null} executionLevelsAllowed={executionLevelsAllowed} executionIntent={executionIntent} chartLevels={v5ChartLevels}/>:null}</div>
+    {tab==="thesis"&&(v5Analysis?<>{canonicalTrustBlocked?<div className="aurynIntegrityAlert aurynTrustBlock" role="alert"><b>CANONICAL TRUST BLOCK</b><span>{v7Analysis?.trust.blockers[0]||"AURYN detected an internal snapshot/plan inconsistency."} Price-sensitive execution levels are suppressed until the canonical chain is aligned.</span></div>:null}</>:<section className="aurynV5Unavailable v940PendingSnapshot"><small>{canonicalV935?.research?"LAST VERIFIED AURYN DECISION":"AURYN CANONICAL ANALYSIS"}</small><b>{canonicalV935?.research?"VERIFIED SNAPSHOT LOADED":"BUILDING FIRST VERIFIED SNAPSHOT"}</b><span>{canonicalV935?.research?"Refreshing deeper evidence… live market price and the last verified research snapshot remain available while the canonical analysis updates.":"AURYN is building the first canonical evidence snapshot. Price verification and research load independently."}</span><div className="v940PendingProgress"><i className="done"/><i className="done"/><i/><i/><span>Market price</span><span>Structure</span><span>Fundamentals</span><span>Canonical decision</span></div></section>)}
 
     <section ref={thesisRef} id="auryn-research" className="aurynStockResearch">
       <StockEvidenceSections>
 
-      {tab==="fundamentals"&&<div data-auryn-section="valuation" className="aurynStockTabPage v12Fund v99934BusinessThesis">
-        <header className="v99934TabHero"><small>LONG-TERM COMPANY THESIS</small><h2>{canonicalBusinessLabel}{canonicalBusinessScore!=null?` · ${canonicalBusinessScore}/100`:""}</h2><p>This tab answers whether the underlying business deserves long-term ownership. Entry timing and technical price levels stay on Overview and Technicals.</p></header>
-        <div className="v99934BusinessQuestions">
-          <article><small>WHY OWN IT</small><h3>Business case</h3>{(business.reasons||[]).filter(Boolean).slice(0,3).map((x:string,i:number)=><p key={i}>✓ {x}</p>)}{!(business.reasons||[]).length?<p>Decision-grade business evidence is still building.</p>:null}</article>
-          <article><small>WHAT MUST GO RIGHT</small><h3>Operating proof</h3><p>Growth must translate into durable profitability, cash generation and execution quality.</p>{canonicalBusinessScore!=null&&canonicalBusinessScore<60?<p>Current business quality is below AURYN's strong-quality threshold; improvement must be demonstrated rather than assumed.</p>:<p>Maintain or improve the operating factors supporting the current business-quality score.</p>}</article>
-          <article><small>WHAT BREAKS THE BUSINESS THESIS</small><h3>Fundamental invalidation</h3><p>Sustained deterioration in growth, profitability, cash generation, balance-sheet resilience or competitive durability.</p><p>Price volatility by itself does not break the business thesis.</p></article>
-        </div>
-        {five&&<section className="v99934FiveYear"><div><small>5-YEAR BUSINESS RECORD</small><h3>{five.score}/100 · {formatScoreBand(Number(five.score))}</h3><p>{five.summary}</p><span>Revenue trend: <b>{five.revenueTrend}</b></span></div><div className="v99934FiveYearGrid">{(five.history||[]).map((y:any)=><span key={y.year}><i>{y.year}</i><strong>{y.revenue!=null?money(y.revenue):"—"}</strong><em>{y.netIncome!=null?`NI ${money(y.netIncome)}`:"NI —"}</em></span>)}</div></section>}
-        <section className="v99934Fundamentals"><header><small>OPERATING EVIDENCE</small><h3>Reported fundamentals</h3></header><div className="osList">{company?.fundamentals?.length?company.fundamentals.map((x:any)=><div key={x.label}><span>{x.label}{x.detail&&<small>{x.detail}</small>}</span><b>{x.value}</b></div>):<p>No standardized SEC fundamentals available for this symbol yet.</p>}</div></section>
-      </div>}
+      {tab==="fundamentals"&&<div className="researchTabBody"><header className="researchSectionHeading"><small>Slow brain · Business quality</small><h2>{company?.name||symbol}</h2><p>{canonicalBusinessLabel} · {canonicalBusinessScore==null?"Evidence building":`${canonicalBusinessScore}/100 business quality`}</p></header><div className="researchTwoColumns"><article className="researchCard"><h3>The ownership case</h3>{(business.reasons||[]).length?(business.reasons||[]).filter(Boolean).map((x:string,i:number)=><p className="researchEvidence" key={i}>{x}</p>):<p>Decision-grade business evidence is still building.</p>}</article><article className="researchCard"><h3>Operating proof to watch</h3><p>Growth must translate into durable profitability, cash generation and execution quality.</p><dl className="researchData">{Object.entries(analystFundamentals.companyDimensions||{}).map(([k,v])=><div key={k}><dt>{k.replace(/([A-Z])/g," $1")}</dt><dd>{v==null?"—":`${v}/100`}</dd></div>)}</dl></article></div><article className="researchCard"><header><h3>Five-year business record</h3><button onClick={()=>handleEvidenceTab("financials")}>Financial statements →</button></header><p>{five?.summary||"Historical business evidence is unavailable."}</p><div className="researchDecisionMap">{(five?.history||[]).map((x:any)=><div key={x.year}><small>{x.year}</small><strong>{x.revenue==null?"—":money(x.revenue)}</strong><span>Revenue</span></div>)}</div></article><article className="researchCard"><h3>Fundamental invalidation</h3><p>Sustained deterioration in growth, profitability, cash generation, balance-sheet resilience or competitive durability can change the ownership case. Price volatility by itself does not break the business thesis.</p><button onClick={()=>handleEvidenceTab("risk")}>Review counter-evidence →</button></article></div>}
 
-      {tab==="institutions"&&<div className="aurynStockTabPage v34InstitutionsPage">
-        <StockTabContext marketTruth={marketTruth} label="OWNERSHIP" title="Ownership & positioning evidence" score={canonicalMetricScore("positioning")} state={institutionalLabel} action={institutionalDecision?.newMoneyAction??v5Analysis?.decision.primaryAction} detail="Ownership evidence is delayed context and feeds the same canonical decision without pretending to be real-time order flow."/>
-        <div className="v34InstitutionHero">
-          <div><small>INSTITUTIONAL OWNERSHIP INTELLIGENCE</small><h3>{institutional?.enabled?(institutional.institutional?.shareChangePctLabel||institutional.institutional?.directionLabel||institutionalLabel):"13F data unavailable"}</h3><p>Who reported adding, trimming, opening or exiting positions — translated from delayed SEC 13F evidence.</p></div>
-          <div className="v34InstitutionDates">
-            <div><small>REPORT PERIOD</small><b>{fmtDate(institutionalPeriod)}</b></div>
-            <div><small>COMPARED WITH</small><b>{fmtDate(institutionalPriorPeriod)}</b></div>
-            <div><small>SEC DATASET THROUGH</small><b>{fmtDate(institutionalDatasetThrough)}</b></div>
-          </div>
-        </div>
-        <div className="v34InstitutionDisclosure"><Info size={14}/><span>13F shows reported holdings for a past quarter. It does not prove an institution is buying or selling today. AURYN separately labels current price/volume accumulation.</span></div>
-        <div className="v32Institutional">
-          <div className="v32InstitutionalHead"><div><small>INSTITUTIONAL INTELLIGENCE</small><h3>{institutionalLabel}</h3><p>{institutional?.disclosure||"Reported institutional ownership is not available from the connected feed for this symbol."}</p></div><MetricInfo title="Institutional intelligence">Reported institutional ownership and insider filings are delayed evidence. AURYN keeps this separate from the daily accumulation proxy so it never presents quarterly filings as real-time institutional buying.</MetricInfo></div>
-          {institutional?.enabled?<div className="v32InstitutionalGrid v321InstitutionalGrid">
-            <div><small>QUARTER-OVER-QUARTER</small><b className={Number(institutional.institutional?.shareChangePct||0)>0?"good":Number(institutional.institutional?.shareChangePct||0)<0?"bad":"mid"}>{institutional.institutional?.shareChangePctLabel||institutional.institutional?.directionLabel||institutionalLabel}</b><span>{institutional.institutional?.directionLabel||institutionalLabel} · {institutional.institutional?.increased||0} adding · {institutional.institutional?.reduced||0} trimming</span><em>{institutional.institutional?.periodLabel||"Latest available filing period"}</em></div>
-            <div><small>REPORTED HOLDINGS</small><b className={Number(institutional.institutional?.netReportedShareChange||0)>0?"good":Number(institutional.institutional?.netReportedShareChange||0)<0?"bad":"mid"}>{institutional.institutional?.netChangeLabel||"Mixed / unavailable"}</b><span>{institutional.institutional?.totalShares!=null?`${Number(institutional.institutional.totalShares).toLocaleString()} shares now · ${Number(institutional.institutional.priorTotalShares||0).toLocaleString()} prior`: `${institutional.institutional?.reportingRows||0} reporting managers`}</span><em>{institutional.institutional?.totalValueLabel&&institutional.institutional?.priorTotalValueLabel?`${institutional.institutional.totalValueLabel} reported value · prior ${institutional.institutional.priorTotalValueLabel}`:"Delayed filing evidence — not today's order flow"}</em></div>
-            <div><small>MANAGER BREADTH</small><b className={institutionalTone}>{institutional.institutional?.increased||0} adding · {institutional.institutional?.reduced||0} trimming</b><span>{institutional.institutional?.newManagers!=null?`${institutional.institutional.newManagers} new positions · ${institutional.institutional.exitedManagers||0} exits`: `${institutional.institutional?.reportingRows||0} reporting positions`}</span><em>{institutional.institutional?.unchangedManagers!=null?`${institutional.institutional.unchangedManagers} unchanged · ${institutional.institutional.reportingManagers||0} current managers`:"Latest available ownership evidence"}</em></div>
-            <div><small>INSIDERS</small><b className={institutional.insiders?.label==="Net buying"?"good":institutional.insiders?.label==="Net selling"?"bad":"mid"}>{institutional.insiders?.label||"Mixed"}</b><span>{institutional.insiders?.buys||0} buys · {institutional.insiders?.sells||0} sells in available feed</span><em>Reported transactions only</em></div>
-            <div><small>TODAY'S ACCUMULATION PROXY</small><b className={marketLab?.accumulationLabel==="Accumulating"?"good":marketLab?.accumulationLabel==="Distribution risk"?"bad":"mid"}>{marketLab?.accumulationLabel||"Insufficient data"}</b><span>{marketLab?`${marketLab.accumulation}/100 from price/volume behavior`:"Needs more price/volume history"}</span><em>Market-behavior proxy, not named-institution flow</em></div>
-          </div>:<div className="v32InstitutionalEmpty"><b>Reported institutional filings unavailable.</b><span>{institutional?.reason||"AURYN could not verify current ownership data from the connected/cache sources."}</span><small>Price/volume accumulation remains available separately; AURYN will not call that institutional buying.</small></div>}
-          {institutional?.enabled&&<div className="v33InstitutionalDeep">
-            <div className="v33Pulse">
-              <div><small>INSTITUTIONAL SCORE</small><b className={Number(institutional.institutional?.institutionalScore||50)>=60?"good":Number(institutional.institutional?.institutionalScore||50)<45?"bad":"mid"}>{institutional.institutional?.institutionalScore??50}/100</b><span>Quarterly filing trend strength</span></div>
-              <div><small>ADD / TRIM BREADTH</small><b>{Number(institutional.institutional?.addBreadthPct||0).toFixed(0)}% / {Number(institutional.institutional?.trimBreadthPct||0).toFixed(0)}%</b><span>Among managers that changed positions</span></div>
-              <div><small>REPORTED VALUE CHANGE</small><b className={Number(institutional.institutional?.valueChangePct||0)>0?"good":Number(institutional.institutional?.valueChangePct||0)<0?"bad":"mid"}>{institutional.institutional?.valueChangePctLabel||"Unavailable"}</b><span>Value also moves with stock price</span></div>
-            </div>
-            {[
-              ["LARGEST REPORTED HOLDERS",institutional.institutional?.top],
-              ["BIGGEST REPORTED ADDERS",institutional.institutional?.biggestBuyers],
-              ["BIGGEST REPORTED TRIMMERS",institutional.institutional?.biggestSellers],
-              ["NEW REPORTED POSITIONS",institutional.institutional?.newPositions],
-              ["REPORTED EXITS",institutional.institutional?.exits]
-            ].map(([title,list]:any)=>Array.isArray(list)&&list.length>0&&<details className="v33ManagerGroup" key={title} open={title==="LARGEST REPORTED HOLDERS"}>
-              <summary><span>{title}</span><em>{list.length} shown</em></summary>
-              <div className="v33ManagerTable">
-                <div className="head"><span>Manager</span><span>Current</span><span>Prior</span><span>Change</span><span>Reported</span></div>
-                {list.slice(0,12).map((x:any,i:number)=>{const ch=Number(x.change||0);const cp=Number(x.changePct);const total=Number(institutional.institutional?.totalShares||0);const poolPct=total>0?Number(x.shares||0)/total*100:null;return <div key={`${title}-${x.name}-${i}`}><b>{x.name}<small>{x.status?String(x.status).replace(/^./,(c:string)=>c.toUpperCase()):""}</small></b><span>{Number(x.shares||0).toLocaleString()} sh{poolPct!=null&&<small>{poolPct.toFixed(poolPct>=10?1:2)}% of reported 13F shares</small>}</span><span>{x.priorShares!=null?`${Number(x.priorShares).toLocaleString()} sh`:"—"}</span><em className={ch>0?"good":ch<0?"bad":"mid"}>{ch>0?"+":""}{Math.round(ch).toLocaleString()} {Number.isFinite(cp)?`(${cp>0?"+":""}${cp.toFixed(1)}%)`:""}</em><time>{x.filingDate?fmtDate(x.filingDate):(x.reportPeriod?fmtDate(x.reportPeriod):fmtDate(institutionalPeriod))}</time></div>})}
-              </div>
-            </details>)}
-            <div className="v33InstitutionalNote"><b>How to read this</b><span>13F shows what reporting managers held at the report period—not what they are buying today. Manager percentages shown here are each manager’s share of AURYN’s aggregated reported 13F shares, not ownership % of the whole company. True company ownership % needs a period-matched shares-outstanding denominator.</span></div>
-          </div>}
-        </div>
+      {tab==="financials"&&<div className="researchTabBody"><header className="researchSectionHeading"><small>Reported financial evidence</small><h2>Financials</h2><p>Revenue, profitability and cash generation from available company filings. Missing fields remain unavailable.</p></header><div className="researchTwoColumns"><article className="researchCard"><h3>Operating metrics</h3><dl className="researchData">{company?.fundamentals?.length?company.fundamentals.map((x:any)=><div key={x.label}><dt>{x.label}{x.detail&&<small>{x.detail}</small>}</dt><dd>{x.value??"—"}</dd></div>):<p>No standardized financial metrics available.</p>}</dl></article><article className="researchCard"><h3>Five-year record</h3><p>{five?.summary||"Historical financial evidence is not available."}</p><div className="researchTableWrap"><table><thead><tr><th>Year</th><th>Revenue</th><th>Net income</th></tr></thead><tbody>{(five?.history||[]).map((x:any)=><tr key={x.year}><td>{x.year}</td><td>{x.revenue==null?"—":money(x.revenue)}</td><td>{x.netIncome==null?"—":money(x.netIncome)}</td></tr>)}</tbody></table></div></article></div><article className="researchCard"><h3>Source filings</h3>{filings.length?filings.slice(0,8).map((x:any)=><a className="researchSource" href={x.url} key={x.accession} target="_blank" rel="noreferrer"><span>{x.form} · {x.label}</span><time>{x.date} ↗</time></a>):<p>No linked filings returned for this security.</p>}</article></div>}
+      {tab==="valuation"&&<div className="researchTabBody"><header className="researchSectionHeading"><small>Independent valuation clock</small><h2>What is the business worth?</h2><p>Fundamental value is modeled independently from spot price and technical targets.</p></header><div className="researchClocks"><article className="researchCard"><small>Method</small><h3>{String(analystFundamentals.method||"Unavailable").replaceAll("_"," ")}</h3><p>Evidence: {analystFundamentals.valuationState}</p></article><article className="researchCard"><small>Fair value</small><h3>{analystFundamentals.fairValue==null?"—":money(analystFundamentals.fairValue)}</h3><p>Source-backed fundamental estimate</p></article><article className="researchCard"><small>Margin of safety</small><h3>{analystFundamentals.marginOfSafety==null?"—":`${Number(analystFundamentals.marginOfSafety).toFixed(1)}%`}</h3><p>Relative to the current verified reference</p></article></div><article className="researchCard"><h3>Scenario analysis</h3><div className="researchScenarios">{["bear","base","bull"].map(k=><div key={k}><small>{k}</small><strong>{(analystFundamentals.fundamentalScenario as any)?.[k]?.value==null?"—":money((analystFundamentals.fundamentalScenario as any)[k].value)}</strong><span>Independent fundamental scenario</span></div>)}</div><p>Unavailable cases indicate insufficient evidence for the routed valuation method; no price-anchored substitute is used.</p></article><article className="researchCard"><h3>Valuation context</h3><dl className="researchData">{Object.entries(analystFundamentals.relativeContext||{}).map(([k,v])=><div key={k}><dt>{k.replace(/([A-Z])/g," $1")}</dt><dd>{v==null?"—":typeof v==="object"?"See source evidence":String(v)}</dd></div>)}</dl></article></div>}
+      {tab==="risk"&&<div className="researchTabBody"><header className="researchSectionHeading"><small>Thesis discipline</small><h2>Risk & counter-evidence</h2><p>Fundamental deterioration can break the business thesis. Technical levels govern tactical deployment.</p></header><div className="researchTwoColumns"><article className="researchCard"><h3>Counter-evidence</h3>{institutionalDecision?.counterEvidence?.length?institutionalDecision.counterEvidence.map((x:string,i:number)=><p className="researchEvidence" key={i}>{x}</p>):<p>No canonical counter-evidence available. This does not mean there is no risk.</p>}</article><article className="researchCard"><h3>Hard constraints</h3>{institutionalDecision?.hardVetoReasons?.length?institutionalDecision.hardVetoReasons.map((x:string,i:number)=><p className="researchEvidence" key={i}>{x}</p>):<p>No hard veto recorded in the current snapshot.</p>}<p>{institutionalDecision?.pillars.riskAsymmetry.why||"Risk evidence is still building."}</p></article></div><article className="researchCard"><h3>What would change the thesis?</h3><p>Sustained deterioration in growth, profitability, cash generation, balance-sheet resilience or competitive durability requires a fundamental review.</p><p>Confidence: {institutionalDecision?.confidenceScore??"—"}/100 · Evidence completeness: {institutionalDecision?.evidenceCompleteness??"—"}/100</p></article></div>}
+      {tab==="news"&&<div className="researchTabBody"><header className="researchSectionHeading"><small>Source-linked developments</small><h2>News & filings</h2><p>Read the underlying evidence. A headline does not create a standalone investment decision.</p></header><div className="researchNewsGrid">{items.length?items.map((x:any,i:number)=><article className="researchCard" key={x.url||i}><small>{x.source||"Source unavailable"} · {x.date?new Date(x.date).toLocaleDateString():"Date unavailable"}</small><h3>{x.headline}</h3><p>{x.summary}</p>{x.url&&<a href={x.url} target="_blank" rel="noreferrer">Read source ↗</a>}</article>):<article className="researchCard"><h3>No source-backed news available</h3><p>The connected feed has not returned recent stories for this security.</p></article>}</div></div>}
 
-      </div>}
+      {tab==="institutions"&&<div className="researchTabBody"><StockTabContext marketTruth={marketTruth} label="OWNERSHIP" title="Who owns the business?" score={canonicalMetricScore("positioning")} state={institutionalLabel} detail="Reported holdings are delayed SEC evidence. They do not establish who is buying or selling today."/><div className="researchClocks">{[["Report period",fmtDate(institutionalPeriod)],["Compared with",fmtDate(institutionalPriorPeriod)],["SEC dataset through",fmtDate(institutionalDatasetThrough)]].map(([k,v])=><article className="researchCard" key={k}><small>{k}</small><h3>{v}</h3></article>)}</div>{institutional?.enabled?<><div className="researchTwoColumns"><article className="researchCard"><h3>Reported institutional holdings</h3><p>{institutional.institutional?.directionLabel||institutionalLabel}</p><dl className="researchData"><div><dt>Net share change</dt><dd>{institutional.institutional?.netChangeLabel||"—"}</dd></div><div><dt>Managers adding</dt><dd>{institutional.institutional?.increased??"—"}</dd></div><div><dt>Managers trimming</dt><dd>{institutional.institutional?.reduced??"—"}</dd></div><div><dt>New positions / exits</dt><dd>{institutional.institutional?.newManagers??"—"} / {institutional.institutional?.exitedManagers??"—"}</dd></div></dl></article><article className="researchCard"><h3>Insider filings</h3><p>{institutional.insiders?.label||"Unavailable"}</p><dl className="researchData"><div><dt>Reported buys</dt><dd>{institutional.insiders?.buys??"—"}</dd></div><div><dt>Reported sells</dt><dd>{institutional.insiders?.sells??"—"}</dd></div></dl><h3>Price / volume behavior</h3><p>{marketLab?.accumulationLabel||"Insufficient data"} · market-behavior proxy, not named institutional flows.</p></article></div>{[["Largest reported holders",institutional.institutional?.top],["Biggest reported adders",institutional.institutional?.biggestBuyers],["Biggest reported trimmers",institutional.institutional?.biggestSellers],["New reported positions",institutional.institutional?.newPositions],["Reported exits",institutional.institutional?.exits]].map(([title,list]:any)=>Array.isArray(list)&&list.length>0?<details className="researchCard" key={title} open={title==="Largest reported holders"}><summary>{title}</summary><div className="researchTableWrap"><table><thead><tr><th>Manager</th><th>Shares</th><th>Prior shares</th><th>Change</th><th>Reported</th></tr></thead><tbody>{list.slice(0,12).map((x:any,i:number)=><tr key={i}><td>{x.name}</td><td>{x.shares==null?"—":Number(x.shares).toLocaleString()}</td><td>{x.priorShares==null?"—":Number(x.priorShares).toLocaleString()}</td><td>{x.change==null?"—":Number(x.change).toLocaleString()}</td><td>{fmtDate(x.filingDate||x.reportPeriod||institutionalPeriod)}</td></tr>)}</tbody></table></div></details>:null)}</>:<article className="researchCard"><h3>Reported ownership unavailable</h3><p>{institutional?.reason||"The connected sources have not returned verified ownership evidence."}</p></article>}<p className="researchProvenance">13F positions refer to a past quarter. Reported value changes may also reflect stock-price movements.</p></div>}
 
-      {tab==="catalysts"&&<div data-auryn-section="catalysts" className="aurynStockTabPage v12Catalysts v37Events v99935CatalystPage">
-        <StockTabContext marketTruth={marketTruth} label="CATALYSTS" title="Events that can change the thesis" score={canonicalMetricScore("catalysts")} state={catalystLabel} action={institutionalDecision?.newMoneyAction??v5Analysis?.decision.primaryAction} detail={institutionalDecision?.pillars.catalystsRegime.why||"Catalyst and regime evidence is loading into the canonical AURYN decision."}/>
-        <div className="v37EventsSummary v99935CatalystHero"><div><small>EVENT RISK / OPPORTUNITY</small><h3>{catalystLabel}</h3><p>{intelligence?.dimensions?.catalysts!=null?`Catalyst score ${intelligence.dimensions.catalysts}/100. Events can change the thesis quickly; price confirmation still matters.`:"Event evidence is loading."}</p></div><div><small>NEWS TONE</small><b className={news.tone==="positive"?"good":news.tone==="negative"?"bad":"mid"}>{news.label}</b><span>{news.topReason||"No dominant headline signal."}</span></div></div>
-        {earn&&<div className="nextEvent"><CalendarDays size={18}/><div><small>NEXT EARNINGS</small><b>{earn.date}</b><span>{earnDays!=null&&earnDays>=0?`${earnDays} days away`:"Upcoming"}{earn.epsEstimate!=null?` · EPS est. ${eps(earn.epsEstimate)}`:""}</span></div></div>}
-        <section className="v99935CatalystSection"><div className="catalystIntro"><div><small>RECENT MATERIAL FILINGS</small><MetricInfo title="Catalysts">Company filings and scheduled events that may change the investment thesis. A filing is evidence to review, not automatically bullish or bearish.</MetricInfo></div><span>Newest first</span></div>
-        <div className="catalystList">{filings.length?filings.slice(0,8).map((x:any)=><a className="catalystRow" href={x.url} target="_blank" rel="noreferrer" key={x.accession}>
-          <div className="catalystMain"><b>{x.label}</b><small>{x.form}{x.description?` · ${x.description}`:""}</small></div>
-          <div className="catalystMeta"><em className={x.tone}>{x.materiality}</em><time>{x.date}</time><ExternalLink size={14}/></div>
-        </a>):<p className="emptyState">No recent material SEC filings found.</p>}</div></section>
-        <section className="v99935CatalystSection v99935NewsSection"><div className="v37EventNews"><div className="catalystIntro"><div><small>RECENT MATERIAL NEWS</small></div><span>Context, not a standalone signal</span></div>{items.slice(0,5).map((x:any,i:number)=><a href={x.url} target="_blank" rel="noreferrer" key={i}><div><span className={`newsTone ${x.tone}`}>{x.tone}</span><small>{x.materiality} · {x.source}</small></div><b>{x.headline}</b><p>{x.summary}</p></a>)}</div></section>
-      </div>}
+      {tab==="catalysts"&&<div className="researchTabBody"><StockTabContext marketTruth={marketTruth} label="CATALYSTS" title="Events that can change the thesis" score={canonicalMetricScore("catalysts")} state={catalystLabel} detail={institutionalDecision?.pillars.catalystsRegime.why||"Catalyst evidence is still building."}/>{earn&&<article className="researchCard researchEvent"><small>Next earnings · estimated</small><h3>{earn.date}</h3><p>{earnDays!=null&&earnDays>=0?`${earnDays} days away`:"Upcoming event"} · Dates remain estimates until confirmed by the company.</p></article>}<article className="researchCard"><h3>Material filings</h3>{filings.length?filings.slice(0,12).map((x:any)=><a className="researchSource" key={x.accession} href={x.url} target="_blank" rel="noreferrer"><div><b>{x.label}</b><p>{x.form} · {x.description||x.materiality}</p></div><time>{x.date} ↗</time></a>):<p>No recent material SEC filings found.</p>}</article><div className="researchNewsGrid">{items.slice(0,6).map((x:any,i:number)=><article className="researchCard" key={i}><small>{x.source} · {x.materiality}</small><h3>{x.headline}</h3><p>{x.summary}</p><a href={x.url} target="_blank" rel="noreferrer">Read source ↗</a></article>)}</div></div>}
 
-      {tab==="earnings"&&<div data-auryn-section="earnings" className="aurynStockTabPage v12Earnings"><StockTabContext marketTruth={marketTruth} label="EARNINGS" title="Execution, revisions & reported results" score={canonicalMetricScore("fundamentals")} state={v4Analysis?.thesis.direction} action={institutionalDecision?.newMoneyAction??v5Analysis?.decision.primaryAction} detail={institutionalDecision?.pillars.earningsRevisions.why||"Earnings and forward-fundamental evidence is loading into the canonical AURYN decision."}/><div className="earnSplit">{latestReport&&<div className="earnNext earnReported"><small>LATEST REPORTED RESULTS</small><h3>{latestEarnNews?.date?new Date(latestEarnNews.date).toLocaleDateString():latestReport.date}</h3><p>{latestEarnNews?.headline||`${latestReport.form} filed — latest reported financial filing`}</p>{latestEarnNews?.url&&<a href={latestEarnNews.url} target="_blank" rel="noreferrer">Read results <ExternalLink size={12}/></a>}</div>}{earn&&<div className="earnNext estimated"><small>NEXT EARNINGS · ESTIMATED</small><h3>{earn.date}</h3><p>{earn.hour||"Time not listed"}{earn.epsEstimate!=null?` · EPS est. ${eps(earn.epsEstimate)}`:""}{earn.revenueEstimate!=null?` · Revenue est. ${money(earn.revenueEstimate)}`:""}</p><p className="earnMeta">Future calendar dates are estimates until confirmed by the company.</p></div>}</div><div className="earnGrid">{(context?.surprises||[]).length?context.surprises.map((x:any,i:number)=><div key={i}><small>{x.period}</small><b className={(x.surprisePercent??0)>=0?"good":"bad"}>{x.surprisePercent!=null?`${x.surprisePercent>=0?"+":""}${Number(x.surprisePercent).toFixed(1)}% surprise`:"Reported"}</b><span>Actual {formatEpsValue(x.actual)} · Est. {formatEpsValue(x.estimate)}</span></div>):<p>No earnings-surprise history returned by the connected feed.</p>}</div></div>}
+      {tab==="earnings"&&<div className="researchTabBody"><StockTabContext marketTruth={marketTruth} label="EARNINGS" title="Execution & reported results" score={canonicalMetricScore("fundamentals")} state={v4Analysis?.thesis.direction} detail={institutionalDecision?.pillars.earningsRevisions.why||"Earnings evidence is still building."}/><div className="researchTwoColumns"><article className="researchCard"><small>Latest reported results</small><h3>{latestReport?.date||"No verified report loaded"}</h3><p>{latestEarnNews?.headline||latestReport?.form||"Reported results will appear when returned by the connected sources."}</p>{latestEarnNews?.url&&<a href={latestEarnNews.url} target="_blank" rel="noreferrer">Read results ↗</a>}</article><article className="researchCard"><small>Next earnings · estimated</small><h3>{earn?.date||"Date unavailable"}</h3><dl className="researchData"><div><dt>EPS estimate</dt><dd>{eps(earn?.epsEstimate)}</dd></div><div><dt>Revenue estimate</dt><dd>{money(earn?.revenueEstimate)}</dd></div></dl><p>Future dates are estimates until confirmed by the company.</p></article></div><article className="researchCard"><h3>Earnings surprise history</h3>{context?.surprises?.length?<div className="researchTableWrap"><table><thead><tr><th>Period</th><th>Actual EPS</th><th>Estimated EPS</th><th>Surprise</th></tr></thead><tbody>{context.surprises.map((x:any,i:number)=><tr key={i}><td>{x.period}</td><td>{formatEpsValue(x.actual)}</td><td>{formatEpsValue(x.estimate)}</td><td>{x.surprisePercent==null?"—":`${Number(x.surprisePercent).toFixed(1)}%`}</td></tr>)}</tbody></table></div>:<p>No earnings-surprise history returned by the connected feed.</p>}</article></div>}
 
-      {tab==="technical"&&<div className="aurynStockTabPage v12Technical v26Technical">
-        {d?.marketIntelligence?<section className="v934TechnicalCore" data-market-intelligence-snapshot={d.marketIntelligence.snapshotId}><div className="aurynEyebrow">MULTI-TIMEFRAME MARKET STATE</div><MarketTimeframeTape marketIntelligence={marketIntelligenceView??d.marketIntelligence}/><MarketActionMap marketIntelligence={d.marketIntelligence}/></section>:null}
-        <div className="v962TechnicalExperience">
-          <StockTabContext marketTruth={marketTruth} label="TECHNICALS" title="Timing, trend & confluence" score={technicalState.strength} state={d.labels.trend} action={institutionalDecision?.newMoneyAction??v5Analysis?.decision.primaryAction} detail={institutionalDecision?.pillars.marketStructure.why||"Completed-bar market structure is loading into the canonical AURYN decision."}/>
-
-          <section className="v962TechnicalRead">
-            <div className="v962ReadNarrative">
-              <small>TECHNICAL READ</small>
-              <h3>Timing, trend &amp; confluence</h3>
-              <p>{
-                technicalState.trend>=67
-                  ? technicalState.momentum>=60&&technicalState.participation>=55
-                    ? "Trend, momentum and participation are aligned. The setup is technically constructive, but entry quality still determines whether price is worth chasing."
-                    : "Trend remains strong, but momentum and participation are not fully confirming yet. Strength and entry remain different questions."
-                  : technicalState.trend<42
-                    ? "Trend structure is weak. AURYN is prioritizing stabilization and confirmation before treating strength as durable."
-                    : "Trend structure is mixed. Confirmation matters more than a single indicator while the setup remains unresolved."
-              }</p>
-              <div className="v962ReadChips">
-                <span className={technicalState.trend>=67?"good":technicalState.trend<42?"bad":"mid"}>Trend · {technicalState.trend>=67?"Bullish":technicalState.trend<42?"Bearish":"Mixed"}</span>
-                <span className={technicalState.momentum>=67?"good":technicalState.momentum<42?"bad":"mid"}>Momentum · {technicalState.momentum>=67?"Strong":technicalState.momentum<42?"Weak":"Mixed"}</span>
-                <span className={technicalState.volatilityRisk>=70?"bad":technicalState.volatilityRisk<40?"good":"mid"}>Risk · {technicalState.volatilityRisk>=70?"Elevated":technicalState.volatilityRisk<40?"Controlled":"Moderate"}</span>
-              </div>
-            </div>
-            <div className="v962ReadScore">
-              <small>TECHNICAL STRENGTH</small>
-              <div className="v962ScoreGauge" style={{"--score":`${technicalState.strength}%`} as React.CSSProperties}><i/></div>
-              <div><b className={technicalState.strength>=68?"good":technicalState.strength<45?"bad":"mid"}>{technicalState.strength}</b><span>/100</span></div>
-              <strong>{technicalState.strength>=68?"Constructive":technicalState.strength<45?"Defensive":"Mixed"}</strong>
-            </div>
-            <div className="v962ReadTakeaway">
-              <small>WHAT IT MEANS</small>
-              <p>{technicalState.strength>=68
-                ? "The chart has useful technical strength. AURYN still requires entry quality and confirmation before strength becomes a reason to deploy new capital."
-                : technicalState.strength<45
-                  ? "Technical evidence is defensive. Improvement in structure and participation is needed before the setup becomes actionable."
-                  : "Evidence is balanced. Wait for stronger agreement between trend, momentum and participation before upgrading the setup."}</p>
-            </div>
-          </section>
-
-          <section className="v962FactorSection">
-            <div className="v962SectionLabel">KEY FACTOR SCORES</div>
-            <div className="v962ScoreRail">
-              <div><small>ENTRY QUALITY</small><b className={technicalState.entryQuality>=68?"good":technicalState.entryQuality<45?"bad":"mid"}>{technicalState.entryQuality}<em>/100</em></b><span>{technicalState.entryState}</span><i style={{"--v":`${technicalState.entryQuality}%`} as React.CSSProperties}/></div>
-              <div><small>TREND</small><b>{technicalState.trend}<em>/100</em></b><span>{technicalState.trend>=67?"Bullish":technicalState.trend<42?"Bearish":"Mixed"}</span><i style={{"--v":`${technicalState.trend}%`} as React.CSSProperties}/></div>
-              <div><small>MOMENTUM</small><b>{technicalState.momentum}<em>/100</em></b><span>{technicalState.momentum>=67?"Strong":technicalState.momentum<42?"Weak":"Mixed"}</span><i style={{"--v":`${technicalState.momentum}%`} as React.CSSProperties}/></div>
-              <div><small>PARTICIPATION</small><b>{technicalState.participation}<em>/100</em></b><span>{proTech?.volumeLabel||"Volume context"}</span><i style={{"--v":`${technicalState.participation}%`} as React.CSSProperties}/></div>
-              <div><small>EXTENSION RISK</small><b className={technicalState.extensionRisk>=70?"bad":technicalState.extensionRisk<40?"good":"mid"}>{technicalState.extensionRisk}<em>/100</em></b><span>Higher = more chase risk</span><i style={{"--v":`${technicalState.extensionRisk}%`} as React.CSSProperties}/></div>
-              <div><small>VOLATILITY RISK</small><b className={technicalState.volatilityRisk>=70?"bad":technicalState.volatilityRisk<40?"good":"mid"}>{technicalState.volatilityRisk}<em>/100</em></b><span>Higher = larger swings</span><i style={{"--v":`${technicalState.volatilityRisk}%`} as React.CSSProperties}/></div>
-            </div>
-          </section>
-
-          {proTech&&<section className="v962Drivers">
-            <div className="v962SectionLabel">WHAT IS DRIVING THE SCORE</div>
-            <div className="v962DriverStack">
-              <article className="v962DriverRow">
-                <div className="v962DriverIdentity"><span className="v962DriverIcon">↗</span><div><small>MOMENTUM</small><h4>Momentum</h4><p>Short-term price strength</p></div></div>
-                <div className="v962DriverCall"><b className={technicalState.momentum>=67?"good":technicalState.momentum<42?"bad":"mid"}>{technicalState.momentum>=67?"Strong":technicalState.momentum<42?"Weak":"Mixed"}</b><p>{proTech.macdLabel==="Bullish"?"Momentum is supported by MACD; RSI shows whether price is becoming extended.":"RSI is holding up, but MACD has not confirmed the recent strength."}</p></div>
-                <div className="v962DriverMetric v941RsiTrack"><div className="metricLabel"><small>RSI · 14</small><MetricInfo title="RSI (14)">Relative Strength Index from 0–100. Above 70 can indicate extension; below 30 can indicate oversold conditions.</MetricInfo></div><b>{proTech.rsi14!=null?proTech.rsi14.toFixed(1):"—"}</b><div className="v942RsiScale" style={{"--pos":`${Math.max(0,Math.min(100,proTech.rsi14??50))}%`} as React.CSSProperties}><i/><em>30</em><em>50</em><em>70</em></div></div>
-                <div className="v962DriverMetric"><div className="metricLabel"><small>MACD · 12/26/9</small><MetricInfo title="MACD">MACD compares fast and slow exponential moving averages.</MetricInfo></div><b className={proTech.macdLabel==="Bullish"?"good":proTech.macdLabel==="Bearish"?"bad":"mid"}>{proTech.macdLabel}</b><div className={`v942MacdHistogram ${proTech.macdHist!=null&&proTech.macdHist<0?"negative":"positive"}`}><i/><span/></div><span>{proTech.macdHist!=null?`Histogram ${proTech.macdHist>=0?"+":""}${proTech.macdHist.toFixed(3)}`:"Unavailable"}</span></div>
-              </article>
-
-              <article className="v962DriverRow">
-                <div className="v962DriverIdentity"><span className="v962DriverIcon">⌁</span><div><small>TREND</small><h4>Trend</h4><p>Price trend &amp; structure</p></div></div>
-                <div className="v962DriverCall"><b className={proTech.trendLabel==="Bullish"?"good":proTech.trendLabel==="Bearish"?"bad":"mid"}>{proTech.trendLabel==="Bullish"?"Strong":proTech.trendLabel==="Bearish"?"Weak":"Mixed"}</b><p>{proTech.trendLabel==="Bullish"?"Price remains supported by the key moving-average structure.":"Moving-average structure is not fully aligned; confirmation remains important."}</p></div>
-                <div className="v962DriverMetric"><div className="metricLabel"><small>20D / 50D TREND</small><MetricInfo title="Moving-average trend">Compares price with the 20-day and 50-day moving averages.</MetricInfo></div><b className={proTech.trendLabel==="Bullish"?"good":proTech.trendLabel==="Bearish"?"bad":"mid"}>{proTech.trendLabel}</b><span>{proTech.d20!=null?`${proTech.d20>=0?"+":""}${proTech.d20.toFixed(1)}% vs 20D`:"—"} · {proTech.d50!=null?`${proTech.d50>=0?"+":""}${proTech.d50.toFixed(1)}% vs 50D`:"—"}</span></div>
-                <div className="v962DriverMetric v941BollingerTrack"><div className="metricLabel"><small>BOLLINGER POSITION</small><MetricInfo title="Bollinger position">Shows where price sits within a 20-day, two-standard-deviation band.</MetricInfo></div><b>{proTech.bbPos!=null?`${Math.max(0,Math.min(100,proTech.bbPos)).toFixed(0)}%`:"—"}</b><div className="v942BollingerScale" style={{"--pos":`${Math.max(0,Math.min(100,proTech.bbPos??50))}%`} as React.CSSProperties}><i/><em>LOWER</em><em>MID</em><em>UPPER</em></div></div>
-              </article>
-
-              <article className="v962DriverRow">
-                <div className="v962DriverIdentity"><span className="v962DriverIcon">▥</span><div><small>PARTICIPATION</small><h4>Participation</h4><p>Volume &amp; market activity</p></div></div>
-                <div className="v962DriverCall"><b className={technicalState.participation>=67?"good":technicalState.participation<42?"bad":"mid"}>{technicalState.participation>=67?"Strong":technicalState.participation<42?"Light":"Moderate"}</b><p>{(proTech.volRatio??1)>=1?"Volume is confirming the move with above-normal participation.":"Volume is below normal, so the move has limited participation confirmation."}</p></div>
-                <div className="v962DriverMetric v941VolumeTrack"><div className="metricLabel"><small>VOLUME vs 20D</small><MetricInfo title="Volume confirmation">Compares current volume with the recent 20-session average.</MetricInfo></div><b>{proTech.volRatio!=null?`${proTech.volRatio.toFixed(2)}×`:"—"}</b><div className="v942VolumeScale" style={{"--pos":`${Math.max(0,Math.min(100,(proTech.volRatio??1)*50))}%`} as React.CSSProperties}><i/><em>1×</em></div></div>
-                <div className="v962DriverMetric"><div className="metricLabel"><small>REALIZED VOL · 20D</small><MetricInfo title="Realized volatility">Annualized recent realized volatility from daily returns.</MetricInfo></div><b>{proTech.rv!=null?`${proTech.rv.toFixed(1)}%`:"—"}</b><span>{proTech.drawdown!=null?`${proTech.drawdown.toFixed(1)}% from 52-week high`:"52-week drawdown unavailable"}</span></div>
-              </article>
-
-              <article className="v962DriverRow">
-                <div className="v962DriverIdentity"><span className="v962DriverIcon">◇</span><div><small>ENTRY &amp; RISK</small><h4>Entry &amp; Risk</h4><p>Volatility &amp; structural zone</p></div></div>
-                <div className="v962DriverCall"><b className={technicalState.entryQuality>=68?"good":technicalState.entryQuality<45?"bad":"mid"}>{technicalState.entryQuality>=68?"Favorable":technicalState.entryQuality<45?"Caution":"Watch"}</b><p>{technicalState.entryQuality>=68?"Entry quality is constructive, but risk controls still govern sizing.":"Price needs either a better structural location or stronger confirmation before entry quality improves."}</p></div>
-                <div className="v962DriverMetric"><div className="metricLabel"><small>ATR · 14</small><MetricInfo title="ATR (14)">Average True Range estimates typical recent daily movement.</MetricInfo></div><b>{proTech.atrPct!=null?`${proTech.atrPct.toFixed(1)}%`:"—"}</b><span>Typical daily range</span></div>
-                <div className="v962DriverMetric"><div className="metricLabel"><small>{v5Analysis?.executionPlan.intent==="ACCUMULATE"?"DCA / INITIAL ENTRY":"STRUCTURAL WATCH ZONE"}</small><MetricInfo title="Canonical execution zone">This level comes from the single canonical execution plan.</MetricInfo></div><b>{!priceSensitiveAllowed?"BLOCKED":v5Analysis?.executionPlan.initialEntry?`${displayMoney(v5Analysis.executionPlan.initialEntry.low)}–${displayMoney(v5Analysis.executionPlan.initialEntry.high)}`:"—"}</b><span>{!priceSensitiveAllowed?"Hidden until Market Truth verifies price.":v5Analysis?.executionPlan.initialEntry?"Canonical structural zone":"No active structural zone"}</span></div>
-              </article>
-            </div>
-          </section>}
-
-          <section className="v962BottomLine">
-            <div><small>BOTTOM LINE</small><h4>{technicalState.strength>=68?"Constructive, but confirmation still matters.":technicalState.strength<45?"Defensive until structure improves.":"Mixed evidence — wait for better agreement."}</h4><p>{technicalState.strength>=68?"The trend is doing useful work; momentum, participation and entry quality determine whether that strength is actionable.":"AURYN is separating chart strength from entry quality so one good indicator cannot overrule the full evidence set."}</p></div>
-            <div className="v962BottomStats"><span>Entry <b>{technicalState.entryQuality}/100</b></span><span>Confirm <b>{v5Analysis?.executionPlan.confirmation?displayMoney(v5Analysis.executionPlan.confirmation):"—"}</b></span></div>
-          </section>
-        </div>
-        {v5Analysis?<div className="v933TechnicalChart">
-          <div className="v32MarketLabHead"><div><small>PRICE STRUCTURE</small><h3>Levels on the chart</h3><p>The chart uses the same preferred entry, confirmation, risk and target levels shown in the AURYN call above.</p></div></div>
-          <PriceChart candles={v5Analysis.bars.slice(horizon==="now"?-65:horizon==="swing"?-125:-180)} levels={v5ChartLevels} showTrend={true}/>
-        </div>:null}
-      </div>}
+      {tab==="technical"&&<div className="researchTabBody"><StockTabContext marketTruth={marketTruth} label="FAST BRAIN · TECHNICALS" title="Timing, trend & participation" score={technicalState.strength} state={technicalState.state} detail={institutionalDecision?.pillars.marketStructure.why||"Completed-bar market evidence is still building."}/><div className="researchMetricGrid">{[["Entry quality",technicalState.entryQuality],["Trend",technicalState.trend],["Momentum",technicalState.momentum],["Participation",technicalState.participation],["Extension risk",technicalState.extensionRisk],["Volatility risk",technicalState.volatilityRisk]].map(([k,v])=><article className="researchCard" key={String(k)}><small>{k}</small><h3>{v==null?"—":`${v}/100`}</h3><progress max="100" value={Number(v)||0} aria-label={String(k)}/></article>)}</div><article className="researchCard"><header><h3>Price structure</h3><span>Canonical levels · completed bars</span></header><div className="researchTechnicalChart">{v5Analysis?<PriceChart candles={v5Analysis.bars.slice(horizon==="now"?-65:horizon==="swing"?-125:-180)} levels={executionLevelsAllowed?v5ChartLevels:null} showTrend/>:<div className="researchEmpty">Verified price history is unavailable.</div>}</div><p>Technical weakness informs entry timing. It does not independently invalidate durable business fundamentals.</p></article><div className="researchTwoColumns"><article className="researchCard"><h3>Indicator evidence</h3><dl className="researchData">{[["RSI · 14",proTech?.rsi14],["MACD histogram",proTech?.macdHist],["Volume / 20D average",proTech?.volRatio],["Realized volatility",proTech?.rv],["ATR %",proTech?.atrPct],["52-week drawdown %",proTech?.drawdown]].map(([k,v])=><div key={String(k)}><dt>{k}</dt><dd>{v==null?"—":Number(v).toFixed(2)}</dd></div>)}</dl></article><article className="researchCard"><h3>Execution discipline</h3><p>{technicalState.entryState}</p><dl className="researchData"><div><dt>{executionEntryLabel}</dt><dd>{!executionLevelsAllowed?"Blocked":canonicalValidationLevels?.entryLow!=null&&canonicalValidationLevels?.entryHigh!=null?`${displayMoney(canonicalValidationLevels.entryLow)} – ${displayMoney(canonicalValidationLevels.entryHigh)}`:"—"}</dd></div><div><dt>Confirmation</dt><dd>{!executionLevelsAllowed?"Blocked":canonicalValidationLevels?.confirmation!=null?displayMoney(canonicalValidationLevels.confirmation):"—"}</dd></div></dl><p>{v5Analysis?.executionPlan.reason}</p>{executionLevelsAllowed&&executionIntent==="ACCUMULATE"&&Boolean(v5Analysis?.executionPlan.dcaZones.length)&&<dl className="researchData">{v5Analysis?.executionPlan.dcaZones.map((zone:any)=><div key={zone.label}><dt>{zone.label}</dt><dd>{displayMoney(zone.low)} – {displayMoney(zone.high)}</dd></div>)}</dl>}<p>Execution levels publish only with sufficient price verification. Timing stays separate from fair value.</p></article></div>{d?.marketIntelligence&&<details className="researchCard"><summary>Multi-timeframe evidence</summary><MarketTimeframeTape marketIntelligence={marketIntelligenceView??d.marketIntelligence}/>{executionLevelsAllowed?<MarketActionMap marketIntelligence={d.marketIntelligence} newMoneyAction={institutionalDecision?.newMoneyAction} setup={institutionalDecision?.setupState} executionIntent={executionIntent}/>:<p>Execution levels unavailable until price and canonical trust are verified.</p>}</details>}</div>}
 
       {tab==="options"&&<div className="aurynStockTabPage gammaPanel v22Options v26Options">
         <StockTabContext marketTruth={marketTruth} label="OPTIONS" title="Positioning & contract research" score={null} state={optionsData?.enabled?"Provider data":"Evidence dependent"} action={institutionalDecision?.newMoneyAction??v5Analysis?.decision.primaryAction} detail={institutionalDecision?.pillars.riskAsymmetry.why||"Risk/asymmetry evidence governs how options research is interpreted; options do not create a separate directional call."}/>
@@ -1107,6 +954,6 @@ export default function StockClient({symbol}:{symbol:string}){
       </div>}
       </StockEvidenceSections>
     </section>
-
+    </div>
   </div>;
 }

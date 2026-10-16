@@ -1,0 +1,17 @@
+{
+  "uploaded_file_count_excluding_macos_resource_forks": 1796,
+  "uploaded_project_paths_preserved": 1191,
+  "missing_uploaded_source_paths": [],
+  "github_tracked_files": 1197,
+  "missing_github_paths": [],
+  "github_tree_sha": "5465a6dd002aaa79298e5228752a8f41d2586e25",
+  "restored_github_file": "app/auryn-intelligence-os.css (retained for source completeness; new layout does not import legacy theme)",
+  "intentional_exclusion_counts": {
+    ".DS_Store": 1,
+    ".env.local": 1,
+    "tsconfig.tsbuildinfo": 1,
+    ".next": 272,
+    ".git": 330
+  },
+  "comparison_method": "Compare normalized relative file paths. Redesigned file contents intentionally differ. No secrets or generated build output are required as application source."
+}

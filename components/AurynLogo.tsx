@@ -1,3 +1,2 @@
-"use client";
-import Link from "next/link";
-export default function AurynLogo({href="/analyze",compact=false}:{href?:string;compact?:boolean}){return <Link href={href} className={`aurynBrand ${compact?"compact":""}`} aria-label="AURYN home"><svg className="aurynSigil" viewBox="0 0 48 48" aria-hidden="true"><path d="M7 36.5 19.2 11h9.6L41 36.5h-8.7l-2.6-6H18.3l-2.6 6H7Zm14.2-13h5.6L24 17l-2.8 6.5Z"/><path className="aurynCut" d="M15 37 24 19l9 18h-5.3L24 29.7 20.3 37H15Z"/></svg><span className="aurynWord">AURYN</span>{!compact?<small>Investment Intelligence</small>:null}</Link>}
+import Link from 'next/link';
+export default function AurynLogo({href='/analyze',compact=false}:{href?:string;compact?:boolean}){return <Link className={`aurynBrand ${compact?'compact':''}`} href={href} aria-label="AURYN home"><svg viewBox="0 0 36 38" width="30" height="32" aria-hidden="true"><path fill="#2866ef" d="M14 3h9L10 34H1z"/><path fill="#76a0ff" d="m23 3 12 31H23L12 7z"/><path fill="#1450d7" d="m18 21 5 13H10z"/><path fill="#adc6ff" d="m14 3 4 10 5-10z"/></svg><span className="aurynWord">AURYN</span>{!compact&&<small>Investment Intelligence</small>}</Link>}

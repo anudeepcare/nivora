@@ -1,3 +1,4 @@
+import {authorizeRequest} from "@/lib/server/authorization";
 import {NextResponse} from "next/server";
 import {createClient} from "@supabase/supabase-js";
 import {summarizeTradingPerformance} from "@/lib/nivora-trading-metrics";
@@ -8,7 +9,8 @@ import {AUTONOMOUS_RESEARCH_ENGINE_VERSION} from "@/lib/auryn/v995/persist-resea
 
 export const dynamic="force-dynamic";
 
-export async function GET(){
+export async function GET(req:Request){
+ const auth=await authorizeRequest(req,true);if(auth.response)return auth.response;
  const alpacaKey=process.env.ALPACA_PAPER_API_KEY||"";
  const alpacaSecret=process.env.ALPACA_PAPER_API_SECRET||"";
  const configured=Boolean(alpacaKey&&alpacaSecret);

@@ -1,88 +1,78 @@
 "use client";
-import {useCallback,useEffect,useState} from "react";
-import {Activity,FlaskConical,Play,RefreshCw} from "lucide-react";
-import AppShell from "@/components/AppShell";
-import MetricInfo from "@/components/v65/MetricInfo";
-import {supabaseBrowser} from "@/lib/supabase";
-
-type EvalRow={symbol:string;action:string;status:string;reason:string;riskCode?:string|null;evaluatedAt?:string|null;orderStatus?:string|null;fillStatus?:string|null;realizedPnl?:number|null;returnPct?:number|null;marketIntelligenceSnapshotId?:string|null;marketIntelligenceTimeframes?:any;marketIntelligenceLevels?:any};
-const when=(x?:string|null)=>x?new Date(x).toLocaleString():"—";
-const money=(x?:number|null,signed=true)=>x==null?"—":`${signed?(x>=0?"+":"-"):""}$${Math.abs(x).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`;
-const friendlyGate=(raw?:string|null)=>{
- const s=String(raw||"").trim(); if(!s)return "No trade condition was recorded.";
- if(/Quote integrity is STALE|older than the tradable freshness policy|quote.*stale/i.test(s))return "Fresh executable quote was unavailable after an automatic refresh, so the paper order was safely blocked.";
- const rules:[RegExp,(m:RegExpMatchArray)=>string][]=[
-  [/^Thesis ≥ (\d+)/i,m=>`Long-term thesis needs ${m[1]}+ before new capital.`],
-  [/^Company quality ≥ (\d+)/i,m=>`Business quality needs ${m[1]}+ before new capital.`],
-  [/^Opportunity ≥ (\d+)/i,m=>`Current setup needs ${m[1]}+ across price, timing and risk.`],
-  [/^Timing score ≥ (\d+)/i,m=>`Entry timing needs ${m[1]}+ before the setup is confirmed.`],
-  [/^Risk pressure ≤ (\d+)/i,m=>`Risk pressure must be ${m[1]} or lower.`]
- ];
- for(const[r,f]of rules){const m=s.match(r);if(m)return f(m)} return s;
-};
-
-export default function TradingLab(){
- const[data,setData]=useState<any>(null),[loading,setLoading]=useState(true),[running,setRunning]=useState(false),[runMessage,setRunMessage]=useState("");
- const load=useCallback(()=>fetch("/api/trading-lab/status",{cache:"no-store"}).then(r=>r.json()).then(setData).finally(()=>setLoading(false)),[]);
- useEffect(()=>{let live=true;const refresh=()=>load().catch(()=>{});refresh();const timer=setInterval(()=>{if(live&&document.visibilityState==="visible")refresh()},30000);return()=>{live=false;clearInterval(timer)}},[load]);
- const m=data?.metrics||{},rows:EvalRow[]=data?.recentEvaluations||[],currentRows:EvalRow[]=data?.currentRunEvaluations||[],previousRows:EvalRow[]=data?.previousEvaluations||[];
- const evaluated=Number(data?.funnel?.evaluated||0),orders=Number(data?.orders||0),trades=Number(m?.trades||0),buySignals=Number(data?.decisionAudit?.actions?.BUY||0);
- const latest=rows[0]||null;
- const latestRun=data?.recentRuns?.[0]||null;
- const currentProcessed=Number(latestRun?.processed??evaluated??0),currentSubmitted=Number(latestRun?.submitted??0),currentBlocked=Number(latestRun?.blocked??0),currentErrors=Number(latestRun?.errors??0);
- const actionable=buySignals;
- const auditRows:any[]=data?.decisionAudit?.closestToBuy||[];
- const auditBySymbol=new Map(auditRows.map((x:any)=>[String(x.symbol||"").toUpperCase(),x]));
- const blocker=data?.decisionAudit?.dominantBlockers?.[0]?.reason||null;
- const statusTitle=!data?.broker?.connected?"Paper broker needs attention":!latestRun?"Ready for a paper check":currentProcessed===0?"Waiting for fresh canonical research":currentErrors>0?"Paper check needs attention":currentSubmitted>0?"Paper orders submitted":currentBlocked>0?"No order passed every safety gate":"No trade qualified in the latest check";
- const statusText=!data?.broker?.connected?(data?.broker?.error||"Alpaca Paper is not connected."):!latestRun?"Run a paper check to evaluate the latest canonical AURYN decisions.":currentProcessed===0?"No canonical decisions were available for this check. AURYN will evaluate them after the next completed research cycle.":currentSubmitted>0?`${currentSubmitted} paper order${currentSubmitted===1?"":"s"} reached Alpaca in the latest check.`:currentBlocked>0?(blocker?`Latest check was safely blocked. ${friendlyGate(blocker)}`:`${currentBlocked} decision${currentBlocked===1?" was":"s were"} blocked before broker submission.`):"The latest canonical decisions produced no executable paper order.";
-
- async function runNow(){
-  setRunning(true);setRunMessage("Refreshing decisions and running the paper engine…");
-  try{
-   const s=supabaseBrowser(),{data:{session}}=await s.auth.getSession();
-   if(!session?.access_token)throw new Error("Please sign in again.");
-   const r=await fetch("/api/trading-lab/run-now",{method:"POST",headers:{authorization:`Bearer ${session.access_token}`},cache:"no-store"});
-   const x=await r.json();
-   if(!r.ok)throw new Error(x?.reason||x?.error||"Paper check failed.");
-   const processed=Number(x?.paper?.processed||0),results=Array.isArray(x?.paper?.results)?x.paper.results:[];
-   const submitted=results.filter((y:any)=>y.status==="SUBMITTED").length,blocked=results.filter((y:any)=>y.status==="BLOCKED").length,noIntent=results.filter((y:any)=>y.status==="NO_INTENT").length;
-   setRunMessage(x?.paper?.status==="skipped"?`Decisions refreshed. Paper execution is limited to the regular market session (${String(x?.paper?.code||"market closed").replaceAll("_"," ")}).`:`Checked ${processed} fresh decision${processed===1?"":"s"}: ${submitted} order${submitted===1?"":"s"} submitted, ${blocked} blocked by risk gates, ${noIntent} intentionally produced no order.`);
-   await load();
-  }catch(e:any){setRunMessage(e?.message||"Paper check failed.")}finally{setRunning(false)}
- }
-
- return <AppShell><section className="aurynLabPage">
-  <header className="aurynLabHero"><div><div className="aurynEyebrow">TRADING LAB · PAPER ONLY</div><h1>See whether AURYN actually trades.</h1><p>One place to prove the full path: decision → risk check → Alpaca Paper → result. No live money.</p></div><span className="aurynLabPaperBadge"><FlaskConical size={16}/> PAPER</span></header>
-
-  <section className="aurynLabStatus">
-   <div><small>RIGHT NOW</small><h2>{statusTitle}</h2><p>{statusText}</p></div>
-   <button type="button" className="aurynLabRunButton" onClick={runNow} disabled={running||!data?.broker?.connected}>{running?<RefreshCw className="spin" size={17}/>:<Play size={17}/>} {running?"Running…":"Run paper check now"}</button>
-  </section>
-  {runMessage?<div className="aurynLabRunMessage">{runMessage}</div>:null}
-
-  {loading?<div className="aurynLabEmpty">Loading paper account…</div>:<>
-   <section className="aurynLabPath aurynLabCurrentRun"><div className="aurynLabSectionHead aurynLabPathHead"><div><small>THIS CHECK</small><h2>Decision → safety → paper broker</h2></div><span>{latestRun?`Updated ${when(latestRun.finished_at||latestRun.started_at)}`:"Waiting for first run"}</span></div><div className="aurynLabCompactFunnel"><article><small>DECISIONS</small><b>{currentProcessed}</b><span>canonical decisions checked</span></article><article className={currentBlocked?"mid":"good"}><small>BLOCKED</small><b>{currentBlocked}</b><span>stopped by safety gates</span></article><article className={currentSubmitted?"good":"mid"}><small>SUBMITTED</small><b>{currentSubmitted}</b><span>sent to Alpaca Paper</span></article><article className={currentErrors?"bad":"good"}><small>ERRORS</small><b>{currentErrors}</b><span>{currentErrors?"needs attention":"system path healthy"}</span></article></div><div className="aurynLabHistoryNote"><span>Historical paper orders <b>{orders}</b></span><span>Completed round trips <b>{trades}</b></span><span>Qualified decision-layer BUY signals <b>{actionable}</b></span></div></section>
-   {trades?<div className="aurynLabResult"><article><small>REALIZED RESULT <MetricInfo title="Realized paper result">Completed simulated trades only. This is measured only after a round-trip paper trade closes.</MetricInfo></small><b>{money(Number(m.netPnl||0))}</b><span>{m.winRatePct}% win rate · {trades} trade{trades===1?"":"s"}</span></article></div>:null}
-
-   <section className="aurynLabActivity">
-    <div className="aurynLabSectionHead"><div><small>THIS CHECK</small><h2>{currentRows.length?"Current paper decisions":"No decisions evaluated in this check"}</h2></div>{currentRows[0]?<span>Updated {when(currentRows[0].evaluatedAt)}</span>:null}</div>
-    {currentRows.length?<div className="aurynLabDecisionList aurynLabDecisionGrid">{currentRows.slice(0,12).map((r,i)=>{const audit:any=auditBySymbol.get(String(r.symbol||"").toUpperCase());const why=friendlyGate(r.reason);return <article key={`${r.symbol}-${r.evaluatedAt}-${i}`}><div><b>{r.symbol}</b><span>{r.action}</span></div><strong className={r.status==="SUBMITTED"?"good":r.status==="BLOCKED"||r.status==="ERROR"?"bad":"mid"}>{r.status==="NO_INTENT"?"NO TRADE":String(r.status||"").replaceAll("_"," ")}</strong><p><b className="aurynLabWhyLabel">Why</b>{why}</p>{audit?.primaryBlocker?<small className="aurynLabTrigger"><b>What would change it</b>{friendlyGate(audit.primaryBlocker)}</small>:null}</article>})}</div>:<div className="aurynLabEmptyAction"><Activity size={20}/><b>Waiting for fresh canonical research</b><span>No canonical decisions were available for this check. This is a waiting state, not a trading error.</span></div>}
-    {previousRows.length?<details className="aurynLabPrevious"><summary>PREVIOUS CHECKS · {previousRows.length} evaluations</summary><div className="aurynLabPreviousSummary"><b>Previous blocked evaluations</b><span>Older results are kept for audit history and do not describe the current paper check.</span></div><div className="aurynLabDecisionList aurynLabDecisionGrid">{previousRows.slice(0,8).map((r,i)=><article key={`previous-${r.symbol}-${i}`}><div><b>{r.symbol}</b><span>{r.action}</span></div><strong className="mid">{String(r.status||"").replaceAll("_"," ")}</strong><p>{friendlyGate(r.reason)}</p></article>)}</div></details>:null}
-   </section>
-
-   <details className="aurynLabDetails"><summary>View performance &amp; system details ↓</summary><div className="aurynLabDetailsBody">
-    <div><b>Automatic schedule</b><span>{data?.runner?.lastAutomaticRun?"Confirmed":"Not yet observed"} · {data?.runner?.schedule||"—"}</span><small>Last automatic check: {when(data?.runner?.lastAutomaticRun)} · {data?.runner?.lastRunOk===true?"healthy":data?.runner?.lastRunOk===false?"error":"no run recorded yet"}</small></div>
-    <div><b>Decision funnel</b><span>{data?.funnel?.snapshots??0} snapshots → {evaluated} evaluated → {data?.funnel?.intents??0} intents → {data?.funnel?.submitted??0} submitted</span><small>{data?.funnel?.blocked??0} blocked by execution/risk gates</small></div>
-    <div><b>Track record</b><span>{trades?`${m.winRatePct}% win rate · ${money(Number(m.netPnl||0))} net paper P&L`:"No completed trades yet"}</span><small>{data?.learning?.maturedOutcomes??0} matured benchmark-comparable outcomes</small></div>
-    <div><b>Safety</b><span>Alpaca Paper only</span><small>Live-money automatic execution remains disabled.</small></div>
-   </div></details>
-  </>}
- </section></AppShell>
+import {useCallback,useEffect,useState} from 'react';
+import Link from 'next/link';
+import {FlaskConical,RefreshCw,ShieldCheck,Play,ArrowUpRight} from 'lucide-react';
+import AppShell from '@/components/AppShell';
+import AuthGuard from '@/components/AuthGuard';
+import ManualPaperTicket from '@/components/ManualPaperTicket';
+import {supabaseBrowser} from '@/lib/supabase';
+import '../secondary-redesign.css';
+const when=(v?:string)=>v&&Number.isFinite(Date.parse(v))?new Date(v).toLocaleString():'Not recorded';
+const cash=(v:unknown)=>v!==null&&v!==undefined&&Number.isFinite(Number(v))?new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(Number(v)):'—';
+const measured=(v:unknown,suffix='',digits=0)=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?`${Number(v).toFixed(digits)}${suffix}`:'Not available';
+export default function TradingLab(){return <AuthGuard><TradingWorkspace/></AuthGuard>}
+function TradingWorkspace(){
+ const [data,setData]=useState<any>(null),[loading,setLoading]=useState(true),[error,setError]=useState(''),[running,setRunning]=useState(false),[message,setMessage]=useState(''),[tab,setTab]=useState('Order');
+ const load=useCallback(async()=>{setError('');try{const {data:{session}}=await supabaseBrowser().auth.getSession();if(!session)throw new Error('Please sign in again to view the paper account.');const r=await fetch('/api/trading-lab/status',{cache:'no-store',headers:{authorization:`Bearer ${session.access_token}`}});if(!r.ok)throw new Error(r.status===403?'Trading Lab is restricted to administrators because it manages the deployment paper account.':r.status===401?'Your session has expired. Please sign in again.':'Paper account status is unavailable. Please retry.');setData(await r.json())}catch(e){setError(e instanceof Error?e.message:'Unable to load paper account.')}finally{setLoading(false)}},[]);
+ useEffect(()=>{load();const t=setInterval(()=>{if(document.visibilityState==='visible')load()},30000);return()=>clearInterval(t)},[load]);
+ async function run(){setRunning(true);setMessage('Refreshing research and checking eligible paper decisions…');try{const {data:{session}}=await supabaseBrowser().auth.getSession();if(!session)throw new Error('Your session has expired. Sign in again.');const r=await fetch('/api/trading-lab/run-now',{method:'POST',headers:{authorization:`Bearer ${session.access_token}`}});const x=await r.json();if(!r.ok)throw new Error(r.status===403?'Only a deployment administrator can run paper checks.':'The paper check could not finish. Refresh status or try again later.');const rows=Array.isArray(x.paper?.results)?x.paper.results:[];setMessage(x.paper?.status==='disabled'?'Paper execution is disabled in this deployment. No decisions were executed.':x.paper?.status==='unavailable'?'Paper execution is unavailable. Check the deployment configuration and refresh status.':x.paper?.status==='error'?'The paper engine reported an error. Review the execution history before trying again.':x.paper?.status==='skipped'?'The check was skipped. Paper execution is limited to eligible regular market sessions.':`Checked ${Number(x.paper?.processed||0)} decisions. ${rows.filter((y:any)=>y.status==='SUBMITTED').length} paper orders submitted; ${rows.filter((y:any)=>y.status==='BLOCKED').length} blocked by safety gates. Submission does not confirm a fill.`);await load()}catch(e){setMessage(e instanceof Error?e.message:'Paper check failed.')}finally{setRunning(false)}}
+ const broker=data?.broker,runRow=data?.recentRuns?.[0],rows:any[]=data?.recentEvaluations||[],metrics=data?.metrics;
+ return <AppShell><main className="secondaryPage labPage"><header className="secondaryHead"><div><span className="secondaryEyebrow">YOUR RESEARCH, PUT TO THE TEST</span><h1>Trading Lab</h1><p>Follow every decision from research to simulated execution.</p></div><span className="secondaryPill"><FlaskConical size={15}/> Paper only</span></header>
+ {error&&<div className="secondaryNotice" role="alert">{error} <button onClick={load}>Try again</button></div>}
+ <section className="paperAccount"><div className="secondaryRow"><h2><FlaskConical size={19}/> Paper Trading <span>(Alpaca)</span></h2><span className={`secondaryPill ${broker?.connected?'connected':''}`}>{loading?'Checking connection':broker?.connected?'Connected':'Disconnected'}</span></div><div className="secondaryMetrics"><div><small>Account equity</small><strong>{cash(broker?.equity)}</strong></div><div><small>Cash</small><strong>{cash(broker?.cash)}</strong></div><div><small>Open positions</small><strong>{broker?.positions??'—'}</strong></div><div><small>Realized paper P/L</small><strong>{metrics?.trades>0?cash(metrics.netPnl):'—'}</strong></div></div><p className="secondaryCaption">Deployment paper account · simulated funds · {broker?.clock?.isOpen===true?'Market open':broker?.clock?.isOpen===false?'Market closed':'Market session unavailable'}</p></section>
+ <div className="secondaryTabs" role="tablist" aria-label="Trading Lab views">{['Order','Paper check','Trade history','Strategies'].map(t=><button key={t} id={`lab-${t.replaceAll(' ','-')}`} role="tab" aria-controls="lab-panel" aria-selected={tab===t} onClick={()=>setTab(t)}>{t}</button>)}</div>
+ <div role="tabpanel" id="lab-panel" aria-labelledby={`lab-${tab.replaceAll(' ','-')}`}>
+ {loading?<div className="secondaryEmpty" role="status">Loading paper account and execution history…</div>:tab==='Order'?<ManualPaperTicket connected={Boolean(broker?.connected)&&!error} onSubmitted={load}/>:tab==='Paper check'?<div className="secondarySplit"><section className="secondaryCard"><div className="secondaryRow"><h2>Automated paper workflow</h2><ShieldCheck size={20}/></div><p>Eligible AURYN research decisions pass quote freshness, market-session and risk checks before the engine can submit an Alpaca paper order.</p><ol className="secondarySteps"><li><b>Research</b><span>Use fresh, versioned canonical decisions.</span></li><li><b>Safety checks</b><span>Verify the quote, sizing and execution gates.</span></li><li><b>Paper execution</b><span>Submit qualifying orders and record the result.</span></li></ol><div className="secondaryNotice">This tab runs the research-driven engine. Use Order to review a manually entered paper limit order.</div><button className="secondaryPrimary" disabled={running||!broker?.connected||Boolean(error)} onClick={run}>{running?<RefreshCw size={17}/>:<Play size={17}/>} {running?'Running paper check…':'Run paper check'}</button>{message&&<p role="status" className="secondaryNotice">{message}</p>}{!broker?.connected&&<p className="secondaryCaption">{broker?.configured?'Alpaca Paper is currently unreachable. Retry status before running a check.':'A paper broker connection is not available. Your deployment administrator must configure it before checks can submit orders.'}</p>}</section><aside className="secondaryCard"><span className="secondaryEyebrow">LATEST CHECK</span><h2>{runRow?'Execution summary':'No check recorded'}</h2><p className="secondaryCaption">{when(runRow?.finished_at||runRow?.started_at)}</p><dl className="secondaryFacts">{[['Decisions checked',runRow?.processed],['Blocked by gates',runRow?.blocked],['Orders submitted',runRow?.submitted],['Errors',runRow?.errors]].map(([label,value])=><div key={label}><dt>{label}</dt><dd>{value??'—'}</dd></div>)}</dl><p className="secondaryCaption">Current run: {runRow?.status||'Not recorded'}. {data?.currentRunEvaluations?.length??0} evaluations belong to this run; earlier evaluations remain in Trade history.</p><p>Not every check results in a trade. Missing research, stale quotes and unmet thresholds can safely produce no order.</p><button className="secondaryTextButton" onClick={load}><RefreshCw size={15}/> Refresh status</button></aside></div>:tab==='Trade history'?<section className="secondaryCard"><div className="secondaryRow"><h2>Recent decisions & orders</h2><span className="secondaryCaption">Recent evaluation window · up to 50 records</span></div>{data?.auditStatus==='migration-required'&&<p role="alert" className="secondaryNotice">Evaluation history is unavailable. The deployment requires a storage update.</p>}{rows.length?<div className="secondaryTableWrap"><table className="secondaryTable"><thead><tr><th>Symbol</th><th>Decision</th><th>Execution</th><th>Order / fill</th><th>Evaluated</th></tr></thead><tbody>{rows.map((r,i)=><tr key={`${r.symbol}-${i}`}><td><Link href={`/stock/${encodeURIComponent(r.symbol)}`}>{r.symbol}<ArrowUpRight size={12}/></Link></td><td>{r.action}</td><td><details><summary>{String(r.status||'Unknown').replaceAll('_',' ')}</summary><p>{r.reason||'No explanation recorded.'}</p><dl><dt>Quote provider / age</dt><dd>{r.quoteProvider||'Unavailable'} / {r.quoteAgeSeconds==null?'Unknown':`${r.quoteAgeSeconds}s`}</dd><dt>Market session</dt><dd>{r.marketSession||'Unavailable'}</dd><dt>Canonical research snapshot</dt><dd>{r.canonicalSnapshotId||'Not recorded'}</dd><dt>Canonical market snapshot</dt><dd>{r.canonicalMarketSnapshotId||'Not recorded'}</dd><dt>Risk gate</dt><dd>{r.riskCode||'No code recorded'}</dd></dl></details></td><td>{r.orderStatus||'No order'} / {r.fillStatus||'No fill recorded'}</td><td>{when(r.evaluatedAt)}</td></tr>)}</tbody></table></div>:<div className="secondaryEmpty"><FlaskConical/><h3>No recent paper evaluations</h3><p>Run a paper check when the broker is connected. Orders and fills appear only after they are recorded.</p></div>}<p className="secondaryCaption">{data?.orders??0} historical paper orders · {metrics?.trades??0} completed round trips. Paper performance does not guarantee actual investment results.</p></section>:<section className="secondaryCard"><span className="secondaryEyebrow">CANONICAL AURYN STRATEGY</span><h2>Fundamentals first. Execution with discipline.</h2><p>The paper engine consumes the same versioned research used throughout AURYN. This view describes that engine; it does not enable alternate strategies or change production weights.</p><div className="secondaryGrid three"><article><h3>Long-term thesis</h3><p>Business quality, durable growth, financial strength and thesis-break evidence.</p></article><article><h3>Independent valuation</h3><p>Bear, base and bull scenarios grounded in business assumptions rather than anchored to the current quote.</p></article><article><h3>Tactical deployment</h3><p>Timing, price freshness and portfolio risk determine whether new capital qualifies.</p></article></div><dl className="secondaryFacts"><div><dt>Automatic schedule</dt><dd>{data?.runner?.schedule||'Unavailable'}</dd></div><div><dt>Last automatic check</dt><dd>{when(data?.runner?.lastAutomaticRun)}</dd></div><div><dt>Learning evidence</dt><dd>{data?.learning?.maturedOutcomes??0} matured outcomes</dd></div></dl><Link href="/calibration" className="secondaryTextButton">Explore model evidence <ArrowUpRight size={16}/></Link></section>}
+ {!loading&&data&&(tab==='Paper check'||tab==='Trade history')&&<TradingDiagnostics data={data}/>}
+ </div><footer className="secondaryFoot"><ShieldCheck size={16}/> Alpaca paper trading only. Simulated orders use no real money. <Link href="/disclaimer">Investment disclaimer</Link></footer></main></AppShell>
 }
 
-/* Compatibility contract terms retained for regression coverage only; V65.3 progressively discloses these details:
-AUTOMATIC RUNNER | quoteProvider | quoteAgeSeconds | integrityState | Profit factor | Win rate |
-No live-money auto execution | RECENT DECISIONS | Risk / Order | REAL-MARKET DECISION AUDIT | BUY SIGNALS |
-DOMINANT BLOCKER | CLOSEST TO BUY | RECENT AUTOMATIC CYCLES | EXECUTION STATE | LEARNING STATE | MATURED OUTCOMES
-*/
+function TradingDiagnostics({data}:{data:any}){
+ const runner=data?.runner,audit=data?.decisionAudit,learning=data?.learning,metrics=data?.metrics;
+ const runs:any[]=Array.isArray(data?.recentRuns)?data.recentRuns:[];
+ const blockers:any[]=Array.isArray(audit?.dominantBlockers)?audit.dominantBlockers:[];
+ const closest:any[]=Array.isArray(audit?.closestToBuy)?audit.closestToBuy:[];
+ const hasResults=Number(metrics?.trades)>0;
+ return <section className="secondaryDictionary" aria-label="Paper trading operational evidence">
+  <details className="secondaryCard">
+   <summary>Automatic runner health</summary>
+   <dl className="secondaryFacts">
+    <div><dt>Scheduler</dt><dd>{runner?.scheduler||'Not available'}</dd></div>
+    <div><dt>Schedule</dt><dd>{runner?.schedule||'Not available'}</dd></div>
+    <div><dt>Market session</dt><dd>{runner?.marketSession?String(runner.marketSession).replaceAll('_',' '):'Not available'}</dd></div>
+    <div><dt>Last automatic check</dt><dd>{when(runner?.lastAutomaticRun)}</dd></div>
+    <div><dt>Last runner result</dt><dd>{runner?.lastRunOk===true?'Succeeded':runner?.lastRunOk===false?'Needs attention':'Not recorded'}</dd></div>
+    <div><dt>Runner diagnostic</dt><dd>{runner?.lastRunCode||'No code recorded'}</dd></div>
+    <div><dt>Last check duration</dt><dd>{measured(runner?.lastRunLatencyMs,' ms')}</dd></div>
+   </dl>
+   <p>Broker connectivity and scheduler health are separate. A connected paper account does not confirm that an automatic cycle completed.</p>
+  </details>
+  <details className="secondaryCard">
+   <summary>Recent automatic and manual cycles</summary>
+   {data?.runAuditStatus==='migration-required'?<p role="alert" className="secondaryNotice">Run history is unavailable. The deployment requires a storage update.</p>:runs.length?<div className="secondaryTableWrap"><table className="secondaryTable"><caption>Most recent recorded cycles, up to 20</caption><thead><tr><th scope="col">Started / finished</th><th scope="col">Trigger / session</th><th scope="col">Status</th><th scope="col">Checked</th><th scope="col">Blocked</th><th scope="col">Submitted</th><th scope="col">Errors</th></tr></thead><tbody>{runs.map((run,i)=><tr key={run.id??i}><td>{when(run.started_at)}<br/>{when(run.finished_at)}</td><td>{run.automatic===true?'Automatic':run.automatic===false?'Manual':'Not recorded'}<br/>{run.session?String(run.session).replaceAll('_',' '):'Session unavailable'}</td><td>{run.status||'Not recorded'}{run.error&&<p>{run.error}</p>}</td><td>{measured(run.processed)}</td><td>{measured(run.blocked)}</td><td>{measured(run.submitted)}</td><td>{measured(run.errors)}</td></tr>)}</tbody></table></div>:<p>No cycle history is available.</p>}
+   <p>Submitted orders are not completed fills. Individual execution reasons remain in Trade history.</p>
+  </details>
+  <details className="secondaryCard">
+   <summary>Research decisions and blockers</summary>
+   {!audit?<p>Decision audit is unavailable.</p>:<>
+    <p>Latest stored research by symbol. This distribution is not a count of executable orders.</p>
+    <dl className="secondaryFacts"><div><dt>Symbols with stored decisions</dt><dd>{measured(audit.total)}</dd></div><div><dt>BUY signals</dt><dd>{audit.actions?measured(audit.actions.BUY??0):'Not available'}</dd></div>{Object.entries(audit.actions||{}).filter(([action])=>action!=='BUY').map(([action,count])=><div key={action}><dt>{action.replaceAll('_',' ')}</dt><dd>{measured(count)}</dd></div>)}</dl>
+    <h3>Dominant research blockers</h3>
+    {blockers.length?<dl className="secondaryFacts">{blockers.map((blocker,i)=><div key={`${blocker.reason}-${i}`}><dt>{String(blocker.reason||'Unspecified blocker').replaceAll('_',' ')}</dt><dd>{measured(blocker.count)} symbols</dd></div>)}</dl>:<p>No research blocker summary is available. This does not confirm execution eligibility.</p>}
+    <h3>Closest to BUY in stored research</h3>
+    {closest.length?<div className="secondaryTableWrap"><table className="secondaryTable"><thead><tr><th scope="col">Symbol</th><th scope="col">Decision</th><th scope="col">Path / blocker</th><th scope="col">Observed</th></tr></thead><tbody>{closest.map((candidate,i)=><tr key={`${candidate.symbol}-${i}`}><th scope="row"><Link href={`/stock/${encodeURIComponent(candidate.symbol)}`}>{candidate.symbol}</Link></th><td>{String(candidate.action||'Not recorded').replaceAll('_',' ')}</td><td>{String(candidate.closestPath||'Path unavailable').replaceAll('_',' ')}<br/>{String(candidate.primaryBlocker||'No blocker recorded').replaceAll('_',' ')}</td><td>{when(candidate.observedAt)}</td></tr>)}</tbody></table></div>:<p>No ranked research candidates are available.</p>}
+   </>}
+  </details>
+  <details className="secondaryCard">
+   <summary>Learning evidence</summary>
+   <dl className="secondaryFacts"><div><dt>Learning state</dt><dd>{learning?.state?String(learning.state).replaceAll('_',' '):'Not available'}</dd></div><div><dt>Matured version-matched outcomes</dt><dd>{measured(learning?.maturedOutcomes)}</dd></div></dl>
+   <p>{learning?.reason||'No verified learning status was returned.'}</p>
+   <Link href="/calibration" className="secondaryTextButton">Explore model evidence <ArrowUpRight size={16}/></Link>
+  </details>
+  <details className="secondaryCard">
+   <summary>Realized paper performance</summary>
+   <dl className="secondaryFacts"><div><dt>Completed round trips</dt><dd>{measured(metrics?.trades)}</dd></div><div><dt>Win rate</dt><dd>{hasResults?measured(metrics?.winRatePct,'%',1):'No measured result yet'}</dd></div><div><dt>Profit factor</dt><dd>{hasResults?measured(metrics?.profitFactor,'',2):'No measured result yet'}</dd></div><div><dt>Net realized P/L</dt><dd>{hasResults?cash(metrics?.netPnl):'No measured result yet'}</dd></div><div><dt>Average realized P/L per trade</dt><dd>{hasResults?cash(metrics?.expectancy):'No measured result yet'}</dd></div><div><dt>Realized maximum drawdown</dt><dd>{hasResults?cash(metrics?.maxDrawdownDollars):'No measured result yet'}</dd></div></dl>
+   <p>Metrics use recorded completed paper results. Missing profit factor can mean no realized loss denominator; it is not a verified zero. Paper performance does not guarantee actual investment results.</p>
+  </details>
+ </section>;
+}

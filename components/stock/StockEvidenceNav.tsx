@@ -1,6 +1,6 @@
 "use client";
-const tabs=[['thesis','Overview'],['fundamentals','Business'],['earnings','Earnings'],['technical','Technicals'],['institutions','Ownership'],['catalysts','Catalysts'],['options','Options']] as const;
+const tabs=[['thesis','Overview'],['fundamentals','Business'],['earnings','Earnings'],['financials','Financials'],['valuation','Valuation'],['institutions','Ownership'],['catalysts','Catalysts'],['options','Options'],['news','News'],['technical','Technicals'],['risk','Risk']] as const;
 export default function StockEvidenceNav({tab,setTab,isCrypto}:{tab:string;setTab:(x:any)=>void;isCrypto:boolean}){
  const visible=tabs.filter(([k])=>!(isCrypto&&(k==='earnings'||k==='institutions')));
- return <nav className="aurynEvidenceNav" aria-label="Analysis evidence">{visible.map(([k,label])=><button key={k} type="button" className={tab===k?"on":""} onClick={()=>setTab(k)}>{label}</button>)}</nav>;
+ return <nav className="aurynEvidenceNav" aria-label="Research sections"><div role="tablist" aria-label="Security research">{visible.map(([k,label],index)=><button key={k} id={`research-tab-${k}`} role="tab" aria-selected={tab===k} aria-controls="research-tab-panel" tabIndex={tab===k?0:-1} type="button" onKeyDown={event=>{let next=index;if(event.key==='ArrowRight')next=(index+1)%visible.length;else if(event.key==='ArrowLeft')next=(index+visible.length-1)%visible.length;else if(event.key==='Home')next=0;else if(event.key==='End')next=visible.length-1;else return;event.preventDefault();setTab(visible[next][0]);document.getElementById(`research-tab-${visible[next][0]}`)?.focus()}} className={tab===k?"on":""} onClick={()=>setTab(k)}>{label}</button>)}</div></nav>;
 }

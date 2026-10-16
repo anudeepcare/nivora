@@ -40,6 +40,8 @@ export function buildCanonicalMarketSnapshot(input:{symbol:string;asOf?:Date;pri
 
   const useRegularClose=(why:string)=>{
     if(regularClose==null)return false;
+    // An open-session fallback needs dated evidence; an undated numeric close is not verified.
+    if(calendar.session==="REGULAR"&&(!regularCloseAsOf||!Number.isFinite(Date.parse(regularCloseAsOf))))return false;
     priceState="OFFICIAL_CLOSE";decisionPrice=regularClose;displayPrice=regularClose;decisionPriceAsOf=regularCloseAsOf;decisionPriceRole="REGULAR_CLOSE";
     priceSensitiveAllowed=true;executionTradable=false;priceUse="RESEARCH_CLOSE";providerAgreementPct=null;reason=why;
     return true;

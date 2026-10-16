@@ -1,40 +1,29 @@
 "use client";
-import {useEffect,useRef} from "react";
+import {useEffect,useRef,useState} from "react";
 import {createChart,CandlestickSeries,HistogramSeries,LineSeries,LineStyle} from "lightweight-charts";
+const finite=(value:any)=>value!==null&&value!==undefined&&value!==""&&Number.isFinite(Number(value));
 export default function PriceChart({candles,levels,showTrend=false,confluence}:{candles:any[],levels:any|null,showTrend?:boolean,confluence?:{fib382?:number;fib50?:number;fib618?:number;waveTarget?:number;waveInvalidation?:number}}){
- const el=useRef<HTMLDivElement>(null);
- useEffect(()=>{if(!el.current||!candles?.length)return;
- const mobile=window.matchMedia("(max-width: 760px)").matches;
- const chartHeight=Math.round(el.current.clientHeight);
- const chart=createChart(el.current,{width:el.current.clientWidth,height:chartHeight>120?chartHeight:(mobile?280:430),layout:{background:{color:"#ffffff"},textColor:"#667085",fontSize:mobile?11:12},grid:{vertLines:{color:"#f2f4f7"},horzLines:{color:"#f2f4f7"}},rightPriceScale:{borderColor:"#eaecf0",minimumWidth:mobile?58:92}/* v99915 reserved label gutter */,timeScale:{borderColor:"#eaecf0",timeVisible:false,rightOffset:mobile?5:12,barSpacing:mobile?5:7}});
- const cs=chart.addSeries(CandlestickSeries,{upColor:"#16a34a",downColor:"#dc2626",borderVisible:false,wickUpColor:"#16a34a",wickDownColor:"#dc2626",priceLineVisible:true,lastValueVisible:true});
- cs.setData(candles.map((x:any)=>({time:x.time,open:x.open,high:x.high,low:x.low,close:x.close})));
- if(showTrend){
-   const sma=(n:number)=>candles.map((x:any,i:number)=>i<n-1?null:{time:x.time,value:candles.slice(i-n+1,i+1).reduce((a:number,b:any)=>a+Number(b.close||0),0)/n}).filter(Boolean) as any[];
-   const ma20=chart.addSeries(LineSeries,{color:"#2563eb",lineWidth:2,priceLineVisible:false,lastValueVisible:false});
-   const ma50=chart.addSeries(LineSeries,{color:"#7c3aed",lineWidth:2,priceLineVisible:false,lastValueVisible:false});
-   ma20.setData(sma(20));ma50.setData(sma(50));
- }
- const vs=chart.addSeries(HistogramSeries,{priceFormat:{type:"volume"},priceScaleId:""});vs.priceScale().applyOptions({scaleMargins:{top:.84,bottom:0}});vs.setData(candles.map((x:any)=>({time:x.time,value:x.volume,color:x.close>=x.open?"rgba(22,163,74,.20)":"rgba(220,38,38,.18)"})));
- const lines:any[]=!levels?[]:levels?.target1!=null?[
-   ["Entry low",levels.entryLow,"#16833d"],["Entry high",levels.entryHigh,"#16833d"],
-   ["Confirm",levels.confirm,"#b26a19"],["Target 1",levels.target1,"#486b8a"],["Target 2",levels.target2,"#365a78"],
-   ["Thesis break",levels.stop,"#8f4541"]
- ]:[["Preferred entry",levels.preferredEntry,"#16833d"],["Nearest support",levels.support,"#16833d"],["Major support",levels.majorSupport,"#668f33"],["Resistance",levels.resistance,"#9f3a36"],["Breakout",levels.breakout,"#b26a19"],["Invalidation",levels.invalidation,"#7f3f3f"]];
- for(const [title,price,color] of lines){if(Number.isFinite(Number(price)))cs.createPriceLine({price:Number(price),color,lineWidth:1,lineStyle:LineStyle.Dashed,axisLabelVisible:!mobile,title:mobile?"":title})}
- if(confluence){
-   const extra=[
-     ["Fib 38.2%",confluence.fib382,"#64748b"],
-     ["Fib 50%",confluence.fib50,"#64748b"],
-     ["Fib 61.8%",confluence.fib618,"#64748b"],
-     ["Wave target",confluence.waveTarget,"#7c3aed"],
-     ["Wave invalidation",confluence.waveInvalidation,"#be123c"],
-   ] as const;
-   for(const [title,price,color] of extra){if(Number.isFinite(Number(price)))cs.createPriceLine({price:Number(price),color,lineWidth:1,lineStyle:LineStyle.Dotted,axisLabelVisible:!mobile,title:mobile?"":title})}
- }
- chart.timeScale().fitContent();
- const resize=()=>{if(!el.current)return;const m=window.innerWidth<=760;const nextHeight=Math.round(el.current.clientHeight);chart.applyOptions({width:el.current.clientWidth,height:nextHeight>120?nextHeight:(m?280:430),rightPriceScale:{minimumWidth:m?58:92},timeScale:{rightOffset:m?5:12,barSpacing:m?5:7}})};
- const ro=new ResizeObserver(resize);ro.observe(el.current);window.addEventListener("orientationchange",resize);return()=>{ro.disconnect();window.removeEventListener("orientationchange",resize);chart.remove()}
- },[candles,levels,showTrend,confluence]);
- return <div ref={el} className="chartCanvas"/>;
+ const el=useRef<HTMLDivElement>(null),[appearance,setAppearance]=useState(0);
+ useEffect(()=>{const change=()=>setAppearance(x=>x+1);window.addEventListener("auryn-appearance",change);window.addEventListener("storage",change);const observer=new MutationObserver(change);observer.observe(document.documentElement,{attributes:true,attributeFilter:["class","data-theme","style"]});return()=>{window.removeEventListener("auryn-appearance",change);window.removeEventListener("storage",change);observer.disconnect()}},[]);
+ useEffect(()=>{
+ if(!el.current)return;
+ const bars=Array.from(new Map((candles||[]).filter(x=>x.time!=null&&[x.open,x.high,x.low,x.close].every(finite)).map(x=>[String(x.time),{...x,open:Number(x.open),high:Number(x.high),low:Number(x.low),close:Number(x.close)}])).values()).sort((a,b)=>typeof a.time==="number"&&typeof b.time==="number"?a.time-b.time:String(a.time).localeCompare(String(b.time)));
+ if(!bars.length)return;
+ const mobile=window.matchMedia("(max-width:760px)").matches,css=getComputedStyle(el.current);
+ const color=(name:string,fallback:string)=>css.getPropertyValue(name).trim()||fallback;
+ const background=color("--auryn-card-bg","#ffffff"),ink=color("--auryn-page-muted","#71829c"),border=color("--auryn-border","#dfe7f2"),accent=color("--auryn-accent","#246bfd"),positive=color("--auryn-positive","#10b981"),negative=color("--auryn-negative","#ef6070");
+ let style="candlestick";try{style=localStorage.getItem("auryn-chart-style")||style}catch{}
+ const chart=createChart(el.current,{localization:{locale:"en-US"},width:el.current.clientWidth,height:Math.max(220,el.current.clientHeight),layout:{background:{color:background},textColor:ink,fontSize:11},grid:{vertLines:{color:border},horzLines:{color:border}},rightPriceScale:{borderColor:border,minimumWidth:mobile?52:64},timeScale:{borderColor:border,timeVisible:false,rightOffset:3,barSpacing:6}});
+ const series=style==="line"?chart.addSeries(LineSeries,{color:accent,lineWidth:2}):chart.addSeries(CandlestickSeries,{upColor:positive,downColor:negative,borderVisible:false,wickUpColor:positive,wickDownColor:negative});
+ let haOpen=0,haClose=0;
+ const rendered=bars.map((x,i)=>{if(style==="line")return{time:x.time,value:x.close};if(style!=="heikin")return{time:x.time,open:x.open,high:x.high,low:x.low,close:x.close};const close=(x.open+x.high+x.low+x.close)/4,open=i?(haOpen+haClose)/2:(x.open+x.close)/2;haOpen=open;haClose=close;return{time:x.time,open,close,high:Math.max(x.high,open,close),low:Math.min(x.low,open,close)}});
+ series.setData(rendered as any);
+ if(showTrend)for(const [period,lineColor] of [[20,accent],[50,"#9175df"]] as const){const ma=chart.addSeries(LineSeries,{color:lineColor,lineWidth:1,priceLineVisible:false,lastValueVisible:false});ma.setData(bars.flatMap((x,i)=>i<period-1?[]:[{time:x.time,value:bars.slice(i-period+1,i+1).reduce((sum,b)=>sum+b.close,0)/period}]) as any)}
+ const volume=chart.addSeries(HistogramSeries,{priceFormat:{type:"volume"},priceScaleId:""});volume.priceScale().applyOptions({scaleMargins:{top:.85,bottom:0}});volume.setData(bars.filter(x=>finite(x.volume)&&Number(x.volume)>=0).map(x=>({time:x.time,value:Number(x.volume),color:x.close>=x.open?positive+"45":negative+"45"})) as any);
+ const lines:any[]=!levels?[]:[[levels.entryLabel||"Entry",levels.entryLow??levels.preferredEntry,positive],["Confirm",levels.confirm??levels.breakout,accent],["Target",levels.target1??levels.t1,accent],["Setup invalidation",levels.invalidation??levels.stop,negative]];
+ if(confluence)lines.push(["Fib 38.2%",confluence.fib382,ink],["Fib 50%",confluence.fib50,ink],["Fib 61.8%",confluence.fib618,ink],["Wave target",confluence.waveTarget,accent],["Wave invalidation",confluence.waveInvalidation,negative]);
+ for(const [title,price,lineColor] of lines)if(finite(price)&&Number(price)>0)series.createPriceLine({price:Number(price),color:lineColor,lineWidth:1,lineStyle:LineStyle.Dashed,axisLabelVisible:false,title:mobile?"":title});
+ chart.timeScale().fitContent();const resize=new ResizeObserver(()=>{if(el.current)chart.applyOptions({width:el.current.clientWidth,height:Math.max(220,el.current.clientHeight)})});resize.observe(el.current);return()=>{resize.disconnect();chart.remove()};
+ },[candles,levels,showTrend,confluence,appearance]);
+ return <div ref={el} className="chartCanvas" role="img" aria-label="Historical market price chart; selected chart appearance follows your preferences"/>;
 }

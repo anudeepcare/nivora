@@ -1,0 +1,56 @@
+{
+  "checks": [
+    {
+      "path": "/watchlist",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "path": "/portfolio",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "path": "/alerts",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "path": "/trading-lab",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "path": "/calibration",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "path": "/watchlist",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "path": "/portfolio",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "path": "/alerts",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "path": "/trading-lab",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "path": "/calibration",
+      "width": 1440,
+      "overflow": false
+    }
+  ],
+  "errors": [],
+  "fixtureOnly": true
+}

@@ -1,5 +1,6 @@
 import {formatMoney} from '@/lib/nivora-format';
-const money=(x:any)=>Number.isFinite(Number(x))?formatMoney(Number(x)):'—';
+const finite=(x:any)=>x!=null&&x!==''&&Number.isFinite(Number(x));
+const money=(x:any)=>finite(x)?formatMoney(Number(x)):'—';
 function resolve(mi:any){
  const map=mi?.actionMap??null,levels=mi?.levels??null;
  return{
@@ -13,15 +14,17 @@ function resolve(mi:any){
   invalidation:map?.invalidation??levels?.invalidation??null
  };
 }
-export default function MarketActionMap({marketIntelligence,newMoneyAction,setup}:{marketIntelligence:any;newMoneyAction?:string|null;setup?:string|null}){
+export default function MarketActionMap({marketIntelligence,newMoneyAction,setup,executionIntent}:{marketIntelligence:any;newMoneyAction?:string|null;setup?:string|null;executionIntent?:string|null}){
  if(!marketIntelligence)return null;
  const x=resolve(marketIntelligence);
- const entry=Number.isFinite(Number(x.entryLow))&&Number.isFinite(Number(x.entryHigh))?`${money(x.entryLow)}–${money(x.entryHigh)}`:'—';
+ const entrySuppressed=executionIntent==='REDUCE'||executionIntent==='EXIT';
+ if(entrySuppressed){x.entryLow=null;x.entryHigh=null;x.confirm=null;x.t1=null;x.t2=null;}
+ const entry=finite(x.entryLow)&&finite(x.entryHigh)?`${money(x.entryLow)}–${money(x.entryHigh)}`:'—';
  const daily=String(marketIntelligence?.confirmed?.['1D']?.rating||'').toUpperCase();
  const state=String(setup||'').toUpperCase();
  const action=String(newMoneyAction||'').toUpperCase();
  const recovery=/DAMAGED|BREAKDOWN|FAILED|WEAKENING/.test(state)||daily==='SELL'||action==='AVOID';
- const entryLabel=recovery?'RECOVERY / WATCH ZONE':'PREFERRED ENTRY';
+ const entryLabel=entrySuppressed?'NO NEW ENTRY':recovery?'RECOVERY / WATCH ZONE':executionIntent==='WATCH'?'STRUCTURAL WATCH ZONE':'PREFERRED ENTRY';
  const confirmLabel=recovery?'RECLAIM / CONFIRM':'CONFIRM';
  return <div className="v934ActionMap" data-market-intelligence-snapshot={marketIntelligence.snapshotId||''} aria-label="Canonical market action map">
   <span><small>{entryLabel}</small><b>{entry}</b></span>

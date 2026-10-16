@@ -1,0 +1,20 @@
+{
+  "archiveIntegrity": "PASS (packager validates before replacing output)",
+  "requiredContents": "PASS",
+  "actualSuppliedSecretMatches": 0,
+  "sourceCompleteness": "All 1,191 uploaded source paths and 1,197 GitHub paths retained",
+  "workflows": 9,
+  "screenshots": 129,
+  "excluded": [
+    "node_modules",
+    ".next",
+    ".git",
+    ".engine-test",
+    "local .env credentials",
+    "OS metadata",
+    "nested archives",
+    "symlinks",
+    "compiled caches"
+  ],
+  "manifest": "SOURCE_MANIFEST.json; every archived file checked against SHA-256, excluding manifest self-check"
+}

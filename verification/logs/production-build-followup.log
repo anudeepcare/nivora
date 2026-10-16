@@ -1,0 +1,104 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> auryn-investment-intelligence@1.0.0 build
+> next build
+
+   ▲ Next.js 15.5.24
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 4.1s
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/43) ...
+   Generating static pages (10/43) 
+   Generating static pages (21/43) 
+   Generating static pages (32/43) 
+ ✓ Generating static pages (43/43)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                    Size  First Load JS
+┌ ○ /                                         188 B         106 kB
+├ ○ /_not-found                               254 B         103 kB
+├ ○ /about                                    188 B         106 kB
+├ ○ /alerts                                   300 B         182 kB
+├ ○ /analyze                                1.98 kB         178 kB
+├ ƒ /api/analyze/[symbol]                     254 B         103 kB
+├ ƒ /api/arena                                254 B         103 kB
+├ ƒ /api/astra/[symbol]                       254 B         103 kB
+├ ƒ /api/audit/universe                       254 B         103 kB
+├ ƒ /api/calibration                          254 B         103 kB
+├ ƒ /api/calibration/mature                   254 B         103 kB
+├ ƒ /api/canonical                            254 B         103 kB
+├ ƒ /api/canonical/[symbol]                   254 B         103 kB
+├ ƒ /api/chart/[symbol]                       254 B         103 kB
+├ ƒ /api/company/[symbol]                     254 B         103 kB
+├ ƒ /api/context/[symbol]                     254 B         103 kB
+├ ƒ /api/decision-audit                       254 B         103 kB
+├ ƒ /api/decision/summaries                   254 B         103 kB
+├ ƒ /api/discover                             254 B         103 kB
+├ ƒ /api/factor-integrity                     254 B         103 kB
+├ ƒ /api/health                               254 B         103 kB
+├ ƒ /api/institutional/[symbol]               254 B         103 kB
+├ ƒ /api/investment                           254 B         103 kB
+├ ƒ /api/market                               254 B         103 kB
+├ ƒ /api/market-intelligence/live/[symbol]    254 B         103 kB
+├ ƒ /api/model-health                         254 B         103 kB
+├ ƒ /api/model-health/mature                  254 B         103 kB
+├ ƒ /api/news/[symbol]                        254 B         103 kB
+├ ƒ /api/options/[symbol]                     254 B         103 kB
+├ ƒ /api/portfolio/learn                      254 B         103 kB
+├ ƒ /api/portfolio/pulse                      254 B         103 kB
+├ ƒ /api/portfolio/risk                       254 B         103 kB
+├ ƒ /api/quote/[symbol]                       254 B         103 kB
+├ ƒ /api/relative-rank                        254 B         103 kB
+├ ƒ /api/research-lab                         254 B         103 kB
+├ ƒ /api/scan                                 254 B         103 kB
+├ ƒ /api/search                               254 B         103 kB
+├ ƒ /api/system/health                        254 B         103 kB
+├ ƒ /api/trading-lab/diagnostics              254 B         103 kB
+├ ƒ /api/trading-lab/evaluate                 254 B         103 kB
+├ ƒ /api/trading-lab/manual                   254 B         103 kB
+├ ƒ /api/trading-lab/run-now                  254 B         103 kB
+├ ƒ /api/trading-lab/run-paper                254 B         103 kB
+├ ƒ /api/trading-lab/status                   254 B         103 kB
+├ ƒ /api/validation/finalize                  254 B         103 kB
+├ ƒ /api/validation/model-health              254 B         103 kB
+├ ƒ /api/validation/orchestrate               254 B         103 kB
+├ ƒ /api/validation/outcomes                  254 B         103 kB
+├ ƒ /api/validation/snapshot                  254 B         103 kB
+├ ƒ /api/validation/watchdog                  254 B         103 kB
+├ ƒ /api/validation/worker                    254 B         103 kB
+├ ○ /apple-icon.png                             0 B            0 B
+├ ○ /auth/callback                          1.43 kB         174 kB
+├ ○ /calibration                            4.68 kB         181 kB
+├ ○ /dashboard                               2.2 kB         175 kB
+├ ○ /disclaimer                               188 B         106 kB
+├ ○ /discover                                 254 B         103 kB
+├ ○ /faq                                      188 B         106 kB
+├ ○ /forgot-password                        1.44 kB         174 kB
+├ ○ /icon.svg                                   0 B            0 B
+├ ○ /login                                  2.73 kB         175 kB
+├ ○ /manifest.webmanifest                     254 B         103 kB
+├ ○ /methodology                              188 B         106 kB
+├ ○ /onboarding                             3.39 kB         176 kB
+├ ○ /personalization                        4.12 kB         177 kB
+├ ○ /portfolio                              12.7 kB         189 kB
+├ ○ /privacy                                  188 B         106 kB
+├ ○ /profile                                4.55 kB         181 kB
+├ ○ /register                               3.01 kB         176 kB
+├ ○ /research-lab                           1.97 kB         178 kB
+├ ○ /reset-password                         2.88 kB         175 kB
+├ ƒ /stock/[symbol]                          158 kB         334 kB
+├ ○ /terms                                    188 B         106 kB
+├ ○ /trading-lab                            9.98 kB         186 kB
+└ ○ /watchlist                                290 B         182 kB
++ First Load JS shared by all                103 kB
+  ├ chunks/1255-fc6c00ab2f765339.js         46.4 kB
+  ├ chunks/4bd1b696-f785427dddbba9fb.js     54.2 kB
+  └ other shared chunks (total)             1.94 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

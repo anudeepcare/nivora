@@ -1,14 +1,7 @@
-import "./globals.css";
-import "./auryn-tokens.css";
-import "./auryn-product.css";
-import "./auryn-premium.css";
-import "./auryn-mobile.css";
-import "./auryn-themes.css";
-import "./auryn-unified-ui.css";
-import "./auryn-refresh.css";
-import "./auryn-experience-2026.css";
-import "./auryn-next.css";
-import "./auryn-intelligence-os.css";
+import "./auryn-redesign.css";
+import "./research-redesign.css";
+import "./portfolio-redesign.css";
+import "./secondary-redesign.css";
 import type {Metadata,Viewport} from "next";
 import ThemeProvider from "@/components/ThemeProvider";
 
@@ -19,13 +12,13 @@ export const metadata:Metadata={
  title:{default:"AURYN — Investment Intelligence",template:"%s | AURYN"},
  description,
  applicationName:"AURYN",
- icons:{icon:[{url:"/auryn-v38-icon.svg",type:"image/svg+xml"}],shortcut:"/auryn-v38-icon.svg",apple:"/auryn-v384-apple.png"},
+ icons:{icon:[{url:"/auryn-icon.svg",type:"image/svg+xml"}],shortcut:"/auryn-icon.svg",apple:"/auryn-apple.png"},
  manifest:"/manifest.webmanifest",
  appleWebApp:{capable:true,statusBarStyle:"black-translucent",title:"AURYN"},
- openGraph:{type:"website",siteName:"AURYN",title:"AURYN — Investment Intelligence",description,images:[{url:"/auryn-v384-social.png",width:1200,height:1200,alt:"AURYN"}]},
- twitter:{card:"summary",title:"AURYN — Investment Intelligence",description,images:["/auryn-v384-social.png"]},
+ openGraph:{type:"website",siteName:"AURYN",title:"AURYN — Investment Intelligence",description,images:[{url:"/auryn-512.png",width:512,height:512,alt:"AURYN"}]},
+ twitter:{card:"summary",title:"AURYN — Investment Intelligence",description,images:["/auryn-512.png"]},
 };
 
-export const viewport:Viewport={width:"device-width",initialScale:1,maximumScale:1,viewportFit:"cover",themeColor:"#15130f"};
-const appearanceBoot=`(function(){try{var theme=localStorage.getItem('auryn-theme')||'classic';var size=localStorage.getItem('auryn-text-size')||'standard';var density=localStorage.getItem('auryn-density')||'comfortable';var numberFormat=localStorage.getItem('auryn-number-format')||'standard';var motion=localStorage.getItem('auryn-motion')||'standard';var themes=['classic','noir','sapphire','racing','bordeaux','arctic','porcelain'];if(themes.indexOf(theme)<0)theme='classic';document.documentElement.dataset.theme=theme;document.documentElement.dataset.textSize=size;document.documentElement.dataset.density=density;document.documentElement.dataset.numberFormat=numberFormat;document.documentElement.dataset.motion=motion;}catch(e){}})();`;
+export const viewport:Viewport={width:"device-width",initialScale:1,viewportFit:"cover",themeColor:"#071321"};
+const appearanceBoot=`(function(){try{var t=localStorage.getItem('auryn-theme')||'light';if(['noir','sapphire'].includes(t))t='dark';if(!['light','dark','system'].includes(t))t='light';document.documentElement.dataset.theme=t==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):t;document.documentElement.dataset.accent=localStorage.getItem('auryn-accent')||'blue';}catch(e){}})();`;
 export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="en" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{__html:appearanceBoot}}/></head><body><ThemeProvider>{children}</ThemeProvider></body></html>}

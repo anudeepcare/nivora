@@ -1,59 +1,10 @@
 "use client";
-import Link from "next/link";
-import {usePathname,useRouter} from "next/navigation";
-import {useEffect,useRef,useState} from "react";
-import {BriefcaseBusiness,FlaskConical,LogOut,Radar,Search as SearchIcon,UserRound,Bookmark,Settings2,HelpCircle} from "lucide-react";
-import {supabaseBrowser} from "@/lib/supabase";
-import AurynLogo from "./AurynLogo";
-import SearchBox from "./SearchBox";
-import ProductFooter from "./ProductFooter";
-
-const nav=[
- {href:"/analyze",label:"Research",icon:SearchIcon},
- {href:"/portfolio",label:"Portfolio",icon:BriefcaseBusiness},
- {href:"/alerts",label:"Monitor",icon:Radar},
- {href:"/trading-lab",label:"Trading Lab",icon:FlaskConical},
-];
-
-export default function AppShell({children}:{children:React.ReactNode}){
- const path=usePathname(),router=useRouter(),menuRef=useRef<HTMLDivElement>(null);
- const[open,setOpen]=useState(false),[email,setEmail]=useState(""),[primarySearchVisible,setPrimarySearchVisible]=useState(path==="/analyze");
- const active=(href:string)=>path===href||path.startsWith(href+"/")||(href==="/analyze"&&path.startsWith("/stock/"));
- useEffect(()=>{
-  const sb=supabaseBrowser();sb.auth.getSession().then(({data})=>setEmail(data.session?.user.email||""));
-  const close=(e:MouseEvent)=>{if(menuRef.current&&!menuRef.current.contains(e.target as Node))setOpen(false)};
-  document.addEventListener("mousedown",close);return()=>document.removeEventListener("mousedown",close);
- },[]);
- useEffect(()=>{setOpen(false)},[path]);
- useEffect(()=>{
-  if(path!=="/analyze"){setPrimarySearchVisible(false);return}
-  let observer:IntersectionObserver|null=null;const timer=window.setTimeout(()=>{const el=document.querySelector(".aurynResearchHero .aurynSearch.large");if(!el){setPrimarySearchVisible(false);return}observer=new IntersectionObserver(([entry])=>setPrimarySearchVisible(entry.isIntersecting),{threshold:.35});observer.observe(el)},50);
-  return()=>{window.clearTimeout(timer);observer?.disconnect()};
- },[path]);
- async function logout(){await supabaseBrowser().auth.signOut();router.replace("/login");router.refresh()}
- return <div className="aurynAppShell">
-  <header className="aurynHeader">
-   <AurynLogo compact/>
-   <nav className="aurynDesktopNav" aria-label="Primary">{nav.map(n=><Link key={n.href} className={active(n.href)?"on":""} href={n.href}>{n.label}</Link>)}</nav>
-   <div className="aurynHeaderRight">
-    <div className="aurynQuickSearch"><SearchBox compact/></div>
-    <div className="aurynAccount" ref={menuRef}>
-     <button type="button" aria-label="Account menu" aria-expanded={open} onClick={()=>setOpen(v=>!v)}>{(email?.[0]||"A").toUpperCase()}</button>
-     {open&&<div className="aurynAccountMenu"><small>{email||"AURYN account"}</small><Link href="/profile"><UserRound size={15}/>Profile</Link><button onClick={logout}><LogOut size={15}/>Sign out</button></div>}
-    </div>
-   </div>
-  </header>
-  {(!primarySearchVisible||path!=="/analyze")&&<div className="aurynMobileSearch"><SearchBox compact/></div>}
-  <div className="aurynOSWorkspace">
-   <aside className="aurynOSSidebar" aria-label="Workspace navigation">
-    <div className="aurynOSSidebarLabel">WORKSPACE</div>
-    {nav.map(n=>{const Icon=n.icon;return <Link key={n.href} href={n.href} className={active(n.href)?"aurynOSNavLink active":"aurynOSNavLink"}><Icon size={19}/><span>{n.label}</span></Link>})}
-    <Link href="/watchlist" className={active("/watchlist")?"aurynOSNavLink active":"aurynOSNavLink"}><Bookmark size={19}/>Watchlist</Link>
-    <div className="aurynOSSidebarBottom"><Link href="/profile" className="aurynOSNavLink"><Settings2 size={19}/>Settings</Link><Link href="/about" className="aurynOSNavLink"><HelpCircle size={19}/>About AURYN</Link></div>
-   </aside>
-   <main className="aurynAppMain">{children}</main>
-  </div>
-  <ProductFooter/>
-  <nav className="aurynBottomNav" aria-label="Mobile primary">{nav.map(n=>{const Icon=n.icon;return <Link key={n.href} className={active(n.href)?"on":""} href={n.href}><Icon size={20}/><span>{n.label}</span></Link>})}</nav>
- </div>
-}
+import {navigateToLogin} from "@/lib/client-auth-navigation";
+import Link from 'next/link';import {usePathname,useRouter} from 'next/navigation';import {useEffect,useRef,useState} from 'react';
+import {BriefcaseBusiness,FlaskConical,LogOut,Radar,Search,UserRound,Star,Settings,Menu,X,HelpCircle} from 'lucide-react';
+import {supabaseBrowser} from '@/lib/supabase';import AurynLogo from './AurynLogo';import SearchBox from './SearchBox';
+const nav=[{href:'/analyze',label:'Research',icon:Search},{href:'/portfolio',label:'Portfolio',icon:BriefcaseBusiness},{href:'/alerts',label:'Monitor',icon:Radar},{href:'/trading-lab',label:'Trading Lab',icon:FlaskConical}];
+export default function AppShell({children}:{children:React.ReactNode}){const path=usePathname(),r=useRouter(),menuRef=useRef<HTMLDivElement>(null);const[open,setOpen]=useState(false),[email,setEmail]=useState('');const active=(href:string)=>path===href||(href==='/analyze'&&path.startsWith('/stock/'));
+ useEffect(()=>{try{supabaseBrowser().auth.getSession().then(({data})=>setEmail(data.session?.user.email||''))}catch{}const close=(e:MouseEvent)=>{if(menuRef.current&&!menuRef.current.contains(e.target as Node))setOpen(false)};const escape=(e:KeyboardEvent)=>{if(e.key==='Escape')setOpen(false)};document.addEventListener('mousedown',close);document.addEventListener('keydown',escape);return()=>{document.removeEventListener('mousedown',close);document.removeEventListener('keydown',escape)}},[]);
+ useEffect(()=>setOpen(false),[path]);async function logout(){try{const{error}=await supabaseBrowser().auth.signOut();if(error)throw error;navigateToLogin()}catch{window.alert('Sign out failed. Please check your connection and try again.')}}
+ return <div className="aurynAppShell"><a className="uxSkip" href="#workspace">Skip to content</a><header className="aurynHeader"><AurynLogo compact/><nav className="aurynDesktopNav" aria-label="Primary">{nav.map(n=><Link key={n.href} className={active(n.href)?'on':''} aria-current={active(n.href)?'page':undefined} href={n.href}>{n.label}</Link>)}</nav><div className="aurynHeaderRight"><div className="aurynQuickSearch"><SearchBox compact/></div><Link className="uxWatchShortcut" href="/watchlist" aria-label="Watchlist"><Star size={19}/></Link><div className="aurynAccount" ref={menuRef}><button aria-label="Account menu" aria-expanded={open} aria-controls="account-menu" onClick={()=>setOpen(!open)}>{open?<X size={18}/>:(email[0]||'A').toUpperCase()}</button>{open&&<div className="aurynAccountMenu" id="account-menu"><small>{email||'Your workspace'}</small><Link href="/watchlist"><Star size={16}/>Watchlist</Link><Link href="/profile"><UserRound size={16}/>Account</Link><Link href="/personalization"><Settings size={16}/>Appearance</Link><Link href="/faq"><HelpCircle size={16}/>Help & FAQ</Link><button onClick={logout}><LogOut size={16}/>Sign out</button></div>}</div></div></header><div className="aurynMobileSearch"><SearchBox compact/></div><main className="aurynAppMain" id="workspace">{children}</main><footer className="uxAppFooter"><span>AURYN · Research with conviction</span><Link href="/disclaimer">Research only. Investing involves risk.</Link><Link href="/methodology">Methodology</Link></footer><nav className="aurynBottomNav" aria-label="Mobile primary">{nav.map(n=>{const Icon=n.icon;return <Link key={n.href} className={active(n.href)?'on':''} aria-current={active(n.href)?'page':undefined} href={n.href}><Icon size={20}/><span>{n.label}</span></Link>})}</nav></div>}

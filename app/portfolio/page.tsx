@@ -1,125 +1,47 @@
 "use client";
-import {useCallback,useEffect,useMemo,useState} from "react";
-import AuthGuard from "@/components/AuthGuard";
-import AppShell from "@/components/AppShell";
-import {supabaseBrowser} from "@/lib/supabase";
-import {calculatePortfolioPulse} from "@/lib/v65/portfolio";
-import PortfolioPulse from "@/components/portfolio/PortfolioPulse";
-import HoldingsIntelligence from "@/components/portfolio/HoldingsIntelligence";
-import {useSearchParams} from "next/navigation";
-import {WalletCards,Bitcoin,Banknote} from "lucide-react";
-import {buildPortfolioCioActions} from "@/lib/auryn/v6/portfolio-adapter";
-import {mergePositionMath} from "@/lib/auryn/portfolio-consolidation";
-
-type AssetType="EQUITY"|"CRYPTO"|"CASH";
-
-function portfolioOwnerAction(q:any){
- const raw=String(q?.canonicalOwnerAction||"").toUpperCase();
- if(/EXIT|SELL/.test(raw))return "REDUCE / REASSESS";
- if(/REDUCE/.test(raw))return "REDUCE / REASSESS";
- if(/ADD|BUY/.test(raw))return "HOLD / ADD";
- if(/HOLD/.test(raw))return "HOLD";
- return "REVIEW";
-}
-
-function PortfolioContent(){
- const sp=useSearchParams();
- const[rows,setRows]=useState<any[]>([]),[quotes,setQuotes]=useState<any>({});
- const[pulseHistory,setPulseHistory]=useState<any[]>([]),[assetType,setAssetType]=useState<AssetType>("EQUITY"),[symbol,setSymbol]=useState(sp.get("symbol")||""),[shares,setShares]=useState(""),[cost,setCost]=useState(""),[horizon,setHorizon]=useState("long"),[msg,setMsg]=useState(""),[edit,setEdit]=useState<any>(null),[portfolioRisk,setPortfolioRisk]=useState<any>(null),[showAdd,setShowAdd]=useState(false),[pendingDelete,setPendingDelete]=useState<any>(null);
- const[activePortfolioSection,setActivePortfolioSection]=useState("portfolio-overview");
-
- const refreshPulseHistory=useCallback(async(uid:string)=>{try{const j=await fetch("/api/portfolio/pulse",{headers:{"x-nivora-user-id":uid},cache:"no-store"}).then(r=>r.json());setPulseHistory(Array.isArray(j?.items)?j.items:[])}catch{}},[]);
- const load=useCallback(async()=>{
-  const s=supabaseBrowser();const{data:{user}}=await s.auth.getUser();if(!user)return;
-  refreshPulseHistory(user.id);
-  const{data,error}=await s.from("portfolio_positions").select("*").eq("user_id",user.id).order("updated_at",{ascending:false});
-  if(error){setMsg(error.message.includes("asset_type")?"Run supabase/20260904_v65_portfolio_assets.sql once to enable V65 stocks, crypto and cash.":error.message);return}
-  const normalized=(data||[]).map((x:any)=>({...x,asset_type:x.asset_type||"EQUITY"}));
-  const cashMap=new Map<string,any>(),clean:any[]=[];for(const x of normalized){if(x.asset_type==="CASH"){const k=String(x.currency||x.symbol||"USD").toUpperCase(),prev=cashMap.get(k);if(prev)prev.cash_amount=Number(prev.cash_amount||0)+Number(x.cash_amount||0);else cashMap.set(k,{...x,currency:k,symbol:k})}else clean.push(x)}clean.push(...cashMap.values());setRows(clean);
-  const syms=[...new Set(clean.filter((x:any)=>x.asset_type!=="CASH").map((x:any)=>String(x.symbol).toUpperCase()))].slice(0,40);
-  if(syms.length){
-   const encoded=encodeURIComponent(syms.join(","));
-   const canonical=await fetch(`/api/canonical?symbols=${encoded}`,{cache:"no-store"}).then(r=>r.json()).catch(()=>({items:[]}));
-   const m:any={};for(const snap of canonical.items||[]){const symbol=String(snap?.security?.symbol||"").toUpperCase();if(!symbol)continue;const r=snap.research||{},mt=snap.market||{};m[symbol]={symbol,canonicalAction:r.action,canonicalOwnerAction:r.ownerAction,longTermAction:r.longTermAction,setupState:r.setupState,decisionAsOf:r.observedAt,decisionSnapshotId:r.decisionSnapshotId,thesisScore:r.thesisScore,opportunityScore:r.opportunityScore,archetype:r.archetype,displayPrice:mt.displayPrice,priceUse:mt.priceUse,priceState:mt.priceState,session:mt.session,marketSnapshotId:mt.snapshotId,marketIntelligence:r.marketIntelligenceSnapshotId?{snapshotId:r.marketIntelligenceSnapshotId,timeframes:r.timeframes,actionMap:r.actionMap,levels:r.levels}:null,levels:r.levels,canonicalSnapshotId:snap.snapshotId,degraded:snap.degraded};}
-   setQuotes(m);
-   const holdings=clean.filter((x:any)=>x.asset_type!=="CASH").map((x:any)=>({symbol:x.symbol,marketValue:Number(x.shares||0)*Number(m[x.symbol]?.price||x.avg_cost||0),sector:m[x.symbol]?.sector||null,archetype:m[x.symbol]?.archetype||null}));
-   const pr=await fetch("/api/portfolio/risk",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId:user.id,holdings})}).then(r=>r.json()).catch(()=>null);setPortfolioRisk(pr?.risk||null);
-  }else{setQuotes({});setPortfolioRisk(null);}
- },[refreshPulseHistory]);
- useEffect(()=>{load()},[load]);
- useEffect(()=>{
-  const ids=["portfolio-overview","portfolio-performance","portfolio-allocation","portfolio-risk","portfolio-decisions","portfolio-holdings"];
-  const nodes=ids.map(id=>document.getElementById(id)).filter(Boolean) as HTMLElement[];
-  if(!nodes.length)return;
-  const observer=new IntersectionObserver(entries=>{const visible=entries.filter(x=>x.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(visible?.target?.id)setActivePortfolioSection(visible.target.id)},{rootMargin:"-22% 0px -62% 0px",threshold:[0,.15,.35,.6]});
-  nodes.forEach(n=>observer.observe(n));return()=>observer.disconnect();
- },[rows.length]);
-
- async function mergeConsolidatedPosition(sb:any,userId:string,payload:any){
-  const {data:matches,error:readError}=await sb.from("portfolio_positions").select("*").eq("user_id",userId).eq("symbol",payload.symbol).order("updated_at",{ascending:true});
-  if(readError)throw readError;
-  const existing=(matches||[]).filter((x:any)=>String(x.asset_type||"EQUITY")===String(payload.asset_type||"EQUITY"));
-  if(!existing.length){const {error}=await sb.from("portfolio_positions").insert(payload);if(error)throw error;return}
-  const current=existing.reduce((a:any,x:any)=>mergePositionMath(a,{shares:Number(x.shares||0),avgCost:Number(x.avg_cost||0)}),null);
-  const merged=mergePositionMath(current,{shares:Number(payload.shares||0),avgCost:Number(payload.avg_cost||0)});
-  const keeper=existing.find((x:any)=>String(x.account_name||"Default")==="Default")||existing[0];
-  const duplicateIds=existing.filter((x:any)=>x.id!==keeper.id).map((x:any)=>x.id).filter(Boolean);
-  // V9.9.9 users may already have experimental account rows. Collapse them before
-  // writing the single Default holding so the prior account uniqueness cannot conflict.
-  if(duplicateIds.length){const {error:deleteError}=await sb.from("portfolio_positions").delete().in("id",duplicateIds);if(deleteError)throw deleteError}
-  const {error:updateError}=await sb.from("portfolio_positions").update({...payload,shares:merged.shares,avg_cost:merged.avgCost}).eq("id",keeper.id);
-  if(updateError)throw updateError;
- }
- async function add(e:React.FormEvent){
-  e.preventDefault();const s=supabaseBrowser();const{data:{user}}=await s.auth.getUser();if(!user)return;
-  const raw=symbol.trim().toUpperCase();
-  const normalized=assetType==="CASH"?(raw||"USD"):assetType==="CRYPTO"?(raw.includes("/")?raw:`${raw}/USD`):raw;
-  const qty=Number(shares),avg=assetType==="CASH"?1:Number(cost);
-  if(!normalized||!Number.isFinite(qty)||qty<=0||!Number.isFinite(avg)||avg<0){setMsg("Enter a valid symbol/amount.");return}
-  const payload={user_id:user.id,symbol:normalized,shares:qty,avg_cost:avg,horizon,asset_type:assetType,currency:assetType==="CASH"?normalized.split("/")[0]:"USD",updated_at:new Date().toISOString()};
-  try{await mergeConsolidatedPosition(s,user.id,payload)}catch(error:any){setMsg(error?.message||"Unable to save position");return}
-  setSymbol("");setShares("");setCost("");setMsg(`${assetType==="CASH"?"Cash":normalized} saved`);load();
- }
- function requestRemove(x:any){setEdit(null);setPendingDelete(x)}
- async function confirmRemove(){if(!pendingDelete)return;const x=pendingDelete;const s=supabaseBrowser();const{error}=await s.from("portfolio_positions").delete().eq("id",x.id);if(error){setMsg(error.message);return}setRows(v=>v.filter(r=>r.id!==x.id));setPendingDelete(null);setMsg(`${x.symbol} removed`)}
- async function saveEdit(){if(!edit)return;const s=supabaseBrowser();const{error}=await s.from("portfolio_positions").update({shares:+edit.shares,avg_cost:edit.asset_type==="CASH"?1:+edit.avg_cost,horizon:edit.horizon,updated_at:new Date().toISOString()}).eq("id",edit.id);if(error){setMsg(error.message);return}setEdit(null);setMsg("Position updated");load()}
-
- const priced=useMemo(()=>rows.map((x:any)=>{
-  if(x.asset_type==="CASH")return{assetType:"CASH" as const,currency:x.currency||x.symbol,symbol:x.symbol,amount:Number(x.shares||0),source:x};
-  const q=quotes[x.symbol],price=Number(q?.displayPrice??q?.price??x.avg_cost??0);
-  return{assetType:x.asset_type==="CRYPTO"?"CRYPTO" as const:"EQUITY" as const,symbol:x.symbol,quantity:Number(x.shares||0),price,avgCost:Number(x.avg_cost||0),thesisScore:q?.thesisScore??null,companyScore:q?.companyScore??null,opportunityScore:q?.opportunityScore??null,action:portfolioOwnerAction(q),sector:q?.sector||null,archetype:q?.archetype||null,marketIntelligence:q?.marketIntelligence??null,levels:q?.levels??null,source:x};
- }),[rows,quotes]);
- const pulse=useMemo(()=>calculatePortfolioPulse(priced,pulseHistory),[priced,pulseHistory]);
- const v6PortfolioActions=useMemo(()=>portfolioRisk?buildPortfolioCioActions({positions:priced.map((x:any)=>x.assetType==="CASH"?{symbol:x.currency||x.symbol,value:Number(x.amount||0),assetType:"CASH",archetype:null,rawAction:"HOLD"}:{symbol:x.symbol,value:Number(x.quantity||0)*Number(x.price||0),assetType:x.assetType,archetype:x.archetype||null,rawAction:x.action||"HOLD"}),portfolioRisk}):pulse.actions,[priced,portfolioRisk,pulse.actions]);
- const portfolioPulse=useMemo(()=>({...pulse,actions:v6PortfolioActions}),[pulse,v6PortfolioActions]);
- useEffect(()=>{if(!rows.length||!pulse.totalValue)return;let cancelled=false;(async()=>{const sb=supabaseBrowser(),{data:{user}}=await sb.auth.getUser();if(!user||cancelled)return;const holdings=priced.map((x:any)=>x.assetType==="CASH"?{assetType:"CASH",symbol:x.currency,value:Number(x.amount||0)}:{assetType:x.assetType,symbol:x.symbol,value:Number(x.quantity||0)*Number(x.price||0),marketIntelligence:x.marketIntelligence??null});await fetch("/api/portfolio/pulse",{method:"POST",headers:{"Content-Type":"application/json","x-nivora-user-id":user.id},body:JSON.stringify({totalValue:pulse.totalValue,holdings})}).then(r=>r.ok?refreshPulseHistory(user.id):null).catch(()=>null)})();return()=>{cancelled=true}},[rows.length,pulse.totalValue,priced]);
- const investedRows=rows.filter((x:any)=>x.asset_type!=="CASH");
- const attention=investedRows.filter((x:any)=>/REDUCE|REASSESS|WATCH/i.test(portfolioOwnerAction(quotes[x.symbol]))).length;
- const ranked=investedRows.map((x:any)=>({symbol:x.symbol,type:x.asset_type,q:quotes[x.symbol]||{}}));
- const strongest=[...ranked].filter(x=>Number.isFinite(Number(x.q.thesisScore))).sort((a,b)=>Number(b.q.thesisScore)-Number(a.q.thesisScore))[0]||null;
- const opportunity=[...ranked].filter(x=>Number.isFinite(Number(x.q.opportunityScore))).sort((a,b)=>Number(b.q.opportunityScore)-Number(a.q.opportunityScore))[0]||null;
- const weakest=[...ranked].filter(x=>Number.isFinite(Number(x.q.thesisScore))).sort((a,b)=>Number(a.q.thesisScore)-Number(b.q.thesisScore))[0]||null;
- const hasPriorityEvidence=Boolean(strongest||opportunity||weakest);
-
- return <section className="aurynPortfolioPage">
-  <div className="aurynPortfolioIntro"><div><small>OWN</small><h1>Your capital, interpreted.</h1><p>Performance, benchmark context, risk, concentration and the decisions that matter now.</p></div><button className="aurynMobileAddInvestment" type="button" onClick={()=>setShowAdd(v=>!v)}>{showAdd?"Close":"+ Add investment"}</button></div>
-
-  <nav className="aurynPortfolioNav aurynPortfolioScrollSpy" aria-label="Portfolio sections">{[["portfolio-overview","Overview"],["portfolio-performance","Performance"],["portfolio-allocation","Allocation"],["portfolio-risk","Risk"],["portfolio-decisions","Decisions"],["portfolio-holdings","Holdings"]].map(([id,label])=><a key={id} href={`#${id}`} className={activePortfolioSection===id?"active":""} aria-current={activePortfolioSection===id?"location":undefined}>{label}</a>)}</nav>
-  {showAdd?<div className="aurynSection aurynAddPanel">
-   <div className="aurynAssetTabs"><button className={assetType==="EQUITY"?"on":""} onClick={()=>setAssetType("EQUITY")}><WalletCards size={16}/> Stock</button><button className={assetType==="CRYPTO"?"on":""} onClick={()=>setAssetType("CRYPTO")}><Bitcoin size={16}/> Crypto</button><button className={assetType==="CASH"?"on":""} onClick={()=>setAssetType("CASH")}><Banknote size={16}/> Cash</button></div>
-   <form className="aurynAssetForm" onSubmit={add}><input placeholder={assetType==="CASH"?"Currency (USD)":assetType==="CRYPTO"?"BTC, ETH, SOL…":"Ticker"} value={symbol} onChange={e=>setSymbol(e.target.value)} required={assetType!=="CASH"}/><input placeholder={assetType==="CASH"?"Cash amount":"Qty"} type="number" step="any" value={shares} onChange={e=>setShares(e.target.value)} required/>{assetType!=="CASH"?<input placeholder="Average cost" type="number" step="0.01" value={cost} onChange={e=>setCost(e.target.value)} required/>:null}{assetType!=="CASH"?<select value={horizon} onChange={e=>setHorizon(e.target.value)}><option value="short">Short term</option><option value="swing">Swing</option><option value="long">Long term</option></select>:null}<button className="aurynCompactAddButton">+ Add {assetType==="EQUITY"?"stock":assetType==="CRYPTO"?"crypto":"cash"}</button></form>
-  </div>:null}{msg&&<div className="formError">{msg}</div>}
-
-  <div id="portfolio-overview"><PortfolioPulse pulse={portfolioPulse} risk={portfolioRisk}/></div> 
-
-  
-
-
-  <section className="v934PortfolioIntel" aria-label="Portfolio market intelligence"><div><small>MARKET INTELLIGENCE</small><h2>One market view across every holding.</h2></div><p>{investedRows.length?`${investedRows.filter((x:any)=>quotes[x.symbol]?.marketIntelligence?.timeframes?.["1D"]?.confirmed==="BUY").length} daily constructive · ${investedRows.filter((x:any)=>quotes[x.symbol]?.marketIntelligence?.timeframes?.["1D"]?.confirmed==="SELL").length} daily defensive. Open any holding for the same 15M / 1H / 4H / 1D / 1W evidence and action map.`:"Add a holding to build the canonical multi-timeframe portfolio view."}</p></section>
-
-  <div id="portfolio-holdings" className="aurynScrollTarget"><HoldingsIntelligence assets={priced} onEdit={x=>{setPendingDelete(null);setEdit(x)}} onRemove={requestRemove} editingId={edit?.id||null} editDraft={edit} onEditDraft={setEdit} onSaveEdit={saveEdit} onCancelEdit={()=>setEdit(null)} pendingDelete={pendingDelete?.id||null} onConfirmRemove={confirmRemove} onCancelRemove={()=>setPendingDelete(null)}/></div>
-
-  <span hidden>PORTFOLIO HEALTH</span><span hidden>AVAILABLE BUYING POWER</span>
+import {useCallback,useEffect,useMemo,useState} from 'react';
+import Link from 'next/link';
+import {Plus,Wallet,ChartPie,RefreshCw,Pencil,Trash2} from 'lucide-react';
+import AuthGuard from '@/components/AuthGuard';
+import AppShell from '@/components/AppShell';
+import {supabaseBrowser} from '@/lib/supabase';
+import {buildPortfolioCioActions} from '@/lib/auryn/v6/portfolio-adapter';
+import {analyzePortfolioRisk} from '@/lib/nivora-portfolio-risk';
+import {calculatePortfolioPulse} from '@/lib/v65/portfolio';
+import {mergePositionMath} from '@/lib/auryn/portfolio-consolidation';
+import {positionValue,valuationSummary,validPosition,currentResearch} from '@/components/portfolio/valuation';
+import {MarketLabel,money,fetchQuotes} from '@/components/portfolio/MarketLabel';
+const empty={symbol:'',shares:'',avg_cost:'',asset_type:'EQUITY',horizon:'long'};
+function Content(){
+ const [rows,setRows]=useState<any[]>([]),[quotes,setQuotes]=useState<Record<string,any>>({}),[history,setHistory]=useState<any[]>([]),[loading,setLoading]=useState(true),[error,setError]=useState(''),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false),[draft,setDraft]=useState<any>(empty),[form,setForm]=useState(false),[tab,setTab]=useState('Overview'),[range,setRange]=useState('ALL');
+ const load=useCallback(async()=>{setLoading(true);setError('');try{const s=supabaseBrowser();const {data:{user},error:authError}=await s.auth.getUser();if(authError)throw authError;if(!user)throw Error('Sign in to load your portfolio.');const {data,error}=await s.from('portfolio_positions').select('*').eq('user_id',user.id).order('updated_at',{ascending:false});if(error)throw error;const positions=(data||[]).map(x=>({...x,asset_type:x.asset_type||'EQUITY'}));setRows(positions);setQuotes({});try{setQuotes(await fetchQuotes(positions.filter(x=>x.asset_type!=='CASH').map(x=>x.symbol)))}catch(e:any){setError(e.message)}const {data:{session}}=await s.auth.getSession();const h=await fetch('/api/portfolio/pulse',{headers:{Authorization:`Bearer ${session?.access_token||''}`},cache:'no-store'});const j=await h.json();if(h.ok)setHistory(j.items||[]);else{setHistory([]);setNotice('Balance history is unavailable. Current holdings are still shown.')}}catch(e:any){setError(e.message||'Unable to load portfolio.')}finally{setLoading(false)}},[]);
+ useEffect(()=>{load();const symbol=new URLSearchParams(window.location.search).get("symbol");if(symbol&&/^[A-Z0-9][A-Z0-9./-]{0,19}$/i.test(symbol)){setDraft({...empty,symbol:symbol.toUpperCase(),asset_type:symbol.includes("/")?"CRYPTO":"EQUITY"});setForm(true)}},[load]);
+ const summary=useMemo(()=>valuationSummary(rows,quotes),[rows,quotes]);
+ const assets=useMemo(()=>rows.flatMap<any>(x=>{const value=positionValue(x,quotes[x.symbol]?.market);if(value==null)return [];return x.asset_type==='CASH'?[{assetType:'CASH' as const,currency:'USD',amount:value}]:[{assetType:x.asset_type,symbol:x.symbol,quantity:Number(x.shares),price:quotes[x.symbol].market.displayPrice,avgCost:Number(x.avg_cost),thesisScore:currentResearch(quotes[x.symbol]?.research).thesisScore,action:currentResearch(quotes[x.symbol]?.research).ownerAction||undefined}]}),[rows,quotes]);
+ const pulse=useMemo(()=>calculatePortfolioPulse(assets),[assets]);
+ const capitalActions=useMemo(()=>{
+  if(summary.missing)return [];
+  const positions=rows.map(x=>({symbol:x.symbol,value:positionValue(x,quotes[x.symbol]?.market)??0,assetType:x.asset_type,archetype:currentResearch(quotes[x.symbol]?.research).archetype,rawAction:currentResearch(quotes[x.symbol]?.research).ownerAction}));
+  const risk=analyzePortfolioRisk(positions.filter(x=>x.assetType!=='CASH').map(x=>({symbol:x.symbol,marketValue:x.value,archetype:x.archetype})));
+  return buildPortfolioCioActions({positions,portfolioRisk:risk}).filter(x=>quotes[x.symbol]?.research?.state==='READY');
+ },[rows,quotes,summary.missing]);
+ const allocationStops=Object.values(pulse.assetAllocation).reduce<{parts:string[];end:number}>((acc,value,i)=>{const end=acc.end+(summary.knownValue?value/summary.knownValue*100:0);return {parts:[...acc.parts,`${["#3275f9","#8b6eef","#f3b64d"][i]} ${acc.end}% ${end}%`],end}}, {parts:[],end:0}).parts.join(",");
+ const points=history.filter(x=>Number.isFinite(Number(x.totalValue))&&Number.isFinite(Date.parse(x.asOf))&&(range==='ALL'||Date.parse(x.asOf)>=Date.now()-Number(range)*86400000)).sort((a,b)=>Date.parse(a.asOf)-Date.parse(b.asOf));
+ const values=points.map(x=>Number(x.totalValue)),min=Math.min(...values),max=Math.max(...values),firstTime=points.length?Date.parse(points[0].asOf):0,lastTime=points.length?Date.parse(points[points.length-1].asOf):0,line=points.map(x=>`${(Date.parse(x.asOf)-firstTime)/(lastTime-firstTime||1)*700},${160-(Number(x.totalValue)-min)/(max-min||1)*130}`).join(' ');
+ async function save(e:React.FormEvent){e.preventDefault();if(busy)return;setError('');const symbol=draft.symbol.trim().toUpperCase();if(!/^[A-Z0-9][A-Z0-9./-]{0,19}$/.test(symbol)||!validPosition(draft.shares,draft.asset_type==='CASH'?1:draft.avg_cost)){setError('Enter a valid symbol, positive quantity and nonnegative average cost.');return}if(draft.asset_type==='CASH'&&symbol!=='USD'){setError('Cash tracking currently supports USD only; foreign currency needs verified FX valuation.');return}setBusy(true);try{const s=supabaseBrowser();const{data:{user},error}=await s.auth.getUser();if(error)throw error;if(!user)throw Error('Please sign in again.');const normalized=draft.asset_type==='CRYPTO'&&!symbol.includes('/')?`${symbol}/USD`:symbol;let payload:any={user_id:user.id,symbol:normalized,asset_type:draft.asset_type,shares:Number(draft.shares),avg_cost:draft.asset_type==='CASH'?1:Number(draft.avg_cost),horizon:draft.horizon,currency:'USD',updated_at:new Date().toISOString()};let id=draft.id;if(!id){const {data:matches,error:readError}=await s.from('portfolio_positions').select('*').eq('user_id',user.id).eq('symbol',normalized);if(readError)throw readError;const existing=(matches||[]).filter(x=>(x.asset_type||'EQUITY')===draft.asset_type);if(existing.length>1)throw Error('Multiple existing lots found. Edit a specific lot to preserve its data.');if(existing.length===1){id=existing[0].id;const merged=mergePositionMath({shares:Number(existing[0].shares),avgCost:Number(existing[0].avg_cost)},{shares:payload.shares,avgCost:payload.avg_cost});payload={...payload,shares:merged.shares,avg_cost:merged.avgCost}}}const result=id?await s.from('portfolio_positions').update(payload).eq('id',id).eq('user_id',user.id):await s.from('portfolio_positions').insert(payload);if(result.error)throw result.error;setForm(false);setDraft(empty);setNotice('Position saved.');await load()}catch(e:any){setError(e.message)}finally{setBusy(false)}}
+ async function recordBalance(){if(busy||summary.missing||!rows.length)return;setBusy(true);setError('');try{const s=supabaseBrowser();const {data:{session},error}=await s.auth.getSession();if(error)throw error;if(!session)throw Error('Please sign in again.');const r=await fetch('/api/portfolio/pulse',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${session.access_token}`},body:JSON.stringify({totalValue:summary.knownValue,holdings:rows.map(x=>({symbol:x.symbol,assetType:x.asset_type,value:positionValue(x,quotes[x.symbol]?.market)}))})});const j=await r.json();if(!r.ok)throw Error(j.error||'Unable to record balance.');await load();setNotice('Current balance recorded. A new recording replaces today’s earlier snapshot.')}catch(e:any){setError(e.message)}finally{setBusy(false)}}
+ async function remove(row:any){if(!window.confirm(`Remove ${row.symbol} from your portfolio?`))return;setBusy(true);try{const{error}=await supabaseBrowser().from('portfolio_positions').delete().eq('id',row.id);if(error)throw error;await load();setNotice('Position removed.')}catch(e:any){setError(e.message)}finally{setBusy(false)}}
+ return <section className="pmPage"><header className="pmHead"><div><span className="pmEyebrow">YOUR INVESTMENT PICTURE</span><h1>Portfolio</h1><p>A clear view of your capital, conviction and concentration.</p></div><div className="pmActions"><button className="pmSecondary" onClick={load} disabled={loading||busy} aria-label="Refresh portfolio"><RefreshCw size={16}/></button><button className="pmPrimary" onClick={()=>{setDraft(empty);setForm(!form)}}><Plus size={17}/> Add investment</button></div></header>
+ {error&&<div className="pmMessage" role="alert">{error}</div>}{notice&&<div className="pmNotice" role="status">{notice}</div>}
+ {form&&<section className="pmCard"><h2>{draft.id?'Edit position':'Add investment'}</h2><form onSubmit={save} className="pmForm"><label>Asset type<select value={draft.asset_type} disabled={!!draft.id} onChange={e=>setDraft({...draft,asset_type:e.target.value})}><option value="EQUITY">Stock</option><option value="CRYPTO">Crypto</option><option value="CASH">Cash (USD)</option></select></label><label>{draft.asset_type==='CASH'?'Currency':'Symbol'}<input required value={draft.symbol} disabled={!!draft.id} placeholder={draft.asset_type==='CASH'?'USD':'AAPL'} onChange={e=>setDraft({...draft,symbol:e.target.value})}/></label><label>{draft.asset_type==='CASH'?'Amount':'Quantity'}<input required type="number" min="0.00000001" step="any" value={draft.shares} onChange={e=>setDraft({...draft,shares:e.target.value})}/></label>{draft.asset_type!=='CASH'&&<label>Average cost ($)<input required type="number" min="0" step="any" value={draft.avg_cost} onChange={e=>setDraft({...draft,avg_cost:e.target.value})}/></label>}<label>Horizon<select value={draft.horizon} onChange={e=>setDraft({...draft,horizon:e.target.value})}><option value="long">Long term</option><option value="swing">Swing</option><option value="short">Short term</option></select></label><div className="pmActions"><button disabled={busy} className="pmPrimary">{busy?'Saving…':'Save position'}</button><button type="button" className="pmSecondary" onClick={()=>setForm(false)}>Cancel</button></div></form></section>}
+ <nav className="pmTabs" aria-label="Portfolio views">{['Overview','Holdings','Allocation'].map(x=><button key={x} aria-current={tab===x?'page':undefined} onClick={()=>setTab(x)}>{x}</button>)}</nav>
+ {loading?<div className="pmEmpty" role="status">Loading your portfolio…</div>:!rows.length?<div className="pmCard pmEmpty"><Wallet size={34}/><h2>Your portfolio starts here</h2><p>Add stocks, crypto or USD cash to see your allocation and holdings.</p><button className="pmPrimary" onClick={()=>setForm(true)}>Add your first investment</button></div>:<>
+ <div className="pmStats"><article className="pmStat pmNavy"><span>{summary.missing?'Known portfolio value':'Total portfolio value'}</span><strong>{money(summary.knownValue)}</strong><small>{summary.missing?`${summary.missing} unpriced position(s) excluded`:`${rows.length} positions · USD`}</small></article><article className="pmStat"><span>Unrealized gain / loss</span><strong className={summary.unrealized>=0?'pmPositive':'pmNegative'}>{money(summary.unrealized)}</strong><small>{summary.missing?'Priced positions only':'Market value less recorded cost'} · not today’s return</small></article><article className="pmStat"><span>Cash balance</span><strong>{money(pulse.cashValue)}</strong><small>Recorded USD cash · not broker buying power</small></article></div>
+ {tab==='Overview'&&<div className="pmOverview"><section className="pmCard"><div className="pmCardHead"><div><h2>Portfolio balance</h2><p>Recorded value over time</p></div><div className="pmRanges">{[['30','1M'],['90','3M'],['365','1Y'],['ALL','All']].map(([v,l])=><button key={v} aria-pressed={range===v} onClick={()=>setRange(v)}>{l}</button>)}</div></div>{points.length>=2?<><svg className="pmChart" viewBox="0 0 700 200" role="img" aria-label={`Balance history from ${money(values[0])} to ${money(values[values.length-1])}`}><defs><linearGradient id="balanceFill" x1="0" y1="0" x2="0" y2="1"><stop stopColor="#3477ff" stopOpacity=".25"/><stop offset="1" stopColor="#3477ff" stopOpacity="0"/></linearGradient></defs>{[30,95,160].map(y=><line key={y} x1="0" x2="700" y1={y} y2={y} stroke="currentColor" opacity=".08"/>)}<polygon points={`0,190 ${line} 700,190`} fill="url(#balanceFill)"/><polyline points={line} fill="none" stroke="#3477ff" strokeWidth="3"/></svg><div className="pmChartDates"><span>{new Date(points[0].asOf).toLocaleDateString()}</span><span>{new Date(points[points.length-1].asOf).toLocaleDateString()}</span></div></>:<div className="pmEmpty"><ChartPie size={28}/><p>Not enough recorded snapshots for this period.</p></div>}<button className="pmSecondary" disabled={busy||summary.missing>0} onClick={recordBalance}>{busy?'Recording…':'Record current balance'}</button><p className="pmFootnote">Balance includes deposits, withdrawals and position edits. It is not a cash-flow-adjusted investment return. Historical snapshot pricing has not been revalidated.</p></section><section className="pmCard"><h2>Portfolio perspective</h2><div className="pmInsight"><span>Largest invested position</span><strong>{pulse.largestPositionPct.toFixed(1)}%</strong><p>Of priced invested capital. Concentration can amplify both gains and losses.</p></div><div className="pmInsight"><span>Evidence coverage</span><strong>{pulse.scorableHoldings} scored equities</strong><p>Open a holding for its long-term thesis, independent valuation and tactical context.</p></div></section></div>}
+ {(tab==='Overview'||tab==='Allocation')&&<section className="pmCard"><h2>Asset allocation</h2><p className="pmFootnote">{summary.missing?'Allocation of priced assets only.':'Share of recorded portfolio value.'}</p><div className="pmAllocationLayout"><div className="pmDonut" role="img" aria-label={`Allocation of ${money(summary.knownValue)} in priced assets`} style={{background:summary.knownValue?`conic-gradient(${allocationStops})`:"var(--auryn-border)"}}><div><small>Priced assets</small><strong>{money(summary.knownValue)}</strong></div></div><div className="pmAllocation">{Object.entries(pulse.assetAllocation).map(([key,value],i)=><div key={key}><div><span><i style={{background:['#3275f9','#8b6eef','#f3b64d'][i]}}/>{key==='EQUITY'?'Stocks':key==='CRYPTO'?'Crypto':'Cash'}</span><b>{summary.knownValue?(value/summary.knownValue*100).toFixed(1):'0'}%</b></div><div className="pmBar"><i style={{width:`${summary.knownValue?value/summary.knownValue*100:0}%`,background:['#3275f9','#8b6eef','#f3b64d'][i]}}/></div><small>{money(value)}</small></div>)}</div></div></section>}
+ {tab==='Overview'&&<section className="pmCard"><h2>Capital priorities</h2><p className="pmFootnote">Portfolio sizing constraints preserve the independent company call. Based on priced holdings and available business classifications; return correlation is not assessed in this view.</p>{capitalActions.length?<div className="pmHoldings">{capitalActions.map(action=><article className="pmHolding" key={action.symbol}><div><Link href={`/stock/${encodeURIComponent(action.symbol)}`}>{action.symbol}</Link><p>{action.reason}</p></div><div><small>Company call</small><b>{action.companyAction.replaceAll('_',' ')}</b></div><div><small>Portfolio action</small><b>{action.portfolioAction.replaceAll('_',' ')}</b></div><div><small>New capital cap</small><b>{action.maxNewPositionPct}%</b></div></article>)}</div>:<p>{summary.missing?'Complete market values are required before sizing priorities can be calculated.':'Refresh holding research to calculate current capital priorities.'}</p>}</section>}
+ {(tab==='Overview'||tab==='Holdings')&&<section className="pmCard"><div className="pmCardHead"><h2>Your holdings</h2><span>{rows.length} positions</span></div><div className="pmHoldings">{rows.map(x=>{const research=currentResearch(quotes[x.symbol]?.research),market=quotes[x.symbol]?.market,value=positionValue(x,market),pnl=value==null||x.asset_type==='CASH'?null:value-Number(x.shares)*Number(x.avg_cost);return <article className="pmHolding" key={x.id}><div className="pmHoldingName"><div className="pmAvatar">{x.symbol.slice(0,2)}</div><div>{x.asset_type==='CASH'?<b>{x.symbol} cash</b>:<Link href={`/stock/${encodeURIComponent(x.symbol)}`}>{x.symbol}</Link>}<small>{Number(x.shares).toLocaleString()} {x.asset_type==='CASH'?'USD':'units'} · {x.horizon||'long'} horizon</small>{x.asset_type!=='CASH'&&<><MarketLabel market={market}/>{research.warning&&<small className="pmMessage">{research.warning}</small>}<small>Owner: {String(research.ownerAction||'Research pending').replaceAll('_',' ')} · Long term: {String(research.longTermAction||'Awaiting evidence').replaceAll('_',' ')}</small><small>{quotes[x.symbol]?.research?.observedAt?`Research as of ${new Date(quotes[x.symbol].research.observedAt).toLocaleDateString()}`:'Research timestamp unavailable'}</small></>}</div></div><div><small>Market value</small><b>{money(value)}</b></div><div><small>Unrealized P/L</small><b className={pnl==null?'':pnl>=0?'pmPositive':'pmNegative'}>{money(pnl)}</b></div><div className="pmRowActions"><button aria-label={`Edit ${x.symbol}`} disabled={busy} onClick={()=>{setDraft(x);setForm(true);window.scrollTo({top:0,behavior:'smooth'})}}><Pencil size={16}/></button><button aria-label={`Remove ${x.symbol}`} disabled={busy} onClick={()=>remove(x)}><Trash2 size={16}/></button></div></article>})}</div></section>}
+ </>}
  </section>
 }
-export default function Page(){return <AuthGuard><AppShell><PortfolioContent/></AppShell></AuthGuard>}
+export default function Page(){return <AuthGuard><AppShell><Content/></AppShell></AuthGuard>}

@@ -1,0 +1,1510 @@
+{
+  "fixture": "Offline mocked auth and empty service responses; not live integration validation",
+  "reports": [
+    {
+      "path": "/",
+      "width": 320,
+      "scroll": 320,
+      "title": "Invest withClarity and Conviction",
+      "overflow": []
+    },
+    {
+      "path": "/login",
+      "width": 320,
+      "scroll": 320,
+      "title": "Welcome back",
+      "overflow": []
+    },
+    {
+      "path": "/register",
+      "width": 320,
+      "scroll": 320,
+      "title": "Create your account",
+      "overflow": []
+    },
+    {
+      "path": "/forgot-password",
+      "width": 320,
+      "scroll": 320,
+      "title": "Reset your password",
+      "overflow": []
+    },
+    {
+      "path": "/onboarding",
+      "width": 320,
+      "scroll": 320,
+      "title": "Let’s personalize your experience",
+      "overflow": []
+    },
+    {
+      "path": "/personalization",
+      "width": 320,
+      "scroll": 320,
+      "title": "Customize your experience",
+      "overflow": []
+    },
+    {
+      "path": "/analyze",
+      "width": 320,
+      "scroll": 320,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/portfolio",
+      "width": 320,
+      "scroll": 320,
+      "title": "Portfolio",
+      "overflow": []
+    },
+    {
+      "path": "/watchlist",
+      "width": 320,
+      "scroll": 320,
+      "title": "Watchlist",
+      "overflow": []
+    },
+    {
+      "path": "/alerts",
+      "width": 320,
+      "scroll": 320,
+      "title": "Monitor",
+      "overflow": []
+    },
+    {
+      "path": "/trading-lab",
+      "width": 320,
+      "scroll": 320,
+      "title": "Trading Lab",
+      "overflow": []
+    },
+    {
+      "path": "/profile",
+      "width": 320,
+      "scroll": 320,
+      "title": "Account & preferences",
+      "overflow": []
+    },
+    {
+      "path": "/faq",
+      "width": 320,
+      "scroll": 320,
+      "title": "A little clarity goes a long way.",
+      "overflow": []
+    },
+    {
+      "path": "/about",
+      "width": 320,
+      "scroll": 320,
+      "title": "Invest with clarity and conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/methodology",
+      "width": 320,
+      "scroll": 320,
+      "title": "The reasoning behind the research.",
+      "overflow": []
+    },
+    {
+      "path": "/terms",
+      "width": 320,
+      "scroll": 320,
+      "title": "Terms of Use",
+      "overflow": []
+    },
+    {
+      "path": "/privacy",
+      "width": 320,
+      "scroll": 320,
+      "title": "Privacy Policy",
+      "overflow": []
+    },
+    {
+      "path": "/disclaimer",
+      "width": 320,
+      "scroll": 320,
+      "title": "Investment & Data Disclaimer",
+      "overflow": []
+    },
+    {
+      "path": "/calibration",
+      "width": 320,
+      "scroll": 320,
+      "title": "Confidence, earned.",
+      "overflow": [
+        "secondaryTable",
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "path": "/research-lab",
+      "width": 320,
+      "scroll": 320,
+      "title": "Explore ideas. Demand evidence.",
+      "overflow": [
+        "secondaryTable",
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "path": "/stock/IREN",
+      "width": 320,
+      "scroll": 320,
+      "title": "IREN",
+      "overflow": []
+    },
+    {
+      "path": "/reset-password",
+      "width": 320,
+      "scroll": 320,
+      "title": "Choose a new password",
+      "overflow": []
+    },
+    {
+      "path": "/auth/callback",
+      "width": 320,
+      "scroll": 320,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/dashboard",
+      "width": 320,
+      "scroll": 320,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/discover",
+      "width": 320,
+      "scroll": 320,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/not-a-real-route",
+      "width": 320,
+      "scroll": 320,
+      "title": "Page not found",
+      "overflow": []
+    },
+    {
+      "path": "/",
+      "width": 375,
+      "scroll": 375,
+      "title": "Invest withClarity and Conviction",
+      "overflow": []
+    },
+    {
+      "path": "/login",
+      "width": 375,
+      "scroll": 375,
+      "title": "Welcome back",
+      "overflow": []
+    },
+    {
+      "path": "/register",
+      "width": 375,
+      "scroll": 375,
+      "title": "Create your account",
+      "overflow": []
+    },
+    {
+      "path": "/forgot-password",
+      "width": 375,
+      "scroll": 375,
+      "title": "Reset your password",
+      "overflow": []
+    },
+    {
+      "path": "/onboarding",
+      "width": 375,
+      "scroll": 375,
+      "title": "Let’s personalize your experience",
+      "overflow": []
+    },
+    {
+      "path": "/personalization",
+      "width": 375,
+      "scroll": 375,
+      "title": "Customize your experience",
+      "overflow": []
+    },
+    {
+      "path": "/analyze",
+      "width": 375,
+      "scroll": 375,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/portfolio",
+      "width": 375,
+      "scroll": 375,
+      "title": "Portfolio",
+      "overflow": []
+    },
+    {
+      "path": "/watchlist",
+      "width": 375,
+      "scroll": 375,
+      "title": "Watchlist",
+      "overflow": []
+    },
+    {
+      "path": "/alerts",
+      "width": 375,
+      "scroll": 375,
+      "title": "Monitor",
+      "overflow": []
+    },
+    {
+      "path": "/trading-lab",
+      "width": 375,
+      "scroll": 375,
+      "title": "Trading Lab",
+      "overflow": []
+    },
+    {
+      "path": "/profile",
+      "width": 375,
+      "scroll": 375,
+      "title": "Account & preferences",
+      "overflow": []
+    },
+    {
+      "path": "/faq",
+      "width": 375,
+      "scroll": 375,
+      "title": "A little clarity goes a long way.",
+      "overflow": []
+    },
+    {
+      "path": "/about",
+      "width": 375,
+      "scroll": 375,
+      "title": "Invest with clarity and conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/methodology",
+      "width": 375,
+      "scroll": 375,
+      "title": "The reasoning behind the research.",
+      "overflow": []
+    },
+    {
+      "path": "/terms",
+      "width": 375,
+      "scroll": 375,
+      "title": "Terms of Use",
+      "overflow": []
+    },
+    {
+      "path": "/privacy",
+      "width": 375,
+      "scroll": 375,
+      "title": "Privacy Policy",
+      "overflow": []
+    },
+    {
+      "path": "/disclaimer",
+      "width": 375,
+      "scroll": 375,
+      "title": "Investment & Data Disclaimer",
+      "overflow": []
+    },
+    {
+      "path": "/calibration",
+      "width": 375,
+      "scroll": 375,
+      "title": "Confidence, earned.",
+      "overflow": [
+        "secondaryTable",
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "path": "/research-lab",
+      "width": 375,
+      "scroll": 375,
+      "title": "Explore ideas. Demand evidence.",
+      "overflow": [
+        "secondaryTable",
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "path": "/stock/IREN",
+      "width": 375,
+      "scroll": 375,
+      "title": "IREN",
+      "overflow": []
+    },
+    {
+      "path": "/reset-password",
+      "width": 375,
+      "scroll": 375,
+      "title": "Choose a new password",
+      "overflow": []
+    },
+    {
+      "path": "/auth/callback",
+      "width": 375,
+      "scroll": 375,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/dashboard",
+      "width": 375,
+      "scroll": 375,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/discover",
+      "width": 375,
+      "scroll": 375,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/not-a-real-route",
+      "width": 375,
+      "scroll": 375,
+      "title": "Page not found",
+      "overflow": []
+    },
+    {
+      "path": "/",
+      "width": 390,
+      "scroll": 390,
+      "title": "Invest withClarity and Conviction",
+      "overflow": []
+    },
+    {
+      "path": "/login",
+      "width": 390,
+      "scroll": 390,
+      "title": "Welcome back",
+      "overflow": []
+    },
+    {
+      "path": "/register",
+      "width": 390,
+      "scroll": 390,
+      "title": "Create your account",
+      "overflow": []
+    },
+    {
+      "path": "/forgot-password",
+      "width": 390,
+      "scroll": 390,
+      "title": "Reset your password",
+      "overflow": []
+    },
+    {
+      "path": "/onboarding",
+      "width": 390,
+      "scroll": 390,
+      "title": "Let’s personalize your experience",
+      "overflow": []
+    },
+    {
+      "path": "/personalization",
+      "width": 390,
+      "scroll": 390,
+      "title": "Customize your experience",
+      "overflow": []
+    },
+    {
+      "path": "/analyze",
+      "width": 390,
+      "scroll": 390,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/portfolio",
+      "width": 390,
+      "scroll": 390,
+      "title": "Portfolio",
+      "overflow": []
+    },
+    {
+      "path": "/watchlist",
+      "width": 390,
+      "scroll": 390,
+      "title": "Watchlist",
+      "overflow": []
+    },
+    {
+      "path": "/alerts",
+      "width": 390,
+      "scroll": 390,
+      "title": "Monitor",
+      "overflow": []
+    },
+    {
+      "path": "/trading-lab",
+      "width": 390,
+      "scroll": 390,
+      "title": "Trading Lab",
+      "overflow": []
+    },
+    {
+      "path": "/profile",
+      "width": 390,
+      "scroll": 390,
+      "title": "Account & preferences",
+      "overflow": []
+    },
+    {
+      "path": "/faq",
+      "width": 390,
+      "scroll": 390,
+      "title": "A little clarity goes a long way.",
+      "overflow": []
+    },
+    {
+      "path": "/about",
+      "width": 390,
+      "scroll": 390,
+      "title": "Invest with clarity and conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/methodology",
+      "width": 390,
+      "scroll": 390,
+      "title": "The reasoning behind the research.",
+      "overflow": []
+    },
+    {
+      "path": "/terms",
+      "width": 390,
+      "scroll": 390,
+      "title": "Terms of Use",
+      "overflow": []
+    },
+    {
+      "path": "/privacy",
+      "width": 390,
+      "scroll": 390,
+      "title": "Privacy Policy",
+      "overflow": []
+    },
+    {
+      "path": "/disclaimer",
+      "width": 390,
+      "scroll": 390,
+      "title": "Investment & Data Disclaimer",
+      "overflow": []
+    },
+    {
+      "path": "/calibration",
+      "width": 390,
+      "scroll": 390,
+      "title": "Confidence, earned.",
+      "overflow": [
+        "secondaryTable",
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "path": "/research-lab",
+      "width": 390,
+      "scroll": 390,
+      "title": "Explore ideas. Demand evidence.",
+      "overflow": [
+        "secondaryTable",
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "path": "/stock/IREN",
+      "width": 390,
+      "scroll": 390,
+      "title": "IREN",
+      "overflow": []
+    },
+    {
+      "path": "/reset-password",
+      "width": 390,
+      "scroll": 390,
+      "title": "Choose a new password",
+      "overflow": []
+    },
+    {
+      "path": "/auth/callback",
+      "width": 390,
+      "scroll": 390,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/dashboard",
+      "width": 390,
+      "scroll": 390,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/discover",
+      "width": 390,
+      "scroll": 390,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/not-a-real-route",
+      "width": 390,
+      "scroll": 390,
+      "title": "Page not found",
+      "overflow": []
+    },
+    {
+      "path": "/",
+      "width": 430,
+      "scroll": 430,
+      "title": "Invest withClarity and Conviction",
+      "overflow": []
+    },
+    {
+      "path": "/login",
+      "width": 430,
+      "scroll": 430,
+      "title": "Welcome back",
+      "overflow": []
+    },
+    {
+      "path": "/register",
+      "width": 430,
+      "scroll": 430,
+      "title": "Create your account",
+      "overflow": []
+    },
+    {
+      "path": "/forgot-password",
+      "width": 430,
+      "scroll": 430,
+      "title": "Reset your password",
+      "overflow": []
+    },
+    {
+      "path": "/onboarding",
+      "width": 430,
+      "scroll": 430,
+      "title": "Let’s personalize your experience",
+      "overflow": []
+    },
+    {
+      "path": "/personalization",
+      "width": 430,
+      "scroll": 430,
+      "title": "Customize your experience",
+      "overflow": []
+    },
+    {
+      "path": "/analyze",
+      "width": 430,
+      "scroll": 430,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/portfolio",
+      "width": 430,
+      "scroll": 430,
+      "title": "Portfolio",
+      "overflow": []
+    },
+    {
+      "path": "/watchlist",
+      "width": 430,
+      "scroll": 430,
+      "title": "Watchlist",
+      "overflow": []
+    },
+    {
+      "path": "/alerts",
+      "width": 430,
+      "scroll": 430,
+      "title": "Monitor",
+      "overflow": []
+    },
+    {
+      "path": "/trading-lab",
+      "width": 430,
+      "scroll": 430,
+      "title": "Trading Lab",
+      "overflow": []
+    },
+    {
+      "path": "/profile",
+      "width": 430,
+      "scroll": 430,
+      "title": "Account & preferences",
+      "overflow": []
+    },
+    {
+      "path": "/faq",
+      "width": 430,
+      "scroll": 430,
+      "title": "A little clarity goes a long way.",
+      "overflow": []
+    },
+    {
+      "path": "/about",
+      "width": 430,
+      "scroll": 430,
+      "title": "Invest with clarity and conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/methodology",
+      "width": 430,
+      "scroll": 430,
+      "title": "The reasoning behind the research.",
+      "overflow": []
+    },
+    {
+      "path": "/terms",
+      "width": 430,
+      "scroll": 430,
+      "title": "Terms of Use",
+      "overflow": []
+    },
+    {
+      "path": "/privacy",
+      "width": 430,
+      "scroll": 430,
+      "title": "Privacy Policy",
+      "overflow": []
+    },
+    {
+      "path": "/disclaimer",
+      "width": 430,
+      "scroll": 430,
+      "title": "Investment & Data Disclaimer",
+      "overflow": []
+    },
+    {
+      "path": "/calibration",
+      "width": 430,
+      "scroll": 430,
+      "title": "Confidence, earned.",
+      "overflow": [
+        "secondaryTable",
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "path": "/research-lab",
+      "width": 430,
+      "scroll": 430,
+      "title": "Explore ideas. Demand evidence.",
+      "overflow": [
+        "secondaryTable",
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "path": "/stock/IREN",
+      "width": 430,
+      "scroll": 430,
+      "title": "IREN",
+      "overflow": []
+    },
+    {
+      "path": "/reset-password",
+      "width": 430,
+      "scroll": 430,
+      "title": "Choose a new password",
+      "overflow": []
+    },
+    {
+      "path": "/auth/callback",
+      "width": 430,
+      "scroll": 430,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/dashboard",
+      "width": 430,
+      "scroll": 430,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/discover",
+      "width": 430,
+      "scroll": 430,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/not-a-real-route",
+      "width": 430,
+      "scroll": 430,
+      "title": "Page not found",
+      "overflow": []
+    },
+    {
+      "path": "/",
+      "width": 768,
+      "scroll": 768,
+      "title": "Invest withClarity and Conviction",
+      "overflow": []
+    },
+    {
+      "path": "/login",
+      "width": 768,
+      "scroll": 768,
+      "title": "Welcome back",
+      "overflow": []
+    },
+    {
+      "path": "/register",
+      "width": 768,
+      "scroll": 768,
+      "title": "Create your account",
+      "overflow": []
+    },
+    {
+      "path": "/forgot-password",
+      "width": 768,
+      "scroll": 768,
+      "title": "Reset your password",
+      "overflow": []
+    },
+    {
+      "path": "/onboarding",
+      "width": 768,
+      "scroll": 768,
+      "title": "Let’s personalize your experience",
+      "overflow": []
+    },
+    {
+      "path": "/personalization",
+      "width": 768,
+      "scroll": 768,
+      "title": "Customize your experience",
+      "overflow": []
+    },
+    {
+      "path": "/analyze",
+      "width": 768,
+      "scroll": 768,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/portfolio",
+      "width": 768,
+      "scroll": 768,
+      "title": "Portfolio",
+      "overflow": []
+    },
+    {
+      "path": "/watchlist",
+      "width": 768,
+      "scroll": 768,
+      "title": "Watchlist",
+      "overflow": []
+    },
+    {
+      "path": "/alerts",
+      "width": 768,
+      "scroll": 768,
+      "title": "Monitor",
+      "overflow": []
+    },
+    {
+      "path": "/trading-lab",
+      "width": 768,
+      "scroll": 768,
+      "title": "Trading Lab",
+      "overflow": []
+    },
+    {
+      "path": "/profile",
+      "width": 768,
+      "scroll": 768,
+      "title": "Account & preferences",
+      "overflow": []
+    },
+    {
+      "path": "/faq",
+      "width": 768,
+      "scroll": 768,
+      "title": "A little clarity goes a long way.",
+      "overflow": []
+    },
+    {
+      "path": "/about",
+      "width": 768,
+      "scroll": 768,
+      "title": "Invest with clarity and conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/methodology",
+      "width": 768,
+      "scroll": 768,
+      "title": "The reasoning behind the research.",
+      "overflow": []
+    },
+    {
+      "path": "/terms",
+      "width": 768,
+      "scroll": 768,
+      "title": "Terms of Use",
+      "overflow": []
+    },
+    {
+      "path": "/privacy",
+      "width": 768,
+      "scroll": 768,
+      "title": "Privacy Policy",
+      "overflow": []
+    },
+    {
+      "path": "/disclaimer",
+      "width": 768,
+      "scroll": 768,
+      "title": "Investment & Data Disclaimer",
+      "overflow": []
+    },
+    {
+      "path": "/calibration",
+      "width": 768,
+      "scroll": 768,
+      "title": "Confidence, earned.",
+      "overflow": []
+    },
+    {
+      "path": "/research-lab",
+      "width": 768,
+      "scroll": 768,
+      "title": "Explore ideas. Demand evidence.",
+      "overflow": []
+    },
+    {
+      "path": "/stock/IREN",
+      "width": 768,
+      "scroll": 768,
+      "title": "IREN",
+      "overflow": []
+    },
+    {
+      "path": "/reset-password",
+      "width": 768,
+      "scroll": 768,
+      "title": "Choose a new password",
+      "overflow": []
+    },
+    {
+      "path": "/auth/callback",
+      "width": 768,
+      "scroll": 768,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/dashboard",
+      "width": 768,
+      "scroll": 768,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/discover",
+      "width": 768,
+      "scroll": 768,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/not-a-real-route",
+      "width": 768,
+      "scroll": 768,
+      "title": "Page not found",
+      "overflow": []
+    },
+    {
+      "path": "/",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "Invest withClarity and Conviction",
+      "overflow": []
+    },
+    {
+      "path": "/login",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "Welcome back",
+      "overflow": []
+    },
+    {
+      "path": "/register",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "Create your account",
+      "overflow": []
+    },
+    {
+      "path": "/forgot-password",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "Reset your password",
+      "overflow": []
+    },
+    {
+      "path": "/onboarding",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "Let’s personalize your experience",
+      "overflow": []
+    },
+    {
+      "path": "/personalization",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "Customize your experience",
+      "overflow": []
+    },
+    {
+      "path": "/analyze",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/portfolio",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "Portfolio",
+      "overflow": []
+    },
+    {
+      "path": "/watchlist",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "Watchlist",
+      "overflow": []
+    },
+    {
+      "path": "/alerts",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "Monitor",
+      "overflow": []
+    },
+    {
+      "path": "/trading-lab",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "Trading Lab",
+      "overflow": []
+    },
+    {
+      "path": "/profile",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "Account & preferences",
+      "overflow": []
+    },
+    {
+      "path": "/faq",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "A little clarity goes a long way.",
+      "overflow": []
+    },
+    {
+      "path": "/about",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "Invest with clarity and conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/methodology",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "The reasoning behind the research.",
+      "overflow": []
+    },
+    {
+      "path": "/terms",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "Terms of Use",
+      "overflow": []
+    },
+    {
+      "path": "/privacy",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "Privacy Policy",
+      "overflow": []
+    },
+    {
+      "path": "/disclaimer",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "Investment & Data Disclaimer",
+      "overflow": []
+    },
+    {
+      "path": "/calibration",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "Confidence, earned.",
+      "overflow": []
+    },
+    {
+      "path": "/research-lab",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "Explore ideas. Demand evidence.",
+      "overflow": []
+    },
+    {
+      "path": "/stock/IREN",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "IREN",
+      "overflow": []
+    },
+    {
+      "path": "/reset-password",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "Choose a new password",
+      "overflow": []
+    },
+    {
+      "path": "/auth/callback",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/dashboard",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/discover",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/not-a-real-route",
+      "width": 1280,
+      "scroll": 1280,
+      "title": "Page not found",
+      "overflow": []
+    },
+    {
+      "path": "/",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "Invest withClarity and Conviction",
+      "overflow": []
+    },
+    {
+      "path": "/login",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "Welcome back",
+      "overflow": []
+    },
+    {
+      "path": "/register",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "Create your account",
+      "overflow": []
+    },
+    {
+      "path": "/forgot-password",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "Reset your password",
+      "overflow": []
+    },
+    {
+      "path": "/onboarding",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "Let’s personalize your experience",
+      "overflow": []
+    },
+    {
+      "path": "/personalization",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "Customize your experience",
+      "overflow": []
+    },
+    {
+      "path": "/analyze",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/portfolio",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "Portfolio",
+      "overflow": []
+    },
+    {
+      "path": "/watchlist",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "Watchlist",
+      "overflow": []
+    },
+    {
+      "path": "/alerts",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "Monitor",
+      "overflow": []
+    },
+    {
+      "path": "/trading-lab",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "Trading Lab",
+      "overflow": []
+    },
+    {
+      "path": "/profile",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "Account & preferences",
+      "overflow": []
+    },
+    {
+      "path": "/faq",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "A little clarity goes a long way.",
+      "overflow": []
+    },
+    {
+      "path": "/about",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "Invest with clarity and conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/methodology",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "The reasoning behind the research.",
+      "overflow": []
+    },
+    {
+      "path": "/terms",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "Terms of Use",
+      "overflow": []
+    },
+    {
+      "path": "/privacy",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "Privacy Policy",
+      "overflow": []
+    },
+    {
+      "path": "/disclaimer",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "Investment & Data Disclaimer",
+      "overflow": []
+    },
+    {
+      "path": "/calibration",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "Confidence, earned.",
+      "overflow": []
+    },
+    {
+      "path": "/research-lab",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "Explore ideas. Demand evidence.",
+      "overflow": []
+    },
+    {
+      "path": "/stock/IREN",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "IREN",
+      "overflow": []
+    },
+    {
+      "path": "/reset-password",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "Choose a new password",
+      "overflow": []
+    },
+    {
+      "path": "/auth/callback",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/dashboard",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/discover",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/not-a-real-route",
+      "width": 1440,
+      "scroll": 1440,
+      "title": "Page not found",
+      "overflow": []
+    },
+    {
+      "path": "/",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "Invest withClarity and Conviction",
+      "overflow": []
+    },
+    {
+      "path": "/login",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "Welcome back",
+      "overflow": []
+    },
+    {
+      "path": "/register",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "Create your account",
+      "overflow": []
+    },
+    {
+      "path": "/forgot-password",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "Reset your password",
+      "overflow": []
+    },
+    {
+      "path": "/onboarding",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "Let’s personalize your experience",
+      "overflow": []
+    },
+    {
+      "path": "/personalization",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "Customize your experience",
+      "overflow": []
+    },
+    {
+      "path": "/analyze",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/portfolio",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "Portfolio",
+      "overflow": []
+    },
+    {
+      "path": "/watchlist",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "Watchlist",
+      "overflow": []
+    },
+    {
+      "path": "/alerts",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "Monitor",
+      "overflow": []
+    },
+    {
+      "path": "/trading-lab",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "Trading Lab",
+      "overflow": []
+    },
+    {
+      "path": "/profile",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "Account & preferences",
+      "overflow": []
+    },
+    {
+      "path": "/faq",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "A little clarity goes a long way.",
+      "overflow": []
+    },
+    {
+      "path": "/about",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "Invest with clarity and conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/methodology",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "The reasoning behind the research.",
+      "overflow": []
+    },
+    {
+      "path": "/terms",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "Terms of Use",
+      "overflow": []
+    },
+    {
+      "path": "/privacy",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "Privacy Policy",
+      "overflow": []
+    },
+    {
+      "path": "/disclaimer",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "Investment & Data Disclaimer",
+      "overflow": []
+    },
+    {
+      "path": "/calibration",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "Confidence, earned.",
+      "overflow": []
+    },
+    {
+      "path": "/research-lab",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "Explore ideas. Demand evidence.",
+      "overflow": []
+    },
+    {
+      "path": "/stock/IREN",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "IREN",
+      "overflow": []
+    },
+    {
+      "path": "/reset-password",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "Choose a new password",
+      "overflow": []
+    },
+    {
+      "path": "/auth/callback",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/dashboard",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/discover",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "A clearer view.A stronger conviction.",
+      "overflow": []
+    },
+    {
+      "path": "/not-a-real-route",
+      "width": 1920,
+      "scroll": 1920,
+      "title": "Page not found",
+      "overflow": []
+    }
+  ],
+  "errors": []
+}
