@@ -1,5 +1,9 @@
 # GitHub and Vercel deployment
 
+## Latest chart and mobile-menu fixes
+
+This complete source update introduces no subscription, new environment variable or database migration. It corrects chart range requests and cache error recovery, moves the canonical decision above the chart, improves dates and nested spacing, and refines the mobile dock and account menu. See `CHART_AND_MOBILE_FIXES.md`. Rebuild from source; this session has not pushed or deployed the update.
+
 ## October 16 premium product update
 
 The premium interface, personal research home, quote repairs and exploratory valuation workbench require no additional environment variable, subscription or migration. Rebuild from this source package. Extract its `AURYN` contents into the existing Git checkout, including hidden configuration/workflow templates, while retaining your `.git` history and private `.env.local`. Downloading or unzipping alone does not update GitHub.
@@ -13,7 +17,7 @@ npm run verify:release
 git status --short
 git add -A
 git add -f .github/workflows/auryn-v996-validation-queue.yml .github/workflows/nivora-calibration-mature.yml
-git commit -m "AURYN mobile-first research and portfolio redesign"
+git commit -m "Fix AURYN charts and mobile glass navigation"
 git push origin main
 ```
 
@@ -78,4 +82,4 @@ Verify a preview deployment first: signup and email verification, login, passwor
 
 ## Reproducing offline browser checks
 
-Install Playwright in a development environment (`npm install --no-save playwright` and `npx playwright install chromium`). Build with the public fixture configuration shown in `verification/BROWSER_TESTS.md`, start the local server, then run the applicable browser scripts. For this update, run `node verification/premium-global-browser.cjs` and `node verification/premium-research-browser.cjs`; these check application routes and the 11 research tabs across mobile/desktop widths and both themes. Run `node verification/premium-interactions.cjs` for personal workspace interactions and `node verification/premium-company-browser.cjs` for scenario editing and blocked financial-evidence states. Supply `PLAYWRIGHT_MODULE_PATH` only if Playwright is installed outside the project, and `CHROMIUM_EXECUTABLE_PATH` only for a custom browser executable. Never deploy a fixture-configured build. Rebuild with real public environment variables for deployment.
+Install Playwright in a development environment (`npm install --no-save playwright` and `npx playwright install chromium`). Build with the public fixture configuration shown in `verification/BROWSER_TESTS.md`, start the local server, then run the applicable browser scripts. For the latest targeted checks, run `node verification/chart-fix-browser.cjs` and `node verification/mobile-menu-browser.cjs`. The earlier broad checks remain available: run `node verification/premium-global-browser.cjs` and `node verification/premium-research-browser.cjs`; these check application routes and the 11 research tabs across mobile/desktop widths and both themes. Run `node verification/premium-interactions.cjs` for personal workspace interactions and `node verification/premium-company-browser.cjs` for scenario editing and blocked financial-evidence states. Supply `PLAYWRIGHT_MODULE_PATH` only if Playwright is installed outside the project, and `CHROMIUM_EXECUTABLE_PATH` only for a custom browser executable. Never deploy a fixture-configured build. Rebuild with real public environment variables for deployment.

@@ -1,0 +1,434 @@
+{
+  "scope": "Chromium mobile emulation at 320, 390 and 430 CSS px in light and dark mode. Native iOS Safari and nonzero hardware safe-area insets still require device verification.",
+  "reports": [
+    {
+      "theme": "light",
+      "width": 320,
+      "path": "/portfolio"
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "path": "/alerts"
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "path": "/trading-lab"
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "path": "/analyze"
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "path": "/portfolio"
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "path": "/alerts"
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "path": "/trading-lab"
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "path": "/analyze"
+    },
+    {
+      "theme": "light",
+      "width": 430,
+      "path": "/portfolio"
+    },
+    {
+      "theme": "light",
+      "width": 430,
+      "path": "/alerts"
+    },
+    {
+      "theme": "light",
+      "width": 430,
+      "path": "/trading-lab"
+    },
+    {
+      "theme": "light",
+      "width": 430,
+      "path": "/analyze"
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "path": "/portfolio"
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "path": "/alerts"
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "path": "/trading-lab"
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "path": "/analyze"
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "path": "/portfolio"
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "path": "/alerts"
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "path": "/trading-lab"
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "path": "/analyze"
+    },
+    {
+      "theme": "dark",
+      "width": 430,
+      "path": "/portfolio"
+    },
+    {
+      "theme": "dark",
+      "width": 430,
+      "path": "/alerts"
+    },
+    {
+      "theme": "dark",
+      "width": 430,
+      "path": "/trading-lab"
+    },
+    {
+      "theme": "dark",
+      "width": 430,
+      "path": "/analyze"
+    }
+  ],
+  "measurements": [
+    {
+      "theme": "light",
+      "width": 320,
+      "metrics": {
+        "left": 8,
+        "right": 312,
+        "width": 304,
+        "height": 66,
+        "bottom": 832,
+        "viewport": 320,
+        "viewportHeight": 844,
+        "paddingTop": "6px",
+        "paddingBottom": "6px",
+        "background": "rgba(245, 249, 255, 0.74)",
+        "blur": "blur(28px) saturate(1.8)",
+        "items": [
+          {
+            "width": 70.25,
+            "height": 52,
+            "labelFits": true
+          },
+          {
+            "width": 70.25,
+            "height": 52,
+            "labelFits": true
+          },
+          {
+            "width": 70.25,
+            "height": 52,
+            "labelFits": true
+          },
+          {
+            "width": 70.25,
+            "height": 52,
+            "labelFits": true
+          }
+        ]
+      },
+      "menuMetrics": {
+        "left": 44,
+        "right": 304,
+        "blur": "blur(28px) saturate(1.6)",
+        "heights": [
+          48,
+          48,
+          48,
+          48,
+          48
+        ]
+      }
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "metrics": {
+        "left": 12,
+        "right": 378,
+        "width": 366,
+        "height": 66,
+        "bottom": 832,
+        "viewport": 390,
+        "viewportHeight": 844,
+        "paddingTop": "6px",
+        "paddingBottom": "6px",
+        "background": "rgba(245, 249, 255, 0.74)",
+        "blur": "blur(28px) saturate(1.8)",
+        "items": [
+          {
+            "width": 85.75,
+            "height": 52,
+            "labelFits": true
+          },
+          {
+            "width": 85.75,
+            "height": 52,
+            "labelFits": true
+          },
+          {
+            "width": 85.75,
+            "height": 52,
+            "labelFits": true
+          },
+          {
+            "width": 85.75,
+            "height": 52,
+            "labelFits": true
+          }
+        ]
+      },
+      "menuMetrics": {
+        "left": 114,
+        "right": 374,
+        "blur": "blur(28px) saturate(1.6)",
+        "heights": [
+          48,
+          48,
+          48,
+          48,
+          48
+        ]
+      }
+    },
+    {
+      "theme": "light",
+      "width": 430,
+      "metrics": {
+        "left": 12,
+        "right": 418,
+        "width": 406,
+        "height": 66,
+        "bottom": 832,
+        "viewport": 430,
+        "viewportHeight": 844,
+        "paddingTop": "6px",
+        "paddingBottom": "6px",
+        "background": "rgba(245, 249, 255, 0.74)",
+        "blur": "blur(28px) saturate(1.8)",
+        "items": [
+          {
+            "width": 95.75,
+            "height": 52,
+            "labelFits": true
+          },
+          {
+            "width": 95.75,
+            "height": 52,
+            "labelFits": true
+          },
+          {
+            "width": 95.75,
+            "height": 52,
+            "labelFits": true
+          },
+          {
+            "width": 95.75,
+            "height": 52,
+            "labelFits": true
+          }
+        ]
+      },
+      "menuMetrics": {
+        "left": 154,
+        "right": 414,
+        "blur": "blur(28px) saturate(1.6)",
+        "heights": [
+          48,
+          48,
+          48,
+          48,
+          48
+        ]
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "metrics": {
+        "left": 8,
+        "right": 312,
+        "width": 304,
+        "height": 66,
+        "bottom": 832,
+        "viewport": 320,
+        "viewportHeight": 844,
+        "paddingTop": "6px",
+        "paddingBottom": "6px",
+        "background": "rgba(15, 30, 49, 0.78)",
+        "blur": "blur(28px) saturate(1.8)",
+        "items": [
+          {
+            "width": 70.25,
+            "height": 52,
+            "labelFits": true
+          },
+          {
+            "width": 70.25,
+            "height": 52,
+            "labelFits": true
+          },
+          {
+            "width": 70.25,
+            "height": 52,
+            "labelFits": true
+          },
+          {
+            "width": 70.25,
+            "height": 52,
+            "labelFits": true
+          }
+        ]
+      },
+      "menuMetrics": {
+        "left": 44,
+        "right": 304,
+        "blur": "blur(28px) saturate(1.6)",
+        "heights": [
+          48,
+          48,
+          48,
+          48,
+          48
+        ]
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "metrics": {
+        "left": 12,
+        "right": 378,
+        "width": 366,
+        "height": 66,
+        "bottom": 832,
+        "viewport": 390,
+        "viewportHeight": 844,
+        "paddingTop": "6px",
+        "paddingBottom": "6px",
+        "background": "rgba(15, 30, 49, 0.78)",
+        "blur": "blur(28px) saturate(1.8)",
+        "items": [
+          {
+            "width": 85.75,
+            "height": 52,
+            "labelFits": true
+          },
+          {
+            "width": 85.75,
+            "height": 52,
+            "labelFits": true
+          },
+          {
+            "width": 85.75,
+            "height": 52,
+            "labelFits": true
+          },
+          {
+            "width": 85.75,
+            "height": 52,
+            "labelFits": true
+          }
+        ]
+      },
+      "menuMetrics": {
+        "left": 114,
+        "right": 374,
+        "blur": "blur(28px) saturate(1.6)",
+        "heights": [
+          48,
+          48,
+          48,
+          48,
+          48
+        ]
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 430,
+      "metrics": {
+        "left": 12,
+        "right": 418,
+        "width": 406,
+        "height": 66,
+        "bottom": 832,
+        "viewport": 430,
+        "viewportHeight": 844,
+        "paddingTop": "6px",
+        "paddingBottom": "6px",
+        "background": "rgba(15, 30, 49, 0.78)",
+        "blur": "blur(28px) saturate(1.8)",
+        "items": [
+          {
+            "width": 95.75,
+            "height": 52,
+            "labelFits": true
+          },
+          {
+            "width": 95.75,
+            "height": 52,
+            "labelFits": true
+          },
+          {
+            "width": 95.75,
+            "height": 52,
+            "labelFits": true
+          },
+          {
+            "width": 95.75,
+            "height": 52,
+            "labelFits": true
+          }
+        ]
+      },
+      "menuMetrics": {
+        "left": 154,
+        "right": 414,
+        "blur": "blur(28px) saturate(1.6)",
+        "heights": [
+          48,
+          48,
+          48,
+          48,
+          48
+        ]
+      }
+    }
+  ],
+  "errors": []
+}

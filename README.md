@@ -4,6 +4,10 @@ Start with **PROJECT_STRUCTURE.md**, **DEPLOYMENT.md** and **verification/VERIFI
 
 This package contains the complete application source, redesigned routes, preserved research/investment engines, Supabase SQL, paper-trading integrations, approved reference material, executable tests and verification evidence. It is not a claim of fully verified production operation: some live service connections and read isolation are now verified; end-to-end authentication, broker execution and deployment of this rebuilt source still require acceptance. Historical source-contract suites remain separately reported. The precise status is recorded in the verification report.
 
+## Latest chart and mobile-menu fixes
+
+Read **CHART_AND_MOBILE_FIXES.md** for normal chart scrolling, explicit zoom controls, corrected 1D/1W history, recoverable history errors, decision-first research, readable weekly dates and the refined mobile glass dock. Current build/test results are in **verification/VERIFICATION_REPORT.md**.
+
 ## October 16 premium product update
 
 Read **PREMIUM_UX_RELEASE.md** for the current mobile-first design, search/portfolio fixes, quote-refresh budget and exploratory valuation boundary. The approved concept boards are included under `docs/redesign/approved-2026-10-16/`. Detailed explanations open on demand; financial data stays on high-contrast surfaces.

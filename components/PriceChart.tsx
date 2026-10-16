@@ -2,10 +2,12 @@
 import {useEffect,useRef,useState} from "react";
 import {createChart,CandlestickSeries,HistogramSeries,LineSeries,LineStyle,PriceScaleMode} from "lightweight-charts";
 import type {StructureChartOverlays} from "@/lib/research-structure-presentation";
-import type {AutoscaleInfo} from "lightweight-charts";
+import type {AutoscaleInfo,IChartApi} from "lightweight-charts";
 const finite=(value:any)=>value!==null&&value!==undefined&&value!==""&&Number.isFinite(Number(value));
 export default function PriceChart({candles,levels,showTrend=false,confluence,overlays,forceCandles=false,ariaLabel}:{candles:any[],levels:any|null,showTrend?:boolean,confluence?:{fib382?:number;fib50?:number;fib618?:number;waveTarget?:number;waveInvalidation?:number},overlays?:StructureChartOverlays,forceCandles?:boolean,ariaLabel?:string}){
- const el=useRef<HTMLDivElement>(null),[appearance,setAppearance]=useState(0);
+ const el=useRef<HTMLDivElement>(null),chartRef=useRef<IChartApi|null>(null),[appearance,setAppearance]=useState(0),[zoom,setZoom]=useState(1);
+ const changeZoom=(factor:number)=>{const chart=chartRef.current,range=chart?.timeScale().getVisibleLogicalRange();if(!chart||!range)return;const center=(range.from+range.to)/2,width=Math.max(8,(range.to-range.from)*factor);chart.timeScale().setVisibleLogicalRange({from:center-width/2,to:center+width/2});setZoom(previous=>Math.max(.1,previous/factor));};
+ const resetZoom=()=>{chartRef.current?.timeScale().fitContent();setZoom(1);};
  useEffect(()=>{const change=()=>setAppearance(x=>x+1);window.addEventListener("auryn-appearance",change);window.addEventListener("storage",change);const observer=new MutationObserver(change);observer.observe(document.documentElement,{attributes:true,attributeFilter:["class","data-theme","style"]});return()=>{window.removeEventListener("auryn-appearance",change);window.removeEventListener("storage",change);observer.disconnect()}},[]);
  useEffect(()=>{
  if(!el.current)return;
@@ -16,7 +18,8 @@ export default function PriceChart({candles,levels,showTrend=false,confluence,ov
  const background=color("--auryn-card-bg","#ffffff"),ink=color("--auryn-page-muted","#71829c"),border=color("--auryn-border","#dfe7f2"),accent=color("--auryn-accent","#246bfd"),positive=color("--auryn-positive","#10b981"),negative=color("--auryn-negative","#ef6070");
  let style="candlestick";try{style=localStorage.getItem("auryn-chart-style")||style}catch{}
  if(forceCandles)style="candlestick";
- const chart=createChart(el.current,{localization:{locale:"en-US"},width:el.current.clientWidth,height:Math.max(220,el.current.clientHeight),layout:{background:{color:background},textColor:ink,fontSize:11},grid:{vertLines:{color:border},horzLines:{color:border}},rightPriceScale:{borderColor:border,minimumWidth:mobile?52:64},timeScale:{borderColor:border,timeVisible:false,rightOffset:3,barSpacing:6}});
+ const chart=createChart(el.current,{localization:{locale:"en-US"},width:el.current.clientWidth,height:Math.max(120,el.current.clientHeight),layout:{background:{color:background},textColor:ink,fontSize:11},grid:{vertLines:{color:border},horzLines:{color:border}},rightPriceScale:{borderColor:border,minimumWidth:mobile?52:64},handleScroll:{mouseWheel:false,pressedMouseMove:true,horzTouchDrag:false,vertTouchDrag:false},handleScale:{mouseWheel:false,pinch:false,axisPressedMouseMove:false,axisDoubleClickReset:false},timeScale:{borderColor:border,timeVisible:typeof bars[0].time==="number",secondsVisible:false,rightOffset:3,barSpacing:6}});
+ chartRef.current=chart;setZoom(1);
  const series=style==="line"?chart.addSeries(LineSeries,{color:accent,lineWidth:2}):chart.addSeries(CandlestickSeries,{upColor:positive,downColor:negative,borderVisible:false,wickUpColor:positive,wickDownColor:negative});
  let haOpen=0,haClose=0;
  const rendered=bars.map((x,i)=>{if(style==="line")return{time:x.time,value:x.close};if(style!=="heikin")return{time:x.time,open:x.open,high:x.high,low:x.low,close:x.close};const close=(x.open+x.high+x.low+x.close)/4,open=i?(haOpen+haClose)/2:(x.open+x.close)/2;haOpen=open;haClose=close;return{time:x.time,open,close,high:Math.max(x.high,open,close),low:Math.min(x.low,open,close)}});
@@ -32,7 +35,7 @@ export default function PriceChart({candles,levels,showTrend=false,confluence,ov
  if(confluence)lines.push(["Fib 38.2%",confluence.fib382,ink],["Fib 50%",confluence.fib50,ink],["Fib 61.8%",confluence.fib618,ink],["Wave target",confluence.waveTarget,accent],["Wave invalidation",confluence.waveInvalidation,negative]);
  if(overlays)lines.push(...overlays.lines.map(line=>[line.label,line.price,line.color]));
  for(const [title,price,lineColor] of lines)if(finite(price)&&Number(price)>0)series.createPriceLine({price:Number(price),color:lineColor,lineWidth:1,lineStyle:LineStyle.Dashed,axisLabelVisible:false,title:mobile?"":title});
- chart.timeScale().fitContent();const resize=new ResizeObserver(()=>{if(el.current)chart.applyOptions({width:el.current.clientWidth,height:Math.max(220,el.current.clientHeight)})});resize.observe(el.current);return()=>{resize.disconnect();chart.remove()};
+ chart.timeScale().fitContent();const resize=new ResizeObserver(()=>{if(el.current)chart.applyOptions({width:el.current.clientWidth,height:Math.max(120,el.current.clientHeight)})});resize.observe(el.current);return()=>{resize.disconnect();chartRef.current=null;chart.remove()};
  },[candles,levels,showTrend,confluence,overlays,forceCandles,appearance]);
- return <div ref={el} className="chartCanvas" role="img" aria-label={ariaLabel||"Historical market price chart; selected chart appearance follows your preferences"}/>;
+ return <div className="priceChartFrame"><div ref={el} className="chartCanvas" role="img" aria-label={ariaLabel||"Historical market price chart; selected chart appearance follows your preferences"}/><div className="priceChartNavigation" aria-label="Chart zoom controls"><span aria-live="polite">{zoom===1?"Full range":`Zoom ${zoom.toFixed(1)}×`}</span><button type="button" aria-label="Zoom out chart" onClick={()=>changeZoom(4/3)} disabled={!candles.length}>−</button><button type="button" aria-label="Zoom in chart" onClick={()=>changeZoom(.75)} disabled={!candles.length}>+</button><button type="button" aria-label="Reset chart zoom" onClick={resetZoom} disabled={!candles.length}>Reset</button></div></div>;
 }

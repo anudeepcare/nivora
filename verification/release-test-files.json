@@ -165,5 +165,6 @@
   "tests/portfolio-quote-freshness.test.mjs",
   "tests/research-valuation-workbench.test.mjs",
   "tests/watchlist-compact-view.test.mjs",
-  "tests/research-premium-surfaces.test.mjs"
+  "tests/research-premium-surfaces.test.mjs",
+  "tests/chart-history-repair.test.mjs"
 ]

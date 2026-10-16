@@ -1,0 +1,42 @@
+{
+  "testedAt": "2026-10-16T03:53:12.776Z",
+  "scope": "Read-only direct Twelve Data time_series calls, normalized using the shipped chart-history module. No brokerage requests or orders. Not deployed Vercel verification.",
+  "results": [
+    {
+      "symbol": "ETH/USD",
+      "range": "1D",
+      "interval": "15min",
+      "verified": true,
+      "observations": 96,
+      "first": 1792036800,
+      "last": 1792122300
+    },
+    {
+      "symbol": "ETH/USD",
+      "range": "1W",
+      "interval": "1h",
+      "verified": true,
+      "observations": 168,
+      "first": 1791518400,
+      "last": 1792119600
+    },
+    {
+      "symbol": "ZETA",
+      "range": "1D",
+      "interval": "15min",
+      "verified": true,
+      "observations": 26,
+      "first": 1792071000,
+      "last": 1792093500
+    },
+    {
+      "symbol": "ZETA",
+      "range": "1W",
+      "interval": "1h",
+      "verified": true,
+      "observations": 35,
+      "first": 1791552600,
+      "last": 1792092600
+    }
+  ]
+}
