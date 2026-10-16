@@ -2,6 +2,8 @@ import "./auryn-redesign.css";
 import "./research-redesign.css";
 import "./portfolio-redesign.css";
 import "./secondary-redesign.css";
+import "./weekly-structure.css";
+import "./product-polish.css";
 import type {Metadata,Viewport} from "next";
 import ThemeProvider from "@/components/ThemeProvider";
 

@@ -1,0 +1,14 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import ts from 'typescript';
+import React from 'react';
+import {renderToStaticMarkup} from 'react-dom/server';
+import {createRequire} from 'node:module';
+const require=createRequire(import.meta.url);
+const load=(file,cache=new Map())=>{const full=path.resolve(file);assert.ok(fs.existsSync(full),'Weekly structure component and calculation modules must exist');if(cache.has(full))return cache.get(full).exports;const mod={exports:{}};cache.set(full,mod);const js=ts.transpileModule(fs.readFileSync(full,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.ReactJSX,esModuleInterop:true}}).outputText;new Function('require','module','exports',js)(id=>{if(id==='lightweight-charts')return {};if(id.startsWith('@/')||id.startsWith('.')){const base=id.startsWith('@/')?path.resolve(id.slice(2)):path.resolve(path.dirname(full),id);return load([base,base+'.ts',base+'.tsx'].find(x=>fs.existsSync(x)&&fs.statSync(x).isFile()),cache);}return require(id);},mod,mod.exports);return mod.exports;};
+const render=props=>renderToStaticMarkup(React.createElement(load('components/research/WeeklyStructure.tsx').default,{symbol:'TEST',bars:[],asOf:'2026-10-16',...props}));
+test('empty history explains unavailable evidence without a price target',()=>{const html=render();assert.match(html,/Weekly structure/);assert.match(html,/200/);assert.match(html,/unavailable|not enough|need|waiting/i);assert.doesNotMatch(html,/\$0\.00/);});
+test('loading and failed history retain readable recoverable states',()=>{assert.match(render({loading:true}),/Loading weekly history/);assert.match(render({error:'History could not be loaded'}),/History could not be loaded/);});
+test('controls identify average calculation and scale and keep advanced details discoverable',()=>{const html=render();for(const term of ['Average calculation','Fibonacci price scale','Fibonacci levels','Weekly averages','Conditional extensions','How these levels work'])assert.ok(html.includes(term),term);assert.match(html,/Simple.*SMA/);assert.match(html,/Weighted.*WMA/);});

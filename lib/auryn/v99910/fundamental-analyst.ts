@@ -28,7 +28,8 @@ export function buildFundamentalAnalyst(input:FundamentalAnalystInput){
  const r=input.rawMetrics||{},fiveYearRecord=input.fiveYearRecord||{};
  const growth=nonlinearScore(r.revGrowth,10,8),profitability=nonlinearScore(r.opMargin,12,8),cashGeneration=finite(r.fcf)&&finite(r.revenue)&&Number(r.revenue)>0?nonlinearScore(Number(r.fcf)/Number(r.revenue)*100,10,7):null,balanceSheet=finite(r.leverage)?nonlinearScore(70-Number(r.leverage),15,12):null,durability=finite(fiveYearRecord.score)?nonlinearScore(Number(fiveYearRecord.score),62,13):null,forward=finite(input.forwardScore)?nonlinearScore(Number(input.forwardScore),60,14):null;
  const companyDimensions={growth,profitability,cashGeneration,balanceSheet,durability,forwardEvidence:forward};
- const trajectory=String(fiveYearRecord.revenueTrend||"").toUpperCase()==="STRONG"||String(fiveYearRecord.profitTrend||"").toUpperCase()==="IMPROVING"?"IMPROVING":String(fiveYearRecord.revenueTrend||"").toUpperCase()==="WEAKENING"?"DETERIORATING":"STABLE";
+ const hasTrajectoryEvidence=[fiveYearRecord.revenueTrend,fiveYearRecord.profitTrend].some(x=>["STRONG","IMPROVING","WEAKENING","MIXED","STABLE"].includes(String(x||"").toUpperCase()));
+ const trajectory=!hasTrajectoryEvidence?"UNKNOWN":String(fiveYearRecord.revenueTrend||"").toUpperCase()==="STRONG"||String(fiveYearRecord.profitTrend||"").toUpperCase()==="IMPROVING"?"IMPROVING":String(fiveYearRecord.revenueTrend||"").toUpperCase()==="WEAKENING"?"DETERIORATING":"STABLE";
  const method=valuationMethodFor(input.businessModel),fcf=finite(r.fcf)?Number(r.fcf):null,revenue=finite(r.revenue)?Number(r.revenue):null,marketCap=finite(input.marketCap)?Number(input.marketCap):null,price=finite(input.currentPrice)?Number(input.currentPrice):null;
  const fcfYield=fcf!=null&&marketCap!=null&&marketCap>0?fcf/marketCap*100:null;
  const growthModels=["GROWTH_EV_SALES_FCF","AI_INFRA_SOTP_CAPACITY","BANK_PB_ROE_NIM","REIT_FFO_AFFO","BIOTECH_SCENARIO_PIPELINE","ENERGY_CYCLE_NAV","CYCLE_NORMALIZED","GENERAL_RELATIVE"];
@@ -48,5 +49,14 @@ export function buildFundamentalAnalyst(input:FundamentalAnalystInput){
  const marginOfSafety=fairValue==null?null:(price!=null&&price>0?(fairValue/price-1)*100:null);
  const valuationScore=marginOfSafety==null?null:score(50+marginOfSafety*1.15);
  const relativeContext={vsHistory:null,vsPeers:null,growthAdjusted:null,fcfYield};
- return{companyDimensions,trajectory,independentCrossChecks,businessModel:input.businessModel??null,method,valuationState,decisionGrade,missingMethodInputs:decisionGrade?[]:growthModels.includes(method)?["method-specific forward/relative valuation inputs required"]:[],fundamentalScenario,fairValue,marginOfSafety,valuationScore,relativeContext};
+ const implementationState=decisionGrade?"VERIFIED":growthModels.includes(method)?"MODEL_NOT_IMPLEMENTED":"VALIDATION_REQUIRED";
+ const missingMethodInputs:string[]=[];
+ if(!decisionGrade){
+   if(growthModels.includes(method))missingMethodInputs.push("The required sector valuation model is not implemented with verified inputs.");
+   if(independentCrossChecks<1)missingMethodInputs.push("An independent, source-backed valuation cross-check is required.");
+   if(method==="DCF_FCF_EARNINGS"&&(fcf==null||fcf<=0))missingMethodInputs.push("Positive, comparable free cash flow is required for the current DCF method.");
+   if(revenue==null||revenue<=0)missingMethodInputs.push("Comparable reported revenue is unavailable.");
+   if(marketCap==null||marketCap<=0||price==null||price<=0)missingMethodInputs.push("Verified share-count and market reference inputs are required.");
+ }
+ return{companyDimensions,trajectory,independentCrossChecks,businessModel:input.businessModel??null,method,valuationState,decisionGrade,implementationState,missingMethodInputs,fundamentalScenario,fairValue,marginOfSafety,valuationScore,relativeContext};
 }

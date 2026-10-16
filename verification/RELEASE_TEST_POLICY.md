@@ -77,6 +77,14 @@ Table entries without `.test.mjs` use that extension under `tests/`. Other omitt
 
 Add new current behavior tests to the acceptance manifest and run `npm test` plus the production build. Never remove a failing case simply to restore a green status. Trace its intended requirement, determine whether the active product violates it, repair real regressions, and document the current replacement coverage when an intentional redesign makes an old contract obsolete. Keep the historical assertion unchanged unless a separately reviewed test-maintenance change explicitly authorizes updating it. Keep release claims scoped to the exact commands and environments actually verified.
 
-## Final packaged run
+## Prior packaged run
 
 A fresh ZIP extraction passed **605 acceptance tests with zero failures/skips**, then passed its production build. The unchanged historical aggregate was rerun: **649 passed / 82 failed**. The additional failure relative to the earlier 650/81 snapshot is `auryn-v934-package-contract`: it expects `verify:release` to point to an old v934/v935/v936 gate. That gate remains available as `verify:legacy-release`; the current gate intentionally runs the reviewed acceptance suite and build. No historical assertion was edited to mask this difference. See `logs/clean-acceptance.log`, `logs/clean-production-build.log` and `logs/historical-final.log`.
+
+## Product research update
+
+The October 15 product review adds four complete files to the acceptance manifest: `sec-company-evidence-integrity`, `research-product-clarity`, `client-research-cache`, and `product-valuation-disclosure` (all under `tests/` with `.test.mjs`). They add 52 regressions covering actual SEC selection/arithmetic, rendered research meaning, cancellation/cache lifetime behavior and explicit valuation implementation limits. The current 158-file run passed **657 tests with zero failures/skips**. The original historical aggregate remains **649 passed / 82 failed**. See `logs/product-acceptance.log` and `logs/product-historical.log`. No existing acceptance file was removed.
+
+## October 16 weekly study acceptance
+
+The manifest now includes 161 whole test files, with 696 passing tests in the fresh release run. Three new files add 39 tests for weekly calendar/data/pivot/average geometry, explicit support observations and dated moving-average evidence, overlay selection and rendered missing/loading states. The original aggregate remains 649 passed / 82 failed with unchanged failure names versus the preceding product update; `weekly-historical-comparison.json` records that comparison. No historical assertion was modified or removed for this update. The browser and external-service scopes remain separate from this deterministic gate.

@@ -1,10 +1,13 @@
 {
-  "archiveIntegrity": "PASS (packager validates before replacing output)",
+  "archiveIntegrity": "Packager validates CRC and every SHA-256 before replacing output",
   "requiredContents": "PASS",
   "actualSuppliedSecretMatches": 0,
-  "sourceCompleteness": "All 1,191 uploaded source paths and 1,197 GitHub paths retained",
+  "sourceCompleteness": "All 1471 previous package paths retained, including all previously verified uploaded/GitHub source paths",
   "workflows": 9,
-  "screenshots": 129,
+  "screenshots": 141,
+  "new_product_screenshots": 12,
+  "tested_application_files": 892,
+  "tested_application_hash_differences": [],
   "excluded": [
     "node_modules",
     ".next",
@@ -16,5 +19,5 @@
     "symlinks",
     "compiled caches"
   ],
-  "manifest": "SOURCE_MANIFEST.json; every archived file checked against SHA-256, excluding manifest self-check"
+  "manifest": "SOURCE_MANIFEST.json; packager verifies all archived entries, excluding manifest self-check"
 }

@@ -1,5 +1,9 @@
 "use client";
 import {saveWatchlistSymbol} from "@/lib/watchlist.mjs";
+import {createResearchJsonCache,createResearchWarmCache,COMPANY_EVIDENCE_CONTRACT,isCurrentCompanyEvidence,type ResearchWarmEntry} from "@/lib/client-research-cache.mjs";
+import BusinessEvidence from "./research/BusinessEvidence";
+import WeeklyStructure from "./research/WeeklyStructure";
+import {formatReportedAmount} from "@/lib/research-evidence";
 import {buildFundamentalAnalyst} from "@/lib/auryn/v99910/fundamental-analyst";
 import {buildMarketTruth,formatMarketTruth} from "@/lib/auryn/market-truth";
 
@@ -85,30 +89,16 @@ function metricScore(mode:Mode,business:number,six:number,timing:number,risk:num
   )));
 }
 
-type StockWarmCache={d?:any;company?:any;context?:any;institutional?:any;ts:number;evidenceTs?:number};
+type StockWarmCache=ResearchWarmEntry;
 const CORE_ATTEMPTS=1,CORE_TIMEOUT_MS=4500;
-const stockWarmCache=new Map<string,StockWarmCache>();
 const CACHE_MAX_AGE=15*60*1000;
 const DISPLAY_QUOTE_GRACE_MS=90_000;
 const STALE_CACHE_MAX_AGE=7*24*60*60*1000;
-const inflightJson=new Map<string,Promise<any>>();
-const responseJsonCache=new Map<string,{ts:number;data:any}>();
+const stockWarmCache=createResearchWarmCache({maxEntries:24,maxAgeMs:STALE_CACHE_MAX_AGE});
+const researchJsonCache=createResearchJsonCache({maxEntries:48});
+const chartCacheTtl=(range:string)=>range==="1D"||range==="1W"?30_000:5*60*1000;
 function sharedJson(url:string,signal?:AbortSignal,ttlMs=15000){
-  const cached=responseJsonCache.get(url);
-  if(cached&&Date.now()-cached.ts<ttlMs)return Promise.resolve(cached.data);
-  // Abortable requests belong to their effect; sharing them lets Strict Mode cleanup
-  // cancel a new subscriber before it receives its own research response.
-  if(signal)return fetch(url,{signal}).then(async r=>{const x=await r.json();if(!r.ok||x?.error)throw new Error(x?.error||`Request failed (${r.status})`);if(!signal.aborted)responseJsonCache.set(url,{ts:Date.now(),data:x});return x;});
-  const pending=inflightJson.get(url);
-  if(pending)return pending;
-  const request=fetch(url,{signal}).then(async r=>{
-    const x=await r.json();
-    if(!r.ok||x?.error)throw new Error(x?.error||`Request failed (${r.status})`);
-    responseJsonCache.set(url,{ts:Date.now(),data:x});
-    return x;
-  }).finally(()=>inflightJson.delete(url));
-  inflightJson.set(url,request);
-  return request;
+  return researchJsonCache.get(url,{signal,ttlMs});
 }
 let calibrationCache:any=null;
 const modelHealthCache=new Map<string,any>();
@@ -124,12 +114,10 @@ function scheduleNonCritical(work:()=>void){
 }
 
 function mergeWarm(symbol:string,patch:Partial<StockWarmCache>){
-  const prev=stockWarmCache.get(symbol)||{ts:0};
-  stockWarmCache.set(symbol,{...prev,...patch,ts:Date.now()});
+  stockWarmCache.merge(symbol,patch);
 }
 function mergeEvidenceWarm(symbol:string,patch:Partial<StockWarmCache>){
-  const prev=stockWarmCache.get(symbol)||{ts:0};
-  stockWarmCache.set(symbol,{...prev,...patch,ts:Math.max(prev.ts||0,Date.now()),evidenceTs:Date.now()});
+  stockWarmCache.merge(symbol,patch);
 }
 export default function StockClient({symbol}:{symbol:string}){
   const thesisRef=useRef<HTMLElement>(null);
@@ -152,6 +140,8 @@ export default function StockClient({symbol}:{symbol:string}){
   const[overviewChartRange,setOverviewChartRange]=useState<"1D"|"1W"|"1M"|"3M"|"6M"|"1Y"|"3Y"|"5Y">("3M");
   const[overviewChartBars,setOverviewChartBars]=useState<any[]|null>(null);
   const[longTermBars,setLongTermBars]=useState<any[]>([]);
+  const[longTermLoading,setLongTermLoading]=useState(false);
+  const[longTermError,setLongTermError]=useState("");
   const[overviewChartLoading,setOverviewChartLoading]=useState(false);
   const[optionView,setOptionView]=useState<"setups"|"positioning">("setups");
   const[optionSide,setOptionSide]=useState<"bullish"|"bearish">("bullish");
@@ -172,8 +162,30 @@ export default function StockClient({symbol}:{symbol:string}){
   const[coreRetry,setCoreRetry]=useState(0);
   const[previousSetupState,setPreviousSetupState]=useState<SetupState|null>(null);
 
-  useEffect(()=>{if(tab!=="thesis")return;let cancelled=false;setOverviewChartLoading(true);setOverviewChartBars([]);fetch(`/api/chart/${encodeURIComponent(symbol)}?range=${overviewChartRange}`,{cache:"no-store"}).then(r=>r.ok?r.json():Promise.reject(new Error("chart"))).then(j=>{if(!cancelled)setOverviewChartBars(Array.isArray(j?.candles)?j.candles:[])}).catch(()=>{if(!cancelled)setOverviewChartBars([])}).finally(()=>{if(!cancelled)setOverviewChartLoading(false)});return()=>{cancelled=true}},[symbol,overviewChartRange,tab]);
-  useEffect(()=>{if(tab!=="thesis")return;let cancelled=false;fetch(`/api/chart/${encodeURIComponent(symbol)}?range=5Y`,{cache:"force-cache"}).then(r=>r.ok?r.json():Promise.reject(new Error("long-term chart"))).then(j=>{if(!cancelled&&Array.isArray(j?.candles))setLongTermBars(j.candles)}).catch(()=>{if(!cancelled)setLongTermBars([])});return()=>{cancelled=true}},[symbol,tab]);
+  useEffect(()=>{
+    if(tab!=="thesis")return;
+    const controller=new AbortController();
+    const url=`/api/chart/${encodeURIComponent(symbol)}?range=${overviewChartRange}`,ttlMs=chartCacheTtl(overviewChartRange);
+    const cached=researchJsonCache.peek(url,ttlMs);
+    setOverviewChartLoading(!cached);setOverviewChartBars(Array.isArray(cached?.candles)?cached.candles:[]);
+    sharedJson(url,controller.signal,ttlMs)
+      .then(j=>{if(!controller.signal.aborted)setOverviewChartBars(Array.isArray(j?.candles)?j.candles:[])})
+      .catch(()=>{if(!controller.signal.aborted)setOverviewChartBars([])})
+      .finally(()=>{if(!controller.signal.aborted)setOverviewChartLoading(false)});
+    return()=>controller.abort();
+  },[symbol,overviewChartRange,tab]);
+  useEffect(()=>{
+    if(tab!=="thesis"&&tab!=="technical")return;
+    const controller=new AbortController();
+    const url=`/api/chart/${encodeURIComponent(symbol)}?range=5Y`,ttlMs=chartCacheTtl("5Y");
+    const cached=researchJsonCache.peek(url,ttlMs);
+    setLongTermBars(Array.isArray(cached?.candles)?cached.candles:[]);setLongTermLoading(!cached);setLongTermError("");
+    sharedJson(url,controller.signal,ttlMs)
+      .then(j=>{if(!controller.signal.aborted)setLongTermBars(Array.isArray(j?.candles)?j.candles:[])})
+      .catch((error:any)=>{if(!controller.signal.aborted){setLongTermBars([]);setLongTermError(error?.message||"Weekly chart history could not be loaded.")}})
+      .finally(()=>{if(!controller.signal.aborted)setLongTermLoading(false)});
+    return()=>controller.abort();
+  },[symbol,tab]);
   useEffect(()=>{
     try{const saved=localStorage.getItem(`auryn:v931:setup:${symbol}`) as SetupState|null;setPreviousSetupState(saved||null)}catch{setPreviousSetupState(null)}
   },[symbol]);
@@ -209,10 +221,11 @@ export default function StockClient({symbol}:{symbol:string}){
   },[symbol]);
 
   useEffect(()=>{
-    let active=true;let timer:any;
-    const loadCanonical=()=>sharedJson(`/api/canonical/${encodeURIComponent(symbol)}`,undefined,10000).then((x:any)=>{if(!active)return;setCanonicalV935(x);if(x?.market)setLiveQuote({...x.market,price:x.market.displayPrice,changePct:null,providerTimestamp:x.market.decisionPriceAsOf??x.market.asOf})}).catch(()=>{});
+    let active=true;let timer:any;const controller=new AbortController();
+    setCanonicalV935(null);setLiveQuote(null);
+    const loadCanonical=()=>sharedJson(`/api/canonical/${encodeURIComponent(symbol)}`,controller.signal,10000).then((x:any)=>{if(!active)return;setCanonicalV935(x);if(x?.market)setLiveQuote({...x.market,price:x.market.displayPrice,changePct:null,providerTimestamp:x.market.decisionPriceAsOf??x.market.asOf})}).catch(()=>{});
     loadCanonical();timer=setInterval(()=>{if(document.visibilityState==="visible")loadCanonical()},30000);
-    return()=>{active=false;clearInterval(timer)};
+    return()=>{active=false;clearInterval(timer);controller.abort()};
   },[symbol]);
 
   useEffect(()=>{
@@ -245,6 +258,7 @@ export default function StockClient({symbol}:{symbol:string}){
   useEffect(()=>{
     let live=true;
     let core:AbortController|null=null;
+    const evidenceController=new AbortController();
     let warm=stockWarmCache.get(symbol);
     if(!warm&&typeof window!=="undefined"){
       try{
@@ -252,14 +266,20 @@ export default function StockClient({symbol}:{symbol:string}){
         if(raw){const parsed=JSON.parse(raw);if(parsed?.d&&Date.now()-Number(parsed.ts||0)<STALE_CACHE_MAX_AGE){warm=parsed;stockWarmCache.set(symbol,parsed)}}
       }catch{}
     }
+    // Old company snapshots may have mixed reporting units. Invalidate only that
+    // evidence contract; independently verified price/history remain reusable.
+    if(warm?.company&&!isCurrentCompanyEvidence(warm.company)){
+      warm={...warm,company:undefined,companyTs:undefined};
+      stockWarmCache.set(symbol,warm);
+    }
     const warmAge=warm?Date.now()-Number(warm.ts||0):Number.POSITIVE_INFINITY;
-    const hasUsableWarm=!!warm&&warmAge<STALE_CACHE_MAX_AGE;
-    const hasFreshWarm=!!warm&&warmAge<CACHE_MAX_AGE;
+    const hasUsableWarm=!!warm?.d&&warmAge<STALE_CACHE_MAX_AGE;
+    const hasFreshWarm=!!warm?.d&&warmAge<CACHE_MAX_AGE;
     if(hasUsableWarm){
-      if(warm?.d)setD(warm.d);
-      if(warm?.company)setCompany(warm.company);
-      if(warm?.context)setContext(warm.context);
-      if(warm?.institutional)setInstitutional(warm.institutional);
+      setD(warm?.d??null);
+      setCompany(warm?.company??null);
+      setContext(warm?.context??null);
+      setInstitutional(warm?.institutional??null);
       setErr("");
     }else{
       setD(null);setCompany(null);setContext(null);setInstitutional(null);setLiveMarketContext(null);setErr("");
@@ -294,28 +314,28 @@ export default function StockClient({symbol}:{symbol:string}){
       // The first screen already has canonical price/decision data; bursting company,
       // context and institutional requests together can exceed upstream minute limits.
       const jobs=[
-        ()=>fetchJson(`/api/company/${encodeURIComponent(symbol)}`).then(x=>{if(live){setCompany(x);mergeEvidenceWarm(symbol,{company:x})}}),
-        ()=>fetchJson(`/api/context/${encodeURIComponent(symbol)}`).then(x=>{if(live){setContext(x);mergeEvidenceWarm(symbol,{context:x})}})
+        {fresh:!!warm?.companyTs&&Date.now()-warm.companyTs<30*60*1000,run:()=>fetchJson(`/api/company/${encodeURIComponent(symbol)}?evidenceContract=${COMPANY_EVIDENCE_CONTRACT}`,evidenceController.signal).then(x=>{if(live&&isCurrentCompanyEvidence(x)){setCompany(x);mergeEvidenceWarm(symbol,{company:x})}})},
+        {fresh:!!warm?.contextTs&&Date.now()-warm.contextTs<5*60*1000,run:()=>fetchJson(`/api/context/${encodeURIComponent(symbol)}`,evidenceController.signal).then(x=>{if(live){setContext(x);mergeEvidenceWarm(symbol,{context:x})}})}
       ];
       for(const job of jobs){
         if(!live)return;
-        try{await job()}catch{}
+        if(job.fresh)continue;
+        try{await job.run()}catch{}
         await new Promise(r=>setTimeout(r,220));
       }
     };
 
     if(!hasFreshWarm)loadCore(!hasUsableWarm);
-    const evidenceFresh=!!warm?.evidenceTs&&Date.now()-warm.evidenceTs<30*60*1000;
-    const cancelEvidence=!evidenceFresh?scheduleNonCritical(()=>loadEvidence()):()=>{};
+    const cancelEvidence=scheduleNonCritical(()=>loadEvidence());
 
     const priceTimer=setInterval(()=>{if(document.visibilityState==="visible")loadCore(false)},900000);
-    const newsTimer=setInterval(()=>{if(document.visibilityState==="visible")fetchJson(`/api/context/${encodeURIComponent(symbol)}`).then(x=>{if(live){setContext(x);mergeEvidenceWarm(symbol,{context:x})}}).catch(()=>{})},300000);
+    const newsTimer=setInterval(()=>{if(document.visibilityState==="visible")fetchJson(`/api/context/${encodeURIComponent(symbol)}`,evidenceController.signal).then(x=>{if(live){setContext(x);mergeEvidenceWarm(symbol,{context:x})}}).catch(()=>{})},300000);
     const onFocus=()=>{
       const last=stockWarmCache.get(symbol)?.ts||0;
       if(Date.now()-last>CACHE_MAX_AGE)loadCore(false);
     };
     window.addEventListener("focus",onFocus);
-    return()=>{live=false;cancelEvidence();core?.abort();clearInterval(priceTimer);clearInterval(newsTimer);window.removeEventListener("focus",onFocus)};
+    return()=>{live=false;cancelEvidence();core?.abort();evidenceController.abort();clearInterval(priceTimer);clearInterval(newsTimer);window.removeEventListener("focus",onFocus)};
   },[symbol,coreRetry]);
 
 
@@ -328,11 +348,11 @@ export default function StockClient({symbol}:{symbol:string}){
 
   useEffect(()=>{
     if(tab!=="institutions"||d?.assetType==="crypto")return;
-    let active=true;
-    sharedJson(`/api/institutional/${encodeURIComponent(symbol)}`,undefined,5*60*1000)
+    let active=true;const controller=new AbortController();
+    sharedJson(`/api/institutional/${encodeURIComponent(symbol)}`,controller.signal,5*60*1000)
       .then((x:any)=>{if(active){setInstitutional(x);mergeEvidenceWarm(symbol,{institutional:x})}})
       .catch(()=>{});
-    return()=>{active=false};
+    return()=>{active=false;controller.abort()};
   },[tab,symbol,d?.assetType]);
 
   useEffect(()=>{
@@ -889,17 +909,17 @@ export default function StockClient({symbol}:{symbol:string}){
     {marketTruth&&!priceSensitiveAllowed&&stableLiveFresh?<div className="aurynIntegrityNote"><b>Research price live</b><span>Execution-grade verification is still pending; AURYN keeps automated execution blocked without hiding the live research price.</span></div>:null}
     {/* Compatibility contract: AurynResearchOverview decision={institutionalDecision} marketTruth={marketTruth}; runtime receives the unified display truth below. */}
     {watchError&&<p role="alert" className="formError">{watchError}</p>}
-    <div id="research-tab-panel" role="tabpanel" aria-labelledby={`research-tab-${tab}`} tabIndex={0}><div ref={overviewRef}>{tab==="thesis"&&institutionalDecision?<AurynResearchOverviewV2 decision={institutionalDecision} marketTruth={{...marketTruth,...marketTruthUi,priceState:marketTruthUi.freshness}} displayPrice={aurynPriceState.price} displayPriceLive={aurynPriceState.isLive} marketIntelligence={marketIntelligenceView??d?.marketIntelligence??null} fundamentalScenario={analystFundamentals.fundamentalScenario} analystFundamentals={analystFundamentals} technicalEvidence={{trend:technicalState.trend,momentum:technicalState.momentum,participation:technicalState.participation,relativeStrengthPct:null,volatilityRisk:technicalState.volatilityRisk}} entryQuality={technicalState.entryQuality} chartRange={overviewChartRange} chartLoading={overviewChartLoading} onChartRangeChange={setOverviewChartRange} onOpenCatalysts={()=>handleEvidenceTab("catalysts","catalysts")} onOpenRisks={()=>handleEvidenceTab("risk")} onOpenDetails={()=>handleEvidenceTab("earnings","earnings")} onOpenThesis={()=>handleEvidenceTab("fundamentals","thesis")} onOpenValuation={()=>handleEvidenceTab("valuation")} onAddWatchlist={watch} onTrackPosition={()=>{window.location.href="/portfolio?symbol="+encodeURIComponent(symbol)}} watching={watching} candles={overviewChartBars??(v5Analysis?.bars||d?.candles||[]).slice(-180)} longTermCandles={longTermBars.length?longTermBars:(v5Analysis?.bars||d?.candles||[])} scenario={v5Analysis?.scenario??null} executionLevelsAllowed={executionLevelsAllowed} executionIntent={executionIntent} chartLevels={v5ChartLevels}/>:null}</div>
+    <div id="research-tab-panel" role="tabpanel" aria-labelledby={`research-tab-${tab}`} tabIndex={0}><div ref={overviewRef}>{tab==="thesis"&&institutionalDecision?<AurynResearchOverviewV2 symbol={symbol} structureCandles={longTermBars} structureLoading={longTermLoading} structureError={longTermError} onOpenTechnicals={()=>handleEvidenceTab("technical")} decision={institutionalDecision} marketTruth={{...marketTruth,...marketTruthUi,priceState:marketTruthUi.freshness}} displayPrice={aurynPriceState.price} displayPriceLive={aurynPriceState.isLive} marketIntelligence={marketIntelligenceView??d?.marketIntelligence??null} fundamentalScenario={analystFundamentals.fundamentalScenario} analystFundamentals={analystFundamentals} technicalEvidence={{trend:technicalState.trend,momentum:technicalState.momentum,participation:technicalState.participation,relativeStrengthPct:null,volatilityRisk:technicalState.volatilityRisk}} entryQuality={technicalState.entryQuality} chartRange={overviewChartRange} chartLoading={overviewChartLoading} onChartRangeChange={setOverviewChartRange} onOpenCatalysts={()=>handleEvidenceTab("catalysts","catalysts")} onOpenRisks={()=>handleEvidenceTab("risk")} onOpenDetails={()=>handleEvidenceTab("earnings","earnings")} onOpenThesis={()=>handleEvidenceTab("fundamentals","thesis")} onOpenValuation={()=>handleEvidenceTab("valuation")} onAddWatchlist={watch} onTrackPosition={()=>{window.location.href="/portfolio?symbol="+encodeURIComponent(symbol)}} watching={watching} candles={overviewChartBars??(v5Analysis?.bars||d?.candles||[]).slice(-180)} longTermCandles={longTermBars.length?longTermBars:(v5Analysis?.bars||d?.candles||[])} scenario={v5Analysis?.scenario??null} executionLevelsAllowed={executionLevelsAllowed} executionIntent={executionIntent} chartLevels={v5ChartLevels}/>:null}</div>
     {tab==="thesis"&&(v5Analysis?<>{canonicalTrustBlocked?<div className="aurynIntegrityAlert aurynTrustBlock" role="alert"><b>CANONICAL TRUST BLOCK</b><span>{v7Analysis?.trust.blockers[0]||"AURYN detected an internal snapshot/plan inconsistency."} Price-sensitive execution levels are suppressed until the canonical chain is aligned.</span></div>:null}</>:<section className="aurynV5Unavailable v940PendingSnapshot"><small>{canonicalV935?.research?"LAST VERIFIED AURYN DECISION":"AURYN CANONICAL ANALYSIS"}</small><b>{canonicalV935?.research?"VERIFIED SNAPSHOT LOADED":"BUILDING FIRST VERIFIED SNAPSHOT"}</b><span>{canonicalV935?.research?"Refreshing deeper evidence… live market price and the last verified research snapshot remain available while the canonical analysis updates.":"AURYN is building the first canonical evidence snapshot. Price verification and research load independently."}</span><div className="v940PendingProgress"><i className="done"/><i className="done"/><i/><i/><span>Market price</span><span>Structure</span><span>Fundamentals</span><span>Canonical decision</span></div></section>)}
 
     <section ref={thesisRef} id="auryn-research" className="aurynStockResearch">
       <StockEvidenceSections>
 
-      {tab==="fundamentals"&&<div className="researchTabBody"><header className="researchSectionHeading"><small>Slow brain · Business quality</small><h2>{company?.name||symbol}</h2><p>{canonicalBusinessLabel} · {canonicalBusinessScore==null?"Evidence building":`${canonicalBusinessScore}/100 business quality`}</p></header><div className="researchTwoColumns"><article className="researchCard"><h3>The ownership case</h3>{(business.reasons||[]).length?(business.reasons||[]).filter(Boolean).map((x:string,i:number)=><p className="researchEvidence" key={i}>{x}</p>):<p>Decision-grade business evidence is still building.</p>}</article><article className="researchCard"><h3>Operating proof to watch</h3><p>Growth must translate into durable profitability, cash generation and execution quality.</p><dl className="researchData">{Object.entries(analystFundamentals.companyDimensions||{}).map(([k,v])=><div key={k}><dt>{k.replace(/([A-Z])/g," $1")}</dt><dd>{v==null?"—":`${v}/100`}</dd></div>)}</dl></article></div><article className="researchCard"><header><h3>Five-year business record</h3><button onClick={()=>handleEvidenceTab("financials")}>Financial statements →</button></header><p>{five?.summary||"Historical business evidence is unavailable."}</p><div className="researchDecisionMap">{(five?.history||[]).map((x:any)=><div key={x.year}><small>{x.year}</small><strong>{x.revenue==null?"—":money(x.revenue)}</strong><span>Revenue</span></div>)}</div></article><article className="researchCard"><h3>Fundamental invalidation</h3><p>Sustained deterioration in growth, profitability, cash generation, balance-sheet resilience or competitive durability can change the ownership case. Price volatility by itself does not break the business thesis.</p><button onClick={()=>handleEvidenceTab("risk")}>Review counter-evidence →</button></article></div>}
+      {tab==="fundamentals"&&<BusinessEvidence company={company} analystFundamentals={analystFundamentals} v4Analysis={v4Analysis} symbol={symbol} onNavigate={handleEvidenceTab}/>}
 
-      {tab==="financials"&&<div className="researchTabBody"><header className="researchSectionHeading"><small>Reported financial evidence</small><h2>Financials</h2><p>Revenue, profitability and cash generation from available company filings. Missing fields remain unavailable.</p></header><div className="researchTwoColumns"><article className="researchCard"><h3>Operating metrics</h3><dl className="researchData">{company?.fundamentals?.length?company.fundamentals.map((x:any)=><div key={x.label}><dt>{x.label}{x.detail&&<small>{x.detail}</small>}</dt><dd>{x.value??"—"}</dd></div>):<p>No standardized financial metrics available.</p>}</dl></article><article className="researchCard"><h3>Five-year record</h3><p>{five?.summary||"Historical financial evidence is not available."}</p><div className="researchTableWrap"><table><thead><tr><th>Year</th><th>Revenue</th><th>Net income</th></tr></thead><tbody>{(five?.history||[]).map((x:any)=><tr key={x.year}><td>{x.year}</td><td>{x.revenue==null?"—":money(x.revenue)}</td><td>{x.netIncome==null?"—":money(x.netIncome)}</td></tr>)}</tbody></table></div></article></div><article className="researchCard"><h3>Source filings</h3>{filings.length?filings.slice(0,8).map((x:any)=><a className="researchSource" href={x.url} key={x.accession} target="_blank" rel="noreferrer"><span>{x.form} · {x.label}</span><time>{x.date} ↗</time></a>):<p>No linked filings returned for this security.</p>}</article></div>}
-      {tab==="valuation"&&<div className="researchTabBody"><header className="researchSectionHeading"><small>Independent valuation clock</small><h2>What is the business worth?</h2><p>Fundamental value is modeled independently from spot price and technical targets.</p></header><div className="researchClocks"><article className="researchCard"><small>Method</small><h3>{String(analystFundamentals.method||"Unavailable").replaceAll("_"," ")}</h3><p>Evidence: {analystFundamentals.valuationState}</p></article><article className="researchCard"><small>Fair value</small><h3>{analystFundamentals.fairValue==null?"—":money(analystFundamentals.fairValue)}</h3><p>Source-backed fundamental estimate</p></article><article className="researchCard"><small>Margin of safety</small><h3>{analystFundamentals.marginOfSafety==null?"—":`${Number(analystFundamentals.marginOfSafety).toFixed(1)}%`}</h3><p>Relative to the current verified reference</p></article></div><article className="researchCard"><h3>Scenario analysis</h3><div className="researchScenarios">{["bear","base","bull"].map(k=><div key={k}><small>{k}</small><strong>{(analystFundamentals.fundamentalScenario as any)?.[k]?.value==null?"—":money((analystFundamentals.fundamentalScenario as any)[k].value)}</strong><span>Independent fundamental scenario</span></div>)}</div><p>Unavailable cases indicate insufficient evidence for the routed valuation method; no price-anchored substitute is used.</p></article><article className="researchCard"><h3>Valuation context</h3><dl className="researchData">{Object.entries(analystFundamentals.relativeContext||{}).map(([k,v])=><div key={k}><dt>{k.replace(/([A-Z])/g," $1")}</dt><dd>{v==null?"—":typeof v==="object"?"See source evidence":String(v)}</dd></div>)}</dl></article></div>}
-      {tab==="risk"&&<div className="researchTabBody"><header className="researchSectionHeading"><small>Thesis discipline</small><h2>Risk & counter-evidence</h2><p>Fundamental deterioration can break the business thesis. Technical levels govern tactical deployment.</p></header><div className="researchTwoColumns"><article className="researchCard"><h3>Counter-evidence</h3>{institutionalDecision?.counterEvidence?.length?institutionalDecision.counterEvidence.map((x:string,i:number)=><p className="researchEvidence" key={i}>{x}</p>):<p>No canonical counter-evidence available. This does not mean there is no risk.</p>}</article><article className="researchCard"><h3>Hard constraints</h3>{institutionalDecision?.hardVetoReasons?.length?institutionalDecision.hardVetoReasons.map((x:string,i:number)=><p className="researchEvidence" key={i}>{x}</p>):<p>No hard veto recorded in the current snapshot.</p>}<p>{institutionalDecision?.pillars.riskAsymmetry.why||"Risk evidence is still building."}</p></article></div><article className="researchCard"><h3>What would change the thesis?</h3><p>Sustained deterioration in growth, profitability, cash generation, balance-sheet resilience or competitive durability requires a fundamental review.</p><p>Confidence: {institutionalDecision?.confidenceScore??"—"}/100 · Evidence completeness: {institutionalDecision?.evidenceCompleteness??"—"}/100</p></article></div>}
+      {tab==="financials"&&<div className="researchTabBody"><header className="researchSectionHeading"><small>Reported financial evidence</small><h2>Financials</h2><p>Revenue, profitability and cash generation from available company filings. Missing fields remain unavailable.</p></header><div className="researchTwoColumns"><article className="researchCard"><h3>Operating metrics</h3><dl className="researchData">{company?.fundamentals?.length?company.fundamentals.map((x:any)=><div key={x.label}><dt>{x.label}{x.detail&&<small>{x.detail}</small>}</dt><dd>{x.value??"—"}</dd></div>):<p>No standardized financial metrics available.</p>}</dl></article><article className="researchCard"><h3>Five-year record</h3><p>{five?.summary||"Historical financial evidence is not available."}</p><div className="researchTableWrap"><table><thead><tr><th>Period / currency</th><th>Revenue</th><th>Net income</th></tr></thead><tbody>{(five?.history||[]).map((x:any)=><tr key={x.year}><td>{x.year} · {x.currency||"Currency unverified"}</td><td>{formatReportedAmount(x.revenue,x.currency??company?.dataQuality?.reportedCurrency)}</td><td>{formatReportedAmount(x.netIncome,x.currency??company?.dataQuality?.reportedCurrency)}</td></tr>)}</tbody></table></div></article></div><article className="researchCard"><h3>Source filings</h3>{filings.length?filings.slice(0,8).map((x:any)=><a className="researchSource" href={x.url} key={x.accession} target="_blank" rel="noreferrer"><span>{x.form} · {x.label}</span><time>{x.date} ↗</time></a>):<p>No linked filings returned for this security.</p>}</article></div>}
+      {tab==="valuation"&&<div className="researchTabBody"><header className="researchSectionHeading"><small>Independent valuation clock</small><h2>What is the business worth?</h2><p>Fundamental value is modeled independently from spot price and technical targets.</p></header><div className="researchClocks"><article className="researchCard"><small>Method</small><h3>{String(analystFundamentals.method||"Unavailable").replaceAll("_"," ")}</h3><p>Evidence: {analystFundamentals.valuationState}</p><p>{analystFundamentals.implementationState==="MODEL_NOT_IMPLEMENTED"?"This sector model is not implemented with verified inputs.":"Independent valuation validation is required."}</p></article><article className="researchCard"><small>Fair value</small><h3>{analystFundamentals.fairValue==null?"—":money(analystFundamentals.fairValue)}</h3><p>Source-backed fundamental estimate</p></article><article className="researchCard"><small>Margin of safety</small><h3>{analystFundamentals.marginOfSafety==null?"—":`${Number(analystFundamentals.marginOfSafety).toFixed(1)}%`}</h3><p>Relative to the current verified reference</p></article></div><article className="researchCard"><h3>Scenario analysis</h3>{analystFundamentals.missingMethodInputs?.length>0&&<details className="researchValuationMissing"><summary>Why valuation is unavailable</summary><ul>{analystFundamentals.missingMethodInputs.map((item:string)=><li key={item}>{item}</li>)}</ul><p>Refreshing the stock price cannot complete this valuation model.</p></details>}<div className="researchScenarios">{["bear","base","bull"].map(k=><div key={k}><small>{k}</small><strong>{(analystFundamentals.fundamentalScenario as any)?.[k]?.value==null?"—":money((analystFundamentals.fundamentalScenario as any)[k].value)}</strong><span>Independent fundamental scenario</span></div>)}</div><p>Unavailable cases indicate insufficient evidence for the routed valuation method; no price-anchored substitute is used.</p></article><article className="researchCard"><h3>Valuation context</h3><dl className="researchData">{Object.entries(analystFundamentals.relativeContext||{}).map(([k,v])=><div key={k}><dt>{k.replace(/([A-Z])/g," $1")}</dt><dd>{v==null?"—":typeof v==="object"?"See source evidence":k==="fcfYield"?`${Number(v).toFixed(1)}%`:String(v)}</dd></div>)}</dl></article></div>}
+      {tab==="risk"&&<div className="researchTabBody"><header className="researchSectionHeading"><small>Thesis discipline</small><h2>Risk & counter-evidence</h2><p>Fundamental deterioration can break the business thesis. Technical levels govern tactical deployment.</p></header><div className="researchTwoColumns"><article className="researchCard"><h3>Counter-evidence</h3>{institutionalDecision?.counterEvidence?.length?institutionalDecision.counterEvidence.map((x:string,i:number)=><p className="researchEvidence" key={i}>{x}</p>):<p>No canonical counter-evidence available. This does not mean there is no risk.</p>}</article><article className="researchCard"><h3>Hard constraints</h3>{institutionalDecision?.hardVetoReasons?.length?institutionalDecision.hardVetoReasons.map((x:string,i:number)=><p className="researchEvidence" key={i}>{x}</p>):<p>No hard veto recorded in the current snapshot.</p>}<p>{institutionalDecision?.pillars.riskAsymmetry.why||"Risk evidence is still building."}</p></article></div><article className="researchCard"><h3>What would change the thesis?</h3><p>Sustained deterioration in growth, profitability, cash generation, balance-sheet resilience or competitive durability requires a fundamental review.</p><p>Model confidence (not profit probability): {institutionalDecision?.confidenceScore??"—"}/100 · Evidence completeness: {institutionalDecision?.evidenceCompleteness??"—"}/100</p></article></div>}
       {tab==="news"&&<div className="researchTabBody"><header className="researchSectionHeading"><small>Source-linked developments</small><h2>News & filings</h2><p>Read the underlying evidence. A headline does not create a standalone investment decision.</p></header><div className="researchNewsGrid">{items.length?items.map((x:any,i:number)=><article className="researchCard" key={x.url||i}><small>{x.source||"Source unavailable"} · {x.date?new Date(x.date).toLocaleDateString():"Date unavailable"}</small><h3>{x.headline}</h3><p>{x.summary}</p>{x.url&&<a href={x.url} target="_blank" rel="noreferrer">Read source ↗</a>}</article>):<article className="researchCard"><h3>No source-backed news available</h3><p>The connected feed has not returned recent stories for this security.</p></article>}</div></div>}
 
       {tab==="institutions"&&<div className="researchTabBody"><StockTabContext marketTruth={marketTruth} label="OWNERSHIP" title="Who owns the business?" score={canonicalMetricScore("positioning")} state={institutionalLabel} detail="Reported holdings are delayed SEC evidence. They do not establish who is buying or selling today."/><div className="researchClocks">{[["Report period",fmtDate(institutionalPeriod)],["Compared with",fmtDate(institutionalPriorPeriod)],["SEC dataset through",fmtDate(institutionalDatasetThrough)]].map(([k,v])=><article className="researchCard" key={k}><small>{k}</small><h3>{v}</h3></article>)}</div>{institutional?.enabled?<><div className="researchTwoColumns"><article className="researchCard"><h3>Reported institutional holdings</h3><p>{institutional.institutional?.directionLabel||institutionalLabel}</p><dl className="researchData"><div><dt>Net share change</dt><dd>{institutional.institutional?.netChangeLabel||"—"}</dd></div><div><dt>Managers adding</dt><dd>{institutional.institutional?.increased??"—"}</dd></div><div><dt>Managers trimming</dt><dd>{institutional.institutional?.reduced??"—"}</dd></div><div><dt>New positions / exits</dt><dd>{institutional.institutional?.newManagers??"—"} / {institutional.institutional?.exitedManagers??"—"}</dd></div></dl></article><article className="researchCard"><h3>Insider filings</h3><p>{institutional.insiders?.label||"Unavailable"}</p><dl className="researchData"><div><dt>Reported buys</dt><dd>{institutional.insiders?.buys??"—"}</dd></div><div><dt>Reported sells</dt><dd>{institutional.insiders?.sells??"—"}</dd></div></dl><h3>Price / volume behavior</h3><p>{marketLab?.accumulationLabel||"Insufficient data"} · market-behavior proxy, not named institutional flows.</p></article></div>{[["Largest reported holders",institutional.institutional?.top],["Biggest reported adders",institutional.institutional?.biggestBuyers],["Biggest reported trimmers",institutional.institutional?.biggestSellers],["New reported positions",institutional.institutional?.newPositions],["Reported exits",institutional.institutional?.exits]].map(([title,list]:any)=>Array.isArray(list)&&list.length>0?<details className="researchCard" key={title} open={title==="Largest reported holders"}><summary>{title}</summary><div className="researchTableWrap"><table><thead><tr><th>Manager</th><th>Shares</th><th>Prior shares</th><th>Change</th><th>Reported</th></tr></thead><tbody>{list.slice(0,12).map((x:any,i:number)=><tr key={i}><td>{x.name}</td><td>{x.shares==null?"—":Number(x.shares).toLocaleString()}</td><td>{x.priorShares==null?"—":Number(x.priorShares).toLocaleString()}</td><td>{x.change==null?"—":Number(x.change).toLocaleString()}</td><td>{fmtDate(x.filingDate||x.reportPeriod||institutionalPeriod)}</td></tr>)}</tbody></table></div></details>:null)}</>:<article className="researchCard"><h3>Reported ownership unavailable</h3><p>{institutional?.reason||"The connected sources have not returned verified ownership evidence."}</p></article>}<p className="researchProvenance">13F positions refer to a past quarter. Reported value changes may also reflect stock-price movements.</p></div>}
@@ -908,7 +928,7 @@ export default function StockClient({symbol}:{symbol:string}){
 
       {tab==="earnings"&&<div className="researchTabBody"><StockTabContext marketTruth={marketTruth} label="EARNINGS" title="Execution & reported results" score={canonicalMetricScore("fundamentals")} state={v4Analysis?.thesis.direction} detail={institutionalDecision?.pillars.earningsRevisions.why||"Earnings evidence is still building."}/><div className="researchTwoColumns"><article className="researchCard"><small>Latest reported results</small><h3>{latestReport?.date||"No verified report loaded"}</h3><p>{latestEarnNews?.headline||latestReport?.form||"Reported results will appear when returned by the connected sources."}</p>{latestEarnNews?.url&&<a href={latestEarnNews.url} target="_blank" rel="noreferrer">Read results ↗</a>}</article><article className="researchCard"><small>Next earnings · estimated</small><h3>{earn?.date||"Date unavailable"}</h3><dl className="researchData"><div><dt>EPS estimate</dt><dd>{eps(earn?.epsEstimate)}</dd></div><div><dt>Revenue estimate</dt><dd>{money(earn?.revenueEstimate)}</dd></div></dl><p>Future dates are estimates until confirmed by the company.</p></article></div><article className="researchCard"><h3>Earnings surprise history</h3>{context?.surprises?.length?<div className="researchTableWrap"><table><thead><tr><th>Period</th><th>Actual EPS</th><th>Estimated EPS</th><th>Surprise</th></tr></thead><tbody>{context.surprises.map((x:any,i:number)=><tr key={i}><td>{x.period}</td><td>{formatEpsValue(x.actual)}</td><td>{formatEpsValue(x.estimate)}</td><td>{x.surprisePercent==null?"—":`${Number(x.surprisePercent).toFixed(1)}%`}</td></tr>)}</tbody></table></div>:<p>No earnings-surprise history returned by the connected feed.</p>}</article></div>}
 
-      {tab==="technical"&&<div className="researchTabBody"><StockTabContext marketTruth={marketTruth} label="FAST BRAIN · TECHNICALS" title="Timing, trend & participation" score={technicalState.strength} state={technicalState.state} detail={institutionalDecision?.pillars.marketStructure.why||"Completed-bar market evidence is still building."}/><div className="researchMetricGrid">{[["Entry quality",technicalState.entryQuality],["Trend",technicalState.trend],["Momentum",technicalState.momentum],["Participation",technicalState.participation],["Extension risk",technicalState.extensionRisk],["Volatility risk",technicalState.volatilityRisk]].map(([k,v])=><article className="researchCard" key={String(k)}><small>{k}</small><h3>{v==null?"—":`${v}/100`}</h3><progress max="100" value={Number(v)||0} aria-label={String(k)}/></article>)}</div><article className="researchCard"><header><h3>Price structure</h3><span>Canonical levels · completed bars</span></header><div className="researchTechnicalChart">{v5Analysis?<PriceChart candles={v5Analysis.bars.slice(horizon==="now"?-65:horizon==="swing"?-125:-180)} levels={executionLevelsAllowed?v5ChartLevels:null} showTrend/>:<div className="researchEmpty">Verified price history is unavailable.</div>}</div><p>Technical weakness informs entry timing. It does not independently invalidate durable business fundamentals.</p></article><div className="researchTwoColumns"><article className="researchCard"><h3>Indicator evidence</h3><dl className="researchData">{[["RSI · 14",proTech?.rsi14],["MACD histogram",proTech?.macdHist],["Volume / 20D average",proTech?.volRatio],["Realized volatility",proTech?.rv],["ATR %",proTech?.atrPct],["52-week drawdown %",proTech?.drawdown]].map(([k,v])=><div key={String(k)}><dt>{k}</dt><dd>{v==null?"—":Number(v).toFixed(2)}</dd></div>)}</dl></article><article className="researchCard"><h3>Execution discipline</h3><p>{technicalState.entryState}</p><dl className="researchData"><div><dt>{executionEntryLabel}</dt><dd>{!executionLevelsAllowed?"Blocked":canonicalValidationLevels?.entryLow!=null&&canonicalValidationLevels?.entryHigh!=null?`${displayMoney(canonicalValidationLevels.entryLow)} – ${displayMoney(canonicalValidationLevels.entryHigh)}`:"—"}</dd></div><div><dt>Confirmation</dt><dd>{!executionLevelsAllowed?"Blocked":canonicalValidationLevels?.confirmation!=null?displayMoney(canonicalValidationLevels.confirmation):"—"}</dd></div></dl><p>{v5Analysis?.executionPlan.reason}</p>{executionLevelsAllowed&&executionIntent==="ACCUMULATE"&&Boolean(v5Analysis?.executionPlan.dcaZones.length)&&<dl className="researchData">{v5Analysis?.executionPlan.dcaZones.map((zone:any)=><div key={zone.label}><dt>{zone.label}</dt><dd>{displayMoney(zone.low)} – {displayMoney(zone.high)}</dd></div>)}</dl>}<p>Execution levels publish only with sufficient price verification. Timing stays separate from fair value.</p></article></div>{d?.marketIntelligence&&<details className="researchCard"><summary>Multi-timeframe evidence</summary><MarketTimeframeTape marketIntelligence={marketIntelligenceView??d.marketIntelligence}/>{executionLevelsAllowed?<MarketActionMap marketIntelligence={d.marketIntelligence} newMoneyAction={institutionalDecision?.newMoneyAction} setup={institutionalDecision?.setupState} executionIntent={executionIntent}/>:<p>Execution levels unavailable until price and canonical trust are verified.</p>}</details>}</div>}
+      {tab==="technical"&&<div className="researchTabBody"><StockTabContext marketTruth={marketTruth} label="FAST BRAIN · TECHNICALS" title="Timing, trend & participation" score={technicalState.strength} state={technicalState.state} detail={institutionalDecision?.pillars.marketStructure.why||"Completed-bar market evidence is still building."}/><WeeklyStructure key={symbol} symbol={symbol} bars={longTermBars} loading={longTermLoading} error={longTermError}/><details className="researchCard researchTechnicalDetail"><summary>Daily indicators &amp; execution evidence</summary><div className="researchMetricGrid">{[["Entry quality",technicalState.entryQuality],["Trend",technicalState.trend],["Momentum",technicalState.momentum],["Participation",technicalState.participation],["Extension risk",technicalState.extensionRisk],["Volatility risk",technicalState.volatilityRisk]].map(([k,v])=><article className="researchCard" key={String(k)}><small>{k}</small><h3>{v==null?"—":`${v}/100`}</h3><progress max="100" value={Number(v)||0} aria-label={String(k)}/></article>)}</div><article className="researchCard"><header><h3>Price structure</h3><span>Canonical levels · completed bars</span></header><div className="researchTechnicalChart">{v5Analysis?<PriceChart candles={v5Analysis.bars.slice(horizon==="now"?-65:horizon==="swing"?-125:-180)} levels={executionLevelsAllowed?v5ChartLevels:null} showTrend/>:<div className="researchEmpty">Verified price history is unavailable.</div>}</div><p>Technical weakness informs entry timing. It does not independently invalidate durable business fundamentals.</p></article><div className="researchTwoColumns"><article className="researchCard"><h3>Indicator evidence</h3><dl className="researchData">{[["RSI · 14",proTech?.rsi14],["MACD histogram",proTech?.macdHist],["Volume / 20D average",proTech?.volRatio],["Realized volatility",proTech?.rv],["ATR %",proTech?.atrPct],["52-week drawdown %",proTech?.drawdown]].map(([k,v])=><div key={String(k)}><dt>{k}</dt><dd>{v==null?"—":Number(v).toFixed(2)}</dd></div>)}</dl></article><article className="researchCard"><h3>Execution discipline</h3><p>{technicalState.entryState}</p><dl className="researchData"><div><dt>{executionEntryLabel}</dt><dd>{!executionLevelsAllowed?"Blocked":canonicalValidationLevels?.entryLow!=null&&canonicalValidationLevels?.entryHigh!=null?`${displayMoney(canonicalValidationLevels.entryLow)} – ${displayMoney(canonicalValidationLevels.entryHigh)}`:"—"}</dd></div><div><dt>Confirmation</dt><dd>{!executionLevelsAllowed?"Blocked":canonicalValidationLevels?.confirmation!=null?displayMoney(canonicalValidationLevels.confirmation):"—"}</dd></div></dl><p>{v5Analysis?.executionPlan.reason}</p>{executionLevelsAllowed&&executionIntent==="ACCUMULATE"&&Boolean(v5Analysis?.executionPlan.dcaZones.length)&&<dl className="researchData">{v5Analysis?.executionPlan.dcaZones.map((zone:any)=><div key={zone.label}><dt>{zone.label}</dt><dd>{displayMoney(zone.low)} – {displayMoney(zone.high)}</dd></div>)}</dl>}<p>Execution levels publish only with sufficient price verification. Timing stays separate from fair value.</p></article></div>{d?.marketIntelligence&&<details className="researchCard"><summary>Multi-timeframe evidence</summary><MarketTimeframeTape marketIntelligence={marketIntelligenceView??d.marketIntelligence}/>{executionLevelsAllowed?<MarketActionMap marketIntelligence={d.marketIntelligence} newMoneyAction={institutionalDecision?.newMoneyAction} setup={institutionalDecision?.setupState} executionIntent={executionIntent}/>:<p>Execution levels unavailable until price and canonical trust are verified.</p>}</details>}</details></div>}
 
       {tab==="options"&&<div className="aurynStockTabPage gammaPanel v22Options v26Options">
         <StockTabContext marketTruth={marketTruth} label="OPTIONS" title="Positioning & contract research" score={null} state={optionsData?.enabled?"Provider data":"Evidence dependent"} action={institutionalDecision?.newMoneyAction??v5Analysis?.decision.primaryAction} detail={institutionalDecision?.pillars.riskAsymmetry.why||"Risk/asymmetry evidence governs how options research is interpreted; options do not create a separate directional call."}/>

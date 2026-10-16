@@ -1,0 +1,688 @@
+{
+  "scope": "Local production Chromium, intercepted auth/APIs, synthetic price/action fixtures and public SEC company-facts fixture. Not real-device Safari or live brokerage verification.",
+  "reports": [
+    {
+      "theme": "light",
+      "width": 320,
+      "tab": "Overview",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "tab": "Business",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "tab": "Earnings",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "tab": "Financials",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "tab": "Valuation",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "tab": "Ownership",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "tab": "Catalysts",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "tab": "Options",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "tab": "News",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "tab": "Technicals",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "tab": "Risk",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "tab": "Overview",
+      "viewport": 390,
+      "scroll": 390
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "tab": "Business",
+      "viewport": 390,
+      "scroll": 390
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "tab": "Earnings",
+      "viewport": 390,
+      "scroll": 390
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "tab": "Financials",
+      "viewport": 390,
+      "scroll": 390
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "tab": "Valuation",
+      "viewport": 390,
+      "scroll": 390
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "tab": "Ownership",
+      "viewport": 390,
+      "scroll": 390
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "tab": "Catalysts",
+      "viewport": 390,
+      "scroll": 390
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "tab": "Options",
+      "viewport": 390,
+      "scroll": 390
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "tab": "News",
+      "viewport": 390,
+      "scroll": 390
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "tab": "Technicals",
+      "viewport": 390,
+      "scroll": 390
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "tab": "Risk",
+      "viewport": 390,
+      "scroll": 390
+    },
+    {
+      "theme": "light",
+      "width": 430,
+      "tab": "Overview",
+      "viewport": 430,
+      "scroll": 430
+    },
+    {
+      "theme": "light",
+      "width": 430,
+      "tab": "Business",
+      "viewport": 430,
+      "scroll": 430
+    },
+    {
+      "theme": "light",
+      "width": 430,
+      "tab": "Earnings",
+      "viewport": 430,
+      "scroll": 430
+    },
+    {
+      "theme": "light",
+      "width": 430,
+      "tab": "Financials",
+      "viewport": 430,
+      "scroll": 430
+    },
+    {
+      "theme": "light",
+      "width": 430,
+      "tab": "Valuation",
+      "viewport": 430,
+      "scroll": 430
+    },
+    {
+      "theme": "light",
+      "width": 430,
+      "tab": "Ownership",
+      "viewport": 430,
+      "scroll": 430
+    },
+    {
+      "theme": "light",
+      "width": 430,
+      "tab": "Catalysts",
+      "viewport": 430,
+      "scroll": 430
+    },
+    {
+      "theme": "light",
+      "width": 430,
+      "tab": "Options",
+      "viewport": 430,
+      "scroll": 430
+    },
+    {
+      "theme": "light",
+      "width": 430,
+      "tab": "News",
+      "viewport": 430,
+      "scroll": 430
+    },
+    {
+      "theme": "light",
+      "width": 430,
+      "tab": "Technicals",
+      "viewport": 430,
+      "scroll": 430
+    },
+    {
+      "theme": "light",
+      "width": 430,
+      "tab": "Risk",
+      "viewport": 430,
+      "scroll": 430
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "tab": "Overview",
+      "viewport": 1440,
+      "scroll": 1440
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "tab": "Business",
+      "viewport": 1440,
+      "scroll": 1440
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "tab": "Earnings",
+      "viewport": 1440,
+      "scroll": 1440
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "tab": "Financials",
+      "viewport": 1440,
+      "scroll": 1440
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "tab": "Valuation",
+      "viewport": 1440,
+      "scroll": 1440
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "tab": "Ownership",
+      "viewport": 1440,
+      "scroll": 1440
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "tab": "Catalysts",
+      "viewport": 1440,
+      "scroll": 1440
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "tab": "Options",
+      "viewport": 1440,
+      "scroll": 1440
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "tab": "News",
+      "viewport": 1440,
+      "scroll": 1440
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "tab": "Technicals",
+      "viewport": 1440,
+      "scroll": 1440
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "tab": "Risk",
+      "viewport": 1440,
+      "scroll": 1440
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "tab": "Overview",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "tab": "Business",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "tab": "Earnings",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "tab": "Financials",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "tab": "Valuation",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "tab": "Ownership",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "tab": "Catalysts",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "tab": "Options",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "tab": "News",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "tab": "Technicals",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "tab": "Risk",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "tab": "Overview",
+      "viewport": 390,
+      "scroll": 390
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "tab": "Business",
+      "viewport": 390,
+      "scroll": 390
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "tab": "Earnings",
+      "viewport": 390,
+      "scroll": 390
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "tab": "Financials",
+      "viewport": 390,
+      "scroll": 390
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "tab": "Valuation",
+      "viewport": 390,
+      "scroll": 390
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "tab": "Ownership",
+      "viewport": 390,
+      "scroll": 390
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "tab": "Catalysts",
+      "viewport": 390,
+      "scroll": 390
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "tab": "Options",
+      "viewport": 390,
+      "scroll": 390
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "tab": "News",
+      "viewport": 390,
+      "scroll": 390
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "tab": "Technicals",
+      "viewport": 390,
+      "scroll": 390
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "tab": "Risk",
+      "viewport": 390,
+      "scroll": 390
+    },
+    {
+      "theme": "dark",
+      "width": 430,
+      "tab": "Overview",
+      "viewport": 430,
+      "scroll": 430
+    },
+    {
+      "theme": "dark",
+      "width": 430,
+      "tab": "Business",
+      "viewport": 430,
+      "scroll": 430
+    },
+    {
+      "theme": "dark",
+      "width": 430,
+      "tab": "Earnings",
+      "viewport": 430,
+      "scroll": 430
+    },
+    {
+      "theme": "dark",
+      "width": 430,
+      "tab": "Financials",
+      "viewport": 430,
+      "scroll": 430
+    },
+    {
+      "theme": "dark",
+      "width": 430,
+      "tab": "Valuation",
+      "viewport": 430,
+      "scroll": 430
+    },
+    {
+      "theme": "dark",
+      "width": 430,
+      "tab": "Ownership",
+      "viewport": 430,
+      "scroll": 430
+    },
+    {
+      "theme": "dark",
+      "width": 430,
+      "tab": "Catalysts",
+      "viewport": 430,
+      "scroll": 430
+    },
+    {
+      "theme": "dark",
+      "width": 430,
+      "tab": "Options",
+      "viewport": 430,
+      "scroll": 430
+    },
+    {
+      "theme": "dark",
+      "width": 430,
+      "tab": "News",
+      "viewport": 430,
+      "scroll": 430
+    },
+    {
+      "theme": "dark",
+      "width": 430,
+      "tab": "Technicals",
+      "viewport": 430,
+      "scroll": 430
+    },
+    {
+      "theme": "dark",
+      "width": 430,
+      "tab": "Risk",
+      "viewport": 430,
+      "scroll": 430
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "tab": "Overview",
+      "viewport": 1440,
+      "scroll": 1440
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "tab": "Business",
+      "viewport": 1440,
+      "scroll": 1440
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "tab": "Earnings",
+      "viewport": 1440,
+      "scroll": 1440
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "tab": "Financials",
+      "viewport": 1440,
+      "scroll": 1440
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "tab": "Valuation",
+      "viewport": 1440,
+      "scroll": 1440
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "tab": "Ownership",
+      "viewport": 1440,
+      "scroll": 1440
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "tab": "Catalysts",
+      "viewport": 1440,
+      "scroll": 1440
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "tab": "Options",
+      "viewport": 1440,
+      "scroll": 1440
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "tab": "News",
+      "viewport": 1440,
+      "scroll": 1440
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "tab": "Technicals",
+      "viewport": 1440,
+      "scroll": 1440
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "tab": "Risk",
+      "viewport": 1440,
+      "scroll": 1440
+    }
+  ],
+  "network": [
+    {
+      "theme": "light",
+      "width": 320,
+      "chartRequests": {
+        "/api/chart/NBIS?range=3M": 1,
+        "/api/chart/NBIS?range=5Y": 1
+      }
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "chartRequests": {
+        "/api/chart/NBIS?range=3M": 1,
+        "/api/chart/NBIS?range=5Y": 1
+      }
+    },
+    {
+      "theme": "light",
+      "width": 430,
+      "chartRequests": {
+        "/api/chart/NBIS?range=3M": 1,
+        "/api/chart/NBIS?range=5Y": 1
+      }
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "chartRequests": {
+        "/api/chart/NBIS?range=3M": 1,
+        "/api/chart/NBIS?range=5Y": 1
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "chartRequests": {
+        "/api/chart/NBIS?range=3M": 1,
+        "/api/chart/NBIS?range=5Y": 1
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "chartRequests": {
+        "/api/chart/NBIS?range=3M": 1,
+        "/api/chart/NBIS?range=5Y": 1
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 430,
+      "chartRequests": {
+        "/api/chart/NBIS?range=3M": 1,
+        "/api/chart/NBIS?range=5Y": 1
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "chartRequests": {
+        "/api/chart/NBIS?range=3M": 1,
+        "/api/chart/NBIS?range=5Y": 1
+      }
+    }
+  ],
+  "errors": []
+}

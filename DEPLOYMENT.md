@@ -1,5 +1,30 @@
 # GitHub and Vercel deployment
 
+## October 16 weekly study and UX update
+
+The new weekly study and shared CSS require no additional environment variable, subscription or migration. Rebuild from this source package. Extract its `AURYN` contents into the existing Git checkout, including hidden configuration/workflow templates, while retaining your `.git` history and private `.env.local`. Downloading or unzipping alone does not update GitHub.
+
+From the owner's existing checkout:
+
+```sh
+cd /Users/anudeeppaleru/Downloads/AURYN
+npm ci
+npm run verify:release
+git status --short
+git add -A
+git add -f .github/workflows/auryn-v996-validation-queue.yml .github/workflows/nivora-calibration-mature.yml
+git commit -m "AURYN weekly Fibonacci research and premium UX"
+git push origin main
+```
+
+Run the Git commands only after a successful verification and diff review. Vercel must build the pushed commit with the real environment settings; this ZIP has not been deployed by this session. Read `verification/WEEKLY_UX_REPORT.md` for current test scope. Earlier prerequisites below remain relevant.
+
+## October 15 research update
+
+The previously delivered rebuild was observed on GitHub main at `f6a08231a8dc7e1fff4dfc5f9772ce297ea88843`. This package contains subsequent research/data/mobile fixes; those new changes have not been pushed or deployed by this session. Use the existing repository and review the diff before merging. No new paid provider is required by these changes.
+
+Set server-only `SEC_USER_AGENT` to an identifying application/contact string for SEC requests. The new `sec-company-evidence-v2` contract invalidates older company snapshots in the browser. No database migration is introduced by this product research update; the earlier paper-order migration below remains necessary for that feature.
+
 ## Current release status
 
 See `verification/LIVE_READINESS.md` for actual service observations. Supabase anonymous access and two-user read isolation, Alpaca Paper connectivity, Finnhub, and Twelve Data stock/crypto quotes have been checked. Deployment of the rebuilt source, actual login/email/CRUD and an intended paper submission/fill/cancel still require acceptance. The manual audit schema/admin setup, broker protection settings and extended-hours entitlement need attention. Current acceptance is the blocking build/test gate; unchanged historical contracts remain separately reported in `verification/RELEASE_TEST_POLICY.md`.
@@ -53,4 +78,4 @@ Verify a preview deployment first: signup and email verification, login, passwor
 
 ## Reproducing offline browser checks
 
-Install Playwright in a development environment (`npm install --no-save playwright` and `npx playwright install chromium`). Build with the public fixture configuration shown in `verification/BROWSER_TESTS.md`, start the local server, then run the three browser scripts. Never deploy a fixture-configured build. Rebuild with real public environment variables for deployment.
+Install Playwright in a development environment (`npm install --no-save playwright` and `npx playwright install chromium`). Build with the public fixture configuration shown in `verification/BROWSER_TESTS.md`, start the local server, then run the applicable browser scripts. For this update, run `node verification/product-browser.cjs`; it checks 11 research tabs at 320, 390, 430 and 1440 CSS pixels in both themes, plus chart-request reuse. Supply `PLAYWRIGHT_MODULE_PATH` only if Playwright is installed outside the project, and `CHROMIUM_EXECUTABLE_PATH` only for a custom browser executable. Never deploy a fixture-configured build. Rebuild with real public environment variables for deployment.
