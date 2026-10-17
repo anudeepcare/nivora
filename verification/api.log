@@ -1,0 +1,6 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> auryn-product@0.1.0 test:api
+> node scripts/test-api.mjs
+
+23 built API checks passed: anonymous denial, private responses, trusted admin boundary, listing identity, disabled AI without provider spend.

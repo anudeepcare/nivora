@@ -1,9 +1,0 @@
-{
-  "pointInTimeUniverse": true,
-  "includesDelisted": true,
-  "delistingReturnsHandled": true,
-  "universeSnapshots": [
-    {"date":"2020-01-01","symbols":["AAPL","MSFT","OLD"]},
-    {"date":"2023-01-01","symbols":["AAPL","MSFT"]}
-  ]
-}

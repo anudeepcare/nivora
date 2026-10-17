@@ -1,6 +1,0 @@
-Checking light 390
-page.waitForFunction: Timeout 2500ms exceeded.
-    at /workspace/scratch/0397d872aad5/auryn/verification/chart-fix-browser.cjs:53:14 {
-  log: [],
-  name: 'TimeoutError'
-}

@@ -1,23 +1,22 @@
 {
-  "name": "AURYN \u2014 Investment Intelligence",
+  "name": "AURYN Investment Intelligence",
   "short_name": "AURYN",
-  "description": "Evidence-first investment intelligence for stocks, crypto and portfolios.",
-  "start_url": "/analyze",
+  "start_url": "/overview",
   "display": "standalone",
-  "background_color": "#f4f7fc",
-  "theme_color": "#071321",
+  "background_color": "#0c1017",
+  "theme_color": "#0c1017",
   "icons": [
     {
-      "src": "/auryn-192.png",
+      "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "/auryn-512.png",
+      "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }
