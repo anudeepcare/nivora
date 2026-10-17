@@ -1,5 +1,6 @@
 import type { Fact, Candle, FinancialPeriod } from "./types";
 import { financialPeriods, cashFlowValue } from "./engine.ts";
+import { flowFields, withFinancialRatios } from "./financial-formulas.ts";
 const DAY = 86400000;
 export function quarterFacts(facts: Fact[], asOf: string): Fact[] {
   const day = asOf.slice(0, 10),
@@ -18,7 +19,7 @@ export function quarterFacts(facts: Fact[], asOf: string): Fact[] {
     if (
       !["ytd", "annual"].includes(f.scope) ||
       !f.start ||
-      ["eps", "shares"].includes(f.metric)
+      ["eps", "shares", "weightedShares"].includes(f.metric)
     )
       continue;
     const previous = known
@@ -68,7 +69,14 @@ export function quarterFacts(facts: Fact[], asOf: string): Fact[] {
   );
 }
 export function ttmPeriods(facts: Fact[], asOf: string): FinancialPeriod[] {
-  const rows = financialPeriods(quarterFacts(facts, asOf), "quarterly", asOf),
+  const rows = financialPeriods(
+      [
+        ...quarterFacts(facts, asOf),
+        ...facts.filter((f) => f.scope === "instant"),
+      ],
+      "quarterly",
+      asOf,
+    ),
     result: FinancialPeriod[] = [];
   for (let i = 3; i < rows.length; i++) {
     const four = rows.slice(i - 3, i + 1),
@@ -100,17 +108,42 @@ export function ttmPeriods(facts: Fact[], asOf: string): FinancialPeriod[] {
         : null;
     const revenue = sum("revenue"),
       op = sum("operatingIncome");
-    result.push({
-      ...last,
-      start: four[0].start,
-      revenue,
-      netIncome: sum("netIncome"),
-      operatingIncome: op,
-      operatingCashFlow: sum("operatingCashFlow"),
-      capex: sum("capex"),
-      fcf: sum("fcf"),
-      margin: revenue && op != null ? (op / revenue) * 100 : null,
-    });
+    const extended = Object.fromEntries(
+      flowFields.map((k) => [
+        k,
+        four.every((r) => r[k] != null)
+          ? four.reduce((s, r) => s + r[k]!, 0)
+          : null,
+      ]),
+    );
+    const days = four.map(
+      (r) => (Date.parse(r.end) - Date.parse(r.start)) / DAY + 1,
+    );
+    const weights = four.every(
+      (r) => r.weightedShares != null && r.weightedShares > 0,
+    )
+      ? four.reduce((s, r, j) => s + r.weightedShares! * days[j], 0) /
+        days.reduce((s, n) => s + n, 0)
+      : null;
+    result.push(
+      withFinancialRatios({
+        ...last,
+        start: four[0].start,
+        revenue,
+        netIncome: sum("netIncome"),
+        operatingIncome: op,
+        operatingCashFlow: sum("operatingCashFlow"),
+        capex: sum("capex"),
+        fcf: sum("fcf"),
+        margin: revenue && op != null ? (op / revenue) * 100 : null,
+        ...extended,
+        weightedShares: weights,
+        eps: null,
+        sourceUrls: [
+          ...new Set(four.flatMap((r) => r.sourceUrls ?? [r.sourceUrl])),
+        ],
+      }),
+    );
   }
   return result;
 }
@@ -212,7 +245,11 @@ export function modelCoverage(
       method:
         "Milestone and unit-economics scenarios; no automatic intrinsic value from current losses.",
     };
-  if (["JPM", "BAC", "WFC", "C", "GS", "MS", "SCHW", "NU", "SOFI"].includes(symbol))
+  if (
+    ["JPM", "BAC", "WFC", "C", "GS", "MS", "SCHW", "NU", "SOFI"].includes(
+      symbol,
+    )
+  )
     return {
       family: "financial",
       drivers: [

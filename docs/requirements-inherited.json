@@ -99,14 +99,14 @@
       "section": "3. Financial data, source integrity and market freshness",
       "requirement": "Attach provenance, calculation basis, observation time and availability reasons to material metrics. Distinguish reported facts, management guidance, external estimates and AURYN assumptions.",
       "status": "partial",
-      "evidence": "Facts have filing dates, units, basis and links; comprehensive per-metric guidance/estimate provenance UX remains incomplete."
+      "evidence": "EODHD financial records preserve source, period, currency and provider basis. Quotes and charts show their own selected source, timestamps and fallback provenance. Per-metric availability is improved; all inherited provenance/persistence requirements are not complete."
     },
     {
       "id": "C03",
       "section": "3. Financial data, source integrity and market freshness",
       "requirement": "Repair missing-value paths end to end: provider response, normalization, calculation, persistence and rendering. Never fill gaps with invented prices or fundamentals.",
       "status": "partial",
-      "evidence": "Known normalization gaps corrected; universal company coverage cannot be established from the available entitlement."
+      "evidence": "New EODHD normalized statements/forecast/ownership data and financial-chart catalog; null and zero preserved, crypto/SAP identity and currency regression tested. Paid EODHD and actual rendered coverage still require preview acceptance."
     },
     {
       "id": "C04",
@@ -119,8 +119,8 @@
       "id": "C05",
       "section": "3. Financial data, source integrity and market freshness",
       "requirement": "Deduplicate provider requests, cache shareable data, refresh filings on relevant updates and preserve interactive headroom. Retain the documented 55/min ceiling and 42/min background cap unless verified configuration requires a stricter limit.",
-      "status": "verified_logic",
-      "evidence": "Request deduplication plus PostgreSQL 55/min total and 42/min background budget tested; distributed hosted behavior unverified."
+      "status": "partial",
+      "evidence": "Concurrent requests deduplicated and per-process caches bounded. Twelve Data credit guard retained with distributed option. EODHD has cached research; distributed EODHD/global multi-instance budgets remain unimplemented."
     },
     {
       "id": "C06",
@@ -190,7 +190,7 @@
       "section": "5. Valuation and implied expectations",
       "requirement": "Complete source-backed valuation inputs and meaningful independent cross-checks; do not merely remove the current gate that suppresses unsupported fair values.",
       "status": "partial",
-      "evidence": "Matched cash flow and shares, gated scenarios; comprehensive independent valuation cross-checks are incomplete."
+      "evidence": "Source financial scenarios plus EODHD trailing/forward multiples and separately labelled consensus. Foreign-listed share/currency gates preserved. Complete automatic cross-checks and sector due diligence remain partial."
     },
     {
       "id": "E02",
@@ -378,8 +378,8 @@
       "id": "I01",
       "section": "9. Institutions, insiders, catalysts and evidence",
       "requirement": "Display institutional ownership changes using available source-backed filings, with holding period and filing date. Do not describe delayed disclosures as live whale activity.",
-      "status": "blocked_data",
-      "evidence": "Institutional ownership-change feed/filing ingestion not implemented or entitled."
+      "status": "partial",
+      "evidence": "EODHD institutional/insider totals, dated holder positions and provider change fields ingested. UI shows reported holdings, not live whales. Complete filing-period ownership-change reconciliation remains incomplete."
     },
     {
       "id": "I02",
@@ -484,7 +484,7 @@
       "section": "11. All-level UX and full application review",
       "requirement": "Explain every major metric: definition, relevance to this company, calculation, source and limitations.",
       "status": "partial",
-      "evidence": "Major metric help dialogs and source labels; exhaustive per-metric explanation review unverified."
+      "evidence": "Financial catalog, expanded technicals, DCA, consensus and ownership have definitions and caveats. All inherited metrics and every rendered accessibility journey still unverified."
     },
     {
       "id": "K04",
@@ -498,7 +498,7 @@
       "section": "11. All-level UX and full application review",
       "requirement": "Fix search spacing and stale/hard-coded suggestions; duplicate research menus; missing valuation states; ticker links/logos; clipped values; mobile navigation spacing; date readability; chart scrolling and ranges.",
       "status": "partial",
-      "evidence": "Source fixes for menus, search, charts, icons/fallbacks and links; rendered acceptance open."
+      "evidence": "Rebuilt stylesheet and five research tabs from approved-pwa-20261017.html; logo fallback, safe areas, chart periods, provenance and selected filter state fixed in source. Actual browser/iPhone acceptance remains unverified."
     },
     {
       "id": "K06",

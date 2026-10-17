@@ -29,7 +29,7 @@ type Quotes = Record<
 export function useWorkspaceQuotes(
   scope: "all" | "watchlist" | "portfolio" = "all",
 ) {
-  const { workspace, demo, cache } = useProduct(),
+  const { workspace, demo, cache, marketProvider } = useProduct(),
     groups = workspaceSymbolBatches(
       scope === "watchlist" ? [] : (workspace?.positions ?? []),
       scope === "portfolio" ? [] : (workspace?.watchlist ?? []),
@@ -95,7 +95,7 @@ export function useWorkspaceQuotes(
           (n, s) => n + (s.includes("/") ? 2 : 1),
           0,
         );
-        if (requested + weight > 40) {
+        if (marketProvider !== "eodhd" && requested + weight > 40) {
           await pause();
           requested = 0;
           windowStarted = Date.now();
@@ -137,7 +137,7 @@ export function useWorkspaceQuotes(
       active = false;
       abort.abort();
     };
-  }, [key, demo, cache, revision]);
+  }, [key, demo, cache, revision, marketProvider]);
   return { data, loading, error, refresh };
 }
 export function ResearchHome() {
@@ -175,7 +175,7 @@ export function ResearchHome() {
               <Link
                 className="company-card"
                 key={symbol}
-                href={`${prefix}/research/${encodeURIComponent(symbol)}`}
+                href={`${prefix}/research/${encodeURIComponent(symbol.replace("/", "-"))}`}
               >
                 <div>
                   <SecurityLogo symbol={symbol} />
@@ -201,7 +201,7 @@ export function ResearchHome() {
                 </footer>
                 <small className="quote-stamp">
                   {q?.quote
-                    ? quoteTime(q.quote.asOf)
+                    ? `${q.quote.source} · ${quoteTime(q.quote.asOf)}`
                     : q?.error || "Loading price…"}
                 </small>
               </Link>
@@ -328,7 +328,7 @@ function InvestmentRows({
           <div className="investment-row" key={symbol}>
             <Link
               className="investment-identity"
-              href={`${prefix}/research/${encodeURIComponent(symbol)}`}
+              href={`${prefix}/research/${encodeURIComponent(symbol.replace("/", "-"))}`}
             >
               <SecurityLogo symbol={symbol} />
               <span>
@@ -359,7 +359,7 @@ function InvestmentRows({
               </small>
               <small className="quote-stamp" title={q?.error}>
                 {q?.quote
-                  ? quoteTime(q.quote.asOf)
+                  ? `${q.quote.source} · ${quoteTime(q.quote.asOf)}`
                   : q?.error || "Requesting latest quote"}
               </small>
             </div>
@@ -375,7 +375,7 @@ function InvestmentRows({
               <Link
                 className="icon-button"
                 aria-label={`Research ${symbol}`}
-                href={`${prefix}/research/${encodeURIComponent(symbol)}`}
+                href={`${prefix}/research/${encodeURIComponent(symbol.replace("/", "-"))}`}
               >
                 <ArrowUpRight size={17} />
               </Link>
@@ -558,8 +558,6 @@ export function Portfolio() {
     quotes = useWorkspaceQuotes("portfolio"),
     prefix = demo ? "/preview" : "",
     modal = useRef<HTMLDialogElement>(null),
-    currencyModal = useRef<HTMLDialogElement>(null),
-    [confirmedUsd, setConfirmedUsd] = useState(false),
     [currency, setCurrency] = useState("USD"),
     [editing, setEditing] = useState<Position | null>(null),
     [symbol, setSymbol] = useState(""),
@@ -643,21 +641,38 @@ export function Portfolio() {
         <div className="portfolio-review">
           <div>
             <strong>
-              {missingCurrency.length} cost currencies need confirmation
+              {missingCurrency.length} older positions are missing a
+              cost-currency label
             </strong>
             <p>
-              Your recorded average costs are present. Confirm their currency to
-              calculate unrealized returns.
+              Your costs are saved. Mark them as USD to include their unrealized
+              returns.
             </p>
           </div>
           <button
             className="button"
-            onClick={() => {
-              setConfirmedUsd(false);
-              currencyModal.current?.showModal();
+            disabled={busy}
+            onClick={async () => {
+              setBusy(true);
+              setError("");
+              try {
+                await mutate({
+                  op: "confirm-cost-currency",
+                  currency: "USD",
+                  ids: missingCurrency.map((p) => p.id),
+                });
+              } catch (e) {
+                setError(
+                  e instanceof Error
+                    ? e.message
+                    : "Could not save USD cost labels.",
+                );
+              } finally {
+                setBusy(false);
+              }
             }}
           >
-            Review currencies
+            {busy ? "Saving…" : "Set costs to USD"}
           </button>
         </div>
       )}
@@ -684,9 +699,7 @@ export function Portfolio() {
           Refresh prices
         </button>
       </div>
-      {error && !modal.current?.open && !currencyModal.current?.open && (
-        <Notice error>{error}</Notice>
-      )}
+      {error && !modal.current?.open && <Notice error>{error}</Notice>}
       <div className="portfolio-top">
         <section className="panel portfolio-balance">
           <span className="eyebrow">KNOWN MARKET VALUE · USD</span>
@@ -788,7 +801,7 @@ export function Portfolio() {
                           ) : (
                             <Link
                               className="investment-identity"
-                              href={`${prefix}/research/${encodeURIComponent(p.symbol)}`}
+                              href={`${prefix}/research/${encodeURIComponent(p.symbol.replace("/", "-"))}`}
                             >
                               <SecurityLogo symbol={p.symbol} size={35} />
                               <span>
@@ -816,7 +829,7 @@ export function Portfolio() {
                             {p.assetType === "cash"
                               ? "Cash"
                               : q[p.symbol]
-                                ? quoteTime(q[p.symbol].asOf)
+                                ? `${q[p.symbol].source} · ${quoteTime(q[p.symbol].asOf)}`
                                 : quotes.loading
                                   ? "Loading…"
                                   : "Unavailable"}
@@ -907,65 +920,6 @@ export function Portfolio() {
         Total-return charts require a transaction ledger; deposits are not
         presented as investment gains.
       </p>
-      <dialog
-        ref={currencyModal}
-        className="dialog position-dialog"
-        aria-labelledby="currency-review-title"
-      >
-        <button
-          className="icon-button close"
-          aria-label="Close currency review"
-          onClick={() => currencyModal.current?.close()}
-        >
-          <X size={20} />
-        </button>
-        <h2 id="currency-review-title">Confirm recorded cost currency</h2>
-        <p>
-          This sets USD for the {missingCurrency.length} listed records with no
-          currency. It does not convert or change your quantities or average
-          costs.
-        </p>
-        <p className="currency-symbols">
-          {missingCurrency.map((p) => p.symbol).join(", ")}
-        </p>
-        <label className="check">
-          <input
-            type="checkbox"
-            checked={confirmedUsd}
-            onChange={(e) => setConfirmedUsd(e.target.checked)}
-          />
-          All these recorded average costs are in USD.
-        </label>
-        <button
-          className="button primary"
-          disabled={!confirmedUsd || busy}
-          onClick={async () => {
-            setBusy(true);
-            setError("");
-            try {
-              await mutate({
-                op: "confirm-cost-currency",
-                currency: "USD",
-                ids: missingCurrency.map((p) => p.id),
-              });
-              currencyModal.current?.close();
-            } catch (e) {
-              setError(
-                e instanceof Error ? e.message : "Could not save currency.",
-              );
-            } finally {
-              setBusy(false);
-            }
-          }}
-        >
-          {busy ? "Saving…" : "Confirm USD costs"}
-        </button>
-        <p className="footnote">
-          If any cost is in another currency, close this dialog and edit that
-          position individually.
-        </p>
-        {error && <Notice error>{error}</Notice>}
-      </dialog>
       <dialog
         ref={modal}
         className="dialog position-dialog"

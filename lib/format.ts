@@ -35,6 +35,7 @@ export function symbolInput(value: unknown) {
   let s = String(value ?? "")
     .trim()
     .toUpperCase();
+  if (/^[A-Z0-9]{2,10}-USD$/.test(s)) s = s.replace(/-USD$/, "/USD");
   s =
     (
       {

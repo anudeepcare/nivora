@@ -18,7 +18,7 @@ export function analystStatus(
       available: false,
       reason: "disabled",
       message:
-        "AI generation is off for this workspace. The financial evidence below is available without AI credits.",
+        "AI generation is disabled in this deployment. Reported financial evidence remains available.",
     };
   if (!env.OPENAI_API_KEY || !env.OPENAI_MODEL)
     return {

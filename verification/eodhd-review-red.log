@@ -1,0 +1,98 @@
+✖ both providers reject same-day future intraday candles at the timestamp boundary (8.378632ms)
+✖ financial selected-control styles outrank global button resets (13.115548ms)
+✖ the actual Snapshot renders quote fallback provenance (129.391857ms)
+✖ unverified upcoming EPS is never formatted in the listing currency (43.621071ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 578.213788
+
+✖ failing tests:
+
+test at tests/release-review.test.mjs:12:1
+✖ both providers reject same-day future intraday candles at the timestamp boundary (8.378632ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  3 !== 2
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/product/tests/release-review.test.mjs:14:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 3,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/release-review.test.mjs:17:1
+✖ financial selected-control styles outrank global button resets (13.115548ms)
+  AssertionError [ERR_ASSERTION]: Selected controls must outrank #auryn-app button
+      at <input css 3bVcqA>:35:1
+      at file:///workspace/scratch/0397d872aad5/auryn-next/product/tests/release-review.test.mjs:26:71
+      at /workspace/scratch/0397d872aad5/auryn-next/product/node_modules/postcss/lib/container.js:432:18
+      at Root.walk (/workspace/scratch/0397d872aad5/auryn-next/product/node_modules/postcss/lib/container.js:352:18)
+      at Root.walkRules (/workspace/scratch/0397d872aad5/auryn-next/product/node_modules/postcss/lib/container.js:430:19)
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/product/tests/release-review.test.mjs:24:8)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple',
+    postcssNode: { raws: { before: '\n', between: ' ', semicolon: true, after: '\n' }, type: 'rule', nodes: [ [Object], [Object] ], parent: { raws: [Object], type: 'root', nodes: [Array], source: [Object], lastEach: 1, indexes: [Object] }, source: { input: [Object], start: [Object], end: [Object] }, selector: '#auryn-app button,\n#auryn-app input,\n#auryn-app select' }
+  }
+
+test at tests/release-review.test.mjs:42:1
+✖ the actual Snapshot renders quote fallback provenance (129.391857ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /EODHD.*fallback/. Input:
+  
+  '<article class="research-page"><header class="au-securityhead"><div class="au-flex"><div><h1>SAP SE</h1><p class="au-caption">SAP · NYSE · USD</p></div></div><div class="au-flex"><div class="au-quote"><div class="au-price au-num">$200.00</div><span class="au-positive">+1.0%</span><small>Delayed quote · Oct 17, 1:00 PM GMT+2</small></div><button class="icon-button" aria-label="Save to watchlist" aria-pressed="false"></button></div></header><nav class="au-localtabs" role="tablist" aria-label="Research sections" style="grid-template-columns:repeat(5,minmax(0,1fr))"><button role="tab" id="tab-Snapshot" aria-selected="true" aria-pressed="true" aria-controls="research-content" tabindex="0">Snapshot</button><button role="tab" id="tab-Financials" aria-selected="false" aria-pressed="false" aria-controls="research-content" tabindex="-1">Financials</button><button role="tab" id="tab-Valuation" aria-selected="false" aria-pressed="false" aria-controls="research-content" tabindex="-1">Valuation</button><button role="tab" id="tab-Technicals" aria-selected="false" aria-pressed="false" aria-controls="research-content" tabindex="-1">Technicals</button><button role="tab" id="tab-Thesis" aria-selected="false" aria-pressed="false" aria-controls="research-content" tabindex="-1">Thesis</button></nav><div id="research-content" role="tabpanel" aria-labelledby="tab-Snapshot" class="au-stack"><section class="au-takeaway"><div class="au-between"><span class="au-chip blue">Developing</span><div class="au-segment" aria-label="Research horizon"><button aria-pressed="true">Long term</button><button aria-pressed="false">Swing</button><button aria-pressed="false">Tactical</button></div></div><h2>Review the business</h2><p>Current financial evidence and price history are assessed separately.</p><div class="au-verdicts"><div><small>Business</small><b>Developing</b></div><div><small>Valuation</small><b>Review</b></div><div><small>Price trend</small><b class="au-amber">Weak</b></div></div></section><div class="au-mainrail"><section class="au-panel"><header class="au-panel-head"><h2>Price history</h2><div class="au-ranges" aria-label="Chart period"><button aria-pressed="false">1D</button><button aria-pressed="false">1W</button><button aria-pressed="false">1M</button><button aria-pressed="false">6M</button><button aria-pressed="true">1Y</button><button aria-pressed="false">5Y</button></div></header><div class="chart-empty" role="status">No observations in this period.</div><div class="au-chart-foot"><span>Price history · Date unavailable</span><div class="au-segment"><button aria-pressed="true">Line</button><button aria-pressed="false">Candles</button></div></div></section></div><div class="au-event"><div class="au-event-date">01<small>Feb</small></div><div><p>Next earnings · Feb 1, 2099</p><small>Estimated EPS $3.21 · Schedule can change</small></div><button class="au-link">View context </button></div></div></article>'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/product/tests/release-review.test.mjs:42:74)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '<article class="research-page"><header class="au-securityhead"><div class="au-flex"><div><h1>SAP SE</h1><p class="au-caption">SAP · NYSE · USD</p></div></div><div class="au-flex"><div class="au-quote"><div class="au-price au-num">$200.00</div><span class="au-positive">+1.0%</span><small>Delayed quote · Oct 17, 1:00 PM GMT+2</small></div><button class="icon-button" aria-label="Save to watchlist" aria-pressed="false"></button></div></header><nav class="au-localtabs" role="tablist" aria-label="Research sections" style="grid-template-columns:repeat(5,minmax(0,1fr))"><button role="tab" id="tab-Snapshot" aria-selected="true" aria-pressed="true" aria-controls="research-content" tabindex="0">Snapshot</button><button role="tab" id="tab-Financials" aria-selected="false" aria-pressed="false" aria-controls="research-content" tabindex="-1">Financials</button><button role="tab" id="tab-Valuation" aria-selected="false" aria-pressed="false" aria-controls="research-content" tabindex="-1">Valuation</button><button role="tab" id="tab-Technicals" aria-selected="false" aria-pressed="false" aria-controls="research-content" tabindex="-1">Technicals</button><button role="tab" id="tab-Thesis" aria-selected="false" aria-pressed="false" aria-controls="research-content" tabindex="-1">Thesis</button></nav><div id="research-content" role="tabpanel" aria-labelledby="tab-Snapshot" class="au-stack"><section class="au-takeaway"><div class="au-between"><span class="au-chip blue">Developing</span><div class="au-segment" aria-label="Research horizon"><button aria-pressed="true">Long term</button><button aria-pressed="false">Swing</button><button aria-pressed="false">Tactical</button></div></div><h2>Review the business</h2><p>Current financial evidence and price history are assessed separately.</p><div class="au-verdicts"><div><small>Business</small><b>Developing</b></div><div><small>Valuation</small><b>Review</b></div><div><small>Price trend</small><b class="au-amber">Weak</b></div></div></section><div class="au-mainrail"><section class="au-panel"><header class="au-panel-head"><h2>Price history</h2><div class="au-ranges" aria-label="Chart period"><button aria-pressed="false">1D</button><button aria-pressed="false">1W</button><button aria-pressed="false">1M</button><button aria-pressed="false">6M</button><button aria-pressed="true">1Y</button><button aria-pressed="false">5Y</button></div></header><div class="chart-empty" role="status">No observations in this period.</div><div class="au-chart-foot"><span>Price history · Date unavailable</span><div class="au-segment"><button aria-pressed="true">Line</button><button aria-pressed="false">Candles</button></div></div></section></div><div class="au-event"><div class="au-event-date">01<small>Feb</small></div><div><p>Next earnings · Feb 1, 2099</p><small>Estimated EPS $3.21 · Schedule can change</small></div><button class="au-link">View context </button></div></div></article>',
+    expected: /EODHD.*fallback/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at tests/release-review.test.mjs:43:1
+✖ unverified upcoming EPS is never formatted in the listing currency (43.621071ms)
+  AssertionError [ERR_ASSERTION]: The input was expected to not match the regular expression /\$3\.21/. Input:
+  
+  '<article class="research-page"><header class="au-securityhead"><div class="au-flex"><div><h1>SAP SE</h1><p class="au-caption">SAP · NYSE · USD</p></div></div><div class="au-flex"><div class="au-quote"><div class="au-price au-num">$200.00</div><span class="au-positive">+1.0%</span><small>Delayed quote · Oct 17, 1:00 PM GMT+2</small></div><button class="icon-button" aria-label="Save to watchlist" aria-pressed="false"></button></div></header><nav class="au-localtabs" role="tablist" aria-label="Research sections" style="grid-template-columns:repeat(5,minmax(0,1fr))"><button role="tab" id="tab-Snapshot" aria-selected="true" aria-pressed="true" aria-controls="research-content" tabindex="0">Snapshot</button><button role="tab" id="tab-Financials" aria-selected="false" aria-pressed="false" aria-controls="research-content" tabindex="-1">Financials</button><button role="tab" id="tab-Valuation" aria-selected="false" aria-pressed="false" aria-controls="research-content" tabindex="-1">Valuation</button><button role="tab" id="tab-Technicals" aria-selected="false" aria-pressed="false" aria-controls="research-content" tabindex="-1">Technicals</button><button role="tab" id="tab-Thesis" aria-selected="false" aria-pressed="false" aria-controls="research-content" tabindex="-1">Thesis</button></nav><div id="research-content" role="tabpanel" aria-labelledby="tab-Snapshot" class="au-stack"><section class="au-takeaway"><div class="au-between"><span class="au-chip blue">Developing</span><div class="au-segment" aria-label="Research horizon"><button aria-pressed="true">Long term</button><button aria-pressed="false">Swing</button><button aria-pressed="false">Tactical</button></div></div><h2>Review the business</h2><p>Current financial evidence and price history are assessed separately.</p><div class="au-verdicts"><div><small>Business</small><b>Developing</b></div><div><small>Valuation</small><b>Review</b></div><div><small>Price trend</small><b class="au-amber">Weak</b></div></div></section><div class="au-mainrail"><section class="au-panel"><header class="au-panel-head"><h2>Price history</h2><div class="au-ranges" aria-label="Chart period"><button aria-pressed="false">1D</button><button aria-pressed="false">1W</button><button aria-pressed="false">1M</button><button aria-pressed="false">6M</button><button aria-pressed="true">1Y</button><button aria-pressed="false">5Y</button></div></header><div class="chart-empty" role="status">No observations in this period.</div><div class="au-chart-foot"><span>Price history · Date unavailable</span><div class="au-segment"><button aria-pressed="true">Line</button><button aria-pressed="false">Candles</button></div></div></section></div><div class="au-event"><div class="au-event-date">01<small>Feb</small></div><div><p>Next earnings · Feb 1, 2099</p><small>Estimated EPS $3.21 · Schedule can change</small></div><button class="au-link">View context </button></div></div></article>'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/product/tests/release-review.test.mjs:44:37)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '<article class="research-page"><header class="au-securityhead"><div class="au-flex"><div><h1>SAP SE</h1><p class="au-caption">SAP · NYSE · USD</p></div></div><div class="au-flex"><div class="au-quote"><div class="au-price au-num">$200.00</div><span class="au-positive">+1.0%</span><small>Delayed quote · Oct 17, 1:00 PM GMT+2</small></div><button class="icon-button" aria-label="Save to watchlist" aria-pressed="false"></button></div></header><nav class="au-localtabs" role="tablist" aria-label="Research sections" style="grid-template-columns:repeat(5,minmax(0,1fr))"><button role="tab" id="tab-Snapshot" aria-selected="true" aria-pressed="true" aria-controls="research-content" tabindex="0">Snapshot</button><button role="tab" id="tab-Financials" aria-selected="false" aria-pressed="false" aria-controls="research-content" tabindex="-1">Financials</button><button role="tab" id="tab-Valuation" aria-selected="false" aria-pressed="false" aria-controls="research-content" tabindex="-1">Valuation</button><button role="tab" id="tab-Technicals" aria-selected="false" aria-pressed="false" aria-controls="research-content" tabindex="-1">Technicals</button><button role="tab" id="tab-Thesis" aria-selected="false" aria-pressed="false" aria-controls="research-content" tabindex="-1">Thesis</button></nav><div id="research-content" role="tabpanel" aria-labelledby="tab-Snapshot" class="au-stack"><section class="au-takeaway"><div class="au-between"><span class="au-chip blue">Developing</span><div class="au-segment" aria-label="Research horizon"><button aria-pressed="true">Long term</button><button aria-pressed="false">Swing</button><button aria-pressed="false">Tactical</button></div></div><h2>Review the business</h2><p>Current financial evidence and price history are assessed separately.</p><div class="au-verdicts"><div><small>Business</small><b>Developing</b></div><div><small>Valuation</small><b>Review</b></div><div><small>Price trend</small><b class="au-amber">Weak</b></div></div></section><div class="au-mainrail"><section class="au-panel"><header class="au-panel-head"><h2>Price history</h2><div class="au-ranges" aria-label="Chart period"><button aria-pressed="false">1D</button><button aria-pressed="false">1W</button><button aria-pressed="false">1M</button><button aria-pressed="false">6M</button><button aria-pressed="true">1Y</button><button aria-pressed="false">5Y</button></div></header><div class="chart-empty" role="status">No observations in this period.</div><div class="au-chart-foot"><span>Price history · Date unavailable</span><div class="au-segment"><button aria-pressed="true">Line</button><button aria-pressed="false">Candles</button></div></div></section></div><div class="au-event"><div class="au-event-date">01<small>Feb</small></div><div><p>Next earnings · Feb 1, 2099</p><small>Estimated EPS $3.21 · Schedule can change</small></div><button class="au-link">View context </button></div></div></article>',
+    expected: /\$3\.21/,
+    operator: 'doesNotMatch',
+    diff: 'simple'
+  }

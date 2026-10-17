@@ -2,14 +2,11 @@
 import { useId, useRef, useState, useEffect } from "react";
 import { CircleHelp, X, ArrowUpRight, Search } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { requestLogo } from "@/lib/logo-client";
 export function Logo() {
   return (
     <span className="brand">
-      <svg viewBox="0 0 36 38" width="38" height="38" aria-hidden="true">
-        <path fill="#356df3" d="M14 3h9L10 34H1z" />
-        <path fill="#80a8ff" d="m23 3 12 31H23L12 7z" />
-        <path fill="#2458d9" d="m18 21 5 13H10z" />
-      </svg>
+      <img src="/icon.svg" width="31" height="34" alt="" aria-hidden="true" />
       <span>
         <strong>AURYN</strong>
         <small>Investment Intelligence</small>
@@ -56,7 +53,27 @@ export function SecurityLogo({
   size?: number;
 }) {
   const [failed, setFailed] = useState(false);
-  useEffect(() => setFailed(false), [symbol]);
+  const [remote, setRemote] = useState<{
+    symbol: string;
+    url: string | null;
+  } | null>(null);
+  useEffect(() => {
+    let active = true;
+    setFailed(false);
+    setRemote(null);
+    if (!logos[symbol] && !["MSFT", "BTC/USD", "ETH/USD"].includes(symbol))
+      void requestLogo(symbol).then((url) => {
+        if (active) setRemote({ symbol, url });
+      });
+    return () => {
+      active = false;
+    };
+  }, [symbol]);
+  const imageSrc = logos[symbol]
+    ? `/logos/${logos[symbol]}`
+    : remote?.symbol === symbol
+      ? remote.url
+      : null;
   return (
     <span
       className={`security-logo ${["HIMS", "NOW"].includes(symbol) ? "logo-dark" : ""}`}
@@ -78,10 +95,15 @@ export function SecurityLogo({
           <path fill="#3c3c3d" d="m16 0 15 25-15-7z" />
           <path fill="#8c8c8c" d="m1 28 15 20 15-20-15 9z" />
         </svg>
-      ) : logos[symbol] && !failed ? (
+      ) : imageSrc && !failed ? (
         <img
           alt=""
-          src={`/logos/${logos[symbol]}`}
+          src={imageSrc}
+          width={size}
+          height={size}
+          loading="lazy"
+          decoding="async"
+          referrerPolicy="no-referrer"
           onError={() => setFailed(true)}
         />
       ) : (

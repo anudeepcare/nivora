@@ -1,0 +1,30 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+app/globals.css 128ms
+app/approved-design.css 81ms
+app/layout.tsx 44ms
+app/api/news/route.ts 8ms
+app/api/filings/route.ts 11ms
+app/api/provider-status/route.ts 6ms
+app/api/chart/[symbol]/route.ts 7ms
+components/Research.tsx 75ms
+components/ResearchEvidence.tsx 63ms
+components/GrowCompany.tsx 19ms (unchanged)
+components/Valuation.tsx 15ms
+components/Pwa.tsx 4ms
+components/Session.tsx 33ms
+components/SupportingViews.tsx 23ms
+components/Workspace.tsx 80ms (unchanged)
+components/Ui.tsx 12ms (unchanged)
+components/Search.tsx 14ms (unchanged)
+lib/eodhd.ts 36ms
+lib/eodhd-normalize.ts 29ms
+lib/provider-routing.ts 4ms
+lib/providers.ts 35ms
+lib/types.ts 6ms (unchanged)
+lib/company-profiles.ts 4ms
+lib/grow-provider.ts 3ms
+lib/enrichment.ts 8ms
+lib/technical-expanded.ts 8ms
+lib/report.ts 8ms
+next.config.ts 2ms
+public/sw.js 22ms

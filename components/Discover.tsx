@@ -50,7 +50,9 @@ export default function Discover() {
             .map((s) =>
               demo
                 ? Promise.resolve(demo.research[s])
-                : api<Research>(`research/${encodeURIComponent(s)}`),
+                : api<Research>(
+                    `research/${encodeURIComponent(s.replace("/", "-"))}`,
+                  ),
             ),
         );
         batch.forEach((v, j) => {
@@ -184,7 +186,7 @@ export default function Discover() {
                   <td>
                     <Link
                       className="investment-identity"
-                      href={`${prefix}/research/${encodeURIComponent(r.company.symbol)}`}
+                      href={`${prefix}/research/${encodeURIComponent(r.company.symbol.replace("/", "-"))}`}
                     >
                       <SecurityLogo symbol={r.company.symbol} />
                       <span>

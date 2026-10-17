@@ -52,6 +52,8 @@ export default function Shell({
         key={r.path}
         href={`${prefix}/${r.path}`}
         className="nav-item"
+        aria-label={r.label}
+        title={r.label}
         aria-current={page === r.path ? "page" : undefined}
       >
         <Icon size={21} />
@@ -79,10 +81,12 @@ export default function Shell({
           <Link
             href={`${prefix}/settings`}
             className="nav-item"
+            aria-label="Preferences"
+            title="Preferences"
             aria-current={page === "settings" ? "page" : undefined}
           >
             <Settings size={21} />
-            Preferences
+            <span>Preferences</span>
           </Link>
           <div className="profile">
             <span className="avatar">

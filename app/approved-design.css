@@ -1,0 +1,1537 @@
+/* Design tokens and component rules from the approved interactive preview. */
+
+#auryn-app {
+  --au-bg: light-dark(#f5f7fb, #0e1420);
+  --au-paper: light-dark(#fff, #171f2e);
+  --au-soft: light-dark(#edf1f8, #202a3b);
+  --au-ink: light-dark(#19253b, #f0f4fc);
+  --au-muted: light-dark(#5c6b80, #a3b0c6);
+  --au-line: light-dark(#e0e6f0, #303c50);
+  --au-blue: light-dark(#345fe7, #94afff);
+  --au-blue-soft: light-dark(#eaf0ff, #233352);
+  --au-green: light-dark(#087e67, #6bdfb7);
+  --au-green-soft: light-dark(#e6f6f0, #183b36);
+  --au-amber: light-dark(#98611a, #f4c078);
+  --au-amber-soft: light-dark(#fff3df, #403324);
+  --au-red: light-dark(#b64155, #ff9cae);
+  --au-purple: light-dark(#7754c7, #c3a7ff);
+  --au-shadow: light-dark(0 14px 44px #24467c09, 0 14px 44px #00000019);
+  font:
+    400 15px/1.5 -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  letter-spacing: -0.015em;
+  color: var(--au-ink);
+  width: 100%;
+  color-scheme: inherit;
+}
+#auryn-app * {
+  box-sizing: border-box;
+}
+#auryn-app [hidden] {
+  display: none !important;
+}
+:where(#auryn-app) button,
+:where(#auryn-app) input,
+:where(#auryn-app) select {
+  font: inherit;
+  color: inherit;
+}
+:where(#auryn-app) button {
+  min-height: 44px;
+  border: 0;
+  background: none;
+  border-radius: 12px;
+  padding: 9px 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 500;
+}
+:where(#auryn-app) button:hover {
+  background: var(--au-soft);
+}
+:where(#auryn-app) button:active {
+  transform: translateY(1px);
+}
+:where(#auryn-app) input,
+:where(#auryn-app) select {
+  background: var(--au-paper);
+  border: 1px solid var(--au-line);
+  border-radius: 12px;
+  padding: 11px 12px;
+  min-width: 0;
+  font-size: 16px;
+}
+#auryn-app input[type="range"] {
+  padding: 0;
+  accent-color: var(--au-blue);
+  width: 100%;
+}
+#auryn-app input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--au-blue);
+}
+#auryn-app h1,
+#auryn-app h2,
+#auryn-app h3,
+#auryn-app p {
+  margin: 0;
+}
+#auryn-app h1 {
+  font-size: 28px;
+  line-height: 1.22;
+  letter-spacing: -0.045em;
+  font-weight: 500;
+}
+#auryn-app h2 {
+  font-size: 20px;
+  line-height: 1.3;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+#auryn-app h3 {
+  font-size: 16px;
+  font-weight: 500;
+}
+#auryn-app strong,
+#auryn-app b {
+  font-weight: 500;
+}
+#auryn-app small {
+  font-size: 12px;
+  color: var(--au-muted);
+}
+#auryn-app svg {
+  display: block;
+}
+#auryn-app .au-muted {
+  color: var(--au-muted);
+}
+#auryn-app .au-positive {
+  color: var(--au-green);
+}
+#auryn-app .au-negative {
+  color: var(--au-red);
+}
+#auryn-app .au-amber {
+  color: var(--au-amber);
+}
+#auryn-app .au-num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.025em;
+}
+#auryn-app .au-caption {
+  font-size: 12px;
+  color: var(--au-muted);
+  line-height: 1.55;
+}
+#auryn-app .au-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--au-muted);
+}
+#auryn-app .au-flex {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+#auryn-app .au-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+#auryn-app .au-stack {
+  display: grid;
+  gap: 20px;
+}
+#auryn-app .au-tight {
+  display: grid;
+  gap: 7px;
+}
+#auryn-app .au-rule {
+  height: 1px;
+  background: var(--au-line);
+  margin: 20px 0;
+}
+#auryn-app .au-button {
+  border: 1px solid var(--au-line);
+  background: var(--au-paper);
+}
+#auryn-app .au-primary {
+  background: var(--au-blue) !important;
+  color: light-dark(#fff, #101b36) !important;
+}
+#auryn-app .au-link {
+  color: var(--au-blue);
+  padding-left: 0;
+  padding-right: 0;
+}
+#auryn-app .au-icon {
+  width: 44px;
+  padding: 10px;
+  flex-shrink: 0;
+}
+#auryn-app .au-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  border-radius: 7px;
+  background: var(--au-soft);
+  font-size: 12px;
+  white-space: nowrap;
+}
+#auryn-app .au-chip.good {
+  background: var(--au-green-soft);
+  color: var(--au-green);
+}
+#auryn-app .au-chip.warn {
+  background: var(--au-amber-soft);
+  color: var(--au-amber);
+}
+#auryn-app .au-chip.blue {
+  background: var(--au-blue-soft);
+  color: var(--au-blue);
+}
+#auryn-app .au-segment {
+  display: inline-flex;
+  gap: 3px;
+  background: var(--au-soft);
+  padding: 3px;
+  border-radius: 12px;
+}
+#auryn-app .au-segment button {
+  min-height: 36px;
+  font-size: 12px;
+  padding: 7px 12px;
+  border-radius: 9px;
+}
+#auryn-app .au-segment button[aria-pressed="true"] {
+  background: var(--au-paper);
+  box-shadow: 0 2px 7px #0000000b;
+}
+#auryn-app .au-reviewbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 0 0 12px;
+  padding: 4px 0;
+}
+#auryn-app .au-reviewbar > span {
+  font-size: 13px;
+}
+#auryn-app .au-preview {
+  container-type: inline-size;
+  background: var(--au-bg);
+  border: 1px solid var(--au-line);
+  border-radius: 20px;
+  overflow: clip;
+  width: 100%;
+  margin: auto;
+  box-shadow: var(--au-shadow);
+}
+#auryn-app .au-preview.au-phone {
+  max-width: 393px;
+}
+#auryn-app .au-shell {
+  display: grid;
+  grid-template-columns: 154px minmax(0, 1fr);
+  align-items: stretch;
+  min-width: 0;
+}
+#auryn-app .au-sidebar {
+  background: var(--au-paper);
+  border-right: 1px solid var(--au-line);
+  padding: 26px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+}
+#auryn-app .au-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+  padding: 0 4px;
+}
+#auryn-app .au-brand img {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+}
+#auryn-app .au-side-nav {
+  display: grid;
+  gap: 6px;
+}
+#auryn-app .au-side-nav button {
+  justify-content: flex-start;
+  color: var(--au-muted);
+  font-size: 13px;
+  padding: 11px 12px;
+  border-radius: 10px;
+}
+#auryn-app .au-side-nav button[aria-current="page"] {
+  background: var(--au-blue-soft);
+  color: var(--au-blue);
+}
+#auryn-app .au-sidebar-bottom {
+  margin-top: auto;
+  display: grid;
+  gap: 10px;
+  padding-top: 70px;
+}
+#auryn-app .au-profile {
+  width: 31px;
+  height: 31px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--au-soft);
+  font-size: 12px;
+  letter-spacing: 0.03em;
+}
+#auryn-app .au-workspace {
+  min-width: 0;
+}
+#auryn-app .au-topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 17px 28px;
+  border-bottom: 1px solid var(--au-line);
+  background: var(--au-paper);
+}
+#auryn-app .au-search {
+  position: relative;
+  flex: 1;
+  max-width: 400px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#auryn-app .au-search > i,
+#auryn-app .au-search > svg {
+  position: absolute;
+  left: 13px;
+  width: 17px;
+  color: var(--au-muted);
+  pointer-events: none;
+}
+#auryn-app .au-search input {
+  width: 100%;
+  padding-left: 39px;
+  border: 0;
+  background: var(--au-soft);
+  font-size: 14px;
+  min-height: 43px;
+}
+#auryn-app .au-searchresults {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 25;
+  border: 1px solid var(--au-line);
+  border-radius: 16px;
+  background: var(--au-paper);
+  box-shadow: 0 18px 50px #0002;
+  padding: 7px;
+}
+#auryn-app .au-searchresults button {
+  width: 100%;
+  justify-content: flex-start;
+  text-align: left;
+  padding: 10px;
+  gap: 10px;
+}
+#auryn-app .au-searchresults button small {
+  display: block;
+}
+#auryn-app .au-searchresults .au-chip {
+  margin-left: auto;
+}
+#auryn-app .au-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+#auryn-app .au-mobilebrand,
+#auryn-app .au-mobile-nav {
+  display: none;
+}
+#auryn-app .au-body {
+  padding: 26px 28px 30px;
+  min-width: 0;
+}
+#auryn-app .au-pagehead {
+  margin-bottom: 23px;
+}
+#auryn-app .au-pagehead p {
+  color: var(--au-muted);
+  margin-top: 6px;
+}
+#auryn-app .au-panel {
+  background: var(--au-paper);
+  border: 1px solid var(--au-line);
+  border-radius: 18px;
+  padding: 21px;
+  min-width: 0;
+  box-shadow: 0 4px 18px #18345903;
+}
+#auryn-app .au-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+#auryn-app .au-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  min-width: 0;
+}
+#auryn-app .au-mainrail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 218px;
+  gap: 18px;
+  align-items: stretch;
+}
+#auryn-app .au-three {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+#auryn-app .au-logo {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #e2e7ee;
+}
+#auryn-app .au-logo.au-hims {
+  background: #173b31;
+}
+#auryn-app .au-logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+#auryn-app .au-logo.au-biglogo {
+  width: 52px;
+  height: 52px;
+  flex-basis: 52px;
+  border-radius: 15px;
+}
+#auryn-app .au-logo.au-btc {
+  background: #f7931a;
+  color: #fff;
+  border-color: transparent;
+  font-size: 27px;
+  font-weight: 500;
+}
+#auryn-app .au-securityhead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+#auryn-app .au-securityhead h1 {
+  font-size: 27px;
+}
+#auryn-app .au-quote {
+  text-align: right;
+}
+#auryn-app .au-quote .au-price {
+  font-size: 29px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+#auryn-app .au-quote small {
+  display: block;
+  margin-top: 4px;
+}
+#auryn-app .au-localtabs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 4px;
+  border-bottom: 1px solid var(--au-line);
+  margin-bottom: 22px;
+}
+#auryn-app .au-localtabs button {
+  border-radius: 0;
+  color: var(--au-muted);
+  font-size: 13px;
+  padding: 10px 5px;
+  border-bottom: 2px solid transparent;
+  min-width: 0;
+}
+#auryn-app .au-localtabs button[aria-pressed="true"] {
+  border-color: var(--au-blue);
+  color: var(--au-blue);
+  background: transparent;
+}
+#auryn-app .au-takeaway {
+  position: relative;
+  border-radius: 18px;
+  background: linear-gradient(115deg, var(--au-blue-soft), var(--au-paper) 77%);
+  border: 1px solid var(--au-line);
+  padding: 22px 24px;
+  margin-bottom: 20px;
+}
+#auryn-app .au-takeaway h2 {
+  font-size: 22px;
+  margin: 7px 0 9px;
+  max-width: 580px;
+  letter-spacing: -0.035em;
+}
+#auryn-app .au-takeaway p {
+  color: var(--au-muted);
+  font-size: 14px;
+  max-width: 620px;
+  line-height: 1.65;
+}
+#auryn-app .au-verdicts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--au-line);
+}
+#auryn-app .au-verdicts small {
+  display: block;
+  font-size: 11px;
+  margin-bottom: 4px;
+}
+#auryn-app .au-verdicts b {
+  font-size: 14px;
+  display: block;
+}
+#auryn-app .au-dca {
+  background: linear-gradient(145deg, var(--au-green-soft), var(--au-paper));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+#auryn-app .au-dca-number {
+  font-size: 61px;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.065em;
+  color: var(--au-green);
+}
+#auryn-app .au-dca-number span {
+  font-size: 24px;
+  letter-spacing: -0.02em;
+}
+#auryn-app .au-dca-scale {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  margin: 4px 0;
+}
+#auryn-app .au-dca-scale span {
+  font-size: 11px;
+  text-align: center;
+  padding: 7px 2px;
+  border-radius: 7px;
+  background: var(--au-soft);
+  color: var(--au-muted);
+}
+#auryn-app .au-dca-scale .active {
+  color: var(--au-green);
+  background: var(--au-green-soft);
+  box-shadow: inset 0 0 0 1px var(--au-green);
+}
+#auryn-app .au-dca .au-caption {
+  font-size: 12px;
+}
+#auryn-app .au-chart {
+  width: 100%;
+  min-width: 0;
+  touch-action: pan-y;
+  position: relative;
+}
+#auryn-app .au-chart svg {
+  width: 100%;
+  overflow: visible;
+}
+#auryn-app .au-chart svg text {
+  font-family: inherit;
+  fill: var(--au-muted);
+  font-size: 11px;
+}
+#auryn-app .au-chartline {
+  stroke: var(--au-blue);
+}
+#auryn-app .au-chart-readout {
+  min-height: 22px;
+  font-size: 12px;
+  color: var(--au-muted);
+  font-variant-numeric: tabular-nums;
+  margin-top: 3px;
+}
+#auryn-app .au-chart-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin-top: 9px;
+  font-size: 11px;
+  color: var(--au-muted);
+}
+#auryn-app .au-ranges {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+#auryn-app .au-ranges button {
+  padding: 5px 10px;
+  min-height: 35px;
+  font-size: 11px;
+}
+#auryn-app .au-ranges button[aria-pressed="true"] {
+  background: var(--au-blue-soft);
+  color: var(--au-blue);
+}
+#auryn-app .au-section-head {
+  margin: 7px 0 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+#auryn-app .au-metric-title {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--au-muted);
+  font-size: 13px;
+}
+#auryn-app .au-help {
+  padding: 6px !important;
+  min-height: 30px !important;
+  width: 30px;
+  color: var(--au-muted);
+}
+#auryn-app .au-metric-value {
+  font-size: 27px;
+  letter-spacing: -0.045em;
+  line-height: 1.3;
+  margin: 6px 0 2px;
+}
+#auryn-app .au-delta {
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+#auryn-app .au-trendmetric {
+  padding: 18px 19px;
+}
+#auryn-app .au-case {
+  padding: 5px 0;
+}
+#auryn-app .au-case-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 13px;
+}
+#auryn-app .au-case ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 15px;
+}
+#auryn-app .au-case li {
+  display: grid;
+  grid-template-columns: 17px 1fr;
+  gap: 8px;
+  font-size: 14px;
+}
+#auryn-app .au-case li svg {
+  margin-top: 3px;
+}
+#auryn-app .au-case li small {
+  display: block;
+  margin-top: 4px;
+  line-height: 1.6;
+}
+#auryn-app .au-plainsection {
+  padding: 7px 3px;
+}
+#auryn-app .au-event {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 13px 0;
+  border-top: 1px solid var(--au-line);
+}
+#auryn-app .au-event-date {
+  background: var(--au-soft);
+  border-radius: 10px;
+  text-align: center;
+  min-width: 48px;
+  padding: 6px 8px;
+  line-height: 1.25;
+  font-size: 18px;
+}
+#auryn-app .au-event-date small {
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+#auryn-app .au-event p {
+  font-size: 14px;
+}
+#auryn-app .au-event small {
+  display: block;
+  margin-top: 2px;
+}
+#auryn-app .au-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 93px 90px;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 14px 0 !important;
+  border-radius: 0 !important;
+  border-bottom: 1px solid var(--au-line) !important;
+  text-align: left;
+}
+#auryn-app .au-row:last-child {
+  border-bottom: 0 !important;
+}
+#auryn-app .au-row .au-rowname {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+#auryn-app .au-row .au-rowname small {
+  display: block;
+  font-size: 11px;
+}
+#auryn-app .au-row .au-rowprice {
+  text-align: right;
+  font-size: 14px;
+}
+#auryn-app .au-row .au-rowprice small {
+  display: block;
+  margin-top: 3px;
+}
+#auryn-app .au-row .au-rowstate {
+  text-align: right;
+}
+#auryn-app .au-row .au-rowstate small {
+  display: block;
+  margin-top: 3px;
+}
+#auryn-app .au-total {
+  font-size: 39px;
+  letter-spacing: -0.055em;
+  line-height: 1.15;
+  font-weight: 500;
+}
+#auryn-app .au-portfolio-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-top: 17px;
+}
+#auryn-app .au-portfolio-summary > div {
+  border-top: 1px solid var(--au-line);
+  padding-top: 12px;
+}
+#auryn-app .au-portfolio-summary small {
+  display: block;
+}
+#auryn-app .au-portfolio-summary b {
+  font-size: 18px;
+}
+#auryn-app .au-allocation {
+  height: 11px;
+  display: flex;
+  gap: 3px;
+  overflow: hidden;
+  border-radius: 8px;
+  margin: 19px 0;
+}
+#auryn-app .au-allocation span {
+  height: 100%;
+  border-radius: 3px;
+}
+#auryn-app .au-allocation-legend {
+  display: grid;
+  gap: 13px;
+  font-size: 13px;
+}
+#auryn-app .au-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 3px;
+  display: inline-block;
+  margin-right: 6px;
+  background: var(--au-blue);
+}
+#auryn-app .au-subtlelink {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--au-blue);
+  font-size: 12px;
+}
+#auryn-app .au-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--au-soft);
+  font-size: 13px;
+  color: var(--au-muted);
+}
+#auryn-app .au-notice svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+#auryn-app .au-settingsrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 17px 0;
+  border-bottom: 1px solid var(--au-line);
+}
+#auryn-app .au-settingsrow small {
+  display: block;
+  margin-top: 3px;
+}
+#auryn-app .au-settingsrow:last-child {
+  border: 0;
+}
+#auryn-app .au-check {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+}
+#auryn-app .au-val-range {
+  display: flex;
+  gap: 4px;
+  height: 18px;
+  margin: 18px 0 10px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+#auryn-app .au-val-range span {
+  flex: 1;
+  background: var(--au-soft);
+}
+#auryn-app .au-val-range span:nth-child(2) {
+  background: var(--au-green-soft);
+}
+#auryn-app .au-val-range span:nth-child(3) {
+  background: var(--au-blue-soft);
+}
+#auryn-app .au-scenario-values {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+#auryn-app .au-scenario-values b {
+  font-size: 22px;
+  display: block;
+  margin-top: 4px;
+}
+#auryn-app .au-sliderfield {
+  display: grid;
+  gap: 10px;
+  margin-top: 20px;
+}
+#auryn-app .au-sourcebar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  color: var(--au-muted);
+  flex-wrap: wrap;
+  margin-top: 13px;
+}
+#auryn-app .au-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+#auryn-app .au-table th {
+  font-weight: 400;
+  color: var(--au-muted);
+  font-size: 11px;
+}
+#auryn-app .au-table th,
+#auryn-app .au-table td {
+  padding: 13px 8px;
+  text-align: right;
+  border-bottom: 1px solid var(--au-line);
+}
+#auryn-app .au-table td:first-child,
+#auryn-app .au-table th:first-child {
+  text-align: left;
+  padding-left: 0;
+}
+#auryn-app .au-level {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--au-line);
+  font-size: 13px;
+}
+#auryn-app .au-level > span {
+  min-width: 58px;
+}
+#auryn-app .au-level i {
+  flex: 1;
+  height: 1px;
+  background: var(--au-line);
+}
+#auryn-app .au-level small {
+  min-width: 72px;
+  text-align: right;
+}
+#auryn-app .au-empty {
+  padding: 36px 16px;
+  text-align: center;
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+}
+#auryn-app .au-form {
+  display: grid;
+  gap: 17px;
+}
+#auryn-app .au-form label {
+  display: grid;
+  gap: 7px;
+  font-size: 13px;
+}
+#auryn-app .au-login {
+  padding: 38px 28px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 45px;
+  background: var(--au-paper);
+}
+#auryn-app .au-login-story {
+  padding: 35px;
+  border-radius: 24px;
+  background: linear-gradient(
+    145deg,
+    var(--au-blue-soft),
+    var(--au-green-soft)
+  );
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+#auryn-app .au-login-story h1 {
+  font-size: 38px;
+  letter-spacing: -0.05em;
+}
+#auryn-app .au-login-form {
+  padding: 22px 5px;
+  max-width: 355px;
+  display: grid;
+  align-content: center;
+  gap: 22px;
+}
+#auryn-app .au-modalback {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  background: #0714276b;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 65px 18px;
+}
+#auryn-app .au-dialog {
+  background: var(--au-paper);
+  color: var(--au-ink);
+  border: 1px solid var(--au-line);
+  border-radius: 20px;
+  box-shadow: 0 24px 70px #0004;
+  padding: 23px;
+  width: min(100%, 510px);
+}
+#auryn-app .au-dialog p {
+  margin-top: 14px;
+  font-size: 14px;
+  color: var(--au-muted);
+  line-height: 1.7;
+}
+#auryn-app .au-productwrap {
+  position: relative;
+}
+#auryn-app .au-toast {
+  padding: 11px 17px;
+  background: var(--au-blue-soft);
+  color: var(--au-blue);
+  border-bottom: 1px solid var(--au-line);
+  font-size: 13px;
+}
+#auryn-app .au-footer {
+  padding: 14px 28px;
+  border-top: 1px solid var(--au-line);
+  font-size: 11px;
+  color: var(--au-muted);
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+#auryn-app .au-mobile-nav button {
+  font-size: 11px;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 55px;
+  border-radius: 9px;
+  padding: 7px 3px;
+  color: var(--au-muted);
+}
+#auryn-app .au-mobile-nav button[aria-current="page"] {
+  color: var(--au-blue);
+  background: var(--au-blue-soft);
+}
+#auryn-app .au-chart svg .au-gridline {
+  stroke: var(--au-line);
+  stroke-width: 1;
+}
+#auryn-app .au-chart svg .au-bar {
+  fill: var(--au-blue);
+}
+#auryn-app .au-chart svg .au-bar-secondary {
+  fill: var(--au-green);
+}
+#auryn-app .au-chart svg .au-mark-label {
+  fill: var(--au-ink);
+}
+#auryn-app .au-chart svg .au-inspect {
+  fill: transparent;
+}
+#auryn-app .au-chart svg .au-fib {
+  stroke: var(--au-purple);
+  stroke-width: 1;
+  stroke-dasharray: 4 5;
+}
+#auryn-app .au-chart svg .au-fib-text {
+  fill: var(--au-purple);
+}
+#auryn-app .au-spark {
+  width: 80px;
+  height: 30px;
+  min-width: 0;
+}
+#auryn-app .au-spark svg {
+  width: 100%;
+  height: 100%;
+}
+#auryn-app .au-healthdot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--au-green);
+  display: inline-block;
+}
+#auryn-app .au-filters {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+#auryn-app .au-filters button {
+  min-height: 34px;
+  padding: 6px 12px;
+  font-size: 12px;
+  background: var(--au-paper);
+  border: 1px solid var(--au-line);
+}
+#auryn-app .au-filters button[aria-pressed="true"] {
+  color: var(--au-blue);
+  background: var(--au-blue-soft);
+  border-color: transparent;
+}
+@media (max-width: 850px) {
+  #auryn-app .au-sidebar {
+    padding: 22px 8px;
+  }
+  #auryn-app .au-shell {
+    grid-template-columns: 135px minmax(0, 1fr);
+  }
+  #auryn-app .au-body {
+    padding: 22px;
+  }
+  #auryn-app .au-topbar {
+    padding: 14px 22px;
+  }
+  #auryn-app .au-mainrail {
+    grid-template-columns: minmax(0, 1fr) 195px;
+  }
+  #auryn-app .au-panel {
+    padding: 17px;
+  }
+  #auryn-app .au-total {
+    font-size: 34px;
+  }
+  #auryn-app .au-top-actions .au-caption {
+    display: none;
+  }
+  #auryn-app .au-three {
+    gap: 12px;
+  }
+  #auryn-app .au-metric-value {
+    font-size: 24px;
+  }
+}
+@media (max-width: 700px) {
+  #auryn-app .au-sidebar {
+    display: none;
+  }
+  #auryn-app .au-shell {
+    display: block;
+  }
+  #auryn-app .au-mainrail {
+    grid-template-columns: minmax(0, 1fr) 200px;
+  }
+  #auryn-app .au-mobilebrand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 19px 8px;
+    padding-top: max(18px, env(safe-area-inset-top));
+    background: var(--au-paper);
+  }
+  #auryn-app .au-mobile-nav {
+    display: flex;
+    gap: 4px;
+    padding: 6px 12px 12px;
+    background: var(--au-paper);
+    border-bottom: 1px solid var(--au-line);
+  }
+  #auryn-app .au-topbar {
+    padding: 8px 18px 10px;
+    border: 0;
+  }
+  #auryn-app .au-top-actions {
+    display: none;
+  }
+  #auryn-app .au-search {
+    max-width: none;
+  }
+  #auryn-app .au-search input {
+    font-size: 16px;
+  }
+  #auryn-app .au-login {
+    gap: 22px;
+    padding: 25px;
+  }
+  #auryn-app .au-login-story {
+    padding: 25px;
+  }
+  #auryn-app .au-login-story h1 {
+    font-size: 30px;
+  }
+}
+@media (max-width: 540px) {
+  #auryn-app .au-body {
+    padding: 22px 16px 25px;
+  }
+  #auryn-app .au-mainrail,
+  #auryn-app .au-two,
+  #auryn-app .au-three,
+  #auryn-app .au-login {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  #auryn-app .au-takeaway {
+    padding: 19px;
+  }
+  #auryn-app .au-takeaway h2 {
+    font-size: 21px;
+  }
+  #auryn-app .au-verdicts {
+    gap: 8px;
+    margin-top: 17px;
+    padding-top: 14px;
+  }
+  #auryn-app .au-verdicts b {
+    font-size: 12px;
+  }
+  #auryn-app .au-verdicts small {
+    font-size: 10px;
+  }
+  #auryn-app .au-securityhead {
+    gap: 14px;
+  }
+  #auryn-app .au-securityhead h1 {
+    font-size: 24px;
+  }
+  #auryn-app .au-securityhead > .au-flex {
+    flex: 1;
+  }
+  #auryn-app .au-securityhead > .au-quote {
+    min-width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+    padding-left: 0;
+  }
+  #auryn-app .au-quote .au-price {
+    font-size: 29px;
+  }
+  #auryn-app .au-quote small {
+    margin: 0;
+  }
+  #auryn-app .au-localtabs {
+    gap: 0;
+    margin-bottom: 19px;
+  }
+  #auryn-app .au-localtabs button {
+    font-size: 11px;
+    padding: 10px 1px;
+    letter-spacing: -0.025em;
+  }
+  #auryn-app .au-panel {
+    padding: 18px;
+    border-radius: 16px;
+  }
+  #auryn-app .au-dca {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px 14px;
+    align-items: center;
+  }
+  #auryn-app .au-dca .au-dca-top {
+    grid-column: 1/-1;
+  }
+  #auryn-app .au-dca .au-dca-number {
+    grid-row: 2/4;
+    font-size: 52px;
+  }
+  #auryn-app .au-dca .au-dca-scale {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  #auryn-app .au-dca .au-caption {
+    grid-column: 2;
+    font-size: 11px;
+  }
+  #auryn-app .au-dca > .au-link {
+    grid-column: 1/-1;
+    justify-content: flex-start;
+    margin: 0;
+    font-size: 12px;
+  }
+  #auryn-app .au-panel-head {
+    margin-bottom: 12px;
+  }
+  #auryn-app .au-row {
+    grid-template-columns: minmax(0, 1fr) 82px;
+    gap: 8px;
+  }
+  #auryn-app .au-row .au-rowstate {
+    display: none;
+  }
+  #auryn-app .au-row .au-rowname small {
+    font-size: 11px;
+  }
+  #auryn-app .au-row .au-logo {
+    width: 37px;
+    height: 37px;
+    flex-basis: 37px;
+    border-radius: 10px;
+  }
+  #auryn-app .au-row .au-rowname {
+    gap: 9px;
+  }
+  #auryn-app .au-pagehead h1 {
+    font-size: 27px;
+  }
+  #auryn-app .au-pagehead p {
+    font-size: 14px;
+  }
+  #auryn-app .au-settingsrow {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  #auryn-app .au-settingsrow > .au-segment {
+    margin-top: 6px;
+  }
+  #auryn-app .au-footer {
+    padding: 13px 17px;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+  #auryn-app .au-login-story {
+    display: none;
+  }
+  #auryn-app .au-login {
+    padding: 28px 23px;
+  }
+  #auryn-app .au-login-form {
+    max-width: none;
+    padding: 8px 0;
+  }
+  #auryn-app .au-table {
+    font-size: 12px;
+  }
+  #auryn-app .au-table th,
+  #auryn-app .au-table td {
+    padding: 12px 5px;
+  }
+  #auryn-app .au-modalback {
+    padding: 30px 12px;
+  }
+  #auryn-app .au-section-head h2 {
+    font-size: 19px;
+  }
+  #auryn-app .au-trendmetric {
+    display: grid;
+    grid-template-columns: 1fr 125px;
+    gap: 0 10px;
+  }
+  #auryn-app .au-trendmetric .au-chart {
+    grid-column: 2;
+    grid-row: 1/5;
+    align-self: center;
+  }
+  #auryn-app .au-trendmetric .au-sourcebar {
+    grid-column: 1/-1;
+    margin-top: 8px;
+  }
+  #auryn-app .au-trendmetric .au-metric-value {
+    font-size: 25px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #auryn-app * {
+    scroll-behavior: auto !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}
+#auryn-app[data-reduced="true"] * {
+  transition: none !important;
+  animation: none !important;
+}
+
+#auryn-app .au-studygroup {
+  padding: 19px 20px;
+  background: var(--au-paper);
+  border: 1px solid var(--au-line);
+  border-radius: 17px;
+  min-width: 0;
+}
+#auryn-app .au-studyhead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+#auryn-app .au-studyhead > svg {
+  color: var(--au-blue);
+}
+#auryn-app .au-studyrow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 12px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--au-line);
+}
+#auryn-app .au-studyrow:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+#auryn-app .au-studyrow .au-studyname {
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+#auryn-app .au-studyrow .au-studyvalue {
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+#auryn-app .au-studyrow .au-caption {
+  grid-column: 1/-1;
+}
+#auryn-app .au-meter {
+  position: relative;
+  display: flex;
+  gap: 3px;
+  height: 7px;
+  border-radius: 5px;
+  margin: 15px 0 8px;
+  background: var(--au-soft);
+}
+#auryn-app .au-meter:after {
+  content: "";
+  width: 3px;
+  height: 15px;
+  border-radius: 3px;
+  background: var(--au-ink);
+  position: absolute;
+  left: 48.6%;
+  top: -4px;
+}
+#auryn-app .au-meter span {
+  width: 30%;
+  height: 7px;
+  background: var(--au-blue-soft);
+  border-radius: 5px;
+}
+#auryn-app .au-meter span:nth-child(2) {
+  width: 40%;
+  background: var(--au-green-soft);
+}
+#auryn-app .au-meter span:nth-child(3) {
+  background: var(--au-amber-soft);
+}
+#auryn-app .au-dockwrap {
+  display: none;
+}
+#auryn-app .au-home-indicator {
+  width: 118px;
+  height: 4px;
+  border-radius: 4px;
+  background: var(--au-ink);
+  opacity: 0.65;
+  margin: 12px auto 0;
+}
+#auryn-app .au-technical-summary {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin: 0 0 2px;
+}
+#auryn-app .au-fib-legend {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 14px 0 0;
+}
+#auryn-app .au-fib-legend > div {
+  padding: 9px 0;
+}
+#auryn-app .au-fib-legend b {
+  display: block;
+  margin-top: 3px;
+  font-size: 14px;
+}
+@media (max-width: 700px) {
+  #auryn-app .au-mobile-nav {
+    border: 1px solid var(--au-line);
+    border-radius: 25px;
+    padding: 5px;
+    background: var(--au-paper);
+    box-shadow: 0 7px 26px #12274a19;
+    gap: 3px;
+  }
+  #auryn-app .au-mobile-nav button {
+    border-radius: 20px;
+    min-height: 55px;
+  }
+  #auryn-app .au-mobile-nav button[aria-current="page"] {
+    background: var(--au-soft);
+  }
+  #auryn-app .au-mobile-nav button svg {
+    width: 21px;
+    height: 21px;
+  }
+  #auryn-app .au-dockwrap {
+    display: block;
+    position: sticky;
+    bottom: 0;
+    z-index: 12;
+    padding: 10px 13px max(12px, env(safe-area-inset-bottom));
+    background: var(--au-bg);
+  }
+  #auryn-app .au-mobilebrand {
+    padding-top: max(23px, env(safe-area-inset-top));
+    padding-bottom: 5px;
+  }
+  #auryn-app .au-topbar {
+    padding-top: 8px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--au-line);
+  }
+  #auryn-app .au-search input {
+    border-radius: 14px;
+  }
+  #auryn-app .au-footer {
+    display: none;
+  }
+  #auryn-app .au-body {
+    padding-bottom: 12px;
+  }
+  #auryn-app .au-ranges button,
+  #auryn-app .au-segment button,
+  #auryn-app .au-filters button,
+  #auryn-app .au-help {
+    min-height: 44px !important;
+  }
+  #auryn-app .au-help {
+    min-width: 38px;
+  }
+  #auryn-app .au-studyrow .au-studyname {
+    font-size: 14px;
+  }
+  #auryn-app .au-localtabs button {
+    font-size: 12px;
+    min-height: 47px;
+  }
+  #auryn-app .au-modalback {
+    align-items: flex-end;
+    padding: 18px 0 0;
+  }
+  #auryn-app .au-dialog {
+    border-radius: 26px 26px 0 0;
+    padding: 23px 23px max(28px, env(safe-area-inset-bottom));
+    box-shadow: 0 -8px 50px #0002;
+  }
+  #auryn-app .au-dialog:before {
+    content: "";
+    display: block;
+    width: 38px;
+    height: 4px;
+    border-radius: 4px;
+    background: var(--au-line);
+    margin: 0 auto 20px;
+  }
+}

@@ -1,42 +1,35 @@
 {
-  "generatedAt": "2026-10-17T13:35:14.975632+00:00",
-  "sourceRoot": "product (standalone application)",
+  "generatedAt": "2026-10-17T16:00:24.504515+00:00",
+  "sourceRoot": "AURYN (ZIP root); product in the development checkout",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm ci": "passed earlier in this standalone workspace",
-    "npm run verify": "passed",
-    "npm run test:api": "passed: 24 baseline built-handler checks and 13 repair regressions"
+    "npm run verify": "passed: 94 tests, route generation, TypeScript and production build",
+    "npm run test:api": "passed: 32 baseline + 16 research regressions + 10 EODHD/mixed-provider checks",
+    "git diff --check": "passed"
   },
-  "domainAndPostgresTests": 57,
-  "builtApiChecks": 37,
+  "domainPostgresAndComponentTests": 94,
+  "builtApiChecks": 58,
+  "providerSelection": {
+    "quotes": "Twelve Data preferred; labelled EODHD fallback",
+    "intraday": "Twelve Data preferred; labelled EODHD historical fallback",
+    "dailyHistory": "EODHD preferred; entire Twelve series on failure",
+    "financials": "EODHD when configured; SEC legacy path when absent"
+  },
+  "paidEodhdAccountVerified": false,
+  "eodhdConfiguration": "User reports key configured externally; no local EODHD token; Vercel metadata access returned403 scope authorization error",
+  "publicDemoNormalization": "eodhd-demo-normalization.json",
   "browserTestsExecuted": false,
   "physicalIphoneTestsExecuted": false,
   "liveDatabaseWrites": false,
   "brokerOrdersSubmitted": false,
   "paidAiCalls": 0,
   "productionReady": false,
-  "readOnlyProviderProbes": {
-    "SEC companyfacts": 200,
-    "Finnhub company profile": 200,
-    "Finnhub insider transactions": 200,
-    "Alpaca paper account": 200,
-    "latestReportedTickers": [
-      "SAP",
-      "HIMS",
-      "OSCR",
-      "BTC/USD",
-      "ETH/USD"
-    ],
-    "SEC_latest_retry": "SAP 226 facts, HIMS 592 facts, OSCR 507 facts, 20 filings each. An earlier request failed transiently; prices/history remained usable."
-  },
-  "review": "Independent Astra source review of current product changes; all identified correctness/layout findings addressed. Actual valuation callbacks and DCA date slicing verified by RED-to-GREEN regressions.",
+  "deployed": false,
+  "pushed": false,
+  "review": "One independent source review; four Important findings fixed with observed failing/passing regressions. See eodhd-review.md.",
+  "approvedDesign": "docs/design/approved-pwa-20261017.html",
   "scopeAudit": "docs/requirements-inherited.json",
   "remainingGates": "docs/RELEASE_STATUS.md",
-  "liveProviderRepairReport": "verification/approved-html-provider-check.json",
-  "repairNotes": "docs/SCREENSHOT_FIXES.md",
-  "deployed": false,
-  "liveDatabaseWritesScope": "No account-record writes during this repair; earlier schema setup is documented in LIVE_SETUP.md",
-  "approvedDesign": "docs/design/approved-interactive.html",
-  "exactSourceInstaller": "Passed real ZIP CLI rehearsal in a disposable Git repository; checksum validation and Git/env/Vercel preservation verified. See source-installer-cli.json."
+  "priorEvidence": "Other verification logs predate this update. They do not establish current deployed end-to-end acceptance."
 }

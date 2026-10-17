@@ -1,0 +1,10 @@
+✔ both subscriptions have separate jobs with one fallback, not duplicate requests (1.333369ms)
+✔ fallback retains its own provenance and complete value; both failures propagate (0.620106ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 125.131566

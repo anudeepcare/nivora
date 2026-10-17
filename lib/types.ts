@@ -17,7 +17,18 @@ export type Metric =
   | "assets"
   | "liabilities"
   | "shares"
-  | "eps";
+  | "eps"
+  | "grossProfit"
+  | "costOfRevenue"
+  | "researchExpense"
+  | "stockCompensation"
+  | "buybacks"
+  | "dividends"
+  | "weightedShares"
+  | "equity"
+  | "currentAssets"
+  | "currentLiabilities"
+  | "interestExpense";
 export type Fact = {
   id: string;
   metric: Metric;
@@ -30,7 +41,7 @@ export type Fact = {
   accession: string;
   form: string;
   sourceUrl: string;
-  basis: "GAAP" | "IFRS";
+  basis: "GAAP" | "IFRS" | "Provider";
   scope: "annual" | "quarterly" | "instant" | "ytd";
   derivedFrom?: string[];
   sourceUrls?: string[];
@@ -49,6 +60,35 @@ export type FinancialPeriod = {
   capex: number | null;
   fcf: number | null;
   margin: number | null;
+  grossProfit?: number | null;
+  costOfRevenue?: number | null;
+  researchExpense?: number | null;
+  stockCompensation?: number | null;
+  buybacks?: number | null;
+  dividends?: number | null;
+  weightedShares?: number | null;
+  eps?: number | null;
+  cash?: number | null;
+  debt?: number | null;
+  equity?: number | null;
+  assets?: number | null;
+  liabilities?: number | null;
+  currentAssets?: number | null;
+  currentLiabilities?: number | null;
+  interestExpense?: number | null;
+  grossMargin?: number | null;
+  netMargin?: number | null;
+  fcfMargin?: number | null;
+  sbcRevenue?: number | null;
+  capexRevenue?: number | null;
+  fcfPerShare?: number | null;
+  sbcAdjustedFcfPerShare?: number | null;
+  currentRatio?: number | null;
+  debtEquity?: number | null;
+  netDebt?: number | null;
+  interestCoverage?: number | null;
+  cashConversion?: number | null;
+  sourceUrls?: string[];
 };
 export type Quote = {
   price: number | null;
@@ -65,6 +105,7 @@ export type Company = {
   exchange: string;
   currency: string;
   assetType: "stock" | "crypto";
+  foreignListing?: boolean;
   description?: string;
   website?: string;
   sector?: string;
@@ -75,10 +116,12 @@ export type Research = {
   company: Company;
   quote: Quote;
   history: Candle[];
+  historySource?: string;
   facts: Fact[];
   filings: Filing[];
   retrievedAt: string;
   issues: string[];
+  evidence?: import("./eodhd-normalize").EodEvidence;
   snapshot?: import("./canonical").Canonical;
   demo?: boolean;
 };

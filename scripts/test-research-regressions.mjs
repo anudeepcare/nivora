@@ -7,6 +7,8 @@ const route = (p) =>
 process.env.NEXT_PUBLIC_SUPABASE_URL = "https://account.example.invalid";
 process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = "test-public";
 process.env.TWELVE_DATA_API_KEY = "test-provider";
+delete process.env.EODHD_API_KEY;
+delete process.env.EODHD_API_TOKEN;
 process.env.SEC_USER_AGENT = "AURYN research-test@test.invalid";
 delete process.env.SUPABASE_SERVICE_ROLE_KEY;
 delete process.env.AURYN_REQUIRE_DISTRIBUTED_BUDGET;
@@ -90,8 +92,16 @@ globalThis.fetch = async (input, options) => {
     });
   if (u.pathname === "/quote")
     return Response.json({
-      symbol: u.searchParams.get("symbol"),
-      name: "SAP SE Sponsored ADR",
+      symbol:
+        u.searchParams.get("symbol") === "ADA/USD"
+          ? "BTC"
+          : u.searchParams.get("symbol"),
+      name:
+        u.searchParams.get("symbol") === "ETH/USD"
+          ? "Ethereum"
+          : u.searchParams.get("symbol") === "BTC/USD"
+            ? "Bitcoin"
+            : "SAP SE Sponsored ADR",
       exchange: "NYSE",
       currency: "USD",
       close: "200",
@@ -212,6 +222,30 @@ await check("SAP search keeps the NYSE USD listing", async () => {
     [["SAP", "NYSE", "USD"]],
   );
 });
+await check(
+  "A mismatched crypto quote cannot be shown as the requested asset",
+  async () => {
+    const d = await (await get("research/[symbol]", "ADA/USD")).json();
+    assert.equal(d.quote.price, null);
+    assert.ok(d.issues.some((x) => x.includes("different instrument")));
+  },
+);
+for (const [symbol, name] of [
+  ["BTC-USD", "Bitcoin"],
+  ["ETH-USD", "Ethereum"],
+])
+  await check(
+    `${symbol} URL slug resolves to the crypto identity`,
+    async () => {
+      const response = await get("research/[symbol]", symbol);
+      const d = await response.json();
+      assert.equal(response.status, 200);
+      assert.equal(d.company.name, name);
+      assert.equal(d.company.assetType, "crypto");
+      assert.equal(d.company.symbol, symbol.replace("-", "/"));
+    },
+  );
+
 const sap = await (await get("research/[symbol]")).json();
 await check("SAP research remains usable with IFRS reporting currency", () => {
   assert.equal(sap.company.exchange, "NYSE");
@@ -370,13 +404,22 @@ await check(
     );
   },
 );
-await check("One malformed saved ticker does not block SAP, HIMS or OSCR prices", async () => {
-  const response = await route("quotes").GET(new Request("https://test.invalid/api/quotes?symbols=SAP,BAD%3F,HIMS,OSCR", { headers }));
-  assert.equal(response.status, 200);
-  const data = await response.json();
-  for (const symbol of ["SAP", "HIMS", "OSCR"]) assert.equal(data[symbol].quote.price, 200);
-  assert.equal(typeof data["BAD?"].error, "string");
-});
+await check(
+  "One malformed saved ticker does not block SAP, HIMS or OSCR prices",
+  async () => {
+    const response = await route("quotes").GET(
+      new Request(
+        "https://test.invalid/api/quotes?symbols=SAP,BAD%3F,HIMS,OSCR",
+        { headers },
+      ),
+    );
+    assert.equal(response.status, 200);
+    const data = await response.json();
+    for (const symbol of ["SAP", "HIMS", "OSCR"])
+      assert.equal(data[symbol].quote.price, 200);
+    assert.equal(typeof data["BAD?"].error, "string");
+  },
+);
 for (const c of checks)
   console.log(
     `${c.passed ? "PASS" : "FAIL"} ${c.name}${c.error ? " — " + c.error : ""}`,

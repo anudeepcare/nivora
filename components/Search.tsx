@@ -106,7 +106,9 @@ export default function Search({
     setOpen(false);
     setQuery("");
     onNavigate?.();
-    router.push(`${prefix}/research/${encodeURIComponent(symbol)}`);
+    router.push(
+      `${prefix}/research/${encodeURIComponent(symbol.replace("/", "-"))}`,
+    );
   };
   function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -119,7 +121,7 @@ export default function Search({
   }
   return (
     <div ref={box} className={`search ${large ? "large" : ""}`}>
-      <form onSubmit={submit}>
+      <form className="search-box" onSubmit={submit}>
         <SearchIcon size={19} />
         <input
           ref={input}

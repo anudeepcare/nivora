@@ -1,0 +1,349 @@
+// Exercise compiled Next handlers with identity and provider fixtures. No external or paid calls.
+import { createRequire } from "node:module";
+import assert from "node:assert/strict";
+const require = createRequire(import.meta.url),
+  load = (p) =>
+    require(`../.next/server/app/api/${p}/route.js`).routeModule.userland;
+process.env.NEXT_PUBLIC_SUPABASE_URL = "https://account.example.invalid";
+process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = "test-public";
+process.env.TWELVE_DATA_API_KEY = "test-twelve";
+process.env.EODHD_API_KEY = "test-eodhd";
+delete process.env.EODHD_API_TOKEN;
+delete process.env.SUPABASE_SERVICE_ROLE_KEY;
+delete process.env.AURYN_REQUIRE_DISTRIBUTED_BUDGET;
+const headers = {
+  Authorization: "Bearer fixture",
+  "Content-Type": "application/json",
+};
+const calls = [],
+  checks = [];
+const financial = (symbol) => ({
+  General: {
+    Code: symbol,
+    Name: symbol === "SAP" ? "SAP SE" : symbol,
+    Exchange: "NYSE",
+    CurrencyCode: "USD",
+    CountryISO: symbol === "SAP" ? "DE" : "US",
+    CIK: "0000320193",
+    UpdatedAt: "2026-10-16",
+    LogoURL: "/img/logos/US/aapl.png",
+  },
+  Financials: Object.fromEntries(
+    ["Income_Statement", "Cash_Flow", "Balance_Sheet"].map((name) => [
+      name,
+      {
+        currency_symbol: symbol === "SAP" ? "EUR" : "USD",
+        yearly: {
+          "2025-12-31": {
+            date: "2025-12-31",
+            filing_date: "2026-02-01",
+            totalRevenue: "1200",
+            netIncome: "150",
+            operatingIncome: "200",
+            totalCashFromOperatingActivities: "300",
+            capitalExpenditures: "-50",
+            stockBasedCompensation: "20",
+            totalAssets: "1000",
+            totalLiab: "400",
+            totalStockholderEquity: "600",
+            shortLongTermDebtTotal: "100",
+            cash: "200",
+            commonStockSharesOutstanding: "100",
+          },
+        },
+      },
+    ]),
+  ),
+  Valuation: { TrailingPE: 20, ForwardPE: 18 },
+  Highlights: { MarketCapitalization: 2000 },
+  AnalystRatings: { Buy: 8, Hold: 2, TargetPrice: 21 },
+  Earnings: {
+    History: {
+      next: {
+        date: "2099-01-01",
+        reportDate: "2099-02-01",
+        epsActual: 2,
+        epsEstimate: 1.5,
+      },
+    },
+    Trend: {},
+  },
+  Holders: {
+    Institutions: {
+      one: {
+        name: "Example fund",
+        date: "2026-06-30",
+        currentShares: 20,
+        totalShares: 2,
+      },
+    },
+  },
+});
+globalThis.fetch = async (input) => {
+  const u = new URL(String(input));
+  calls.push(u);
+  if (u.pathname === "/auth/v1/user")
+    return Response.json({
+      id: "00000000-0000-4000-8000-000000000001",
+      email_confirmed_at: "2026-01-01",
+    });
+  if (u.hostname === "api.twelvedata.com") {
+    const symbol = u.searchParams.get("symbol");
+    if (symbol === "HIMS") return new Response("", { status: 503 });
+    if (u.pathname === "/quote")
+      return Response.json({
+        symbol,
+        name: symbol,
+        exchange: "NYSE",
+        currency: "USD",
+        close: "200",
+        percent_change: "1.2",
+        timestamp: Math.floor(Date.now() / 1000),
+      });
+    if (u.pathname === "/time_series")
+      return Response.json({
+        meta: { symbol },
+        values: [
+          {
+            datetime: "2026-10-16 15:00:00",
+            open: "200",
+            high: "203",
+            low: "199",
+            close: "202",
+            volume: "40",
+          },
+        ],
+      });
+  }
+  if (u.hostname === "eodhd.com") {
+    assert.equal(u.searchParams.get("api_token"), "test-eodhd");
+    if (u.pathname.startsWith("/api/v1.1/fundamentals/")) {
+      const symbol = u.pathname.split("/").at(-1).replace(/\.US$/, "");
+      const data = financial(symbol);
+      return Response.json(u.searchParams.has("filter") ? data.General : data);
+    }
+    if (u.pathname.startsWith("/api/eod/"))
+      return Response.json([
+        {
+          date: "2026-10-01",
+          open: 400,
+          high: 440,
+          low: 380,
+          close: 420,
+          volume: 100,
+        },
+        {
+          date: "2026-10-16",
+          open: 100,
+          high: 110,
+          low: 95,
+          close: 105,
+          volume: 100,
+        },
+      ]);
+    if (u.pathname.startsWith("/api/splits/"))
+      return Response.json([{ date: "2026-10-08", split: "4/1" }]);
+    if (u.pathname.startsWith("/api/div/"))
+      return Response.json([{ date: "2026-10-01", value: 0.5 }]);
+    if (u.pathname.startsWith("/api/real-time/"))
+      return Response.json({
+        code: u.pathname.split("/").at(-1),
+        close: 105,
+        timestamp: Math.floor(Date.now() / 1000) - 900,
+        change_p: 0,
+      });
+    if (u.pathname.startsWith("/api/search/"))
+      return Response.json([
+        {
+          Code: "SAP",
+          Name: "SAP SE",
+          Exchange: "US",
+          Currency: "USD",
+          Type: "Common Stock",
+        },
+        {
+          Code: "SAP",
+          Name: "Wrong currency",
+          Exchange: "XETRA",
+          Currency: "EUR",
+          Type: "Common Stock",
+        },
+        {
+          Code: "BTC",
+          Name: "Bitcoin ETF",
+          Exchange: "US",
+          Currency: "USD",
+          Type: "ETF",
+        },
+        {
+          Code: "ETH-USD",
+          Name: "Ethereum",
+          Exchange: "CC",
+          Currency: "USD",
+          Type: "Crypto",
+        },
+      ]);
+    if (u.pathname === "/api/news")
+      return Response.json([
+        {
+          date: "2026-10-16",
+          title: "Reported event",
+          link: "https://example.com/report",
+        },
+        { date: "2026-10-16", title: "Unsafe", link: "javascript:alert(1)" },
+        {
+          date: "2099-01-01",
+          title: "Future",
+          link: "https://example.com/future",
+        },
+      ]);
+    if (u.pathname.startsWith("/api/sec-filings/"))
+      return Response.json({
+        data: [
+          {
+            accession_number: "0000320193-26-000001",
+            filed_at: "2026-02-01",
+            item_sections: [{ title: "Results of operations" }],
+          },
+        ],
+      });
+  }
+  throw Error("Unexpected target " + u.hostname + u.pathname);
+};
+const get = (path, query = "", symbol = "APP") =>
+  load(path).GET(
+    new Request("https://test.invalid/api/test" + query, { headers }),
+    { params: Promise.resolve({ symbol }) },
+  );
+async function check(name, fn) {
+  try {
+    await fn();
+    checks.push({ name, passed: true });
+  } catch (e) {
+    checks.push({ name, passed: false, error: e.message });
+  }
+}
+await check(
+  "settings detect both providers without exposing credentials",
+  async () => {
+    const r = await get("provider-status"),
+      d = await r.json();
+    assert.equal(d.marketProvider, "hybrid");
+    assert.equal(d.configured, true);
+    assert.doesNotMatch(JSON.stringify(d), /test-eodhd|test-twelve/);
+  },
+);
+await check(
+  "research combines Twelve quote with EODHD financials and one intact split-adjusted history",
+  async () => {
+    const r = await get("research/[symbol]"),
+      d = await r.json();
+    assert.equal(r.status, 200);
+    assert.match(d.quote.source, /Twelve Data/);
+    assert.equal(d.quote.price, 200);
+    assert.equal(d.historySource, "EODHD");
+    assert.equal(d.history[0].close, 105);
+    assert.equal(d.history[0].volume, 100);
+    assert.equal(d.facts.find((x) => x.metric === "revenue").value, 1200);
+    assert.equal(d.evidence.consensus.buy, 8);
+    assert.equal(d.evidence.earnings[0].actual, null);
+    assert.ok(!calls.some((x) => x.pathname === "/api/real-time/APP.US"));
+    assert.ok(
+      !calls.some(
+        (x) =>
+          x.hostname === "api.twelvedata.com" &&
+          x.searchParams.get("interval") === "1day",
+      ),
+    );
+  },
+);
+await check(
+  "1D charts use Twelve intraday and identify their own source",
+  async () => {
+    const r = await get("chart/[symbol]", "?range=1D"),
+      d = await r.json();
+    assert.equal(r.status, 200);
+    assert.equal(d.source, "Twelve Data");
+    assert.equal(d.candles[0].close, 202);
+    assert.ok(!calls.some((x) => x.pathname.startsWith("/api/intraday/")));
+  },
+);
+await check(
+  "quote failure falls back once to a clearly labelled EODHD quote",
+  async () => {
+    const r = await get("quotes", "?symbols=HIMS"),
+      d = await r.json();
+    assert.equal(d.HIMS.quote.price, 105);
+    assert.match(d.HIMS.quote.source, /EODHD.*fallback/);
+  },
+);
+await check("repeated quotes reuse cached results", async () => {
+  const before = calls.filter(
+    (x) => x.hostname !== "account.example.invalid",
+  ).length;
+  await get("quotes", "?symbols=HIMS,APP");
+  assert.equal(
+    calls.filter((x) => x.hostname !== "account.example.invalid").length,
+    before,
+  );
+});
+await check(
+  "ETH resolves to crypto before same-name funds and SAP stays USD listing",
+  async () => {
+    const d = await (await get("search", "?q=ETH")).json();
+    assert.equal(d.results[0].symbol, "ETH/USD");
+    assert.equal(d.results.find((x) => x.symbol === "SAP").currency, "USD");
+    assert.ok(!d.results.some((x) => x.exchange === "XETRA"));
+  },
+);
+await check(
+  "crypto research has crypto price/history and no corporate financial request",
+  async () => {
+    const d = await (await get("research/[symbol]", "", "ETH-USD")).json();
+    assert.equal(d.company.symbol, "ETH/USD");
+    assert.equal(d.company.assetType, "crypto");
+    assert.equal(d.facts.length, 0);
+    assert.ok(calls.some((x) => x.pathname === "/api/eod/ETH-USD.CC"));
+    assert.ok(!calls.some((x) => x.pathname.includes("fundamentals/ETH-USD")));
+  },
+);
+await check(
+  "SAP retains EUR statements separately from the USD quote",
+  async () => {
+    const d = await (await get("research/[symbol]", "", "SAP")).json();
+    assert.equal(d.quote.currency, "USD");
+    assert.equal(d.facts.find((x) => x.metric === "revenue").currency, "EUR");
+    assert.equal(d.company.foreignListing, true);
+  },
+);
+await check("headlines reject unsafe and future links", async () => {
+  const d = await (await get("news", "?symbol=APP")).json();
+  assert.equal(d.items.length, 1);
+  assert.equal(d.items[0].url, "https://example.com/report");
+});
+await check(
+  "filings use validated SEC links and corporate actions are available",
+  async () => {
+    const d = await (await get("filings", "?symbol=APP")).json();
+    assert.equal(d.filings.length, 3);
+    assert.ok(
+      d.filings.every((f) => f.url.startsWith("https://www.sec.gov/Archives/")),
+    );
+    const actions = await (
+      await get("company-data", "?symbol=APP&dataset=dividends")
+    ).json();
+    assert.equal(actions.dividends[0].amount, 0.5);
+  },
+);
+console.log(
+  JSON.stringify(
+    {
+      checks,
+      passed: checks.filter((x) => x.passed).length,
+      total: checks.length,
+    },
+    null,
+    2,
+  ),
+);
+if (checks.some((x) => !x.passed)) process.exitCode = 1;

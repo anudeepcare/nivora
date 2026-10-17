@@ -1,0 +1,15 @@
+✔ EOD identity keeps crypto separate from same-code ETFs and rejects wrong fundamentals (1.735309ms)
+✔ EOD financials preserve zero, compatible currency and positive spending (8.876632ms)
+✔ EOD does not expose future actual earnings or fabricate missing financial fields (0.588578ms)
+✔ EOD split adjustment applies to all OHLC values without double adjusting volume (0.885015ms)
+✔ EOD quotes retain provider time and refuse instrument substitution (7.983434ms)
+✔ EOD search excludes foreign currency collisions and keeps USD crypto (0.812218ms)
+✔ AI evidence accepts normalized EODHD financial records without accepting arbitrary source URLs (0.687404ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 159.421405

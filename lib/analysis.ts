@@ -133,7 +133,7 @@ export function valuationInputs(r: Research) {
   if (r.company.assetType === "crypto")
     issues.push("Corporate cash-flow valuation does not apply to crypto.");
   // Foreign listings require explicit listed-share/ADR reconciliation, never assume 1:1.
-  if (share && ["20-F", "40-F"].includes(share.form))
+  if (r.company.foreignListing || (share && ["20-F", "40-F"].includes(share.form)))
     issues.push(
       "Reconcile listed shares or ADR units before using per-share valuation.",
     );

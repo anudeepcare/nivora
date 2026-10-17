@@ -12,6 +12,7 @@ import type { Session } from "@supabase/supabase-js";
 import { api, authClient } from "@/lib/client";
 import type { Research, Workspace } from "@/lib/types";
 import { Logo } from "./Ui";
+import { readResource } from "@/lib/resource-cache";
 export type DemoData = {
   research: Record<string, Research>;
   workspace: Workspace;
@@ -19,6 +20,7 @@ export type DemoData = {
 type Store = {
   demo?: DemoData;
   owner: string;
+  marketProvider: "hybrid" | "eodhd" | "twelve" | "none" | "unknown";
   workspace: Workspace | null;
   workspaceError: string;
   reloadWorkspace: () => Promise<void>;
@@ -110,6 +112,23 @@ function StoreProvider({
   owner: string;
   demo?: DemoData;
 }) {
+  const [marketProvider, setMarketProvider] = useState<
+    "hybrid" | "eodhd" | "twelve" | "none" | "unknown"
+  >("unknown");
+  useEffect(() => {
+    if (demo) return;
+    let active = true;
+    api<{ marketProvider: "hybrid" | "eodhd" | "twelve" | "none" }>(
+      "provider-status",
+    )
+      .then((x) => {
+        if (active) setMarketProvider(x.marketProvider);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [demo]);
   const cache = useRef(
     new Map<string, { at: number; value: unknown }>(),
   ).current;
@@ -173,6 +192,12 @@ function StoreProvider({
             : "light"
           : themePreference;
       document.documentElement.dataset.theme = value;
+      document
+        .querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')
+        .forEach((meta) => {
+          meta.content = value === "dark" ? "#0e1420" : "#f5f7fb";
+          meta.removeAttribute("media");
+        });
       setThemeState(value);
     };
     apply();
@@ -220,6 +245,7 @@ function StoreProvider({
     () => ({
       demo,
       owner,
+      marketProvider,
       workspace,
       workspaceError,
       reloadWorkspace,
@@ -234,6 +260,7 @@ function StoreProvider({
       setReduceMotion,
     }),
     [
+      marketProvider,
       demo,
       owner,
       workspace,
@@ -281,18 +308,15 @@ export function useResource<T>(key: string | null, preview?: T, ttl = 60_000) {
       setState({ key, data: old.value as T, loading: false, error: "" });
       return;
     }
-    const controller = new AbortController();
     setState((s) => ({
       key,
       data: s.key === key ? s.data : null,
       loading: true,
       error: "",
     }));
-    api<T>(key, undefined, controller.signal)
+    readResource<T>(cache, key, ttl, () => api<T>(key))
       .then((data) => {
         if (!active) return;
-        cache.set(key, { at: Date.now(), value: data });
-        if (cache.size > 80) cache.delete(cache.keys().next().value!);
         setState({ key, data, loading: false, error: "" });
       })
       .catch((e) => {
@@ -305,7 +329,6 @@ export function useResource<T>(key: string | null, preview?: T, ttl = 60_000) {
       });
     return () => {
       active = false;
-      controller.abort();
     };
   }, [key, cache, demo, preview, revision, ttl]);
   const refresh = () => {

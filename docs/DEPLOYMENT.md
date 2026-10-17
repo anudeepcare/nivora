@@ -18,7 +18,7 @@ npm run verify &&
 npm run test:api &&
 git reset --soft origin/main &&
 git add -A &&
-(git diff --cached --quiet || git commit -m "Apply approved AURYN HTML design and ticker repairs") &&
+(git diff --cached --quiet || git commit -m "Integrate EODHD and Twelve Data with the approved AURYN research workspace") &&
 git push origin main
 ```
 
@@ -44,6 +44,12 @@ For the merged app use **Root Directory: .**, Next.js, Node 24, install `npm ci`
 4. Set `AURYN_ENABLE_PREVIEW=false`, `AURYN_AI_ENABLED=false`, `AURYN_PAPER_EXECUTION_ENABLED=false`, `AURYN_PAPER_SCHEDULE_ENABLED=false` initially.
 5. Before a multi-user launch, configure the service-role key and provider-budget migration, and set `AURYN_REQUIRE_DISTRIBUTED_BUDGET=true`. Verify distribution and provider display permissions. No service-role key was available in the build session.
 
+## Keep both provider keys
+
+Set **EODHD_API_KEY** and **TWELVE_DATA_API_KEY** in Vercel → nivora → Settings → Environment Variables for the intended Preview and Production environments. Neither name has NEXT_PUBLIC_. Redeploy after changing environment variables; an existing deployment will not acquire a new value automatically. You have reported configuring EODHD already; keep it in place. Do not paste secret values into chat or commit them.
+
+The app automatically chooses Twelve Data for quotes/1D/1W and EODHD for financials/daily history. Settings shows which keys are configured; that label does not prove successful authorization. Open APP, HIMS, OSCR, IREN, ASTS, SAP, BTC and ETH in the preview, check displayed source timestamps and financial periods, and inspect any per-dataset error. EODHD fallback prices are explicitly delayed/indicative. No extra plan is needed to run the code; individual dataset entitlement remains to be checked.
+
 ## Connected database setup record
 
 On October 17 the seven original SQL files were checked against this branch, rehearsed in a rolled-back transaction, and installed on `nivora` as migration `20261017070956_auryn_product_workspace_setup`. Explicit permissions were installed as `20261017071243_auryn_product_explicit_grants`; that migration is included in source. Existing portfolio and watchlist records were preserved. All 31 live rollback-only database checks passed.
@@ -62,4 +68,4 @@ Uncertain submissions keep the account lock until reconciled. Do not retry with 
 
 ## Acceptance before promotion
 
-Run the checks, then capture actual desktop and mobile light/dark screens, including 320/375/390/430, tablet and 1280/1440/1920 widths. Compare them to `docs/design/approved-interactive.html`; missing reference screens must receive direct usability review. Test all tabs, search, sources, dialogs, error states, saved notes, alerts, chart ranges/scrolling, theme persistence, browser back/forward and installed iPhone PWA safe areas. Test latency under the existing provider budget. Review the unimplemented scope in `RELEASE_STATUS.md` before selling access.
+Run the checks, then capture actual desktop and mobile light/dark screens, including 320/375/390/430, tablet and 1280/1440/1920 widths. Review against `docs/design/approved-pwa-20261017.html`; earlier references remain historical context. Test all tabs, search, sources, dialogs, error states, alerts, chart ranges/scrolling, theme persistence, browser back/forward and installed iPhone PWA safe areas. Test latency under the existing provider budget. Review the unimplemented scope in `RELEASE_STATUS.md` before selling access.

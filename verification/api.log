@@ -5,6 +5,9 @@ npm warn Unknown env config "http-proxy". This will stop working in the next maj
 
 24 built API checks passed: anonymous denial, private responses, trusted admin boundary, listing identity, disabled AI without provider spend.
 PASS SAP search keeps the NYSE USD listing
+PASS A mismatched crypto quote cannot be shown as the requested asset
+PASS BTC-USD URL slug resolves to the crypto identity
+PASS ETH-USD URL slug resolves to the crypto identity
 PASS SAP research remains usable with IFRS reporting currency
 PASS Company reports survive a first page full of insider filings
 PASS IFRS operating cash flow is retained without inventing capex

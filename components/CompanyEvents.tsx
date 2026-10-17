@@ -1,40 +1,53 @@
 "use client";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { CalendarDays } from "lucide-react";
 import { useProduct, useResource } from "./Session";
 import type { Enrichment } from "@/lib/enrichment";
 import { dateLabel } from "@/lib/format";
 import { Notice, Source } from "./Ui";
+import GrowCompanyEvents from "./GrowCompany";
 export default function CompanyEvents({ symbol }: { symbol: string }) {
-  const { demo } = useProduct(),
-    preview = useMemo(
-      () =>
-        demo
-          ? ({
-              symbol,
-              profile: null,
-              insiders: [],
-              earnings: [],
-              issues: [],
-              retrievedAt: "2026-10-16",
-              source: "Illustrative preview",
-            } as Enrichment)
-          : undefined,
-      [demo, symbol],
-    ),
-    r = useResource<Enrichment>(
-      symbol.includes("/") ? null : `enrichment/${encodeURIComponent(symbol)}`,
-      preview,
-      3600000,
-    );
+  const { demo } = useProduct();
+  const [allTransactions, setAllTransactions] = useState(false);
+  const preview = useMemo(
+    () =>
+      demo
+        ? ({
+            symbol,
+            profile: null,
+            insiders: [],
+            earnings: [],
+            issues: [],
+            retrievedAt: "2026-10-16",
+            source: "Illustrative preview",
+          } as Enrichment)
+        : undefined,
+    [demo, symbol],
+  );
+  const r = useResource<Enrichment>(
+    symbol.includes("/") ? null : `enrichment/${encodeURIComponent(symbol)}`,
+    preview,
+    3600000,
+  );
   if (symbol.includes("/")) return null;
+  const today = r.data?.retrievedAt.slice(0, 10) ?? "";
+  const upcoming = r.data?.earnings
+    .filter((e) => e.date >= today)
+    .sort((a, b) => a.date.localeCompare(b.date));
+  const next = upcoming?.[0];
+  const trades =
+    r.data?.insiders
+      .filter((x) => allTransactions || ["P", "S"].includes(x.code))
+      .sort((a, b) => b.date.localeCompare(a.date)) ?? [];
   return (
-    <section className="support">
+    <section className="events-section">
       <header className="section-heading">
         <div>
-          <h2>Earnings & insider activity</h2>
-          <p>Reported events and provider estimates stay separate.</p>
+          <h2>Events & catalysts</h2>
+          <p>The next scheduled report and recent insider transactions.</p>
         </div>
       </header>
+      <GrowCompanyEvents symbol={symbol} />
       {r.error && <Notice>{r.error}</Notice>}
       {r.loading && !r.data && <p role="status">Loading company events…</p>}
       {r.data && (
@@ -42,97 +55,106 @@ export default function CompanyEvents({ symbol }: { symbol: string }) {
           {r.data.issues.map((i) => (
             <Notice key={i}>{i}</Notice>
           ))}
-          {r.data.profile && (
-            <p className="source-line">
-              {r.data.profile.industry}{" "}
-              {r.data.profile.website && (
-                <Source href={r.data.profile.website}>Company website</Source>
-              )}
-            </p>
-          )}
-          <div className="two-col">
-            <section className="panel">
-              <h3>Earnings calendar</h3>
-              {r.data.earnings.length ? (
-                <div className="table-scroll">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Date</th>
-                        <th>EPS reported*</th>
-                        <th>EPS estimate*</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {r.data.earnings.map((e, i) => (
-                        <tr key={`${e.date}-${i}`}>
-                          <td>
-                            {dateLabel(e.date)}
-                            <small className="table-detail">
-                              {e.epsActual == null
-                                ? "Scheduled / estimate"
-                                : "Reported"}
-                            </small>
-                          </td>
-                          <td>{e.epsActual?.toFixed(2) ?? "—"}</td>
-                          <td>{e.epsEstimate?.toFixed(2) ?? "—"}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <p className="muted">No earnings observations returned.</p>
-              )}
-              <p className="footnote">
-                *As reported by Finnhub; reporting currency is not specified by
-                this feed. Estimates can change.
+          <section className="catalyst-strip">
+            <CalendarDays size={24} />
+            <div>
+              <span className="eyebrow">NEXT SCHEDULED CATALYST</span>
+              <h3>
+                {next
+                  ? `Earnings · ${dateLabel(next.date)}`
+                  : "No upcoming earnings date returned"}
+              </h3>
+              <p>
+                {next
+                  ? `${next.hour === "bmo" ? "Before market open" : next.hour === "amc" ? "After market close" : "Time not confirmed"} · Provider schedule; date may change.`
+                  : "The provider has not supplied a date within the next 90 days."}
               </p>
-            </section>
+            </div>
+            {next?.epsEstimate != null && (
+              <div className="catalyst-estimate">
+                <span>EPS estimate*</span>
+                <strong>{next.epsEstimate.toFixed(2)}</strong>
+              </div>
+            )}
+          </section>
+          <div>
             <section className="panel">
-              <h3>Reported insider transactions</h3>
-              {r.data.insiders.length ? (
+              <header className="section-heading">
+                <h3>Insider activity</h3>
+                <div className="segment" aria-label="Insider activity filter">
+                  <button
+                    aria-pressed={!allTransactions}
+                    onClick={() => setAllTransactions(false)}
+                  >
+                    Buys & sells
+                  </button>
+                  <button
+                    aria-pressed={allTransactions}
+                    onClick={() => setAllTransactions(true)}
+                  >
+                    All filings
+                  </button>
+                </div>
+              </header>
+              {trades.length ? (
                 <div className="compact-records">
-                  {r.data.insiders.slice(0, 12).map((x, i) => (
+                  {trades.slice(0, 12).map((x, i) => (
                     <div className="event-record" key={`${x.filed}-${i}`}>
                       <div>
                         <strong>{x.name}</strong>
                         <small>
-                          {x.action} · {Math.abs(x.change).toLocaleString()}{" "}
-                          shares
+                          <span
+                            className={
+                              x.code === "P"
+                                ? "green"
+                                : x.code === "S"
+                                  ? "red"
+                                  : "muted"
+                            }
+                          >
+                            {x.code === "P"
+                              ? "Purchase"
+                              : x.code === "S"
+                                ? "Sale"
+                                : x.action}
+                          </span>{" "}
+                          · {Math.abs(x.change).toLocaleString()} shares
                         </small>
                         <small>
-                          Transaction {dateLabel(x.date)} · filed{" "}
-                          {dateLabel(x.filed)}
+                          {dateLabel(x.date)} · Filed {dateLabel(x.filed)}
                         </small>
                       </div>
-                      <span className="event-price">
-                        {x.price?.toLocaleString("en-US", {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        }) ?? "—"}
+                      <div className="event-price">
+                        <strong>
+                          {x.price?.toLocaleString("en-US", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          }) ?? "—"}
+                        </strong>
                         <small>Reported price*</small>
-                      </span>
+                      </div>
                     </div>
                   ))}
                 </div>
               ) : (
                 <p className="muted">
-                  No transactions returned for this period.
+                  {allTransactions
+                    ? "No insider transactions returned."
+                    : "No purchases or sales returned for this period. Other transactions appear under All filings."}
                 </p>
               )}
               <p className="footnote">
-                *Transaction currency is not specified by this feed. Grants,
-                exercises and tax withholding are not classified as open-market
-                purchases. Transactions do not establish intent or future
-                returns.
+                P/S filings can include private transactions. Awards, exercises
+                and tax withholding are separate. *Currency not supplied by this
+                feed.
               </p>
             </section>
           </div>
-          <p className="footnote">
-            {r.data.source} · retrieved {dateLabel(r.data.retrievedAt)}.
-            Schedules and estimates can change; institutional holdings and
-            options positioning require separate coverage.
+          <p className="source-line">
+            {r.data.source} · {dateLabel(r.data.retrievedAt)}
+            {r.data.profile?.website && (
+              <Source href={r.data.profile.website}>Company website</Source>
+            )}
           </p>
         </>
       )}

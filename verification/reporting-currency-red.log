@@ -1,0 +1,36 @@
+✔ periods expose sourced margins, per-share cash and matching balance sheet (8.606699ms)
+✔ balance sheets do not join a different currency, date or basis; zero is retained (0.439018ms)
+✔ weighted shares are not derived by subtracting cumulative averages (0.276308ms)
+✔ TTM sums flows, recalculates ratios and retains the final balance only (2.156124ms)
+✖ current reporting currency takes precedence over old quote-currency disclosures (1.436792ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 4
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 150.785914
+
+✖ failing tests:
+
+test at tests/financial-workspace.test.mjs:118:1
+✖ current reporting currency takes precedence over old quote-currency disclosures (1.436792ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'USD' !== 'EUR'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/product/tests/financial-workspace.test.mjs:121:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'USD',
+    expected: 'EUR',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

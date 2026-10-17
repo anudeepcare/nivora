@@ -5,6 +5,7 @@ import Alerts from "./AlertCenter";
 import Discover from "./Discover";
 import { ProductSession, type DemoData } from "./Session";
 import Shell from "./Shell";
+import { symbolInput } from "@/lib/format";
 import dynamic from "next/dynamic";
 const Research = dynamic(() => import("./Research"), {
   loading: () => <p role="status">Opening research…</p>,
@@ -21,12 +22,31 @@ export default function Product({
   compareSymbols?: string;
 }) {
   const page = route[0] || "overview";
+  let researchSymbol = "";
+  if (page === "research" && route[1]) {
+    try {
+      researchSymbol = symbolInput(
+        decodeURIComponent(route.slice(1).join("/")),
+      );
+    } catch {
+      return (
+        <ProductSession demo={demo}>
+          <Shell page={page}>
+            <p role="alert">
+              This instrument link is invalid. Search for the company or crypto
+              pair again.
+            </p>
+          </Shell>
+        </ProductSession>
+      );
+    }
+  }
   return (
     <ProductSession demo={demo}>
       <Shell page={page}>
         {page === "research" ? (
           route[1] ? (
-            <Research key={route[1]} symbol={route[1].toUpperCase()} />
+            <Research key={researchSymbol} symbol={researchSymbol} />
           ) : (
             <ResearchHome />
           )

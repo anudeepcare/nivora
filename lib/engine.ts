@@ -1,4 +1,9 @@
 import { monthEndSession } from "./calendar.ts";
+import {
+  flowFields,
+  balanceFields,
+  withFinancialRatios,
+} from "./financial-formulas.ts";
 import type {
   Candle,
   Fact,
@@ -131,8 +136,21 @@ export function financialPeriods(
 ): FinancialPeriod[] {
   if (!Number.isFinite(Date.parse(asOf))) return [];
   const day = asOf.slice(0, 10),
-    groups = new Map<string, Fact[]>();
+    groups = new Map<string, Fact[]>(),
+    byEndAndBasis = new Map<string, Fact[]>();
   for (const f of facts) {
+    if (
+      finite(f.value) &&
+      validDate(f.end) &&
+      validDate(f.filed) &&
+      f.end <= day &&
+      f.filed <= day
+    ) {
+      const instantKey = `${f.end}|${f.basis}`;
+      const bucket = byEndAndBasis.get(instantKey);
+      if (bucket) bucket.push(f);
+      else byEndAndBasis.set(instantKey, [f]);
+    }
     if (
       f.scope !== scope ||
       !finite(f.value) ||
@@ -147,6 +165,8 @@ export function financialPeriods(
     const key = [f.start, f.end, f.currency, f.basis].join("|");
     groups.set(key, [...(groups.get(key) || []), f]);
   }
+  for (const bucket of byEndAndBasis.values())
+    bucket.sort((a, b) => b.filed.localeCompare(a.filed));
   return [...groups.values()]
     .map((group) => {
       const ordered = [...group].sort((a, b) => b.filed.localeCompare(a.filed)),
@@ -164,7 +184,38 @@ export function financialPeriods(
           : null;
       const revenue = value("revenue"),
         op = value("operatingIncome");
-      return {
+      const compatible =
+        byEndAndBasis.get(`${anchor.end}|${anchor.basis}`) ?? [];
+      const balance = Object.fromEntries(
+        balanceFields.map((k) => [
+          k,
+          compatible.find(
+            (f) =>
+              f.metric === k &&
+              f.scope === "instant" &&
+              f.currency === anchor.currency,
+          )?.value ?? null,
+        ]),
+      );
+      const weight = compatible.find(
+        (f) =>
+          f.metric === "weightedShares" &&
+          f.start === anchor.start &&
+          f.scope === scope &&
+          f.unit === "shares",
+      );
+      const flows = Object.fromEntries(flowFields.map((k) => [k, value(k)]));
+      // Derive gross profit only from matching currency, period and accession.
+      const revenueFact = get("revenue"),
+        costFact = get("costOfRevenue");
+      if (
+        flows.grossProfit == null &&
+        revenueFact &&
+        costFact &&
+        revenueFact.accession === costFact.accession
+      )
+        flows.grossProfit = revenueFact.value - costFact.value;
+      return withFinancialRatios({
         end: anchor.end,
         start: anchor.start!,
         currency: anchor.currency!,
@@ -181,7 +232,26 @@ export function financialPeriods(
           revenue != null && revenue > 0 && op != null
             ? (op / revenue) * 100
             : null,
-      };
+        ...flows,
+        ...balance,
+        weightedShares: weight?.value ?? null,
+        eps:
+          ordered.find(
+            (f) => f.metric === "eps" && f.unit === `${anchor.currency}/shares`,
+          )?.value ?? null,
+        sourceUrls: [
+          ...new Set(
+            [
+              ...ordered,
+              ...compatible.filter(
+                (f) =>
+                  (f.scope === "instant" && f.currency === anchor.currency) ||
+                  f === weight,
+              ),
+            ].map((f) => f.sourceUrl),
+          ),
+        ],
+      });
     })
     .sort((a, b) => a.end.localeCompare(b.end));
 }

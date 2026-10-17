@@ -3,8 +3,8 @@
   "short_name": "AURYN",
   "start_url": "/overview",
   "display": "standalone",
-  "background_color": "#0c1017",
-  "theme_color": "#0c1017",
+  "background_color": "#0e1420",
+  "theme_color": "#0e1420",
   "icons": [
     {
       "src": "/icon-192.png",
@@ -18,5 +18,7 @@
       "type": "image/png",
       "purpose": "any"
     }
-  ]
+  ],
+  "scope": "/",
+  "id": "/"
 }

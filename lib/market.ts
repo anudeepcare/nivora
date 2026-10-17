@@ -46,7 +46,11 @@ export function normalizeQuote(
       now - milliseconds > ageLimit,
   };
 }
-export function normalizeBars(raw: unknown, intraday: boolean): Candle[] {
+export function normalizeBars(
+  raw: unknown,
+  intraday: boolean,
+  now = Date.now(),
+): Candle[] {
   if (!Array.isArray(raw)) return [];
   const unique = new Map<string, Candle>();
   for (const row of raw) {
@@ -64,7 +68,7 @@ export function normalizeBars(raw: unknown, intraday: boolean): Candle[] {
     const stamp = intraday
       ? Date.parse(text.replace(" ", "T") + "Z")
       : Date.parse(day);
-    if (!Number.isFinite(stamp)) continue;
+    if (!Number.isFinite(stamp) || (intraday && stamp > now)) continue;
     const [open, high, low, close] = [
       row.open,
       row.high,

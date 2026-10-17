@@ -1,0 +1,128 @@
+✖ EOD identity keeps crypto separate from same-code ETFs and rejects wrong fundamentals (1.380286ms)
+✖ EOD financials preserve zero, compatible currency and positive spending (0.206394ms)
+✖ EOD does not expose future actual earnings or fabricate missing financial fields (0.132756ms)
+✖ EOD split adjustment applies to all OHLC values without double adjusting volume (0.157802ms)
+✖ EOD quotes retain provider time and refuse instrument substitution (0.179004ms)
+✖ EOD search excludes foreign currency collisions and keeps USD crypto (0.161308ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 0
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 125.366996
+
+✖ failing tests:
+
+test at tests/eodhd.test.mjs:8:1
+✖ EOD identity keeps crypto separate from same-code ETFs and rejects wrong fundamentals (1.380286ms)
+  AssertionError [ERR_ASSERTION]: EODHD normalization must exist
+      at lib (file:///workspace/scratch/0397d872aad5/auryn-next/product/tests/eodhd.test.mjs:5:23)
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/product/tests/eodhd.test.mjs:8:107)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/eodhd.test.mjs:9:1
+✖ EOD financials preserve zero, compatible currency and positive spending (0.206394ms)
+  AssertionError [ERR_ASSERTION]: EODHD normalization must exist
+      at lib (file:///workspace/scratch/0397d872aad5/auryn-next/product/tests/eodhd.test.mjs:5:23)
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/product/tests/eodhd.test.mjs:9:99)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/eodhd.test.mjs:10:1
+✖ EOD does not expose future actual earnings or fabricate missing financial fields (0.132756ms)
+  AssertionError [ERR_ASSERTION]: EODHD normalization must exist
+      at lib (file:///workspace/scratch/0397d872aad5/auryn-next/product/tests/eodhd.test.mjs:5:23)
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/product/tests/eodhd.test.mjs:10:102)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/eodhd.test.mjs:11:1
+✖ EOD split adjustment applies to all OHLC values without double adjusting volume (0.157802ms)
+  AssertionError [ERR_ASSERTION]: EODHD normalization must exist
+      at lib (file:///workspace/scratch/0397d872aad5/auryn-next/product/tests/eodhd.test.mjs:5:23)
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/product/tests/eodhd.test.mjs:11:104)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/eodhd.test.mjs:12:1
+✖ EOD quotes retain provider time and refuse instrument substitution (0.179004ms)
+  AssertionError [ERR_ASSERTION]: EODHD normalization must exist
+      at lib (file:///workspace/scratch/0397d872aad5/auryn-next/product/tests/eodhd.test.mjs:5:23)
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/product/tests/eodhd.test.mjs:12:88)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/eodhd.test.mjs:13:1
+✖ EOD search excludes foreign currency collisions and keeps USD crypto (0.161308ms)
+  AssertionError [ERR_ASSERTION]: EODHD normalization must exist
+      at lib (file:///workspace/scratch/0397d872aad5/auryn-next/product/tests/eodhd.test.mjs:5:23)
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/product/tests/eodhd.test.mjs:13:93)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

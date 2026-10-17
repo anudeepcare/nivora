@@ -24,8 +24,13 @@ export function evidenceFor(research: Research): Evidence[] {
         const url = new URL(f.sourceUrl);
         return (
           url.protocol === "https:" &&
-          url.hostname === "www.sec.gov" &&
-          url.pathname.startsWith("/Archives/") &&
+          ((url.hostname === "www.sec.gov" &&
+            url.pathname.startsWith("/Archives/")) ||
+            (url.hostname === "eodhd.com" &&
+              url.pathname ===
+                "/financial-apis/stock-etfs-fundamental-data-feeds" &&
+              f.basis === "Provider" &&
+              f.id.startsWith("eodhd:"))) &&
           f.filed <= day &&
           f.end <= day &&
           Number.isFinite(f.value)

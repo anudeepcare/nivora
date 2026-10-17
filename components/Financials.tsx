@@ -1,12 +1,152 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { Maximize2, Search, X } from "lucide-react";
 import type { Research, FinancialPeriod } from "@/lib/types";
-import { quarterFacts, ttmPeriods } from "@/lib/research-depth";
-import { modelCoverage } from "@/lib/research-depth";
-import { financialPeriods } from "@/lib/engine";
+import {
+  researchPeriods,
+  applicableMetrics,
+  type FinancialScope,
+  type FinancialGroup,
+  type MetricDefinition,
+} from "@/lib/financial-catalog";
 import { amount, percent, dateLabel } from "@/lib/format";
-import { Help, Empty, Source } from "./Ui";
-import { MiniChart } from "./Charts";
+import { Help, Source, Empty } from "./Ui";
+import s from "./ResearchWorkspace.module.css";
+const groups: FinancialGroup[] = [
+  "Essentials",
+  "Profitability",
+  "Cash flow",
+  "Balance sheet",
+];
+export function metricText(
+  m: MetricDefinition,
+  v: number | null | undefined,
+  currency: string,
+) {
+  if (v == null || !Number.isFinite(v)) return "—";
+  return m.unit === "percent"
+    ? percent(v)
+    : m.unit === "ratio"
+      ? `${v.toFixed(2)}×`
+      : m.unit === "shares"
+        ? Intl.NumberFormat("en-US", {
+            notation: "compact",
+            maximumFractionDigits: 2,
+          }).format(v)
+        : amount(v, currency, m.unit !== "perShare");
+}
+export function FinancialPlot({
+  rows,
+  metric,
+}: {
+  rows: FinancialPeriod[];
+  metric: MetricDefinition;
+}) {
+  const values = rows.map((r) => r[metric.key] ?? null),
+    valid = values.filter((v): v is number => v != null && Number.isFinite(v));
+  const [active, setActive] = useState<number | null>(null);
+  const activeIndex = active != null && active < rows.length ? active : null;
+  if (valid.length < 2)
+    return <div className={s.chartGap}>More comparable periods needed</div>;
+  const min = Math.min(0, ...valid),
+    max = Math.max(0, ...valid),
+    span = max - min || 1,
+    y = (v: number) => 146 - ((v - min) / span) * 120;
+  const width = 238 / rows.length,
+    base = y(0),
+    color =
+      metric.color === "green"
+        ? "var(--teal)"
+        : metric.color === "violet"
+          ? "var(--purple)"
+          : metric.color === "amber"
+            ? "var(--amber)"
+            : "var(--blue)";
+  return (
+    <div>
+      <svg
+        className={s.plot}
+        viewBox="0 0 320 180"
+        role="group"
+        aria-label={`${metric.label} history`}
+      >
+        {[min, (min + max) / 2, max].map((v, i) => (
+          <g key={i}>
+            <line
+              x1="4"
+              x2="246"
+              y1={y(v)}
+              y2={y(v)}
+              stroke="var(--line)"
+              strokeDasharray={v === 0 ? "0" : "3 4"}
+            />
+            <text x="252" y={y(v) + 4}>
+              {metricText(metric, v, rows[0].currency)}
+            </text>
+          </g>
+        ))}
+        {values.map((v, i) =>
+          v == null ? (
+            <text
+              key={i}
+              x={6 + i * width + width / 2}
+              y={base - 5}
+              textAnchor="middle"
+            >
+              —
+            </text>
+          ) : (
+            <rect
+              key={i}
+              x={6 + i * width + 3}
+              y={Math.min(base, y(v))}
+              width={Math.max(3, width - 9)}
+              height={Math.max(1, Math.abs(base - y(v)))}
+              rx="3"
+              fill={color}
+              opacity={active == null || active === i ? 1 : 0.45}
+              tabIndex={0}
+              onFocus={() => setActive(i)}
+              onBlur={() => setActive(null)}
+              onMouseEnter={() => setActive(i)}
+              onMouseLeave={() => setActive(null)}
+              onClick={() => setActive(active === i ? null : i)}
+              aria-label={`${dateLabel(rows[i].end)}: ${metricText(metric, v, rows[i].currency)}`}
+            >
+              <title>
+                {dateLabel(rows[i].end)} ·{" "}
+                {metricText(metric, v, rows[i].currency)}
+              </title>
+            </rect>
+          ),
+        )}
+        {rows.map((r, i) => (
+          <text
+            key={`${r.start}-${r.end}`}
+            x={6 + i * width + width / 2}
+            y="170"
+            textAnchor="middle"
+          >
+            {rows.length <= 6
+              ? new Date(r.end).toLocaleDateString("en-US", {
+                  month: "short",
+                  year: "2-digit",
+                  timeZone: "UTC",
+                })
+              : i % 2 === 0
+                ? r.end.slice(0, 4)
+                : ""}
+          </text>
+        ))}
+      </svg>
+      <p className={s.caption} aria-live="polite">
+        {activeIndex != null
+          ? `${dateLabel(rows[activeIndex].end)} · ${metricText(metric, values[activeIndex], rows[activeIndex].currency)}`
+          : `${dateLabel(rows[0].end)} – ${dateLabel(rows.at(-1)!.end)}`}
+      </p>
+    </div>
+  );
+}
 export default function Financials({
   research,
   compact = false,
@@ -14,225 +154,244 @@ export default function Financials({
   research: Research;
   compact?: boolean;
 }) {
-  const [scope, setScope] = useState<"annual" | "quarterly" | "ttm">("annual"),
-    rows = useMemo(
-      () =>
-        (scope === "ttm"
-          ? ttmPeriods(research.facts, research.retrievedAt)
-          : financialPeriods(
-              scope === "quarterly"
-                ? quarterFacts(research.facts, research.retrievedAt)
-                : research.facts,
-              scope,
-              research.retrievedAt,
-            )
-        ).slice(-6),
+  const [scope, setScope] = useState<FinancialScope>("annual"),
+    [group, setGroup] = useState<FinancialGroup>("Essentials"),
+    [query, setQuery] = useState(""),
+    [view, setView] = useState<"charts" | "statements">("charts"),
+    [selected, setSelected] = useState<MetricDefinition | null>(null);
+  const dialog = useRef<HTMLDialogElement>(null);
+  const rows = useMemo(
+      () => researchPeriods(research, scope).slice(-8),
       [research, scope],
     ),
     last = rows.at(-1);
-  const metrics: {
-    key:
-      | "revenue"
-      | "fcf"
-      | "margin"
-      | "netIncome"
-      | "operatingCashFlow"
-      | "capex";
-    label: string;
-    caption: string;
-    color: string;
-    help: string;
-  }[] = [
-    {
-      key: "revenue",
-      label: "Revenue",
-      caption: "Sales before expenses",
-      color: "blue",
-      help: "Revenue is sales recognized during the stated reporting period. Compare periods with the same currency and accounting basis.",
-    },
-    {
-      key: "fcf",
-      label: "Free cash flow",
-      caption: "Cash after capital investment",
-      color: "green",
-      help: "Operating cash flow less cash capital expenditure from the same filing and period. This is not adjusted company FCF.",
-    },
-    {
-      key: "margin",
-      label: "Operating margin",
-      caption: "Operating profit as a share of sales",
-      color: "violet",
-      help: "Operating income divided by revenue. This is before interest and tax, and differs from net margin.",
-    },
-    {
-      key: "netIncome",
-      label: "Net income",
-      caption: "Earnings after reported costs",
-      color: "blue",
-      help: "Reported earnings after interest and tax. One-time gains and charges may affect comparability.",
-    },
-    {
-      key: "operatingCashFlow",
-      label: "Operating cash flow",
-      caption: "Cash generated by operations",
-      color: "green",
-      help: "Cash generated by operations, including working-capital changes. Capital investment is shown separately.",
-    },
-    {
-      key: "capex",
-      label: "Capital investment",
-      caption: "Cash spent on long-lived assets",
-      color: "violet",
-      help: "Cash purchases of property, plant and equipment for the reported period. Investment can support growth while reducing current free cash flow.",
-    },
+  const all = useMemo(() => applicableMetrics(research), [research]);
+  const available = all.filter((m) => rows.some((r) => r[m.key] != null));
+  const core = [
+    "revenue",
+    "netIncome",
+    "fcf",
+    "margin",
+    "grossMargin",
+    "fcfMargin",
   ];
-  const bank =
-    modelCoverage(research.company.symbol, research.company.assetType)
-      .family === "financial";
-  const available = metrics.filter(
-    (m) =>
-      last &&
-      last[m.key] != null &&
-      !(bank && ["fcf", "margin", "capex"].includes(m.key)),
-  );
-  const missing = metrics.filter(
-    (m) =>
-      !available.includes(m) &&
-      !(bank && ["fcf", "margin", "capex"].includes(m.key)),
-  );
+  const shown = compact
+    ? core
+        .map((k) => available.find((m) => m.key === k))
+        .filter((m): m is MetricDefinition => !!m)
+    : available.filter((m) =>
+        query
+          ? `${m.label} ${m.help}`.toLowerCase().includes(query.toLowerCase())
+          : group === "Essentials"
+            ? core.includes(m.key) || m.group === "Essentials"
+            : m.group === group,
+      );
   return (
-    <section className="financials">
-      <header className="section-heading">
+    <section className={s.workspace}>
+      <header className={s.heading}>
         <div>
-          <h2>
-            {compact ? "The business, at a glance" : "Financial performance"}
-          </h2>
-          {!compact && (
-            <p>
-              Reported figures · {last?.currency || "Currency unavailable"} ·{" "}
-              {last?.basis || "Source evidence required"}
-            </p>
-          )}
+          <h2>{compact ? "Financial picture" : "Financials"}</h2>
+          <p>
+            {last
+              ? `${scope === "ttm" ? "Trailing 12 months" : scope === "quarterly" ? "Standalone quarters" : "Annual statements"} · ${last.currency} · ${last.basis}`
+              : "Reported company evidence"}
+          </p>
         </div>
-        <div className="segment" aria-label="Financial period">
-          {(["annual", "quarterly", "ttm"] as const).map((p) => (
+        <div className={s.controls} aria-label="Financial period">
+          {(["annual", "quarterly", "ttm"] as const).map((v) => (
             <button
-              key={p}
-              aria-pressed={scope === p}
-              onClick={() => setScope(p)}
+              key={v}
+              aria-pressed={scope === v}
+              onClick={() => setScope(v)}
             >
-              {p === "annual" ? "Annual" : p === "ttm" ? "TTM" : "Quarterly"}
+              {v === "ttm" ? "TTM" : v === "annual" ? "Annual" : "Quarterly"}
             </button>
           ))}
         </div>
       </header>
       {!last ? (
-        <Empty
-          title={
-            research.company.assetType === "crypto"
-              ? "Company statements do not apply"
-              : "Financial history is not available"
-          }
-        >
-          {research.company.assetType === "crypto"
-            ? "Use price structure and asset-specific research for this instrument."
-            : research.issues.find((i) => i.startsWith("Company")) ||
-              "The connected source has not returned comparable reported periods."}
+        <Empty title="Financial history is unavailable">
+          {research.issues.find((i) => /compan|financial|filing/i.test(i)) ||
+            "No comparable reported periods were returned."}
         </Empty>
       ) : (
         <>
-          <div className="financial-grid">
-            {available.slice(0, compact ? 3 : 6).map((m) => (
-              <article className="financial-card" key={m.key}>
-                <div className="metric-label">
-                  {m.label}
-                  <Help label={m.label}>{m.help}</Help>
-                </div>
-                <strong className="metric-value">
-                  {m.key === "margin"
-                    ? percent(last[m.key])
-                    : amount(last[m.key], last.currency, true)}
-                </strong>
-                <MiniChart
-                  color={m.color}
-                  bars={m.key === "revenue" || m.key === "netIncome"}
-                  values={rows.map((r) => r[m.key])}
-                  labels={rows.map((r) =>
-                    scope === "annual" ? r.end.slice(0, 4) : r.end.slice(2, 7),
-                  )}
-                />
-                <p>{m.caption}</p>
-              </article>
-            ))}
-          </div>
-          {bank && (
-            <p className="financial-coverage">
-              Bank research emphasizes earnings, capital and credit quality.
-              Generic operating-margin and free-cash-flow valuation are not used
-              for this business.
-            </p>
-          )}
-          {missing.length > 0 && (
-            <p className="financial-coverage">
-              Not reported in the connected facts for this period:{" "}
-              {missing.map((m) => m.label).join(", ")}.
-            </p>
-          )}
-          <div className="source-line">
-            <Source href={last.sourceUrl}>
-              SEC filing · {dateLabel(last.filed)}
-            </Source>
-            <span>Period ended {dateLabel(last.end)}</span>
-          </div>
           {!compact && (
-            <div className="statement-table table-scroll">
+            <>
+              <div className={s.filters}>
+                <label className={s.search}>
+                  <Search size={17} />
+                  <input
+                    aria-label="Search financial metrics"
+                    placeholder="Find a metric — cash flow, margins, debt…"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                  />
+                </label>
+                <div className={s.controls}>
+                  {(["charts", "statements"] as const).map((v) => (
+                    <button
+                      key={v}
+                      aria-pressed={view === v}
+                      onClick={() => setView(v)}
+                    >
+                      {v === "charts" ? "Charts" : "Statements"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className={s.filters} aria-label="Metric groups">
+                {groups.map((g) => (
+                  <button
+                    key={g}
+                    aria-pressed={group === g && !query}
+                    onClick={() => {
+                      setGroup(g);
+                      setQuery("");
+                    }}
+                  >
+                    {g}
+                  </button>
+                ))}
+                <span className={s.caption}>
+                  {available.length} supported metrics
+                </span>
+              </div>
+            </>
+          )}
+          {view === "charts" || compact ? (
+            <div className={s.grid}>
+              {shown.map((m) => (
+                <article key={m.key} className={s.card}>
+                  <div className={s.cardTop}>
+                    <span>{m.label}</span>
+                    <div>
+                      <Help label={m.label}>{m.help}</Help>
+                      <button
+                        className={s.expand}
+                        aria-label={`Expand ${m.label}`}
+                        onClick={() => {
+                          setSelected(m);
+                          dialog.current?.showModal();
+                        }}
+                      >
+                        <Maximize2 size={15} />
+                      </button>
+                    </div>
+                  </div>
+                  <strong className={s.number}>
+                    {metricText(m, last[m.key], last.currency)}
+                  </strong>
+                  {last[m.key] == null && (
+                    <small>Not reported for the latest period</small>
+                  )}
+                  <FinancialPlot rows={rows.slice(-6)} metric={m} />
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className={s.table}>
               <table>
                 <caption>
-                  Financial statements · {last.currency}
-                  {scope !== "annual"
-                    ? " · standalone quarters may be derived from reported cumulative periods"
-                    : ""}
+                  {group} · {last.currency}
                 </caption>
                 <thead>
                   <tr>
                     <th>Metric</th>
-                    {rows.map((r, i) => (
-                      <th key={i}>{dateLabel(r.end)}</th>
+                    {[...rows].reverse().map((r) => (
+                      <th key={r.end}>{dateLabel(r.end)}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {metrics
-                    .filter(
-                      (m) =>
-                        !bank || !["fcf", "margin", "capex"].includes(m.key),
-                    )
-                    .map((m) => (
-                      <tr key={m.key}>
-                        <th>{m.label}</th>
-                        {rows.map((r, i) => (
-                          <td key={i}>
-                            {m.key === "margin"
-                              ? percent(r[m.key])
-                              : amount(r[m.key], r.currency, true)}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  <tr>
-                    <th>Source</th>
-                    {rows.map((r, i) => (
-                      <td key={i}>
-                        <Source href={r.sourceUrl}>Filing</Source>
-                      </td>
-                    ))}
-                  </tr>
+                  {shown.map((m) => (
+                    <tr key={m.key}>
+                      <th>
+                        {m.label} <Help label={m.label}>{m.help}</Help>
+                      </th>
+                      {[...rows].reverse().map((r) => (
+                        <td key={r.end}>
+                          {metricText(m, r[m.key], r.currency)}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
           )}
+          {!shown.length && (
+            <p className={s.empty}>
+              No reported values match this selection. Try another group or
+              period.
+            </p>
+          )}
+          <div className={s.source}>
+            <span>Period ended {dateLabel(last.end)}</span>
+            {(last.sourceUrls ?? [last.sourceUrl])
+              .filter(Boolean)
+              .map((url, i) => (
+                <Source key={url} href={url}>
+                  Filing {i + 1}
+                </Source>
+              ))}
+            {scope === "ttm" && (
+              <span>
+                Four consecutive quarters; balance sheet at final period end.
+              </span>
+            )}
+          </div>
         </>
       )}
+      <dialog
+        ref={dialog}
+        className={s.dialog}
+        onClick={(e) => {
+          if (e.target === dialog.current) dialog.current?.close();
+        }}
+        aria-label={selected?.label || "Metric detail"}
+      >
+        <header className={s.heading}>
+          <h2>{selected?.label}</h2>
+          <button
+            className={s.close}
+            aria-label="Close metric detail"
+            onClick={() => dialog.current?.close()}
+          >
+            <X size={20} />
+          </button>
+        </header>
+        {selected && (
+          <>
+            <p className={s.caption}>{selected.help}</p>
+            <FinancialPlot rows={rows} metric={selected} />
+            <div className={s.table}>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Period</th>
+                    <th>Value</th>
+                    <th>Source</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[...rows].reverse().map((r) => (
+                    <tr key={r.end}>
+                      <th>{dateLabel(r.end)}</th>
+                      <td>
+                        {metricText(selected, r[selected.key], r.currency)}
+                      </td>
+                      <td>
+                        <Source href={r.sourceUrl}>Filing</Source>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
+      </dialog>
     </section>
   );
 }

@@ -1,5 +1,5 @@
 import { account, failure, HttpError, limit, privateJson } from "@/lib/server";
-import { history, type ChartRange } from "@/lib/providers";
+import { marketHistory, type ChartRange } from "@/lib/providers";
 import { symbolInput } from "@/lib/format";
 export async function GET(
   request: Request,
@@ -12,10 +12,10 @@ export async function GET(
     if (!["1D", "1W", "1M", "6M", "1Y", "5Y"].includes(range))
       throw new HttpError("Unsupported chart range.");
     return privateJson({
-      candles: await history(
+      ...(await marketHistory(
         symbolInput((await params).symbol),
         range as ChartRange,
-      ),
+      )),
       range,
     });
   } catch (e) {

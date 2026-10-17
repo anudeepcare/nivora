@@ -24,6 +24,7 @@ export function Settings() {
       reduceMotion,
       setReduceMotion,
       workspace,
+      marketProvider,
       demo,
     } = useProduct(),
     prefix = demo ? "/preview" : "",
@@ -60,7 +61,7 @@ export function Settings() {
             <strong>Appearance</strong>
             <p>Choose your theme or follow your device.</p>
           </div>
-          <div className="segmented" aria-label="Appearance">
+          <div className="segment" aria-label="Appearance">
             {(["light", "dark", "system"] as const).map((t) => (
               <button
                 key={t}
@@ -77,7 +78,7 @@ export function Settings() {
             <strong>Text size</strong>
             <p>Comfortable, readable type across your workspace.</p>
           </div>
-          <div className="segmented" aria-label="Text size">
+          <div className="segment" aria-label="Text size">
             {(["standard", "large"] as const).map((t) => (
               <button
                 key={t}
@@ -104,10 +105,37 @@ export function Settings() {
         </div>
       </section>
       <section className="panel support">
+        <div className="setting-row">
+          <div>
+            <strong>Market data</strong>
+            <p>
+              {marketProvider === "hybrid"
+                ? "Twelve Data quotes + EODHD research"
+                : marketProvider === "eodhd"
+                  ? "EODHD"
+                  : marketProvider === "twelve"
+                    ? "Twelve Data"
+                    : "Provider configuration not confirmed"}
+            </p>
+          </div>
+          <span className="tag">
+            {marketProvider === "hybrid" ||
+            marketProvider === "eodhd" ||
+            marketProvider === "twelve"
+              ? "Key configured"
+              : "Setup needed"}
+          </span>
+        </div>
+        <p className="footnote">
+          Configuration status does not verify token validity. Research shows
+          actual source timestamps and any dataset errors. EODHD prices are
+          indicative; broker execution remains separate.
+        </p>
+      </section>
+      <section className="panel support">
         <h2>Your tools</h2>
         <div className="settings-links">
           {[
-            ["compare", "Compare companies"],
             ["discover", "Discover"],
             ["alerts", "Price alerts"],
             ["research-lab", "Research validation"],
@@ -193,7 +221,7 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
           demo
             ? Promise.resolve(demo.research[s])
             : api<Research>(
-                `research/${encodeURIComponent(s)}`,
+                `research/${encodeURIComponent(s.replace("/", "-"))}`,
                 undefined,
                 abort.signal,
               ),
@@ -303,7 +331,7 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
                 {values.map(({ r }) => (
                   <th key={r.company.symbol}>
                     <Link
-                      href={`${prefix}/research/${encodeURIComponent(r.company.symbol)}`}
+                      href={`${prefix}/research/${encodeURIComponent(r.company.symbol.replace("/", "-"))}`}
                     >
                       <SecurityLogo symbol={r.company.symbol} />
                       {r.company.symbol}
@@ -383,7 +411,7 @@ export function HelpPage() {
         ],
         [
           "Price history and technicals",
-          "The source is Twelve Data. Quotes and chart bars have different timestamps. Chart ranges do not change the business assessment. Fibonacci prices are references based on displayed anchors, not confirmed support.",
+          "Each quote and chart identifies its source. Quotes and chart bars have different timestamps. Chart ranges do not change the business assessment. Fibonacci prices are references based on displayed anchors, not confirmed support.",
         ],
         [
           "Portfolio accounting",

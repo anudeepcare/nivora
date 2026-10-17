@@ -1,0 +1,49 @@
+✖ expanded technicals use completed bars, Wilder ADX and bounded momentum (1.127104ms)
+✖ short and flat histories do not fabricate strength or relative performance (3.16921ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 88.773333
+
+✖ failing tests:
+
+test at tests/technical-expanded.test.mjs:4:1
+✖ expanded technicals use completed bars, Wilder ADX and bounded momentum (1.127104ms)
+  AssertionError [ERR_ASSERTION]: Expanded technicals must exist
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/product/tests/technical-expanded.test.mjs:4:92)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/technical-expanded.test.mjs:5:1
+✖ short and flat histories do not fabricate strength or relative performance (3.16921ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(m)
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0397d872aad5/auryn-next/product/tests/technical-expanded.test.mjs:5:95)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

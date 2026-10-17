@@ -1,3 +1,11 @@
+import { preferredMarketSources, readPreferred } from "./provider-routing";
+import {
+  eodEnabled,
+  eodQuote,
+  eodHistory,
+  eodFundamentals,
+  eodSearch,
+} from "./eodhd";
 import { secObservations } from "./sec-observations";
 import { reserveProvider } from "./provider-budget";
 import type {
@@ -47,10 +55,14 @@ async function json(url: string, headers: Record<string, string> = {}) {
     );
   return r.json();
 }
-async function twelve(endpoint: string, params: Record<string, string>) {
+export async function twelve(
+  endpoint: string,
+  params: Record<string, string>,
+  cost = 1,
+) {
   const key = process.env.TWELVE_DATA_API_KEY;
   if (!key) throw new HttpError("Market data is not configured.", 503);
-  await reserveProvider();
+  await reserveProvider(cost);
   const data = await json(
     `https://api.twelvedata.com/${endpoint}?${new URLSearchParams({ ...params, apikey: key })}`,
   );
@@ -64,11 +76,48 @@ async function twelve(endpoint: string, params: Record<string, string>) {
   return data;
 }
 const num = numeric;
+const configuredSources = () => ({
+  twelve: Boolean(process.env.TWELVE_DATA_API_KEY),
+  eodhd: eodEnabled(),
+});
 export async function quote(
+  symbol: string,
+): Promise<{ company: Company; quote: Quote }> {
+  const sources = preferredMarketSources("quote", configuredSources());
+  return cached(
+    `selected-quote:${sources.join(",")}:${symbol}`,
+    60000,
+    async () => {
+      const result = await readPreferred(sources, async (source) => {
+        const value = await (source === "twelve"
+          ? twelveQuote(symbol)
+          : eodQuote(symbol));
+        if (value.quote.price == null)
+          throw new HttpError("The quote source returned no price.", 503);
+        return value;
+      });
+      return result.fallback
+        ? {
+            ...result.value,
+            quote: {
+              ...result.value.quote,
+              source: result.value.quote.source + " · fallback",
+            },
+          }
+        : result.value;
+    },
+  );
+}
+async function twelveQuote(
   symbol: string,
 ): Promise<{ company: Company; quote: Quote }> {
   return cached(`quote:${symbol}`, 60_000, async () => {
     const q = await twelve("quote", { symbol });
+    if (String(q.symbol ?? "").toUpperCase() !== symbol)
+      throw new HttpError(
+        "The provider returned a different instrument. The quote was not used.",
+        502,
+      );
     if (!symbol.includes("/") && !supportedListing(q))
       throw new HttpError(
         "This listing is outside the supported US/USD equity universe.",
@@ -128,9 +177,44 @@ export async function quote(
   });
 }
 export type ChartRange = "1D" | "1W" | "1M" | "6M" | "1Y" | "5Y";
+export async function marketHistory(symbol: string, range: ChartRange = "5Y") {
+  const sources = preferredMarketSources(
+    range === "1D" || range === "1W" ? "intraday" : "daily",
+    configuredSources(),
+  );
+  return cached(
+    `selected-history:${sources.join(",")}:${symbol}:${range}`,
+    range === "1D" || range === "1W" ? 60000 : 900000,
+    async () => {
+      const result = await readPreferred(sources, async (source) => {
+        const candles = await (source === "eodhd"
+          ? eodHistory(symbol, range)
+          : twelveHistory(symbol, range));
+        if (!candles.length)
+          throw new HttpError(
+            "No price observations were returned for this period.",
+            503,
+          );
+        return candles;
+      });
+      return {
+        candles: result.value,
+        source:
+          (result.provider === "eodhd" ? "EODHD" : "Twelve Data") +
+          (result.fallback ? " · fallback" : ""),
+      };
+    },
+  );
+}
 export async function history(
   symbol: string,
   range: ChartRange = "5Y",
+): Promise<Candle[]> {
+  return (await marketHistory(symbol, range)).candles;
+}
+async function twelveHistory(
+  symbol: string,
+  range: ChartRange,
 ): Promise<Candle[]> {
   return cached(
     `history:${symbol}:${range}`,
@@ -154,6 +238,11 @@ export async function history(
         order: "ASC",
         adjust: "splits",
       });
+      if (String(data.meta?.symbol ?? "").toUpperCase() !== symbol)
+        throw new HttpError(
+          "Price history belongs to a different instrument and was not used.",
+          502,
+        );
       const bars = normalizeBars(data.values, intraday);
       if (range === "1D" && bars.length) {
         const end = Date.parse(bars.at(-1)!.time),
@@ -202,6 +291,31 @@ const tags: Record<Metric, string[]> = {
     "EntityCommonStockSharesOutstanding",
   ],
   eps: ["EarningsPerShareDiluted", "DilutedEarningsLossPerShare"],
+  grossProfit: ["GrossProfit"],
+  costOfRevenue: ["CostOfRevenue", "CostOfGoodsAndServicesSold", "CostOfSales"],
+  researchExpense: ["ResearchAndDevelopmentExpense"],
+  stockCompensation: ["ShareBasedCompensation", "SharebasedPaymentExpense"],
+  buybacks: [
+    "PaymentsForRepurchaseOfCommonStock",
+    "PaymentsForRepurchaseOfEquity",
+  ],
+  dividends: [
+    "PaymentsOfDividendsCommonStock",
+    "PaymentsOfDividends",
+    "DividendsPaidClassifiedAsFinancingActivities",
+  ],
+  weightedShares: [
+    "WeightedAverageNumberOfDilutedSharesOutstanding",
+    "AdjustedWeightedAverageShares",
+  ],
+  equity: ["StockholdersEquity", "EquityAttributableToOwnersOfParent"],
+  currentAssets: ["AssetsCurrent", "CurrentAssets"],
+  currentLiabilities: ["LiabilitiesCurrent", "CurrentLiabilities"],
+  interestExpense: [
+    "InterestExpense",
+    "InterestAndDebtExpense",
+    "InterestExpenseNonOperating",
+  ],
 };
 async function sec(path: string) {
   const agent = process.env.SEC_USER_AGENT;
@@ -217,7 +331,10 @@ export async function fundamentals(symbol: string): Promise<{
   filings: Filing[];
   name: string;
   issues: string[];
+  evidence?: import("./eodhd-normalize").EodEvidence;
+  company?: Company;
 }> {
+  if (eodEnabled()) return eodFundamentals(symbol);
   const result = await cached(`sec:${symbol}`, 6 * 3600_000, async () => {
     const tickers = await cached<Record<string, any>>(
       "sec-tickers",
@@ -344,13 +461,23 @@ export async function fundamentals(symbol: string): Promise<{
 export async function research(symbol: string): Promise<Research> {
   const results = await Promise.allSettled([
     quote(symbol),
-    history(symbol),
+    marketHistory(symbol),
     symbol.includes("/")
-      ? Promise.resolve({ facts: [], filings: [], name: symbol, issues: [] })
+      ? Promise.resolve({
+          facts: [],
+          filings: [],
+          name: symbol,
+          issues: [],
+          evidence: undefined,
+          company: undefined,
+        })
       : fundamentals(symbol),
   ]);
   const q = results[0].status === "fulfilled" ? results[0].value : null,
-    h = results[1].status === "fulfilled" ? results[1].value : [],
+    h =
+      results[1].status === "fulfilled"
+        ? results[1].value
+        : { candles: [], source: "Unavailable" },
     f = results[2].status === "fulfilled" ? results[2].value : null;
   const issues = results.flatMap((r, i) =>
     r.status === "rejected"
@@ -360,24 +487,31 @@ export async function research(symbol: string): Promise<Research> {
       : [],
   );
   return {
-    company: q?.company ?? {
-      symbol,
-      name: f?.name || symbol,
-      currency: "USD",
-      exchange: "",
-      assetType: symbol.includes("/") ? "crypto" : "stock",
-    },
+    company: f?.company ??
+      q?.company ?? {
+        symbol,
+        name: f?.name || symbol,
+        currency: "USD",
+        exchange: "",
+        assetType: symbol.includes("/") ? "crypto" : "stock",
+      },
     quote: q?.quote ?? {
       price: null,
       changePct: null,
       currency: "USD",
       asOf: null,
       session: "Unavailable",
-      source: "Twelve Data",
+      source: process.env.TWELVE_DATA_API_KEY
+        ? "Twelve Data"
+        : eodEnabled()
+          ? "EODHD"
+          : "Unconfigured",
       stale: true,
     },
-    history: h,
+    history: h.candles,
+    historySource: h.source,
     facts: f?.facts ?? [],
+    evidence: f?.evidence,
     filings: f?.filings ?? [],
     retrievedAt: new Date().toISOString(),
     issues: [...issues, ...(f?.issues ?? [])],
@@ -385,6 +519,7 @@ export async function research(symbol: string): Promise<Research> {
 }
 export async function search(query: string) {
   query = query.trim().toUpperCase();
+  if (eodEnabled()) return eodSearch(query);
   return cached(`search:${query}`, 3600_000, async () => {
     const result = await twelve("symbol_search", {
       symbol: query,

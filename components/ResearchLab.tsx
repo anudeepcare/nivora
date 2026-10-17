@@ -47,7 +47,9 @@ export default function ResearchLab() {
       const s = symbolInput(symbol);
       const r = demo
         ? demo.research[s]
-        : await api<Research>(`research/${encodeURIComponent(s)}`);
+        : await api<Research>(
+            `research/${encodeURIComponent(s.replace("/", "-"))}`,
+          );
       if (!r)
         throw Error("No history available for that company in this preview.");
       setData(r);

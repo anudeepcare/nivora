@@ -6,6 +6,9 @@ const require = createRequire(import.meta.url),
 const load = (path) => require(root + path + "/route.js").routeModule.userland;
 const routes = [
   "workspace",
+  "news",
+  "filings",
+  "provider-status",
   "documents",
   "alerts",
   "observations",
@@ -17,6 +20,8 @@ const routes = [
   "research/[symbol]",
   "chart/[symbol]",
   "quotes",
+  "logos",
+  "company-data",
   "paper-status",
   "analyst/[symbol]",
 ];
@@ -41,6 +46,9 @@ for (const path of routes) {
 process.env.NEXT_PUBLIC_SUPABASE_URL = "https://account.example.invalid";
 process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = "test-publishable";
 process.env.TWELVE_DATA_API_KEY = "test-not-a-key";
+delete process.env.EODHD_API_KEY;
+delete process.env.EODHD_API_TOKEN;
+process.env.FINNHUB_API_KEY = "test-not-a-key";
 const headers = {
   Authorization: "Bearer test-only",
   "Content-Type": "application/json",
@@ -75,6 +83,16 @@ globalThis.fetch = async (input, options) => {
         },
       ],
     });
+  if (url.includes("/stock/profile2?")) {
+    const symbol = new URL(url).searchParams.get("symbol");
+    return Response.json({
+      ticker: symbol === "LOGOB" ? "OTHER" : symbol,
+      logo:
+        symbol === "LOGOC"
+          ? "https://unexpected.invalid/logo.png"
+          : "https://static2.finnhub.io/file/publicdatany/test.png",
+    });
+  }
   throw Error("Unexpected network target");
 };
 const denied = await load("paper-status").GET(
@@ -116,6 +134,20 @@ const ai = await load("analyst/[symbol]").POST(
 assert.equal(ai.status, 503);
 assert.ok(!calls.some((u) => u.includes("api.openai.com")));
 checks++;
+const logosResponse = await load("logos").GET(
+  new Request("https://auryn.example/api/logos?symbols=LOGOA,LOGOB,LOGOC", {
+    headers,
+  }),
+);
+assert.equal(logosResponse.status, 200);
+const logos = await logosResponse.json();
+assert.equal(
+  logos.LOGOA,
+  "https://static2.finnhub.io/file/publicdatany/test.png",
+);
+assert.equal(logos.LOGOB, null);
+assert.equal(logos.LOGOC, null);
+checks += 3;
 console.log(
-  `${checks} built API checks passed: anonymous denial, private responses, trusted admin boundary, listing identity, disabled AI without provider spend.`,
+  `${checks} built API checks passed: anonymous denial, private responses, trusted admin boundary, listing and logo identity, disabled AI without provider spend.`,
 );

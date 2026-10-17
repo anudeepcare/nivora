@@ -1,6 +1,6 @@
 # Approved HTML implementation
 
-This package implements the latest approved interactive HTML in the existing real-data React application. The reference is `docs/design/approved-interactive.html`. Its sample numbers are not production data.
+Historical implementation record (superseded visually by VISUAL_AND_CRYPTO_REPAIR.md). This revision implemented the then-approved interactive HTML in the existing real-data React application. The reference is `docs/design/approved-interactive.html`. Its sample numbers are not production data.
 
 - Shared light/dark colors, readable typography, four primary routes and compact chart proportions.
 - Mobile company identity/save row, separate quote row, safe-area header and bottom navigation clearance.

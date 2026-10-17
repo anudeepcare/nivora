@@ -8,11 +8,11 @@ const require = createRequire(import.meta.url);
 // Execute the real valuation component and its button callback. The React hook
 // transport records state updates; no DOM, provider or paid request is involved.
 const source = fs.readFileSync(
-  new URL("../components/Research.tsx", import.meta.url),
+  new URL("../components/Valuation.tsx", import.meta.url),
   "utf8",
 );
 const ast = ts.createSourceFile(
-  "Research.tsx",
+  "Valuation.tsx",
   source,
   ts.ScriptTarget.Latest,
   true,
@@ -21,7 +21,7 @@ const ast = ts.createSourceFile(
 const declaration = ast.statements.find(
   (n) => ts.isFunctionDeclaration(n) && n.name?.text === "Valuation",
 );
-const code = ts.transpileModule(declaration.getText(ast), {
+const code = ts.transpileModule(declaration.getText(ast).replace("export default ", ""), {
   compilerOptions: { jsx: ts.JsxEmit.React, module: ts.ModuleKind.CommonJS },
 }).outputText;
 function walk(node, predicate) {

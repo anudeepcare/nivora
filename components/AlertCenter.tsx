@@ -201,7 +201,7 @@ export default function AlertCenter() {
               <article className="compact-record" key={e.id}>
                 <div>
                   <Link
-                    href={`${prefix}/research/${encodeURIComponent(e.symbol)}`}
+                    href={`${prefix}/research/${encodeURIComponent(e.symbol.replace("/", "-"))}`}
                   >
                     <b>{e.title}</b>
                   </Link>

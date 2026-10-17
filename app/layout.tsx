@@ -1,4 +1,6 @@
+import Pwa from "@/components/Pwa";
 import type { Metadata, Viewport } from "next";
+import "./approved-design.css";
 import "./globals.css";
 export const metadata: Metadata = {
   title: "AURYN · Investment Intelligence",
@@ -12,8 +14,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover",
   themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#0b1220" },
-    { media: "(prefers-color-scheme: light)", color: "#eaf0f7" },
+    { media: "(prefers-color-scheme: dark)", color: "#0e1420" },
+    { media: "(prefers-color-scheme: light)", color: "#f5f7fb" },
   ],
 };
 const boot = `try{const r=document.documentElement,s=localStorage.getItem('auryn-product-theme');r.dataset.theme=s==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):s==='light'?'light':'dark';r.dataset.textSize=localStorage.getItem('auryn-product-text')==='large'?'large':'standard';r.dataset.motion=localStorage.getItem('auryn-product-motion')==='reduce'?'reduce':'system'}catch(e){}`;
@@ -23,7 +25,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: boot }} />
       </head>
-      <body>{children}</body>
+      <body id="auryn-app">
+        <Pwa />
+        {children}
+      </body>
     </html>
   );
 }

@@ -37,7 +37,7 @@ export default function Analyst({ research }: { research: Research }) {
     [demo],
   );
   const availability = useResource<AnalystStatus>(
-    `analyst/${encodeURIComponent(research.company.symbol)}`,
+    `analyst/${encodeURIComponent(research.company.symbol.replace("/", "-"))}`,
     previewStatus,
   );
   async function generate() {
@@ -55,7 +55,7 @@ export default function Analyst({ research }: { research: Research }) {
     try {
       setReport(
         await api<Report>(
-          `analyst/${encodeURIComponent(research.company.symbol)}`,
+          `analyst/${encodeURIComponent(research.company.symbol.replace("/", "-"))}`,
           { mode },
         ),
       );
@@ -98,7 +98,7 @@ export default function Analyst({ research }: { research: Research }) {
       <header className="section-heading">
         <div>
           <span className="eyebrow">AURYN ANALYST</span>
-          <h2>Understand the evidence. Challenge the thesis.</h2>
+          <h2>Company analysis</h2>
           <p>Source-linked analysis of the data available for this company.</p>
         </div>
         <Sparkles size={26} className="violet" />
@@ -113,7 +113,7 @@ export default function Analyst({ research }: { research: Research }) {
                 : "Reported annual figures"}
             </p>
           </div>
-          <span className="status-pill">No AI credits</span>
+          <span className="status-pill">Reported data</span>
         </header>
         <div className="evidence-metrics">
           <div>
@@ -179,42 +179,44 @@ export default function Analyst({ research }: { research: Research }) {
           </button>
         )}
       </div>
-      <div className="analyst-controls">
-        <div className="segment">
-          {(["snapshot", "deep-dive", "swot"] as const).map((m) => (
-            <button
-              key={m}
-              aria-pressed={m === mode}
-              disabled={busy || !availability.data?.available}
-              onClick={() => {
-                setMode(m);
-                setReport(null);
-                setError("");
-              }}
-            >
-              {m === "snapshot"
-                ? "Snapshot"
-                : m === "deep-dive"
-                  ? "Deep dive"
-                  : "SWOT"}
-            </button>
-          ))}
+      {availability.data?.available && (
+        <div className="analyst-controls">
+          <div className="segment">
+            {(["snapshot", "deep-dive", "swot"] as const).map((m) => (
+              <button
+                key={m}
+                aria-pressed={m === mode}
+                disabled={busy || !availability.data?.available}
+                onClick={() => {
+                  setMode(m);
+                  setReport(null);
+                  setError("");
+                }}
+              >
+                {m === "snapshot"
+                  ? "Snapshot"
+                  : m === "deep-dive"
+                    ? "Deep dive"
+                    : "SWOT"}
+              </button>
+            ))}
+          </div>
+          <button
+            className="button primary"
+            disabled={
+              busy || !availability.data?.available || !research.facts.length
+            }
+            onClick={generate}
+          >
+            <Sparkles size={16} />
+            {busy
+              ? "Reviewing evidence…"
+              : report
+                ? "Refresh analysis"
+                : "Generate analysis"}
+          </button>
         </div>
-        <button
-          className="button primary"
-          disabled={
-            busy || !availability.data?.available || !research.facts.length
-          }
-          onClick={generate}
-        >
-          <Sparkles size={16} />
-          {busy
-            ? "Reviewing evidence…"
-            : report
-              ? "Refresh analysis"
-              : "Generate analysis"}
-        </button>
-      </div>
+      )}
       {error && <Notice error>{error}</Notice>}
       {report ? (
         <div className="ai-report">
