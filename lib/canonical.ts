@@ -4,13 +4,14 @@ import { modelCoverage, weeklyStudies } from "./research-depth.ts";
 import type { Research } from "./types";
 export function canonical(r: Research) {
   const p = perspective(r),
+    crypto = r.company.assetType === "crypto",
     coverage = modelCoverage(r.company.symbol, r.company.assetType),
     closed = r.history
       .filter((b) => b.time < r.retrievedAt.slice(0, 10))
       .at(-1);
   const content = {
     company: r.company,
-    policy: "research-v1.2",
+    policy: "research-v1.3",
     asOfDay: r.retrievedAt.slice(0, 10),
     history: r.history.filter((b) => b.time < r.retrievedAt.slice(0, 10)),
     facts: [...r.facts].sort((a, b) => a.id.localeCompare(b.id)),
@@ -22,20 +23,24 @@ export function canonical(r: Research) {
   const id = createHash("sha256")
     .update(JSON.stringify({ evidenceId, quote: r.quote, issues: r.issues }))
     .digest("hex");
-  const newCapital = !p.last
-    ? "Gather evidence"
-    : p.strong &&
-        p.valuation === "Below base case" &&
-        p.tech.trend === "Constructive"
-      ? "Consider staged entry"
-      : p.strong && p.valuation === "Above base case"
-        ? "Be selective on price"
-        : p.strong
-          ? "Research candidate"
-          : coverage.family === "frontier" ||
-              coverage.family === "infrastructure"
-            ? "Milestone-led research"
-            : "Review business economics";
+  const newCapital = crypto
+    ? p.tech.trend === "Not assessed"
+      ? "Price history needed"
+      : `${p.tech.trend} price trend`
+    : !p.last
+      ? "Gather evidence"
+      : p.strong &&
+          p.valuation === "Below base case" &&
+          p.tech.trend === "Constructive"
+        ? "Consider staged entry"
+        : p.strong && p.valuation === "Above base case"
+          ? "Be selective on price"
+          : p.strong
+            ? "Research candidate"
+            : coverage.family === "frontier" ||
+                coverage.family === "infrastructure"
+              ? "Milestone-led research"
+              : "Review business economics";
   return {
     id,
     evidenceId,
@@ -45,15 +50,17 @@ export function canonical(r: Research) {
     evidenceAt: closed?.time ?? null,
     financialPeriod: p.last?.end ?? null,
     business: p.business,
-    valuation: p.valuation,
+    valuation: crypto ? "Corporate valuation does not apply" : p.valuation,
     timing: p.tech.trend,
     monthly: p.dca.confirmed,
     forming: p.dca.forming,
     coverage,
     newCapital,
-    existingOwner: p.strong
-      ? "Review thesis and position size"
-      : "Review financing and thesis evidence",
+    existingOwner: crypto
+      ? "Review exposure, custody and price risk"
+      : p.strong
+        ? "Review thesis and position size"
+        : "Review financing and thesis evidence",
     horizons: {
       tactical:
         p.tech.trend === "Constructive"
@@ -61,8 +68,9 @@ export function canonical(r: Research) {
           : p.tech.trend === "Weak"
             ? "Trend under pressure"
             : "No aligned trend",
-      swing:
-        "Review earnings, valuation assumptions and execution over the next reporting periods",
+      swing: crypto
+        ? "Review momentum, volatility and position risk"
+        : "Review earnings, valuation assumptions and execution over the next reporting periods",
       longTerm: coverage.drivers.slice(0, 3).join(" · "),
     },
     positives: [
@@ -78,7 +86,7 @@ export function canonical(r: Research) {
         ? "Operations and reinvestment consume cash"
         : null,
       r.quote.stale ? "Quote is not current" : null,
-      !p.valuationInputs.eligible
+      !crypto && !p.valuationInputs.eligible
         ? "A reliable per-share valuation is not established"
         : null,
     ].filter(Boolean),

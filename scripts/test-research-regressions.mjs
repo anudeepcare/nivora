@@ -370,6 +370,13 @@ await check(
     );
   },
 );
+await check("One malformed saved ticker does not block SAP, HIMS or OSCR prices", async () => {
+  const response = await route("quotes").GET(new Request("https://test.invalid/api/quotes?symbols=SAP,BAD%3F,HIMS,OSCR", { headers }));
+  assert.equal(response.status, 200);
+  const data = await response.json();
+  for (const symbol of ["SAP", "HIMS", "OSCR"]) assert.equal(data[symbol].quote.price, 200);
+  assert.equal(typeof data["BAD?"].error, "string");
+});
 for (const c of checks)
   console.log(
     `${c.passed ? "PASS" : "FAIL"} ${c.name}${c.error ? " — " + c.error : ""}`,

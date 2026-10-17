@@ -8,63 +8,78 @@ npm warn Unknown env config "http-proxy". This will stop working in the next maj
 > auryn-product@0.1.0 test
 > node --experimental-strip-types --test tests/*.test.mjs
 
-✔ price-only revisions have distinct snapshot IDs but stable evidence identity (6.916166ms)
-✔ a corrected historical bar changes evidence identity even when the latest close is unchanged (16.879994ms)
-✔ Postgres migrations enforce account-scoped watches, idempotency, and AI request budgets (1107.241268ms)
-✔ monthly research supports 1x, 2x, 3x, 4x and pause without an amount (14.3716ms)
-✔ forming and future observations cannot repaint a closed month (2.007489ms)
-✔ gaps, insufficient history, stale series and invalid bars withhold multiplier (1.065255ms)
-✔ documented thesis break pauses current signal without rewriting historical signals (1.050854ms)
-✔ financial periods preserve missing values and only combine matching cash-flow filings (0.778231ms)
-✔ portfolio excludes unpriced holdings from known value and withholds total P&L (0.295927ms)
-✔ cash-flow valuation uses per-share dilution and rejects invalid terminal assumptions (5.38084ms)
-✔ incomplete month near month-end does not become confirmed (6.024659ms)
-✔ foreign or unknown cash cannot enter USD known value (0.250901ms)
-✔ quote provenance rejects missing currency, future timestamps and stale crypto (1.723248ms)
-✔ malformed bars are discarded; repeated timestamps deduplicate and history sorts (9.556981ms)
-✔ USD portfolio cannot silently add foreign currency or unknown-currency prices (0.292672ms)
-✔ AI report needs supplied citations for every claim, bounded text and valid structure (0.681969ms)
-✔ AI evidence excludes future filings and non-SEC source injection (0.286633ms)
-✔ unknown quote currency formats without a crash or a dollar assumption (9.141807ms)
-✔ existing non-USD cost basis cannot become a USD unrealized return (0.251071ms)
-✔ watchlist adapter deduplicates a ticker saved in multiple lists (3.416382ms)
-✔ global search cannot resolve a same-named foreign listing as a US company (0.41929ms)
-✔ crypto quote uses explicit USD pair when provider omits currency (0.233104ms)
-✔ paper plans reject fractional, foreign and invalid exposure inputs (2.102849ms)
-✔ paper checks fail closed on stale quotes, funds, open orders and market state (0.429755ms)
-✔ partial fills remain reserved until terminal broker reconciliation (0.118144ms)
-✔ a reservation revalidates changed account state before any order can submit (0.360754ms)
-✔ DCA comparison uses equal contributions and never spends unavailable cash (18.762873ms)
-✔ CSV import validates all rows and supports quoted commas without replacing holdings (0.86609ms)
-✔ portfolio preview respects cash and exposure caps (0.286264ms)
-✔ alerts reject stale price triggers and use deterministic event identities (3.435289ms)
-✔ saved research validates links, symbols and bounded content (0.475243ms)
-✔ quarter derivation preserves provenance, does not derive EPS, and excludes unavailable evidence (11.73347ms)
-✔ TTM refuses gaps and mixed currencies (1.62366ms)
-✔ reverse valuation solves a price under fixed assumptions, without calling it a forecast (0.492188ms)
-✔ weekly averages exclude forming week and require actual history (1.678913ms)
-✔ coverage distinguishes business economics instead of forcing one DCF (1.165293ms)
-✔ SEC alternates retain new periods and do not double-count the same filing (0.772512ms)
-✔ all 200 holdings receive a quote batch ahead of watchlist names (0.399752ms)
-✔ a definite pre-submission failure does not starve the next scheduled plan (0.738281ms)
-✔ operating scenarios use unit economics, funding claims and dilution before market price (0.907652ms)
-✔ bank model rejects invalid terminal assumptions and shows zero residual value when economics do not cover growth (0.265132ms)
-✔ Fibonacci overlays expose explicit endpoints, percentages and custom levels (1.651392ms)
-✔ trend markers are known on the completed signal bar and cannot repaint (9.837826ms)
-✔ correlation uses matched dates and sufficient return history (0.707647ms)
-ℹ tests 44
+✔ price-only revisions have distinct snapshot IDs but stable evidence identity (3.354509ms)
+✔ a corrected historical bar changes evidence identity even when the latest close is unchanged (10.5602ms)
+✔ crypto snapshots do not demand company accounts or earnings (0.464537ms)
+✔ Postgres migrations enforce account-scoped watches, idempotency, and AI request budgets (1723.103488ms)
+✔ DCA chart labeled twelve months excludes older trading sessions (7.896112ms)
+✔ monthly research supports 1x, 2x, 3x, 4x and pause without an amount (18.234854ms)
+✔ forming and future observations cannot repaint a closed month (2.003892ms)
+✔ gaps, insufficient history, stale series and invalid bars withhold multiplier (1.08237ms)
+✔ documented thesis break pauses current signal without rewriting historical signals (1.935431ms)
+✔ financial periods preserve missing values and only combine matching cash-flow filings (0.651783ms)
+✔ portfolio excludes unpriced holdings from known value and withholds total P&L (0.392049ms)
+✔ cash-flow valuation uses per-share dilution and rejects invalid terminal assumptions (0.332771ms)
+✔ incomplete month near month-end does not become confirmed (0.871208ms)
+✔ foreign or unknown cash cannot enter USD known value (0.45319ms)
+✔ quote provenance rejects missing currency, future timestamps and stale crypto (3.278346ms)
+✔ malformed bars are discarded; repeated timestamps deduplicate and history sorts (10.511788ms)
+✔ USD portfolio cannot silently add foreign currency or unknown-currency prices (0.480471ms)
+✔ AI report needs supplied citations for every claim, bounded text and valid structure (1.00101ms)
+✔ AI evidence excludes future filings and non-SEC source injection (0.406531ms)
+✔ unknown quote currency formats without a crash or a dollar assumption (15.633189ms)
+✔ existing non-USD cost basis cannot become a USD unrealized return (0.387593ms)
+✔ watchlist adapter deduplicates a ticker saved in multiple lists (7.477733ms)
+✔ global search cannot resolve a same-named foreign listing as a US company (0.428964ms)
+✔ crypto quote uses explicit USD pair when provider omits currency (0.240856ms)
+✔ paper plans reject fractional, foreign and invalid exposure inputs (1.954359ms)
+✔ paper checks fail closed on stale quotes, funds, open orders and market state (0.458608ms)
+✔ partial fills remain reserved until terminal broker reconciliation (0.156902ms)
+✔ a reservation revalidates changed account state before any order can submit (0.431739ms)
+✔ DCA comparison uses equal contributions and never spends unavailable cash (15.895666ms)
+✔ CSV import validates all rows and supports quoted commas without replacing holdings (0.868904ms)
+✔ portfolio preview respects cash and exposure caps (0.322707ms)
+✔ alerts reject stale price triggers and use deterministic event identities (0.352851ms)
+✔ saved research validates links, symbols and bounded content (0.544515ms)
+✔ quarter derivation preserves provenance, does not derive EPS, and excludes unavailable evidence (13.363073ms)
+✔ TTM refuses gaps and mixed currencies (1.5556ms)
+✔ reverse valuation solves a price under fixed assumptions, without calling it a forecast (0.590593ms)
+✔ weekly averages exclude forming week and require actual history (5.064626ms)
+✔ coverage distinguishes business economics instead of forcing one DCF (0.321625ms)
+✔ Bitcoin and Ethereum input aliases resolve to USD crypto pairs (1.611191ms)
+✔ Nu uses bank research economics, not a generic cash-flow valuation (0.31799ms)
+✔ ambiguous stock symbols remain distinct from crypto pairs (0.323017ms)
+✔ legacy crypto symbols use their saved asset type without relabeling equity holdings (0.376466ms)
+✔ SEC alternates retain new periods and do not double-count the same filing (0.966949ms)
+✔ all 200 holdings receive a quote batch ahead of watchlist names (0.416605ms)
+✔ a definite pre-submission failure does not starve the next scheduled plan (0.785531ms)
+✔ operating scenarios use unit economics, funding claims and dilution before market price (1.21739ms)
+✔ bank model rejects invalid terminal assumptions and shows zero residual value when economics do not cover growth (0.291161ms)
+✔ a USD ADR on NYSE remains supported when the provider reports the issuer country (0.977425ms)
+✔ crypto search defaults to the pair while an explicitly selected ETF remains the ETF (4.889117ms)
+✔ source replacement archives legacy files and preserves Git, environment and Vercel identity (6.910305ms)
+✔ a damaged source package is rejected before any existing file moves (3.049758ms)
+✔ unlisted files in a source package cannot enter the application (3.38925ms)
+✔ Fibonacci overlays expose explicit endpoints, percentages and custom levels (1.641076ms)
+✔ trend markers are known on the completed signal bar and cannot repaint (7.964092ms)
+✔ correlation uses matched dates and sufficient return history (0.58826ms)
+✔ selecting the Bear scenario loads the exact assumptions behind its displayed estimate (20.220198ms)
+✔ the displayed scenario bounds do not change when the quote is above Bull (1.790745ms)
+ℹ tests 57
 ℹ suites 0
-ℹ pass 44
+ℹ pass 57
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 1236.331263
+ℹ duration_ms 1858.474149
 npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
 
 > auryn-product@0.1.0 typecheck
-> tsc --noEmit
+> next typegen && tsc --noEmit
 
+Generating route types...
+✓ Route types generated successfully
 npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
 
 > auryn-product@0.1.0 build
@@ -73,13 +88,13 @@ npm warn Unknown env config "http-proxy". This will stop working in the next maj
    ▲ Next.js 15.5.28
 
    Creating an optimized production build ...
- ✓ Compiled successfully in 3.7s
+ ✓ Compiled successfully in 2.6s
    Linting and checking validity of types ...
    Collecting page data ...
    Generating static pages (0/13) ...
-   Generating static pages (3/13) 
-   Generating static pages (6/13) 
-   Generating static pages (9/13) 
+   Generating static pages (3/13)
+   Generating static pages (6/13)
+   Generating static pages (9/13)
  ✓ Generating static pages (13/13)
    Finalizing page optimization ...
    Collecting build traces ...
@@ -109,4 +124,3 @@ Route (app)                                 Size  First Load JS
 
 ○  (Static)   prerendered as static content
 ƒ  (Dynamic)  server-rendered on demand
-

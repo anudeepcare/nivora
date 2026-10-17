@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 import type { Research, FinancialPeriod } from "@/lib/types";
 import { quarterFacts, ttmPeriods } from "@/lib/research-depth";
+import { modelCoverage } from "@/lib/research-depth";
 import { financialPeriods } from "@/lib/engine";
 import { amount, percent, dateLabel } from "@/lib/format";
 import { Help, Empty, Source } from "./Ui";
@@ -85,6 +86,20 @@ export default function Financials({
       help: "Cash purchases of property, plant and equipment for the reported period. Investment can support growth while reducing current free cash flow.",
     },
   ];
+  const bank =
+    modelCoverage(research.company.symbol, research.company.assetType)
+      .family === "financial";
+  const available = metrics.filter(
+    (m) =>
+      last &&
+      last[m.key] != null &&
+      !(bank && ["fcf", "margin", "capex"].includes(m.key)),
+  );
+  const missing = metrics.filter(
+    (m) =>
+      !available.includes(m) &&
+      !(bank && ["fcf", "margin", "capex"].includes(m.key)),
+  );
   return (
     <section className="financials">
       <header className="section-heading">
@@ -127,7 +142,7 @@ export default function Financials({
       ) : (
         <>
           <div className="financial-grid">
-            {metrics.slice(0, compact ? 3 : 6).map((m) => (
+            {available.slice(0, compact ? 3 : 6).map((m) => (
               <article className="financial-card" key={m.key}>
                 <div className="metric-label">
                   {m.label}
@@ -150,6 +165,19 @@ export default function Financials({
               </article>
             ))}
           </div>
+          {bank && (
+            <p className="financial-coverage">
+              Bank research emphasizes earnings, capital and credit quality.
+              Generic operating-margin and free-cash-flow valuation are not used
+              for this business.
+            </p>
+          )}
+          {missing.length > 0 && (
+            <p className="financial-coverage">
+              Not reported in the connected facts for this period:{" "}
+              {missing.map((m) => m.label).join(", ")}.
+            </p>
+          )}
           <div className="source-line">
             <Source href={last.sourceUrl}>
               SEC filing · {dateLabel(last.filed)}
@@ -174,18 +202,23 @@ export default function Financials({
                   </tr>
                 </thead>
                 <tbody>
-                  {metrics.map((m) => (
-                    <tr key={m.key}>
-                      <th>{m.label}</th>
-                      {rows.map((r, i) => (
-                        <td key={i}>
-                          {m.key === "margin"
-                            ? percent(r[m.key])
-                            : amount(r[m.key], r.currency, true)}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
+                  {metrics
+                    .filter(
+                      (m) =>
+                        !bank || !["fcf", "margin", "capex"].includes(m.key),
+                    )
+                    .map((m) => (
+                      <tr key={m.key}>
+                        <th>{m.label}</th>
+                        {rows.map((r, i) => (
+                          <td key={i}>
+                            {m.key === "margin"
+                              ? percent(r[m.key])
+                              : amount(r[m.key], r.currency, true)}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
                   <tr>
                     <th>Source</th>
                     {rows.map((r, i) => (

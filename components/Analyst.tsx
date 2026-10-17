@@ -1,12 +1,13 @@
 "use client";
-import { useState } from "react";
-import { Sparkles, ArrowUpRight, Download, ShieldCheck } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Sparkles, Download } from "lucide-react";
 import { perspective } from "@/lib/analysis";
 import { amount, percent } from "@/lib/format";
 import type { Research } from "@/lib/types";
 import { api } from "@/lib/client";
 import { dateLabel } from "@/lib/format";
-import { useProduct } from "./Session";
+import { useProduct, useResource } from "./Session";
+import type { AnalystStatus } from "@/lib/analyst-status";
 import { Notice, Source } from "./Ui";
 type Claim = { text: string; evidenceIds: string[] };
 type Report = {
@@ -23,11 +24,30 @@ export default function Analyst({ research }: { research: Research }) {
     [report, setReport] = useState<Report | null>(null),
     [busy, setBusy] = useState(false),
     [error, setError] = useState("");
+  const previewStatus = useMemo<AnalystStatus | undefined>(
+    () =>
+      demo
+        ? {
+            available: false,
+            reason: "preview",
+            message:
+              "This preview shows reported evidence. AI generation is off.",
+          }
+        : undefined,
+    [demo],
+  );
+  const availability = useResource<AnalystStatus>(
+    `analyst/${encodeURIComponent(research.company.symbol)}`,
+    previewStatus,
+  );
   async function generate() {
     setError("");
-    if (demo) {
+    if (demo || !availability.data?.available) {
       setError(
-        "AI generation is disabled in this illustrative preview. No API credits are used.",
+        demo
+          ? "AI generation is disabled in this illustrative preview. No API credits are used."
+          : availability.data?.message ||
+              "AI configuration could not be checked. Please retry.",
       );
       return;
     }
@@ -83,49 +103,89 @@ export default function Analyst({ research }: { research: Research }) {
         </div>
         <Sparkles size={26} className="violet" />
       </header>
-      <section className="panel support">
-        <h3>Evidence answers</h3>
-        <p className="muted">
-          Calculated from the current research snapshot · no AI charge
-        </p>
-        <div className="three-col">
+      <section className="panel evidence-summary">
+        <header className="section-heading">
           <div>
-            <b>What is improving?</b>
+            <h3>Financial evidence</h3>
             <p>
+              {evidence.last
+                ? `Annual period ending ${dateLabel(evidence.last.end)} · ${evidence.last.currency}`
+                : "Reported annual figures"}
+            </p>
+          </div>
+          <span className="status-pill">No AI credits</span>
+        </header>
+        <div className="evidence-metrics">
+          <div>
+            <span>Revenue growth</span>
+            <strong
+              className={
+                evidence.growth != null && evidence.growth < 0 ? "red" : ""
+              }
+            >
+              {percent(evidence.growth, true)}
+            </strong>
+            <small>
               {evidence.growth != null
-                ? `Comparable annual revenue changed ${percent(evidence.growth)}.`
-                : "Comparable annual revenue periods are needed."}
-            </p>
-            {evidence.last && (
-              <Source href={evidence.last.sourceUrl}>
-                Reported financials
-              </Source>
-            )}
+                ? "Comparable annual periods"
+                : "Comparable periods not available"}
+            </small>
           </div>
           <div>
-            <b>Does profit turn into cash?</b>
-            <p>
+            <span>Free cash flow</span>
+            <strong
+              className={
+                evidence.last?.fcf != null && evidence.last.fcf < 0 ? "red" : ""
+              }
+            >
+              {amount(evidence.last?.fcf, evidence.last?.currency, true)}
+            </strong>
+            <small>
               {evidence.last?.fcf != null
-                ? `Free cash flow was ${amount(evidence.last.fcf, evidence.last.currency, true)}, versus net income of ${amount(evidence.last.netIncome, evidence.last.currency, true)}.`
-                : "Matching operating cash flow and capital expenditure periods are needed."}
-            </p>
+                ? "Operating cash flow less capital spending"
+                : "Matching cash flow and capital spending needed"}
+            </small>
           </div>
           <div>
-            <b>What could change the view?</b>
-            <p>
-              {research.snapshot?.coverage.drivers.slice(0, 3).join(" · ") ||
-                "Review revenue durability, cash conversion, financing and the next reported milestone."}
-            </p>
+            <span>Operating margin</span>
+            <strong>{percent(evidence.last?.margin)}</strong>
+            <small>Operating income ÷ revenue</small>
           </div>
         </div>
+        {evidence.last && (
+          <Source href={evidence.last.sourceUrl}>
+            View reported financials
+          </Source>
+        )}
       </section>
+      <div className="analyst-availability" role="status">
+        <span
+          className={`status-pill ${availability.data?.available ? "green" : "amber"}`}
+        >
+          {availability.loading
+            ? "Checking AI"
+            : availability.data?.available
+              ? "AI ready"
+              : "AI unavailable"}
+        </span>
+        <p>
+          {availability.error ||
+            availability.data?.message ||
+            "Checking whether generation is available…"}
+        </p>
+        {availability.error && (
+          <button className="button" onClick={availability.refresh}>
+            Retry
+          </button>
+        )}
+      </div>
       <div className="analyst-controls">
         <div className="segment">
           {(["snapshot", "deep-dive", "swot"] as const).map((m) => (
             <button
               key={m}
               aria-pressed={m === mode}
-              disabled={busy}
+              disabled={busy || !availability.data?.available}
               onClick={() => {
                 setMode(m);
                 setReport(null);
@@ -142,7 +202,9 @@ export default function Analyst({ research }: { research: Research }) {
         </div>
         <button
           className="button primary"
-          disabled={busy || !research.facts.length}
+          disabled={
+            busy || !availability.data?.available || !research.facts.length
+          }
           onClick={generate}
         >
           <Sparkles size={16} />
@@ -208,48 +270,12 @@ export default function Analyst({ research }: { research: Research }) {
             correct.
           </p>
         </div>
-      ) : (
-        <div className="analyst-intro">
-          <div className="analyst-mark">
-            <Sparkles size={32} />
-          </div>
-          <h3>A clear brief, built from sources.</h3>
-          <p>
-            Review the business, challenge the strongest argument and identify
-            what deserves a closer look.
-          </p>
-          <div className="analyst-features">
-            <span>
-              <ShieldCheck size={17} />
-              Source references
-            </span>
-            <span>
-              <ArrowUpRight size={17} />
-              Bull & bear evidence
-            </span>
-            <span>
-              <Sparkles size={17} />
-              Generated when requested
-            </span>
-          </div>
-          <small>
-            {research.facts.length
-              ? `${research.facts.length} reported observations available. Paid generation requires configured access and an account budget.`
-              : "Reported source evidence is needed before generating analysis."}
-          </small>
-        </div>
-      )}
-      <section className="panel support">
-        <h3>Earnings transcripts & analyst forecasts</h3>
-        <p>
-          These require a provider with the relevant coverage and display
-          rights. They are not inferred from SEC financial totals or fabricated
-          by AI.
+      ) : availability.data?.available ? (
+        <p className="analyst-hint">
+          Choose a format to generate a sourced brief from the reported
+          evidence. Review its citations before relying on an interpretation.
         </p>
-        <div className="source-line">
-          <span>Provider coverage pending verification</span>
-        </div>
-      </section>
+      ) : null}
     </section>
   );
 }

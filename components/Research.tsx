@@ -15,7 +15,7 @@ import {
 import type { Research as ResearchData, Candle } from "@/lib/types";
 import { perspective, valuationInputs } from "@/lib/analysis";
 import { cashFlowValue } from "@/lib/engine";
-import { amount, dateLabel, percent } from "@/lib/format";
+import { amount, dateLabel, percent, quoteTime } from "@/lib/format";
 import { useProduct, useResource } from "./Session";
 import { SecurityLogo, Help, Notice, Empty, Source } from "./Ui";
 import { PriceChart } from "./Charts";
@@ -31,9 +31,9 @@ const tabs = [
   "Overview",
   "Financials",
   "Valuation",
-  "Business",
   "Technicals",
-  "Accumulation",
+  "DCA",
+  "Business",
   "AI Analyst",
   "Events",
   "Compare",
@@ -116,7 +116,11 @@ export default function Research({ symbol }: { symbol: string }) {
     price = r.quote.price,
     change = r.quote.changePct,
     saved = workspace?.watchlist.some((w) => w.symbol === symbol),
-    prefix = demo ? "/preview" : "";
+    prefix = demo ? "/preview" : "",
+    crypto = r.company.assetType === "crypto",
+    visibleTabs = crypto
+      ? tabs.filter((t) => ["Overview", "Technicals", "DCA"].includes(t))
+      : tabs;
   const chart = (
     <section className="panel chart-panel">
       <header className="chart-heading">
@@ -180,13 +184,19 @@ export default function Research({ symbol }: { symbol: string }) {
         <div className="company-quote">
           <div>
             <strong>{amount(price, r.quote.currency)}</strong>
-            <span className={change != null && change < 0 ? "red" : "green"}>
+            <span
+              className={
+                change == null ? "muted" : change < 0 ? "red" : "green"
+              }
+            >
               {percent(change, true)}
             </span>
           </div>
           <small>
             {r.quote.stale ? "Older quote" : r.quote.session} ·{" "}
-            {dateLabel(r.quote.asOf)}
+            {r.company.assetType === "crypto"
+              ? quoteTime(r.quote.asOf)
+              : dateLabel(r.quote.asOf)}
           </small>
         </div>
         <button
@@ -207,15 +217,15 @@ export default function Research({ symbol }: { symbol: string }) {
         onKeyDown={(e) => {
           if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
           e.preventDefault();
-          const index = tabs.indexOf(tab),
+          const index = visibleTabs.indexOf(tab),
             next =
-              (index + (e.key === "ArrowRight" ? 1 : -1) + tabs.length) %
-              tabs.length;
-          setTab(tabs[next]);
+              (index + (e.key === "ArrowRight" ? 1 : -1) + visibleTabs.length) %
+              visibleTabs.length;
+          setTab(visibleTabs[next]);
           (e.currentTarget.children[next] as HTMLButtonElement)?.focus();
         }}
       >
-        {tabs.map((name) => (
+        {visibleTabs.map((name) => (
           <button
             role="tab"
             aria-selected={tab === name}
@@ -248,61 +258,89 @@ export default function Research({ symbol }: { symbol: string }) {
           <>
             <section className="first-glance">
               <div className="first-glance-heading">
-                <div>
-                  <span className="eyebrow">NEW CAPITAL · RESEARCH VIEW</span>
-                  <div
-                    className="segment horizon-control"
-                    aria-label="Investment horizon"
-                  >
-                    {(["tactical", "swing", "longTerm"] as const).map((h) => (
-                      <button
-                        key={h}
-                        aria-pressed={horizon === h}
-                        onClick={() => setHorizon(h)}
-                      >
-                        {h === "longTerm"
-                          ? "Long term"
-                          : h === "swing"
-                            ? "Swing"
-                            : "Tactical"}
-                      </button>
-                    ))}
-                  </div>
-                  <h2>{r.snapshot?.newCapital ?? p.heading}</h2>
-                  <p>{r.snapshot?.horizons[horizon] ?? p.heading}</p>
-                </div>
-                <button
-                  className="text-button"
-                  onClick={() => setTab("Business")}
+                <span className="chip blue">
+                  {r.snapshot?.newCapital ?? p.heading}
+                </span>
+                <div
+                  className="segment horizon-control"
+                  aria-label="Investment horizon"
                 >
-                  View evidence <ArrowUpRight size={15} />
-                </button>
+                  {(["tactical", "swing", "longTerm"] as const).map((h) => (
+                    <button
+                      key={h}
+                      aria-pressed={horizon === h}
+                      onClick={() => setHorizon(h)}
+                    >
+                      {h === "longTerm"
+                        ? "Long term"
+                        : h === "swing"
+                          ? "Swing"
+                          : "Tactical"}
+                    </button>
+                  ))}
+                </div>
               </div>
+              <h2>{p.heading}</h2>
+              <p>
+                {r.snapshot?.horizons[horizon] ??
+                  "Review the evidence for your investment horizon."}
+              </p>
               <div className="perspectives">
-                <div>
-                  <span>
-                    Business{" "}
-                    <Help label="Business economics">
-                      This summarizes reported profitability and cash
-                      generation. It does not establish a competitive moat or a
-                      probability of success.
-                    </Help>
-                  </span>
-                  <strong className={p.strong ? "green" : "blue"}>
-                    {p.business}
-                  </strong>
-                </div>
-                <div>
-                  <span>
-                    Valuation{" "}
-                    <Help label="Valuation context">
-                      Cash-flow scenarios use visible assumptions. They are
-                      sensitivity estimates, not verified intrinsic values or
-                      analyst targets.
-                    </Help>
-                  </span>
-                  <strong className="amber">{p.valuation}</strong>
-                </div>
+                {!crypto && (
+                  <>
+                    <div>
+                      <span>
+                        Business{" "}
+                        <Help label="Business economics">
+                          This summarizes reported profitability and cash
+                          generation. It does not establish a competitive moat
+                          or a probability of success.
+                        </Help>
+                      </span>
+                      <strong className={p.strong ? "green" : "blue"}>
+                        {p.business}
+                      </strong>
+                    </div>
+                    <div>
+                      <span>
+                        Valuation{" "}
+                        <Help label="Valuation context">
+                          Cash-flow scenarios use visible assumptions. They are
+                          sensitivity estimates, not verified intrinsic values
+                          or analyst targets.
+                        </Help>
+                      </span>
+                      <strong className="amber">{p.valuation}</strong>
+                    </div>
+                  </>
+                )}
+                {crypto && (
+                  <>
+                    <div>
+                      <span>
+                        RSI · 14D{" "}
+                        <Help label="Crypto momentum">
+                          Momentum from completed daily closes. Overbought or
+                          oversold readings do not predict a reversal.
+                        </Help>
+                      </span>
+                      <strong className="violet">
+                        {p.tech.rsi?.toFixed(1) ?? "—"}
+                      </strong>
+                    </div>
+                    <div>
+                      <span>
+                        Daily range · ATR{" "}
+                        <Help label="Daily range">
+                          Mean true range over 14 completed days as a percentage
+                          of the latest close. A measure of recent volatility,
+                          not a forecast.
+                        </Help>
+                      </span>
+                      <strong className="amber">{percent(p.tech.atr)}</strong>
+                    </div>
+                  </>
+                )}
                 <div>
                   <span>
                     Entry timing{" "}
@@ -320,13 +358,12 @@ export default function Research({ symbol }: { symbol: string }) {
                     <Help label="Monthly DCA">
                       An experimental contribution multiplier based on completed
                       monthly prices. It is neither leverage nor a return
-                      prediction. Open Accumulation to see the rules and
-                      history.
+                      prediction. Open DCA to see the rules and history.
                     </Help>
                   </span>
                   <button
                     className="metric-link violet"
-                    onClick={() => setTab("Accumulation")}
+                    onClick={() => setTab("DCA")}
                   >
                     {p.dca.confirmed
                       ? p.dca.confirmed.multiplier === 0
@@ -338,17 +375,24 @@ export default function Research({ symbol }: { symbol: string }) {
                 </div>
               </div>
             </section>
-            <div className="research-split">
-              {chart}
-              <EvidenceBrief research={r} onOpen={() => setTab("AI Analyst")} />
-            </div>
-            <Financials research={r} compact />
+            {crypto ? (
+              chart
+            ) : (
+              <div className="research-split">
+                {chart}
+                <EvidenceBrief
+                  research={r}
+                  onOpen={() => setTab("AI Analyst")}
+                />
+              </div>
+            )}
+            {!crypto && <Financials research={r} compact />}
           </>
         )}
         {tab === "Financials" && <Financials research={r} />}
         {tab === "Valuation" && <Valuation research={r} />}
-        {tab === "Accumulation" && <Accumulation research={r} />}
-        {tab === "AI Analyst" && <Analyst research={r} />}
+        {tab === "DCA" && <Accumulation research={r} />}
+        {tab === "AI Analyst" && <Analyst key={symbol} research={r} />}
         {tab === "Technicals" && (
           <>
             <header className="section-heading">
@@ -360,7 +404,8 @@ export default function Research({ symbol }: { symbol: string }) {
                 </p>
               </div>
             </header>
-            <div className="technical-grid support">
+            <TechnicalLevels research={r} />
+            <div className="technical-metrics support">
               {[
                 [
                   "50-week average",
@@ -416,7 +461,6 @@ export default function Research({ symbol }: { symbol: string }) {
                 </article>
               ))}
             </div>
-            <TechnicalLevels research={r} />
           </>
         )}
         {tab === "Business" && <Business research={r} />}
@@ -490,7 +534,7 @@ export function EvidenceBrief({
     <aside className="panel evidence-brief">
       <h2>
         <Sparkles size={19} className="violet" />
-        Evidence brief
+        The evidence, in three points
       </h2>
       <small>From reported data · {dateLabel(last?.filed)}</small>
       <div>
@@ -531,6 +575,7 @@ export function EvidenceBrief({
 function Valuation({ research: r }: { research: ResearchData }) {
   const input = valuationInputs(r),
     [growth, setGrowth] = useState(0),
+    [selectedScenario, setSelectedScenario] = useState<string | null>(null),
     [discount, setDiscount] = useState(10),
     [terminal, setTerminal] = useState(2),
     [dilution, setDilution] = useState(1);
@@ -589,20 +634,86 @@ function Valuation({ research: r }: { research: ResearchData }) {
       </div>
       {input.eligible ? (
         <>
-          <div className="scenario-grid">
-            {input.scenarios.map((s, i) => (
-              <article
-                className={`panel ${["amber", "blue", "green"][i]}`}
-                key={s.name}
-              >
-                <span>{s.name} scenario</span>
-                <strong>{amount(s.value, r.quote.currency)}</strong>
-                <small>
-                  {s.growth}% growth · {s.discount}% discount rate
-                </small>
-              </article>
-            ))}
-          </div>
+          <section className="panel">
+            <div className="section-heading">
+              <h2>Explore the valuation range</h2>
+              <span className="muted small">Five-year cash-flow scenarios</span>
+            </div>
+            {r.quote.price != null &&
+              input.scenarios.every((s) => s.value != null) &&
+              (() => {
+                const values = input.scenarios.map((s) => s.value!),
+                  low = Math.min(...values),
+                  high = Math.max(...values);
+                const left =
+                  high > low
+                    ? Math.max(
+                        5,
+                        Math.min(
+                          95,
+                          5 + (90 * (r.quote.price! - low)) / (high - low),
+                        ),
+                      )
+                    : 50;
+                return (
+                  <>
+                    <div className="valuation-track">
+                      <i
+                        className="valuation-marker"
+                        style={{ left: `${left}%` }}
+                        aria-hidden="true"
+                      />
+                      <span
+                        className="value-pin"
+                        style={{
+                          left: `${left}%`,
+                          transform:
+                            left > 75
+                              ? "translateX(-100%)"
+                              : left < 25
+                                ? "none"
+                                : "translateX(-50%)",
+                        }}
+                      >
+                        {r.quote.price! > high
+                          ? "Above range · "
+                          : r.quote.price! < low
+                            ? "Below range · "
+                            : "Price "}
+                        {amount(r.quote.price, r.quote.currency)}
+                      </span>
+                    </div>
+                    <div className="valuation-labels">
+                      <span>{amount(low, r.quote.currency)}</span>
+                      <span>Scenario range</span>
+                      <span>{amount(high, r.quote.currency)}</span>
+                    </div>
+                  </>
+                );
+              })()}
+            <div className="scenarios">
+              {input.scenarios.map((s) => (
+                <button
+                  className={`scenario ${selectedScenario === s.name ? "active" : ""}`}
+                  key={s.name}
+                  aria-pressed={selectedScenario === s.name}
+                  onClick={() => {
+                    setSelectedScenario(s.name);
+                    setGrowth(s.growth);
+                    setDiscount(s.discount);
+                    setTerminal(s.terminal);
+                    setDilution(1);
+                  }}
+                >
+                  <span>{s.name} scenario</span>
+                  <strong>{amount(s.value, r.quote.currency)}</strong>
+                  <small>
+                    {s.growth}% growth · {s.discount}% discount
+                  </small>
+                </button>
+              ))}
+            </div>
+          </section>
           <section className="panel support">
             <div className="section-heading">
               <div>
@@ -672,7 +783,10 @@ function Valuation({ research: r }: { research: ResearchData }) {
                     max={x.max}
                     step={0.5}
                     value={x.v}
-                    onChange={(e) => x.set(Number(e.target.value))}
+                    onChange={(e) => {
+                      setSelectedScenario(null);
+                      x.set(Number(e.target.value));
+                    }}
                   />
                 </label>
               ))}
@@ -762,8 +876,8 @@ function Business({ research: r }: { research: ResearchData }) {
           </p>
         </section>
       </div>
-      <ResearchNotes research={r} />
       <Filings research={r} />
+      <ResearchNotes research={r} />
     </section>
   );
 }
@@ -793,10 +907,13 @@ function Filings({ research: r }: { research: ResearchData }) {
           ))}
         </div>
       ) : (
-        <Empty title="No filings returned" icon={FileText}>
-          The connected source has not returned filings for this instrument.
-          Future earnings dates are not inferred from historical filing dates.
-        </Empty>
+        <div className="inline-empty" role="status">
+          <FileText size={20} />
+          <p>
+            {r.issues.find((i) => /filings|disclosures/i.test(i)) ||
+              "No supported company reports returned for this listing."}
+          </p>
+        </div>
       )}
     </section>
   );

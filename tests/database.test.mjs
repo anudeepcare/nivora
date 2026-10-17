@@ -17,7 +17,8 @@ test("Postgres migrations enforce account-scoped watches, idempotency, and AI re
    alter table watchlists enable row level security; alter table watchlist_items enable row level security;
    create policy own_list on watchlists for all using(auth.uid()=user_id) with check(auth.uid()=user_id);
    create policy own_item on watchlist_items for all using(auth.uid()=user_id) with check(auth.uid()=user_id);
-   grant select,insert,update,delete on watchlists,watchlist_items to authenticated;`);
+   grant select,insert,update,delete on watchlists,watchlist_items to authenticated;
+   alter default privileges in schema public grant all on tables to anon,authenticated,service_role;`);
     for (const file of [
       "202610170000_workspace_base.sql",
       "202610170001_ai_budget.sql",
@@ -26,6 +27,7 @@ test("Postgres migrations enforce account-scoped watches, idempotency, and AI re
       "202610170004_paper_plans.sql",
       "202610170005_provider_budget.sql",
       "202610170006_position_imports.sql",
+      "20261017071243_auryn_product_explicit_grants.sql",
     ])
       await db.exec(
         await readFile(
@@ -33,6 +35,8 @@ test("Postgres migrations enforce account-scoped watches, idempotency, and AI re
           "utf8",
         ),
       );
+    assert.equal((await db.query("select has_table_privilege('anon','public.auryn_documents','SELECT') as allowed")).rows[0].allowed, false);
+    assert.equal((await db.query("select has_table_privilege('authenticated','public.auryn_documents','TRUNCATE') as allowed")).rows[0].allowed, false);
     await db.exec(`set role authenticated; set request.uid='${a}'`);
     for (let i = 0; i < 2; i++)
       assert.equal(

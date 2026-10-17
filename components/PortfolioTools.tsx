@@ -92,7 +92,7 @@ export default function PortfolioTools({
     URL.revokeObjectURL(u);
   }
   return (
-    <section className="support">
+    <section className="support portfolio-tools">
       <header className="section-heading">
         <h2>Before your next investment</h2>
         <Help label="Portfolio scenarios">
@@ -136,18 +136,20 @@ export default function PortfolioTools({
           <div className="data-list">
             <div>
               <span>Cash after</span>
-              <b>{amount(preview.cashAfter)}</b>
+              <b>{symbol.trim() ? amount(preview.cashAfter) : "—"}</b>
             </div>
             <div>
               <span>Position after</span>
-              <b>{percent(preview.weightAfter)}</b>
+              <b>{symbol.trim() ? percent(preview.weightAfter) : "—"}</b>
             </div>
           </div>
           <p className="footnote">
-            {totals.missing.length
-              ? "Full pricing is required before judging total exposure."
-              : preview.reasons.join(" ") ||
-                "Within the cash and concentration assumptions shown. Not an instruction to buy."}
+            {!symbol.trim()
+              ? "Enter a ticker to preview the purchase."
+              : totals.missing.length
+                ? "Full pricing is required before judging total exposure."
+                : preview.reasons.join(" ") ||
+                  "Within the cash and concentration assumptions shown. Not an instruction to buy."}
           </p>
         </section>
         <section className="panel">
@@ -181,10 +183,12 @@ export default function PortfolioTools({
             CSV template
           </button>
         </header>
-        <label className="button">
+        <label className="button file-picker">
           <Upload size={16} />
           Choose CSV
           <input
+            className="upload-input"
+            aria-label="Choose holdings CSV"
             type="file"
             accept=".csv,text/csv"
             onChange={(e) => read(e.target.files?.[0])}

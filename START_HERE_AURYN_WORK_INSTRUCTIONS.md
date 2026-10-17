@@ -2,7 +2,7 @@
 
 This archive contains the full independent AURYN application source, not only generated HTML or a build output. Read README.md, docs/RELEASE_STATUS.md and docs/DEPLOYMENT.md before replacing a deployment.
 
-The approved design is docs/design/approved-direction.png. It is an illustrative mockup, not a screenshot proving the implemented app matches. Current source must be reviewed in a real browser and on an installed iPhone PWA.
+The current approved design is docs/design/approved-interactive.html. The older approved-direction.png remains historical context. The HTML contains illustrative data and is a design reference, not a screenshot proving the real app matches. Current source must be reviewed in a real browser and on an installed iPhone PWA.
 
 The complete inherited 104-item specification is docs/requirements-inherited.json. Each requirement has a current status and evidence note. Preserve this audit; do not describe incomplete work as finished. Later user instructions require a ground-up independent application, no legacy CSS override stack, simple decision-first mobile/desktop UX, light/dark preferences, visible metrics, amount-free 1×–4× accumulation zones, and no new paid provider without a cost/capability review.
 

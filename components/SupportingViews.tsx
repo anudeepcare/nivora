@@ -16,7 +16,16 @@ import { amount, percent, dateLabel, symbolInput } from "@/lib/format";
 import { perspective } from "@/lib/analysis";
 import type { Research } from "@/lib/types";
 export function Settings() {
-  const { theme, setTheme, workspace, demo } = useProduct(),
+  const {
+      themePreference,
+      setTheme,
+      textSize,
+      setTextSize,
+      reduceMotion,
+      setReduceMotion,
+      workspace,
+      demo,
+    } = useProduct(),
     prefix = demo ? "/preview" : "",
     [message, setMessage] = useState(""),
     [password, setPassword] = useState(""),
@@ -45,49 +54,98 @@ export function Settings() {
         title="Make AURYN yours."
         subtitle="Appearance and account settings, without the clutter."
       />
-      <div className="settings-grid">
-        <section className="panel">
-          <h2>Appearance</h2>
-          <p>
-            Choose the theme that feels right. Your preference stays on this
-            device.
-          </p>
-          <div className="theme-options">
-            {(["dark", "light"] as const).map((t) => (
+      <section className="panel preferences">
+        <div className="setting-row">
+          <div>
+            <strong>Appearance</strong>
+            <p>Choose your theme or follow your device.</p>
+          </div>
+          <div className="segmented" aria-label="Appearance">
+            {(["light", "dark", "system"] as const).map((t) => (
               <button
                 key={t}
-                aria-pressed={theme === t}
+                aria-pressed={themePreference === t}
                 onClick={() => setTheme(t)}
               >
-                <span className={`theme-picture ${t}`}>
-                  <span />
-                  <div>
-                    <i />
-                    <i />
-                    <i />
-                  </div>
-                </span>
-                {t === "dark" ? "Dark · charcoal" : "Light · porcelain"}
+                {t[0].toUpperCase() + t.slice(1)}
               </button>
             ))}
           </div>
-        </section>
-        <section className="panel">
-          <h2>Your account</h2>
-          <p>{workspace?.email || "Loading account…"}</p>
-          <div className="settings-links">
-            <Link href={`${prefix}/help`}>
-              Data & methodology <ArrowUpRight size={15} />
-            </Link>
-            <Link href={`${prefix}/trading`}>
-              Paper connection <ArrowUpRight size={15} />
-            </Link>
-            <Link href={`${prefix}/research-lab`}>
-              Research validation <ArrowUpRight size={15} />
-            </Link>
+        </div>
+        <div className="setting-row">
+          <div>
+            <strong>Text size</strong>
+            <p>Comfortable, readable type across your workspace.</p>
           </div>
-        </section>
-      </div>
+          <div className="segmented" aria-label="Text size">
+            {(["standard", "large"] as const).map((t) => (
+              <button
+                key={t}
+                aria-pressed={textSize === t}
+                onClick={() => setTextSize(t)}
+              >
+                {t[0].toUpperCase() + t.slice(1)}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="setting-row">
+          <div>
+            <strong>Reduce motion</strong>
+            <p>Your device’s accessibility preference is always respected.</p>
+          </div>
+          <button
+            className="button"
+            aria-pressed={reduceMotion}
+            onClick={() => setReduceMotion(!reduceMotion)}
+          >
+            {reduceMotion ? "On" : "Use device setting"}
+          </button>
+        </div>
+      </section>
+      <section className="panel support">
+        <h2>Your tools</h2>
+        <div className="settings-links">
+          {[
+            ["compare", "Compare companies"],
+            ["discover", "Discover"],
+            ["alerts", "Price alerts"],
+            ["research-lab", "Research validation"],
+            ["trading", "Paper trading"],
+            ["help", "Sources & methodology"],
+          ].map(([path, label]) => (
+            <Link key={path} href={`${prefix}/${path}`}>
+              {label}
+              <ArrowUpRight size={17} />
+            </Link>
+          ))}
+        </div>
+      </section>
+      <section className="panel support">
+        <div className="setting-row">
+          <div>
+            <strong>Your account</strong>
+            <p>
+              {workspace?.email ||
+                (demo ? "Design preview" : "Loading account…")}
+            </p>
+          </div>
+          <button
+            className="button"
+            disabled={!!demo}
+            onClick={async () => {
+              try {
+                const { error } = await authClient().auth.signOut();
+                if (error) throw error;
+              } catch {
+                setMessage("Sign out failed. Please try again.");
+              }
+            }}
+          >
+            Sign out
+          </button>
+        </div>
+      </section>
       <section className="panel support">
         <h2>Update password</h2>
         <form className="password-form" onSubmit={update}>

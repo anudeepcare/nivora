@@ -5,7 +5,7 @@ import type { LucideIcon } from "lucide-react";
 export function Logo() {
   return (
     <span className="brand">
-      <svg viewBox="0 0 36 38" width="31" height="33" aria-hidden="true">
+      <svg viewBox="0 0 36 38" width="38" height="38" aria-hidden="true">
         <path fill="#356df3" d="M14 3h9L10 34H1z" />
         <path fill="#80a8ff" d="m23 3 12 31H23L12 7z" />
         <path fill="#2458d9" d="m18 21 5 13H10z" />
@@ -19,6 +19,8 @@ export function Logo() {
 }
 const logos: Record<string, string> = {
   AAPL: "AAPL.svg",
+  NOW: "NOW.png",
+  SAP: "SAP.png",
   MSFT: "",
   IREN: "IREN.svg",
   APP: "APP.svg",
@@ -57,7 +59,7 @@ export function SecurityLogo({
   useEffect(() => setFailed(false), [symbol]);
   return (
     <span
-      className="security-logo"
+      className={`security-logo ${["HIMS", "NOW"].includes(symbol) ? "logo-dark" : ""}`}
       style={{ width: size, height: size, minWidth: size }}
       aria-hidden="true"
     >
@@ -68,8 +70,14 @@ export function SecurityLogo({
           <path fill="#00a4ef" d="M1 13h10v10H1z" />
           <path fill="#ffb900" d="M13 13h10v10H13z" />
         </svg>
-      ) : symbol === "BTC/USD" || symbol === "BTC" ? (
+      ) : symbol === "BTC/USD" ? (
         <span className="bitcoin">₿</span>
+      ) : symbol === "ETH/USD" ? (
+        <svg viewBox="0 0 32 48" width="22" aria-hidden="true">
+          <path fill="#627eea" d="M16 0 1 25l15 9 15-9z" />
+          <path fill="#3c3c3d" d="m16 0 15 25-15-7z" />
+          <path fill="#8c8c8c" d="m1 28 15 20 15-20-15 9z" />
+        </svg>
       ) : logos[symbol] && !failed ? (
         <img
           alt=""
@@ -77,7 +85,9 @@ export function SecurityLogo({
           onError={() => setFailed(true)}
         />
       ) : (
-        <b>{symbol.slice(0, 2)}</b>
+        <b className="ticker-monogram" title={symbol}>
+          {symbol.split("/")[0]}
+        </b>
       )}
     </span>
   );

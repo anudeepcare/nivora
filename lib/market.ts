@@ -107,7 +107,6 @@ export function supportedListing(raw: Record<string, unknown>): boolean {
       "NYSE MKT",
       "BATS",
       "CBOE",
-    ].includes(exchange) &&
-    (!raw.country || raw.country === "United States")
+    ].includes(exchange)
   );
 }

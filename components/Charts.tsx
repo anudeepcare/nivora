@@ -37,7 +37,7 @@ export function PriceChart({
       layout: {
         background: { type: ColorType.Solid, color: "transparent" },
         textColor: theme === "dark" ? "#a1aec2" : "#5a677b",
-        fontSize: 11,
+        fontSize: 12,
       },
       grid: {
         vertLines: { visible: false },
@@ -127,38 +127,8 @@ export function PriceChart({
         } catch {}
     };
   }, [bars, range, theme, style, levels]);
-  function zoom(factor: number) {
-    const scale = chart.current?.timeScale(),
-      r = scale?.getVisibleLogicalRange();
-    if (!scale || !r) return;
-    const middle = (r.from + r.to) / 2,
-      half = ((r.to - r.from) * factor) / 2;
-    scale.setVisibleLogicalRange({ from: middle - half, to: middle + half });
-  }
   return (
-    <div>
-      <div className="chart-tools" aria-label="Chart zoom controls">
-        <button
-          type="button"
-          onClick={() => zoom(0.7)}
-          aria-label="Zoom into chart"
-        >
-          +
-        </button>
-        <button
-          type="button"
-          onClick={() => zoom(1.4)}
-          aria-label="Zoom out of chart"
-        >
-          −
-        </button>
-        <button
-          type="button"
-          onClick={() => chart.current?.timeScale().fitContent()}
-        >
-          Reset
-        </button>
-      </div>
+    <div className="chart-wrap">
       <div
         className="price-chart"
         role="img"

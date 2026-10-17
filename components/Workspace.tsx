@@ -15,22 +15,25 @@ import {
 } from "lucide-react";
 import type { Company, Position, Quote } from "@/lib/types";
 import { portfolioTotals } from "@/lib/engine";
-import { amount, dateLabel, percent } from "@/lib/format";
+import { amount, dateLabel, percent, quoteTime } from "@/lib/format";
 import { useProduct, useResource } from "./Session";
 import { Empty, PageHeading, SecurityLogo, Notice, Help } from "./Ui";
 import Search from "./Search";
 import { api } from "@/lib/client";
 import { workspaceSymbolBatches } from "@/lib/workspace";
-import PortfolioTools from "./PortfolioTools";
+
 type Quotes = Record<
   string,
   { company?: Company; quote?: Quote; error?: string }
 >;
-export function useWorkspaceQuotes() {
+export function useWorkspaceQuotes(
+  scope: "all" | "watchlist" | "portfolio" = "all",
+) {
   const { workspace, demo, cache } = useProduct(),
     groups = workspaceSymbolBatches(
-      workspace?.positions ?? [],
-      workspace?.watchlist ?? [],
+      scope === "watchlist" ? [] : (workspace?.positions ?? []),
+      scope === "portfolio" ? [] : (workspace?.watchlist ?? []),
+      10,
     ),
     key = JSON.stringify(groups),
     [revision, setRevision] = useState(0),
@@ -61,9 +64,13 @@ export function useWorkspaceQuotes() {
     setData(cached);
     setLoading(selected.length > 0);
     setError("");
+    let windowStarted = Date.now();
     const pause = () =>
       new Promise<void>((resolve) => {
-        const timer = setTimeout(resolve, 31000);
+        const timer = setTimeout(
+          resolve,
+          Math.max(0, 61000 - (Date.now() - windowStarted)),
+        );
         abort.signal.addEventListener(
           "abort",
           () => {
@@ -74,7 +81,7 @@ export function useWorkspaceQuotes() {
         );
       });
     (async () => {
-      let sent = 0;
+      let requested = 0;
       for (const group of selected) {
         if (!active) break;
         const missing = group.filter(
@@ -84,7 +91,15 @@ export function useWorkspaceQuotes() {
             Date.now() - cache.get("quote:" + s)!.at > 60000,
         );
         if (!missing.length) continue;
-        if (sent) await pause();
+        const weight = missing.reduce(
+          (n, s) => n + (s.includes("/") ? 2 : 1),
+          0,
+        );
+        if (requested + weight > 40) {
+          await pause();
+          requested = 0;
+          windowStarted = Date.now();
+        }
         if (!active) break;
         try {
           const result = await api<Quotes>(
@@ -95,12 +110,25 @@ export function useWorkspaceQuotes() {
           if (!active) break;
           for (const [s, r] of Object.entries(result))
             if (r.quote) cache.set("quote:" + s, { at: Date.now(), value: r });
-          setData((old) => ({ ...old, ...result }));
-          sent++;
+          setData((old) => {
+            const next = { ...old };
+            for (const [symbol, row] of Object.entries(result))
+              next[symbol] = row.quote
+                ? row
+                : {
+                    ...old[symbol],
+                    ...row,
+                    ...(old[symbol]?.quote
+                      ? { quote: { ...old[symbol].quote!, stale: true } }
+                      : {}),
+                  };
+            return next;
+          });
+          requested += weight;
         } catch (e) {
           if (active)
             setError(e instanceof Error ? e.message : "Quotes unavailable");
-          sent++;
+          requested += weight;
         }
       }
       if (active) setLoading(false);
@@ -134,6 +162,7 @@ export function ResearchHome() {
         <Search large />
       </div>
       {workspaceError && <Notice error>{workspaceError}</Notice>}
+      {quotes.error && <Notice error>{quotes.error}</Notice>}
       <header className="section-heading">
         <h2>Your research universe</h2>
         <span className="muted small">{symbols.length} saved companies</span>
@@ -159,11 +188,22 @@ export function ResearchHome() {
                 <footer>
                   <strong>{amount(q?.quote?.price, q?.quote?.currency)}</strong>
                   <span
-                    className={(q?.quote?.changePct ?? 0) < 0 ? "red" : "green"}
+                    className={
+                      q?.quote?.changePct == null
+                        ? "muted"
+                        : q.quote.changePct < 0
+                          ? "red"
+                          : "green"
+                    }
                   >
                     {percent(q?.quote?.changePct, true)}
                   </span>
                 </footer>
+                <small className="quote-stamp">
+                  {q?.quote
+                    ? quoteTime(q.quote.asOf)
+                    : q?.error || "Loading price…"}
+                </small>
               </Link>
             );
           })}
@@ -200,74 +240,72 @@ export function Overview() {
         }
       />
       {workspaceError && <Notice error>{workspaceError}</Notice>}
-      <div className="overview-stats">
+      {quotes.error && <Notice error>{quotes.error}</Notice>}
+      <section className="panel overview-hero">
         <div>
-          <span>Known portfolio value</span>
-          <strong>{workspace ? amount(totals.knownValue) : "—"}</strong>
-          <small>
-            {totals.missing.length
-              ? `${totals.missing.length} unpriced holdings excluded`
-              : `${holdings.length} investment positions`}
-          </small>
-        </div>
-        <div>
-          <span>Unrealized return</span>
-          <strong
-            className={totals.pnl != null && totals.pnl < 0 ? "red" : "green"}
-          >
-            {amount(totals.pnl)}
-          </strong>
-          <small>Requires a verified USD cost basis</small>
-        </div>
-        <div>
-          <span>Following</span>
-          <strong>
-            {workspace?.watchlist.length ?? "—"}
-            <small>companies</small>
-          </strong>
-          <Link href={`${prefix}/watchlist`}>Open watchlist →</Link>
-        </div>
-      </div>
-      <div className="overview-columns">
-        <section>
-          <header className="section-heading">
-            <h2>On your radar</h2>
-            <Link className="text-button" href={`${prefix}/watchlist`}>
-              View all <ArrowUpRight size={15} />
-            </Link>
-          </header>
-          <InvestmentRows
-            symbols={
-              workspace?.watchlist.slice(0, 6).map((w) => w.symbol) || []
-            }
-            quotes={quotes.data || {}}
-          />
-        </section>
-        <section className="panel overview-focus">
-          <span className="eyebrow">RESEARCH THAT COMPOUNDS</span>
-          <h2>Follow the business behind the price.</h2>
-          <p>
-            Review reported financial trends, valuation assumptions and monthly
-            accumulation in one company workspace.
+          <span className="eyebrow">YOUR PORTFOLIO · USD</span>
+          <div className="balance">
+            {workspace ? amount(totals.knownValue) : "—"}
+          </div>
+          <p className="balance-caption">
+            {quotes.loading
+              ? "Updating prices…"
+              : totals.missing.length
+                ? `${totals.missing.length} unpriced holdings excluded`
+                : "Priced investments and recorded cash"}
           </p>
-          <Search />
-          <div className="focus-links">
-            <Link href={`${prefix}/compare`}>
-              Compare companies <ArrowUpRight size={15} />
-            </Link>
-            <Link href={`${prefix}/portfolio`}>
-              Review your allocation <ArrowUpRight size={15} />
+          <div className="mini-stats">
+            <div>
+              <span>Unrealized return</span>
+              <strong
+                className={
+                  totals.pnl != null && totals.pnl < 0 ? "red" : "green"
+                }
+              >
+                {amount(totals.pnl)}
+              </strong>
+            </div>
+            <div>
+              <span>Investments</span>
+              <strong>{holdings.length}</strong>
+            </div>
+            <div>
+              <span>Following</span>
+              <strong>{workspace?.watchlist.length ?? "—"}</strong>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div className="section-heading">
+            <h2>Your allocation</h2>
+            <Link className="text-button" href={`${prefix}/portfolio`}>
+              View portfolio <ArrowUpRight size={16} />
             </Link>
           </div>
-        </section>
+          <Allocation positions={workspace?.positions || []} quotes={q} />
+        </div>
+      </section>
+      <section className="panel support">
+        <header className="section-heading">
+          <h2>On your radar</h2>
+          <Link className="text-button" href={`${prefix}/watchlist`}>
+            View all <ArrowUpRight size={16} />
+          </Link>
+        </header>
+        <InvestmentRows
+          symbols={workspace?.watchlist.slice(0, 6).map((w) => w.symbol) || []}
+          quotes={quotes.data || {}}
+        />
+      </section>
+      <div className="research-entry support">
+        <div>
+          <h2>Find your next idea</h2>
+          <p className="muted">
+            Financials, valuation and price structure in one place.
+          </p>
+        </div>
+        <Search />
       </div>
-      <header className="section-heading support">
-        <h2>Portfolio concentration</h2>
-        <Link className="text-button" href={`${prefix}/portfolio`}>
-          Review holdings <ArrowUpRight size={15} />
-        </Link>
-      </header>
-      <Allocation positions={workspace?.positions || []} quotes={q} />
     </section>
   );
 }
@@ -303,11 +341,26 @@ function InvestmentRows({
             <div className="investment-price">
               <strong>{amount(q?.quote?.price, q?.quote?.currency)}</strong>
               <small
-                className={(q?.quote?.changePct ?? 0) < 0 ? "red" : "green"}
+                className={
+                  q?.quote?.changePct == null
+                    ? "muted"
+                    : q.quote.changePct < 0
+                      ? "red"
+                      : "green"
+                }
               >
-                {q?.quote?.stale
-                  ? "Older quote"
-                  : percent(q?.quote?.changePct, true)}
+                {!q?.quote
+                  ? q?.error
+                    ? "Unavailable"
+                    : "Loading…"
+                  : q.quote.stale
+                    ? "Older quote"
+                    : percent(q.quote.changePct, true)}
+              </small>
+              <small className="quote-stamp" title={q?.error}>
+                {q?.quote
+                  ? quoteTime(q.quote.asOf)
+                  : q?.error || "Requesting latest quote"}
               </small>
             </div>
             {remove ? (
@@ -339,8 +392,9 @@ function InvestmentRows({
 }
 export function Watchlist() {
   const { workspace, demo, workspaceError, mutate } = useProduct(),
-    quotes = useWorkspaceQuotes(),
+    quotes = useWorkspaceQuotes("watchlist"),
     [query, setQuery] = useState(""),
+    addDialog = useRef<HTMLDialogElement>(null),
     [error, setError] = useState("");
   const symbols = (workspace?.watchlist || [])
     .map((w) => w.symbol)
@@ -359,22 +413,22 @@ export function Watchlist() {
   return (
     <section>
       <PageHeading
-        title="Keep good ideas close."
-        subtitle="Your watchlist, connected to company research."
+        title="Watchlist"
+        subtitle="Latest prices and a direct route to your research."
         action={
           <button
-            className="button"
-            onClick={quotes.refresh}
-            disabled={quotes.loading}
+            className="button primary"
+            onClick={() => addDialog.current?.showModal()}
           >
-            <RefreshCw size={16} />
-            {quotes.loading ? "Refreshing…" : "Refresh prices"}
+            <Plus size={18} />
+            Add company
           </button>
         }
       />
       {(workspaceError || error) && (
         <Notice error>{workspaceError || error}</Notice>
       )}
+      {quotes.error && <Notice error>{quotes.error}</Notice>}
       <div className="watchlist-toolbar">
         <label>
           <SearchIcon size={17} />
@@ -386,18 +440,37 @@ export function Watchlist() {
           />
         </label>
         <span>{symbols.length} companies</span>
+        <button
+          className="icon-button"
+          aria-label="Refresh watchlist prices"
+          disabled={quotes.loading}
+          onClick={quotes.refresh}
+        >
+          <RefreshCw size={18} />
+        </button>
       </div>
       <InvestmentRows
         symbols={symbols}
         quotes={quotes.data || {}}
         remove={remove}
       />
-      <div className="support">
-        <h3>Find another company</h3>
-        <div className="research-search">
-          <Search />
+      <dialog
+        className="search-dialog"
+        ref={addDialog}
+        aria-label="Add a company"
+      >
+        <div className="dialog-head">
+          <h2>Find a company to follow</h2>
+          <button
+            className="icon-button"
+            aria-label="Close search"
+            onClick={() => addDialog.current?.close()}
+          >
+            <X size={20} />
+          </button>
         </div>
-      </div>
+        <Search autoFocus onNavigate={() => addDialog.current?.close()} />
+      </dialog>
     </section>
   );
 }
@@ -408,7 +481,7 @@ function Allocation({
   positions: Position[];
   quotes: Record<string, Quote>;
 }) {
-  const value = positions
+  const priced = positions
       .map((p) => ({
         symbol: p.symbol,
         value:
@@ -423,8 +496,26 @@ function Allocation({
               : null,
       }))
       .filter((p): p is { symbol: string; value: number } => p.value != null),
-    total = value.reduce((s, p) => s + p.value, 0),
+    total = priced.reduce((s, p) => s + p.value, 0),
     colors = ["#5c85ff", "#8c72e5", "#25b391", "#edb15c", "#db7ca8", "#61b3ce"];
+  const grouped = Object.entries(
+    priced.reduce<Record<string, number>>((acc, p) => {
+      acc[p.symbol] = (acc[p.symbol] || 0) + p.value;
+      return acc;
+    }, {}),
+  )
+    .map(([symbol, value]) => ({ symbol, value }))
+    .sort((a, b) => b.value - a.value);
+  const value =
+    grouped.length > 6
+      ? [
+          ...grouped.slice(0, 6),
+          {
+            symbol: "Other",
+            value: grouped.slice(6).reduce((n, p) => n + p.value, 0),
+          },
+        ]
+      : grouped;
   return total > 0 ? (
     <div className="allocation">
       <div
@@ -452,7 +543,7 @@ function Allocation({
           </span>
         ))}
       </div>
-      {value.length < positions.length && (
+      {priced.length < positions.length && (
         <p className="footnote">Allocation covers priced positions only.</p>
       )}
     </div>
@@ -464,9 +555,12 @@ function Allocation({
 }
 export function Portfolio() {
   const { workspace, demo, workspaceError, mutate } = useProduct(),
-    quotes = useWorkspaceQuotes(),
+    quotes = useWorkspaceQuotes("portfolio"),
     prefix = demo ? "/preview" : "",
     modal = useRef<HTMLDialogElement>(null),
+    currencyModal = useRef<HTMLDialogElement>(null),
+    [confirmedUsd, setConfirmedUsd] = useState(false),
+    [currency, setCurrency] = useState("USD"),
     [editing, setEditing] = useState<Position | null>(null),
     [symbol, setSymbol] = useState(""),
     [quantity, setQuantity] = useState(""),
@@ -482,13 +576,17 @@ export function Portfolio() {
         .map(([k, v]) => [k, v.quote!]),
     ),
     positions = workspace?.positions || [],
-    totals = portfolioTotals(positions, q);
+    totals = portfolioTotals(positions, q),
+    missingCurrency = positions.filter(
+      (p) => !p.currency && p.assetType !== "cash",
+    );
   function edit(p: Position | null) {
     setEditing(p);
     setSymbol(p?.symbol || "");
     setQuantity(p ? String(p.quantity) : "");
     setCost(p ? String(p.cost) : "");
     setCash(p?.assetType === "cash");
+    setCurrency(p ? p.currency || "" : "USD");
     setError("");
     modal.current?.showModal();
   }
@@ -504,6 +602,7 @@ export function Portfolio() {
         quantity: Number(quantity),
         cost: cash ? 1 : Number(cost),
         assetType: cash ? "cash" : "stock",
+        currency: cash ? "USD" : currency,
       });
       modal.current?.close();
     } catch (e) {
@@ -529,8 +628,8 @@ export function Portfolio() {
   return (
     <section>
       <PageHeading
-        title="Your portfolio, in perspective."
-        subtitle="Holdings, recorded cost and concentration in one place."
+        title="Portfolio"
+        subtitle="Your holdings, current prices and unrealized returns."
         action={
           <button className="button primary" onClick={() => edit(null)}>
             <Plus size={17} />
@@ -539,44 +638,99 @@ export function Portfolio() {
         }
       />
       {workspaceError && <Notice error>{workspaceError}</Notice>}
-      {error && !modal.current?.open && <Notice error>{error}</Notice>}
-      <div className="overview-stats">
-        <div>
-          <span>
-            Known market value{" "}
-            <Help label="Market value">
-              Quantity multiplied by available price, plus recorded cash.
-              Unpriced, stale or non-USD holdings are excluded from known value.
-              This is not a performance calculation.
-            </Help>
-          </span>
-          <strong>{workspace ? amount(totals.knownValue) : "—"}</strong>
-          <small>
-            {totals.missing.length
-              ? `${totals.missing.join(", ")} excluded`
-              : "Across priced positions and cash"}
-          </small>
-        </div>
-        <div>
-          <span>Recorded cost</span>
-          <strong>{workspace ? amount(totals.cost) : "—"}</strong>
-          <small>Quantity × your average cost</small>
-        </div>
-        <div>
-          <span>Unrealized profit / loss</span>
-          <strong
-            className={totals.pnl != null && totals.pnl < 0 ? "red" : "green"}
+      {quotes.error && <Notice error>{quotes.error}</Notice>}
+      {missingCurrency.length > 0 && (
+        <div className="portfolio-review">
+          <div>
+            <strong>
+              {missingCurrency.length} cost currencies need confirmation
+            </strong>
+            <p>
+              Your recorded average costs are present. Confirm their currency to
+              calculate unrealized returns.
+            </p>
+          </div>
+          <button
+            className="button"
+            onClick={() => {
+              setConfirmedUsd(false);
+              currencyModal.current?.showModal();
+            }}
           >
-            {amount(totals.pnl)}
-          </strong>
-          <small>
-            {totals.pnl != null && totals.cost
-              ? percent((totals.pnl / totals.cost) * 100, true)
-              : "Complete pricing required"}
-          </small>
+            Review currencies
+          </button>
         </div>
+      )}
+      <div className="quote-progress" role="status">
+        <span>
+          {quotes.loading ? "Updating prices…" : "Quote check complete"} ·{" "}
+          {
+            positions.filter(
+              (p) =>
+                p.assetType !== "cash" &&
+                q[p.symbol]?.price != null &&
+                !q[p.symbol].stale,
+            ).length
+          }
+          /{positions.filter((p) => p.assetType !== "cash").length} investments
+          priced
+        </span>
+        <button
+          className="text-button"
+          disabled={quotes.loading}
+          onClick={quotes.refresh}
+        >
+          <RefreshCw size={14} />
+          Refresh prices
+        </button>
       </div>
-      <section className="portfolio-holdings">
+      {error && !modal.current?.open && !currencyModal.current?.open && (
+        <Notice error>{error}</Notice>
+      )}
+      <div className="portfolio-top">
+        <section className="panel portfolio-balance">
+          <span className="eyebrow">KNOWN MARKET VALUE · USD</span>
+          <div className="balance">
+            {workspace ? amount(totals.knownValue) : "—"}
+          </div>
+          <p className="balance-caption">
+            {totals.missing.length
+              ? `${totals.missing.length} unpriced holdings excluded`
+              : "Across priced investments and cash"}
+            <Help label="Market value">
+              Quantity multiplied by available USD prices, plus recorded USD
+              cash. Stale, unpriced and non-USD positions are excluded. This is
+              not a performance calculation.
+            </Help>
+          </p>
+          <div className="mini-stats">
+            <div>
+              <span>Recorded cost</span>
+              <strong>{workspace ? amount(totals.cost) : "—"}</strong>
+            </div>
+            <div>
+              <span>Unrealized profit / loss</span>
+              <strong
+                className={
+                  totals.pnl != null && totals.pnl < 0 ? "red" : "green"
+                }
+              >
+                {amount(totals.pnl)}
+              </strong>
+              <small>
+                {totals.pnl != null && totals.cost
+                  ? percent((totals.pnl / totals.cost) * 100, true)
+                  : "Complete USD pricing and costs required"}
+              </small>
+            </div>
+          </div>
+        </section>
+        <section className="panel">
+          <h2>Allocation</h2>
+          <Allocation positions={positions} quotes={q} />
+        </section>
+      </div>
+      <section className="panel portfolio-holdings support">
         <header className="section-heading">
           <h2>
             Holdings <span className="count">{positions.length}</span>
@@ -595,8 +749,7 @@ export function Portfolio() {
               <thead>
                 <tr>
                   <th>Investment</th>
-                  <th>Quantity</th>
-                  <th>Avg. cost</th>
+                  <th>Price</th>
                   <th>Value</th>
                   <th>Unrealized</th>
                   <th aria-label="Actions" />
@@ -640,6 +793,15 @@ export function Portfolio() {
                               <SecurityLogo symbol={p.symbol} size={35} />
                               <span>
                                 <b>{p.symbol}</b>
+                                <small className="holding-quantity">
+                                  {p.quantity.toLocaleString(undefined, {
+                                    maximumFractionDigits: 6,
+                                  })}{" "}
+                                  units · Cost{" "}
+                                  {p.currency
+                                    ? amount(p.cost, p.currency)
+                                    : "currency needed"}
+                                </small>
                                 <small>
                                   {quotes.data?.[p.symbol]?.company?.name ||
                                     "Open company research"}
@@ -648,15 +810,34 @@ export function Portfolio() {
                             </Link>
                           )}
                         </td>
-                        <td>
-                          {p.quantity.toLocaleString(undefined, {
-                            maximumFractionDigits: 6,
-                          })}
+                        <td data-label="Price">
+                          {amount(price)}
+                          <small className="muted">
+                            {p.assetType === "cash"
+                              ? "Cash"
+                              : q[p.symbol]
+                                ? quoteTime(q[p.symbol].asOf)
+                                : quotes.loading
+                                  ? "Loading…"
+                                  : "Unavailable"}
+                          </small>
                         </td>
-                        <td>{amount(p.cost, p.currency ?? "")}</td>
-                        <td>{amount(value)}</td>
+                        <td data-label="Value">
+                          {amount(value)}
+                          {value == null && (
+                            <small className="quote-error">
+                              {quotes.data?.[p.symbol]?.error ||
+                                (quotes.loading
+                                  ? "Loading price…"
+                                  : "Price unavailable")}
+                            </small>
+                          )}
+                        </td>
                         <td
-                          className={pnl != null && pnl < 0 ? "red" : "green"}
+                          data-label="Unrealized"
+                          className={
+                            pnl == null ? "muted" : pnl < 0 ? "red" : "green"
+                          }
                         >
                           {amount(pnl)}
                           <small>
@@ -721,16 +902,70 @@ export function Portfolio() {
           </Empty>
         )}
       </section>
-      <header className="section-heading support">
-        <h2>Allocation</h2>
-      </header>
-      <Allocation positions={positions} quotes={q} />
-      <PortfolioTools quotes={q} />
       <p className="footnote">
         Unrealized returns exclude realized trades, dividends, fees and taxes.
         Total-return charts require a transaction ledger; deposits are not
         presented as investment gains.
       </p>
+      <dialog
+        ref={currencyModal}
+        className="dialog position-dialog"
+        aria-labelledby="currency-review-title"
+      >
+        <button
+          className="icon-button close"
+          aria-label="Close currency review"
+          onClick={() => currencyModal.current?.close()}
+        >
+          <X size={20} />
+        </button>
+        <h2 id="currency-review-title">Confirm recorded cost currency</h2>
+        <p>
+          This sets USD for the {missingCurrency.length} listed records with no
+          currency. It does not convert or change your quantities or average
+          costs.
+        </p>
+        <p className="currency-symbols">
+          {missingCurrency.map((p) => p.symbol).join(", ")}
+        </p>
+        <label className="check">
+          <input
+            type="checkbox"
+            checked={confirmedUsd}
+            onChange={(e) => setConfirmedUsd(e.target.checked)}
+          />
+          All these recorded average costs are in USD.
+        </label>
+        <button
+          className="button primary"
+          disabled={!confirmedUsd || busy}
+          onClick={async () => {
+            setBusy(true);
+            setError("");
+            try {
+              await mutate({
+                op: "confirm-cost-currency",
+                currency: "USD",
+                ids: missingCurrency.map((p) => p.id),
+              });
+              currencyModal.current?.close();
+            } catch (e) {
+              setError(
+                e instanceof Error ? e.message : "Could not save currency.",
+              );
+            } finally {
+              setBusy(false);
+            }
+          }}
+        >
+          {busy ? "Saving…" : "Confirm USD costs"}
+        </button>
+        <p className="footnote">
+          If any cost is in another currency, close this dialog and edit that
+          position individually.
+        </p>
+        {error && <Notice error>{error}</Notice>}
+      </dialog>
       <dialog
         ref={modal}
         className="dialog position-dialog"
@@ -781,7 +1016,7 @@ export function Portfolio() {
             </label>
             {!cash && (
               <label>
-                Average cost · USD
+                Average cost
                 <input
                   required
                   type="number"
@@ -793,6 +1028,31 @@ export function Portfolio() {
               </label>
             )}
           </div>
+          {!cash && (
+            <label>
+              Cost currency
+              <select
+                required
+                value={currency}
+                onChange={(e) => setCurrency(e.target.value)}
+              >
+                <option value="" disabled>
+                  Choose currency
+                </option>
+                {[
+                  ...new Set([
+                    "USD",
+                    "EUR",
+                    "CAD",
+                    "GBP",
+                    ...(/^[A-Z]{3}$/.test(currency) ? [currency] : []),
+                  ]),
+                ].map((c) => (
+                  <option key={c}>{c}</option>
+                ))}
+              </select>
+            </label>
+          )}
           {error && <Notice error>{error}</Notice>}
           <button className="button primary" disabled={busy}>
             {busy ? "Saving…" : "Save position"}

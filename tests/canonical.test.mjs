@@ -54,3 +54,13 @@ test("a corrected historical bar changes evidence identity even when the latest 
     canonical({ ...r, history: [{ ...bars[0], close: 90 }, bars[1]] }).id,
   );
 });
+test("crypto snapshots do not demand company accounts or earnings", () => {
+  const c = canonical({
+    ...r,
+    company: { ...r.company, symbol: "BTC/USD", assetType: "crypto" },
+  });
+  assert.equal(c.newCapital, "Price history needed");
+  assert.equal(c.valuation, "Corporate valuation does not apply");
+  assert.ok(!c.risks.some((x) => x.includes("per-share")));
+  assert.ok(!c.horizons.swing.includes("earnings"));
+});

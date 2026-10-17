@@ -32,10 +32,31 @@ export const words = (s: string) =>
     .toLowerCase()
     .replace(/^./, (c) => c.toUpperCase());
 export function symbolInput(value: unknown) {
-  const s = String(value ?? "")
+  let s = String(value ?? "")
     .trim()
     .toUpperCase();
+  s =
+    (
+      {
+        BTCUSD: "BTC/USD",
+        "BTC-USD": "BTC/USD",
+        BITCOIN: "BTC/USD",
+        ETHUSD: "ETH/USD",
+        "ETH-USD": "ETH/USD",
+        ETHEREUM: "ETH/USD",
+      } as Record<string, string>
+    )[s] ?? s;
   if (!/^[A-Z0-9][A-Z0-9.-]{0,14}(\/[A-Z]{3,5})?$/.test(s))
     throw Error("Enter a valid stock symbol or crypto pair.");
   return s;
 }
+export const quoteTime = (s: string | null | undefined) =>
+  s && Number.isFinite(Date.parse(s))
+    ? new Date(s).toLocaleString("en-US", {
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        timeZoneName: "short",
+      })
+    : "Timestamp unavailable";

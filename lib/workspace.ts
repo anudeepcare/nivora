@@ -1,10 +1,24 @@
 import type { Position, Watch } from "./types";
+import { symbolInput } from "./format.ts";
+const savedSymbol = (value: unknown) => {
+  try {
+    return symbolInput(value);
+  } catch {
+    return String(value ?? "")
+      .trim()
+      .toUpperCase();
+  }
+};
 export function normalizePositions(
   rows: Record<string, unknown>[],
 ): Position[] {
   return rows.map((r) => ({
     id: String(r.id),
-    symbol: String(r.symbol),
+    symbol:
+      r.asset_type === "CRYPTO" &&
+      ["BTC", "ETH"].includes(String(r.symbol).trim().toUpperCase())
+        ? `${String(r.symbol).trim().toUpperCase()}/USD`
+        : savedSymbol(r.symbol),
     quantity: Number(r.shares),
     cost: Number(r.avg_cost),
     currency: typeof r.currency === "string" ? r.currency : null,
@@ -19,9 +33,13 @@ export function normalizePositions(
 export function normalizeWatchlist(rows: Record<string, unknown>[]): Watch[] {
   const unique = new Map<string, Watch>();
   for (const r of rows)
-    if (typeof r.symbol === "string" && !unique.has(r.symbol))
-      unique.set(r.symbol, {
-        symbol: r.symbol,
+    if (typeof r.symbol === "string" && !unique.has(savedSymbol(r.symbol)))
+      unique.set(savedSymbol(r.symbol), {
+        symbol:
+          r.asset_type === "CRYPTO" &&
+          ["BTC", "ETH"].includes(String(r.symbol).trim().toUpperCase())
+            ? `${String(r.symbol).trim().toUpperCase()}/USD`
+            : savedSymbol(r.symbol),
         note: "",
         createdAt: String(r.created_at),
       });

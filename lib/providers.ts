@@ -74,7 +74,47 @@ export async function quote(
         "This listing is outside the supported US/USD equity universe.",
         422,
       );
-    const normalized = normalizeQuote(q, symbol);
+    let normalized = normalizeQuote(q, symbol);
+    if (symbol.endsWith("/USD")) {
+      // The crypto quote timestamp is often the daily candle's midnight, not a
+      // quote observation time. Use a completed minute bar, never fetch time.
+      try {
+        const series = await twelve("time_series", {
+          symbol,
+          interval: "1min",
+          outputsize: "2",
+          timezone: "UTC",
+          order: "DESC",
+        });
+        if (series.meta?.symbol === symbol) {
+          const bar = normalizeBars(series.values, true)
+            .filter((b) => Date.parse(b.time) + 60000 <= Date.now())
+            .at(-1);
+          if (
+            bar &&
+            (!normalized.asOf ||
+              Date.parse(bar.time) > Date.parse(normalized.asOf))
+          ) {
+            const previous = numeric(q.previous_close);
+            normalized = normalizeQuote(
+              {
+                ...q,
+                close: bar.close,
+                timestamp: Date.parse(bar.time) / 1000,
+                percent_change:
+                  previous != null && previous > 0
+                    ? (bar.close / previous - 1) * 100
+                    : null,
+              },
+              symbol,
+            );
+            normalized.source = "Twelve Data · 1-minute close";
+          }
+        }
+      } catch {
+        // Keep the provider's dated daily observation explicitly stale on outage.
+      }
+    }
     return {
       company: {
         symbol,
@@ -135,13 +175,17 @@ export async function history(
 const tags: Record<Metric, string[]> = {
   revenue: [
     "RevenueFromContractWithCustomerExcludingAssessedTax",
+    "RevenueFromContractWithCustomerIncludingAssessedTax",
     "Revenues",
     "SalesRevenueNet",
     "Revenue",
   ],
   netIncome: ["NetIncomeLoss", "ProfitLoss"],
   operatingIncome: ["OperatingIncomeLoss", "ProfitLossFromOperatingActivities"],
-  operatingCashFlow: ["NetCashProvidedByUsedInOperatingActivities"],
+  operatingCashFlow: [
+    "NetCashProvidedByUsedInOperatingActivities",
+    "CashFlowsFromUsedInOperatingActivities",
+  ],
   capex: [
     "PaymentsToAcquirePropertyPlantAndEquipment",
     "PurchaseOfPropertyPlantAndEquipmentClassifiedAsInvestingActivities",
@@ -168,10 +212,13 @@ async function sec(path: string) {
     );
   return json(path, { "User-Agent": agent, Accept: "application/json" });
 }
-export async function fundamentals(
-  symbol: string,
-): Promise<{ facts: Fact[]; filings: Filing[]; name: string }> {
-  return cached(`sec:${symbol}`, 6 * 3600_000, async () => {
+export async function fundamentals(symbol: string): Promise<{
+  facts: Fact[];
+  filings: Filing[];
+  name: string;
+  issues: string[];
+}> {
+  const result = await cached(`sec:${symbol}`, 6 * 3600_000, async () => {
     const tickers = await cached<Record<string, any>>(
       "sec-tickers",
       86400_000,
@@ -186,10 +233,20 @@ export async function fundamentals(
         404,
       );
     const cik = String(match.cik_str).padStart(10, "0");
-    const [company, submissions] = await Promise.all([
+    const sources = await Promise.allSettled([
       sec(`https://data.sec.gov/api/xbrl/companyfacts/CIK${cik}.json`),
       sec(`https://data.sec.gov/submissions/CIK${cik}.json`),
     ]);
+    const company = sources[0].status === "fulfilled" ? sources[0].value : null;
+    const submissions =
+      sources[1].status === "fulfilled" ? sources[1].value : null;
+    const issues = sources.flatMap((source, i) =>
+      source.status === "rejected"
+        ? [
+            `${i === 0 ? "Financial facts" : "Company disclosures"}: Source temporarily unavailable. Retry to refresh this source.`,
+          ]
+        : [],
+    );
     const facts: Fact[] = [];
     for (const [metric, names] of Object.entries(tags))
       for (const [taxonomy, basis] of [
@@ -198,7 +255,7 @@ export async function fundamentals(
         ["dei", "GAAP"],
       ] as const) {
         for (const { tag, unit, row } of secObservations(
-          company.facts?.[taxonomy],
+          company?.facts?.[taxonomy],
           names,
         )) {
           if (
@@ -245,11 +302,30 @@ export async function fundamentals(
           });
         }
       }
-    const recent = submissions.filings?.recent,
+    const recent = submissions?.filings?.recent,
       filings: Filing[] = [];
-    for (let i = 0; i < Math.min(20, recent?.form?.length ?? 0); i++) {
+    // Insider forms can occupy the first hundreds of rows. Filter before limiting.
+    for (
+      let i = 0;
+      i < (recent?.form?.length ?? 0) && filings.length < 20;
+      i++
+    ) {
       if (
-        !["10-K", "10-Q", "8-K", "6-K", "20-F", "40-F"].includes(recent.form[i])
+        ![
+          "10-K",
+          "10-Q",
+          "8-K",
+          "6-K",
+          "20-F",
+          "40-F",
+          "10-K/A",
+          "10-Q/A",
+          "20-F/A",
+          "40-F/A",
+        ].includes(recent.form[i]) ||
+        !/^\d{10}-\d{2}-\d{6}$/.test(recent.accessionNumber?.[i] ?? "") ||
+        !recent.primaryDocument?.[i] ||
+        !/^\d{4}-\d{2}-\d{2}$/.test(recent.filingDate?.[i] ?? "")
       )
         continue;
       filings.push({
@@ -259,15 +335,18 @@ export async function fundamentals(
         url: `https://www.sec.gov/Archives/edgar/data/${Number(cik)}/${recent.accessionNumber[i].replaceAll("-", "")}/${recent.primaryDocument[i]}`,
       });
     }
-    return { facts, filings, name: company.entityName || match.title };
+    return { facts, filings, name: company?.entityName || match.title, issues };
   });
+  // A partial provider failure must be retryable, not cached for six hours.
+  if (result.issues.length) cache.delete(`sec:${symbol}`);
+  return result;
 }
 export async function research(symbol: string): Promise<Research> {
   const results = await Promise.allSettled([
     quote(symbol),
     history(symbol),
     symbol.includes("/")
-      ? Promise.resolve({ facts: [], filings: [], name: symbol })
+      ? Promise.resolve({ facts: [], filings: [], name: symbol, issues: [] })
       : fundamentals(symbol),
   ]);
   const q = results[0].status === "fulfilled" ? results[0].value : null,
@@ -301,14 +380,15 @@ export async function research(symbol: string): Promise<Research> {
     facts: f?.facts ?? [],
     filings: f?.filings ?? [],
     retrievedAt: new Date().toISOString(),
-    issues,
+    issues: [...issues, ...(f?.issues ?? [])],
   };
 }
 export async function search(query: string) {
+  query = query.trim().toUpperCase();
   return cached(`search:${query}`, 3600_000, async () => {
     const result = await twelve("symbol_search", {
       symbol: query,
-      outputsize: "12",
+      outputsize: "50",
     });
     return (result.data ?? [])
       .filter(
@@ -316,6 +396,10 @@ export async function search(query: string) {
           supportedListing(v) ||
           (v.instrument_type === "Digital Currency" &&
             String(v.symbol).endsWith("/USD")),
+      )
+      .sort(
+        (a: any, b: any) =>
+          Number(b.symbol === query) - Number(a.symbol === query),
       )
       .slice(0, 12)
       .map((v: any) => ({

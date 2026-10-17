@@ -2,7 +2,7 @@
 import { useMemo } from "react";
 import { useProduct, useResource } from "./Session";
 import type { Enrichment } from "@/lib/enrichment";
-import { amount, dateLabel } from "@/lib/format";
+import { dateLabel } from "@/lib/format";
 import { Notice, Source } from "./Ui";
 export default function CompanyEvents({ symbol }: { symbol: string }) {
   const { demo } = useProduct(),
@@ -59,8 +59,8 @@ export default function CompanyEvents({ symbol }: { symbol: string }) {
                     <thead>
                       <tr>
                         <th>Date</th>
-                        <th>EPS reported</th>
-                        <th>Consensus estimate</th>
+                        <th>EPS reported*</th>
+                        <th>EPS estimate*</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -68,14 +68,14 @@ export default function CompanyEvents({ symbol }: { symbol: string }) {
                         <tr key={`${e.date}-${i}`}>
                           <td>
                             {dateLabel(e.date)}
-                            <small>
+                            <small className="table-detail">
                               {e.epsActual == null
                                 ? "Scheduled / estimate"
                                 : "Reported"}
                             </small>
                           </td>
-                          <td>{e.epsActual ?? "—"}</td>
-                          <td>{e.epsEstimate ?? "—"}</td>
+                          <td>{e.epsActual?.toFixed(2) ?? "—"}</td>
+                          <td>{e.epsEstimate?.toFixed(2) ?? "—"}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -84,13 +84,17 @@ export default function CompanyEvents({ symbol }: { symbol: string }) {
               ) : (
                 <p className="muted">No earnings observations returned.</p>
               )}
+              <p className="footnote">
+                *As reported by Finnhub; reporting currency is not specified by
+                this feed. Estimates can change.
+              </p>
             </section>
             <section className="panel">
               <h3>Reported insider transactions</h3>
               {r.data.insiders.length ? (
                 <div className="compact-records">
                   {r.data.insiders.slice(0, 12).map((x, i) => (
-                    <div key={`${x.filed}-${i}`}>
+                    <div className="event-record" key={`${x.filed}-${i}`}>
                       <div>
                         <strong>{x.name}</strong>
                         <small>
@@ -102,7 +106,13 @@ export default function CompanyEvents({ symbol }: { symbol: string }) {
                           {dateLabel(x.filed)}
                         </small>
                       </div>
-                      <span>{amount(x.price, "USD")}</span>
+                      <span className="event-price">
+                        {x.price?.toLocaleString("en-US", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }) ?? "—"}
+                        <small>Reported price*</small>
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -112,9 +122,10 @@ export default function CompanyEvents({ symbol }: { symbol: string }) {
                 </p>
               )}
               <p className="footnote">
-                Grants, exercises and tax withholding are not classified as
-                open-market purchases. Transactions do not establish intent or
-                future returns.
+                *Transaction currency is not specified by this feed. Grants,
+                exercises and tax withholding are not classified as open-market
+                purchases. Transactions do not establish intent or future
+                returns.
               </p>
             </section>
           </div>

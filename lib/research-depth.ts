@@ -212,7 +212,7 @@ export function modelCoverage(
       method:
         "Milestone and unit-economics scenarios; no automatic intrinsic value from current losses.",
     };
-  if (["JPM", "BAC", "WFC", "C", "GS", "MS", "SCHW"].includes(symbol))
+  if (["JPM", "BAC", "WFC", "C", "GS", "MS", "SCHW", "NU", "SOFI"].includes(symbol))
     return {
       family: "financial",
       drivers: [

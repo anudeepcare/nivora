@@ -25,7 +25,12 @@ type Store = {
   mutate: (body: unknown) => Promise<void>;
   cache: Map<string, { at: number; value: unknown }>;
   theme: "light" | "dark";
-  setTheme: (v: "light" | "dark") => void;
+  setTheme: (v: "light" | "dark" | "system") => void;
+  themePreference: "light" | "dark" | "system";
+  textSize: "standard" | "large";
+  setTextSize: (v: "standard" | "large") => void;
+  reduceMotion: boolean;
+  setReduceMotion: (v: boolean) => void;
 };
 const Context = createContext<Store | null>(null);
 export const useProduct = () => {
@@ -112,7 +117,12 @@ function StoreProvider({
       demo?.workspace ?? null,
     ),
     [workspaceError, setWorkspaceError] = useState(""),
-    [theme, setThemeState] = useState<"light" | "dark">("dark");
+    [theme, setThemeState] = useState<"light" | "dark">("dark"),
+    [themePreference, setThemePreference] = useState<
+      "light" | "dark" | "system"
+    >("dark"),
+    [textSize, setTextSizeState] = useState<"standard" | "large">("standard"),
+    [reduceMotion, setReduceMotionState] = useState(false);
   const alive = useRef(true);
   const reloadWorkspace = useCallback(async () => {
     if (demo) return;
@@ -140,16 +150,59 @@ function StoreProvider({
   useEffect(() => {
     try {
       const saved = localStorage.getItem("auryn-product-theme");
-      const value = saved === "light" ? "light" : "dark";
-      document.documentElement.dataset.theme = value;
-      setThemeState(value);
+      setThemePreference(
+        saved === "light" || saved === "system" ? saved : "dark",
+      );
+      setTextSizeState(
+        localStorage.getItem("auryn-product-text") === "large"
+          ? "large"
+          : "standard",
+      );
+      setReduceMotionState(
+        localStorage.getItem("auryn-product-motion") === "reduce",
+      );
     } catch {}
   }, []);
-  const setTheme = useCallback((value: "light" | "dark") => {
-    setThemeState(value);
-    document.documentElement.dataset.theme = value;
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const apply = () => {
+      const value =
+        themePreference === "system"
+          ? media.matches
+            ? "dark"
+            : "light"
+          : themePreference;
+      document.documentElement.dataset.theme = value;
+      setThemeState(value);
+    };
+    apply();
+    media.addEventListener("change", apply);
+    return () => media.removeEventListener("change", apply);
+  }, [themePreference]);
+  useEffect(() => {
+    document.documentElement.dataset.textSize = textSize;
+  }, [textSize]);
+  useEffect(() => {
+    document.documentElement.dataset.motion = reduceMotion
+      ? "reduce"
+      : "system";
+  }, [reduceMotion]);
+  const setTheme = useCallback((value: "light" | "dark" | "system") => {
+    setThemePreference(value);
     try {
       localStorage.setItem("auryn-product-theme", value);
+    } catch {}
+  }, []);
+  const setTextSize = useCallback((value: "standard" | "large") => {
+    setTextSizeState(value);
+    try {
+      localStorage.setItem("auryn-product-text", value);
+    } catch {}
+  }, []);
+  const setReduceMotion = useCallback((value: boolean) => {
+    setReduceMotionState(value);
+    try {
+      localStorage.setItem("auryn-product-motion", value ? "reduce" : "system");
     } catch {}
   }, []);
   const mutate = useCallback(
@@ -174,6 +227,11 @@ function StoreProvider({
       cache,
       theme,
       setTheme,
+      themePreference,
+      textSize,
+      setTextSize,
+      reduceMotion,
+      setReduceMotion,
     }),
     [
       demo,
@@ -185,6 +243,11 @@ function StoreProvider({
       cache,
       theme,
       setTheme,
+      themePreference,
+      textSize,
+      setTextSize,
+      reduceMotion,
+      setReduceMotion,
     ],
   );
   return <Context.Provider value={value}>{children}</Context.Provider>;

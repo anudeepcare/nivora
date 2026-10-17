@@ -7,7 +7,7 @@ export async function GET(request: Request) {
     const q = (new URL(request.url).searchParams.get("q") || "")
       .trim()
       .slice(0, 60);
-    return privateJson({ results: q.length < 2 ? [] : await search(q) });
+    return privateJson({ results: !q ? [] : await search(q) });
   } catch (e) {
     return failure(e);
   }

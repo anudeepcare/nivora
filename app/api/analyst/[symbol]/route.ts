@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { account, failure, HttpError, limit, privateJson } from "@/lib/server";
 import { research } from "@/lib/providers";
 import { symbolInput } from "@/lib/format";
+import { analystStatus } from "@/lib/analyst-status";
 import {
   evidenceFor,
   reportSchema,
@@ -17,6 +18,19 @@ type Report = ReportBody & {
   mode: string;
 };
 const reports = new Map<string, { until: number; value: Promise<Report> }>();
+export async function GET(request: Request) {
+  try {
+    const { user } = await account(request);
+    return privateJson(
+      analystStatus(
+        process.env,
+        !user.is_anonymous && !!user.email_confirmed_at,
+      ),
+    );
+  } catch (e) {
+    return failure(e);
+  }
+}
 export async function POST(
   request: Request,
   context: { params: Promise<{ symbol: string }> },
@@ -31,11 +45,12 @@ export async function POST(
     limit(`analyst:${user.id}`, 3);
     const key = process.env.OPENAI_API_KEY,
       model = process.env.OPENAI_MODEL;
-    if (process.env.AURYN_AI_ENABLED !== "true" || !key || !model)
-      throw new HttpError(
-        "AI analysis is not enabled. Configure the model, provider key and account budget before enabling it.",
-        503,
-      );
+    const status = analystStatus(
+      process.env,
+      !user.is_anonymous && !!user.email_confirmed_at,
+    );
+    if (!status.available || !key || !model)
+      throw new HttpError(status.message, 503);
     const body = await request.json();
     if (!["snapshot", "deep-dive", "swot"].includes(body?.mode))
       throw new HttpError("Choose a supported analysis format.");

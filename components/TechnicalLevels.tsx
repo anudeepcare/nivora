@@ -11,7 +11,7 @@ export default function TechnicalLevels({
 }: {
   research: Research;
 }) {
-  const [custom, setCustom] = useState(false),
+  const [custom, setCustom] = useState(true),
     [manual, setManual] = useState(false),
     [lowValue, setLowValue] = useState(""),
     [highValue, setHighValue] = useState("");
@@ -38,9 +38,11 @@ export default function TechnicalLevels({
     lines = useMemo(
       () =>
         levels
-          .filter((x) => [0.5, 0.618, 0.786].includes(x.ratio))
+          .filter((x) =>
+            [0.5, 0.618, ...(custom ? [0.686] : []), 0.786].includes(x.ratio),
+          )
           .map((x) => ({ label: `${x.ratio}`, price: x.price })),
-      [levels],
+      [levels, custom],
     ),
     weekly = weeklyStudies(r.history, r.retrievedAt),
     markers = useMemo(
@@ -48,7 +50,7 @@ export default function TechnicalLevels({
       [r],
     );
   return (
-    <section className="panel support">
+    <section className="panel technical-levels">
       <header className="section-heading">
         <div>
           <h2>Reference levels</h2>
@@ -112,58 +114,79 @@ export default function TechnicalLevels({
           {amount(high, r.quote.currency)} · {dateLabel(highBar?.time)}
         </p>
       )}
-      <PriceChart bars={bars} range="126 sessions" levels={lines} />
-      <div className="level-grid">
-        {levels.map((x) => (
-          <div key={x.ratio}>
-            <span>
-              {x.ratio.toFixed(3)} · {(x.ratio * 100).toFixed(1)}%
-            </span>
-            <strong>{amount(x.price, r.quote.currency)}</strong>
-            <small>
-              {x.kind}
-              {[weekly.ma50, weekly.ma200].some(
-                (v) => v != null && Math.abs(v / x.price - 1) <= 0.02,
-              )
-                ? " · near weekly average"
-                : ""}
-            </small>
-          </div>
-        ))}
+      <div className="technical-layout">
+        <PriceChart bars={bars} range="126 sessions" levels={lines} />
+        <div className="level-grid reference-grid">
+          {levels
+            .filter((x) => x.ratio !== 0 && x.ratio !== 1)
+            .map((x) => (
+              <div key={x.ratio}>
+                <span>
+                  {x.ratio} {x.ratio > 1 ? "extension" : "Fib"}
+                </span>
+                <strong>{amount(x.price, r.quote.currency)}</strong>
+                <small>
+                  {x.kind}
+                  {[weekly.ma50, weekly.ma200].some(
+                    (v) => v != null && Math.abs(v / x.price - 1) <= 0.02,
+                  )
+                    ? " · near weekly average"
+                    : ""}
+                </small>
+              </div>
+            ))}
+        </div>
       </div>
       {!levels.length && <p>Choose a positive low below the high.</p>}
       <header className="section-heading support">
         <div>
-          <h3>First-known trend markers</h3>
+          <h3>Recent trend signals</h3>
           <p>
-            Close above SMA50, with SMA50 above SMA200; first aligned completed
-            bar.
+            First completed close above the 50-day average while the 50-day is
+            above the 200-day.
           </p>
         </div>
+        <Help label="Trend signals">
+          These mark historical trend alignment, not a buy instruction. A later
+          close below the 50-day average breaks alignment. Price and the average
+          shown are those observed on the signal date.
+        </Help>
       </header>
-      <div className="compact-records">
-        {markers.map((m) => (
-          <div key={m.time}>
-            <span className="blue" aria-hidden="true">
-              ◆
-            </span>
-            <div>
-              <strong>
-                {m.label} · {dateLabel(m.time)}
-              </strong>
-              <small>
-                Observed at {amount(m.price, r.quote.currency)} · then-current
-                SMA50 {amount(m.invalidation, r.quote.currency)}
-              </small>
-            </div>
-          </div>
-        ))}
-      </div>
+      {markers.length ? (
+        <div className="table-scroll trend-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Signal date</th>
+                <th>Price</th>
+                <th>50-day average</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[...markers].reverse().map((m) => (
+                <tr key={m.time}>
+                  <td>
+                    <span className="blue" aria-hidden="true">
+                      ◆{" "}
+                    </span>
+                    {dateLabel(m.time)}
+                  </td>
+                  <td>{amount(m.price, r.quote.currency)}</td>
+                  <td>{amount(m.invalidation, r.quote.currency)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p className="muted">
+          No completed trend-alignment signal in the available history.
+        </p>
+      )}
       <p className="footnote">
-        A later close below the current SMA50 breaks alignment. Markers use only
-        data available through their bar, are not execution prices, and do not
-        assess the business. Historical source corrections can change
-        reconstructed history.
+        Historical signals use data available through that bar. Provider
+        corrections can change reconstructed history; signal prices are not
+        execution prices.
       </p>
     </section>
   );

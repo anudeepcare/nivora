@@ -4,14 +4,23 @@ import { useRouter } from "next/navigation";
 import { Search as SearchIcon, ArrowUpRight, X } from "lucide-react";
 import { api } from "@/lib/client";
 import type { Company } from "@/lib/types";
-import { symbolInput } from "@/lib/format";
+import { cryptoSearchSymbol, searchSelection } from "@/lib/search-selection";
 import { useProduct } from "./Session";
 import { SecurityLogo } from "./Ui";
-export default function Search({ large = false }: { large?: boolean }) {
+export default function Search({
+  large = false,
+  autoFocus = false,
+  onNavigate,
+}: {
+  large?: boolean;
+  autoFocus?: boolean;
+  onNavigate?: () => void;
+}) {
   const listId = useId();
   const { demo } = useProduct(),
     router = useRouter(),
     box = useRef<HTMLDivElement>(null),
+    input = useRef<HTMLInputElement>(null),
     [query, setQuery] = useState(""),
     [results, setResults] = useState<Company[]>([]),
     [open, setOpen] = useState(false),
@@ -24,17 +33,31 @@ export default function Search({ large = false }: { large?: boolean }) {
       if (!box.current?.contains(e.target as Node)) setOpen(false);
     };
     document.addEventListener("pointerdown", close);
-    return () => document.removeEventListener("pointerdown", close);
+    return () => {
+      document.removeEventListener("pointerdown", close);
+    };
   }, []);
   useEffect(() => {
     setSelected(-1);
-    if (query.trim().length < 2) {
+    setResults([]);
+    setError("");
+    if (query.trim().length < 1) {
       setResults([]);
       setLoading(false);
       return;
     }
     let active = true;
     const c = new AbortController();
+    const base = cryptoSearchSymbol(query)?.split("/")[0] ?? null;
+    const cryptoMatch: Company | null = base
+      ? {
+          symbol: `${base}/USD`,
+          name: base === "BTC" ? "Bitcoin" : "Ethereum",
+          exchange: "Crypto · USD pair",
+          currency: "USD",
+          assetType: "crypto",
+        }
+      : null;
     setLoading(true);
     const timer = setTimeout(async () => {
       try {
@@ -48,18 +71,25 @@ export default function Search({ large = false }: { large?: boolean }) {
               )
           : (
               await api<{ results: Company[] }>(
-                `search?q=${encodeURIComponent(query.trim())}`,
+                `search?q=${encodeURIComponent(query.trim().replace(/^\$/, ""))}`,
                 undefined,
                 c.signal,
               )
             ).results;
         if (active) {
-          setResults(rows);
+          setResults(
+            cryptoMatch
+              ? [
+                  cryptoMatch,
+                  ...rows.filter((r) => r.symbol !== cryptoMatch.symbol),
+                ]
+              : rows,
+          );
           setError("");
         }
       } catch (e) {
         if (active) {
-          setResults([]);
+          setResults(cryptoMatch ? [cryptoMatch] : []);
           setError(e instanceof Error ? e.message : "Search unavailable");
         }
       } finally {
@@ -75,13 +105,13 @@ export default function Search({ large = false }: { large?: boolean }) {
   const go = (symbol: string) => {
     setOpen(false);
     setQuery("");
+    onNavigate?.();
     router.push(`${prefix}/research/${encodeURIComponent(symbol)}`);
   };
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (selected >= 0 && results[selected]) return go(results[selected].symbol);
     try {
-      go(symbolInput(query));
+      go(searchSelection(query, results, selected));
     } catch {
       setError("Choose a company below or enter its ticker.");
       setOpen(true);
@@ -92,6 +122,8 @@ export default function Search({ large = false }: { large?: boolean }) {
       <form onSubmit={submit}>
         <SearchIcon size={19} />
         <input
+          ref={input}
+          autoFocus={autoFocus}
           type="search"
           aria-label="Search companies or tickers"
           role="combobox"
@@ -101,7 +133,7 @@ export default function Search({ large = false }: { large?: boolean }) {
           aria-activedescendant={
             selected >= 0 ? `${listId}-${selected}` : undefined
           }
-          placeholder="Search companies or tickers"
+          placeholder="Search a company or crypto"
           autoComplete="off"
           value={query}
           onFocus={() => setOpen(true)}
@@ -140,7 +172,7 @@ export default function Search({ large = false }: { large?: boolean }) {
           <kbd>⌘ K</kbd>
         )}
       </form>
-      {open && query.length >= 2 && (
+      {open && query.trim().length >= 1 && (
         <div
           className="search-results"
           id={listId}
@@ -170,8 +202,31 @@ export default function Search({ large = false }: { large?: boolean }) {
           ))}
           {error && <p>{error}</p>}
           {!loading && !results.length && (
-            <p>Enter an exact ticker and press Enter to open research.</p>
+            <p>
+              {error
+                ? "Search is temporarily unavailable. You can still open an exact ticker below."
+                : "No matching US listing or USD crypto pair returned."}
+            </p>
           )}
+          {/^[A-Za-z0-9][A-Za-z0-9.-]{0,14}(\/[A-Za-z]{3,5})?$/.test(
+            query.trim(),
+          ) &&
+            !results.some(
+              (c) => c.symbol.toUpperCase() === query.trim().toUpperCase(),
+            ) && (
+              <button
+                type="button"
+                className="search-direct"
+                onClick={() => go(searchSelection(query, []))}
+              >
+                <SearchIcon size={17} />
+                <span>
+                  <b>Open {query.trim().toUpperCase()}</b>
+                  <small>Look up this exact ticker</small>
+                </span>
+                <ArrowUpRight size={16} />
+              </button>
+            )}
         </div>
       )}
     </div>

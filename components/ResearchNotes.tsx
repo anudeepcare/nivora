@@ -1,9 +1,8 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { Save, BookmarkCheck, ExternalLink } from "lucide-react";
+import { Save, BookmarkCheck, Pencil, X } from "lucide-react";
 import { useProduct, useResource } from "./Session";
 import { api } from "@/lib/client";
-import { modelCoverage } from "@/lib/research-depth";
 import type { Research } from "@/lib/types";
 import { Notice, Source } from "./Ui";
 export default function ResearchNotes({ research: r }: { research: Research }) {
@@ -11,8 +10,7 @@ export default function ResearchNotes({ research: r }: { research: Research }) {
     preview = useMemo(() => (demo ? { documents: [] } : undefined), [demo]),
     records = useResource<{
       documents: { key: string; body: Record<string, string> }[];
-    }>("documents?kind=note", preview),
-    coverage = modelCoverage(r.company.symbol, r.company.assetType);
+    }>("documents?kind=note", preview);
   const empty = {
     thesis: "",
     counterargument: "",
@@ -25,7 +23,8 @@ export default function ResearchNotes({ research: r }: { research: Research }) {
   };
   const [form, setForm] = useState(empty),
     [message, setMessage] = useState(""),
-    [busy, setBusy] = useState(false);
+    [busy, setBusy] = useState(false),
+    [editing, setEditing] = useState(false);
   useEffect(() => {
     const found = records.data?.documents.find(
       (x) => x.key === r.company.symbol,
@@ -46,6 +45,7 @@ export default function ResearchNotes({ research: r }: { research: Research }) {
         key: r.company.symbol,
         body: form,
       });
+      setEditing(false);
       records.refresh();
       setMessage(
         "Thesis saved. Your interpretation stays separate from reported evidence.",
@@ -75,114 +75,177 @@ export default function ResearchNotes({ research: r }: { research: Research }) {
     <section className="support">
       <header className="section-heading">
         <div>
-          <h2>Your investment thesis</h2>
-          <p>{coverage.method}</p>
+          <h2>Your thesis</h2>
+          <p>Private notes, separate from reported company evidence.</p>
         </div>
-        <button className="button" disabled={busy} onClick={snapshot}>
-          <BookmarkCheck size={16} />
-          Save snapshot
-        </button>
+        <div className="note-actions">
+          <button
+            className="button"
+            disabled={busy || records.loading || !!records.error}
+            aria-expanded={editing}
+            aria-controls="thesis-editor"
+            onClick={() => {
+              if (editing) {
+                const saved = records.data?.documents.find(
+                  (x) => x.key === r.company.symbol,
+                );
+                setForm(saved ? { ...empty, ...saved.body } : empty);
+              }
+              setEditing(!editing);
+              setMessage("");
+            }}
+          >
+            <Pencil size={16} />
+            {editing
+              ? "Close editor"
+              : form.thesis
+                ? "Edit thesis"
+                : "Add a note"}
+          </button>
+          <button className="button" disabled={busy} onClick={snapshot}>
+            <BookmarkCheck size={16} />
+            Save snapshot
+          </button>
+        </div>
       </header>
-      <div className="driver-strip">
-        {coverage.drivers.map((d) => (
-          <span key={d}>{d}</span>
-        ))}
-      </div>
-      <form className="research-note-form" onSubmit={save}>
-        <div className="two-col">
-          <label>
-            Reason to own
-            <textarea
-              value={form.thesis}
-              maxLength={3000}
-              onChange={(e) => setForm({ ...form, thesis: e.target.value })}
-              placeholder="What gives this business an enduring advantage?"
-            />
-          </label>
-          <label>
-            Strongest counterargument
-            <textarea
-              value={form.counterargument}
-              maxLength={2000}
-              onChange={(e) =>
-                setForm({ ...form, counterargument: e.target.value })
-              }
-              placeholder="What could make this thesis wrong?"
-            />
-          </label>
-          <label>
-            What would change your mind?
-            <textarea
-              value={form.condition}
-              maxLength={1500}
-              onChange={(e) => setForm({ ...form, condition: e.target.value })}
-              placeholder="Name a measurable condition, not just a share-price move."
-            />
-          </label>
-          <label>
-            Next milestone
-            <textarea
-              value={form.milestone}
-              maxLength={1500}
-              onChange={(e) => setForm({ ...form, milestone: e.target.value })}
-              placeholder="Separate delivered results from management targets."
-            />
-          </label>
-        </div>
-        <div className="form-grid">
-          <label>
-            Original source
-            <input
-              type="url"
-              value={form.sourceUrl}
-              placeholder="https://…"
-              onChange={(e) => setForm({ ...form, sourceUrl: e.target.value })}
-            />
-          </label>
-          <label>
-            Evidence date
-            <input
-              type="date"
-              value={form.evidenceDate}
-              onChange={(e) =>
-                setForm({ ...form, evidenceDate: e.target.value })
-              }
-            />
-          </label>
-          <label>
-            Thesis status
-            <select
-              value={form.status}
-              onChange={(e) => setForm({ ...form, status: e.target.value })}
-            >
-              {["researching", "intact", "review", "broken"].map((v) => (
-                <option key={v}>{v}</option>
+      {records.error && <Notice error>{records.error}</Notice>}
+      {message && <Notice>{message}</Notice>}
+      {!editing &&
+        (form.thesis ||
+          form.counterargument ||
+          form.condition ||
+          form.milestone) && (
+          <div className="thesis-summary">
+            {[
+              ["Reason to own", form.thesis],
+              ["Counterargument", form.counterargument],
+              ["Review trigger", form.condition],
+              ["Next milestone", form.milestone],
+            ]
+              .filter(([, text]) => text)
+              .map(([label, text]) => (
+                <div key={label}>
+                  <span>{label}</span>
+                  <p>{text}</p>
+                </div>
               ))}
-            </select>
-          </label>
-          <label>
-            Horizon
-            <select
-              value={form.horizon}
-              onChange={(e) => setForm({ ...form, horizon: e.target.value })}
-            >
-              {["tactical", "swing", "long-term"].map((v) => (
-                <option key={v}>{v}</option>
-              ))}
-            </select>
-          </label>
-        </div>
-        <button className="button primary" disabled={busy}>
-          <Save size={16} />
-          {busy ? "Saving…" : "Save thesis"}
-        </button>
-        {message && <Notice>{message}</Notice>}
-      </form>
-      <p className="footnote">
-        Your notes are personal interpretations. They do not automatically
-        establish a moat, change canonical research or authorize paper
-        execution.
-      </p>
+            {form.sourceUrl && (
+              <Source href={form.sourceUrl}>Saved source</Source>
+            )}
+          </div>
+        )}
+      {editing && (
+        <form id="thesis-editor" className="research-note-form" onSubmit={save}>
+          <div className="two-col">
+            <label>
+              Reason to own
+              <textarea
+                value={form.thesis}
+                maxLength={3000}
+                onChange={(e) => setForm({ ...form, thesis: e.target.value })}
+                placeholder="What gives this business an enduring advantage?"
+              />
+            </label>
+            <label>
+              Strongest counterargument
+              <textarea
+                value={form.counterargument}
+                maxLength={2000}
+                onChange={(e) =>
+                  setForm({ ...form, counterargument: e.target.value })
+                }
+                placeholder="What could make this thesis wrong?"
+              />
+            </label>
+            <label>
+              What would change your mind?
+              <textarea
+                value={form.condition}
+                maxLength={1500}
+                onChange={(e) =>
+                  setForm({ ...form, condition: e.target.value })
+                }
+                placeholder="Name a measurable condition, not just a share-price move."
+              />
+            </label>
+            <label>
+              Next milestone
+              <textarea
+                value={form.milestone}
+                maxLength={1500}
+                onChange={(e) =>
+                  setForm({ ...form, milestone: e.target.value })
+                }
+                placeholder="Separate delivered results from management targets."
+              />
+            </label>
+          </div>
+          <div className="form-grid">
+            <label>
+              Original source
+              <input
+                type="url"
+                value={form.sourceUrl}
+                placeholder="https://…"
+                onChange={(e) =>
+                  setForm({ ...form, sourceUrl: e.target.value })
+                }
+              />
+            </label>
+            <label>
+              Evidence date
+              <input
+                type="date"
+                value={form.evidenceDate}
+                onChange={(e) =>
+                  setForm({ ...form, evidenceDate: e.target.value })
+                }
+              />
+            </label>
+            <label>
+              Thesis status
+              <select
+                value={form.status}
+                onChange={(e) => setForm({ ...form, status: e.target.value })}
+              >
+                {["researching", "intact", "review", "broken"].map((v) => (
+                  <option key={v}>{v}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Horizon
+              <select
+                value={form.horizon}
+                onChange={(e) => setForm({ ...form, horizon: e.target.value })}
+              >
+                {["tactical", "swing", "long-term"].map((v) => (
+                  <option key={v}>{v}</option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <button className="button primary" disabled={busy}>
+            <Save size={16} />
+            {busy ? "Saving…" : "Save thesis"}
+          </button>
+          <button
+            type="button"
+            className="button"
+            disabled={busy}
+            onClick={() => {
+              const saved = records.data?.documents.find(
+                (x) => x.key === r.company.symbol,
+              );
+              setForm(saved ? { ...empty, ...saved.body } : empty);
+              setEditing(false);
+            }}
+          >
+            <X size={15} />
+            Cancel
+          </button>
+        </form>
+      )}
     </section>
   );
 }

@@ -35,4 +35,4 @@ npm run test:api
 - `docs/`: architecture, deployment/Git steps, original requirements audit, approved design reference, source-review results and remaining gates.
 - `MANIFEST.sha256`: checksums of packaged files.
 
-Follow `docs/DEPLOYMENT.md`. Do not overwrite production or enable broker scheduling solely because compilation passed. No provider was purchased or canceled, no database was migrated live, and no order was placed during this build.
+Follow `docs/DEPLOYMENT.md`. Do not overwrite production or enable broker scheduling solely because compilation passed. No provider was purchased or canceled, no paid AI call was made, and no order was placed during this repair. Earlier database setup is recorded in `verification/LIVE_SETUP.md`. The latest fixes and remaining gaps are in `docs/SCREENSHOT_FIXES.md`.
