@@ -1,0 +1,158 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DEFAULT_PREFERENCES = void 0;
+exports.normalizedSymbol = normalizedSymbol;
+exports.validateWatch = validateWatch;
+exports.validateView = validateView;
+exports.validatePreferences = validatePreferences;
+exports.snapshotFromCanonical = snapshotFromCanonical;
+exports.validatePlanningRecord = validatePlanningRecord;
+exports.compareSnapshots = compareSnapshots;
+exports.researchFreshness = researchFreshness;
+exports.eventsWithin = eventsWithin;
+exports.materialChanges = materialChanges;
+exports.businessThesisUnchanged = businessThesisUnchanged;
+exports.buildAlerts = buildAlerts;
+exports.answerEvidence = answerEvidence;
+exports.validateContribution = validateContribution;
+exports.DEFAULT_PREFERENCES = { enabled: true, channels: ['in-app'], types: ['thesis', 'milestone', 'valuation', 'technical', 'allocation'] };
+const kinds = ['thesis', 'milestone', 'valuation', 'technical', 'allocation'];
+const str = (x) => typeof x === 'string' && x.trim() ? x.trim() : null;
+const finite = (x) => typeof x === 'number' && Number.isFinite(x) ? x : null;
+const date = (x) => str(x) && Number.isFinite(Date.parse(String(x))) ? String(x) : null;
+function normalizedSymbol(raw) { const s = String(raw || '').trim().toUpperCase(); if (!/^[A-Z0-9][A-Z0-9./-]{0,19}$/.test(s))
+    throw Error('Enter a valid symbol.'); return s; }
+function validateWatch(raw) { const symbol = normalizedSymbol(raw?.symbol), reason = str(raw?.reason), text = str(raw?.awaited?.text), kind = raw?.awaited?.kind; if (!reason || reason.length > 1200 || !text || text.length > 1200 || !['evidence', 'milestone', 'valuation', 'technical'].includes(kind))
+    throw Error('Add a watch reason and the evidence or condition you are waiting for (up to 1,200 characters each).'); return { symbol, reason, awaited: { kind, text } }; }
+function validateView(raw) { const name = str(raw?.name); if (!name || name.length > 80 || !Array.isArray(raw?.symbols) || raw.symbols.length > 6)
+    throw Error('Name the view and choose up to six comparison symbols.'); const symbols = Array.from(new Set(raw.symbols.map(normalizedSymbol))); if (!['quick', 'research', 'advanced'].includes(raw.depth) || !['long-term', 'medium-term', 'short-term'].includes(raw.horizon) || !['all', 'ready', 'needs-refresh'].includes(raw?.filter?.state))
+    throw Error('Select valid view settings.'); return { name, symbols, depth: raw.depth, horizon: raw.horizon, filter: { query: String(raw.filter.query || '').slice(0, 80), state: raw.filter.state } }; }
+function validatePreferences(raw) { if (typeof raw?.enabled !== 'boolean' || !Array.isArray(raw.types) || raw.types.some((t) => !kinds.includes(t)))
+    throw Error('Invalid alert preferences.'); return { enabled: raw.enabled, channels: ['in-app'], types: Array.from(new Set(raw.types)) }; }
+function snapshotFromCanonical(raw, savedId) {
+    const r = raw?.research || {}, decision = r.decision || {}, financial = r.financialEvidence || {}, facts = Array.isArray(r.evidence) ? r.evidence : [], metrics = Array.isArray(financial.metrics) ? financial.metrics : Array.isArray(r.comparisonMetrics) ? r.comparisonMetrics : [], events = Array.isArray(r.events) ? r.events : [];
+    const evidence = facts.filter((e) => str(e?.id) && str(e?.source) && str(e?.value)).map((e) => ({ id: e.id, label: String(e.label || 'Evidence'), value: String(e.value), source: e.source, asOf: date(e.asOf), role: ['reason', 'risk'].includes(e.role) ? e.role : 'fact', ...(finite(e.strength) !== null ? { strength: e.strength } : {}) }));
+    const observedAt = date(r.observedAt), action = str(decision.newMoneyAction) || str(r.action), setupState = str(decision.setupState) || str(r.setupState), thesisScore = decision.dimensions?.business ? finite(decision.dimensions.business.score) : finite(r.thesisScore), businessAssessment = str(decision.dimensions?.business?.assessment), businessCounterEvidence = Array.isArray(financial.thesis?.counterarguments) ? [] : null;
+    for (const [id, label, value] of [['action', 'Canonical assessment', action], ['setup', 'Technical condition', setupState], ['thesis', 'Business score', thesisScore?.toString()], ['business-assessment', 'Long-term business assessment', businessAssessment], ['valuation-state', 'Valuation assessment', str(decision.dimensions?.valuation?.state) || str(r.valuationState)]])
+        if (value)
+            evidence.push({ id: id, label: label, value, source: 'Saved canonical research', asOf: observedAt, role: 'fact' });
+    for (const [key, pillar] of Object.entries(decision.pillars || {})) {
+        if (str(pillar?.why))
+            evidence.push({ id: `pillar-${key}`, label: wordsForEvidence(key), value: pillar.why, source: `Canonical pillar${pillar.evidenceIds?.length ? ` · ${pillar.evidenceIds.join(', ')}` : ''}`, asOf: date(pillar.asOf), role: 'fact' });
+    }
+    for (const [field, role] of [['drivers', 'reason'], ['counterEvidence', 'risk']]) {
+        for (const [i, value] of (Array.isArray(decision[field]) ? decision[field] : []).entries())
+            if (str(value))
+                evidence.push({ id: `${field}-${i}`, label: role === 'risk' ? 'Recorded counterargument' : 'Decision driver', value, source: `Canonical decision · ${decision.policyVersion || 'recorded policy'}`, asOf: observedAt, role });
+    }
+    for (const [field, role] of [['reasonsToOwn', 'reason'], ['counterarguments', 'risk']]) {
+        for (const claim of Array.isArray(financial.thesis?.[field]) ? financial.thesis[field] : [])
+            if (str(claim?.id) && str(claim?.text) && str(claim?.source) && date(claim?.publishedAt)) {
+                evidence.push({ id: claim.id, label: claim.dimension || 'Company evidence', value: claim.text, source: claim.source, sourceUrl: /^https:\/\//.test(claim.sourceUrl || '') ? claim.sourceUrl : undefined, asOf: claim.publishedAt, role });
+                if (field === 'counterarguments')
+                    businessCounterEvidence?.push(claim.text);
+            }
+    }
+    if (businessCounterEvidence !== null)
+        evidence.push({ id: 'business-counterevidence', label: 'Sourced business counterevidence', value: businessCounterEvidence.join('; ') || 'No counterargument in the saved business evidence', source: 'Saved company financial evidence', asOf: date(financial.evidenceAsOf) || observedAt, role: 'fact' });
+    if (str(decision.nextDecisionTrigger))
+        evidence.push({ id: 'next-trigger', label: 'Next decision trigger', value: decision.nextDecisionTrigger, source: 'Canonical decision policy', asOf: observedAt, role: 'fact' });
+    if (str(decision.invalidationTrigger))
+        evidence.push({ id: 'invalidation', label: 'Tactical setup invalidation', value: decision.invalidationTrigger, source: 'Canonical tactical setup policy', asOf: observedAt, role: 'fact' });
+    return { symbol: normalizedSymbol(raw?.security?.symbol), snapshotId: savedId, canonicalSnapshotId: str(decision.snapshotId) || str(r.decisionSnapshotId) || str(raw?.snapshotId), observedAt, currency: str(raw?.security?.currency), businessModel: str(financial.thesis?.businessModel) || str(r.archetype), state: str(r.state) || 'ANALYSIS_REQUIRED', action, ...(decision.horizons ? { horizons: { now: String(decision.horizons.now || 'Unavailable'), swing: String(decision.horizons.swing || 'Unavailable'), sixToTwelveMonths: String(decision.horizons.sixToTwelveMonths || 'Unavailable'), threeToFiveYears: String(decision.horizons.threeToFiveYears || 'Unavailable') } } : {}), thesisScore, businessAssessment, businessCounterEvidence, setupState, valuation: str(decision.dimensions?.valuation?.state) || str(r.valuationState), evidence, metrics: metrics.filter((v) => str(v?.key) && str(v?.definition) && str(v?.source)).map((v) => ({ key: v.key, label: String(v.label || v.key), value: finite(v.value), unit: v.unit === v.currency ? 'currency' : String(v.unit || ''), currency: str(v.currency), period: v.scope && v.periodEnd ? `${v.scope} · ${v.periodStart || 'point-in-time'} / ${v.periodEnd}` : str(v.period), definition: `${v.definition}${v.accountingBasis ? ` · ${v.accountingBasis}` : ''}`, source: v.source, sourceUrl: /^https:\/\//.test(v.sourceUrl || '') ? v.sourceUrl : undefined, asOf: date(v.asOf) })), events: events.filter((e) => str(e?.id) && str(e?.source) && date(e?.date)).map((e) => ({ id: e.id, label: String(e.label || 'Event'), date: e.date, source: e.source, sourceUrl: /^https:\/\//.test(e.sourceUrl || '') ? e.sourceUrl : undefined, dateState: ['reported', 'estimated'].includes(e.dateState) ? e.dateState : 'unconfirmed' })) };
+}
+function wordsForEvidence(value) { return value.replace(/([A-Z])/g, ' $1').replace(/^./, c => c.toUpperCase()); }
+function validatePlanningRecord(kind, key, payload) {
+    if (!['decision-journal', 'decision-review', 'allocation-plan'].includes(String(kind)) || typeof key !== 'string' || !key || key.length > 160 || !payload || typeof payload !== 'object' || Array.isArray(payload) || payload.user_id || payload.userId)
+        throw Error('Invalid planning record.');
+    if (kind === 'allocation-plan') {
+        if (!str(payload.symbol) || !payload.plan || typeof payload.plan !== 'object')
+            throw Error('A saved allocation plan needs a symbol and plan.');
+        return payload;
+    }
+    if (payload.id !== key || !date(payload.createdAt))
+        throw Error('Planning record identity or timestamp is invalid.');
+    if (kind === 'decision-journal') {
+        if (payload.kind !== 'DECISION' || payload.immutable !== true || !str(payload.symbol) || !str(payload.thesis) || !str(payload.horizon) || !payload.evidence || typeof payload.evidence !== 'object' || !str(payload.evidence.snapshotId) || !date(payload.evidence.knownAt) || !Array.isArray(payload.evidence.references) || !payload.evidence.references.every((r) => typeof r === 'string') || !payload.plan || typeof payload.plan !== 'object' || !payload.processChecklist || !['evidenceReviewed', 'risksRecorded', 'budgetChecked'].every(k => typeof payload.processChecklist[k] === 'boolean'))
+            throw Error('Original decisions require a thesis, horizon, evidence, allocation plan and process checklist.');
+    }
+    if (kind === 'decision-journal' && Date.parse(payload.evidence.knownAt) > Date.parse(payload.createdAt))
+        throw Error('Evidence must be known at the original decision timestamp.');
+    if (kind === 'decision-review' && (payload.kind !== 'REVIEW' || !str(payload.decisionId) || !str(payload.notes) || !['gain', 'loss', 'flat', 'pending'].includes(payload.outcome)))
+        throw Error('A review needs an original decision reference, notes and outcome.');
+    return payload;
+}
+function compareSnapshots(snapshots) { const keys = Array.from(new Set(snapshots.flatMap(s => s.metrics.map(m => m.key)))); return keys.map(key => { const metrics = snapshots.map(s => s.metrics.find(m => m.key === key)), first = metrics.find(Boolean), limitations = []; if (snapshots.length < 2)
+    limitations.push('Choose at least two companies.'); if (snapshots.some(s => !s.businessModel) || new Set(snapshots.map(s => s.businessModel)).size !== 1)
+    limitations.push('Business models differ or are unclassified.'); if (metrics.some(m => !m || m.value === null))
+    limitations.push('A reported value is unavailable.'); if (metrics.some(m => !m?.period) || new Set(metrics.map(m => m?.period)).size !== 1)
+    limitations.push('Reporting periods do not match or are unknown.'); if (new Set(metrics.map(m => m?.definition)).size !== 1 || new Set(metrics.map(m => m?.unit)).size !== 1)
+    limitations.push('Metric definitions or units differ.'); if (first.unit === 'currency' && (metrics.some(m => !m?.currency) || new Set(metrics.map(m => m?.currency)).size !== 1))
+    limitations.push('Currencies differ or are unknown; no FX conversion was applied.'); return { key, label: first.label, definition: first.definition, unit: first.unit, period: first.period, currency: first.currency, values: metrics.map(m => m?.value ?? null), metrics, comparable: limitations.length === 0, limitations }; }); }
+/** Saved readiness is historical. Currentness is derived again whenever evidence is read. */
+function researchFreshness(snapshot, now = new Date()) {
+    if (!snapshot || snapshot.state === 'ANALYSIS_REQUIRED' || !date(snapshot.observedAt) || !Number.isFinite(now.getTime()))
+        return 'unavailable';
+    const age = now.getTime() - Date.parse(snapshot.observedAt);
+    if (age < 0)
+        return 'future';
+    if (age > 7 * 86400000)
+        return 'stale';
+    return snapshot.state === 'READY' ? 'ready' : 'stale';
+}
+function eventsWithin(snapshot, now = new Date(), days = 30) { return snapshot.events.filter(event => { const instant = Date.parse(event.date), end = /^\d{4}-\d{2}-\d{2}$/.test(event.date) ? instant + 86400000 - 1 : instant; return Number.isFinite(instant) && end >= now.getTime() && instant <= now.getTime() + days * 86400000; }); }
+function materialChanges(previous, next, now = new Date()) {
+    const current = date(next.observedAt), prior = date(previous?.observedAt);
+    if (!previous || researchFreshness(next, now) !== 'ready' || !current || !prior || Date.parse(current) <= Date.parse(prior) || Date.parse(current) > now.getTime() || now.getTime() - Date.parse(current) > 7 * 86400000)
+        return [];
+    const result = [];
+    const add = (kind, title, before, after) => { if (before != null && after != null && before !== after)
+        result.push({ kind, title, before: String(before), after: String(after), detail: `${String(before).replaceAll('_', ' ')} → ${String(after).replaceAll('_', ' ')}`, asOf: current }); };
+    // A new-capital action can change because price or entry timing changed. It is never thesis evidence by itself.
+    add('allocation', 'New-capital assessment changed', previous.action, next.action);
+    add('thesis', 'Long-term business assessment changed', previous.businessAssessment, next.businessAssessment);
+    if (previous.thesisScore !== null && next.thesisScore !== null && Math.abs(previous.thesisScore - next.thesisScore) >= 6)
+        add('thesis', 'Material business score change', previous.thesisScore, next.thesisScore);
+    if (Array.isArray(previous.businessCounterEvidence) && Array.isArray(next.businessCounterEvidence) && businessCounterSignature(previous) !== businessCounterSignature(next))
+        add('thesis', 'Sourced business counterevidence changed', previous.businessCounterEvidence.join('; ') || 'No counterargument in saved business evidence', next.businessCounterEvidence.join('; ') || 'No counterargument in saved business evidence');
+    add('technical', 'Technical condition changed', previous.setupState, next.setupState);
+    add('valuation', 'Valuation assessment changed', previous.valuation, next.valuation);
+    return result;
+}
+function businessCounterSignature(snapshot) { return Array.isArray(snapshot.businessCounterEvidence) ? JSON.stringify([...snapshot.businessCounterEvidence].sort()) : null; }
+/** Compares the independent recorded business assessment; capital and tactical states are deliberately excluded. */
+function businessThesisUnchanged(previous, next) { return !!previous && (next.thesisScore !== null || !!next.businessAssessment) && previous.thesisScore === next.thesisScore && (previous.businessAssessment ?? null) === (next.businessAssessment ?? null) && businessCounterSignature(previous) === businessCounterSignature(next); }
+function stableId(value) { let h = 2166136261; for (let i = 0; i < value.length; i++) {
+    h ^= value.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+} return (h >>> 0).toString(36); }
+function buildAlerts(previous, next, prefs, history, now = new Date()) { if (!prefs.enabled)
+    return []; const changes = materialChanges(previous, next, now); for (const event of eventsWithin(next, now, 7)) {
+    changes.push({ kind: 'milestone', title: event.label, detail: `Upcoming event · ${event.dateState || 'unconfirmed'} date · ${event.source}`, before: 'upcoming', after: event.date, asOf: event.date, eventId: event.id });
+} return changes.filter(c => prefs.types.includes(c.kind)).map(c => ({ ...c, id: `alert-${stableId([next.symbol, c.kind, c.title, c.before, c.after, c.asOf, c.eventId || ''].join('|'))}`, symbol: next.symbol, snapshotId: next.snapshotId, previousSnapshotId: previous?.snapshotId || null, createdAt: now.toISOString(), read: false })).filter(a => !history.some(old => old.id === a.id)); }
+function answerEvidence(question, current, previous) {
+    const base = { canonicalDecisionChanged: false }, cite = (s, e) => ({ snapshotId: s.snapshotId, evidenceId: e.id, label: e.label, source: e.source, sourceUrl: e.sourceUrl, asOf: e.asOf });
+    if (question === 'counterargument') {
+        const risks = current.evidence.filter(e => e.role === 'risk').sort((a, b) => (b.strength ?? 0) - (a.strength ?? 0));
+        if (!risks.length)
+            return { ...base, supported: false, text: 'No sourced counterargument is recorded in this saved snapshot. Open the company evidence before forming a conclusion.', citations: [] };
+        return { ...base, supported: true, text: `${risks[0].strength === undefined ? 'Recorded counterargument (strength not ranked)' : 'Strongest recorded counterargument'}: ${risks[0].value}. This is recorded evidence, not a prediction.`, citations: [cite(current, risks[0])] };
+    }
+    if (question === 'changed') {
+        if (!previous)
+            return { ...base, supported: false, text: 'A previous saved snapshot is needed to explain a change. Refresh after new research becomes available.', citations: [] };
+        const changes = materialChanges(previous, current, new Date(current.observedAt || 0));
+        return { ...base, supported: true, text: changes.length ? changes.map(c => `${c.title}: ${c.detail}.`).join(' ') : 'No material assessment change is established between these saved snapshots. A quote refresh alone is not a thesis change.', citations: [...previous.evidence.filter(e => ['action', 'thesis', 'setup', 'business-assessment', 'business-counterevidence', 'valuation-state'].includes(e.id)).map(e => cite(previous, e)), ...current.evidence.filter(e => ['action', 'thesis', 'setup', 'business-assessment', 'business-counterevidence', 'valuation-state'].includes(e.id)).map(e => cite(current, e))] };
+    }
+    if (question === 'summary') {
+        const selected = current.evidence.filter(e => e.role === 'reason' || e.id === 'action').slice(0, 4);
+        return { ...base, supported: !!selected.length, text: selected.length ? selected.map(e => `${e.label}: ${e.value.replaceAll('_', ' ')}.`).join(' ') : 'The saved snapshot has no sourced assessment to explain.', citations: selected.map(e => cite(current, e)) };
+    }
+    return { ...base, supported: false, text: 'This question is outside the saved evidence. Choose assessment, decision changes, or counterargument. Ask AURYN does not predict prices, change the canonical decision, or authorize trades.', citations: [] };
+}
+/** Preferences only. Saving does not authorize an order or persist a suggested multiplier. */
+function validateContribution(raw) {
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw) || ![raw.amount, raw.budgetCap, raw.maxPositionPct].every(n => typeof n === 'number' && Number.isFinite(n)) || raw.amount < 0 || raw.amount > 1e9 || raw.budgetCap < 0 || raw.budgetCap > 1e9 || raw.maxPositionPct <= 0 || raw.maxPositionPct > 100 || !['weekly', 'monthly'].includes(raw.cadence) || typeof raw.paused !== 'boolean')
+        throw Error('Enter valid amounts, a weekly or monthly schedule, and a position limit between 0 and 100%.');
+    return { amount: raw.amount, cadence: raw.cadence, budgetCap: raw.budgetCap, maxPositionPct: raw.maxPositionPct, paused: raw.paused };
+}

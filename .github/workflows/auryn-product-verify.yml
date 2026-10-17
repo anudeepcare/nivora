@@ -1,0 +1,26 @@
+name: AURYN product verification
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Locate the standalone app
+        id: app
+        run: |
+          if [ -f product/package-lock.json ]; then
+            echo 'directory=product' >> "$GITHUB_OUTPUT"
+          else
+            echo 'directory=.' >> "$GITHUB_OUTPUT"
+          fi
+      - run: npm ci
+        working-directory: ${{ steps.app.outputs.directory }}
+      - run: npm run verify && npm run test:api
+        working-directory: ${{ steps.app.outputs.directory }}
