@@ -1,2 +1,0 @@
-import Link from 'next/link';
-export default function AurynLogo({href='/analyze',compact=false}:{href?:string;compact?:boolean}){return <Link className={`aurynBrand ${compact?'compact':''}`} href={href} aria-label="AURYN home"><svg viewBox="0 0 36 38" width="30" height="32" aria-hidden="true"><path fill="#2866ef" d="M14 3h9L10 34H1z"/><path fill="#76a0ff" d="m23 3 12 31H23L12 7z"/><path fill="#1450d7" d="m18 21 5 13H10z"/><path fill="#adc6ff" d="m14 3 4 10 5-10z"/></svg><span className="aurynWord">AURYN</span>{!compact&&<small>Investment Intelligence</small>}</Link>}

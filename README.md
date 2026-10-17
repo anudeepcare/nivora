@@ -1,67 +1,38 @@
-> **Latest build: approved midnight direction, 2026-10-16.** Start with `START_HERE.md` and `RELEASE_REPORT.md`. Current verification is in `verification/midnight-release/`; older release narratives below are historical. Complete source is included; this ZIP has not been deployed.
+# AURYN Investment Intelligence
 
-# AURYN Intelligence OS — complete source package
+A complete standalone **source package** for the new AURYN application. The application builds independently of the old screens and styles. **It is not fully production accepted, and not every inherited product requirement is complete.** Read `docs/RELEASE_STATUS.md` for the exact remaining scope and verification limits.
 
-Start with **START_HERE.md**, **RELEASE_REPORT.md** and **GIT_AND_VERCEL.md**. The product-recovery build includes the full intelligence upgrade plus data integrity, clean research surfaces, financial charts, persistent chart/planner state and connected contribution proposals. Current software and provider checks are recorded in the release report. Some approved implementation and deployed acceptance gaps remain; this is not an all-capabilities production certificate.
+## Start
 
-The two research migrations are applied in the connected Supabase project. The paper-safety migration still needs deployment. Older counts and configuration statements below are historical.
-
-## Retained historical project notes
-
-# AURYN Intelligence OS — rebuilt source
-
-Start with **PROJECT_STRUCTURE.md**, **DEPLOYMENT.md** and **verification/VERIFICATION_REPORT.md**.
-
-This package contains the complete application source, redesigned routes, preserved research/investment engines, Supabase SQL, paper-trading integrations, approved reference material, executable tests and verification evidence. It is not a claim of fully verified production operation: some live service connections and read isolation are now verified; end-to-end authentication, broker execution and deployment of this rebuilt source still require acceptance. Historical source-contract suites remain separately reported. The precise status is recorded in the verification report.
-
-## Latest chart and mobile-menu fixes
-
-Read **CHART_AND_MOBILE_FIXES.md** for normal chart scrolling, explicit zoom controls, corrected 1D/1W history, recoverable history errors, decision-first research, readable weekly dates and the refined mobile glass dock. Current build/test results are in **verification/VERIFICATION_REPORT.md**.
-
-## October 16 premium product update
-
-Read **PREMIUM_UX_RELEASE.md** for the current mobile-first design, search/portfolio fixes, quote-refresh budget and exploratory valuation boundary. The approved concept boards are included under `docs/redesign/approved-2026-10-16/`. Detailed explanations open on demand; financial data stays on high-contrast surfaces.
-
-## Previous weekly research update
-
-Weekly Fibonacci research is now available in Technicals and the expandable Overview study: inspect swing anchors, select simple/weighted 50/200-week averages, choose linear/logarithmic geometry, and read support/reclaim/hold explanations. The shared product finish improves typography, contrast, touch targets, form readability, navigation and card spacing across the existing routes in both themes. See **FIBONACCI_RESEARCH.md** for exact rules and **verification/WEEKLY_UX_REPORT.md** for fresh evidence and limits. No additional paid dependency or provider is required.
-
-## October 15 product research update
-
-This update corrects SEC reporting currency and annual/quarter selection, distinguishes continuing operations and comparable history, adds source-backed business evidence, explains the three action horizons, makes missing valuation implementation explicit, and reduces duplicate research/chart requests. The current premium revision puts chart, independent research lenses and concise canonical context together near the top. No additional subscription was purchased.
-
-Read **PRODUCT_DIRECTION.md** for the affordable product sequence, including validated valuation, proposed DCA/signal rules and the path from paper testing to a later customer product. These proposed features are not advertised as implemented. Read **verification/PRODUCT_REVIEW_REPORT.md** for current results and limitations.
-
-## Local application
-
-Use Node 22 LTS and npm. Copy `.env.example` to `.env.local`, supply your own environment values, then run:
+From the extracted application directory (the directory containing this file):
 
 ```sh
 npm ci
+cp .env.example .env.local
 npm run dev
 ```
 
-Open http://localhost:3000. Authentication is required for private workspace routes. Missing configuration produces a clear unavailable state; no fake account or live prices are injected by the application.
+Node 22.18+ is required; Node 24 was used. Configure Supabase, Twelve Data and a real SEC contact identity. Existing Finnhub and Alpaca paper credentials are optional. Keep every server key out of `NEXT_PUBLIC_*` variables.
 
-## What changed
+For a read-only local design preview, set `AURYN_ENABLE_PREVIEW=true` in `.env.local` and open `http://localhost:3000/preview/research/MSFT`. Illustrative fixture values are labeled, are not live signals, and cannot authorize writes or trades. The local preview does not require account credentials. Keep that flag off when hosted.
 
-- Unified blue/white and navy design system; rebuilt landing, authentication, onboarding, preferences, app shell and secondary pages.
-- Rebuilt research overview with thesis, chart, key data, three clocks, scenarios and evidence. Eleven working evidence tabs, selectable chart ranges, chart appearance, moving averages and expanded chart.
-- Portfolio position create/edit/delete, known-versus-unpriced value, balance history, allocation and owner context; watchlist and price-target monitoring.
-- Administrator-only shared Alpaca Paper workspace, automatic checks, execution evidence, manual paper limit-order review, verified order/fill history and explicit cancellation review. No real-money endpoint is used. Manual orders require a separate audit migration and broker-enforced cash-only/long-only settings.
-- Fail-closed authentication, authenticated portfolio APIs, guarded shared paper APIs, correct watchlist ownership, reliable logout, truthful save/error states, abort-safe research requests and empty-chart resets.
-- Original investment engine preserved, with a regression-tested correction preventing undated regular closes from becoming verified prices during an open session.
-
-## Tests and evidence
+## Verify
 
 ```sh
-npm run build
-npm test
-npm run test:historical
+npm run verify
+npm run test:api
 ```
 
-`npm test` / `test:release` runs current acceptance, including the additional runtime suites audited for this package. `test:engine` / `test:historical` retains the original historical aggregate unchanged. See `verification/RELEASE_TEST_POLICY.md` for the mapping and CI policy; a passing acceptance gate does not make the old source-contract failures disappear. Existing version scripts and tests are retained.
+`verify` runs domain/Postgres tests, TypeScript and the production build. `test:api` tests the actual built handlers with mocks. Reports live in `verification/`. Browser and physical-device testing was not performed here.
 
-Open `verification/VISUAL_REVIEW.html` for reference and screenshot review. Browser runs use synthetic fixtures and do not prove live vendor, database or broker behavior. The original mockup is a collage, so no pixel-perfect claim is made.
+## What is included
 
-Historical release notes in the source describe earlier versions. This README, DEPLOYMENT.md and the current verification report take precedence for this package.
+- `app/`, `components/`, `lib/`, `public/`: full application source and assets.
+- `supabase/migrations/`: fresh-account baseline and additive feature migrations.
+- `tests/`, `scripts/`, `package-lock.json`: reproducible tests, tools and exact dependency versions.
+- `.env.example`: safe configuration names, with paper execution and AI off by default.
+- `.github/workflows/`: CI verification and manually triggered controlled checks.
+- `docs/`: architecture, deployment/Git steps, original requirements audit, approved design reference, source-review results and remaining gates.
+- `MANIFEST.sha256`: checksums of packaged files.
+
+Follow `docs/DEPLOYMENT.md`. Do not overwrite production or enable broker scheduling solely because compilation passed. No provider was purchased or canceled, no database was migrated live, and no order was placed during this build.

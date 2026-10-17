@@ -1,5 +1,0 @@
-FAIL dark 1920 research Valuation locator.waitFor: Timeout 8000ms exceeded.
-Call log:
-[2m  - waiting for locator('.au-tabs') to be visible[22m
-
-{"passed":83,"failed":1,"runtimeErrors":1}

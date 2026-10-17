@@ -1,2 +1,0 @@
-FAIL supported accumulation caps, pause, original journal and review Journal write must use authenticated storage adapter, not session-only state
-{"out":"/workspace/scratch/0397d872aad5/auryn-next/verification/next-build/browser-interactions-2","cases":22,"passed":21,"failed":1,"runtimeErrors":0,"unlabeledControlCases":0,"smallTargetCases":2,"fatalError":null}

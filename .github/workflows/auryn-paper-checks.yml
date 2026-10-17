@@ -1,0 +1,24 @@
+name: AURYN controlled workspace checks
+on:
+  workflow_dispatch:
+# Add a schedule only after staging acceptance. The endpoint independently requires
+# AURYN_PAPER_SCHEDULE_ENABLED and AURYN_PAPER_EXECUTION_ENABLED for broker execution.
+permissions:
+  contents: read
+concurrency:
+  group: auryn-controlled-checks
+  cancel-in-progress: false
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    environment: auryn-paper
+    steps:
+      - name: Run configured checks
+        env:
+          AURYN_APP_URL: ${{ vars.AURYN_APP_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          test -n "$AURYN_APP_URL"
+          test -n "$CRON_SECRET"
+          case "$AURYN_APP_URL" in https://*) ;; *) exit 1 ;; esac
+          curl --fail --silent --show-error --max-time 65 --header "Authorization: Bearer $CRON_SECRET" "$AURYN_APP_URL/api/jobs"

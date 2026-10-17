@@ -1,1 +1,11 @@
-import Link from 'next/link';export default function NotFound(){return <main className="uxState"><h1>Page not found</h1><p>Let’s get you back to your research.</p><Link href="/analyze">Open Research</Link></main>}
+import Link from "next/link";
+export default function NotFound() {
+  return (
+    <main className="session-state">
+      <h1>That view is not available.</h1>
+      <Link className="button" href="/research">
+        Open research
+      </Link>
+    </main>
+  );
+}

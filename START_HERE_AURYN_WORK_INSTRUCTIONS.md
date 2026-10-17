@@ -1,13 +1,11 @@
-> CURRENT HANDOFF: the autonomous simplicity cleanup and review in `START_HERE.md` and `verification/cleanup-2026-10-17/VERIFICATION_REPORT.md` supersede the earlier UX repair below. The user wants to see the actual product before deployment; no deployment was performed.
+# Start here
 
-> CURRENT DESIGN: the user-approved midnight desktop/mobile direction in `docs/design/approved-midnight-2026-10-16/` supersedes the older glass/native references below. Read `START_HERE.md` and `verification/repair-2026-10-17/VERIFICATION_REPORT.md` first. The UX repair report supersedes the earlier midnight test results.
+This archive contains the full independent AURYN application source, not only generated HTML or a build output. Read README.md, docs/RELEASE_STATUS.md and docs/DEPLOYMENT.md before replacing a deployment.
 
-# AURYN current source handoff — read this first
+The approved design is docs/design/approved-direction.png. It is an illustrative mockup, not a screenshot proving the implemented app matches. Current source must be reviewed in a real browser and on an installed iPhone PWA.
 
-The user approved the entire scope in `docs/superpowers/specs/2026-10-16-approved-build.md` and subsequently requested the accumulation visuals described in `verification/next-build/requirements.json`. Do not ask the user to repeat those requirements or buy another provider without a concrete need/cost review.
+The complete inherited 104-item specification is docs/requirements-inherited.json. Each requirement has a current status and evidence note. Preserve this audit; do not describe incomplete work as finished. Later user instructions require a ground-up independent application, no legacy CSS override stack, simple decision-first mobile/desktop UX, light/dark preferences, visible metrics, amount-free 1×–4× accumulation zones, and no new paid provider without a cost/capability review.
 
-This archive contains the complete source, not a certificate that all requirements or production acceptance are complete. Start with `START_HERE.md`, `RELEASE_REPORT.md`, `GIT_AND_VERCEL.md`, and `verification/next-build/REMAINING_GAPS.md`. Read the per-item ledger before deciding what remains. Do not relabel unavailable/partial capabilities as delivered.
+Existing account data remains in Supabase. Apply additive migrations to staging first. Keep every secret out of source and archives. Do not turn on paper execution/scheduling or paid AI merely to make an empty state disappear. Use the configured real providers; unavailable evidence must remain explicit.
 
-Current repair evidence is in `verification/repair-2026-10-17/` and the corresponding `verification/next-build/repair-*` browser reports. Preserve working changes and the latest approved visual direction. Re-run affected gates if source changes; do not repeatedly redesign/research or rerun unrelated checks. The user requested low credit use, concise updates and one complete deliverable.
-
-All prior source, approved boards, historical context and tests are retained. No deployment, live migration or broker order was performed in this UX repair; earlier migration observations are recorded in GIT_AND_VERCEL.md. The actual owner UUID, production configuration and externally supplied evidence cannot be inferred from fixture data.
+The build/test logs apply to this standalone source. Browser screenshots, live authenticated writes, production deployment, broker order lifecycle and investment-model efficacy have not been verified. Read the release status for material feature gaps as well as test blockers.

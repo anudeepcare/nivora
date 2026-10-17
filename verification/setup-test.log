@@ -1,0 +1,57 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> auryn-product@0.1.0 test
+> node --experimental-strip-types --test tests/*.test.mjs
+
+✔ price-only revisions have distinct snapshot IDs but stable evidence identity (3.025275ms)
+✔ a corrected historical bar changes evidence identity even when the latest close is unchanged (7.941702ms)
+✔ Postgres migrations enforce account-scoped watches, idempotency, and AI request budgets (1161.482473ms)
+✔ monthly research supports 1x, 2x, 3x, 4x and pause without an amount (17.660554ms)
+✔ forming and future observations cannot repaint a closed month (2.063973ms)
+✔ gaps, insufficient history, stale series and invalid bars withhold multiplier (1.106036ms)
+✔ documented thesis break pauses current signal without rewriting historical signals (6.143297ms)
+✔ financial periods preserve missing values and only combine matching cash-flow filings (0.768527ms)
+✔ portfolio excludes unpriced holdings from known value and withholds total P&L (0.300474ms)
+✔ cash-flow valuation uses per-share dilution and rejects invalid terminal assumptions (0.379291ms)
+✔ incomplete month near month-end does not become confirmed (0.929034ms)
+✔ foreign or unknown cash cannot enter USD known value (0.545677ms)
+✔ quote provenance rejects missing currency, future timestamps and stale crypto (5.601966ms)
+✔ malformed bars are discarded; repeated timestamps deduplicate and history sorts (8.097037ms)
+✔ USD portfolio cannot silently add foreign currency or unknown-currency prices (0.306153ms)
+✔ AI report needs supplied citations for every claim, bounded text and valid structure (1.438318ms)
+✔ AI evidence excludes future filings and non-SEC source injection (0.293184ms)
+✔ unknown quote currency formats without a crash or a dollar assumption (11.856077ms)
+✔ existing non-USD cost basis cannot become a USD unrealized return (0.259824ms)
+✔ watchlist adapter deduplicates a ticker saved in multiple lists (6.815241ms)
+✔ global search cannot resolve a same-named foreign listing as a US company (0.707958ms)
+✔ crypto quote uses explicit USD pair when provider omits currency (0.470165ms)
+✔ paper plans reject fractional, foreign and invalid exposure inputs (1.817038ms)
+✔ paper checks fail closed on stale quotes, funds, open orders and market state (0.486589ms)
+✔ partial fills remain reserved until terminal broker reconciliation (0.215919ms)
+✔ a reservation revalidates changed account state before any order can submit (0.428084ms)
+✔ DCA comparison uses equal contributions and never spends unavailable cash (15.2916ms)
+✔ CSV import validates all rows and supports quoted commas without replacing holdings (0.678884ms)
+✔ portfolio preview respects cash and exposure caps (0.292302ms)
+✔ alerts reject stale price triggers and use deterministic event identities (0.301967ms)
+✔ saved research validates links, symbols and bounded content (4.494067ms)
+✔ quarter derivation preserves provenance, does not derive EPS, and excludes unavailable evidence (11.912741ms)
+✔ TTM refuses gaps and mixed currencies (0.923075ms)
+✔ reverse valuation solves a price under fixed assumptions, without calling it a forecast (5.695855ms)
+✔ weekly averages exclude forming week and require actual history (1.100227ms)
+✔ coverage distinguishes business economics instead of forcing one DCF (3.095839ms)
+✔ SEC alternates retain new periods and do not double-count the same filing (0.795907ms)
+✔ all 200 holdings receive a quote batch ahead of watchlist names (0.443596ms)
+✔ a definite pre-submission failure does not starve the next scheduled plan (0.7233ms)
+✔ operating scenarios use unit economics, funding claims and dilution before market price (0.801416ms)
+✔ bank model rejects invalid terminal assumptions and shows zero residual value when economics do not cover growth (0.151064ms)
+✔ Fibonacci overlays expose explicit endpoints, percentages and custom levels (1.241847ms)
+✔ trend markers are known on the completed signal bar and cannot repaint (9.265596ms)
+✔ correlation uses matched dates and sufficient return history (0.806624ms)
+ℹ tests 44
+ℹ suites 0
+ℹ pass 44
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1303.882984

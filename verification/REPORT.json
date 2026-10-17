@@ -1,0 +1,28 @@
+{
+  "generatedAt": "2026-10-17T06:41:44.144915+00:00",
+  "sourceRoot": "product (standalone application)",
+  "node": "24.19.0",
+  "next": "15.5.28",
+  "commands": {
+    "npm ci": "passed earlier in this standalone workspace",
+    "npm run verify": "passed",
+    "npm run test:api": "passed"
+  },
+  "domainAndPostgresTests": 44,
+  "builtApiChecks": 23,
+  "browserTestsExecuted": false,
+  "physicalIphoneTestsExecuted": false,
+  "liveDatabaseWrites": false,
+  "brokerOrdersSubmitted": false,
+  "paidAiCalls": 0,
+  "productionReady": false,
+  "readOnlyProviderProbes": {
+    "SEC companyfacts": 200,
+    "Finnhub company profile": 200,
+    "Finnhub insider transactions": 200,
+    "Alpaca paper account": 200
+  },
+  "review": "Fresh Astra source review; five important findings corrected with regression coverage",
+  "scopeAudit": "docs/requirements-inherited.json",
+  "remainingGates": "docs/RELEASE_STATUS.md"
+}

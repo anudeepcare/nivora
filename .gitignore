@@ -1,8 +1,5 @@
-node_modules
-.next
+node_modules/
+.next/
 .env*
 !.env.example
-.DS_Store
-
-.engine-test/
-tsconfig.tsbuildinfo
+*.tsbuildinfo

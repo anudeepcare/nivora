@@ -1,0 +1,330 @@
+import { secObservations } from "./sec-observations";
+import { reserveProvider } from "./provider-budget";
+import type {
+  Candle,
+  Company,
+  Fact,
+  Filing,
+  Metric,
+  Quote,
+  Research,
+} from "./types";
+import { HttpError } from "./server";
+import {
+  normalizeQuote,
+  normalizeBars,
+  numeric,
+  supportedListing,
+} from "./market";
+const cache = new Map<string, { expires: number; value: Promise<any> }>();
+async function cached<T>(
+  key: string,
+  ttl: number,
+  read: () => Promise<T>,
+): Promise<T> {
+  const old = cache.get(key);
+  if (old && old.expires > Date.now()) return old.value;
+  const value = read().catch((e) => {
+    cache.delete(key);
+    throw e;
+  });
+  cache.set(key, { expires: Date.now() + ttl, value });
+  if (cache.size > 250) cache.delete(cache.keys().next().value!);
+  return value;
+}
+async function json(url: string, headers: Record<string, string> = {}) {
+  const r = await fetch(url, {
+    headers,
+    signal: AbortSignal.timeout(18_000),
+    cache: "no-store",
+  });
+  if (!r.ok)
+    throw new HttpError(
+      r.status === 429
+        ? "The data provider is at its request limit. Try again shortly."
+        : "The requested source is temporarily unavailable.",
+      503,
+    );
+  return r.json();
+}
+async function twelve(endpoint: string, params: Record<string, string>) {
+  const key = process.env.TWELVE_DATA_API_KEY;
+  if (!key) throw new HttpError("Market data is not configured.", 503);
+  await reserveProvider();
+  const data = await json(
+    `https://api.twelvedata.com/${endpoint}?${new URLSearchParams({ ...params, apikey: key })}`,
+  );
+  if (data.status === "error")
+    throw new HttpError(
+      data.code === 429
+        ? "Market-data allowance reached. Try again later."
+        : "The provider did not return this instrument.",
+      503,
+    );
+  return data;
+}
+const num = numeric;
+export async function quote(
+  symbol: string,
+): Promise<{ company: Company; quote: Quote }> {
+  return cached(`quote:${symbol}`, 60_000, async () => {
+    const q = await twelve("quote", { symbol });
+    if (!symbol.includes("/") && !supportedListing(q))
+      throw new HttpError(
+        "This listing is outside the supported US/USD equity universe.",
+        422,
+      );
+    const normalized = normalizeQuote(q, symbol);
+    return {
+      company: {
+        symbol,
+        name: typeof q.name === "string" ? q.name : symbol,
+        exchange: q.exchange || "",
+        currency: normalized.currency,
+        assetType: symbol.includes("/") ? "crypto" : "stock",
+      },
+      quote: normalized,
+    };
+  });
+}
+export type ChartRange = "1D" | "1W" | "1M" | "6M" | "1Y" | "5Y";
+export async function history(
+  symbol: string,
+  range: ChartRange = "5Y",
+): Promise<Candle[]> {
+  return cached(
+    `history:${symbol}:${range}`,
+    range === "1D" || range === "1W" ? 60_000 : 15 * 60_000,
+    async () => {
+      const intraday = range === "1D" || range === "1W",
+        interval = range === "1D" ? "5min" : range === "1W" ? "1h" : "1day",
+        count = {
+          "1D": "400",
+          "1W": "168",
+          "1M": "32",
+          "6M": "184",
+          "1Y": "367",
+          "5Y": "1830",
+        }[range];
+      const data = await twelve("time_series", {
+        symbol,
+        interval,
+        outputsize: count,
+        timezone: "UTC",
+        order: "ASC",
+        adjust: "splits",
+      });
+      const bars = normalizeBars(data.values, intraday);
+      if (range === "1D" && bars.length) {
+        const end = Date.parse(bars.at(-1)!.time),
+          continuous = symbol.includes("/");
+        return bars.filter((b) =>
+          continuous
+            ? Date.parse(b.time) > end - 86400_000
+            : b.time.slice(0, 10) === bars.at(-1)!.time.slice(0, 10),
+        );
+      }
+      if (range === "1W" && bars.length) {
+        const end = Date.parse(bars.at(-1)!.time);
+        return bars.filter((b) => Date.parse(b.time) > end - 7 * 86400_000);
+      }
+      return bars;
+    },
+  );
+}
+const tags: Record<Metric, string[]> = {
+  revenue: [
+    "RevenueFromContractWithCustomerExcludingAssessedTax",
+    "Revenues",
+    "SalesRevenueNet",
+    "Revenue",
+  ],
+  netIncome: ["NetIncomeLoss", "ProfitLoss"],
+  operatingIncome: ["OperatingIncomeLoss", "ProfitLossFromOperatingActivities"],
+  operatingCashFlow: ["NetCashProvidedByUsedInOperatingActivities"],
+  capex: [
+    "PaymentsToAcquirePropertyPlantAndEquipment",
+    "PurchaseOfPropertyPlantAndEquipmentClassifiedAsInvestingActivities",
+  ],
+  cash: ["CashAndCashEquivalentsAtCarryingValue", "CashAndCashEquivalents"],
+  debt: [
+    "LongTermDebtAndCapitalLeaseObligationsIncludingCurrentMaturities",
+    "LongTermDebtCurrentAndNoncurrent",
+  ],
+  assets: ["Assets"],
+  liabilities: ["Liabilities"],
+  shares: [
+    "CommonStockSharesOutstanding",
+    "EntityCommonStockSharesOutstanding",
+  ],
+  eps: ["EarningsPerShareDiluted", "DilutedEarningsLossPerShare"],
+};
+async function sec(path: string) {
+  const agent = process.env.SEC_USER_AGENT;
+  if (!agent || agent.includes("example.com"))
+    throw new HttpError(
+      "Configure a valid SEC contact identity to load filings.",
+      503,
+    );
+  return json(path, { "User-Agent": agent, Accept: "application/json" });
+}
+export async function fundamentals(
+  symbol: string,
+): Promise<{ facts: Fact[]; filings: Filing[]; name: string }> {
+  return cached(`sec:${symbol}`, 6 * 3600_000, async () => {
+    const tickers = await cached<Record<string, any>>(
+      "sec-tickers",
+      86400_000,
+      () => sec("https://www.sec.gov/files/company_tickers.json"),
+    );
+    const match = Object.values(tickers).find(
+      (v: any) => v.ticker === symbol.replaceAll(".", "-"),
+    );
+    if (!match)
+      throw new HttpError(
+        "SEC company facts are not available for this listing.",
+        404,
+      );
+    const cik = String(match.cik_str).padStart(10, "0");
+    const [company, submissions] = await Promise.all([
+      sec(`https://data.sec.gov/api/xbrl/companyfacts/CIK${cik}.json`),
+      sec(`https://data.sec.gov/submissions/CIK${cik}.json`),
+    ]);
+    const facts: Fact[] = [];
+    for (const [metric, names] of Object.entries(tags))
+      for (const [taxonomy, basis] of [
+        ["us-gaap", "GAAP"],
+        ["ifrs-full", "IFRS"],
+        ["dei", "GAAP"],
+      ] as const) {
+        for (const { tag, unit, row } of secObservations(
+          company.facts?.[taxonomy],
+          names,
+        )) {
+          if (
+            !["10-K", "10-Q", "20-F", "40-F", "10-K/A", "10-Q/A"].includes(
+              row.form,
+            ) ||
+            num(row.val) == null ||
+            !row.end ||
+            !row.filed ||
+            !row.accn
+          )
+            continue;
+          const days = row.start
+            ? (Date.parse(row.end) - Date.parse(row.start)) / 86400_000
+            : 0;
+          const scope = !row.start
+            ? "instant"
+            : days >= 330 && days <= 400
+              ? "annual"
+              : days >= 60 && days <= 110
+                ? "quarterly"
+                : days > 110 && days < 330
+                  ? "ytd"
+                  : null;
+          if (!scope) continue;
+          facts.push({
+            id: [taxonomy, tag, unit, row.start, row.end, row.accn].join(":"),
+            metric: metric as Metric,
+            value: Number(row.val),
+            unit,
+            currency: /^[A-Z]{3}$/.test(unit)
+              ? unit
+              : unit.endsWith("/shares")
+                ? unit.split("/")[0]
+                : null,
+            start: row.start ?? null,
+            end: row.end,
+            filed: row.filed,
+            accession: row.accn,
+            form: row.form,
+            basis,
+            scope,
+            sourceUrl: `https://www.sec.gov/Archives/edgar/data/${Number(cik)}/${row.accn.replaceAll("-", "")}/`,
+          });
+        }
+      }
+    const recent = submissions.filings?.recent,
+      filings: Filing[] = [];
+    for (let i = 0; i < Math.min(20, recent?.form?.length ?? 0); i++) {
+      if (
+        !["10-K", "10-Q", "8-K", "6-K", "20-F", "40-F"].includes(recent.form[i])
+      )
+        continue;
+      filings.push({
+        form: recent.form[i],
+        date: recent.filingDate[i],
+        title: recent.primaryDocDescription?.[i] || recent.form[i],
+        url: `https://www.sec.gov/Archives/edgar/data/${Number(cik)}/${recent.accessionNumber[i].replaceAll("-", "")}/${recent.primaryDocument[i]}`,
+      });
+    }
+    return { facts, filings, name: company.entityName || match.title };
+  });
+}
+export async function research(symbol: string): Promise<Research> {
+  const results = await Promise.allSettled([
+    quote(symbol),
+    history(symbol),
+    symbol.includes("/")
+      ? Promise.resolve({ facts: [], filings: [], name: symbol })
+      : fundamentals(symbol),
+  ]);
+  const q = results[0].status === "fulfilled" ? results[0].value : null,
+    h = results[1].status === "fulfilled" ? results[1].value : [],
+    f = results[2].status === "fulfilled" ? results[2].value : null;
+  const issues = results.flatMap((r, i) =>
+    r.status === "rejected"
+      ? [
+          `${["Quote", "Price history", "Company filings"][i]}: ${r.reason instanceof HttpError ? r.reason.message : "Source unavailable."}`,
+        ]
+      : [],
+  );
+  return {
+    company: q?.company ?? {
+      symbol,
+      name: f?.name || symbol,
+      currency: "USD",
+      exchange: "",
+      assetType: symbol.includes("/") ? "crypto" : "stock",
+    },
+    quote: q?.quote ?? {
+      price: null,
+      changePct: null,
+      currency: "USD",
+      asOf: null,
+      session: "Unavailable",
+      source: "Twelve Data",
+      stale: true,
+    },
+    history: h,
+    facts: f?.facts ?? [],
+    filings: f?.filings ?? [],
+    retrievedAt: new Date().toISOString(),
+    issues,
+  };
+}
+export async function search(query: string) {
+  return cached(`search:${query}`, 3600_000, async () => {
+    const result = await twelve("symbol_search", {
+      symbol: query,
+      outputsize: "12",
+    });
+    return (result.data ?? [])
+      .filter(
+        (v: any) =>
+          supportedListing(v) ||
+          (v.instrument_type === "Digital Currency" &&
+            String(v.symbol).endsWith("/USD")),
+      )
+      .slice(0, 12)
+      .map((v: any) => ({
+        symbol: v.symbol,
+        name: v.instrument_name,
+        exchange: v.exchange,
+        currency: v.currency,
+        assetType:
+          v.instrument_type === "Digital Currency" ? "crypto" : "stock",
+      }));
+  });
+}
