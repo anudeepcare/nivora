@@ -1,0 +1,17 @@
+✔ BREAKOUT_READY explains confirmation and is not an automatic BUY (1.10281ms)
+✔ DOUBLE_BOTTOM explains seller exhaustion and neckline confirmation (0.253094ms)
+✔ TREND_BREAKDOWN explains damaged structure without equating it to SELL (0.172716ms)
+✔ unknown setup stays factual and does not invent pattern meaning (0.157964ms)
+✔ opportunity lens is deterministic (1.443954ms)
+✔ missing valuation lowers coverage without becoming a bearish zero (0.251942ms)
+✔ scenario balance sums to 100 and is explicitly uncalibrated (0.234496ms)
+✔ hard veto prevents opportunity from being presented as high conviction (0.183701ms)
+✔ reward risk improves opportunity only when it is finite and plausible (0.206916ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 89.046762

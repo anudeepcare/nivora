@@ -1,0 +1,46 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> auryn-investment-intelligence@1.0.0 build
+> next build
+
+   ▲ Next.js 15.5.28
+
+   Creating an optimized production build ...
+<w> [webpack.cache.PackFileCacheStrategy] Skipped not serializable cache item 'Compilation/modules|javascript/auto|/workspace/scratch/0397d872aad5/auryn-next/node_modules/next/dist/build/webpack/loaders/next-flight-css-loader.js??ruleSet[1].rules[14].oneOf[5].use[0]!/workspace/scratch/0397d872aad5/auryn-next/node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[1]!/workspace/scratch/0397d872aad5/auryn-next/node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[2]!/workspace/scratch/0397d872aad5/auryn-next/components/ResearchWorkspace.module.css|ssr': No serializer registered for Warning
+<w> while serializing webpack/lib/cache/PackFileCacheStrategy.PackContentItems -> webpack/lib/NormalModule -> Array { 2 items } -> webpack/lib/ModuleWarning -> Warning
+Failed to compile.
+
+./components/StockClient.tsx
+Module parse failed: Identifier 'isDisplayQuoteLive' has already been declared (51:9)
+File was processed with these loaders:
+ * ./node_modules/next/dist/build/webpack/loaders/next-flight-client-module-loader.js
+ * ./node_modules/next/dist/build/webpack/loaders/next-swc-loader.js
+You may need an additional loader to handle the result of these loaders.
+| import { useRouter } from "next/navigation";
+| import StockSecurityHeader from "./stock/StockSecurityHeader";
+> import { isDisplayQuoteLive } from "@/lib/auryn/market-price-authority";
+| import { marketSessionAt } from "@/lib/nivora-market-session";
+| import StockEvidenceNav from "./stock/StockEvidenceNav";
+
+Import trace for requested module:
+./components/StockClient.tsx
+
+./lib/auryn/market-price-authority.ts
+Module parse failed: Identifier 'isDisplayQuoteLive' has already been declared (117:105)
+File was processed with these loaders:
+ * ./node_modules/next/dist/build/webpack/loaders/next-flight-loader/index.js
+ * ./node_modules/next/dist/build/webpack/loaders/next-swc-loader.js
+You may need an additional loader to handle the result of these loaders.
+|     };
+| }
+> /** A retained quote is research context after polling or provider freshness expires. */ export function isDisplayQuoteLive(quote, currentSession, now = Date.now()) {
+|     const providerAt = ms(quote?.providerTimestamp), checkedAt = ms(quote?.retrievedAt) || Number(quote?.cachedAt);
+|     const providerAge = now - providerAt, checkedAge = now - checkedAt;
+
+Import trace for requested module:
+./lib/auryn/market-price-authority.ts
+./lib/auryn/fast-quote.ts
+./app/api/quote/[symbol]/route.ts
+
+
+> Build failed because of webpack errors

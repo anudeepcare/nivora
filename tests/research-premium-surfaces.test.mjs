@@ -54,7 +54,7 @@ test('annual chart series never bridges currency or cash-flow accounting bases',
 test('overview contains one canonical summary and sends scenario work to valuation',()=>{
  const html=renderToStaticMarkup(React.createElement(Overview,{symbol:'ACME',decision,marketTruth:{},candles:[],chartLevels:{},fundamentalScenario:{base:{value:999}},onOpenValuation:()=>{}}));
  assert.equal((html.match(/aria-label="Stock overview"/g)||[]).length,1);
- assert.match(html,/Three investment lenses/i);
+ assert.match(html,/One decision, three perspectives/i);
  assert.match(html,/Valuation/);
  assert.doesNotMatch(html,/researchScenarios|Bear, base &amp; bull|999\.00/);
  assert.match(html,/aria-label="Decision evidence"/);

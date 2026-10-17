@@ -1,13 +1,16 @@
 "use client";
-import {useEffect,useRef,useState} from "react";
+import {useCallback,useEffect,useRef,useState} from "react";
 import {createChart,CandlestickSeries,HistogramSeries,AreaSeries,LineSeries,LineStyle,PriceScaleMode} from "lightweight-charts";
 import {shouldFitChart} from '@/lib/research-first-glance';
 import type {IChartApi} from "lightweight-charts";
 import type {StructureChartOverlays} from "@/lib/research-structure-presentation";
 const finite=(v:any)=>v!==null&&v!==undefined&&v!==""&&Number.isFinite(Number(v));
-type Props={compact?:boolean;candles:any[];levels:any|null;showTrend?:boolean;confluence?:{fib382?:number;fib50?:number;fib618?:number;waveTarget?:number;waveInvalidation?:number};overlays?:StructureChartOverlays;forceCandles?:boolean;ariaLabel?:string;rangeKey?:string};
-export default function PriceChart({candles,levels,showTrend=false,confluence,overlays,forceCandles=false,ariaLabel,rangeKey,compact=false}:Props){
+type Props={supportBand?:{low:number;high:number;label?:string};compact?:boolean;candles:any[];levels:any|null;showTrend?:boolean;confluence?:{fib382?:number;fib50?:number;fib618?:number;waveTarget?:number;waveInvalidation?:number};overlays?:StructureChartOverlays;forceCandles?:boolean;ariaLabel?:string;rangeKey?:string};
+export default function PriceChart({candles,levels,showTrend=false,confluence,overlays,forceCandles=false,ariaLabel,rangeKey,compact=false,supportBand}:Props){
+ const bandRef=useRef<HTMLDivElement>(null);
+ const bandValue=useRef(supportBand);bandValue.current=supportBand;
  const el=useRef<HTMLDivElement>(null),chartRef=useRef<IChartApi|null>(null),dataRef=useRef<any>({series:null,volume:null,studies:new Map(),lines:[],style:null,signature:null,range:null}),[appearance,setAppearance]=useState(0),[zoom,setZoom]=useState(1);
+ const paintBand=useCallback(()=>{const node=bandRef.current,series=dataRef.current.series,band=bandValue.current;if(!node||!series||!band||!el.current){if(node)node.hidden=true;return;}const y1=series.priceToCoordinate(band.high),y2=series.priceToCoordinate(band.low);if(y1==null||y2==null){node.hidden=true;return;}const height=el.current.clientHeight,top=Math.max(0,Math.min(y1,y2)),bottom=Math.min(height-26,Math.max(y1,y2));node.hidden=bottom<=top;node.style.top=`${top}px`;node.style.height=`${Math.max(2,bottom-top)}px`;},[]);
  const changeZoom=(factor:number)=>{const chart=chartRef.current,range=chart?.timeScale().getVisibleLogicalRange();if(!chart||!range)return;const center=(range.from+range.to)/2,width=Math.max(8,(range.to-range.from)*factor);dataRef.current.userAdjusted=true;chart.timeScale().setVisibleLogicalRange({from:center-width/2,to:center+width/2});setZoom(previous=>Math.max(.1,previous/factor));};
  const resetZoom=()=>{dataRef.current.userAdjusted=false;chartRef.current?.timeScale().fitContent();setZoom(1);};
  // Mount once. Quotes, theme changes and freshly allocated props do not remount the canvas.
@@ -15,7 +18,8 @@ export default function PriceChart({candles,levels,showTrend=false,confluence,ov
   if(!el.current)return;
   const chart=createChart(el.current,{width:el.current.clientWidth,height:Math.max(120,el.current.clientHeight),localization:{locale:"en-US"},layout:{fontSize:11},rightPriceScale:{minimumWidth:54},handleScroll:{mouseWheel:false,pressedMouseMove:true,horzTouchDrag:false,vertTouchDrag:false},handleScale:{mouseWheel:false,pinch:false,axisPressedMouseMove:false,axisDoubleClickReset:false},timeScale:{secondsVisible:false,rightOffset:3,barSpacing:6}});
   chartRef.current=chart;
-  const resize=new ResizeObserver(()=>{if(el.current)chart.applyOptions({width:el.current.clientWidth,height:Math.max(120,el.current.clientHeight)})});resize.observe(el.current);
+  chart.timeScale().subscribeVisibleLogicalRangeChange(paintBand);
+  const resize=new ResizeObserver(()=>{if(el.current)chart.applyOptions({width:el.current.clientWidth,height:Math.max(120,el.current.clientHeight)});requestAnimationFrame(paintBand)});resize.observe(el.current);
   const change=()=>setAppearance(x=>x+1),storage=(e:StorageEvent)=>{if(e.key?.startsWith('auryn-')&&/theme|accent|chart-style/.test(e.key))change();};
   window.addEventListener('auryn-appearance',change);window.addEventListener('storage',storage);
   return()=>{resize.disconnect();window.removeEventListener('auryn-appearance',change);window.removeEventListener('storage',storage);chartRef.current=null;dataRef.current={series:null,volume:null,studies:new Map(),lines:[],style:null,signature:null,range:null};chart.remove();};
@@ -52,7 +56,7 @@ export default function PriceChart({candles,levels,showTrend=false,confluence,ov
   lines.push(...(overlays?.lines??[]).map(line=>[line.label,line.price,line.color]));
   for(const [title,price,lineColor] of lines)if(finite(price)&&Number(price)>0)current.lines.push(current.series.createPriceLine({price:Number(price),color:lineColor,lineWidth:1,lineStyle:LineStyle.Dashed,axisLabelVisible:false,title}));
   if(bars.length&&shouldFitChart({rangeChanged:changedRange,dataChanged,userAdjusted:!!current.userAdjusted,hasRange:!!visible})){chart.timeScale().fitContent();current.userAdjusted=false;setZoom(1);}else if(visible)chart.timeScale().setVisibleLogicalRange(visible);
-  current.range=nextRange;
- },[candles,levels,showTrend,confluence,overlays,forceCandles,appearance,rangeKey,compact]);
- return <div className="priceChartFrame"><div ref={el} onPointerDown={e=>{if(e.pointerType==='mouse')dataRef.current.userAdjusted=true}} className="chartCanvas" role="img" aria-label={ariaLabel||'Historical price and volume chart'}/>{!compact&&<div className="priceChartNavigation" aria-label="Chart zoom controls"><span aria-live="polite">{zoom===1?'Full range':`Zoom ${zoom.toFixed(1)}×`}</span><button type="button" aria-label="Zoom out chart" onClick={()=>changeZoom(4/3)} disabled={!candles.length}>−</button><button type="button" aria-label="Zoom in chart" onClick={()=>changeZoom(.75)} disabled={!candles.length}>+</button><button type="button" aria-label="Reset chart zoom" onClick={resetZoom} disabled={!candles.length}>Reset</button></div>}</div>;
+  current.range=nextRange;requestAnimationFrame(paintBand);
+ },[candles,levels,showTrend,confluence,overlays,forceCandles,appearance,rangeKey,compact,supportBand,paintBand]);
+ return <div className="priceChartFrame"><div ref={el} onPointerDown={e=>{if(e.pointerType==='mouse')dataRef.current.userAdjusted=true}} className="chartCanvas" role="img" aria-label={ariaLabel||'Historical price and volume chart'}/><div ref={bandRef} hidden={!supportBand} className="chartSupportBand"><span>{supportBand?.label}</span></div>{!compact&&<div className="priceChartNavigation" aria-label="Chart zoom controls"><span aria-live="polite">{zoom===1?'Full range':`Zoom ${zoom.toFixed(1)}×`}</span><button type="button" aria-label="Zoom out chart" onClick={()=>changeZoom(4/3)} disabled={!candles.length}>−</button><button type="button" aria-label="Zoom in chart" onClick={()=>changeZoom(.75)} disabled={!candles.length}>+</button><button type="button" aria-label="Reset chart zoom" onClick={resetZoom} disabled={!candles.length}>Reset</button></div>}</div>;
 }

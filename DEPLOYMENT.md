@@ -1,4 +1,4 @@
-> **Current delivery:** use `GIT_AND_VERCEL.md` for the approved glass build, migration status and safe branch push. Rebuild with real environment values; fixture output is not deployable.
+> **Current delivery:** use `GIT_AND_VERCEL.md` for the midnight build, migration status and safe branch push. Rebuild with real environment values; fixture output is not deployable.
 
 # Current upgrade deployment
 

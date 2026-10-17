@@ -1,0 +1,10 @@
+{
+  "scope": "Offline replay of saved production AAPL evidence; no live provider or execution verification",
+  "state": "RESEARCH_READY",
+  "policy": "auryn-intelligence-2026-10-16-identity-v2",
+  "businessModel": "GENERAL_COMPOUNDER",
+  "businessScore": 80,
+  "valuationMethod": "DCF_FCF_EARNINGS",
+  "valuationState": "INPUTS_REQUIRED",
+  "reason": "Mature positive cash-flow method requires dated share reconciliation, financing/claims evidence and a separate normalized-earnings check."
+}

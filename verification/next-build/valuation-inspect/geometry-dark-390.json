@@ -1,0 +1,62 @@
+{
+  ".aurynStockPage": {
+    "width": 362,
+    "height": 3016.703125,
+    "top": 106,
+    "margin": "0px",
+    "padding": "0px",
+    "minHeight": "0px",
+    "maxWidth": "none",
+    "cssHeight": "3016.7px"
+  },
+  ".glassPricePlot": {
+    "width": 0,
+    "height": 0,
+    "top": 0,
+    "margin": "0px",
+    "padding": "0px",
+    "minHeight": "0px",
+    "maxWidth": "none",
+    "cssHeight": "205px"
+  },
+  ".priceChartFrame": {
+    "width": 0,
+    "height": 0,
+    "top": 0,
+    "margin": "0px",
+    "padding": "0px",
+    "minHeight": "0px",
+    "maxWidth": "none",
+    "cssHeight": "100%"
+  },
+  ".chartCanvas": {
+    "width": 0,
+    "height": 0,
+    "top": 0,
+    "margin": "0px",
+    "padding": "0px",
+    "minHeight": "0px",
+    "maxWidth": "none",
+    "cssHeight": "100%"
+  },
+  ".chartCanvas table": {
+    "width": 0,
+    "height": 0,
+    "top": 0,
+    "margin": "0px",
+    "padding": "0px",
+    "minHeight": "0px",
+    "maxWidth": "none",
+    "cssHeight": "204px"
+  },
+  ".au-ranges": {
+    "width": 0,
+    "height": 0,
+    "top": 0,
+    "margin": "8px 0px 0px",
+    "padding": "3px",
+    "minHeight": "0px",
+    "maxWidth": "100%",
+    "cssHeight": "auto"
+  }
+}

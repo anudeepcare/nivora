@@ -1,0 +1,186 @@
+{
+  "startedAt": "2026-10-17T02:04:37.585Z",
+  "mode": "fixture",
+  "scope": "Local production Chromium with intercepted synthetic auth/database/market/paper services. No actual login delivery, RLS, provider entitlement, broker order or investment-performance certification.",
+  "baseUrl": "http://127.0.0.1:3102",
+  "widths": [
+    390,
+    1440
+  ],
+  "themes": [
+    "light"
+  ],
+  "groups": [
+    "routes",
+    "research",
+    "interactions"
+  ],
+  "node": "v24.19.0",
+  "browserVersion": "153.0.8010.0",
+  "release": {
+    ".next/BUILD_ID": "yfaij72_GqkfAg2H0I-Mh",
+    "package-lock.json": "9aaea5c0a52a2ecc9280bb63cf1c5995b1a163381fa07715cc914b18f2d8b99f",
+    "gitHead": "bbdce50b92384acefb3db79978423da92a75e1ea"
+  },
+  "cases": [
+    {
+      "name": "chart range changes preserve canvas and wheel scroll moves the page",
+      "passed": true
+    },
+    {
+      "name": "metric help and More menu support keyboard dismissal",
+      "passed": true
+    },
+    {
+      "name": "DCA is above the chart and needs no contribution amount",
+      "passed": true
+    },
+    {
+      "name": "weekly Fibonacci controls, custom ratio and expansion work",
+      "passed": true
+    },
+    {
+      "name": "saved note and comparison remain available",
+      "passed": true
+    },
+    {
+      "name": "late explanation cannot appear under another company or account",
+      "passed": true
+    },
+    {
+      "name": "account navigation opens and outside click closes it",
+      "passed": true
+    },
+    {
+      "name": "tab changes preserve chart canvas and do not reload chart histories",
+      "passed": true
+    },
+    {
+      "name": "live quote badge expires after failed polling without hiding the last price",
+      "passed": true
+    },
+    {
+      "name": "search shows local company logos and navigates without a document reload",
+      "passed": true
+    },
+    {
+      "name": "Light Dark and System preferences save to account and survive reload",
+      "passed": true
+    }
+  ],
+  "runtimeErrors": [],
+  "requestCounts": {
+    "GET /stock/MSFT": 4,
+    "GET /_next/static/css/06d5a35261f1f10b.css": 9,
+    "GET /_next/static/css/d239bc770918689e.css": 9,
+    "GET /_next/static/css/34c887b1e38a88e8.css": 9,
+    "GET /_next/static/css/91a7d401bb509a2b.css": 9,
+    "GET /_next/static/chunks/webpack-56dfa73104d6cd8d.js": 9,
+    "GET /_next/static/chunks/4bd1b696-f785427dddbba9fb.js": 9,
+    "GET /_next/static/chunks/1255-dc3ddf72a1dc71a7.js": 9,
+    "GET /_next/static/chunks/main-app-b8ebc991fc6c6414.js": 9,
+    "GET /_next/static/chunks/44530001-50318953f9db2bed.js": 9,
+    "GET /_next/static/chunks/8370-c7fbb5729bf8ed01.js": 9,
+    "GET /_next/static/chunks/app/layout-37923bd9d3d957a1.js": 9,
+    "GET /_next/static/chunks/app/error-e6a52c594721b341.js": 9,
+    "GET /_next/static/chunks/2619-3c9e02e22d10480a.js": 9,
+    "GET /_next/static/chunks/app/page-0fe3c31c2ffb9b42.js": 9,
+    "GET /_next/static/chunks/d0709137-5539a0b74c1c25b1.js": 4,
+    "GET /_next/static/chunks/765-7fb227c745e0a4f4.js": 4,
+    "GET /_next/static/chunks/2235-af83e4c62450edf2.js": 9,
+    "GET /_next/static/chunks/2253-345f2137ba8d6452.js": 9,
+    "GET /_next/static/chunks/app/stock/%5Bsymbol%5D/page-bcf868640f08bab0.js": 4,
+    "GET /api/chart/MSFT?range=1M": 4,
+    "GET /api/chart/MSFT?range=5Y": 4,
+    "GET /api/quote/MSFT": 3,
+    "GET /api/canonical/MSFT": 8,
+    "GET /api/analyze/MSFT": 1,
+    "GET /auth/v1/user": 12,
+    "GET /dashboard?_rsc=A6x-NTTofiNmwWjj": 4,
+    "GET /watchlist?_rsc=A6x-NTTofiNmwWjj": 4,
+    "GET /disclaimer?_rsc=A6x-NTTofiNmwWjj": 3,
+    "GET /methodology?_rsc=A6x-NTTofiNmwWjj": 3,
+    "GET /faq?_rsc=A6x-NTTofiNmwWjj": 3,
+    "GET /api/company/MSFT?evidenceContract=sec-company-evidence-v3": 4,
+    "GET /api/calibration?engine=v65.2": 4,
+    "GET /rest/v1/portfolio_positions?select=shares%2Cavg_cost%2Chorizon&user_id=eq.00000000-0000-0000-0000-000000000001&symbol=eq.MSFT": 4,
+    "GET /_next/static/chunks/6554-0899643ae2ffecab.js": 9,
+    "GET /_next/static/chunks/5333-8d6810389e391a09.js": 9,
+    "GET /_next/static/chunks/6369.a940e9170ca9bbfa.js": 4,
+    "GET /_next/static/chunks/2677-33aa864ad0b53ed1.js": 9,
+    "GET /_next/static/chunks/4876-2c0e3dd2aef22b2b.js": 9,
+    "GET /_next/static/chunks/app/dashboard/page-24338091890e7027.js": 7,
+    "GET /_next/static/css/56c8b42d512aef2b.css": 9,
+    "GET /analyze?_rsc=A6x-NTTofiNmwWjj": 4,
+    "GET /_next/static/chunks/app/disclaimer/page-67310e487dc31fd6.js": 5,
+    "GET /portfolio?_rsc=A6x-NTTofiNmwWjj": 4,
+    "GET /_next/static/chunks/app/watchlist/page-24338091890e7027.js": 9,
+    "GET /_next/static/chunks/app/faq/page-ba16fd961ef32d9a.js": 5,
+    "GET /_next/static/chunks/app/methodology/page-67310e487dc31fd6.js": 5,
+    "GET /_next/static/chunks/app/analyze/page-c7558b366f993754.js": 9,
+    "GET /_next/static/chunks/1403-d95e30e34a3f329e.js": 9,
+    "GET /_next/static/chunks/app/portfolio/page-5e5b035354585b1d.js": 9,
+    "GET /_next/static/css/3042b8b6da6dd4cf.css": 9,
+    "GET /api/model-health?archetype=GENERAL_COMPOUNDER": 4,
+    "POST /api/validation/snapshot": 1,
+    "GET /api/context/MSFT": 4,
+    "GET /api/market-intelligence/live/MSFT": 5,
+    "GET /api/chart/MSFT?range=1W": 1,
+    "GET /api/chart/MSFT?range=1D": 1,
+    "GET /api/chart/MSFT?range=1Y": 1,
+    "GET /api/chart/MSFT?range=3M": 1,
+    "GET /api/chart/MSFT?range=6M": 1,
+    "GET /api/chart/MSFT?range=3Y": 1,
+    "GET /watchlist": 2,
+    "GET /api/research-workspace": 4,
+    "GET /dashboard?_rsc=74Yaumt2i95LbaAY": 2,
+    "GET /disclaimer?_rsc=74Yaumt2i95LbaAY": 2,
+    "GET /methodology?_rsc=74Yaumt2i95LbaAY": 2,
+    "GET /faq?_rsc=74Yaumt2i95LbaAY": 2,
+    "GET /analyze?_rsc=74Yaumt2i95LbaAY": 2,
+    "GET /asset-logos/NBIS.svg": 3,
+    "GET /api/canonical?symbols=MSFT%2CNBIS": 3,
+    "GET /portfolio?_rsc=74Yaumt2i95LbaAY": 2,
+    "GET /stock/MSFT?_rsc=74Yaumt2i95LbaAY": 2,
+    "GET /stock/NBIS?_rsc=74Yaumt2i95LbaAY": 2,
+    "POST /api/research-workspace": 1,
+    "GET /_next/static/chunks/4932.18e258a2d201338a.js": 1,
+    "GET /_next/static/css/5f009dd30c810c44.css": 1,
+    "GET /stock/NBIS?_rsc=A6x-NTTofiNmwWjj": 1,
+    "GET /stock/NBIS?_rsc=Nf5KrhMSRRCqaVhl": 1,
+    "GET /personalization": 3,
+    "GET /api/chart/NBIS?range=1M": 1,
+    "GET /api/chart/NBIS?range=5Y": 1,
+    "GET /api/quote/NBIS": 1,
+    "GET /api/canonical/NBIS": 1,
+    "GET /api/analyze/NBIS": 1,
+    "GET /_next/static/chunks/2553-49b347947f178c35.js": 3,
+    "GET /_next/static/chunks/app/personalization/page-3083ee92b98e86b5.js": 3,
+    "GET /dashboard?_rsc=rmPsmXxTawoQDIen": 3,
+    "GET /watchlist?_rsc=rmPsmXxTawoQDIen": 3,
+    "GET /analyze?_rsc=rmPsmXxTawoQDIen": 3,
+    "GET /portfolio?_rsc=rmPsmXxTawoQDIen": 3,
+    "PUT /auth/v1/user": 2,
+    "GET /trading-lab?_rsc=rmPsmXxTawoQDIen": 2,
+    "GET /_next/static/chunks/app/trading-lab/page-6277dc7eb67c4794.js": 2
+  },
+  "blockedExternal": [],
+  "unhandledFixtures": [],
+  "warnings": [],
+  "notVerified": [
+    "Deployed owner/admin mapping",
+    "Live cross-user Supabase RLS",
+    "Real signup/password-reset email delivery",
+    "Vendor entitlements and freshness",
+    "Actual paper submission, broker fill and reconciliation",
+    "Physical devices, Safari/Firefox and assistive technology",
+    "Human usability approval",
+    "Investment performance or model calibration"
+  ],
+  "finishedAt": "2026-10-17T02:04:50.695Z",
+  "summary": {
+    "passed": 11,
+    "failed": 0,
+    "runtimeErrors": 0
+  }
+}

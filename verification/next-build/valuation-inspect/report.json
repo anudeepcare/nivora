@@ -1,0 +1,360 @@
+{
+  "startedAt": "2026-10-17T00:05:03.903Z",
+  "mode": "fixture",
+  "scope": "Local production Chromium with intercepted synthetic auth/database/market/paper services. No actual login delivery, RLS, provider entitlement, broker order or investment-performance certification.",
+  "baseUrl": "http://127.0.0.1:3102",
+  "widths": [
+    390,
+    1440
+  ],
+  "themes": [
+    "light"
+  ],
+  "groups": [
+    "routes",
+    "research",
+    "interactions"
+  ],
+  "node": "v24.19.0",
+  "browserVersion": null,
+  "release": {
+    ".next/BUILD_ID": "wsDi6mk5hIOtHXpzRq6Ra",
+    "package-lock.json": "9aaea5c0a52a2ecc9280bb63cf1c5995b1a163381fa07715cc914b18f2d8b99f",
+    "gitHead": "bbdce50b92384acefb3db79978423da92a75e1ea"
+  },
+  "cases": [
+    {
+      "theme": "dark",
+      "width": 390,
+      "measurement": {
+        "title": "MICROSOFT CORP",
+        "viewport": 390,
+        "scroll": 394,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Open search",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved investments",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Price & freshness",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Investment horizon",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Save",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Alert",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About AURYN assessment",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About DCA intensity",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Overview",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Financials",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Technicals",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "More",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Fair-value scenarios",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Review cash generation →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [
+          {
+            "label": "Open search",
+            "width": 38,
+            "height": 42
+          },
+          {
+            "label": "Account and navigation",
+            "width": 38,
+            "height": 42
+          },
+          {
+            "label": "About Price & freshness",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "Save",
+            "width": 54.703125,
+            "height": 38
+          },
+          {
+            "label": "Alert",
+            "width": 55.203125,
+            "height": 38
+          },
+          {
+            "label": "About AURYN assessment",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About DCA intensity",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About Fair-value scenarios",
+            "width": 24,
+            "height": 24
+          }
+        ],
+        "overflow": [
+          {
+            "tag": "TABLE",
+            "class": "",
+            "text": "Driverbearbasebull5-year cash-flow growthUnavailableUnavailableUnavailableEquity"
+          },
+          {
+            "tag": "THEAD",
+            "class": "",
+            "text": "Driverbearbasebull"
+          },
+          {
+            "tag": "TR",
+            "class": "",
+            "text": "Driverbearbasebull"
+          },
+          {
+            "tag": "TH",
+            "class": "",
+            "text": "bull"
+          },
+          {
+            "tag": "TBODY",
+            "class": "",
+            "text": "5-year cash-flow growthUnavailableUnavailableUnavailableEquity discount rateUnav"
+          },
+          {
+            "tag": "TR",
+            "class": "",
+            "text": "5-year cash-flow growthUnavailableUnavailableUnavailable"
+          },
+          {
+            "tag": "TD",
+            "class": "",
+            "text": "Unavailable"
+          },
+          {
+            "tag": "TR",
+            "class": "",
+            "text": "Equity discount rateUnavailableUnavailableUnavailable"
+          },
+          {
+            "tag": "TD",
+            "class": "",
+            "text": "Unavailable"
+          },
+          {
+            "tag": "TR",
+            "class": "",
+            "text": "Terminal growthUnavailableUnavailableUnavailable"
+          },
+          {
+            "tag": "TD",
+            "class": "",
+            "text": "Unavailable"
+          },
+          {
+            "tag": "TR",
+            "class": "",
+            "text": "Annual dilutionUnavailableUnavailableUnavailable"
+          }
+        ]
+      }
+    }
+  ],
+  "runtimeErrors": [],
+  "requestCounts": {
+    "GET /stock/MSFT": 1,
+    "GET /_next/static/css/06d5a35261f1f10b.css": 1,
+    "GET /_next/static/css/d239bc770918689e.css": 1,
+    "GET /_next/static/css/34c887b1e38a88e8.css": 1,
+    "GET /_next/static/css/32738377312ddf1c.css": 1,
+    "GET /_next/static/chunks/webpack-18d532e5749b90b1.js": 1,
+    "GET /_next/static/chunks/4bd1b696-f785427dddbba9fb.js": 1,
+    "GET /_next/static/chunks/1255-dc3ddf72a1dc71a7.js": 1,
+    "GET /_next/static/chunks/main-app-b8ebc991fc6c6414.js": 1,
+    "GET /_next/static/chunks/44530001-50318953f9db2bed.js": 1,
+    "GET /_next/static/chunks/8370-c7fbb5729bf8ed01.js": 1,
+    "GET /_next/static/chunks/app/layout-37923bd9d3d957a1.js": 1,
+    "GET /_next/static/chunks/app/error-e6a52c594721b341.js": 1,
+    "GET /_next/static/chunks/2619-3c9e02e22d10480a.js": 1,
+    "GET /_next/static/chunks/app/page-0fe3c31c2ffb9b42.js": 1,
+    "GET /_next/static/chunks/d0709137-5539a0b74c1c25b1.js": 1,
+    "GET /_next/static/chunks/765-7fb227c745e0a4f4.js": 1,
+    "GET /_next/static/chunks/2235-8ed22cc9cad2888d.js": 1,
+    "GET /_next/static/chunks/85-9846b0d30c69add6.js": 1,
+    "GET /_next/static/chunks/app/stock/%5Bsymbol%5D/page-66320edc88559ffe.js": 1,
+    "GET /api/quote/MSFT": 1,
+    "GET /api/canonical/MSFT": 2,
+    "GET /api/analyze/MSFT": 1,
+    "GET /auth/v1/user": 2,
+    "GET /dashboard?_rsc=A6x-NTTofiNmwWjj": 1,
+    "GET /watchlist?_rsc=A6x-NTTofiNmwWjj": 1,
+    "GET /disclaimer?_rsc=A6x-NTTofiNmwWjj": 1,
+    "GET /methodology?_rsc=A6x-NTTofiNmwWjj": 1,
+    "GET /faq?_rsc=A6x-NTTofiNmwWjj": 1,
+    "GET /api/company/MSFT?evidenceContract=sec-company-evidence-v3": 1,
+    "GET /api/calibration?engine=v65.2": 1,
+    "GET /_next/static/chunks/537-d589eba7ce730b20.js": 1,
+    "GET /_next/static/chunks/1042-ccdebf57d7504b8f.js": 1,
+    "GET /_next/static/chunks/5333-8d6810389e391a09.js": 1,
+    "GET /_next/static/chunks/6369.a940e9170ca9bbfa.js": 1,
+    "GET /rest/v1/portfolio_positions?select=shares%2Cavg_cost%2Chorizon&user_id=eq.00000000-0000-0000-0000-000000000001&symbol=eq.MSFT": 1,
+    "GET /_next/static/chunks/2677-33aa864ad0b53ed1.js": 1,
+    "GET /_next/static/chunks/4876-53531bc10698fbc1.js": 1,
+    "GET /_next/static/chunks/1205-63879b593f8ec48d.js": 1,
+    "GET /_next/static/chunks/app/dashboard/page-0396a62c1bb566b9.js": 1,
+    "GET /_next/static/css/56c8b42d512aef2b.css": 1,
+    "GET /analyze?_rsc=A6x-NTTofiNmwWjj": 1,
+    "GET /_next/static/chunks/app/watchlist/page-26d7f7cb326920de.js": 1,
+    "GET /portfolio?_rsc=A6x-NTTofiNmwWjj": 1,
+    "GET /_next/static/chunks/app/methodology/page-67310e487dc31fd6.js": 1,
+    "GET /_next/static/chunks/app/faq/page-ba16fd961ef32d9a.js": 1,
+    "GET /_next/static/chunks/app/disclaimer/page-67310e487dc31fd6.js": 1,
+    "GET /_next/static/chunks/app/analyze/page-97fea594dcc2fe6b.js": 1,
+    "GET /_next/static/chunks/1403-d95e30e34a3f329e.js": 1,
+    "GET /_next/static/chunks/app/portfolio/page-c9e326cdf4a6f017.js": 1,
+    "GET /_next/static/css/3042b8b6da6dd4cf.css": 1,
+    "GET /api/model-health?archetype=GENERAL_COMPOUNDER": 1,
+    "POST /api/validation/snapshot": 1,
+    "GET /api/market-intelligence/live/MSFT": 1,
+    "GET /_next/static/chunks/4932.18e258a2d201338a.js": 1,
+    "GET /_next/static/css/5f009dd30c810c44.css": 1
+  },
+  "blockedExternal": [],
+  "unhandledFixtures": [],
+  "warnings": [],
+  "notVerified": [
+    "Deployed owner/admin mapping",
+    "Live cross-user Supabase RLS",
+    "Real signup/password-reset email delivery",
+    "Vendor entitlements and freshness",
+    "Actual paper submission, broker fill and reconciliation",
+    "Physical devices, Safari/Firefox and assistive technology",
+    "Human usability approval",
+    "Investment performance or model calibration"
+  ]
+}

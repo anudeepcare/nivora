@@ -85,7 +85,7 @@ test("legacy adapter treats unsupported zero valuation as unavailable evidence",
   assert.equal(x.observations.some(o=>o.factor==="VALUATION"),false);
 });
 
-test("legacy adapter can use source-backed news context to classify an AI infrastructure company when profile description is absent",()=>{
+test("legacy adapter does not use news as company identity when profile description is absent",()=>{
   const x=adaptCurrentEvidenceToV4({
     symbol:"INFRA",asOf:"2026-09-07T20:00:00Z",
     market:{assetType:"stock",scores:{risk:65}},
@@ -93,5 +93,5 @@ test("legacy adapter can use source-backed news context to classify an AI infras
     context:{profile:{name:"InfraCo",finnhubIndustry:"Mining"},news:[{headline:"InfraCo expands GPU cloud capacity at powered data center campus",summary:"New HPC hosting capacity is expected online next year."}]},
     legacyDecision:{factors:{growth:80,risk:65}}
   });
-  assert.match(String(x.classificationInput.description||""),/GPU cloud capacity|HPC hosting/i);
+  assert.equal(x.classificationInput.description,null);
 });

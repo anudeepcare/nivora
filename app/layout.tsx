@@ -10,8 +10,7 @@ import "./valuation-workbench.css";
 import "./evidence-surfaces.css";
 import "./research-surfaces.css";
 import "./product-recovery.css";
-import "./approved-glass.css";
-import "./glass-integration.css";
+import "./product-system.css";
 import type {Metadata,Viewport} from "next";
 import ThemeProvider from "@/components/ThemeProvider";
 

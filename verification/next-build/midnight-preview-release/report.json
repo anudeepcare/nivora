@@ -1,0 +1,1503 @@
+{
+  "startedAt": "2026-10-17T02:02:24.418Z",
+  "mode": "fixture",
+  "scope": "Local production Chromium with intercepted synthetic auth/database/market/paper services. No actual login delivery, RLS, provider entitlement, broker order or investment-performance certification.",
+  "baseUrl": "http://127.0.0.1:3102",
+  "widths": [
+    390,
+    1440
+  ],
+  "themes": [
+    "light"
+  ],
+  "groups": [
+    "routes",
+    "research",
+    "interactions"
+  ],
+  "node": "v24.19.0",
+  "browserVersion": null,
+  "release": {
+    ".next/BUILD_ID": "yfaij72_GqkfAg2H0I-Mh",
+    "package-lock.json": "9aaea5c0a52a2ecc9280bb63cf1c5995b1a163381fa07715cc914b18f2d8b99f",
+    "gitHead": "bbdce50b92384acefb3db79978423da92a75e1ea"
+  },
+  "cases": [
+    {
+      "theme": "dark",
+      "width": 1440,
+      "measurement": {
+        "title": "MICROSOFT CORP",
+        "viewport": 1440,
+        "scroll": 1440,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Discover",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Trading lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Settings",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": "combobox",
+            "label": "Search investments",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Price & freshness",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Investment horizon",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Save",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Alert",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About AURYN assessment",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About DCA intensity",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Overview",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Financials",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Technicals",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "More",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Hide levels",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Expand chart",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Charting by TradingView",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1D",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1W",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1M",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1Y",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "5Y",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Additional chart periods",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Entry timing",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Support\n$140.00–$145.00",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Reclaim\n$155.00",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "View technicals",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Financials",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Revenue",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Free cash flow",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Operating margin",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "What would change the call?",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [
+          {
+            "label": "Investment horizon",
+            "font": "13px"
+          },
+          {
+            "label": "Additional chart periods",
+            "font": "12px"
+          }
+        ],
+        "smallTargets": [
+          {
+            "label": "Account and navigation",
+            "width": 42,
+            "height": 42
+          },
+          {
+            "label": "About Price & freshness",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "Save",
+            "width": 63.4375,
+            "height": 40
+          },
+          {
+            "label": "Alert",
+            "width": 63.96875,
+            "height": 40
+          },
+          {
+            "label": "About AURYN assessment",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About DCA intensity",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "Hide levels",
+            "width": 68.328125,
+            "height": 36
+          },
+          {
+            "label": "Expand chart",
+            "width": 36,
+            "height": 36
+          },
+          {
+            "label": "1D",
+            "width": 44,
+            "height": 36
+          },
+          {
+            "label": "1W",
+            "width": 44,
+            "height": 36
+          },
+          {
+            "label": "1M",
+            "width": 44,
+            "height": 36
+          },
+          {
+            "label": "1Y",
+            "width": 44,
+            "height": 36
+          },
+          {
+            "label": "5Y",
+            "width": 44,
+            "height": 36
+          },
+          {
+            "label": "About Entry timing",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "View technicals",
+            "width": 124.25,
+            "height": 36
+          },
+          {
+            "label": "Financials",
+            "width": 85.078125,
+            "height": 36
+          },
+          {
+            "label": "About Revenue",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About Free cash flow",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About Operating margin",
+            "width": 24,
+            "height": 24
+          }
+        ],
+        "overflow": []
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "measurement": {
+        "title": "MICROSOFT CORP",
+        "viewport": 390,
+        "scroll": 390,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Open search",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved investments",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Price & freshness",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Investment horizon",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Save",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Alert",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About AURYN assessment",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About DCA intensity",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Overview",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Financials",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Technicals",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "More",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Hide levels",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Expand chart",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Charting by TradingView",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1D",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1W",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1M",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1Y",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "5Y",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Additional chart periods",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Financials",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Revenue",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Free cash flow",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Operating margin",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "What would change the call?",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [
+          {
+            "label": "Open search",
+            "width": 38,
+            "height": 42
+          },
+          {
+            "label": "Account and navigation",
+            "width": 38,
+            "height": 42
+          },
+          {
+            "label": "About Price & freshness",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About AURYN assessment",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About DCA intensity",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "Expand chart",
+            "width": 32,
+            "height": 32
+          },
+          {
+            "label": "1D",
+            "width": 35,
+            "height": 36
+          },
+          {
+            "label": "1W",
+            "width": 35,
+            "height": 36
+          },
+          {
+            "label": "1M",
+            "width": 35,
+            "height": 36
+          },
+          {
+            "label": "1Y",
+            "width": 35,
+            "height": 36
+          },
+          {
+            "label": "5Y",
+            "width": 35,
+            "height": 36
+          },
+          {
+            "label": "About Revenue",
+            "width": 20,
+            "height": 20
+          },
+          {
+            "label": "About Free cash flow",
+            "width": 20,
+            "height": 20
+          },
+          {
+            "label": "About Operating margin",
+            "width": 20,
+            "height": 20
+          }
+        ],
+        "overflow": []
+      }
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "measurement": {
+        "title": "MICROSOFT CORP",
+        "viewport": 1440,
+        "scroll": 1440,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Discover",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Trading lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Settings",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": "combobox",
+            "label": "Search investments",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Price & freshness",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Investment horizon",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Save",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Alert",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About AURYN assessment",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About DCA intensity",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Overview",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Financials",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Technicals",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "More",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Hide levels",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Expand chart",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Charting by TradingView",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1D",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1W",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1M",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1Y",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "5Y",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Additional chart periods",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Entry timing",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Support\n$140.00–$145.00",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Reclaim\n$155.00",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "View technicals",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Financials",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Revenue",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Free cash flow",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Operating margin",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "What would change the call?",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [
+          {
+            "label": "Investment horizon",
+            "font": "13px"
+          },
+          {
+            "label": "Additional chart periods",
+            "font": "12px"
+          }
+        ],
+        "smallTargets": [
+          {
+            "label": "Account and navigation",
+            "width": 42,
+            "height": 42
+          },
+          {
+            "label": "About Price & freshness",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "Save",
+            "width": 63.4375,
+            "height": 40
+          },
+          {
+            "label": "Alert",
+            "width": 63.96875,
+            "height": 40
+          },
+          {
+            "label": "About AURYN assessment",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About DCA intensity",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "Hide levels",
+            "width": 68.328125,
+            "height": 36
+          },
+          {
+            "label": "Expand chart",
+            "width": 36,
+            "height": 36
+          },
+          {
+            "label": "1D",
+            "width": 44,
+            "height": 36
+          },
+          {
+            "label": "1W",
+            "width": 44,
+            "height": 36
+          },
+          {
+            "label": "1M",
+            "width": 44,
+            "height": 36
+          },
+          {
+            "label": "1Y",
+            "width": 44,
+            "height": 36
+          },
+          {
+            "label": "5Y",
+            "width": 44,
+            "height": 36
+          },
+          {
+            "label": "About Entry timing",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "View technicals",
+            "width": 124.25,
+            "height": 36
+          },
+          {
+            "label": "Financials",
+            "width": 85.078125,
+            "height": 36
+          },
+          {
+            "label": "About Revenue",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About Free cash flow",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About Operating margin",
+            "width": 24,
+            "height": 24
+          }
+        ],
+        "overflow": []
+      }
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "measurement": {
+        "title": "MICROSOFT CORP",
+        "viewport": 390,
+        "scroll": 390,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Open search",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved investments",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Price & freshness",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Investment horizon",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Save",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Alert",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About AURYN assessment",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About DCA intensity",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Overview",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Financials",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Technicals",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "More",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Hide levels",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Expand chart",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Charting by TradingView",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1D",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1W",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1M",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1Y",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "5Y",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Additional chart periods",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Financials",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Revenue",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Free cash flow",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Operating margin",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "What would change the call?",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [
+          {
+            "label": "Open search",
+            "width": 38,
+            "height": 42
+          },
+          {
+            "label": "Account and navigation",
+            "width": 38,
+            "height": 42
+          },
+          {
+            "label": "About Price & freshness",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About AURYN assessment",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About DCA intensity",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "Expand chart",
+            "width": 32,
+            "height": 32
+          },
+          {
+            "label": "1D",
+            "width": 35,
+            "height": 36
+          },
+          {
+            "label": "1W",
+            "width": 35,
+            "height": 36
+          },
+          {
+            "label": "1M",
+            "width": 35,
+            "height": 36
+          },
+          {
+            "label": "1Y",
+            "width": 35,
+            "height": 36
+          },
+          {
+            "label": "5Y",
+            "width": 35,
+            "height": 36
+          },
+          {
+            "label": "About Revenue",
+            "width": 20,
+            "height": 20
+          },
+          {
+            "label": "About Free cash flow",
+            "width": 20,
+            "height": 20
+          },
+          {
+            "label": "About Operating margin",
+            "width": 20,
+            "height": 20
+          }
+        ],
+        "overflow": []
+      }
+    }
+  ],
+  "runtimeErrors": [],
+  "requestCounts": {
+    "GET /stock/MSFT": 4,
+    "GET /_next/static/css/06d5a35261f1f10b.css": 4,
+    "GET /_next/static/css/d239bc770918689e.css": 4,
+    "GET /_next/static/css/34c887b1e38a88e8.css": 4,
+    "GET /_next/static/css/91a7d401bb509a2b.css": 4,
+    "GET /_next/static/chunks/webpack-56dfa73104d6cd8d.js": 4,
+    "GET /_next/static/chunks/4bd1b696-f785427dddbba9fb.js": 4,
+    "GET /_next/static/chunks/1255-dc3ddf72a1dc71a7.js": 4,
+    "GET /_next/static/chunks/main-app-b8ebc991fc6c6414.js": 4,
+    "GET /_next/static/chunks/44530001-50318953f9db2bed.js": 4,
+    "GET /_next/static/chunks/8370-c7fbb5729bf8ed01.js": 4,
+    "GET /_next/static/chunks/app/layout-37923bd9d3d957a1.js": 4,
+    "GET /_next/static/chunks/app/error-e6a52c594721b341.js": 4,
+    "GET /_next/static/chunks/2619-3c9e02e22d10480a.js": 4,
+    "GET /_next/static/chunks/app/page-0fe3c31c2ffb9b42.js": 4,
+    "GET /_next/static/chunks/d0709137-5539a0b74c1c25b1.js": 4,
+    "GET /_next/static/chunks/765-7fb227c745e0a4f4.js": 4,
+    "GET /_next/static/chunks/2235-af83e4c62450edf2.js": 4,
+    "GET /_next/static/chunks/2253-345f2137ba8d6452.js": 4,
+    "GET /_next/static/chunks/app/stock/%5Bsymbol%5D/page-bcf868640f08bab0.js": 4,
+    "GET /api/quote/MSFT": 4,
+    "GET /api/canonical/MSFT": 8,
+    "GET /api/analyze/MSFT": 4,
+    "GET /auth/v1/user": 8,
+    "GET /dashboard?_rsc=A6x-NTTofiNmwWjj": 4,
+    "GET /analyze?_rsc=A6x-NTTofiNmwWjj": 4,
+    "GET /watchlist?_rsc=A6x-NTTofiNmwWjj": 4,
+    "GET /portfolio?_rsc=A6x-NTTofiNmwWjj": 4,
+    "GET /discover?_rsc=A6x-NTTofiNmwWjj": 2,
+    "GET /api/company/MSFT?evidenceContract=sec-company-evidence-v3": 4,
+    "GET /api/calibration?engine=v65.2": 4,
+    "GET /_next/static/chunks/6554-0899643ae2ffecab.js": 4,
+    "GET /_next/static/chunks/5333-8d6810389e391a09.js": 4,
+    "GET /_next/static/chunks/6369.a940e9170ca9bbfa.js": 4,
+    "GET /rest/v1/portfolio_positions?select=shares%2Cavg_cost%2Chorizon&user_id=eq.00000000-0000-0000-0000-000000000001&symbol=eq.MSFT": 4,
+    "GET /_next/static/chunks/2677-33aa864ad0b53ed1.js": 4,
+    "GET /_next/static/chunks/4876-2c0e3dd2aef22b2b.js": 4,
+    "GET /_next/static/chunks/app/dashboard/page-24338091890e7027.js": 4,
+    "GET /_next/static/css/56c8b42d512aef2b.css": 4,
+    "GET /alerts?_rsc=A6x-NTTofiNmwWjj": 2,
+    "GET /_next/static/chunks/app/discover/page-24338091890e7027.js": 2,
+    "GET /research-lab?_rsc=A6x-NTTofiNmwWjj": 2,
+    "GET /_next/static/chunks/app/watchlist/page-24338091890e7027.js": 4,
+    "GET /trading-lab?_rsc=A6x-NTTofiNmwWjj": 2,
+    "GET /_next/static/chunks/app/analyze/page-c7558b366f993754.js": 4,
+    "GET /personalization?_rsc=A6x-NTTofiNmwWjj": 2,
+    "GET /_next/static/chunks/1403-d95e30e34a3f329e.js": 4,
+    "GET /_next/static/chunks/app/portfolio/page-5e5b035354585b1d.js": 4,
+    "GET /_next/static/css/3042b8b6da6dd4cf.css": 4,
+    "GET /faq?_rsc=A6x-NTTofiNmwWjj": 4,
+    "GET /_next/static/chunks/app/alerts/page-e3729126f444e748.js": 2,
+    "GET /disclaimer?_rsc=A6x-NTTofiNmwWjj": 4,
+    "GET /_next/static/chunks/app/research-lab/page-2e624fc416a58309.js": 2,
+    "GET /methodology?_rsc=A6x-NTTofiNmwWjj": 4,
+    "GET /_next/static/chunks/app/trading-lab/page-6277dc7eb67c4794.js": 2,
+    "GET /_next/static/chunks/2553-49b347947f178c35.js": 2,
+    "GET /_next/static/chunks/app/personalization/page-3083ee92b98e86b5.js": 2,
+    "GET /_next/static/chunks/app/faq/page-ba16fd961ef32d9a.js": 4,
+    "GET /_next/static/chunks/app/disclaimer/page-67310e487dc31fd6.js": 4,
+    "GET /_next/static/chunks/app/methodology/page-67310e487dc31fd6.js": 4,
+    "GET /api/model-health?archetype=GENERAL_COMPOUNDER": 4,
+    "POST /api/validation/snapshot": 4,
+    "GET /api/market-intelligence/live/MSFT": 4,
+    "GET /_next/static/chunks/5058-33aa864ad0b53ed1.js": 1
+  },
+  "blockedExternal": [],
+  "unhandledFixtures": [],
+  "warnings": [],
+  "notVerified": [
+    "Deployed owner/admin mapping",
+    "Live cross-user Supabase RLS",
+    "Real signup/password-reset email delivery",
+    "Vendor entitlements and freshness",
+    "Actual paper submission, broker fill and reconciliation",
+    "Physical devices, Safari/Firefox and assistive technology",
+    "Human usability approval",
+    "Investment performance or model calibration"
+  ]
+}

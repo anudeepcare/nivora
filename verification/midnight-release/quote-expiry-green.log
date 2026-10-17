@@ -1,0 +1,13 @@
+✔ retained live flags expire without a successful new request (0.802727ms)
+✔ session transitions, unknown timestamps and future observations cannot stay live (0.171353ms)
+✔ retained live quotes expire without another provider response (1.125984ms)
+✔ closed session, wrong symbol, invalid and future timestamps cannot claim live (0.177472ms)
+✔ crypto is live only while its provider and request timestamps remain fresh (0.160988ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 372.954247

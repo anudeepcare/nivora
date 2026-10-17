@@ -1,4 +1,4 @@
-> **Latest build: approved liquid glass, 2026-10-16.** Start with `START_HERE.md` and `RELEASE_REPORT.md`. Current verification is in `verification/glass-release/`; older release narratives below are historical. Complete source is included; this ZIP has not been deployed.
+> **Latest build: approved midnight direction, 2026-10-16.** Start with `START_HERE.md` and `RELEASE_REPORT.md`. Current verification is in `verification/midnight-release/`; older release narratives below are historical. Complete source is included; this ZIP has not been deployed.
 
 # AURYN Intelligence OS — complete source package
 

@@ -9,7 +9,7 @@ export default function AuthGuard({children}:{children:React.ReactNode}){
  useEffect(()=>{let alive=true;let unsubscribe=()=>{};
  const timer=setTimeout(()=>{if(alive)setError('We could not verify your session. Please try signing in again.')},12000);
  try{const sb=supabaseBrowser();sb.auth.getSession().then(({data,error})=>{if(!alive)return;clearTimeout(timer);if(error){setError(error.message);return}if(data.session)setReady(true);else router.replace('/login')}).catch(()=>{if(alive)setError('Unable to connect. Check your connection and try again.')});
- const {data}=sb.auth.onAuthStateChange((event,session)=>{if(!alive)return;if(event==='SIGNED_OUT'||!session){setReady(false);navigateToLogin()}});unsubscribe=()=>data.subscription.unsubscribe();
+ const {data}=sb.auth.onAuthStateChange((event,session)=>{if(!alive)return;if(event==='SIGNED_OUT'){setReady(false);navigateToLogin()}else if(session){setReady(true);setError('')}});unsubscribe=()=>data.subscription.unsubscribe();
  }catch{setError('Sign-in is not configured for this installation. Please contact the account administrator.')}
  return()=>{alive=false;clearTimeout(timer);unsubscribe()};},[router]);
  if(error)return <main className="uxState" role="alert"><h1>Unable to open your workspace</h1><p>{error}</p><Link href="/login">Back to sign in</Link><button onClick={()=>window.location.reload()}>Try again</button></main>;

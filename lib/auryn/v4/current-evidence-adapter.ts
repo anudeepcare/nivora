@@ -116,19 +116,17 @@ export function adaptCurrentEvidenceToV4(input:CurrentEvidenceAdapterInput):Anal
   const profile=context?.profile??{};
   const industry=profile?.finnhubIndustry??profile?.industry??company?.industry??null;
   const sector=profile?.sector??company?.sector??context?.sector??null;
-  const sourceBackedContextText=[
-    context?.summary?.description,
-    context?.summary?.topReason,
-    ...(Array.isArray(context?.news)?context.news.slice(0,6).flatMap((x:any)=>[x?.headline??x?.title,x?.summary]):[])
-  ].filter((x:unknown)=>typeof x==="string"&&x.trim()).join(" ").slice(0,2400);
-  const description=profile?.description??company?.description??context?.summary?.description??(sourceBackedContextText||null);
+  // A headline mentioning data centers does not make its subject an operator.
+  // Legacy hints and strategic themes may themselves be news-derived; classify
+  // from the operating profile and reported financials independently.
+  const description=profile?.description??company?.description??null;
   const latestHistoryRevenue=Array.isArray(company?.fiveYearRecord?.history)?[...company.fiveYearRecord.history].reverse().find((x:any)=>finite(x?.revenue))?.revenue:null;
   const revenue=finite(raw?.revenue)?Number(raw.revenue):finite(company?.revenue)?Number(company.revenue):finite(latestHistoryRevenue)?Number(latestHistoryRevenue):null;
   const revenueGrowth=finite(raw?.revGrowth)?Number(raw.revGrowth):finite(company?.revenueGrowth)?Number(company.revenueGrowth):null;
   const operatingMargin=finite(raw?.opMargin)?Number(raw.opMargin):null;
   const fcf=finite(raw?.fcf)?Number(raw.fcf):null;
   const profitable=typeof company?.profitable==="boolean"?company.profitable:operatingMargin!=null?operatingMargin>0:fcf!=null?fcf>0:null;
-  const classificationInput:SecurityClassificationInput={assetType:market?.assetType??company?.assetType??"stock",sector,industry,name:profile?.name??company?.name??input.symbol,description,revenue,revenueGrowth,operatingMargin,fcf,profitable,archetypeHint:legacy?.archetype??null,strategicTheme:legacy?.strategicContext?.theme??null};
+  const classificationInput:SecurityClassificationInput={assetType:market?.assetType??company?.assetType??"stock",sector,industry,name:profile?.name??company?.name??input.symbol,description,revenue,revenueGrowth,operatingMargin,fcf,profitable,archetypeHint:null,strategicTheme:null};
 
   const slowEvidenceFingerprint=JSON.stringify({
     currentScore:company?.fundamentalSignal?.currentScore??null,

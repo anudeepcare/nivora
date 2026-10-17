@@ -1,0 +1,195 @@
+/* Approved native design. Shared across production and visual comparisons. */
+.aurynGlass{--a-bg:#fff;--a-card:#fff;--a-ink:#0a1631;--a-muted:#536786;--a-line:#e6edf7;--a-blue:#0865f5;--a-pale:#edf4ff;--a-green:#00a77b;--a-gsoft:#e4f8f0;--a-amber:#a96905;--a-asoft:#fff5df;--a-red:#c63b64;--auryn-page-ink:var(--a-ink);--auryn-page-muted:var(--a-muted);--auryn-card-bg:var(--a-card);--auryn-border:var(--a-line);--auryn-accent:#1672ff;--text:var(--a-ink);--muted:var(--a-muted);--border:var(--a-line);--surface:var(--a-card);--panel:var(--a-card);--bg:var(--a-bg);font-size:14px;line-height:1.5}
+body:has(.aurynAppShell){background:var(--auryn-page-bg,#fff)}
+.aurynGlass .au-app{background:var(--a-bg);min-height:100dvh;border:0;box-shadow:none;border-radius:0}
+.aurynGlass .au-shell{grid-template-columns:190px minmax(0,1fr)}
+.aurynGlass .au-side{background:#f8fafd;border-color:var(--a-line);backdrop-filter:none;-webkit-backdrop-filter:none;padding:30px 16px}
+.aurynGlass .au-nav{font-size:13px;padding:12px;color:var(--a-muted);border-radius:10px}
+.aurynGlass .au-nav[data-active=true]{background:var(--a-pale);color:var(--a-blue);box-shadow:none}
+.aurynGlass .au-top{background:var(--a-card);border:0;border-bottom:1px solid var(--a-line);border-radius:0;margin:0;padding:18px 34px;gap:14px;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;position:relative;z-index:50}
+.aurynGlass .au-live-search{max-width:560px;margin-right:auto}
+.aurynGlass .aurynSearch form{background:#f5f8fc;border:1px solid var(--a-line);border-radius:12px}
+.aurynGlass :is(.au-icon,.au-btn){color:var(--a-ink);background:var(--a-card);border-color:var(--a-line);box-shadow:none}
+.aurynGlass .nativeSearchToggle,.aurynGlass .nativeSavedLink{display:none}
+.aurynGlass .au-content{max-width:1440px;padding:30px 38px 50px}
+.aurynGlass .au-stockhead{display:flex;align-items:center;justify-content:space-between;padding:0;margin:0 0 12px;gap:24px}
+.aurynGlass .au-stockhead .assetLogo{border:0;border-radius:11px;background:var(--a-pale);box-shadow:none;min-width:44px!important;height:44px!important;width:44px!important}
+.aurynGlass .au-stockhead h1{font-size:25px;letter-spacing:-.6px;line-height:1.2;font-weight:650}
+.aurynGlass .au-stockhead .au-quote{text-align:right;min-width:0}
+.aurynGlass .au-stockhead .au-quote .au-metric{font-size:40px;font-weight:680;line-height:1.1;letter-spacing:-1.6px;color:var(--a-ink)}
+.aurynGlass .glassQuoteChange{margin-top:6px;font-size:13px;flex-wrap:wrap}
+.aurynGlass .glassQuoteChange .au-positive{color:var(--a-green);font-size:16px;font-weight:550}
+.aurynGlass .glassPriceTime{font-size:10px;max-width:none;margin-top:4px;color:var(--a-muted)}
+.aurynGlass .nativeStockControls{margin:0 0 16px;gap:12px;font-size:12px}
+.aurynGlass .glassHorizon select{color:var(--a-ink);min-height:36px;font-size:13px;max-width:none}
+.aurynGlass .glassStockActions .au-btn{min-height:34px;padding:5px 12px;font-size:12px}
+.aurynGlass .nativeDecisionStrip{display:flex;gap:12px;align-items:flex-start;border-radius:12px;background:#f8fafc;padding:14px 16px}
+.aurynGlass .nativeDecisionStrip>i{width:12px;height:12px;border-radius:50%;background:#ffbb3d;margin-top:5px;flex-shrink:0}
+.aurynGlass .nativeDecisionStrip[data-tone=positive]>i{background:#00bd8b}
+.aurynGlass .nativeDecisionStrip[data-tone=negative]>i{background:#ed527c}
+.aurynGlass .nativeDecisionStrip[data-tone=neutral]>i{background:#8096b9}
+.aurynGlass .nativeDecisionStrip>div{flex:1}
+.aurynGlass .nativeDecisionStrip strong{font-size:17px;font-weight:650;color:var(--a-ink)}
+.aurynGlass .nativeDecisionStrip p{font-size:13px;color:var(--a-muted);margin:3px 0 0}
+.aurynGlass .nativeOutlook{display:flex;align-items:center;gap:22px;padding:13px 8px;font-size:12px;color:var(--a-muted)}
+.aurynGlass .nativeOutlook>span:first-child{color:var(--a-green)}
+.aurynGlass .nativeOutlook>span+span{border-left:1px solid var(--a-line);padding-left:22px}
+.aurynGlass .nativeOutlook b{font-weight:500}
+.aurynGlass .au-tabs{display:flex;gap:26px;background:none;border:0;border-radius:0;border-bottom:1px solid var(--a-line);padding:0;margin:0 0 23px;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;overflow:visible}
+.aurynGlass .au-tab,.aurynGlass .au-more{border:0;background:none;border-radius:0;padding:12px 0;color:var(--a-muted);font-size:14px;min-height:46px;box-shadow:none;position:relative}
+.aurynGlass .au-tab[aria-pressed=true],.aurynGlass .au-more.au-current{color:var(--a-ink);background:none;font-weight:650;box-shadow:none}
+.aurynGlass .au-tab[aria-pressed=true]:after,.aurynGlass .au-more.au-current:after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:3px;border-radius:3px;background:var(--a-blue)}
+.aurynGlass .au-more{font-size:12px;min-width:45px}
+.aurynGlass .au-morewrap{margin-left:auto}
+.aurynGlass .au-morepanel{background:var(--a-card);border-color:var(--a-line);box-shadow:0 15px 40px #14274420}
+.aurynGlass .au-morepanel button{background:var(--a-card);color:var(--a-ink)}
+.aurynGlass .au-morepanel button:hover{background:var(--a-pale)}
+.aurynGlass .nativeResearchGrid{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:26px;align-items:start}
+.aurynGlass .nativeChart{min-width:0}
+.aurynGlass .nativeChart .au-panelhead{margin:0 0 12px;min-height:26px}
+.aurynGlass .nativeChart h2,.aurynGlass .nativeBusiness h2{font-size:16px;font-weight:650;letter-spacing:-.3px}
+.aurynGlass .nativeChartActions{display:flex;align-items:center;gap:14px}
+.aurynGlass .nativeChartActions .au-icon{border:0;width:30px;min-height:30px;height:30px;color:var(--a-muted)}
+.aurynGlass .nativeChartActions .au-link{font-size:11px;font-weight:400;color:var(--a-muted)}
+.aurynGlass .nativeChart .glassPricePlot{height:285px;margin:0}
+.aurynGlass .nativeChart .au-ranges{display:flex;justify-content:center;gap:12px;background:transparent;border:0;padding:10px 0 0;margin:0}
+.aurynGlass .au-ranges button{border:0;background:transparent;min-width:42px;min-height:36px;font-size:12px;border-radius:10px;color:var(--a-muted)}
+.aurynGlass .au-ranges button[aria-pressed=true]{background:var(--a-pale);color:var(--a-blue);box-shadow:none;font-weight:650}
+.aurynGlass .priceChartFrame{position:relative}
+.aurynGlass .chartSupportBand{position:absolute;left:0;right:54px;background:#f9b84222;border-top:1px dashed #d69631;border-bottom:1px dashed #d69631;pointer-events:none;z-index:2;min-height:2px}
+.aurynGlass .chartSupportBand>span{position:absolute;right:8px;top:100%;font-size:10px;color:var(--a-amber);background:var(--a-card);padding:1px 4px;border-radius:4px;white-space:nowrap}
+.aurynGlass .nativeSignals{display:grid;gap:12px}
+.aurynGlass .nativeDca,.aurynGlass .nativeTiming{display:block;padding:18px;background:#f6f8fc;border:1px solid #edf1f7;border-radius:16px;box-shadow:none;min-width:0;overflow:visible}
+.aurynGlass .nativeDca h3,.aurynGlass .nativeTiming h3{font-size:13px;font-weight:600;color:var(--a-ink);margin:0 0 4px;display:flex;align-items:center;gap:3px}
+.aurynGlass .nativeDcaValue,.aurynGlass .nativeTiming>strong{font-size:29px;line-height:1.2;font-weight:650;letter-spacing:-.7px;color:var(--a-ink)}
+.aurynGlass .nativeTiming .nativeWait{color:#c78b1a}
+.aurynGlass .nativeDca p,.aurynGlass .nativeTiming p{font-size:12px;color:var(--a-muted);margin:2px 0 0;line-height:1.5}
+.aurynGlass .nativeDca .au-dcarail{position:relative;display:flex;justify-content:space-between;background:none;padding:0;margin:13px 0 0;gap:0}
+.aurynGlass .nativeDca .au-dcarail:before{content:'';position:absolute;top:5px;left:8px;right:8px;height:2px;background:linear-gradient(90deg,#d2d7ed,#9862f3,#d2d7ed)}
+.aurynGlass .nativeDca .au-dcarail span{position:relative;display:grid;justify-items:center;gap:6px;font-size:10px;height:auto;color:var(--a-muted);background:none;border:0;box-shadow:none;border-radius:0;padding:0;min-width:19px}
+.aurynGlass .nativeDca .au-dcarail span i{display:block;border:1px solid #b1bdd2;background:var(--a-card);width:10px;height:10px;border-radius:50%}
+.aurynGlass .nativeDca .au-dcarail span.active{color:var(--a-ink);background:none;box-shadow:none}
+.aurynGlass .nativeDca .au-dcarail span.active i{background:#056bff;border:2px solid #91b8ff;box-shadow:0 0 0 3px #2576f414}
+.aurynGlass .nativeDca .au-dcarail b{font-weight:450}
+.aurynGlass .nativeDca .au-dcarail span.active b{font-weight:650}
+.aurynGlass .nativeDcaDate{display:block;font-size:9px;color:var(--a-muted);margin-top:8px}
+.aurynGlass .nativeTiming .au-link{display:flex;align-items:center;margin-top:12px;font-size:10px;color:var(--a-muted)}
+.aurynGlass .nativeBusiness{margin-top:24px}
+.aurynGlass .nativeBusiness .au-panelhead{margin-bottom:12px}
+.aurynGlass .nativeBusiness .au-link{display:flex;align-items:center;gap:4px;font-size:11px}
+.aurynGlass .nativeBusiness .au-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.aurynGlass .nativeBusiness .au-facts>div{background:var(--a-card);border:1px solid var(--a-line);border-radius:13px;padding:15px 14px;color:var(--a-ink);min-width:0}
+.aurynGlass .nativeBusiness .au-facts .au-small{display:flex;align-items:center;gap:2px;font-size:11px;white-space:normal}
+.aurynGlass .nativeBusiness .au-facts .au-metric{font-size:23px;letter-spacing:-.5px;font-weight:650;margin-top:4px;color:var(--a-ink)}
+.aurynGlass .nativeBusiness .researchSparkline{display:block;width:100%;height:38px;margin-top:8px}
+.aurynGlass .nativeDataNote{font-size:10px;line-height:1.5;color:var(--a-muted);margin:8px 0}
+.aurynGlass .nativeChangeRow{display:flex;align-items:center;justify-content:space-between;width:100%;margin:18px 0;padding:16px 18px;min-height:52px;background:var(--a-card);border:1px solid var(--a-line);border-radius:13px;color:var(--a-ink);font-size:14px;text-align:left}
+.aurynGlass .au-panel{background:var(--a-card);border-color:var(--a-line);box-shadow:none;border-radius:16px;color:var(--a-ink)}
+.aurynGlass .au-head h1{font-size:27px;letter-spacing:-.7px}
+.aurynGlass .au-note{background:var(--a-pale);color:var(--a-muted);border-color:var(--a-line)}
+.aurynGlass :is(.au-note strong,.au-panel h2,.au-panel h3){color:var(--a-ink)}
+.aurynGlass .au-input{background:var(--a-card);color:var(--a-ink);border-color:var(--a-line)}
+.aurynGlass .glassStockLink{max-width:none}
+.aurynGlass .glassResearchHome .glassStockLink{width:100%}
+.aurynGlass .au-listrow .au-security{min-width:0;flex:1}
+.aurynGlass .au-listrow .au-end{flex-shrink:0;max-width:42%}
+.aurynGlass .au-dock{display:none}
+.aurynGlass .au-footer{margin-top:26px;font-size:10px}
+.aurynGlass .metricHelpButton{background:none!important;color:var(--a-muted)!important;margin:0 0 0 3px}
+.aurynGlass .nativeDca .metricHelpButton{color:var(--a-muted)!important}
+[data-theme=dark] .aurynGlass{--a-bg:#08172c;--a-card:#0c1c33;--a-ink:#f0f4ff;--a-muted:#afc0dc;--a-line:#213956;--a-blue:#2c94ff;--a-pale:#132b4e;--a-green:#3cdec3;--a-gsoft:#123a3b;--a-amber:#ffce76;--a-asoft:#3b3324;--a-red:#ff9bb6;--auryn-accent:#2694ff;--auryn-positive:#3cdec3;--auryn-negative:#ff9bb6}
+[data-theme=dark] body:has(.aurynAppShell){background:#08172c}
+[data-theme=dark] .aurynGlass .au-app{background:var(--a-bg)}
+[data-theme=dark] .aurynGlass .au-side{background:#0b1b30;border-color:var(--a-line)}
+[data-theme=dark] .aurynGlass .au-top{background:var(--a-bg);border-color:var(--a-line)}
+[data-theme=dark] .aurynGlass .nativeDecisionStrip{background:#10233c}
+[data-theme=dark] .aurynGlass :is(.nativeDca,.nativeTiming){background:linear-gradient(130deg,#122842,#0e2037);border-color:#25405f;color:var(--a-ink)}
+[data-theme=dark] .aurynGlass .au-tabs{background:none;border-color:var(--a-line);box-shadow:none}
+[data-theme=dark] .aurynGlass .au-tab[aria-pressed=true],[data-theme=dark] .aurynGlass .au-more.au-current{background:none;color:var(--a-ink)}
+[data-theme=dark] .aurynGlass .nativeTiming .nativeWait{color:#ffcb6e}
+[data-theme=dark] .aurynGlass .au-ranges button[aria-pressed=true]{background:#132f56;color:#37a0ff}
+[data-theme=dark] .aurynGlass .nativeChart .glassChartEmpty{background:var(--a-bg)}
+[data-theme=dark] .aurynGlass .nativeChart .chartSupportBand{background:#e9b95020}
+[data-theme=dark] .aurynGlass .au-morepanel button:hover{background:var(--a-pale)}
+[data-theme=dark] .aurynGlass .au-reading{background:var(--a-card);color:var(--a-ink);border-color:var(--a-line)}
+[data-theme=dark] .metricHelpDialog{background:#10223a;color:#eff4ff;border-color:#304568}
+[data-theme=dark] .metricHelpDialog h2{color:#eff4ff}
+[data-theme=dark] .metricHelpDialog p{color:#c6d2e7}
+@media(max-width:1050px){.aurynGlass .nativeResearchGrid{grid-template-columns:minmax(0,1fr)}.aurynGlass .nativeSignals{grid-template-columns:1fr 1fr}.aurynGlass .au-content{padding:24px}.aurynGlass .nativeTiming .au-link{margin-top:16px}}
+@media(max-width:750px){
+ .aurynGlass .au-shell{grid-template-columns:1fr}
+ .aurynGlass .au-app{padding-top:env(safe-area-inset-top,0px);overflow:clip}
+ .aurynGlass .au-top{position:relative;display:flex;gap:8px;align-items:center;min-height:62px;padding:9px 20px;margin:0;background:var(--a-bg);border:0}
+ .aurynGlass .au-mobile-brand{display:block;width:auto;height:auto;margin-right:auto}
+ .aurynGlass .au-top .au-mobile-brand .aurynWord{display:inline!important;font-size:21px;letter-spacing:.5px;font-weight:650;color:var(--a-ink)}
+ .aurynGlass .au-top .au-mobile-brand svg{width:27px;height:30px}
+ .aurynGlass .nativeSearchToggle,.aurynGlass .nativeSavedLink{display:grid}
+ .aurynGlass .au-top .au-icon{background:none!important;border:0;width:34px;height:40px;min-height:40px;border-radius:10px;color:var(--a-ink)}
+ .aurynGlass .au-top .au-icon svg{width:20px;height:20px}
+ .aurynGlass .au-top [data-desktop-only]{display:none}
+ .aurynGlass .au-live-search{display:none}
+ .aurynGlass .au-top[data-search-open=true] .au-live-search{display:block;position:absolute;top:100%;left:16px;right:16px;padding:8px;background:var(--a-card);border:1px solid var(--a-line);border-radius:15px;box-shadow:0 12px 28px #15233c22;max-width:none}
+ .aurynGlass .au-content{padding:15px 20px calc(104px + env(safe-area-inset-bottom,0px))}
+ .aurynGlass .au-stockhead{display:flex;flex-direction:column;align-items:flex-start;gap:16px;margin:0}
+ .aurynGlass .au-stockhead .au-security{gap:12px}
+ .aurynGlass .au-stockhead h1{font-size:21px;letter-spacing:-.4px}
+ .aurynGlass .au-stockhead .au-quote{text-align:left;width:100%}
+ .aurynGlass .au-stockhead .au-quote .au-metric{font-size:38px;letter-spacing:-1.3px}
+ .aurynGlass .glassQuoteChange{justify-content:flex-start;gap:8px;margin-top:5px}
+ .aurynGlass .glassPriceTime{font-size:9px;max-width:none}
+ .aurynGlass .nativeStockControls{margin:9px 0 13px;gap:8px}
+ .aurynGlass .glassHorizon{font-size:10px;gap:4px}
+ .aurynGlass .glassHorizon select{font-size:16px;max-width:134px;min-height:32px;padding:2px 16px 2px 2px}
+ .aurynGlass .glassStockActions{gap:6px}
+ .aurynGlass .glassStockActions .au-btn{min-height:32px;padding:4px 10px;font-size:11px}
+ .aurynGlass .nativeDecisionStrip{padding:12px;gap:10px}
+ .aurynGlass .nativeDecisionStrip strong{font-size:15px}
+ .aurynGlass .nativeDecisionStrip p{font-size:12px}
+ .aurynGlass .nativeOutlook{font-size:10px;gap:13px;padding:12px 3px}
+ .aurynGlass .nativeOutlook>span+span{padding-left:13px}
+ .aurynGlass .au-tabs{gap:22px;margin-bottom:19px}
+ .aurynGlass .au-tab{font-size:13px;min-height:40px;padding:9px 0}
+ .aurynGlass .au-more{font-size:10px;min-width:34px;padding:9px 0;min-height:40px}
+ .aurynGlass .au-morewrap{margin-left:auto}
+ .aurynGlass .nativeResearchGrid{display:block}
+ .aurynGlass .nativeChart .glassPricePlot{height:205px}
+ .aurynGlass .nativeChart .au-panelhead{margin-bottom:10px}
+ .aurynGlass .nativeChartActions{gap:4px}
+ .aurynGlass .nativeChartActions .au-link{font-size:9px}
+ .aurynGlass .nativeChart h2,.aurynGlass .nativeBusiness h2{font-size:14px}
+ .aurynGlass .nativeChart .au-ranges{gap:6px;padding-top:6px}
+ .aurynGlass .au-ranges button{min-width:39px;min-height:34px;font-size:11px;padding:4px 8px}
+ .aurynGlass .glassExtraRanges{font-size:11px;max-width:45px}
+ .aurynGlass .nativeSignals{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+ .aurynGlass .nativeDca,.aurynGlass .nativeTiming{padding:15px 13px;border-radius:14px}
+ .aurynGlass .nativeDca h3,.aurynGlass .nativeTiming h3{font-size:12px}
+ .aurynGlass .nativeDcaValue,.aurynGlass .nativeTiming>strong{font-size:27px}
+ .aurynGlass .nativeDca p,.aurynGlass .nativeTiming p{font-size:11px}
+ .aurynGlass .nativeDcaDate{font-size:8px}
+ .aurynGlass .nativeBusiness{margin-top:20px}
+ .aurynGlass .nativeBusiness .au-facts{gap:7px}
+ .aurynGlass .nativeBusiness .au-facts>div{padding:11px 8px;border-radius:12px}
+ .aurynGlass .nativeBusiness .au-facts .au-small{font-size:9px;min-height:27px;align-items:flex-start}
+ .aurynGlass .nativeBusiness .au-facts .au-metric{font-size:19px;letter-spacing:-.5px;margin-top:2px}
+ .aurynGlass .nativeBusiness .researchSparkline{height:28px;margin-top:7px}
+ .aurynGlass .nativeBusiness .metricHelpButton{width:13px!important;min-width:13px!important;height:13px;flex-basis:13px}
+ .aurynGlass .nativeBusiness .metricHelpButton svg{width:11px;height:11px}
+ .aurynGlass .nativeChangeRow{font-size:12px;padding:13px;margin:14px 0}
+ .aurynGlass .au-dock{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));position:fixed;z-index:50;bottom:calc(8px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);width:calc(100% - 24px);max-width:440px;margin:0;padding:7px 6px;gap:3px;border-radius:24px;background:#ffffffed;border:1px solid #e4ebf6;box-shadow:0 4px 25px #17406d0d;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+ .aurynGlass .au-dock a{display:grid;justify-items:center;gap:4px;min-height:45px;font-size:10px;padding:5px 2px;background:transparent;color:#8092ad;border-radius:16px}
+ .aurynGlass .au-dock a svg{width:21px;height:21px}
+ .aurynGlass .au-dock a[data-active=true]{background:transparent;color:#0065ff;box-shadow:none}
+ .aurynGlass .au-account-menu{max-height:calc(100dvh - 180px - env(safe-area-inset-top,0px));width:min(290px,calc(100vw - 28px))}
+ .aurynGlass .uxSearchResults{left:0;width:100%}
+ [data-theme=dark] .aurynGlass .au-dock{background:#10243de8;border-color:#294361;box-shadow:0 6px 30px #0002}
+ [data-theme=dark] .aurynGlass .au-dock a{color:#a4b9d6}
+ [data-theme=dark] .aurynGlass .au-dock a[data-active=true]{background:none;color:#2396ff}
+}
+@media(max-width:360px){.aurynGlass .au-content{padding-left:14px;padding-right:14px}.aurynGlass .au-top{padding-left:14px;padding-right:14px}.aurynGlass .au-tabs{gap:17px}.aurynGlass .nativeBusiness .au-facts .au-small{font-size:8px}}
+/* Stable logo plates keep the artwork legible in both themes. */
+.aurynGlass .assetLogo,[data-theme=dark] .aurynGlass .assetLogo{position:relative;background:#fff;border:1px solid #e5ebf3;color:#344966;box-shadow:none;isolation:isolate}
+.aurynGlass .assetLogo img{position:absolute;inset:6px;width:calc(100% - 12px);height:calc(100% - 12px);max-width:none;max-height:none;object-fit:contain;filter:none}
+.aurynGlass .assetLogoBTC,[data-theme=dark] .aurynGlass .assetLogoBTC{background:#f7931a;border-color:#f7931a;color:#fff}
+.aurynGlass .au-stockhead .assetLogo,[data-theme=dark] .aurynGlass .au-stockhead .assetLogo{background:#fff}
+.aurynGlass .au-tabs{width:100%}
+.aurynGlass .glassExtraRanges{min-width:64px;max-width:none}

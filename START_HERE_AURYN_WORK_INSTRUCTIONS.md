@@ -1,3 +1,5 @@
+> CURRENT DESIGN: the user-approved midnight desktop/mobile direction in `docs/design/approved-midnight-2026-10-16/` supersedes the older glass/native references below. Read `START_HERE.md` and the midnight verification report first.
+
 # AURYN current source handoff — read this first
 
 The user approved the entire scope in `docs/superpowers/specs/2026-10-16-approved-build.md` and subsequently requested the accumulation visuals described in `verification/next-build/requirements.json`. Do not ask the user to repeat those requirements or buy another provider without a concrete need/cost review.

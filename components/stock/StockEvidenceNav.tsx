@@ -1,8 +1,8 @@
 "use client";
 import {useState,useEffect,useRef} from 'react';
 import {ChevronDown,ChevronRight} from 'lucide-react';
-const primary=[['thesis','Overview'],['technical','Technicals'],['valuation','Valuation'],['financials','Financials']] as const;
-const advanced=[['fundamentals','Business'],['institutions','Ownership'],['earnings','Earnings & events'],['risk','Risks'],['options','Options']] as const;
+const primary=[['thesis','Overview'],['financials','Financials'],['technical','Technicals']] as const;
+const advanced=[['valuation','Valuation'],['fundamentals','Business'],['institutions','Ownership'],['earnings','Earnings & events'],['risk','Risks'],['options','Options']] as const;
 export default function StockEvidenceNav({tab,setTab,isCrypto}:{tab:string;setTab:(x:any)=>void;isCrypto:boolean}){
  const menu=useRef<HTMLDivElement>(null),[open,setOpen]=useState(false);
  const visible=primary.filter(([key])=>!isCrypto||['thesis','technical'].includes(key)),extras=advanced.filter(([key])=>!isCrypto||key==='risk');

@@ -1,3 +1,5 @@
+> CURRENT RELEASE: `verification/midnight-release/VERIFICATION_REPORT.md` supersedes the older verification results below.
+
 # Historical verification report
 
 This file records the earlier chart/mobile release. For current product recovery use `../RELEASE_REPORT.md`, `product-recovery/verify-release-final.log`, `next-build/recovery-browser-final/report.json` and `next-build/requirements.json`. The old test counts and live observations below do not certify this update.

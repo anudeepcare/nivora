@@ -9,7 +9,7 @@ import tempfile
 import zipfile
 
 ROOT = Path(__file__).resolve().parent.parent
-EXCLUDED_DIRS = {".git", ".next", "node_modules", ".engine-test", "__pycache__", "__MACOSX", ".vercel", ".temp", "test-results", "playwright-report"}
+EXCLUDED_DIRS = {".git", ".next", "node_modules", ".engine-test", "__pycache__", "__MACOSX", ".vercel", ".temp", "test-results", "playwright-report", ".superpowers"}
 MANIFEST = "SOURCE_MANIFEST.json"
 
 

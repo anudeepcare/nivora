@@ -1,0 +1,21 @@
+✔ retained live flags expire without a successful new request (1.0393ms)
+✔ session transitions, unknown timestamps and future observations cannot stay live (0.260571ms)
+✔ missing, zero, negative and malformed quotes remain unavailable (1.261765ms)
+✔ cost basis is never substituted for market price (0.276214ms)
+✔ cash is shares and unsupported currencies are not silently valued as USD (0.182647ms)
+✔ partial valuation labels total unavailable and P/L covers priced assets only (0.965893ms)
+✔ edit and add share validation rejects negative or absent quantities and costs (0.225539ms)
+✔ stale or unverified research cannot contribute current calls or thesis scores (0.236016ms)
+✔ missing cost basis and entirely unpriced holdings do not invent unrealized profit (0.221153ms)
+✔ invalid quantities and non-USD quotes cannot enter USD totals (0.182697ms)
+✔ retained live quotes expire without another provider response (0.774083ms)
+✔ closed session, wrong symbol, invalid and future timestamps cannot claim live (0.166924ms)
+✔ crypto is live only while its provider and request timestamps remain fresh (0.137541ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 441.81993

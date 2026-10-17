@@ -14,6 +14,13 @@ export type MarketDisplayQuote={
 const n=(v:unknown)=>{const x=Number(v);return Number.isFinite(x)&&x>0?x:null};
 const ms=(v:string|null|undefined)=>{if(!v)return NaN;const x=new Date(v).getTime();return Number.isFinite(x)?x:NaN};
 export const marketPriceMaxAgeSeconds=(session:DisplaySession)=>session==="REGULAR"?180:(session==="PRE_MARKET"||session==="AFTER_HOURS"?900:session==="CRYPTO_24X7"?300:900);
+/** Cached prices remain useful references, but their LIVE badge must expire. */
+export function isDisplayQuoteLive(quote:any,symbol:string,session:DisplaySession,now=Date.now()):boolean{
+ if(!quote||quote.symbol!==symbol||quote.session!==session||['CLOSED','OVERNIGHT'].includes(session)||quote.displayState!=='LIVE'||quote.freshness!=='LIVE'||n(quote.price)==null)return false;
+ const observed=ms(quote.providerTimestamp),checked=ms(quote.retrievedAt)||(Number(quote.cachedAt));
+ const providerAge=now-observed,requestAge=now-checked;
+ return Number.isFinite(now)&&Number.isFinite(providerAge)&&providerAge>=0&&providerAge<=marketPriceMaxAgeSeconds(session)*1000&&Number.isFinite(requestAge)&&requestAge>=0&&requestAge<=90000;
+}
 const maxAgeSeconds=marketPriceMaxAgeSeconds;
 const labelFor=(session:DisplaySession):DisplayLabel=>session==="REGULAR"?"LIVE MARKET PRICE":session==="PRE_MARKET"?"PRE-MARKET PRICE":session==="AFTER_HOURS"?"AFTER-HOURS PRICE":session==="CRYPTO_24X7"?"LIVE MARKET PRICE":"LAST OFFICIAL CLOSE";
 

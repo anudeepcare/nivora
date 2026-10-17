@@ -15,7 +15,8 @@ function load(file){
 }
 const api=()=>load('lib/server/paper-operations.ts');
 const now=new Date('2026-10-16T15:00:00Z');
-function snapshot(){return {observed_at:now.toISOString(),evidence_fingerprint:'evidence',evidence:{v995:{autonomous:true,policyVersion:'auryn-intelligence-2026-10-16'},v935:{snapshotId:'canonical',contract:'AURYN_V9_3_5_CANONICAL_SNAPSHOT',marketSnapshotId:'market',researchSnapshotId:'research'},v931:{policyVersion:'auryn-intelligence-2026-10-16',snapshotId:'research',canonicalPrimaryAction:'BUY',executionAction:'READY'},v934:{snapshotId:'technical',marketTruthSnapshotId:'market',actionMap:{invalidation:90,support:95,confirm:102,asOf:now.toISOString()},confirmed:{'1D':{rating:'BUY',score:70}},summary:{alignment:'BULLISH_ALIGNED'},coverage:{}}}};}
+const currentPolicy=load('lib/auryn/v931/domain.ts').INTELLIGENCE_POLICY_VERSION;
+function snapshot(){return {observed_at:now.toISOString(),evidence_fingerprint:'evidence',evidence:{v995:{autonomous:true,policyVersion:currentPolicy},v935:{snapshotId:'canonical',contract:'AURYN_V9_3_5_CANONICAL_SNAPSHOT',marketSnapshotId:'market',researchSnapshotId:'research'},v931:{policyVersion:currentPolicy,snapshotId:'research',canonicalPrimaryAction:'BUY',executionAction:'READY'},v934:{snapshotId:'technical',marketTruthSnapshotId:'market',actionMap:{invalidation:90,support:95,confirm:102,asOf:now.toISOString()},confirmed:{'1D':{rating:'BUY',score:70}},summary:{alignment:'BULLISH_ALIGNED'},coverage:{}}}};}
 test('raw canonical intelligence is projected while missing data, stale data and mismatched provenance stay blocked',()=>{
  const h=api(),raw=snapshot();const r=h.normalizePaperEvidence(raw,now);assert.equal(r.ok,true);assert.equal(r.marketIntelligence.levels.invalidation,90);
  const projected={...raw,evidence:{...raw.evidence,v934:r.marketIntelligence}};assert.equal(h.normalizePaperEvidence(projected,now).ok,true);

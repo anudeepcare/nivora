@@ -79,13 +79,8 @@ function earnings(context:any){
 export function classifyArchetype(context:any,raw:any,assetType:string){
   if(assetType==="crypto")return"crypto";
   const industry=String(context?.profile?.finnhubIndustry||"").toLowerCase();
-  const text=[
-    industry,
-    context?.profile?.description,
-    context?.profile?.name,
-    context?.summary,
-    ...(Array.isArray(context?.news)?context.news.slice(0,5).map((x:any)=>x?.headline||x?.title||""):[])
-  ].filter(Boolean).join(" ").toLowerCase();
+  // Business identity comes from the operating profile, never from current news.
+  const text=[industry,context?.profile?.description,context?.profile?.name].filter(Boolean).join(" ").toLowerCase();
   const op=Number(raw.opMargin),fcf=Number(raw.fcf),rev=num(raw.revGrowth,0);
   const aiInfra=/\b(ai cloud|gpu cloud|gpu compute|data cent(?:er|re)|hyperscaler|accelerated compute)\b/.test(text);
   const milestone=/\b(satellite|constellation|direct-to-device|direct to device|space-based|launch milestone)\b/.test(text);

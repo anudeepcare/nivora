@@ -1,11 +1,13 @@
-# AURYN — approved glass source build
+# AURYN — midnight full-source release
 
-The latest build implements the approved glass design across the application and preserves the preceding intelligence/recovery work. It includes complete source, tests, migrations, workflows, the frozen reference, visual comparisons and Git/Vercel instructions.
+This package implements the user-approved midnight desktop/mobile direction, Light/Dark/System preferences saved locally and to the account, decision/DCA before the chart, name-aware logos, stable chart/tab behavior and company-identity/quote-freshness corrections. It preserves the preceding intelligence and research workspace work.
 
-**Verification:** 944 release tests passed; the production build passed; 97 light and 37 dark Chromium checks passed. Read `verification/glass-release/VERIFICATION_REPORT.md` for scope, final contrast checks, review fixes and exact evidence. Open `verification/glass-release/visual-review/index.html` for comparisons.
+**Verified:** production build passed; 961 release tests passed; final responsive matrix passed 112 checks across eight widths in both themes; final interaction rerun passed 11 checks with zero runtime errors. The broader route/section pass also passed 131 checks. Production dependency audit reported zero vulnerabilities. See `verification/midnight-release/VERIFICATION_REPORT.md` for exact evidence and scope.
 
-**Production limits:** this source has not been pushed or deployed. The paper-safety migration and real-account authorization/execution acceptance remain required. No live order was placed or automation enabled. Provider entitlements, email flows, physical iPhone/Safari and investment performance are not certified. Missing source data remains explicitly unavailable.
+**Included:** complete source and lockfile, workflows and migrations, tests and reports, approved concept and real app previews, `SOURCE_MANIFEST.json`, and `GIT_AND_VERCEL.md` with branch-safe push instructions. No installed dependencies, build cache, Git history or private credentials are included. This is a full source archive, not a patch.
 
-The approved reference is followed in layout and styling. Actual values, unavailable states, timestamps and functioning charts necessarily differ from fictional mockup content; this is not a pixel-identical claim. The remaining forward-evidence/portfolio-history gaps from the original scope remain disclosed.
+**Important limits:** this has not been pushed or deployed. Paper-safety migration and owner/admin configuration are still needed; real account/email/RLS and broker lifecycle were not verified. Physical iPhone/Safari is not certified. Forward 6–12-month evidence and advanced portfolio exposure/history/benchmark capabilities remain incomplete. Source-dependent metrics can remain unavailable. Details are explicit in `verification/next-build/REMAINING_GAPS.md` and the current capabilities report.
 
-Start with `START_HERE.md`, then `GIT_AND_VERCEL.md`. Preserve your existing `.git` and private environment files when copying the complete `AURYN/` source into your checkout. The deployment guide addresses the earlier branch/non-fast-forward problem without force-pushing.
+The current design follows the approved hierarchy and palette; it is not a claim of pixel-identical fictional data or complete production readiness. DCA is an experimental research heuristic, not a validated return optimizer or automatic order. No new paid feed or real-money trading was added.
+
+Read `START_HERE.md`, open `verification/midnight-release/visual-review/index.html`, then follow `GIT_AND_VERCEL.md`. Preserve your existing `.git` and private environment when copying the contents of `AURYN/` into your checkout.

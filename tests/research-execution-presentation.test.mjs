@@ -39,7 +39,8 @@ test('overview withholds execution prices when the final trust/price gate is clo
 });
 test('watch plan is described as structural context rather than an active entry',()=>{
  const html=render({executionIntent:'WATCH'});
- assert.match(html,/Watch zone/);
+ assert.match(html,/Support/);
+ assert.match(html,/Support not confirmed/);
  assert.doesNotMatch(html,/Active entry is/);
 });
 test('reduce and exit plans cannot render new entry instructions from retained level data',()=>{

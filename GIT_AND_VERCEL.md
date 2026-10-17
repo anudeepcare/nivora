@@ -1,6 +1,6 @@
-# AURYN approved glass build — Git and deployment
+# AURYN midnight build — Git and deployment
 
-This package is based on `bbdce50b92384acefb3db79978423da92a75e1ea`. It has not been pushed or deployed by this build. Read `RELEASE_REPORT.md` and `verification/next-build/requirements.json` for source verification and remaining acceptance boundaries. The latest build implements the approved liquid-glass reference across the application and preserves the intelligence/recovery work. Read verification/glass-release/VERIFICATION_REPORT.md first; older reports are historical.
+This package is based on `bbdce50b92384acefb3db79978423da92a75e1ea`. It has not been pushed or deployed by this build. Read `RELEASE_REPORT.md` and `verification/next-build/requirements.json` for source verification and remaining acceptance boundaries. The latest build follows the approved midnight desktop/mobile direction, adds account-saved Light/Dark/System preferences, and preserves the intelligence/recovery work. Read verification/midnight-release/VERIFICATION_REPORT.md first; older reports and rejected design references are historical.
 
 ## 1. Put the complete source in your existing checkout
 
@@ -27,25 +27,25 @@ Your earlier terminal was on `restore-auryn`, while `git push origin main` tried
 ```bash
 git status --short
 git fetch origin
-git switch -c auryn-approved-glass
+git switch -c auryn-midnight-release
 git add -A
 git add -f .github/workflows/auryn-v996-validation-queue.yml .github/workflows/nivora-calibration-mature.yml
 git diff --cached --stat
-git commit -m "Match AURYN to approved glass UX and preserve verified intelligence"
+git commit -m "Build AURYN midnight UX, saved themes and verified intelligence"
 git rebase origin/main
 npm run verify:release
 git push -u origin HEAD
 ```
 
-If that branch already exists, use `git switch auryn-approved-glass`. If Git says there is nothing to commit, continue with fetch/rebase/verification. If rebase reports a conflict, resolve the named files, `git add` those files and `git rebase --continue`; use `git rebase --abort` to return to the pre-rebase state if needed. Do not choose all local or all remote files blindly. Do not force-push.
+If that branch already exists, use `git switch auryn-midnight-release`. If Git says there is nothing to commit, continue with fetch/rebase/verification. If rebase reports a conflict, resolve the named files, `git add` those files and `git rebase --continue`; use `git rebase --abort` to return to the pre-rebase state if needed. Do not choose all local or all remote files blindly. Do not force-push.
 
-Open a pull request from `auryn-approved-glass` into `main`, review it, then merge. Vercel's Git integration deploys the merged main commit. If you intentionally want to update main directly after successful rebase and verification, the command is `git push origin HEAD:main`; a rejection means the remote moved, so fetch/rebase/test again.
+Open a pull request from `auryn-midnight-release` into `main`, review it, then merge. Vercel's Git integration deploys the merged main commit. If you intentionally want to update main directly after successful rebase and verification, the command is `git push origin HEAD:main`; a rejection means the remote moved, so fetch/rebase/test again.
 
 ```bash
 git fetch origin
 git log -1 --oneline
 git rev-parse HEAD
-git rev-parse origin/auryn-approved-glass
+git rev-parse origin/auryn-midnight-release
 ```
 
 After the branch push, the last two hashes should match. After a PR merge, compare Vercel's deployed commit to `origin/main` (a merge/squash may have a different hash). Running npm commands does not update GitHub. An extracted ZIP is not a Git checkout: keep your existing `.git`, or clone the repository first and overlay `AURYN/` contents without nesting them.
