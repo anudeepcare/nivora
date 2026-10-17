@@ -1,15 +1,9 @@
-# AURYN — complete source, UX repair of October 16–17, 2026
+# AURYN — cleanup review build
 
-This is the complete source archive after the reported interface defects were reproduced and repaired. It includes the earlier investment engine, integration code, migrations, workflows, tests and approved design reference.
+1. Open `verification/cleanup-2026-10-17/visual-review/index.html` to review the actual desktop/mobile build in both themes. The standalone `AURYN_Product_Review.html` provides the same review in one file.
+2. Read `RELEASE_REPORT.md` and `verification/cleanup-2026-10-17/VERIFICATION_REPORT.md`. These supersede earlier UI release reports.
+3. Read `GIT_AND_VERCEL.md` for installation, review-branch Git steps, configuration and deployment after approval. Preserve your `.git` and private `.env.local`; copy the contents of `AURYN/` without nesting another AURYN directory.
+4. Run `npm ci`, then `npm run verify:release` with your own environment. No dependencies, `.next`, private credentials or Git history are packaged.
+5. Consult `verification/next-build/REMAINING_GAPS.md` for the larger engine and production acceptance requirements. UI test success does not complete those requirements.
 
-1. Read `RELEASE_REPORT.md` and `verification/repair-2026-10-17/VERIFICATION_REPORT.md`. These supersede earlier release summaries.
-2. Follow `GIT_AND_VERCEL.md`. Copy the contents of `AURYN/` into your existing checkout, including `.github`; preserve `.git` and private `.env.local`. Avoid an extra `AURYN/AURYN` folder.
-3. Review `verification/repair-2026-10-17/visual-review/index.html` for screenshots from the actual application. Quotes/signals/account data in previews are explicitly illustrative. They are not a live investment recommendation or evidence of broker execution.
-4. Run `npm ci` and `npm run verify:release` with your own environment. Dependencies and generated `.next` files are excluded; Vercel rebuilds from source.
-5. Keep existing integration credentials. Review the paper migration and trusted administrator configuration before testing Paper Lab.
-
-The site was not pushed or deployed in this repair. No account permission was changed and no order was placed. Physical iPhone/Safari, live cross-account security, email delivery and broker execution still require deployment acceptance. `verification/next-build/REMAINING_GAPS.md` records outstanding capabilities from the larger product scope.
-
-The active global UI now comes from `app/ui.css`; component CSS modules remain local. Historical global styles remain in source for provenance but are no longer imported by the app layout. This removes the previous stack of global overrides.
-
-`SOURCE_MANIFEST.json` lists every included file and hash. The archive is checked against the tracked source inventory and every file's bytes. Credentials, Git history, dependencies, build caches and personal screenshots are excluded. No paid provider was added.
+No push, deployment, database mutation, role grant or broker order was performed for this cleanup. The active global stylesheet is `app/ui.css`; historical CSS remains for provenance and is not imported. `SOURCE_MANIFEST.json` lists included source and hashes.

@@ -197,5 +197,8 @@
   "tests/appearance-persistence.test.mjs",
   "tests/asset-identity.test.mjs",
   "tests/quote-display-expiry.test.mjs",
-  "tests/display-quote-expiry.test.mjs"
+  "tests/display-quote-expiry.test.mjs",
+  "tests/research-stability.test.mjs",
+  "tests/security-logo.test.mjs",
+  "tests/research-clean-states.test.mjs"
 ]

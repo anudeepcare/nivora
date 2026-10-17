@@ -1,3 +1,5 @@
+> CURRENT HANDOFF: the autonomous simplicity cleanup and review in `START_HERE.md` and `verification/cleanup-2026-10-17/VERIFICATION_REPORT.md` supersede the earlier UX repair below. The user wants to see the actual product before deployment; no deployment was performed.
+
 > CURRENT DESIGN: the user-approved midnight desktop/mobile direction in `docs/design/approved-midnight-2026-10-16/` supersedes the older glass/native references below. Read `START_HERE.md` and `verification/repair-2026-10-17/VERIFICATION_REPORT.md` first. The UX repair report supersedes the earlier midnight test results.
 
 # AURYN current source handoff — read this first

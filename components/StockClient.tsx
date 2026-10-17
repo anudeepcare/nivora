@@ -7,7 +7,6 @@ import {buildCanonicalAssessment} from "@/lib/auryn/v931/canonical-assessment";
 import {authenticatedPlanningJournalStore} from "@/lib/auryn/workspace/planning-store";
 import dynamic from "next/dynamic";
 const ContributionDialog=dynamic(()=>import("./research/ContributionDialog"));
-const ResearchWorkspace=dynamic(()=>import("./ResearchWorkspace"));
 import ResearchDepth,{type ResearchDepthMode,type ResearchHorizon} from "./research/ResearchDepth";
 import BusinessEvidence from "./research/BusinessEvidence";
 import ValuationWorkbench from "./research/ValuationWorkbench";
@@ -24,6 +23,7 @@ import {buildBusinessEvidence,formatReportedAmount} from "@/lib/research-evidenc
 import {buildFundamentalAnalyst} from "@/lib/auryn/v99910/fundamental-analyst";
 import {buildMarketTruth,formatMarketTruth} from "@/lib/auryn/market-truth";
 
+import {Bookmark,Bell} from "lucide-react";
 import {useEffect,useMemo,useRef,useState} from "react";
 import Link from "next/link";
 import {
@@ -151,11 +151,13 @@ export default function StockClient({symbol}:{symbol:string}){
   const[err,setErr]=useState("");
   const[horizon,setHorizon]=useState<ResearchHorizon>("long");
   const[depth,setDepth]=useState<ResearchDepthMode>("quick");
-  const[plannerOpen,setPlannerOpen]=useState(false),[workspaceOpen,setWorkspaceOpen]=useState(false);
+  const[plannerOpen,setPlannerOpen]=useState(false);
   const[owns,setOwns]=useState(false);
   const[ownerPosition,setOwnerPosition]=useState<any>(null);
   const mode:Mode=owns?"own":horizon==="year"?"long":horizon;
   const[tab,setTab]=useState<Tab>("thesis");
+  const [visitedSections,setVisitedSections]=useState<Set<string>>(()=>new Set(["thesis"]));
+  useEffect(()=>{setVisitedSections(previous=>previous.has(tab)?previous:new Set([...previous,tab]));},[tab]);
   const[visitedTechnical,setVisitedTechnical]=useState(false);
   useEffect(()=>{if(tab==="technical")setVisitedTechnical(true)},[tab]);
   useEffect(()=>{const restore=()=>{const section=new URLSearchParams(window.location.search).get('section');if(section&&['thesis','fundamentals','financials','valuation','technical','catalysts','news','earnings','risk','institutions','options'].includes(section))setTab(section as Tab);};restore();window.addEventListener('popstate',restore);return()=>window.removeEventListener('popstate',restore);},[]);
@@ -237,7 +239,7 @@ export default function StockClient({symbol}:{symbol:string}){
       return fetch(`/api/quote/${encodeURIComponent(symbol)}`,{cache:"no-store"}).then(async r=>{const q=await r.json();if(!r.ok||q?.error){const ds=Array.isArray(q?.diagnostics)?q.diagnostics.map((d:any)=>`${d.provider}: ${d.status}${d.price!=null?` $${Number(d.price).toFixed(2)}`:""}${d.ageSeconds!=null?` age ${Math.round(Number(d.ageSeconds))}s`:""}${d.detail?` (${d.detail})`:""}`).join(" · "):"";throw new Error(`${String(q?.reason||q?.error||"provider unavailable")}${ds?` · ${ds}`:""}`)}return q}).then((q:any)=>{
         if(!active||seq!==quoteRequestSeq.current||!q?.price)return;
         const next={...q,cachedAt:Date.now()};
-        setQuoteClock(Date.now());setQuoteClock(Date.now());setQuoteDiagnostic("");setFastQuote(next);setStableDisplayQuote(next);
+        setQuoteClock(Date.now());setQuoteDiagnostic("");setFastQuote(next);setStableDisplayQuote(next);
         try{sessionStorage.setItem(storageKey,JSON.stringify(next))}catch{}
       }).catch((e:any)=>{if(active&&seq===quoteRequestSeq.current)setQuoteDiagnostic(String(e?.message||"market provider unavailable"))});
     };
@@ -862,7 +864,7 @@ export default function StockClient({symbol}:{symbol:string}){
   };
   return <div className="aurynStockPage">
     <ResearchVisit symbol={symbol} name={company?.name||context?.profile?.name||symbol}/>
-    <div className="compactSecurityBar"><StockSecurityHeader company={company?.name||d.name||symbol} symbol={symbol} price={aurynPriceState.price} changePct={displayChangePct} status={marketStatusLabel} detail={marketDetail} logoUrl={context?.profile?.logo||null} marketFacts={securityMarketFacts} controls={<div className="glassStockControls nativeStockControls"><label className="glassHorizon">Horizon<select aria-label="Investment horizon" value={horizon} onChange={e=>setHorizon(e.target.value as ResearchHorizon)}><option value="long">Long term</option><option value="year">6–12 months</option><option value="swing">Swing</option><option value="now">Today</option></select></label><div className="glassStockActions"><button type="button" className="au-btn" aria-pressed={watching} onClick={watch}>{watching?'✓ Saved':'Save'}</button><button type="button" className="au-btn" onClick={()=>{router.push('/alerts?symbol='+encodeURIComponent(symbol))}}>Alert</button></div></div>} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
+    <div className="compactSecurityBar"><StockSecurityHeader company={company?.name||d.name||symbol} symbol={symbol} price={aurynPriceState.price} changePct={displayChangePct} status={marketStatusLabel} detail={marketDetail} logoUrl={context?.profile?.logo||null} marketFacts={securityMarketFacts} controls={<div className="glassStockControls nativeStockControls"><label className="glassHorizon">Horizon<select aria-label="Investment horizon" value={horizon} onChange={e=>setHorizon(e.target.value as ResearchHorizon)}><option value="long">Long term</option><option value="year">6–12 months</option><option value="swing">Swing</option><option value="now">Today</option></select></label><div className="glassStockActions"><button type="button" className="au-btn" aria-label={watching?'Unsave investment':'Save investment'} aria-pressed={watching} onClick={watch}><Bookmark size={16}/>{watching?'Saved':'Save'}</button><button type="button" className="au-btn" onClick={()=>{router.push('/alerts?symbol='+encodeURIComponent(symbol))}}><Bell size={16}/>Alert</button></div></div>} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
 
     </div>{institutionalDecision&&<StockDecisionSummary horizon={horizon} decision={institutionalDecision} state={canonicalV935?.research?.state} snapshot={canonicalV935} candles={longTermBars} loading={longTermLoading}/>}<StockEvidenceNav tab={tab} setTab={(next)=>{if(depth==="quick"&&next!=="thesis")setDepth("research");handleEvidenceTab(next);}} isCrypto={d.assetType==="crypto"}/>
     {marketTruth&&!priceSensitiveAllowed&&!stableLiveFresh?<div className="aurynIntegrityAlert aurynMarketTruthAlert" role="alert"><b>PRICE UNVERIFIED</b><span>{marketTruth.reason||"Independent market sources are not sufficiently aligned."} AURYN has disabled entry, confirmation, target, stop and risk/reward output until the canonical price is verified.</span></div>:null}
@@ -870,7 +872,6 @@ export default function StockClient({symbol}:{symbol:string}){
     {/* Compatibility contract: AurynResearchOverview decision={institutionalDecision} marketTruth={marketTruth}; runtime receives the unified display truth below. */}
     {watchError&&<p role="alert" className="formError">{watchError}</p>}
     <div id="research-tab-panel" role="tabpanel" aria-labelledby={`research-tab-${tab}`} tabIndex={0}><div ref={overviewRef} hidden={tab!=="thesis"}>{institutionalDecision?<AurynResearchOverviewV2 canonical={canonicalV935} symbol={symbol} company={company} valuationEvidence={valuationEvidence} structureCandles={longTermBars} structureLoading={longTermLoading} structureError={longTermError} onOpenTechnicals={()=>handleEvidenceTab("technical")} decision={institutionalDecision} marketTruth={{...marketTruth,...marketTruthUi,priceState:marketTruthUi.freshness}} displayPrice={aurynPriceState.price} displayPriceLive={aurynPriceState.isLive} marketIntelligence={marketIntelligenceView??d?.marketIntelligence??null} fundamentalScenario={analystFundamentals.fundamentalScenario} analystFundamentals={analystFundamentals} technicalEvidence={{trend:technicalState.trend,momentum:technicalState.momentum,participation:technicalState.participation,relativeStrengthPct:null,volatilityRisk:technicalState.volatilityRisk}} entryQuality={technicalState.entryQuality} chartRange={overviewChartRange} chartLoading={overviewChartLoading} chartError={overviewChartError} chartCoverage={overviewChartCoverage} onRetryChart={()=>setOverviewChartRetry(value=>value+1)} onChartRangeChange={setOverviewChartRange} onOpenFinancials={()=>handleEvidenceTab("financials")} onOpenCatalysts={()=>handleEvidenceTab("earnings")} onOpenRisks={()=>handleEvidenceTab("risk")} onOpenDetails={()=>handleEvidenceTab("earnings","earnings")} onOpenThesis={()=>handleEvidenceTab("fundamentals","thesis")} onOpenValuation={()=>handleEvidenceTab("valuation")} onBuildPlan={()=>setPlannerOpen(true)} onAddWatchlist={watch} onTrackPosition={()=>{router.push("/portfolio?symbol="+encodeURIComponent(symbol))}} watching={watching} candles={overviewChartBars??(v5Analysis?.bars||d?.candles||[]).slice(-180)} longTermCandles={longTermBars.length?longTermBars:(v5Analysis?.bars||d?.candles||[])} scenario={v5Analysis?.scenario??null} executionLevelsAllowed={executionLevelsAllowed} executionIntent={executionIntent} chartLevels={v5ChartLevels}/>:null}</div>
-    {<details hidden={tab!=="thesis"} className="researchCard evidenceDisclosure" onToggle={e=>setWorkspaceOpen(e.currentTarget.open)}><summary>Saved thesis, comparison & explanations</summary>{workspaceOpen&&<ResearchWorkspace mode="company" symbol={symbol} canonical={{...canonicalV935,research:{...canonicalV935?.research,decision:institutionalDecision,financialEvidence:sharedFinancialAssessment}}}/>}</details>}
     <ContributionDialog open={plannerOpen} onClose={()=>setPlannerOpen(false)} symbol={symbol} price={aurynPriceState.price} snapshot={canonicalV935}/>
     {tab==="thesis"&&(v5Analysis?<>{canonicalTrustBlocked?<div className="aurynIntegrityAlert aurynTrustBlock" role="alert"><b>CANONICAL TRUST BLOCK</b><span>{v7Analysis?.trust.blockers[0]||"AURYN detected an internal snapshot/plan inconsistency."} Price-sensitive execution levels are suppressed until the canonical chain is aligned.</span></div>:null}</>:<section className="aurynV5Unavailable v940PendingSnapshot"><small>{canonicalV935?.research?"LAST VERIFIED AURYN DECISION":"AURYN CANONICAL ANALYSIS"}</small><b>{canonicalV935?.research?"VERIFIED SNAPSHOT LOADED":"BUILDING FIRST VERIFIED SNAPSHOT"}</b><span>{canonicalV935?.research?"Refreshing deeper evidence… live market price and the last verified research snapshot remain available while the canonical analysis updates.":"AURYN is building the first canonical evidence snapshot. Price verification and research load independently."}</span><div className="v940PendingProgress"><i className="done"/><i className="done"/><i/><i/><span>Market price</span><span>Structure</span><span>Fundamentals</span><span>Canonical decision</span></div></section>)}
 
@@ -879,11 +880,11 @@ export default function StockClient({symbol}:{symbol:string}){
 
 
 
-      {tab==="fundamentals"&&<BusinessEvidence financialAssessment={sharedFinancialAssessment} company={company} analystFundamentals={analystFundamentals} v4Analysis={v4Analysis} symbol={symbol} onNavigate={handleEvidenceTab}/>}
+      {visitedSections.has("fundamentals")&&<div hidden={tab!=="fundamentals"}><BusinessEvidence financialAssessment={sharedFinancialAssessment} company={company} analystFundamentals={analystFundamentals} v4Analysis={v4Analysis} symbol={symbol} onNavigate={handleEvidenceTab}/></div>}
 
-      {tab==="financials"&&<FinancialTrends company={company} context={context} onOpenEarnings={()=>handleEvidenceTab("earnings")}/>}
+      {visitedSections.has("financials")&&<div hidden={tab!=="financials"}><FinancialTrends company={company} context={context} onOpenEarnings={()=>handleEvidenceTab("earnings")}/></div>}
 
-      {tab==="valuation"&&<><GlassValuation assessment={sharedFinancialAssessment} evidence={valuationEvidence} price={aurynPriceState.price} onFinancials={()=>handleEvidenceTab("financials")}/><details className="au-panel au-support glassDisclosure"><summary>Explore your own valuation assumptions</summary>        <ValuationWorkbench financialAssessment={sharedFinancialAssessment} symbol={symbol} company={company} profile={context?.profile} currentPrice={aurynPriceState.price} priceAsOf={aurynPriceState.observedAt} priceCurrency={context?.profile?.currency} businessModel={proofArchetype} assetType={d.assetType} onOpenFinancials={()=>handleEvidenceTab("financials")}/></details></>}
+      {visitedSections.has("valuation")&&<div hidden={tab!=="valuation"}><GlassValuation assessment={sharedFinancialAssessment} evidence={valuationEvidence} price={aurynPriceState.price} onFinancials={()=>handleEvidenceTab("financials")}/><details className="au-panel au-support glassDisclosure"><summary>Explore your own valuation assumptions</summary>        <ValuationWorkbench financialAssessment={sharedFinancialAssessment} symbol={symbol} company={company} profile={context?.profile} currentPrice={aurynPriceState.price} priceAsOf={aurynPriceState.observedAt} priceCurrency={context?.profile?.currency} businessModel={proofArchetype} assetType={d.assetType} onOpenFinancials={()=>handleEvidenceTab("financials")}/></details></div>}
 
       {tab==="risk"&&<GlassRisks decision={institutionalDecision} assessment={sharedFinancialAssessment}/>}
       {tab==="institutions"&&<GlassOwnership data={institutional} period={institutionalPeriod} priorPeriod={institutionalPriorPeriod} datasetThrough={institutionalDatasetThrough}/>}

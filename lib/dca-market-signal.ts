@@ -2,6 +2,15 @@ import {buildResearchStructure} from './research-structure';
 export type DcaMultiple=0|1|2|4;
 type Observation={date:string;close:number;average:number;drawdown:number;rsi:number;multiplier:DcaMultiple};
 const DAY=86400000;
+/** Separates a price condition from permission to allocate capital. */
+export function dcaAllocationContext(snapshot:any){
+ const decision=snapshot?.research?.decision;
+ if(!decision||snapshot?.research?.state!=='READY')return {canSuggestAdding:false,label:'Price signal only'};
+ if(decision.hardVetoReasons?.includes('FUNDAMENTAL_THESIS_BREAK'))return {canSuggestAdding:false,label:'Adding paused · thesis review'};
+ if(['REDUCE','EXIT'].includes(decision.ownerAction)||decision.newMoneyAction==='AVOID')return {canSuggestAdding:false,label:'Adding paused · risk review'};
+ // Even a complete assessment is not a personal contribution recommendation.
+ return {canSuggestAdding:false,label:'Price signal only'};
+}
 /** Experimental research heuristic. No orders, leverage or valuation claims. */
 export function buildDcaMarketSignal(input:unknown,options:{asOf?:string;thesisBroken?:boolean}={}){
  const asOf=options.asOf??new Date().toISOString(),model=buildResearchStructure(input,{asOf}),bars=model.weeklyBars;

@@ -1,6 +1,8 @@
-# AURYN UX repair — Git and deployment
+# AURYN cleanup review — Git and deployment
 
-This package is based on `bbdce50b92384acefb3db79978423da92a75e1ea` and includes the accumulated AURYN rebuild plus the October 16–17 UX repairs. It has not been pushed or deployed. Read `RELEASE_REPORT.md` and `verification/repair-2026-10-17/VERIFICATION_REPORT.md` first; older reports describe earlier builds. The source includes new and modified files, not just a patch.
+This package is based on `bbdce50b92384acefb3db79978423da92a75e1ea` and includes the accumulated AURYN rebuild plus the October 16–17 UX repairs. It has not been pushed or deployed. Read `RELEASE_REPORT.md` and `verification/cleanup-2026-10-17/VERIFICATION_REPORT.md` first; older reports describe earlier builds. The source includes new and modified files, not just a patch.
+
+**Review first:** No push or deployment was performed for this package. Open the included actual-app visual review before using the deployment steps below. A preview/review branch can trigger a Vercel preview deployment; merge or push to main only after approving the product.
 
 ## 1. Put the complete source in your existing checkout
 
@@ -27,25 +29,25 @@ Your earlier terminal was on `restore-auryn`, while `git push origin main` tried
 ```bash
 git status --short
 git fetch origin
-git switch -c auryn-ux-repair
+git switch -c auryn-cleanup-review
 git add -A
 git add -f .github/workflows/auryn-v996-validation-queue.yml .github/workflows/nivora-calibration-mature.yml
 git diff --cached --stat
-git commit -m "Repair AURYN layouts, controls, quotes and research views"
+git commit -m "Simplify AURYN research, controls, data states and portfolio loading"
 git rebase origin/main
 npm run verify:release
 git push -u origin HEAD
 ```
 
-If that branch already exists, use `git switch auryn-ux-repair`. If Git says there is nothing to commit, continue with fetch/rebase/verification. If rebase reports a conflict, resolve the named files, `git add` those files and `git rebase --continue`; use `git rebase --abort` to return to the pre-rebase state if needed. Do not choose all local or all remote files blindly. Do not force-push.
+If that branch already exists, use `git switch auryn-cleanup-review`. If Git says there is nothing to commit, continue with fetch/rebase/verification. If rebase reports a conflict, resolve the named files, `git add` those files and `git rebase --continue`; use `git rebase --abort` to return to the pre-rebase state if needed. Do not choose all local or all remote files blindly. Do not force-push.
 
-Open a pull request from `auryn-ux-repair` into `main`, review it, then merge. Vercel's Git integration deploys the merged main commit. If you intentionally want to update main directly after successful rebase and verification, the command is `git push origin HEAD:main`; a rejection means the remote moved, so fetch/rebase/test again.
+Open a pull request from `auryn-cleanup-review` into `main`, review it, then merge. Vercel's Git integration deploys the merged main commit. If you intentionally want to update main directly after successful rebase and verification, the command is `git push origin HEAD:main`; a rejection means the remote moved, so fetch/rebase/test again.
 
 ```bash
 git fetch origin
 git log -1 --oneline
 git rev-parse HEAD
-git rev-parse origin/auryn-ux-repair
+git rev-parse origin/auryn-cleanup-review
 ```
 
 After the branch push, the last two hashes should match. After a PR merge, compare Vercel's deployed commit to `origin/main` (a merge/squash may have a different hash). Running npm commands does not update GitHub. An extracted ZIP is not a Git checkout: keep your existing `.git`, or clone the repository first and overlay `AURYN/` contents without nesting them.

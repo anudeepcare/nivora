@@ -17,9 +17,13 @@ export function assetIdentity(symbol:string,name?:string){
  const crypto=possible&&(/[/-]/.test(key)||!name||name.toUpperCase()===key||cryptoNames[possible].test(name))?possible:null;
  const lookup=crypto||key,entry=identities[lookup],specificName=(name||'').trim();
  const matches=entry&&(!specificName||specificName.toUpperCase()===key||entry.name.test(specificName));
- return {key,crypto:crypto||null,microsoft:lookup==='MSFT'&&Boolean(matches),local:matches&&entry.file?'/asset-logos/'+entry.file:null};
+ return {key,ambiguous:Boolean(entry&&specificName&&!matches),crypto:crypto||null,microsoft:lookup==='MSFT'&&Boolean(matches),local:matches&&entry.file?'/asset-logos/'+entry.file:null};
 }
 export function assetLogoCandidates(symbol:string,name?:string,logoUrl?:string|null){
  const {local}=assetIdentity(symbol,name),remote=logoUrl&&/^https:\/\//i.test(logoUrl)?logoUrl:null;
  return [...new Set([local,remote].filter((value):value is string=>Boolean(value)))];
+}
+export function verifiedProfileLogo(symbol:string,profile:any):string|null{
+ if(String(profile?.ticker||'').toUpperCase()!==symbol.toUpperCase())return null;
+ try{const url=new URL(profile.logo);return url.protocol==='https:'&&!url.username&&!url.password?url.href:null}catch{return null}
 }

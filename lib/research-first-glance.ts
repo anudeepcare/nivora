@@ -2,7 +2,16 @@ import {suggestMultiplier,type PlanningEvidence} from './auryn/planning/policy';
 const labels:Record<string,string>={STRONG_BUY:'Strong buy',BUY:'Buy',START_SMALL:'Start small',WAIT:'Wait',AVOID:'Avoid',ADD:'Add',HOLD:'Hold',WATCH:'Watch',REDUCE:'Reduce',EXIT:'Exit'};
 export function firstGlance(decision:any,state='READY'){
  const ready=state==='READY'&&Boolean(labels[decision?.newMoneyAction]);
- return{label:ready?labels[decision.newMoneyAction]:'Review data',owner:ready?(labels[decision?.ownerAction]||'Review'):'Review',tone:!ready?'neutral':['BUY','STRONG_BUY','START_SMALL'].includes(decision.newMoneyAction)?'positive':decision.newMoneyAction==='AVOID'?'negative':'caution',ready};
+ let label=ready?labels[decision.newMoneyAction]:'Review data';
+ let reason=!ready?'Current evidence needs review.':'Review valuation and position risk.';
+ if(ready&&decision.newMoneyAction==='WAIT'){
+  if(decision.pillars?.business&&decision.pillars.business.score==null){label='Needs research';reason='Business evidence is incomplete; a new investment is not assessed.';}
+  else if(decision.dimensions?.valuation?.state==='UNAVAILABLE'||decision.pillars?.valuation&&decision.pillars.valuation.score==null){label='Needs valuation';reason='Valuation evidence is incomplete; an attractive price is not established.';}
+  else if(['DAMAGED','REPAIRING','RECLAIM_ATTEMPT','FAILED_RECLAIM'].includes(decision.setupState)){label='Wait for support';reason='The technical setup needs a confirmed hold or reclaim.';}
+  else{reason=decision.policyReasons?.find((x:unknown)=>typeof x==='string'&&!/^[A-Z_]+$/.test(x))||'Current valuation and risk conditions do not support new capital.';}
+ }
+ if(ready&&decision.newMoneyAction==='AVOID')reason='The documented business or risk constraints block new capital.';
+ return{label,reason,owner:ready?(labels[decision?.ownerAction]||'Review'):'Review',tone:!ready||label.startsWith('Needs')?'neutral':['BUY','STRONG_BUY','START_SMALL'].includes(decision.newMoneyAction)?'positive':decision.newMoneyAction==='AVOID'?'negative':'caution',ready};
 }
 export function concreteRisk(values:unknown[]):string|null{
  return values.find((x):x is string=>typeof x==='string'&&x.trim().length>0&&!/^[A-Z_]+$/.test(x)&&!/(current source-backed|measured market\/macro regime context|no major pillar|expand expert evidence|source-backed.*catalyst state)/i.test(x))?.trim()??null;

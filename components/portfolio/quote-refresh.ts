@@ -31,7 +31,7 @@ export function createQuoteRefreshController(options:{
   pending=true;lastAttempt=now();options.onState({loading:first,refreshing:true,error:'',lastCheckedAt});
   let error='';
   try{
-   const result=await fetcher(batch,{signal:abort.signal,onProgress:partial=>{if(!disposed)options.onQuotes(partial);}});
+   const result=await fetcher(batch,{signal:abort.signal});
    if(disposed)return false;
    options.onQuotes(result);lastCheckedAt=now();
    const unavailable=next.symbols.filter(symbol=>result[symbol]?.market?.displayPrice==null);

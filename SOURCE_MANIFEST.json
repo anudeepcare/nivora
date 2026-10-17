@@ -849,8 +849,8 @@
     },
     {
       "path": "GIT_AND_VERCEL.md",
-      "bytes": 8964,
-      "sha256": "e9dd53aee40a01ecdef3645ca4aede1cd75a134c7e5b3f47915821df7c570e85"
+      "bytes": 9279,
+      "sha256": "fc127f905ddd646d5a90a3f40fc256c0c7962fdcd4b46a1c008cfb2913d1169c"
     },
     {
       "path": "PREMIUM_UX_RELEASE.md",
@@ -874,8 +874,8 @@
     },
     {
       "path": "RELEASE_REPORT.md",
-      "bytes": 3178,
-      "sha256": "572005210cb744b38521b387c697616e5801257dd18d167be8fbd1de2b7357fe"
+      "bytes": 1210,
+      "sha256": "9ea1d2d16726b301a115245d9073deb128a5a3caaf725a0c32922a3176b7aad7"
     },
     {
       "path": "SCALING.md",
@@ -884,13 +884,13 @@
     },
     {
       "path": "START_HERE.md",
-      "bytes": 2017,
-      "sha256": "1a62372ba00baa5993c2c1d21d93ad4b3742ce095722bac8e918add37d378019"
+      "bytes": 1190,
+      "sha256": "57da046f0051d6e7d6920c3ca85b2051327f7f7001deb69353b36f7540e988b4"
     },
     {
       "path": "START_HERE_AURYN_WORK_INSTRUCTIONS.md",
-      "bytes": 1782,
-      "sha256": "1ba2a6587b625b75bd782967598666fccf553602db664f77625c7f2d2ec8070d"
+      "bytes": 2055,
+      "sha256": "995bba3ea3ed441647e703e3b07f4f99a7fdd10559ee6e3ef55fc6ad1560b393"
     },
     {
       "path": "V65_3_RELEASE.md",
@@ -1149,8 +1149,8 @@
     },
     {
       "path": "app/ui.css",
-      "bytes": 155654,
-      "sha256": "4acd2e2b0e09829e997fbc8140c440730a693a309d862bae2bda88eb05e866a5"
+      "bytes": 161701,
+      "sha256": "c1eea510756e158a0d6e74a3096f25709df94365f9ef0ea334fe0b4e4c032883"
     },
     {
       "path": "app/v65-responsive.css",
@@ -1358,6 +1358,11 @@
       "sha256": "a03b51a6fd2d9d396f243559c83a9a6839e776c7c0ac6f76fd04099a2acc5dea"
     },
     {
+      "path": "app/api/security-profile/[symbol]/route.ts",
+      "bytes": 1021,
+      "sha256": "7a620239742774f500607fa4ee04e21403d32684c231920bc20549e6dbebeded"
+    },
+    {
       "path": "app/api/system/health/route.ts",
       "bytes": 1739,
       "sha256": "ee8872d12b4a1185eb8a7b02337065d8e8edbb80bb30494ac54b11ccd9f71d64"
@@ -1494,8 +1499,8 @@
     },
     {
       "path": "app/portfolio/page.tsx",
-      "bytes": 18185,
-      "sha256": "d22875404435e8d4b5d4aa93e172f3b353359ded5c362209209d33890f9eb760"
+      "bytes": 15454,
+      "sha256": "698b89a1b900a2f7aca1678631dc8117622f6a8b9e8e9167fa5c46d5bb63c2fd"
     },
     {
       "path": "app/privacy/page.tsx",
@@ -1554,8 +1559,8 @@
     },
     {
       "path": "components/AssetLogo.tsx",
-      "bytes": 1764,
-      "sha256": "bbe616c2b4d6d13d0971e36eb91e02948817c77c42c1921ce2de5e227052482a"
+      "bytes": 3306,
+      "sha256": "04d6be9cbc6bdb17cb5166ed5d34ce0f287fdb66721b2603af1c6301060ef7ba"
     },
     {
       "path": "components/AurynLogo.tsx",
@@ -1609,8 +1614,8 @@
     },
     {
       "path": "components/PriceChart.tsx",
-      "bytes": 10248,
-      "sha256": "9fcc0adbfb0374e4b3cfaed62d5b6d9a8050840070096e42ba5d13a8a704344b"
+      "bytes": 10513,
+      "sha256": "ac3e7cae4cbf8f6d3d5371ab4b9f8b642000e90f031c779f29297963050f4f5f"
     },
     {
       "path": "components/ProductFooter.tsx",
@@ -1629,13 +1634,13 @@
     },
     {
       "path": "components/ResearchWorkspace.module.css",
-      "bytes": 13714,
-      "sha256": "b4ae3f7547b1eafc5be47e251ca4b505e864c3e6bb87bb09582ef2fe8fab8f96"
+      "bytes": 13734,
+      "sha256": "ed13f3ae21bf7b6495683826c630abc1ecd549c00994bef1d50aecfb3c69d473"
     },
     {
       "path": "components/ResearchWorkspace.tsx",
-      "bytes": 33885,
-      "sha256": "e6b64097342bf2ca628dd8cd5738315634f50f891d7b42d34ad4478b68b3bbb7"
+      "bytes": 34148,
+      "sha256": "c2c218383db7f9843a0db24232f194ba8f35a452d80d897118e008b6b9cd97b4"
     },
     {
       "path": "components/ScorePill.tsx",
@@ -1654,8 +1659,8 @@
     },
     {
       "path": "components/StockClient.tsx",
-      "bytes": 82076,
-      "sha256": "1ec3d83f0ffb7f4438206c6eb67a420b3304599736fd17cff0ea10d340404704"
+      "bytes": 82016,
+      "sha256": "36df9c4df5c35517b94f3f3d7c6db9c209989239d40aa0e98288fbcf048efb5a"
     },
     {
       "path": "components/ThemeProvider.tsx",
@@ -1753,14 +1758,19 @@
       "sha256": "92fc0fdaa467f2339ef76362879fe8e92bfab0d7ce0484c884c828f923eded04"
     },
     {
+      "path": "components/portfolio/quote-cache.ts",
+      "bytes": 1419,
+      "sha256": "6164bdcc54a20b8a7e06a16df9e6505ab42676d49f608614cc99605a79529594"
+    },
+    {
       "path": "components/portfolio/quote-client.ts",
       "bytes": 1907,
       "sha256": "61460c27f62575b6af7413202f004f3afad0edf6a0870b89f5639dce43ab28d3"
     },
     {
       "path": "components/portfolio/quote-refresh.ts",
-      "bytes": 3197,
-      "sha256": "80881c1fb4ba672d4ee55aa7daa95f30512df2b164fb8c5be4d5934618c0ac9c"
+      "bytes": 3135,
+      "sha256": "0722909ccc9d6927d301106f15524941c73f986080dfe33e712a316706d1d4b6"
     },
     {
       "path": "components/portfolio/quote-status.ts",
@@ -1769,8 +1779,8 @@
     },
     {
       "path": "components/portfolio/usePortfolioQuotes.ts",
-      "bytes": 1754,
-      "sha256": "65a7221fd07c9468ac04fadcf37bb5a0cb80f42242faae664d09bd4c13dfa1da"
+      "bytes": 2217,
+      "sha256": "c9e1ba453b1e6cf0886c0783808e32cad2a79170271eed5ba21d9e95271e6fce"
     },
     {
       "path": "components/portfolio/valuation.ts",
@@ -1784,8 +1794,8 @@
     },
     {
       "path": "components/premium/AurynResearchOverviewV2.tsx",
-      "bytes": 11554,
-      "sha256": "fbb2013ccea8278bee5fef2da6b6bd3a9ca7165e7372d966c2c97434e10de2cc"
+      "bytes": 12806,
+      "sha256": "4cdbf2a71443a5e4bf2536218065625cec802b9077a5a19e9b94ea09efe49f92"
     },
     {
       "path": "components/research/AccumulationVisuals.module.css",
@@ -1814,18 +1824,18 @@
     },
     {
       "path": "components/research/DcaInsight.tsx",
-      "bytes": 1902,
-      "sha256": "acbd65d11a74f8f8b6b73906fca529147e103bc5b992ddbf2e37ae9ccde39307"
+      "bytes": 2044,
+      "sha256": "008e778e061cf7ee5d8ae54f2e0cfd2973f2a9200e94b33b2554138f8a919b5d"
     },
     {
       "path": "components/research/FinancialTrends.tsx",
-      "bytes": 7900,
-      "sha256": "1a175b40b65f49b08e4997240facc733fff01176db8401e3867445c75cd935ef"
+      "bytes": 8082,
+      "sha256": "b7f4c4d8f395ac33b366d1a54fe71e895d935752c974d6ab67666e5bc898e46c"
     },
     {
       "path": "components/research/GlassEvidencePages.tsx",
-      "bytes": 9524,
-      "sha256": "ada73953486e3b746659f783a5f86c4d361f254c0d090e908cb2a068fd187e90"
+      "bytes": 9760,
+      "sha256": "cc9a204b21cbb9a2477eb68ddeec3b5b4665d31b2077feb8cd44ba0c7ecead33"
     },
     {
       "path": "components/research/GlassResearchLab.tsx",
@@ -1834,8 +1844,8 @@
     },
     {
       "path": "components/research/GlassValuation.tsx",
-      "bytes": 5370,
-      "sha256": "5b7499a1aedfedd1cb51f0bb5e6816ce9e3e1c7db4b2cbe2ada6defd9d630ed4"
+      "bytes": 7015,
+      "sha256": "396f3b54466b5308d22716258346ef82b62fefc4008d847919be9cea711fd706"
     },
     {
       "path": "components/research/ResearchDepth.module.css",
@@ -1859,8 +1869,8 @@
     },
     {
       "path": "components/research/TechnicalReadings.tsx",
-      "bytes": 1948,
-      "sha256": "ea043fb776930e3c139cdfc1c51a394536d1412a78aff09720eaa30a268d4f34"
+      "bytes": 1990,
+      "sha256": "3331bac8e948977e0662d63d1e87a9b4198a82bfe3f4e8710aad2d11acfbf8fa"
     },
     {
       "path": "components/research/TechnicalStudies.module.css",
@@ -1874,8 +1884,8 @@
     },
     {
       "path": "components/research/WeeklyStructure.tsx",
-      "bytes": 12774,
-      "sha256": "4f981526b26844b82adfb08ed6432dc3d39ee51e115206426eb0b24ca66fe281"
+      "bytes": 12741,
+      "sha256": "336dc74e1cca956faf742b584aa6bb4802ca1cc12a5e1d145f00a4e852957475"
     },
     {
       "path": "components/research/useContributionSettings.ts",
@@ -1884,13 +1894,13 @@
     },
     {
       "path": "components/stock/StockDecisionSummary.tsx",
-      "bytes": 2583,
-      "sha256": "9266cc6248a9b06b26bf9ace1a2de94b0f223671e8a168a668a3f881a93e8098"
+      "bytes": 2076,
+      "sha256": "11930dbddd383fdac74dfd521e1714c06e81e7b51ad9946e5ef873a20f657731"
     },
     {
       "path": "components/stock/StockEvidenceNav.tsx",
-      "bytes": 2425,
-      "sha256": "8472cb24d4428a579f643fd2cf5bfa8dc60d39faf6842580b71a2408fcb3b57a"
+      "bytes": 2559,
+      "sha256": "83181cd56f2922f5f104771e6542d8705d2da6267f938d6dab4f0b6262fad966"
     },
     {
       "path": "components/stock/StockEvidenceSections.tsx",
@@ -2883,6 +2893,11 @@
       "sha256": "0ec8cc7a75c513ddb4273617412cfe40f1ef3e0631be8f200c95a6c1d987b378"
     },
     {
+      "path": "docs/superpowers/plans/2026-10-17-simple-product-cleanup.md",
+      "bytes": 1777,
+      "sha256": "9f3a370f273e5c889bbd7994c53cb249148702867d5448dad1c86d8ebb466d6d"
+    },
+    {
       "path": "docs/superpowers/specs/2026-09-01-nivora-v59-design.md",
       "bytes": 1759,
       "sha256": "7385f341eaed64325042f53ccb21d8213529ef23df9fde60d594316bd2da2158"
@@ -3204,8 +3219,8 @@
     },
     {
       "path": "lib/asset-identity.ts",
-      "bytes": 2373,
-      "sha256": "cee2d22991a2f2af7aa11bebe1dfdb9c7583f46ac68c6b52f006d6e6c02b0fbe"
+      "bytes": 2713,
+      "sha256": "069151dbb2bd23ca71d465f666af8d6c708046afa09d4c42c3555884197f5896"
     },
     {
       "path": "lib/auryn-decision-audit.ts",
@@ -3239,8 +3254,8 @@
     },
     {
       "path": "lib/dca-market-signal.ts",
-      "bytes": 2847,
-      "sha256": "df983b917ea3574531f595308f599a21b743db2272731f2f6bb233a908d407da"
+      "bytes": 3564,
+      "sha256": "10d65b938003b7d1290df46db7e3d02f8978ba24bd7e08ac82a3227501d4cc70"
     },
     {
       "path": "lib/insider-transactions.ts",
@@ -3534,8 +3549,8 @@
     },
     {
       "path": "lib/research-first-glance.ts",
-      "bytes": 2000,
-      "sha256": "65ad37845cf0d0b485c96f0736e0fbd4572bd9936e02a8398781bb8efb3192c7"
+      "bytes": 3081,
+      "sha256": "812da72fe6b8046140632bd54863473f966d1f6141a5ff9c23ce74b0456a025d"
     },
     {
       "path": "lib/research-structure-presentation.ts",
@@ -4663,6 +4678,11 @@
       "sha256": "7ff21ca8efb952ac7fcd1e49ada2127aadc6716bff11582d4da3431b9d103182"
     },
     {
+      "path": "scripts/build_cleanup_review.py",
+      "bytes": 6333,
+      "sha256": "a9477636128c7c268375219f32a5292d246d2dfe07b82c5b474ffdc73dc024ce"
+    },
+    {
       "path": "scripts/curate_release_visuals.py",
       "bytes": 3886,
       "sha256": "00d5e2d0b46e913badb12bce50e101e8544d7595be9f6bb19022da1431afbd75"
@@ -4879,8 +4899,8 @@
     },
     {
       "path": "scripts/verify-midnight-browser.mjs",
-      "bytes": 53978,
-      "sha256": "056cf7a90cb8fe3e1eb66ce0bc62aa0e827f5126df940507e7f830b952b175e0"
+      "bytes": 60412,
+      "sha256": "f92537a8deb411727c533f74a0eae83db27382ec1be11ad232c741d2b6035cdf"
     },
     {
       "path": "scripts/verify-next-build-browser.mjs",
@@ -6783,6 +6803,11 @@
       "sha256": "1e2f1f20a0cd1af625ac6c4db3070f9eaf47a9affd177a462dd0e39208bd2145"
     },
     {
+      "path": "tests/research-clean-states.test.mjs",
+      "bytes": 2242,
+      "sha256": "afea3486020169f420ddc4ef8121331e90849a25fdcbaaa61e346886fe4ed4cb"
+    },
+    {
       "path": "tests/research-discovery.test.mjs",
       "bytes": 1484,
       "sha256": "cbfd6300b8b9a0b5e46123cdf82da203e3e98e01929d05f6fc61af5ac5d3509c"
@@ -6803,6 +6828,11 @@
       "sha256": "0eb3535a1d3a4764f11b4459241418d6a299f42aac82e3be90eb26ddc0982032"
     },
     {
+      "path": "tests/research-stability.test.mjs",
+      "bytes": 4707,
+      "sha256": "c7d45509d0acfdf97aba14056dd48a7a1fbbe821d42b0b1ffbcb9e4c3b595d93"
+    },
+    {
       "path": "tests/research-structure-presentation.test.mjs",
       "bytes": 5059,
       "sha256": "d40c304bc3e7aeb8bdfcae89a92afd9d965880db3531fb258b254dcaa6e492f4"
@@ -6821,6 +6851,11 @@
       "path": "tests/sec-company-evidence-integrity.test.mjs",
       "bytes": 12687,
       "sha256": "847721a71ec31f4dc761ec71bea87ebd9a0a9084be2e8fb03ae8e29ab8b0986c"
+    },
+    {
+      "path": "tests/security-logo.test.mjs",
+      "bytes": 1018,
+      "sha256": "254a0fb0d4fcbd6c58f7634269a7f83e0145d390b85ac72710650215726ac66e"
     },
     {
       "path": "tests/v37-product-polish.test.mjs",
@@ -7779,8 +7814,8 @@
     },
     {
       "path": "verification/release-test-files.json",
-      "bytes": 8591,
-      "sha256": "7aaed4fe9d6fcfaf169a9dac1d023afe1e574ef3161687c007333e5c384981bd"
+      "bytes": 8706,
+      "sha256": "7f3821953126c146b50c1ff57a450ded9aa1fc42a4ebfde949ef0ec73c5082f0"
     },
     {
       "path": "verification/research-browser-report.json",
@@ -7841,6 +7876,486 @@
       "path": "verification/weekly-tested-source-hashes.json",
       "bytes": 99293,
       "sha256": "cb3e57c74275017e6b9eed1e53ce270c414c421b6f8017ff1b1d020e4f539eee"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/VERIFICATION_REPORT.md",
+      "bytes": 5414,
+      "sha256": "7ad4df45eafa29e22da6bcb31ea9ea27190d495860f01f50b3e2cfe14e2d74ec"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/credential-scan.json",
+      "bytes": 232,
+      "sha256": "99c80e798f54b90bb09922a9288bb67f7eb4387a1927ce3fb3d14ee2d527c2e0"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/focused-regression-tests.log",
+      "bytes": 1392,
+      "sha256": "0b91a60b28e2ca5bfed2fff9174aca00226aac6052722cf497687d82cb879ac9"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/production-build.log",
+      "bytes": 6590,
+      "sha256": "99bec416ad59eb5aba96e43affc8cef30c54ea0f63232eb3eac907bbc3510f13"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/review-viewer-check.json",
+      "bytes": 75,
+      "sha256": "1baf4541278c10ea05106b277b6de7000ee254762bbdc523386339bf60a78ff3"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/unit-tests.log",
+      "bytes": 210448,
+      "sha256": "554ce443e09ff505aaf88eac2741a618d311ec14df77f18ff56bbc9378356b1f"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/README.md",
+      "bytes": 278,
+      "sha256": "0b77e790c8f487c06fe72ad66d83920b9131ed912da98e555f59fd66bbec9568"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/index.html",
+      "bytes": 16421,
+      "sha256": "e28e1fea7672ad4c1c3eabfbd52b235b40b6e82e98423634376e043edd222df3"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-1440-MSFT-Business.png",
+      "bytes": 468464,
+      "sha256": "d9c40d11d0fe246c4e5733ac1097d2b931181f66b20b27fb566e4e2a359de7ef"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-1440-MSFT-Earnings-events.png",
+      "bytes": 486603,
+      "sha256": "db7612aac00c822ccc13a5db249f406422c0ed29a2cc1414b63ee153cc3e2ac5"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-1440-MSFT-Financials.png",
+      "bytes": 536931,
+      "sha256": "433b7d8117383d56b9fbef1c5d3c2ffc37af8024c47502b75a910d70ce67d3ec"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-1440-MSFT-Options.png",
+      "bytes": 360875,
+      "sha256": "e787942d07dc0ed3b27a6f474748d903fd0fdd0c062283d936ad43dd38df4946"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-1440-MSFT-Overview.png",
+      "bytes": 441590,
+      "sha256": "25168bb8ad23c8cf040be1c3fe8cf7871b50bfd0b23bf1d5084676eac93861b6"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-1440-MSFT-Ownership.png",
+      "bytes": 332702,
+      "sha256": "4070f72abfb37916c14486f97b3011fd4500c4a01bfbc91918673c55dc9ead5f"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-1440-MSFT-Risks.png",
+      "bytes": 344775,
+      "sha256": "87311a7e3a6467c09ccf87c16e1a825aded835aa55a608bb8c2b47e916f15908"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-1440-MSFT-Technicals.png",
+      "bytes": 536817,
+      "sha256": "5a17d5546fabc704e1053afc01d56f7dccd58046f035bacba2cf8938ccfce677"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-1440-MSFT-Valuation.png",
+      "bytes": 421124,
+      "sha256": "cb59afb9be4924fa507d8c5ff17d43951147a8a76fbc129bc9e23ece3c9d6516"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-1440-alerts.png",
+      "bytes": 222083,
+      "sha256": "7c7cdcc6988ec73544674deb16ea161685bbad1ccc16a274a97ddfe5c0cd2898"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-1440-analyze.png",
+      "bytes": 173715,
+      "sha256": "3f317141aaf6a800eed25922f804f5d89eb427f1285eb31ffb1802ccd17d8446"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-1440-dashboard.png",
+      "bytes": 304193,
+      "sha256": "554981c92b5e4e9f745034ab98bf2de06a4ce96650a2f5a64f626eb9272f9c77"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-1440-discover.png",
+      "bytes": 215124,
+      "sha256": "008b0754b078f5f67fb8c18f2d8b718155037cbc1a5ae3f0acb60488c78a9d18"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-1440-faq.png",
+      "bytes": 255957,
+      "sha256": "4300383b622b930996cfe8adb05f0c470926b95732f81bd12c7e19732b97ef8a"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-1440-login.png",
+      "bytes": 238098,
+      "sha256": "34a29da8fcf203312d821b8e779f99f30c0bc9fe086484a9c8ee8c2598df61af"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-1440-onboarding.png",
+      "bytes": 249317,
+      "sha256": "99e2447e154b2a108bb18ec42ac32ee60c2ce4b63eb34821d7ce36680896b06d"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-1440-personalization.png",
+      "bytes": 296226,
+      "sha256": "5e6764e899e6c09166ba1a552238aff2bac475eb8657c78bf95494790ac94e4c"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-1440-portfolio.png",
+      "bytes": 224312,
+      "sha256": "e2a57ef26c16209a450c0aef83d127a9a27401d9efb8bdc01afbf0d704c7aea2"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-1440-profile.png",
+      "bytes": 220064,
+      "sha256": "5cb637371c013fc9afd36bd2caf95177215678f4c591e42e8bd7e804a2191931"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-1440-research-lab.png",
+      "bytes": 200757,
+      "sha256": "0f0f8933d58b2a21d551616a754ed8e43b6a50d19303f4f3e84353b5684f2522"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-1440-trading-lab.png",
+      "bytes": 204916,
+      "sha256": "12a66a371d2be00b56d703d70f5e06c88ea69956813d01ae6f7715b1e032a821"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-1440-watchlist.png",
+      "bytes": 174978,
+      "sha256": "669dbd6114acf447bbdd2268494c974f483c8e8495dfb1e039b4e93b8fa3478b"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-390-MSFT-Business.png",
+      "bytes": 295506,
+      "sha256": "466b5c1676c154c0cee7eeba549d60fbcc9e422bf645aeee1a858aeaef9b869d"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-390-MSFT-Earnings-events.png",
+      "bytes": 237867,
+      "sha256": "850aa2c2f17cc7147bea906ef8b348a29b16c023ffd0106129601c93adfce649"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-390-MSFT-Financials.png",
+      "bytes": 276965,
+      "sha256": "535b28bfd9d2beb12f7c194234b2b126c6445253ff2d67fe43c39a759c13aacf"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-390-MSFT-Options.png",
+      "bytes": 212555,
+      "sha256": "6c3dd9fdd1ed444024b34f2bed66f6f77370c98d1c801bef8bf3af07ae9263da"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-390-MSFT-Overview.png",
+      "bytes": 260995,
+      "sha256": "ce2e3ad047ee41b0275bf50b13fe8887614e8b5471b452e3eb7352e70fca2692"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-390-MSFT-Ownership.png",
+      "bytes": 177349,
+      "sha256": "d6adf8797700f17ca206b82fa9e1faabffa7a6814a677291ec5b7d33580c0a94"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-390-MSFT-Risks.png",
+      "bytes": 206782,
+      "sha256": "0a4095c7cf53e73bc68fbf949b88ed2ba17f995dfd4c32405d4e440ca9bbb374"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-390-MSFT-Technicals.png",
+      "bytes": 339051,
+      "sha256": "50834717ca95db8b031e37e48648f2327873a3dace446c33c58bbab7010467ac"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-390-MSFT-Valuation.png",
+      "bytes": 214296,
+      "sha256": "c0aab8e70cc6c1e5da72ff9858dd70278feef203e54a70a4cbaad67c3eaaa67b"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-390-alerts.png",
+      "bytes": 127805,
+      "sha256": "c82bfb76e4dcc7742b277c38898b445c814bdce597fab39f2b0ba638dedb6a35"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-390-analyze.png",
+      "bytes": 85876,
+      "sha256": "35f7930434d34f7166de5fa4cb9a96cac185a8918f082091dc2daec4c85f7400"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-390-dashboard.png",
+      "bytes": 184938,
+      "sha256": "723c02cdb7cd13727c9117024e7e9ce4aebff9a2d182eadca1c40461c8018e54"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-390-discover.png",
+      "bytes": 129687,
+      "sha256": "74cfc0233b42d69ae80aa6d48bae332ac488dedda3e323d32945c57722b90e92"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-390-faq.png",
+      "bytes": 135256,
+      "sha256": "c26be507fb77fd6c6265c51ef509a8c89e238b17507a8b1ac362ca4d5f73cd17"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-390-login.png",
+      "bytes": 55801,
+      "sha256": "40e196700aea1fc8a43d96cf473648d58b5a8f2556224335c2600e0bdeba2d3a"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-390-onboarding.png",
+      "bytes": 58421,
+      "sha256": "7c3ce6cf17e38b4c5bc1e79e7bdde645737f5efeba7b6eef5cf52a9ee0ff6964"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-390-personalization.png",
+      "bytes": 110701,
+      "sha256": "ed4e04a3884d38cf849dfd99e9d4d0fa2318547a2f3c3bdfbed41e70cc262b83"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-390-portfolio.png",
+      "bytes": 152896,
+      "sha256": "8546920eecb03603ce03ba1dfca384c1477247119f3b14541abd923baa778438"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-390-profile.png",
+      "bytes": 84070,
+      "sha256": "a337945e39be560a8bb287b384eb2514e59b72a2be07da47a6637ced39114981"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-390-research-lab.png",
+      "bytes": 78253,
+      "sha256": "c2311c1981720d00e6741cc19cf722bb4c3a92c031177ae87e1b963a0eae6522"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-390-trading-lab.png",
+      "bytes": 137371,
+      "sha256": "e5767f3d99e2dc4c85e54926caf281421173ff21614579d389a8dce03434c769"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/dark-390-watchlist.png",
+      "bytes": 97672,
+      "sha256": "3124edd41c216dc45af3d6efd27cbd2e7a1619eb643789ed79f0a0e9cc2ae8f4"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-1440-MSFT-Business.png",
+      "bytes": 354568,
+      "sha256": "909399c4e171e37c5bb1f1e74927aa4295ecd63ef00c6feadc25b53b413cafa9"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-1440-MSFT-Earnings-events.png",
+      "bytes": 485642,
+      "sha256": "e438fe5c12959f1243a95e407e86c3947becdfb331e889beeed57df39e90e0f3"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-1440-MSFT-Financials.png",
+      "bytes": 528022,
+      "sha256": "3780d94db5b22bd709db629c4d7f7a5fdd0d2be101c7861b73015f7140b2f377"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-1440-MSFT-Options.png",
+      "bytes": 265418,
+      "sha256": "41737688e374e88dcb9ee521a9d8c908be46e03ffe56f4ca3b0dbbd9b36e4430"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-1440-MSFT-Overview.png",
+      "bytes": 429828,
+      "sha256": "eb69e670f7073db8be67e23440344a7f19fb9cc554622149f1d5dca2be271880"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-1440-MSFT-Ownership.png",
+      "bytes": 241596,
+      "sha256": "7b7871f65be77369f8ff8d47a6dd2134abf3b814580315e67c50ac1cfe69f8c2"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-1440-MSFT-Risks.png",
+      "bytes": 251354,
+      "sha256": "7d455e74d6075b17005018efa340b60c7f705db14734d795935b6b23239a472d"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-1440-MSFT-Technicals.png",
+      "bytes": 415474,
+      "sha256": "0839c3b5abbf767388d0e3679b345074ce6823f6e1c910874a98b7b57de9e246"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-1440-MSFT-Valuation.png",
+      "bytes": 300861,
+      "sha256": "15cc310f7c1e986481bdf1c948fabcc72d12d913e4355880a306289a8e37c64c"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-1440-alerts.png",
+      "bytes": 175479,
+      "sha256": "35ea9d90b5184cf928bc6201cab5cfd6d3d7cc10fac159de049fa27d1b050534"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-1440-analyze.png",
+      "bytes": 127068,
+      "sha256": "ad71cd9a46d0883587adcfd2a52e1b7a780b4863486542d341d2b317e7f5d029"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-1440-dashboard.png",
+      "bytes": 216598,
+      "sha256": "8b99a2283d06a00eff0d2496d8350d3702aa01f5b48cfc52423b9fd7b62c1a51"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-1440-discover.png",
+      "bytes": 151111,
+      "sha256": "efb6eae0fb601195b4fac0a2486f51658937bc853ca90c6d9ff3adc896ea0cb4"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-1440-faq.png",
+      "bytes": 194325,
+      "sha256": "6d7bb07711bbfaa41baf1bbc55379a74c7ef653daa0218d280ef511558bf03ee"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-1440-login.png",
+      "bytes": 157053,
+      "sha256": "2c3af21e647e634eb1b9d95c4272a5f61997b83270bd035690ba8cbf586aa75a"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-1440-onboarding.png",
+      "bytes": 171685,
+      "sha256": "537bc094efce7c0872507562a2164d07b8323e35a2bcc715e96338b9f0774f2b"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-1440-personalization.png",
+      "bytes": 311446,
+      "sha256": "d26154e29e6667c25d4e8691ba3ca10cb66bf386754532b70454ee334ccb884a"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-1440-portfolio.png",
+      "bytes": 188481,
+      "sha256": "9bab9a17895b5ac98f6763847b67807ee66038b8d775e69dfee6b69042ef84f5"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-1440-profile.png",
+      "bytes": 137409,
+      "sha256": "04f0d03b90d5dd31cca1ecb2115363cd2064ca286cbe5e167970ef42119c24c6"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-1440-research-lab.png",
+      "bytes": 132239,
+      "sha256": "8bfcb63bae0c3507704742e9651e705d0371aec3423ea7a67cde501ee2ada847"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-1440-trading-lab.png",
+      "bytes": 171352,
+      "sha256": "2c8a5e45f5f9b6e3be1c310644ca5d05d9696ee361d879225ebc67d300501051"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-1440-watchlist.png",
+      "bytes": 133468,
+      "sha256": "e95a6bf50827db6ef0498820a0425b8b0799359a1f43f4b5543e1837327bee6a"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-390-MSFT-Business.png",
+      "bytes": 284487,
+      "sha256": "af2ab2f660239fd61351bfcde9d7bfc6902262a10267a57fd7b8ff150d179b79"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-390-MSFT-Earnings-events.png",
+      "bytes": 229235,
+      "sha256": "a008e8ffe9ac0f7588874ef031ade6adcf7bddbbf5808e6820276014d75d8cb7"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-390-MSFT-Financials.png",
+      "bytes": 240046,
+      "sha256": "bb616663549046841ff6eed759ad3d168d1301e7c05696a5ade05a72ebe61d18"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-390-MSFT-Options.png",
+      "bytes": 203261,
+      "sha256": "85d219ec1a9bcac6b314e3a59be94b859bfa026ada89c93d0993fc0a2ecda700"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-390-MSFT-Overview.png",
+      "bytes": 252537,
+      "sha256": "373cc7e731a8d041d2a3624a124442bd77a2ad9a99554acac9e6614850e8744d"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-390-MSFT-Ownership.png",
+      "bytes": 147905,
+      "sha256": "3150aa9099c2e5970fecd233302e43b101d62e7da24903dd996e83d246e68939"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-390-MSFT-Risks.png",
+      "bytes": 196845,
+      "sha256": "5248dc2ce04c613f42857fbb1c4ea0379555350176f07d17cf2bcd3bc008e548"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-390-MSFT-Technicals.png",
+      "bytes": 332566,
+      "sha256": "de50228406d15d4b17e117f383812e18409fb846082ceb09b271b43ceffdb4ec"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-390-MSFT-Valuation.png",
+      "bytes": 181596,
+      "sha256": "61609a5aae4373ba5a9edc4c386f8fad310943996fcf3c711a074070a6cf1742"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-390-alerts.png",
+      "bytes": 114507,
+      "sha256": "27b6a5ddc2a0975044eb6db5dab8cf645a20060a8a3a512d803a1b62d8926778"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-390-analyze.png",
+      "bytes": 72013,
+      "sha256": "9f43a8fc5bceb6f9dbb19a92c8866aafc2711d99719a617029a0808f38511578"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-390-dashboard.png",
+      "bytes": 148494,
+      "sha256": "62dc1237e03e144a6e8088deeaa9e9ed37dce5ba55c00a00e37efee864f6021a"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-390-discover.png",
+      "bytes": 128891,
+      "sha256": "62bc928af0ba3af81452acab22820141d4bd8c6a55ae7575e4d425bbe8d3f422"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-390-faq.png",
+      "bytes": 119756,
+      "sha256": "5ec05649b413a07316305d0971b8b961013be9b51aeba9693ffde5f6b33bbfa2"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-390-login.png",
+      "bytes": 48920,
+      "sha256": "e138f42d94d7168180d2962dff4fe587d189ef10473081051e26bc98329655c0"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-390-onboarding.png",
+      "bytes": 55357,
+      "sha256": "91113746e24e010018b4596b3a5bde874ee4771e02f0fcd7350a33bcd9e5372b"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-390-personalization.png",
+      "bytes": 112301,
+      "sha256": "01a4bce70812da551b3edc74c27f5a307ed744ff65e53efed3a9ac595d6d0b96"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-390-portfolio.png",
+      "bytes": 142587,
+      "sha256": "8693feef9268bd92dd3d55823321a615180ed4dc8d0c8cbd912a9d35f653e07c"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-390-profile.png",
+      "bytes": 67224,
+      "sha256": "c7f995fd9551216ce15b874858b553f1497037b8ce6ef24336b43e8108cf5141"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-390-research-lab.png",
+      "bytes": 62742,
+      "sha256": "3230698833a471b5f9901814e22178184c7a92e99f5547f72743b152cbe8ab93"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-390-trading-lab.png",
+      "bytes": 126759,
+      "sha256": "0e10eaa507370041cd546b28677cf8cf1b3d2246ba8dfcc461d0ebbf3159cf95"
+    },
+    {
+      "path": "verification/cleanup-2026-10-17/visual-review/captures/light-390-watchlist.png",
+      "bytes": 97499,
+      "sha256": "8ae23e44d843e2a299cc77d094853dacaa3129415bdc8d1c3cf7772c2eefdfa6"
     },
     {
       "path": "verification/decision-first/green.log",
@@ -9303,6 +9818,66 @@
       "sha256": "f9b3181f9e3eba2ef84a94a8e7e54add648bc09dc269a707a217e78a4e1df13e"
     },
     {
+      "path": "verification/next-build/cleanup-controls-final-06/progress.json",
+      "bytes": 111,
+      "sha256": "e077ce002ad66bbee0b3cdc9945a3d132503802bba75a55bb30f91d8c331ec67"
+    },
+    {
+      "path": "verification/next-build/cleanup-controls-final-06/report.json",
+      "bytes": 10833,
+      "sha256": "35953aad47e4b5bec993704ebe73b16faff56e832dd317b2c734447f5a393cf9"
+    },
+    {
+      "path": "verification/next-build/cleanup-final-03/progress.json",
+      "bytes": 120,
+      "sha256": "1274430da23e7701ca681adc1cd7a313e019f1bf8cdc764779e87d22230262dc"
+    },
+    {
+      "path": "verification/next-build/cleanup-final-03/report.json",
+      "bytes": 864955,
+      "sha256": "26fe45d49c167248e29b8470c99f121a313dcfb07a515c07727d136fa09149a3"
+    },
+    {
+      "path": "verification/next-build/cleanup-full-02/progress.json",
+      "bytes": 120,
+      "sha256": "1fec8b51cbf6849b14bcaead6074b75ff4fbda63eab0bd321f42040f28554462"
+    },
+    {
+      "path": "verification/next-build/cleanup-full-02/report.json",
+      "bytes": 627778,
+      "sha256": "47db57c4f148f284c66a9cd5c1670429793d2ac50256704206331e2693b31a4c"
+    },
+    {
+      "path": "verification/next-build/cleanup-preview-01/progress.json",
+      "bytes": 79,
+      "sha256": "a9b9db181869263d897a9f6de0452be153ac43f13849957fd718796765f462f2"
+    },
+    {
+      "path": "verification/next-build/cleanup-preview-01/report.json",
+      "bytes": 207965,
+      "sha256": "f743ba65815e0374cfa06689c929066e36384e6e3ebf7d8ad15a79ad26183350"
+    },
+    {
+      "path": "verification/next-build/cleanup-review-final-05/progress.json",
+      "bytes": 120,
+      "sha256": "a62789fe356a5390314e0710d54df2a23c1a3d5b55cb80753fc3db300cd73ab1"
+    },
+    {
+      "path": "verification/next-build/cleanup-review-final-05/report.json",
+      "bytes": 640606,
+      "sha256": "19316d71cdd39fa04f634efba3fc9b42caecf593dd5a4fab68a2ca0b1e3edc53"
+    },
+    {
+      "path": "verification/next-build/cleanup-stability-final-04/progress.json",
+      "bytes": 79,
+      "sha256": "6a24ab4775875bb75970074b3a02f900c917a864dcc6139e186fca83204f84b9"
+    },
+    {
+      "path": "verification/next-build/cleanup-stability-final-04/report.json",
+      "bytes": 328744,
+      "sha256": "6a703605e731ac16211d488677a6d5d4c79bbe99a627fb90dc0e7872cffa6bd5"
+    },
+    {
       "path": "verification/next-build/controls-green-01/progress.json",
       "bytes": 123,
       "sha256": "2abea8ecaea3d076c8791431aef77bd295f73ee7175b8c817bd3be395028d975"
@@ -9943,6 +10518,16 @@
       "sha256": "6278a8e6e862d7eabb7e3b2cae59a07065cbbddd15dc2c0d0ad1e538197a0392"
     },
     {
+      "path": "verification/next-build/stability-red/progress.json",
+      "bytes": 119,
+      "sha256": "a4f113d12334bcb530a9f8b17c9282dccedeb60ab0c278eda229de6e90467277"
+    },
+    {
+      "path": "verification/next-build/stability-red/report.json",
+      "bytes": 272668,
+      "sha256": "081ee39cbfafcb2bb766e51c6932fa8f4297c5ea49c09a520152de81a33454e6"
+    },
+    {
       "path": "verification/next-build/valuation-inspect/auryn-dark-390.png",
       "bytes": 174648,
       "sha256": "a209b9b8381f39859b3ecb8c131096c4674a1817bd762db1449a9e22742c2588"
@@ -10119,8 +10704,8 @@
     },
     {
       "path": "verification/product-recovery/browser-server.log",
-      "bytes": 5434,
-      "sha256": "6f20e37f40c8e352f5fcb7cf04cb924cdfe26eb934facc7e22a4bff3bd49b6e5"
+      "bytes": 6435,
+      "sha256": "c6eaef8885abc91af5b119feb607004e31b996f72448715c331572bbbcde2fd5"
     },
     {
       "path": "verification/product-recovery/build-final.log",

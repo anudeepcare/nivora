@@ -580,13 +580,6 @@ body:has(.aurynAppShell) {
   border-color: #f7931a;
   color: #fff;
 }
-.aurynGlass .au-stockhead {
-  display: grid;
-  grid-template-columns: minmax(0,1fr) auto auto;
-  align-items: center;
-  gap: 24px;
-  margin: 0 0 18px;
-}
 .aurynGlass .au-security {
   display: flex;
   align-items: center;
@@ -634,33 +627,6 @@ body:has(.aurynAppShell) {
   color: var(--a-muted);
   margin-top: 4px;
   max-width: 400px;
-}
-.aurynGlass .glassStockControls {
-  display: flex;
-  flex-direction: column-reverse;
-  align-items: flex-end;
-  gap: 8px;
-  margin: 0;
-}
-.aurynGlass .glassHorizon {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 12px;
-  color: var(--a-muted);
-}
-.aurynGlass .glassHorizon select {
-  border: 1px solid var(--a-line);
-  background: var(--a-card);
-  color: var(--a-ink);
-  border-radius: 8px;
-  padding: 7px 8px;
-  font-size: 13px;
-  min-height: 36px;
-}
-.aurynGlass .glassStockActions {
-  display: flex;
-  gap: 8px;
 }
 .aurynGlass .nativeDecision {
   display: grid;
@@ -775,7 +741,11 @@ body:has(.aurynAppShell) {
   grid-row: 2;
 }
 .aurynGlass .nativeDca p {
-  display: none;
+  display: block;
+  grid-column: 1 / -1;
+  color: var(--a-ink);
+  font-size: 12px;
+  margin: 2px 0 0;
 }
 .aurynGlass .nativeDca .au-dcarail {
   position: relative;
@@ -947,7 +917,7 @@ body:has(.aurynAppShell) {
 }
 .aurynGlass .glassPricePlot {
   position: relative;
-  height: 280px;
+  height: 250px;
   touch-action: pan-y;
 }
 .aurynGlass .glassPricePlot .priceChartFrame,.aurynGlass .glassPricePlot .chartCanvas {
@@ -1137,7 +1107,7 @@ body:has(.aurynAppShell) {
 }
 .aurynGlass .nativeBusiness .au-facts {
   display: grid;
-  grid-template-columns: repeat(3,minmax(0,1fr));
+  grid-template-columns: repeat(auto-fit,minmax(150px,1fr));
   gap: 0;
 }
 .aurynGlass .nativeBusiness .au-facts>div {
@@ -1498,8 +1468,8 @@ body:has(.aurynAppShell) {
   gap: 6px;
   padding: 8px 12px;
   min-height: 40px;
-  background: var(--a-card);
-  border: 1px solid var(--a-line);
+  background: transparent;
+  border: 1px solid transparent;
   border-radius: 8px;
   color: var(--a-muted);
   font-size: 13px;
@@ -1507,7 +1477,7 @@ body:has(.aurynAppShell) {
 .aurynGlass .au-chip[aria-pressed=true] {
   background: var(--a-pale);
   color: var(--a-blue);
-  border-color: var(--a-blue);
+  border-color: transparent;
 }
 .aurynGlass .au-segment,.aurynGlass .uxSegment {
   display: flex;
@@ -1991,23 +1961,6 @@ body:has(.aurynAppShell) {
   .aurynGlass .au-content {
     padding: 16px 14px calc(106px + env(safe-area-inset-bottom,0px));
   }
-  .aurynGlass .au-stockhead {
-    grid-template-columns: minmax(0,1fr) auto;
-    gap: 10px;
-    margin-bottom: 14px;
-    align-items: flex-start;
-  }
-  .aurynGlass .au-stockhead>.au-security {
-    grid-column: 1/-1;
-  }
-  .aurynGlass .au-stockhead>.glassStockControls {
-    grid-column: 2;
-    grid-row: 2;
-  }
-  .aurynGlass .au-stockhead>.au-quote {
-    grid-column: 1;
-    grid-row: 2;
-  }
   .aurynGlass .au-stockhead h1 {
     font-size: 22px;
     letter-spacing: -.4px;
@@ -2043,28 +1996,6 @@ body:has(.aurynAppShell) {
     font-size: 10px;
     margin-top: 2px;
     max-width: 220px;
-  }
-  .aurynGlass .glassStockControls {
-    margin: 0;
-    gap: 6px;
-  }
-  .aurynGlass .glassHorizon {
-    font-size: 11px;
-    gap: 4px;
-  }
-  .aurynGlass .glassHorizon select {
-    font-size: 16px;
-    max-width: 132px;
-    min-height: 38px;
-    padding: 5px 6px;
-  }
-  .aurynGlass .glassStockActions {
-    gap: 6px;
-  }
-  .aurynGlass .glassStockActions .au-btn {
-    font-size: 12px;
-    padding: 9px 12px;
-    min-height: 44px;
   }
   .aurynGlass .nativeDecision {
     gap: 9px;
@@ -2170,7 +2101,7 @@ body:has(.aurynAppShell) {
     height: 44px;
   }
   .aurynGlass .glassPricePlot {
-    height: 205px;
+    height: 210px;
   }
   .aurynGlass .au-ranges {
     gap: 2px;
@@ -2194,9 +2125,9 @@ body:has(.aurynAppShell) {
     font-size: 10px;
   }
   .aurynGlass .nativeTiming {
-    display: none;
+    display: block;
   }
-  /* Same support/reclaim evidence is in Technicals and chart; no duplicate call on mobile. */
+
   .aurynGlass .nativeBusiness {
     padding: 12px 10px;
     margin-top: 12px;
@@ -6803,8 +6734,8 @@ body:has(.aurynAppShell) {
 .glassPortfolioHistory>svg {
   display: block;
   width: 100%;
-  height: 170px;
-  max-height: 170px;
+  height: 130px;
+  max-height: 130px;
 }
 .glassPortfolioHistory .au-empty {
   padding: 22px;
@@ -7062,6 +6993,7 @@ body:has(.aurynAppShell) {
   max-height: 240px;
 }
 .authPage {
+  grid-template-columns: minmax(0,1fr);
   min-height: 100dvh;
   display: grid;
   place-items: center;
@@ -7069,6 +7001,7 @@ body:has(.aurynAppShell) {
   background: radial-gradient(ellipse at top,var(--a-pale),transparent 60%),var(--a-bg);
 }
 .authPage .au-auth {
+  min-width: 0;
   margin: 0;
 }
 .authPage .au-brand {
@@ -7333,15 +7266,6 @@ body:has(.aurynAppShell) {
   margin: 20px 0 10px;
 }
 @media(min-width:751px) {
-  .glassStockControls {
-    max-width: 220px;
-  }
-  .glassHorizon {
-    justify-content: flex-end;
-  }
-  .aurynGlass .au-stockhead {
-    column-gap: 20px;
-  }
   .portfolioLayout:has(.pmHoldingsTable) {
     grid-template-columns: minmax(0,1fr);
   }
@@ -7432,47 +7356,12 @@ body:has(.aurynAppShell) {
   .aurynGlass .au-head p {
     font-size: 12px;
   }
-  .aurynGlass .au-head>.au-btn:has(svg) {
-    padding: 8px;
-    font-size: 0;
-    min-width: 44px;
-    flex-shrink: 0;
-  }
   .aurynGlass .au-head>.au-btn svg {
     width: 18px;
     height: 18px;
   }
   .aurynGlass .au-head>div {
     min-width: 0;
-  }
-  .aurynGlass .au-stockhead>.au-security {
-    grid-column: 1/-1;
-    grid-row: 1;
-  }
-  .aurynGlass .au-stockhead>.au-quote {
-    grid-column: 1;
-    grid-row: 2;
-  }
-  .aurynGlass .au-stockhead>.glassStockControls {
-    grid-column: 2;
-    grid-row: 2;
-    display: flex;
-    align-items: end;
-  }
-  .aurynGlass .glassStockControls {
-    gap: 10px;
-  }
-  .aurynGlass .glassHorizon {
-    font-size: 0;
-  }
-  .aurynGlass .glassHorizon select {
-    max-width: 132px;
-    min-height: 44px;
-    padding: 6px 8px;
-    font-size: 16px;
-  }
-  .aurynGlass .glassStockActions .au-btn {
-    min-height: 44px;
   }
   .aurynGlass .glassPriceTime {
     max-width: 100%;
@@ -7596,3 +7485,153 @@ body:has(.aurynAppShell) {
 .uxSpinner{width:28px;height:28px;border:3px solid var(--a-line);border-top-color:var(--a-blue);border-radius:50%;animation:auryn-spin 1s linear infinite}
 
 .paperReview>button{margin:6px 8px 0 0}
+
+/* Stock header: one identity row and one compact toolbar at every width. */
+
+.aurynGlass .au-stockhead {display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:14px 24px;margin:0 0 18px}
+
+.aurynGlass .glassStockControls {grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:10px;border-top:1px solid var(--a-line);margin:0;max-width:none}
+
+.aurynGlass .glassHorizon {display:flex;align-items:center;gap:10px;color:var(--a-muted);font-size:12px;white-space:nowrap}
+
+.aurynGlass .glassHorizon select {min-height:40px;padding:7px 30px 7px 11px;border:1px solid var(--a-line);border-radius:10px;background:var(--a-card);color:var(--a-ink);font-size:13px;max-width:180px}
+
+.aurynGlass .glassStockActions {display:flex;align-items:center;gap:8px}
+
+.aurynGlass .glassStockActions .au-btn {min-height:40px;gap:6px;padding:7px 12px;border-color:transparent;background:var(--a-raised);font-size:12px;border-radius:10px}
+
+.aurynGlass .glassStockActions .au-btn[aria-pressed=true] {color:var(--a-blue);background:var(--a-pale)}
+
+.aurynGlass .glassStockActions svg {flex-shrink:0}
+
+.aurynGlass .nativeDcaContext {grid-column:1/-1;font-size:11px;color:var(--a-muted)}
+
+.technicalReadings {margin:0 0 20px}
+
+.technicalReadings .au-chiprow {display:flex;flex-wrap:nowrap;overflow-x:auto;gap:2px;border-bottom:1px solid var(--a-line);padding:0 0 4px;margin-bottom:12px;scrollbar-width:none}
+
+.technicalReadings .au-chip {white-space:nowrap;flex-shrink:0;min-height:40px;padding:8px 12px;border:0;border-radius:8px;font-size:12px}
+
+.indicatorGrid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--a-line);border-radius:14px;overflow:hidden;background:var(--a-card)}
+
+.indicatorReading {min-width:0;padding:14px 16px;border-bottom:1px solid var(--a-line);border-right:1px solid var(--a-line)}
+
+.indicatorReading h3 {font-size:12px;font-weight:500;color:var(--a-muted)}
+
+.indicatorReading .au-metric {font-size:23px;letter-spacing:-.5px;margin-top:4px}
+
+.indicatorReading .au-pill {font-size:10px;padding:3px 6px;white-space:nowrap}
+
+.indicatorReading .au-row {gap:6px;align-items:center}
+
+.indicatorReading .metricHelpButton {flex-shrink:0}
+
+.technicalDetails {display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+
+.technicalDetails .au-stack {display:grid;gap:16px;min-width:0}
+
+.technicalDetails .au-table td,.technicalDetails .au-table th {padding:10px 12px}
+
+.technicalDetails .au-summary {font-size:13px;line-height:1.6;margin:7px 0 12px}
+
+.technicalMethod {border-top:1px solid var(--a-line);margin-top:16px;padding:0 2px}
+
+.technicalMethod>summary {padding:14px 0;color:var(--a-muted);font-size:12px}
+
+.aurynGlass .weeklyChartPanel {margin-top:16px}
+
+.aurynGlass .weeklyChartPanel .glassWeeklyCanvas {height:260px;min-height:0}
+
+.aurynGlass .weeklyChartPanel .chartCanvas,.aurynGlass .weeklyChartPanel .priceChartFrame {height:100%;min-height:0}
+
+.valuationPending {margin-top:16px;max-width:800px}
+
+.helpSearch {display:flex;align-items:center;gap:12px;width:100%;margin:20px 0;background:var(--a-card);border:1px solid var(--a-line);border-radius:12px;padding:0 14px}
+
+.helpSearch>svg {color:var(--a-muted);flex-shrink:0}
+
+.helpSearch input {flex:1;width:100%;border:0!important;background:transparent!important;outline:none}
+
+.helpSearch:focus-within {outline:2px solid var(--a-blue);outline-offset:2px}
+
+.aurynGlass .refreshAction {min-height:40px;padding:8px 11px;border:0;background:var(--a-raised);font-size:12px;border-radius:10px;white-space:nowrap;flex-shrink:0}
+
+.overviewEvidence {display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:18px 0;padding:18px 0;border-top:1px solid var(--a-line)}
+
+.overviewEvidence h3 {font-size:13px;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+
+.overviewEvidence p {font-size:13px;line-height:1.65;color:var(--a-muted);margin:0}
+
+.overviewEvidence .au-link {font-size:12px}
+
+.aurynGlass .au-btn:hover:enabled,.aurynGlass .au-icon:hover:enabled {background:var(--a-raised)}
+
+.aurynGlass .au-primary:hover:enabled {background:var(--a-blue);filter:brightness(1.08)}
+
+button:focus-visible,a:focus-visible,select:focus-visible {outline:2px solid var(--a-blue);outline-offset:3px}
+
+[hidden] {display:none!important}
+
+@media(max-width:750px) {
+ .aurynGlass .au-stockhead {grid-template-columns:1fr;gap:10px;margin-bottom:16px}
+ .aurynGlass .au-stockhead>.au-security,.aurynGlass .au-stockhead>.au-quote {grid-column:1;grid-row:auto}
+ .aurynGlass .glassStockControls {gap:8px;padding-top:8px;flex-wrap:wrap}
+ .aurynGlass .glassHorizon {gap:7px;font-size:11px}
+ .aurynGlass .glassHorizon select {font-size:16px;min-height:44px;max-width:155px;padding:7px 8px}
+ .aurynGlass .glassStockActions {gap:4px;margin-left:auto}
+ .aurynGlass .glassStockActions .au-btn {min-height:44px;padding:8px;font-size:12px}
+ .aurynGlass .nativeDcaContext,.aurynGlass .nativeDcaDate {font-size:10px;line-height:1.45}
+ .aurynGlass .nativeDca p {font-size:11px}
+ .indicatorGrid {grid-template-columns:repeat(2,minmax(0,1fr))}
+ .indicatorReading {padding:12px 10px}
+ .indicatorReading .au-metric {font-size:21px}
+ .indicatorReading h3 {font-size:11px}
+ .technicalReadings .au-chip {min-height:44px;padding:9px 10px}
+ .technicalDetails {grid-template-columns:1fr;gap:12px}
+ .aurynGlass .weeklyChartPanel .glassWeeklyCanvas {height:230px}
+ .overviewEvidence {grid-template-columns:1fr;gap:16px;padding:14px 0}
+ .aurynGlass .refreshAction {min-height:44px;font-size:12px;padding:8px 10px}
+ .aurynGlass .au-head:has(.refreshAction) {align-items:center}
+ .aurynGlass .nativeBusiness .au-facts {grid-template-columns:repeat(auto-fit,minmax(100px,1fr))}
+ .aurynGlass .nativeBusiness .au-facts>div {grid-template-columns:1fr;padding:10px 8px}
+ .aurynGlass .nativeBusiness .sparklineWrap {grid-column:1;grid-row:3;width:100%;height:36px;margin-top:6px}
+}
+
+@media(prefers-reduced-motion:reduce) {*,*::before,*::after {animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+.researchQualityRow {display:flex;flex-wrap:wrap;gap:20px 32px;padding:18px 0;margin-bottom:18px;border-bottom:1px solid var(--a-line)}
+.researchQualityRow>span {display:flex;gap:10px;align-items:center;color:var(--a-muted);font-size:12px}
+.researchQualityRow strong {font-size:18px;color:var(--a-ink);font-variant-numeric:tabular-nums}
+.overviewEvidence:has(>div:only-child) {grid-template-columns:1fr}
+.au-two:has(>.au-panel:only-child) {grid-template-columns:1fr}
+@media(max-width:750px) {
+ .aurynGlass [data-auryn-section="financials"]>.au-head {flex-wrap:wrap;align-items:center;gap:12px}
+ .aurynGlass [data-auryn-section="financials"]>.au-head>.au-segment {flex-wrap:nowrap;flex-shrink:0}
+ .aurynGlass .nativeTiming .nativeLevelRows {display:grid;grid-template-columns:1fr 1fr;gap:12px}
+ .aurynGlass .nativeTiming .nativeLevelRows button {padding:10px 0}
+ .aurynGlass .nativeTiming .nativeLevelRows button>span {font-size:11px}
+ .aurynGlass .nativeTiming .nativeLevelRows strong {font-size:15px}
+ .aurynGlass .nativeTiming h3 {font-size:13px}
+ .aurynGlass .glassPortfolioHistory>svg {height:115px;max-height:115px}
+}
+
+@media(max-width:360px) {
+ .authPage .au-auth {padding:20px}
+ .authPage .uxSegment {display:grid;grid-template-columns:minmax(0,1fr)}
+ .authPage .uxSegment button {min-height:44px}
+}
+
+.financialChartLegend {display:flex;gap:18px;flex-wrap:wrap;margin:4px 0 12px;color:var(--a-muted);font-size:12px}
+.financialChartLegend>span {display:inline-flex;align-items:center;gap:7px}
+.financialChartLegend i {width:9px;height:9px;border-radius:3px;background:var(--auryn-accent)}
+.financialChartLegend>span+span i {background:#abc1ef}
+@media(max-width:750px) {
+ .aurynGlass .financialHighlights {grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+ .aurynGlass .financialHighlights .au-panel {padding:12px 9px;border-radius:10px}
+ .aurynGlass .financialHighlights .au-small {font-size:10px;line-height:1.5}
+ .aurynGlass .financialHighlights .au-small:first-child {min-height:32px}
+ .aurynGlass .financialHighlights .au-metric {font-size:20px;margin-top:7px;letter-spacing:-.7px}
+ .aurynGlass .financialHighlights .glassFinancialSpark {height:32px;margin-top:8px}
+ .aurynGlass .financialHighlights .researchSparkline {height:28px}
+}
+@media(max-width:360px) {.aurynGlass .financialHighlights .au-metric {font-size:17px}}

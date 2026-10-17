@@ -19,7 +19,14 @@ export default function PriceChart({candles,levels,showTrend=false,confluence,ov
   const chart=createChart(el.current,{width:el.current.clientWidth,height:Math.max(120,el.current.clientHeight),localization:{locale:"en-US"},layout:{fontSize:11},rightPriceScale:{minimumWidth:54},handleScroll:{mouseWheel:false,pressedMouseMove:true,horzTouchDrag:false,vertTouchDrag:false},handleScale:{mouseWheel:false,pinch:false,axisPressedMouseMove:false,axisDoubleClickReset:false},timeScale:{secondsVisible:false,rightOffset:3,barSpacing:6}});
   chartRef.current=chart;
   chart.timeScale().subscribeVisibleLogicalRangeChange(paintBand);
-  const resize=new ResizeObserver(()=>{if(el.current)chart.applyOptions({width:el.current.clientWidth,height:Math.max(120,el.current.clientHeight)});requestAnimationFrame(paintBand)});resize.observe(el.current);
+  let lastWidth=el.current.clientWidth;
+  const resize=new ResizeObserver(()=>{
+   const node=el.current;if(!node||node.clientWidth===0)return;
+   const changed=node.clientWidth!==lastWidth;lastWidth=node.clientWidth;
+   chart.applyOptions({width:node.clientWidth,height:Math.max(120,node.clientHeight)});
+   if(changed&&!dataRef.current.userAdjusted&&dataRef.current.series)chart.timeScale().fitContent();
+   requestAnimationFrame(paintBand);
+  });resize.observe(el.current);
   const change=()=>setAppearance(x=>x+1),storage=(e:StorageEvent)=>{if(e.key?.startsWith('auryn-')&&/theme|accent|chart-style/.test(e.key))change();};
   window.addEventListener('auryn-appearance',change);window.addEventListener('storage',storage);
   return()=>{resize.disconnect();window.removeEventListener('auryn-appearance',change);window.removeEventListener('storage',storage);chartRef.current=null;dataRef.current={series:null,volume:null,studies:new Map(),lines:[],style:null,signature:null,range:null};chart.remove();};
