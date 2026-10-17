@@ -4,6 +4,7 @@ import fs from "node:fs";
 import ts from "typescript";
 import { createRequire } from "node:module";
 import { cashFlowValue } from "../lib/engine.ts";
+import { valuationScale } from "../lib/research-summary.ts";
 const require = createRequire(import.meta.url);
 // Execute the real valuation component and its button callback. The React hook
 // transport records state updates; no DOM, provider or paid request is involved.
@@ -21,9 +22,12 @@ const ast = ts.createSourceFile(
 const declaration = ast.statements.find(
   (n) => ts.isFunctionDeclaration(n) && n.name?.text === "Valuation",
 );
-const code = ts.transpileModule(declaration.getText(ast).replace("export default ", ""), {
-  compilerOptions: { jsx: ts.JsxEmit.React, module: ts.ModuleKind.CommonJS },
-}).outputText;
+const code = ts.transpileModule(
+  declaration.getText(ast).replace("export default ", ""),
+  {
+    compilerOptions: { jsx: ts.JsxEmit.React, module: ts.ModuleKind.CommonJS },
+  },
+).outputText;
 function walk(node, predicate) {
   if (!node || typeof node !== "object") return null;
   if (predicate(node)) return node;
@@ -72,6 +76,7 @@ test("selecting the Bear scenario loads the exact assumptions behind its display
     "SpecializedScenario",
     "reverseGrowth",
     "TriangleAlert",
+    "valuationScale",
     code + "; return Valuation;",
   )(
     require("react"),
@@ -86,6 +91,7 @@ test("selecting the Bear scenario loads the exact assumptions behind its display
     empty,
     empty,
     empty,
+    valuationScale,
   );
   const tree = component({
     research: { quote: { price: 80, currency: "USD" } },
@@ -103,7 +109,7 @@ test("selecting the Bear scenario loads the exact assumptions behind its display
     bear.value,
   );
 });
-test("the displayed scenario bounds do not change when the quote is above Bull", () => {
+test("a quote above all examples appears outside their band on the same numeric axis", () => {
   const empty = () => null;
   const component = new Function(
     "React",
@@ -118,6 +124,7 @@ test("the displayed scenario bounds do not change when the quote is above Bull",
     "SpecializedScenario",
     "reverseGrowth",
     "TriangleAlert",
+    "valuationScale",
     code + "; return Valuation;",
   )(
     require("react"),
@@ -140,12 +147,19 @@ test("the displayed scenario bounds do not change when the quote is above Bull",
     empty,
     empty,
     empty,
+    valuationScale,
   );
   const tree = component({
     research: { quote: { price: 300, currency: "USD" } },
   });
   const labels = walk(tree, (n) => n.props.className === "valuation-labels");
-  assert.equal(labels.props.children.at(-1).props.children, "120");
+  assert.ok(Number(labels.props.children.at(-1).props.children) > 300);
   const pin = walk(tree, (n) => n.props.className === "value-pin");
-  assert.ok(Number.parseFloat(pin.props.style.left) <= 95);
+  const band = walk(tree, (n) => n.props.className === "valuation-band");
+  assert.ok(band);
+  assert.ok(
+    Number.parseFloat(pin.props.style.left) >
+      Number.parseFloat(band.props.style.left) +
+        Number.parseFloat(band.props.style.width),
+  );
 });

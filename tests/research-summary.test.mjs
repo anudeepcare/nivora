@@ -102,3 +102,35 @@ test("financial case treats absence as missing evidence and never manufactures a
       .risks.some((s) => s.key === "fcf"),
   );
 });
+
+test("small net debt is contextualized against cash generation instead of automatically becoming a bear case", () => {
+  const c = m.financialCase({ ...period, fcf: 4.5e9, netDebt: 461.8e6 }, null);
+  assert.ok(!c.risks.some((x) => x.key === "debt"));
+  const debt = c.context.find((x) => x.key === "debt");
+  assert.ok(debt);
+  assert.match(debt.text, /0\.10×/);
+});
+
+test("cash-consuming businesses retain a debt funding warning", () => {
+  const c = m.financialCase({ ...period, fcf: -100, netDebt: 461.8 }, null);
+  assert.ok(c.risks.some((x) => x.key === "debt"));
+});
+
+test("positive net income cannot hide operating losses in the financial case", () => {
+  const c = m.financialCase(
+    { ...period, netIncome: 430.8, operatingIncome: -303.9, margin: -31 },
+    null,
+  );
+  assert.ok(c.risks.some((x) => x.key === "earnings-quality"));
+});
+
+test("valuation scale puts the quote beyond the scenario band when the quote exceeds every scenario", () => {
+  const s = m.valuationScale([83.05, 137.27, 190.41], 266.13);
+  assert.ok(s);
+  assert.ok(s.quotePosition > s.highPosition);
+  assert.ok(s.max > 266.13);
+  assert.equal(s.low, 83.05);
+  assert.equal(s.high, 190.41);
+  assert.equal(m.valuationScale([83, NaN], 266), null);
+  assert.equal(m.valuationScale([83, 190], -1), null);
+});

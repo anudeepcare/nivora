@@ -4,10 +4,10 @@ import type { Research as ResearchData } from "@/lib/types";
 import { valuationInputs } from "@/lib/analysis";
 import { cashFlowValue } from "@/lib/engine";
 import { reverseGrowth } from "@/lib/research-depth";
+import { valuationScale } from "@/lib/research-summary";
 import { amount, dateLabel, percent } from "@/lib/format";
 import { Help, Notice } from "./Ui";
 import { TriangleAlert } from "lucide-react";
-import SpecializedScenario from "./SpecializedScenario";
 export default function Valuation({ research: r }: { research: ResearchData }) {
   const input = valuationInputs(r),
     [growth, setGrowth] = useState(0),
@@ -72,7 +72,7 @@ export default function Valuation({ research: r }: { research: ResearchData }) {
         <>
           <section className="panel">
             <div className="section-heading">
-              <h2>Cash-flow sensitivity</h2>
+              <h2>Cash-flow examples</h2>
               <Help label="Sensitivity assumptions">
                 These −5%, 0% and +5% growth settings are calculator examples,
                 not company forecasts or AURYN bear/base/bull price targets.
@@ -85,22 +85,26 @@ export default function Valuation({ research: r }: { research: ResearchData }) {
             {r.quote.price != null &&
               input.scenarios.every((s) => s.value != null) &&
               (() => {
-                const values = input.scenarios.map((s) => s.value!),
-                  low = Math.min(...values),
-                  high = Math.max(...values);
-                const left =
-                  high > low
-                    ? Math.max(
-                        5,
-                        Math.min(
-                          95,
-                          5 + (90 * (r.quote.price! - low)) / (high - low),
-                        ),
-                      )
-                    : 50;
+                const scale = valuationScale(
+                  input.scenarios.map((s) => s.value!),
+                  r.quote.price!,
+                );
+                if (!scale) return null;
+                const left = scale.quotePosition;
                 return (
                   <>
-                    <div className="valuation-track">
+                    <div
+                      className="valuation-track"
+                      aria-label="Quote and example estimates on the same price scale"
+                    >
+                      <span
+                        className="valuation-band"
+                        aria-hidden="true"
+                        style={{
+                          left: `${scale.lowPosition}%`,
+                          width: `${scale.highPosition - scale.lowPosition}%`,
+                        }}
+                      />
                       <i
                         className="valuation-marker"
                         style={{ left: `${left}%` }}
@@ -118,18 +122,14 @@ export default function Valuation({ research: r }: { research: ResearchData }) {
                                 : "translateX(-50%)",
                         }}
                       >
-                        {r.quote.price! > high
-                          ? "Quote · "
-                          : r.quote.price! < low
-                            ? "Quote · "
-                            : "Price "}
+                        {"Current quote · "}
                         {amount(r.quote.price, r.quote.currency)}
                       </span>
                     </div>
                     <div className="valuation-labels">
-                      <span>{amount(low, r.quote.currency)}</span>
-                      <span>Illustrative range · not fair value</span>
-                      <span>{amount(high, r.quote.currency)}</span>
+                      <span>{amount(scale.min, r.quote.currency)}</span>
+                      <span>Shaded area: example estimates</span>
+                      <span>{amount(scale.max, r.quote.currency)}</span>
                     </div>
                   </>
                 );
@@ -166,8 +166,11 @@ export default function Valuation({ research: r }: { research: ResearchData }) {
           <section className="panel support">
             <div className="section-heading">
               <div>
-                <h2>Your assumptions</h2>
-                <p>Changes update this scenario immediately.</p>
+                <h2>Explore your assumptions</h2>
+                <p>
+                  This calculator changes only your scenario below. The example
+                  settings above stay fixed.
+                </p>
                 <p>
                   Implied five-year annual FCF growth at this quote:{" "}
                   <b>
@@ -186,9 +189,17 @@ export default function Valuation({ research: r }: { research: ResearchData }) {
                   </b>
                 </p>
               </div>
-              <strong className="scenario-value">
-                {amount(estimate, r.quote.currency)}
-              </strong>
+              <div className="custom-scenario-result">
+                <small>
+                  {selectedScenario
+                    ? "Selected example"
+                    : "Your calculator result"}
+                </small>
+                <strong className="scenario-value">
+                  {amount(estimate, r.quote.currency)}
+                </strong>
+                <small>Based on the four settings below</small>
+              </div>
             </div>
             <div className="assumptions">
               {[
@@ -262,7 +273,7 @@ export default function Valuation({ research: r }: { research: ResearchData }) {
           </p>
         </div>
       )}
-      <SpecializedScenario research={r} />
+
       <p className="footnote">
         These scenarios are sensitivity analyses, not analyst targets or a
         verified valuation verdict. Review business-specific economics and model

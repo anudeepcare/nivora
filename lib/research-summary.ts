@@ -110,11 +110,13 @@ export function financialCase(
 ) {
   const positive: CaseFactor[] = [],
     risks: CaseFactor[] = [],
+    context: CaseFactor[] = [],
     gaps: string[] = [];
   if (!p)
     return {
       positive,
       risks,
+      context,
       gaps: ["Comparable company statements are not available."],
     };
   const growth = comparableGrowth(p, prior);
@@ -137,7 +139,9 @@ export function financialCase(
       unit: "money",
       text:
         p.fcf > 0
-          ? "Positive free cash flow can support reinvestment and financing flexibility."
+          ? p.revenue != null && p.revenue > 0
+            ? `${((p.fcf / p.revenue) * 100).toFixed(1)}% of revenue remained after operating cash flows and reported capital expenditure. Check software investment and lease treatment in the source.`
+            : "Operating cash flow exceeded reported capital expenditure."
           : "Funding and the returns on capital spending need closer review.",
     });
   else
@@ -169,13 +173,34 @@ export function financialCase(
       unit: "ratio",
       text: "Operating earnings cover interest fewer than three times; financing costs matter.",
     });
-  if (p.netDebt != null && p.netDebt > 0)
-    risks.push({
+  if (p.netDebt != null && p.netDebt > 0) {
+    const hasCashGeneration = p.fcf != null && p.fcf > 0;
+    const hasInterestPressure =
+      p.interestCoverage != null && p.interestCoverage < 3;
+    (hasCashGeneration && !hasInterestPressure ? context : risks).push({
       key: "debt",
-      title: "Net debt to service",
+      title: hasCashGeneration
+        ? "Net debt in context"
+        : "Debt and funding needs",
       value: p.netDebt,
       unit: "money",
-      text: "Debt exceeds cash. Maturities, covenants and cash generation determine the burden.",
+      text: hasCashGeneration
+        ? `Net debt is ${(p.netDebt / p.fcf!).toFixed(2)}× this period’s cash after capex. This is a historical comparison, not a debt repayment forecast; maturity and lease obligations still matter.`
+        : "Debt exceeds cash while positive cash after capex is not established. Review financing commitments and maturities.",
+    });
+  }
+  if (
+    p.netIncome != null &&
+    p.netIncome > 0 &&
+    p.operatingIncome != null &&
+    p.operatingIncome < 0
+  )
+    risks.unshift({
+      key: "earnings-quality",
+      title: "Net profit includes non-operating effects",
+      value: p.operatingIncome,
+      unit: "money",
+      text: "Reported net income is positive, but operations are loss-making. Reconcile investment gains, financing, tax and other non-operating items before treating profit as recurring.",
     });
   if (p.currentRatio != null && p.currentRatio < 1)
     risks.push({
@@ -189,5 +214,34 @@ export function financialCase(
     gaps.push("Comparable year-over-year revenue growth is missing.");
   if (p.debt == null)
     gaps.push("Total debt is not available from the mapped facts.");
-  return { positive: positive.slice(0, 3), risks: risks.slice(0, 3), gaps };
+  return { positive: positive.slice(0, 3), risks, context, gaps };
+}
+
+/** A price and scenario range share one numeric axis. Never clamp an
+ * out-of-range quote inside the scenario band. */
+export function valuationScale(values: number[], quote: number) {
+  if (
+    !values.length ||
+    !values.every((v) => Number.isFinite(v) && v >= 0) ||
+    !Number.isFinite(quote) ||
+    quote <= 0
+  )
+    return null;
+  const low = Math.min(...values),
+    high = Math.max(...values);
+  const floor = Math.min(low, quote),
+    ceiling = Math.max(high, quote);
+  const padding = Math.max((ceiling - floor) * 0.1, ceiling * 0.03, 0.01);
+  const min = Math.max(0, floor - padding),
+    max = ceiling + padding;
+  const position = (v: number) => ((v - min) / (max - min)) * 100;
+  return {
+    low,
+    high,
+    min,
+    max,
+    lowPosition: position(low),
+    highPosition: position(high),
+    quotePosition: position(quote),
+  };
 }

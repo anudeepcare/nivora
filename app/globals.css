@@ -16,7 +16,7 @@
 html {
   font-size: var(--base);
   -webkit-text-size-adjust: 100%;
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
   scroll-padding-top: 100px;
 }
 body#auryn-app {
@@ -1012,6 +1012,17 @@ small,
   font-size: 0.75rem;
   margin-top: 3px;
 }
+.investment-company {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.investment-asof {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 28px;
+}
 .investment-price {
   text-align: right;
   font-variant-numeric: tabular-nums;
@@ -1047,6 +1058,9 @@ small,
   white-space: nowrap;
   color: var(--muted);
   font-size: 0.85rem;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
 }
 .watchlist-toolbar input {
   flex: 1;
@@ -1122,6 +1136,12 @@ small,
   color: var(--muted);
   font-size: 0.83rem;
   margin-bottom: 15px;
+}
+.quote-progress > span {
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+  flex-wrap: wrap;
 }
 .company-grid {
   display: grid;
@@ -1428,14 +1448,16 @@ textarea {
 .valuation-track {
   height: 18px;
   border-radius: 8px;
-  background: linear-gradient(
-    90deg,
-    var(--bluewash),
-    var(--tealwash),
-    var(--bluewash)
-  );
+  background: var(--raised);
   position: relative;
   margin: 55px 0 12px;
+}
+.valuation-band {
+  position: absolute;
+  inset-block: 0;
+  border-radius: inherit;
+  background: var(--tealwash);
+  border: 1px solid var(--teal);
 }
 .valuation-marker {
   position: absolute;
@@ -1478,6 +1500,15 @@ textarea {
 .scenario-value {
   font-size: 1.8rem;
   color: var(--blue);
+}
+.custom-scenario-result {
+  display: grid;
+  gap: 4px;
+  text-align: right;
+}
+.custom-scenario-result small {
+  color: var(--muted);
+  font-size: 0.8rem;
 }
 .assumptions {
   display: grid;
@@ -2010,10 +2041,25 @@ textarea {
     max-width: 150px;
   }
   .portfolio-holdings {
-    padding: 18px 14px;
+    padding: 18px 12px;
+  }
+  .portfolio-page {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .portfolio-page .portfolio-top {
+    display: contents;
+  }
+  .portfolio-page .portfolio-allocation {
+    order: 1;
+    margin-top: 18px;
+  }
+  .portfolio-holdings .table-scroll {
+    overflow: visible;
   }
   .holding-quantity {
-    font-size: 0.72rem;
+    display: none;
   }
   .holdings-table {
     min-width: 0;
@@ -2028,44 +2074,84 @@ textarea {
   }
   .holdings-table tbody {
     display: grid;
-    gap: 12px;
+    gap: 0;
   }
   .holdings-table tr {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 10px;
+    grid-template-columns: minmax(0, 1fr) minmax(82px, auto) 44px;
+    grid-template-areas: "identity value actions" "price pnl actions";
+    column-gap: 8px;
+    row-gap: 6px;
     padding: 16px 0;
     border-bottom: 1px solid var(--line);
   }
+  .holdings-table tr:last-child {
+    border-bottom: 0;
+  }
   .holdings-table td {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 8px;
+    display: block;
     border: 0;
     padding: 0;
     min-width: 0;
     white-space: normal;
     font-size: 0.85rem;
+    align-self: center;
   }
-  .holdings-table td:first-child {
-    grid-column: 1/-1;
-    padding-bottom: 4px;
-  }
-  .holdings-table td[data-label]::before {
-    content: attr(data-label);
-    display: block;
-    color: var(--muted);
-    font-size: 0.72rem;
+  .holdings-table .holding-identity-cell {
+    grid-area: identity;
     text-align: left;
-    margin-right: auto;
   }
-  .holdings-table td:last-child {
-    grid-column: 1/-1;
+  .holdings-table .holding-price-cell {
+    grid-area: price;
+    text-align: left;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .holdings-table .holding-price-cell > .holding-metric::before {
+    content: "Price ";
+  }
+  .holdings-table .holding-value-cell {
+    grid-area: value;
+    font-size: 1rem;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+  .holdings-table .holding-pnl-cell {
+    grid-area: pnl;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .holdings-table .holding-pnl-cell::before {
+    content: "Unrealized";
     display: block;
+    font-size: 0.67rem;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+  .holdings-table .holding-actions-cell {
+    grid-area: actions;
+    align-self: start;
+    position: relative;
   }
   .holdings-table .row-actions {
-    justify-content: flex-end;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .holdings-table .remove-confirm {
+    position: absolute;
+    z-index: 2;
+    right: 0;
+    top: 94px;
+    width: min(260px, 70vw);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+    padding: 14px;
+    border-radius: 12px;
+  }
+  .holdings-table .investment-identity {
+    gap: 7px;
   }
   .holdings-table .investment-identity small:last-child {
     max-width: 100%;
@@ -2080,12 +2166,13 @@ textarea {
     font-size: 0.65rem;
   }
   .investment-row {
-    grid-template-columns: minmax(0, 1fr) auto 32px;
+    grid-template-columns: minmax(0, 1fr) auto 44px;
+    min-height: 100px;
+    gap: 8px;
   }
   .investment-row > .icon-button {
-    min-width: 32px;
-    width: 32px;
-    padding: 5px;
+    min-width: 44px;
+    width: 44px;
   }
   .investment-price .data-stamp {
     justify-content: flex-end;

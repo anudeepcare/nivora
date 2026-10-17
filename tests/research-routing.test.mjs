@@ -55,14 +55,11 @@ for (const base of ["BTC", "ETH"]) {
       [`${base}%2FUSD`],
     ]) {
       const tree = component({ route: ["research", ...tail] });
-      assert.equal(
-        tree.props.children.props.children.props.symbol,
-        `${base}/USD`,
-      );
+      assert.equal(tree.props.children.props.symbol, `${base}/USD`);
     }
   });
   test(`explicit ${base} equity route remains a distinct instrument`, () => {
     const tree = component({ route: ["research", base] });
-    assert.equal(tree.props.children.props.children.props.symbol, base);
+    assert.equal(tree.props.children.props.symbol, base);
   });
 }

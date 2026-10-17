@@ -4,6 +4,8 @@
 
 ## Current update
 
+The latest correction moves account/session and shell ownership into the persistent root layout; preserves primary-tab positions and list filters; reduces mobile holdings density; puts allocation after holdings; and stabilizes quote-status changes. APP screenshot repairs correct the valuation-axis geometry and calculator labeling. Earnings-quality checks distinguish positive net income from an operating loss; debt context no longer becomes an automatic bear argument. See verification/RESEARCH_MOBILE_REPAIR_20261017.md. Company-specific valuation models remain incomplete; the research terminal contract is in RESEARCH_TERMINAL_SPEC_20261017.md.
+
 The current source replaces the oversized research takeaway with a compact financial/action summary and explicit conditional buy/hold/trim/sell-review labels. These are original research prompts, not company-specific fair value or executable orders. Current quotes alone cannot validate an obsolete trend; unknown business classification blocks ordinary-company action labels. DCA now shows all 0×–4× zones, six confirmed months and the forming month, with price-only context. See DECISION_GUIDE.md.
 
 Sector/industry metadata now guards bank, insurer, REIT/property and other financial models. Shared Help dialogs no longer generate invalid paragraph nesting; search navigation/ARIA/scrolling, dialog safe areas, mobile holdings, no-match filters and stale comparison results were repaired. Latest TTM/annual labels are consistent in Discover, Compare and AI evidence. The all-route source audit and authenticated reference scope are in verification/UI_CONTROL_AUDIT_20261017.md and verification/REFERENCE_REVIEW_20261017.md.
@@ -23,7 +25,7 @@ Read verification/LIVE_UI_AUDIT_20261017.md for the live audit and HIMS/ValueSna
 
 ## Verification for this update
 
-See verification/REPORT.json, decision-ui-verify.log and decision-ui-api.log for final counts and commands. 124 unit/domain/Postgres/component checks, TypeScript and the optimized production build passed. Compiled-handler tests cover unauthenticated denial, trusted admin controls, crypto identity, SAP reporting currency, shared caching, mixed-provider selection, fallback labels, estimates and dated source links. The tests use fixtures and do not certify paid-provider availability.
+See verification/REPORT.json, research-correction-verify.log and research-correction-api.log for current counts and commands. Compiled-handler tests cover unauthenticated denial, trusted admin controls, crypto identity, SAP reporting currency, shared caching, mixed-provider selection, fallback labels, estimates and dated source links. The tests use fixtures and do not certify paid-provider availability. The earlier decision-ui logs describe the preceding source version.
 
 The new adapter also parsed the official public AAPL demo into 3,447 normalized financial observations, 50 estimate records, 20 earnings records and 12 holder records. This validates the retrieved response shape against the adapter, not the paid account, accuracy of each field or full watchlist coverage.
 

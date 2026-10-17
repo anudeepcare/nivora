@@ -114,6 +114,23 @@ export function decisionGuide(r: Research, p = perspective(r)) {
         "Persistent losses, cash outflows and declining revenue warrant reviewing whether the original thesis still holds.",
         "negative",
       );
+    } else if (
+      last!.netIncome != null &&
+      last!.netIncome > 0 &&
+      last!.operatingIncome != null &&
+      last!.operatingIncome < 0
+    ) {
+      buying = step(
+        "earnings-quality",
+        "Check earnings quality",
+        "Net income is positive while operations report a loss. Reconcile the non-operating items before treating earnings as sustainable.",
+        "caution",
+      );
+      owning = step(
+        "review",
+        "Review core earnings",
+        "Separate operating results from investment, financing and tax effects in the latest report.",
+      );
     } else if (extended) {
       buying = step(
         "wait",
@@ -173,6 +190,6 @@ export function decisionGuide(r: Research, p = perspective(r)) {
     valuationEstablished: false as const,
     financialPeriod: last?.end ?? null,
     priceAsOf: r.quote.asOf,
-    version: "decision-guide-v1",
+    version: "decision-guide-v1.1",
   };
 }

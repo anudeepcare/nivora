@@ -49,6 +49,16 @@ export default function Product({
   compareSymbols?: string;
 }) {
   const page = route[0] || "overview";
+  // Only the localhost-only design preview owns a page-level session.
+  // Real account sessions are retained by AppSession in the root layout.
+  const frame = (content: React.ReactNode) =>
+    demo ? (
+      <ProductSession demo={demo}>
+        <Shell page={page}>{content}</Shell>
+      </ProductSession>
+    ) : (
+      <>{content}</>
+    );
   let researchSymbol = "";
   if (page === "research" && route[1]) {
     try {
@@ -56,57 +66,49 @@ export default function Product({
         decodeURIComponent(route.slice(1).join("/")),
       );
     } catch {
-      return (
-        <ProductSession demo={demo}>
-          <Shell page={page}>
-            <p role="alert">
-              This instrument link is invalid. Search for the company or crypto
-              pair again.
-            </p>
-          </Shell>
-        </ProductSession>
+      return frame(
+        <p role="alert">
+          This instrument link is invalid. Search for the company or crypto pair
+          again.
+        </p>,
       );
     }
   }
-  return (
-    <ProductSession demo={demo}>
-      <Shell page={page}>
-        {page === "research" ? (
-          route[1] ? (
-            <Research key={researchSymbol} symbol={researchSymbol} />
-          ) : (
-            <WorkspaceGate>
-              <ResearchHome />
-            </WorkspaceGate>
-          )
-        ) : page === "portfolio" ? (
-          <WorkspaceGate>
-            <Portfolio />
-          </WorkspaceGate>
-        ) : page === "watchlist" ? (
-          <WorkspaceGate>
-            <Watchlist />
-          </WorkspaceGate>
-        ) : page === "settings" ? (
-          <Settings />
-        ) : page === "compare" ? (
-          <Compare initialSymbols={compareSymbols} />
-        ) : page === "alerts" ? (
-          <Alerts />
-        ) : page === "research-lab" ? (
-          <ResearchLab />
-        ) : page === "trading" ? (
-          <Trading />
-        ) : page === "discover" ? (
-          <Discover />
-        ) : page === "help" ? (
-          <HelpPage />
-        ) : (
-          <WorkspaceGate>
-            <Overview />
-          </WorkspaceGate>
-        )}
-      </Shell>
-    </ProductSession>
+  return frame(
+    page === "research" ? (
+      route[1] ? (
+        <Research key={researchSymbol} symbol={researchSymbol} />
+      ) : (
+        <WorkspaceGate>
+          <ResearchHome />
+        </WorkspaceGate>
+      )
+    ) : page === "portfolio" ? (
+      <WorkspaceGate>
+        <Portfolio />
+      </WorkspaceGate>
+    ) : page === "watchlist" ? (
+      <WorkspaceGate>
+        <Watchlist />
+      </WorkspaceGate>
+    ) : page === "settings" ? (
+      <Settings />
+    ) : page === "compare" ? (
+      <Compare initialSymbols={compareSymbols} />
+    ) : page === "alerts" ? (
+      <Alerts />
+    ) : page === "research-lab" ? (
+      <ResearchLab />
+    ) : page === "trading" ? (
+      <Trading />
+    ) : page === "discover" ? (
+      <Discover />
+    ) : page === "help" ? (
+      <HelpPage />
+    ) : (
+      <WorkspaceGate>
+        <Overview />
+      </WorkspaceGate>
+    ),
   );
 }

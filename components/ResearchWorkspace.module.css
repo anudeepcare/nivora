@@ -225,6 +225,53 @@
 .caseRisk {
   border-color: var(--amber);
 }
+.evidenceCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+.evidenceCard {
+  min-width: 0;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+.evidenceCard > small {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  margin-bottom: 10px;
+}
+.evidenceCard[data-tone="positive"] > small {
+  color: var(--teal);
+}
+.evidenceCard[data-tone="risk"] > small {
+  color: var(--amber);
+}
+.evidenceCard > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.evidenceCard h3 {
+  font-size: 0.94rem;
+  font-weight: 500;
+}
+.evidenceCard strong {
+  font-size: 1.2rem;
+  font-weight: 550;
+  font-variant-numeric: tabular-nums;
+}
+.evidenceCard p {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
 .case h3 {
   display: flex;
   align-items: center;

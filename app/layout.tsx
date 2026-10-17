@@ -1,4 +1,5 @@
 import Pwa from "@/components/Pwa";
+import AppSession from "@/components/AppSession";
 import type { Metadata, Viewport } from "next";
 import "./approved-design.css";
 import "./globals.css";
@@ -27,7 +28,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body id="auryn-app">
         <Pwa />
-        {children}
+        <AppSession>{children}</AppSession>
       </body>
     </html>
   );

@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
-import { ShieldAlert, TrendingUp } from "lucide-react";
+import { ShieldAlert, TrendingUp, Info } from "lucide-react";
 import type { Research } from "@/lib/types";
 import { perspective, latestFinancialEvidence } from "@/lib/analysis";
 import { researchPeriods } from "@/lib/financial-catalog";
@@ -113,7 +113,7 @@ export function InvestmentCase({ research: r }: { research: Research }) {
     <section>
       <header className={s.heading}>
         <div>
-          <h2>The investment case</h2>
+          <h2>Financial strengths & risks</h2>
           <p>
             {evidence.periodBasis} evidence · {dateLabel(last?.end)}
           </p>
@@ -122,50 +122,43 @@ export function InvestmentCase({ research: r }: { research: Research }) {
           Source details
         </Source>
       </header>
-      <div className={s.cases}>
+      <div className={s.evidenceCards}>
         {[
-          {
-            title: "Supports the bull case",
-            items: c.positive,
-            icon: TrendingUp,
-            risk: false,
-          },
-          {
-            title: "Challenges the bull case",
-            items: c.risks,
-            icon: ShieldAlert,
-            risk: true,
-          },
-        ].map(({ title, items, icon: Icon, risk }) => (
-          <article
-            className={`${s.case} ${risk ? s.caseRisk : ""}`}
-            key={title}
-          >
-            <h3>
-              <Icon size={18} />
-              {title}
-            </h3>
-            {items.length ? (
-              items.map((f) => (
-                <div className={s.factor} key={f.key}>
-                  <b>{f.title}</b>
-                  <strong>
-                    {f.unit === "percent"
-                      ? percent(f.value)
-                      : f.unit === "ratio"
-                        ? `${f.value.toFixed(1)}×`
-                        : amount(f.value, last?.currency, true)}
-                  </strong>
-                  <p>{f.text}</p>
-                </div>
-              ))
-            ) : (
-              <p className={s.empty}>
-                {risk
-                  ? "No additional risk factor was established by these limited financial rules. This does not establish that the investment is low risk."
-                  : "The available financial evidence does not establish a positive case yet."}
-              </p>
-            )}
+          ...c.positive.map((f) => ({
+            ...f,
+            tone: "positive",
+            label: "Strength",
+            Icon: TrendingUp,
+          })),
+          ...c.risks.map((f) => ({
+            ...f,
+            tone: "risk",
+            label: "Risk to assess",
+            Icon: ShieldAlert,
+          })),
+          ...c.context.map((f) => ({
+            ...f,
+            tone: "context",
+            label: "Balance sheet",
+            Icon: Info,
+          })),
+        ].map(({ Icon, ...f }) => (
+          <article className={s.evidenceCard} data-tone={f.tone} key={f.key}>
+            <small>
+              <Icon size={15} aria-hidden="true" />
+              {f.label}
+            </small>
+            <div>
+              <h3>{f.title}</h3>
+              <strong>
+                {f.unit === "percent"
+                  ? percent(f.value)
+                  : f.unit === "ratio"
+                    ? `${f.value.toFixed(1)}×`
+                    : amount(f.value, last?.currency, true)}
+              </strong>
+            </div>
+            <p>{f.text}</p>
           </article>
         ))}
       </div>
@@ -173,9 +166,8 @@ export function InvestmentCase({ research: r }: { research: Research }) {
         <p className={s.caption}>Evidence gaps: {c.gaps.join(" ")}</p>
       )}
       <p className={s.caption}>
-        Moat, management quality and future catalysts require company
-        disclosures beyond these ratios. These factors do not constitute a
-        complete thesis.
+        Financial evidence only. Business moat, catalysts and valuation are
+        separate parts of the research.
       </p>
     </section>
   );

@@ -378,6 +378,19 @@ export function useResource<T>(key: string | null, preview?: T, ttl = 60_000) {
     refresh,
   };
 }
+// Small view preferences stay in this account's memory, not in URLs or storage.
+export function useWorkspaceFilter(view: "watchlist" | "portfolio") {
+  const { cache } = useProduct();
+  const key = `view:${view}:filter`;
+  const [query, update] = useState(
+    () => (cache.get(key)?.value as string) || "",
+  );
+  const setQuery = (value: string) => {
+    cache.set(key, { at: Date.now(), value });
+    update(value);
+  };
+  return [query, setQuery] as const;
+}
 function Login({ initialError }: { initialError: string }) {
   const [email, setEmail] = useState(""),
     [password, setPassword] = useState(""),

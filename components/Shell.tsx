@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import {
   Home,
   ChartNoAxesCombined,
@@ -31,6 +31,28 @@ export default function Shell({
 }) {
   const { demo, workspace, theme, setTheme } = useProduct();
   const pathname = usePathname();
+  const tabOffsets = useRef(new Map<string, number>());
+  const tabDestination = useRef<string | null>(null);
+  useLayoutEffect(() => {
+    if (tabDestination.current === pathname) {
+      window.scrollTo({
+        top: tabOffsets.current.get(pathname) ?? 0,
+        left: 0,
+        behavior: "instant",
+      });
+      tabDestination.current = null;
+    }
+    // Also remember position when leaving a list through a company link.
+    if (
+      !primary.some(
+        (r) => pathname === `/${r.path}` || pathname === `/preview/${r.path}`,
+      )
+    )
+      return;
+    const remember = () => tabOffsets.current.set(pathname, window.scrollY);
+    window.addEventListener("scroll", remember, { passive: true });
+    return () => window.removeEventListener("scroll", remember);
+  }, [pathname]);
   const prefix = demo ? "/preview" : "",
     search = useRef<HTMLDialogElement>(null);
   useEffect(() => {
@@ -55,6 +77,16 @@ export default function Shell({
       <Link
         key={r.path}
         href={`${prefix}/${r.path}`}
+        scroll={false}
+        onNavigate={(event) => {
+          const destination = `${prefix}/${r.path}`;
+          if (destination === pathname) {
+            event.preventDefault();
+            return;
+          }
+          tabOffsets.current.set(pathname, window.scrollY);
+          tabDestination.current = destination;
+        }}
         className="nav-item"
         aria-label={r.label}
         title={r.label}

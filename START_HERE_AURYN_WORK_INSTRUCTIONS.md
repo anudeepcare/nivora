@@ -4,6 +4,8 @@ This archive contains the complete standalone application source, tests, assets,
 
 ## Current update — action clarity and control repairs
 
+Latest follow-up: read verification/RESEARCH_MOBILE_REPAIR_20261017.md and docs/RESEARCH_TERMINAL_SPEC_20261017.md. The root layout now retains the account session and shell between routes; mobile holdings, tab scroll memory and quote status were revised. APP valuation-marker geometry and earnings/debt interpretation were corrected. These source changes still need rendered and physical-iPhone acceptance. The 11-instrument quote check is not a completed fundamental/model comparison.
+
 Read docs/DECISION_GUIDE.md, verification/UI_CONTROL_AUDIT_20261017.md and verification/REFERENCE_REVIEW_20261017.md. The first research screen now has a compact financial/action summary instead of the large text takeaway. Conditional buy/hold/trim/sell-review labels use dated evidence; stale history and missing business classification cannot produce a buy candidate. DCA remains a separate original price-only experiment with visible 0×–4× and confirmed/forming dates. Sector/industry metadata protects bank, insurer, REIT and nonbank-financial models. Shared dialogs, search, mobile holdings, period labels and stale research-comparison results were repaired. Physical-iPhone and post-patch rendered acceptance remain open.
 
 ## Latest repair — preserve this distinction

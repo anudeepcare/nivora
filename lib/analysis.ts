@@ -215,6 +215,7 @@ export function perspective(r: Research) {
     last.revenue > 0 &&
     last.netIncome != null &&
     last.netIncome > 0 &&
+    !(last.operatingIncome != null && last.operatingIncome < 0) &&
     last.fcf != null &&
     last.fcf > 0;
   const business =

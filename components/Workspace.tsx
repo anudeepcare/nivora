@@ -16,7 +16,7 @@ import {
 import type { Company, Position, Quote } from "@/lib/types";
 import { portfolioTotals } from "@/lib/engine";
 import { amount, dateLabel, percent, quoteTime } from "@/lib/format";
-import { useProduct, useResource } from "./Session";
+import { useProduct, useResource, useWorkspaceFilter } from "./Session";
 import {
   Empty,
   PageHeading,
@@ -58,6 +58,9 @@ export function useWorkspaceQuotes(
     ),
     [error, setError] = useState("");
   const refresh = useCallback(() => setRevision((x) => x + 1), []);
+  // Discovering a hybrid/Twelve connection must not abort and restart a quote
+  // batch that already began while provider metadata was loading.
+  const rateLimited = marketProvider !== "eodhd";
   useEffect(() => {
     if (demo) {
       setData(
@@ -116,7 +119,7 @@ export function useWorkspaceQuotes(
           (n, s) => n + (s.includes("/") ? 2 : 1),
           0,
         );
-        if (marketProvider !== "eodhd" && requested + weight > 40) {
+        if (rateLimited && requested + weight > 40) {
           await pause();
           requested = 0;
           windowStarted = Date.now();
@@ -169,7 +172,7 @@ export function useWorkspaceQuotes(
       active = false;
       abort.abort();
     };
-  }, [key, demo, cache, revision, marketProvider]);
+  }, [key, demo, cache, revision, rateLimited]);
   return { data, loading, ready, error, refresh };
 }
 export function ResearchHome() {
@@ -364,9 +367,10 @@ function InvestmentRows({
             >
               <SecurityLogo symbol={symbol} />
               <span>
-                <b>{q?.company?.name || symbol}</b>
-                <small>
-                  {symbol} · {q?.company?.exchange || "Saved company"}
+                <b>{symbol}</b>
+                <small className="investment-company" title={q?.company?.name}>
+                  {q?.company?.name ||
+                    (symbol.includes("/") ? "Crypto pair" : "Saved investment")}
                 </small>
               </span>
             </Link>
@@ -389,13 +393,15 @@ function InvestmentRows({
                     ? "Older quote"
                     : percent(q.quote.changePct, true)}
               </small>
-              {q?.quote ? (
-                <DataStamp source={q.quote.source} asOf={q.quote.asOf} />
-              ) : (
-                <small className="quote-stamp" title={q?.error}>
-                  {q?.error || "Requesting latest quote"}
-                </small>
-              )}
+              <span className="investment-asof">
+                {q?.quote ? (
+                  <DataStamp source={q.quote.source} asOf={q.quote.asOf} />
+                ) : (
+                  <small className="quote-stamp" title={q?.error}>
+                    {q?.error ? "Quote unavailable" : "Checking quote"}
+                  </small>
+                )}
+              </span>
             </div>
             {remove ? (
               <button
@@ -427,7 +433,7 @@ function InvestmentRows({
 export function Watchlist() {
   const { workspace, demo, workspaceError, mutate } = useProduct(),
     quotes = useWorkspaceQuotes("watchlist"),
-    [query, setQuery] = useState(""),
+    [query, setQuery] = useWorkspaceFilter("watchlist"),
     addDialog = useRef<HTMLDialogElement>(null),
     [error, setError] = useState("");
   const symbols = (workspace?.watchlist || [])
@@ -445,7 +451,7 @@ export function Watchlist() {
     }
   }
   return (
-    <section>
+    <section className="watchlist-page">
       <PageHeading
         title="Watchlist"
         subtitle="Latest prices and a direct route to your research."
@@ -462,7 +468,6 @@ export function Watchlist() {
       {(workspaceError || error) && (
         <Notice error>{workspaceError || error}</Notice>
       )}
-      {quotes.error && <Notice error>{quotes.error}</Notice>}
       <div className="watchlist-toolbar">
         <label>
           <SearchIcon size={17} />
@@ -473,7 +478,17 @@ export function Watchlist() {
             onChange={(e) => setQuery(e.target.value)}
           />
         </label>
-        <span>{symbols.length} companies</span>
+        <span className="watchlist-status" role="status">
+          {symbols.length} investments ·{" "}
+          {quotes.loading
+            ? "Updating"
+            : quotes.error
+              ? "Prices delayed"
+              : "Checked"}
+          {quotes.error && (
+            <Help label="Watchlist price update">{quotes.error}</Help>
+          )}
+        </span>
         <button
           className="icon-button"
           aria-label="Refresh watchlist prices"
@@ -616,7 +631,7 @@ export function Portfolio() {
     [cash, setCash] = useState(false),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
-    [query, setQuery] = useState(""),
+    [query, setQuery] = useWorkspaceFilter("portfolio"),
     [removing, setRemoving] = useState<string | null>(null);
   const q = Object.fromEntries(
       Object.entries(quotes.data || {})
@@ -679,7 +694,7 @@ export function Portfolio() {
     }
   }
   return (
-    <section>
+    <section className="portfolio-page">
       <PageHeading
         title="Portfolio"
         subtitle="Your holdings, current prices and unrealized returns."
@@ -691,7 +706,6 @@ export function Portfolio() {
         }
       />
       {workspaceError && <Notice error>{workspaceError}</Notice>}
-      {quotes.error && <Notice error>{quotes.error}</Notice>}
       {missingCurrency.length > 0 && (
         <div className="portfolio-review">
           <div>
@@ -733,7 +747,12 @@ export function Portfolio() {
       )}
       <div className="quote-progress" role="status">
         <span>
-          {quotes.loading ? "Updating prices…" : "Quote check complete"} ·{" "}
+          {quotes.loading
+            ? "Updating prices…"
+            : quotes.error
+              ? "Prices delayed"
+              : "Quote check complete"}{" "}
+          ·{" "}
           {
             positions.filter(
               (p) =>
@@ -744,6 +763,9 @@ export function Portfolio() {
           }
           /{positions.filter((p) => p.assetType !== "cash").length} investments
           priced
+          {quotes.error && (
+            <Help label="Portfolio price update">{quotes.error}</Help>
+          )}
         </span>
         <button
           className="text-button"
@@ -793,7 +815,7 @@ export function Portfolio() {
             </div>
           </div>
         </section>
-        <section className="panel">
+        <section className="panel portfolio-allocation">
           <h2>Allocation</h2>
           <Allocation positions={positions} quotes={q} />
         </section>
@@ -851,7 +873,7 @@ export function Portfolio() {
                         : null;
                   return (
                     <tr key={p.id}>
-                      <td>
+                      <td className="holding-identity-cell">
                         {p.assetType === "cash" ? (
                           <span className="investment-identity">
                             <span className="security-logo">
@@ -876,7 +898,7 @@ export function Portfolio() {
                                   ? amount(p.cost, p.currency)
                                   : "currency needed"}
                               </small>
-                              <small>
+                              <small className="investment-company">
                                 {quotes.data?.[p.symbol]?.company?.name ||
                                   "Open company research"}
                               </small>
@@ -884,7 +906,7 @@ export function Portfolio() {
                           </Link>
                         )}
                       </td>
-                      <td data-label="Price">
+                      <td data-label="Price" className="holding-price-cell">
                         <span className="holding-metric">
                           {amount(price)}
                           <span className="holding-stamp">
@@ -906,7 +928,7 @@ export function Portfolio() {
                           </span>
                         </span>
                       </td>
-                      <td data-label="Value">
+                      <td data-label="Value" className="holding-value-cell">
                         <span className="holding-metric">
                           {amount(value)}
                           {value == null && (
@@ -922,7 +944,8 @@ export function Portfolio() {
                       <td
                         data-label="Unrealized"
                         className={
-                          pnl == null ? "muted" : pnl < 0 ? "red" : "green"
+                          "holding-pnl-cell " +
+                          (pnl == null ? "muted" : pnl < 0 ? "red" : "green")
                         }
                       >
                         <span className="holding-metric">
@@ -937,7 +960,7 @@ export function Portfolio() {
                           </small>
                         </span>
                       </td>
-                      <td>
+                      <td className="holding-actions-cell">
                         <div className="row-actions">
                           <button
                             className="icon-button"

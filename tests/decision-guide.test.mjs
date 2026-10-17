@@ -112,6 +112,18 @@ test("a reported loss with positive cash generation does not imply funding distr
   assert.equal(canonical(r).decision?.owning.code, "review");
   assert.notEqual(canonical(r).decision?.buying.code, "candidate");
 });
+test("positive net income with an operating loss cannot produce a profitable-business buy candidate", () => {
+  const r = sample();
+  for (const fact of [...r.facts].filter((f) => f.metric === "netIncome"))
+    r.facts.push({
+      ...fact,
+      id: `op-${fact.id}`,
+      metric: "operatingIncome",
+      value: -50,
+    });
+  assert.notEqual(perspective(r).business, "Profitable");
+  assert.notEqual(canonical(r).decision?.buying.code, "candidate");
+});
 test("persistent losses and cash outflows with declining revenue prompt an exit review, not an automatic order", () => {
   const d = canonical(
     sample({ loss: true, burn: true, declining: true, weak: true }),
