@@ -23,6 +23,7 @@ import { useProduct, useResource } from "./Session";
 import { SecurityLogo, Help, Notice, Empty, DataStamp } from "./Ui";
 import { PriceChart } from "./Charts";
 import Financials from "./Financials";
+import DecisionBrief from "./DecisionBrief";
 import { InvestmentCase, EarningsScenario } from "./ResearchSummary";
 import Valuation from "./Valuation";
 import TechnicalLevels from "./TechnicalLevels";
@@ -46,9 +47,6 @@ export default function Research({ symbol }: { symbol: string }) {
   const [tab, setTab] = useState<(typeof tabs)[number]>("Snapshot"),
     [range, setRange] = useState<(typeof ranges)[number]>("1Y"),
     [style, setStyle] = useState<"line" | "candles">("line"),
-    [horizon, setHorizon] = useState<"longTerm" | "swing" | "tactical">(
-      "longTerm",
-    ),
     [notice, setNotice] = useState(""),
     [saving, setSaving] = useState(false);
   const intraday = range === "1D" || range === "1W";
@@ -216,9 +214,11 @@ export default function Research({ symbol }: { symbol: string }) {
             </div>
             <span
               className={
-                r.quote.changePct != null && r.quote.changePct < 0
-                  ? "au-negative"
-                  : "au-positive"
+                r.quote.changePct == null || r.quote.changePct === 0
+                  ? ""
+                  : r.quote.changePct < 0
+                    ? "au-negative"
+                    : "au-positive"
               }
             >
               {percent(r.quote.changePct, true)}
@@ -302,81 +302,7 @@ export default function Research({ symbol }: { symbol: string }) {
       >
         {tab === "Snapshot" && (
           <>
-            <section className="au-takeaway">
-              <div className="au-between">
-                <span className="au-chip blue">
-                  {r.snapshot?.newCapital ?? p.business}
-                </span>
-                <div className="au-segment" aria-label="Research horizon">
-                  {(["longTerm", "swing", "tactical"] as const).map((x) => (
-                    <button
-                      aria-pressed={horizon === x}
-                      key={x}
-                      onClick={() => setHorizon(x)}
-                    >
-                      {x === "longTerm"
-                        ? "Long term"
-                        : x === "swing"
-                          ? "Swing"
-                          : "Tactical"}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <h2>
-                {horizon === "longTerm"
-                  ? p.heading
-                  : (r.snapshot?.horizons[horizon] ?? p.tech.trend)}
-              </h2>
-              <p>
-                {horizon === "longTerm"
-                  ? crypto
-                    ? "Read price structure and allocation together. Corporate financials do not apply to this asset."
-                    : p.growth != null
-                      ? `Revenue ${p.growth >= 0 ? "grew" : "declined"} ${percent(Math.abs(p.growth))} year over year. ${p.periodBasis} to ${dateLabel(p.last?.end)}.`
-                      : "Current financial evidence and price history are assessed separately."
-                  : r.snapshot?.horizons.longTerm}
-              </p>
-              <div className="au-verdicts">
-                <div>
-                  <small>{crypto ? "Momentum" : "Business"}</small>
-                  <b>
-                    {crypto
-                      ? `RSI ${p.tech.rsi?.toFixed(1) ?? "—"}`
-                      : p.business}
-                  </b>
-                </div>
-                <div>
-                  <small>{crypto ? "Daily range" : "Analyst target"}</small>
-                  <b>
-                    {crypto
-                      ? percent(p.tech.atr)
-                      : !r.company.foreignListing &&
-                          r.evidence?.consensus?.target
-                        ? amount(r.evidence.consensus.target, r.quote.currency)
-                        : "Not available"}
-                  </b>
-                  {!crypto && (
-                    <button
-                      className="au-link decision-detail"
-                      onClick={() => setTab("Valuation")}
-                    >
-                      View ratings & assumptions <ArrowUpRight size={13} />
-                    </button>
-                  )}
-                </div>
-                <div>
-                  <small>Price trend</small>
-                  <b
-                    className={
-                      p.tech.trend === "Weak" ? "au-amber" : "au-positive"
-                    }
-                  >
-                    {p.tech.trend}
-                  </b>
-                </div>
-              </div>
-            </section>
+            <DecisionBrief research={r} onDca={() => setTab("Technicals")} />
             <div className="au-mainrail">
               {chart}
               <DcaCard research={r} />
@@ -462,50 +388,109 @@ function rangeBars(history: Candle[], range: string) {
 export function DcaCard({ research: r }: { research: ResearchData }) {
   const p = useMemo(() => perspective(r), [r]),
     signal = p.dca.confirmed;
+  const tone = !signal
+    ? "neutral"
+    : signal.multiplier === 0
+      ? "caution"
+      : signal.multiplier === 1
+        ? "neutral"
+        : "positive";
+  const month = (value: string) =>
+    new Date(value + "-01T12:00:00Z").toLocaleDateString("en-US", {
+      month: "short",
+      year: "numeric",
+      timeZone: "UTC",
+    });
   return (
-    <aside className="au-panel au-dca">
-      <div className="au-between">
-        <span className="au-eyebrow">Monthly DCA</span>
+    <aside
+      className="au-panel au-dca"
+      data-tone={tone}
+      aria-label="Monthly accumulation signal"
+    >
+      <div className="au-between au-dca-top">
+        <span className="au-eyebrow">Monthly DCA · price only</span>
         <Help label="DCA multiplier">
-          A multiple of your usual contribution—not leverage or a return
+          A multiple of your usual contribution, not leverage or a return
           forecast. AURYN’s original experimental rules use 24 completed monthly
-          closes. The monthly close must be present. The current month is
-          provisional. Review business quality and exposure separately.
+          closes. 0× pauses new scheduled contributions; it is not a sell order.
+          Stronger pullbacks can earn larger multipliers even in a deteriorating
+          business. Review financial evidence before adding. The current month
+          can change until it closes.
         </Help>
       </div>
-      <div className="au-dca-number">
-        {signal ? signal.multiplier : "—"}
-        {signal && <span>×</span>}
+      <div className="au-dca-reading">
+        <div className="au-dca-number">
+          {signal ? signal.multiplier : "—"}
+          {signal && <span>×</span>}
+        </div>
+        <div>
+          <h3>
+            {!signal
+              ? "History needed"
+              : signal.multiplier === 0
+                ? "Pause contributions"
+                : signal.multiplier === 1
+                  ? "Baseline pace"
+                  : `${signal.multiplier === 4 ? "Deep" : signal.multiplier === 3 ? "Larger" : "Moderate"} pullback`}
+          </h3>
+          <small>
+            {signal
+              ? `Confirmed · ${month(signal.month)}`
+              : "24 complete months required"}
+          </small>
+        </div>
       </div>
-      <h3>
-        {signal
-          ? signal.multiplier === 0
-            ? "Pause zone"
-            : signal.multiplier === 1
-              ? "Baseline pace"
-              : "Stronger pullback zone"
-          : "History needed"}
-      </h3>
-      <div className="au-dca-scale">
-        {[1, 2, 3, 4].map((n) => (
-          <span key={n} className={signal?.multiplier === n ? "active" : ""}>
+      <div className="au-dca-scale" aria-label="Contribution multiplier scale">
+        {[0, 1, 2, 3, 4].map((n) => (
+          <span
+            key={n}
+            aria-current={signal?.multiplier === n ? "step" : undefined}
+            className={signal?.multiplier === n ? "active" : ""}
+          >
             {n}×
           </span>
         ))}
       </div>
+      <div
+        className="au-dca-history"
+        aria-label="Last six confirmed monthly signals"
+      >
+        {p.dca.history.slice(-6).map((x) => (
+          <div key={x.month}>
+            <span
+              style={{ height: `${12 + x.multiplier * 7}px` }}
+              data-zone={x.multiplier}
+              title={`${month(x.month)} · ${x.multiplier}×`}
+            />
+            <b>{x.multiplier}×</b>
+            <small>
+              {new Date(x.month + "-01T12:00:00Z").toLocaleDateString("en-US", {
+                month: "short",
+                timeZone: "UTC",
+              })}
+            </small>
+          </div>
+        ))}
+      </div>
       <p className="au-caption">{signal?.reason ?? p.dca.reason}</p>
-      <div className="au-rule" />
-      <p className="au-caption">
-        Confirmed · {signal?.month ?? "Not available"}
-        <br />
-        Current month ·{" "}
-        {p.dca.forming
-          ? `${p.dca.forming.multiplier}× forming`
-          : "Awaiting completed daily closes"}
+      <div className="au-dca-forming">
+        <span>Current month</span>
+        <b>
+          {p.dca.forming
+            ? `${p.dca.forming.multiplier}× forming`
+            : "Awaiting closes"}
+        </b>
+      </div>
+      <p className="au-caption au-dca-business">
+        {r.company.assetType === "crypto"
+          ? "Corporate fundamentals do not apply."
+          : `Business evidence: ${p.business.toLowerCase()}.`}{" "}
+        A price zone does not establish value.
       </p>
     </aside>
   );
 }
+
 function DcaHistory({ research: r }: { research: ResearchData }) {
   const d = useMemo(() => perspective(r).dca, [r]);
   return (

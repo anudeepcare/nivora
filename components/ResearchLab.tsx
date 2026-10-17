@@ -9,7 +9,7 @@ import type { Research } from "@/lib/types";
 import { PageHeading, Notice, Empty, Help } from "./Ui";
 import { MiniChart } from "./Charts";
 export default function ResearchLab() {
-  const { demo, workspace } = useProduct(),
+  const { demo } = useProduct(),
     [symbol, setSymbol] = useState(""),
     [cost, setCost] = useState(10),
     [data, setData] = useState<Research | null>(null),
@@ -29,6 +29,8 @@ export default function ResearchLab() {
   );
   async function run(e: React.FormEvent) {
     e.preventDefault();
+    if (busy) return;
+    setData(null);
     setBusy(true);
     setMessage("");
     try {
@@ -73,9 +75,14 @@ export default function ResearchLab() {
           Company
           <input
             required
+            disabled={busy}
             value={symbol}
             placeholder="Ticker or crypto pair"
-            onChange={(e) => setSymbol(e.target.value.toUpperCase())}
+            onChange={(e) => {
+              setSymbol(e.target.value.toUpperCase());
+              setData(null);
+              setMessage("");
+            }}
           />
         </label>
         <label>
@@ -97,7 +104,9 @@ export default function ResearchLab() {
       {result && result.months > 0 ? (
         <>
           <header className="section-heading support">
-            <h2>Equal-budget comparison · {result.months} months</h2>
+            <h2>
+              {data?.company.symbol} · {result.months} months
+            </h2>
             <button className="button" onClick={download}>
               <Download size={16} />
               Export
@@ -143,7 +152,11 @@ export default function ResearchLab() {
               );
             })}
           </div>
-          <p className="footnote">{result.limitations.join(" ")}</p>
+          <p className="footnote">
+            Equal-budget, hypothetical comparison · History through{" "}
+            {dateLabel(data?.history.at(-1)?.time)}.{" "}
+            {result.limitations.join(" ")}
+          </p>
         </>
       ) : (
         <Empty

@@ -14,7 +14,10 @@ export default function SpecializedScenario({
 }: {
   research: Research;
 }) {
-  const coverage = modelCoverage(r.company.symbol, r.company.assetType),
+  const coverage = modelCoverage(r.company.symbol, r.company.assetType, {
+      sector: r.evidence?.profile?.sector || r.company.sector,
+      industry: r.evidence?.profile?.industry,
+    }),
     [values, setValues] = useState<Record<string, string>>({}),
     [source, setSource] = useState("");
   if (!["frontier", "infrastructure", "financial"].includes(coverage.family))

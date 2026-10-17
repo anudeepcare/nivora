@@ -301,7 +301,10 @@ export function researchPeriods(r: Research, scope: FinancialScope) {
 }
 export function applicableMetrics(r: Research) {
   const bank =
-    modelCoverage(r.company.symbol, r.company.assetType).family === "financial";
+    modelCoverage(r.company.symbol, r.company.assetType, {
+      sector: r.evidence?.profile?.sector || r.company.sector,
+      industry: r.evidence?.profile?.industry,
+    }).family === "financial";
   return financialCatalog.filter(
     (m) =>
       !bank ||

@@ -1,5 +1,6 @@
 "use client";
 import { useId, useRef, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { CircleHelp, X, ArrowUpRight, Search } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { requestLogo } from "@/lib/logo-client";
@@ -150,7 +151,11 @@ export function Help({
   children: React.ReactNode;
 }) {
   const dialog = useRef<HTMLDialogElement>(null),
-    id = useId();
+    id = useId(),
+    [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (open) dialog.current?.showModal();
+  }, [open]);
   return (
     <>
       <button
@@ -158,35 +163,48 @@ export function Help({
         type="button"
         aria-label={`About ${label}`}
         aria-haspopup="dialog"
-        onClick={() => dialog.current?.showModal()}
+        onClick={() => setOpen(true)}
       >
         <CircleHelp size={14} />
       </button>
-      <dialog
-        className="dialog help-dialog"
-        ref={dialog}
-        aria-labelledby={id}
-        onClick={(e) => {
-          if (e.target === dialog.current) dialog.current.close();
-        }}
-      >
-        <button
-          className="icon-button close"
-          aria-label="Close explanation"
-          onClick={() => dialog.current?.close()}
-        >
-          <X size={20} />
-        </button>
-        <span className="eyebrow">UNDERSTAND THE METRIC</span>
-        <h2 id={id}>{label}</h2>
-        <div className="help-copy">{children}</div>
-        <button
-          className="button primary"
-          onClick={() => dialog.current?.close()}
-        >
-          Got it
-        </button>
-      </dialog>
+      {open &&
+        createPortal(
+          <dialog
+            className="dialog help-dialog"
+            ref={dialog}
+            aria-labelledby={id}
+            onClose={() => setOpen(false)}
+            onClick={(e) => {
+              if (e.target !== e.currentTarget) return;
+              const bounds = e.currentTarget.getBoundingClientRect();
+              if (
+                e.clientX < bounds.left ||
+                e.clientX > bounds.right ||
+                e.clientY < bounds.top ||
+                e.clientY > bounds.bottom
+              )
+                e.currentTarget.close();
+            }}
+          >
+            <button
+              className="icon-button close"
+              aria-label="Close explanation"
+              onClick={() => dialog.current?.close()}
+            >
+              <X size={20} />
+            </button>
+            <span className="eyebrow">UNDERSTAND THE METRIC</span>
+            <h2 id={id}>{label}</h2>
+            <div className="help-copy">{children}</div>
+            <button
+              className="button primary"
+              onClick={() => dialog.current?.close()}
+            >
+              Got it
+            </button>
+          </dialog>,
+          document.body,
+        )}
     </>
   );
 }

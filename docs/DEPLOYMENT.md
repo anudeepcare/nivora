@@ -12,7 +12,7 @@ npm ci &&
 npm run verify &&
 npm run test:api &&
 git add -A &&
-(git diff --cached --quiet || git commit -m "Fix research evidence periods and responsive AURYN interface") &&
+(git diff --cached --quiet || git commit -m "Improve AURYN decision clarity, DCA and responsive controls") &&
 git push origin main
 ```
 

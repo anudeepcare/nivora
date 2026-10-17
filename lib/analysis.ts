@@ -163,7 +163,10 @@ export function valuationInputs(r: Research) {
     issues.push(
       "Reconcile listed shares or ADR units before using per-share valuation.",
     );
-  const coverage = modelCoverage(r.company.symbol, r.company.assetType);
+  const coverage = modelCoverage(r.company.symbol, r.company.assetType, {
+    sector: r.evidence?.profile?.sector || r.company.sector,
+    industry: r.evidence?.profile?.industry,
+  });
   if (coverage.family !== "operating-company") issues.push(coverage.method);
   const eligible = issues.length === 0;
   const scenarios = eligible
@@ -236,7 +239,7 @@ export function perspective(r: Research) {
             ? "Profitable business. Weak price trend."
             : "Profitable business. Put the price in context."
           : last.netIncome != null && last.netIncome < 0
-            ? "Growth requires a funding and execution thesis."
+            ? "Reported losses. Review cash generation."
             : "Review cash generation and the price together.";
   const gap =
     last && previous

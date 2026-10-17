@@ -2,6 +2,12 @@
 
 **Full standalone source is included. Production acceptance is not complete.** The current update repairs the UI and reconciles financial-period selection following a signed-in audit of the deployed app. This patched source has not been deployed or tested on a physical iPhone.
 
+## Current update
+
+The current source replaces the oversized research takeaway with a compact financial/action summary and explicit conditional buy/hold/trim/sell-review labels. These are original research prompts, not company-specific fair value or executable orders. Current quotes alone cannot validate an obsolete trend; unknown business classification blocks ordinary-company action labels. DCA now shows all 0×–4× zones, six confirmed months and the forming month, with price-only context. See DECISION_GUIDE.md.
+
+Sector/industry metadata now guards bank, insurer, REIT/property and other financial models. Shared Help dialogs no longer generate invalid paragraph nesting; search navigation/ARIA/scrolling, dialog safe areas, mobile holdings, no-match filters and stale comparison results were repaired. Latest TTM/annual labels are consistent in Discover, Compare and AI evidence. The all-route source audit and authenticated reference scope are in verification/UI_CONTROL_AUDIT_20261017.md and verification/REFERENCE_REVIEW_20261017.md.
+
 ## Latest repair and evidence
 
 Read verification/LIVE_UI_AUDIT_20261017.md for the live audit and HIMS/ValueSnapshot reconciliation. The source now uses current complete TTM evidence consistently, removes generic calculator-driven buy/valuation judgments, corrects zero P/E and forecast displays, preserves account data between navigations, batches portfolio totals, and repairs mobile header/holdings/search/allocation layouts. Provider metadata is in Data details. The cash-flow calculator is an assumption sensitivity, not a company-specific fair-value engine.
@@ -17,7 +23,7 @@ Read verification/LIVE_UI_AUDIT_20261017.md for the live audit and HIMS/ValueSna
 
 ## Verification for this update
 
-See verification/REPORT.json, ui-repair-verify.log and ui-repair-api.log for final counts and commands. Unit/domain/Postgres checks, TypeScript and the optimized production build passed. Compiled-handler tests cover unauthenticated denial, trusted admin controls, crypto identity, SAP reporting currency, shared caching, mixed-provider selection, fallback labels, estimates and dated source links. The tests use fixtures and do not certify paid-provider availability.
+See verification/REPORT.json, decision-ui-verify.log and decision-ui-api.log for final counts and commands. 124 unit/domain/Postgres/component checks, TypeScript and the optimized production build passed. Compiled-handler tests cover unauthenticated denial, trusted admin controls, crypto identity, SAP reporting currency, shared caching, mixed-provider selection, fallback labels, estimates and dated source links. The tests use fixtures and do not certify paid-provider availability.
 
 The new adapter also parsed the official public AAPL demo into 3,447 normalized financial observations, 50 estimate records, 20 earnings records and 12 holder records. This validates the retrieved response shape against the adapter, not the paid account, accuracy of each field or full watchlist coverage.
 
@@ -38,4 +44,4 @@ The 104-item audit in requirements-inherited.json remains authoritative for inhe
 
 ## Review and delivery
 
-The design contract is docs/design/approved-pwa-20261017.html. Review the source installer and Git instructions in DEPLOYMENT.md before replacement. The archive has a complete manifest and excludes secrets, installed dependencies and generated Next output. Any final source-review findings and fixes are recorded in verification/eodhd-review.md. No push, merge or deployment is implied by delivery of the ZIP.
+The design foundation is docs/design/approved-pwa-20261017.html. The compact action/DCA summary is the current request’s source refinement; it has not been accepted through a rendered comparison. Review the source installer and Git instructions in DEPLOYMENT.md before replacement. The archive has a complete manifest and excludes secrets, installed dependencies and generated Next output. Any final source-review findings and fixes are recorded in verification/eodhd-review.md. No push, merge or deployment is implied by delivery of the ZIP.

@@ -28,6 +28,13 @@ export default function Search({
     [loading, setLoading] = useState(false),
     [error, setError] = useState("");
   const prefix = demo ? "/preview" : "";
+  const showResults = open && query.trim().length > 0;
+  useEffect(() => {
+    if (showResults && selected >= 0)
+      document.getElementById(`${listId}-${selected}`)?.scrollIntoView({
+        block: "nearest",
+      });
+  }, [showResults, selected, listId]);
   useEffect(() => {
     const close = (e: PointerEvent) => {
       if (!box.current?.contains(e.target as Node)) setOpen(false);
@@ -120,7 +127,13 @@ export default function Search({
     }
   }
   return (
-    <div ref={box} className={`search ${large ? "large" : ""}`}>
+    <div
+      ref={box}
+      className={`search ${large ? "large" : ""}`}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) setOpen(false);
+      }}
+    >
       <form className="search-box" onSubmit={submit}>
         <SearchIcon size={19} />
         <input
@@ -129,11 +142,11 @@ export default function Search({
           type="search"
           aria-label="Search companies or tickers"
           role="combobox"
-          aria-expanded={open}
-          aria-controls={listId}
+          aria-expanded={showResults}
+          aria-controls={showResults ? listId : undefined}
           aria-autocomplete="list"
           aria-activedescendant={
-            selected >= 0 ? `${listId}-${selected}` : undefined
+            showResults && selected >= 0 ? `${listId}-${selected}` : undefined
           }
           placeholder="Search a company or crypto"
           autoComplete="off"
@@ -166,6 +179,7 @@ export default function Search({
             onClick={() => {
               setQuery("");
               setOpen(false);
+              input.current?.focus();
             }}
           >
             <X size={17} />
@@ -174,7 +188,7 @@ export default function Search({
           <kbd>⌘ K</kbd>
         )}
       </form>
-      {open && query.trim().length >= 1 && (
+      {showResults && (
         <div
           className="search-results"
           id={listId}
@@ -186,10 +200,12 @@ export default function Search({
             <button
               type="button"
               role="option"
+              tabIndex={-1}
               id={`${listId}-${i}`}
               aria-selected={selected === i}
               className={selected === i ? "selected" : ""}
               key={`${c.symbol}:${c.exchange}`}
+              onPointerDown={(e) => e.preventDefault()}
               onClick={() => go(c.symbol)}
             >
               <SecurityLogo symbol={c.symbol} size={34} />
@@ -218,7 +234,9 @@ export default function Search({
             ) && (
               <button
                 type="button"
+                tabIndex={-1}
                 className="search-direct"
+                onPointerDown={(e) => e.preventDefault()}
                 onClick={() => go(searchSelection(query, []))}
               >
                 <SearchIcon size={17} />

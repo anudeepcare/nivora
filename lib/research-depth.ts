@@ -207,10 +207,21 @@ export function weeklyStudies(
 export function modelCoverage(
   symbol: string,
   assetType: string,
-): { family: string; drivers: string[]; method: string } {
+  profile?: { sector?: string | null; industry?: string | null },
+): {
+  family: string;
+  drivers: string[];
+  method: string;
+  classificationSource:
+    | "asset-type"
+    | "provider-profile"
+    | "known-symbol"
+    | "fallback";
+} {
   if (assetType === "crypto")
     return {
       family: "crypto",
+      classificationSource: "asset-type",
       drivers: [
         "Network usage",
         "Supply and issuance",
@@ -222,6 +233,7 @@ export function modelCoverage(
   if (["IREN", "CIFR", "CORZ", "CRWV", "NBIS"].includes(symbol))
     return {
       family: "infrastructure",
+      classificationSource: "known-symbol",
       drivers: [
         "Contracted versus operating capacity",
         "Power and utilization",
@@ -235,6 +247,7 @@ export function modelCoverage(
   if (["ASTS", "RKLB", "JOBY", "ACHR"].includes(symbol))
     return {
       family: "frontier",
+      classificationSource: "known-symbol",
       drivers: [
         "Deployment and usable capacity",
         "Commercial conversion",
@@ -245,13 +258,63 @@ export function modelCoverage(
       method:
         "Milestone and unit-economics scenarios; no automatic intrinsic value from current losses.",
     };
+  const label = (value?: string | null) =>
+      (value ?? "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, " ")
+        .trim(),
+    sector = label(profile?.sector),
+    industry = label(profile?.industry),
+    hasProfile = !!(sector || industry);
+  // Provider classifications guard model suitability; they do not supply a
+  // validated valuation model or company-specific assumptions.
   if (
-    ["JPM", "BAC", "WFC", "C", "GS", "MS", "SCHW", "NU", "SOFI"].includes(
-      symbol,
-    )
+    /\breits?\b|\breal estate investment trusts?\b/.test(industry) ||
+    sector === "real estate"
+  )
+    return {
+      family: "real-estate",
+      classificationSource: "provider-profile",
+      drivers: [
+        "Property income and occupancy",
+        "FFO and AFFO reconciliation",
+        "Leverage and refinancing",
+        "Maintenance capital expenditure",
+        "Portfolio value and lease terms",
+      ],
+      method:
+        "Property/REIT-specific valuation is not available; FFO/AFFO, asset values and leverage need dedicated review before selecting a valuation method.",
+    };
+  if (
+    (/\binsurance\b/.test(industry) && !/\bbrokers?\b/.test(industry)) ||
+    /\bhealth ?care plans?\b/.test(industry) ||
+    sector === "insurance"
+  )
+    return {
+      family: "insurance",
+      classificationSource: "provider-profile",
+      drivers: [
+        "Underwriting or medical claims economics",
+        "Claims and reserve adequacy",
+        "Regulatory capital and liquidity",
+        "Investment portfolio",
+        "Policy retention and pricing",
+      ],
+      method:
+        "Insurance-specific valuation is not available; claims, reserves and regulatory capital require dedicated review rather than a generic cash-flow or bank scenario.",
+    };
+  if (
+    (/\bbanks?\b|\bthrifts?\b|\bsavings (?:and )?loans?\b/.test(industry) &&
+      !/\binvestment banks?\b/.test(industry)) ||
+    industry === "banking" ||
+    (!hasProfile &&
+      ["JPM", "BAC", "WFC", "C", "GS", "MS", "SCHW", "NU", "SOFI"].includes(
+        symbol,
+      ))
   )
     return {
       family: "financial",
+      classificationSource: hasProfile ? "provider-profile" : "known-symbol",
       drivers: [
         "Return on tangible equity",
         "Capital adequacy",
@@ -262,8 +325,28 @@ export function modelCoverage(
       method:
         "Residual income / tangible-book scenarios; operating cash flow is not a suitable bank valuation anchor.",
     };
+  if (
+    /\bfinancials?\b|\bfinance\b/.test(sector) ||
+    /\bfinancial\b|\bfinance\b|\binsurance\b|\basset management\b|\bcapital markets\b|\bcredit services\b|\binvestment bank(?:s|ing)?\b/.test(
+      industry,
+    )
+  )
+    return {
+      family: "specialized-financial",
+      classificationSource: "provider-profile",
+      drivers: [
+        "Business mix and revenue sources",
+        "Capital and liquidity requirements",
+        "Credit and market exposure",
+        "Customer assets and obligations",
+        "Sustainable earnings and distributions",
+      ],
+      method:
+        "A sector-specific valuation is not available; generic operating cash flow and bank tangible-book assumptions should not be applied automatically.",
+    };
   return {
     family: "operating-company",
+    classificationSource: hasProfile ? "provider-profile" : "fallback",
     drivers: [
       "Revenue durability",
       "Margins and cash conversion",
@@ -271,7 +354,8 @@ export function modelCoverage(
       "Balance-sheet claims",
       "Competitive advantage and dilution",
     ],
-    method:
-      "Cash-flow sensitivity when positive cash flow and reconciled shares are available.",
+    method: hasProfile
+      ? "Cash-flow sensitivity when positive cash flow and reconciled shares are available."
+      : "Business classification is unavailable; generic cash-flow sensitivity is provisional and requires model suitability review.",
   };
 }

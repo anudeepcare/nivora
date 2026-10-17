@@ -349,7 +349,15 @@ export default function Financials({
         ref={dialog}
         className={s.dialog}
         onClick={(e) => {
-          if (e.target === dialog.current) dialog.current?.close();
+          if (e.target !== e.currentTarget) return;
+          const box = e.currentTarget.getBoundingClientRect();
+          if (
+            e.clientX < box.left ||
+            e.clientX > box.right ||
+            e.clientY < box.top ||
+            e.clientY > box.bottom
+          )
+            dialog.current?.close();
         }}
         aria-label={selected?.label || "Metric detail"}
       >

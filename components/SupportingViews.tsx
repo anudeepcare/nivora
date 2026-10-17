@@ -218,6 +218,7 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
     }
     let active = true;
     const abort = new AbortController();
+    setRows([]);
     setLoading(true);
     setError("");
     Promise.all(
@@ -349,7 +350,7 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
             <tbody>
               {[
                 "Company",
-                "Annual period",
+                "Reporting period",
                 "Reporting currency",
                 "Revenue",
                 "Revenue growth",
@@ -365,7 +366,7 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
                       {
                         [
                           r.company.name,
-                          dateLabel(p.last?.end),
+                          `${p.periodBasis} · ${dateLabel(p.last?.end)}`,
                           p.last?.currency || "—",
                           amount(p.last?.revenue, p.last?.currency, true),
                           percent(p.growth),
@@ -429,7 +430,7 @@ export function HelpPage() {
         ],
         [
           "Sources and access",
-          "Company statements come from SEC company facts where supported. Data availability varies by listing, taxonomy and reporting history. Commercial display rights must be confirmed with market-data providers before selling access.",
+          "Company statements use EODHD when configured, with SEC company facts available on the legacy route. Period, currency and source details stay attached to the evidence. Availability varies by listing and reporting history. Commercial display rights must be confirmed with market-data providers before selling access.",
         ],
       ].map(([title, text]) => (
         <section key={title}>

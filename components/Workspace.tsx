@@ -483,11 +483,24 @@ export function Watchlist() {
           <RefreshCw size={18} />
         </button>
       </div>
-      <InvestmentRows
-        symbols={symbols}
-        quotes={quotes.data || {}}
-        remove={remove}
-      />
+      {query.trim() && !symbols.length ? (
+        <Empty
+          title="No companies match your filter"
+          action={
+            <button className="button" onClick={() => setQuery("")}>
+              Clear filter
+            </button>
+          }
+        >
+          Try another company name or ticker.
+        </Empty>
+      ) : (
+        <InvestmentRows
+          symbols={symbols}
+          quotes={quotes.data || {}}
+          remove={remove}
+        />
+      )}
       <dialog
         className="search-dialog"
         ref={addDialog}
@@ -503,6 +516,9 @@ export function Watchlist() {
             <X size={20} />
           </button>
         </div>
+        <p className="search-guidance">
+          Open its research, then choose Save to watchlist.
+        </p>
         <Search autoFocus onNavigate={() => addDialog.current?.close()} />
       </dialog>
     </section>
@@ -609,6 +625,11 @@ export function Portfolio() {
     ),
     positions = workspace?.positions || [],
     totals = portfolioTotals(positions, q),
+    visiblePositions = positions.filter((p) =>
+      `${p.symbol} ${quotes.data?.[p.symbol]?.company?.name || ""} ${p.assetType === "cash" ? "cash" : ""}`
+        .toLowerCase()
+        .includes(query.trim().toLowerCase()),
+    ),
     missingCurrency = positions.filter(
       (p) => !p.currency && p.assetType !== "cash",
     );
@@ -790,7 +811,18 @@ export function Portfolio() {
             onChange={(e) => setQuery(e.target.value)}
           />
         </header>
-        {positions.length ? (
+        {positions.length && !visiblePositions.length ? (
+          <Empty
+            title="No holdings match your filter"
+            action={
+              <button className="button" onClick={() => setQuery("")}>
+                Clear filter
+              </button>
+            }
+          >
+            Try another company name or ticker.
+          </Empty>
+        ) : positions.length ? (
           <div className="table-scroll">
             <table className="holdings-table">
               <thead>
@@ -803,61 +835,57 @@ export function Portfolio() {
                 </tr>
               </thead>
               <tbody>
-                {positions
-                  .filter((p) =>
-                    p.symbol.toLowerCase().includes(query.toLowerCase()),
-                  )
-                  .map((p) => {
-                    const price =
-                        p.assetType === "cash"
-                          ? p.currency === "USD" && p.symbol === "USD"
-                            ? 1
-                            : null
-                          : q[p.symbol]?.stale ||
-                              q[p.symbol]?.currency !== "USD"
-                            ? null
-                            : q[p.symbol]?.price,
-                      value = price != null ? p.quantity * price : null,
-                      pnl =
-                        value != null && p.currency === "USD"
-                          ? value - p.quantity * p.cost
-                          : null;
-                    return (
-                      <tr key={p.id}>
-                        <td>
-                          {p.assetType === "cash" ? (
-                            <span className="investment-identity">
-                              <span className="security-logo">
-                                <Wallet size={20} />
-                              </span>
-                              <b>{p.currency || "Unknown currency"} cash</b>
+                {visiblePositions.map((p) => {
+                  const price =
+                      p.assetType === "cash"
+                        ? p.currency === "USD" && p.symbol === "USD"
+                          ? 1
+                          : null
+                        : q[p.symbol]?.stale || q[p.symbol]?.currency !== "USD"
+                          ? null
+                          : q[p.symbol]?.price,
+                    value = price != null ? p.quantity * price : null,
+                    pnl =
+                      value != null && p.currency === "USD"
+                        ? value - p.quantity * p.cost
+                        : null;
+                  return (
+                    <tr key={p.id}>
+                      <td>
+                        {p.assetType === "cash" ? (
+                          <span className="investment-identity">
+                            <span className="security-logo">
+                              <Wallet size={20} />
                             </span>
-                          ) : (
-                            <Link
-                              className="investment-identity"
-                              href={`${prefix}/research/${encodeURIComponent(p.symbol.replace("/", "-"))}`}
-                            >
-                              <SecurityLogo symbol={p.symbol} size={35} />
-                              <span>
-                                <b>{p.symbol}</b>
-                                <small className="holding-quantity">
-                                  {p.quantity.toLocaleString(undefined, {
-                                    maximumFractionDigits: 6,
-                                  })}{" "}
-                                  units · Cost{" "}
-                                  {p.currency
-                                    ? amount(p.cost, p.currency)
-                                    : "currency needed"}
-                                </small>
-                                <small>
-                                  {quotes.data?.[p.symbol]?.company?.name ||
-                                    "Open company research"}
-                                </small>
-                              </span>
-                            </Link>
-                          )}
-                        </td>
-                        <td data-label="Price">
+                            <b>{p.currency || "Unknown currency"} cash</b>
+                          </span>
+                        ) : (
+                          <Link
+                            className="investment-identity"
+                            href={`${prefix}/research/${encodeURIComponent(p.symbol.replace("/", "-"))}`}
+                          >
+                            <SecurityLogo symbol={p.symbol} size={35} />
+                            <span>
+                              <b>{p.symbol}</b>
+                              <small className="holding-quantity">
+                                {p.quantity.toLocaleString(undefined, {
+                                  maximumFractionDigits: 6,
+                                })}{" "}
+                                units · Cost{" "}
+                                {p.currency
+                                  ? amount(p.cost, p.currency)
+                                  : "currency needed"}
+                              </small>
+                              <small>
+                                {quotes.data?.[p.symbol]?.company?.name ||
+                                  "Open company research"}
+                              </small>
+                            </span>
+                          </Link>
+                        )}
+                      </td>
+                      <td data-label="Price">
+                        <span className="holding-metric">
                           {amount(price)}
                           <span className="holding-stamp">
                             {p.assetType === "cash" ? (
@@ -876,8 +904,10 @@ export function Portfolio() {
                               "Unavailable"
                             )}
                           </span>
-                        </td>
-                        <td data-label="Value">
+                        </span>
+                      </td>
+                      <td data-label="Value">
+                        <span className="holding-metric">
                           {amount(value)}
                           {value == null && (
                             <small className="quote-error">
@@ -887,13 +917,15 @@ export function Portfolio() {
                                   : "Price unavailable")}
                             </small>
                           )}
-                        </td>
-                        <td
-                          data-label="Unrealized"
-                          className={
-                            pnl == null ? "muted" : pnl < 0 ? "red" : "green"
-                          }
-                        >
+                        </span>
+                      </td>
+                      <td
+                        data-label="Unrealized"
+                        className={
+                          pnl == null ? "muted" : pnl < 0 ? "red" : "green"
+                        }
+                      >
+                        <span className="holding-metric">
                           {amount(pnl)}
                           <small>
                             {pnl != null && p.cost > 0
@@ -903,42 +935,43 @@ export function Portfolio() {
                                 )
                               : ""}
                           </small>
-                        </td>
-                        <td>
-                          <div className="row-actions">
+                        </span>
+                      </td>
+                      <td>
+                        <div className="row-actions">
+                          <button
+                            className="icon-button"
+                            aria-label={`Edit ${p.symbol}`}
+                            onClick={() => edit(p)}
+                          >
+                            <PenLine size={15} />
+                          </button>
+                          <button
+                            className="icon-button"
+                            aria-label={`Remove ${p.symbol}`}
+                            onClick={() => setRemoving(p.id)}
+                          >
+                            <Trash2 size={15} />
+                          </button>
+                        </div>
+                        {removing === p.id && (
+                          <div className="remove-confirm">
+                            <span>Remove this record?</span>
                             <button
-                              className="icon-button"
-                              aria-label={`Edit ${p.symbol}`}
-                              onClick={() => edit(p)}
+                              disabled={busy}
+                              onClick={() => remove(p.id)}
                             >
-                              <PenLine size={15} />
+                              Remove
                             </button>
-                            <button
-                              className="icon-button"
-                              aria-label={`Remove ${p.symbol}`}
-                              onClick={() => setRemoving(p.id)}
-                            >
-                              <Trash2 size={15} />
+                            <button onClick={() => setRemoving(null)}>
+                              Cancel
                             </button>
                           </div>
-                          {removing === p.id && (
-                            <div className="remove-confirm">
-                              <span>Remove this record?</span>
-                              <button
-                                disabled={busy}
-                                onClick={() => remove(p.id)}
-                              >
-                                Remove
-                              </button>
-                              <button onClick={() => setRemoving(null)}>
-                                Cancel
-                              </button>
-                            </div>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -965,7 +998,8 @@ export function Portfolio() {
       <dialog
         ref={modal}
         className="dialog position-dialog"
-        onCancel={() => setError("")}
+        aria-labelledby="position-dialog-title"
+        onClose={() => setError("")}
       >
         <button
           className="icon-button close"
@@ -975,7 +1009,9 @@ export function Portfolio() {
           <X size={20} />
         </button>
         <span className="eyebrow">YOUR HOLDINGS</span>
-        <h2>{editing ? "Edit position" : "Add a position"}</h2>
+        <h2 id="position-dialog-title">
+          {editing ? "Edit position" : "Add a position"}
+        </h2>
         <p>Update your records. No trade will be placed.</p>
         <form onSubmit={submit}>
           <label className="check">

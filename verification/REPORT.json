@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-10-17T16:45:31.447954+00:00",
+  "generatedAt": "2026-10-17T17:25:12.350653+00:00",
   "sourceRoot": "AURYN (ZIP root); product in the development checkout",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 102 tests, route generation, TypeScript and production build",
+    "npm run verify": "passed: 124 tests, route generation, TypeScript and production build",
     "npm run test:api": "passed: 32 baseline + 16 research regressions + 10 mixed-provider checks",
     "git diff --check": "passed"
   },
-  "domainPostgresAndComponentTests": 102,
+  "domainPostgresAndComponentTests": 124,
   "builtApiChecks": 58,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -27,11 +27,14 @@
   "productionReady": false,
   "deployed": false,
   "pushed": false,
-  "review": "Live UI root-cause audit, source diff and React review; regression coverage added. No independent agent review for this patch.",
+  "review": "Bounded independent model and shared-UI reviews; action-guide review found stale-history and missing-classification gaps, repaired with observed-failing regressions.",
   "approvedDesign": "docs/design/approved-pwa-20261017.html",
   "scopeAudit": "docs/requirements-inherited.json",
   "remainingGates": "docs/RELEASE_STATUS.md",
-  "priorEvidence": "Other logs predate this patch. The live audit covers the previously deployed build; no post-repair visual acceptance is claimed.",
+  "priorEvidence": "The signed-in reference/deployed UI reviews predate this patch. New verification is source, domain/SSR, TypeScript and build evidence only.",
   "browserTestScope": "Read-only PRE-REPAIR deployed app; see LIVE_UI_AUDIT_20261017.md",
-  "patchedSourceBrowserTestsExecuted": false
+  "patchedSourceBrowserTestsExecuted": false,
+  "latestAudit": "UI_CONTROL_AUDIT_20261017.md",
+  "referenceReview": "REFERENCE_REVIEW_20261017.md",
+  "decisionPolicy": "research-v1.5 / decision-guide-v1; original unvalidated research triage; no broker execution"
 }

@@ -174,10 +174,10 @@ export default function Discover() {
               <tr>
                 <th>Company</th>
                 <th>Business</th>
-                <th>Annual FCF</th>
+                <th>Cash after capex</th>
                 <th>Revenue growth</th>
                 <th>Trend</th>
-                <th>Monthly</th>
+                <th>DCA · price only</th>
               </tr>
             </thead>
             <tbody>
@@ -196,7 +196,12 @@ export default function Discover() {
                     </Link>
                   </td>
                   <td>{p.business}</td>
-                  <td>{amount(p.last?.fcf, p.last?.currency, true)}</td>
+                  <td>
+                    {amount(p.last?.fcf, p.last?.currency, true)}
+                    <small className="block">
+                      {p.periodBasis} · {p.last?.end ?? "Period unavailable"}
+                    </small>
+                  </td>
                   <td>{percent(p.growth)}</td>
                   <td>{p.tech.trend}</td>
                   <td>

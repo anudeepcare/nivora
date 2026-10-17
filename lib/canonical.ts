@@ -1,17 +1,27 @@
 import { createHash } from "node:crypto";
+import { decisionGuide } from "./decision-guide.ts";
 import { perspective } from "./analysis.ts";
 import { modelCoverage, weeklyStudies } from "./research-depth.ts";
 import type { Research } from "./types";
 export function canonical(r: Research) {
   const p = perspective(r),
     crypto = r.company.assetType === "crypto",
-    coverage = modelCoverage(r.company.symbol, r.company.assetType),
+    coverage = modelCoverage(r.company.symbol, r.company.assetType, {
+      sector: r.evidence?.profile?.sector || r.company.sector,
+      industry: r.evidence?.profile?.industry,
+    }),
     closed = r.history
       .filter((b) => b.time < r.retrievedAt.slice(0, 10))
       .at(-1);
   const content = {
     company: r.company,
-    policy: "research-v1.4",
+    policy: "research-v1.5",
+    classification: r.evidence?.profile
+      ? {
+          sector: r.evidence.profile.sector,
+          industry: r.evidence.profile.industry,
+        }
+      : null,
     asOfDay: r.retrievedAt.slice(0, 10),
     history: r.history.filter((b) => b.time < r.retrievedAt.slice(0, 10)),
     facts: [...r.facts].sort((a, b) => a.id.localeCompare(b.id)),
@@ -49,6 +59,7 @@ export function canonical(r: Research) {
     forming: p.dca.forming,
     coverage,
     newCapital,
+    decision: decisionGuide(r, p),
     existingOwner: crypto
       ? "Review exposure, custody and price risk"
       : p.strong

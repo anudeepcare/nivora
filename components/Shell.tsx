@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import {
   Home,
@@ -29,17 +30,20 @@ export default function Shell({
   children: React.ReactNode;
 }) {
   const { demo, workspace, theme, setTheme } = useProduct();
+  const pathname = usePathname();
   const prefix = demo ? "/preview" : "",
     search = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     search.current?.close();
-  }, [page]);
+  }, [pathname]);
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
+        if (document.querySelector("dialog[open]") && !search.current?.open)
+          return;
         search.current?.showModal();
-        search.current?.querySelector("input")?.focus();
+        search.current?.querySelector("input")?.focus({ preventScroll: true });
       }
     };
     document.addEventListener("keydown", key);
@@ -115,9 +119,12 @@ export default function Shell({
             <button
               className="icon-button mobile-search"
               aria-label="Search companies and crypto"
+              aria-haspopup="dialog"
               onClick={() => {
                 search.current?.showModal();
-                search.current?.querySelector("input")?.focus();
+                search.current
+                  ?.querySelector("input")
+                  ?.focus({ preventScroll: true });
               }}
             >
               <SearchIcon size={21} />
@@ -133,12 +140,13 @@ export default function Shell({
               className="icon-button"
               href={`${prefix}/settings`}
               aria-label="Preferences"
+              aria-current={page === "settings" ? "page" : undefined}
             >
               <Settings size={21} />
             </Link>
           </div>
         </header>
-        <main id="content" className="content">
+        <main id="content" className="content" tabIndex={-1}>
           {demo && (
             <div className="preview-label">
               Design preview · Illustrative data · Account actions disabled

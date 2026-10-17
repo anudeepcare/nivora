@@ -174,6 +174,7 @@ function researchMarkup() {
     "Forecasts",
     "ResearchThesis",
     "DcaCard",
+    "DecisionBrief",
     "Bookmark",
     "RefreshCw",
     "ArrowUpRight",

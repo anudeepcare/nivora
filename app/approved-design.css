@@ -408,7 +408,7 @@
 }
 #auryn-app .au-mainrail {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 218px;
+  grid-template-columns: minmax(0, 1fr) 264px;
   gap: 18px;
   align-items: stretch;
 }
@@ -504,68 +504,160 @@
   color: var(--au-blue);
   background: transparent;
 }
-#auryn-app .au-takeaway {
-  position: relative;
-  border-radius: 18px;
-  background: linear-gradient(115deg, var(--au-blue-soft), var(--au-paper) 77%);
+#auryn-app .au-decisionbrief {
   border: 1px solid var(--au-line);
-  padding: 22px 24px;
-  margin-bottom: 20px;
+  border-radius: 18px;
+  padding: 18px 22px 12px;
+  background: linear-gradient(115deg, var(--au-blue-soft), var(--au-paper) 70%);
 }
-#auryn-app .au-takeaway h2 {
+#auryn-app .au-brief-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#auryn-app .au-dca-shortcut {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 6px 10px;
+  border-radius: 9px;
+  font-size: 11px;
+  color: var(--au-blue);
+  background: var(--au-blue-soft);
+}
+#auryn-app .au-dca-shortcut b {
+  font-size: 16px;
+  font-weight: 550;
+}
+#auryn-app .au-decisionbrief > header {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+#auryn-app .au-actions-overview {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 12px 0 18px;
+}
+#auryn-app .au-action-summary {
+  min-width: 0;
+}
+#auryn-app .au-action-summary small {
+  color: var(--au-muted);
+  font-size: 12px;
+}
+#auryn-app .au-action-summary h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 21px;
+  line-height: 1.3;
+  font-weight: 550;
+  margin: 5px 0 7px;
+}
+#auryn-app .au-action-summary i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--au-muted);
+  flex-shrink: 0;
+}
+#auryn-app .au-action-summary[data-tone="positive"] i {
+  background: var(--au-green);
+}
+#auryn-app .au-action-summary[data-tone="caution"] i {
+  background: var(--au-amber);
+}
+#auryn-app .au-action-summary[data-tone="negative"] i {
+  background: var(--au-red);
+}
+#auryn-app .au-action-summary p {
+  color: var(--au-muted);
+  font-size: 13px;
+  line-height: 1.5;
+  max-width: 54ch;
+  margin: 0;
+}
+#auryn-app .au-evidence-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  border-top: 1px solid var(--au-line);
+  padding-top: 14px;
+}
+#auryn-app .au-evidence-strip > div {
+  min-width: 0;
+}
+#auryn-app .au-evidence-strip small {
+  display: block;
+  color: var(--au-muted);
+  font-size: 12px;
+}
+#auryn-app .au-evidence-strip strong {
+  display: block;
   font-size: 22px;
-  margin: 7px 0 9px;
-  max-width: 580px;
+  font-weight: 500;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
   letter-spacing: -0.035em;
 }
-#auryn-app .au-takeaway p {
+#auryn-app .au-evidence-strip span {
+  display: block;
   color: var(--au-muted);
-  font-size: 14px;
-  max-width: 620px;
-  line-height: 1.65;
-}
-#auryn-app .au-verdicts {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-top: 22px;
-  padding-top: 18px;
-  border-top: 1px solid var(--au-line);
-}
-#auryn-app .au-verdicts small {
-  display: block;
   font-size: 11px;
-  margin-bottom: 4px;
+  line-height: 1.4;
 }
-#auryn-app .au-verdicts b {
-  font-size: 14px;
-  display: block;
+#auryn-app .au-evidence-date {
+  color: var(--au-muted);
+  font-size: 11px;
+  line-height: 1.4;
+  margin: 12px 0 0;
 }
 #auryn-app .au-dca {
-  background: linear-gradient(145deg, var(--au-green-soft), var(--au-paper));
   display: flex;
   flex-direction: column;
   gap: 12px;
+  background: linear-gradient(160deg, var(--au-blue-soft), var(--au-paper) 65%);
+}
+#auryn-app .au-dca-reading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+#auryn-app .au-dca-reading h3 {
+  font-size: 15px;
+  line-height: 1.35;
+  margin: 0 0 4px;
+}
+#auryn-app .au-dca-reading small {
+  color: var(--au-muted);
+  font-size: 11px;
 }
 #auryn-app .au-dca-number {
-  font-size: 61px;
+  font-size: 54px;
   font-weight: 500;
   line-height: 1.1;
   letter-spacing: -0.065em;
-  color: var(--au-green);
+  color: var(--au-blue);
 }
 #auryn-app .au-dca-number span {
   font-size: 24px;
   letter-spacing: -0.02em;
 }
+#auryn-app .au-dca[data-tone="caution"] .au-dca-number {
+  color: var(--au-amber);
+}
+#auryn-app .au-dca[data-tone="positive"] .au-dca-number {
+  color: var(--au-green);
+}
 #auryn-app .au-dca-scale {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 4px;
-  margin: 4px 0;
 }
 #auryn-app .au-dca-scale span {
-  font-size: 11px;
+  font-size: 12px;
   text-align: center;
   padding: 7px 2px;
   border-radius: 7px;
@@ -573,12 +665,64 @@
   color: var(--au-muted);
 }
 #auryn-app .au-dca-scale .active {
-  color: var(--au-green);
-  background: var(--au-green-soft);
-  box-shadow: inset 0 0 0 1px var(--au-green);
+  color: var(--au-blue);
+  background: var(--au-blue-soft);
+  box-shadow: inset 0 0 0 1px var(--au-blue);
+  font-weight: 600;
+}
+#auryn-app .au-dca-history {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  padding-top: 3px;
+}
+#auryn-app .au-dca-history > div {
+  flex: 1;
+  text-align: center;
+}
+#auryn-app .au-dca-history span {
+  display: block;
+  background: var(--au-blue);
+  opacity: 0.7;
+  border-radius: 4px 4px 1px 1px;
+}
+#auryn-app .au-dca-history span[data-zone="0"] {
+  background: var(--au-amber);
+}
+#auryn-app .au-dca-history span[data-zone="2"],
+#auryn-app .au-dca-history span[data-zone="3"],
+#auryn-app .au-dca-history span[data-zone="4"] {
+  background: var(--au-green);
+}
+#auryn-app .au-dca-history b,
+#auryn-app .au-dca-history small {
+  display: block;
+  font-size: 10px;
+  margin-top: 3px;
+}
+#auryn-app .au-dca-history small {
+  color: var(--au-muted);
 }
 #auryn-app .au-dca .au-caption {
   font-size: 12px;
+  line-height: 1.5;
+  margin: 0;
+}
+#auryn-app .au-dca-forming {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px;
+  font-size: 11px;
+  border-top: 1px solid var(--au-line);
+  padding-top: 10px;
+}
+#auryn-app .au-dca-forming span {
+  color: var(--au-muted);
+}
+#auryn-app .au-dca-business {
+  border-left: 2px solid var(--au-line);
+  padding-left: 9px;
 }
 #auryn-app .au-chart {
   width: 100%;
@@ -1188,22 +1332,26 @@
   #auryn-app .au-login {
     grid-template-columns: minmax(0, 1fr);
   }
-  #auryn-app .au-takeaway {
-    padding: 19px;
+  #auryn-app .au-decisionbrief {
+    padding: 16px;
   }
-  #auryn-app .au-takeaway h2 {
+  #auryn-app .au-actions-overview {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+  #auryn-app .au-action-summary + .au-action-summary {
+    border-top: 1px solid var(--au-line);
+    padding-top: 12px;
+  }
+  #auryn-app .au-action-summary h2 {
     font-size: 21px;
   }
-  #auryn-app .au-verdicts {
-    gap: 8px;
-    margin-top: 17px;
-    padding-top: 14px;
+  #auryn-app .au-evidence-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
   }
-  #auryn-app .au-verdicts b {
-    font-size: 12px;
-  }
-  #auryn-app .au-verdicts small {
-    font-size: 10px;
+  #auryn-app .au-evidence-strip strong {
+    font-size: 22px;
   }
   #auryn-app .au-securityhead {
     gap: 14px;
@@ -1239,31 +1387,17 @@
     border-radius: 16px;
   }
   #auryn-app .au-dca {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 7px 14px;
-    align-items: center;
+    display: flex;
+    gap: 12px;
   }
-  #auryn-app .au-dca .au-dca-top {
-    grid-column: 1/-1;
+  #auryn-app .au-dca-reading {
+    justify-content: flex-start;
   }
   #auryn-app .au-dca .au-dca-number {
-    grid-row: 2/4;
-    font-size: 52px;
+    font-size: 48px;
   }
-  #auryn-app .au-dca .au-dca-scale {
-    grid-column: 2;
-    grid-row: 2;
-  }
-  #auryn-app .au-dca .au-caption {
-    grid-column: 2;
-    font-size: 11px;
-  }
-  #auryn-app .au-dca > .au-link {
-    grid-column: 1/-1;
-    justify-content: flex-start;
-    margin: 0;
-    font-size: 12px;
+  #auryn-app .au-dca-history {
+    max-width: 100%;
   }
   #auryn-app .au-panel-head {
     margin-bottom: 12px;

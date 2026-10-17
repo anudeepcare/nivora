@@ -109,8 +109,8 @@ export default function Analyst({ research }: { research: Research }) {
             <h3>Financial evidence</h3>
             <p>
               {evidence.last
-                ? `Annual period ending ${dateLabel(evidence.last.end)} · ${evidence.last.currency}`
-                : "Reported annual figures"}
+                ? `${evidence.periodBasis} ending ${dateLabel(evidence.last.end)} · ${evidence.last.currency}`
+                : "Reporting period unavailable"}
             </p>
           </div>
           <span className="status-pill">Reported data</span>
@@ -127,7 +127,7 @@ export default function Analyst({ research }: { research: Research }) {
             </strong>
             <small>
               {evidence.growth != null
-                ? "Comparable annual periods"
+                ? `Comparable ${evidence.periodBasis} periods`
                 : "Comparable periods not available"}
             </small>
           </div>
