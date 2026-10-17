@@ -154,7 +154,9 @@ export default function Financials({
   research: Research;
   compact?: boolean;
 }) {
-  const [scope, setScope] = useState<FinancialScope>("annual"),
+  const [scope, setScope] = useState<FinancialScope>(() =>
+      researchPeriods(research, "ttm").length ? "ttm" : "annual",
+    ),
     [group, setGroup] = useState<FinancialGroup>("Essentials"),
     [query, setQuery] = useState(""),
     [view, setView] = useState<"charts" | "statements">("charts"),

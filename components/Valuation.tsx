@@ -49,7 +49,7 @@ export default function Valuation({ research: r }: { research: ResearchData }) {
           <small>{dateLabel(r.quote.asOf)}</small>
         </div>
         <div>
-          <span>Reported annual FCF</span>
+          <span>Operating cash flow − capex · {input.periodBasis}</span>
           <strong>
             {amount(input.latest?.fcf, input.latest?.currency, true)}
           </strong>
@@ -72,8 +72,15 @@ export default function Valuation({ research: r }: { research: ResearchData }) {
         <>
           <section className="panel">
             <div className="section-heading">
-              <h2>Explore the valuation range</h2>
-              <span className="muted small">Five-year cash-flow scenarios</span>
+              <h2>Cash-flow sensitivity</h2>
+              <Help label="Sensitivity assumptions">
+                These −5%, 0% and +5% growth settings are calculator examples,
+                not company forecasts or AURYN bear/base/bull price targets.
+                Operating cash flow less provider capital expenditure can differ
+                from company-reported FCF, including software investment and
+                lease payments. Debt financing and other equity claims are not
+                fully reconciled.
+              </Help>
             </div>
             {r.quote.price != null &&
               input.scenarios.every((s) => s.value != null) &&
@@ -112,16 +119,16 @@ export default function Valuation({ research: r }: { research: ResearchData }) {
                         }}
                       >
                         {r.quote.price! > high
-                          ? "Above range · "
+                          ? "Quote · "
                           : r.quote.price! < low
-                            ? "Below range · "
+                            ? "Quote · "
                             : "Price "}
                         {amount(r.quote.price, r.quote.currency)}
                       </span>
                     </div>
                     <div className="valuation-labels">
                       <span>{amount(low, r.quote.currency)}</span>
-                      <span>Scenario range</span>
+                      <span>Illustrative range · not fair value</span>
                       <span>{amount(high, r.quote.currency)}</span>
                     </div>
                   </>
@@ -141,7 +148,13 @@ export default function Valuation({ research: r }: { research: ResearchData }) {
                     setDilution(1);
                   }}
                 >
-                  <span>{s.name} scenario</span>
+                  <span>
+                    {s.name === "Bear"
+                      ? "Contracting cash flow"
+                      : s.name === "Base"
+                        ? "Flat cash flow"
+                        : "Growing cash flow"}
+                  </span>
                   <strong>{amount(s.value, r.quote.currency)}</strong>
                   <small>
                     {s.growth}% growth · {s.discount}% discount

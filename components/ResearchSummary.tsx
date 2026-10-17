@@ -2,7 +2,7 @@
 import { useMemo, useState } from "react";
 import { ShieldAlert, TrendingUp } from "lucide-react";
 import type { Research } from "@/lib/types";
-import { perspective } from "@/lib/analysis";
+import { perspective, latestFinancialEvidence } from "@/lib/analysis";
 import { researchPeriods } from "@/lib/financial-catalog";
 import {
   financialCase,
@@ -104,9 +104,9 @@ export function ResearchSnapshot({
   );
 }
 export function InvestmentCase({ research: r }: { research: Research }) {
-  const rows = useMemo(() => researchPeriods(r, "annual"), [r]),
-    last = rows.at(-1),
-    prior = rows.at(-2),
+  const evidence = useMemo(() => latestFinancialEvidence(r), [r]),
+    last = evidence.latest,
+    prior = evidence.prior,
     c = useMemo(() => financialCase(last, prior), [last, prior]);
   if (r.company.assetType === "crypto") return null;
   return (
@@ -115,11 +115,12 @@ export function InvestmentCase({ research: r }: { research: Research }) {
         <div>
           <h2>The investment case</h2>
           <p>
-            Financial evidence · conditional implications ·{" "}
-            {dateLabel(last?.end)}
+            {evidence.periodBasis} evidence · {dateLabel(last?.end)}
           </p>
         </div>
-        <Source href={last?.sourceUrl}>Check the filing</Source>
+        <Source href={r.filings.find((f) => f.url)?.url || last?.sourceUrl}>
+          Source details
+        </Source>
       </header>
       <div className={s.cases}>
         {[
@@ -220,10 +221,13 @@ export function EarningsScenario({ research: r }: { research: Research }) {
     [multiple, setMultiple] = useState(20),
     [discount, setDiscount] = useState(10);
   const p = useMemo(() => researchPeriods(r, "annual").at(-1), [r]);
+  const current = useMemo(() => latestFinancialEvidence(r).latest, [r]);
   const adr = r.facts.some(
     (f) => f.end === p?.end && /^(20-F|40-F)/.test(f.form),
   );
   const eligible =
+    current?.netIncome != null &&
+    current.netIncome > 0 &&
     p?.eps != null &&
     p.eps > 0 &&
     p.currency === r.quote.currency &&
@@ -239,7 +243,7 @@ export function EarningsScenario({ research: r }: { research: Research }) {
     <section className={s.scenario}>
       <header className={s.heading}>
         <div>
-          <h2>Earnings scenarios</h2>
+          <h2>Your earnings assumptions</h2>
           <p>
             Five-year illustration · annual diluted EPS{" "}
             {amount(p!.eps, p!.currency)} · {dateLabel(p!.end)}

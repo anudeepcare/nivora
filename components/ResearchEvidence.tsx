@@ -12,7 +12,12 @@ import type { Research, Filing } from "@/lib/types";
 import type { EodNews } from "@/lib/eodhd";
 import { amount, percent, dateLabel } from "@/lib/format";
 import { useProduct, useResource } from "./Session";
-import { Help, Source } from "./Ui";
+import { Help, Source, DataStamp } from "./Ui";
+import {
+  estimateValue,
+  earningsMultiple,
+  upcomingEstimates,
+} from "@/lib/evidence-display";
 import { InvestmentCase } from "./ResearchSummary";
 import Analyst from "./Analyst";
 import { useGrow } from "./GrowCompany";
@@ -35,12 +40,12 @@ export function ProviderMetrics({
     ],
     [
       "P/E · TTM",
-      multiple(e.multiples.TrailingPE),
+      earningsMultiple(e.multiples.TrailingPE),
       "Provider-reported trailing price/earnings ratio. A negative earnings base may make this unavailable.",
     ],
     [
       "Forward P/E",
-      multiple(e.multiples.ForwardPE),
+      earningsMultiple(e.multiples.ForwardPE),
       "Provider-reported ratio based on estimated future earnings, not reported results.",
     ],
     [
@@ -81,9 +86,7 @@ export function ProviderMetrics({
     <section>
       <header className="au-section-head">
         <h2>{compact ? "Market context" : "Valuation in context"}</h2>
-        <span className="au-caption">
-          EODHD · Updated {dateLabel(e.updatedAt)}
-        </span>
+        <DataStamp source="EODHD fundamentals" asOf={e.updatedAt} />
       </header>
       <div className="market-metrics">
         {rows.slice(0, compact ? 4 : 8).map(([label, value, help]) => (
@@ -177,14 +180,7 @@ export function Consensus({ research: r }: { research: Research }) {
 export function Forecasts({ research: r }: { research: Research }) {
   const [annual, setAnnual] = useState(true),
     e = r.evidence;
-  const rows =
-    e?.estimates
-      .filter((x) =>
-        annual
-          ? x.frequency.toLowerCase().includes("annual")
-          : x.frequency.toLowerCase().includes("quarter"),
-      )
-      .slice(-6) ?? [];
+  const rows = upcomingEstimates(r, annual);
   if (!e) return null;
   return (
     <section className="au-panel">
@@ -192,7 +188,7 @@ export function Forecasts({ research: r }: { research: Research }) {
         <div>
           <h2>What analysts expect next</h2>
           <p className="au-caption">
-            Forecasts · range of estimates · {dateLabel(e.updatedAt)}
+            Upcoming fiscal periods · consensus estimates
           </p>
         </div>
         <div className="au-segment">
@@ -222,16 +218,14 @@ export function Forecasts({ research: r }: { research: Research }) {
                   <td>
                     {dateLabel(x.date)}
                     <small className="block">
-                      {x.currency ?? "Currency unspecified"}
+                      {x.currency ?? "Provider units"}
                     </small>
                   </td>
+                  <td>{estimateValue(x.revenue, x.currency, true)}</td>
+                  <td>{estimateValue(x.eps, x.currency)}</td>
                   <td>
-                    {x.currency ? amount(x.revenue, x.currency, true) : "—"}
-                  </td>
-                  <td>{x.currency ? amount(x.eps, x.currency) : "—"}</td>
-                  <td>
-                    {x.currency && x.epsLow != null && x.epsHigh != null
-                      ? `${amount(x.epsLow, x.currency)} – ${amount(x.epsHigh, x.currency)}`
+                    {x.epsLow != null && x.epsHigh != null
+                      ? `${estimateValue(x.epsLow, x.currency)} – ${estimateValue(x.epsHigh, x.currency)}`
                       : "—"}
                   </td>
                   <td>{x.analysts ?? "—"}</td>
@@ -244,6 +238,12 @@ export function Forecasts({ research: r }: { research: Research }) {
         <p className="au-caption">
           No {annual ? "annual" : "quarterly"} consensus estimates returned for
           this listing.
+        </p>
+      )}
+      {rows.some((x) => !x.currency) && (
+        <p className="footnote">
+          Figures without a currency use the provider’s stated numeric basis.
+          Currency was not supplied; these are not assumed to be USD.
         </p>
       )}
     </section>
@@ -578,7 +578,7 @@ export function ResearchThesis({ research: r }: { research: Research }) {
               {e?.profile.employees != null
                 ? ` · ${e.profile.employees.toLocaleString()} employees`
                 : ""}{" "}
-              · EODHD company profile
+              <DataStamp source="EODHD company profile" asOf={e?.updatedAt} />
             </p>
           </section>
           <InvestmentCase research={r} />

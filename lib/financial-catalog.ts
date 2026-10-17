@@ -46,11 +46,11 @@ export const financialCatalog: MetricDefinition[] = [
   ),
   m(
     "fcf",
-    "Free cash flow",
+    "FCF · OCF less capex",
     "Essentials",
     "money",
     "green",
-    "Operating cash flow minus cash capital expenditure from matching filings. This is not management-adjusted FCF.",
+    "AURYN calculation: operating cash flow minus the source’s capital expenditure field, using matching periods. Company-reported FCF may additionally deduct software investment, intangibles or lease payments. These definitions are not interchangeable.",
   ),
   m(
     "eps",

@@ -2,13 +2,17 @@
 
 This archive contains the complete standalone application source, tests, assets, migrations, approved design reference and deployment instructions. It is not proof that every inherited product requirement is production accepted. Read README.md, docs/RELEASE_STATUS.md and docs/DEPLOYMENT.md.
 
+## Latest repair — preserve this distinction
+
+HIMS exposed a period mismatch: the old headline used profitable 2025 annual data while its latest TTM showed losses. Current summaries, financial cards and investment case now use the latest complete TTM when available. Do not restore a generic zero-growth valuation as an authoritative base case or trigger Buy/Avoid from it. Operating cash flow less provider capex is a calculation and may differ from company-reported FCF. See verification/LIVE_UI_AUDIT_20261017.md.
+
 ## Latest decisions — preserve these
 
 The user has paid for both Twelve Data and EODHD All-in-One. Use Twelve Data for quotes and intraday charts; EODHD for daily history, financial statements, forecasts, valuation context, ownership, company events, news and filings. Cache and deduplicate requests. Use a labelled, whole-result fallback for price failures. Do not merge two providers' financial periods or splice their chart bars. No additional subscription or paid AI activation is authorized by this data integration.
 
 The user reports configuring EODHD_API_KEY in their deployment. The build environment could not independently access that key: it was absent locally and the Vercel connector returned a scope authorization error. Do not mislabel this as an invalid key or a failed paid subscription. The current build/API tests use fixture transports, and public EODHD demo normalization was checked separately.
 
-The current approved design is docs/design/approved-pwa-20261017.html. Earlier HTML and image references are historical. The live React implementation uses the approved design tokens and five research tabs: Snapshot, Financials, Valuation, Technicals and Thesis. Desktop sidebar and four-item mobile navigation, readable light/dark/system preferences, visible amount-free 0×–4× monthly accumulation context, source dates and clear metric explanations are required. No browser/physical-iPhone comparison has been completed in this environment. Never claim exact visual matching on compilation alone.
+The current approved design is docs/design/approved-pwa-20261017.html. Earlier HTML and image references are historical. The live React implementation uses the approved design tokens and five research tabs: Snapshot, Financials, Valuation, Technicals and Thesis. Desktop sidebar and four-item mobile navigation, readable light/dark/system preferences, visible amount-free 0×–4× monthly accumulation context, source dates and clear metric explanations are required. The deployed predecessor has now had a signed-in browser audit and supplied iPhone screenshots were inspected. The patched source still needs rendered preview and physical-iPhone acceptance. Never claim exact visual matching on compilation alone.
 
 Keep the product simple. Preserve AURYN branding. Do not reintroduce the removed portfolio purchase/stress/import panels or private-thesis/snapshot/Compare controls into the primary UI. Charts must not capture normal page scrolling. BTC/USD and ETH/USD must never silently resolve to ETFs. SAP's US quote must not turn EUR financials into USD values. Unknown data stays unknown, not zero or fabricated advice.
 

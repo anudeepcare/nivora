@@ -9,7 +9,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { useProduct, useResource } from "./Session";
-import { PageHeading, Notice, Empty, SecurityLogo } from "./Ui";
+import { PageHeading, Notice, Empty, SecurityLogo, Help } from "./Ui";
 import { ResearchHome } from "./Workspace";
 import { api, authClient } from "@/lib/client";
 import { amount, percent, dateLabel, symbolInput } from "@/lib/format";
@@ -107,29 +107,35 @@ export function Settings() {
       <section className="panel support">
         <div className="setting-row">
           <div>
-            <strong>Market data</strong>
-            <p>
-              {marketProvider === "hybrid"
-                ? "Twelve Data quotes + EODHD research"
-                : marketProvider === "eodhd"
-                  ? "EODHD"
-                  : marketProvider === "twelve"
-                    ? "Twelve Data"
-                    : "Provider configuration not confirmed"}
-            </p>
+            <strong>
+              Market data{" "}
+              <Help label="Market data connection">
+                {marketProvider === "hybrid"
+                  ? "Twelve Data quotes + EODHD research"
+                  : marketProvider === "eodhd"
+                    ? "EODHD"
+                    : marketProvider === "twelve"
+                      ? "Twelve Data"
+                      : "Provider configuration not confirmed"}
+                . Key configuration does not verify individual dataset
+                entitlements.
+              </Help>
+            </strong>
+            <p>Prices and company research</p>
           </div>
           <span className="tag">
             {marketProvider === "hybrid" ||
             marketProvider === "eodhd" ||
             marketProvider === "twelve"
               ? "Key configured"
-              : "Setup needed"}
+              : marketProvider === "unknown"
+                ? "Checking…"
+                : "Setup needed"}
           </span>
         </div>
         <p className="footnote">
-          Configuration status does not verify token validity. Research shows
-          actual source timestamps and any dataset errors. EODHD prices are
-          indicative; broker execution remains separate.
+          Observation dates and source information are available in Data
+          details. Research prices are separate from broker execution prices.
         </p>
       </section>
       <section className="panel support">

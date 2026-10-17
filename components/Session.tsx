@@ -13,6 +13,7 @@ import { api, authClient } from "@/lib/client";
 import type { Research, Workspace } from "@/lib/types";
 import { Logo } from "./Ui";
 import { readResource } from "@/lib/resource-cache";
+import { accountCache, clearAccountCache } from "@/lib/account-cache";
 export type DemoData = {
   research: Record<string, Research>;
   workspace: Workspace;
@@ -70,6 +71,7 @@ export function ProductSession({
           }
         });
       const { data } = client.auth.onAuthStateChange((_event, next) => {
+        if (!next) clearAccountCache();
         if (alive) {
           setSession(next);
           setLoading(false);
@@ -112,14 +114,30 @@ function StoreProvider({
   owner: string;
   demo?: DemoData;
 }) {
+  const cache = useMemo(
+    () =>
+      demo
+        ? new Map<string, { at: number; value: unknown }>()
+        : accountCache(owner),
+    [owner, demo],
+  );
   const [marketProvider, setMarketProvider] = useState<
     "hybrid" | "eodhd" | "twelve" | "none" | "unknown"
-  >("unknown");
+  >(
+    () =>
+      (
+        cache.get("provider-status")?.value as
+          | { marketProvider: Store["marketProvider"] }
+          | undefined
+      )?.marketProvider ?? "unknown",
+  );
   useEffect(() => {
     if (demo) return;
     let active = true;
-    api<{ marketProvider: "hybrid" | "eodhd" | "twelve" | "none" }>(
-      "provider-status",
+    readResource(cache, "provider-status", 300000, () =>
+      api<{ marketProvider: "hybrid" | "eodhd" | "twelve" | "none" }>(
+        "provider-status",
+      ),
     )
       .then((x) => {
         if (active) setMarketProvider(x.marketProvider);
@@ -128,18 +146,27 @@ function StoreProvider({
     return () => {
       active = false;
     };
-  }, [demo]);
-  const cache = useRef(
-    new Map<string, { at: number; value: unknown }>(),
-  ).current;
+  }, [demo, cache]);
   const [workspace, setWorkspace] = useState<Workspace | null>(
-      demo?.workspace ?? null,
+      demo?.workspace ??
+        (cache.get("workspace")?.value as Workspace | undefined) ??
+        null,
     ),
     [workspaceError, setWorkspaceError] = useState(""),
     [theme, setThemeState] = useState<"light" | "dark">("dark"),
     [themePreference, setThemePreference] = useState<
       "light" | "dark" | "system"
-    >("dark"),
+    >(() => {
+      try {
+        const v =
+          typeof window === "undefined"
+            ? null
+            : localStorage.getItem("auryn-product-theme");
+        return v === "light" || v === "system" ? v : "dark";
+      } catch {
+        return "dark";
+      }
+    }),
     [textSize, setTextSizeState] = useState<"standard" | "large">("standard"),
     [reduceMotion, setReduceMotionState] = useState(false);
   const alive = useRef(true);
@@ -148,6 +175,7 @@ function StoreProvider({
     try {
       const value = await api<Workspace>("workspace");
       if (alive.current) {
+        cache.set("workspace", { at: Date.now(), value });
         setWorkspace(value);
         setWorkspaceError("");
       }
@@ -157,13 +185,12 @@ function StoreProvider({
           e instanceof Error ? e.message : "Saved investments unavailable",
         );
     }
-  }, [demo]);
+  }, [demo, cache]);
   useEffect(() => {
     alive.current = true;
     void reloadWorkspace();
     return () => {
       alive.current = false;
-      cache.clear();
     };
   }, [reloadWorkspace, cache]);
   useEffect(() => {
@@ -287,7 +314,16 @@ export function useResource<T>(key: string | null, preview?: T, ttl = 60_000) {
       data: T | null;
       loading: boolean;
       error: string;
-    }>({ key: null, data: null, loading: false, error: "" });
+    }>(() => ({
+      key,
+      data: demo
+        ? (preview ?? null)
+        : key
+          ? ((cache.get(key)?.value as T) ?? null)
+          : null,
+      loading: !!key && !demo && !cache.has(key),
+      error: "",
+    }));
   useEffect(() => {
     if (!key) return;
     if (demo) {

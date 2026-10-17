@@ -11,7 +11,7 @@ export function canonical(r: Research) {
       .at(-1);
   const content = {
     company: r.company,
-    policy: "research-v1.3",
+    policy: "research-v1.4",
     asOfDay: r.retrievedAt.slice(0, 10),
     history: r.history.filter((b) => b.time < r.retrievedAt.slice(0, 10)),
     facts: [...r.facts].sort((a, b) => a.id.localeCompare(b.id)),
@@ -29,18 +29,11 @@ export function canonical(r: Research) {
       : `${p.tech.trend} price trend`
     : !p.last
       ? "Gather evidence"
-      : p.strong &&
-          p.valuation === "Below base case" &&
-          p.tech.trend === "Constructive"
-        ? "Consider staged entry"
-        : p.strong && p.valuation === "Above base case"
-          ? "Be selective on price"
-          : p.strong
-            ? "Research candidate"
-            : coverage.family === "frontier" ||
-                coverage.family === "infrastructure"
-              ? "Milestone-led research"
-              : "Review business economics";
+      : p.strong
+        ? "Research candidate"
+        : coverage.family === "frontier" || coverage.family === "infrastructure"
+          ? "Milestone-led research"
+          : "Review business economics";
   return {
     id,
     evidenceId,
@@ -75,10 +68,10 @@ export function canonical(r: Research) {
     },
     positives: [
       p.last?.fcf != null && p.last.fcf > 0
-        ? "Reported free cash flow is positive"
+        ? "Operating cash flow less capital expenditure is positive"
         : null,
       p.growth != null && p.growth > 0
-        ? "Comparable annual revenue increased"
+        ? "Comparable twelve-month revenue increased"
         : null,
     ].filter(Boolean),
     risks: [

@@ -129,6 +129,36 @@ function researchMarkup() {
     }),
     rangeBars: () => [],
   };
+  // Render the actual shared provenance component too; details remain available
+  // in its disclosure rather than cluttering the quote headline.
+  const ui = ts.createSourceFile(
+    "Ui.tsx",
+    fs.readFileSync("components/Ui.tsx", "utf8"),
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TSX,
+  );
+  const stamp = ui.statements.find(
+    (n) => ts.isFunctionDeclaration(n) && n.name?.text === "DataStamp",
+  );
+  const stampCode = ts.transpileModule(
+    stamp.getText(ui).replace("export ", ""),
+    {
+      compilerOptions: {
+        jsx: ts.JsxEmit.React,
+        module: ts.ModuleKind.CommonJS,
+      },
+    },
+  ).outputText;
+  bindings.DataStamp = new Function(
+    "React",
+    "dateLabel",
+    "quoteTime",
+    "Help",
+    stampCode + ";return DataStamp;",
+  )(React, format.dateLabel, format.quoteTime, ({ children }) =>
+    React.createElement("dialog", {}, children),
+  );
   for (const name of [
     "SecurityLogo",
     "Help",

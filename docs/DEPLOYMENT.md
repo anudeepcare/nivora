@@ -4,35 +4,23 @@
 
 The product branch was merged into `main` in PR #1 (merge commit `6e6b97ef80c42b1a3ac0d505b0ff3e5daea1e1d6`). The app is at the repository root. Do not run `cd product` on your Mac.
 
-Download the latest `AURYN-full-source-handoff.zip` to Downloads, replacing the earlier download with that exact filename. Stop any local development server first. Run this in your existing folder:
+If you already extracted and copied the new source into `~/Downloads/AURYN`, run:
 
 ```sh
 cd ~/Downloads/AURYN &&
-git switch main &&
-git fetch origin &&
-git branch "backup-auryn-$(date +%Y%m%d-%H%M%S)" &&
-unzip -p "$HOME/Downloads/AURYN-full-source-handoff.zip" AURYN/scripts/apply-source.cjs > "$HOME/Downloads/auryn-apply-source.cjs" &&
-node "$HOME/Downloads/auryn-apply-source.cjs" "$HOME/Downloads/AURYN-full-source-handoff.zip" &&
 npm ci &&
 npm run verify &&
 npm run test:api &&
-git reset --soft origin/main &&
 git add -A &&
-(git diff --cached --quiet || git commit -m "Integrate EODHD and Twelve Data with the approved AURYN research workspace") &&
+(git diff --cached --quiet || git commit -m "Fix research evidence periods and responsive AURYN interface") &&
 git push origin main
 ```
 
-The installer validates archive integrity and every source checksum before changing the app. It moves previous source, legacy tests/workflows and generated files into a sibling `AURYN-source-backup-…` folder and prints that backup location. It installs only the source listed in the package. It preserves `.git`, `.env`, `.env.*` (except the sample template) and `.vercel`. It does not modify Supabase, deployment settings or broker accounts. The archive excludes credentials, installed dependencies and generated build output.
+This assumes you are already on `main`, as in your last deployment. `git status -sb` shows the current branch. A clean working tree does not prevent the final push. If Git rejects the push, preserve the local changes and inspect the remote difference; do not force-push or reset branch history.
 
-Do not use `unzip -o` over the application: it leaves obsolete files in place and caused the mixed-source test failure. If verification fails, the command chain stops before changing the Git base or pushing. The backup folder retains the previous files.
+If you have only downloaded the ZIP, first extract its `AURYN` contents into the existing project folder. Keep your existing Git repository and private environment settings. The ZIP contains the full standalone source, dependency lockfile, tests and deployment documentation; it excludes installed dependencies, generated Next output and secret keys. No source belongs in a nested `product` directory on your Mac.
 
-The local and remote repositories previously had unrelated histories. After verification, `git reset --soft origin/main` keeps the installed working files and makes the new commit a normal child of the fetched remote `main`. The backup branch retains the previous local commits. The final push does not use force. This intentionally replaces the remote application source with the tested package; review any unrelated remote edits before running it. If the remote changes again during verification, fetch and review that change before retrying.
-
-`verify` regenerates Next route types before TypeScript checking, then runs a production build. Do not manually edit `.next/types/validator.ts`. If a previous development process is still running, stop it before verifying so it cannot regenerate stale route types during the build.
-
-A failed command stops the chain. The conditional commit handles an already-current working tree without preventing the push. Do not force-push or merge unrelated histories to work around an installation error.
-
-The current CI workflow is `auryn-product-verify.yml`. Historical workflows are moved to the source backup by the installer. Do not restore old schedules against replacement endpoint contracts without reviewing them.
+The optional `scripts/apply-source.cjs` installer validates the archive manifest and makes a sibling source backup before replacing files. Use it only when replacing a legacy folder wholesale; it is unnecessary when you already copied this source. Do not reintroduce removed legacy CSS or old generated `.next` route types.
 
 ## Vercel preview
 

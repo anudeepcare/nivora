@@ -17,7 +17,14 @@ import type { Company, Position, Quote } from "@/lib/types";
 import { portfolioTotals } from "@/lib/engine";
 import { amount, dateLabel, percent, quoteTime } from "@/lib/format";
 import { useProduct, useResource } from "./Session";
-import { Empty, PageHeading, SecurityLogo, Notice, Help } from "./Ui";
+import {
+  Empty,
+  PageHeading,
+  SecurityLogo,
+  Notice,
+  Help,
+  DataStamp,
+} from "./Ui";
 import Search from "./Search";
 import { api } from "@/lib/client";
 import { workspaceSymbolBatches } from "@/lib/workspace";
@@ -37,8 +44,18 @@ export function useWorkspaceQuotes(
     ),
     key = JSON.stringify(groups),
     [revision, setRevision] = useState(0),
-    [data, setData] = useState<Quotes>({}),
-    [loading, setLoading] = useState(false),
+    [data, setData] = useState<Quotes>(() =>
+      Object.fromEntries(
+        groups.flat().flatMap((s) => {
+          const row = cache.get("quote:" + s);
+          return row ? [[s, row.value as Quotes[string]]] : [];
+        }),
+      ),
+    ),
+    [loading, setLoading] = useState(!demo && groups.length > 0),
+    [ready, setReady] = useState(
+      !!demo || cache.has("workspace-quotes:" + key) || !groups.length,
+    ),
     [error, setError] = useState("");
   const refresh = useCallback(() => setRevision((x) => x + 1), []);
   useEffect(() => {
@@ -51,6 +68,8 @@ export function useWorkspaceQuotes(
           ]),
         ),
       );
+      setReady(true);
+      setLoading(false);
       return;
     }
     const abort = new AbortController();
@@ -62,6 +81,7 @@ export function useWorkspaceQuotes(
       if (row) cached[symbol] = row.value as Quotes[string];
     }
     setData(cached);
+    setReady(cache.has("workspace-quotes:" + key) || !selected.length);
     setLoading(selected.length > 0);
     setError("");
     let windowStarted = Date.now();
@@ -81,6 +101,7 @@ export function useWorkspaceQuotes(
         );
       });
     (async () => {
+      const next: Quotes = { ...cached };
       let requested = 0;
       for (const group of selected) {
         if (!active) break;
@@ -110,35 +131,46 @@ export function useWorkspaceQuotes(
           if (!active) break;
           for (const [s, r] of Object.entries(result))
             if (r.quote) cache.set("quote:" + s, { at: Date.now(), value: r });
-          setData((old) => {
-            const next = { ...old };
-            for (const [symbol, row] of Object.entries(result))
-              next[symbol] = row.quote
-                ? row
-                : {
-                    ...old[symbol],
-                    ...row,
-                    ...(old[symbol]?.quote
-                      ? { quote: { ...old[symbol].quote!, stale: true } }
-                      : {}),
-                  };
-            return next;
-          });
+          for (const [symbol, row] of Object.entries(result))
+            next[symbol] = row.quote
+              ? row
+              : {
+                  ...next[symbol],
+                  ...row,
+                  ...(next[symbol]?.quote
+                    ? { quote: { ...next[symbol].quote!, stale: true } }
+                    : {}),
+                };
           requested += weight;
         } catch (e) {
-          if (active)
+          if (active) {
             setError(e instanceof Error ? e.message : "Quotes unavailable");
+            for (const symbol of missing) {
+              if (next[symbol]?.quote) {
+                next[symbol] = {
+                  ...next[symbol],
+                  quote: { ...next[symbol].quote!, stale: true },
+                };
+                cache.set("quote:" + symbol, { at: 0, value: next[symbol] });
+              }
+            }
+          }
           requested += weight;
         }
       }
-      if (active) setLoading(false);
+      if (active) {
+        setData(next);
+        cache.set("workspace-quotes:" + key, { at: Date.now(), value: true });
+        setReady(true);
+        setLoading(false);
+      }
     })();
     return () => {
       active = false;
       abort.abort();
     };
   }, [key, demo, cache, revision, marketProvider]);
-  return { data, loading, error, refresh };
+  return { data, loading, ready, error, refresh };
 }
 export function ResearchHome() {
   const { workspace, demo, workspaceError } = useProduct(),
@@ -201,7 +233,7 @@ export function ResearchHome() {
                 </footer>
                 <small className="quote-stamp">
                   {q?.quote
-                    ? `${q.quote.source} · ${quoteTime(q.quote.asOf)}`
+                    ? dateLabel(q.quote.asOf)
                     : q?.error || "Loading price…"}
                 </small>
               </Link>
@@ -245,7 +277,7 @@ export function Overview() {
         <div>
           <span className="eyebrow">YOUR PORTFOLIO · USD</span>
           <div className="balance">
-            {workspace ? amount(totals.knownValue) : "—"}
+            {workspace && quotes.ready ? amount(totals.knownValue) : "—"}
           </div>
           <p className="balance-caption">
             {quotes.loading
@@ -262,7 +294,7 @@ export function Overview() {
                   totals.pnl != null && totals.pnl < 0 ? "red" : "green"
                 }
               >
-                {amount(totals.pnl)}
+                {quotes.ready ? amount(totals.pnl) : "—"}
               </strong>
             </div>
             <div>
@@ -357,11 +389,13 @@ function InvestmentRows({
                     ? "Older quote"
                     : percent(q.quote.changePct, true)}
               </small>
-              <small className="quote-stamp" title={q?.error}>
-                {q?.quote
-                  ? `${q.quote.source} · ${quoteTime(q.quote.asOf)}`
-                  : q?.error || "Requesting latest quote"}
-              </small>
+              {q?.quote ? (
+                <DataStamp source={q.quote.source} asOf={q.quote.asOf} />
+              ) : (
+                <small className="quote-stamp" title={q?.error}>
+                  {q?.error || "Requesting latest quote"}
+                </small>
+              )}
             </div>
             {remove ? (
               <button
@@ -704,7 +738,7 @@ export function Portfolio() {
         <section className="panel portfolio-balance">
           <span className="eyebrow">KNOWN MARKET VALUE · USD</span>
           <div className="balance">
-            {workspace ? amount(totals.knownValue) : "—"}
+            {workspace && quotes.ready ? amount(totals.knownValue) : "—"}
           </div>
           <p className="balance-caption">
             {totals.missing.length
@@ -728,7 +762,7 @@ export function Portfolio() {
                   totals.pnl != null && totals.pnl < 0 ? "red" : "green"
                 }
               >
-                {amount(totals.pnl)}
+                {quotes.ready ? amount(totals.pnl) : "—"}
               </strong>
               <small>
                 {totals.pnl != null && totals.cost
@@ -825,15 +859,23 @@ export function Portfolio() {
                         </td>
                         <td data-label="Price">
                           {amount(price)}
-                          <small className="muted">
-                            {p.assetType === "cash"
-                              ? "Cash"
-                              : q[p.symbol]
-                                ? `${q[p.symbol].source} · ${quoteTime(q[p.symbol].asOf)}`
-                                : quotes.loading
-                                  ? "Loading…"
-                                  : "Unavailable"}
-                          </small>
+                          <span className="holding-stamp">
+                            {p.assetType === "cash" ? (
+                              "Cash"
+                            ) : q[p.symbol] ? (
+                              <DataStamp
+                                source={q[p.symbol].source}
+                                asOf={q[p.symbol].asOf}
+                                status={
+                                  q[p.symbol].stale ? "Older quote" : undefined
+                                }
+                              />
+                            ) : quotes.loading ? (
+                              "Loading…"
+                            ) : (
+                              "Unavailable"
+                            )}
+                          </span>
                         </td>
                         <td data-label="Value">
                           {amount(value)}

@@ -870,6 +870,7 @@ small,
   display: grid;
   grid-template-columns: 1.1fr 1fr;
   gap: 26px;
+  align-items: start;
 }
 .overview-hero {
   background: linear-gradient(130deg, var(--bluewash), var(--surface) 55%);
@@ -921,14 +922,20 @@ small,
 }
 .allocation-labels {
   display: grid;
-  gap: 13px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 24px;
 }
-.allocation-labels > div {
+.allocation-labels > span {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 6px;
   font-size: 0.87rem;
+}
+.allocation-labels b {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
 }
 .allocation-labels i {
   display: inline-block;
@@ -960,6 +967,11 @@ small,
 .investment-identity b {
   display: block;
   font-weight: 500;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.4;
 }
 .investment-identity small {
   display: block;
@@ -984,9 +996,82 @@ small,
   align-items: center;
   margin-bottom: 18px;
 }
+.watchlist-toolbar > label {
+  display: flex;
+  position: relative;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+.watchlist-toolbar > label > svg {
+  position: absolute;
+  left: 13px;
+  color: var(--muted);
+  pointer-events: none;
+}
+.watchlist-toolbar > span {
+  white-space: nowrap;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
 .watchlist-toolbar input {
   flex: 1;
   min-width: 0;
+  width: 100%;
+  padding-left: 40px;
+}
+.data-stamp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: inherit;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 0.73rem;
+  line-height: 1.4;
+  max-width: 100%;
+}
+.data-stamp > span {
+  overflow-wrap: anywhere;
+}
+#auryn-app .data-stamp .help {
+  min-height: 28px;
+  min-width: 28px;
+  width: 28px;
+  height: 28px;
+  padding: 4px;
+  flex-shrink: 0;
+}
+.au-quote .data-stamp {
+  display: flex;
+  justify-content: flex-end;
+}
+.holding-stamp {
+  display: block;
+  color: var(--muted);
+  font-size: 0.73rem;
+}
+.holding-stamp .data-stamp {
+  white-space: normal;
+}
+.workspace-loading {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 12px;
+  min-height: 45vh;
+  color: var(--muted);
+}
+.au-section-head {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+#auryn-app .decision-detail {
+  display: flex;
+  padding: 4px 0;
+  min-height: 32px;
+  font-size: 12px;
+  font-weight: 400;
+  justify-content: flex-start;
 }
 .quote-progress {
   display: flex;
@@ -1591,7 +1676,7 @@ textarea {
     z-index: 40;
     padding: calc(10px + env(safe-area-inset-top)) 16px 10px;
     background: color-mix(in srgb, var(--surface) 94%, transparent);
-    backdrop-filter: blur(20px);
+    min-height: calc(64px + env(safe-area-inset-top));
   }
   .mobile-brand {
     display: block;
@@ -1607,6 +1692,17 @@ textarea {
   }
   .content {
     padding: 24px 18px calc(100px + env(safe-area-inset-bottom));
+    min-width: 0;
+  }
+  html {
+    scroll-padding-top: calc(84px + env(safe-area-inset-top));
+  }
+  .mobile-brand .brand {
+    line-height: 1.25;
+    overflow: visible;
+  }
+  .mobile-brand .brand img {
+    flex-shrink: 0;
   }
   .mobile-dock {
     display: flex;
@@ -1707,6 +1803,14 @@ textarea {
   }
   .au-quote {
     text-align: left !important;
+  }
+  .au-quote .data-stamp {
+    justify-content: flex-start;
+  }
+  #auryn-app .data-stamp .help {
+    min-height: 44px;
+    min-width: 36px;
+    width: 36px;
   }
   .au-localtabs {
     position: relative;
@@ -1852,7 +1956,85 @@ textarea {
     font-size: 0.72rem;
   }
   .holdings-table {
-    min-width: 570px;
+    min-width: 0;
+    width: 100%;
+  }
+  .holdings-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .holdings-table tbody {
+    display: grid;
+    gap: 12px;
+  }
+  .holdings-table tr {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .holdings-table td {
+    display: block;
+    border: 0;
+    padding: 0;
+    min-width: 0;
+    white-space: normal;
+    font-size: 0.85rem;
+  }
+  .holdings-table td:first-child {
+    grid-column: 1/-1;
+    padding-bottom: 4px;
+  }
+  .holdings-table td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    color: var(--muted);
+    font-size: 0.72rem;
+    margin-bottom: 5px;
+  }
+  .holdings-table td:last-child {
+    grid-column: 1/-1;
+  }
+  .holdings-table .row-actions {
+    justify-content: flex-end;
+  }
+  .holdings-table .investment-identity small:last-child {
+    max-width: 260px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .holdings-table .holding-stamp {
+    margin-top: 5px;
+  }
+  .holdings-table .data-stamp > span {
+    font-size: 0.65rem;
+  }
+  .investment-row {
+    grid-template-columns: minmax(0, 1fr) auto 32px;
+  }
+  .investment-row > .icon-button {
+    min-width: 32px;
+    width: 32px;
+    padding: 5px;
+  }
+  .investment-price .data-stamp {
+    justify-content: flex-end;
+  }
+  .watchlist-toolbar {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .watchlist-toolbar > label {
+    flex-basis: calc(100% - 54px);
+  }
+  .watchlist-toolbar > span {
+    order: 3;
+    flex-basis: 100%;
   }
   .company-grid {
     grid-template-columns: 1fr;

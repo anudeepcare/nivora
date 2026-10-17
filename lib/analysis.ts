@@ -1,8 +1,31 @@
-import { modelCoverage } from "./research-depth.ts";
+import { modelCoverage, ttmPeriods } from "./research-depth.ts";
 import type { Candle, Research, FinancialPeriod } from "./types";
 import { financialPeriods, cashFlowValue, accumulation } from "./engine.ts";
 export const annualRows = (r: Research) =>
   financialPeriods(r.facts, "annual", r.retrievedAt);
+export function latestFinancialEvidence(r: Research) {
+  const annual = annualRows(r),
+    ttm = ttmPeriods(r.facts, r.retrievedAt);
+  const a = annual.at(-1),
+    t = ttm.at(-1);
+  const useTtm = !!t && (!a || t.end > a.end) && t.revenue != null;
+  const rows = useTtm ? ttm : annual,
+    latest = rows.at(-1);
+  const prior = latest
+    ? rows
+        .filter((x) => {
+          const days = (Date.parse(latest.end) - Date.parse(x.end)) / 86400000;
+          return (
+            days >= 330 &&
+            days <= 400 &&
+            x.currency === latest.currency &&
+            x.basis === latest.basis
+          );
+        })
+        .at(-1)
+    : undefined;
+  return { rows, latest, prior, periodBasis: useTtm ? "TTM" : "Annual" };
+}
 export function indicators(bars: Candle[], asOf: string) {
   const day = asOf.slice(0, 10),
     rows = bars
@@ -94,8 +117,8 @@ export function indicators(bars: Candle[], asOf: string) {
   };
 }
 export function valuationInputs(r: Research) {
-  const rows = annualRows(r),
-    latest = rows.at(-1),
+  const evidence = latestFinancialEvidence(r),
+    latest = evidence.latest,
     today = r.retrievedAt.slice(0, 10);
   const share = r.facts
     .filter(
@@ -133,7 +156,10 @@ export function valuationInputs(r: Research) {
   if (r.company.assetType === "crypto")
     issues.push("Corporate cash-flow valuation does not apply to crypto.");
   // Foreign listings require explicit listed-share/ADR reconciliation, never assume 1:1.
-  if (r.company.foreignListing || (share && ["20-F", "40-F"].includes(share.form)))
+  if (
+    r.company.foreignListing ||
+    (share && ["20-F", "40-F"].includes(share.form))
+  )
     issues.push(
       "Reconcile listed shares or ADR units before using per-share valuation.",
     );
@@ -156,12 +182,20 @@ export function valuationInputs(r: Research) {
         ),
       }))
     : [];
-  return { latest, share, issues, eligible, scenarios };
+  return {
+    latest,
+    share,
+    issues,
+    eligible,
+    scenarios,
+    periodBasis: evidence.periodBasis,
+  };
 }
 export function perspective(r: Research) {
-  const rows = annualRows(r),
-    last = rows.at(-1),
-    previous = rows.at(-2),
+  const evidence = latestFinancialEvidence(r),
+    rows = evidence.rows,
+    last = evidence.latest,
+    previous = evidence.prior,
     tech = indicators(r.history, r.retrievedAt),
     dca = accumulation(
       r.history,
@@ -190,16 +224,8 @@ export function perspective(r: Research) {
           : last.netIncome != null && last.netIncome < 0
             ? "Loss-making"
             : "Mixed economics";
-  const scenario = v.scenarios[1]?.value,
-    price = r.quote.stale ? null : r.quote.price;
-  const valuation =
-    scenario && price
-      ? price < scenario * 0.85
-        ? "Below base case"
-        : price > scenario * 1.15
-          ? "Above base case"
-          : "Near base case"
-      : "Scenario needed";
+  // A calculator's generic growth/discount settings are not an investment rating.
+  const valuation = v.eligible ? "Assumption dependent" : "Not established";
   const heading =
     r.company.assetType === "crypto"
       ? "Price structure, with risk in view."
@@ -236,6 +262,7 @@ export function perspective(r: Research) {
     last,
     growth,
     strong,
+    periodBasis: evidence.periodBasis,
   };
 }
 export function periodLabel(row: FinancialPeriod) {

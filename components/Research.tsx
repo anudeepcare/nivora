@@ -20,7 +20,7 @@ import { expandedStudies } from "@/lib/technical-expanded";
 import { weeklyStudies } from "@/lib/research-depth";
 import { amount, percent, dateLabel, quoteTime } from "@/lib/format";
 import { useProduct, useResource } from "./Session";
-import { SecurityLogo, Help, Notice, Empty } from "./Ui";
+import { SecurityLogo, Help, Notice, Empty, DataStamp } from "./Ui";
 import { PriceChart } from "./Charts";
 import Financials from "./Financials";
 import { InvestmentCase, EarningsScenario } from "./ResearchSummary";
@@ -171,13 +171,15 @@ export default function Research({ symbol }: { symbol: string }) {
         </div>
       )}
       <div className="au-chart-foot">
-        <span>
-          {intraday
-            ? (short.data?.source ?? "Price history")
-            : (r.historySource ?? "Price history")}{" "}
-          · {dateLabel(bars.at(-1)?.time)}
-          {intraday ? " · Historical intraday" : ""}
-        </span>
+        <DataStamp
+          source={
+            intraday
+              ? (short.data?.source ?? "Price history")
+              : (r.historySource ?? "Price history")
+          }
+          asOf={bars.at(-1)?.time}
+          status={intraday ? "Intraday history" : undefined}
+        />
         <div className="au-segment">
           <button
             aria-pressed={style === "line"}
@@ -198,7 +200,7 @@ export default function Research({ symbol }: { symbol: string }) {
   return (
     <article className="research-page">
       <header className="au-securityhead">
-        <div className="au-flex">
+        <div className="au-flex security-identity">
           <SecurityLogo symbol={symbol} size={52} />
           <div>
             <h1>{r.company.name}</h1>
@@ -207,7 +209,7 @@ export default function Research({ symbol }: { symbol: string }) {
             </p>
           </div>
         </div>
-        <div className="au-flex">
+        <div className="au-flex security-actions">
           <div className="au-quote">
             <div className="au-price au-num">
               {amount(r.quote.price, r.quote.currency)}
@@ -221,10 +223,11 @@ export default function Research({ symbol }: { symbol: string }) {
             >
               {percent(r.quote.changePct, true)}
             </span>
-            <small>
-              {r.quote.stale ? "Older observation" : r.quote.session} ·{" "}
-              {r.quote.source} · {quoteTime(r.quote.asOf)}
-            </small>
+            <DataStamp
+              source={r.quote.source}
+              asOf={r.quote.asOf}
+              status={r.quote.stale ? "Older quote" : r.quote.session}
+            />
           </div>
           <button
             className="icon-button"
@@ -330,7 +333,7 @@ export default function Research({ symbol }: { symbol: string }) {
                   ? crypto
                     ? "Read price structure and allocation together. Corporate financials do not apply to this asset."
                     : p.growth != null
-                      ? `Revenue ${p.growth >= 0 ? "grew" : "declined"} ${percent(Math.abs(p.growth))} in the last comparable annual period. ${p.last?.fcf != null ? `Free cash flow was ${amount(p.last.fcf, p.last.currency, true)}.` : ""}`
+                      ? `Revenue ${p.growth >= 0 ? "grew" : "declined"} ${percent(Math.abs(p.growth))} year over year. ${p.periodBasis} to ${dateLabel(p.last?.end)}.`
                       : "Current financial evidence and price history are assessed separately."
                   : r.snapshot?.horizons.longTerm}
               </p>
@@ -344,8 +347,23 @@ export default function Research({ symbol }: { symbol: string }) {
                   </b>
                 </div>
                 <div>
-                  <small>{crypto ? "Daily range" : "Valuation"}</small>
-                  <b>{crypto ? percent(p.tech.atr) : p.valuation}</b>
+                  <small>{crypto ? "Daily range" : "Analyst target"}</small>
+                  <b>
+                    {crypto
+                      ? percent(p.tech.atr)
+                      : !r.company.foreignListing &&
+                          r.evidence?.consensus?.target
+                        ? amount(r.evidence.consensus.target, r.quote.currency)
+                        : "Not available"}
+                  </b>
+                  {!crypto && (
+                    <button
+                      className="au-link decision-detail"
+                      onClick={() => setTab("Valuation")}
+                    >
+                      View ratings & assumptions <ArrowUpRight size={13} />
+                    </button>
+                  )}
                 </div>
                 <div>
                   <small>Price trend</small>

@@ -3,7 +3,7 @@ import Trading from "./Trading";
 import ResearchLab from "./ResearchLab";
 import Alerts from "./AlertCenter";
 import Discover from "./Discover";
-import { ProductSession, type DemoData } from "./Session";
+import { ProductSession, useProduct, type DemoData } from "./Session";
 import Shell from "./Shell";
 import { symbolInput } from "@/lib/format";
 import dynamic from "next/dynamic";
@@ -12,6 +12,33 @@ const Research = dynamic(() => import("./Research"), {
 });
 import { Overview, ResearchHome, Portfolio, Watchlist } from "./Workspace";
 import { Settings, Compare, HelpPage } from "./SupportingViews";
+function WorkspaceGate({ children }: { children: React.ReactNode }) {
+  const { workspace, workspaceError, reloadWorkspace } = useProduct();
+  if (!workspace)
+    return (
+      <section
+        className="workspace-loading"
+        aria-busy={!workspaceError}
+        role="status"
+      >
+        <span className={workspaceError ? "" : "spinner"} />
+        <h2>
+          {workspaceError
+            ? "Your workspace could not be loaded"
+            : "Loading your investments"}
+        </h2>
+        <p>
+          {workspaceError || "Retrieving your saved positions and watchlist…"}
+        </p>
+        {workspaceError && (
+          <button className="button" onClick={reloadWorkspace}>
+            Try again
+          </button>
+        )}
+      </section>
+    );
+  return children;
+}
 export default function Product({
   route,
   demo,
@@ -48,12 +75,18 @@ export default function Product({
           route[1] ? (
             <Research key={researchSymbol} symbol={researchSymbol} />
           ) : (
-            <ResearchHome />
+            <WorkspaceGate>
+              <ResearchHome />
+            </WorkspaceGate>
           )
         ) : page === "portfolio" ? (
-          <Portfolio />
+          <WorkspaceGate>
+            <Portfolio />
+          </WorkspaceGate>
         ) : page === "watchlist" ? (
-          <Watchlist />
+          <WorkspaceGate>
+            <Watchlist />
+          </WorkspaceGate>
         ) : page === "settings" ? (
           <Settings />
         ) : page === "compare" ? (
@@ -69,7 +102,9 @@ export default function Product({
         ) : page === "help" ? (
           <HelpPage />
         ) : (
-          <Overview />
+          <WorkspaceGate>
+            <Overview />
+          </WorkspaceGate>
         )}
       </Shell>
     </ProductSession>

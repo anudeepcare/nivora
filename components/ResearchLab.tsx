@@ -1,7 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import { Download, FlaskConical } from "lucide-react";
-import { useProduct, useResource } from "./Session";
+import { useProduct } from "./Session";
 import { api } from "@/lib/client";
 import { compareDca } from "@/lib/planning";
 import { amount, percent, symbolInput, dateLabel } from "@/lib/format";
@@ -15,18 +15,6 @@ export default function ResearchLab() {
     [data, setData] = useState<Research | null>(null),
     [busy, setBusy] = useState(false),
     [message, setMessage] = useState("");
-  const observationPreview = useMemo(
-    () => (demo ? { observations: [] } : undefined),
-    [demo],
-  );
-  const observations = useResource<{
-    observations: {
-      symbol: string;
-      snapshot_id: string;
-      observed_at: string;
-      payload: any;
-    }[];
-  }>("observations", observationPreview);
   const result = useMemo(
     () =>
       data
@@ -78,7 +66,7 @@ export default function ResearchLab() {
     <section>
       <PageHeading
         title="Test the idea. Keep the evidence."
-        subtitle="Transparent historical comparisons and dated research records."
+        subtitle="Compare monthly policies using the same budget and completed history."
       />
       <form className="alert-builder panel" onSubmit={run}>
         <label>
@@ -167,44 +155,6 @@ export default function ResearchLab() {
         >
           Both policies receive the same cash at the same time. Stronger
           multipliers cannot borrow from future contributions.
-        </Empty>
-      )}
-      <header className="section-heading support">
-        <h2>Saved research observations</h2>
-        <span className="muted small">
-          Evidence records, not verified investment outcomes
-        </span>
-      </header>
-      {observations.error && <Notice>{observations.error}</Notice>}
-      {observations.data?.observations.length ? (
-        <div className="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>Company</th>
-                <th>Saved</th>
-                <th>Business</th>
-                <th>Timing</th>
-                <th>Policy</th>
-              </tr>
-            </thead>
-            <tbody>
-              {observations.data.observations.map((r) => (
-                <tr key={`${r.symbol}:${r.snapshot_id}`}>
-                  <td>{r.symbol}</td>
-                  <td>{dateLabel(r.observed_at)}</td>
-                  <td>{r.payload.business}</td>
-                  <td>{r.payload.timing}</td>
-                  <td>{r.payload.policy}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <Empty title="Start a record you can revisit">
-          Save a dated snapshot from a company's Business tab. Original
-          observations remain separate from later research.
         </Empty>
       )}
     </section>

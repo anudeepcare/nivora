@@ -451,15 +451,26 @@
   font-weight: 500;
 }
 #auryn-app .au-securityhead {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   justify-content: space-between;
   align-items: center;
   gap: 16px;
-  flex-wrap: wrap;
   margin-bottom: 22px;
 }
 #auryn-app .au-securityhead h1 {
   font-size: 27px;
+  overflow-wrap: anywhere;
+  line-height: 1.2;
+}
+#auryn-app .security-identity {
+  min-width: 0;
+}
+#auryn-app .security-identity > div {
+  min-width: 0;
+}
+#auryn-app .security-actions {
+  justify-content: flex-end;
 }
 #auryn-app .au-quote {
   text-align: right;
@@ -1196,20 +1207,17 @@
   }
   #auryn-app .au-securityhead {
     gap: 14px;
+    grid-template-columns: minmax(0, 1fr);
   }
   #auryn-app .au-securityhead h1 {
     font-size: 24px;
   }
-  #auryn-app .au-securityhead > .au-flex {
-    flex: 1;
+  #auryn-app .security-actions {
+    width: 100%;
+    justify-content: space-between;
   }
-  #auryn-app .au-securityhead > .au-quote {
-    min-width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  #auryn-app .security-actions .au-quote {
     text-align: left;
-    padding-left: 0;
   }
   #auryn-app .au-quote .au-price {
     font-size: 29px;

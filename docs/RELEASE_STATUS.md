@@ -1,6 +1,10 @@
 # AURYN release status — 17 October 2026
 
-**Full standalone source is included. Production acceptance is not complete.** The current update implements both-provider routing and the approved research layout. It has not been deployed or tested on a physical iPhone in this session.
+**Full standalone source is included. Production acceptance is not complete.** The current update repairs the UI and reconciles financial-period selection following a signed-in audit of the deployed app. This patched source has not been deployed or tested on a physical iPhone.
+
+## Latest repair and evidence
+
+Read verification/LIVE_UI_AUDIT_20261017.md for the live audit and HIMS/ValueSnapshot reconciliation. The source now uses current complete TTM evidence consistently, removes generic calculator-driven buy/valuation judgments, corrects zero P/E and forecast displays, preserves account data between navigations, batches portfolio totals, and repairs mobile header/holdings/search/allocation layouts. Provider metadata is in Data details. The cash-flow calculator is an assumption sensitivity, not a company-specific fair-value engine.
 
 ## What changed
 
@@ -13,7 +17,7 @@
 
 ## Verification for this update
 
-See verification/REPORT.json, eodhd-verify.log and eodhd-api.log for final counts and commands. Unit/domain/Postgres checks, TypeScript and the optimized production build passed. Compiled-handler tests cover unauthenticated denial, trusted admin controls, crypto identity, SAP reporting currency, shared caching, mixed-provider selection, fallback labels, estimates and dated source links. The tests use fixtures and do not certify paid-provider availability.
+See verification/REPORT.json, ui-repair-verify.log and ui-repair-api.log for final counts and commands. Unit/domain/Postgres checks, TypeScript and the optimized production build passed. Compiled-handler tests cover unauthenticated denial, trusted admin controls, crypto identity, SAP reporting currency, shared caching, mixed-provider selection, fallback labels, estimates and dated source links. The tests use fixtures and do not certify paid-provider availability.
 
 The new adapter also parsed the official public AAPL demo into 3,447 normalized financial observations, 50 estimate records, 20 earnings records and 12 holder records. This validates the retrieved response shape against the adapter, not the paid account, accuracy of each field or full watchlist coverage.
 
@@ -21,11 +25,11 @@ Earlier live read-only Twelve Data/SEC/Finnhub/Alpaca probes and database setup 
 
 ## Still unverified
 
-- **Paid EODHD connection:** the user says the key is configured externally. No EODHD key was available locally; Vercel environment access returned a scope authorization error. This is an access blocker, not evidence of a bad key. Check actual preview research responses for the intended tickers.
-- **Actual rendered UX and installed iPhone PWA:** no supported browser-control capability was available in the managed Sites environment. The Sites workflow disallows an improvised browser path. Therefore no pixel comparison, touch/keyboard journey, contrast measurement, all-viewport pass or physical-device acceptance is claimed. The approved HTML is a design reference, not an actual screenshot of this build.
-- **Deployed account flows:** registration, reset, owner mapping and authenticated writes through the new deployed UI require preview acceptance. Current database/RLS tests do not establish that end-to-end journey.
-- **AI:** no AI key/model and funded runtime were verified; no paid generation took place. EODHD does not supply this service. Deterministic financial evidence is available independently.
-- **Paper execution:** no order submission, partial fill/cancel lifecycle or deployed scheduler was exercised. Execution/scheduling are off by default.
+- **Paid EODHD connection:** the deployed UI returned EODHD financial/consensus data for APP, HIMS, SAP and OSCR and historical charts during the live audit. The key was not accessed locally, and the full subscription entitlement matrix remains unverified.
+- **Patched rendered UX and installed iPhone PWA:** the deployed predecessor was inspected through the cloud browser and the supplied iPhone screenshots. Local preview control is unavailable under the managed Sites workflow. Post-repair pixel comparisons, all-viewport checks and physical iPhone acceptance are therefore still required; no exact visual match is claimed.
+- **Deployed account flows:** secure sign-in and reading existing portfolios/watchlists succeeded on the deployed predecessor. Registration, reset, account writes and patched navigation still require preview acceptance.
+- **AI:** the deployed UI reports generation disabled. No paid generation or configuration change took place.
+- **Paper execution:** the signed-in account encountered Administrator access required. Trusted owner/admin mapping must be checked; no permission change or broker order was made.
 - **Commercial operation:** personal subscriptions are not verified resale licences. Multi-instance cache/budget, real traffic latency, billing and support operations remain open.
 
 ## Material inherited scope still incomplete

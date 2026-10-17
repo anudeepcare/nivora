@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-10-17T16:00:24.504515+00:00",
+  "generatedAt": "2026-10-17T16:45:31.447954+00:00",
   "sourceRoot": "AURYN (ZIP root); product in the development checkout",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 94 tests, route generation, TypeScript and production build",
-    "npm run test:api": "passed: 32 baseline + 16 research regressions + 10 EODHD/mixed-provider checks",
+    "npm run verify": "passed: 102 tests, route generation, TypeScript and production build",
+    "npm run test:api": "passed: 32 baseline + 16 research regressions + 10 mixed-provider checks",
     "git diff --check": "passed"
   },
-  "domainPostgresAndComponentTests": 94,
+  "domainPostgresAndComponentTests": 102,
   "builtApiChecks": 58,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -16,10 +16,10 @@
     "dailyHistory": "EODHD preferred; entire Twelve series on failure",
     "financials": "EODHD when configured; SEC legacy path when absent"
   },
-  "paidEodhdAccountVerified": false,
-  "eodhdConfiguration": "User reports key configured externally; no local EODHD token; Vercel metadata access returned403 scope authorization error",
+  "paidEodhdAccountVerified": "Deployed financial results observed; account/token and full entitlement matrix not inspected",
+  "eodhdConfiguration": "Financial data returned in signed-in deployed UI; no local token; Vercel metadata access denied by scope.",
   "publicDemoNormalization": "eodhd-demo-normalization.json",
-  "browserTestsExecuted": false,
+  "browserTestsExecuted": true,
   "physicalIphoneTestsExecuted": false,
   "liveDatabaseWrites": false,
   "brokerOrdersSubmitted": false,
@@ -27,9 +27,11 @@
   "productionReady": false,
   "deployed": false,
   "pushed": false,
-  "review": "One independent source review; four Important findings fixed with observed failing/passing regressions. See eodhd-review.md.",
+  "review": "Live UI root-cause audit, source diff and React review; regression coverage added. No independent agent review for this patch.",
   "approvedDesign": "docs/design/approved-pwa-20261017.html",
   "scopeAudit": "docs/requirements-inherited.json",
   "remainingGates": "docs/RELEASE_STATUS.md",
-  "priorEvidence": "Other verification logs predate this update. They do not establish current deployed end-to-end acceptance."
+  "priorEvidence": "Other logs predate this patch. The live audit covers the previously deployed build; no post-repair visual acceptance is claimed.",
+  "browserTestScope": "Read-only PRE-REPAIR deployed app; see LIVE_UI_AUDIT_20261017.md",
+  "patchedSourceBrowserTestsExecuted": false
 }

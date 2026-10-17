@@ -3,6 +3,34 @@ import { useId, useRef, useState, useEffect } from "react";
 import { CircleHelp, X, ArrowUpRight, Search } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { requestLogo } from "@/lib/logo-client";
+import { dateLabel, quoteTime } from "@/lib/format";
+export function DataStamp({
+  source,
+  asOf,
+  status,
+}: {
+  source?: string | null;
+  asOf?: string | null;
+  status?: string;
+}) {
+  return (
+    <span className="data-stamp">
+      <span>
+        {status ? `${status} · ` : ""}
+        {dateLabel(asOf)}
+      </span>
+      <Help label="Data details">
+        <p>{source || "Source not supplied"}</p>
+        <p>Observation: {quoteTime(asOf)}</p>
+        <p>
+          Quotes, statements and analyst estimates can have different
+          observation dates. A daily bar timestamp may identify the session
+          rather than the closing time.
+        </p>
+      </Help>
+    </span>
+  );
+}
 export function Logo() {
   return (
     <span className="brand">
@@ -212,7 +240,9 @@ export function Source({
 }) {
   return href && /^https:\/\//.test(href) ? (
     <a className="source" href={href} target="_blank" rel="noreferrer">
-      {children}
+      {/eodhd\.com\/financial-apis|twelvedata\.com\/docs/.test(href)
+        ? "Data methodology"
+        : children}
       <ArrowUpRight size={13} />
     </a>
   ) : (
