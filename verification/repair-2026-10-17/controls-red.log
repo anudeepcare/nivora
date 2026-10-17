@@ -1,0 +1,2 @@
+FAIL mobile controls stay separated and dialogs close without obscured buttons Screen-reader labels occupy visible space
+{"passed":7,"failed":1,"runtimeErrors":0}

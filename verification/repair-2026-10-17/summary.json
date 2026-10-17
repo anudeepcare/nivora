@@ -1,0 +1,60 @@
+{
+  "generatedAt": "2026-10-17T02:52:46.159364+00:00",
+  "productionBuild": "PASS",
+  "currentBuildId": "zUVit8XSmD52oKNez8EpK",
+  "releaseTests": {
+    "passed": 961,
+    "failed": 0
+  },
+  "browser": {
+    "routes": {
+      "summary": {
+        "passed": 139,
+        "failed": 0,
+        "runtimeErrors": 0
+      },
+      "buildId": "w1Ov9I9T63dAx79FHxfKU",
+      "widths": [
+        390,
+        1440
+      ],
+      "themes": [
+        "light",
+        "dark"
+      ]
+    },
+    "interactions": {
+      "summary": {
+        "passed": 14,
+        "failed": 0,
+        "runtimeErrors": 0
+      },
+      "buildId": "zUVit8XSmD52oKNez8EpK",
+      "widths": [
+        390,
+        1440
+      ],
+      "themes": [
+        "light"
+      ]
+    },
+    "responsive": {
+      "summary": {
+        "passed": 38,
+        "failed": 0,
+        "runtimeErrors": 0
+      },
+      "buildId": "zUVit8XSmD52oKNez8EpK",
+      "widths": [
+        320,
+        768
+      ],
+      "themes": [
+        "light",
+        "dark"
+      ]
+    }
+  },
+  "deployed": false,
+  "livePaperOrderSent": false
+}

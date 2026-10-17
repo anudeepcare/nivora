@@ -1,13 +1,15 @@
-# AURYN — midnight source release
+# AURYN — complete source, UX repair of October 16–17, 2026
 
-This archive contains the complete application source, package lock, migrations, workflows, tests, approved midnight concept and verification reports. It preserves the preceding intelligence and recovery work.
+This is the complete source archive after the reported interface defects were reproduced and repaired. It includes the earlier investment engine, integration code, migrations, workflows, tests and approved design reference.
 
-1. Read `RELEASE_REPORT.md` and `verification/midnight-release/VERIFICATION_REPORT.md` for current verification and unresolved items. Older reports describe earlier builds.
-2. Follow `GIT_AND_VERCEL.md`. Copy the **contents** of `AURYN/` into your existing checkout, including `.github`; preserve `.git` and private `.env.local`. Do not create `AURYN/AURYN`.
-3. Open `verification/midnight-release/visual-review/index.html` to compare the approved concept with real browser captures of this build. Preview prices and signals are illustrative; captured financial statements are dated source evidence, not live prices.
-4. Run `npm ci` and `npm run verify:release` with your real environment. Dependencies and `.next` output are intentionally excluded; Vercel rebuilds the complete source.
-5. Check migration status and administrator configuration before using Paper Lab. The paper-safety migration remains required; this build does not activate trading.
+1. Read `RELEASE_REPORT.md` and `verification/repair-2026-10-17/VERIFICATION_REPORT.md`. These supersede earlier release summaries.
+2. Follow `GIT_AND_VERCEL.md`. Copy the contents of `AURYN/` into your existing checkout, including `.github`; preserve `.git` and private `.env.local`. Avoid an extra `AURYN/AURYN` folder.
+3. Review `verification/repair-2026-10-17/visual-review/index.html` for screenshots from the actual application. Quotes/signals/account data in previews are explicitly illustrative. They are not a live investment recommendation or evidence of broker execution.
+4. Run `npm ci` and `npm run verify:release` with your own environment. Dependencies and generated `.next` files are excluded; Vercel rebuilds from source.
+5. Keep existing integration credentials. Review the paper migration and trusted administrator configuration before testing Paper Lab.
 
-No source was pushed or deployed, no broker order was submitted, and no account role was changed in this release. Live environment, real-account preference sync, email delivery and paper execution require deployment acceptance. No physical iPhone/Safari certification is claimed. See `verification/next-build/REMAINING_GAPS.md` for unimplemented forward evidence and advanced portfolio history/exposure features.
+The site was not pushed or deployed in this repair. No account permission was changed and no order was placed. Physical iPhone/Safari, live cross-account security, email delivery and broker execution still require deployment acceptance. `verification/next-build/REMAINING_GAPS.md` records outstanding capabilities from the larger product scope.
 
-`SOURCE_MANIFEST.json` hashes every delivered file except itself. Packaging verifies every archived byte and the tracked-source inventory. Credentials, `.git`, installed dependencies and caches are excluded. No new paid provider was added.
+The active global UI now comes from `app/ui.css`; component CSS modules remain local. Historical global styles remain in source for provenance but are no longer imported by the app layout. This removes the previous stack of global overrides.
+
+`SOURCE_MANIFEST.json` lists every included file and hash. The archive is checked against the tracked source inventory and every file's bytes. Credentials, Git history, dependencies, build caches and personal screenshots are excluded. No paid provider was added.

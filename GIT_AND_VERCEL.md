@@ -1,6 +1,6 @@
-# AURYN midnight build — Git and deployment
+# AURYN UX repair — Git and deployment
 
-This package is based on `bbdce50b92384acefb3db79978423da92a75e1ea`. It has not been pushed or deployed by this build. Read `RELEASE_REPORT.md` and `verification/next-build/requirements.json` for source verification and remaining acceptance boundaries. The latest build follows the approved midnight desktop/mobile direction, adds account-saved Light/Dark/System preferences, and preserves the intelligence/recovery work. Read verification/midnight-release/VERIFICATION_REPORT.md first; older reports and rejected design references are historical.
+This package is based on `bbdce50b92384acefb3db79978423da92a75e1ea` and includes the accumulated AURYN rebuild plus the October 16–17 UX repairs. It has not been pushed or deployed. Read `RELEASE_REPORT.md` and `verification/repair-2026-10-17/VERIFICATION_REPORT.md` first; older reports describe earlier builds. The source includes new and modified files, not just a patch.
 
 ## 1. Put the complete source in your existing checkout
 
@@ -27,25 +27,25 @@ Your earlier terminal was on `restore-auryn`, while `git push origin main` tried
 ```bash
 git status --short
 git fetch origin
-git switch -c auryn-midnight-release
+git switch -c auryn-ux-repair
 git add -A
 git add -f .github/workflows/auryn-v996-validation-queue.yml .github/workflows/nivora-calibration-mature.yml
 git diff --cached --stat
-git commit -m "Build AURYN midnight UX, saved themes and verified intelligence"
+git commit -m "Repair AURYN layouts, controls, quotes and research views"
 git rebase origin/main
 npm run verify:release
 git push -u origin HEAD
 ```
 
-If that branch already exists, use `git switch auryn-midnight-release`. If Git says there is nothing to commit, continue with fetch/rebase/verification. If rebase reports a conflict, resolve the named files, `git add` those files and `git rebase --continue`; use `git rebase --abort` to return to the pre-rebase state if needed. Do not choose all local or all remote files blindly. Do not force-push.
+If that branch already exists, use `git switch auryn-ux-repair`. If Git says there is nothing to commit, continue with fetch/rebase/verification. If rebase reports a conflict, resolve the named files, `git add` those files and `git rebase --continue`; use `git rebase --abort` to return to the pre-rebase state if needed. Do not choose all local or all remote files blindly. Do not force-push.
 
-Open a pull request from `auryn-midnight-release` into `main`, review it, then merge. Vercel's Git integration deploys the merged main commit. If you intentionally want to update main directly after successful rebase and verification, the command is `git push origin HEAD:main`; a rejection means the remote moved, so fetch/rebase/test again.
+Open a pull request from `auryn-ux-repair` into `main`, review it, then merge. Vercel's Git integration deploys the merged main commit. If you intentionally want to update main directly after successful rebase and verification, the command is `git push origin HEAD:main`; a rejection means the remote moved, so fetch/rebase/test again.
 
 ```bash
 git fetch origin
 git log -1 --oneline
 git rev-parse HEAD
-git rev-parse origin/auryn-midnight-release
+git rev-parse origin/auryn-ux-repair
 ```
 
 After the branch push, the last two hashes should match. After a PR merge, compare Vercel's deployed commit to `origin/main` (a merge/squash may have a different hash). Running npm commands does not update GitHub. An extracted ZIP is not a Git checkout: keep your existing `.git`, or clone the repository first and overlay `AURYN/` contents without nesting them.
@@ -54,9 +54,9 @@ After the branch push, the last two hashes should match. After a PR merge, compa
 
 Use the existing Supabase project `culqkfmyqfpcuklonnog`. Review its migration history first; do not re-run the entire legacy schema.
 
-The research-workspace and company-source-review migrations were applied during this work and their tables have RLS enabled. The connected migration history records versions `20261016195707` and `20261016195621` respectively; local source filenames retain their original timestamps. Reconcile that mapping in your normal migration workflow before a broad CLI push.
+The earlier handoff records that research-workspace and company-source-review migrations were applied and their tables have RLS enabled. The connected migration history records versions `20261016195707` and `20261016195621` respectively; local source filenames retain their original timestamps. Reconcile that mapping in your normal migration workflow before a broad CLI push.
 
-The **paper-safety migration remains required**. An attempt returned connector error `Invalid or expired requestState`; a subsequent read confirmed its two new tables are absent. Its prerequisites are present. Apply that file using the SQL editor or your established migration workflow; it starts paper controls paused.
+The **paper-safety migration was still required at the last recorded inspection**. This UX repair did not recheck or modify the live database. An attempt returned connector error `Invalid or expired requestState`; a subsequent read confirmed its two new tables are absent. Its prerequisites are present. Apply that file using the SQL editor or your established migration workflow; it starts paper controls paused.
 
 For a new environment, apply these **new files in order** using the Supabase SQL editor, or your established Supabase CLI migration workflow after reviewing `supabase migration list` and `supabase db push --dry-run`:
 

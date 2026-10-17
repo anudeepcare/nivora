@@ -1,5 +1,4 @@
 import AppShell from '@/components/AppShell';
 import AuthGuard from '@/components/AuthGuard';
 import GlassResearchLab from '@/components/research/GlassResearchLab';
-import {featureCatalogSummary} from '@/lib/auryn/v9/feature-registry';
-export default function ResearchLab(){const catalog=featureCatalogSummary();return <AuthGuard><AppShell><GlassResearchLab/><details className="au-panel au-support glassDisclosure"><summary>Candidate research catalog · unvalidated hypotheses</summary><p className="au-policy">{catalog.candidateCount.toLocaleString()} hypotheses across {catalog.familyCount} families. Counts describe research breadth, not validated predictive signals.</p><div className="au-tablewrap"><table><thead><tr><th>Family</th><th>Candidates</th><th>Status</th></tr></thead><tbody>{Object.entries(catalog.byFamily).map(([family,n])=><tr key={family}><td>{family.replaceAll('_',' ')}</td><td>{Number(n).toLocaleString()}</td><td>Requires validation</td></tr>)}</tbody></table></div></details></AppShell></AuthGuard>}
+export default function ResearchLab(){return <AuthGuard><AppShell><GlassResearchLab/></AppShell></AuthGuard>}

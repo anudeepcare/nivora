@@ -1,0 +1,19 @@
+FAIL authentication screens exclude investment navigation Expected values to be strictly equal:
+
+1 !== 0
+
+FAIL home prices every holding and a saved symbol outside the first twelve Holdings were silently excluded from quote requests
+FAIL portfolio presents one holdings view and a bounded balance chart Balance chart exceeds compact summary height
+FAIL investment horizon changes the visible assessment Expected "actual" to be strictly unequal to:
+
+'Long term\nConstructive\nAlready own · Hold'
+FAIL More menu items align label and arrow within one touch target Arrow wraps under text
+FAIL empty research outcomes do not render unavailable performance cards The expression evaluated to a falsy value:
+
+  assert.ok(!(await page.locator('main').innerText()).includes('Unavailable'))
+
+FAIL theme preview artwork stays inside its preview box Expected values to be strictly equal:
+
+true !== false
+
+{"passed":14,"failed":7,"runtimeErrors":0}

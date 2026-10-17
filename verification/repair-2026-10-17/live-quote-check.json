@@ -1,0 +1,22 @@
+{
+  "source": "Read-only GET https://getauryn.vercel.app/api/canonical?symbols=MSFT,FIGR",
+  "scope": "Confirms endpoint returned prices; not a vendor freshness or entitlement certification.",
+  "items": [
+    {
+      "symbol": "MSFT",
+      "price": 529.049988,
+      "priceState": "OFFICIAL_CLOSE",
+      "session": "CLOSED",
+      "priceAsOf": "2026-10-16T20:00:00.000Z",
+      "researchState": "ANALYSIS_REQUIRED"
+    },
+    {
+      "symbol": "FIGR",
+      "price": 27.13,
+      "priceState": "OFFICIAL_CLOSE",
+      "session": "CLOSED",
+      "priceAsOf": "2026-10-16T20:00:00.000Z",
+      "researchState": "ANALYSIS_REQUIRED"
+    }
+  ]
+}

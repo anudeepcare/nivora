@@ -69,7 +69,7 @@ export default function ManualPaperTicket({connected,onSubmitted}:{connected:boo
     <h3>Review your paper order</h3><dl className="secondaryFacts">{[['Symbol',preview.symbol],['Side',preview.side],['Quantity',preview.quantity],['Limit price',price(preview.limitPrice)],['Maximum order value',price(preview.notional)],['Time in force','Day'],['Quote as of',when(preview.quoteAsOf)]].map(([label,value])=><div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
     <p>Confirming submits to the deployment’s shared Alpaca Paper account. It does not use real money. Prices and safety checks are verified again on submission.</p>
     <button className="secondaryPrimary" disabled={busy||uncertain} onClick={submit}>{busy?'Working…':'Confirm paper order'}</button>
-    {uncertain?<button disabled={busy} onClick={reconcile}>Reconcile order status</button>:<button disabled={busy} onClick={()=>{setPreview(null);localStorage.removeItem('auryn-pending-paper-request:'+preview.userId)}}>Back to order</button>}
+    {uncertain?<button className="au-btn" disabled={busy} onClick={reconcile}>Reconcile order status</button>:<button className="au-btn" disabled={busy} onClick={()=>{setPreview(null);localStorage.removeItem('auryn-pending-paper-request:'+preview.userId)}}>Back to order</button>}
    </section>:<form className="aurynForm" onSubmit={review}>
     <label className="aurynField">Symbol<input required maxLength={10} placeholder="IREN" value={symbol} onChange={e=>setSymbol(e.target.value.toUpperCase())}/></label>
     <label className="aurynField">Side<select value={side} onChange={e=>setSide(e.target.value)}><option value="BUY">Buy</option><option value="SELL">Sell</option></select></label>
@@ -81,13 +81,13 @@ export default function ManualPaperTicket({connected,onSubmitted}:{connected:boo
    </form>}
   </section>
   <section className="secondaryCard">
-   <div className="secondaryRow"><h2>Your recent manual orders</h2><button disabled={historyBusy||busy} onClick={load}>{historyBusy?'Checking broker…':'Refresh broker status'}</button></div>
+   <div className="secondaryRow"><h2>Your recent manual orders</h2><button className="au-btn" disabled={historyBusy||busy} onClick={load}>{historyBusy?'Checking broker…':'Refresh broker status'}</button></div>
    {historyError&&<p role="alert" className="secondaryNotice">{historyError}</p>}
    {cancelReview&&<section className="paperReview" aria-label="Review cancellation">
     <h3>Cancel the remaining paper order?</h3>
     <dl className="secondaryFacts"><div><dt>Order</dt><dd>{cancelReview.side} {cancelReview.quantity} {cancelReview.symbol} at {price(cancelReview.limit_price)}</dd></div><div><dt>Shares already filled</dt><dd>{cancelReview.filled_quantity??'Not verified'}</dd></div><div><dt>Shares remaining</dt><dd>{cancelReview.quantity-(cancelReview.filled_quantity??0)}</dd></div><div><dt>Broker status checked</dt><dd>{when(cancelReview.broker_checked_at)}</dd></div></dl>
     <p>This requests cancellation of the unfilled shares. Cancellation does not reverse completed fills, and the order may still fill before the broker confirms cancellation.</p>
-    <button className="secondaryPrimary" disabled={busy} onClick={cancel}>{busy?'Requesting cancellation…':'Confirm cancellation'}</button><button disabled={busy} onClick={()=>setCancelReview(null)}>Keep order</button>
+    <button className="secondaryPrimary" disabled={busy} onClick={cancel}>{busy?'Requesting cancellation…':'Confirm cancellation'}</button><button className="au-btn" disabled={busy} onClick={()=>setCancelReview(null)}>Keep order</button>
    </section>}
    {items.length?<div className="secondaryTableWrap"><table className="secondaryTable">
     <thead><tr><th>Symbol</th><th>Side / quantity</th><th>Status / fills</th></tr></thead>
@@ -97,7 +97,7 @@ export default function ManualPaperTicket({connected,onSubmitted}:{connected:boo
      <td><details><summary>{String(item.status).replaceAll('_',' ')}</summary><p>{item.detail}</p><p>{item.reconciliationNote}</p><small>{item.broker_order_id||'Broker order ID not recorded'}</small>{item.cancel_requested_at&&<p>Cancellation attempt: {when(item.cancel_requested_at)} · {item.cancel_status==='REQUESTED'?'Request acknowledged; check broker status for its outcome.':'Outcome needs reconciliation; this attempt will not be resent.'}</p>}</details>
       <small>Last verified: {when(item.broker_checked_at)}</small>{!['verified','stored'].includes(item.reconciliation)&&<p className="secondaryCaption">{item.reconciliationNote}</p>}
       <small>{item.filled_quantity==null?'Filled quantity not verified':`${item.filled_quantity} / ${item.quantity} filled`}</small>{Number(item.filled_quantity)>0&&<small>Average fill {price(item.filled_avg_price)}</small>}
-      {item.canCancel===true&&<button disabled={busy||historyBusy} onClick={()=>{setCancelReview(item);setError('');setNotice('')}}>Review cancellation</button>}
+      {item.canCancel===true&&<button className="au-btn" disabled={busy||historyBusy} onClick={()=>{setCancelReview(item);setError('');setNotice('')}}>Review cancellation</button>}
      </td>
     </tr>)}</tbody>
    </table></div>:!historyError&&<div className="secondaryEmpty">{historyBusy?'Checking your recorded orders…':'No manual paper orders recorded.'}</div>}

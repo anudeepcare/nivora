@@ -1,0 +1,5980 @@
+{
+  "startedAt": "2026-10-17T02:51:12.538Z",
+  "mode": "fixture",
+  "scope": "Local production Chromium with intercepted synthetic auth/database/market/paper services. No actual login delivery, RLS, provider entitlement, broker order or investment-performance certification.",
+  "baseUrl": "http://127.0.0.1:3102",
+  "widths": [
+    320,
+    768
+  ],
+  "themes": [
+    "light",
+    "dark"
+  ],
+  "groups": [
+    "routes",
+    "research",
+    "interactions"
+  ],
+  "node": "v24.19.0",
+  "browserVersion": "153.0.8010.0",
+  "release": {
+    ".next/BUILD_ID": "zUVit8XSmD52oKNez8EpK",
+    "package-lock.json": "9aaea5c0a52a2ecc9280bb63cf1c5995b1a163381fa07715cc914b18f2d8b99f",
+    "gitHead": "bbdce50b92384acefb3db79978423da92a75e1ea"
+  },
+  "cases": [
+    {
+      "name": "authentication screens exclude investment navigation",
+      "passed": true
+    },
+    {
+      "name": "home prices every holding and a saved symbol outside the first twelve",
+      "passed": true
+    },
+    {
+      "name": "portfolio presents one holdings view and a bounded balance chart",
+      "passed": true
+    },
+    {
+      "name": "investment horizon changes the visible assessment",
+      "passed": true
+    },
+    {
+      "name": "More menu items align label and arrow within one touch target",
+      "passed": true
+    },
+    {
+      "name": "empty research outcomes do not render unavailable performance cards",
+      "passed": true
+    },
+    {
+      "name": "theme preview artwork stays inside its preview box",
+      "passed": true
+    },
+    {
+      "name": "mobile controls stay separated and dialogs close without obscured buttons",
+      "passed": true
+    },
+    {
+      "name": "denied paper access reports permissions without inventing broker status",
+      "passed": true
+    },
+    {
+      "name": "safe-area insets keep mobile header controls below the notch",
+      "passed": true
+    },
+    {
+      "name": "repair light 320 /dashboard",
+      "theme": "light",
+      "width": 320,
+      "passed": true,
+      "measurement": {
+        "title": "Your investing day.",
+        "viewport": 320,
+        "scroll": 320,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Open search",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved investments",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Refresh",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Open portfolio",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "All activity →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "NBIS · SYNTHETIC QA milestone",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "MSFT · SYNTHETIC QA milestone",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "See all →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "MS\nMSFT — SYNTHETIC QA FIXTURE\nMSFT",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "NB\nNBIS — SYNTHETIC QA FIXTURE\nNBIS",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-light-320-dashboard.png"
+    },
+    {
+      "name": "repair light 320 portfolio",
+      "theme": "light",
+      "width": 320,
+      "passed": true,
+      "measurement": {
+        "title": "Your portfolio",
+        "viewport": 320,
+        "scroll": 320,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Open search",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved investments",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Refresh portfolio",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Add holding",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Market value",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1M",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "3M",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1Y",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "All",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Record balance",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": null,
+            "label": "Filter holdings",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Filter by asset type",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Sort holdings",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Price & freshness",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Market value",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Unrealized profit / loss",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Position & average cost",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Open MSFT investment research",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Research details for MSFT",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Edit MSFT",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Remove MSFT",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Edit USD",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Remove USD",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [
+          {
+            "label": "About Market value",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "1M",
+            "width": 40,
+            "height": 44
+          },
+          {
+            "label": "3M",
+            "width": 40,
+            "height": 44
+          },
+          {
+            "label": "1Y",
+            "width": 40,
+            "height": 44
+          },
+          {
+            "label": "All",
+            "width": 40,
+            "height": 44
+          },
+          {
+            "label": "About Price & freshness",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About Market value",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About Unrealized profit / loss",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About Position & average cost",
+            "width": 24,
+            "height": 24
+          }
+        ],
+        "overflow": [
+          {
+            "tag": "TR",
+            "class": "",
+            "text": "InvestmentPrice Position Market value Unrealized P/L Holding actions"
+          },
+          {
+            "tag": "TH",
+            "class": "",
+            "text": "Market value"
+          },
+          {
+            "tag": "TH",
+            "class": "",
+            "text": "Unrealized P/L"
+          },
+          {
+            "tag": "TH",
+            "class": "",
+            "text": "Holding actions"
+          }
+        ]
+      },
+      "screenshot": "screenshots/repair-light-320-portfolio.png"
+    },
+    {
+      "name": "repair light 320 watchlist",
+      "theme": "light",
+      "width": 320,
+      "passed": true,
+      "measurement": {
+        "title": "Your shortlist.",
+        "viewport": 320,
+        "scroll": 320,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Open search",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved investments",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Refresh",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Add company & note",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": null,
+            "label": "Filter watched symbols",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "MS\nMSFT — SYNTHETIC QA FIXTURE\nMSFT",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Edit note",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": null,
+            "label": "Compare",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Remove MSFT from watchlist",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "NB\nNBIS — SYNTHETIC QA FIXTURE\nSYNTHETIC QA watch reason",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Edit note",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": null,
+            "label": "Compare",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Remove NBIS from watchlist",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-light-320-watchlist.png"
+    },
+    {
+      "name": "repair light 320 research-lab",
+      "theme": "light",
+      "width": 320,
+      "passed": true,
+      "measurement": {
+        "title": "Research lab",
+        "viewport": 320,
+        "scroll": 320,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Open search",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved investments",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Refresh",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "View collection & evaluation status →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-light-320-research-lab.png"
+    },
+    {
+      "name": "repair light 320 trading-lab",
+      "theme": "light",
+      "width": 320,
+      "passed": true,
+      "measurement": {
+        "title": "Trading lab",
+        "viewport": 320,
+        "scroll": 320,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Open search",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved investments",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Refresh safety checks",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": "tab",
+            "label": "Overview",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": "tab",
+            "label": "Order",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": "tab",
+            "label": "Paper check",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": "tab",
+            "label": "Trade history",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": "tab",
+            "label": "Strategies",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Investment disclaimer",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-light-320-trading-lab.png"
+    },
+    {
+      "name": "repair light 320 personalization",
+      "theme": "light",
+      "width": 320,
+      "passed": true,
+      "measurement": {
+        "title": "Settings",
+        "viewport": 320,
+        "scroll": 320,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Open search",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved investments",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Light",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Dark",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "System",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "blue accent",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "violet accent",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "teal accent",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "amber accent",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "coral accent",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "pink accent",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Comfortable",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Compact",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Candlestick",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Line",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Heikin Ashi",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Research\nPortfolio\nWatchlist\nMonitor",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Save preferences",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Manage →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Open →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Check connection →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Privacy details →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-light-320-personalization.png"
+    },
+    {
+      "name": "repair light 320 stock/MSFT",
+      "theme": "light",
+      "width": 320,
+      "passed": true,
+      "measurement": {
+        "title": "MSFT — synthetic test fixture",
+        "viewport": 320,
+        "scroll": 320,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Open search",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved investments",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Price & freshness",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Investment horizon",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Save",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Alert",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About AURYN assessment",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About DCA intensity",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Overview",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Financials",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Technicals",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "More",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Hide levels",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Expand chart",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Charting by TradingView",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1D",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1W",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1M",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1Y",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "5Y",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Additional chart periods",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Financials",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "What would change the call?",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [
+          {
+            "label": "About Price & freshness",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About AURYN assessment",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About DCA intensity",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "1D",
+            "width": 40,
+            "height": 44
+          },
+          {
+            "label": "1W",
+            "width": 40,
+            "height": 44
+          },
+          {
+            "label": "1M",
+            "width": 40,
+            "height": 44
+          },
+          {
+            "label": "1Y",
+            "width": 40,
+            "height": 44
+          },
+          {
+            "label": "5Y",
+            "width": 40,
+            "height": 44
+          }
+        ],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-light-320-stock-MSFT.png"
+    },
+    {
+      "name": "repair light 768 /dashboard",
+      "theme": "light",
+      "width": 768,
+      "passed": true,
+      "measurement": {
+        "title": "Your investing day.",
+        "viewport": 768,
+        "scroll": 768,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Discover",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Trading lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Settings",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": "combobox",
+            "label": "Search investments",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Refresh",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Open portfolio",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "All activity →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "NBIS · SYNTHETIC QA milestone",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "MSFT · SYNTHETIC QA milestone",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "See all →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "MS\nMSFT — SYNTHETIC QA FIXTURE\nMSFT",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "NB\nNBIS — SYNTHETIC QA FIXTURE\nNBIS",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-light-768-dashboard.png"
+    },
+    {
+      "name": "repair light 768 portfolio",
+      "theme": "light",
+      "width": 768,
+      "passed": true,
+      "measurement": {
+        "title": "Your portfolio",
+        "viewport": 768,
+        "scroll": 768,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Discover",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Trading lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Settings",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": "combobox",
+            "label": "Search investments",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Refresh portfolio",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Add holding",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Market value",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1M",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "3M",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1Y",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "All",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Record balance",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": null,
+            "label": "Filter holdings",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Filter by asset type",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Sort holdings",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Price & freshness",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Position & average cost",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Market value",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Unrealized profit / loss",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Open MSFT investment research",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Research details for MSFT",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Edit MSFT",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Remove MSFT",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Edit USD",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Remove USD",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [
+          {
+            "label": "Filter holdings",
+            "font": "12px"
+          },
+          {
+            "label": "Filter by asset type",
+            "font": "12px"
+          },
+          {
+            "label": "Sort holdings",
+            "font": "12px"
+          }
+        ],
+        "smallTargets": [
+          {
+            "label": "About Market value",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About Price & freshness",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About Position & average cost",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About Market value",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About Unrealized profit / loss",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "Research details for MSFT",
+            "width": 34,
+            "height": 36
+          },
+          {
+            "label": "Edit MSFT",
+            "width": 34,
+            "height": 36
+          },
+          {
+            "label": "Remove MSFT",
+            "width": 34,
+            "height": 36
+          },
+          {
+            "label": "Edit USD",
+            "width": 34,
+            "height": 36
+          },
+          {
+            "label": "Remove USD",
+            "width": 34,
+            "height": 36
+          }
+        ],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-light-768-portfolio.png"
+    },
+    {
+      "name": "repair light 768 watchlist",
+      "theme": "light",
+      "width": 768,
+      "passed": true,
+      "measurement": {
+        "title": "Your shortlist.",
+        "viewport": 768,
+        "scroll": 768,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Discover",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Trading lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Settings",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": "combobox",
+            "label": "Search investments",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Refresh",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Add company & note",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": null,
+            "label": "Filter watched symbols",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "MS\nMSFT — SYNTHETIC QA FIXTURE\nMSFT",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Edit note",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": null,
+            "label": "Compare",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Remove MSFT from watchlist",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "NB\nNBIS — SYNTHETIC QA FIXTURE\nSYNTHETIC QA watch reason",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Edit note",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": null,
+            "label": "Compare",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Remove NBIS from watchlist",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [
+          {
+            "label": "Filter watched symbols",
+            "font": "12px"
+          }
+        ],
+        "smallTargets": [],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-light-768-watchlist.png"
+    },
+    {
+      "name": "repair light 768 research-lab",
+      "theme": "light",
+      "width": 768,
+      "passed": true,
+      "measurement": {
+        "title": "Research lab",
+        "viewport": 768,
+        "scroll": 768,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Discover",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Trading lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Settings",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": "combobox",
+            "label": "Search investments",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Refresh",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "View collection & evaluation status →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-light-768-research-lab.png"
+    },
+    {
+      "name": "repair light 768 trading-lab",
+      "theme": "light",
+      "width": 768,
+      "passed": true,
+      "measurement": {
+        "title": "Trading lab",
+        "viewport": 768,
+        "scroll": 768,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Discover",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Trading lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Settings",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": "combobox",
+            "label": "Search investments",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Refresh safety checks",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": "tab",
+            "label": "Overview",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": "tab",
+            "label": "Order",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": "tab",
+            "label": "Paper check",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": "tab",
+            "label": "Trade history",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": "tab",
+            "label": "Strategies",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Investment disclaimer",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-light-768-trading-lab.png"
+    },
+    {
+      "name": "repair light 768 personalization",
+      "theme": "light",
+      "width": 768,
+      "passed": true,
+      "measurement": {
+        "title": "Settings",
+        "viewport": 768,
+        "scroll": 768,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Discover",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Trading lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Settings",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": "combobox",
+            "label": "Search investments",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Light",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Dark",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "System",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "blue accent",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "violet accent",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "teal accent",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "amber accent",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "coral accent",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "pink accent",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Comfortable",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Compact",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Candlestick",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Line",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Heikin Ashi",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Research\nPortfolio\nWatchlist\nMonitor",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Save preferences",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Manage →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Open →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Check connection →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Privacy details →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [
+          {
+            "label": "Comfortable",
+            "width": 258,
+            "height": 38
+          },
+          {
+            "label": "Compact",
+            "width": 258,
+            "height": 38
+          },
+          {
+            "label": "Candlestick",
+            "width": 170.65625,
+            "height": 38
+          },
+          {
+            "label": "Line",
+            "width": 170.671875,
+            "height": 38
+          },
+          {
+            "label": "Heikin Ashi",
+            "width": 170.671875,
+            "height": 38
+          }
+        ],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-light-768-personalization.png"
+    },
+    {
+      "name": "repair light 768 stock/MSFT",
+      "theme": "light",
+      "width": 768,
+      "passed": true,
+      "measurement": {
+        "title": "MSFT — synthetic test fixture",
+        "viewport": 768,
+        "scroll": 768,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Discover",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Trading lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Settings",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": "combobox",
+            "label": "Search investments",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Price & freshness",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Investment horizon",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Save",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Alert",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About AURYN assessment",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About DCA intensity",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Overview",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Financials",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Technicals",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "More",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Hide levels",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Expand chart",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Charting by TradingView",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1D",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1W",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1M",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1Y",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "5Y",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Additional chart periods",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Weekly reference levels",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Candidate support\n$139.77",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "First reclaim\n$146.75–$148.52",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Explore technicals",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Financials",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "What would change the call?",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [
+          {
+            "label": "Investment horizon",
+            "font": "13px"
+          },
+          {
+            "label": "Additional chart periods",
+            "font": "12px"
+          }
+        ],
+        "smallTargets": [
+          {
+            "label": "About Price & freshness",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About AURYN assessment",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About DCA intensity",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "Expand chart",
+            "width": 36,
+            "height": 36
+          },
+          {
+            "label": "About Weekly reference levels",
+            "width": 24,
+            "height": 24
+          }
+        ],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-light-768-stock-MSFT.png"
+    },
+    {
+      "name": "repair dark 320 /dashboard",
+      "theme": "dark",
+      "width": 320,
+      "passed": true,
+      "measurement": {
+        "title": "Your investing day.",
+        "viewport": 320,
+        "scroll": 320,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Open search",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved investments",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Refresh",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Open portfolio",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "All activity →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "NBIS · SYNTHETIC QA milestone",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "MSFT · SYNTHETIC QA milestone",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "See all →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "MS\nMSFT — SYNTHETIC QA FIXTURE\nMSFT",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "NB\nNBIS — SYNTHETIC QA FIXTURE\nNBIS",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-dark-320-dashboard.png"
+    },
+    {
+      "name": "repair dark 320 portfolio",
+      "theme": "dark",
+      "width": 320,
+      "passed": true,
+      "measurement": {
+        "title": "Your portfolio",
+        "viewport": 320,
+        "scroll": 320,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Open search",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved investments",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Refresh portfolio",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Add holding",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Market value",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1M",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "3M",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1Y",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "All",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Record balance",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": null,
+            "label": "Filter holdings",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Filter by asset type",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Sort holdings",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Price & freshness",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Market value",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Unrealized profit / loss",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Position & average cost",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Open MSFT investment research",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Research details for MSFT",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Edit MSFT",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Remove MSFT",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Edit USD",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Remove USD",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [
+          {
+            "label": "About Market value",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "1M",
+            "width": 40,
+            "height": 44
+          },
+          {
+            "label": "3M",
+            "width": 40,
+            "height": 44
+          },
+          {
+            "label": "1Y",
+            "width": 40,
+            "height": 44
+          },
+          {
+            "label": "All",
+            "width": 40,
+            "height": 44
+          },
+          {
+            "label": "About Price & freshness",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About Market value",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About Unrealized profit / loss",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About Position & average cost",
+            "width": 24,
+            "height": 24
+          }
+        ],
+        "overflow": [
+          {
+            "tag": "TR",
+            "class": "",
+            "text": "InvestmentPrice Position Market value Unrealized P/L Holding actions"
+          },
+          {
+            "tag": "TH",
+            "class": "",
+            "text": "Market value"
+          },
+          {
+            "tag": "TH",
+            "class": "",
+            "text": "Unrealized P/L"
+          },
+          {
+            "tag": "TH",
+            "class": "",
+            "text": "Holding actions"
+          }
+        ]
+      },
+      "screenshot": "screenshots/repair-dark-320-portfolio.png"
+    },
+    {
+      "name": "repair dark 320 watchlist",
+      "theme": "dark",
+      "width": 320,
+      "passed": true,
+      "measurement": {
+        "title": "Your shortlist.",
+        "viewport": 320,
+        "scroll": 320,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Open search",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved investments",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Refresh",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Add company & note",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": null,
+            "label": "Filter watched symbols",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "MS\nMSFT — SYNTHETIC QA FIXTURE\nMSFT",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Edit note",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": null,
+            "label": "Compare",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Remove MSFT from watchlist",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "NB\nNBIS — SYNTHETIC QA FIXTURE\nSYNTHETIC QA watch reason",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Edit note",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": null,
+            "label": "Compare",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Remove NBIS from watchlist",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-dark-320-watchlist.png"
+    },
+    {
+      "name": "repair dark 320 research-lab",
+      "theme": "dark",
+      "width": 320,
+      "passed": true,
+      "measurement": {
+        "title": "Research lab",
+        "viewport": 320,
+        "scroll": 320,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Open search",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved investments",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Refresh",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "View collection & evaluation status →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-dark-320-research-lab.png"
+    },
+    {
+      "name": "repair dark 320 trading-lab",
+      "theme": "dark",
+      "width": 320,
+      "passed": true,
+      "measurement": {
+        "title": "Trading lab",
+        "viewport": 320,
+        "scroll": 320,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Open search",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved investments",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Refresh safety checks",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": "tab",
+            "label": "Overview",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": "tab",
+            "label": "Order",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": "tab",
+            "label": "Paper check",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": "tab",
+            "label": "Trade history",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": "tab",
+            "label": "Strategies",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Investment disclaimer",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-dark-320-trading-lab.png"
+    },
+    {
+      "name": "repair dark 320 personalization",
+      "theme": "dark",
+      "width": 320,
+      "passed": true,
+      "measurement": {
+        "title": "Settings",
+        "viewport": 320,
+        "scroll": 320,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Open search",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved investments",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Light",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Dark",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "System",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "blue accent",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "violet accent",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "teal accent",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "amber accent",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "coral accent",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "pink accent",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Comfortable",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Compact",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Candlestick",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Line",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Heikin Ashi",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Research\nPortfolio\nWatchlist\nMonitor",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Save preferences",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Manage →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Open →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Check connection →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Privacy details →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-dark-320-personalization.png"
+    },
+    {
+      "name": "repair dark 320 stock/MSFT",
+      "theme": "dark",
+      "width": 320,
+      "passed": true,
+      "measurement": {
+        "title": "MSFT — synthetic test fixture",
+        "viewport": 320,
+        "scroll": 320,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Open search",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved investments",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Price & freshness",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Investment horizon",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Save",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Alert",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About AURYN assessment",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About DCA intensity",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Overview",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Financials",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Technicals",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "More",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Hide levels",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Expand chart",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Charting by TradingView",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1D",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1W",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1M",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1Y",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "5Y",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Additional chart periods",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Financials",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "What would change the call?",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [
+          {
+            "label": "About Price & freshness",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About AURYN assessment",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About DCA intensity",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "1D",
+            "width": 40,
+            "height": 44
+          },
+          {
+            "label": "1W",
+            "width": 40,
+            "height": 44
+          },
+          {
+            "label": "1M",
+            "width": 40,
+            "height": 44
+          },
+          {
+            "label": "1Y",
+            "width": 40,
+            "height": 44
+          },
+          {
+            "label": "5Y",
+            "width": 40,
+            "height": 44
+          }
+        ],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-dark-320-stock-MSFT.png"
+    },
+    {
+      "name": "repair dark 768 /dashboard",
+      "theme": "dark",
+      "width": 768,
+      "passed": true,
+      "measurement": {
+        "title": "Your investing day.",
+        "viewport": 768,
+        "scroll": 768,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Discover",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Trading lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Settings",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": "combobox",
+            "label": "Search investments",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Refresh",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Open portfolio",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "All activity →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "NBIS · SYNTHETIC QA milestone",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "MSFT · SYNTHETIC QA milestone",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "See all →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "MS\nMSFT — SYNTHETIC QA FIXTURE\nMSFT",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "NB\nNBIS — SYNTHETIC QA FIXTURE\nNBIS",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-dark-768-dashboard.png"
+    },
+    {
+      "name": "repair dark 768 portfolio",
+      "theme": "dark",
+      "width": 768,
+      "passed": true,
+      "measurement": {
+        "title": "Your portfolio",
+        "viewport": 768,
+        "scroll": 768,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Discover",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Trading lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Settings",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": "combobox",
+            "label": "Search investments",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Refresh portfolio",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Add holding",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Market value",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1M",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "3M",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1Y",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "All",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Record balance",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": null,
+            "label": "Filter holdings",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Filter by asset type",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Sort holdings",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Price & freshness",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Position & average cost",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Market value",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Unrealized profit / loss",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Open MSFT investment research",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Research details for MSFT",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Edit MSFT",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Remove MSFT",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Edit USD",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Remove USD",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [
+          {
+            "label": "Filter holdings",
+            "font": "12px"
+          },
+          {
+            "label": "Filter by asset type",
+            "font": "12px"
+          },
+          {
+            "label": "Sort holdings",
+            "font": "12px"
+          }
+        ],
+        "smallTargets": [
+          {
+            "label": "About Market value",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About Price & freshness",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About Position & average cost",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About Market value",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About Unrealized profit / loss",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "Research details for MSFT",
+            "width": 34,
+            "height": 36
+          },
+          {
+            "label": "Edit MSFT",
+            "width": 34,
+            "height": 36
+          },
+          {
+            "label": "Remove MSFT",
+            "width": 34,
+            "height": 36
+          },
+          {
+            "label": "Edit USD",
+            "width": 34,
+            "height": 36
+          },
+          {
+            "label": "Remove USD",
+            "width": 34,
+            "height": 36
+          }
+        ],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-dark-768-portfolio.png"
+    },
+    {
+      "name": "repair dark 768 watchlist",
+      "theme": "dark",
+      "width": 768,
+      "passed": true,
+      "measurement": {
+        "title": "Your shortlist.",
+        "viewport": 768,
+        "scroll": 768,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Discover",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Trading lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Settings",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": "combobox",
+            "label": "Search investments",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Refresh",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Add company & note",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": null,
+            "label": "Filter watched symbols",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "MS\nMSFT — SYNTHETIC QA FIXTURE\nMSFT",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Edit note",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": null,
+            "label": "Compare",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Remove MSFT from watchlist",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "NB\nNBIS — SYNTHETIC QA FIXTURE\nSYNTHETIC QA watch reason",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Edit note",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": null,
+            "label": "Compare",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Remove NBIS from watchlist",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [
+          {
+            "label": "Filter watched symbols",
+            "font": "12px"
+          }
+        ],
+        "smallTargets": [],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-dark-768-watchlist.png"
+    },
+    {
+      "name": "repair dark 768 research-lab",
+      "theme": "dark",
+      "width": 768,
+      "passed": true,
+      "measurement": {
+        "title": "Research lab",
+        "viewport": 768,
+        "scroll": 768,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Discover",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Trading lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Settings",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": "combobox",
+            "label": "Search investments",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Refresh",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "View collection & evaluation status →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-dark-768-research-lab.png"
+    },
+    {
+      "name": "repair dark 768 trading-lab",
+      "theme": "dark",
+      "width": 768,
+      "passed": true,
+      "measurement": {
+        "title": "Trading lab",
+        "viewport": 768,
+        "scroll": 768,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Discover",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Trading lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Settings",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": "combobox",
+            "label": "Search investments",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Refresh safety checks",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": "tab",
+            "label": "Overview",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": "tab",
+            "label": "Order",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": "tab",
+            "label": "Paper check",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": "tab",
+            "label": "Trade history",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": "tab",
+            "label": "Strategies",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Investment disclaimer",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-dark-768-trading-lab.png"
+    },
+    {
+      "name": "repair dark 768 personalization",
+      "theme": "dark",
+      "width": 768,
+      "passed": true,
+      "measurement": {
+        "title": "Settings",
+        "viewport": 768,
+        "scroll": 768,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Discover",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Trading lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Settings",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": "combobox",
+            "label": "Search investments",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Light",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Dark",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "System",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "blue accent",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "violet accent",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "teal accent",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "amber accent",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "coral accent",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "pink accent",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Comfortable",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Compact",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Candlestick",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Line",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Heikin Ashi",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Research\nPortfolio\nWatchlist\nMonitor",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Save preferences",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Manage →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Open →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Check connection →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Privacy details →",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [],
+        "smallTargets": [
+          {
+            "label": "Comfortable",
+            "width": 258,
+            "height": 38
+          },
+          {
+            "label": "Compact",
+            "width": 258,
+            "height": 38
+          },
+          {
+            "label": "Candlestick",
+            "width": 170.65625,
+            "height": 38
+          },
+          {
+            "label": "Line",
+            "width": 170.671875,
+            "height": 38
+          },
+          {
+            "label": "Heikin Ashi",
+            "width": 170.671875,
+            "height": 38
+          }
+        ],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-dark-768-personalization.png"
+    },
+    {
+      "name": "repair dark 768 stock/MSFT",
+      "theme": "dark",
+      "width": 768,
+      "passed": true,
+      "measurement": {
+        "title": "MSFT — synthetic test fixture",
+        "viewport": 768,
+        "scroll": 768,
+        "renderedControls": [
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Skip to content",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "AURYN home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Home",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Saved",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Portfolio",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Discover",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Trading lab",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Settings",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          },
+          {
+            "tag": "INPUT",
+            "role": "combobox",
+            "label": "Search investments",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Alerts",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Account and navigation",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Price & freshness",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Investment horizon",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Save",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Alert",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About AURYN assessment",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About DCA intensity",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Overview",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Financials",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Technicals",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "More",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Hide levels",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Expand chart",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Charting by TradingView",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1D",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1W",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1M",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "1Y",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "5Y",
+            "disabled": false
+          },
+          {
+            "tag": "SELECT",
+            "role": null,
+            "label": "Additional chart periods",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "About Weekly reference levels",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Candidate support\n$139.77",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "First reclaim\n$146.75–$148.52",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Explore technicals",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "Financials",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "What would change the call?",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Research only · investing involves risk",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Methodology",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "role": null,
+            "label": "Help",
+            "disabled": false
+          }
+        ],
+        "unlabeled": [],
+        "smallInputs": [
+          {
+            "label": "Investment horizon",
+            "font": "13px"
+          },
+          {
+            "label": "Additional chart periods",
+            "font": "12px"
+          }
+        ],
+        "smallTargets": [
+          {
+            "label": "About Price & freshness",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About AURYN assessment",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "About DCA intensity",
+            "width": 24,
+            "height": 24
+          },
+          {
+            "label": "Expand chart",
+            "width": 36,
+            "height": 36
+          },
+          {
+            "label": "About Weekly reference levels",
+            "width": 24,
+            "height": 24
+          }
+        ],
+        "overflow": []
+      },
+      "screenshot": "screenshots/repair-dark-768-stock-MSFT.png"
+    }
+  ],
+  "runtimeErrors": [],
+  "requestCounts": {
+    "GET /login": 1,
+    "GET /_next/static/css/6bee19b6ecaf458b.css": 40,
+    "GET /_next/static/chunks/webpack-fe2b98e98b4d9274.js": 40,
+    "GET /_next/static/chunks/4bd1b696-f785427dddbba9fb.js": 40,
+    "GET /_next/static/chunks/1255-dc3ddf72a1dc71a7.js": 40,
+    "GET /_next/static/chunks/main-app-b8ebc991fc6c6414.js": 40,
+    "GET /_next/static/chunks/44530001-50318953f9db2bed.js": 40,
+    "GET /_next/static/chunks/8370-c7fbb5729bf8ed01.js": 40,
+    "GET /_next/static/chunks/app/layout-cc0c5294c4257465.js": 40,
+    "GET /_next/static/chunks/app/error-e6a52c594721b341.js": 40,
+    "GET /_next/static/chunks/2619-3c9e02e22d10480a.js": 40,
+    "GET /_next/static/chunks/app/page-0fe3c31c2ffb9b42.js": 40,
+    "GET /_next/static/chunks/app/login/page-42c539a66a241367.js": 3,
+    "GET /auth/v1/settings": 2,
+    "GET /?_rsc=j7s84HGI7papZ6oY": 1,
+    "GET /forgot-password?_rsc=j7s84HGI7papZ6oY": 1,
+    "GET /register?_rsc=j7s84HGI7papZ6oY": 1,
+    "GET /privacy?_rsc=j7s84HGI7papZ6oY": 1,
+    "GET /terms?_rsc=j7s84HGI7papZ6oY": 1,
+    "GET /_next/static/chunks/app/forgot-password/page-7c741ec86a4e1d31.js": 2,
+    "GET /_next/static/chunks/2235-af83e4c62450edf2.js": 40,
+    "GET /_next/static/chunks/app/privacy/page-67310e487dc31fd6.js": 4,
+    "GET /_next/static/chunks/app/terms/page-67310e487dc31fd6.js": 3,
+    "GET /_next/static/chunks/app/register/page-0fbad853832d6022.js": 2,
+    "GET /register": 1,
+    "GET /?_rsc=rRcpm0zrXFALismt": 1,
+    "GET /terms?_rsc=rRcpm0zrXFALismt": 1,
+    "GET /privacy?_rsc=rRcpm0zrXFALismt": 1,
+    "GET /login?_rsc=rRcpm0zrXFALismt": 1,
+    "GET /forgot-password": 1,
+    "GET /?_rsc=Qepd8GqaKG90J9Lq": 1,
+    "GET /login?_rsc=Qepd8GqaKG90J9Lq": 1,
+    "GET /privacy?_rsc=Qepd8GqaKG90J9Lq": 1,
+    "GET /terms?_rsc=Qepd8GqaKG90J9Lq": 1,
+    "GET /dashboard": 6,
+    "GET /_next/static/css/c007ac4d15fecd80.css": 37,
+    "GET /_next/static/chunks/1325-9803a360248acc55.js": 37,
+    "GET /_next/static/chunks/6554-0899643ae2ffecab.js": 37,
+    "GET /_next/static/chunks/2253-345f2137ba8d6452.js": 37,
+    "GET /_next/static/chunks/4876-4e77a20ce7d8c5f2.js": 37,
+    "GET /_next/static/chunks/app/dashboard/page-47e0f76fa0ed7454.js": 33,
+    "GET /api/research-workspace": 10,
+    "GET /analyze?_rsc=Uj5fJzh3oSqZfPD_": 6,
+    "GET /watchlist?_rsc=Uj5fJzh3oSqZfPD_": 6,
+    "GET /portfolio?_rsc=Uj5fJzh3oSqZfPD_": 6,
+    "GET /discover?_rsc=Uj5fJzh3oSqZfPD_": 3,
+    "GET /alerts?_rsc=Uj5fJzh3oSqZfPD_": 6,
+    "GET /asset-logos/NBIS.svg": 10,
+    "GET /api/canonical?symbols=MSFT%2CNBIS%2CQA0%2CQA1%2CQA2%2CQA3%2CQA4%2CQA5%2CQA6%2CQA7": 1,
+    "GET /api/canonical?symbols=QA8%2CQA9%2CQA10%2CQA11%2CQA12%2CQA13%2CQA14%2CQA15%2CQA16%2CQA17": 1,
+    "GET /_next/static/chunks/app/analyze/page-6e97346de50853cf.js": 37,
+    "GET /research-lab?_rsc=Uj5fJzh3oSqZfPD_": 3,
+    "GET /trading-lab?_rsc=Uj5fJzh3oSqZfPD_": 3,
+    "GET /_next/static/chunks/1403-d95e30e34a3f329e.js": 37,
+    "GET /_next/static/chunks/5333-8d6810389e391a09.js": 37,
+    "GET /_next/static/chunks/app/portfolio/page-65c702fcfb0557fb.js": 37,
+    "GET /_next/static/css/3042b8b6da6dd4cf.css": 37,
+    "GET /personalization?_rsc=Uj5fJzh3oSqZfPD_": 3,
+    "GET /api/canonical?symbols=QA18%2CQA19%2CQA20%2CQA21%2CQA22%2CQA23%2CQA24%2CQA25%2CQA26%2CQA27": 1,
+    "GET /faq?_rsc=Uj5fJzh3oSqZfPD_": 3,
+    "GET /_next/static/chunks/app/alerts/page-54793e2576a4ebcd.js": 22,
+    "GET /disclaimer?_rsc=Uj5fJzh3oSqZfPD_": 3,
+    "GET /api/canonical?symbols=QA28": 1,
+    "GET /_next/static/chunks/app/trading-lab/page-b9ca09d71f220a75.js": 22,
+    "GET /methodology?_rsc=Uj5fJzh3oSqZfPD_": 3,
+    "GET /_next/static/chunks/app/faq/page-ba16fd961ef32d9a.js": 26,
+    "GET /stock/NBIS?section=earnings&_rsc=Uj5fJzh3oSqZfPD_": 6,
+    "GET /_next/static/chunks/app/personalization/page-0be3f53dfe77c3ce.js": 21,
+    "GET /stock/MSFT?section=earnings&_rsc=Uj5fJzh3oSqZfPD_": 6,
+    "GET /_next/static/chunks/app/disclaimer/page-67310e487dc31fd6.js": 20,
+    "GET /_next/static/chunks/app/research-lab/page-81bf73d2bfac09f6.js": 21,
+    "GET /_next/static/chunks/app/methodology/page-67310e487dc31fd6.js": 20,
+    "GET /portfolio": 6,
+    "GET /auth/v1/user": 22,
+    "GET /rest/v1/portfolio_positions?select=*&user_id=eq.00000000-0000-0000-0000-000000000001&order=updated_at.desc": 6,
+    "GET /dashboard?_rsc=c4mLfVWrmqAJA1Hf": 6,
+    "GET /analyze?_rsc=c4mLfVWrmqAJA1Hf": 6,
+    "GET /watchlist?_rsc=c4mLfVWrmqAJA1Hf": 6,
+    "GET /discover?_rsc=c4mLfVWrmqAJA1Hf": 3,
+    "GET /alerts?_rsc=c4mLfVWrmqAJA1Hf": 3,
+    "GET /api/portfolio/pulse": 6,
+    "GET /api/canonical?symbols=MSFT": 6,
+    "GET /api/research-workspace?scope=planning&symbol=MSFT": 6,
+    "GET /research-lab?_rsc=c4mLfVWrmqAJA1Hf": 3,
+    "GET /trading-lab?_rsc=c4mLfVWrmqAJA1Hf": 3,
+    "GET /_next/static/chunks/app/watchlist/page-47e0f76fa0ed7454.js": 31,
+    "GET /personalization?_rsc=c4mLfVWrmqAJA1Hf": 3,
+    "GET /_next/static/chunks/app/discover/page-47e0f76fa0ed7454.js": 14,
+    "GET /faq?_rsc=c4mLfVWrmqAJA1Hf": 5,
+    "GET /_next/static/chunks/3706-9803a360248acc55.js": 5,
+    "GET /disclaimer?_rsc=c4mLfVWrmqAJA1Hf": 5,
+    "GET /api/research-workspace?scope=contribution&symbol=MSFT": 6,
+    "GET /methodology?_rsc=c4mLfVWrmqAJA1Hf": 5,
+    "GET /stock/MSFT?_rsc=c4mLfVWrmqAJA1Hf": 6,
+    "GET /stock/MSFT": 6,
+    "GET /_next/static/chunks/d0709137-5539a0b74c1c25b1.js": 6,
+    "GET /_next/static/chunks/765-7fb227c745e0a4f4.js": 6,
+    "GET /_next/static/chunks/app/stock/%5Bsymbol%5D/page-8d236c828a24ef36.js": 6,
+    "GET /api/chart/MSFT?range=1M": 6,
+    "GET /api/chart/MSFT?range=5Y": 6,
+    "GET /api/quote/MSFT": 6,
+    "GET /api/canonical/MSFT": 7,
+    "GET /api/analyze/MSFT": 1,
+    "GET /dashboard?_rsc=A6x-NTTofiNmwWjj": 6,
+    "GET /analyze?_rsc=A6x-NTTofiNmwWjj": 6,
+    "GET /watchlist?_rsc=A6x-NTTofiNmwWjj": 6,
+    "GET /portfolio?_rsc=A6x-NTTofiNmwWjj": 6,
+    "GET /discover?_rsc=A6x-NTTofiNmwWjj": 3,
+    "GET /_next/static/chunks/6369.a940e9170ca9bbfa.js": 6,
+    "GET /rest/v1/portfolio_positions?select=shares%2Cavg_cost%2Chorizon&user_id=eq.00000000-0000-0000-0000-000000000001&symbol=eq.MSFT": 6,
+    "GET /alerts?_rsc=A6x-NTTofiNmwWjj": 3,
+    "GET /research-lab?_rsc=A6x-NTTofiNmwWjj": 3,
+    "GET /trading-lab?_rsc=A6x-NTTofiNmwWjj": 3,
+    "GET /personalization?_rsc=A6x-NTTofiNmwWjj": 3,
+    "GET /faq?_rsc=A6x-NTTofiNmwWjj": 3,
+    "GET /disclaimer?_rsc=A6x-NTTofiNmwWjj": 1,
+    "GET /methodology?_rsc=A6x-NTTofiNmwWjj": 1,
+    "GET /api/company/MSFT?evidenceContract=sec-company-evidence-v3": 6,
+    "GET /api/calibration?engine=v65.2": 6,
+    "GET /api/model-health?archetype=GENERAL_COMPOUNDER": 6,
+    "POST /api/validation/snapshot": 1,
+    "GET /api/market-intelligence/live/MSFT": 6,
+    "GET /api/context/MSFT": 6,
+    "GET /research-lab": 5,
+    "GET /api/calibration": 5,
+    "GET /api/model-health": 5,
+    "GET /dashboard?_rsc=OVrOj5GSxKy5Tfj9": 5,
+    "GET /analyze?_rsc=OVrOj5GSxKy5Tfj9": 5,
+    "GET /watchlist?_rsc=OVrOj5GSxKy5Tfj9": 5,
+    "GET /portfolio?_rsc=OVrOj5GSxKy5Tfj9": 5,
+    "GET /discover?_rsc=OVrOj5GSxKy5Tfj9": 3,
+    "GET /alerts?_rsc=OVrOj5GSxKy5Tfj9": 3,
+    "GET /trading-lab?_rsc=OVrOj5GSxKy5Tfj9": 3,
+    "GET /personalization?_rsc=OVrOj5GSxKy5Tfj9": 3,
+    "GET /faq?_rsc=OVrOj5GSxKy5Tfj9": 5,
+    "GET /calibration?_rsc=OVrOj5GSxKy5Tfj9": 5,
+    "GET /disclaimer?_rsc=OVrOj5GSxKy5Tfj9": 5,
+    "GET /methodology?_rsc=OVrOj5GSxKy5Tfj9": 5,
+    "GET /_next/static/chunks/app/calibration/page-867ebbb64bcd72d7.js": 5,
+    "GET /personalization": 5,
+    "GET /dashboard?_rsc=rmPsmXxTawoQDIen": 5,
+    "GET /analyze?_rsc=rmPsmXxTawoQDIen": 5,
+    "GET /watchlist?_rsc=rmPsmXxTawoQDIen": 5,
+    "GET /portfolio?_rsc=rmPsmXxTawoQDIen": 5,
+    "GET /discover?_rsc=rmPsmXxTawoQDIen": 3,
+    "GET /alerts?_rsc=rmPsmXxTawoQDIen": 3,
+    "GET /research-lab?_rsc=rmPsmXxTawoQDIen": 3,
+    "GET /trading-lab?_rsc=rmPsmXxTawoQDIen": 3,
+    "GET /faq?_rsc=rmPsmXxTawoQDIen": 3,
+    "GET /profile?_rsc=rmPsmXxTawoQDIen": 5,
+    "GET /privacy?_rsc=rmPsmXxTawoQDIen": 1,
+    "GET /disclaimer?_rsc=rmPsmXxTawoQDIen": 1,
+    "GET /methodology?_rsc=rmPsmXxTawoQDIen": 1,
+    "GET /_next/static/chunks/app/profile/page-0a30a987094937de.js": 5,
+    "GET /trading-lab": 5,
+    "GET /dashboard?_rsc=z7lQudpX6vUoFCbf": 5,
+    "GET /watchlist?_rsc=z7lQudpX6vUoFCbf": 5,
+    "GET /disclaimer?_rsc=z7lQudpX6vUoFCbf": 1,
+    "GET /methodology?_rsc=z7lQudpX6vUoFCbf": 1,
+    "GET /faq?_rsc=z7lQudpX6vUoFCbf": 3,
+    "GET /analyze?_rsc=z7lQudpX6vUoFCbf": 5,
+    "GET /portfolio?_rsc=z7lQudpX6vUoFCbf": 5,
+    "GET /api/canonical?symbols=MSFT%2CNBIS": 9,
+    "GET /watchlist": 4,
+    "GET /dashboard?_rsc=74Yaumt2i95LbaAY": 4,
+    "GET /disclaimer?_rsc=74Yaumt2i95LbaAY": 4,
+    "GET /methodology?_rsc=74Yaumt2i95LbaAY": 4,
+    "GET /faq?_rsc=74Yaumt2i95LbaAY": 4,
+    "GET /analyze?_rsc=74Yaumt2i95LbaAY": 4,
+    "GET /portfolio?_rsc=74Yaumt2i95LbaAY": 4,
+    "GET /stock/MSFT?_rsc=74Yaumt2i95LbaAY": 4,
+    "GET /stock/NBIS?_rsc=74Yaumt2i95LbaAY": 4,
+    "GET /api/trading-lab/status": 4,
+    "GET /discover?_rsc=74Yaumt2i95LbaAY": 2,
+    "GET /alerts?_rsc=74Yaumt2i95LbaAY": 2,
+    "GET /research-lab?_rsc=74Yaumt2i95LbaAY": 2,
+    "GET /trading-lab?_rsc=74Yaumt2i95LbaAY": 2,
+    "GET /personalization?_rsc=74Yaumt2i95LbaAY": 2,
+    "GET /discover?_rsc=z7lQudpX6vUoFCbf": 2,
+    "GET /alerts?_rsc=z7lQudpX6vUoFCbf": 2,
+    "GET /research-lab?_rsc=z7lQudpX6vUoFCbf": 2,
+    "GET /personalization?_rsc=z7lQudpX6vUoFCbf": 2
+  },
+  "blockedExternal": [],
+  "unhandledFixtures": [],
+  "warnings": [],
+  "notVerified": [
+    "Deployed owner/admin mapping",
+    "Live cross-user Supabase RLS",
+    "Real signup/password-reset email delivery",
+    "Vendor entitlements and freshness",
+    "Actual paper submission, broker fill and reconciliation",
+    "Physical devices, Safari/Firefox and assistive technology",
+    "Human usability approval",
+    "Investment performance or model calibration"
+  ],
+  "finishedAt": "2026-10-17T02:51:46.563Z",
+  "summary": {
+    "passed": 38,
+    "failed": 0,
+    "runtimeErrors": 0
+  }
+}

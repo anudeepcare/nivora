@@ -808,67 +808,8 @@ export default function StockClient({symbol}:{symbol:string}){
     entryQuality:Number(d.scores?.entry??d.scores?.timing??50),trend:Number(d.scores?.trend??50),momentum:Number(d.scores?.momentum??50),participation:Number(d.scores?.flow??50),structure:Number(d.scores?.structure??50),extensionRisk:Number(d.scores?.extension??50),volatilityRisk:Number(d.scores?.risk??50),state:d.labels?.trend||"Mixed",entryState:d.labels?.entry||"Mixed"
   };
 
-  const fairValue=(()=>{
-    const technicalAnchor=Math.max(Number(d.levels?.breakout||currentPx),Number(marketLab?.waveTarget||currentPx));
-    const businessAnchor=currentPx*(1+Math.max(-.22,Math.min(.28,(businessScore-50)/250)));
-    const mid=hasAnalystTarget
-      ? targetMean*.60+businessAnchor*.25+technicalAnchor*.15
-      : businessAnchor*.60+technicalAnchor*.40;
-    const quality=Math.max(-.04,Math.min(.04,(businessScore-55)/800));
-    return {
-      mid:Number(mid.toFixed(2)),
-      low:Number((mid*(.92+quality)).toFixed(2)),
-      high:Number((mid*(1.08+quality)).toFixed(2)),
-      source:hasAnalystTarget?"Analyst target + business quality + price structure":"Business quality + price structure"
-    };
-  })();
-
-  const horizonPlan=(()=>{
-    const atr=Math.max(.01,Number(proTech?.atr14||currentPx*.025));
-    const pref=Number(d.levels.preferredEntry), sup=Number(d.levels.support), major=Number(d.levels.majorSupport), res=Number(d.levels.resistance), brk=Number(d.levels.breakout), inv=Number(d.levels.invalidation);
-    let entryLow=Math.min(pref,sup),entryHigh=Math.max(pref,sup),confirm=brk,target1=res,target2=Math.max(brk+atr*1.25,res+atr*1.75),stop=inv;
-    if(horizon==="swing"){
-      entryLow=Math.max(0,Math.min(major,sup-atr*.55));entryHigh=sup;confirm=res;target1=brk;target2=brk+atr*1.6;stop=Math.min(inv,entryLow-atr*.85);
-    }
-    if(horizon==="long"){
-      entryLow=Math.max(0,Math.min(Number(marketLab?.dcaLow||major),major));entryHigh=Math.max(Number(marketLab?.dcaHigh||sup),sup);confirm=brk;
-      target1=Math.max(brk,fairValue.low,currentPx*1.10);target2=Math.max(target1+atr,fairValue.mid,currentPx*1.22);stop=Math.min(inv,major-atr*1.15);
-    }
-    // A "buy zone" must be decision-useful, not a huge percentage band.
-    // Clamp the visible zone around its midpoint; wider structural levels remain visible as support/major support.
-    const rawMid=(entryLow+entryHigh)/2;
-    const isCrypto=/BTC|ETH|\//i.test(String(d.symbol||d.name||""));
-    const maxZonePct=isCrypto?.045:.065;
-    const maxHalf=Math.max(currentPx*.012,rawMid*maxZonePct/2);
-    if(entryHigh-entryLow>maxHalf*2){entryLow=Math.max(0,rawMid-maxHalf);entryHigh=rawMid+maxHalf;}
-    const plannedEntry=(entryLow+entryHigh)/2;
-    const reward=Math.max(.01,target1-plannedEntry),riskAmt=Math.max(.01,plannedEntry-stop);
-    const ratioRaw=reward/riskAmt;
-    const ratio=Number.isFinite(ratioRaw)&&ratioRaw>0&&ratioRaw<=12&&riskAmt/plannedEntry>=.004?ratioRaw:0;
-    return {
-      entryLow:Number(entryLow.toFixed(2)),entryHigh:Number(entryHigh.toFixed(2)),confirm:Number(confirm.toFixed(2)),
-      target1:Number(target1.toFixed(2)),target2:Number(target2.toFixed(2)),stop:Number(stop.toFixed(2)),rr:Number(ratio.toFixed(1)),
-      timeframe:horizon==="now"?"Current / daily structure":horizon==="swing"?"Swing / daily-weekly structure":"Long term / weekly-monthly thesis"
-    };
-  })();
-  const rsiNow=Number(proTech?.rsi14??d.engine?.RSI??50), extensionNow=Number(d.scores?.extension??50);
-  const timingState=(()=>{
-    if((rsiNow>=76||extensionNow>=82)&&currentPx>=Number(d.levels?.resistance||Infinity))return{label:owns?"TRIM / DO NOT ADD":"DO NOT CHASE",reason:`Price is stretched${Number.isFinite(rsiNow)?` (RSI ${rsiNow.toFixed(0)})`:""} near/above resistance. This is a timing warning, not automatically a broken thesis.`,tone:"bad" as const};
-    if(rsiNow>=70||extensionNow>=74)return{label:"OVEREXTENDED",reason:"Momentum is strong but entry quality is poor. Prefer consolidation, a pullback, or new fundamental evidence before adding.",tone:"mid" as const};
-    if(currentPx>=horizonPlan.entryLow&&currentPx<=horizonPlan.entryHigh&&rsiNow<68)return{label:"ATTRACTIVE ENTRY",reason:"Price is inside the preferred accumulation band without an extreme momentum reading. Thesis must still remain intact.",tone:"good" as const};
-    if(currentPx<horizonPlan.entryLow)return{label:"WAIT FOR STABILITY",reason:"Price is below the planned area. Cheaper is not automatically better; wait for stabilization and intact thesis evidence.",tone:"mid" as const};
-    return{label:"WAIT / WATCH",reason:"The investment thesis and the current entry are not aligned strongly enough for a high-conviction add.",tone:"mid" as const};
-  })();
-
-  const horizonChartLevels={
-    entryLow:horizonPlan.entryLow,entryHigh:horizonPlan.entryHigh,confirm:horizonPlan.confirm,
-    target1:horizonPlan.target1,target2:horizonPlan.target2,stop:horizonPlan.stop,
-    preferredEntry:horizonPlan.entryLow,support:horizonPlan.entryHigh,majorSupport:Number(d.levels.majorSupport),
-    resistance:horizonPlan.target1,breakout:horizonPlan.confirm,invalidation:horizonPlan.stop
-  };
   // The current canonical map owns every displayed chart level; the V5 plan is its verified fallback.
   const v5ChartLevels=executionLevelsAllowed?canonicalValidationLevels:null;
-  const horizonCandles=(d.candles||[]).slice(horizon==="now"?-65:horizon==="swing"?-125:-180);
 
   const marketTruthUi=buildMarketTruth(aurynPriceState.isLive?stableDisplayQuote:null,marketTruth,new Date().toISOString());
   const formattedMarketTruth=formatMarketTruth(marketTruthUi);
@@ -922,9 +863,8 @@ export default function StockClient({symbol}:{symbol:string}){
   return <div className="aurynStockPage">
     <ResearchVisit symbol={symbol} name={company?.name||context?.profile?.name||symbol}/>
     <div className="compactSecurityBar"><StockSecurityHeader company={company?.name||d.name||symbol} symbol={symbol} price={aurynPriceState.price} changePct={displayChangePct} status={marketStatusLabel} detail={marketDetail} logoUrl={context?.profile?.logo||null} marketFacts={securityMarketFacts} controls={<div className="glassStockControls nativeStockControls"><label className="glassHorizon">Horizon<select aria-label="Investment horizon" value={horizon} onChange={e=>setHorizon(e.target.value as ResearchHorizon)}><option value="long">Long term</option><option value="year">6–12 months</option><option value="swing">Swing</option><option value="now">Today</option></select></label><div className="glassStockActions"><button type="button" className="au-btn" aria-pressed={watching} onClick={watch}>{watching?'✓ Saved':'Save'}</button><button type="button" className="au-btn" onClick={()=>{router.push('/alerts?symbol='+encodeURIComponent(symbol))}}>Alert</button></div></div>} owns={owns} positionLoaded={Boolean(ownerPosition)} onToggleOwn={()=>setOwns(!owns)}/>
-    {false&&tab!=="thesis"&&institutionalDecision&&<div className="researchToolbar" aria-label="Canonical investment decision"><span>Canonical decision <b>{institutionalDecision.newMoneyAction.replaceAll("_"," ")}</b></span><span>Owner: {institutionalDecision.ownerAction.replaceAll("_"," ")} · Long term: {institutionalDecision.longTermAction.replaceAll("_"," ")}</span></div>}
 
-    </div>{institutionalDecision&&<StockDecisionSummary decision={institutionalDecision} state={canonicalV935?.research?.state} snapshot={canonicalV935} candles={longTermBars} loading={longTermLoading}/>}<StockEvidenceNav tab={tab} setTab={(next)=>{if(depth==="quick"&&next!=="thesis")setDepth("research");handleEvidenceTab(next);}} isCrypto={d.assetType==="crypto"}/>
+    </div>{institutionalDecision&&<StockDecisionSummary horizon={horizon} decision={institutionalDecision} state={canonicalV935?.research?.state} snapshot={canonicalV935} candles={longTermBars} loading={longTermLoading}/>}<StockEvidenceNav tab={tab} setTab={(next)=>{if(depth==="quick"&&next!=="thesis")setDepth("research");handleEvidenceTab(next);}} isCrypto={d.assetType==="crypto"}/>
     {marketTruth&&!priceSensitiveAllowed&&!stableLiveFresh?<div className="aurynIntegrityAlert aurynMarketTruthAlert" role="alert"><b>PRICE UNVERIFIED</b><span>{marketTruth.reason||"Independent market sources are not sufficiently aligned."} AURYN has disabled entry, confirmation, target, stop and risk/reward output until the canonical price is verified.</span></div>:null}
     {marketTruth&&!priceSensitiveAllowed&&stableLiveFresh?<div className="aurynIntegrityNote"><b>Research price live</b><span>Execution-grade verification is still pending; AURYN keeps automated execution blocked without hiding the live research price.</span></div>:null}
     {/* Compatibility contract: AurynResearchOverview decision={institutionalDecision} marketTruth={marketTruth}; runtime receives the unified display truth below. */}

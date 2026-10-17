@@ -1,0 +1,1 @@
+Open index.html in a browser. All captures come from the actual built application with synthetic account/quote/decision services. No private user screenshot is included. See the parent verification report for the exact scope and unverified production/device integrations.

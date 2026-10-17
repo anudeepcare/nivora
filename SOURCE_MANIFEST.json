@@ -849,8 +849,8 @@
     },
     {
       "path": "GIT_AND_VERCEL.md",
-      "bytes": 9068,
-      "sha256": "223344e136dc558726b1fe2be30dc746e7874275ad8726c07aa5c3f54c5f4528"
+      "bytes": 8964,
+      "sha256": "e9dd53aee40a01ecdef3645ca4aede1cd75a134c7e5b3f47915821df7c570e85"
     },
     {
       "path": "PREMIUM_UX_RELEASE.md",
@@ -874,8 +874,8 @@
     },
     {
       "path": "RELEASE_REPORT.md",
-      "bytes": 2167,
-      "sha256": "bf65b6e1e25c2f74775c6f1c8ab9f0a53309a7e45d69e69acddf5b46929dc5a0"
+      "bytes": 3178,
+      "sha256": "572005210cb744b38521b387c697616e5801257dd18d167be8fbd1de2b7357fe"
     },
     {
       "path": "SCALING.md",
@@ -884,13 +884,13 @@
     },
     {
       "path": "START_HERE.md",
-      "bytes": 1855,
-      "sha256": "ed23af464dfa55f77ff26f879a18ae8c2c8a04141a7086cada334bdc18671e59"
+      "bytes": 2017,
+      "sha256": "1a62372ba00baa5993c2c1d21d93ad4b3742ce095722bac8e918add37d378019"
     },
     {
       "path": "START_HERE_AURYN_WORK_INSTRUCTIONS.md",
-      "bytes": 1604,
-      "sha256": "5e68625370541268ced0aba49f6d34c85c7a338b17d513530d89ac873d6c98e8"
+      "bytes": 1782,
+      "sha256": "1ba2a6587b625b75bd782967598666fccf553602db664f77625c7f2d2ec8070d"
     },
     {
       "path": "V65_3_RELEASE.md",
@@ -1074,8 +1074,8 @@
     },
     {
       "path": "app/layout.tsx",
-      "bytes": 2150,
-      "sha256": "937772ee583efe643dc43e08a6a95fad78d0615fc8523b2dcdb72efecc3fa779"
+      "bytes": 1718,
+      "sha256": "4ca1c8ea16f14480cc8f11511264497e1cca16d1060426a5bfa95085e2250c25"
     },
     {
       "path": "app/loading.tsx",
@@ -1139,13 +1139,18 @@
     },
     {
       "path": "app/secondary-frame.tsx",
-      "bytes": 637,
-      "sha256": "a301249181ab6353d1ad38c5077df6ceaf500a7a894982662c639325b1765f1c"
+      "bytes": 603,
+      "sha256": "a08200ff666af7ecd0be80ab0de64968706ea6500ad80eca39b66307ceafbb50"
     },
     {
       "path": "app/secondary-redesign.css",
       "bytes": 13249,
       "sha256": "d5cb0d2329b1feba444bf1eb1215bafdb97802dd5420f73c51187364584a4344"
+    },
+    {
+      "path": "app/ui.css",
+      "bytes": 155654,
+      "sha256": "4acd2e2b0e09829e997fbc8140c440730a693a309d862bae2bda88eb05e866a5"
     },
     {
       "path": "app/v65-responsive.css",
@@ -1439,8 +1444,8 @@
     },
     {
       "path": "app/calibration/page.tsx",
-      "bytes": 6014,
-      "sha256": "53fca82080cb56b4ce4434836e44f4a9967c945b5725d734ef4e6c6ceab3e813"
+      "bytes": 5979,
+      "sha256": "194eabb02f48d9bb70376e7741c12cca2ee07a3341da27f1b7940c7644589fac"
     },
     {
       "path": "app/dashboard/page.tsx",
@@ -1479,18 +1484,18 @@
     },
     {
       "path": "app/onboarding/page.tsx",
-      "bytes": 2217,
-      "sha256": "d05899de81a6e5b11f3e34799efa48f918ebac57ffb5e2aad3a1810500d8349f"
+      "bytes": 2162,
+      "sha256": "58887a7d6601c27823c81810c91ecd7d90999f6ef12088b81843e063f6efbf04"
     },
     {
       "path": "app/personalization/page.tsx",
-      "bytes": 1730,
-      "sha256": "fd47f56fe281d84ee1d0217431971d564740abc0698fd8807b9c3e9456d961d3"
+      "bytes": 1158,
+      "sha256": "f3a06b65ad174d8e9d468220de494ab5a2dce9548df2321b9d106ef54e8bb947"
     },
     {
       "path": "app/portfolio/page.tsx",
-      "bytes": 19264,
-      "sha256": "66ad92fa1f8a81c972e6621cda37d9ba93261c7575bf33fa1aba7a4db0368790"
+      "bytes": 18185,
+      "sha256": "d22875404435e8d4b5d4aa93e172f3b353359ded5c362209209d33890f9eb760"
     },
     {
       "path": "app/privacy/page.tsx",
@@ -1499,8 +1504,8 @@
     },
     {
       "path": "app/profile/page.tsx",
-      "bytes": 1807,
-      "sha256": "281dace59de68bc0ee1bda639dbc9ac3130b493aa076b3bd23ee1c27d9968872"
+      "bytes": 1931,
+      "sha256": "c6683ba4cd373b13216c59db2dc3f30e7e9bfb5880e9632dc7ac9f410161487a"
     },
     {
       "path": "app/register/page.tsx",
@@ -1509,8 +1514,8 @@
     },
     {
       "path": "app/research-lab/page.tsx",
-      "bytes": 1027,
-      "sha256": "d8fb19c2b011e9b2b1bbf51e35c74e336304d744dbc0af69f01af868ff791336"
+      "bytes": 275,
+      "sha256": "8a9a4b68222cedb2632f66262ef4e4f9fdf8e15ec4b85f5396b6e610b649fe37"
     },
     {
       "path": "app/reset-password/page.tsx",
@@ -1529,8 +1534,8 @@
     },
     {
       "path": "app/trading-lab/page.tsx",
-      "bytes": 21358,
-      "sha256": "3ce956411250694737de53a8de25ba0e0771ede916b1b7f66e732a5332e30cf0"
+      "bytes": 22348,
+      "sha256": "ec2b463468d99b256382d7280256b14d4507b11dfd1fe519495f9ef27ccd6e27"
     },
     {
       "path": "app/watchlist/page.tsx",
@@ -1544,8 +1549,8 @@
     },
     {
       "path": "components/AppearanceSettings.tsx",
-      "bytes": 3414,
-      "sha256": "b77d8fbb2404368e50fa54c6161caa2762ad9619b4e531f8abad86dbbc2da58a"
+      "bytes": 3400,
+      "sha256": "92f5a3c03500fcc7b476c49ed5e2b3c6549285292fa5b49437ea6168a5b8466b"
     },
     {
       "path": "components/AssetLogo.tsx",
@@ -1584,8 +1589,8 @@
     },
     {
       "path": "components/ManualPaperTicket.tsx",
-      "bytes": 12184,
-      "sha256": "88eea0ba54cca53fe68bc2380800da79d6146fd0db3db357d730aa73ab574308"
+      "bytes": 12279,
+      "sha256": "16e0acec14021db35eb1629ae0724fbafadf56f24a4d8837588faff2eeac66a6"
     },
     {
       "path": "components/MetricHelp.tsx",
@@ -1614,8 +1619,8 @@
     },
     {
       "path": "components/ResearchHome.tsx",
-      "bytes": 4887,
-      "sha256": "bf85ca670ec1afebc9e92781864fd97fd5bba35891664dee39d787a8554eb493"
+      "bytes": 4310,
+      "sha256": "40038fe0cc7507358bf820d9239704c89f49135e4a68fa612bde2e59387548ff"
     },
     {
       "path": "components/ResearchVisit.tsx",
@@ -1624,13 +1629,13 @@
     },
     {
       "path": "components/ResearchWorkspace.module.css",
-      "bytes": 13686,
-      "sha256": "f96ad4aa65e6a4da35993fa2b88df0b564b010de4fb60a9b2dae26eac371bee6"
+      "bytes": 13714,
+      "sha256": "b4ae3f7547b1eafc5be47e251ca4b505e864c3e6bb87bb09582ef2fe8fab8f96"
     },
     {
       "path": "components/ResearchWorkspace.tsx",
-      "bytes": 34215,
-      "sha256": "3260eb38e1c0e8c597bcdb80ec982e77316de96d83549f5da42d1c0421203f97"
+      "bytes": 33885,
+      "sha256": "e6b64097342bf2ca628dd8cd5738315634f50f891d7b42d34ad4478b68b3bbb7"
     },
     {
       "path": "components/ScorePill.tsx",
@@ -1649,8 +1654,8 @@
     },
     {
       "path": "components/StockClient.tsx",
-      "bytes": 87210,
-      "sha256": "bebc08fd67c35a1396cd367d10da356a48bbbb77fab5be1c8ed804d325e7341f"
+      "bytes": 82076,
+      "sha256": "1ec3d83f0ffb7f4438206c6eb67a420b3304599736fd17cff0ea10d340404704"
     },
     {
       "path": "components/ThemeProvider.tsx",
@@ -1659,8 +1664,8 @@
     },
     {
       "path": "components/auth/AuthShell.tsx",
-      "bytes": 667,
-      "sha256": "9401191790f7a2e98cf9e6fcea95c627a978fc47ee9cb20dd2665d77880d3875"
+      "bytes": 635,
+      "sha256": "05fb713970ee670cf954be048bd48cc24d1b8ec3670d2990d7d4c3952763b3b7"
     },
     {
       "path": "components/auth/PasswordField.tsx",
@@ -1779,8 +1784,8 @@
     },
     {
       "path": "components/premium/AurynResearchOverviewV2.tsx",
-      "bytes": 11031,
-      "sha256": "a1beb57ee3fb75ae7873dfa51ee382c064d6674a22eebc6c72cf4b5a0d982ed3"
+      "bytes": 11554,
+      "sha256": "fbb2013ccea8278bee5fef2da6b6bd3a9ca7165e7372d966c2c97434e10de2cc"
     },
     {
       "path": "components/research/AccumulationVisuals.module.css",
@@ -1794,8 +1799,8 @@
     },
     {
       "path": "components/research/BusinessEvidence.tsx",
-      "bytes": 14799,
-      "sha256": "64de9831b21635d6b3b88f1df3512183aa32c95b95e5707319b11d7f366af93c"
+      "bytes": 14956,
+      "sha256": "33491a8d67b6c7f2f280ab2655b6878495749d4eb688dd75574ed08539a3056f"
     },
     {
       "path": "components/research/ContributionDialog.tsx",
@@ -1814,8 +1819,8 @@
     },
     {
       "path": "components/research/FinancialTrends.tsx",
-      "bytes": 7533,
-      "sha256": "d8563516159f801de0066b6f406610b4948c5c75060d0178cfbaa265d73758dd"
+      "bytes": 7900,
+      "sha256": "1a175b40b65f49b08e4997240facc733fff01176db8401e3867445c75cd935ef"
     },
     {
       "path": "components/research/GlassEvidencePages.tsx",
@@ -1824,8 +1829,8 @@
     },
     {
       "path": "components/research/GlassResearchLab.tsx",
-      "bytes": 3701,
-      "sha256": "80082eb7f37d0264a07d2598b018eee72abdf6f936df13bea88e34cd2634327c"
+      "bytes": 4348,
+      "sha256": "d039002ffc91315600c5dc8a93c47a72f7874e9ced2b7d5a03911a4b9ba12dbc"
     },
     {
       "path": "components/research/GlassValuation.tsx",
@@ -1879,8 +1884,8 @@
     },
     {
       "path": "components/stock/StockDecisionSummary.tsx",
-      "bytes": 2044,
-      "sha256": "d7309e7b0320b8e5f22031bcf83a118a8886975fc102542519e20f86572869e9"
+      "bytes": 2583,
+      "sha256": "9266cc6248a9b06b26bf9ace1a2de94b0f223671e8a168a668a3f881a93e8098"
     },
     {
       "path": "components/stock/StockEvidenceNav.tsx",
@@ -4874,8 +4879,8 @@
     },
     {
       "path": "scripts/verify-midnight-browser.mjs",
-      "bytes": 41053,
-      "sha256": "1aaf423562bdd89d46dff7304ecfd4e79f2943e5e903426c9a13c874127f1d75"
+      "bytes": 53978,
+      "sha256": "056cf7a90cb8fe3e1eb66ce0bc62aa0e827f5126df940507e7f830b952b175e0"
     },
     {
       "path": "scripts/verify-next-build-browser.mjs",
@@ -7514,8 +7519,8 @@
     },
     {
       "path": "verification/VERIFICATION_REPORT.md",
-      "bytes": 4276,
-      "sha256": "368a7a60e73514e181f3cf0b048bcb215257acb94d3aa32db8d0859c87734a78"
+      "bytes": 189,
+      "sha256": "6a7807e2a9dcabceb1c3471d7fc6f3da82d5ac3f2de1bbd0d4e404bac95d9592"
     },
     {
       "path": "verification/VISUAL_REVIEW.html",
@@ -9298,6 +9303,26 @@
       "sha256": "f9b3181f9e3eba2ef84a94a8e7e54add648bc09dc269a707a217e78a4e1df13e"
     },
     {
+      "path": "verification/next-build/controls-green-01/progress.json",
+      "bytes": 123,
+      "sha256": "2abea8ecaea3d076c8791431aef77bd295f73ee7175b8c817bd3be395028d975"
+    },
+    {
+      "path": "verification/next-build/controls-green-01/report.json",
+      "bytes": 10505,
+      "sha256": "d0a5bf9d668718c2b19a6a9cf3a0c6eafd65fde3e2f3b95a496e5f1185ca0d81"
+    },
+    {
+      "path": "verification/next-build/controls-red/progress.json",
+      "bytes": 123,
+      "sha256": "26e2da0686129a6c1f7c2ee2b27c7fbaa3b2f44556cb42a196ae26f71483ed6e"
+    },
+    {
+      "path": "verification/next-build/controls-red/report.json",
+      "bytes": 10554,
+      "sha256": "14aa05a83ee682e56a97ff84f5251df5e6ebdc7637bea4f896705fe72532b0b6"
+    },
+    {
       "path": "verification/next-build/glass-01/progress.json",
       "bytes": 81,
       "sha256": "7500df73f240d2261ab1b1ae5a7fe5f4b4ab288ed1b689ffc7bbb036ecd63935"
@@ -9688,6 +9713,126 @@
       "sha256": "d99e16d1f1414f7c3627fde2c2c88e9fd3b825e7a934eaf75859e57c17e0df4b"
     },
     {
+      "path": "verification/next-build/repair-actual-preview/auryn-dark-1440.png",
+      "bytes": 322218,
+      "sha256": "1b1aa72dc2add7abbdfccc666ca70da03eb9a9f2d9af3265ddd75a2b3c2302b2"
+    },
+    {
+      "path": "verification/next-build/repair-actual-preview/auryn-dark-390.png",
+      "bytes": 149994,
+      "sha256": "cb57e63c79bc96577e40113a115bcee46296c741c59aed6b88451f124c3234d3"
+    },
+    {
+      "path": "verification/next-build/repair-actual-preview/auryn-dca-dark.png",
+      "bytes": 15708,
+      "sha256": "14703a68748f974e95c068a622033f0739c38cc7ab9477646ab7951188f38829"
+    },
+    {
+      "path": "verification/next-build/repair-actual-preview/auryn-dca-light.png",
+      "bytes": 12452,
+      "sha256": "b3d1e4633290fa4d28955349f5e2a9a4d96efad9072f9dd4ef29edc3faffb351"
+    },
+    {
+      "path": "verification/next-build/repair-actual-preview/auryn-financials-desktop.png",
+      "bytes": 410572,
+      "sha256": "61c22783c6259d29f52972dd69154feddeef069e414822cbe4c09e11a7069537"
+    },
+    {
+      "path": "verification/next-build/repair-actual-preview/auryn-light-1440.png",
+      "bytes": 249225,
+      "sha256": "6433cb782c8486b798ea14fcf12e50643f4863576d921b672c6e5b669ad1e63c"
+    },
+    {
+      "path": "verification/next-build/repair-actual-preview/auryn-light-390.png",
+      "bytes": 125330,
+      "sha256": "b25235b2a76cf0b1ae85c7ae51e0bd172536ead50226bf04c5d59af339999572"
+    },
+    {
+      "path": "verification/next-build/repair-actual-preview/geometry-dark-1440.json",
+      "bytes": 1200,
+      "sha256": "583afa9512084dfce564a7023486e64aa15f7476deaf8344b64cbab5dbefbfb4"
+    },
+    {
+      "path": "verification/next-build/repair-actual-preview/geometry-dark-390.json",
+      "bytes": 1233,
+      "sha256": "8a69a4868845e80a8806c30e75df9b731901c310f8b6f11b1bc9577b0151dd10"
+    },
+    {
+      "path": "verification/next-build/repair-actual-preview/geometry-light-1440.json",
+      "bytes": 1200,
+      "sha256": "583afa9512084dfce564a7023486e64aa15f7476deaf8344b64cbab5dbefbfb4"
+    },
+    {
+      "path": "verification/next-build/repair-actual-preview/geometry-light-390.json",
+      "bytes": 1233,
+      "sha256": "8a69a4868845e80a8806c30e75df9b731901c310f8b6f11b1bc9577b0151dd10"
+    },
+    {
+      "path": "verification/next-build/repair-actual-preview/report.json",
+      "bytes": 34789,
+      "sha256": "adcd390d28a9270994cacb664ac769ef583e786de459ba9926d42fcbd4225823"
+    },
+    {
+      "path": "verification/next-build/repair-final/progress.json",
+      "bytes": 120,
+      "sha256": "e0969b1ccee74680de614cc7db5415f29c0b2c1cece5d239402bd22d2b0025b4"
+    },
+    {
+      "path": "verification/next-build/repair-final/report.json",
+      "bytes": 614647,
+      "sha256": "ba36e1b8a417554337e2d823923f161e3ddc2ca9b1ccbaf159e23194e6250379"
+    },
+    {
+      "path": "verification/next-build/repair-final-interactions/progress.json",
+      "bytes": 119,
+      "sha256": "684d9c0ae677390a61f78632753be7c7e432d90e106ed84e82808254c3753706"
+    },
+    {
+      "path": "verification/next-build/repair-final-interactions/report.json",
+      "bytes": 10898,
+      "sha256": "aeecf37064ca868f363f7fa3cff7ba855f84e8780898ff648f308da9d97112ee"
+    },
+    {
+      "path": "verification/next-build/repair-final-responsive/progress.json",
+      "bytes": 77,
+      "sha256": "687a014626a93b2a9888be9acb341dd12b140794d7ab50f978bb707e8ce03692"
+    },
+    {
+      "path": "verification/next-build/repair-final-responsive/report.json",
+      "bytes": 150252,
+      "sha256": "b70a023a883403207576245b868fcf62198de24efbe82cb21cce02bb7e2f6c69"
+    },
+    {
+      "path": "verification/next-build/repair-full-01/progress.json",
+      "bytes": 120,
+      "sha256": "8cf060846af26f40037bdf2e627c507d5dcbcf51169f6059627130c2badb9f8e"
+    },
+    {
+      "path": "verification/next-build/repair-full-01/report.json",
+      "bytes": 525796,
+      "sha256": "174735e708f979732de32ab778fd14f879ec1d27bca35bd6585de215d68ed07b"
+    },
+    {
+      "path": "verification/next-build/repair-full-02/progress.json",
+      "bytes": 120,
+      "sha256": "44992bb7a3594fe0786b1359843c5b2f95bd34123079ab1ba3e0e19f51ad4117"
+    },
+    {
+      "path": "verification/next-build/repair-full-02/report.json",
+      "bytes": 627406,
+      "sha256": "45d622cf3059a7a4f3c450b7912b9a974852bb261b5c8ba9a4b54594b7c79a96"
+    },
+    {
+      "path": "verification/next-build/repair-green-01/progress.json",
+      "bytes": 78,
+      "sha256": "51e879621f251793ea05e595b599ceaf205fc6dfbef4a6da4b738c51b469b8b2"
+    },
+    {
+      "path": "verification/next-build/repair-green-01/report.json",
+      "bytes": 167628,
+      "sha256": "0112d0e67ce2f8925fd8cba78f6fb792d8ebff9d514a1a9012f598422a51e0c8"
+    },
+    {
       "path": "verification/next-build/repair-preview-01/auryn-dark-390.png",
       "bytes": 239939,
       "sha256": "20b8771b9f1152c3771481a08bc2de793e62a72efb44ec78976af80d1e7eb5c2"
@@ -9786,6 +9931,16 @@
       "path": "verification/next-build/repair-preview-03/report.json",
       "bytes": 34325,
       "sha256": "269bf211e8e91c923d09b26738a9472449453f51d13ce9531ef1d80d49e85bf9"
+    },
+    {
+      "path": "verification/next-build/repair-red/progress.json",
+      "bytes": 79,
+      "sha256": "5bdbad484583536e1910dd41b95ecc6f32f704e13c03c89472e9778612ad9faf"
+    },
+    {
+      "path": "verification/next-build/repair-red/report.json",
+      "bytes": 89423,
+      "sha256": "6278a8e6e862d7eabb7e3b2cae59a07065cbbddd15dc2c0d0ad1e538197a0392"
     },
     {
       "path": "verification/next-build/valuation-inspect/auryn-dark-390.png",
@@ -9964,8 +10119,8 @@
     },
     {
       "path": "verification/product-recovery/browser-server.log",
-      "bytes": 4004,
-      "sha256": "f56807a104dd530aaa303f4a15937ec5455a6a665f144acccaccf0cf463d3f6f"
+      "bytes": 5434,
+      "sha256": "6f20e37f40c8e352f5fcb7cf04cb924cdfe26eb934facc7e22a4bff3bd49b6e5"
     },
     {
       "path": "verification/product-recovery/build-final.log",
@@ -10206,6 +10361,1026 @@
       "path": "verification/product-repair/preview-source-checksums.json",
       "bytes": 521,
       "sha256": "0b7dbc035cca74c72b8cbf4ebc3100863a0eb4f19a4fe20f7862c5641c1c1648"
+    },
+    {
+      "path": "verification/repair-2026-10-17/VERIFICATION_REPORT.md",
+      "bytes": 5127,
+      "sha256": "6d92b60b5b42ee596a2def111a8f309217405c8728486c3d3fa897775eb13f6a"
+    },
+    {
+      "path": "verification/repair-2026-10-17/browser-final-interactions.log",
+      "bytes": 43,
+      "sha256": "266ee8e40532a9809909ee7197f4296d5680752707318217d847bdae651fe9fe"
+    },
+    {
+      "path": "verification/repair-2026-10-17/browser-final-responsive.log",
+      "bytes": 43,
+      "sha256": "e3951a77b6b7e388998c22d619e8daad030b822a26e898c8d8a60c83d1119b3b"
+    },
+    {
+      "path": "verification/repair-2026-10-17/browser-final.log",
+      "bytes": 44,
+      "sha256": "45568b62088527250a2e7c1aa7c2f6a545946a6039b0d5781da8135f66900862"
+    },
+    {
+      "path": "verification/repair-2026-10-17/browser-full-01.log",
+      "bytes": 169,
+      "sha256": "cd7cf5dc42775bee2b3d5e711866d48bd82dacc75eaa7b8fcf2fcbfe8f04a994"
+    },
+    {
+      "path": "verification/repair-2026-10-17/browser-full-02.log",
+      "bytes": 44,
+      "sha256": "1cfd26f2a34fc2394b615a98ee61c6713fac8d298b7ba4ec536f58c318bfa9f2"
+    },
+    {
+      "path": "verification/repair-2026-10-17/browser-green-01.log",
+      "bytes": 43,
+      "sha256": "1140b08a16099ffe98601ac3b29fc8faea247265c67fd18b731962713ce93394"
+    },
+    {
+      "path": "verification/repair-2026-10-17/browser-red.log",
+      "bytes": 937,
+      "sha256": "2fc22270fafbf02bde52ae2f460c966269add21773a78e8d84bfaadc4142ac68"
+    },
+    {
+      "path": "verification/repair-2026-10-17/build-02.log",
+      "bytes": 11834,
+      "sha256": "abd36c6b633a17dbc8f3df53cc5ef52e994287c8bc79250a4bc3742d3f43c10b"
+    },
+    {
+      "path": "verification/repair-2026-10-17/build-03.log",
+      "bytes": 9329,
+      "sha256": "06cc947cdce46d509c59e3ac4c4a6852b2a4ac4a797ffba3e85bb5e353de97e3"
+    },
+    {
+      "path": "verification/repair-2026-10-17/build-final-02.log",
+      "bytes": 9330,
+      "sha256": "afb34d6079e3d4500e7f5575918fa45b6da4dddeff8c8eca671796fa0adaeee1"
+    },
+    {
+      "path": "verification/repair-2026-10-17/build-final-03.log",
+      "bytes": 9328,
+      "sha256": "78e140c1d43b4621518d64ee81483dedc045a6c5349bd06ce0ba00426ecdd06d"
+    },
+    {
+      "path": "verification/repair-2026-10-17/build-final.log",
+      "bytes": 9328,
+      "sha256": "180cbf09e7a089e56aaf6a15ca6a87266fd3beb2bf9073f69a67b8b304ec6c43"
+    },
+    {
+      "path": "verification/repair-2026-10-17/build.log",
+      "bytes": 12474,
+      "sha256": "1fcfcf42a812e345e34ca1c3b018bbc329f39983d3f8f7830b6fe4641f4e3afe"
+    },
+    {
+      "path": "verification/repair-2026-10-17/controls-green-01.log",
+      "bytes": 42,
+      "sha256": "032dda3567bdacf809545c4b028b5f4b58f383684da8b16744968de4348b3948"
+    },
+    {
+      "path": "verification/repair-2026-10-17/controls-red.log",
+      "bytes": 163,
+      "sha256": "7d0058db30bb65916e4397a3d635d004b12b71f939a1f42943bf7ea491c9b48f"
+    },
+    {
+      "path": "verification/repair-2026-10-17/credential-scan.json",
+      "bytes": 193,
+      "sha256": "50cfb620147a9834cba91ebc90be4208256ee174b8a31dba7641980ef33264b6"
+    },
+    {
+      "path": "verification/repair-2026-10-17/live-chart-check.json",
+      "bytes": 456,
+      "sha256": "50e12c07c30ab4a13cdfcfb9d46871738d9c97692b16c3ec16537d56cef394ab"
+    },
+    {
+      "path": "verification/repair-2026-10-17/live-quote-check.json",
+      "bytes": 644,
+      "sha256": "f5791a6c415cb382b7b0de25b8f302a3d491720f8ec9bbb1381b9289798fc19e"
+    },
+    {
+      "path": "verification/repair-2026-10-17/preview.log",
+      "bytes": 36,
+      "sha256": "17ee2b762835caea6d0e8e22c5524bfeeb462e1ad5b17c9a1dc61bbce45eedbc"
+    },
+    {
+      "path": "verification/repair-2026-10-17/release-complete.log",
+      "bytes": 208255,
+      "sha256": "753ed564db1b2400266e4c43fce217f2c554758193cbeceff6075f3a7adaa130"
+    },
+    {
+      "path": "verification/repair-2026-10-17/release-tests-final-02.log",
+      "bytes": 73061,
+      "sha256": "ad54ba7556a029362046133f584b40f9f2572cc980f77a1e9b8d6dab44bb511b"
+    },
+    {
+      "path": "verification/repair-2026-10-17/release-tests-final.log",
+      "bytes": 225349,
+      "sha256": "418848f73166a28b3977f05517c1f6fc8799a645f07d56ead2aff5220f37049e"
+    },
+    {
+      "path": "verification/repair-2026-10-17/release-tests.log",
+      "bytes": 208256,
+      "sha256": "dbfc7c47cda91b8dae9f72864c54aef04802e8fbff1e9132d5ad6e0b2c8b64a3"
+    },
+    {
+      "path": "verification/repair-2026-10-17/source-build.json",
+      "bytes": 67992,
+      "sha256": "ba97353ffe2c90b00544e8c8e58f2a0ed580bc99524c1487af05e35a630cedfa"
+    },
+    {
+      "path": "verification/repair-2026-10-17/summary.json",
+      "bytes": 1077,
+      "sha256": "4a2a81d2267d7f797cfb645f43a82d8be91a93855911ccbd7569ece42a3df642"
+    },
+    {
+      "path": "verification/repair-2026-10-17/typecheck.log",
+      "bytes": 322,
+      "sha256": "6c9d5bbb6e40afa4c69edf49500e579260d76d9afaae03d84344e78a40cbf5b5"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/README.md",
+      "bytes": 272,
+      "sha256": "4497dcfb97c11d8576a4da09ad38ec231342162805a5a7afc9f175c6d4778d60"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/auryn-dark-1440.png",
+      "bytes": 322218,
+      "sha256": "1b1aa72dc2add7abbdfccc666ca70da03eb9a9f2d9af3265ddd75a2b3c2302b2"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/auryn-dark-390.png",
+      "bytes": 149994,
+      "sha256": "cb57e63c79bc96577e40113a115bcee46296c741c59aed6b88451f124c3234d3"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/auryn-dca-dark.png",
+      "bytes": 15708,
+      "sha256": "14703a68748f974e95c068a622033f0739c38cc7ab9477646ab7951188f38829"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/auryn-dca-light.png",
+      "bytes": 12452,
+      "sha256": "b3d1e4633290fa4d28955349f5e2a9a4d96efad9072f9dd4ef29edc3faffb351"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/auryn-financials-desktop.png",
+      "bytes": 410572,
+      "sha256": "61c22783c6259d29f52972dd69154feddeef069e414822cbe4c09e11a7069537"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/auryn-light-1440.png",
+      "bytes": 249225,
+      "sha256": "6433cb782c8486b798ea14fcf12e50643f4863576d921b672c6e5b669ad1e63c"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/auryn-light-390.png",
+      "bytes": 125330,
+      "sha256": "b25235b2a76cf0b1ae85c7ae51e0bd172536ead50226bf04c5d59af339999572"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/index.html",
+      "bytes": 43992,
+      "sha256": "cd0476866b72bfc926e1395c3218843b5813b3d88cf77c4a493ae6f561e7f960"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/MSFT-Business-expanded.png",
+      "bytes": 394651,
+      "sha256": "6b6be46af2d7fc4367be9719bb55fd31d2e99b95da04ccf17c24c1d9f4868c22"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/MSFT-Earnings-events-expanded.png",
+      "bytes": 208711,
+      "sha256": "4db4b70d49703d4eb049f1f047f99e219de3656b2173d7994ae56b2702f4527b"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/MSFT-Financials-expanded.png",
+      "bytes": 139160,
+      "sha256": "483467d523f052673f9637cf83c3f97d2c4d592e435eaa7f3cd5160c56b73572"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/MSFT-Options-expanded.png",
+      "bytes": 235693,
+      "sha256": "6708f0b530ae57d5fd4c6311c2bcd0e6a23cb247e0d167966224241609201dab"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/MSFT-Overview-expanded.png",
+      "bytes": 6094,
+      "sha256": "5a5337e4cf6c9cf03c662c0beed0383b19c1be2796197dac57f161b39baf78f6"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/MSFT-Ownership-expanded.png",
+      "bytes": 222086,
+      "sha256": "65ee126d3724b55a2666ef3838666203fb5f3362805da9bc08767b3a1aba1c3b"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/MSFT-Risks-expanded.png",
+      "bytes": 214925,
+      "sha256": "e4b8cfef1dfccc263e6ffa733eeee068e81546fb798de6bc7a534038c31e4109"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/MSFT-Technicals-expanded.png",
+      "bytes": 468753,
+      "sha256": "1e483b84d0918cf09cffb2f0c5f93c2f7372fcd964771e69e8d55e8203d2fb6c"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/MSFT-Valuation-expanded.png",
+      "bytes": 659181,
+      "sha256": "dc43a42c39dc125c3f44998f2e13677a22455779c368b8024753cf01c96c799d"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/alerts-expanded.png",
+      "bytes": 180911,
+      "sha256": "52474a2a2246cf270581befcb3bc82c5919d0eb762ee61c7e2a273a59feb9b5f"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-MSFT-Business.png",
+      "bytes": 384897,
+      "sha256": "fe5e684f1244cfc9c3c127074f4fbdbf4195bb8e6fc8302614fda8e8a9f44790"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-MSFT-Earnings-events.png",
+      "bytes": 386767,
+      "sha256": "ab88d57562fa3df51561c73849892325e19faf6bfcc4f42550afe148d4fba736"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-MSFT-Financials.png",
+      "bytes": 303628,
+      "sha256": "9f16641d800f85c8c2e5fc486fd89d9bd5be9775c1ff8a12a8c5a02adea3536c"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-MSFT-Options.png",
+      "bytes": 350835,
+      "sha256": "0b794788484a84f67e707620b0ca438f7761858befe794bd2620ea1a47f1f75b"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-MSFT-Overview.png",
+      "bytes": 341549,
+      "sha256": "1ecb6f7ac13e7472b6b6a106190c00e9af329c715d4b73970a05217b1c4f6018"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-MSFT-Ownership.png",
+      "bytes": 329708,
+      "sha256": "07f1f204a1fcb086549a5c4ecca95b48a06ed383377096e663a2f48cb989e59d"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-MSFT-Risks.png",
+      "bytes": 373632,
+      "sha256": "c53a3030ab132ea0b7747d57c94442d5233c93cd372042b5061be9ec70b1023b"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-MSFT-Technicals.png",
+      "bytes": 556911,
+      "sha256": "9df9e5a1ef64ed2f56a443704152d8b111c462987fab2f2660a8b4ee78a29c1e"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-MSFT-Valuation.png",
+      "bytes": 493882,
+      "sha256": "8b11ad92a8c264bcb92fff2afc359ea494fffcd3e5232c8c7ee6e1bee543f6f2"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-alerts.png",
+      "bytes": 221804,
+      "sha256": "0c14dea588d68ba54ab68d2aff7438cec26d78f35a4f9d652e1324c1dd1c8598"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-analyze.png",
+      "bytes": 173738,
+      "sha256": "3799f1cc34e4b60c2ab21df78145fef7043a1aa004834e07c199ba1d9eb3611b"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-calibration.png",
+      "bytes": 293145,
+      "sha256": "d30c04fdce9b94023cd95ff2b261316f8ab525427a86805ffa8937a51554c652"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-dashboard.png",
+      "bytes": 303851,
+      "sha256": "68c3f5d3b3fb0386eccec52bb7b1719e05c09c0282d7f30c68a8c2a8395e931c"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-disclaimer.png",
+      "bytes": 295726,
+      "sha256": "cea3b78d3cf498cd7ac276953a65a2de365441ac47a181ed06797f697fdde5a8"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-discover.png",
+      "bytes": 214746,
+      "sha256": "fc23dd0a4ef32a6ddc40ce2ff2555354c554a9d81eb3929324dada23cdeb82df"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-faq.png",
+      "bytes": 272781,
+      "sha256": "68b3a4b2e084bb05c4c43bcea2e08b209d0abe8d5d18b996634edc131f9e6a33"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-forgot-password.png",
+      "bytes": 248329,
+      "sha256": "4d08aa613e56279510035a7d8e4ce5da093d8070d836323a606eba35fe063813"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-login.png",
+      "bytes": 238098,
+      "sha256": "34a29da8fcf203312d821b8e779f99f30c0bc9fe086484a9c8ee8c2598df61af"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-methodology.png",
+      "bytes": 216820,
+      "sha256": "5399d3e49227e7bd3f09a317b8f5dc4dc1da2501ebbc2a145abeaccae75d9838"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-onboarding.png",
+      "bytes": 249317,
+      "sha256": "99e2447e154b2a108bb18ec42ac32ee60c2ce4b63eb34821d7ce36680896b06d"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-personalization.png",
+      "bytes": 296226,
+      "sha256": "5e6764e899e6c09166ba1a552238aff2bac475eb8657c78bf95494790ac94e4c"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-portfolio.png",
+      "bytes": 240970,
+      "sha256": "710a753714a14f18582d2f303f35f21bd278114169859bcad2dc1e6f61888913"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-privacy.png",
+      "bytes": 187382,
+      "sha256": "a452eb2321c3b46c4fe0c1a6f38bc84035e89380f9478af8f94d273119481351"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-profile.png",
+      "bytes": 220064,
+      "sha256": "5cb637371c013fc9afd36bd2caf95177215678f4c591e42e8bd7e804a2191931"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-register.png",
+      "bytes": 236530,
+      "sha256": "48594b5d9b8726fe7a00b2a857ad54f86233c209fdbb577ae47749f7596eb678"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-research-lab.png",
+      "bytes": 200757,
+      "sha256": "0f0f8933d58b2a21d551616a754ed8e43b6a50d19303f4f3e84353b5684f2522"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-reset-password.png",
+      "bytes": 252511,
+      "sha256": "24b207613e6311b1a123854b5e0ac9fa4d66eb845ecf1a91b264f72375119416"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-terms.png",
+      "bytes": 631414,
+      "sha256": "f5e59b381c72fa8543b8cc700f876211c949663563fd8b9fdc59c1cd67099c9e"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-trading-lab.png",
+      "bytes": 204916,
+      "sha256": "12a66a371d2be00b56d703d70f5e06c88ea69956813d01ae6f7715b1e032a821"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-1440-watchlist.png",
+      "bytes": 174922,
+      "sha256": "d862b95b0d79542b4aeea3e3e0e0ea5b9830dc1fe9cf92fc9ea535aeadfc30d6"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-MSFT-Business.png",
+      "bytes": 243170,
+      "sha256": "7dc8f72306500976c89735aaeb402d39673b3d24441b321213e4c9d44b89c0c2"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-MSFT-Earnings-events.png",
+      "bytes": 215887,
+      "sha256": "5cbb6e1dafa3b7c39295c261ac47c4c107b1d14ed8aadfb06b3b6057c0ab1e5e"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-MSFT-Financials.png",
+      "bytes": 166362,
+      "sha256": "90304def0ee0367f558335af0e0d869805ab7f2a804eed8ded184199a46bf372"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-MSFT-Options.png",
+      "bytes": 185727,
+      "sha256": "a1d3ed3a8b786c09bf8ac4cb58274c9f9a392a08a900f332130d034735a77f60"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-MSFT-Overview.png",
+      "bytes": 170468,
+      "sha256": "13ee73783a24c897bff39094f074550195094e8e5958ae3e21543bb2fcb8b552"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-MSFT-Ownership.png",
+      "bytes": 228543,
+      "sha256": "be794874e9eb00d519882265c8046a996c8d5c961261717f6f4bbf6120f89987"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-MSFT-Risks.png",
+      "bytes": 221179,
+      "sha256": "243ab042dd2850ab24a4a6d31ef86b18d0b2161c3c9b1b28b36fc2f15f574bb4"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-MSFT-Technicals.png",
+      "bytes": 383269,
+      "sha256": "a1ecc1d1ddc42abb228cf4e1f8cc9480c6336684bac822412ae70ec0e6becad3"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-MSFT-Valuation.png",
+      "bytes": 319135,
+      "sha256": "49a9e19906c3c13a025389477cc9329b8ad54afeeb36ce8c17f75fbd17e62abb"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-alerts.png",
+      "bytes": 127230,
+      "sha256": "fa86fe9fcbfce8a0237d2c8bf151e98cc78f065d4babb1f0a238205d6544ae4a"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-analyze.png",
+      "bytes": 86025,
+      "sha256": "cf52af24af6126106db8c52f3b29e562976ca6a0bfaebfb7bf006e66ccd17700"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-calibration.png",
+      "bytes": 183785,
+      "sha256": "c0f03f2be712c5d4a53b69ce0a3b0ac1dfd55209168587b39af3addea898ceae"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-dashboard.png",
+      "bytes": 184618,
+      "sha256": "1e095389d35e7373fee432d96e6d964f800b5fe599023a9a62ae564609cf605a"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-disclaimer.png",
+      "bytes": 182075,
+      "sha256": "a489f435272c69bbdad834c8599c5e46c3cb02695afca29cafe299b3ec36a770"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-discover.png",
+      "bytes": 125489,
+      "sha256": "8ea09ee2c824d00aa9a565b13efbf77bcffbf55c1999bb6f81d8350bd99d84dc"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-faq.png",
+      "bytes": 137299,
+      "sha256": "f98a8032c384469cc0ed093e8849a5e043317668b2bc7762fe65c4e819712e99"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-forgot-password.png",
+      "bytes": 64930,
+      "sha256": "40c510328d048e7e9734593729e27b7c4b0e56562d821ec8ba81359693411c5c"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-login.png",
+      "bytes": 55801,
+      "sha256": "40e196700aea1fc8a43d96cf473648d58b5a8f2556224335c2600e0bdeba2d3a"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-methodology.png",
+      "bytes": 123097,
+      "sha256": "19d6b54b627d5ffaa8c13f5a508fce2410956cf34667a404170a66a722ac5db1"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-onboarding.png",
+      "bytes": 58421,
+      "sha256": "7c3ce6cf17e38b4c5bc1e79e7bdde645737f5efeba7b6eef5cf52a9ee0ff6964"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-personalization.png",
+      "bytes": 110701,
+      "sha256": "ed4e04a3884d38cf849dfd99e9d4d0fa2318547a2f3c3bdfbed41e70cc262b83"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-portfolio.png",
+      "bytes": 165957,
+      "sha256": "0d002679bca4b463ad0bf5436d47c4d427060ac3b453dc2ea7f21a8a9713f8c6"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-privacy.png",
+      "bytes": 83275,
+      "sha256": "b6b35b06478b1d030a7b63cc72b196310fcad783b1fb4fc59e4ad387c06c2398"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-profile.png",
+      "bytes": 84070,
+      "sha256": "a337945e39be560a8bb287b384eb2514e59b72a2be07da47a6637ced39114981"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-register.png",
+      "bytes": 51152,
+      "sha256": "5f070da064c40048e28079b1701eaf2bb2e4c4649531e1e333825b4ad056bbf5"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-research-lab.png",
+      "bytes": 78253,
+      "sha256": "c2311c1981720d00e6741cc19cf722bb4c3a92c031177ae87e1b963a0eae6522"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-reset-password.png",
+      "bytes": 64605,
+      "sha256": "413125fa4a56e88ec88154e7d60a2d70b36b4b85cb790e174f9c69ec2345b97e"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-terms.png",
+      "bytes": 393109,
+      "sha256": "b783390610846119a42b1d76702a9dbad306839b875dac6c9c8bad58ffac79a8"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-trading-lab.png",
+      "bytes": 137371,
+      "sha256": "e5767f3d99e2dc4c85e54926caf281421173ff21614579d389a8dce03434c769"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/dark-390-watchlist.png",
+      "bytes": 98217,
+      "sha256": "115512b7afba38d3f3a5feba2a64fce019796e586e70806c593c463291268bda"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-MSFT-Business.png",
+      "bytes": 291393,
+      "sha256": "95c655bc0849a36d2e12887150ff3cd5c158753bcad538008630c9d9a99a3d24"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-MSFT-Earnings-events.png",
+      "bytes": 385382,
+      "sha256": "ea11a48accaa62d6f5255c3e1b251e7dc5fe8cc524b51ffacf790d25a374e34e"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-MSFT-Financials.png",
+      "bytes": 223324,
+      "sha256": "d5e67c2495d7fb53c8b68ed07871832e2056ddd66d51b9d1d2538f008f499e4f"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-MSFT-Options.png",
+      "bytes": 347957,
+      "sha256": "21ad26b269b7d5a7363323f8ba5fbe37108201698804af661e357012d2578302"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-MSFT-Overview.png",
+      "bytes": 334096,
+      "sha256": "d569f25d662c0a69f4face01d8287bea171f7957f1302f58c196454bf9673f4e"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-MSFT-Ownership.png",
+      "bytes": 251442,
+      "sha256": "f709747acc3133389828dc1a5836536deb71b02cf0c93dc1cee3d1f303fbf10e"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-MSFT-Risks.png",
+      "bytes": 371128,
+      "sha256": "9882d9511670a0ef403e806c5ddc3966f32fa49b67516e432392dfb7f2e5bbd6"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-MSFT-Technicals.png",
+      "bytes": 455071,
+      "sha256": "2b2ac8062f85ec265fb24509d7fecc6f85bb0b2a4c714b3d6cb5537da4a64f28"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-MSFT-Valuation.png",
+      "bytes": 396153,
+      "sha256": "784195dbecd8041b0dacbcbd8965305a151d29229b4d80eb7c5f3ceba346d1e2"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-alerts.png",
+      "bytes": 175494,
+      "sha256": "69cbda5cec23a16d0e0bbde42b651b768a30b9c1fe013e10d8618688a03f953e"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-analyze.png",
+      "bytes": 127163,
+      "sha256": "414a2e54348288c8405d3b411be569ea3ed879cae0b955c625f8ab2df00decd9"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-calibration.png",
+      "bytes": 233054,
+      "sha256": "29bc4f5e71405eff97b097af499432942e81252d2abb2ade329eb0cf592df062"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-dashboard.png",
+      "bytes": 216520,
+      "sha256": "a43155c8be701148945015521d546651e4f774c773d4ae21d96adc2445107222"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-disclaimer.png",
+      "bytes": 306392,
+      "sha256": "2696f5a079b9c5ceb614a0d275f6292b07f8d05a7c88f8f5f09c47207d4bb512"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-discover.png",
+      "bytes": 151656,
+      "sha256": "24d41a9262a972888b2793fcc036fde926af03e41a9dc48af20807ecc82e2f06"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-faq.png",
+      "bytes": 201103,
+      "sha256": "125f45a908b358cafed9d2562015eb17b87619f7a18786068fbd70a2607cff72"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-forgot-password.png",
+      "bytes": 154280,
+      "sha256": "6ba8c9561eb49f9613edde2854facdb0ff79b7877618c02e8c50da8d6e7beaab"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-login.png",
+      "bytes": 157053,
+      "sha256": "2c3af21e647e634eb1b9d95c4272a5f61997b83270bd035690ba8cbf586aa75a"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-methodology.png",
+      "bytes": 167788,
+      "sha256": "d6b357fd00d873c58a602429910d22a470174e22de8609c9600ae19dc59dc709"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-onboarding.png",
+      "bytes": 171685,
+      "sha256": "537bc094efce7c0872507562a2164d07b8323e35a2bcc715e96338b9f0774f2b"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-personalization.png",
+      "bytes": 311446,
+      "sha256": "d26154e29e6667c25d4e8691ba3ca10cb66bf386754532b70454ee334ccb884a"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-portfolio.png",
+      "bytes": 203066,
+      "sha256": "fadc1fd378c54dd3b60a2aabafbc6cc5e4051937246e7865bbc7a5b3af7240f3"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-privacy.png",
+      "bytes": 142389,
+      "sha256": "9aaeaf502cd27b623165f1fa5be453074c52d7f0d3fceb14eea687c6d6856bb8"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-profile.png",
+      "bytes": 137409,
+      "sha256": "04f0d03b90d5dd31cca1ecb2115363cd2064ca286cbe5e167970ef42119c24c6"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-register.png",
+      "bytes": 159519,
+      "sha256": "655eaa5d26575b4340d5bd7bb1c611532ce3586c23f4e48cc5ea73812b7c18bb"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-research-lab.png",
+      "bytes": 132239,
+      "sha256": "8bfcb63bae0c3507704742e9651e705d0371aec3423ea7a67cde501ee2ada847"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-reset-password.png",
+      "bytes": 156143,
+      "sha256": "08e315d0c095dfe47dd8cef60a0b3c9940f83025abea8e9f9b040b0164a42ad9"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-terms.png",
+      "bytes": 651077,
+      "sha256": "a9b57eb14c9200eb7b0855477818bcca761b441765f6799597bfe0c2abc32da4"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-trading-lab.png",
+      "bytes": 171352,
+      "sha256": "2c8a5e45f5f9b6e3be1c310644ca5d05d9696ee361d879225ebc67d300501051"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-1440-watchlist.png",
+      "bytes": 133489,
+      "sha256": "f4856831c104df391756c426dea9628ac4edbfa9822782ea2a889ca72d4691bf"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-MSFT-Business.png",
+      "bytes": 236016,
+      "sha256": "5a853a4adeead4d5845ef4d8c7a39378b9bef6d2f47673e3792a545d0cd66c78"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-MSFT-Earnings-events.png",
+      "bytes": 208711,
+      "sha256": "4db4b70d49703d4eb049f1f047f99e219de3656b2173d7994ae56b2702f4527b"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-MSFT-Financials.png",
+      "bytes": 139160,
+      "sha256": "483467d523f052673f9637cf83c3f97d2c4d592e435eaa7f3cd5160c56b73572"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-MSFT-Options.png",
+      "bytes": 157674,
+      "sha256": "6a3633906cbcd73398e630fc50567c2189280c36ce0eb5168f43f48f869527aa"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-MSFT-Overview.png",
+      "bytes": 161968,
+      "sha256": "cb4e2d122732f9671045a39b233fc3441587bc47ce4980a7f0fbc5c9b5ed1100"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-MSFT-Ownership.png",
+      "bytes": 222086,
+      "sha256": "65ee126d3724b55a2666ef3838666203fb5f3362805da9bc08767b3a1aba1c3b"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-MSFT-Risks.png",
+      "bytes": 214925,
+      "sha256": "e4b8cfef1dfccc263e6ffa733eeee068e81546fb798de6bc7a534038c31e4109"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-MSFT-Technicals.png",
+      "bytes": 344019,
+      "sha256": "ab8e8c6257ea1e217be84ae4095d6e6efd64628a0cb66b83fe53f5a6fe7e073a"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-MSFT-Valuation.png",
+      "bytes": 286672,
+      "sha256": "405934647f8ba50e223aeea238cdb7eeb92c4000d9338aa70a675199ccfac8bc"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-alerts.png",
+      "bytes": 114433,
+      "sha256": "6b0ea4df0f20946bae0c625907e0493e38047b875eec32eadfe76feb04eaf54b"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-analyze.png",
+      "bytes": 72094,
+      "sha256": "3d1db970d9fac5cc130570f58ba67d5cd4a1661b93bdd7857aa689fa35697af8"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-calibration.png",
+      "bytes": 163290,
+      "sha256": "e1506931eeb22bf10105d0afaeafe1e2ef77bc3a59c3b6e5f2835fa949bab54a"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-dashboard.png",
+      "bytes": 148230,
+      "sha256": "c38239b4d53348f7465c7443216f04fa6fa6dbb6f827524de18eba5fda1be414"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-disclaimer.png",
+      "bytes": 185675,
+      "sha256": "0979c537ed15d77a9171275f91ed1df1f4b32b436b1e8cad758414eb6fe8074e"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-discover.png",
+      "bytes": 125050,
+      "sha256": "a489fb5d00f061aa227508060e6e84c8d4d05192a6fe1e3477a82ddc0e75f171"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-faq.png",
+      "bytes": 119645,
+      "sha256": "3c83d04b5c0ce0579e14e8e27ae101f8ee0bc04d7e33ae3069043562d41205ec"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-forgot-password.png",
+      "bytes": 49696,
+      "sha256": "c5bb26ecb73d2dc83ccb28745ee49b9db5eed0d369684ffb6a50377e2a98d163"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-login.png",
+      "bytes": 48920,
+      "sha256": "e138f42d94d7168180d2962dff4fe587d189ef10473081051e26bc98329655c0"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-methodology.png",
+      "bytes": 107413,
+      "sha256": "999059ddd895abdc71e32e34452392781653c05892d0535a4c365a76944cb944"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-onboarding.png",
+      "bytes": 55357,
+      "sha256": "91113746e24e010018b4596b3a5bde874ee4771e02f0fcd7350a33bcd9e5372b"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-personalization.png",
+      "bytes": 112301,
+      "sha256": "01a4bce70812da551b3edc74c27f5a307ed744ff65e53efed3a9ac595d6d0b96"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-portfolio.png",
+      "bytes": 153562,
+      "sha256": "b06419bbb3917aec1a988896ffba3e9938ddebd45e0f2f6af89d45f24ea9f4db"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-privacy.png",
+      "bytes": 77884,
+      "sha256": "928d5c6dfc75ac25b55c09eb65d9746f2572fca72592fc2ee93f12967e88b11b"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-profile.png",
+      "bytes": 67224,
+      "sha256": "c7f995fd9551216ce15b874858b553f1497037b8ce6ef24336b43e8108cf5141"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-register.png",
+      "bytes": 47192,
+      "sha256": "a4f4dab9d239192475ba9fc3dc87fbbbbefda766fff8d792af910201a0a1c8e3"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-research-lab.png",
+      "bytes": 62742,
+      "sha256": "3230698833a471b5f9901814e22178184c7a92e99f5547f72743b152cbe8ab93"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-reset-password.png",
+      "bytes": 49868,
+      "sha256": "24fe675fe532be57e03ee7b51697e05898e82d1211dac4aed8462b0802e1e295"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-terms.png",
+      "bytes": 388444,
+      "sha256": "d485352abe95787e48f9f45f435c59a8a210867456becb4cb4ee4f178f9a5f41"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-trading-lab.png",
+      "bytes": 126759,
+      "sha256": "0e10eaa507370041cd546b28677cf8cf1b3d2246ba8dfcc461d0ebbf3159cf95"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/light-390-watchlist.png",
+      "bytes": 97760,
+      "sha256": "92722da134858fa710dba902bb894d8583831cea4a4c36cffe11691eb85f39d7"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/personalization-expanded.png",
+      "bytes": 112301,
+      "sha256": "01a4bce70812da551b3edc74c27f5a307ed744ff65e53efed3a9ac595d6d0b96"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/portfolio-expanded.png",
+      "bytes": 767947,
+      "sha256": "b52bb68ebfc09f04e903f28d71244397e714753e1ec435734c6dd0b8a343fc08"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/research-lab-expanded.png",
+      "bytes": 62742,
+      "sha256": "3230698833a471b5f9901814e22178184c7a92e99f5547f72743b152cbe8ab93"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/trading-lab-expanded.png",
+      "bytes": 158746,
+      "sha256": "e1bccc880dc34a27f0175013afa9c4a640eef3ae0f9492d4598b7dbb63b98850"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final/watchlist-expanded.png",
+      "bytes": 149880,
+      "sha256": "62492b8a1c81690d7b1ded5c1531b26957254d950df3d6dbdb0a936968ee3766"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-interactions/paper-Order.png",
+      "bytes": 126943,
+      "sha256": "d0aec8a08a50b482d850b06550ce3b92d99cb16bf2f0db5585a8dd00a071a03e"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-interactions/paper-Overview.png",
+      "bytes": 126759,
+      "sha256": "0e10eaa507370041cd546b28677cf8cf1b3d2246ba8dfcc461d0ebbf3159cf95"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-interactions/paper-Paper-check.png",
+      "bytes": 156748,
+      "sha256": "8c16bcdb64bc94e86e154b5871ec485568b429a400b89d70a461af219e5e0a12"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-interactions/paper-Strategies.png",
+      "bytes": 149489,
+      "sha256": "730eda7832edf284210b76a73174e8bdf66123f3cc9d1d96591c3fb702e03e52"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-interactions/paper-Trade-history.png",
+      "bytes": 139170,
+      "sha256": "f2e013420d9d1092997b7cbd72ba7bc89af207c356cb148b5b905770b7ed6904"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-dark-320-dashboard.png",
+      "bytes": 189281,
+      "sha256": "1686da661a4d450959651a3bcac5c7663c89c4f8036fe9f28319fd5078d0f696"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-dark-320-personalization.png",
+      "bytes": 109107,
+      "sha256": "e8e3f6b37c0dd4613eef2ef93b0faa484032e6a218db4e4576989806276737c8"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-dark-320-portfolio.png",
+      "bytes": 159326,
+      "sha256": "925ca97655e07f41b252b82cc2f0814257574edd9522fa3e94aba09fc456b500"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-dark-320-research-lab.png",
+      "bytes": 68740,
+      "sha256": "32efc42e8a8211cd59ee33eb8354d04d77db63f33160dd19fe5b8981c040c810"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-dark-320-stock-MSFT.png",
+      "bytes": 148297,
+      "sha256": "d96da7d09b00c313ed8cbdc9c6b1b2a92bac08696d2b5cc67ed203bedd87135a"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-dark-320-trading-lab.png",
+      "bytes": 131970,
+      "sha256": "9f4bb16ff6c5080dffb12bc0cb3a638eb6b2c263f2374cd0fb9ea71a6601425a"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-dark-320-watchlist.png",
+      "bytes": 88548,
+      "sha256": "030bc3e51dd5b4bc702dbe7966cf3350e69f390485feb24ea889aab451a61ed8"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-dark-768-dashboard.png",
+      "bytes": 253598,
+      "sha256": "716ac51bc926a8889ac4da6ee94a408d505da9b43f58ce4c78e27524a3002a10"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-dark-768-personalization.png",
+      "bytes": 155406,
+      "sha256": "5d340d9bf3b10b87ba92de8f4fc8ad17723512d3860ccd0c6fee5f5a77fec848"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-dark-768-portfolio.png",
+      "bytes": 206674,
+      "sha256": "c8bbf048afc569a98debed74259a7d4b9c5d7099cce634337439057b5552939e"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-dark-768-research-lab.png",
+      "bytes": 154159,
+      "sha256": "49cf96ff56051f31e662bd46e039d90f41760684a0b33e8949f6053b2afb7d43"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-dark-768-stock-MSFT.png",
+      "bytes": 307730,
+      "sha256": "41ac96462fb4a7b4dba5f5e4d0aa5987a8572ba0263d19801e7ef5429ea6e17c"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-dark-768-trading-lab.png",
+      "bytes": 193860,
+      "sha256": "74cc370320c9b26db2e2116f58db1a61d8a7b53cd61366c02200c03e2bc0e547"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-dark-768-watchlist.png",
+      "bytes": 138907,
+      "sha256": "6e57b215c7c81f5c3785c004cb0f7dba9eb88c86e2e3212fcad3cb853638a096"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-light-320-dashboard.png",
+      "bytes": 186395,
+      "sha256": "8d27a480ff626fd1e400120c3a1acfd01a956faf38889951e4cbf0a1ebae9229"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-light-320-personalization.png",
+      "bytes": 111338,
+      "sha256": "fa1ece5caa318265689c6357d72a8e0df729cea76f0af71ac19815d28b605aa6"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-light-320-portfolio.png",
+      "bytes": 160384,
+      "sha256": "8304d5932e606ced41a638c9e086ef22cc522ee7aab5e8818a63675681e6680f"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-light-320-research-lab.png",
+      "bytes": 58212,
+      "sha256": "8c71609adca37c3f5dfde8a00e0ffee9038c031ead02489107c60a9b9dc4e77d"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-light-320-stock-MSFT.png",
+      "bytes": 126968,
+      "sha256": "f812bcee260e09fa751c311fca39129eb2672b313e3618fdf6245a0faf197cef"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-light-320-trading-lab.png",
+      "bytes": 123430,
+      "sha256": "995f7e9dfe3f0c41f29d386b266a5f4b00f21f6e5ca1a0b9855dec4c1a0c1dc0"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-light-320-watchlist.png",
+      "bytes": 78399,
+      "sha256": "35e4385b049c581e8e57d1134f4351f1a1a1795594da90c7d40b60309175f2e0"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-light-768-dashboard.png",
+      "bytes": 190446,
+      "sha256": "4a6dea75be384ddaced0cf5b7a0e81b6ae2c7246ac8e9c169e5104e67b02e105"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-light-768-personalization.png",
+      "bytes": 126971,
+      "sha256": "d106a2b77de4a960fb20ccbdca24a0214f35d49d98e83ea98c87ebdf7f3792dc"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-light-768-portfolio.png",
+      "bytes": 184585,
+      "sha256": "8a94e52064ebf970d1736004fbf0220e51525a31b4ee81caa3cc970f52b93c2f"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-light-768-research-lab.png",
+      "bytes": 110685,
+      "sha256": "7dc276a56c830434d26a3afca88a77b498c5993493e430cf51d2582eba0bfa50"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-light-768-stock-MSFT.png",
+      "bytes": 240943,
+      "sha256": "cc4d6be5350c83409ea9c3bba4b2cb40733cc21fb858115756938d22f126e7df"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-light-768-trading-lab.png",
+      "bytes": 192638,
+      "sha256": "b546eced50da61824c0dc7fcf07ebde5d938fc384fc7d3637bb988a7beb09740"
+    },
+    {
+      "path": "verification/repair-2026-10-17/visual-review/captures/repair-final-responsive/repair-light-768-watchlist.png",
+      "bytes": 114638,
+      "sha256": "6d48d7f91dc9f05da9265a7c0079ac530470cfcb22139b3ff748c9228e8582e0"
     }
   ],
   "manifest_excludes_itself": true,

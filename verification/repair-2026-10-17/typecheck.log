@@ -1,0 +1,3 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+components/premium/AurynResearchOverviewV2.tsx(48,592): error TS2345: Argument of type 'StructureZone | null' is not assignable to parameter of type 'StructureZone'.
+  Type 'null' is not assignable to type 'StructureZone'.
