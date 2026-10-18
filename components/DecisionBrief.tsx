@@ -43,33 +43,16 @@ export default function DecisionBrief({
         <h2>{action.label}</h2>
       </div>
       <p>{action.reason}</p>
-      <div className="perspective-grid">
-        <div>
-          <span>Business quality</span>
-          <b>{p.business}</b>
-          <small>Latest reported operating evidence</small>
-        </div>
-        <div>
-          <span>Valuation context</span>
-          <b>
-            {valuation
-              ? `${percent(valuation.change, true)} to consensus`
-              : "Evidence incomplete"}
-          </b>
-          <small>Analyst opinion; fair value assessed separately</small>
-        </div>
-        <div>
-          <span>Entry timing</span>
-          <b>{p.tech.trend}</b>
-          <small>Completed prices; separate from long-term thesis</small>
-        </div>
-      </div>
       <div className="decision-foot">
         <span>
           Business <b>{p.business}</b>
         </span>
         <span>
           Timing <b>{p.tech.trend}</b>
+        </span>
+        <span>
+          Consensus{" "}
+          <b>{valuation ? percent(valuation.change, true) : "Unavailable"}</b>
         </span>
         <Help label="How action labels work" trigger="Why this view">
           <p>

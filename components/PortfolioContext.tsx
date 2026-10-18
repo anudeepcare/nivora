@@ -5,8 +5,10 @@ import type { Quote, Research } from "@/lib/types";
 import { amount, percent } from "@/lib/format";
 export default function PortfolioContext({
   quotes,
+  compact = false,
 }: {
   quotes: Record<string, Quote>;
+  compact?: boolean;
 }) {
   const { workspace, cache } = useProduct();
   const sectors: Record<string, string> = {};
@@ -22,11 +24,17 @@ export default function PortfolioContext({
   const c = holdingsContext(workspace?.positions ?? [], quotes, sectors);
   if (!workspace?.positions.length) return null;
   return (
-    <section className="portfolio-context">
+    <section
+      className={`portfolio-context${compact ? " portfolio-context-compact" : ""}`}
+    >
       <header className="section-head">
         <div>
-          <span className="eyebrow">Exposure, not a forecast</span>
-          <h3>Your portfolio at a glance</h3>
+          {!compact && (
+            <span className="eyebrow">Exposure, not a forecast</span>
+          )}
+          <h3>
+            {compact ? "Portfolio snapshot" : "Your portfolio at a glance"}
+          </h3>
         </div>
       </header>
       <div className="context-highlights">
@@ -57,33 +65,37 @@ export default function PortfolioContext({
           </small>
         </div>
       </div>
-      <div className="exposure-list">
-        {c.sectors.map((s, i) => (
-          <div key={s.name}>
-            <span>{s.name}</span>
-            <div className="exposure-track">
-              <i
-                style={{
-                  width: `${s.percent}%`,
-                  background: [
-                    "var(--blue)",
-                    "var(--green)",
-                    "var(--violet)",
-                    "var(--muted)",
-                  ][i % 4],
-                }}
-              />
-            </div>
-            <b>{percent(s.percent)}</b>
+      {!compact && (
+        <>
+          <div className="exposure-list">
+            {c.sectors.map((s, i) => (
+              <div key={s.name}>
+                <span>{s.name}</span>
+                <div className="exposure-track">
+                  <i
+                    style={{
+                      width: `${s.percent}%`,
+                      background: [
+                        "var(--blue)",
+                        "var(--green)",
+                        "var(--purple)",
+                        "var(--muted)",
+                      ][i % 4],
+                    }}
+                  />
+                </div>
+                <b>{percent(s.percent)}</b>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <p className="small muted">
-        Sector coverage comes from reports you have opened. Unclassified
-        holdings stay visible. Percentages use priced USD value; session move is
-        not a total-return calculation and does not measure deposits or
-        withdrawals.
-      </p>
+          <p className="small muted">
+            Sector coverage comes from reports you have opened. Unclassified
+            holdings stay visible. Percentages use priced USD value; session
+            move is not a total-return calculation and does not measure deposits
+            or withdrawals.
+          </p>
+        </>
+      )}
     </section>
   );
 }

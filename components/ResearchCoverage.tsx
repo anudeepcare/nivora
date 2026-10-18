@@ -10,7 +10,7 @@ export default function ResearchCoverage({
   return (
     <details className="research-coverage">
       <summary>Data coverage & definitions</summary>
-      <div className="coverage-grid">
+      <div className="dataset-coverage-grid">
         {researchCoverage(r).map((row) => (
           <div key={row.key}>
             <b>{row.label}</b>

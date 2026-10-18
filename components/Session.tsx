@@ -448,7 +448,7 @@ function Login({ initialError }: { initialError: string }) {
               : "Reset your password."}
         </h1>
         <p>Understand the business. Put the price in perspective.</p>
-        <form onSubmit={submit}>
+        <form onSubmit={submit} aria-busy={busy}>
           <label>
             Email address
             <input
@@ -496,6 +496,7 @@ function Login({ initialError }: { initialError: string }) {
         </form>
         <div className="login-links">
           <button
+            disabled={busy}
             onClick={() => {
               setMode(mode === "signup" ? "login" : "signup");
               setError("");
@@ -507,6 +508,7 @@ function Login({ initialError }: { initialError: string }) {
               : "Create an account"}
           </button>
           <button
+            disabled={busy}
             onClick={() => {
               setMode(mode === "reset" ? "login" : "reset");
               setError("");

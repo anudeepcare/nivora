@@ -97,7 +97,7 @@ button[aria-pressed="true"] {
   flex: 1;
   width: 100%;
   max-width: 1320px;
-  padding: 34px 40px 54px;
+  padding: 24px 32px 32px;
   margin: 0 auto;
   outline: none;
   overflow-anchor: none;
@@ -148,7 +148,7 @@ button[aria-pressed="true"] {
   justify-content: space-between;
   align-items: center;
   gap: 20px;
-  margin-bottom: 28px;
+  margin-bottom: 20px;
 }
 .page-heading p {
   font-size: 14px;
@@ -291,8 +291,40 @@ button[aria-pressed="true"] {
   min-width: 28px;
   min-height: 28px;
 }
+.security-head {
+  padding: 18px 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+}
 .security-head .quote {
   align-items: flex-end;
+}
+.research-section-heading {
+  margin: 0 0 14px;
+}
+.research-section-heading h2 {
+  font-size: 20px;
+}
+.home-workspace > .page-heading h1,
+.home-workspace > .page-head h1 {
+  font-size: clamp(25px, 3vw, 34px);
+}
+.home-workspace .portfolio-context-compact {
+  border-top: 3px solid var(--blue);
+  box-shadow: 0 6px 24px #172d3a05;
+}
+.home-workspace .context-highlights > div:nth-child(2) strong {
+  color: var(--purple);
+}
+.home-workspace .context-highlights > div:first-child strong {
+  color: var(--blue);
+}
+.home-workspace .home-details > section {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
 }
 .security-head .quote > strong {
   line-height: 1.1;
@@ -388,13 +420,13 @@ button[aria-pressed="true"] {
 }
 .au-stack {
   display: grid;
-  gap: 26px;
+  gap: 20px;
 }
 .research-page > .au-stack {
   display: block;
 }
 .research-page > .au-stack > section + section {
-  margin-top: 28px;
+  margin-top: 20px;
 }
 .research-page .coverage-note {
   display: flex;
@@ -1378,12 +1410,23 @@ caption {
 .login-card {
   max-width: 440px;
   width: 100%;
-  padding: 65px 35px;
+  padding: 40px 30px;
   align-self: center;
   justify-self: center;
 }
 .login-card > .brand {
-  margin-bottom: 50px;
+  margin-bottom: 32px;
+}
+.login-card input {
+  min-height: 50px;
+  border-radius: 14px;
+}
+.login-card .button.primary {
+  min-height: 50px;
+  border-radius: 16px;
+}
+.login-card form[aria-busy="true"] {
+  cursor: progress;
 }
 .login-card > .eyebrow {
   display: none;
@@ -2356,12 +2399,12 @@ caption {
 }
 /* Scoped company updates and grouped research details. */
 .home-updates {
-  margin: 28px 0 34px;
+  margin: 20px 0 24px;
 }
 .updates-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 22px;
+  gap: 18px;
 }
 .update-panel {
   min-width: 0;
@@ -3417,8 +3460,8 @@ caption {
   font-size: 14px;
 }
 .research-updates {
-  margin-top: 30px;
-  padding-top: 24px;
+  margin-top: 20px;
+  padding-top: 18px;
   border-top: 1px solid var(--line);
 }
 .technical-numbers {
@@ -3429,13 +3472,14 @@ caption {
 .technical-numbers .stat-pair {
   min-width: 0;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-  border: 0;
-  background: var(--bg);
-  border-radius: 12px;
-  padding: 14px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  border-radius: 0;
+  padding: 10px 0;
 }
 .technical-numbers .stat-pair span {
   color: var(--muted);
@@ -3524,8 +3568,8 @@ caption {
 .compare-workspace,
 .earnings-workspace,
 .portfolio-context {
-  margin: 26px 0;
-  padding: 24px;
+  margin: 20px 0;
+  padding: 20px;
   border: 1px solid var(--line);
   border-radius: 24px;
   background: var(--surface);
@@ -3573,7 +3617,7 @@ caption {
 }
 .table-scroll th,
 .table-scroll td {
-  padding: 13px 12px;
+  padding: 9px 12px;
   text-align: right;
   border-bottom: 1px solid var(--line);
   white-space: nowrap;
@@ -3800,13 +3844,13 @@ caption {
   cursor: pointer;
   padding: 12px 0;
 }
-.coverage-grid {
+.dataset-coverage-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
   margin: 16px 0;
 }
-.coverage-grid > div {
+.dataset-coverage-grid > div {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -3814,11 +3858,11 @@ caption {
   border: 1px solid var(--line);
   border-radius: 16px;
 }
-.coverage-grid b {
+.dataset-coverage-grid b {
   font-weight: 500;
   color: var(--ink);
 }
-.coverage-grid small {
+.dataset-coverage-grid small {
   font-size: 11px;
 }
 @media (max-width: 700px) {
@@ -3830,7 +3874,7 @@ caption {
   .monthly-readings {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-  .coverage-grid {
+  .dataset-coverage-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
   }
@@ -3867,6 +3911,7 @@ caption {
   padding: 8px 12px;
 }
 .financial-detail-table .help-trigger {
+  min-height: 32px;
   font-size: 13px;
 }
 .ownership-picture {
@@ -3918,5 +3963,87 @@ caption {
   .technical-study-groups {
     grid-template-columns: minmax(0, 1fr);
     gap: 12px;
+  }
+}
+/* Compact Home summary; full exposure detail belongs to Portfolio. */
+.portfolio-context-compact {
+  padding: 18px 20px;
+  margin: 16px 0 20px;
+}
+.portfolio-context-compact .section-head {
+  margin-bottom: 12px;
+}
+.portfolio-context-compact .context-highlights {
+  margin: 0;
+  gap: 20px;
+}
+.portfolio-context-compact .context-highlights strong {
+  font-size: 26px;
+}
+.portfolio-context-compact .context-highlights small {
+  font-size: 11px;
+}
+button,
+a,
+input,
+select {
+  transition:
+    background-color 0.14s ease,
+    color 0.14s ease,
+    border-color 0.14s ease,
+    box-shadow 0.14s ease;
+}
+@media (hover: hover) {
+  .focus-row:hover,
+  .update-row:hover,
+  .investment-row:hover {
+    background: var(--blue-soft);
+  }
+  .local-tabs button:not(.active):hover {
+    background: var(--blue-soft);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+@media (max-width: 700px) {
+  .portfolio-context-compact {
+    padding: 16px;
+  }
+  .portfolio-context-compact .context-highlights {
+    gap: 12px;
+  }
+  .portfolio-context-compact .context-highlights strong {
+    font-size: 23px;
+  }
+  .technical-numbers .stat-pair strong {
+    font-size: 16px;
+  }
+  .technical-numbers .stat-pair span {
+    max-width: 65%;
+  }
+  .research-page .security-head {
+    gap: 12px;
+    padding: 16px;
+    border-radius: 18px;
+  }
+  .research-section-heading h2 {
+    font-size: 18px;
+  }
+  .home-workspace .home-details > section {
+    padding: 16px;
+  }
+  .home-workspace > .page-heading {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .topbar {
+    isolation: isolate;
   }
 }

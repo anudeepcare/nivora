@@ -331,3 +331,42 @@ test("financial trend scope controls remain available for a missing selected per
   assert.match(html, /Quarterly/);
   assert.match(html, /No comparable quarterly/);
 });
+test("Home portfolio summary retains key figures without the full allocation panel", async () => {
+  const { holdingsContext } = await import("../lib/holdings-brief.ts");
+  const Component = loadComponent(
+    "components/PortfolioContext.tsx",
+    "PortfolioContext",
+    {
+      React,
+      useProduct: () => ({
+        workspace: {
+          positions: [
+            {
+              id: "1",
+              symbol: "APP",
+              quantity: 2,
+              cost: 10,
+              assetType: "stock",
+              currency: "USD",
+            },
+          ],
+        },
+        cache: new Map(),
+      }),
+      holdingsContext,
+      ...format,
+    },
+  );
+  const quotes = {
+    APP: { price: 100, currency: "USD", stale: false, changePct: 1 },
+  };
+  const compact = renderToStaticMarkup(
+    React.createElement(Component, { quotes, compact: true }),
+  );
+  const detailed = renderToStaticMarkup(
+    React.createElement(Component, { quotes }),
+  );
+  assert.match(compact, /\$200\.00/);
+  assert.doesNotMatch(compact, /class="exposure-list"/);
+  assert.match(detailed, /class="exposure-list"/);
+});

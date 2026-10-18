@@ -304,9 +304,9 @@ export function Overview() {
       : []),
   ];
   return (
-    <section>
+    <section className="home-workspace">
       <PageHeading
-        title="Home"
+        title="Your portfolio, in focus."
         subtitle={new Date().toLocaleDateString("en-US", {
           weekday: "long",
           month: "long",
@@ -323,6 +323,7 @@ export function Overview() {
       {workspaceError && <Notice error>{workspaceError}</Notice>}
       {quotes.error && <Notice error>{quotes.error}</Notice>}
       <PortfolioContext
+        compact
         quotes={Object.fromEntries(
           Object.entries(quotes.data || {})
             .filter(([, v]) => v.quote)

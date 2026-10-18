@@ -244,7 +244,7 @@ strong {
   padding: 8px 17px;
   min-height: 64px;
   flex: none;
-  margin: 14px 24px 0;
+  margin: 10px 20px 0;
   border: 1px solid #ffffff70;
   border-radius: 22px;
   box-shadow: 0 2px 14px #18364a04;
@@ -408,7 +408,7 @@ strong {
   max-width: 250px;
 }
 .security-head {
-  margin-bottom: 22px;
+  margin-bottom: 16px;
 }
 .security-head .quote {
   display: flex;
@@ -427,11 +427,11 @@ strong {
 .local-tabs {
   display: flex;
   gap: 6px;
-  margin-bottom: 24px;
+  margin-bottom: 18px;
   white-space: nowrap;
   overflow-x: auto;
   scrollbar-width: none;
-  border: 0;
+  border-bottom: 1px solid var(--line);
   padding: 0 0 4px;
 }
 .local-tabs button {
@@ -443,12 +443,20 @@ strong {
   position: relative;
 }
 .local-tabs button.active {
-  background: var(--blue);
-  color: #fff;
-  font-weight: 550;
+  background: transparent;
+  color: var(--blue);
+  font-weight: 600;
 }
 .local-tabs button.active:after {
-  display: none;
+  content: "";
+  display: block;
+  position: absolute;
+  bottom: -4px;
+  left: 14px;
+  right: 14px;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--blue);
 }
 .research-layout {
   display: grid;
@@ -791,7 +799,7 @@ strong {
   align-items: center;
   justify-content: space-between;
   gap: 18px;
-  margin: 26px 0 15px;
+  margin: 18px 0 12px;
 }
 .section-head:first-child {
   margin-top: 0;
@@ -2201,8 +2209,8 @@ dialog::backdrop {
     border-radius: 29px;
     background: var(--nav);
     color: var(--ink);
-    backdrop-filter: blur(22px);
-    -webkit-backdrop-filter: blur(22px);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     box-shadow: 0 8px 30px #1733491c;
     z-index: 3;
   }
@@ -2559,8 +2567,8 @@ dialog::backdrop {
   box-shadow: 0 0 60px #67c7c519;
 }
 [data-theme="dark"] .local-tabs button.active {
-  background: var(--blue);
-  color: #fff;
+  background: transparent;
+  color: var(--blue);
 }
 [data-theme="dark"] .topbar,
 [data-theme="dark"] .mobile-dock {

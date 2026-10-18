@@ -317,6 +317,19 @@ export default function Research({ symbol }: { symbol: string }) {
           </button>
         ))}
       </nav>
+      <header className="research-section-heading">
+        <h2>
+          {tab === "Snapshot"
+            ? "Investment overview"
+            : tab === "Valuation"
+              ? "Value & scenarios"
+              : tab === "Financials"
+                ? "Business performance"
+                : tab === "Technicals"
+                  ? "Price & accumulation"
+                  : "Thesis & catalysts"}
+        </h2>
+      </header>
       <ResearchChanges research={r} />
       {notice && <Notice error>{notice}</Notice>}
       {resource.error && <Notice error>{resource.error}</Notice>}
