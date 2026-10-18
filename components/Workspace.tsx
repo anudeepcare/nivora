@@ -1,4 +1,6 @@
 "use client";
+import SessionBrief from "./SessionBrief";
+import PortfolioContext from "./PortfolioContext";
 import Link from "next/link";
 import { useMemo, useRef, useState, useEffect, useCallback } from "react";
 import {
@@ -320,6 +322,14 @@ export function Overview() {
       />
       {workspaceError && <Notice error>{workspaceError}</Notice>}
       {quotes.error && <Notice error>{quotes.error}</Notice>}
+      <PortfolioContext
+        quotes={Object.fromEntries(
+          Object.entries(quotes.data || {})
+            .filter(([, v]) => v.quote)
+            .map(([k, v]) => [k, v.quote!]),
+        )}
+      />
+      <SessionBrief />
       <HomeUpdates />
       <div className="grid2 home-details">
         <section>
@@ -353,8 +363,16 @@ export function Overview() {
         <section>
           <header className="section-head">
             <div>
-              <h2>On your radar</h2>
-              <p>Your selected instruments.</p>
+              <h2>
+                {workspace?.watchlist.length
+                  ? "On your radar"
+                  : "Your holdings"}
+              </h2>
+              <p>
+                {workspace?.watchlist.length
+                  ? "Your saved instruments."
+                  : "Continue researching companies you own."}
+              </p>
             </div>
             <Link className="text-button small" href={`${prefix}/watchlist`}>
               View all →
@@ -362,7 +380,15 @@ export function Overview() {
           </header>
           <InvestmentRows
             symbols={
-              workspace?.watchlist.slice(0, 4).map((w) => w.symbol) || []
+              workspace?.watchlist.length
+                ? workspace.watchlist.slice(0, 4).map((w) => w.symbol)
+                : [
+                    ...new Set(
+                      workspace?.positions
+                        .filter((p) => p.assetType !== "cash")
+                        .map((p) => p.symbol) ?? [],
+                    ),
+                  ].slice(0, 4)
             }
             quotes={quotes.data || {}}
           />
@@ -853,6 +879,7 @@ export function Portfolio() {
           <Allocation positions={positions} quotes={q} />
         </section>
       </div>
+      <PortfolioContext quotes={q} />
       <section className="panel portfolio-holdings support">
         <header className="section-heading">
           <h2>

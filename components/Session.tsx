@@ -12,7 +12,7 @@ import type { Session } from "@supabase/supabase-js";
 import { api, authClient } from "@/lib/client";
 import type { Research, Workspace } from "@/lib/types";
 import { Logo } from "./Ui";
-import { readResource } from "@/lib/resource-cache";
+import { readResource, resourceSnapshot } from "@/lib/resource-cache";
 import { accountCache, clearAccountCache } from "@/lib/account-cache";
 export type DemoData = {
   research: Record<string, Research>;
@@ -346,7 +346,7 @@ export function useResource<T>(key: string | null, preview?: T, ttl = 60_000) {
     }
     setState((s) => ({
       key,
-      data: s.key === key ? s.data : null,
+      data: resourceSnapshot<T>(cache, key) ?? (s.key === key ? s.data : null),
       loading: true,
       error: "",
     }));
@@ -374,7 +374,12 @@ export function useResource<T>(key: string | null, preview?: T, ttl = 60_000) {
   return {
     ...(state.key === key
       ? state
-      : { key, data: null, loading: !!key, error: "" }),
+      : {
+          key,
+          data: demo ? (preview ?? null) : resourceSnapshot<T>(cache, key),
+          loading: !!key,
+          error: "",
+        }),
     refresh,
   };
 }

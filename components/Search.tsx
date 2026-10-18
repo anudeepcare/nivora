@@ -134,7 +134,7 @@ export default function Search({
       }
     };
     const timer =
-      cached && Date.now() - cached.at < 300000 ? null : setTimeout(load, 350);
+      cached && Date.now() - cached.at < 300000 ? null : setTimeout(load, 200);
     if (timer == null) void load();
     return () => {
       active = false;

@@ -3,13 +3,14 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowUpRight, Search as SearchIcon, Save } from "lucide-react";
 import { useProduct, useResource } from "./Session";
+import { readResource } from "@/lib/resource-cache";
 import { api } from "@/lib/client";
 import { perspective } from "@/lib/analysis";
 import { symbolInput, amount, percent } from "@/lib/format";
 import type { Research } from "@/lib/types";
 import { Empty, PageHeading, SecurityLogo, Notice, Help } from "./Ui";
 export default function Discover() {
-  const { workspace, demo } = useProduct(),
+  const { workspace, demo, cache } = useProduct(),
     prefix = demo ? "/preview" : "",
     [draft, setDraft] = useState(""),
     [rows, setRows] = useState<Research[]>([]),
@@ -50,8 +51,14 @@ export default function Discover() {
             .map((s) =>
               demo
                 ? Promise.resolve(demo.research[s])
-                : api<Research>(
+                : readResource<Research>(
+                    cache,
                     `research/${encodeURIComponent(s.replace("/", "-"))}`,
+                    300000,
+                    () =>
+                      api<Research>(
+                        `research/${encodeURIComponent(s.replace("/", "-"))}`,
+                      ),
                   ),
             ),
         );

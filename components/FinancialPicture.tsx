@@ -3,6 +3,9 @@ import { useMemo, useState } from "react";
 import type { Research } from "@/lib/types";
 import { researchPeriods, type FinancialScope } from "@/lib/financial-catalog";
 import { amount, percent, dateLabel } from "@/lib/format";
+import FinancialDetailTable from "./FinancialDetailTable";
+import ResearchWorkbench from "./ResearchWorkbench";
+import ResearchCompare from "./ResearchCompare";
 import { Help, DataStamp, Empty } from "./Ui";
 
 export default function FinancialPicture({
@@ -286,6 +289,9 @@ export default function FinancialPicture({
           data.
         </Empty>
       )}
+      <ResearchWorkbench research={r} />
+      <FinancialDetailTable research={r} />
+      <ResearchCompare research={r} />
     </section>
   );
 }

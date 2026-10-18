@@ -1,6 +1,11 @@
 export type AlertRule = {
   symbol: string;
-  type: "price-above" | "price-below" | "monthly-zone" | "new-filing";
+  type:
+    | "price-above"
+    | "price-below"
+    | "monthly-zone"
+    | "new-filing"
+    | "earnings-soon";
   threshold: number | null;
   enabled: boolean;
   name: string;
@@ -54,9 +59,13 @@ export function cleanDocument(
     const type = String(v.type),
       symbol = text("symbol", 20).toUpperCase();
     if (
-      !["price-above", "price-below", "monthly-zone", "new-filing"].includes(
-        type,
-      ) ||
+      ![
+        "price-above",
+        "price-below",
+        "monthly-zone",
+        "new-filing",
+        "earnings-soon",
+      ].includes(type) ||
       !/^[A-Z0-9][A-Z0-9.-]{0,14}(\/[A-Z]{3,5})?$/.test(symbol)
     )
       throw Error("Choose a valid symbol and alert type.");
@@ -71,6 +80,14 @@ export function cleanDocument(
       (threshold == null || ![0, 1, 2, 3, 4].includes(threshold))
     )
       throw Error("Choose a monthly zone from zero to four.");
+    if (
+      type === "earnings-soon" &&
+      (threshold == null ||
+        !Number.isInteger(threshold) ||
+        threshold < 1 ||
+        threshold > 30)
+    )
+      throw Error("Choose one to thirty days before earnings.");
     return {
       name: text("name", 80),
       symbol,

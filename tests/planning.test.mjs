@@ -90,3 +90,34 @@ test("saved research validates links, symbols and bounded content", () => {
     3000,
   );
 });
+test("earnings reminders use upcoming report dates and stable dedup keys", () => {
+  const rule = {
+    symbol: "APP",
+    type: "earnings-soon",
+    threshold: 7,
+    enabled: true,
+    name: "",
+  };
+  const state = {
+    snapshotId: "x",
+    price: 100,
+    stale: false,
+    monthly: 1,
+    month: "2026-09",
+    filings: [],
+    asOf: "2026-10-18T12:00:00Z",
+    earnings: [{ date: "2026-10-20", period: "2026-06-30" }],
+  };
+  const e = evaluateAlert(rule, state, "2026-10-01");
+  assert.equal(e.event_key, "earnings:2026-10-20");
+  assert.equal(
+    evaluateAlert(rule, { ...state, asOf: "2026-10-21" }, "2026-10-01"),
+    null,
+  );
+  assert.equal(cleanDocument("alert", rule).threshold, 7);
+  assert.throws(() => cleanDocument("alert", { ...rule, threshold: 100 }));
+});
+test("DCA history excludes a month missing its final required session", () => {
+  const r = compareDca(bars, "2024-05-01", 10, "crypto");
+  assert(!r.history.some((x) => x.month === "2024-04"));
+});

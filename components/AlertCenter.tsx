@@ -127,6 +127,7 @@ export default function AlertCenter() {
         <label>
           Notify me about
           <select value={type} onChange={(e) => setType(e.target.value)}>
+            <option value="earnings-soon">Earnings approaching</option>
             <option value="new-filing">New company filing</option>
             <option value="monthly-zone">Monthly accumulation zone</option>
             <option value="price-below">Price below my level</option>
@@ -135,12 +136,32 @@ export default function AlertCenter() {
         </label>
         {type !== "new-filing" && (
           <label>
-            {type === "monthly-zone" ? "Zone (0 = pause)" : "Price · USD"}
+            {type === "monthly-zone"
+              ? "Zone (0 = pause)"
+              : type === "earnings-soon"
+                ? "Days before earnings"
+                : "Price · USD"}
             <input
               type="number"
-              step={type === "monthly-zone" ? "1" : ".01"}
-              min={type === "monthly-zone" ? "0" : ".01"}
-              max={type === "monthly-zone" ? "4" : undefined}
+              step={
+                type === "monthly-zone" || type === "earnings-soon"
+                  ? "1"
+                  : ".01"
+              }
+              min={
+                type === "monthly-zone"
+                  ? "0"
+                  : type === "earnings-soon"
+                    ? "1"
+                    : ".01"
+              }
+              max={
+                type === "monthly-zone"
+                  ? "4"
+                  : type === "earnings-soon"
+                    ? "30"
+                    : undefined
+              }
               required
               value={threshold}
               onChange={(e) => setThreshold(e.target.value)}

@@ -2,6 +2,8 @@ import type { AlertRule } from "./documents";
 export function evaluateAlert(
   rule: AlertRule,
   input: {
+    asOf?: string;
+    earnings?: { date: string }[];
     snapshotId: string;
     price: number | null;
     stale: boolean;
@@ -13,6 +15,33 @@ export function evaluateAlert(
 ) {
   if (!rule.enabled) return null;
   const base = { symbol: rule.symbol, snapshot_id: input.snapshotId };
+  if (rule.type === "earnings-soon") {
+    const now = Date.parse(input.asOf ?? ""),
+      today = (input.asOf ?? "").slice(0, 10);
+    if (
+      !Number.isFinite(now) ||
+      rule.threshold == null ||
+      rule.threshold < 1 ||
+      rule.threshold > 30
+    )
+      return null;
+    const next = input.earnings
+      ?.filter(
+        (e) =>
+          e.date >= today &&
+          Number.isFinite(Date.parse(e.date)) &&
+          Date.parse(e.date) - Date.parse(today) <= rule.threshold! * 86400000,
+      )
+      .sort((a, b) => a.date.localeCompare(b.date))[0];
+    return next
+      ? {
+          ...base,
+          event_key: `earnings:${next.date}`,
+          title: `${rule.symbol}: earnings approaching`,
+          detail: `Scheduled report ${next.date}. Dates can change; check the company calendar before acting.`,
+        }
+      : null;
+  }
   if (rule.type === "new-filing") {
     const f = input.filings
       .filter((f) => f.date >= since.slice(0, 10))

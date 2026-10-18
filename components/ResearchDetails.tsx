@@ -8,6 +8,7 @@ import { priceStudies } from "@/lib/price-studies";
 import { expandedStudies } from "@/lib/technical-expanded";
 import { amount, dateLabel, percent } from "@/lib/format";
 import TechnicalLevels from "./TechnicalLevels";
+import OwnershipPicture from "./OwnershipPicture";
 import Analyst from "./Analyst";
 import { NewsAndFilings } from "./ResearchEvidence";
 import { Help, DataStamp } from "./Ui";
@@ -72,6 +73,29 @@ export function TechnicalPicture({
       detail: "Of price · daily reference",
     },
   ];
+  const studyRows = [
+    ["50-day average", amount(p.tech.ma50, r.quote.currency)],
+    ["200-day average", amount(p.tech.ma200, r.quote.currency)],
+    ["20-day EMA", amount(s.ema20, r.quote.currency)],
+    ["20-session momentum", percent(x.roc20)],
+    ["ADX · 14", x.adx?.toFixed(1) ?? "—"],
+    [
+      "Directional movement · +DI / −DI",
+      x.plusDI == null || x.minusDI == null
+        ? "—"
+        : `${x.plusDI.toFixed(1)} / ${x.minusDI.toFixed(1)}`,
+    ],
+    [
+      "Fast stochastic · 14,1,3 · %K / %D",
+      x.stochasticK == null || x.stochasticD == null
+        ? "—"
+        : `${x.stochasticK.toFixed(1)} / ${x.stochasticD.toFixed(1)}`,
+    ],
+    ["Bollinger position · %B", percent(x.percentB)],
+    ["OBV", x.obv?.toLocaleString() ?? "—"],
+    ["Bollinger bandwidth", percent(x.bandwidth)],
+    ["From 252-session closing high", percent(x.drawdown)],
+  ];
   return (
     <>
       <div className="tech-grid">
@@ -113,34 +137,26 @@ export function TechnicalPicture({
           <p className="context-note">
             A touch alone does not confirm a reversal.
           </p>
-          <div className="grid2 technical-numbers">
+          <div className="technical-study-groups">
             {[
-              ["50-day average", amount(p.tech.ma50, r.quote.currency)],
-              ["200-day average", amount(p.tech.ma200, r.quote.currency)],
-              ["20-day EMA", amount(s.ema20, r.quote.currency)],
-              ["20-session momentum", percent(x.roc20)],
-              ["ADX · 14", x.adx?.toFixed(1) ?? "—"],
-              [
-                "Directional movement · +DI / −DI",
-                x.plusDI == null || x.minusDI == null
-                  ? "—"
-                  : `${x.plusDI.toFixed(1)} / ${x.minusDI.toFixed(1)}`,
-              ],
-              [
-                "Fast stochastic · 14,1,3 · %K / %D",
-                x.stochasticK == null || x.stochasticD == null
-                  ? "—"
-                  : `${x.stochasticK.toFixed(1)} / ${x.stochasticD.toFixed(1)}`,
-              ],
-              ["Bollinger position · %B", percent(x.percentB)],
-              ["OBV", x.obv?.toLocaleString() ?? "—"],
-              ["Bollinger bandwidth", percent(x.bandwidth)],
-              ["From 252-session closing high", percent(x.drawdown)],
-            ].map(([label, value]) => (
-              <div className="stat-pair" key={label}>
-                <span>{label}</span>
-                <strong className="num">{value}</strong>
-              </div>
+              { name: "Trend", indexes: [0, 1, 2, 4, 5] },
+              { name: "Momentum", indexes: [3, 6] },
+              { name: "Volatility & range", indexes: [7, 9, 10] },
+              { name: "Volume", indexes: [8] },
+            ].map((group) => (
+              <section key={group.name}>
+                <h3>{group.name}</h3>
+                <div className="technical-numbers">
+                  {group.indexes
+                    .map((index) => studyRows[index])
+                    .map(([label, value]) => (
+                      <div className="stat-pair" key={label}>
+                        <span>{label}</span>
+                        <strong className="num">{value}</strong>
+                      </div>
+                    ))}
+                </div>
+              </section>
             ))}
           </div>
           <Help label="Study definitions" trigger="How to read these studies">
@@ -328,6 +344,7 @@ export function ThesisPicture({ research: r }: { research: Research }) {
           </div>
         </div>
       </section>
+      <OwnershipPicture research={r} />
       <NewsAndFilings research={r} />
       <Analyst research={r} compact />
       <div className="shared-stamp">

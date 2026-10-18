@@ -92,7 +92,7 @@ export default function SettingsSheet({
         </div>
         {[
           ["settings", "Account & security"],
-          ["alerts", "Price alerts"],
+          ["alerts", "Alerts"],
           ["discover", "Discover"],
           ["research-lab", "Strategy lab"],
           ["trading", "Paper trading"],

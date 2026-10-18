@@ -28,3 +28,10 @@ export async function readResource<T>(
   requests.set(key, request);
   return request;
 }
+
+export function resourceSnapshot<T>(
+  cache: ResourceCache,
+  key: string | null,
+): T | null {
+  return key ? ((cache.get(key)?.value as T) ?? null) : null;
+}

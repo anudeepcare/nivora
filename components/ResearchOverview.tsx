@@ -83,8 +83,8 @@ export function ResearchOutlook({
           : "No current comparable analyst target is available. Fair value is not established."}
       </p>
       {outlook.available ? (
-        <details className="forecast-sensitivity">
-          <summary>Inspect forecast sensitivity</summary>
+        <details className="forecast-sensitivity" open>
+          <summary>Bear, base & bull scenarios</summary>
           <p className="sensitivity-warning">
             Not intrinsic fair value. These mechanical cases use assumed
             valuation multiples; they are not validated price targets.

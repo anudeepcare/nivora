@@ -46,6 +46,9 @@ test("Financials retains four primary metrics and statement rows with separate l
       React,
       useMemo: React.useMemo,
       useState: React.useState,
+      FinancialDetailTable: empty,
+      ResearchWorkbench: empty,
+      ResearchCompare: empty,
       researchPeriods,
       ...format,
       Help: ({ trigger }) => React.createElement("button", null, trigger),
@@ -255,7 +258,7 @@ test("data details retain observation time without displaying infrastructure ven
   }
 });
 
-test("valuation snapshot separates analyst targets from closed mechanical forecast sensitivities", async () => {
+test("valuation snapshot separates analyst targets from visible labelled forecast scenarios", async () => {
   const { researchOutlook, consensusOutlook } = await import(
     "../lib/outlook.ts"
   );
@@ -299,9 +302,32 @@ test("valuation snapshot separates analyst targets from closed mechanical foreca
   assert.match(html, /Analyst consensus/);
   assert.match(html, /Gap to consensus/);
   assert.match(html, /Not intrinsic fair value/);
-  assert.match(html, /<details class="forecast-sensitivity">/);
-  const primary = html.split('<details class="forecast-sensitivity">')[0];
+  assert.match(html, /<details class="forecast-sensitivity" open="">/);
+  const primary = html.split(
+    '<details class="forecast-sensitivity" open="">',
+  )[0];
   assert.doesNotMatch(primary, /\$160\.00|\$240\.00/);
   assert.match(primary, /\$150\.00/);
   assert.doesNotMatch(html, /margin of safety/i);
+});
+test("financial trend scope controls remain available for a missing selected period", () => {
+  const Component = loadComponent(
+    "components/ResearchWorkbench.tsx",
+    "ResearchWorkbench",
+    {
+      React,
+      useMemo: React.useMemo,
+      useState: () => ["quarterly", () => {}],
+      financialTrend: () => [],
+      ...format,
+      Download: empty,
+      downloadCsv: () => {},
+    },
+  );
+  const html = renderToStaticMarkup(
+    React.createElement(Component, { research: demoData.research.MSFT }),
+  );
+  assert.match(html, /Annual/);
+  assert.match(html, /Quarterly/);
+  assert.match(html, /No comparable quarterly/);
 });

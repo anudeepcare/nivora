@@ -2,6 +2,8 @@
 import { useMemo, useState } from "react";
 import type { Research } from "@/lib/types";
 import { perspective } from "@/lib/analysis";
+import { consensusOutlook } from "@/lib/outlook";
+import { percent } from "@/lib/format";
 import { decisionGuide } from "@/lib/decision-guide";
 import { Help } from "./Ui";
 export default function DecisionBrief({
@@ -14,6 +16,7 @@ export default function DecisionBrief({
   const p = useMemo(() => perspective(r), [r]);
   const d = useMemo(() => decisionGuide(r, p), [r, p]);
   const [context, setContext] = useState<"new" | "own">("new");
+  const valuation = useMemo(() => consensusOutlook(r), [r]);
   const action = context === "new" ? d.buying : d.owning;
   return (
     <section
@@ -40,6 +43,27 @@ export default function DecisionBrief({
         <h2>{action.label}</h2>
       </div>
       <p>{action.reason}</p>
+      <div className="perspective-grid">
+        <div>
+          <span>Business quality</span>
+          <b>{p.business}</b>
+          <small>Latest reported operating evidence</small>
+        </div>
+        <div>
+          <span>Valuation context</span>
+          <b>
+            {valuation
+              ? `${percent(valuation.change, true)} to consensus`
+              : "Evidence incomplete"}
+          </b>
+          <small>Analyst opinion; fair value assessed separately</small>
+        </div>
+        <div>
+          <span>Entry timing</span>
+          <b>{p.tech.trend}</b>
+          <small>Completed prices; separate from long-term thesis</small>
+        </div>
+      </div>
       <div className="decision-foot">
         <span>
           Business <b>{p.business}</b>

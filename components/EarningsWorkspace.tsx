@@ -1,0 +1,127 @@
+"use client";
+import type { Research } from "@/lib/types";
+import { earningsSurprise } from "@/lib/research-workbench";
+import { dateLabel, percent, amount } from "@/lib/format";
+import { downloadCsv } from "./ResearchWorkbench";
+export default function EarningsWorkspace({
+  research: r,
+}: {
+  research: Research;
+}) {
+  const day = r.retrievedAt.slice(0, 10),
+    rows = (r.evidence?.earnings ?? [])
+      .filter((e) => e.date <= day && (e.actual != null || e.estimate != null))
+      .sort((a, b) => b.date.localeCompare(a.date))
+      .slice(0, 8);
+  const future = (r.evidence?.estimates ?? [])
+    .filter((e) => e.date > day)
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .slice(0, 4);
+  if (!rows.length && !future.length) return null;
+  return (
+    <section className="earnings-workspace">
+      <header className="section-head">
+        <div>
+          <span className="eyebrow">Expectations & delivery</span>
+          <h3>Earnings checkpoints</h3>
+          <p>Results and forecasts stay separate. Estimates can change.</p>
+        </div>
+      </header>
+      {rows.length > 0 && (
+        <div className="table-scroll">
+          <table>
+            <caption>
+              Reported EPS versus the supplied estimate. Surprise = (actual −
+              estimate) / |estimate|. Currency and adjusted/GAAP basis are not
+              consistently supplied for historical EPS; compare within the same
+              series.
+            </caption>
+            <thead>
+              <tr>
+                <th>Report date</th>
+                <th>Period</th>
+                <th>Actual EPS</th>
+                <th>Estimate</th>
+                <th>Surprise</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((e, i) => {
+                const surprise = earningsSurprise(e.actual, e.estimate);
+                return (
+                  <tr key={e.date + e.period + i}>
+                    <td>{dateLabel(e.date)}</td>
+                    <td>{e.period || "—"}</td>
+                    <td>{e.actual?.toFixed(2) ?? "—"}</td>
+                    <td>{e.estimate?.toFixed(2) ?? "—"}</td>
+                    <td
+                      className={
+                        surprise == null
+                          ? "muted"
+                          : surprise < 0
+                            ? "red"
+                            : "green"
+                      }
+                    >
+                      {percent(surprise, true)}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {future.length > 0 && (
+        <div className="estimate-grid">
+          {future.map((e, i) => (
+            <section className="estimate-card" key={e.date + e.frequency + i}>
+              <span className="eyebrow">
+                {e.frequency || "Forecast"} · {e.period || e.date}
+              </span>
+              <strong>
+                {e.revenue != null && e.currency
+                  ? amount(e.revenue, e.currency, true)
+                  : "Revenue unavailable"}
+              </strong>
+              <span>Revenue estimate</span>
+              <p>
+                EPS{" "}
+                {e.eps != null && e.currency ? amount(e.eps, e.currency) : "—"}{" "}
+                · {e.analysts ?? "Unknown"} analysts
+              </p>
+              <small className="muted">Period ends {dateLabel(e.date)}</small>
+            </section>
+          ))}
+        </div>
+      )}
+      <button
+        className="text-button"
+        onClick={() =>
+          downloadCsv(`${r.company.symbol}-earnings.csv`, [
+            [
+              "symbol",
+              "report_date",
+              "period",
+              "actual_eps",
+              "estimate_eps",
+              "surprise_pct",
+              "retrieved_at",
+            ],
+            ...rows.map((e) => [
+              r.company.symbol,
+              e.date,
+              e.period,
+              e.actual,
+              e.estimate,
+              earningsSurprise(e.actual, e.estimate),
+              r.retrievedAt,
+            ]),
+          ])
+        }
+      >
+        Download earnings history
+      </button>
+    </section>
+  );
+}

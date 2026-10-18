@@ -28,3 +28,14 @@ test("a rejected request can be retried and never poisons the cache", async () =
   );
   assert.equal(await c.readResource(cache, "x", 60000, async () => 42), 42);
 });
+test("view changes expose only the requested account-cached resource immediately", () => {
+  const cache = new Map([
+    ["research/APP", { at: 1, value: { symbol: "APP" } }],
+  ]);
+  assert.deepEqual(c.resourceSnapshot(cache, "research/APP"), {
+    symbol: "APP",
+  });
+  assert.equal(c.resourceSnapshot(cache, "research/SAP"), null);
+  assert.equal(c.resourceSnapshot(new Map(), "research/APP"), null);
+  assert.equal(c.resourceSnapshot(cache, null), null);
+});

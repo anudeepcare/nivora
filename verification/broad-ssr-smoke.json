@@ -1,0 +1,65 @@
+{
+  "scope": "Local production server with illustrative fixtures, HTML only. Not browser/device/live-data performance.",
+  "checks": [
+    {
+      "path": "/preview/overview",
+      "status": 200,
+      "expectedContent": true,
+      "localMs": 213
+    },
+    {
+      "path": "/preview/portfolio",
+      "status": 200,
+      "expectedContent": true,
+      "localMs": 103
+    },
+    {
+      "path": "/preview/watchlist",
+      "status": 200,
+      "expectedContent": true,
+      "localMs": 99
+    },
+    {
+      "path": "/preview/research/MSFT?tab=Financials",
+      "status": 200,
+      "expectedContent": true,
+      "localMs": 156
+    },
+    {
+      "path": "/preview/research/MSFT?tab=Technicals",
+      "status": 200,
+      "expectedContent": true,
+      "localMs": 244
+    },
+    {
+      "path": "/preview/research/MSFT?tab=Thesis",
+      "status": 200,
+      "expectedContent": true,
+      "localMs": 136
+    },
+    {
+      "path": "/preview/research/MSFT?tab=Valuation",
+      "status": 200,
+      "expectedContent": true,
+      "localMs": 125
+    },
+    {
+      "path": "/preview/alerts",
+      "status": 200,
+      "expectedContent": true,
+      "localMs": 98
+    },
+    {
+      "path": "/preview/discover",
+      "status": 200,
+      "expectedContent": true,
+      "localMs": 327
+    },
+    {
+      "path": "/preview/settings",
+      "status": 200,
+      "expectedContent": true,
+      "localMs": 88
+    }
+  ]
+}

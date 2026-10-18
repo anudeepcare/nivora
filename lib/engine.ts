@@ -78,16 +78,7 @@ export function accumulation(
       peak = Math.max(...window.map(([, b]) => b.close));
     const drawdown = (bar.close / peak - 1) * 100,
       deviation = (bar.close / average - 1) * 100;
-    const multiplier: Signal["multiplier"] =
-      deviation > 25
-        ? 0
-        : drawdown <= -50 && deviation <= -35
-          ? 4
-          : drawdown <= -30 && deviation <= -20
-            ? 3
-            : drawdown <= -15 && deviation <= -10
-              ? 2
-              : 1;
+    const multiplier = accumulationBand(drawdown, deviation);
     const reason =
       multiplier === 0
         ? "Price is stretched above its 24-month average."
@@ -334,4 +325,19 @@ export function cashFlowValue(
     (discount / 100 - perShareGrowth) /
     (1 + discount / 100) ** 5;
   return finite(result) && result > 0 ? Math.round(result * 1e8) / 1e8 : null;
+}
+
+export function accumulationBand(
+  drawdown: number,
+  deviation: number,
+): Signal["multiplier"] {
+  return deviation > 25
+    ? 0
+    : drawdown <= -50 && deviation <= -35
+      ? 4
+      : drawdown <= -30 && deviation <= -20
+        ? 3
+        : drawdown <= -15 && deviation <= -10
+          ? 2
+          : 1;
 }

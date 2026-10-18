@@ -2,6 +2,9 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AlertRule } from "./documents";
 import { research } from "./providers";
 import { canonical } from "./canonical";
+import { eodEnabled, eodRequest } from "./eodhd";
+import { eodTicker } from "./eodhd-normalize";
+import { calendarHighlights } from "./home-feed";
 import { evaluateAlert } from "./alert-policy";
 export async function checkAlerts(db: SupabaseClient, userId: string) {
   const rules = await db
@@ -24,11 +27,34 @@ export async function checkAlerts(db: SupabaseClient, userId: string) {
         r = await research(rule.symbol);
         sources.set(rule.symbol, r);
       }
+      let earnings = r.evidence?.earnings.map((e) => ({ date: e.date })) ?? [];
+      if (rule.type === "earnings-soon" && eodEnabled()) {
+        const from = r.retrievedAt.slice(0, 10),
+          to = new Date(Date.parse(from) + 30 * 86400000)
+            .toISOString()
+            .slice(0, 10);
+        try {
+          const raw = await eodRequest(
+            "calendar/earnings",
+            { symbols: eodTicker(rule.symbol), from, to },
+            21600000,
+          );
+          earnings = calendarHighlights(raw, null, [rule.symbol], from, to).map(
+            (e) => ({ date: e.date }),
+          );
+        } catch {
+          errors.push(
+            `${rule.symbol}: scheduled earnings could not be refreshed; existing report dates were used.`,
+          );
+        }
+      }
       const c = canonical(r);
       checked++;
       const event = evaluateAlert(
         rule,
         {
+          asOf: r.retrievedAt,
+          earnings,
           snapshotId: c.id,
           price: r.quote.price,
           stale: r.quote.stale,

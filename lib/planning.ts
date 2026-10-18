@@ -1,4 +1,5 @@
 import type { Candle } from "./types";
+import { monthEndSession } from "./calendar.ts";
 import { accumulation } from "./engine.ts";
 import { symbolInput } from "./format.ts";
 export function compareDca(
@@ -45,6 +46,7 @@ export function compareDca(
     }[] = [];
   for (const [month, rows] of months) {
     if (month >= asOf.slice(0, 7)) continue;
+    if (rows.at(-1)?.time !== monthEndSession(month, market)) continue;
     const prev = new Date(
         Date.UTC(Number(month.slice(0, 4)), Number(month.slice(5)) - 1, 0),
       )

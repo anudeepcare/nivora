@@ -1,3 +1,11 @@
+# Broad research build — current
+
+191 tests, TypeScript, production build, 64 built API checks and 10 local fixture HTML routes pass. See docs/BROAD_BUILD_STATUS.md and verification/BROAD_BUILD_REVIEW.md for exact scope and outstanding live-data/device acceptance. This is not a production-verified or complete institutional platform claim.
+
+# Current patch: loading and Home
+
+176 tests, TypeScript, production build and 64 API fixture checks pass. See verification/SMOOTH_LOADING_AND_HOME.md for included changes and remaining verification, and docs/DATA_COVERAGE_REVIEW.md for outstanding product capabilities.
+
 # Latest update — 18 October 2026
 
 Metrics, legacy PWA start redirects and mobile control polish are included. 175 tests, TypeScript, production build and 64 built API fixture checks pass. See verification/METRICS_AND_MOBILE_POLISH.md. Physical iPhone and live feed acceptance remain unverified.
