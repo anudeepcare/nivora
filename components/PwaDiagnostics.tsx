@@ -33,7 +33,14 @@ export default function PwaDiagnostics() {
     setReport(
       JSON.stringify(
         {
-          version: "viewport-audit-20261018",
+          version: "viewport-audit-20261018-keyboard",
+          screen: {
+            width: screen.width,
+            height: screen.height,
+            pixelRatio: devicePixelRatio,
+          },
+          keyboardOpen:
+            document.documentElement.classList.contains("keyboard-open"),
           standalone:
             matchMedia("(display-mode: standalone)").matches ||
             (navigator as Navigator & { standalone?: boolean }).standalone ===

@@ -53,3 +53,13 @@ test("viewport updates do not rewrite unchanged styles during scroll", () => {
   update({ height: 420, offsetTop: 65 }, 850);
   assert.equal(writes.length, 6);
 });
+
+test("dock keyboard state requires an editable focus and a substantial viewport reduction", () => {
+  const { softwareKeyboardOpen } = load();
+  assert.equal(typeof softwareKeyboardOpen, "function");
+  assert.equal(softwareKeyboardOpen(true, 812, 420), true);
+  assert.equal(softwareKeyboardOpen(false, 812, 420), false);
+  assert.equal(softwareKeyboardOpen(true, 812, 812), false);
+  assert.equal(softwareKeyboardOpen(true, 812, 750), false);
+  assert.equal(softwareKeyboardOpen(true, 812, 0), false);
+});

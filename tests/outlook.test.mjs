@@ -138,3 +138,13 @@ test("a bank can show a labelled earnings sensitivity without applying an operat
   assert.equal(result.available, true);
   assert.equal(result.cases[1].target, 160);
 });
+
+test("consensus comparison calculates the gap without calling it fair value or inventing high/low targets", () => {
+  const input = research();
+  input.evidence.consensus = { target: 150 };
+  const result = load().consensusOutlook(input);
+  assert.equal(result.change, 50);
+  assert.equal(result.target, 150);
+  assert.equal(result.high, undefined);
+  assert.equal(result.low, undefined);
+});

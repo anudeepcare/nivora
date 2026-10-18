@@ -32,7 +32,7 @@ export type Outlook =
 
 export function consensusOutlook(
   r: Research,
-): { target: number; asOf: string } | null {
+): { target: number; asOf: string; change: number } | null {
   const e = r.evidence;
   const now = Date.parse(r.retrievedAt);
   const at = Date.parse(e?.updatedAt ?? "");
@@ -52,7 +52,11 @@ export function consensusOutlook(
     target <= 0
   )
     return null;
-  return { target, asOf: e!.updatedAt! };
+  return {
+    target,
+    asOf: e!.updatedAt!,
+    change: (target / r.quote.price! - 1) * 100,
+  };
 }
 
 /** A forecast sensitivity, never a company-specific intrinsic valuation.
@@ -214,6 +218,31 @@ export function researchOutlook(r: Research): Outlook {
         "The supplied fiscal period and forecast date conflict.",
       );
     const netDebt = debt.value - cash.value;
+    // All listings need a share/quote bridge, not just foreign issuers. Mixing
+    // millions of shares with whole shares can otherwise create thousand-fold targets.
+    const reportedEV = e.multiples?.EnterpriseValue;
+    const ttmRevenue = e.highlights?.RevenueTTM;
+    const listingEquity = shares * price;
+    const comparableEV = listingEquity + netDebt;
+    if (
+      e.reportingCurrency !== r.quote.currency ||
+      marketCap == null ||
+      !Number.isFinite(marketCap) ||
+      marketCap <= 0 ||
+      Math.abs(marketCap / listingEquity - 1) > 0.1 ||
+      reportedEV == null ||
+      !Number.isFinite(reportedEV) ||
+      reportedEV <= 0 ||
+      comparableEV <= 0 ||
+      Math.abs(reportedEV / comparableEV - 1) > 0.2 ||
+      ttmRevenue == null ||
+      !Number.isFinite(ttmRevenue) ||
+      ttmRevenue <= 0 ||
+      Math.abs(multiple / (reportedEV / ttmRevenue) - 1) > 0.1
+    )
+      return unavailable(
+        "The share count, price, market capitalisation and EV/revenue inputs do not reconcile on one currency basis. Revenue price sensitivities are withheld.",
+      );
     const years = (Date.parse(estimate.date) - now) / (365.25 * 86400000);
     const cases = (
       [

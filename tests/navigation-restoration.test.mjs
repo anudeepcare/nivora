@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import ts from "typescript";
 
-function navigation() {
+function navigation(window, document) {
   if (!fs.existsSync("lib/navigation.ts")) return {};
   const code = ts.transpileModule(
     fs.readFileSync("lib/navigation.ts", "utf8"),
@@ -15,7 +15,12 @@ function navigation() {
     },
   ).outputText;
   const module = { exports: {} };
-  new Function("module", "exports", code)(module, module.exports);
+  new Function("module", "exports", "window", "document", code)(
+    module,
+    module.exports,
+    window,
+    document,
+  );
   return module.exports;
 }
 function viewport() {
@@ -124,38 +129,31 @@ test("an error or shortened list clamps once at the deadline and can be disposed
   assert.deepEqual(next.moves, []);
 });
 
-test("mobile navigation measures and scrolls the app content instead of the iPhone document", () => {
-  const { browserScrollEnvironment } = navigation();
-  const oldWindow = globalThis.window,
-    oldDocument = globalThis.document;
-  const moves = [];
-  const content = {
-    scrollTop: 420,
-    scrollHeight: 1800,
-    clientHeight: 600,
-    scrollTo: (o) => moves.push(o),
-    addEventListener() {},
-    removeEventListener() {},
-  };
-  globalThis.window = {
+test("mobile scroll memory follows the document instead of a non-scrolling content panel", () => {
+  const moves = [],
+    listeners = [];
+  const window = {
+    scrollY: 280,
+    innerHeight: 812,
     matchMedia: () => ({ matches: true }),
-    innerHeight: 900,
-    scrollY: 0,
-    scrollTo: () => assert.fail("mobile must not scroll the document"),
+    addEventListener: (name) => listeners.push(name),
+    removeEventListener: () => {},
+    scrollTo: (value) => moves.push(value),
   };
-  globalThis.document = {
-    getElementById: () => content,
-    documentElement: { scrollHeight: 2000 },
+  const document = {
+    getElementById: () => ({
+      scrollTop: 0,
+      scrollHeight: 400,
+      clientHeight: 400,
+    }),
+    documentElement: { scrollHeight: 1800 },
     querySelector: () => null,
   };
-  try {
-    const env = browserScrollEnvironment();
-    assert.equal(env.readTop?.(), 420);
-    assert.equal(env.maxScroll(), 1200);
-    env.scrollTo(600);
-    assert.equal(moves[0].top, 600);
-  } finally {
-    globalThis.window = oldWindow;
-    globalThis.document = oldDocument;
-  }
+  const env = navigation(window, document).browserScrollEnvironment();
+  assert.equal(env.readTop(), 280);
+  assert.equal(env.maxScroll(), 988);
+  env.scrollTo(310);
+  assert.equal(moves[0].top, 310);
+  env.onScroll(() => {});
+  assert.deepEqual(listeners, ["scroll"]);
 });

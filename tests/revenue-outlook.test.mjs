@@ -14,8 +14,9 @@ function input(symbol = "NBIS") {
         CountryISO: "US",
         UpdatedAt: "2026-10-16",
       },
+      Highlights: { MarketCapitalization: 5000000000, RevenueTTM: 1060000000 },
       SharesStats: { SharesOutstanding: 100000000 },
-      Valuation: { EnterpriseValueRevenue: 5 },
+      Valuation: { EnterpriseValueRevenue: 5, EnterpriseValue: 5300000000 },
       Financials: {
         Income_Statement: { currency_symbol: "USD" },
         Balance_Sheet: {
@@ -91,4 +92,18 @@ test("foreign-domiciled revenue cases require reporting currency and listing equ
   r.evidence.highlights.MarketCapitalization = 5e9;
   r.evidence.reportingCurrency = "EUR";
   assert.equal(researchOutlook(r).available, false);
+});
+
+test("revenue sensitivity rejects share-unit and EV/revenue denominator inconsistencies for every listing", () => {
+  for (const change of [
+    (r) => (r.evidence.ownership.outstanding = 100),
+    (r) => (r.evidence.highlights.MarketCapitalization = 50e9),
+    (r) => (r.evidence.multiples.EnterpriseValue = 53e9),
+    (r) => (r.evidence.highlights.RevenueTTM = 1060000),
+    (r) => delete r.evidence.highlights.MarketCapitalization,
+  ]) {
+    const r = input("HIMS");
+    change(r);
+    assert.equal(researchOutlook(r).available, false);
+  }
 });

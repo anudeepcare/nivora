@@ -52,12 +52,10 @@ export function restoreWhenReady(target: number, env: ScrollEnvironment) {
 }
 export function browserScrollEnvironment(): ScrollEnvironment {
   const content = document.getElementById("content");
-  const mobile =
-    window.matchMedia("(max-width: 700px)").matches && content != null;
   return {
-    readTop: () => (mobile ? content!.scrollTop : window.scrollY),
+    readTop: () => window.scrollY,
     onScroll: (notify) => {
-      const target = mobile ? content! : window;
+      const target = window;
       target.addEventListener("scroll", notify, { passive: true });
       return () => target.removeEventListener("scroll", notify);
     },
@@ -66,23 +64,18 @@ export function browserScrollEnvironment(): ScrollEnvironment {
         '#content [aria-busy="true"], #content [data-scroll-pending="true"]',
       ),
     maxScroll: () =>
-      Math.max(
-        0,
-        mobile
-          ? content!.scrollHeight - content!.clientHeight
-          : document.documentElement.scrollHeight - window.innerHeight,
-      ),
+      Math.max(0, document.documentElement.scrollHeight - window.innerHeight),
     scrollTo: (top) =>
-      (mobile ? content! : window).scrollTo({
+      window.scrollTo({
         top,
         left: 0,
         behavior: "instant",
       }),
     observe: (notify) => {
       const observer = new ResizeObserver(notify);
-      observer.observe(mobile ? content! : document.body);
-      if (mobile)
-        Array.from(content!.children).forEach((child) =>
+      observer.observe(document.body);
+      if (content)
+        Array.from(content.children).forEach((child) =>
           observer.observe(child),
         );
       const mutations = new MutationObserver(notify);

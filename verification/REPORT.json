@@ -4,11 +4,11 @@
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 165 tests, TypeScript and production build",
+    "npm run verify": "passed: 170 tests, TypeScript and production build",
     "npm run test:api": "passed: 32 baseline + 16 research regressions + 13 hybrid/provider checks",
     "git diff --check": "passed"
   },
-  "domainPostgresAndComponentTests": 165,
+  "domainPostgresAndComponentTests": 170,
   "builtApiChecks": 61,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -34,20 +34,22 @@
   "priorEvidence": "The signed-in reference/deployed UI reviews predate this patch. New verification is source, domain/SSR, TypeScript and build evidence only.",
   "browserTestScope": "No rendered browser test of this build; older live audits are historical evidence only",
   "patchedSourceBrowserTestsExecuted": false,
-  "latestAudit": "SCENARIO_COVERAGE_AND_PWA_AUDIT.md",
+  "latestAudit": "WORKING_PWA_REFERENCE_AND_VALUATION.md",
   "referenceReview": "REFERENCE_REVIEW_20261017.md",
   "decisionPolicy": "research-v1.6 / decision-guide-v1.1; original unvalidated research triage; no broker execution",
   "latestLogs": [
-    "scenario-verify.log",
-    "scenario-api.log"
+    "old-reference-final-verify.log",
+    "old-reference-final-api.log"
   ],
   "cohortQuoteObservations": "cohort-quotes-20261017.json; 11 instruments; quote identity only, not fundamental/model validation",
   "exactVisualParityVerified": false,
   "sourceBase": "53655c82ed00bcacdafc5e97da1b1493a39d6db6",
   "sourceBranch": "auryn-approved-studio-20261017",
   "liveUiAudit": "Signed-in Chrome: CRM search, all five research tabs and weekly range loaded. Deployed mobile dock CSS is fixed; latest source dock is in layout flow. No physical iPhone verification.",
-  "valuationCorrection": "OSCR Healthcare Plans was excluded by decision guide but admitted by separate outlook regex. Outlook now uses shared modelCoverage; failing then passing regression.",
+  "valuationCorrection": "Primary consensus separated from closed mechanical sensitivities; share/equity/EV/revenue reconciliation guards; mobile rows. Company-specific fair value not implemented.",
   "forecastPeriodCorrection": "Forecast end date and months ahead now visible beside cases; conflicting fiscal labels rejected; missing fiscal label no longer invented from calendar year.",
   "performance": "Session search cache plus server fetch cache for Twelve Data; quote30s, intraday60s, daily3600s, profile86400s. Viewport writes coalesced per animation frame and skipped when unchanged. No post-deployment latency benchmark.",
-  "scenarioCoverage": "Positive-EPS sensitivities for eligible operating companies/banks; revenue/EV-sales sensitivities when ordered forecasts, equity shares and dated balance evidence exist. Cross-currency listings and insurance-specific fair value remain unsupported."
+  "scenarioCoverage": "Conditional mechanical EPS/revenue sensitivities only; not independently validated company valuations. SAP ADR/FX and sector-specific fair value remain unsupported.",
+  "pwaKeyboardCorrection": "Working old ZIP reference: black-translucent, document scrolling, sticky header, fixed safe-area dock; visualViewport only for keyboard/dialog handling. Physical installed-device acceptance unverified.",
+  "comparedAgainstRemote": "c610416"
 }

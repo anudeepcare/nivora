@@ -151,7 +151,7 @@ test("opening mobile search offers the account's saved instruments without fabri
   assert.doesNotMatch(html, /Grayscale|role="listbox"/);
 });
 
-test("Research outlook keeps the approved three-case structure when forecast coverage is missing", async () => {
+test("Research outlook does not fill missing coverage with three empty scenario cards", async () => {
   const { researchOutlook, consensusOutlook } = await import(
     "../lib/outlook.ts"
   );
@@ -175,8 +175,8 @@ test("Research outlook keeps the approved three-case structure when forecast cov
   const html = renderToStaticMarkup(
     React.createElement(Outlook, { research: r }),
   );
-  assert.equal((html.match(/class="outcome"/g) || []).length, 3);
-  for (const name of ["Bear", "Base", "Bull"]) assert(html.includes(name));
+  assert.equal((html.match(/class="outcome"/g) || []).length, 0);
+  assert.match(html, /Valuation snapshot/);
   assert(!html.includes('class="consensus-quick"'));
 });
 
@@ -256,4 +256,55 @@ test("data details retain observation time without displaying infrastructure ven
     assert.doesNotMatch(html, /EODHD|Twelve Data|Data attribution/);
     assert.match(html, /Observation:/);
   }
+});
+
+test("valuation snapshot separates analyst targets from closed mechanical forecast sensitivities", async () => {
+  const { researchOutlook, consensusOutlook } = await import(
+    "../lib/outlook.ts"
+  );
+  const Outlook = loadComponent(
+    "components/ResearchOverview.tsx",
+    "ResearchOutlook",
+    {
+      React,
+      useMemo: React.useMemo,
+      researchOutlook,
+      consensusOutlook,
+      ...format,
+      Help: empty,
+      DataStamp: empty,
+    },
+  );
+  const r = structuredClone(demoData.research.MSFT);
+  r.retrievedAt = "2026-10-18T00:00:00Z";
+  r.quote = { ...r.quote, price: 100, currency: "USD", stale: false };
+  r.evidence = {
+    updatedAt: "2026-10-17",
+    consensus: { target: 150 },
+    profile: { sector: "Technology", industry: "Software" },
+    multiples: { ForwardPE: 20 },
+    estimates: [
+      {
+        date: "2029-10-17",
+        period: "FY2029",
+        frequency: "annual",
+        currency: "USD",
+        eps: 8,
+        epsLow: 6,
+        epsHigh: 10,
+        analysts: 10,
+      },
+    ],
+  };
+  const html = renderToStaticMarkup(
+    React.createElement(Outlook, { research: r }),
+  );
+  assert.match(html, /Analyst consensus/);
+  assert.match(html, /Gap to consensus/);
+  assert.match(html, /Not intrinsic fair value/);
+  assert.match(html, /<details class="forecast-sensitivity">/);
+  const primary = html.split('<details class="forecast-sensitivity">')[0];
+  assert.doesNotMatch(primary, /\$160\.00|\$240\.00/);
+  assert.match(primary, /\$150\.00/);
+  assert.doesNotMatch(html, /margin of safety/i);
 });

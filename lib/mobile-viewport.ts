@@ -22,6 +22,19 @@ export function keyboardInset(
   return Math.max(0, layoutHeight - visible.height - visible.top);
 }
 
+/** Focus alone also occurs with hardware keyboards; safe-area changes are small. */
+export function softwareKeyboardOpen(
+  editable: boolean,
+  fullHeight: number,
+  visibleHeight: number,
+) {
+  return (
+    editable &&
+    visibleHeight > 0 &&
+    fullHeight - visibleHeight > Math.max(120, fullHeight * 0.2)
+  );
+}
+
 /** Avoid style/layout invalidation for unchanged visualViewport scroll events. */
 export function createViewportUpdater(
   write: (name: string, value: string) => void,

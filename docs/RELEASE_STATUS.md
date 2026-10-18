@@ -1,3 +1,11 @@
+# Latest working-reference PWA and valuation repair
+
+170 tests, TypeScript, production build and 61 fixture API checks passed. Restores the working ZIP’s document-scroll/sticky-header/fixed-dock approach and black-translucent metadata. Generic forecasts are separated from the primary analyst-consensus comparison; revenue inputs now require equity/EV reconciliation. Not deployed. Physical iPhone acceptance and company-specific fair-value models remain incomplete. See verification/WORKING_PWA_REFERENCE_AND_VALUATION.md.
+
+# Latest PWA keyboard geometry update
+
+166 tests, TypeScript and production build passed. Standalone shell height and keyboard dock handling changed using supplied device geometry and documented WebKit behavior. Physical iPhone acceptance, production speed and SAP cross-currency/ADR scenarios remain unresolved. Not deployed. See verification/PWA_KEYBOARD_GEOMETRY.md.
+
 # Latest scenario/PWA source update
 
 165 tests + TypeScript + production build + 61 fixture API checks passed. Expanded conditional earnings/revenue sensitivity coverage, server market-data caching and targeted scroll/focus corrections included. SAP cross-currency/ADR valuation and installed iPhone acceptance remain unresolved. No universal valuation or production-readiness claim. See verification/SCENARIO_COVERAGE_AND_PWA_AUDIT.md.

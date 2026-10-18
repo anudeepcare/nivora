@@ -2,7 +2,7 @@
 import { useMemo } from "react";
 import type { Research } from "@/lib/types";
 import { perspective, latestFinancialEvidence } from "@/lib/analysis";
-import { financialCase, valuationScale } from "@/lib/research-summary";
+import { financialCase } from "@/lib/research-summary";
 import { researchOutlook, consensusOutlook } from "@/lib/outlook";
 import { amount, percent, dateLabel } from "@/lib/format";
 import { Help, DataStamp } from "./Ui";
@@ -18,150 +18,13 @@ export function ResearchOutlook({
   const consensus = useMemo(() => consensusOutlook(r), [r]);
   const target = consensus?.target;
   if (detailed) {
-    const scale =
-      outlook.available && r.quote.price != null
-        ? valuationScale(
-            outlook.cases.map((c) => c.target),
-            r.quote.price,
-          )
-        : null;
     const multiple = (v: number | null | undefined) =>
       v == null ? "—" : v <= 0 ? "N/M" : `${v.toFixed(1)}×`;
     return (
       <section className="value-picture">
+        <ResearchOutlook research={r} />
         <header className="section-head">
-          <div>
-            <h2>Value the business. Understand the range.</h2>
-            <p>Forecast sensitivities are separate from reported facts.</p>
-          </div>
-          <Help label="Model details" trigger="Model details">
-            {outlook.available ? (
-              outlook.basis === "revenue" ? (
-                <>
-                  <p>
-                    Annual revenue forecasts for {dateLabel(outlook.end)}:{" "}
-                    {outlook.cases
-                      .map(
-                        (c) =>
-                          `${c.name} ${amount(c.revenue, outlook.currency, true)}`,
-                      )
-                      .join(" · ")}
-                    .
-                  </p>
-                  <p>
-                    Equity value = forecast revenue × exit EV/revenue − current
-                    net debt, divided by diluted outstanding shares.
-                  </p>
-                  <p>
-                    Exit multiples are 80%, 100% and 120% of the current
-                    reported EV/revenue multiple. Additional dilution
-                    assumptions are 20%, 10% and 0%. Current net debt{" "}
-                    {amount(outlook.netDebt, outlook.currency, true)} is held
-                    constant from {dateLabel(outlook.balanceDate)}. Future capex
-                    funding and capacity conversion are not forecast. This is a
-                    sensitivity, not intrinsic fair value.
-                  </p>
-                </>
-              ) : (
-                <>
-                  <p>
-                    Annual EPS forecasts for {dateLabel(outlook.end)}:{" "}
-                    {outlook.cases
-                      .map(
-                        (c) => `${c.name} ${amount(c.eps, outlook.currency)}`,
-                      )
-                      .join(" · ")}
-                    .
-                  </p>
-                  <p>
-                    Exit P/E assumptions:{" "}
-                    {outlook.cases
-                      .map((c) => `${c.name} ${c.multiple.toFixed(1)}×`)
-                      .join(" · ")}
-                    . These are 80%, 100% and 120% of reported forward P/E, not
-                    verified future multiples.
-                  </p>
-                  <p>
-                    Forecast sensitivity, not intrinsic fair value. Observation:{" "}
-                    {dateLabel(outlook.asOf)}.
-                  </p>
-                </>
-              )
-            ) : (
-              <p>
-                {outlook.reason} No substitute target is used as a bear, base or
-                bull case.
-              </p>
-            )}
-          </Help>
-        </header>
-        <div className="grid2">
-          <div>
-            <ResearchOutlook research={r} />
-            {scale && (
-              <div className="price-scale">
-                <div className="scale-track" />
-                <div
-                  className="scale-marker"
-                  style={{ left: `${scale.quotePosition}%` }}
-                >
-                  <span>Today {amount(r.quote.price, r.quote.currency)}</span>
-                </div>
-                <div className="scale-labels">
-                  <span>{amount(scale.min, r.quote.currency)}</span>
-                  <span>{amount(scale.max, r.quote.currency)}</span>
-                </div>
-              </div>
-            )}
-          </div>
-          <div>
-            <h3>How to read the cases</h3>
-            {outlook.available ? (
-              outlook.cases.map((c) => (
-                <div className="driver" key={c.name}>
-                  <div className="row between">
-                    <h3>{c.name}</h3>
-                    <span className="num small">
-                      {percent(c.annual, true)} / year
-                    </span>
-                  </div>
-                  <p>
-                    {outlook.basis === "revenue"
-                      ? c.name === "Bear"
-                        ? "Lower forecast revenue, a lower sales multiple and more dilution."
-                        : c.name === "Bull"
-                          ? "Higher forecast revenue and a higher sales multiple, with no additional dilution assumed."
-                          : "Average forecast revenue, the current sales multiple and additional dilution."
-                      : c.name === "Bear"
-                        ? "Lower forecast earnings with a lower valuation multiple."
-                        : c.name === "Bull"
-                          ? "Higher forecast earnings with a higher valuation multiple."
-                          : "Average forecast earnings with the current forward multiple."}
-                  </p>
-                </div>
-              ))
-            ) : (
-              <div className="case-unavailable">
-                <h3>Model coverage</h3>
-                <p>{outlook.reason}</p>
-                <p>
-                  Targets are withheld until the required forecasts and
-                  business-specific assumptions can be reconciled.
-                </p>
-              </div>
-            )}
-            <p className="context-note">
-              Annualised price change over the stated forecast horizon.
-              Dividends, fees and taxes are excluded. No probabilities are
-              assigned.
-            </p>
-          </div>
-        </div>
-        <header className="section-head">
-          <div>
-            <h2>Market context</h2>
-            <p>These ratios are separate from model outputs.</p>
-          </div>
+          <h3>Market multiples</h3>
         </header>
         <div className="grid3 valuation-metrics">
           {[
@@ -190,19 +53,42 @@ export function ResearchOutlook({
       aria-label="Research outlook"
     >
       <div className="row between">
-        <h2>
-          {outlook.available ? `${outlook.period} outlook` : "Company outlook"}
-        </h2>
-        <span className="pill">
-          {outlook.available
-            ? outlook.basis === "revenue"
-              ? "Revenue"
-              : "Earnings"
-            : "Evidence"}
-        </span>
+        <h2>Valuation snapshot</h2>
       </div>
+      <div className="valuation-summary">
+        <div>
+          <span>Current price</span>
+          <strong className="num">
+            {amount(r.quote.price, r.quote.currency)}
+          </strong>
+        </div>
+        <div>
+          <span>Analyst consensus</span>
+          <strong className="num">
+            {target != null ? amount(target, r.quote.currency) : "—"}
+          </strong>
+        </div>
+        <div>
+          <span>Gap to consensus</span>
+          <strong
+            className={`num ${consensus == null ? "" : consensus.change < 0 ? "negative" : "positive"}`}
+          >
+            {consensus ? percent(consensus.change, true) : "—"}
+          </strong>
+        </div>
+      </div>
+      <p className="valuation-summary-note">
+        {consensus
+          ? `Dataset updated ${dateLabel(consensus.asOf)}. Analyst opinion, not intrinsic fair value. A target horizon is not supplied.`
+          : "No current comparable analyst target is available. Fair value is not established."}
+      </p>
       {outlook.available ? (
-        <>
+        <details className="forecast-sensitivity">
+          <summary>Inspect forecast sensitivity</summary>
+          <p className="sensitivity-warning">
+            Not intrinsic fair value. These mechanical cases use assumed
+            valuation multiples; they are not validated price targets.
+          </p>
           <p className="outlook-horizon">
             Forecast ends {dateLabel(outlook.end)} ·{" "}
             {Math.round(outlook.years * 12)} months ahead
@@ -331,50 +217,9 @@ export function ResearchOutlook({
             {outlook.analysts ?? "Unknown"} reporting analysts ·{" "}
             {dateLabel(outlook.asOf)}
           </p>
-        </>
+        </details>
       ) : (
-        <>
-          <div className="scenario-list">
-            {(["Bear", "Base", "Bull"] as const).map((name, i) => (
-              <div className="outcome" key={name}>
-                <div>
-                  <div
-                    className={`label ${i === 0 ? "negative" : i === 2 ? "positive" : ""}`}
-                  >
-                    <i />
-                    {name}
-                  </div>
-                  <div className="sub">
-                    {i === 0
-                      ? "Slower growth"
-                      : i === 2
-                        ? "Stronger execution"
-                        : "Steady execution"}
-                  </div>
-                </div>
-                <div className="target">
-                  <strong className="num">—</strong>
-                  <span className="muted small">Forecast needed</span>
-                </div>
-              </div>
-            ))}
-          </div>
-          <p className="context-note">{outlook.reason}</p>
-          {target != null && (
-            <p className="context-note">
-              Analyst consensus {amount(target, r.quote.currency)} ·{" "}
-              {dateLabel(consensus?.asOf)}. Separate from scenarios.
-            </p>
-          )}
-          <div className="why">
-            <h3>Keep the key drivers in view</h3>
-            <p>
-              {r.company.assetType === "crypto"
-                ? "Network use, liquidity, supply and portfolio exposure."
-                : "Revenue growth, cash generation, dilution and the durability of demand."}
-            </p>
-          </div>
-        </>
+        <p className="model-coverage-note">{outlook.reason}</p>
       )}
     </section>
   );

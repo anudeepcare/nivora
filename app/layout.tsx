@@ -7,7 +7,11 @@ export const metadata: Metadata = {
   title: "AURYN · Investment Intelligence",
   description: "Understand the business. Put the price in perspective.",
   manifest: "/manifest.webmanifest",
-  appleWebApp: { capable: true, title: "AURYN", statusBarStyle: "default" },
+  appleWebApp: {
+    capable: true,
+    title: "AURYN",
+    statusBarStyle: "black-translucent",
+  },
   icons: { icon: "/icon.svg", apple: "/apple-touch-icon.png" },
 };
 export const viewport: Viewport = {
