@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-18T23:01:29.096933+00:00",
+  "generatedAt": "2026-10-18T23:08:19.106623+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
@@ -34,7 +34,7 @@
   "priorEvidence": "The signed-in reference/deployed UI reviews predate this patch. New verification is source, domain/SSR, TypeScript and build evidence only.",
   "browserTestScope": "No rendered browser test of this build; older live audits are historical evidence only",
   "patchedSourceBrowserTestsExecuted": false,
-  "latestAudit": "../docs/DESIGN_REFINEMENT_20261018.md",
+  "latestAudit": "../docs/PWA_WEBKIT_THRESHOLD_20261018.md",
   "referenceReview": "REFERENCE_REVIEW_20261017.md",
   "decisionPolicy": "research-v1.6 / decision-guide-v1.1; original unvalidated research triage; no broker execution",
   "latestLogs": [
@@ -79,11 +79,14 @@
   },
   "pwaRootSurface": {
     "directBodyChild": true,
-    "minimumHeightCssPx": 8,
+    "minimumHeightCssPx": 12,
     "width": "100%",
     "top": 0,
     "zeroInsetCollapsePrevented": true,
-    "physicalDeviceAcceptanceRecorded": false
+    "physicalDeviceAcceptanceRecorded": false,
+    "computedColourWithoutPainting": true,
+    "prior8pxSurfaceDeployedButSymptomPersisted": true,
+    "webkitDirectColourThresholdCssPx": 10
   },
   "designRefinement": {
     "screensReviewed": 8,

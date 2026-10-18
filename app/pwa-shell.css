@@ -7,11 +7,15 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: env(safe-area-inset-top, 0px);
-  min-height: 8px;
+  height: max(12px, env(safe-area-inset-top, 0px));
+  min-height: 12px;
+  /* WebKit reads this computed colour when both dimensions exceed its
+     10px thinBorderWidth. Clip to absent text so the box paints no stripe. */
   background: var(--paper);
+  -webkit-background-clip: text;
+  background-clip: text;
   pointer-events: none;
-  z-index: 60;
+  z-index: 2147483647;
 }
 @media (max-width: 700px) and (display-mode: standalone) {
   .pwa-status-surface { display: block; }

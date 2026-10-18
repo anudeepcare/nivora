@@ -14,7 +14,8 @@ test('installed status surface exists before account shell and cannot collapse a
  assert.ok(rule,'The surface must not depend on a changing route container');
  const d=Object.fromEntries(rule.nodes.filter(n=>n.type==='decl').map(n=>[n.prop,n.value]));
  assert.equal(d.position,'fixed');assert.equal(d.top,'0');assert.equal(d.width,'100%');
- assert.ok(parseFloat(d['min-height'])>=6,'Zero safe-area insets must still leave a sampling surface');
+ assert.ok(parseFloat(d['min-height'])>10,'WebKit thinBorderWidth rejects boxes 10px high or smaller, including the previous 8px strip');
  assert.equal(d['pointer-events'],'none');assert.equal(d.background,'var(--paper)');
+ assert.equal(d['background-clip'],'text','An empty strip must not paint over header controls');
  assert.equal(d.transform,undefined,'No transformed containing block for the fixed surface');
 });
