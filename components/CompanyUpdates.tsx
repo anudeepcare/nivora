@@ -13,7 +13,7 @@ export default function CompanyUpdates({
   return (
     <>
       {" "}
-      <section className="research-updates">
+      <section className="research-updates company-updates">
         <header className="section-head">
           <div>
             <h2>Events & insider activity</h2>
@@ -40,7 +40,7 @@ export default function CompanyUpdates({
             )}
           </div>
           <div>
-            <h3>Recent insider filings</h3>
+            <h3>Reported insider activity</h3>
             {r.evidence?.insiders?.length ? (
               r.evidence.insiders.slice(0, 4).map((item, i) => (
                 <div className="stat-pair" key={i}>

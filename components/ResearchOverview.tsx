@@ -361,7 +361,7 @@ export function CaseHighlights({ research: r }: { research: Research }) {
   if (r.company.assetType === "crypto") return null;
   return (
     <section className="case-columns">
-      <div>
+      <div data-tone="supports">
         <h3>Supports the case</h3>
         <div className="case-points">
           {c.positive.slice(0, 3).map((x) => (
@@ -374,7 +374,7 @@ export function CaseHighlights({ research: r }: { research: Research }) {
           )}
         </div>
       </div>
-      <div>
+      <div data-tone="risks">
         <h3>Risks to track</h3>
         <div className="case-points">
           {c.risks.slice(0, 3).map((x) => (

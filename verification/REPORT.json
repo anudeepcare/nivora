@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-18T17:15:36.338661+00:00",
+  "generatedAt": "2026-10-18T17:33:02.124264+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
@@ -38,8 +38,8 @@
   "referenceReview": "REFERENCE_REVIEW_20261017.md",
   "decisionPolicy": "research-v1.6 / decision-guide-v1.1; original unvalidated research triage; no broker execution",
   "latestLogs": [
-    "tab-layout-release-verify.log",
-    "tab-layout-release-api.log"
+    "research-cleanup-verify.log",
+    "research-cleanup-api.log"
   ],
   "cohortQuoteObservations": "cohort-quotes-20261017.json; 11 instruments; quote identity only, not fundamental/model validation",
   "exactVisualParityVerified": false,
@@ -53,6 +53,6 @@
   "pwaKeyboardCorrection": "Working old ZIP reference: black-translucent, document scrolling, sticky header, fixed safe-area dock; visualViewport only for keyboard/dialog handling. Physical installed-device acceptance unverified.",
   "comparedAgainstRemote": "c610416",
   "localSsrFixtureRoutes": 10,
-  "interfaceRefinement": "News tab, concise Overview context, earnings in Financials, scoped holdings table CSS, compact position editor, MACD and Bollinger studies",
+  "interfaceRefinement": "Removed Research data coverage block; compact strengths/risks chips; grouped News event sections; honest insider-activity label",
   "pwaHeader": "Opaque header with compositor boundary, no app blur; OS-reported blur remains unverified on physical installed device"
 }

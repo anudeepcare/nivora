@@ -22,7 +22,6 @@ import { PriceChart } from "./Charts";
 import Financials from "./FinancialPicture";
 import { TechnicalPicture, ThesisPicture } from "./ResearchDetails";
 import { groupHistory } from "@/lib/chart-period";
-import ResearchCoverage from "./ResearchCoverage";
 import ResearchChanges from "./ResearchChanges";
 import DcaResearch from "./DcaResearch";
 import EarningsWorkspace from "./EarningsWorkspace";
@@ -418,7 +417,6 @@ export default function Research({ symbol }: { symbol: string }) {
         {tab === "Technicals" && <DcaResearch research={r} />}
         {tab === "Thesis" && <ThesisPicture research={r} />}
       </div>
-      <ResearchCoverage research={r} />
     </article>
   );
 }
