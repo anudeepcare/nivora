@@ -107,5 +107,19 @@
     "outcome": "User reported fixed after removing and re-adding installed PWA",
     "shellPreservedByteForByteAgainstPriorArchive": true,
     "assistantPhysicalDeviceVerification": false
-  }
+  },
+  "loginLayoutCorrection": {
+    "emptyDecorativePanelRemoved": true,
+    "sharedSignInSignupResetLayout": true,
+    "authBehaviorChanged": false,
+    "visualBrowserAcceptance": false
+  },
+  "overviewOrder": [
+    "company and quote",
+    "compact decision summary",
+    "price chart, scenario context and accumulation",
+    "key financial metrics",
+    "detailed evidence lenses and case"
+  ],
+  "overviewOrderVisualAcceptance": false
 }

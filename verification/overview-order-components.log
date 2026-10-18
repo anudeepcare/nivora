@@ -1,0 +1,26 @@
+✔ Financials retains four primary metrics and statement rows with separate labelled detail groups (168.548973ms)
+✔ metric explanations do not inject dialog blocks into server-rendered paragraphs (23.491434ms)
+✔ empty focused search does not expose a nonexistent listbox to assistive technology (53.079516ms)
+✔ opening mobile search offers the account's saved instruments without fabricated suggestions (29.83559ms)
+✔ Research outlook does not fill missing coverage with three empty scenario cards (38.218595ms)
+✔ Product footer supplies copyright and a research disclosure without provider marketing (8.810612ms)
+✔ outlook displays the selected forecast end and horizon beside its cases (34.117072ms)
+✔ data details retain observation time without displaying infrastructure vendor names (10.814373ms)
+✔ valuation snapshot separates analyst targets from visible labelled forecast scenarios (32.963531ms)
+✔ financial trend scope controls remain available for a missing selected period (23.304979ms)
+✔ Home portfolio summary retains key figures without the full allocation panel (16.382703ms)
+✔ Analyst ratings preserve missing counts separately from reported zero (10.427162ms)
+✔ Analyst ratings do not invent a distribution when counts are absent (9.1565ms)
+✔ Overview context stays concise and does not assign quote currency to upcoming EPS (9.383201ms)
+✔ News earnings do not infer estimate currency from a stock listing or company accounts (9.004206ms)
+✔ public legal and help documents render all cross-links and readable sections (20.658308ms)
+✔ decision overview renders real evidence, eight lenses and direct research paths (90.850466ms)
+✔ valuation tool withholds unsupported models rather than fabricating sensitivities (17.837073ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1269.712276

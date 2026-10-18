@@ -510,6 +510,11 @@ test('decision overview renders real evidence, eight lenses and direct research 
  assert.match(html,/Investment evidence overview/);assert.match(html,/Evidence lenses/);
  assert.match(html,/What does the price imply/);assert.match(html,/Challenge the case/);
  assert.match(html,/href="\/methodology"/);assert.doesNotMatch(html,/NaN|Infinity|undefined/);
+ const summary=renderToStaticMarkup(React.createElement(DecisionWorkspace,{research:demoData.research.MSFT,onTab:()=>{},part:'summary'}));
+ const detail=renderToStaticMarkup(React.createElement(DecisionWorkspace,{research:demoData.research.MSFT,onTab:()=>{},part:'detail'}));
+ assert.doesNotMatch(summary,/<svg|Evidence lenses|Supports the case/);
+ assert.match(summary,/What does the price imply/);
+ assert.match(detail,/Evidence lenses/);assert.doesNotMatch(detail,/decision-answer-grid/);
 });
 
 test('valuation tool withholds unsupported models rather than fabricating sensitivities',async()=>{

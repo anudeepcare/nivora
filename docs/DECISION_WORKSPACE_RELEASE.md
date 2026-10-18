@@ -36,3 +36,9 @@ Set NEXT_PUBLIC_AURYN_OPERATOR and NEXT_PUBLIC_AURYN_SUPPORT_EMAIL in deployment
 
 ## Verification limits
 Automated tests, TypeScript, production build and fixture API checks are recorded in verification/. Live paid-provider entitlement, every ticker's financial correctness, pixel parity and native iPhone visual acceptance are not established by these checks. The user reported the earlier PWA status-bar issue resolved after removing and re-adding the installed app; this release preserves that shell. No deployment, database change or broker order is performed.
+
+## Sign-in layout correction
+Removed the empty half-page decorative pseudo-element. Sign-in, registration and reset use one centered 460px maximum-width form, responsive padding, 16px fields and safe-area spacing. Authentication behavior and installed-PWA shell are unchanged. Screenshot review identified the empty panel; this patch has no rendered browser acceptance claim.
+
+## Overview order refinement
+Compact four-answer summary now precedes the price chart, scenario context and monthly accumulation. Four financial highlights follow; the detailed radar, eight lenses and case evidence sit below them. The screening composite is visually secondary. Analyst target gap is labelled separately from internal scenarios. Summary business action opens Thesis. Existing mobile stacking, PWA shell and login correction are retained.

@@ -360,7 +360,7 @@ export default function Research({ symbol }: { symbol: string }) {
         {tab === "Analysts" && <AnalystRatings research={r} />}
         {tab === "Snapshot" && (
           <>
-            <DecisionWorkspace research={r} onTab={switchTab} />
+            <DecisionWorkspace research={r} onTab={switchTab} part="summary" />
             <div className="research-layout">
               <div className="research-canvas">
                 <header className="chart-context-heading"><h3>Price & accumulation context</h3><p>Timing evidence alongside the business case.</p></header>
@@ -372,6 +372,7 @@ export default function Research({ symbol }: { symbol: string }) {
               <OverviewContext research={r} />
             </div>
             <KeyFinancialMetrics research={r} />
+            <DecisionWorkspace research={r} onTab={switchTab} part="detail" />
             <DecisionWatch research={r} />
           </>
         )}

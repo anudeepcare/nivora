@@ -105,3 +105,6 @@
 @supports (backdrop-filter:blur(8px)) {.evidence-label {backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}}
 .decision-answer-grid>button:focus-visible,.lens-list>button:focus-visible,.style-options button:focus-visible {outline:2px solid var(--blue);outline-offset:3px;}
 @media (prefers-reduced-motion:reduce) {.decision-answer-grid>button,.lens-list>button,.style-options button {transition:none;}}
+
+.decision-summary {padding:20px;}.decision-summary .decision-intro {margin-bottom:14px;}.decision-summary .decision-intro h2 {font-size:24px;}.decision-summary .decision-answer-grid>button {padding:12px;gap:6px;}.decision-detail .decision-lens-layout {padding-top:0;}.decision-detail .lens-total {font-size:28px;}
+@media(max-width:700px){.decision-summary {padding:16px;}.decision-summary .decision-intro {display:block;}.decision-summary .evidence-label {margin-top:8px;}.decision-summary .decision-intro h2 {font-size:21px;}}
