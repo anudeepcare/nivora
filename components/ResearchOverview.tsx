@@ -372,10 +372,41 @@ export function KeyFinancialMetrics({ research: r }: { research: Research }) {
                 : `Financial period: ${p.periodBasis} to ${dateLabel(p.last?.end)}. Reporting currency: ${p.last?.currency ?? "unknown"}. Forward P/E is a separate provider estimate, not a reported financial result.`}
             </p>
           </Help>
-          <div className={`metric-number num ${"tone" in m ? m.tone : ""}`}>
-            {m.value}
+          <div className="metric-number num">{m.value}</div>
+          <div
+            className={`metric-sub ${m.label === "Revenue" && p.growth != null ? (p.growth >= 0 ? "positive" : "negative") : ""}`}
+          >
+            {m.detail}
           </div>
-          <div className="metric-sub">{m.detail}</div>
+          {m.label === "Operating margin" && p.last?.margin != null && (
+            <div
+              className="metric-meter"
+              aria-label={`Operating margin ${percent(p.last.margin)}`}
+            >
+              <i
+                style={{
+                  width: `${Math.max(0, Math.min(100, p.last.margin))}%`,
+                }}
+              />
+            </div>
+          )}
+          {m.label === "Cash after capex" &&
+            p.last?.fcf != null &&
+            p.last?.revenue != null &&
+            p.last.revenue > 0 && (
+              <>
+                <div className="metric-sub">
+                  {percent((p.last.fcf / p.last.revenue) * 100)} of revenue
+                </div>
+                <div className="metric-meter" aria-hidden="true">
+                  <i
+                    style={{
+                      width: `${Math.max(0, Math.min(100, (p.last.fcf / p.last.revenue) * 100))}%`,
+                    }}
+                  />
+                </div>
+              </>
+            )}
         </div>
       ))}
     </section>

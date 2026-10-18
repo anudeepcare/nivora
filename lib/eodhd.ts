@@ -11,6 +11,7 @@ import { cryptoSearchSymbol } from "./search-selection";
 import type { Company, Filing } from "./types";
 import type { ChartRange } from "./providers";
 import type { GrowData, GrowDataset } from "./grow-data";
+class EodAccessError extends HttpError {}
 const cache = new Map<string, { expires: number; value: Promise<any> }>();
 export const eodEnabled = () =>
   Boolean(process.env.EODHD_API_KEY || process.env.EODHD_API_TOKEN);
@@ -31,8 +32,16 @@ export async function eodRequest(
   const value = (async () => {
     const response = await fetch(
       `https://eodhd.com/api/${path}?${new URLSearchParams({ ...params, api_token: token, fmt: "json" })}`,
-      { cache: "no-store", signal: AbortSignal.timeout(15000) },
+      {
+        next: { revalidate: Math.max(1, Math.ceil(ttl / 1000)) },
+        signal: AbortSignal.timeout(15000),
+      },
     );
+    if (response.status === 401 || response.status === 403)
+      throw new EodAccessError(
+        "EODHD did not authorize this dataset. Check the key and plan entitlement.",
+        503,
+      );
     if (!response.ok)
       throw new HttpError(
         response.status === 401 || response.status === 403
@@ -50,7 +59,10 @@ export async function eodRequest(
       );
     return data;
   })().catch((e) => {
-    cache.delete(key);
+    if (e instanceof EodAccessError) {
+      const entry = cache.get(key);
+      if (entry) entry.expires = Date.now() + 60000;
+    } else cache.delete(key);
     throw e;
   });
   cache.set(key, { expires: Date.now() + ttl, value });
@@ -60,6 +72,24 @@ export async function eodRequest(
     if (first) cache.delete(first);
   }
   return value;
+}
+async function fundamentalPayload(
+  symbol: string,
+  params: Record<string, string> = {},
+  ttl = 21600000,
+) {
+  try {
+    return await eodRequest(
+      `v1.1/fundamentals/${eodTicker(symbol)}`,
+      params,
+      ttl,
+    );
+  } catch (error) {
+    if (!(error instanceof EodAccessError)) throw error;
+    // Some accounts authorize the original endpoint only. Use its complete
+    // response; never combine financial periods across endpoint versions.
+    return eodRequest(`fundamentals/${eodTicker(symbol)}`, params, ttl);
+  }
 }
 export async function eodProfile(symbol: string): Promise<Company> {
   if (symbol.includes("/"))
@@ -75,11 +105,7 @@ export async function eodProfile(symbol: string): Promise<Company> {
       currency: "USD",
       assetType: "crypto",
     };
-  const raw = await eodRequest(
-    `v1.1/fundamentals/${eodTicker(symbol)}`,
-    { filter: "General" },
-    86400000,
-  );
+  const raw = await fundamentalPayload(symbol, { filter: "General" }, 86400000);
   return normalizeEodFundamentals(
     symbol,
     { General: raw.General ?? raw },
@@ -151,18 +177,14 @@ export async function eodHistory(symbol: string, range: ChartRange) {
   return normalizeEodBars(raw, false, splits);
 }
 export async function eodFundamentals(symbol: string) {
-  const raw = await eodRequest(
-    `v1.1/fundamentals/${eodTicker(symbol)}`,
-    {},
-    21600000,
-  );
+  const raw = await fundamentalPayload(symbol);
   return normalizeEodFundamentals(symbol, raw, new Date().toISOString());
 }
 export async function eodSearch(query: string) {
   const crypto = cryptoSearchSymbol(query);
   const raw = await eodRequest(
     `search/${encodeURIComponent(query)}`,
-    { limit: "40" },
+    { limit: "40", ...(crypto ? {} : { exchange: "US" }) },
     3600000,
   );
   const rows = normalizeEodSearch(raw);
@@ -338,11 +360,7 @@ export async function eodEnrichment(symbol: string) {
 export async function eodFilings(
   symbol: string,
 ): Promise<{ filings: Filing[]; issues: string[] }> {
-  const raw = await eodRequest(
-      `v1.1/fundamentals/${eodTicker(symbol)}`,
-      {},
-      21600000,
-    ),
+  const raw = await fundamentalPayload(symbol),
     cik = String(raw.General?.CIK ?? "");
   if (!/^\d{1,10}$/.test(cik))
     return {

@@ -1,3 +1,11 @@
+# Latest reliability corrections
+
+See verification/SEARCH_LOGO_REQUEST_RELIABILITY.md. 150 tests and 60 simulated API checks pass. Live deployment access was denied; installed-iPhone defects remain unresolved pending device verification.
+
+# Latest evidence restoration
+
+See verification/EVIDENCE_RESTORATION.md. 150 tests and 59 simulated API checks pass. Universal valuation models, private entitlement verification and rendered/iPhone acceptance remain open.
+
 # Latest iPhone PWA corrections
 
 See verification/MOBILE_PWA_CORRECTION.md. 150 tests and 58 simulated API checks pass. Physical iPhone acceptance remains open.

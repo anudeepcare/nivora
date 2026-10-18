@@ -1,0 +1,11 @@
+# Evidence restoration and remaining valuation gap
+
+The supplied HIMS screenshot shows a rejected fundamentals request. AURYN previously stopped after the versioned endpoint failed. A regression first reproduced missing financial data under a version-specific HTTP 403. EODHD requests now retry the original whole fundamental payload only for HTTP 401/403 from the versioned endpoint. Original-endpoint annual/quarterly trend shapes normalize into the same evidence contract. There is no period merging or retry on quota exhaustion. Both endpoint failures remain visible; the private subscription is not verified.
+
+Reconnected recent news and validated SEC source filing links within Thesis, plus scheduled earnings and reported insider activity from normalized evidence. Expanded upfront technical readings with 50/200-day averages, ADX, OBV, Bollinger bandwidth and drawdown, in addition to existing RSI/MACD/relative volume/ATR, Fibonacci and DCA. News/filings requests begin only when the Thesis view mounts and use existing account cache.
+
+Restyled the Remove holding action with a compact red bordered control while retaining confirmation. Moved mobile DCA before the chart and retained desktop ordering. Added actual margin/FCF progress bars and coloured revenue growth, keeping the approved large financial numbers neutral.
+
+Verification: 150 tests, typecheck, production build, and 59 simulated API checks passed. Reference: EODHD fundamentals documentation supports both original and v1.1 endpoints (https://eodhd.com/financial-apis/stock-etfs-fundamental-data-feeds). ValueSnapshot private page was not accessible in this session; supplied screenshots were reviewed instead. No access to its valuation formula is claimed.
+
+OPEN: Universal per-stock bear/base/bull targets are not implemented. Existing EPS/multiple sensitivities require complete positive forecasts and currency compatibility; unavailable inputs remain unavailable. These are not validated intrinsic valuations or demonstrated profitable trade rules. Sector-specific models, wider live cohort validation, exact browser parity and physical iPhone QA remain open. No paid subscriptions, orders, production deployment or account writes performed.

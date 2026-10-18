@@ -308,7 +308,14 @@ export default function Research({ symbol }: { symbol: string }) {
       {resource.error && <Notice error>{resource.error}</Notice>}
       {r.issues.length > 0 && (
         <div className="coverage-note">
-          <span>{r.issues.join(" ")}</span>
+          <span>
+            Some research data could not be loaded.{" "}
+            <Help label="Research data status" trigger="Details">
+              {r.issues.map((issue) => (
+                <p key={issue}>{issue}</p>
+              ))}
+            </Help>
+          </span>
           <button
             className="icon-button"
             aria-label="Retry data sources"
@@ -333,8 +340,10 @@ export default function Research({ symbol }: { symbol: string }) {
                   research={r}
                   onDca={() => switchTab("Technicals")}
                 />
+                <div className="overview-dca">
+                  <DcaCard research={r} compact />
+                </div>
                 {chart}
-                <DcaCard research={r} compact />
               </div>
               <ResearchOutlook research={r} />
             </div>

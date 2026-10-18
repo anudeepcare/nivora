@@ -90,6 +90,19 @@ globalThis.fetch = async (input) => {
   if (u.hostname === "api.twelvedata.com") {
     const symbol = u.searchParams.get("symbol");
     if (symbol === "HIMS") return new Response("", { status: 503 });
+    if (u.pathname === "/symbol_search")
+      return Response.json({
+        data: [
+          {
+            symbol: "CRM",
+            instrument_name: "Salesforce",
+            exchange: "NYSE",
+            currency: "USD",
+            country: "United States",
+            instrument_type: "Common Stock",
+          },
+        ],
+      });
     if (u.pathname === "/quote")
       return Response.json({
         symbol,
@@ -119,7 +132,22 @@ globalThis.fetch = async (input) => {
     assert.equal(u.searchParams.get("api_token"), "test-eodhd");
     if (u.pathname.startsWith("/api/v1.1/fundamentals/")) {
       const symbol = u.pathname.split("/").at(-1).replace(/\.US$/, "");
+      if (symbol === "LEGACY") return new Response("", { status: 403 });
       const data = financial(symbol);
+      return Response.json(u.searchParams.has("filter") ? data.General : data);
+    }
+    if (u.pathname.startsWith("/api/fundamentals/")) {
+      const symbol = u.pathname.split("/").at(-1).replace(/\.US$/, "");
+      const data = financial(symbol);
+      data.Earnings.Trend = {
+        "2027-12-31": {
+          date: "2027-12-31",
+          period: "+1y",
+          earningsEstimateAvg: "8",
+          earningsEstimateLow: "6",
+          earningsEstimateHigh: "10",
+        },
+      };
       return Response.json(u.searchParams.has("filter") ? data.General : data);
     }
     if (u.pathname.startsWith("/api/eod/"))
@@ -152,6 +180,8 @@ globalThis.fetch = async (input) => {
         timestamp: Math.floor(Date.now() / 1000) - 900,
         change_p: 0,
       });
+    if (u.pathname === "/api/search/CRM")
+      return new Response("", { status: 403 });
     if (u.pathname.startsWith("/api/search/"))
       return Response.json([
         {
@@ -333,6 +363,35 @@ await check(
       await get("company-data", "?symbol=APP&dataset=dividends")
     ).json();
     assert.equal(actions.dividends[0].amount, 0.5);
+  },
+);
+await check(
+  "version-specific access denial retries the legacy whole fundamental payload",
+  async () => {
+    const d = await (await get("research/[symbol]", "", "LEGACY")).json();
+    assert(
+      d.facts.length > 0,
+      "authorized legacy fundamentals must reach research",
+    );
+    assert.equal(d.evidence.estimates[0].frequency, "Annual");
+    assert.equal(d.evidence.estimates[0].currency, "USD");
+    assert(calls.some((x) => x.pathname === "/api/fundamentals/LEGACY.US"));
+  },
+);
+await check(
+  "CRM search survives an EODHD failure through configured Twelve Data and caches its result",
+  async () => {
+    const d = await (await get("search", "?q=CRM")).json();
+    assert.equal(d.results?.[0]?.symbol, "CRM");
+    assert.equal(d.results[0].name, "Salesforce");
+    const before = calls.length;
+    await get("search", "?q=CRM");
+    assert.equal(
+      calls.filter(
+        (x) => x.hostname === "eodhd.com" && x.pathname === "/api/search/CRM",
+      ).length,
+      1,
+    );
   },
 );
 console.log(

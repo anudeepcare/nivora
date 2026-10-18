@@ -16,13 +16,13 @@ async function flush() {
       const url = safeLogoUrl(result[symbol]);
       resolved.set(symbol, {
         url,
-        expires: Date.now() + (url ? 86400000 : 60000),
+        expires: Date.now() + (url ? 86400000 : 300000),
       });
       listeners.forEach((fn) => fn(url));
     }
   } catch {
     for (const [symbol, listeners] of entries) {
-      resolved.set(symbol, { url: null, expires: Date.now() + 60000 });
+      resolved.set(symbol, { url: null, expires: Date.now() + 300000 });
       listeners.forEach((fn) => fn(null));
     }
   }

@@ -379,12 +379,16 @@ export function normalizeEodFundamentals(
       .slice(0, 20),
     estimates: Object.entries(raw.Earnings?.Trend ?? {})
       .flatMap(([frequency, data]) =>
-        entries(data)
-          .filter((x) => date(x.date))
-          .map((x) => ({
+        (date((data as any)?.date) ? [data] : entries(data))
+          .filter((x: any) => date(x.date))
+          .map((x: any) => ({
             date: x.date,
             period: text(x.period),
-            frequency,
+            frequency: date(frequency)
+              ? /^[+-]?\d+y$/.test(text(x.period))
+                ? "Annual"
+                : "Quarterly"
+              : frequency,
             currency:
               text(x.currency) ||
               text(raw.Financials?.Income_Statement?.currency_symbol) ||

@@ -482,7 +482,7 @@ export async function research(symbol: string): Promise<Research> {
   const issues = results.flatMap((r, i) =>
     r.status === "rejected"
       ? [
-          `${["Quote", "Price history", "Company filings"][i]}: ${r.reason instanceof HttpError ? r.reason.message : "Source unavailable."}`,
+          `${["Quote", "Price history", "Company fundamentals"][i]}: ${r.reason instanceof HttpError ? r.reason.message : "Source unavailable."}`,
         ]
       : [],
   );
@@ -519,8 +519,15 @@ export async function research(symbol: string): Promise<Research> {
 }
 export async function search(query: string) {
   query = query.trim().toUpperCase();
-  if (eodEnabled()) return eodSearch(query);
   return cached(`search:${query}`, 3600_000, async () => {
+    if (eodEnabled()) {
+      try {
+        const rows = await eodSearch(query);
+        if (rows.length || !process.env.TWELVE_DATA_API_KEY) return rows;
+      } catch (error) {
+        if (!process.env.TWELVE_DATA_API_KEY) throw error;
+      }
+    }
     const result = await twelve("symbol_search", {
       symbol: query,
       outputsize: "50",

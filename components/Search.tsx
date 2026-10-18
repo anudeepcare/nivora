@@ -110,7 +110,7 @@ export default function Search({
       } finally {
         if (active) setLoading(false);
       }
-    }, 300);
+    }, 450);
     return () => {
       active = false;
       clearTimeout(timer);

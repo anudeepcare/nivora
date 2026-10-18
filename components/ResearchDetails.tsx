@@ -9,6 +9,7 @@ import { expandedStudies } from "@/lib/technical-expanded";
 import { amount, dateLabel, percent } from "@/lib/format";
 import TechnicalLevels from "./TechnicalLevels";
 import Analyst from "./Analyst";
+import { NewsAndFilings } from "./ResearchEvidence";
 import { Help, DataStamp } from "./Ui";
 
 export function TechnicalPicture({
@@ -103,6 +104,21 @@ export function TechnicalPicture({
           <p className="context-note">
             A touch alone does not confirm a reversal.
           </p>
+          <div className="grid2 technical-numbers">
+            {[
+              ["50-day average", amount(p.tech.ma50, r.quote.currency)],
+              ["200-day average", amount(p.tech.ma200, r.quote.currency)],
+              ["ADX · 14", x.adx?.toFixed(1) ?? "—"],
+              ["OBV", x.obv?.toLocaleString() ?? "—"],
+              ["Bollinger bandwidth", percent(x.bandwidth)],
+              ["From 252-session closing high", percent(x.drawdown)],
+            ].map(([label, value]) => (
+              <div className="stat-pair" key={label}>
+                <span>{label}</span>
+                <strong className="num">{value}</strong>
+              </div>
+            ))}
+          </div>
           <div className="stat-pair">
             <span>Trend studies</span>
             <Help label="Trend studies" trigger="50 / 200 MA">
@@ -227,6 +243,68 @@ export function ThesisPicture({ research: r }: { research: Research }) {
         <strong>Revisit the case if</strong> growth and cash conversion weaken
         persistently or the funding picture changes.
       </div>
+      <section className="research-updates">
+        <header className="section-head">
+          <div>
+            <h2>Events & insider activity</h2>
+            <p>
+              Reported transactions and scheduled earnings; neither is a
+              standalone buy signal.
+            </p>
+          </div>
+        </header>
+        <div className="grid2">
+          <div>
+            <h3>Next scheduled earnings</h3>
+            <p className="context-note">
+              {next ? dateLabel(next.date) : "No upcoming date supplied"}
+            </p>
+            {next?.estimate != null && (
+              <p>
+                EPS estimate{" "}
+                {amount(
+                  next.estimate,
+                  r.evidence?.reportingCurrency ?? undefined,
+                )}
+              </p>
+            )}
+          </div>
+          <div>
+            <h3>Recent insider filings</h3>
+            {r.evidence?.insiders?.length ? (
+              r.evidence.insiders.slice(0, 4).map((item, i) => (
+                <div className="stat-pair" key={i}>
+                  <span>
+                    {item.name}
+                    <small className="muted">
+                      {" "}
+                      · {dateLabel(item.date)} ·{" "}
+                      {item.code === "S"
+                        ? "Sale"
+                        : item.code === "P"
+                          ? "Purchase"
+                          : `Code ${item.code}`}
+                    </small>
+                  </span>
+                  <strong>
+                    {item.change == null
+                      ? "—"
+                      : Math.abs(item.change).toLocaleString()}{" "}
+                    shares
+                  </strong>
+                </div>
+              ))
+            ) : (
+              <p className="context-note">No insider records supplied.</p>
+            )}
+            <p className="context-note">
+              Sales can reflect tax, diversification or trading plans.
+              Transaction codes and filing dates matter.
+            </p>
+          </div>
+        </div>
+      </section>
+      <NewsAndFilings research={r} />
       <Analyst research={r} compact />
       <div className="shared-stamp">
         <DataStamp

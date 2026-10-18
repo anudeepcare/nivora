@@ -22,7 +22,7 @@ export async function companyLogo(symbol: string): Promise<LogoProfile> {
       try {
         const p = await twelve("logo", { symbol });
         const logoUrl =
-          p.meta?.symbol === symbol
+          !p.meta?.symbol || p.meta.symbol === symbol
             ? safeLogoUrl(symbol.includes("/") ? p.logo_base : p.url)
             : null;
         if (logoUrl) return { symbol, logoUrl };

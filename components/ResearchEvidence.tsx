@@ -385,7 +385,7 @@ function Ownership({ research: r }: { research: Research }) {
     </section>
   );
 }
-function NewsAndFilings({ research: r }: { research: Research }) {
+export function NewsAndFilings({ research: r }: { research: Research }) {
   const { demo } = useProduct();
   const preview = useMemo(
     () =>

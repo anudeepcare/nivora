@@ -307,6 +307,10 @@ button[aria-pressed="true"] {
   color: #314e66;
   font-size: 12px;
 }
+.security-logo.logo-dark {
+  background: #143a43;
+  border-color: #143a43;
+}
 .security-logo img {
   width: 100%;
   height: 100%;
@@ -2812,5 +2816,63 @@ caption {
   }
   .value-picture .outlook .why {
     display: none;
+  }
+}
+
+/* Compact controls and evidence reuse within the approved five research views. */
+.position-dialog > .text-button.negative {
+  color: var(--red);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 8px 14px;
+  min-height: 44px;
+  margin-top: 14px;
+  font-size: 14px;
+}
+.research-updates {
+  margin-top: 30px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+.technical-numbers {
+  gap: 0 24px;
+}
+@media (min-width: 701px) {
+  .research-canvas .overview-dca {
+    order: 3;
+  }
+  .research-canvas .plot-section {
+    order: 2;
+  }
+  .research-canvas .decision {
+    order: 1;
+  }
+}
+
+.research-canvas .overview-dca {
+  order: 2;
+}
+@media (max-width: 700px) {
+  .research-canvas .plot-section {
+    order: 3;
+  }
+}
+.metric-meter {
+  height: 4px;
+  border-radius: 8px;
+  background: var(--line);
+  margin-top: 10px;
+  overflow: hidden;
+}
+.metric-meter > i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--blue);
+}
+
+@media (min-width: 701px) {
+  .research-canvas .overview-dca {
+    order: 3;
   }
 }
