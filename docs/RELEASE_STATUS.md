@@ -1,3 +1,7 @@
+## October 18 — integration stylesheet correction
+
+Restores the React integration styles omitted from the earlier archive. See STYLE_REGRESSION_20261018.md. Physical iPhone/header and full browser acceptance remain unverified; this is not a completed production acceptance claim.
+
 # Latest tab and mobile layout correction — 18 October 2026
 
 197 tests, TypeScript, production build and 64 API fixture checks pass. See TAB_LAYOUT_20261018.md. Physical iPhone PWA blur, every-control visual acceptance and production performance remain unverified.

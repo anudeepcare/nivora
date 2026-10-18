@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     title: "AURYN",
-    statusBarStyle: "black-translucent",
+    statusBarStyle: "default",
   },
   icons: { icon: "/icon.svg", apple: "/apple-touch-icon.png" },
 };

@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-10-18T17:33:02.124264+00:00",
+  "generatedAt": "2026-10-18T17:50:44.544515+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 197 tests, TypeScript and production build",
+    "npm run verify": "passed: original 197 tests, TypeScript and restored-style production build; supplemental full suite 198 tests recorded separately",
     "npm run test:api": "passed: 32 baseline + 16 research regressions + 16 provider checks",
     "git diff --check": "passed"
   },
-  "domainPostgresAndComponentTests": 197,
+  "domainPostgresAndComponentTests": 198,
   "builtApiChecks": 64,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -34,7 +34,7 @@
   "priorEvidence": "The signed-in reference/deployed UI reviews predate this patch. New verification is source, domain/SSR, TypeScript and build evidence only.",
   "browserTestScope": "No rendered browser test of this build; older live audits are historical evidence only",
   "patchedSourceBrowserTestsExecuted": false,
-  "latestAudit": "../docs/TAB_LAYOUT_20261018.md",
+  "latestAudit": "../docs/STYLE_REGRESSION_20261018.md",
   "referenceReview": "REFERENCE_REVIEW_20261017.md",
   "decisionPolicy": "research-v1.6 / decision-guide-v1.1; original unvalidated research triage; no broker execution",
   "latestLogs": [
@@ -54,5 +54,18 @@
   "comparedAgainstRemote": "c610416",
   "localSsrFixtureRoutes": 10,
   "interfaceRefinement": "Removed Research data coverage block; compact strengths/risks chips; grouped News event sections; honest insider-activity label",
-  "pwaHeader": "Opaque header with compositor boundary, no app blur; OS-reported blur remains unverified on physical installed device"
+  "pwaHeader": "Opaque header with compositor boundary, no app blur; OS-reported blur remains unverified on physical installed device",
+  "pwaHeaderCorrection": {
+    "statusBarStyle": "default",
+    "mobileHeaderBackdropFilter": "none",
+    "shellSelectorsMatchRenderedMarkup": true,
+    "documentScrollOwner": true,
+    "physicalDeviceResultVerified": false
+  },
+  "styleIntegrationRegression": {
+    "restored": true,
+    "sourceSelectorsChecked": true,
+    "productionCssSelectorsChecked": true,
+    "visualBrowserAcceptance": false
+  }
 }
