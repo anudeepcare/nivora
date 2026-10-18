@@ -34,7 +34,7 @@
   "priorEvidence": "The signed-in reference/deployed UI reviews predate this patch. New verification is source, domain/SSR, TypeScript and build evidence only.",
   "browserTestScope": "No rendered browser test of this build; older live audits are historical evidence only",
   "patchedSourceBrowserTestsExecuted": false,
-  "latestAudit": "../docs/STYLE_REGRESSION_20261018.md",
+  "latestAudit": "../docs/UX_BASELINE_RECOVERY_20261018.md",
   "referenceReview": "REFERENCE_REVIEW_20261017.md",
   "decisionPolicy": "research-v1.6 / decision-guide-v1.1; original unvalidated research triage; no broker execution",
   "latestLogs": [
@@ -67,5 +67,13 @@
     "sourceSelectorsChecked": true,
     "productionCssSelectorsChecked": true,
     "visualBrowserAcceptance": false
+  },
+  "uxBaselineRecovery": {
+    "archiveVersion": 18,
+    "globalsCssBytes": 80191,
+    "foundationCssBytes": 47245,
+    "stylesRestoredByteForByte": true,
+    "statusBarStyle": "default",
+    "physicalIphoneVerified": false
   }
 }
