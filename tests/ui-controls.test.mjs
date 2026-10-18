@@ -185,6 +185,7 @@ test("Research outlook does not fill missing coverage with three empty scenario 
 test("Product footer supplies copyright and a research disclosure without provider marketing", () => {
   const ProductFooter = loadComponent("components/Ui.tsx", "ProductFooter", {
     React,
+    Link: ({children, ...props}) => React.createElement("a", props, children),
     Help: ({ children, trigger }) =>
       React.createElement(
         "details",
@@ -486,4 +487,34 @@ test("News earnings do not infer estimate currency from a stock listing or compa
   assert.match(html, /1\.25/);
   assert.doesNotMatch(html, /\$1\.25|€1\.25/);
   assert.match(html, /currency.*not supplied/i);
+});
+
+test('public legal and help documents render all cross-links and readable sections',async()=>{
+ const {documents,legalConfiguration}=await import('../lib/legal-content.ts');
+ const LegalDocument=loadComponent('components/LegalDocument.tsx','LegalDocument',{React,useState:React.useState,documents,legalConfiguration,Link:({children,...props})=>React.createElement('a',props,children)});
+ for(const id of ['terms','privacy','risk','methodology','help']){
+  const html=renderToStaticMarkup(React.createElement(LegalDocument,{id}));
+  for(const path of ['terms','privacy','risk','methodology','help'])assert.ok(html.includes(`href="/${path}"`));
+  assert.ok(html.includes('<h1>'));assert.ok(html.includes('document-sections'));
+  assert.doesNotMatch(html,/mobile-dock|desktop-nav/);
+ }
+});
+
+test('decision overview renders real evidence, eight lenses and direct research paths',async()=>{
+ const {researchDecision,styles}=await import('../lib/decision-research.ts');
+ const {consensusOutlook}=await import('../lib/outlook.ts');
+ const bindings={React,useMemo:React.useMemo,useState:React.useState,researchDecision,styles,consensusOutlook,...format,useResearchPreferences:()=>({preferences:{style:'Balanced',detail:'essential',horizon:'long'},setPreferences:()=>{}}),Link:({children,...props})=>React.createElement('a',props,children),ShieldCheck:empty,CalendarDays:empty,ArrowUpRight:empty};
+ const evidenceValue=loadComponent('components/DecisionWorkspace.tsx','evidenceValue',bindings);
+ const DecisionWorkspace=loadComponent('components/DecisionWorkspace.tsx','DecisionWorkspace',{...bindings,evidenceValue});
+ const html=renderToStaticMarkup(React.createElement(DecisionWorkspace,{research:demoData.research.MSFT,onTab:()=>{}}));
+ assert.match(html,/Investment evidence overview/);assert.match(html,/Evidence lenses/);
+ assert.match(html,/What does the price imply/);assert.match(html,/Challenge the case/);
+ assert.match(html,/href="\/methodology"/);assert.doesNotMatch(html,/NaN|Infinity|undefined/);
+});
+
+test('valuation tool withholds unsupported models rather than fabricating sensitivities',async()=>{
+ const engine=await import('../lib/decision-research.ts');
+ const ValuationLab=loadComponent('components/ValuationLab.tsx','ValuationLab',{React,useMemo:React.useMemo,useState:React.useState,...engine,...format});
+ const html=renderToStaticMarkup(React.createElement(ValuationLab,{research:{...demoData.research.MSFT,facts:[],evidence:undefined}}));
+ assert.match(html,/Use the right model/);assert.doesNotMatch(html,/type="range"|NaN|Infinity/);
 });

@@ -7,6 +7,7 @@ export const flowFields = [
   "buybacks",
   "dividends",
   "interestExpense",
+  "depreciation",
 ] as const;
 export const balanceFields = [
   "cash",
@@ -16,6 +17,10 @@ export const balanceFields = [
   "liabilities",
   "currentAssets",
   "currentLiabilities",
+  "receivables",
+  "inventory",
+  "payables",
+  "retainedEarnings",
 ] as const;
 export function ratio(
   a: number | null | undefined,

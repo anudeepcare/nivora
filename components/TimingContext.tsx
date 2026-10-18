@@ -1,0 +1,6 @@
+"use client";
+import {useMemo} from 'react';
+import type {Research} from '@/lib/types';
+import {researchDecision} from '@/lib/decision-research';
+import {percent} from '@/lib/format';
+export default function TimingContext({research:r}:{research:Research}){const d=useMemo(()=>researchDecision(r),[r]),t=d.timing;return <section className="timing-context"><header className="section-head"><div><span className="eyebrow">Timing, not business value</span><h3>Risk behind the price action</h3><p>{t.observations} completed daily observations. History depth affects every measurement.</p></div></header><div className="timing-metrics">{[['Annualized volatility',percent(t.volatility),'Sample standard deviation of daily log returns; at least 60 observations.'],['Maximum observed drawdown',percent(t.maxDrawdown),'Largest peak-to-trough decline in the supplied history, not a forecast loss.'],['52-week range position',percent(t.rangePosition),'Position within approximately 252 completed observations; not a support guarantee.'],['MACD histogram',t.histogram==null?'—':t.histogram.toFixed(2),'12/26-day MACD less its 9-day signal. Positive is momentum context, not intrinsic value.']].map(([l,v,n])=><div key={l}><span>{l}</span><strong>{v}</strong><small>{n}</small></div>)}</div></section>;}

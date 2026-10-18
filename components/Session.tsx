@@ -519,6 +519,7 @@ function Login({ initialError }: { initialError: string }) {
           </button>
         </div>
         <small>Independent research. Investing involves risk.</small>
+        <nav className="login-legal" aria-label="Help and legal"><a href="/help">Help</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/risk">Risks</a></nav>
       </section>
     </main>
   );

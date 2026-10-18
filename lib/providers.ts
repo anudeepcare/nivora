@@ -275,6 +275,11 @@ async function twelveHistory(
   );
 }
 const tags: Record<Metric, string[]> = {
+  depreciation: ["DepreciationDepletionAndAmortization", "DepreciationDepletionAndAmortizationPropertyPlantAndEquipment"],
+  receivables: ["AccountsReceivableNetCurrent", "ReceivablesNetCurrent"],
+  inventory: ["InventoryNet"],
+  payables: ["AccountsPayableCurrent"],
+  retainedEarnings: ["RetainedEarningsAccumulatedDeficit"],
   revenue: [
     "RevenueFromContractWithCustomerExcludingAssessedTax",
     "RevenueFromContractWithCustomerIncludingAssessedTax",

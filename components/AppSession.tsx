@@ -14,6 +14,7 @@ export default function AppSession({
   if (pathname === "/preview" || pathname.startsWith("/preview/"))
     return <>{children}</>;
   const page = pathname.split("/")[1] || "overview";
+  if (["terms", "privacy", "risk", "methodology", "help"].includes(page)) return <>{children}</>;
   return (
     <ProductSession>
       <Shell page={page}>{children}</Shell>

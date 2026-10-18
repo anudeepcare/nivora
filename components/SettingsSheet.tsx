@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import ResearchPreferenceControls from "./ResearchPreferences";
 import { useState, type RefObject } from "react";
 import { ArrowRight, X, LogOut } from "lucide-react";
 import { useProduct } from "./Session";
@@ -90,6 +91,7 @@ export default function SettingsSheet({
             <i />
           </button>
         </div>
+        <ResearchPreferenceControls />
         {[
           ["settings", "Account & security"],
           ["alerts", "Alerts"],
@@ -97,6 +99,9 @@ export default function SettingsSheet({
           ["research-lab", "Strategy lab"],
           ["trading", "Paper trading"],
           ["help", "Help"],
+          ["methodology", "Methodology"],
+          ["terms", "Terms of use"],
+          ["privacy", "Privacy"],
         ].map(([path, label]) => (
           <Link
             key={path}

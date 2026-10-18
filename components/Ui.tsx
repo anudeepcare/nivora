@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useId, useRef, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { CircleHelp, X, ArrowUpRight, Search } from "lucide-react";
@@ -292,6 +293,7 @@ export function ProductFooter() {
   return (
     <footer className="product-footer">
       <span>© {new Date().getFullYear()} AURYN. All rights reserved.</span>
+      <nav aria-label="Help and legal"><Link href="/help">Help</Link><Link href="/methodology">Methodology</Link><Link href="/terms">Terms</Link><Link href="/privacy">Privacy</Link><Link href="/risk">Risk disclosure</Link></nav>
       <Help label="Research disclosure" trigger="Research disclosure">
         <p>
           AURYN provides investment research and decision support. It does not

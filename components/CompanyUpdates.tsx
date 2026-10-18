@@ -16,7 +16,7 @@ export default function CompanyUpdates({
       <section className="research-updates company-updates">
         <header className="section-head">
           <div>
-            <h2>Events & insider activity</h2>
+            <h2>Events & reported transactions</h2>
             <p>
               Reported transactions and scheduled earnings; neither is a
               standalone buy signal.
@@ -40,7 +40,7 @@ export default function CompanyUpdates({
             )}
           </div>
           <div>
-            <h3>Reported insider activity</h3>
+            <h3>Reported transactions</h3>
             {r.evidence?.insiders?.length ? (
               r.evidence.insiders.slice(0, 4).map((item, i) => (
                 <div className="stat-pair" key={i}>
@@ -65,11 +65,11 @@ export default function CompanyUpdates({
                 </div>
               ))
             ) : (
-              <p className="context-note">No insider records supplied.</p>
+              <p className="context-note">No transaction records supplied.</p>
             )}
-            <p className="context-note">
+            <p className="transaction-note">
               Sales can reflect tax, diversification or trading plans.
-              Transaction codes and filing dates matter.
+              Roles, transaction codes and filing dates need verification; this snapshot does not establish that every named person is a company insider.
             </p>
           </div>
         </div>

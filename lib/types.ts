@@ -28,7 +28,12 @@ export type Metric =
   | "equity"
   | "currentAssets"
   | "currentLiabilities"
-  | "interestExpense";
+  | "interestExpense"
+  | "depreciation"
+  | "receivables"
+  | "inventory"
+  | "payables"
+  | "retainedEarnings";
 export type Fact = {
   id: string;
   metric: Metric;
@@ -76,6 +81,11 @@ export type FinancialPeriod = {
   currentAssets?: number | null;
   currentLiabilities?: number | null;
   interestExpense?: number | null;
+  depreciation?: number | null;
+  receivables?: number | null;
+  inventory?: number | null;
+  payables?: number | null;
+  retainedEarnings?: number | null;
   grossMargin?: number | null;
   netMargin?: number | null;
   fcfMargin?: number | null;

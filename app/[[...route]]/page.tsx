@@ -14,6 +14,10 @@ const allowed = new Set([
   "trading",
   "discover",
   "help",
+  "terms",
+  "privacy",
+  "risk",
+  "methodology",
   "login",
 ]);
 export default async function Page({

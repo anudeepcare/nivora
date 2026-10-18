@@ -241,3 +241,13 @@ test("EOD annual forecasts inherit reported statement currency when the trend om
     null,
   );
 });
+
+test('additional accounting fields reuse normalized fundamentals with currency and period evidence',()=>{
+ const input=structuredClone(raw);
+ input.Financials.Cash_Flow.quarterly['2026-06-30'].depreciation='8';
+ input.Financials.Balance_Sheet={currency_symbol:'USD',quarterly:{'2026-06-30':{date:'2026-06-30',filing_date:'2026-08-10',netReceivables:'12',inventory:'3',accountsPayable:'5',retainedEarnings:'-2'}}};
+ const {facts}=lib().normalizeEodFundamentals('APP',input,stamp);
+ for(const [metric,value] of Object.entries({depreciation:8,receivables:12,inventory:3,payables:5,retainedEarnings:-2})){
+  const fact=facts.find(f=>f.metric===metric);assert.ok(fact,metric);assert.equal(fact.value,value);assert.equal(fact.unit,'USD');assert.equal(fact.end,'2026-06-30');
+ }
+});

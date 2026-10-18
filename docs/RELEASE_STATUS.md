@@ -119,3 +119,6 @@ The 104-item audit in requirements-inherited.json remains authoritative for inhe
 ## Review and delivery
 
 The current design foundation is docs/design/approved-studio-20261017.html. Earlier design references are historical. The compact action/DCA summary is the current request’s source refinement; it has not been accepted through a rendered comparison. Review the source installer and Git instructions in DEPLOYMENT.md before replacement. The archive has a complete manifest and excludes secrets, installed dependencies and generated Next output. Any final source-review findings and fixes are recorded in verification/eodhd-review.md. No push, merge or deployment is implied by delivery of the ZIP.
+
+## October 18 decision workspace update
+See DECISION_WORKSPACE_RELEASE.md for the supplied specification mapping, actual additions and boundaries. Latest evidence: 207 tests, TypeScript, production build and 64 API fixtures pass. The user confirmed the prior installed-PWA issue resolved after reinstall; shell and global styles are preserved. No new physical-device or live-account acceptance is claimed. Legal templates require operator configuration and review before commercial use.

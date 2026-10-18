@@ -226,6 +226,7 @@ export function normalizeEodFundamentals(
       operatingCashFlow: ["totalCashFromOperatingActivities"],
       capex: ["capitalExpenditures"],
       stockCompensation: ["stockBasedCompensation"],
+      depreciation: ["depreciation"],
       dividends: ["dividendsPaid"],
     },
     Balance_Sheet: {
@@ -237,6 +238,10 @@ export function normalizeEodFundamentals(
       currentAssets: ["totalCurrentAssets"],
       currentLiabilities: ["totalCurrentLiabilities"],
       shares: ["commonStockSharesOutstanding"],
+      receivables: ["netReceivables"],
+      inventory: ["inventory"],
+      payables: ["accountsPayable"],
+      retainedEarnings: ["retainedEarnings"],
     },
   };
   for (const [statement, mapping] of Object.entries(maps))

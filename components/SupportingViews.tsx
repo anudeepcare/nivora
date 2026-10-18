@@ -1,4 +1,5 @@
 "use client";
+import ResearchPreferenceControls from "./ResearchPreferences";
 import PwaDiagnostics from "./PwaDiagnostics";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -67,6 +68,7 @@ export function Settings() {
           </button>
         </div>
       </section>
+      <section className="panel"><ResearchPreferenceControls /></section>
       <section className="panel support">
         <h2>Update password</h2>
         <form className="password-form" onSubmit={update}>

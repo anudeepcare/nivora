@@ -28,6 +28,11 @@ const m = (
   help: string,
 ): MetricDefinition => ({ key, label, group, unit, color, help });
 export const financialCatalog: MetricDefinition[] = [
+  m("depreciation", "Depreciation & amortization", "Cash flow", "money", "violet", "Provider-reported non-cash depreciation field. Check the filing for amortization scope before using it as a full D&A figure."),
+  m("receivables", "Net receivables", "Balance sheet", "money", "blue", "Amounts customers owe at the reporting date, net of allowances."),
+  m("inventory", "Inventory", "Balance sheet", "money", "blue", "Inventory carrying value at the reporting date; industry comparability matters."),
+  m("payables", "Accounts payable", "Balance sheet", "money", "blue", "Reported supplier obligations at the reporting date."),
+  m("retainedEarnings", "Retained earnings", "Balance sheet", "money", "violet", "Cumulative retained accounting earnings, not cash available to shareholders."),
   m(
     "revenue",
     "Revenue",

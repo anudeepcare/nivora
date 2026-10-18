@@ -1,4 +1,8 @@
 "use client";
+import TimingContext from "./TimingContext";
+import DecisionWorkspace from "./DecisionWorkspace";
+import ValuationLab from "./ValuationLab";
+import DecisionWatch from "./DecisionWatch";
 import { useMemo, useState, useRef, useLayoutEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Bookmark, RefreshCw } from "lucide-react";
@@ -356,12 +360,10 @@ export default function Research({ symbol }: { symbol: string }) {
         {tab === "Analysts" && <AnalystRatings research={r} />}
         {tab === "Snapshot" && (
           <>
+            <DecisionWorkspace research={r} onTab={switchTab} />
             <div className="research-layout">
               <div className="research-canvas">
-                <DecisionBrief
-                  research={r}
-                  onDca={() => switchTab("Technicals")}
-                />
+                <header className="chart-context-heading"><h3>Price & accumulation context</h3><p>Timing evidence alongside the business case.</p></header>
                 <div className="overview-dca">
                   <DcaCard research={r} compact />
                 </div>
@@ -370,7 +372,7 @@ export default function Research({ symbol }: { symbol: string }) {
               <OverviewContext research={r} />
             </div>
             <KeyFinancialMetrics research={r} />
-            <CaseHighlights research={r} />
+            <DecisionWatch research={r} />
           </>
         )}
         {tab === "Financials" && (
@@ -382,6 +384,7 @@ export default function Research({ symbol }: { symbol: string }) {
         {tab === "Valuation" && (
           <>
             <ResearchOutlook research={r} detailed />
+            <ValuationLab research={r} />
           </>
         )}
         {tab === "Technicals" && (
@@ -408,6 +411,7 @@ export default function Research({ symbol }: { symbol: string }) {
               </div>
             </header>
             {chart}
+            <TimingContext research={r} />
             <TechnicalPicture
               research={r}
               dca={<DcaCard research={r} compact />}

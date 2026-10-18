@@ -3,6 +3,7 @@ import AppSession from "@/components/AppSession";
 import type { Metadata, Viewport } from "next";
 import "./studio-foundation.css";
 import "./globals.css";
+import "./decision-workspace.css";
 import "./pwa-shell.css";
 export const metadata: Metadata = {
   title: "AURYN · Investment Intelligence",
