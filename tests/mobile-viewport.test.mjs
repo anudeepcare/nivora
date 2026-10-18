@@ -31,3 +31,10 @@ test("invalid viewport readings cannot collapse or move an overlay offscreen", (
     top: 0,
   });
 });
+
+test("keyboard inset keeps bottom sheets above the iPhone keyboard without adding an inset at full height", () => {
+  const { keyboardInset } = load();
+  assert.equal(typeof keyboardInset, "function");
+  assert.equal(keyboardInset({ height: 420, offsetTop: 65 }, 850), 365);
+  assert.equal(keyboardInset({ height: 850, offsetTop: 0 }, 850), 0);
+});

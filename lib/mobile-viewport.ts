@@ -13,3 +13,11 @@ export function visibleViewport(
     top: top != null && Number.isFinite(top) && top > 0 ? top : 0,
   };
 }
+
+export function keyboardInset(
+  viewport: { height: number; offsetTop: number } | null,
+  layoutHeight: number,
+) {
+  const visible = visibleViewport(viewport, layoutHeight);
+  return Math.max(0, layoutHeight - visible.height - visible.top);
+}

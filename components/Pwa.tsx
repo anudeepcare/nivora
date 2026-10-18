@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import { visibleViewport } from "@/lib/mobile-viewport";
+import { visibleViewport, keyboardInset } from "@/lib/mobile-viewport";
 export default function Pwa() {
   useEffect(() => {
     const viewport = window.visualViewport;
@@ -9,6 +9,10 @@ export default function Pwa() {
       document.documentElement.style.setProperty(
         "--visual-height",
         `${visible.height}px`,
+      );
+      document.documentElement.style.setProperty(
+        "--keyboard-bottom",
+        `${keyboardInset(viewport, window.innerHeight)}px`,
       );
       document.documentElement.style.setProperty(
         "--visual-top",

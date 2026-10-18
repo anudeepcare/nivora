@@ -41,19 +41,24 @@ export default function Shell({
   const search = useRef<HTMLDialogElement>(null);
   const settings = useRef<HTMLDialogElement>(null);
   useLayoutEffect(() => {
-    let cancel: (() => void) | undefined;
-    if (pending.current?.path === pathname) {
-      cancel = restoreWhenReady(
-        pending.current.top,
-        browserScrollEnvironment(),
-      );
-      pending.current = null;
+    const env = browserScrollEnvironment();
+    const top =
+      pending.current?.path === pathname
+        ? pending.current.top
+        : memory.current.position(pathname);
+    const cancel = restoreWhenReady(top, env);
+    pending.current = null;
+    const remember = () =>
+      memory.current.remember(pathname, env.readTop?.() ?? window.scrollY);
+    let stop: () => void;
+    if (env.onScroll) stop = env.onScroll(remember);
+    else {
+      window.addEventListener("scroll", remember, { passive: true });
+      stop = () => window.removeEventListener("scroll", remember);
     }
-    const remember = () => memory.current.remember(pathname, window.scrollY);
-    window.addEventListener("scroll", remember, { passive: true });
     return () => {
-      cancel?.();
-      window.removeEventListener("scroll", remember);
+      cancel();
+      stop();
     };
   }, [pathname]);
   useEffect(() => {
@@ -85,7 +90,7 @@ export default function Shell({
           const top = memory.current.navigate(
             pathname,
             destination,
-            window.scrollY,
+            browserScrollEnvironment().readTop?.() ?? window.scrollY,
           );
           if (top == null) {
             event.preventDefault();

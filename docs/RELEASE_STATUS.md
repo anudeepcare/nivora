@@ -1,3 +1,7 @@
+# Latest iPhone scrolling architecture correction
+
+See verification/IPHONE_SCROLL_ROOT.md. 152 tests and 60 simulated API checks pass. Installed-device acceptance remains open.
+
 # Latest reliability corrections
 
 See verification/SEARCH_LOGO_REQUEST_RELIABILITY.md. 150 tests and 60 simulated API checks pass. Live deployment access was denied; installed-iPhone defects remain unresolved pending device verification.

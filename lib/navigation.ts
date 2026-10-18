@@ -13,6 +13,8 @@ export class NavigationMemory {
   }
 }
 export type ScrollEnvironment = {
+  readTop?: () => number;
+  onScroll?: (notify: () => void) => () => void;
   isSettled?: () => boolean;
   maxScroll: () => number;
   scrollTo: (top: number) => void;
@@ -49,17 +51,40 @@ export function restoreWhenReady(target: number, env: ScrollEnvironment) {
   return dispose;
 }
 export function browserScrollEnvironment(): ScrollEnvironment {
+  const content = document.getElementById("content");
+  const mobile =
+    window.matchMedia("(max-width: 700px)").matches && content != null;
   return {
+    readTop: () => (mobile ? content!.scrollTop : window.scrollY),
+    onScroll: (notify) => {
+      const target = mobile ? content! : window;
+      target.addEventListener("scroll", notify, { passive: true });
+      return () => target.removeEventListener("scroll", notify);
+    },
     isSettled: () =>
       !document.querySelector(
         '#content [aria-busy="true"], #content [data-scroll-pending="true"]',
       ),
     maxScroll: () =>
-      Math.max(0, document.documentElement.scrollHeight - window.innerHeight),
-    scrollTo: (top) => window.scrollTo({ top, left: 0, behavior: "instant" }),
+      Math.max(
+        0,
+        mobile
+          ? content!.scrollHeight - content!.clientHeight
+          : document.documentElement.scrollHeight - window.innerHeight,
+      ),
+    scrollTo: (top) =>
+      (mobile ? content! : window).scrollTo({
+        top,
+        left: 0,
+        behavior: "instant",
+      }),
     observe: (notify) => {
       const observer = new ResizeObserver(notify);
-      observer.observe(document.body);
+      observer.observe(mobile ? content! : document.body);
+      if (mobile)
+        Array.from(content!.children).forEach((child) =>
+          observer.observe(child),
+        );
       const mutations = new MutationObserver(notify);
       mutations.observe(document.getElementById("content") ?? document.body, {
         childList: true,

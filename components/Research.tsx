@@ -50,7 +50,10 @@ export default function Research({ symbol }: { symbol: string }) {
   const pendingTab = useRef<number | null>(null);
   const switchTab = (next: (typeof tabs)[number]) => {
     if (next === tab) return;
-    tabOffsets.current.set(tab, window.scrollY);
+    tabOffsets.current.set(
+      tab,
+      browserScrollEnvironment().readTop?.() ?? window.scrollY,
+    );
     pendingTab.current = tabOffsets.current.get(next) ?? 0;
     setTab(next);
   };
