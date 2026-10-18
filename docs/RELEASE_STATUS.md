@@ -1,3 +1,11 @@
+# Latest iPhone PWA corrections
+
+See verification/MOBILE_PWA_CORRECTION.md. 150 tests and 58 simulated API checks pass. Physical iPhone acceptance remains open.
+
+# Latest screenshot corrections
+
+See verification/MOCK_PARITY_CORRECTION.md. Latest verification: 148 tests and 58 fixture API checks passed. Exact rendered parity remains unverified.
+
 # AURYN release status — 17 October 2026
 
 **Full standalone source is included. Production acceptance is not complete.** The current update repairs the UI and reconciles financial-period selection following a signed-in audit of the deployed app. This patched source has not been deployed or tested on a physical iPhone.

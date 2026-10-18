@@ -319,43 +319,6 @@ export function Overview() {
       />
       {workspaceError && <Notice error>{workspaceError}</Notice>}
       {quotes.error && <Notice error>{quotes.error}</Notice>}
-      <section className="overview-hero">
-        <div>
-          <div className="eyebrow">
-            Invested value · {holdings.length} holdings
-          </div>
-          <div className="balance">
-            {workspace && quotes.ready ? amount(totals.knownValue) : "—"}
-          </div>
-          <div className="money-sub">
-            <span
-              className={totals.pnl != null && totals.pnl < 0 ? "red" : "green"}
-            >
-              {quotes.ready ? amount(totals.pnl) : "—"}{" "}
-              {totals.pnl != null && totals.cost
-                ? percent((totals.pnl / totals.cost) * 100, true)
-                : ""}
-            </span>
-            <span className="muted"> unrealised</span>
-          </div>
-          <p className="balance-caption">
-            {totals.missing.length
-              ? `${totals.missing.length} unpriced holdings excluded`
-              : quotes.loading
-                ? "Updating prices…"
-                : "Priced investments and recorded cash"}
-          </p>
-        </div>
-        <div>
-          <div className="row between">
-            <h3>Where your money sits</h3>
-            <Link className="text-button small" href={`${prefix}/portfolio`}>
-              Portfolio →
-            </Link>
-          </div>
-          <Allocation positions={workspace?.positions || []} quotes={q} />
-        </div>
-      </section>
       <div className="grid2 home-details">
         <section>
           <header className="section-head">
@@ -862,40 +825,29 @@ export function Portfolio() {
       {error && !modal.current?.open && <Notice error>{error}</Notice>}
       <div className="portfolio-top">
         <section className="panel portfolio-balance">
-          <span className="eyebrow">KNOWN MARKET VALUE · USD</span>
+          <span className="eyebrow">Invested value · USD</span>
           <div className="balance">
             {workspace && quotes.ready ? amount(totals.knownValue) : "—"}
           </div>
-          <p className="balance-caption">
-            {totals.missing.length
-              ? `${totals.missing.length} unpriced holdings excluded`
-              : "Across priced investments and cash"}
-            <Help label="Market value">
-              Quantity multiplied by available USD prices, plus recorded USD
-              cash. Stale, unpriced and non-USD positions are excluded. This is
-              not a performance calculation.
-            </Help>
-          </p>
-          <div className="mini-stats">
-            <div>
-              <span>Unrealized profit / loss</span>
-              <strong
-                className={
-                  totals.pnl != null && totals.pnl < 0 ? "red" : "green"
-                }
-              >
-                {quotes.ready ? amount(totals.pnl) : "—"}
-              </strong>
-              <small>
-                {totals.pnl != null && totals.cost
-                  ? percent((totals.pnl / totals.cost) * 100, true)
-                  : "Complete USD pricing and costs required"}
-              </small>
-            </div>
+          <div className="money-sub">
+            <span
+              className={totals.pnl != null && totals.pnl < 0 ? "red" : "green"}
+            >
+              {quotes.ready ? amount(totals.pnl) : "—"}{" "}
+              {totals.pnl != null && totals.cost
+                ? percent((totals.pnl / totals.cost) * 100, true)
+                : ""}
+            </span>
+            <span className="muted"> unrealised</span>
           </div>
+          {totals.missing.length > 0 && (
+            <p className="balance-caption">
+              {totals.missing.length} unpriced holdings excluded · return
+              requires complete pricing
+            </p>
+          )}
         </section>
         <section className="panel portfolio-allocation">
-          <h2>Allocation</h2>
           <Allocation positions={positions} quotes={q} />
         </section>
       </div>
@@ -907,7 +859,7 @@ export function Portfolio() {
           <input
             className="filter-input"
             aria-label="Filter holdings"
-            placeholder="Filter holdings"
+            placeholder="Find a holding"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -928,10 +880,12 @@ export function Portfolio() {
             <table className="holdings-table">
               <thead>
                 <tr>
-                  <th>Investment</th>
+                  <th>Company</th>
+                  <th>Quantity</th>
+                  <th>Avg. cost</th>
                   <th>Price</th>
                   <th>Value</th>
-                  <th>Unrealized</th>
+                  <th>Return</th>
                   <th aria-label="Actions" />
                 </tr>
               </thead>
@@ -968,44 +922,30 @@ export function Portfolio() {
                             <SecurityLogo symbol={p.symbol} size={35} />
                             <span>
                               <b>{p.symbol}</b>
+                              <small className="investment-company">
+                                {quotes.data?.[p.symbol]?.company?.name ||
+                                  "Open company research"}
+                              </small>
                               <small className="holding-quantity">
                                 {p.quantity.toLocaleString(undefined, {
                                   maximumFractionDigits: 6,
                                 })}{" "}
-                                units · Cost{" "}
-                                {p.currency
-                                  ? amount(p.cost, p.currency)
-                                  : "currency needed"}
-                              </small>
-                              <small className="investment-company">
-                                {quotes.data?.[p.symbol]?.company?.name ||
-                                  "Open company research"}
+                                {p.assetType === "crypto" ? "units" : "shares"}
                               </small>
                             </span>
                           </Link>
                         )}
                       </td>
+                      <td className="holding-quantity-cell">
+                        {p.quantity.toLocaleString(undefined, {
+                          maximumFractionDigits: 6,
+                        })}
+                      </td>
+                      <td className="holding-cost-cell">
+                        {p.currency ? amount(p.cost, p.currency) : "—"}
+                      </td>
                       <td data-label="Price" className="holding-price-cell">
-                        <span className="holding-metric">
-                          {amount(price)}
-                          <span className="holding-stamp">
-                            {p.assetType === "cash" ? (
-                              "Cash"
-                            ) : q[p.symbol] ? (
-                              <DataStamp
-                                source={q[p.symbol].source}
-                                asOf={q[p.symbol].asOf}
-                                status={
-                                  q[p.symbol].stale ? "Older quote" : undefined
-                                }
-                              />
-                            ) : quotes.loading ? (
-                              "Loading…"
-                            ) : (
-                              "Unavailable"
-                            )}
-                          </span>
-                        </span>
+                        <span className="holding-metric">{amount(price)}</span>
                       </td>
                       <td data-label="Value" className="holding-value-cell">
                         <span className="holding-metric">
@@ -1028,7 +968,6 @@ export function Portfolio() {
                         }
                       >
                         <span className="holding-metric">
-                          {amount(pnl)}
                           <small>
                             {pnl != null && p.cost > 0
                               ? percent(

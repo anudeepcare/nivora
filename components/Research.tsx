@@ -288,6 +288,7 @@ export default function Research({ symbol }: { symbol: string }) {
           <button
             role="tab"
             id={`tab-${name}`}
+            className={tab === name ? "active" : ""}
             aria-selected={tab === name}
             aria-pressed={tab === name}
             aria-controls="research-content"

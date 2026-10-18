@@ -87,13 +87,14 @@ button[aria-pressed="true"] {
 }
 .product {
   min-height: 100svh;
-  padding-top: env(safe-area-inset-top, 0px);
+  padding-top: 0;
 }
 .content {
   max-width: 1320px;
   padding: 34px 40px 54px;
   margin: 0 auto;
   outline: none;
+  overflow-anchor: none;
 }
 .content > section,
 .content > article {
@@ -850,7 +851,7 @@ button[aria-pressed="true"] {
 .portfolio-allocation {
   padding: 0;
   background: transparent;
-  width: 40%;
+  width: 34%;
 }
 .portfolio-allocation h2 {
   font-size: 17px;
@@ -985,6 +986,13 @@ button[aria-pressed="true"] {
 }
 .holding-metric small {
   font-size: 12px;
+}
+.holding-pnl-cell .holding-metric > small {
+  font-size: 15px;
+}
+.holding-quantity-cell,
+.holding-cost-cell {
+  white-space: nowrap;
 }
 .holding-stamp {
   color: var(--muted);
@@ -1566,11 +1574,19 @@ caption {
 }
 @media (max-width: 700px) {
   .product {
-    padding-top: env(safe-area-inset-top, 0px);
+    padding-top: 0;
   }
   .topbar {
-    padding-top: 8px;
-    min-height: 62px;
+    position: sticky;
+    top: 0;
+    z-index: 45;
+    padding-top: calc(8px + env(safe-area-inset-top, 0px));
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    min-height: calc(62px + env(safe-area-inset-top, 0px));
+    background: var(--paper);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
   .topbar > .top-search {
     display: flex;
@@ -1992,21 +2008,40 @@ caption {
     padding: 0 20px 24px;
   }
   .search-dialog {
+    inset: max(
+        calc(env(safe-area-inset-top, 0px) + 12px),
+        var(--visual-top, 0px)
+      )
+      12px auto;
+    width: calc(100% - 24px);
+    max-width: none;
     overflow: hidden;
+    height: max(
+      180px,
+      calc(var(--visual-height, 100dvh) - env(safe-area-inset-top, 0px) - 24px)
+    );
     max-height: calc(100dvh - env(safe-area-inset-top, 0px) - 24px);
-    padding: 0 0 calc(18px + env(safe-area-inset-bottom, 0px));
-    border-radius: 30px 30px 0 0;
+    margin: 0;
+    padding: 0 0 12px;
+    border-radius: 26px;
   }
   .search-dialog[open] {
-    display: block;
-    height: auto;
+    display: flex;
+    flex-direction: column;
   }
   .search-dialog .search-results {
-    max-height: calc(100dvh - 240px);
+    max-height: none;
+    flex: 1;
     overflow: auto;
+    overscroll-behavior: contain;
   }
   .search-dialog > .search {
     padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
   }
   .help-dialog {
     padding: 28px 24px calc(28px + env(safe-area-inset-bottom, 0px));

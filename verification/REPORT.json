@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-10-17T20:37:52.679741+00:00",
+  "generatedAt": "2026-10-18T03:35:58.969269+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 146 tests, route generation, TypeScript and production build",
+    "npm run verify": "passed: 150 tests, TypeScript and production build",
     "npm run test:api": "passed: 32 baseline + 16 research regressions + 10 mixed-provider checks",
     "git diff --check": "passed"
   },
-  "domainPostgresAndComponentTests": 146,
+  "domainPostgresAndComponentTests": 150,
   "builtApiChecks": 58,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -34,13 +34,12 @@
   "priorEvidence": "The signed-in reference/deployed UI reviews predate this patch. New verification is source, domain/SSR, TypeScript and build evidence only.",
   "browserTestScope": "No rendered browser test of this build; older live audits are historical evidence only",
   "patchedSourceBrowserTestsExecuted": false,
-  "latestAudit": "APPROVED_STUDIO_REPORT.md",
+  "latestAudit": "MOBILE_PWA_CORRECTION.md",
   "referenceReview": "REFERENCE_REVIEW_20261017.md",
   "decisionPolicy": "research-v1.6 / decision-guide-v1.1; original unvalidated research triage; no broker execution",
   "latestLogs": [
-    "approved-studio-verify.log",
-    "approved-studio-build.log",
-    "approved-studio-api.log"
+    "mobile-pwa-verify.log",
+    "mobile-pwa-api.log"
   ],
   "cohortQuoteObservations": "cohort-quotes-20261017.json; 11 instruments; quote identity only, not fundamental/model validation",
   "exactVisualParityVerified": false,

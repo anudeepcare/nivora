@@ -34,6 +34,36 @@ export function ResearchOutlook({
             <h2>Value the business. Understand the range.</h2>
             <p>Forecast sensitivities are separate from reported facts.</p>
           </div>
+          <Help label="Model details" trigger="Model details">
+            {outlook.available ? (
+              <>
+                <p>
+                  Annual EPS forecasts for {dateLabel(outlook.end)}:{" "}
+                  {outlook.cases
+                    .map((c) => `${c.name} ${amount(c.eps, outlook.currency)}`)
+                    .join(" · ")}
+                  .
+                </p>
+                <p>
+                  Exit P/E assumptions:{" "}
+                  {outlook.cases
+                    .map((c) => `${c.name} ${c.multiple.toFixed(1)}×`)
+                    .join(" · ")}
+                  . These are 80%, 100% and 120% of reported forward P/E, not
+                  verified future multiples.
+                </p>
+                <p>
+                  Forecast sensitivity, not intrinsic fair value. Observation:{" "}
+                  {dateLabel(outlook.asOf)}.
+                </p>
+              </>
+            ) : (
+              <p>
+                {outlook.reason} No substitute target is used as a bear, base or
+                bull case.
+              </p>
+            )}
+          </Help>
         </header>
         <div className="grid2">
           <div>
@@ -75,7 +105,14 @@ export function ResearchOutlook({
                 </div>
               ))
             ) : (
-              <p className="context-note">{outlook.reason}</p>
+              <div className="case-unavailable">
+                {["Bear", "Base", "Bull"].map((name) => (
+                  <div className="driver" key={name}>
+                    <h3>{name}</h3>
+                    <p>Comparable forecast inputs are not available yet.</p>
+                  </div>
+                ))}
+              </div>
             )}
             <p className="context-note">
               Annualised price change over the stated forecast horizon.
@@ -117,7 +154,9 @@ export function ResearchOutlook({
       aria-label="Research outlook"
     >
       <div className="row between">
-        <h2>{outlook.available ? `${outlook.period} outlook` : "Outlook"}</h2>
+        <h2>
+          {outlook.available ? `${outlook.period} outlook` : "Company outlook"}
+        </h2>
         <span className="pill">
           {outlook.available ? "Sensitivity" : "Evidence"}
         </span>
@@ -210,25 +249,38 @@ export function ResearchOutlook({
         </>
       ) : (
         <>
-          {target != null && Number.isFinite(target) && target > 0 ? (
-            <div className="consensus-quick">
-              <span className="muted small">Reported analyst target</span>
-              <strong className="num">
-                {amount(target, r.quote.currency)}
-              </strong>
-              <span className="muted small">
-                Consensus opinion · {dateLabel(consensus?.asOf)} · horizon not
-                supplied
-              </span>
-            </div>
-          ) : (
+          <div className="scenario-list">
+            {(["Bear", "Base", "Bull"] as const).map((name, i) => (
+              <div className="outcome" key={name}>
+                <div>
+                  <div
+                    className={`label ${i === 0 ? "negative" : i === 2 ? "positive" : ""}`}
+                  >
+                    <i />
+                    {name}
+                  </div>
+                  <div className="sub">
+                    {i === 0
+                      ? "Slower growth"
+                      : i === 2
+                        ? "Stronger execution"
+                        : "Steady execution"}
+                  </div>
+                </div>
+                <div className="target">
+                  <strong className="num">—</strong>
+                  <span className="muted small">Forecast needed</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="context-note">{outlook.reason}</p>
+          {target != null && (
             <p className="context-note">
-              {r.company.assetType === "crypto"
-                ? "Use network activity, supply and liquidity alongside price structure."
-                : "Company scenarios need comparable earnings forecasts."}
+              Analyst consensus {amount(target, r.quote.currency)} ·{" "}
+              {dateLabel(consensus?.asOf)}. Separate from scenarios.
             </p>
           )}
-          <p className="context-note">{outlook.reason}</p>
           <div className="why">
             <h3>Keep the key drivers in view</h3>
             <p>
@@ -272,6 +324,7 @@ export function KeyFinancialMetrics({ research: r }: { research: Research }) {
       : [
           {
             label: "Revenue",
+            tone: "blue",
             value: amount(p.last?.revenue, p.last?.currency, true),
             detail:
               p.growth == null
@@ -280,16 +333,25 @@ export function KeyFinancialMetrics({ research: r }: { research: Research }) {
           },
           {
             label: "Operating margin",
+            tone:
+              p.last?.margin != null
+                ? p.last.margin >= 0
+                  ? "green"
+                  : "red"
+                : "",
             value: percent(p.last?.margin),
             detail: `${p.periodBasis} · share of revenue`,
           },
           {
             label: "Cash after capex",
+            tone:
+              p.last?.fcf != null ? (p.last.fcf >= 0 ? "green" : "red") : "",
             value: amount(p.last?.fcf, p.last?.currency, true),
             detail: "Operating cash flow − capex",
           },
           {
             label: "Forward P/E",
+            tone: "violet",
             value:
               r.evidence?.multiples?.ForwardPE != null &&
               r.evidence.multiples.ForwardPE > 0
@@ -310,7 +372,9 @@ export function KeyFinancialMetrics({ research: r }: { research: Research }) {
                 : `Financial period: ${p.periodBasis} to ${dateLabel(p.last?.end)}. Reporting currency: ${p.last?.currency ?? "unknown"}. Forward P/E is a separate provider estimate, not a reported financial result.`}
             </p>
           </Help>
-          <div className="metric-number num">{m.value}</div>
+          <div className={`metric-number num ${"tone" in m ? m.tone : ""}`}>
+            {m.value}
+          </div>
           <div className="metric-sub">{m.detail}</div>
         </div>
       ))}

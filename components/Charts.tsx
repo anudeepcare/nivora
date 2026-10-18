@@ -57,7 +57,8 @@ export function PriceChart({
         vertLines: { visible: false },
         horzLines: { color: grid },
       },
-      rightPriceScale: { borderVisible: false },
+      rightPriceScale: { borderVisible: false, visible: !contrast },
+      leftPriceScale: { borderVisible: false, visible: contrast },
       timeScale: {
         borderVisible: false,
         timeVisible: range === "1D" || range === "1W",
@@ -78,6 +79,7 @@ export function PriceChart({
     series.current =
       style === "candles"
         ? api.addSeries(CandlestickSeries, {
+            priceScaleId: contrast ? "left" : "right",
             upColor: "#28b894",
             downColor: "#e26c7a",
             borderVisible: false,
@@ -85,6 +87,8 @@ export function PriceChart({
             wickDownColor: "#e26c7a",
           })
         : api.addSeries(AreaSeries, {
+            priceScaleId: contrast ? "left" : "right",
+            lastValueVisible: !contrast,
             lineColor: accent,
             topColor: rgba(accent, 0.2),
             bottomColor: rgba(accent, 0),

@@ -150,3 +150,32 @@ test("opening mobile search offers the account's saved instruments without fabri
   assert.match(html, /SAP/);
   assert.doesNotMatch(html, /Grayscale|role="listbox"/);
 });
+
+test("Research outlook keeps the approved three-case structure when forecast coverage is missing", async () => {
+  const { researchOutlook, consensusOutlook } = await import(
+    "../lib/outlook.ts"
+  );
+  const { valuationScale } = await import("../lib/research-summary.ts");
+  const Outlook = loadComponent(
+    "components/ResearchOverview.tsx",
+    "ResearchOutlook",
+    {
+      React,
+      useMemo: React.useMemo,
+      researchOutlook,
+      consensusOutlook,
+      valuationScale,
+      ...format,
+      Help: empty,
+      DataStamp: empty,
+    },
+  );
+  const r = structuredClone(demoData.research.MSFT);
+  r.evidence = undefined;
+  const html = renderToStaticMarkup(
+    React.createElement(Outlook, { research: r }),
+  );
+  assert.equal((html.match(/class="outcome"/g) || []).length, 3);
+  for (const name of ["Bear", "Base", "Bull"]) assert(html.includes(name));
+  assert(!html.includes('class="consensus-quick"'));
+});

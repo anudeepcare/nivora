@@ -385,7 +385,10 @@ export function normalizeEodFundamentals(
             date: x.date,
             period: text(x.period),
             frequency,
-            currency: text(x.currency) || null,
+            currency:
+              text(x.currency) ||
+              text(raw.Financials?.Income_Statement?.currency_symbol) ||
+              null,
             revenue: numeric(x.revenueEstimateAvg),
             revenueLow: numeric(x.revenueEstimateLow),
             revenueHigh: numeric(x.revenueEstimateHigh),

@@ -146,7 +146,6 @@ export default function Search({
         <SearchIcon size={19} />
         <input
           ref={input}
-          autoFocus={autoFocus}
           type="search"
           aria-label="Search companies or tickers"
           role="combobox"
