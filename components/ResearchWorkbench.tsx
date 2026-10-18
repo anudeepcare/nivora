@@ -127,7 +127,7 @@ export default function ResearchWorkbench({
         })}
       </div>
       <details className="research-data-table">
-        <summary>Reported values & download</summary>
+        <summary>Reported values</summary>
         <div className="table-scroll">
           <table>
             <caption>
@@ -158,29 +158,6 @@ export default function ResearchWorkbench({
             </tbody>
           </table>
         </div>
-        <button
-          className="text-button"
-          onClick={() =>
-            downloadCsv(`${r.company.symbol}-${scope}-financials.csv`, [
-              [
-                "symbol",
-                "period",
-                "currency",
-                ...fields.map((f) => f[0]),
-                "retrieved_at",
-              ],
-              ...points.map((p) => [
-                r.company.symbol,
-                p.date,
-                p.currency,
-                ...fields.map((f) => p[f[0]]),
-                r.retrievedAt,
-              ]),
-            ])
-          }
-        >
-          <Download size={16} /> Download financials
-        </button>
       </details>
     </section>
   );

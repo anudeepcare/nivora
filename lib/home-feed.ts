@@ -98,14 +98,47 @@ export function newsHighlights(
         unique.set(url.href, {
           symbol: group.symbol,
           date: row.date,
-          title: row.title.slice(0, 400),
+          title: row.title
+            .replace(
+              /&(#x[0-9a-f]+|#\d+|amp|quot|apos|lt|gt);/gi,
+              (entity, key: string) => {
+                const names: Record<string, string> = {
+                  amp: "&",
+                  quot: '"',
+                  apos: "'",
+                  lt: "<",
+                  gt: ">",
+                };
+                if (!key.startsWith("#"))
+                  return names[key.toLowerCase()] ?? entity;
+                const n =
+                  key[1].toLowerCase() === "x"
+                    ? parseInt(key.slice(2), 16)
+                    : parseInt(key.slice(1), 10);
+                return n > 0 && n <= 0x10ffff
+                  ? String.fromCodePoint(n)
+                  : entity;
+              },
+            )
+            .slice(0, 400),
           url: url.href,
         });
       } catch {
         /* Unusable publisher links are not rendered. */
       }
     }
-  return [...unique.values()]
-    .sort((a, b) => b.date.localeCompare(a.date))
-    .slice(0, 6);
+  const sorted = [...unique.values()].sort((a, b) =>
+    b.date.localeCompare(a.date),
+  );
+  const seen = new Set<string>();
+  const first: MarketHeadline[] = [],
+    rest: MarketHeadline[] = [];
+  for (const row of sorted) {
+    if (seen.has(row.symbol)) rest.push(row);
+    else {
+      seen.add(row.symbol);
+      first.push(row);
+    }
+  }
+  return [...first, ...rest].slice(0, 6);
 }

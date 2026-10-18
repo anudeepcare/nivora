@@ -27,12 +27,14 @@ import ResearchChanges from "./ResearchChanges";
 import DcaResearch from "./DcaResearch";
 import EarningsWorkspace from "./EarningsWorkspace";
 import DecisionBrief from "./DecisionBrief";
+import AnalystRatings from "./AnalystRatings";
 const tabs = [
   "Snapshot",
   "Financials",
   "Valuation",
   "Technicals",
   "Thesis",
+  "Analysts",
 ] as const;
 const ranges = ["1D", "1W", "1M", "6M", "1Y", "5Y"] as const;
 export default function Research({ symbol }: { symbol: string }) {
@@ -327,7 +329,9 @@ export default function Research({ symbol }: { symbol: string }) {
                 ? "Business performance"
                 : tab === "Technicals"
                   ? "Price & accumulation"
-                  : "Thesis & catalysts"}
+                  : tab === "Analysts"
+                    ? "Analyst perspectives"
+                    : "Thesis & catalysts"}
         </h2>
       </header>
       <ResearchChanges research={r} />
@@ -359,6 +363,7 @@ export default function Research({ symbol }: { symbol: string }) {
         aria-labelledby={`tab-${tab}`}
         className="au-stack"
       >
+        {tab === "Analysts" && <AnalystRatings research={r} />}
         {tab === "Snapshot" && (
           <>
             <div className="research-layout">

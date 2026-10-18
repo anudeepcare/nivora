@@ -1,0 +1,51 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> auryn-product@0.1.0 build
+> next build
+
+   ▲ Next.js 15.5.28
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 4.2s
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/19) ...
+   Generating static pages (4/19) 
+   Generating static pages (9/19) 
+   Generating static pages (14/19) 
+ ✓ Generating static pages (19/19)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /_not-found                            171 B         103 kB
+├ ƒ /[[...route]]                        82.6 kB         268 kB
+├ ƒ /api/alerts                            171 B         103 kB
+├ ƒ /api/analyst/[symbol]                  171 B         103 kB
+├ ƒ /api/chart/[symbol]                    171 B         103 kB
+├ ƒ /api/company-data                      171 B         103 kB
+├ ƒ /api/documents                         171 B         103 kB
+├ ƒ /api/enrichment/[symbol]               171 B         103 kB
+├ ƒ /api/filings                           171 B         103 kB
+├ ƒ /api/home-feed                         171 B         103 kB
+├ ƒ /api/jobs                              171 B         103 kB
+├ ƒ /api/logos                             171 B         103 kB
+├ ƒ /api/news                              171 B         103 kB
+├ ƒ /api/observations                      171 B         103 kB
+├ ƒ /api/paper-plans                       171 B         103 kB
+├ ƒ /api/paper-status                      171 B         103 kB
+├ ƒ /api/portfolio-import                  171 B         103 kB
+├ ƒ /api/provider-status                   171 B         103 kB
+├ ƒ /api/quotes                            171 B         103 kB
+├ ƒ /api/research/[symbol]                 171 B         103 kB
+├ ƒ /api/search                            171 B         103 kB
+└ ƒ /api/workspace                         171 B         103 kB
++ First Load JS shared by all             103 kB
+  ├ chunks/255-b1e2483a7e02feee.js       46.6 kB
+  ├ chunks/4bd1b696-c023c6e3521b1417.js  54.2 kB
+  └ other shared chunks (total)          2.43 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

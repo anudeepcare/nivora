@@ -107,10 +107,6 @@ export default function ResearchLab() {
             <h2>
               {data?.company.symbol} · {result.months} months
             </h2>
-            <button className="button" onClick={download}>
-              <Download size={16} />
-              Export
-            </button>
           </header>
           <div className="two-col">
             {[

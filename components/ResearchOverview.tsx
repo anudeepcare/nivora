@@ -21,7 +21,7 @@ export function ResearchOutlook({
     const multiple = (v: number | null | undefined) =>
       v == null ? "—" : v <= 0 ? "N/M" : `${v.toFixed(1)}×`;
     return (
-      <section className="value-picture">
+      <section className="value-picture compact-value">
         <ResearchOutlook research={r} />
         <header className="section-head">
           <h3>Market multiples</h3>

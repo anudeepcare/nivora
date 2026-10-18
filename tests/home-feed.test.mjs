@@ -76,3 +76,39 @@ test("Home news stays recent, deduplicates publisher URLs and never accepts unsa
   assert.equal(r[0].title, "Results released");
   assert.equal(r[0].symbol, "HIMS");
 });
+
+test("Home news decodes publisher text and gives each followed company a first headline", () => {
+  const result = m.newsHighlights(
+    [
+      {
+        symbol: "HIMS",
+        items: [
+          {
+            date: "2026-10-18T10:00:00Z",
+            title: "Hims &amp; Hers",
+            url: "https://example.com/a",
+          },
+          {
+            date: "2026-10-18T09:00:00Z",
+            title: "Second",
+            url: "https://example.com/b",
+          },
+        ],
+      },
+      {
+        symbol: "NOW",
+        items: [
+          {
+            date: "2026-10-17T10:00:00Z",
+            title: "ServiceNow update",
+            url: "https://example.com/c",
+          },
+        ],
+      },
+    ],
+    "2026-10-18T12:00:00Z",
+  );
+  assert.equal(result[0].title, "Hims & Hers");
+  assert.equal(result[1].symbol, "NOW");
+  assert.equal(result[2].symbol, "HIMS");
+});

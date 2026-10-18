@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-10-18T16:16:29.265024+00:00",
+  "generatedAt": "2026-10-18T16:34:51.549899+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 192 tests, TypeScript and production build",
+    "npm run verify": "passed: 195 tests, TypeScript and production build",
     "npm run test:api": "passed: 32 baseline + 16 research regressions + 16 provider checks",
     "git diff --check": "passed"
   },
-  "domainPostgresAndComponentTests": 192,
+  "domainPostgresAndComponentTests": 195,
   "builtApiChecks": 64,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -34,12 +34,13 @@
   "priorEvidence": "The signed-in reference/deployed UI reviews predate this patch. New verification is source, domain/SSR, TypeScript and build evidence only.",
   "browserTestScope": "No rendered browser test of this build; older live audits are historical evidence only",
   "patchedSourceBrowserTestsExecuted": false,
-  "latestAudit": "../docs/REFINEMENT_20261018.md",
+  "latestAudit": "../docs/APPROVED_WORKSPACE_20261018.md",
   "referenceReview": "REFERENCE_REVIEW_20261017.md",
   "decisionPolicy": "research-v1.6 / decision-guide-v1.1; original unvalidated research triage; no broker execution",
   "latestLogs": [
-    "refinement-final-verify.log",
-    "refinement-api.log"
+    "approved-workspace-release-verify.log",
+    "approved-workspace-final-build.log",
+    "approved-workspace-api.log"
   ],
   "cohortQuoteObservations": "cohort-quotes-20261017.json; 11 instruments; quote identity only, not fundamental/model validation",
   "exactVisualParityVerified": false,
@@ -53,5 +54,5 @@
   "pwaKeyboardCorrection": "Working old ZIP reference: black-translucent, document scrolling, sticky header, fixed safe-area dock; visualViewport only for keyboard/dialog handling. Physical installed-device acceptance unverified.",
   "comparedAgainstRemote": "c610416",
   "localSsrFixtureRoutes": 10,
-  "interfaceRefinement": "Company header, underlined tabs, compact decision evidence, compact Home holdings context, news grid namespace, auth busy state, shared spacing and reduced-motion transitions"
+  "interfaceRefinement": "Removed comparisons and downloads, added analyst evidence, compact forecast table and value scenarios, removed duplicate Portfolio summary, Home news diversity and entity decoding"
 }

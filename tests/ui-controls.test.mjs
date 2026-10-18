@@ -370,3 +370,62 @@ test("Home portfolio summary retains key figures without the full allocation pan
   assert.doesNotMatch(compact, /class="exposure-list"/);
   assert.match(detailed, /class="exposure-list"/);
 });
+
+test("Analyst ratings preserve missing counts separately from reported zero", () => {
+  const Component = loadComponent(
+    "components/AnalystRatings.tsx",
+    "AnalystRatings",
+    {
+      React,
+      consensusOutlook: () => null,
+      amount: format.amount,
+      dateLabel: format.dateLabel,
+    },
+  );
+  const research = {
+    company: { symbol: "HIMS" },
+    quote: { currency: "USD" },
+    retrievedAt: "2026-10-18",
+    evidence: {
+      consensus: {
+        rating: null,
+        strongBuy: 0,
+        buy: 2,
+        hold: null,
+        sell: 0,
+        strongSell: null,
+      },
+    },
+  };
+  const html = renderToStaticMarkup(
+    React.createElement(Component, { research }),
+  );
+  assert.match(html, /Recommendation distribution/);
+  assert.match(html, /Reported recommendations/);
+  assert.match(html, /<b>0<\/b>/);
+  assert.match(html, /<b>—<\/b>/);
+  assert.match(html, /not necessarily unique analysts/i);
+});
+test("Analyst ratings do not invent a distribution when counts are absent", () => {
+  const Component = loadComponent(
+    "components/AnalystRatings.tsx",
+    "AnalystRatings",
+    {
+      React,
+      consensusOutlook: () => null,
+      amount: format.amount,
+      dateLabel: format.dateLabel,
+    },
+  );
+  const html = renderToStaticMarkup(
+    React.createElement(Component, {
+      research: {
+        company: { symbol: "SAP" },
+        quote: { currency: "USD" },
+        retrievedAt: "2026-10-18",
+      },
+    }),
+  );
+  assert.match(html, /counts are not supplied/);
+  assert.doesNotMatch(html, /class="rating-track"/);
+});

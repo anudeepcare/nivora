@@ -292,7 +292,7 @@ button[aria-pressed="true"] {
   min-height: 28px;
 }
 .security-head {
-  padding: 18px 20px;
+  padding: 12px 16px;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 20px;
@@ -311,8 +311,16 @@ button[aria-pressed="true"] {
   font-size: clamp(25px, 3vw, 34px);
 }
 .home-workspace .portfolio-context-compact {
-  border-top: 3px solid var(--blue);
-  box-shadow: 0 6px 24px #172d3a05;
+  --ink: #f3fbff;
+  --muted: #b4ccd5;
+  --blue: #79d9ed;
+  --purple: #cfbbff;
+  --red: #ffaaa8;
+  --green: #8be4c5;
+  color: var(--ink);
+  background: #123b46;
+  border: 1px solid #1d5361;
+  box-shadow: 0 6px 24px #172d3a08;
 }
 .home-workspace .context-highlights > div:nth-child(2) strong {
   color: var(--purple);
@@ -577,17 +585,20 @@ button[aria-pressed="true"] {
 .outlook .outcome:last-child .label i {
   background: var(--green);
 }
+.compact-value .scenario-list,
 .outlook-detailed .scenario-list {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 28px;
+  gap: 14px;
 }
+.compact-value .outcome,
 .outlook-detailed .outcome {
   align-items: flex-start;
   flex-direction: column;
   border: 0;
   gap: 16px;
 }
+.compact-value .outcome .target,
 .outlook-detailed .outcome .target {
   text-align: left;
   max-width: none;
@@ -1874,9 +1885,11 @@ caption {
   .outlook .outcome .target strong {
     font-size: 26px;
   }
+  .compact-value .scenario-list,
   .outlook-detailed .scenario-list {
     gap: 14px;
   }
+  .compact-value .outcome .target strong,
   .outlook-detailed .outcome .target strong {
     font-size: 28px;
   }
@@ -3225,9 +3238,10 @@ caption {
   margin-top: 32px;
 }
 .technical-bottom {
-  margin-top: 24px;
+  margin-top: 18px;
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
-  gap: 24px;
+  gap: 18px;
 }
 .technical-reference,
 .technical-accumulation,
@@ -4036,6 +4050,17 @@ select {
   .research-section-heading h2 {
     font-size: 18px;
   }
+  .analyst-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .research-page .local-tabs {
+    display: flex;
+    overflow-x: auto;
+  }
+  .research-page .local-tabs button {
+    flex: 0 0 auto;
+    padding: 10px 12px;
+  }
   .home-workspace .home-details > section {
     padding: 16px;
   }
@@ -4045,5 +4070,106 @@ select {
   }
   .topbar {
     isolation: isolate;
+  }
+}
+
+/* Analyst evidence shares the compact research surface. */
+.analyst-workspace {
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+}
+.analyst-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 24px;
+}
+.analyst-summary span,
+.analyst-summary small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+.analyst-summary strong {
+  display: block;
+  color: var(--blue);
+  font-size: 28px;
+  margin: 6px 0;
+}
+.rating-distribution {
+  display: grid;
+  gap: 14px;
+  margin: 18px 0 24px;
+}
+.rating-distribution > div {
+  display: grid;
+  grid-template-columns: 100px minmax(0, 1fr) 40px;
+  gap: 12px;
+  align-items: center;
+  font-size: 13px;
+}
+.rating-track {
+  height: 8px;
+  background: var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.rating-track i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+}
+@media (max-width: 700px) {
+  .analyst-summary {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .analyst-workspace {
+    padding: 16px;
+  }
+}
+
+.compact-value .outlook {
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+}
+.compact-value .outcome {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--blue);
+  border-radius: 14px;
+  gap: 10px;
+}
+.compact-value .outcome:first-child {
+  border-top-color: var(--red);
+}
+.compact-value .outcome:last-child {
+  border-top-color: var(--green);
+}
+.compact-value .outcome .target strong {
+  font-size: clamp(24px, 2.3vw, 34px);
+}
+.compact-value .outlook .scenario-list .target {
+  max-width: 100%;
+  min-width: 0;
+}
+@media (max-width: 700px) {
+  .compact-value .outlook {
+    padding: 16px;
+  }
+  .compact-value .outcome {
+    flex-direction: row;
+    align-items: center;
+  }
+  .compact-value .outcome .target {
+    width: auto;
+    text-align: right;
+  }
+  .compact-value .outcome .target strong {
+    font-size: 25px;
   }
 }

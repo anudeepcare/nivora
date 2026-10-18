@@ -2,7 +2,6 @@
 import type { Research } from "@/lib/types";
 import { earningsSurprise } from "@/lib/research-workbench";
 import { dateLabel, percent, amount } from "@/lib/format";
-import { downloadCsv } from "./ResearchWorkbench";
 export default function EarningsWorkspace({
   research: r,
 }: {
@@ -73,55 +72,40 @@ export default function EarningsWorkspace({
         </div>
       )}
       {future.length > 0 && (
-        <div className="estimate-grid">
-          {future.map((e, i) => (
-            <section className="estimate-card" key={e.date + e.frequency + i}>
-              <span className="eyebrow">
-                {e.frequency || "Forecast"} · {e.period || e.date}
-              </span>
-              <strong>
-                {e.revenue != null && e.currency
-                  ? amount(e.revenue, e.currency, true)
-                  : "Revenue unavailable"}
-              </strong>
-              <span>Revenue estimate</span>
-              <p>
-                EPS{" "}
-                {e.eps != null && e.currency ? amount(e.eps, e.currency) : "—"}{" "}
-                · {e.analysts ?? "Unknown"} analysts
-              </p>
-              <small className="muted">Period ends {dateLabel(e.date)}</small>
-            </section>
-          ))}
+        <div className="table-scroll">
+          <table>
+            <caption>Future estimates · not reported results</caption>
+            <thead>
+              <tr>
+                <th>Period ending</th>
+                <th>Scope</th>
+                <th>Revenue estimate</th>
+                <th>EPS estimate</th>
+                <th>Analysts</th>
+              </tr>
+            </thead>
+            <tbody>
+              {future.map((e, i) => (
+                <tr key={e.date + e.frequency + i}>
+                  <td>{dateLabel(e.date)}</td>
+                  <td>{e.frequency || "Not supplied"}</td>
+                  <td>
+                    {e.revenue != null && e.currency
+                      ? amount(e.revenue, e.currency, true)
+                      : "—"}
+                  </td>
+                  <td className={e.eps != null && e.eps < 0 ? "red" : ""}>
+                    {e.eps != null && e.currency
+                      ? amount(e.eps, e.currency)
+                      : "—"}
+                  </td>
+                  <td>{e.analysts ?? "—"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
-      <button
-        className="text-button"
-        onClick={() =>
-          downloadCsv(`${r.company.symbol}-earnings.csv`, [
-            [
-              "symbol",
-              "report_date",
-              "period",
-              "actual_eps",
-              "estimate_eps",
-              "surprise_pct",
-              "retrieved_at",
-            ],
-            ...rows.map((e) => [
-              r.company.symbol,
-              e.date,
-              e.period,
-              e.actual,
-              e.estimate,
-              earningsSurprise(e.actual, e.estimate),
-              r.retrievedAt,
-            ]),
-          ])
-        }
-      >
-        Download earnings history
-      </button>
     </section>
   );
 }

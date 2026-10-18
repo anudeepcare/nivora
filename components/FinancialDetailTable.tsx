@@ -112,43 +112,6 @@ export default function FinancialDetailTable({
           periods remain selectable.
         </p>
       )}
-      <button
-        className="text-button"
-        onClick={() =>
-          downloadCsv(`${r.company.symbol}-${scope}-detail.csv`, [
-            [
-              "symbol",
-              "period_start",
-              "period_end",
-              "currency",
-              "basis",
-              "metric",
-              "value",
-              "unit",
-              "definition",
-              "retrieved_at",
-            ],
-            ...periods.flatMap((p) =>
-              applicableMetrics(r)
-                .filter((m) => p[m.key] != null)
-                .map((m) => [
-                  r.company.symbol,
-                  p.start,
-                  p.end,
-                  p.currency,
-                  p.basis,
-                  m.label,
-                  p[m.key],
-                  m.unit,
-                  m.help,
-                  r.retrievedAt,
-                ]),
-            ),
-          ])
-        }
-      >
-        Download all available financial metrics
-      </button>
     </details>
   );
 }

@@ -178,10 +178,6 @@ export default function PortfolioTools({
       <section className="support">
         <header className="section-heading">
           <h2>Import positions</h2>
-          <button className="text-button" onClick={template}>
-            <Download size={15} />
-            CSV template
-          </button>
         </header>
         <label className="button file-picker">
           <Upload size={16} />

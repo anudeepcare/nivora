@@ -262,13 +262,6 @@ export default function Analyst({
                 })}
               </div>
             </div>
-            <button
-              className="icon-button"
-              aria-label="Download analysis"
-              onClick={download}
-            >
-              <Download size={18} />
-            </button>
           </header>
           <div className="three-col">
             {(["strengths", "risks", "watch"] as const).map((k, i) => (

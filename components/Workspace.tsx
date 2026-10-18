@@ -854,7 +854,7 @@ export function Portfolio() {
       {error && !modal.current?.open && <Notice error>{error}</Notice>}
       <div className="portfolio-top">
         <section className="panel portfolio-balance">
-          <span className="eyebrow">Invested value · USD</span>
+          <span className="eyebrow">Priced assets & cash · USD</span>
           <div className="balance">
             {workspace && quotes.ready ? amount(totals.knownValue) : "—"}
           </div>
@@ -880,7 +880,6 @@ export function Portfolio() {
           <Allocation positions={positions} quotes={q} />
         </section>
       </div>
-      <PortfolioContext quotes={q} />
       <section className="panel portfolio-holdings support">
         <header className="section-heading">
           <h2>
