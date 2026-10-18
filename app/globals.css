@@ -2499,11 +2499,11 @@ caption {
 .financial-detail-groups {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 22px;
-  margin-top: 32px;
+  gap: 14px;
+  margin-top: 24px;
 }
 .financial-detail-groups > section {
-  padding: 22px;
+  padding: 18px;
   border: 1px solid var(--line);
   border-radius: 20px;
   background: var(--surface);
@@ -2841,8 +2841,8 @@ caption {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
-  padding: 20px;
+  gap: 8px;
+  padding: 16px 20px;
   border: 1px solid var(--line);
   border-radius: 18px;
   background: var(--surface);
@@ -3583,10 +3583,12 @@ caption {
   min-width: 0;
 }
 .trend-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 14px;
 }
 .trend-card {
   padding: 18px;
+  border: 1px solid color-mix(in srgb, currentColor 12%, var(--line));
   border-radius: 18px;
   background: color-mix(in srgb, currentColor 5%, var(--surface));
   min-width: 0;
@@ -3604,8 +3606,9 @@ caption {
 .trend-card svg {
   display: block;
   width: 100%;
-  height: 100px;
-  margin: 8px 0;
+  height: 92px;
+  margin: 14px 0 10px;
+  overflow: visible;
 }
 .research-data-table summary {
   color: var(--blue);
@@ -3805,13 +3808,17 @@ caption {
   margin: 20px 0;
 }
 .monthly-readings > div {
-  padding: 14px 8px;
+  --reading-tone: var(--blue);
+  padding: 12px 8px;
+  min-height: 88px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  background: var(--blue-soft);
-  border-radius: 16px;
+  gap: 6px;
+  background: color-mix(in srgb, var(--reading-tone) 7%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--reading-tone) 15%, var(--line));
+  border-top: 3px solid var(--reading-tone);
+  border-radius: 14px;
 }
 .monthly-readings span {
   font-size: 12px;
@@ -3820,7 +3827,7 @@ caption {
 .monthly-readings b {
   font-size: 24px;
   font-weight: 550;
-  color: var(--blue);
+  color: var(--reading-tone);
 }
 .monthly-readings small {
   font-size: 10px;
@@ -4134,7 +4141,8 @@ select {
   border-radius: 20px;
 }
 .compact-value .outcome {
-  padding: 16px;
+  background: color-mix(in srgb, var(--blue) 3%, var(--surface));
+  padding: 18px;
   border: 1px solid var(--line);
   border-top: 3px solid var(--blue);
   border-radius: 14px;
@@ -4142,9 +4150,11 @@ select {
 }
 .compact-value .outcome:first-child {
   border-top-color: var(--red);
+  background: color-mix(in srgb, var(--red) 4%, var(--surface));
 }
 .compact-value .outcome:last-child {
   border-top-color: var(--green);
+  background: color-mix(in srgb, var(--green) 4%, var(--surface));
 }
 .compact-value .outcome .target strong {
   font-size: clamp(24px, 2.3vw, 34px);
@@ -4263,3 +4273,70 @@ select {
     gap: 12px;
   }
 }
+
+/* Compact statement snapshot: paired labels and values, not a full-width table. */
+.statement-snapshot {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 24px;
+  margin: 16px 0 24px;
+  padding: 4px 20px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+}
+.statement-snapshot > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+.statement-snapshot > div:nth-last-child(-n+2) { border-bottom: 0; }
+.statement-snapshot dt { color: var(--muted); font-size: 14px; }
+.statement-snapshot dd { margin: 0; font-size: 18px; font-weight: 550; }
+.research-page .metric-strip { gap: 12px; padding: 0; margin: 22px 0; }
+.research-page .metric-strip .metric {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--blue);
+  border-radius: 16px;
+  background: var(--surface);
+}
+.research-page .metric-strip .metric[data-tone="green"] { border-top-color: var(--green); }
+.research-page .metric-strip .metric[data-tone="red"] { border-top-color: var(--red); }
+.research-page .metric-strip .metric[data-tone="neutral"] { border-top-color: var(--muted); }
+.research-page .metric-number { font-size: clamp(26px, 2.4vw, 32px); letter-spacing: -.7px; }
+.case-columns [data-tone="supports"] .case-points > span:not(.muted),
+.case-columns [data-tone="risks"] .case-points > span:not(.muted) {
+  display: inline-flex; padding: 6px 10px; border-radius: 10px; font-size: 13px;
+}
+.case-columns [data-tone="supports"] .case-points > span:not(.muted) { background: var(--green-soft); color: var(--green); }
+.case-columns [data-tone="risks"] .case-points > span:not(.muted) { background: var(--red-soft); color: var(--red); }
+.monthly-readings > [data-level="0"] { --reading-tone: var(--muted); }
+.monthly-readings > [data-level="2"] { --reading-tone: var(--green); }
+.monthly-readings > [data-level="3"] { --reading-tone: var(--purple); }
+.monthly-readings > [data-level="4"] { --reading-tone: var(--amber); }
+.company-updates > .grid2 { align-items: start; gap: 18px; }
+.company-updates > .grid2 > div {
+  padding: 20px; border: 1px solid var(--line); border-radius: 20px; background: var(--surface);
+}
+.company-updates .context-note { color: var(--blue); font-size: 18px; margin: 14px 0 10px; }
+.company-updates .stat-pair { padding: 12px 0; gap: 14px; }
+.company-updates .stat-pair > span { line-height: 1.6; }
+@media (max-width: 700px) {
+  .statement-snapshot { grid-template-columns: minmax(0,1fr); padding: 0 16px; }
+  .statement-snapshot > div:nth-last-child(2) { border-bottom: 1px solid var(--line); }
+  .statement-snapshot dd { font-size: 17px; }
+  .research-page .metric-strip .metric { padding: 14px; }
+  .trend-grid { grid-template-columns: minmax(0,1fr); }
+  .trend-card svg { height: 84px; }
+  .monthly-readings { gap: 8px; }
+  .monthly-readings > div { min-height: 84px; padding: 10px 6px; }
+  .company-updates > .grid2 > div { padding: 16px; }
+}
+
+.valuation-summary strong.positive { color: var(--green); }
+.valuation-summary strong.negative { color: var(--red); }
+.content > .research-page { margin-bottom: 24px; }

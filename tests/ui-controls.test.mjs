@@ -67,7 +67,9 @@ test("Financials retains four primary metrics and statement rows with separate l
     "Net debt",
   ])
     assert(html.includes(label));
-  assert.equal((html.match(/<tbody><tr>|<\/tr><tr>/g) || []).length, 4);
+  assert.match(html, /aria-label="Income statement snapshot"/);
+  assert.equal((html.match(/<dt>/g) || []).length, 4);
+  assert.equal((html.match(/<dd class="num">/g) || []).length, 4);
   assert.doesNotMatch(html, /supported metrics|Expand|Forecast|Market cap/);
 });
 

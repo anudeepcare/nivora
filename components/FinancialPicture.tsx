@@ -139,7 +139,7 @@ export default function FinancialPicture({
     },
   ];
   return (
-    <section>
+    <section className="financial-picture">
       <header className="section-head">
         <div>
           <h2>Financials</h2>
@@ -216,22 +216,14 @@ export default function FinancialPicture({
               ))}
             </div>
           </header>
-          <table className="statement">
-            <thead>
-              <tr>
-                <th>Metric</th>
-                <th>Snapshot</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map(([label, value]) => (
-                <tr key={label}>
-                  <td>{label}</td>
-                  <td className="num">{value}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <dl className="statement-snapshot" aria-label={`${statement} statement snapshot`}>
+            {rows.map(([label, value]) => (
+              <div key={label}>
+                <dt>{label}</dt>
+                <dd className="num">{value}</dd>
+              </div>
+            ))}
+          </dl>
           <div className="financial-detail-groups">
             {detailGroups.map((group) => {
               const available = group.rows.filter(

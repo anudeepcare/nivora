@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-18T22:54:26.917788+00:00",
+  "generatedAt": "2026-10-18T23:01:29.096933+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
@@ -34,7 +34,7 @@
   "priorEvidence": "The signed-in reference/deployed UI reviews predate this patch. New verification is source, domain/SSR, TypeScript and build evidence only.",
   "browserTestScope": "No rendered browser test of this build; older live audits are historical evidence only",
   "patchedSourceBrowserTestsExecuted": false,
-  "latestAudit": "../docs/PWA_ROOT_SURFACE_20261018.md",
+  "latestAudit": "../docs/DESIGN_REFINEMENT_20261018.md",
   "referenceReview": "REFERENCE_REVIEW_20261017.md",
   "decisionPolicy": "research-v1.6 / decision-guide-v1.1; original unvalidated research triage; no broker execution",
   "latestLogs": [
@@ -84,5 +84,11 @@
     "top": 0,
     "zeroInsetCollapsePrevented": true,
     "physicalDeviceAcceptanceRecorded": false
+  },
+  "designRefinement": {
+    "screensReviewed": 8,
+    "calculationsChanged": false,
+    "pwaCorrectionRetainedByteForByte": true,
+    "visualBrowserAcceptance": false
   }
 }

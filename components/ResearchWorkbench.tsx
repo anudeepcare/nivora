@@ -93,6 +93,7 @@ export default function ResearchWorkbench({
               </strong>
               <svg
                 viewBox="0 0 300 106"
+                preserveAspectRatio="none"
                 role="img"
                 aria-label={`${label}, ${points.length} reported ${scope} periods`}
               >
@@ -107,7 +108,8 @@ export default function ResearchWorkbench({
                   d={path}
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="3"
+                  strokeWidth="2.5"
+                  vectorEffect="non-scaling-stroke"
                 />
                 {valid.length === 1 && (
                   <circle

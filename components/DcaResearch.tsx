@@ -23,14 +23,12 @@ export default function DcaResearch({ research: r }: { research: Research }) {
       </header>
       <div className="monthly-readings">
         {readings.map((x) => (
-          <div key={x.month}>
-            <span>{x.month}</span>
+          <div key={x.month} data-level={x.confirmed}>
+            <span title={x.month}>{new Date(`${x.month}-01T12:00:00Z`).toLocaleDateString("en-US", {month: "short", year: "2-digit", timeZone: "UTC"})}</span>
             <b>{x.confirmed}×</b>
             {x.strongest > x.confirmed ? (
               <small title={x.date}>◇ {x.strongest}× during month</small>
-            ) : (
-              <small>Same strongest zone</small>
-            )}
+            ) : null}
           </div>
         ))}
       </div>
