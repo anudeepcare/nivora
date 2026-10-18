@@ -115,6 +115,14 @@ export function researchOutlook(r: Research): Outlook {
     return unavailable(
       "A comparable annual EPS forecast in the quote currency is needed.",
     );
+  const fiscalLabel = /^FY(\d{4})$/i.exec(estimate.period);
+  if (
+    fiscalLabel &&
+    Math.abs(Number(fiscalLabel[1]) - Number(estimate.date.slice(0, 4))) > 1
+  )
+    return unavailable(
+      "The supplied fiscal period and forecast date conflict.",
+    );
   const { epsLow: low, eps: base, epsHigh: high } = estimate;
   if (
     ![low, base, high].every((v) => v != null && Number.isFinite(v) && v > 0) ||
@@ -153,9 +161,7 @@ export function researchOutlook(r: Research): Outlook {
     available: true,
     cases,
     years,
-    period: /^FY\d{4}$/i.test(estimate.period)
-      ? estimate.period
-      : `FY${estimate.date.slice(0, 4)}`,
+    period: fiscalLabel ? estimate.period.toUpperCase() : "Annual forecast",
     end: estimate.date,
     asOf: e.updatedAt!,
     currency: r.quote.currency,

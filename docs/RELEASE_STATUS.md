@@ -1,6 +1,6 @@
 # Latest source update — 18 October 2026
 
-Technical/Thesis grid polish and copyright/disclosure footer included. 154 tests + production build + 61 fixture API checks passed. Not deployed; physical installed-iPhone PWA and exact rendered parity remain unverified. See verification/RESEARCH_POLISH_20261018.md.
+Technical/Thesis grid polish and copyright/disclosure footer included. 156 tests + production build + 61 fixture API checks passed. Not deployed; physical installed-iPhone PWA and exact rendered parity remain unverified. See verification/RESEARCH_POLISH_20261018.md.
 
 # Latest standalone PWA and outage correction
 

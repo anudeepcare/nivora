@@ -163,6 +163,10 @@ export function ResearchOutlook({
       </div>
       {outlook.available ? (
         <>
+          <p className="outlook-horizon">
+            Forecast ends {dateLabel(outlook.end)} ·{" "}
+            {Math.round(outlook.years * 12)} months ahead
+          </p>
           <div className="scenario-list">
             {outlook.cases.map((c, i) => (
               <div className="outcome" key={c.name}>

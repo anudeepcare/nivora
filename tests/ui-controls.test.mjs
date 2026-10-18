@@ -197,3 +197,48 @@ test("Product footer supplies copyright and a research disclosure without provid
   assert.match(html, /not guarantees/);
   assert.doesNotMatch(html, /EODHD|Twelve Data/);
 });
+
+test("outlook displays the selected forecast end and horizon beside its cases", async () => {
+  const { researchOutlook, consensusOutlook } = await import(
+    "../lib/outlook.ts"
+  );
+  const Outlook = loadComponent(
+    "components/ResearchOverview.tsx",
+    "ResearchOutlook",
+    {
+      React,
+      useMemo: React.useMemo,
+      researchOutlook,
+      consensusOutlook,
+      ...format,
+      Help: empty,
+      DataStamp: empty,
+    },
+  );
+  const r = structuredClone(demoData.research.MSFT);
+  r.retrievedAt = "2026-10-17T00:00:00Z";
+  r.quote = { ...r.quote, price: 100, currency: "USD", stale: false };
+  r.evidence = {
+    updatedAt: "2026-10-17",
+    profile: { sector: "Technology", industry: "Software" },
+    multiples: { ForwardPE: 20 },
+    estimates: [
+      {
+        date: "2029-10-17",
+        period: "FY2029",
+        frequency: "Annual",
+        currency: "USD",
+        eps: 8,
+        epsLow: 6,
+        epsHigh: 10,
+        analysts: 10,
+      },
+    ],
+  };
+  const html = renderToStaticMarkup(
+    React.createElement(Outlook, { research: r }),
+  );
+  assert.match(html, /Forecast ends/);
+  assert.match(html, /Oct 17, 2029/);
+  assert.match(html, /36 months ahead/);
+});

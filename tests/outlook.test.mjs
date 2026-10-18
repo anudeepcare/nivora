@@ -117,3 +117,11 @@ test("healthcare-plan insurers cannot bypass the same sector gate used by the de
   assert.equal(result.available, false);
   assert.match(result.reason, /sector-specific/i);
 });
+
+test("outlook rejects a fiscal label that contradicts its underlying forecast date", () => {
+  const input = research();
+  input.evidence.estimates[0].period = "FY2035";
+  const result = load().researchOutlook(input);
+  assert.equal(result.available, false);
+  assert.match(result.reason, /period|date/i);
+});
