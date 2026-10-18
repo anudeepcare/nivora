@@ -27,3 +27,6 @@ AppLovin comparison is still a methodological gap: the uploaded competitor scree
 
 ## Forecast period clarity
 Each available outlook now displays forecast end date and months ahead beside the three cases, in Overview and Value. Explicit fiscal labels more than one year away from the forecast calendar year are rejected (one-year differences can arise from fiscal-year naming conventions). Missing fiscal labels remain Annual forecast rather than inventing a fiscal-year designation. All three cases still share exactly one forecast record/date and horizon. Company forecasts may cover different future years; cross-company fair-value comparability is not established by this change. Two added regressions check contradictory labels and the visible forecast horizon.
+
+## Search corner correction
+Uploaded screenshot shows the sticky header background escaping the rounded dialog because desktop search-dialog set overflow:visible. Source now clips at its existing rounded boundary, and the input uses a 16px radius and full border instead of the square bottom-border override. No new data requests. CSS-only correction; installed-device and rendered post-change verification remain outstanding.

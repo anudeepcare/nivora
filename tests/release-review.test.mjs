@@ -192,8 +192,9 @@ function researchMarkup() {
   )(...Object.values(bindings));
   return renderToStaticMarkup(component({ symbol: "SAP" }));
 }
-test("the actual Snapshot renders quote fallback provenance", () => {
-  assert.match(researchMarkup(), /EODHD.*fallback/);
+test("the actual Snapshot discloses backup data without vendor names", () => {
+  assert.match(researchMarkup(), /Backup data used/);
+  assert.doesNotMatch(researchMarkup(), /EODHD|Twelve Data/);
 });
 test("unverified upcoming EPS is never formatted in the listing currency", () => {
   const html = researchMarkup();

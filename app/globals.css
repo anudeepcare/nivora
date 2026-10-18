@@ -1159,7 +1159,8 @@ caption {
   width: min(600px, calc(100vw - 40px));
   max-height: calc(100dvh - 80px);
   padding-bottom: 18px;
-  overflow: visible;
+  overflow: hidden;
+  border-radius: 28px;
 }
 .search-dialog > .search {
   padding: 0 20px;
@@ -1175,10 +1176,10 @@ caption {
   padding: 0;
 }
 .search-dialog .search-box {
-  border-radius: 0;
-  border: 0;
-  border-bottom: 1px solid var(--line);
-  padding: 0;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  padding: 4px 12px;
 }
 .dialog {
   padding: 26px;
@@ -2439,6 +2440,121 @@ caption {
   font-size: 12px;
   line-height: 1.6;
   margin: 12px 0;
+}
+/* Coverage rows keep the date, headline and action in separate columns. */
+.coverage-grid {
+  margin-top: 24px;
+  align-items: start;
+}
+.coverage-grid .source-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 20px;
+  align-items: start;
+  gap: 14px;
+  margin: 0;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+  text-decoration: none;
+}
+.coverage-grid .source-row:last-child {
+  border-bottom: 0;
+}
+.coverage-grid .source-row > span {
+  min-width: 0;
+}
+.coverage-grid .source-row small {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.coverage-grid .source-row strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.55;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.coverage-grid .source-row > svg {
+  margin-top: 26px;
+  color: var(--blue);
+}
+.coverage-grid .source-row:hover strong {
+  color: var(--blue);
+}
+.coverage-grid .au-panel {
+  min-width: 0;
+}
+.metric[data-tone="red"] .metric-number {
+  color: var(--red);
+}
+.metric[data-tone="green"] .metric-number {
+  color: var(--green);
+}
+.metric[data-tone="blue"] .metric-number {
+  color: var(--blue);
+}
+.metric[data-tone="violet"] .metric-number {
+  color: var(--ink);
+}
+.metric .metric-number {
+  font-size: clamp(26px, 2.5vw, 36px);
+  overflow-wrap: anywhere;
+}
+.valuation-metrics {
+  gap: 16px;
+}
+.valuation-metrics .stat-pair {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+}
+.valuation-metrics .stat-pair span {
+  font-size: 13px;
+  color: var(--muted);
+}
+.valuation-metrics .stat-pair strong {
+  font-size: 28px;
+  color: var(--blue);
+  font-weight: 550;
+}
+.outlook-horizon {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 10px 0 8px;
+}
+.value-picture .outcome .target strong {
+  font-size: clamp(28px, 3vw, 38px);
+}
+.case-unavailable {
+  padding: 20px;
+  background: var(--blue-soft);
+  border-radius: 18px;
+}
+.case-unavailable p {
+  font-size: 14px;
+  line-height: 1.6;
+  margin-top: 10px;
+  color: var(--muted);
+}
+@media (max-width: 700px) {
+  .coverage-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .coverage-grid .source-row strong {
+    font-size: 14px;
+  }
+  .valuation-metrics {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 .blue {
   color: var(--blue);

@@ -21,3 +21,14 @@ export function searchSelection(
   );
   return exact?.symbol ?? symbolInput(q);
 }
+
+/** One cache entry for equivalent ticker/company queries. */
+export function searchRequestKey(query: string): string {
+  const normalized = query
+    .trim()
+    .replace(/^\$/, "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toUpperCase();
+  return `search?q=${encodeURIComponent(normalized)}`;
+}

@@ -3,8 +3,13 @@ import { useId, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search as SearchIcon, ArrowUpRight, X } from "lucide-react";
 import { api } from "@/lib/client";
+import { readResource } from "@/lib/resource-cache";
 import type { Company } from "@/lib/types";
-import { cryptoSearchSymbol, searchSelection } from "@/lib/search-selection";
+import {
+  cryptoSearchSymbol,
+  searchSelection,
+  searchRequestKey,
+} from "@/lib/search-selection";
 import { useProduct } from "./Session";
 import { SecurityLogo } from "./Ui";
 export default function Search({
@@ -62,7 +67,6 @@ export default function Search({
       return;
     }
     let active = true;
-    const c = new AbortController();
     const base = cryptoSearchSymbol(query)?.split("/")[0] ?? null;
     const cryptoMatch: Company | null = base
       ? {
@@ -73,8 +77,15 @@ export default function Search({
           assetType: "crypto",
         }
       : null;
-    setLoading(true);
-    const timer = setTimeout(async () => {
+    if (cryptoMatch && !demo) {
+      setResults([cryptoMatch]);
+      setLoading(false);
+      return;
+    }
+    const requestKey = searchRequestKey(query);
+    const cached = !demo ? cache.get(requestKey) : null;
+    setLoading(!cached || Date.now() - cached.at >= 300000);
+    const load = async () => {
       try {
         const rows = demo
           ? Object.values(demo.research)
@@ -85,10 +96,11 @@ export default function Search({
                   .includes(query.toLowerCase()),
               )
           : (
-              await api<{ results: Company[] }>(
-                `search?q=${encodeURIComponent(query.trim().replace(/^\$/, ""))}`,
-                undefined,
-                c.signal,
+              await readResource<{ results: Company[] }>(
+                cache,
+                requestKey,
+                300000,
+                () => api<{ results: Company[] }>(requestKey),
               )
             ).results;
         if (active) {
@@ -110,13 +122,15 @@ export default function Search({
       } finally {
         if (active) setLoading(false);
       }
-    }, 450);
+    };
+    const timer =
+      cached && Date.now() - cached.at < 300000 ? null : setTimeout(load, 350);
+    if (timer == null) void load();
     return () => {
       active = false;
-      clearTimeout(timer);
-      c.abort();
+      if (timer != null) clearTimeout(timer);
     };
-  }, [query, demo]);
+  }, [query, demo, cache]);
   const go = (symbol: string) => {
     setOpen(false);
     setQuery("");

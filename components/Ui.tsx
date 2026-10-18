@@ -21,10 +21,9 @@ export function DataStamp({
         {dateLabel(asOf)}
       </span>
       <Help label="Data details">
-        <details className="source-details">
-          <summary>Data attribution</summary>
-          <p>{source || "Source not supplied"}</p>
-        </details>
+        {source && /fallback/i.test(source) && (
+          <p>Backup data used for this observation.</p>
+        )}
         <p>Observation: {quoteTime(asOf)}</p>
         <p>
           Quotes, statements and analyst estimates can have different

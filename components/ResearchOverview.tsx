@@ -106,12 +106,12 @@ export function ResearchOutlook({
               ))
             ) : (
               <div className="case-unavailable">
-                {["Bear", "Base", "Bull"].map((name) => (
-                  <div className="driver" key={name}>
-                    <h3>{name}</h3>
-                    <p>Comparable forecast inputs are not available yet.</p>
-                  </div>
-                ))}
+                <h3>Model coverage</h3>
+                <p>{outlook.reason}</p>
+                <p>
+                  Targets are withheld until the required forecasts and
+                  business-specific assumptions can be reconciled.
+                </p>
               </div>
             )}
             <p className="context-note">
@@ -127,7 +127,7 @@ export function ResearchOutlook({
             <p>These ratios are separate from model outputs.</p>
           </div>
         </header>
-        <div className="grid3">
+        <div className="grid3 valuation-metrics">
           {[
             ["P/E · TTM", multiple(r.evidence?.multiples?.TrailingPE)],
             ["Forward P/E", multiple(r.evidence?.multiples?.ForwardPE)],
@@ -301,7 +301,12 @@ export function ResearchOutlook({
 
 export function KeyFinancialMetrics({ research: r }: { research: Research }) {
   const p = useMemo(() => perspective(r), [r]);
-  const metrics =
+  const metrics: {
+    label: string;
+    value: string;
+    detail: string;
+    tone?: string;
+  }[] =
     r.company.assetType === "crypto"
       ? [
           {
@@ -361,13 +366,13 @@ export function KeyFinancialMetrics({ research: r }: { research: Research }) {
               r.evidence.multiples.ForwardPE > 0
                 ? `${r.evidence.multiples.ForwardPE.toFixed(1)}×`
                 : "—",
-            detail: "Provider earnings estimate",
+            detail: "Forward earnings estimate",
           },
         ];
   return (
     <section className="metric-strip" aria-label="Key metrics">
       {metrics.map((m) => (
-        <div className="metric" key={m.label}>
+        <div className="metric" data-tone={m.tone ?? "neutral"} key={m.label}>
           <Help label={m.label} trigger={m.label}>
             <p>
               {m.detail}.{" "}
@@ -382,18 +387,20 @@ export function KeyFinancialMetrics({ research: r }: { research: Research }) {
           >
             {m.detail}
           </div>
-          {m.label === "Operating margin" && p.last?.margin != null && (
-            <div
-              className="metric-meter"
-              aria-label={`Operating margin ${percent(p.last.margin)}`}
-            >
-              <i
-                style={{
-                  width: `${Math.max(0, Math.min(100, p.last.margin))}%`,
-                }}
-              />
-            </div>
-          )}
+          {m.label === "Operating margin" &&
+            p.last?.margin != null &&
+            p.last.margin >= 0 && (
+              <div
+                className="metric-meter"
+                aria-label={`Operating margin ${percent(p.last.margin)}`}
+              >
+                <i
+                  style={{
+                    width: `${Math.max(0, Math.min(100, p.last.margin))}%`,
+                  }}
+                />
+              </div>
+            )}
           {m.label === "Cash after capex" &&
             p.last?.fcf != null &&
             p.last?.revenue != null &&
@@ -402,13 +409,15 @@ export function KeyFinancialMetrics({ research: r }: { research: Research }) {
                 <div className="metric-sub">
                   {percent((p.last.fcf / p.last.revenue) * 100)} of revenue
                 </div>
-                <div className="metric-meter" aria-hidden="true">
-                  <i
-                    style={{
-                      width: `${Math.max(0, Math.min(100, (p.last.fcf / p.last.revenue) * 100))}%`,
-                    }}
-                  />
-                </div>
+                {p.last.fcf >= 0 && (
+                  <div className="metric-meter" aria-hidden="true">
+                    <i
+                      style={{
+                        width: `${Math.max(0, Math.min(100, (p.last.fcf / p.last.revenue) * 100))}%`,
+                      }}
+                    />
+                  </div>
+                )}
               </>
             )}
         </div>

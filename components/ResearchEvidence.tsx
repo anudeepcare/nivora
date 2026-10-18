@@ -51,7 +51,7 @@ export function ProviderMetrics({
     [
       "EV / revenue",
       multiple(e.multiples.EnterpriseValueRevenue),
-      "Enterprise value divided by revenue, supplied by EODHD.",
+      "Enterprise value divided by reported revenue.",
     ],
     [
       "EV / EBITDA",
@@ -125,9 +125,10 @@ export function Consensus({ research: r }: { research: Research }) {
           </small>
         </div>
         <Help label="Analyst consensus">
-          EODHD consensus and targets may update at different times from prices.
-          A target is not fair value or a guaranteed return. The provider update
-          date is not necessarily the date of each analyst report.
+          Analyst consensus and targets may update at different times from
+          prices. A target is not fair value or a guaranteed return. The
+          provider update date is not necessarily the date of each analyst
+          report.
         </Help>
       </div>
       <div className="au-between">
@@ -415,7 +416,7 @@ export function NewsAndFilings({ research: r }: { research: Research }) {
     3600000,
   );
   return (
-    <div className="au-two">
+    <div className="au-two coverage-grid">
       <section className="au-panel">
         <header className="au-panel-head">
           <h2>Recent coverage</h2>
@@ -432,7 +433,7 @@ export function NewsAndFilings({ research: r }: { research: Research }) {
             >
               <span>
                 <small>{dateLabel(n.date)}</small>
-                {n.title}
+                <strong>{n.title}</strong>
               </span>
               <ArrowUpRight size={17} />
             </a>
@@ -464,7 +465,7 @@ export function NewsAndFilings({ research: r }: { research: Research }) {
                   <small>
                     {f.form} · {dateLabel(f.date)}
                   </small>
-                  {f.title}
+                  <strong>{f.title}</strong>
                 </span>
                 <ArrowUpRight size={17} />
               </a>

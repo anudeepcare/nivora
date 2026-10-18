@@ -242,3 +242,18 @@ test("outlook displays the selected forecast end and horizon beside its cases", 
   assert.match(html, /Oct 17, 2029/);
   assert.match(html, /36 months ahead/);
 });
+
+test("data details retain observation time without displaying infrastructure vendor names", () => {
+  const Stamp = loadComponent("components/Ui.tsx", "DataStamp", {
+    React,
+    ...format,
+    Help: ({ children }) => React.createElement("section", null, children),
+  });
+  for (const source of ["EODHD", "Twelve Data"]) {
+    const html = renderToStaticMarkup(
+      React.createElement(Stamp, { source, asOf: "2026-10-16T20:00:00Z" }),
+    );
+    assert.doesNotMatch(html, /EODHD|Twelve Data|Data attribution/);
+    assert.match(html, /Observation:/);
+  }
+});

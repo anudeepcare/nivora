@@ -1,3 +1,7 @@
+# Latest grid/search update
+
+158 tests + TypeScript + production build + 61 fixture API checks passed. News layout, signed metric colours, Value ratio tiles and cached search included. See verification/RESEARCH_GRID_AND_SEARCH_PERFORMANCE.md. Production latency, post-change visuals, installed iPhone PWA and infrastructure scenario models remain unverified or incomplete.
+
 # Latest source update — 18 October 2026
 
 Technical/Thesis grid polish and copyright/disclosure footer included. 156 tests + production build + 61 fixture API checks passed. Not deployed; physical installed-iPhone PWA and exact rendered parity remain unverified. See verification/RESEARCH_POLISH_20261018.md.

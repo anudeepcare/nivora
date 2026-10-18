@@ -99,7 +99,23 @@ export default function FinancialPicture({
         <>
           <div className="metric-strip" style={{ marginTop: 0 }}>
             {metrics.map(([label, value, detail]) => (
-              <div className="metric" key={label}>
+              <div
+                className="metric"
+                data-tone={
+                  label === "Revenue"
+                    ? "blue"
+                    : label === "Operating margin" && p.margin != null
+                      ? p.margin >= 0
+                        ? "green"
+                        : "red"
+                      : label === "Cash after capex" && p.fcf != null
+                        ? p.fcf >= 0
+                          ? "green"
+                          : "red"
+                        : "neutral"
+                }
+                key={label}
+              >
                 <Help label={label} trigger={label}>
                   <p>
                     {detail}.{" "}

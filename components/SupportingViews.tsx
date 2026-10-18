@@ -317,7 +317,7 @@ export function HelpPage() {
         ],
         [
           "Sources and access",
-          "Company statements use EODHD when configured, with SEC company facts available on the legacy route. Period, currency and source details stay attached to the evidence. Availability varies by listing and reporting history. Commercial display rights must be confirmed with market-data providers before selling access.",
+          "Company statements use available financial data and SEC company facts. Period, currency and source details stay attached to the evidence. Availability varies by listing and reporting history. Commercial display rights must be confirmed with market-data providers before selling access.",
         ],
       ].map(([title, text]) => (
         <section key={title}>
