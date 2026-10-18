@@ -1,0 +1,9 @@
+# Installed-PWA dock and provider-outage corrections
+
+Reviewed IMG_3642 and IMG_3643. The floating fixed dock still covered visible research content. Mobile navigation now occupies a reserved final flex row in the bounded app shell, with a bottom safe-area margin. Content fills the remaining height and owns scrolling. Removed the old 118px floating-dock content padding. App height tracks VisualViewport height. Header remains a separate opaque safe-area row. This targets Safari Add to Home Screen standalone use, but no actual iPhone PWA test has occurred.
+
+Fundamentals previously stopped on EODHD failure. They now attempt the existing SEC financial-facts path and the configured Twelve Data company-profile path independently. A failed SEC contact/coverage request does not discard the available Twelve profile. Statements remain wholly from the SEC fallback rather than splicing provider periods. Company-data endpoints also fall back to Twelve Data where entitled. No new paid endpoint is enabled beyond existing Growth endpoint use. Twelve financial statements and analyst estimates depend on plan entitlement; complete EPS scenarios cannot be promised during an EODHD outage. Missing observations remain marked unavailable.
+
+A compiled-handler regression first failed with an EODHD outage, then verified the Twelve company profile, sector and quote remain available. Its quote assertion was corrected from 202 (chart fixture value) to 200 (the existing quote fixture). Final verification: 152 tests, TypeScript and production build pass; all 61 simulated API checks pass.
+
+OPEN: physical installed-iPhone safe areas, docking, keyboard and rapid navigation; live subscription coverage and price/financial/model cohort checks; universal numeric Bear/Base/Bull values; exact mock visual parity. Vercel access remains blocked; no deployment/push performed. No claim of device-confirmed permanent repair.

@@ -26,6 +26,7 @@ export function TechnicalPicture({
   const readings = [
     {
       label: "Momentum · RSI",
+      tone: "blue",
       value: p.tech.rsi?.toFixed(1) ?? "—",
       detail:
         p.tech.rsi == null
@@ -38,6 +39,12 @@ export function TechnicalPicture({
     },
     {
       label: "Trend · MACD",
+      tone:
+        s.histogram == null
+          ? "neutral"
+          : s.histogram > 0
+            ? "positive"
+            : "negative",
       value:
         s.histogram == null
           ? "—"
@@ -53,12 +60,14 @@ export function TechnicalPicture({
     },
     {
       label: "Relative volume",
+      tone: "blue",
       value:
         p.tech.volumeRatio == null ? "—" : `${p.tech.volumeRatio.toFixed(1)}×`,
       detail: "Versus 20-session average",
     },
     {
       label: "Volatility · ATR",
+      tone: "neutral",
       value: percent(p.tech.atr),
       detail: "Of price · daily reference",
     },
@@ -67,7 +76,7 @@ export function TechnicalPicture({
     <>
       <div className="tech-grid">
         {readings.map((v) => (
-          <div className="tech-read" key={v.label}>
+          <div className="tech-read" data-tone={v.tone} key={v.label}>
             <p className="muted">{v.label}</p>
             <strong className="num">{v.value}</strong>
             <p className="muted">{v.detail}</p>
@@ -75,7 +84,7 @@ export function TechnicalPicture({
         ))}
       </div>
       <div className="grid2 technical-bottom">
-        <section>
+        <section className="technical-reference">
           <header className="section-head">
             <div>
               <h2>Fibonacci reference levels</h2>
@@ -119,29 +128,21 @@ export function TechnicalPicture({
               </div>
             ))}
           </div>
-          <div className="stat-pair">
-            <span>Trend studies</span>
-            <Help label="Trend studies" trigger="50 / 200 MA">
-              <p>
-                50-day average {amount(p.tech.ma50, r.quote.currency)}. 200-day
-                average {amount(p.tech.ma200, r.quote.currency)}. Completed
-                daily bars; {dateLabel(p.tech.last)}.
-              </p>
-            </Help>
-          </div>
-          <div className="stat-pair">
-            <span>Additional studies</span>
-            <Help label="Additional studies" trigger="ADX · OBV · ATR">
-              <p>
-                ADX {x.adx?.toFixed(1) ?? "—"}. OBV{" "}
-                {x.obv == null ? "—" : x.obv.toLocaleString()}. ATR{" "}
-                {percent(p.tech.atr)} of price. These measures use completed
-                daily observations and are separate from the chart interval.
-              </p>
-            </Help>
-          </div>
+          <Help label="Study definitions" trigger="How to read these studies">
+            <p>
+              Moving averages describe price trend. ADX measures trend strength,
+              not direction. OBV accumulates signed trading volume; its change
+              matters more than its absolute level.
+            </p>
+            <p>
+              Bollinger bandwidth measures the spread of the bands relative to
+              their average. Drawdown compares the latest close with the highest
+              close in the last 252 sessions. These studies use completed daily
+              observations regardless of chart interval.
+            </p>
+          </Help>
         </section>
-        <div>{dca}</div>
+        <div className="technical-accumulation">{dca}</div>
       </div>
       <div className="shared-stamp">
         <DataStamp
@@ -189,21 +190,21 @@ export function ThesisPicture({ research: r }: { research: Research }) {
           <p>Three drivers. Three risks. What would change the view.</p>
         </div>
       </header>
-      <div className="grid2">
+      <div className="grid2 thesis-evidence">
         {groups.map((g) => (
-          <section key={g.label}>
+          <section className="thesis-group" data-tone={g.tone} key={g.label}>
             <h3 className={g.tone}>{g.label}</h3>
             {g.rows.slice(0, 3).map((x) => (
               <div className="driver" key={x.key}>
                 <h3>{x.title}</h3>
-                <p>
+                <strong className="driver-value num">
                   {x.unit === "percent"
                     ? percent(x.value)
                     : x.unit === "ratio"
                       ? `${x.value.toFixed(1)}×`
-                      : amount(x.value, e.latest?.currency, true)}{" "}
-                  · {x.text}
-                </p>
+                      : amount(x.value, e.latest?.currency, true)}
+                </strong>
+                <p>{x.text}</p>
               </div>
             ))}
             {!g.rows.length && (

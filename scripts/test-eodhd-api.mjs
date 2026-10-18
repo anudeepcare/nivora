@@ -90,6 +90,16 @@ globalThis.fetch = async (input) => {
   if (u.hostname === "api.twelvedata.com") {
     const symbol = u.searchParams.get("symbol");
     if (symbol === "HIMS") return new Response("", { status: 503 });
+    if (u.pathname === "/profile")
+      return Response.json({
+        symbol: u.searchParams.get("symbol"),
+        name: "Fallback company",
+        sector: "Technology",
+        industry: "Software",
+        exchange: "NASDAQ",
+        currency: "USD",
+        country: "United States",
+      });
     if (u.pathname === "/symbol_search")
       return Response.json({
         data: [
@@ -132,12 +142,14 @@ globalThis.fetch = async (input) => {
     assert.equal(u.searchParams.get("api_token"), "test-eodhd");
     if (u.pathname.startsWith("/api/v1.1/fundamentals/")) {
       const symbol = u.pathname.split("/").at(-1).replace(/\.US$/, "");
-      if (symbol === "LEGACY") return new Response("", { status: 403 });
+      if (["LEGACY", "FALLBACK"].includes(symbol))
+        return new Response("", { status: 403 });
       const data = financial(symbol);
       return Response.json(u.searchParams.has("filter") ? data.General : data);
     }
     if (u.pathname.startsWith("/api/fundamentals/")) {
       const symbol = u.pathname.split("/").at(-1).replace(/\.US$/, "");
+      if (symbol === "FALLBACK") return new Response("", { status: 403 });
       const data = financial(symbol);
       data.Earnings.Trend = {
         "2027-12-31": {
@@ -392,6 +404,17 @@ await check(
       ).length,
       1,
     );
+  },
+);
+await check(
+  "fundamentals outage preserves the available Twelve Data company profile",
+  async () => {
+    const d = await (await get("research/[symbol]", "", "FALLBACK")).json();
+    assert.equal(d.company.name, "Fallback company");
+    assert.equal(d.company.sector, "Technology");
+    assert.equal(d.quote.price, 200);
+    assert(d.issues.length > 0);
+    assert.equal(d.evidence, undefined);
   },
 );
 console.log(

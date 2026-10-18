@@ -1,3 +1,11 @@
+# Latest source update — 18 October 2026
+
+Technical/Thesis grid polish and copyright/disclosure footer included. 154 tests + production build + 61 fixture API checks passed. Not deployed; physical installed-iPhone PWA and exact rendered parity remain unverified. See verification/RESEARCH_POLISH_20261018.md.
+
+# Latest standalone PWA and outage correction
+
+See verification/PWA_DOCK_AND_PROVIDER_OUTAGE.md. 152 tests and 61 simulated API checks pass. Physical installed-PWA and private provider acceptance remain open.
+
 # Latest iPhone scrolling architecture correction
 
 See verification/IPHONE_SCROLL_ROOT.md. 152 tests and 60 simulated API checks pass. Installed-device acceptance remains open.

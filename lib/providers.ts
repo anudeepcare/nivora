@@ -6,6 +6,7 @@ import {
   eodFundamentals,
   eodSearch,
 } from "./eodhd";
+import { normalizeGrow } from "./grow-data";
 import { secObservations } from "./sec-observations";
 import { reserveProvider } from "./provider-budget";
 import type {
@@ -326,7 +327,61 @@ async function sec(path: string) {
     );
   return json(path, { "User-Agent": agent, Accept: "application/json" });
 }
-export async function fundamentals(symbol: string): Promise<{
+export async function fundamentals(
+  symbol: string,
+): Promise<Awaited<ReturnType<typeof secFundamentals>>> {
+  if (!eodEnabled()) return secFundamentals(symbol);
+  try {
+    return await eodFundamentals(symbol);
+  } catch {
+    const [reported, profile] = await Promise.allSettled([
+      secFundamentals(symbol),
+      process.env.TWELVE_DATA_API_KEY
+        ? cached(`fallback-profile:${symbol}`, 86400000, async () => {
+            const raw = await twelve("profile", { symbol }, 10);
+            const p = normalizeGrow(
+              symbol,
+              "profile",
+              raw,
+              new Date().toISOString(),
+            ).profile;
+            if (!p) throw new Error("Company profile unavailable");
+            return {
+              symbol,
+              name: p.name,
+              sector: p.sector,
+              description: p.description,
+              assetType: "stock" as const,
+              exchange: String(raw.exchange || ""),
+              currency: /^[A-Z]{3}$/.test(raw.currency) ? raw.currency : "USD",
+            };
+          })
+        : Promise.reject(new Error("Profile provider not configured")),
+    ]);
+    const result =
+      reported.status === "fulfilled"
+        ? reported.value
+        : {
+            facts: [],
+            filings: [],
+            name: symbol,
+            issues: [
+              "Reported financials unavailable from the fallback source.",
+            ],
+          };
+    const company = profile.status === "fulfilled" ? profile.value : undefined;
+    return {
+      ...result,
+      name: company?.name || result.name,
+      ...(company ? { company } : {}),
+      issues: [
+        "Primary company data unavailable; fallback coverage is shown where available.",
+        ...result.issues,
+      ],
+    };
+  }
+}
+async function secFundamentals(symbol: string): Promise<{
   facts: Fact[];
   filings: Filing[];
   name: string;
@@ -334,7 +389,6 @@ export async function fundamentals(symbol: string): Promise<{
   evidence?: import("./eodhd-normalize").EodEvidence;
   company?: Company;
 }> {
-  if (eodEnabled()) return eodFundamentals(symbol);
   const result = await cached(`sec:${symbol}`, 6 * 3600_000, async () => {
     const tickers = await cached<Record<string, any>>(
       "sec-tickers",

@@ -21,7 +21,10 @@ export function DataStamp({
         {dateLabel(asOf)}
       </span>
       <Help label="Data details">
-        <p>{source || "Source not supplied"}</p>
+        <details className="source-details">
+          <summary>Data attribution</summary>
+          <p>{source || "Source not supplied"}</p>
+        </details>
         <p>Observation: {quoteTime(asOf)}</p>
         <p>
           Quotes, statements and analyst estimates can have different
@@ -283,5 +286,28 @@ export function Notice({
     >
       {children}
     </div>
+  );
+}
+
+export function ProductFooter() {
+  return (
+    <footer className="product-footer">
+      <span>© {new Date().getFullYear()} AURYN. All rights reserved.</span>
+      <Help label="Research disclosure" trigger="Research disclosure">
+        <p>
+          AURYN provides investment research and decision support. It does not
+          provide personalised financial advice.
+        </p>
+        <p>
+          Scenarios, signals and hypothetical results are not guarantees of
+          future returns. Investing involves risk, including loss of principal.
+        </p>
+        <p>
+          Check observation dates and underlying assumptions before acting.
+          Market prices may be delayed; incomplete evidence is shown as
+          unavailable.
+        </p>
+      </Help>
+    </footer>
   );
 }

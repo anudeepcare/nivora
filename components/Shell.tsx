@@ -11,7 +11,7 @@ import {
   Bell,
   X,
 } from "lucide-react";
-import { Logo } from "./Ui";
+import { Logo, ProductFooter } from "./Ui";
 import Search from "./Search";
 import SettingsSheet from "./SettingsSheet";
 import { useProduct } from "./Session";
@@ -165,6 +165,7 @@ export default function Shell({
           </div>
         )}
         {children}
+        <ProductFooter />
       </main>
       <nav className="mobile-dock" aria-label="Mobile navigation">
         {primary.map((r) => nav(r, true))}

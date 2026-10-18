@@ -179,3 +179,21 @@ test("Research outlook keeps the approved three-case structure when forecast cov
   for (const name of ["Bear", "Base", "Bull"]) assert(html.includes(name));
   assert(!html.includes('class="consensus-quick"'));
 });
+
+test("Product footer supplies copyright and a research disclosure without provider marketing", () => {
+  const ProductFooter = loadComponent("components/Ui.tsx", "ProductFooter", {
+    React,
+    Help: ({ children, trigger }) =>
+      React.createElement(
+        "details",
+        null,
+        React.createElement("summary", null, trigger),
+        children,
+      ),
+  });
+  const html = renderToStaticMarkup(React.createElement(ProductFooter));
+  assert.match(html, /All rights reserved/);
+  assert.match(html, /Research disclosure/);
+  assert.match(html, /not guarantees/);
+  assert.doesNotMatch(html, /EODHD|Twelve Data/);
+});

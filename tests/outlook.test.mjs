@@ -1,3 +1,4 @@
+import { modelCoverage } from "../lib/research-depth.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -11,7 +12,7 @@ function load() {
       target: ts.ScriptTarget.ES2022,
     },
   }).outputText;
-  new Function("exports", code)(exports);
+  new Function("exports", "require", code)(exports, () => ({ modelCoverage }));
   return exports;
 }
 function research() {
@@ -101,4 +102,18 @@ test("quarterly, dated, nonpositive or inverted forecasts never produce a valid 
     change(input);
     assert.equal(researchOutlook(input).available, false);
   }
+});
+
+test("healthcare-plan insurers cannot bypass the same sector gate used by the decision guide", () => {
+  const { researchOutlook } = load();
+  const input = research();
+  input.company.symbol = "OSCR";
+  input.evidence.profile = {
+    sector: "Healthcare",
+    industry: "Healthcare Plans",
+  };
+  input.evidence.multiples.ForwardPE = 700;
+  const result = researchOutlook(input);
+  assert.equal(result.available, false);
+  assert.match(result.reason, /sector-specific/i);
 });

@@ -11,7 +11,13 @@ export async function growData(
   symbol: string,
   dataset: GrowDataset,
 ): Promise<GrowData> {
-  if (eodEnabled()) return eodCompanyData(symbol, dataset);
+  if (eodEnabled()) {
+    try {
+      return await eodCompanyData(symbol, dataset);
+    } catch (error) {
+      if (!process.env.TWELVE_DATA_API_KEY) throw error;
+    }
+  }
   const key = dataset + ":" + symbol,
     old = cache.get(key);
   if (old && old.expires > Date.now()) return old.value;

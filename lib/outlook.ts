@@ -1,3 +1,4 @@
+import { modelCoverage } from "./research-depth.ts";
 import type { Research } from "./types";
 
 export type OutlookCase = {
@@ -67,11 +68,11 @@ export function researchOutlook(r: Research): Outlook {
   const now = Date.parse(r.retrievedAt);
   if (!e || !Number.isFinite(now))
     return unavailable("A dated annual earnings forecast is needed.");
-  if (
-    /bank|insurance|reit|real estate|financial services/i.test(
-      `${e.profile?.sector ?? ""} ${e.profile?.industry ?? ""}`,
-    )
-  )
+  const coverage = modelCoverage(r.company.symbol, r.company.assetType, {
+    sector: e.profile?.sector || r.company.sector,
+    industry: e.profile?.industry,
+  });
+  if (coverage.family !== "operating-company")
     return unavailable(
       "This business needs a sector-specific valuation framework.",
     );

@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-10-18T03:54:25.577457+00:00",
+  "generatedAt": "2026-10-18T04:19:52.903248+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 152 tests, TypeScript and production build",
-    "npm run test:api": "passed: 32 baseline + 16 research regressions + 12 hybrid/provider checks",
+    "npm run verify": "passed: 154 tests, TypeScript and production build",
+    "npm run test:api": "passed: 32 baseline + 16 research regressions + 13 hybrid/provider checks",
     "git diff --check": "passed"
   },
-  "domainPostgresAndComponentTests": 152,
-  "builtApiChecks": 60,
+  "domainPostgresAndComponentTests": 154,
+  "builtApiChecks": 61,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
     "intraday": "Twelve Data preferred; labelled EODHD historical fallback",
@@ -34,15 +34,17 @@
   "priorEvidence": "The signed-in reference/deployed UI reviews predate this patch. New verification is source, domain/SSR, TypeScript and build evidence only.",
   "browserTestScope": "No rendered browser test of this build; older live audits are historical evidence only",
   "patchedSourceBrowserTestsExecuted": false,
-  "latestAudit": "IPHONE_SCROLL_ROOT.md",
+  "latestAudit": "RESEARCH_POLISH_20261018.md",
   "referenceReview": "REFERENCE_REVIEW_20261017.md",
   "decisionPolicy": "research-v1.6 / decision-guide-v1.1; original unvalidated research triage; no broker execution",
   "latestLogs": [
-    "pwa-root-verify.log",
-    "pwa-root-api.log"
+    "polish-verify.log",
+    "polish-api.log"
   ],
   "cohortQuoteObservations": "cohort-quotes-20261017.json; 11 instruments; quote identity only, not fundamental/model validation",
   "exactVisualParityVerified": false,
   "sourceBase": "53655c82ed00bcacdafc5e97da1b1493a39d6db6",
-  "sourceBranch": "auryn-approved-studio-20261017"
+  "sourceBranch": "auryn-approved-studio-20261017",
+  "liveUiAudit": "Signed-in Chrome: CRM search, all five research tabs and weekly range loaded. Deployed mobile dock CSS is fixed; latest source dock is in layout flow. No physical iPhone verification.",
+  "valuationCorrection": "OSCR Healthcare Plans was excluded by decision guide but admitted by separate outlook regex. Outlook now uses shared modelCoverage; failing then passing regression."
 }

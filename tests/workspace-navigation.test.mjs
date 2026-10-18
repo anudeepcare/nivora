@@ -108,6 +108,7 @@ test("switching workspace tabs restores their own position; tapping the active t
     ],
     Link: "Link",
     Logo: icon,
+    ProductFooter: icon,
     Settings: icon,
     Search: icon,
     SearchIcon: icon,
