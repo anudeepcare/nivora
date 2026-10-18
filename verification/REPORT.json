@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-10-18T16:34:51.549899+00:00",
+  "generatedAt": "2026-10-18T17:15:36.338661+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 195 tests, TypeScript and production build",
+    "npm run verify": "passed: 197 tests, TypeScript and production build",
     "npm run test:api": "passed: 32 baseline + 16 research regressions + 16 provider checks",
     "git diff --check": "passed"
   },
-  "domainPostgresAndComponentTests": 195,
+  "domainPostgresAndComponentTests": 197,
   "builtApiChecks": 64,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -34,13 +34,12 @@
   "priorEvidence": "The signed-in reference/deployed UI reviews predate this patch. New verification is source, domain/SSR, TypeScript and build evidence only.",
   "browserTestScope": "No rendered browser test of this build; older live audits are historical evidence only",
   "patchedSourceBrowserTestsExecuted": false,
-  "latestAudit": "../docs/APPROVED_WORKSPACE_20261018.md",
+  "latestAudit": "../docs/TAB_LAYOUT_20261018.md",
   "referenceReview": "REFERENCE_REVIEW_20261017.md",
   "decisionPolicy": "research-v1.6 / decision-guide-v1.1; original unvalidated research triage; no broker execution",
   "latestLogs": [
-    "approved-workspace-release-verify.log",
-    "approved-workspace-final-build.log",
-    "approved-workspace-api.log"
+    "tab-layout-release-verify.log",
+    "tab-layout-release-api.log"
   ],
   "cohortQuoteObservations": "cohort-quotes-20261017.json; 11 instruments; quote identity only, not fundamental/model validation",
   "exactVisualParityVerified": false,
@@ -54,5 +53,6 @@
   "pwaKeyboardCorrection": "Working old ZIP reference: black-translucent, document scrolling, sticky header, fixed safe-area dock; visualViewport only for keyboard/dialog handling. Physical installed-device acceptance unverified.",
   "comparedAgainstRemote": "c610416",
   "localSsrFixtureRoutes": 10,
-  "interfaceRefinement": "Removed comparisons and downloads, added analyst evidence, compact forecast table and value scenarios, removed duplicate Portfolio summary, Home news diversity and entity decoding"
+  "interfaceRefinement": "News tab, concise Overview context, earnings in Financials, scoped holdings table CSS, compact position editor, MACD and Bollinger studies",
+  "pwaHeader": "Opaque header with compositor boundary, no app blur; OS-reported blur remains unverified on physical installed device"
 }

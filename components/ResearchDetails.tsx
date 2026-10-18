@@ -10,7 +10,6 @@ import { amount, dateLabel, percent } from "@/lib/format";
 import TechnicalLevels from "./TechnicalLevels";
 import OwnershipPicture from "./OwnershipPicture";
 import Analyst from "./Analyst";
-import { NewsAndFilings } from "./ResearchEvidence";
 import { Help, DataStamp } from "./Ui";
 
 export function TechnicalPicture({
@@ -95,6 +94,10 @@ export function TechnicalPicture({
     ["OBV", x.obv?.toLocaleString() ?? "—"],
     ["Bollinger bandwidth", percent(x.bandwidth)],
     ["From 252-session closing high", percent(x.drawdown)],
+    ["MACD line · 12/26", s.macd?.toFixed(2) ?? "—"],
+    ["MACD signal · 9", s.signal?.toFixed(2) ?? "—"],
+    ["Bollinger upper · 20/2", amount(s.bands?.high, r.quote.currency)],
+    ["Bollinger lower · 20/2", amount(s.bands?.low, r.quote.currency)],
   ];
   return (
     <>
@@ -140,8 +143,8 @@ export function TechnicalPicture({
           <div className="technical-study-groups">
             {[
               { name: "Trend", indexes: [0, 1, 2, 4, 5] },
-              { name: "Momentum", indexes: [3, 6] },
-              { name: "Volatility & range", indexes: [7, 9, 10] },
+              { name: "Momentum", indexes: [3, 6, 11, 12] },
+              { name: "Volatility & range", indexes: [7, 9, 10, 13, 14] },
               { name: "Volume", indexes: [8] },
             ].map((group) => (
               <section key={group.name}>
@@ -283,69 +286,7 @@ export function ThesisPicture({ research: r }: { research: Research }) {
         <strong>Revisit the case if</strong> growth and cash conversion weaken
         persistently or the funding picture changes.
       </div>
-      <section className="research-updates">
-        <header className="section-head">
-          <div>
-            <h2>Events & insider activity</h2>
-            <p>
-              Reported transactions and scheduled earnings; neither is a
-              standalone buy signal.
-            </p>
-          </div>
-        </header>
-        <div className="grid2">
-          <div>
-            <h3>Next scheduled earnings</h3>
-            <p className="context-note">
-              {next ? dateLabel(next.date) : "No upcoming date supplied"}
-            </p>
-            {next?.estimate != null && (
-              <p>
-                EPS estimate{" "}
-                {amount(
-                  next.estimate,
-                  r.evidence?.reportingCurrency ?? undefined,
-                )}
-              </p>
-            )}
-          </div>
-          <div>
-            <h3>Recent insider filings</h3>
-            {r.evidence?.insiders?.length ? (
-              r.evidence.insiders.slice(0, 4).map((item, i) => (
-                <div className="stat-pair" key={i}>
-                  <span>
-                    {item.name}
-                    <small className="muted">
-                      {" "}
-                      · {dateLabel(item.date)} ·{" "}
-                      {item.code === "S"
-                        ? "Sale"
-                        : item.code === "P"
-                          ? "Purchase"
-                          : `Code ${item.code}`}
-                    </small>
-                  </span>
-                  <strong>
-                    {item.change == null
-                      ? "—"
-                      : Math.abs(item.change).toLocaleString()}{" "}
-                    shares
-                  </strong>
-                </div>
-              ))
-            ) : (
-              <p className="context-note">No insider records supplied.</p>
-            )}
-            <p className="context-note">
-              Sales can reflect tax, diversification or trading plans.
-              Transaction codes and filing dates matter.
-            </p>
-          </div>
-        </div>
-      </section>
       <OwnershipPicture research={r} />
-      <NewsAndFilings research={r} />
       <Analyst research={r} compact />
       <div className="shared-stamp">
         <DataStamp

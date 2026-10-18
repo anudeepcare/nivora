@@ -142,8 +142,8 @@ export default function FinancialPicture({
     <section>
       <header className="section-head">
         <div>
-          <h2>Financial picture</h2>
-          <p>A few important numbers, with the detail underneath.</p>
+          <h2>Financials</h2>
+          <p>Reported performance and financial position.</p>
         </div>
         <div className="segments" aria-label="Financial period">
           {(["ttm", "annual", "quarterly"] as const).map((v) => (

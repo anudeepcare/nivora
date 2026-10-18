@@ -1,3 +1,7 @@
+# Latest tab and mobile layout correction — 18 October 2026
+
+197 tests, TypeScript, production build and 64 API fixture checks pass. See TAB_LAYOUT_20261018.md. Physical iPhone PWA blur, every-control visual acceptance and production performance remain unverified.
+
 # Latest interface refinement — 18 October 2026
 
 192 tests, TypeScript, production build and 64 API fixture checks pass. See REFINEMENT_20261018.md for changes and verification limits. Exact mock parity, physical iPhone PWA behaviour, production performance and live provider/model accuracy remain unverified. This is tested source, not a production acceptance claim.

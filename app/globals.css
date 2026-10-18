@@ -1737,6 +1737,10 @@ caption {
     background: var(--paper);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
+    filter: none;
+    opacity: 1;
+    transform: translateZ(0);
+    border-bottom: 1px solid var(--line);
   }
   .topbar > .top-search {
     display: flex;
@@ -2028,7 +2032,7 @@ caption {
     grid-template-columns: minmax(0, 1fr) auto 40px;
     gap: 5px;
     align-items: center;
-    padding: 18px 0;
+    padding: 14px 0;
     border-bottom: 1px solid var(--line);
   }
   .holdings-table td {
@@ -3624,20 +3628,20 @@ caption {
   overflow-x: auto;
   overscroll-behavior-x: contain;
 }
-.table-scroll table {
+.table-scroll table:not(.holdings-table) {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
 }
-.table-scroll th,
-.table-scroll td {
+.table-scroll table:not(.holdings-table) th,
+.table-scroll table:not(.holdings-table) td {
   padding: 9px 12px;
   text-align: right;
   border-bottom: 1px solid var(--line);
   white-space: nowrap;
 }
-.table-scroll th:first-child,
-.table-scroll td:first-child {
+.table-scroll table:not(.holdings-table) th:first-child,
+.table-scroll table:not(.holdings-table) td:first-child {
   text-align: left;
 }
 .table-scroll caption {
@@ -3919,10 +3923,13 @@ caption {
   flex-wrap: wrap;
   gap: 8px;
 }
+.metric-groups button {
+  border-radius: 14px;
+  padding: 8px 12px;
+  min-height: 40px;
+}
 .metric-groups [aria-pressed="true"] {
   background: var(--blue-soft);
-  border-radius: 16px;
-  padding: 8px 12px;
 }
 .financial-detail-table .help-trigger {
   min-height: 32px;
@@ -4171,5 +4178,99 @@ select {
   }
   .compact-value .outcome .target strong {
     font-size: 25px;
+  }
+}
+
+/* Overview presents highlights; detailed evidence lives in its named tab. */
+.overview-context {
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-self: start;
+}
+.overview-consensus {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.overview-consensus span,
+.overview-next span {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+}
+.overview-consensus strong {
+  display: block;
+  font-size: clamp(23px, 2.4vw, 31px);
+  margin-top: 5px;
+  color: var(--blue);
+}
+.overview-consensus .negative {
+  color: var(--red);
+}
+.overview-consensus .positive {
+  color: var(--green);
+}
+.overview-cases {
+  display: grid;
+  gap: 0;
+}
+.overview-cases > div {
+  display: grid;
+  grid-template-columns: 55px minmax(0, 1fr) 68px;
+  gap: 8px;
+  align-items: center;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+}
+.overview-cases b,
+.overview-cases small {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.overview-next {
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  font-size: 13px;
+}
+@media (max-width: 700px) {
+  .portfolio-holdings > .section-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .portfolio-holdings .filter-input {
+    width: 100%;
+    max-width: none;
+  }
+  .holdings-table .holding-pnl-cell .holding-metric {
+    font-size: 12px;
+  }
+  .overview-context {
+    padding: 16px;
+    gap: 12px;
+  }
+  .dialog.position-dialog {
+    padding: 22px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+  }
+  .dialog.position-dialog > h2 {
+    margin-top: 10px;
+    font-size: 24px;
+  }
+  .dialog.position-dialog > p {
+    margin: 6px 0 16px;
+    font-size: 13px;
+  }
+  .dialog.position-dialog form {
+    gap: 12px;
   }
 }

@@ -39,6 +39,7 @@ export default function FinancialDetailTable({
           {(["annual", "quarterly", "ttm"] as const).map((s) => (
             <button
               key={s}
+              className={scope === s ? "active" : ""}
               aria-pressed={scope === s}
               onClick={() => setScope(s)}
             >

@@ -28,6 +28,8 @@ import DcaResearch from "./DcaResearch";
 import EarningsWorkspace from "./EarningsWorkspace";
 import DecisionBrief from "./DecisionBrief";
 import AnalystRatings from "./AnalystRatings";
+import CompanyUpdates from "./CompanyUpdates";
+import OverviewContext from "./OverviewContext";
 const tabs = [
   "Snapshot",
   "Financials",
@@ -35,6 +37,7 @@ const tabs = [
   "Technicals",
   "Thesis",
   "Analysts",
+  "News",
 ] as const;
 const ranges = ["1D", "1W", "1M", "6M", "1Y", "5Y"] as const;
 export default function Research({ symbol }: { symbol: string }) {
@@ -166,7 +169,9 @@ export default function Research({ symbol }: { symbol: string }) {
   const crypto = r.company.assetType === "crypto",
     saved = workspace?.watchlist.some((x) => x.symbol === symbol),
     visible = crypto
-      ? tabs.filter((x) => ["Snapshot", "Technicals", "Thesis"].includes(x))
+      ? tabs.filter((x) =>
+          ["Snapshot", "Technicals", "Thesis", "News"].includes(x),
+        )
       : tabs;
   const chart = (
     <section className="plot-section">
@@ -319,21 +324,6 @@ export default function Research({ symbol }: { symbol: string }) {
           </button>
         ))}
       </nav>
-      <header className="research-section-heading">
-        <h2>
-          {tab === "Snapshot"
-            ? "Investment overview"
-            : tab === "Valuation"
-              ? "Value & scenarios"
-              : tab === "Financials"
-                ? "Business performance"
-                : tab === "Technicals"
-                  ? "Price & accumulation"
-                  : tab === "Analysts"
-                    ? "Analyst perspectives"
-                    : "Thesis & catalysts"}
-        </h2>
-      </header>
       <ResearchChanges research={r} />
       {notice && <Notice error>{notice}</Notice>}
       {resource.error && <Notice error>{resource.error}</Notice>}
@@ -363,6 +353,7 @@ export default function Research({ symbol }: { symbol: string }) {
         aria-labelledby={`tab-${tab}`}
         className="au-stack"
       >
+        {tab === "News" && <CompanyUpdates research={r} />}
         {tab === "Analysts" && <AnalystRatings research={r} />}
         {tab === "Snapshot" && (
           <>
@@ -377,16 +368,16 @@ export default function Research({ symbol }: { symbol: string }) {
                 </div>
                 {chart}
               </div>
-              <ResearchOutlook research={r} />
+              <OverviewContext research={r} />
             </div>
             <KeyFinancialMetrics research={r} />
             <CaseHighlights research={r} />
-            <EarningsWorkspace research={r} />
           </>
         )}
         {tab === "Financials" && (
           <>
             <Financials research={r} />
+            <EarningsWorkspace research={r} />
           </>
         )}
         {tab === "Valuation" && (

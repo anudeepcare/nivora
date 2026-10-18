@@ -429,3 +429,59 @@ test("Analyst ratings do not invent a distribution when counts are absent", () =
   assert.match(html, /counts are not supplied/);
   assert.doesNotMatch(html, /class="rating-track"/);
 });
+
+test("Overview context stays concise and does not assign quote currency to upcoming EPS", () => {
+  const Component = loadComponent(
+    "components/OverviewContext.tsx",
+    "OverviewContext",
+    {
+      React,
+      consensusOutlook: () => null,
+      researchOutlook: () => ({ available: false }),
+      amount: format.amount,
+      percent: format.percent,
+      dateLabel: format.dateLabel,
+    },
+  );
+  const html = renderToStaticMarkup(
+    React.createElement(Component, {
+      research: {
+        company: { symbol: "SAP" },
+        quote: { currency: "USD" },
+        retrievedAt: "2026-10-18",
+        evidence: { earnings: [{ date: "2026-10-25", estimate: 99.99 }] },
+      },
+    }),
+  );
+  assert.match(html, /Next earnings report/);
+  assert.doesNotMatch(html, /99\.99|Actual EPS|Earnings checkpoints/);
+  assert.match(html, /Scenarios need comparable/);
+});
+
+test("News earnings do not infer estimate currency from a stock listing or company accounts", () => {
+  const Component = loadComponent(
+    "components/CompanyUpdates.tsx",
+    "CompanyUpdates",
+    {
+      React,
+      amount: format.amount,
+      dateLabel: format.dateLabel,
+      NewsAndFilings: empty,
+    },
+  );
+  const html = renderToStaticMarkup(
+    React.createElement(Component, {
+      research: {
+        quote: { currency: "USD" },
+        retrievedAt: "2026-10-18",
+        evidence: {
+          reportingCurrency: "EUR",
+          earnings: [{ date: "2026-10-25", estimate: 1.25 }],
+        },
+      },
+    }),
+  );
+  assert.match(html, /1\.25/);
+  assert.doesNotMatch(html, /\$1\.25|€1\.25/);
+  assert.match(html, /currency.*not supplied/i);
+});
