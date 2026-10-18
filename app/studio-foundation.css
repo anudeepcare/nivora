@@ -443,8 +443,8 @@ strong {
   position: relative;
 }
 .local-tabs button.active {
-  background: var(--ink);
-  color: var(--surface);
+  background: var(--blue);
+  color: #fff;
   font-weight: 550;
 }
 .local-tabs button.active:after {
@@ -1918,7 +1918,10 @@ dialog::backdrop {
     margin-top: 14px;
   }
   .pace-history {
-    display: none;
+    display: flex;
+    overflow-x: auto;
+    gap: 14px;
+    padding-bottom: 8px;
   }
   .outlook {
     border: 0;
@@ -2556,8 +2559,8 @@ dialog::backdrop {
   box-shadow: 0 0 60px #67c7c519;
 }
 [data-theme="dark"] .local-tabs button.active {
-  background: #eaf3f7;
-  color: #172d3a;
+  background: var(--blue);
+  color: #fff;
 }
 [data-theme="dark"] .topbar,
 [data-theme="dark"] .mobile-dock {

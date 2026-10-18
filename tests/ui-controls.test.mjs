@@ -38,7 +38,7 @@ function loadComponent(file, name, bindings) {
 }
 const empty = () => null;
 
-test("Financials renders the approved four metrics and four statement rows without extra metric panels", () => {
+test("Financials retains four primary metrics and statement rows with separate labelled detail groups", () => {
   const FinancialPicture = loadComponent(
     "components/FinancialPicture.tsx",
     "FinancialPicture",
@@ -65,10 +65,7 @@ test("Financials renders the approved four metrics and four statement rows witho
   ])
     assert(html.includes(label));
   assert.equal((html.match(/<tbody><tr>|<\/tr><tr>/g) || []).length, 4);
-  assert.doesNotMatch(
-    html,
-    /supported metrics|Expand|Forecast|Market cap|Gross margin/,
-  );
+  assert.doesNotMatch(html, /supported metrics|Expand|Forecast|Market cap/);
 });
 
 test("metric explanations do not inject dialog blocks into server-rendered paragraphs", () => {

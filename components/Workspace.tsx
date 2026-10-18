@@ -27,6 +27,7 @@ import {
   DataStamp,
 } from "./Ui";
 import Search from "./Search";
+import HomeUpdates from "./HomeUpdates";
 import { api } from "@/lib/client";
 import { workspaceSymbolBatches } from "@/lib/workspace";
 
@@ -319,6 +320,7 @@ export function Overview() {
       />
       {workspaceError && <Notice error>{workspaceError}</Notice>}
       {quotes.error && <Notice error>{quotes.error}</Notice>}
+      <HomeUpdates />
       <div className="grid2 home-details">
         <section>
           <header className="section-head">

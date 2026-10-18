@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-10-18T04:49:16.675436+00:00",
+  "generatedAt": "2026-10-18T14:57:07.498820+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 170 tests, TypeScript and production build",
-    "npm run test:api": "passed: 32 baseline + 16 research regressions + 13 hybrid/provider checks",
+    "npm run verify": "passed: 175 tests, TypeScript and production build",
+    "npm run test:api": "passed: 32 baseline + 16 research regressions + 16 hybrid/provider checks",
     "git diff --check": "passed"
   },
-  "domainPostgresAndComponentTests": 170,
-  "builtApiChecks": 61,
+  "domainPostgresAndComponentTests": 175,
+  "builtApiChecks": 64,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
     "intraday": "Twelve Data preferred; labelled EODHD historical fallback",
@@ -34,12 +34,12 @@
   "priorEvidence": "The signed-in reference/deployed UI reviews predate this patch. New verification is source, domain/SSR, TypeScript and build evidence only.",
   "browserTestScope": "No rendered browser test of this build; older live audits are historical evidence only",
   "patchedSourceBrowserTestsExecuted": false,
-  "latestAudit": "WORKING_PWA_REFERENCE_AND_VALUATION.md",
+  "latestAudit": "METRICS_AND_MOBILE_POLISH.md",
   "referenceReview": "REFERENCE_REVIEW_20261017.md",
   "decisionPolicy": "research-v1.6 / decision-guide-v1.1; original unvalidated research triage; no broker execution",
   "latestLogs": [
-    "old-reference-final-verify.log",
-    "old-reference-final-api.log"
+    "updates-polish-verify.log",
+    "updates-polish-api.log"
   ],
   "cohortQuoteObservations": "cohort-quotes-20261017.json; 11 instruments; quote identity only, not fundamental/model validation",
   "exactVisualParityVerified": false,

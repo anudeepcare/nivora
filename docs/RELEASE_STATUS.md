@@ -1,3 +1,7 @@
+# Latest update — 18 October 2026
+
+Metrics, legacy PWA start redirects and mobile control polish are included. 175 tests, TypeScript, production build and 64 built API fixture checks pass. See verification/METRICS_AND_MOBILE_POLISH.md. Physical iPhone and live feed acceptance remain unverified.
+
 # Latest working-reference PWA and valuation repair
 
 170 tests, TypeScript, production build and 61 fixture API checks passed. Restores the working ZIP’s document-scroll/sticky-header/fixed-dock approach and black-translucent metadata. Generic forecasts are separated from the primary analyst-consensus comparison; revenue inputs now require equity/EV reconciliation. Not deployed. Physical iPhone acceptance and company-specific fair-value models remain incomplete. See verification/WORKING_PWA_REFERENCE_AND_VALUATION.md.

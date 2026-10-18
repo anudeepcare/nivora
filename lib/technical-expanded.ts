@@ -74,6 +74,14 @@ export function expandedStudies(
   const shared = rows
     .filter((b) => (benchmarkByDay.get(b.time) ?? 0) > 0)
     .slice(-64);
+  const stochastic = rows.slice(-3).map((b, i, tail) => {
+    const end = rows.length - tail.length + i + 1;
+    const sample = rows.slice(Math.max(0, end - 14), end);
+    if (sample.length < 14) return null;
+    const high = Math.max(...sample.map((v) => v.high)),
+      low = Math.min(...sample.map((v) => v.low));
+    return high > low ? (100 * (b.close - low)) / (high - low) : null;
+  });
   const relativeReturn =
     shared.length === 64
       ? 100 *
@@ -84,6 +92,17 @@ export function expandedStudies(
             1))
       : null;
   return {
+    stochasticK: stochastic.at(-1) ?? null,
+    stochasticD:
+      stochastic.length === 3 && stochastic.every((v) => v != null)
+        ? stochastic.reduce<number>((sum, v) => sum + v!, 0) / 3
+        : null,
+    roc20:
+      rows.length >= 21 && last
+        ? (last.close / rows[rows.length - 21].close - 1) * 100
+        : null,
+    plusDI: rows.length > n ? (tr > 0 ? (plus / tr) * 100 : 0) : null,
+    minusDI: rows.length > n ? (tr > 0 ? (minus / tr) * 100 : 0) : null,
     adx,
     atr,
     atrPct: atr != null && last ? (atr / last.close) * 100 : null,

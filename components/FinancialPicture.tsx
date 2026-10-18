@@ -75,6 +75,67 @@ export default function FinancialPicture({
             ["Cash balance", amount(p?.cash, p?.currency, true)],
             ["Total debt", amount(p?.debt, p?.currency, true)],
           ];
+  const detailGroups = [
+    {
+      title: "Profitability",
+      rows: [
+        ["Gross margin", p?.grossMargin, "percent", "Gross profit ÷ revenue."],
+        ["Net margin", p?.netMargin, "percent", "Net income ÷ revenue."],
+        [
+          "Cash-flow margin",
+          p?.fcfMargin,
+          "percent",
+          "Operating cash flow less capex, divided by revenue.",
+        ],
+      ],
+    },
+    {
+      title: "Reinvestment",
+      rows: [
+        [
+          "Capex / revenue",
+          p?.capexRevenue,
+          "percent",
+          "Absolute capital expenditure ÷ revenue.",
+        ],
+        [
+          "Stock compensation / revenue",
+          p?.sbcRevenue,
+          "percent",
+          "Reported stock compensation ÷ revenue; not actual share dilution.",
+        ],
+        [
+          "Cash flow / diluted share",
+          p?.fcfPerShare,
+          "money",
+          "Operating cash flow less capex, divided by weighted shares.",
+        ],
+      ],
+    },
+    {
+      title: "Balance sheet",
+      rows: [
+        [
+          "Current ratio",
+          p?.currentRatio,
+          "ratio",
+          "Current assets ÷ current liabilities.",
+        ],
+        [
+          "Debt / equity",
+          p?.debtEquity,
+          "ratio",
+          "Reported debt ÷ positive book equity.",
+        ],
+        [
+          "Interest coverage",
+          p?.interestCoverage,
+          "ratio",
+          "Operating income ÷ interest expense.",
+        ],
+      ],
+    },
+  ];
   return (
     <section>
       <header className="section-head">
@@ -169,6 +230,42 @@ export default function FinancialPicture({
               ))}
             </tbody>
           </table>
+          <div className="financial-detail-groups">
+            {detailGroups.map((group) => {
+              const available = group.rows.filter(
+                ([, value]) =>
+                  typeof value === "number" && Number.isFinite(value),
+              );
+              return available.length ? (
+                <section key={group.title}>
+                  <h3>{group.title}</h3>
+                  <div className="detail-metric-grid">
+                    {available.map(([label, value, unit, help]) => (
+                      <div className="detail-metric" key={String(label)}>
+                        <Help label={String(label)} trigger={String(label)}>
+                          <p>{String(help)}</p>
+                          <p>
+                            Uses the selected financial period. Definitions and
+                            sector relevance matter; a ratio alone does not
+                            determine a buy or sell.
+                          </p>
+                        </Help>
+                        <strong
+                          className={`num ${Number(value) < 0 ? "negative" : ""}`}
+                        >
+                          {unit === "percent"
+                            ? percent(Number(value))
+                            : unit === "money"
+                              ? amount(Number(value), p.currency)
+                              : `${Number(value).toFixed(1)}×`}
+                        </strong>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              ) : null;
+            })}
+          </div>
           <div className="shared-stamp">
             <DataStamp
               source={p.sourceUrl || p.basis}

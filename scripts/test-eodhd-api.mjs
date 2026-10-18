@@ -139,6 +139,33 @@ globalThis.fetch = async (input) => {
       });
   }
   if (u.hostname === "eodhd.com") {
+    if (u.pathname === "/api/calendar/earnings")
+      return Response.json({
+        earnings: [
+          {
+            code: "HIMS.US",
+            report_date: new Date(Date.now() + 2 * 86400000)
+              .toISOString()
+              .slice(0, 10),
+            date: "2026-06-30",
+            before_after_market: "AfterMarket",
+          },
+        ],
+      });
+    if (u.pathname === "/api/calendar/splits")
+      return Response.json({
+        splits: [
+          {
+            code: "HIMS.US",
+            split_date: new Date(Date.now() + 3 * 86400000)
+              .toISOString()
+              .slice(0, 10),
+            old_shares: 1,
+            new_shares: 2,
+          },
+        ],
+      });
+
     assert.equal(u.searchParams.get("api_token"), "test-eodhd");
     if (u.pathname.startsWith("/api/v1.1/fundamentals/")) {
       const symbol = u.pathname.split("/").at(-1).replace(/\.US$/, "");
@@ -415,6 +442,44 @@ await check(
     assert.equal(d.quote.price, 200);
     assert(d.issues.length > 0);
     assert.equal(d.evidence, undefined);
+  },
+);
+await check(
+  "home feed separates report dates, filters news and bounds coverage",
+  async () => {
+    const r = await get("home-feed", "?symbols=HIMS,CRM,APP,MSFT");
+    assert.equal(r.status, 200);
+    const d = await r.json();
+    assert.equal(d.events.length, 2);
+    assert.equal(d.news.length, 1);
+    assert.equal(d.newsFollowed, 3);
+    const calendar = calls.filter((x) =>
+      x.pathname.startsWith("/api/calendar/"),
+    );
+    assert.equal(calendar.length, 2);
+    assert(
+      calendar.every(
+        (x) => x.searchParams.has("from") && x.searchParams.has("to"),
+      ),
+    );
+  },
+);
+await check("repeated home feed reuses provider cache", async () => {
+  const count = () => calls.filter((x) => x.hostname === "eodhd.com").length;
+  const before = count();
+  await get("home-feed", "?symbols=HIMS,CRM,APP,MSFT");
+  assert.equal(count(), before);
+});
+await check(
+  "home feed rejects crypto pairs without provider calls",
+  async () => {
+    const before = calls.filter((x) => x.hostname === "eodhd.com").length;
+    const r = await get("home-feed", "?symbols=ETH/USD");
+    assert.equal(r.status, 400);
+    assert.equal(
+      calls.filter((x) => x.hostname === "eodhd.com").length,
+      before,
+    );
   },
 );
 console.log(

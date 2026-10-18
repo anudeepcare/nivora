@@ -117,7 +117,22 @@ export function TechnicalPicture({
             {[
               ["50-day average", amount(p.tech.ma50, r.quote.currency)],
               ["200-day average", amount(p.tech.ma200, r.quote.currency)],
+              ["20-day EMA", amount(s.ema20, r.quote.currency)],
+              ["20-session momentum", percent(x.roc20)],
               ["ADX · 14", x.adx?.toFixed(1) ?? "—"],
+              [
+                "Directional movement · +DI / −DI",
+                x.plusDI == null || x.minusDI == null
+                  ? "—"
+                  : `${x.plusDI.toFixed(1)} / ${x.minusDI.toFixed(1)}`,
+              ],
+              [
+                "Fast stochastic · 14,1,3 · %K / %D",
+                x.stochasticK == null || x.stochasticD == null
+                  ? "—"
+                  : `${x.stochasticK.toFixed(1)} / ${x.stochasticD.toFixed(1)}`,
+              ],
+              ["Bollinger position · %B", percent(x.percentB)],
               ["OBV", x.obv?.toLocaleString() ?? "—"],
               ["Bollinger bandwidth", percent(x.bandwidth)],
               ["From 252-session closing high", percent(x.drawdown)],
@@ -129,6 +144,14 @@ export function TechnicalPicture({
             ))}
           </div>
           <Help label="Study definitions" trigger="How to read these studies">
+            <p>
+              EMA weights recent prices more heavily. Twenty-session momentum is
+              the close-to-close percentage change across twenty observations.
+              Fast stochastic uses a fourteen-session high/low range with no %K
+              smoothing and a three-session %D average. +DI and −DI describe
+              directional movement, while ADX measures its strength. A high or
+              low oscillator is not a standalone buy or sell signal.
+            </p>
             <p>
               Moving averages describe price trend. ADX measures trend strength,
               not direction. OBV accumulates signed trading volume; its change

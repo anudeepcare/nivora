@@ -1,5 +1,6 @@
 "use client";
 import { useMemo, useState, useRef, useLayoutEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { Bookmark, RefreshCw } from "lucide-react";
 import type {
   Research as ResearchData,
@@ -31,6 +32,7 @@ const tabs = [
 ] as const;
 const ranges = ["1D", "1W", "1M", "6M", "1Y", "5Y"] as const;
 export default function Research({ symbol }: { symbol: string }) {
+  const requestedTab = useSearchParams().get("tab");
   const { demo, workspace, mutate } = useProduct();
   const resource = useResource<ResearchData>(
       `research/${encodeURIComponent(symbol.replace("/", "-"))}`,
@@ -38,7 +40,9 @@ export default function Research({ symbol }: { symbol: string }) {
       300000,
     ),
     r = resource.data;
-  const [tab, setTab] = useState<(typeof tabs)[number]>("Snapshot"),
+  const [tab, setTab] = useState<(typeof tabs)[number]>(
+      () => tabs.find((t) => t === requestedTab) ?? "Snapshot",
+    ),
     [range, setRange] = useState<(typeof ranges)[number]>("1Y"),
     [style, setStyle] = useState<"line" | "candles">("line"),
     [notice, setNotice] = useState(""),
@@ -469,7 +473,7 @@ export function DcaCard({
           ))}
         </div>
         <div className="pace-history">
-          {p.dca.history.slice(-4).map((x) => (
+          {p.dca.history.slice(-6).map((x) => (
             <div key={x.month}>
               {new Date(x.month + "-01T12:00:00Z").toLocaleDateString("en-US", {
                 month: "short",
