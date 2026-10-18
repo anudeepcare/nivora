@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-10-18T17:50:44.544515+00:00",
+  "generatedAt": "2026-10-18T22:54:26.917788+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: original 197 tests, TypeScript and restored-style production build; supplemental full suite 198 tests recorded separately",
+    "npm run verify": "passed: 199 tests, TypeScript and production build",
     "npm run test:api": "passed: 32 baseline + 16 research regressions + 16 provider checks",
     "git diff --check": "passed"
   },
-  "domainPostgresAndComponentTests": 198,
+  "domainPostgresAndComponentTests": 199,
   "builtApiChecks": 64,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -34,7 +34,7 @@
   "priorEvidence": "The signed-in reference/deployed UI reviews predate this patch. New verification is source, domain/SSR, TypeScript and build evidence only.",
   "browserTestScope": "No rendered browser test of this build; older live audits are historical evidence only",
   "patchedSourceBrowserTestsExecuted": false,
-  "latestAudit": "../docs/UX_BASELINE_RECOVERY_20261018.md",
+  "latestAudit": "../docs/PWA_ROOT_SURFACE_20261018.md",
   "referenceReview": "REFERENCE_REVIEW_20261017.md",
   "decisionPolicy": "research-v1.6 / decision-guide-v1.1; original unvalidated research triage; no broker execution",
   "latestLogs": [
@@ -72,8 +72,17 @@
     "archiveVersion": 18,
     "globalsCssBytes": 80191,
     "foundationCssBytes": 47245,
-    "stylesRestoredByteForByte": true,
+    "stylesRestoredByteForByte": false,
     "statusBarStyle": "default",
-    "physicalIphoneVerified": false
+    "physicalIphoneVerified": false,
+    "onlyStyleDeviation": "Removed obsolete zero-height product::before status cover; recovered page styling retained"
+  },
+  "pwaRootSurface": {
+    "directBodyChild": true,
+    "minimumHeightCssPx": 8,
+    "width": "100%",
+    "top": 0,
+    "zeroInsetCollapsePrevented": true,
+    "physicalDeviceAcceptanceRecorded": false
   }
 }

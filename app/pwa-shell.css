@@ -1,0 +1,22 @@
+/* Root-owned, opaque viewport sampling surface for installed mobile WebKit.
+   Keep outside transformed/sticky route containers and never let it collapse
+   when an installed app reports safe-area-inset-top: 0. */
+.pwa-status-surface {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: env(safe-area-inset-top, 0px);
+  min-height: 8px;
+  background: var(--paper);
+  pointer-events: none;
+  z-index: 60;
+}
+@media (max-width: 700px) and (display-mode: standalone) {
+  .pwa-status-surface { display: block; }
+}
+/* Legacy iOS standalone detection, populated by the pre-paint root script. */
+@media (max-width: 700px) {
+  :root[data-pwa="true"] .pwa-status-surface { display: block; }
+}

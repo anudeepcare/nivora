@@ -1,0 +1,20 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {createRequire} from 'node:module';
+const require=createRequire(import.meta.url);
+const postcss=require('postcss');
+const root=new URL('../',import.meta.url);
+test('installed status surface exists before account shell and cannot collapse at a zero safe-area inset',()=>{
+ const layout=fs.readFileSync(new URL('app/layout.tsx',root),'utf8');
+ assert.ok(layout.indexOf('className="pwa-status-surface"')>layout.indexOf('<body'));
+ assert.ok(layout.indexOf('className="pwa-status-surface"')<layout.indexOf('<AppSession>'));
+ const css=postcss.parse(fs.readFileSync(new URL('app/pwa-shell.css',root),'utf8'));
+ const rule=css.nodes.find(n=>n.type==='rule'&&n.selector==='.pwa-status-surface');
+ assert.ok(rule,'The surface must not depend on a changing route container');
+ const d=Object.fromEntries(rule.nodes.filter(n=>n.type==='decl').map(n=>[n.prop,n.value]));
+ assert.equal(d.position,'fixed');assert.equal(d.top,'0');assert.equal(d.width,'100%');
+ assert.ok(parseFloat(d['min-height'])>=6,'Zero safe-area insets must still leave a sampling surface');
+ assert.equal(d['pointer-events'],'none');assert.equal(d.background,'var(--paper)');
+ assert.equal(d.transform,undefined,'No transformed containing block for the fixed surface');
+});

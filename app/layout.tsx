@@ -3,6 +3,7 @@ import AppSession from "@/components/AppSession";
 import type { Metadata, Viewport } from "next";
 import "./studio-foundation.css";
 import "./globals.css";
+import "./pwa-shell.css";
 export const metadata: Metadata = {
   title: "AURYN · Investment Intelligence",
   description: "Understand the business. Put the price in perspective.",
@@ -23,7 +24,7 @@ export const viewport: Viewport = {
     { media: "(prefers-color-scheme: light)", color: "#f2f4f7" },
   ],
 };
-const boot = `try{const r=document.documentElement,s=localStorage.getItem('auryn-product-theme');r.dataset.theme=(!s||s==='system')?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):s==='dark'?'dark':'light';r.dataset.textSize=localStorage.getItem('auryn-product-text')==='large'?'large':'standard';r.dataset.motion=localStorage.getItem('auryn-product-motion')==='reduce'?'reduce':'system'}catch(e){}`;
+const boot = `try{document.documentElement.dataset.pwa=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true?'true':'false'}catch(e){};try{const r=document.documentElement,s=localStorage.getItem('auryn-product-theme');r.dataset.theme=(!s||s==='system')?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):s==='dark'?'dark':'light';r.dataset.textSize=localStorage.getItem('auryn-product-text')==='large'?'large':'standard';r.dataset.motion=localStorage.getItem('auryn-product-motion')==='reduce'?'reduce':'system'}catch(e){}`;
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" data-theme="light" suppressHydrationWarning>
@@ -31,6 +32,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: boot }} />
       </head>
       <body id="auryn-app">
+        <div className="pwa-status-surface" aria-hidden="true" />
         <Pwa />
         <AppSession>{children}</AppSession>
       </body>

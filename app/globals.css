@@ -2581,17 +2581,6 @@ caption {
     min-width: 40px;
   }
 }
-@media (max-width: 700px) and (display-mode: standalone) {
-  .product::before {
-    content: "";
-    position: fixed;
-    inset: 0 0 auto;
-    height: env(safe-area-inset-top, 0px);
-    background: var(--paper);
-    z-index: 60;
-    pointer-events: none;
-  }
-}
 .home-details .section-head {
   margin: 0 0 8px;
 }
