@@ -11,6 +11,7 @@ import {
   X,
   RefreshCw,
   Search as SearchIcon,
+  MoreHorizontal,
   PieChart,
 } from "lucide-react";
 import type { Company, Position, Quote } from "@/lib/types";
@@ -252,98 +253,160 @@ export function ResearchHome() {
   );
 }
 export function Overview() {
-  const { workspace, demo, workspaceError } = useProduct(),
-    quotes = useWorkspaceQuotes(),
-    prefix = demo ? "/preview" : "";
+  const { workspace, demo, workspaceError } = useProduct();
+  const quotes = useWorkspaceQuotes();
+  const prefix = demo ? "/preview" : "";
   const q = Object.fromEntries(
-      Object.entries(quotes.data || {})
-        .filter(([, v]) => v.quote)
-        .map(([k, v]) => [k, v.quote!]),
-    ),
-    totals = portfolioTotals(workspace?.positions || [], q);
-  const holdings =
-    workspace?.positions.filter((p) => p.assetType !== "cash") || [];
+    Object.entries(quotes.data || {})
+      .filter(([, v]) => v.quote)
+      .map(([k, v]) => [k, v.quote!]),
+  );
+  const totals = portfolioTotals(workspace?.positions || [], q);
+  const holdings = (workspace?.positions || []).filter(
+    (p) => p.assetType !== "cash",
+  );
+  const priced = holdings.filter(
+    (p) =>
+      p.currency === "USD" &&
+      q[p.symbol]?.currency === "USD" &&
+      !q[p.symbol]?.stale &&
+      q[p.symbol]?.price != null,
+  );
+  const largest = [...priced].sort(
+    (a, b) => b.quantity * q[b.symbol].price! - a.quantity * q[a.symbol].price!,
+  )[0];
+  const worst = [...priced]
+    .filter((p) => p.cost > 0)
+    .sort(
+      (a, b) => q[a.symbol].price! / a.cost - q[b.symbol].price! / b.cost,
+    )[0];
+  const focus = [
+    ...(largest && totals.knownValue > 0
+      ? [
+          {
+            symbol: largest.symbol,
+            title: `${largest.symbol} is ${(((largest.quantity * q[largest.symbol].price!) / totals.knownValue) * 100).toFixed(1)}% of priced value`,
+            detail: "Review concentration alongside your business conviction.",
+          },
+        ]
+      : []),
+    ...(worst
+      ? [
+          {
+            symbol: worst.symbol,
+            title: `${worst.symbol} has the largest percentage drawdown`,
+            detail: `${percent((q[worst.symbol].price! / worst.cost - 1) * 100, true)} versus recorded cost. A loss alone is not a buy signal.`,
+          },
+        ]
+      : []),
+  ];
   return (
     <section>
       <PageHeading
-        title="Your investing perspective."
-        subtitle="The companies you follow. The portfolio you’re building."
+        title="Home"
+        subtitle={new Date().toLocaleDateString("en-US", {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          timeZone: "America/Chicago",
+        })}
         action={
-          <Link className="button" href={`${prefix}/research`}>
-            Research a company <ArrowUpRight size={16} />
+          <Link className="button primary" href={`${prefix}/research`}>
+            <SearchIcon size={18} />
+            Find a company
           </Link>
         }
       />
       {workspaceError && <Notice error>{workspaceError}</Notice>}
       {quotes.error && <Notice error>{quotes.error}</Notice>}
-      <section className="panel overview-hero">
+      <section className="overview-hero">
         <div>
-          <span className="eyebrow">YOUR PORTFOLIO · USD</span>
+          <div className="eyebrow">
+            Invested value · {holdings.length} holdings
+          </div>
           <div className="balance">
             {workspace && quotes.ready ? amount(totals.knownValue) : "—"}
           </div>
+          <div className="money-sub">
+            <span
+              className={totals.pnl != null && totals.pnl < 0 ? "red" : "green"}
+            >
+              {quotes.ready ? amount(totals.pnl) : "—"}{" "}
+              {totals.pnl != null && totals.cost
+                ? percent((totals.pnl / totals.cost) * 100, true)
+                : ""}
+            </span>
+            <span className="muted"> unrealised</span>
+          </div>
           <p className="balance-caption">
-            {quotes.loading
-              ? "Updating prices…"
-              : totals.missing.length
-                ? `${totals.missing.length} unpriced holdings excluded`
+            {totals.missing.length
+              ? `${totals.missing.length} unpriced holdings excluded`
+              : quotes.loading
+                ? "Updating prices…"
                 : "Priced investments and recorded cash"}
           </p>
-          <div className="mini-stats">
-            <div>
-              <span>Unrealized return</span>
-              <strong
-                className={
-                  totals.pnl != null && totals.pnl < 0 ? "red" : "green"
-                }
-              >
-                {quotes.ready ? amount(totals.pnl) : "—"}
-              </strong>
-            </div>
-            <div>
-              <span>Investments</span>
-              <strong>{holdings.length}</strong>
-            </div>
-            <div>
-              <span>Following</span>
-              <strong>{workspace?.watchlist.length ?? "—"}</strong>
-            </div>
-          </div>
         </div>
         <div>
-          <div className="section-heading">
-            <h2>Your allocation</h2>
-            <Link className="text-button" href={`${prefix}/portfolio`}>
-              View portfolio <ArrowUpRight size={16} />
+          <div className="row between">
+            <h3>Where your money sits</h3>
+            <Link className="text-button small" href={`${prefix}/portfolio`}>
+              Portfolio →
             </Link>
           </div>
           <Allocation positions={workspace?.positions || []} quotes={q} />
         </div>
       </section>
-      <section className="panel support">
-        <header className="section-heading">
-          <h2>On your radar</h2>
-          <Link className="text-button" href={`${prefix}/watchlist`}>
-            View all <ArrowUpRight size={16} />
-          </Link>
-        </header>
-        <InvestmentRows
-          symbols={workspace?.watchlist.slice(0, 6).map((w) => w.symbol) || []}
-          quotes={quotes.data || {}}
-        />
-      </section>
-      <div className="research-entry support">
-        <div>
-          <h2>Find your next idea</h2>
-          <p className="muted">
-            Financials, valuation and price structure in one place.
-          </p>
-        </div>
-        <Search />
+      <div className="grid2 home-details">
+        <section>
+          <header className="section-head">
+            <div>
+              <h2>Worth a closer look</h2>
+              <p>Based on your positions, not a forecast.</p>
+            </div>
+          </header>
+          {focus.length ? (
+            focus.map((f) => (
+              <Link
+                className="focus-row"
+                href={`${prefix}/research/${encodeURIComponent(f.symbol.replace("/", "-"))}`}
+                key={f.symbol + f.title}
+              >
+                <SecurityLogo symbol={f.symbol} />
+                <div className="focus-text">
+                  <strong>{f.title}</strong>
+                  <p>{f.detail}</p>
+                </div>
+                <ArrowUpRight size={19} />
+              </Link>
+            ))
+          ) : (
+            <Empty title="Start with your holdings">
+              Add positions to see concentration and cost context here.
+            </Empty>
+          )}
+        </section>
+        <section>
+          <header className="section-head">
+            <div>
+              <h2>On your radar</h2>
+              <p>Your selected instruments.</p>
+            </div>
+            <Link className="text-button small" href={`${prefix}/watchlist`}>
+              View all →
+            </Link>
+          </header>
+          <InvestmentRows
+            symbols={
+              workspace?.watchlist.slice(0, 4).map((w) => w.symbol) || []
+            }
+            quotes={quotes.data || {}}
+          />
+        </section>
       </div>
     </section>
   );
 }
+
 function InvestmentRows({
   symbols,
   quotes,
@@ -434,10 +497,16 @@ export function Watchlist() {
   const { workspace, demo, workspaceError, mutate } = useProduct(),
     quotes = useWorkspaceQuotes("watchlist"),
     [query, setQuery] = useWorkspaceFilter("watchlist"),
+    [watchType, setWatchType] = useState<"All" | "Stocks" | "Crypto">("All"),
     addDialog = useRef<HTMLDialogElement>(null),
     [error, setError] = useState("");
   const symbols = (workspace?.watchlist || [])
     .map((w) => w.symbol)
+    .filter(
+      (s) =>
+        watchType === "All" ||
+        (watchType === "Crypto" ? s.includes("/") : !s.includes("/")),
+    )
     .filter((s) =>
       (s + " " + (quotes.data?.[s]?.company?.name || ""))
         .toLowerCase()
@@ -454,7 +523,7 @@ export function Watchlist() {
     <section className="watchlist-page">
       <PageHeading
         title="Watchlist"
-        subtitle="Latest prices and a direct route to your research."
+        subtitle="Keep your next decisions within reach."
         action={
           <button
             className="button primary"
@@ -469,6 +538,18 @@ export function Watchlist() {
         <Notice error>{workspaceError || error}</Notice>
       )}
       <div className="watchlist-toolbar">
+        <div className="segments" aria-label="Watchlist asset type">
+          {(["All", "Stocks", "Crypto"] as const).map((t) => (
+            <button
+              key={t}
+              aria-pressed={watchType === t}
+              className={watchType === t ? "active" : ""}
+              onClick={() => setWatchType(t)}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
         <label>
           <SearchIcon size={17} />
           <input
@@ -649,6 +730,7 @@ export function Portfolio() {
       (p) => !p.currency && p.assetType !== "cash",
     );
   function edit(p: Position | null) {
+    setRemoving(null);
     setEditing(p);
     setSymbol(p?.symbol || "");
     setQuantity(p ? String(p.quantity) : "");
@@ -685,6 +767,7 @@ export function Portfolio() {
     try {
       await mutate({ op: "remove-position", id });
       setRemoving(null);
+      modal.current?.close();
     } catch (e) {
       setError(
         e instanceof Error ? e.message : "Position could not be removed.",
@@ -794,10 +877,6 @@ export function Portfolio() {
             </Help>
           </p>
           <div className="mini-stats">
-            <div>
-              <span>Recorded cost</span>
-              <strong>{workspace ? amount(totals.cost) : "—"}</strong>
-            </div>
             <div>
               <span>Unrealized profit / loss</span>
               <strong
@@ -967,30 +1046,9 @@ export function Portfolio() {
                             aria-label={`Edit ${p.symbol}`}
                             onClick={() => edit(p)}
                           >
-                            <PenLine size={15} />
-                          </button>
-                          <button
-                            className="icon-button"
-                            aria-label={`Remove ${p.symbol}`}
-                            onClick={() => setRemoving(p.id)}
-                          >
-                            <Trash2 size={15} />
+                            <MoreHorizontal size={19} />
                           </button>
                         </div>
-                        {removing === p.id && (
-                          <div className="remove-confirm">
-                            <span>Remove this record?</span>
-                            <button
-                              disabled={busy}
-                              onClick={() => remove(p.id)}
-                            >
-                              Remove
-                            </button>
-                            <button onClick={() => setRemoving(null)}>
-                              Cancel
-                            </button>
-                          </div>
-                        )}
                       </td>
                     </tr>
                   );
@@ -1113,6 +1171,35 @@ export function Portfolio() {
             {busy ? "Saving…" : "Save position"}
           </button>
         </form>
+        {editing &&
+          (removing === editing.id ? (
+            <div className="remove-confirm">
+              <span>Remove this holding?</span>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => remove(editing.id)}
+              >
+                Remove holding
+              </button>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => setRemoving(null)}
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <button
+              className="text-button negative"
+              type="button"
+              disabled={busy}
+              onClick={() => setRemoving(editing.id)}
+            >
+              Remove holding
+            </button>
+          ))}
       </dialog>
     </section>
   );

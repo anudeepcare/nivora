@@ -12,7 +12,7 @@ npm ci &&
 npm run verify &&
 npm run test:api &&
 git add -A &&
-(git diff --cached --quiet || git commit -m "Improve AURYN decision clarity, DCA and responsive controls") &&
+(git diff --cached --quiet || git commit -m "Implement approved AURYN design and stable navigation") &&
 git push origin main
 ```
 
@@ -56,4 +56,4 @@ Uncertain submissions keep the account lock until reconciled. Do not retry with 
 
 ## Acceptance before promotion
 
-Run the checks, then capture actual desktop and mobile light/dark screens, including 320/375/390/430, tablet and 1280/1440/1920 widths. Review against `docs/design/approved-pwa-20261017.html`; earlier references remain historical context. Test all tabs, search, sources, dialogs, error states, alerts, chart ranges/scrolling, theme persistence, browser back/forward and installed iPhone PWA safe areas. Test latency under the existing provider budget. Review the unimplemented scope in `RELEASE_STATUS.md` before selling access.
+Run the checks, then capture actual desktop and mobile light/dark screens, including 320/375/390/430, tablet and 1280/1440/1920 widths. Review against `docs/design/approved-studio-20261017.html`; earlier references remain historical context. Test all tabs, search, sources, dialogs, error states, alerts, chart ranges/scrolling, theme persistence, browser back/forward and installed iPhone PWA safe areas. Test latency under the existing provider budget. Review the unimplemented scope in `RELEASE_STATUS.md` before selling access.

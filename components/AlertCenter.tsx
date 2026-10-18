@@ -81,7 +81,7 @@ export default function AlertCenter() {
   return (
     <section>
       <PageHeading
-        title="Changes worth your attention."
+        title="Alerts"
         subtitle="Your levels, monthly zones and new company filings. One focused history."
         action={
           <button

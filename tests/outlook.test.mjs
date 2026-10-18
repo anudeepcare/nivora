@@ -1,0 +1,104 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import ts from "typescript";
+function load() {
+  if (!fs.existsSync("lib/outlook.ts")) return {};
+  const exports = {};
+  const code = ts.transpileModule(fs.readFileSync("lib/outlook.ts", "utf8"), {
+    compilerOptions: {
+      module: ts.ModuleKind.CommonJS,
+      target: ts.ScriptTarget.ES2022,
+    },
+  }).outputText;
+  new Function("exports", code)(exports);
+  return exports;
+}
+function research() {
+  return {
+    company: { symbol: "CRM", assetType: "stock" },
+    quote: { price: 100, currency: "USD", stale: false },
+    retrievedAt: "2026-10-17T12:00:00Z",
+    evidence: {
+      updatedAt: "2026-10-16",
+      reportingCurrency: "USD",
+      profile: { sector: "Technology", industry: "Software" },
+      multiples: { ForwardPE: 20 },
+      estimates: [
+        {
+          date: "2029-10-17",
+          period: "FY2029",
+          frequency: "annual",
+          currency: "USD",
+          eps: 8,
+          epsLow: 6,
+          epsHigh: 10,
+          analysts: 15,
+        },
+      ],
+    },
+  };
+}
+
+test("a consensus fallback never revives an old target and always carries its observation date", () => {
+  const { consensusOutlook } = load();
+  assert.equal(typeof consensusOutlook, "function");
+  const input = research();
+  input.evidence.consensus = { target: 150 };
+  assert.equal(consensusOutlook(input).asOf, "2026-10-16");
+  input.evidence.updatedAt = "2023-01-01";
+  assert.equal(consensusOutlook(input), null);
+  input.evidence.updatedAt = "2026-10-16";
+  input.quote.stale = true;
+  assert.equal(consensusOutlook(input), null);
+});
+test("outlook prices use actual forecast EPS, disclosed multiple sensitivity, and a common horizon", () => {
+  const { researchOutlook } = load();
+  assert.equal(typeof researchOutlook, "function");
+  const r = researchOutlook(research());
+  assert.equal(r.available, true);
+  assert.equal(r.cases[0].target, 96);
+  assert.equal(r.cases[1].target, 160);
+  assert.equal(r.cases[2].target, 240);
+  assert(Math.abs(r.cases[1].change - 60) < 1e-10);
+  assert(Math.abs((1 + r.cases[1].annual / 100) ** r.years - 1.6) < 1e-10);
+  assert.equal(r.period, "FY2029");
+  assert.equal(r.cases[0].multiple, 16);
+});
+test("a missing EPS range cannot become fabricated bear and bull targets", () => {
+  const { researchOutlook } = load();
+  assert.equal(typeof researchOutlook, "function");
+  const input = research();
+  input.evidence.estimates[0].epsLow = null;
+  const r = researchOutlook(input);
+  assert.equal(r.available, false);
+  assert.match(r.reason, /range/i);
+});
+test("crypto, foreign listings, stale quotes and mismatched currency withhold corporate targets", () => {
+  const { researchOutlook } = load();
+  assert.equal(typeof researchOutlook, "function");
+  for (const change of [
+    (r) => (r.company.assetType = "crypto"),
+    (r) => (r.company.foreignListing = true),
+    (r) => (r.quote.stale = true),
+    (r) => (r.evidence.estimates[0].currency = "EUR"),
+  ]) {
+    const input = research();
+    change(input);
+    assert.equal(researchOutlook(input).available, false);
+  }
+});
+test("quarterly, dated, nonpositive or inverted forecasts never produce a valid outlook", () => {
+  const { researchOutlook } = load();
+  assert.equal(typeof researchOutlook, "function");
+  for (const change of [
+    (r) => (r.evidence.estimates[0].frequency = "quarterly"),
+    (r) => (r.evidence.updatedAt = "2023-01-01"),
+    (r) => (r.evidence.estimates[0].epsLow = -1),
+    (r) => (r.evidence.estimates[0].epsLow = 12),
+  ]) {
+    const input = research();
+    change(input);
+    assert.equal(researchOutlook(input).available, false);
+  }
+});

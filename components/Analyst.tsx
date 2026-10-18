@@ -18,12 +18,20 @@ type Report = {
   sources: { id: string; label: string; url: string }[];
   generatedAt: string;
 };
-export default function Analyst({ research }: { research: Research }) {
+export default function Analyst({
+  research,
+  compact = false,
+}: {
+  research: Research;
+  compact?: boolean;
+}) {
   const { demo } = useProduct(),
     [mode, setMode] = useState<"snapshot" | "deep-dive" | "swot">("snapshot"),
     [report, setReport] = useState<Report | null>(null),
     [busy, setBusy] = useState(false),
-    [error, setError] = useState("");
+    [error, setError] = useState(""),
+    [question, setQuestion] = useState(""),
+    [prepared, setPrepared] = useState("");
   const previewStatus = useMemo<AnalystStatus | undefined>(
     () =>
       demo
@@ -40,7 +48,9 @@ export default function Analyst({ research }: { research: Research }) {
     `analyst/${encodeURIComponent(research.company.symbol.replace("/", "-"))}`,
     previewStatus,
   );
-  async function generate() {
+  async function generate(
+    requestedMode: "snapshot" | "deep-dive" | "swot" = mode,
+  ) {
     setError("");
     if (demo || !availability.data?.available) {
       setError(
@@ -56,7 +66,7 @@ export default function Analyst({ research }: { research: Research }) {
       setReport(
         await api<Report>(
           `analyst/${encodeURIComponent(research.company.symbol.replace("/", "-"))}`,
-          { mode },
+          { mode: requestedMode },
         ),
       );
     } catch (e) {
@@ -93,71 +103,89 @@ export default function Analyst({ research }: { research: Research }) {
     URL.revokeObjectURL(url);
   }
   const evidence = perspective(research);
+  if (compact) {
+    const prompts = [
+      "What does cash after capex tell me?",
+      "What is the biggest missing piece?",
+      "What would strengthen the bull case?",
+    ];
+    const respond = (prompt: string, index: number) => {
+      setQuestion(prompt);
+      setError("");
+      setReport(null);
+      if (availability.data?.available && !demo) {
+        setPrepared("");
+        void generate(
+          index === 1 ? "swot" : index === 2 ? "snapshot" : "deep-dive",
+        );
+        return;
+      }
+      const p = evidence.last;
+      setPrepared(
+        index === 0
+          ? p?.fcf == null
+            ? "Matching operating cash flow and capital expenditure are missing for this period."
+            : `${amount(p.fcf, p.currency, true)} remained after operating cash flow less reported capital spending in the ${evidence.periodBasis} period to ${dateLabel(p.end)}. This is not automatically distributable cash; financing, acquisitions and dilution still matter.`
+          : index === 1
+            ? "Reported financials do not establish a durable moat or a fair purchase price by themselves. Reconcile assumptions, competitive position, financing and the forecast horizon with company disclosures."
+            : `Sustained revenue growth, cash conversion and disciplined reinvestment would strengthen the business case. Current comparable revenue growth is ${percent(evidence.growth, true)}. That observation does not guarantee future returns.`,
+      );
+    };
+    return (
+      <section className="ask-auryn">
+        <header className="section-head">
+          <div>
+            <h2>Ask AURYN</h2>
+            <p>Explanations grounded in the available evidence.</p>
+          </div>
+        </header>
+        <div className="prompt-row">
+          {prompts.map((prompt, index) => (
+            <button
+              type="button"
+              key={prompt}
+              disabled={busy}
+              onClick={() => respond(prompt, index)}
+            >
+              {prompt}
+            </button>
+          ))}
+        </div>
+        {busy && (
+          <p className="context-note" role="status">
+            Reviewing evidence…
+          </p>
+        )}
+        {error && <Notice error>{error}</Notice>}
+        {(prepared || report) && (
+          <div className="answer" aria-live="polite">
+            <strong>{question}</strong>
+            <p>{report?.summary.text || prepared}</p>
+            <p className="small muted">
+              {report
+                ? "AI-generated research · verify the cited sources"
+                : "Evidence explanation · no AI request made"}
+            </p>
+            {report?.sources.slice(0, 3).map((source) => (
+              <Source key={source.id} href={source.url}>
+                {source.label}
+              </Source>
+            ))}
+          </div>
+        )}
+      </section>
+    );
+  }
   return (
     <section>
       <header className="section-heading">
         <div>
           <span className="eyebrow">AURYN ANALYST</span>
-          <h2>Company analysis</h2>
-          <p>Source-linked analysis of the data available for this company.</p>
+          <h2>Ask AURYN</h2>
+          <p>Source-linked analysis of the company evidence.</p>
         </div>
         <Sparkles size={26} className="violet" />
       </header>
-      <section className="panel evidence-summary">
-        <header className="section-heading">
-          <div>
-            <h3>Financial evidence</h3>
-            <p>
-              {evidence.last
-                ? `${evidence.periodBasis} ending ${dateLabel(evidence.last.end)} · ${evidence.last.currency}`
-                : "Reporting period unavailable"}
-            </p>
-          </div>
-          <span className="status-pill">Reported data</span>
-        </header>
-        <div className="evidence-metrics">
-          <div>
-            <span>Revenue growth</span>
-            <strong
-              className={
-                evidence.growth != null && evidence.growth < 0 ? "red" : ""
-              }
-            >
-              {percent(evidence.growth, true)}
-            </strong>
-            <small>
-              {evidence.growth != null
-                ? `Comparable ${evidence.periodBasis} periods`
-                : "Comparable periods not available"}
-            </small>
-          </div>
-          <div>
-            <span>Free cash flow</span>
-            <strong
-              className={
-                evidence.last?.fcf != null && evidence.last.fcf < 0 ? "red" : ""
-              }
-            >
-              {amount(evidence.last?.fcf, evidence.last?.currency, true)}
-            </strong>
-            <small>
-              {evidence.last?.fcf != null
-                ? "Operating cash flow less capital spending"
-                : "Matching cash flow and capital spending needed"}
-            </small>
-          </div>
-          <div>
-            <span>Operating margin</span>
-            <strong>{percent(evidence.last?.margin)}</strong>
-            <small>Operating income ÷ revenue</small>
-          </div>
-        </div>
-        {evidence.last && (
-          <Source href={evidence.last.sourceUrl}>
-            View reported financials
-          </Source>
-        )}
-      </section>
       <div className="analyst-availability" role="status">
         <span
           className={`status-pill ${availability.data?.available ? "green" : "amber"}`}
@@ -206,7 +234,7 @@ export default function Analyst({ research }: { research: Research }) {
             disabled={
               busy || !availability.data?.available || !research.facts.length
             }
-            onClick={generate}
+            onClick={() => generate()}
           >
             <Sparkles size={16} />
             {busy

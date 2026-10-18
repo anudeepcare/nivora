@@ -153,7 +153,7 @@ function StoreProvider({
         null,
     ),
     [workspaceError, setWorkspaceError] = useState(""),
-    [theme, setThemeState] = useState<"light" | "dark">("dark"),
+    [theme, setThemeState] = useState<"light" | "dark">("light"),
     [themePreference, setThemePreference] = useState<
       "light" | "dark" | "system"
     >(() => {
@@ -162,9 +162,9 @@ function StoreProvider({
           typeof window === "undefined"
             ? null
             : localStorage.getItem("auryn-product-theme");
-        return v === "light" || v === "system" ? v : "dark";
+        return v === "light" || v === "dark" ? v : "system";
       } catch {
-        return "dark";
+        return "system";
       }
     }),
     [textSize, setTextSizeState] = useState<"standard" | "large">("standard"),
@@ -197,7 +197,7 @@ function StoreProvider({
     try {
       const saved = localStorage.getItem("auryn-product-theme");
       setThemePreference(
-        saved === "light" || saved === "system" ? saved : "dark",
+        saved === "light" || saved === "dark" ? saved : "system",
       );
       setTextSizeState(
         localStorage.getItem("auryn-product-text") === "large"
@@ -222,7 +222,7 @@ function StoreProvider({
       document
         .querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')
         .forEach((meta) => {
-          meta.content = value === "dark" ? "#0e1420" : "#f5f7fb";
+          meta.content = value === "dark" ? "#101a23" : "#f2f4f7";
           meta.removeAttribute("media");
         });
       setThemeState(value);

@@ -8,7 +8,11 @@ import Shell from "./Shell";
 import { symbolInput } from "@/lib/format";
 import dynamic from "next/dynamic";
 const Research = dynamic(() => import("./Research"), {
-  loading: () => <p role="status">Opening research…</p>,
+  loading: () => (
+    <p role="status" aria-busy="true">
+      Opening research…
+    </p>
+  ),
 });
 import { Overview, ResearchHome, Portfolio, Watchlist } from "./Workspace";
 import { Settings, Compare, HelpPage } from "./SupportingViews";

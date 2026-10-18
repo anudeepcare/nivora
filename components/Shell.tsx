@@ -7,17 +7,21 @@ import {
   ChartNoAxesCombined,
   Bookmark,
   PieChart,
-  Settings,
-  Sun,
-  Moon,
   Search as SearchIcon,
+  Bell,
   X,
 } from "lucide-react";
 import { Logo } from "./Ui";
 import Search from "./Search";
+import SettingsSheet from "./SettingsSheet";
 import { useProduct } from "./Session";
+import {
+  NavigationMemory,
+  restoreWhenReady,
+  browserScrollEnvironment,
+} from "@/lib/navigation";
 const primary = [
-  { path: "overview", label: "Overview", icon: Home },
+  { path: "overview", label: "Home", icon: Home },
   { path: "research", label: "Research", icon: ChartNoAxesCombined },
   { path: "watchlist", label: "Watchlist", icon: Bookmark },
   { path: "portfolio", label: "Portfolio", icon: PieChart },
@@ -29,34 +33,32 @@ export default function Shell({
   page: string;
   children: React.ReactNode;
 }) {
-  const { demo, workspace, theme, setTheme } = useProduct();
+  const { demo, workspace } = useProduct();
   const pathname = usePathname();
-  const tabOffsets = useRef(new Map<string, number>());
-  const tabDestination = useRef<string | null>(null);
+  const memory = useRef(new NavigationMemory());
+  const pending = useRef<{ path: string; top: number } | null>(null);
+  const prefix = demo ? "/preview" : "";
+  const search = useRef<HTMLDialogElement>(null);
+  const settings = useRef<HTMLDialogElement>(null);
   useLayoutEffect(() => {
-    if (tabDestination.current === pathname) {
-      window.scrollTo({
-        top: tabOffsets.current.get(pathname) ?? 0,
-        left: 0,
-        behavior: "instant",
-      });
-      tabDestination.current = null;
+    let cancel: (() => void) | undefined;
+    if (pending.current?.path === pathname) {
+      cancel = restoreWhenReady(
+        pending.current.top,
+        browserScrollEnvironment(),
+      );
+      pending.current = null;
     }
-    // Also remember position when leaving a list through a company link.
-    if (
-      !primary.some(
-        (r) => pathname === `/${r.path}` || pathname === `/preview/${r.path}`,
-      )
-    )
-      return;
-    const remember = () => tabOffsets.current.set(pathname, window.scrollY);
+    const remember = () => memory.current.remember(pathname, window.scrollY);
     window.addEventListener("scroll", remember, { passive: true });
-    return () => window.removeEventListener("scroll", remember);
+    return () => {
+      cancel?.();
+      window.removeEventListener("scroll", remember);
+    };
   }, [pathname]);
-  const prefix = demo ? "/preview" : "",
-    search = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     search.current?.close();
+    settings.current?.close();
   }, [pathname]);
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
@@ -71,7 +73,7 @@ export default function Shell({
     document.addEventListener("keydown", key);
     return () => document.removeEventListener("keydown", key);
   }, []);
-  const nav = (r: (typeof primary)[number]) => {
+  const nav = (r: (typeof primary)[number], mobile = false) => {
     const Icon = r.icon;
     return (
       <Link
@@ -80,19 +82,22 @@ export default function Shell({
         scroll={false}
         onNavigate={(event) => {
           const destination = `${prefix}/${r.path}`;
-          if (destination === pathname) {
+          const top = memory.current.navigate(
+            pathname,
+            destination,
+            window.scrollY,
+          );
+          if (top == null) {
             event.preventDefault();
             return;
           }
-          tabOffsets.current.set(pathname, window.scrollY);
-          tabDestination.current = destination;
+          pending.current = { path: destination, top };
         }}
-        className="nav-item"
+        className={page === r.path ? "active" : ""}
         aria-label={r.label}
-        title={r.label}
         aria-current={page === r.path ? "page" : undefined}
       >
-        <Icon size={21} />
+        {mobile && <Icon size={22} />}
         <span>{r.label}</span>
       </Link>
     );
@@ -102,115 +107,81 @@ export default function Shell({
       <a className="skip" href="#content">
         Skip to content
       </a>
-      <aside className="sidebar">
+      <header className="topbar">
         <Link
           href={`${prefix}/overview`}
           className="brand-link"
-          aria-label="AURYN overview"
+          aria-label="AURYN home"
         >
           <Logo />
         </Link>
-        <nav className="main-nav" aria-label="Primary">
-          {primary.map(nav)}
+        <nav className="desktop-nav" aria-label="Main navigation">
+          {primary.map((r) => nav(r))}
         </nav>
-        <div className="sidebar-bottom">
+        <button
+          className="top-search"
+          aria-label="Search companies and crypto"
+          aria-haspopup="dialog"
+          onClick={() => {
+            search.current?.showModal();
+            search.current
+              ?.querySelector("input")
+              ?.focus({ preventScroll: true });
+          }}
+        >
+          <SearchIcon size={19} />
+          <span>Find a company</span>
+          <kbd>⌘ K</kbd>
+        </button>
+        <div className="top-actions">
           <Link
-            href={`${prefix}/settings`}
-            className="nav-item"
-            aria-label="Preferences"
-            title="Preferences"
-            aria-current={page === "settings" ? "page" : undefined}
+            className="icon-button"
+            href={`${prefix}/alerts`}
+            aria-label="Price alerts"
           >
-            <Settings size={21} />
-            <span>Preferences</span>
+            <Bell size={21} />
           </Link>
-          <div className="profile">
+          <button
+            className="icon-button"
+            aria-label="Settings"
+            aria-haspopup="dialog"
+            onClick={() => settings.current?.showModal()}
+          >
             <span className="avatar">
               {(workspace?.email?.[0] || "A").toUpperCase()}
             </span>
-            <div>
-              <strong>{demo ? "Design preview" : "Your workspace"}</strong>
-              <small>{demo ? "Illustrative data" : "Private account"}</small>
-            </div>
-          </div>
+          </button>
         </div>
-      </aside>
-      <div className="main-column">
-        <header className="topbar">
-          <Link
-            className="mobile-brand"
-            href={`${prefix}/overview`}
-            aria-label="AURYN overview"
-          >
-            <Logo />
-          </Link>
-          <div className="top-search">
-            <Search />
+      </header>
+      <main id="content" className="content" tabIndex={-1}>
+        {demo && (
+          <div className="preview-label">
+            Design preview · Illustrative data · Account actions disabled
           </div>
-          <div className="top-actions">
-            <button
-              className="icon-button mobile-search"
-              aria-label="Search companies and crypto"
-              aria-haspopup="dialog"
-              onClick={() => {
-                search.current?.showModal();
-                search.current
-                  ?.querySelector("input")
-                  ?.focus({ preventScroll: true });
-              }}
-            >
-              <SearchIcon size={21} />
-            </button>
-            <button
-              className="icon-button"
-              aria-label={`Use ${theme === "dark" ? "light" : "dark"} theme`}
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            >
-              {theme === "dark" ? <Sun size={21} /> : <Moon size={21} />}
-            </button>
-            <Link
-              className="icon-button"
-              href={`${prefix}/settings`}
-              aria-label="Preferences"
-              aria-current={page === "settings" ? "page" : undefined}
-            >
-              <Settings size={21} />
-            </Link>
-          </div>
-        </header>
-        <main id="content" className="content" tabIndex={-1}>
-          {demo && (
-            <div className="preview-label">
-              Design preview · Illustrative data · Account actions disabled
-            </div>
-          )}
-          {children}
-          <footer className="footer">
-            <span>AURYN · Independent investment research</span>
-            <Link href={`${prefix}/help`}>Sources & methodology</Link>
-          </footer>
-        </main>
-      </div>
+        )}
+        {children}
+      </main>
       <nav className="mobile-dock" aria-label="Mobile navigation">
-        {primary.map(nav)}
+        {primary.map((r) => nav(r, true))}
       </nav>
       <dialog
         className="search-dialog"
         ref={search}
         aria-label="Search companies and crypto"
       >
-        <div className="dialog-head">
-          <h2>Find your next idea</h2>
+        <header className="dialog-head">
+          <h2>Find a company</h2>
           <button
             className="icon-button"
             aria-label="Close search"
             onClick={() => search.current?.close()}
           >
-            <X size={20} />
+            <X size={21} />
           </button>
-        </div>
+        </header>
         <Search autoFocus onNavigate={() => search.current?.close()} />
       </dialog>
+      <SettingsSheet dialog={settings} />
     </div>
   );
 }

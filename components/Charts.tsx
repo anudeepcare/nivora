@@ -17,11 +17,13 @@ export function PriceChart({
   range,
   style = "line",
   levels = EMPTY_LEVELS,
+  contrast = false,
 }: {
   bars: Candle[];
   range: string;
   style?: "line" | "candles";
   levels?: { label: string; price: number }[];
+  contrast?: boolean;
 }) {
   const element = useRef<HTMLDivElement>(null),
     chart = useRef<IChartApi | null>(null),
@@ -32,16 +34,28 @@ export function PriceChart({
     { theme } = useProduct();
   useEffect(() => {
     if (!element.current) return;
+    const palette = getComputedStyle(element.current);
+    const ink =
+      palette.getPropertyValue("--muted").trim() ||
+      (theme === "dark" ? "#a8b9c5" : "#5e6e79");
+    const accent = palette.getPropertyValue("--blue").trim() || "#2267d8";
+    const grid =
+      palette.getPropertyValue("--line").trim() ||
+      (theme === "dark" ? "#2a3b47" : "#e2e7ec");
+    const rgba = (hex: string, alpha: number) =>
+      /^#[0-9a-f]{6}$/i.test(hex)
+        ? `rgba(${parseInt(hex.slice(1, 3), 16)},${parseInt(hex.slice(3, 5), 16)},${parseInt(hex.slice(5, 7), 16)},${alpha})`
+        : "rgba(34,103,216,0.1)";
     const api = createChart(element.current, {
       autoSize: true,
       layout: {
         background: { type: ColorType.Solid, color: "transparent" },
-        textColor: theme === "dark" ? "#a1aec2" : "#5a677b",
+        textColor: ink,
         fontSize: 12,
       },
       grid: {
         vertLines: { visible: false },
-        horzLines: { color: theme === "dark" ? "#263142" : "#e7ecf4" },
+        horzLines: { color: grid },
       },
       rightPriceScale: { borderVisible: false },
       timeScale: {
@@ -71,9 +85,9 @@ export function PriceChart({
             wickDownColor: "#e26c7a",
           })
         : api.addSeries(AreaSeries, {
-            lineColor: "#5e8aff",
-            topColor: "#3f75ee35",
-            bottomColor: "#3f75ee00",
+            lineColor: accent,
+            topColor: rgba(accent, 0.2),
+            bottomColor: rgba(accent, 0),
             lineWidth: 2,
             priceLineVisible: false,
           });
@@ -83,7 +97,7 @@ export function PriceChart({
       chart.current = null;
       series.current = null;
     };
-  }, [theme, style]);
+  }, [theme, style, contrast]);
   useEffect(() => {
     if (!series.current || !chart.current) return;
     const unique = new Map<string, any>();
@@ -126,7 +140,7 @@ export function PriceChart({
           series.current?.removePriceLine(l);
         } catch {}
     };
-  }, [bars, range, theme, style, levels]);
+  }, [bars, range, theme, style, levels, contrast]);
   return (
     <div className="chart-wrap">
       <div

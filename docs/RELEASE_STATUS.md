@@ -2,7 +2,11 @@
 
 **Full standalone source is included. Production acceptance is not complete.** The current update repairs the UI and reconciles financial-period selection following a signed-in audit of the deployed app. This patched source has not been deployed or tested on a physical iPhone.
 
-## Current update
+## Current update — approved studio build
+
+The approved top navigation, research canvas, floating mobile dock, compact settings and exact primary metric set are implemented. Additional primary forecast/ownership/news/dividend/repeated earnings grids were removed from the five research views. Outlook cases remain disclosed forecast sensitivities; their actual horizon and eligibility differ from illustrative mockup targets. The user-approved reference is `design/approved-studio-20261017.html`. All 146 domain/UI tests, typecheck, production build and fixture-backed API suites pass. Two independent-review findings (slow-loading scroll and expired consensus fallback) were fixed with RED→GREEN tests. Read `../verification/APPROVED_STUDIO_REPORT.md`. Rendered parity, installed-iPhone PWA behavior and new authenticated live checks remain unverified.
+
+## Previous update
 
 The latest correction moves account/session and shell ownership into the persistent root layout; preserves primary-tab positions and list filters; reduces mobile holdings density; puts allocation after holdings; and stabilizes quote-status changes. APP screenshot repairs correct the valuation-axis geometry and calculator labeling. Earnings-quality checks distinguish positive net income from an operating loss; debt context no longer becomes an automatic bear argument. See verification/RESEARCH_MOBILE_REPAIR_20261017.md. Company-specific valuation models remain incomplete; the research terminal contract is in RESEARCH_TERMINAL_SPEC_20261017.md.
 
@@ -46,4 +50,4 @@ The 104-item audit in requirements-inherited.json remains authoritative for inhe
 
 ## Review and delivery
 
-The design foundation is docs/design/approved-pwa-20261017.html. The compact action/DCA summary is the current request’s source refinement; it has not been accepted through a rendered comparison. Review the source installer and Git instructions in DEPLOYMENT.md before replacement. The archive has a complete manifest and excludes secrets, installed dependencies and generated Next output. Any final source-review findings and fixes are recorded in verification/eodhd-review.md. No push, merge or deployment is implied by delivery of the ZIP.
+The current design foundation is docs/design/approved-studio-20261017.html. Earlier design references are historical. The compact action/DCA summary is the current request’s source refinement; it has not been accepted through a rendered comparison. Review the source installer and Git instructions in DEPLOYMENT.md before replacement. The archive has a complete manifest and excludes secrets, installed dependencies and generated Next output. Any final source-review findings and fixes are recorded in verification/eodhd-review.md. No push, merge or deployment is implied by delivery of the ZIP.

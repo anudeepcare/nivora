@@ -1,13 +1,6 @@
 "use client";
-import { useMemo, useState } from "react";
-import {
-  Bookmark,
-  RefreshCw,
-  ArrowUpRight,
-  ArrowDownRight,
-  Activity,
-  Layers,
-} from "lucide-react";
+import { useMemo, useState, useRef, useLayoutEffect } from "react";
+import { Bookmark, RefreshCw } from "lucide-react";
 import type {
   Research as ResearchData,
   Candle,
@@ -15,19 +8,20 @@ import type {
   Quote,
 } from "@/lib/types";
 import { perspective } from "@/lib/analysis";
-import { priceStudies } from "@/lib/price-studies";
-import { expandedStudies } from "@/lib/technical-expanded";
-import { weeklyStudies } from "@/lib/research-depth";
+import { restoreWhenReady, browserScrollEnvironment } from "@/lib/navigation";
+import {
+  ResearchOutlook,
+  KeyFinancialMetrics,
+  CaseHighlights,
+} from "./ResearchOverview";
 import { amount, percent, dateLabel, quoteTime } from "@/lib/format";
 import { useProduct, useResource } from "./Session";
 import { SecurityLogo, Help, Notice, Empty, DataStamp } from "./Ui";
 import { PriceChart } from "./Charts";
-import Financials from "./Financials";
+import Financials from "./FinancialPicture";
+import { TechnicalPicture, ThesisPicture } from "./ResearchDetails";
+import { groupHistory } from "@/lib/chart-period";
 import DecisionBrief from "./DecisionBrief";
-import { InvestmentCase, EarningsScenario } from "./ResearchSummary";
-import Valuation from "./Valuation";
-import TechnicalLevels from "./TechnicalLevels";
-import { ProviderMetrics, Forecasts, ResearchThesis } from "./ResearchEvidence";
 const tabs = [
   "Snapshot",
   "Financials",
@@ -48,7 +42,24 @@ export default function Research({ symbol }: { symbol: string }) {
     [range, setRange] = useState<(typeof ranges)[number]>("1Y"),
     [style, setStyle] = useState<"line" | "candles">("line"),
     [notice, setNotice] = useState(""),
-    [saving, setSaving] = useState(false);
+    [saving, setSaving] = useState(false),
+    [frequency, setFrequency] = useState<"Daily" | "Weekly" | "Monthly">(
+      "Daily",
+    );
+  const tabOffsets = useRef(new Map<string, number>());
+  const pendingTab = useRef<number | null>(null);
+  const switchTab = (next: (typeof tabs)[number]) => {
+    if (next === tab) return;
+    tabOffsets.current.set(tab, window.scrollY);
+    pendingTab.current = tabOffsets.current.get(next) ?? 0;
+    setTab(next);
+  };
+  useLayoutEffect(() => {
+    if (pendingTab.current == null) return;
+    const top = pendingTab.current;
+    pendingTab.current = null;
+    return restoreWhenReady(top, browserScrollEnvironment());
+  }, [tab]);
   const intraday = range === "1D" || range === "1W";
   const demoShort = useMemo(
     () => (demo && r ? { candles: rangeBars(r.history, range) } : undefined),
@@ -69,6 +80,10 @@ export default function Research({ symbol }: { symbol: string }) {
           ? rangeBars(r.history, range)
           : [],
     [intraday, short.data, r, range],
+  );
+  const chartBars = useMemo(
+    () => (frequency === "Daily" ? bars : groupHistory(bars, frequency)),
+    [bars, frequency],
   );
   const p = useMemo(() => (r ? perspective(r) : null), [r]);
   const quickDemo = useMemo(
@@ -107,7 +122,7 @@ export default function Research({ symbol }: { symbol: string }) {
     const q = quick.data?.[symbol];
     return resource.loading ? (
       <section aria-busy="true" className="research-loading">
-        <header className="au-securityhead">
+        <header className="page-head security-head">
           <div className="au-flex">
             <SecurityLogo symbol={symbol} />
             <div>
@@ -140,19 +155,19 @@ export default function Research({ symbol }: { symbol: string }) {
     visible = crypto
       ? tabs.filter((x) => ["Snapshot", "Technicals", "Thesis"].includes(x))
       : tabs;
-  const upcoming = r.evidence?.earnings
-    .filter((x) => x.date >= r.retrievedAt.slice(0, 10))
-    .sort((a, b) => a.date.localeCompare(b.date))[0];
   const chart = (
-    <section className="au-panel">
-      <header className="au-panel-head">
-        <h2>Price history</h2>
-        <div className="au-ranges" aria-label="Chart period">
+    <section className="plot-section">
+      <header className="row between chart-head">
+        <h3>Price</h3>
+        <div className="ranges" aria-label="Chart period">
           {ranges.map((x) => (
             <button
               key={x}
               aria-pressed={range === x}
-              onClick={() => setRange(x)}
+              onClick={() => {
+                setRange(x);
+                if (x === "1D" || x === "1W") setFrequency("Daily");
+              }}
             >
               {x}
             </button>
@@ -160,7 +175,12 @@ export default function Research({ symbol }: { symbol: string }) {
         </div>
       </header>
       {bars.length ? (
-        <PriceChart bars={bars} range={range} style={style} />
+        <PriceChart
+          bars={chartBars}
+          range={frequency === "Daily" ? range : `${range} ${frequency}`}
+          style={style}
+          contrast={tab === "Snapshot"}
+        />
       ) : (
         <div className="chart-empty" role="status">
           {short.loading
@@ -168,7 +188,7 @@ export default function Research({ symbol }: { symbol: string }) {
             : short.error || "No observations in this period."}
         </div>
       )}
-      <div className="au-chart-foot">
+      <div className="chart-note">
         <DataStamp
           source={
             intraday
@@ -178,7 +198,7 @@ export default function Research({ symbol }: { symbol: string }) {
           asOf={bars.at(-1)?.time}
           status={intraday ? "Intraday history" : undefined}
         />
-        <div className="au-segment">
+        <div className="segments">
           <button
             aria-pressed={style === "line"}
             onClick={() => setStyle("line")}
@@ -197,21 +217,21 @@ export default function Research({ symbol }: { symbol: string }) {
   );
   return (
     <article className="research-page">
-      <header className="au-securityhead">
-        <div className="au-flex security-identity">
+      <header className="page-head security-head">
+        <div className="identity">
           <SecurityLogo symbol={symbol} size={52} />
           <div>
             <h1>{r.company.name}</h1>
-            <p className="au-caption">
+            <p className="muted small">
               {symbol} · {r.company.exchange || "Listing"} · {r.quote.currency}
             </p>
           </div>
         </div>
-        <div className="au-flex security-actions">
-          <div className="au-quote">
-            <div className="au-price au-num">
+        <div className="row quote-actions gap24">
+          <div className="quote">
+            <strong className="num">
               {amount(r.quote.price, r.quote.currency)}
-            </div>
+            </strong>
             <span
               className={
                 r.quote.changePct == null || r.quote.changePct === 0
@@ -241,7 +261,7 @@ export default function Research({ symbol }: { symbol: string }) {
         </div>
       </header>
       <nav
-        className="au-localtabs"
+        className="local-tabs"
         role="tablist"
         aria-label="Research sections"
         style={{
@@ -260,7 +280,7 @@ export default function Research({ symbol }: { symbol: string }) {
                     (e.key === "ArrowRight" ? 1 : -1) +
                     visible.length) %
                   visible.length;
-          setTab(visible[index]);
+          switchTab(visible[index]);
           (e.currentTarget.children[index] as HTMLButtonElement).focus();
         }}
       >
@@ -273,9 +293,13 @@ export default function Research({ symbol }: { symbol: string }) {
             aria-controls="research-content"
             tabIndex={tab === name ? 0 : -1}
             key={name}
-            onClick={() => setTab(name)}
+            onClick={() => switchTab(name)}
           >
-            {name}
+            {name === "Snapshot"
+              ? "Overview"
+              : name === "Valuation"
+                ? "Value"
+                : name}
           </button>
         ))}
       </nav>
@@ -302,71 +326,62 @@ export default function Research({ symbol }: { symbol: string }) {
       >
         {tab === "Snapshot" && (
           <>
-            <DecisionBrief research={r} onDca={() => setTab("Technicals")} />
-            <div className="au-mainrail">
-              {chart}
-              <DcaCard research={r} />
+            <div className="research-layout">
+              <div className="research-canvas">
+                <DecisionBrief
+                  research={r}
+                  onDca={() => switchTab("Technicals")}
+                />
+                {chart}
+                <DcaCard research={r} compact />
+              </div>
+              <ResearchOutlook research={r} />
             </div>
-            {!crypto && (
-              <>
-                <Financials research={r} compact />
-                <ProviderMetrics research={r} compact />
-                <InvestmentCase research={r} />
-                {upcoming && (
-                  <div className="au-event">
-                    <div className="au-event-date">
-                      {upcoming.date.slice(8)}
-                      <small>
-                        {new Date(
-                          upcoming.date + "T12:00:00Z",
-                        ).toLocaleDateString("en-US", { month: "short" })}
-                      </small>
-                    </div>
-                    <div>
-                      <p>Next earnings · {dateLabel(upcoming.date)}</p>
-                      <small>
-                        Estimated EPS {upcoming.estimate?.toFixed(2) ?? "—"} ·
-                        Provider EPS; currency/unit unverified. Schedule can
-                        change
-                      </small>
-                    </div>
-                    <button
-                      className="au-link"
-                      onClick={() => setTab("Thesis")}
-                    >
-                      View context <ArrowUpRight size={16} />
-                    </button>
-                  </div>
-                )}
-              </>
-            )}
+            <KeyFinancialMetrics research={r} />
+            <CaseHighlights research={r} />
           </>
         )}
         {tab === "Financials" && (
           <>
             <Financials research={r} />
-            <Forecasts research={r} />
           </>
         )}
         {tab === "Valuation" && (
           <>
-            <ProviderMetrics research={r} />
-            <Valuation research={r} />
-            <EarningsScenario research={r} />
+            <ResearchOutlook research={r} detailed />
           </>
         )}
         {tab === "Technicals" && (
           <>
-            <div className="au-mainrail">
-              {chart}
-              <DcaCard research={r} />
-            </div>
-            <TechnicalDashboard research={r} />
-            <TechnicalLevels research={r} />
-            <DcaHistory research={r} />
+            <header className="section-head">
+              <div>
+                <h2>Price structure</h2>
+                <p>Chart interval · studies use completed daily prices.</p>
+              </div>
+              <div className="segments" aria-label="Chart interval">
+                {(["Daily", "Weekly", "Monthly"] as const).map((v) => (
+                  <button
+                    key={v}
+                    className={frequency === v ? "active" : ""}
+                    aria-pressed={frequency === v}
+                    onClick={() => {
+                      setFrequency(v);
+                      setRange(v === "Monthly" ? "5Y" : "1Y");
+                    }}
+                  >
+                    {v}
+                  </button>
+                ))}
+              </div>
+            </header>
+            {chart}
+            <TechnicalPicture
+              research={r}
+              dca={<DcaCard research={r} compact />}
+            />
           </>
         )}
-        {tab === "Thesis" && <ResearchThesis research={r} />}
+        {tab === "Thesis" && <ThesisPicture research={r} />}
       </div>
     </article>
   );
@@ -385,7 +400,13 @@ function rangeBars(history: Candle[], range: string) {
     (b) => Date.parse(b.time) >= end - (days[range] ?? 366) * 86400000,
   );
 }
-export function DcaCard({ research: r }: { research: ResearchData }) {
+export function DcaCard({
+  research: r,
+  compact = false,
+}: {
+  research: ResearchData;
+  compact?: boolean;
+}) {
   const p = useMemo(() => perspective(r), [r]),
     signal = p.dca.confirmed;
   const tone = !signal
@@ -401,6 +422,71 @@ export function DcaCard({ research: r }: { research: ResearchData }) {
       year: "numeric",
       timeZone: "UTC",
     });
+  if (compact)
+    return (
+      <section
+        className="pace"
+        aria-label="Monthly accumulation signal"
+        data-tone={tone}
+      >
+        <div className="pace-title">
+          <div>
+            <h3>Monthly accumulation</h3>
+            <p className="muted small">
+              {signal
+                ? `${month(signal.month)} · confirmed`
+                : "24 complete months required"}
+            </p>
+          </div>
+          <div className="pace-value num">
+            {signal ? `${signal.multiplier}×` : "—"}
+          </div>
+        </div>
+        <div className="pace-line" aria-label="Contribution multiplier scale">
+          {[0, 1, 2, 3, 4].map((n) => (
+            <div
+              key={n}
+              className={`pace-zone ${signal?.multiplier === n ? "selected" : ""}`}
+              aria-current={signal?.multiplier === n ? "step" : undefined}
+            >
+              {n}×
+            </div>
+          ))}
+        </div>
+        <div className="pace-history">
+          {p.dca.history.slice(-4).map((x) => (
+            <div key={x.month}>
+              {new Date(x.month + "-01T12:00:00Z").toLocaleDateString("en-US", {
+                month: "short",
+                timeZone: "UTC",
+              })}
+              <b>{x.multiplier}×</b>
+            </div>
+          ))}
+          <div>
+            Now · forming
+            <b>{p.dca.forming ? `${p.dca.forming.multiplier}×` : "—"}</b>
+          </div>
+        </div>
+        <Help label="Monthly accumulation" trigger="How to read the multiplier">
+          <p>
+            A multiple of your usual contribution, not leverage or a return
+            forecast. The confirmed zone uses completed monthly observations.
+            The forming month can change until it closes.
+          </p>
+          <p>
+            {signal?.reason ?? p.dca.reason} This original price-only experiment
+            does not determine business quality, fair value or position size. 0×
+            pauses contributions; it is not a sell order.
+          </p>
+        </Help>
+        <span className="forming-label">
+          {p.dca.forming
+            ? `${p.dca.forming.multiplier}× forming this month`
+            : "Current month awaits settled closes"}
+        </span>
+      </section>
+    );
   return (
     <aside
       className="au-panel au-dca"
@@ -488,195 +574,5 @@ export function DcaCard({ research: r }: { research: ResearchData }) {
         A price zone does not establish value.
       </p>
     </aside>
-  );
-}
-
-function DcaHistory({ research: r }: { research: ResearchData }) {
-  const d = useMemo(() => perspective(r).dca, [r]);
-  return (
-    <section className="au-panel">
-      <header className="au-panel-head">
-        <h2>Monthly accumulation history</h2>
-        <Help label="Accumulation rules">
-          Pause above 25% of the 24-month average. 2× requires drawdown of at
-          least 15% and deviation below average of at least 10%; 3× uses 30% /
-          20%; 4× uses 50% / 35%. Otherwise 1×. These are original, experimental
-          thresholds and have not been shown to outperform a fixed schedule.
-        </Help>
-      </header>
-      {d.history.length ? (
-        <div className="timeline">
-          {d.history.slice(-6).map((x) => (
-            <div key={x.month}>
-              <small>{x.month}</small>
-              <b>{x.multiplier}×</b>
-              <small>{amount(x.close, r.quote.currency)}</small>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p className="muted">{d.reason}</p>
-      )}
-      <p className="footnote">
-        Closed months only · {d.version} · Price conditions do not establish
-        business value.
-      </p>
-    </section>
-  );
-}
-function TechnicalDashboard({ research: r }: { research: ResearchData }) {
-  const benchmark = useResource<{ candles: Candle[]; source?: string }>(
-    r.company.assetType === "stock" ? "chart/SPY?range=1Y" : null,
-    undefined,
-    900000,
-  );
-  const p = useMemo(() => perspective(r), [r]),
-    s = useMemo(() => priceStudies(r.history, r.retrievedAt), [r]),
-    x = useMemo(
-      () => expandedStudies(r.history, r.retrievedAt, benchmark.data?.candles),
-      [r, benchmark.data],
-    ),
-    weekly = useMemo(() => weeklyStudies(r.history, r.retrievedAt), [r]);
-  const num = (v: number | null | undefined) =>
-      v == null ? "—" : v.toFixed(2),
-    cash = (v: number | null | undefined) => amount(v, r.quote.currency);
-  const groups = [
-    {
-      title: "Trend",
-      icon: Activity,
-      items: [
-        [
-          "20D EMA",
-          cash(s.ema20),
-          "Exponential average of 20 completed daily closes.",
-        ],
-        [
-          "50D SMA",
-          cash(p.tech.ma50),
-          "Simple mean of 50 completed daily closes.",
-        ],
-        [
-          "200D SMA",
-          cash(p.tech.ma200),
-          "Simple mean of 200 completed daily closes.",
-        ],
-        [
-          "ADX · 14",
-          num(x.adx),
-          "Wilder ADX measures trend strength, not direction. A reading above 25 is a convention, not a buy signal.",
-        ],
-      ],
-    },
-    {
-      title: "Momentum",
-      icon: ArrowUpRight,
-      items: [
-        [
-          "RSI · 14",
-          num(p.tech.rsi),
-          "Wilder RSI. Readings above 70 or below 30 can persist.",
-        ],
-        ["MACD", num(s.macd), "12-day EMA minus 26-day EMA."],
-        ["Signal", num(s.signal), "9-observation EMA of MACD."],
-        ["Histogram", num(s.histogram), "MACD minus the signal line."],
-      ],
-    },
-    {
-      title: "Volatility",
-      icon: ArrowDownRight,
-      items: [
-        ["ATR · 14", cash(x.atr), "Wilder-smoothed true range in price units."],
-        [
-          "ATR / price",
-          percent(x.atrPct),
-          "Wilder ATR as a percentage of the latest completed close.",
-        ],
-        [
-          "Band width",
-          percent(x.bandwidth),
-          "Bollinger upper minus lower band divided by the 20-close mean.",
-        ],
-        [
-          "52W drawdown",
-          percent(x.drawdown),
-          "Decline from the highest closing price in the available last 252 sessions.",
-        ],
-      ],
-    },
-    {
-      title: "Participation",
-      icon: Layers,
-      items: [
-        [
-          "Relative volume",
-          x.relativeVolume == null ? "—" : `${x.relativeVolume.toFixed(2)}×`,
-          "Last completed volume divided by the prior 20-session average.",
-        ],
-        [
-          "OBV",
-          x.obv == null
-            ? "—"
-            : Intl.NumberFormat("en", { notation: "compact" }).format(x.obv),
-          "Cumulative signed volume, starting at zero at the beginning of the available series.",
-        ],
-        [
-          "Bollinger %B",
-          percent(x.percentB),
-          "Position inside the band: 0% at the lower and 100% at the upper band. Can exceed that range.",
-        ],
-        [
-          "3M vs SPY",
-          percent(x.relativeReturn, true),
-          "63 matched daily intervals: asset return minus SPY price return, in percentage points. Not dividend-adjusted total return.",
-        ],
-      ],
-    },
-  ];
-  return (
-    <section>
-      <header className="au-section-head">
-        <div>
-          <h2>Technicals, at a glance</h2>
-          <p className="au-caption">
-            Completed daily prices · {dateLabel(p.tech.last)}
-          </p>
-        </div>
-      </header>
-      <div className="study-grid">
-        {groups.map((g) => (
-          <section className="au-panel study-group" key={g.title}>
-            <h3>
-              <g.icon size={17} />
-              {g.title}
-            </h3>
-            {g.items.map(([label, value, help]) => (
-              <div className="study-row" key={label}>
-                <span>
-                  {label}
-                  <Help label={label}>{help}</Help>
-                </span>
-                <b>{value}</b>
-              </div>
-            ))}
-          </section>
-        ))}
-      </div>
-      <div className="weekly-row">
-        <span>
-          Long-term reference{" "}
-          <Help label="Weekly averages">
-            Simple averages of 50 or 200 completed weekly closes. These are
-            weekly, not weighted, moving averages. Levels are references, not
-            guaranteed support.
-          </Help>
-        </span>
-        <span>
-          50W SMA <b>{cash(weekly.ma50)}</b>
-        </span>
-        <span>
-          200W SMA <b>{cash(weekly.ma200)}</b>
-        </span>
-      </div>
-    </section>
   );
 }

@@ -23,7 +23,8 @@ test("both providers reject same-day future intraday candles at the timestamp bo
 });
 test("financial selected-control styles outrank global button resets", () => {
   const base = postcss.parse(
-    fs.readFileSync("app/approved-design.css", "utf8"),
+    fs.readFileSync("app/studio-foundation.css", "utf8") +
+      fs.readFileSync("app/globals.css", "utf8"),
   );
   const module = postcss.parse(
     fs.readFileSync("components/ResearchWorkspace.module.css", "utf8"),
@@ -115,6 +116,8 @@ function researchMarkup() {
     ranges: ["1D", "1W", "1M", "6M", "1Y", "5Y"],
     useState: (v) => [v, empty],
     useMemo: (f) => f(),
+    useRef: (value) => ({ current: value }),
+    useLayoutEffect: () => {},
     useProduct: () => ({ workspace: { watchlist: [] }, mutate: empty }),
     useResource: (path) => ({
       data: path?.startsWith("research/") ? r : undefined,
@@ -175,6 +178,9 @@ function researchMarkup() {
     "ResearchThesis",
     "DcaCard",
     "DecisionBrief",
+    "ResearchOutlook",
+    "KeyFinancialMetrics",
+    "CaseHighlights",
     "Bookmark",
     "RefreshCw",
     "ArrowUpRight",
@@ -192,6 +198,10 @@ test("the actual Snapshot renders quote fallback provenance", () => {
 test("unverified upcoming EPS is never formatted in the listing currency", () => {
   const html = researchMarkup();
   assert.doesNotMatch(html, /\$3\.21/);
-  assert.match(html, /3\.21/);
-  assert.match(html, /currency.*unverified/i);
+  assert.doesNotMatch(
+    html,
+    /3\.21/,
+    "The approved Overview does not repeat the earnings panel",
+  );
+  assert.doesNotMatch(html, /Estimated EPS/);
 });

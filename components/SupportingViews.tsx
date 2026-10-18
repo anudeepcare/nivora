@@ -16,28 +16,18 @@ import { amount, percent, dateLabel, symbolInput } from "@/lib/format";
 import { perspective } from "@/lib/analysis";
 import type { Research } from "@/lib/types";
 export function Settings() {
-  const {
-      themePreference,
-      setTheme,
-      textSize,
-      setTextSize,
-      reduceMotion,
-      setReduceMotion,
-      workspace,
-      marketProvider,
-      demo,
-    } = useProduct(),
-    prefix = demo ? "/preview" : "",
-    [message, setMessage] = useState(""),
-    [password, setPassword] = useState(""),
-    [busy, setBusy] = useState(false);
+  const { workspace, demo } = useProduct();
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const [busy, setBusy] = useState(false);
   async function update(e: React.FormEvent) {
     e.preventDefault();
     if (demo) {
-      setMessage("Account changes are disabled in this preview.");
+      setMessage("Account changes are disabled in the preview.");
       return;
     }
     setBusy(true);
+    setMessage("");
     try {
       const { error } = await authClient().auth.updateUser({ password });
       if (error) throw error;
@@ -50,115 +40,15 @@ export function Settings() {
     }
   }
   return (
-    <section>
+    <section className="settings-page">
       <PageHeading
-        title="Make AURYN yours."
-        subtitle="Appearance and account settings, without the clutter."
+        title="Account & security"
+        subtitle="Your login and password."
       />
-      <section className="panel preferences">
+      <section className="panel">
         <div className="setting-row">
           <div>
-            <strong>Appearance</strong>
-            <p>Choose your theme or follow your device.</p>
-          </div>
-          <div className="segment" aria-label="Appearance">
-            {(["light", "dark", "system"] as const).map((t) => (
-              <button
-                key={t}
-                aria-pressed={themePreference === t}
-                onClick={() => setTheme(t)}
-              >
-                {t[0].toUpperCase() + t.slice(1)}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="setting-row">
-          <div>
-            <strong>Text size</strong>
-            <p>Comfortable, readable type across your workspace.</p>
-          </div>
-          <div className="segment" aria-label="Text size">
-            {(["standard", "large"] as const).map((t) => (
-              <button
-                key={t}
-                aria-pressed={textSize === t}
-                onClick={() => setTextSize(t)}
-              >
-                {t[0].toUpperCase() + t.slice(1)}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="setting-row">
-          <div>
-            <strong>Reduce motion</strong>
-            <p>Your device’s accessibility preference is always respected.</p>
-          </div>
-          <button
-            className="button"
-            aria-pressed={reduceMotion}
-            onClick={() => setReduceMotion(!reduceMotion)}
-          >
-            {reduceMotion ? "On" : "Use device setting"}
-          </button>
-        </div>
-      </section>
-      <section className="panel support">
-        <div className="setting-row">
-          <div>
-            <strong>
-              Market data{" "}
-              <Help label="Market data connection">
-                {marketProvider === "hybrid"
-                  ? "Twelve Data quotes + EODHD research"
-                  : marketProvider === "eodhd"
-                    ? "EODHD"
-                    : marketProvider === "twelve"
-                      ? "Twelve Data"
-                      : "Provider configuration not confirmed"}
-                . Key configuration does not verify individual dataset
-                entitlements.
-              </Help>
-            </strong>
-            <p>Prices and company research</p>
-          </div>
-          <span className="tag">
-            {marketProvider === "hybrid" ||
-            marketProvider === "eodhd" ||
-            marketProvider === "twelve"
-              ? "Key configured"
-              : marketProvider === "unknown"
-                ? "Checking…"
-                : "Setup needed"}
-          </span>
-        </div>
-        <p className="footnote">
-          Observation dates and source information are available in Data
-          details. Research prices are separate from broker execution prices.
-        </p>
-      </section>
-      <section className="panel support">
-        <h2>Your tools</h2>
-        <div className="settings-links">
-          {[
-            ["discover", "Discover"],
-            ["alerts", "Price alerts"],
-            ["research-lab", "Research validation"],
-            ["trading", "Paper trading"],
-            ["help", "Sources & methodology"],
-          ].map(([path, label]) => (
-            <Link key={path} href={`${prefix}/${path}`}>
-              {label}
-              <ArrowUpRight size={17} />
-            </Link>
-          ))}
-        </div>
-      </section>
-      <section className="panel support">
-        <div className="setting-row">
-          <div>
-            <strong>Your account</strong>
+            <strong>Email</strong>
             <p>
               {workspace?.email ||
                 (demo ? "Design preview" : "Loading account…")}
@@ -168,12 +58,8 @@ export function Settings() {
             className="button"
             disabled={!!demo}
             onClick={async () => {
-              try {
-                const { error } = await authClient().auth.signOut();
-                if (error) throw error;
-              } catch {
-                setMessage("Sign out failed. Please try again.");
-              }
+              const { error } = await authClient().auth.signOut();
+              if (error) setMessage(error.message);
             }}
           >
             Sign out
@@ -194,7 +80,7 @@ export function Settings() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </label>
-          <button className="button" disabled={busy}>
+          <button className="button primary" disabled={busy}>
             {busy ? "Saving…" : "Update password"}
           </button>
         </form>
@@ -203,6 +89,7 @@ export function Settings() {
     </section>
   );
 }
+
 export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
   const { demo } = useProduct(),
     prefix = demo ? "/preview" : "",

@@ -146,9 +146,11 @@ export function SecurityLogo({
 export function Help({
   label,
   children,
+  trigger,
 }: {
   label: string;
   children: React.ReactNode;
+  trigger?: React.ReactNode;
 }) {
   const dialog = useRef<HTMLDialogElement>(null),
     id = useId(),
@@ -159,13 +161,13 @@ export function Help({
   return (
     <>
       <button
-        className="help"
+        className={trigger ? "text-button help-trigger" : "help"}
         type="button"
         aria-label={`About ${label}`}
         aria-haspopup="dialog"
         onClick={() => setOpen(true)}
       >
-        <CircleHelp size={14} />
+        {trigger ?? <CircleHelp size={14} />}
       </button>
       {open &&
         createPortal(

@@ -27,6 +27,9 @@ npm run test:api
 
 ## Current update
 
+The user-approved studio design is implemented in the connected React app: lighter top navigation, floating mobile dock, contrasting research canvas and compact settings. The five research tabs retain exactly the approved primary metric selection. See `verification/APPROVED_STUDIO_REPORT.md` for the 146-test verification, forecast model distinction and browser/iPhone acceptance limits. The exact approved mockup is included as `docs/design/approved-studio-20261017.html`. No live-data or pixel-parity certification is implied.
+
+
 Persistent account navigation, tab scroll/filter memory, compact mobile holdings and stable price refresh states; corrected cash-flow example geometry, custom-result labeling and earnings/debt interpretation. See `verification/RESEARCH_MOBILE_REPAIR_20261017.md`. No post-patch installed-iPhone acceptance or company-specific fair-value completion is claimed.
 
 Compact stock decision guide, separate buying/ownership context, visible 0×–4× monthly signals, sector-aware valuation safeguards, and responsive search/dialog/portfolio repairs. Read `docs/DECISION_GUIDE.md` and `verification/UI_CONTROL_AUDIT_20261017.md` for exact behavior and remaining acceptance checks.
@@ -41,4 +44,4 @@ Compact stock decision guide, separate buying/ownership context, visible 0×–4
 - `docs/`: architecture, deployment/Git steps, original requirements audit, approved design reference, source-review results and remaining gates.
 - `MANIFEST.sha256`: checksums of packaged files.
 
-Follow `docs/DEPLOYMENT.md`. Do not overwrite production or enable broker scheduling solely because compilation passed. No provider was purchased or canceled, no paid AI call was made, and no order was placed during this repair. Earlier database setup is recorded in `verification/LIVE_SETUP.md`. The latest provider allocation is in `docs/PROVIDER_STRATEGY.md` and the approved design is `docs/design/approved-pwa-20261017.html`; inherited gaps remain in `docs/RELEASE_STATUS.md`.
+Follow `docs/DEPLOYMENT.md`. Do not overwrite production or enable broker scheduling solely because compilation passed. No provider was purchased or canceled, no paid AI call was made, and no order was placed during this repair. Earlier database setup is recorded in `verification/LIVE_SETUP.md`. The latest provider allocation is in `docs/PROVIDER_STRATEGY.md` and the approved design is `docs/design/approved-studio-20261017.html`; inherited gaps remain in `docs/RELEASE_STATUS.md`.

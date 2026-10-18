@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import ts from "typescript";
 import React from "react";
+import { NavigationMemory, restoreWhenReady } from "../lib/navigation.ts";
 
 function component(file, name, bindings) {
   const ast = ts.createSourceFile(
@@ -91,6 +92,15 @@ test("switching workspace tabs restores their own position; tapping the active t
       effect = fn;
     },
     useEffect: () => {},
+    NavigationMemory,
+    restoreWhenReady,
+    browserScrollEnvironment: () => ({
+      maxScroll: () => 10000,
+      scrollTo: (top) => window.scrollTo({ top, left: 0, behavior: "instant" }),
+      observe: () => () => {},
+      onIntent: () => () => {},
+      delay: () => () => {},
+    }),
     window,
     primary: [
       { path: "portfolio", label: "Portfolio", icon },
@@ -104,6 +114,8 @@ test("switching workspace tabs restores their own position; tapping the active t
     Sun: icon,
     Moon: icon,
     X: icon,
+    Bell: icon,
+    SettingsSheet: icon,
   });
   function links(node, href) {
     if (!node || typeof node !== "object") return [];

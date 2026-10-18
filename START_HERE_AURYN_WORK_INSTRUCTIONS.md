@@ -2,7 +2,13 @@
 
 This archive contains the complete standalone application source, tests, assets, migrations, approved design reference and deployment instructions. It is not proof that every inherited product requirement is production accepted. Read README.md, docs/RELEASE_STATUS.md and docs/DEPLOYMENT.md.
 
-## Current update — action clarity and control repairs
+## Current approved build — studio design
+
+The user approved `docs/design/approved-studio-20261017.html` in chat and explicitly requested the same metric selection with no extra/redundant primary panels. This supersedes the earlier sidebar design. Read `verification/APPROVED_STUDIO_REPORT.md` first for implementation, numbers/model distinctions, test evidence and remaining browser/device/live-connection checks. The source uses the prototype style foundation and a focused React integration stylesheet, lighter top navigation, floating mobile dock, compact settings sheet and the five approved research tabs. Lists restore their position after loading settles and cancel automatic restoration on user gestures.
+
+Do not replace missing live data with prototype sample prices/targets. Outlook values are dated EPS/multiple sensitivities, not certified company-specific fair values. No deployment, paid-provider/AI activation, database migration or broker execution was performed for this build.
+
+## Previous update — action clarity and control repairs
 
 Latest follow-up: read verification/RESEARCH_MOBILE_REPAIR_20261017.md and docs/RESEARCH_TERMINAL_SPEC_20261017.md. The root layout now retains the account session and shell between routes; mobile holdings, tab scroll memory and quote status were revised. APP valuation-marker geometry and earnings/debt interpretation were corrected. These source changes still need rendered and physical-iPhone acceptance. The 11-instrument quote check is not a completed fundamental/model comparison.
 
@@ -18,7 +24,7 @@ The user has paid for both Twelve Data and EODHD All-in-One. Use Twelve Data for
 
 The user reports configuring EODHD_API_KEY in their deployment. The build environment could not independently access that key: it was absent locally and the Vercel connector returned a scope authorization error. Do not mislabel this as an invalid key or a failed paid subscription. The current build/API tests use fixture transports, and public EODHD demo normalization was checked separately.
 
-The current approved design is docs/design/approved-pwa-20261017.html. Earlier HTML and image references are historical. The live React implementation uses the approved design tokens and five research tabs: Snapshot, Financials, Valuation, Technicals and Thesis. Desktop sidebar and four-item mobile navigation, readable light/dark/system preferences, visible amount-free 0×–4× monthly accumulation context, source dates and clear metric explanations are required. The deployed predecessor has now had a signed-in browser audit and supplied iPhone screenshots were inspected. The patched source still needs rendered preview and physical-iPhone acceptance. Never claim exact visual matching on compilation alone.
+The previous approved design was docs/design/approved-pwa-20261017.html; it is superseded by the studio reference above. Earlier HTML and image references are historical. The live React implementation uses the approved design tokens and five research tabs: Snapshot, Financials, Valuation, Technicals and Thesis. Desktop sidebar and four-item mobile navigation, readable light/dark/system preferences, visible amount-free 0×–4× monthly accumulation context, source dates and clear metric explanations are required. The deployed predecessor has now had a signed-in browser audit and supplied iPhone screenshots were inspected. The patched source still needs rendered preview and physical-iPhone acceptance. Never claim exact visual matching on compilation alone.
 
 Keep the product simple. Preserve AURYN branding. Do not reintroduce the removed portfolio purchase/stress/import panels or private-thesis/snapshot/Compare controls into the primary UI. Charts must not capture normal page scrolling. BTC/USD and ETH/USD must never silently resolve to ETFs. SAP's US quote must not turn EUR financials into USD values. Unknown data stays unknown, not zero or fabricated advice.
 

@@ -67,7 +67,7 @@ export default function ResearchLab() {
   return (
     <section>
       <PageHeading
-        title="Test the idea. Keep the evidence."
+        title="Strategy lab"
         subtitle="Compare monthly policies using the same budget and completed history."
       />
       <form className="alert-builder panel" onSubmit={run}>

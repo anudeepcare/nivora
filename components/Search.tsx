@@ -17,7 +17,7 @@ export default function Search({
   onNavigate?: () => void;
 }) {
   const listId = useId();
-  const { demo } = useProduct(),
+  const { demo, workspace, cache } = useProduct(),
     router = useRouter(),
     box = useRef<HTMLDivElement>(null),
     input = useRef<HTMLInputElement>(null),
@@ -29,6 +29,14 @@ export default function Search({
     [error, setError] = useState("");
   const prefix = demo ? "/preview" : "";
   const showResults = open && query.trim().length > 0;
+  const recent = [
+    ...new Set([
+      ...(workspace?.watchlist.map((x) => x.symbol) ?? []),
+      ...(workspace?.positions
+        .filter((x) => x.assetType !== "cash")
+        .map((x) => x.symbol) ?? []),
+    ]),
+  ].slice(0, 6);
   useEffect(() => {
     if (showResults && selected >= 0)
       document.getElementById(`${listId}-${selected}`)?.scrollIntoView({
@@ -188,6 +196,29 @@ export default function Search({
           <kbd>⌘ K</kbd>
         )}
       </form>
+      {autoFocus && !query.trim() && recent.length > 0 && (
+        <section className="search-suggestions" aria-label="Saved instruments">
+          <h3>Your saved instruments</h3>
+          {recent.map((symbol) => {
+            const quote = cache?.get("quote:" + symbol)?.value as
+              | { company?: Company }
+              | undefined;
+            return (
+              <button key={symbol} type="button" onClick={() => go(symbol)}>
+                <SecurityLogo symbol={symbol} size={38} />
+                <span>
+                  <b>{quote?.company?.name || symbol}</b>
+                  <small>
+                    {symbol} ·{" "}
+                    {symbol.includes("/") ? "Crypto pair" : "Saved company"}
+                  </small>
+                </span>
+                <ArrowUpRight size={17} />
+              </button>
+            );
+          })}
+        </section>
+      )}
       {showResults && (
         <div
           className="search-results"
