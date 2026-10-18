@@ -1,3 +1,7 @@
+# Latest scenario/PWA source update
+
+165 tests + TypeScript + production build + 61 fixture API checks passed. Expanded conditional earnings/revenue sensitivity coverage, server market-data caching and targeted scroll/focus corrections included. SAP cross-currency/ADR valuation and installed iPhone acceptance remain unresolved. No universal valuation or production-readiness claim. See verification/SCENARIO_COVERAGE_AND_PWA_AUDIT.md.
+
 # Latest grid/search update
 
 158 tests + TypeScript + production build + 61 fixture API checks passed. News layout, signed metric colours, Value ratio tiles and cached search included. See verification/RESEARCH_GRID_AND_SEARCH_PERFORMANCE.md. Production latency, post-change visuals, installed iPhone PWA and infrastructure scenario models remain unverified or incomplete.

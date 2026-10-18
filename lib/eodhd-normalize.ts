@@ -145,6 +145,7 @@ export type EodEvidence = {
     strongSell: number | null;
   };
   ownership: {
+    outstanding?: number | null;
     institutions: number | null;
     insiders: number | null;
     float: number | null;
@@ -344,6 +345,7 @@ export function normalizeEodFundamentals(
       strongSell: numeric(a.StrongSell),
     },
     ownership: {
+      outstanding: numeric(raw.SharesStats?.SharesOutstanding),
       institutions: numeric(raw.SharesStats?.PercentInstitutions),
       insiders: numeric(raw.SharesStats?.PercentInsiders),
       float: numeric(raw.SharesStats?.SharesFloat),

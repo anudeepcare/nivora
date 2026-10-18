@@ -1,4 +1,5 @@
 "use client";
+import PwaDiagnostics from "./PwaDiagnostics";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
@@ -325,6 +326,7 @@ export function HelpPage() {
           <p>{text}</p>
         </section>
       ))}
+      <PwaDiagnostics />
     </article>
   );
 }

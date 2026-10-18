@@ -9,6 +9,7 @@ import {
   cryptoSearchSymbol,
   searchSelection,
   searchRequestKey,
+  searchListScrollTop,
 } from "@/lib/search-selection";
 import { useProduct } from "./Session";
 import { SecurityLogo } from "./Ui";
@@ -43,10 +44,19 @@ export default function Search({
     ]),
   ].slice(0, 6);
   useEffect(() => {
-    if (showResults && selected >= 0)
-      document.getElementById(`${listId}-${selected}`)?.scrollIntoView({
-        block: "nearest",
-      });
+    if (!showResults || selected < 0) return;
+    const item = document.getElementById(`${listId}-${selected}`);
+    const list = document.getElementById(listId);
+    if (!item || !list) return;
+    const container = list.getBoundingClientRect(),
+      target = item.getBoundingClientRect();
+    list.scrollTop = searchListScrollTop(
+      list.scrollTop,
+      container.top,
+      container.bottom,
+      target.top,
+      target.bottom,
+    );
   }, [showResults, selected, listId]);
   useEffect(() => {
     const close = (e: PointerEvent) => {
@@ -200,7 +210,7 @@ export default function Search({
             onClick={() => {
               setQuery("");
               setOpen(false);
-              input.current?.focus();
+              input.current?.focus({ preventScroll: true });
             }}
           >
             <X size={17} />

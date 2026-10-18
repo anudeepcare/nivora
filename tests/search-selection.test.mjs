@@ -41,3 +41,11 @@ test("search request keys coalesce case, dollar prefix and whitespace variants",
     searchRequestKey("salesforce inc"),
   );
 });
+
+test("keyboard result selection scrolls only enough within its list", async () => {
+  const { searchListScrollTop } = await import("../lib/search-selection.ts");
+  assert.equal(typeof searchListScrollTop, "function");
+  assert.equal(searchListScrollTop(100, 200, 500, 240, 290), 100);
+  assert.equal(searchListScrollTop(100, 200, 500, 480, 540), 140);
+  assert.equal(searchListScrollTop(100, 200, 500, 180, 230), 80);
+});

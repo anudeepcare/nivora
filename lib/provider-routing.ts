@@ -26,3 +26,15 @@ export async function readPreferred<T>(
   }
   throw failure;
 }
+
+/** Server data cache durations, separate from rendered-page/account caching. */
+export function providerCacheSeconds(
+  endpoint: string,
+  params: Record<string, string>,
+) {
+  if (endpoint === "quote") return 30;
+  if (endpoint === "profile" || endpoint === "logo") return 86400;
+  if (endpoint === "symbol_search") return 3600;
+  if (endpoint === "time_series") return params.interval === "1day" ? 3600 : 60;
+  return 60;
+}

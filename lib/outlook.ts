@@ -3,7 +3,9 @@ import type { Research } from "./types";
 
 export type OutlookCase = {
   name: "Bear" | "Base" | "Bull";
-  eps: number;
+  eps: number | null;
+  revenue?: number;
+  dilution?: number;
   multiple: number;
   target: number;
   change: number;
@@ -21,6 +23,11 @@ export type Outlook =
       currency: string;
       analysts: number | null;
       forwardPE: number;
+      basis?: "earnings" | "revenue";
+      shares?: number;
+      netDebt?: number;
+      balanceDate?: string;
+      caveat?: string;
     };
 
 export function consensusOutlook(
@@ -60,10 +67,6 @@ export function researchOutlook(r: Research): Outlook {
     return unavailable(
       "Corporate earnings scenarios do not apply to this asset.",
     );
-  if (r.company.foreignListing)
-    return unavailable(
-      "The listing and forecast share/currency basis need reconciliation.",
-    );
   const e = r.evidence;
   const now = Date.parse(r.retrievedAt);
   if (!e || !Number.isFinite(now))
@@ -72,9 +75,28 @@ export function researchOutlook(r: Research): Outlook {
     sector: e.profile?.sector || r.company.sector,
     industry: e.profile?.industry,
   });
-  if (coverage.family !== "operating-company")
+  if (
+    !["operating-company", "infrastructure", "financial"].includes(
+      coverage.family,
+    )
+  )
     return unavailable(
       "This business needs a sector-specific valuation framework.",
+    );
+  const outstanding = e.ownership?.outstanding;
+  const marketCap = e.highlights?.MarketCapitalization;
+  const aggregateListingBasis =
+    e.reportingCurrency === r.quote.currency &&
+    outstanding != null &&
+    outstanding > 0 &&
+    marketCap != null &&
+    marketCap > 0 &&
+    r.quote.price != null &&
+    r.quote.price > 0 &&
+    Math.abs(marketCap / (outstanding * r.quote.price) - 1) <= 0.1;
+  if (r.company.foreignListing && !aggregateListingBasis)
+    return unavailable(
+      "The listing needs matching reporting currency and reconciled market-cap/share/price evidence before constructing per-share scenarios.",
     );
   const updated = Date.parse(e.updatedAt ?? "");
   if (
@@ -90,12 +112,159 @@ export function researchOutlook(r: Research): Outlook {
     return unavailable(
       "A current price is needed to compare forecast outcomes.",
     );
+  const usableEps = (
+    x: NonNullable<Research["evidence"]>["estimates"][number],
+  ) => {
+    const days = (Date.parse(x.date) - now) / 86400000;
+    return (
+      /annual/i.test(x.frequency) &&
+      days >= 270 &&
+      days <= 1461 &&
+      x.currency === r.quote.currency &&
+      [x.epsLow, x.eps, x.epsHigh].every(
+        (v) => v != null && Number.isFinite(v) && v > 0,
+      ) &&
+      x.epsLow! <= x.eps! &&
+      x.eps! <= x.epsHigh!
+    );
+  };
+  const hasEarnings =
+    (e.estimates ?? []).some(usableEps) && (e.multiples?.ForwardPE ?? 0) > 0;
+  if (
+    coverage.family === "financial" &&
+    (!hasEarnings || r.company.foreignListing)
+  )
+    return unavailable(
+      "A bank earnings sensitivity needs a reconciled positive annual EPS range; operating cash flow and EV/revenue are not substitutes.",
+    );
+  if (
+    coverage.family === "infrastructure" ||
+    r.company.foreignListing ||
+    !hasEarnings
+  ) {
+    const shares = e.ownership?.outstanding;
+    const multiple = e.multiples?.EnterpriseValueRevenue;
+    const balances = r.facts
+      .filter(
+        (f) =>
+          f.metric === "cash" &&
+          f.currency === r.quote.currency &&
+          f.end <= r.retrievedAt.slice(0, 10) &&
+          f.filed <= r.retrievedAt.slice(0, 10) &&
+          now - Date.parse(f.end) <= 400 * 86400000,
+      )
+      .sort((a, b) => b.end.localeCompare(a.end));
+    const cash = balances[0];
+    const debt =
+      cash &&
+      r.facts.find(
+        (f) =>
+          f.metric === "debt" &&
+          f.end === cash.end &&
+          f.accession === cash.accession &&
+          f.currency === cash.currency &&
+          f.filed <= r.retrievedAt.slice(0, 10),
+      );
+    const estimate = (e.estimates ?? [])
+      .filter((x) => {
+        const days = (Date.parse(x.date) - now) / 86400000;
+        return (
+          /annual/i.test(x.frequency) &&
+          days >= 90 &&
+          days <= 1461 &&
+          x.currency === r.quote.currency
+        );
+      })
+      .sort(
+        (a, b) =>
+          Math.abs(Date.parse(a.date) - now - 3 * 365.25 * 86400000) -
+          Math.abs(Date.parse(b.date) - now - 3 * 365.25 * 86400000),
+      )[0];
+    if (
+      !shares ||
+      !Number.isFinite(shares) ||
+      shares <= 0 ||
+      !multiple ||
+      !Number.isFinite(multiple) ||
+      multiple <= 0 ||
+      !cash ||
+      !debt ||
+      ![cash.value, debt.value].every((v) => Number.isFinite(v) && v >= 0)
+    )
+      return unavailable(
+        "A complete positive EPS range is unavailable. Revenue scenarios also need reported outstanding shares, an EV/revenue multiple, and matching dated cash/debt evidence.",
+      );
+    if (
+      !estimate ||
+      ![estimate.revenueLow, estimate.revenue, estimate.revenueHigh].every(
+        (v) => v != null && Number.isFinite(v) && v > 0,
+      ) ||
+      estimate.revenueLow! > estimate.revenue! ||
+      estimate.revenue! > estimate.revenueHigh!
+    )
+      return unavailable(
+        "A complete ordered annual revenue forecast range in the quote currency is needed.",
+      );
+    const fiscal = /^FY(\d{4})$/i.exec(estimate.period);
+    if (
+      fiscal &&
+      Math.abs(Number(fiscal[1]) - Number(estimate.date.slice(0, 4))) > 1
+    )
+      return unavailable(
+        "The supplied fiscal period and forecast date conflict.",
+      );
+    const netDebt = debt.value - cash.value;
+    const years = (Date.parse(estimate.date) - now) / (365.25 * 86400000);
+    const cases = (
+      [
+        ["Bear", estimate.revenueLow!, 0.8, 0.2],
+        ["Base", estimate.revenue!, 1, 0.1],
+        ["Bull", estimate.revenueHigh!, 1.2, 0],
+      ] as const
+    ).map(([name, revenue, stress, dilution]) => {
+      const exitMultiple = multiple * stress;
+      const target = Math.max(
+        0,
+        (revenue * exitMultiple - netDebt) / (shares * (1 + dilution)),
+      );
+      return {
+        name,
+        eps: null,
+        revenue,
+        multiple: exitMultiple,
+        dilution,
+        target,
+        change: (target / price - 1) * 100,
+        annual: (Math.pow(target / price, 1 / years) - 1) * 100,
+      };
+    });
+    if (
+      !cases.every((c) => [c.target, c.change, c.annual].every(Number.isFinite))
+    )
+      return unavailable("Revenue scenarios did not produce finite outcomes.");
+    return {
+      available: true,
+      basis: "revenue",
+      cases,
+      years,
+      period: fiscal ? estimate.period.toUpperCase() : "Annual forecast",
+      end: estimate.date,
+      asOf: e.updatedAt!,
+      currency: r.quote.currency,
+      analysts: estimate.analysts,
+      forwardPE: 0,
+      shares,
+      netDebt,
+      balanceDate: cash.end,
+    };
+  }
   const forwardPE = e.multiples?.ForwardPE;
   if (forwardPE == null || !Number.isFinite(forwardPE) || forwardPE <= 0)
     return unavailable(
       "A positive reported forward earnings multiple is needed.",
     );
   const annual = (e.estimates ?? [])
+    .filter(usableEps)
     .filter((x) => {
       const days = (Date.parse(x.date) - now) / 86400000;
       return (
@@ -113,7 +282,7 @@ export function researchOutlook(r: Research): Outlook {
   const estimate = annual[0];
   if (!estimate)
     return unavailable(
-      "A comparable annual EPS forecast in the quote currency is needed.",
+      "A comparable annual EPS forecast with a complete positive range in the quote currency is needed.",
     );
   const fiscalLabel = /^FY(\d{4})$/i.exec(estimate.period);
   if (
@@ -159,6 +328,13 @@ export function researchOutlook(r: Research): Outlook {
     );
   return {
     available: true,
+    basis: "earnings",
+    ...(coverage.family === "financial"
+      ? {
+          caveat:
+            "Earnings sensitivity only. Capital adequacy, credit losses and tangible book value require a separate bank assessment.",
+        }
+      : {}),
     cases,
     years,
     period: fiscalLabel ? estimate.period.toUpperCase() : "Annual forecast",

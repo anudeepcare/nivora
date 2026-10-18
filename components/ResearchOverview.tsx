@@ -36,27 +36,57 @@ export function ResearchOutlook({
           </div>
           <Help label="Model details" trigger="Model details">
             {outlook.available ? (
-              <>
-                <p>
-                  Annual EPS forecasts for {dateLabel(outlook.end)}:{" "}
-                  {outlook.cases
-                    .map((c) => `${c.name} ${amount(c.eps, outlook.currency)}`)
-                    .join(" · ")}
-                  .
-                </p>
-                <p>
-                  Exit P/E assumptions:{" "}
-                  {outlook.cases
-                    .map((c) => `${c.name} ${c.multiple.toFixed(1)}×`)
-                    .join(" · ")}
-                  . These are 80%, 100% and 120% of reported forward P/E, not
-                  verified future multiples.
-                </p>
-                <p>
-                  Forecast sensitivity, not intrinsic fair value. Observation:{" "}
-                  {dateLabel(outlook.asOf)}.
-                </p>
-              </>
+              outlook.basis === "revenue" ? (
+                <>
+                  <p>
+                    Annual revenue forecasts for {dateLabel(outlook.end)}:{" "}
+                    {outlook.cases
+                      .map(
+                        (c) =>
+                          `${c.name} ${amount(c.revenue, outlook.currency, true)}`,
+                      )
+                      .join(" · ")}
+                    .
+                  </p>
+                  <p>
+                    Equity value = forecast revenue × exit EV/revenue − current
+                    net debt, divided by diluted outstanding shares.
+                  </p>
+                  <p>
+                    Exit multiples are 80%, 100% and 120% of the current
+                    reported EV/revenue multiple. Additional dilution
+                    assumptions are 20%, 10% and 0%. Current net debt{" "}
+                    {amount(outlook.netDebt, outlook.currency, true)} is held
+                    constant from {dateLabel(outlook.balanceDate)}. Future capex
+                    funding and capacity conversion are not forecast. This is a
+                    sensitivity, not intrinsic fair value.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p>
+                    Annual EPS forecasts for {dateLabel(outlook.end)}:{" "}
+                    {outlook.cases
+                      .map(
+                        (c) => `${c.name} ${amount(c.eps, outlook.currency)}`,
+                      )
+                      .join(" · ")}
+                    .
+                  </p>
+                  <p>
+                    Exit P/E assumptions:{" "}
+                    {outlook.cases
+                      .map((c) => `${c.name} ${c.multiple.toFixed(1)}×`)
+                      .join(" · ")}
+                    . These are 80%, 100% and 120% of reported forward P/E, not
+                    verified future multiples.
+                  </p>
+                  <p>
+                    Forecast sensitivity, not intrinsic fair value. Observation:{" "}
+                    {dateLabel(outlook.asOf)}.
+                  </p>
+                </>
+              )
             ) : (
               <p>
                 {outlook.reason} No substitute target is used as a bear, base or
@@ -96,11 +126,17 @@ export function ResearchOutlook({
                     </span>
                   </div>
                   <p>
-                    {c.name === "Bear"
-                      ? "Lower forecast earnings with a lower valuation multiple."
-                      : c.name === "Bull"
-                        ? "Higher forecast earnings with a higher valuation multiple."
-                        : "Average forecast earnings with the current forward multiple."}
+                    {outlook.basis === "revenue"
+                      ? c.name === "Bear"
+                        ? "Lower forecast revenue, a lower sales multiple and more dilution."
+                        : c.name === "Bull"
+                          ? "Higher forecast revenue and a higher sales multiple, with no additional dilution assumed."
+                          : "Average forecast revenue, the current sales multiple and additional dilution."
+                      : c.name === "Bear"
+                        ? "Lower forecast earnings with a lower valuation multiple."
+                        : c.name === "Bull"
+                          ? "Higher forecast earnings with a higher valuation multiple."
+                          : "Average forecast earnings with the current forward multiple."}
                   </p>
                 </div>
               ))
@@ -158,7 +194,11 @@ export function ResearchOutlook({
           {outlook.available ? `${outlook.period} outlook` : "Company outlook"}
         </h2>
         <span className="pill">
-          {outlook.available ? "Sensitivity" : "Evidence"}
+          {outlook.available
+            ? outlook.basis === "revenue"
+              ? "Revenue"
+              : "Earnings"
+            : "Evidence"}
         </span>
       </div>
       {outlook.available ? (
@@ -167,6 +207,7 @@ export function ResearchOutlook({
             Forecast ends {dateLabel(outlook.end)} ·{" "}
             {Math.round(outlook.years * 12)} months ahead
           </p>
+          {outlook.caveat && <p className="context-note">{outlook.caveat}</p>}
           <div className="scenario-list">
             {outlook.cases.map((c, i) => (
               <div className="outcome" key={c.name}>
@@ -178,11 +219,17 @@ export function ResearchOutlook({
                     {c.name}
                   </div>
                   <div className="sub">
-                    {i === 0
-                      ? "Lower EPS · lower multiple"
-                      : i === 2
-                        ? "Higher EPS · higher multiple"
-                        : "Average EPS · current multiple"}
+                    {outlook.basis === "revenue"
+                      ? i === 0
+                        ? "Lower revenue · 20% dilution"
+                        : i === 2
+                          ? "Higher revenue · no extra dilution"
+                          : "Average revenue · 10% dilution"
+                      : i === 0
+                        ? "Lower EPS · lower multiple"
+                        : i === 2
+                          ? "Higher EPS · higher multiple"
+                          : "Average EPS · current multiple"}
                   </div>
                 </div>
                 <div className="target">
@@ -195,7 +242,7 @@ export function ResearchOutlook({
                   <div className="scenario-bar" aria-hidden="true">
                     <i
                       style={{
-                        width: `${(c.target / outlook.cases[2].target) * 100}%`,
+                        width: `${outlook.cases[2].target > 0 ? (c.target / outlook.cases[2].target) * 100 : 0}%`,
                         background: `var(--${i === 0 ? "red" : i === 2 ? "green" : "blue"})`,
                       }}
                     />
@@ -204,26 +251,59 @@ export function ResearchOutlook({
               </div>
             ))}
           </div>
+          {outlook.basis === "revenue" && (
+            <p className="context-note">
+              Revenue × EV/sales, less net debt, with dilution stresses. Not a
+              funded capacity forecast.
+            </p>
+          )}
           <Help label="Outlook assumptions" trigger="View assumptions →">
-            <p>
-              These are forecast sensitivities, not intrinsic fair values. Dated{" "}
-              {dateLabel(outlook.asOf)}. Annual forecast for{" "}
-              {dateLabel(outlook.end)}; {outlook.years.toFixed(1)} years from
-              the research snapshot.
-            </p>
-            <p>
-              Low, average and high provider EPS estimates are multiplied by{" "}
-              {outlook.cases.map((c) => `${c.multiple.toFixed(1)}×`).join(", ")}{" "}
-              respectively. The multiples are 80%, 100% and 120% of the reported{" "}
-              {outlook.forwardPE.toFixed(1)}× forward P/E. That stress range is
-              an explicit assumption, not a forecast that a market multiple will
-              hold.
-            </p>
-            <p>
-              Dividends, fees and taxes are excluded. Analyst estimates and
-              multiples may use adjusted earnings. This is separate from AURYN’s
-              action guide and is not used to authorize trades.
-            </p>
+            {outlook.basis === "revenue" ? (
+              <>
+                <p>
+                  Revenue forecasts dated {dateLabel(outlook.asOf)}, ending{" "}
+                  {dateLabel(outlook.end)}. Low/average/high revenue is
+                  multiplied by{" "}
+                  {outlook.cases
+                    .map((c) => `${c.multiple.toFixed(1)}×`)
+                    .join(", ")}{" "}
+                  EV/revenue.
+                </p>
+                <p>
+                  Current reported shares: {outlook.shares?.toLocaleString()}.
+                  Additional dilution: 20% / 10% / 0%. Net debt{" "}
+                  {amount(outlook.netDebt, outlook.currency, true)}, dated{" "}
+                  {dateLabel(outlook.balanceDate)}, is held constant. Future
+                  capex, financing, contract fulfilment and capacity utilisation
+                  are not forecast by this sensitivity. These assumptions may
+                  materially overstate or understate equity value.
+                </p>
+              </>
+            ) : (
+              <>
+                <p>
+                  These are forecast sensitivities, not intrinsic fair values.
+                  Dated {dateLabel(outlook.asOf)}. Annual forecast for{" "}
+                  {dateLabel(outlook.end)}; {outlook.years.toFixed(1)} years
+                  from the research snapshot.
+                </p>
+                <p>
+                  Low, average and high provider EPS estimates are multiplied by{" "}
+                  {outlook.cases
+                    .map((c) => `${c.multiple.toFixed(1)}×`)
+                    .join(", ")}{" "}
+                  respectively. The multiples are 80%, 100% and 120% of the
+                  reported {outlook.forwardPE.toFixed(1)}× forward P/E. That
+                  stress range is an explicit assumption, not a forecast that a
+                  market multiple will hold.
+                </p>
+                <p>
+                  Dividends, fees and taxes are excluded. Analyst estimates and
+                  multiples may use adjusted earnings. This is separate from
+                  AURYN’s action guide and is not used to authorize trades.
+                </p>
+              </>
+            )}
           </Help>
           {detailed && (
             <div className="outlook-drivers">
@@ -247,8 +327,9 @@ export function ResearchOutlook({
             </div>
           )}
           <p className="context-note">
-            Annual EPS forecasts · {outlook.analysts ?? "Unknown"} reporting
-            analysts · {dateLabel(outlook.asOf)}
+            Annual {outlook.basis === "revenue" ? "revenue" : "EPS"} forecasts ·{" "}
+            {outlook.analysts ?? "Unknown"} reporting analysts ·{" "}
+            {dateLabel(outlook.asOf)}
           </p>
         </>
       ) : (

@@ -38,3 +38,18 @@ test("keyboard inset keeps bottom sheets above the iPhone keyboard without addin
   assert.equal(keyboardInset({ height: 420, offsetTop: 65 }, 850), 365);
   assert.equal(keyboardInset({ height: 850, offsetTop: 0 }, 850), 0);
 });
+
+test("viewport updates do not rewrite unchanged styles during scroll", () => {
+  const { createViewportUpdater } = load();
+  assert.equal(typeof createViewportUpdater, "function");
+  const writes = [];
+  const update = createViewportUpdater((name, value) =>
+    writes.push([name, value]),
+  );
+  update({ height: 850, offsetTop: 0 }, 850);
+  assert.equal(writes.length, 3);
+  update({ height: 850, offsetTop: 0 }, 850);
+  assert.equal(writes.length, 3);
+  update({ height: 420, offsetTop: 65 }, 850);
+  assert.equal(writes.length, 6);
+});

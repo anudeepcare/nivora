@@ -1,29 +1,26 @@
 "use client";
 import { useEffect } from "react";
-import { visibleViewport, keyboardInset } from "@/lib/mobile-viewport";
+import { createViewportUpdater } from "@/lib/mobile-viewport";
 export default function Pwa() {
   useEffect(() => {
     const viewport = window.visualViewport;
+    const write = createViewportUpdater((name, value) =>
+      document.documentElement.style.setProperty(name, value),
+    );
+    let frame = 0;
     const update = () => {
-      const visible = visibleViewport(viewport, window.innerHeight);
-      document.documentElement.style.setProperty(
-        "--visual-height",
-        `${visible.height}px`,
-      );
-      document.documentElement.style.setProperty(
-        "--keyboard-bottom",
-        `${keyboardInset(viewport, window.innerHeight)}px`,
-      );
-      document.documentElement.style.setProperty(
-        "--visual-top",
-        `${visible.top}px`,
-      );
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        write(viewport, window.innerHeight);
+      });
     };
     update();
     viewport?.addEventListener("resize", update);
     viewport?.addEventListener("scroll", update);
     window.addEventListener("resize", update);
     return () => {
+      if (frame) cancelAnimationFrame(frame);
       viewport?.removeEventListener("resize", update);
       viewport?.removeEventListener("scroll", update);
       window.removeEventListener("resize", update);

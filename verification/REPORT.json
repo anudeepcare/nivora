@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-10-18T04:35:41.196651+00:00",
+  "generatedAt": "2026-10-18T04:49:16.675436+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 158 tests and TypeScript; production build rerun after final help-copy changes",
+    "npm run verify": "passed: 165 tests, TypeScript and production build",
     "npm run test:api": "passed: 32 baseline + 16 research regressions + 13 hybrid/provider checks",
     "git diff --check": "passed"
   },
-  "domainPostgresAndComponentTests": 158,
+  "domainPostgresAndComponentTests": 165,
   "builtApiChecks": 61,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -34,13 +34,12 @@
   "priorEvidence": "The signed-in reference/deployed UI reviews predate this patch. New verification is source, domain/SSR, TypeScript and build evidence only.",
   "browserTestScope": "No rendered browser test of this build; older live audits are historical evidence only",
   "patchedSourceBrowserTestsExecuted": false,
-  "latestAudit": "RESEARCH_GRID_AND_SEARCH_PERFORMANCE.md",
+  "latestAudit": "SCENARIO_COVERAGE_AND_PWA_AUDIT.md",
   "referenceReview": "REFERENCE_REVIEW_20261017.md",
   "decisionPolicy": "research-v1.6 / decision-guide-v1.1; original unvalidated research triage; no broker execution",
   "latestLogs": [
-    "grid-perf-verify.log",
-    "grid-perf-build.log",
-    "grid-perf-api.log"
+    "scenario-verify.log",
+    "scenario-api.log"
   ],
   "cohortQuoteObservations": "cohort-quotes-20261017.json; 11 instruments; quote identity only, not fundamental/model validation",
   "exactVisualParityVerified": false,
@@ -49,5 +48,6 @@
   "liveUiAudit": "Signed-in Chrome: CRM search, all five research tabs and weekly range loaded. Deployed mobile dock CSS is fixed; latest source dock is in layout flow. No physical iPhone verification.",
   "valuationCorrection": "OSCR Healthcare Plans was excluded by decision guide but admitted by separate outlook regex. Outlook now uses shared modelCoverage; failing then passing regression.",
   "forecastPeriodCorrection": "Forecast end date and months ahead now visible beside cases; conflicting fiscal labels rejected; missing fiscal label no longer invented from calendar year.",
-  "performance": "Search uses bounded per-account resource cache (5min), shared in-flight requests and normalized query keys; exact BTC/ETH matches resolve locally. No production latency benchmark."
+  "performance": "Session search cache plus server fetch cache for Twelve Data; quote30s, intraday60s, daily3600s, profile86400s. Viewport writes coalesced per animation frame and skipped when unchanged. No post-deployment latency benchmark.",
+  "scenarioCoverage": "Positive-EPS sensitivities for eligible operating companies/banks; revenue/EV-sales sensitivities when ordered forecasts, equity shares and dated balance evidence exist. Cross-currency listings and insurance-specific fair value remain unsupported."
 }

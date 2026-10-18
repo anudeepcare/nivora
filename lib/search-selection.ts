@@ -32,3 +32,16 @@ export function searchRequestKey(query: string): string {
     .toUpperCase();
   return `search?q=${encodeURIComponent(normalized)}`;
 }
+
+/** Reveal a selected result without scrolling the document or dialog ancestors. */
+export function searchListScrollTop(
+  current: number,
+  top: number,
+  bottom: number,
+  itemTop: number,
+  itemBottom: number,
+) {
+  if (itemTop < top) return Math.max(0, current + itemTop - top);
+  if (itemBottom > bottom) return Math.max(0, current + itemBottom - bottom);
+  return current;
+}

@@ -44,3 +44,12 @@ test("fallback retains its own provenance and complete value; both failures prop
     /Unavailable/,
   );
 });
+
+test("provider cache policy keeps quotes short and company/search metadata longer", async () => {
+  const { providerCacheSeconds } = await import("../lib/provider-routing.ts");
+  assert.equal(typeof providerCacheSeconds, "function");
+  assert.equal(providerCacheSeconds("quote", {}), 30);
+  assert.equal(providerCacheSeconds("time_series", { interval: "1day" }), 3600);
+  assert.equal(providerCacheSeconds("time_series", { interval: "1h" }), 60);
+  assert.equal(providerCacheSeconds("profile", {}), 86400);
+});

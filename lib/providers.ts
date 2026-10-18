@@ -1,4 +1,8 @@
-import { preferredMarketSources, readPreferred } from "./provider-routing";
+import {
+  preferredMarketSources,
+  readPreferred,
+  providerCacheSeconds,
+} from "./provider-routing";
 import {
   eodEnabled,
   eodQuote,
@@ -41,11 +45,17 @@ async function cached<T>(
   if (cache.size > 250) cache.delete(cache.keys().next().value!);
   return value;
 }
-async function json(url: string, headers: Record<string, string> = {}) {
+async function json(
+  url: string,
+  headers: Record<string, string> = {},
+  ttl = 0,
+) {
   const r = await fetch(url, {
     headers,
     signal: AbortSignal.timeout(18_000),
-    cache: "no-store",
+    ...(ttl > 0
+      ? { next: { revalidate: ttl } }
+      : { cache: "no-store" as const }),
   });
   if (!r.ok)
     throw new HttpError(
@@ -66,6 +76,8 @@ export async function twelve(
   await reserveProvider(cost);
   const data = await json(
     `https://api.twelvedata.com/${endpoint}?${new URLSearchParams({ ...params, apikey: key })}`,
+    {},
+    providerCacheSeconds(endpoint, params),
   );
   if (data.status === "error")
     throw new HttpError(

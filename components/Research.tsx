@@ -284,7 +284,9 @@ export default function Research({ symbol }: { symbol: string }) {
                     visible.length) %
                   visible.length;
           switchTab(visible[index]);
-          (e.currentTarget.children[index] as HTMLButtonElement).focus();
+          (e.currentTarget.children[index] as HTMLButtonElement).focus({
+            preventScroll: true,
+          });
         }}
       >
         {visible.map((name) => (

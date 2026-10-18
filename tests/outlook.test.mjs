@@ -18,6 +18,7 @@ function load() {
 function research() {
   return {
     company: { symbol: "CRM", assetType: "stock" },
+    facts: [],
     quote: { price: 100, currency: "USD", stale: false },
     retrievedAt: "2026-10-17T12:00:00Z",
     evidence: {
@@ -124,4 +125,16 @@ test("outlook rejects a fiscal label that contradicts its underlying forecast da
   const result = load().researchOutlook(input);
   assert.equal(result.available, false);
   assert.match(result.reason, /period|date/i);
+});
+
+test("a bank can show a labelled earnings sensitivity without applying an operating-cash-flow valuation", () => {
+  const r = research();
+  r.company.symbol = "NU";
+  r.evidence.profile = {
+    sector: "Financial Services",
+    industry: "Banks - Diversified",
+  };
+  const result = load().researchOutlook(r);
+  assert.equal(result.available, true);
+  assert.equal(result.cases[1].target, 160);
 });
