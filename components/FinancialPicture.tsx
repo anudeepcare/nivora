@@ -160,42 +160,7 @@ export default function FinancialPicture({
       </header>
       {p ? (
         <>
-          <div className="metric-strip" style={{ marginTop: 0 }}>
-            {metrics.map(([label, value, detail]) => (
-              <div
-                className="metric"
-                data-tone={
-                  label === "Revenue"
-                    ? "blue"
-                    : label === "Operating margin" && p.margin != null
-                      ? p.margin >= 0
-                        ? "green"
-                        : "red"
-                      : label === "Cash after capex" && p.fcf != null
-                        ? p.fcf >= 0
-                          ? "green"
-                          : "red"
-                        : "neutral"
-                }
-                key={label}
-              >
-                <Help label={label} trigger={label}>
-                  <p>
-                    {detail}.{" "}
-                    {scope === "ttm"
-                      ? "Trailing twelve months"
-                      : scope === "annual"
-                        ? "Annual financials"
-                        : "Standalone quarter"}{" "}
-                    ending {dateLabel(p.end)}, {p.currency}. Missing fields are
-                    not assumed to be zero.
-                  </p>
-                </Help>
-                <div className="metric-number num">{value}</div>
-                <div className="metric-sub">{detail}</div>
-              </div>
-            ))}
-          </div>
+          <ResearchWorkbench research={r} />
           <header className="section-head">
             <div>
               <h2>Statements</h2>
@@ -280,7 +245,6 @@ export default function FinancialPicture({
           data.
         </Empty>
       )}
-      <ResearchWorkbench research={r} />
       <FinancialDetailTable research={r} />
     </section>
   );

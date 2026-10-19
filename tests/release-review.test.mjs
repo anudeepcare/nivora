@@ -182,7 +182,7 @@ function researchMarkup() {
     "DecisionWorkspace",
     "DecisionWatch",
     "ValuationLab",
-    "TimingContext",
+    "TimingContext", "FinancingContext", "EarningsPrep", "ResearchNotes", "ResearchCompare", "CompanyBrief",
     "ResearchOutlook",
     "OverviewContext",
     "CompanyUpdates",

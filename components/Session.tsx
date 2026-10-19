@@ -441,10 +441,10 @@ function Login({ initialError }: { initialError: string }) {
         <span className="eyebrow">A clearer investment perspective</span>
         <h2>Business first. <br/>Price second. <br/><em>Timing alongside.</em></h2>
         <p>Understand what you own, challenge what you pay, and see what deserves a closer look.</p>
-        <div className="login-product-story">
-          <article><span>01 · Understand</span><h3>Look beyond the ticker.</h3><p>Growth, profitability, cash generation and financing risks in one research workspace.</p></article>
-          <article><span>02 · Put price in context</span><h3>Explore the possibilities.</h3><p>Bear, base and bull scenarios with assumptions kept separate from analyst opinion.</p></article>
-          <article><span>03 · Keep perspective</span><h3>Follow the evidence.</h3><p>Price trends, monthly accumulation context, watchlists and your portfolio.</p></article>
+        <div className="login-preview" aria-label="AURYN interface preview, no live financial data">
+          <header><span className="preview-brand-mark">A</span><div><strong>Your research, connected.</strong><small>Business · Value · Timing</small></div><span className="preview-caption">Interface preview</span></header>
+          <div className="preview-journey"><section><i>01</i><div><strong>Understand the business</strong><p>Growth → profit → cash generation</p></div></section><section><i>02</i><div><strong>Put the price in perspective</strong><p>Bear · Base · Bull, with the assumptions visible</p></div></section><section><i>03</i><div><strong>Know what to revisit</strong><p>Funding risks, upcoming reports and price context</p></div></section></div>
+          <footer>One workspace. Evidence you can inspect.</footer>
         </div>
         <small>Research to inform your judgment. No promised returns or automatic trade instructions.</small>
       </section>

@@ -1,4 +1,5 @@
 "use client";
+import {researchDecision} from "@/lib/decision-research";
 import { useProduct } from "./Session";
 import { holdingsContext } from "@/lib/holdings-brief";
 import type { Quote, Research } from "@/lib/types";
@@ -12,10 +13,12 @@ export default function PortfolioContext({
 }) {
   const { workspace, cache } = useProduct();
   const sectors: Record<string, string> = {};
+  const reports=new Map<string,Research>();
   for (const [key, entry] of cache) {
     if (key.startsWith("research/")) {
       const r = entry.value as Research;
       if (r?.company?.symbol) {
+        reports.set(r.company.symbol,r);
         const sector = r.evidence?.profile?.sector || r.company.sector;
         if (sector) sectors[r.company.symbol] = sector;
       }
@@ -23,6 +26,9 @@ export default function PortfolioContext({
   }
   const c = holdingsContext(workspace?.positions ?? [], quotes, sectors);
   if (!workspace?.positions.length) return null;
+  const held=[...new Set(workspace.positions.filter(p=>p.assetType==='stock').map(p=>p.symbol))];
+  const covered=held.flatMap(symbol=>{const r=reports.get(symbol);return r?[{symbol,...researchDecision(r)}]:[];});
+  const flagged=covered.filter(x=>x.flags.length>0);
   return (
     <section
       className={`portfolio-context${compact ? " portfolio-context-compact" : ""}`}
@@ -67,6 +73,7 @@ export default function PortfolioContext({
       </div>
       {!compact && (
         <>
+          <section className="portfolio-evidence-health"><h4>Evidence coverage across your holdings</h4><p><strong>{covered.length} of {held.length} stock holdings reviewed</strong> · {flagged.length} have current review flags.</p>{flagged.length>0&&<p>{flagged.map(x=>`${x.symbol}: ${x.flags[0].title}`).join(' · ')}</p>}<small>Based on reports already loaded in this session. Unreviewed holdings are not cleared; no whole-portfolio quality score is inferred from partial coverage.</small></section>
           <div className="exposure-list">
             {c.sectors.map((s, i) => (
               <div key={s.name}>

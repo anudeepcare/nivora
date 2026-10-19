@@ -1,15 +1,14 @@
 {
-  "generatedAt": "2026-10-19T00:10:00.587295+00:00",
+  "generatedAt": "2026-10-19T00:24:30.153057+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm test": "passed: 209 tests",
-    "npm run verify": "passed: tests, TypeScript and production build; two additional entry-page tests pass in final full test rerun",
-    "npm run test:api": "passed: 32 baseline + 16 research regressions + 16 provider checks",
+    "npm run verify": "passed: 216 tests, TypeScript, production build",
+    "npm run test:api": "passed: 32 baseline + 16 research regression + 16 provider checks",
     "git diff --check": "passed"
   },
-  "domainPostgresAndComponentTests": 209,
+  "domainPostgresAndComponentTests": 216,
   "builtApiChecks": 64,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -134,5 +133,17 @@
     "billingConnected": false,
     "commercialDataLicenseVerified": false,
     "featureBacklog": "docs/COMMERCIAL_LAUNCH_PLAN.md"
+  },
+  "researchRetention": {
+    "releaseNotes": "docs/RESEARCH_RETENTION_RELEASE.md",
+    "metricSourceStatuses": true,
+    "savedViewChanges": "account-scoped device persistence",
+    "financialCrossingAlerts": "in-app; baseline first; existing configured-owner schedule only",
+    "cashRunwayAndWorkingCapital": true,
+    "selectedPeerMedians": "not an industry median",
+    "privateJournal": "existing editable notes, not immutable outcome log",
+    "printBrief": true,
+    "liveDatabaseVerification": false,
+    "commercialRoadmapComplete": false
   }
 }

@@ -4,6 +4,7 @@ export function evaluateAlert(
   input: {
     asOf?: string;
     earnings?: { date: string }[];
+    financial?: {value:number;period:string;previous:number|null};
     snapshotId: string;
     price: number | null;
     stale: boolean;
@@ -15,6 +16,13 @@ export function evaluateAlert(
 ) {
   if (!rule.enabled) return null;
   const base = { symbol: rule.symbol, snapshot_id: input.snapshotId };
+  if (["interest-below","sbc-above","current-below","margin-below"].includes(rule.type)) {
+    const f=input.financial,t=rule.threshold;
+    if(!f||t==null||f.previous==null||![f.value,f.previous,t].every(Number.isFinite))return null;
+    const breached=(v:number)=>rule.type==='sbc-above'?v>t:v<t;
+    if(!breached(f.value)||breached(f.previous))return null;
+    return {...base,event_key:`financial:${rule.type}:${t}:${f.period}`,title:`${rule.symbol}: financial threshold crossed`,detail:`${rule.type}: ${f.previous.toFixed(2)} → ${f.value.toFixed(2)}; threshold ${t}, reporting period ${f.period}. Observed between checks, not an intraday or trade signal.`};
+  }
   if (rule.type === "earnings-soon") {
     const now = Date.parse(input.asOf ?? ""),
       today = (input.asOf ?? "").slice(0, 10);

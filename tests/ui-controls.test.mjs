@@ -38,7 +38,7 @@ function loadComponent(file, name, bindings) {
 }
 const empty = () => null;
 
-test("Financials retains four primary metrics and statement rows with separate labelled detail groups", () => {
+test("Financials avoids duplicate overview tiles and retains statement rows with labelled detail groups", () => {
   const FinancialPicture = loadComponent(
     "components/FinancialPicture.tsx",
     "FinancialPicture",
@@ -59,12 +59,12 @@ test("Financials retains four primary metrics and statement rows with separate l
   const html = renderToStaticMarkup(
     React.createElement(FinancialPicture, { research: demoData.research.MSFT }),
   );
-  assert.equal((html.match(/class="metric"/g) || []).length, 4);
+  assert.equal((html.match(/class="metric"/g) || []).length, 0);
   for (const label of [
     "Revenue",
     "Operating margin",
-    "Cash after capex",
-    "Net debt",
+    "Net income",
+    "SBC / revenue",
   ])
     assert(html.includes(label));
   assert.match(html, /aria-label="Income statement snapshot"/);
@@ -165,7 +165,9 @@ test("Research outlook does not fill missing coverage with three empty scenario 
       React,
       useMemo: React.useMemo,
       researchOutlook,
+      CaseRange: empty,
       consensusOutlook,
+      CaseRange: empty,
       valuationScale,
       ...format,
       Help: empty,
@@ -212,7 +214,9 @@ test("outlook displays the selected forecast end and horizon beside its cases", 
       React,
       useMemo: React.useMemo,
       researchOutlook,
+      CaseRange: empty,
       consensusOutlook,
+      CaseRange: empty,
       ...format,
       Help: empty,
       DataStamp: empty,
@@ -272,7 +276,9 @@ test("valuation snapshot separates analyst targets from visible labelled forecas
       React,
       useMemo: React.useMemo,
       researchOutlook,
+      CaseRange: empty,
       consensusOutlook,
+      CaseRange: empty,
       ...format,
       Help: empty,
       DataStamp: empty,
@@ -529,7 +535,7 @@ test('authentication explains AURYN in sign-in, signup and recovery without fabr
   let i=0;const values=['','','',false,mode,''];
   const Login=loadComponent('components/Session.tsx','Login',{React,useState:()=>[values[i++],()=>{}],Logo:()=>React.createElement('span',null,'AURYN')});
   const html=renderToStaticMarkup(React.createElement(Login,{initialError:''}));
-  assert.match(html,/About AURYN/);assert.match(html,/Business first/);assert.match(html,/Explore the possibilities/);
+  assert.match(html,/About AURYN/);assert.match(html,/Business first/);assert.match(html,/Put the price in perspective/);
   assert.doesNotMatch(html,/desktop-nav|mobile-dock|guaranteed returns/);
  }
 });
@@ -538,4 +544,11 @@ test('settings hides experimental navigation while preserving account and help',
  const html=renderToStaticMarkup(React.createElement(SettingsSheet,{dialog:{current:null}}));
  assert.doesNotMatch(html,/href="\/(discover|research-lab|trading)"/);
  assert.match(html,/Account &amp; security/);assert.match(html,/href="\/help"/);
+});
+
+test('scenario presentation uses one shared scale and keeps current price outside the range when appropriate',async()=>{
+ const {valuationScale}=await import('../lib/research-summary.ts');
+ const CaseRange=loadComponent('components/CaseRange.tsx','CaseRange',{React,valuationScale,...format});
+ const html=renderToStaticMarkup(React.createElement(CaseRange,{cases:[{name:'Bear',target:10,change:-80},{name:'Base',target:20,change:-60},{name:'Bull',target:30,change:-40}],price:50,currency:'USD'}));
+ assert.match(html,/Shared linear price scale/);assert.match(html,/Current/);assert.match(html,/\$50\.00/);assert.doesNotMatch(html,/scenario-bar|NaN|Infinity/);
 });

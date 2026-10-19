@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import type { Research } from "@/lib/types";
+import { peerContext } from "@/lib/research-integrity";
 import { comparisonRows } from "@/lib/research-workbench";
 import { readResource } from "@/lib/resource-cache";
 import { api } from "@/lib/client";
@@ -26,7 +27,7 @@ export default function ResearchCompare({
       r,
       ...reports.filter((x) => x.company.symbol !== r.company.symbol),
     ].slice(0, 4),
-    rows = comparisonRows(items);
+    rows = comparisonRows(items),peers=peerContext(items);
   async function add(e: React.FormEvent) {
     e.preventDefault();
     if (busy) return;
@@ -82,6 +83,7 @@ export default function ResearchCompare({
         </button>
       </form>
       {message && <Notice>{message}</Notice>}
+      <section className="selected-lens"><h4>Selected peer context</h4><p>{peers.eligible?`${peers.count} selected ${peers.sector} companies. Median operating margin: ${percent(peers.marginMedian)}; median FCF yield: ${percent(peers.fcfYieldMedian)}.`:'Add at least three companies from one reported sector with aligned currencies and reporting dates to calculate selected-cohort medians.'}</p><small>This is your selected cohort, not an industry-wide median or representative peer ranking.</small></section>
       <div className="table-scroll">
         <table>
           <caption>

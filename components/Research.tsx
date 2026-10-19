@@ -1,4 +1,10 @@
 "use client";
+import dynamic from "next/dynamic";
+const ResearchCompare=dynamic(()=>import("./ResearchCompare"));
+const ResearchNotes=dynamic(()=>import("./ResearchNotes"));
+const CompanyBrief=dynamic(()=>import("./CompanyBrief"));
+import FinancingContext from "./FinancingContext";
+import EarningsPrep from "./EarningsPrep";
 import TimingContext from "./TimingContext";
 import DecisionWorkspace from "./DecisionWorkspace";
 import ValuationLab from "./ValuationLab";
@@ -356,7 +362,7 @@ export default function Research({ symbol }: { symbol: string }) {
         aria-labelledby={`tab-${tab}`}
         className="au-stack"
       >
-        {tab === "News" && <CompanyUpdates research={r} />}
+        {tab === "News" && <><EarningsPrep research={r} /><CompanyUpdates research={r} /></>}
         {tab === "Analysts" && <AnalystRatings research={r} />}
         {tab === "Snapshot" && (
           <>
@@ -379,6 +385,7 @@ export default function Research({ symbol }: { symbol: string }) {
         {tab === "Financials" && (
           <>
             <Financials research={r} />
+            <FinancingContext research={r} />
             <EarningsWorkspace research={r} />
           </>
         )}
@@ -386,6 +393,7 @@ export default function Research({ symbol }: { symbol: string }) {
           <>
             <ResearchOutlook research={r} detailed />
             <ValuationLab research={r} />
+            <details className="research-optional"><summary>Compare companies & selected peer context</summary><ResearchCompare research={r} /></details>
           </>
         )}
         {tab === "Technicals" && (
@@ -420,7 +428,7 @@ export default function Research({ symbol }: { symbol: string }) {
           </>
         )}
         {tab === "Technicals" && <DcaResearch research={r} />}
-        {tab === "Thesis" && <ThesisPicture research={r} />}
+        {tab === "Thesis" && <><ThesisPicture research={r} /><details className="research-optional"><summary>My thesis, pre-mortem & research record</summary><ResearchNotes research={r} /></details><CompanyBrief research={r} /></>}
       </div>
     </article>
   );

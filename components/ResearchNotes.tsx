@@ -147,7 +147,7 @@ export default function ResearchNotes({ research: r }: { research: Research }) {
               />
             </label>
             <label>
-              Strongest counterargument
+              Pre-mortem: how could this go wrong?
               <textarea
                 value={form.counterargument}
                 maxLength={2000}
@@ -158,7 +158,7 @@ export default function ResearchNotes({ research: r }: { research: Research }) {
               />
             </label>
             <label>
-              What would change your mind?
+              Measurable evidence that would change your mind?
               <textarea
                 value={form.condition}
                 maxLength={1500}

@@ -48,3 +48,5 @@ https://eodhd.com/financial-apis/commercial-vs-personal-license-use
 https://support.twelvedata.com/en/articles/5332349-commercial-and-personal-usage
 https://support.twelvedata.com/en/articles/12647398-attribution-guidelines-for-using-twelve-data
 https://www.sec.gov/files/divisions/investment/iaregulation/memoia.htm
+
+Latest October 19 research/visual additions and exact remaining scope: see docs/RESEARCH_RETENTION_RELEASE.md (RESEARCH_RETENTION_RELEASE.md from this docs directory). Latest automated verification: 216 tests, TypeScript, production build and 64 API fixtures. Billing and the full commercial roadmap are not complete.

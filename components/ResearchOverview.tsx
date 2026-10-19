@@ -1,4 +1,6 @@
 "use client";
+import CaseRange from "./CaseRange";
+import MetricProvenance from "./MetricProvenance";
 import { useMemo } from "react";
 import type { Research } from "@/lib/types";
 import { perspective, latestFinancialEvidence } from "@/lib/analysis";
@@ -94,49 +96,7 @@ export function ResearchOutlook({
             {Math.round(outlook.years * 12)} months ahead
           </p>
           {outlook.caveat && <p className="context-note">{outlook.caveat}</p>}
-          <div className="scenario-list">
-            {outlook.cases.map((c, i) => (
-              <div className="outcome" key={c.name}>
-                <div>
-                  <div
-                    className={`label ${i === 0 ? "negative" : i === 2 ? "positive" : ""}`}
-                  >
-                    <i />
-                    {c.name}
-                  </div>
-                  <div className="sub">
-                    {outlook.basis === "revenue"
-                      ? i === 0
-                        ? "Lower revenue · 20% dilution"
-                        : i === 2
-                          ? "Higher revenue · no extra dilution"
-                          : "Average revenue · 10% dilution"
-                      : i === 0
-                        ? "Lower EPS · lower multiple"
-                        : i === 2
-                          ? "Higher EPS · higher multiple"
-                          : "Average EPS · current multiple"}
-                  </div>
-                </div>
-                <div className="target">
-                  <strong className="num">
-                    {amount(c.target, outlook.currency)}
-                  </strong>
-                  <span className={c.change < 0 ? "negative" : "positive"}>
-                    {percent(c.change, true)}
-                  </span>
-                  <div className="scenario-bar" aria-hidden="true">
-                    <i
-                      style={{
-                        width: `${outlook.cases[2].target > 0 ? (c.target / outlook.cases[2].target) * 100 : 0}%`,
-                        background: `var(--${i === 0 ? "red" : i === 2 ? "green" : "blue"})`,
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <CaseRange cases={outlook.cases} price={r.quote.price} currency={outlook.currency}/>
           {outlook.basis === "revenue" && (
             <p className="context-note">
               Revenue × EV/sales, less net debt, with dilution stresses. Not a
@@ -296,7 +256,7 @@ export function KeyFinancialMetrics({ research: r }: { research: Research }) {
           },
         ];
   return (
-    <section className="metric-strip" aria-label="Key metrics">
+    <section className="metric-band" aria-label="Key metrics">
       {metrics.map((m) => (
         <div className="metric" data-tone={m.tone ?? "neutral"} key={m.label}>
           <Help label={m.label} trigger={m.label}>
@@ -308,6 +268,8 @@ export function KeyFinancialMetrics({ research: r }: { research: Research }) {
             </p>
           </Help>
           <div className="metric-number num">{m.value}</div>
+          {r.company.assetType==='stock'&&<MetricProvenance research={r} metrics={m.label==='Revenue'?['revenue']:m.label==='Operating margin'?['operatingIncome','revenue']:m.label==='Cash after capex'?['operatingCashFlow','capex']:[]} calculated={m.label!=='Revenue'||p.periodBasis==='TTM'} estimated={m.label==='Forward P/E'}/>}
+
           <div
             className={`metric-sub ${m.label === "Revenue" && p.growth != null ? (p.growth >= 0 ? "positive" : "negative") : ""}`}
           >

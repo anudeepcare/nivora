@@ -5,7 +5,8 @@ export type AlertRule = {
     | "price-below"
     | "monthly-zone"
     | "new-filing"
-    | "earnings-soon";
+    | "earnings-soon"
+    | "interest-below" | "sbc-above" | "current-below" | "margin-below";
   threshold: number | null;
   enabled: boolean;
   name: string;
@@ -65,6 +66,7 @@ export function cleanDocument(
         "monthly-zone",
         "new-filing",
         "earnings-soon",
+        "interest-below", "sbc-above", "current-below", "margin-below",
       ].includes(type) ||
       !/^[A-Z0-9][A-Z0-9.-]{0,14}(\/[A-Z]{3,5})?$/.test(symbol)
     )
@@ -88,6 +90,7 @@ export function cleanDocument(
         threshold > 30)
     )
       throw Error("Choose one to thirty days before earnings.");
+    if (["interest-below","sbc-above","current-below","margin-below"].includes(type) && (threshold == null || threshold < (type==='margin-below'?-1000:0) || threshold > 1000)) throw Error('Enter a valid financial threshold.');
     return {
       name: text("name", 80),
       symbol,

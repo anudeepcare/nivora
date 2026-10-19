@@ -1,3 +1,4 @@
+import {createHash} from "node:crypto";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AlertRule } from "./documents";
 import { research } from "./providers";
@@ -5,6 +6,7 @@ import { canonical } from "./canonical";
 import { eodEnabled, eodRequest } from "./eodhd";
 import { eodTicker } from "./eodhd-normalize";
 import { calendarHighlights } from "./home-feed";
+import { latestFinancialEvidence } from "./analysis";
 import { evaluateAlert } from "./alert-policy";
 export async function checkAlerts(db: SupabaseClient, userId: string) {
   const rules = await db
@@ -50,9 +52,25 @@ export async function checkAlerts(db: SupabaseClient, userId: string) {
       }
       const c = canonical(r);
       checked++;
+      let financial:{value:number;period:string;previous:number|null;currency:string;basis:string}|undefined;
+      const financialRule=['interest-below','sbc-above','current-below','margin-below'].includes(rule.type);
+      const stateKey=`fin-alert:${createHash("sha256").update(record.key).digest("hex")}`;
+      if(financialRule){
+        const p=latestFinancialEvidence(r).latest;
+        const v=rule.type==='interest-below'?p?.interestCoverage:rule.type==='sbc-above'?p?.sbcRevenue:rule.type==='current-below'?p?.currentRatio:p?.margin;
+        if(!p||v==null||!Number.isFinite(v))continue;
+        const state=await db.from('auryn_documents').select('body').eq('user_id',userId).eq('kind','view').eq('key',stateKey).maybeSingle();
+        if(state.error)throw Error('Financial alert baseline unavailable.');
+        const old=state.data?.body;
+        const previous=old?.filter!==''&&typeof old?.filter==='string'&&Number.isFinite(Number(old.filter))&&old?.name===rule.type&&old?.symbols?.[0]===rule.symbol&&old?.currency===p.currency&&old?.basis===p.basis?Number(old.filter):null;
+        // A backwards reporting period must not replace newer baseline evidence.
+        if(old?.horizon&&p.end<old.horizon)continue;
+        financial={value:v,period:p.end,previous,currency:p.currency,basis:p.basis};
+      }
       const event = evaluateAlert(
         rule,
         {
+          financial,
           asOf: r.retrievedAt,
           earnings,
           snapshotId: c.id,
@@ -64,7 +82,12 @@ export async function checkAlerts(db: SupabaseClient, userId: string) {
         },
         record.created_at,
       );
-      if (!event) continue;
+      const saveBaseline=async()=>{
+        if(!financial)return;
+        const saved=await db.from('auryn_documents').upsert({user_id:userId,kind:'view',key:stateKey,body:{name:rule.type,symbols:[rule.symbol],filter:String(financial.value),horizon:financial.period,currency:financial.currency,basis:financial.basis},updated_at:new Date().toISOString()},{onConflict:'user_id,kind,key'});
+        if(saved.error)throw Error('Financial baseline could not be saved.');
+      };
+      if (!event) {await saveBaseline();continue;}
       const saved = await db
         .from("auryn_alert_events")
         .upsert(
@@ -74,6 +97,7 @@ export async function checkAlerts(db: SupabaseClient, userId: string) {
         .select("id");
       if (saved.error) throw Error("Could not persist the alert.");
       created += saved.data?.length ?? 0;
+      await saveBaseline();
     } catch {
       errors.push(`${rule.symbol}: the source or alert store was unavailable.`);
     }

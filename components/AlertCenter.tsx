@@ -126,7 +126,11 @@ export default function AlertCenter() {
         </label>
         <label>
           Notify me about
-          <select value={type} onChange={(e) => setType(e.target.value)}>
+          <select value={type} onChange={(e) => {setType(e.target.value);setThreshold(e.target.value==="sbc-above"?"10":e.target.value==="current-below"?"1":e.target.value==="margin-below"?"0":"2");}}>
+            <option value="interest-below">Interest coverage falls below</option>
+            <option value="sbc-above">Stock pay / revenue rises above</option>
+            <option value="current-below">Current ratio falls below</option>
+            <option value="margin-below">Operating margin falls below</option>
             <option value="earnings-soon">Earnings approaching</option>
             <option value="new-filing">New company filing</option>
             <option value="monthly-zone">Monthly accumulation zone</option>
@@ -140,7 +144,7 @@ export default function AlertCenter() {
               ? "Zone (0 = pause)"
               : type === "earnings-soon"
                 ? "Days before earnings"
-                : "Price · USD"}
+                : type==='sbc-above'||type==='margin-below'?'Threshold · %':type==='interest-below'||type==='current-below'?'Threshold · ×':"Price · USD"}
             <input
               type="number"
               step={
@@ -149,7 +153,7 @@ export default function AlertCenter() {
                   : ".01"
               }
               min={
-                type === "monthly-zone"
+                type === "margin-below" ? "-1000" : type === "monthly-zone"
                   ? "0"
                   : type === "earnings-soon"
                     ? "1"
@@ -174,7 +178,7 @@ export default function AlertCenter() {
         </button>
       </form>
       <p className="footnote">
-        Checks use available source timestamps. Scheduled checks require the
+        Financial alerts establish a baseline on the first check, then report later safe-to-breached crossings. They do not alert merely because the first observed value is already weak. Missing data does not reset the baseline. Checks use available source timestamps. Scheduled checks require the
         included monitoring workflow to be configured. No email or push messages
         are sent.
       </p>
