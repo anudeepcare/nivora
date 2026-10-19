@@ -43,6 +43,7 @@ import { TechnicalPicture, ThesisPicture } from "./ResearchDetails";
 import { groupHistory } from "@/lib/chart-period";
 import ResearchChanges from "./ResearchChanges";
 import DcaResearch from "./DcaResearch";
+import DecisionOverview from "./DecisionOverview";
 import EarningsWorkspace from "./EarningsWorkspace";
 import DecisionBrief from "./DecisionBrief";
 import AnalystRatings from "./AnalystRatings";
@@ -515,21 +516,13 @@ export default function Research({ symbol }: { symbol: string }) {
             hidden={tab !== "Snapshot"}
             className="au-stack"
           >
-            <DecisionWorkspace
-              research={r}
-              onTab={switchTab}
-              onRefresh={latestQuote.refresh}
-              part="summary"
-            />
+            <DecisionOverview research={r} onTab={switchTab}/>
             <div className="research-layout">
               <div className="research-canvas">
                 <header className="chart-context-heading">
                   <h3>Price & accumulation context</h3>
                   <p>Timing evidence alongside the business case.</p>
                 </header>
-                <div className="overview-dca">
-                  <DcaCard research={r} compact />
-                </div>
                 {chart}
               </div>
               <OverviewContext research={r} />

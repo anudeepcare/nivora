@@ -400,6 +400,7 @@ function Login({ initialError }: { initialError: string }) {
     [busy, setBusy] = useState(false),
     [mode, setMode] = useState<"login" | "signup" | "reset">("login"),
     [notice, setNotice] = useState("");
+  useEffect(()=>{const requested=new URLSearchParams(window.location.search).get('mode');if(requested==='signup')setMode('signup');},[]);
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
@@ -433,7 +434,7 @@ function Login({ initialError }: { initialError: string }) {
     }
   }
   return (
-    <main className="login-page">
+    <main className="login-page refined-auth">
       <section className="login-introduction" aria-label="About AURYN">
         <span className="eyebrow">Decisions you can defend</span>
         <h2>Business first. <br/>Price second. <br/><em>Timing alongside.</em></h2>
@@ -446,6 +447,7 @@ function Login({ initialError }: { initialError: string }) {
         <small>Research to inform your judgment. No promised returns or automatic trade instructions.</small>
       </section>
       <section className="login-card">
+        <a className="auth-back" href="/">← Explore AURYN</a>
         <Logo />
         <span className="eyebrow">YOUR INVESTMENT WORKSPACE</span>
         <h1>

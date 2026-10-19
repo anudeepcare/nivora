@@ -133,7 +133,7 @@ export function researchDecision(
     q = e.prior,
     m = marketMultiples(r, p),
     special = /bank|insurance|reit|real estate investment trust/i.test(
-      [r.company.sector, r.evidence?.profile.industry].join(" "),
+      [r.company.sector, r.evidence?.profile?.industry].join(" "),
     );
   const period = p?.end ?? null;
   const avgAssets =
@@ -495,21 +495,21 @@ export function researchDecision(
         metric(
           "institutions",
           "Reported institutional ownership",
-          r.evidence?.ownership.institutions,
+          r.evidence?.ownership?.institutions,
           "percent",
           "Provider snapshot; reporting dates and coverage vary.",
         ),
         metric(
           "insiders",
           "Reported insider ownership",
-          r.evidence?.ownership.insiders,
+          r.evidence?.ownership?.insiders,
           "percent",
           "Ownership percentage, not transaction activity.",
         ),
         metric(
           "target",
           "Analyst target",
-          r.evidence?.consensus.target,
+          r.evidence?.consensus?.target,
           "money",
           "Published opinion; horizon and dispersion may be unavailable.",
         ),
@@ -595,7 +595,7 @@ export function researchDecision(
   flags.sort((a, b) => Number(b.severe) - Number(a.severe));
   const { studies, technical, bars, volatility, maxDrawdown, range } =
     decisionHistory(r);
-  const next = r.evidence?.earnings
+  const next = (r.evidence?.earnings ?? [])
     .filter((x) => x.date >= r.retrievedAt.slice(0, 10))
     .sort((a, b) => a.date.localeCompare(b.date))[0];
   const fcase = financialCase(p, q);
@@ -652,8 +652,8 @@ export function researchDecision(
     tripwires,
     forCase: fcase.positive.slice(0, 3),
     against: fcase.risks.slice(0, 3),
-    description: r.company.description || r.evidence?.profile.description || "",
-    sector: r.company.sector || r.evidence?.profile.sector || "",
+    description: r.company.description || r.evidence?.profile?.description || "",
+    sector: r.company.sector || r.evidence?.profile?.sector || "",
     nextReport: next?.date ?? null,
     stance: flags.some((x) => x.severe)
       ? "Resolve financing risk first"

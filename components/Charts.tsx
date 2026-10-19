@@ -11,6 +11,7 @@ import {
 } from "lightweight-charts";
 import type { Candle } from "@/lib/types";
 import { useProduct } from "./Session";
+const EMPTY_COLORS: Record<string,string> = {};
 const EMPTY_LEVELS: { label: string; price: number }[] = [];
 export function PriceChart({
   bars,
@@ -18,12 +19,14 @@ export function PriceChart({
   style = "line",
   levels = EMPTY_LEVELS,
   contrast = false,
+  candleColors = EMPTY_COLORS,
 }: {
   bars: Candle[];
   range: string;
   style?: "line" | "candles";
   levels?: { label: string; price: number }[];
   contrast?: boolean;
+  candleColors?: Record<string,string>;
 }) {
   const element = useRef<HTMLDivElement>(null),
     chart = useRef<IChartApi | null>(null),
@@ -114,7 +117,7 @@ export function PriceChart({
       unique.set(
         String(time),
         style === "candles"
-          ? { time, open: b.open, high: b.high, low: b.low, close: b.close }
+          ? { time, open: b.open, high: b.high, low: b.low, close: b.close, ...(candleColors[b.time]?{color:candleColors[b.time],wickColor:candleColors[b.time],borderColor:candleColors[b.time]}:{}) }
           : { time, value: b.close },
       );
     }
@@ -144,7 +147,7 @@ export function PriceChart({
           series.current?.removePriceLine(l);
         } catch {}
     };
-  }, [bars, range, theme, style, levels, contrast]);
+  }, [bars, range, theme, style, levels, contrast, candleColors]);
   return (
     <div className="chart-wrap">
       <div

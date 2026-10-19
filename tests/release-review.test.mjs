@@ -186,6 +186,7 @@ function researchMarkup() {
     "DcaCard",
     "DecisionBrief",
     "DecisionWorkspace",
+    "DecisionOverview",
     "DecisionWatch",
     "PositionAwareResearch",
     "ValuationLab",

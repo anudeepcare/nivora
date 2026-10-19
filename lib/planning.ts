@@ -62,6 +62,8 @@ export function compareDca(
       [adaptive, signal.multiplier],
     ] as const) {
       const before = state.value;
+      const openingValue = state.cash + state.units * entry;
+      if (before > 0) state.nav *= openingValue / before;
       state.cash += 100;
       state.contributed += 100;
       const spend = Math.min(state.cash, 100 * multiplier),
@@ -71,7 +73,7 @@ export function compareDca(
       state.costs += fee;
       state.turnover += spend;
       state.value = state.cash + state.units * close;
-      state.nav *= state.value / (before + 100);
+      state.nav *= state.value / (openingValue + 100);
       state.peak = Math.max(state.peak, state.nav);
       state.drawdown = Math.min(
         state.drawdown,

@@ -536,7 +536,7 @@ test('valuation tool withholds unsupported models rather than fabricating sensit
 test('authentication explains AURYN in sign-in, signup and recovery without fabricating investment results',()=>{
  for(const mode of ['login','signup','reset']){
   let i=0;const values=['','','',false,mode,''];
-  const Login=loadComponent('components/Session.tsx','Login',{React,useState:()=>[values[i++],()=>{}],Logo:()=>React.createElement('span',null,'AURYN')});
+  const Login=loadComponent('components/Session.tsx','Login',{React,useEffect:()=>{},useState:()=>[values[i++],()=>{}],Logo:()=>React.createElement('span',null,'AURYN')});
   const html=renderToStaticMarkup(React.createElement(Login,{initialError:''}));
   assert.match(html,/About AURYN/);assert.match(html,/Business first/);assert.match(html,/Put the price in perspective/);
   assert.doesNotMatch(html,/desktop-nav|mobile-dock|guaranteed returns/);
@@ -605,4 +605,16 @@ test('account equity displays debt separately without representing it as a losin
  });
  const html=renderToStaticMarkup(React.createElement(AccountBalances,{assets:800000,ready:true,missing:1}));
  assert.match(html,/Net equity/);assert.match(html,/683,688/);assert.match(html,/116,312/);assert.match(html,/Managed portfolio not included/);assert.match(html,/Partial equity/);
+});
+
+test('public sample explains fictional data and offers readable business, value and discipline tabs without account APIs',()=>{
+ const PublicSample=loadComponent('components/PublicLanding.tsx','PublicSample',{React,useState:React.useState,Check:empty,Layers3:empty});
+ const html=renderToStaticMarkup(React.createElement(PublicSample));assert.match(html,/not a real investment/);assert.match(html,/role="tablist"/);assert.match(html,/role="tabpanel"/);assert.match(html,/Business/);assert.match(html,/Discipline/);assert.match(html,/Illustrative year-over-year/);assert.doesNotMatch(html,/90%|guaranteed|buy now|api_key/i);
+});
+
+test('monthly chart distinguishes unavailable warm-up data from ordinary 1x conditions',async()=>{
+ const {accumulation}=await import('../lib/engine.ts'),{candidatePolicy,settledPolicyBars}=await import('../lib/accumulation-policy.ts'),{evaluatePolicies}=await import('../lib/policy-evaluation.ts'),{monthlyReadings}=await import('../lib/dca-research.ts');
+ const colours={0:'#d89a20',1:'#7d9db0',2:'#12a28b',3:'#71b337',4:'#ac68e5'};
+ const Desk=loadComponent('components/AccumulationDesk.tsx','AccumulationDesk',{React,useMemo:React.useMemo,useState:React.useState,accumulation,candidatePolicy,settledPolicyBars,evaluatePolicies,monthlyReadings,...format,colours,PriceChart:({candleColors})=>React.createElement('span',{'data-zone-colours':JSON.stringify(candleColors)})});
+ const html=renderToStaticMarkup(React.createElement(Desk,{research:demoData.research.MSFT}));assert.match(html,/No eligible signal/);assert.match(html,/#b0b5bd/);assert.match(html,/Original v1/);assert.match(html,/Candidate v2/);
 });

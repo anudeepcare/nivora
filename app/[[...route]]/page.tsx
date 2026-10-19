@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import Product from "@/components/Product";
+import PublicLanding from "@/components/PublicLanding";
 export const dynamic = "force-dynamic";
 const allowed = new Set([
   "overview",
@@ -20,6 +21,7 @@ const allowed = new Set([
   "methodology",
   "reliability",
   "login",
+  "sample",
 ]);
 export default async function Page({
   params,
@@ -32,6 +34,7 @@ export default async function Page({
     preview = path[0] === "preview",
     route = preview ? path.slice(1) : path;
   if (route[0] && !allowed.has(route[0])) notFound();
+  if (!preview && (!route.length || (route.length === 1 && route[0] === "sample"))) return <PublicLanding sampleOnly={route[0] === "sample"}/>;
   let demo;
   if (preview) {
     const host = (await headers()).get("host") || "";

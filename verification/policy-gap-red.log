@@ -1,0 +1,36 @@
+✔ candidate requires 36 complete consecutive months and is invariant to future prices (72.308573ms)
+✔ candidate rejects missing month ends and keeps forming separate (11.446688ms)
+✔ evaluation uses common months, equal deposits, cash limits and a later untouched holdout (36.187965ms)
+✔ flat history remains finite without manufactured extreme readings (12.756365ms)
+✖ an opening loss is not diluted by a deposit made after the gap (32.591793ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 4
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 391.008159
+
+✖ failing tests:
+
+test at tests/accumulation-policy.test.mjs:8:1
+✖ an opening loss is not diluted by a deposit made after the gap (32.591793ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(Math.abs(e.fixed.drawdown+50)<1e-8)
+  
+      at TestContext.<anonymous> (file:///workspace/auryn-github-main/tests/accumulation-policy.test.mjs:8:345)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

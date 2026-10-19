@@ -1,0 +1,514 @@
+/* Decision depth is layered; these rules do not change PWA viewport geometry. */
+.decision-readout {
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+  min-width: 0;
+}
+.decision-readout > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 18px;
+}
+.decision-readout > header h2 {
+  font-size: clamp(21px, 2.3vw, 29px);
+  line-height: 1.3;
+  letter-spacing: -0.035em;
+  margin: 8px 0 0;
+  font-weight: 550;
+}
+.decision-readout > header > small {
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  max-width: 25ch;
+  text-align: right;
+}
+.decision-readout-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.decision-readout-grid > button {
+  text-align: left;
+  padding: 19px;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--blue);
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--ink);
+  min-width: 0;
+  cursor: pointer;
+}
+.decision-readout-grid [data-lens="business"] {
+  border-top-color: var(--green);
+}
+.decision-readout-grid [data-lens="accumulation"] {
+  border-top-color: #9967d8;
+}
+.decision-readout-grid > button > span {
+  display: block;
+  font-size: 0.73rem;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.decision-readout-grid > button > strong {
+  display: block;
+  font-size: 1.08rem;
+  line-height: 1.4;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+.decision-readout-grid p {
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.75;
+  margin: 10px 0 0;
+}
+.decision-readout-grid small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.69rem;
+  margin-top: 9px;
+  line-height: 1.5;
+}
+.decision-readout-risk {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  flex-wrap: wrap;
+  padding: 13px 16px;
+  margin-top: 14px;
+  border-radius: 11px;
+  background: color-mix(in srgb, #d99b29 8%, var(--surface));
+  font-size: 0.8rem;
+  line-height: 1.6;
+  border-left: 3px solid #c58c25;
+}
+.decision-readout-risk span {
+  color: var(--muted);
+}
+.decision-readout-risk.conflict {
+  border-left-color: var(--red);
+  background: color-mix(in srgb, var(--red) 7%, var(--surface));
+}
+.position-readout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 9px 18px;
+  font-size: 0.77rem;
+  line-height: 1.6;
+  margin-top: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.position-readout > span:nth-child(2) {
+  color: var(--muted);
+}
+.position-readout > a {
+  color: var(--blue);
+  margin-left: auto;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+}
+.decision-evidence {
+  margin-top: 14px;
+  padding-block: 10px;
+}
+.decision-evidence summary {
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: var(--blue);
+  padding: 8px 0;
+}
+.decision-evidence-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-block: 16px;
+}
+.decision-evidence-grid article {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.decision-evidence-grid article > span {
+  font-size: 0.68rem;
+  color: var(--green);
+}
+.decision-evidence-grid article[data-status="missing"] > span {
+  color: var(--muted);
+}
+.decision-evidence-grid article[data-status="conflicting"] > span {
+  color: var(--red);
+}
+.decision-evidence-grid h3 {
+  font-size: 0.83rem;
+  margin: 8px 0;
+}
+.decision-evidence-grid p,
+.decision-evidence > p {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.75;
+}
+.decision-evidence > small {
+  font-size: 0.7rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.accumulation-desk {
+  min-width: 0;
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+}
+.accumulation-desk-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.accumulation-desk-head h2 {
+  font-size: 1.35rem;
+  font-weight: 550;
+  margin: 8px 0 0;
+  letter-spacing: -0.025em;
+}
+.accumulation-desk-head .segments {
+  width: auto;
+}
+.accumulation-desk .segments button {
+  font-size: 0.78rem;
+  min-height: 40px;
+}
+.accumulation-desk .segments [aria-pressed="true"] {
+  background: var(--blue-soft);
+  color: var(--blue);
+}
+.accumulation-summary {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 25px;
+  padding: 22px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+}
+.accumulation-badge {
+  display: inline-flex;
+  padding: 9px 16px;
+  border-radius: 12px;
+  color: #fff;
+  background: #526c7d;
+  font-size: 1.8rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.accumulation-summary h3 {
+  font-size: 1.05rem;
+  font-weight: 550;
+  margin: 13px 0 8px;
+}
+.accumulation-summary p {
+  margin: 0 0 10px;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.accumulation-summary small {
+  font-size: 0.7rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.accumulation-summary dl {
+  margin: 0;
+  display: grid;
+  align-content: center;
+  gap: 15px;
+}
+.accumulation-summary dl > div {
+  display: grid;
+  gap: 5px;
+}
+.accumulation-summary dt {
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+.accumulation-summary dd {
+  margin: 0;
+  font-size: 0.83rem;
+}
+.accumulation-chart {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  padding: 14px 8px;
+  margin-top: 18px;
+  overflow: hidden;
+}
+.accumulation-chart .price-chart {
+  min-height: 280px;
+}
+.accumulation-legend {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding-block: 14px;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.accumulation-legend > span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.accumulation-legend i {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+.accumulation-touches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px 18px;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.accumulation-touches b {
+  color: var(--ink);
+}
+.policy-rules,
+.policy-evaluation details {
+  font-size: 0.8rem;
+  line-height: 1.8;
+  margin-block: 12px;
+  color: var(--muted);
+}
+.policy-rules summary,
+.policy-evaluation summary {
+  color: var(--blue);
+  cursor: pointer;
+  padding-block: 7px;
+}
+.policy-evaluation {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 15px;
+}
+.policy-evaluation > header {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.policy-evaluation h3 {
+  margin: 8px 0;
+  font-size: 1.05rem;
+}
+.policy-evaluation > header label {
+  display: grid;
+  gap: 7px;
+  font-size: 0.73rem;
+  color: var(--muted);
+}
+.policy-evaluation input {
+  width: 90px;
+  padding: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+}
+.policy-evaluation > p {
+  font-size: 0.78rem;
+  line-height: 1.8;
+  color: var(--muted);
+}
+.policy-results {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-block: 17px;
+}
+.policy-results article {
+  padding: 15px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.policy-results article:last-child {
+  border-color: color-mix(in srgb, #9967d8 45%, var(--line));
+}
+.policy-results h4 {
+  margin: 0 0 12px;
+  font-size: 0.8rem;
+}
+.policy-results article > strong {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 550;
+}
+.policy-results article > span {
+  font-size: 0.66rem;
+  color: var(--muted);
+}
+.policy-results dl {
+  display: grid;
+  gap: 9px;
+  margin: 16px 0 0;
+}
+.policy-results dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.69rem;
+}
+.policy-results dt {
+  color: var(--muted);
+}
+.policy-results dd {
+  margin: 0;
+}
+@media (max-width: 740px) {
+  .decision-readout > header {
+    display: block;
+  }
+  .decision-readout > header > small {
+    display: block;
+    max-width: none;
+    text-align: left;
+    margin-top: 10px;
+  }
+  .decision-readout-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .decision-readout-grid > button {
+    padding: 16px;
+  }
+  .decision-readout-grid > button > span {
+    margin-bottom: 7px;
+  }
+  .decision-readout-grid p {
+    margin-top: 6px;
+  }
+  .decision-readout-risk {
+    gap: 4px;
+  }
+  .position-readout {
+    display: grid;
+    gap: 5px;
+  }
+  .position-readout > a {
+    margin: 0;
+  }
+  .decision-evidence-grid {
+    grid-template-columns: 1fr;
+  }
+  .accumulation-desk-head {
+    display: block;
+  }
+  .accumulation-desk-head .segments {
+    margin-top: 14px;
+    display: inline-flex;
+  }
+  .accumulation-summary {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding: 18px;
+  }
+  .accumulation-summary dl {
+    border-top: 1px solid var(--line);
+    padding-top: 14px;
+    gap: 12px;
+  }
+  .accumulation-summary dl > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+  }
+  .accumulation-summary dd {
+    text-align: right;
+    font-size: 0.75rem;
+  }
+  .policy-results {
+    grid-template-columns: 1fr;
+  }
+  .policy-results dl {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .policy-results article > strong {
+    font-size: 1.6rem;
+  }
+  .policy-evaluation {
+    padding: 16px;
+  }
+  .accumulation-chart {
+    padding-inline: 0;
+  }
+}
+
+.decision-number-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 22px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.decision-number-line > span {
+  font-size: 0.67rem;
+  color: var(--muted);
+}
+.decision-number-line b {
+  display: block;
+  color: var(--blue);
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-top: 5px;
+}
+.candidate-levels {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 15px 0;
+}
+.candidate-levels > div {
+  display: grid;
+  gap: 6px;
+  border-bottom: 2px solid var(--line);
+  padding: 8px 0;
+}
+.candidate-levels span {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+.candidate-levels strong {
+  color: var(--ink);
+  font-size: 1.1rem;
+  font-weight: 550;
+}
+.accumulation-chart .price-chart {
+  height: 300px;
+}
+@media (max-width: 740px) {
+  .accumulation-chart .price-chart {
+    height: 260px;
+    min-height: 260px;
+  }
+  .candidate-levels strong {
+    font-size: 0.94rem;
+  }
+  .candidate-levels {
+    gap: 8px;
+  }
+}
