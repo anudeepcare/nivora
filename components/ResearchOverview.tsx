@@ -20,6 +20,7 @@ export function ResearchOutlook({
   const outlook = useMemo(() => researchOutlook(r), [r]);
   const consensus = useMemo(() => consensusOutlook(r), [r]);
   const target = consensus?.target;
+  const supported = outlook.available && outlook.basis === "earnings";
   if (detailed) {
     const multiple = (v: number | null | undefined) =>
       v == null ? "—" : v <= 0 ? "N/M" : `${v.toFixed(1)}×`;
@@ -58,8 +59,8 @@ export function ResearchOutlook({
       <div className="row between">
         <h2>Valuation snapshot</h2>
       </div>
-      {consensus && <AnalystTargets research={r} />}
-      <div className="valuation-summary" hidden={!!consensus}>
+      {consensus && !supported && <AnalystTargets research={r} />}
+      <div className="valuation-summary" hidden={!!consensus || supported}>
         <div>
           <span>Current price</span>
           <strong className="num">
@@ -81,15 +82,15 @@ export function ResearchOutlook({
           </strong>
         </div>
       </div>
-      <p className="valuation-summary-note">
+      <p className="valuation-summary-note" hidden={supported}>
         {consensus
           ? `Dataset updated ${dateLabel(consensus.asOf)}. Analyst opinion, not intrinsic fair value. A target horizon is not supplied.`
           : "No current comparable analyst target is available. Fair value is not established."}
       </p>
       {outlook.available ? (
-        <details className="forecast-sensitivity">
+        <details className="forecast-sensitivity" open={supported}>
           <summary>
-            Exploratory forecast-multiple sensitivity · not fair value
+            {supported ? "Bear, base & bull · earnings scenarios" : "Exploratory forecast-multiple sensitivity · not fair value"}
           </summary>
           <p className="sensitivity-warning">
             Not intrinsic fair value. These mechanical cases use assumed
@@ -104,6 +105,7 @@ export function ResearchOutlook({
             cases={outlook.cases}
             price={r.quote.price}
             currency={outlook.currency}
+            referenceLabel={r.quote.stale ? "Older quote" : "Current"}
           />
           {outlook.basis === "revenue" && (
             <p className="context-note">

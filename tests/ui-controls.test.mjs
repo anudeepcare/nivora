@@ -313,11 +313,11 @@ test("valuation snapshot separates analyst targets from opt-in exploratory sensi
   assert.match(html, /Analyst consensus/);
   assert.match(html, /Gap to consensus/);
   assert.match(html, /Not intrinsic fair value/);
-  assert.match(html, /<details class="forecast-sensitivity">/);
-  assert.doesNotMatch(html, /<details class="forecast-sensitivity" open/);
-  assert.match(html, /Exploratory forecast-multiple sensitivity/);
+  assert.match(html, /<details class="forecast-sensitivity" open="">/);
+  assert.match(html, /<details class="forecast-sensitivity" open/);
+  assert.match(html, /Bear, base &amp; bull|Exploratory forecast-multiple sensitivity/);
   const primary = html.split(
-    '<details class="forecast-sensitivity">',
+    '<details class="forecast-sensitivity" open="">',
   )[0];
   assert.doesNotMatch(primary, /\$160\.00|\$240\.00/);
   assert.match(primary, /\$150\.00/);
@@ -636,7 +636,7 @@ test('visual overview keeps the chart, scenarios, catalyst and risk visible with
  const html=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT,onTab:()=>{},chart:React.createElement('div',{'data-chart':'visible'})}));
  assert.doesNotMatch(html,/Completed-price studies/);
  const pro=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT,onTab:()=>{},pro:true}));assert.match(pro,/Completed-price studies/);
- assert.doesNotMatch(html,/data-scenarios="visible"/);assert.match(html,/Analyst expectations|Fair value not established/);
+ if(b.scenarioEligible)assert.match(html,/data-scenarios="visible"/);else assert.doesNotMatch(html,/data-scenarios="visible"/);assert.match(html,/Bear, base &amp; bull|Analyst expectations|Fair value not established/);
  assert.match(html,/data-chart="visible"/);assert.match(html,/Accumulation/);assert.match(html,/Next report/);assert.match(html,/Main risk/);
  assert.doesNotMatch(html,/Why this assessment|available metrics|decision-evidence-grid|research-brief-v2|T\d{2}:\d{2}:\d{2}/);
 });
@@ -652,5 +652,5 @@ test('analyst fallback presents actual consensus without invented low/high targe
  assert.match(older,/\$77\.81/);assert.match(older,/Versus older quote/);
  r.quote.price=null;const missing=renderToStaticMarkup(React.createElement(View,{research:r}));
  assert.match(missing,/\$77\.81/);assert.match(missing,/Price comparison unavailable/);
- assert.match(html,/\$77\.81/);assert.match(html,/ANALYST PRICE TARGETS/);assert.match(html,/low\/high range not supplied/);assert.doesNotMatch(html,/\$37\.00|\$139\.00|Bear|Bull/);
+ assert.match(html,/\$77\.81/);assert.match(html,/Wall Street consensus/);assert.match(html,/low\/high range not supplied/);assert.doesNotMatch(html,/\$37\.00|\$139\.00|Bear|Bull/);
 });

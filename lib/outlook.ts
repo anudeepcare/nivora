@@ -30,9 +30,7 @@ export type Outlook =
       caveat?: string;
     };
 
-export function consensusOutlook(
-  r: Research,
-): {
+export function consensusOutlook(r: Research): {
   target: number;
   asOf: string;
   change: number | null;
@@ -127,10 +125,22 @@ export function researchOutlook(r: Research): Outlook {
       "The earnings forecast needs a current observation date.",
     );
   const price = r.quote.price;
-  if (r.quote.stale || price == null || !Number.isFinite(price) || price <= 0)
+  if (price == null || !Number.isFinite(price) || price <= 0)
     return unavailable(
       "A current price is needed to compare forecast outcomes.",
     );
+  if (r.quote.stale) {
+    const observed = Date.parse(r.quote.asOf ?? "");
+    const comparisonTime = Date.parse(r.priceObservedAt ?? r.retrievedAt);
+    if (
+      !Number.isFinite(observed) ||
+      observed > comparisonTime + 60000 ||
+      comparisonTime - observed > 4 * 86400000
+    )
+      return unavailable(
+        "A dated recent reference price is needed for forecast comparisons.",
+      );
+  }
   const validFiscal = (
     x: NonNullable<Research["evidence"]>["estimates"][number],
   ) => {
@@ -169,6 +179,10 @@ export function researchOutlook(r: Research): Outlook {
     r.company.foreignListing ||
     !hasEarnings
   ) {
+    if (r.quote.stale)
+      return unavailable(
+        "A current quote is needed for a price-anchored revenue sensitivity; analyst targets remain separate.",
+      );
     const shares = e.ownership?.outstanding;
     let multiple = e.multiples?.EnterpriseValueRevenue;
     const balances = r.facts

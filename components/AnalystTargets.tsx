@@ -14,7 +14,7 @@ export default function AnalystTargets({
       className="analyst-target-fallback"
       aria-label="Analyst price targets"
     >
-      <span className="eyebrow">ANALYST PRICE TARGETS</span>
+      <span className="analyst-target-kicker">Wall Street consensus</span>
       <div className="analyst-target-main">
         <div>
           <span>Consensus</span>
@@ -30,14 +30,18 @@ export default function AnalystTargets({
           </span>
           <strong
             className={
-              c.change != null && c.change < 0 ? "negative" : "positive"
+              c.change == null
+                ? "muted"
+                : c.change < 0
+                  ? "negative"
+                  : "positive"
             }
           >
             {percent(c.change, true)}
           </strong>
         </div>
       </div>
-      <p>
+      <p className="analyst-target-quote">
         {c.referenceStatus === "older"
           ? "Older quote"
           : c.referenceStatus === "unavailable"
@@ -46,11 +50,16 @@ export default function AnalystTargets({
         {amount(r.quote.price, r.quote.currency)} · observed{" "}
         {dateLabel(r.quote.asOf)}
       </p>
-      <small>
-        Target dataset updated {dateLabel(c.asOf)}. Target horizon and low/high
-        range not supplied. Analyst opinion—not AURYN fair value or a guaranteed
-        return.
-      </small>
+      <div className="analyst-target-note">
+        <small>Analyst opinion · not AURYN fair value</small>
+        <details>
+          <summary>Coverage & dates</summary>
+          <p>
+            Target dataset updated {dateLabel(c.asOf)}. Target horizon and
+            low/high range not supplied. This is not a guaranteed return.
+          </p>
+        </details>
+      </div>
     </section>
   );
 }

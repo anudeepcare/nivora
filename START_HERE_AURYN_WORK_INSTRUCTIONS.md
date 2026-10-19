@@ -1,3 +1,7 @@
+# Current scenario selection
+
+Read `docs/SCENARIO_PRIORITY.md`: eligible earnings Bear/Base/Bull cases take priority over analyst consensus; revenue-only sensitivities do not become headline valuations. This supersedes the earlier blanket suppression instruction below.
+
 # Current valuation correction
 
 Read `docs/FUNDED_SCENARIOS.md` first for this release. Forecast-multiple outputs are exploratory only; do not restore them as headline fair values. The new funded workbench requires explicit personal assumptions and is not automatic company-specific research.

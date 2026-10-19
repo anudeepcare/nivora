@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-19T20:22:07.908629+00:00",
+  "generatedAt": "2026-10-19T20:30:45.985154+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
@@ -7,10 +7,10 @@
     "npm run verify": "passed: tests, TypeScript and production build",
     "npm run test:api": "passed: 40 baseline + 16 research regression + 22 provider + 5 shared protection checks",
     "git diff --check": "passed",
-    "npm test": "passed: 358 tests",
+    "npm test": "passed: 360 tests",
     "npm run build": "passed after final scoped stylesheet cleanup"
   },
-  "domainPostgresAndComponentTests": 358,
+  "domainPostgresAndComponentTests": 360,
   "builtApiChecks": 83,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -458,5 +458,19 @@
     "limits": "No missing analyst targets or ranges invented; production deployment not yet checked",
     "verification": "358 tests; TypeScript and production build; 83 API checks; diff whitespace check",
     "physicalIphoneTested": false
+  },
+  "analystCardPolish": {
+    "scope": "AnalystTargets typography, spacing and scoped CSS only",
+    "behaviour": "Target values and freshness eligibility unchanged",
+    "verification": "358 tests; production build; 83 API checks",
+    "visualDeviceAcceptance": "Not executed"
+  },
+  "scenarioPriorityCorrection": {
+    "cause": "Global scenarioEligible:false wrongly suppressed supported earnings cases",
+    "selection": "Eligible earnings cases first; analyst opinion only as fallback; no inflated revenue headline",
+    "quoteStates": "Recent dated older reference retains earnings case amounts; labelled Older quote",
+    "verification": "360 tests, TypeScript, production build, 83 API checks",
+    "competitorReview": "Read-only APP/NOW/MSFT/META DCF and EPS displays inspected; not copied or treated as numerical ground truth",
+    "deployed": false
   }
 }

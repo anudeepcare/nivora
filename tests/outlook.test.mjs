@@ -76,13 +76,12 @@ test("a missing EPS range cannot become fabricated bear and bull targets", () =>
   assert.equal(r.available, false);
   assert.match(r.reason, /range/i);
 });
-test("crypto, foreign listings, stale quotes and mismatched currency withhold corporate targets", () => {
+test("crypto, unreconciled foreign listings and mismatched currency withhold corporate targets", () => {
   const { researchOutlook } = load();
   assert.equal(typeof researchOutlook, "function");
   for (const change of [
     (r) => (r.company.assetType = "crypto"),
     (r) => (r.company.foreignListing = true),
-    (r) => (r.quote.stale = true),
     (r) => (r.evidence.estimates[0].currency = "EUR"),
   ]) {
     const input = research();
@@ -171,4 +170,22 @@ test('quote freshness transitions do not remove a dated analyst target',()=>{
  assert.equal(older.target,live.target);assert.equal(older.referenceStatus,'older');assert.equal(older.change,50);
  r.quote.price=null;const missing=consensusOutlook(r);assert.equal(missing.target,150);assert.equal(missing.change,null);assert.equal(missing.referenceStatus,'unavailable');
  r.quote.price=100;r.quote.asOf='2026-01-01';assert.equal(consensusOutlook(r).change,null);
+});
+
+test('eligible earnings scenarios keep their targets when a recent settled quote becomes older',()=>{
+ const r=research();const {researchOutlook}=load();const fresh=researchOutlook(r);assert.equal(fresh.available,true);
+ r.quote.stale=true;const older=researchOutlook(r);assert.equal(older.available,true);assert.deepEqual(older.cases,fresh.cases);
+ r.quote.asOf='2026-01-01';assert.equal(researchOutlook(r).available,false);
+});
+
+test('headline policy prefers eligible earnings cases and uses analyst fallback for revenue-only cases',async()=>{
+ const {researchBrief}=await import('../lib/research-brief.ts');
+ const r=JSON.parse(fs.readFileSync('tests/fixtures/iren-observed-20261019.json','utf8'));
+ r.company.symbol='QATEST';r.company.sector='Technology';r.evidence.profile.sector='Technology';r.evidence.profile.industry='Software - Application';
+ r.evidence.multiples.ForwardPE=20;
+ r.evidence.estimates=[{date:'2028-06-30',period:'FY2028',frequency:'Annual',currency:'USD',epsLow:5,eps:6,epsHigh:7,analysts:10,revenueLow:1e9,revenue:2e9,revenueHigh:3e9}];
+ assert.equal(researchBrief(r).scenarioEligible,true);
+ r.quote.stale=true;assert.equal(researchBrief(r).scenarioEligible,true);
+ r.quote.stale=false;r.evidence.estimates[0].epsLow=-1;
+ const unsupported=researchBrief(r);assert.equal(unsupported.scenarioEligible,false);assert.equal(unsupported.consensus.target,77.8056);
 });

@@ -91,7 +91,8 @@ export function researchBrief(r: Research) {
           ? (latest.operatingIncome / latest.revenue) * 100
           : null,
     },
-    scenarioEligible: false, // Forecast-multiple outputs are exploratory, never headline fair value.
+    scenarioEligible:
+      !mismatch && outlook.available && outlook.basis === "earnings", // Only supported earnings cases precede analyst fallback; not intrinsic value.
     scenario:
       !mismatch && outlook.available
         ? {
@@ -100,6 +101,7 @@ export function researchBrief(r: Research) {
             base: outlook.cases[1].target,
             high: outlook.cases[2].target,
             asOf: outlook.asOf,
+            end: outlook.end,
             calculatedMultiple: !!outlook.caveat?.startsWith(
               "Calculated EV/revenue",
             ),

@@ -175,7 +175,11 @@ export default function DecisionOverview({
           <section className="overview-visual-value">
             <header>
               <h3>
-                {b.consensus ? "Analyst expectations" : "Valuation context"}
+                {b.scenario && b.scenarioEligible
+                  ? "Bear, base & bull"
+                  : b.consensus
+                    ? "Analyst expectations"
+                    : "Valuation context"}
               </h3>
               <button
                 className="text-button"
@@ -190,11 +194,12 @@ export default function DecisionOverview({
                   cases={cases}
                   price={r.quote.price}
                   currency={b.scenario.currency}
+                  referenceLabel={r.quote.stale ? "Older quote" : "Current"}
                 />
                 <small>
                   {b.scenario.calculatedMultiple
                     ? "Price-anchored sensitivity · calculated multiple · not fair value"
-                    : "Conditional model · assumptions in Value"}
+                    : `Earnings scenarios · ends ${dateLabel(b.scenario.end)} · not intrinsic value`}
                 </small>
               </>
             ) : b.consensus ? (

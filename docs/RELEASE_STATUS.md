@@ -1,3 +1,11 @@
+# Restore scenario priority — current
+
+Replaces the mistaken global suppression of headline scenarios with model-specific selection: eligible earnings cases first, analyst consensus only as fallback. Recent older quotes retain earnings cases with an explicit label. The inflated revenue model is not restored. Includes analyst card polish. See `SCENARIO_PRIORITY.md`.
+
+# Analyst card presentation polish — current
+
+Scoped analyst card only: subtle metric surfaces, aligned target/gap values, compact dated quote row, shorter opinion note, and optional coverage disclosure. Target eligibility, numbers, provider calls and quote-state behaviour are unchanged. PWA shell geometry was not edited. Visual acceptance on a physical device remains unverified.
+
 # Analyst target freshness correction — current
 
 Quote freshness no longer controls whether a dated analyst target exists. Targets remain visible through older/missing quote states; comparison percentages are independently validated and labelled. Regression covers quote-state transitions and rendered fallback.
