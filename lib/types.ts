@@ -131,6 +131,8 @@ export type Research = {
   facts: Fact[];
   filings: Filing[];
   retrievedAt: string;
+  /** Clock used to validate the current quote, independent of statement retrieval. */
+  priceObservedAt?: string;
   issues: string[];
   evidence?: import("./eodhd-normalize").EodEvidence;
   snapshot?: import("./canonical").Canonical;

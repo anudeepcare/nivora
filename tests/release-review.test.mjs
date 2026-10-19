@@ -121,6 +121,8 @@ function researchMarkup() {
     useLayoutEffect: () => {},
     useEffect: () => {},
     useLivePrices: () => ({ticks:{},connected:false}),
+    useResearchPreferences:()=>({preferences:{detail:"essential"}}),
+    ResearchModeSwitch:()=>null,
     mergePriceTick: (base) => base,
     quoteHealth: (base) => base,
     useProduct: () => ({ workspace: { watchlist: [] }, mutate: empty }),

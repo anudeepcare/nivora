@@ -1,3 +1,5 @@
+> Latest refinement: `PRODUCT_REFINEMENT.md` documents the price-clock fix, exposure-ranked Home, partial returns, compact layouts and Simple/Pro depth. Current logs: `verification/product-refinement-verify.log` and `verification/product-refinement-api.log`.
+
 # Current release — connected research, 19 October 2026
 
 Read **CONNECTED_PRODUCT.md** for the fifteen approved product points, their primary locations and their limits. This is the current scope; earlier dated reports in verification/ describe historical builds.
@@ -16,7 +18,7 @@ Read **CONNECTED_PRODUCT.md** for the fifteen approved product points, their pri
 
 ## Verification
 
-`npm run verify`: 256 tests, generated route types, TypeScript and production build passed. Built API fixture results are recorded in verification/connected-product-api.log and REPORT.json. No paid API/model calls, broker orders or live database writes were made for this release.
+`npm run verify`: 260 tests, generated route types, TypeScript and production build passed. Built API fixture results are recorded in verification/connected-product-api.log and REPORT.json. No paid API/model calls, broker orders or live database writes were made for this release.
 
 ## Activation and remaining acceptance
 

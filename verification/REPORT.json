@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-10-19T14:32:52.875842+00:00",
+  "generatedAt": "2026-10-19T14:58:02.702284+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 256 tests, TypeScript, production build",
+    "npm run verify": "passed: 260 tests, TypeScript, production build",
     "npm run test:api": "passed: 34 baseline + 16 research regression + 22 provider + 5 shared protection checks",
     "git diff --check": "passed",
-    "npm test": "passed: 256 tests"
+    "npm test": "passed: 260 tests"
   },
-  "domainPostgresAndComponentTests": 256,
+  "domainPostgresAndComponentTests": 260,
   "builtApiChecks": 77,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -35,12 +35,12 @@
   "priorEvidence": "The signed-in reference/deployed UI reviews predate this patch. New verification is source, domain/SSR, TypeScript and build evidence only.",
   "browserTestScope": "No rendered browser test of this build; older live audits are historical evidence only",
   "patchedSourceBrowserTestsExecuted": false,
-  "latestAudit": "../docs/CONNECTED_PRODUCT.md",
+  "latestAudit": "../docs/PRODUCT_REFINEMENT.md",
   "referenceReview": "REFERENCE_REVIEW_20261017.md",
   "decisionPolicy": "research-v1.6 / decision-guide-v1.1; original unvalidated research triage; no broker execution",
   "latestLogs": [
-    "connected-product-verify.log",
-    "connected-product-api.log"
+    "product-refinement-verify.log",
+    "product-refinement-api.log"
   ],
   "cohortQuoteObservations": "cohort-quotes-20261017.json; 11 instruments; quote identity only, not fundamental/model validation",
   "exactVisualParityVerified": false,
@@ -257,5 +257,17 @@
     "liveMigrationApplied": false,
     "liveProviderQuotaVerified": false,
     "globalStreamFanoutImplemented": false
+  },
+  "productRefinement": {
+    "scope": "docs/PRODUCT_REFINEMENT.md",
+    "quoteClockRegression": "fresh quote observed after older research snapshot; expired and future quote rejection",
+    "partialReturns": "priced USD investment subset with explicit coverage; complete account return remains guarded",
+    "home": "events and headlines ordered by actual priced exposure",
+    "portfolio": "top-three, earnings, crypto, thesis count and watch labels",
+    "modes": "saved Simple/Pro control; workbench depth only",
+    "css": "scoped responsive styling; PWA shell unchanged",
+    "browserAcceptance": false,
+    "physicalIphoneAcceptance": false,
+    "testsAdded": 4
   }
 }

@@ -75,10 +75,10 @@ export default function ResearchNotes({ research: r }: { research: Research }) {
     }
   }
   return (
-    <section className="support">
+    <section className={`support decision-record ${!form.thesis&&!editing?"record-empty":""}`}>
       <header className="section-heading">
         <div>
-          <h2>Your decision record</h2>
+          <h2>Keep your reasoning</h2>
           <p>Your reasoning, counter-case and review conditions. Private and separate from company evidence.</p>
         </div>
         <div className="note-actions">

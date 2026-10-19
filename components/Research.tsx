@@ -1,11 +1,15 @@
 "use client";
+import {
+  ResearchModeSwitch,
+  useResearchPreferences,
+} from "./ResearchPreferences";
 import dynamic from "next/dynamic";
 import useLivePrices from "./useLivePrices";
-import {quoteHealth} from "@/lib/quote-health";
-import {mergePriceTick} from "@/lib/live-price";
-const AdvancedResearch=dynamic(()=>import("./AdvancedResearch"));
+import { quoteHealth } from "@/lib/quote-health";
+import { mergePriceTick } from "@/lib/live-price";
+const AdvancedResearch = dynamic(() => import("./AdvancedResearch"));
 
-const ResearchNotes=dynamic(()=>import("./ResearchNotes"));
+const ResearchNotes = dynamic(() => import("./ResearchNotes"));
 import FinancingContext from "./FinancingContext";
 import EarningsPrep from "./EarningsPrep";
 import BusinessMap from "./BusinessMap";
@@ -55,6 +59,7 @@ const tabs = [
 ] as const;
 const ranges = ["1D", "1W", "1M", "6M", "1Y", "5Y"] as const;
 export default function Research({ symbol }: { symbol: string }) {
+  const { preferences } = useResearchPreferences();
   const requestedTab = useSearchParams().get("tab");
   const { demo, workspace, mutate } = useProduct();
   const resource = useResource<ResearchData>(
@@ -63,16 +68,71 @@ export default function Research({ symbol }: { symbol: string }) {
       300000,
     ),
     baseResearch = resource.data;
-  const latestQuote = useResource<Record<string,{company:Company;quote:Quote}>>(`quotes?symbols=${encodeURIComponent(symbol)}`, demo ? {[symbol]:{company:demo.research[symbol]?.company,quote:demo.research[symbol]?.quote}} as Record<string,{company:Company;quote:Quote}> : undefined,60000);
-  const liveHealthy=useRef(false);
-  const refreshQuote=useRef(latestQuote.refresh);refreshQuote.current=latestQuote.refresh;
-  useEffect(()=>{if(demo)return;const tick=()=>{if(document.visibilityState==='visible'&&!liveHealthy.current)refreshQuote.current();};const timer=setInterval(tick,60000);document.addEventListener('visibilitychange',tick);return()=>{clearInterval(timer);document.removeEventListener('visibilitychange',tick);};},[symbol,demo]);
-  const live=useLivePrices([symbol],!!demo);
-  liveHealthy.current=live.connected&&!!live.ticks[symbol]&&Date.now()-Date.parse(live.ticks[symbol].asOf)<30000;
-  const observedRest=latestQuote.data?.[symbol]?.quote??baseResearch?.quote;
-  const restQuote=quoteHealth(latestQuote.error&&observedRest?{...observedRest,stale:true}:observedRest);
-  const currentQuote=live.ticks[symbol]?mergePriceTick(restQuote,{...live.ticks[symbol],session:live.connected?live.ticks[symbol].session:"Last streamed trade · reconnecting"}):restQuote;
-  const r=useMemo(()=>baseResearch&&currentQuote&&Date.parse(currentQuote.asOf||'')>=Date.parse(baseResearch.quote.asOf||'')?{...baseResearch,quote:currentQuote}:baseResearch,[baseResearch,currentQuote]);
+  const latestQuote = useResource<
+    Record<string, { company: Company; quote: Quote }>
+  >(
+    `quotes?symbols=${encodeURIComponent(symbol)}`,
+    demo
+      ? ({
+          [symbol]: {
+            company: demo.research[symbol]?.company,
+            quote: demo.research[symbol]?.quote,
+          },
+        } as Record<string, { company: Company; quote: Quote }>)
+      : undefined,
+    60000,
+  );
+  const liveHealthy = useRef(false);
+  const refreshQuote = useRef(latestQuote.refresh);
+  refreshQuote.current = latestQuote.refresh;
+  useEffect(() => {
+    if (demo) return;
+    const tick = () => {
+      if (document.visibilityState === "visible" && !liveHealthy.current)
+        refreshQuote.current();
+    };
+    const timer = setInterval(tick, 60000);
+    document.addEventListener("visibilitychange", tick);
+    return () => {
+      clearInterval(timer);
+      document.removeEventListener("visibilitychange", tick);
+    };
+  }, [symbol, demo]);
+  const live = useLivePrices([symbol], !!demo);
+  liveHealthy.current =
+    live.connected &&
+    !!live.ticks[symbol] &&
+    Date.now() - Date.parse(live.ticks[symbol].asOf) < 30000;
+  const observedRest = latestQuote.data?.[symbol]?.quote ?? baseResearch?.quote;
+  const restQuote = quoteHealth(
+    latestQuote.error && observedRest
+      ? { ...observedRest, stale: true }
+      : observedRest,
+  );
+  const currentQuote = live.ticks[symbol]
+    ? mergePriceTick(restQuote, {
+        ...live.ticks[symbol],
+        session: live.connected
+          ? live.ticks[symbol].session
+          : "Last streamed trade · reconnecting",
+      })
+    : restQuote;
+  const r = useMemo(
+    () =>
+      baseResearch &&
+      currentQuote &&
+      Date.parse(currentQuote.asOf || "") >=
+        Date.parse(baseResearch.quote.asOf || "")
+        ? {
+            ...baseResearch,
+            quote: currentQuote,
+            priceObservedAt: demo
+              ? baseResearch.retrievedAt
+              : new Date().toISOString(),
+          }
+        : baseResearch,
+    [baseResearch, currentQuote],
+  );
   const [tab, setTab] = useState<(typeof tabs)[number]>(
       () => tabs.find((t) => t === requestedTab) ?? "Snapshot",
     ),
@@ -258,7 +318,7 @@ export default function Research({ symbol }: { symbol: string }) {
     </section>
   );
   return (
-    <article className="research-page">
+    <article className="research-page" data-research-mode={preferences.detail}>
       <header className="page-head security-head">
         <div className="identity">
           <SecurityLogo symbol={symbol} size={52} />
@@ -303,6 +363,9 @@ export default function Research({ symbol }: { symbol: string }) {
         </div>
       </header>
 
+      <div className="research-view-control">
+        <ResearchModeSwitch />
+      </div>
       <nav
         className="local-tabs"
         role="tablist"
@@ -378,15 +441,31 @@ export default function Research({ symbol }: { symbol: string }) {
         aria-labelledby={`tab-${tab}`}
         className="au-stack"
       >
-        {tab === "News" && <><EarningsPrep research={r} /><EarningsWorkspace research={r} /><CompanyUpdates research={r} /></>}
-        {tab === "Advanced" && <AdvancedResearch key={r.company.symbol} research={r}/>}
+        {tab === "News" && (
+          <>
+            <EarningsPrep research={r} />
+            <EarningsWorkspace research={r} />
+            <CompanyUpdates research={r} />
+          </>
+        )}
+        {tab === "Advanced" && (
+          <AdvancedResearch key={r.company.symbol} research={r} />
+        )}
         {tab === "Analysts" && <AnalystRatings research={r} />}
         {tab === "Snapshot" && (
           <>
-            <DecisionWorkspace research={r} onTab={switchTab} part="summary" />
+            <DecisionWorkspace
+              research={r}
+              onTab={switchTab}
+              onRefresh={latestQuote.refresh}
+              part="summary"
+            />
             <div className="research-layout">
               <div className="research-canvas">
-                <header className="chart-context-heading"><h3>Price & accumulation context</h3><p>Timing evidence alongside the business case.</p></header>
+                <header className="chart-context-heading">
+                  <h3>Price & accumulation context</h3>
+                  <p>Timing evidence alongside the business case.</p>
+                </header>
                 <div className="overview-dca">
                   <DcaCard research={r} compact />
                 </div>
@@ -409,7 +488,13 @@ export default function Research({ symbol }: { symbol: string }) {
         {tab === "Valuation" && (
           <>
             <ResearchOutlook research={r} detailed />
-            <ValuationLab research={r} />
+            <details
+              className="valuation-workbench"
+              open={preferences.detail === "advanced"}
+            >
+              <summary>Test your valuation assumptions</summary>
+              <ValuationLab research={r} />
+            </details>
           </>
         )}
         {tab === "Technicals" && (
@@ -437,14 +522,19 @@ export default function Research({ symbol }: { symbol: string }) {
             </header>
             {chart}
             <TimingContext research={r} />
-            <TechnicalPicture
-              research={r}
-              dca={null}
-            />
+            <TechnicalPicture research={r} dca={null} />
           </>
         )}
         {tab === "Technicals" && <DcaResearch research={r} />}
-        {tab === "Thesis" && <><ThesisPicture research={r}/><details className="research-optional"><summary>My decision record & review</summary><ResearchNotes research={r}/></details></>}
+        {tab === "Thesis" && (
+          <>
+            <ThesisPicture research={r} />
+            <details className="research-optional">
+              <summary>My decision record & review</summary>
+              <ResearchNotes research={r} />
+            </details>
+          </>
+        )}
       </div>
     </article>
   );
@@ -505,7 +595,16 @@ export function DcaCard({
             {signal ? `${signal.multiplier}×` : "—"}
           </div>
         </div>
-        <p className="small muted pace-summary">{signal ? `Last completed month: ${signal.multiplier === 0 ? 'pause new contributions under this price policy; this is not a sell signal' : `${signal.multiplier}× your usual contribution under this price policy`}.` : 'A confirmed contribution zone needs more completed monthly history.'} {p.dca.forming ? `Current month: ${p.dca.forming.multiplier}×, provisional until month-end.` : ''} This measures price conditions, not buying activity or business quality.</p>
+        <p className="small muted pace-summary">
+          {signal
+            ? `Last completed month: ${signal.multiplier === 0 ? "pause new contributions under this price policy; this is not a sell signal" : `${signal.multiplier}× your usual contribution under this price policy`}.`
+            : "A confirmed contribution zone needs more completed monthly history."}{" "}
+          {p.dca.forming
+            ? `Current month: ${p.dca.forming.multiplier}×, provisional until month-end.`
+            : ""}{" "}
+          This measures price conditions, not buying activity or business
+          quality.
+        </p>
         <div className="pace-line" aria-label="Contribution multiplier scale">
           {[0, 1, 2, 3, 4].map((n) => (
             <div

@@ -1,3 +1,4 @@
+import { quoteHealth } from "./quote-health.ts";
 import { perspective, latestFinancialEvidence } from "./analysis.ts";
 import { modelCoverage } from "./research-depth.ts";
 import type { Research } from "./types";
@@ -18,14 +19,15 @@ export function decisionGuide(r: Research, p = perspective(r)) {
     sector: r.evidence?.profile?.sector || r.company.sector,
     industry: r.evidence?.profile?.industry,
   });
-  const now = Date.parse(r.retrievedAt),
+  const now = Date.parse(r.priceObservedAt ?? r.retrievedAt),
     quoteAt = Date.parse(r.quote.asOf ?? "");
   const validQuote =
     Number.isFinite(r.quote.price) &&
     r.quote.price! > 0 &&
-    !r.quote.stale &&
+    Number.isFinite(now) &&
+    !quoteHealth(r.quote, now)?.stale &&
     Number.isFinite(quoteAt) &&
-    quoteAt <= now &&
+    quoteAt <= now + 60000 &&
     now - quoteAt <= 4 * 86400000;
   const lastCloseAt = Date.parse(p.tech.last ?? "");
   const currentHistory =

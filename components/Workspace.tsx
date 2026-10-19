@@ -1,12 +1,16 @@
 "use client";
 
 import dynamic from "next/dynamic";
-const Discover=dynamic(()=>import("./Discover"));
+const Discover = dynamic(() => import("./Discover"));
 import PortfolioExposure from "./PortfolioExposure";
+import { pricedInvestmentReturns } from "@/lib/product-attention";
+import PortfolioRiskSummary, {
+  usePortfolioCalendar,
+} from "./PortfolioRiskSummary";
 import SessionBrief from "./SessionBrief";
 import useLivePrices from "./useLivePrices";
-import {quoteHealth} from "@/lib/quote-health";
-import {mergePriceTick} from "@/lib/live-price";
+import { quoteHealth } from "@/lib/quote-health";
+import { mergePriceTick } from "@/lib/live-price";
 
 import Link from "next/link";
 import { useMemo, useRef, useState, useEffect, useCallback } from "react";
@@ -68,7 +72,7 @@ export function useWorkspaceQuotes(
       !!demo || cache.has("workspace-quotes:" + key) || !groups.length,
     ),
     [error, setError] = useState("");
-  const liveFresh=useRef(new Set<string>());
+  const liveFresh = useRef(new Set<string>());
   const refresh = useCallback(() => setRevision((x) => x + 1), []);
   // Discovering a hybrid/Twelve connection must not abort and restart a quote
   // batch that already began while provider metadata was loading.
@@ -122,8 +126,9 @@ export function useWorkspaceQuotes(
         if (!active) break;
         const missing = group.filter(
           (s) =>
-            !liveFresh.current.has(s)&&(!cache.get("quote:" + s) ||
-            Date.now() - cache.get("quote:" + s)!.at > 60000),
+            !liveFresh.current.has(s) &&
+            (!cache.get("quote:" + s) ||
+              Date.now() - cache.get("quote:" + s)!.at > 60000),
         );
         if (!missing.length) continue;
         const weight = missing.reduce(
@@ -184,20 +189,52 @@ export function useWorkspaceQuotes(
       abort.abort();
     };
   }, [key, demo, cache, revision, rateLimited]);
-  useEffect(()=>{
-    if(demo)return;
-    const tick=()=>{if(document.visibilityState==='visible'&&!loading)refresh();};
-    const timer=setInterval(tick,120000);
-    document.addEventListener('visibilitychange',tick);
-    return()=>{clearInterval(timer);document.removeEventListener('visibilitychange',tick);};
-  },[demo,loading,refresh]);
-  const live=useLivePrices(groups.flat(),!!demo);
-  liveFresh.current=new Set(live.connected?Object.values(live.ticks).filter(t=>Date.now()-Date.parse(t.asOf)<30000).map(t=>t.symbol):[]);
-  const pricedData=useMemo(()=>Object.fromEntries(Object.entries(data).map(([symbol,row])=>[symbol,{...row,quote:quoteHealth(live.ticks[symbol]?mergePriceTick(row.quote,{...live.ticks[symbol],session:live.connected?live.ticks[symbol].session:"Last streamed trade · reconnecting"}):row.quote)}])),[data,live]);
-  return { data:pricedData, loading, ready, error, refresh };
+  useEffect(() => {
+    if (demo) return;
+    const tick = () => {
+      if (document.visibilityState === "visible" && !loading) refresh();
+    };
+    const timer = setInterval(tick, 120000);
+    document.addEventListener("visibilitychange", tick);
+    return () => {
+      clearInterval(timer);
+      document.removeEventListener("visibilitychange", tick);
+    };
+  }, [demo, loading, refresh]);
+  const live = useLivePrices(groups.flat(), !!demo);
+  liveFresh.current = new Set(
+    live.connected
+      ? Object.values(live.ticks)
+          .filter((t) => Date.now() - Date.parse(t.asOf) < 30000)
+          .map((t) => t.symbol)
+      : [],
+  );
+  const pricedData = useMemo(
+    () =>
+      Object.fromEntries(
+        Object.entries(data).map(([symbol, row]) => [
+          symbol,
+          {
+            ...row,
+            quote: quoteHealth(
+              live.ticks[symbol]
+                ? mergePriceTick(row.quote, {
+                    ...live.ticks[symbol],
+                    session: live.connected
+                      ? live.ticks[symbol].session
+                      : "Last streamed trade · reconnecting",
+                  })
+                : row.quote,
+            ),
+          },
+        ]),
+      ),
+    [data, live],
+  );
+  return { data: pricedData, loading, ready, error, refresh };
 }
 export function ResearchHome() {
-  const [discoveryOpen,setDiscoveryOpen]=useState(false);
+  const [discoveryOpen, setDiscoveryOpen] = useState(false);
   const { workspace, demo, workspaceError } = useProduct(),
     quotes = useWorkspaceQuotes(),
     prefix = demo ? "/preview" : "";
@@ -218,7 +255,13 @@ export function ResearchHome() {
       <div className="research-search">
         <Search large />
       </div>
-      <details className="research-discovery" onToggle={e=>setDiscoveryOpen(e.currentTarget.open)}><summary>Find a setup in your companies</summary>{discoveryOpen&&<Discover embedded />}</details>
+      <details
+        className="research-discovery"
+        onToggle={(e) => setDiscoveryOpen(e.currentTarget.open)}
+      >
+        <summary>Find a setup in your companies</summary>
+        {discoveryOpen && <Discover embedded />}
+      </details>
       {workspaceError && <Notice error>{workspaceError}</Notice>}
       {quotes.error && <Notice error>{quotes.error}</Notice>}
       <header className="section-heading">
@@ -259,7 +302,7 @@ export function ResearchHome() {
                 </footer>
                 <small className="quote-stamp">
                   {q?.quote
-                    ? `${q.quote.stale?"Older quote · ":""}${quoteTime(q.quote.asOf)}`
+                    ? `${q.quote.stale ? "Older quote · " : ""}${quoteTime(q.quote.asOf)}`
                     : q?.error || "Loading price…"}
                 </small>
               </Link>
@@ -342,7 +385,7 @@ export function Overview() {
       {workspaceError && <Notice error>{workspaceError}</Notice>}
       {quotes.error && <Notice error>{quotes.error}</Notice>}
       <SessionBrief />
-      <HomeUpdates />
+      <HomeUpdates quotes={q} />
       <div className="grid2 home-details">
         <section>
           <header className="section-head">
@@ -717,6 +760,23 @@ export function Portfolio() {
     [busy, setBusy] = useState(false),
     [query, setQuery] = useWorkspaceFilter("portfolio"),
     [removing, setRemoving] = useState<string | null>(null);
+  const calendar = usePortfolioCalendar(workspace?.positions ?? []);
+  const portfolioDay = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Chicago",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+  const reportsSoon = new Set(
+    (calendar.data?.events ?? [])
+      .filter(
+        (e) =>
+          /earnings/i.test(e.kind) &&
+          e.date >= portfolioDay &&
+          Date.parse(e.date) <= Date.parse(portfolioDay) + 7 * 86400000,
+      )
+      .map((e) => e.symbol),
+  );
   const q = Object.fromEntries(
       Object.entries(quotes.data || {})
         .filter(([, v]) => v.quote)
@@ -724,6 +784,7 @@ export function Portfolio() {
     ),
     positions = workspace?.positions || [],
     totals = portfolioTotals(positions, q),
+    returns = pricedInvestmentReturns(positions, q),
     visiblePositions = positions.filter((p) =>
       `${p.symbol} ${quotes.data?.[p.symbol]?.company?.name || ""} ${p.assetType === "cash" ? "cash" : ""}`
         .toLowerCase()
@@ -872,19 +933,25 @@ export function Portfolio() {
           </div>
           <div className="money-sub">
             <span
-              className={totals.pnl != null && totals.pnl < 0 ? "red" : "green"}
+              className={
+                returns.pnl != null && returns.pnl < 0 ? "red" : "green"
+              }
             >
-              {quotes.ready ? amount(totals.pnl) : "—"}{" "}
-              {totals.pnl != null && totals.cost
-                ? percent((totals.pnl / totals.cost) * 100, true)
+              {quotes.ready ? amount(returns.pnl) : "—"}{" "}
+              {returns.returnPct != null
+                ? percent(returns.returnPct, true)
                 : ""}
             </span>
-            <span className="muted"> unrealised</span>
+            <span className="muted">
+              {" "}
+              unrealized · {returns.covered}/{returns.total} investments with
+              price & USD cost
+            </span>
           </div>
           {totals.missing.length > 0 && (
             <p className="balance-caption">
-              {totals.missing.length} unpriced holdings excluded · return
-              requires complete pricing
+              {totals.missing.length} unpriced holdings excluded · displayed
+              return covers only the priced subset
             </p>
           )}
         </section>
@@ -892,12 +959,12 @@ export function Portfolio() {
           <Allocation positions={positions} quotes={q} />
         </section>
       </div>
-      <section className="portfolio-review-strip" aria-label="Portfolio exposure review">
-        <div><span>Pricing coverage</span><strong>{quotes.ready ? `${positions.length - positions.filter(p=>totals.missing.includes(p.symbol)).length} / ${positions.length}` : '—'}</strong><small>Recorded positions with usable prices</small></div>
-        <div><span>Available cash</span><strong>{workspace ? amount(positions.filter(p=>p.assetType==='cash'&&p.symbol==='USD'&&p.currency==='USD'&&Number.isFinite(p.quantity)&&p.quantity>0&&Number.isFinite(p.cost)&&p.cost>=0).reduce((sum,p)=>sum+p.quantity,0)) : '—'}</strong><small>Recorded USD cash, not broker buying power</small></div>
-        <div><span>Largest investment</span><strong>{quotes.ready ? (()=>{const values=new Map<string,number>();for(const p of positions){if(p.assetType==='cash'||totals.missing.includes(p.symbol))continue;values.set(p.symbol,(values.get(p.symbol)||0)+p.quantity*q[p.symbol].price!);}const largest=[...values].sort((a,b)=>b[1]-a[1])[0];return largest&&totals.knownValue>0?`${largest[0]} · ${percent(largest[1]/totals.knownValue*100)}`:'—';})() : '—'}</strong><small>Share of priced assets and cash</small></div>
-      </section>
-      <PortfolioExposure positions={positions} quotes={quotes.data||{}} />
+      <PortfolioRiskSummary
+        positions={positions}
+        quotes={q}
+        calendar={calendar}
+      />
+      <PortfolioExposure positions={positions} quotes={quotes.data || {}} />
       <section className="panel portfolio-holdings support">
         <header className="section-heading">
           <h2>
@@ -933,6 +1000,7 @@ export function Portfolio() {
                   <th>Price</th>
                   <th>Value</th>
                   <th>Return</th>
+                  <th>Watch</th>
                   <th aria-label="Actions" />
                 </tr>
               </thead>
@@ -993,7 +1061,12 @@ export function Portfolio() {
                       </td>
                       <td data-label="Price" className="holding-price-cell">
                         <span className="holding-metric">{amount(price)}</span>
-                        {p.assetType!=="cash"&&q[p.symbol]?.asOf&&<small className="muted">{q[p.symbol]?.stale?"Older quote · ":""}{quoteTime(q[p.symbol].asOf)}</small>}
+                        {p.assetType !== "cash" && q[p.symbol]?.asOf && (
+                          <small className="muted">
+                            {q[p.symbol]?.stale ? "Older quote · " : ""}
+                            {quoteTime(q[p.symbol].asOf)}
+                          </small>
+                        )}
                       </td>
                       <td data-label="Value" className="holding-value-cell">
                         <span className="holding-metric">
@@ -1024,6 +1097,34 @@ export function Portfolio() {
                                 )
                               : ""}
                           </small>
+                        </span>
+                      </td>
+                      <td className="holding-watch-cell" data-label="Watch">
+                        <span
+                          className={`holding-watch ${p.assetType !== "cash" && (q[p.symbol]?.stale || value == null) ? "watch-caution" : ""}`}
+                        >
+                          {p.assetType === "cash"
+                            ? "Recorded cash"
+                            : q[p.symbol]?.stale
+                              ? "Older price"
+                              : value == null
+                                ? "Needs pricing"
+                                : reportsSoon.has(p.symbol)
+                                  ? "Earnings ≤7 days"
+                                  : totals.knownValue > 0 &&
+                                      positions
+                                        .filter((v) => v.symbol === p.symbol)
+                                        .reduce(
+                                          (sum, v) =>
+                                            sum +
+                                            v.quantity *
+                                              (q[p.symbol]?.price ?? 0),
+                                          0,
+                                        ) /
+                                        totals.knownValue >=
+                                        0.1
+                                    ? "Concentration ≥10%"
+                                    : "Price current"}
                         </span>
                       </td>
                       <td className="holding-actions-cell">

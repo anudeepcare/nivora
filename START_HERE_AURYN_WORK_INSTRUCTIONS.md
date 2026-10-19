@@ -1,3 +1,5 @@
+> Latest product refinement: read `docs/PRODUCT_REFINEMENT.md` before earlier release notes. No deployed-provider or physical-iPhone acceptance is claimed.
+
 > Current release, 19 October: read `docs/CONNECTED_PRODUCT.md` for all fifteen approved product points and `docs/RELEASE_STATUS.md` for current acceptance limits. Older sections below are historical context.
 
 > Latest update: shared price-trust and cost controls require the migration and enable flag in `docs/TRUST_AND_COST_CONTROLS.md`. They have not been activated in production here.

@@ -569,7 +569,7 @@ test('technical desk separates four evidence groups and formats missing data saf
 });
 
 test('shared settings exposes theme and accessibility without repeating accent headings',()=>{
- const DisplayPreferences=loadComponent('components/DisplayPreferences.tsx','DisplayPreferences',{React,useProduct:()=>({themePreference:'dark',textSize:'large',reduceMotion:true}),AppearanceControls:empty});
+ const DisplayPreferences=loadComponent('components/DisplayPreferences.tsx','DisplayPreferences',{React,useProduct:()=>({themePreference:'dark',textSize:'large',reduceMotion:true}),AppearanceControls:empty,ResearchModeSwitch:empty});
  const html=renderToStaticMarkup(React.createElement(DisplayPreferences));
  assert.match(html,/Make it yours/);assert.match(html,/aria-label="Appearance"/);assert.match(html,/aria-label="Text size"/);assert.match(html,/aria-label="Reduce motion" aria-pressed="true"/);assert.match(html,/aria-pressed="true" class="active">Dark/);
 });
