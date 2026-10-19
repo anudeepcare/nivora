@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-19T18:55:50.858526+00:00",
+  "generatedAt": "2026-10-19T19:06:19.367530+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
@@ -7,10 +7,10 @@
     "npm run verify": "passed: tests, TypeScript and production build",
     "npm run test:api": "passed: 40 baseline + 16 research regression + 22 provider + 5 shared protection checks",
     "git diff --check": "passed",
-    "npm test": "passed: 294 tests",
+    "npm test": "passed: 296 tests",
     "npm run build": "passed after final scoped stylesheet cleanup"
   },
-  "domainPostgresAndComponentTests": 294,
+  "domainPostgresAndComponentTests": 296,
   "builtApiChecks": 83,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -368,6 +368,24 @@
     "logs": [
       "refresh-consistency-verify.log",
       "refresh-consistency-api.log"
+    ]
+  },
+  "overviewDepth": {
+    "status": "296 tests, TypeScript, production build and 83 fixture API checks passed",
+    "restored": [
+      "Key financial metrics in both modes, before chart",
+      "Detailed evidence lenses in both modes",
+      "Risk review thresholds in both modes"
+    ],
+    "depthSelector": "Navigation-aligned desktop; decision-heading mobile",
+    "calculationReuse": "Immutable Research snapshot and style; new data recomputes",
+    "benchmark": "decision-reuse-benchmark.json; fixture CPU only, not network or device latency",
+    "modelAccuracyClaim": "No new model coefficients, profit probabilities or best-in-class claim",
+    "physicalDeviceVisuals": "not verified",
+    "logs": [
+      "overview-depth-verify.log",
+      "overview-depth-api.log",
+      "decision-reuse-benchmark.json"
     ]
   }
 }

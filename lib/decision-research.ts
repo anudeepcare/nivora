@@ -124,7 +124,7 @@ const change = (a: number | null | undefined, b: number | null | undefined) =>
   a != null && b != null && b > 0 ? (a / b - 1) * 100 : null;
 const mean = (x: number[]) =>
   x.length ? x.reduce((a, b) => a + b, 0) / x.length : null;
-export function researchDecision(
+function computeResearchDecision(
   r: Research,
   style: ResearchStyle = "Balanced",
 ) {
@@ -744,4 +744,10 @@ function decisionHistory(r: Research) {
     `${r.history.length}:${r.retrievedAt}:${r.company.assetType}`,
     () => computeDecisionHistory(r),
   );
+}
+
+const decisionMemo = evidenceMemo<ReturnType<typeof computeResearchDecision>>();
+/** Research snapshots are immutable; a new quote/evidence object invalidates this cache. */
+export function researchDecision(r: Research, style: ResearchStyle = "Balanced") {
+  return decisionMemo(r, style, () => computeResearchDecision(r, style));
 }

@@ -1,0 +1,16 @@
+✔ quote-only changes reuse completed financial and price studies without reusing stale inputs (37.706729ms)
+✔ first research-tab visits reveal their content below the sticky navigation without restoring a deep old offset (1.28547ms)
+✔ components share one decision calculation per immutable evidence snapshot and style (17.286778ms)
+✔ both providers reject same-day future intraday candles at the timestamp boundary (9.244744ms)
+✔ financial selected-control styles outrank global button resets (50.041662ms)
+✔ the actual Snapshot discloses backup data without vendor names (280.210248ms)
+✔ unverified upcoming EPS is never formatted in the listing currency (54.726035ms)
+✔ Simple overview retains financial metrics, evidence lenses and risk thresholds (58.878412ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 906.255287

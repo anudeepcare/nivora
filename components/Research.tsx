@@ -387,7 +387,6 @@ export default function Research({ symbol }: { symbol: string }) {
             <p className="muted small">
               {symbol} · {r.company.exchange || "Listing"} · {r.quote.currency}
             </p>
-            <ResearchModeSwitch />
           </div>
         </div>
         <div className="row quote-actions gap24">
@@ -429,6 +428,7 @@ export default function Research({ symbol }: { symbol: string }) {
         className="research-tab-anchor"
         aria-hidden="true"
       />
+      <div className="research-navigation">
       <nav
         ref={tabsElement}
         className="local-tabs"
@@ -476,6 +476,8 @@ export default function Research({ symbol }: { symbol: string }) {
           </button>
         ))}
       </nav>
+      <div className="research-desktop-depth"><ResearchModeSwitch /></div>
+      </div>
       {notice && <Notice error>{notice}</Notice>}
       {resource.error && <Notice error>{resource.error}</Notice>}
       {r.issues.length > 0 && (
@@ -521,7 +523,8 @@ export default function Research({ symbol }: { symbol: string }) {
             hidden={tab !== "Snapshot"}
             className="au-stack"
           >
-            <DecisionOverview research={r} onTab={switchTab}/>
+            <DecisionOverview research={r} onTab={switchTab} pro={preferences.detail === "advanced"} modeControl={<ResearchModeSwitch />}/>
+            <KeyFinancialMetrics research={r} />
             <ResearchChanges research={r} />
             <div className="research-layout">
               <div className="research-canvas">
@@ -533,11 +536,8 @@ export default function Research({ symbol }: { symbol: string }) {
               </div>
               <OverviewContext research={r} />
             </div>
-            {preferences.detail === "advanced" && <>
-              <KeyFinancialMetrics research={r} />
-              <DecisionWorkspace research={r} onTab={switchTab} part="detail" />
-              <DecisionWatch key={r.company.symbol} research={r} />
-            </>}
+            <DecisionWorkspace research={r} onTab={switchTab} part="detail" />
+            <DecisionWatch key={r.company.symbol} research={r} />
           </section>
         )}
         {tab === "Financials" && (

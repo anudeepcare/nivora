@@ -1,3 +1,7 @@
+# Full Overview restored — 2026-10-19
+
+Core financial metrics, evidence lenses and review thresholds are available in both modes. Metrics precede the chart; the depth selector sits with navigation on desktop and the decision heading on mobile. Repeated decision calculations reuse immutable evidence snapshots. See `OVERVIEW_DEPTH_AND_MODELS.md`.
+
 # Current correction — 2026-10-19
 
 Quote retention, compact first-screen decision snapshot, functional Simple/Pro depth and customer-facing source-link cleanup. See `REFRESH_CONSISTENCY.md`. PWA shell geometry is unchanged. Physical iPhone and authenticated live-feed checks remain unverified.

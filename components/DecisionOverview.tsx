@@ -1,5 +1,5 @@
 "use client";
-import { useMemo } from "react";
+import { useMemo, type ReactNode } from "react";
 import type { Research } from "@/lib/types";
 import { researchBrief } from "@/lib/research-brief";
 import { dateLabel, amount, percent } from "@/lib/format";
@@ -7,8 +7,12 @@ import PositionAwareResearch from "./PositionAwareResearch";
 export default function DecisionOverview({
   research: r,
   onTab,
+  pro = false,
+  modeControl,
 }: {
   research: Research;
+  pro?: boolean;
+  modeControl?: ReactNode;
   onTab: (tab: "Thesis" | "Valuation" | "Technicals" | "News") => void;
 }) {
   const b = useMemo(() => researchBrief(r), [r]);
@@ -24,6 +28,7 @@ export default function DecisionOverview({
             ? `Reported through ${dateLabel(b.period)}`
             : "Reporting evidence incomplete"}
         </small>
+        <div className="overview-mobile-depth">{modeControl}</div>
       </header>
       <div className="decision-readout-grid">
         {[
@@ -121,7 +126,7 @@ export default function DecisionOverview({
         </span>
       </aside>
       <PositionAwareResearch research={r} compact />
-      <details className="decision-evidence">
+      <details className="decision-evidence" open={pro}>
         <summary>Why this assessment · {b.metrics} available metrics</summary>
         <p><b>Business:</b> {b.business.reason}</p>
         <p><b>Value:</b> {b.value.reason}</p>

@@ -1,0 +1,16 @@
+{
+  "generatedAt": "2026-10-19T19:04:02.865Z",
+  "kind": "local synthetic fixture microbenchmark; not network or device latency",
+  "freshSnapshot": {
+    "samples": 100,
+    "medianMs": 0.02098999999998341,
+    "p95Ms": 0.11524000000000001
+  },
+  "reusedSnapshot": {
+    "samples": 100,
+    "medianMs": 0.00025099999999156353,
+    "p95Ms": 0.0003600000000005821
+  },
+  "outputsIdentical": true,
+  "scope": "Identical immutable snapshot and style reuse only; new observations recompute. No investment accuracy or market-wide validation claim."
+}

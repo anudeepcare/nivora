@@ -208,6 +208,9 @@ function researchMarkup() {
     "ArrowUpRight",
   ])
     bindings[name] = empty;
+  bindings.KeyFinancialMetrics = () => React.createElement('section', {'data-overview-evidence':'financials'});
+  bindings.DecisionWorkspace = () => React.createElement('section', {'data-overview-evidence':'lenses'});
+  bindings.DecisionWatch = () => React.createElement('section', {'data-overview-evidence':'thresholds'});
   const component = new Function(
     ...Object.keys(bindings),
     code + ";return Research;",
@@ -227,4 +230,9 @@ test("unverified upcoming EPS is never formatted in the listing currency", () =>
     "The approved Overview does not repeat the earnings panel",
   );
   assert.doesNotMatch(html, /Estimated EPS/);
+});
+
+test('Simple overview retains financial metrics, evidence lenses and risk thresholds',()=>{
+ const html=researchMarkup();
+ for(const section of ['financials','lenses','thresholds'])assert.ok(html.includes(`data-overview-evidence="${section}"`));
 });

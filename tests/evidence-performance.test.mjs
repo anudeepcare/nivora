@@ -17,3 +17,14 @@ test('first research-tab visits reveal their content below the sticky navigation
  assert.equal(researchTabTarget(850,4800,320,120),850);
  assert.equal(researchTabTarget(undefined,NaN,NaN,120),0);
 });
+
+test('components share one decision calculation per immutable evidence snapshot and style',async()=>{
+ const {researchDecision}=await import('../lib/decision-research.ts');
+ const r=demoData.research.MSFT;
+ const first=researchDecision(r);
+ assert.equal(researchDecision(r),first);
+ assert.notEqual(researchDecision(r,'Growth'),first);
+ const updated={...r,quote:{...r.quote,price:r.quote.price/2}};
+ assert.notEqual(researchDecision(updated),first);
+ assert.equal(researchDecision(r),first);
+});
