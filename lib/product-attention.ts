@@ -17,7 +17,6 @@ export function pricedInvestmentReturns(
       !Number.isFinite(p.quantity) ||
       p.quantity <= 0 ||
       !q ||
-      q.stale ||
       q.currency !== "USD" ||
       !Number.isFinite(q.price) ||
       q.price! <= 0
@@ -56,8 +55,7 @@ export function holdingAttention(
       (cash
         ? p.symbol !== "USD" || p.currency !== "USD"
         : !q ||
-          q.stale ||
-          q.currency !== "USD" ||
+              q.currency !== "USD" ||
           !Number.isFinite(q.price) ||
           q.price! <= 0)
     )
@@ -111,8 +109,7 @@ export function portfolioRiskSummary(
       (cash
         ? p.symbol !== "USD" || p.currency !== "USD"
         : !q ||
-          q.stale ||
-          q.currency !== "USD" ||
+              q.currency !== "USD" ||
           !Number.isFinite(q.price) ||
           q.price! <= 0)
     )

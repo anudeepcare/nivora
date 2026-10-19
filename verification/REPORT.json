@@ -4,14 +4,14 @@
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: tests, TypeScript and production build; final tests 274",
-    "npm run test:api": "passed: 39 baseline + 16 research regression + 22 provider + 5 shared protection checks",
+    "npm run verify": "passed: tests, TypeScript and production build",
+    "npm run test:api": "40 baseline + 16 research regression + 22 provider + 5 shared protection checks",
     "git diff --check": "passed",
-    "npm test": "passed: 275 tests",
+    "npm test": "passed: 280 tests",
     "npm run build": "passed after final scoped stylesheet cleanup"
   },
-  "domainPostgresAndComponentTests": 275,
-  "builtApiChecks": 82,
+  "domainPostgresAndComponentTests": 280,
+  "builtApiChecks": 83,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
     "intraday": "Twelve Data preferred; labelled EODHD historical fallback",
@@ -320,5 +320,18 @@
     "fix": "Isolated readable form palette, USD text inputs with decimal keyboard and comma support, compact responsive layout, Save/Cancel",
     "tests": "Money parser rejects ambiguous separators, exponent, negative amounts and excess decimal places",
     "limits": "No physical device or rendered browser confirmation"
+  },
+  "portfolioReliability": {
+    "valuation": "Older usable USD quotes remain included in headline, ledger, charts, Home exposure and position context; never-priced and foreign quotes remain excluded explicitly.",
+    "refresh": "Balanced five-minute default, optional Live, Hourly and Manual; visible-page polling, coherent batch commit and existing cache/budget protection.",
+    "retention": "Last available quotes saved on this device under the signed-in account namespace; failures and older responses preserve usable quotes. Refresh check time is separate from quote observation time.",
+    "sectorContext": "On-demand dated ETF benchmark returns, matching dates versus SPY, explicit missing observations, price-only returns.",
+    "scope": "Allocation, gain/loss and sector views concern listed holdings; net equity separately includes entered managed investments and margin debt.",
+    "limits": [
+      "No real provider or physical iPhone/rendered browser verification",
+      "Saved quotes are local to this browser/device, not a broker connection",
+      "No historical account performance is fabricated; true return history requires dated holdings and cash flows",
+      "Live stream covers supported selected instruments; periodic quote fallback covers remaining holdings"
+    ]
   }
 }

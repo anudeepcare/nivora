@@ -19,7 +19,7 @@ export function portfolioExposure(positions:Position[],quotes:Record<string,Quot
  for(const p of positions){
   const q=quotes[p.symbol],cash=p.assetType==='cash';
   if(!Number.isFinite(p.quantity)||p.quantity<=0||!Number.isFinite(p.cost)||p.cost<0||
-    (cash?(p.currency!=='USD'||p.symbol!=='USD'):(!q||q.stale||q.currency!=='USD'||!Number.isFinite(q.price)||q.price!<=0))){excluded.add(p.symbol);continue;}
+    (cash?(p.currency!=='USD'||p.symbol!=='USD'):(!q||q.currency!=='USD'||!Number.isFinite(q.price)||q.price!<=0))){excluded.add(p.symbol);continue;}
   const value=p.quantity*(cash?1:q.price!),name=cash?'Cash':p.assetType==='crypto'?'Crypto':sectors[p.symbol]?.trim()||'Unclassified';
   total+=value;if(!cash)invested+=value;if(!cash&&name!=='Unclassified')classifiedValue+=value;
   groups.set(name,(groups.get(name)??0)+value);

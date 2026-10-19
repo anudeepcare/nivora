@@ -12,7 +12,7 @@ test('opening assessment separates financial evidence, valuation assumptions and
  const missing=openingAssessment({...r,facts:[],evidence:undefined});
  assert.match(missing[0].label,/evidence/i);
 });
-test('portfolio exposure groups duplicate holdings, discloses unclassified assets and excludes stale prices',()=>{
+test('portfolio exposure groups duplicate holdings, discloses unclassified assets and retains labelled older prices',()=>{
  const positions=[
  {id:'1',symbol:'A',assetType:'stock',quantity:2,cost:50,currency:'USD'},
  {id:'2',symbol:'A',assetType:'stock',quantity:1,cost:50,currency:'USD'},
@@ -22,10 +22,10 @@ test('portfolio exposure groups duplicate holdings, discloses unclassified asset
  {id:'6',symbol:'USD',assetType:'cash',quantity:100,cost:1,currency:'USD'}];
  const q={A:{price:100,currency:'USD',stale:false},'BTC/USD':{price:200,currency:'USD',stale:false},B:{price:100,currency:'USD',stale:false},C:{price:100,currency:'USD',stale:true}};
  const x=portfolioExposure(positions,q,{A:'Technology'},-20);
- assert.equal(x.total,700);assert.equal(x.classifiedValue,500);
+ assert.equal(x.total,800);assert.equal(x.classifiedValue,500);
  assert.equal(x.groups.find(v=>v.name==='Technology').value,300);
- assert.equal(x.groups.find(v=>v.name==='Unclassified').value,100);
- assert.equal(x.hypotheticalChange,-120);assert.deepEqual(x.excluded,['C']);
+ assert.equal(x.groups.find(v=>v.name==='Unclassified').value,200);
+ assert.equal(x.hypotheticalChange,-140);assert.deepEqual(x.excluded,[]);
  assert.equal(portfolioExposure(positions,q,{},-101).hypotheticalChange,null);
 });
 test('AI intents are an allowlist and never accept arbitrary user instructions',()=>{

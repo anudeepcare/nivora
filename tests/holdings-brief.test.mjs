@@ -99,4 +99,4 @@ test("concentration combines multiple lots of the same instrument", () => {
   );
   assert.deepEqual(r.largest, { symbol: "APP", value: 12 });
 });
-test('exposure total reconciles with headline valuation when quotes are stale or costs invalid',async()=>{const {portfolioTotals}=await import('../lib/engine.ts');const positions=[p('APP',2),p('SAP',1),p('USD',50,'cash'),{...p('BAD',1),cost:-1}];const quotes={APP:q(100),SAP:{...q(90),stale:true},BAD:q(100)};const c=h.holdingsContext(positions,quotes,{});assert.equal(c.pricedValue,portfolioTotals(positions,quotes).knownValue);assert.equal(c.pricedValue,250);assert.equal(c.stale,1);assert.equal(c.missing,2);});
+test('exposure total reconciles with headline valuation when quotes are stale or costs invalid',async()=>{const {portfolioTotals}=await import('../lib/engine.ts');const positions=[p('APP',2),p('SAP',1),p('USD',50,'cash'),{...p('BAD',1),cost:-1}];const quotes={APP:q(100),SAP:{...q(90),stale:true},BAD:q(100)};const c=h.holdingsContext(positions,quotes,{});assert.equal(c.pricedValue,portfolioTotals(positions,quotes).knownValue);assert.equal(c.pricedValue,340);assert.equal(c.stale,1);assert.equal(c.missing,1);});

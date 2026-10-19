@@ -18,7 +18,7 @@ export default function useLivePrices(symbols:string[],disabled=false){
     const response=await fetch(`/api/price-stream?symbols=${encodeURIComponent(key)}`,{headers:{Authorization:`Bearer ${data.session.access_token}`},signal:controller.signal});
     if(!response.ok||!response.body)throw Error('Stream unavailable');
     const reader=response.body.getReader(),decoder=new TextDecoder();let buffer='';
-    while(active&&run===generation){const {done,value}=await reader.read();if(done)break;buffer+=decoder.decode(value,{stream:true});if(buffer.length>100000)throw Error('Invalid stream');let split;while((split=buffer.indexOf('\n\n'))>=0){const frame=buffer.slice(0,split);buffer=buffer.slice(split+2);if(!frame.startsWith('data: '))continue;const event=JSON.parse(frame.slice(6));if(event.type==='prices'&&Array.isArray(event.ticks)){for(const tick of event.ticks)if(key.split(',').includes(tick?.symbol))pending[tick.symbol]=tick;failures=0;if(!flush)flush=setTimeout(publish,50);}else if(event.type==='status'&&event.status!=='connecting'){setState(s=>({...s,connected:false}));}}}
+    while(active&&run===generation){const {done,value}=await reader.read();if(done)break;buffer+=decoder.decode(value,{stream:true});if(buffer.length>100000)throw Error('Invalid stream');let split;while((split=buffer.indexOf('\n\n'))>=0){const frame=buffer.slice(0,split);buffer=buffer.slice(split+2);if(!frame.startsWith('data: '))continue;const event=JSON.parse(frame.slice(6));if(event.type==='prices'&&Array.isArray(event.ticks)){for(const tick of event.ticks)if(key.split(',').includes(tick?.symbol))pending[tick.symbol]=tick;failures=0;if(!flush)flush=setTimeout(publish,1000);}else if(event.type==='status'&&event.status!=='connecting'){setState(s=>({...s,connected:false}));}}}
    }catch{/* REST polling continues independently on auth/network/entitlement errors. */}
    if(active&&run===generation&&document.visibilityState==='visible'){setState(s=>({...s,connected:false}));retry=setTimeout(connect,Math.min(60000,1000*2**Math.min(failures++,6)));}
   };
@@ -27,5 +27,5 @@ export default function useLivePrices(symbols:string[],disabled=false){
   document.addEventListener('visibilitychange',visibility);void connect();
   return()=>{active=false;controller?.abort();clearTimeout(retry);clearTimeout(flush);clearInterval(age);document.removeEventListener('visibilitychange',visibility);};
  },[key,disabled]);
- return state.key===key?state:{key,ticks:{},connected:false};
+ return !disabled&&state.key===key?state:{key,ticks:{},connected:false};
 }

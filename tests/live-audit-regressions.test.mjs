@@ -14,6 +14,7 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { workspaceSymbolBatches } from "../lib/workspace.ts";
 import { dateLabel } from "../lib/format.ts";
+import {mergePortfolioQuotes,refreshIntervals,usablePortfolioQuote} from "../lib/portfolio-quotes.ts";
 
 function component(file, name, bindings) {
   const ast = ts.createSourceFile(
@@ -204,6 +205,7 @@ test("workspace quote refresh commits all batches together and settles loading",
       marketProvider: "eodhd",
     }),
     workspaceSymbolBatches,
+    mergePortfolioQuotes,refreshIntervals,usablePortfolioQuote,
     useState: (initial) => {
       const i = index++;
       state[i] = typeof initial === "function" ? initial() : initial;
@@ -235,7 +237,7 @@ test("workspace quote refresh commits all batches together and settles loading",
     },
   });
   hook("portfolio");
-  const cleanup = effects[0]();
+  const cleanup = effects[1]();
   await new Promise((resolve) => setImmediate(resolve));
   assert.equal(requests.length, 2);
   assert.equal(Object.keys(state[1]).length, 12);

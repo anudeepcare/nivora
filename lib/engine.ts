@@ -277,7 +277,7 @@ export function portfolioTotals(
       !finite(price) ||
       price <= 0 ||
       (p.assetType !== "cash" &&
-        (quotes[p.symbol]?.stale || quotes[p.symbol]?.currency !== "USD"))
+        quotes[p.symbol]?.currency !== "USD")
     ) {
       missing.push(p.symbol);
       continue;

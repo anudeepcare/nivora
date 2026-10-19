@@ -12,7 +12,6 @@ function valueOf(p: Position, quotes: Record<string, Quote>) {
     return p.symbol === "USD" && p.currency === "USD" ? p.quantity : null;
   const q = quotes[p.symbol];
   return q &&
-    !q.stale &&
     q.currency === "USD" &&
     Number.isFinite(q.price) &&
     q.price! > 0
@@ -51,10 +50,10 @@ export function ledgerRows(
       price: value != null ? (cash ? 1 : q.price) : null,
       note: cash
         ? ""
-        : q?.stale
-          ? "Older price"
-          : value == null
-            ? "Price unavailable"
+        : value == null
+          ? q?.currency && q.currency !== "USD" ? "USD price needed" : "Price unavailable"
+          : q?.stale
+            ? "Older price"
             : earnings.has(p.symbol)
               ? "Earnings ≤7 days"
               : weight != null && weight >= 10

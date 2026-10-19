@@ -27,7 +27,7 @@ export function holdingsContext(
         q.price == null ||
         !Number.isFinite(q.price) ||
         q.price <= 0 ||
-        q.currency !== "USD" || q.stale)
+        q.currency !== "USD")
     ) {
       missing++;
       continue;

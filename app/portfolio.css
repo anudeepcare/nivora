@@ -781,3 +781,20 @@
 .account-balance-form .account-balance-error { color: #a5283e; font-size: .83rem; margin: 0; }
 .portfolio-page .portfolio-balance .account-balance-edit { color: #a2dedc; }
 @media (max-width: 700px) { .account-balance-fields { grid-template-columns: 1fr; } .account-balance-actions button { flex: 1; } }
+.portfolio-refresh { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+.portfolio-refresh > span > small { display:block; color:var(--muted); margin-top:4px; }
+.portfolio-refresh-controls { display:flex; align-items:center; gap:12px; }
+.portfolio-refresh-controls label { display:flex; align-items:center; gap:7px; font-size:.8rem; }
+.portfolio-refresh-controls select { padding:8px; border:1px solid var(--line); border-radius:10px; background:var(--surface); color:var(--ink); }
+.sector-benchmarks { min-width:0; }
+.sector-benchmarks .segments { margin:14px 0; max-width:340px; }
+.sector-performance-rows { display:grid; gap:12px; }
+.sector-performance-row { display:grid; grid-template-columns:minmax(140px,1.1fr) minmax(80px,1fr) 75px 120px; gap:14px; align-items:center; font-size:.85rem; }
+.sector-performance-row > div:first-child { display:grid; gap:3px; }
+.sector-performance-row small { color:var(--muted); font-size:.73rem; }
+.sector-performance-row > strong,.sector-performance-row > small { text-align:right; }
+.sector-performance-axis { position:relative; height:12px; background:var(--blue-soft); border-radius:4px; }
+.sector-performance-axis:before { content:''; position:absolute; left:50%; height:100%; border-left:1px solid var(--muted); }
+.sector-performance-axis i { position:absolute; height:100%; border-radius:3px; }
+.sector-performance-axis .gain { background:var(--green); }.sector-performance-axis .loss { background:var(--red); }
+@media(max-width:700px){.portfolio-refresh-controls{width:100%;justify-content:space-between}.sector-performance-row{grid-template-columns:minmax(100px,1fr) minmax(60px,.8fr) 65px;gap:8px}.sector-performance-row>small{grid-column:2/4;margin-top:-8px}.sector-benchmarks .section-heading{align-items:flex-start}.sector-benchmarks h2{font-size:1.1rem}}
