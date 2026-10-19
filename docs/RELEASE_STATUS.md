@@ -1,3 +1,7 @@
+# Observed IREN response correction — current
+
+Actual uploaded response now yields explicitly labelled price-anchored revenue sensitivities after independently corroborating trailing revenue. See `OBSERVED_IREN_SCENARIO_FIX.md`. NBIS/TE live response validation and ASTS framework/listing conflicts remain unresolved.
+
 # Shared scenario pipeline corrections — current
 
 Five reproduced selection/normalization/classification failures corrected with a 45-combination synthetic coverage matrix. See `SCENARIO_PIPELINE_CORRECTIONS.md`. This does not establish universal live ticker coverage; all reconciliation gates remain active.

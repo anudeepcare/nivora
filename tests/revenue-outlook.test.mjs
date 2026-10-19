@@ -108,19 +108,93 @@ test("revenue sensitivity rejects share-unit and EV/revenue denominator inconsis
   }
 });
 
-test('a complete revenue forecast remains usable when a nearer incomplete forecast is present',()=>{
- const r=input();const good={...r.evidence.estimates[0],date:'2028-12-31',period:'FY2028'};
- r.evidence.estimates=[{...good,date:'2029-10-17',period:'FY2029',revenueLow:null},good];
- const result=researchOutlook(r);assert.equal(result.available,true);assert.equal(result.end,'2028-12-31');
+test("a complete revenue forecast remains usable when a nearer incomplete forecast is present", () => {
+  const r = input();
+  const good = {
+    ...r.evidence.estimates[0],
+    date: "2028-12-31",
+    period: "FY2028",
+  };
+  r.evidence.estimates = [
+    { ...good, date: "2029-10-17", period: "FY2029", revenueLow: null },
+    good,
+  ];
+  const result = researchOutlook(r);
+  assert.equal(result.available, true);
+  assert.equal(result.end, "2028-12-31");
 });
-test('an unmatched newer cash observation does not hide the latest complete cash/debt pair',()=>{
- const r=input();const cash=r.facts.find(x=>x.metric==='cash');
- r.facts.push({...cash,end:'2026-09-30',filed:'2026-10-10',accession:'new-incomplete-balance',value:250e6});
- const result=researchOutlook(r);assert.equal(result.available,true);assert.equal(result.balanceDate,'2026-06-30');
+test("an unmatched newer cash observation does not hide the latest complete cash/debt pair", () => {
+  const r = input();
+  const cash = r.facts.find((x) => x.metric === "cash");
+  r.facts.push({
+    ...cash,
+    end: "2026-09-30",
+    filed: "2026-10-10",
+    accession: "new-incomplete-balance",
+    value: 250e6,
+  });
+  const result = researchOutlook(r);
+  assert.equal(result.available, true);
+  assert.equal(result.balanceDate, "2026-06-30");
 });
 
-test('infrastructure suitability is selected from provider industry for arbitrary tickers',async()=>{
- const {modelCoverage}=await import('../lib/research-depth.ts');
- for(const industry of ['Data Centers','Bitcoin Mining','Cryptocurrency Mining'])assert.equal(modelCoverage('UNLISTED','stock',{industry,sector:'Technology'}).family,'infrastructure');
- assert.equal(modelCoverage('UNLISTED','stock',{industry:'Software - Application',sector:'Technology'}).family,'operating-company');
+test("infrastructure suitability is selected from provider industry for arbitrary tickers", async () => {
+  const { modelCoverage } = await import("../lib/research-depth.ts");
+  for (const industry of [
+    "Data Centers",
+    "Bitcoin Mining",
+    "Cryptocurrency Mining",
+  ])
+    assert.equal(
+      modelCoverage("UNLISTED", "stock", { industry, sector: "Technology" })
+        .family,
+      "infrastructure",
+    );
+  assert.equal(
+    modelCoverage("UNLISTED", "stock", {
+      industry: "Software - Application",
+      sector: "Technology",
+    }).family,
+    "operating-company",
+  );
+});
+
+test("uploaded IREN response uses a reconciled calculated multiple when reported EV fields disagree", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const r = JSON.parse(
+    await readFile(
+      new URL("./fixtures/iren-observed-20261019.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  const result = researchOutlook(r);
+  assert.equal(result.available, true);
+  const shares = 394058648,
+    netDebt = 7839600000 - 5895591000;
+  const calculated = (shares * 28.19 + netDebt) / 707006976;
+  assert(Math.abs(result.cases[1].multiple - calculated) < 1e-9);
+  assert(
+    Math.abs(
+      result.cases[1].target -
+        (7411105890 * calculated - netDebt) / (shares * 1.1),
+    ) < 1e-6,
+  );
+  assert.match(result.caveat, /calculated.*multiple/i);
+  const { researchBrief } = await import("../lib/research-brief.ts");
+  assert.equal(researchBrief(r).scenario.calculatedMultiple, true);
+  for (const symbol of ["QATEST", "NBIS", "TE"]) {
+    const shared = structuredClone(r);
+    shared.company.symbol = symbol;
+    shared.evidence.profile.industry = "Data Centers";
+    assert.equal(researchOutlook(shared).available, true);
+  }
+  const noSupport = structuredClone(r);
+  noSupport.facts = noSupport.facts.filter((f) => f.metric !== "revenue");
+  assert.equal(researchOutlook(noSupport).available, false);
+  const invalid = structuredClone(r);
+  invalid.evidence.ownership.outstanding = 394;
+  assert.equal(researchOutlook(invalid).available, false);
+  const wrongRevenue = structuredClone(r);
+  wrongRevenue.evidence.highlights.RevenueTTM /= 1000;
+  assert.equal(researchOutlook(wrongRevenue).available, false);
 });

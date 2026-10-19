@@ -188,7 +188,11 @@ export default function DecisionOverview({
                   price={r.quote.price}
                   currency={b.scenario.currency}
                 />
-                <small>Conditional model · assumptions in Value</small>
+                <small>
+                  {b.scenario.calculatedMultiple
+                    ? "Price-anchored sensitivity · calculated multiple · not fair value"
+                    : "Conditional model · assumptions in Value"}
+                </small>
               </>
             ) : (
               <div className="overview-value-gap">

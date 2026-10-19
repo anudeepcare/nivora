@@ -69,7 +69,12 @@ export function researchBrief(r: Research) {
   const specialist = coverage.family !== "operating-company";
   const previous = latestFinancialEvidence(r).prior;
   return {
-    timing: {ma50:p.tech.ma50,ma200:p.tech.ma200,rsi:p.tech.rsi,trend:p.tech.trend},
+    timing: {
+      ma50: p.tech.ma50,
+      ma200: p.tech.ma200,
+      rsi: p.tech.rsi,
+      trend: p.tech.trend,
+    },
     businessNumbers: {
       currency: latest?.currency ?? r.quote.currency,
       revenueGrowth:
@@ -94,6 +99,9 @@ export function researchBrief(r: Research) {
             base: outlook.cases[1].target,
             high: outlook.cases[2].target,
             asOf: outlook.asOf,
+            calculatedMultiple: !!outlook.caveat?.startsWith(
+              "Calculated EV/revenue",
+            ),
           }
         : null,
     version: "research-brief-v2",
@@ -112,7 +120,8 @@ export function researchBrief(r: Research) {
             : d.stance,
       reason: specialist
         ? coverage.drivers.slice(0, 3).join(" · ")
-        : (d.flags.find(x => x.severe)?.text ?? d.forCase[0]?.text ??
+        : (d.flags.find((x) => x.severe)?.text ??
+          d.forCase[0]?.text ??
           "Review reported profitability, cash generation and funding together."),
     },
     value: {

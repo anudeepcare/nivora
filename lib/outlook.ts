@@ -1,4 +1,4 @@
-import { modelCoverage } from "./research-depth.ts";
+import { modelCoverage, ttmPeriods } from "./research-depth.ts";
 import type { Research } from "./types";
 
 export type OutlookCase = {
@@ -155,7 +155,7 @@ export function researchOutlook(r: Research): Outlook {
     !hasEarnings
   ) {
     const shares = e.ownership?.outstanding;
-    const multiple = e.multiples?.EnterpriseValueRevenue;
+    let multiple = e.multiples?.EnterpriseValueRevenue;
     const balances = r.facts
       .filter(
         (f) =>
@@ -267,25 +267,72 @@ export function researchOutlook(r: Research): Outlook {
     const ttmRevenue = e.highlights?.RevenueTTM;
     const listingEquity = shares * price;
     const comparableEV = listingEquity + netDebt;
-    if (
-      e.reportingCurrency !== r.quote.currency ||
-      marketCap == null ||
-      !Number.isFinite(marketCap) ||
-      marketCap <= 0 ||
-      Math.abs(marketCap / listingEquity - 1) > 0.1 ||
-      reportedEV == null ||
-      !Number.isFinite(reportedEV) ||
-      reportedEV <= 0 ||
-      comparableEV <= 0 ||
-      Math.abs(reportedEV / comparableEV - 1) > 0.2 ||
-      ttmRevenue == null ||
-      !Number.isFinite(ttmRevenue) ||
-      ttmRevenue <= 0 ||
-      Math.abs(multiple / (reportedEV / ttmRevenue) - 1) > 0.1
-    )
+    const listingValid =
+      e.reportingCurrency === r.quote.currency &&
+      marketCap != null &&
+      Number.isFinite(marketCap) &&
+      marketCap > 0 &&
+      Math.abs(marketCap / listingEquity - 1) <= 0.1 &&
+      Number.isFinite(comparableEV) &&
+      comparableEV > 0 &&
+      ttmRevenue != null &&
+      Number.isFinite(ttmRevenue) &&
+      ttmRevenue > 0;
+    if (!listingValid)
       return unavailable(
-        "The share count, price, market capitalisation and EV/revenue inputs do not reconcile on one currency basis. Revenue price sensitivities are withheld.",
+        "The share count, price, market capitalisation and revenue inputs do not reconcile on one currency basis. Revenue price sensitivities are withheld.",
       );
+    const reportedMultipleValid =
+      reportedEV != null &&
+      Number.isFinite(reportedEV) &&
+      reportedEV > 0 &&
+      Math.abs(reportedEV / comparableEV - 1) <= 0.2 &&
+      Math.abs(multiple! / (reportedEV / ttmRevenue!) - 1) <= 0.1;
+    let calculatedMultiple = false;
+    if (!reportedMultipleValid) {
+      // Independently corroborate the revenue unit/period before rebuilding EV.
+      // A stale or inconsistent vendor EV is not itself a reason to invent a
+      // replacement denominator. Use the latest complete reported year or TTM.
+      const annualRevenue = r.facts
+        .filter(
+          (f) =>
+            f.metric === "revenue" &&
+            f.scope === "annual" &&
+            f.currency === r.quote.currency &&
+            f.start &&
+            f.end <= r.retrievedAt.slice(0, 10) &&
+            f.filed <= r.retrievedAt.slice(0, 10) &&
+            now - Date.parse(f.end) <= 400 * 86400000 &&
+            Date.parse(f.end) - Date.parse(f.start) >= 330 * 86400000 &&
+            Date.parse(f.end) - Date.parse(f.start) <= 400 * 86400000 &&
+            Number.isFinite(f.value) &&
+            f.value > 0,
+        )
+        .map((f) => ({ end: f.end, revenue: f.value }));
+      const revenuePeriods = [
+        ...annualRevenue,
+        ...ttmPeriods(r.facts, r.retrievedAt).filter(
+          (p) => p.currency === r.quote.currency,
+        ),
+      ]
+        .filter(
+          (p) =>
+            p.revenue != null &&
+            p.revenue > 0 &&
+            now - Date.parse(p.end) <= 400 * 86400000,
+        )
+        .sort((a, b) => b.end.localeCompare(a.end));
+      const latestRevenue = revenuePeriods[0];
+      if (
+        !latestRevenue ||
+        Math.abs(ttmRevenue! / latestRevenue.revenue! - 1) > 0.1
+      )
+        return unavailable(
+          "Reported EV inputs conflict and the revenue denominator cannot be corroborated against the latest complete financial period.",
+        );
+      multiple = comparableEV / ttmRevenue!;
+      calculatedMultiple = true;
+    }
     const years = (Date.parse(estimate.date) - now) / (365.25 * 86400000);
     const cases = (
       [
@@ -328,6 +375,12 @@ export function researchOutlook(r: Research): Outlook {
       shares,
       netDebt,
       balanceDate: cash.end,
+      ...(calculatedMultiple
+        ? {
+            caveat:
+              "Calculated EV/revenue multiple: current quote × reported shares, plus dated net debt, divided by corroborated trailing revenue. Conflicting reported EV fields are excluded. This price-anchored sensitivity is not intrinsic fair value; future funding and capex are not forecast.",
+          }
+        : {}),
     };
   }
   const forwardPE = e.multiples?.ForwardPE;

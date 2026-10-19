@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-19T19:32:28.047797+00:00",
+  "generatedAt": "2026-10-19T19:49:21.510566+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
@@ -7,10 +7,10 @@
     "npm run verify": "passed: tests, TypeScript and production build",
     "npm run test:api": "passed: 40 baseline + 16 research regression + 22 provider + 5 shared protection checks",
     "git diff --check": "passed",
-    "npm test": "passed: 347 tests",
+    "npm test": "passed: 348 tests",
     "npm run build": "passed after final scoped stylesheet cleanup"
   },
-  "domainPostgresAndComponentTests": 347,
+  "domainPostgresAndComponentTests": 348,
   "builtApiChecks": 83,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -423,5 +423,13 @@
       "scenario-pipeline-verify.log",
       "scenario-pipeline-api.log"
     ]
+  },
+  "observedIrenCorrection": {
+    "source": "User-provided deployed research response, 2026-10-19",
+    "regression": "Reproduced failure then passed with calculated EV/revenue fallback",
+    "verification": "348 tests, TypeScript, production build, 83 API checks, diff whitespace check",
+    "basis": "Price-anchored forecast sensitivity with independently corroborated revenue, not intrinsic fair value",
+    "unresolved": "NBIS/TE actual response validation; ASTS listing conflict and development model; physical iPhone acceptance",
+    "deployed": false
   }
 }
