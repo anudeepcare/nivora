@@ -311,11 +311,15 @@ export function HelpPage() {
         ],
         [
           "Price history and technicals",
-          "Each quote and chart identifies its source. Quotes and chart bars have different timestamps. Chart ranges do not change the business assessment. Fibonacci prices are references based on displayed anchors, not confirmed support.",
+          "Quotes and chart bars have separate observation timestamps. Filing links and calculation details remain available where supported. Chart ranges do not change the business assessment. Fibonacci prices are references based on displayed anchors, not confirmed support.",
+        ],
+        [
+          "Live and extended-session prices",
+          "Research streams available trades and checks quotes every minute when streaming is unavailable. Portfolio defaults to five-minute checks; Live adds streaming with a two-minute fallback, while Hourly and Manual reduce requests. Updates pause in hidden pages. Premarket and after-hours observations appear when available; closed markets retain the latest observation. Crypto can update continuously. A refresh checks for new data; it does not create a new trade or change an observation timestamp. Delays, coverage and connection limits can apply.",
         ],
         [
           "Portfolio accounting",
-          "The current view tracks recorded positions and unrealized profit or loss. It does not calculate a transaction-aware performance series. Missing or stale prices are excluded from known value, and total profit is withheld when coverage is incomplete.",
+          "The current view tracks recorded positions and unrealized profit or loss. It does not calculate a transaction-aware performance series. Older usable USD prices remain included and visibly labelled; never-priced investments are excluded, with incomplete coverage disclosed. Managed balances and margin debt are shown separately.",
         ],
         [
           "AI research",

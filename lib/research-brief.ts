@@ -111,7 +111,7 @@ export function researchBrief(r: Research) {
             : d.stance,
       reason: specialist
         ? coverage.drivers.slice(0, 3).join(" · ")
-        : (d.forCase[0]?.text ??
+        : (d.flags.find(x => x.severe)?.text ?? d.forCase[0]?.text ??
           "Review reported profitability, cash generation and funding together."),
     },
     value: {

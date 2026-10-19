@@ -6,6 +6,7 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import postcss from "postcss";
 import * as format from "../lib/format.ts";
+import {retainResearchQuote} from "../lib/research-quote.ts";
 import { normalizeBars } from "../lib/market.ts";
 import { normalizeEodBars } from "../lib/eodhd-normalize.ts";
 const asOf = "2026-10-17T12:00:00Z";
@@ -138,6 +139,7 @@ function researchMarkup() {
       tech: { trend: "Weak" },
     }),
     rangeBars: () => [],
+    retainResearchQuote,
   };
   // Render the actual shared provenance component too; details remain available
   // in its disclosure rather than cluttering the quote headline.

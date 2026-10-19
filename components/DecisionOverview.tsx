@@ -17,7 +17,7 @@ export default function DecisionOverview({
       <header>
         <div>
           <span className="eyebrow">Business · Price · Discipline</span>
-          <h2>Understand the case. Then consider the price.</h2>
+          <h2>Decision snapshot</h2>
         </div>
         <small>
           {b.period
@@ -123,6 +123,9 @@ export default function DecisionOverview({
       <PositionAwareResearch research={r} compact />
       <details className="decision-evidence">
         <summary>Why this assessment · {b.metrics} available metrics</summary>
+        <p><b>Business:</b> {b.business.reason}</p>
+        <p><b>Value:</b> {b.value.reason}</p>
+        <p><b>Contribution condition:</b> {b.accumulation.reason}</p>
         <div className="decision-evidence-grid">
           {b.checks.map((x) => (
             <article key={x.label} data-status={x.status}>

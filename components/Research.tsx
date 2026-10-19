@@ -8,6 +8,7 @@ import dynamic from "next/dynamic";
 import useLivePrices from "./useLivePrices";
 import { quoteHealth } from "@/lib/quote-health";
 import { mergePriceTick } from "@/lib/live-price";
+import { retainResearchQuote } from "@/lib/research-quote";
 const AdvancedResearch = dynamic(() => import("./AdvancedResearch"));
 
 const ResearchNotes = dynamic(() => import("./ResearchNotes"));
@@ -105,13 +106,18 @@ export default function Research({ symbol }: { symbol: string }) {
     live.connected &&
     !!live.ticks[symbol] &&
     Date.now() - Date.parse(live.ticks[symbol].asOf) < 30000;
-  const observedRest = latestQuote.data?.[symbol]?.quote ?? baseResearch?.quote;
+  const retainedQuote = useRef<{symbol: string; quote: Quote | undefined}>({symbol, quote: undefined});
+  const priorQuote = retainedQuote.current.symbol === symbol ? retainedQuote.current.quote : undefined;
+  const observedRest = retainResearchQuote(
+    retainResearchQuote(priorQuote, baseResearch?.quote),
+    latestQuote.data?.[symbol]?.quote,
+  );
   const restQuote = quoteHealth(
     latestQuote.error && observedRest
       ? { ...observedRest, stale: true }
       : observedRest,
   );
-  const currentQuote = live.ticks[symbol]
+  const streamedQuote = live.ticks[symbol]
     ? mergePriceTick(restQuote, {
         ...live.ticks[symbol],
         session: live.connected
@@ -119,12 +125,14 @@ export default function Research({ symbol }: { symbol: string }) {
           : "Last streamed trade · reconnecting",
       })
     : restQuote;
+  const currentQuote = quoteHealth(retainResearchQuote(observedRest, streamedQuote));
+  retainedQuote.current = {symbol, quote: currentQuote};
   const r = useMemo(
     () =>
       baseResearch &&
       currentQuote &&
-      Date.parse(currentQuote.asOf || "") >=
-        Date.parse(baseResearch.quote.asOf || "")
+      (baseResearch.quote.price == null || Date.parse(currentQuote.asOf || "") >=
+        Date.parse(baseResearch.quote.asOf || ""))
         ? {
             ...baseResearch,
             quote: currentQuote,
@@ -379,6 +387,7 @@ export default function Research({ symbol }: { symbol: string }) {
             <p className="muted small">
               {symbol} · {r.company.exchange || "Listing"} · {r.quote.currency}
             </p>
+            <ResearchModeSwitch />
           </div>
         </div>
         <div className="row quote-actions gap24">
@@ -415,9 +424,6 @@ export default function Research({ symbol }: { symbol: string }) {
         </div>
       </header>
 
-      <div className="research-view-control">
-        <ResearchModeSwitch />
-      </div>
       <div
         ref={tabsAnchor}
         className="research-tab-anchor"
@@ -470,7 +476,6 @@ export default function Research({ symbol }: { symbol: string }) {
           </button>
         ))}
       </nav>
-      {tab === "Snapshot" && <ResearchChanges research={r} />}
       {notice && <Notice error>{notice}</Notice>}
       {resource.error && <Notice error>{resource.error}</Notice>}
       {r.issues.length > 0 && (
@@ -517,6 +522,7 @@ export default function Research({ symbol }: { symbol: string }) {
             className="au-stack"
           >
             <DecisionOverview research={r} onTab={switchTab}/>
+            <ResearchChanges research={r} />
             <div className="research-layout">
               <div className="research-canvas">
                 <header className="chart-context-heading">
@@ -527,9 +533,11 @@ export default function Research({ symbol }: { symbol: string }) {
               </div>
               <OverviewContext research={r} />
             </div>
-            <KeyFinancialMetrics research={r} />
-            <DecisionWorkspace research={r} onTab={switchTab} part="detail" />
-            <DecisionWatch key={r.company.symbol} research={r} />
+            {preferences.detail === "advanced" && <>
+              <KeyFinancialMetrics research={r} />
+              <DecisionWorkspace research={r} onTab={switchTab} part="detail" />
+              <DecisionWatch key={r.company.symbol} research={r} />
+            </>}
           </section>
         )}
         {tab === "Financials" && (

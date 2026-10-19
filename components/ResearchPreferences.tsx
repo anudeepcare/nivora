@@ -101,6 +101,7 @@ export function ResearchModeSwitch() {
         <button
           type="button"
           key={mode}
+          title={mode === "essential" ? "Concise overview with the case, scenarios and price" : "Overview plus financial metrics, evidence lenses and review thresholds"}
           aria-pressed={p.detail === mode}
           className={p.detail === mode ? "active" : ""}
           onClick={() => setPreferences({ detail: mode })}

@@ -1,3 +1,7 @@
+# Current correction — 2026-10-19
+
+Quote retention, compact first-screen decision snapshot, functional Simple/Pro depth and customer-facing source-link cleanup. See `REFRESH_CONSISTENCY.md`. PWA shell geometry is unchanged. Physical iPhone and authenticated live-feed checks remain unverified.
+
 EVIDENCE-LED PRODUCT BUILD — 2026-10-19
 Public storefront at /, fictional interactive walkthrough at /sample, separate signup at /login?mode=signup. Overview now layers business, conditional value, contribution condition, priority risk and dated evidence. Technicals includes monthly zone candles and an experimental robust candidate with equal-budget historical comparison. Original production policy, portfolio refresh/accounting and PWA geometry retained. Read docs/EVIDENCE_PRODUCT_BUILD.md for exact scope and limits. Candidate is not promoted as superior; five real-history checks have mixed results. No new SQL required. Final verification/report: 291 tests, 83 API checks, production build; no physical device/rendered browser confirmation.
 

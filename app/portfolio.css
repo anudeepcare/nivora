@@ -785,7 +785,7 @@
 .portfolio-refresh > span > small { display:block; color:var(--muted); margin-top:4px; }
 .portfolio-refresh-controls { display:flex; align-items:center; gap:12px; }
 .portfolio-refresh-controls label { display:flex; align-items:center; gap:7px; font-size:.8rem; }
-.portfolio-refresh-controls select { padding:8px; border:1px solid var(--line); border-radius:10px; background:var(--surface); color:var(--ink); }
+.portfolio-refresh-controls select { min-height:40px; max-width:190px; padding:8px 30px 8px 12px; border:1px solid var(--line); border-radius:10px; background-color:var(--surface); color:var(--ink); font:inherit; line-height:1.3; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%23647b88' stroke-width='1.5'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 9px center; }
 .sector-benchmarks { min-width:0; }
 .sector-benchmarks .segments { margin:14px 0; max-width:340px; }
 .sector-performance-rows { display:grid; gap:12px; }

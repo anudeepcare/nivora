@@ -111,7 +111,7 @@ export function useWorkspaceQuotes(
       if (row) cached[symbol] = row.value as Quotes[string];
     }
     let persisted:Quotes={};
-    if(scope==='portfolio'&&owner&&!demo){try{const saved=JSON.parse(localStorage.getItem('auryn-portfolio-quotes-v1:'+owner)||'null');if(saved?.version===1&&saved.rows&&typeof saved.rows==='object'){persisted=saved.rows;setCheckedAt(typeof saved.checkedAt==='string'?saved.checkedAt:null);}}catch{}}
+    if(owner&&!demo){try{const saved=JSON.parse(localStorage.getItem('auryn-portfolio-quotes-v1:'+owner)||'null');if(saved?.version===1&&saved.rows&&typeof saved.rows==='object'){persisted=saved.rows;setCheckedAt(typeof saved.checkedAt==='string'?saved.checkedAt:null);}}catch{}}
     const baseline=mergePortfolioQuotes(mergePortfolioQuotes(persisted,cached,selected.flat()),latestData.current,selected.flat());
     setDataOwner(owner);setData(baseline);
     setReady(Object.values(baseline).some(r=>r.quote?.price!=null)||!selected.length);
@@ -180,7 +180,7 @@ export function useWorkspaceQuotes(
         next=mergePortfolioQuotes(next,latestData.current,selected.flat());
         setData(next);
         const checked=new Date().toISOString();setCheckedAt(checked);
-        if(scope==='portfolio'&&owner&&!demo){try{localStorage.setItem('auryn-portfolio-quotes-v1:'+owner,JSON.stringify({version:1,checkedAt:checked,rows:next}));}catch{}}
+        if(owner&&!demo){try{const storageKey='auryn-portfolio-quotes-v1:'+owner;const stored=JSON.parse(localStorage.getItem(storageKey)||'null');const rows=mergePortfolioQuotes(stored?.version===1?stored.rows??{}:{},next,[...new Set([...Object.keys(stored?.version===1?stored.rows??{}:{}),...Object.keys(next)])]);localStorage.setItem(storageKey,JSON.stringify({version:1,checkedAt:checked,rows}));}catch{}}
         cache.set("workspace-quotes:" + key, { at: Date.now(), value: true });
         setReady(true);
         setLoading(false);
@@ -243,7 +243,9 @@ export function useWorkspaceQuotes(
     [data, live, dataOwner, owner],
   );
   useEffect(() => {
+    let advanced = false;
     for (const [symbol, row] of Object.entries(pricedData)) {
+      if (usablePortfolioQuote(row.quote) && (!usablePortfolioQuote(data[symbol]?.quote) || Date.parse(row.quote!.asOf || '') > Date.parse(data[symbol]?.quote?.asOf || ''))) advanced = true;
       if (!row.quote || row.quote.stale) continue;
       const old = cache.get("quote:" + symbol)?.value as
         | Quotes[string]
@@ -254,7 +256,9 @@ export function useWorkspaceQuotes(
       )
         cache.set("quote:" + symbol, { at: Date.now(), value: row });
     }
-  }, [pricedData, cache]);
+    // Commit streamed observations too: expiry/reconnect must not restore an older REST snapshot.
+    if (advanced && dataOwner === owner) setData(prior => mergePortfolioQuotes(prior, pricedData, Object.keys(pricedData)));
+  }, [pricedData, cache, data, dataOwner, owner]);
   return { data: pricedData, loading, ready, error, refresh, mode, changeMode, checkedAt };
 }
 export function ResearchHome() {

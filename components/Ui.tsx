@@ -251,6 +251,7 @@ export function Source({
   href?: string | null;
   children: React.ReactNode;
 }) {
+  if (href && /^https:\/\/(?:[^/]*\.)?(?:eodhd\.com|twelvedata\.com)(?:[/:]|$)/i.test(href)) return null;
   return href && /^https:\/\//.test(href) ? (
     <a className="source" href={href} target="_blank" rel="noreferrer">
       {/eodhd\.com\/financial-apis|twelvedata\.com\/docs/.test(href)

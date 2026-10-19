@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-19T18:26:28.800218+00:00",
+  "generatedAt": "2026-10-19T18:55:50.858526+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
@@ -7,10 +7,10 @@
     "npm run verify": "passed: tests, TypeScript and production build",
     "npm run test:api": "passed: 40 baseline + 16 research regression + 22 provider + 5 shared protection checks",
     "git diff --check": "passed",
-    "npm test": "passed: 291 tests",
+    "npm test": "passed: 294 tests",
     "npm run build": "passed after final scoped stylesheet cleanup"
   },
-  "domainPostgresAndComponentTests": 291,
+  "domainPostgresAndComponentTests": 294,
   "builtApiChecks": 83,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -350,6 +350,24 @@
       "No new specialist intrinsic valuation models or point-in-time fundamental backtest",
       "No live orders, paid service provisioning, deployment or database writes",
       "No physical iPhone/rendered browser verification"
+    ]
+  },
+  "refreshConsistency": {
+    "status": "294 automated tests, TypeScript, production build and 83 fixture API checks passed",
+    "changes": [
+      "Retain usable newer research quotes across failed/invalid/older refreshes",
+      "Commit streamed portfolio observations before reconnect or expiry",
+      "Share account-scoped saved quotes across Home, Watchlist and Portfolio",
+      "Compact company header, top-aligned assessment cards and first-screen decision snapshot",
+      "Functional Simple/Pro overview depth",
+      "Remove customer-facing API vendor URLs; preserve filings/news",
+      "Readable earnings hover and portfolio refresh selector"
+    ],
+    "pwaShellGeometry": "unchanged",
+    "browserVisuals": "not executed",
+    "logs": [
+      "refresh-consistency-verify.log",
+      "refresh-consistency-api.log"
     ]
   }
 }

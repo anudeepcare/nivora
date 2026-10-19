@@ -618,3 +618,10 @@ test('monthly chart distinguishes unavailable warm-up data from ordinary 1x cond
  const Desk=loadComponent('components/AccumulationDesk.tsx','AccumulationDesk',{React,useMemo:React.useMemo,useState:React.useState,accumulation,candidatePolicy,settledPolicyBars,evaluatePolicies,monthlyReadings,...format,colours,PriceChart:({candleColors})=>React.createElement('span',{'data-zone-colours':JSON.stringify(candleColors)})});
  const html=renderToStaticMarkup(React.createElement(Desk,{research:demoData.research.MSFT}));assert.match(html,/No eligible signal/);assert.match(html,/#b0b5bd/);assert.match(html,/Original v1/);assert.match(html,/Candidate v2/);
 });
+
+test('metric provenance links filings but never sends users to infrastructure API pages',()=>{
+ const Source=loadComponent('components/Ui.tsx','Source',{React,ArrowUpRight:empty});
+ for(const href of ['https://eodhd.com/api/fundamentals/IREN.US','https://eodhd.com/financial-apis','https://twelvedata.com/docs'])assert.equal(renderToStaticMarkup(React.createElement(Source,{href},'Source 1')),'');
+ const html=renderToStaticMarkup(React.createElement(Source,{href:'https://www.sec.gov/Archives/edgar/data/1/'},'Filing'));
+ assert.match(html,/sec.gov/);assert.match(html,/Filing/);
+});
