@@ -2,6 +2,7 @@
 
 import SessionBrief from "./SessionBrief";
 import useLivePrices from "./useLivePrices";
+import {quoteHealth} from "@/lib/quote-health";
 import {mergePriceTick} from "@/lib/live-price";
 
 import Link from "next/link";
@@ -64,6 +65,7 @@ export function useWorkspaceQuotes(
       !!demo || cache.has("workspace-quotes:" + key) || !groups.length,
     ),
     [error, setError] = useState("");
+  const liveFresh=useRef(new Set<string>());
   const refresh = useCallback(() => setRevision((x) => x + 1), []);
   // Discovering a hybrid/Twelve connection must not abort and restart a quote
   // batch that already began while provider metadata was loading.
@@ -117,8 +119,8 @@ export function useWorkspaceQuotes(
         if (!active) break;
         const missing = group.filter(
           (s) =>
-            !cache.get("quote:" + s) ||
-            Date.now() - cache.get("quote:" + s)!.at > 60000,
+            !liveFresh.current.has(s)&&(!cache.get("quote:" + s) ||
+            Date.now() - cache.get("quote:" + s)!.at > 60000),
         );
         if (!missing.length) continue;
         const weight = missing.reduce(
@@ -187,7 +189,8 @@ export function useWorkspaceQuotes(
     return()=>{clearInterval(timer);document.removeEventListener('visibilitychange',tick);};
   },[demo,loading,refresh]);
   const live=useLivePrices(groups.flat(),!!demo);
-  const pricedData=useMemo(()=>Object.keys(live.ticks).length?Object.fromEntries(Object.entries(data).map(([symbol,row])=>[symbol,live.ticks[symbol]?{...row,quote:mergePriceTick(row.quote,{...live.ticks[symbol],session:live.connected?live.ticks[symbol].session:"Last streamed trade · reconnecting"})}:row])):data,[data,live]);
+  liveFresh.current=new Set(live.connected?Object.values(live.ticks).filter(t=>Date.now()-Date.parse(t.asOf)<30000).map(t=>t.symbol):[]);
+  const pricedData=useMemo(()=>Object.fromEntries(Object.entries(data).map(([symbol,row])=>[symbol,{...row,quote:quoteHealth(live.ticks[symbol]?mergePriceTick(row.quote,{...live.ticks[symbol],session:live.connected?live.ticks[symbol].session:"Last streamed trade · reconnecting"}):row.quote)}])),[data,live]);
   return { data:pricedData, loading, ready, error, refresh };
 }
 export function ResearchHome() {
@@ -251,7 +254,7 @@ export function ResearchHome() {
                 </footer>
                 <small className="quote-stamp">
                   {q?.quote
-                    ? dateLabel(q.quote.asOf)
+                    ? `${q.quote.stale?"Older quote · ":""}${quoteTime(q.quote.asOf)}`
                     : q?.error || "Loading price…"}
                 </small>
               </Link>

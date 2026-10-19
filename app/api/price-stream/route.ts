@@ -1,6 +1,7 @@
 import {account,failure,HttpError,limit} from '@/lib/server';
 import {symbolInput} from '@/lib/format';
 import type {PriceTick} from '@/lib/live-price';
+import {allowStreamWorker} from '@/lib/shared-market';
 import {priceStreamHub} from '@/lib/price-stream-hub';
 export const runtime='nodejs';export const dynamic='force-dynamic';export const maxDuration=60;
 export async function GET(request:Request){
@@ -12,6 +13,7 @@ export async function GET(request:Request){
   if(!raw.length||raw.length>30)throw new HttpError('Select 1–30 instruments.');
   const symbols=[...new Set(raw.map(symbolInput))];
   if(symbols.some(s=>!/^([A-Z][A-Z0-9.-]{0,14}|[A-Z0-9]{2,12}\/USD)$/.test(s)))throw new HttpError('Unsupported streaming symbol.');
+  if(!await allowStreamWorker(token))throw new HttpError("Streaming capacity is in use; regular price updates continue.",503);
   const encoder=new TextEncoder();let cleanup=()=>{};
   const stream=new ReadableStream<Uint8Array>({start(controller){
    let finished=false,release:()=>void=()=>{};let timer:ReturnType<typeof setTimeout>,heartbeat:ReturnType<typeof setInterval>,flush:ReturnType<typeof setInterval>;const pending=new Map<string,PriceTick>();

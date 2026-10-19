@@ -1,6 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import useLivePrices from "./useLivePrices";
+import {quoteHealth} from "@/lib/quote-health";
 import {mergePriceTick} from "@/lib/live-price";
 const AdvancedResearch=dynamic(()=>import("./AdvancedResearch"));
 
@@ -62,10 +63,13 @@ export default function Research({ symbol }: { symbol: string }) {
     ),
     baseResearch = resource.data;
   const latestQuote = useResource<Record<string,{company:Company;quote:Quote}>>(`quotes?symbols=${encodeURIComponent(symbol)}`, demo ? {[symbol]:{company:demo.research[symbol]?.company,quote:demo.research[symbol]?.quote}} as Record<string,{company:Company;quote:Quote}> : undefined,60000);
+  const liveHealthy=useRef(false);
   const refreshQuote=useRef(latestQuote.refresh);refreshQuote.current=latestQuote.refresh;
-  useEffect(()=>{if(demo)return;const tick=()=>{if(document.visibilityState==='visible')refreshQuote.current();};const timer=setInterval(tick,60000);document.addEventListener('visibilitychange',tick);return()=>{clearInterval(timer);document.removeEventListener('visibilitychange',tick);};},[symbol,demo]);
+  useEffect(()=>{if(demo)return;const tick=()=>{if(document.visibilityState==='visible'&&!liveHealthy.current)refreshQuote.current();};const timer=setInterval(tick,60000);document.addEventListener('visibilitychange',tick);return()=>{clearInterval(timer);document.removeEventListener('visibilitychange',tick);};},[symbol,demo]);
   const live=useLivePrices([symbol],!!demo);
-  const restQuote=latestQuote.data?.[symbol]?.quote??baseResearch?.quote;
+  liveHealthy.current=live.connected&&!!live.ticks[symbol]&&Date.now()-Date.parse(live.ticks[symbol].asOf)<30000;
+  const observedRest=latestQuote.data?.[symbol]?.quote??baseResearch?.quote;
+  const restQuote=quoteHealth(latestQuote.error&&observedRest?{...observedRest,stale:true}:observedRest);
   const currentQuote=live.ticks[symbol]?mergePriceTick(restQuote,{...live.ticks[symbol],session:live.connected?live.ticks[symbol].session:"Last streamed trade · reconnecting"}):restQuote;
   const r=useMemo(()=>baseResearch&&currentQuote&&Date.parse(currentQuote.asOf||'')>=Date.parse(baseResearch.quote.asOf||'')?{...baseResearch,quote:currentQuote}:baseResearch,[baseResearch,currentQuote]);
   const [tab, setTab] = useState<(typeof tabs)[number]>(

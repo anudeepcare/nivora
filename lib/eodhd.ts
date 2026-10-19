@@ -1,3 +1,5 @@
+import {sharedEodRead,MarketGuardError,pauseSharedEod} from "./shared-market";
+import {canonicalMarketKey} from "./market-policy";
 import { HttpError } from "./server";
 import {
   eodTicker,
@@ -12,6 +14,7 @@ import type { Company, Filing } from "./types";
 import type { ChartRange } from "./providers";
 import type { GrowData, GrowDataset } from "./grow-data";
 class EodAccessError extends HttpError {}
+class EodBackoffError extends HttpError { seconds:number;constructor(message:string,seconds:number){super(message,503);this.seconds=seconds;} }
 const cache = new Map<string, { expires: number; value: Promise<any> }>();
 export const eodEnabled = () =>
   Boolean(process.env.EODHD_API_KEY || process.env.EODHD_API_TOKEN);
@@ -26,10 +29,10 @@ export async function eodRequest(
       "Add EODHD_API_KEY to the server environment to connect your subscription.",
       503,
     );
-  const key = path + JSON.stringify(params),
+  const key = canonicalMarketKey(path,params),
     old = cache.get(key);
   if (old && old.expires > Date.now()) return old.value;
-  const value = (async () => {
+  const value = sharedEodRead(token,path,params,ttl,async () => {
     const response = await fetch(
       `https://eodhd.com/api/${path}?${new URLSearchParams({ ...params, api_token: token, fmt: "json" })}`,
       {
@@ -37,6 +40,12 @@ export async function eodRequest(
         signal: AbortSignal.timeout(15000),
       },
     );
+    if(response.status===429||response.status===402){
+      const raw=response.headers.get('Retry-After'),parsed=raw?Number(raw):NaN;
+      const seconds=response.status===402?Math.ceil((Date.parse(new Date(Date.now()+86400000).toISOString().slice(0,10))-Date.now())/1000):Math.max(1,Math.min(3600,Number.isFinite(parsed)?parsed:60));
+      await pauseSharedEod(token,seconds);
+      throw new EodBackoffError(response.status===402?'Updates temporarily limited: the market-data allowance is exhausted.':'Updates temporarily paused by the data source. Please retry later.',seconds);
+    }
     if (response.status === 401 || response.status === 403)
       throw new EodAccessError(
         "EODHD did not authorize this dataset. Check the key and plan entitlement.",
@@ -46,7 +55,9 @@ export async function eodRequest(
       throw new HttpError(
         response.status === 401 || response.status === 403
           ? "EODHD did not authorize this dataset. Check the key and plan entitlement."
-          : response.status === 429
+          : response.status === 402
+            ? "Updates temporarily limited: the market-data allowance is exhausted."
+            : response.status === 429
             ? "EODHD request allowance reached. Retry shortly."
             : "EODHD could not return this dataset. Retry shortly.",
         503,
@@ -58,12 +69,12 @@ export async function eodRequest(
         503,
       );
     return data;
-  })().catch((e) => {
-    if (e instanceof EodAccessError) {
+  }).catch((e) => {
+    if (e instanceof EodAccessError || e instanceof EodBackoffError) {
       const entry = cache.get(key);
-      if (entry) entry.expires = Date.now() + 60000;
+      if (entry) entry.expires = Date.now() + (e instanceof EodBackoffError?e.seconds*1000:60000);
     } else cache.delete(key);
-    throw e;
+    throw e instanceof MarketGuardError?new HttpError(e.message,503):e;
   });
   cache.set(key, { expires: Date.now() + ttl, value });
   // Full fundamental objects are large; bound their lifetime and retained count.

@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-10-19T13:49:38.846996+00:00",
+  "generatedAt": "2026-10-19T14:10:16.018406+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 246 tests, TypeScript, production build",
-    "npm run test:api": "passed: 33 baseline + 16 research regression + 22 provider checks",
+    "npm run verify": "passed: 251 tests, TypeScript, production build",
+    "npm run test:api": "passed: 33 baseline + 16 research regression + 22 provider + 5 shared protection checks",
     "git diff --check": "passed",
-    "npm test": "passed: 246 tests"
+    "npm test": "passed: 251 tests"
   },
-  "domainPostgresAndComponentTests": 246,
-  "builtApiChecks": 71,
+  "domainPostgresAndComponentTests": 251,
+  "builtApiChecks": 76,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
     "intraday": "Twelve Data preferred; labelled EODHD historical fallback",
@@ -235,5 +235,15 @@
     "deployedStreamingVerified": false,
     "workerLocalSubscriptionCoordinationOnly": true,
     "physicalIphoneVerified": false
+  },
+  "trustAndCostControls": {
+    "scope": "docs/TRUST_AND_COST_CONTROLS.md",
+    "migration": "supabase/migrations/20261019140303_shared_market_guard.sql",
+    "verifyLog": "verification/trust-and-budget-verify.log",
+    "apiLog": "verification/trust-and-budget-api.log",
+    "enabledByDefault": false,
+    "liveMigrationApplied": false,
+    "liveProviderQuotaVerified": false,
+    "globalStreamFanoutImplemented": false
   }
 }
