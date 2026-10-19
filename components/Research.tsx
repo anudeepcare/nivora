@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 const AdvancedResearch=dynamic(()=>import("./AdvancedResearch"));
-import PositionAwareResearch from "./PositionAwareResearch";
+
 const ResearchNotes=dynamic(()=>import("./ResearchNotes"));
 import FinancingContext from "./FinancingContext";
 import EarningsPrep from "./EarningsPrep";
@@ -288,7 +288,7 @@ export default function Research({ symbol }: { symbol: string }) {
           </button>
         </div>
       </header>
-      <PositionAwareResearch research={r}/>
+
       <nav
         className="local-tabs"
         role="tablist"

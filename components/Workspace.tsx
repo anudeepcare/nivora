@@ -1,7 +1,7 @@
 "use client";
-import HoldingsImport from "./HoldingsImport";
+
 import SessionBrief from "./SessionBrief";
-import PortfolioContext from "./PortfolioContext";
+
 import Link from "next/link";
 import { useMemo, useRef, useState, useEffect, useCallback } from "react";
 import {
@@ -307,7 +307,7 @@ export function Overview() {
   return (
     <section className="home-workspace">
       <PageHeading
-        title="Your portfolio, in focus."
+        title="Your investing day."
         subtitle={new Date().toLocaleDateString("en-US", {
           weekday: "long",
           month: "long",
@@ -323,14 +323,6 @@ export function Overview() {
       />
       {workspaceError && <Notice error>{workspaceError}</Notice>}
       {quotes.error && <Notice error>{quotes.error}</Notice>}
-      <PortfolioContext
-        compact
-        quotes={Object.fromEntries(
-          Object.entries(quotes.data || {})
-            .filter(([, v]) => v.quote)
-            .map(([k, v]) => [k, v.quote!]),
-        )}
-      />
       <SessionBrief />
       <HomeUpdates />
       <div className="grid2 home-details">
@@ -781,7 +773,7 @@ export function Portfolio() {
           </button>
         }
       />
-      <HoldingsImport/>
+
       {workspaceError && <Notice error>{workspaceError}</Notice>}
       {missingCurrency.length > 0 && (
         <div className="portfolio-review">
@@ -882,6 +874,11 @@ export function Portfolio() {
           <Allocation positions={positions} quotes={q} />
         </section>
       </div>
+      <section className="portfolio-review-strip" aria-label="Portfolio exposure review">
+        <div><span>Pricing coverage</span><strong>{quotes.ready ? `${positions.length - positions.filter(p=>totals.missing.includes(p.symbol)).length} / ${positions.length}` : '—'}</strong><small>Recorded positions with usable prices</small></div>
+        <div><span>Available cash</span><strong>{workspace ? amount(positions.filter(p=>p.assetType==='cash'&&p.symbol==='USD'&&p.currency==='USD'&&Number.isFinite(p.quantity)&&p.quantity>0&&Number.isFinite(p.cost)&&p.cost>=0).reduce((sum,p)=>sum+p.quantity,0)) : '—'}</strong><small>Recorded USD cash, not broker buying power</small></div>
+        <div><span>Largest investment</span><strong>{quotes.ready ? (()=>{const values=new Map<string,number>();for(const p of positions){if(p.assetType==='cash'||totals.missing.includes(p.symbol))continue;values.set(p.symbol,(values.get(p.symbol)||0)+p.quantity*q[p.symbol].price!);}const largest=[...values].sort((a,b)=>b[1]-a[1])[0];return largest&&totals.knownValue>0?`${largest[0]} · ${percent(largest[1]/totals.knownValue*100)}`:'—';})() : '—'}</strong><small>Share of priced assets and cash</small></div>
+      </section>
       <section className="panel portfolio-holdings support">
         <header className="section-heading">
           <h2>

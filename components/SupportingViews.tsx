@@ -1,5 +1,5 @@
 "use client";
-import AppearanceControls from "./AppearanceControls";
+import DisplayPreferences from "./DisplayPreferences";
 import ResearchPreferenceControls from "./ResearchPreferences";
 import PwaDiagnostics from "./PwaDiagnostics";
 import { useEffect, useMemo, useState } from "react";
@@ -45,10 +45,11 @@ export function Settings() {
   return (
     <section className="settings-page">
       <PageHeading
-        title="Your workspace"
-        subtitle="Appearance, research preferences and account security."
+        title="Settings"
+        subtitle="Make AURYN feel right for you."
       />
-      <section className="panel">
+      <section className="panel settings-account">
+        <h3>Account</h3>
         <div className="setting-row">
           <div>
             <strong>Email</strong>
@@ -69,7 +70,7 @@ export function Settings() {
           </button>
         </div>
       </section>
-      <section className="panel settings-appearance"><AppearanceControls /><details className="settings-research"><summary>Research preferences</summary><ResearchPreferenceControls /></details></section>
+      <section className="panel settings-appearance"><DisplayPreferences /><details className="settings-research"><summary>Research preferences</summary><ResearchPreferenceControls /></details></section>
       <details className="panel support settings-password">
         <summary>Change password</summary>
         <form className="password-form" onSubmit={update}>
@@ -88,8 +89,9 @@ export function Settings() {
             {busy ? "Saving…" : "Update password"}
           </button>
         </form>
-        {message && <Notice>{message}</Notice>}
       </details>
+      {message && <Notice>{message}</Notice>}
+      <nav className="settings-page-links" aria-label="Help and legal"><Link href={`${demo?"/preview":""}/help`}>Help & support <ArrowUpRight size={16}/></Link><Link href="/privacy">Privacy <ArrowUpRight size={16}/></Link><Link href="/terms">Terms <ArrowUpRight size={16}/></Link></nav>
     </section>
   );
 }

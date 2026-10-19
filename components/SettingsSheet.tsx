@@ -1,5 +1,5 @@
 "use client";
-import AppearanceControls from "./AppearanceControls";
+import DisplayPreferences from "./DisplayPreferences";
 import Link from "next/link";
 import ResearchPreferenceControls from "./ResearchPreferences";
 import { useState, type RefObject } from "react";
@@ -12,15 +12,7 @@ export default function SettingsSheet({
 }: {
   dialog: RefObject<HTMLDialogElement | null>;
 }) {
-  const {
-    demo,
-    themePreference,
-    setTheme,
-    textSize,
-    setTextSize,
-    reduceMotion,
-    setReduceMotion,
-  } = useProduct();
+  const { demo } = useProduct();
   const [error, setError] = useState("");
   const prefix = demo ? "/preview" : "";
   return (
@@ -50,49 +42,8 @@ export default function SettingsSheet({
           <X size={21} />
         </button>
       </header>
-      <div className="dialog-body">
-        <div className="setting-row">
-          <span>Appearance</span>
-          <div className="segments" aria-label="Appearance">
-            {(["light", "dark", "system"] as const).map((t) => (
-              <button
-                key={t}
-                aria-pressed={themePreference === t}
-                className={themePreference === t ? "active" : ""}
-                onClick={() => setTheme(t)}
-              >
-                {t[0].toUpperCase() + t.slice(1)}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="setting-row">
-          <span>Text size</span>
-          <div className="segments" aria-label="Text size">
-            {(["standard", "large"] as const).map((t) => (
-              <button
-                key={t}
-                aria-pressed={textSize === t}
-                className={textSize === t ? "active" : ""}
-                onClick={() => setTextSize(t)}
-              >
-                {t === "large" ? "Larger" : "Standard"}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="setting-row">
-          <span>Reduce motion</span>
-          <button
-            className="toggle"
-            aria-label="Reduce motion"
-            aria-pressed={reduceMotion}
-            onClick={() => setReduceMotion(!reduceMotion)}
-          >
-            <i />
-          </button>
-        </div>
-        <AppearanceControls />
+      <div className="dialog-body settings-clean-body">
+        <DisplayPreferences />
         <details className="settings-research"><summary>Research preferences</summary><ResearchPreferenceControls /></details>
         {[
           ["settings", "Account & security"],

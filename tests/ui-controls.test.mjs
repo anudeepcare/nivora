@@ -542,7 +542,7 @@ test('authentication explains AURYN in sign-in, signup and recovery without fabr
  }
 });
 test('settings hides experimental navigation while preserving account and help',()=>{
- const SettingsSheet=loadComponent('components/SettingsSheet.tsx','SettingsSheet',{React,useState:React.useState,useProduct:()=>({demo:false,themePreference:'light',textSize:'standard',reduceMotion:false}),Link:({children,...props})=>React.createElement('a',props,children),ArrowRight:empty,X:empty,LogOut:empty,ResearchPreferenceControls:empty,AppearanceControls:empty});
+ const SettingsSheet=loadComponent('components/SettingsSheet.tsx','SettingsSheet',{React,useState:React.useState,useProduct:()=>({demo:false,themePreference:'light',textSize:'standard',reduceMotion:false}),Link:({children,...props})=>React.createElement('a',props,children),ArrowRight:empty,X:empty,LogOut:empty,ResearchPreferenceControls:empty,DisplayPreferences:empty});
  const html=renderToStaticMarkup(React.createElement(SettingsSheet,{dialog:{current:null}}));
  assert.doesNotMatch(html,/href="\/(discover|research-lab|trading)"/);
  assert.match(html,/Account &amp; security/);assert.match(html,/href="\/help"/);
@@ -565,4 +565,10 @@ test('technical desk separates four evidence groups and formats missing data saf
  const {advancedStudies}=await import('../lib/advanced-research.ts'),{professionalStudies}=await import('../lib/professional-studies.ts'),{expandedStudies}=await import('../lib/technical-expanded.ts'),{priceStudies}=await import('../lib/price-studies.ts'),{perspective}=await import('../lib/analysis.ts');
  const TechnicalDashboard=loadComponent('components/TechnicalDashboard.tsx','TechnicalDashboard',{React,useMemo:React.useMemo,useRef:React.useRef,advancedStudies,professionalStudies,expandedStudies,priceStudies,perspective,...format,TechnicalLevels:()=>null,X:()=>null});
  const html=renderToStaticMarkup(React.createElement(TechnicalDashboard,{research:demoData.research.MSFT}));for(const title of ['Trend','Momentum','Volatility &amp; range','Participation','Price reference map','Custom anchors'])assert.ok(html.includes(title),title);assert.doesNotMatch(html,/NaN|Infinity|undefined/);
+});
+
+test('shared settings exposes theme and accessibility without repeating accent headings',()=>{
+ const DisplayPreferences=loadComponent('components/DisplayPreferences.tsx','DisplayPreferences',{React,useProduct:()=>({themePreference:'dark',textSize:'large',reduceMotion:true}),AppearanceControls:empty});
+ const html=renderToStaticMarkup(React.createElement(DisplayPreferences));
+ assert.match(html,/Make it yours/);assert.match(html,/aria-label="Appearance"/);assert.match(html,/aria-label="Text size"/);assert.match(html,/aria-label="Reduce motion" aria-pressed="true"/);assert.match(html,/aria-pressed="true" class="active">Dark/);
 });
