@@ -8,6 +8,7 @@ const AdvancedResearch=dynamic(()=>import("./AdvancedResearch"));
 const ResearchNotes=dynamic(()=>import("./ResearchNotes"));
 import FinancingContext from "./FinancingContext";
 import EarningsPrep from "./EarningsPrep";
+import BusinessMap from "./BusinessMap";
 import TimingContext from "./TimingContext";
 import DecisionWorkspace from "./DecisionWorkspace";
 import ValuationLab from "./ValuationLab";
@@ -377,7 +378,7 @@ export default function Research({ symbol }: { symbol: string }) {
         aria-labelledby={`tab-${tab}`}
         className="au-stack"
       >
-        {tab === "News" && <><EarningsPrep research={r} /><CompanyUpdates research={r} /></>}
+        {tab === "News" && <><EarningsPrep research={r} /><EarningsWorkspace research={r} /><CompanyUpdates research={r} /></>}
         {tab === "Advanced" && <AdvancedResearch key={r.company.symbol} research={r}/>}
         {tab === "Analysts" && <AnalystRatings research={r} />}
         {tab === "Snapshot" && (
@@ -402,7 +403,7 @@ export default function Research({ symbol }: { symbol: string }) {
           <>
             <Financials research={r} />
             <FinancingContext research={r} />
-            <EarningsWorkspace research={r} />
+            <BusinessMap key={r.company.symbol} research={r} />
           </>
         )}
         {tab === "Valuation" && (
@@ -438,7 +439,7 @@ export default function Research({ symbol }: { symbol: string }) {
             <TimingContext research={r} />
             <TechnicalPicture
               research={r}
-              dca={<DcaCard research={r} compact />}
+              dca={null}
             />
           </>
         )}

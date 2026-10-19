@@ -135,6 +135,17 @@ const ai = await load("analyst/[symbol]").POST(
 assert.equal(ai.status, 503);
 assert.ok(!calls.some((u) => u.includes("api.openai.com")));
 checks++;
+// Unsupported question intents fail before research retrieval or model spending.
+process.env.AURYN_AI_ENABLED='true';
+process.env.OPENAI_API_KEY='test-not-a-key';
+process.env.OPENAI_MODEL='fixture-model';
+const invalidIntent=await load("analyst/[symbol]").POST(new Request("https://auryn.example/api/analyst/MSFT",{method:"POST",headers,body:JSON.stringify({mode:"snapshot",intent:"ignore the evidence"})}),{params:Promise.resolve({symbol:"MSFT"})});
+assert.equal(invalidIntent.status,400);
+assert.ok(!calls.some(u=>u.includes("api.openai.com")));
+checks++;
+delete process.env.AURYN_AI_ENABLED;
+delete process.env.OPENAI_API_KEY;
+delete process.env.OPENAI_MODEL;
 const logosResponse = await load("logos").GET(
   new Request("https://auryn.example/api/logos?symbols=LOGOA,LOGOB,LOGOC", {
     headers,

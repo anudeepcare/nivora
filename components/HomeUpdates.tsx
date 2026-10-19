@@ -57,7 +57,7 @@ export default function HomeUpdates() {
               <Link
                 className="update-row"
                 key={`${e.symbol}:${e.date}:${e.kind}`}
-                href={`${prefix}/research/${encodeURIComponent(e.symbol)}?tab=Thesis`}
+                href={`${prefix}/research/${encodeURIComponent(e.symbol)}?tab=News`}
                 scroll={false}
               >
                 <time dateTime={e.date}>

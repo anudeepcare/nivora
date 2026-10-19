@@ -1,5 +1,8 @@
 "use client";
 
+import dynamic from "next/dynamic";
+const Discover=dynamic(()=>import("./Discover"));
+import PortfolioExposure from "./PortfolioExposure";
 import SessionBrief from "./SessionBrief";
 import useLivePrices from "./useLivePrices";
 import {quoteHealth} from "@/lib/quote-health";
@@ -194,6 +197,7 @@ export function useWorkspaceQuotes(
   return { data:pricedData, loading, ready, error, refresh };
 }
 export function ResearchHome() {
+  const [discoveryOpen,setDiscoveryOpen]=useState(false);
   const { workspace, demo, workspaceError } = useProduct(),
     quotes = useWorkspaceQuotes(),
     prefix = demo ? "/preview" : "";
@@ -214,6 +218,7 @@ export function ResearchHome() {
       <div className="research-search">
         <Search large />
       </div>
+      <details className="research-discovery" onToggle={e=>setDiscoveryOpen(e.currentTarget.open)}><summary>Find a setup in your companies</summary>{discoveryOpen&&<Discover embedded />}</details>
       {workspaceError && <Notice error>{workspaceError}</Notice>}
       {quotes.error && <Notice error>{quotes.error}</Notice>}
       <header className="section-heading">
@@ -892,6 +897,7 @@ export function Portfolio() {
         <div><span>Available cash</span><strong>{workspace ? amount(positions.filter(p=>p.assetType==='cash'&&p.symbol==='USD'&&p.currency==='USD'&&Number.isFinite(p.quantity)&&p.quantity>0&&Number.isFinite(p.cost)&&p.cost>=0).reduce((sum,p)=>sum+p.quantity,0)) : '—'}</strong><small>Recorded USD cash, not broker buying power</small></div>
         <div><span>Largest investment</span><strong>{quotes.ready ? (()=>{const values=new Map<string,number>();for(const p of positions){if(p.assetType==='cash'||totals.missing.includes(p.symbol))continue;values.set(p.symbol,(values.get(p.symbol)||0)+p.quantity*q[p.symbol].price!);}const largest=[...values].sort((a,b)=>b[1]-a[1])[0];return largest&&totals.knownValue>0?`${largest[0]} · ${percent(largest[1]/totals.knownValue*100)}`:'—';})() : '—'}</strong><small>Share of priced assets and cash</small></div>
       </section>
+      <PortfolioExposure positions={positions} quotes={quotes.data||{}} />
       <section className="panel portfolio-holdings support">
         <header className="section-heading">
           <h2>

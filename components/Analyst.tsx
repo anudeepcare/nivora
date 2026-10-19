@@ -15,7 +15,7 @@ type Report = {
   strengths: Claim[];
   risks: Claim[];
   watch: Claim[];
-  sources: { id: string; label: string; url: string }[];
+  sources: { id: string; label: string; url: string; passage?:string }[];
   generatedAt: string;
 };
 export default function Analyst({
@@ -50,6 +50,7 @@ export default function Analyst({
   );
   async function generate(
     requestedMode: "snapshot" | "deep-dive" | "swot" = mode,
+    intent?: "explain" | "missing" | "strengthen" | "challenge",
   ) {
     setError("");
     if (demo || !availability.data?.available) {
@@ -66,7 +67,7 @@ export default function Analyst({
       setReport(
         await api<Report>(
           `analyst/${encodeURIComponent(research.company.symbol.replace("/", "-"))}`,
-          { mode: requestedMode },
+          { mode: requestedMode, ...(intent?{intent}:{}) },
         ),
       );
     } catch (e) {
@@ -108,6 +109,7 @@ export default function Analyst({
       "What does cash after capex tell me?",
       "What is the biggest missing piece?",
       "What would strengthen the bull case?",
+      "Challenge the case",
     ];
     const respond = (prompt: string, index: number) => {
       setQuestion(prompt);
@@ -116,7 +118,8 @@ export default function Analyst({
       if (availability.data?.available && !demo) {
         setPrepared("");
         void generate(
-          index === 1 ? "swot" : index === 2 ? "snapshot" : "deep-dive",
+          index === 1||index === 3 ? "swot" : index === 2 ? "snapshot" : "deep-dive",
+          (["explain","missing","strengthen","challenge"] as const)[index],
         );
         return;
       }
@@ -126,6 +129,8 @@ export default function Analyst({
           ? p?.fcf == null
             ? "Matching operating cash flow and capital expenditure are missing for this period."
             : `${amount(p.fcf, p.currency, true)} remained after operating cash flow less reported capital spending in the ${evidence.periodBasis} period to ${dateLabel(p.end)}. This is not automatically distributable cash; financing, acquisitions and dilution still matter.`
+          : index === 3
+            ? "Challenge growth with cash conversion, financing requirements and dilution. A favorable price chart does not prove business durability; verify the original disclosures. This is a research prompt, not an AI finding."
           : index === 1
             ? "Reported financials do not establish a durable moat or a fair purchase price by themselves. Reconcile assumptions, competitive position, financing and the forecast horizon with company disclosures."
             : `Sustained revenue growth, cash conversion and disciplined reinvestment would strengthen the business case. Current comparable revenue growth is ${percent(evidence.growth, true)}. That observation does not guarantee future returns.`,
@@ -136,7 +141,7 @@ export default function Analyst({
         <header className="section-head">
           <div>
             <h2>Ask AURYN</h2>
-            <p>Explanations grounded in the available evidence.</p>
+            <p>Explain, find gaps or challenge the case using supplied evidence. Filing excerpts are included only when available and enabled.</p>
           </div>
         </header>
         <div className="prompt-row">
@@ -163,13 +168,11 @@ export default function Analyst({
             <p>{report?.summary.text || prepared}</p>
             <p className="small muted">
               {report
-                ? "AI-generated research · verify the cited sources"
+                ? `AI-generated research · ${report.sources.some(s=>s.passage)?"includes selected filing excerpts":"financial observations only; no filing excerpts"} · verify each claim`
                 : "Evidence explanation · no AI request made"}
             </p>
-            {report?.sources.slice(0, 3).map((source) => (
-              <Source key={source.id} href={source.url}>
-                {source.label}
-              </Source>
+            {report?.sources.filter(s=>report.summary.evidenceIds.includes(s.id)).map((source) => (
+              <div key={source.id}><Source href={source.url}>{source.id} · {source.label}</Source>{source.passage&&<details><summary>Read supplied excerpt</summary><blockquote>{source.passage}</blockquote><p className="small muted">Selected excerpt; read the full filing for context.</p></details>}</div>
             ))}
           </div>
         )}

@@ -2,6 +2,8 @@
 
 A complete standalone **source package** for the new AURYN application. The application builds independently of the old screens and styles. **It is not fully production accepted, and not every inherited product requirement is complete.** Read `docs/RELEASE_STATUS.md` for the exact remaining scope and verification limits.
 
+Latest scope: `docs/CONNECTED_PRODUCT.md` maps the fifteen approved improvements to their primary homes and lists configuration and coverage limits.
+
 ## Start
 
 From the extracted application directory (the directory containing this file):

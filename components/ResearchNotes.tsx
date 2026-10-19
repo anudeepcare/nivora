@@ -1,11 +1,14 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import {researchDecision} from "@/lib/decision-research";
 import { Save, BookmarkCheck, Pencil, X } from "lucide-react";
 import { useProduct, useResource } from "./Session";
 import { api } from "@/lib/client";
 import type { Research } from "@/lib/types";
 import { Notice, Source } from "./Ui";
 export default function ResearchNotes({ research: r }: { research: Research }) {
+  const decision=useMemo(()=>researchDecision(r),[r]);
   const { demo } = useProduct(),
     preview = useMemo(() => (demo ? { documents: [] } : undefined), [demo]),
     records = useResource<{
@@ -134,6 +137,7 @@ export default function ResearchNotes({ research: r }: { research: Research }) {
             )}
           </div>
         )}
+      {(form.thesis||form.condition)&&<div className="record-evidence-check"><h4>Review against current evidence</h4>{decision.tripwires.some(t=>t.breached)?decision.tripwires.filter(t=>t.breached).map(t=><p key={t.id}><strong>{t.label}</strong> · {t.value.toFixed(1)}{t.unit==='percent'?'%':'×'} · review {t.direction} {t.threshold}{t.unit==='percent'?'%':'×'}</p>):<p>No available threshold is currently breached. This does not validate your written thesis.</p>}<Link href={`${demo?'/preview':''}/research/${encodeURIComponent(r.company.symbol.replace('/','-'))}?tab=Snapshot`}>Review evidence & save threshold alerts →</Link><p className="small muted">Written conditions are your interpretation. These checks do not automatically interpret free text or monitor continuously.</p></div>}
       {editing && (
         <form id="thesis-editor" className="research-note-form" onSubmit={save}>
           <div className="two-col">

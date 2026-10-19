@@ -509,18 +509,18 @@ test('public legal and help documents render all cross-links and readable sectio
 
 test('decision overview renders real evidence, eight lenses and direct research paths',async()=>{
  const {researchDecision,styles}=await import('../lib/decision-research.ts');
- const {consensusOutlook}=await import('../lib/outlook.ts');
- const bindings={React,useMemo:React.useMemo,useState:React.useState,researchDecision,styles,consensusOutlook,...format,useResearchPreferences:()=>({preferences:{style:'Balanced',detail:'essential',horizon:'long'},setPreferences:()=>{}}),Link:({children,...props})=>React.createElement('a',props,children),ShieldCheck:empty,CalendarDays:empty,ArrowUpRight:empty};
+ const {openingAssessment}=await import('../lib/connected-product.ts');
+ const bindings={React,useMemo:React.useMemo,useState:React.useState,researchDecision,styles,openingAssessment,...format,useResearchPreferences:()=>({preferences:{style:'Balanced',detail:'essential',horizon:'long'},setPreferences:()=>{}}),Link:({children,...props})=>React.createElement('a',props,children),ShieldCheck:empty,CalendarDays:empty,ArrowUpRight:empty};
  const evidenceValue=loadComponent('components/DecisionWorkspace.tsx','evidenceValue',bindings);
  const DecisionWorkspace=loadComponent('components/DecisionWorkspace.tsx','DecisionWorkspace',{...bindings,evidenceValue});
  const html=renderToStaticMarkup(React.createElement(DecisionWorkspace,{research:demoData.research.MSFT,onTab:()=>{}}));
  assert.match(html,/Investment evidence overview/);assert.match(html,/Evidence lenses/);
- assert.match(html,/What does the price imply/);assert.match(html,/Challenge the case/);
+ assert.match(html,/Valuation/);assert.match(html,/Challenge the case/);
  assert.match(html,/href="\/methodology"/);assert.doesNotMatch(html,/NaN|Infinity|undefined/);
  const summary=renderToStaticMarkup(React.createElement(DecisionWorkspace,{research:demoData.research.MSFT,onTab:()=>{},part:'summary'}));
  const detail=renderToStaticMarkup(React.createElement(DecisionWorkspace,{research:demoData.research.MSFT,onTab:()=>{},part:'detail'}));
  assert.doesNotMatch(summary,/<svg|Evidence lenses|Supports the case/);
- assert.match(summary,/What does the price imply/);
+ assert.match(summary,/Valuation/);
  assert.match(detail,/Evidence lenses/);assert.doesNotMatch(detail,/decision-answer-grid/);
 });
 

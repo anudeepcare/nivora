@@ -3,7 +3,8 @@ export type Evidence = {
   id: string;
   label: string;
   url: string;
-  value: number;
+  value: number | null;
+  passage?: string;
   unit: string;
   period: string;
   filed: string;

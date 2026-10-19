@@ -9,14 +9,15 @@ import { perspective } from "@/lib/analysis";
 import { symbolInput, amount, percent } from "@/lib/format";
 import type { Research } from "@/lib/types";
 import { Empty, PageHeading, SecurityLogo, Notice, Help } from "./Ui";
-export default function Discover() {
+export default function Discover({embedded=false}:{embedded?:boolean}) {
   const { workspace, demo, cache } = useProduct(),
     prefix = demo ? "/preview" : "",
     [draft, setDraft] = useState(""),
     [rows, setRows] = useState<Research[]>([]),
     [filter, setFilter] = useState("all"),
     [busy, setBusy] = useState(false),
-    [message, setMessage] = useState("");
+    [message, setMessage] = useState(""),
+    [coverage,setCoverage]=useState({requested:0,returned:0});
   const preview = useMemo(() => (demo ? { documents: [] } : undefined), [demo]),
     saved = useResource<{
       documents: {
@@ -68,6 +69,7 @@ export default function Discover() {
         });
       }
       setRows(result);
+      setCoverage({requested:symbols.length,returned:result.length});
       if (failed.length) setMessage(`No response for ${failed.join(", ")}.`);
     } catch (e) {
       setMessage(e instanceof Error ? e.message : "Scan failed.");
@@ -110,10 +112,11 @@ export default function Discover() {
   }
   return (
     <section>
-      <PageHeading
+      {!embedded && <PageHeading
         title="Discover with a purpose."
         subtitle="Screen a focused universe using the same research shown on each company."
-      />
+      />}
+      <p className="small muted">Your selected universe only · up to 12 instruments per requested scan. No market-wide ranking or automatic background scan.</p>
       {saved.data?.documents.length ? (
         <div className="source-line">
           Saved screens:{" "}
@@ -173,6 +176,7 @@ export default function Discover() {
           Save screen
         </button>
       </div>
+      {!!coverage.requested&&<p className="context-note">Evidence returned for {coverage.returned} of {coverage.requested} requested instruments · {values.length} match the selected filter. Missing values do not count as matches.</p>}
       {message && <Notice>{message}</Notice>}
       {values.length ? (
         <div className="table-scroll">

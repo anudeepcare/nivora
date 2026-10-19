@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-10-19T14:10:16.018406+00:00",
+  "generatedAt": "2026-10-19T14:32:52.875842+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 251 tests, TypeScript, production build",
-    "npm run test:api": "passed: 33 baseline + 16 research regression + 22 provider + 5 shared protection checks",
+    "npm run verify": "passed: 256 tests, TypeScript, production build",
+    "npm run test:api": "passed: 34 baseline + 16 research regression + 22 provider + 5 shared protection checks",
     "git diff --check": "passed",
-    "npm test": "passed: 251 tests"
+    "npm test": "passed: 256 tests"
   },
-  "domainPostgresAndComponentTests": 251,
-  "builtApiChecks": 76,
+  "domainPostgresAndComponentTests": 256,
+  "builtApiChecks": 77,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
     "intraday": "Twelve Data preferred; labelled EODHD historical fallback",
@@ -35,12 +35,12 @@
   "priorEvidence": "The signed-in reference/deployed UI reviews predate this patch. New verification is source, domain/SSR, TypeScript and build evidence only.",
   "browserTestScope": "No rendered browser test of this build; older live audits are historical evidence only",
   "patchedSourceBrowserTestsExecuted": false,
-  "latestAudit": "../docs/PWA_WEBKIT_THRESHOLD_20261018.md",
+  "latestAudit": "../docs/CONNECTED_PRODUCT.md",
   "referenceReview": "REFERENCE_REVIEW_20261017.md",
   "decisionPolicy": "research-v1.6 / decision-guide-v1.1; original unvalidated research triage; no broker execution",
   "latestLogs": [
-    "research-cleanup-verify.log",
-    "research-cleanup-api.log"
+    "connected-product-verify.log",
+    "connected-product-api.log"
   ],
   "cohortQuoteObservations": "cohort-quotes-20261017.json; 11 instruments; quote identity only, not fundamental/model validation",
   "exactVisualParityVerified": false,
@@ -209,13 +209,25 @@
     "roadmapComplete": false
   },
   "connectedProduct": {
-    "tests": 231,
-    "log": "verification/connected-workspace-verify.log",
-    "coverage": "docs/CONNECTED_PRODUCT_RELEASE.md",
-    "fullRoadmapComplete": false,
+    "approvedPoints": 15,
+    "mapping": "docs/CONNECTED_PRODUCT.md",
+    "openingAssessment": "business / valuation / entry separated",
+    "newPrimaryHomes": {
+      "earnings": "News",
+      "businessSegments": "Financials",
+      "discovery": "Research landing, optional",
+      "sharedExposure": "Portfolio"
+    },
+    "filingAi": "optional bounded SEC excerpts; fixture-tested, not live-provider/model verified",
+    "duplicatesRemoved": [
+      "Financials earnings checkpoints",
+      "Advanced segment disclosures",
+      "Decision detail business description"
+    ],
+    "newTests": 5,
     "physicalIphoneVerified": false,
-    "liveSupabaseWriteTested": false,
-    "paidBillingImplemented": false
+    "liveAiVerified": false,
+    "licensedOptionsIncluded": false
   },
   "marketContextAndTechnicals": {
     "tests": 239,
