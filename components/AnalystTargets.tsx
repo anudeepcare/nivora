@@ -21,14 +21,29 @@ export default function AnalystTargets({
           <strong>{amount(c.target, r.quote.currency)}</strong>
         </div>
         <div>
-          <span>Versus current price</span>
-          <strong className={c.change < 0 ? "negative" : "positive"}>
+          <span>
+            {c.referenceStatus === "older"
+              ? "Versus older quote"
+              : c.referenceStatus === "unavailable"
+                ? "Price comparison unavailable"
+                : "Versus current price"}
+          </span>
+          <strong
+            className={
+              c.change != null && c.change < 0 ? "negative" : "positive"
+            }
+          >
             {percent(c.change, true)}
           </strong>
         </div>
       </div>
       <p>
-        Current {amount(r.quote.price, r.quote.currency)} · observed{" "}
+        {c.referenceStatus === "older"
+          ? "Older quote"
+          : c.referenceStatus === "unavailable"
+            ? "Last recorded quote"
+            : "Current"}{" "}
+        {amount(r.quote.price, r.quote.currency)} · observed{" "}
         {dateLabel(r.quote.asOf)}
       </p>
       <small>

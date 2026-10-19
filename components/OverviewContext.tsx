@@ -24,7 +24,11 @@ export default function OverviewContext({
         </div>
         <div>
           <span>Gap to consensus</span>
-          <strong className={c && c.change < 0 ? "negative" : "positive"}>
+          <strong
+            className={
+              c && c.change != null && c.change < 0 ? "negative" : "positive"
+            }
+          >
             {c ? percent(c.change, true) : "—"}
           </strong>
         </div>

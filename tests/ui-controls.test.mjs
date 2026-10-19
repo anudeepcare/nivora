@@ -647,5 +647,10 @@ test('analyst fallback presents actual consensus without invented low/high targe
  const r=JSON.parse(fs.readFileSync('tests/fixtures/iren-observed-20261019.json','utf8'));
  const View=loadComponent('components/AnalystTargets.tsx','AnalystTargets',{React,consensusOutlook,...format});
  const html=renderToStaticMarkup(React.createElement(View,{research:r}));
+ r.quote.stale=true;
+ const older=renderToStaticMarkup(React.createElement(View,{research:r}));
+ assert.match(older,/\$77\.81/);assert.match(older,/Versus older quote/);
+ r.quote.price=null;const missing=renderToStaticMarkup(React.createElement(View,{research:r}));
+ assert.match(missing,/\$77\.81/);assert.match(missing,/Price comparison unavailable/);
  assert.match(html,/\$77\.81/);assert.match(html,/ANALYST PRICE TARGETS/);assert.match(html,/low\/high range not supplied/);assert.doesNotMatch(html,/\$37\.00|\$139\.00|Bear|Bull/);
 });

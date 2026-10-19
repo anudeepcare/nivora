@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-19T20:14:04.036218+00:00",
+  "generatedAt": "2026-10-19T20:22:07.908629+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
@@ -7,10 +7,10 @@
     "npm run verify": "passed: tests, TypeScript and production build",
     "npm run test:api": "passed: 40 baseline + 16 research regression + 22 provider + 5 shared protection checks",
     "git diff --check": "passed",
-    "npm test": "passed: 357 tests",
+    "npm test": "passed: 358 tests",
     "npm run build": "passed after final scoped stylesheet cleanup"
   },
-  "domainPostgresAndComponentTests": 357,
+  "domainPostgresAndComponentTests": 358,
   "builtApiChecks": 83,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -451,5 +451,12 @@
     "currency": "Listing currency must match quote currency; foreign domicile alone no longer blocks opinion",
     "verification": "357 tests, production build, 83 API checks",
     "deployed": false
+  },
+  "analystQuoteFreshnessFix": {
+    "cause": "consensusOutlook incorrectly returned null for quote.stale",
+    "correction": "Keep a valid dated target; validate and label quote comparison independently",
+    "limits": "No missing analyst targets or ranges invented; production deployment not yet checked",
+    "verification": "358 tests; TypeScript and production build; 83 API checks; diff whitespace check",
+    "physicalIphoneTested": false
   }
 }

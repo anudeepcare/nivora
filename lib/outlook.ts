@@ -32,17 +32,19 @@ export type Outlook =
 
 export function consensusOutlook(
   r: Research,
-): { target: number; asOf: string; change: number } | null {
+): {
+  target: number;
+  asOf: string;
+  change: number | null;
+  referenceStatus: "current" | "older" | "unavailable";
+} | null {
   const e = r.evidence;
-  const now = Date.parse(r.retrievedAt);
+  const now = Date.parse(r.priceObservedAt ?? r.retrievedAt);
   const at = Date.parse(e?.updatedAt ?? "");
   const target = e?.consensus?.target;
   if (
     r.company.assetType !== "stock" ||
     r.company.currency !== r.quote.currency ||
-    r.quote.stale ||
-    r.quote.price == null ||
-    r.quote.price <= 0 ||
     !Number.isFinite(now) ||
     !Number.isFinite(at) ||
     at > now + 86400000 ||
@@ -52,10 +54,23 @@ export function consensusOutlook(
     target <= 0
   )
     return null;
+  const stamp = Date.parse(r.quote.asOf ?? "");
+  const comparable =
+    r.quote.price != null &&
+    Number.isFinite(r.quote.price) &&
+    r.quote.price > 0 &&
+    Number.isFinite(stamp) &&
+    stamp <= now + 60000 &&
+    now - stamp <= 4 * 86400000;
   return {
     target,
     asOf: e!.updatedAt!,
-    change: (target / r.quote.price! - 1) * 100,
+    change: comparable ? (target / r.quote.price! - 1) * 100 : null,
+    referenceStatus: !comparable
+      ? "unavailable"
+      : r.quote.stale
+        ? "older"
+        : "current",
   };
 }
 

@@ -19,7 +19,7 @@ function research() {
   return {
     company: { symbol: "CRM", assetType: "stock", currency: "USD" },
     facts: [],
-    quote: { price: 100, currency: "USD", stale: false },
+    quote: { price: 100, currency: "USD", stale: false, asOf: "2026-10-16T20:00:00Z" },
     retrievedAt: "2026-10-17T12:00:00Z",
     evidence: {
       updatedAt: "2026-10-16",
@@ -52,7 +52,7 @@ test("a consensus fallback never revives an old target and always carries its ob
   assert.equal(consensusOutlook(input), null);
   input.evidence.updatedAt = "2026-10-16";
   input.quote.stale = true;
-  assert.equal(consensusOutlook(input), null);
+  assert.equal(consensusOutlook(input).target, 150);
 });
 test("outlook prices use actual forecast EPS, disclosed multiple sensitivity, and a common horizon", () => {
   const { researchOutlook } = load();
@@ -162,4 +162,13 @@ test('analyst consensus is listing-currency opinion and does not require a share
  assert.equal(consensusOutlook(r).target,77.8056);
  r.company.foreignListing=true;assert.equal(consensusOutlook(r).target,77.8056);
  r.quote.currency='EUR';assert.equal(consensusOutlook(r),null);
+});
+
+test('quote freshness transitions do not remove a dated analyst target',()=>{
+ const r=research();r.evidence.consensus={target:150};r.quote.asOf='2026-10-16T20:00:00Z';
+ const {consensusOutlook}=load();
+ const live=consensusOutlook(r);r.quote.stale=true;const older=consensusOutlook(r);
+ assert.equal(older.target,live.target);assert.equal(older.referenceStatus,'older');assert.equal(older.change,50);
+ r.quote.price=null;const missing=consensusOutlook(r);assert.equal(missing.target,150);assert.equal(missing.change,null);assert.equal(missing.referenceStatus,'unavailable');
+ r.quote.price=100;r.quote.asOf='2026-01-01';assert.equal(consensusOutlook(r).change,null);
 });

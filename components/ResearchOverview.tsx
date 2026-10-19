@@ -75,7 +75,7 @@ export function ResearchOutlook({
         <div>
           <span>Gap to consensus</span>
           <strong
-            className={`num ${consensus == null ? "" : consensus.change < 0 ? "negative" : "positive"}`}
+            className={`num ${consensus == null ? "" : consensus.change != null && consensus.change < 0 ? "negative" : "positive"}`}
           >
             {consensus ? percent(consensus.change, true) : "—"}
           </strong>

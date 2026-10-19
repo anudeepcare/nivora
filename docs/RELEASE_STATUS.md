@@ -1,3 +1,7 @@
+# Analyst target freshness correction — current
+
+Quote freshness no longer controls whether a dated analyst target exists. Targets remain visible through older/missing quote states; comparison percentages are independently validated and labelled. Regression covers quote-state transitions and rendered fallback.
+
 # Automatic analyst fallback — current
 
 Overview now presents reported analyst consensus automatically when headline AURYN valuation is unavailable. Consensus-only data is explicitly labelled; no low/high target range or analyst count is manufactured. See `ANALYST_TARGET_FALLBACK.md`.
