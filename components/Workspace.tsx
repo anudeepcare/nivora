@@ -1,4 +1,5 @@
 "use client";
+import HoldingsImport from "./HoldingsImport";
 import SessionBrief from "./SessionBrief";
 import PortfolioContext from "./PortfolioContext";
 import Link from "next/link";
@@ -780,6 +781,7 @@ export function Portfolio() {
           </button>
         }
       />
+      <HoldingsImport/>
       {workspaceError && <Notice error>{workspaceError}</Notice>}
       {missingCurrency.length > 0 && (
         <div className="portfolio-review">

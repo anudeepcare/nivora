@@ -199,5 +199,22 @@
     "newUserTheme": "light",
     "savedDarkAndSystemPreserved": true,
     "physicalIphoneVerified": false
+  },
+  "professionalAdvancedExpansion": {
+    "tests": 228,
+    "log": "verification/professional-advanced-verify.log",
+    "coverage": "docs/ADVANCED_FEATURE_COVERAGE.md",
+    "newProviderCalls": 0,
+    "physicalIphoneVerified": false,
+    "roadmapComplete": false
+  },
+  "connectedProduct": {
+    "tests": 231,
+    "log": "verification/connected-workspace-verify.log",
+    "coverage": "docs/CONNECTED_PRODUCT_RELEASE.md",
+    "fullRoadmapComplete": false,
+    "physicalIphoneVerified": false,
+    "liveSupabaseWriteTested": false,
+    "paidBillingImplemented": false
   }
 }

@@ -1,6 +1,9 @@
 "use client";
 import dynamic from "next/dynamic";
 const AdvancedResearch=dynamic(()=>import("./AdvancedResearch"));
+import PositionAwareResearch from "./PositionAwareResearch";
+const ResearchNotes=dynamic(()=>import("./ResearchNotes"));
+const ResearchCompare=dynamic(()=>import("./ResearchCompare"));
 import FinancingContext from "./FinancingContext";
 import EarningsPrep from "./EarningsPrep";
 import TimingContext from "./TimingContext";
@@ -286,6 +289,7 @@ export default function Research({ symbol }: { symbol: string }) {
           </button>
         </div>
       </header>
+      <PositionAwareResearch research={r}/>
       <nav
         className="local-tabs"
         role="tablist"
@@ -362,7 +366,7 @@ export default function Research({ symbol }: { symbol: string }) {
         className="au-stack"
       >
         {tab === "News" && <><EarningsPrep research={r} /><CompanyUpdates research={r} /></>}
-        {tab === "Advanced" && <AdvancedResearch key={r.company.symbol} research={r} />}
+        {tab === "Advanced" && <><AdvancedResearch key={r.company.symbol} research={r}/><details className="research-optional"><summary>Compare selected companies</summary><ResearchCompare research={r}/></details></>}
         {tab === "Analysts" && <AnalystRatings research={r} />}
         {tab === "Snapshot" && (
           <>
@@ -379,7 +383,7 @@ export default function Research({ symbol }: { symbol: string }) {
             </div>
             <KeyFinancialMetrics research={r} />
             <DecisionWorkspace research={r} onTab={switchTab} part="detail" />
-            <DecisionWatch research={r} />
+            <DecisionWatch key={r.company.symbol} research={r} />
           </>
         )}
         {tab === "Financials" && (
@@ -427,7 +431,7 @@ export default function Research({ symbol }: { symbol: string }) {
           </>
         )}
         {tab === "Technicals" && <DcaResearch research={r} />}
-        {tab === "Thesis" && <ThesisPicture research={r} />}
+        {tab === "Thesis" && <><ThesisPicture research={r}/><details className="research-optional"><summary>My decision record & review</summary><ResearchNotes research={r}/></details></>}
       </div>
     </article>
   );

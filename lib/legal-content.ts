@@ -3,8 +3,15 @@ export const legalConfiguration={
  contact:process.env.NEXT_PUBLIC_AURYN_SUPPORT_EMAIL||'',
  updated:'October 18, 2026',version:'research-release-20261018',
 };
-export type DocumentId='terms'|'privacy'|'risk'|'methodology'|'help';
+export type DocumentId='terms'|'privacy'|'risk'|'methodology'|'help'|'reliability';
 export const documents:Record<DocumentId,{title:string;intro:string;sections:{title:string;text:string}[]}>= {
+ reliability:{title:'Data reliability & release notes',intro:'Understand what is measured, what is missing and which checks have actually run. This page is a release disclosure, not a live uptime monitor.',sections:[
+ {title:'Freshness and coverage',text:'Quote timestamps and financial period ends describe different observations. Missing or stale prices are excluded from priced portfolio value. Holdings without matching USD prices cannot be combined into a dollar total without an FX conversion. A partial total is not the value of every holding.'},
+ {title:'Models are conditional',text:'Cash-flow assumptions, forecast-multiple scenarios and analyst consensus answer different questions and can use different horizons. Their central values are not interchangeable. Screening scores use disclosed absolute anchors, not peer ranks or calibrated success probabilities.'},
+ {title:'Known limitations',text:'Corporate-action and vendor revision reconciliation is not independently verified for every ticker. Options analytics, universal peer coverage, historical analog probabilities and all-customer continuous alert scheduling are not established in this release. A source link does not prove an independent filing audit.'},
+ {title:'Recent corrections',text:'October 19: aligned portfolio exposure and headline inclusion rules for stale quotes and invalid records; separated cash-flow central assumptions from forecast-multiple scenarios; repaired mobile lens and Advanced navigation alignment; made Light the default for new users while preserving saved preferences.'},
+ {title:'Verification scope',text:'Automated calculations, type checks and a production build are recorded in the release archive. These checks do not establish live provider entitlements, physical iPhone visual acceptance, payment processing, legal readiness or profitability. No numerical service-level or uptime guarantee is implied.'},
+ ]},
  terms:{title:'Terms of use',intro:'Terms for this personal research release. Read the risk disclosure and privacy notice alongside these terms.',sections:[
  {title:'Purpose and your decisions',text:'AURYN provides research tools and general educational information. You remain responsible for choosing investments, checking facts, assessing suitability and obtaining professional advice where appropriate. Nothing here guarantees a result or creates a fiduciary or advisory relationship.'},
  {title:'Accounts and responsible use',text:'Keep your credentials secure and provide information you have permission to use. Do not attempt unauthorized access, disrupt the service, scrape restricted datasets or upload another person’s private financial information without authority.'},

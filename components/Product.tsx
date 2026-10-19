@@ -55,7 +55,7 @@ export default function Product({
   compareSymbols?: string;
 }) {
   const page = route[0] || "overview";
-  if (["terms","privacy","risk","methodology","help"].includes(page)) return <LegalDocument id={page as DocumentId}/>;
+  if (["terms","privacy","risk","methodology","help","reliability"].includes(page)) return <LegalDocument id={page as DocumentId}/>;
   // Only the localhost-only design preview owns a page-level session.
   // Real account sessions are retained by AppSession in the root layout.
   const frame = (content: React.ReactNode) =>

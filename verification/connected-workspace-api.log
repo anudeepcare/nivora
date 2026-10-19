@@ -1,0 +1,92 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> auryn-product@0.1.0 test:api
+> node scripts/test-api.mjs && node scripts/test-research-regressions.mjs && node scripts/test-eodhd-api.mjs
+
+32 built API checks passed: anonymous denial, private responses, trusted admin boundary, listing and logo identity, disabled AI without provider spend.
+PASS SAP search keeps the NYSE USD listing
+PASS A mismatched crypto quote cannot be shown as the requested asset
+PASS BTC-USD URL slug resolves to the crypto identity
+PASS ETH-USD URL slug resolves to the crypto identity
+PASS SAP research remains usable with IFRS reporting currency
+PASS Company reports survive a first page full of insider filings
+PASS IFRS operating cash flow is retained without inventing capex
+PASS A facts outage does not discard available company filings
+PASS A submissions outage does not discard available financial facts
+PASS AI availability is readable before generation and spends no credits
+PASS Crypto quote uses the timestamp of a completed minute bar
+PASS Cost-currency confirmation updates only selected own rows with no currency
+PASS Crypto fallback never fabricates freshness on outage or mismatched instrument
+PASS Removing a crypto pair cannot remove the similarly named equity
+PASS Currency confirmation rejects malformed record IDs before database write
+PASS One malformed saved ticker does not block SAP, HIMS or OSCR prices
+{
+  "checks": [
+    {
+      "name": "settings detect both providers without exposing credentials",
+      "passed": true
+    },
+    {
+      "name": "research combines Twelve quote with EODHD financials and one intact split-adjusted history",
+      "passed": true
+    },
+    {
+      "name": "1D charts use Twelve intraday and identify their own source",
+      "passed": true
+    },
+    {
+      "name": "quote failure falls back once to a clearly labelled EODHD quote",
+      "passed": true
+    },
+    {
+      "name": "repeated quotes reuse cached results",
+      "passed": true
+    },
+    {
+      "name": "ETH resolves to crypto before same-name funds and SAP stays USD listing",
+      "passed": true
+    },
+    {
+      "name": "crypto research has crypto price/history and no corporate financial request",
+      "passed": true
+    },
+    {
+      "name": "SAP retains EUR statements separately from the USD quote",
+      "passed": true
+    },
+    {
+      "name": "headlines reject unsafe and future links",
+      "passed": true
+    },
+    {
+      "name": "filings use validated SEC links and corporate actions are available",
+      "passed": true
+    },
+    {
+      "name": "version-specific access denial retries the legacy whole fundamental payload",
+      "passed": true
+    },
+    {
+      "name": "CRM search survives an EODHD failure through configured Twelve Data and caches its result",
+      "passed": true
+    },
+    {
+      "name": "fundamentals outage preserves the available Twelve Data company profile",
+      "passed": true
+    },
+    {
+      "name": "home feed separates report dates, filters news and bounds coverage",
+      "passed": true
+    },
+    {
+      "name": "repeated home feed reuses provider cache",
+      "passed": true
+    },
+    {
+      "name": "home feed rejects crypto pairs without provider calls",
+      "passed": true
+    }
+  ],
+  "passed": 16,
+  "total": 16
+}

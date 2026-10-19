@@ -26,7 +26,7 @@ export default function ResearchCompare({
   const items = [
       r,
       ...reports.filter((x) => x.company.symbol !== r.company.symbol),
-    ].slice(0, 4),
+    ].slice(0, 6),
     rows = comparisonRows(items),peers=peerContext(items);
   async function add(e: React.FormEvent) {
     e.preventDefault();
@@ -36,7 +36,7 @@ export default function ResearchCompare({
       const s = symbolInput(symbol);
       if (items.some((x) => x.company.symbol === s))
         throw Error("This company is already shown.");
-      if (items.length >= 4) throw Error("Compare up to four companies.");
+      if (items.length >= 6) throw Error("Compare up to four companies.");
       setBusy(true);
       const key = `research/${encodeURIComponent(s.replace("/", "-"))}`;
       const value = demo
@@ -77,7 +77,7 @@ export default function ResearchCompare({
         </label>
         <button
           className="button"
-          disabled={busy || items.length >= 4 || !symbol.trim()}
+          disabled={busy || items.length >= 6 || !symbol.trim()}
         >
           {busy ? "Loading…" : "Add comparison"}
         </button>

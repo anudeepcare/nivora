@@ -18,6 +18,7 @@ const allowed = new Set([
   "privacy",
   "risk",
   "methodology",
+  "reliability",
   "login",
 ]);
 export default async function Page({

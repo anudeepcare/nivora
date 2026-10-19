@@ -1,0 +1,30 @@
+import type {Candle} from './types';
+const mean=(a:number[])=>a.length?a.reduce((s,v)=>s+v,0)/a.length:null;
+const sd=(a:number[])=>{const m=mean(a);return m==null||a.length<2?null:Math.sqrt(a.reduce((s,v)=>s+(v-m)**2,0)/(a.length-1));};
+const quantile=(values:number[],p:number)=>{const a=[...values].sort((a,b)=>a-b),at=(a.length-1)*p,i=Math.floor(at);return a[i]+(a[Math.min(i+1,a.length-1)]-a[i])*(at-i);};
+export function professionalStudies(input:Candle[],asOf:string,annualSessions:number){
+ const b=[...new Map(input.filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x.time)&&x.time<asOf.slice(0,10)&&[x.open,x.high,x.low,x.close].every(Number.isFinite)&&x.low>0&&x.high>=Math.max(x.open,x.close,x.low)&&x.low<=Math.min(x.open,x.close)).map(x=>[x.time,x])).values()].sort((a,b)=>a.time.localeCompare(b.time));
+ const c=b.map(x=>x.close),n=c.length,last=c.at(-1),returns=c.slice(1).map((v,i)=>v/c[i]-1),logs=c.slice(1).map((v,i)=>Math.log(v/c[i]));
+ const roc=(length:number)=>n>length?(c[n-1]/c[n-1-length]-1)*100:null,ma=(length:number)=>n>=length?mean(c.slice(-length)):null;
+ const volatility=(length:number)=>{const s=logs.length>=length?sd(logs.slice(-length)):null;return s==null?null:s*Math.sqrt(annualSessions)*100;};
+ const m20=ma(20),m50=ma(50),sigma20=n>=20?Math.sqrt(c.slice(-20).reduce((s,v)=>s+(v-m20!)**2,0)/20):null;
+ const cut95=returns.length>=60?quantile(returns,.05):null,cut99=returns.length>=250?quantile(returns,.01):null;
+ const tail=(q:number,min:number)=>{if(returns.length<min)return null;const sorted=[...returns].sort((a,b)=>a-b),mass=returns.length*q,whole=Math.floor(mass),fraction=mass-whole,total=sorted.slice(0,whole).reduce((s,v)=>s+v,0)+(fraction>0?sorted[whole]*fraction:0);return Math.max(0,-total/mass*100);};
+ let peak=0,peakIndex=0;for(let i=0;i<n;i++)if(c[i]>=peak){peak=c[i];peakIndex=i;}
+ const gaps=b.slice(1).map((x,i)=>(x.open/b[i].close-1)*100),filled=b.slice(1).flatMap((x,i)=>{const g=(x.open/b[i].close-1)*100;return Math.abs(g)>3?[g>0?x.low<=b[i].close:x.high>=b[i].close]:[];});
+ const volReady=n>=21&&b.slice(-21).every(x=>Number.isFinite(x.volume)&&x.volume>0),v20=b.slice(-20),totalVol=volReady?v20.reduce((s,x)=>s+x.volume,0):null;
+ const cmf=totalVol?100*v20.reduce((s,x)=>s+(x.high===x.low?0:(2*x.close-x.low-x.high)/(x.high-x.low))*x.volume,0)/totalVol:null;
+ let obv20:number|null=null,upDownVolume:number|null=null;if(volReady){let up=0,down=0;obv20=0;for(let i=n-20;i<n;i++){if(c[i]>c[i-1]){up+=b[i].volume;obv20+=b[i].volume;}else if(c[i]<c[i-1]){down+=b[i].volume;obv20-=b[i].volume;}}upDownVolume=down>0?up/down:null;}
+ const w14=b.slice(-14),lo14=n>=14?Math.min(...w14.map(x=>x.low)):null,hi14=n>=14?Math.max(...w14.map(x=>x.high)):null;
+ const w52=b.slice(-annualSessions),hi52=n>=annualSessions?Math.max(...w52.map(x=>x.high)):null,lo52=n>=annualSessions?Math.min(...w52.map(x=>x.low)):null;
+ const parkinson=n>=20?Math.sqrt(b.slice(-20).reduce((s,x)=>s+Math.log(x.high/x.low)**2,0)/(4*20*Math.log(2))*annualSessions)*100:null;
+ const mu=mean(returns),sigma=sd(returns),skew=returns.length>=60&&sigma&&mu!=null?mean(returns.map(v=>((v-mu)/sigma)**3)):null,kurtosis=returns.length>=60&&sigma&&mu!=null?mean(returns.map(v=>((v-mu)/sigma)**4))!-3:null;
+ const priorMA20=n>=25?mean(c.slice(-25,-5)):null,pivot=b.at(-1),P=pivot?(pivot.high+pivot.low+pivot.close)/3:null;
+ return {count:n,roc5:roc(5),roc120:roc(120),roc252:roc(annualSessions),ma20:m20,ma50:m50,ma100:ma(100),ma200:ma(200),slope20:m20&&priorMA20?(m20/priorMA20-1)*100:null,z20:last!=null&&m20!=null&&sigma20? (last-m20)/sigma20:null,percentB:last!=null&&m20!=null&&sigma20?((last-(m20-2*sigma20))/(4*sigma20))*100:null,upPct20:returns.length>=20?returns.slice(-20).filter(v=>v>0).length/20*100:null,upPct60:returns.length>=60?returns.slice(-60).filter(v=>v>0).length/60*100:null,stochastic:last!=null&&hi14!=null&&lo14!=null&&hi14>lo14?(last-lo14)/(hi14-lo14)*100:null,vol10:volatility(10),vol30:volatility(30),vol90:volatility(90),parkinson,var95:cut95==null?null:Math.max(0,-cut95*100),es95:tail(.05,60),var99:cut99==null?null:Math.max(0,-cut99*100),es99:tail(.01,250),currentDrawdown:last!=null&&peak?(last/peak-1)*100:null,drawdownSessions:n?n-1-peakIndex:null,gapFrequency:gaps.length>=20?gaps.filter(v=>Math.abs(v)>3).length/gaps.length*100:null,gapFill:filled.length>=5?filled.filter(Boolean).length/filled.length*100:null,gapSample:filled.length,bestDay:returns.length>=20?Math.max(...returns)*100:null,worstDay:returns.length>=20?Math.min(...returns)*100:null,worst5:n>=26?Math.min(...c.slice(5).map((v,i)=>v/c[i]-1))*100:null,skew,kurtosis,cmf,obv20,upDownVolume,distanceHigh:last&&hi52?(last/hi52-1)*100:null,distanceLow:last&&lo52?(last/lo52-1)*100:null,pivots:P&&pivot?{p:P,r1:2*P-pivot.low,s1:2*P-pivot.high,r2:P+pivot.high-pivot.low,s2:P-pivot.high+pivot.low,date:pivot.time}:null};
+}
+export function planStress(x:{quantity:number;entry:number;stop:number;target:number;slippage:number;capital:number;atr:number|null;gap:number|null;dollarVolume:number|null;winProbability:number}){
+ if(![x.quantity,x.entry,x.stop,x.target,x.slippage,x.capital,x.winProbability].every(Number.isFinite)||x.quantity<0||x.capital<=0||x.stop<=0||x.entry<=x.stop||x.target<=x.entry||x.slippage<0||x.slippage>5||x.winProbability<0||x.winProbability>100)return null;
+ const cost=x.entry*(1+x.slippage/100),loss=cost-x.stop*(1-x.slippage/100),win=x.target*(1-x.slippage/100)-cost;if(win<=0)return null;
+ const pnl=(price:number)=>x.quantity*(Math.max(0,price)*(1-x.slippage/100)-cost);
+ return {breakeven:loss/(loss+win)*100,expectancy:x.quantity*(x.winProbability/100*win-(1-x.winProbability/100)*loss),positionPct:x.quantity*cost/x.capital*100,participation:x.dollarVolume&&x.dollarVolume>0?x.quantity*cost/x.dollarVolume*100:null,gapLoss:x.gap!=null?Math.max(0,-pnl(x.entry*(1-x.gap/100))):null,scenarios:[{label:'Invalidation',price:x.stop,pnl:pnl(x.stop)},{label:'Target',price:x.target,pnl:pnl(x.target)},...(x.atr!=null?[-2,-1,1,2].map(k=>({label:`${k>0?'+':''}${k} ATR`,price:Math.max(0,x.entry+k*x.atr!),pnl:pnl(x.entry+k*x.atr!)})):[])]};
+}

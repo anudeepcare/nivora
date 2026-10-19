@@ -1,0 +1,33 @@
+✔ portfolio exposure uses actual priced holdings, explicit unknown sectors and missing quotes (2.731967ms)
+✔ portfolio daily estimate excludes stale prices and does not label returns on deposits (0.320674ms)
+✔ research changes report only comparable observed facts and distinguish first observation (1.312613ms)
+✔ estimate revisions compare the same future period and currency only (0.324638ms)
+✔ concentration combines multiple lots of the same instrument (0.653909ms)
+✖ exposure total reconciles with headline valuation when quotes are stale or costs invalid (11.270495ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 5
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 630.377985
+
+✖ failing tests:
+
+test at tests/holdings-brief.test.mjs:102:1
+✖ exposure total reconciles with headline valuation when quotes are stale or costs invalid (11.270495ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  440 !== 250
+  
+      at TestContext.<anonymous> (file:///workspace/auryn-github-main/tests/holdings-brief.test.mjs:102:364)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 440,
+    expected: 250,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

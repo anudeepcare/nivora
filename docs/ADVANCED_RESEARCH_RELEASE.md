@@ -17,3 +17,6 @@ Price studies exclude the report's calendar date conservatively, even when that 
 
 ## Verification
 223 automated tests passed, including deterministic filtering/OHLC guards, insufficient data, Fibonacci direction, ATR/relative-volume arithmetic and slippage-aware risk sizing. TypeScript and production build results are recorded in verification/advanced-verify.log. Browser visual acceptance and physical iPhone verification remain outstanding. No production data writes or trades performed.
+
+## Professional expansion
+See ADVANCED_FEATURE_COVERAGE.md for the full pasted-feedback implementation matrix and pending datasets. New risk/participation studies, Disconnect evidence panel, classic pivots and dollar-based planning stresses are included. The mobile navigation now wraps without compressing labels. The updated verification log is verification/professional-advanced-verify.log (228 tests).

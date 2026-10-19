@@ -253,7 +253,7 @@ export function ThesisPicture({ research: r }: { research: Research }) {
               <p className="context-note">
                 {r.company.assetType === "crypto"
                   ? "Evaluate supply, network usage, liquidity and protocol risks. Corporate financial ratios do not apply."
-                  : "No confirmed factors in this snapshot. Review the company's own disclosures."}
+                  : g.tone==='negative'?"No measured downside factors were established in this snapshot. This does not establish low risk. Test valuation assumptions, customer concentration, funding needs and the next earnings report.":"No supporting factors were established in this snapshot. Review original disclosures before drawing a conclusion."}
               </p>
             )}
           </section>

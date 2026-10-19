@@ -525,7 +525,9 @@ test('decision overview renders real evidence, eight lenses and direct research 
 
 test('valuation tool withholds unsupported models rather than fabricating sensitivities',async()=>{
  const engine=await import('../lib/decision-research.ts');
- const ValuationLab=loadComponent('components/ValuationLab.tsx','ValuationLab',{React,useMemo:React.useMemo,useState:React.useState,...engine,...format});
+ const outlook=await import('../lib/outlook.ts');
+ const ValuationMethods=loadComponent('components/ValuationMethods.tsx','ValuationMethods',{React,...outlook,...format});
+ const ValuationLab=loadComponent('components/ValuationLab.tsx','ValuationLab',{React,useMemo:React.useMemo,useState:React.useState,ValuationMethods,...engine,...format});
  const html=renderToStaticMarkup(React.createElement(ValuationLab,{research:{...demoData.research.MSFT,facts:[],evidence:undefined}}));
  assert.match(html,/Use the right model/);assert.doesNotMatch(html,/type="range"|NaN|Infinity/);
 });

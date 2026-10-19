@@ -75,8 +75,8 @@ export default function ResearchNotes({ research: r }: { research: Research }) {
     <section className="support">
       <header className="section-heading">
         <div>
-          <h2>Your thesis</h2>
-          <p>Private notes, separate from reported company evidence.</p>
+          <h2>Your decision record</h2>
+          <p>Your reasoning, counter-case and review conditions. Private and separate from company evidence.</p>
         </div>
         <div className="note-actions">
           <button

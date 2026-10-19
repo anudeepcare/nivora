@@ -13,20 +13,21 @@ export function holdingsContext(
     changeCovered = 0;
   let largest: { symbol: string; value: number } | null = null;
   for (const p of positions) {
-    if (!Number.isFinite(p.quantity) || p.quantity < 0) continue;
+    if (!Number.isFinite(p.quantity) || p.quantity <= 0 || !Number.isFinite(p.cost) || p.cost < 0) {missing++;continue;}
     const cash = p.assetType === "cash";
     const q = quotes[p.symbol];
-    if (cash && (p.symbol !== "USD" || (p.currency && p.currency !== "USD"))) {
+    if (cash && (p.symbol !== "USD" || p.currency !== "USD")) {
       missing++;
       continue;
     }
+    if (!cash && q?.stale) stale++;
     if (
       !cash &&
       (!q ||
         q.price == null ||
         !Number.isFinite(q.price) ||
         q.price <= 0 ||
-        q.currency !== "USD")
+        q.currency !== "USD" || q.stale)
     ) {
       missing++;
       continue;
@@ -40,7 +41,6 @@ export function holdingsContext(
         : sectorBySymbol[p.symbol] || "Unclassified stocks";
     groups.set(sector, (groups.get(sector) || 0) + value);
     if (!cash) holdings.set(p.symbol, (holdings.get(p.symbol) ?? 0) + value);
-    if (!cash && q.stale) stale++;
     if (
       !cash &&
       !q.stale &&

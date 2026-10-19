@@ -1,0 +1,35 @@
+✔ completed observations exclude current day and invalid OHLC (9.934945ms)
+✔ short and volume-free histories withhold unsupported studies (0.240854ms)
+✔ long planner sizes conservatively including round-trip slippage (0.258289ms)
+✔ retracement levels derive from ordered observed extremes (0.648883ms)
+✔ risk distribution uses signed returns and excludes positive-only tail loss (11.373712ms)
+✔ risk distribution reports losses and drawdown duration on declining prices (103.953406ms)
+✔ planner stress honors shortfall and probability assumptions (12.040206ms)
+✖ expected shortfall averages the fixed tail mass even when the quantile is tied at zero (124.706906ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 7
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1009.275824
+
+✖ failing tests:
+
+test at tests/advanced-research.test.mjs:11:1
+✖ expected shortfall averages the fixed tail mass even when the quantile is tied at zero (124.706906ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(Math.abs(s.es95-20/(61*.05))<1e-9)
+  
+      at TestContext.<anonymous> (file:///workspace/auryn-github-main/tests/advanced-research.test.mjs:11:386)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

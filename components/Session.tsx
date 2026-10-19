@@ -435,7 +435,7 @@ function Login({ initialError }: { initialError: string }) {
   return (
     <main className="login-page">
       <section className="login-introduction" aria-label="About AURYN">
-        <span className="eyebrow">Research with a clearer purpose</span>
+        <span className="eyebrow">Decisions you can defend</span>
         <h2>Business first. <br/>Price second. <br/><em>Timing alongside.</em></h2>
         <p>Company fundamentals, valuation scenarios and price context — connected in one focused research workspace.</p>
         <div className="login-preview" aria-label="AURYN interface preview, no live financial data">

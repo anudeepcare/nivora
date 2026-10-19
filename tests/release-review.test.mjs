@@ -181,6 +181,7 @@ function researchMarkup() {
     "DecisionBrief",
     "DecisionWorkspace",
     "DecisionWatch",
+    "PositionAwareResearch",
     "ValuationLab",
     "TimingContext", "FinancingContext", "EarningsPrep", "ResearchNotes", "ResearchCompare", "CompanyBrief",
     "ResearchOutlook",
