@@ -288,13 +288,7 @@ export function ThesisPicture({ research: r }: { research: Research }) {
       </div>
       <OwnershipPicture research={r} />
       <Analyst research={r} compact />
-      <div className="shared-stamp">
-        <DataStamp
-          source={e.latest?.sourceUrl || e.latest?.basis}
-          asOf={e.latest?.end}
-          status={e.periodBasis}
-        />
-      </div>
+
     </>
   );
 }

@@ -438,11 +438,11 @@ function Login({ initialError }: { initialError: string }) {
   return (
     <main className="login-page">
       <section className="login-introduction" aria-label="About AURYN">
-        <span className="eyebrow">A clearer investment perspective</span>
+        <span className="eyebrow">Research with a clearer purpose</span>
         <h2>Business first. <br/>Price second. <br/><em>Timing alongside.</em></h2>
-        <p>Understand what you own, challenge what you pay, and see what deserves a closer look.</p>
+        <p>Company fundamentals, valuation scenarios and price context — connected in one focused research workspace.</p>
         <div className="login-preview" aria-label="AURYN interface preview, no live financial data">
-          <header><span className="preview-brand-mark">A</span><div><strong>Your research, connected.</strong><small>Business · Value · Timing</small></div><span className="preview-caption">Interface preview</span></header>
+          <header><span className="preview-brand-mark">A</span><div><strong>See the business behind the ticker.</strong><small>Business · Value · Timing</small></div><span className="preview-caption">Interface preview</span></header>
           <div className="preview-journey"><section><i>01</i><div><strong>Understand the business</strong><p>Growth → profit → cash generation</p></div></section><section><i>02</i><div><strong>Put the price in perspective</strong><p>Bear · Base · Bull, with the assumptions visible</p></div></section><section><i>03</i><div><strong>Know what to revisit</strong><p>Funding risks, upcoming reports and price context</p></div></section></div>
           <footer>One workspace. Evidence you can inspect.</footer>
         </div>
@@ -455,7 +455,7 @@ function Login({ initialError }: { initialError: string }) {
           {mode === "login"
             ? "Welcome back."
             : mode === "signup"
-              ? "Make room for clarity."
+              ? "Start your research journey."
               : "Reset your password."}
         </h1>
         <p>Understand the business. Put the price in perspective.</p>

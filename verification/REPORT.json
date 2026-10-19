@@ -170,5 +170,18 @@
     "settingsSimplified": true,
     "whiteButtonContrastTest": "at least 4.5:1 across four solid accents",
     "installedIphoneVisualAcceptance": false
+  },
+  "accountNewsRefinement": {
+    "status": "implemented",
+    "tests": 219,
+    "log": "verification/account-news-refinement.log",
+    "visualAcceptance": false,
+    "physicalIphoneVerified": false,
+    "removed": [
+      "thesis personal record entry",
+      "print PDF entry",
+      "Thesis trailing date stamp"
+    ],
+    "billingImplemented": false
   }
 }

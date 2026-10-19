@@ -58,9 +58,9 @@ export default function CompanyUpdates({
                   </span>
                   <strong>
                     {item.change == null
-                      ? "—"
+                      ? "Quantity not supplied"
                       : Math.abs(item.change).toLocaleString()}{" "}
-                    shares
+                    {item.change != null ? "shares" : ""}
                   </strong>
                 </div>
               ))

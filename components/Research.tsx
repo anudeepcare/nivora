@@ -1,7 +1,5 @@
 "use client";
 import dynamic from "next/dynamic";
-const ResearchNotes=dynamic(()=>import("./ResearchNotes"));
-const CompanyBrief=dynamic(()=>import("./CompanyBrief"));
 import FinancingContext from "./FinancingContext";
 import EarningsPrep from "./EarningsPrep";
 import TimingContext from "./TimingContext";
@@ -426,7 +424,7 @@ export default function Research({ symbol }: { symbol: string }) {
           </>
         )}
         {tab === "Technicals" && <DcaResearch research={r} />}
-        {tab === "Thesis" && <><ThesisPicture research={r} /><details className="research-optional"><summary>My thesis, pre-mortem & research record</summary><ResearchNotes research={r} /></details><CompanyBrief research={r} /></>}
+        {tab === "Thesis" && <ThesisPicture research={r} />}
       </div>
     </article>
   );

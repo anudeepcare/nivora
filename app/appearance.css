@@ -11,3 +11,27 @@
 @media(max-width:1000px){:root[data-density="compact"] .decision-workspace {padding:16px;}:root[data-density="compact"] .metric-band {margin:18px 0;row-gap:16px;}:root[data-density="compact"] .financing-context,:root[data-density="compact"] .earnings-prep {margin:18px 0;}}
 
 .settings-sheet .dialog-body {padding:12px 22px 20px;}.settings-sheet .setting-row {min-height:50px;padding:10px 0;}.settings-sheet .appearance-controls {margin-top:8px;padding-bottom:14px;}.settings-sheet .appearance-controls h3 {font-size:14px;}.settings-sheet .appearance-controls>p {margin:6px 0;}.settings-research {border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0;margin-bottom:8px;}.settings-research>summary,.settings-password>summary {cursor:pointer;font-size:14px;font-weight:550;min-height:28px;}.settings-research .research-preferences {border:0;padding-bottom:0;}.settings-legal {display:flex;flex-wrap:wrap;gap:16px;padding-top:16px;border-top:1px solid var(--line);font-size:11px;color:var(--muted);}.settings-legal a {padding:5px 0;}.settings-password[open]>summary {margin-bottom:20px;}@media(max-width:700px){.settings-sheet .dialog-body {padding:12px 18px 20px;}}
+
+/* Focused account, help and news surfaces. Does not change the installed PWA shell. */
+.settings-page {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;max-width:1100px;align-items:start;}
+.settings-page>.page-heading {grid-column:1/-1;}
+.settings-page>.panel {margin:0;padding:24px;min-width:0;border:1px solid var(--line);border-radius:20px;}
+.settings-page>.settings-appearance {grid-column:2;grid-row:2/4;}
+.settings-page .appearance-controls {padding:0 0 18px;border:0;}
+.settings-page .setting-row {gap:16px;align-items:center;padding:0;}
+.settings-page .setting-row>div {min-width:0;}.settings-page .setting-row p {overflow-wrap:anywhere;}
+.settings-page .settings-password {grid-column:1;}.settings-page .password-form {flex-wrap:wrap;}
+.settings-sheet .setting-row.action {width:100%;display:flex;justify-content:space-between;align-items:center;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0;color:var(--ink);gap:14px;}
+.settings-sheet .setting-row.action.negative {color:var(--red);}
+.earnings-prep {padding:22px;border:1px solid var(--line);border-radius:22px;background:var(--surface);}
+.earnings-prep>.section-head {margin-bottom:16px;}.earnings-prep .eyebrow {color:var(--blue);}
+.earnings-prep>div {gap:16px;}.earnings-prep>div>section {padding:16px 18px;border-radius:14px;background:color-mix(in srgb,var(--blue) 6%,var(--surface));border-left:3px solid var(--blue);}
+.earnings-prep>div>section+section {background:color-mix(in srgb,#b36b15 6%,var(--surface));border-color:#b36b15;}
+.earnings-prep h4 {margin:0 0 10px;}.earnings-prep>div p {margin:8px 0;}.earnings-prep>.small {margin:14px 0 0;}
+.company-updates .grid2>div:first-child {border-top:3px solid var(--blue);}.company-updates .grid2>div+div {border-top:3px solid #008b78;}
+.company-updates .stat-pair {gap:16px;align-items:start;}.company-updates .stat-pair>span {min-width:0;}.company-updates .stat-pair small {display:block;margin-top:5px;}.company-updates .stat-pair>strong {font-size:12px;text-align:right;flex-shrink:0;max-width:36%;}
+.legal-document>nav a {display:inline-flex;align-items:center;min-height:44px;}.help-search {display:grid;gap:10px;}.help-search input {width:100%;min-height:48px;box-sizing:border-box;}
+.login-card {border:1px solid var(--line);box-shadow:0 24px 80px rgb(20 40 70 / 8%);}
+.login-preview {background:linear-gradient(140deg,color-mix(in srgb,var(--blue) 5%,var(--surface)),var(--surface));}
+.preview-journey section:nth-child(2) i {background:color-mix(in srgb,#008b78 12%,var(--surface));color:#008b78;}.preview-journey section:nth-child(3) i {background:color-mix(in srgb,#8b5bd3 12%,var(--surface));color:#8b5bd3;}
+@media(max-width:700px){.settings-page {grid-template-columns:minmax(0,1fr);gap:14px;}.settings-page>.settings-appearance,.settings-page .settings-password {grid-column:auto;grid-row:auto;}.settings-page>.panel {padding:20px;}.earnings-prep {padding:18px;}.earnings-prep>div {grid-template-columns:1fr;}.company-updates .stat-pair {flex-wrap:wrap;}.company-updates .stat-pair>strong {max-width:100%;text-align:left;}.settings-sheet .setting-row>.segments {flex-wrap:wrap;}}

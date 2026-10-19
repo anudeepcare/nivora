@@ -45,8 +45,8 @@ export function Settings() {
   return (
     <section className="settings-page">
       <PageHeading
-        title="Account & security"
-        subtitle="Your login and password."
+        title="Your workspace"
+        subtitle="Appearance, research preferences and account security."
       />
       <section className="panel">
         <div className="setting-row">
@@ -69,7 +69,7 @@ export function Settings() {
           </button>
         </div>
       </section>
-      <section className="panel"><AppearanceControls /><details className="settings-research"><summary>Research preferences</summary><ResearchPreferenceControls /></details></section>
+      <section className="panel settings-appearance"><AppearanceControls /><details className="settings-research"><summary>Research preferences</summary><ResearchPreferenceControls /></details></section>
       <details className="panel support settings-password">
         <summary>Change password</summary>
         <form className="password-form" onSubmit={update}>

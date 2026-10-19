@@ -35,3 +35,10 @@ Baseline and no-change notices are invisible. Actual detected changes appear on 
 ## Appearance and settings refinement
 Four saved accent choices (AURYN Blue, Ocean, Iris and Rose), light/dark/system appearance, comfortable/compact spacing, existing text size and reduced motion are available in Settings. Accent does not overwrite positive/negative risk colors. Desktop research uses a wider bounded content area and a tighter company header. Compact spacing reduces gaps without reducing text size or main touch targets. Settings keeps research preferences collapsed, legal links compact, and password editing closed until requested. Preferences are local to this device; no account sync is claimed. Installed-PWA status surface and safe-area shell remain intact.
 Latest automated checks: 219 tests, TypeScript, production build; no rendered-browser or physical-device acceptance claimed.
+
+## Account, News and entry-page refinement — October 19
+- Removed the optional personal thesis/pre-mortem record and print/PDF brief entry from Thesis, plus its redundant trailing period stamp. Financial data retains period context in its own sections.
+- Account uses two aligned desktop columns, one mobile column, compact appearance settings and a separate password disclosure. Settings navigation actions now have consistent full-width icon alignment.
+- News separates earnings preparation, events and transactions with restrained color accents. Missing transaction quantities say “Quantity not supplied” rather than an orphan dash plus shares.
+- Sign-in and registration introduce the business/value/timing proposition with clearer product copy. No testimonial, return claim or unimplemented paid-plan promise added.
+- PWA metadata, safe-area rules and status surface are preserved. No physical iPhone acceptance or live authentication verification was performed for this patch.
