@@ -20,6 +20,7 @@ const calls = [],
 const financial = (symbol) => ({
   General: {
     Code: symbol,
+    ...(symbol === "PEERBASE" ? { Sector: "Technology", Industry: "Software" } : {}),
     Name: symbol === "SAP" ? "SAP SE" : symbol,
     Exchange: "NYSE",
     CurrencyCode: "USD",
@@ -139,6 +140,12 @@ globalThis.fetch = async (input) => {
       });
   }
   if (u.hostname === "eodhd.com") {
+    if(u.pathname==='/api/screener') return Response.json({data:[{code:'PEERBASE',name:'Base company',exchange:'US',industry:'Software',sector:'Technology',market_capitalization:1000000000},{code:'PEERONE',name:'Peer one',exchange:'US',industry:'Software',sector:'Technology',market_capitalization:900000000}]});
+    if(u.pathname.includes('/sec-companies/')&&u.pathname.endsWith('/segments')) {
+      if(u.pathname.includes('/DENIED.')) return new Response('',{status:403});
+      return Response.json({data:[{axis:'ProductOrService',member:'Services',concept:'Revenue',value:1000000,unit:'USD',period_end:'2025-12-31'}]});
+    }
+
     if (u.pathname === "/api/calendar/earnings")
       return Response.json({
         earnings: [
@@ -482,6 +489,12 @@ await check(
     );
   },
 );
+
+await check('research context rejects unauthenticated access',async()=>{const r=await load('research-context/[symbol]').GET(new Request('https://test.invalid/api/research-context/APP?kind=peers'),{params:Promise.resolve({symbol:'APP'})});assert.equal(r.status,401);});
+await check('peer discovery uses bounded industry candidates and cache',async()=>{const r=await get('research-context/[symbol]','?kind=peers','PEERBASE'),d=await r.json();assert.equal(r.status,200);assert.equal(d.candidates[0].symbol,'PEERONE');assert.equal(d.field,'industry');const before=calls.filter(x=>x.pathname==='/api/screener').length;await get('research-context/[symbol]','?kind=peers','PEERBASE');assert.equal(calls.filter(x=>x.pathname==='/api/screener').length,before);});
+await check('segments normalize the documented response',async()=>{const r=await get('research-context/[symbol]','?kind=segments','APP'),d=await r.json();assert.equal(r.status,200);assert.equal(d.rows[0].value,1000000);assert.equal(d.rows[0].unit,'USD');});
+await check('segments fail closed on denied entitlement',async()=>{const r=await get('research-context/[symbol]','?kind=segments','DENIED');assert.equal(r.status,503);});
+await check('corporate context rejects crypto without provider calls',async()=>{const before=calls.length,r=await get('research-context/[symbol]','?kind=segments','ETH-USD');assert.equal(r.status,400);assert.equal(calls.filter(x=>x.hostname==='eodhd.com').slice(-1)[0]?.pathname.includes('ETH'),false);});
 console.log(
   JSON.stringify(
     {

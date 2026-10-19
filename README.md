@@ -49,3 +49,5 @@ Follow `docs/DEPLOYMENT.md`. Do not overwrite production or enable broker schedu
 Latest October 19 research/visual additions and exact remaining scope: see docs/RESEARCH_RETENTION_RELEASE.md (RESEARCH_RETENTION_RELEASE.md from this docs directory). Latest automated verification: 219 tests, TypeScript, production build and 64 API fixtures. Billing and the full commercial roadmap are not complete.
 
 Latest connected research changes and the complete requested-feature coverage matrix: docs/CONNECTED_PRODUCT_RELEASE.md.
+
+Latest benchmark, industry candidate, segment and Technicals work: docs/MARKET_CONTEXT_RELEASE.md. Install test dependencies with npm ci --include=dev.

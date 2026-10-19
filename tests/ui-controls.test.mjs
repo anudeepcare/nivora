@@ -560,3 +560,9 @@ test('change tracking stays invisible until there are actual observed changes',(
  const html=renderToStaticMarkup(React.createElement(ResearchChanges,{research:demoData.research.MSFT}));
  assert.equal(html,'');
 });
+
+test('technical desk separates four evidence groups and formats missing data safely',async()=>{
+ const {advancedStudies}=await import('../lib/advanced-research.ts'),{professionalStudies}=await import('../lib/professional-studies.ts'),{expandedStudies}=await import('../lib/technical-expanded.ts'),{priceStudies}=await import('../lib/price-studies.ts'),{perspective}=await import('../lib/analysis.ts');
+ const TechnicalDashboard=loadComponent('components/TechnicalDashboard.tsx','TechnicalDashboard',{React,useMemo:React.useMemo,useRef:React.useRef,advancedStudies,professionalStudies,expandedStudies,priceStudies,perspective,...format,TechnicalLevels:()=>null,X:()=>null});
+ const html=renderToStaticMarkup(React.createElement(TechnicalDashboard,{research:demoData.research.MSFT}));for(const title of ['Trend','Momentum','Volatility &amp; range','Participation','Price reference map','Custom anchors'])assert.ok(html.includes(title),title);assert.doesNotMatch(html,/NaN|Infinity|undefined/);
+});

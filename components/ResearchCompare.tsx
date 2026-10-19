@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import type { PeerCandidate } from "@/lib/market-context";
 import type { Research } from "@/lib/types";
 import { peerContext } from "@/lib/research-integrity";
 import { comparisonRows } from "@/lib/research-workbench";
@@ -10,9 +11,9 @@ import { useProduct } from "./Session";
 import { Notice, SecurityLogo } from "./Ui";
 import { downloadCsv } from "./ResearchWorkbench";
 export default function ResearchCompare({
-  research: r,
+  research: r, suggestions = [],
 }: {
-  research: Research;
+  research: Research; suggestions?: PeerCandidate[];
 }) {
   const { cache, demo } = useProduct();
   const [symbol, setSymbol] = useState(""),
@@ -28,15 +29,14 @@ export default function ResearchCompare({
       ...reports.filter((x) => x.company.symbol !== r.company.symbol),
     ].slice(0, 6),
     rows = comparisonRows(items),peers=peerContext(items);
-  async function add(e: React.FormEvent) {
-    e.preventDefault();
+  async function addSymbol(input: string) {
     if (busy) return;
     setMessage("");
     try {
-      const s = symbolInput(symbol);
+      const s = symbolInput(input);
       if (items.some((x) => x.company.symbol === s))
         throw Error("This company is already shown.");
-      if (items.length >= 6) throw Error("Compare up to four companies.");
+      if (items.length >= 6) throw Error("Compare up to six companies.");
       setBusy(true);
       const key = `research/${encodeURIComponent(s.replace("/", "-"))}`;
       const value = demo
@@ -62,7 +62,8 @@ export default function ResearchCompare({
           <p>Choose relevant peers. Sector and reporting dates matter.</p>
         </div>
       </header>
-      <form className="compare-form" onSubmit={add}>
+      <div className="peer-candidates">{suggestions.filter(p=>!items.some(x=>x.company.symbol===p.symbol)).map(p=><button className="button" key={p.symbol} disabled={busy||items.length>=6} onClick={()=>addSymbol(p.symbol)}>+ {p.symbol}<small>{p.name}</small></button>)}</div>
+      <form className="compare-form" onSubmit={e=>{e.preventDefault();void addSymbol(symbol);}}>
         <label htmlFor="compare-symbol">
           Company ticker
           <input

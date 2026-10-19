@@ -3,7 +3,6 @@ import dynamic from "next/dynamic";
 const AdvancedResearch=dynamic(()=>import("./AdvancedResearch"));
 import PositionAwareResearch from "./PositionAwareResearch";
 const ResearchNotes=dynamic(()=>import("./ResearchNotes"));
-const ResearchCompare=dynamic(()=>import("./ResearchCompare"));
 import FinancingContext from "./FinancingContext";
 import EarningsPrep from "./EarningsPrep";
 import TimingContext from "./TimingContext";
@@ -366,7 +365,7 @@ export default function Research({ symbol }: { symbol: string }) {
         className="au-stack"
       >
         {tab === "News" && <><EarningsPrep research={r} /><CompanyUpdates research={r} /></>}
-        {tab === "Advanced" && <><AdvancedResearch key={r.company.symbol} research={r}/><details className="research-optional"><summary>Compare selected companies</summary><ResearchCompare research={r}/></details></>}
+        {tab === "Advanced" && <AdvancedResearch key={r.company.symbol} research={r}/>}
         {tab === "Analysts" && <AnalystRatings research={r} />}
         {tab === "Snapshot" && (
           <>

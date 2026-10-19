@@ -8,7 +8,7 @@ If you already extracted and copied the new source into `~/Downloads/AURYN`, run
 
 ```sh
 cd ~/Downloads/AURYN &&
-npm ci &&
+npm ci --include=dev &&
 npm run verify &&
 npm run test:api &&
 git add -A &&

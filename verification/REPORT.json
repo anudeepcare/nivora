@@ -216,5 +216,14 @@
     "physicalIphoneVerified": false,
     "liveSupabaseWriteTested": false,
     "paidBillingImplemented": false
+  },
+  "marketContextAndTechnicals": {
+    "tests": 239,
+    "log": "verification/market-context-verify.log",
+    "apiLog": "verification/market-context-api.log",
+    "scope": "docs/MARKET_CONTEXT_RELEASE.md",
+    "liveEntitlementsVerified": false,
+    "physicalIphoneVerified": false,
+    "fullRoadmapComplete": false
   }
 }
