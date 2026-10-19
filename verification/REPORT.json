@@ -298,5 +298,14 @@
     "newFeature": "user-initiated manual trade reference; no broker order or extra provider request",
     "physicalIphoneVerified": false,
     "renderedBrowserVerified": false
+  },
+  "desktopAlignment": {
+    "changes": [
+      "Research navigation remains in document flow to avoid covering charts and evidence",
+      "Defined desktop ledger column widths and right-aligned quote timestamps; mobile named grid retained",
+      "Advanced hero text contrast corrected"
+    ],
+    "verification": "269 tests, TypeScript and production build passed; 77 fixture API checks passed",
+    "limits": "Rendered browser and physical iPhone visual checks unavailable"
   }
 }

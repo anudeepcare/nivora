@@ -1,3 +1,5 @@
+Desktop alignment update: research tabs no longer overlay content; portfolio columns and quote timestamps align; Advanced hero contrast corrected. Mobile ledger grid and PWA shell preserved. Tests: 269; fixture API checks: 77. Physical iPhone/browser visual confirmation remains unavailable.
+
 > Latest interaction update: read `docs/INTERACTION_AND_TRUST.md`. Keep dark tokens local to the balance card, immutable evidence caching and the existing PWA shell.
 
 > Latest: `docs/PORTFOLIO_LEDGER_REPAIR.md` covers the Portfolio layout repair and new charts. Preserve the isolated ledger classes and existing PWA shell.

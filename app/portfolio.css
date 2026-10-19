@@ -732,3 +732,18 @@
 .portfolio-charts {
   color: var(--ink);
 }
+
+/* Explicit desktop columns align headings and values without stretching identity. */
+@media (min-width: 701px) {
+  .portfolio-ledger { table-layout: fixed; }
+  .portfolio-ledger th:first-child { width: 28%; padding-left: 0; }
+  .portfolio-ledger th:nth-child(2) { width: 12%; }
+  .portfolio-ledger th:nth-child(3) { width: 15%; }
+  .portfolio-ledger th:nth-child(4) { width: 14%; }
+  .portfolio-ledger th:nth-child(5) { width: 14%; }
+  .portfolio-ledger th:nth-child(6) { width: 12%; }
+  .portfolio-ledger th:last-child { width: 5%; }
+  .portfolio-ledger .ledger-price small { margin-left: auto; white-space: normal; overflow-wrap: anywhere; }
+  .portfolio-ledger td { padding-block: 13px; }
+  .portfolio-ledger .ledger-watch { overflow-wrap: anywhere; }
+}
