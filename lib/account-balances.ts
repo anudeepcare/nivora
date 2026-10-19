@@ -9,3 +9,12 @@ export function cleanAccountBalances(value: unknown): AccountBalances {
 export function accountEquity(pricedAssets: number, balances: AccountBalances) {
   return pricedAssets + (balances.managed_value ?? 0) - balances.margin_debt;
 }
+
+export function parseAccountMoney(text: string, optional = false): number | null {
+  const value = text.trim().replace(/^\$\s*/, '');
+  if (!value) { if (optional) return null; throw Error('Enter the margin debt, or 0 if none.'); }
+  if (!/^(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d{1,2})?$/.test(value)) throw Error('Use a USD amount such as 120,000.00, with at most two decimal places.');
+  const number = Number(value.replaceAll(',', ''));
+  if (!Number.isFinite(number) || number > 1e12) throw Error('Check the amount.');
+  return number;
+}

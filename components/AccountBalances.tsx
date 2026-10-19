@@ -3,7 +3,7 @@ import {useEffect,useState} from 'react';
 import {useProduct,useResource} from './Session';
 import {api} from '@/lib/client';
 import {amount,quoteTime} from '@/lib/format';
-import {accountEquity,type AccountBalances as Balances} from '@/lib/account-balances';
+import {accountEquity,parseAccountMoney,type AccountBalances as Balances} from '@/lib/account-balances';
 const preview={balances:null};
 export default function AccountBalances({assets,ready,missing}:{assets:number;ready:boolean;missing:number}){
  const {demo}=useProduct();
@@ -14,7 +14,7 @@ export default function AccountBalances({assets,ready,missing}:{assets:number;re
  async function save(e:React.FormEvent){e.preventDefault();setBusy(true);setMessage('');try{
   if(demo)throw Error('Sign in to save balances.');
   if(managed.trim()&&!confirmed)throw Error('Confirm that managed investments are separate from listed holdings.');
-  await api('account-balances',{margin_debt:debt.trim()?Number(debt):0,managed_value:managed.trim()?Number(managed):null});
+  await api('account-balances',{margin_debt:parseAccountMoney(debt),managed_value:parseAccountMoney(managed,true)});
   setEditing(false);records.refresh();
  }catch(e){setMessage(e instanceof Error?e.message:'Could not save.');}finally{setBusy(false);}}
  return <div className="account-equity">
@@ -24,7 +24,16 @@ export default function AccountBalances({assets,ready,missing}:{assets:number;re
   {b&&(missing>0||b.managed_value==null)&&<p className="balance-caption">Partial equity: {missing>0?`${missing} unpriced holdings excluded. `:''}{b.managed_value==null?'Managed portfolio not included until its exact value is entered.':''}</p>}
   {b?.updated_at&&<small className="account-balance-date">Balances recorded {quoteTime(b.updated_at)} · manual values</small>}
   {records.error&&<p className="balance-caption">Margin and managed balances unavailable; shown total is gross listed assets.</p>}
-  <button type="button" className="text-button account-balance-edit" onClick={()=>setEditing(!editing)}>{editing?'Close balance editor':'Edit margin & managed balance'}</button>
-  {editing&&<form onSubmit={save} className="account-balance-form"><label>Margin debt · USD<input type="number" min="0" max="1000000000000" step="0.01" value={debt} onChange={e=>setDebt(e.target.value)} placeholder="0" /></label><label>Separate managed investments · USD<input type="number" min="0" max="1000000000000" step="0.01" value={managed} onChange={e=>{setManaged(e.target.value);setConfirmed(false);}} placeholder="Exact current value" /></label><label className="account-balance-confirm"><input type="checkbox" checked={confirmed} onChange={e=>setConfirmed(e.target.checked)} />Managed value excludes all holdings already listed below.</label><button className="primary-button" disabled={busy||!!demo}>{busy?'Saving…':'Save balances'}</button>{message&&<p role="alert">{message}</p>}</form>}
+  {!editing&&<button type="button" className="text-button account-balance-edit" onClick={()=>setEditing(true)}>Edit margin & managed balance</button>}
+  {editing&&<form onSubmit={save} className="account-balance-form" noValidate>
+    <div className="account-balance-form-head"><strong>Account balances</strong><span>USD · update when your broker balance changes</span></div>
+    <div className="account-balance-fields">
+      <label>Margin used<div className="account-money-input"><span aria-hidden="true">$</span><input type="text" inputMode="decimal" autoComplete="off" aria-label="Margin used in USD" value={debt} onChange={e=>setDebt(e.target.value)} placeholder="0.00" /></div><small>Deducted from your net equity.</small></label>
+      <label>Managed investments<div className="account-money-input"><span aria-hidden="true">$</span><input type="text" inputMode="decimal" autoComplete="off" aria-label="Managed investments in USD" value={managed} onChange={e=>{setManaged(e.target.value);setConfirmed(false);}} placeholder="Exact balance, or leave blank" /></div><small>Added separately to your listed holdings.</small></label>
+    </div>
+    <label className="account-balance-confirm"><input type="checkbox" checked={confirmed} onChange={e=>setConfirmed(e.target.checked)} />Managed investments are not already in my holdings.</label>
+    {message&&<p className="account-balance-error" role="alert">{message}</p>}
+    <div className="account-balance-actions"><button type="button" onClick={()=>{setEditing(false);setMessage('');setDebt(b?String(b.margin_debt):'');setManaged(b?.managed_value==null?'':String(b.managed_value));setConfirmed(b?.managed_value!=null);}}>Cancel</button><button type="submit" disabled={busy||!!demo}>{busy?'Saving…':'Save balances'}</button></div>
+  </form>}
  </div>;
 }

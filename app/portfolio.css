@@ -756,5 +756,28 @@
 .account-balance-edit { margin-top: 10px; color: var(--blue); }
 .account-balance-form { display: grid; gap: 12px; padding-top: 16px; }
 .account-balance-form label { display: grid; gap: 6px; font-size: .83rem; }
-.account-balance-form input[type=number] { width: 100%; min-width: 0; padding: 11px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 10px; }
+
 .account-balance-form .account-balance-confirm { display: flex; align-items: flex-start; gap: 8px; }
+
+/* The editor owns its palette rather than inheriting the dark balance hero. */
+.portfolio-page .account-balance-form { --ink: #172f3a; --muted: #526773; --line: #cdd8e1; --blue: #2367df; --surface: #ffffff; color: #172f3a; background: #f5f8fc; border: 1px solid #d9e2ec; border-radius: 16px; padding: 18px; margin-top: 14px; gap: 16px; }
+.account-balance-form-head { display: grid; gap: 4px; }
+.account-balance-form-head strong { color: #172f3a; font-size: .95rem; }
+.account-balance-form-head span, .account-balance-form label small { color: #526773; font-size: .76rem; line-height: 1.4; }
+.account-balance-fields { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+.account-balance-fields label { min-width: 0; color: #172f3a; }
+.account-money-input { display: flex; align-items: center; border: 1px solid #b9c8d5; border-radius: 10px; background: #fff; overflow: hidden; min-width: 0; }
+.account-money-input > span { padding-left: 12px; color: #526773; }
+.portfolio-page .account-money-input input { width: 100%; min-width: 0; border: 0; border-radius: 0; padding: 12px 10px; color: #172f3a; -webkit-text-fill-color: #172f3a; caret-color: #2367df; background: #fff; font-size: 16px; font-variant-numeric: tabular-nums; box-shadow: none; }
+.portfolio-page .account-money-input input::placeholder { color: #667d8e; -webkit-text-fill-color: #667d8e; opacity: 1; }
+.account-money-input:focus-within { outline: 2px solid #2367df; outline-offset: 2px; }
+.portfolio-page .account-money-input input:focus-visible { outline: none; }
+.account-balance-form .account-balance-confirm { color: #334d5c; line-height: 1.45; }
+.account-balance-confirm input { accent-color: #2367df; flex: 0 0 auto; width: 18px; height: 18px; margin: 0; }
+.account-balance-actions { display: flex; justify-content: flex-end; gap: 10px; }
+.account-balance-actions button { min-height: 42px; padding: 10px 16px; border: 1px solid #bccbd8; border-radius: 10px; background: #fff; color: #243c49; }
+.account-balance-actions button[type=submit] { background: #2367df; border-color: #2367df; color: #fff; }
+.account-balance-actions button:disabled { opacity: .6; }
+.account-balance-form .account-balance-error { color: #a5283e; font-size: .83rem; margin: 0; }
+.portfolio-page .portfolio-balance .account-balance-edit { color: #a2dedc; }
+@media (max-width: 700px) { .account-balance-fields { grid-template-columns: 1fr; } .account-balance-actions button { flex: 1; } }

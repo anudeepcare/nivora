@@ -7,10 +7,10 @@
     "npm run verify": "passed: tests, TypeScript and production build; final tests 274",
     "npm run test:api": "passed: 39 baseline + 16 research regression + 22 provider + 5 shared protection checks",
     "git diff --check": "passed",
-    "npm test": "passed: 274 tests",
+    "npm test": "passed: 275 tests",
     "npm run build": "passed after final scoped stylesheet cleanup"
   },
-  "domainPostgresAndComponentTests": 274,
+  "domainPostgresAndComponentTests": 275,
   "builtApiChecks": 82,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -315,5 +315,10 @@
     "security": "verified identity at API and account-scoped RLS; PostgreSQL isolation test passed",
     "quoteDates": "compact today time, older date/time; full timestamp retained in time title",
     "limitations": "No live database write or physical iPhone/rendered browser verification"
+  },
+  "balanceEditor": {
+    "fix": "Isolated readable form palette, USD text inputs with decimal keyboard and comma support, compact responsive layout, Save/Cancel",
+    "tests": "Money parser rejects ambiguous separators, exponent, negative amounts and excess decimal places",
+    "limits": "No physical device or rendered browser confirmation"
   }
 }
