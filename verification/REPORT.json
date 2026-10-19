@@ -1,14 +1,15 @@
 {
-  "generatedAt": "2026-10-19T00:24:30.153057+00:00",
+  "generatedAt": "2026-10-19T00:35:47.343786+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 216 tests, TypeScript, production build",
+    "npm run verify": "passed: 219 tests, TypeScript, production build",
     "npm run test:api": "passed: 32 baseline + 16 research regression + 16 provider checks",
-    "git diff --check": "passed"
+    "git diff --check": "passed",
+    "npm test": "passed: 219 tests"
   },
-  "domainPostgresAndComponentTests": 216,
+  "domainPostgresAndComponentTests": 219,
   "builtApiChecks": 64,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -145,5 +146,29 @@
     "printBrief": true,
     "liveDatabaseVerification": false,
     "commercialRoadmapComplete": false
+  },
+  "summaryCleanup": {
+    "baselineNoticeHidden": true,
+    "actualChangesOnlyOnOverview": true,
+    "comparisonRemovedFromValue": true,
+    "canonicalSummaryStylesRewritten": true,
+    "browserVisualAcceptance": false
+  },
+  "appearance": {
+    "accents": [
+      "AURYN Blue",
+      "Ocean",
+      "Iris",
+      "Rose"
+    ],
+    "spacing": [
+      "comfortable",
+      "compact"
+    ],
+    "persistence": "on device; early boot applies preference before paint",
+    "riskColorsPreserved": true,
+    "settingsSimplified": true,
+    "whiteButtonContrastTest": "at least 4.5:1 across four solid accents",
+    "installedIphoneVisualAcceptance": false
   }
 }

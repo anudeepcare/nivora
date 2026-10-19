@@ -1,4 +1,5 @@
 "use client";
+import AppearanceControls from "./AppearanceControls";
 import ResearchPreferenceControls from "./ResearchPreferences";
 import PwaDiagnostics from "./PwaDiagnostics";
 import { useEffect, useMemo, useState } from "react";
@@ -68,9 +69,9 @@ export function Settings() {
           </button>
         </div>
       </section>
-      <section className="panel"><ResearchPreferenceControls /></section>
-      <section className="panel support">
-        <h2>Update password</h2>
+      <section className="panel"><AppearanceControls /><details className="settings-research"><summary>Research preferences</summary><ResearchPreferenceControls /></details></section>
+      <details className="panel support settings-password">
+        <summary>Change password</summary>
         <form className="password-form" onSubmit={update}>
           <label>
             New password
@@ -88,7 +89,7 @@ export function Settings() {
           </button>
         </form>
         {message && <Notice>{message}</Notice>}
-      </section>
+      </details>
     </section>
   );
 }

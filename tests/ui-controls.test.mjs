@@ -540,7 +540,7 @@ test('authentication explains AURYN in sign-in, signup and recovery without fabr
  }
 });
 test('settings hides experimental navigation while preserving account and help',()=>{
- const SettingsSheet=loadComponent('components/SettingsSheet.tsx','SettingsSheet',{React,useState:React.useState,useProduct:()=>({demo:false,themePreference:'light',textSize:'standard',reduceMotion:false}),Link:({children,...props})=>React.createElement('a',props,children),ArrowRight:empty,X:empty,LogOut:empty,ResearchPreferenceControls:empty});
+ const SettingsSheet=loadComponent('components/SettingsSheet.tsx','SettingsSheet',{React,useState:React.useState,useProduct:()=>({demo:false,themePreference:'light',textSize:'standard',reduceMotion:false}),Link:({children,...props})=>React.createElement('a',props,children),ArrowRight:empty,X:empty,LogOut:empty,ResearchPreferenceControls:empty,AppearanceControls:empty});
  const html=renderToStaticMarkup(React.createElement(SettingsSheet,{dialog:{current:null}}));
  assert.doesNotMatch(html,/href="\/(discover|research-lab|trading)"/);
  assert.match(html,/Account &amp; security/);assert.match(html,/href="\/help"/);
@@ -551,4 +551,10 @@ test('scenario presentation uses one shared scale and keeps current price outsid
  const CaseRange=loadComponent('components/CaseRange.tsx','CaseRange',{React,valuationScale,...format});
  const html=renderToStaticMarkup(React.createElement(CaseRange,{cases:[{name:'Bear',target:10,change:-80},{name:'Base',target:20,change:-60},{name:'Bull',target:30,change:-40}],price:50,currency:'USD'}));
  assert.match(html,/Shared linear price scale/);assert.match(html,/Current/);assert.match(html,/\$50\.00/);assert.doesNotMatch(html,/scenario-bar|NaN|Infinity/);
+});
+
+test('change tracking stays invisible until there are actual observed changes',()=>{
+ const ResearchChanges=loadComponent('components/ResearchChanges.tsx','ResearchChanges',{React,useState:React.useState,useRef:React.useRef,useEffect:()=>{},useProduct:()=>({cache:new Map(),owner:'test',demo:undefined})});
+ const html=renderToStaticMarkup(React.createElement(ResearchChanges,{research:demoData.research.MSFT}));
+ assert.equal(html,'');
 });

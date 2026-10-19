@@ -1,4 +1,5 @@
 "use client";
+import AppearanceControls from "./AppearanceControls";
 import Link from "next/link";
 import ResearchPreferenceControls from "./ResearchPreferences";
 import { useState, type RefObject } from "react";
@@ -91,14 +92,12 @@ export default function SettingsSheet({
             <i />
           </button>
         </div>
-        <ResearchPreferenceControls />
+        <AppearanceControls />
+        <details className="settings-research"><summary>Research preferences</summary><ResearchPreferenceControls /></details>
         {[
           ["settings", "Account & security"],
           ["alerts", "Alerts"],
           ["help", "Help"],
-          ["methodology", "Methodology"],
-          ["terms", "Terms of use"],
-          ["privacy", "Privacy"],
         ].map(([path, label]) => (
           <Link
             key={path}
@@ -124,6 +123,7 @@ export default function SettingsSheet({
           <span>Sign out</span>
           <LogOut size={18} />
         </button>
+        <nav className="settings-legal" aria-label="Legal and methodology"><Link href="/methodology" onNavigate={()=>dialog.current?.close()}>Methodology</Link><Link href="/terms" onNavigate={()=>dialog.current?.close()}>Terms</Link><Link href="/privacy" onNavigate={()=>dialog.current?.close()}>Privacy</Link></nav>
         {error && (
           <p role="alert" className="negative">
             {error}

@@ -14,5 +14,6 @@ export default function ResearchChanges({research:r}:{research:Research}){
   if(!demo)try{localStorage.setItem(key,JSON.stringify(current));}catch{setSaved(false);}
   if(list.length){const feed=(cache.get('brief:changes')?.value??[]) as {symbol:string;changes:string[];at:string}[];cache.set('brief:changes',{at:Date.now(),value:[{symbol:r.company.symbol,changes:list,at:r.retrievedAt},...feed.filter(x=>x.symbol!==r.company.symbol)].slice(0,12)});}
  },[r,owner,cache,demo]);
+ if(!changes.length)return null;
  return <section className="observed-changes"><span className="eyebrow">{baseline?'Your first observation':'Since your previous saved view'}</span>{changes.map(x=><p key={x}>{x}</p>)}{!changes.length&&<p>{baseline?'This view establishes a baseline. Future visits can show changes to available evidence.':'No tracked evidence changes detected since your saved view.'}</p>}<small>{!saved?'Device storage is unavailable; this observation will not persist.':demo?'Preview does not save observation history.':'Saved on this device for this account; not a continuous market monitor or complete revision history.'}</small></section>;
 }

@@ -28,3 +28,10 @@ The complete requested commercial platform is not finished. The following are re
 
 ## Checks and deployment
 See verification/research-retention-final-verify.log and research-retention-final-api.log for the latest automated results. Documentation is not a substitute for the remaining external and operational tests. No push, deployment, live order, user email or production database mutation is performed.
+
+## Latest requested cleanup
+Baseline and no-change notices are invisible. Actual detected changes appear on Overview only. Comparison/selected-peer controls have been removed from Value at the user’s request. Summary-specific CSS rules were consolidated and rewritten with blue/teal/violet decision accents, amber/red risk context, compact spacing and formatted dates. PWA shell remains unchanged.
+
+## Appearance and settings refinement
+Four saved accent choices (AURYN Blue, Ocean, Iris and Rose), light/dark/system appearance, comfortable/compact spacing, existing text size and reduced motion are available in Settings. Accent does not overwrite positive/negative risk colors. Desktop research uses a wider bounded content area and a tighter company header. Compact spacing reduces gaps without reducing text size or main touch targets. Settings keeps research preferences collapsed, legal links compact, and password editing closed until requested. Preferences are local to this device; no account sync is claimed. Installed-PWA status surface and safe-area shell remain intact.
+Latest automated checks: 219 tests, TypeScript, production build; no rendered-browser or physical-device acceptance claimed.

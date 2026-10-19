@@ -1,6 +1,5 @@
 "use client";
 import dynamic from "next/dynamic";
-const ResearchCompare=dynamic(()=>import("./ResearchCompare"));
 const ResearchNotes=dynamic(()=>import("./ResearchNotes"));
 const CompanyBrief=dynamic(()=>import("./CompanyBrief"));
 import FinancingContext from "./FinancingContext";
@@ -333,7 +332,7 @@ export default function Research({ symbol }: { symbol: string }) {
           </button>
         ))}
       </nav>
-      <ResearchChanges research={r} />
+      {tab === "Snapshot" && <ResearchChanges research={r} />}
       {notice && <Notice error>{notice}</Notice>}
       {resource.error && <Notice error>{resource.error}</Notice>}
       {r.issues.length > 0 && (
@@ -393,7 +392,6 @@ export default function Research({ symbol }: { symbol: string }) {
           <>
             <ResearchOutlook research={r} detailed />
             <ValuationLab research={r} />
-            <details className="research-optional"><summary>Compare companies & selected peer context</summary><ResearchCompare research={r} /></details>
           </>
         )}
         {tab === "Technicals" && (
