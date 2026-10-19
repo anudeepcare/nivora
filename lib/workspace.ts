@@ -16,7 +16,7 @@ export function normalizePositions(
     id: String(r.id),
     symbol:
       r.asset_type === "CRYPTO" &&
-      ["BTC", "ETH"].includes(String(r.symbol).trim().toUpperCase())
+      /^[A-Z0-9]{2,12}$/.test(String(r.symbol).trim().toUpperCase())
         ? `${String(r.symbol).trim().toUpperCase()}/USD`
         : savedSymbol(r.symbol),
     quantity: Number(r.shares),
@@ -37,7 +37,7 @@ export function normalizeWatchlist(rows: Record<string, unknown>[]): Watch[] {
       unique.set(savedSymbol(r.symbol), {
         symbol:
           r.asset_type === "CRYPTO" &&
-          ["BTC", "ETH"].includes(String(r.symbol).trim().toUpperCase())
+          /^[A-Z0-9]{2,12}$/.test(String(r.symbol).trim().toUpperCase())
             ? `${String(r.symbol).trim().toUpperCase()}/USD`
             : savedSymbol(r.symbol),
         note: "",

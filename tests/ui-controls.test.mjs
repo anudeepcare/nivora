@@ -261,7 +261,8 @@ test("data details retain observation time without displaying infrastructure ven
       React.createElement(Stamp, { source, asOf: "2026-10-16T20:00:00Z" }),
     );
     assert.doesNotMatch(html, /EODHD|Twelve Data|Data attribution/);
-    assert.match(html, /Observation:/);
+    assert.ok(html.includes(format.quoteTime("2026-10-16T20:00:00Z")));
+    assert.doesNotMatch(html,/Data details|data-help/);
   }
 });
 

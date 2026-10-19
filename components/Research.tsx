@@ -9,7 +9,7 @@ import TimingContext from "./TimingContext";
 import DecisionWorkspace from "./DecisionWorkspace";
 import ValuationLab from "./ValuationLab";
 import DecisionWatch from "./DecisionWatch";
-import { useMemo, useState, useRef, useLayoutEffect } from "react";
+import { useMemo, useState, useRef, useLayoutEffect, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Bookmark, RefreshCw } from "lucide-react";
 import type {
@@ -58,7 +58,12 @@ export default function Research({ symbol }: { symbol: string }) {
       demo?.research[symbol],
       300000,
     ),
-    r = resource.data;
+    baseResearch = resource.data;
+  const latestQuote = useResource<Record<string,{company:Company;quote:Quote}>>(`quotes?symbols=${encodeURIComponent(symbol)}`, demo ? {[symbol]:{company:demo.research[symbol]?.company,quote:demo.research[symbol]?.quote}} as Record<string,{company:Company;quote:Quote}> : undefined,60000);
+  const refreshQuote=useRef(latestQuote.refresh);refreshQuote.current=latestQuote.refresh;
+  useEffect(()=>{if(demo)return;const tick=()=>{if(document.visibilityState==='visible')refreshQuote.current();};const timer=setInterval(tick,60000);document.addEventListener('visibilitychange',tick);return()=>{clearInterval(timer);document.removeEventListener('visibilitychange',tick);};},[symbol,demo]);
+  const currentQuote=latestQuote.data?.[symbol]?.quote;
+  const r=useMemo(()=>baseResearch&&currentQuote&&Date.parse(currentQuote.asOf||'')>=Date.parse(baseResearch.quote.asOf||'')?{...baseResearch,quote:currentQuote}:baseResearch,[baseResearch,currentQuote]);
   const [tab, setTab] = useState<(typeof tabs)[number]>(
       () => tabs.find((t) => t === requestedTab) ?? "Snapshot",
     ),

@@ -459,7 +459,8 @@ await check(
     const d = await r.json();
     assert.equal(d.events.length, 2);
     assert.equal(d.news.length, 1);
-    assert.equal(d.newsFollowed, 3);
+    assert.equal(d.newsFollowed, 4);
+    assert(calls.some(x=>x.pathname==='/api/news'&&x.searchParams.get('s')==='MSFT.US'));
     const calendar = calls.filter((x) =>
       x.pathname.startsWith("/api/calendar/"),
     );

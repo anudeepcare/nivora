@@ -27,7 +27,7 @@ export async function GET(request: Request) {
       issues: [],
       retrievedAt,
       followed: symbols.length,
-      newsFollowed: Math.min(3, symbols.length),
+      newsFollowed: symbols.length,
     };
     if (!symbols.length) return privateJson(result);
     if (!eodEnabled())
@@ -43,7 +43,7 @@ export async function GET(request: Request) {
     const [earnings, splits, ...news] = await Promise.allSettled([
       eodRequest("calendar/earnings", params, 21600000),
       eodRequest("calendar/splits", params, 21600000),
-      ...symbols.slice(0, 3).map((s) => eodNews(s)),
+      ...symbols.map((s) => eodNews(s)),
     ]);
     result.events = calendarHighlights(
       earnings.status === "fulfilled" ? earnings.value : null,

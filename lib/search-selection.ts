@@ -3,7 +3,9 @@ export function cryptoSearchSymbol(query: string): string | null {
   const q = query.trim().replace(/^\$/, "").toUpperCase();
   if (/^(BTC|BTCUSD|BTC-USD|BTC\/USD|BITCOIN)$/.test(q)) return "BTC/USD";
   if (/^(ETH|ETHUSD|ETH-USD|ETH\/USD|ETHEREUM)$/.test(q)) return "ETH/USD";
-  return null;
+  const aliases:Record<string,string>={ADA:"ADA/USD",CARDANO:"ADA/USD",DOGE:"DOGE/USD",DOGECOIN:"DOGE/USD",SOL:"SOL/USD",SOLANA:"SOL/USD",XRP:"XRP/USD",RIPPLE:"XRP/USD",LTC:"LTC/USD",LITECOIN:"LTC/USD",AVAX:"AVAX/USD",AVALANCHE:"AVAX/USD",DOT:"DOT/USD",POLKADOT:"DOT/USD",LINK:"LINK/USD",CHAINLINK:"LINK/USD"};
+  const base=q.replace(/(?:[-/]?USD)$/," ").trim();
+  return aliases[q]??aliases[base]??null;
 }
 export function searchSelection(
   query: string,

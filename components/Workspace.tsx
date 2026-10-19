@@ -115,7 +115,6 @@ export function useWorkspaceQuotes(
         if (!active) break;
         const missing = group.filter(
           (s) =>
-            revision > 0 ||
             !cache.get("quote:" + s) ||
             Date.now() - cache.get("quote:" + s)!.at > 60000,
         );
@@ -178,6 +177,13 @@ export function useWorkspaceQuotes(
       abort.abort();
     };
   }, [key, demo, cache, revision, rateLimited]);
+  useEffect(()=>{
+    if(demo)return;
+    const tick=()=>{if(document.visibilityState==='visible'&&!loading)refresh();};
+    const timer=setInterval(tick,120000);
+    document.addEventListener('visibilitychange',tick);
+    return()=>{clearInterval(timer);document.removeEventListener('visibilitychange',tick);};
+  },[demo,loading,refresh]);
   return { data, loading, ready, error, refresh };
 }
 export function ResearchHome() {
@@ -974,6 +980,7 @@ export function Portfolio() {
                       </td>
                       <td data-label="Price" className="holding-price-cell">
                         <span className="holding-metric">{amount(price)}</span>
+                        {p.assetType!=="cash"&&q[p.symbol]?.asOf&&<small className="muted">{q[p.symbol]?.stale?"Older quote · ":""}{quoteTime(q[p.symbol].asOf)}</small>}
                       </td>
                       <td data-label="Value" className="holding-value-cell">
                         <span className="holding-metric">

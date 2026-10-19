@@ -119,6 +119,7 @@ function researchMarkup() {
     useMemo: (f) => f(),
     useRef: (value) => ({ current: value }),
     useLayoutEffect: () => {},
+    useEffect: () => {},
     useProduct: () => ({ workspace: { watchlist: [] }, mutate: empty }),
     useResource: (path) => ({
       data: path?.startsWith("research/") ? r : undefined,

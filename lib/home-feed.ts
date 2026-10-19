@@ -140,5 +140,5 @@ export function newsHighlights(
       first.push(row);
     }
   }
-  return [...first, ...rest].slice(0, 6);
+  return [...first, ...rest].slice(0, 90);
 }

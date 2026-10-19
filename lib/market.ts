@@ -27,7 +27,13 @@ export function normalizeQuote(
       ? reportedCurrency
       : "";
   const continuous = symbol.includes("/");
-  const ageLimit = open || continuous ? 15 * 60_000 : 4 * 86400_000;
+  const parts=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',weekday:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(now);
+  const part=(key:string)=>parts.find(p=>p.type===key)?.value||'';
+  const minutes=Number(part('hour'))*60+Number(part('minute'));
+  // This tightens freshness during scheduled US hours; it does not assert an
+  // exchange is open on holidays or overwrite the provider's session report.
+  const scheduledHours=!['Sat','Sun'].includes(part('weekday'))&&minutes>=570&&minutes<960;
+  const ageLimit = open || continuous || scheduledHours ? 15 * 60_000 : 4 * 86400_000;
   return {
     price: price != null && price > 0 ? price : null,
     changePct: numeric(raw.percent_change),

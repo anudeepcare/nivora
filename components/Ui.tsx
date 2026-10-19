@@ -19,19 +19,9 @@ export function DataStamp({
     <span className="data-stamp">
       <span>
         {status ? `${status} · ` : ""}
-        {dateLabel(asOf)}
+        {asOf?.includes('T') ? quoteTime(asOf) : dateLabel(asOf)}
+        {source && /fallback/i.test(source) && <small> · Backup data used</small>}
       </span>
-      <Help label="Data details">
-        {source && /fallback/i.test(source) && (
-          <p>Backup data used for this observation.</p>
-        )}
-        <p>Observation: {quoteTime(asOf)}</p>
-        <p>
-          Quotes, statements and analyst estimates can have different
-          observation dates. A daily bar timestamp may identify the session
-          rather than the closing time.
-        </p>
-      </Help>
     </span>
   );
 }

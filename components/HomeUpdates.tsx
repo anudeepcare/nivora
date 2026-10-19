@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { CalendarDays, ArrowUpRight, Newspaper } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useProduct, useResource } from "./Session";
 import { dateLabel } from "@/lib/format";
 import type { HomeFeed } from "@/lib/home-feed";
@@ -38,6 +38,7 @@ export default function HomeUpdates() {
     preview,
     3600000,
   );
+  const [expanded,setExpanded]=useState(false);
   if (!key) return null;
   return (
     <section className="home-updates" aria-label="Company updates">
@@ -48,13 +49,14 @@ export default function HomeUpdates() {
         </div>
         <span className="muted small">Following {symbols.length} stocks</span>
       </header>
+      <button className="text-button" onClick={()=>setExpanded(!expanded)}>{expanded?"Show highlights":"Show all returned updates"}</button>
       <div className="updates-grid">
         <section className="update-panel upcoming-panel">
           <h3>
             <CalendarDays size={18} /> Coming up <small>Next 30 days</small>
           </h3>
           {feed.data?.events.length ? (
-            feed.data.events.slice(0, 5).map((e) => (
+            feed.data.events.slice(0, expanded?undefined:5).map((e) => (
               <Link
                 className="update-row"
                 key={`${e.symbol}:${e.date}:${e.kind}`}
@@ -92,7 +94,7 @@ export default function HomeUpdates() {
             <Newspaper size={18} /> In the news <small>Past 7 days</small>
           </h3>
           {feed.data?.news.length ? (
-            feed.data.news.slice(0, 4).map((n) => (
+            feed.data.news.slice(0, expanded?undefined:6).map((n) => (
               <a
                 className="update-row"
                 key={n.url}
@@ -124,7 +126,7 @@ export default function HomeUpdates() {
             </p>
           )}
           <p className="small muted">
-            Recent coverage for your first {Math.min(3, symbols.length)}{" "}
+            Recent coverage checked for {feed.data?.newsFollowed??symbols.length}{" "}
             followed stocks.
           </p>
         </section>

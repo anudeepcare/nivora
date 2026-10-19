@@ -1,6 +1,7 @@
 import {
   preferredMarketSources,
   readPreferred,
+  readFreshQuote,
   providerCacheSeconds,
 } from "./provider-routing";
 import {
@@ -101,7 +102,7 @@ export async function quote(
     `selected-quote:${sources.join(",")}:${symbol}`,
     60000,
     async () => {
-      const result = await readPreferred(sources, async (source) => {
+      const result = await readFreshQuote(sources, async (source) => {
         const value = await (source === "twelve"
           ? twelveQuote(symbol)
           : eodQuote(symbol));
@@ -137,7 +138,7 @@ async function twelveQuote(
         422,
       );
     let normalized = normalizeQuote(q, symbol);
-    if (symbol.endsWith("/USD")) {
+    if (symbol.endsWith("/USD") || normalized.stale) {
       // The crypto quote timestamp is often the daily candle's midnight, not a
       // quote observation time. Use a completed minute bar, never fetch time.
       try {
@@ -171,6 +172,7 @@ async function twelveQuote(
               symbol,
             );
             normalized.source = "Twelve Data · 1-minute close";
+            normalized.session = "1-minute close";
           }
         }
       } catch {
