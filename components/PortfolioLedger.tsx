@@ -121,7 +121,7 @@ export default function PortfolioLedger({
                 <td className="ledger-price">
                   <strong>{amount(row.price, "USD")}</strong>
                   {!cash && quotes[p.symbol]?.asOf && (
-                    <small>{quoteTime(quotes[p.symbol].asOf)}</small>
+                    <small><time dateTime={quotes[p.symbol].asOf ?? undefined} title={quoteTime(quotes[p.symbol].asOf)}>{quoteTime(quotes[p.symbol].asOf, true)}</time></small>
                   )}
                 </td>
                 <td className="ledger-value">

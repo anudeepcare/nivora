@@ -5,6 +5,7 @@ const require = createRequire(import.meta.url),
   root = "../.next/server/app/api/";
 const load = (path) => require(root + path + "/route.js").routeModule.userland;
 const routes = [
+  "account-balances",
   "price-stream",
   "workspace",
   "news",
@@ -163,3 +164,20 @@ checks += 3;
 console.log(
   `${checks} built API checks passed: anonymous denial, private responses, trusted admin boundary, listing and logo identity, disabled AI without provider spend.`,
 );
+// Account balances always scope reads/writes to the verified identity.
+const balancesRoute=load('account-balances');let balanceWrite=null,balanceRead='';
+globalThis.fetch=async(input,options)=>{
+ const url=String(input);
+ if(url.includes('/auth/v1/user'))return Response.json({id:'00000000-0000-4000-8000-000000000001',email:'test@example.invalid'});
+ if(url.includes('/rest/v1/auryn_account_balances')){
+  if(options?.method==='POST'){balanceWrite=JSON.parse(options.body);return new Response(null,{status:201});}
+  balanceRead=url;return Response.json({margin_debt:116312,managed_value:null});
+ }
+ throw Error('Unexpected external request');
+};
+const balancesRead=await balancesRoute.GET(new Request('https://auryn.example/api/account-balances',{headers}));
+assert.equal(balancesRead.status,200);assert.match(balanceRead,/user_id=eq.00000000-0000-4000-8000-000000000001/);checks++;
+const balancesWrite=await balancesRoute.POST(new Request('https://auryn.example/api/account-balances',{method:'POST',headers,body:JSON.stringify({user_id:'another-account',margin_debt:116312,managed_value:null})}));
+assert.equal(balancesWrite.status,200);assert.equal(balanceWrite.user_id,'00000000-0000-4000-8000-000000000001');assert.equal(balanceWrite.margin_debt,116312);checks++;
+const invalidBalance=await balancesRoute.POST(new Request('https://auryn.example/api/account-balances',{method:'POST',headers,body:JSON.stringify({margin_debt:-1,managed_value:null})}));assert.equal(invalidBalance.status,400);checks++;
+console.log(`3 account balance API checks passed: verified-owner read/write and invalid amount rejection. Total baseline checks: ${checks}.`);

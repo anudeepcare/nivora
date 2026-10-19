@@ -595,3 +595,14 @@ test('portfolio gain-loss chart keeps losses signed and never presents a return 
  const html=renderToStaticMarkup(React.createElement(PortfolioCharts,{positions:[p],quotes:{A:{price:50,currency:'USD',stale:false}}}));
  assert.match(html,/\-\$100.00 unrealized/);assert.match(html,/class="loss"/);assert.match(html,/not daily performance or total returns/);
 });
+
+test('account equity displays debt separately without representing it as a losing holding', async () => {
+ const {accountEquity}=await import('../lib/account-balances.ts');
+ const AccountBalances=loadComponent('components/AccountBalances.tsx','AccountBalances',{
+  React,useState:React.useState,useEffect:React.useEffect,useProduct:()=>({demo:false}),
+  useResource:()=>({data:{balances:{margin_debt:116312,managed_value:null,updated_at:'2026-10-19T16:00:00Z'}},error:'',refresh:()=>{}}),
+  accountEquity,...format,preview:{balances:null},api:()=>{throw Error('SSR must not save');}
+ });
+ const html=renderToStaticMarkup(React.createElement(AccountBalances,{assets:800000,ready:true,missing:1}));
+ assert.match(html,/Net equity/);assert.match(html,/683,688/);assert.match(html,/116,312/);assert.match(html,/Managed portfolio not included/);assert.match(html,/Partial equity/);
+});

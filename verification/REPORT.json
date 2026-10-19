@@ -4,14 +4,14 @@
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 269 tests, TypeScript, production build",
-    "npm run test:api": "passed: 34 baseline + 16 research regression + 22 provider + 5 shared protection checks",
+    "npm run verify": "passed: tests, TypeScript and production build; final tests 274",
+    "npm run test:api": "passed: 39 baseline + 16 research regression + 22 provider + 5 shared protection checks",
     "git diff --check": "passed",
-    "npm test": "passed: 269 tests",
+    "npm test": "passed: 274 tests",
     "npm run build": "passed after final scoped stylesheet cleanup"
   },
-  "domainPostgresAndComponentTests": 269,
-  "builtApiChecks": 77,
+  "domainPostgresAndComponentTests": 274,
+  "builtApiChecks": 82,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
     "intraday": "Twelve Data preferred; labelled EODHD historical fallback",
@@ -307,5 +307,13 @@
     ],
     "verification": "269 tests, TypeScript and production build passed; 77 fixture API checks passed",
     "limits": "Rendered browser and physical iPhone visual checks unavailable"
+  },
+  "accountBalances": {
+    "formula": "priced listed assets and cash + separately recorded managed value - margin debt",
+    "sql": "docs/sql/ACCOUNT_BALANCES_SETUP.sql; user executes, not applied live",
+    "missingManagedValue": "NULL, excluded explicitly; never inferred as 120000",
+    "security": "verified identity at API and account-scoped RLS; PostgreSQL isolation test passed",
+    "quoteDates": "compact today time, older date/time; full timestamp retained in time title",
+    "limitations": "No live database write or physical iPhone/rendered browser verification"
   }
 }

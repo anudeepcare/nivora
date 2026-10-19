@@ -1,0 +1,39 @@
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 3 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 3 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 3 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+✔ Financials avoids duplicate overview tiles and retains statement rows with labelled detail groups (107.735094ms)
+✔ metric explanations do not inject dialog blocks into server-rendered paragraphs (14.618624ms)
+✔ empty focused search does not expose a nonexistent listbox to assistive technology (32.078571ms)
+✔ opening mobile search offers the account's saved instruments without fabricated suggestions (21.487344ms)
+✔ Research outlook does not fill missing coverage with three empty scenario cards (21.869925ms)
+✔ Product footer supplies copyright and a research disclosure without provider marketing (7.216431ms)
+✔ outlook displays the selected forecast end and horizon beside its cases (17.099979ms)
+✔ data details retain observation time without displaying infrastructure vendor names (6.941015ms)
+✔ valuation snapshot separates analyst targets from visible labelled forecast scenarios (17.416563ms)
+✔ financial trend scope controls remain available for a missing selected period (13.703769ms)
+✔ Home portfolio summary retains key figures without the full allocation panel (16.778106ms)
+✔ Analyst ratings preserve missing counts separately from reported zero (6.504936ms)
+✔ Analyst ratings do not invent a distribution when counts are absent (5.765059ms)
+✔ Overview context stays concise and does not assign quote currency to upcoming EPS (5.635337ms)
+✔ News earnings do not infer estimate currency from a stock listing or company accounts (5.49367ms)
+✔ public legal and help documents render all cross-links and readable sections (12.89388ms)
+✔ decision overview renders real evidence, eight lenses and direct research paths (52.22931ms)
+✔ valuation tool withholds unsupported models rather than fabricating sensitivities (18.324347ms)
+✔ authentication explains AURYN in sign-in, signup and recovery without fabricating investment results (35.382964ms)
+✔ settings hides experimental navigation while preserving account and help (4.906998ms)
+✔ scenario presentation uses one shared scale and keeps current price outside the range when appropriate (5.55504ms)
+✔ change tracking stays invisible until there are actual observed changes (3.898657ms)
+✔ technical desk separates four evidence groups and formats missing data safely (29.557999ms)
+✔ shared settings exposes theme and accessibility without repeating accent headings (4.742827ms)
+✔ portfolio ledger renders identity, value, return and edit as separate named cells (11.169177ms)
+✔ portfolio allocation chart combines duplicate holdings and discloses excluded pricing (6.614867ms)
+✔ portfolio gain-loss chart keeps losses signed and never presents a return history (6.162182ms)
+✔ account equity displays debt separately without representing it as a losing holding (7.504704ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 934.103481

@@ -747,3 +747,14 @@
   .portfolio-ledger td { padding-block: 13px; }
   .portfolio-ledger .ledger-watch { overflow-wrap: anywhere; }
 }
+
+.account-equity-breakdown { margin: 14px 0; display: grid; gap: 8px; }
+.account-equity-breakdown > div { display: flex; justify-content: space-between; gap: 14px; font-size: .84rem; }
+.account-equity-breakdown dt { color: var(--muted); }
+.account-equity-breakdown dd { margin: 0; font-variant-numeric: tabular-nums; }
+.account-balance-date { display: block; color: var(--muted); font-size: .74rem; }
+.account-balance-edit { margin-top: 10px; color: var(--blue); }
+.account-balance-form { display: grid; gap: 12px; padding-top: 16px; }
+.account-balance-form label { display: grid; gap: 6px; font-size: .83rem; }
+.account-balance-form input[type=number] { width: 100%; min-width: 0; padding: 11px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 10px; }
+.account-balance-form .account-balance-confirm { display: flex; align-items: flex-start; gap: 8px; }

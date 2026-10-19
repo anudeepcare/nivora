@@ -51,13 +51,11 @@ export function symbolInput(value: unknown) {
     throw Error("Enter a valid stock symbol or crypto pair.");
   return s;
 }
-export const quoteTime = (s: string | null | undefined) =>
-  s && Number.isFinite(Date.parse(s))
-    ? new Date(s).toLocaleString("en-US", {
-        month: "short",
-        day: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
-        timeZoneName: "short",
-      })
-    : "Timestamp unavailable";
+export const quoteTime = (s: string | null | undefined, compact = false, now = new Date()) => {
+  if (!s || !Number.isFinite(Date.parse(s))) return "Timestamp unavailable";
+  const date = new Date(s);
+  const today = date.toLocaleDateString("en-US") === now.toLocaleDateString("en-US");
+  const time = date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZoneName: "short" });
+  if (compact) return today ? time : `${date.toLocaleDateString("en-US", { month: "short", day: "numeric", ...(date.getFullYear() !== now.getFullYear() ? { year: "numeric" } : {}) })} · ${time}`;
+  return date.toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" });
+};

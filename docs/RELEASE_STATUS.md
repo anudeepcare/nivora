@@ -1,3 +1,5 @@
+Account balances update: run docs/sql/ACCOUNT_BALANCES_SETUP.sql in Supabase SQL Editor. This seeds only Anudeep's $116,312 margin debt. The exact managed portfolio value remains unset; enter it via Portfolio > Edit margin & managed balance, excluding already listed holdings. Net equity is separate from gross assets and investment return. Quote timestamps are compact with full dates accessible. Verification: 274 tests, 82 API checks, production build. SQL tested locally, not applied live.
+
 Desktop alignment update: research tabs no longer overlay content; portfolio columns and quote timestamps align; Advanced hero contrast corrected. Mobile ledger grid and PWA shell preserved. Tests: 269; fixture API checks: 77. Physical iPhone/browser visual confirmation remains unavailable.
 
 > Latest: `INTERACTION_AND_TRUST.md` covers chart contrast, research-tab retention, Settings scrolling, evidence reuse and manual broker references. See interaction verification logs for the current check counts. Physical iPhone/rendered-browser acceptance is still outstanding.

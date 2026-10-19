@@ -9,6 +9,7 @@ import PortfolioRiskSummary, {
 } from "./PortfolioRiskSummary";
 import PortfolioLedger from "./PortfolioLedger";
 import PortfolioCharts from "./PortfolioCharts";
+import AccountBalances from "./AccountBalances";
 import SessionBrief from "./SessionBrief";
 import useLivePrices from "./useLivePrices";
 import { quoteHealth } from "@/lib/quote-health";
@@ -979,10 +980,7 @@ export function Portfolio() {
       {error && !modal.current?.open && <Notice error>{error}</Notice>}
       <div className="portfolio-summary-layout">
         <section className="panel portfolio-balance">
-          <span className="eyebrow">Priced assets & cash · USD</span>
-          <div className="balance">
-            {workspace && quotes.ready ? amount(totals.knownValue) : "—"}
-          </div>
+          <AccountBalances assets={totals.knownValue} ready={!!workspace && quotes.ready} missing={totals.missing.length} />
           <div className="money-sub">
             <span
               className={
