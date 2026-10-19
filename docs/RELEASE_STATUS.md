@@ -1,3 +1,7 @@
+# Visual Overview — current
+
+Chart and scenarios are composed together, with key numbers and visible risk/context. The large diagnostic card grid has been removed. See `VISUAL_OVERVIEW.md` for exact scope and validation limits.
+
 # Full Overview restored — 2026-10-19
 
 Core financial metrics, evidence lenses and review thresholds are available in both modes. Metrics precede the chart; the depth selector sits with navigation on desktop and the decision heading on mobile. Repeated decision calculations reuse immutable evidence snapshots. See `OVERVIEW_DEPTH_AND_MODELS.md`.

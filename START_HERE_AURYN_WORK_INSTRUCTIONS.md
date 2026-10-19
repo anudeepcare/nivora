@@ -1,3 +1,7 @@
+# Current Overview
+
+Read `docs/VISUAL_OVERVIEW.md` for the latest composition. Preserve the PWA shell, quote retention and existing evidence engines.
+
 # Latest correction
 
 See `docs/REFRESH_CONSISTENCY.md` for quote retention, first-screen decisions and pricing update behaviour. Preserve the installed PWA shell.

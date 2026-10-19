@@ -625,3 +625,14 @@ test('metric provenance links filings but never sends users to infrastructure AP
  const html=renderToStaticMarkup(React.createElement(Source,{href:'https://www.sec.gov/Archives/edgar/data/1/'},'Filing'));
  assert.match(html,/sec.gov/);assert.match(html,/Filing/);
 });
+
+test('visual overview keeps the chart, scenarios, catalyst and risk visible without diagnostic expansion',async()=>{
+ const {researchBrief}=await import('../lib/research-brief.ts');
+ const b=researchBrief(demoData.research.MSFT);
+ const View=loadComponent('components/DecisionOverview.tsx','DecisionOverview',{React,useMemo:React.useMemo,researchBrief:()=>b,...format,PositionAwareResearch:empty,CaseRange:()=>React.createElement('div',{'data-scenarios':'visible'})});
+ const html=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT,onTab:()=>{},chart:React.createElement('div',{'data-chart':'visible'})}));
+ assert.doesNotMatch(html,/Completed-price studies/);
+ const pro=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT,onTab:()=>{},pro:true}));assert.match(pro,/Completed-price studies/);
+ assert.match(html,/data-chart="visible"/);assert.match(html,/Accumulation/);assert.match(html,/Next report/);assert.match(html,/Main risk/);
+ assert.doesNotMatch(html,/Why this assessment|available metrics|decision-evidence-grid|research-brief-v2|T\d{2}:\d{2}:\d{2}/);
+});

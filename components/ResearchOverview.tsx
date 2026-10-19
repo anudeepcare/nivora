@@ -185,7 +185,7 @@ export function ResearchOutlook({
   );
 }
 
-export function KeyFinancialMetrics({ research: r }: { research: Research }) {
+export function KeyFinancialMetrics({ research: r, omitRepeated = false }: { research: Research; omitRepeated?: boolean }) {
   const p = useMemo(() => perspective(r), [r]);
   const metrics: {
     label: string;
@@ -256,8 +256,8 @@ export function KeyFinancialMetrics({ research: r }: { research: Research }) {
           },
         ];
   return (
-    <section className="metric-band" aria-label="Key metrics">
-      {metrics.map((m) => (
+    <section className={`metric-band ${omitRepeated && r.company.assetType !== "crypto" ? "overview-additional-metrics" : ""}`} aria-label="Key metrics">
+      {metrics.filter(m=>!omitRepeated || r.company.assetType === "crypto" || !["Operating margin","Cash after capex"].includes(m.label)).map((m) => (
         <div className="metric" data-tone={m.tone ?? "neutral"} key={m.label}>
           <Help label={m.label} trigger={m.label}>
             <p>

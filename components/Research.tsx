@@ -523,19 +523,9 @@ export default function Research({ symbol }: { symbol: string }) {
             hidden={tab !== "Snapshot"}
             className="au-stack"
           >
-            <DecisionOverview research={r} onTab={switchTab} pro={preferences.detail === "advanced"} modeControl={<ResearchModeSwitch />}/>
-            <KeyFinancialMetrics research={r} />
+            <DecisionOverview research={r} onTab={switchTab} pro={preferences.detail === "advanced"} modeControl={<ResearchModeSwitch />} chart={chart}/>
+            {r.company.assetType !== "crypto" && <KeyFinancialMetrics research={r} omitRepeated/>}
             <ResearchChanges research={r} />
-            <div className="research-layout">
-              <div className="research-canvas">
-                <header className="chart-context-heading">
-                  <h3>Price & accumulation context</h3>
-                  <p>Timing evidence alongside the business case.</p>
-                </header>
-                {chart}
-              </div>
-              <OverviewContext research={r} />
-            </div>
             <DecisionWorkspace research={r} onTab={switchTab} part="detail" />
             <DecisionWatch key={r.company.symbol} research={r} />
           </section>

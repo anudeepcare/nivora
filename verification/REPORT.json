@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-19T19:06:19.367530+00:00",
+  "generatedAt": "2026-10-19T19:20:29.553848+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
@@ -7,10 +7,10 @@
     "npm run verify": "passed: tests, TypeScript and production build",
     "npm run test:api": "passed: 40 baseline + 16 research regression + 22 provider + 5 shared protection checks",
     "git diff --check": "passed",
-    "npm test": "passed: 296 tests",
+    "npm test": "passed: 297 tests",
     "npm run build": "passed after final scoped stylesheet cleanup"
   },
-  "domainPostgresAndComponentTests": 296,
+  "domainPostgresAndComponentTests": 297,
   "builtApiChecks": 83,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -386,6 +386,21 @@
       "overview-depth-verify.log",
       "overview-depth-api.log",
       "decision-reuse-benchmark.json"
+    ]
+  },
+  "visualOverview": {
+    "status": "297 automated tests, TypeScript, production build and 83 fixture API checks passed",
+    "composition": "Assessment and number strip, chart beside visual scenarios/accumulation, visible risk and existing compact position summary",
+    "mobile": "Assessment/numbers then compact chart and scenario/timing context",
+    "diagnostics": "Compact disclosure; no internal version strings, raw ISO timestamps or large diagnostic boxes",
+    "newDataSpend": "none",
+    "modelCoefficients": "unchanged",
+    "physicalIphoneVisuals": "not verified",
+    "browserVisualComparison": "not executed",
+    "logs": [
+      "visual-overview-focused.log",
+      "visual-overview-verify.log",
+      "visual-overview-api.log"
     ]
   }
 }

@@ -69,6 +69,7 @@ export function researchBrief(r: Research) {
   const specialist = coverage.family !== "operating-company";
   const previous = latestFinancialEvidence(r).prior;
   return {
+    timing: {ma50:p.tech.ma50,ma200:p.tech.ma200,rsi:p.tech.rsi,trend:p.tech.trend},
     businessNumbers: {
       currency: latest?.currency ?? r.quote.currency,
       revenueGrowth:
@@ -127,6 +128,7 @@ export function researchBrief(r: Research) {
           : outlook.reason,
     },
     accumulation: {
+      multiplier: p.dca.confirmed?.multiplier ?? null,
       title: p.dca.confirmed
         ? `${p.dca.confirmed.multiplier}× · ${p.dca.confirmed.multiplier === 0 ? "Pause contributions" : "Monthly contribution condition"}`
         : "Monthly history needed",
