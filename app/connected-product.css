@@ -511,33 +511,3 @@
     transition: none;
   }
 }
-.holding-watch {
-  display: inline-flex;
-  padding: 5px 9px;
-  border-radius: 9px;
-  background: color-mix(in srgb, var(--blue) 7%, var(--surface));
-  color: var(--ink);
-  font-size: 0.78rem;
-  line-height: 1.4;
-  font-weight: 500;
-  white-space: nowrap;
-}
-.holding-watch.watch-caution {
-  color: var(--amber, #a36a12);
-  background: color-mix(in srgb, #b57818 10%, var(--surface));
-}
-@media (max-width: 700px) {
-  .holdings-table .holding-watch-cell {
-    display: block;
-    grid-column: 1;
-    grid-row: 2;
-    text-align: left;
-    min-width: 0;
-  }
-  .holding-watch {
-    white-space: normal;
-    font-size: 0.72rem;
-    padding: 4px 7px;
-    max-width: 100%;
-  }
-}

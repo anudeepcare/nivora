@@ -1,3 +1,5 @@
+> Latest Portfolio correction: `PORTFOLIO_LEDGER_REPAIR.md`. Replaces the conflicting mobile table with an isolated ledger, adds allocation/gain-loss charts and refines the editor. 265 automated tests; physical iPhone/rendered-browser acceptance remains unverified.
+
 > Latest refinement: `PRODUCT_REFINEMENT.md` documents the price-clock fix, exposure-ranked Home, partial returns, compact layouts and Simple/Pro depth. Current logs: `verification/product-refinement-verify.log` and `verification/product-refinement-api.log`.
 
 # Current release — connected research, 19 October 2026

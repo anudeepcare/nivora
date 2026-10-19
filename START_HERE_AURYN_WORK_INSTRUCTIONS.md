@@ -1,3 +1,5 @@
+> Latest: `docs/PORTFOLIO_LEDGER_REPAIR.md` covers the Portfolio layout repair and new charts. Preserve the isolated ledger classes and existing PWA shell.
+
 > Latest product refinement: read `docs/PRODUCT_REFINEMENT.md` before earlier release notes. No deployed-provider or physical-iPhone acceptance is claimed.
 
 > Current release, 19 October: read `docs/CONNECTED_PRODUCT.md` for all fifteen approved product points and `docs/RELEASE_STATUS.md` for current acceptance limits. Older sections below are historical context.

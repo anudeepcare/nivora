@@ -573,3 +573,25 @@ test('shared settings exposes theme and accessibility without repeating accent h
  const html=renderToStaticMarkup(React.createElement(DisplayPreferences));
  assert.match(html,/Make it yours/);assert.match(html,/aria-label="Appearance"/);assert.match(html,/aria-label="Text size"/);assert.match(html,/aria-label="Reduce motion" aria-pressed="true"/);assert.match(html,/aria-pressed="true" class="active">Dark/);
 });
+
+test('portfolio ledger renders identity, value, return and edit as separate named cells',async()=>{
+ const {ledgerRows}=await import('../lib/portfolio-ledger.ts');
+ const PortfolioLedger=loadComponent('components/PortfolioLedger.tsx','PortfolioLedger',{React,useMemo:React.useMemo,useState:React.useState,ledgerRows,...format,Link:({children,...props})=>React.createElement('a',props,children),SecurityLogo:empty,Wallet:empty,MoreHorizontal:empty});
+ const p={id:'1',symbol:'HIMS',quantity:3700,cost:34.4,currency:'USD',assetType:'stock'};
+ const html=renderToStaticMarkup(React.createElement(PortfolioLedger,{positions:[p],allPositions:[p],quotes:{HIMS:{price:28.39,stale:false,currency:'USD',asOf:'2026-10-19T15:00:00Z'}},companies:{HIMS:{name:'Hims & Hers Health'}},total:1000000,earnings:new Set(),prefix:'',onEdit:()=>{}}));
+ assert.match(html,/href="\/research\/HIMS"/);assert.match(html,/\$105,043.00/);assert.match(html,/Edit HIMS/);assert.match(html,/Concentration ≥10%/);assert.doesNotMatch(html,/Price current|NaN|Infinity|undefined/);
+});
+test('portfolio allocation chart combines duplicate holdings and discloses excluded pricing',async()=>{
+ const {portfolioChartData}=await import('../lib/portfolio-ledger.ts');
+ const PortfolioCharts=loadComponent('components/PortfolioCharts.tsx','PortfolioCharts',{React,useMemo:React.useMemo,useState:React.useState,portfolioChartData,...format});
+ const p={id:'1',symbol:'A',quantity:2,cost:50,currency:'USD',assetType:'stock'};
+ const html=renderToStaticMarkup(React.createElement(PortfolioCharts,{positions:[p,{...p,id:'2',symbol:'B'}],quotes:{A:{price:100,currency:'USD',stale:false}}}));
+ assert.match(html,/Allocation/);assert.match(html,/Gain \/ loss/);assert.match(html,/100.0%/);assert.match(html,/1 unpriced instruments excluded/);assert.doesNotMatch(html,/NaN|Infinity/);
+});
+test('portfolio gain-loss chart keeps losses signed and never presents a return history',async()=>{
+ const {portfolioChartData}=await import('../lib/portfolio-ledger.ts');
+ const PortfolioCharts=loadComponent('components/PortfolioCharts.tsx','PortfolioCharts',{React,useMemo:React.useMemo,useState:()=>['returns',()=>{}],portfolioChartData,...format});
+ const p={id:'1',symbol:'A',quantity:2,cost:100,currency:'USD',assetType:'stock'};
+ const html=renderToStaticMarkup(React.createElement(PortfolioCharts,{positions:[p],quotes:{A:{price:50,currency:'USD',stale:false}}}));
+ assert.match(html,/\-\$100.00 unrealized/);assert.match(html,/class="loss"/);assert.match(html,/not daily performance or total returns/);
+});

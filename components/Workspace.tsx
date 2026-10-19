@@ -7,6 +7,8 @@ import { pricedInvestmentReturns } from "@/lib/product-attention";
 import PortfolioRiskSummary, {
   usePortfolioCalendar,
 } from "./PortfolioRiskSummary";
+import PortfolioLedger from "./PortfolioLedger";
+import PortfolioCharts from "./PortfolioCharts";
 import SessionBrief from "./SessionBrief";
 import useLivePrices from "./useLivePrices";
 import { quoteHealth } from "@/lib/quote-health";
@@ -803,6 +805,9 @@ export function Portfolio() {
     setCurrency(p ? p.currency || "" : "USD");
     setError("");
     modal.current?.showModal();
+    modal.current
+      ?.querySelector<HTMLHeadingElement>("h2")
+      ?.focus({ preventScroll: true });
   }
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -955,16 +960,13 @@ export function Portfolio() {
             </p>
           )}
         </section>
-        <section className="panel portfolio-allocation">
-          <Allocation positions={positions} quotes={q} />
-        </section>
+        <PortfolioCharts positions={positions} quotes={q} />
       </div>
       <PortfolioRiskSummary
         positions={positions}
         quotes={q}
         calendar={calendar}
       />
-      <PortfolioExposure positions={positions} quotes={quotes.data || {}} />
       <section className="panel portfolio-holdings support">
         <header className="section-heading">
           <h2>
@@ -990,160 +992,21 @@ export function Portfolio() {
             Try another company name or ticker.
           </Empty>
         ) : positions.length ? (
-          <div className="table-scroll">
-            <table className="holdings-table">
-              <thead>
-                <tr>
-                  <th>Company</th>
-                  <th>Quantity</th>
-                  <th>Avg. cost</th>
-                  <th>Price</th>
-                  <th>Value</th>
-                  <th>Return</th>
-                  <th>Watch</th>
-                  <th aria-label="Actions" />
-                </tr>
-              </thead>
-              <tbody>
-                {visiblePositions.map((p) => {
-                  const price =
-                      p.assetType === "cash"
-                        ? p.currency === "USD" && p.symbol === "USD"
-                          ? 1
-                          : null
-                        : q[p.symbol]?.stale || q[p.symbol]?.currency !== "USD"
-                          ? null
-                          : q[p.symbol]?.price,
-                    value = price != null ? p.quantity * price : null,
-                    pnl =
-                      value != null && p.currency === "USD"
-                        ? value - p.quantity * p.cost
-                        : null;
-                  return (
-                    <tr key={p.id}>
-                      <td className="holding-identity-cell">
-                        {p.assetType === "cash" ? (
-                          <span className="investment-identity">
-                            <span className="security-logo">
-                              <Wallet size={20} />
-                            </span>
-                            <b>{p.currency || "Unknown currency"} cash</b>
-                          </span>
-                        ) : (
-                          <Link
-                            className="investment-identity"
-                            href={`${prefix}/research/${encodeURIComponent(p.symbol.replace("/", "-"))}`}
-                          >
-                            <SecurityLogo symbol={p.symbol} size={35} />
-                            <span>
-                              <b>{p.symbol}</b>
-                              <small className="investment-company">
-                                {quotes.data?.[p.symbol]?.company?.name ||
-                                  "Open company research"}
-                              </small>
-                              <small className="holding-quantity">
-                                {p.quantity.toLocaleString(undefined, {
-                                  maximumFractionDigits: 6,
-                                })}{" "}
-                                {p.assetType === "crypto" ? "units" : "shares"}
-                              </small>
-                            </span>
-                          </Link>
-                        )}
-                      </td>
-                      <td className="holding-quantity-cell">
-                        {p.quantity.toLocaleString(undefined, {
-                          maximumFractionDigits: 6,
-                        })}
-                      </td>
-                      <td className="holding-cost-cell">
-                        {p.currency ? amount(p.cost, p.currency) : "—"}
-                      </td>
-                      <td data-label="Price" className="holding-price-cell">
-                        <span className="holding-metric">{amount(price)}</span>
-                        {p.assetType !== "cash" && q[p.symbol]?.asOf && (
-                          <small className="muted">
-                            {q[p.symbol]?.stale ? "Older quote · " : ""}
-                            {quoteTime(q[p.symbol].asOf)}
-                          </small>
-                        )}
-                      </td>
-                      <td data-label="Value" className="holding-value-cell">
-                        <span className="holding-metric">
-                          {amount(value)}
-                          {value == null && (
-                            <small className="quote-error">
-                              {quotes.data?.[p.symbol]?.error ||
-                                (quotes.loading
-                                  ? "Loading price…"
-                                  : "Price unavailable")}
-                            </small>
-                          )}
-                        </span>
-                      </td>
-                      <td
-                        data-label="Unrealized"
-                        className={
-                          "holding-pnl-cell " +
-                          (pnl == null ? "muted" : pnl < 0 ? "red" : "green")
-                        }
-                      >
-                        <span className="holding-metric">
-                          <small>
-                            {pnl != null && p.cost > 0
-                              ? percent(
-                                  (pnl / (p.quantity * p.cost)) * 100,
-                                  true,
-                                )
-                              : ""}
-                          </small>
-                        </span>
-                      </td>
-                      <td className="holding-watch-cell" data-label="Watch">
-                        <span
-                          className={`holding-watch ${p.assetType !== "cash" && (q[p.symbol]?.stale || value == null) ? "watch-caution" : ""}`}
-                        >
-                          {p.assetType === "cash"
-                            ? "Recorded cash"
-                            : q[p.symbol]?.stale
-                              ? "Older price"
-                              : value == null
-                                ? "Needs pricing"
-                                : reportsSoon.has(p.symbol)
-                                  ? "Earnings ≤7 days"
-                                  : totals.knownValue > 0 &&
-                                      positions
-                                        .filter((v) => v.symbol === p.symbol)
-                                        .reduce(
-                                          (sum, v) =>
-                                            sum +
-                                            v.quantity *
-                                              (q[p.symbol]?.price ?? 0),
-                                          0,
-                                        ) /
-                                        totals.knownValue >=
-                                        0.1
-                                    ? "Concentration ≥10%"
-                                    : "Price current"}
-                        </span>
-                      </td>
-                      <td className="holding-actions-cell">
-                        <div className="row-actions">
-                          <button
-                            className="icon-button"
-                            aria-label={`Edit ${p.symbol}`}
-                            onClick={() => edit(p)}
-                          >
-                            <MoreHorizontal size={19} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <PortfolioLedger
+            positions={visiblePositions}
+            allPositions={positions}
+            quotes={q}
+            companies={Object.fromEntries(
+              Object.entries(quotes.data || {}).map(([symbol, row]) => [
+                symbol,
+                row.company,
+              ]),
+            )}
+            total={totals.knownValue}
+            earnings={reportsSoon}
+            prefix={prefix}
+            onEdit={edit}
+          />
         ) : (
           <Empty
             title="Bring your holdings into focus"
@@ -1159,6 +1022,10 @@ export function Portfolio() {
           </Empty>
         )}
       </section>
+      <details className="portfolio-extra">
+        <summary>Sector exposure & stress check</summary>
+        <PortfolioExposure positions={positions} quotes={quotes.data || {}} />
+      </details>
       <p className="footnote">
         Unrealized returns exclude realized trades, dividends, fees and taxes.
         Total-return charts require a transaction ledger; deposits are not
@@ -1166,7 +1033,7 @@ export function Portfolio() {
       </p>
       <dialog
         ref={modal}
-        className="dialog position-dialog"
+        className="dialog portfolio-editor"
         aria-labelledby="position-dialog-title"
         onClose={() => setError("")}
       >
@@ -1178,7 +1045,7 @@ export function Portfolio() {
           <X size={20} />
         </button>
         <span className="eyebrow">YOUR HOLDINGS</span>
-        <h2 id="position-dialog-title">
+        <h2 id="position-dialog-title" tabIndex={-1}>
           {editing ? "Edit position" : "Add a position"}
         </h2>
         <p>Update your records. No trade will be placed.</p>
@@ -1203,7 +1070,7 @@ export function Portfolio() {
               />
             </label>
           )}
-          <div className="two-col">
+          <div className="editor-numbers">
             <label>
               {cash ? "Cash balance" : "Shares / units"}
               <input

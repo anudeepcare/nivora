@@ -1,15 +1,16 @@
 {
-  "generatedAt": "2026-10-19T14:58:02.702284+00:00",
+  "generatedAt": "2026-10-19T15:57:18.712020+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 260 tests, TypeScript, production build",
+    "npm run verify": "passed: 265 tests, TypeScript, production build",
     "npm run test:api": "passed: 34 baseline + 16 research regression + 22 provider + 5 shared protection checks",
     "git diff --check": "passed",
-    "npm test": "passed: 260 tests"
+    "npm test": "passed: 265 tests",
+    "npm run build": "passed after final scoped stylesheet cleanup"
   },
-  "domainPostgresAndComponentTests": 260,
+  "domainPostgresAndComponentTests": 265,
   "builtApiChecks": 77,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -35,12 +36,13 @@
   "priorEvidence": "The signed-in reference/deployed UI reviews predate this patch. New verification is source, domain/SSR, TypeScript and build evidence only.",
   "browserTestScope": "No rendered browser test of this build; older live audits are historical evidence only",
   "patchedSourceBrowserTestsExecuted": false,
-  "latestAudit": "../docs/PRODUCT_REFINEMENT.md",
+  "latestAudit": "../docs/PORTFOLIO_LEDGER_REPAIR.md",
   "referenceReview": "REFERENCE_REVIEW_20261017.md",
   "decisionPolicy": "research-v1.6 / decision-guide-v1.1; original unvalidated research triage; no broker execution",
   "latestLogs": [
-    "product-refinement-verify.log",
-    "product-refinement-api.log"
+    "portfolio-ledger-verify.log",
+    "portfolio-ledger-final-build.log",
+    "portfolio-ledger-api.log"
   ],
   "cohortQuoteObservations": "cohort-quotes-20261017.json; 11 instruments; quote identity only, not fundamental/model validation",
   "exactVisualParityVerified": false,
@@ -269,5 +271,18 @@
     "browserAcceptance": false,
     "physicalIphoneAcceptance": false,
     "testsAdded": 4
+  },
+  "portfolioLedgerRepair": {
+    "rootCause": "Watch occupied the implicit company grid column in legacy mobile holdings table",
+    "layout": "isolated ledger with named company/value/result/edit/watch grid areas",
+    "charts": [
+      "priced allocation",
+      "unrealized dollar gain/loss; not return history"
+    ],
+    "editor": "isolated compact layout, title focus and existing keyboard viewport offsets",
+    "testsAdded": 5,
+    "renderedBrowserTestsExecuted": false,
+    "browserInstall": "binary download failed",
+    "physicalIphoneTestsExecuted": false
   }
 }

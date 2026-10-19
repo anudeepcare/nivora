@@ -7,6 +7,7 @@ import "./globals.css";
 import "./decision-workspace.css";
 import "./appearance.css";
 import "./connected-product.css";
+import "./portfolio.css";
 import "./pwa-shell.css";
 export const metadata: Metadata = {
   title: "AURYN · Investment Intelligence",
