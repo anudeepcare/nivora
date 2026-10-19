@@ -1893,6 +1893,15 @@
       "employees": 685,
       "website": "https://iren.com/",
       "logo": "https://eodhd.com/img/logos/US/IREN.png"
+    },
+    "consensus": {
+      "rating": 4.45,
+      "target": 77.8056,
+      "strongBuy": 13,
+      "buy": 3,
+      "hold": 4,
+      "sell": 0,
+      "strongSell": 0
     }
   },
   "retrievedAt": "2026-10-19T19:45:54.976Z",

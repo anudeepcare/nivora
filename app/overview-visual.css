@@ -93,3 +93,5 @@
 .overview-pro-signals b { display:block; color:var(--ink); font-size:.95rem; margin-top:5px; }
 .overview-pro-signals > small { font-size:.62rem; color:var(--muted); display:block; margin-top:9px; }
 @media(max-width:740px){.overview-pro-signals > div{grid-template-columns:repeat(2,minmax(0,1fr));}}
+
+.analyst-target-fallback{min-width:0}.analyst-target-main{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:14px 0}.analyst-target-main span{display:block;font-size:13px;color:var(--muted)}.analyst-target-main strong{display:block;font-variant-numeric:tabular-nums;font-size:clamp(22px,2.4vw,32px);overflow-wrap:anywhere;margin-top:6px}.analyst-target-fallback p,.analyst-target-fallback small{color:var(--muted);line-height:1.5}.analyst-target-fallback small{display:block}

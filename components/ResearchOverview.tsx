@@ -1,5 +1,6 @@
 "use client";
 import CaseRange from "./CaseRange";
+import AnalystTargets from "./AnalystTargets";
 import MetricProvenance from "./MetricProvenance";
 import { useMemo } from "react";
 import type { Research } from "@/lib/types";
@@ -57,7 +58,8 @@ export function ResearchOutlook({
       <div className="row between">
         <h2>Valuation snapshot</h2>
       </div>
-      <div className="valuation-summary">
+      {consensus && <AnalystTargets research={r} />}
+      <div className="valuation-summary" hidden={!!consensus}>
         <div>
           <span>Current price</span>
           <strong className="num">

@@ -1,3 +1,7 @@
+# Automatic analyst fallback — current
+
+Overview now presents reported analyst consensus automatically when headline AURYN valuation is unavailable. Consensus-only data is explicitly labelled; no low/high target range or analyst count is manufactured. See `ANALYST_TARGET_FALLBACK.md`.
+
 # Funded operating scenarios — current
 
 Misleading forecast-multiple outputs are no longer headline valuations. A new explicit-assumption funded scenario workbench accounts for phased capex, financing, dilution and discounted equity. Missing future inputs are not fabricated. See `FUNDED_SCENARIOS.md` for scope and limits. Automatic sourced cases across all stocks, including ASTS, are not complete.

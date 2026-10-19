@@ -9,6 +9,7 @@ import { researchPeriods } from "../lib/financial-catalog.ts";
 import { demoData } from "./fixtures/demo.ts";
 
 function loadComponent(file, name, bindings) {
+  bindings = {AnalystTargets: () => null, ...bindings};
   const ast = ts.createSourceFile(
     file,
     fs.readFileSync(file, "utf8"),
@@ -635,7 +636,16 @@ test('visual overview keeps the chart, scenarios, catalyst and risk visible with
  const html=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT,onTab:()=>{},chart:React.createElement('div',{'data-chart':'visible'})}));
  assert.doesNotMatch(html,/Completed-price studies/);
  const pro=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT,onTab:()=>{},pro:true}));assert.match(pro,/Completed-price studies/);
- assert.doesNotMatch(html,/data-scenarios="visible"/);assert.match(html,/Fair value not established/);
+ assert.doesNotMatch(html,/data-scenarios="visible"/);assert.match(html,/Analyst expectations|Fair value not established/);
  assert.match(html,/data-chart="visible"/);assert.match(html,/Accumulation/);assert.match(html,/Next report/);assert.match(html,/Main risk/);
  assert.doesNotMatch(html,/Why this assessment|available metrics|decision-evidence-grid|research-brief-v2|T\d{2}:\d{2}:\d{2}/);
+});
+
+
+test('analyst fallback presents actual consensus without invented low/high targets',async()=>{
+ const {consensusOutlook}=await import('../lib/outlook.ts');
+ const r=JSON.parse(fs.readFileSync('tests/fixtures/iren-observed-20261019.json','utf8'));
+ const View=loadComponent('components/AnalystTargets.tsx','AnalystTargets',{React,consensusOutlook,...format});
+ const html=renderToStaticMarkup(React.createElement(View,{research:r}));
+ assert.match(html,/\$77\.81/);assert.match(html,/ANALYST PRICE TARGETS/);assert.match(html,/low\/high range not supplied/);assert.doesNotMatch(html,/\$37\.00|\$139\.00|Bear|Bull/);
 });

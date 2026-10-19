@@ -39,7 +39,7 @@ export function consensusOutlook(
   const target = e?.consensus?.target;
   if (
     r.company.assetType !== "stock" ||
-    r.company.foreignListing ||
+    r.company.currency !== r.quote.currency ||
     r.quote.stale ||
     r.quote.price == null ||
     r.quote.price <= 0 ||

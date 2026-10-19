@@ -5,6 +5,7 @@ import { researchBrief } from "@/lib/research-brief";
 import { dateLabel, amount, percent } from "@/lib/format";
 import PositionAwareResearch from "./PositionAwareResearch";
 import CaseRange from "./CaseRange";
+import AnalystTargets from "./AnalystTargets";
 export default function DecisionOverview({
   research: r,
   onTab,
@@ -173,7 +174,9 @@ export default function DecisionOverview({
         >
           <section className="overview-visual-value">
             <header>
-              <h3>Price versus scenarios</h3>
+              <h3>
+                {b.consensus ? "Analyst expectations" : "Valuation context"}
+              </h3>
               <button
                 className="text-button"
                 onClick={() => onTab("Valuation")}
@@ -194,6 +197,8 @@ export default function DecisionOverview({
                     : "Conditional model · assumptions in Value"}
                 </small>
               </>
+            ) : b.consensus ? (
+              <AnalystTargets research={r} />
             ) : (
               <div className="overview-value-gap">
                 <span>
@@ -220,15 +225,6 @@ export default function DecisionOverview({
                 >
                   Review valuation evidence ↗
                 </button>
-              </div>
-            )}
-            {b.consensus && (
-              <div className="overview-analyst-reference">
-                <span>
-                  Analyst target{" "}
-                  <b>{amount(b.consensus.target, r.quote.currency)}</b>
-                </span>
-                <small>Opinion, separate from model value</small>
               </div>
             )}
           </section>
