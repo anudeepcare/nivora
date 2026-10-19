@@ -10,7 +10,10 @@ export async function GET(request: Request) {
   try {
     const { user } = await account(request);
     limit(`home-feed:${user.id}`, 6);
-    const raw = new URL(request.url).searchParams.get("symbols") ?? "";
+    const query=new URL(request.url).searchParams;
+    const kind=query.get("kind")||"all";
+    if(!["all","events","news"].includes(kind))throw new HttpError("Invalid update category.");
+    const raw = query.get("symbols") ?? "";
     const symbols = [...new Set(raw.split(",").filter(Boolean))];
     if (
       symbols.length > 30 ||
@@ -27,7 +30,7 @@ export async function GET(request: Request) {
       issues: [],
       retrievedAt,
       followed: symbols.length,
-      newsFollowed: symbols.length,
+      newsFollowed: kind==="events"?0:symbols.length,
     };
     if (!symbols.length) return privateJson(result);
     if (!eodEnabled())
@@ -41,9 +44,9 @@ export async function GET(request: Request) {
       to,
     };
     const [earnings, splits, ...news] = await Promise.allSettled([
-      eodRequest("calendar/earnings", params, 21600000),
-      eodRequest("calendar/splits", params, 21600000),
-      ...symbols.map((s) => eodNews(s)),
+      kind!=="news"?eodRequest("calendar/earnings", params, 21600000):Promise.resolve(null),
+      kind!=="news"?eodRequest("calendar/splits", params, 21600000):Promise.resolve(null),
+      ...(kind!=="events"?symbols.map((s) => eodNews(s)):[]),
     ]);
     result.events = calendarHighlights(
       earnings.status === "fulfilled" ? earnings.value : null,

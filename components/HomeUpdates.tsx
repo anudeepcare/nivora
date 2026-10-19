@@ -33,11 +33,8 @@ export default function HomeUpdates() {
         : undefined,
     [demo],
   );
-  const feed = useResource<HomeFeed>(
-    key ? `home-feed?symbols=${encodeURIComponent(key)}` : null,
-    preview,
-    3600000,
-  );
+  const events = useResource<HomeFeed>(key ? `home-feed?kind=events&symbols=${encodeURIComponent(key)}` : null,preview,21600000);
+  const news = useResource<HomeFeed>(key ? `home-feed?kind=news&symbols=${encodeURIComponent(key)}` : null,preview,3600000);
   const [expanded,setExpanded]=useState(false);
   if (!key) return null;
   return (
@@ -47,16 +44,16 @@ export default function HomeUpdates() {
           <span className="eyebrow">Your companies</span>
           <h2>What’s coming. What changed.</h2>
         </div>
-        <span className="muted small">Following {symbols.length} stocks</span>
+        <div className="home-update-actions"><span className="muted small">Following {symbols.length} stocks</span><button className="text-button" onClick={()=>setExpanded(!expanded)} aria-expanded={expanded}>{expanded?"Highlights":"View all updates"}</button></div>
       </header>
-      <button className="text-button" onClick={()=>setExpanded(!expanded)}>{expanded?"Show highlights":"Show all returned updates"}</button>
+
       <div className="updates-grid">
         <section className="update-panel upcoming-panel">
           <h3>
             <CalendarDays size={18} /> Coming up <small>Next 30 days</small>
           </h3>
-          {feed.data?.events.length ? (
-            feed.data.events.slice(0, expanded?undefined:5).map((e) => (
+          {events.data?.events.length ? (
+            events.data.events.slice(0, expanded?undefined:5).map((e) => (
               <Link
                 className="update-row"
                 key={`${e.symbol}:${e.date}:${e.kind}`}
@@ -77,10 +74,10 @@ export default function HomeUpdates() {
             ))
           ) : (
             <p className="updates-empty">
-              {feed.loading
+              {events.loading
                 ? "Checking scheduled reports…"
-                : feed.error ||
-                    feed.data?.issues.some(
+                : events.error ||
+                    events.data?.issues.some(
                       (i) => i.includes("events") || i.includes("connected"),
                     )
                   ? "Scheduled events could not be checked. Your research remains available."
@@ -93,8 +90,8 @@ export default function HomeUpdates() {
           <h3>
             <Newspaper size={18} /> In the news <small>Past 7 days</small>
           </h3>
-          {feed.data?.news.length ? (
-            feed.data.news.slice(0, expanded?undefined:6).map((n) => (
+          {news.data?.news.length ? (
+            news.data.news.slice(0, expanded?undefined:6).map((n) => (
               <a
                 className="update-row"
                 key={n.url}
@@ -115,10 +112,10 @@ export default function HomeUpdates() {
             ))
           ) : (
             <p className="updates-empty">
-              {feed.loading
+              {news.loading
                 ? "Loading recent headlines…"
-                : feed.error ||
-                    feed.data?.issues.some(
+                : news.error ||
+                    news.data?.issues.some(
                       (i) => i.includes("news") || i.includes("connected"),
                     )
                   ? "Recent coverage is temporarily unavailable."
@@ -126,7 +123,7 @@ export default function HomeUpdates() {
             </p>
           )}
           <p className="small muted">
-            Recent coverage checked for {feed.data?.newsFollowed??symbols.length}{" "}
+            Recent coverage checked for {news.data?.newsFollowed??symbols.length}{" "}
             followed stocks.
           </p>
         </section>

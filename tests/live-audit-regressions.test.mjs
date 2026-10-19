@@ -215,6 +215,9 @@ test("workspace quote refresh commits all batches together and settles loading",
       ];
     },
     useCallback: (f) => f,
+    useMemo: (f) => f(),
+    useLivePrices: () => ({ticks:{},connected:false}),
+    mergePriceTick: (base) => base,
     useEffect: (f) => effects.push(f),
     api: async (path) => {
       requests.push(path);

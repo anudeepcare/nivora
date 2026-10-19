@@ -101,6 +101,7 @@ export type FinancialPeriod = {
   sourceUrls?: string[];
 };
 export type Quote = {
+  previousClose?: number | null;
   price: number | null;
   changePct: number | null;
   currency: string;

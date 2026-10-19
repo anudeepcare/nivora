@@ -1,5 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
+import useLivePrices from "./useLivePrices";
+import {mergePriceTick} from "@/lib/live-price";
 const AdvancedResearch=dynamic(()=>import("./AdvancedResearch"));
 
 const ResearchNotes=dynamic(()=>import("./ResearchNotes"));
@@ -62,7 +64,9 @@ export default function Research({ symbol }: { symbol: string }) {
   const latestQuote = useResource<Record<string,{company:Company;quote:Quote}>>(`quotes?symbols=${encodeURIComponent(symbol)}`, demo ? {[symbol]:{company:demo.research[symbol]?.company,quote:demo.research[symbol]?.quote}} as Record<string,{company:Company;quote:Quote}> : undefined,60000);
   const refreshQuote=useRef(latestQuote.refresh);refreshQuote.current=latestQuote.refresh;
   useEffect(()=>{if(demo)return;const tick=()=>{if(document.visibilityState==='visible')refreshQuote.current();};const timer=setInterval(tick,60000);document.addEventListener('visibilitychange',tick);return()=>{clearInterval(timer);document.removeEventListener('visibilitychange',tick);};},[symbol,demo]);
-  const currentQuote=latestQuote.data?.[symbol]?.quote;
+  const live=useLivePrices([symbol],!!demo);
+  const restQuote=latestQuote.data?.[symbol]?.quote??baseResearch?.quote;
+  const currentQuote=live.ticks[symbol]?mergePriceTick(restQuote,{...live.ticks[symbol],session:live.connected?live.ticks[symbol].session:"Last streamed trade · reconnecting"}):restQuote;
   const r=useMemo(()=>baseResearch&&currentQuote&&Date.parse(currentQuote.asOf||'')>=Date.parse(baseResearch.quote.asOf||'')?{...baseResearch,quote:currentQuote}:baseResearch,[baseResearch,currentQuote]);
   const [tab, setTab] = useState<(typeof tabs)[number]>(
       () => tabs.find((t) => t === requestedTab) ?? "Snapshot",
@@ -94,7 +98,7 @@ export default function Research({ symbol }: { symbol: string }) {
   const intraday = range === "1D" || range === "1W";
   const demoShort = useMemo(
     () => (demo && r ? { candles: rangeBars(r.history, range) } : undefined),
-    [demo, r, range],
+    [demo, r?.history, range],
   );
   const short = useResource<{ candles: Candle[]; source?: string }>(
     intraday
@@ -110,7 +114,7 @@ export default function Research({ symbol }: { symbol: string }) {
         : r
           ? rangeBars(r.history, range)
           : [],
-    [intraday, short.data, r, range],
+    [intraday, short.data, r?.history, range],
   );
   const chartBars = useMemo(
     () => (frequency === "Daily" ? bars : groupHistory(bars, frequency)),

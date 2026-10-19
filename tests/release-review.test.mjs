@@ -120,6 +120,8 @@ function researchMarkup() {
     useRef: (value) => ({ current: value }),
     useLayoutEffect: () => {},
     useEffect: () => {},
+    useLivePrices: () => ({ticks:{},connected:false}),
+    mergePriceTick: (base) => base,
     useProduct: () => ({ workspace: { watchlist: [] }, mutate: empty }),
     useResource: (path) => ({
       data: path?.startsWith("research/") ? r : undefined,

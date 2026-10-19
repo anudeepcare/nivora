@@ -5,6 +5,7 @@ const require = createRequire(import.meta.url),
   root = "../.next/server/app/api/";
 const load = (path) => require(root + path + "/route.js").routeModule.userland;
 const routes = [
+  "price-stream",
   "workspace",
   "news",
   "filings",

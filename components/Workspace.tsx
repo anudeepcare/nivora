@@ -1,6 +1,8 @@
 "use client";
 
 import SessionBrief from "./SessionBrief";
+import useLivePrices from "./useLivePrices";
+import {mergePriceTick} from "@/lib/live-price";
 
 import Link from "next/link";
 import { useMemo, useRef, useState, useEffect, useCallback } from "react";
@@ -184,7 +186,9 @@ export function useWorkspaceQuotes(
     document.addEventListener('visibilitychange',tick);
     return()=>{clearInterval(timer);document.removeEventListener('visibilitychange',tick);};
   },[demo,loading,refresh]);
-  return { data, loading, ready, error, refresh };
+  const live=useLivePrices(groups.flat(),!!demo);
+  const pricedData=useMemo(()=>Object.keys(live.ticks).length?Object.fromEntries(Object.entries(data).map(([symbol,row])=>[symbol,live.ticks[symbol]?{...row,quote:mergePriceTick(row.quote,{...live.ticks[symbol],session:live.connected?live.ticks[symbol].session:"Last streamed trade · reconnecting"})}:row])):data,[data,live]);
+  return { data:pricedData, loading, ready, error, refresh };
 }
 export function ResearchHome() {
   const { workspace, demo, workspaceError } = useProduct(),

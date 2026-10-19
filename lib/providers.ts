@@ -138,7 +138,7 @@ async function twelveQuote(
         422,
       );
     let normalized = normalizeQuote(q, symbol);
-    if (symbol.endsWith("/USD") || normalized.stale) {
+    if (symbol.endsWith("/USD") || normalized.stale || (normalized.asOf && Date.now()-Date.parse(normalized.asOf)>90000)) {
       // The crypto quote timestamp is often the daily candle's midnight, not a
       // quote observation time. Use a completed minute bar, never fetch time.
       try {

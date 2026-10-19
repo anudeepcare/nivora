@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-10-19T00:35:47.343786+00:00",
+  "generatedAt": "2026-10-19T13:49:38.846996+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 219 tests, TypeScript, production build",
-    "npm run test:api": "passed: 32 baseline + 16 research regression + 16 provider checks",
+    "npm run verify": "passed: 246 tests, TypeScript, production build",
+    "npm run test:api": "passed: 33 baseline + 16 research regression + 22 provider checks",
     "git diff --check": "passed",
-    "npm test": "passed: 219 tests"
+    "npm test": "passed: 246 tests"
   },
-  "domainPostgresAndComponentTests": 219,
-  "builtApiChecks": 64,
+  "domainPostgresAndComponentTests": 246,
+  "builtApiChecks": 71,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
     "intraday": "Twelve Data preferred; labelled EODHD historical fallback",
@@ -225,5 +225,15 @@
     "liveEntitlementsVerified": false,
     "physicalIphoneVerified": false,
     "fullRoadmapComplete": false
+  },
+  "streamingAndHome": {
+    "scope": "docs/STREAMING_AND_HOME.md",
+    "verifyLog": "verification/streaming-verify.log",
+    "apiLog": "verification/streaming-api.log",
+    "publicCryptoDemoTradeReceived": true,
+    "privateStreamingEntitlementVerified": false,
+    "deployedStreamingVerified": false,
+    "workerLocalSubscriptionCoordinationOnly": true,
+    "physicalIphoneVerified": false
   }
 }

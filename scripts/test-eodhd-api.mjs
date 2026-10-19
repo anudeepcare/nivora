@@ -472,6 +472,12 @@ await check(
     );
   },
 );
+await check("Home calendar and news can load independently",async()=>{
+ const newsCalls=()=>calls.filter(x=>x.pathname==='/api/news').length;
+ const calendarCalls=()=>calls.filter(x=>x.pathname.startsWith('/api/calendar/')).length;
+ const beforeNews=newsCalls();const events=await get('home-feed','?kind=events&symbols=NVDA,IBM');assert.equal(events.status,200);assert.equal((await events.json()).newsFollowed,0);assert.equal(newsCalls(),beforeNews);
+ const beforeCalendar=calendarCalls();const news=await get('home-feed','?kind=news&symbols=NFLX');assert.equal(news.status,200);assert.equal((await news.json()).newsFollowed,1);assert.equal(calendarCalls(),beforeCalendar);
+});
 await check("repeated home feed reuses provider cache", async () => {
   const count = () => calls.filter((x) => x.hostname === "eodhd.com").length;
   const before = count();

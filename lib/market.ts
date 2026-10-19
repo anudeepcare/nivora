@@ -33,10 +33,11 @@ export function normalizeQuote(
   // This tightens freshness during scheduled US hours; it does not assert an
   // exchange is open on holidays or overwrite the provider's session report.
   const scheduledHours=!['Sat','Sun'].includes(part('weekday'))&&minutes>=570&&minutes<960;
-  const ageLimit = open || continuous || scheduledHours ? 15 * 60_000 : 4 * 86400_000;
+  const ageLimit = open || continuous || scheduledHours ? 3 * 60_000 : 4 * 86400_000;
   return {
     price: price != null && price > 0 ? price : null,
     changePct: numeric(raw.percent_change),
+    previousClose: numeric(raw.previous_close),
     currency,
     asOf,
     session: continuous
