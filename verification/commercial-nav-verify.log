@@ -1,0 +1,283 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> auryn-product@0.1.0 verify
+> npm test && npm run typecheck && npm run build
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> auryn-product@0.1.0 test
+> node --experimental-strip-types --test tests/*.test.mjs
+
+✔ price-only revisions have distinct snapshot IDs but stable evidence identity (4.867215ms)
+✔ a corrected historical bar changes evidence identity even when the latest close is unchanged (9.633103ms)
+✔ crypto snapshots do not demand company accounts or earnings (1.648865ms)
+✔ weekly chart bars preserve first open, extrema, last close and summed volume (248.302288ms)
+✔ monthly chart controls change the actual bar interval instead of relabeling daily bars (26.88999ms)
+✔ Postgres migrations enforce account-scoped watches, idempotency, and AI request budgets (3182.692314ms)
+✔ DCA chart labeled twelve months excludes older trading sessions (12.170525ms)
+✔ monthly readings never use future bars or replace a confirmed month with a later observation (35.549873ms)
+✔ positive current business and trend create a conditional buy candidate, not asserted fair value (56.722299ms)
+✔ missing or stale prices cannot create a current buy candidate (143.049962ms)
+✔ a reported loss with positive cash generation does not imply funding distress or a sell (35.972286ms)
+✔ positive net income with an operating loss cannot produce a profitable-business buy candidate (18.913306ms)
+✔ persistent losses and cash outflows with declining revenue prompt an exit review, not an automatic order (36.307619ms)
+✔ an extended confirmed monthly price zone prompts trim review, without marking a healthy company broken (15.379836ms)
+✔ crypto and a bank do not inherit an ordinary-company buy or exit signal (30.940435ms)
+✔ classification evidence affects canonical identity because it can change the applicable model (72.786282ms)
+✔ a current quote cannot turn an obsolete trend into a buy candidate (28.688186ms)
+✔ an unidentified business model cannot receive operating-company action labels (59.300725ms)
+✔ cash-flow sensitivity has a hand-checkable constant-growth perpetuity and solves back to its assumptions (1.501143ms)
+✔ scores interpolate anchors, handle missing evidence and do not silently zero it (35.614232ms)
+✔ cash-flow scenarios respect economic monotonicity and invalid assumptions (0.209572ms)
+✔ research preferences reject malformed saved settings (2.761095ms)
+✔ monthly research supports 1x, 2x, 3x, 4x and pause without an amount (12.973967ms)
+✔ forming and future observations cannot repaint a closed month (1.962455ms)
+✔ gaps, insufficient history, stale series and invalid bars withhold multiplier (0.785401ms)
+✔ documented thesis break pauses current signal without rewriting historical signals (1.276606ms)
+✔ financial periods preserve missing values and only combine matching cash-flow filings (1.580782ms)
+✔ portfolio excludes unpriced holdings from known value and withholds total P&L (0.299783ms)
+✔ cash-flow valuation uses per-share dilution and rejects invalid terminal assumptions (0.595199ms)
+✔ incomplete month near month-end does not become confirmed (0.656584ms)
+✔ foreign or unknown cash cannot enter USD known value (0.317199ms)
+✔ EOD identity keeps crypto separate from same-code ETFs and rejects wrong fundamentals (16.577028ms)
+✔ EOD financials preserve zero, compatible currency and positive spending (31.528044ms)
+✔ EOD does not expose future actual earnings or fabricate missing financial fields (0.700173ms)
+✔ EOD split adjustment applies to all OHLC values without double adjusting volume (3.032903ms)
+✔ EOD quotes retain provider time and refuse instrument substitution (112.506607ms)
+✔ EOD search excludes foreign currency collisions and keeps USD crypto (1.840003ms)
+✔ AI evidence accepts normalized EODHD financial records without accepting arbitrary source URLs (1.559465ms)
+✔ EOD annual forecasts inherit reported statement currency when the trend omits it (1.322433ms)
+✔ additional accounting fields reuse normalized fundamentals with currency and period evidence (0.874508ms)
+✔ periods expose sourced margins, per-share cash and matching balance sheet (40.15339ms)
+✔ balance sheets do not join a different currency, date or basis; zero is retained (1.380012ms)
+✔ weighted shares are not derived by subtracting cumulative averages (1.571245ms)
+✔ TTM sums flows, recalculates ratios and retains the final balance only (9.040769ms)
+✔ current reporting currency takes precedence over old quote-currency disclosures (1.518666ms)
+✔ Grow weights share 55 credits, reset on minute boundaries and preserve foreground capacity (2.475971ms)
+✔ Grow company data retains zero, currencies and actual/estimate separation (32.46937ms)
+✔ a stock split stays an event and does not rewrite portfolio quantities (1.830136ms)
+✔ portfolio exposure uses actual priced holdings, explicit unknown sectors and missing quotes (1.836453ms)
+✔ portfolio daily estimate excludes stale prices and does not label returns on deposits (13.088774ms)
+✔ research changes report only comparable observed facts and distinguish first observation (1.510062ms)
+✔ estimate revisions compare the same future period and currency only (0.652009ms)
+✔ concentration combines multiple lots of the same instrument (4.890118ms)
+✔ Home earnings use report dates, selected stocks and a bounded future window (3.217486ms)
+✔ Home split events retain ratio direction and exclude invalid ratios (0.875807ms)
+✔ Home news stays recent, deduplicates publisher URLs and never accepts unsafe links or future headlines (1.003191ms)
+✔ Home news decodes publisher text and gives each followed company a first headline (34.320514ms)
+✔ quote provenance rejects missing currency, future timestamps and stale crypto (4.036917ms)
+✔ malformed bars are discarded; repeated timestamps deduplicate and history sorts (12.828219ms)
+✔ USD portfolio cannot silently add foreign currency or unknown-currency prices (0.360263ms)
+✔ AI report needs supplied citations for every claim, bounded text and valid structure (1.1413ms)
+✔ AI evidence excludes future filings and non-SEC source injection (8.242832ms)
+✔ unknown quote currency formats without a crash or a dollar assumption (16.749803ms)
+✔ existing non-USD cost basis cannot become a USD unrealized return (0.405879ms)
+✔ watchlist adapter deduplicates a ticker saved in multiple lists (5.982474ms)
+✔ global search cannot resolve a same-named foreign listing as a US company (0.557285ms)
+✔ crypto quote uses explicit USD pair when provider omits currency (0.473676ms)
+✔ older installed PWA start URLs and saved stock links redirect into the current workspace (10.337671ms)
+✔ cash flow uses the more recent complete TTM period, not last year by default (25.228178ms)
+✔ generic calculator assumptions cannot decide whether a stock is cheap or expensive (19.371985ms)
+✔ a profitable prior year cannot override losses in the latest complete TTM evidence (7.485141ms)
+✔ a zero or negative P/E is not displayed as a cheap positive multiple (0.989788ms)
+✔ estimates with no stated currency retain numbers without inventing USD (19.227836ms)
+✔ navigation reuses account data but account switches and sign-out invalidate it (0.381571ms)
+✔ forecast table renders available estimates, including an unreported completed quarter (382.036111ms)
+✔ workspace quote refresh commits all batches together and settles loading (248.477033ms)
+✔ logo images require an HTTPS provider host without embedded credentials (2.090512ms)
+✔ mobile overlay uses visual viewport after the keyboard reduces visible height (204.230406ms)
+✔ invalid viewport readings cannot collapse or move an overlay offscreen (39.313172ms)
+✔ keyboard inset keeps bottom sheets above the iPhone keyboard without adding an inset at full height (16.447307ms)
+✔ viewport updates do not rewrite unchanged styles during scroll (35.190114ms)
+✔ dock keyboard state requires an editable focus and a substantial viewport reduction (31.803499ms)
+✔ provider bank industries route arbitrary symbols to bank economics (3.237532ms)
+✔ normalized provider profile preserves the classification used for REIT routing (2.088874ms)
+✔ insurance industries never inherit a bank calculator or generic DCF (1.080225ms)
+✔ financial and real estate sectors with incomplete industry data use conservative guards (0.668526ms)
+✔ nonbank financial industries do not get a bank scenario even for legacy symbols (0.890551ms)
+✔ classification tolerates provider punctuation and whitespace (0.512129ms)
+✔ ordinary provider sectors do not trigger unrelated specialty models (1.102817ms)
+✔ explicit frontier and infrastructure exceptions retain priority over broad provider labels (0.484605ms)
+✔ missing classification preserves compatibility but marks the fallback provisional (0.723419ms)
+✔ saved scroll waits for async list content instead of being clamped by its loading state (179.112081ms)
+✔ slow data beyond the deadline still restores the saved list position after loading settles (52.851076ms)
+✔ a deliberate gesture cancels pending restoration and avoids a late jump (40.894601ms)
+✔ navigation ledger preserves distinct page offsets and ignores active navigation (46.207695ms)
+✔ an error or shortened list clamps once at the deadline and can be disposed on route change (19.680547ms)
+✔ mobile scroll memory follows the document instead of a non-scrolling content panel (35.665957ms)
+✔ a consensus fallback never revives an old target and always carries its observation date (219.739713ms)
+✔ outlook prices use actual forecast EPS, disclosed multiple sensitivity, and a common horizon (51.375651ms)
+✔ a missing EPS range cannot become fabricated bear and bull targets (48.406388ms)
+✔ crypto, foreign listings, stale quotes and mismatched currency withhold corporate targets (36.490026ms)
+✔ quarterly, dated, nonpositive or inverted forecasts never produce a valid outlook (28.474958ms)
+✔ healthcare-plan insurers cannot bypass the same sector gate used by the decision guide (36.902155ms)
+✔ outlook rejects a fiscal label that contradicts its underlying forecast date (33.304948ms)
+✔ a bank can show a labelled earnings sensitivity without applying an operating-cash-flow valuation (31.863681ms)
+✔ consensus comparison calculates the gap without calling it fair value or inventing high/low targets (27.601644ms)
+✔ paper plans reject fractional, foreign and invalid exposure inputs (2.711965ms)
+✔ paper checks fail closed on stale quotes, funds, open orders and market state (0.996558ms)
+✔ partial fills remain reserved until terminal broker reconciliation (0.366737ms)
+✔ a reservation revalidates changed account state before any order can submit (0.79785ms)
+✔ DCA comparison uses equal contributions and never spends unavailable cash (65.191858ms)
+✔ CSV import validates all rows and supports quoted commas without replacing holdings (9.248965ms)
+✔ portfolio preview respects cash and exposure caps (7.32574ms)
+✔ alerts reject stale price triggers and use deterministic event identities (5.393739ms)
+✔ saved research validates links, symbols and bounded content (1.550892ms)
+✔ earnings reminders use upcoming report dates and stable dedup keys (0.381603ms)
+✔ DCA history excludes a month missing its final required session (4.487282ms)
+✔ flat closes give flat EMA/bands and zero MACD without NaN (24.988019ms)
+✔ MACD uses mean-seeded 12/26 EMAs and a nine-observation signal (0.573851ms)
+✔ short history and forming daily bars do not manufacture indicators (0.49547ms)
+✔ both subscriptions have separate jobs with one fallback, not duplicate requests (7.28261ms)
+✔ fallback retains its own provenance and complete value; both failures propagate (3.681563ms)
+✔ provider cache policy keeps quotes short and company/search metadata longer (0.826272ms)
+✔ PWA mounted with an already-open keyboard hides navigation and restores it after dismissal (146.688916ms)
+✔ installed status surface exists before account shell and cannot collapse at a zero safe-area inset (5.687212ms)
+✔ PWA never caches private API responses and supplies a navigation-only offline fallback (25.389758ms)
+✔ both providers reject same-day future intraday candles at the timestamp boundary (15.429424ms)
+✔ financial selected-control styles outrank global button resets (66.243314ms)
+✔ the actual Snapshot discloses backup data without vendor names (462.117587ms)
+✔ unverified upcoming EPS is never formatted in the listing currency (56.815527ms)
+✔ quarter derivation preserves provenance, does not derive EPS, and excludes unavailable evidence (12.858447ms)
+✔ TTM refuses gaps and mixed currencies (1.759072ms)
+✔ reverse valuation solves a price under fixed assumptions, without calling it a forecast (0.979635ms)
+✔ weekly averages exclude forming week and require actual history (5.889067ms)
+✔ coverage distinguishes business economics instead of forcing one DCF (0.468662ms)
+✔ Bitcoin and Ethereum input aliases resolve to USD crypto pairs (1.823561ms)
+✔ Nu uses bank research economics, not a generic cash-flow valuation (0.780353ms)
+✔ ambiguous stock symbols remain distinct from crypto pairs (0.224066ms)
+✔ legacy crypto symbols use their saved asset type without relabeling equity holdings (0.398334ms)
+✔ a failed research-lab request clears the previous instrument result (158.880146ms)
+✔ a new comparison clears the preceding company set before loading (65.111772ms)
+✔ BTC research retains the USD pair across encoded, split and hyphenated routes (2.915507ms)
+✔ explicit BTC equity route remains a distinct instrument (0.355769ms)
+✔ ETH research retains the USD pair across encoded, split and hyphenated routes (0.789277ms)
+✔ explicit ETH equity route remains a distinct instrument (0.254ms)
+✔ market ratios use dated same-currency evidence and withhold ADR, negative earnings and stale quote (4.871553ms)
+✔ earnings scenario discounts an explicit exit multiple and refuses invalid assumptions (0.475285ms)
+✔ financial case treats absence as missing evidence and never manufactures a moat (0.622968ms)
+✔ small net debt is contextualized against cash generation instead of automatically becoming a bear case (0.677986ms)
+✔ cash-consuming businesses retain a debt funding warning (0.504443ms)
+✔ positive net income cannot hide operating losses in the financial case (0.225542ms)
+✔ valuation scale puts the quote beyond the scenario band when the quote exceeds every scenario (2.031122ms)
+✔ financial trend keeps dates, missing values and reporting currency explicit (4.728141ms)
+✔ peer comparability rejects different currency, stale periods and nonpositive denominators (0.595578ms)
+✔ CSV escapes quotes commas newlines and formula-looking labels (1.155684ms)
+✔ earnings surprises use absolute estimate denominator and never divide by zero (0.198181ms)
+✔ coverage distinguishes zero from missing evidence (0.450725ms)
+✔ peer comparability rejects accounting basis and duration mismatch (0.206329ms)
+✔ concurrent consumers and repeated tab mounts share one request per account cache (2.088494ms)
+✔ a rejected request can be retried and never poisons the cache (1.213503ms)
+✔ view changes expose only the requested account-cached resource immediately (0.920362ms)
+✔ Synthetic infrastructure and loss-making operating-company revenue sensitivities reconcile enterprise value, net debt and diluted shares (7.198769ms)
+✔ revenue scenarios fail closed on missing shares, missing debt, currency mismatch or unordered ranges (4.492481ms)
+✔ foreign-domiciled revenue cases require reporting currency and listing equity reconciliation (0.434687ms)
+✔ revenue sensitivity rejects share-unit and EV/revenue denominator inconsistencies for every listing (1.431047ms)
+✔ SEC alternates retain new periods and do not double-count the same filing (3.712718ms)
+✔ all 200 holdings receive a quote batch ahead of watchlist names (1.383945ms)
+✔ a definite pre-submission failure does not starve the next scheduled plan (1.747606ms)
+✔ operating scenarios use unit economics, funding claims and dilution before market price (1.705086ms)
+✔ bank model rejects invalid terminal assumptions and shows zero residual value when economics do not cover growth (0.484078ms)
+✔ a USD ADR on NYSE remains supported when the provider reports the issuer country (1.212549ms)
+✔ crypto search defaults to the pair while an explicitly selected ETF remains the ETF (7.78219ms)
+✔ search request keys coalesce case, dollar prefix and whitespace variants (0.603537ms)
+✔ keyboard result selection scrolls only enough within its list (0.681373ms)
+✔ source replacement archives legacy files and preserves Git, environment and Vercel identity (10.708943ms)
+✔ a damaged source package is rejected before any existing file moves (3.516465ms)
+✔ unlisted files in a source package cannot enter the application (4.573342ms)
+✔ the imported integration sheet styles the current React shell and home feed (75.106734ms)
+✔ Fibonacci overlays expose explicit endpoints, percentages and custom levels (7.234708ms)
+✔ trend markers are known on the completed signal bar and cannot repaint (19.004999ms)
+✔ correlation uses matched dates and sufficient return history (1.711476ms)
+✔ expanded technicals use completed bars, Wilder ADX and bounded momentum (13.349039ms)
+✔ short and flat histories do not fabricate strength or relative performance (0.536696ms)
+✔ stochastic, directional movement and 20-session momentum use completed observations (0.423828ms)
+✔ Financials retains four primary metrics and statement rows with separate labelled detail groups (290.415158ms)
+✔ metric explanations do not inject dialog blocks into server-rendered paragraphs (33.319804ms)
+✔ empty focused search does not expose a nonexistent listbox to assistive technology (57.768636ms)
+✔ opening mobile search offers the account's saved instruments without fabricated suggestions (39.252015ms)
+✔ Research outlook does not fill missing coverage with three empty scenario cards (43.063927ms)
+✔ Product footer supplies copyright and a research disclosure without provider marketing (19.691388ms)
+✔ outlook displays the selected forecast end and horizon beside its cases (32.000722ms)
+✔ data details retain observation time without displaying infrastructure vendor names (11.918074ms)
+✔ valuation snapshot separates analyst targets from visible labelled forecast scenarios (25.336689ms)
+✔ financial trend scope controls remain available for a missing selected period (16.600624ms)
+✔ Home portfolio summary retains key figures without the full allocation panel (16.858118ms)
+✔ Analyst ratings preserve missing counts separately from reported zero (7.712455ms)
+✔ Analyst ratings do not invent a distribution when counts are absent (7.17401ms)
+✔ Overview context stays concise and does not assign quote currency to upcoming EPS (7.484662ms)
+✔ News earnings do not infer estimate currency from a stock listing or company accounts (7.42815ms)
+✔ public legal and help documents render all cross-links and readable sections (17.031328ms)
+✔ decision overview renders real evidence, eight lenses and direct research paths (83.211582ms)
+✔ valuation tool withholds unsupported models rather than fabricating sensitivities (18.308719ms)
+✔ selecting the Bear scenario loads the exact assumptions behind its displayed estimate (27.607563ms)
+✔ a quote above all examples appears outside their band on the same numeric axis (3.11676ms)
+✔ workspace pages share a layout-owned session and shell without route keys (146.191994ms)
+✔ local preview has its own isolated session and never starts real account loading (17.587568ms)
+✔ switching workspace tabs restores their own position; tapping the active tab does not jump (87.54012ms)
+ℹ tests 207
+ℹ suites 0
+ℹ pass 207
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5879.081574
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> auryn-product@0.1.0 typecheck
+> next typegen && tsc --noEmit
+
+Generating route types...
+✓ Route types generated successfully
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> auryn-product@0.1.0 build
+> next build
+
+   ▲ Next.js 15.5.28
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 5.2s
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/19) ...
+   Generating static pages (4/19) 
+   Generating static pages (9/19) 
+   Generating static pages (14/19) 
+ ✓ Generating static pages (19/19)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /_not-found                            171 B         103 kB
+├ ƒ /[[...route]]                        88.4 kB         275 kB
+├ ƒ /api/alerts                            171 B         103 kB
+├ ƒ /api/analyst/[symbol]                  171 B         103 kB
+├ ƒ /api/chart/[symbol]                    171 B         103 kB
+├ ƒ /api/company-data                      171 B         103 kB
+├ ƒ /api/documents                         171 B         103 kB
+├ ƒ /api/enrichment/[symbol]               171 B         103 kB
+├ ƒ /api/filings                           171 B         103 kB
+├ ƒ /api/home-feed                         171 B         103 kB
+├ ƒ /api/jobs                              171 B         103 kB
+├ ƒ /api/logos                             171 B         103 kB
+├ ƒ /api/news                              171 B         103 kB
+├ ƒ /api/observations                      171 B         103 kB
+├ ƒ /api/paper-plans                       171 B         103 kB
+├ ƒ /api/paper-status                      171 B         103 kB
+├ ƒ /api/portfolio-import                  171 B         103 kB
+├ ƒ /api/provider-status                   171 B         103 kB
+├ ƒ /api/quotes                            171 B         103 kB
+├ ƒ /api/research/[symbol]                 171 B         103 kB
+├ ƒ /api/search                            171 B         103 kB
+└ ƒ /api/workspace                         171 B         103 kB
++ First Load JS shared by all             103 kB
+  ├ chunks/255-b1e2483a7e02feee.js       46.6 kB
+  ├ chunks/4bd1b696-c023c6e3521b1417.js  54.2 kB
+  └ other shared chunks (total)          2.43 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

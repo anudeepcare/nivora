@@ -523,3 +523,19 @@ test('valuation tool withholds unsupported models rather than fabricating sensit
  const html=renderToStaticMarkup(React.createElement(ValuationLab,{research:{...demoData.research.MSFT,facts:[],evidence:undefined}}));
  assert.match(html,/Use the right model/);assert.doesNotMatch(html,/type="range"|NaN|Infinity/);
 });
+
+test('authentication explains AURYN in sign-in, signup and recovery without fabricating investment results',()=>{
+ for(const mode of ['login','signup','reset']){
+  let i=0;const values=['','','',false,mode,''];
+  const Login=loadComponent('components/Session.tsx','Login',{React,useState:()=>[values[i++],()=>{}],Logo:()=>React.createElement('span',null,'AURYN')});
+  const html=renderToStaticMarkup(React.createElement(Login,{initialError:''}));
+  assert.match(html,/About AURYN/);assert.match(html,/Business first/);assert.match(html,/Explore the possibilities/);
+  assert.doesNotMatch(html,/desktop-nav|mobile-dock|guaranteed returns/);
+ }
+});
+test('settings hides experimental navigation while preserving account and help',()=>{
+ const SettingsSheet=loadComponent('components/SettingsSheet.tsx','SettingsSheet',{React,useState:React.useState,useProduct:()=>({demo:false,themePreference:'light',textSize:'standard',reduceMotion:false}),Link:({children,...props})=>React.createElement('a',props,children),ArrowRight:empty,X:empty,LogOut:empty,ResearchPreferenceControls:empty});
+ const html=renderToStaticMarkup(React.createElement(SettingsSheet,{dialog:{current:null}}));
+ assert.doesNotMatch(html,/href="\/(discover|research-lab|trading)"/);
+ assert.match(html,/Account &amp; security/);assert.match(html,/href="\/help"/);
+});

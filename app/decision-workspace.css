@@ -108,3 +108,5 @@
 
 .decision-summary {padding:20px;}.decision-summary .decision-intro {margin-bottom:14px;}.decision-summary .decision-intro h2 {font-size:24px;}.decision-summary .decision-answer-grid>button {padding:12px;gap:6px;}.decision-detail .decision-lens-layout {padding-top:0;}.decision-detail .lens-total {font-size:28px;}
 @media(max-width:700px){.decision-summary {padding:16px;}.decision-summary .decision-intro {display:block;}.decision-summary .evidence-label {margin-top:8px;}.decision-summary .decision-intro h2 {font-size:21px;}}
+
+.decision-risk-banner {border-left:3px solid var(--blue);background:var(--paper);padding:12px 16px;margin:0 0 14px;border-radius:12px;}.decision-risk-banner.high-risk {border-color:var(--red);background:color-mix(in srgb,var(--red) 6%,var(--surface));}.decision-risk-banner strong {font-size:14px;}.decision-risk-banner p {margin:5px 0;font-size:13px;}.decision-risk-banner small {color:var(--muted);font-size:12px;}

@@ -437,6 +437,17 @@ function Login({ initialError }: { initialError: string }) {
   }
   return (
     <main className="login-page">
+      <section className="login-introduction" aria-label="About AURYN">
+        <span className="eyebrow">A clearer investment perspective</span>
+        <h2>Business first. <br/>Price second. <br/><em>Timing alongside.</em></h2>
+        <p>Understand what you own, challenge what you pay, and see what deserves a closer look.</p>
+        <div className="login-product-story">
+          <article><span>01 · Understand</span><h3>Look beyond the ticker.</h3><p>Growth, profitability, cash generation and financing risks in one research workspace.</p></article>
+          <article><span>02 · Put price in context</span><h3>Explore the possibilities.</h3><p>Bear, base and bull scenarios with assumptions kept separate from analyst opinion.</p></article>
+          <article><span>03 · Keep perspective</span><h3>Follow the evidence.</h3><p>Price trends, monthly accumulation context, watchlists and your portfolio.</p></article>
+        </div>
+        <small>Research to inform your judgment. No promised returns or automatic trade instructions.</small>
+      </section>
       <section className="login-card">
         <Logo />
         <span className="eyebrow">YOUR INVESTMENT WORKSPACE</span>

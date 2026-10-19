@@ -95,9 +95,6 @@ export default function SettingsSheet({
         {[
           ["settings", "Account & security"],
           ["alerts", "Alerts"],
-          ["discover", "Discover"],
-          ["research-lab", "Strategy lab"],
-          ["trading", "Paper trading"],
           ["help", "Help"],
           ["methodology", "Methodology"],
           ["terms", "Terms of use"],

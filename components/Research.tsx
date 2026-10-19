@@ -481,6 +481,7 @@ export function DcaCard({
             {signal ? `${signal.multiplier}×` : "—"}
           </div>
         </div>
+        <p className="small muted pace-summary">{signal ? `Last completed month: ${signal.multiplier === 0 ? 'pause new contributions under this price policy; this is not a sell signal' : `${signal.multiplier}× your usual contribution under this price policy`}.` : 'A confirmed contribution zone needs more completed monthly history.'} {p.dca.forming ? `Current month: ${p.dca.forming.multiplier}×, provisional until month-end.` : ''} This measures price conditions, not buying activity or business quality.</p>
         <div className="pace-line" aria-label="Contribution multiplier scale">
           {[0, 1, 2, 3, 4].map((n) => (
             <div
