@@ -1,3 +1,5 @@
+> Latest: `INTERACTION_AND_TRUST.md` covers chart contrast, research-tab retention, Settings scrolling, evidence reuse and manual broker references. See interaction verification logs for the current check counts. Physical iPhone/rendered-browser acceptance is still outstanding.
+
 > Latest Portfolio correction: `PORTFOLIO_LEDGER_REPAIR.md`. Replaces the conflicting mobile table with an isolated ledger, adds allocation/gain-loss charts and refines the editor. 265 automated tests; physical iPhone/rendered-browser acceptance remains unverified.
 
 > Latest refinement: `PRODUCT_REFINEMENT.md` documents the price-clock fix, exposure-ranked Home, partial returns, compact layouts and Simple/Pro depth. Current logs: `verification/product-refinement-verify.log` and `verification/product-refinement-api.log`.

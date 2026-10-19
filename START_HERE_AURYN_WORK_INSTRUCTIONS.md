@@ -1,3 +1,5 @@
+> Latest interaction update: read `docs/INTERACTION_AND_TRUST.md`. Keep dark tokens local to the balance card, immutable evidence caching and the existing PWA shell.
+
 > Latest: `docs/PORTFOLIO_LEDGER_REPAIR.md` covers the Portfolio layout repair and new charts. Preserve the isolated ledger classes and existing PWA shell.
 
 > Latest product refinement: read `docs/PRODUCT_REFINEMENT.md` before earlier release notes. No deployed-provider or physical-iPhone acceptance is claimed.

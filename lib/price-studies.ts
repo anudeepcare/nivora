@@ -1,6 +1,7 @@
+import { evidenceMemo } from "./evidence-memo.ts";
 import type { Candle } from "./types";
 /** Daily studies use completed dated observations only; no additional provider calls. */
-export function priceStudies(bars: Candle[], asOf: string) {
+function computePriceStudies(bars: Candle[], asOf: string) {
   const closes = [
     ...new Map(
       bars
@@ -51,4 +52,11 @@ export function priceStudies(bars: Candle[], asOf: string) {
         ? { low: mid - 2 * sigma, mid, high: mid + 2 * sigma }
         : null,
   };
+}
+
+const studiesMemo = evidenceMemo<ReturnType<typeof computePriceStudies>>();
+export function priceStudies(bars: Candle[], asOf: string) {
+  return studiesMemo(bars, `${bars.length}:${asOf}`, () =>
+    computePriceStudies(bars, asOf),
+  );
 }

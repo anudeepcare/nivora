@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-10-19T15:57:18.712020+00:00",
+  "generatedAt": "2026-10-19T16:18:38.222824+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 265 tests, TypeScript, production build",
+    "npm run verify": "passed: 269 tests, TypeScript, production build",
     "npm run test:api": "passed: 34 baseline + 16 research regression + 22 provider + 5 shared protection checks",
     "git diff --check": "passed",
-    "npm test": "passed: 265 tests",
+    "npm test": "passed: 269 tests",
     "npm run build": "passed after final scoped stylesheet cleanup"
   },
-  "domainPostgresAndComponentTests": 265,
+  "domainPostgresAndComponentTests": 269,
   "builtApiChecks": 77,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -36,13 +36,12 @@
   "priorEvidence": "The signed-in reference/deployed UI reviews predate this patch. New verification is source, domain/SSR, TypeScript and build evidence only.",
   "browserTestScope": "No rendered browser test of this build; older live audits are historical evidence only",
   "patchedSourceBrowserTestsExecuted": false,
-  "latestAudit": "../docs/PORTFOLIO_LEDGER_REPAIR.md",
+  "latestAudit": "../docs/INTERACTION_AND_TRUST.md",
   "referenceReview": "REFERENCE_REVIEW_20261017.md",
   "decisionPolicy": "research-v1.6 / decision-guide-v1.1; original unvalidated research triage; no broker execution",
   "latestLogs": [
-    "portfolio-ledger-verify.log",
-    "portfolio-ledger-final-build.log",
-    "portfolio-ledger-api.log"
+    "interaction-verify.log",
+    "interaction-api.log"
   ],
   "cohortQuoteObservations": "cohort-quotes-20261017.json; 11 instruments; quote identity only, not fundamental/model validation",
   "exactVisualParityVerified": false,
@@ -284,5 +283,20 @@
     "renderedBrowserTestsExecuted": false,
     "browserInstall": "binary download failed",
     "physicalIphoneTestsExecuted": false
+  },
+  "interactionAndTrust": {
+    "portfolioContrast": "legacy dark wrapper removed; balance-only dark tokens",
+    "researchTabs": "sticky beneath measured header, first-visit anchor, retained Overview/Technical charts",
+    "settings": "isolated fixed header and scrolling body; initial heading focus",
+    "evidenceReuse": "weak immutable dataset identity/cutoff caches; at most three variants per dataset",
+    "benchmark": {
+      "iterations": 50,
+      "beforeMs": 612.499906,
+      "afterMs": 30.923403,
+      "scope": "single synthetic local Node sample, not browser/device latency"
+    },
+    "newFeature": "user-initiated manual trade reference; no broker order or extra provider request",
+    "physicalIphoneVerified": false,
+    "renderedBrowserVerified": false
   }
 }

@@ -150,7 +150,15 @@ export default function Shell({
             className="icon-button"
             aria-label="Settings"
             aria-haspopup="dialog"
-            onClick={() => settings.current?.showModal()}
+            onClick={() => {
+              settings.current?.showModal();
+              const body =
+                settings.current?.querySelector<HTMLElement>(".dialog-body");
+              if (body) body.scrollTop = 0;
+              settings.current
+                ?.querySelector<HTMLHeadingElement>("h2")
+                ?.focus({ preventScroll: true });
+            }}
           >
             <span className="avatar">
               {(workspace?.email?.[0] || "A").toUpperCase()}

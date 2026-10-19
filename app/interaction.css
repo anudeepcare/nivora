@@ -1,0 +1,271 @@
+/* Isolated preferences sheet: fixed header plus one scrolling content region. */
+.preferences-sheet {
+  padding: 0;
+  border: 1px solid var(--line);
+  width: min(520px, calc(100vw - 32px));
+  max-width: 520px;
+  height: min(740px, calc(100dvh - 48px));
+  max-height: calc(100dvh - 48px);
+  overflow: hidden;
+  border-radius: 24px;
+  background: var(--surface);
+  color: var(--ink);
+}
+.preferences-sheet[open] {
+  display: flex;
+  flex-direction: column;
+}
+.preferences-sheet > .dialog-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+  margin: 0;
+  position: relative;
+  top: auto;
+}
+.preferences-sheet .dialog-head h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0;
+  padding: 0;
+}
+.preferences-sheet h2:focus {
+  outline: none;
+}
+.preferences-sheet .dialog-head button {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+}
+.preferences-sheet > .dialog-body {
+  min-height: 0;
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 18px 20px max(20px, env(safe-area-inset-bottom, 0px));
+  scroll-padding-top: 12px;
+}
+.preferences-sheet .setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  min-height: 52px;
+  font-size: 0.88rem;
+}
+.preferences-sheet .setting-row.action {
+  width: 100%;
+  color: var(--ink);
+  background: none;
+  border-radius: 0;
+  text-align: left;
+}
+.preferences-sheet .setting-row.action.negative {
+  color: var(--red);
+}
+.preferences-sheet .segments {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+.preferences-sheet .segments button {
+  min-height: 38px;
+  padding: 8px 10px;
+  font-size: 0.8rem;
+}
+.preferences-sheet .display-preferences > header h3 {
+  font-size: 1rem;
+  margin: 0 0 6px;
+}
+.preferences-sheet .display-preferences > header p {
+  font-size: 0.8rem;
+  margin: 0 0 10px;
+}
+.preferences-sheet .appearance-controls {
+  padding: 18px 0;
+  border: 0;
+}
+.preferences-sheet .appearance-controls h4 {
+  font-size: 0.88rem;
+  margin: 0 0 12px;
+}
+.preferences-sheet .accent-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.preferences-sheet .accent-options button {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px;
+  font-size: 0.82rem;
+}
+.preferences-sheet .accent-options button span {
+  margin-left: auto;
+}
+.preferences-sheet .density-options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.preferences-sheet .density-options button {
+  min-height: 42px;
+  padding: 9px 12px;
+  font-size: 0.82rem;
+}
+.preferences-sheet .appearance-controls > small {
+  display: block;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  margin-top: 12px;
+}
+.preferences-sheet .text-button {
+  font-size: 0.82rem;
+  margin-top: 10px;
+}
+.preferences-sheet .settings-research {
+  border-block: 1px solid var(--line);
+  padding: 16px 0;
+  margin: 0;
+}
+.preferences-sheet .settings-research summary {
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 550;
+  min-height: 30px;
+  align-content: center;
+}
+.preferences-sheet .research-preferences {
+  padding-top: 14px;
+}
+.preferences-sheet .settings-legal {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding-top: 18px;
+  font-size: 0.78rem;
+}
+.preferences-sheet :focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.research-page .local-tabs {
+  position: sticky;
+  top: var(--tabs-offset, 0px);
+  z-index: 25;
+  background: var(--paper);
+  isolation: isolate;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  touch-action: auto;
+}
+.research-page .local-tabs button {
+  transition:
+    color 0.12s ease,
+    background-color 0.12s ease;
+  flex-shrink: 0;
+}
+.research-page [data-retained-panel][hidden] {
+  display: none !important;
+}
+.research-page [data-retained-panel] {
+  min-width: 0;
+}
+@media (max-width: 700px) {
+  .preferences-sheet {
+    position: fixed;
+    inset: auto 0 var(--keyboard-bottom, 0px);
+    margin: 0;
+    width: 100%;
+    max-width: none;
+    height: min(
+      760px,
+      calc(
+        var(--visual-height, 100dvh) - max(env(safe-area-inset-top, 0px), 18px)
+      )
+    );
+    max-height: calc(
+      var(--visual-height, 100dvh) - max(env(safe-area-inset-top, 0px), 18px)
+    );
+    border-radius: 24px 24px 0 0;
+  }
+  .preferences-sheet > .dialog-head {
+    padding: 16px 18px;
+  }
+  .preferences-sheet > .dialog-body {
+    padding: 16px 18px max(20px, env(safe-area-inset-bottom, 0px));
+  }
+  .research-page .local-tabs {
+    margin-inline: -2px;
+    padding-inline: 2px;
+  }
+  .research-page .local-tabs button {
+    min-height: 44px;
+    padding: 10px 14px;
+    font-size: 0.86rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .research-page .local-tabs button {
+    transition: none;
+  }
+}
+.trade-reference {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  background: var(--surface);
+}
+.trade-reference > div {
+  flex: 1;
+  min-width: 210px;
+}
+.trade-reference h4 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+}
+.trade-reference p {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0;
+}
+.trade-reference > details {
+  width: 100%;
+  font-size: 0.84rem;
+}
+.trade-reference summary {
+  cursor: pointer;
+  min-height: 36px;
+  align-content: center;
+  color: var(--blue);
+}
+.trade-reference pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: inherit;
+  line-height: 1.7;
+  color: var(--ink);
+  padding: 12px;
+  background: var(--paper);
+  border-radius: 12px;
+}
+.trade-reference button {
+  min-height: 44px;
+  font-size: 0.85rem;
+}

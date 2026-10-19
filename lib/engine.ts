@@ -1,3 +1,4 @@
+import { evidenceMemo } from "./evidence-memo.ts";
 import { monthEndSession } from "./calendar.ts";
 import {
   flowFields,
@@ -20,7 +21,7 @@ const validDate = (s: string) =>
   /^\d{4}-\d{2}-\d{2}$/.test(s) &&
   Number.isFinite(Date.parse(s)) &&
   new Date(s).toISOString().slice(0, 10) === s;
-export function accumulation(
+function computeAccumulation(
   bars: Candle[],
   asOf: string,
   broken = false,
@@ -340,4 +341,18 @@ export function accumulationBand(
         : drawdown <= -15 && deviation <= -10
           ? 2
           : 1;
+}
+
+const accumulationMemo = evidenceMemo<ReturnType<typeof computeAccumulation>>();
+export function accumulation(
+  bars: Candle[],
+  asOf: string,
+  broken = false,
+  market: "us-equity" | "crypto" = "us-equity",
+) {
+  return accumulationMemo(
+    bars,
+    `${bars.length}:${asOf}:${broken}:${market}`,
+    () => computeAccumulation(bars, asOf, broken, market),
+  );
 }

@@ -3,6 +3,7 @@ import {
   ResearchModeSwitch,
   useResearchPreferences,
 } from "./ResearchPreferences";
+import { researchTabTarget } from "@/lib/research-interaction";
 import dynamic from "next/dynamic";
 import useLivePrices from "./useLivePrices";
 import { quoteHealth } from "@/lib/quote-health";
@@ -61,7 +62,7 @@ const ranges = ["1D", "1W", "1M", "6M", "1Y", "5Y"] as const;
 export default function Research({ symbol }: { symbol: string }) {
   const { preferences } = useResearchPreferences();
   const requestedTab = useSearchParams().get("tab");
-  const { demo, workspace, mutate } = useProduct();
+  const { demo, workspace, mutate, reduceMotion } = useProduct();
   const resource = useResource<ResearchData>(
       `research/${encodeURIComponent(symbol.replace("/", "-"))}`,
       demo?.research[symbol],
@@ -143,6 +144,30 @@ export default function Research({ symbol }: { symbol: string }) {
     [frequency, setFrequency] = useState<"Daily" | "Weekly" | "Monthly">(
       "Daily",
     );
+  const [retainedCharts, setRetainedCharts] = useState<string[]>(() =>
+    !requestedTab ||
+    requestedTab === "Snapshot" ||
+    requestedTab === "Technicals"
+      ? [requestedTab ?? "Snapshot"]
+      : [],
+  );
+  const tabsElement = useRef<HTMLElement>(null);
+  const tabsAnchor = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const nav = tabsElement.current,
+      header = document.querySelector<HTMLElement>(".topbar");
+    if (!nav) return;
+    const update = () =>
+      nav.style.setProperty(
+        "--tabs-offset",
+        `${header?.getBoundingClientRect().height ?? 0}px`,
+      );
+    update();
+    if (!header) return;
+    const observer = new ResizeObserver(update);
+    observer.observe(header);
+    return () => observer.disconnect();
+  }, [!!r]);
   const tabOffsets = useRef(new Map<string, number>());
   const pendingTab = useRef<number | null>(null);
   const switchTab = (next: (typeof tabs)[number]) => {
@@ -151,10 +176,36 @@ export default function Research({ symbol }: { symbol: string }) {
       tab,
       browserScrollEnvironment().readTop?.() ?? window.scrollY,
     );
-    pendingTab.current = tabOffsets.current.get(next) ?? 0;
+    const current = browserScrollEnvironment().readTop?.() ?? window.scrollY;
+    pendingTab.current = researchTabTarget(
+      tabOffsets.current.get(next),
+      current,
+      tabsAnchor.current
+        ? tabsAnchor.current.getBoundingClientRect().top + current
+        : current,
+      parseFloat(
+        tabsElement.current?.style.getPropertyValue("--tabs-offset") || "0",
+      ),
+    );
+    if (next === "Snapshot" || next === "Technicals")
+      setRetainedCharts((old) => (old.includes(next) ? old : [...old, next]));
     setTab(next);
   };
   useLayoutEffect(() => {
+    const nav = tabsElement.current,
+      active = nav?.querySelector<HTMLElement>('[aria-selected="true"]');
+    if (nav && active) {
+      const behavior =
+        reduceMotion ||
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "instant"
+          : "smooth";
+      const left = active.offsetLeft,
+        right = left + active.offsetWidth;
+      if (left < nav.scrollLeft) nav.scrollTo({ left, behavior });
+      else if (right > nav.scrollLeft + nav.clientWidth)
+        nav.scrollTo({ left: right - nav.clientWidth, behavior });
+    }
     if (pendingTab.current == null) return;
     const top = pendingTab.current;
     pendingTab.current = null;
@@ -366,7 +417,13 @@ export default function Research({ symbol }: { symbol: string }) {
       <div className="research-view-control">
         <ResearchModeSwitch />
       </div>
+      <div
+        ref={tabsAnchor}
+        className="research-tab-anchor"
+        aria-hidden="true"
+      />
       <nav
+        ref={tabsElement}
         className="local-tabs"
         role="tablist"
         aria-label="Research sections"
@@ -452,8 +509,12 @@ export default function Research({ symbol }: { symbol: string }) {
           <AdvancedResearch key={r.company.symbol} research={r} />
         )}
         {tab === "Analysts" && <AnalystRatings research={r} />}
-        {tab === "Snapshot" && (
-          <>
+        {retainedCharts.includes("Snapshot") && (
+          <section
+            data-retained-panel="Snapshot"
+            hidden={tab !== "Snapshot"}
+            className="au-stack"
+          >
             <DecisionWorkspace
               research={r}
               onTab={switchTab}
@@ -476,7 +537,7 @@ export default function Research({ symbol }: { symbol: string }) {
             <KeyFinancialMetrics research={r} />
             <DecisionWorkspace research={r} onTab={switchTab} part="detail" />
             <DecisionWatch key={r.company.symbol} research={r} />
-          </>
+          </section>
         )}
         {tab === "Financials" && (
           <>
@@ -497,8 +558,12 @@ export default function Research({ symbol }: { symbol: string }) {
             </details>
           </>
         )}
-        {tab === "Technicals" && (
-          <>
+        {retainedCharts.includes("Technicals") && (
+          <section
+            data-retained-panel="Technicals"
+            hidden={tab !== "Technicals"}
+            className="au-stack"
+          >
             <header className="section-head">
               <div>
                 <h2>Price structure</h2>
@@ -523,9 +588,9 @@ export default function Research({ symbol }: { symbol: string }) {
             {chart}
             <TimingContext research={r} />
             <TechnicalPicture research={r} dca={null} />
-          </>
+            <DcaResearch research={r} />
+          </section>
         )}
-        {tab === "Technicals" && <DcaResearch research={r} />}
         {tab === "Thesis" && (
           <>
             <ThesisPicture research={r} />

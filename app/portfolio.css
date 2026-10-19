@@ -1,5 +1,6 @@
 /* Portfolio owns its ledger and editor. No legacy holdings-table selectors apply. */
-.portfolio-page .portfolio-top {
+.portfolio-page .portfolio-summary-layout {
+  display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
   align-items: stretch;
   gap: 18px;
@@ -450,7 +451,7 @@
   outline-offset: 3px;
 }
 @media (max-width: 1000px) {
-  .portfolio-page .portfolio-top {
+  .portfolio-page .portfolio-summary-layout {
     grid-template-columns: minmax(0, 1fr);
   }
   .portfolio-charts {
@@ -702,4 +703,32 @@
 }
 .portfolio-extra .portfolio-exposure {
   margin-bottom: 0;
+}
+
+.portfolio-page .portfolio-balance {
+  padding: 24px;
+  border-radius: 24px;
+  background: #143a43;
+  color: #f3fffd;
+  --ink: #f3fffd;
+  --muted: #b4cbd0;
+  --line: #ffffff20;
+  --red: #ffa5a9;
+  --green: #88e5c8;
+}
+.portfolio-summary-layout .portfolio-balance .balance {
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 1.2;
+}
+.portfolio-summary-layout .money-sub {
+  line-height: 1.6;
+  margin-top: 14px;
+}
+.portfolio-summary-layout .balance-caption {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  margin-top: 12px;
+}
+.portfolio-charts {
+  color: var(--ink);
 }

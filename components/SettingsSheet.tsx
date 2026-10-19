@@ -18,7 +18,7 @@ export default function SettingsSheet({
   return (
     <dialog
       ref={dialog}
-      className="dialog settings-sheet"
+      className="dialog preferences-sheet"
       aria-labelledby="settings-title"
       onClick={(e) => {
         if (e.target !== e.currentTarget) return;
@@ -33,7 +33,9 @@ export default function SettingsSheet({
       }}
     >
       <header className="dialog-head">
-        <h2 id="settings-title">Settings</h2>
+        <h2 id="settings-title" tabIndex={-1}>
+          Settings
+        </h2>
         <button
           className="icon-button"
           aria-label="Close settings"
@@ -44,7 +46,10 @@ export default function SettingsSheet({
       </header>
       <div className="dialog-body settings-clean-body">
         <DisplayPreferences />
-        <details className="settings-research"><summary>Research preferences</summary><ResearchPreferenceControls /></details>
+        <details className="settings-research">
+          <summary>Research preferences</summary>
+          <ResearchPreferenceControls />
+        </details>
         {[
           ["settings", "Account & security"],
           ["alerts", "Alerts"],
@@ -74,7 +79,17 @@ export default function SettingsSheet({
           <span>Sign out</span>
           <LogOut size={18} />
         </button>
-        <nav className="settings-legal" aria-label="Legal and methodology"><Link href="/methodology" onNavigate={()=>dialog.current?.close()}>Methodology</Link><Link href="/terms" onNavigate={()=>dialog.current?.close()}>Terms</Link><Link href="/privacy" onNavigate={()=>dialog.current?.close()}>Privacy</Link></nav>
+        <nav className="settings-legal" aria-label="Legal and methodology">
+          <Link href="/methodology" onNavigate={() => dialog.current?.close()}>
+            Methodology
+          </Link>
+          <Link href="/terms" onNavigate={() => dialog.current?.close()}>
+            Terms
+          </Link>
+          <Link href="/privacy" onNavigate={() => dialog.current?.close()}>
+            Privacy
+          </Link>
+        </nav>
         {error && (
           <p role="alert" className="negative">
             {error}

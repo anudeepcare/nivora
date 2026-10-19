@@ -101,7 +101,21 @@ export function useWorkspaceQuotes(
       const row = cache.get("quote:" + symbol);
       if (row) cached[symbol] = row.value as Quotes[string];
     }
-    setData(cached);
+    setData((old) =>
+      Object.fromEntries(
+        selected.flat().flatMap((symbol) => {
+          const prior = old[symbol],
+            saved = cached[symbol];
+          const best =
+            prior?.quote &&
+            Date.parse(prior.quote.asOf || "") >
+              Date.parse(saved?.quote?.asOf || "")
+              ? prior
+              : (saved ?? prior);
+          return best ? [[symbol, best]] : [];
+        }),
+      ),
+    );
     setReady(cache.has("workspace-quotes:" + key) || !selected.length);
     setLoading(selected.length > 0);
     setError("");
@@ -226,13 +240,31 @@ export function useWorkspaceQuotes(
                       ? live.ticks[symbol].session
                       : "Last streamed trade · reconnecting",
                   })
-                : row.quote,
+                : !live.connected && /^Live/.test(row.quote?.session || "")
+                  ? {
+                      ...row.quote!,
+                      session: "Last streamed trade · reconnecting",
+                    }
+                  : row.quote,
             ),
           },
         ]),
       ),
     [data, live],
   );
+  useEffect(() => {
+    for (const [symbol, row] of Object.entries(pricedData)) {
+      if (!row.quote || row.quote.stale) continue;
+      const old = cache.get("quote:" + symbol)?.value as
+        | Quotes[string]
+        | undefined;
+      if (
+        !old?.quote ||
+        Date.parse(row.quote.asOf || "") > Date.parse(old.quote.asOf || "")
+      )
+        cache.set("quote:" + symbol, { at: Date.now(), value: row });
+    }
+  }, [pricedData, cache]);
   return { data: pricedData, loading, ready, error, refresh };
 }
 export function ResearchHome() {
@@ -769,28 +801,43 @@ export function Portfolio() {
     month: "2-digit",
     day: "2-digit",
   }).format(new Date());
-  const reportsSoon = new Set(
-    (calendar.data?.events ?? [])
-      .filter(
-        (e) =>
-          /earnings/i.test(e.kind) &&
-          e.date >= portfolioDay &&
-          Date.parse(e.date) <= Date.parse(portfolioDay) + 7 * 86400000,
-      )
-      .map((e) => e.symbol),
+  const reportsSoon = useMemo(
+    () =>
+      new Set(
+        (calendar.data?.events ?? [])
+          .filter(
+            (e) =>
+              /earnings/i.test(e.kind) &&
+              e.date >= portfolioDay &&
+              Date.parse(e.date) <= Date.parse(portfolioDay) + 7 * 86400000,
+          )
+          .map((e) => e.symbol),
+      ),
+    [calendar.data, portfolioDay],
   );
-  const q = Object.fromEntries(
-      Object.entries(quotes.data || {})
-        .filter(([, v]) => v.quote)
-        .map(([k, v]) => [k, v.quote!]),
+  const q = useMemo(
+      () =>
+        Object.fromEntries(
+          Object.entries(quotes.data || {})
+            .filter(([, v]) => v.quote)
+            .map(([k, v]) => [k, v.quote!]),
+        ),
+      [quotes.data],
     ),
     positions = workspace?.positions || [],
-    totals = portfolioTotals(positions, q),
-    returns = pricedInvestmentReturns(positions, q),
-    visiblePositions = positions.filter((p) =>
-      `${p.symbol} ${quotes.data?.[p.symbol]?.company?.name || ""} ${p.assetType === "cash" ? "cash" : ""}`
-        .toLowerCase()
-        .includes(query.trim().toLowerCase()),
+    totals = useMemo(() => portfolioTotals(positions, q), [positions, q]),
+    returns = useMemo(
+      () => pricedInvestmentReturns(positions, q),
+      [positions, q],
+    ),
+    visiblePositions = useMemo(
+      () =>
+        positions.filter((p) =>
+          `${p.symbol} ${quotes.data?.[p.symbol]?.company?.name || ""} ${p.assetType === "cash" ? "cash" : ""}`
+            .toLowerCase()
+            .includes(query.trim().toLowerCase()),
+        ),
+      [positions, query, quotes.data],
     ),
     missingCurrency = positions.filter(
       (p) => !p.currency && p.assetType !== "cash",
@@ -930,7 +977,7 @@ export function Portfolio() {
         </button>
       </div>
       {error && !modal.current?.open && <Notice error>{error}</Notice>}
-      <div className="portfolio-top">
+      <div className="portfolio-summary-layout">
         <section className="panel portfolio-balance">
           <span className="eyebrow">Priced assets & cash · USD</span>
           <div className="balance">

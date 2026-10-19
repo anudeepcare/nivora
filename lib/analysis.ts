@@ -1,9 +1,10 @@
+import { evidenceMemo } from "./evidence-memo.ts";
 import { modelCoverage, ttmPeriods } from "./research-depth.ts";
 import type { Candle, Research, FinancialPeriod } from "./types";
 import { financialPeriods, cashFlowValue, accumulation } from "./engine.ts";
 export const annualRows = (r: Research) =>
   financialPeriods(r.facts, "annual", r.retrievedAt);
-export function latestFinancialEvidence(r: Research) {
+function computeFinancialEvidence(r: Research) {
   const annual = annualRows(r),
     ttm = ttmPeriods(r.facts, r.retrievedAt);
   const a = annual.at(-1),
@@ -26,7 +27,7 @@ export function latestFinancialEvidence(r: Research) {
     : undefined;
   return { rows, latest, prior, periodBasis: useTtm ? "TTM" : "Annual" };
 }
-export function indicators(bars: Candle[], asOf: string) {
+function computeIndicators(bars: Candle[], asOf: string) {
   const day = asOf.slice(0, 10),
     rows = bars
       .filter(
@@ -275,4 +276,18 @@ export function periodLabel(row: FinancialPeriod) {
     year: "numeric",
     timeZone: "UTC",
   });
+}
+
+const financialMemo =
+  evidenceMemo<ReturnType<typeof computeFinancialEvidence>>();
+export function latestFinancialEvidence(r: Research) {
+  return financialMemo(r.facts, `${r.facts.length}:${r.retrievedAt}`, () =>
+    computeFinancialEvidence(r),
+  );
+}
+const indicatorMemo = evidenceMemo<ReturnType<typeof computeIndicators>>();
+export function indicators(bars: Candle[], asOf: string) {
+  return indicatorMemo(bars, `${bars.length}:${asOf}`, () =>
+    computeIndicators(bars, asOf),
+  );
 }
