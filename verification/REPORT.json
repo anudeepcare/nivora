@@ -183,5 +183,21 @@
       "Thesis trailing date stamp"
     ],
     "billingImplemented": false
+  },
+  "advancedResearch": {
+    "implemented": true,
+    "tests": 223,
+    "log": "verification/advanced-verify.log",
+    "scope": "docs/ADVANCED_RESEARCH_RELEASE.md",
+    "additionalProviderCalls": 0,
+    "physicalIphoneVerified": false,
+    "billingImplemented": false
+  },
+  "mobileLensTheme": {
+    "tests": 224,
+    "log": "verification/mobile-theme-verify.log",
+    "newUserTheme": "light",
+    "savedDarkAndSystemPreserved": true,
+    "physicalIphoneVerified": false
   }
 }

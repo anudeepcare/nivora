@@ -42,3 +42,10 @@ Latest automated checks: 219 tests, TypeScript, production build; no rendered-br
 - News separates earnings preparation, events and transactions with restrained color accents. Missing transaction quantities say “Quantity not supplied” rather than an orphan dash plus shares.
 - Sign-in and registration introduce the business/value/timing proposition with clearer product copy. No testimonial, return claim or unimplemented paid-plan promise added.
 - PWA metadata, safe-area rules and status surface are preserved. No physical iPhone acceptance or live authentication verification was performed for this patch.
+
+## Mobile lens alignment and optional dark mode
+The screenshot's overlapping lens labels/scores came from a late three-column declaration overriding the mobile rule while the middle bar was hidden. Mobile now uses one full-width list with independent flexible label and auto-sized score columns; style buttons use a stable three-column grid. Desktop keeps the bar layout with a score column that can fit “Unscored”.
+
+New/invalid theme preferences default to Light. Explicit saved Dark and System preferences are preserved, and System continues tracking the OS. Prepaint initialization and hydrated session use the same preference policy. Dark surfaces now use neutral charcoal with lighter separators and text; selected style buttons keep a contrast-tested solid background. Native theme-color metadata follows the selected mode. PWA geometry and status-surface mechanism are unchanged.
+
+Verification: 224 tests, type checking and production build in verification/mobile-theme-verify.log. Physical iPhone visual acceptance has not been performed.

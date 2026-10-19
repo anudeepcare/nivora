@@ -1,4 +1,5 @@
 "use client";
+import {themePreference as parseThemePreference,resolvedTheme} from "@/lib/theme-preference";
 import {
   createContext,
   useCallback,
@@ -162,9 +163,9 @@ function StoreProvider({
           typeof window === "undefined"
             ? null
             : localStorage.getItem("auryn-product-theme");
-        return v === "light" || v === "dark" ? v : "system";
+        return parseThemePreference(v);
       } catch {
-        return "system";
+        return "light";
       }
     }),
     [textSize, setTextSizeState] = useState<"standard" | "large">("standard"),
@@ -197,7 +198,7 @@ function StoreProvider({
     try {
       const saved = localStorage.getItem("auryn-product-theme");
       setThemePreference(
-        saved === "light" || saved === "dark" ? saved : "system",
+        parseThemePreference(saved),
       );
       setTextSizeState(
         localStorage.getItem("auryn-product-text") === "large"
@@ -213,16 +214,12 @@ function StoreProvider({
     const media = window.matchMedia("(prefers-color-scheme: dark)");
     const apply = () => {
       const value =
-        themePreference === "system"
-          ? media.matches
-            ? "dark"
-            : "light"
-          : themePreference;
+        resolvedTheme(themePreference,media.matches);
       document.documentElement.dataset.theme = value;
       document
         .querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')
         .forEach((meta) => {
-          meta.content = value === "dark" ? "#101a23" : "#f2f4f7";
+          meta.content = value === "dark" ? "#171b24" : "#f2f4f7";
           meta.removeAttribute("media");
         });
       setThemeState(value);

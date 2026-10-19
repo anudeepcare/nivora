@@ -1,5 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
+const AdvancedResearch=dynamic(()=>import("./AdvancedResearch"));
 import FinancingContext from "./FinancingContext";
 import EarningsPrep from "./EarningsPrep";
 import TimingContext from "./TimingContext";
@@ -44,6 +45,7 @@ const tabs = [
   "Thesis",
   "Analysts",
   "News",
+  "Advanced",
 ] as const;
 const ranges = ["1D", "1W", "1M", "6M", "1Y", "5Y"] as const;
 export default function Research({ symbol }: { symbol: string }) {
@@ -176,7 +178,7 @@ export default function Research({ symbol }: { symbol: string }) {
     saved = workspace?.watchlist.some((x) => x.symbol === symbol),
     visible = crypto
       ? tabs.filter((x) =>
-          ["Snapshot", "Technicals", "Thesis", "News"].includes(x),
+          ["Snapshot", "Technicals", "Thesis", "News", "Advanced"].includes(x),
         )
       : tabs;
   const chart = (
@@ -360,6 +362,7 @@ export default function Research({ symbol }: { symbol: string }) {
         className="au-stack"
       >
         {tab === "News" && <><EarningsPrep research={r} /><CompanyUpdates research={r} /></>}
+        {tab === "Advanced" && <AdvancedResearch key={r.company.symbol} research={r} />}
         {tab === "Analysts" && <AnalystRatings research={r} />}
         {tab === "Snapshot" && (
           <>

@@ -1664,19 +1664,19 @@ dialog::backdrop {
 }
 [data-theme="dark"] {
   color-scheme: dark;
-  --paper: #101a23;
-  --surface: #172630;
-  --ink: #edf5f8;
-  --muted: #a8b9c5;
-  --line: #2a3b47;
+  --paper: #171b24;
+  --surface: #222834;
+  --ink: #f0f3f8;
+  --muted: #b2bdce;
+  --line: #384253;
   --blue: #97baff;
-  --blue-soft: #243b52;
+  --blue-soft: #2b3954;
   --green: #7bd9b6;
   --green-soft: #183e35;
   --red: #ffa1a7;
   --red-soft: #452d35;
-  --nav: #192a36dd;
-  --nav-text: #edf5f8;
+  --nav: #222834ed;
+  --nav-text: #f0f3f8;
   --shadow: 0 24px 80px #0006;
 }
 [data-theme="dark"] .button.primary {
