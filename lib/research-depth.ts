@@ -230,10 +230,19 @@ export function modelCoverage(
       ],
       method: "Corporate cash-flow valuation does not apply.",
     };
-  if (["IREN", "CIFR", "CORZ", "CRWV", "NBIS"].includes(symbol))
+  const knownInfrastructure = ["IREN", "CIFR", "CORZ", "CRWV", "NBIS"].includes(
+    symbol,
+  );
+  const infrastructureIndustry =
+    /\bdata[ -]?cent(?:er|re)s?\b|\b(?:bitcoin|cryptocurrency|digital asset) mining\b/i.test(
+      profile?.industry ?? "",
+    );
+  if (knownInfrastructure || infrastructureIndustry)
     return {
       family: "infrastructure",
-      classificationSource: "known-symbol",
+      classificationSource: knownInfrastructure
+        ? "known-symbol"
+        : "provider-profile",
       drivers: [
         "Contracted versus operating capacity",
         "Power and utilization",

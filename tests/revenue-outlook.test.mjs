@@ -107,3 +107,20 @@ test("revenue sensitivity rejects share-unit and EV/revenue denominator inconsis
     assert.equal(researchOutlook(r).available, false);
   }
 });
+
+test('a complete revenue forecast remains usable when a nearer incomplete forecast is present',()=>{
+ const r=input();const good={...r.evidence.estimates[0],date:'2028-12-31',period:'FY2028'};
+ r.evidence.estimates=[{...good,date:'2029-10-17',period:'FY2029',revenueLow:null},good];
+ const result=researchOutlook(r);assert.equal(result.available,true);assert.equal(result.end,'2028-12-31');
+});
+test('an unmatched newer cash observation does not hide the latest complete cash/debt pair',()=>{
+ const r=input();const cash=r.facts.find(x=>x.metric==='cash');
+ r.facts.push({...cash,end:'2026-09-30',filed:'2026-10-10',accession:'new-incomplete-balance',value:250e6});
+ const result=researchOutlook(r);assert.equal(result.available,true);assert.equal(result.balanceDate,'2026-06-30');
+});
+
+test('infrastructure suitability is selected from provider industry for arbitrary tickers',async()=>{
+ const {modelCoverage}=await import('../lib/research-depth.ts');
+ for(const industry of ['Data Centers','Bitcoin Mining','Cryptocurrency Mining'])assert.equal(modelCoverage('UNLISTED','stock',{industry,sector:'Technology'}).family,'infrastructure');
+ assert.equal(modelCoverage('UNLISTED','stock',{industry:'Software - Application',sector:'Technology'}).family,'operating-company');
+});

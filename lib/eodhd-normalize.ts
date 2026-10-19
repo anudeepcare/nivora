@@ -391,11 +391,15 @@ export function normalizeEodFundamentals(
           .map((x: any) => ({
             date: x.date,
             period: text(x.period),
-            frequency: date(frequency)
-              ? /^[+-]?\d+y$/.test(text(x.period))
-                ? "Annual"
-                : "Quarterly"
-              : frequency,
+            frequency: /annual|year/i.test(frequency)
+              ? "Annual"
+              : date(frequency)
+                ? /^(?:[+-]?\d+y|FY\d{4})$/i.test(text(x.period))
+                  ? "Annual"
+                  : /^[+-]?\d+q$/i.test(text(x.period))
+                    ? "Quarterly"
+                    : "Unknown"
+                : frequency,
             currency:
               text(x.currency) ||
               text(raw.Financials?.Income_Statement?.currency_symbol) ||

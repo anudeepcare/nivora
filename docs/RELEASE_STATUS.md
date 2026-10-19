@@ -1,3 +1,7 @@
+# Shared scenario pipeline corrections — current
+
+Five reproduced selection/normalization/classification failures corrected with a 45-combination synthetic coverage matrix. See `SCENARIO_PIPELINE_CORRECTIONS.md`. This does not establish universal live ticker coverage; all reconciliation gates remain active.
+
 # Visual Overview — current
 
 Chart and scenarios are composed together, with key numbers and visible risk/context. The large diagnostic card grid has been removed. See `VISUAL_OVERVIEW.md` for exact scope and validation limits.

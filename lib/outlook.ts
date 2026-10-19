@@ -116,6 +116,14 @@ export function researchOutlook(r: Research): Outlook {
     return unavailable(
       "A current price is needed to compare forecast outcomes.",
     );
+  const validFiscal = (
+    x: NonNullable<Research["evidence"]>["estimates"][number],
+  ) => {
+    const label = /^FY(\d{4})$/i.exec(x.period);
+    return (
+      !label || Math.abs(Number(label[1]) - Number(x.date.slice(0, 4))) <= 1
+    );
+  };
   const usableEps = (
     x: NonNullable<Research["evidence"]>["estimates"][number],
   ) => {
@@ -158,7 +166,20 @@ export function researchOutlook(r: Research): Outlook {
           now - Date.parse(f.end) <= 400 * 86400000,
       )
       .sort((a, b) => b.end.localeCompare(a.end));
-    const cash = balances[0];
+    const cash = balances.find((candidate) =>
+      r.facts.some(
+        (f) =>
+          f.metric === "debt" &&
+          f.end === candidate.end &&
+          f.accession === candidate.accession &&
+          f.currency === candidate.currency &&
+          f.filed <= r.retrievedAt.slice(0, 10) &&
+          Number.isFinite(f.value) &&
+          f.value >= 0 &&
+          Number.isFinite(candidate.value) &&
+          candidate.value >= 0,
+      ),
+    );
     const debt =
       cash &&
       r.facts.find(
@@ -176,7 +197,13 @@ export function researchOutlook(r: Research): Outlook {
           /annual/i.test(x.frequency) &&
           days >= 90 &&
           days <= 1461 &&
-          x.currency === r.quote.currency
+          x.currency === r.quote.currency &&
+          validFiscal(x) &&
+          [x.revenueLow, x.revenue, x.revenueHigh].every(
+            (v) => v != null && Number.isFinite(v) && v > 0,
+          ) &&
+          x.revenueLow! <= x.revenue! &&
+          x.revenue! <= x.revenueHigh!
         );
       })
       .sort(
@@ -196,7 +223,23 @@ export function researchOutlook(r: Research): Outlook {
       ![cash.value, debt.value].every((v) => Number.isFinite(v) && v >= 0)
     )
       return unavailable(
-        "A complete positive EPS range is unavailable. Revenue scenarios also need reported outstanding shares, an EV/revenue multiple, and matching dated cash/debt evidence.",
+        "A complete positive EPS range is unavailable. Revenue scenarios need: " +
+          [
+            !shares || !Number.isFinite(shares) || shares <= 0
+              ? "positive reported outstanding shares"
+              : null,
+            !multiple || !Number.isFinite(multiple) || multiple <= 0
+              ? "a positive EV/revenue multiple"
+              : null,
+            !cash ||
+            !debt ||
+            ![cash.value, debt.value].every((v) => Number.isFinite(v) && v >= 0)
+              ? "matching dated cash/debt evidence"
+              : null,
+          ]
+            .filter(Boolean)
+            .join("; ") +
+          ".",
       );
     if (
       !estimate ||
@@ -294,6 +337,7 @@ export function researchOutlook(r: Research): Outlook {
     );
   const annual = (e.estimates ?? [])
     .filter(usableEps)
+    .filter(validFiscal)
     .filter((x) => {
       const days = (Date.parse(x.date) - now) / 86400000;
       return (
@@ -309,6 +353,13 @@ export function researchOutlook(r: Research): Outlook {
         Math.abs(Date.parse(b.date) - now - 3 * 365.25 * 86400000),
     );
   const estimate = annual[0];
+  if (
+    !estimate &&
+    (e.estimates ?? []).some((x) => usableEps(x) && !validFiscal(x))
+  )
+    return unavailable(
+      "The supplied fiscal period and forecast date conflict.",
+    );
   if (!estimate)
     return unavailable(
       "A comparable annual EPS forecast with a complete positive range in the quote currency is needed.",

@@ -251,3 +251,9 @@ test('additional accounting fields reuse normalized fundamentals with currency a
   const fact=facts.find(f=>f.metric===metric);assert.ok(fact,metric);assert.equal(fact.value,value);assert.equal(fact.unit,'USD');assert.equal(fact.end,'2026-06-30');
  }
 });
+
+test('flat annual fiscal labels are not incorrectly classified as quarterly estimates',()=>{
+ const input=structuredClone(raw);input.Earnings.Trend={'2028-12-31':{date:'2028-12-31',period:'FY2028',currency:'USD',earningsEstimateLow:6,earningsEstimateAvg:8,earningsEstimateHigh:10}};
+ const result=lib().normalizeEodFundamentals('APP',input,stamp);
+ assert.equal(result.evidence.estimates[0].frequency,'Annual');
+});

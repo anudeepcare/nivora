@@ -204,6 +204,12 @@ export default function DecisionOverview({
                       ? "Share and listing inputs need reconciliation."
                       : "Comparable forecast and valuation inputs are needed."}
                 </p>
+                {!crypto && (
+                  <details className="overview-scenario-reason">
+                    <summary>What prevents the calculation?</summary>
+                    <p>{b.value.reason}</p>
+                  </details>
+                )}
                 <button
                   className="text-button"
                   onClick={() => onTab("Valuation")}

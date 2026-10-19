@@ -148,3 +148,9 @@ test("consensus comparison calculates the gap without calling it fair value or i
   assert.equal(result.high, undefined);
   assert.equal(result.low, undefined);
 });
+
+test('a malformed nearer fiscal label cannot hide another complete eligible EPS forecast',()=>{
+ const r=research();const good=r.evidence.estimates[0];
+ r.evidence.estimates=[{...good,period:'FY2035'}, {...good,date:'2028-12-31',period:'FY2028'}];
+ const result=load().researchOutlook(r);assert.equal(result.available,true);assert.equal(result.period,'FY2028');
+});

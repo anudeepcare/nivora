@@ -1,3 +1,7 @@
+# Current scenario correction
+
+Read `docs/SCENARIO_PIPELINE_CORRECTIONS.md` for exact shared fixes and live-data limits. Preserve input validation and the PWA shell.
+
 # Current Overview
 
 Read `docs/VISUAL_OVERVIEW.md` for the latest composition. Preserve the PWA shell, quote retention and existing evidence engines.
