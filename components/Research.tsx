@@ -18,6 +18,7 @@ import BusinessMap from "./BusinessMap";
 import TimingContext from "./TimingContext";
 import DecisionWorkspace from "./DecisionWorkspace";
 import ValuationLab from "./ValuationLab";
+import FundedScenarios from "./FundedScenarios";
 import DecisionWatch from "./DecisionWatch";
 import { useMemo, useState, useRef, useLayoutEffect, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
@@ -106,8 +107,14 @@ export default function Research({ symbol }: { symbol: string }) {
     live.connected &&
     !!live.ticks[symbol] &&
     Date.now() - Date.parse(live.ticks[symbol].asOf) < 30000;
-  const retainedQuote = useRef<{symbol: string; quote: Quote | undefined}>({symbol, quote: undefined});
-  const priorQuote = retainedQuote.current.symbol === symbol ? retainedQuote.current.quote : undefined;
+  const retainedQuote = useRef<{ symbol: string; quote: Quote | undefined }>({
+    symbol,
+    quote: undefined,
+  });
+  const priorQuote =
+    retainedQuote.current.symbol === symbol
+      ? retainedQuote.current.quote
+      : undefined;
   const observedRest = retainResearchQuote(
     retainResearchQuote(priorQuote, baseResearch?.quote),
     latestQuote.data?.[symbol]?.quote,
@@ -125,14 +132,17 @@ export default function Research({ symbol }: { symbol: string }) {
           : "Last streamed trade · reconnecting",
       })
     : restQuote;
-  const currentQuote = quoteHealth(retainResearchQuote(observedRest, streamedQuote));
-  retainedQuote.current = {symbol, quote: currentQuote};
+  const currentQuote = quoteHealth(
+    retainResearchQuote(observedRest, streamedQuote),
+  );
+  retainedQuote.current = { symbol, quote: currentQuote };
   const r = useMemo(
     () =>
       baseResearch &&
       currentQuote &&
-      (baseResearch.quote.price == null || Date.parse(currentQuote.asOf || "") >=
-        Date.parse(baseResearch.quote.asOf || ""))
+      (baseResearch.quote.price == null ||
+        Date.parse(currentQuote.asOf || "") >=
+          Date.parse(baseResearch.quote.asOf || ""))
         ? {
             ...baseResearch,
             quote: currentQuote,
@@ -429,54 +439,56 @@ export default function Research({ symbol }: { symbol: string }) {
         aria-hidden="true"
       />
       <div className="research-navigation">
-      <nav
-        ref={tabsElement}
-        className="local-tabs"
-        role="tablist"
-        aria-label="Research sections"
-        style={{
-          gridTemplateColumns: `repeat(${visible.length},minmax(0,1fr))`,
-        }}
-        onKeyDown={(e) => {
-          if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key))
-            return;
-          e.preventDefault();
-          const index =
-            e.key === "Home"
-              ? 0
-              : e.key === "End"
-                ? visible.length - 1
-                : (visible.indexOf(tab) +
-                    (e.key === "ArrowRight" ? 1 : -1) +
-                    visible.length) %
-                  visible.length;
-          switchTab(visible[index]);
-          (e.currentTarget.children[index] as HTMLButtonElement).focus({
-            preventScroll: true,
-          });
-        }}
-      >
-        {visible.map((name) => (
-          <button
-            role="tab"
-            id={`tab-${name}`}
-            className={tab === name ? "active" : ""}
-            aria-selected={tab === name}
-            aria-pressed={tab === name}
-            aria-controls="research-content"
-            tabIndex={tab === name ? 0 : -1}
-            key={name}
-            onClick={() => switchTab(name)}
-          >
-            {name === "Snapshot"
-              ? "Overview"
-              : name === "Valuation"
-                ? "Value"
-                : name}
-          </button>
-        ))}
-      </nav>
-      <div className="research-desktop-depth"><ResearchModeSwitch /></div>
+        <nav
+          ref={tabsElement}
+          className="local-tabs"
+          role="tablist"
+          aria-label="Research sections"
+          style={{
+            gridTemplateColumns: `repeat(${visible.length},minmax(0,1fr))`,
+          }}
+          onKeyDown={(e) => {
+            if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key))
+              return;
+            e.preventDefault();
+            const index =
+              e.key === "Home"
+                ? 0
+                : e.key === "End"
+                  ? visible.length - 1
+                  : (visible.indexOf(tab) +
+                      (e.key === "ArrowRight" ? 1 : -1) +
+                      visible.length) %
+                    visible.length;
+            switchTab(visible[index]);
+            (e.currentTarget.children[index] as HTMLButtonElement).focus({
+              preventScroll: true,
+            });
+          }}
+        >
+          {visible.map((name) => (
+            <button
+              role="tab"
+              id={`tab-${name}`}
+              className={tab === name ? "active" : ""}
+              aria-selected={tab === name}
+              aria-pressed={tab === name}
+              aria-controls="research-content"
+              tabIndex={tab === name ? 0 : -1}
+              key={name}
+              onClick={() => switchTab(name)}
+            >
+              {name === "Snapshot"
+                ? "Overview"
+                : name === "Valuation"
+                  ? "Value"
+                  : name}
+            </button>
+          ))}
+        </nav>
+        <div className="research-desktop-depth">
+          <ResearchModeSwitch />
+        </div>
       </div>
       {notice && <Notice error>{notice}</Notice>}
       {resource.error && <Notice error>{resource.error}</Notice>}
@@ -523,8 +535,16 @@ export default function Research({ symbol }: { symbol: string }) {
             hidden={tab !== "Snapshot"}
             className="au-stack"
           >
-            <DecisionOverview research={r} onTab={switchTab} pro={preferences.detail === "advanced"} modeControl={<ResearchModeSwitch />} chart={chart}/>
-            {r.company.assetType !== "crypto" && <KeyFinancialMetrics research={r} omitRepeated/>}
+            <DecisionOverview
+              research={r}
+              onTab={switchTab}
+              pro={preferences.detail === "advanced"}
+              modeControl={<ResearchModeSwitch />}
+              chart={chart}
+            />
+            {r.company.assetType !== "crypto" && (
+              <KeyFinancialMetrics research={r} omitRepeated />
+            )}
             <ResearchChanges research={r} />
             <DecisionWorkspace research={r} onTab={switchTab} part="detail" />
             <DecisionWatch key={r.company.symbol} research={r} />
@@ -540,6 +560,7 @@ export default function Research({ symbol }: { symbol: string }) {
         {tab === "Valuation" && (
           <>
             <ResearchOutlook research={r} detailed />
+            <FundedScenarios key={r.company.symbol} research={r} />
             <details
               className="valuation-workbench"
               open={preferences.detail === "advanced"}

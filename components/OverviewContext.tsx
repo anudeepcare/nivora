@@ -1,14 +1,13 @@
 "use client";
 import type { Research } from "@/lib/types";
-import { consensusOutlook, researchOutlook } from "@/lib/outlook";
+import { consensusOutlook } from "@/lib/outlook";
 import { amount, percent, dateLabel } from "@/lib/format";
 export default function OverviewContext({
   research: r,
 }: {
   research: Research;
 }) {
-  const c = consensusOutlook(r),
-    model = researchOutlook(r);
+  const c = consensusOutlook(r);
   const next = r.evidence?.earnings
     ?.filter((x) => x.date >= r.retrievedAt.slice(0, 10))
     .sort((a, b) => a.date.localeCompare(b.date))[0];
@@ -33,37 +32,10 @@ export default function OverviewContext({
       <p className="small muted">
         Analyst opinion; target horizon not supplied.
       </p>
-      {model.available ? (
-        <>
-          <h3>Scenario snapshot</h3>
-          <div className="overview-cases">
-            {model.cases.map((x, i) => (
-              <div key={x.name}>
-                <span
-                  className={
-                    i === 0 ? "negative" : i === 2 ? "positive" : "blue"
-                  }
-                >
-                  {x.name}
-                </span>
-                <b>{amount(x.target, model.currency)}</b>
-                <small className={x.change < 0 ? "negative" : "positive"}>
-                  {percent(x.change, true)}
-                </small>
-              </div>
-            ))}
-          </div>
-          <p className="small muted">
-            Model sensitivity · ends {dateLabel(model.end)}. Assumptions and
-            limitations are in Value.
-          </p>
-        </>
-      ) : (
-        <p className="small muted">
-          Scenarios need comparable forecast and valuation inputs. See Value for
-          coverage.
-        </p>
-      )}
+      <p className="small muted">
+        Fair value is not established by a forecast-multiple sensitivity.
+        Inspect operating and funding assumptions in Value.
+      </p>
       <div className="overview-next">
         <span>Next earnings report</span>
         <b>{next ? dateLabel(next.date) : "Date not supplied"}</b>

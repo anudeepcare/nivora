@@ -85,8 +85,10 @@ export function ResearchOutlook({
           : "No current comparable analyst target is available. Fair value is not established."}
       </p>
       {outlook.available ? (
-        <details className="forecast-sensitivity" open>
-          <summary>Bear, base & bull scenarios</summary>
+        <details className="forecast-sensitivity">
+          <summary>
+            Exploratory forecast-multiple sensitivity · not fair value
+          </summary>
           <p className="sensitivity-warning">
             Not intrinsic fair value. These mechanical cases use assumed
             valuation multiples; they are not validated price targets.
@@ -96,7 +98,11 @@ export function ResearchOutlook({
             {Math.round(outlook.years * 12)} months ahead
           </p>
           {outlook.caveat && <p className="context-note">{outlook.caveat}</p>}
-          <CaseRange cases={outlook.cases} price={r.quote.price} currency={outlook.currency}/>
+          <CaseRange
+            cases={outlook.cases}
+            price={r.quote.price}
+            currency={outlook.currency}
+          />
           {outlook.basis === "revenue" && (
             <p className="context-note">
               Revenue × EV/sales, less net debt, with dilution stresses. Not a
@@ -185,7 +191,13 @@ export function ResearchOutlook({
   );
 }
 
-export function KeyFinancialMetrics({ research: r, omitRepeated = false }: { research: Research; omitRepeated?: boolean }) {
+export function KeyFinancialMetrics({
+  research: r,
+  omitRepeated = false,
+}: {
+  research: Research;
+  omitRepeated?: boolean;
+}) {
   const p = useMemo(() => perspective(r), [r]);
   const metrics: {
     label: string;
@@ -256,60 +268,85 @@ export function KeyFinancialMetrics({ research: r, omitRepeated = false }: { res
           },
         ];
   return (
-    <section className={`metric-band ${omitRepeated && r.company.assetType !== "crypto" ? "overview-additional-metrics" : ""}`} aria-label="Key metrics">
-      {metrics.filter(m=>!omitRepeated || r.company.assetType === "crypto" || !["Operating margin","Cash after capex"].includes(m.label)).map((m) => (
-        <div className="metric" data-tone={m.tone ?? "neutral"} key={m.label}>
-          <Help label={m.label} trigger={m.label}>
-            <p>
-              {m.detail}.{" "}
-              {r.company.assetType === "crypto"
-                ? "These are price observations and do not establish intrinsic value."
-                : `Financial period: ${p.periodBasis} to ${dateLabel(p.last?.end)}. Reporting currency: ${p.last?.currency ?? "unknown"}. Forward P/E is a separate provider estimate, not a reported financial result.`}
-            </p>
-          </Help>
-          <div className="metric-number num">{m.value}</div>
-          {r.company.assetType==='stock'&&<MetricProvenance research={r} metrics={m.label==='Revenue'?['revenue']:m.label==='Operating margin'?['operatingIncome','revenue']:m.label==='Cash after capex'?['operatingCashFlow','capex']:[]} calculated={m.label!=='Revenue'||p.periodBasis==='TTM'} estimated={m.label==='Forward P/E'}/>}
+    <section
+      className={`metric-band ${omitRepeated && r.company.assetType !== "crypto" ? "overview-additional-metrics" : ""}`}
+      aria-label="Key metrics"
+    >
+      {metrics
+        .filter(
+          (m) =>
+            !omitRepeated ||
+            r.company.assetType === "crypto" ||
+            !["Operating margin", "Cash after capex"].includes(m.label),
+        )
+        .map((m) => (
+          <div className="metric" data-tone={m.tone ?? "neutral"} key={m.label}>
+            <Help label={m.label} trigger={m.label}>
+              <p>
+                {m.detail}.{" "}
+                {r.company.assetType === "crypto"
+                  ? "These are price observations and do not establish intrinsic value."
+                  : `Financial period: ${p.periodBasis} to ${dateLabel(p.last?.end)}. Reporting currency: ${p.last?.currency ?? "unknown"}. Forward P/E is a separate provider estimate, not a reported financial result.`}
+              </p>
+            </Help>
+            <div className="metric-number num">{m.value}</div>
+            {r.company.assetType === "stock" && (
+              <MetricProvenance
+                research={r}
+                metrics={
+                  m.label === "Revenue"
+                    ? ["revenue"]
+                    : m.label === "Operating margin"
+                      ? ["operatingIncome", "revenue"]
+                      : m.label === "Cash after capex"
+                        ? ["operatingCashFlow", "capex"]
+                        : []
+                }
+                calculated={m.label !== "Revenue" || p.periodBasis === "TTM"}
+                estimated={m.label === "Forward P/E"}
+              />
+            )}
 
-          <div
-            className={`metric-sub ${m.label === "Revenue" && p.growth != null ? (p.growth >= 0 ? "positive" : "negative") : ""}`}
-          >
-            {m.detail}
-          </div>
-          {m.label === "Operating margin" &&
-            p.last?.margin != null &&
-            p.last.margin >= 0 && (
-              <div
-                className="metric-meter"
-                aria-label={`Operating margin ${percent(p.last.margin)}`}
-              >
-                <i
-                  style={{
-                    width: `${Math.max(0, Math.min(100, p.last.margin))}%`,
-                  }}
-                />
-              </div>
-            )}
-          {m.label === "Cash after capex" &&
-            p.last?.fcf != null &&
-            p.last?.revenue != null &&
-            p.last.revenue > 0 && (
-              <>
-                <div className="metric-sub">
-                  {percent((p.last.fcf / p.last.revenue) * 100)} of revenue
+            <div
+              className={`metric-sub ${m.label === "Revenue" && p.growth != null ? (p.growth >= 0 ? "positive" : "negative") : ""}`}
+            >
+              {m.detail}
+            </div>
+            {m.label === "Operating margin" &&
+              p.last?.margin != null &&
+              p.last.margin >= 0 && (
+                <div
+                  className="metric-meter"
+                  aria-label={`Operating margin ${percent(p.last.margin)}`}
+                >
+                  <i
+                    style={{
+                      width: `${Math.max(0, Math.min(100, p.last.margin))}%`,
+                    }}
+                  />
                 </div>
-                {p.last.fcf >= 0 && (
-                  <div className="metric-meter" aria-hidden="true">
-                    <i
-                      style={{
-                        width: `${Math.max(0, Math.min(100, (p.last.fcf / p.last.revenue) * 100))}%`,
-                      }}
-                    />
+              )}
+            {m.label === "Cash after capex" &&
+              p.last?.fcf != null &&
+              p.last?.revenue != null &&
+              p.last.revenue > 0 && (
+                <>
+                  <div className="metric-sub">
+                    {percent((p.last.fcf / p.last.revenue) * 100)} of revenue
                   </div>
-                )}
-              </>
-            )}
-        </div>
-      ))}
+                  {p.last.fcf >= 0 && (
+                    <div className="metric-meter" aria-hidden="true">
+                      <i
+                        style={{
+                          width: `${Math.max(0, Math.min(100, (p.last.fcf / p.last.revenue) * 100))}%`,
+                        }}
+                      />
+                    </div>
+                  )}
+                </>
+              )}
+          </div>
+        ))}
     </section>
   );
 }

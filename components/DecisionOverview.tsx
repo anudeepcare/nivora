@@ -181,7 +181,7 @@ export default function DecisionOverview({
                 Value ↗
               </button>
             </header>
-            {b.scenario ? (
+            {b.scenario && b.scenarioEligible ? (
               <>
                 <CaseRange
                   cases={cases}
@@ -199,14 +199,14 @@ export default function DecisionOverview({
                 <span>
                   {crypto
                     ? "Corporate valuation does not apply"
-                    : "Scenario unavailable"}
+                    : "Fair value not established"}
                 </span>
                 <p>
                   {crypto
                     ? "Review network economics, liquidity and price risk instead."
                     : b.conflicting
                       ? "Share and listing inputs need reconciliation."
-                      : "Comparable forecast and valuation inputs are needed."}
+                      : "Operating and funding assumptions are needed."}
                 </p>
                 {!crypto && (
                   <details className="overview-scenario-reason">

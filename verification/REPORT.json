@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-19T19:49:21.510566+00:00",
+  "generatedAt": "2026-10-19T20:01:23.821670+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
@@ -7,10 +7,10 @@
     "npm run verify": "passed: tests, TypeScript and production build",
     "npm run test:api": "passed: 40 baseline + 16 research regression + 22 provider + 5 shared protection checks",
     "git diff --check": "passed",
-    "npm test": "passed: 348 tests",
+    "npm test": "passed: 355 tests",
     "npm run build": "passed after final scoped stylesheet cleanup"
   },
-  "domainPostgresAndComponentTests": 348,
+  "domainPostgresAndComponentTests": 355,
   "builtApiChecks": 83,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -430,6 +430,17 @@
     "verification": "348 tests, TypeScript, production build, 83 API checks, diff whitespace check",
     "basis": "Price-anchored forecast sensitivity with independently corroborated revenue, not intrinsic fair value",
     "unresolved": "NBIS/TE actual response validation; ASTS listing conflict and development model; physical iPhone acceptance",
+    "deployed": false
+  },
+  "fundedScenarioCorrection": {
+    "tests": 355,
+    "apiChecks": 83,
+    "productionBuild": "passed",
+    "headline": "Forecast-multiple sensitivities excluded",
+    "model": "Explicit-assumption cash funding bridge, dilution, terminal equity and discounting",
+    "automaticSourcedCases": "Not implemented; future operating/financing evidence remains required",
+    "ASTS": "Listing reconciliation remains unresolved; personal operating workbench is separate",
+    "physicalIphoneTested": false,
     "deployed": false
   }
 }

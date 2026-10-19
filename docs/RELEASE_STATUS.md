@@ -1,3 +1,7 @@
+# Funded operating scenarios — current
+
+Misleading forecast-multiple outputs are no longer headline valuations. A new explicit-assumption funded scenario workbench accounts for phased capex, financing, dilution and discounted equity. Missing future inputs are not fabricated. See `FUNDED_SCENARIOS.md` for scope and limits. Automatic sourced cases across all stocks, including ASTS, are not complete.
+
 # Observed IREN response correction — current
 
 Actual uploaded response now yields explicitly labelled price-anchored revenue sensitivities after independently corroborating trailing revenue. See `OBSERVED_IREN_SCENARIO_FIX.md`. NBIS/TE live response validation and ASTS framework/listing conflicts remain unresolved.

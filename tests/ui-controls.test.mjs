@@ -266,7 +266,7 @@ test("data details retain observation time without displaying infrastructure ven
   }
 });
 
-test("valuation snapshot separates analyst targets from visible labelled forecast scenarios", async () => {
+test("valuation snapshot separates analyst targets from opt-in exploratory sensitivities", async () => {
   const { researchOutlook, consensusOutlook } = await import(
     "../lib/outlook.ts"
   );
@@ -312,9 +312,11 @@ test("valuation snapshot separates analyst targets from visible labelled forecas
   assert.match(html, /Analyst consensus/);
   assert.match(html, /Gap to consensus/);
   assert.match(html, /Not intrinsic fair value/);
-  assert.match(html, /<details class="forecast-sensitivity" open="">/);
+  assert.match(html, /<details class="forecast-sensitivity">/);
+  assert.doesNotMatch(html, /<details class="forecast-sensitivity" open/);
+  assert.match(html, /Exploratory forecast-multiple sensitivity/);
   const primary = html.split(
-    '<details class="forecast-sensitivity" open="">',
+    '<details class="forecast-sensitivity">',
   )[0];
   assert.doesNotMatch(primary, /\$160\.00|\$240\.00/);
   assert.match(primary, /\$150\.00/);
@@ -465,7 +467,7 @@ test("Overview context stays concise and does not assign quote currency to upcom
   );
   assert.match(html, /Next earnings report/);
   assert.doesNotMatch(html, /99\.99|Actual EPS|Earnings checkpoints/);
-  assert.match(html, /Scenarios need comparable/);
+  assert.match(html, /Fair value is not established/);
 });
 
 test("News earnings do not infer estimate currency from a stock listing or company accounts", () => {
@@ -633,6 +635,7 @@ test('visual overview keeps the chart, scenarios, catalyst and risk visible with
  const html=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT,onTab:()=>{},chart:React.createElement('div',{'data-chart':'visible'})}));
  assert.doesNotMatch(html,/Completed-price studies/);
  const pro=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT,onTab:()=>{},pro:true}));assert.match(pro,/Completed-price studies/);
+ assert.doesNotMatch(html,/data-scenarios="visible"/);assert.match(html,/Fair value not established/);
  assert.match(html,/data-chart="visible"/);assert.match(html,/Accumulation/);assert.match(html,/Next report/);assert.match(html,/Main risk/);
  assert.doesNotMatch(html,/Why this assessment|available metrics|decision-evidence-grid|research-brief-v2|T\d{2}:\d{2}:\d{2}/);
 });

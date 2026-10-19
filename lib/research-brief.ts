@@ -91,6 +91,7 @@ export function researchBrief(r: Research) {
           ? (latest.operatingIncome / latest.revenue) * 100
           : null,
     },
+    scenarioEligible: false, // Forecast-multiple outputs are exploratory, never headline fair value.
     scenario:
       !mismatch && outlook.available
         ? {
@@ -128,12 +129,12 @@ export function researchBrief(r: Research) {
       title: mismatch
         ? "Resolve listing inputs"
         : outlook.available
-          ? "Compare the scenarios"
+          ? "Fair value not established"
           : "Value not established",
       reason: mismatch
         ? "Scenario prices should not drive a decision until the input conflict is resolved."
         : outlook.available
-          ? `Conditional ${outlook.basis === "revenue" ? "revenue" : "earnings"} scenarios; assumptions and dates are visible in Value.`
+          ? "Forecast-multiple sensitivities omit a complete operating and financing plan. Build funded cases in Value; analyst targets remain separate."
           : outlook.reason,
     },
     accumulation: {

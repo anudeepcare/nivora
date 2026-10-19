@@ -1,3 +1,7 @@
+# Current valuation correction
+
+Read `docs/FUNDED_SCENARIOS.md` first for this release. Forecast-multiple outputs are exploratory only; do not restore them as headline fair values. The new funded workbench requires explicit personal assumptions and is not automatic company-specific research.
+
 # Current scenario correction
 
 Read `docs/SCENARIO_PIPELINE_CORRECTIONS.md` for exact shared fixes and live-data limits. Preserve input validation and the PWA shell.
