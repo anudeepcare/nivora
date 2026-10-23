@@ -113,9 +113,9 @@
 .public-hero {
   display: grid;
   grid-template-columns: 1fr 1.05fr;
-  gap: 54px;
+  gap: 40px;
   align-items: center;
-  padding-block: 66px;
+  padding-block: 48px;
 }
 .public-eyebrow {
   display: flex;
@@ -827,3 +827,7 @@
     scroll-behavior: auto !important;
   }
 }
+
+.public-hero-capabilities {display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin:22px 0 0;padding:0;}
+.public-hero-capabilities li {padding:7px 10px;border:1px solid var(--public-line);border-radius:9px;color:var(--public-muted);background:color-mix(in srgb,var(--public-paper) 70%,white);font-size:11px;line-height:1.4;}
+@media(max-width:600px){.public-nav>div{gap:12px}.public-nav .public-button.compact{padding:10px 12px}.public-actions{display:grid;gap:8px}.public-hero-capabilities{gap:6px}.public-hero-capabilities li{font-size:10px;padding:6px 8px}}

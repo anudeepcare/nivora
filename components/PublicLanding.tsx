@@ -264,6 +264,7 @@ export default function PublicLanding({
                   Explore the experience <ArrowRight size={17} />
                 </Link>
               </div>
+              <ul className="public-hero-capabilities" aria-label="Inside your workspace"><li>Company research</li><li>Valuation & price context</li><li>Your portfolio, connected</li></ul>
               <div className="public-assurance">
                 <ShieldCheck size={16} />
                 <span>Evidence you can inspect. No promised returns.</span>
@@ -385,7 +386,7 @@ export default function PublicLanding({
               ],
               [
                 "Are the accumulation models proven to outperform?",
-                "No demonstrated advantage is claimed. Trend-adjusted monthly rules are documented, with hypothetical equal-budget comparisons and explicit limitations.",
+                "No demonstrated advantage is claimed. Cycle-relative monthly rules are documented, with hypothetical equal-budget comparisons and explicit limitations.",
               ],
               [
                 "Can I use it on my phone?",

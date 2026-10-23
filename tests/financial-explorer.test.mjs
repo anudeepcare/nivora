@@ -8,3 +8,8 @@ test('reported financial charts survive missing or changed live quotes',()=>{
  const r=demoData.research.MSFT,s=financialMetricSeries(r,'annual','revenue',5);
  assert.deepEqual(financialMetricSeries({...r,quote:{...r.quote,price:null,stale:true}},'annual','revenue',5),s);
 });
+test('profit-to-loss transitions do not present a misleading percentage growth headline',()=>{
+ const r=structuredClone(demoData.research.MSFT);const income=r.facts.filter(f=>f.metric==='netIncome'&&f.scope==='annual');
+ income.sort((a,b)=>a.end.localeCompare(b.end));for(let i=0;i<income.length;i++)income[i].value=i===0?450900:-499400000;
+ const s=financialMetricSeries(r,'annual','netIncome',0);assert.equal(s.change,null);assert.equal(s.crossedZero,true);assert.equal(s.latest,-499400000);assert.equal(s.cagr,null);
+});

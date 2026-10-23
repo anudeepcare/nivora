@@ -1,0 +1,32 @@
+✖ real session boundary ignores an initial session response arriving after sign-out (294.802599ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 382.770575
+
+✖ failing tests:
+
+test at tests/auth-launch.test.mjs:44:1
+✖ real session boundary ignores an initial session response arriving after sign-out (294.802599ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + []
+  - [
+  -   '/login'
+  - ]
+  
+      at TestContext.<anonymous> (file:///workspace/auryn-github-main/tests/auth-launch.test.mjs:57:250)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [],
+    expected: [ '/login' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

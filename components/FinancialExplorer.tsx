@@ -205,7 +205,9 @@ export default function FinancialExplorer({
                   : "positive"
               }
             >
-              {series.change == null
+              {series.crossedZero
+                ? series.latest != null && series.latest < 0 ? "Moved from positive to negative" : "Moved from negative to positive"
+                : series.change == null
                 ? "Change not established"
                 : `${series.change > 0 ? "+" : ""}${series.change.toFixed(1)}${series.changeUnit === "pp" ? " pp" : "%"} over shown period`}
             </span>

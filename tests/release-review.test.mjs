@@ -174,6 +174,7 @@ function researchMarkup() {
     React.createElement("dialog", {}, children),
   );
   for (const name of [
+    "StockFacts",
     "SecurityLogo",
     "Help",
     "Notice",

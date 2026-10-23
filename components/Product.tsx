@@ -9,6 +9,7 @@ import { ProductSession, useProduct, type DemoData } from "./Session";
 import Shell from "./Shell";
 import { symbolInput } from "@/lib/format";
 import dynamic from "next/dynamic";
+import PasswordRecovery from "./PasswordRecovery";
 const Research = dynamic(() => import("./Research"), {
   loading: () => (
     <p role="status" aria-busy="true">
@@ -55,6 +56,7 @@ export default function Product({
   compareSymbols?: string;
 }) {
   const page = route[0] || "overview";
+  if (page === "reset-password") return <PasswordRecovery/>;
   if (["terms","privacy","risk","methodology","help","reliability"].includes(page)) return <LegalDocument id={page as DocumentId}/>;
   // Only the localhost-only design preview owns a page-level session.
   // Real account sessions are retained by AppSession in the root layout.

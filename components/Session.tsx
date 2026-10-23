@@ -1,4 +1,6 @@
 "use client";
+import { usePathname, useRouter } from "next/navigation";
+import { authDestination, authErrorMessage } from "@/lib/auth-navigation";
 import {themePreference as parseThemePreference,resolvedTheme} from "@/lib/theme-preference";
 import {
   createContext,
@@ -49,29 +51,35 @@ export function ProductSession({
   children: React.ReactNode;
   demo?: DemoData;
 }) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const [recovering, setRecovering] = useState(false);
   const [session, setSession] = useState<Session | null>(null),
     [loading, setLoading] = useState(!demo),
     [error, setError] = useState("");
   useEffect(() => {
     if (demo) return;
     let alive = true;
+    let authEventSeen = false;
     try {
       const client = authClient();
       client.auth
         .getSession()
         .then(({ data, error }) => {
-          if (!alive) return;
+          if (!alive || authEventSeen) return;
           if (error) setError("Your account session could not be loaded.");
           setSession(data.session);
           setLoading(false);
         })
         .catch(() => {
-          if (alive) {
+          if (alive && !authEventSeen) {
             setError("Your session could not be loaded. Please sign in again.");
             setLoading(false);
           }
         });
-      const { data } = client.auth.onAuthStateChange((_event, next) => {
+      const { data } = client.auth.onAuthStateChange((event, next) => {
+        authEventSeen = true;
+        if (event === "PASSWORD_RECOVERY") setRecovering(true);
         if (!next) clearAccountCache();
         if (alive) {
           setSession(next);
@@ -86,8 +94,18 @@ export function ProductSession({
       setError(e instanceof Error ? e.message : "Account unavailable");
       setLoading(false);
     }
+  }, [demo, router]);
+  useEffect(() => {
+    if (demo) return;
+    const restored = (event: PageTransitionEvent) => {if (event.persisted) window.location.reload();};
+    window.addEventListener("pageshow", restored);
+    return () => window.removeEventListener("pageshow", restored);
   }, [demo]);
-  if (loading)
+  const destination = !demo && !loading ? authDestination(pathname, !!session, recovering) : null;
+  useEffect(() => {
+    if (destination) router.replace(destination);
+  }, [destination, router]);
+  if (loading || destination)
     return (
       <main className="session-state">
         <Logo />
@@ -394,13 +412,32 @@ export function useWorkspaceFilter(view: "watchlist" | "portfolio") {
   return [query, setQuery] as const;
 }
 function Login({ initialError }: { initialError: string }) {
+  const router = useRouter();
   const [email, setEmail] = useState(""),
     [password, setPassword] = useState(""),
     [error, setError] = useState(initialError),
     [busy, setBusy] = useState(false),
     [mode, setMode] = useState<"login" | "signup" | "reset">("login"),
     [notice, setNotice] = useState("");
-  useEffect(()=>{const requested=new URLSearchParams(window.location.search).get('mode');if(requested==='signup')setMode('signup');},[]);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("mode") === "signup") setMode("signup");
+    const message = authErrorMessage(params.get("auth_error"));
+    if (message) setError(message);
+  }, []);
+  async function social(provider: "google" | "x") {
+    if (busy) return;
+    setBusy(true); setError(""); setNotice("");
+    try {
+      const {error} = await authClient().auth.signInWithOAuth({provider, options:{
+        redirectTo: `${window.location.origin}/auth/callback`,
+      }});
+      if (error) throw error;
+    } catch {
+      setError("This sign-in option is unavailable right now. Please use email or try again later.");
+      setBusy(false);
+    }
+  }
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
@@ -415,14 +452,14 @@ function Login({ initialError }: { initialError: string }) {
             ? await auth.signUp({
                 email,
                 password,
-                options: { emailRedirectTo: window.location.origin },
+                options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
               })
             : await auth.resetPasswordForEmail(email, {
-                redirectTo: `${window.location.origin}/settings`,
+                redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
               });
       if (result.error) throw result.error;
-      if (mode !== "login")
-        setNotice(
+      if (mode === "login" || ("data" in result && "session" in result.data && result.data.session)) router.replace("/overview");
+      else setNotice(
           mode === "signup"
             ? "Check your email to confirm your account."
             : "Check your email for the password reset link.",
@@ -458,6 +495,11 @@ function Login({ initialError }: { initialError: string }) {
               : "Reset your password."}
         </h1>
         <p>{mode === "signup" ? "Create one place for your research, watchlist and portfolio." : mode === "reset" ? "We’ll email a secure link to restore access to your workspace." : "Your companies. Your evidence. Your next decision."}</p>
+        {mode !== "reset" && <div className="auth-social" aria-label="Continue with a social account">
+          <button type="button" disabled={busy} onClick={() => social("google")}><span className="google-mark" aria-hidden="true">G</span>Continue with Google</button>
+          <button type="button" disabled={busy} onClick={() => social("x")}><span aria-hidden="true">𝕏</span>Continue with X</button>
+          <div className="auth-divider"><span>or use email</span></div>
+        </div>}
         <form onSubmit={submit} aria-busy={busy}>
           <label>
             Email address
@@ -528,7 +570,7 @@ function Login({ initialError }: { initialError: string }) {
             {mode === "reset" ? "Back to sign in" : "Forgot password?"}
           </button>
         </div>
-        <small>Independent research. Investing involves risk.</small>
+        <small>By continuing, you agree to our <a href="/terms">Terms</a> and acknowledge our <a href="/privacy">Privacy Policy</a>. Investing involves risk.</small>
         <nav className="login-legal" aria-label="Help and legal"><a href="/help">Help</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/risk">Risks</a></nav>
       </section>
     </main>

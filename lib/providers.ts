@@ -24,6 +24,8 @@ import type {
   Research,
 } from "./types";
 import { HttpError } from "./server";
+import { readExtendedQuote } from "./extended-quote";
+const extendedCapability = {deniedUntil: 0};
 import {
   normalizeQuote,
   normalizeBars,
@@ -80,13 +82,22 @@ export async function twelve(
     {},
     providerCacheSeconds(endpoint, params),
   );
-  if (data.status === "error")
-    throw new HttpError(
+  if (data.status === "error") {
+    const error = new HttpError(
       data.code === 429
         ? "Market-data allowance reached. Try again later."
         : "The provider did not return this instrument.",
       503,
     );
+    // Preserve only a machine-readable capability classification, never provider
+    // credentials or raw messages in client errors. Invalid symbols and outages
+    // must not disable extended data for other instruments.
+    if (params.prepost === "true" && data.code !== 429 &&
+        /(?:pre.?post|extended.?hours)/i.test(String(data.message)) &&
+        /(?:plan|subscription|upgrade|permission|not available|not supported|access)/i.test(String(data.message)))
+      Object.assign(error, {entitlementDenied: true});
+    throw error;
+  }
   return data;
 }
 const num = numeric;
@@ -126,7 +137,7 @@ async function twelveQuote(
   symbol: string,
 ): Promise<{ company: Company; quote: Quote }> {
   return cached(`quote:${symbol}`, 60_000, async () => {
-    const q = await twelve("quote", { symbol });
+    const q = await readExtendedQuote(twelve, symbol, extendedCapability);
     if (String(q.symbol ?? "").toUpperCase() !== symbol)
       throw new HttpError(
         "The provider returned a different instrument. The quote was not used.",
@@ -148,6 +159,7 @@ async function twelveQuote(
           outputsize: "2",
           timezone: "UTC",
           order: "DESC",
+          ...(!symbol.includes("/") && extendedCapability.deniedUntil <= Date.now() ? {prepost: "true"} : {}),
         });
         if (series.meta?.symbol === symbol) {
           const bar = normalizeBars(series.values, true)
@@ -163,6 +175,11 @@ async function twelveQuote(
               {
                 ...q,
                 close: bar.close,
+                is_extended_hours: !symbol.includes("/") && (() => {
+                  const p = new Intl.DateTimeFormat("en-US", {timeZone:"America/New_York",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(Date.parse(bar.time));
+                  const m = Number(p.find(x=>x.type==="hour")?.value)*60+Number(p.find(x=>x.type==="minute")?.value);
+                  return m < 570 || m >= 960;
+                })(),
                 timestamp: Date.parse(bar.time) / 1000,
                 percent_change:
                   previous != null && previous > 0
@@ -172,7 +189,7 @@ async function twelveQuote(
               symbol,
             );
             normalized.source = "Twelve Data · 1-minute close";
-            normalized.session = "1-minute close";
+            if (!/Premarket|After-hours/.test(normalized.session)) normalized.session = symbol.includes("/") ? "Continuous market · 1-minute close" : "1-minute close";
           }
         }
       } catch {

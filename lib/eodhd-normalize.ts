@@ -70,6 +70,7 @@ export function normalizeEodQuote(
   const minute = Number(part("hour")) * 60 + Number(part("minute"));
   const open =
     !["Sat", "Sun"].includes(part("weekday")) && minute >= 570 && minute <= 990;
+  const extendedWindow = !["Sat", "Sun"].includes(part("weekday")) && minute >= 240 && minute < 1200;
   const crypto = symbol.includes("/"),
     price = numeric(raw.close);
   return {
@@ -86,7 +87,7 @@ export function normalizeEodQuote(
     stale:
       !asOf ||
       ms > now + 60000 ||
-      now - ms > (crypto ? 20 * 60000 : open ? 45 * 60000 : 4 * 86400000),
+      now - ms > (crypto ? 20 * 60000 : open || extendedWindow ? 45 * 60000 : 4 * 86400000),
   };
 }
 export function normalizeEodBars(

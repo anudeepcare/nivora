@@ -1,5 +1,7 @@
 # Git and Vercel instructions
 
+For Google/X authentication and the purchased domain, complete `docs/LAUNCH_AUTH_SETUP.md` before public launch. This code does not configure provider secrets or external dashboards automatically.
+
 ## Update the merged nivora app
 
 The product branch was merged into `main` in PR #1 (merge commit `6e6b97ef80c42b1a3ac0d505b0ff3e5daea1e1d6`). The app is at the repository root. Do not run `cd product` on your Mac.

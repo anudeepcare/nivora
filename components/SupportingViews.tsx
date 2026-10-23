@@ -14,7 +14,7 @@ import {
 import { useProduct, useResource } from "./Session";
 import { PageHeading, Notice, Empty, SecurityLogo, Help } from "./Ui";
 import { ResearchHome } from "./Workspace";
-import { api, authClient } from "@/lib/client";
+import { api, authClient, signOutAndRedirect } from "@/lib/client";
 import { amount, percent, dateLabel, symbolInput } from "@/lib/format";
 import { perspective } from "@/lib/analysis";
 import type { Research } from "@/lib/types";
@@ -23,77 +23,48 @@ export function Settings() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const [account, setAccount] = useState<{email: string; providers: string[]} | null>(null);
+  useEffect(() => {
+    if (demo) return;
+    let active = true;
+    authClient().auth.getUser().then(({data,error}) => {
+      if (!active) return;
+      if (error) {setMessage("Account details could not be loaded. Please try again.");return;}
+      if (data.user) setAccount({email:data.user.email || "", providers:[...new Set((data.user.identities || []).map(x=>x.provider))]});
+    }).catch(() => {if (active) setMessage("Account details could not be loaded. Please try again.");});
+    return () => {active = false;};
+  }, [demo]);
   async function update(e: React.FormEvent) {
     e.preventDefault();
-    if (demo) {
-      setMessage("Account changes are disabled in the preview.");
-      return;
-    }
-    setBusy(true);
-    setMessage("");
+    if (demo) {setMessage("Account changes are disabled in the preview.");return;}
+    setBusy(true);setMessage("");
     try {
-      const { error } = await authClient().auth.updateUser({ password });
+      const {error} = await authClient().auth.updateUser({password});
       if (error) throw error;
-      setPassword("");
-      setMessage("Password updated.");
-    } catch (e) {
-      setMessage(e instanceof Error ? e.message : "Password update failed.");
-    } finally {
-      setBusy(false);
-    }
+      setPassword("");setMessage("Password updated.");
+    } catch (e) {setMessage(e instanceof Error ? e.message : "Password update failed.");}
+    finally {setBusy(false);}
   }
-  return (
-    <section className="settings-page">
-      <PageHeading
-        title="Settings"
-        subtitle="Make AURYN feel right for you."
-      />
-      <section className="panel settings-account">
-        <h3>Account</h3>
-        <div className="setting-row">
-          <div>
-            <strong>Email</strong>
-            <p>
-              {workspace?.email ||
-                (demo ? "Design preview" : "Loading account…")}
-            </p>
-          </div>
-          <button
-            className="button"
-            disabled={!!demo}
-            onClick={async () => {
-              const { error } = await authClient().auth.signOut();
-              if (error) setMessage(error.message);
-            }}
-          >
-            Sign out
-          </button>
-        </div>
-      </section>
-      <section className="panel settings-appearance"><DisplayPreferences /><details className="settings-research"><summary>Research preferences</summary><ResearchPreferenceControls /></details></section>
-      <details className="panel support settings-password">
-        <summary>Change password</summary>
-        <form className="password-form" onSubmit={update}>
-          <label>
-            New password
-            <input
-              type="password"
-              minLength={8}
-              autoComplete="new-password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </label>
-          <button className="button primary" disabled={busy}>
-            {busy ? "Saving…" : "Update password"}
-          </button>
-        </form>
-      </details>
-      {message && <Notice>{message}</Notice>}
-      <nav className="settings-page-links" aria-label="Help and legal"><Link href={`${demo?"/preview":""}/help`}>Help & support <ArrowUpRight size={16}/></Link><Link href="/privacy">Privacy <ArrowUpRight size={16}/></Link><Link href="/terms">Terms <ArrowUpRight size={16}/></Link></nav>
+  const email = account?.email || workspace?.email || (demo ? "Design preview" : "Loading account…");
+  return <section className="settings-page">
+    <PageHeading title="Your AURYN" subtitle="A workspace that feels like yours."/>
+    <section className="panel settings-account" aria-labelledby="account-title">
+      <header className="settings-profile"><span className="settings-profile-avatar" aria-hidden="true">{email[0]?.toUpperCase() || "A"}</span><div><span className="eyebrow">Account</span><h2 id="account-title">Your space. Your perspective.</h2><p>{email}</p></div></header>
+      {!!account?.providers.length && <div className="account-identities" aria-label="Connected sign-in methods">{account.providers.map(provider=><span key={provider}>{provider === "google" ? "Google" : provider === "x" || provider === "twitter" ? "X" : provider === "email" ? "Email" : provider}</span>)}</div>}
+      <div className="settings-security">
+        <h3>Security</h3><p>Keep access to your account in your hands.</p>
+        <details className="settings-password"><summary>Set or change password</summary><form className="password-form" onSubmit={update}><label>New password<input type="password" minLength={8} autoComplete="new-password" required value={password} onChange={e=>setPassword(e.target.value)}/></label><button className="button primary" disabled={busy || !!demo}>{busy ? "Saving…" : "Update password"}</button></form></details>
+        <button type="button" className="settings-signout" disabled={!!demo || busy} onClick={async()=>{
+          setBusy(true);setMessage("");
+          try {await signOutAndRedirect();}
+          catch(error){setMessage(error instanceof Error ? error.message : "Could not sign out. Please try again.");setBusy(false);}
+        }}>Sign out of AURYN <ArrowUpRight size={16}/></button>
+      </div>
     </section>
-  );
+    <section className="panel settings-appearance"><DisplayPreferences/><details className="settings-research"><summary>Research preferences</summary><ResearchPreferenceControls/></details><small className="settings-device-note">Appearance and reading preferences are saved on this device.</small></section>
+    {message && <div className="settings-feedback" role="status"><Notice>{message}</Notice></div>}
+    <nav className="settings-page-links" aria-label="Help and legal"><Link href="/help">Help & support <ArrowUpRight size={16}/></Link><Link href="/privacy">Privacy <ArrowUpRight size={16}/></Link><Link href="/terms">Terms <ArrowUpRight size={16}/></Link><Link href="/risk">Investment risks <ArrowUpRight size={16}/></Link></nav>
+  </section>;
 }
 
 export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {

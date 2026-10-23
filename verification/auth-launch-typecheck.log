@@ -1,0 +1,8 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> auryn-product@0.1.0 typecheck
+> next typegen && tsc --noEmit
+
+Generating route types...
+✓ Route types generated successfully
+app/auth/callback/route.ts(17,17): error TS7006: Parameter 'values' implicitly has an 'any' type.

@@ -1,0 +1,21 @@
+✔ auth routes canonicalize login and sign-out without replacing authenticated deep links (34.41134ms)
+✔ OAuth callback accepts only fixed internal destinations and never trusts forwarded hosts (4.673251ms)
+✔ logout waits for successful revocation before clearing memory and replacing the location (2.485677ms)
+✖ email confirmation and recovery accept only explicit token types and fixed destinations (0.613012ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 3
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 134.247007
+
+✖ failing tests:
+
+test at tests/auth-launch.test.mjs:34:1
+✖ email confirmation and recovery accept only explicit token types and fixed destinations (0.613012ms)
+  TypeError: completeEmailConfirmation is not a function
+      at TestContext.<anonymous> (file:///workspace/auryn-github-main/tests/auth-launch.test.mjs:37:21)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

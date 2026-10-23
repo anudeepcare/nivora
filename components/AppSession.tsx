@@ -18,7 +18,7 @@ export default function AppSession({
   if (["terms", "privacy", "risk", "methodology", "help", "reliability"].includes(page)) return <>{children}</>;
   return (
     <ProductSession>
-      <Shell page={page}>{children}</Shell>
+      {page === "login" || page === "reset-password" ? children : <Shell page={page}>{children}</Shell>}
     </ProductSession>
   );
 }

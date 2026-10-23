@@ -539,7 +539,7 @@ test('valuation tool withholds unsupported models rather than fabricating sensit
 test('authentication explains AURYN in sign-in, signup and recovery without fabricating investment results',()=>{
  for(const mode of ['login','signup','reset']){
   let i=0;const values=['','','',false,mode,''];
-  const Login=loadComponent('components/Session.tsx','Login',{React,useEffect:()=>{},useState:()=>[values[i++],()=>{}],Logo:()=>React.createElement('span',null,'AURYN')});
+  const Login=loadComponent('components/Session.tsx','Login',{React,useRouter:()=>({replace:()=>{}}),useEffect:()=>{},useState:()=>[values[i++],()=>{}],Logo:()=>React.createElement('span',null,'AURYN')});
   const html=renderToStaticMarkup(React.createElement(Login,{initialError:''}));
   assert.match(html,/About AURYN/);assert.match(html,/Business first/);assert.match(html,/Put the price in perspective/);
   assert.doesNotMatch(html,/desktop-nav|mobile-dock|guaranteed returns/);
@@ -658,8 +658,8 @@ test('analyst fallback presents actual consensus without invented low/high targe
 
 test('Advanced opens with a readable risk brief and keeps planning tools off the initial screen',async()=>{
  const {advancedStudies,tradePlan}=await import('../lib/advanced-research.ts'),{planStress}=await import('../lib/professional-studies.ts');
- const Advanced=loadComponent('components/AdvancedResearch.tsx','AdvancedResearch',{React,useMemo:React.useMemo,useState:React.useState,advancedStudies,tradePlan,planStress,...format,AdvancedRiskBrief:()=>React.createElement('section',{'data-risk-brief':'visible'},'Typical daily movement'),ProfessionalContext:empty,MarketContext:()=>{throw Error('Market must not load before selected');},HistoricalConditions:()=>{throw Error('Study must not load before selected');},TradeReference:empty});
- const html=renderToStaticMarkup(React.createElement(Advanced,{research:demoData.research.MSFT}));assert.match(html,/data-risk-brief="visible"/);assert.match(html,/Risk brief/);assert.doesNotMatch(html,/href="#advanced|Assumed win probability|type="number"|DISCONNECT/);
+ const Advanced=loadComponent('components/AdvancedResearch.tsx','AdvancedResearch',{React,useMemo:React.useMemo,useState:React.useState,advancedStudies,tradePlan,planStress,...format,AdvancedDashboard:()=>React.createElement('section',{'data-risk-brief':'visible'},'Typical daily movement'),ProfessionalContext:empty,MarketContext:()=>{throw Error('Market must not load before selected');},HistoricalConditions:()=>{throw Error('Study must not load before selected');},TradeReference:empty});
+ const html=renderToStaticMarkup(React.createElement(Advanced,{research:demoData.research.MSFT}));assert.match(html,/data-risk-brief="visible"/);assert.match(html,/Risk &amp; conditions/);assert.doesNotMatch(html,/href="#advanced|Assumed win probability|type="number"|DISCONNECT/);
 });
 test('risk brief exposes dated actual measurements with explanations and no assumed success rate',async()=>{
  const {riskBrief}=await import('../lib/risk-brief.ts');
@@ -733,4 +733,26 @@ test('News leads with company coverage before earnings and transaction records',
  const View=loadComponent('components/CompanyUpdates.tsx','CompanyUpdates',{React,dateLabel:format.dateLabel,NewsAndFilings:()=>React.createElement('section',{'data-news':'first'},'Company headlines and filings')});
  const html=renderToStaticMarkup(React.createElement(View,{research:{retrievedAt:'2026-10-22',evidence:{earnings:[]}}}));
  assert.ok(html.indexOf('data-news="first"')<html.indexOf('Events &amp; reported transactions'));
+});
+
+test('new Advanced dashboard exposes actual distributions and risk charts with no input forms or invented success rate',async()=>{
+ const {advancedDesk}=await import('../lib/research-desks.ts');
+ const View=loadComponent('components/AdvancedDashboard.tsx','AdvancedDashboard',{React,useMemo:React.useMemo,advancedDesk,...format});
+ const html=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT}));
+ assert.match(html,/Historical drawdown from the running closing peak/);assert.match(html,/Return distribution/);assert.match(html,/Typical daily traded value/);assert.match(html,/Volatility regime/);assert.doesNotMatch(html,/NaN|Infinity|type="number"|win probability/);
+});
+
+test('stock context uses supplied completed price studies and does not invent a corporate multiple for crypto',async()=>{
+ const {advancedStudies}=await import('../lib/advanced-research.ts');
+ const View=loadComponent('components/StockFacts.tsx','StockFacts',{React,useMemo:React.useMemo,advancedStudies,...format});
+ const r={...demoData.research.MSFT,company:{...demoData.research.MSFT.company,assetType:'crypto'},evidence:{multiples:{ForwardPE:20}}};
+ const html=renderToStaticMarkup(React.createElement(View,{research:r}));assert.match(html,/20-session move/);assert.doesNotMatch(html,/Forward P\/E|NaN|Infinity/);
+});
+
+test('new operating expectations begins with explicit future inputs and never guesses a valuation',async()=>{
+ const {latestFinancialEvidence}=await import('../lib/analysis.ts');const {enterpriseExpectations,impliedOperatingMargin}=await import('../lib/expectation-engine.ts');
+ const View=loadComponent('components/ExpectationMap.tsx','ExpectationMap',{React,useMemo:React.useMemo,useState:React.useState,latestFinancialEvidence,enterpriseExpectations,impliedOperatingMargin,...format,futureFields:[['growth','Annual growth']]});
+ const html=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT}));
+ assert.match(html,/What must the business deliver/);assert.match(html,/Complete and reconcile the inputs/);assert.match(html,/These future assumptions are mine/);assert.doesNotMatch(html,/NaN|Infinity|Central assumption sensitivity/);
+ const crypto=structuredClone(demoData.research.MSFT);crypto.company.assetType='crypto';assert.match(renderToStaticMarkup(React.createElement(View,{research:crypto})),/does not fit crypto/);
 });

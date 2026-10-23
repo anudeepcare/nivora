@@ -5,7 +5,7 @@ import ResearchPreferenceControls from "./ResearchPreferences";
 import { useState, type RefObject } from "react";
 import { ArrowRight, X, LogOut } from "lucide-react";
 import { useProduct } from "./Session";
-import { authClient } from "@/lib/client";
+import { signOutAndRedirect } from "@/lib/client";
 
 export default function SettingsSheet({
   dialog,
@@ -72,8 +72,8 @@ export default function SettingsSheet({
               setError("Account actions are disabled in the design preview.");
               return;
             }
-            const { error } = await authClient().auth.signOut();
-            if (error) setError(error.message);
+            try { await signOutAndRedirect(); }
+            catch (error) { setError(error instanceof Error ? error.message : "Could not sign out. Please try again."); }
           }}
         >
           <span>Sign out</span>

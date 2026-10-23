@@ -1,4 +1,5 @@
 "use client";
+import StockFacts from "./StockFacts";
 import {
   ResearchModeSwitch,
   useResearchPreferences,
@@ -9,6 +10,7 @@ import useLivePrices from "./useLivePrices";
 import { quoteHealth } from "@/lib/quote-health";
 import { mergePriceTick } from "@/lib/live-price";
 import { retainResearchQuote } from "@/lib/research-quote";
+const ValueStudio = dynamic(() => import("./ValueStudio"), {loading:()=> <p role="status">Opening valuation…</p>});
 const AdvancedResearch = dynamic(() => import("./AdvancedResearch"), {
   loading: () => (
     <p role="status" aria-busy="true">
@@ -19,7 +21,6 @@ const AdvancedResearch = dynamic(() => import("./AdvancedResearch"), {
 
 import FinancingContext from "./FinancingContext";
 import BusinessHistory from "./BusinessHistory";
-import ModelAssessment from "./ModelAssessment";
 import { headerMarketContext } from "@/lib/business-history";
 import BusinessMap from "./BusinessMap";
 import TimingContext from "./TimingContext";
@@ -37,7 +38,6 @@ import type {
 import { perspective } from "@/lib/analysis";
 import { restoreWhenReady, browserScrollEnvironment } from "@/lib/navigation";
 import {
-  ResearchOutlook,
   KeyFinancialMetrics,
   CaseHighlights,
 } from "./ResearchOverview";
@@ -175,6 +175,7 @@ export default function Research({ symbol }: { symbol: string }) {
       ? [requestedTab ?? "Snapshot"]
       : [],
   );
+  const [workbenchTarget,setWorkbenchTarget]=useState("risk");
   const tabsElement = useRef<HTMLElement>(null);
   const tabsAnchor = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
@@ -461,6 +462,7 @@ export default function Research({ symbol }: { symbol: string }) {
         </div>
       </header>
 
+      <StockFacts research={r}/>
       <div
         ref={tabsAnchor}
         className="research-tab-anchor"
@@ -558,7 +560,7 @@ export default function Research({ symbol }: { symbol: string }) {
           </>
         )}
         {tab === "Advanced" && (
-          <AdvancedResearch key={r.company.symbol} research={r} />
+          <AdvancedResearch key={r.company.symbol} research={r} initialSection={workbenchTarget}/>
         )}
         {tab === "Analysts" && <AnalystRatings research={r} />}
         {retainedCharts.includes("Snapshot") && (
@@ -588,21 +590,7 @@ export default function Research({ symbol }: { symbol: string }) {
             <FinancingContext research={r} />
           </>
         )}
-        {tab === "Valuation" && (
-          <>
-            <ResearchOutlook research={r} detailed />
-            <ModelAssessment research={r} />
-            <p className="small muted">
-              Want to test your own assumptions?{" "}
-              <button
-                className="text-button"
-                onClick={() => switchTab("Advanced")}
-              >
-                Open Advanced →
-              </button>
-            </p>
-          </>
-        )}
+        {tab === "Valuation" && <ValueStudio research={r} onWorkbench={()=>{setWorkbenchTarget("expectations");switchTab("Advanced")}}/>}
         {retainedCharts.includes("Technicals") && (
           <section
             data-retained-panel="Technicals"

@@ -11,7 +11,7 @@ export default function SessionBrief() {
   }[];
   if (!rows.length) return null;
   return (
-    <section className="observed-changes">
+    <section className="observed-changes session-digest">
       <span className="eyebrow">Changes observed this session</span>
       {rows.slice(0, 4).map((r) => (
         <Link

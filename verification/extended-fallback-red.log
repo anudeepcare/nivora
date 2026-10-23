@@ -1,0 +1,30 @@
+✔ extended observation retains its actual trade time, session and price (15.308162ms)
+✔ extended request falls back only on explicit entitlement denial and remembers it for one hour (3.175954ms)
+✖ EODHD fallback and display freshness cannot hide an old close during extended hours (6.07711ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 2
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 134.89899
+
+✖ failing tests:
+
+test at tests/extended-quote.test.mjs:19:1
+✖ EODHD fallback and display freshness cannot hide an old close during extended hours (6.07711ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/auryn-github-main/tests/extended-quote.test.mjs:21:123)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

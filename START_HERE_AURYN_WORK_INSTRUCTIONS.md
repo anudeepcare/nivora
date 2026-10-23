@@ -1,10 +1,6 @@
 # Current continuation — 23 October 2026
 
-Read `docs/CURRENT_ACCEPTANCE.md` and `docs/MONTHLY_POLICY_V4.md` first (from this docs directory, use their local filenames). Full source includes the latest UI cleanup and monthly v4. Verification: 419 tests, route types, TypeScript, production build and 83 API fixture checks pass. Monthly v4 matches 26/26 selected current reference readings and 26/26 supplied IREN historical months; calibration and remaining weekly differences are disclosed. This is not universal parity or investment-performance proof. No deployment or push performed; physical iPhone and patched-source visual acceptance remain unverified. Older counts and policies below are historical.
-
-## Historical notes below
-
-The dated sections below describe earlier iterations. Their old test counts, “current” labels and v1/v2 headline-policy statements are historical; this top section and the unified report supersede them.
+Read `docs/LAUNCH_DESKS_AND_PRICING.md` and `docs/LAUNCH_AUTH_SETUP.md` first. This revision adds launch authentication/routing, new Value/Advanced presentation, a new explicit operating-expectations engine, mobile metric fixes and extended-hours request/freshness repairs. Full source retains monthly-v4 and portfolio data logic. Verification results are in `verification/REPORT.json`; earlier counts below are historical. No push/deployment or live database mutation was performed. Live OAuth, extended-hours entitlement and physical iPhone/rendered-source acceptance remain outstanding.
 
 # Approved research composition — 23 October
 

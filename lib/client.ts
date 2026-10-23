@@ -1,5 +1,7 @@
 "use client";
 import { createBrowserClient } from "@supabase/ssr";
+import { completeSignOut } from "./auth-actions";
+import { clearAccountCache } from "./account-cache";
 import type { SupabaseClient } from "@supabase/supabase-js";
 let client: SupabaseClient | null = null;
 export function authClient() {
@@ -31,4 +33,13 @@ export async function api<T>(
   if (!response.ok)
     throw Error(value.error || "This request could not be completed.");
   return value;
+}
+
+/** A full location replacement also drops mounted private state and Next client route cache. */
+export async function signOutAndRedirect() {
+  await completeSignOut(
+    () => authClient().auth.signOut(),
+    clearAccountCache,
+    path => window.location.replace(path),
+  );
 }

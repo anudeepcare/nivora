@@ -493,15 +493,14 @@ export function Overview() {
           timeZone: "America/Chicago",
         })}
         action={
-          <Link className="button primary" href={`${prefix}/research`}>
+          <Link className="button" href={`${prefix}/research`}>
             <SearchIcon size={18} />
-            Find a company
+            Explore research
           </Link>
         }
       />
       {workspaceError && <Notice error>{workspaceError}</Notice>}
       {quotes.error && <Notice error>{quotes.error}</Notice>}
-      <SessionBrief />
       <HomeUpdates
         quotes={q}
         companyNames={Object.fromEntries(
@@ -510,6 +509,7 @@ export function Overview() {
           ),
         )}
       />
+      <SessionBrief />
       <div className="grid2 home-details">
         <section>
           <header className="section-head">

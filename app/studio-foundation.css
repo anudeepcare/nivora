@@ -451,17 +451,7 @@ strong {
   color: var(--blue);
   font-weight: 600;
 }
-.local-tabs button.active:after {
-  content: "";
-  display: block;
-  position: absolute;
-  bottom: -4px;
-  left: 14px;
-  right: 14px;
-  height: 3px;
-  border-radius: 3px;
-  background: var(--blue);
-}
+
 .research-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.75fr) minmax(290px, 1fr);

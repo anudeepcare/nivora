@@ -8,6 +8,7 @@ const marketClock = new Intl.DateTimeFormat("en-US", {
 });
 let clockMinute = NaN,
   clockRegular = false;
+// Scheduled US pre/post window tightens age only; it does not assert holiday trading.
 function regularSession(now: number) {
   const key = Math.floor(now / 60000);
   if (key !== clockMinute) {
@@ -16,8 +17,8 @@ function regularSession(now: number) {
       minute = Number(part("hour")) * 60 + Number(part("minute"));
     clockRegular =
       !["Sat", "Sun"].includes(part("weekday")) &&
-      minute >= 570 &&
-      minute < 960;
+      minute >= 240 &&
+      minute < 1200;
     clockMinute = key;
   }
   return clockRegular;

@@ -21,6 +21,7 @@ const allowed = new Set([
   "methodology",
   "reliability",
   "login",
+  "reset-password",
   "sample",
 ]);
 export default async function Page({
@@ -34,6 +35,7 @@ export default async function Page({
     preview = path[0] === "preview",
     route = preview ? path.slice(1) : path;
   if (route[0] && !allowed.has(route[0])) notFound();
+  if (route.length > 1 && route[0] !== "research") notFound();
   if (!preview && (!route.length || (route.length === 1 && route[0] === "sample"))) return <PublicLanding sampleOnly={route[0] === "sample"}/>;
   let demo;
   if (preview) {

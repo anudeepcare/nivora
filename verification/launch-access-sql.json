@@ -1,0 +1,32 @@
+{
+  "localPostgres": true,
+  "liveApplied": false,
+  "idempotence": true,
+  "grants": [
+    {
+      "signature": "auryn_acquire_provider_tokens(integer,integer)",
+      "anon": false,
+      "auth": false,
+      "server": true
+    },
+    {
+      "signature": "auryn_lease_validation_job(integer)",
+      "anon": false,
+      "auth": false,
+      "server": true
+    },
+    {
+      "signature": "handle_new_user()",
+      "anon": false,
+      "auth": false,
+      "server": true
+    },
+    {
+      "signature": "nivora_take_rate_limit(text,integer,integer)",
+      "anon": false,
+      "auth": false,
+      "server": true
+    }
+  ],
+  "signupTriggerPreserved": true
+}
