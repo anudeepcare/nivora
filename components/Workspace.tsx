@@ -1,5 +1,6 @@
 "use client";
 
+import {FeatureGate} from "./Access";
 import PortfolioExposure from "./PortfolioExposure";
 import {
   pricedInvestmentReturns,
@@ -365,7 +366,7 @@ export function useWorkspaceQuotes(
 export function ResearchHome() {
   const { workspace, demo, workspaceError } = useProduct(),
     quotes = useWorkspaceQuotes(),
-    prefix = demo ? "/preview" : "";
+    prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   const symbols = [
     ...new Set([
       ...(workspace?.watchlist.map((w) => w.symbol) || []),
@@ -440,7 +441,7 @@ export function ResearchHome() {
 }
 export function Overview() {
   const quotes = useWorkspaceQuotes();
-  return <HomeBriefing quotes={quotes.data || {}} error={quotes.error}/>;
+  return <FeatureGate feature="home" fallback={<section className="membership-panel"><span className="eyebrow">Your AURYN</span><h1>A clear place to begin.</h1><p>Search a company, save your favorites and review your holdings.</p><Link className="button primary" href="/research">Find a company</Link><Link className="button" href="/portfolio">View holdings</Link></section>}><HomeBriefing quotes={quotes.data || {}} error={quotes.error}/></FeatureGate>;
 }
 
 function InvestmentRows({
@@ -453,7 +454,7 @@ function InvestmentRows({
   remove?: (symbol: string) => void;
 }) {
   const { demo } = useProduct(),
-    prefix = demo ? "/preview" : "";
+    prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   return symbols.length ? (
     <div className="investment-list">
       {symbols.map((symbol) => {
@@ -738,7 +739,7 @@ function Allocation({
 export function Portfolio() {
   const { workspace, demo, workspaceError, mutate } = useProduct(),
     quotes = useWorkspaceQuotes("portfolio"),
-    prefix = demo ? "/preview" : "",
+    prefix = demo && demo.routePrefix !== "" ? "/preview" : "",
     modal = useRef<HTMLDialogElement>(null),
     [currency, setCurrency] = useState("USD"),
     [editing, setEditing] = useState<Position | null>(null),
@@ -996,14 +997,16 @@ export function Portfolio() {
             </p>
           )}
         </section>
-        <PortfolioCharts positions={positions} quotes={q} />
+        <FeatureGate feature="portfolio"><PortfolioCharts positions={positions} quotes={q} /></FeatureGate>
       </div>
+      <FeatureGate feature="portfolio">
       <PortfolioRiskSummary
         positions={positions}
         quotes={q}
         calendar={calendar}
       />
       <SectorBenchmarks />
+      </FeatureGate>
       <section className="panel portfolio-holdings support">
         <header className="section-heading">
           <h2>
@@ -1061,7 +1064,7 @@ export function Portfolio() {
       </section>
       <details className="portfolio-extra">
         <summary>Sector exposure & stress check</summary>
-        <PortfolioExposure positions={positions} quotes={quotes.data || {}} />
+        <FeatureGate feature="portfolio"><PortfolioExposure positions={positions} quotes={quotes.data || {}} /></FeatureGate>
       </details>
       <p className="footnote">
         Unrealized returns exclude realized trades, dividends, fees and taxes.

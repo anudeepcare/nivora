@@ -9,6 +9,7 @@ const allowed = new Set([
   "portfolio",
   "watchlist",
   "settings",
+  "owner",
   "compare",
   "alerts",
   "research-lab",

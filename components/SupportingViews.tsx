@@ -1,4 +1,5 @@
 "use client";
+import PlanPanel from "./PlanPanel";
 import DisplayPreferences from "./DisplayPreferences";
 import ResearchPreferenceControls from "./ResearchPreferences";
 import PwaDiagnostics from "./PwaDiagnostics";
@@ -25,7 +26,7 @@ export function Settings() {
   const [busy, setBusy] = useState(false);
   const [account, setAccount] = useState<{email: string; providers: string[]} | null>(null);
   useEffect(() => {
-    if (demo) return;
+    if (demo && demo.routePrefix!=="") return;
     let active = true;
     authClient().auth.getUser().then(({data,error}) => {
       if (!active) return;
@@ -36,7 +37,7 @@ export function Settings() {
   }, [demo]);
   async function update(e: React.FormEvent) {
     e.preventDefault();
-    if (demo) {setMessage("Account changes are disabled in the preview.");return;}
+    if (demo && demo.routePrefix!=="") {setMessage("Account changes are disabled in the preview.");return;}
     setBusy(true);setMessage("");
     try {
       const {error} = await authClient().auth.updateUser({password});
@@ -53,14 +54,15 @@ export function Settings() {
       {!!account?.providers.length && <div className="account-identities" aria-label="Connected sign-in methods">{account.providers.map(provider=><span key={provider}>{provider === "google" ? "Google" : provider === "x" || provider === "twitter" ? "X" : provider === "email" ? "Email" : provider}</span>)}</div>}
       <div className="settings-security">
         <h3>Security</h3><p>Keep access to your account in your hands.</p>
-        <details className="settings-password"><summary>Set or change password</summary><form className="password-form" onSubmit={update}><label>New password<input type="password" minLength={8} autoComplete="new-password" required value={password} onChange={e=>setPassword(e.target.value)}/></label><button className="button primary" disabled={busy || !!demo}>{busy ? "Saving…" : "Update password"}</button></form></details>
-        <button type="button" className="settings-signout" disabled={!!demo || busy} onClick={async()=>{
+        <details className="settings-password"><summary>Set or change password</summary><form className="password-form" onSubmit={update}><label>New password<input type="password" minLength={8} autoComplete="new-password" required value={password} onChange={e=>setPassword(e.target.value)}/></label><button className="button primary" disabled={busy || (!!demo && demo.routePrefix !== "")}>{busy ? "Saving…" : "Update password"}</button></form></details>
+        <button type="button" className="settings-signout" disabled={(!!demo && demo.routePrefix!=="") || busy} onClick={async()=>{
           setBusy(true);setMessage("");
           try {await signOutAndRedirect();}
           catch(error){setMessage(error instanceof Error ? error.message : "Could not sign out. Please try again.");setBusy(false);}
         }}>Sign out of AURYN <ArrowUpRight size={16}/></button>
       </div>
     </section>
+    <PlanPanel/>
     <section className="panel settings-appearance"><DisplayPreferences/><details className="settings-research"><summary>Research preferences</summary><ResearchPreferenceControls/></details><small className="settings-device-note">Appearance and reading preferences are saved on this device.</small></section>
     {message && <div className="settings-feedback" role="status"><Notice>{message}</Notice></div>}
     <nav className="settings-page-links" aria-label="Help and legal"><Link href="/help">Help & support <ArrowUpRight size={16}/></Link><Link href="/privacy">Privacy <ArrowUpRight size={16}/></Link><Link href="/terms">Terms <ArrowUpRight size={16}/></Link><Link href="/risk">Investment risks <ArrowUpRight size={16}/></Link></nav>
@@ -69,7 +71,7 @@ export function Settings() {
 
 export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
   const { demo } = useProduct(),
-    prefix = demo ? "/preview" : "",
+    prefix = demo && demo.routePrefix !== "" ? "/preview" : "",
     [draft, setDraft] = useState(initialSymbols),
     [symbols, setSymbols] = useState(initialSymbols),
     [rows, setRows] = useState<Research[]>([]),

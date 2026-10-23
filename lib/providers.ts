@@ -2,6 +2,7 @@ import {
   preferredMarketSources,
   readPreferred,
   readFreshQuote,
+  quoteRefreshMaxAge,
   providerCacheSeconds,
 } from "./provider-routing";
 import {
@@ -120,7 +121,7 @@ export async function quote(
         if (value.quote.price == null)
           throw new HttpError("The quote source returned no price.", 503);
         return value;
-      });
+      }, {now: Date.now(), maxAgeMs: quoteRefreshMaxAge(symbol)});
       return result.fallback
         ? {
             ...result.value,

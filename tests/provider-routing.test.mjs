@@ -81,3 +81,16 @@ test('EODHD-first quote routing avoids a second request on success and uses Twel
  const stale={quote:{price:19,asOf:'2026-10-21T20:00:00Z',stale:true}};
  const newer=await readFreshQuote(sources,async p=>p==='eodhd'?stale:fresh);assert.equal(newer.value,fresh);assert.equal(newer.provider,'twelve');
 });
+
+test('an aging delayed primary checks backup and never replaces a newer observation with an older backup',async()=>{
+ const {readFreshQuote}=await import('../lib/provider-routing.ts');
+ const now=Date.parse('2026-10-23T14:00:00Z');
+ const primary={quote:{price:20,asOf:'2026-10-23T13:45:00Z',stale:false}};
+ const newer={quote:{price:21,asOf:'2026-10-23T13:59:00Z',stale:false}};
+ const options={now,maxAgeMs:180000};const calls=[];
+ const result=await readFreshQuote(['eodhd','twelve'],async p=>{calls.push(p);return p==='eodhd'?primary:newer;},options);
+ assert.equal(result.value,newer);assert.deepEqual(calls,['eodhd','twelve']);
+ const older={quote:{price:19,asOf:'2026-10-23T13:40:00Z',stale:false}};
+ assert.equal((await readFreshQuote(['eodhd','twelve'],async p=>p==='eodhd'?primary:older,options)).value,primary);
+ assert.equal((await readFreshQuote(['eodhd','twelve'],async p=>{if(p==='twelve')throw Error('quota');return primary;},options)).value,primary);
+});

@@ -24,6 +24,7 @@ export async function api<T>(
     method: body ? "POST" : "GET",
     headers: {
       Authorization: `Bearer ${data.session.access_token}`,
+      ...((():Record<string,string>=>{try{const p=sessionStorage.getItem("auryn-owner-preview");return p==="free"||p==="pro"?{"x-auryn-preview-plan":p}:{};}catch{return {};}})()),
       ...(body ? { "Content-Type": "application/json" } : {}),
     },
     ...(body ? { body: JSON.stringify(body) } : {}),

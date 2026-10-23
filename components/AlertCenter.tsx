@@ -26,7 +26,7 @@ type Event = {
 };
 export default function AlertCenter() {
   const { demo, workspace } = useProduct(),
-    prefix = demo ? "/preview" : "",
+    prefix = demo && demo.routePrefix !== "" ? "/preview" : "",
     previewRules = useMemo(
       () => (demo ? { documents: [] as Rule[] } : undefined),
       [demo],

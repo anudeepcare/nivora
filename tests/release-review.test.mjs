@@ -111,7 +111,7 @@ function researchMarkup() {
     },
   };
   const empty = () => null;
-  const bindings = {
+  const bindings = {useAccess:()=>({access:{features:Object.fromEntries(["overview","business","financials","value","technicals","analysts","news","advanced","portfolio","home","ai","longHistory"].map(k=>[k,true]))}}),FeatureGate:({children})=>children,FreeSnapshot:()=>null,
     React,
     ...format,
     tabs: ["Snapshot", "Financials", "Valuation", "Technicals", "Thesis"],

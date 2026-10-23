@@ -17,6 +17,7 @@ import "./product-surfaces.css";
 import "./research-desks.css";
 import "./approved-entry.css";
 import "./approved-home.css";
+import "./membership.css";
 import "./pwa-shell.css";
 export const metadata: Metadata = {
   title: "AURYN · Investment Intelligence",

@@ -17,6 +17,7 @@ import { dateLabel } from "../lib/format.ts";
 import {mergePortfolioQuotes,refreshIntervals,usablePortfolioQuote} from "../lib/portfolio-quotes.ts";
 
 function component(file, name, bindings) {
+  bindings = {useAccess:()=>({access:{features:Object.fromEntries(["overview","business","financials","value","technicals","analysts","news","advanced","portfolio","home","ai","longHistory"].map(k=>[k,true]))}}),FeatureGate:({children})=>children,FreeSnapshot:()=>null,...bindings};
   const ast = ts.createSourceFile(
     file,
     fs.readFileSync(file, "utf8"),

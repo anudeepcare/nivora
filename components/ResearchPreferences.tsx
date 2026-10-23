@@ -106,7 +106,7 @@ export function ResearchModeSwitch() {
           className={p.detail === mode ? "active" : ""}
           onClick={() => setPreferences({ detail: mode })}
         >
-          {mode === "essential" ? "Simple" : "Pro"}
+          {mode === "essential" ? "Simple" : "Detailed"}
         </button>
       ))}
     </div>

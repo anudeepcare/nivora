@@ -6,6 +6,7 @@ import React from "react";
 import { NavigationMemory, restoreWhenReady } from "../lib/navigation.ts";
 
 function component(file, name, bindings) {
+  bindings={AccessBoundary:"AccessBoundary",AccessNotice:()=>null,...bindings};
   const ast = ts.createSourceFile(
     file,
     fs.readFileSync(file, "utf8"),
@@ -46,8 +47,9 @@ test("workspace pages share a layout-owned session and shell without route keys"
   assert.equal(next.type, first.type);
   assert.equal(first.key, null);
   assert.equal(next.key, null);
-  assert.equal(first.props.children.type, "Shell");
-  assert.equal(next.props.children.props.page, "watchlist");
+  assert.equal(first.props.children.type, "AccessBoundary");
+  assert.equal(first.props.children.props.children.type, "Shell");
+  assert.equal(next.props.children.props.children.props.page, "watchlist");
   assert.match(
     fs.readFileSync("app/layout.tsx", "utf8"),
     /<AppSession>\{children\}<\/AppSession>/,

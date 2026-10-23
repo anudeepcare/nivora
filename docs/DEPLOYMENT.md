@@ -38,7 +38,7 @@ For the merged app use **Root Directory: .**, Next.js, Node 24, install `npm ci`
 
 Set **EODHD_API_KEY** and **TWELVE_DATA_API_KEY** in Vercel → nivora → Settings → Environment Variables for the intended Preview and Production environments. Neither name has NEXT_PUBLIC_. Redeploy after changing environment variables; an existing deployment will not acquire a new value automatically. You have reported configuring EODHD already; keep it in place. Do not paste secret values into chat or commit them.
 
-The app automatically chooses Twelve Data for quotes/1D/1W and EODHD for financials/daily history. Settings shows which keys are configured; that label does not prove successful authorization. Open APP, HIMS, OSCR, IREN, ASTS, SAP, BTC and ETH in the preview, check displayed source timestamps and financial periods, and inspect any per-dataset error. EODHD fallback prices are explicitly delayed/indicative. No extra plan is needed to run the code; individual dataset entitlement remains to be checked.
+The app prefers EODHD for quotes, intraday and daily history, with Twelve Data fallback. During scheduled US pre/regular/post hours, an aging primary quote can trigger a newer backup check. Settings shows which keys are configured; that label does not prove successful authorization. Open APP, HIMS, OSCR, IREN, ASTS, SAP, BTC and ETH in the preview, check displayed source timestamps and financial periods, and inspect any per-dataset error. EODHD fallback prices are explicitly delayed/indicative. No extra plan is needed to run the code; individual dataset entitlement remains to be checked.
 
 ## Connected database setup record
 

@@ -47,6 +47,8 @@ export async function POST(request: Request) {
           }),
         ),
       );
+      if (results.some((r) => r.error?.message?.includes("Watchlist allowance")))
+        throw new HttpError("Watchlist allowance reached. Remove a saved company before adding another.", 429);
       if (results.some((r) => r.error))
         throw new HttpError("Watchlist update failed. Please try again.", 503);
     } else if (body.op === "confirm-cost-currency") {

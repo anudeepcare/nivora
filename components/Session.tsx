@@ -21,6 +21,8 @@ import { Logo } from "./Ui";
 import { readResource, resourceSnapshot } from "@/lib/resource-cache";
 import { accountCache, clearAccountCache } from "@/lib/account-cache";
 export type DemoData = {
+  /** Empty for authenticated synthetic-data beta; undefined for localhost preview. */
+  routePrefix?: "";
   research: Record<string, Research>;
   workspace: Workspace;
 };

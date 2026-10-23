@@ -1,3 +1,7 @@
+# Latest update — beta controls and quote polling, 23 October 2026
+
+Read `docs/BETA_ACCESS_AND_QUOTES.md` first. Includes owner-only feature controls, expiring friend grants, Free/Pro previews and quotas, sample-only beta protection, quote-polling and freshness fallback fixes. Billing remains disconnected; no Stripe test or real payments are available. Thirty-stock DCA check: 28/30 confirmed and 30/30 forming signals agree with the observed reference snapshot, without policy changes. This is not investment outperformance or universal parity. No deploy or live database migration was performed. Earlier entries below describe previous iterations.
+
 # Latest build — Adaptive Home, 23 October 2026
 
 The approved adaptive Home is implemented. Read `docs/ADAPTIVE_HOME_BUILD.md` for behavior, coverage and verification limits. Greeting and a daily perspective remain; the navy feature adapts to earnings, company updates, milestones or a weekly review. The Home CSS file was replaced rather than adding another override layer. PWA shell geometry and other app pages remain unchanged. Prior entries below describe earlier iterations. DCA outperformance remains unestablished.

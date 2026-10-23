@@ -1,4 +1,5 @@
 "use client";
+import OwnerAccess from "./OwnerAccess";
 import Trading from "./Trading";
 import LegalDocument from "./LegalDocument";
 import type {DocumentId} from "@/lib/legal-content";
@@ -100,6 +101,8 @@ export default function Product({
       <WorkspaceGate>
         <Watchlist />
       </WorkspaceGate>
+    ) : page === "owner" ? (
+      <OwnerAccess/>
     ) : page === "settings" ? (
       <Settings />
     ) : page === "compare" ? (

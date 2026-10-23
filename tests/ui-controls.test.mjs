@@ -11,7 +11,7 @@ import { researchPeriods } from "../lib/financial-catalog.ts";
 import { demoData } from "./fixtures/demo.ts";
 
 function loadComponent(file, name, bindings) {
-  bindings = {AnalystTargets: () => null, PriceRiskCases: () => null, homeDay, homeBrief, dailyPerspective, PieChart:()=>null, FileText:()=>null, Clock3:()=>null, useEffect:()=>{}, ...bindings};
+  bindings = {useAccess:()=>({access:{features:Object.fromEntries(["overview","business","financials","value","technicals","analysts","news","advanced","portfolio","home","ai","longHistory"].map(k=>[k,true]))}}),FeatureGate:({children})=>children,FreeSnapshot:()=>null,PlanPanel:()=>null,AccessNotice:()=>null,AnalystTargets: () => null, PriceRiskCases: () => null, homeDay, homeBrief, dailyPerspective, PieChart:()=>null, FileText:()=>null, Clock3:()=>null, useEffect:()=>{}, ...bindings};
   const ast = ts.createSourceFile(
     file,
     fs.readFileSync(file, "utf8"),

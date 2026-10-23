@@ -1,4 +1,5 @@
 "use client";
+import {AccessNotice} from "./Access";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef } from "react";
@@ -37,7 +38,7 @@ export default function Shell({
   const pathname = usePathname();
   const memory = useRef(new NavigationMemory());
   const pending = useRef<{ path: string; top: number } | null>(null);
-  const prefix = demo ? "/preview" : "";
+  const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   const search = useRef<HTMLDialogElement>(null);
   const settings = useRef<HTMLDialogElement>(null);
   useLayoutEffect(() => {
@@ -167,6 +168,7 @@ export default function Shell({
         </div>
       </header>
       <main id="content" className="content" tabIndex={-1}>
+        <AccessNotice/>
         {demo && (
           <div className="preview-label">
             Design preview · Illustrative data · Account actions disabled

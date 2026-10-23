@@ -1,5 +1,5 @@
 import type { Research, Fact, Candle, Workspace } from "../../lib/types";
-// Only imported by the localhost-only, explicitly enabled /preview route.
+// Synthetic data for explicitly enabled localhost preview or labelled private-beta sample mode.
 // These synthetic observations never substitute for failed production requests.
 const at = "2026-10-17T05:00:00Z";
 function sample(

@@ -1,4 +1,8 @@
 "use client";
+import { startQuotePolling } from "@/lib/quote-refresh";
+import {FeatureGate,useAccess} from "./Access";
+import FreeSnapshot from "./FreeSnapshot";
+import type {Feature} from "@/lib/access-policy";
 import StockFacts from "./StockFacts";
 import {
   ResearchModeSwitch,
@@ -68,6 +72,7 @@ const tabs = [
 ] as const;
 const ranges = ["1D", "1W", "1M", "6M", "1Y", "5Y"] as const;
 export default function Research({ symbol }: { symbol: string }) {
+  const {access}=useAccess();
   const { preferences } = useResearchPreferences();
   const requestedTab = useSearchParams().get("tab");
   const { demo, workspace, mutate, reduceMotion } = useProduct();
@@ -91,27 +96,13 @@ export default function Research({ symbol }: { symbol: string }) {
       : undefined,
     60000,
   );
-  const liveHealthy = useRef(false);
   const refreshQuote = useRef(latestQuote.refresh);
   refreshQuote.current = latestQuote.refresh;
   useEffect(() => {
     if (demo) return;
-    const tick = () => {
-      if (document.visibilityState === "visible" && !liveHealthy.current)
-        refreshQuote.current();
-    };
-    const timer = setInterval(tick, 60000);
-    document.addEventListener("visibilitychange", tick);
-    return () => {
-      clearInterval(timer);
-      document.removeEventListener("visibilitychange", tick);
-    };
+    return startQuotePolling(() => refreshQuote.current());
   }, [symbol, demo]);
   const live = useLivePrices([symbol], !!demo);
-  liveHealthy.current =
-    live.connected &&
-    !!live.ticks[symbol] &&
-    Date.now() - Date.parse(live.ticks[symbol].asOf) < 30000;
   const retainedQuote = useRef<{ symbol: string; quote: Quote | undefined }>({
     symbol,
     quote: undefined,
@@ -508,6 +499,7 @@ export default function Research({ symbol }: { symbol: string }) {
               key={name}
               onClick={() => switchTab(name)}
             >
+              {!access.features[({Snapshot:"overview",Thesis:"business",Financials:"financials",Valuation:"value",Technicals:"technicals",Analysts:"analysts",News:"news",Advanced:"advanced"} as const)[name]]&&<span className="tab-pro-mark">Pro · </span>}
               {name === "Snapshot"
                 ? "Overview"
                 : name === "Valuation"
@@ -550,6 +542,7 @@ export default function Research({ symbol }: { symbol: string }) {
         aria-labelledby={`tab-${tab}`}
         className="au-stack"
       >
+        <FeatureGate feature={({Snapshot:"overview",Thesis:"business",Financials:"financials",Valuation:"value",Technicals:"technicals",Analysts:"analysts",News:"news",Advanced:"advanced"} as const)[tab]} fallback={tab==="Snapshot"?<FreeSnapshot research={r}/>:undefined}>
         {tab === "News" && (
           <>
             <CompanyUpdates research={r} />
@@ -563,7 +556,7 @@ export default function Research({ symbol }: { symbol: string }) {
           <AdvancedResearch key={r.company.symbol} research={r} initialSection={workbenchTarget}/>
         )}
         {tab === "Analysts" && <AnalystRatings research={r} />}
-        {retainedCharts.includes("Snapshot") && (
+        {access.features.overview && retainedCharts.includes("Snapshot") && (
           <section
             data-retained-panel="Snapshot"
             hidden={tab !== "Snapshot"}
@@ -591,7 +584,7 @@ export default function Research({ symbol }: { symbol: string }) {
           </>
         )}
         {tab === "Valuation" && <ValueStudio research={r} onWorkbench={()=>{setWorkbenchTarget("expectations");switchTab("Advanced")}}/>}
-        {retainedCharts.includes("Technicals") && (
+        {access.features.technicals && retainedCharts.includes("Technicals") && (
           <section
             data-retained-panel="Technicals"
             hidden={tab !== "Technicals"}
@@ -631,6 +624,7 @@ export default function Research({ symbol }: { symbol: string }) {
             <BusinessMap key={r.company.symbol} research={r} />
           </>
         )}
+        </FeatureGate>
       </div>
     </article>
   );

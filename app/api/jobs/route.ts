@@ -1,3 +1,4 @@
+import {accessEnabled,exactOwner} from "@/lib/access-server";
 import { scheduledCandidates } from "@/lib/paper-policy";
 import { backgroundWork } from "@/lib/provider-budget";
 import { timingSafeEqual } from "node:crypto";
@@ -22,12 +23,13 @@ export async function GET(request: Request) {
       results: unknown[] = [];
     // A bounded operator-owned job. Never scan or execute on arbitrary tenants.
     const alertOwner = process.env.AURYN_ALERT_JOB_USER_ID;
-    if (alertOwner)
+    if (alertOwner && (!accessEnabled() || exactOwner(alertOwner)))
       results.push({
         alerts: await backgroundWork(() => checkAlerts(db, alertOwner)),
       });
     if (
       owner &&
+      (!accessEnabled() || exactOwner(owner)) &&
       process.env.AURYN_PAPER_SCHEDULE_ENABLED === "true" &&
       process.env.AURYN_PAPER_EXECUTION_ENABLED === "true"
     ) {

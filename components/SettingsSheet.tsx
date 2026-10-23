@@ -15,7 +15,7 @@ export default function SettingsSheet({
   const { demo } = useProduct();
   const [error, setError] = useState("");
   const [section,setSection]=useState("appearance"),[signingOut,setSigningOut]=useState(false);
-  const prefix = demo ? "/preview" : "";
+  const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   return (
     <dialog
       ref={dialog}
@@ -69,7 +69,7 @@ export default function SettingsSheet({
           className="setting-row action negative"
           disabled={signingOut}
           onClick={async () => {
-            if (demo) {
+            if (demo && demo.routePrefix!=="") {
               setError("Account actions are disabled in the design preview.");
               return;
             }

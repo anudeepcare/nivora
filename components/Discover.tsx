@@ -11,7 +11,7 @@ import type { Research } from "@/lib/types";
 import { Empty, PageHeading, SecurityLogo, Notice, Help } from "./Ui";
 export default function Discover({embedded=false}:{embedded?:boolean}) {
   const { workspace, demo, cache } = useProduct(),
-    prefix = demo ? "/preview" : "",
+    prefix = demo && demo.routePrefix !== "" ? "/preview" : "",
     [draft, setDraft] = useState(""),
     [rows, setRows] = useState<Research[]>([]),
     [filter, setFilter] = useState("all"),

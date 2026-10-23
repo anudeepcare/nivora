@@ -33,7 +33,7 @@ export default function Search({
     [selected, setSelected] = useState(-1),
     [loading, setLoading] = useState(false),
     [error, setError] = useState("");
-  const prefix = demo ? "/preview" : "";
+  const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   const showResults = open && query.trim().length > 0;
   const recent = [
     ...new Set([

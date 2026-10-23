@@ -1,0 +1,30 @@
+// Built route tests, mocked account/data transport. No live database or vendor calls.
+import {createRequire} from 'node:module';import assert from 'node:assert/strict';
+const require=createRequire(import.meta.url),load=p=>require('../.next/server/app/api/'+p+'/route.js').routeModule.userland;
+const owner='00000000-0000-4000-8000-000000000001',friend='00000000-0000-4000-8000-000000000002';
+process.env.NEXT_PUBLIC_SUPABASE_URL='https://access.example.invalid';process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY='test-public';process.env.SUPABASE_SERVICE_ROLE_KEY='test-server';process.env.AURYN_OWNER_USER_ID=owner;process.env.AURYN_ACCESS_ENABLED='true';process.env.AURYN_EXTERNAL_DATA_LICENSED='false';
+let actor=friend,config={mode:'beta',freeResearch:0},grant=null,calls=[],checks=0;
+globalThis.fetch=async(input,options)=>{
+ const url=new URL(String(input));calls.push(url.pathname);
+ if(url.pathname==='/auth/v1/user')return Response.json({id:actor,email:'fixture@example.invalid',email_confirmed_at:'2026-01-01',app_metadata:{},user_metadata:{role:'admin'}});
+ if(url.pathname.endsWith('/auryn_access_config'))return Response.json({body:config,enforced:true,owner_id:owner});
+ if(url.pathname.endsWith('/auryn_beta_grants'))return Response.json(grant);
+ if(url.pathname.endsWith('/auryn_subscriptions'))return Response.json(null);
+ if(url.pathname.endsWith('/auryn_access_usage'))return new Response(null,{status:200,headers:{'content-range':'0-0/0'}});
+ if(url.pathname.endsWith('/rpc/auryn_access_reserve'))return Response.json({allowed:false,used:0});
+ throw Error('Unexpected network target: '+url.pathname);
+};
+const req=(path,method='GET')=>new Request('https://auryn.example/api/'+path,{method,headers:{Authorization:'Bearer test-only','x-auryn-preview-plan':'pro'}});
+let r=await load('access').GET(req('access'));assert.equal(r.status,200);let a=await r.json();assert.equal(a.owner,false);assert.equal(a.plan,'free');assert.equal(a.preview,null);assert.equal(a.sampleOnly,true);checks++;
+r=await load('owner/access').GET(req('owner/access'));assert.equal(r.status,403);checks++;
+r=await load('search').GET(req('search?q=MSFT'));assert.equal(r.status,403);checks++;
+process.env.AURYN_EXTERNAL_DATA_LICENSED='true';
+r=await load('chart/[symbol]').GET(req('chart/MSFT?range=5Y'),{params:Promise.resolve({symbol:'MSFT'})});assert.equal(r.status,403);checks++;
+r=await load('research/[symbol]').GET(req('research/MSFT'),{params:Promise.resolve({symbol:'MSFT'})});assert.equal(r.status,429);checks++;
+grant={expires_at:new Date(Date.now()+86400000).toISOString(),revoked_at:null};
+r=await load('access').GET(req('access'));a=await r.json();assert.equal(a.plan,'pro');assert.equal(a.source,'complimentary');checks++;
+grant={...grant,revoked_at:new Date().toISOString()};r=await load('access').GET(req('access'));a=await r.json();assert.equal(a.plan,'free');checks++;
+config={mode:'private'};r=await load('access').GET(req('access'));a=await r.json();assert.equal(a.admitted,false);checks++;
+actor=owner;r=await load('access').GET(req('access'));a=await r.json();assert.equal(a.owner,true);assert.equal(a.plan,'pro');assert.equal(a.preview,'pro');checks++;
+assert.ok(calls.every(p=>p.startsWith('/auth/')||p.startsWith('/rest/')));checks++;
+console.log(`${checks} access API checks passed: owner spoofing, preview isolation, sample-data guard, feature gate, quota, grant/revoke and private admission.`);

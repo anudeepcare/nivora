@@ -43,7 +43,11 @@ export async function readFreshQuote<
   T extends {
     quote: { price: number | null; asOf: string | null; stale: boolean };
   },
->(sources: MarketSource[], read: (source: MarketSource) => Promise<T>) {
+>(
+  sources: MarketSource[],
+  read: (source: MarketSource) => Promise<T>,
+  freshness?: { now: number; maxAgeMs: number },
+) {
   let retained: { value: T; provider: MarketSource; fallback: boolean } | null =
     null;
   let failure: unknown = new Error("No market-data provider is configured.");
@@ -57,7 +61,20 @@ export async function readFreshQuote<
       )
         throw new Error("The quote source returned no usable price.");
       const result = { value, provider: sources[i], fallback: i > 0 };
-      if (!value.quote.stale) return result;
+      const stamp = Date.parse(value.quote.asOf || "");
+      const timely =
+        !freshness ||
+        (Number.isFinite(stamp) &&
+          stamp <= freshness.now + 60000 &&
+          freshness.now - stamp <= freshness.maxAgeMs);
+      // A delayed flag is a feed classification, not proof that a quote is new.
+      // Retain the newest observation if the backup is older or unavailable.
+      if (
+        !value.quote.stale &&
+        timely &&
+        (!retained || stamp >= Date.parse(retained.value.quote.asOf || ""))
+      )
+        return result;
       if (
         !retained ||
         (Date.parse(value.quote.asOf || "") || 0) >
@@ -70,4 +87,25 @@ export async function readFreshQuote<
   }
   if (retained) return retained;
   throw failure;
+}
+
+/** Try a newer backup during scheduled pre/regular/post hours and for crypto.
+ * Closed-market observations do not trigger a second vendor request merely
+ * because the market is closed. This is a freshness window, not a holiday calendar. */
+export function quoteRefreshMaxAge(symbol: string, now = Date.now()) {
+  if (symbol.includes("/")) return 180000;
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York",
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(now);
+  const part = (key: string) => parts.find((p) => p.type === key)?.value || "";
+  const minutes = Number(part("hour")) * 60 + Number(part("minute"));
+  return !["Sat", "Sun"].includes(part("weekday")) &&
+    minutes >= 240 &&
+    minutes < 1200
+    ? 180000
+    : 4 * 86400000;
 }

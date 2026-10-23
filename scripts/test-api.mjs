@@ -5,6 +5,7 @@ const require = createRequire(import.meta.url),
   root = "../.next/server/app/api/";
 const load = (path) => require(root + path + "/route.js").routeModule.userland;
 const routes = [
+  "access", "access/visit", "owner/access",
   "sector-performance",
   "account-balances",
   "price-stream",
@@ -98,6 +99,17 @@ globalThis.fetch = async (input, options) => {
   }
   throw Error("Unexpected network target");
 };
+// Owner controls cannot be acquired through editable profile metadata.
+process.env.AURYN_OWNER_USER_ID = "00000000-0000-4000-8000-000000000099";
+for (const method of ["GET","POST"]) {
+ const r = await load("owner/access")[method](new Request("https://auryn.example/api/owner/access", {method,headers,...(method==="POST"?{body:JSON.stringify({action:"settings",config:{mode:"beta"}})}:{})}));
+ assert.equal(r.status,403);checks++;
+}
+process.env.AURYN_ACCESS_ENABLED="true";
+const blockedBeforeSetup=await load("quotes").GET(new Request("https://auryn.example/api/quotes?symbols=MSFT",{headers}));
+assert.equal(blockedBeforeSetup.status,503);checks++;
+process.env.AURYN_ACCESS_ENABLED="false";
+delete process.env.AURYN_OWNER_USER_ID;
 const denied = await load("paper-status").GET(
   new Request("https://auryn.example/api/paper-status", { headers }),
 );

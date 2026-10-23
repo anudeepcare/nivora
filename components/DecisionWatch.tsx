@@ -57,7 +57,7 @@ export default function DecisionWatch({ research: r }: { research: Research }) {
             alert; checks run on request or an administrator schedule.
           </p>
         </div>
-        <Link href={`${demo ? "/preview" : ""}/alerts`}>Manage alerts →</Link>
+        <Link href={`${demo && demo.routePrefix !== "" ? "/preview" : ""}/alerts`}>Manage alerts →</Link>
       </header>
       <div>
         {d.tripwires.map((t) => (

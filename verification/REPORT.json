@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-10-23T06:42:51.917535+00:00",
+  "generatedAt": "2026-10-23T13:44:42.023655+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 461 tests, TypeScript and production build; CSS-only final refinement rebuilt separately",
-    "npm run test:api": "passed: 83 compiled API checks",
+    "npm run verify": "passed: 471 tests, generated Next route types, TypeScript and production build",
+    "npm run test:api": "passed: 100 compiled API checks",
     "git diff --check": "passed",
-    "npm test": "passed: 461 tests",
+    "npm test": "passed: 471 tests",
     "npm run build": "passed with no CSS compilation warnings",
-    "production HTTP": "passed: 12 local HTTP checks; not a browser or live consent roundtrip",
-    "node scripts/test-auth-provider-api.mjs": "passed: 3 compiled checks; 86 API checks total"
+    "production HTTP": "passed: 12 local production-server HTTP checks; not a live OAuth roundtrip",
+    "node scripts/test-auth-provider-api.mjs": "passed: 3 compiled checks; 103 API checks total"
   },
-  "domainPostgresAndComponentTests": 461,
-  "builtApiChecks": 86,
+  "domainPostgresAndComponentTests": 471,
+  "builtApiChecks": 103,
   "providerSelection": {
     "quotes": "EODHD primary; Twelve fallback for stale or failed primary; retain newest usable stale observation if both fail freshness",
     "intraday": "EODHD primary; whole Twelve series on failure",
@@ -671,5 +671,27 @@
     "browserErrors": 0,
     "horizontalOverflow": false,
     "calendarAnchorVerified": true
+  },
+  "currentUpdate": {
+    "document": "docs/BETA_ACCESS_AND_QUOTES.md",
+    "quotePolling": "60-second visible-page REST validation independent of stream health; resume check; no hidden polling",
+    "primaryFreshness": "aging primary tries backup during active window; never downgrade newest observation",
+    "accessControls": "optional owner controls, grants/revocation, Free/Pro previews, atomic research/AI quotas, direct-write watchlist caps",
+    "billing": "NOT CONNECTED; no Stripe checkout, webhook or portal; no test or real payments",
+    "liveDatabaseWrites": false,
+    "deployed": false,
+    "currentMembershipVisualAcceptance": false
+  },
+  "dcaComparison30": {
+    "asOf": "2026-10-22T23:00:00Z",
+    "confirmedMatches": 28,
+    "formingMatches": 30,
+    "stocks": 30,
+    "mismatches": [
+      "TSLA confirmed: AURYN 2 / reference 1",
+      "NVO confirmed: AURYN 2 / reference 3"
+    ],
+    "report": "verification/dca-comparison-30.json",
+    "claim": "snapshot numerical agreement only; no universal parity or outperformance"
   }
 }

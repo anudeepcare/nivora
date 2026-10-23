@@ -29,7 +29,7 @@ export default function HomeBriefing({
   error?: string;
 }) {
   const { workspace, demo, workspaceError, displayName } = useProduct(),
-    prefix = demo ? "/preview" : "";
+    prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   const [page, setPage] = useState(0),
     [expandedNews, setExpandedNews] = useState(false);
   const now = new Date(),

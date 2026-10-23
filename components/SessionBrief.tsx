@@ -16,7 +16,7 @@ export default function SessionBrief() {
       {rows.slice(0, 4).map((r) => (
         <Link
           key={r.symbol}
-          href={`${demo ? "/preview" : ""}/research/${encodeURIComponent(r.symbol.replace("/", "-"))}`}
+          href={`${demo && demo.routePrefix !== "" ? "/preview" : ""}/research/${encodeURIComponent(r.symbol.replace("/", "-"))}`}
         >
           <b>{r.symbol}</b>
           <span>{r.changes.join(" · ")}</span>

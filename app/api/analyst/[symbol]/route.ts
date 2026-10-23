@@ -1,3 +1,4 @@
+import {requestAccess,reserveAccess,requireFeature} from "@/lib/access-server";
 import {filingPassages} from "@/lib/filing-passages";
 import {analysisIntent} from "@/lib/connected-product";
 import { createHash } from "node:crypto";
@@ -85,6 +86,8 @@ export async function POST(
       .digest("hex");
     const old = reports.get(hash);
     if (old && old.until > Date.now()) return privateJson(await old.value);
+    const access=await requestAccess(request,user.id);requireFeature(access,"ai");
+    await reserveAccess(user.id,access,"ai",crypto.randomUUID());
     const value = (async (): Promise<Report> => {
       const quota = await db.rpc("auryn_reserve_ai_request");
       if (quota.error)

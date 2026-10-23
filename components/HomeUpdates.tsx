@@ -17,7 +17,7 @@ export default function HomeUpdates({
   companyNames?: Record<string, string>;
 }) {
   const { workspace, demo } = useProduct(),
-    prefix = demo ? "/preview" : "";
+    prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   const [requestedPage, setRequestedPage] = useState(0);
   const feed = companyFeedPage(
     [
