@@ -181,6 +181,9 @@ async function twelveQuote(
                   return m < 570 || m >= 960;
                 })(),
                 timestamp: Date.parse(bar.time) / 1000,
+                last_quote_at: Date.parse(bar.time) / 1000,
+                extended_price: undefined,
+                extended_timestamp: undefined,
                 percent_change:
                   previous != null && previous > 0
                     ? (bar.close / previous - 1) * 100

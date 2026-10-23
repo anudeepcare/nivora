@@ -247,14 +247,12 @@ export default function PublicLanding({
                 <i /> Business first. Price in perspective.
               </span>
               <h1>
-                Know what you own.
+                A clearer edge.
                 <br />
-                <em>See what matters next.</em>
+                <em>The whole picture.</em>
               </h1>
               <p>
-                Understand the business, put its price in context, and follow
-                the changes that matter to your investments. One calm workspace,
-                with the evidence close by.
+                Know what you own. Connect business quality, valuation and price conditions—then see what matters to your holdings next.
               </p>
               <div className="public-actions">
                 <Link href="/login?mode=signup" className="public-button">
@@ -272,7 +270,7 @@ export default function PublicLanding({
             </div>
             <div className="public-hero-example">
               <div className="public-example-label">
-                <span>Inside AURYN</span>
+                <span>The AURYN perspective</span>
                 <span>Tap to explore ↓</span>
               </div>
               <PublicSample />

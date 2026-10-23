@@ -93,9 +93,11 @@ export default function HomeUpdates({
     companyNames,
     exposure,
   );
+  const agenda=[...attention].sort((a,b)=>a.date.localeCompare(b.date)||(b.value??0)-(a.value??0));
+  const next=agenda[0];
   if (!key) return null;
   return (
-    <section className="home-updates" aria-label="Company updates">
+    <section className="home-updates home-desk" aria-label="Company updates">
       <header className="section-head">
         <div>
           <span className="eyebrow">Your companies</span>
@@ -133,15 +135,16 @@ export default function HomeUpdates({
         </div>
       </header>
 
-      <div className="updates-grid">
-        <section className="update-panel upcoming-panel">
+      {next&&<Link className="agenda-lead" href={`${prefix}/research/${encodeURIComponent(next.symbol)}?tab=News`} scroll={false}><div className="agenda-lead-date"><CalendarDays size={21}/><span>Next on your calendar</span><strong>{dateLabel(next.date).replace(/, \d{4}$/, "")}</strong></div><div className="agenda-lead-company"><span>{next.kind} · {next.detail}</span><h3>{next.symbol}</h3><p>{next.value!=null?`${amount(next.value,"USD",true)} of your priced holdings exposed`:"Review the business before its next report"}</p></div><div className="agenda-lead-action"><span>Open company brief</span><ArrowUpRight size={24}/></div></Link>}
+      <div className="agenda-layout">
+        <section className="agenda-calendar">
           <h3>
-            <CalendarDays size={18} /> Coming up <small>Next 30 days</small>
+            <CalendarDays size={18} /> On the horizon <small>Next 30 days</small>
           </h3>
-          {attention.length ? (
-            attention.slice(0, expanded ? undefined : 5).map((e) => (
+          {agenda.length>(next?1:0) ? (
+            agenda.slice(next?1:0, expanded ? undefined : 4).map((e) => (
               <Link
-                className="update-row"
+                className="agenda-item"
                 key={`${e.symbol}:${e.date}:${e.kind}`}
                 href={`${prefix}/research/${encodeURIComponent(e.symbol)}?tab=News`}
                 scroll={false}
@@ -172,29 +175,25 @@ export default function HomeUpdates({
                       (i) => i.includes("events") || i.includes("connected"),
                     )
                   ? "Scheduled events could not be checked. Your research remains available."
-                  : "No scheduled events returned for the next 30 days."}
+                  : next ? "No further scheduled events returned for the next 30 days." : "No scheduled events returned for the next 30 days."}
             </p>
           )}
-          <p className="small muted">
-            Ranked by priced holding value, then report date. Percentages use
-            priced USD assets and cash, including older usable observations.
-            Dates can change; missing coverage is not an all-clear.
-          </p>
+
         </section>
-        <section className="update-panel news-panel">
+        <section className="agenda-news">
           <h3>
             <Newspaper size={18} /> In the news <small>Past 7 days</small>
           </h3>
           {headlines.length ? (
-            headlines.slice(0, expanded ? undefined : 6).map((n) => (
+            headlines.slice(0, expanded ? undefined : 4).map((n) => (
               <a
-                className="update-row"
+                className="agenda-item"
                 key={n.url}
                 href={n.url}
                 target="_blank"
                 rel="noreferrer"
               >
-                <span className="news-symbol">{n.symbol}</span>
+                <span className="agenda-symbol">{n.symbol}</span>
                 <span>
                   <b>{n.title}</b>
                   <small>
@@ -217,14 +216,10 @@ export default function HomeUpdates({
                   : "No recent headlines matching your company names or explicit tickers were returned."}
             </p>
           )}
-          <p className="small muted">
-            Headline names or explicit tickers matched; one per company before
-            repeats, ranked by holding exposure. This can omit relevant broader
-            coverage and does not assess materiality. Coverage checked for{" "}
-            {news.data?.newsFollowed ?? symbols.length} followed stocks.
-          </p>
+
         </section>
       </div>
+      <details className="agenda-context"><summary>About these updates</summary><p>Calendar ordered by date, then priced holding exposure. Exposure can use older usable USD prices. News is matched to company names or explicit tickers, with one story per company before repeats; it is ranked by holding exposure. Coverage checked for {news.data?.newsFollowed??symbols.length} followed stocks. Dates can change and missing coverage is not an all-clear.</p></details>
     </section>
   );
 }

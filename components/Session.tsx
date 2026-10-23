@@ -425,8 +425,11 @@ function Login({ initialError }: { initialError: string }) {
     const message = authErrorMessage(params.get("auth_error"));
     if (message) setError(message);
   }, []);
+  const [socialProviders,setSocialProviders]=useState<{google:boolean|null;x:boolean|null}>({google:null,x:null});
+  useEffect(()=>{const controller=new AbortController();fetch("/api/auth/providers",{signal:controller.signal}).then(r=>r.ok?r.json():null).then(v=>{if(v&&!controller.signal.aborted)setSocialProviders({google:typeof v.google==="boolean"?v.google:null,x:typeof v.x==="boolean"?v.x:null});}).catch(()=>{});return()=>controller.abort();},[]);
   async function social(provider: "google" | "x") {
     if (busy) return;
+    if(socialProviders[provider]===false){setError(`${provider==="google"?"Google":"X"} sign-in has not been enabled yet. Please use email.`);return;}
     setBusy(true); setError(""); setNotice("");
     try {
       const {error} = await authClient().auth.signInWithOAuth({provider, options:{
@@ -495,9 +498,10 @@ function Login({ initialError }: { initialError: string }) {
               : "Reset your password."}
         </h1>
         <p>{mode === "signup" ? "Create one place for your research, watchlist and portfolio." : mode === "reset" ? "We’ll email a secure link to restore access to your workspace." : "Your companies. Your evidence. Your next decision."}</p>
+        {mode !== "reset" && (socialProviders.google===false||socialProviders.x===false) && <p className="auth-provider-note" role="status">{socialProviders.google===false&&socialProviders.x===false?"Social sign-in is not enabled yet. Continue securely with email below.":`${socialProviders.google===false?"Google":"X"} sign-in is not enabled yet. Use an available option below.`}</p>}
         {mode !== "reset" && <div className="auth-social" aria-label="Continue with a social account">
-          <button type="button" disabled={busy} onClick={() => social("google")}><span className="google-mark" aria-hidden="true">G</span>Continue with Google</button>
-          <button type="button" disabled={busy} onClick={() => social("x")}><span aria-hidden="true">𝕏</span>Continue with X</button>
+          <button type="button" disabled={busy||socialProviders.google===false} onClick={() => social("google")}><svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M21.6 12.23c0-.71-.06-1.39-.18-2.05H12v3.88h5.38a4.6 4.6 0 0 1-2 3.02v2.51h3.24c1.89-1.74 2.98-4.31 2.98-7.36Z"/><path fill="#34A853" d="M12 22c2.7 0 4.96-.9 6.62-2.42l-3.24-2.51c-.9.6-2.05.96-3.38.96-2.6 0-4.81-1.76-5.6-4.12H3.06v2.59A10 10 0 0 0 12 22Z"/><path fill="#FBBC05" d="M6.4 13.91a6 6 0 0 1 0-3.82V7.5H3.06a10 10 0 0 0 0 9l3.34-2.59Z"/><path fill="#EA4335" d="M12 5.97c1.47 0 2.79.51 3.82 1.51l2.87-2.87A9.6 9.6 0 0 0 12 2a10 10 0 0 0-8.94 5.5l3.34 2.59A5.97 5.97 0 0 1 12 5.97Z"/></svg>Continue with Google</button>
+          <button type="button" disabled={busy||socialProviders.x===false} onClick={() => social("x")}><span aria-hidden="true">𝕏</span>Continue with X</button>
           <div className="auth-divider"><span>or use email</span></div>
         </div>}
         <form onSubmit={submit} aria-busy={busy}>

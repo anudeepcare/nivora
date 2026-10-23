@@ -2,6 +2,10 @@
 
 Code is integrated. Google/X consent flows, email delivery and domain settings are not activated by copying source alone. No provider credentials were requested in chat or stored in this package.
 
+## Confirmed current blocker
+
+Read-only live public Auth settings on 23 October show Google disabled, legacy Twitter disabled and no enabled X flag. The new application checks availability and keeps email usable. These providers require real developer Client IDs/secrets saved in Supabase; copying the ZIP cannot activate them. Availability is cached for at most five minutes after a successful read.
+
 ## Domain and Supabase
 
 1. In Vercel, connect `auryninvest.com` to the existing project, confirm HTTPS and select it as the canonical host. Redirect `www.auryninvest.com` to the apex. Keep the current Vercel address available until the domain works.

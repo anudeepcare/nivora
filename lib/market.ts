@@ -10,8 +10,11 @@ export function normalizeQuote(
   symbol: string,
   now = Date.now(),
 ): Quote {
-  const price = numeric(raw.close),
-    timestamp = numeric(raw.timestamp);
+  const regularStamp = numeric(raw.last_quote_at) ?? numeric(raw.timestamp);
+  const extendedStamp = numeric(raw.extended_timestamp), extendedPrice = numeric(raw.extended_price);
+  const useExtended = !symbol.includes("/") && extendedPrice != null && extendedPrice > 0 && extendedStamp != null && extendedStamp * 1000 <= now + 60000 && (regularStamp == null || extendedStamp > regularStamp);
+  const price = useExtended ? extendedPrice : numeric(raw.close),
+    timestamp = useExtended ? extendedStamp : regularStamp;
   const milliseconds = timestamp == null ? NaN : timestamp * 1000;
   const asOf =
     Number.isFinite(milliseconds) && Math.abs(milliseconds) < 8.64e15
@@ -33,14 +36,14 @@ export function normalizeQuote(
   // This tightens freshness during scheduled US hours; it does not assert an
   // exchange is open on holidays or overwrite the provider's session report.
   const scheduledHours=!['Sat','Sun'].includes(part('weekday'))&&minutes>=570&&minutes<960;
-  const extended = raw.is_extended_hours === true || raw.is_extended_hours === "true";
+  const extended = useExtended || raw.is_extended_hours === true || raw.is_extended_hours === "true";
   const extendedWindow = !["Sat", "Sun"].includes(part("weekday")) && minutes >= 240 && minutes < 1200;
   const ageLimit = open || continuous || extended || extendedWindow || scheduledHours ? 3 * 60_000 : 4 * 86400_000;
   const observedParts = asOf ? new Intl.DateTimeFormat("en-US", {timeZone:"America/New_York",hour:"2-digit",hourCycle:"h23"}).formatToParts(milliseconds) : [];
   const observedHour = Number(observedParts.find(p=>p.type==="hour")?.value);
   return {
     price: price != null && price > 0 ? price : null,
-    changePct: numeric(raw.percent_change),
+    changePct: useExtended ? (numeric(raw.previous_close) != null && Number(raw.previous_close) > 0 ? (price! / Number(raw.previous_close) - 1) * 100 : null) : numeric(raw.percent_change),
     previousClose: numeric(raw.previous_close),
     currency,
     asOf,

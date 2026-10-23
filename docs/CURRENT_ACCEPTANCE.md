@@ -1,6 +1,6 @@
-# Current continuation — 23 October 2026
+# Current screenshot follow-up — 23 October 2026
 
-Read `docs/LAUNCH_DESKS_AND_PRICING.md` and `docs/LAUNCH_AUTH_SETUP.md` first. This revision adds launch authentication/routing, new Value/Advanced presentation, a new explicit operating-expectations engine, mobile metric fixes and extended-hours request/freshness repairs. Full source retains monthly-v4 and portfolio data logic. Verification results are in `verification/REPORT.json`; earlier counts below are historical. No push/deployment or live database mutation was performed. Live OAuth, extended-hours entitlement and physical iPhone/rendered-source acceptance remain outstanding.
+Read `docs/SCREENSHOT_REPAIR_20261023.md` first. Corrected the quote candle-opening/observation timestamp mismatch, added live social-provider availability handling, replaced the profile Settings sheet and Home/landing compositions, and compacted the stock metric strip. 439 tests, production build, 83 API fixture checks, 3 additional provider-config checks and 12 local HTTP checks pass. Google/X are disabled in the inspected live Supabase configuration; complete `docs/LAUNCH_AUTH_SETUP.md` to activate them. No push/deployment or live configuration mutation was performed. Physical device, rendered-source and live quote/OAuth acceptance remain outstanding. Earlier status entries below are historical.
 
 # Current source changes and acceptance blockers
 

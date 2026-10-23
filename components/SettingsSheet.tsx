@@ -14,6 +14,7 @@ export default function SettingsSheet({
 }) {
   const { demo } = useProduct();
   const [error, setError] = useState("");
+  const [section,setSection]=useState("appearance"),[signingOut,setSigningOut]=useState(false);
   const prefix = demo ? "/preview" : "";
   return (
     <dialog
@@ -44,12 +45,11 @@ export default function SettingsSheet({
           <X size={21} />
         </button>
       </header>
+      <nav className="settings-sheet-tabs" aria-label="Settings sections">{[["appearance","Appearance"],["research","Research"],["account","Account"]].map(([id,label])=><button type="button" key={id} aria-pressed={section===id} aria-controls={`settings-${id}`} onClick={()=>setSection(id)}>{label}</button>)}</nav>
       <div className="dialog-body settings-clean-body">
-        <DisplayPreferences />
-        <details className="settings-research">
-          <summary>Research preferences</summary>
-          <ResearchPreferenceControls />
-        </details>
+        <section id="settings-appearance" hidden={section!=="appearance"}><DisplayPreferences /></section>
+        <section id="settings-research" hidden={section!=="research"}><h3>Your research, your way.</h3><ResearchPreferenceControls /></section>
+        <section id="settings-account" hidden={section!=="account"} className="sheet-account"><h3>Account & support</h3>
         {[
           ["settings", "Account & security"],
           ["alerts", "Alerts"],
@@ -67,16 +67,18 @@ export default function SettingsSheet({
         ))}
         <button
           className="setting-row action negative"
+          disabled={signingOut}
           onClick={async () => {
             if (demo) {
               setError("Account actions are disabled in the design preview.");
               return;
             }
+            setSigningOut(true);
             try { await signOutAndRedirect(); }
-            catch (error) { setError(error instanceof Error ? error.message : "Could not sign out. Please try again."); }
+            catch (error) { setError(error instanceof Error ? error.message : "Could not sign out. Please try again."); setSigningOut(false); }
           }}
         >
-          <span>Sign out</span>
+          <span>{signingOut?"Signing out…":"Sign out"}</span>
           <LogOut size={18} />
         </button>
         <nav className="settings-legal" aria-label="Legal and methodology">
@@ -90,6 +92,7 @@ export default function SettingsSheet({
             Privacy
           </Link>
         </nav>
+        </section>
         {error && (
           <p role="alert" className="negative">
             {error}
