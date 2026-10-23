@@ -53,7 +53,7 @@ export default function SettingsSheet({
         href={`${prefix}/plans`}
         onNavigate={() => dialog.current?.close()}
       >
-        <strong>Membership</strong>
+        <span><strong>Membership</strong><small>{access.owner ? "Owner access" : access.plan === "pro" ? "Pro membership" : "Free membership"}</small></span>
         <ArrowRight size={18} />
       </Link>
       {access.owner && !prefix && (

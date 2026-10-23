@@ -81,23 +81,6 @@ export default function OwnerAccess() {
         <h1>Admin controls</h1>
         <p>People, product access and payments. Just for you.</p>
       </header>
-      <nav className="admin-section-nav" aria-label="Admin sections">
-        {[
-          ["people", "People"],
-          ["features", "Features"],
-          ["payments", "Payments"],
-        ].map(([id, label]) => (
-          <button
-            type="button"
-            key={id}
-            aria-pressed={panel === id}
-            aria-controls={`admin-${id}`}
-            onClick={() => setPanel(id)}
-          >
-            {label}
-          </button>
-        ))}
-      </nav>
       <section className="admin-preview-row" aria-label="Plan preview">
         <div>
           <strong>Preview access</strong>
@@ -125,6 +108,23 @@ export default function OwnerAccess() {
           </select>
         </label>
       </section>
+      <nav className="admin-section-nav" aria-label="Admin sections">
+        {[
+          ["people", "People"],
+          ["features", "Features"],
+          ["payments", "Payments"],
+        ].map(([id, label]) => (
+          <button
+            type="button"
+            key={id}
+            aria-pressed={panel === id}
+            aria-controls={`admin-${id}`}
+            onClick={() => setPanel(id)}
+          >
+            {label}
+          </button>
+        ))}
+      </nav>
       {message && (
         <p className="membership-feedback" role="status">
           {message}
@@ -277,6 +277,7 @@ export default function OwnerAccess() {
                   type="email"
                   required
                   autoComplete="off"
+                  placeholder="name@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -303,6 +304,7 @@ export default function OwnerAccess() {
                 Grant complimentary Pro
               </button>
             </form>
+            <h3>Complimentary members</h3>
             <div className="owner-grants">
               {data.grants.length ? (
                 data.grants.map((g) => (
@@ -369,7 +371,7 @@ export default function OwnerAccess() {
             className="membership-panel"
           >
             <span className="eyebrow">Stripe billing</span>
-            <h2>Payments, clearly.</h2>
+            <h2>Payments</h2>
             <p>
               Check the connected environment and monthly price without creating
               a charge. Customers manage payment methods, invoices and

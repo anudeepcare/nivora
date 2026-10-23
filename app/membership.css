@@ -227,15 +227,14 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .owner-feature-grid label {
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  gap: 15px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
   border-bottom: 1px solid var(--line);
   padding-bottom: 12px;
 }
 .owner-feature-grid select {
-  width: 150px;
+  width: 100%;
   flex-shrink: 0;
 }
 .owner-grant-form {
@@ -340,7 +339,7 @@
   border-radius: 999px;
   font-size: 12px;
   font-weight: 650;
-  color: var(--accent);
+  color: var(--blue);
   white-space: nowrap;
   min-height: 40px;
   flex-shrink: 0;
@@ -355,20 +354,26 @@
   border-radius: 16px;
   border: 1px solid var(--line);
   background: var(--surface);
-  color: var(--accent);
+  color: var(--blue);
   text-decoration: none;
   margin: 0 0 16px;
 }
 .settings-plan-entry span {
   display: grid;
-  gap: 5px;
+  gap: 3px;
 }
 .settings-plan-entry small {
   color: var(--muted);
   font-size: 12px;
 }
 .preferences-sheet > .settings-plan-entry {
-  margin: 0 20px 14px;
+  margin: 0 20px;
+  flex: none;
+  min-height: 58px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  padding: 10px 0;
 }
 .plans-page {
   max-width: 860px;
@@ -449,7 +454,7 @@
   margin: 32px 0 0;
 }
 .plans-public a {
-  color: var(--accent);
+  color: var(--blue);
 }
 @media (max-width: 600px) {
   .pricing-cards {
@@ -534,7 +539,7 @@
   flex-shrink: 0;
 }
 .plans-page .button:focus-visible {
-  outline: 3px solid var(--accent);
+  outline: 3px solid var(--blue);
   outline-offset: 3px;
 }
 @media (max-width: 600px) {
@@ -552,9 +557,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 18px 0;
-  margin-bottom: 20px;
-  border-block: 1px solid var(--line);
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
   color: var(--ink);
 }
 .admin-preview-row p {
@@ -618,7 +625,7 @@
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 16px;
-  margin: 20px 0;
+  margin: 0 0 18px;
 }
 .admin-section-nav button {
   flex: 1;
@@ -631,12 +638,13 @@
   cursor: pointer;
 }
 .admin-section-nav button[aria-pressed="true"] {
-  background: var(--accent);
-  color: #fff;
-  box-shadow: 0 4px 12px #2269df24;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-weight: 650;
+  box-shadow: none;
 }
 .admin-section-nav button:focus-visible {
-  outline: 3px solid var(--accent);
+  outline: 3px solid var(--blue);
   outline-offset: 3px;
 }
 .admin-duration-row {
@@ -649,7 +657,7 @@
 .admin-duration-row > span {
   font-size: 13px;
   color: var(--muted);
-  margin-right: auto;
+  margin-right: 8px;
 }
 .admin-duration-row .button {
   margin: 0;
@@ -682,4 +690,28 @@
   .owner-grants strong {
     overflow-wrap: anywhere;
   }
+}
+
+/* Scoped console geometry: forms and lists share one content edge. */
+.owner-access { width:100%; max-width:1120px; }
+.owner-access .membership-panel { max-width:none; margin-bottom:16px; border-radius:16px; padding:22px; }
+.owner-access .membership-panel h2 { font-size:21px; }
+.owner-access .owner-grant-form { margin-top:18px; }
+.owner-access .owner-grant-form label { font-size:13px; }
+.owner-access .owner-grant-form input { min-width:0; min-height:46px; background:var(--surface); }
+.owner-access .owner-grant-form button { margin:0; }
+.owner-access .admin-duration-row .button { min-height:40px; font-size:13px; padding:7px 14px; border-radius:10px; }
+.owner-access .owner-grants article { min-height:72px; }
+.owner-access .owner-grants strong { font-size:14px; }
+.owner-access .owner-grants small { font-size:12px; }
+.owner-access .owner-grants .button { margin:0; font-size:13px; padding:8px 14px; border-radius:10px; }
+.owner-access .admin-activity { padding:16px 22px; }
+.owner-access .owner-audit-row { flex-wrap:wrap; }
+.preferences-sheet > .settings-plan-entry strong { font-size:14px; font-weight:600; color:var(--ink); }
+.preferences-sheet > .settings-plan-entry svg { color:var(--blue); flex:none; }
+@media (max-width:760px) {
+ .owner-access .owner-grant-form { grid-template-columns:minmax(0,1fr); }
+ .owner-access .owner-feature-grid { grid-template-columns:minmax(0,1fr); }
+ .owner-access .membership-panel { padding:18px; }
+ .owner-access .admin-preview-row { gap:10px; }
 }
