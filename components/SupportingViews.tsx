@@ -1,5 +1,4 @@
 "use client";
-import PlanPanel from "./PlanPanel";
 import DisplayPreferences from "./DisplayPreferences";
 import ResearchPreferenceControls from "./ResearchPreferences";
 import PwaDiagnostics from "./PwaDiagnostics";

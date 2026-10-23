@@ -9,7 +9,7 @@ globalThis.fetch=async(input,options)=>{
  if(url.pathname==='/auth/v1/user')return Response.json({id:actor,email:'fixture@example.invalid',email_confirmed_at:'2026-01-01',app_metadata:{},user_metadata:{role:'admin'}});
  if(url.pathname.endsWith('/auryn_access_config'))return Response.json({body:config,enforced:true,owner_id:owner});
  if(url.pathname.endsWith('/auryn_beta_grants'))return Response.json(grant);
- if(url.pathname.endsWith('/auryn_subscriptions'))return Response.json(null);
+ if(url.pathname.endsWith('/auryn_stripe_subscriptions'))return Response.json(null);
  if(url.pathname.endsWith('/auryn_access_usage'))return new Response(null,{status:200,headers:{'content-range':'0-0/0'}});
  if(url.pathname.endsWith('/rpc/auryn_access_reserve'))return Response.json({allowed:false,used:0});
  throw Error('Unexpected network target: '+url.pathname);

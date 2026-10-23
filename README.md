@@ -1,3 +1,7 @@
+# Latest — clean Plans and Stripe implementation, 23 October 2026
+
+Read `docs/STRIPE_SETUP.md` first. The complete source includes compact Free/Pro plans, $2.99 monthly Checkout, signed subscription webhooks and a Customer Portal entry. Apply the new billing migration, configure the price/webhook/portal, and complete a sandbox checkout before enabling live payments. Actual Stripe payment and physical iPhone verification have not been performed. Earlier entries below are historical.
+
 # Latest — direct Plans and model audit, 23 October 2026
 
 Read `docs/CLEAR_PLANS_AND_MODEL_AUDIT.md` first. Pricing is public; signed-in Plans is one click from the header. Overview shows analyst targets separately from AURYN scenarios. Includes the 30-stock cross-product audit and historical DCA evaluation; the timing strategy did not establish an advantage. Stripe sandbox connection and payment implementation are required before charges can work. Earlier entries below are historical.

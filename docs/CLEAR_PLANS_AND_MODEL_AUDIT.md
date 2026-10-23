@@ -1,3 +1,5 @@
+> Superseded billing status: this release now implements Checkout/webhook/portal. Read `STRIPE_SETUP.md`. Historical model audit findings below remain unchanged.
+
 # Plans and model comparison — 23 October 2026
 
 ## What changed in this source

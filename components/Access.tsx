@@ -121,7 +121,7 @@ export function AccessBoundary({ children }: { children: React.ReactNode }) {
         <p>Opening your plan…</p>
       </main>
     );
-  if (!access.admitted)
+  if (!access.admitted && path !== "/plans")
     return (
       <main className="membership-state">
         <span className="eyebrow">Private beta</span>
@@ -156,7 +156,7 @@ export function AccessBoundary({ children }: { children: React.ReactNode }) {
         <main className="membership-state">
           <h1>Research allowance</h1>
           <p role="alert">{visit.error}</p>
-          <Link href="/settings">Plan & access →</Link>
+          <Link href="/plans">Plan & access →</Link>
         </main>
       );
     content = <ProductSession demo={sample}>{content}</ProductSession>;
@@ -189,7 +189,7 @@ export function FeatureGate({
           <span className="plan-pill">Pro</span>
           <h3>{featureNames[feature]}</h3>
           <p>This section is not included in your current access.</p>
-          <Link href="/settings">View plan & access →</Link>
+          <Link href="/plans">View plan & access →</Link>
         </section>
       ));
 }

@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { billingMode } from "./billing-policy";
 import { HttpError } from "./server";
 import {
   resolveAccess,
@@ -49,9 +50,13 @@ export async function getAccess(
       .eq("user_id", id)
       .maybeSingle(),
     db
-      .from("auryn_subscriptions")
+      .from("auryn_stripe_subscriptions")
       .select("status,paid_until")
       .eq("user_id", id)
+      .eq("mode", billingMode())
+      .in("status", ["active", "trialing", "past_due"])
+      .order("paid_until", { ascending: false })
+      .limit(1)
       .maybeSingle(),
   ]);
   if (c.error || g.error || s.error) {

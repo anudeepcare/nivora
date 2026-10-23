@@ -1,3 +1,7 @@
+# Stripe update
+
+After deploying, follow `STRIPE_SETUP.md` for the new migration and Stripe price, webhook and portal setup. Existing API/auth/provider configuration is preserved.
+
 # Git and Vercel instructions
 
 For Google/X authentication and the purchased domain, complete `docs/LAUNCH_AUTH_SETUP.md` before public launch. This code does not configure provider secrets or external dashboards automatically.
