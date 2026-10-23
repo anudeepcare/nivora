@@ -1,3 +1,7 @@
+# Latest — visible signup-to-plans flow and payment return UX
+
+Read `docs/ONBOARDING_AND_EMAIL.md`. New users have visible Plans/Free navigation, confirmation-email resend, and clear payment return messages. Misleading sample-beta design-preview labels are removed. User-supplied screenshots show a successful sandbox purchase, Pro access and Customer Portal invoice; live charges and email delivery remain unverified. No new migration required.
+
 # Latest — billing diagnostics and quieter admin UX
 
 Read `docs/BILLING_TROUBLESHOOTING.md`. Removes global owner-preview banners, adds owner-only Stripe connection checking, safe failure references and aligned admin inputs. The production checkout 503 remains unverified; this build makes its underlying failure diagnosable without exposing secrets. No new migration required beyond the existing Stripe setup.

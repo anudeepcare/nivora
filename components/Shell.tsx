@@ -1,5 +1,5 @@
 "use client";
-import {AccessNotice} from "./Access";
+import { AccessNotice } from "./Access";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef } from "react";
@@ -140,7 +140,13 @@ export default function Shell({
           <kbd>⌘ K</kbd>
         </button>
         <div className="top-actions">
-          <Link className="top-plans-link" href={`${prefix}/plans`} aria-current={page === "plans" ? "page" : undefined}>Plans</Link>
+          <Link
+            className="top-plans-link"
+            href={`${prefix}/plans`}
+            aria-current={page === "plans" ? "page" : undefined}
+          >
+            Plans
+          </Link>
           <Link
             className="icon-button"
             href={`${prefix}/alerts`}
@@ -169,8 +175,8 @@ export default function Shell({
         </div>
       </header>
       <main id="content" className="content" tabIndex={-1}>
-        <AccessNotice/>
-        {demo && (
+        <AccessNotice />
+        {demo && demo.routePrefix !== "" && (
           <div className="preview-label">
             Design preview · Illustrative data · Account actions disabled
           </div>

@@ -96,11 +96,17 @@ export function PricingCards({
               {plan === "free" ? "Get started free" : "Explore Pro"}
             </Link>
           ) : plan === "free" ? (
-            <span className="pricing-current">
-              {access?.plan === "free"
-                ? "Your current plan"
-                : "Always available"}
-            </span>
+            access?.plan === "free" && access.admitted ? (
+              <Link className="button" href="/overview">
+                Continue with Free
+              </Link>
+            ) : (
+              <span className="pricing-current">
+                {access?.plan === "free"
+                  ? "Free access requires an invitation"
+                  : "Always available"}
+              </span>
+            )
           ) : (
             <button
               className="button primary"
@@ -157,6 +163,10 @@ function SignedInPlans() {
             );
         } else if (returned === "cancelled")
           setMessage("Checkout cancelled. Your plan is unchanged.");
+        else if (
+          new URLSearchParams(window.location.search).get("welcome") === "1"
+        )
+          setMessage("Your account is ready. Review your membership below.");
       } catch (e) {
         if (!abort.signal.aborted)
           setMessage(
@@ -196,6 +206,18 @@ function SignedInPlans() {
     );
   return (
     <>
+      {message && (
+        <section className="membership-feedback" role="status">
+          <strong>{message}</strong>
+          {billing?.access.source === "subscription" && (
+            <p>
+              <Link className="button primary" href="/overview">
+                Open your workspace
+              </Link>
+            </p>
+          )}
+        </section>
+      )}
       <PricingCards
         config={billing?.config}
         access={a}
@@ -255,11 +277,6 @@ function SignedInPlans() {
           Payment setup: {billing.setup.join(", ")}.
         </p>
       ) : null}
-      {message && (
-        <p role="status" className="membership-feedback">
-          {message}
-        </p>
-      )}
     </>
   );
 }

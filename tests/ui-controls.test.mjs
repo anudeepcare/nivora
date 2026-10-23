@@ -540,10 +540,11 @@ test('valuation tool withholds unsupported models rather than fabricating sensit
 
 test('authentication explains AURYN in sign-in, signup and recovery without fabricating investment results',()=>{
  for(const mode of ['login','signup','reset']){
-  let i=0;const values=['','','',false,mode,'',{google:false,x:false}];
+  let i=0;const values=['','','',false,mode,mode==='signup'?'Confirm your email':'',false,0,{google:false,x:false}];
   const Login=loadComponent('components/Session.tsx','Login',{React,useRouter:()=>({replace:()=>{}}),useEffect:()=>{},useState:()=>[values[i++],()=>{}],Logo:()=>React.createElement('span',null,'AURYN')});
   const html=renderToStaticMarkup(React.createElement(Login,{initialError:''}));
   if(mode!=="reset"){assert.match(html,/Social sign-in is not enabled yet/);assert.match(html,/disabled=""/);}
+  if(mode==="signup")assert.match(html,/Resend confirmation email/);
   assert.match(html,/name="email"/);if(mode!=="reset")assert.match(html,/name="password"/);assert.match(html,/About AURYN/);assert.match(html,/A clearer perspective/);assert.match(html,/Business, value and timing/);
   assert.doesNotMatch(html,/desktop-nav|mobile-dock|guaranteed returns/);
  }

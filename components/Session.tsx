@@ -436,7 +436,9 @@ function Login({ initialError }: { initialError: string }) {
     [error, setError] = useState(initialError),
     [busy, setBusy] = useState(false),
     [mode, setMode] = useState<"login" | "signup" | "reset">("login"),
-    [notice, setNotice] = useState("");
+    [notice, setNotice] = useState(""),
+    [resendPending, setResendPending] = useState(false),
+    [resendUntil, setResendUntil] = useState(0);
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("mode") === "signup") setMode("signup");
@@ -461,6 +463,37 @@ function Login({ initialError }: { initialError: string }) {
       .catch(() => {});
     return () => controller.abort();
   }, []);
+  useEffect(() => {
+    if (!resendUntil) return;
+    const timer = setTimeout(
+      () => setResendUntil(0),
+      Math.max(0, resendUntil - Date.now()),
+    );
+    return () => clearTimeout(timer);
+  }, [resendUntil]);
+  async function resendConfirmation() {
+    if (resendPending || resendUntil > Date.now() || !email.trim()) return;
+    setResendPending(true);
+    setError("");
+    try {
+      const r = await authClient().auth.resend({
+        type: "signup",
+        email: email.trim(),
+        options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+      });
+      if (r.error) throw r.error;
+      setNotice(
+        "Confirmation requested. Check your inbox and spam folder, then return to sign in.",
+      );
+      setResendUntil(Date.now() + 60000);
+    } catch (e) {
+      setError(
+        e instanceof Error ? e.message : "Confirmation could not be requested.",
+      );
+    } finally {
+      setResendPending(false);
+    }
+  }
   async function social(provider: "google" | "x") {
     if (busy) return;
     if (socialProviders[provider] === false) {
@@ -513,11 +546,11 @@ function Login({ initialError }: { initialError: string }) {
         mode === "login" ||
         ("data" in result && "session" in result.data && result.data.session)
       )
-        router.replace("/overview");
+        router.replace(mode === "signup" ? "/plans?welcome=1" : "/overview");
       else
         setNotice(
           mode === "signup"
-            ? "Check your email to confirm your account."
+            ? `Confirm your email to finish creating your account. Check the inbox and spam folder for ${email.trim()}. After confirming, sign in to choose your plan.`
             : "Check your email for the password reset link.",
         );
     } catch (e) {
@@ -745,6 +778,20 @@ function Login({ initialError }: { initialError: string }) {
             <p role="status" className="success">
               {notice}
             </p>
+          )}
+          {mode === "signup" && notice && (
+            <button
+              type="button"
+              className="button"
+              disabled={resendPending || !!resendUntil}
+              onClick={() => void resendConfirmation()}
+            >
+              {resendPending
+                ? "Requesting…"
+                : resendUntil
+                  ? "Resend available in one minute"
+                  : "Resend confirmation email"}
+            </button>
           )}
           <button className="button primary" disabled={busy}>
             {busy
