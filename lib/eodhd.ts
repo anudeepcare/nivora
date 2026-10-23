@@ -40,6 +40,7 @@ export async function eodRequest(
         signal: AbortSignal.timeout(15000),
       },
     );
+    if(response.status===402 && path.startsWith("mp/unicornbay/options/"))throw new EodAccessError("Options dataset access is not enabled for this account.",503);
     if(response.status===429||response.status===402){
       const raw=response.headers.get('Retry-After'),parsed=raw?Number(raw):NaN;
       const seconds=response.status===402?Math.ceil((Date.parse(new Date(Date.now()+86400000).toISOString().slice(0,10))-Date.now())/1000):Math.max(1,Math.min(3600,Number.isFinite(parsed)?parsed:60));

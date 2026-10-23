@@ -271,7 +271,7 @@ function SignedInPlans() {
           <Link className="button" href="/owner">
             Admin controls
           </Link>
-        ) : billing?.canManage ? (
+        ) : billing?.canManage && a.source === "subscription" ? (
           <button
             className="button"
             disabled={busy || !billing.ready}

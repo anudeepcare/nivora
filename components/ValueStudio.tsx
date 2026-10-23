@@ -3,6 +3,7 @@ import {useMemo} from "react";
 import type {Research} from "@/lib/types";
 import {valueDesk,type DeskMetric} from "@/lib/research-desks";
 import {percent,dateLabel} from "@/lib/format";
+import PriceProjection from "./PriceProjection";
 import ScenarioCompass from "./ScenarioCompass";
 import {modelAssessment} from "@/lib/model-assessment";
 const display=(m:DeskMetric)=>m.value==null?"Not available":m.unit==="ratio"?`${m.value.toFixed(1)}×`:percent(m.value);
@@ -15,6 +16,7 @@ export default function ValueStudio({research:r,onWorkbench}:{research:Research;
   const maximum=Math.max(10,...yields.flatMap(m=>m.value==null?[]:[m.value]));
   return <div className="value-studio">
     <header className="desk-heading"><div><span className="eyebrow">Value · what the price implies</span><h2>Price in context.</h2><p>Read the scenario, the multiple and the assumptions together.</p></div><button type="button" className="button" onClick={onWorkbench}>Test assumptions →</button></header>
+    <PriceProjection key={r.company.symbol} research={r}/>
     <ScenarioCompass research={r}/>
     {d.metrics.length>0 && <section className="valuation-board" aria-labelledby="market-pricing-title">
       <header className="section-head"><div><span className="eyebrow">Reported market pricing</span><h3 id="market-pricing-title">What you are paying for</h3></div><small>{d.asOf?`Reported ${dateLabel(d.asOf)}`:"Observation date not supplied"}</small></header>

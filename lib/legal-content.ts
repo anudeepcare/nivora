@@ -147,6 +147,10 @@ export const documents: Record<
         text: "Data can be missing, stale, restated or misclassified. Ownership and reported transaction data can be delayed and may lack role or transaction context. AI may make mistakes. Verify material conclusions against primary company disclosures.",
       },
       {
+        title: "Options, positioning and hypothetical payoffs",
+        text: "Options can lose the full premium. Short options may be assigned before expiry and can create stock, cash or margin obligations. Illustrated spreads assume both legs are managed together; realized losses can differ with assignment, execution and fees. Gamma exposure is a model under stated positioning assumptions, not observed dealer inventory or guaranteed support or resistance. End-of-day chains are not live executable quotes. Probability and volatility estimates are model-dependent; delta is not an exact probability of profit.",
+      },
+      {
         title: "Personal circumstances",
         text: "The service does not establish suitability for your financial situation, tax position, liquidity needs or investment objectives. Seek qualified advice when needed. A disclosure alone does not determine the operator’s regulatory obligations.",
       },

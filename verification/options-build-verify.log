@@ -1,0 +1,629 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> auryn-product@0.1.0 verify
+> npm test && npm run typecheck && npm run build
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> auryn-product@0.1.0 test
+> node --experimental-strip-types --test tests/*.test.mjs
+
+✔ access tables and RPCs deny self-promotion; unique quotas, watch caps and audited grants survive direct writes (1938.716297ms)
+✔ beta access expires complimentary grants without affecting paid-through access (1.627712ms)
+✔ owner preview changes effective plan but never grants owner status to ordinary Pro users (0.205466ms)
+✔ feature rules support everyone, Pro, beta and off without making Pro an administrator (0.319185ms)
+✔ research payload projection removes locked evidence and does not mutate cached source (0.380656ms)
+✔ compact plan summary distinguishes sample access and links directly to plans (160.862229ms)
+✔ Pro cannot render the owner console; actual owner gets invitation and feature controls (394.841788ms)
+✔ signed-in accounts render their own workspace even when external data is unavailable (17.631785ms)
+✔ owner controls present focused People Features Payments sections and quick expiry choices (54.469478ms)
+✔ account balances SQL seeds only the owner, preserves managed values on rerun and enforces cross-account isolation (1977.158476ms)
+✔ account equity deducts debt once and includes only separately recorded managed assets (1.148919ms)
+✔ account balance validation rejects negative, nonnumeric and nonfinite amounts without assuming a managed value (1.213135ms)
+✔ account money entry accepts readable USD formatting and rejects ambiguous or excessive decimals (0.600974ms)
+✔ adaptive evaluation deposits equal budgets, carries cash and executes after the signal (52.781481ms)
+✔ transaction costs reduce ending assets and future bars cannot change this evaluation (21.233955ms)
+✔ short histories withhold simulated results (4.427819ms)
+✔ candidate requires 36 complete consecutive months and is invariant to future prices (70.629432ms)
+✔ candidate rejects missing month ends and keeps forming separate (10.399304ms)
+✔ evaluation uses common months, equal deposits, cash limits and a later untouched holdout (33.035199ms)
+✔ flat history remains finite without manufactured extreme readings (12.786756ms)
+✔ an opening loss is not diluted by a deposit made after the gap (12.572867ms)
+✔ later data cannot change an earlier policy evaluation (66.029888ms)
+✔ v3 uses one dated confirmed policy and does not require a live quote (35.949991ms)
+✔ zones depend on prior trend and pullback rather than a long-run arithmetic average (21.532949ms)
+✔ v3 is invariant to price units and future observations (8.914103ms)
+✔ final US session confirms only after the conservative settlement cutoff (2.876801ms)
+✔ short, gapped, malformed and invalid-as-of histories do not become 0x (2.503354ms)
+✔ forming readings remain separate and use only settled observations (1.628273ms)
+✔ conflicting duplicates are excluded regardless of input order (4.719403ms)
+✔ crypto confirms the UTC calendar month only after the final UTC day completes (2.361113ms)
+✔ cycle model uses the prior year anchor and spread gates for increasing contribution zones (45.978984ms)
+✔ cycle anchor avoids a cheap label solely because a fitted growth trend extrapolates above the current price (5.324492ms)
+✔ v4 keeps settlement, future exclusion, completed-month gaps and scale invariance (19.48618ms)
+✔ extension reviews distinguish light and strong without inventing a sale amount or future return (9.750718ms)
+✔ v5 includes short listed history without inventing prior monthly bars (44.96824ms)
+✔ v5 separates moderate cycle decline from more severe standardized decline (0.626743ms)
+✔ v5 is scale invariant, excludes future observations and rejects missing completed months (31.577542ms)
+✔ aggressive upsize requires corroboration from the longer cycle, not just the latest-year decline (0.699301ms)
+✔ weekly uses settled completed weeks without a quote and preserves unit invariance (53.494111ms)
+✔ weekly Friday closes are forming before settlement and confirmed after it (17.456534ms)
+✔ weekly calendar handles Friday holidays without guessing missing closes (0.3228ms)
+✔ missing history, duplicate conflicts, future observations and stale weeks cannot fabricate a weekly reading (27.209446ms)
+✔ crypto weeks end Sunday UTC and never confirm the current UTC day (8.751672ms)
+✔ completed observations exclude current day and invalid OHLC (12.443325ms)
+✔ short and volume-free histories withhold unsupported studies (0.198846ms)
+✔ long planner sizes conservatively including round-trip slippage (0.352063ms)
+✔ retracement levels derive from ordered observed extremes (0.346105ms)
+✔ risk distribution uses signed returns and excludes positive-only tail loss (27.48396ms)
+✔ risk distribution reports losses and drawdown duration on declining prices (4.055013ms)
+✔ planner stress honors shortfall and probability assumptions (0.879799ms)
+✔ expected shortfall averages the fixed tail mass even when the quantile is tied at zero (0.798098ms)
+✔ appearance preferences accept only supported accents and spacing (1.908991ms)
+✔ accent solid colors retain readable white button text (0.461056ms)
+✔ auth routes canonicalize login and sign-out without replacing authenticated deep links (50.177521ms)
+✔ OAuth callback accepts only fixed internal destinations and never trusts forwarded hosts (4.803347ms)
+✔ logout waits for successful revocation before clearing memory and replacing the location (2.188787ms)
+✔ email confirmation and recovery accept only explicit token types and fixed destinations (4.851309ms)
+✔ real session boundary ignores an initial session response arriving after sign-out (991.284401ms)
+✔ social availability distinguishes missing X capability from an explicit disabled flag (2.209708ms)
+✔ an explicit X off flag stays off while omission allows an ordinary provider attempt (0.257774ms)
+✔ billing errors identify configuration faults without exposing Stripe messages or secrets (1.509095ms)
+✔ signed-in Free plan offers one upgrade without creating another account (268.514024ms)
+✔ owner and existing Pro access never offer a charge (87.038979ms)
+✔ owner-configured plan limits and disabled features are reflected in the cards (25.962624ms)
+✔ complimentary friends may subscribe without first losing Pro and the action stays unavailable until billing is ready (61.123989ms)
+✔ public Free pricing includes complete Overview, company news and Home without claiming Pro-only access (44.083495ms)
+✔ billing only accepts the exact monthly price and a fixed HTTPS origin (4.527386ms)
+✔ failed renewals never extend paid time; successful invoices extend it without shortening existing access (0.737177ms)
+✔ Stripe signature verification rejects tampering and expired signatures (17.725204ms)
+✔ billing database denies self-promotion, leases checkout, isolates sandbox and atomically handles duplicate/stale events (2064.001489ms)
+✔ business history reports denominators, periods and actual cash/profit evidence (28.380609ms)
+✔ history does not manufacture a moat, dilution or corporate metrics for crypto (5.144765ms)
+✔ header market cap requires matching quote/listing currency and a positive reported value (1.32414ms)
+✔ header withholds a financial-sector label that contradicts a known infrastructure business (0.289822ms)
+✔ price-only revisions have distinct snapshot IDs but stable evidence identity (11.23764ms)
+✔ a corrected historical bar changes evidence identity even when the latest close is unchanged (1.703605ms)
+✔ crypto snapshots do not demand company accounts or earnings (14.908393ms)
+✔ weekly chart bars preserve first open, extrema, last close and summed volume (108.077409ms)
+✔ monthly chart controls change the actual bar interval instead of relabeling daily bars (21.219448ms)
+✔ contradictory finance metadata cannot drive infrastructure labels or benchmarks (1.554803ms)
+✔ valid infrastructure and ordinary company classifications remain available (4.211356ms)
+✔ conditions use the signal close and enter at the next open with two-sided costs (15.01442ms)
+✔ changing future prices cannot rewrite an earlier signal (2.313723ms)
+✔ future bars and invalid configurations cannot enter the study (0.58476ms)
+✔ opening assessment separates financial evidence, valuation assumptions and stale entry prices (42.490467ms)
+✔ portfolio exposure groups duplicate holdings, discloses unclassified assets and retains labelled older prices (0.589497ms)
+✔ AI intents are an allowlist and never accept arbitrary user instructions (0.570659ms)
+✔ Postgres migrations enforce account-scoped watches, idempotency, and AI request budgets (2046.328748ms)
+✔ DCA chart labeled twelve months excludes older trading sessions (9.942264ms)
+✔ monthly readings never use future bars or replace a confirmed month with a later observation (44.95485ms)
+✔ positive current business and trend create a conditional buy candidate, not asserted fair value (34.931797ms)
+✔ missing or stale prices cannot create a current buy candidate (70.9639ms)
+✔ a reported loss with positive cash generation does not imply funding distress or a sell (10.333275ms)
+✔ positive net income with an operating loss cannot produce a profitable-business buy candidate (14.517031ms)
+✔ persistent losses and cash outflows with declining revenue prompt an exit review, not an automatic order (9.32166ms)
+✔ an extended confirmed monthly price zone prompts trim review, without marking a healthy company broken (8.666847ms)
+✔ crypto and a bank do not inherit an ordinary-company buy or exit signal (16.048299ms)
+✔ classification evidence affects canonical identity because it can change the applicable model (17.530444ms)
+✔ a current quote cannot turn an obsolete trend into a buy candidate (8.956326ms)
+✔ an unidentified business model cannot receive operating-company action labels (15.710486ms)
+✔ cash-flow sensitivity has a hand-checkable constant-growth perpetuity and solves back to its assumptions (2.606989ms)
+✔ scores interpolate anchors, handle missing evidence and do not silently zero it (27.395713ms)
+✔ cash-flow scenarios respect economic monotonicity and invalid assumptions (0.343341ms)
+✔ research preferences reject malformed saved settings (2.068457ms)
+✔ monthly research supports 1x, 2x, 3x, 4x and pause without an amount (27.385273ms)
+✔ forming and future observations cannot repaint a closed month (2.261004ms)
+✔ gaps, insufficient history, stale series and invalid bars withhold multiplier (1.164063ms)
+✔ documented thesis break pauses current signal without rewriting historical signals (2.229817ms)
+✔ financial periods preserve missing values and only combine matching cash-flow filings (1.988109ms)
+✔ portfolio excludes unpriced holdings from known value and withholds total P&L (0.339776ms)
+✔ cash-flow valuation uses per-share dilution and rejects invalid terminal assumptions (0.399404ms)
+✔ incomplete month near month-end does not become confirmed (0.576628ms)
+✔ foreign or unknown cash cannot enter USD known value (0.415519ms)
+✔ EOD identity keeps crypto separate from same-code ETFs and rejects wrong fundamentals (7.024722ms)
+✔ EOD financials preserve zero, compatible currency and positive spending (29.392694ms)
+✔ EOD does not expose future actual earnings or fabricate missing financial fields (0.680002ms)
+✔ EOD split adjustment applies to all OHLC values without double adjusting volume (0.737317ms)
+✔ EOD quotes retain provider time and refuse instrument substitution (12.252957ms)
+✔ EOD search excludes foreign currency collisions and keeps USD crypto (1.182719ms)
+✔ AI evidence accepts normalized EODHD financial records without accepting arbitrary source URLs (2.092123ms)
+✔ EOD annual forecasts inherit reported statement currency when the trend omits it (0.687843ms)
+✔ additional accounting fields reuse normalized fundamentals with currency and period evidence (0.554535ms)
+✔ flat annual fiscal labels are not incorrectly classified as quarterly estimates (5.202591ms)
+✔ quote-only changes reuse completed financial and price studies without reusing stale inputs (64.463693ms)
+✔ first research-tab visits reveal their content below the sticky navigation without restoring a deep old offset (1.304581ms)
+✔ components share one decision calculation per immutable evidence snapshot and style (28.433768ms)
+✔ operating model reconciles reinvestment, enterprise value, net debt and per-share equity (1.40511ms)
+✔ inverse model recovers margin without inventing an answer outside the search bounds (0.788653ms)
+✔ invalid capital economics and funding deficits withhold price outputs (0.376871ms)
+✔ extended observation retains its actual trade time, session and price (40.454695ms)
+✔ extended request falls back only on explicit entitlement denial and remembers it for one hour (8.904189ms)
+✔ EODHD fallback and display freshness cannot hide an old close during extended hours (13.432407ms)
+✔ regular quotes use last_quote_at rather than the daily candle opening timestamp (0.456379ms)
+✔ extended price uses its own timestamp and never inherits the regular close price or change (0.713953ms)
+✔ filing passages only fetch dated server-selected SEC archives and render source text inert (8.204248ms)
+✔ filing failures and missing identification do not fabricate text evidence (3.327061ms)
+✔ financial chart series keeps comparable dated reported observations and truthful statistics (13.923728ms)
+✔ percentage charts use percentage-point changes and do not imply annualized returns (1.910843ms)
+✔ missing and inapplicable financial fields do not become zero charts (0.380326ms)
+✔ reported financial charts survive missing or changed live quotes (2.95019ms)
+✔ profit-to-loss transitions do not present a misleading percentage growth headline (3.881145ms)
+✔ periods expose sourced margins, per-share cash and matching balance sheet (11.975689ms)
+✔ balance sheets do not join a different currency, date or basis; zero is retained (0.560865ms)
+✔ weighted shares are not derived by subtracting cumulative averages (0.364002ms)
+✔ TTM sums flows, recalculates ratios and retains the final balance only (5.959677ms)
+✔ current reporting currency takes precedence over old quote-currency disclosures (0.518161ms)
+✔ funded scenario reconciles cumulative cash, ending debt and discounted equity (1.559401ms)
+✔ unfunded expansion never produces a per-share valuation (0.293127ms)
+✔ equity financing closes the funding gap and increases share count (0.214399ms)
+✔ debt funding includes interest cash use and terminal debt claims (0.195721ms)
+✔ dilution and required return reduce present per-share value (4.545524ms)
+✔ invalid, nonfinite and economically unsupported inputs fail closed (0.353786ms)
+✔ a later cash recovery does not conceal an unfunded first year (0.36949ms)
+✔ Grow weights share 55 credits, reset on minute boundaries and preserve foreground capacity (1.133356ms)
+✔ Grow company data retains zero, currencies and actual/estimate separation (11.887077ms)
+✔ a stock split stays an event and does not rewrite portfolio quantities (7.901827ms)
+✔ portfolio exposure uses actual priced holdings, explicit unknown sectors and missing quotes (1.37766ms)
+✔ portfolio daily estimate excludes stale prices and does not label returns on deposits (0.379304ms)
+✔ research changes report only comparable observed facts and distinguish first observation (1.046157ms)
+✔ estimate revisions compare the same future period and currency only (0.47036ms)
+✔ concentration combines multiple lots of the same instrument (0.412504ms)
+✔ exposure total reconciles with headline valuation when quotes are stale or costs invalid (8.604162ms)
+✔ Home hero uses held upcoming earnings and never expired or unrelated events (21.84248ms)
+✔ Home news fallback requires recent dated source and never infers materiality from a headline (0.382449ms)
+✔ quiet Home distinguishes unavailable evidence from no returned checkpoints and keeps daily perspective stable (0.205937ms)
+✔ Home focus chooses dollar impact rather than the first saved ticker and combines lots (39.876254ms)
+✔ Home does not mix old sessions, crypto windows or missing changes into the equity day total (0.711899ms)
+✔ without day moves Home prioritizes a held upcoming event then the largest priced holding (1.086657ms)
+✔ Home earnings use report dates, selected stocks and a bounded future window (6.091784ms)
+✔ Home split events retain ratio direction and exclude invalid ratios (0.325244ms)
+✔ Home news stays recent, deduplicates publisher URLs and never accepts unsafe links or future headlines (0.564ms)
+✔ Home news decodes publisher text and gives each followed company a first headline (21.175988ms)
+✔ Home headline selection prioritizes company identity and covers different holdings before repeats (5.234088ms)
+✔ quote provenance rejects missing currency, future timestamps and stale crypto (40.903162ms)
+✔ malformed bars are discarded; repeated timestamps deduplicate and history sorts (2.512668ms)
+✔ USD portfolio cannot silently add foreign currency or unknown-currency prices (0.313436ms)
+✔ AI report needs supplied citations for every claim, bounded text and valid structure (1.007629ms)
+✔ AI evidence excludes future filings and non-SEC source injection (0.446905ms)
+✔ unknown quote currency formats without a crash or a dollar assumption (5.740772ms)
+✔ existing non-USD cost basis cannot become a USD unrealized return (2.168366ms)
+✔ watchlist adapter deduplicates a ticker saved in multiple lists (2.039425ms)
+✔ global search cannot resolve a same-named foreign listing as a US company (0.393556ms)
+✔ crypto quote uses explicit USD pair when provider omits currency (0.671899ms)
+✔ older installed PWA start URLs and saved stock links redirect into the current workspace (1.146096ms)
+✔ cash flow uses the more recent complete TTM period, not last year by default (5.924555ms)
+✔ generic calculator assumptions cannot decide whether a stock is cheap or expensive (5.518712ms)
+✔ a profitable prior year cannot override losses in the latest complete TTM evidence (1.607562ms)
+✔ a zero or negative P/E is not displayed as a cheap positive multiple (0.260998ms)
+✔ estimates with no stated currency retain numbers without inventing USD (5.726521ms)
+✔ navigation reuses account data but account switches and sign-out invalidate it (0.290392ms)
+✔ forecast table renders available estimates, including an unreported completed quarter (125.92544ms)
+✔ workspace quote refresh commits all batches together and settles loading (211.772605ms)
+✔ stream parses dated US and crypto trades without accepting unrelated, old or invalid prices (1.790464ms)
+✔ extended sessions use actual trade time and merging never invents daily change or regress timestamps (38.386948ms)
+✔ relay shares a market socket, scopes delivery and releases subscriptions (8.2863ms)
+✔ logo images require an HTTPS provider host without embedded credentials (0.87336ms)
+✔ identical matched series have beta and correlation one with zero excess return (11.355817ms)
+✔ flat and insufficient benchmark history withholds regression (2.303427ms)
+✔ peer selection deduplicates US symbols and ranks available candidates by size distance (1.131143ms)
+✔ segments preserve axes concept and units without silently summing conflicts (0.39692ms)
+✔ weighted budget accounts for expensive endpoints and multiple symbols (0.878447ms)
+✔ actual account quota overrides assumptions and old-day usage resets (9.514897ms)
+✔ mobile overlay uses visual viewport after the keyboard reduces visible height (99.334344ms)
+✔ invalid viewport readings cannot collapse or move an overlay offscreen (21.18027ms)
+✔ keyboard inset keeps bottom sheets above the iPhone keyboard without adding an inset at full height (9.96702ms)
+✔ viewport updates do not rewrite unchanged styles during scroll (15.842953ms)
+✔ dock keyboard state requires an editable focus and a substantial viewport reduction (10.837796ms)
+✔ assessment distinguishes conditional cash sensitivities from published analyst evidence (28.821294ms)
+✔ specialist businesses and crypto never inherit generic cash or earnings model availability (3.676109ms)
+✔ missing financial inputs never manufacture a model or fair-value target (0.540474ms)
+✔ provider bank industries route arbitrary symbols to bank economics (2.068588ms)
+✔ normalized provider profile preserves the classification used for REIT routing (1.306194ms)
+✔ insurance industries never inherit a bank calculator or generic DCF (0.377582ms)
+✔ financial and real estate sectors with incomplete industry data use conservative guards (0.443059ms)
+✔ nonbank financial industries do not get a bank scenario even for legacy symbols (3.113733ms)
+✔ classification tolerates provider punctuation and whitespace (0.339916ms)
+✔ ordinary provider sectors do not trigger unrelated specialty models (0.280267ms)
+✔ explicit frontier and infrastructure exceptions retain priority over broad provider labels (0.193558ms)
+✔ missing classification preserves compatibility but marks the fallback provisional (0.390842ms)
+✔ saved scroll waits for async list content instead of being clamped by its loading state (106.980992ms)
+✔ slow data beyond the deadline still restores the saved list position after loading settles (36.683863ms)
+✔ a deliberate gesture cancels pending restoration and avoids a late jump (20.832658ms)
+✔ navigation ledger preserves distinct page offsets and ignores active navigation (12.033976ms)
+✔ an error or shortened list clamps once at the deadline and can be disposed on route change (20.84679ms)
+✔ mobile scroll memory follows the document instead of a non-scrolling content panel (16.811535ms)
+✔ public Free migration preserves ownership and watchlist caps; monthly allowance counts 100 distinct companies and permits revisits (1794.312576ms)
+✔ every new account enters Free without an invitation, including legacy private configurations (1.341206ms)
+✔ Pro research is truly unlimited and expired paid access falls back to admitted Free (0.572642ms)
+✔ a paid subscription takes billing precedence over a complimentary grant without erasing its remaining access (0.222011ms)
+✔ Free includes full Overview, news and Home; market access depends on deployment entitlement rather than subscription (0.218125ms)
+✔ options normalization keeps zero and missing distinct and rejects crossed quotes, expired and future observations (1.611658ms)
+✔ GEX units are dollars per one percent move and sign convention is explicit (1.185073ms)
+✔ same-date snapshot selection excludes earlier observations and partial chains withhold gamma flip (10.137093ms)
+✔ complete call put chain produces straddle and zero net GEX without inventing a crossing (1.127188ms)
+✔ liquidity rejects empty open interest and adjusted contracts (0.333426ms)
+✔ long call payoff, max risk and exact breakeven (0.596618ms)
+✔ defined risk call and put spreads use both legs (3.591314ms)
+✔ covered call and protective put include actual stock capital in risk (0.208801ms)
+✔ a consensus fallback never revives an old target and always carries its observation date (240.727665ms)
+✔ outlook prices use actual forecast EPS, disclosed multiple sensitivity, and a common horizon (119.926819ms)
+✔ a missing EPS range cannot become fabricated bear and bull targets (50.854889ms)
+✔ crypto, unreconciled foreign listings and mismatched currency withhold corporate targets (64.312813ms)
+✔ quarterly, dated, nonpositive or inverted forecasts never produce a valid outlook (36.1777ms)
+✔ healthcare-plan insurers cannot bypass the same sector gate used by the decision guide (32.615621ms)
+✔ outlook rejects a fiscal label that contradicts its underlying forecast date (52.900873ms)
+✔ a bank can show a labelled earnings sensitivity without applying an operating-cash-flow valuation (36.053666ms)
+✔ consensus comparison calculates the gap without calling it fair value or inventing high/low targets (30.187988ms)
+✔ a malformed nearer fiscal label cannot hide another complete eligible EPS forecast (32.190578ms)
+✔ analyst consensus is listing-currency opinion and does not require a share reconciliation (39.063794ms)
+✔ quote freshness transitions do not remove a dated analyst target (21.328235ms)
+✔ eligible earnings scenarios keep their targets when a recent settled quote becomes older (32.999471ms)
+✔ headline policy prefers eligible earnings cases and uses analyst fallback for revenue-only cases (58.505974ms)
+✔ paper plans reject fractional, foreign and invalid exposure inputs (1.986185ms)
+✔ paper checks fail closed on stale quotes, funds, open orders and market state (0.36984ms)
+✔ partial fills remain reserved until terminal broker reconciliation (0.228871ms)
+✔ a reservation revalidates changed account state before any order can submit (0.420286ms)
+✔ DCA comparison uses equal contributions and never spends unavailable cash (21.07641ms)
+✔ CSV import validates all rows and supports quoted commas without replacing holdings (1.012116ms)
+✔ portfolio preview respects cash and exposure caps (2.519309ms)
+✔ alerts reject stale price triggers and use deterministic event identities (0.424782ms)
+✔ saved research validates links, symbols and bounded content (0.494866ms)
+✔ earnings reminders use upcoming report dates and stable dedup keys (0.259476ms)
+✔ DCA history excludes a month missing its final required session (1.010714ms)
+✔ ledger keeps value, cost basis, gains and aggregated position weights distinct (1.523777ms)
+✔ portfolio charts aggregate duplicate tickers and reconcile priced allocation without invented history (1.555244ms)
+✔ older quotes retain identical price, value, gains and exposure across portfolio surfaces (2.664855ms)
+✔ failed, invalid and out-of-order refresh results never erase a prior usable valuation (2.334875ms)
+✔ coverage separates never-priced and older quotes; refresh modes control polling explicitly (0.499834ms)
+✔ an invalid older quote is labelled unpriced rather than implying a usable older value (0.340937ms)
+✔ position context combines lots and uses the canonical priced denominator (1.33754ms)
+✔ older USD quotes retain exposure while non-dollar quotes remain unconverted (0.948511ms)
+✔ historical price-risk cases calculate ordered distinct bear/base/bull values without analyst consensus (32.129287ms)
+✔ price-risk scenarios preserve old valid closes and never use future candles (13.607597ms)
+✔ too-short, currency-conflicting or discontinuous data cannot manufacture numeric scenarios (8.045882ms)
+✔ constant geometric daily growth produces the hand-calculated horizon result rather than invented uncertainty (2.717384ms)
+✔ flat closes give flat EMA/bands and zero MACD without NaN (14.081142ms)
+✔ MACD uses mean-seeded 12/26 EMAs and a nine-observation signal (0.518111ms)
+✔ short history and forming daily bars do not manufacture indicators (0.344293ms)
+✔ home focus combines lots and retains older usable prices with an explicit label (52.601648ms)
+✔ home focus excludes invalid and foreign currency positions and does not turn missing quotes into losses (1.117513ms)
+✔ Home company batches make every holding reachable without requesting all data at once (0.762014ms)
+✔ Home moves change with observed quotes and rank by estimated holding impact, combining lots (0.706942ms)
+✔ Home moves reject missing, future, expired and mismatched observations rather than inventing daily P&L (1.697736ms)
+✔ a fresh observed quote after the research snapshot does not request another refresh (66.089628ms)
+✔ partial returns stay usable while unpriced and unknown-cost holdings stay explicit (0.36304ms)
+✔ attention ranks supplied upcoming events by actual USD exposure and deduplicates events (7.96408ms)
+✔ risk summary counts each earnings holding once and separates crypto from cash (1.016843ms)
+✔ EODHD is primary for every market dataset with Twelve as one fallback (1.865796ms)
+✔ fallback retains its own provenance and complete value; both failures propagate (0.86031ms)
+✔ provider cache policy keeps quotes short and company/search metadata longer (0.585761ms)
+✔ quote selection tries backup for stale prices and retains newest dated stale observation on outage (0.380836ms)
+✔ crypto search routes ADA and DOGE to pairs and saved crypto positions retain asset identity (10.250182ms)
+✔ old close is stale during scheduled US hours even if provider open flag is false (22.046484ms)
+✔ EODHD-first quote routing avoids a second request on success and uses Twelve when stale or unavailable (2.482484ms)
+✔ an aging delayed primary checks backup and never replaces a newer observation with an older backup (0.688003ms)
+✔ PWA mounted with an already-open keyboard hides navigation and restores it after dismissal (90.890059ms)
+✔ installed status surface exists before account shell and cannot collapse at a zero safe-area inset (8.243686ms)
+✔ PWA never caches private API responses and supplies a navigation-only offline fallback (5.131134ms)
+✔ cached market-open labels cannot keep a twelve-minute old observation fresh (1.271101ms)
+✔ delayed data remains labelled delayed, while old streaming ticks expire sooner (0.194119ms)
+✔ disconnected cached streamed trades keep the short freshness window (0.138717ms)
+✔ visible research continues polling when a formerly healthy stream stops producing renders (1.408546ms)
+✔ hidden pages pause; resume checks immediately; repeated resume events do not burst requests (0.324693ms)
+✔ compact quote timestamps distinguish today, older dates and unknown time (19.337162ms)
+✔ both providers reject same-day future intraday candles at the timestamp boundary (10.683416ms)
+✔ financial selected-control styles outrank global button resets (88.801422ms)
+✔ the actual Snapshot discloses backup data without vendor names (354.540866ms)
+✔ unverified upcoming EPS is never formatted in the listing currency (120.162039ms)
+✔ Simple overview retains financial metrics, evidence lenses and risk thresholds (60.523342ms)
+✔ brief keeps consensus separate and flags inconsistent share/listing inputs (71.189276ms)
+✔ crypto and unsupported specialist businesses do not inherit generic operating-company claims (27.236122ms)
+✔ overview exposes dated confirmed and forming DCA readings without replacing one with the other (5.44373ms)
+✔ overview financial chart series use reported annual values and exclude future filings and mixed currencies (27.777692ms)
+✔ quote refresh state does not rewrite settled accumulation or reported financial trends (21.892569ms)
+✔ quarter derivation preserves provenance, does not derive EPS, and excludes unavailable evidence (9.054943ms)
+✔ TTM refuses gaps and mixed currencies (1.863063ms)
+✔ reverse valuation solves a price under fixed assumptions, without calling it a forecast (0.888732ms)
+✔ weekly averages exclude forming week and require actual history (2.202847ms)
+✔ coverage distinguishes business economics instead of forcing one DCF (0.459043ms)
+✔ value desk reports supplied ratios and refuses earnings yields for nonpositive earnings (18.188063ms)
+✔ advanced desk excludes uncompleted observations, preserves histogram mass and computes signed drawdown (28.683373ms)
+✔ reported cash per share survives delayed or missing quote without manufacturing market multiples (36.165863ms)
+✔ per-share cash still rejects expired share basis and mixed currencies (11.618538ms)
+✔ risk brief uses completed evidence and keeps missing data unknown (27.141005ms)
+✔ Bitcoin and Ethereum input aliases resolve to USD crypto pairs (1.57934ms)
+✔ Nu uses bank research economics, not a generic cash-flow valuation (0.80005ms)
+✔ ambiguous stock symbols remain distinct from crypto pairs (0.180478ms)
+✔ legacy crypto symbols use their saved asset type without relabeling equity holdings (0.398483ms)
+✔ unavailable or conflicting evidence never receives a verified label (1.669254ms)
+✔ observed changes require a baseline and do not compare incompatible score versions (26.303318ms)
+✔ financial alerts require a safe baseline, only fire on crossings and keep quote staleness separate (2.534782ms)
+✔ saved view parser rejects malformed scores and array contents (0.484511ms)
+✔ missing working capital inputs do not become zero or a fictional cash cycle (0.595646ms)
+✔ extreme negative FCF margins are not clamped and runway uses actual historical burn (2.122038ms)
+✔ a failed research-lab request clears the previous instrument result (173.050289ms)
+✔ a new comparison clears the preceding company set before loading (92.933027ms)
+✔ research retains a usable observed price across missing, invalid and older refreshes (1.027389ms)
+✔ retained prices never leak across currencies and retain observation time (0.234259ms)
+✔ BTC research retains the USD pair across encoded, split and hyphenated routes (2.025023ms)
+✔ explicit BTC equity route remains a distinct instrument (0.321188ms)
+✔ ETH research retains the USD pair across encoded, split and hyphenated routes (0.439333ms)
+✔ explicit ETH equity route remains a distinct instrument (0.235581ms)
+✔ market ratios use dated same-currency evidence and withhold ADR, negative earnings and stale quote (2.131292ms)
+✔ earnings scenario discounts an explicit exit multiple and refuses invalid assumptions (0.424962ms)
+✔ financial case treats absence as missing evidence and never manufactures a moat (0.507204ms)
+✔ small net debt is contextualized against cash generation instead of automatically becoming a bear case (0.355199ms)
+✔ cash-consuming businesses retain a debt funding warning (0.210653ms)
+✔ positive net income cannot hide operating losses in the financial case (0.247167ms)
+✔ valuation scale puts the quote beyond the scenario band when the quote exceeds every scenario (0.281329ms)
+✔ financial trend keeps dates, missing values and reporting currency explicit (1.058536ms)
+✔ peer comparability rejects different currency, stale periods and nonpositive denominators (0.253527ms)
+✔ CSV escapes quotes commas newlines and formula-looking labels (0.407417ms)
+✔ earnings surprises use absolute estimate denominator and never divide by zero (0.133989ms)
+✔ coverage distinguishes zero from missing evidence (0.311844ms)
+✔ peer comparability rejects accounting basis and duration mismatch (0.126268ms)
+✔ concurrent consumers and repeated tab mounts share one request per account cache (1.70756ms)
+✔ a rejected request can be retried and never poisons the cache (0.660093ms)
+✔ view changes expose only the requested account-cached resource immediately (0.621915ms)
+✔ Synthetic infrastructure and loss-making operating-company revenue sensitivities reconcile enterprise value, net debt and diluted shares (8.069326ms)
+✔ revenue scenarios fail closed on missing shares, missing debt, currency mismatch or unordered ranges (1.561904ms)
+✔ foreign-domiciled revenue cases require reporting currency and listing equity reconciliation (0.393475ms)
+✔ revenue sensitivity rejects share-unit and EV/revenue denominator inconsistencies for every listing (12.834958ms)
+✔ a complete revenue forecast remains usable when a nearer incomplete forecast is present (3.723731ms)
+✔ an unmatched newer cash observation does not hide the latest complete cash/debt pair (0.28847ms)
+✔ infrastructure suitability is selected from provider industry for arbitrary tickers (0.509628ms)
+✔ uploaded IREN response uses a reconciled calculated multiple when reported EV fields disagree (70.94396ms)
+✔ SEC alternates retain new periods and do not double-count the same filing (1.304722ms)
+✔ all 200 holdings receive a quote batch ahead of watchlist names (0.782375ms)
+✔ a definite pre-submission failure does not starve the next scheduled plan (1.132865ms)
+✔ scenario pipeline: nested-annual, complete, software (5.713021ms)
+✔ scenario pipeline: nested-annual, complete, infrastructure (1.110893ms)
+✔ scenario pipeline: nested-annual, complete, bank (1.383418ms)
+✔ scenario pipeline: nested-annual, complete, insurance (0.409879ms)
+✔ scenario pipeline: nested-annual, complete, foreign-software (0.460525ms)
+✔ scenario pipeline: nested-annual, missing-eps, software (0.45039ms)
+✔ scenario pipeline: nested-annual, missing-eps, infrastructure (0.800681ms)
+✔ scenario pipeline: nested-annual, missing-eps, bank (0.41033ms)
+✔ scenario pipeline: nested-annual, missing-eps, insurance (0.364772ms)
+✔ scenario pipeline: nested-annual, missing-eps, foreign-software (0.835383ms)
+✔ scenario pipeline: nested-annual, incomplete-nearer, software (9.567126ms)
+✔ scenario pipeline: nested-annual, incomplete-nearer, infrastructure (0.551881ms)
+✔ scenario pipeline: nested-annual, incomplete-nearer, bank (0.385523ms)
+✔ scenario pipeline: nested-annual, incomplete-nearer, insurance (0.31577ms)
+✔ scenario pipeline: nested-annual, incomplete-nearer, foreign-software (0.292705ms)
+✔ scenario pipeline: flat-fiscal, complete, software (0.340627ms)
+✔ scenario pipeline: flat-fiscal, complete, infrastructure (0.367236ms)
+✔ scenario pipeline: flat-fiscal, complete, bank (1.571809ms)
+✔ scenario pipeline: flat-fiscal, complete, insurance (0.213628ms)
+✔ scenario pipeline: flat-fiscal, complete, foreign-software (0.192877ms)
+✔ scenario pipeline: flat-fiscal, missing-eps, software (0.188781ms)
+✔ scenario pipeline: flat-fiscal, missing-eps, infrastructure (0.176162ms)
+✔ scenario pipeline: flat-fiscal, missing-eps, bank (0.150834ms)
+✔ scenario pipeline: flat-fiscal, missing-eps, insurance (0.236462ms)
+✔ scenario pipeline: flat-fiscal, missing-eps, foreign-software (0.173768ms)
+✔ scenario pipeline: flat-fiscal, incomplete-nearer, software (0.259016ms)
+✔ scenario pipeline: flat-fiscal, incomplete-nearer, infrastructure (0.281539ms)
+✔ scenario pipeline: flat-fiscal, incomplete-nearer, bank (0.198375ms)
+✔ scenario pipeline: flat-fiscal, incomplete-nearer, insurance (0.16759ms)
+✔ scenario pipeline: flat-fiscal, incomplete-nearer, foreign-software (0.194039ms)
+✔ scenario pipeline: flat-relative, complete, software (0.203974ms)
+✔ scenario pipeline: flat-relative, complete, infrastructure (0.24863ms)
+✔ scenario pipeline: flat-relative, complete, bank (0.175181ms)
+✔ scenario pipeline: flat-relative, complete, insurance (0.175201ms)
+✔ scenario pipeline: flat-relative, complete, foreign-software (0.207528ms)
+✔ scenario pipeline: flat-relative, missing-eps, software (0.237674ms)
+✔ scenario pipeline: flat-relative, missing-eps, infrastructure (0.165476ms)
+✔ scenario pipeline: flat-relative, missing-eps, bank (0.148491ms)
+✔ scenario pipeline: flat-relative, missing-eps, insurance (0.147299ms)
+✔ scenario pipeline: flat-relative, missing-eps, foreign-software (0.157444ms)
+✔ scenario pipeline: flat-relative, incomplete-nearer, software (0.193298ms)
+✔ scenario pipeline: flat-relative, incomplete-nearer, infrastructure (0.150904ms)
+✔ scenario pipeline: flat-relative, incomplete-nearer, bank (0.184265ms)
+✔ scenario pipeline: flat-relative, incomplete-nearer, insurance (2.052369ms)
+✔ scenario pipeline: flat-relative, incomplete-nearer, foreign-software (0.374908ms)
+✔ operating scenarios use unit economics, funding claims and dilution before market price (1.88833ms)
+✔ bank model rejects invalid terminal assumptions and shows zero residual value when economics do not cover growth (0.221119ms)
+✔ a USD ADR on NYSE remains supported when the provider reports the issuer country (1.062591ms)
+✔ crypto search defaults to the pair while an explicitly selected ETF remains the ETF (4.584481ms)
+✔ search request keys coalesce case, dollar prefix and whitespace variants (0.373976ms)
+✔ keyboard result selection scrolls only enough within its list (0.494145ms)
+✔ sector comparisons align dates and do not invent returns from insufficient or mismatched history (11.940867ms)
+✔ shared market cache leases enforce weighted quotas, isolation and one stream owner (1168.061025ms)
+✔ source replacement archives legacy files and preserves Git, environment and Vercel identity (6.311871ms)
+✔ a damaged source package is rejected before any existing file moves (2.693618ms)
+✔ unlisted files in a source package cannot enter the application (2.307464ms)
+✔ the imported integration sheet styles the current React shell and home feed (55.707988ms)
+✔ additional technicals use observed OHLCV and return known monotonic oscillator values (21.447752ms)
+✔ flat prices, absent volume and short histories remain finite or explicitly unavailable (5.387101ms)
+✔ future bars cannot change technical context (2.526139ms)
+✔ weekly WMAs use completed consecutive weeks with the newest close weighted most (7.958461ms)
+✔ Fibonacci overlays expose explicit endpoints, percentages and custom levels (1.540001ms)
+✔ trend markers are known on the completed signal bar and cannot repaint (8.270015ms)
+✔ correlation uses matched dates and sufficient return history (1.137802ms)
+✔ expanded technicals use completed bars, Wilder ADX and bounded momentum (14.804487ms)
+✔ short and flat histories do not fabricate strength or relative performance (1.131634ms)
+✔ stochastic, directional movement and 20-session momentum use completed observations (1.432762ms)
+✔ new users start in light while explicit dark and system choices survive (0.964916ms)
+✔ manual trade reference keeps user assumptions separate and flags stale prices (1.467143ms)
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 3 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 3 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 3 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 4 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 4 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 4 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 4 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 4 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 4 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 4 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 4 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 4 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 4 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 4 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 4 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 4 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 4 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 4 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 3 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 3 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 3 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 3 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 3 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 3 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 3 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 3 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 3 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 3 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 3 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+React expects the `children` prop of <title> tags to be a string, number, bigint, or object with a novel `toString` method but found an Array with length 3 instead. Browsers treat all child Nodes of <title> tags as Text content and React expects to be able to convert `children` of <title> tags to a single string value which is why Arrays of length greater than 1 are not supported. When using JSX it can be common to combine text nodes and value nodes. For example: <title>hello {nameOfUser}</title>. While not immediately apparent, `children` in this case is an Array with length 2. If your `children` prop is using this form try rewriting it using a template string: <title>{`hello ${nameOfUser}`}</title>.
+✔ Financials avoids duplicate overview tiles and retains statement rows with labelled detail groups (153.031614ms)
+✔ metric explanations do not inject dialog blocks into server-rendered paragraphs (14.133349ms)
+✔ empty focused search does not expose a nonexistent listbox to assistive technology (48.634472ms)
+✔ opening mobile search offers the account's saved instruments without fabricated suggestions (29.391911ms)
+✔ Research outlook does not fill missing coverage with three empty scenario cards (30.481783ms)
+✔ Product footer supplies copyright and a research disclosure without provider marketing (5.150254ms)
+✔ outlook displays the selected forecast end and horizon beside its cases (14.164885ms)
+✔ data details retain observation time without displaying infrastructure vendor names (6.83446ms)
+✔ valuation snapshot separates analyst targets from opt-in exploratory sensitivities (13.463762ms)
+✔ financial trend scope controls remain available for a missing selected period (12.393951ms)
+✔ Home portfolio summary retains key figures without the full allocation panel (16.287868ms)
+✔ Analyst ratings preserve missing counts separately from reported zero (5.488076ms)
+✔ Analyst ratings do not invent a distribution when counts are absent (4.587616ms)
+✔ Overview context stays concise and does not assign quote currency to upcoming EPS (4.634916ms)
+✔ News earnings do not infer estimate currency from a stock listing or company accounts (6.112145ms)
+✔ public legal and help documents render all cross-links and readable sections (12.458812ms)
+✔ decision overview renders real evidence, eight lenses and direct research paths (61.839761ms)
+✔ valuation tool withholds unsupported models rather than fabricating sensitivities (23.205402ms)
+✔ authentication explains AURYN in sign-in, signup and recovery without fabricating investment results (84.313479ms)
+✔ settings hides experimental navigation while preserving account and help (9.669357ms)
+✔ scenario presentation uses one shared scale and keeps current price outside the range when appropriate (6.028889ms)
+✔ change tracking stays invisible until there are actual observed changes (4.082985ms)
+✔ technical desk separates four evidence groups and formats missing data safely (53.536467ms)
+✔ shared settings exposes theme and accessibility without repeating accent headings (4.419336ms)
+✔ portfolio ledger renders identity, value, return and edit as separate named cells (8.999579ms)
+✔ portfolio allocation chart combines duplicate holdings and discloses excluded pricing (7.274074ms)
+✔ portfolio gain-loss chart keeps losses signed and never presents a return history (5.847832ms)
+✔ account equity displays debt separately without representing it as a losing holding (7.442663ms)
+✔ public sample explains fictional data and offers readable business, value and discipline tabs without account APIs (10.927349ms)
+✔ monthly chart distinguishes unavailable warm-up data from ordinary 1x conditions (31.21872ms)
+✔ metric provenance links filings but never sends users to infrastructure API pages (4.410462ms)
+✔ visual overview keeps the chart, scenarios, catalyst and risk visible without diagnostic expansion (49.980776ms)
+✔ analyst fallback presents actual consensus without invented low/high targets (8.577502ms)
+✔ Advanced opens with a readable risk brief and keeps planning tools off the initial screen (6.39858ms)
+✔ risk brief exposes dated actual measurements with explanations and no assumed success rate (7.781889ms)
+✔ overview does not ask users to resolve infrastructure inputs or replace business risk with data diagnostics (29.690817ms)
+✔ weekly accumulation has its own history, date labels and no misleading monthly simulation (36.412527ms)
+✔ Business starts with reported durability charts and keeps missing annual values unplotted (17.083018ms)
+✔ financial explorer presents selectable metrics and honest chart dates without adding paid data requests (20.094899ms)
+✔ overview leads with the forming DCA period and keeps the confirmed result separately labelled (29.45084ms)
+✔ technical accumulation leads with the same forming reading and retains confirmed history frequency (11.175137ms)
+✔ News leads with company coverage before earnings and transaction records (3.52845ms)
+✔ new Advanced dashboard exposes actual distributions and risk charts with no input forms or invented success rate (26.06347ms)
+✔ stock context uses supplied completed price studies and does not invent a corporate multiple for crypto (5.71277ms)
+✔ new operating expectations begins with explicit future inputs and never guesses a valuation (16.248235ms)
+✔ approved Home keeps account companies, real quotes and missing history separate from illustrative marketing (26.378197ms)
+✔ approved Home renders an honest empty account without fabricated companies or event dates (21.186253ms)
+✔ analyst range requires both ordered reported bounds and never manufactures bear/bull valuations (5.864336ms)
+✔ price-risk cases render Bear Base Bull rather than replacing unsupported earnings with consensus (40.219451ms)
+✔ Home exposes complete matching-news count and expands past three companies without additional feed requests (47.755314ms)
+✔ adaptive Home keeps missing moves neutral, shares current contributor data and makes no chart requests (27.694546ms)
+✔ Overview renders the actual analyst range beside separately labelled AURYN scenarios (42.63746ms)
+✔ selecting the Bear scenario loads the exact assumptions behind its displayed estimate (21.620049ms)
+✔ a quote above all examples appears outside their band on the same numeric axis (2.417386ms)
+✔ workspace pages share a layout-owned session and shell without route keys (61.785769ms)
+✔ local preview has its own isolated session and never starts real account loading (13.783037ms)
+✔ switching workspace tabs restores their own position; tapping the active tab does not jump (75.253629ms)
+✔ public storefront and sample bypass the account shell while research remains protected (65.999229ms)
+✔ first-load research panels suspend locally instead of replacing company identity and tabs (88.287552ms)
+ℹ tests 497
+ℹ suites 0
+ℹ pass 497
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8096.305127
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> auryn-product@0.1.0 typecheck
+> next typegen && tsc --noEmit
+
+Generating route types...
+✓ Route types generated successfully
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> auryn-product@0.1.0 build
+> next build
+
+   ▲ Next.js 15.5.28
+
+   Creating an optimized production build ...
+<w> [webpack.cache.PackFileCacheStrategy] Skipped not serializable cache item 'Compilation/modules|/workspace/auryn-github-main/node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!/workspace/auryn-github-main/node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!/workspace/auryn-github-main/app/options.css': No serializer registered for Warning
+<w> while serializing webpack/lib/cache/PackFileCacheStrategy.PackContentItems -> webpack/lib/NormalModule -> Array { 1 items } -> webpack/lib/ModuleWarning -> Warning
+ ⚠ Compiled with warnings in 2.1s
+
+./app/options.css.webpack[javascript/auto]!=!./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./app/options.css
+Warning
+
+(2:2262) autoprefixer: end value has mixed support, consider using flex-end instead
+
+Import trace for requested module:
+./app/options.css.webpack[javascript/auto]!=!./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./app/options.css
+./app/options.css
+
+ ✓ Compiled successfully in 5.2s
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/27) ...
+   Generating static pages (6/27) 
+   Generating static pages (13/27) 
+   Generating static pages (20/27) 
+ ✓ Generating static pages (27/27)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /_not-found                            218 B         104 kB
+├ ƒ /[[...route]]                         119 kB         311 kB
+├ ƒ /api/access                            218 B         104 kB
+├ ƒ /api/access/visit                      218 B         104 kB
+├ ƒ /api/account-balances                  218 B         104 kB
+├ ƒ /api/alerts                            218 B         104 kB
+├ ƒ /api/analyst/[symbol]                  218 B         104 kB
+├ ƒ /api/auth/providers                    218 B         104 kB
+├ ƒ /api/billing                           218 B         104 kB
+├ ƒ /api/billing/webhook                   218 B         104 kB
+├ ƒ /api/chart/[symbol]                    218 B         104 kB
+├ ƒ /api/company-data                      218 B         104 kB
+├ ƒ /api/documents                         218 B         104 kB
+├ ƒ /api/enrichment/[symbol]               218 B         104 kB
+├ ƒ /api/filings                           218 B         104 kB
+├ ƒ /api/home-feed                         218 B         104 kB
+├ ƒ /api/jobs                              218 B         104 kB
+├ ƒ /api/logos                             218 B         104 kB
+├ ƒ /api/news                              218 B         104 kB
+├ ƒ /api/observations                      218 B         104 kB
+├ ƒ /api/options/[symbol]                  218 B         104 kB
+├ ƒ /api/owner/access                      218 B         104 kB
+├ ƒ /api/paper-plans                       218 B         104 kB
+├ ƒ /api/paper-status                      218 B         104 kB
+├ ƒ /api/portfolio-import                  218 B         104 kB
+├ ƒ /api/price-stream                      218 B         104 kB
+├ ƒ /api/provider-status                   218 B         104 kB
+├ ƒ /api/quotes                            218 B         104 kB
+├ ƒ /api/research-context/[symbol]         218 B         104 kB
+├ ƒ /api/research/[symbol]                 218 B         104 kB
+├ ƒ /api/search                            218 B         104 kB
+├ ƒ /api/sector-performance                218 B         104 kB
+├ ƒ /api/workspace                         218 B         104 kB
+├ ƒ /auth/callback                         218 B         104 kB
+└ ƒ /auth/confirm                          218 B         104 kB
++ First Load JS shared by all             103 kB
+  ├ chunks/1255-dc3ddf72a1dc71a7.js      46.6 kB
+  ├ chunks/4bd1b696-f785427dddbba9fb.js  54.2 kB
+  └ other shared chunks (total)          2.56 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

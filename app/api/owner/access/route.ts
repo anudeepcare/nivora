@@ -65,6 +65,13 @@ export async function POST(request: Request) {
         !/^\S+@\S+\.\S+$/.test(b.email)
       )
         throw new HttpError("Enter the exact email of an existing account.");
+      if (
+        typeof b.expiresAt !== "string" ||
+        !/(?:Z|[+-]\d{2}:\d{2})$/.test(b.expiresAt)
+      )
+        throw new HttpError(
+          "Choose an expiry with a timezone. Refresh the page and try again.",
+        );
       const end = Date.parse(b.expiresAt);
       if (
         !Number.isFinite(end) ||
@@ -115,6 +122,25 @@ export async function POST(request: Request) {
         "Access could not be updated. No payment subscription was changed.",
         503,
       );
+    if (b.action === "grant") {
+      const saved = await db
+        .from("auryn_beta_grants")
+        .select("user_id,email,expires_at,revoked_at,cohort")
+        .eq("user_id", target)
+        .single();
+      const expected = (body as { expiresAt: string }).expiresAt;
+      if (
+        saved.error ||
+        !saved.data ||
+        Date.parse(saved.data.expires_at) !== Date.parse(expected) ||
+        saved.data.revoked_at
+      )
+        throw new HttpError(
+          "The saved expiry could not be confirmed. Reload member access before retrying.",
+          503,
+        );
+      return privateJson({ saved: true, grant: saved.data });
+    }
     return privateJson({ saved: true });
   } catch (e) {
     return failure(e);

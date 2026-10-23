@@ -15,6 +15,7 @@ import { quoteHealth } from "@/lib/quote-health";
 import { mergePriceTick } from "@/lib/live-price";
 import { retainResearchQuote } from "@/lib/research-quote";
 const ValueStudio = dynamic(() => import("./ValueStudio"), {loading:()=> <p role="status">Opening valuation…</p>});
+const OptionsDesk = dynamic(() => import("./OptionsDesk"), {loading:()=> <p role="status">Opening options…</p>});
 const AdvancedResearch = dynamic(() => import("./AdvancedResearch"), {
   loading: () => (
     <p role="status" aria-busy="true">
@@ -69,6 +70,7 @@ const tabs = [
   "Analysts",
   "News",
   "Advanced",
+  "Options",
 ] as const;
 const ranges = ["1D", "1W", "1M", "6M", "1Y", "5Y"] as const;
 export default function Research({ symbol }: { symbol: string }) {
@@ -541,7 +543,7 @@ export default function Research({ symbol }: { symbol: string }) {
         aria-labelledby={`tab-${tab}`}
         className="au-stack"
       >
-        <FeatureGate feature={({Snapshot:"overview",Thesis:"business",Financials:"financials",Valuation:"value",Technicals:"technicals",Analysts:"analysts",News:"news",Advanced:"advanced"} as const)[tab]} fallback={tab==="Snapshot"?<FreeSnapshot research={r}/>:undefined}>
+        <FeatureGate feature={({Snapshot:"overview",Thesis:"business",Financials:"financials",Valuation:"value",Technicals:"technicals",Analysts:"analysts",News:"news",Advanced:"advanced",Options:"options"} as const)[tab]} fallback={tab==="Snapshot"?<FreeSnapshot research={r}/>:undefined}>
         {tab === "News" && (
           <>
             <CompanyUpdates research={r} />
@@ -554,6 +556,7 @@ export default function Research({ symbol }: { symbol: string }) {
         {tab === "Advanced" && (
           <AdvancedResearch key={r.company.symbol} research={r} initialSection={workbenchTarget}/>
         )}
+        {tab === "Options" && <OptionsDesk key={r.company.symbol} research={r} preview={!!demo} />}
         {tab === "Analysts" && <AnalystRatings research={r} />}
         {access.features.overview && retainedCharts.includes("Snapshot") && (
           <section

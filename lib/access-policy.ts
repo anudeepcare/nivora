@@ -8,6 +8,7 @@ export const featureNames = {
   analysts: "Analyst coverage",
   news: "Company news",
   advanced: "Advanced workbench",
+  options: "Options & positioning",
   portfolio: "Portfolio insights",
   home: "Personalized Home",
   ai: "AI analysis",

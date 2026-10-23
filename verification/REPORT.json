@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-10-23T17:01:32.823937+00:00",
+  "generatedAt": "2026-10-23T18:22:23.443137+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: typecheck and production build (admin-clean-verify.log); final 489-test run in admin-clean-tests.log",
-    "npm run test:api": "passed: 106 compiled checks (admin-clean-api.log)",
+    "npm run verify": "passed: 499 tests, TypeScript and production build; options-complete-verify.log",
+    "npm run test:api": "see options-complete-api.log; built routes with synthetic transports",
     "git diff --check": "passed",
-    "npm test": "passed: 489 tests (admin-clean-tests.log)",
-    "npm run build": "passed (admin-clean-verify.log)",
-    "production HTTP": "passed: 14 local HTTP checks (admin-clean-http.log), not browser visual acceptance",
+    "npm test": "passed: 499 tests",
+    "npm run build": "passed: options-complete-verify.log",
+    "production HTTP": "14 local production HTTP checks; options-http.log",
     "node scripts/test-auth-provider-api.mjs": "passed: 3 checks; 109 API checks total (admin-clean-auth-api.log)"
   },
-  "domainPostgresAndComponentTests": 489,
-  "builtApiChecks": 109,
+  "domainPostgresAndComponentTests": 499,
+  "builtApiChecks": 119,
   "providerSelection": {
     "quotes": "EODHD primary; Twelve fallback for stale or failed primary; retain newest usable stale observation if both fail freshness",
     "intraday": "EODHD primary; whole Twelve series on failure",
@@ -23,7 +23,7 @@
   "paidEodhdAccountVerified": "Deployed financial results observed; account/token and full entitlement matrix not inspected",
   "eodhdConfiguration": "Financial data returned in signed-in deployed UI; no local token; Vercel metadata access denied by scope.",
   "publicDemoNormalization": "eodhd-demo-normalization.json",
-  "browserTestsExecuted": false,
+  "browserTestsExecuted": true,
   "physicalIphoneTestsExecuted": false,
   "liveDatabaseWrites": false,
   "brokerOrdersSubmitted": false,
@@ -31,13 +31,13 @@
   "productionReady": false,
   "deployed": false,
   "pushed": false,
-  "review": "Auth race/callback/sign-out regressions, operating-model worked arithmetic and inverse tests, provider fallback/freshness tests, actual component SSR checks and compiled API fixture checks pass. Local production HTTP checks are not rendered browser or physical device tests.",
+  "review": "New options calculations, projections, access-save confirmation, compiled route guard and responsive component fixtures verified. No broad claim of all historical requirements complete, proprietary signal parity, outperformance, legal approval or live options entitlement.",
   "approvedDesign": "docs/design/approved-studio-20261017.html",
   "scopeAudit": "docs/requirements-inherited.json",
   "remainingGates": "docs/RELEASE_STATUS.md",
-  "priorEvidence": "The signed-in reference/deployed UI reviews predate this patch. New verification is source, domain/SSR, TypeScript and build evidence only.",
-  "browserTestScope": "No rendered browser test of this build; older live audits are historical evidence only",
-  "patchedSourceBrowserTestsExecuted": false,
+  "priorEvidence": "Earlier audit fields describe historical work; the optionsRelease and current command/browser scope above define this release.",
+  "browserTestScope": "36 component fixture layout checks, 18 admin fixture layout checks; four actual built-preview navigation combinations. One initial research-preview hydration warning remains; see options-preview-browser.json. No physical iPhone or live dataset acceptance.",
+  "patchedSourceBrowserTestsExecuted": true,
   "latestAudit": "../docs/CURRENT_ACCEPTANCE.md",
   "referenceReview": "REFERENCE_REVIEW_20261017.md",
   "decisionPolicy": {
@@ -824,5 +824,34 @@
     "backendPermissionsChanged": false,
     "databaseMigrationRequired": false,
     "realPaymentVerified": "User reported hosted checkout opens after billing mode correction; completed live transaction not demonstrated"
+  },
+  "optionsRelease": {
+    "tab": "Options",
+    "optionsFeedEnabledByDefault": false,
+    "newDataPurchase": false,
+    "liveEntitlementVerified": false,
+    "dataFrequency": "End of day",
+    "chainLimit": 4000,
+    "providerCacheMinutes": 15,
+    "computed": [
+      "GEX by strike",
+      "open interest by strike",
+      "modeled gamma profile/crossing where supported",
+      "ATM straddle cost",
+      "put skew",
+      "expiry strategy payoff and analytic risk limits"
+    ],
+    "notImplemented": [
+      "observed dealer inventory",
+      "live options flow",
+      "historical IV rank/percentile",
+      "broker execution",
+      "probability of profit",
+      "pre-expiry option repricing",
+      "broker-verified portfolio coverage"
+    ],
+    "priceProjection": "Conditional positive-earnings sensitivities; reconciled recent same-currency inputs required; transparent illustrative stresses, not calibrated forecasts",
+    "adminExpiry": "ISO timezone-explicit submission with saved-row readback verification",
+    "docs": "docs/OPTIONS_AND_PROJECTIONS.md"
   }
 }

@@ -19,6 +19,7 @@ let r=await load('access').GET(req('access'));assert.equal(r.status,200);let a=a
 r=await load('owner/access').GET(req('owner/access'));assert.equal(r.status,403);checks++;
 r=await load('search').GET(req('search?q=MSFT'));assert.equal(r.status,403);checks++;
 process.env.AURYN_EXTERNAL_DATA_LICENSED='true';
+r=await load('options/[symbol]').GET(req('options/APP'),{params:Promise.resolve({symbol:'APP'})});assert.equal(r.status,403);checks++;
 r=await load('chart/[symbol]').GET(req('chart/MSFT?range=5Y'),{params:Promise.resolve({symbol:'MSFT'})});assert.equal(r.status,403);checks++;
 r=await load('research/[symbol]').GET(req('research/MSFT'),{params:Promise.resolve({symbol:'MSFT'})});assert.equal(r.status,429);checks++;
 grant={expires_at:new Date(Date.now()+86400000).toISOString(),revoked_at:null};

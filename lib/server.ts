@@ -26,7 +26,7 @@ export async function account(request: Request) {
   if (error || !data.user)
     throw new HttpError("Session could not be verified. Sign in again.", 401);
   if(process.env.AURYN_ACCESS_ENABLED==='true'){const {guardAccess}=await import('./access-server');await guardAccess(request,data.user.id);}
-  if(/^\/api\/(sector-performance|quotes|research(?:-context)?|chart|search|home-feed|company-data|enrichment|logos|price-stream)(?:\/|$)/.test(new URL(request.url).pathname)){
+  if(/^\/api\/(options|sector-performance|quotes|research(?:-context)?|chart|search|home-feed|company-data|enrichment|logos|price-stream)(?:\/|$)/.test(new URL(request.url).pathname)){
     try{if(!await allowMarketUser(data.user.id))throw new HttpError("Your daily research allowance is reached. Saved observations remain available.",429);}catch(e){if(e instanceof HttpError)throw e;throw new HttpError(e instanceof MarketGuardError?e.message:"Market allowance unavailable.",503);}
   }
   return { user: data.user, db };

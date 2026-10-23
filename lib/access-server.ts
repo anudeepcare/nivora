@@ -147,7 +147,7 @@ export async function guardAccess(request: Request, id: string) {
     path = url.pathname;
   // Every vendor-bearing route must pass here; merely hiding a client tab is insufficient.
   const market =
-    /^\/api\/(quotes|research|research-context|chart|search|home-feed|company-data|enrichment|logos|price-stream|news|filings|sector-performance|analyst|observations|alerts|paper-plans)(?:\/|$)/.test(
+    /^\/api\/(options|quotes|research|research-context|chart|search|home-feed|company-data|enrichment|logos|price-stream|news|filings|sector-performance|analyst|observations|alerts|paper-plans)(?:\/|$)/.test(
       path,
     );
   if (!market) return;
@@ -157,7 +157,9 @@ export async function guardAccess(request: Request, id: string) {
       "Market data is not enabled for this deployment. Your saved account data remains available.",
       403,
     );
-  const feature: Feature | null = /\/analyst\//.test(path)
+  const feature: Feature | null = /\/options\//.test(path)
+    ? "options"
+    : /\/analyst\//.test(path)
     ? "ai"
     : /\/research-context\//.test(path)
       ? "advanced"

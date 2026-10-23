@@ -33,11 +33,15 @@ export default function OwnerAccess() {
     [cohort, setCohort] = useState("friends"),
     [message, setMessage] = useState(""),
     [busy, setBusy] = useState(false),
-    [panel, setPanel] = useState("people");
+    [panel, setPanel] = useState("people"),
+    [duration, setDuration] = useState<number | null>(null),
+    [memberSearch, setMemberSearch] = useState(""),
+    [memberFilter, setMemberFilter] = useState("active");
   const load = async () => {
     const d = await api<Data>("owner/access");
     setData(d);
     setConfig(d.config);
+    return d;
   };
   useEffect(() => {
     if (access.owner) void load().catch((e) => setMessage(e.message));
@@ -58,9 +62,17 @@ export default function OwnerAccess() {
     setBusy(true);
     setMessage("");
     try {
-      await api("owner/access", body);
+      const result = await api<{ saved: boolean; grant?: Grant }>(
+        "owner/access",
+        body,
+      );
       await load();
-      setMessage("Access updated. Payment subscriptions were not changed.");
+      await refresh();
+      setMessage(
+        result.grant
+          ? `Pro access saved for ${result.grant.email} until ${new Date(result.grant.expires_at).toLocaleString()}.`
+          : "Access updated. Payment subscriptions were not changed.",
+      );
     } catch (e) {
       setMessage(e instanceof Error ? e.message : "Update failed.");
     } finally {
@@ -86,27 +98,31 @@ export default function OwnerAccess() {
           <strong>Preview access</strong>
           <p>Test permissions without changing your subscription.</p>
         </div>
-        <label>
-          View as
-          <select
-            value={access.preview ?? "owner"}
-            onChange={(e) => {
-              try {
-                if (e.target.value === "owner")
-                  sessionStorage.removeItem("auryn-owner-preview");
-                else
-                  sessionStorage.setItem("auryn-owner-preview", e.target.value);
-                refresh();
-              } catch {
-                setMessage("Preview could not be changed.");
-              }
-            }}
-          >
-            <option value="owner">Owner · Full access</option>
-            <option value="free">Free</option>
-            <option value="pro">Pro</option>
-          </select>
-        </label>
+        <div
+          className="admin-preview-options"
+          role="group"
+          aria-label="Preview plan"
+        >
+          {(["owner", "free", "pro"] as const).map((plan) => (
+            <button
+              type="button"
+              key={plan}
+              aria-pressed={(access.preview ?? "owner") === plan}
+              onClick={() => {
+                try {
+                  if (plan === "owner")
+                    sessionStorage.removeItem("auryn-owner-preview");
+                  else sessionStorage.setItem("auryn-owner-preview", plan);
+                  refresh();
+                } catch {
+                  setMessage("Preview could not be changed.");
+                }
+              }}
+            >
+              {plan === "owner" ? "Owner" : plan === "free" ? "Free" : "Pro"}
+            </button>
+          ))}
+        </div>
       </section>
       <nav className="admin-section-nav" aria-label="Admin sections">
         {[
@@ -119,7 +135,10 @@ export default function OwnerAccess() {
             key={id}
             aria-pressed={panel === id}
             aria-controls={`admin-${id}`}
-            onClick={() => setPanel(id)}
+            onClick={() => {
+              setPanel(id);
+              setMessage("");
+            }}
           >
             {label}
           </button>
@@ -153,7 +172,6 @@ export default function OwnerAccess() {
                     : "Controls are configured but not activated. Set AURYN_ACCESS_ENABLED=true after applying the migration."}
                 </p>
               </div>
-
             </header>
             <form
               onSubmit={(e) => {
@@ -245,8 +263,11 @@ export default function OwnerAccess() {
                   type="button"
                   className="button"
                   key={days}
+                  aria-pressed={duration === days}
                   disabled={busy}
                   onClick={() => {
+                    setDuration(days);
+                    setMessage("");
                     const d = new Date(Date.now() + days * 86400000);
                     setExpiry(
                       new Date(d.getTime() - d.getTimezoneOffset() * 60000)
@@ -266,7 +287,7 @@ export default function OwnerAccess() {
                 void save({
                   action: "grant",
                   email,
-                  expiresAt: expiry,
+                  expiresAt: new Date(expiry).toISOString(),
                   cohort,
                 });
               }}
@@ -288,7 +309,10 @@ export default function OwnerAccess() {
                   type="datetime-local"
                   required
                   value={expiry}
-                  onChange={(e) => setExpiry(e.target.value)}
+                  onChange={(e) => {
+                    setExpiry(e.target.value);
+                    setDuration(null);
+                  }}
                 />
               </label>
               <label>
@@ -300,37 +324,121 @@ export default function OwnerAccess() {
                   onChange={(e) => setCohort(e.target.value)}
                 />
               </label>
+              {expiry && (
+                <p className="admin-expiry-summary">
+                  Access will end {new Date(expiry).toLocaleString()}. Select
+                  Give access to save this date.
+                </p>
+              )}
               <button className="button primary" disabled={busy}>
                 Grant complimentary Pro
               </button>
             </form>
             <h3>Complimentary members</h3>
+            <p>Search the latest 100 access records.</p>
+            <div className="admin-member-tools">
+              <label>
+                Find a member
+                <input
+                  type="search"
+                  value={memberSearch}
+                  onChange={(e) => setMemberSearch(e.target.value)}
+                  placeholder="Search email"
+                />
+              </label>
+              <label>
+                Status
+                <select
+                  value={memberFilter}
+                  onChange={(e) => setMemberFilter(e.target.value)}
+                >
+                  <option value="active">Active</option>
+                  <option value="expired">Expired</option>
+                  <option value="revoked">Revoked</option>
+                  <option value="all">All members</option>
+                </select>
+              </label>
+            </div>
+            {!data.grants.some(
+              (g) =>
+                g.email.toLowerCase().includes(memberSearch.toLowerCase()) &&
+                (memberFilter === "all" ||
+                  (g.revoked_at
+                    ? "revoked"
+                    : Date.parse(g.expires_at) <= Date.now()
+                      ? "expired"
+                      : "active") === memberFilter),
+            ) && <p>No members match this filter.</p>}
             <div className="owner-grants">
               {data.grants.length ? (
-                data.grants.map((g) => (
-                  <article key={g.user_id}>
-                    <div>
-                      <strong>{g.email}</strong>
-                      <small>
-                        {g.cohort} ·{" "}
-                        {g.revoked_at
-                          ? "Revoked"
-                          : Date.parse(g.expires_at) < Date.now()
-                            ? "Expired"
-                            : `Until ${dateLabel(g.expires_at)}`}
-                      </small>
-                    </div>
-                    <button
-                      className="button"
-                      disabled={busy || !!g.revoked_at}
-                      onClick={() =>
-                        void save({ action: "revoke", userId: g.user_id })
-                      }
-                    >
-                      Revoke
-                    </button>
-                  </article>
-                ))
+                data.grants
+                  .filter(
+                    (g) =>
+                      g.email
+                        .toLowerCase()
+                        .includes(memberSearch.toLowerCase()) &&
+                      (memberFilter === "all" ||
+                        (g.revoked_at
+                          ? "revoked"
+                          : Date.parse(g.expires_at) <= Date.now()
+                            ? "expired"
+                            : "active") === memberFilter),
+                  )
+                  .map((g) => (
+                    <article key={g.user_id}>
+                      <div>
+                        <strong>{g.email}</strong>
+                        <small>
+                          {g.cohort} ·{" "}
+                          {g.revoked_at
+                            ? "Revoked"
+                            : Date.parse(g.expires_at) < Date.now()
+                              ? "Expired"
+                              : `Until ${new Date(g.expires_at).toLocaleString()} · ${Math.max(0, Math.ceil((Date.parse(g.expires_at) - Date.now()) / 86400000))} days left`}
+                        </small>
+                      </div>
+                      <div className="admin-member-actions">
+                        <button
+                          type="button"
+                          className="button"
+                          disabled={busy}
+                          onClick={() => {
+                            setEmail(g.email);
+                            setCohort(g.cohort);
+                            setExpiry(
+                              new Date(
+                                Math.max(Date.now(), Date.parse(g.expires_at)) +
+                                  30 * 86400000 -
+                                  new Date().getTimezoneOffset() * 60000,
+                              )
+                                .toISOString()
+                                .slice(0, 16),
+                            );
+                            setDuration(null);
+                            setMessage(
+                              `Review the new date for ${g.email}, then give access to save.`,
+                            );
+                            document
+                              .querySelector<HTMLInputElement>(
+                                ".owner-grant-form input",
+                              )
+                              ?.focus();
+                          }}
+                        >
+                          Extend 30 days
+                        </button>
+                        <button
+                          className="button"
+                          disabled={busy || !!g.revoked_at}
+                          onClick={() =>
+                            void save({ action: "revoke", userId: g.user_id })
+                          }
+                        >
+                          Revoke
+                        </button>
+                      </div>
+                    </article>
+                  ))
               ) : (
                 <p>No complimentary grants yet.</p>
               )}
@@ -405,8 +513,20 @@ export default function OwnerAccess() {
             </p>
             {data.audit.map((a, i) => (
               <div className="owner-audit-row" key={i}>
-                <span>{a.action}</span>
-                <time>{dateLabel(a.created_at)}</time>
+                <span>
+                  {(
+                    {
+                      grant: "Pro access granted",
+                      revoke: "Complimentary access revoked",
+                      settings: "Feature settings updated",
+                      "revoke-cohort": "Group access ended",
+                    } as Record<string, string>
+                  )[a.action] ?? a.action}
+                  {a.target
+                    ? ` · ${data.grants.find((g) => g.user_id === a.target)?.email ?? a.target}`
+                    : ""}
+                </span>
+                <time>{new Date(a.created_at).toLocaleString()}</time>
               </div>
             ))}
           </details>

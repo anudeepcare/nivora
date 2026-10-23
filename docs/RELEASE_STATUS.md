@@ -1,3 +1,11 @@
+## Options, projections and access reliability — October 23
+
+This release adds a dedicated Options tab (chain, GEX/positioning, LEAPS explorer, expiry payoff strategies, metric explanations), conditional earnings projections under Value, and timezone-explicit verified admin access saving with member filters/extension.
+
+Read `docs/OPTIONS_AND_PROJECTIONS.md` before enabling the options feed. Set `AURYN_OPTIONS_ENABLED=true` only after dataset entitlement/display rights are verified; no new subscription is purchased. Existing market-data keys are reused. No new SQL migration is required. Default Options feature access is Pro, configurable by the owner.
+
+Options data are EOD snapshots, not live executable quotes. GEX is modeled; no actual dealer inventory is inferred as fact. The earnings model is a conditional sensitivity, not a guaranteed target. Live vendor entitlement, live payments and physical iPhone acceptance remain unverified in this environment.
+
 > Owner UX update: focused People, Features and Payments sections, quick complimentary access durations, and a private Settings shortcut. See [ADMIN_CONTROLS.md](ADMIN_CONTROLS.md).
 
 > Current Free experience: full Overview, news and Home; real account workspace with no automatic sample holdings; quieter upgrade prompts. See [FREE_EXPERIENCE_UPDATE.md](FREE_EXPERIENCE_UPDATE.md).
