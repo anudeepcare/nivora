@@ -8,7 +8,10 @@ export default function BusinessHistory({
 }: {
   research: Research;
 }) {
-  const h = useMemo(() => businessHistory(r), [r]);
+  const h = useMemo(
+    () => businessHistory(r),
+    [r.facts, r.retrievedAt, r.company.assetType],
+  );
   if (!h || !h.periods) return null;
   return (
     <section className="business-history panel">
@@ -57,6 +60,92 @@ export default function BusinessHistory({
             Reported diluted weighted shares, not a forecast of future dilution
           </small>
         </article>
+      </div>
+      <div className="business-trend-charts">
+        {(
+          [
+            ["revenue", "Revenue", "blue"],
+            ["fcf", "Cash after capex", "green"],
+            ["margin", "Operating margin", "violet"],
+          ] as const
+        ).map(([key, label, tone]) => {
+          const values = h.rows
+            .map((x) => x[key])
+            .filter((v): v is number => v != null && Number.isFinite(v));
+          if (!values.length) return null;
+          const low = Math.min(0, ...values),
+            high = Math.max(0, ...values),
+            span = high - low || 1,
+            y = (v: number) => 104 - ((v - low) / span) * 77,
+            zero = y(0),
+            step = 320 / h.rows.length;
+          return (
+            <figure key={key} data-tone={tone}>
+              <figcaption>
+                {label}
+                <small>{key === "margin" ? "% of revenue" : h.currency}</small>
+              </figcaption>
+              <svg
+                viewBox="0 0 360 136"
+                role="img"
+                aria-label={`${label} history`}
+              >
+                <line
+                  x1="18"
+                  x2="342"
+                  y1={zero}
+                  y2={zero}
+                  stroke="currentColor"
+                  opacity=".15"
+                />
+                {h.rows.map((row, i) => {
+                  const value = row[key],
+                    x = 20 + step * (i + 0.5);
+                  if (value == null || !Number.isFinite(value))
+                    return (
+                      <text key={row.end} x={x} y="126" textAnchor="middle">
+                        {row.end.slice(0, 4)} · —
+                      </text>
+                    );
+                  return (
+                    <g key={row.end}>
+                      <title>
+                        {dateLabel(row.end)}:{" "}
+                        {key === "margin"
+                          ? percent(value)
+                          : amount(value, h.currency ?? undefined, true)}
+                      </title>
+                      <rect
+                        x={x - 13}
+                        width="26"
+                        y={Math.min(y(value), zero)}
+                        height={Math.max(1, Math.abs(y(value) - zero))}
+                        rx="3"
+                        data-negative={value < 0}
+                      />
+                      <text
+                        x={x}
+                        y={
+                          value < 0
+                            ? Math.min(115, y(value) + 13)
+                            : Math.max(13, y(value) - 7)
+                        }
+                        textAnchor="middle"
+                      >
+                        {key === "margin"
+                          ? percent(value)
+                          : amount(value, h.currency ?? undefined, true)}
+                      </text>
+                      <text x={x} y="132" textAnchor="middle">
+                        {row.end.slice(0, 4)}
+                      </text>
+                    </g>
+                  );
+                })}
+              </svg>
+            </figure>
+          );
+        })}
       </div>
       <div className="table-scroll">
         <table>

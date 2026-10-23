@@ -15,7 +15,7 @@ const ResearchNotes = dynamic(() => import("./ResearchNotes"));
 import FinancingContext from "./FinancingContext";
 import BusinessHistory from "./BusinessHistory";
 import ModelAssessment from "./ModelAssessment";
-import {headerMarketContext} from "@/lib/business-history";
+import { headerMarketContext } from "@/lib/business-history";
 import BusinessMap from "./BusinessMap";
 import TimingContext from "./TimingContext";
 import DecisionWorkspace from "./DecisionWorkspace";
@@ -389,7 +389,7 @@ export default function Research({ symbol }: { symbol: string }) {
       </div>
     </section>
   );
-  const headerContext=headerMarketContext(r);
+  const headerContext = headerMarketContext(r);
   return (
     <article className="research-page" data-research-mode={preferences.detail}>
       <header className="page-head security-head">
@@ -398,9 +398,30 @@ export default function Research({ symbol }: { symbol: string }) {
           <div>
             <h1>{symbol}</h1>
             <p className="muted small">
-              {r.company.name} · {r.company.exchange || "Listing"} · {r.quote.currency}
+              {r.company.name} · {r.company.exchange || "Listing"} ·{" "}
+              {r.quote.currency}
             </p>
-            <div className="security-context">{headerContext.sector&&<span>{headerContext.sector}</span>}{headerContext.marketCap!=null&&<span title={headerContext.asOf?`Reported market capitalization · ${dateLabel(headerContext.asOf)}`:undefined}>Market cap <b>{amount(headerContext.marketCap,headerContext.currency,true)}</b></span>}</div>
+            <div className="security-context">
+              {headerContext.sector && <span>{headerContext.sector}</span>}
+              {headerContext.marketCap != null && (
+                <span
+                  title={
+                    headerContext.asOf
+                      ? `Reported market capitalization · ${dateLabel(headerContext.asOf)}`
+                      : undefined
+                  }
+                >
+                  Market cap{" "}
+                  <b>
+                    {amount(
+                      headerContext.marketCap,
+                      headerContext.currency,
+                      true,
+                    )}
+                  </b>
+                </span>
+              )}
+            </div>
           </div>
         </div>
         <div className="row quote-actions gap24">
@@ -486,7 +507,9 @@ export default function Research({ symbol }: { symbol: string }) {
                 ? "Overview"
                 : name === "Valuation"
                   ? "Value"
-                  : name === "Thesis" ? "Business" : name}
+                  : name === "Thesis"
+                    ? "Business"
+                    : name}
             </button>
           ))}
         </nav>
@@ -561,13 +584,13 @@ export default function Research({ symbol }: { symbol: string }) {
         )}
         {tab === "Valuation" && (
           <>
-            <ModelAssessment research={r} />
             <ResearchOutlook research={r} detailed />
-            <details className="research-optional"><summary>Build a personal operating scenario</summary><FundedScenarios key={r.company.symbol} research={r}/></details>
-            <details
-              className="valuation-workbench"
-              open={preferences.detail === "advanced"}
-            >
+            <ModelAssessment research={r} />
+            <details className="research-optional">
+              <summary>Build a personal operating scenario</summary>
+              <FundedScenarios key={r.company.symbol} research={r} />
+            </details>
+            <details className="valuation-workbench">
               <summary>Test your valuation assumptions</summary>
               <ValuationLab research={r} />
             </details>
@@ -608,9 +631,9 @@ export default function Research({ symbol }: { symbol: string }) {
         )}
         {tab === "Thesis" && (
           <>
-            <BusinessMap key={r.company.symbol} research={r} />
             <BusinessHistory research={r} />
             <ThesisPicture research={r} />
+            <BusinessMap key={r.company.symbol} research={r} />
             <details className="research-optional">
               <summary>My decision record & review</summary>
               <ResearchNotes research={r} />
@@ -743,10 +766,10 @@ export function DcaCard({
         <Help label="DCA multiplier">
           A multiple of your usual contribution, not leverage or a return
           forecast. AURYN’s trend-adjusted rules use the preceding 24 completed
-          monthly closes. 0× pauses new scheduled contributions; it is not a sell order.
-          Stronger pullbacks can earn larger multipliers even in a deteriorating
-          business. Review financial evidence before adding. The current month
-          can change until it closes.
+          monthly closes. 0× pauses new scheduled contributions; it is not a
+          sell order. Stronger pullbacks can earn larger multipliers even in a
+          deteriorating business. Review financial evidence before adding. The
+          current month can change until it closes.
         </Help>
       </div>
       <div className="au-dca-reading">

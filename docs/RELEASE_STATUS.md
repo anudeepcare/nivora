@@ -1,3 +1,7 @@
+# Latest screenshot and financial-explorer continuation
+
+Read `docs/SCREENSHOT_REVIEW_20261023.md` first (local filename from docs). Includes the 36-metric financial explorer, metrics-first Business charts, additional technical studies, shared classification protection and Advanced contrast repair. 408 tests, TypeScript, production build and 83 API fixture checks passed. DCA parity is unresolved; the audited equal-budget study does not establish superiority. Full wish-list completion and rendered/iPhone acceptance are not claimed.
+
 # Latest consolidated product continuation
 
 Read `docs/CONSOLIDATED_PRODUCT_BUILD.md` (or the local filename from docs) first. This includes the simplified public storefront, separate weekly/monthly accumulation desk and Home price/coverage corrections, along with prior screenshot fixes. Full source is included. Broader competitor parity, commercial readiness, rendered visual parity and physical iPhone acceptance remain incomplete; see the current verification report.

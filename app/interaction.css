@@ -272,8 +272,12 @@
 
 /* Desktop keeps research navigation in flow so it cannot cover charts or evidence. */
 @media (min-width: 701px) {
-  .research-page .research-view-control { margin: 0; padding: 0; min-height: 0; }
-  .research-page .local-tabs { margin-block: 10px 18px; }
-  .research-page .advanced-intro { --ink: #f3f8fc; --muted: #bed2dc; }
+  .research-page .research-view-control {
+    margin: 0;
+    padding: 0;
+    min-height: 0;
+  }
+  .research-page .local-tabs {
+    margin-block: 10px 18px;
+  }
 }
-.research-page .advanced-intro p { color: #bed2dc; }

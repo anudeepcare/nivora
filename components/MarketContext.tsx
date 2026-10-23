@@ -1,6 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import type { Research, Candle } from "@/lib/types";
+import { companyClassification } from "@/lib/company-classification";
 import { benchmarkContext, type PeerCandidate } from "@/lib/market-context";
 import { percent, dateLabel } from "@/lib/format";
 import { useProduct, useResource } from "./Session";
@@ -13,7 +14,13 @@ export default function MarketContext({ research: r }: { research: Research }) {
         ? "ETH/USD"
         : "BTC/USD"
       : "SPY";
-  const sectorKey = (r.evidence?.profile.sector || r.company.sector || "")
+  const classification = companyClassification({
+    symbol: r.company.symbol,
+    assetType: r.company.assetType,
+    sector: r.evidence?.profile?.sector || r.company.sector,
+    industry: r.evidence?.profile?.industry,
+  });
+  const sectorKey = (classification.sector || "")
       .replace(/[^a-z]/gi, "")
       .toLowerCase(),
     sectorBenchmark: Record<string, string> = {

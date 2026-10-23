@@ -175,6 +175,8 @@ export function researchBrief(r: Research) {
     },
     accumulation: {
       version: p.dca.version,
+      date: p.dca.confirmed?.date ?? null,
+      close: p.dca.confirmed?.close ?? null,
       forming: p.dca.forming,
       drawdown: p.dca.confirmed?.drawdown ?? null,
       deviation: p.dca.confirmed?.deviation ?? null,

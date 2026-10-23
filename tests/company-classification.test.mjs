@@ -1,0 +1,4 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {companyClassification} from '../lib/company-classification.ts';
+test('contradictory finance metadata cannot drive infrastructure labels or benchmarks',()=>{const c=companyClassification({symbol:'IREN',assetType:'stock',sector:'Financial Services',industry:'Capital Markets'});assert.equal(c.sector,null);assert.equal(c.industry,null);assert.equal(c.conflicting,true);});
+test('valid infrastructure and ordinary company classifications remain available',()=>{assert.deepEqual(companyClassification({symbol:'MSFT',assetType:'stock',sector:'Technology',industry:'Software'}),{sector:'Technology',industry:'Software',conflicting:false});const c=companyClassification({symbol:'IREN',assetType:'stock',sector:'Financial Services',industry:'Data Centers'});assert.equal(c.sector,null);assert.equal(c.industry,'Data Centers');});

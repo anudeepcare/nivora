@@ -433,14 +433,12 @@
 }
 .analyst-target-main > div {
   min-width: 0;
-  padding: 14px;
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--blue) 5%, var(--paper));
-  border: 1px solid color-mix(in srgb, var(--blue) 10%, var(--line));
+  padding: 10px 0;
+  background: transparent;
 }
 .analyst-target-main > div:last-child {
-  background: color-mix(in srgb, var(--teal) 5%, var(--paper));
-  border-color: color-mix(in srgb, var(--teal) 10%, var(--line));
+  border-left: 1px solid var(--line);
+  padding-left: 18px;
 }
 .analyst-target-main span {
   display: block;
@@ -495,7 +493,7 @@
     gap: 9px;
   }
   .analyst-target-main > div {
-    padding: 12px;
+    padding-block: 8px;
   }
   .analyst-target-main strong {
     font-size: clamp(22px, 6vw, 30px);

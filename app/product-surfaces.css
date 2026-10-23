@@ -1017,3 +1017,301 @@
     display: none;
   }
 }
+/* Business evidence precedes the optional company profile. */
+.business-trend-charts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+.business-trend-charts figure {
+  min-width: 0;
+  margin: 0;
+  padding: 15px 12px 8px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+.business-trend-charts figcaption {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.business-trend-charts figcaption small {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 400;
+}
+.business-trend-charts svg {
+  width: 100%;
+  display: block;
+  margin-top: 8px;
+  overflow: visible;
+}
+.business-trend-charts text {
+  fill: var(--muted);
+  font-size: 10px;
+  font-family: inherit;
+}
+.business-trend-charts rect {
+  fill: var(--blue);
+}
+.business-trend-charts [data-tone="green"] rect {
+  fill: var(--green);
+}
+.business-trend-charts [data-tone="violet"] rect {
+  fill: var(--violet, #8565dc);
+}
+.business-trend-charts rect[data-negative="true"] {
+  fill: var(--red);
+}
+.business-map-compact .company-profile {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+}
+.business-map-compact .company-profile summary {
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+.business-map-compact .company-profile p {
+  margin-top: 12px;
+  font-size: 13px;
+  line-height: 1.7;
+  max-width: 90ch;
+}
+.business-map-compact .business-checklist {
+  margin-block: 12px;
+}
+.business-map-compact .segment-breakdown {
+  margin-top: 18px;
+  padding-top: 18px;
+}
+@media (max-width: 760px) {
+  .business-trend-charts {
+    grid-template-columns: 1fr;
+  }
+  .business-trend-charts svg {
+    max-height: 160px;
+  }
+}
+.overview-dca-readings > div > span > small {
+  display: block;
+  font-size: 10px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin-top: 3px;
+}
+.home-workspace > .page-head {
+  padding: 12px 0 20px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 22px;
+}
+.home-workspace .home-details {
+  gap: 16px;
+}
+.home-workspace .home-details > section {
+  padding: 18px 20px;
+}
+.home-workspace .focus-row {
+  padding: 14px 0;
+}
+.home-workspace .focus-text > strong {
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.home-workspace .focus-text > p {
+  font-size: 12px;
+  line-height: 1.6;
+}
+.company-updates .grid2 {
+  align-items: start;
+}
+@media (max-width: 700px) {
+  .home-workspace > .page-head {
+    padding-top: 4px;
+  }
+  .home-workspace .home-details > section {
+    padding: 16px;
+  }
+}
+/* Financial explorer: one chart, grouped metrics, no duplicate trend-card wall. */
+.financial-explorer {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  padding: 20px;
+}
+.financial-explorer > .section-head {
+  margin-bottom: 14px;
+}
+.financial-explorer .section-head h3 {
+  font-size: 22px;
+  margin: 6px 0;
+}
+.explorer-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.explorer-body {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  gap: 24px;
+}
+.explorer-metrics {
+  max-height: 440px;
+  overflow: auto;
+  padding-right: 12px;
+  border-right: 1px solid var(--line);
+  scrollbar-width: thin;
+}
+.explorer-metrics > div + div {
+  margin-top: 18px;
+}
+.explorer-metrics > div > span {
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  margin: 8px 0;
+}
+.explorer-metrics button {
+  display: block;
+  width: 100%;
+  min-height: 38px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  padding: 8px 10px;
+  text-align: left;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.5;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.explorer-metrics button[aria-pressed="true"] {
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-weight: 600;
+}
+.explorer-plot {
+  min-width: 0;
+}
+.explorer-latest {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.explorer-latest strong {
+  font-size: 30px;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+}
+.explorer-latest > span {
+  font-size: 12px;
+}
+.explorer-plot > svg {
+  display: block;
+  width: 100%;
+  margin: 16px 0 4px;
+  touch-action: pan-y;
+}
+.explorer-definition {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 6px 0 14px;
+}
+.explorer-statistics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+  gap: 12px;
+}
+.explorer-statistics span {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+.explorer-statistics b {
+  display: block;
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+  margin-top: 6px;
+}
+.explorer-table {
+  margin-top: 18px;
+  font-size: 12px;
+}
+.explorer-table summary {
+  cursor: pointer;
+  color: var(--blue);
+  min-height: 28px;
+}
+.explorer-table p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+.explorer-mobile-picker {
+  display: none;
+}
+.explorer-empty {
+  min-height: 180px;
+  display: grid;
+  place-content: center;
+  padding: 24px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+@media (max-width: 900px) {
+  .explorer-body {
+    grid-template-columns: 1fr;
+  }
+  .explorer-metrics {
+    display: none;
+  }
+  .explorer-mobile-picker {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 14px;
+    font-size: 12px;
+    margin-bottom: 18px;
+  }
+  .explorer-mobile-picker select {
+    min-width: 0;
+    width: 100%;
+    min-height: 44px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: var(--ink);
+    font: inherit;
+    padding: 10px;
+  }
+  .financial-explorer {
+    padding: 16px;
+  }
+  .explorer-statistics {
+    gap: 8px;
+  }
+  .explorer-statistics b {
+    font-size: 14px;
+  }
+  .explorer-latest strong {
+    font-size: 27px;
+  }
+}

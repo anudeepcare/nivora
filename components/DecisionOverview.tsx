@@ -263,12 +263,25 @@ export default function DecisionOverview({
               <div>
                 <span>
                   Confirmed · {b.accumulation.month ?? "not established"}
+                  {b.accumulation.close != null && (
+                    <small>
+                      {dateLabel(b.accumulation.date)} ·{" "}
+                      {amount(b.accumulation.close, r.quote.currency)} close
+                    </small>
+                  )}
                 </span>
                 <b>{multiplier == null ? "—" : `${multiplier}×`}</b>
               </div>
               <div>
                 <span>
                   {b.accumulation.forming?.month ?? "Current month"} · forming
+                  {b.accumulation.forming && (
+                    <small>
+                      {dateLabel(b.accumulation.forming.date)} ·{" "}
+                      {amount(b.accumulation.forming.close, r.quote.currency)}{" "}
+                      settled close
+                    </small>
+                  )}
                 </span>
                 <b>
                   {b.accumulation.forming
@@ -279,7 +292,8 @@ export default function DecisionOverview({
             </div>
             <p>{b.accumulation.reason}</p>
             <small>
-              Price-only experimental rule; not a buy or sell instruction.
+              AURYN monthly v3 · independent experimental rule, not a buy or
+              sell instruction.
             </small>
           </section>
         </aside>

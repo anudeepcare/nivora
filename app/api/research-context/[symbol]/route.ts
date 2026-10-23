@@ -1,7 +1,97 @@
-import {account,failure,HttpError,limit,privateJson} from '@/lib/server';
-import {fundamentals} from '@/lib/providers';
-import {eodEnabled,eodRequest} from '@/lib/eodhd';
-import {symbolInput} from '@/lib/format';
-import {normalizeSegments,selectPeers} from '@/lib/market-context';
-export async function GET(request:Request,{params}:{params:Promise<{symbol:string}>}){try{const {user}=await account(request);limit(`research-context:${user.id}`,6);const symbol=symbolInput((await params).symbol),kind=new URL(request.url).searchParams.get('kind');if(!['peers','segments'].includes(kind??''))throw new HttpError('Choose peer context or revenue segments.');if(symbol.includes('/'))throw new HttpError('Corporate peer and segment data do not apply to crypto.');if(!eodEnabled())throw new HttpError('This dataset requires the configured fundamentals connection. Existing research remains available.',503);const observedAt=new Date().toISOString();if(kind==='segments'){const raw=await eodRequest(`sec-companies/${encodeURIComponent(symbol)}.US/segments`,{},86400000),result=normalizeSegments(raw,observedAt);return privateJson({symbol,kind,...result,observedAt});}
- const f=await fundamentals(symbol),industry=f.evidence?.profile.industry??'',sector=f.evidence?.profile.sector??f.company?.sector??'',marketCap=f.evidence?.highlights.MarketCapitalization??null;let field:'industry'|'sector'=industry?'industry':'sector',value=industry||sector;if(!value)throw new HttpError('A reported industry or sector is needed to discover candidates.',422);let raw=await eodRequest('screener',{filters:JSON.stringify([['exchange','=','us'],[field,'=',value]]),sort:'market_capitalization.desc',limit:'25'},86400000),candidates=selectPeers(raw,symbol,field,value,marketCap);if(!candidates.length&&industry&&sector){field='sector';value=sector;raw=await eodRequest('screener',{filters:JSON.stringify([['exchange','=','us'],['sector','=',sector]]),sort:'market_capitalization.desc',limit:'25'},86400000);candidates=selectPeers(raw,symbol,field,value,marketCap);}return privateJson({symbol,kind,field,classification:value,candidates,observedAt,method:'Up to five nearest market-cap sizes among the largest 25 returned US listings in the same reported industry; sector fallback when no industry candidate is returned. Not a representative universe or validated competitor list.'});}catch(e){return failure(e);}}
+import { account, failure, HttpError, limit, privateJson } from "@/lib/server";
+import { fundamentals } from "@/lib/providers";
+import { eodEnabled, eodRequest } from "@/lib/eodhd";
+import { symbolInput } from "@/lib/format";
+import { companyClassification } from "@/lib/company-classification";
+import { normalizeSegments, selectPeers } from "@/lib/market-context";
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ symbol: string }> },
+) {
+  try {
+    const { user } = await account(request);
+    limit(`research-context:${user.id}`, 6);
+    const symbol = symbolInput((await params).symbol),
+      kind = new URL(request.url).searchParams.get("kind");
+    if (!["peers", "segments"].includes(kind ?? ""))
+      throw new HttpError("Choose peer context or revenue segments.");
+    if (symbol.includes("/"))
+      throw new HttpError(
+        "Corporate peer and segment data do not apply to crypto.",
+      );
+    if (!eodEnabled())
+      throw new HttpError(
+        "This dataset requires the configured fundamentals connection. Existing research remains available.",
+        503,
+      );
+    const observedAt = new Date().toISOString();
+    if (kind === "segments") {
+      const raw = await eodRequest(
+          `sec-companies/${encodeURIComponent(symbol)}.US/segments`,
+          {},
+          86400000,
+        ),
+        result = normalizeSegments(raw, observedAt);
+      return privateJson({ symbol, kind, ...result, observedAt });
+    }
+    const f = await fundamentals(symbol),
+      classification = companyClassification({
+        symbol,
+        assetType: f.company?.assetType ?? "stock",
+        sector: f.evidence?.profile?.sector ?? f.company?.sector,
+        industry: f.evidence?.profile?.industry,
+      }),
+      industry = classification.industry ?? "",
+      sector = classification.sector ?? "",
+      marketCap = f.evidence?.highlights.MarketCapitalization ?? null;
+    let field: "industry" | "sector" = industry ? "industry" : "sector",
+      value = industry || sector;
+    if (!value)
+      throw new HttpError(
+        "A reported industry or sector is needed to discover candidates.",
+        422,
+      );
+    let raw = await eodRequest(
+        "screener",
+        {
+          filters: JSON.stringify([
+            ["exchange", "=", "us"],
+            [field, "=", value],
+          ]),
+          sort: "market_capitalization.desc",
+          limit: "25",
+        },
+        86400000,
+      ),
+      candidates = selectPeers(raw, symbol, field, value, marketCap);
+    if (!candidates.length && industry && sector) {
+      field = "sector";
+      value = sector;
+      raw = await eodRequest(
+        "screener",
+        {
+          filters: JSON.stringify([
+            ["exchange", "=", "us"],
+            ["sector", "=", sector],
+          ]),
+          sort: "market_capitalization.desc",
+          limit: "25",
+        },
+        86400000,
+      );
+      candidates = selectPeers(raw, symbol, field, value, marketCap);
+    }
+    return privateJson({
+      symbol,
+      kind,
+      field,
+      classification: value,
+      candidates,
+      observedAt,
+      method:
+        "Up to five nearest market-cap sizes among the largest 25 returned US listings in the same reported industry; sector fallback when no industry candidate is returned. Not a representative universe or validated competitor list.",
+    });
+  } catch (e) {
+    return failure(e);
+  }
+}

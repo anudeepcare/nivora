@@ -48,7 +48,7 @@ test("Financials avoids duplicate overview tiles and retains statement rows with
       useMemo: React.useMemo,
       useState: React.useState,
       FinancialDetailTable: empty,
-      ResearchWorkbench: empty,
+      FinancialExplorer: empty,
       ResearchCompare: empty,
       researchPeriods,
       ...format,
@@ -567,7 +567,8 @@ test('change tracking stays invisible until there are actual observed changes',(
 
 test('technical desk separates four evidence groups and formats missing data safely',async()=>{
  const {advancedStudies}=await import('../lib/advanced-research.ts'),{professionalStudies}=await import('../lib/professional-studies.ts'),{expandedStudies}=await import('../lib/technical-expanded.ts'),{priceStudies}=await import('../lib/price-studies.ts'),{perspective}=await import('../lib/analysis.ts');
- const TechnicalDashboard=loadComponent('components/TechnicalDashboard.tsx','TechnicalDashboard',{React,useMemo:React.useMemo,useRef:React.useRef,advancedStudies,professionalStudies,expandedStudies,priceStudies,perspective,...format,TechnicalLevels:()=>null,X:()=>null});
+ const {technicalContext}=await import('../lib/technical-context.ts');
+ const TechnicalDashboard=loadComponent('components/TechnicalDashboard.tsx','TechnicalDashboard',{React,useMemo:React.useMemo,useRef:React.useRef,technicalContext,advancedStudies,professionalStudies,expandedStudies,priceStudies,perspective,...format,TechnicalLevels:()=>null,X:()=>null});
  const html=renderToStaticMarkup(React.createElement(TechnicalDashboard,{research:demoData.research.MSFT}));for(const title of ['Trend','Momentum','Volatility &amp; range','Participation','Price reference map','Custom anchors'])assert.ok(html.includes(title),title);assert.doesNotMatch(html,/NaN|Infinity|undefined/);
 });
 
@@ -680,4 +681,19 @@ test('weekly accumulation has its own history, date labels and no misleading mon
  const View=loadComponent('components/AccumulationDesk.tsx','AccumulationDesk',{React,useMemo:React.useMemo,useState:(initial)=>React.useState(++state===1?'weekly':initial),weeklyAccumulation,researchAccumulation,adaptiveSettledBars,evaluateAccumulation,...format,colours,PriceChart:empty});
  const html=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT}));
  assert.match(html,/Weekly conditions/);assert.match(html,/Accumulation time horizon/);assert.match(html,/Current week/);assert.match(html,/52 completed weeks/);assert.match(html,/historical simulation remains monthly only/);assert.doesNotMatch(html,/Test this policy on available history|Same deposits/);
+});
+
+test('Business starts with reported durability charts and keeps missing annual values unplotted',async()=>{
+ const {businessHistory}=await import('../lib/business-history.ts');
+ const View=loadComponent('components/BusinessHistory.tsx','BusinessHistory',{React,useMemo:React.useMemo,businessHistory,...format});
+ const html=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT}));
+ assert.match(html,/aria-label="Revenue history"/);assert.match(html,/aria-label="Cash after capex history"/);assert.match(html,/Annual reported evidence/);
+ const empty=renderToStaticMarkup(React.createElement(View,{research:{...demoData.research.MSFT,facts:[]}}));assert.equal(empty,'');
+});
+
+test('financial explorer presents selectable metrics and honest chart dates without adding paid data requests',async()=>{
+ const {financialMetricSeries}=await import('../lib/financial-explorer.ts'),{applicableMetrics}=await import('../lib/financial-catalog.ts');
+ const View=loadComponent('components/FinancialExplorer.tsx','FinancialExplorer',{React,useMemo:React.useMemo,useState:React.useState,financialMetricSeries,applicableMetrics,...format});
+ const html=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT}));
+ for(const label of ['Financial chart metric','Financial metrics','Financial chart style','Reported observations','SBC / revenue','Revenue by reported period'])assert.ok(html.includes(label),label);assert.doesNotMatch(html,/NaN|Infinity|api_key|Download/);
 });

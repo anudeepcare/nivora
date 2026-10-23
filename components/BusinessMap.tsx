@@ -2,6 +2,7 @@
 import { useState } from "react";
 import type { Research } from "@/lib/types";
 import type { SegmentRow } from "@/lib/market-context";
+import { companyClassification } from "@/lib/company-classification";
 import { modelCoverage } from "@/lib/research-depth";
 import { amount, dateLabel } from "@/lib/format";
 import { useProduct, useResource } from "./Session";
@@ -28,28 +29,34 @@ export default function BusinessMap({ research: r }: { research: Research }) {
     concepts = [...new Set(current.map((x) => x.concept))],
     unitSet = [...new Set(current.map((x) => x.unit))];
   const profile = r.evidence?.profile,
+    classification = companyClassification({
+      symbol: r.company.symbol,
+      assetType: r.company.assetType,
+      sector: profile?.sector || r.company.sector,
+      industry: profile?.industry,
+    }),
     coverage = modelCoverage(r.company.symbol, r.company.assetType, {
       sector: profile?.sector || r.company.sector,
       industry: profile?.industry,
     });
   if (r.company.assetType === "crypto") return null;
   return (
-    <section className="business-map">
-      <header className="section-head">
-        <div>
-          <span className="eyebrow">Business map</span>
-          <h3>Understand the engine</h3>
-          <p>
-            {profile?.sector || r.company.sector || "Sector not supplied"} ·{" "}
-            {profile?.industry || "Industry not supplied"}
+    <section className="business-map business-map-compact">
+      <details className="company-profile">
+        <summary>About {r.company.name}</summary>
+        {(classification.sector || classification.industry) && (
+          <p className="small muted">
+            {[classification.sector, classification.industry]
+              .filter(Boolean)
+              .join(" · ")}
           </p>
-        </div>
-      </header>
-      <p>
-        {r.company.description ||
-          profile?.description ||
-          "A company description is not supplied. Read the latest company filing before inferring how it makes money."}
-      </p>
+        )}
+        <p>
+          {r.company.description ||
+            profile?.description ||
+            "Read the latest company filing for the business description."}
+        </p>
+      </details>
       <details className="business-checklist">
         <summary>Research checklist for this business</summary>
         <ul>

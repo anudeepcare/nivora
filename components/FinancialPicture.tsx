@@ -4,7 +4,7 @@ import type { Research } from "@/lib/types";
 import { researchPeriods, type FinancialScope } from "@/lib/financial-catalog";
 import { amount, percent, dateLabel } from "@/lib/format";
 import FinancialDetailTable from "./FinancialDetailTable";
-import ResearchWorkbench from "./ResearchWorkbench";
+import FinancialExplorer from "./FinancialExplorer";
 import { Help, DataStamp, Empty } from "./Ui";
 
 export default function FinancialPicture({
@@ -160,7 +160,7 @@ export default function FinancialPicture({
       </header>
       {p ? (
         <>
-          <ResearchWorkbench research={r} />
+          <FinancialExplorer research={r} scope={scope} />
           <header className="section-head">
             <div>
               <h2>Statements</h2>
@@ -181,7 +181,10 @@ export default function FinancialPicture({
               ))}
             </div>
           </header>
-          <dl className="statement-snapshot" aria-label={`${statement} statement snapshot`}>
+          <dl
+            className="statement-snapshot"
+            aria-label={`${statement} statement snapshot`}
+          >
             {rows.map(([label, value]) => (
               <div key={label}>
                 <dt>{label}</dt>
