@@ -31,7 +31,7 @@ export const defaultAccessConfig: AccessConfig = {
   freeWatchlist: 5,
   proWatchlist: 50,
   proAi: 10,
-  rules: { news: "free" },
+  rules: { overview: "free", news: "free", home: "free" },
 };
 export function cleanAccessConfig(value: unknown): AccessConfig {
   if (!value || typeof value !== "object" || Array.isArray(value))

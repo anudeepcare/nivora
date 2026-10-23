@@ -997,9 +997,9 @@ export function Portfolio() {
             </p>
           )}
         </section>
-        <FeatureGate feature="portfolio"><PortfolioCharts positions={positions} quotes={q} /></FeatureGate>
+        <FeatureGate feature="portfolio" fallback={null}><PortfolioCharts positions={positions} quotes={q} /></FeatureGate>
       </div>
-      <FeatureGate feature="portfolio">
+      <FeatureGate feature="portfolio" fallback={null}>
       <PortfolioRiskSummary
         positions={positions}
         quotes={q}
@@ -1064,7 +1064,7 @@ export function Portfolio() {
       </section>
       <details className="portfolio-extra">
         <summary>Sector exposure & stress check</summary>
-        <FeatureGate feature="portfolio"><PortfolioExposure positions={positions} quotes={quotes.data || {}} /></FeatureGate>
+        <FeatureGate feature="portfolio" fallback={null}><PortfolioExposure positions={positions} quotes={quotes.data || {}} /></FeatureGate>
       </details>
       <p className="footnote">
         Unrealized returns exclude realized trades, dividends, fees and taxes.

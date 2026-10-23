@@ -48,7 +48,7 @@ export function Settings() {
   const email = account?.email || workspace?.email || (demo ? "Design preview" : "Loading account…");
   return <section className="settings-page">
     <PageHeading title="Your AURYN" subtitle="A workspace that feels like yours."/>
-    <Link className="settings-plan-entry" href="/plans"><span><strong>Plans & access</strong><small>Your plan, allowances and owner controls</small></span><ArrowUpRight size={20}/></Link>
+    <Link className="settings-plan-entry" href="/plans"><span><strong>Membership</strong><small>Your plan, usage and billing</small></span><ArrowUpRight size={20}/></Link>
     <section className="panel settings-account" aria-labelledby="account-title">
       <header className="settings-profile"><span className="settings-profile-avatar" aria-hidden="true">{email[0]?.toUpperCase() || "A"}</span><div><span className="eyebrow">Account</span><h2 id="account-title">Your space. Your perspective.</h2><p>{email}</p></div></header>
       {!!account?.providers.length && <div className="account-identities" aria-label="Connected sign-in methods">{account.providers.map(provider=><span key={provider}>{provider === "google" ? "Google" : provider === "x" || provider === "twitter" ? "X" : provider === "email" ? "Email" : provider}</span>)}</div>}

@@ -5,6 +5,9 @@
   align-items: stretch;
   gap: 18px;
 }
+.portfolio-page .portfolio-summary-layout > .portfolio-balance:only-child {
+  grid-column: 1 / -1;
+}
 .portfolio-charts {
   --mix-0: #2269df;
   --mix-1: #16a6a1;

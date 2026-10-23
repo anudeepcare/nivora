@@ -154,7 +154,7 @@ export async function guardAccess(request: Request, id: string) {
   const a = await requestAccess(request, id);
   if (a.sampleOnly)
     throw new HttpError(
-      "This beta account uses sample data. External market data is not enabled.",
+      "Market data is not enabled for this deployment. Your saved account data remains available.",
       403,
     );
   const feature: Feature | null = /\/analyst\//.test(path)

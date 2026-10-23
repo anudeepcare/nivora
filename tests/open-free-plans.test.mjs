@@ -15,3 +15,6 @@ test('a paid subscription takes billing precedence over a complimentary grant wi
  const paid=resolveAccess({...input,grant,subscription:{status:'active',paidUntil:'2026-11-01'}});assert.equal(paid.source,'subscription');assert.equal(paid.limits.research,-1);
  const canceled=resolveAccess({...input,grant,subscription:{status:'canceled',paidUntil:'2026-10-01'}});assert.equal(canceled.source,'complimentary');assert.equal(canceled.plan,'pro');
 });
+test('Free includes full Overview, news and Home; market access depends on deployment entitlement rather than subscription',()=>{
+ const free=resolveAccess({...input,licensed:true,config:{rules:{news:'free'}}});assert.equal(free.features.overview,true);assert.equal(free.features.news,true);assert.equal(free.features.home,true);assert.equal(free.features.advanced,false);assert.equal(free.sampleOnly,false);assert.equal(resolveAccess({...input,grant:{expiresAt:'2026-12-01'}}).sampleOnly,true);
+});

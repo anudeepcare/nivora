@@ -499,7 +499,6 @@ export default function Research({ symbol }: { symbol: string }) {
               key={name}
               onClick={() => switchTab(name)}
             >
-              {!access.features[({Snapshot:"overview",Thesis:"business",Financials:"financials",Valuation:"value",Technicals:"technicals",Analysts:"analysts",News:"news",Advanced:"advanced"} as const)[name]]&&<span className="tab-pro-mark">Pro · </span>}
               {name === "Snapshot"
                 ? "Overview"
                 : name === "Valuation"

@@ -79,7 +79,6 @@ export function PricingCards({
               {config[plan === "free" ? "freeWatchlist" : "proWatchlist"]} saved
               companies
             </li>
-            <li>Basic company snapshot</li>
             {included(plan).map((k) => (
               <li key={k}>{featureNames[k]}</li>
             ))}
@@ -267,7 +266,7 @@ function SignedInPlans() {
           ) : (
             <p>
               {a.sampleOnly
-                ? "Sample beta · market data is not enabled for this account."
+                ? "Market data is currently unavailable."
                 : a.limits.research === -1
                   ? "Unlimited company research."
                   : `${access.researchUsed === -1 ? "Usage unavailable" : (access.researchUsed ?? 0) + " of 100 companies explored this month"}.`}
@@ -321,9 +320,10 @@ export default function Plans({
       </header>
       {publicPage ? <PricingCards /> : <SignedInPlans />}
       <p className="plans-footnote">
-        Monthly billing. Cancel future renewals in Manage subscription; paid
-        access continues through the billing period. Research support, not
-        investment advice.
+        Secure checkout by Stripe. AURYN does not store full card numbers or
+        security codes. Monthly billing. Cancel future renewals in Manage
+        subscription; paid access continues through the billing period. Research
+        support, not investment advice.
       </p>
       {publicPage && (
         <footer>

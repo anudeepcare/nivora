@@ -6,7 +6,6 @@ import {
   useState,
   useCallback,
 } from "react";
-import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { api, signOutAndRedirect } from "@/lib/client";
 import { clearAccountCache } from "@/lib/account-cache";
@@ -16,7 +15,6 @@ import {
   type Access,
   type Feature,
 } from "@/lib/access-policy";
-import { ProductSession, type DemoData } from "./Session";
 const personal = resolveAccess({
   enabled: false,
   owner: false,
@@ -30,12 +28,9 @@ const Context = createContext<{ access: AccessView; refresh: () => void }>({
 });
 export const useAccess = () => useContext(Context);
 export function AccessBoundary({ children }: { children: React.ReactNode }) {
-  const path = usePathname();
   const [access, setAccess] = useState<AccessView | null>(null),
     [error, setError] = useState(""),
-    [sample, setSample] = useState<DemoData | null>(null),
-    [revision, setRevision] = useState(0),
-    [visit, setVisit] = useState<{ path: string; error: string } | null>(null);
+    [revision, setRevision] = useState(0);
   const refresh = useCallback(() => {
     clearAccountCache();
     setAccess(null);
@@ -53,10 +48,6 @@ export function AccessBoundary({ children }: { children: React.ReactNode }) {
             clearAccountCache();
           return a;
         });
-        if (a.sampleOnly) {
-          const { demoData } = await import("@/tests/fixtures/demo");
-          if (alive) setSample({ ...demoData, routePrefix: "" });
-        }
       } catch (e) {
         if (alive) {
           setAccess(null);
@@ -81,26 +72,6 @@ export function AccessBoundary({ children }: { children: React.ReactNode }) {
       document.removeEventListener("visibilitychange", resume);
     };
   }, [revision, refresh]);
-  useEffect(() => {
-    if (
-      !access?.sampleOnly ||
-      !access.admitted ||
-      !/^\/research\/[^/]+/.test(path)
-    )
-      return;
-    let active = true;
-    const symbol = decodeURIComponent(path.slice("/research/".length));
-    api("access/visit", { symbol })
-      .then(() => {
-        if (active) setVisit({ path, error: "" });
-      })
-      .catch((e) => {
-        if (active) setVisit({ path, error: e.message });
-      });
-    return () => {
-      active = false;
-    };
-  }, [path, access?.sampleOnly, access?.admitted, access?.plan, revision]);
   if (error && !access)
     return (
       <main className="membership-state">
@@ -121,39 +92,15 @@ export function AccessBoundary({ children }: { children: React.ReactNode }) {
         <p>Opening your plan…</p>
       </main>
     );
-  const preview = access.preview;
   const context = { access, refresh };
-  let content = children;
-  if (access.sampleOnly) {
-    if (!sample)
-      return (
-        <main className="membership-state" role="status">
-          Opening sample workspace…
-        </main>
-      );
-    if (/^\/research\/[^/]+/.test(path) && visit?.path !== path)
-      return (
-        <main className="membership-state" role="status">
-          Checking your research allowance…
-        </main>
-      );
-    if (visit?.path === path && visit.error)
-      content = (
-        <main className="membership-state">
-          <h1>Research allowance</h1>
-          <p role="alert">{visit.error}</p>
-          <Link href="/plans">Plan & access →</Link>
-        </main>
-      );
-    content = <ProductSession demo={sample}>{content}</ProductSession>;
-  }
+
   return (
     <Context.Provider value={context}>
       <div
         style={{ display: "contents" }}
         key={JSON.stringify([access.plan, access.sampleOnly, access.features])}
       >
-        {content}
+        {children}
       </div>
     </Context.Provider>
   );
@@ -168,23 +115,23 @@ export function FeatureGate({
   fallback?: React.ReactNode;
 }) {
   const { access } = useAccess();
-  return access.features[feature]
-    ? children
-    : (fallback ?? (
-        <section className="feature-lock">
-          <span className="plan-pill">Pro</span>
-          <h3>{featureNames[feature]}</h3>
-          <p>This section is not included in your current access.</p>
-          <Link href="/plans">View plan & access →</Link>
-        </section>
-      ));
+  return access.features[feature] ? (
+    children
+  ) : fallback !== undefined ? (
+    fallback
+  ) : (
+    <section className="feature-lock">
+      <span className="eyebrow">Included with Pro</span>
+      <h3>{featureNames[feature]}</h3>
+      <p>
+        Go deeper with the complete research workspace. Your free Overview and
+        news remain available.
+      </p>
+      <Link href="/plans">Explore Pro →</Link>
+    </section>
+  );
 }
 
 export function AccessNotice() {
-  const { access } = useAccess();
-  return access.sampleOnly ? (
-    <p className="membership-status" role="status">
-      Sample data · Live market data is not enabled for this account.
-    </p>
-  ) : null;
+  return null;
 }

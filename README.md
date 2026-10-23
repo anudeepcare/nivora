@@ -1,3 +1,5 @@
+> Current Free experience: full Overview, news and Home; real account workspace with no automatic sample holdings; quieter upgrade prompts. See [docs/FREE_EXPERIENCE_UPDATE.md](docs/FREE_EXPERIENCE_UPDATE.md).
+
 > Friends can now subscribe while retaining complimentary Pro. Live Stripe activation steps: [docs/STRIPE_PRODUCTION_LAUNCH.md](docs/STRIPE_PRODUCTION_LAUNCH.md). This package does not activate or charge a live Stripe account.
 
 > Current membership update: every new account starts Free (100 distinct companies/month); Pro has unlimited company research. See [membership setup](docs/FREE_AND_PRO_MEMBERSHIP.md). Earlier invitation-only or signup-to-Plans instructions below are superseded.

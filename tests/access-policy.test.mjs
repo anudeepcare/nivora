@@ -79,6 +79,7 @@ test("research payload projection removes locked evidence and does not mutate ca
     owner: false,
     licensed: true,
     now,
+    config: {rules:{overview:"pro"}},
   });
   const r = {
     company: { symbol: "ABC" },

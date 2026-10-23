@@ -14,13 +14,15 @@ export default function PlanPanel() {
               : "AURYN Free"}
         </strong>
         <p>
-          {access.sampleOnly
-            ? "Sample beta access."
-            : "Manage your membership in one place."}
+          {access.plan === "free"
+            ? "100 companies each month · Overview and news included."
+            : access.source === "complimentary"
+              ? "Complimentary access · subscribe anytime."
+              : "Your membership and billing, in one place."}
         </p>
       </div>
       <Link className="button" href="/plans">
-        View plans
+        Membership
       </Link>
     </section>
   );

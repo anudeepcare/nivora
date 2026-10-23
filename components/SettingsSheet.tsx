@@ -45,7 +45,7 @@ export default function SettingsSheet({
           <X size={21} />
         </button>
       </header>
-      <Link className="settings-plan-entry" href={`${prefix}/plans`} onNavigate={()=>dialog.current?.close()}><strong>Plans & access</strong><ArrowRight size={18}/></Link>
+      <Link className="settings-plan-entry" href={`${prefix}/plans`} onNavigate={()=>dialog.current?.close()}><strong>Membership</strong><ArrowRight size={18}/></Link>
       <nav className="settings-sheet-tabs" aria-label="Settings sections">{[["appearance","Appearance"],["research","Research"],["account","Account"]].map(([id,label])=><button type="button" key={id} aria-pressed={section===id} aria-controls={`settings-${id}`} onClick={()=>setSection(id)}>{label}</button>)}</nav>
       <div className="dialog-body settings-clean-body">
         <section id="settings-appearance" hidden={section!=="appearance"}><DisplayPreferences /></section>
