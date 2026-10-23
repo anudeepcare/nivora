@@ -206,7 +206,7 @@ export async function billingAction(
   if (exactOwner(user))
     throw new HttpError("Your owner account already has full access.", 409);
   const access = await getAccess(user);
-  if (access.plan === "pro")
+  if (access.plan === "pro" && access.source !== "complimentary")
     throw new HttpError("You already have Pro access.", 409);
   progress("price_lookup");
   const price = await stripe.prices.retrieve(c.price);

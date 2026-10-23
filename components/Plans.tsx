@@ -111,18 +111,25 @@ export function PricingCards({
           ) : (
             <button
               className="button primary"
-              disabled={busy || owner || access?.plan === "pro" || !ready}
+              disabled={
+                busy ||
+                owner ||
+                (access?.plan === "pro" && access.source !== "complimentary") ||
+                !ready
+              }
               onClick={onUpgrade}
             >
               {busy
                 ? "Opening…"
                 : owner
                   ? "Included with owner access"
-                  : access?.plan === "pro"
-                    ? "Your Pro access"
-                    : ready
-                      ? "Upgrade to Pro"
-                      : "Coming soon"}
+                  : access?.source === "complimentary" && ready
+                    ? "Subscribe for $2.99/month"
+                    : access?.plan === "pro"
+                      ? "Your Pro access"
+                      : ready
+                        ? "Upgrade to Pro"
+                        : "Coming soon"}
             </button>
           )}
         </section>
@@ -247,7 +254,10 @@ function SignedInPlans() {
           {owner ? (
             <p>You have access to the full workspace.</p>
           ) : a.source === "complimentary" ? (
-            <p>Included until {date(a.grantUntil!)}.</p>
+            <p>
+              Included until {date(a.grantUntil!)}. You can subscribe anytime;
+              your access stays active during checkout.
+            </p>
           ) : sub && a.source === "subscription" ? (
             <p>
               {sub.status === "past_due" ? "Payment needs attention. " : ""}

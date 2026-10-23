@@ -65,16 +65,16 @@ export function cleanAccessConfig(value: unknown): AccessConfig {
     "proAi",
   ] as const) {
     if (k === "proResearch" && v[k] === -1) continue;
-  if (v[k] !== undefined) {
-    if (
-      typeof v[k] !== "number" ||
-      !Number.isInteger(v[k]) ||
-      v[k] < 0 ||
-      v[k] > 1000
-    )
-      throw Error("Limits must be whole numbers from 0 to 1000.");
-    result[k] = v[k];
-  }
+    if (v[k] !== undefined) {
+      if (
+        typeof v[k] !== "number" ||
+        !Number.isInteger(v[k]) ||
+        v[k] < 0 ||
+        v[k] > 1000
+      )
+        throw Error("Limits must be whole numbers from 0 to 1000.");
+      result[k] = v[k];
+    }
   }
   if (v.rules !== undefined) {
     if (!v.rules || typeof v.rules !== "object" || Array.isArray(v.rules))
@@ -143,10 +143,10 @@ export function resolveAccess(i: Input) {
     source:
       i.owner && !preview
         ? "owner"
-        : beta
-          ? "complimentary"
-          : paid
-            ? "subscription"
+        : paid
+          ? "subscription"
+          : beta
+            ? "complimentary"
             : !i.enabled
               ? "personal"
               : "free",

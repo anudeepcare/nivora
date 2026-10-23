@@ -1,3 +1,5 @@
+> Friends can now subscribe while retaining complimentary Pro. Live Stripe activation steps: [docs/STRIPE_PRODUCTION_LAUNCH.md](docs/STRIPE_PRODUCTION_LAUNCH.md). This package does not activate or charge a live Stripe account.
+
 > Current membership update: every new account starts Free (100 distinct companies/month); Pro has unlimited company research. See [membership setup](docs/FREE_AND_PRO_MEMBERSHIP.md). Earlier invitation-only or signup-to-Plans instructions below are superseded.
 
 # Latest — visible signup-to-plans flow and payment return UX

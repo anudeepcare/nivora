@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-10-23T15:58:53.359219+00:00",
+  "generatedAt": "2026-10-23T16:21:31.132983+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 483 tests, TypeScript and production build (open-free-membership-verify.log)",
-    "npm run test:api": "passed: 106 compiled checks (open-free-membership-api.log)",
+    "npm run verify": "passed: 485 tests, TypeScript and production build (friends-subscribe-verify.log)",
+    "npm run test:api": "passed: 106 compiled checks (friends-subscribe-api.log)",
     "git diff --check": "passed",
-    "npm test": "passed: 483 tests",
+    "npm test": "passed: 485 tests",
     "npm run build": "passed with no CSS compilation warnings",
-    "production HTTP": "passed: 14 local production-server HTTP checks (open-free-membership-http.log); not browser visual review",
-    "node scripts/test-auth-provider-api.mjs": "passed: 3 checks; 109 API checks total (open-free-membership-auth-api.log)"
+    "production HTTP": "passed: 14 local HTTP checks (friends-subscribe-http.log); not browser visual verification",
+    "node scripts/test-auth-provider-api.mjs": "passed: 3 checks; 109 API checks total (friends-subscribe-auth-api.log)"
   },
-  "domainPostgresAndComponentTests": 483,
+  "domainPostgresAndComponentTests": 485,
   "builtApiChecks": 109,
   "providerSelection": {
     "quotes": "EODHD primary; Twelve fallback for stale or failed primary; retain newest usable stale observation if both fail freshness",
@@ -672,7 +672,7 @@
     "horizontalOverflow": false,
     "calendarAnchorVerified": true
   },
-  "currentUpdate": "Permanent Free onboarding, 100 distinct companies/month, unlimited Pro company research, portal-return membership sync",
+  "currentUpdate": "Complimentary friends can voluntarily subscribe without losing grant access; paid subscription takes precedence; exact live Stripe activation guide",
   "dcaComparison30": {
     "asOf": "2026-10-22T23:00:00Z",
     "confirmedMatches": 28,
@@ -773,5 +773,14 @@
       "completed cancellation in production",
       "real-money purchase"
     ]
+  },
+  "friendsSubscriptions": {
+    "grantRequiredToBeRemovedBeforeCheckout": false,
+    "paidStatusPrecedesGrant": true,
+    "grantRemainsFallbackUntilExpiry": true,
+    "liveStripeActivated": false,
+    "productionSecretsChanged": false,
+    "realMoneyTransactionPerformed": false,
+    "guide": "docs/STRIPE_PRODUCTION_LAUNCH.md"
   }
 }

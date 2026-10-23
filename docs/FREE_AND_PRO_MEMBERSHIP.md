@@ -12,7 +12,7 @@ After the existing access and Stripe migrations, run `supabase/migrations/202610
 - Plans is directly accessible from navigation. Free users can continue into the app or choose Pro; no invitation screen blocks content.
 - Checkout runs on Stripe. A success URL alone never grants Pro. Verified Stripe status and signed webhook processing determine access; return handling polls briefly while confirmation completes.
 - Manage subscription opens Stripe's portal. Returning synchronizes subscription status and refreshes membership. Cancellation at period end retains Pro until the paid-through date, then returns to Free.
-- Owner grants provide complimentary Pro and can expire or be revoked. They never control admission to Free.
+- Owner grants provide complimentary Pro and can expire or be revoked. They never control admission to Free. Friends can subscribe while retaining a grant; paid subscription status takes precedence after confirmation, and the remaining grant is preserved as a fallback. See STRIPE_PRODUCTION_LAUNCH.md for live setup.
 - Feature rules, watchlist limits and AI limits remain in owner controls. Monthly company limits are fixed to the advertised tiers.
 
 ## Setup and verification limits

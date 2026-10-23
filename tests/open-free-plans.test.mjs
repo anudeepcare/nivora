@@ -10,3 +10,8 @@ test('Pro research is truly unlimited and expired paid access falls back to admi
  const expired=resolveAccess({...input,subscription:{status:'active',paidUntil:'2026-10-01'}});assert.equal(expired.plan,'free');assert.equal(expired.admitted,true);assert.equal(expired.limits.research,100);
  assert.equal(cleanAccessConfig({proResearch:100}).proResearch,-1);assert.throws(()=>cleanAccessConfig({freeResearch:-1}));
 });
+test('a paid subscription takes billing precedence over a complimentary grant without erasing its remaining access',()=>{
+ const grant={expiresAt:'2026-12-01'};
+ const paid=resolveAccess({...input,grant,subscription:{status:'active',paidUntil:'2026-11-01'}});assert.equal(paid.source,'subscription');assert.equal(paid.limits.research,-1);
+ const canceled=resolveAccess({...input,grant,subscription:{status:'canceled',paidUntil:'2026-10-01'}});assert.equal(canceled.source,'complimentary');assert.equal(canceled.plan,'pro');
+});
