@@ -19,7 +19,22 @@ export default function FinancialExplorer({
     [years, setYears] = useState(5),
     [style, setStyle] = useState<"bar" | "line" | "area">("bar");
   const catalog = useMemo(
-      () => applicableMetrics(r),
+      () =>
+        applicableMetrics(r).toSorted(
+          (a, b) =>
+            [
+              "Essentials",
+              "Profitability",
+              "Cash flow",
+              "Balance sheet",
+            ].indexOf(a.group) -
+            [
+              "Essentials",
+              "Profitability",
+              "Cash flow",
+              "Balance sheet",
+            ].indexOf(b.group),
+        ),
       [
         r.company.symbol,
         r.company.assetType,

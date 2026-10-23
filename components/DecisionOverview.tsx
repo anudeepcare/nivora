@@ -78,7 +78,10 @@ export default function DecisionOverview({
   };
   const warning =
     b.conflicting || /risk|verification|evidence first/i.test(b.business.title);
-  const multiplier = b.accumulation.multiplier;
+  const forming = b.accumulation.forming;
+  const multiplier = forming?.multiplier ?? b.accumulation.multiplier;
+  const readingMonth = forming?.month ?? b.accumulation.month;
+  const readingState = forming ? "forming" : "confirmed";
   const crypto = r.company.assetType === "crypto";
   return (
     <section
@@ -236,9 +239,9 @@ export default function DecisionOverview({
                         : "Increased contribution condition"}
                 </b>
                 <small>
-                  {b.accumulation.month
-                    ? `${b.accumulation.month} · confirmed`
-                    : "No confirmed reading"}
+                  {readingMonth
+                    ? `${readingMonth} · ${readingState}`
+                    : "No eligible reading"}
                 </small>
               </div>
             </div>
@@ -247,7 +250,7 @@ export default function DecisionOverview({
               aria-label={
                 multiplier == null
                   ? "No eligible accumulation reading"
-                  : `Confirmed ${multiplier} times condition`
+                  : `${forming ? "Forming" : "Confirmed"} ${multiplier} times condition`
               }
             >
               {[0, 1, 2, 3, 4].map((v) => (
@@ -270,7 +273,11 @@ export default function DecisionOverview({
                     </small>
                   )}
                 </span>
-                <b>{multiplier == null ? "—" : `${multiplier}×`}</b>
+                <b>
+                  {b.accumulation.multiplier == null
+                    ? "—"
+                    : `${b.accumulation.multiplier}×`}
+                </b>
               </div>
               <div>
                 <span>
@@ -290,9 +297,14 @@ export default function DecisionOverview({
                 </b>
               </div>
             </div>
-            <p>{b.accumulation.reason}</p>
+            <p>{forming?.reason ?? b.accumulation.reason}</p>
+            {forming && (
+              <small>
+                Current month is provisional and can change before month-end.
+              </small>
+            )}
             <small>
-              AURYN monthly v3 · independent experimental rule, not a buy or
+              AURYN monthly v4 · independent experimental rule, not a buy or
               sell instruction.
             </small>
           </section>

@@ -9,9 +9,14 @@ import useLivePrices from "./useLivePrices";
 import { quoteHealth } from "@/lib/quote-health";
 import { mergePriceTick } from "@/lib/live-price";
 import { retainResearchQuote } from "@/lib/research-quote";
-const AdvancedResearch = dynamic(() => import("./AdvancedResearch"));
+const AdvancedResearch = dynamic(() => import("./AdvancedResearch"), {
+  loading: () => (
+    <p role="status" aria-busy="true">
+      Loading advanced research…
+    </p>
+  ),
+});
 
-const ResearchNotes = dynamic(() => import("./ResearchNotes"));
 import FinancingContext from "./FinancingContext";
 import BusinessHistory from "./BusinessHistory";
 import ModelAssessment from "./ModelAssessment";
@@ -19,8 +24,6 @@ import { headerMarketContext } from "@/lib/business-history";
 import BusinessMap from "./BusinessMap";
 import TimingContext from "./TimingContext";
 import DecisionWorkspace from "./DecisionWorkspace";
-import ValuationLab from "./ValuationLab";
-import FundedScenarios from "./FundedScenarios";
 import DecisionWatch from "./DecisionWatch";
 import { useMemo, useState, useRef, useLayoutEffect, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
@@ -547,8 +550,11 @@ export default function Research({ symbol }: { symbol: string }) {
       >
         {tab === "News" && (
           <>
-            <EarningsWorkspace research={r} />
             <CompanyUpdates research={r} />
+            <details className="research-reference">
+              <summary>Earnings history &amp; estimates</summary>
+              <EarningsWorkspace research={r} />
+            </details>
           </>
         )}
         {tab === "Advanced" && (
@@ -586,14 +592,15 @@ export default function Research({ symbol }: { symbol: string }) {
           <>
             <ResearchOutlook research={r} detailed />
             <ModelAssessment research={r} />
-            <details className="research-optional">
-              <summary>Build a personal operating scenario</summary>
-              <FundedScenarios key={r.company.symbol} research={r} />
-            </details>
-            <details className="valuation-workbench">
-              <summary>Test your valuation assumptions</summary>
-              <ValuationLab research={r} />
-            </details>
+            <p className="small muted">
+              Want to test your own assumptions?{" "}
+              <button
+                className="text-button"
+                onClick={() => switchTab("Advanced")}
+              >
+                Open Advanced →
+              </button>
+            </p>
           </>
         )}
         {retainedCharts.includes("Technicals") && (
@@ -634,10 +641,6 @@ export default function Research({ symbol }: { symbol: string }) {
             <BusinessHistory research={r} />
             <ThesisPicture research={r} />
             <BusinessMap key={r.company.symbol} research={r} />
-            <details className="research-optional">
-              <summary>My decision record & review</summary>
-              <ResearchNotes research={r} />
-            </details>
           </>
         )}
       </div>

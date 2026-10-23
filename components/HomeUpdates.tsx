@@ -8,10 +8,13 @@ import { companyFeedPage, holdingAttention } from "@/lib/product-attention";
 import type { Quote } from "@/lib/types";
 import { dateLabel } from "@/lib/format";
 import type { HomeFeed } from "@/lib/home-feed";
+import { relevantHoldingHeadlines } from "@/lib/home-feed";
 export default function HomeUpdates({
   quotes = {},
+  companyNames = {},
 }: {
   quotes?: Record<string, Quote>;
+  companyNames?: Record<string, string>;
 }) {
   const { workspace, demo } = useProduct(),
     prefix = demo ? "/preview" : "";
@@ -85,10 +88,10 @@ export default function HomeUpdates({
         (exposure.get(p.symbol) ?? 0) + p.quantity * q.price,
       );
   }
-  const headlines = [...(news.data?.news ?? [])].sort(
-    (a, b) =>
-      (exposure.get(b.symbol) ?? 0) - (exposure.get(a.symbol) ?? 0) ||
-      b.date.localeCompare(a.date),
+  const headlines = relevantHoldingHeadlines(
+    news.data?.news ?? [],
+    companyNames,
+    exposure,
   );
   if (!key) return null;
   return (
@@ -182,7 +185,7 @@ export default function HomeUpdates({
           <h3>
             <Newspaper size={18} /> In the news <small>Past 7 days</small>
           </h3>
-          {news.data?.news.length ? (
+          {headlines.length ? (
             headlines.slice(0, expanded ? undefined : 6).map((n) => (
               <a
                 className="update-row"
@@ -211,13 +214,14 @@ export default function HomeUpdates({
                       (i) => i.includes("news") || i.includes("connected"),
                     )
                   ? "Recent coverage is temporarily unavailable."
-                  : "No recent headlines returned."}
+                  : "No recent headlines matching your company names or explicit tickers were returned."}
             </p>
           )}
           <p className="small muted">
-            Headlines ordered by holding exposure; not assessed for materiality.
-            Coverage checked for {news.data?.newsFollowed ?? symbols.length}{" "}
-            followed stocks.
+            Headline names or explicit tickers matched; one per company before
+            repeats, ranked by holding exposure. This can omit relevant broader
+            coverage and does not assess materiality. Coverage checked for{" "}
+            {news.data?.newsFollowed ?? symbols.length} followed stocks.
           </p>
         </section>
       </div>

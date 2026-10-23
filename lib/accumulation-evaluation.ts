@@ -2,7 +2,8 @@ import type { Candle } from "./types";
 import {
   adaptiveSettledBars,
   researchAccumulation,
-} from "./accumulation-policy-v3.ts";
+} from "./accumulation-policy-v4.ts";
+import { researchAccumulation as priorPolicy } from "./accumulation-policy-v3.ts";
 import { monthEndSession } from "./calendar.ts";
 type Row = {
   month: string;
@@ -68,11 +69,12 @@ export function evaluateAccumulation(
   asOf: string,
   costBps = 10,
   market: "us-equity" | "crypto" = "us-equity",
+  policy: "monthly-v3" | "monthly-v4" = "monthly-v4",
 ) {
   if (!Number.isFinite(costBps) || costBps < 0 || costBps > 200)
     throw Error("Use zero to 200 basis points.");
   const signals = new Map(
-    researchAccumulation(bars, asOf, market).history.map((s) => [s.month, s]),
+    (policy === "monthly-v3" ? priorPolicy : researchAccumulation)(bars, asOf, market).history.map((s) => [s.month, s]),
   );
   const months = new Map<string, Candle[]>();
   for (const b of adaptiveSettledBars(bars, asOf, market)) {
@@ -109,7 +111,7 @@ export function evaluateAccumulation(
     later = rows.slice(cut);
   return {
     available: true as const,
-    version: "monthly-v3-evaluation",
+    version: `${policy}-evaluation`,
     months: rows.length,
     costBps,
     ...simulate(rows, costBps),

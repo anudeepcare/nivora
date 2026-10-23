@@ -3,7 +3,11 @@
 import dynamic from "next/dynamic";
 const Discover = dynamic(() => import("./Discover"));
 import PortfolioExposure from "./PortfolioExposure";
-import { homeFocus, pricedInvestmentReturns } from "@/lib/product-attention";
+import {
+  homeFocus,
+  homePriceMoves,
+  pricedInvestmentReturns,
+} from "@/lib/product-attention";
 import PortfolioRiskSummary, {
   usePortfolioCalendar,
 } from "./PortfolioRiskSummary";
@@ -456,17 +460,28 @@ export function Overview() {
       .filter(([, v]) => v.quote)
       .map(([k, v]) => [k, v.quote!]),
   );
-  const focus = homeFocus(workspace?.positions ?? [], q).map((f) => ({
-    ...f,
-    title:
-      f.kind === "concentration"
-        ? `${f.symbol} is ${percent(f.weight)} of priced value`
-        : `${f.symbol} has the largest percentage drawdown`,
-    detail:
-      f.kind === "concentration"
-        ? "Review concentration alongside your business conviction."
-        : `${percent(f.returnPct, true)} versus recorded cost. A loss alone is not a buy signal.`,
-  }));
+  const moves = homePriceMoves(
+    workspace?.positions ?? [],
+    q,
+    new Date().toISOString(),
+  );
+  const focus = moves.length
+    ? moves.map((f) => ({
+        ...f,
+        title: `${f.symbol} · ${percent(f.changePct, true)}`,
+        detail: `${f.impact < 0 ? "−" : "+"}${amount(Math.abs(f.impact), "USD", true)} estimated price impact on current units · ${quoteTime(f.asOf)}`,
+      }))
+    : homeFocus(workspace?.positions ?? [], q).map((f) => ({
+        ...f,
+        title:
+          f.kind === "concentration"
+            ? `${f.symbol} is ${percent(f.weight)} of priced value`
+            : `${f.symbol} has the largest percentage drawdown`,
+        detail:
+          f.kind === "concentration"
+            ? "Review concentration alongside your business conviction."
+            : `${percent(f.returnPct, true)} versus recorded cost. A loss alone is not a buy signal.`,
+      }));
   return (
     <section className="home-workspace">
       <PageHeading
@@ -487,13 +502,28 @@ export function Overview() {
       {workspaceError && <Notice error>{workspaceError}</Notice>}
       {quotes.error && <Notice error>{quotes.error}</Notice>}
       <SessionBrief />
-      <HomeUpdates quotes={q} />
+      <HomeUpdates
+        quotes={q}
+        companyNames={Object.fromEntries(
+          Object.entries(quotes.data || {}).flatMap(([symbol, row]) =>
+            row.company?.name ? [[symbol, row.company.name]] : [],
+          ),
+        )}
+      />
       <div className="grid2 home-details">
         <section>
           <header className="section-head">
             <div>
-              <h2>Worth a closer look</h2>
-              <p>Based on your positions, not a forecast.</p>
+              <h2>
+                {moves.length
+                  ? "Moves affecting your holdings"
+                  : "Portfolio checks"}
+              </h2>
+              <p>
+                {moves.length
+                  ? "Latest reported price changes, ranked by estimated holding impact."
+                  : "Concentration and cost context; these checks change when your positions or prices do."}
+              </p>
             </div>
           </header>
           {focus.length ? (
@@ -520,6 +550,13 @@ export function Overview() {
             <Empty title="Start with your holdings">
               Add positions to see concentration and cost context here.
             </Empty>
+          )}
+          {moves.length > 0 && (
+            <p className="small muted home-move-basis">
+              Uses current units and each quote’s reported change reference. Not
+              account P&amp;L; excludes trades, fees and distributions.
+              Observation times can differ.
+            </p>
           )}
         </section>
         <section>

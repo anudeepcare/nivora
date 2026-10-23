@@ -56,10 +56,8 @@ export default function BusinessMap({ research: r }: { research: Research }) {
             profile?.description ||
             "Read the latest company filing for the business description."}
         </p>
-      </details>
-      <details className="business-checklist">
-        <summary>Research checklist for this business</summary>
-        <ul>
+        <h4>Questions for this business</h4>
+        <ul className="business-checklist">
           {coverage.drivers.map((driver) => (
             <li key={driver}>{driver}</li>
           ))}
@@ -69,8 +67,13 @@ export default function BusinessMap({ research: r }: { research: Research }) {
           company strengths.
         </p>
       </details>
-      <section className="segment-breakdown">
-        <h4>How revenue is disclosed</h4>
+      <details
+        className="segment-breakdown"
+        onToggle={(event) => {
+          if (event.currentTarget.open) setSegmentsEnabled(true);
+        }}
+      >
+        <summary>Revenue by business &amp; region</summary>
         <div className="market-context-actions">
           <button
             className="button"
@@ -81,7 +84,7 @@ export default function BusinessMap({ research: r }: { research: Research }) {
           >
             {segments.loading
               ? "Loading disclosures…"
-              : "Load revenue segments"}
+              : "Refresh revenue breakdown"}
           </button>
           <label>
             Dimension
@@ -147,7 +150,7 @@ export default function BusinessMap({ research: r }: { research: Research }) {
             )}
           </>
         )}
-      </section>
+      </details>
     </section>
   );
 }

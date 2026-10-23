@@ -4,7 +4,7 @@ import type { Research, Candle } from "@/lib/types";
 import {
   researchAccumulation,
   adaptiveSettledBars,
-} from "@/lib/accumulation-policy-v3";
+} from "@/lib/accumulation-policy-v4";
 import { weeklyAccumulation } from "@/lib/accumulation-weekly";
 import { evaluateAccumulation } from "@/lib/accumulation-evaluation";
 import { amount, percent, dateLabel } from "@/lib/format";
@@ -33,7 +33,9 @@ export default function AccumulationDesk({
           : researchAccumulation(r.history, r.retrievedAt, market),
       [r.history, r.retrievedAt, market, weekly],
     ),
-    signal = chosen.confirmed;
+    confirmed = chosen.confirmed,
+    signal = chosen.forming ?? confirmed;
+  const trimTier = signal && "trimTier" in signal ? signal.trimTier : null;
   const monthly = useMemo(() => {
     if (weekly)
       return weeklyAccumulation(r.history, r.retrievedAt, market).bars.slice(
@@ -74,7 +76,7 @@ export default function AccumulationDesk({
             )
               ? chosen.forming
               : null);
-          return [b.time, s ? colours[s.multiplier] : "#b0b5bd"];
+          return [b.time, s && "trimTier" in s && s.trimTier === "strong" ? "#bd4660" : s ? colours[s.multiplier] : "#b0b5bd"];
         }),
       ),
     [monthly, chosen, weekly],
@@ -86,7 +88,7 @@ export default function AccumulationDesk({
             { label: "2× pullback", price: signal.buy2 },
             { label: "3× pullback", price: signal.buy3 },
             { label: "4× pullback", price: signal.buy4 },
-          ]
+          ].filter(level => level.price > 0)
         : [],
     [signal],
   );
@@ -104,7 +106,7 @@ export default function AccumulationDesk({
           <span className="eyebrow">
             {weekly
               ? "Weekly conditions · separate time horizon"
-              : "Trend-adjusted · monthly discipline"}
+              : "Cycle-relative · monthly discipline"}
           </span>
           <h2>One reading. The history behind it.</h2>
         </div>
@@ -126,7 +128,7 @@ export default function AccumulationDesk({
           <span
             className="accumulation-badge"
             style={{
-              background: signal ? colours[signal.multiplier] : undefined,
+              background: trimTier === "strong" ? "var(--red)" : signal ? colours[signal.multiplier] : undefined,
               color:
                 signal && [0, 1, 3].includes(signal.multiplier)
                   ? "#15313d"
@@ -138,7 +140,7 @@ export default function AccumulationDesk({
           <h3>
             {signal
               ? signal.multiplier === 0
-                ? "Pause new contributions"
+                ? trimTier === "strong" ? "Strong trim review" : "Pause / trim review"
                 : signal.multiplier === 1
                   ? "Normal contribution condition"
                   : "Stronger pullback condition"
@@ -147,7 +149,7 @@ export default function AccumulationDesk({
           <p>{signal?.reason ?? chosen.reason}</p>
           <small>
             {signal
-              ? `${weekly ? "Week ending" : signal.month + " · confirmed at"} ${dateLabel(signal.date)}`
+              ? `${chosen.forming ? (weekly ? "Current week · forming" : "Current month · forming") : weekly ? "Confirmed week ending" : signal.month + " · confirmed at"} ${dateLabel(signal.date)}`
               : weekly
                 ? "52 consecutive completed prior weeks required"
                 : "24 consecutive completed prior months required"}
@@ -155,18 +157,18 @@ export default function AccumulationDesk({
         </div>
         <dl>
           <div>
-            <dt>{weekly ? "Current week" : "Current month"}</dt>
+            <dt>{weekly ? "Last confirmed week" : "Last confirmed month"}</dt>
             <dd>
-              {chosen.forming
-                ? `${chosen.forming.multiplier}× · forming · ${dateLabel(chosen.forming.date)}`
-                : "No forming reading"}
+              {confirmed
+                ? `${confirmed.multiplier}× · confirmed · ${dateLabel(confirmed.date)}`
+                : "No confirmed reading"}
             </dd>
           </div>
           <div>
             <dt>Same confirmed zone</dt>
             <dd>
-              {signal
-                ? `${chosen.history.filter((s) => s.multiplier === signal.multiplier).length} of ${chosen.history.length} eligible ${weekly ? "weeks" : "months"}`
+              {confirmed
+                ? `${chosen.history.filter((s) => s.multiplier === confirmed.multiplier).length} of ${chosen.history.length} eligible ${weekly ? "weeks" : "months"}`
                 : "Not established"}
             </dd>
           </div>
@@ -184,7 +186,7 @@ export default function AccumulationDesk({
       </p>
       {signal?.trimReview && (
         <div className="accumulation-extension" role="note">
-          <strong>Review price extension</strong>
+          <strong>{trimTier === "strong" ? "Strong trim review" : "Review price extension"}</strong>
           <span>
             Extreme distance above trend. Review exposure and the business case;
             this is separate from the contribution multiplier and specifies no
@@ -195,7 +197,7 @@ export default function AccumulationDesk({
       <div className="accumulation-chart">
         <PriceChart
           bars={monthly}
-          range={weekly ? "weekly-policy-v1" : "monthly-policy-v3"}
+          range={weekly ? "weekly-policy-v1" : "monthly-policy-v4"}
           style="candles"
           candleColors={candleColors}
           levels={levels}
@@ -233,24 +235,19 @@ export default function AccumulationDesk({
       <details className="policy-rules">
         <summary>See the rules and price assumptions</summary>
         <p>
-          Uses {weekly ? "52 completed weeks" : "24 completed months"} before
-          each reading. A robust log-price trend uses median pairwise slopes.
-          Spread is the larger of residual variability, period return
-          variability and a {weekly ? "3%" : "7%"} floor. 2×/3×/4× require
-          drawdowns of 12%/25%/40% from the prior period high and deviations
-          below trend of 0.7/1.35/2 spread units. Pause requires two units and
-          25% above trend. These fixed rules have no demonstrated
-          outperformance.
+          {weekly ? "Weekly v1 uses 52 completed weeks and a robust fitted log-price trend. Its 2×/3×/4× gates use 12%/25%/40% drawdown and 0.7/1.35/2 robust spread units." : "Monthly v4 uses the preceding 12 completed monthly closes for its cycle average and sample spread (minimum 10% of that average), with 24 prior consecutive months required for eligibility. The 2×/3×/4× gates require 10%/25%/40% below the cycle average and 0.5/1.35/1.5 spread units below it. Positive extension reviews also retain the robust-trend upper guard and a severe cycle-extension check."}
+          Weekly and monthly calculations differ. Matching selected reference readings does not establish an investment edge or the private reference formula.
         </p>
         <p>
           US observations settle after 5 PM New York; crypto uses completed UTC
           days. A completed month needs its final market session. Missing or
           conflicting history is unscored, never a 0× instruction. Displayed
-          bands use the last confirmed window and do not predict future prices.
-          Weekly confirmation requires the final expected session (US Friday,
-          adjusted for standard Friday holidays; crypto Sunday UTC). Missing
-          closes withhold the reading. Weekly and monthly policies can disagree
-          and must not be combined as two contributions. Older v1/v2 evaluators
+          bands use the forming reading's window when available, otherwise the
+          last confirmed window; they do not predict future prices. Weekly
+          confirmation requires the final expected session (US Friday, adjusted
+          for standard Friday holidays; crypto Sunday UTC). Missing closes
+          withhold the reading. Weekly and monthly policies can disagree and
+          must not be combined as two contributions. Older v1/v2 evaluators
           remain in the source for reproducibility.
         </p>
       </details>
@@ -300,7 +297,7 @@ export default function AccumulationDesk({
               <div className="policy-results">
                 {[
                   ["Normal DCA", evaluation.fixed],
-                  ["Trend-adjusted v3", evaluation.adaptive],
+                  ["Cycle-relative v4", evaluation.adaptive],
                 ].map(([name, result]) => {
                   const x = result as typeof evaluation.fixed;
                   return (

@@ -25,7 +25,7 @@ export default function FinancingContext({
           </p>
         </div>
       </header>
-      <div>
+      <div className="funding-metrics">
         {[
           ["Reported cash", amount(x.cash, x.currency ?? undefined, true)],
           [
@@ -80,21 +80,31 @@ export default function FinancingContext({
         ]
           .filter(([, value]) => value !== "Not established" && value !== "—")
           .map(([label, value]) => (
-            <section key={label}>
+            <section
+              key={label}
+              data-kind={
+                label === "Reported cash" || label === "Working capital"
+                  ? "balance"
+                  : "ratio"
+              }
+            >
               <span>{label}</span>
               <strong>{value}</strong>
             </section>
           ))}
       </div>
-      <p className="small muted">
-        Unavailable measurements are omitted. Runway = reported cash ÷ average
-        monthly historical cash use, using an annual or TTM period. No new
-        financing, restricted-cash adjustment or future spending forecast is
-        assumed. Working-capital days use average comparable balance-sheet
-        values and the annual/TTM flow period. They may not fit financial
-        businesses. Debt maturities and convertible conversion terms require the
-        original filings; no missing schedule is invented.
-      </p>
+      <details className="funding-basis">
+        <summary>Calculation details</summary>
+        <p className="small muted">
+          Unavailable measurements are omitted. Runway = reported cash ÷ average
+          monthly historical cash use, using an annual or TTM period. No new
+          financing, restricted-cash adjustment or future spending forecast is
+          assumed. Working-capital days use average comparable balance-sheet
+          values and the annual/TTM flow period. They may not fit financial
+          businesses. Debt maturities and convertible conversion terms require
+          the original filings; no missing schedule is invented.
+        </p>
+      </details>
     </section>
   );
 }

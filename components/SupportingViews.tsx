@@ -307,7 +307,7 @@ export function HelpPage() {
         ],
         [
           "Monthly accumulation",
-          "The monthly-v3 price policy uses a robust log-price trend from the preceding 24 completed months. Deeper drawdowns and deviations below that trend can produce 2×, 3× or 4× zones; stretched prices can produce a pause. A multiplier is not leverage, a profit prediction or an instruction to trade. The forming month is separate.",
+          "The monthly-v4 price policy measures pullbacks from the previous 12 completed monthly closes, with spread gates and 24 months of continuity required. Deeper cycle-relative pullbacks can produce 2×, 3× or 4× conditions; large positive extensions can produce a pause and light/strong trim review. Weekly v1 remains a separate policy. A multiplier is not leverage, a profit prediction or an instruction to trade. The forming month is separate.",
         ],
         [
           "Price history and technicals",

@@ -1,18 +1,6 @@
-# Latest screenshot and financial-explorer continuation
+# Current continuation — 23 October 2026
 
-Read `docs/SCREENSHOT_REVIEW_20261023.md` first (local filename from docs). Includes the 36-metric financial explorer, metrics-first Business charts, additional technical studies, shared classification protection and Advanced contrast repair. 408 tests, TypeScript, production build and 83 API fixture checks passed. DCA parity is unresolved; the audited equal-budget study does not establish superiority. Full wish-list completion and rendered/iPhone acceptance are not claimed.
-
-# Latest consolidated product continuation
-
-Read `docs/CONSOLIDATED_PRODUCT_BUILD.md` (or the local filename from docs) first. This includes the simplified public storefront, separate weekly/monthly accumulation desk and Home price/coverage corrections, along with prior screenshot fixes. Full source is included. Broader competitor parity, commercial readiness, rendered visual parity and physical iPhone acceptance remain incomplete; see the current verification report.
-
-# Latest screenshot correction — 23 October 2026
-
-Read `docs/SCREENSHOT_FEEDBACK_20261023.md` for this continuation (from docs, use the local filename). Full source includes the revised Overview, Advanced risk brief, optional Value workbenches and the quote-independent reported per-share fix. Verification: 387 tests and 83 compiled API checks; TypeScript and production build pass. Exact visual parity, physical iPhone acceptance, private DCA equivalence and the complete feature wish list are not certified.
-
-# Current build — unified research, 23 October 2026
-
-Read `docs/UNIFIED_BUILD_20261023.md` (or `UNIFIED_BUILD_20261023.md` from this docs directory), `docs/COMPETITOR_COMPARISON_20261023.md`, `docs/MONTHLY_POLICY_V3.md` and `verification/REPORT.json`. This build includes full source, shared all-page content styling, Business durability, model suitability, header market cap, public Why AURYN and monthly-v3 across Overview/Technicals. 380 tests, TypeScript, production build and 83 compiled API checks passed. No new SQL is needed for this continuation. Physical iPhone, exact visual parity, complete live entitlements and commercial readiness are not certified.
+Read `docs/CURRENT_ACCEPTANCE.md` and `docs/MONTHLY_POLICY_V4.md` first (from this docs directory, use their local filenames). Full source includes the latest UI cleanup and monthly v4. Verification: 419 tests, route types, TypeScript, production build and 83 API fixture checks pass. Monthly v4 matches 26/26 selected current reference readings and 26/26 supplied IREN historical months; calibration and remaining weekly differences are disclosed. This is not universal parity or investment-performance proof. No deployment or push performed; physical iPhone and patched-source visual acceptance remain unverified. Older counts and policies below are historical.
 
 ## Historical notes below
 

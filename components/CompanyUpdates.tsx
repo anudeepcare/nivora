@@ -12,7 +12,7 @@ export default function CompanyUpdates({
     .sort((a, b) => a.date.localeCompare(b.date))[0];
   return (
     <>
-      {" "}
+      <NewsAndFilings research={r} />
       <section className="research-updates company-updates">
         <header className="section-head">
           <div>
@@ -68,13 +68,14 @@ export default function CompanyUpdates({
               <p className="context-note">No transaction records supplied.</p>
             )}
             <p className="transaction-note">
-              Sales can reflect tax, diversification or trading plans.
-              Roles, transaction codes and filing dates need verification; this snapshot does not establish that every named person is a company insider.
+              Sales can reflect tax, diversification or trading plans. Roles,
+              transaction codes and filing dates need verification; this
+              snapshot does not establish that every named person is a company
+              insider.
             </p>
           </div>
         </div>
       </section>
-      <NewsAndFilings research={r} />
     </>
   );
 }

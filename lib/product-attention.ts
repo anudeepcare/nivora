@@ -1,5 +1,63 @@
 import type { Position, Quote } from "./types";
 import type { MarketEvent } from "./home-feed";
+/** Quote-reference impact on current units, not brokerage/account performance. */
+export function homePriceMoves(
+  positions: Position[],
+  quotes: Record<string, Quote>,
+  asOf: string,
+) {
+  const now = Date.parse(asOf);
+  const quantities = new Map<string, number>();
+  for (const p of positions) {
+    if (
+      p.assetType === "cash" ||
+      p.currency !== "USD" ||
+      !Number.isFinite(p.quantity) ||
+      p.quantity <= 0
+    )
+      continue;
+    quantities.set(p.symbol, (quantities.get(p.symbol) ?? 0) + p.quantity);
+  }
+  return [...quantities]
+    .flatMap(([symbol, quantity]) => {
+      const q = quotes[symbol],
+        at = Date.parse(q?.asOf ?? "");
+      if (
+        !q ||
+        q.currency !== "USD" ||
+        !Number.isFinite(now) ||
+        !Number.isFinite(at) ||
+        at > now + 60000 ||
+        now - at > 4 * 86400000 ||
+        q.price == null ||
+        !Number.isFinite(q.price) ||
+        q.price <= 0 ||
+        q.changePct == null ||
+        !Number.isFinite(q.changePct) ||
+        q.changePct <= -100 ||
+        q.changePct === 0
+      )
+        return [];
+      const impact = (quantity * q.price * q.changePct) / (100 + q.changePct);
+      if (!Number.isFinite(impact)) return [];
+      return [
+        {
+          symbol,
+          quantity,
+          impact,
+          changePct: q.changePct,
+          asOf: q.asOf!,
+          older: !!q.stale,
+        },
+      ];
+    })
+    .sort(
+      (a, b) =>
+        Math.abs(b.impact) - Math.abs(a.impact) ||
+        a.symbol.localeCompare(b.symbol),
+    )
+    .slice(0, 3);
+}
 export function pricedInvestmentReturns(
   positions: Position[],
   quotes: Record<string, Quote>,

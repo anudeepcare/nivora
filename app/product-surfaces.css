@@ -575,13 +575,17 @@
   padding: 22px;
 }
 .analyst-summary {
-  border-radius: 12px;
-  background: var(--blue-soft);
-  padding: 20px;
+  border-radius: 0;
+  background: transparent;
+  border-bottom: 1px solid var(--line);
+  padding: 0 0 20px;
 }
 .analyst-summary strong {
-  color: var(--blue);
+  color: var(--ink);
   font-size: 30px;
+}
+.analyst-summary > div:first-child strong {
+  color: var(--blue);
 }
 .rating-distribution {
   max-width: 800px;
@@ -628,7 +632,7 @@
     font-size: 15px;
   }
   .analyst-summary {
-    padding: 16px;
+    padding: 0 0 16px;
   }
   .analyst-summary strong {
     font-size: 25px;
@@ -1070,10 +1074,10 @@
 }
 .business-map-compact .company-profile {
   border-bottom: 1px solid var(--line);
-  padding-bottom: 14px;
-  margin-bottom: 14px;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
 }
-.business-map-compact .company-profile summary {
+.business-map-compact summary {
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
@@ -1088,8 +1092,80 @@
   margin-block: 12px;
 }
 .business-map-compact .segment-breakdown {
-  margin-top: 18px;
-  padding-top: 18px;
+  margin-top: 0;
+  padding-top: 0;
+}
+.business-map-compact .segment-breakdown[open] > .market-context-actions {
+  margin-top: 14px;
+}
+.financing-context {
+  margin: 0;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  background: var(--surface);
+}
+.funding-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.funding-metrics > section {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.funding-metrics span {
+  color: var(--muted);
+  font-size: 12px;
+}
+.funding-metrics strong {
+  color: var(--ink);
+  font-size: clamp(19px, 2.1vw, 26px);
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.funding-metrics [data-kind="balance"] strong {
+  color: var(--blue);
+}
+.funding-basis {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.funding-basis summary,
+.research-reference > summary {
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+}
+.funding-basis p {
+  margin-top: 12px;
+  line-height: 1.7;
+}
+.research-reference > summary {
+  padding: 12px 0;
+  border-block: 1px solid var(--line);
+}
+.research-reference[open] > summary {
+  margin-bottom: 14px;
+}
+.home-move-basis {
+  margin-top: 12px;
+  line-height: 1.6;
+}
+@media (max-width: 800px) {
+  .funding-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .financing-context {
+    padding: 18px;
+  }
 }
 @media (max-width: 760px) {
   .business-trend-charts {

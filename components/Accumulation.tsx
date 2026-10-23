@@ -1,6 +1,6 @@
 "use client";
 import type { Research } from "@/lib/types";
-import {researchAccumulation} from "@/lib/accumulation-policy-v3";
+import {researchAccumulation} from "@/lib/accumulation-policy-v4";
 import { amount, percent } from "@/lib/format";
 import { Help, Notice } from "./Ui";
 import { PriceChart } from "./Charts";
@@ -10,14 +10,14 @@ export default function Accumulation({ research }: { research: Research }) {
     research.retrievedAt,
     research.company.assetType === "crypto" ? "crypto" : "us-equity",
   );
-  const signal = result.confirmed;
+  const signal = result.forming ?? result.confirmed;
   return (
     <section className="dca-page">
       <div className="panel">
         <div className="dca-hero">
           <div className="dca-orb">
             <b>{signal ? `${signal.multiplier}×` : "—"}</b>
-            <small>CONFIRMED MONTH</small>
+            <small>{result.forming ? "FORMING MONTH" : "CONFIRMED MONTH"}</small>
           </div>
           <div>
             <span className="eyebrow">
@@ -35,8 +35,10 @@ export default function Accumulation({ research }: { research: Research }) {
             <p className="muted">{signal?.reason || result.reason}</p>
           </div>
           <Help label="Monthly DCA">
-            AURYN’s trend-adjusted price policy compares settled prices with a
-            robust prior 24-month trend and monthly closing high. Multipliers
+            AURYN’s monthly-v4 price policy measures settled prices against the
+            previous 12 completed monthly closes and their variability.
+            It requires 24 consecutive prior months and is empirically calibrated,
+            not a copy of the private reference formula. Multipliers
             describe your usual contribution, not leverage or expected returns.
             No amount is required. It does not establish business quality or
             suitability.
@@ -61,12 +63,12 @@ export default function Accumulation({ research }: { research: Research }) {
         </div>
         <div className="dca-explain">
           <div>
-            <h3>Current month · forming</h3>
+            <h3>Last confirmed month</h3>
             <p>
-              {result.forming
-                ? `${result.forming.multiplier}× zone · ${result.forming.reason}`
-                : "No settled observation in the current month."}{" "}
-              This may change until the month closes.
+              {result.confirmed
+                ? `${result.confirmed.month} · ${result.confirmed.multiplier}× zone · ${result.confirmed.reason}`
+                : "No confirmed monthly reading."}{" "}
+              The forming headline can change until month-end; this completed reading stays fixed for unchanged inputs.
             </p>
           </div>
           <div>

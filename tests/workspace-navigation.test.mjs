@@ -180,3 +180,27 @@ test('public storefront and sample bypass the account shell while research remai
  const AppSession=component('components/AppSession.tsx','AppSession',{React,usePathname:()=>path,ProductSession:'ProductSession',Shell:'Shell'});const tree=AppSession({children:'content'});assert.equal(tree.type==='ProductSession',!['/','/sample'].includes(path));
  }
 });
+
+test('first-load research panels suspend locally instead of replacing company identity and tabs', async () => {
+  const {renderToPipeableStream}=await import('react-dom/server');
+  const {PassThrough}=await import('node:stream');
+  const imported=await import('next/dist/shared/lib/lazy-dynamic/loadable.js');
+  const Loadable=imported.default.default ?? imported.default;
+  const file='components/Research.tsx';
+  const source=fs.readFileSync(file,'utf8');
+  const ast=ts.createSourceFile(file,source,ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX);
+  for (const name of ['AdvancedResearch']) {
+    const declaration=ast.statements.find(n=>ts.isVariableStatement(n)&&n.declarationList.declarations.some(d=>d.name.getText(ast)===name));
+    const code=ts.transpileModule(declaration.getText(ast),{compilerOptions:{jsx:ts.JsxEmit.React,module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
+    const Panel=new Function('React','dynamic',code+`;return ${name};`)(React,(_loader,options)=>Loadable({...options,loader:()=>new Promise(()=>{})}));
+    const html=await new Promise((resolve,reject)=>{
+      let output='';const stream=new PassThrough();
+      stream.on('data',chunk=>output+=chunk.toString());stream.on('end',()=>resolve(output));stream.on('error',reject);
+      const rendered=renderToPipeableStream(React.createElement(React.Suspense,{fallback:'Opening research…'},React.createElement('h1',null,'IREN'),React.createElement('nav',null,'Overview Business Advanced'),React.createElement(Panel)),{onShellReady(){rendered.pipe(stream);setImmediate(()=>rendered.abort());},onError(){}});
+    });
+    assert.match(html,/<h1>IREN<\/h1>/,name+' must retain company identity');
+    assert.match(html,/<nav>Overview Business Advanced<\/nav>/,name+' must retain tab navigation');
+    assert.match(html,/role="status"/,name+' must expose a local loading state');
+    assert.doesNotMatch(html,/Opening research…/,name+' must not reach the whole-page fallback');
+  }
+});

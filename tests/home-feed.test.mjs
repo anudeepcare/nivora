@@ -112,3 +112,12 @@ test("Home news decodes publisher text and gives each followed company a first h
   assert.equal(result[1].symbol, "NOW");
   assert.equal(result[2].symbol, "HIMS");
 });
+
+test('Home headline selection prioritizes company identity and covers different holdings before repeats',()=>{
+ assert.equal(typeof m.relevantHoldingHeadlines,'function');
+ const row=(symbol,title,i)=>({symbol,title,date:'2026-10-22',url:`https://example.com/${i}`});
+ const rows=[row('NOW','NowVertical Group raises capital',1),row('NOW','Primis Financial reports results',2),row('NOW','ServiceNow (NOW) reports earnings',3),row('NOW','ServiceNow launches a product',4),row('HIMS','Hims & Hers expands care',5),row('ZETA','Zeta Global wins contract',6)];
+ const ranked=m.relevantHoldingHeadlines(rows,{NOW:'ServiceNow Inc',HIMS:'Hims & Hers Health Inc',ZETA:'Zeta Global Holdings Corp'},new Map([['NOW',200],['HIMS',100],['ZETA',50]]));
+ assert.deepEqual(ranked.map(x=>x.url),[3,5,6,4].map(i=>`https://example.com/${i}`));
+ assert.equal(m.relevantHoldingHeadlines([row('SAP','SAP updates outlook',7)],{SAP:'SAP SE ADR'},new Map()).length,1);
+});

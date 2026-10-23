@@ -18,6 +18,84 @@ export type HomeFeed = {
   followed: number;
   newsFollowed: number;
 };
+/** Headline identity filter, not a claim that a publisher's story is material. */
+export function relevantHoldingHeadlines(
+  rows: MarketHeadline[],
+  names: Record<string, string>,
+  exposure: Map<string, number>,
+) {
+  const normalize = (s: string) =>
+    s
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim();
+  const generic = new Set([
+    "the",
+    "inc",
+    "incorporated",
+    "corp",
+    "corporation",
+    "company",
+    "co",
+    "ltd",
+    "limited",
+    "plc",
+    "se",
+    "adr",
+    "class",
+    "common",
+    "stock",
+    "shares",
+    "holdings",
+    "holding",
+  ]);
+  const ambiguous = new Set([
+    "advanced",
+    "first",
+    "american",
+    "global",
+    "national",
+    "international",
+    "united",
+    "new",
+    "financial",
+    "energy",
+    "health",
+  ]);
+  const sorted = rows
+    .filter((row) => {
+      const words = normalize(names[row.symbol] ?? "")
+        .split(" ")
+        .filter((w) => w && !generic.has(w));
+      const title = ` ${normalize(row.title)} `;
+      const symbol = row.symbol.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const explicitTicker = new RegExp(
+        `(?:\\$${symbol}\\b|\\(${symbol}\\))`,
+      ).test(row.title);
+      return (
+        explicitTicker ||
+        (words.length > 0 &&
+          (title.includes(` ${words.join(" ")} `) ||
+            (!ambiguous.has(words[0]) && title.includes(` ${words[0]} `))))
+      );
+    })
+    .sort(
+      (a, b) =>
+        (exposure.get(b.symbol) ?? 0) - (exposure.get(a.symbol) ?? 0) ||
+        b.date.localeCompare(a.date),
+    );
+  const seen = new Set<string>(),
+    first: MarketHeadline[] = [],
+    rest: MarketHeadline[] = [];
+  for (const row of sorted) {
+    if (seen.has(row.symbol)) rest.push(row);
+    else {
+      seen.add(row.symbol);
+      first.push(row);
+    }
+  }
+  return [...first, ...rest];
+}
 const day = (v: unknown): v is string =>
   typeof v === "string" &&
   /^\d{4}-\d{2}-\d{2}$/.test(v) &&

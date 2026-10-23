@@ -617,10 +617,10 @@ test('public sample explains fictional data and offers readable business, value 
 });
 
 test('monthly chart distinguishes unavailable warm-up data from ordinary 1x conditions',async()=>{
- const {researchAccumulation,adaptiveSettledBars}=await import('../lib/accumulation-policy-v3.ts'),{evaluateAccumulation}=await import('../lib/accumulation-evaluation.ts');
+ const {researchAccumulation,adaptiveSettledBars}=await import('../lib/accumulation-policy-v4.ts'),{evaluateAccumulation}=await import('../lib/accumulation-evaluation.ts');
  const colours={0:'#d89a20',1:'#7d9db0',2:'#12a28b',3:'#71b337',4:'#ac68e5'};
  const Desk=loadComponent('components/AccumulationDesk.tsx','AccumulationDesk',{React,useMemo:React.useMemo,useState:React.useState,researchAccumulation,adaptiveSettledBars,evaluateAccumulation,...format,colours,PriceChart:({candleColors})=>React.createElement('span',{'data-zone-colours':JSON.stringify(candleColors)})});
- const html=renderToStaticMarkup(React.createElement(Desk,{research:demoData.research.MSFT}));assert.match(html,/No eligible signal/);assert.match(html,/#b0b5bd/);assert.match(html,/Trend-adjusted/);assert.match(html,/confirmed/);assert.match(html,/forming/);
+ const html=renderToStaticMarkup(React.createElement(Desk,{research:demoData.research.MSFT}));assert.match(html,/No eligible signal/);assert.match(html,/#b0b5bd/);assert.match(html,/Cycle-relative/);assert.match(html,/confirmed/);assert.match(html,/forming/);
 });
 
 test('metric provenance links filings but never sends users to infrastructure API pages',()=>{
@@ -674,13 +674,13 @@ test('overview does not ask users to resolve infrastructure inputs or replace bu
 
 test('weekly accumulation has its own history, date labels and no misleading monthly simulation',async()=>{
  const {weeklyAccumulation}=await import('../lib/accumulation-weekly.ts');
- const {researchAccumulation,adaptiveSettledBars}=await import('../lib/accumulation-policy-v3.ts');
+ const {researchAccumulation,adaptiveSettledBars}=await import('../lib/accumulation-policy-v4.ts');
  const {evaluateAccumulation}=await import('../lib/accumulation-evaluation.ts');
  const colours={0:'#d89a20',1:'#7d9db0',2:'#12a28b',3:'#71b337',4:'#ac68e5'};
  let state=0;
  const View=loadComponent('components/AccumulationDesk.tsx','AccumulationDesk',{React,useMemo:React.useMemo,useState:(initial)=>React.useState(++state===1?'weekly':initial),weeklyAccumulation,researchAccumulation,adaptiveSettledBars,evaluateAccumulation,...format,colours,PriceChart:empty});
  const html=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT}));
- assert.match(html,/Weekly conditions/);assert.match(html,/Accumulation time horizon/);assert.match(html,/Current week/);assert.match(html,/52 completed weeks/);assert.match(html,/historical simulation remains monthly only/);assert.doesNotMatch(html,/Test this policy on available history|Same deposits/);
+ assert.match(html,/Weekly conditions/);assert.match(html,/Accumulation time horizon/);assert.match(html,/Last confirmed week/);assert.match(html,/52 completed weeks/);assert.match(html,/historical simulation remains monthly only/);assert.doesNotMatch(html,/Test this policy on available history|Same deposits/);
 });
 
 test('Business starts with reported durability charts and keeps missing annual values unplotted',async()=>{
@@ -696,4 +696,41 @@ test('financial explorer presents selectable metrics and honest chart dates with
  const View=loadComponent('components/FinancialExplorer.tsx','FinancialExplorer',{React,useMemo:React.useMemo,useState:React.useState,financialMetricSeries,applicableMetrics,...format});
  const html=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT}));
  for(const label of ['Financial chart metric','Financial metrics','Financial chart style','Reported observations','SBC / revenue','Revenue by reported period'])assert.ok(html.includes(label),label);assert.doesNotMatch(html,/NaN|Infinity|api_key|Download/);
+});
+
+test('overview leads with the forming DCA period and keeps the confirmed result separately labelled',async()=>{
+ const {researchBrief}=await import('../lib/research-brief.ts');
+ const b=researchBrief(demoData.research.MSFT);
+ b.accumulation={...b.accumulation,multiplier:1,month:'2026-09',reason:'Confirmed baseline reason',forming:{month:'2026-10',date:'2026-10-22',close:25.51,multiplier:2,reason:'Current pullback reason'}};
+ const View=loadComponent('components/DecisionOverview.tsx','DecisionOverview',{React,useMemo:React.useMemo,researchBrief:()=>b,...format,PositionAwareResearch:empty,CaseRange:empty});
+ const html=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT,onTab:()=>{}}));
+ const hero=html.match(/class="overview-multiplier"[\s\S]*?class="overview-zone-scale"/)?.[0];
+ assert.match(hero,/<strong>2×<\/strong>/);
+ assert.match(hero,/2026-10 · forming/);
+ assert.match(html,/Forming 2 times condition/);
+ assert.match(html,/Current pullback reason/);
+ assert.doesNotMatch(html,/Confirmed baseline reason/);
+ assert.match(html,/Confirmed · 2026-09/);
+ assert.match(html,/<b>1×<\/b>/);
+ b.accumulation.forming=null;
+ const closed=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT,onTab:()=>{}}));
+ assert.match(closed,/2026-09 · confirmed/);assert.match(closed,/Confirmed baseline reason/);
+});
+
+test('technical accumulation leads with the same forming reading and retains confirmed history frequency',()=>{
+ const confirmed={multiplier:1,month:'2026-09',date:'2026-09-30',close:40.88,reason:'Confirmed baseline',risk:'Confirmed risk',buy2:30,buy3:20,buy4:10};
+ const forming={...confirmed,multiplier:2,month:'2026-10',date:'2026-10-22',reason:'Forming pullback',risk:'Current trend risk',buy2:31};
+ const chosen={confirmed,forming,history:[confirmed],reason:'Enough history'};
+ const View=loadComponent('components/AccumulationDesk.tsx','AccumulationDesk',{React,useMemo:React.useMemo,useState:React.useState,researchAccumulation:()=>chosen,adaptiveSettledBars:()=>[],evaluateAccumulation:()=>null,...format,colours:{0:'#d89a20',1:'#7d9db0',2:'#12a28b',3:'#71b337',4:'#ac68e5'},PriceChart:({levels})=>React.createElement('span',{'data-first-level':levels[0]?.price})});
+ const html=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT}));
+ assert.match(html,/class="accumulation-badge"[^>]*>2×/);
+ assert.match(html,/Current month · forming/);assert.match(html,/Forming pullback/);
+ assert.match(html,/Last confirmed month/);assert.match(html,/1× · confirmed · Sep 30, 2026/);
+ assert.match(html,/1 of 1 eligible months/);assert.match(html,/data-first-level="31"/);
+});
+
+test('News leads with company coverage before earnings and transaction records',()=>{
+ const View=loadComponent('components/CompanyUpdates.tsx','CompanyUpdates',{React,dateLabel:format.dateLabel,NewsAndFilings:()=>React.createElement('section',{'data-news':'first'},'Company headlines and filings')});
+ const html=renderToStaticMarkup(React.createElement(View,{research:{retrievedAt:'2026-10-22',evidence:{earnings:[]}}}));
+ assert.ok(html.indexOf('data-news="first"')<html.indexOf('Events &amp; reported transactions'));
 });

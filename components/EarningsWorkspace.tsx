@@ -50,7 +50,7 @@ export default function EarningsWorkspace({
                 return (
                   <tr key={e.date + e.period + i}>
                     <td>{dateLabel(e.date)}</td>
-                    <td>{e.period || "—"}</td>
+                    <td>{e.period ? dateLabel(e.period) : "—"}</td>
                     <td>{e.actual?.toFixed(2) ?? "—"}</td>
                     <td>{e.estimate?.toFixed(2) ?? "—"}</td>
                     <td

@@ -6,6 +6,8 @@ import AdvancedRiskBrief from "./AdvancedRiskBrief";
 import HistoricalConditions from "./HistoricalConditions";
 import MarketContext from "./MarketContext";
 import ProfessionalContext from "./ProfessionalContext";
+import ValuationLab from "./ValuationLab";
+import FundedScenarios from "./FundedScenarios";
 import { planStress } from "@/lib/professional-studies";
 import { advancedStudies, tradePlan } from "@/lib/advanced-research";
 
@@ -73,6 +75,7 @@ export default function AdvancedResearch({
           ["context", "Market & peers"],
           ["plan", "Trade plan"],
           ["history", "Historical study"],
+          ["valuation", "Valuation tools"],
         ].map(([id, label]) => (
           <button
             key={id}
@@ -88,6 +91,16 @@ export default function AdvancedResearch({
           </button>
         ))}
       </nav>
+      {visited.includes("valuation") && (
+        <section
+          id="advanced-panel-valuation"
+          className="advanced-panel au-stack"
+          hidden={active !== "valuation"}
+        >
+          <FundedScenarios key={r.company.symbol} research={r} />
+          <ValuationLab research={r} />
+        </section>
+      )}
       <section
         id="advanced-panel-risk"
         className="advanced-panel"

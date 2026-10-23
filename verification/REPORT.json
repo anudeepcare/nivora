@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-10-23T03:57:43.042304+00:00",
+  "generatedAt": "2026-10-23T04:37:32.216087+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 408 tests, route type generation, TypeScript and production build",
+    "npm run verify": "passed: 419 tests, route type generation, TypeScript and production build",
     "npm run test:api": "passed: 40 baseline + 16 research regression + 22 provider + 5 shared protection checks",
     "git diff --check": "passed",
-    "npm test": "passed: 408 tests, zero failures",
+    "npm test": "passed: 419 tests, zero failures",
     "npm run build": "passed as part of final verify; no CSS compilation warnings"
   },
-  "domainPostgresAndComponentTests": 408,
+  "domainPostgresAndComponentTests": 419,
   "builtApiChecks": 83,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -36,12 +36,12 @@
   "priorEvidence": "The signed-in reference/deployed UI reviews predate this patch. New verification is source, domain/SSR, TypeScript and build evidence only.",
   "browserTestScope": "No rendered browser test of this build; older live audits are historical evidence only",
   "patchedSourceBrowserTestsExecuted": false,
-  "latestAudit": "../docs/SCREENSHOT_REVIEW_20261023.md",
+  "latestAudit": "../docs/CURRENT_ACCEPTANCE.md",
   "referenceReview": "REFERENCE_REVIEW_20261017.md",
   "decisionPolicy": "research-v1.6 / decision-guide-v1.1; original unvalidated research triage; no broker execution",
   "latestLogs": [
-    "screenshot-review-verify.log",
-    "screenshot-review-api.log"
+    "verification/monthly-v4-verify.log",
+    "verification/monthly-v4-api.log"
   ],
   "cohortQuoteObservations": "cohort-quotes-20261017.json; 11 instruments; quote identity only, not fundamental/model validation",
   "exactVisualParityVerified": false,
@@ -563,5 +563,54 @@
     },
     "visualAcceptance": false,
     "physicalIphoneAcceptance": false
+  },
+  "unitTests": 419,
+  "dcaParityVerified": false,
+  "latestFollowup": {
+    "scope": "Current screenshot UI cleanup plus original monthly-v4 algorithm",
+    "tests": 419,
+    "apiFixtureChecks": 83,
+    "deployed": false,
+    "archiveProduced": true,
+    "patchedSourceRendered": false,
+    "physicalIphoneVerified": false,
+    "monthlyPolicy": "monthly-v4",
+    "comparisonAudit": "verification/monthly-v4-reference-audit.json",
+    "monthlyCurrentReadings": {
+      "matched": 26,
+      "total": 26,
+      "priorPolicyMatched": 19,
+      "calibration": 16,
+      "additionalUnretunedSample": 10
+    },
+    "irenHistoricalReadings": {
+      "matched": 26,
+      "total": 26,
+      "calibrationNotValidation": true
+    },
+    "weeklyIren": {
+      "reference": [
+        4,
+        4
+      ],
+      "auryn": [
+        3,
+        3
+      ],
+      "unchangedPolicy": "weekly-v1"
+    },
+    "calculationThresholdsChanged": true,
+    "universalParityVerified": false,
+    "investmentEdgeEstablished": false,
+    "equalBudgetStudy": {
+      "eligible": 12,
+      "ahead": 3,
+      "behind": 2,
+      "equal": 7,
+      "insufficientExecutionHistory": [
+        "NBIS"
+      ],
+      "independentValidation": false
+    }
   }
 }
