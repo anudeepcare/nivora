@@ -278,7 +278,7 @@ export function HelpPage() {
         ],
         [
           "Monthly accumulation",
-          "The monthly-v4 price policy measures pullbacks from the previous 12 completed monthly closes, with spread gates and 24 months of continuity required. Deeper cycle-relative pullbacks can produce 2×, 3× or 4× conditions; large positive extensions can produce a pause and light/strong trim review. Weekly v1 remains a separate policy. A multiplier is not leverage, a profit prediction or an instruction to trade. The forming month is separate.",
+          "The monthly-v5 price policy measures pullbacks from the previous 12 completed monthly closes, with spread gates and at least 12 prior completed months; 12–23 months are explicitly limited history. Deeper cycle-relative pullbacks can produce 2×, 3× or 4× conditions; large positive extensions can produce a pause and light/strong trim review. Weekly v1 remains a separate policy. A multiplier is not leverage, a profit prediction or an instruction to trade. The forming month is separate.",
         ],
         [
           "Price history and technicals",

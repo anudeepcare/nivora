@@ -2,7 +2,8 @@ import type { Candle } from "./types";
 import {
   adaptiveSettledBars,
   researchAccumulation,
-} from "./accumulation-policy-v4.ts";
+} from "./accumulation-policy-v5.ts";
+import { researchAccumulation as v4Policy } from "./accumulation-policy-v4.ts";
 import { researchAccumulation as priorPolicy } from "./accumulation-policy-v3.ts";
 import { monthEndSession } from "./calendar.ts";
 type Row = {
@@ -69,12 +70,19 @@ export function evaluateAccumulation(
   asOf: string,
   costBps = 10,
   market: "us-equity" | "crypto" = "us-equity",
-  policy: "monthly-v3" | "monthly-v4" = "monthly-v4",
+  policy: "monthly-v3" | "monthly-v4" | "monthly-v5" = "monthly-v5",
 ) {
   if (!Number.isFinite(costBps) || costBps < 0 || costBps > 200)
     throw Error("Use zero to 200 basis points.");
   const signals = new Map(
-    (policy === "monthly-v3" ? priorPolicy : researchAccumulation)(bars, asOf, market).history.map((s) => [s.month, s]),
+    (policy === "monthly-v3"
+      ? priorPolicy
+      : policy === "monthly-v4"
+        ? v4Policy
+        : researchAccumulation)(bars, asOf, market).history.map((s) => [
+      s.month,
+      s,
+    ]),
   );
   const months = new Map<string, Candle[]>();
   for (const b of adaptiveSettledBars(bars, asOf, market)) {
@@ -103,8 +111,7 @@ export function evaluateAccumulation(
   if (rows.length < 18)
     return {
       available: false as const,
-      reason:
-        "18 completed execution months after the 24-month prior-history warm-up are required.",
+      reason: `18 completed execution months after the ${policy === "monthly-v5" ? "12-month minimum" : "24-month"} prior-history warm-up are required.`,
       eligibleMonths: rows.length,
     };
   const cut = Math.floor(rows.length * 0.7),

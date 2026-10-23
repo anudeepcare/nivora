@@ -494,16 +494,16 @@ function Login({ initialError }: { initialError: string }) {
       const auth = authClient().auth;
       const result =
         mode === "login"
-          ? await auth.signInWithPassword({ email, password })
+          ? await auth.signInWithPassword({ email: email.trim(), password })
           : mode === "signup"
             ? await auth.signUp({
-                email,
+                email: email.trim(),
                 password,
                 options: {
                   emailRedirectTo: `${window.location.origin}/auth/callback`,
                 },
               })
-            : await auth.resetPasswordForEmail(email, {
+            : await auth.resetPasswordForEmail(email.trim(), {
                 redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
               });
       if (result.error) throw result.error;
@@ -706,7 +706,12 @@ function Login({ initialError }: { initialError: string }) {
             Email address
             <input
               type="email"
-              autoComplete="email"
+              name="email"
+              id="auryn-signin-email"
+              autoComplete="username"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -717,6 +722,8 @@ function Login({ initialError }: { initialError: string }) {
               Password
               <input
                 type="password"
+                name="password"
+                id="auryn-signin-password"
                 autoComplete={
                   mode === "login" ? "current-password" : "new-password"
                 }

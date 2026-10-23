@@ -5,7 +5,7 @@ import { researchBrief } from "@/lib/research-brief";
 import { dateLabel, amount, percent } from "@/lib/format";
 import PositionAwareResearch from "./PositionAwareResearch";
 import CaseRange from "./CaseRange";
-import AnalystTargets from "./AnalystTargets";
+import PriceRiskCases from "./PriceRiskCases";
 export default function DecisionOverview({
   research: r,
   onTab,
@@ -160,8 +160,8 @@ export default function DecisionOverview({
               <h3>
                 {b.scenario && b.scenarioEligible
                   ? "Bear, base & bull"
-                  : b.consensus
-                    ? "Analyst expectations"
+                  : b.priceRisk.available
+                    ? "Bear, base & bull"
                     : "Valuation context"}
               </h3>
               <button
@@ -185,8 +185,8 @@ export default function DecisionOverview({
                     : `Earnings scenarios · ends ${dateLabel(b.scenario.end)} · not intrinsic value`}
                 </small>
               </>
-            ) : b.consensus ? (
-              <AnalystTargets research={r} />
+            ) : b.priceRisk.available ? (
+              <PriceRiskCases scenarios={b.priceRisk} compact/>
             ) : (
               <div className="overview-value-gap">
                 <span>

@@ -1,0 +1,13 @@
+{
+  "checkedAtDate": "2026-10-23",
+  "domains": ["getauryn.vercel.app", "auryninvest.com"],
+  "customDomainResolvedLogin": "https://www.auryninvest.com/login",
+  "sameDeployment": true,
+  "samePublicLoginHtmlDigest": true,
+  "sameSupabaseProjectInPublicBundles": true,
+  "reportedPasswordError": "Invalid credentials",
+  "passwordSuppliedOrInspected": false,
+  "passwordFailureReproduced": false,
+  "passwordFailureResolved": false,
+  "productionConfigurationChanged": false
+}

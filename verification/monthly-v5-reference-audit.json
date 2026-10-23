@@ -1,0 +1,513 @@
+{
+  "asOf": "2026-10-22T23:00:00Z",
+  "policy": "monthly-v5",
+  "method": "Original recalibrated policy; same-date supplied visible monthly reference. The complete visible sample, including SOFI/TTD/CRWV, influenced calibration. This is not an independent holdout or private formula recovery; no universal parity or investment-performance claim. ONDS also influenced the shared longer-cycle guard: 3×/4× require price at or below the average of available prior closes (up to 24 months).",
+  "source": "Existing connected-history audit; new SOFI/TTD/CRWV daily OHLC retrieved through connected Twelve fallback. EODHD remains application primary. Settled daily observations grouped by completed month or Oct 22 forming; no licensed raw series packaged. ONDS was checked on independently fetched monthly OHLC through the same reference date.",
+  "current": [
+    {
+      "symbol": "IREN",
+      "reference": [
+        2,
+        4
+      ],
+      "v4": [
+        2,
+        4
+      ],
+      "v5": [
+        2,
+        4
+      ],
+      "historyBasis": "standard",
+      "priorMonths": 24,
+      "dates": [
+        "2026-09-30",
+        "2026-10-22"
+      ]
+    },
+    {
+      "symbol": "APP",
+      "reference": [
+        4,
+        4
+      ],
+      "v4": [
+        4,
+        4
+      ],
+      "v5": [
+        4,
+        4
+      ],
+      "historyBasis": "standard",
+      "priorMonths": 24,
+      "dates": [
+        "2026-09-30",
+        "2026-10-22"
+      ]
+    },
+    {
+      "symbol": "ASTS",
+      "reference": [
+        2,
+        4
+      ],
+      "v4": [
+        2,
+        4
+      ],
+      "v5": [
+        2,
+        4
+      ],
+      "historyBasis": "standard",
+      "priorMonths": 24,
+      "dates": [
+        "2026-09-30",
+        "2026-10-22"
+      ]
+    },
+    {
+      "symbol": "MSFT",
+      "reference": [
+        1,
+        1
+      ],
+      "v4": [
+        1,
+        1
+      ],
+      "v5": [
+        1,
+        1
+      ],
+      "historyBasis": "standard",
+      "priorMonths": 24,
+      "dates": [
+        "2026-09-30",
+        "2026-10-22"
+      ]
+    },
+    {
+      "symbol": "NU",
+      "reference": [
+        2,
+        1
+      ],
+      "v4": [
+        2,
+        1
+      ],
+      "v5": [
+        2,
+        1
+      ],
+      "historyBasis": "standard",
+      "priorMonths": 24,
+      "dates": [
+        "2026-09-30",
+        "2026-10-22"
+      ]
+    },
+    {
+      "symbol": "HIMS",
+      "reference": [
+        1,
+        1
+      ],
+      "v4": [
+        1,
+        1
+      ],
+      "v5": [
+        1,
+        1
+      ],
+      "historyBasis": "standard",
+      "priorMonths": 24,
+      "dates": [
+        "2026-09-30",
+        "2026-10-22"
+      ]
+    },
+    {
+      "symbol": "SAP",
+      "reference": [
+        1,
+        1
+      ],
+      "v4": [
+        1,
+        1
+      ],
+      "v5": [
+        1,
+        1
+      ],
+      "historyBasis": "standard",
+      "priorMonths": 24,
+      "dates": [
+        "2026-09-30",
+        "2026-10-22"
+      ]
+    },
+    {
+      "symbol": "NBIS",
+      "reference": [
+        1,
+        1
+      ],
+      "v4": [
+        1,
+        1
+      ],
+      "v5": [
+        1,
+        1
+      ],
+      "historyBasis": "standard",
+      "priorMonths": 24,
+      "dates": [
+        "2026-09-30",
+        "2026-10-22"
+      ]
+    },
+    {
+      "symbol": "CIFR",
+      "reference": [
+        2,
+        4
+      ],
+      "v4": [
+        2,
+        4
+      ],
+      "v5": [
+        2,
+        4
+      ],
+      "historyBasis": "standard",
+      "priorMonths": 24,
+      "dates": [
+        "2026-09-30",
+        "2026-10-22"
+      ]
+    },
+    {
+      "symbol": "META",
+      "reference": [
+        1,
+        1
+      ],
+      "v4": [
+        1,
+        1
+      ],
+      "v5": [
+        1,
+        1
+      ],
+      "historyBasis": "standard",
+      "priorMonths": 24,
+      "dates": [
+        "2026-09-30",
+        "2026-10-22"
+      ]
+    },
+    {
+      "symbol": "NVDA",
+      "reference": [
+        1,
+        1
+      ],
+      "v4": [
+        1,
+        1
+      ],
+      "v5": [
+        1,
+        1
+      ],
+      "historyBasis": "standard",
+      "priorMonths": 24,
+      "dates": [
+        "2026-09-30",
+        "2026-10-22"
+      ]
+    },
+    {
+      "symbol": "NOW",
+      "reference": [
+        1,
+        1
+      ],
+      "v4": [
+        1,
+        1
+      ],
+      "v5": [
+        1,
+        1
+      ],
+      "historyBasis": "standard",
+      "priorMonths": 24,
+      "dates": [
+        "2026-09-30",
+        "2026-10-22"
+      ]
+    },
+    {
+      "symbol": "BE",
+      "reference": [
+        1,
+        1
+      ],
+      "v4": [
+        1,
+        1
+      ],
+      "v5": [
+        1,
+        1
+      ],
+      "historyBasis": "standard",
+      "priorMonths": 24,
+      "dates": [
+        "2026-09-30",
+        "2026-10-22"
+      ]
+    },
+    {
+      "symbol": "SOFI",
+      "reference": [
+        3,
+        3
+      ],
+      "v4": [
+        2,
+        2
+      ],
+      "v5": [
+        3,
+        3
+      ],
+      "historyBasis": "standard",
+      "priorMonths": 24,
+      "dates": [
+        "2026-09-30",
+        "2026-10-22"
+      ]
+    },
+    {
+      "symbol": "TTD",
+      "reference": [
+        4,
+        3
+      ],
+      "v4": [
+        3,
+        2
+      ],
+      "v5": [
+        4,
+        3
+      ],
+      "historyBasis": "standard",
+      "priorMonths": 24,
+      "dates": [
+        "2026-09-30",
+        "2026-10-22"
+      ]
+    },
+    {
+      "symbol": "CRWV",
+      "reference": [
+        1,
+        4
+      ],
+      "v4": [
+        null,
+        null
+      ],
+      "v5": [
+        1,
+        4
+      ],
+      "historyBasis": "limited",
+      "priorMonths": 19,
+      "dates": [
+        "2026-09-30",
+        "2026-10-22"
+      ]
+    },
+    {
+      "symbol": "ONDS",
+      "reference": [
+        2,
+        2
+      ],
+      "v4": [
+        2,
+        3
+      ],
+      "v5": [
+        2,
+        2
+      ],
+      "historyBasis": "standard",
+      "priorMonths": 24,
+      "dates": [
+        "2026-09-30",
+        "2026-10-22"
+      ]
+    }
+  ],
+  "currentMatches": 34,
+  "currentCount": 34,
+  "history": [
+    {
+      "month": "2024-08",
+      "reference": 1,
+      "v5": 1
+    },
+    {
+      "month": "2024-09",
+      "reference": 1,
+      "v5": 1
+    },
+    {
+      "month": "2024-10",
+      "reference": 1,
+      "v5": 1
+    },
+    {
+      "month": "2024-11",
+      "reference": 1,
+      "v5": 1
+    },
+    {
+      "month": "2024-12",
+      "reference": 1,
+      "v5": 1
+    },
+    {
+      "month": "2025-01",
+      "reference": 1,
+      "v5": 1
+    },
+    {
+      "month": "2025-02",
+      "reference": 1,
+      "v5": 1
+    },
+    {
+      "month": "2025-03",
+      "reference": 2,
+      "v5": 3
+    },
+    {
+      "month": "2025-04",
+      "reference": 2,
+      "v5": 3
+    },
+    {
+      "month": "2025-05",
+      "reference": 1,
+      "v5": 1
+    },
+    {
+      "month": "2025-06",
+      "reference": 1,
+      "v5": 1
+    },
+    {
+      "month": "2025-07",
+      "reference": 1,
+      "v5": 1
+    },
+    {
+      "month": "2025-08",
+      "reference": 1,
+      "v5": 1
+    },
+    {
+      "month": "2025-09",
+      "reference": "strong",
+      "v5": "strong"
+    },
+    {
+      "month": "2025-10",
+      "reference": "light",
+      "v5": "light"
+    },
+    {
+      "month": "2025-11",
+      "reference": 1,
+      "v5": 1
+    },
+    {
+      "month": "2025-12",
+      "reference": 1,
+      "v5": 1
+    },
+    {
+      "month": "2026-01",
+      "reference": 1,
+      "v5": 1
+    },
+    {
+      "month": "2026-02",
+      "reference": 1,
+      "v5": 1
+    },
+    {
+      "month": "2026-03",
+      "reference": 1,
+      "v5": 1
+    },
+    {
+      "month": "2026-04",
+      "reference": 1,
+      "v5": 1
+    },
+    {
+      "month": "2026-05",
+      "reference": 1,
+      "v5": 1
+    },
+    {
+      "month": "2026-06",
+      "reference": 1,
+      "v5": 1
+    },
+    {
+      "month": "2026-07",
+      "reference": 1,
+      "v5": 1
+    },
+    {
+      "month": "2026-08",
+      "reference": 2,
+      "v5": 2
+    },
+    {
+      "month": "2026-09",
+      "reference": 2,
+      "v5": 2
+    }
+  ],
+  "historyMatches": 24,
+  "historyCount": 26,
+  "historicalMismatches": [
+    {
+      "month": "2025-03",
+      "reference": 2,
+      "v5": 3
+    },
+    {
+      "month": "2025-04",
+      "reference": 2,
+      "v5": 3
+    }
+  ]
+}

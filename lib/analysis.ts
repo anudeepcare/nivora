@@ -1,4 +1,4 @@
-import {researchAccumulation} from "./accumulation-policy-v4.ts";
+import {researchAccumulation} from "./accumulation-policy-v5.ts";
 import { evidenceMemo } from "./evidence-memo.ts";
 import { modelCoverage, ttmPeriods } from "./research-depth.ts";
 import type { Candle, Research, FinancialPeriod } from "./types";

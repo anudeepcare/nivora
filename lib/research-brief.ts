@@ -7,6 +7,7 @@ import {
 import { researchDecision } from "./decision-research.ts";
 import { researchOutlook, consensusOutlook } from "./outlook.ts";
 import { financingContext } from "./research-integrity.ts";
+import { priceRiskScenarios } from "./price-risk-scenarios.ts";
 import { modelCoverage } from "./research-depth.ts";
 export function researchBrief(r: Research) {
   const p = perspective(r),
@@ -75,6 +76,7 @@ export function researchBrief(r: Research) {
   const specialist = coverage.family !== "operating-company";
   const previous = latestFinancialEvidence(r).prior;
   return {
+    priceRisk: priceRiskScenarios(r),
     trajectory:
       r.company.assetType === "crypto"
         ? []

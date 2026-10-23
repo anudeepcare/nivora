@@ -1,7 +1,5 @@
 "use client";
 
-import dynamic from "next/dynamic";
-const Discover = dynamic(() => import("./Discover"));
 import PortfolioExposure from "./PortfolioExposure";
 import {
   pricedInvestmentReturns,
@@ -365,7 +363,6 @@ export function useWorkspaceQuotes(
   };
 }
 export function ResearchHome() {
-  const [discoveryOpen, setDiscoveryOpen] = useState(false);
   const { workspace, demo, workspaceError } = useProduct(),
     quotes = useWorkspaceQuotes(),
     prefix = demo ? "/preview" : "";
@@ -386,13 +383,6 @@ export function ResearchHome() {
       <div className="research-search">
         <Search large />
       </div>
-      <details
-        className="research-discovery"
-        onToggle={(e) => setDiscoveryOpen(e.currentTarget.open)}
-      >
-        <summary>Find a setup in your companies</summary>
-        {discoveryOpen && <Discover embedded />}
-      </details>
       {workspaceError && <Notice error>{workspaceError}</Notice>}
       {quotes.error && <Notice error>{quotes.error}</Notice>}
       <header className="section-heading">

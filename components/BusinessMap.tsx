@@ -42,6 +42,7 @@ export default function BusinessMap({ research: r }: { research: Research }) {
   if (r.company.assetType === "crypto") return null;
   return (
     <section className="business-map business-map-compact">
+      <header className="business-map-title"><span>COMPANY CONTEXT</span><h3>The business behind the numbers.</h3></header>
       <details className="company-profile">
         <summary>About {r.company.name}</summary>
         {(classification.sector || classification.industry) && (

@@ -4,7 +4,7 @@ import type { Research, Candle } from "@/lib/types";
 import {
   researchAccumulation,
   adaptiveSettledBars,
-} from "@/lib/accumulation-policy-v4";
+} from "@/lib/accumulation-policy-v5";
 import { weeklyAccumulation } from "@/lib/accumulation-weekly";
 import { evaluateAccumulation } from "@/lib/accumulation-evaluation";
 import { amount, percent, dateLabel } from "@/lib/format";
@@ -76,7 +76,14 @@ export default function AccumulationDesk({
             )
               ? chosen.forming
               : null);
-          return [b.time, s && "trimTier" in s && s.trimTier === "strong" ? "#bd4660" : s ? colours[s.multiplier] : "#b0b5bd"];
+          return [
+            b.time,
+            s && "trimTier" in s && s.trimTier === "strong"
+              ? "#bd4660"
+              : s
+                ? colours[s.multiplier]
+                : "#b0b5bd",
+          ];
         }),
       ),
     [monthly, chosen, weekly],
@@ -88,7 +95,7 @@ export default function AccumulationDesk({
             { label: "2× pullback", price: signal.buy2 },
             { label: "3× pullback", price: signal.buy3 },
             { label: "4× pullback", price: signal.buy4 },
-          ].filter(level => level.price > 0)
+          ].filter((level) => level.price > 0)
         : [],
     [signal],
   );
@@ -128,7 +135,12 @@ export default function AccumulationDesk({
           <span
             className="accumulation-badge"
             style={{
-              background: trimTier === "strong" ? "var(--red)" : signal ? colours[signal.multiplier] : undefined,
+              background:
+                trimTier === "strong"
+                  ? "var(--red)"
+                  : signal
+                    ? colours[signal.multiplier]
+                    : undefined,
               color:
                 signal && [0, 1, 3].includes(signal.multiplier)
                   ? "#15313d"
@@ -140,7 +152,9 @@ export default function AccumulationDesk({
           <h3>
             {signal
               ? signal.multiplier === 0
-                ? trimTier === "strong" ? "Strong trim review" : "Pause / trim review"
+                ? trimTier === "strong"
+                  ? "Strong trim review"
+                  : "Pause / trim review"
                 : signal.multiplier === 1
                   ? "Normal contribution condition"
                   : "Stronger pullback condition"
@@ -152,7 +166,7 @@ export default function AccumulationDesk({
               ? `${chosen.forming ? (weekly ? "Current week · forming" : "Current month · forming") : weekly ? "Confirmed week ending" : signal.month + " · confirmed at"} ${dateLabel(signal.date)}`
               : weekly
                 ? "52 consecutive completed prior weeks required"
-                : "24 consecutive completed prior months required"}
+                : "12 consecutive completed prior months required"}
           </small>
         </div>
         <dl>
@@ -180,13 +194,26 @@ export default function AccumulationDesk({
       </div>
       <p className="small muted">
         Multiples of your usual contribution—not leverage or expected returns.
+        {signal &&
+          "historyBasis" in signal &&
+          signal.historyBasis === "limited" &&
+          "priorMonths" in signal && (
+            <strong className="dca-limited-history">
+              Limited listing history · {String(signal.priorMonths)} prior
+              completed months.{" "}
+            </strong>
+          )}
         Completed periods stay fixed for unchanged input history; the forming
         reading can change. A deeper price pullback does not establish a better
         business or confirmed support.
       </p>
       {signal?.trimReview && (
         <div className="accumulation-extension" role="note">
-          <strong>{trimTier === "strong" ? "Strong trim review" : "Review price extension"}</strong>
+          <strong>
+            {trimTier === "strong"
+              ? "Strong trim review"
+              : "Review price extension"}
+          </strong>
           <span>
             Extreme distance above trend. Review exposure and the business case;
             this is separate from the contribution multiplier and specifies no
@@ -197,7 +224,7 @@ export default function AccumulationDesk({
       <div className="accumulation-chart">
         <PriceChart
           bars={monthly}
-          range={weekly ? "weekly-policy-v1" : "monthly-policy-v4"}
+          range={weekly ? "weekly-policy-v1" : "monthly-policy-v5"}
           style="candles"
           candleColors={candleColors}
           levels={levels}
@@ -235,8 +262,12 @@ export default function AccumulationDesk({
       <details className="policy-rules">
         <summary>See the rules and price assumptions</summary>
         <p>
-          {weekly ? "Weekly v1 uses 52 completed weeks and a robust fitted log-price trend. Its 2×/3×/4× gates use 12%/25%/40% drawdown and 0.7/1.35/2 robust spread units." : "Monthly v4 uses the preceding 12 completed monthly closes for its cycle average and sample spread (minimum 10% of that average), with 24 prior consecutive months required for eligibility. The 2×/3×/4× gates require 10%/25%/40% below the cycle average and 0.5/1.35/1.5 spread units below it. Positive extension reviews also retain the robust-trend upper guard and a severe cycle-extension check."}
-          Weekly and monthly calculations differ. Matching selected reference readings does not establish an investment edge or the private reference formula.
+          {weekly
+            ? "Weekly v1 uses 52 completed weeks and a robust fitted log-price trend. Its 2×/3×/4× gates use 12%/25%/40% drawdown and 0.7/1.35/2 robust spread units."
+            : "Monthly v5 uses the preceding 12 completed monthly closes for its cycle average and sample spread (minimum 10% of that average). Readings with 12–23 prior completed months are labelled limited history; 24 prior months use the standard robust-trend guard. The 2×/3×/4× gates require 10%/25%/35% below the cycle average and 0.5/0.95/1.3 spread units below it. Positive extension reviews also retain the robust-trend upper guard and a severe cycle-extension check."}
+          Weekly and monthly calculations differ. Matching selected reference
+          readings does not establish an investment edge or the private
+          reference formula.
         </p>
         <p>
           US observations settle after 5 PM New York; crypto uses completed UTC
@@ -297,7 +328,7 @@ export default function AccumulationDesk({
               <div className="policy-results">
                 {[
                   ["Normal DCA", evaluation.fixed],
-                  ["Cycle-relative v4", evaluation.adaptive],
+                  ["Cycle-relative v5", evaluation.adaptive],
                 ].map(([name, result]) => {
                   const x = result as typeof evaluation.fixed;
                   return (

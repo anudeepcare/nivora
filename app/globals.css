@@ -1574,9 +1574,6 @@ caption {
   color: var(--muted);
   max-width: 80ch;
 }
-.au-stack > section + section {
-  margin-top: 26px;
-}
 .au-technical-grid,
 .au-technicals {
   display: grid;
@@ -3273,7 +3270,7 @@ caption {
 }
 .product-footer {
   margin-top: auto;
-  padding: 22px 0 6px;
+  padding: 20px 0 24px;
   border-top: 1px solid var(--line);
   display: flex;
   flex-wrap: wrap;

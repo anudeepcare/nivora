@@ -1,3 +1,7 @@
+# Canonical-domain check — 23 October 2026
+
+The live apex currently redirects to `www.auryninvest.com`. Both it and getauryn use the same deployment and Supabase project. Read `HOME_DAY_AND_DOMAIN_FOLLOWUP.md` for exact www callback entries and the remaining password-sign-in verification limit. Live settings have not been changed here. The older apex instructions below must be reconciled with the canonical domain selected in Vercel.
+
 # Launch setup — auryninvest.com
 
 Code is integrated. Google/X consent flows, email delivery and domain settings are not activated by copying source alone. No provider credentials were requested in chat or stored in this package.

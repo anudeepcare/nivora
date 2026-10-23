@@ -5,11 +5,12 @@ import ts from "typescript";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import * as format from "../lib/format.ts";
+import {homeDay} from "../lib/home-day.ts";
 import { researchPeriods } from "../lib/financial-catalog.ts";
 import { demoData } from "./fixtures/demo.ts";
 
 function loadComponent(file, name, bindings) {
-  bindings = {AnalystTargets: () => null, ...bindings};
+  bindings = {AnalystTargets: () => null, PriceRiskCases: () => null, homeDay, useEffect:()=>{}, ...bindings};
   const ast = ts.createSourceFile(
     file,
     fs.readFileSync(file, "utf8"),
@@ -542,7 +543,7 @@ test('authentication explains AURYN in sign-in, signup and recovery without fabr
   const Login=loadComponent('components/Session.tsx','Login',{React,useRouter:()=>({replace:()=>{}}),useEffect:()=>{},useState:()=>[values[i++],()=>{}],Logo:()=>React.createElement('span',null,'AURYN')});
   const html=renderToStaticMarkup(React.createElement(Login,{initialError:''}));
   if(mode!=="reset"){assert.match(html,/Social sign-in is not enabled yet/);assert.match(html,/disabled=""/);}
-  assert.match(html,/About AURYN/);assert.match(html,/A clearer perspective/);assert.match(html,/Business, value and timing/);
+  assert.match(html,/name="email"/);if(mode!=="reset")assert.match(html,/name="password"/);assert.match(html,/About AURYN/);assert.match(html,/A clearer perspective/);assert.match(html,/Business, value and timing/);
   assert.doesNotMatch(html,/desktop-nav|mobile-dock|guaranteed returns/);
  }
 });
@@ -785,4 +786,26 @@ test('analyst range requires both ordered reported bounds and never manufactures
  const html=renderToStaticMarkup(React.createElement(View,{research:r}));assert.match(html,/\$50\.00/);assert.match(html,/\$150\.00/);assert.match(html,/Reported analyst targets/);assert.match(html,/not calculated bear\/base\/bull/);
  r.evidence.consensus.low=110;const invalid=consensusOutlook(r);assert.equal(invalid.low,undefined);assert.equal(invalid.high,undefined);assert.equal(invalid.target,100);
  delete r.evidence.consensus.low;assert.equal(consensusOutlook(r).low,undefined);
+});
+
+test('price-risk cases render Bear Base Bull rather than replacing unsupported earnings with consensus',async()=>{
+ const {priceRiskScenarios}=await import('../lib/price-risk-scenarios.ts');
+ const research=demoData.research.MSFT,s=priceRiskScenarios(research);assert.equal(s.available,true);
+ const CaseRange=loadComponent('components/CaseRange.tsx','CaseRange',{React,...format,valuationScale:(await import('../lib/research-summary.ts')).valuationScale});
+ const PriceRiskCases=loadComponent('components/PriceRiskCases.tsx','PriceRiskCases',{React,useState:React.useState,...format,CaseRange});
+ const html=renderToStaticMarkup(React.createElement(PriceRiskCases,{scenarios:s,compact:true}));
+ for(const term of ['Bear','Base','Bull','Historical price-risk cases','not fair value','historical windows'])assert.ok(html.includes(term),term);
+ assert.doesNotMatch(html,/Wall Street consensus|Analyst expectations|NaN|Infinity/);
+ const {researchBrief}=await import('../lib/research-brief.ts');const brief=researchBrief(research);
+ brief.scenarioEligible=false;brief.scenario=null;
+ const View=loadComponent('components/DecisionOverview.tsx','DecisionOverview',{React,useMemo:React.useMemo,researchBrief:()=>brief,...format,PositionAwareResearch:empty,CaseRange,PriceRiskCases});
+ const whole=renderToStaticMarkup(React.createElement(View,{research,onTab:()=>{}}));assert.match(whole,/Historical price-risk cases/);assert.doesNotMatch(whole,/Wall Street consensus|Analyst expectations/);
+});
+
+test('Home exposes complete matching-news count and expands past three companies without additional feed requests',async()=>{
+ const {companyFeedPage,holdingAttention}=await import('../lib/product-attention.ts');const {relevantHoldingHeadlines}=await import('../lib/home-feed.ts');
+ const symbols=['SOFI','HIMS','IREN','NOW'];const workspace={positions:symbols.map((symbol,i)=>({id:symbol,symbol,quantity:10+i,cost:10,currency:'USD',assetType:'stock'})),watchlist:[]};
+ const quotes=Object.fromEntries(symbols.map(symbol=>[symbol,{company:{name:symbol},quote:{price:20,currency:'USD',changePct:1,asOf:'2026-10-22T20:00:00Z',stale:true}}]));
+ const items=symbols.map(symbol=>({symbol,date:'2026-10-22',title:`$${symbol} announced a company update`,url:`https://example.com/${symbol}`}));
+ for(const expanded of [false,true]){let state=0;const keys=[];const Home=loadComponent('components/HomeBriefing.tsx','HomeBriefing',{React,useMemo:React.useMemo,useState:(v)=>[state++===3?expanded:v,()=>{}],useProduct:()=>({workspace}),useResource:key=>{keys.push(key);return {data:key?.includes('kind=news')?{news:items,issues:[]}:null,loading:false,error:''};},companyFeedPage,holdingAttention,relevantHoldingHeadlines,...format,Link:({children,...p})=>React.createElement('a',p,children),SecurityLogo:empty,Notice:empty,ArrowUpRight:empty,CalendarDays:empty,ArrowRight:empty,Search:empty});const html=renderToStaticMarkup(React.createElement(Home,{quotes}));assert.match(html,/4 matching headlines/);assert.match(html,/4 companies/);assert.equal((html.match(/announced a company update/g)||[]).length,expanded?4:3);assert.match(html,expanded?/Show highlights/:/View all 4 updates/);assert.equal(keys.filter(k=>k?.includes('kind=news')).length,1);}
 });

@@ -1,10 +1,11 @@
 "use client";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { ArrowUpRight, CalendarDays, ArrowRight, Search } from "lucide-react";
 import { useProduct, useResource } from "./Session";
 import { SecurityLogo, Notice } from "./Ui";
 import { amount, percent, quoteTime, dateLabel } from "@/lib/format";
+import { homeDay } from "@/lib/home-day";
 import { companyFeedPage, holdingAttention } from "@/lib/product-attention";
 import { relevantHoldingHeadlines, type HomeFeed } from "@/lib/home-feed";
 import type { Candle, Company, Quote } from "@/lib/types";
@@ -21,9 +22,13 @@ export default function HomeBriefing({
 }) {
   const { workspace, demo, workspaceError, displayName } = useProduct(),
     prefix = demo ? "/preview" : "";
-  const [selected, setSelected] = useState("");
-  const [range, setRange] = useState("1Y");
-  const [page, setPage] = useState(0);
+  const [selection, setSelection] = useState<{
+    symbol: string;
+    reason: string;
+  } | null>(null);
+  const [range, setRange] = useState("1Y"),
+    [page, setPage] = useState(0),
+    [expandedNews, setExpandedNews] = useState(false);
   const positions =
     workspace?.positions.filter((p) => p.assetType !== "cash") ?? [];
   const symbols = [
@@ -32,11 +37,35 @@ export default function HomeBriefing({
       ...(workspace?.watchlist.map((p) => p.symbol) ?? []),
     ]),
   ];
-  const symbol = symbols.includes(selected) ? selected : (symbols[0] ?? "");
+  const q = Object.fromEntries(
+    Object.entries(quotes).flatMap(([symbol, row]) =>
+      row.quote ? [[symbol, row.quote]] : [],
+    ),
+  );
+  const names = Object.fromEntries(
+    Object.entries(quotes).flatMap(([symbol, row]) =>
+      row.company?.name ? [[symbol, row.company.name]] : [],
+    ),
+  );
+  const exposure = new Map<string, number>();
+  for (const p of positions) {
+    const quote = q[p.symbol];
+    const value =
+      quote?.currency === p.currency &&
+      p.currency === "USD" &&
+      quote.price != null &&
+      quote.price > 0 &&
+      Number.isFinite(quote.price)
+        ? p.quantity * quote.price
+        : 0;
+    exposure.set(p.symbol, (exposure.get(p.symbol) ?? 0) + value);
+  }
+  const orderedSymbols = [...symbols].sort(
+    (a, b) =>
+      (exposure.get(b) ?? 0) - (exposure.get(a) ?? 0) || a.localeCompare(b),
+  );
   const feed = companyFeedPage(
-      symbols.filter(
-        (s) => positions.find((p) => p.symbol === s)?.assetType !== "crypto",
-      ),
+      orderedSymbols.filter((s) => !s.includes("/")),
       page,
     ),
     key = feed.symbols.join(",");
@@ -64,6 +93,39 @@ export default function HomeBriefing({
     preview,
     3600000,
   );
+  const now = new Date(),
+    today = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "America/Chicago",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(now);
+  const day = homeDay(
+    workspace?.positions ?? [],
+    q,
+    events.data?.events ?? [],
+    now.toISOString(),
+  );
+  const watchFocus = orderedSymbols.find((s) => q[s]?.price != null);
+  const automatic = day.focus
+    ? {
+        symbol: day.focus.symbol,
+        reason:
+          day.focus.kind === "impact"
+            ? `Largest estimated session impact · ${amount(day.focus.impact, "USD")}`
+            : day.focus.kind === "event"
+              ? `Upcoming company event · ${dateLabel(day.focus.date)}`
+              : "Largest priced holding",
+      }
+    : watchFocus
+      ? { symbol: watchFocus, reason: "A company on your watchlist" }
+      : null;
+  const choice =
+    selection && symbols.includes(selection.symbol) ? selection : automatic;
+  const symbol = choice?.symbol ?? "";
+  useEffect(() => {
+    if (!selection && automatic) setSelection(automatic);
+  }, [selection, automatic?.symbol, automatic?.reason]);
   const previewHistory = useMemo(
     () =>
       demo ? { candles: demo.research[symbol]?.history ?? [] } : undefined,
@@ -88,47 +150,23 @@ export default function HomeBriefing({
         `${i ? "L" : "M"}${(10 + (i / Math.max(1, bars.length - 1)) * 480).toFixed(2)} ${(170 - ((c.close - min) / spread) * 135).toFixed(2)}`,
     )
     .join(" ");
-  const q = Object.fromEntries(
-    Object.entries(quotes).flatMap(([s, row]) =>
-      row.quote ? [[s, row.quote]] : [],
-    ),
-  );
-  const names = Object.fromEntries(
-    Object.entries(quotes).flatMap(([s, row]) =>
-      row.company?.name ? [[s, row.company.name]] : [],
-    ),
-  );
-  const exposure = new Map<string, number>();
-  for (const p of positions) {
-    const value =
-      q[p.symbol]?.currency === p.currency &&
-      Number.isFinite(q[p.symbol]?.price)
-        ? p.quantity * (q[p.symbol].price ?? 0)
-        : 0;
-    exposure.set(
-      p.symbol,
-      (exposure.get(p.symbol) ?? 0) + (p.currency === "USD" ? value : 0),
-    );
-  }
-  const now = new Date(),
-    today = new Intl.DateTimeFormat("en-CA", {
-      timeZone: "America/Chicago",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }).format(now);
   const calendar = holdingAttention(
     workspace?.positions ?? [],
     q,
     events.data?.events ?? [],
     today,
   ).sort((a, b) => a.date.localeCompare(b.date));
-  const headlines = relevantHoldingHeadlines(
-    news.data?.news ?? [],
-    names,
-    exposure,
-  ).slice(0, 3);
+  const allHeadlines = relevantHoldingHeadlines(
+      news.data?.news ?? [],
+      names,
+      exposure,
+    ),
+    headlines = expandedNews ? allHeadlines : allHeadlines.slice(0, 3);
+  const newsCompanies = new Set(allHeadlines.map((n) => n.symbol)).size;
   const chosen = quotes[symbol]?.quote;
+  const reviewSymbols = [
+    ...new Set([...day.moves.map((m) => m.symbol), ...orderedSymbols]),
+  ];
   const hour = Number(
     new Intl.DateTimeFormat("en-US", {
       hour: "numeric",
@@ -168,6 +206,54 @@ export default function HomeBriefing({
       </header>
       {workspaceError && <Notice error>{workspaceError}</Notice>}
       {error && <Notice error>{error}</Notice>}
+      <section className="briefing-day" aria-label="Your latest session impact">
+        <article
+          data-tone={day.net != null && day.net < 0 ? "risk" : "positive"}
+        >
+          <span>
+            {day.covered < day.total
+              ? "Partial estimated move"
+              : "Estimated session move"}
+          </span>
+          <strong>
+            {day.net == null ? "Not available" : amount(day.net, "USD")}
+          </strong>
+          <small>
+            {day.session
+              ? `US observations · ${dateLabel(day.session)}`
+              : "Dated quotes are needed"}
+          </small>
+        </article>
+        <article data-tone="blue">
+          <span>Behind the move</span>
+          <strong>
+            {day.positive} up <i>·</i> {day.negative} down
+          </strong>
+          <small>
+            {day.covered} of {day.total} USD equity holdings with comparable
+            changes
+          </small>
+        </article>
+        <article data-tone="amber">
+          <span>The next seven days</span>
+          <strong>
+            {new Set(day.upcoming.map((e) => e.symbol)).size} companies
+          </strong>
+          <small>
+            {day.upcoming.length
+              ? day.upcoming
+                  .slice(0, 3)
+                  .map((e) => e.symbol)
+                  .join(" · ")
+              : "No scheduled company events returned"}
+          </small>
+        </article>
+        <p>
+          Estimated price change on your current recorded units. Excludes
+          trades, cash flows, fees and crypto; not brokerage P&amp;L. Different
+          observation dates are not combined.
+        </p>
+      </section>
       <div className="briefing-columns">
         <section className="briefing-market">
           <header>
@@ -182,14 +268,20 @@ export default function HomeBriefing({
               <ArrowUpRight size={20} />
             </Link>
           </header>
-          {symbols.length ? (
+          {symbol ? (
             <>
+              <p className="briefing-focus-reason">{choice?.reason}</p>
               <div className="briefing-company-picker">
                 <label>
                   <span className="sr-only">Company chart</span>
                   <select
                     value={symbol}
-                    onChange={(e) => setSelected(e.target.value)}
+                    onChange={(e) =>
+                      setSelection({
+                        symbol: e.target.value,
+                        reason: "Selected by you",
+                      })
+                    }
                   >
                     {symbols.map((s) => (
                       <option key={s} value={s}>
@@ -298,10 +390,34 @@ export default function HomeBriefing({
                 ))}
                 <small>Daily closes · {symbol}</small>
               </div>
+              {day.moves.length > 0 && (
+                <div
+                  className="briefing-drivers"
+                  aria-label="Largest estimated session drivers"
+                >
+                  {day.moves.slice(0, 3).map((m) => (
+                    <Link
+                      key={m.symbol}
+                      href={`${prefix}/research/${encodeURIComponent(m.symbol)}`}
+                      data-direction={m.impact < 0 ? "down" : "up"}
+                    >
+                      <b>{m.symbol}</b>
+                      <i>
+                        <span
+                          style={{
+                            width: `${(Math.abs(m.impact) / Math.max(1, ...day.moves.map((x) => Math.abs(x.impact)))) * 100}%`,
+                          }}
+                        />
+                      </i>
+                      <strong>{amount(m.impact, "USD")}</strong>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </>
           ) : (
             <p className="briefing-empty">
-              Save your first company or add your holdings to begin.
+              {symbols.length ? "Waiting for a dated quote to choose your focus. Your companies remain available below." : "Save your first company or add your holdings to begin."}
             </p>
           )}
         </section>
@@ -371,26 +487,38 @@ export default function HomeBriefing({
           <header>
             <span className="briefing-kicker">THE LATEST EVIDENCE</span>
             <h2>What changed</h2>
+            <p className="briefing-news-coverage">
+              {allHeadlines.length} matching headlines · {newsCompanies}{" "}
+              companies
+              <br />
+              {feed.symbols.length} companies requested in this group
+            </p>
           </header>
           {headlines.length ? (
-            headlines.map((n, i) => (
-              <a
-                key={`${n.url}-${i}`}
-                href={n.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <div>
-                  <SecurityLogo symbol={n.symbol} size={28} />
-                  <b>{n.symbol}</b>
-                  <span>{dateLabel(n.date)}</span>
-                </div>
-                <p>{n.title}</p>
-                <small>
-                  Company news <ArrowUpRight size={12} />
-                </small>
-              </a>
-            ))
+            <div
+              className="briefing-headline-list"
+              id="home-company-headlines"
+              data-expanded={expandedNews}
+            >
+              {headlines.map((n, i) => (
+                <a
+                  key={`${n.url}-${i}`}
+                  href={n.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <div>
+                    <SecurityLogo symbol={n.symbol} size={28} />
+                    <b>{n.symbol}</b>
+                    <span>{dateLabel(n.date)}</span>
+                  </div>
+                  <p>{n.title}</p>
+                  <small>
+                    Company news <ArrowUpRight size={12} />
+                  </small>
+                </a>
+              ))}
+            </div>
           ) : (
             <div className="briefing-empty">
               <p>
@@ -404,6 +532,23 @@ export default function HomeBriefing({
                 Explore a company <ArrowRight size={14} />
               </Link>
             </div>
+          )}
+          {allHeadlines.length > 3 && (
+            <button
+              className="briefing-news-expand"
+              aria-expanded={expandedNews}
+              aria-controls="home-company-headlines"
+              onClick={() => setExpandedNews(!expandedNews)}
+            >
+              {expandedNews
+                ? "Show highlights"
+                : `View all ${allHeadlines.length} updates →`}
+            </button>
+          )}
+          {!!news.data?.issues?.length && (
+            <small className="briefing-news-coverage" role="status">
+              Some company updates could not be checked.
+            </small>
           )}
         </section>
       </div>
@@ -430,7 +575,7 @@ export default function HomeBriefing({
                 </tr>
               </thead>
               <tbody>
-                {symbols.slice(0, 8).map((s) => {
+                {reviewSymbols.slice(0, 8).map((s) => {
                   const row = quotes[s],
                     quote = row?.quote,
                     event = calendar.find((e) => e.symbol === s);
