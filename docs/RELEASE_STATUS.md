@@ -1,3 +1,5 @@
+> Owner UX update: focused People, Features and Payments sections, quick complimentary access durations, and a private Settings shortcut. See [ADMIN_CONTROLS.md](ADMIN_CONTROLS.md).
+
 > Current Free experience: full Overview, news and Home; real account workspace with no automatic sample holdings; quieter upgrade prompts. See [FREE_EXPERIENCE_UPDATE.md](FREE_EXPERIENCE_UPDATE.md).
 
 > Friends can now subscribe while retaining complimentary Pro. Live Stripe activation steps: [STRIPE_PRODUCTION_LAUNCH.md](STRIPE_PRODUCTION_LAUNCH.md). This package does not activate or charge a live Stripe account.

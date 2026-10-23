@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-10-23T16:45:59.416843+00:00",
+  "generatedAt": "2026-10-23T17:01:32.823937+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 488 tests, typecheck and build (free-value-verify.log)",
-    "npm run test:api": "passed: 106 compiled checks (free-value-api.log)",
+    "npm run verify": "passed: typecheck and production build (admin-clean-verify.log); final 489-test run in admin-clean-tests.log",
+    "npm run test:api": "passed: 106 compiled checks (admin-clean-api.log)",
     "git diff --check": "passed",
-    "npm test": "passed: 488 tests",
-    "npm run build": "passed: final portfolio layout CSS included (free-value-final-build.log)",
-    "production HTTP": "passed: 14 local HTTP checks (free-value-http.log), not browser visual acceptance",
-    "node scripts/test-auth-provider-api.mjs": "passed: 3 checks; 109 API checks total (free-value-auth-api.log)"
+    "npm test": "passed: 489 tests (admin-clean-tests.log)",
+    "npm run build": "passed (admin-clean-verify.log)",
+    "production HTTP": "passed: 14 local HTTP checks (admin-clean-http.log), not browser visual acceptance",
+    "node scripts/test-auth-provider-api.mjs": "passed: 3 checks; 109 API checks total (admin-clean-auth-api.log)"
   },
-  "domainPostgresAndComponentTests": 488,
+  "domainPostgresAndComponentTests": 489,
   "builtApiChecks": 109,
   "providerSelection": {
     "quotes": "EODHD primary; Twelve fallback for stale or failed primary; retain newest usable stale observation if both fail freshness",
@@ -672,7 +672,7 @@
     "horizontalOverflow": false,
     "calendarAnchorVerified": true
   },
-  "currentUpdate": "Useful Free Overview/news/Home, no signed-in demo portfolio, quieter paid tabs, payment/privacy terms and membership settings",
+  "currentUpdate": "Focused owner People/Features/Payments sections, private Settings shortcut and 7/30/90-day complimentary access choices",
   "dcaComparison30": {
     "asOf": "2026-10-22T23:00:00Z",
     "confirmedMatches": 28,
@@ -800,5 +800,29 @@
     "deploymentMarketDataFlagChanged": false,
     "liveQuotesVerifiedInThisUpdate": false,
     "notes": "Owner feature overrides remain supported. Real data for nonowners requires enabled deployment entitlement and working vendor credentials. Quote freshness is provider-specific; no observation is relabeled live."
+  },
+  "pricingCopy": {
+    "numericWatchlistAndAiBulletsRemoved": true,
+    "actualWatchlistAndAiAllowancesChanged": false,
+    "productionCheckoutError": "Owner must finish access setup; requires checking database enforced/owner_id/billing_mode against deployment",
+    "livePaymentVerified": false
+  },
+  "ownerUx": {
+    "sections": [
+      "People",
+      "Features",
+      "Payments"
+    ],
+    "defaultSection": "People",
+    "quickGrantDurationDays": [
+      7,
+      30,
+      90
+    ],
+    "ownerOnlySettingsShortcut": true,
+    "recentActivityCollapsed": true,
+    "backendPermissionsChanged": false,
+    "databaseMigrationRequired": false,
+    "realPaymentVerified": "User reported hosted checkout opens after billing mode correction; completed live transaction not demonstrated"
   }
 }

@@ -75,16 +75,10 @@ export function PricingCards({
                 ? "Unlimited company research"
                 : "100 companies / month"}
             </li>
-            <li>
-              {config[plan === "free" ? "freeWatchlist" : "proWatchlist"]} saved
-              companies
-            </li>
             {included(plan).map((k) => (
               <li key={k}>{featureNames[k]}</li>
             ))}
-            {plan === "pro" && included(plan).includes("ai") && (
-              <li>{config.proAi} AI analyses / month</li>
-            )}
+
           </ul>
           {publicPage ? (
             <Link

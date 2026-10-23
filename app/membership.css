@@ -606,3 +606,80 @@
   font-size: 13px;
   color: var(--muted);
 }
+
+/* Owner console: one focused section with shared application tokens. */
+.owner-access [hidden] {
+  display: none !important;
+}
+.admin-section-nav {
+  display: flex;
+  gap: 6px;
+  padding: 5px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  margin: 20px 0;
+}
+.admin-section-nav button {
+  flex: 1;
+  min-height: 46px;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+}
+.admin-section-nav button[aria-pressed="true"] {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 4px 12px #2269df24;
+}
+.admin-section-nav button:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+.admin-duration-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+.admin-duration-row > span {
+  font-size: 13px;
+  color: var(--muted);
+  margin-right: auto;
+}
+.admin-duration-row .button {
+  margin: 0;
+  padding: 8px 14px;
+}
+.admin-activity summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--ink);
+}
+#admin-payments .admin-plan-defaults {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  border-bottom: 0;
+}
+@media (max-width: 600px) {
+  .owner-access .membership-panel {
+    padding: 18px;
+  }
+  .admin-section-nav button {
+    font-size: 14px;
+  }
+  .admin-duration-row > span {
+    width: 100%;
+  }
+  .owner-grants article {
+    align-items: flex-start;
+  }
+  .owner-grants strong {
+    overflow-wrap: anywhere;
+  }
+}

@@ -32,7 +32,8 @@ export default function OwnerAccess() {
     [expiry, setExpiry] = useState(""),
     [cohort, setCohort] = useState("friends"),
     [message, setMessage] = useState(""),
-    [busy, setBusy] = useState(false);
+    [busy, setBusy] = useState(false),
+    [panel, setPanel] = useState("people");
   const load = async () => {
     const d = await api<Data>("owner/access");
     setData(d);
@@ -76,10 +77,27 @@ export default function OwnerAccess() {
   return (
     <section className="owner-access">
       <header className="owner-heading">
-        <span className="eyebrow">Private owner console</span>
+        <span className="eyebrow">Your workspace</span>
         <h1>Admin controls</h1>
-        <p>Manage invitations, Free/Pro limits and feature access.</p>
+        <p>People, product access and payments. Just for you.</p>
       </header>
+      <nav className="admin-section-nav" aria-label="Admin sections">
+        {[
+          ["people", "People"],
+          ["features", "Features"],
+          ["payments", "Payments"],
+        ].map(([id, label]) => (
+          <button
+            type="button"
+            key={id}
+            aria-pressed={panel === id}
+            aria-controls={`admin-${id}`}
+            onClick={() => setPanel(id)}
+          >
+            {label}
+          </button>
+        ))}
+      </nav>
       <section className="admin-preview-row" aria-label="Plan preview">
         <div>
           <strong>Preview access</strong>
@@ -121,24 +139,21 @@ export default function OwnerAccess() {
         </button>
       ) : (
         <>
-          <section className="membership-panel">
+          <section
+            id="admin-features"
+            hidden={panel !== "features"}
+            className="membership-panel"
+          >
             <header>
               <div>
-                <h2>Launch & limits</h2>
+                <h2>Feature access</h2>
                 <p>
                   {data.enabled
                     ? "Free/Pro controls are enabled."
                     : "Controls are configured but not activated. Set AURYN_ACCESS_ENABLED=true after applying the migration."}
                 </p>
               </div>
-              <button
-                type="button"
-                className="button"
-                disabled={busy}
-                onClick={() => void checkBilling()}
-              >
-                {busy ? "Checking…" : "Check Stripe connection"}
-              </button>
+
             </header>
             <form
               onSubmit={(e) => {
@@ -180,7 +195,7 @@ export default function OwnerAccess() {
                   ),
                 )}
               </div>
-              <h3>Feature access</h3>
+              <h3>Who can use each feature</h3>
               <div className="owner-feature-grid">
                 {Object.entries(featureNames).map(([key, label]) => (
                   <label key={key}>
@@ -199,7 +214,7 @@ export default function OwnerAccess() {
                     >
                       <option value="free">Everyone</option>
                       <option value="pro">Pro</option>
-                      <option value="beta">Invited beta only</option>
+                      <option value="beta">Complimentary members</option>
                       <option value="off">Off</option>
                     </select>
                   </label>
@@ -210,12 +225,40 @@ export default function OwnerAccess() {
               </button>
             </form>
           </section>
-          <section className="membership-panel">
-            <h2>Invite a friend</h2>
+          <section
+            id="admin-people"
+            hidden={panel !== "people"}
+            className="membership-panel"
+          >
+            <h2>Give Pro access</h2>
             <p>
-              They create an account first. Complimentary Pro expires
-              automatically; no card is needed.
+              Use their existing account email. No card needed. They can
+              subscribe anytime without losing access.
             </p>
+            <div
+              className="admin-duration-row"
+              aria-label="Quick access duration"
+            >
+              <span>Quick duration</span>
+              {[7, 30, 90].map((days) => (
+                <button
+                  type="button"
+                  className="button"
+                  key={days}
+                  disabled={busy}
+                  onClick={() => {
+                    const d = new Date(Date.now() + days * 86400000);
+                    setExpiry(
+                      new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+                        .toISOString()
+                        .slice(0, 16),
+                    );
+                  }}
+                >
+                  {days} days
+                </button>
+              ))}
+            </div>
             <form
               className="owner-grant-form"
               onSubmit={(e) => {
@@ -248,7 +291,7 @@ export default function OwnerAccess() {
                 />
               </label>
               <label>
-                Beta group
+                Group
                 <input
                   maxLength={40}
                   required
@@ -291,7 +334,7 @@ export default function OwnerAccess() {
               )}
             </div>
             <details>
-              <summary>End a beta group</summary>
+              <summary>End group access</summary>
               <p>
                 Only complimentary grants are revoked. Paid subscriptions are
                 untouched.
@@ -320,8 +363,41 @@ export default function OwnerAccess() {
               </button>
             </details>
           </section>
-          <section className="membership-panel">
-            <h2>Recent activity</h2>
+          <section
+            id="admin-payments"
+            hidden={panel !== "payments"}
+            className="membership-panel"
+          >
+            <span className="eyebrow">Stripe billing</span>
+            <h2>Payments, clearly.</h2>
+            <p>
+              Check the connected environment and monthly price without creating
+              a charge. Customers manage payment methods, invoices and
+              cancellation through Stripe.
+            </p>
+            <button
+              type="button"
+              className="button primary"
+              disabled={busy}
+              onClick={() => void checkBilling()}
+            >
+              {busy ? "Checking…" : "Check Stripe connection"}
+            </button>
+            <a
+              className="button"
+              href="https://dashboard.stripe.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Open Stripe ↗
+            </a>
+            <div className="admin-plan-defaults">
+              <strong>Free · 100 companies/month</strong>
+              <p>Pro · $2.99/month · Unlimited company research</p>
+            </div>
+          </section>
+          <details className="membership-panel admin-activity">
+            <summary>Recent activity</summary>
             <p>
               {data.usage} recorded research/AI usage entries this UTC month.
             </p>
@@ -331,7 +407,7 @@ export default function OwnerAccess() {
                 <time>{dateLabel(a.created_at)}</time>
               </div>
             ))}
-          </section>
+          </details>
         </>
       )}
     </section>
