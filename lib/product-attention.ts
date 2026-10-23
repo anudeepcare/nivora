@@ -55,7 +55,7 @@ export function holdingAttention(
       (cash
         ? p.symbol !== "USD" || p.currency !== "USD"
         : !q ||
-              q.currency !== "USD" ||
+          q.currency !== "USD" ||
           !Number.isFinite(q.price) ||
           q.price! <= 0)
     )
@@ -109,7 +109,7 @@ export function portfolioRiskSummary(
       (cash
         ? p.symbol !== "USD" || p.currency !== "USD"
         : !q ||
-              q.currency !== "USD" ||
+          q.currency !== "USD" ||
           !Number.isFinite(q.price) ||
           q.price! <= 0)
     )
@@ -149,5 +149,82 @@ export function portfolioRiskSummary(
     earningsWeight: total > 0 ? (amount / total) * 100 : null,
     earnings,
     values,
+  };
+}
+
+/** Home is a review queue, not a second portfolio total. Combine lots before ranking. */
+export function homeFocus(
+  positions: Position[],
+  quotes: Record<string, Quote>,
+) {
+  const grouped = new Map<
+    string,
+    { symbol: string; value: number; cost: number; older: boolean }
+  >();
+  let total = 0;
+  for (const p of positions) {
+    if (p.currency !== "USD" || !Number.isFinite(p.quantity) || p.quantity <= 0)
+      continue;
+    if (p.assetType === "cash") {
+      if (p.symbol === "USD") total += p.quantity;
+      continue;
+    }
+    const q = quotes[p.symbol];
+    if (
+      !q ||
+      q.currency !== "USD" ||
+      typeof q.price !== "number" ||
+      !Number.isFinite(q.price) ||
+      q.price <= 0 ||
+      !Number.isFinite(p.cost) ||
+      p.cost < 0
+    )
+      continue;
+    const value = p.quantity * q.price,
+      previous = grouped.get(p.symbol);
+    total += value;
+    grouped.set(p.symbol, {
+      symbol: p.symbol,
+      value: value + (previous?.value ?? 0),
+      cost: p.quantity * p.cost + (previous?.cost ?? 0),
+      older: !!q.stale,
+    });
+  }
+  const rows = [...grouped.values()].map((p) => ({
+    ...p,
+    weight: total > 0 ? (p.value / total) * 100 : null,
+    returnPct: p.cost > 0 ? (p.value / p.cost - 1) * 100 : null,
+  }));
+  const largest = [...rows].sort((a, b) => b.value - a.value)[0],
+    worst = rows
+      .filter((p) => p.returnPct != null && p.returnPct < 0)
+      .sort((a, b) => a.returnPct! - b.returnPct!)[0];
+  return [
+    ...(largest ? [{ ...largest, kind: "concentration" as const }] : []),
+    ...(worst ? [{ ...worst, kind: "drawdown" as const }] : []),
+  ];
+}
+
+/** Budget-bounded, explicit coverage: all followed stocks are reachable, 30 at a time. */
+export function companyFeedPage(symbols: string[], requestedPage: number) {
+  const all = [
+      ...new Set(symbols.filter((s) => /^[A-Z][A-Z0-9.-]{0,14}$/.test(s))),
+    ],
+    size = 30;
+  const pageCount = Math.ceil(all.length / size),
+    page = Math.max(
+      0,
+      Math.min(
+        Number.isFinite(requestedPage) ? Math.floor(requestedPage) : 0,
+        Math.max(0, pageCount - 1),
+      ),
+    );
+  return {
+    symbols: all.slice(page * size, (page + 1) * size),
+    total: all.length,
+    pageCount,
+    page,
+    start: all.length ? page * size + 1 : 0,
+    end: Math.min(all.length, (page + 1) * size),
   };
 }

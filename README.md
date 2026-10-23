@@ -1,3 +1,11 @@
+# Latest consolidated product continuation
+
+Read `docs/CONSOLIDATED_PRODUCT_BUILD.md` (or the local filename from docs) first. This includes the simplified public storefront, separate weekly/monthly accumulation desk and Home price/coverage corrections, along with prior screenshot fixes. Full source is included. Broader competitor parity, commercial readiness, rendered visual parity and physical iPhone acceptance remain incomplete; see the current verification report.
+
+# Latest screenshot correction — 23 October 2026
+
+Read `docs/SCREENSHOT_FEEDBACK_20261023.md` for this continuation (from docs, use the local filename). Full source includes the revised Overview, Advanced risk brief, optional Value workbenches and the quote-independent reported per-share fix. Verification: 387 tests and 83 compiled API checks; TypeScript and production build pass. Exact visual parity, physical iPhone acceptance, private DCA equivalence and the complete feature wish list are not certified.
+
 # AURYN Investment Intelligence
 
 A complete standalone **source package** for the new AURYN application. The application builds independently of the old screens and styles. **It is not fully production accepted, and not every inherited product requirement is complete.** Read `docs/RELEASE_STATUS.md` for the exact remaining scope and verification limits.

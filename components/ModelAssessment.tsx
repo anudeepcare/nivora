@@ -9,20 +9,16 @@ export default function ModelAssessment({
 }) {
   const a = useMemo(() => modelAssessment(r), [r]);
   return (
-    <section
-      className="model-assessment panel"
+    <details
+      className="model-assessment model-assessment-compact"
       aria-label="Valuation model suitability"
     >
-      <header className="section-head">
-        <div>
-          <span className="eyebrow">Choose the right lens</span>
-          <h2>What this business can support</h2>
-          <p>
-            Available inputs determine the model. A missing model is not a zero
-            valuation.
-          </p>
-        </div>
-      </header>
+      <summary>
+        Valuation methods &amp; data notes{" "}
+        <span>
+          {a.methods.filter((m) => m.status === "available").length} available
+        </span>
+      </summary>
       <div className="model-assessment-grid">
         {a.methods.map((m) => (
           <article key={m.key} data-state={m.status}>
@@ -48,6 +44,6 @@ export default function ModelAssessment({
           </ul>
         </div>
       )}
-    </section>
+    </details>
   );
 }

@@ -5,6 +5,7 @@ import {
   researchAccumulation,
   adaptiveSettledBars,
 } from "@/lib/accumulation-policy-v3";
+import { weeklyAccumulation } from "@/lib/accumulation-weekly";
 import { evaluateAccumulation } from "@/lib/accumulation-evaluation";
 import { amount, percent, dateLabel } from "@/lib/format";
 import { PriceChart } from "./Charts";
@@ -20,15 +21,24 @@ export default function AccumulationDesk({
 }: {
   research: Research;
 }) {
+  const [cadence, setCadence] = useState<"monthly" | "weekly">("monthly");
+  const weekly = cadence === "weekly";
   const [showEvaluation, setShowEvaluation] = useState(false),
     [cost, setCost] = useState(10);
   const market = r.company.assetType === "crypto" ? "crypto" : "us-equity";
   const chosen = useMemo(
-      () => researchAccumulation(r.history, r.retrievedAt, market),
-      [r.history, r.retrievedAt, market],
+      () =>
+        weekly
+          ? weeklyAccumulation(r.history, r.retrievedAt, market)
+          : researchAccumulation(r.history, r.retrievedAt, market),
+      [r.history, r.retrievedAt, market, weekly],
     ),
     signal = chosen.confirmed;
   const monthly = useMemo(() => {
+    if (weekly)
+      return weeklyAccumulation(r.history, r.retrievedAt, market).bars.slice(
+        -104,
+      );
     const m = new Map<string, Candle>();
     for (const b of adaptiveSettledBars(r.history, r.retrievedAt, market)) {
       const key = b.time.slice(0, 7),
@@ -48,20 +58,26 @@ export default function AccumulationDesk({
       );
     }
     return [...m.values()].slice(-60);
-  }, [r.history, r.retrievedAt, market]);
+  }, [r.history, r.retrievedAt, market, weekly]);
   const candleColors = useMemo(
     () =>
       Object.fromEntries(
         monthly.map((b) => {
           const s =
-            chosen.history.find((s) => s.month === b.time.slice(0, 7)) ??
-            (chosen.forming?.month === b.time.slice(0, 7)
+            chosen.history.find((s) =>
+              weekly ? s.date === b.time : s.month === b.time.slice(0, 7),
+            ) ??
+            ((
+              weekly
+                ? chosen.forming?.date === b.time
+                : chosen.forming?.month === b.time.slice(0, 7)
+            )
               ? chosen.forming
               : null);
           return [b.time, s ? colours[s.multiplier] : "#b0b5bd"];
         }),
       ),
-    [monthly, chosen],
+    [monthly, chosen, weekly],
   );
   const levels = useMemo(
     () =>
@@ -76,19 +92,34 @@ export default function AccumulationDesk({
   );
   const evaluation = useMemo(
     () =>
-      showEvaluation
+      showEvaluation && !weekly
         ? evaluateAccumulation(r.history, r.retrievedAt, cost, market)
         : null,
-    [showEvaluation, r.history, r.retrievedAt, cost, market],
+    [showEvaluation, r.history, r.retrievedAt, cost, market, weekly],
   );
   return (
     <section className="accumulation-desk">
       <header className="accumulation-desk-head">
         <div>
-          <span className="eyebrow">Monthly discipline · price conditions</span>
+          <span className="eyebrow">
+            {weekly
+              ? "Weekly conditions · separate time horizon"
+              : "Trend-adjusted · monthly discipline"}
+          </span>
           <h2>One reading. The history behind it.</h2>
         </div>
-        <span className="policy-version">Trend-adjusted · v3</span>
+        <div className="segments" aria-label="Accumulation time horizon">
+          {(["monthly", "weekly"] as const).map((v) => (
+            <button
+              key={v}
+              type="button"
+              aria-pressed={cadence === v}
+              onClick={() => setCadence(v)}
+            >
+              {v === "monthly" ? "Monthly" : "Weekly"}
+            </button>
+          ))}
+        </div>
       </header>
       <div className="accumulation-summary">
         <div>
@@ -111,21 +142,23 @@ export default function AccumulationDesk({
                 : signal.multiplier === 1
                   ? "Normal contribution condition"
                   : "Stronger pullback condition"
-              : "More monthly history needed"}
+              : `More ${cadence} history needed`}
           </h3>
           <p>{signal?.reason ?? chosen.reason}</p>
           <small>
             {signal
-              ? `${signal.month} · confirmed at ${dateLabel(signal.date)}`
-              : "24 consecutive completed prior months required"}
+              ? `${weekly ? "Week ending" : signal.month + " · confirmed at"} ${dateLabel(signal.date)}`
+              : weekly
+                ? "52 consecutive completed prior weeks required"
+                : "24 consecutive completed prior months required"}
           </small>
         </div>
         <dl>
           <div>
-            <dt>Current month</dt>
+            <dt>{weekly ? "Current week" : "Current month"}</dt>
             <dd>
               {chosen.forming
-                ? `${chosen.forming.multiplier}× · forming`
+                ? `${chosen.forming.multiplier}× · forming · ${dateLabel(chosen.forming.date)}`
                 : "No forming reading"}
             </dd>
           </div>
@@ -133,7 +166,7 @@ export default function AccumulationDesk({
             <dt>Same confirmed zone</dt>
             <dd>
               {signal
-                ? `${chosen.history.filter((s) => s.multiplier === signal.multiplier).length} of ${chosen.history.length} eligible months`
+                ? `${chosen.history.filter((s) => s.multiplier === signal.multiplier).length} of ${chosen.history.length} eligible ${weekly ? "weeks" : "months"}`
                 : "Not established"}
             </dd>
           </div>
@@ -145,14 +178,24 @@ export default function AccumulationDesk({
       </div>
       <p className="small muted">
         Multiples of your usual contribution—not leverage or expected returns.
-        Confirmed months stay fixed; the forming reading can change. A deeper
-        price pullback does not establish a better business or confirmed
-        support.
+        Completed periods stay fixed for unchanged input history; the forming
+        reading can change. A deeper price pullback does not establish a better
+        business or confirmed support.
       </p>
+      {signal?.trimReview && (
+        <div className="accumulation-extension" role="note">
+          <strong>Review price extension</strong>
+          <span>
+            Extreme distance above trend. Review exposure and the business case;
+            this is separate from the contribution multiplier and specifies no
+            sale amount.
+          </span>
+        </div>
+      )}
       <div className="accumulation-chart">
         <PriceChart
           bars={monthly}
-          range="monthly-policy-v3"
+          range={weekly ? "weekly-policy-v1" : "monthly-policy-v3"}
           style="candles"
           candleColors={candleColors}
           levels={levels}
@@ -180,15 +223,23 @@ export default function AccumulationDesk({
           No eligible signal
         </span>
       </div>
+      {weekly && (
+        <p className="small muted">
+          Weekly v1 is a shorter-horizon research policy, not a replica of
+          another service. The available historical simulation remains monthly
+          only.
+        </p>
+      )}
       <details className="policy-rules">
         <summary>See the rules and price assumptions</summary>
         <p>
-          Uses the 24 completed months before each reading. A robust log-price
-          trend uses median pairwise slopes. Spread is the larger of residual
-          variability, monthly return variability and a 7% floor. 2×/3×/4×
-          require drawdowns of 12%/25%/40% from the prior monthly high and
-          deviations below trend of 0.7/1.35/2 spread units. Pause requires two
-          units and 25% above trend. These fixed rules have no demonstrated
+          Uses {weekly ? "52 completed weeks" : "24 completed months"} before
+          each reading. A robust log-price trend uses median pairwise slopes.
+          Spread is the larger of residual variability, period return
+          variability and a {weekly ? "3%" : "7%"} floor. 2×/3×/4× require
+          drawdowns of 12%/25%/40% from the prior period high and deviations
+          below trend of 0.7/1.35/2 spread units. Pause requires two units and
+          25% above trend. These fixed rules have no demonstrated
           outperformance.
         </p>
         <p>
@@ -196,20 +247,26 @@ export default function AccumulationDesk({
           days. A completed month needs its final market session. Missing or
           conflicting history is unscored, never a 0× instruction. Displayed
           bands use the last confirmed window and do not predict future prices.
-          Older v1/v2 evaluators remain in the source for reproducibility.
+          Weekly confirmation requires the final expected session (US Friday,
+          adjusted for standard Friday holidays; crypto Sunday UTC). Missing
+          closes withhold the reading. Weekly and monthly policies can disagree
+          and must not be combined as two contributions. Older v1/v2 evaluators
+          remain in the source for reproducibility.
         </p>
       </details>
-      <button
-        type="button"
-        className="text-button"
-        onClick={() => setShowEvaluation(!showEvaluation)}
-        aria-expanded={showEvaluation}
-      >
-        {showEvaluation
-          ? "Hide historical comparison"
-          : "Test this policy on available history ↗"}
-      </button>
-      {showEvaluation && (
+      {!weekly && (
+        <button
+          type="button"
+          className="text-button"
+          onClick={() => setShowEvaluation(!showEvaluation)}
+          aria-expanded={showEvaluation}
+        >
+          {showEvaluation
+            ? "Hide historical comparison"
+            : "Test this policy on available history ↗"}
+        </button>
+      )}
+      {showEvaluation && !weekly && (
         <section className="policy-evaluation">
           <header>
             <div>

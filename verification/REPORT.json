@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-10-23T02:43:53.724031+00:00",
+  "generatedAt": "2026-10-23T03:27:37.332239+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 380 tests, route type generation, TypeScript, optimized production build",
+    "npm run verify": "passed: 396 tests, route type generation, TypeScript and production build",
     "npm run test:api": "passed: 40 baseline + 16 research regression + 22 provider + 5 shared protection checks",
     "git diff --check": "passed",
-    "npm test": "passed: 380 tests, zero failures",
+    "npm test": "passed: 396 tests, zero failures",
     "npm run build": "passed as part of final verify; no CSS compilation warnings"
   },
-  "domainPostgresAndComponentTests": 380,
+  "domainPostgresAndComponentTests": 396,
   "builtApiChecks": 83,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -36,12 +36,13 @@
   "priorEvidence": "The signed-in reference/deployed UI reviews predate this patch. New verification is source, domain/SSR, TypeScript and build evidence only.",
   "browserTestScope": "No rendered browser test of this build; older live audits are historical evidence only",
   "patchedSourceBrowserTestsExecuted": false,
-  "latestAudit": "../docs/UNIFIED_BUILD_20261023.md",
+  "latestAudit": "../docs/CONSOLIDATED_PRODUCT_BUILD.md",
   "referenceReview": "REFERENCE_REVIEW_20261017.md",
   "decisionPolicy": "research-v1.6 / decision-guide-v1.1; original unvalidated research triage; no broker execution",
   "latestLogs": [
-    "unified-verify.log",
-    "unified-api.log"
+    "consolidation-verify.log",
+    "consolidation-api.log",
+    "consolidation-http.log"
   ],
   "cohortQuoteObservations": "cohort-quotes-20261017.json; 11 instruments; quote identity only, not fundamental/model validation",
   "exactVisualParityVerified": false,
@@ -500,5 +501,33 @@
     "newPaidServices": false,
     "independentPerformanceValidation": false,
     "commercialActivation": false
+  },
+  "screenshotFeedback20261023": {
+    "reportedPerShareIndependentOfQuote": true,
+    "cashModelInputsRemainGuarded": true,
+    "initialAdvancedRiskBrief": true,
+    "retainedAdvancedWorkAreas": true,
+    "overviewCompactReferenceLayoutAndAnnualSparklines": true,
+    "unresolvedSourceConflictsStillWithholdModels": true,
+    "privateCompetitorDcaParity": false,
+    "upstreamProfileValidated": false,
+    "renderedVisualParity": false,
+    "physicalIphoneAcceptance": false,
+    "broaderFeatureWishlistComplete": false
+  },
+  "consolidation": {
+    "publicStorefront": "focused introduction, fictional interactive example, connected workflow, legal/help; one stylesheet owner",
+    "weeklyPolicy": "weekly-v1; 52 completed prior weeks, separate confirmed/forming, no private competitor equivalence",
+    "monthlyPolicy": "monthly-v3 unchanged; simulation remains monthly only",
+    "home": "combined lots, labelled older usable USD quotes, all eligible followed stocks reachable in explicit cached batches of 30",
+    "tests": 396,
+    "compiledApiChecks": 83,
+    "httpHtmlChecks": 6,
+    "browserRendered": false,
+    "physicalIphoneAccepted": false,
+    "pwaGeometryChanged": false,
+    "browserBlocker": "Playwright Chromium download returned truncated archive; local rendered testing unavailable",
+    "broaderWishListComplete": false,
+    "commercialReady": false
   }
 }

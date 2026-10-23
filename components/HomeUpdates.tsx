@@ -4,7 +4,7 @@ import { CalendarDays, ArrowUpRight, Newspaper } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useProduct, useResource } from "./Session";
 import { amount, percent } from "@/lib/format";
-import { holdingAttention } from "@/lib/product-attention";
+import { companyFeedPage, holdingAttention } from "@/lib/product-attention";
 import type { Quote } from "@/lib/types";
 import { dateLabel } from "@/lib/format";
 import type { HomeFeed } from "@/lib/home-feed";
@@ -15,16 +15,19 @@ export default function HomeUpdates({
 }) {
   const { workspace, demo } = useProduct(),
     prefix = demo ? "/preview" : "";
-  const symbols = [
-    ...new Set([
-      ...(workspace?.positions
-        .filter((p) => p.assetType === "stock")
-        .map((p) => p.symbol) ?? []),
-      ...(workspace?.watchlist.map((w) => w.symbol) ?? []),
-    ]),
-  ]
-    .filter((s) => /^[A-Z][A-Z0-9.-]{0,14}$/.test(s))
-    .slice(0, 30);
+  const [requestedPage, setRequestedPage] = useState(0);
+  const feed = companyFeedPage(
+    [
+      ...new Set([
+        ...(workspace?.positions
+          .filter((p) => p.assetType === "stock")
+          .map((p) => p.symbol) ?? []),
+        ...(workspace?.watchlist.map((w) => w.symbol) ?? []),
+      ]),
+    ],
+    requestedPage,
+  );
+  const symbols = feed.symbols;
   const key = symbols.join(",");
   const preview = useMemo(
     () =>
@@ -69,9 +72,13 @@ export default function HomeUpdates({
     if (
       p.assetType !== "cash" &&
       q &&
-      !q.stale &&
       q.currency === "USD" &&
-      q.price != null
+      typeof q.price === "number" &&
+      Number.isFinite(q.price) &&
+      q.price > 0 &&
+      p.currency === "USD" &&
+      Number.isFinite(p.quantity) &&
+      p.quantity > 0
     )
       exposure.set(
         p.symbol,
@@ -92,7 +99,27 @@ export default function HomeUpdates({
           <h2>Needs your attention</h2>
         </div>
         <div className="home-update-actions">
-          <span className="muted small">Following {symbols.length} stocks</span>
+          {feed.pageCount > 1 ? (
+            <label className="home-feed-batch">
+              <span>Company updates</span>
+              <select
+                aria-label="Company update coverage"
+                value={feed.page}
+                onChange={(e) => setRequestedPage(Number(e.target.value))}
+              >
+                {Array.from({ length: feed.pageCount }, (_, i) => (
+                  <option key={i} value={i}>
+                    Companies {i * 30 + 1}–{Math.min(feed.total, (i + 1) * 30)}{" "}
+                    of {feed.total}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : (
+            <span className="muted small">
+              Following {symbols.length} stocks
+            </span>
+          )}
           <button
             className="text-button"
             onClick={() => setExpanded(!expanded)}
@@ -147,8 +174,8 @@ export default function HomeUpdates({
           )}
           <p className="small muted">
             Ranked by priced holding value, then report date. Percentages use
-            priced USD assets and cash. Dates can change; missing coverage is
-            not an all-clear.
+            priced USD assets and cash, including older usable observations.
+            Dates can change; missing coverage is not an all-clear.
           </p>
         </section>
         <section className="update-panel news-panel">

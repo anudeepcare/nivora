@@ -654,3 +654,30 @@ test('analyst fallback presents actual consensus without invented low/high targe
  assert.match(missing,/\$77\.81/);assert.match(missing,/Price comparison unavailable/);
  assert.match(html,/\$77\.81/);assert.match(html,/Wall Street consensus/);assert.match(html,/low\/high range not supplied/);assert.doesNotMatch(html,/\$37\.00|\$139\.00|Bear|Bull/);
 });
+
+test('Advanced opens with a readable risk brief and keeps planning tools off the initial screen',async()=>{
+ const {advancedStudies,tradePlan}=await import('../lib/advanced-research.ts'),{planStress}=await import('../lib/professional-studies.ts');
+ const Advanced=loadComponent('components/AdvancedResearch.tsx','AdvancedResearch',{React,useMemo:React.useMemo,useState:React.useState,advancedStudies,tradePlan,planStress,...format,AdvancedRiskBrief:()=>React.createElement('section',{'data-risk-brief':'visible'},'Typical daily movement'),ProfessionalContext:empty,MarketContext:()=>{throw Error('Market must not load before selected');},HistoricalConditions:()=>{throw Error('Study must not load before selected');},TradeReference:empty});
+ const html=renderToStaticMarkup(React.createElement(Advanced,{research:demoData.research.MSFT}));assert.match(html,/data-risk-brief="visible"/);assert.match(html,/Risk brief/);assert.doesNotMatch(html,/href="#advanced|Assumed win probability|type="number"|DISCONNECT/);
+});
+test('risk brief exposes dated actual measurements with explanations and no assumed success rate',async()=>{
+ const {riskBrief}=await import('../lib/risk-brief.ts');
+ const Brief=loadComponent('components/AdvancedRiskBrief.tsx','AdvancedRiskBrief',{React,useMemo:React.useMemo,riskBrief,...format});
+ const html=renderToStaticMarkup(React.createElement(Brief,{research:demoData.research.MSFT}));assert.match(html,/Typical daily movement/);assert.match(html,/worst 5%/);assert.match(html,/Largest observed opening gap/);assert.doesNotMatch(html,/NaN|Infinity|50% win|probability forecast/);
+});
+test('overview does not ask users to resolve infrastructure inputs or replace business risk with data diagnostics',async()=>{
+ const {researchBrief}=await import('../lib/research-brief.ts'),b=researchBrief({...demoData.research.MSFT,evidence:{...demoData.research.MSFT.evidence,reportingCurrency:'USD',ownership:{outstanding:100},highlights:{MarketCapitalization:1e12}}});
+ const View=loadComponent('components/DecisionOverview.tsx','DecisionOverview',{React,useMemo:React.useMemo,researchBrief:()=>b,...format,PositionAwareResearch:empty,CaseRange:empty});
+ const html=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT,onTab:()=>{}}));assert.doesNotMatch(html,/Resolve conflicting inputs|Input conflict/);assert.match(html,/metric-sparkline/);assert.match(html,/What changes the case/);assert.match(html,/Calculation basis/);
+});
+
+test('weekly accumulation has its own history, date labels and no misleading monthly simulation',async()=>{
+ const {weeklyAccumulation}=await import('../lib/accumulation-weekly.ts');
+ const {researchAccumulation,adaptiveSettledBars}=await import('../lib/accumulation-policy-v3.ts');
+ const {evaluateAccumulation}=await import('../lib/accumulation-evaluation.ts');
+ const colours={0:'#d89a20',1:'#7d9db0',2:'#12a28b',3:'#71b337',4:'#ac68e5'};
+ let state=0;
+ const View=loadComponent('components/AccumulationDesk.tsx','AccumulationDesk',{React,useMemo:React.useMemo,useState:(initial)=>React.useState(++state===1?'weekly':initial),weeklyAccumulation,researchAccumulation,adaptiveSettledBars,evaluateAccumulation,...format,colours,PriceChart:empty});
+ const html=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT}));
+ assert.match(html,/Weekly conditions/);assert.match(html,/Accumulation time horizon/);assert.match(html,/Current week/);assert.match(html,/52 completed weeks/);assert.match(html,/historical simulation remains monthly only/);assert.doesNotMatch(html,/Test this policy on available history|Same deposits/);
+});

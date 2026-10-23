@@ -6,6 +6,7 @@ import {
 } from "./analysis.ts";
 import { researchDecision } from "./decision-research.ts";
 import { researchOutlook, consensusOutlook } from "./outlook.ts";
+import { financingContext } from "./research-integrity.ts";
 import { modelCoverage } from "./research-depth.ts";
 export function researchBrief(r: Research) {
   const p = perspective(r),
@@ -16,7 +17,8 @@ export function researchBrief(r: Research) {
       sector: r.evidence?.profile?.sector || r.company.sector,
       industry: r.evidence?.profile?.industry,
     }),
-    latest = latestFinancialEvidence(r).latest;
+    latest = latestFinancialEvidence(r).latest,
+    funding = financingContext(r);
   const checks: {
     label: string;
     status: "available" | "missing" | "conflicting";
@@ -88,6 +90,7 @@ export function researchBrief(r: Research) {
               currency: row.currency,
               revenue: row.revenue,
               fcf: row.fcf,
+              margin: row.margin,
               shares: row.weightedShares ?? null,
             })),
     timing: {
@@ -98,6 +101,10 @@ export function researchBrief(r: Research) {
     },
     businessNumbers: {
       currency: latest?.currency ?? r.quote.currency,
+      revenue: latest?.revenue ?? null,
+      runway: funding.investmentRunway,
+      dilution: funding.dilution,
+      sbcRevenue: funding.sbcRevenue,
       revenueGrowth:
         latest?.revenue != null &&
         previous?.revenue != null &&
@@ -140,22 +147,28 @@ export function researchBrief(r: Research) {
         r.company.assetType === "crypto"
           ? "Network & exposure review"
           : specialist
-            ? "Use the sector-specific lens"
+            ? coverage.family === "financial"
+              ? "Review bank returns and credit risk"
+              : latest?.fcf != null && latest.fcf < 0
+                ? "Growth needs cash. Watch funding."
+                : "Review the business and its funding"
             : d.stance,
       reason: specialist
-        ? coverage.drivers.slice(0, 3).join(" · ")
+        ? latest?.fcf != null && latest.fcf < 0
+          ? "Investment exceeds internally generated cash. Check liquidity, financing and progress toward sustainable cash generation."
+          : coverage.drivers.slice(0, 3).join(" · ")
         : (d.flags.find((x) => x.severe)?.text ??
           d.forCase[0]?.text ??
           "Review reported profitability, cash generation and funding together."),
     },
     value: {
       title: mismatch
-        ? "Resolve listing inputs"
+        ? "AURYN valuation is unavailable"
         : outlook.available
           ? "Fair value not established"
           : "Value not established",
       reason: mismatch
-        ? "Scenario prices should not drive a decision until the input conflict is resolved."
+        ? `Reported market cap (${cap?.toLocaleString()} ${r.quote.currency}) differs from shares × the reference price (${((shares ?? 0) * (r.quote.price ?? 0)).toLocaleString()} ${r.quote.currency}). These inputs may use different dates or share units. AURYN withholds affected price scenarios; reported company results and published analyst targets remain usable.`
         : outlook.available
           ? "Forecast-multiple sensitivities omit a complete operating and financing plan. Build funded cases in Value; analyst targets remain separate."
           : outlook.reason,

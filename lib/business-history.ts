@@ -1,7 +1,16 @@
 import type { Research } from "./types";
+import { modelCoverage } from "./research-depth.ts";
 import { annualRows } from "./analysis.ts";
 export function headerMarketContext(r: Research) {
-  const cap = r.evidence?.highlights?.MarketCapitalization;
+  const cap = r.evidence?.highlights?.MarketCapitalization,
+    rawSector = r.evidence?.profile?.sector || r.company.sector || null,
+    coverage = modelCoverage(r.company.symbol, r.company.assetType, {
+      sector: rawSector,
+      industry: r.evidence?.profile?.industry,
+    });
+  const contradictory =
+    coverage.family === "infrastructure" &&
+    /financial|bank|insurance/i.test(rawSector ?? "");
   return {
     marketCap:
       r.company.assetType === "stock" &&
@@ -13,7 +22,7 @@ export function headerMarketContext(r: Research) {
         : null,
     currency: r.company.currency,
     asOf: r.evidence?.updatedAt ?? null,
-    sector: r.evidence?.profile?.sector || r.company.sector || null,
+    sector: contradictory ? null : rawSector,
   };
 }
 export function businessHistory(r: Research) {

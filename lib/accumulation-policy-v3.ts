@@ -86,7 +86,11 @@ export function adaptiveSettledBars(
     .filter((b) => Number.isFinite(b.close))
     .sort((a, b) => a.time.localeCompare(b.time));
 }
-function reading(previous: Candle[], bar: Candle): AdaptiveSignal {
+export function trendAccumulationReading(
+  previous: Candle[],
+  bar: Candle,
+  cadence: "monthly" | "weekly" = "monthly",
+): AdaptiveSignal {
   const logs = previous.map((b) => Math.log(b.close)),
     slopes: number[] = [];
   for (let i = 0; i < logs.length; i++)
@@ -99,7 +103,7 @@ function reading(previous: Candle[], bar: Candle): AdaptiveSignal {
   const returns = logs.slice(1).map((v, i) => v - logs[i]),
     returnCentre = median(returns);
   const scale = Math.max(
-    0.07,
+    cadence === "weekly" ? 0.03 : 0.07,
     1.4826 * median(residuals.map((x) => Math.abs(x - centre))),
     1.4826 *
       median(returns.map((x) => Math.abs(x - returnCentre))) *
@@ -139,7 +143,9 @@ function reading(previous: Candle[], bar: Candle): AdaptiveSignal {
     buy3: Math.min(peak * 0.75, trend * Math.exp(-1.35 * scale)),
     buy4: Math.min(peak * 0.6, trend * Math.exp(-2 * scale)),
     pauseAbove: Math.max(trend * 1.25, trend * Math.exp(2 * scale)),
-    trimReview: z >= 3 && bar.close / previous.at(-12)!.close >= 1.5,
+    trimReview:
+      z >= 3 &&
+      bar.close / previous.at(cadence === "weekly" ? -26 : -12)!.close >= 1.5,
     risk: falling
       ? "Downtrend persists; the zone does not confirm support."
       : "Price condition only; check business, funding and position risk.",
@@ -148,7 +154,7 @@ function reading(previous: Candle[], bar: Candle): AdaptiveSignal {
         ? `${deviation.toFixed(1)}% above its prior fitted trend; an extension condition.`
         : multiplier === 1
           ? "A stronger pullback condition is not established."
-          : `${Math.abs(drawdown).toFixed(1)}% below the prior monthly high and ${Math.abs(z).toFixed(1)} robust deviations below trend.`,
+          : `${Math.abs(drawdown).toFixed(1)}% below the prior ${cadence} high and ${Math.abs(z).toFixed(1)} robust deviations below trend.`,
   };
 }
 function compute(bars: Candle[], asOf: string, market: "us-equity" | "crypto") {
@@ -182,7 +188,7 @@ function compute(bars: Candle[], asOf: string, market: "us-equity" | "crypto") {
       continue;
     const closed = bar.time === monthEndSession(month, market);
     if (month < cutoff.month && !closed) continue;
-    const signal = reading(
+    const signal = trendAccumulationReading(
       prior.map(([, b]) => b),
       bar,
     );

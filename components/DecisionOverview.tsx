@@ -36,6 +36,46 @@ export default function DecisionOverview({
             : 0,
       }))
     : [];
+  const sparkline = (key: "revenue" | "fcf" | "shares" | "margin") => {
+    const rows = b.trajectory.filter(
+      (x) => x[key] != null && Number.isFinite(x[key]),
+    );
+    if (rows.length < 2) return null;
+    const values = rows.map((x) => x[key]!),
+      lo = Math.min(...values),
+      hi = Math.max(...values),
+      span = hi - lo || 1;
+    const first = Date.parse(rows[0].end),
+      last = Date.parse(rows.at(-1)!.end);
+    const points = rows
+      .map(
+        (x, i) =>
+          `${4 + ((Date.parse(x.end) - first) / (last - first || 1)) * 88},${30 - ((values[i] - lo) / span) * 24}`,
+      )
+      .join(" ");
+    return (
+      <svg
+        className="metric-sparkline"
+        data-tone={
+          key === "shares"
+            ? "neutral"
+            : values.at(-1)! < 0 || values.at(-1)! < values[0]
+              ? "risk"
+              : "positive"
+        }
+        viewBox="0 0 96 36"
+        role="img"
+        aria-label={`Reported annual ${key}: ${rows.map((x) => `${x.end}: ${x[key]}`).join("; ")}`}
+      >
+        <polyline
+          points={points}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        />
+      </svg>
+    );
+  };
   const warning =
     b.conflicting || /risk|verification|evidence first/i.test(b.business.title);
   const multiplier = b.accumulation.multiplier;
@@ -82,8 +122,8 @@ export default function DecisionOverview({
                         : "Cash burn after capex"}
                     </span>
                   )}
-                  {b.conflicting && (
-                    <span data-tone="risk">Resolve conflicting inputs</span>
+                  {(b.conflicting || !b.scenarioEligible) && (
+                    <span data-tone="caution">Valuation uncertain</span>
                   )}
                 </div>
               )}
@@ -94,11 +134,9 @@ export default function DecisionOverview({
             >
               {crypto
                 ? "Crypto · price-based analysis"
-                : b.conflicting
-                  ? "Input conflict"
-                  : b.period
-                    ? `Financials · ${dateLabel(b.period)}`
-                    : "Financial evidence incomplete"}
+                : b.period
+                  ? `Financials · ${dateLabel(b.period)}`
+                  : "Financial evidence incomplete"}
             </span>
           </header>
 
@@ -277,7 +315,7 @@ export default function DecisionOverview({
         ) : (
           <>
             <div>
-              <span>Revenue growth</span>
+              <span>Revenue</span>
               <strong
                 className={
                   b.businessNumbers.revenueGrowth != null &&
@@ -286,11 +324,18 @@ export default function DecisionOverview({
                     : "blue"
                 }
               >
-                {b.businessNumbers.revenueGrowth == null
-                  ? "—"
-                  : percent(b.businessNumbers.revenueGrowth)}
+                {amount(
+                  b.businessNumbers.revenue,
+                  b.businessNumbers.currency,
+                  true,
+                )}
               </strong>
-              <small>Comparable year over year</small>
+              {sparkline("revenue")}
+              <small>
+                {b.businessNumbers.revenueGrowth == null
+                  ? "Reported period"
+                  : `${percent(b.businessNumbers.revenueGrowth, true)} year over year`}
+              </small>
             </div>
             <div>
               <span>Operating margin</span>
@@ -306,10 +351,15 @@ export default function DecisionOverview({
                   ? "—"
                   : percent(b.businessNumbers.operatingMargin)}
               </strong>
+              {sparkline("margin")}
               <small>Reported operating profitability</small>
             </div>
             <div>
-              <span>Cash after capex</span>
+              <span>
+                {b.businessNumbers.runway != null
+                  ? "Cash runway after investment"
+                  : "Cash after capex"}
+              </span>
               <strong
                 className={
                   b.businessNumbers.fcf != null && b.businessNumbers.fcf < 0
@@ -317,126 +367,176 @@ export default function DecisionOverview({
                     : "positive"
                 }
               >
-                {amount(
-                  b.businessNumbers.fcf,
-                  b.businessNumbers.currency,
-                  true,
-                )}
+                {b.businessNumbers.runway != null
+                  ? `${b.businessNumbers.runway.toFixed(1)} mo`
+                  : amount(
+                      b.businessNumbers.fcf,
+                      b.businessNumbers.currency,
+                      true,
+                    )}
               </strong>
-              <small>Operating cash flow less capex</small>
+              {b.businessNumbers.runway == null ? sparkline("fcf") : null}
+              <small>
+                {b.businessNumbers.runway != null
+                  ? "At reported historical cash use"
+                  : "Operating cash flow less capex"}
+              </small>
             </div>
             <div>
-              <span>Next report</span>
-              <strong className="blue">
-                {next
-                  ? dateLabel(next.date).replace(/, \d{4}$/, "")
-                  : "Not supplied"}
+              <span>
+                {b.businessNumbers.dilution != null
+                  ? "Diluted share change"
+                  : b.businessNumbers.sbcRevenue != null
+                    ? "Stock pay / revenue"
+                    : "Next report"}
+              </span>
+              <strong
+                className={
+                  b.businessNumbers.dilution != null &&
+                  b.businessNumbers.dilution > 0
+                    ? "negative"
+                    : "blue"
+                }
+              >
+                {b.businessNumbers.dilution != null
+                  ? percent(b.businessNumbers.dilution, true)
+                  : b.businessNumbers.sbcRevenue != null
+                    ? percent(b.businessNumbers.sbcRevenue)
+                    : next
+                      ? dateLabel(next.date).replace(/, \d{4}$/, "")
+                      : "Not supplied"}
               </strong>
+              {b.businessNumbers.dilution != null ? sparkline("shares") : null}
               <small>
-                {next
-                  ? "Scheduled earnings · date may change"
-                  : "Check company announcements"}
+                {b.businessNumbers.dilution != null
+                  ? "Comparable weighted-share periods"
+                  : b.businessNumbers.sbcRevenue != null
+                    ? "Reported compensation cost"
+                    : "Scheduled earnings"}
               </small>
             </div>
           </>
         )}
       </div>
-      {!crypto && b.trajectory.length >= 2 && (
-        <section
-          className="overview-trajectory"
-          aria-label="Reported annual financial trends"
-        >
-          <header>
-            <h3>Business in motion</h3>
-            <span>Reported annual periods · {b.businessNumbers.currency}</span>
-          </header>
-          <div className="overview-trend-grid">
-            {(
-              [
-                { key: "revenue", label: "Revenue" },
-                { key: "fcf", label: "Cash after capex" },
-                { key: "shares", label: "Weighted shares" },
-              ] as const
-            ).map(({ key, label }) => {
-              const rows = b.trajectory.filter(
-                (row) => row[key] != null && Number.isFinite(row[key]),
-              );
-              if (rows.length < 2) return null;
-              const scale = Math.max(
-                ...rows.map((row) => Math.abs(row[key]!)),
-                1,
-              );
-              const signed = rows.some((row) => row[key]! < 0);
-              return (
-                <figure key={key}>
-                  <figcaption>{label}</figcaption>
-                  <div
-                    className="overview-trend-bars"
-                    role="img"
-                    aria-label={`${label}: ${rows.map((row) => `${row.end}: ${row[key]}`).join("; ")}`}
-                  >
-                    {rows.map((row) => (
-                      <div key={row.end} className="overview-trend-column">
-                        <span className={row[key]! < 0 ? "negative" : ""}>
-                          {key === "shares"
-                            ? row[key]!.toLocaleString("en-US", {
-                                notation: "compact",
-                                maximumFractionDigits: 1,
-                              })
-                            : amount(row[key], row.currency, true)}
-                        </span>
-                        <div
-                          className="overview-trend-track"
-                          data-signed={signed}
-                        >
-                          <i
-                            data-negative={row[key]! < 0}
-                            data-shares={key === "shares"}
-                            style={{
-                              height: `${Math.max(1, (Math.abs(row[key]!) / scale) * (signed ? 48 : 96))}%`,
-                            }}
-                          />
-                        </div>
-                        <small>{row.end.slice(0, 7)}</small>
-                      </div>
-                    ))}
-                  </div>
-                  <details>
-                    <summary>Read values</summary>
-                    <ul>
+      <div className="overview-bottom">
+        {!crypto && b.trajectory.length >= 2 && (
+          <section
+            className="overview-trajectory"
+            aria-label="Reported annual financial trends"
+          >
+            <header>
+              <h3>Business in motion</h3>
+              <span>
+                Reported annual periods · {b.businessNumbers.currency}
+              </span>
+            </header>
+            <div className="overview-trend-grid">
+              {(
+                [
+                  { key: "revenue", label: "Revenue" },
+                  { key: "fcf", label: "Cash after capex" },
+                  { key: "shares", label: "Weighted shares" },
+                ] as const
+              ).map(({ key, label }) => {
+                const rows = b.trajectory.filter(
+                  (row) => row[key] != null && Number.isFinite(row[key]),
+                );
+                if (rows.length < 2) return null;
+                const scale = Math.max(
+                  ...rows.map((row) => Math.abs(row[key]!)),
+                  1,
+                );
+                const signed = rows.some((row) => row[key]! < 0);
+                return (
+                  <figure key={key}>
+                    <figcaption>{label}</figcaption>
+                    <div
+                      className="overview-trend-bars"
+                      role="img"
+                      aria-label={`${label}: ${rows.map((row) => `${row.end}: ${row[key]}`).join("; ")}`}
+                    >
                       {rows.map((row) => (
-                        <li key={row.end}>
-                          {row.end}:{" "}
-                          {key === "shares"
-                            ? row[key]!.toLocaleString("en-US")
-                            : amount(row[key], row.currency)}
-                        </li>
+                        <div key={row.end} className="overview-trend-column">
+                          <span className={row[key]! < 0 ? "negative" : ""}>
+                            {key === "shares"
+                              ? row[key]!.toLocaleString("en-US", {
+                                  notation: "compact",
+                                  maximumFractionDigits: 1,
+                                })
+                              : amount(row[key], row.currency, true)}
+                          </span>
+                          <div
+                            className="overview-trend-track"
+                            data-signed={signed}
+                          >
+                            <i
+                              data-negative={row[key]! < 0}
+                              data-shares={key === "shares"}
+                              style={{
+                                height: `${Math.max(1, (Math.abs(row[key]!) / scale) * (signed ? 48 : 96))}%`,
+                              }}
+                            />
+                          </div>
+                          <small>{row.end.slice(0, 7)}</small>
+                        </div>
                       ))}
-                    </ul>
-                  </details>
-                </figure>
-              );
-            })}
+                    </div>
+                    <details>
+                      <summary>Read values</summary>
+                      <ul>
+                        {rows.map((row) => (
+                          <li key={row.end}>
+                            {row.end}:{" "}
+                            {key === "shares"
+                              ? row[key]!.toLocaleString("en-US")
+                              : amount(row[key], row.currency)}
+                          </li>
+                        ))}
+                      </ul>
+                    </details>
+                  </figure>
+                );
+              })}
+            </div>
+          </section>
+        )}
+        <aside className="overview-case-review">
+          <h3>What changes the case</h3>
+          {b.support.length > 0 && (
+            <div className="case-review-row" data-tone="positive">
+              <span aria-hidden="true">↑</span>
+              <div>
+                <b>Supporting evidence</b>
+                <p>{b.support[0]}</p>
+              </div>
+            </div>
+          )}
+          <div className="case-review-row" data-tone="risk">
+            <span aria-hidden="true">↓</span>
+            <div>
+              <b>Main risk</b>
+              <p>{b.risk}</p>
+              {b.counterCase.length > 0 && <small>{b.counterCase[0]}</small>}
+            </div>
           </div>
-        </section>
-      )}
-      <div className={`overview-visual-risk ${warning ? "caution" : ""}`}>
-        <b>Main risk</b>
-        <span>
-          {b.conflicting
-            ? "Valuation inputs conflict; scenario estimates are withheld."
-            : b.risk}
-        </span>
-        <button className="text-button" onClick={() => onTab("Thesis")}>
-          View the case ↗
-        </button>
+          <button
+            className="case-review-row case-review-event"
+            onClick={() => onTab("News")}
+          >
+            <span aria-hidden="true">↗</span>
+            <div>
+              <b>
+                Next report ·{" "}
+                {next ? dateLabel(next.date) : "Date not supplied"}
+              </b>
+              <p>Review growth, cash generation and guidance.</p>
+            </div>
+          </button>
+          <button className="text-button" onClick={() => onTab("Thesis")}>
+            View the business case ↗
+          </button>
+        </aside>
       </div>
-      {b.counterCase.length > 0 && (
-        <div className="overview-countercase">
-          <b>What would change this view?</b>
-          <span>{b.counterCase[0]}</span>
-        </div>
-      )}
       {pro && !crypto && (
         <section
           className="overview-pro-signals"

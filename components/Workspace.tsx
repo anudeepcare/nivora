@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 const Discover = dynamic(() => import("./Discover"));
 import PortfolioExposure from "./PortfolioExposure";
-import { pricedInvestmentReturns } from "@/lib/product-attention";
+import { homeFocus, pricedInvestmentReturns } from "@/lib/product-attention";
 import PortfolioRiskSummary, {
   usePortfolioCalendar,
 } from "./PortfolioRiskSummary";
@@ -47,7 +47,13 @@ import Search from "./Search";
 import HomeUpdates from "./HomeUpdates";
 import { api } from "@/lib/client";
 import { workspaceSymbolBatches } from "@/lib/workspace";
-import {mergePortfolioQuotes,quoteCoverage,refreshIntervals,usablePortfolioQuote,type RefreshMode} from "@/lib/portfolio-quotes";
+import {
+  mergePortfolioQuotes,
+  quoteCoverage,
+  refreshIntervals,
+  usablePortfolioQuote,
+  type RefreshMode,
+} from "@/lib/portfolio-quotes";
 
 type Quotes = Record<
   string,
@@ -78,12 +84,24 @@ export function useWorkspaceQuotes(
     ),
     [error, setError] = useState("");
   const liveFresh = useRef(new Set<string>());
-  const [dataOwner,setDataOwner]=useState(owner);
-  const latestData=useRef(data);latestData.current=dataOwner===owner?data:{};
-  const [mode,setMode]=useState<RefreshMode>('balanced');
-  const [checkedAt,setCheckedAt]=useState<string|null>(null);
-  useEffect(()=>{if(scope!=='portfolio'||demo||!owner)return;try{const saved=localStorage.getItem('auryn-refresh-v1:'+owner);if(saved&&saved in refreshIntervals)setMode(saved as RefreshMode);}catch{}},[owner,scope,demo]);
-  const changeMode=(value:RefreshMode)=>{setMode(value);try{if(owner)localStorage.setItem('auryn-refresh-v1:'+owner,value);}catch{}};
+  const [dataOwner, setDataOwner] = useState(owner);
+  const latestData = useRef(data);
+  latestData.current = dataOwner === owner ? data : {};
+  const [mode, setMode] = useState<RefreshMode>("balanced");
+  const [checkedAt, setCheckedAt] = useState<string | null>(null);
+  useEffect(() => {
+    if (scope !== "portfolio" || demo || !owner) return;
+    try {
+      const saved = localStorage.getItem("auryn-refresh-v1:" + owner);
+      if (saved && saved in refreshIntervals) setMode(saved as RefreshMode);
+    } catch {}
+  }, [owner, scope, demo]);
+  const changeMode = (value: RefreshMode) => {
+    setMode(value);
+    try {
+      if (owner) localStorage.setItem("auryn-refresh-v1:" + owner, value);
+    } catch {}
+  };
   const refresh = useCallback(() => setRevision((x) => x + 1), []);
   // Discovering a hybrid/Twelve connection must not abort and restart a quote
   // batch that already began while provider metadata was loading.
@@ -110,11 +128,35 @@ export function useWorkspaceQuotes(
       const row = cache.get("quote:" + symbol);
       if (row) cached[symbol] = row.value as Quotes[string];
     }
-    let persisted:Quotes={};
-    if(owner&&!demo){try{const saved=JSON.parse(localStorage.getItem('auryn-portfolio-quotes-v1:'+owner)||'null');if(saved?.version===1&&saved.rows&&typeof saved.rows==='object'){persisted=saved.rows;setCheckedAt(typeof saved.checkedAt==='string'?saved.checkedAt:null);}}catch{}}
-    const baseline=mergePortfolioQuotes(mergePortfolioQuotes(persisted,cached,selected.flat()),latestData.current,selected.flat());
-    setDataOwner(owner);setData(baseline);
-    setReady(Object.values(baseline).some(r=>r.quote?.price!=null)||!selected.length);
+    let persisted: Quotes = {};
+    if (owner && !demo) {
+      try {
+        const saved = JSON.parse(
+          localStorage.getItem("auryn-portfolio-quotes-v1:" + owner) || "null",
+        );
+        if (
+          saved?.version === 1 &&
+          saved.rows &&
+          typeof saved.rows === "object"
+        ) {
+          persisted = saved.rows;
+          setCheckedAt(
+            typeof saved.checkedAt === "string" ? saved.checkedAt : null,
+          );
+        }
+      } catch {}
+    }
+    const baseline = mergePortfolioQuotes(
+      mergePortfolioQuotes(persisted, cached, selected.flat()),
+      latestData.current,
+      selected.flat(),
+    );
+    setDataOwner(owner);
+    setData(baseline);
+    setReady(
+      Object.values(baseline).some((r) => r.quote?.price != null) ||
+        !selected.length,
+    );
     setLoading(selected.length > 0);
     setError("");
     let windowStarted = Date.now();
@@ -162,25 +204,55 @@ export function useWorkspaceQuotes(
             abort.signal,
           );
           if (!active) break;
-          next=mergePortfolioQuotes(next,result,selected.flat());
-          for (const [symbol,row] of Object.entries(result)) {
-            if(usablePortfolioQuote(row.quote))cache.set("quote:"+symbol,{at:Date.now(),value:next[symbol]});
-            if(row.error)setError('Some prices could not be updated. Available older prices remain included.');
+          next = mergePortfolioQuotes(next, result, selected.flat());
+          for (const [symbol, row] of Object.entries(result)) {
+            if (usablePortfolioQuote(row.quote))
+              cache.set("quote:" + symbol, {
+                at: Date.now(),
+                value: next[symbol],
+              });
+            if (row.error)
+              setError(
+                "Some prices could not be updated. Available older prices remain included.",
+              );
           }
           requested += weight;
         } catch (e) {
           if (active) {
             setError(e instanceof Error ? e.message : "Quotes unavailable");
-
           }
           requested += weight;
         }
       }
       if (active) {
-        next=mergePortfolioQuotes(next,latestData.current,selected.flat());
+        next = mergePortfolioQuotes(next, latestData.current, selected.flat());
         setData(next);
-        const checked=new Date().toISOString();setCheckedAt(checked);
-        if(owner&&!demo){try{const storageKey='auryn-portfolio-quotes-v1:'+owner;const stored=JSON.parse(localStorage.getItem(storageKey)||'null');const rows=mergePortfolioQuotes(stored?.version===1?stored.rows??{}:{},next,[...new Set([...Object.keys(stored?.version===1?stored.rows??{}:{}),...Object.keys(next)])]);localStorage.setItem(storageKey,JSON.stringify({version:1,checkedAt:checked,rows}));}catch{}}
+        const checked = new Date().toISOString();
+        setCheckedAt(checked);
+        if (owner && !demo) {
+          try {
+            const storageKey = "auryn-portfolio-quotes-v1:" + owner;
+            const stored = JSON.parse(
+              localStorage.getItem(storageKey) || "null",
+            );
+            const rows = mergePortfolioQuotes(
+              stored?.version === 1 ? (stored.rows ?? {}) : {},
+              next,
+              [
+                ...new Set([
+                  ...Object.keys(
+                    stored?.version === 1 ? (stored.rows ?? {}) : {},
+                  ),
+                  ...Object.keys(next),
+                ]),
+              ],
+            );
+            localStorage.setItem(
+              storageKey,
+              JSON.stringify({ version: 1, checkedAt: checked, rows }),
+            );
+          } catch {}
+        }
         cache.set("workspace-quotes:" + key, { at: Date.now(), value: true });
         setReady(true);
         setLoading(false);
@@ -196,18 +268,30 @@ export function useWorkspaceQuotes(
     const tick = () => {
       if (document.visibilityState === "visible" && !loading) refresh();
     };
-    const interval=scope==='portfolio'?refreshIntervals[mode]:120000;
-    if(!interval)return;
-    let last=Date.now();
-    const due=()=>{if(Date.now()-last>=interval&&document.visibilityState==='visible'&&!loading){last=Date.now();tick();}};
-    const timer = setInterval(due, Math.min(interval,60000));
+    const interval = scope === "portfolio" ? refreshIntervals[mode] : 120000;
+    if (!interval) return;
+    let last = Date.now();
+    const due = () => {
+      if (
+        Date.now() - last >= interval &&
+        document.visibilityState === "visible" &&
+        !loading
+      ) {
+        last = Date.now();
+        tick();
+      }
+    };
+    const timer = setInterval(due, Math.min(interval, 60000));
     document.addEventListener("visibilitychange", due);
     return () => {
       clearInterval(timer);
       document.removeEventListener("visibilitychange", due);
     };
   }, [demo, loading, refresh, scope, mode]);
-  const live = useLivePrices(groups.flat(), !!demo || (scope==='portfolio' && mode!=='live'));
+  const live = useLivePrices(
+    groups.flat(),
+    !!demo || (scope === "portfolio" && mode !== "live"),
+  );
   liveFresh.current = new Set(
     live.connected
       ? Object.values(live.ticks)
@@ -218,7 +302,7 @@ export function useWorkspaceQuotes(
   const pricedData = useMemo(
     () =>
       Object.fromEntries(
-        Object.entries(dataOwner===owner?data:{}).map(([symbol, row]) => [
+        Object.entries(dataOwner === owner ? data : {}).map(([symbol, row]) => [
           symbol,
           {
             ...row,
@@ -245,7 +329,13 @@ export function useWorkspaceQuotes(
   useEffect(() => {
     let advanced = false;
     for (const [symbol, row] of Object.entries(pricedData)) {
-      if (usablePortfolioQuote(row.quote) && (!usablePortfolioQuote(data[symbol]?.quote) || Date.parse(row.quote!.asOf || '') > Date.parse(data[symbol]?.quote?.asOf || ''))) advanced = true;
+      if (
+        usablePortfolioQuote(row.quote) &&
+        (!usablePortfolioQuote(data[symbol]?.quote) ||
+          Date.parse(row.quote!.asOf || "") >
+            Date.parse(data[symbol]?.quote?.asOf || ""))
+      )
+        advanced = true;
       if (!row.quote || row.quote.stale) continue;
       const old = cache.get("quote:" + symbol)?.value as
         | Quotes[string]
@@ -257,9 +347,21 @@ export function useWorkspaceQuotes(
         cache.set("quote:" + symbol, { at: Date.now(), value: row });
     }
     // Commit streamed observations too: expiry/reconnect must not restore an older REST snapshot.
-    if (advanced && dataOwner === owner) setData(prior => mergePortfolioQuotes(prior, pricedData, Object.keys(pricedData)));
+    if (advanced && dataOwner === owner)
+      setData((prior) =>
+        mergePortfolioQuotes(prior, pricedData, Object.keys(pricedData)),
+      );
   }, [pricedData, cache, data, dataOwner, owner]);
-  return { data: pricedData, loading, ready, error, refresh, mode, changeMode, checkedAt };
+  return {
+    data: pricedData,
+    loading,
+    ready,
+    error,
+    refresh,
+    mode,
+    changeMode,
+    checkedAt,
+  };
 }
 export function ResearchHome() {
   const [discoveryOpen, setDiscoveryOpen] = useState(false);
@@ -354,45 +456,17 @@ export function Overview() {
       .filter(([, v]) => v.quote)
       .map(([k, v]) => [k, v.quote!]),
   );
-  const totals = portfolioTotals(workspace?.positions || [], q);
-  const holdings = (workspace?.positions || []).filter(
-    (p) => p.assetType !== "cash",
-  );
-  const priced = holdings.filter(
-    (p) =>
-      p.currency === "USD" &&
-      q[p.symbol]?.currency === "USD" &&
-      !q[p.symbol]?.stale &&
-      q[p.symbol]?.price != null,
-  );
-  const largest = [...priced].sort(
-    (a, b) => b.quantity * q[b.symbol].price! - a.quantity * q[a.symbol].price!,
-  )[0];
-  const worst = [...priced]
-    .filter((p) => p.cost > 0)
-    .sort(
-      (a, b) => q[a.symbol].price! / a.cost - q[b.symbol].price! / b.cost,
-    )[0];
-  const focus = [
-    ...(largest && totals.knownValue > 0
-      ? [
-          {
-            symbol: largest.symbol,
-            title: `${largest.symbol} is ${(((largest.quantity * q[largest.symbol].price!) / totals.knownValue) * 100).toFixed(1)}% of priced value`,
-            detail: "Review concentration alongside your business conviction.",
-          },
-        ]
-      : []),
-    ...(worst
-      ? [
-          {
-            symbol: worst.symbol,
-            title: `${worst.symbol} has the largest percentage drawdown`,
-            detail: `${percent((q[worst.symbol].price! / worst.cost - 1) * 100, true)} versus recorded cost. A loss alone is not a buy signal.`,
-          },
-        ]
-      : []),
-  ];
+  const focus = homeFocus(workspace?.positions ?? [], q).map((f) => ({
+    ...f,
+    title:
+      f.kind === "concentration"
+        ? `${f.symbol} is ${percent(f.weight)} of priced value`
+        : `${f.symbol} has the largest percentage drawdown`,
+    detail:
+      f.kind === "concentration"
+        ? "Review concentration alongside your business conviction."
+        : `${percent(f.returnPct, true)} versus recorded cost. A loss alone is not a buy signal.`,
+  }));
   return (
     <section className="home-workspace">
       <PageHeading
@@ -433,6 +507,11 @@ export function Overview() {
                 <div className="focus-text">
                   <strong>{f.title}</strong>
                   <p>{f.detail}</p>
+                  {f.older && (
+                    <small className="home-older-price">
+                      Based on an older usable quote
+                    </small>
+                  )}
                 </div>
                 <ArrowUpRight size={19} />
               </Link>
@@ -940,15 +1019,76 @@ export function Portfolio() {
         </div>
       )}
       <div className="quote-progress portfolio-refresh">
-        <span role="status">{quotes.loading?'Updating quietly…':quotes.error?'Some updates unavailable':'Valuation ready'} · {quoteCoverage(positions.filter(p=>p.assetType!=='cash').map(p=>p.symbol),quotes.data||{}).current} current · {quoteCoverage(positions.filter(p=>p.assetType!=='cash').map(p=>p.symbol),quotes.data||{}).older} older · {quoteCoverage(positions.filter(p=>p.assetType!=='cash').map(p=>p.symbol),quotes.data||{}).unpriced} unpriced
-        {quotes.checkedAt&&<small>Last check {quoteTime(quotes.checkedAt,true)}</small>}
+        <span role="status">
+          {quotes.loading
+            ? "Updating quietly…"
+            : quotes.error
+              ? "Some updates unavailable"
+              : "Valuation ready"}{" "}
+          ·{" "}
+          {
+            quoteCoverage(
+              positions
+                .filter((p) => p.assetType !== "cash")
+                .map((p) => p.symbol),
+              quotes.data || {},
+            ).current
+          }{" "}
+          current ·{" "}
+          {
+            quoteCoverage(
+              positions
+                .filter((p) => p.assetType !== "cash")
+                .map((p) => p.symbol),
+              quotes.data || {},
+            ).older
+          }{" "}
+          older ·{" "}
+          {
+            quoteCoverage(
+              positions
+                .filter((p) => p.assetType !== "cash")
+                .map((p) => p.symbol),
+              quotes.data || {},
+            ).unpriced
+          }{" "}
+          unpriced
+          {quotes.checkedAt && (
+            <small>Last check {quoteTime(quotes.checkedAt, true)}</small>
+          )}
         </span>
-        <div className="portfolio-refresh-controls"><label>Updates<select aria-label="Portfolio price updates" value={quotes.mode} onChange={e=>quotes.changeMode(e.target.value as RefreshMode)}><option value="balanced">Every 5 minutes</option><option value="live">Live</option><option value="hourly">Hourly</option><option value="manual">Manual</option></select></label><button className="text-button" disabled={quotes.loading} onClick={quotes.refresh}><RefreshCw size={14}/>{quotes.loading?'Updating':'Refresh'}</button></div>
+        <div className="portfolio-refresh-controls">
+          <label>
+            Updates
+            <select
+              aria-label="Portfolio price updates"
+              value={quotes.mode}
+              onChange={(e) => quotes.changeMode(e.target.value as RefreshMode)}
+            >
+              <option value="balanced">Every 5 minutes</option>
+              <option value="live">Live</option>
+              <option value="hourly">Hourly</option>
+              <option value="manual">Manual</option>
+            </select>
+          </label>
+          <button
+            className="text-button"
+            disabled={quotes.loading}
+            onClick={quotes.refresh}
+          >
+            <RefreshCw size={14} />
+            {quotes.loading ? "Updating" : "Refresh"}
+          </button>
+        </div>
       </div>
       {error && !modal.current?.open && <Notice error>{error}</Notice>}
       <div className="portfolio-summary-layout">
         <section className="panel portfolio-balance">
-          <AccountBalances assets={totals.knownValue} ready={!!workspace && quotes.ready} missing={totals.missing.length} />
+          <AccountBalances
+            assets={totals.knownValue}
+            ready={!!workspace && quotes.ready}
+            missing={totals.missing.length}
+          />
           <div className="money-sub">
             <span
               className={

@@ -210,7 +210,12 @@ export default function PublicLanding({
           <span>AURYN</span>
         </Link>
         <div>
-          <a href="/#why-auryn" className="public-method">Why AURYN</a>
+          <a href="/#why-auryn" className="public-method">
+            Why AURYN
+          </a>
+          <Link href="/sample" className="public-method">
+            Explore
+          </Link>
           <Link href="/login">Sign in</Link>
           <Link href="/login?mode=signup" className="public-button compact">
             Get started <ArrowUpRight size={15} />
@@ -239,18 +244,17 @@ export default function PublicLanding({
           <section className="public-hero">
             <div className="public-hero-copy">
               <span className="public-eyebrow">
-                <i /> An investment research workspace
+                <i /> Business first. Price in perspective.
               </span>
               <h1>
-                See the business.
+                Know what you own.
                 <br />
-                <em>Understand the price.</em>
-                <br />
-                Invest with perspective.
+                <em>See what matters next.</em>
               </h1>
               <p>
-                Company quality, valuation scenarios and monthly price
-                conditions—connected to the investments you actually hold.
+                Understand the business, put its price in context, and follow
+                the changes that matter to your investments. One calm workspace,
+                with the evidence close by.
               </p>
               <div className="public-actions">
                 <Link href="/login?mode=signup" className="public-button">
@@ -273,120 +277,100 @@ export default function PublicLanding({
               <PublicSample />
             </div>
           </section>
-          <section
-            className="public-value-strip"
-            aria-label="Connected research"
-          >
-            <span>Business quality</span>
-            <i>↗</i>
-            <span>Valuation context</span>
-            <i>↗</i>
-            <span>Monthly discipline</span>
-            <i>↗</i>
-            <span>Portfolio perspective</span>
-          </section>
           <section id="why-auryn" className="public-why" aria-label="Why AURYN">
-            <div><span className="public-eyebrow">Why AURYN</span><h2>A stronger process.<br/>A clearer perspective.</h2><p>Your research should connect the quality of a business, the price you pay and the risks you already hold.</p></div>
-            <ol><li><span>BUSINESS FIRST</span><h3>Look beyond the ticker.</h3><p>Follow revenue into profit and cash. See financing and dilution alongside growth, with comparable reported periods.</p></li><li><span>PRICE SECOND</span><h3>Know what each number means.</h3><p>Analyst targets, conditional scenarios and price-based accumulation zones are different tools. AURYN keeps their assumptions and dates separate.</p></li><li><span>YOUR PERSPECTIVE</span><h3>Keep the important things close.</h3><p>Your holdings, concentration, news and upcoming reports belong in the same research workflow. Choose Simple or Pro depth and your preferred appearance.</p></li></ol>
-          </section>
-          <section className="public-features">
             <header>
               <span className="public-eyebrow">
-                Less noise. More understanding.
+                A connected investing workflow
               </span>
               <h2>
-                Your next decision deserves
+                Less searching.
                 <br />
-                more than a price chart.
+                More understanding.
               </h2>
-              <p>
-                Start with a clear assessment. Follow the evidence when you want
-                to go deeper.
-              </p>
+              <p>Start with the answer. Go as deep as you need.</p>
             </header>
-            <div className="public-feature-grid">
+            <div className="public-journey">
               {[
                 {
                   icon: Layers3,
                   n: "01",
-                  title: "Understand what you own",
-                  text: "Read growth, margins, cash generation and financing risks together. Use the right lens for the business.",
+                  title: "Understand the business",
+                  text: "Growth, cash generation, dilution and funding—read together, with strengths and risks side by side.",
+                  tone: "blue",
+                  link: "Business & financials",
                 },
                 {
                   icon: ChartNoAxesCombined,
                   n: "02",
-                  title: "Put the price in context",
-                  text: "Compare supported scenarios, inspect assumptions and keep analyst consensus separate from modelled value.",
-                },
-                {
-                  icon: ShieldCheck,
-                  n: "03",
-                  title: "Give discipline a structure",
-                  text: "Explore confirmed monthly conditions, provisional changes and transparent historical policy comparisons.",
+                  title: "Understand the opportunity",
+                  text: "Keep analyst targets, supported valuation scenarios and settled price conditions distinct. See the assumptions behind each.",
+                  tone: "teal",
+                  link: "Value & technicals",
                 },
                 {
                   icon: Wallet,
-                  n: "04",
-                  title: "See your portfolio clearly",
-                  text: "Review concentration, upcoming earnings and sector context. Keep assets, managed balances and margin debt distinct.",
+                  n: "03",
+                  title: "Stay close to what changes",
+                  text: "Follow company news and upcoming reports alongside your holdings. Review concentration without losing the business context.",
+                  tone: "violet",
+                  link: "Home & portfolio",
                 },
               ].map((x) => (
-                <article key={x.n}>
-                  <div>
+                <article key={x.n} data-tone={x.tone}>
+                  <div className="journey-top">
                     <x.icon size={23} />
                     <span>{x.n}</span>
                   </div>
                   <h3>{x.title}</h3>
                   <p>{x.text}</p>
+                  <span className="journey-label">{x.link}</span>
                 </article>
               ))}
             </div>
           </section>
-          <section className="public-process">
+          <section
+            className="public-principles"
+            aria-label="Research you can question"
+          >
             <div>
-              <span className="public-eyebrow">
-                The answer, then the evidence
-              </span>
+              <ShieldCheck size={24} />
               <h2>
-                Simple enough to start.
+                Confidence in the process.
                 <br />
-                Deep enough to question.
+                Room for uncertainty.
               </h2>
               <p>
-                AURYN separates business strength, valuation and price
-                conditions. Missing evidence stays visible. An
-                attractive-looking chart doesn’t establish a strong company.
+                Company evidence, analyst opinion and model assumptions have
+                different jobs. AURYN keeps them separate so you can judge the
+                case for yourself.
               </p>
               <Link href="/methodology" className="public-secondary">
-                Read the methodology <ArrowUpRight size={16} />
+                How AURYN works <ArrowRight size={17} />
               </Link>
             </div>
-            <ol>
+            <ul>
               <li>
-                <span>01</span>
-                <div>
-                  <h3>See the assessment</h3>
-                  <p>What the available evidence supports—and the main risk.</p>
-                </div>
+                <Check size={18} />
+                <span>
+                  <b>The case and the counter-case.</b> Read the strongest
+                  evidence on both sides.
+                </span>
               </li>
               <li>
-                <span>02</span>
-                <div>
-                  <h3>Understand the reason</h3>
-                  <p>Read the supporting case and the counter-case together.</p>
-                </div>
+                <Check size={18} />
+                <span>
+                  <b>Dates alongside the numbers.</b> Know when a quote or
+                  financial observation was recorded.
+                </span>
               </li>
               <li>
-                <span>03</span>
-                <div>
-                  <h3>Inspect the evidence</h3>
-                  <p>
-                    Open dated inputs, model assumptions and calculation
-                    details.
-                  </p>
-                </div>
+                <Check size={18} />
+                <span>
+                  <b>Depth when you need it.</b> Choose Simple or Pro, with
+                  light, dark and saved appearance preferences.
+                </span>
               </li>
-            </ol>
+            </ul>
           </section>
           <section className="public-faq">
             <h2>Before you begin.</h2>
@@ -419,9 +403,8 @@ export default function PublicLanding({
               Business first. Price second. Timing alongside.
             </span>
             <h2>
-              Make room for
-              <br />
-              better questions.
+              Your research.
+              <br />A clearer perspective.
             </h2>
             <Link href="/login?mode=signup" className="public-button">
               Create your workspace <ArrowUpRight size={18} />

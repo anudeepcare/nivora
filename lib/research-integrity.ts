@@ -15,7 +15,7 @@ export function metricEvidence(r:Research,metrics:Metric[],calculated=false){
 export function financingContext(r:Research){
  const {latest:p,prior}=latestFinancialEvidence(r);
  const cash=p?.cash,ocf=p?.operatingCashFlow,fcf=p?.fcf;
- const applicable=r.company.assetType==='stock'&&!/bank|insurance|reit/i.test((r.company.sector??'')+' '+(r.evidence?.profile.industry??''));
+ const applicable=r.company.assetType==='stock'&&!/bank|insurance|reit/i.test((r.company.sector??'')+' '+(r.evidence?.profile?.industry??''));
  const months=p?(Date.parse(p.end)-Date.parse(p.start))/86400000/30.4375:null;
  const annualBasis=months!=null&&months>=10&&months<=14;
  const runway=(burn:number|null|undefined)=>applicable&&annualBasis&&cash!=null&&cash>=0&&burn!=null&&burn<0?cash/(-burn/12):null;

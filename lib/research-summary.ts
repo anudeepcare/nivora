@@ -245,3 +245,12 @@ export function valuationScale(values: number[], quote: number) {
     quotePosition: position(quote),
   };
 }
+
+/** Reported per-share inputs do not depend on a live market quote. */
+export function reportedCashPerShare(r:Research,p?:FinancialPeriod|null){
+ const empty={cash:null as number|null,sbc:null as number|null};
+ if(!p||r.company.assetType!=='stock'||r.company.foreignListing||p.currency!==r.company.currency||p.currency!==r.quote.currency||Date.parse(r.retrievedAt)-Date.parse(p.end)>550*86400000)return empty;
+ const day=r.retrievedAt.slice(0,10),share=r.facts.filter(f=>f.metric==='shares'&&f.scope==='instant'&&f.unit==='shares'&&Number.isFinite(f.value)&&f.value>0&&f.end<=day&&f.filed<=day&&!/^(20-F|40-F)/.test(f.form)&&Date.parse(day)-Date.parse(f.end)<=180*86400000).sort((a,b)=>b.end.localeCompare(a.end)||b.filed.localeCompare(a.filed))[0];
+ if(!share)return empty;
+ return {cash:p.fcf!=null&&Number.isFinite(p.fcf)&&p.fcf>0?p.fcf/share.value:null,sbc:p.stockCompensation!=null&&Number.isFinite(p.stockCompensation)&&p.stockCompensation>=0?p.stockCompensation/share.value:null};
+}

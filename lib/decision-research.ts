@@ -3,6 +3,7 @@ import type { Research } from "./types";
 import { latestFinancialEvidence, indicators } from "./analysis.ts";
 import {
   marketMultiples,
+  reportedCashPerShare,
   financialCase,
   comparableGrowth,
 } from "./research-summary.ts";
@@ -132,6 +133,7 @@ function computeResearchDecision(
     p = e.latest,
     q = e.prior,
     m = marketMultiples(r, p),
+    reported = reportedCashPerShare(r,p),
     special = /bank|insurance|reit|real estate investment trust/i.test(
       [r.company.sector, r.evidence?.profile?.industry].join(" "),
     );
@@ -670,19 +672,8 @@ function computeResearchDecision(
       rangePosition: range,
       observations: bars.length,
     },
-    modelCashFlowPerShare:
-      m.marketCap != null &&
-      p?.fcf != null &&
-      p.fcf > 0 &&
-      r.quote.price != null
-        ? p.fcf / (m.marketCap / r.quote.price)
-        : null,
-    modelSbcPerShare:
-      m.marketCap != null &&
-      p?.stockCompensation != null &&
-      r.quote.price != null
-        ? p.stockCompensation / (m.marketCap / r.quote.price)
-        : null,
+    modelCashFlowPerShare: reported.cash,
+    modelSbcPerShare: reported.sbc,
     modelEligible:
       !special && r.company.assetType === "stock" && !r.company.foreignListing,
   };

@@ -14,7 +14,7 @@ test("brief keeps consensus separate and flags inconsistent share/listing inputs
     },
   });
   assert.equal(b.conflicting, true);
-  assert.equal(b.value.title, "Resolve listing inputs");
+  assert.equal(b.value.title, "AURYN valuation is unavailable");
   assert.ok(b.checks.some((x) => x.status === "conflicting"));
   assert.ok(b.business.reason.length > 0);
   assert.equal(typeof b.business.reason, "string");
@@ -39,7 +39,7 @@ test("crypto and unsupported specialist businesses do not inherit generic operat
       },
     },
   });
-  assert.equal(bank.business.title, "Use the sector-specific lens");
+  assert.equal(bank.business.title, "Review bank returns and credit risk");
   assert.notEqual(bank.coverage.family, "operating-company");
 });
 

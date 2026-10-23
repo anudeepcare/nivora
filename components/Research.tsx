@@ -396,9 +396,9 @@ export default function Research({ symbol }: { symbol: string }) {
         <div className="identity">
           <SecurityLogo symbol={symbol} size={52} />
           <div>
-            <h1>{r.company.name}</h1>
+            <h1>{symbol}</h1>
             <p className="muted small">
-              {symbol} · {r.company.exchange || "Listing"} · {r.quote.currency}
+              {r.company.name} · {r.company.exchange || "Listing"} · {r.quote.currency}
             </p>
             <div className="security-context">{headerContext.sector&&<span>{headerContext.sector}</span>}{headerContext.marketCap!=null&&<span title={headerContext.asOf?`Reported market capitalization · ${dateLabel(headerContext.asOf)}`:undefined}>Market cap <b>{amount(headerContext.marketCap,headerContext.currency,true)}</b></span>}</div>
           </div>
@@ -563,7 +563,7 @@ export default function Research({ symbol }: { symbol: string }) {
           <>
             <ModelAssessment research={r} />
             <ResearchOutlook research={r} detailed />
-            <FundedScenarios key={r.company.symbol} research={r} />
+            <details className="research-optional"><summary>Build a personal operating scenario</summary><FundedScenarios key={r.company.symbol} research={r}/></details>
             <details
               className="valuation-workbench"
               open={preferences.detail === "advanced"}

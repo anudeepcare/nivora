@@ -1,3 +1,7 @@
+# Continuation note
+
+Separate weekly-v1 accumulation, a focused public storefront and corrected Home coverage have now been added. See CONSOLIDATED_PRODUCT_BUILD.md for current scope. The observations and private-signal limitations below remain unchanged.
+
 # Three-platform comparison and AURYN implementation
 
 Observed authenticated web interfaces on 23 October 2026 UTC, using the displayed 22 October US close where specified. These are interface observations, not independently audited company financials. Five companies were inspected across all three products: APP, IREN, ASTS, MSFT and NU. An additional DCA reading was inspected for SAP. AURYN's connected-history audit covers fourteen instruments; raw licensed histories are excluded from this distribution.
