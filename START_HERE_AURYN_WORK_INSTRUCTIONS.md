@@ -1,3 +1,7 @@
+# Approved research composition — 23 October
+
+Read `docs/APPROVED_RESEARCH_20261023.md` and `verification/REPORT.json` first. Shared tokens, the stock-overview composition, annual trend charts and confirmed/forming DCA presentation were updated. The approved image contains illustrative numbers; never use them as production data. PWA geometry, quote retention and model eligibility remain unchanged. This revision does not claim every page has been redesigned or visually accepted.
+
 # Current scenario selection
 
 Read `docs/SCENARIO_PRIORITY.md`: eligible earnings Bear/Base/Bull cases take priority over analyst consensus; revenue-only sensitivities do not become headline valuations. This supersedes the earlier blanket suppression instruction below.

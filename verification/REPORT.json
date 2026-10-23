@@ -472,5 +472,20 @@
     "verification": "360 tests, TypeScript, production build, 83 API checks",
     "competitorReview": "Read-only APP/NOW/MSFT/META DCF and EPS displays inspected; not copied or treated as numerical ground truth",
     "deployed": false
+  },
+  "approvedResearch20261023": {
+    "unitTests": 363,
+    "unitTestsPassed": 363,
+    "typecheck": "passed",
+    "productionBuild": "passed",
+    "apiChecks": 83,
+    "apiChecksPassed": 83,
+    "apiMode": "compiled handlers with identity/provider fixtures; no private provider verification",
+    "visualReference": "docs/design/approved-research-20261023.png",
+    "implementationGuide": "docs/APPROVED_RESEARCH_20261023.md",
+    "visualAcceptance": "not completed; cloud browser could not open the local component preview (ERR_BLOCKED_BY_CLIENT)",
+    "pwaGeometry": "unchanged; no new physical iPhone acceptance",
+    "policy": "monthly-v1 unchanged; no demonstrated investment edge",
+    "scope": "shared content primitives and stock overview, not an all-page redesign"
   }
 }

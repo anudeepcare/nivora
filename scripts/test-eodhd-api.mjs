@@ -262,11 +262,11 @@ globalThis.fetch = async (input) => {
     if (u.pathname === "/api/news")
       return Response.json([
         {
-          date: "2026-10-16",
+          date: new Date(Date.now() - 86400000).toISOString().slice(0, 10),
           title: "Reported event",
           link: "https://example.com/report",
         },
-        { date: "2026-10-16", title: "Unsafe", link: "javascript:alert(1)" },
+        { date: new Date(Date.now() - 86400000).toISOString().slice(0, 10), title: "Unsafe", link: "javascript:alert(1)" },
         {
           date: "2099-01-01",
           title: "Future",

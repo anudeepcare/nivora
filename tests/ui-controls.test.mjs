@@ -637,7 +637,7 @@ test('visual overview keeps the chart, scenarios, catalyst and risk visible with
  assert.doesNotMatch(html,/Completed-price studies/);
  const pro=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT,onTab:()=>{},pro:true}));assert.match(pro,/Completed-price studies/);
  if(b.scenarioEligible)assert.match(html,/data-scenarios="visible"/);else assert.doesNotMatch(html,/data-scenarios="visible"/);assert.match(html,/Bear, base &amp; bull|Analyst expectations|Fair value not established/);
- assert.match(html,/data-chart="visible"/);assert.match(html,/Accumulation/);assert.match(html,/Next report/);assert.match(html,/Main risk/);
+ assert.match(html,/data-chart="visible"/);assert.match(html,/Accumulation/);assert.match(html,/Next report/);assert.match(html,/Main risk/);assert.match(html,/Confirmed and forming monthly conditions/);assert.match(html,/Business in motion/);assert.match(html,/Reported annual periods/);
  assert.doesNotMatch(html,/Why this assessment|available metrics|decision-evidence-grid|research-brief-v2|T\d{2}:\d{2}:\d{2}/);
 });
 

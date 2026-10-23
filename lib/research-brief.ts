@@ -1,5 +1,9 @@
 import type { Research } from "./types";
-import { perspective, latestFinancialEvidence } from "./analysis.ts";
+import {
+  perspective,
+  latestFinancialEvidence,
+  annualRows,
+} from "./analysis.ts";
 import { researchDecision } from "./decision-research.ts";
 import { researchOutlook, consensusOutlook } from "./outlook.ts";
 import { modelCoverage } from "./research-depth.ts";
@@ -69,6 +73,23 @@ export function researchBrief(r: Research) {
   const specialist = coverage.family !== "operating-company";
   const previous = latestFinancialEvidence(r).prior;
   return {
+    trajectory:
+      r.company.assetType === "crypto"
+        ? []
+        : annualRows(r)
+            .filter(
+              (row) =>
+                row.currency === latest?.currency &&
+                row.basis === latest?.basis,
+            )
+            .slice(-5)
+            .map((row) => ({
+              end: row.end,
+              currency: row.currency,
+              revenue: row.revenue,
+              fcf: row.fcf,
+              shares: row.weightedShares ?? null,
+            })),
     timing: {
       ma50: p.tech.ma50,
       ma200: p.tech.ma200,
@@ -140,6 +161,10 @@ export function researchBrief(r: Research) {
           : outlook.reason,
     },
     accumulation: {
+      version: p.dca.version,
+      forming: p.dca.forming,
+      drawdown: p.dca.confirmed?.drawdown ?? null,
+      deviation: p.dca.confirmed?.deviation ?? null,
       multiplier: p.dca.confirmed?.multiplier ?? null,
       title: p.dca.confirmed
         ? `${p.dca.confirmed.multiplier}× · ${p.dca.confirmed.multiplier === 0 ? "Pause contributions" : "Monthly contribution condition"}`

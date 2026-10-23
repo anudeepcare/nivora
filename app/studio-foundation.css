@@ -6,6 +6,10 @@
   --muted: #5e6e79;
   --line: #e2e7ec;
   --blue: #2267d8;
+  --dca: #7046cf;
+  --dca-soft: #f0ebff;
+  --radius-panel: 16px;
+  --radius-control: 12px;
   --blue-soft: #eaf0fc;
   --green: #087767;
   --green-soft: #e4f6ef;
@@ -1670,6 +1674,8 @@ dialog::backdrop {
   --muted: #b2bdce;
   --line: #384253;
   --blue: #97baff;
+  --dca: #b9a2ff;
+  --dca-soft: #302745;
   --blue-soft: #2b3954;
   --green: #7bd9b6;
   --green-soft: #183e35;

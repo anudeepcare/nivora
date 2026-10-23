@@ -6,9 +6,9 @@
   --raised: var(--surface);
   --bluewash: var(--blue-soft);
   --teal: var(--green);
-  --purple: #8265bf;
+  --purple: var(--dca);
   --amber: #976516;
-  --radius: 24px;
+  --radius: var(--radius-panel);
   --font-size: 16px;
   --muted2: var(--muted);
 }
@@ -118,8 +118,8 @@ button[aria-pressed="true"] {
   font-size: 14px;
 }
 .desktop-nav a.active {
-  color: var(--ink);
-  background: var(--paper);
+  color: var(--blue);
+  background: var(--blue-soft);
 }
 .brand-link {
   color: var(--ink);
@@ -177,10 +177,10 @@ button[aria-pressed="true"] {
   margin-top: 28px;
 }
 .panel {
-  padding: 25px;
+  padding: 22px;
   background: var(--surface);
-  border-radius: 24px;
-  border: 0;
+  border-radius: var(--radius-panel);
+  border: 1px solid var(--line);
   min-width: 0;
 }
 .panel > .section-heading:first-child {
