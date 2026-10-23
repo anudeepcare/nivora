@@ -43,7 +43,7 @@ export function PricingCards({
       const r = config.rules[k] ?? "pro";
       return r === "free" || (plan === "pro" && r === "pro");
     });
-  const owner = access?.owner && !access.preview;
+  const owner = access?.owner;
   return (
     <div className="pricing-cards">
       {(["free", "pro"] as const).map((plan) => (
@@ -188,7 +188,7 @@ function SignedInPlans() {
     }
   }
   const a = billing?.access ?? access,
-    owner = a.owner && !a.preview,
+    owner = a.owner,
     sub = billing?.subscription;
   const date = (s: string) =>
     new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(

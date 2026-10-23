@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-10-23T14:55:41.189617+00:00",
+  "generatedAt": "2026-10-23T15:25:33.886947+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 476 tests, TypeScript and production build; final npm test adds 3 pricing interaction tests (479 total)",
-    "npm run test:api": "passed: 106 compiled API checks",
+    "npm run verify": "passed: 480 tests, TypeScript and production build (billing-diagnostics-verify.log)",
+    "npm run test:api": "passed: 106 compiled checks (billing-diagnostics-api.log)",
     "git diff --check": "passed",
-    "npm test": "passed: 479 tests",
+    "npm test": "passed: 480 tests",
     "npm run build": "passed with no CSS compilation warnings",
-    "production HTTP": "passed: 14 local HTTP checks; not browser/iPhone visual acceptance",
-    "node scripts/test-auth-provider-api.mjs": "passed: 3 compiled checks; 109 API checks total"
+    "production HTTP": "passed: 14 local HTTP checks (billing-diagnostics-http.log), not visual/iPhone verification",
+    "node scripts/test-auth-provider-api.mjs": "passed: 3 checks; 109 API checks total (billing-diagnostics-auth-api.log)"
   },
-  "domainPostgresAndComponentTests": 479,
+  "domainPostgresAndComponentTests": 480,
   "builtApiChecks": 109,
   "providerSelection": {
     "quotes": "EODHD primary; Twelve fallback for stale or failed primary; retain newest usable stale observation if both fail freshness",
@@ -673,7 +673,7 @@
     "calendarAnchorVerified": true
   },
   "currentUpdate": {
-    "document": "docs/STRIPE_SETUP.md",
+    "document": "docs/BILLING_TROUBLESHOOTING.md",
     "quotePolling": "60-second visible-page REST validation independent of stream health; resume check; no hidden polling",
     "primaryFreshness": "aging primary tries backup during active window; never downgrade newest observation",
     "accessControls": "optional owner controls, grants/revocation, Free/Pro previews, atomic research/AI quotas, direct-write watchlist caps",
@@ -682,7 +682,8 @@
     "deployed": false,
     "currentMembershipVisualAcceptance": false,
     "plans": "Compact two-card Free/Pro screen; owner full-access row and separate admin link; current plan and subscription management",
-    "overview": "Actual shared analyst targets above separately named AURYN scenarios"
+    "overview": "Actual shared analyst targets above separately named AURYN scenarios",
+    "productionCheckout503": "Unresolved: safe diagnostics and owner connection check added; no deployed credentials/log access"
   },
   "dcaComparison30": {
     "asOf": "2026-10-22T23:00:00Z",
@@ -737,6 +738,22 @@
       "No physical iPhone visual review in this update",
       "Vercel project credentials inaccessible",
       "Default billing mode test; live launch separately gated"
+    ]
+  },
+  "billingDiagnostics": {
+    "document": "docs/BILLING_TROUBLESHOOTING.md",
+    "ownerBannerRemoved": true,
+    "previewControls": "Admin page only",
+    "safeErrorCategories": true,
+    "ownerStripeConnectionCheckImplemented": true,
+    "actualOwnerConnectionCheckRun": false,
+    "production503Resolved": false,
+    "productionLogsAccess": "Vercel team scope denied (403)",
+    "currentEvidence": [
+      "billing-diagnostics-verify.log",
+      "billing-diagnostics-api.log",
+      "billing-diagnostics-auth-api.log",
+      "billing-diagnostics-http.log"
     ]
   }
 }

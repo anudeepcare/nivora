@@ -155,17 +155,46 @@ export async function billingAction(
   user: string,
   email: string | undefined,
   action: string,
+  progress: (stage: string) => void = () => {},
 ) {
+  progress("configuration");
   const c = billingConfig(),
     stripe = stripeClient(),
     db = accessDb();
+  if (action === "check") {
+    if (!exactOwner(user)) throw new HttpError("Owner access required.", 403);
+    progress("price_lookup");
+    const price = await stripe.prices.retrieve(c.price);
+    if (!validProPrice(price) || price.livemode !== (c.mode === "live"))
+      throw new HttpError(
+        "Pro must use an active monthly USD $2.99 price in the same Stripe mode.",
+        503,
+      );
+    progress("database_check");
+    const schema = await db
+      .from("auryn_access_config")
+      .select("billing_mode")
+      .eq("id", true)
+      .single();
+    if (schema.error) throw schema.error;
+    if (schema.data.billing_mode !== c.mode)
+      throw new HttpError(
+        "Database billing mode does not match this deployment.",
+        503,
+      );
+    return {
+      message: `Stripe ${c.mode} connection and monthly $2.99 price verified. No payment was created.`,
+    };
+  }
   if (action === "sync") {
     await syncCustomer(user, stripe);
     return { synced: true };
   }
+  progress("customer_lookup");
   let b = await binding(user);
   if (action === "portal") {
     if (!b) throw new HttpError("No subscription to manage yet.", 400);
+    progress("portal_create");
     const portal = await stripe.billingPortal.sessions.create({
       customer: b.customer_id,
       return_url: c.origin + "/plans",
@@ -179,9 +208,11 @@ export async function billingAction(
   const access = await getAccess(user);
   if (access.plan === "pro")
     throw new HttpError("You already have Pro access.", 409);
+  progress("price_lookup");
   const price = await stripe.prices.retrieve(c.price);
   if (!validProPrice(price) || price.livemode !== (c.mode === "live"))
     throw new HttpError("The monthly plan is not configured correctly.", 503);
+  progress("access_configuration");
   const conf = await db
     .from("auryn_access_config")
     .select("enforced,owner_id,billing_mode")
@@ -195,6 +226,7 @@ export async function billingAction(
   )
     throw new HttpError("The owner must finish access setup.", 503);
   if (!b) {
+    progress("customer_create");
     const customer = await stripe.customers.create(
       { email, metadata: { auryn_user_id: user } },
       { idempotencyKey: `auryn-customer:${c.mode}:${user}` },
@@ -205,15 +237,16 @@ export async function billingAction(
         { user_id: user, mode: c.mode, customer_id: customer.id },
         { onConflict: "user_id,mode", ignoreDuplicates: true },
       );
-    if (insert.error) throw Error("Customer could not be saved");
+    if (insert.error) throw insert.error;
     b = await binding(user);
     if (!b) throw Error("Customer not found");
   }
+  progress("checkout_reservation");
   const lease = await db.rpc("auryn_billing_checkout_lease", {
     p_user: user,
     p_mode: c.mode,
   });
-  if (lease.error) throw Error("Checkout reservation unavailable");
+  if (lease.error) throw lease.error;
   if (!lease.data?.allowed)
     throw new HttpError(
       "Checkout is already opening. Try again in a moment.",
@@ -221,6 +254,7 @@ export async function billingAction(
     );
   const nonce = lease.data.nonce;
   try {
+    progress("subscription_lookup");
     for await (const s of stripe.subscriptions.list({
       customer: b.customer_id,
       status: "all",
@@ -249,6 +283,7 @@ export async function billingAction(
         409,
       );
     }
+    progress("checkout_create");
     const session = await stripe.checkout.sessions.create(
       {
         mode: "subscription",
@@ -262,13 +297,15 @@ export async function billingAction(
       },
       { idempotencyKey: `auryn-checkout:${c.mode}:${user}:${nonce}` },
     );
+    progress("checkout_save");
     const save = await db
       .from("auryn_billing_customers")
       .update({ checkout_session: session.id })
       .eq("user_id", user)
       .eq("mode", c.mode)
       .eq("checkout_nonce", nonce);
-    if (save.error || !session.url) throw Error("Checkout could not be saved");
+    if (save.error) throw save.error;
+    if (!session.url) throw Error("Checkout could not be saved");
     return { url: session.url };
   } finally {
     await db

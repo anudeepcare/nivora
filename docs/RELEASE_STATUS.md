@@ -1,3 +1,7 @@
+# Latest — billing diagnostics and quieter admin UX
+
+Read `docs/BILLING_TROUBLESHOOTING.md`. Removes global owner-preview banners, adds owner-only Stripe connection checking, safe failure references and aligned admin inputs. The production checkout 503 remains unverified; this build makes its underlying failure diagnosable without exposing secrets. No new migration required beyond the existing Stripe setup.
+
 # Latest — clean Plans and Stripe implementation, 23 October 2026
 
 Read `docs/STRIPE_SETUP.md` first. The complete source includes compact Free/Pro plans, $2.99 monthly Checkout, signed subscription webhooks and a Customer Portal entry. Apply the new billing migration, configure the price/webhook/portal, and complete a sandbox checkout before enabling live payments. Actual Stripe payment and physical iPhone verification have not been performed. Earlier entries below are historical.

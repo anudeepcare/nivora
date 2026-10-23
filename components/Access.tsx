@@ -196,11 +196,9 @@ export function FeatureGate({
 
 export function AccessNotice() {
   const { access } = useAccess();
-  return access.sampleOnly || access.preview ? (
+  return access.sampleOnly ? (
     <p className="membership-status" role="status">
-      {access.sampleOnly
-        ? "SAMPLE DATA · Private beta · Not live prices or your real holdings"
-        : `OWNER PREVIEW · ${access.preview?.toUpperCase()} · Billing unchanged`}
+      Sample data · Live market data is not enabled for this account.
     </p>
   ) : null;
 }

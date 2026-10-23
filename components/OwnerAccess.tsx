@@ -41,6 +41,18 @@ export default function OwnerAccess() {
   useEffect(() => {
     if (access.owner) void load().catch((e) => setMessage(e.message));
   }, [access.owner]);
+  async function checkBilling() {
+    setBusy(true);
+    setMessage("");
+    try {
+      const r = await api<{ message: string }>("billing", { action: "check" });
+      setMessage(r.message);
+    } catch (e) {
+      setMessage(e instanceof Error ? e.message : "Billing check failed.");
+    } finally {
+      setBusy(false);
+    }
+  }
   async function save(body: unknown) {
     setBusy(true);
     setMessage("");
@@ -65,12 +77,36 @@ export default function OwnerAccess() {
     <section className="owner-access">
       <header className="owner-heading">
         <span className="eyebrow">Private owner console</span>
-        <h1>Access, kept simple.</h1>
-        <p>
-          Control beta invitations and plan features. Real charges remain
-          disabled.
-        </p>
+        <h1>Admin controls</h1>
+        <p>Manage invitations, Free/Pro limits and feature access.</p>
       </header>
+      <section className="admin-preview-row" aria-label="Plan preview">
+        <div>
+          <strong>Preview access</strong>
+          <p>Test permissions without changing your subscription.</p>
+        </div>
+        <label>
+          View as
+          <select
+            value={access.preview ?? "owner"}
+            onChange={(e) => {
+              try {
+                if (e.target.value === "owner")
+                  sessionStorage.removeItem("auryn-owner-preview");
+                else
+                  sessionStorage.setItem("auryn-owner-preview", e.target.value);
+                refresh();
+              } catch {
+                setMessage("Preview could not be changed.");
+              }
+            }}
+          >
+            <option value="owner">Owner · Full access</option>
+            <option value="free">Free</option>
+            <option value="pro">Pro</option>
+          </select>
+        </label>
+      </section>
       {message && (
         <p className="membership-feedback" role="status">
           {message}
@@ -95,7 +131,14 @@ export default function OwnerAccess() {
                     : "Controls are configured but not activated. Set AURYN_ACCESS_ENABLED=true after applying the migration."}
                 </p>
               </div>
-              <span className="plan-pill">No billing</span>
+              <button
+                type="button"
+                className="button"
+                disabled={busy}
+                onClick={() => void checkBilling()}
+              >
+                {busy ? "Checking…" : "Check Stripe connection"}
+              </button>
             </header>
             <form
               onSubmit={(e) => {
