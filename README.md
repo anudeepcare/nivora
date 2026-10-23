@@ -1,6 +1,8 @@
-# Current landing and X correction — 23 October 2026
+# Approved public, sign-in and Home build — 23 October 2026
 
-Read `docs/LANDING_AND_X_AVAILABILITY.md` first. Enlarged landing buttons, removed “Before you begin,” restored sample chart colors and corrected the missing-X provider flag. The supplied dashboard shows X OAuth2 enabled; public settings omit X, which must not be treated as disabled. No credential changes are needed solely because of the earlier message. 440 tests, production build, 86 compiled API checks and 12 local HTTP checks pass. Deploy this source before testing the corrected button. Live OAuth, rendered-source and physical iPhone acceptance remain unverified; no push/deployment performed. Earlier status entries below are historical.
+Read `docs/APPROVED_PUBLIC_AUTH_HOME_20261023.md` for this update. The approved public research panorama, focused sign-in/create-account screens and account-driven Home briefing are implemented. EODHD is primary for quotes, intraday and daily history; Twelve Data is fallback. Financial research already prefers EODHD. The archive contains complete source, tests and deployment instructions, not installed dependencies or secrets.
+
+**Not production accepted:** rendered pixel matching, installed-iPhone behavior and a live OAuth round trip remain unverified. SOFI/TTD DCA reference mismatches and universal bear/base/bull coverage are unresolved; do not treat selected historical agreement as universal parity. Reports document the exact limits. Earlier entries below are historical.
 
 # AURYN Investment Intelligence
 
@@ -18,7 +20,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Node 22.18+ is required; Node 24 was used. Configure Supabase, EODHD_API_KEY and your existing TWELVE_DATA_API_KEY. Both are used: Twelve Data for quotes/intraday, EODHD for financial research/daily history. Add a real SEC contact identity for the legacy filings fallback. Existing Finnhub and Alpaca paper credentials are optional. Keep every server key out of `NEXT_PUBLIC_*` variables.
+Node 22.18+ is required; Node 24 was used. Configure Supabase, EODHD_API_KEY and your existing TWELVE_DATA_API_KEY. EODHD is primary for market data and financial research; Twelve Data remains a fallback for unavailable or stale quotes and failed history requests. Add a real SEC contact identity for the legacy filings fallback. Existing Finnhub and Alpaca paper credentials are optional. Keep every server key out of `NEXT_PUBLIC_*` variables.
 
 For a read-only local design preview, set `AURYN_ENABLE_PREVIEW=true` in `.env.local` and open `http://localhost:3000/preview/research/MSFT`. Illustrative fixture values are labeled, are not live signals, and cannot authorize writes or trades. The local preview does not require account credentials. Keep that flag off when hosted.
 

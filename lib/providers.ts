@@ -594,10 +594,10 @@ export async function research(symbol: string): Promise<Research> {
       currency: "USD",
       asOf: null,
       session: "Unavailable",
-      source: process.env.TWELVE_DATA_API_KEY
-        ? "Twelve Data"
-        : eodEnabled()
-          ? "EODHD"
+      source: eodEnabled()
+        ? "EODHD"
+        : process.env.TWELVE_DATA_API_KEY
+          ? "Twelve Data"
           : "Unconfigured",
       stale: true,
     },

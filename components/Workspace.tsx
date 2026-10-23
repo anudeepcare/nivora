@@ -4,8 +4,6 @@ import dynamic from "next/dynamic";
 const Discover = dynamic(() => import("./Discover"));
 import PortfolioExposure from "./PortfolioExposure";
 import {
-  homeFocus,
-  homePriceMoves,
   pricedInvestmentReturns,
 } from "@/lib/product-attention";
 import PortfolioRiskSummary, {
@@ -15,7 +13,6 @@ import PortfolioLedger from "./PortfolioLedger";
 import PortfolioCharts from "./PortfolioCharts";
 import SectorBenchmarks from "./SectorBenchmarks";
 import AccountBalances from "./AccountBalances";
-import SessionBrief from "./SessionBrief";
 import useLivePrices from "./useLivePrices";
 import { quoteHealth } from "@/lib/quote-health";
 import { mergePriceTick } from "@/lib/live-price";
@@ -48,7 +45,7 @@ import {
   DataStamp,
 } from "./Ui";
 import Search from "./Search";
-import HomeUpdates from "./HomeUpdates";
+import HomeBriefing from "./HomeBriefing";
 import { api } from "@/lib/client";
 import { workspaceSymbolBatches } from "@/lib/workspace";
 import {
@@ -452,149 +449,8 @@ export function ResearchHome() {
   );
 }
 export function Overview() {
-  const { workspace, demo, workspaceError } = useProduct();
   const quotes = useWorkspaceQuotes();
-  const prefix = demo ? "/preview" : "";
-  const q = Object.fromEntries(
-    Object.entries(quotes.data || {})
-      .filter(([, v]) => v.quote)
-      .map(([k, v]) => [k, v.quote!]),
-  );
-  const moves = homePriceMoves(
-    workspace?.positions ?? [],
-    q,
-    new Date().toISOString(),
-  );
-  const focus = moves.length
-    ? moves.map((f) => ({
-        ...f,
-        title: `${f.symbol} · ${percent(f.changePct, true)}`,
-        detail: `${f.impact < 0 ? "−" : "+"}${amount(Math.abs(f.impact), "USD", true)} estimated price impact on current units · ${quoteTime(f.asOf)}`,
-      }))
-    : homeFocus(workspace?.positions ?? [], q).map((f) => ({
-        ...f,
-        title:
-          f.kind === "concentration"
-            ? `${f.symbol} is ${percent(f.weight)} of priced value`
-            : `${f.symbol} has the largest percentage drawdown`,
-        detail:
-          f.kind === "concentration"
-            ? "Review concentration alongside your business conviction."
-            : `${percent(f.returnPct, true)} versus recorded cost. A loss alone is not a buy signal.`,
-      }));
-  return (
-    <section className="home-workspace">
-      <PageHeading
-        title="Your investing day."
-        subtitle={new Date().toLocaleDateString("en-US", {
-          weekday: "long",
-          month: "long",
-          day: "numeric",
-          timeZone: "America/Chicago",
-        })}
-        action={
-          <Link className="button" href={`${prefix}/research`}>
-            <SearchIcon size={18} />
-            Explore research
-          </Link>
-        }
-      />
-      {workspaceError && <Notice error>{workspaceError}</Notice>}
-      {quotes.error && <Notice error>{quotes.error}</Notice>}
-      <HomeUpdates
-        quotes={q}
-        companyNames={Object.fromEntries(
-          Object.entries(quotes.data || {}).flatMap(([symbol, row]) =>
-            row.company?.name ? [[symbol, row.company.name]] : [],
-          ),
-        )}
-      />
-      <SessionBrief />
-      <div className="grid2 home-details">
-        <section>
-          <header className="section-head">
-            <div>
-              <h2>
-                {moves.length
-                  ? "Moves affecting your holdings"
-                  : "Portfolio checks"}
-              </h2>
-              <p>
-                {moves.length
-                  ? "Latest reported price changes, ranked by estimated holding impact."
-                  : "Concentration and cost context; these checks change when your positions or prices do."}
-              </p>
-            </div>
-          </header>
-          {focus.length ? (
-            focus.map((f) => (
-              <Link
-                className="focus-row"
-                href={`${prefix}/research/${encodeURIComponent(f.symbol.replace("/", "-"))}`}
-                key={f.symbol + f.title}
-              >
-                <SecurityLogo symbol={f.symbol} />
-                <div className="focus-text">
-                  <strong>{f.title}</strong>
-                  <p>{f.detail}</p>
-                  {f.older && (
-                    <small className="home-older-price">
-                      Based on an older usable quote
-                    </small>
-                  )}
-                </div>
-                <ArrowUpRight size={19} />
-              </Link>
-            ))
-          ) : (
-            <Empty title="Start with your holdings">
-              Add positions to see concentration and cost context here.
-            </Empty>
-          )}
-          {moves.length > 0 && (
-            <p className="small muted home-move-basis">
-              Uses current units and each quote’s reported change reference. Not
-              account P&amp;L; excludes trades, fees and distributions.
-              Observation times can differ.
-            </p>
-          )}
-        </section>
-        <section>
-          <header className="section-head">
-            <div>
-              <h2>
-                {workspace?.watchlist.length
-                  ? "On your radar"
-                  : "Your holdings"}
-              </h2>
-              <p>
-                {workspace?.watchlist.length
-                  ? "Your saved instruments."
-                  : "Continue researching companies you own."}
-              </p>
-            </div>
-            <Link className="text-button small" href={`${prefix}/watchlist`}>
-              View all →
-            </Link>
-          </header>
-          <InvestmentRows
-            symbols={
-              workspace?.watchlist.length
-                ? workspace.watchlist.slice(0, 4).map((w) => w.symbol)
-                : [
-                    ...new Set(
-                      workspace?.positions
-                        .filter((p) => p.assetType !== "cash")
-                        .map((p) => p.symbol) ?? [],
-                    ),
-                  ].slice(0, 4)
-            }
-            quotes={quotes.data || {}}
-          />
-        </section>
-      </div>
-    </section>
-  );
+  return <HomeBriefing quotes={quotes.data || {}} error={quotes.error}/>;
 }
 
 function InvestmentRows({

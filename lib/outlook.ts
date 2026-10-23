@@ -32,6 +32,8 @@ export type Outlook =
 
 export function consensusOutlook(r: Research): {
   target: number;
+  low?: number;
+  high?: number;
   asOf: string;
   change: number | null;
   referenceStatus: "current" | "older" | "unavailable";
@@ -60,8 +62,20 @@ export function consensusOutlook(r: Research): {
     Number.isFinite(stamp) &&
     stamp <= now + 60000 &&
     now - stamp <= 4 * 86400000;
+  const low = e?.consensus?.low,
+    high = e?.consensus?.high;
+  const rangeValid =
+    low != null &&
+    high != null &&
+    Number.isFinite(low) &&
+    Number.isFinite(high) &&
+    low > 0 &&
+    low <= target &&
+    target <= high &&
+    low < high;
   return {
     target,
+    ...(rangeValid ? { low: low!, high: high! } : {}),
     asOf: e!.updatedAt!,
     change: comparable ? (target / r.quote.price! - 1) * 100 : null,
     referenceStatus: !comparable

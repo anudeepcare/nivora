@@ -90,7 +90,6 @@ globalThis.fetch = async (input) => {
     });
   if (u.hostname === "api.twelvedata.com") {
     const symbol = u.searchParams.get("symbol");
-    if (symbol === "HIMS") return new Response("", { status: 503 });
     if (u.pathname === "/profile")
       return Response.json({
         symbol: u.searchParams.get("symbol"),
@@ -219,11 +218,13 @@ globalThis.fetch = async (input) => {
       return Response.json([{ date: "2026-10-08", split: "4/1" }]);
     if (u.pathname.startsWith("/api/div/"))
       return Response.json([{ date: "2026-10-01", value: 0.5 }]);
+    if (u.pathname === "/api/real-time/HIMS.US") return new Response("", {status:503});
+    if (u.pathname.startsWith("/api/intraday/")) return Response.json([{datetime:new Date(Date.now()-600000).toISOString().slice(0,19).replace("T"," "),timestamp:Math.floor(Date.now()/1000)-600,open:100,high:110,low:95,close:105,volume:100}]);
     if (u.pathname.startsWith("/api/real-time/"))
       return Response.json({
         code: u.pathname.split("/").at(-1),
         close: 105,
-        timestamp: Math.floor(Date.now() / 1000) - 900,
+        timestamp: Math.floor(Date.now() / 1000) - 30,
         change_p: 0,
       });
     if (u.pathname === "/api/search/CRM")
@@ -310,20 +311,21 @@ await check(
   },
 );
 await check(
-  "research combines Twelve quote with EODHD financials and one intact split-adjusted history",
+  "research uses EODHD quote, financials and one intact split-adjusted history",
   async () => {
     const r = await get("research/[symbol]"),
       d = await r.json();
     assert.equal(r.status, 200);
-    assert.match(d.quote.source, /Twelve Data/);
-    assert.equal(d.quote.price, 200);
+    assert.match(d.quote.source, /EODHD/);
+    assert.equal(d.quote.price, 105);
     assert.equal(d.historySource, "EODHD");
     assert.equal(d.history[0].close, 105);
     assert.equal(d.history[0].volume, 100);
     assert.equal(d.facts.find((x) => x.metric === "revenue").value, 1200);
     assert.equal(d.evidence.consensus.buy, 8);
     assert.equal(d.evidence.earnings[0].actual, null);
-    assert.ok(!calls.some((x) => x.pathname === "/api/real-time/APP.US"));
+    assert.equal(calls.filter(x=>x.pathname === "/api/real-time/APP.US").length,1);
+    assert.ok(!calls.some(x=>x.hostname==="api.twelvedata.com"&&x.pathname==="/quote"&&x.searchParams.get("symbol")==="APP"));
     assert.ok(
       !calls.some(
         (x) =>
@@ -334,23 +336,24 @@ await check(
   },
 );
 await check(
-  "1D charts use Twelve intraday and identify their own source",
+  "1D charts use EODHD intraday and identify their own source",
   async () => {
     const r = await get("chart/[symbol]", "?range=1D"),
       d = await r.json();
     assert.equal(r.status, 200);
-    assert.equal(d.source, "Twelve Data");
-    assert.equal(d.candles[0].close, 202);
-    assert.ok(!calls.some((x) => x.pathname.startsWith("/api/intraday/")));
+    assert.equal(d.source, "EODHD");
+    assert.equal(d.candles[0].close, 105);
+    assert.ok(calls.some((x) => x.pathname.startsWith("/api/intraday/")));
   },
 );
 await check(
-  "quote failure falls back once to a clearly labelled EODHD quote",
+  "EODHD quote failure falls back once to a clearly labelled Twelve quote",
   async () => {
     const r = await get("quotes", "?symbols=HIMS"),
       d = await r.json();
-    assert.equal(d.HIMS.quote.price, 105);
-    assert.match(d.HIMS.quote.source, /EODHD.*fallback/);
+    assert.equal(d.HIMS.quote.price, 200);
+    assert.match(d.HIMS.quote.source, /Twelve Data.*fallback/);
+    assert.equal(calls.filter(x=>x.pathname==="/api/real-time/HIMS.US").length,1);
   },
 );
 await check("repeated quotes reuse cached results", async () => {
@@ -446,7 +449,7 @@ await check(
     const d = await (await get("research/[symbol]", "", "FALLBACK")).json();
     assert.equal(d.company.name, "Fallback company");
     assert.equal(d.company.sector, "Technology");
-    assert.equal(d.quote.price, 200);
+    assert.equal(d.quote.price, 105);
     assert(d.issues.length > 0);
     assert.equal(d.evidence, undefined);
   },

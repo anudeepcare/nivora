@@ -4,12 +4,12 @@ import {
   preferredMarketSources,
   readPreferred,
 } from "../lib/provider-routing.ts";
-test("both subscriptions have separate jobs with one fallback, not duplicate requests", async () => {
+test("EODHD is primary for every market dataset with Twelve as one fallback", async () => {
   const both = { twelve: true, eodhd: true };
-  assert.deepEqual(preferredMarketSources("quote", both), ["twelve", "eodhd"]);
+  assert.deepEqual(preferredMarketSources("quote", both), ["eodhd", "twelve"]);
   assert.deepEqual(preferredMarketSources("intraday", both), [
-    "twelve",
     "eodhd",
+    "twelve",
   ]);
   assert.deepEqual(preferredMarketSources("daily", both), ["eodhd", "twelve"]);
   assert.deepEqual(
@@ -70,3 +70,14 @@ test('crypto search routes ADA and DOGE to pairs and saved crypto positions reta
  assert.equal(normalizePositions([{id:'1',symbol:'ADA',asset_type:'CRYPTO',shares:5,avg_cost:1,currency:'USD'}])[0].symbol,'ADA/USD');
 });
 test('old close is stale during scheduled US hours even if provider open flag is false',async()=>{const {normalizeQuote}=await import('../lib/market.ts');const q=normalizeQuote({close:10,timestamp:Date.parse('2026-10-16T20:00:00Z')/1000,currency:'USD',is_market_open:false},'IREN',Date.parse('2026-10-19T13:31:00Z'));assert.equal(q.stale,true);});
+
+
+test('EODHD-first quote routing avoids a second request on success and uses Twelve when stale or unavailable',async()=>{
+ const {readFreshQuote}=await import('../lib/provider-routing.ts');
+ const sources=preferredMarketSources('quote',{eodhd:true,twelve:true});
+ const calls=[];const fresh={quote:{price:20,asOf:'2026-10-22T20:00:00Z',stale:false}};
+ const first=await readFreshQuote(sources,async p=>{calls.push(p);return fresh;});assert.deepEqual(calls,['eodhd']);assert.equal(first.fallback,false);
+ const backup=await readFreshQuote(sources,async p=>{if(p==='eodhd')throw Error('entitlement unavailable');return fresh;});assert.equal(backup.provider,'twelve');assert.equal(backup.fallback,true);
+ const stale={quote:{price:19,asOf:'2026-10-21T20:00:00Z',stale:true}};
+ const newer=await readFreshQuote(sources,async p=>p==='eodhd'?stale:fresh);assert.equal(newer.value,fresh);assert.equal(newer.provider,'twelve');
+});

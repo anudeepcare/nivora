@@ -1,7 +1,10 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
 import { authDestination, authErrorMessage } from "@/lib/auth-navigation";
-import {themePreference as parseThemePreference,resolvedTheme} from "@/lib/theme-preference";
+import {
+  themePreference as parseThemePreference,
+  resolvedTheme,
+} from "@/lib/theme-preference";
 import {
   createContext,
   useCallback,
@@ -24,6 +27,7 @@ export type DemoData = {
 type Store = {
   demo?: DemoData;
   owner: string;
+  displayName?: string;
   marketProvider: "hybrid" | "eodhd" | "twelve" | "none" | "unknown";
   workspace: Workspace | null;
   workspaceError: string;
@@ -97,11 +101,14 @@ export function ProductSession({
   }, [demo, router]);
   useEffect(() => {
     if (demo) return;
-    const restored = (event: PageTransitionEvent) => {if (event.persisted) window.location.reload();};
+    const restored = (event: PageTransitionEvent) => {
+      if (event.persisted) window.location.reload();
+    };
     window.addEventListener("pageshow", restored);
     return () => window.removeEventListener("pageshow", restored);
   }, [demo]);
-  const destination = !demo && !loading ? authDestination(pathname, !!session, recovering) : null;
+  const destination =
+    !demo && !loading ? authDestination(pathname, !!session, recovering) : null;
   useEffect(() => {
     if (destination) router.replace(destination);
   }, [destination, router]);
@@ -119,6 +126,14 @@ export function ProductSession({
       key={demo ? "preview" : session!.user.id}
       owner={session?.user.id || "preview"}
       demo={demo}
+      displayName={
+        typeof session?.user.user_metadata?.full_name === "string"
+          ? session.user.user_metadata.full_name
+              .trim()
+              .split(/\s+/)[0]
+              .slice(0, 25)
+          : undefined
+      }
     >
       {children}
     </StoreProvider>
@@ -128,10 +143,12 @@ function StoreProvider({
   children,
   owner,
   demo,
+  displayName,
 }: {
   children: React.ReactNode;
   owner: string;
   demo?: DemoData;
+  displayName?: string;
 }) {
   const cache = useMemo(
     () =>
@@ -215,9 +232,7 @@ function StoreProvider({
   useEffect(() => {
     try {
       const saved = localStorage.getItem("auryn-product-theme");
-      setThemePreference(
-        parseThemePreference(saved),
-      );
+      setThemePreference(parseThemePreference(saved));
       setTextSizeState(
         localStorage.getItem("auryn-product-text") === "large"
           ? "large"
@@ -231,8 +246,7 @@ function StoreProvider({
   useEffect(() => {
     const media = window.matchMedia("(prefers-color-scheme: dark)");
     const apply = () => {
-      const value =
-        resolvedTheme(themePreference,media.matches);
+      const value = resolvedTheme(themePreference, media.matches);
       document.documentElement.dataset.theme = value;
       document
         .querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')
@@ -287,6 +301,7 @@ function StoreProvider({
     () => ({
       demo,
       owner,
+      displayName,
       marketProvider,
       workspace,
       workspaceError,
@@ -305,6 +320,7 @@ function StoreProvider({
       marketProvider,
       demo,
       owner,
+      displayName,
       workspace,
       workspaceError,
       reloadWorkspace,
@@ -425,19 +441,47 @@ function Login({ initialError }: { initialError: string }) {
     const message = authErrorMessage(params.get("auth_error"));
     if (message) setError(message);
   }, []);
-  const [socialProviders,setSocialProviders]=useState<{google:boolean|null;x:boolean|null}>({google:null,x:null});
-  useEffect(()=>{const controller=new AbortController();fetch("/api/auth/providers",{signal:controller.signal}).then(r=>r.ok?r.json():null).then(v=>{if(v&&!controller.signal.aborted)setSocialProviders({google:typeof v.google==="boolean"?v.google:null,x:typeof v.x==="boolean"?v.x:null});}).catch(()=>{});return()=>controller.abort();},[]);
+  const [socialProviders, setSocialProviders] = useState<{
+    google: boolean | null;
+    x: boolean | null;
+  }>({ google: null, x: null });
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/auth/providers", { signal: controller.signal })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((v) => {
+        if (v && !controller.signal.aborted)
+          setSocialProviders({
+            google: typeof v.google === "boolean" ? v.google : null,
+            x: typeof v.x === "boolean" ? v.x : null,
+          });
+      })
+      .catch(() => {});
+    return () => controller.abort();
+  }, []);
   async function social(provider: "google" | "x") {
     if (busy) return;
-    if(socialProviders[provider]===false){setError(`${provider==="google"?"Google":"X"} sign-in has not been enabled yet. Please use email.`);return;}
-    setBusy(true); setError(""); setNotice("");
+    if (socialProviders[provider] === false) {
+      setError(
+        `${provider === "google" ? "Google" : "X"} sign-in has not been enabled yet. Please use email.`,
+      );
+      return;
+    }
+    setBusy(true);
+    setError("");
+    setNotice("");
     try {
-      const {error} = await authClient().auth.signInWithOAuth({provider, options:{
-        redirectTo: `${window.location.origin}/auth/callback`,
-      }});
+      const { error } = await authClient().auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
       if (error) throw error;
     } catch {
-      setError("This sign-in option is unavailable right now. Please use email or try again later.");
+      setError(
+        "This sign-in option is unavailable right now. Please use email or try again later.",
+      );
       setBusy(false);
     }
   }
@@ -455,14 +499,21 @@ function Login({ initialError }: { initialError: string }) {
             ? await auth.signUp({
                 email,
                 password,
-                options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+                options: {
+                  emailRedirectTo: `${window.location.origin}/auth/callback`,
+                },
               })
             : await auth.resetPasswordForEmail(email, {
                 redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
               });
       if (result.error) throw result.error;
-      if (mode === "login" || ("data" in result && "session" in result.data && result.data.session)) router.replace("/overview");
-      else setNotice(
+      if (
+        mode === "login" ||
+        ("data" in result && "session" in result.data && result.data.session)
+      )
+        router.replace("/overview");
+      else
+        setNotice(
           mode === "signup"
             ? "Check your email to confirm your account."
             : "Check your email for the password reset link.",
@@ -474,36 +525,182 @@ function Login({ initialError }: { initialError: string }) {
     }
   }
   return (
-    <main className="login-page refined-auth">
-      <section className="login-introduction" aria-label="About AURYN">
-        <span className="eyebrow">Decisions you can defend</span>
-        <h2>Business first. <br/>Price second. <br/><em>Timing alongside.</em></h2>
-        <p>Company fundamentals, valuation scenarios and price context — connected in one focused research workspace.</p>
-        <div className="login-preview" aria-label="AURYN interface preview, no live financial data">
-          <header><span className="preview-brand-mark">A</span><div><strong>See the business behind the ticker.</strong><small>Business · Value · Timing</small></div><span className="preview-caption">Interface preview</span></header>
-          <div className="preview-journey"><section><i>01</i><div><strong>Understand the business</strong><p>Growth → profit → cash generation</p></div></section><section><i>02</i><div><strong>Put the price in perspective</strong><p>Bear · Base · Bull, with the assumptions visible</p></div></section><section><i>03</i><div><strong>Know what to revisit</strong><p>Funding risks, upcoming reports and price context</p></div></section></div>
-          <footer>One workspace. Evidence you can inspect.</footer>
+    <main className="entry-page">
+      <section className="entry-art" aria-label="About AURYN">
+        <a href="/" className="entry-art-brand">
+          <Logo />
+        </a>
+        <div className="entry-landscape" aria-hidden="true">
+          <svg viewBox="0 0 680 480" fill="none">
+            {Array.from({ length: 24 }, (_, row) => (
+              <path
+                key={row}
+                d={Array.from({ length: 49 }, (_, i) => {
+                  const x = i * 14,
+                    y =
+                      125 +
+                      row * 10 -
+                      70 *
+                        Math.exp(-((x - 310) ** 2) / 17000) *
+                        Math.sin(row / 8) +
+                      45 * Math.sin(x / 125 + row / 13);
+                  return `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`;
+                }).join(" ")}
+                stroke="#6294e3"
+                strokeWidth=".7"
+                opacity={0.3 + row / 60}
+              />
+            ))}
+            {Array.from({ length: 35 }, (_, col) => (
+              <path
+                key={col}
+                d={Array.from({ length: 24 }, (_, row) => {
+                  const x = col * 20,
+                    y =
+                      125 +
+                      row * 10 -
+                      70 *
+                        Math.exp(-((x - 310) ** 2) / 17000) *
+                        Math.sin(row / 8) +
+                      45 * Math.sin(x / 125 + row / 13);
+                  return `${row ? "L" : "M"}${x} ${y.toFixed(1)}`;
+                }).join(" ")}
+                stroke="#6294e3"
+                strokeWidth=".6"
+                opacity=".4"
+              />
+            ))}
+            <path
+              d="M65 280L160 245L270 260L375 170L475 205L610 120"
+              stroke="#2269dd"
+              strokeWidth="2"
+            />
+            {[
+              [160, 245, "Business"],
+              [375, 170, "Value"],
+              [610, 120, "Timing"],
+            ].map(([x, y, label]) => (
+              <g key={label}>
+                <circle cx={x} cy={y} r="5" fill="#2469e5" />
+                <text
+                  x={Number(x) - 22}
+                  y={Number(y) - 18}
+                  fill="#28578a"
+                  fontSize="13"
+                >
+                  {label}
+                </text>
+              </g>
+            ))}
+          </svg>
         </div>
-        <small>Research to inform your judgment. No promised returns or automatic trade instructions.</small>
+        <div className="entry-art-copy">
+          <span>A deeper understanding.</span>
+          <h2>A clearer perspective.</h2>
+          <p>
+            Business, value and timing.
+            <br />
+            One thoughtful research workspace.
+          </p>
+        </div>
+        <small>
+          Research to inform your judgment. Investing involves risk.
+        </small>
       </section>
-      <section className="login-card">
-        <a className="auth-back" href="/">← Explore AURYN</a>
+      <section className="entry-form">
+        <a className="auth-back" href="/">
+          ← Explore AURYN
+        </a>
         <Logo />
-        <span className="eyebrow">YOUR INVESTMENT WORKSPACE</span>
+
         <h1>
           {mode === "login"
-            ? "Welcome back."
+            ? "Welcome to AURYN."
             : mode === "signup"
-              ? "Start your research journey."
+              ? "Make room for conviction."
               : "Reset your password."}
         </h1>
-        <p>{mode === "signup" ? "Create one place for your research, watchlist and portfolio." : mode === "reset" ? "We’ll email a secure link to restore access to your workspace." : "Your companies. Your evidence. Your next decision."}</p>
-        {mode !== "reset" && (socialProviders.google===false||socialProviders.x===false) && <p className="auth-provider-note" role="status">{socialProviders.google===false&&socialProviders.x===false?"Social sign-in is not enabled yet. Continue securely with email below.":`${socialProviders.google===false?"Google":"X"} sign-in is not enabled yet. Use an available option below.`}</p>}
-        {mode !== "reset" && <div className="auth-social" aria-label="Continue with a social account">
-          <button type="button" disabled={busy||socialProviders.google===false} onClick={() => social("google")}><svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M21.6 12.23c0-.71-.06-1.39-.18-2.05H12v3.88h5.38a4.6 4.6 0 0 1-2 3.02v2.51h3.24c1.89-1.74 2.98-4.31 2.98-7.36Z"/><path fill="#34A853" d="M12 22c2.7 0 4.96-.9 6.62-2.42l-3.24-2.51c-.9.6-2.05.96-3.38.96-2.6 0-4.81-1.76-5.6-4.12H3.06v2.59A10 10 0 0 0 12 22Z"/><path fill="#FBBC05" d="M6.4 13.91a6 6 0 0 1 0-3.82V7.5H3.06a10 10 0 0 0 0 9l3.34-2.59Z"/><path fill="#EA4335" d="M12 5.97c1.47 0 2.79.51 3.82 1.51l2.87-2.87A9.6 9.6 0 0 0 12 2a10 10 0 0 0-8.94 5.5l3.34 2.59A5.97 5.97 0 0 1 12 5.97Z"/></svg>Continue with Google</button>
-          <button type="button" disabled={busy||socialProviders.x===false} onClick={() => social("x")}><span aria-hidden="true">𝕏</span>Continue with X</button>
-          <div className="auth-divider"><span>or use email</span></div>
-        </div>}
+        <p>
+          {mode === "signup"
+            ? "Create one place for your research, watchlist and portfolio."
+            : mode === "reset"
+              ? "We’ll email a secure link to restore access to your workspace."
+              : "Your research. A clearer perspective."}
+        </p>
+        {mode !== "reset" && (
+          <div className="entry-mode" aria-label="Account access">
+            {(["login", "signup"] as const).map((value) => (
+              <button
+                key={value}
+                type="button"
+                disabled={busy}
+                aria-pressed={mode === value}
+                onClick={() => {
+                  setMode(value);
+                  setError("");
+                  setNotice("");
+                }}
+              >
+                {value === "login" ? "Sign in" : "Create account"}
+              </button>
+            ))}
+          </div>
+        )}
+        {mode !== "reset" &&
+          (socialProviders.google === false || socialProviders.x === false) && (
+            <p className="auth-provider-note" role="status">
+              {socialProviders.google === false && socialProviders.x === false
+                ? "Social sign-in is not enabled yet. Continue securely with email below."
+                : `${socialProviders.google === false ? "Google" : "X"} sign-in is not enabled yet. Use an available option below.`}
+            </p>
+          )}
+        {mode !== "reset" && (
+          <div
+            className="auth-social"
+            aria-label="Continue with a social account"
+          >
+            <button
+              type="button"
+              disabled={busy || socialProviders.google === false}
+              onClick={() => social("google")}
+            >
+              <svg
+                width="19"
+                height="19"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  fill="#4285F4"
+                  d="M21.6 12.23c0-.71-.06-1.39-.18-2.05H12v3.88h5.38a4.6 4.6 0 0 1-2 3.02v2.51h3.24c1.89-1.74 2.98-4.31 2.98-7.36Z"
+                />
+                <path
+                  fill="#34A853"
+                  d="M12 22c2.7 0 4.96-.9 6.62-2.42l-3.24-2.51c-.9.6-2.05.96-3.38.96-2.6 0-4.81-1.76-5.6-4.12H3.06v2.59A10 10 0 0 0 12 22Z"
+                />
+                <path
+                  fill="#FBBC05"
+                  d="M6.4 13.91a6 6 0 0 1 0-3.82V7.5H3.06a10 10 0 0 0 0 9l3.34-2.59Z"
+                />
+                <path
+                  fill="#EA4335"
+                  d="M12 5.97c1.47 0 2.79.51 3.82 1.51l2.87-2.87A9.6 9.6 0 0 0 12 2a10 10 0 0 0-8.94 5.5l3.34 2.59A5.97 5.97 0 0 1 12 5.97Z"
+                />
+              </svg>
+              Continue with Google
+            </button>
+            <button
+              type="button"
+              disabled={busy || socialProviders.x === false}
+              onClick={() => social("x")}
+            >
+              <span aria-hidden="true">𝕏</span>Continue with X
+            </button>
+            <div className="auth-divider">
+              <span>or use email</span>
+            </div>
+          </div>
+        )}
         <form onSubmit={submit} aria-busy={busy}>
           <label>
             Email address
@@ -574,8 +771,17 @@ function Login({ initialError }: { initialError: string }) {
             {mode === "reset" ? "Back to sign in" : "Forgot password?"}
           </button>
         </div>
-        <small>By continuing, you agree to our <a href="/terms">Terms</a> and acknowledge our <a href="/privacy">Privacy Policy</a>. Investing involves risk.</small>
-        <nav className="login-legal" aria-label="Help and legal"><a href="/help">Help</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/risk">Risks</a></nav>
+        <small>
+          By continuing, you agree to our <a href="/terms">Terms</a> and
+          acknowledge our <a href="/privacy">Privacy Policy</a>. Investing
+          involves risk.
+        </small>
+        <nav className="login-legal" aria-label="Help and legal">
+          <a href="/help">Help</a>
+          <a href="/terms">Terms</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/risk">Risks</a>
+        </nav>
       </section>
     </main>
   );

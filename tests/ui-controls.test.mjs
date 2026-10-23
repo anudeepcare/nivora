@@ -542,7 +542,7 @@ test('authentication explains AURYN in sign-in, signup and recovery without fabr
   const Login=loadComponent('components/Session.tsx','Login',{React,useRouter:()=>({replace:()=>{}}),useEffect:()=>{},useState:()=>[values[i++],()=>{}],Logo:()=>React.createElement('span',null,'AURYN')});
   const html=renderToStaticMarkup(React.createElement(Login,{initialError:''}));
   if(mode!=="reset"){assert.match(html,/Social sign-in is not enabled yet/);assert.match(html,/disabled=""/);}
-  assert.match(html,/About AURYN/);assert.match(html,/Business first/);assert.match(html,/Put the price in perspective/);
+  assert.match(html,/About AURYN/);assert.match(html,/A clearer perspective/);assert.match(html,/Business, value and timing/);
   assert.doesNotMatch(html,/desktop-nav|mobile-dock|guaranteed returns/);
  }
 });
@@ -614,7 +614,7 @@ test('account equity displays debt separately without representing it as a losin
 
 test('public sample explains fictional data and offers readable business, value and discipline tabs without account APIs',()=>{
  const PublicSample=loadComponent('components/PublicLanding.tsx','PublicSample',{React,useState:React.useState,Check:empty,Layers3:empty});
- const html=renderToStaticMarkup(React.createElement(PublicSample));assert.match(html,/not a real investment/);assert.match(html,/role="tablist"/);assert.match(html,/role="tabpanel"/);assert.match(html,/Business/);assert.match(html,/Discipline/);assert.match(html,/Illustrative year-over-year/);assert.doesNotMatch(html,/90%|guaranteed|buy now|api_key/i);
+ const html=renderToStaticMarkup(React.createElement(PublicSample));assert.match(html,/not a real investment/);assert.match(html,/aria-label="Preview perspective"/);assert.match(html,/aria-pressed="true"/);assert.match(html,/Business/);assert.match(html,/Timing/);assert.match(html,/shared linear scale/);assert.doesNotMatch(html,/90%|guaranteed|buy now|api_key/i);
 });
 
 test('monthly chart distinguishes unavailable warm-up data from ordinary 1x conditions',async()=>{
@@ -756,4 +756,33 @@ test('new operating expectations begins with explicit future inputs and never gu
  const html=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT}));
  assert.match(html,/What must the business deliver/);assert.match(html,/Complete and reconcile the inputs/);assert.match(html,/These future assumptions are mine/);assert.doesNotMatch(html,/NaN|Infinity|Central assumption sensitivity/);
  const crypto=structuredClone(demoData.research.MSFT);crypto.company.assetType='crypto';assert.match(renderToStaticMarkup(React.createElement(View,{research:crypto})),/does not fit crypto/);
+});
+
+test('approved Home keeps account companies, real quotes and missing history separate from illustrative marketing',async()=>{
+ const {companyFeedPage,holdingAttention}=await import('../lib/product-attention.ts');
+ const {relevantHoldingHeadlines}=await import('../lib/home-feed.ts');
+ const quote={price:14.77,currency:'USD',changePct:-.87,asOf:'2026-10-22T20:00:00Z',stale:true};
+ const workspace={positions:[{id:'a',symbol:'SOFI',assetType:'stock',currency:'USD',quantity:10,cost:20}],watchlist:[]};
+ const Home=loadComponent('components/HomeBriefing.tsx','HomeBriefing',{React,useMemo:React.useMemo,useState:React.useState,useProduct:()=>({workspace,displayName:'Anudeep',workspaceError:''}),useResource:()=>({data:null,error:'History unavailable',loading:false}),companyFeedPage,holdingAttention,relevantHoldingHeadlines,...format,Link:({children,...p})=>React.createElement('a',p,children),SecurityLogo:empty,Notice:({children})=>React.createElement('p',null,children),ArrowUpRight:empty,CalendarDays:empty,ArrowRight:empty,Search:empty});
+ const html=renderToStaticMarkup(React.createElement(Home,{quotes:{SOFI:{quote,company:{name:'SoFi Technologies'}}}}));
+ assert.match(html,/Anudeep/);assert.match(html,/\$14\.77/);assert.match(html,/Your companies, in focus/);assert.match(html,/Next on your calendar/);assert.match(html,/What changed/);assert.match(html,/temporarily unavailable/);assert.match(html,/Last available/);assert.doesNotMatch(html,/S&amp;P|Example Company|NaN|Infinity|portfolio total/i);
+});
+
+test('approved Home renders an honest empty account without fabricated companies or event dates',async()=>{
+ const {companyFeedPage,holdingAttention}=await import('../lib/product-attention.ts');
+ const {relevantHoldingHeadlines}=await import('../lib/home-feed.ts');
+ const Home=loadComponent('components/HomeBriefing.tsx','HomeBriefing',{React,useMemo:React.useMemo,useState:React.useState,useProduct:()=>({workspace:{positions:[],watchlist:[]}}),useResource:()=>({data:null,error:'',loading:false}),companyFeedPage,holdingAttention,relevantHoldingHeadlines,...format,Link:({children,...p})=>React.createElement('a',p,children),SecurityLogo:empty,Notice:empty,ArrowUpRight:empty,CalendarDays:empty,ArrowRight:empty,Search:empty});
+ const html=renderToStaticMarkup(React.createElement(Home,{quotes:{}}));assert.match(html,/Find your first company/);assert.doesNotMatch(html,/NOW|HIMS|SOFI|Anudeep|NaN|Infinity/);
+});
+
+test('analyst range requires both ordered reported bounds and never manufactures bear/bull valuations',async()=>{
+ const {consensusOutlook}=await import('../lib/outlook.ts');
+ const r=JSON.parse(fs.readFileSync('tests/fixtures/iren-observed-20261019.json','utf8'));
+ r.evidence.consensus={...r.evidence.consensus,target:100,low:50,high:150};
+ r.evidence.updatedAt=r.retrievedAt;
+ const c=consensusOutlook(r);assert.equal(c.low,50);assert.equal(c.high,150);
+ const View=loadComponent('components/AnalystTargets.tsx','AnalystTargets',{React,consensusOutlook,...format});
+ const html=renderToStaticMarkup(React.createElement(View,{research:r}));assert.match(html,/\$50\.00/);assert.match(html,/\$150\.00/);assert.match(html,/Reported analyst targets/);assert.match(html,/not calculated bear\/base\/bull/);
+ r.evidence.consensus.low=110;const invalid=consensusOutlook(r);assert.equal(invalid.low,undefined);assert.equal(invalid.high,undefined);assert.equal(invalid.target,100);
+ delete r.evidence.consensus.low;assert.equal(consensusOutlook(r).low,undefined);
 });

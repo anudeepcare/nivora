@@ -1,3 +1,7 @@
+# Latest approved public, sign-in and Home build — 23 October 2026
+
+Read `docs/APPROVED_PUBLIC_AUTH_HOME_20261023.md` and `verification/REPORT.json` first. EODHD is primary for quotes, intraday and daily history; Twelve Data remains fallback. The approved public research panorama, focused authentication and account-driven Home briefing are implemented. Verification: 444 tests, TypeScript, production build, 86 compiled API checks and 12 local production HTTP checks passed. **DCA parity and automatic bear/base/bull for every ticker are not resolved.** Pixel matching, physical installed-iPhone and live OAuth acceptance remain unverified. Earlier entries below are historical. Do not replace missing real data with mock values or hardcode competitor signals.
+
 # Current landing and X correction — 23 October 2026
 
 Read `docs/LANDING_AND_X_AVAILABILITY.md` first. Enlarged landing buttons, removed “Before you begin,” restored sample chart colors and corrected the missing-X provider flag. The supplied dashboard shows X OAuth2 enabled; public settings omit X, which must not be treated as disabled. No credential changes are needed solely because of the earlier message. 440 tests, production build, 86 compiled API checks and 12 local HTTP checks pass. Deploy this source before testing the corrected button. Live OAuth, rendered-source and physical iPhone acceptance remain unverified; no push/deployment performed. Earlier status entries below are historical.

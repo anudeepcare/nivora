@@ -1,3 +1,9 @@
+# Approved public/auth/Home and EODHD-first update — 23 October 2026
+
+See `APPROVED_PUBLIC_AUTH_HOME_20261023.md`. Public, authentication and signed-in Home surfaces have been rebuilt around the three approved mockups. EODHD now leads quotes and all chart-history ranges, with Twelve fallback. The analyst target component supports supplied, ordered low/high bounds without inventing them. **Current connected data did not supply those bounds, and the checked Twelve price-target endpoint denied access.**
+
+The fresh SOFI/TTD screenshot comparison does not match the original AURYN DCA policy: see `verification/sofi-ttd-reference-audit.json`. CRWV's short listing history remains insufficient for this policy's 24-month warm-up. No universal parity, investment performance, automatic scenarios for every security, rendered-source pixel match, installed-iPhone acceptance or live OAuth roundtrip is claimed. No push, deployment, paid upgrade or database mutation was performed. Prior entries below are historical.
+
 # Current landing and X correction — 23 October 2026
 
 Read `docs/LANDING_AND_X_AVAILABILITY.md` first. Enlarged landing buttons, removed “Before you begin,” restored sample chart colors and corrected the missing-X provider flag. The supplied dashboard shows X OAuth2 enabled; public settings omit X, which must not be treated as disabled. No credential changes are needed solely because of the earlier message. 440 tests, production build, 86 compiled API checks and 12 local HTTP checks pass. Deploy this source before testing the corrected button. Live OAuth, rendered-source and physical iPhone acceptance remain unverified; no push/deployment performed. Earlier status entries below are historical.
