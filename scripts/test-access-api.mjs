@@ -24,7 +24,7 @@ r=await load('research/[symbol]').GET(req('research/MSFT'),{params:Promise.resol
 grant={expires_at:new Date(Date.now()+86400000).toISOString(),revoked_at:null};
 r=await load('access').GET(req('access'));a=await r.json();assert.equal(a.plan,'pro');assert.equal(a.source,'complimentary');checks++;
 grant={...grant,revoked_at:new Date().toISOString()};r=await load('access').GET(req('access'));a=await r.json();assert.equal(a.plan,'free');checks++;
-config={mode:'private'};r=await load('access').GET(req('access'));a=await r.json();assert.equal(a.admitted,false);checks++;
+config={mode:'private'};r=await load('access').GET(req('access'));a=await r.json();assert.equal(a.admitted,true);checks++;
 actor=owner;r=await load('access').GET(req('access'));a=await r.json();assert.equal(a.owner,true);assert.equal(a.plan,'pro');assert.equal(a.preview,'pro');checks++;
 assert.ok(calls.every(p=>p.startsWith('/auth/')||p.startsWith('/rest/')));checks++;
-console.log(`${checks} access API checks passed: owner spoofing, preview isolation, sample-data guard, feature gate, quota, grant/revoke and private admission.`);
+console.log(`${checks} access API checks passed: owner spoofing, preview isolation, sample-data guard, feature gate, quota, grant/revoke and permanent Free admission.`);

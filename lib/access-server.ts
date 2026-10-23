@@ -108,7 +108,7 @@ export function requestAccess(request: Request, id: string) {
 export function requireFeature(a: Access, feature: Feature) {
   if (!a.features[feature])
     throw new HttpError(
-      "This feature is not included in your current access. Open Plan & access in Settings.",
+      "This feature is not included in your current access. Open Plans to see your options.",
       403,
     );
 }
@@ -118,7 +118,12 @@ export async function reserveAccess(
   bucket: "research" | "ai",
   item: string,
 ) {
-  if (!a.enabled || (a.owner && !a.preview)) return;
+  if (
+    !a.enabled ||
+    (a.owner && !a.preview) ||
+    (bucket === "research" && a.limits.research === -1)
+  )
+    return;
   const r = await accessDb().rpc("auryn_access_reserve", {
     p_user: id,
     p_bucket: bucket,
@@ -147,11 +152,6 @@ export async function guardAccess(request: Request, id: string) {
     );
   if (!market) return;
   const a = await requestAccess(request, id);
-  if (!a.admitted)
-    throw new HttpError(
-      "AURYN is in private testing. Your account has no beta invitation yet.",
-      403,
-    );
   if (a.sampleOnly)
     throw new HttpError(
       "This beta account uses sample data. External market data is not enabled.",

@@ -239,7 +239,7 @@
   flex-shrink: 0;
 }
 .owner-grant-form {
-  align-items:end;
+  align-items: end;
   display: grid;
   grid-template-columns: 1.2fr 1fr 0.8fr;
   gap: 15px;
@@ -593,4 +593,16 @@
   .admin-preview-row select {
     width: 100%;
   }
+}
+
+.admin-plan-defaults {
+  grid-column: 1/-1;
+  border-bottom: 1px solid var(--line);
+  padding: 0 0 16px;
+  color: var(--ink);
+}
+.admin-plan-defaults p {
+  margin: 7px 0 0;
+  font-size: 13px;
+  color: var(--muted);
 }

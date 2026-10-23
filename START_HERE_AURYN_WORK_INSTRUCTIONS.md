@@ -1,3 +1,5 @@
+> Current membership update: every new account starts Free (100 distinct companies/month); Pro has unlimited company research. See [membership setup](docs/FREE_AND_PRO_MEMBERSHIP.md). Earlier invitation-only or signup-to-Plans instructions below are superseded.
+
 # Latest — visible signup-to-plans flow and payment return UX
 
 Read `docs/ONBOARDING_AND_EMAIL.md`. New users have visible Plans/Free navigation, confirmation-email resend, and clear payment return messages. Misleading sample-beta design-preview labels are removed. User-supplied screenshots show a successful sandbox purchase, Pro access and Customer Portal invoice; live charges and email delivery remain unverified. No new migration required.

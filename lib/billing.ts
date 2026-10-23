@@ -197,7 +197,7 @@ export async function billingAction(
     progress("portal_create");
     const portal = await stripe.billingPortal.sessions.create({
       customer: b.customer_id,
-      return_url: c.origin + "/plans",
+      return_url: c.origin + "/plans?billing=return",
     });
     return { url: portal.url };
   }

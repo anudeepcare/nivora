@@ -121,26 +121,6 @@ export function AccessBoundary({ children }: { children: React.ReactNode }) {
         <p>Opening your plan…</p>
       </main>
     );
-  if (!access.admitted && path !== "/plans")
-    return (
-      <main className="membership-state">
-        <span className="eyebrow">Welcome to AURYN</span>
-        <h1>Your account is ready.</h1>
-        <p>
-          This workspace is invite-only for Free access. You can view plans and
-          choose Pro, or check an existing invitation.
-        </p>
-        <Link className="button primary" href="/plans">
-          View plans
-        </Link>
-        <button className="button" onClick={refresh}>
-          Check invitation
-        </button>
-        <button className="button" onClick={() => void signOutAndRedirect()}>
-          Sign out
-        </button>
-      </main>
-    );
   const preview = access.preview;
   const context = { access, refresh };
   let content = children;

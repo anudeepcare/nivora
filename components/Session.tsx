@@ -546,7 +546,7 @@ function Login({ initialError }: { initialError: string }) {
         mode === "login" ||
         ("data" in result && "session" in result.data && result.data.session)
       )
-        router.replace(mode === "signup" ? "/plans?welcome=1" : "/overview");
+        router.replace("/overview");
       else
         setNotice(
           mode === "signup"

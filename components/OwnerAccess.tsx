@@ -147,54 +147,38 @@ export default function OwnerAccess() {
               }}
             >
               <div className="owner-field-grid">
-                <label>
-                  Who may enter?
-                  <select
-                    value={config.mode}
-                    onChange={(e) =>
-                      setConfig({
-                        ...config,
-                        mode: e.target.value as AccessConfig["mode"],
-                      })
-                    }
-                  >
-                    <option value="private">Owner and invited accounts</option>
-                    <option value="beta">
-                      All signed-in accounts · sample beta
-                    </option>
-                  </select>
-                </label>
-                {(
-                  [
-                    "freeResearch",
-                    "proResearch",
-                    "freeWatchlist",
-                    "proWatchlist",
-                    "proAi",
-                  ] as const
-                ).map((k) => (
-                  <label key={k}>
-                    {
+                <div className="admin-plan-defaults">
+                  <strong>Free: 100 companies / month</strong>
+                  <p>
+                    Pro: unlimited company research. Every new account starts on
+                    Free; invitations only grant complimentary Pro.
+                  </p>
+                </div>
+                {(["freeWatchlist", "proWatchlist", "proAi"] as const).map(
+                  (k) => (
+                    <label key={k}>
                       {
-                        freeResearch: "Free research / month",
-                        proResearch: "Pro research / month",
-                        freeWatchlist: "Free watchlist",
-                        proWatchlist: "Pro watchlist",
-                        proAi: "Pro AI / month",
-                      }[k]
-                    }
-                    <input
-                      type="number"
-                      min={0}
-                      max={1000}
-                      required
-                      value={config[k]}
-                      onChange={(e) =>
-                        setConfig({ ...config, [k]: Number(e.target.value) })
+                        {
+                          freeResearch: "Free research / month",
+                          proResearch: "Pro research / month",
+                          freeWatchlist: "Free watchlist",
+                          proWatchlist: "Pro watchlist",
+                          proAi: "Pro AI / month",
+                        }[k]
                       }
-                    />
-                  </label>
-                ))}
+                      <input
+                        type="number"
+                        min={0}
+                        max={1000}
+                        required
+                        value={config[k]}
+                        onChange={(e) =>
+                          setConfig({ ...config, [k]: Number(e.target.value) })
+                        }
+                      />
+                    </label>
+                  ),
+                )}
               </div>
               <h3>Feature access</h3>
               <div className="owner-feature-grid">

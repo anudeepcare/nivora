@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-10-23T15:43:38.930385+00:00",
+  "generatedAt": "2026-10-23T15:58:53.359219+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 481 tests, TypeScript and production build (onboarding-path-verify.log)",
-    "npm run test:api": "passed: 106 compiled checks (onboarding-path-api.log)",
+    "npm run verify": "passed: 483 tests, TypeScript and production build (open-free-membership-verify.log)",
+    "npm run test:api": "passed: 106 compiled checks (open-free-membership-api.log)",
     "git diff --check": "passed",
-    "npm test": "passed: 481 tests",
+    "npm test": "passed: 483 tests",
     "npm run build": "passed with no CSS compilation warnings",
-    "production HTTP": "passed: 14 local HTTP checks (onboarding-path-http.log), not browser visual review",
-    "node scripts/test-auth-provider-api.mjs": "passed: 3 checks; 109 API checks total (onboarding-path-auth-api.log)"
+    "production HTTP": "passed: 14 local production-server HTTP checks (open-free-membership-http.log); not browser visual review",
+    "node scripts/test-auth-provider-api.mjs": "passed: 3 checks; 109 API checks total (open-free-membership-auth-api.log)"
   },
-  "domainPostgresAndComponentTests": 481,
+  "domainPostgresAndComponentTests": 483,
   "builtApiChecks": 109,
   "providerSelection": {
     "quotes": "EODHD primary; Twelve fallback for stale or failed primary; retain newest usable stale observation if both fail freshness",
@@ -672,19 +672,7 @@
     "horizontalOverflow": false,
     "calendarAnchorVerified": true
   },
-  "currentUpdate": {
-    "document": "docs/ONBOARDING_AND_EMAIL.md",
-    "quotePolling": "60-second visible-page REST validation independent of stream health; resume check; no hidden polling",
-    "primaryFreshness": "aging primary tries backup during active window; never downgrade newest observation",
-    "accessControls": "optional owner controls, grants/revocation, Free/Pro previews, atomic research/AI quotas, direct-write watchlist caps",
-    "billing": "Implemented real Stripe SDK Checkout, signed webhook, paid-period sync and Customer Portal. No actual sandbox payment processed; external price, webhook, portal and database migration remain operator setup.",
-    "liveDatabaseWrites": false,
-    "deployed": false,
-    "currentMembershipVisualAcceptance": false,
-    "plans": "Compact two-card Free/Pro screen; owner full-access row and separate admin link; current plan and subscription management",
-    "overview": "Actual shared analyst targets above separately named AURYN scenarios",
-    "productionCheckout503": "User corrected live/sandbox mismatch; later supplied screenshots show sandbox checkout, Pro access and paid invoice in Customer Portal. No live-mode charge verified."
-  },
+  "currentUpdate": "Permanent Free onboarding, 100 distinct companies/month, unlimited Pro company research, portal-return membership sync",
   "dcaComparison30": {
     "asOf": "2026-10-22T23:00:00Z",
     "confirmedMatches": 28,
@@ -766,5 +754,24 @@
     "openWorkspaceAfterConfirmation": true,
     "emailProviderConfiguredByAssistant": false,
     "liveDataLicenseUnchanged": true
+  },
+  "openFreeMembership": {
+    "freeDistinctCompaniesPerUtcMonth": 100,
+    "proResearch": "unlimited",
+    "newAccounts": "Free without invitation; Home after authenticated signup",
+    "migrationRequired": "supabase/migrations/20261023155152_open_free_membership.sql",
+    "productionMigrationApplied": false,
+    "verified": [
+      "legacy private configurations cannot gate Free",
+      "100 distinct research reservations; 101st denied; revisits permitted",
+      "watchlist caps and nonowner ownership enforced in Postgres fixture",
+      "expired paid access returns to admitted Free",
+      "Stripe signed-event verification and mode isolation retained"
+    ],
+    "notVerified": [
+      "live SMTP delivery",
+      "completed cancellation in production",
+      "real-money purchase"
+    ]
   }
 }

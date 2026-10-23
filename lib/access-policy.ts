@@ -25,9 +25,9 @@ export type AccessConfig = {
   rules: Partial<Record<Feature, Rule>>;
 };
 export const defaultAccessConfig: AccessConfig = {
-  mode: "private",
-  freeResearch: 5,
-  proResearch: 100,
+  mode: "beta",
+  freeResearch: 100,
+  proResearch: -1,
   freeWatchlist: 5,
   proWatchlist: 50,
   proAi: 10,
@@ -63,17 +63,19 @@ export function cleanAccessConfig(value: unknown): AccessConfig {
     "freeWatchlist",
     "proWatchlist",
     "proAi",
-  ] as const)
-    if (v[k] !== undefined) {
-      if (
-        typeof v[k] !== "number" ||
-        !Number.isInteger(v[k]) ||
-        v[k] < 0 ||
-        v[k] > 1000
-      )
-        throw Error("Limits must be whole numbers from 0 to 1000.");
-      result[k] = v[k];
-    }
+  ] as const) {
+    if (k === "proResearch" && v[k] === -1) continue;
+  if (v[k] !== undefined) {
+    if (
+      typeof v[k] !== "number" ||
+      !Number.isInteger(v[k]) ||
+      v[k] < 0 ||
+      v[k] > 1000
+    )
+      throw Error("Limits must be whole numbers from 0 to 1000.");
+    result[k] = v[k];
+  }
+  }
   if (v.rules !== undefined) {
     if (!v.rules || typeof v.rules !== "object" || Array.isArray(v.rules))
       throw Error("Invalid feature rules.");
@@ -86,6 +88,10 @@ export function cleanAccessConfig(value: unknown): AccessConfig {
       result.rules[k as Feature] = r as Rule;
     }
   }
+  // Permanent public tiers; tolerate legacy stored settings, never reinstate invitation gates.
+  result.mode = "beta";
+  result.freeResearch = 100;
+  result.proResearch = -1;
   return result;
 }
 type Input = {
@@ -113,8 +119,7 @@ export function resolveAccess(i: Input) {
       : null;
   const plan =
     preview ?? (!i.enabled || i.owner || beta || paid ? "pro" : "free");
-  const admitted =
-    !i.enabled || i.owner || config.mode === "beta" || beta || paid;
+  const admitted = true;
   const features = Object.fromEntries(
     (Object.keys(featureNames) as Feature[]).map((k) => {
       const rule = config.rules[k] ?? "pro";

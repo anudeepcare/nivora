@@ -1,3 +1,5 @@
+> Current membership update: every new account starts Free (100 distinct companies/month); Pro has unlimited company research. See [membership setup](FREE_AND_PRO_MEMBERSHIP.md). Earlier invitation-only or signup-to-Plans instructions below are superseded.
+
 # Registration, Plans and email flow update
 
 Observed user sandbox acceptance: supplied screenshots show Checkout opens in sandbox, AURYN changes to Pro paid through Nov 23, 2026, and Stripe's Customer Portal shows a paid $2.99 invoice plus subscription cancellation and payment-method controls. This confirms the shown test account's purchase and portal flow, not live-mode acceptance or all failure scenarios. Cancellation completion and later downgrade have not been demonstrated.

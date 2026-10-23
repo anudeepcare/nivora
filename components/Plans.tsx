@@ -71,8 +71,9 @@ export function PricingCards({
           </p>
           <ul>
             <li>
-              {config[plan === "free" ? "freeResearch" : "proResearch"]}{" "}
-              companies / month
+              {plan === "pro"
+                ? "Unlimited company research"
+                : "100 companies / month"}
             </li>
             <li>
               {config[plan === "free" ? "freeWatchlist" : "proWatchlist"]} saved
@@ -103,7 +104,7 @@ export function PricingCards({
             ) : (
               <span className="pricing-current">
                 {access?.plan === "free"
-                  ? "Free access requires an invitation"
+                  ? "Your current plan"
                   : "Always available"}
               </span>
             )
@@ -137,18 +138,24 @@ function SignedInPlans() {
   useEffect(() => {
     const abort = new AbortController();
     let timer: ReturnType<typeof setTimeout> | undefined;
+    const portalReturn =
+      new URLSearchParams(window.location.search).get("billing") === "return";
     const returned = new URLSearchParams(window.location.search).get(
       "checkout",
     );
     let attempts = 0;
     async function load() {
       try {
-        if (returned === "success") {
+        if (returned === "success" || portalReturn) {
           await api("billing", { action: "sync" }, abort.signal);
         }
         const b = await api<Billing>("billing", undefined, abort.signal);
         if (abort.signal.aborted) return;
         setBilling(b);
+        if (portalReturn) {
+          refresh();
+          window.history.replaceState(null, "", "/plans");
+        }
         if (returned === "success") {
           if (b.access.source === "subscription") {
             setMessage("You’re on Pro. Welcome aboard.");
@@ -251,7 +258,9 @@ function SignedInPlans() {
             <p>
               {a.sampleOnly
                 ? "Sample beta · market data is not enabled for this account."
-                : `${access.researchUsed ?? 0} of ${a.limits.research} companies explored this month.`}
+                : a.limits.research === -1
+                  ? "Unlimited company research."
+                  : `${access.researchUsed === -1 ? "Usage unavailable" : (access.researchUsed ?? 0) + " of 100 companies explored this month"}.`}
             </p>
           )}
         </div>
