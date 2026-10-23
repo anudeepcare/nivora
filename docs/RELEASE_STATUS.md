@@ -1,3 +1,11 @@
+# Current build — unified research, 23 October 2026
+
+Read `docs/UNIFIED_BUILD_20261023.md` (or `UNIFIED_BUILD_20261023.md` from this docs directory), `docs/COMPETITOR_COMPARISON_20261023.md`, `docs/MONTHLY_POLICY_V3.md` and `verification/REPORT.json`. This build includes full source, shared all-page content styling, Business durability, model suitability, header market cap, public Why AURYN and monthly-v3 across Overview/Technicals. 380 tests, TypeScript, production build and 83 compiled API checks passed. No new SQL is needed for this continuation. Physical iPhone, exact visual parity, complete live entitlements and commercial readiness are not certified.
+
+## Historical notes below
+
+The dated sections below describe earlier iterations. Their old test counts, “current” labels and v1/v2 headline-policy statements are historical; this top section and the unified report supersede them.
+
 # Restore scenario priority — current
 
 Replaces the mistaken global suppression of headline scenarios with model-specific selection: eligible earnings cases first, analyst consensus only as fallback. Recent older quotes retain earnings cases with an explicit label. The inflated revenue model is not restored. Includes analyst card polish. See `SCENARIO_PRIORITY.md`.

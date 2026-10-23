@@ -49,7 +49,7 @@ test("DCA chart labeled twelve months excludes older trading sessions", () => {
   }
   const component = new Function(
     "React",
-    "accumulation",
+    "researchAccumulation",
     "amount",
     "percent",
     "Help",

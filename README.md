@@ -2,7 +2,7 @@
 
 A complete standalone **source package** for the new AURYN application. The application builds independently of the old screens and styles. **It is not fully production accepted, and not every inherited product requirement is complete.** Read `docs/RELEASE_STATUS.md` for the exact remaining scope and verification limits.
 
-Latest scope: `docs/CONNECTED_PRODUCT.md` maps the fifteen approved improvements to their primary homes and lists configuration and coverage limits.
+Latest scope: `docs/UNIFIED_BUILD_20261023.md`. The three-platform comparison is in `docs/COMPETITOR_COMPARISON_20261023.md`; monthly-v3 rules and limitations are in `docs/MONTHLY_POLICY_V3.md`. Current verification: 380 tests, TypeScript, production build and 83 compiled API checks.
 
 ## Start
 

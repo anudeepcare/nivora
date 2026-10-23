@@ -13,7 +13,9 @@ const AdvancedResearch = dynamic(() => import("./AdvancedResearch"));
 
 const ResearchNotes = dynamic(() => import("./ResearchNotes"));
 import FinancingContext from "./FinancingContext";
-import EarningsPrep from "./EarningsPrep";
+import BusinessHistory from "./BusinessHistory";
+import ModelAssessment from "./ModelAssessment";
+import {headerMarketContext} from "@/lib/business-history";
 import BusinessMap from "./BusinessMap";
 import TimingContext from "./TimingContext";
 import DecisionWorkspace from "./DecisionWorkspace";
@@ -53,10 +55,10 @@ import CompanyUpdates from "./CompanyUpdates";
 import OverviewContext from "./OverviewContext";
 const tabs = [
   "Snapshot",
+  "Thesis",
   "Financials",
   "Valuation",
   "Technicals",
-  "Thesis",
   "Analysts",
   "News",
   "Advanced",
@@ -387,6 +389,7 @@ export default function Research({ symbol }: { symbol: string }) {
       </div>
     </section>
   );
+  const headerContext=headerMarketContext(r);
   return (
     <article className="research-page" data-research-mode={preferences.detail}>
       <header className="page-head security-head">
@@ -397,6 +400,7 @@ export default function Research({ symbol }: { symbol: string }) {
             <p className="muted small">
               {symbol} · {r.company.exchange || "Listing"} · {r.quote.currency}
             </p>
+            <div className="security-context">{headerContext.sector&&<span>{headerContext.sector}</span>}{headerContext.marketCap!=null&&<span title={headerContext.asOf?`Reported market capitalization · ${dateLabel(headerContext.asOf)}`:undefined}>Market cap <b>{amount(headerContext.marketCap,headerContext.currency,true)}</b></span>}</div>
           </div>
         </div>
         <div className="row quote-actions gap24">
@@ -482,7 +486,7 @@ export default function Research({ symbol }: { symbol: string }) {
                 ? "Overview"
                 : name === "Valuation"
                   ? "Value"
-                  : name}
+                  : name === "Thesis" ? "Business" : name}
             </button>
           ))}
         </nav>
@@ -520,7 +524,6 @@ export default function Research({ symbol }: { symbol: string }) {
       >
         {tab === "News" && (
           <>
-            <EarningsPrep research={r} />
             <EarningsWorkspace research={r} />
             <CompanyUpdates research={r} />
           </>
@@ -554,11 +557,11 @@ export default function Research({ symbol }: { symbol: string }) {
           <>
             <Financials research={r} />
             <FinancingContext research={r} />
-            <BusinessMap key={r.company.symbol} research={r} />
           </>
         )}
         {tab === "Valuation" && (
           <>
+            <ModelAssessment research={r} />
             <ResearchOutlook research={r} detailed />
             <FundedScenarios key={r.company.symbol} research={r} />
             <details
@@ -605,6 +608,8 @@ export default function Research({ symbol }: { symbol: string }) {
         )}
         {tab === "Thesis" && (
           <>
+            <BusinessMap key={r.company.symbol} research={r} />
+            <BusinessHistory research={r} />
             <ThesisPicture research={r} />
             <details className="research-optional">
               <summary>My decision record & review</summary>
@@ -737,8 +742,8 @@ export function DcaCard({
         <span className="au-eyebrow">Monthly DCA · price only</span>
         <Help label="DCA multiplier">
           A multiple of your usual contribution, not leverage or a return
-          forecast. AURYN’s original experimental rules use 24 completed monthly
-          closes. 0× pauses new scheduled contributions; it is not a sell order.
+          forecast. AURYN’s trend-adjusted rules use the preceding 24 completed
+          monthly closes. 0× pauses new scheduled contributions; it is not a sell order.
           Stronger pullbacks can earn larger multipliers even in a deteriorating
           business. Review financial evidence before adding. The current month
           can change until it closes.

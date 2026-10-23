@@ -307,7 +307,7 @@ export function HelpPage() {
         ],
         [
           "Monthly accumulation",
-          "The monthly-v1 price policy uses 24 consecutive monthly closing observations. Increasing discounts to the closing high and average can produce 2×, 3× or 4× zones; stretched prices can produce a pause. A multiplier is not leverage, a profit prediction or an instruction to trade. The forming month is separate.",
+          "The monthly-v3 price policy uses a robust log-price trend from the preceding 24 completed months. Deeper drawdowns and deviations below that trend can produce 2×, 3× or 4× zones; stretched prices can produce a pause. A multiplier is not leverage, a profit prediction or an instruction to trade. The forming month is separate.",
         ],
         [
           "Price history and technicals",

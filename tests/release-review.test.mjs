@@ -6,6 +6,7 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import postcss from "postcss";
 import * as format from "../lib/format.ts";
+import {headerMarketContext} from "../lib/business-history.ts";
 import {retainResearchQuote} from "../lib/research-quote.ts";
 import { normalizeBars } from "../lib/market.ts";
 import { normalizeEodBars } from "../lib/eodhd-normalize.ts";
@@ -140,6 +141,7 @@ function researchMarkup() {
     }),
     rangeBars: () => [],
     retainResearchQuote,
+    headerMarketContext,
   };
   // Render the actual shared provenance component too; details remain available
   // in its disclosure rather than cluttering the quote headline.

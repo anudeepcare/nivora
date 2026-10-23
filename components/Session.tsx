@@ -457,7 +457,7 @@ function Login({ initialError }: { initialError: string }) {
               ? "Start your research journey."
               : "Reset your password."}
         </h1>
-        <p>Understand the business. Put the price in perspective.</p>
+        <p>{mode === "signup" ? "Create one place for your research, watchlist and portfolio." : mode === "reset" ? "We’ll email a secure link to restore access to your workspace." : "Your companies. Your evidence. Your next decision."}</p>
         <form onSubmit={submit} aria-busy={busy}>
           <label>
             Email address

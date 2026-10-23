@@ -1,3 +1,11 @@
+# Current build — unified research, 23 October 2026
+
+Read `docs/UNIFIED_BUILD_20261023.md` (or `UNIFIED_BUILD_20261023.md` from this docs directory), `docs/COMPETITOR_COMPARISON_20261023.md`, `docs/MONTHLY_POLICY_V3.md` and `verification/REPORT.json`. This build includes full source, shared all-page content styling, Business durability, model suitability, header market cap, public Why AURYN and monthly-v3 across Overview/Technicals. 380 tests, TypeScript, production build and 83 compiled API checks passed. No new SQL is needed for this continuation. Physical iPhone, exact visual parity, complete live entitlements and commercial readiness are not certified.
+
+## Historical notes below
+
+The dated sections below describe earlier iterations. Their old test counts, “current” labels and v1/v2 headline-policy statements are historical; this top section and the unified report supersede them.
+
 # Approved research composition — 23 October
 
 Read `docs/APPROVED_RESEARCH_20261023.md` and `verification/REPORT.json` first. Shared tokens, the stock-overview composition, annual trend charts and confirmed/forming DCA presentation were updated. The approved image contains illustrative numbers; never use them as production data. PWA geometry, quote retention and model eligibility remain unchanged. This revision does not claim every page has been redesigned or visually accepted.

@@ -1,7 +1,8 @@
+import {researchAccumulation} from "./accumulation-policy-v3.ts";
 import { evidenceMemo } from "./evidence-memo.ts";
 import { modelCoverage, ttmPeriods } from "./research-depth.ts";
 import type { Candle, Research, FinancialPeriod } from "./types";
-import { financialPeriods, cashFlowValue, accumulation } from "./engine.ts";
+import { financialPeriods, cashFlowValue } from "./engine.ts";
 export const annualRows = (r: Research) =>
   financialPeriods(r.facts, "annual", r.retrievedAt);
 function computeFinancialEvidence(r: Research) {
@@ -201,10 +202,9 @@ export function perspective(r: Research) {
     last = evidence.latest,
     previous = evidence.prior,
     tech = indicators(r.history, r.retrievedAt),
-    dca = accumulation(
+    dca = researchAccumulation(
       r.history,
       r.retrievedAt,
-      false,
       r.company.assetType === "crypto" ? "crypto" : "us-equity",
     ),
     v = valuationInputs(r);

@@ -1,0 +1,7 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {businessHistory,headerMarketContext} from '../lib/business-history.ts';
+import {demoData} from './fixtures/demo.ts';
+const r=demoData.research.MSFT;
+test('business history reports denominators, periods and actual cash/profit evidence',()=>{const x=businessHistory(r);assert.ok(x.periods>=3);assert.equal(x.profitYears,x.profitObservations);assert.equal(x.cashYears,x.cashObservations);assert.ok(x.revenueCagr>0);assert.equal(x.currency,'USD');});
+test('history does not manufacture a moat, dilution or corporate metrics for crypto',()=>{assert.equal(businessHistory({...r,company:{...r.company,assetType:'crypto'}}),null);const x=businessHistory({...r,facts:r.facts.filter(f=>f.metric!=='weightedShares')});assert.equal(x.shareChange,null);assert.equal(x.moat,null);});
+test('header market cap requires matching quote/listing currency and a positive reported value',()=>{const s={...r,evidence:{...r.evidence,highlights:{...r.evidence?.highlights,MarketCapitalization:1e12}}};assert.equal(headerMarketContext(s).marketCap,1e12);assert.equal(headerMarketContext({...s,quote:{...s.quote,currency:'EUR'}}).marketCap,null);assert.equal(headerMarketContext({...s,evidence:{...s.evidence,highlights:{MarketCapitalization:NaN}}}).marketCap,null);});

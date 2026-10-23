@@ -1,14 +1,13 @@
 "use client";
 import type { Research } from "@/lib/types";
-import { accumulation } from "@/lib/engine";
+import {researchAccumulation} from "@/lib/accumulation-policy-v3";
 import { amount, percent } from "@/lib/format";
 import { Help, Notice } from "./Ui";
 import { PriceChart } from "./Charts";
 export default function Accumulation({ research }: { research: Research }) {
-  const result = accumulation(
+  const result = researchAccumulation(
     research.history,
     research.retrievedAt,
-    false,
     research.company.assetType === "crypto" ? "crypto" : "us-equity",
   );
   const signal = result.confirmed;
@@ -36,8 +35,8 @@ export default function Accumulation({ research }: { research: Research }) {
             <p className="muted">{signal?.reason || result.reason}</p>
           </div>
           <Help label="Monthly DCA">
-            AURYN’s original experimental price policy compares completed
-            monthly closes with a 24-month average and closing high. Multipliers
+            AURYN’s trend-adjusted price policy compares settled prices with a
+            robust prior 24-month trend and monthly closing high. Multipliers
             describe your usual contribution, not leverage or expected returns.
             No amount is required. It does not establish business quality or
             suitability.

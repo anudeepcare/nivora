@@ -616,10 +616,10 @@ test('public sample explains fictional data and offers readable business, value 
 });
 
 test('monthly chart distinguishes unavailable warm-up data from ordinary 1x conditions',async()=>{
- const {accumulation}=await import('../lib/engine.ts'),{candidatePolicy,settledPolicyBars}=await import('../lib/accumulation-policy.ts'),{evaluatePolicies}=await import('../lib/policy-evaluation.ts'),{monthlyReadings}=await import('../lib/dca-research.ts');
+ const {researchAccumulation,adaptiveSettledBars}=await import('../lib/accumulation-policy-v3.ts'),{evaluateAccumulation}=await import('../lib/accumulation-evaluation.ts');
  const colours={0:'#d89a20',1:'#7d9db0',2:'#12a28b',3:'#71b337',4:'#ac68e5'};
- const Desk=loadComponent('components/AccumulationDesk.tsx','AccumulationDesk',{React,useMemo:React.useMemo,useState:React.useState,accumulation,candidatePolicy,settledPolicyBars,evaluatePolicies,monthlyReadings,...format,colours,PriceChart:({candleColors})=>React.createElement('span',{'data-zone-colours':JSON.stringify(candleColors)})});
- const html=renderToStaticMarkup(React.createElement(Desk,{research:demoData.research.MSFT}));assert.match(html,/No eligible signal/);assert.match(html,/#b0b5bd/);assert.match(html,/Original v1/);assert.match(html,/Candidate v2/);
+ const Desk=loadComponent('components/AccumulationDesk.tsx','AccumulationDesk',{React,useMemo:React.useMemo,useState:React.useState,researchAccumulation,adaptiveSettledBars,evaluateAccumulation,...format,colours,PriceChart:({candleColors})=>React.createElement('span',{'data-zone-colours':JSON.stringify(candleColors)})});
+ const html=renderToStaticMarkup(React.createElement(Desk,{research:demoData.research.MSFT}));assert.match(html,/No eligible signal/);assert.match(html,/#b0b5bd/);assert.match(html,/Trend-adjusted/);assert.match(html,/confirmed/);assert.match(html,/forming/);
 });
 
 test('metric provenance links filings but never sends users to infrastructure API pages',()=>{

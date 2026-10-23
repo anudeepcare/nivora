@@ -210,9 +210,7 @@ export default function PublicLanding({
           <span>AURYN</span>
         </Link>
         <div>
-          <Link href="/methodology" className="public-method">
-            How it works
-          </Link>
+          <a href="/#why-auryn" className="public-method">Why AURYN</a>
           <Link href="/login">Sign in</Link>
           <Link href="/login?mode=signup" className="public-button compact">
             Get started <ArrowUpRight size={15} />
@@ -286,6 +284,10 @@ export default function PublicLanding({
             <span>Monthly discipline</span>
             <i>↗</i>
             <span>Portfolio perspective</span>
+          </section>
+          <section id="why-auryn" className="public-why" aria-label="Why AURYN">
+            <div><span className="public-eyebrow">Why AURYN</span><h2>A stronger process.<br/>A clearer perspective.</h2><p>Your research should connect the quality of a business, the price you pay and the risks you already hold.</p></div>
+            <ol><li><span>BUSINESS FIRST</span><h3>Look beyond the ticker.</h3><p>Follow revenue into profit and cash. See financing and dilution alongside growth, with comparable reported periods.</p></li><li><span>PRICE SECOND</span><h3>Know what each number means.</h3><p>Analyst targets, conditional scenarios and price-based accumulation zones are different tools. AURYN keeps their assumptions and dates separate.</p></li><li><span>YOUR PERSPECTIVE</span><h3>Keep the important things close.</h3><p>Your holdings, concentration, news and upcoming reports belong in the same research workflow. Choose Simple or Pro depth and your preferred appearance.</p></li></ol>
           </section>
           <section className="public-features">
             <header>
@@ -399,7 +401,7 @@ export default function PublicLanding({
               ],
               [
                 "Are the accumulation models proven to outperform?",
-                "No demonstrated advantage is claimed. Original and candidate rules are transparent experiments, with hypothetical historical comparisons and explicit limitations.",
+                "No demonstrated advantage is claimed. Trend-adjusted monthly rules are documented, with hypothetical equal-budget comparisons and explicit limitations.",
               ],
               [
                 "Can I use it on my phone?",

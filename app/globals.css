@@ -176,13 +176,7 @@ button[aria-pressed="true"] {
 .support {
   margin-top: 28px;
 }
-.panel {
-  padding: 22px;
-  background: var(--surface);
-  border-radius: var(--radius-panel);
-  border: 1px solid var(--line);
-  min-width: 0;
-}
+/* Shared panel appearance is owned by product-surfaces.css. */
 .panel > .section-heading:first-child {
   margin-top: 0;
 }
@@ -455,12 +449,7 @@ button[aria-pressed="true"] {
   gap: 24px;
   align-items: start;
 }
-.au-panel {
-  padding: 24px;
-  background: var(--surface);
-  border-radius: 25px;
-  min-width: 0;
-}
+/* Shared research panel appearance is owned by product-surfaces.css. */
 .research-canvas .plot-section {
   margin-top: 16px;
 }

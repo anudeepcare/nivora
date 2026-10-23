@@ -1,10 +1,11 @@
 "use client";
 import { useMemo, useState } from "react";
 import type { Research, Candle } from "@/lib/types";
-import { accumulation } from "@/lib/engine";
-import { candidatePolicy, settledPolicyBars } from "@/lib/accumulation-policy";
-import { evaluatePolicies } from "@/lib/policy-evaluation";
-import { monthlyReadings } from "@/lib/dca-research";
+import {
+  researchAccumulation,
+  adaptiveSettledBars,
+} from "@/lib/accumulation-policy-v3";
+import { evaluateAccumulation } from "@/lib/accumulation-evaluation";
 import { amount, percent, dateLabel } from "@/lib/format";
 import { PriceChart } from "./Charts";
 const colours: Record<number, string> = {
@@ -19,27 +20,17 @@ export default function AccumulationDesk({
 }: {
   research: Research;
 }) {
-  const [version, setVersion] = useState<"original" | "candidate">("original"),
-    [showEvaluation, setShowEvaluation] = useState(false),
+  const [showEvaluation, setShowEvaluation] = useState(false),
     [cost, setCost] = useState(10);
   const market = r.company.assetType === "crypto" ? "crypto" : "us-equity";
-  const original = useMemo(
-    () => accumulation(r.history, r.retrievedAt, false, market),
-    [r.history, r.retrievedAt, market],
-  );
-  const candidate = useMemo(
-    () => candidatePolicy(r.history, r.retrievedAt, market),
-    [r.history, r.retrievedAt, market],
-  );
-  const chosen = version === "original" ? original : candidate,
+  const chosen = useMemo(
+      () => researchAccumulation(r.history, r.retrievedAt, market),
+      [r.history, r.retrievedAt, market],
+    ),
     signal = chosen.confirmed;
-  const readings = useMemo(
-    () => monthlyReadings(r.history, r.retrievedAt, market),
-    [r.history, r.retrievedAt, market],
-  );
   const monthly = useMemo(() => {
     const m = new Map<string, Candle>();
-    for (const b of settledPolicyBars(r.history, r.retrievedAt)) {
+    for (const b of adaptiveSettledBars(r.history, r.retrievedAt, market)) {
       const key = b.time.slice(0, 7),
         prev = m.get(key);
       m.set(
@@ -57,42 +48,39 @@ export default function AccumulationDesk({
       );
     }
     return [...m.values()].slice(-60);
-  }, [r.history, r.retrievedAt]);
+  }, [r.history, r.retrievedAt, market]);
   const candleColors = useMemo(
     () =>
       Object.fromEntries(
         monthly.map((b) => {
-          const signal =
+          const s =
             chosen.history.find((s) => s.month === b.time.slice(0, 7)) ??
             (chosen.forming?.month === b.time.slice(0, 7)
               ? chosen.forming
               : null);
-          return [b.time, signal ? colours[signal.multiplier] : "#b0b5bd"];
+          return [b.time, s ? colours[s.multiplier] : "#b0b5bd"];
         }),
       ),
     [monthly, chosen],
   );
   const levels = useMemo(
     () =>
-      version === "candidate" && candidate.confirmed
+      signal
         ? [
-            { label: "2× pullback", price: candidate.confirmed.buy2 },
-            { label: "3× pullback", price: candidate.confirmed.buy3 },
-            { label: "4× pullback", price: candidate.confirmed.buy4 },
+            { label: "2× pullback", price: signal.buy2 },
+            { label: "3× pullback", price: signal.buy3 },
+            { label: "4× pullback", price: signal.buy4 },
           ]
         : [],
-    [candidate, version],
+    [signal],
   );
   const evaluation = useMemo(
     () =>
       showEvaluation
-        ? evaluatePolicies(r.history, r.retrievedAt, cost, market)
+        ? evaluateAccumulation(r.history, r.retrievedAt, cost, market)
         : null,
     [showEvaluation, r.history, r.retrievedAt, cost, market],
   );
-  const rarity = signal
-    ? chosen.history.filter((s) => s.multiplier === signal.multiplier).length
-    : 0;
   return (
     <section className="accumulation-desk">
       <header className="accumulation-desk-head">
@@ -100,18 +88,7 @@ export default function AccumulationDesk({
           <span className="eyebrow">Monthly discipline · price conditions</span>
           <h2>One reading. The history behind it.</h2>
         </div>
-        <div className="segments" aria-label="Accumulation policy">
-          {(["original", "candidate"] as const).map((v) => (
-            <button
-              key={v}
-              type="button"
-              aria-pressed={version === v}
-              onClick={() => setVersion(v)}
-            >
-              {v === "original" ? "Original v1" : "Candidate v2"}
-            </button>
-          ))}
-        </div>
+        <span className="policy-version">Trend-adjusted · v3</span>
       </header>
       <div className="accumulation-summary">
         <div>
@@ -122,7 +99,7 @@ export default function AccumulationDesk({
               color:
                 signal && [0, 1, 3].includes(signal.multiplier)
                   ? "#15313d"
-                  : "#ffffff",
+                  : "#fff",
             }}
           >
             {signal ? `${signal.multiplier}×` : "—"}
@@ -139,14 +116,8 @@ export default function AccumulationDesk({
           <p>{signal?.reason ?? chosen.reason}</p>
           <small>
             {signal
-              ? `${signal.month} · confirmed`
-              : version === "candidate"
-                ? "36 consecutive completed months required"
-                : "24 consecutive completed months required"}{" "}
-            ·{" "}
-            {version === "candidate"
-              ? "Experimental candidate"
-              : "Original experimental policy"}
+              ? `${signal.month} · confirmed at ${dateLabel(signal.date)}`
+              : "24 consecutive completed prior months required"}
           </small>
         </div>
         <dl>
@@ -155,44 +126,39 @@ export default function AccumulationDesk({
             <dd>
               {chosen.forming
                 ? `${chosen.forming.multiplier}× · forming`
-                : "Not established"}
+                : "No forming reading"}
             </dd>
           </div>
           <div>
             <dt>Same confirmed zone</dt>
             <dd>
               {signal
-                ? `${rarity} of ${chosen.history.length} eligible months`
+                ? `${chosen.history.filter((s) => s.multiplier === signal.multiplier).length} of ${chosen.history.length} eligible months`
                 : "Not established"}
             </dd>
           </div>
           <div>
-            <dt>Trim review</dt>
-            <dd>
-              {version === "candidate"
-                ? candidate.confirmed?.trimReview
-                  ? "Price extension flag"
-                  : "No candidate extension flag"
-                : "Separate from 0× pause"}
-            </dd>
+            <dt>Trend risk</dt>
+            <dd>{signal?.risk ?? "Not assessed"}</dd>
           </div>
         </dl>
       </div>
       <p className="small muted">
-        Multiples of your usual contribution—not leverage or expected returns. A
-        price-only condition can coexist with a weak business; review funding,
-        valuation and allocation first.
+        Multiples of your usual contribution—not leverage or expected returns.
+        Confirmed months stay fixed; the forming reading can change. A deeper
+        price pullback does not establish a better business or confirmed
+        support.
       </p>
       <div className="accumulation-chart">
         <PriceChart
           bars={monthly}
-          range={`monthly-policy-${version}`}
+          range="monthly-policy-v3"
           style="candles"
           candleColors={candleColors}
           levels={levels}
         />
       </div>
-      {version === "candidate" && levels.length > 0 && (
+      {!!levels.length && (
         <div className="candidate-levels">
           {levels.map((l) => (
             <div key={l.label}>
@@ -213,48 +179,24 @@ export default function AccumulationDesk({
           <i style={{ background: "#b0b5bd" }} />
           No eligible signal
         </span>
-        <span>Latest month may still be forming</span>
       </div>
-      {version === "original" &&
-        readings.some((x) => x.strongest > x.confirmed) && (
-          <div className="accumulation-touches">
-            <b>Stronger settled-close touches</b>
-            {readings
-              .filter((x) => x.strongest > x.confirmed)
-              .slice(-4)
-              .map((x) => (
-                <span key={x.month}>
-                  ◇ {x.strongest}× · {dateLabel(x.date)} · month closed{" "}
-                  {x.confirmed}×
-                </span>
-              ))}
-          </div>
-        )}
       <details className="policy-rules">
         <summary>See the rules and price assumptions</summary>
-        {version === "candidate" ? (
-          <p>
-            36 settled monthly closes; robust log-price trend fitted from the
-            median of pairwise slopes. Residual spread uses median absolute
-            deviation with a 3% floor. 2×/3×/4× require drawdowns of at least
-            15%/30%/45% and deviations of −0.75/−1.5/−2 robust units. Pause
-            requires +1.5 units and 20% above trend. Trim review additionally
-            requires +2.5 units and 50% twelve-month growth. Bands use the
-            confirmed window and move when that window changes.
-          </p>
-        ) : (
-          <p>
-            24 completed monthly closes. 2× requires 15% drawdown and 10% below
-            the average; 3× requires 30% and 20%; 4× requires 50% and 35%. More
-            than 25% above the average pauses new contributions. Otherwise 1×.
-            These thresholds have no demonstrated advantage.
-          </p>
-        )}
         <p>
-          Only prior settled daily data enters a reading. The forming month
-          never rewrites a confirmed month. A daily-close touch is not an
-          intraday low or guaranteed fill. Model levels are not intrinsic values
-          or evidence of institutional activity.
+          Uses the 24 completed months before each reading. A robust log-price
+          trend uses median pairwise slopes. Spread is the larger of residual
+          variability, monthly return variability and a 7% floor. 2×/3×/4×
+          require drawdowns of 12%/25%/40% from the prior monthly high and
+          deviations below trend of 0.7/1.35/2 spread units. Pause requires two
+          units and 25% above trend. These fixed rules have no demonstrated
+          outperformance.
+        </p>
+        <p>
+          US observations settle after 5 PM New York; crypto uses completed UTC
+          days. A completed month needs its final market session. Missing or
+          conflicting history is unscored, never a 0× instruction. Displayed
+          bands use the last confirmed window and do not predict future prices.
+          Older v1/v2 evaluators remain in the source for reproducibility.
         </p>
       </details>
       <button
@@ -265,14 +207,14 @@ export default function AccumulationDesk({
       >
         {showEvaluation
           ? "Hide historical comparison"
-          : "Test the policies on this history ↗"}
+          : "Test this policy on available history ↗"}
       </button>
       {showEvaluation && (
         <section className="policy-evaluation">
           <header>
             <div>
               <span className="eyebrow">
-                Reproducible historical comparison
+                Hypothetical historical comparison
               </span>
               <h3>Same deposits. Same execution dates.</h3>
             </div>
@@ -294,15 +236,14 @@ export default function AccumulationDesk({
           {evaluation?.available ? (
             <>
               <p>
-                100 model units per month · {evaluation.months} common execution
-                months · final {evaluation.holdout.months} months shown
-                separately below. No contribution amount required.
+                100 model units per month · {evaluation.months} completed
+                execution months. Contributions above 1× require previously
+                unspent cash.
               </p>
               <div className="policy-results">
                 {[
                   ["Normal DCA", evaluation.fixed],
-                  ["Original v1", evaluation.original],
-                  ["Candidate v2", evaluation.candidate],
+                  ["Trend-adjusted v3", evaluation.adaptive],
                 ].map(([name, result]) => {
                   const x = result as typeof evaluation.fixed;
                   return (
@@ -320,7 +261,7 @@ export default function AccumulationDesk({
                           <dd>{amount(x.cash, "USD", true)}</dd>
                         </div>
                         <div>
-                          <dt>Month-end drawdown</dt>
+                          <dt>Monthly drawdown</dt>
                           <dd>{percent(x.drawdown)}</dd>
                         </div>
                         <div>
@@ -332,18 +273,13 @@ export default function AccumulationDesk({
                   );
                 })}
               </div>
-              <h4>
-                Later chronological slice · {evaluation.holdout.start} to{" "}
-                {evaluation.holdout.end}
-              </h4>
               <p>
-                Normal DCA {amount(evaluation.holdout.fixed.value, "USD", true)}{" "}
-                · Original{" "}
-                {amount(evaluation.holdout.original.value, "USD", true)} ·
-                Candidate{" "}
-                {amount(evaluation.holdout.candidate.value, "USD", true)} model
-                units. Each starts with zero capital in this slice. Rules are
-                fixed, not tuned here.
+                Later {evaluation.holdout.months}-month slice, restarted at
+                zero: normal DCA{" "}
+                {amount(evaluation.holdout.fixed.value, "USD", true)} ·
+                trend-adjusted{" "}
+                {amount(evaluation.holdout.adaptive.value, "USD", true)} model
+                units.
               </p>
               <details>
                 <summary>Execution details and limitations</summary>

@@ -8,7 +8,7 @@ The user approved the desktop/iPhone visual board generated in chat on 23 Octobe
 - Stock overview: business headline and evidence tags above the price chart on desktop; valuation and DCA alongside. Mobile orders the investment case and valuation/DCA before the chart.
 - Compact annual financial bar charts from the existing financial-period engine: revenue, operating cash flow less capex, and weighted shares when available. Only matching reporting currency and accounting basis are included. No absent series is manufactured, no quote currency relabelling and no projected annual values.
 - Negative chart values extend below a shared zero baseline; exact values and period dates are available as text.
-- Confirmed and forming monthly accumulation appear separately on the overview. A missing signal remains unknown. Original monthly-v1 remains the default; candidate performance has not established superiority.
+- Confirmed and forming monthly accumulation appear separately on the overview. A missing signal remains unknown. Monthly-v3 now supplies the Overview and Technicals reading; no investment advantage is established. See MONTHLY_POLICY_V3.md.
 - No new API requests, provider subscription, storage schema, order submission or paid AI activation.
 - PWA status surface, viewport, safe-area and keyboard logic unchanged. This is not a new physical-device acceptance result.
 
@@ -22,6 +22,6 @@ Visual matching is not established by a successful compilation. Browser visual/d
 
 Use settled, split-adjusted histories; evaluate signal timing without look-ahead; compare the same dates, horizons and confirmed/forming states. Use equal external contributions and explicitly carried cash, transaction costs, independent chronological periods, adverse regimes and a diverse universe including failed/delisted companies where licensed data permits. Review sensitivity, zone stability and trading frequency rather than optimizing for a competitor's latest multiplier. Report missing/short histories and do not force 4x onto named tickers.
 
-## Remaining application-wide design work
+## Application-wide continuation
 
-This revision applies shared primitives and the stock-overview composition. It does not claim every existing subtab, Home, Portfolio, settings, authentication or commercial feature has been visually rebuilt or accepted. Further screens must use the same tokens and actual components, with no wholesale removal of evidence or replacement of the PWA shell.
+The continuation adds product-surfaces.css as the content appearance owner, a Business tab with comparable annual durability evidence, header market cap, model suitability cards and shared presentation across research, portfolio, watchlist, home, settings and public/account screens. The storefront adds Why AURYN. Existing specialized interactions and PWA shell geometry remain intact. See COMPETITOR_COMPARISON_20261023.md for observations and feature mapping. This is implemented source, not a claim that every screen has passed pixel comparison or physical-device acceptance.
