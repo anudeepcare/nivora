@@ -4,16 +4,16 @@
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 499 tests, TypeScript and production build; options-complete-verify.log",
-    "npm run test:api": "see options-complete-api.log; built routes with synthetic transports",
+    "npm run verify": "passed: 502 tests, TypeScript and production build; alpaca-options-verify.log",
+    "npm run test:api": "passed: alpaca-options-api.log plus alpaca-options-route.log; synthetic transports",
     "git diff --check": "passed",
-    "npm test": "passed: 499 tests",
-    "npm run build": "passed: options-complete-verify.log",
+    "npm test": "passed: 502 tests",
+    "npm run build": "passed: alpaca-options-verify.log",
     "production HTTP": "14 local production HTTP checks; options-http.log",
     "node scripts/test-auth-provider-api.mjs": "passed: 3 checks; 109 API checks total (admin-clean-auth-api.log)"
   },
-  "domainPostgresAndComponentTests": 499,
-  "builtApiChecks": 119,
+  "domainPostgresAndComponentTests": 502,
+  "builtApiChecks": 121,
   "providerSelection": {
     "quotes": "EODHD primary; Twelve fallback for stale or failed primary; retain newest usable stale observation if both fail freshness",
     "intraday": "EODHD primary; whole Twelve series on failure",
@@ -853,5 +853,20 @@
     "priceProjection": "Conditional positive-earnings sensitivities; reconciled recent same-currency inputs required; transparent illustrative stresses, not calibrated forecasts",
     "adminExpiry": "ISO timezone-explicit submission with saved-row readback verification",
     "docs": "docs/OPTIONS_AND_PROJECTIONS.md"
+  },
+  "alpacaOptionsRelease": {
+    "provider": "Alpaca default; EODHD explicit opt-in retained",
+    "feed": "indicative default; modified quotes, delayed trades",
+    "localCredentialsAvailable": false,
+    "liveChainVerified": false,
+    "changes": [
+      "dated open interest join",
+      "bounded pagination and five-minute instance cache",
+      "concurrent request coalescing",
+      "strike-expiry gamma heatmap",
+      "empty chain suppresses placeholder panels"
+    ],
+    "validation": "502 tests, TypeScript, build, existing API suite plus two Alpaca built-route checks; synthetic responses",
+    "visualValidation": "previous visual reports apply to preceding release; new heatmap not device-tested"
   }
 }

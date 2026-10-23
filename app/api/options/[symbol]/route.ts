@@ -1,4 +1,5 @@
 import { account, failure, privateJson, HttpError, limit } from "@/lib/server";
+import { alpacaOptions } from "@/lib/alpaca-options";
 import { eodRequest } from "@/lib/eodhd";
 import { normalizeOptions } from "@/lib/options-analysis";
 export async function GET(
@@ -26,6 +27,16 @@ export async function GET(
       expiry = url.searchParams.get("expiry");
     if (expiry && !/^\d{4}-\d{2}-\d{2}$/.test(expiry))
       throw new HttpError("Choose a valid expiry.");
+    if (process.env.AURYN_OPTIONS_PROVIDER !== "eodhd") {
+      try {
+        return privateJson(await alpacaOptions(ticker, expiry));
+      } catch (error) {
+        throw new HttpError(
+          error instanceof Error ? error.message : "Options unavailable.",
+          503,
+        );
+      }
+    }
     const rows: unknown[] = [];
     let complete = false,
       total: number | null = null;

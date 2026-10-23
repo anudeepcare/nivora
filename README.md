@@ -1,3 +1,7 @@
+# Alpaca options update — October 23, 2026
+
+Options now defaults to Alpaca using the existing paper-account credentials. See `docs/ALPACA_OPTIONS_SETUP.md` for production variables and verification limits. This update does not enable data rights, buy a plan or place trades.
+
 ## Options, projections and access reliability — October 23
 
 This release adds a dedicated Options tab (chain, GEX/positioning, LEAPS explorer, expiry payoff strategies, metric explanations), conditional earnings projections under Value, and timezone-explicit verified admin access saving with member filters/extension.

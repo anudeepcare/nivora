@@ -135,6 +135,42 @@ export default function OptionsDesk({
       ),
     [contracts, spot, active, chain?.complete],
   );
+  const heatExpiries = [...new Set(contracts.map((c) => c.expiry))]
+    .sort()
+    .slice(0, 6);
+  const heatStrikes = [
+    ...new Set(contracts.filter((c) => c.standard).map((c) => c.strike)),
+  ]
+    .sort((a, b) => Math.abs(a - spot) - Math.abs(b - spot))
+    .slice(0, 12)
+    .sort((a, b) => b - a);
+  const heatCells = heatStrikes.map((strike) =>
+    heatExpiries.map((date) => {
+      const rows = contracts.filter(
+        (c) => c.standard && c.strike === strike && c.expiry === date,
+      );
+      if (
+        !spot ||
+        !rows.length ||
+        rows.some((c) => c.oi === null || c.gamma === null)
+      )
+        return null;
+      if (new Set(rows.map((c) => c.observed)).size !== 1) return null;
+      return rows.reduce(
+        (sum, c) =>
+          sum +
+          (c.type === "call" ? 1 : -1) *
+            c.gamma! *
+            c.oi! *
+            c.multiplier *
+            spot *
+            spot *
+            0.01,
+        0,
+      );
+    }),
+  );
+  const heatMax = Math.max(1, ...heatCells.flat().map((v) => Math.abs(v ?? 0)));
   const nearby = [...summary.buckets]
     .sort((a, b) => Math.abs(a.strike - spot) - Math.abs(b.strike - spot))
     .slice(0, 40)
@@ -224,6 +260,34 @@ export default function OptionsDesk({
         return { x, y: expirationPayoff(x, legs, shares, spot) };
       })
     : [];
+  if (!contracts.length)
+    return (
+      <section className="options-desk options-notice" aria-live="polite">
+        <h2>Options & positioning</h2>
+        <p>
+          {busy
+            ? "Loading options contracts…"
+            : error ||
+              chain?.message ||
+              (preview
+                ? "Options appear here after connecting market data."
+                : "No options contracts were returned for this selection.")}
+        </p>
+        <p>
+          Chains, Greeks and positioning appear when data is available. No
+          estimated prices are substituted for missing contracts.
+        </p>
+        {expiry && (
+          <button
+            type="button"
+            className="button"
+            onClick={() => setExpiry("")}
+          >
+            Show all expirations
+          </button>
+        )}
+      </section>
+    );
   return (
     <div className="options-desk">
       <header className="options-heading">
@@ -324,6 +388,48 @@ export default function OptionsDesk({
       )}
       {view === "positioning" && (
         <>
+          <section className="options-heatmap">
+            <h3>Gamma by strike & expiry</h3>
+            <p>
+              Estimated dollar exposure per 1% underlying move. Blue:
+              call-positive; red: put-negative. Missing inputs stay blank.
+              Contract dates can differ across cells; this is not a synchronized
+              dealer inventory.
+            </p>
+            <div className="options-table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Strike</th>
+                    {heatExpiries.map((date) => (
+                      <th key={date}>{date}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {heatStrikes.map((strike, i) => (
+                    <tr key={strike}>
+                      <th>{amount(strike)}</th>
+                      {heatCells[i].map((value, j) => (
+                        <td
+                          key={heatExpiries[j]}
+                          style={
+                            value === null
+                              ? undefined
+                              : {
+                                  background: `color-mix(in srgb, ${value >= 0 ? "var(--blue)" : "#bf4058"} ${Math.round(10 + (Math.abs(value) / heatMax) * 45)}%, transparent)`,
+                                }
+                          }
+                        >
+                          {value === null ? "—" : fmt(value, 0)}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
           <div className="options-kpis">
             <article>
               <span>ATM straddle cost</span>
@@ -630,6 +736,48 @@ export default function OptionsDesk({
           </div>
           {risk ? (
             <>
+              <section className="options-heatmap">
+                <h3>Gamma by strike & expiry</h3>
+                <p>
+                  Estimated dollar exposure per 1% underlying move. Blue:
+                  call-positive; red: put-negative. Missing inputs stay blank.
+                  Contract dates can differ across cells; this is not a
+                  synchronized dealer inventory.
+                </p>
+                <div className="options-table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Strike</th>
+                        {heatExpiries.map((date) => (
+                          <th key={date}>{date}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {heatStrikes.map((strike, i) => (
+                        <tr key={strike}>
+                          <th>{amount(strike)}</th>
+                          {heatCells[i].map((value, j) => (
+                            <td
+                              key={heatExpiries[j]}
+                              style={
+                                value === null
+                                  ? undefined
+                                  : {
+                                      background: `color-mix(in srgb, ${value >= 0 ? "var(--blue)" : "#bf4058"} ${Math.round(10 + (Math.abs(value) / heatMax) * 45)}%, transparent)`,
+                                    }
+                              }
+                            >
+                              {value === null ? "—" : fmt(value, 0)}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
               <div className="options-kpis">
                 <article>
                   <span>Maximum loss at expiry</span>
