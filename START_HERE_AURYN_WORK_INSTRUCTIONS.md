@@ -1,3 +1,7 @@
+# Latest build — Adaptive Home, 23 October 2026
+
+The approved adaptive Home is implemented. Read `docs/ADAPTIVE_HOME_BUILD.md` for behavior, coverage and verification limits. Greeting and a daily perspective remain; the navy feature adapts to earnings, company updates, milestones or a weekly review. The Home CSS file was replaced rather than adding another override layer. PWA shell geometry and other app pages remain unchanged. Prior entries below describe earlier iterations. DCA outperformance remains unestablished.
+
 # Latest validation — 23 October 2026
 
 This is the complete application source, not just the validation bundle. See `docs/DCA_FROZEN_VALIDATION.md` and `verification/dca-frozen-validation.json`. Frozen monthly-v5 was evaluated on eight additional securities over 68 execution months with equal contributions: one win, two losses, five ties versus ordinary DCA; mean ending-value difference +0.044%. This is not evidence of a superior investment algorithm. Production thresholds were not retuned to improve these results. The report discusses reserve funding, dividends, cash yield, survivorship and further validation. Earlier parity results below refer to calibration examples, not proven investment performance.

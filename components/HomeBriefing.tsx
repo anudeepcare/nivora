@@ -1,14 +1,22 @@
 "use client";
 import Link from "next/link";
-import { useMemo, useState, useEffect } from "react";
-import { ArrowUpRight, CalendarDays, ArrowRight, Search } from "lucide-react";
+import { useMemo, useState } from "react";
+import {
+  ArrowUpRight,
+  CalendarDays,
+  ArrowRight,
+  PieChart,
+  FileText,
+  Clock3,
+} from "lucide-react";
 import { useProduct, useResource } from "./Session";
 import { SecurityLogo, Notice } from "./Ui";
 import { amount, percent, quoteTime, dateLabel } from "@/lib/format";
 import { homeDay } from "@/lib/home-day";
+import { homeBrief, dailyPerspective } from "@/lib/home-brief";
 import { companyFeedPage, holdingAttention } from "@/lib/product-attention";
 import { relevantHoldingHeadlines, type HomeFeed } from "@/lib/home-feed";
-import type { Candle, Company, Quote } from "@/lib/types";
+import type { Company, Quote } from "@/lib/types";
 type Rows = Record<
   string,
   { company?: Company; quote?: Quote; error?: string }
@@ -22,13 +30,16 @@ export default function HomeBriefing({
 }) {
   const { workspace, demo, workspaceError, displayName } = useProduct(),
     prefix = demo ? "/preview" : "";
-  const [selection, setSelection] = useState<{
-    symbol: string;
-    reason: string;
-  } | null>(null);
-  const [range, setRange] = useState("1Y"),
-    [page, setPage] = useState(0),
+  const [page, setPage] = useState(0),
     [expandedNews, setExpandedNews] = useState(false);
+  const now = new Date(),
+    asOf = now.toISOString();
+  const today = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Chicago",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(now);
   const positions =
     workspace?.positions.filter((p) => p.assetType !== "cash") ?? [];
   const symbols = [
@@ -38,37 +49,44 @@ export default function HomeBriefing({
     ]),
   ];
   const q = Object.fromEntries(
-    Object.entries(quotes).flatMap(([symbol, row]) =>
-      row.quote ? [[symbol, row.quote]] : [],
-    ),
+    Object.entries(quotes).flatMap(([s, r]) => (r.quote ? [[s, r.quote]] : [])),
   );
   const names = Object.fromEntries(
-    Object.entries(quotes).flatMap(([symbol, row]) =>
-      row.company?.name ? [[symbol, row.company.name]] : [],
+    Object.entries(quotes).flatMap(([s, r]) =>
+      r.company?.name ? [[s, r.company.name]] : [],
     ),
   );
   const exposure = new Map<string, number>();
   for (const p of positions) {
-    const quote = q[p.symbol];
-    const value =
-      quote?.currency === p.currency &&
-      p.currency === "USD" &&
-      quote.price != null &&
-      quote.price > 0 &&
-      Number.isFinite(quote.price)
-        ? p.quantity * quote.price
-        : 0;
-    exposure.set(p.symbol, (exposure.get(p.symbol) ?? 0) + value);
+    const quote = q[p.symbol],
+      at = Date.parse(quote?.asOf ?? "");
+    if (
+      p.currency !== "USD" ||
+      quote?.currency !== "USD" ||
+      !Number.isFinite(p.quantity) ||
+      p.quantity <= 0 ||
+      quote.price == null ||
+      !Number.isFinite(quote.price) ||
+      quote.price <= 0 ||
+      !Number.isFinite(at) ||
+      at > now.getTime() + 60000 ||
+      now.getTime() - at > 4 * 86400000
+    )
+      continue;
+    exposure.set(
+      p.symbol,
+      (exposure.get(p.symbol) ?? 0) + p.quantity * quote.price,
+    );
   }
-  const orderedSymbols = [...symbols].sort(
+  const ordered = [...symbols].sort(
     (a, b) =>
       (exposure.get(b) ?? 0) - (exposure.get(a) ?? 0) || a.localeCompare(b),
   );
   const feed = companyFeedPage(
-      orderedSymbols.filter((s) => !s.includes("/")),
+      ordered.filter((s) => !s.includes("/")),
       page,
     ),
-    key = feed.symbols.join(",");
+    key = [...feed.symbols].sort().join(",");
   const preview = useMemo(
     () =>
       demo
@@ -93,80 +111,52 @@ export default function HomeBriefing({
     preview,
     3600000,
   );
-  const now = new Date(),
-    today = new Intl.DateTimeFormat("en-CA", {
-      timeZone: "America/Chicago",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }).format(now);
+  const allHeadlines = relevantHoldingHeadlines(
+    news.data?.news ?? [],
+    names,
+    exposure,
+  ).filter((n) => {
+    const at = Date.parse(n.date);
+    return (
+      /^https?:\/\//.test(n.url) &&
+      at <= now.getTime() + 60000 &&
+      at >= now.getTime() - 7 * 86400000
+    );
+  });
+  const brief = homeBrief({
+    today,
+    symbols: ordered,
+    names,
+    events: events.data?.events ?? [],
+    headlines: allHeadlines,
+    exposure,
+    eventsReady: !!events.data && !events.error && !events.data.issues?.length,
+    newsReady: !!news.data && !news.error && !news.data.issues?.length,
+  });
   const day = homeDay(
     workspace?.positions ?? [],
     q,
     events.data?.events ?? [],
-    now.toISOString(),
+    asOf,
   );
-  const watchFocus = orderedSymbols.find((s) => q[s]?.price != null);
-  const automatic = day.focus
-    ? {
-        symbol: day.focus.symbol,
-        reason:
-          day.focus.kind === "impact"
-            ? `Largest estimated session impact · ${amount(day.focus.impact, "USD")}`
-            : day.focus.kind === "event"
-              ? `Upcoming company event · ${dateLabel(day.focus.date)}`
-              : "Largest priced holding",
-      }
-    : watchFocus
-      ? { symbol: watchFocus, reason: "A company on your watchlist" }
-      : null;
-  const choice =
-    selection && symbols.includes(selection.symbol) ? selection : automatic;
-  const symbol = choice?.symbol ?? "";
-  useEffect(() => {
-    if (!selection && automatic) setSelection(automatic);
-  }, [selection, automatic?.symbol, automatic?.reason]);
-  const previewHistory = useMemo(
-    () =>
-      demo ? { candles: demo.research[symbol]?.history ?? [] } : undefined,
-    [demo, symbol],
-  );
-  const history = useResource<{ candles: Candle[] }>(
-    symbol
-      ? `chart/${encodeURIComponent(symbol.replace("/", "-"))}?range=1Y`
-      : null,
-    previewHistory,
-    3600000,
-  );
-  const bars = (history.data?.candles ?? [])
-    .filter((c) => Number.isFinite(c.close) && c.close > 0)
-    .slice(range === "1M" ? -22 : range === "3M" ? -66 : -252);
-  const min = Math.min(...bars.map((c) => c.close)),
-    max = Math.max(...bars.map((c) => c.close)),
-    spread = max - min || max * 0.01 || 1;
-  const path = bars
-    .map(
-      (c, i) =>
-        `${i ? "L" : "M"}${(10 + (i / Math.max(1, bars.length - 1)) * 480).toFixed(2)} ${(170 - ((c.close - min) / spread) * 135).toFixed(2)}`,
-    )
-    .join(" ");
   const calendar = holdingAttention(
     workspace?.positions ?? [],
     q,
     events.data?.events ?? [],
     today,
   ).sort((a, b) => a.date.localeCompare(b.date));
-  const allHeadlines = relevantHoldingHeadlines(
-      news.data?.news ?? [],
-      names,
-      exposure,
-    ),
-    headlines = expandedNews ? allHeadlines : allHeadlines.slice(0, 3);
-  const newsCompanies = new Set(allHeadlines.map((n) => n.symbol)).size;
-  const chosen = quotes[symbol]?.quote;
-  const reviewSymbols = [
-    ...new Set([...day.moves.map((m) => m.symbol), ...orderedSymbols]),
-  ];
+  const pricedTotal = [...exposure.values()].reduce((n, v) => n + v, 0),
+    largest = [...exposure].sort((a, b) => b[1] - a[1])[0];
+  const companyHref = (s: string) =>
+    `${prefix}/research/${encodeURIComponent(s.replace("/", "-"))}`;
+  const heroHref =
+    brief.kind === "start"
+      ? `${prefix}/research`
+      : brief.kind === "review"
+        ? `${prefix}/portfolio`
+        : brief.symbol
+          ? companyHref(brief.symbol)
+          : `${prefix}/research`;
   const hour = Number(
     new Intl.DateTimeFormat("en-US", {
       hour: "numeric",
@@ -175,367 +165,199 @@ export default function HomeBriefing({
     }).format(now),
   );
   const greeting =
-    hour < 12
-      ? "Good morning."
-      : hour < 18
-        ? "Good afternoon."
-        : "Good evening.";
+    hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+  const newsCompanies = new Set(allHeadlines.map((n) => n.symbol)).size;
+  const headlines = expandedNews ? allHeadlines : allHeadlines.slice(0, 3);
+  const newsTime = news.data?.retrievedAt;
+  const earningsSymbols = new Set(
+    brief.checkpoints
+      .filter((e) => /earnings/i.test(e.kind))
+      .map((e) => e.symbol),
+  );
+  const heldSymbols = new Set(positions.map((p) => p.symbol));
+  const heldEarnings = [...earningsSymbols].filter((s) => heldSymbols.has(s));
+  const readiness = events.loading || news.loading;
+  const evidenceUnavailable = !!(
+    events.error ||
+    news.error ||
+    events.data?.issues?.length ||
+    news.data?.issues?.length
+  );
   return (
     <section className="briefing-home">
       <header className="briefing-greeting">
-        <div>
-          <span>YOUR DAILY PERSPECTIVE</span>
-          <h1>
-            {displayName
-              ? `${greeting.slice(0, -1)}, ${displayName}.`
-              : greeting}
-          </h1>
-          <p>
-            {now.toLocaleDateString("en-US", {
-              weekday: "long",
-              month: "long",
-              day: "numeric",
-              timeZone: "America/Chicago",
-            })}
-          </p>
-        </div>
-        <Link href={`${prefix}/research`} className="briefing-search">
-          <Search size={17} />
-          Find a company
-        </Link>
+        <span className="briefing-kicker">YOUR DAILY PERSPECTIVE</span>
+        <h1>
+          {greeting}
+          {displayName ? `, ${displayName}` : ""}.
+        </h1>
+        <p className="briefing-thought">
+          A little perspective: {dailyPerspective(today)}
+        </p>
+        <p className="briefing-date">
+          {now.toLocaleDateString("en-US", {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+            timeZone: "America/Chicago",
+          })}{" "}
+          <span>· Your time: Central</span>
+        </p>
       </header>
       {workspaceError && <Notice error>{workspaceError}</Notice>}
       {error && <Notice error>{error}</Notice>}
-      <section className="briefing-day" aria-label="Your latest session impact">
-        <article
-          data-tone={day.net != null && day.net < 0 ? "risk" : "positive"}
-        >
-          <span>
-            {day.covered < day.total
-              ? "Partial estimated move"
-              : "Estimated session move"}
+      <section
+        className="briefing-hero"
+        aria-label="Your daily focus"
+        aria-busy={readiness}
+      >
+        <div className="briefing-hero-story">
+          <span className="briefing-kicker">
+            {readiness && brief.kind === "review"
+              ? "BUILDING YOUR PERSPECTIVE"
+              : brief.kicker}
           </span>
-          <strong>
-            {day.net == null ? "Not available" : amount(day.net, "USD")}
-          </strong>
-          <small>
-            {day.session
-              ? `US observations · ${dateLabel(day.session)}`
-              : "Dated quotes are needed"}
-          </small>
-        </article>
-        <article data-tone="blue">
-          <span>Behind the move</span>
-          <strong>
-            {day.positive} up <i>·</i> {day.negative} down
-          </strong>
-          <small>
-            {day.covered} of {day.total} USD equity holdings with comparable
-            changes
-          </small>
-        </article>
-        <article data-tone="amber">
-          <span>The next seven days</span>
-          <strong>
-            {new Set(day.upcoming.map((e) => e.symbol)).size} companies
-          </strong>
-          <small>
-            {day.upcoming.length
-              ? day.upcoming
-                  .slice(0, 3)
-                  .map((e) => e.symbol)
-                  .join(" · ")
-              : "No scheduled company events returned"}
-          </small>
-        </article>
-        <p>
-          Estimated price change on your current recorded units. Excludes
-          trades, cash flows, fees and crypto; not brokerage P&amp;L. Different
-          observation dates are not combined.
-        </p>
-      </section>
-      <div className="briefing-columns">
-        <section className="briefing-market">
-          <header>
-            <div>
-              <span className="briefing-kicker">THE BIG PICTURE</span>
-              <h2>Your companies, in focus.</h2>
-            </div>
-            <Link
-              href={`${prefix}/research/${encodeURIComponent(symbol.replace("/", "-"))}`}
-              aria-label={`Research ${symbol || "a company"}`}
-            >
-              <ArrowUpRight size={20} />
-            </Link>
-          </header>
-          {symbol ? (
-            <>
-              <p className="briefing-focus-reason">{choice?.reason}</p>
-              <div className="briefing-company-picker">
-                <label>
-                  <span className="sr-only">Company chart</span>
-                  <select
-                    value={symbol}
-                    onChange={(e) =>
-                      setSelection({
-                        symbol: e.target.value,
-                        reason: "Selected by you",
-                      })
-                    }
-                  >
-                    {symbols.map((s) => (
-                      <option key={s} value={s}>
-                        {names[s] ?? s}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <span>
-                  {chosen?.price != null && chosen.price > 0
-                    ? amount(chosen.price, chosen.currency)
-                    : "Price unavailable"}
-                </span>
-              </div>
-              <div className="briefing-chart-meta">
-                <b
-                  data-direction={(chosen?.changePct ?? 0) < 0 ? "down" : "up"}
-                >
-                  {Number.isFinite(chosen?.changePct)
-                    ? percent(chosen!.changePct, true)
-                    : "Change unavailable"}
-                </b>
-                <small>
-                  {chosen ? quoteTime(chosen.asOf) : "Waiting for a quote"}
-                </small>
-              </div>
-              <div className="briefing-chart">
-                {bars.length > 1 ? (
-                  <svg
-                    viewBox="0 0 500 205"
-                    role="img"
-                    aria-label={`${symbol} daily closing prices, ${range}`}
-                  >
-                    <defs>
-                      <linearGradient
-                        id="home-price-fill"
-                        x1="0"
-                        y1="0"
-                        x2="0"
-                        y2="1"
-                      >
-                        <stop stopColor="#5c9df9" stopOpacity=".25" />
-                        <stop offset="1" stopColor="#5c9df9" stopOpacity="0" />
-                      </linearGradient>
-                    </defs>
-                    {[40, 90, 140, 180].map((y) => (
-                      <line
-                        key={y}
-                        x1="10"
-                        x2="490"
-                        y1={y}
-                        y2={y}
-                        stroke="currentColor"
-                        opacity=".08"
-                      />
-                    ))}
-                    <path
-                      d={`${path}L490 180L10 180Z`}
-                      fill="url(#home-price-fill)"
-                    />
-                    <path
-                      d={path}
-                      fill="none"
-                      stroke="#397fea"
-                      strokeWidth="2.5"
-                    />
-                    <text
-                      x="10"
-                      y="201"
-                      fill="currentColor"
-                      opacity=".6"
-                      fontSize="11"
-                    >
-                      {dateLabel(bars[0].time)}
-                    </text>
-                    <text
-                      x="490"
-                      y="201"
-                      textAnchor="end"
-                      fill="currentColor"
-                      opacity=".6"
-                      fontSize="11"
-                    >
-                      {dateLabel(bars[bars.length - 1].time)}
-                    </text>
-                  </svg>
-                ) : (
-                  <p className="briefing-empty">
-                    {history.loading
-                      ? "Loading price history…"
-                      : history.error
-                        ? "Price history is temporarily unavailable. Your holdings remain below."
-                        : "Add a company to start your daily perspective."}
-                  </p>
-                )}
-              </div>
-              <div className="briefing-range" aria-label="Chart history">
-                {["1M", "3M", "1Y"].map((r) => (
-                  <button
-                    key={r}
-                    aria-pressed={range === r}
-                    onClick={() => setRange(r)}
-                  >
-                    {r}
-                  </button>
-                ))}
-                <small>Daily closes · {symbol}</small>
-              </div>
-              {day.moves.length > 0 && (
-                <div
-                  className="briefing-drivers"
-                  aria-label="Largest estimated session drivers"
-                >
-                  {day.moves.slice(0, 3).map((m) => (
-                    <Link
-                      key={m.symbol}
-                      href={`${prefix}/research/${encodeURIComponent(m.symbol)}`}
-                      data-direction={m.impact < 0 ? "down" : "up"}
-                    >
-                      <b>{m.symbol}</b>
-                      <i>
-                        <span
-                          style={{
-                            width: `${(Math.abs(m.impact) / Math.max(1, ...day.moves.map((x) => Math.abs(x.impact)))) * 100}%`,
-                          }}
-                        />
-                      </i>
-                      <strong>{amount(m.impact, "USD")}</strong>
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </>
-          ) : (
-            <p className="briefing-empty">
-              {symbols.length ? "Waiting for a dated quote to choose your focus. Your companies remain available below." : "Save your first company or add your holdings to begin."}
-            </p>
+          <h2>{brief.title}</h2>
+          <p>{brief.detail}</p>
+          <Link className="briefing-primary" href={heroHref}>
+            {brief.action}
+            <ArrowRight size={17} />
+          </Link>
+          {brief.kind === "news" && (
+            <small>Reported headline · assess the evidence in context.</small>
           )}
-        </section>
-        <section className="briefing-calendar">
-          <header>
-            <span className="briefing-kicker">LOOK AHEAD</span>
-            <h2>Next on your calendar</h2>
-          </header>
-          {calendar.length ? (
+        </div>
+        <div className="briefing-hero-context">
+          {brief.checkpoints.length ? (
             <>
-              <div className="briefing-next">
-                <CalendarDays size={21} />
-                <span>{dateLabel(calendar[0].date)}</span>
-              </div>
-              <Link
-                className="briefing-event-title"
-                href={`${prefix}/research/${encodeURIComponent(calendar[0].symbol.replace("/", "-"))}`}
-              >
-                {names[calendar[0].symbol] ?? calendar[0].symbol}
-                <ArrowUpRight size={18} />
-              </Link>
-              <p>{calendar[0].kind}</p>
-              {(calendar[0].weight ?? 0) > 0 && (
-                <strong className="briefing-exposure">
-                  {percent(calendar[0].weight)} <small>of priced assets</small>
-                </strong>
-              )}
-              <div className="briefing-timeline">
-                {calendar.slice(0, 3).map((e, i) => (
+              <span className="briefing-kicker">
+                UPCOMING MILESTONES · NEXT 7 DAYS
+              </span>
+              <div className="briefing-milestones">
+                {brief.checkpoints.slice(0, 3).map((e, i) => (
                   <Link
                     key={`${e.symbol}-${e.date}-${i}`}
-                    href={`${prefix}/research/${encodeURIComponent(e.symbol.replace("/", "-"))}`}
+                    href={companyHref(e.symbol)}
+                    data-accent={i}
                   >
-                    <i />
-                    <small>{dateLabel(e.date)}</small>
-                    <b>{e.symbol}</b>
-                    <span>{e.kind}</span>
+                    <span className="briefing-orb">
+                      <CalendarDays size={23} />
+                    </span>
+                    <time dateTime={e.date}>{dateLabel(e.date)}</time>
+                    <strong>{names[e.symbol] ?? e.symbol}</strong>
+                    <small>{e.kind}</small>
                   </Link>
                 ))}
               </div>
             </>
           ) : (
-            <div className="briefing-empty">
-              <CalendarDays size={28} />
-              <p>
-                {events.loading
-                  ? "Checking company events…"
-                  : "No upcoming dated events returned for these companies."}
-              </p>
+            <div className="briefing-pillars">
+              <Link href={`${prefix}/portfolio`}>
+                <span className="briefing-orb">
+                  <PieChart size={24} />
+                </span>
+                <strong>Concentration</strong>
+                <small>See where your priced holdings are most exposed.</small>
+              </Link>
+              <Link
+                href={
+                  brief.symbol
+                    ? companyHref(brief.symbol)
+                    : `${prefix}/research`
+                }
+                data-accent="1"
+              >
+                <span className="briefing-orb">
+                  <FileText size={24} />
+                </span>
+                <strong>Business evidence</strong>
+                <small>Keep the business behind the price in view.</small>
+              </Link>
+              <Link href="#home-upcoming" data-accent="2">
+                <span className="briefing-orb">
+                  <CalendarDays size={24} />
+                </span>
+                <strong>Upcoming milestones</strong>
+                <small>
+                  Review the dated events available for your companies.
+                </small>
+              </Link>
             </div>
           )}
-          {events.error && (
-            <small role="status">
-              Company events are temporarily unavailable.
-            </small>
-          )}
-          {feed.pageCount > 1 && (
-            <button
-              className="briefing-feed-next"
-              onClick={() => setPage((page + 1) % feed.pageCount)}
-            >
-              Company group {feed.page + 1} of {feed.pageCount} · Next →
-            </button>
-          )}
-        </section>
-        <section className="briefing-changes">
+        </div>
+      </section>
+      <div className="briefing-main-grid">
+        <section
+          className="briefing-panel briefing-changes"
+          aria-label="Company updates"
+        >
           <header>
-            <span className="briefing-kicker">THE LATEST EVIDENCE</span>
-            <h2>What changed</h2>
-            <p className="briefing-news-coverage">
-              {allHeadlines.length} matching headlines · {newsCompanies}{" "}
-              companies
-              <br />
-              {feed.symbols.length} companies requested in this group
-            </p>
+            <div>
+              <span className="briefing-kicker">THE LATEST EVIDENCE</span>
+              <h2>What changed for your companies</h2>
+            </div>
+            <span className="briefing-count">
+              {allHeadlines.length} updates
+            </span>
           </header>
+          <p className="briefing-coverage">
+            {allHeadlines.length} matching headlines · {newsCompanies} companies
+            · {feed.symbols.length} companies requested in this group
+            {newsTime ? ` · Checked ${quoteTime(newsTime)}` : ""}
+          </p>
           {headlines.length ? (
             <div
-              className="briefing-headline-list"
+              className="briefing-news-list"
               id="home-company-headlines"
               data-expanded={expandedNews}
             >
               {headlines.map((n, i) => (
-                <a
-                  key={`${n.url}-${i}`}
-                  href={n.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <div>
-                    <SecurityLogo symbol={n.symbol} size={28} />
-                    <b>{n.symbol}</b>
-                    <span>{dateLabel(n.date)}</span>
+                <article key={`${n.symbol}-${n.url}-${i}`}>
+                  <Link
+                    className="briefing-news-company"
+                    href={companyHref(n.symbol)}
+                  >
+                    <SecurityLogo symbol={n.symbol} size={38} />
+                    <span>
+                      <strong>{n.symbol}</strong>
+                      <small>{names[n.symbol] ?? n.symbol}</small>
+                    </span>
+                  </Link>
+                  <div className="briefing-news-story">
+                    <span className="briefing-tag">Company news</span>
+                    <a href={n.url} target="_blank" rel="noopener noreferrer">
+                      {n.title}
+                      <ArrowUpRight size={15} />
+                    </a>
+                    <time dateTime={n.date}>{dateLabel(n.date)}</time>
                   </div>
-                  <p>{n.title}</p>
-                  <small>
-                    Company news <ArrowUpRight size={12} />
-                  </small>
-                </a>
+                </article>
               ))}
             </div>
           ) : (
             <div className="briefing-empty">
+              <FileText size={25} />
               <p>
                 {news.loading
                   ? "Looking for company updates…"
                   : news.error
-                    ? "News is temporarily unavailable."
+                    ? "Company news is temporarily unavailable."
                     : "No matching recent headlines returned for this company group."}
               </p>
-              <Link href={`${prefix}/research`}>
-                Explore a company <ArrowRight size={14} />
+              <Link
+                href={
+                  brief.symbol
+                    ? companyHref(brief.symbol)
+                    : `${prefix}/research`
+                }
+              >
+                Continue your research <ArrowRight size={15} />
               </Link>
             </div>
           )}
           {allHeadlines.length > 3 && (
             <button
-              className="briefing-news-expand"
+              className="briefing-text-button"
               aria-expanded={expandedNews}
               aria-controls="home-company-headlines"
               onClick={() => setExpandedNews(!expandedNews)}
@@ -546,13 +368,209 @@ export default function HomeBriefing({
             </button>
           )}
           {!!news.data?.issues?.length && (
-            <small className="briefing-news-coverage" role="status">
+            <p className="briefing-coverage" role="status">
               Some company updates could not be checked.
-            </small>
+            </p>
+          )}
+          {feed.pageCount > 1 && (
+            <button
+              className="briefing-text-button"
+              onClick={() => setPage((page + 1) % feed.pageCount)}
+            >
+              Company group {feed.page + 1} of {feed.pageCount} · Next →
+            </button>
           )}
         </section>
+        <section className="briefing-panel briefing-attention">
+          <header>
+            <div>
+              <span className="briefing-kicker">YOUR NEXT STEPS</span>
+              <h2>Your attention, prioritized</h2>
+            </div>
+          </header>
+          <Link
+            className="briefing-action-row"
+            href={
+              heldEarnings[0]
+                ? companyHref(heldEarnings[0])
+                : `${prefix}/portfolio`
+            }
+          >
+            <span className="briefing-step">01</span>
+            <div>
+              <strong>
+                {heldEarnings.length
+                  ? "Prepare for earnings"
+                  : "Review concentration"}
+              </strong>
+              <p>
+                {heldEarnings.length
+                  ? `${heldEarnings.length} held ${heldEarnings.length === 1 ? "company reports" : "companies report"} in the next 7 days.`
+                  : largest && pricedTotal > 0
+                    ? `${largest[0]} is ${percent((largest[1] / pricedTotal) * 100)} of priced USD investments.`
+                    : "Add holdings to see where your exposure is concentrated."}
+              </p>
+            </div>
+            <ArrowUpRight size={17} />
+          </Link>
+          <Link
+            className="briefing-action-row"
+            href="#home-upcoming"
+            data-accent="1"
+          >
+            <span className="briefing-step">02</span>
+            <div>
+              <strong>Check upcoming dates</strong>
+              <p>
+                {brief.checkpoints.length
+                  ? `${brief.checkpoints.length} dated ${brief.checkpoints.length === 1 ? "event" : "events"} in the next 7 days.`
+                  : readiness
+                    ? "Checking available company events…"
+                    : brief.status}
+              </p>
+            </div>
+            <ArrowUpRight size={17} />
+          </Link>
+          <Link
+            className="briefing-action-row"
+            href={
+              brief.symbol ? companyHref(brief.symbol) : `${prefix}/research`
+            }
+            data-accent="2"
+          >
+            <span className="briefing-step">03</span>
+            <div>
+              <strong>Continue your research</strong>
+              <p>
+                {brief.symbol
+                  ? `Open ${names[brief.symbol] ?? brief.symbol} and review the supporting evidence.`
+                  : "Find your first company and make this view yours."}
+              </p>
+            </div>
+            <ArrowUpRight size={17} />
+          </Link>
+          <p className="briefing-coverage">
+            Based on available holdings and evidence. Exposure excludes unpriced
+            assets, cash, margin debt and managed balances.
+          </p>
+        </section>
       </div>
-      <section className="briefing-holdings">
+      <section className="briefing-session" aria-label="Session coverage">
+        <div>
+          <span className="briefing-kicker">MARKET SNAPSHOT</span>
+          <h2>
+            {day.net == null
+              ? "Waiting for comparable session data"
+              : `${amount(day.net, "USD")} estimated ${day.covered < day.total ? "partial " : ""}session move`}
+          </h2>
+          <p>
+            {day.covered} of {day.total} USD equity holdings with comparable
+            changes{day.session ? ` · ${dateLabel(day.session)}` : ""}
+          </p>
+          <div
+            className="briefing-progress"
+            role="progressbar"
+            aria-label="Comparable quote coverage"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={
+              day.total ? Math.round((day.covered / day.total) * 100) : 0
+            }
+          >
+            <span
+              style={{
+                width: `${day.total ? (day.covered / day.total) * 100 : 0}%`,
+              }}
+            />
+          </div>
+        </div>
+        <div className="briefing-contributors">
+          {day.moves.length ? (
+            <>
+              <span className="briefing-kicker">
+                LARGEST CONTRIBUTORS · CURRENT UNITS
+              </span>
+              {day.moves.slice(0, 3).map((m) => (
+                <Link
+                  key={m.symbol}
+                  href={companyHref(m.symbol)}
+                  data-direction={
+                    m.impact < 0 ? "down" : m.impact > 0 ? "up" : "neutral"
+                  }
+                >
+                  <b>{m.symbol}</b>
+                  <i>
+                    <span
+                      style={{
+                        width: `${(Math.abs(m.impact) / Math.max(1, ...day.moves.map((x) => Math.abs(x.impact)))) * 100}%`,
+                      }}
+                    />
+                  </i>
+                  <strong>{amount(m.impact, "USD")}</strong>
+                </Link>
+              ))}
+            </>
+          ) : (
+            <>
+              <Clock3 size={25} />
+              <strong>Comparable changes are not available yet.</strong>
+              <p>
+                Quotes may still appear in your portfolio. Missing changes are
+                not zero returns.
+              </p>
+            </>
+          )}
+        </div>
+        <p className="briefing-session-note">
+          Estimated price-reference change on current recorded units, not
+          brokerage P&amp;L. Excludes trades, cash flows, fees and crypto.
+          Different observation dates are not combined.
+        </p>
+      </section>
+      <section className="briefing-panel briefing-calendar" id="home-upcoming">
+        <header>
+          <div>
+            <span className="briefing-kicker">LOOK AHEAD</span>
+            <h2>Next on your calendar</h2>
+          </div>
+          <span className="briefing-count">
+            Next 30 days · current company group
+          </span>
+        </header>
+        {calendar.length ? (
+          <div className="briefing-calendar-grid">
+            {calendar.slice(0, 6).map((e, i) => (
+              <Link
+                href={companyHref(e.symbol)}
+                key={`${e.symbol}-${e.date}-${i}`}
+              >
+                <span className="briefing-calendar-date">
+                  <CalendarDays size={19} />
+                  <time dateTime={e.date}>{dateLabel(e.date)}</time>
+                </span>
+                <strong>{names[e.symbol] ?? e.symbol}</strong>
+                <small>{e.kind}</small>
+                <ArrowUpRight size={17} />
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <p className="briefing-empty">
+            {events.loading
+              ? "Checking company events…"
+              : events.error || events.data?.issues?.length
+                ? "Company events are temporarily unavailable."
+                : "No upcoming dated events returned for this company group."}
+          </p>
+        )}
+        {evidenceUnavailable && (
+          <p className="briefing-coverage">
+            Some evidence could not be checked. This does not mean nothing
+            changed.
+          </p>
+        )}
+      </section>
+      <section className="briefing-panel briefing-companies">
         <header>
           <div>
             <span className="briefing-kicker">KEEP THE BUSINESS IN VIEW</span>
@@ -562,82 +580,59 @@ export default function HomeBriefing({
             View portfolio <ArrowRight size={15} />
           </Link>
         </header>
-        {symbols.length ? (
-          <div className="briefing-table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th scope="col">Company</th>
-                  <th scope="col">Price</th>
-                  <th scope="col">Day change</th>
-                  <th scope="col">Observation</th>
-                  <th scope="col">Next checkpoint</th>
-                </tr>
-              </thead>
-              <tbody>
-                {reviewSymbols.slice(0, 8).map((s) => {
-                  const row = quotes[s],
-                    quote = row?.quote,
-                    event = calendar.find((e) => e.symbol === s);
-                  return (
-                    <tr key={s}>
-                      <th scope="row">
-                        <Link
-                          href={`${prefix}/research/${encodeURIComponent(s.replace("/", "-"))}`}
-                        >
-                          <SecurityLogo symbol={s} size={35} />
-                          <span>
-                            <b>{row?.company?.name ?? s}</b>
-                            <small>{s}</small>
-                          </span>
-                        </Link>
-                      </th>
-                      <td>
-                        {quote?.price != null && quote.price > 0 ? (
-                          amount(quote.price, quote.currency)
-                        ) : (
-                          <span className="briefing-unpriced">Not priced</span>
-                        )}
-                      </td>
-                      <td
-                        data-direction={
-                          (quote?.changePct ?? 0) < 0 ? "down" : "up"
-                        }
-                      >
-                        {Number.isFinite(quote?.changePct)
-                          ? percent(quote!.changePct, true)
-                          : "—"}
-                      </td>
-                      <td>
-                        <small>
-                          {quote
-                            ? `${quote.stale ? "Last available · " : ""}${quoteTime(quote.asOf)}`
-                            : "Waiting for quote"}
-                        </small>
-                      </td>
-                      <td>
-                        <Link
-                          href={`${prefix}/research/${encodeURIComponent(s.replace("/", "-"))}`}
-                        >
-                          {event
-                            ? `${event.kind} · ${dateLabel(event.date)}`
-                            : "Review company brief"}
-                          <ArrowUpRight size={13} />
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+        {ordered.length ? (
+          <div className="briefing-company-grid">
+            {ordered.slice(0, 8).map((s) => {
+              const row = quotes[s],
+                quote = row?.quote,
+                valid =
+                  quote?.price != null &&
+                  Number.isFinite(quote.price) &&
+                  quote.price > 0;
+              return (
+                <Link key={s} href={companyHref(s)}>
+                  <SecurityLogo symbol={s} size={35} />
+                  <span className="briefing-company-name">
+                    <strong>{s}</strong>
+                    <small>{names[s] ?? s}</small>
+                  </span>
+                  <span className="briefing-company-value">
+                    <strong>
+                      {valid
+                        ? amount(quote!.price, quote!.currency)
+                        : "Not priced"}
+                    </strong>
+                    <small
+                      data-direction={
+                        !Number.isFinite(quote?.changePct)
+                          ? "neutral"
+                          : quote!.changePct! < 0
+                            ? "down"
+                            : quote!.changePct! > 0
+                              ? "up"
+                              : "neutral"
+                      }
+                    >
+                      {Number.isFinite(quote?.changePct)
+                        ? percent(quote!.changePct, true)
+                        : "Change unavailable"}
+                    </small>
+                    <small>
+                      {quote
+                        ? `${quote.stale ? "Last available · " : ""}${quoteTime(quote.asOf)}`
+                        : "Waiting for quote"}
+                    </small>
+                  </span>
+                </Link>
+              );
+            })}
           </div>
         ) : (
           <div className="briefing-empty">
-            <p>
-              Your companies will appear here when you save a ticker or add a
-              position.
-            </p>
-            <Link href={`${prefix}/research`}>Find your first company →</Link>
+            <p>Save a company or add a holding to begin.</p>
+            <Link href={`${prefix}/research`}>
+              Find your first company <ArrowRight size={15} />
+            </Link>
           </div>
         )}
       </section>

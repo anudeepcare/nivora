@@ -6,11 +6,12 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import * as format from "../lib/format.ts";
 import {homeDay} from "../lib/home-day.ts";
+import {homeBrief,dailyPerspective} from "../lib/home-brief.ts";
 import { researchPeriods } from "../lib/financial-catalog.ts";
 import { demoData } from "./fixtures/demo.ts";
 
 function loadComponent(file, name, bindings) {
-  bindings = {AnalystTargets: () => null, PriceRiskCases: () => null, homeDay, useEffect:()=>{}, ...bindings};
+  bindings = {AnalystTargets: () => null, PriceRiskCases: () => null, homeDay, homeBrief, dailyPerspective, PieChart:()=>null, FileText:()=>null, Clock3:()=>null, useEffect:()=>{}, ...bindings};
   const ast = ts.createSourceFile(
     file,
     fs.readFileSync(file, "utf8"),
@@ -766,7 +767,7 @@ test('approved Home keeps account companies, real quotes and missing history sep
  const workspace={positions:[{id:'a',symbol:'SOFI',assetType:'stock',currency:'USD',quantity:10,cost:20}],watchlist:[]};
  const Home=loadComponent('components/HomeBriefing.tsx','HomeBriefing',{React,useMemo:React.useMemo,useState:React.useState,useProduct:()=>({workspace,displayName:'Anudeep',workspaceError:''}),useResource:()=>({data:null,error:'History unavailable',loading:false}),companyFeedPage,holdingAttention,relevantHoldingHeadlines,...format,Link:({children,...p})=>React.createElement('a',p,children),SecurityLogo:empty,Notice:({children})=>React.createElement('p',null,children),ArrowUpRight:empty,CalendarDays:empty,ArrowRight:empty,Search:empty});
  const html=renderToStaticMarkup(React.createElement(Home,{quotes:{SOFI:{quote,company:{name:'SoFi Technologies'}}}}));
- assert.match(html,/Anudeep/);assert.match(html,/\$14\.77/);assert.match(html,/Your companies, in focus/);assert.match(html,/Next on your calendar/);assert.match(html,/What changed/);assert.match(html,/temporarily unavailable/);assert.match(html,/Last available/);assert.doesNotMatch(html,/S&amp;P|Example Company|NaN|Infinity|portfolio total/i);
+ assert.match(html,/Anudeep/);assert.match(html,/\$14\.77/);assert.match(html,/A clearer view of what you own/);assert.match(html,/Next on your calendar/);assert.match(html,/What changed/);assert.match(html,/temporarily unavailable/);assert.match(html,/Last available/);assert.doesNotMatch(html,/S&amp;P|Example Company|NaN|Infinity|portfolio total/i);
 });
 
 test('approved Home renders an honest empty account without fabricated companies or event dates',async()=>{
@@ -806,6 +807,15 @@ test('Home exposes complete matching-news count and expands past three companies
  const {companyFeedPage,holdingAttention}=await import('../lib/product-attention.ts');const {relevantHoldingHeadlines}=await import('../lib/home-feed.ts');
  const symbols=['SOFI','HIMS','IREN','NOW'];const workspace={positions:symbols.map((symbol,i)=>({id:symbol,symbol,quantity:10+i,cost:10,currency:'USD',assetType:'stock'})),watchlist:[]};
  const quotes=Object.fromEntries(symbols.map(symbol=>[symbol,{company:{name:symbol},quote:{price:20,currency:'USD',changePct:1,asOf:'2026-10-22T20:00:00Z',stale:true}}]));
- const items=symbols.map(symbol=>({symbol,date:'2026-10-22',title:`$${symbol} announced a company update`,url:`https://example.com/${symbol}`}));
- for(const expanded of [false,true]){let state=0;const keys=[];const Home=loadComponent('components/HomeBriefing.tsx','HomeBriefing',{React,useMemo:React.useMemo,useState:(v)=>[state++===3?expanded:v,()=>{}],useProduct:()=>({workspace}),useResource:key=>{keys.push(key);return {data:key?.includes('kind=news')?{news:items,issues:[]}:null,loading:false,error:''};},companyFeedPage,holdingAttention,relevantHoldingHeadlines,...format,Link:({children,...p})=>React.createElement('a',p,children),SecurityLogo:empty,Notice:empty,ArrowUpRight:empty,CalendarDays:empty,ArrowRight:empty,Search:empty});const html=renderToStaticMarkup(React.createElement(Home,{quotes}));assert.match(html,/4 matching headlines/);assert.match(html,/4 companies/);assert.equal((html.match(/announced a company update/g)||[]).length,expanded?4:3);assert.match(html,expanded?/Show highlights/:/View all 4 updates/);assert.equal(keys.filter(k=>k?.includes('kind=news')).length,1);}
+ const items=symbols.map(symbol=>({symbol,date:new Date().toISOString().slice(0,10),title:`$${symbol} announced a company update`,url:`https://example.com/${symbol}`}));
+ for(const expanded of [false,true]){let state=0;const keys=[];const Home=loadComponent('components/HomeBriefing.tsx','HomeBriefing',{React,useMemo:React.useMemo,useState:(v)=>[state++===1?expanded:v,()=>{}],useProduct:()=>({workspace}),useResource:key=>{keys.push(key);return {data:key?.includes('kind=news')?{news:items,issues:[]}:null,loading:false,error:''};},companyFeedPage,holdingAttention,relevantHoldingHeadlines,...format,Link:({children,...p})=>React.createElement('a',p,children),SecurityLogo:empty,Notice:empty,ArrowUpRight:empty,CalendarDays:empty,ArrowRight:empty,Search:empty});const html=renderToStaticMarkup(React.createElement(Home,{quotes}));assert.match(html,/4 matching headlines/);assert.match(html,/4 companies/);assert.equal((html.match(/class="briefing-news-story"/g)||[]).length,expanded?4:3);assert.match(html,expanded?/Show highlights/:/View all 4 updates/);assert.equal(keys.filter(k=>k?.includes('kind=news')).length,1);}
+});
+
+test('adaptive Home keeps missing moves neutral, shares current contributor data and makes no chart requests',async()=>{
+ const {companyFeedPage,holdingAttention}=await import('../lib/product-attention.ts');const {relevantHoldingHeadlines}=await import('../lib/home-feed.ts');
+ const workspace={positions:[{id:'one',symbol:'ONE',assetType:'stock',currency:'USD',quantity:10,cost:10}],watchlist:[]};
+ const keys=[];const Home=loadComponent('components/HomeBriefing.tsx','HomeBriefing',{React,useMemo:React.useMemo,useState:React.useState,useProduct:()=>({workspace,displayName:'Anudeep'}),useResource:key=>{keys.push(key);return{data:null,error:'',loading:false}},companyFeedPage,holdingAttention,relevantHoldingHeadlines,...format,Link:({children,...p})=>React.createElement('a',p,children),SecurityLogo:empty,Notice:empty,ArrowUpRight:empty,CalendarDays:empty,ArrowRight:empty});
+ const quotes={ONE:{company:{name:'One company'},quote:{price:20,currency:'USD',changePct:null,asOf:new Date().toISOString(),stale:false}}};
+ let html=renderToStaticMarkup(React.createElement(Home,{quotes}));assert.match(html,/Good (morning|afternoon|evening), Anudeep/);assert.match(html,/A little perspective/);assert.match(html,/Waiting for comparable session data/);assert.match(html,/data-direction="neutral">Change unavailable/);assert.doesNotMatch(html,/0 up · 0 down|Largest estimated session impact/);assert.equal(keys.filter(k=>k?.includes('chart/')).length,0);
+ quotes.ONE.quote.changePct=100;html=renderToStaticMarkup(React.createElement(Home,{quotes}));assert.match(html,/\$100\.00 estimated session move/);assert.match(html,/LARGEST CONTRIBUTORS/);assert.doesNotMatch(html,/Change unavailable/);
 });

@@ -1,0 +1,53 @@
+{
+  "engine": "Chromium; mobile viewport and standalone flag emulated, not physical iOS/WebKit",
+  "checks": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "documentWidth": 1440,
+      "homeWidth": 1384,
+      "overflow": [],
+      "hero": "A clearer view of what you own.",
+      "theme": "light",
+      "pwa": "false",
+      "calendarAnchorReached": true,
+      "errors": []
+    },
+    {
+      "name": "iphone",
+      "width": 402,
+      "documentWidth": 402,
+      "homeWidth": 366,
+      "overflow": [],
+      "hero": "A clearer view of what you own.",
+      "theme": "light",
+      "pwa": "true",
+      "calendarAnchorReached": true,
+      "errors": []
+    },
+    {
+      "name": "iphone-dark",
+      "width": 402,
+      "documentWidth": 402,
+      "homeWidth": 366,
+      "overflow": [],
+      "hero": "A clearer view of what you own.",
+      "theme": "dark",
+      "pwa": "true",
+      "calendarAnchorReached": true,
+      "errors": []
+    },
+    {
+      "name": "small-mobile",
+      "width": 320,
+      "documentWidth": 320,
+      "homeWidth": 288,
+      "overflow": [],
+      "hero": "A clearer view of what you own.",
+      "theme": "light",
+      "pwa": "true",
+      "calendarAnchorReached": true,
+      "errors": []
+    }
+  ]
+}
