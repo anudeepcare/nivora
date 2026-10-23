@@ -639,5 +639,16 @@
     "physicalIphoneVerified": false,
     "liveOAuthVerified": false,
     "exactVisualParityVerified": false
+  },
+  "frozenDcaValidation": {
+    "report": "dca-frozen-validation.json",
+    "unseenSecurities": 8,
+    "executionMonths": 68,
+    "wins": 1,
+    "losses": 2,
+    "ties": 5,
+    "meanEndingAssetDifferencePct": 0.04383026186908362,
+    "outperformanceEstablished": false,
+    "productionPolicyChanged": false
   }
 }
