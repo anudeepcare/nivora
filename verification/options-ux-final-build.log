@@ -1,0 +1,64 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> auryn-product@0.1.0 build
+> next build
+
+   ▲ Next.js 15.5.28
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 3.3s
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/27) ...
+   Generating static pages (6/27) 
+   Generating static pages (13/27) 
+   Generating static pages (20/27) 
+ ✓ Generating static pages (27/27)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /_not-found                            218 B         104 kB
+├ ƒ /[[...route]]                         119 kB         311 kB
+├ ƒ /api/access                            218 B         104 kB
+├ ƒ /api/access/visit                      218 B         104 kB
+├ ƒ /api/account-balances                  218 B         104 kB
+├ ƒ /api/alerts                            218 B         104 kB
+├ ƒ /api/analyst/[symbol]                  218 B         104 kB
+├ ƒ /api/auth/providers                    218 B         104 kB
+├ ƒ /api/billing                           218 B         104 kB
+├ ƒ /api/billing/webhook                   218 B         104 kB
+├ ƒ /api/chart/[symbol]                    218 B         104 kB
+├ ƒ /api/company-data                      218 B         104 kB
+├ ƒ /api/documents                         218 B         104 kB
+├ ƒ /api/enrichment/[symbol]               218 B         104 kB
+├ ƒ /api/filings                           218 B         104 kB
+├ ƒ /api/home-feed                         218 B         104 kB
+├ ƒ /api/jobs                              218 B         104 kB
+├ ƒ /api/logos                             218 B         104 kB
+├ ƒ /api/news                              218 B         104 kB
+├ ƒ /api/observations                      218 B         104 kB
+├ ƒ /api/options/[symbol]                  218 B         104 kB
+├ ƒ /api/owner/access                      218 B         104 kB
+├ ƒ /api/paper-plans                       218 B         104 kB
+├ ƒ /api/paper-status                      218 B         104 kB
+├ ƒ /api/portfolio-import                  218 B         104 kB
+├ ƒ /api/price-stream                      218 B         104 kB
+├ ƒ /api/provider-status                   218 B         104 kB
+├ ƒ /api/quotes                            218 B         104 kB
+├ ƒ /api/research-context/[symbol]         218 B         104 kB
+├ ƒ /api/research/[symbol]                 218 B         104 kB
+├ ƒ /api/search                            218 B         104 kB
+├ ƒ /api/sector-performance                218 B         104 kB
+├ ƒ /api/workspace                         218 B         104 kB
+├ ƒ /auth/callback                         218 B         104 kB
+└ ƒ /auth/confirm                          218 B         104 kB
++ First Load JS shared by all             103 kB
+  ├ chunks/1255-dc3ddf72a1dc71a7.js      46.6 kB
+  ├ chunks/4bd1b696-f785427dddbba9fb.js  54.2 kB
+  └ other shared chunks (total)          2.56 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

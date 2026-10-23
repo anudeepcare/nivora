@@ -136,6 +136,13 @@ export async function alpacaOptions(symbol: string, expiry: string | null) {
     const value = {
       status: "available",
       contracts: joinAlpacaOptions(snapshots, metadata),
+      availableExpiries: [
+        ...new Set(
+          metadata
+            .map((c) => String(c.expiration_date ?? ""))
+            .filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d)),
+        ),
+      ].sort(),
       complete: complete && metadataComplete,
       fetchedAt: new Date().toISOString(),
       frequency:

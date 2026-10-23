@@ -4,15 +4,15 @@
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 502 tests, TypeScript and production build; alpaca-options-verify.log",
-    "npm run test:api": "passed: alpaca-options-api.log plus alpaca-options-route.log; synthetic transports",
+    "npm run verify": "passed: 504 tests, TypeScript and production build; options-ux-verify.log",
+    "npm run test:api": "passed: options-ux-api.log; synthetic provider/auth/database transports",
     "git diff --check": "passed",
-    "npm test": "passed: 502 tests",
-    "npm run build": "passed: alpaca-options-verify.log",
+    "npm test": "passed: 504 tests",
+    "npm run build": "passed: options-ux-final-build.log (after final presentation edits)",
     "production HTTP": "14 local production HTTP checks; options-http.log",
     "node scripts/test-auth-provider-api.mjs": "passed: 3 checks; 109 API checks total (admin-clean-auth-api.log)"
   },
-  "domainPostgresAndComponentTests": 502,
+  "domainPostgresAndComponentTests": 504,
   "builtApiChecks": 121,
   "providerSelection": {
     "quotes": "EODHD primary; Twelve fallback for stale or failed primary; retain newest usable stale observation if both fail freshness",
@@ -868,5 +868,37 @@
     ],
     "validation": "502 tests, TypeScript, build, existing API suite plus two Alpaca built-route checks; synthetic responses",
     "visualValidation": "previous visual reports apply to preceding release; new heatmap not device-tested"
+  },
+  "optionsUxRefinement": {
+    "changes": [
+      "single listed expiry control",
+      "conditional range and positioning charts",
+      "no blank GEX walls",
+      "long-term listed expiration selection",
+      "all contracts default with optional liquidity filter",
+      "one-contract ask cost and retained additional Greeks",
+      "strategy cards and practical learning",
+      "incomplete spreads withhold payoff",
+      "cross-symbol data clearing"
+    ],
+    "verification": {
+      "domainTests": 504,
+      "componentLayouts": 36,
+      "builtAppNavigation": 4,
+      "logs": [
+        "options-ux-verify.log",
+        "options-ux-final-build.log",
+        "options-ux-api.log",
+        "options-ux-visual.json",
+        "options-ux-preview-browser.json"
+      ]
+    },
+    "limitations": [
+      "No live account credentials in workspace; GEX coverage depends on supplied gamma and dated OI",
+      "Static component layouts use synthetic data, not investment results",
+      "No physical iPhone PWA verification",
+      "Existing initial research-preview React 418 hydration warning observed in light-mode navigation checks; no post-click navigation errors",
+      "Commercial display rights not established by this build"
+    ]
   }
 }

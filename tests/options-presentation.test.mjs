@@ -1,0 +1,4 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {listedExpiries,leapsExpiry,displayedContracts} from '../lib/options-presentation.ts';
+test('expiry choices come from listed contracts and long-term selection advances beyond front expiry',()=>{const dates=listedExpiries([{expiry:'2026-10-23'},{expiry:'2028-01-21'},{expiry:'2026-10-23'}]);assert.deepEqual(dates,['2026-10-23','2028-01-21']);assert.equal(leapsExpiry(dates,Date.parse('2026-10-23T18:00Z')),'2028-01-21');assert.equal(leapsExpiry(['2026-10-30'],Date.parse('2026-10-23T18:00Z')),null)});
+test('chain does not silently discard contracts without open interest unless liquidity-only is requested',()=>{const c=[{type:'call',oi:null},{type:'put',oi:200}];assert.equal(displayedContracts(c,'all',false,x=>x.oi>100).length,2);assert.equal(displayedContracts(c,'all',true,x=>x.oi>100).length,1);assert.equal(displayedContracts(c,'call',false,()=>false).length,1)});

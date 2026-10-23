@@ -1,3 +1,7 @@
+# Options workspace refinement — October 23, 2026
+
+Replaces the options presentation with one expiry selector, compact market summary, conditional positioning charts, clearer contract costs, automatic listed long-term selection, strategy cards and practical explanations. Preserves the Alpaca/EODHD data adapters and existing research tabs. See `docs/OPTIONS_UX_REFINEMENT.md`. Missing feed inputs are not unlocked by this redesign.
+
 # Alpaca options update — October 23, 2026
 
 Options now defaults to Alpaca using the existing paper-account credentials. See `docs/ALPACA_OPTIONS_SETUP.md` for production variables and verification limits. This update does not enable data rights, buy a plan or place trades.
