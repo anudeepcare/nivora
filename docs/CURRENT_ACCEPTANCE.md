@@ -1,6 +1,6 @@
-# Current screenshot follow-up — 23 October 2026
+# Current landing and X correction — 23 October 2026
 
-Read `docs/SCREENSHOT_REPAIR_20261023.md` first. Corrected the quote candle-opening/observation timestamp mismatch, added live social-provider availability handling, replaced the profile Settings sheet and Home/landing compositions, and compacted the stock metric strip. 439 tests, production build, 83 API fixture checks, 3 additional provider-config checks and 12 local HTTP checks pass. Google/X are disabled in the inspected live Supabase configuration; complete `docs/LAUNCH_AUTH_SETUP.md` to activate them. No push/deployment or live configuration mutation was performed. Physical device, rendered-source and live quote/OAuth acceptance remain outstanding. Earlier status entries below are historical.
+Read `docs/LANDING_AND_X_AVAILABILITY.md` first. Enlarged landing buttons, removed “Before you begin,” restored sample chart colors and corrected the missing-X provider flag. The supplied dashboard shows X OAuth2 enabled; public settings omit X, which must not be treated as disabled. No credential changes are needed solely because of the earlier message. 440 tests, production build, 86 compiled API checks and 12 local HTTP checks pass. Deploy this source before testing the corrected button. Live OAuth, rendered-source and physical iPhone acceptance remain unverified; no push/deployment performed. Earlier status entries below are historical.
 
 # Current source changes and acceptance blockers
 

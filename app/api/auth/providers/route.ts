@@ -4,8 +4,8 @@ export async function GET(){
  const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
  try {
   if(!url||!key)throw Error('unconfigured');
-  const response=await fetch(`${url.replace(/\/$/,'')}/auth/v1/settings`,{headers:{apikey:key},signal:AbortSignal.timeout(4000),next:{revalidate:300}});
+  const response=await fetch(`${url.replace(/\/$/,'')}/auth/v1/settings`,{headers:{apikey:key},signal:AbortSignal.timeout(4000),next:{revalidate:60}});
   if(!response.ok)throw Error('unavailable');
-  return NextResponse.json(enabledAuthProviders(await response.json()),{headers:{'Cache-Control':'public, max-age=60, s-maxage=300'}});
+  return NextResponse.json(enabledAuthProviders(await response.json()),{headers:{'Cache-Control':'no-store'}});
  }catch{return NextResponse.json({google:null,x:null},{headers:{'Cache-Control':'no-store'}});}
 }

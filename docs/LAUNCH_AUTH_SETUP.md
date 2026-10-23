@@ -2,9 +2,9 @@
 
 Code is integrated. Google/X consent flows, email delivery and domain settings are not activated by copying source alone. No provider credentials were requested in chat or stored in this package.
 
-## Confirmed current blocker
+## Current provider availability
 
-Read-only live public Auth settings on 23 October show Google disabled, legacy Twitter disabled and no enabled X flag. The new application checks availability and keeps email usable. These providers require real developer Client IDs/secrets saved in Supabase; copying the ZIP cannot activate them. Availability is cached for at most five minutes after a successful read.
+The supplied dashboard screenshot shows Google and X OAuth2 enabled. Public Auth settings expose Google true but omit X; absence is not evidence that X is disabled. The corrected application allows an ordinary X sign-in attempt when the field is absent. Do not re-enter credentials solely because the previous source displayed “X sign-in is not enabled.” Read `LANDING_AND_X_AVAILABILITY.md` for the source fix. The provider endpoint is no-store and upstream settings are cached for at most 60 seconds. A completed live consent roundtrip remains to be tested.
 
 ## Domain and Supabase
 

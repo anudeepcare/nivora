@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-10-23T05:25:21.790220+00:00",
+  "generatedAt": "2026-10-23T05:49:28.010311+00:00",
   "sourceRoot": "AURYN (ZIP root)",
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 439 tests, route generation, TypeScript and production build",
+    "npm run verify": "passed: 440 tests, route generation, TypeScript and production build",
     "npm run test:api": "passed: 83 compiled API fixture checks",
     "git diff --check": "passed",
-    "npm test": "passed: 439 tests, zero failures",
+    "npm test": "passed: 440 tests, zero failures",
     "npm run build": "passed with no CSS compilation warnings",
     "production HTTP": "passed: 12 local HTTP checks; not a browser or live consent roundtrip",
-    "node scripts/test-auth-provider-api.mjs": "passed: 3 additional compiled public provider-config route checks"
+    "node scripts/test-auth-provider-api.mjs": "passed: 3 compiled checks including omitted X capability; 86 API checks total"
   },
-  "domainPostgresAndComponentTests": 439,
+  "domainPostgresAndComponentTests": 440,
   "builtApiChecks": 86,
   "providerSelection": {
     "quotes": "Twelve Data preferred; labelled EODHD fallback",
@@ -569,20 +569,14 @@
   "unitTests": 419,
   "dcaParityVerified": false,
   "latestFollowup": {
-    "name": "Eleven-screenshot follow-up: observation time, live provider availability and actual Settings/Home/landing surfaces",
-    "scope": "docs/SCREENSHOT_REPAIR_20261023.md",
-    "testLog": "verification/screenshot-repair-verify.log",
-    "apiLog": "verification/screenshot-repair-api.log",
-    "liveAuthSettings": {
-      "google": false,
-      "xEnabledFlagPresent": false,
-      "legacyTwitter": false,
-      "readOnly": true
-    },
-    "liveProviderPriceRoundTripVerified": false,
-    "physicalIphoneVerified": false,
+    "name": "Larger landing actions, FAQ removal and missing-X availability correction",
+    "scope": "docs/LANDING_AND_X_AVAILABILITY.md",
+    "testLog": "verification/landing-x-verify.log",
+    "apiLog": "verification/landing-x-api.log",
+    "providerEvidence": "Owner screenshot shows Google/X OAuth2 enabled; public settings show Google true and omit X. Missing now maps to unknown, permitting ordinary OAuth2 attempt.",
+    "liveOAuthRoundTripVerified": false,
     "renderedPatchedSourceVerified": false,
-    "liveOAuthVerified": false,
+    "physicalIphoneVerified": false,
     "archiveProduced": true
   }
 }

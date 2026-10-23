@@ -371,32 +371,6 @@ export default function PublicLanding({
               </li>
             </ul>
           </section>
-          <section className="public-faq">
-            <h2>Before you begin.</h2>
-            {[
-              [
-                "Does AURYN place trades?",
-                "The research workspace does not place trades for you. Experimental trading tools remain separate from the main experience.",
-              ],
-              [
-                "Are the prices always live?",
-                "Availability depends on instrument coverage and your data connection. Quotes carry observation times; older or missing observations remain labelled.",
-              ],
-              [
-                "Are the accumulation models proven to outperform?",
-                "No demonstrated advantage is claimed. Cycle-relative monthly rules are documented, with hypothetical equal-budget comparisons and explicit limitations.",
-              ],
-              [
-                "Can I use it on my phone?",
-                "AURYN is designed for mobile and desktop, with a home-screen PWA experience and saved display preferences.",
-              ],
-            ].map(([q, a]) => (
-              <details key={q}>
-                <summary>{q}</summary>
-                <p>{a}</p>
-              </details>
-            ))}
-          </section>
           <section className="public-final">
             <span className="public-eyebrow">
               Business first. Price second. Timing alongside.
