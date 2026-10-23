@@ -1,4 +1,5 @@
 "use client";
+import Plans from "./Plans";
 import OwnerAccess from "./OwnerAccess";
 import Trading from "./Trading";
 import LegalDocument from "./LegalDocument";
@@ -101,6 +102,8 @@ export default function Product({
       <WorkspaceGate>
         <Watchlist />
       </WorkspaceGate>
+    ) : page === "plans" ? (
+      <Plans/>
     ) : page === "owner" ? (
       <OwnerAccess/>
     ) : page === "settings" ? (

@@ -4,11 +4,28 @@ import { consensusOutlook } from "@/lib/outlook";
 import { amount, percent, dateLabel } from "@/lib/format";
 export default function AnalystTargets({
   research: r,
+  showUnavailable = false,
 }: {
   research: Research;
+  showUnavailable?: boolean;
 }) {
   const c = consensusOutlook(r);
-  if (!c) return null;
+  if (!c)
+    return showUnavailable ? (
+      <section
+        className="analyst-target-fallback"
+        aria-label="Analyst price targets"
+      >
+        <span className="analyst-target-kicker">Wall Street consensus</span>
+        <p>
+          No current, usable analyst target is available in the supplied data.
+        </p>
+        <small>
+          AURYN scenarios below are a separate calculation; they do not fill
+          missing analyst coverage.
+        </small>
+      </section>
+    ) : null;
   const reference = c.change == null ? null : r.quote.price;
   const minimum = Math.min(c.low ?? c.target, reference ?? c.target) * 0.95;
   const maximum = Math.max(c.high ?? c.target, reference ?? c.target) * 1.05;
@@ -121,7 +138,7 @@ export default function AnalystTargets({
         <details>
           <summary>Coverage & dates</summary>
           <p>
-            Target dataset updated {dateLabel(c.asOf)}. Target horizon and
+            Target dataset updated {dateLabel(c.asOf)}.{" "}
             {c.low != null
               ? "range shown only because both bounds are supplied and ordered."
               : "low/high range not supplied."}{" "}

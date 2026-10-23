@@ -640,7 +640,7 @@ test('visual overview keeps the chart, scenarios, catalyst and risk visible with
  const html=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT,onTab:()=>{},chart:React.createElement('div',{'data-chart':'visible'})}));
  assert.doesNotMatch(html,/Completed-price studies/);
  const pro=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT,onTab:()=>{},pro:true}));assert.match(pro,/Completed-price studies/);
- if(b.scenarioEligible)assert.match(html,/data-scenarios="visible"/);else assert.doesNotMatch(html,/data-scenarios="visible"/);assert.match(html,/Bear, base &amp; bull|Analyst expectations|Fair value not established/);
+ if(b.scenarioEligible)assert.match(html,/data-scenarios="visible"/);else assert.doesNotMatch(html,/data-scenarios="visible"/);assert.match(html,/AURYN scenarios|Analyst expectations|Fair value not established/);
  assert.match(html,/data-chart="visible"/);assert.match(html,/Accumulation/);assert.match(html,/Next report/);assert.match(html,/Main risk/);assert.match(html,/Confirmed and forming monthly conditions/);assert.match(html,/Business in motion/);assert.match(html,/Reported annual periods/);
  assert.doesNotMatch(html,/Why this assessment|available metrics|decision-evidence-grid|research-brief-v2|T\d{2}:\d{2}:\d{2}/);
 });
@@ -818,4 +818,13 @@ test('adaptive Home keeps missing moves neutral, shares current contributor data
  const quotes={ONE:{company:{name:'One company'},quote:{price:20,currency:'USD',changePct:null,asOf:new Date().toISOString(),stale:false}}};
  let html=renderToStaticMarkup(React.createElement(Home,{quotes}));assert.match(html,/Good (morning|afternoon|evening), Anudeep/);assert.match(html,/A little perspective/);assert.match(html,/Waiting for comparable session data/);assert.match(html,/data-direction="neutral">Change unavailable/);assert.doesNotMatch(html,/0 up · 0 down|Largest estimated session impact/);assert.equal(keys.filter(k=>k?.includes('chart/')).length,0);
  quotes.ONE.quote.changePct=100;html=renderToStaticMarkup(React.createElement(Home,{quotes}));assert.match(html,/\$100\.00 estimated session move/);assert.match(html,/LARGEST CONTRIBUTORS/);assert.doesNotMatch(html,/Change unavailable/);
+});
+
+test('Overview renders the actual analyst range beside separately labelled AURYN scenarios',async()=>{
+ const {consensusOutlook}=await import('../lib/outlook.ts');const {researchBrief}=await import('../lib/research-brief.ts');
+ const r={...demoData.research.MSFT,evidence:{...demoData.research.MSFT.evidence,updatedAt:demoData.research.MSFT.retrievedAt,consensus:{target:100,low:80,high:120}}};
+ const AnalystTargets=loadComponent('components/AnalystTargets.tsx','AnalystTargets',{React,consensusOutlook,...format});
+ const View=loadComponent('components/DecisionOverview.tsx','DecisionOverview',{React,useMemo:React.useMemo,researchBrief,...format,AnalystTargets,PositionAwareResearch:empty,CaseRange:empty});
+ const html=renderToStaticMarkup(React.createElement(View,{research:r,onTab:()=>{}}));
+ assert.match(html,/Wall Street consensus/);assert.match(html,/\$80\.00/);assert.match(html,/\$100\.00/);assert.match(html,/\$120\.00/);assert.match(html,/AURYN scenarios/);assert.match(html,/not calculated bear\/base\/bull valuations/);
 });

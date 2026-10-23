@@ -140,6 +140,7 @@ export default function Shell({
           <kbd>⌘ K</kbd>
         </button>
         <div className="top-actions">
+          <Link className="top-plans-link" href={`${prefix}/plans`} aria-current={page === "plans" ? "page" : undefined}>Plans</Link>
           <Link
             className="icon-button"
             href={`${prefix}/alerts`}

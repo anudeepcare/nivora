@@ -5,6 +5,7 @@ import { researchBrief } from "@/lib/research-brief";
 import { dateLabel, amount, percent } from "@/lib/format";
 import PositionAwareResearch from "./PositionAwareResearch";
 import CaseRange from "./CaseRange";
+import AnalystTargets from "./AnalystTargets";
 import PriceRiskCases from "./PriceRiskCases";
 export default function DecisionOverview({
   research: r,
@@ -155,13 +156,14 @@ export default function DecisionOverview({
           className="overview-visual-rail"
           aria-label="Valuation and accumulation"
         >
+          {!crypto && <AnalystTargets research={r} showUnavailable/>}
           <section className="overview-visual-value">
             <header>
               <h3>
                 {b.scenario && b.scenarioEligible
-                  ? "Bear, base & bull"
+                  ? "AURYN scenarios"
                   : b.priceRisk.available
-                    ? "Bear, base & bull"
+                    ? "AURYN scenarios"
                     : "Valuation context"}
               </h3>
               <button

@@ -49,6 +49,7 @@ export function Settings() {
   const email = account?.email || workspace?.email || (demo ? "Design preview" : "Loading account…");
   return <section className="settings-page">
     <PageHeading title="Your AURYN" subtitle="A workspace that feels like yours."/>
+    <Link className="settings-plan-entry" href="/plans"><span><strong>Plans & access</strong><small>Your plan, allowances and owner controls</small></span><ArrowUpRight size={20}/></Link>
     <section className="panel settings-account" aria-labelledby="account-title">
       <header className="settings-profile"><span className="settings-profile-avatar" aria-hidden="true">{email[0]?.toUpperCase() || "A"}</span><div><span className="eyebrow">Account</span><h2 id="account-title">Your space. Your perspective.</h2><p>{email}</p></div></header>
       {!!account?.providers.length && <div className="account-identities" aria-label="Connected sign-in methods">{account.providers.map(provider=><span key={provider}>{provider === "google" ? "Google" : provider === "x" || provider === "twitter" ? "X" : provider === "email" ? "Email" : provider}</span>)}</div>}
@@ -62,7 +63,7 @@ export function Settings() {
         }}>Sign out of AURYN <ArrowUpRight size={16}/></button>
       </div>
     </section>
-    <PlanPanel/>
+
     <section className="panel settings-appearance"><DisplayPreferences/><details className="settings-research"><summary>Research preferences</summary><ResearchPreferenceControls/></details><small className="settings-device-note">Appearance and reading preferences are saved on this device.</small></section>
     {message && <div className="settings-feedback" role="status"><Notice>{message}</Notice></div>}
     <nav className="settings-page-links" aria-label="Help and legal"><Link href="/help">Help & support <ArrowUpRight size={16}/></Link><Link href="/privacy">Privacy <ArrowUpRight size={16}/></Link><Link href="/terms">Terms <ArrowUpRight size={16}/></Link><Link href="/risk">Investment risks <ArrowUpRight size={16}/></Link></nav>

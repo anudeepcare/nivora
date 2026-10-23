@@ -1,0 +1,82 @@
+{
+  "renderedBrowser": false,
+  "liveOAuthRoundTrip": false,
+  "checks": [
+    {
+      "path": "/auth/callback",
+      "status": 303,
+      "location": "/login?auth_error=callback",
+      "noStore": true
+    },
+    {
+      "path": "/auth/callback?code=invalid&next=//evil.test",
+      "status": 303,
+      "location": "/login?auth_error=callback",
+      "noStore": true
+    },
+    {
+      "path": "/auth/callback?error=access_denied",
+      "status": 303,
+      "location": "/login?auth_error=cancelled",
+      "noStore": true
+    },
+    {
+      "path": "/auth/confirm?type=recovery",
+      "status": 303,
+      "location": "/login?auth_error=callback",
+      "noStore": true
+    },
+    {
+      "path": "/auth/confirm?token_hash=invalid&type=invite",
+      "status": 303,
+      "location": "/login?auth_error=callback",
+      "noStore": true
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "signedOutShellAbsent": false
+    },
+    {
+      "path": "/pricing",
+      "status": 200,
+      "signedOutShellAbsent": true
+    },
+    {
+      "path": "/plans",
+      "status": 200,
+      "signedOutShellAbsent": true
+    },
+    {
+      "path": "/login",
+      "status": 200,
+      "signedOutShellAbsent": true
+    },
+    {
+      "path": "/login?mode=signup",
+      "status": 200,
+      "signedOutShellAbsent": true
+    },
+    {
+      "path": "/reset-password",
+      "status": 200,
+      "signedOutShellAbsent": true
+    },
+    {
+      "path": "/portfolio",
+      "status": 200,
+      "signedOutShellAbsent": true
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "signedOutShellAbsent": true
+    },
+    {
+      "path": "/settings/anything",
+      "status": 200,
+      "notFound": true,
+      "streamedNotFound": true
+    }
+  ]
+}

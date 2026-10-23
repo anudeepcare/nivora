@@ -1,3 +1,7 @@
+# Latest — direct Plans and model audit, 23 October 2026
+
+Read `docs/CLEAR_PLANS_AND_MODEL_AUDIT.md` first. Pricing is public; signed-in Plans is one click from the header. Overview shows analyst targets separately from AURYN scenarios. Includes the 30-stock cross-product audit and historical DCA evaluation; the timing strategy did not establish an advantage. Stripe sandbox connection and payment implementation are required before charges can work. Earlier entries below are historical.
+
 # Latest update — beta controls and quote polling, 23 October 2026
 
 Read `docs/BETA_ACCESS_AND_QUOTES.md` first. Includes owner-only feature controls, expiring friend grants, Free/Pro previews and quotas, sample-only beta protection, quote-polling and freshness fallback fixes. Billing remains disconnected; no Stripe test or real payments are available. Thirty-stock DCA check: 28/30 confirmed and 30/30 forming signals agree with the observed reference snapshot, without policy changes. This is not investment outperformance or universal parity. No deploy or live database migration was performed. Earlier entries below describe previous iterations.

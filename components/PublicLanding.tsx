@@ -310,6 +310,7 @@ export default function PublicLanding({
           <Link href="/sample">The experience</Link>
         </div>
         <div className="public-nav-actions">
+          <Link href="/pricing" className="public-pricing-link">Pricing</Link>
           <Link href="/login">Sign in</Link>
           <Link href="/login?mode=signup" className="public-button compact">
             Get started
@@ -331,6 +332,7 @@ export default function PublicLanding({
             Why AURYN
           </a>
           <Link href="/sample">The experience</Link>
+          <Link href="/pricing" className="public-pricing-link">Pricing</Link>
           <Link href="/login">Sign in</Link>
           <Link href="/login?mode=signup">Create an account</Link>
         </nav>

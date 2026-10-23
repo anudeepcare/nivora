@@ -178,8 +178,8 @@ test("switching workspace tabs restores their own position; tapping the active t
 });
 
 test('public storefront and sample bypass the account shell while research remains protected',()=>{
- for(const path of ['/','/sample','/research/MSFT','/portfolio','/login']){
- const AppSession=component('components/AppSession.tsx','AppSession',{React,usePathname:()=>path,ProductSession:'ProductSession',Shell:'Shell'});const tree=AppSession({children:'content'});assert.equal(tree.type==='ProductSession',!['/','/sample'].includes(path));
+ for(const path of ['/','/sample','/pricing','/research/MSFT','/portfolio','/plans','/login']){
+ const AppSession=component('components/AppSession.tsx','AppSession',{React,usePathname:()=>path,ProductSession:'ProductSession',Shell:'Shell'});const tree=AppSession({children:'content'});assert.equal(tree.type==='ProductSession',!['/','/sample','/pricing'].includes(path));
  }
 });
 

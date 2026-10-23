@@ -1,0 +1,754 @@
+{
+  "observedOn": "2026-10-23",
+  "selection": "Same predeclared 30-stock universe. Numerical browser observations, not copied model logic.",
+  "coverage": {
+    "dcaOptimizerCurrentMonthlySignals": 30,
+    "valueSnapshotValuationOutputs": 30,
+    "versysUsableScenarios": 15
+  },
+  "limitations": [
+    "ValueSnapshot Projection Studio required a Pro upgrade in this account; no purchase or bypass attempted. Its visible valuation tab was checked instead.",
+    "ValueSnapshot DCF/EPS outputs reflect its displayed model defaults, not audited fair values. Zero or negative outputs are recorded as displayed, never imported as AURYN targets.",
+    "Versys returned unavailable data in several attempts; some requested identities could not be verified. Those rows are unavailable, not mismatches or zero valuations.",
+    "Versys 2028 projections, ValueSnapshot present-value models and DCA Optimizer analyst targets have different horizons and methods; direct target equality is not a correctness test.",
+    "Historical executable competitor signals and dated historical valuation assumptions were not available for a fair competitor-performance backtest. AURYN-versus-fixed-DCA backtest is separate.",
+    "Snapshot comparison is not independent validation of the underlying filings or investment performance."
+  ],
+  "rows": [
+    {
+      "symbol": "IREN",
+      "dca": {
+        "symbol": "IREN",
+        "observations": 1206,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 2,
+        "referenceConfirmed": 2,
+        "confirmedMatch": true,
+        "aurynForming": 4,
+        "referenceForming": 4,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "0",
+        "epsDisplayed": null
+      },
+      "versys": {
+        "year": 2028,
+        "bear": 18.0,
+        "base": 64.0,
+        "bull": 108.0,
+        "headlineAnalystTarget": 85.0,
+        "coverageAnalystTarget": 81.0
+      },
+      "versysStatus": "observed comparable 2028 projection"
+    },
+    {
+      "symbol": "NBIS",
+      "dca": {
+        "symbol": "NBIS",
+        "observations": 545,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 1,
+        "referenceConfirmed": 1,
+        "confirmedMatch": true,
+        "aurynForming": 1,
+        "referenceForming": 1,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "0",
+        "epsDisplayed": "297.97"
+      },
+      "versys": {
+        "year": 2028,
+        "bear": 731.0,
+        "base": 1348.0,
+        "bull": 1678.0,
+        "headlineAnalystTarget": 328.0,
+        "coverageAnalystTarget": 292.0
+      },
+      "versysStatus": "observed comparable 2028 projection"
+    },
+    {
+      "symbol": "CRWV",
+      "dca": {
+        "symbol": "CRWV",
+        "observations": 395,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 1,
+        "referenceConfirmed": 1,
+        "confirmedMatch": true,
+        "aurynForming": 4,
+        "referenceForming": 4,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "0",
+        "epsDisplayed": null
+      },
+      "versys": {
+        "year": 2028,
+        "bear": 63.0,
+        "base": 236.0,
+        "bull": 437.0,
+        "headlineAnalystTarget": 125.0,
+        "coverageAnalystTarget": 128.0
+      },
+      "versysStatus": "observed comparable 2028 projection"
+    },
+    {
+      "symbol": "APP",
+      "dca": {
+        "symbol": "APP",
+        "observations": 1206,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 4,
+        "referenceConfirmed": 4,
+        "confirmedMatch": true,
+        "aurynForming": 4,
+        "referenceForming": 4,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "612.50",
+        "epsDisplayed": "501.39"
+      },
+      "versys": {
+        "year": 2028,
+        "bear": 178.0,
+        "base": 581.0,
+        "bull": 998.0,
+        "headlineAnalystTarget": 490.0,
+        "coverageAnalystTarget": 445.0
+      },
+      "versysStatus": "observed comparable 2028 projection"
+    },
+    {
+      "symbol": "ASTS",
+      "dca": {
+        "symbol": "ASTS",
+        "observations": 1206,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 2,
+        "referenceConfirmed": 2,
+        "confirmedMatch": true,
+        "aurynForming": 4,
+        "referenceForming": 4,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "0",
+        "epsDisplayed": null
+      },
+      "versys": {
+        "year": 2028,
+        "bear": 32.0,
+        "base": 33.0,
+        "bull": 68.0,
+        "headlineAnalystTarget": 91.0,
+        "coverageAnalystTarget": 60.0
+      },
+      "versysStatus": "observed comparable 2028 projection"
+    },
+    {
+      "symbol": "CIFR",
+      "dca": {
+        "symbol": "CIFR",
+        "observations": 1206,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 2,
+        "referenceConfirmed": 2,
+        "confirmedMatch": true,
+        "aurynForming": 4,
+        "referenceForming": 4,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "0",
+        "epsDisplayed": null
+      },
+      "versys": {
+        "year": 2028,
+        "bear": 8.0,
+        "base": 27.0,
+        "bull": 47.0,
+        "headlineAnalystTarget": 32.0,
+        "coverageAnalystTarget": 32.0
+      },
+      "versysStatus": "observed comparable 2028 projection"
+    },
+    {
+      "symbol": "SOFI",
+      "dca": {
+        "symbol": "SOFI",
+        "observations": 1261,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 3,
+        "referenceConfirmed": 3,
+        "confirmedMatch": true,
+        "aurynForming": 3,
+        "referenceForming": 3,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "0",
+        "epsDisplayed": "5.91"
+      },
+      "versys": {
+        "year": 2028,
+        "bear": 10.0,
+        "base": 26.0,
+        "bull": 43.0,
+        "headlineAnalystTarget": 22.0,
+        "coverageAnalystTarget": 16.0
+      },
+      "versysStatus": "observed comparable 2028 projection"
+    },
+    {
+      "symbol": "TTD",
+      "dca": {
+        "symbol": "TTD",
+        "observations": 1261,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 4,
+        "referenceConfirmed": 4,
+        "confirmedMatch": true,
+        "aurynForming": 3,
+        "referenceForming": 3,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": ">32.90",
+        "epsDisplayed": "16.30"
+      },
+      "versys": {
+        "year": 2028,
+        "bear": 16.0,
+        "base": 19.0,
+        "bull": 30.0,
+        "headlineAnalystTarget": null,
+        "coverageAnalystTarget": 15.0
+      },
+      "versysStatus": "observed comparable 2028 projection"
+    },
+    {
+      "symbol": "HIMS",
+      "dca": {
+        "symbol": "HIMS",
+        "observations": 1206,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 1,
+        "referenceConfirmed": 1,
+        "confirmedMatch": true,
+        "aurynForming": 1,
+        "referenceForming": 1,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "42.68",
+        "epsDisplayed": null
+      },
+      "versys": null,
+      "versysStatus": "no verified comparable scenario obtained"
+    },
+    {
+      "symbol": "NU",
+      "dca": {
+        "symbol": "NU",
+        "observations": 1206,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 2,
+        "referenceConfirmed": 2,
+        "confirmedMatch": true,
+        "aurynForming": 1,
+        "referenceForming": 1,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "0",
+        "epsDisplayed": "28.42"
+      },
+      "versys": {
+        "year": 2028,
+        "bear": 11.0,
+        "base": 30.0,
+        "bull": 51.0,
+        "headlineAnalystTarget": 18.0,
+        "coverageAnalystTarget": 20.0
+      },
+      "versysStatus": "observed comparable 2028 projection"
+    },
+    {
+      "symbol": "SAP",
+      "dca": {
+        "symbol": "SAP",
+        "observations": 1206,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 1,
+        "referenceConfirmed": 1,
+        "confirmedMatch": true,
+        "aurynForming": 1,
+        "referenceForming": 1,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "253.44",
+        "epsDisplayed": "455.63"
+      },
+      "versys": {
+        "year": 2028,
+        "bear": 254.0,
+        "base": 257.0,
+        "bull": 404.0,
+        "headlineAnalystTarget": 265.0,
+        "coverageAnalystTarget": 392.0
+      },
+      "versysStatus": "observed comparable 2028 projection"
+    },
+    {
+      "symbol": "MSFT",
+      "dca": {
+        "symbol": "MSFT",
+        "observations": 1206,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 1,
+        "referenceConfirmed": 1,
+        "confirmedMatch": true,
+        "aurynForming": 1,
+        "referenceForming": 1,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "645.22",
+        "epsDisplayed": "990.79"
+      },
+      "versys": {
+        "year": 2028,
+        "bear": 349.0,
+        "base": 690.0,
+        "bull": 958.0,
+        "headlineAnalystTarget": 600.0,
+        "coverageAnalystTarget": 640.0
+      },
+      "versysStatus": "observed comparable 2028 projection"
+    },
+    {
+      "symbol": "AAPL",
+      "dca": {
+        "symbol": "AAPL",
+        "observations": 1711,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 1,
+        "referenceConfirmed": 1,
+        "confirmedMatch": true,
+        "aurynForming": 1,
+        "referenceForming": 1,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "272.88",
+        "epsDisplayed": "605.38"
+      },
+      "versys": {
+        "year": 2028,
+        "bear": 370.0,
+        "base": 466.0,
+        "bull": 549.0,
+        "headlineAnalystTarget": 355.0,
+        "coverageAnalystTarget": 323.0
+      },
+      "versysStatus": "observed comparable 2028 projection"
+    },
+    {
+      "symbol": "NVDA",
+      "dca": {
+        "symbol": "NVDA",
+        "observations": 1206,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 1,
+        "referenceConfirmed": 1,
+        "confirmedMatch": true,
+        "aurynForming": 1,
+        "referenceForming": 1,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "437.96",
+        "epsDisplayed": "408.79"
+      },
+      "versys": {
+        "year": 2028,
+        "bear": 125.0,
+        "base": 400.0,
+        "bull": 683.0,
+        "headlineAnalystTarget": 325.0,
+        "coverageAnalystTarget": 262.0
+      },
+      "versysStatus": "observed comparable 2028 projection"
+    },
+    {
+      "symbol": "GOOGL",
+      "dca": {
+        "symbol": "GOOGL",
+        "observations": 1711,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 1,
+        "referenceConfirmed": 1,
+        "confirmedMatch": true,
+        "aurynForming": 1,
+        "referenceForming": 1,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "268.07",
+        "epsDisplayed": "610.31"
+      },
+      "versys": {
+        "year": 2028,
+        "bear": 132.0,
+        "base": 316.0,
+        "bull": 483.0,
+        "headlineAnalystTarget": 425.0,
+        "coverageAnalystTarget": 422.0
+      },
+      "versysStatus": "observed comparable 2028 projection"
+    },
+    {
+      "symbol": "META",
+      "dca": {
+        "symbol": "META",
+        "observations": 1206,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 1,
+        "referenceConfirmed": 1,
+        "confirmedMatch": true,
+        "aurynForming": 1,
+        "referenceForming": 1,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "947.74",
+        "epsDisplayed": "355.88"
+      },
+      "versys": {
+        "year": 2028,
+        "bear": 410.0,
+        "base": 868.0,
+        "bull": 1354.0,
+        "headlineAnalystTarget": 863.0,
+        "coverageAnalystTarget": 889.0
+      },
+      "versysStatus": "observed comparable 2028 projection"
+    },
+    {
+      "symbol": "NOW",
+      "dca": {
+        "symbol": "NOW",
+        "observations": 1206,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 1,
+        "referenceConfirmed": 1,
+        "confirmedMatch": true,
+        "aurynForming": 1,
+        "referenceForming": 1,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "297.26",
+        "epsDisplayed": "270.82"
+      },
+      "versys": null,
+      "versysStatus": "no verified comparable scenario obtained"
+    },
+    {
+      "symbol": "AMZN",
+      "dca": {
+        "symbol": "AMZN",
+        "observations": 1711,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 1,
+        "referenceConfirmed": 1,
+        "confirmedMatch": true,
+        "aurynForming": 1,
+        "referenceForming": 1,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "0",
+        "epsDisplayed": "477.89"
+      },
+      "versys": null,
+      "versysStatus": "no verified comparable scenario obtained"
+    },
+    {
+      "symbol": "TSLA",
+      "dca": {
+        "symbol": "TSLA",
+        "observations": 1711,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 2,
+        "referenceConfirmed": 1,
+        "confirmedMatch": false,
+        "aurynForming": 1,
+        "referenceForming": 1,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "38.61",
+        "epsDisplayed": "9.65"
+      },
+      "versys": null,
+      "versysStatus": "no verified comparable scenario obtained"
+    },
+    {
+      "symbol": "PLTR",
+      "dca": {
+        "symbol": "PLTR",
+        "observations": 1523,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 1,
+        "referenceConfirmed": 1,
+        "confirmedMatch": true,
+        "aurynForming": 1,
+        "referenceForming": 1,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "150.37",
+        "epsDisplayed": "372.69"
+      },
+      "versys": null,
+      "versysStatus": "no verified comparable scenario obtained"
+    },
+    {
+      "symbol": "AMD",
+      "dca": {
+        "symbol": "AMD",
+        "observations": 1711,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 1,
+        "referenceConfirmed": 1,
+        "confirmedMatch": true,
+        "aurynForming": 1,
+        "referenceForming": 1,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "340.66",
+        "epsDisplayed": "963.14"
+      },
+      "versys": null,
+      "versysStatus": "no verified comparable scenario obtained"
+    },
+    {
+      "symbol": "PYPL",
+      "dca": {
+        "symbol": "PYPL",
+        "observations": 1711,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 1,
+        "referenceConfirmed": 1,
+        "confirmedMatch": true,
+        "aurynForming": 1,
+        "referenceForming": 1,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "80.56",
+        "epsDisplayed": "108.58"
+      },
+      "versys": null,
+      "versysStatus": "no verified comparable scenario obtained"
+    },
+    {
+      "symbol": "DIS",
+      "dca": {
+        "symbol": "DIS",
+        "observations": 1711,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 1,
+        "referenceConfirmed": 1,
+        "confirmedMatch": true,
+        "aurynForming": 1,
+        "referenceForming": 1,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "106.61",
+        "epsDisplayed": "217.91"
+      },
+      "versys": null,
+      "versysStatus": "no verified comparable scenario obtained"
+    },
+    {
+      "symbol": "JPM",
+      "dca": {
+        "symbol": "JPM",
+        "observations": 1711,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 1,
+        "referenceConfirmed": 1,
+        "confirmedMatch": true,
+        "aurynForming": 1,
+        "referenceForming": 1,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "0",
+        "epsDisplayed": "216.55"
+      },
+      "versys": null,
+      "versysStatus": "no verified comparable scenario obtained"
+    },
+    {
+      "symbol": "XOM",
+      "dca": {
+        "symbol": "XOM",
+        "observations": 1711,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 1,
+        "referenceConfirmed": 1,
+        "confirmedMatch": true,
+        "aurynForming": 1,
+        "referenceForming": 1,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "101.37",
+        "epsDisplayed": "50.90"
+      },
+      "versys": null,
+      "versysStatus": "no verified comparable scenario obtained"
+    },
+    {
+      "symbol": "JNJ",
+      "dca": {
+        "symbol": "JNJ",
+        "observations": 1711,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 1,
+        "referenceConfirmed": 1,
+        "confirmedMatch": true,
+        "aurynForming": 1,
+        "referenceForming": 1,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "258.52",
+        "epsDisplayed": "503.27"
+      },
+      "versys": null,
+      "versysStatus": "no verified comparable scenario obtained"
+    },
+    {
+      "symbol": "KO",
+      "dca": {
+        "symbol": "KO",
+        "observations": 1711,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 1,
+        "referenceConfirmed": 1,
+        "confirmedMatch": true,
+        "aurynForming": 1,
+        "referenceForming": 1,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "84.88",
+        "epsDisplayed": "169.33"
+      },
+      "versys": null,
+      "versysStatus": "no verified comparable scenario obtained"
+    },
+    {
+      "symbol": "BE",
+      "dca": {
+        "symbol": "BE",
+        "observations": 1206,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 1,
+        "referenceConfirmed": 1,
+        "confirmedMatch": true,
+        "aurynForming": 1,
+        "referenceForming": 1,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "139.43",
+        "epsDisplayed": "-58.61"
+      },
+      "versys": null,
+      "versysStatus": "no verified comparable scenario obtained"
+    },
+    {
+      "symbol": "ONDS",
+      "dca": {
+        "symbol": "ONDS",
+        "observations": 1477,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 2,
+        "referenceConfirmed": 2,
+        "confirmedMatch": true,
+        "aurynForming": 2,
+        "referenceForming": 2,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": "0",
+        "epsDisplayed": "3.37"
+      },
+      "versys": null,
+      "versysStatus": "no verified comparable scenario obtained"
+    },
+    {
+      "symbol": "NVO",
+      "dca": {
+        "symbol": "NVO",
+        "observations": 1711,
+        "confirmedDate": "2026-09-30",
+        "formingDate": "2026-10-22",
+        "aurynConfirmed": 2,
+        "referenceConfirmed": 3,
+        "confirmedMatch": false,
+        "aurynForming": 2,
+        "referenceForming": 2,
+        "formingMatch": true
+      },
+      "valueSnapshot": {
+        "dcfDisplayed": ">98.58",
+        "epsDisplayed": "18.01"
+      },
+      "versys": null,
+      "versysStatus": "no verified comparable scenario obtained"
+    }
+  ]
+}

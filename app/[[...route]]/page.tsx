@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import Product from "@/components/Product";
+import Plans from "@/components/Plans";
 import PublicLanding from "@/components/PublicLanding";
 export const dynamic = "force-dynamic";
 const allowed = new Set([
@@ -10,6 +11,8 @@ const allowed = new Set([
   "watchlist",
   "settings",
   "owner",
+  "plans",
+  "pricing",
   "compare",
   "alerts",
   "research-lab",
@@ -38,6 +41,7 @@ export default async function Page({
   if (route[0] && !allowed.has(route[0])) notFound();
   if (route.length > 1 && route[0] !== "research") notFound();
   if (!preview && (!route.length || (route.length === 1 && route[0] === "sample"))) return <PublicLanding sampleOnly={route[0] === "sample"}/>;
+  if (!preview && route[0] === "pricing") return <Plans publicPage/>;
   let demo;
   if (preview) {
     const host = (await headers()).get("host") || "";

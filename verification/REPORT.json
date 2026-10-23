@@ -4,15 +4,15 @@
   "node": "24.19.0",
   "next": "15.5.28",
   "commands": {
-    "npm run verify": "passed: 471 tests, generated Next route types, TypeScript and production build",
+    "npm run verify": "passed: 472 tests, generated route types, TypeScript and production build",
     "npm run test:api": "passed: 100 compiled API checks",
     "git diff --check": "passed",
-    "npm test": "passed: 471 tests",
+    "npm test": "passed: 472 tests",
     "npm run build": "passed with no CSS compilation warnings",
-    "production HTTP": "passed: 12 local production-server HTTP checks; not a live OAuth roundtrip",
+    "production HTTP": "passed: 14 local production-server HTTP checks, including public Pricing and protected Plans",
     "node scripts/test-auth-provider-api.mjs": "passed: 3 compiled checks; 103 API checks total"
   },
-  "domainPostgresAndComponentTests": 471,
+  "domainPostgresAndComponentTests": 472,
   "builtApiChecks": 103,
   "providerSelection": {
     "quotes": "EODHD primary; Twelve fallback for stale or failed primary; retain newest usable stale observation if both fail freshness",
@@ -673,14 +673,16 @@
     "calendarAnchorVerified": true
   },
   "currentUpdate": {
-    "document": "docs/BETA_ACCESS_AND_QUOTES.md",
+    "document": "docs/CLEAR_PLANS_AND_MODEL_AUDIT.md",
     "quotePolling": "60-second visible-page REST validation independent of stream health; resume check; no hidden polling",
     "primaryFreshness": "aging primary tries backup during active window; never downgrade newest observation",
     "accessControls": "optional owner controls, grants/revocation, Free/Pro previews, atomic research/AI quotas, direct-write watchlist caps",
-    "billing": "NOT CONNECTED; no Stripe checkout, webhook or portal; no test or real payments",
+    "billing": "Stripe connection absent; no checkout/webhook/portal implementation; no payments",
     "liveDatabaseWrites": false,
     "deployed": false,
-    "currentMembershipVisualAcceptance": false
+    "currentMembershipVisualAcceptance": false,
+    "plans": "Public /pricing and direct signed-in /plans; top-level header and Settings entry",
+    "overview": "Actual shared analyst targets above separately named AURYN scenarios"
   },
   "dcaComparison30": {
     "asOf": "2026-10-22T23:00:00Z",
@@ -693,5 +695,25 @@
     ],
     "report": "verification/dca-comparison-30.json",
     "claim": "snapshot numerical agreement only; no universal parity or outperformance"
+  },
+  "crossProductAudit": {
+    "report": "verification/competitor-audit-30.json",
+    "universe": 30,
+    "dcaReferenceCoverage": 30,
+    "valueSnapshotVisibleValuationCoverage": 30,
+    "versysUsableScenarios": 15,
+    "valueSnapshotProjectionStudio": "Pro access required; no bypass or purchase",
+    "historicalCompetitorPerformance": "Not established; historical executable reference signals not obtained"
+  },
+  "thirtyStockBacktest": {
+    "report": "verification/dca-backtest-30.json",
+    "eligible": 28,
+    "wins": 3,
+    "losses": 15,
+    "meanEndingAssetDifferencePct": -2.303805695866351,
+    "lowerMonthlyDrawdown": 9,
+    "holdoutMeanEndingAssetDifferencePct": -0.36421645670331265,
+    "holdoutWins": 2,
+    "claim": "No evidence of outperformance; production policy unchanged"
   }
 }
