@@ -5,7 +5,7 @@
   --public-blue: #125dff;
   --public-line: #dde6f1;
   color: var(--public-ink);
-  background: linear-gradient(150deg, #fff 55%, #f7fbff);
+  background: var(--surface, #fff);
   min-height: 100svh;
   font-family: var(
     --font-ui,
@@ -133,14 +133,20 @@
   text-align: left;
 }
 .public-eyebrow {
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.6;
   letter-spacing: 0.14em;
   font-weight: 750;
   color: #275ea9;
 }
 .atlas-public .public-hero h1 {
-  font-family: var(--font-display, Georgia, "Times New Roman", serif);
+  font-family: var(
+    --font-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif
+  );
   font-size: clamp(38px, 3.9vw, 57px);
   font-weight: 600;
   letter-spacing: -0.045em;
@@ -169,7 +175,7 @@
   flex-wrap: wrap;
   gap: 12px;
   margin-top: 22px;
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.5;
   color: #53657f;
 }
@@ -204,7 +210,7 @@
   padding: 12px 18px;
   background: #f8faff;
   border-bottom: 1px solid #e8edf5;
-  font-size: 9px;
+  font-size: 11px;
   color: #6d7d96;
 }
 .public-preview-label > span {
@@ -224,6 +230,10 @@
   font-weight: 500;
 }
 .research-panorama {
+  --surface: #fff;
+  --ink: #101d42;
+  --muted: #536278;
+  --line: #e3e7ed;
   --public-ink: #101d42;
   --public-muted: #63728b;
   color: var(--public-ink);
@@ -257,7 +267,7 @@
   place-items: center;
   border-radius: 9px;
   color: #fff;
-  background: linear-gradient(140deg, #071a56, #1763ff);
+  background: var(--public-blue, #125dff);
   font-weight: 800;
   font-size: 19px;
   flex: none;
@@ -273,7 +283,7 @@
   margin-left: 5px;
 }
 .panorama-company small {
-  font-size: 8px;
+  font-size: 11px;
   line-height: 1.6;
   color: #74819a;
   display: block;
@@ -289,29 +299,30 @@
 }
 .panorama-reference span {
   display: block;
-  font-size: 7px;
+  font-size: 11px;
   color: #74819a;
   margin-top: 3px;
 }
 .panorama-verdict {
   padding: 15px 16px;
   border-radius: 10px;
-  background: linear-gradient(110deg, #eaf3ff, #f6f9ff);
+  background: var(--surface, #fff);
   margin-bottom: 14px;
 }
 .panorama-verdict > span {
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 750;
   letter-spacing: 0.12em;
   color: #2463cf;
 }
 .panorama-verdict h2 {
-  font: 600 25px/1.15 var(--font-display, Georgia, serif);
+  font: 600 25px/1.15
+    var(--font-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
   letter-spacing: -0.04em;
   margin: 6px 0 !important;
 }
 .panorama-verdict p {
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.6;
   margin: 0;
   color: #465f82;
@@ -344,18 +355,18 @@
 }
 .panorama-chapters > section {
   min-width: 0;
-  border: 1px solid #e7eff0;
+  border: 0;
   padding: 12px 10px;
-  border-radius: 9px;
-  background: linear-gradient(135deg, #effaf6, #fff);
+  border-radius: 0;
+  background: transparent;
 }
 .panorama-chapters > .panorama-value {
   border-color: #e4ebfb;
-  background: linear-gradient(135deg, #eff5ff, #fff);
+  background: var(--surface, #fff);
 }
 .panorama-chapters > .panorama-timing {
   border-color: #eee7fb;
-  background: linear-gradient(135deg, #f7f0ff, #fff);
+  background: var(--surface, #fff);
 }
 .panorama-chapters section > header {
   display: flex;
@@ -371,11 +382,11 @@
   place-items: center;
   background: #079c75;
   color: #fff;
-  font-size: 8px;
+  font-size: 11px;
   flex: none;
 }
 .panorama-chapters h3 {
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.4;
   font-weight: 700;
   margin: 0;
@@ -393,7 +404,7 @@
   background: #8056d9;
 }
 .panorama-chapters section > p {
-  font-size: 8px;
+  font-size: 11px;
   line-height: 1.6;
   color: #65728b;
   margin: 8px 0 12px;
@@ -411,7 +422,7 @@
   letter-spacing: -0.03em;
 }
 .panorama-metrics span {
-  font-size: 7px;
+  font-size: 11px;
   color: #65728b;
   line-height: 1.5;
   display: block;
@@ -431,7 +442,7 @@
 }
 .panorama-cases span {
   display: block;
-  font-size: 8px;
+  font-size: 11px;
   color: #65728b;
 }
 .panorama-cases strong {
@@ -465,7 +476,7 @@
   color: #8056d9;
 }
 .panorama-pace span {
-  font-size: 7px;
+  font-size: 11px;
   color: #65728b;
   display: block;
   line-height: 1.6;
@@ -485,7 +496,7 @@
   display: flex;
   align-items: flex-start;
   gap: 6px;
-  font-size: 8px;
+  font-size: 11px;
   line-height: 1.6;
   color: #77859d;
   margin-top: 14px;
@@ -502,7 +513,8 @@
   border-top: 1px solid var(--public-line);
 }
 .public-section-heading h2 {
-  font: 600 37px/1.05 var(--font-display, Georgia, serif);
+  font: 600 37px/1.05
+    var(--font-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
   letter-spacing: -0.04em;
   margin: 13px 0 !important;
 }
@@ -543,7 +555,7 @@
   position: absolute;
   right: 0;
   top: 12px;
-  font-size: 10px;
+  font-size: 11px;
   color: #8fa0b6;
 }
 .public-benefits h3 {
@@ -562,14 +574,15 @@
   justify-content: space-between;
   gap: 24px;
   padding: 28px 30px;
-  background: linear-gradient(115deg, #edf5ff, #f5f0ff);
+  background: var(--surface, #fff);
   border: 1px solid #e0e9f6;
   border-radius: 15px;
   margin-top: 15px;
   margin-bottom: 42px;
 }
 .public-closing h2 {
-  font: 600 29px/1.1 var(--font-display, Georgia, serif);
+  font: 600 29px/1.1
+    var(--font-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
   letter-spacing: -0.035em;
   margin: 8px 0 !important;
 }
@@ -600,7 +613,7 @@
 }
 .public-footer > small {
   width: 100%;
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.7;
   color: #8490a5;
 }
@@ -620,7 +633,7 @@
     font-size: 14px;
   }
   .panorama-company strong {
-    font-size: 10px;
+    font-size: 11px;
   }
   .panorama-reference strong {
     font-size: 14px;
@@ -705,11 +718,11 @@
   }
   .public-trust {
     gap: 8px 12px;
-    font-size: 9px;
+    font-size: 11px;
     margin-top: 17px;
   }
   .public-plan-note {
-    font-size: 10px;
+    font-size: 11px;
   }
   .research-panorama {
     padding: 15px;
@@ -725,20 +738,20 @@
     font-size: 11px;
   }
   .panorama-company small {
-    font-size: 7px;
+    font-size: 11px;
   }
   .panorama-reference strong {
     font-size: 15px;
   }
   .panorama-reference span {
-    font-size: 6px;
+    font-size: 11px;
     max-width: 65px;
   }
   .panorama-verdict h2 {
     font-size: 23px;
   }
   .panorama-verdict p {
-    font-size: 9px;
+    font-size: 11px;
   }
   .panorama-navigation {
     gap: 24px;
@@ -753,6 +766,9 @@
   .panorama-chapters > section {
     display: none;
     padding: 15px;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
   }
   .panorama-chapters > section[data-active="true"] {
     display: block;
@@ -763,7 +779,7 @@
   .panorama-chapters header > span {
     width: 22px;
     height: 22px;
-    font-size: 10px;
+    font-size: 11px;
   }
   .panorama-chapters section > p {
     font-size: 11px;
@@ -773,7 +789,7 @@
     font-size: 28px;
   }
   .panorama-metrics span {
-    font-size: 10px;
+    font-size: 11px;
   }
   .panorama-business-chart {
     max-height: 145px;
@@ -794,13 +810,13 @@
     font-size: 30px;
   }
   .panorama-pace span {
-    font-size: 10px;
+    font-size: 11px;
   }
   .panorama-timing-chart {
     max-height: 125px;
   }
   .panorama-disclosure {
-    font-size: 8px;
+    font-size: 11px;
   }
   .public-benefits > div + div {
     grid-template-columns: 1fr;
@@ -845,7 +861,7 @@
     gap: 16px;
   }
   .public-footer > p {
-    font-size: 10px;
+    font-size: 11px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

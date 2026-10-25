@@ -9,7 +9,13 @@
 .settings-page > .page-heading h1,
 .plans-heading h1,
 .owner-heading h1 {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(
+    --font-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif
+  );
   font-weight: 600;
   letter-spacing: -0.045em;
   line-height: 1.08;
@@ -30,15 +36,12 @@
   display: flex;
   align-items: center;
   gap: 32px;
-  padding: 16px 20px;
+  padding: 12px 0;
   margin: 0 0 18px;
-  border: 1px solid var(--line);
-  border-radius: var(--account-radius);
-  background: linear-gradient(
-    110deg,
-    color-mix(in srgb, var(--blue) 6%, var(--surface)),
-    var(--surface)
-  );
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  border-bottom: 1px solid var(--line);
 }
 .watchlist-intro-strip > div {
   display: flex;
@@ -188,7 +191,7 @@
 }
 .watchlist-table .watch-price small {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 11px;
 }
 .watchlist-table .watch-date {
   padding-left: 26px;
@@ -200,7 +203,7 @@
 }
 .watchlist-table .watch-date small {
   display: block;
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
   margin-top: 4px;
   line-height: 1.4;
@@ -228,20 +231,17 @@
   margin: 0 0 16px;
 }
 .portfolio-page .portfolio-balance {
-  border: 1px solid var(--line);
-  border-radius: var(--account-radius);
-  padding: 22px;
-  background: linear-gradient(
-    110deg,
-    color-mix(in srgb, var(--blue) 5%, var(--surface)),
-    var(--surface)
-  );
+  border: 0;
+  border-radius: 0;
+  padding: 18px 0;
+  background: transparent;
   color: var(--ink);
   --ink: inherit;
   --muted: inherit;
   --line: inherit;
   --green: inherit;
   --red: inherit;
+  border-bottom: 1px solid var(--line);
 }
 .portfolio-page .portfolio-balance .account-equity {
   display: grid;
@@ -255,7 +255,7 @@
 }
 .portfolio-page .portfolio-balance .eyebrow {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.1em;
 }
@@ -270,7 +270,7 @@
 .account-equity-primary > small {
   display: block;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.5;
 }
 .portfolio-page .account-equity-breakdown {
@@ -306,7 +306,7 @@
   color: var(--amber, #9f6a18);
 }
 .account-equity-breakdown small {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
   line-height: 1.4;
 }
@@ -347,7 +347,7 @@
   line-height: 1.6;
 }
 .portfolio-page .portfolio-refresh > span > small {
-  font-size: 10px;
+  font-size: 11px;
 }
 .portfolio-view-tabs {
   display: flex;
@@ -378,7 +378,13 @@
   padding: 18px 20px;
 }
 .portfolio-page .portfolio-holdings h2 {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(
+    --font-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif
+  );
   font-size: 23px;
   letter-spacing: -0.035em;
 }
@@ -416,18 +422,19 @@
   display: block;
   max-width: 1220px;
   margin-inline: auto;
+  width: 100%;
 }
 .settings-studio-layout {
   display: grid;
   grid-template-columns: 230px minmax(0, 1fr);
-  border: 1px solid var(--line);
-  border-radius: var(--account-radius);
+  border: 0;
+  border-radius: 0;
   overflow: hidden;
-  background: var(--surface);
+  background: transparent;
 }
 .settings-studio-nav {
-  padding: 20px 14px;
-  background: color-mix(in srgb, var(--blue) 3%, var(--surface));
+  padding: 8px 18px 12px 0;
+  background: transparent;
   border-right: 1px solid var(--line);
 }
 .settings-studio-nav nav {
@@ -472,12 +479,13 @@
 .settings-studio-note p {
   margin: 0;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.7;
 }
 .settings-studio-content {
-  padding: 28px 32px;
+  padding: 12px 0 20px 28px;
   min-width: 0;
+  width: 100%;
 }
 .settings-page .settings-studio-content > .panel {
   border: 0;
@@ -491,7 +499,13 @@
 }
 .settings-page .settings-studio-content h2,
 .settings-page .display-preferences h3 {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(
+    --font-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif
+  );
   font-size: 27px;
   letter-spacing: -0.035em;
   font-weight: 600;
@@ -549,7 +563,7 @@
 }
 .preferences-sheet .settings-plan-entry {
   border-radius: 12px;
-  background: linear-gradient(110deg, var(--blue-soft), var(--surface));
+  background: var(--surface, #fff);
   padding: 14px 16px;
 }
 .preferences-sheet .settings-sheet-tabs button[aria-pressed="true"] {
@@ -576,16 +590,18 @@
   background: var(--surface);
 }
 .plans-page .pricing-cards > .pricing-pro {
-  background: linear-gradient(
-    145deg,
-    color-mix(in srgb, var(--blue) 6%, var(--surface)),
-    var(--surface)
-  );
+  background: var(--surface, #fff);
   border-color: color-mix(in srgb, var(--blue) 30%, var(--line));
   box-shadow: 0 12px 35px #2255aa08;
 }
 .plans-page .pricing-card-title h2 {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(
+    --font-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif
+  );
   font-size: 28px;
 }
 .plans-page .pricing-amount {
@@ -612,7 +628,7 @@
 }
 .owner-access .admin-preview-row {
   border-radius: 14px;
-  background: linear-gradient(110deg, var(--blue-soft), var(--surface));
+  background: var(--surface, #fff);
   padding: 18px 22px;
 }
 .owner-access .admin-section-nav {
@@ -692,9 +708,13 @@
 @media (max-width: 900px) {
   .settings-studio-layout {
     grid-template-columns: 190px minmax(0, 1fr);
+    border: 0;
+    border-radius: 0;
+    background: transparent;
   }
   .settings-studio-content {
-    padding: 24px;
+    padding: 12px 0 20px 28px;
+    width: 100%;
   }
   .portfolio-page .portfolio-balance .account-equity {
     grid-template-columns: 1fr;
@@ -727,7 +747,11 @@
   .watchlist-intro-strip {
     align-items: flex-start;
     gap: 10px;
-    padding: 14px;
+    padding: 12px 0;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+    background: transparent;
   }
   .watchlist-intro-strip > p {
     display: none;
@@ -747,7 +771,7 @@
     max-width: 230px;
   }
   .watchlist-page .watchlist-status {
-    font-size: 10px;
+    font-size: 11px;
     margin-left: auto;
     flex: 1;
     text-align: right;
@@ -805,7 +829,7 @@
   .watchlist-table .watch-date time,
   .watchlist-table .watch-date small {
     display: inline;
-    font-size: 9px;
+    font-size: 11px;
   }
   .watchlist-table .watch-date small:before {
     content: " · ";
@@ -826,10 +850,14 @@
     font-size: 13px;
   }
   .watchlist-table .investment-company {
-    font-size: 10px;
+    font-size: 11px;
   }
   .portfolio-page .portfolio-balance {
-    padding: 18px;
+    padding: 18px 0;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+    background: transparent;
   }
   .portfolio-page .portfolio-balance .balance {
     font-size: 34px;
@@ -842,14 +870,14 @@
     font-size: 16px;
   }
   .portfolio-page .account-equity-breakdown dt {
-    font-size: 10px;
+    font-size: 11px;
     line-height: 1.4;
   }
   .portfolio-page .account-equity-breakdown small {
-    font-size: 9px;
+    font-size: 11px;
   }
   .portfolio-page .portfolio-balance .money-sub {
-    font-size: 10px;
+    font-size: 11px;
   }
   .portfolio-page .portfolio-balance .money-sub > span:first-child {
     font-size: 12px;
@@ -868,12 +896,15 @@
   }
   .settings-studio-layout {
     display: block;
-    border-radius: 14px;
+    border-radius: 0;
+    border: 0;
+    background: transparent;
   }
   .settings-studio-nav {
-    padding: 12px;
+    padding: 8px 18px 12px 0;
     border-right: 0;
     border-bottom: 1px solid var(--line);
+    background: transparent;
   }
   .settings-studio-nav nav {
     display: flex;
@@ -894,7 +925,8 @@
     display: none;
   }
   .settings-studio-content {
-    padding: 20px 16px;
+    padding: 12px 0 20px 28px;
+    width: 100%;
   }
   .settings-page .settings-studio-content .setting-row {
     gap: 10px;
@@ -992,7 +1024,7 @@
 }
 
 .plans-page .plan-account-row {
-  background: linear-gradient(110deg, var(--blue-soft), var(--surface));
+  background: var(--surface, #fff);
   margin: 0 0 22px;
 }
 .support-inbox-tools {
@@ -1016,10 +1048,62 @@
 }
 
 /* Alerts uses the same compact form and evidence-row system. */
-.alerts-studio{max-width:1100px;margin:0 auto}
-.alerts-studio .page-heading h1{font-family:Georgia,'Times New Roman',serif;letter-spacing:-.04em}
-.alerts-studio .alert-builder{background:linear-gradient(120deg,var(--blue-soft),var(--surface));border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;grid-template-columns:minmax(120px,1fr) minmax(180px,1.6fr) minmax(110px,.7fr) auto;gap:14px;align-items:end}
-.alerts-studio .alert-builder label{display:grid;gap:7px;font-size:12px;color:var(--muted);min-width:0}
-.alerts-studio .alert-builder input,.alerts-studio .alert-builder select{width:100%;font-size:14px;border-radius:9px;min-height:44px}
-.alerts-studio .footnote{font-size:11px;line-height:1.7;max-width:90ch}
-@media(max-width:760px){.alerts-studio .alert-builder{grid-template-columns:1fr;padding:16px}.alerts-studio .alert-builder input,.alerts-studio .alert-builder select{font-size:16px}.alerts-studio .page-heading{align-items:start;gap:12px}}
+.alerts-studio {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.alerts-studio .page-heading h1 {
+  font-family: var(
+    --font-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif
+  );
+  letter-spacing: -0.04em;
+}
+.alerts-studio .alert-builder {
+  background: var(--surface, #fff);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns:
+    minmax(120px, 1fr) minmax(180px, 1.6fr) minmax(110px, 0.7fr)
+    auto;
+  gap: 14px;
+  align-items: end;
+}
+.alerts-studio .alert-builder label {
+  display: grid;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--muted);
+  min-width: 0;
+}
+.alerts-studio .alert-builder input,
+.alerts-studio .alert-builder select {
+  width: 100%;
+  font-size: 14px;
+  border-radius: 9px;
+  min-height: 44px;
+}
+.alerts-studio .footnote {
+  font-size: 11px;
+  line-height: 1.7;
+  max-width: 90ch;
+}
+@media (max-width: 760px) {
+  .alerts-studio .alert-builder {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+  .alerts-studio .alert-builder input,
+  .alerts-studio .alert-builder select {
+    font-size: 16px;
+  }
+  .alerts-studio .page-heading {
+    align-items: start;
+    gap: 12px;
+  }
+}

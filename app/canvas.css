@@ -16,7 +16,7 @@
   text-wrap: balance;
 }
 .content h1 {
-  font-size: clamp(28px, 3vw, 38px);
+  font-size: clamp(26px, 2.6vw, 34px);
   letter-spacing: -0.045em;
   font-weight: 700;
 }
@@ -86,7 +86,7 @@
   gap: 3px;
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: color-mix(in srgb, var(--blue) 3%, var(--surface));
+  background: var(--paper);
 }
 .content .segments button,
 .content .options-nav button {
@@ -147,11 +147,12 @@
   border: 0;
 }
 .content .technical-desk-groups > section {
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: var(--surface);
-  padding: 20px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 18px 0;
   min-width: 0;
+  border-top: 1px solid var(--line);
 }
 .content .technical-desk-groups > section header {
   padding-bottom: 14px;
@@ -310,7 +311,11 @@
     padding: 10px 11px;
   }
   .content .technical-desk-groups > section {
-    padding: 16px;
+    padding: 18px 0;
+    border: 0;
+    border-top: 1px solid var(--line);
+    border-radius: 0;
+    background: transparent;
   }
   .content .technical-summary-strip {
     display: grid;
@@ -374,11 +379,12 @@
   font-weight: 550;
 }
 .content .congress-disclosures {
-  background: var(--surface);
-  padding: 22px;
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  background: transparent;
+  padding: 20px 0;
+  border: 0;
+  border-radius: 0;
   margin: 18px 0;
+  border-top: 1px solid var(--line);
 }
 .content .congress-list article {
   display: grid;
@@ -436,7 +442,11 @@
     height: 260px;
   }
   .content .congress-disclosures {
-    padding: 16px;
+    padding: 20px 0;
+    border: 0;
+    border-top: 1px solid var(--line);
+    border-radius: 0;
+    background: transparent;
   }
   .content .congress-disclosures .section-head {
     align-items: flex-start;
@@ -453,16 +463,14 @@
 .content .technical-pace {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
-  padding: 18px 20px;
+  padding: 16px 0;
   gap: 20px;
-  border: 1px solid color-mix(in srgb, #7656d9 25%, var(--line));
-  border-radius: 14px;
-  background: linear-gradient(
-    110deg,
-    color-mix(in srgb, var(--blue) 6%, var(--surface)),
-    color-mix(in srgb, #7756d9 7%, var(--surface))
-  );
+  border: 0;
+  border-radius: 0;
+  background: var(--surface, #fff);
   margin: 0 0 20px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
 }
 .content .technical-pace > div {
   display: grid;
@@ -495,8 +503,12 @@
 @media (max-width: 760px) {
   .content .technical-pace {
     grid-template-columns: 1fr 1fr;
-    padding: 15px;
+    padding: 16px 0;
     gap: 14px;
+    border: 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
   }
   .content .technical-pace > div:first-child {
     grid-column: 1/-1;
@@ -508,16 +520,16 @@
 
 /* One palette and graphic language shared across the approved experience. */
 :root {
-  --paper: #f6f8fd;
-  --ink: #152444;
-  --muted: #61718a;
-  --line: #e0e7f2;
+  --paper: #fff;
+  --ink: #142238;
+  --muted: #536278;
+  --line: #e3e7ed;
   --blue: #1260ee;
   --green: #008463;
   --purple: #7441df;
   --amber: #ad6800;
   --amber-soft: #fff3d9;
-  --blue-soft: #edf3ff;
+  --blue-soft: #eef3fb;
   --green-soft: #e6f6ef;
   --red: #c14156;
   --red-soft: #fff0f3;
@@ -638,14 +650,14 @@
 }
 .research-page .quote-actions .data-stamp {
   grid-column: 1/-1;
-  font-size: 10px;
+  font-size: 11px;
 }
 .research-header-evidence {
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid var(--line);
-  padding: 0 0 11px;
+  padding: 6px 0 10px;
   gap: 16px;
 }
 .research-header-evidence > dl {
@@ -663,11 +675,11 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
 }
 .research-header-evidence dt .help-trigger {
-  font-size: 9px;
+  font-size: 11px;
   min-height: 20px;
   padding: 0;
 }
@@ -684,7 +696,7 @@
   color: var(--red);
 }
 .research-header-more {
-  font-size: 10px;
+  font-size: 11px;
   position: relative;
 }
 .research-header-more summary {
@@ -703,7 +715,7 @@
   border-radius: 10px;
 }
 .research-header-more .stock-context-region p {
-  font-size: 10px;
+  font-size: 11px;
 }
 .research-header-more .stock-context-strip {
   margin: 0;
@@ -728,7 +740,7 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 6px;
-  font-size: 10px;
+  font-size: 11px;
   color: var(--ink);
   margin-bottom: 5px;
 }
@@ -744,7 +756,7 @@
 }
 .graphic-axis {
   fill: var(--muted);
-  font-size: 9px;
+  font-size: 11px;
   font-family: inherit;
 }
 .graphic-baseline {
@@ -762,7 +774,7 @@
   display: grid;
 }
 .rsi-graphic span {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
 }
 .rsi-graphic strong {
@@ -823,6 +835,7 @@
     align-items: flex-start;
   }
   .research-page .security-head .identity {
+    margin-bottom: 0;
     align-items: flex-start;
     gap: 9px;
     flex: 1;
@@ -851,7 +864,7 @@
     font-size: 22px;
   }
   .research-page .quote-actions .data-stamp {
-    font-size: 9px;
+    font-size: 10px;
     max-width: 135px;
     line-height: 1.4;
     text-align: right;
@@ -862,13 +875,14 @@
     height: 32px;
   }
   .research-page .security-head .identity p {
-    font-size: 10px;
+    font-size: 11px;
   }
   .research-header-evidence {
     gap: 7px;
     align-items: flex-start;
     flex-direction: column;
     padding-bottom: 8px;
+    padding: 6px 0 10px;
   }
   .research-header-evidence > dl {
     width: 100%;
@@ -879,7 +893,7 @@
     display: block;
   }
   .research-header-evidence dt {
-    font-size: 9px;
+    font-size: 11px;
     gap: 4px;
     flex-wrap: wrap;
   }
@@ -891,7 +905,7 @@
     display: none;
   }
   .research-header-more summary {
-    font-size: 9px;
+    font-size: 11px;
     min-height: 24px;
     padding-top: 3px;
   }
@@ -912,13 +926,13 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .research-header-more .stock-context-region p {
-    font-size: 9px;
+    font-size: 11px;
   }
   .rsi-graphic {
     grid-template-columns: 100px 1fr;
   }
   .evidence-series figcaption {
-    font-size: 10px;
+    font-size: 11px;
   }
 }
 :root[data-accent="teal"] {

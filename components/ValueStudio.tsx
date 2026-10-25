@@ -51,7 +51,7 @@ export default function ValueStudio({
         </p>
         <PriceProjection key={r.company.symbol} research={r} />
       </details>
-      {d.metrics.length > 0 && (
+      {available.length > 0 && (
         <section
           className="valuation-board"
           aria-labelledby="market-pricing-title"
@@ -67,12 +67,6 @@ export default function ValueStudio({
                 : "Observation date not supplied"}
             </small>
           </header>
-          {!available.length && (
-            <p className="desk-footnote">
-              Market multiples were not supplied for this report. Available
-              scenarios and their assumptions remain above.
-            </p>
-          )}
           <div className="valuation-board-grid">
             {available.map((m) => (
               <article key={m.key} data-tone="neutral">
@@ -90,6 +84,16 @@ export default function ValueStudio({
             </p>
           )}
         </section>
+      )}
+      {!available.length && (
+        <details className="value-data-note">
+          <summary>About the pricing evidence</summary>
+          <p className="desk-footnote">
+            Reported market multiples are not supplied for this report.
+            Available scenarios remain above; missing measures are never treated
+            as zero.
+          </p>
+        </details>
       )}
       {yields.some((m) => m.value != null) && (
         <section

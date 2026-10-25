@@ -73,10 +73,11 @@
 }
 .card {
   min-width: 0;
-  padding: 19px 18px 12px;
+  padding: 18px 0 12px;
   border: 0;
-  background: var(--surface);
-  border-radius: 24px;
+  background: transparent;
+  border-radius: 0;
+  border-top: 1px solid var(--line);
 }
 .cardTop {
   display: flex;
@@ -416,7 +417,10 @@
     grid-template-columns: 1fr;
   }
   .card {
-    padding: 18px 18px 12px;
+    padding: 18px 0 12px;
+    border-radius: 0;
+    border-top: 1px solid var(--line);
+    background: transparent;
   }
   .stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -496,7 +500,10 @@
     align-items: flex-start;
   }
   .card {
-    padding: 22px;
+    padding: 18px 0 12px;
+    border-radius: 0;
+    border-top: 1px solid var(--line);
+    background: transparent;
   }
   .number {
     font-size: 1.85rem;

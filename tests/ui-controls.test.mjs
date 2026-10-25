@@ -843,3 +843,21 @@ test('stock header surfaces reported growth and cash generation before extra pri
  const View=loadComponent('components/StockFacts.tsx','StockFacts',{React,useMemo:React.useMemo,advancedStudies,latestFinancialEvidence,...format});
  const html=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT}));assert.match(html,/Revenue growth/);assert.match(html,/FCF margin/);assert.doesNotMatch(html,/NaN|Infinity/);
 });
+
+test("scenario change without a reference quote is neutral rather than a zero percent gain", async () => {
+  const { valuationScale } = await import("../lib/research-summary.ts");
+  const Range = loadComponent("components/CaseRange.tsx", "CaseRange", {
+    React,
+    valuationScale,
+    ...format,
+  });
+  const html = renderToStaticMarkup(
+    React.createElement(Range, {
+      cases: [{ name: "Base", target: 120, change: null }],
+      price: null,
+      currency: "USD",
+    }),
+  );
+  assert.doesNotMatch(html, /class="[^"]*positive|0\.0%/);
+  assert.match(html, /Reference price needed/);
+});

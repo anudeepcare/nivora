@@ -450,7 +450,7 @@ export default function Research({ symbol }: { symbol: string }) {
 
       <div className="research-header-evidence">
         <dl>
-          {headerFinancial?.revenue != null && (
+          {tab !== "Snapshot" && headerFinancial?.revenue != null && (
             <div>
               <dt>
                 Revenue{" "}
@@ -474,7 +474,7 @@ export default function Research({ symbol }: { symbol: string }) {
               </dd>
             </div>
           )}
-          {headerMargin != null && (
+          {tab !== "Snapshot" && headerMargin != null && (
             <div data-tone={headerMargin < 0 ? "risk" : "positive"}>
               <dt>
                 FCF margin{" "}

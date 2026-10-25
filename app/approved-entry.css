@@ -33,7 +33,7 @@
   display: flex;
   flex-direction: column;
   padding: 34px clamp(28px, 4vw, 68px) 28px;
-  background: linear-gradient(150deg, #f7fbff 10%, #edf5ff 60%, #f9f4ff);
+  background: var(--surface, #fff);
   overflow: hidden;
   border-right: 1px solid #e3eaf5;
 }
@@ -57,13 +57,19 @@
   margin: 38px 0 25px;
 }
 .atlas-entry .entry-art-copy > span {
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 0.15em;
   font-weight: 750;
   color: #3567a7;
 }
 .atlas-entry .entry-art-copy h2 {
-  font-family: var(--font-display, Georgia, "Times New Roman", serif);
+  font-family: var(
+    --font-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif
+  );
   font-weight: 600;
   font-size: clamp(36px, 3.7vw, 56px);
   letter-spacing: -0.045em;
@@ -99,7 +105,7 @@
   padding: 10px 8px;
 }
 .entry-product-preview .panorama-chapters h3 {
-  font-size: 9px;
+  font-size: 11px;
 }
 .entry-product-preview .panorama-metrics strong {
   font-size: 18px;
@@ -108,7 +114,7 @@
   font-size: 15px;
 }
 .atlas-entry .entry-art > small {
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.7;
   color: #7d8aa0;
   margin-top: auto;
@@ -129,7 +135,7 @@
 }
 .atlas-entry .entry-form h1 {
   font: 600 clamp(30px, 2.7vw, 39px) / 1.1
-    var(--font-display, Georgia, "Times New Roman", serif);
+    var(--font-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
   letter-spacing: -0.04em;
   color: var(--entry-ink);
   margin: 0 0 10px;
@@ -194,7 +200,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 10px;
+  font-size: 11px;
   color: #8c99ac;
   margin: 9px 0 12px;
 }
@@ -276,14 +282,14 @@
 .atlas-entry .entry-form > small {
   display: block;
   color: #8b98aa;
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.8;
 }
 .atlas-entry .login-legal {
   display: flex;
   gap: 18px;
   margin-top: 14px;
-  font-size: 9px;
+  font-size: 11px;
 }
 .atlas-entry .entry-form > small a,
 .atlas-entry .login-legal a {
@@ -318,7 +324,7 @@
 }
 .atlas-entry.recovery-page {
   grid-template-columns: 1fr;
-  background: linear-gradient(155deg, #f0f6ff, #fff 60%);
+  background: var(--surface, #fff);
   padding: 40px 20px;
 }
 .atlas-entry.recovery-page .entry-form {
@@ -386,7 +392,8 @@
   gap: 55px;
 }
 .support-introduction h1 {
-  font: 600 44px/1.05 var(--font-display, Georgia, serif);
+  font: 600 44px/1.05
+    var(--font-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
   letter-spacing: -0.04em;
   margin: 13px 0 18px;
 }
@@ -397,7 +404,7 @@
   max-width: 32ch;
 }
 .support-introduction > .edge-eyebrow {
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.12em;
   color: #2465c7;
 }
@@ -452,7 +459,7 @@
   resize: vertical;
 }
 .atlas-support .small {
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.7;
   color: var(--muted, #64758d);
   margin: 0;
@@ -489,7 +496,7 @@
   padding: 26px;
   border: 1px solid #cbe8dd;
   border-radius: 12px;
-  background: linear-gradient(135deg, #effaf5, var(--surface, #fff));
+  background: var(--surface, #fff);
   align-self: start;
 }
 .contact-confirmation > svg {
@@ -497,7 +504,8 @@
   margin-bottom: 12px;
 }
 .atlas-support .contact-confirmation h2 {
-  font: 600 29px/1.1 var(--font-display, Georgia, serif);
+  font: 600 29px/1.1
+    var(--font-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
   letter-spacing: -0.03em;
   margin: 0 0 14px;
 }
@@ -599,13 +607,14 @@
   max-width: 760px;
 }
 .document-reading .document-eyebrow {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 750;
   letter-spacing: 0.14em;
   color: #3567a7;
 }
 .atlas-document .document-reading h1 {
-  font: 600 43px/1.08 var(--font-display, Georgia, serif);
+  font: 600 43px/1.08
+    var(--font-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
   letter-spacing: -0.04em;
   margin: 12px 0 16px;
 }
@@ -616,7 +625,7 @@
   margin: 0 0 12px;
 }
 .atlas-document .document-updated {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted, #64758d);
   margin-bottom: 23px;
 }
@@ -671,11 +680,11 @@
   border-top: 1px solid var(--line, #e0e7f0);
   margin-top: 30px;
   padding-top: 20px;
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted, #64758d);
 }
 .atlas-document > footer p {
-  font-size: 10px;
+  font-size: 11px;
   margin: 0;
 }
 .atlas-document > footer span {
@@ -692,7 +701,7 @@ html[data-theme="dark"] .atlas-entry {
   color: var(--entry-ink);
 }
 html[data-theme="dark"] .atlas-entry .entry-art {
-  background: linear-gradient(145deg, #17243c, #1b203b);
+  background: var(--surface, #fff);
   border-color: #33405b;
 }
 html[data-theme="dark"] .atlas-entry .entry-form input,
@@ -727,7 +736,7 @@ html[data-theme="dark"] .atlas-entry .success {
   color: #88e4c2;
 }
 html[data-theme="dark"] .atlas-support .contact-confirmation {
-  background: linear-gradient(135deg, #183d36, var(--surface, #1a263c));
+  background: var(--surface, #fff);
   border-color: #285b50;
 }
 @media (max-width: 1050px) {
@@ -759,11 +768,11 @@ html[data-theme="dark"] .atlas-support .contact-confirmation {
     font-size: 12px;
   }
   .entry-product-preview .panorama-chapters section > p {
-    font-size: 10px;
+    font-size: 11px;
     min-height: 0;
   }
   .entry-product-preview .panorama-metrics span {
-    font-size: 10px;
+    font-size: 11px;
   }
 }
 @media (max-width: 760px) {
@@ -771,7 +780,7 @@ html[data-theme="dark"] .atlas-support .contact-confirmation {
     display: block;
     padding: calc(20px + env(safe-area-inset-top, 0px)) 22px
       calc(25px + env(safe-area-inset-bottom, 0px));
-    background: linear-gradient(#f8fbff, #fff 45%);
+    background: var(--surface, #fff);
   }
   .atlas-entry .entry-art {
     display: none;
@@ -815,10 +824,10 @@ html[data-theme="dark"] .atlas-support .contact-confirmation {
     font-size: 12px;
   }
   .atlas-entry .entry-form > small {
-    font-size: 10px;
+    font-size: 11px;
   }
   .atlas-entry .login-legal {
-    font-size: 10px;
+    font-size: 11px;
     gap: 20px;
   }
   .contact-page.atlas-support,

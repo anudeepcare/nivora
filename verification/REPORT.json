@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-10-25T12:35:28.136146+00:00",
-  "release": "AURYN approved whole-app experience",
-  "sourceBranch": "auryn-approved-experience-rebuild",
+  "generatedAt": "2026-10-25T13:32:28.306762+00:00",
+  "release": "AURYN Fluid all-metrics refinement",
+  "sourceBranch": "auryn-fluid-refinement",
   "completeSourceIncluded": true,
-  "unitDatabaseComponentTests": 565,
+  "unitDatabaseComponentTests": 571,
   "apiChecks": 125,
   "apiTransports": "Synthetic provider, authentication and database transports; no actual payments or broker orders",
   "browserChecks": 132,
@@ -19,15 +19,18 @@
   "browserEngine": "Chromium headless; mobile viewport and standalone emulation, not physical iOS",
   "browserFailures": 0,
   "commands": {
-    "npm run verify": "passed: approved-experience-verify.log (565 tests, typecheck, production build)",
-    "npm run build": "passed: approved-experience-final-build.log (final mobile heading CSS)",
-    "npm run test:api": "passed: approved-experience-api.log (122 fixture checks)",
-    "node scripts/test-auth-provider-api.mjs": "passed: approved-experience-auth.log (3 fixture checks)",
-    "browser": "approved-experience-browser-report.json (132 checks)",
+    "npm run verify": "passed: fluid-verify.log (571 tests, typecheck, production build)",
+    "npm run build": "passed: fluid-final-build.log (final mobile CSS)",
+    "npm run test:api": "passed: fluid-api.log (122 fixture checks)",
+    "node scripts/test-auth-provider-api.mjs": "passed: fluid-auth.log (3 fixture checks)",
+    "targeted regressions": "passed: fluid-final-regressions.log (69 tests)",
+    "browser": "approved-experience-browser-report.json (132/132 on final mobile CSS)",
+    "depth browser": "fluid-depth-browser.json (144 checks)",
     "interactions": "approved-experience-interactions-final.json (30 checks)",
-    "git diff --check": "passed"
+    "git diff --check": "passed",
+    "npm test": "passed: fluid-final-unit.log (571/571 on final source)"
   },
-  "review": "Independent reviewer: no Critical findings; two Important findings fixed RED/GREEN (historical scenario currency and negative FCF risk color). Browser hydration failure reproduced and fixed with single-string SVG title regression. No investment-performance claim.",
+  "review": "Independent review found two P2 issues: historical scenario reference and dark illustrative-preview contrast. Both fixed with targeted regression and browser contrast checks. Additional missing-reference percentage bug fixed. No other important issue reported.",
   "productionReady": false,
   "pushed": false,
   "deployed": false,
@@ -39,9 +42,7 @@
   "liveProviderComparisonVerified": false,
   "competitorDcaParityVerified": false,
   "supportRequires": [
-    "Apply additive support migration",
-    "Configure server database access",
-    "Configure verified sender and email key before enabling production notifications"
+    "Existing support migration and verified sender setup only if not already configured; no new setup for this UI release"
   ],
   "limitations": [
     "No physical installed iPhone/Safari acceptance",
@@ -51,10 +52,13 @@
     "Generated mockup numbers are illustrative; no pixel-perfect equivalence certification"
   ],
   "references": [
-    "docs/APPROVED_EXPERIENCE_RELEASE.md",
+    "docs/FLUID_REFINEMENT_RELEASE.md",
     "docs/SCREEN_INVENTORY.md",
     "docs/SUPPORT_SETUP.md"
   ],
   "interactionChecks": 30,
-  "interactionFailures": 0
+  "interactionFailures": 0,
+  "browserDepthChecks": 144,
+  "browserDepthFailures": 0,
+  "completed": "Local build and full source handoff; production unchanged"
 }

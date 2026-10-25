@@ -6,6 +6,7 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import * as icons from "lucide-react";
 import { overviewValueMessage } from "../lib/evidence-graphics.ts";
+import { overviewEvidence } from "../lib/overview-evidence.ts";
 import { researchEdge } from "../lib/edge-research.ts";
 import { latestFinancialEvidence } from "../lib/analysis.ts";
 import * as format from "../lib/format.ts";
@@ -41,6 +42,19 @@ function view(edgeOverride) {
     BookOpen: icons.BookOpen,
     CalendarDays: icons.CalendarDays,
     overviewValueMessage,
+    overviewEvidence,
+    OverviewEvidence: ({ rows }) =>
+      React.createElement(
+        "dl",
+        null,
+        rows.map((row) =>
+          React.createElement(
+            "div",
+            { key: row.key },
+            row.label + " " + row.value,
+          ),
+        ),
+      ),
     EvidenceSeries: () => null,
     RsiGraphic: () => null,
     useProduct: () => ({ workspace: null }),
@@ -50,10 +64,15 @@ function view(edgeOverride) {
     latestFinancialEvidence,
     ...format,
     Help: ({ trigger }) => React.createElement("button", null, trigger),
-    CaseRange: ({ currency }) =>
+    CaseRange: ({ currency, cases, price, referenceLabel }) =>
       React.createElement(
         "div",
-        { "data-scale-currency": currency },
+        {
+          "data-scale-currency": currency,
+          "data-reference": price,
+          "data-reference-label": referenceLabel,
+          "data-changes": JSON.stringify(cases.map((c) => c.change)),
+        },
         "Shared scale",
       ),
     PriceRiskCases: () => React.createElement("div", null, "Historical risk"),
@@ -77,6 +96,9 @@ test("Edge overview renders decision, concrete evidence and separate confirmed/f
     assert.match(html, /AURYN PACE/);
     assert.match(html, /Completed monthly/);
     assert.match(html, /Cash conversion/);
+    assert.match(html, /overview-research-grid/);
+    assert.match(html, /Business &amp; financial strength/);
+    assert.match(html, /Ownership &amp; upcoming events/);
     assert.doesNotMatch(html, /NaN|Infinity|Revenue by business/);
   }
 });
@@ -225,4 +247,62 @@ test("historical price card keeps listing currency when an unused revenue scenar
   assert.match(html, /data-scale-currency="USD"/);
   assert.doesNotMatch(html, /data-scale-currency="EUR"/);
   assert.match(html, /Past price outcomes/);
+});
+
+test("company scenarios without a quote never invent zero percent changes", () => {
+  const base = researchEdge(demoData.research.MSFT);
+  const Component = view(() => ({
+    ...base,
+    brief: {
+      ...base.brief,
+      scenarioEligible: true,
+      scenario: {
+        currency: "USD",
+        low: 90,
+        base: 120,
+        high: 150,
+        end: "2028-12-31",
+      },
+    },
+  }));
+  const r = structuredClone(demoData.research.MSFT);
+  r.quote.price = null;
+  const html = renderToStaticMarkup(
+    React.createElement(Component, { research: r, onTab: () => {} }),
+  );
+  assert.match(html, /data-changes="\[null,null,null\]"/);
+});
+
+test("historical cases retain their own settled reference when the quote is absent or stale", () => {
+  const base = researchEdge(demoData.research.MSFT);
+  const Component = view(() => ({
+    ...base,
+    brief: {
+      ...base.brief,
+      scenarioEligible: false,
+      priceRisk: {
+        available: true,
+        currency: "USD",
+        reference: 400,
+        referenceBasis: "settled-close",
+        referenceDate: "2026-10-16",
+        horizon: 63,
+        samples: 80,
+        caveat: "Overlapping historical windows, not business value.",
+        cases: [
+          { name: "Bear", target: 320, change: -20 },
+          { name: "Base", target: 420, change: 5 },
+          { name: "Bull", target: 500, change: 25 },
+        ],
+      },
+    },
+  }));
+  const r = structuredClone(demoData.research.MSFT);
+  r.quote.price = null;
+  const html = renderToStaticMarkup(
+    React.createElement(Component, { research: r, onTab: () => {} }),
+  );
+  assert.match(html, /data-reference="400"/);
+  assert.match(html, /data-reference-label="Settled close/);
+  assert.match(html, /Overlapping historical windows/);
 });

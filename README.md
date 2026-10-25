@@ -1,3 +1,7 @@
+# Latest — AURYN Fluid all-metrics refinement
+
+Full source. Start with `docs/FLUID_REFINEMENT_RELEASE.md` for changes, verification and preprod-only deployment. No new SQL or environment variables are required.
+
 # Approved whole-app experience
 
 Start with [this release and preprod instructions](docs/APPROVED_EXPERIENCE_RELEASE.md). Full source; production remains unchanged.

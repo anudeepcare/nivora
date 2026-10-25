@@ -7,7 +7,7 @@ export default function CaseRange({
   currency,
   referenceLabel = "Current",
 }: {
-  cases: { name: string; target: number; change: number }[];
+  cases: { name: string; target: number; change: number | null }[];
   price: number | null;
   currency: string;
   referenceLabel?: string;
@@ -53,11 +53,9 @@ export default function CaseRange({
                 }
                 cy="40"
                 r="8"
-                fill={`var(--${i === 0 ? "red" : i === 2 ? "green" : "blue"})`}
+                fill={`var(--${c.name === "Bear" ? "red" : c.name === "Bull" ? "green" : "blue"})`}
               >
-                <title>
-                  {`${c.name}: ${amount(c.target, currency)}`}
-                </title>
+                <title>{`${c.name}: ${amount(c.target, currency)}`}</title>
               </circle>
             ))}
             <line
@@ -76,14 +74,26 @@ export default function CaseRange({
           <section key={c.name}>
             <span
               style={{
-                color: `var(--${i === 0 ? "red" : i === 2 ? "green" : "blue"})`,
+                color: `var(--${c.name === "Bear" ? "red" : c.name === "Bull" ? "green" : "blue"})`,
               }}
             >
               {c.name}
             </span>
             <strong>{amount(c.target, currency)}</strong>
-            <small className={c.change < 0 ? "negative" : "positive"}>
-              {percent(c.change, true)}
+            <small
+              className={
+                c.change == null
+                  ? "muted"
+                  : c.change < 0
+                    ? "negative"
+                    : c.change > 0
+                      ? "positive"
+                      : ""
+              }
+            >
+              {c.change == null
+                ? "Reference price needed"
+                : percent(c.change, true)}
             </small>
           </section>
         ))}

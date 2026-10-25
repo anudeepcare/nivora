@@ -13,7 +13,7 @@
 }
 .briefing-kicker {
   display: block;
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.12em;
   font-weight: 700;
   color: var(--muted);
@@ -26,7 +26,7 @@
   padding: 4px 0 0;
 }
 .briefing-greeting h1 {
-  font-size: clamp(28px, 3vw, 40px);
+  font-size: clamp(27px, 2.8vw, 36px);
   font-weight: 750;
   letter-spacing: -0.045em;
   line-height: 1.15;
@@ -44,7 +44,7 @@
 }
 .briefing-date small {
   display: block;
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
   margin-top: 4px;
 }
@@ -54,20 +54,17 @@
   gap: 18px;
 }
 .briefing-perspective {
-  padding: 22px 24px;
-  border: 1px solid var(--line);
-  border-radius: 15px;
-  background: linear-gradient(
-    120deg,
-    color-mix(in srgb, var(--blue) 8%, var(--surface)),
-    var(--surface) 65%
-  );
+  padding: 16px 0 18px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  border-bottom: 1px solid var(--line);
 }
 .briefing-perspective h2 {
-  font-size: 28px;
+  font-size: 20px;
   letter-spacing: -0.04em;
   line-height: 1.2;
-  margin: 8px 0;
+  margin: 6px 0;
 }
 .briefing-perspective > p {
   color: var(--muted);
@@ -76,7 +73,7 @@
 .briefing-stat-line {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  margin: 22px 0 15px;
+  margin: 14px 0 10px;
   gap: 20px;
 }
 .briefing-stat-line > div + div {
@@ -97,7 +94,7 @@
 }
 .briefing-stat-line small {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 11px;
   display: block;
   line-height: 1.5;
 }
@@ -111,17 +108,14 @@
 }
 .briefing-focus {
   min-width: 0;
-  border: 1px solid color-mix(in srgb, var(--green) 18%, var(--line));
-  border-radius: 15px;
-  padding: 21px;
-  background: linear-gradient(
-    130deg,
-    color-mix(in srgb, var(--green) 7%, var(--surface)),
-    var(--surface)
-  );
+  border: 0;
+  border-radius: 0;
+  padding: 16px 0 18px 22px;
+  background: transparent;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
+  border-left: 1px solid var(--line);
 }
 .briefing-focus .briefing-kicker {
   color: var(--green);
@@ -158,22 +152,23 @@
   margin-top: auto;
 }
 .briefing-focus > small {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
   line-height: 1.6;
 }
 .briefing-evidence-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: 24px;
   align-items: start;
 }
 .briefing-panel {
   min-width: 0;
-  padding: 18px 20px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: var(--surface);
+  padding: 18px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  border-top: 1px solid var(--line);
 }
 .briefing-panel > header {
   display: flex;
@@ -194,7 +189,7 @@
   color: var(--blue);
 }
 .briefing-panel > header .briefing-kicker {
-  font-size: 9px;
+  font-size: 11px;
   margin-bottom: 5px;
 }
 .briefing-panel > header > svg {
@@ -203,7 +198,7 @@
 .briefing-note,
 .briefing-coverage {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.6;
   margin: 12px 0 0;
 }
@@ -271,14 +266,14 @@
   border-radius: 8px;
   background: var(--amber-soft);
   color: var(--amber);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
 }
 .briefing-attention-row strong {
   font-size: 12px;
 }
 .briefing-attention-row small {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
   display: block;
   margin-top: 2px;
@@ -332,7 +327,7 @@
   color: var(--purple);
 }
 .briefing-calendar-list time b {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 600;
 }
 .briefing-calendar-list strong {
@@ -340,7 +335,7 @@
   display: block;
 }
 .briefing-calendar-list small {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
   line-height: 1.5;
   display: block;
@@ -411,7 +406,7 @@
   display: block;
 }
 .briefing-news-company small {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
   line-height: 1.4;
   display: block;
@@ -432,7 +427,7 @@
 }
 .briefing-news-meta {
   display: block;
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
   line-height: 1.6;
   margin-top: 7px;
@@ -463,7 +458,7 @@
   display: block;
 }
 .briefing-company-name small {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
   display: block;
   line-height: 1.5;
@@ -477,12 +472,12 @@
   font-variant-numeric: tabular-nums;
 }
 .briefing-company-value small {
-  font-size: 10px;
+  font-size: 11px;
   display: block;
   margin-top: 2px;
 }
 .briefing-company-value small:last-child {
-  font-size: 9px;
+  font-size: 11px;
   color: var(--muted);
 }
 .briefing-welcome {
@@ -493,7 +488,7 @@
   padding: 35px;
   border: 1px solid var(--line);
   border-radius: 16px;
-  background: linear-gradient(120deg, var(--blue-soft), var(--surface) 65%);
+  background: var(--surface, #fff);
 }
 .briefing-welcome h2 {
   font-size: clamp(30px, 3.7vw, 48px);
@@ -526,7 +521,7 @@
   border-radius: 13px;
 }
 .briefing-start-map > span {
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.1em;
   color: var(--muted);
 }
@@ -580,6 +575,7 @@
 @media (max-width: 1000px) {
   .briefing-evidence-grid {
     grid-template-columns: 1fr 1fr;
+    gap: 24px;
   }
   .briefing-calendar {
     grid-column: 1/-1;
@@ -605,7 +601,7 @@
     display: block;
   }
   .briefing-greeting h1 {
-    font-size: 29px;
+    font-size: clamp(27px, 2.8vw, 36px);
   }
   .briefing-greeting p {
     font-size: 12px;
@@ -615,12 +611,12 @@
     text-align: left;
     gap: 8px;
     align-items: baseline;
-    font-size: 10px;
+    font-size: 11px;
     padding-top: 7px;
     flex-wrap: wrap;
   }
   .briefing-date small {
-    font-size: 9px;
+    font-size: 11px;
     margin: 0;
   }
   .briefing-top-grid {
@@ -628,14 +624,19 @@
     gap: 12px;
   }
   .briefing-perspective {
-    padding: 18px;
+    padding: 16px 0 18px;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+    background: transparent;
   }
   .briefing-perspective h2 {
-    font-size: 25px;
+    font-size: 20px;
+    margin: 6px 0;
   }
   .briefing-stat-line {
     gap: 14px;
-    margin: 18px 0 12px;
+    margin: 14px 0 10px;
   }
   .briefing-stat-line > div + div {
     padding-left: 14px;
@@ -644,18 +645,26 @@
     font-size: 26px;
   }
   .briefing-focus {
-    padding: 16px;
+    padding: 16px 0 18px 22px;
     gap: 10px;
+    border: 0;
+    border-left: 1px solid var(--line);
+    border-radius: 0;
+    background: transparent;
   }
   .briefing-focus-company strong {
     font-size: 16px;
   }
   .briefing-evidence-grid {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 24px;
   }
   .briefing-panel {
-    padding: 16px;
+    padding: 18px 0;
+    border: 0;
+    border-top: 1px solid var(--line);
+    border-radius: 0;
+    background: transparent;
   }
   .briefing-calendar {
     grid-column: auto;
@@ -683,7 +692,7 @@
     font-size: 13px;
   }
   .briefing-news-meta {
-    font-size: 10px;
+    font-size: 11px;
   }
   .briefing-company-grid {
     grid-template-columns: 1fr;
@@ -710,9 +719,9 @@
     gap: 12px;
   }
   .briefing-stat-line small {
-    font-size: 9px;
+    font-size: 11px;
   }
   .briefing-stat-line dt {
-    font-size: 10px;
+    font-size: 11px;
   }
 }
