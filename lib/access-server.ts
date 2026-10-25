@@ -147,7 +147,7 @@ export async function guardAccess(request: Request, id: string) {
     path = url.pathname;
   // Every vendor-bearing route must pass here; merely hiding a client tab is insufficient.
   const market =
-    /^\/api\/(options|quotes|research|research-context|chart|search|home-feed|company-data|enrichment|logos|price-stream|news|filings|sector-performance|analyst|observations|alerts|paper-plans)(?:\/|$)/.test(
+    /^\/api\/(congress|options|quotes|research|research-context|chart|search|home-feed|company-data|enrichment|logos|price-stream|news|filings|sector-performance|analyst|observations|alerts|paper-plans)(?:\/|$)/.test(
       path,
     );
   if (!market) return;
@@ -165,7 +165,7 @@ export async function guardAccess(request: Request, id: string) {
       ? "advanced"
       : /\/(company-data|filings)(?:\/|$)/.test(path)
         ? "financials"
-        : /\/(enrichment|news)(?:\/|$)/.test(path)
+        : /\/(congress|enrichment|news)(?:\/|$)/.test(path)
           ? "news"
           : /\/(sector-performance)(?:\/|$)/.test(path)
             ? "portfolio"

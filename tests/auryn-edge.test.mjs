@@ -12,9 +12,9 @@ test('missing and conflicting evidence cannot produce an entry verdict',()=>{
 });
 test('crypto cannot inherit a company fundamental verdict',()=>assert.equal(edgeReading({...good,assetType:'crypto'}).verdict,'Price review'));
 test('mixed timing limits a supported business to a small start',()=>assert.equal(edgeReading({...good,timing:'mixed'}).verdict,'Begin small'));
-test('Pace never exceeds the confirmed price reading and pauses on financial conflict',()=>{
+test('Pace preserves the confirmed price reading despite financial conflict',()=>{
  assert.equal(edgeReading({...good,confirmedPace:1,formingPace:4}).pace,1);
- assert.equal(edgeReading({...good,conflicting:true}).pace,0);
+ assert.equal(edgeReading({...good,conflicting:true}).pace,3);
  assert.equal(edgeReading({...good,confirmedPace:null}).pace,null);
 });
 test('an existing holding can be monitored without treating a pause as a sell',()=>{

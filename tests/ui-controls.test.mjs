@@ -5,13 +5,14 @@ import ts from "typescript";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import * as format from "../lib/format.ts";
+import {homeComposition} from "../lib/home-presentation.ts";
 import {homeDay} from "../lib/home-day.ts";
 import {homeBrief,dailyPerspective} from "../lib/home-brief.ts";
 import { researchPeriods } from "../lib/financial-catalog.ts";
 import { demoData } from "./fixtures/demo.ts";
 
 function loadComponent(file, name, bindings) {
-  bindings = {useAccess:()=>({access:{features:Object.fromEntries(["overview","business","financials","value","technicals","analysts","news","advanced","portfolio","home","ai","longHistory"].map(k=>[k,true]))}}),FeatureGate:({children})=>children,FreeSnapshot:()=>null,PlanPanel:()=>null,AccessNotice:()=>null,AnalystTargets: () => null, PriceRiskCases: () => null, homeDay, homeBrief, dailyPerspective, PieChart:()=>null, FileText:()=>null, Clock3:()=>null, useEffect:()=>{}, ...bindings};
+  bindings = {useAccess:()=>({access:{features:Object.fromEntries(["overview","business","financials","value","technicals","analysts","news","advanced","portfolio","home","ai","longHistory"].map(k=>[k,true]))}}),FeatureGate:({children})=>children,FreeSnapshot:()=>null,CongressDisclosures:()=>null,PlanPanel:()=>null,AccessNotice:()=>null,AnalystTargets: () => null, PriceRiskCases: () => null, homeComposition, homeDay, homeBrief, dailyPerspective, PieChart:()=>null, FileText:()=>null, Clock3:()=>null, useEffect:()=>{}, ...bindings};
   const ast = ts.createSourceFile(
     file,
     fs.readFileSync(file, "utf8"),
@@ -545,7 +546,7 @@ test('authentication explains AURYN in sign-in, signup and recovery without fabr
   const html=renderToStaticMarkup(React.createElement(Login,{initialError:''}));
   if(mode!=="reset"){assert.match(html,/Social sign-in is not enabled yet/);assert.match(html,/disabled=""/);}
   if(mode==="signup")assert.match(html,/Resend confirmation email/);
-  assert.match(html,/name="email"/);if(mode!=="reset")assert.match(html,/name="password"/);assert.match(html,/About AURYN/);assert.match(html,/A clearer perspective/);assert.match(html,/Business, value and timing/);
+  assert.match(html,/name="email"/);if(mode!=="reset")assert.match(html,/name="password"/);assert.match(html,/About AURYN/);assert.match(html,/Make the evidence useful/);assert.match(html,/Business, value and timing/);
   assert.doesNotMatch(html,/desktop-nav|mobile-dock|guaranteed returns/);
  }
 });
@@ -768,7 +769,7 @@ test('approved Home keeps account companies, real quotes and missing history sep
  const workspace={positions:[{id:'a',symbol:'SOFI',assetType:'stock',currency:'USD',quantity:10,cost:20}],watchlist:[]};
  const Home=loadComponent('components/HomeBriefing.tsx','HomeBriefing',{React,useMemo:React.useMemo,useState:React.useState,useProduct:()=>({workspace,displayName:'Anudeep',workspaceError:''}),useResource:()=>({data:null,error:'History unavailable',loading:false}),companyFeedPage,holdingAttention,relevantHoldingHeadlines,...format,Link:({children,...p})=>React.createElement('a',p,children),SecurityLogo:empty,Notice:({children})=>React.createElement('p',null,children),ArrowUpRight:empty,CalendarDays:empty,ArrowRight:empty,Search:empty});
  const html=renderToStaticMarkup(React.createElement(Home,{quotes:{SOFI:{quote,company:{name:'SoFi Technologies'}}}}));
- assert.match(html,/Anudeep/);assert.match(html,/\$14\.77/);assert.match(html,/Needs your attention/);assert.match(html,/Next on your calendar/);assert.match(html,/What changed/);assert.match(html,/temporarily unavailable/);assert.match(html,/Last available/);assert.doesNotMatch(html,/S&amp;P|Example Company|NaN|Infinity|portfolio total/i);
+ assert.match(html,/Anudeep/);assert.match(html,/\$14\.77/);assert.match(html,/Needs your attention/);assert.match(html,/Next on your calendar/);assert.match(html,/Latest company news/);assert.match(html,/temporarily unavailable/);assert.match(html,/Last available/);assert.doesNotMatch(html,/S&amp;P|Example Company|NaN|Infinity|portfolio total/i);
 });
 
 test('approved Home renders an honest empty account without fabricated companies or event dates',async()=>{
@@ -833,7 +834,7 @@ test('Overview renders the actual analyst range beside separately labelled AURYN
 test('Home has a compact evidence pulse without a large decorative hero',async()=>{
  const {companyFeedPage,holdingAttention}=await import('../lib/product-attention.ts');const {relevantHoldingHeadlines}=await import('../lib/home-feed.ts');
  const Home=loadComponent('components/HomeBriefing.tsx','HomeBriefing',{React,useMemo:React.useMemo,useState:React.useState,useProduct:()=>({workspace:{positions:[],watchlist:[]}}),useResource:()=>({data:null,error:'',loading:false}),companyFeedPage,holdingAttention,relevantHoldingHeadlines,...format,Link:({children,...p})=>React.createElement('a',p,children),SecurityLogo:empty,Notice:empty,ArrowUpRight:empty,CalendarDays:empty,ArrowRight:empty});
- const html=renderToStaticMarkup(React.createElement(Home,{quotes:{}}));assert.match(html,/aria-label="Your evidence pulse"/);assert.doesNotMatch(html,/class="briefing-hero"/);assert.match(html,/Your companies. What matters today/);
+ const html=renderToStaticMarkup(React.createElement(Home,{quotes:{}}));assert.match(html,/Find your first company/);assert.doesNotMatch(html,/class="briefing-hero"/);assert.match(html,/Your next idea starts with understanding/);
 });
 test('stock header surfaces reported growth and cash generation before extra price momentum',async()=>{
  const {advancedStudies}=await import('../lib/advanced-research.ts');const {latestFinancialEvidence}=await import('../lib/analysis.ts');

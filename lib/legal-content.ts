@@ -245,8 +245,8 @@ export const documents: Record<
         text: "They illustrate different assumptions. Read the horizon, growth, valuation multiple, dilution and discount assumptions. Do not compare a future scenario price directly with a present value without accounting for the horizon.",
       },
       {
-        title: "What does 2× or 4× DCA mean?",
-        text: "Twice or four times a hypothetical regular contribution, not twice or four times the investment return. This price-only policy does not choose investments or determine a suitable allocation. The current month can change until confirmed.",
+        title: "AURYN Pace explained with an example",
+        text: "If your regular contribution is $100, 2× represents $200 and 4× represents $400, provided that cash is available. These are not returns, leverage or suitable position sizes. Completed month: the settled month-end price reading. This month so far: a developing reading that may change. A 0× price reading pauses additions under the policy; a missing reading is not 0×. Business warnings are shown separately.",
       },
       {
         title: "Why is something unavailable?",
@@ -258,7 +258,7 @@ export const documents: Record<
       },
       {
         title: "Installed iPhone app",
-        text: "The current working PWA setup includes a root status surface. After the October 18 status-bar change, removing and re-adding the old Home Screen installation resolved the reported blur. Confirm saved holdings in Safari before clearing site data or removing an installation. Ordinary future updates should not be treated as requiring repeated reinstalls.",
+        text: "Add AURYN to your Home Screen from Safari’s Share menu. Search, research and your saved account use the same workspace. If the keyboard is open, close it to see the full navigation. Report clipped controls through Contact; do not clear saved data as a routine troubleshooting step.",
       },
       {
         title: "Paper trading and AI",
@@ -269,6 +269,6 @@ export const documents: Record<
 };
 
 // Edge uses the same evidence policy across its presentation surfaces.
-documents.methodology.sections.unshift({title:"AURYN Edge and Pace",text:"Edge is an experimental evidence policy, not a probability of profit. A Build reading requires positive cash generation, positive operating margin, non-negative comparable revenue growth, constructive trend, confirmed Pace of at least 2×, no severe flagged risk, a usable quote, and an eligible earnings sensitivity with at least 15% base upside and no more than 40% bear downside. Cases with base upside over 100% or all cases above the quote do not establish a cushion. These are disclosed policy gates, not independently calibrated optimal thresholds. Hold & monitor is ownership context, not a guarantee of suitability. Pace uses confirmed monthly price conditions and pauses additions when severe or conflicting financial evidence is detected; forming readings stay provisional. Models and analyst consensus remain separate."});
+documents.methodology.sections.unshift({title:"AURYN Edge and Pace",text:"Edge is an experimental evidence policy, not a probability of profit. A Build reading requires positive cash generation, positive operating margin, non-negative comparable revenue growth, constructive trend, confirmed Pace of at least 2×, no severe flagged risk, a usable quote, and an eligible earnings sensitivity with at least 15% base upside and no more than 40% bear downside. Cases with base upside over 100% or all cases above the quote do not establish a cushion. These are disclosed policy gates, not independently calibrated optimal thresholds. Hold & monitor is ownership context, not a guarantee of suitability. Pace shows completed monthly price conditions separately from the current developing month. Business and data warnings never overwrite its multiplier; missing price history produces no monthly reading. Models and analyst consensus remain separate."});
 documents.privacy.sections.push({title:"Support requests",text:"The contact form stores your email, chosen topic and message so we can respond. Requests receive a reference number. A hashed network identifier is used to limit abuse; passwords, portfolio contents and payment card details are not automatically attached. If support email delivery is enabled, our email service processes the contact email and message. Use Contact for access or deletion requests. Never send secrets or payment card details."});
 documents.help.sections.unshift({title:"Contact AURYN",text:"Open Contact from the footer for general enquiries, technical issues, billing, feedback or privacy concerns. After a successful save you receive a reference. A receipt is shown as sent only if the email provider accepted it; otherwise the saved request remains available to the owner."});

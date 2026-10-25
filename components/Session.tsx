@@ -393,7 +393,17 @@ export function useResource<T>(key: string | null, preview?: T, ttl = 60_000) {
     if (key) cache.delete(key);
     setRevision((r) => r + 1);
   };
-  if (demo) return {key,data:preview??null,loading:false,error:key && preview===undefined?"This preview does not contain that data.":"",refresh};
+  if (demo)
+    return {
+      key,
+      data: preview ?? null,
+      loading: false,
+      error:
+        key && preview === undefined
+          ? "This preview does not contain that data."
+          : "",
+      refresh,
+    };
   return {
     ...(state.key === key
       ? state
@@ -555,73 +565,29 @@ function Login({ initialError }: { initialError: string }) {
         <a href="/" className="entry-art-brand">
           <Logo />
         </a>
-        <div className="entry-landscape" aria-hidden="true">
-          <svg viewBox="0 0 680 480" fill="none">
-            {Array.from({ length: 24 }, (_, row) => (
-              <path
-                key={row}
-                d={Array.from({ length: 49 }, (_, i) => {
-                  const x = i * 14,
-                    y =
-                      125 +
-                      row * 10 -
-                      70 *
-                        Math.exp(-((x - 310) ** 2) / 17000) *
-                        Math.sin(row / 8) +
-                      45 * Math.sin(x / 125 + row / 13);
-                  return `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`;
-                }).join(" ")}
-                stroke="#6294e3"
-                strokeWidth=".7"
-                opacity={0.3 + row / 60}
-              />
-            ))}
-            {Array.from({ length: 35 }, (_, col) => (
-              <path
-                key={col}
-                d={Array.from({ length: 24 }, (_, row) => {
-                  const x = col * 20,
-                    y =
-                      125 +
-                      row * 10 -
-                      70 *
-                        Math.exp(-((x - 310) ** 2) / 17000) *
-                        Math.sin(row / 8) +
-                      45 * Math.sin(x / 125 + row / 13);
-                  return `${row ? "L" : "M"}${x} ${y.toFixed(1)}`;
-                }).join(" ")}
-                stroke="#6294e3"
-                strokeWidth=".6"
-                opacity=".4"
-              />
-            ))}
-            <path
-              d="M65 280L160 245L270 260L375 170L475 205L610 120"
-              stroke="#2269dd"
-              strokeWidth="2"
-            />
-            {[
-              [160, 245, "Business"],
-              [375, 170, "Value"],
-              [610, 120, "Timing"],
-            ].map(([x, y, label]) => (
-              <g key={label}>
-                <circle cx={x} cy={y} r="5" fill="#2469e5" />
-                <text
-                  x={Number(x) - 22}
-                  y={Number(y) - 18}
-                  fill="#28578a"
-                  fontSize="13"
-                >
-                  {label}
-                </text>
-              </g>
-            ))}
-          </svg>
+        <div
+          className="entry-evidence-story"
+          aria-label="The AURYN research workflow"
+        >
+          <div>
+            <span>01 · AURYN VIEW</span>
+            <h3>Understand the case.</h3>
+            <p>What supports it. What limits conviction.</p>
+          </div>
+          <div>
+            <span>02 · AURYN PACE</span>
+            <h3>Put timing in context.</h3>
+            <p>Price conditions alongside business evidence.</p>
+          </div>
+          <div>
+            <span>03 · CHECKPOINTS</span>
+            <h3>Know what to watch next.</h3>
+            <p>Follow the conditions that change the view.</p>
+          </div>
         </div>
         <div className="entry-art-copy">
-          <span>A deeper understanding.</span>
-          <h2>A clearer perspective.</h2>
+          <span>Business. Price. Perspective.</span>
+          <h2>Make the evidence useful.</h2>
           <p>
             Business, value and timing.
             <br />

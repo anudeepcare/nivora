@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { authClient } from "@/lib/client";
 import { supportCategories } from "@/lib/support-input";
 export default function Contact() {
   const [email, setEmail] = useState(""),
@@ -15,13 +14,6 @@ export default function Contact() {
     [id, setId] = useState("");
   useEffect(() => {
     setId(crypto.randomUUID());
-    try {
-      void authClient()
-        .auth.getSession()
-        .then(({ data }) => {
-          if (data.session?.user.email) setEmail(data.session.user.email);
-        });
-    } catch {}
   }, []);
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -80,7 +72,7 @@ export default function Contact() {
       ) : (
         <form onSubmit={submit}>
           <label>
-            Your email
+            Your reply email
             <input
               type="email"
               required

@@ -764,3 +764,209 @@
     overflow-wrap: normal;
   }
 }
+/* Adaptive account compositions, using the same Decision Canvas hierarchy. */
+.briefing-lead {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(210px, 1fr);
+  gap: 24px;
+  padding: 26px;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--blue);
+  border-radius: 16px;
+  background: linear-gradient(
+    110deg,
+    color-mix(in srgb, var(--blue) 5%, var(--surface)),
+    var(--surface)
+  );
+  margin: 22px 0 16px;
+}
+.briefing-lead h2 {
+  font-size: clamp(23px, 2.7vw, 32px);
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+  margin: 12px 0;
+}
+.briefing-lead p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 75ch;
+}
+.briefing-lead a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+  color: var(--blue);
+  font-size: 13px;
+  font-weight: 550;
+  text-decoration: none;
+  min-height: 38px;
+}
+.briefing-lead-note {
+  padding: 15px 0 15px 25px;
+  border-left: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+}
+.briefing-lead-note > span {
+  font-size: 10px;
+  color: var(--blue);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.briefing-lead-note strong {
+  font-size: 18px;
+  line-height: 1.4;
+}
+.briefing-relevance {
+  display: block;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.briefing-welcome {
+  padding: 32px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  margin: 24px 0;
+  background: linear-gradient(
+    110deg,
+    color-mix(in srgb, var(--blue) 5%, var(--surface)),
+    var(--surface)
+  );
+}
+.briefing-welcome h2 {
+  font-size: clamp(28px, 3.4vw, 42px);
+  max-width: 24ch;
+  line-height: 1.15;
+  letter-spacing: -0.04em;
+  margin: 18px 0;
+}
+.briefing-welcome p {
+  max-width: 65ch;
+  font-size: 16px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin: 15px 0 22px;
+}
+.briefing-welcome small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 15px;
+}
+.briefing-start-paths {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.briefing-start-paths section {
+  padding: 24px 20px;
+  border-top: 2px solid var(--blue);
+  border-bottom: 1px solid var(--line);
+}
+.briefing-start-paths section:nth-child(2) {
+  border-top-color: var(--green);
+}
+.briefing-start-paths section:nth-child(3) {
+  border-top-color: #7854ce;
+}
+.briefing-start-paths span {
+  font-size: 10px;
+  color: var(--blue);
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+.briefing-start-paths h3 {
+  font-size: 20px;
+  margin: 12px 0;
+}
+.briefing-start-paths p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.7;
+  min-height: 65px;
+}
+.briefing-start-paths a {
+  display: block;
+  font-size: 12px;
+  margin-top: 15px;
+  text-decoration: none;
+  min-height: 40px;
+  padding-top: 10px;
+}
+.briefing-quiet-note {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 24px 0;
+}
+@media (max-width: 760px) {
+  .briefing-lead {
+    grid-template-columns: 1fr;
+    padding: 20px;
+    gap: 14px;
+  }
+  .briefing-lead-note {
+    padding: 14px 0 0;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .briefing-lead-note p {
+    font-size: 12px;
+  }
+  .briefing-lead h2 {
+    font-size: 26px;
+  }
+  .briefing-welcome {
+    padding: 22px;
+  }
+  .briefing-welcome h2 {
+    font-size: 29px;
+  }
+  .briefing-welcome p {
+    font-size: 14px;
+  }
+  .briefing-start-paths {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .briefing-start-paths section {
+    padding: 20px 5px;
+  }
+  .briefing-start-paths p {
+    min-height: 0;
+  }
+  .briefing-greeting h1 {
+    font-size: 30px;
+  }
+}
+
+/* Evidence summary has its own responsive layout, independent of panel styles. */
+.home-evidence-pulse {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 18px 0;
+}
+.home-evidence-pulse > a {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface, var(--card));
+  text-decoration: none;
+}
+.home-evidence-pulse span,
+.home-evidence-pulse small { color: var(--muted); font-size: 12px; line-height: 1.5; }
+.home-evidence-pulse strong { font-size: 17px; line-height: 1.4; color: var(--text); }
+@media (max-width: 600px) {
+  .home-evidence-pulse { grid-template-columns: 1fr; gap: 8px; }
+  .home-evidence-pulse > a { padding: 14px 16px; gap: 4px; }
+}

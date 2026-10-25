@@ -1,8 +1,8 @@
 "use client";
 import { startQuotePolling } from "@/lib/quote-refresh";
-import {FeatureGate,useAccess} from "./Access";
+import { FeatureGate, useAccess } from "./Access";
 import FreeSnapshot from "./FreeSnapshot";
-import type {Feature} from "@/lib/access-policy";
+import type { Feature } from "@/lib/access-policy";
 import StockFacts from "./StockFacts";
 import {
   ResearchModeSwitch,
@@ -14,8 +14,12 @@ import useLivePrices from "./useLivePrices";
 import { quoteHealth } from "@/lib/quote-health";
 import { mergePriceTick } from "@/lib/live-price";
 import { retainResearchQuote } from "@/lib/research-quote";
-const ValueStudio = dynamic(() => import("./ValueStudio"), {loading:()=> <p role="status">Opening valuation…</p>});
-const OptionsDesk = dynamic(() => import("./OptionsDesk"), {loading:()=> <p role="status">Opening options…</p>});
+const ValueStudio = dynamic(() => import("./ValueStudio"), {
+  loading: () => <p role="status">Opening valuation…</p>,
+});
+const OptionsDesk = dynamic(() => import("./OptionsDesk"), {
+  loading: () => <p role="status">Opening options…</p>,
+});
 const AdvancedResearch = dynamic(() => import("./AdvancedResearch"), {
   loading: () => (
     <p role="status" aria-busy="true">
@@ -42,10 +46,7 @@ import type {
 } from "@/lib/types";
 import { perspective } from "@/lib/analysis";
 import { restoreWhenReady, browserScrollEnvironment } from "@/lib/navigation";
-import {
-  KeyFinancialMetrics,
-  CaseHighlights,
-} from "./ResearchOverview";
+import { KeyFinancialMetrics, CaseHighlights } from "./ResearchOverview";
 import { amount, percent, dateLabel, quoteTime } from "@/lib/format";
 import { useProduct, useResource } from "./Session";
 import { SecurityLogo, Help, Notice, Empty, DataStamp } from "./Ui";
@@ -74,7 +75,7 @@ const tabs = [
 ] as const;
 const ranges = ["1D", "1W", "1M", "6M", "1Y", "5Y"] as const;
 export default function Research({ symbol }: { symbol: string }) {
-  const {access}=useAccess();
+  const { access } = useAccess();
   const { preferences } = useResearchPreferences();
   const requestedTab = useSearchParams().get("tab");
   const { demo, workspace, mutate, reduceMotion } = useProduct();
@@ -168,7 +169,7 @@ export default function Research({ symbol }: { symbol: string }) {
       ? [requestedTab ?? "Snapshot"]
       : [],
   );
-  const [workbenchTarget,setWorkbenchTarget]=useState("risk");
+  const [workbenchTarget, setWorkbenchTarget] = useState("risk");
   const tabsElement = useRef<HTMLElement>(null);
   const tabsAnchor = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
@@ -395,8 +396,7 @@ export default function Research({ symbol }: { symbol: string }) {
           <div>
             <h1>{r.company.name}</h1>
             <p className="muted small">
-              {symbol} · {r.company.exchange || "Listing"} ·{" "}
-              {r.quote.currency}
+              {symbol} · {r.company.exchange || "Listing"} · {r.quote.currency}
             </p>
             <div className="security-context">
               {headerContext.sector && <span>{headerContext.sector}</span>}
@@ -455,7 +455,7 @@ export default function Research({ symbol }: { symbol: string }) {
         </div>
       </header>
 
-      <StockFacts research={r}/>
+      <StockFacts research={r} />
       <div
         ref={tabsAnchor}
         className="research-tab-anchor"
@@ -543,87 +543,183 @@ export default function Research({ symbol }: { symbol: string }) {
         aria-labelledby={`tab-${tab}`}
         className="au-stack"
       >
-        <FeatureGate feature={({Snapshot:"overview",Thesis:"business",Financials:"financials",Valuation:"value",Technicals:"technicals",Analysts:"analysts",News:"news",Advanced:"advanced",Options:"options"} as const)[tab]} fallback={tab==="Snapshot"?<FreeSnapshot research={r}/>:undefined}>
-        {tab === "News" && (
-          <>
-            <CompanyUpdates research={r} />
-            <details className="research-reference">
-              <summary>Earnings history &amp; estimates</summary>
-              <EarningsWorkspace research={r} />
-            </details>
-          </>
-        )}
-        {tab === "Advanced" && (
-          <AdvancedResearch key={r.company.symbol} research={r} initialSection={workbenchTarget}/>
-        )}
-        {tab === "Options" && <OptionsDesk key={r.company.symbol} research={r} preview={!!demo} />}
-        {tab === "Analysts" && <AnalystRatings research={r} />}
-        {access.features.overview && retainedCharts.includes("Snapshot") && (
-          <section
-            data-retained-panel="Snapshot"
-            hidden={tab !== "Snapshot"}
-            className="au-stack"
-          >
-            <DecisionOverview
+        <FeatureGate
+          feature={
+            (
+              {
+                Snapshot: "overview",
+                Thesis: "business",
+                Financials: "financials",
+                Valuation: "value",
+                Technicals: "technicals",
+                Analysts: "analysts",
+                News: "news",
+                Advanced: "advanced",
+                Options: "options",
+              } as const
+            )[tab]
+          }
+          fallback={
+            tab === "Snapshot" ? <FreeSnapshot research={r} /> : undefined
+          }
+        >
+          {tab === "News" && (
+            <>
+              <CompanyUpdates research={r} preview={!!demo} />
+              <details className="research-reference">
+                <summary>Earnings history &amp; estimates</summary>
+                <EarningsWorkspace research={r} />
+              </details>
+            </>
+          )}
+          {tab === "Advanced" && (
+            <AdvancedResearch
+              key={r.company.symbol}
               research={r}
-              onTab={switchTab}
-              pro={preferences.detail === "advanced"}
-
-              chart={chart}
+              initialSection={workbenchTarget}
             />
-          </section>
-        )}
-        {tab === "Financials" && (
-          <>
-            <Financials research={r} />
-            <FinancingContext research={r} />
-          </>
-        )}
-        {tab === "Valuation" && <ValueStudio research={r} onWorkbench={()=>{setWorkbenchTarget("expectations");switchTab("Advanced")}}/>}
-        {access.features.technicals && retainedCharts.includes("Technicals") && (
-          <section
-            data-retained-panel="Technicals"
-            hidden={tab !== "Technicals"}
-            className="au-stack"
-          >
-            <header className="section-head">
-              <div>
-                <h2>Price structure</h2>
-                <p>Chart interval · studies use completed daily prices.</p>
-              </div>
-              <div className="segments" aria-label="Chart interval">
-                {(["Daily", "Weekly", "Monthly"] as const).map((v) => (
-                  <button
-                    key={v}
-                    className={frequency === v ? "active" : ""}
-                    aria-pressed={frequency === v}
-                    onClick={() => {
-                      setFrequency(v);
-                      setRange(v === "Monthly" ? "5Y" : "1Y");
-                    }}
+          )}
+          {tab === "Options" && (
+            <OptionsDesk key={r.company.symbol} research={r} preview={!!demo} />
+          )}
+          {tab === "Analysts" && <AnalystRatings research={r} />}
+          {access.features.overview && retainedCharts.includes("Snapshot") && (
+            <section
+              data-retained-panel="Snapshot"
+              hidden={tab !== "Snapshot"}
+              className="au-stack"
+            >
+              <DecisionOverview
+                research={r}
+                onTab={switchTab}
+                pro={preferences.detail === "advanced"}
+                chart={chart}
+              />
+            </section>
+          )}
+          {tab === "Financials" && (
+            <>
+              <Financials research={r} />
+              <FinancingContext research={r} />
+            </>
+          )}
+          {tab === "Valuation" && (
+            <ValueStudio
+              research={r}
+              onWorkbench={() => {
+                setWorkbenchTarget("expectations");
+                switchTab("Advanced");
+              }}
+            />
+          )}
+          {access.features.technicals &&
+            retainedCharts.includes("Technicals") && (
+              <section
+                data-retained-panel="Technicals"
+                hidden={tab !== "Technicals"}
+                className="au-stack"
+              >
+                <header className="section-head">
+                  <div>
+                    <h2>Understand the entry conditions.</h2>
+                    <p>
+                      Trend, momentum, participation and risk. Studies use
+                      completed daily prices.
+                    </p>
+                  </div>
+                  <div className="segments" aria-label="Chart interval">
+                    {(["Daily", "Weekly", "Monthly"] as const).map((v) => (
+                      <button
+                        key={v}
+                        className={frequency === v ? "active" : ""}
+                        aria-pressed={frequency === v}
+                        onClick={() => {
+                          setFrequency(v);
+                          setRange(v === "Monthly" ? "5Y" : "1Y");
+                        }}
+                      >
+                        {v}
+                      </button>
+                    ))}
+                  </div>
+                </header>
+                {p && (
+                  <section
+                    className="technical-pace"
+                    aria-label="AURYN Pace price evidence"
                   >
-                    {v}
-                  </button>
-                ))}
-              </div>
-            </header>
-            {chart}
-            <TimingContext research={r} />
-            <TechnicalPicture research={r} dca={null} />
-            <DcaResearch research={r} />
-          </section>
-        )}
-        {tab === "Thesis" && (
-          <>
-            <BusinessHistory research={r} />
-            <ThesisPicture research={r} />
-            <BusinessMap key={r.company.symbol} research={r} />
-            <details className="edge-method"><summary>Detailed evidence lenses and thresholds</summary>
-              <DecisionWorkspace research={r} onTab={switchTab} part="detail" />
-              <DecisionWatch key={r.company.symbol} research={r} />
-            </details>
-          </>
-        )}
+                    <div>
+                      <span className="eyebrow">AURYN PACE</span>
+                      <strong>Your price-based accumulation reading</strong>
+                      <Help
+                        label="AURYN Pace technical reading"
+                        trigger="Learn Pace"
+                      >
+                        <p>
+                          A completed month uses its settled month-end close.
+                          The current month can change. 2× means twice a regular
+                          contribution, not twice the return. The price policy
+                          does not assess company value or suitable position
+                          size.
+                        </p>
+                      </Help>
+                    </div>
+                    <div>
+                      <span>Completed month</span>
+                      <strong>
+                        {p.dca.confirmed
+                          ? `${p.dca.confirmed.multiplier}×`
+                          : "Use daily evidence"}
+                      </strong>
+                      <small>
+                        {p.dca.confirmed?.month ??
+                          "Consecutive month-end history required"}
+                      </small>
+                    </div>
+                    <div>
+                      <span>This month so far</span>
+                      <strong>
+                        {p.dca.forming
+                          ? `${p.dca.forming.multiplier}×`
+                          : "Follow the next close"}
+                      </strong>
+                      <small>
+                        {p.dca.forming?.month} · developing, not final
+                      </small>
+                    </div>
+                  </section>
+                )}
+                <div className="technical-canvas-layout">
+                  <div className="technical-chart-column">
+                    {chart}
+                    <TimingContext research={r} />
+                  </div>
+                  <TechnicalPicture research={r} dca={null} />
+                </div>
+                <details className="value-personal-model">
+                  <summary>
+                    Monthly price zones and historical policy evidence
+                  </summary>
+                  <DcaResearch research={r} />
+                </details>
+              </section>
+            )}
+          {tab === "Thesis" && (
+            <>
+              <BusinessHistory research={r} />
+              <ThesisPicture research={r} />
+              <BusinessMap key={r.company.symbol} research={r} />
+              <details className="edge-method">
+                <summary>Detailed evidence lenses and thresholds</summary>
+                <DecisionWorkspace
+                  research={r}
+                  onTab={switchTab}
+                  part="detail"
+                />
+                <DecisionWatch key={r.company.symbol} research={r} />
+              </details>
+            </>
+          )}
         </FeatureGate>
       </div>
     </article>

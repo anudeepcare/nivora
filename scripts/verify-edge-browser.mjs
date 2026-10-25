@@ -82,6 +82,9 @@ try {
         "/preview/portfolio",
         "/preview/watchlist",
         "/contact",
+        "/help",
+        "/preview/settings",
+        "/preview/plans",
       ]) {
         const before = errors.length;
         const response = await page.goto(base + route, {
@@ -123,7 +126,7 @@ try {
           });
         if (route === "/preview/research/MSFT") {
           await page
-            .getByRole("button", { name: "About Staying Power", exact: true })
+            .getByRole("button", { name: "About AURYN Pace", exact: true })
             .click();
           const explanation = await page.getByRole("dialog").isVisible();
           await page

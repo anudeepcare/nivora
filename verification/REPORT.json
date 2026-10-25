@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-10-25T00:49:04.911677+00:00",
-  "release": "AURYN Edge preprod review",
-  "sourceBranch": "auryn-edge-preprod-20261025",
+  "generatedAt": "2026-10-25T04:56:23.764324+00:00",
+  "release": "AURYN Decision Canvas preprod handoff",
+  "sourceBranch": "auryn-decision-canvas-preprod",
   "completeSourceIncluded": true,
-  "unitDatabaseComponentTests": 532,
-  "apiChecks": 121,
+  "unitDatabaseComponentTests": 552,
+  "apiChecks": 125,
   "apiTransports": "Synthetic provider, authentication and database transports; no actual payments or broker orders",
-  "browserChecks": 102,
+  "browserChecks": 120,
   "browserWidths": [
     1440,
     402,
@@ -19,14 +19,13 @@
   "browserEngine": "Chromium headless; mobile viewport and standalone emulation, not physical iOS",
   "browserFailures": 0,
   "commands": {
-    "npm run verify": "passed: edge-verify.log",
-    "npm run build": "passed after final CSS: edge-final-build.log",
-    "npm run test:api": "passed: edge-api.log (118 checks)",
-    "node scripts/test-auth-provider-api.mjs": "passed: edge-auth-api.log (3 checks)",
-    "browser": "passed: edge-browser-report.json (102 checks)",
-    "git diff --check": "passed: edge-diff-check.log"
+    "npm run verify": "passed: decision-canvas-verify.log",
+    "npm run test:api": "passed: decision-canvas-api.log (122 checks)",
+    "node scripts/test-auth-provider-api.mjs": "passed: decision-canvas-auth.log (3 checks)",
+    "browser": "120 checks, light/dark, 320/402/1440 widths; isolated preview fixtures",
+    "git diff --check": "passed"
   },
-  "review": "Independent focused code review; three important findings fixed with regression tests. No remaining important findings from that review. Later settled-close and display-mode additions covered by local tests.",
+  "review": "Independent review: no critical findings; two important findings fixed with regression tests (disclosure deduplication and optimistic scenario caution). Watchlist navigation wording corrected.",
   "productionReady": false,
   "pushed": false,
   "deployed": false,
@@ -50,8 +49,8 @@
     "Generated mockup numbers are illustrative; no pixel-perfect equivalence certification"
   ],
   "references": [
-    "docs/AURYN_EDGE_RELEASE.md",
-    "docs/SUPPORT_SETUP.md",
-    "docs/PREPROD_EDGE_DEPLOYMENT.md"
+    "docs/DECISION_CANVAS_RELEASE.md",
+    "docs/DECISION_CANVAS_SPEC.md",
+    "docs/SUPPORT_SETUP.md"
   ]
 }

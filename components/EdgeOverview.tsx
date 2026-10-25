@@ -31,285 +31,377 @@ export default function EdgeOverview({
   const edge = useMemo(() => researchEdge(r, ownsPosition), [r, ownsPosition]),
     b = edge.brief;
   const p = latestFinancialEvidence(r).latest;
-  const financialSpecialist = [
+  const specialist = [
     "financial",
     "insurance",
     "specialized-financial",
     "real-estate",
   ].includes(b.coverage.family);
-  const cashConversion =
-    !financialSpecialist &&
-    p?.netIncome != null &&
-    p.netIncome > 0 &&
-    p.fcf != null
-      ? (p.fcf / p.netIncome) * 100
-      : null;
   const fcfMargin =
-    !financialSpecialist && p?.revenue != null && p.revenue > 0 && p.fcf != null
+    !specialist && p?.revenue != null && p.revenue > 0 && p.fcf != null
       ? (p.fcf / p.revenue) * 100
+      : null;
+  const cashConversion =
+    !specialist && p?.netIncome != null && p.netIncome > 0 && p.fcf != null
+      ? (p.fcf / p.netIncome) * 100
       : null;
   const next = r.evidence?.earnings
     ?.filter((e) => e.date >= r.retrievedAt.slice(0, 10))
-    .sort((a, b) => a.date.localeCompare(b.date))[0];
-  const readings = [
-    {
-      name: "Staying Power",
-      value: edge.businessLabel,
-      tone:
-        edge.business === "strong"
-          ? "positive"
-          : edge.business === "weak"
-            ? "risk"
-            : "caution",
-      detail:
-        fcfMargin != null
-          ? `${percent(fcfMargin)} FCF margin`
-          : financialSpecialist
-            ? b.coverage.family
-            : "Comparable cash-flow evidence needed",
-      help: "Operating durability is assessed from available cash generation, profitability and growth. This is not a verified moat assessment.",
-    },
-    {
-      name: "Price Advantage",
-      value: edge.valueLabel,
-      tone: edge.value === "supported" ? "positive" : "caution",
-      detail: "Scenario-dependent · not intrinsic value",
-      help: "A conditional cushion requires a reconciled earnings scenario with at least 15% base upside and no more than 40% bear downside. All-positive cases or base upside over 100% require review rather than earning a favorable label. These policy thresholds are experimental, not backtested optimal levels.",
-    },
-    {
-      name: "Entry Conditions",
-      value: edge.timingLabel,
-      tone:
-        edge.timing === "favorable"
-          ? "positive"
-          : edge.timing === "extended"
-            ? "risk"
-            : "caution",
-      detail:
-        b.timing.rsi != null
-          ? `RSI ${b.timing.rsi.toFixed(0)} · ${b.timing.trend}`
-          : "More price history needed",
-      help: "Trend compares settled closes with 50-day and 200-day moving averages. RSI at 75 or above marks extension. Timing does not establish business value.",
-    },
-  ];
+    .sort((a, z) => a.date.localeCompare(z.date))[0];
+  const price = r.quote.price;
+  const baseChange =
+    b.scenarioEligible && b.scenario && price != null && price > 0
+      ? (b.scenario.base / price - 1) * 100
+      : null;
+  const month = (v: string | null | undefined) =>
+    v && /^\d{4}-\d{2}$/.test(v)
+      ? new Intl.DateTimeFormat("en-US", {
+          month: "long",
+          year: "numeric",
+          timeZone: "UTC",
+        }).format(new Date(v + "-01T12:00:00Z"))
+      : "Latest completed month";
+  const businessTitle =
+    edge.business === "strong"
+      ? "Cash generation supports the business"
+      : edge.business === "weak"
+        ? "Operating evidence needs attention"
+        : specialist
+          ? "Use the sector-specific evidence"
+          : b.businessNumbers.revenueGrowth != null &&
+              b.businessNumbers.revenueGrowth > 0
+            ? "Revenue is growing. Check how growth is funded."
+            : "Understand the business and its funding";
+  const timingTitle =
+    edge.timing === "favorable"
+      ? "Price trend is constructive"
+      : edge.timing === "extended"
+        ? "Momentum is stretched"
+        : "Entry conditions are mixed";
+  const supporting = b.support.length ? b.support : [b.business.reason];
+  const limits = b.checks
+    .filter((c) => c.status === "conflicting")
+    .map((c) => c.detail);
+  const scenarioCaution = b.scenarioEligible && b.scenario && edge.value === 'unestablished'
+    ? 'The model assumptions need closer review: the range is unusually optimistic relative to today’s price. These values remain visible as sensitivities, not an established entry cushion.'
+    : null;
+  const risk = limits[0] ?? scenarioCaution ?? edge.risk;
   const cases =
     b.scenario && b.scenarioEligible
-      ? ["Bear", "Base", "Bull"].map((name, i) => {
-          const target = [b.scenario!.low, b.scenario!.base, b.scenario!.high][
-            i
-          ];
-          return {
-            name,
-            target,
-            change:
-              r.quote.price != null && r.quote.price > 0
-                ? (target / r.quote.price - 1) * 100
-                : 0,
-          };
-        })
+      ? ["Bear", "Base", "Bull"].map((name, i) => ({
+          name,
+          target: [b.scenario!.low, b.scenario!.base, b.scenario!.high][i],
+          change:
+            price != null && price > 0
+              ? ([b.scenario!.low, b.scenario!.base, b.scenario!.high][i] /
+                  price -
+                  1) *
+                100
+              : 0,
+        }))
       : [];
+  const metrics = [
+    {
+      label: "Revenue growth",
+      value: b.businessNumbers.revenueGrowth,
+      note: "Comparable reported periods",
+      help: "Change in revenue between comparable periods. Acquisitions and currency movements can affect growth.",
+      tone: "neutral",
+    },
+    {
+      label: "FCF margin",
+      value: fcfMargin,
+      note: p ? `Period ending ${dateLabel(p.end)}` : "",
+      help:
+        p && p.revenue != null && p.fcf != null
+          ? `${amount(p.fcf, p.currency, true)} free cash flow ÷ ${amount(p.revenue, p.currency, true)} revenue. Free cash flow is operating cash flow less capital spending. Investment spending can make it negative even when operations generate cash.`
+          : "Free cash flow divided by revenue. Inspect operating cash and investment spending separately.",
+      tone: fcfMargin != null && fcfMargin < 0 ? "risk" : "positive",
+    },
+    {
+      label: "Cash conversion",
+      value: cashConversion,
+      note: "FCF / positive net income",
+      help: "How much reported profit becomes free cash flow. Working capital and investment timing can change this sharply.",
+      tone: "neutral",
+    },
+    {
+      label: "Share count change",
+      value: b.businessNumbers.dilution,
+      note: "Review period and share basis",
+      help: "More shares can dilute ownership. Splits and listing units must be reconciled before interpreting the change.",
+      tone: (b.businessNumbers.dilution ?? 0) > 0 ? "caution" : "neutral",
+    },
+  ].filter((m) => m.value != null && Number.isFinite(m.value));
   return (
     <section className="edge-overview" aria-label="Stock overview">
-      <div className="edge-top">
-        <section className="edge-verdict" data-tone={edge.tone}>
-          <header>
-            <span className="edge-eyebrow">AURYN EDGE</span>
-            <div>{modeControl}</div>
-          </header>
-          <h2>{edge.verdict}</h2>
-          <p>{edge.reason}</p>
-          {edge.referenceBasis === "settled-close" && (
-            <small>
-              Research uses the dated settled close shown above, not a live
-              execution price.
-            </small>
-          )}
-          <div className="edge-readings">
-            {readings.map((x) => (
-              <div key={x.name} data-tone={x.tone}>
-                <Help label={x.name} trigger={x.name}>
-                  {x.help}
-                </Help>
-                <strong>{x.value}</strong>
-                <span className="edge-reading-bar" aria-hidden="true" />
-                <small>{x.detail}</small>
-              </div>
-            ))}
+      <section className="edge-verdict" data-tone={edge.tone}>
+        <header>
+          <span className="edge-eyebrow">
+            AURYN VIEW <small>· evidence-led assessment</small>
+          </span>
+          <div>
+            {modeControl}
+            <Help
+              label="AURYN Crosscheck"
+              trigger={
+                b.conflicting
+                  ? "Check affected inputs"
+                  : "How the evidence fits"
+              }
+            >
+              <p>Checks describe input consistency, not guaranteed accuracy.</p>
+              {b.checks.map((c) => (
+                <p key={c.label}>
+                  <strong>{c.label}</strong> · {c.status}
+                  <br />
+                  {c.detail}
+                </p>
+              ))}
+            </Help>
           </div>
-          <details className="edge-method" open={pro}>
-            <summary>How this reading is reached</summary>
-            <p>
-              Edge combines business evidence, conditional valuation, entry
-              conditions and explicit risk gates. It is not a personalized trade
-              instruction. Portfolio size and circumstances still matter.
-            </p>
-            <p>
-              Evidence confidence: {edge.confidence}. Policy {edge.version}; not
-              independently validated for investment performance. A missing
-              valuation never counts as cheap.
-            </p>
-          </details>
-        </section>
-        <section className="edge-pace">
+        </header>
+        <h2>{edge.assessment}</h2>
+        <p>{edge.reason}</p>
+        {edge.referenceBasis === "settled-close" && (
+          <small>
+            Uses the dated settled close, not a live execution price.
+          </small>
+        )}
+        <div className="edge-readings">
+          <button
+            type="button"
+            className="edge-evidence-link"
+            data-tone={edge.business === "strong" ? "positive" : "neutral"}
+            onClick={() => onTab("Thesis")}
+          >
+            <span>01 · BUSINESS</span>
+            <strong>{businessTitle}</strong>
+            <small>
+              {b.businessNumbers.revenueGrowth != null
+                ? `${percent(b.businessNumbers.revenueGrowth, true)} revenue growth`
+                : b.coverage.drivers.slice(0, 2).join(" · ")}
+              {fcfMargin != null ? ` · ${percent(fcfMargin)} FCF margin` : ""}
+            </small>
+            <span className="edge-link-label">Read the operating case →</span>
+          </button>
+          <button
+            type="button"
+            className="edge-evidence-link"
+            data-tone="neutral"
+            onClick={() => onTab("Valuation")}
+          >
+            <span>02 · PRICE</span>
+            <strong>
+              {baseChange != null
+                ? `${percent(baseChange, true)} to the model base case`
+                : "Test what today’s price requires"}
+            </strong>
+            <small>
+              {baseChange != null
+                ? "Conditional scenario, not a guaranteed target"
+                : b.conflicting
+                  ? "Listing inputs need reconciliation; price history remains usable."
+                  : "Compare expectations, analyst targets and the downside assumptions."}
+            </small>
+            <span className="edge-link-label">Explore the assumptions →</span>
+          </button>
+          <button
+            type="button"
+            className="edge-evidence-link"
+            data-tone={edge.timing === "extended" ? "caution" : "neutral"}
+            onClick={() => onTab("Technicals")}
+          >
+            <span>03 · TIMING</span>
+            <strong>{timingTitle}</strong>
+            <small>
+              {b.timing.rsi != null
+                ? `RSI ${b.timing.rsi.toFixed(0)} · ${b.timing.trend} trend`
+                : "Use the dated chart and price levels below."}
+            </small>
+            <span className="edge-link-label">
+              See the technical evidence →
+            </span>
+          </button>
+        </div>
+      </section>
+      <section
+        className="edge-conviction"
+        aria-label="What limits this assessment"
+      >
+        <strong>Why not stronger?</strong>
+        <p>{risk}</p>
+        <button
+          className="text-button"
+          onClick={() => onTab(limits.length ? "Valuation" : "Thesis")}
+        >
+          Inspect the evidence →
+        </button>
+      </section>
+      <section
+        className="edge-pace"
+        aria-label="Price-based contribution readings"
+      >
+        <div className="edge-pace-identity">
           <span className="edge-eyebrow">AURYN PACE</span>
-          <h3>
-            {edge.pace == null
-              ? "Not assessed"
-              : edge.pace === 0
-                ? "0× · Paused"
-                : `${edge.pace}× · ${["", "Steady", "Elevated", "Strong", "Exceptional"][edge.pace]}`}
-          </h3>
-          <p>
-            Confirmed monthly reading
-            {b.accumulation.month ? ` · ${b.accumulation.month}` : ""}
-          </p>
-          {b.accumulation.forming && (
-            <div className="edge-provisional">
-              Forming: {b.accumulation.forming.multiplier}× · provisional
-            </div>
-          )}
-          {edge.pace !== edge.pricePace && (
+          <h3>Your price-based accumulation reading</h3>
+          <Help label="AURYN Pace" trigger="Learn Pace">
             <p>
-              Price zone {edge.pricePace}×; additions paused by the evidence
-              risk check.
+              1× means your regular contribution; 2×–4× are larger multiples,
+              not leverage or predicted returns. 0× means the price policy
+              pauses additions; it does not mean sell.
             </p>
-          )}
-          <Help label="AURYN Pace" trigger="How to read Pace">
             <p>
-              1× is your usual scheduled contribution; 2×–4× are multiples of
-              it, not leverage or predicted returns. 0× pauses additions and
-              does not mean sell. The forming month can change.
+              The completed-month reading is final for that month. This month’s
+              developing reading can change. Business risks and suitable
+              position size must be reviewed separately.
             </p>
             <p>{b.accumulation.reason}</p>
           </Help>
-          <button className="text-button" onClick={() => onTab("Technicals")}>
-            View price evidence →
-          </button>
-        </section>
-      </div>
-      {edge.disconnect && (
-        <section className="edge-disconnect">
-          <span className="edge-eyebrow">THE DISCONNECT</span>
-          <h3>{edge.disconnect.title}</h3>
-          <p>{edge.disconnect.text}</p>
-        </section>
-      )}
+        </div>
+        <div className="edge-pace-reading">
+          <small>Completed month · {month(b.accumulation.month)}</small>
+          <strong>
+            {edge.pace != null ? `${edge.pace}×` : "Review daily conditions"}
+          </strong>
+          <span>
+            {edge.pace === 0
+              ? "Price policy pauses additions"
+              : edge.pace != null
+                ? "Completed monthly price signal"
+                : "A monthly signal needs consecutive month-end observations."}
+          </span>
+        </div>
+        <div className="edge-pace-reading">
+          <small>This month so far</small>
+          <strong>
+            {edge.formingPace != null
+              ? `${edge.formingPace}×`
+              : "Follow the next close"}
+          </strong>
+          <span>
+            {b.accumulation.forming?.month
+              ? month(b.accumulation.forming.month) + " · "
+              : ""}
+            Developing · not final
+          </span>
+        </div>
+        <p className="edge-pace-explanation">
+          2× means twice your regular contribution—not twice the return.{" "}
+          <strong>Business risks reviewed separately.</strong>
+        </p>
+      </section>
       <div className="edge-market">
         <section className="edge-chart research-canvas">
           <header>
             <h3>Price in context</h3>
-            <span>Price history has its own observation date</span>
+            <button className="text-button" onClick={() => onTab("Technicals")}>
+              Levels & studies →
+            </button>
           </header>
           {chart}
         </section>
         <section className="edge-scenarios">
           <header>
-            <h3>AURYN scenarios</h3>
+            <h3>
+              {cases.length
+                ? "AURYN model scenarios"
+                : b.priceRisk.available
+                  ? "Historical price outcomes"
+                  : "Price and expectations"}
+            </h3>
             <button className="text-button" onClick={() => onTab("Valuation")}>
-              Assumptions →
+              Explore →
             </button>
           </header>
           {cases.length ? (
             <>
               <CaseRange
                 cases={cases}
-                price={r.quote.price}
-                currency={b.scenario!.currency}
+                price={price}
+                currency={b.scenario?.currency ?? r.quote.currency}
               />
               <p className="edge-caption">
-                Earnings sensitivity · ends {dateLabel(b.scenario!.end)}. Not
-                intrinsic value.
+                Conditional company scenarios · horizon{" "}
+                {dateLabel(b.scenario?.end)}. Assumptions may not occur.
               </p>
-              {edge.value === "unestablished" && (
-                <p className="edge-caption">
-                  These assumptions do not establish a dependable entry cushion.
-                </p>
-              )}
             </>
           ) : b.priceRisk.available ? (
             <>
               <PriceRiskCases scenarios={b.priceRisk} compact />
               <p className="edge-caption">
-                Historical price risk, not a business valuation.
+                Historical price distribution, not business fair value. Sample
+                limitations matter.
               </p>
             </>
           ) : (
-            <p>{b.value.reason}</p>
+            <p className="edge-caption">
+              Read the available company evidence and compare the assumptions
+              required by today’s price. A numeric valuation needs a suitable
+              model and reconciled inputs.
+            </p>
           )}
           <AnalystTargets research={r} />
         </section>
       </div>
-      <section className="edge-metrics" aria-label="Business evidence">
-        {[
-          {
-            label: "Revenue growth",
-            value: percent(b.businessNumbers.revenueGrowth),
-            note: "Comparable reported periods",
-            help: "Change in reported revenue between comparable periods. Growth can reflect acquisitions or currency effects as well as demand.",
-            tone:
-              (b.businessNumbers.revenueGrowth ?? 0) < 0 ? "risk" : "neutral",
-          },
-          {
-            label: "FCF margin",
-            value: percent(fcfMargin),
-            note: p ? `Period ending ${dateLabel(p.end)}` : "Not available",
-            help: "Operating cash flow less capital spending, divided by revenue. Capital-intensive businesses can show negative cash after investment without a unit error; inspect the actual cash-flow lines.",
-            tone:
-              fcfMargin == null
-                ? "neutral"
-                : fcfMargin < 0
-                  ? "risk"
-                  : "positive",
-          },
-          {
-            label: "Cash conversion",
-            value: percent(cashConversion),
-            note: "FCF / positive net income",
-            help: "Compares free cash flow with positive net income over the same period. Timing and working capital can move it sharply. Not calculated when net income is zero or negative.",
-            tone: "neutral",
-          },
-          {
-            label: "Share count change",
-            value: percent(b.businessNumbers.dilution, true),
-            note: "Review period and share basis",
-            help: "An increase in shares can dilute ownership. Stock splits and changes in listing units must be reconciled before interpreting it.",
-            tone:
-              b.businessNumbers.dilution != null &&
-              b.businessNumbers.dilution > 0
-                ? "caution"
-                : "neutral",
-          },
-        ].map((m) => (
-          <div key={m.label} data-tone={m.tone}>
-            <Help label={m.label} trigger={m.label}>
-              {m.help}
-            </Help>
-            <strong>{m.value}</strong>
-            <small>{m.note}</small>
-          </div>
-        ))}
-      </section>
+      {metrics.length > 0 && (
+        <section className="edge-metrics" aria-label="Business evidence">
+          {metrics.map((m) => (
+            <div key={m.label} data-tone={m.tone}>
+              <Help label={m.label} trigger={m.label}>
+                {m.help}
+              </Help>
+              <strong>
+                {percent(m.value, m.label === "Share count change")}
+              </strong>
+              <small>{m.note}</small>
+            </div>
+          ))}
+        </section>
+      )}
       <div className="edge-bottom">
         <section>
-          <span className="edge-eyebrow">TURNING POINT</span>
+          <span className="edge-eyebrow">AURYN CHECKPOINTS</span>
           <h3>
             {next
-              ? `Earnings · ${dateLabel(next.date)}`
-              : "Evidence to revisit"}
+              ? `Next earnings · ${dateLabel(next.date)}`
+              : "What changes the view?"}
           </h3>
           <p>{edge.turningPoint}</p>
           <button
             className="text-button"
             onClick={() => onTab(next ? "News" : "Thesis")}
           >
-            Review evidence →
+            Follow the evidence →
           </button>
         </section>
-        <section data-tone="caution">
-          <span className="edge-eyebrow">KEY RISK</span>
-          <p>{edge.risk}</p>
+        <section>
+          <span className="edge-eyebrow">THE SUPPORTING CASE</span>
+          {supporting.slice(0, 2).map((x) => (
+            <p key={x}>{x}</p>
+          ))}
         </section>
       </div>
+      {edge.disconnect && (
+        <section className="edge-disconnect">
+          <span className="edge-eyebrow">BUSINESS AND PRICE</span>
+          <h3>{edge.disconnect.title}</h3>
+          <p>{edge.disconnect.text}</p>
+        </section>
+      )}
+      <details className="edge-method" open={pro}>
+        <summary>How AURYN reaches this assessment</summary>
+        <p>
+          Business results, conditional valuation and price conditions are
+          separate evidence. AURYN View describes their agreement and
+          limitations, not a personalised order or probability of profit.
+        </p>
+        <p>
+          Evidence confidence: {edge.confidence}. Policy {edge.version}.
+          Research thresholds are experimental and not independently validated
+          for investment performance.
+        </p>
+      </details>
     </section>
   );
 }

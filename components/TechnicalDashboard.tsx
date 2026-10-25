@@ -236,12 +236,35 @@ export default function TechnicalDashboard({
       ],
     },
   ];
+  const priority = [
+    "50-session average",
+    "200-session average",
+    "RSI · 14",
+    "MACD line / signal",
+    "MACD histogram",
+    "Relative volume",
+    "20-session OBV change",
+    "Wilder ATR · 14",
+    "Current closing drawdown",
+  ];
+  for (const group of groups)
+    group.rows.sort((a, b) => {
+      const x = priority.indexOf(a[0]),
+        y = priority.indexOf(b[0]);
+      return (x < 0 ? 99 : x) - (y < 0 ? 99 : y);
+    });
   return (
     <section className="technical-dashboard">
       <header className="technical-desk-heading">
         <div>
           <span className="eyebrow">TECHNICALS · COMPLETED DAILY EVIDENCE</span>
-          <h2>Direction, strength and participation.</h2>
+          <h2>
+            {p.tech.trend === "Constructive"
+              ? "Trend constructive. Check momentum."
+              : p.tech.trend === "Weak"
+                ? "Trend weak. Watch participation and support."
+                : "Price signals are mixed. Keep risk in view."}
+          </h2>
           <p>
             {a.count} valid completed observations · through {dateLabel(a.asOf)}
             . Chart interval changes do not alter these daily studies.

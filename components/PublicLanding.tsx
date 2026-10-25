@@ -354,15 +354,16 @@ export default function PublicLanding({
               </>
             ) : (
               <>
-                See the business.
+                Understand the business.
                 <br />
-                <em>Understand the price.</em>
+                <em>Put price in perspective.</em>
               </>
             )}
           </h1>
           <p>
-            Understand the business. Put the price in perspective. Know what to
-            watch next.
+            See what supports the case, what could go wrong and what would
+            change the view. Company research, price conditions and your next
+            checkpoint—in one place.
           </p>
           <div className="public-actions">
             <Link href="/sample" className="public-button">
@@ -380,17 +381,17 @@ export default function PublicLanding({
           >
             <div>
               <span>01 · BUSINESS</span>
-              <h2>Understand what lasts.</h2>
+              <h2>AURYN View · the whole case.</h2>
               <p>Cash generation, competitive evidence and funding.</p>
             </div>
             <div>
               <span>02 · VALUE</span>
-              <h2>Put price in perspective.</h2>
+              <h2>Challenge the assumptions.</h2>
               <p>Scenarios, assumptions and the room for error.</p>
             </div>
             <div>
               <span>03 · TIMING</span>
-              <h2>Know what to watch.</h2>
+              <h2>AURYN Pace · timing in context.</h2>
               <p>Price conditions, risks and the next turning point.</p>
             </div>
           </aside>

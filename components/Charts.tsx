@@ -61,8 +61,8 @@ export function PriceChart({
         vertLines: { visible: false },
         horzLines: { color: grid },
       },
-      rightPriceScale: { borderVisible: false, visible: !contrast },
-      leftPriceScale: { borderVisible: false, visible: contrast },
+      rightPriceScale: { borderVisible: false, visible: !contrast, autoScale: true },
+      leftPriceScale: { borderVisible: false, visible: contrast, autoScale: true },
       timeScale: {
         borderVisible: false,
         timeVisible: range === "1D" || range === "1W",

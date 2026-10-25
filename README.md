@@ -1,3 +1,7 @@
+# Decision Canvas preprod handoff
+
+Start with [release and deployment instructions](docs/DECISION_CANVAS_RELEASE.md). Full source; no production deployment performed.
+
 # AURYN Edge — October 25 preprod build
 
 Latest release: see `docs/AURYN_EDGE_RELEASE.md`, `docs/SUPPORT_SETUP.md` and `docs/PREPROD_EDGE_DEPLOYMENT.md`. The complete source is included. No production deployment or live email/database mutation was performed. Historical notes below describe earlier releases and are not a claim of current verification.

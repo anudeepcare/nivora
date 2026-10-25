@@ -160,6 +160,39 @@
   },
   {
     "width": 1440,
+    "theme": "light",
+    "route": "/help",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "route": "/preview/settings",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 10,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "route": "/preview/plans",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 10,
+    "errors": []
+  },
+  {
+    "width": 1440,
     "theme": "dark",
     "route": "/",
     "status": 200,
@@ -318,6 +351,39 @@
     "errors": []
   },
   {
+    "width": 1440,
+    "theme": "dark",
+    "route": "/help",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "route": "/preview/settings",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 10,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "route": "/preview/plans",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 10,
+    "errors": []
+  },
+  {
     "width": 402,
     "theme": "light",
     "route": "/",
@@ -478,6 +544,39 @@
   },
   {
     "width": 402,
+    "theme": "light",
+    "route": "/help",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "light",
+    "route": "/preview/settings",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "light",
+    "route": "/preview/plans",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 402,
     "theme": "dark",
     "route": "/",
     "status": 200,
@@ -636,6 +735,39 @@
     "errors": []
   },
   {
+    "width": 402,
+    "theme": "dark",
+    "route": "/help",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "dark",
+    "route": "/preview/settings",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "dark",
+    "route": "/preview/plans",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
     "width": 320,
     "theme": "light",
     "route": "/",
@@ -796,6 +928,39 @@
   },
   {
     "width": 320,
+    "theme": "light",
+    "route": "/help",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "route": "/preview/settings",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "route": "/preview/plans",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 320,
     "theme": "dark",
     "route": "/",
     "status": 200,
@@ -951,6 +1116,39 @@
     "invalid": false,
     "edge": false,
     "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "route": "/help",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "route": "/preview/settings",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "route": "/preview/plans",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
     "errors": []
   }
 ]

@@ -1,11 +1,14 @@
 "use client";
 import type { Research } from "@/lib/types";
 import { dateLabel } from "@/lib/format";
+import CongressDisclosures from "./CongressDisclosures";
 import { NewsAndFilings } from "./ResearchEvidence";
 export default function CompanyUpdates({
   research: r,
+  preview = false,
 }: {
   research: Research;
+  preview?: boolean;
 }) {
   const next = r.evidence?.earnings
     ?.filter((x) => x.date >= r.retrievedAt.slice(0, 10))
@@ -13,6 +16,13 @@ export default function CompanyUpdates({
   return (
     <>
       <NewsAndFilings research={r} />
+      {r.company?.assetType === "stock" && (
+        <CongressDisclosures
+          key={r.company.symbol}
+          symbol={r.company.symbol}
+          preview={preview}
+        />
+      )}
       <section className="research-updates company-updates">
         <header className="section-head">
           <div>

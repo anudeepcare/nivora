@@ -12,6 +12,7 @@ import {
 import { useProduct, useResource } from "./Session";
 import { SecurityLogo, Notice } from "./Ui";
 import { amount, percent, quoteTime, dateLabel } from "@/lib/format";
+import { homeComposition } from "@/lib/home-presentation";
 import { homeDay } from "@/lib/home-day";
 import { homeBrief, dailyPerspective } from "@/lib/home-brief";
 import { companyFeedPage, holdingAttention } from "@/lib/product-attention";
@@ -153,7 +154,9 @@ export default function HomeBriefing({
     brief.kind === "start"
       ? `${prefix}/research`
       : brief.kind === "review"
-        ? `${prefix}/portfolio`
+        ? positions.length
+          ? `${prefix}/portfolio`
+          : `${prefix}/watchlist`
         : brief.symbol
           ? companyHref(brief.symbol)
           : `${prefix}/research`;
@@ -183,6 +186,77 @@ export default function HomeBriefing({
     events.data?.issues?.length ||
     news.data?.issues?.length
   );
+  const composition = homeComposition(
+    positions.length,
+    workspace?.watchlist.length ?? 0,
+  );
+  const replySources = (url: string) => {
+    try {
+      return new URL(url).hostname.replace(/^www\./, "");
+    } catch {
+      return "Published update";
+    }
+  };
+  if (composition === "first-use" && workspace)
+    return (
+      <section className="briefing-home briefing-first-use">
+        <header className="briefing-greeting">
+          <span className="briefing-kicker">YOUR DAILY PERSPECTIVE</span>
+          <h1>
+            {greeting}
+            {displayName ? `, ${displayName}` : ""}.
+          </h1>
+          <p className="briefing-thought">
+            Your next idea starts with understanding.
+          </p>
+        </header>
+        <section className="briefing-welcome">
+          <span className="briefing-kicker">WELCOME TO AURYN</span>
+          <h2>Find a business. Understand the opportunity.</h2>
+          <p>
+            Start with a company you know. Explore its business, put the price
+            in perspective and see what would change the view.
+          </p>
+          <Link href={`${prefix}/research`} className="button primary">
+            Find your first company <ArrowRight size={17} />
+          </Link>
+          <small>
+            No portfolio required. Your account starts with your own choices.
+          </small>
+        </section>
+        <div className="briefing-start-paths">
+          <section>
+            <span>01 · AURYN VIEW</span>
+            <h3>See the whole case.</h3>
+            <p>
+              Business evidence, price assumptions and the strongest
+              counter-case together.
+            </p>
+            <Link href={`${prefix}/research`}>Explore company research →</Link>
+          </section>
+          <section>
+            <span>02 · WATCHLIST</span>
+            <h3>Keep your ideas close.</h3>
+            <p>
+              Save companies to follow their news, reports and price conditions.
+            </p>
+            <Link href={`${prefix}/watchlist`}>Open your watchlist →</Link>
+          </section>
+          <section>
+            <span>03 · YOUR PORTFOLIO</span>
+            <h3>Bring your own perspective.</h3>
+            <p>
+              Add holdings when you want to understand your exposure and event
+              risk.
+            </p>
+            <Link href={`${prefix}/portfolio`}>Add holdings when ready →</Link>
+          </section>
+        </div>
+        <p className="briefing-quiet-note">
+          Research explains the evidence. You decide what fits your goals.
+        </p>
+      </section>
+    );
   return (
     <section className="briefing-home">
       <header className="briefing-greeting">
@@ -204,6 +278,40 @@ export default function HomeBriefing({
       </header>
       {workspaceError && <Notice error>{workspaceError}</Notice>}
       {error && <Notice error>{error}</Notice>}
+      <section
+        className="briefing-lead"
+        aria-label="Your next research checkpoint"
+      >
+        <div>
+          <span className="briefing-kicker">
+            {brief.kind === "earnings"
+              ? "YOUR EARNINGS CHECKPOINT"
+              : "IN FOCUS TODAY"}
+          </span>
+          <h2>
+            {composition === "watchlist" && brief.kind === "review"
+              ? "Keep your next idea in focus."
+              : brief.title}
+          </h2>
+          <p>
+            {composition === "watchlist" && brief.kind === "review"
+              ? "Review your followed companies, revisit the assumptions and watch for new evidence."
+              : brief.detail}
+          </p>
+          <Link href={heroHref}>
+            Open the evidence <ArrowRight size={16} />
+          </Link>
+        </div>
+        <div className="briefing-lead-note">
+          <span>AURYN CHECKPOINTS</span>
+          <strong>What would change your view?</strong>
+          <p>
+            {composition === "watchlist"
+              ? "Follow business progress, upcoming reports and the assumptions behind each idea."
+              : "Review the events and company developments that matter to the money you have invested."}
+          </p>
+        </div>
+      </section>
       <section
         className="home-evidence-pulse"
         aria-label="Your evidence pulse"
@@ -231,15 +339,23 @@ export default function HomeBriefing({
           </strong>
           <small>Next 7 days · current company group</small>
         </a>
-        <Link href={`${prefix}/portfolio`}>
-          <span>Your exposure</span>
-          <strong>
-            {largest && pricedTotal > 0
-              ? `${percent((largest[1] / pricedTotal) * 100)} in ${largest[0]}`
-              : "Add your holdings"}
-          </strong>
-          <small>Largest share of priced USD investments</small>
-        </Link>
+        {composition === "holdings" ? (
+          <Link href={`${prefix}/portfolio`}>
+            <span>Your exposure</span>
+            <strong>
+              {largest && pricedTotal > 0
+                ? `${percent((largest[1] / pricedTotal) * 100)} in ${largest[0]}`
+                : "Add your holdings"}
+            </strong>
+            <small>Largest share of priced USD investments</small>
+          </Link>
+        ) : (
+          <Link href={`${prefix}/watchlist`}>
+            <span>Your research universe</span>
+            <strong>{ordered.length} followed companies</strong>
+            <small>News and events for your saved ideas</small>
+          </Link>
+        )}
       </section>
       <div className="briefing-main-grid">
         <section
@@ -249,7 +365,7 @@ export default function HomeBriefing({
           <header>
             <div>
               <span className="briefing-kicker">THE LATEST EVIDENCE</span>
-              <h2>What changed for your companies</h2>
+              <h2>Latest company news</h2>
             </div>
             <span className="briefing-count">
               {allHeadlines.length} updates
@@ -279,12 +395,17 @@ export default function HomeBriefing({
                     </span>
                   </Link>
                   <div className="briefing-news-story">
-                    <span className="briefing-tag">Company news</span>
+                    <span className="briefing-tag">{replySources(n.url)}</span>
                     <a href={n.url} target="_blank" rel="noopener noreferrer">
                       {n.title}
                       <ArrowUpRight size={15} />
                     </a>
                     <time dateTime={n.date}>{dateLabel(n.date)}</time>
+                    <small className="briefing-relevance">
+                      {exposure.has(n.symbol)
+                        ? "Relevant to a company you hold. Review the full report before changing your thesis."
+                        : "From your followed companies. Check the details against your research."}
+                    </small>
                   </div>
                 </article>
               ))}
@@ -348,7 +469,7 @@ export default function HomeBriefing({
             href={
               heldEarnings[0]
                 ? companyHref(heldEarnings[0])
-                : `${prefix}/portfolio`
+                : composition === 'holdings' ? `${prefix}/portfolio` : `${prefix}/watchlist`
             }
           >
             <span className="briefing-step">01</span>
@@ -356,14 +477,14 @@ export default function HomeBriefing({
               <strong>
                 {heldEarnings.length
                   ? "Prepare for earnings"
-                  : "Review concentration"}
+                  : composition === 'holdings' ? "Review concentration" : "Revisit your followed companies"}
               </strong>
               <p>
                 {heldEarnings.length
                   ? `${heldEarnings.length} held ${heldEarnings.length === 1 ? "company reports" : "companies report"} in the next 7 days.`
                   : largest && pricedTotal > 0
                     ? `${largest[0]} is ${percent((largest[1] / pricedTotal) * 100)} of priced USD investments.`
-                    : "Add holdings to see where your exposure is concentrated."}
+                    : "Review the business evidence and the assumptions behind each saved idea."}
               </p>
             </div>
             <ArrowUpRight size={17} />
@@ -410,78 +531,80 @@ export default function HomeBriefing({
           </p>
         </section>
       </div>
-      <section className="briefing-session" aria-label="Session coverage">
-        <div>
-          <span className="briefing-kicker">MARKET SNAPSHOT</span>
-          <h2>
-            {day.net == null
-              ? "Waiting for comparable session data"
-              : `${amount(day.net, "USD")} estimated ${day.covered < day.total ? "partial " : ""}session move`}
-          </h2>
-          <p>
-            {day.covered} of {day.total} USD equity holdings with comparable
-            changes{day.session ? ` · ${dateLabel(day.session)}` : ""}
-          </p>
-          <div
-            className="briefing-progress"
-            role="progressbar"
-            aria-label="Comparable quote coverage"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={
-              day.total ? Math.round((day.covered / day.total) * 100) : 0
-            }
-          >
-            <span
-              style={{
-                width: `${day.total ? (day.covered / day.total) * 100 : 0}%`,
-              }}
-            />
+      {composition === "holdings" && (
+        <section className="briefing-session" aria-label="Session coverage">
+          <div>
+            <span className="briefing-kicker">MARKET SNAPSHOT</span>
+            <h2>
+              {day.net == null
+                ? "Waiting for comparable session data"
+                : `${amount(day.net, "USD")} estimated ${day.covered < day.total ? "partial " : ""}session move`}
+            </h2>
+            <p>
+              {day.covered} of {day.total} USD equity holdings with comparable
+              changes{day.session ? ` · ${dateLabel(day.session)}` : ""}
+            </p>
+            <div
+              className="briefing-progress"
+              role="progressbar"
+              aria-label="Comparable quote coverage"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={
+                day.total ? Math.round((day.covered / day.total) * 100) : 0
+              }
+            >
+              <span
+                style={{
+                  width: `${day.total ? (day.covered / day.total) * 100 : 0}%`,
+                }}
+              />
+            </div>
           </div>
-        </div>
-        <div className="briefing-contributors">
-          {day.moves.length ? (
-            <>
-              <span className="briefing-kicker">
-                LARGEST CONTRIBUTORS · CURRENT UNITS
-              </span>
-              {day.moves.slice(0, 3).map((m) => (
-                <Link
-                  key={m.symbol}
-                  href={companyHref(m.symbol)}
-                  data-direction={
-                    m.impact < 0 ? "down" : m.impact > 0 ? "up" : "neutral"
-                  }
-                >
-                  <b>{m.symbol}</b>
-                  <i>
-                    <span
-                      style={{
-                        width: `${(Math.abs(m.impact) / Math.max(1, ...day.moves.map((x) => Math.abs(x.impact)))) * 100}%`,
-                      }}
-                    />
-                  </i>
-                  <strong>{amount(m.impact, "USD")}</strong>
-                </Link>
-              ))}
-            </>
-          ) : (
-            <>
-              <Clock3 size={25} />
-              <strong>Comparable changes are not available yet.</strong>
-              <p>
-                Quotes may still appear in your portfolio. Missing changes are
-                not zero returns.
-              </p>
-            </>
-          )}
-        </div>
-        <p className="briefing-session-note">
-          Estimated price-reference change on current recorded units, not
-          brokerage P&amp;L. Excludes trades, cash flows, fees and crypto.
-          Different observation dates are not combined.
-        </p>
-      </section>
+          <div className="briefing-contributors">
+            {day.moves.length ? (
+              <>
+                <span className="briefing-kicker">
+                  LARGEST CONTRIBUTORS · CURRENT UNITS
+                </span>
+                {day.moves.slice(0, 3).map((m) => (
+                  <Link
+                    key={m.symbol}
+                    href={companyHref(m.symbol)}
+                    data-direction={
+                      m.impact < 0 ? "down" : m.impact > 0 ? "up" : "neutral"
+                    }
+                  >
+                    <b>{m.symbol}</b>
+                    <i>
+                      <span
+                        style={{
+                          width: `${(Math.abs(m.impact) / Math.max(1, ...day.moves.map((x) => Math.abs(x.impact)))) * 100}%`,
+                        }}
+                      />
+                    </i>
+                    <strong>{amount(m.impact, "USD")}</strong>
+                  </Link>
+                ))}
+              </>
+            ) : (
+              <>
+                <Clock3 size={25} />
+                <strong>Comparable changes are not available yet.</strong>
+                <p>
+                  Quotes may still appear in your portfolio. Missing changes are
+                  not zero returns.
+                </p>
+              </>
+            )}
+          </div>
+          <p className="briefing-session-note">
+            Estimated price-reference change on current recorded units, not
+            brokerage P&amp;L. Excludes trades, cash flows, fees and crypto.
+            Different observation dates are not combined.
+          </p>
+        </section>
+      )}
       <section className="briefing-panel briefing-calendar" id="home-upcoming">
         <header>
           <div>
@@ -531,8 +654,8 @@ export default function HomeBriefing({
             <span className="briefing-kicker">KEEP THE BUSINESS IN VIEW</span>
             <h2>Your companies</h2>
           </div>
-          <Link href={`${prefix}/portfolio`}>
-            View portfolio <ArrowRight size={15} />
+          <Link href={composition === 'holdings' ? `${prefix}/portfolio` : `${prefix}/watchlist`}>
+            {composition === 'holdings' ? 'View portfolio' : 'View watchlist'} <ArrowRight size={15} />
           </Link>
         </header>
         {ordered.length ? (

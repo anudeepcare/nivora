@@ -19,28 +19,56 @@ export function edgeReading(input: EdgeInput) {
     input.confirmedPace < 0 ||
     input.confirmedPace > 4
       ? null
-      : input.severeRisk || input.conflicting
-        ? 0
-        : input.confirmedPace;
+      : input.confirmedPace;
+  const formingPace =
+    input.formingPace != null &&
+    Number.isInteger(input.formingPace) &&
+    input.formingPace >= 0 &&
+    input.formingPace <= 4
+      ? input.formingPace
+      : null;
   const result = (
     verdict: string,
     reason: string,
     tone: "positive" | "caution" | "risk" | "neutral",
     turningPoint: string,
   ) => ({
-    version: "edge-v1",
+    version: "edge-v2",
+    assessment:
+      verdict === "Build"
+        ? input.ownsPosition
+          ? "Consider adding gradually"
+          : "Consider starting"
+        : verdict === "Begin small"
+          ? "Start small"
+          : verdict === "Hold & monitor"
+            ? "Hold and monitor"
+            : verdict === "Review exposure"
+              ? "Review exposure before adding"
+              : verdict === "Evidence needed"
+                ? "Review the business and price separately"
+                : verdict === "Sector review"
+                  ? "Use the business-specific evidence"
+                  : verdict === "Price review"
+                    ? "Review the price and instrument risks"
+                    : input.value === "unestablished" && input.freshQuote
+                      ? "Check the price assumptions"
+                      : !input.freshQuote
+                        ? "Review the latest dated price"
+                        : "Wait for stronger entry conditions",
+    riskReview: input.severeRisk || input.conflicting,
     verdict,
     reason,
     tone,
     turningPoint,
     pace,
-    pricePace: input.confirmedPace,
-    formingPace: input.formingPace,
+    pricePace: pace,
+    formingPace,
   });
   if (input.conflicting)
     return result(
       "Evidence needed",
-      "Financial inputs conflict. Resolve the affected calculations before judging an entry.",
+      "Some financial inputs disagree. Price evidence remains visible; affected valuation calculations need a consistency check.",
       "caution",
       "Reconcile share units, currency and reporting dates.",
     );
@@ -85,6 +113,17 @@ export function edgeReading(input: EdgeInput) {
       "Cash generation or operating evidence needs attention before increasing exposure.",
       "risk",
       "Look for improving cash generation and a funded operating plan.",
+    );
+  if (
+    input.ownsPosition &&
+    input.business === "strong" &&
+    input.value === "unestablished"
+  )
+    return result(
+      "Hold & monitor",
+      "Positive operating evidence remains relevant to an existing holding. Review price assumptions before deciding whether to add.",
+      "neutral",
+      "Check whether cash generation and the ownership case remain intact.",
     );
   if (input.value === "unestablished")
     return result(
