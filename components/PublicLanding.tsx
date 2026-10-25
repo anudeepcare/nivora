@@ -310,7 +310,9 @@ export default function PublicLanding({
           <Link href="/sample">The experience</Link>
         </div>
         <div className="public-nav-actions">
-          <Link href="/pricing" className="public-pricing-link">Pricing</Link>
+          <Link href="/pricing" className="public-pricing-link">
+            Pricing
+          </Link>
           <Link href="/login">Sign in</Link>
           <Link href="/login?mode=signup" className="public-button compact">
             Get started
@@ -332,39 +334,67 @@ export default function PublicLanding({
             Why AURYN
           </a>
           <Link href="/sample">The experience</Link>
-          <Link href="/pricing" className="public-pricing-link">Pricing</Link>
+          <Link href="/pricing" className="public-pricing-link">
+            Pricing
+          </Link>
           <Link href="/login">Sign in</Link>
           <Link href="/login?mode=signup">Create an account</Link>
         </nav>
       )}
-      <section className="public-hero">
-        <h1>
-          {sampleOnly ? (
-            <>
-              One company.
-              <br />
-              <em>Three perspectives.</em>
-            </>
-          ) : (
-            <>
-              The market is loud.
-              <br />
-              <em>Find your conviction.</em>
-            </>
-          )}
-        </h1>
-        <p>
-          Understand the business. Put the price in perspective. Know what to
-          watch next.
-        </p>
-        <div className="public-actions">
-          <Link href="/sample" className="public-button">
-            Explore AURYN <ArrowRight size={17} />
-          </Link>
-          <Link href="/login?mode=signup" className="public-button secondary">
-            Create an account
-          </Link>
+      <section
+        className={`public-hero ${sampleOnly ? "" : "public-hero-connected"}`}
+      >
+        <div>
+          <h1>
+            {sampleOnly ? (
+              <>
+                One company.
+                <br />
+                <em>Three perspectives.</em>
+              </>
+            ) : (
+              <>
+                See the business.
+                <br />
+                <em>Understand the price.</em>
+              </>
+            )}
+          </h1>
+          <p>
+            Understand the business. Put the price in perspective. Know what to
+            watch next.
+          </p>
+          <div className="public-actions">
+            <Link href="/sample" className="public-button">
+              Explore AURYN <ArrowRight size={17} />
+            </Link>
+            <Link href="/login?mode=signup" className="public-button secondary">
+              Create an account
+            </Link>
+          </div>
         </div>
+        {!sampleOnly && (
+          <aside
+            className="public-decision-map"
+            aria-label="Three connected research perspectives"
+          >
+            <div>
+              <span>01 · BUSINESS</span>
+              <h2>Understand what lasts.</h2>
+              <p>Cash generation, competitive evidence and funding.</p>
+            </div>
+            <div>
+              <span>02 · VALUE</span>
+              <h2>Put price in perspective.</h2>
+              <p>Scenarios, assumptions and the room for error.</p>
+            </div>
+            <div>
+              <span>03 · TIMING</span>
+              <h2>Know what to watch.</h2>
+              <p>Price conditions, risks and the next turning point.</p>
+            </div>
+          </aside>
+        )}
       </section>
       <div className="public-preview">
         <PublicSample />
@@ -405,6 +435,7 @@ export default function PublicLanding({
         </div>
       </section>
       <footer className="public-footer">
+        <Link href="/contact">Contact & support</Link>
         <Link href="/" className="public-brand">
           <img src="/icon.svg" width="25" height="25" alt="" />
           <span>AURYN</span>

@@ -51,6 +51,7 @@ export function PriceChart({
         : "rgba(34,103,216,0.1)";
     const api = createChart(element.current, {
       autoSize: true,
+      localization: { locale: "en-US" },
       layout: {
         background: { type: ColorType.Solid, color: "transparent" },
         textColor: ink,

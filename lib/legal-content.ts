@@ -1,9 +1,9 @@
 export const legalConfiguration = {
   operator:
-    process.env.NEXT_PUBLIC_AURYN_OPERATOR || "AURYN personal research project",
+    process.env.NEXT_PUBLIC_AURYN_OPERATOR || "AURYN",
   contact: process.env.NEXT_PUBLIC_AURYN_SUPPORT_EMAIL || "",
-  updated: "October 23, 2026",
-  version: "research-release-20261023",
+  updated: "October 25, 2026",
+  version: "edge-preview-20261025",
 };
 export type DocumentId =
   | "terms"
@@ -46,7 +46,7 @@ export const documents: Record<
   terms: {
     title: "Terms of use",
     intro:
-      "Terms for this personal research release. Read the risk disclosure and privacy notice alongside these terms.",
+      "Terms for the AURYN research service. Read the risk disclosure and privacy notice alongside these terms.",
     sections: [
       {
         title: "Purpose and your decisions",
@@ -267,3 +267,8 @@ export const documents: Record<
     ],
   },
 };
+
+// Edge uses the same evidence policy across its presentation surfaces.
+documents.methodology.sections.unshift({title:"AURYN Edge and Pace",text:"Edge is an experimental evidence policy, not a probability of profit. A Build reading requires positive cash generation, positive operating margin, non-negative comparable revenue growth, constructive trend, confirmed Pace of at least 2×, no severe flagged risk, a usable quote, and an eligible earnings sensitivity with at least 15% base upside and no more than 40% bear downside. Cases with base upside over 100% or all cases above the quote do not establish a cushion. These are disclosed policy gates, not independently calibrated optimal thresholds. Hold & monitor is ownership context, not a guarantee of suitability. Pace uses confirmed monthly price conditions and pauses additions when severe or conflicting financial evidence is detected; forming readings stay provisional. Models and analyst consensus remain separate."});
+documents.privacy.sections.push({title:"Support requests",text:"The contact form stores your email, chosen topic and message so we can respond. Requests receive a reference number. A hashed network identifier is used to limit abuse; passwords, portfolio contents and payment card details are not automatically attached. If support email delivery is enabled, our email service processes the contact email and message. Use Contact for access or deletion requests. Never send secrets or payment card details."});
+documents.help.sections.unshift({title:"Contact AURYN",text:"Open Contact from the footer for general enquiries, technical issues, billing, feedback or privacy concerns. After a successful save you receive a reference. A receipt is shown as sent only if the email provider accepted it; otherwise the saved request remains available to the owner."});

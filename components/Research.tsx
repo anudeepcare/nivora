@@ -55,7 +55,7 @@ import { TechnicalPicture, ThesisPicture } from "./ResearchDetails";
 import { groupHistory } from "@/lib/chart-period";
 import ResearchChanges from "./ResearchChanges";
 import DcaResearch from "./DcaResearch";
-import DecisionOverview from "./DecisionOverview";
+import DecisionOverview from "./EdgeOverview";
 import EarningsWorkspace from "./EarningsWorkspace";
 import DecisionBrief from "./DecisionBrief";
 import AnalystRatings from "./AnalystRatings";
@@ -393,9 +393,9 @@ export default function Research({ symbol }: { symbol: string }) {
         <div className="identity">
           <SecurityLogo symbol={symbol} size={52} />
           <div>
-            <h1>{symbol}</h1>
+            <h1>{r.company.name}</h1>
             <p className="muted small">
-              {r.company.name} · {r.company.exchange || "Listing"} ·{" "}
+              {symbol} · {r.company.exchange || "Listing"} ·{" "}
               {r.quote.currency}
             </p>
             <div className="security-context">
@@ -568,15 +568,9 @@ export default function Research({ symbol }: { symbol: string }) {
               research={r}
               onTab={switchTab}
               pro={preferences.detail === "advanced"}
-              modeControl={<ResearchModeSwitch />}
+
               chart={chart}
             />
-            {r.company.assetType !== "crypto" && (
-              <KeyFinancialMetrics research={r} omitRepeated />
-            )}
-            <ResearchChanges research={r} />
-            <DecisionWorkspace research={r} onTab={switchTab} part="detail" />
-            <DecisionWatch key={r.company.symbol} research={r} />
           </section>
         )}
         {tab === "Financials" && (
@@ -624,6 +618,10 @@ export default function Research({ symbol }: { symbol: string }) {
             <BusinessHistory research={r} />
             <ThesisPicture research={r} />
             <BusinessMap key={r.company.symbol} research={r} />
+            <details className="edge-method"><summary>Detailed evidence lenses and thresholds</summary>
+              <DecisionWorkspace research={r} onTab={switchTab} part="detail" />
+              <DecisionWatch key={r.company.symbol} research={r} />
+            </details>
           </>
         )}
         </FeatureGate>

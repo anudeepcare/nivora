@@ -211,6 +211,7 @@ function researchMarkup() {
     "ArrowUpRight",
   ])
     bindings[name] = empty;
+  bindings.DecisionOverview = () => React.createElement('section', {'data-overview-evidence':'edge'});
   bindings.KeyFinancialMetrics = () => React.createElement('section', {'data-overview-evidence':'financials'});
   bindings.DecisionWorkspace = () => React.createElement('section', {'data-overview-evidence':'lenses'});
   bindings.DecisionWatch = () => React.createElement('section', {'data-overview-evidence':'thresholds'});
@@ -235,7 +236,8 @@ test("unverified upcoming EPS is never formatted in the listing currency", () =>
   assert.doesNotMatch(html, /Estimated EPS/);
 });
 
-test('Simple overview retains financial metrics, evidence lenses and risk thresholds',()=>{
+test('Simple overview delegates to Edge without repeating the full evidence panels',()=>{
  const html=researchMarkup();
- for(const section of ['financials','lenses','thresholds'])assert.ok(html.includes(`data-overview-evidence="${section}"`));
+ assert.match(html,/data-overview-evidence="edge"/);
+ for(const section of ['financials','lenses','thresholds'])assert.ok(!html.includes(`data-overview-evidence="${section}"`));
 });

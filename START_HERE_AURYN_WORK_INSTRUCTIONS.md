@@ -1,3 +1,7 @@
+# AURYN Edge — October 25 preprod build
+
+Latest release: see `docs/AURYN_EDGE_RELEASE.md`, `docs/SUPPORT_SETUP.md` and `docs/PREPROD_EDGE_DEPLOYMENT.md`. The complete source is included. No production deployment or live email/database mutation was performed. Historical notes below describe earlier releases and are not a claim of current verification.
+
 # Options workspace refinement — October 23, 2026
 
 Replaces the options presentation with one expiry selector, compact market summary, conditional positioning charts, clearer contract costs, automatic listed long-term selection, strategy cards and practical explanations. Preserves the Alpaca/EODHD data adapters and existing research tabs. See `docs/OPTIONS_UX_REFINEMENT.md`. Missing feed inputs are not unlocked by this redesign.

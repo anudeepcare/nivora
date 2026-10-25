@@ -721,16 +721,16 @@ test('overview leads with the forming DCA period and keeps the confirmed result 
  assert.match(closed,/2026-09 · confirmed/);assert.match(closed,/Confirmed baseline reason/);
 });
 
-test('technical accumulation leads with the same forming reading and retains confirmed history frequency',()=>{
+test('technical accumulation leads with confirmed conditions and separates the forming update',()=>{
  const confirmed={multiplier:1,month:'2026-09',date:'2026-09-30',close:40.88,reason:'Confirmed baseline',risk:'Confirmed risk',buy2:30,buy3:20,buy4:10};
  const forming={...confirmed,multiplier:2,month:'2026-10',date:'2026-10-22',reason:'Forming pullback',risk:'Current trend risk',buy2:31};
  const chosen={confirmed,forming,history:[confirmed],reason:'Enough history'};
  const View=loadComponent('components/AccumulationDesk.tsx','AccumulationDesk',{React,useMemo:React.useMemo,useState:React.useState,researchAccumulation:()=>chosen,adaptiveSettledBars:()=>[],evaluateAccumulation:()=>null,...format,colours:{0:'#d89a20',1:'#7d9db0',2:'#12a28b',3:'#71b337',4:'#ac68e5'},PriceChart:({levels})=>React.createElement('span',{'data-first-level':levels[0]?.price})});
  const html=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT}));
- assert.match(html,/class="accumulation-badge"[^>]*>2×/);
- assert.match(html,/Current month · forming/);assert.match(html,/Forming pullback/);
+ assert.match(html,/class="accumulation-badge"[^>]*>1×/);
+ assert.match(html,/Forming month/);assert.match(html,/2× · provisional/);assert.match(html,/Confirmed baseline/);
  assert.match(html,/Last confirmed month/);assert.match(html,/1× · confirmed · Sep 30, 2026/);
- assert.match(html,/1 of 1 eligible months/);assert.match(html,/data-first-level="31"/);
+ assert.match(html,/1 of 1 eligible months/);assert.match(html,/data-first-level="30"/);
 });
 
 test('News leads with company coverage before earnings and transaction records',()=>{
@@ -768,7 +768,7 @@ test('approved Home keeps account companies, real quotes and missing history sep
  const workspace={positions:[{id:'a',symbol:'SOFI',assetType:'stock',currency:'USD',quantity:10,cost:20}],watchlist:[]};
  const Home=loadComponent('components/HomeBriefing.tsx','HomeBriefing',{React,useMemo:React.useMemo,useState:React.useState,useProduct:()=>({workspace,displayName:'Anudeep',workspaceError:''}),useResource:()=>({data:null,error:'History unavailable',loading:false}),companyFeedPage,holdingAttention,relevantHoldingHeadlines,...format,Link:({children,...p})=>React.createElement('a',p,children),SecurityLogo:empty,Notice:({children})=>React.createElement('p',null,children),ArrowUpRight:empty,CalendarDays:empty,ArrowRight:empty,Search:empty});
  const html=renderToStaticMarkup(React.createElement(Home,{quotes:{SOFI:{quote,company:{name:'SoFi Technologies'}}}}));
- assert.match(html,/Anudeep/);assert.match(html,/\$14\.77/);assert.match(html,/A clearer view of what you own/);assert.match(html,/Next on your calendar/);assert.match(html,/What changed/);assert.match(html,/temporarily unavailable/);assert.match(html,/Last available/);assert.doesNotMatch(html,/S&amp;P|Example Company|NaN|Infinity|portfolio total/i);
+ assert.match(html,/Anudeep/);assert.match(html,/\$14\.77/);assert.match(html,/Needs your attention/);assert.match(html,/Next on your calendar/);assert.match(html,/What changed/);assert.match(html,/temporarily unavailable/);assert.match(html,/Last available/);assert.doesNotMatch(html,/S&amp;P|Example Company|NaN|Infinity|portfolio total/i);
 });
 
 test('approved Home renders an honest empty account without fabricated companies or event dates',async()=>{
@@ -817,7 +817,7 @@ test('adaptive Home keeps missing moves neutral, shares current contributor data
  const workspace={positions:[{id:'one',symbol:'ONE',assetType:'stock',currency:'USD',quantity:10,cost:10}],watchlist:[]};
  const keys=[];const Home=loadComponent('components/HomeBriefing.tsx','HomeBriefing',{React,useMemo:React.useMemo,useState:React.useState,useProduct:()=>({workspace,displayName:'Anudeep'}),useResource:key=>{keys.push(key);return{data:null,error:'',loading:false}},companyFeedPage,holdingAttention,relevantHoldingHeadlines,...format,Link:({children,...p})=>React.createElement('a',p,children),SecurityLogo:empty,Notice:empty,ArrowUpRight:empty,CalendarDays:empty,ArrowRight:empty});
  const quotes={ONE:{company:{name:'One company'},quote:{price:20,currency:'USD',changePct:null,asOf:new Date().toISOString(),stale:false}}};
- let html=renderToStaticMarkup(React.createElement(Home,{quotes}));assert.match(html,/Good (morning|afternoon|evening), Anudeep/);assert.match(html,/A little perspective/);assert.match(html,/Waiting for comparable session data/);assert.match(html,/data-direction="neutral">Change unavailable/);assert.doesNotMatch(html,/0 up · 0 down|Largest estimated session impact/);assert.equal(keys.filter(k=>k?.includes('chart/')).length,0);
+ let html=renderToStaticMarkup(React.createElement(Home,{quotes}));assert.match(html,/Good (morning|afternoon|evening), Anudeep/);assert.match(html,/Your companies. What matters today/);assert.match(html,/Waiting for comparable session data/);assert.match(html,/data-direction="neutral">Change unavailable/);assert.doesNotMatch(html,/0 up · 0 down|Largest estimated session impact/);assert.equal(keys.filter(k=>k?.includes('chart/')).length,0);
  quotes.ONE.quote.changePct=100;html=renderToStaticMarkup(React.createElement(Home,{quotes}));assert.match(html,/\$100\.00 estimated session move/);assert.match(html,/LARGEST CONTRIBUTORS/);assert.doesNotMatch(html,/Change unavailable/);
 });
 
@@ -828,4 +828,15 @@ test('Overview renders the actual analyst range beside separately labelled AURYN
  const View=loadComponent('components/DecisionOverview.tsx','DecisionOverview',{React,useMemo:React.useMemo,researchBrief,...format,AnalystTargets,PositionAwareResearch:empty,CaseRange:empty});
  const html=renderToStaticMarkup(React.createElement(View,{research:r,onTab:()=>{}}));
  assert.match(html,/Wall Street consensus/);assert.match(html,/\$80\.00/);assert.match(html,/\$100\.00/);assert.match(html,/\$120\.00/);assert.match(html,/AURYN scenarios/);assert.match(html,/not calculated bear\/base\/bull valuations/);
+});
+
+test('Home has a compact evidence pulse without a large decorative hero',async()=>{
+ const {companyFeedPage,holdingAttention}=await import('../lib/product-attention.ts');const {relevantHoldingHeadlines}=await import('../lib/home-feed.ts');
+ const Home=loadComponent('components/HomeBriefing.tsx','HomeBriefing',{React,useMemo:React.useMemo,useState:React.useState,useProduct:()=>({workspace:{positions:[],watchlist:[]}}),useResource:()=>({data:null,error:'',loading:false}),companyFeedPage,holdingAttention,relevantHoldingHeadlines,...format,Link:({children,...p})=>React.createElement('a',p,children),SecurityLogo:empty,Notice:empty,ArrowUpRight:empty,CalendarDays:empty,ArrowRight:empty});
+ const html=renderToStaticMarkup(React.createElement(Home,{quotes:{}}));assert.match(html,/aria-label="Your evidence pulse"/);assert.doesNotMatch(html,/class="briefing-hero"/);assert.match(html,/Your companies. What matters today/);
+});
+test('stock header surfaces reported growth and cash generation before extra price momentum',async()=>{
+ const {advancedStudies}=await import('../lib/advanced-research.ts');const {latestFinancialEvidence}=await import('../lib/analysis.ts');
+ const View=loadComponent('components/StockFacts.tsx','StockFacts',{React,useMemo:React.useMemo,advancedStudies,latestFinancialEvidence,...format});
+ const html=renderToStaticMarkup(React.createElement(View,{research:demoData.research.MSFT}));assert.match(html,/Revenue growth/);assert.match(html,/FCF margin/);assert.doesNotMatch(html,/NaN|Infinity/);
 });

@@ -191,9 +191,7 @@ export default function HomeBriefing({
           {greeting}
           {displayName ? `, ${displayName}` : ""}.
         </h1>
-        <p className="briefing-thought">
-          A little perspective: {dailyPerspective(today)}
-        </p>
+        <p className="briefing-thought">Your companies. What matters today.</p>
         <p className="briefing-date">
           {now.toLocaleDateString("en-US", {
             weekday: "long",
@@ -207,84 +205,41 @@ export default function HomeBriefing({
       {workspaceError && <Notice error>{workspaceError}</Notice>}
       {error && <Notice error>{error}</Notice>}
       <section
-        className="briefing-hero"
-        aria-label="Your daily focus"
+        className="home-evidence-pulse"
+        aria-label="Your evidence pulse"
         aria-busy={readiness}
       >
-        <div className="briefing-hero-story">
-          <span className="briefing-kicker">
-            {readiness && brief.kind === "review"
-              ? "BUILDING YOUR PERSPECTIVE"
-              : brief.kicker}
-          </span>
-          <h2>{brief.title}</h2>
-          <p>{brief.detail}</p>
-          <Link className="briefing-primary" href={heroHref}>
-            {brief.action}
-            <ArrowRight size={17} />
-          </Link>
-          {brief.kind === "news" && (
-            <small>Reported headline · assess the evidence in context.</small>
-          )}
-        </div>
-        <div className="briefing-hero-context">
-          {brief.checkpoints.length ? (
-            <>
-              <span className="briefing-kicker">
-                UPCOMING MILESTONES · NEXT 7 DAYS
-              </span>
-              <div className="briefing-milestones">
-                {brief.checkpoints.slice(0, 3).map((e, i) => (
-                  <Link
-                    key={`${e.symbol}-${e.date}-${i}`}
-                    href={companyHref(e.symbol)}
-                    data-accent={i}
-                  >
-                    <span className="briefing-orb">
-                      <CalendarDays size={23} />
-                    </span>
-                    <time dateTime={e.date}>{dateLabel(e.date)}</time>
-                    <strong>{names[e.symbol] ?? e.symbol}</strong>
-                    <small>{e.kind}</small>
-                  </Link>
-                ))}
-              </div>
-            </>
-          ) : (
-            <div className="briefing-pillars">
-              <Link href={`${prefix}/portfolio`}>
-                <span className="briefing-orb">
-                  <PieChart size={24} />
-                </span>
-                <strong>Concentration</strong>
-                <small>See where your priced holdings are most exposed.</small>
-              </Link>
-              <Link
-                href={
-                  brief.symbol
-                    ? companyHref(brief.symbol)
-                    : `${prefix}/research`
-                }
-                data-accent="1"
-              >
-                <span className="briefing-orb">
-                  <FileText size={24} />
-                </span>
-                <strong>Business evidence</strong>
-                <small>Keep the business behind the price in view.</small>
-              </Link>
-              <Link href="#home-upcoming" data-accent="2">
-                <span className="briefing-orb">
-                  <CalendarDays size={24} />
-                </span>
-                <strong>Upcoming milestones</strong>
-                <small>
-                  Review the dated events available for your companies.
-                </small>
-              </Link>
-            </div>
-          )}
-        </div>
+        <a href="#home-company-headlines">
+          <span>Company developments</span>
+          <strong>
+            {news.loading
+              ? "Checking…"
+              : !news.data || news.error
+                ? "Not available"
+                : `${allHeadlines.length} headlines`}
+          </strong>
+          <small>{feed.symbols.length} companies in this group</small>
+        </a>
+        <a href="#home-upcoming">
+          <span>Turning points</span>
+          <strong>
+            {events.loading
+              ? "Checking…"
+              : !events.data || events.error
+                ? "Not available"
+                : `${brief.checkpoints.length} events`}
+          </strong>
+          <small>Next 7 days · current company group</small>
+        </a>
+        <Link href={`${prefix}/portfolio`}>
+          <span>Your exposure</span>
+          <strong>
+            {largest && pricedTotal > 0
+              ? `${percent((largest[1] / pricedTotal) * 100)} in ${largest[0]}`
+              : "Add your holdings"}
+          </strong>
+          <small>Largest share of priced USD investments</small>
+        </Link>
       </section>
       <div className="briefing-main-grid">
         <section
@@ -385,7 +340,7 @@ export default function HomeBriefing({
           <header>
             <div>
               <span className="briefing-kicker">YOUR NEXT STEPS</span>
-              <h2>Your attention, prioritized</h2>
+              <h2>Needs your attention</h2>
             </div>
           </header>
           <Link

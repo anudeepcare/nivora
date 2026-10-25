@@ -56,7 +56,7 @@ export default function CaseRange({
                 fill={`var(--${i === 0 ? "red" : i === 2 ? "green" : "blue"})`}
               >
                 <title>
-                  {c.name}: {amount(c.target, currency)}
+                  {`${c.name}: ${amount(c.target, currency)}`}
                 </title>
               </circle>
             ))}

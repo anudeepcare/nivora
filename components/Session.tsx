@@ -359,18 +359,7 @@ export function useResource<T>(key: string | null, preview?: T, ttl = 60_000) {
     }));
   useEffect(() => {
     if (!key) return;
-    if (demo) {
-      setState({
-        key,
-        data: preview ?? null,
-        loading: false,
-        error:
-          preview === undefined
-            ? "This preview does not contain that data."
-            : "",
-      });
-      return;
-    }
+    if (demo) return;
     let active = true;
     const old = cache.get(key);
     if (old && Date.now() - old.at < ttl) {
@@ -399,11 +388,12 @@ export function useResource<T>(key: string | null, preview?: T, ttl = 60_000) {
     return () => {
       active = false;
     };
-  }, [key, cache, demo, preview, revision, ttl]);
+  }, [key, cache, demo, revision, ttl]);
   const refresh = () => {
     if (key) cache.delete(key);
     setRevision((r) => r + 1);
   };
+  if (demo) return {key,data:preview??null,loading:false,error:key && preview===undefined?"This preview does not contain that data.":"",refresh};
   return {
     ...(state.key === key
       ? state
@@ -652,7 +642,7 @@ function Login({ initialError }: { initialError: string }) {
           {mode === "login"
             ? "Welcome to AURYN."
             : mode === "signup"
-              ? "Make room for conviction."
+              ? "Create your AURYN account."
               : "Reset your password."}
         </h1>
         <p>
@@ -660,7 +650,7 @@ function Login({ initialError }: { initialError: string }) {
             ? "Create one place for your research, watchlist and portfolio."
             : mode === "reset"
               ? "We’ll email a secure link to restore access to your workspace."
-              : "Your research. A clearer perspective."}
+              : "Your next decision starts with clarity."}
         </p>
         {mode !== "reset" && (
           <div className="entry-mode" aria-label="Account access">

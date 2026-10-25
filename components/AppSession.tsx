@@ -12,7 +12,7 @@ export default function AppSession({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  if (pathname === "/" || pathname === "/sample" || pathname === "/pricing") return <>{children}</>;
+  if (pathname === "/" || pathname === "/sample" || pathname === "/pricing" || pathname === "/contact") return <>{children}</>;
   if (pathname === "/preview" || pathname.startsWith("/preview/"))
     return <>{children}</>;
   const page = pathname.split("/")[1] || "overview";

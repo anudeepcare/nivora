@@ -34,7 +34,7 @@ export default function AccumulationDesk({
       [r.history, r.retrievedAt, market, weekly],
     ),
     confirmed = chosen.confirmed,
-    signal = chosen.forming ?? confirmed;
+    signal = confirmed ?? chosen.forming;
   const trimTier = signal && "trimTier" in signal ? signal.trimTier : null;
   const monthly = useMemo(() => {
     if (weekly)
@@ -115,7 +115,7 @@ export default function AccumulationDesk({
               ? "Weekly conditions · separate time horizon"
               : "Cycle-relative · monthly discipline"}
           </span>
-          <h2>One reading. The history behind it.</h2>
+          <h2>AURYN Pace · price evidence.</h2>
         </div>
         <div className="segments" aria-label="Accumulation time horizon">
           {(["monthly", "weekly"] as const).map((v) => (
@@ -163,13 +163,22 @@ export default function AccumulationDesk({
           <p>{signal?.reason ?? chosen.reason}</p>
           <small>
             {signal
-              ? `${chosen.forming ? (weekly ? "Current week · forming" : "Current month · forming") : weekly ? "Confirmed week ending" : signal.month + " · confirmed at"} ${dateLabel(signal.date)}`
+              ? `${signal === chosen.forming ? (weekly ? "Current week · forming" : "Current month · forming") : weekly ? "Confirmed week ending" : signal.month + " · confirmed at"} ${dateLabel(signal.date)}`
               : weekly
                 ? "52 consecutive completed prior weeks required"
                 : "12 consecutive completed prior months required"}
           </small>
         </div>
         <dl>
+          {chosen.forming && (
+            <div>
+              <dt>{weekly ? "Forming week" : "Forming month"}</dt>
+              <dd>
+                {chosen.forming.multiplier}× · provisional ·{" "}
+                {dateLabel(chosen.forming.date)}
+              </dd>
+            </div>
+          )}
           <div>
             <dt>{weekly ? "Last confirmed week" : "Last confirmed month"}</dt>
             <dd>
