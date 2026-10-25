@@ -16,7 +16,8 @@ type Ticket = {
 export default function SupportInbox() {
   const [rows, setRows] = useState<Ticket[]>([]),
     [error, setError] = useState(""),
-    [busy, setBusy] = useState(false);
+    [busy, setBusy] = useState(false),
+    [filter, setFilter] = useState("all");
   async function load() {
     const r = await api<{ requests: Ticket[] }>("support");
     setRows(r.requests);
@@ -47,6 +48,9 @@ export default function SupportInbox() {
       setBusy(false);
     }
   }
+  const visible = rows.filter(
+    (row) => filter === "all" || row.status === filter,
+  );
   return (
     <section className="support-inbox">
       <header>
@@ -59,9 +63,25 @@ export default function SupportInbox() {
           Retry pending emails
         </button>
       </header>
+      <div className="support-inbox-tools">
+        <span>{rows.length} saved requests</span>
+        <label>
+          Show
+          <select
+            aria-label="Filter support requests"
+            value={filter}
+            onChange={(event) => setFilter(event.target.value)}
+          >
+            <option value="all">All requests</option>
+            <option value="new">New</option>
+            <option value="in_progress">In progress</option>
+            <option value="resolved">Resolved</option>
+          </select>
+        </label>
+      </div>
       {error && <p role="alert">{error}</p>}
-      {!rows.length && !error && <p>No requests to show.</p>}
-      {rows.map((r) => (
+      {!visible.length && !error && <p>No requests to show.</p>}
+      {visible.map((r) => (
         <article key={r.id}>
           <header>
             <strong>{r.category}</strong>

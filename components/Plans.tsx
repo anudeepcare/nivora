@@ -78,7 +78,6 @@ export function PricingCards({
             {included(plan).map((k) => (
               <li key={k}>{featureNames[k]}</li>
             ))}
-
           </ul>
           {publicPage ? (
             <Link
@@ -225,14 +224,6 @@ function SignedInPlans() {
           )}
         </section>
       )}
-      <PricingCards
-        config={billing?.config}
-        access={a}
-        ready={!!billing?.ready}
-        busy={busy}
-        publicPage={false}
-        onUpgrade={() => void open("checkout")}
-      />
       <section className="plan-account-row" aria-label="Your membership">
         <div>
           <strong>
@@ -281,6 +272,14 @@ function SignedInPlans() {
           </button>
         ) : null}
       </section>
+      <PricingCards
+        config={billing?.config}
+        access={a}
+        ready={!!billing?.ready}
+        busy={busy}
+        publicPage={false}
+        onUpgrade={() => void open("checkout")}
+      />
       {billing?.mode === "test" && billing.ready && (
         <p className="plans-footnote">Test checkout · no real charges.</p>
       )}

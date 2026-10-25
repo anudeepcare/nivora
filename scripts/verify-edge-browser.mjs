@@ -75,12 +75,14 @@ try {
       });
       for (const route of [
         "/",
+        "/sample",
         "/login",
         "/login?mode=signup",
         "/preview/overview",
         "/preview/research/MSFT",
         "/preview/portfolio",
         "/preview/watchlist",
+        "/reset-password",
         "/contact",
         "/help",
         "/preview/settings",
@@ -157,11 +159,24 @@ try {
             if (await tab.count()) {
               const priorErrors = errors.length;
               await tab.click();
+              await page.waitForFunction(
+                () =>
+                  !/Opening valuation|Loading advanced research|Opening options/.test(
+                    document.getElementById("research-content")?.innerText ||
+                      "",
+                  ),
+                undefined,
+                { timeout: 15000 },
+              );
               await page.waitForTimeout(200);
               const state = await page.evaluate(() => ({
                 overflow: document.documentElement.scrollWidth > innerWidth + 1,
                 invalid: /\bNaN\b|\bInfinity\b/.test(document.body.innerText),
               }));
+              await page.screenshot({
+                path: `${screenshotDir}/${width}-${theme}-research-${label}.png`,
+                fullPage: true,
+              });
               report.push({
                 width,
                 theme,
@@ -180,7 +195,7 @@ try {
   server?.kill();
 }
 await fs.writeFile(
-  "verification/edge-browser-report.json",
+  "verification/approved-experience-browser-report.json",
   JSON.stringify(report, null, 2),
 );
 const failures = report.filter(

@@ -1,0 +1,1025 @@
+/* Account Studio: one compact, responsive system for saved ideas, ownership and controls. */
+.watchlist-page,
+.portfolio-page,
+.account-studio {
+  --account-radius: 16px;
+}
+.watchlist-page > .page-heading h1,
+.portfolio-page > .page-heading h1,
+.settings-page > .page-heading h1,
+.plans-heading h1,
+.owner-heading h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+}
+.watchlist-page > .page-heading,
+.portfolio-page > .page-heading,
+.account-studio > .page-heading {
+  margin-bottom: 22px;
+}
+.watchlist-page .page-heading p,
+.portfolio-page .page-heading p,
+.account-studio .page-heading p {
+  max-width: 760px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.watchlist-intro-strip {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 16px 20px;
+  margin: 0 0 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--account-radius);
+  background: linear-gradient(
+    110deg,
+    color-mix(in srgb, var(--blue) 6%, var(--surface)),
+    var(--surface)
+  );
+}
+.watchlist-intro-strip > div {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--blue);
+}
+.watchlist-intro-strip > div > span {
+  display: grid;
+  gap: 3px;
+}
+.watchlist-intro-strip strong {
+  font-size: 16px;
+  color: var(--ink);
+}
+.watchlist-intro-strip small,
+.watchlist-intro-strip p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 0;
+}
+.watchlist-page .watchlist-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+}
+.watchlist-page .watchlist-toolbar > label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0 12px;
+  background: var(--surface);
+  min-height: 42px;
+  flex: 1;
+  max-width: 380px;
+}
+.watchlist-page .watchlist-toolbar input {
+  border: 0;
+  box-shadow: none;
+  outline-offset: 2px;
+  min-width: 0;
+  width: 100%;
+  padding: 9px 0;
+  font-size: 14px;
+  background: transparent;
+}
+.watchlist-page .watchlist-status {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--muted);
+}
+.watchlist-table-wrap.investment-list {
+  display: block;
+  width: 100%;
+  padding: 0 20px;
+  margin-top: 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--account-radius);
+  background: var(--surface);
+  overflow-x: auto;
+}
+.watchlist-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+}
+.watchlist-table th {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 15px 10px;
+  border-bottom: 1px solid var(--line);
+}
+.watchlist-table th:first-child {
+  padding-left: 0;
+  width: 34%;
+}
+.watchlist-table th:nth-child(2),
+.watchlist-table th:nth-child(3) {
+  text-align: right;
+  width: 15%;
+}
+.watchlist-table th:nth-child(4) {
+  width: 25%;
+}
+.watchlist-table th:last-child {
+  width: 11%;
+}
+.watchlist-table td {
+  border-bottom: 1px solid var(--line);
+  padding: 17px 10px;
+  font-size: 13px;
+  vertical-align: middle;
+}
+.watchlist-table tr:last-child td {
+  border-bottom: 0;
+}
+.watchlist-table td:first-child {
+  padding-left: 0;
+}
+.watchlist-table .investment-identity {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+  text-decoration: none;
+  color: var(--ink);
+}
+.watchlist-table .investment-identity > span {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.watchlist-table .investment-identity b {
+  font-size: 14px;
+  font-weight: 650;
+}
+.watchlist-table .investment-company {
+  font-size: 11px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.watchlist-table .security-logo {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 10px;
+}
+.watchlist-table .watch-price,
+.watchlist-table .watch-change {
+  text-align: right;
+}
+.watchlist-table .watch-price strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+}
+.watchlist-table .watch-price small {
+  color: var(--muted);
+  font-size: 10px;
+}
+.watchlist-table .watch-date {
+  padding-left: 26px;
+}
+.watchlist-table .watch-date time {
+  display: block;
+  font-size: 11px;
+  color: var(--ink);
+}
+.watchlist-table .watch-date small {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+.watchlist-table .watch-actions {
+  text-align: right;
+  white-space: nowrap;
+}
+.watchlist-table .watch-actions .icon-button {
+  display: inline-flex;
+  width: 32px;
+  min-width: 32px;
+  height: 38px;
+  padding: 5px;
+  color: var(--blue);
+}
+.watchlist-table .watch-actions .watch-remove {
+  color: var(--muted);
+}
+.watchlist-table tbody tr:hover {
+  background: color-mix(in srgb, var(--blue) 3%, transparent);
+}
+.portfolio-page .portfolio-summary-layout {
+  display: block;
+  margin: 0 0 16px;
+}
+.portfolio-page .portfolio-balance {
+  border: 1px solid var(--line);
+  border-radius: var(--account-radius);
+  padding: 22px;
+  background: linear-gradient(
+    110deg,
+    color-mix(in srgb, var(--blue) 5%, var(--surface)),
+    var(--surface)
+  );
+  color: var(--ink);
+  --ink: inherit;
+  --muted: inherit;
+  --line: inherit;
+  --green: inherit;
+  --red: inherit;
+}
+.portfolio-page .portfolio-balance .account-equity {
+  display: grid;
+  grid-template-columns: minmax(230px, 1fr) minmax(0, 1.8fr);
+  column-gap: 26px;
+  align-items: start;
+}
+.portfolio-page .account-equity-primary {
+  padding-right: 22px;
+  border-right: 1px solid var(--line);
+}
+.portfolio-page .portfolio-balance .eyebrow {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+.portfolio-page .portfolio-balance .balance {
+  color: var(--ink);
+  font-size: clamp(28px, 3.2vw, 43px);
+  letter-spacing: -0.045em;
+  font-weight: 650;
+  line-height: 1.18;
+  margin: 7px 0;
+}
+.account-equity-primary > small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+.portfolio-page .account-equity-breakdown {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.portfolio-page .account-equity-breakdown > div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 2px 0 0;
+  min-width: 0;
+  font-size: 11px;
+}
+.portfolio-page .account-equity-breakdown dt {
+  color: var(--muted);
+  font-size: 11px;
+}
+.portfolio-page .account-equity-breakdown dd {
+  font-size: clamp(18px, 1.7vw, 24px);
+  line-height: 1.3;
+  color: var(--blue);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  overflow-wrap: anywhere;
+}
+.portfolio-page .account-equity-breakdown [data-tone="green"] dd {
+  color: var(--green);
+}
+.portfolio-page .account-equity-breakdown [data-tone="amber"] dd {
+  color: var(--amber, #9f6a18);
+}
+.account-equity-breakdown small {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.portfolio-page .account-equity > .balance-caption,
+.portfolio-page .account-equity > .account-balance-date,
+.portfolio-page .account-equity > .account-balance-edit,
+.portfolio-page .account-equity > form {
+  grid-column: 1/-1;
+}
+.portfolio-page .portfolio-balance .account-balance-edit {
+  color: var(--blue);
+  font-size: 11px;
+  justify-self: start;
+  margin: 12px 0 0;
+  min-height: 30px;
+}
+.portfolio-page .portfolio-balance .money-sub {
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+  margin-top: 10px;
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+.portfolio-page .portfolio-balance .money-sub > span:first-child {
+  font-size: 15px;
+  font-weight: 600;
+}
+.portfolio-page .portfolio-refresh {
+  border: 0;
+  padding: 0;
+  margin: 0 0 16px;
+  background: none;
+}
+.portfolio-page .portfolio-refresh > span {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+.portfolio-page .portfolio-refresh > span > small {
+  font-size: 10px;
+}
+.portfolio-view-tabs {
+  display: flex;
+  gap: 20px;
+  border-bottom: 1px solid var(--line);
+  margin: 14px 0 18px;
+}
+.portfolio-view-tabs > button {
+  padding: 12px 2px;
+  background: transparent;
+  color: var(--muted);
+  border: 0;
+  border-bottom: 2px solid transparent;
+  font-size: 13px;
+  min-height: 44px;
+  cursor: pointer;
+}
+.portfolio-view-tabs > button[aria-pressed="true"] {
+  color: var(--blue);
+  border-bottom-color: var(--blue);
+  font-weight: 600;
+}
+.portfolio-page [hidden] {
+  display: none;
+}
+.portfolio-page .portfolio-holdings {
+  border-radius: var(--account-radius);
+  padding: 18px 20px;
+}
+.portfolio-page .portfolio-holdings h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 23px;
+  letter-spacing: -0.035em;
+}
+.portfolio-page .portfolio-ledger td {
+  padding-block: 13px;
+}
+.portfolio-page .portfolio-charts {
+  border-radius: var(--account-radius);
+}
+.portfolio-page .portfolio-risk-summary {
+  margin-top: 0;
+  gap: 12px;
+}
+.portfolio-page .portfolio-risk-summary > div {
+  border-radius: 13px;
+  padding: 18px;
+  border-top: 3px solid var(--blue);
+}
+.portfolio-page .portfolio-risk-summary > div:nth-child(2) {
+  border-top-color: var(--amber, #b87a20);
+}
+.portfolio-page .portfolio-risk-summary > div:nth-child(3) {
+  border-top-color: #8868d9;
+}
+.portfolio-page .portfolio-risk-summary > div:nth-child(4) {
+  border-top-color: var(--green);
+}
+.portfolio-page .portfolio-risk-summary strong {
+  font-size: 25px;
+}
+.portfolio-page .sector-benchmarks {
+  margin-top: 16px;
+}
+.settings-page.account-studio {
+  display: block;
+  max-width: 1220px;
+  margin-inline: auto;
+}
+.settings-studio-layout {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  border: 1px solid var(--line);
+  border-radius: var(--account-radius);
+  overflow: hidden;
+  background: var(--surface);
+}
+.settings-studio-nav {
+  padding: 20px 14px;
+  background: color-mix(in srgb, var(--blue) 3%, var(--surface));
+  border-right: 1px solid var(--line);
+}
+.settings-studio-nav nav {
+  display: grid;
+  gap: 5px;
+}
+.settings-studio-nav button,
+.settings-studio-nav a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  color: var(--muted);
+  text-align: left;
+  text-decoration: none;
+  padding: 10px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.settings-studio-nav button[aria-pressed="true"] {
+  color: var(--blue);
+  background: var(--blue-soft);
+  font-weight: 600;
+}
+.settings-studio-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  border-top: 1px solid var(--line);
+  margin: 22px 10px 0;
+  padding-top: 18px;
+  color: var(--blue);
+}
+.settings-studio-note svg {
+  flex-shrink: 0;
+}
+.settings-studio-note p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.7;
+}
+.settings-studio-content {
+  padding: 28px 32px;
+  min-width: 0;
+}
+.settings-page .settings-studio-content > .panel {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+}
+.settings-studio-content [hidden] {
+  display: none;
+}
+.settings-page .settings-studio-content h2,
+.settings-page .display-preferences h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 27px;
+  letter-spacing: -0.035em;
+  font-weight: 600;
+}
+.settings-studio-content .display-preferences > header {
+  padding: 0 0 14px;
+}
+.settings-page .settings-studio-content .setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+.settings-page .setting-row > span {
+  font-size: 13px;
+}
+.settings-studio-content .setting-row > .segments {
+  margin: 0;
+}
+.settings-page .settings-studio-content .appearance-controls {
+  margin-top: 20px;
+  padding: 0;
+}
+.settings-page .settings-page-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 24px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.settings-page .settings-page-links a {
+  display: inline-flex;
+  min-height: 32px;
+  gap: 5px;
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+  font-size: 11px;
+  background: transparent;
+}
+.settings-research-panel > p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+.settings-studio-content .settings-profile {
+  padding-bottom: 18px;
+}
+.settings-studio-content .settings-profile h2 {
+  margin: 4px 0;
+}
+.preferences-sheet .settings-plan-entry {
+  border-radius: 12px;
+  background: linear-gradient(110deg, var(--blue-soft), var(--surface));
+  padding: 14px 16px;
+}
+.preferences-sheet .settings-sheet-tabs button[aria-pressed="true"] {
+  color: var(--blue);
+  background: var(--blue-soft);
+}
+.preferences-sheet .settings-clean-body .setting-row {
+  padding-block: 15px;
+}
+.plans-page .plans-heading {
+  text-align: left;
+  margin-bottom: 24px;
+}
+.plans-page .plans-heading h1 {
+  font-size: clamp(32px, 4vw, 48px);
+  margin-block: 10px;
+}
+.plans-page .pricing-cards {
+  gap: 20px;
+}
+.plans-page .pricing-cards > section {
+  border-radius: 18px;
+  padding: 26px;
+  background: var(--surface);
+}
+.plans-page .pricing-cards > .pricing-pro {
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--blue) 6%, var(--surface)),
+    var(--surface)
+  );
+  border-color: color-mix(in srgb, var(--blue) 30%, var(--line));
+  box-shadow: 0 12px 35px #2255aa08;
+}
+.plans-page .pricing-card-title h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 28px;
+}
+.plans-page .pricing-amount {
+  font-size: 46px;
+  line-height: 1.2;
+  margin: 14px 0;
+}
+.plans-page .pricing-amount small {
+  font-size: 13px;
+  color: var(--muted);
+}
+.plans-page .pricing-cards li {
+  padding-block: 5px;
+  font-size: 13px;
+}
+.plans-page .plan-account-row {
+  border-radius: 14px;
+  padding: 18px 22px;
+  margin-top: 18px;
+}
+.owner-access .owner-heading h1 {
+  font-size: clamp(32px, 4vw, 46px);
+  margin-block: 8px;
+}
+.owner-access .admin-preview-row {
+  border-radius: 14px;
+  background: linear-gradient(110deg, var(--blue-soft), var(--surface));
+  padding: 18px 22px;
+}
+.owner-access .admin-section-nav {
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  border-radius: 0;
+  gap: 18px;
+  padding: 0;
+  margin: 20px 0;
+}
+.owner-access .admin-section-nav button {
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  border-radius: 0;
+  padding: 12px 2px;
+  color: var(--muted);
+}
+.owner-access .admin-section-nav button[aria-pressed="true"] {
+  color: var(--blue);
+  border-bottom-color: var(--blue);
+  background: transparent;
+}
+.owner-access .membership-panel {
+  border-radius: 16px;
+  padding: 22px;
+}
+.owner-access .owner-feature-grid {
+  gap: 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.owner-access .owner-feature-grid label {
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  padding: 12px 16px;
+  background: var(--surface);
+}
+.owner-access .owner-feature-grid label span {
+  font-size: 12px;
+}
+.owner-access .owner-feature-grid select,
+.owner-access input,
+.support-inbox select {
+  min-height: 43px;
+  font-size: 14px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  color: var(--ink);
+  background: var(--surface);
+  padding: 9px 12px;
+}
+.owner-access .owner-grants article {
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.owner-access .support-inbox article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--blue);
+  border-radius: 12px;
+  padding: 18px;
+  margin-top: 12px;
+}
+.owner-access .support-inbox article > header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: space-between;
+}
+.owner-access .support-inbox article > p {
+  line-height: 1.7;
+  font-size: 13px;
+}
+@media (max-width: 900px) {
+  .settings-studio-layout {
+    grid-template-columns: 190px minmax(0, 1fr);
+  }
+  .settings-studio-content {
+    padding: 24px;
+  }
+  .portfolio-page .portfolio-balance .account-equity {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .portfolio-page .account-equity-primary {
+    border-right: 0;
+    padding-right: 0;
+  }
+  .portfolio-page .account-equity-breakdown {
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+  }
+}
+@media (max-width: 600px) {
+  .watchlist-page .page-heading,
+  .portfolio-page .page-heading {
+    align-items: flex-start;
+  }
+  .watchlist-page .page-heading h1,
+  .portfolio-page .page-heading h1 {
+    font-size: 33px;
+  }
+  .watchlist-page .page-heading > .button,
+  .portfolio-page .page-heading > .button {
+    min-height: 40px;
+    font-size: 11px;
+    padding: 9px 12px;
+  }
+  .watchlist-intro-strip {
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px;
+  }
+  .watchlist-intro-strip > p {
+    display: none;
+  }
+  .watchlist-page .watchlist-toolbar {
+    gap: 8px;
+  }
+  .watchlist-page .watchlist-toolbar > label {
+    order: 2;
+    flex-basis: 100%;
+    max-width: none;
+  }
+  .watchlist-page .watchlist-toolbar input {
+    font-size: 16px;
+  }
+  .watchlist-page .watchlist-toolbar > .segments {
+    max-width: 230px;
+  }
+  .watchlist-page .watchlist-status {
+    font-size: 10px;
+    margin-left: auto;
+    flex: 1;
+    text-align: right;
+  }
+  .watchlist-table-wrap.investment-list {
+    padding: 0 14px;
+    overflow: visible;
+  }
+  .watchlist-table,
+  .watchlist-table tbody {
+    display: block;
+  }
+  .watchlist-table thead {
+    display: none;
+  }
+  .watchlist-table tbody > tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(85px, auto) 30px;
+    grid-template-areas: "company price actions" "company change actions" "date date date";
+    padding: 15px 0;
+    gap: 3px 8px;
+    border-bottom: 1px solid var(--line);
+    align-items: center;
+  }
+  .watchlist-table tbody > tr:last-child {
+    border-bottom: 0;
+  }
+  .watchlist-table td {
+    border: 0;
+    padding: 0;
+    min-width: 0;
+  }
+  .watchlist-table .watch-company {
+    grid-area: company;
+  }
+  .watchlist-table .watch-price {
+    grid-area: price;
+    align-self: end;
+  }
+  .watchlist-table .watch-price strong {
+    font-size: 15px;
+  }
+  .watchlist-table .watch-price small {
+    display: none;
+  }
+  .watchlist-table .watch-change {
+    grid-area: change;
+    font-size: 11px;
+    align-self: start;
+  }
+  .watchlist-table .watch-date {
+    grid-area: date;
+    padding: 5px 0 0 45px;
+  }
+  .watchlist-table .watch-date time,
+  .watchlist-table .watch-date small {
+    display: inline;
+    font-size: 9px;
+  }
+  .watchlist-table .watch-date small:before {
+    content: " · ";
+  }
+  .watchlist-table .watch-actions {
+    grid-area: actions;
+    display: grid;
+    gap: 2px;
+  }
+  .watchlist-table .watch-actions .icon-button {
+    height: 30px;
+    min-height: 30px;
+  }
+  .watchlist-table .investment-identity {
+    gap: 9px;
+  }
+  .watchlist-table .investment-identity b {
+    font-size: 13px;
+  }
+  .watchlist-table .investment-company {
+    font-size: 10px;
+  }
+  .portfolio-page .portfolio-balance {
+    padding: 18px;
+  }
+  .portfolio-page .portfolio-balance .balance {
+    font-size: 34px;
+  }
+  .portfolio-page .account-equity-breakdown {
+    gap: 12px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .portfolio-page .account-equity-breakdown dd {
+    font-size: 16px;
+  }
+  .portfolio-page .account-equity-breakdown dt {
+    font-size: 10px;
+    line-height: 1.4;
+  }
+  .portfolio-page .account-equity-breakdown small {
+    font-size: 9px;
+  }
+  .portfolio-page .portfolio-balance .money-sub {
+    font-size: 10px;
+  }
+  .portfolio-page .portfolio-balance .money-sub > span:first-child {
+    font-size: 12px;
+  }
+  .portfolio-view-tabs {
+    gap: 22px;
+  }
+  .portfolio-view-tabs > button {
+    font-size: 12px;
+  }
+  .portfolio-page .portfolio-holdings {
+    padding: 16px;
+  }
+  .portfolio-page .portfolio-holdings h2 {
+    font-size: 22px;
+  }
+  .settings-studio-layout {
+    display: block;
+    border-radius: 14px;
+  }
+  .settings-studio-nav {
+    padding: 12px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .settings-studio-nav nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .settings-studio-nav button,
+  .settings-studio-nav a {
+    width: auto;
+    padding: 9px 10px;
+    min-height: 40px;
+    font-size: 11px;
+  }
+  .settings-studio-nav nav svg {
+    display: none;
+  }
+  .settings-studio-note {
+    display: none;
+  }
+  .settings-studio-content {
+    padding: 20px 16px;
+  }
+  .settings-page .settings-studio-content .setting-row {
+    gap: 10px;
+    padding: 15px 0;
+  }
+  .settings-page .settings-studio-content .setting-row > .segments {
+    flex-shrink: 1;
+    max-width: 100%;
+  }
+  .settings-page .settings-studio-content h2,
+  .settings-page .display-preferences h3 {
+    font-size: 25px;
+  }
+  .plans-page .pricing-cards {
+    gap: 12px;
+  }
+  .plans-page .pricing-cards > section {
+    padding: 20px;
+    border-radius: 14px;
+  }
+  .plans-page .pricing-amount {
+    font-size: 40px;
+  }
+  .owner-access .membership-panel {
+    padding: 17px;
+  }
+  .owner-access .admin-preview-row {
+    padding: 15px;
+  }
+  .owner-access .admin-section-nav {
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .owner-access input,
+  .owner-access select,
+  .support-inbox select {
+    font-size: 16px;
+  }
+}
+
+.portfolio-page .portfolio-ledger .ledger-weight {
+  width: 9%;
+}
+.portfolio-page .portfolio-ledger .ledger-weight strong {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.ledger-weight-track {
+  display: block;
+  width: 100%;
+  height: 4px;
+  background: var(--blue-soft);
+  border-radius: 5px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+.ledger-weight-track i {
+  display: block;
+  height: 100%;
+  background: var(--blue);
+  border-radius: inherit;
+}
+@media (min-width: 701px) {
+  .portfolio-page .portfolio-ledger th:first-child {
+    width: 25%;
+  }
+  .portfolio-page .portfolio-ledger th:nth-child(2) {
+    width: 11%;
+  }
+  .portfolio-page .portfolio-ledger th:nth-child(3) {
+    width: 14%;
+  }
+  .portfolio-page .portfolio-ledger th:nth-child(4) {
+    width: 13%;
+  }
+  .portfolio-page .portfolio-ledger th:nth-child(5) {
+    width: 9%;
+  }
+  .portfolio-page .portfolio-ledger th:nth-child(6) {
+    width: 13%;
+  }
+  .portfolio-page .portfolio-ledger th:nth-child(7) {
+    width: 11%;
+  }
+  .portfolio-page .portfolio-ledger th:last-child {
+    width: 4%;
+  }
+}
+@media (max-width: 700px) {
+  .portfolio-page .portfolio-ledger .ledger-weight {
+    display: none;
+  }
+}
+
+.plans-page .plan-account-row {
+  background: linear-gradient(110deg, var(--blue-soft), var(--surface));
+  margin: 0 0 22px;
+}
+.support-inbox-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-block: 1px solid var(--line);
+  font-size: 12px;
+  color: var(--muted);
+}
+.support-inbox-tools label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.support-inbox-tools select {
+  width: auto;
+}
+
+/* Alerts uses the same compact form and evidence-row system. */
+.alerts-studio{max-width:1100px;margin:0 auto}
+.alerts-studio .page-heading h1{font-family:Georgia,'Times New Roman',serif;letter-spacing:-.04em}
+.alerts-studio .alert-builder{background:linear-gradient(120deg,var(--blue-soft),var(--surface));border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;grid-template-columns:minmax(120px,1fr) minmax(180px,1.6fr) minmax(110px,.7fr) auto;gap:14px;align-items:end}
+.alerts-studio .alert-builder label{display:grid;gap:7px;font-size:12px;color:var(--muted);min-width:0}
+.alerts-studio .alert-builder input,.alerts-studio .alert-builder select{width:100%;font-size:14px;border-radius:9px;min-height:44px}
+.alerts-studio .footnote{font-size:11px;line-height:1.7;max-width:90ch}
+@media(max-width:760px){.alerts-studio .alert-builder{grid-template-columns:1fr;padding:16px}.alerts-studio .alert-builder input,.alerts-studio .alert-builder select{font-size:16px}.alerts-studio .page-heading{align-items:start;gap:12px}}

@@ -189,7 +189,7 @@ export default function Financials({
             : m.group === group,
       );
   return (
-    <section className={s.workspace}>
+    <section className={`${s.workspace} depth-financial-library`}>
       <header className={s.heading}>
         <div>
           <h2>{compact ? "Financial picture" : "Financials"}</h2>
@@ -264,7 +264,11 @@ export default function Financials({
           {view === "charts" || compact ? (
             <div className={s.grid}>
               {shown.map((m) => (
-                <article key={m.key} className={s.card}>
+                <article
+                  key={m.key}
+                  className={s.card}
+                  data-metric-group={m.group}
+                >
                   <div className={s.cardTop}>
                     <span>{m.label}</span>
                     <div>

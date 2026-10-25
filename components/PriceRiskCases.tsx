@@ -28,6 +28,18 @@ export default function PriceRiskCases({
         />
       ) : (
         <>
+          <div className="price-risk-scale">
+            <CaseRange
+              cases={s.cases}
+              price={s.reference}
+              currency={s.currency}
+              referenceLabel={
+                s.referenceBasis === "settled-close"
+                  ? "Settled close"
+                  : "Reference"
+              }
+            />
+          </div>
           <div
             className="compass-cases"
             role="group"

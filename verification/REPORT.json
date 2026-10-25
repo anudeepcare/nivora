@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-10-25T04:56:23.764324+00:00",
-  "release": "AURYN Decision Canvas preprod handoff",
-  "sourceBranch": "auryn-decision-canvas-preprod",
+  "generatedAt": "2026-10-25T12:35:28.136146+00:00",
+  "release": "AURYN approved whole-app experience",
+  "sourceBranch": "auryn-approved-experience-rebuild",
   "completeSourceIncluded": true,
-  "unitDatabaseComponentTests": 552,
+  "unitDatabaseComponentTests": 565,
   "apiChecks": 125,
   "apiTransports": "Synthetic provider, authentication and database transports; no actual payments or broker orders",
-  "browserChecks": 120,
+  "browserChecks": 132,
   "browserWidths": [
     1440,
     402,
@@ -19,13 +19,15 @@
   "browserEngine": "Chromium headless; mobile viewport and standalone emulation, not physical iOS",
   "browserFailures": 0,
   "commands": {
-    "npm run verify": "passed: decision-canvas-verify.log",
-    "npm run test:api": "passed: decision-canvas-api.log (122 checks)",
-    "node scripts/test-auth-provider-api.mjs": "passed: decision-canvas-auth.log (3 checks)",
-    "browser": "120 checks, light/dark, 320/402/1440 widths; isolated preview fixtures",
+    "npm run verify": "passed: approved-experience-verify.log (565 tests, typecheck, production build)",
+    "npm run build": "passed: approved-experience-final-build.log (final mobile heading CSS)",
+    "npm run test:api": "passed: approved-experience-api.log (122 fixture checks)",
+    "node scripts/test-auth-provider-api.mjs": "passed: approved-experience-auth.log (3 fixture checks)",
+    "browser": "approved-experience-browser-report.json (132 checks)",
+    "interactions": "approved-experience-interactions-final.json (30 checks)",
     "git diff --check": "passed"
   },
-  "review": "Independent review: no critical findings; two important findings fixed with regression tests (disclosure deduplication and optimistic scenario caution). Watchlist navigation wording corrected.",
+  "review": "Independent reviewer: no Critical findings; two Important findings fixed RED/GREEN (historical scenario currency and negative FCF risk color). Browser hydration failure reproduced and fixed with single-string SVG title regression. No investment-performance claim.",
   "productionReady": false,
   "pushed": false,
   "deployed": false,
@@ -49,8 +51,10 @@
     "Generated mockup numbers are illustrative; no pixel-perfect equivalence certification"
   ],
   "references": [
-    "docs/DECISION_CANVAS_RELEASE.md",
-    "docs/DECISION_CANVAS_SPEC.md",
+    "docs/APPROVED_EXPERIENCE_RELEASE.md",
+    "docs/SCREEN_INVENTORY.md",
     "docs/SUPPORT_SETUP.md"
-  ]
+  ],
+  "interactionChecks": 30,
+  "interactionFailures": 0
 }

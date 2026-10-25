@@ -4,14 +4,17 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight,
-  ArrowUpRight,
   Search,
   FileText,
   ChartNoAxesCombined,
   Menu,
   X,
+  Check,
+  ShieldCheck,
 } from "lucide-react";
 import { authClient } from "@/lib/client";
+
+/** An explicitly illustrative product surface; never mixed with account research. */
 export function PublicSample() {
   const [active, setActive] = useState("business");
   return (
@@ -21,33 +24,41 @@ export function PublicSample() {
     >
       <header className="panorama-toolbar">
         <div className="panorama-company">
-          <span>E</span>
+          <span>A</span>
           <div>
-            <strong>Example Company</strong>
-            <small>Illustrative · not a real investment</small>
+            <strong>
+              Atlas Software <small>ATLS</small>
+            </strong>
+            <small>Illustrative company · not a real investment</small>
           </div>
         </div>
-        <div
-          className="panorama-navigation"
-          role="group"
-          aria-label="Preview perspective"
-        >
-          {["business", "value", "timing"].map((key) => (
-            <button
-              type="button"
-              key={key}
-              aria-pressed={active === key}
-              aria-controls={`preview-${key}`}
-              onClick={() => setActive(key)}
-            >
-              {key[0].toUpperCase() + key.slice(1)}
-            </button>
-          ))}
+        <div className="panorama-reference">
+          <strong>$120.00</strong>
+          <span>Illustrative reference price</span>
         </div>
       </header>
-      <h2 className="panorama-title">
-        One company. Three perspectives.<span aria-hidden="true">⟶</span>
-      </h2>
+      <div className="panorama-verdict">
+        <span>AURYN VIEW</span>
+        <h2>Understand the whole case.</h2>
+        <p>Business evidence, price assumptions and timing—side by side.</p>
+      </div>
+      <div
+        className="panorama-navigation"
+        role="group"
+        aria-label="Preview perspective"
+      >
+        {["business", "value", "timing"].map((key) => (
+          <button
+            type="button"
+            key={key}
+            aria-pressed={active === key}
+            aria-controls={`preview-${key}`}
+            onClick={() => setActive(key)}
+          >
+            {key[0].toUpperCase() + key.slice(1)}
+          </button>
+        ))}
+      </div>
       <div className="panorama-chapters">
         <section
           id="preview-business"
@@ -55,76 +66,49 @@ export function PublicSample() {
           data-active={active === "business"}
         >
           <header>
-            <span>01</span>
-            <h3>Business</h3>
-            <i />
+            <span>1</span>
+            <h3>Business improving</h3>
           </header>
-          <p>A growing, cash-generative business.</p>
+          <p>Growth supported by cash generation.</p>
           <div className="panorama-metrics">
             <div>
-              <strong>+24%</strong>
+              <strong>+18%</strong>
               <span>Revenue growth</span>
-              <small>3-year CAGR · illustrative</small>
             </div>
             <div>
-              <strong>14%</strong>
-              <span>Free cash flow margin</span>
-              <small>LTM · illustrative</small>
+              <strong>24%</strong>
+              <span>FCF margin</span>
             </div>
           </div>
-          <div className="panorama-chart-labels">
-            <span>Revenue · USD B</span>
-            <span>FCF margin</span>
-          </div>
           <svg
-            className="panorama-business-chart"
-            viewBox="0 0 320 165"
+            viewBox="0 0 260 110"
             role="img"
-            aria-label="Illustrative revenue rises from 2020 to 2025 alongside a free cash flow margin line"
+            aria-label="Illustrative annual revenue increases from 2 to 4 billion over four years"
+            className="panorama-business-chart"
           >
-            {[35, 70, 105, 140].map((y) => (
-              <line key={y} x1="15" x2="300" y1={y} y2={y} stroke="#e6edf6" />
-            ))}
-            {[45, 52, 47, 64, 71, 79, 75, 91, 102, 110, 121, 134].map(
-              (h, i) => (
+            <line x1="12" x2="248" y1="88" y2="88" stroke="#d6e5ec" />
+            {[42, 55, 72, 88].map((h, i) => (
+              <g key={i}>
                 <rect
-                  key={i}
-                  x={20 + i * 23}
-                  y={148 - h}
-                  width="15"
+                  x={24 + i * 58}
+                  y={88 - h}
+                  width="30"
                   height={h}
-                  fill={i % 2 ? "#87baff" : "#bedcff"}
+                  rx="4"
+                  fill={i === 3 ? "#0b9b77" : "#96c2ff"}
                 />
-              ),
-            )}
-            <path
-              d="M25 132L48 127L71 129L94 113L117 117L140 101L163 104L186 90L209 84L232 74L255 70L278 58"
-              fill="none"
-              stroke="#059782"
-              strokeWidth="2.5"
-            />
-            {["2020", "2021", "2022", "2023", "2024", "2025"].map((year, i) => (
-              <text
-                key={year}
-                x={20 + i * 52}
-                y="163"
-                fontSize="9"
-                fill="#7a8ba3"
-              >
-                {year}
-              </text>
+                <text
+                  x={39 + i * 58}
+                  y="106"
+                  textAnchor="middle"
+                  fontSize="10"
+                  fill="#64728c"
+                >
+                  {2021 + i}
+                </text>
+              </g>
             ))}
           </svg>
-          <footer>
-            <span>
-              <i />
-              Revenue
-            </span>
-            <span>
-              <i />
-              Free cash flow margin
-            </span>
-          </footer>
         </section>
         <section
           id="preview-value"
@@ -132,16 +116,15 @@ export function PublicSample() {
           data-active={active === "value"}
         >
           <header>
-            <span>02</span>
-            <h3>Value</h3>
-            <i />
+            <span>2</span>
+            <h3>Price in perspective</h3>
           </header>
-          <p>A range of outcomes, grounded in assumptions.</p>
+          <p>Assumptions, not a single promise.</p>
           <div className="panorama-cases">
             {[
-              ["Bear", "$80"],
-              ["Base", "$110"],
-              ["Bull", "$145"],
+              ["Bear", "$90"],
+              ["Base", "$132"],
+              ["Bull", "$168"],
             ].map(([name, price]) => (
               <div key={name} data-case={name}>
                 <span>{name}</span>
@@ -150,71 +133,59 @@ export function PublicSample() {
             ))}
           </div>
           <svg
-            className="panorama-value-chart"
-            viewBox="0 0 320 126"
+            viewBox="0 0 280 110"
             role="img"
-            aria-label="Illustrative scenarios on a shared linear scale: Bear 80, Base 110, Bull 145 and reference price 102"
+            aria-label="Illustrative shared linear scale from Bear 90 to Bull 168, with reference 120 and Base 132"
+            className="panorama-value-chart"
           >
-            <line x1="15" x2="305" y1="38" y2="38" stroke="#c5d1e2" />
+            <line
+              x1="20"
+              x2="260"
+              y1="34"
+              y2="34"
+              stroke="#b7d8ee"
+              strokeWidth="4"
+            />
             {[
-              [80, "#e96b71"],
-              [110, "#2468e8"],
-              [145, "#009982"],
+              [90, "#ed6878"],
+              [132, "#1763ff"],
+              [168, "#069a75"],
             ].map(([v, c]) => (
               <circle
                 key={v}
-                cx={15 + ((Number(v) - 60) / 100) * 290}
-                cy="38"
-                r="5"
+                cx={20 + ((Number(v) - 90) / 78) * 240}
+                cy="34"
+                r="6"
                 fill={String(c)}
               />
             ))}
             <line
-              x1={15 + (42 / 100) * 290}
-              x2={15 + (42 / 100) * 290}
-              y1="25"
-              y2="52"
-              stroke="#182c43"
+              x1={20 + (30 / 78) * 240}
+              x2={20 + (30 / 78) * 240}
+              y1="20"
+              y2="50"
+              stroke="#26304b"
+              strokeWidth="2"
             />
-            <circle cx={15 + (42 / 100) * 290} cy="38" r="5" fill="#182c43" />
             <text
-              x={15 + (42 / 100) * 290}
-              y="71"
+              x={20 + (30 / 78) * 240}
+              y="70"
               textAnchor="middle"
-              fontSize="13"
-              fontWeight="600"
-              fill="#182c43"
+              fontSize="12"
+              fill="#26304b"
             >
-              $102
+              $120
             </text>
             <text
-              x={15 + (42 / 100) * 290}
+              x={20 + (30 / 78) * 240}
               y="88"
               textAnchor="middle"
-              fontSize="9"
-              fill="#70829a"
+              fontSize="10"
+              fill="#64728c"
             >
-              Reference price
+              Reference
             </text>
-            <line x1="15" x2="305" y1="106" y2="106" stroke="#ccd7e6" />
-            {[60, 80, 100, 120, 140, 160].map((v, i) => (
-              <text
-                key={v}
-                x={15 + i * 58}
-                y="122"
-                textAnchor="middle"
-                fontSize="9"
-                fill="#70829a"
-              >
-                {v}
-              </text>
-            ))}
           </svg>
-          <small className="panorama-disclosure">
-            Scenario assumptions, not predictions.
-            <br />
-            Illustrative prices, not company valuations.
-          </small>
         </section>
         <section
           id="preview-timing"
@@ -222,57 +193,43 @@ export function PublicSample() {
           data-active={active === "timing"}
         >
           <header>
-            <span>03</span>
-            <h3>Timing</h3>
-            <i />
+            <span>3</span>
+            <h3>Timing mixed</h3>
           </header>
-          <p>Market conditions, in context.</p>
-          <div className="panorama-zones">
-            {[
-              ["1×", "Baseline"],
-              ["2×", "Higher"],
-              ["3×", "Higher"],
-              ["2×", "Higher"],
-            ].map(([multiple, label], i) => (
-              <div key={i} data-zone={multiple}>
-                <strong>{multiple}</strong>
-                <span>{label}</span>
-              </div>
-            ))}
+          <p>Price conditions alongside the business.</p>
+          <div className="panorama-pace">
+            <div>
+              <strong>2×</strong>
+              <span>Completed month</span>
+            </div>
+            <div>
+              <strong>3×</strong>
+              <span>Developing · not final</span>
+            </div>
           </div>
-          <span className="panorama-timing-label">
-            Illustrative monthly contribution conditions
-          </span>
           <svg
             className="panorama-timing-chart"
-            viewBox="0 0 320 105"
+            viewBox="0 0 260 90"
             role="img"
-            aria-label="Illustrative monthly condition history"
+            aria-label="Illustrative price trend with changing momentum"
           >
-            <rect x="100" y="10" width="70" height="68" fill="#e9f5f3" />
-            <rect x="240" y="10" width="65" height="68" fill="#edf6ff" />
-            {[18, 45, 72].map((y) => (
-              <line key={y} x1="10" x2="308" y1={y} y2={y} stroke="#e5edf5" />
-            ))}
             <path
-              d="M10 68L28 70L45 64L63 52L80 55L98 45L115 49L133 37L150 45L168 32L185 37L203 39L220 28L238 32L255 20L273 25L290 20L308 14"
+              d="M8 65L25 59L40 65L56 43L72 48L87 30L103 39L119 32L135 40L152 23L168 27L184 15L201 22L218 17L236 25L252 19"
               fill="none"
-              stroke="#299ab3"
-              strokeWidth="2"
+              stroke="#8056d9"
+              strokeWidth="2.5"
             />
-            {["Jan", "Mar", "May", "Jul", "Sep", "Dec"].map((m, i) => (
-              <text key={m} x={10 + i * 57} y="99" fontSize="9" fill="#71849b">
-                {m}
-              </text>
-            ))}
+            <line x1="8" x2="252" y1="76" y2="76" stroke="#e4dff1" />
           </svg>
-          <small className="panorama-disclosure">
-            Confirmed and forming, kept separate.
-            <br />
-            Multipliers are not leverage or return forecasts.
-          </small>
         </section>
       </div>
+      <footer className="panorama-disclosure">
+        <ShieldCheck size={13} />
+        <span>
+          Illustrative preview. Scenarios are assumptions; Pace multiples are
+          contributions, not predicted returns.
+        </span>
+      </footer>
     </section>
   );
 }
@@ -281,8 +238,8 @@ export default function PublicLanding({
 }: {
   sampleOnly?: boolean;
 }) {
-  const router = useRouter();
-  const [menu, setMenu] = useState(false);
+  const router = useRouter(),
+    [menu, setMenu] = useState(false);
   useEffect(() => {
     if (sampleOnly) return;
     let alive = true;
@@ -299,10 +256,12 @@ export default function PublicLanding({
     };
   }, [router, sampleOnly]);
   return (
-    <main className="public-site">
+    <main
+      className={`public-site atlas-public ${sampleOnly ? "public-sample-page" : ""}`}
+    >
       <nav className="public-nav" aria-label="Public navigation">
         <Link href="/" className="public-brand">
-          <img src="/icon.svg" width="31" height="31" alt="" />
+          <img src="/icon.svg" width="32" height="32" alt="" />
           <span>AURYN</span>
         </Link>
         <div className="public-desktop-links">
@@ -315,7 +274,7 @@ export default function PublicLanding({
           </Link>
           <Link href="/login">Sign in</Link>
           <Link href="/login?mode=signup" className="public-button compact">
-            Get started
+            Get started <ArrowRight size={15} />
           </Link>
           <button
             type="button"
@@ -334,23 +293,19 @@ export default function PublicLanding({
             Why AURYN
           </a>
           <Link href="/sample">The experience</Link>
-          <Link href="/pricing" className="public-pricing-link">
-            Pricing
-          </Link>
-          <Link href="/login">Sign in</Link>
+          <Link href="/pricing">Pricing</Link>
           <Link href="/login?mode=signup">Create an account</Link>
         </nav>
       )}
-      <section
-        className={`public-hero ${sampleOnly ? "" : "public-hero-connected"}`}
-      >
-        <div>
+      <section className="public-hero">
+        <div className="public-hero-copy">
+          <span className="public-eyebrow">YOUR INVESTMENT PERSPECTIVE</span>
           <h1>
             {sampleOnly ? (
               <>
                 One company.
                 <br />
-                <em>Three perspectives.</em>
+                <em>The whole picture.</em>
               </>
             ) : (
               <>
@@ -362,87 +317,110 @@ export default function PublicLanding({
           </h1>
           <p>
             See what supports the case, what could go wrong and what would
-            change the view. Company research, price conditions and your next
-            checkpoint—in one place.
+            change the view. Clear research for a decision you understand.
           </p>
           <div className="public-actions">
-            <Link href="/sample" className="public-button">
-              Explore AURYN <ArrowRight size={17} />
+            <Link href="/login?mode=signup" className="public-button">
+              Create an account <ArrowRight size={17} />
             </Link>
-            <Link href="/login?mode=signup" className="public-button secondary">
-              Create an account
+            <Link href="/sample" className="public-button secondary">
+              Explore sample
             </Link>
           </div>
+          <div className="public-trust">
+            <span>
+              <Check size={14} />
+              Start free
+            </span>
+            <span>
+              <Check size={14} />
+              No card required
+            </span>
+            <span>
+              <Check size={14} />
+              Your research, your decision
+            </span>
+          </div>
+          <Link className="public-plan-note" href="/pricing">
+            Free research for 100 companies / month. Explore Pro →
+          </Link>
         </div>
-        {!sampleOnly && (
-          <aside
-            className="public-decision-map"
-            aria-label="Three connected research perspectives"
-          >
-            <div>
-              <span>01 · BUSINESS</span>
-              <h2>AURYN View · the whole case.</h2>
-              <p>Cash generation, competitive evidence and funding.</p>
-            </div>
-            <div>
-              <span>02 · VALUE</span>
-              <h2>Challenge the assumptions.</h2>
-              <p>Scenarios, assumptions and the room for error.</p>
-            </div>
-            <div>
-              <span>03 · TIMING</span>
-              <h2>AURYN Pace · timing in context.</h2>
-              <p>Price conditions, risks and the next turning point.</p>
-            </div>
-          </aside>
-        )}
+        <div className="public-hero-preview">
+          <div className="public-preview-label">
+            <span />
+            <span />
+            <span />
+            <strong>AURYN · Research workspace</strong>
+          </div>
+          <PublicSample />
+        </div>
       </section>
-      <div className="public-preview">
-        <PublicSample />
-      </div>
       <section className="public-benefits" id="why-auryn">
-        <h2>Research that joins the dots.</h2>
+        <div className="public-section-heading">
+          <span className="public-eyebrow">ONE CONNECTED PERSPECTIVE</span>
+          <h2>
+            Less noise.
+            <br />
+            More understanding.
+          </h2>
+          <p>
+            Move from the business to its price, then follow the evidence that
+            matters.
+          </p>
+        </div>
         <div>
           {[
             [
               Search,
-              "The evidence",
-              "Clear, structured analysis of the business, financials and key drivers.",
+              "Understand the business",
+              "Cash generation, growth, funding and competitive evidence. Know what supports the case.",
             ],
             [
               FileText,
-              "The counter-case",
-              "Understand what could go wrong, so you can challenge your thesis.",
+              "Challenge the price",
+              "Bear, base and bull assumptions alongside analyst expectations. See where the conclusions differ.",
             ],
             [
               ChartNoAxesCombined,
-              "Your next checkpoint",
-              "Keep company events and market conditions beside your research.",
+              "Know what to watch",
+              "Price conditions, company news and upcoming events. Keep your next checkpoint in view.",
             ],
-          ].map(([Icon, title, description]) => {
+          ].map(([Icon, title, description], i) => {
             const I = Icon as typeof Search;
             return (
               <article key={String(title)}>
                 <i>
-                  <I size={23} />
+                  <I size={22} />
                 </i>
-                <div>
-                  <h3>{String(title)}</h3>
-                  <p>{String(description)}</p>
-                </div>
+                <span className="public-step">0{i + 1}</span>
+                <h3>{String(title)}</h3>
+                <p>{String(description)}</p>
               </article>
             );
           })}
         </div>
       </section>
+      <section className="public-closing">
+        <div>
+          <span className="public-eyebrow">BUILT FOR YOUR OWN THINKING</span>
+          <h2>A clearer view starts here.</h2>
+          <p>
+            Research the company. Understand the assumptions. Make your own
+            call.
+          </p>
+        </div>
+        <Link href="/login?mode=signup" className="public-button">
+          Start your research <ArrowRight size={17} />
+        </Link>
+      </section>
       <footer className="public-footer">
-        <Link href="/contact">Contact & support</Link>
         <Link href="/" className="public-brand">
           <img src="/icon.svg" width="25" height="25" alt="" />
           <span>AURYN</span>
         </Link>
-        <p>Independent research for a more thoughtful market.</p>
+        <p>Business. Price. Perspective.</p>
         <nav aria-label="Legal and support">
+          <Link href="/contact">Contact</Link>
           <Link href="/methodology">Methodology</Link>
           <Link href="/privacy">Privacy</Link>
           <Link href="/terms">Terms</Link>

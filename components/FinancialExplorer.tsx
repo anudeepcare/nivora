@@ -109,7 +109,7 @@ export default function FinancialExplorer({
   flush();
   return (
     <section
-      className="financial-explorer"
+      className="financial-explorer depth-explorer"
       aria-label="Financial chart explorer"
     >
       <header className="section-head">
@@ -206,10 +206,12 @@ export default function FinancialExplorer({
               }
             >
               {series.crossedZero
-                ? series.latest != null && series.latest < 0 ? "Moved from positive to negative" : "Moved from negative to positive"
+                ? series.latest != null && series.latest < 0
+                  ? "Moved from positive to negative"
+                  : "Moved from negative to positive"
                 : series.change == null
-                ? "Change not established"
-                : `${series.change > 0 ? "+" : ""}${series.change.toFixed(1)}${series.changeUnit === "pp" ? " pp" : "%"} over shown period`}
+                  ? "Change not established"
+                  : `${series.change > 0 ? "+" : ""}${series.change.toFixed(1)}${series.changeUnit === "pp" ? " pp" : "%"} over shown period`}
             </span>
           </div>
           {values.length ? (

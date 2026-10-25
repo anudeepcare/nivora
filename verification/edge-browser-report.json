@@ -83,7 +83,10 @@
     "tab": "Value",
     "overflow": false,
     "invalid": false,
-    "errors": []
+    "errors": [
+      "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+      "Refused to execute script from 'http://127.0.0.1:3031/_next/static/chunks/3071.82268a8bab90cfcb.js' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled."
+    ]
   },
   {
     "width": 1440,
@@ -115,7 +118,10 @@
     "tab": "Advanced",
     "overflow": false,
     "invalid": false,
-    "errors": []
+    "errors": [
+      "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+      "Refused to execute script from 'http://127.0.0.1:3031/_next/static/chunks/8559.b18f49cc47b49fef.js' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled."
+    ]
   },
   {
     "width": 1440,
@@ -123,7 +129,10 @@
     "tab": "Options",
     "overflow": false,
     "invalid": false,
-    "errors": []
+    "errors": [
+      "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+      "Refused to execute script from 'http://127.0.0.1:3031/_next/static/chunks/9132.f6b6255bade7c23b.js' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled."
+    ]
   },
   {
     "width": 1440,

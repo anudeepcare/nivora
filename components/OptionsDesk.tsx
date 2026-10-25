@@ -337,7 +337,7 @@ export default function OptionsDesk({
     (c) => c.delta !== null && c.type === "call",
   );
   return (
-    <div className="options-desk options-v2">
+    <div className="options-desk options-v2 depth-options">
       <header className="options-heading">
         <div>
           <span className="eyebrow">Options workspace</span>
@@ -392,7 +392,7 @@ export default function OptionsDesk({
         </p>
       )}
       {!contracts.length ? (
-        <section className="options-empty">
+        <section className="options-empty" hidden={view === "learn"}>
           <Layers3 size={32} />
           <h3>
             {busy
@@ -1067,57 +1067,57 @@ export default function OptionsDesk({
               </details>
             </section>
           )}
-          {view === "learn" && (
-            <section className="options-card">
-              <span className="eyebrow">
-                <BookOpen size={15} /> Read an option in a minute
-              </span>
-              <h3>Start with cost, then risk, then sensitivity.</h3>
-              <div className="options-learn-grid">
-                {[
-                  [
-                    "01",
-                    "Premium",
-                    "The price per share. A $2.00 premium costs $200 for a standard 100-share contract.",
-                  ],
-                  [
-                    "02",
-                    "Expiration",
-                    "Your option has a deadline. An out-of-the-money long option can expire worthless.",
-                  ],
-                  [
-                    "03",
-                    "Delta",
-                    example
-                      ? `This call has delta ${fmt(example.delta, 2)}: a $1 stock increase implies roughly ${amount(example.delta! * 100)} more contract value initially, holding other inputs fixed.`
-                      : "Delta 0.50 means approximately $50 more value per standard call contract for an initial $1 stock rise, other inputs fixed.",
-                  ],
-                  [
-                    "04",
-                    "Gamma",
-                    "How quickly delta changes. High gamma means your exposure can change rapidly as the stock moves.",
-                  ],
-                  [
-                    "05",
-                    "Time & volatility",
-                    "Time decay can reduce a long option’s value. Changes in implied volatility can move its price even if the stock stays flat.",
-                  ],
-                  [
-                    "06",
-                    "Open interest & GEX",
-                    "Open interest counts outstanding contracts. GEX combines it with gamma under explicit sign assumptions; it does not reveal who is buying or dealer direction.",
-                  ],
-                ].map(([n, title, body]) => (
-                  <article key={n}>
-                    <span>{n}</span>
-                    <h4>{title}</h4>
-                    <p>{body}</p>
-                  </article>
-                ))}
-              </div>
-            </section>
-          )}
         </>
+      )}
+      {view === "learn" && (
+        <section className="options-card">
+          <span className="eyebrow">
+            <BookOpen size={15} /> Read an option in a minute
+          </span>
+          <h3>Start with cost, then risk, then sensitivity.</h3>
+          <div className="options-learn-grid">
+            {[
+              [
+                "01",
+                "Premium",
+                "The price per share. A $2.00 premium costs $200 for a standard 100-share contract.",
+              ],
+              [
+                "02",
+                "Expiration",
+                "Your option has a deadline. An out-of-the-money long option can expire worthless.",
+              ],
+              [
+                "03",
+                "Delta",
+                example
+                  ? `This call has delta ${fmt(example.delta, 2)}: a $1 stock increase implies roughly ${amount(example.delta! * 100)} more contract value initially, holding other inputs fixed.`
+                  : "Delta 0.50 means approximately $50 more value per standard call contract for an initial $1 stock rise, other inputs fixed.",
+              ],
+              [
+                "04",
+                "Gamma",
+                "How quickly delta changes. High gamma means your exposure can change rapidly as the stock moves.",
+              ],
+              [
+                "05",
+                "Time & volatility",
+                "Time decay can reduce a long option’s value. Changes in implied volatility can move its price even if the stock stays flat.",
+              ],
+              [
+                "06",
+                "Open interest & GEX",
+                "Open interest counts outstanding contracts. GEX combines it with gamma under explicit sign assumptions; it does not reveal who is buying or dealer direction.",
+              ],
+            ].map(([n, title, body]) => (
+              <article key={n}>
+                <span>{n}</span>
+                <h4>{title}</h4>
+                <p>{body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
       )}
       <footer className="options-disclosure">
         Options can lose their entire premium. Short positions can create

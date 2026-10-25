@@ -8,6 +8,17 @@ import { Help } from "./Ui";
 import CaseRange from "./CaseRange";
 import AnalystTargets from "./AnalystTargets";
 import PriceRiskCases from "./PriceRiskCases";
+import { EvidenceSeries, RsiGraphic } from "./EvidenceGraphics";
+import { overviewValueMessage } from "@/lib/evidence-graphics";
+import {
+  ArrowUpRight,
+  ShieldCheck,
+  TriangleAlert,
+  Sprout,
+  ChartNoAxesCombined,
+  BookOpen,
+  CalendarDays,
+} from "lucide-react";
 import { useProduct } from "./Session";
 
 type Tab = "Thesis" | "Valuation" | "Technicals" | "News";
@@ -82,9 +93,10 @@ export default function EdgeOverview({
   const limits = b.checks
     .filter((c) => c.status === "conflicting")
     .map((c) => c.detail);
-  const scenarioCaution = b.scenarioEligible && b.scenario && edge.value === 'unestablished'
-    ? 'The model assumptions need closer review: the range is unusually optimistic relative to today’s price. These values remain visible as sensitivities, not an established entry cushion.'
-    : null;
+  const scenarioCaution =
+    b.scenarioEligible && b.scenario && edge.value === "unestablished"
+      ? "The model assumptions need closer review: the range is unusually optimistic relative to today’s price. These values remain visible as sensitivities, not an established entry cushion."
+      : null;
   const risk = limits[0] ?? scenarioCaution ?? edge.risk;
   const cases =
     b.scenario && b.scenarioEligible
@@ -133,6 +145,30 @@ export default function EdgeOverview({
       tone: (b.businessNumbers.dilution ?? 0) > 0 ? "caution" : "neutral",
     },
   ].filter((m) => m.value != null && Number.isFinite(m.value));
+  const valueTitle =
+    !b.scenarioEligible && b.priceRisk.available
+      ? "Historical price context"
+      : overviewValueMessage(edge.value, baseChange);
+  const priceCases = cases.length
+    ? cases
+    : b.priceRisk.available
+      ? b.priceRisk.cases.map((c) => ({
+          name: c.name,
+          target: c.target,
+          change: c.change,
+        }))
+      : [];
+  const curve = b.trajectory.map((row) => ({
+    label: row.end.slice(0, 4),
+    value: row.revenue,
+  }));
+  const cashCurve = b.trajectory.map((row) => ({
+    label: row.end.slice(0, 4),
+    value:
+      row.fcf != null && row.revenue != null && row.revenue > 0
+        ? (row.fcf / row.revenue) * 100
+        : null,
+  }));
   return (
     <section className="edge-overview" aria-label="Stock overview">
       <section className="edge-verdict" data-tone={edge.tone}>
@@ -140,26 +176,27 @@ export default function EdgeOverview({
           <span className="edge-eyebrow">
             AURYN VIEW <small>· evidence-led assessment</small>
           </span>
-          <div>
-            {modeControl}
-            <Help
-              label="AURYN Crosscheck"
-              trigger={
-                b.conflicting
+          <Help
+            label="AURYN Crosscheck"
+            trigger={
+              <>
+                <ShieldCheck size={14} />
+                {b.conflicting
                   ? "Check affected inputs"
-                  : "How the evidence fits"
-              }
-            >
-              <p>Checks describe input consistency, not guaranteed accuracy.</p>
-              {b.checks.map((c) => (
-                <p key={c.label}>
-                  <strong>{c.label}</strong> · {c.status}
-                  <br />
-                  {c.detail}
-                </p>
-              ))}
-            </Help>
-          </div>
+                  : "How the evidence fits"}
+              </>
+            }
+          >
+            <p>Checks describe input consistency, not guaranteed accuracy.</p>
+            {b.checks.map((c) => (
+              <p key={c.label}>
+                <strong>{c.label}</strong> · {c.status}
+                <br />
+                {c.detail}
+              </p>
+            ))}
+          </Help>
+          {modeControl}
         </header>
         <h2>{edge.assessment}</h2>
         <p>{edge.reason}</p>
@@ -168,129 +205,325 @@ export default function EdgeOverview({
             Uses the dated settled close, not a live execution price.
           </small>
         )}
-        <div className="edge-readings">
+      </section>
+      <div className="edge-readings">
+        <section className="edge-evidence-link" data-domain="business">
           <button
-            type="button"
-            className="edge-evidence-link"
-            data-tone={edge.business === "strong" ? "positive" : "neutral"}
+            className="evidence-card-title"
             onClick={() => onTab("Thesis")}
           >
-            <span>01 · BUSINESS</span>
+            <span className="evidence-number">1</span>
             <strong>{businessTitle}</strong>
-            <small>
-              {b.businessNumbers.revenueGrowth != null
-                ? `${percent(b.businessNumbers.revenueGrowth, true)} revenue growth`
-                : b.coverage.drivers.slice(0, 2).join(" · ")}
-              {fcfMargin != null ? ` · ${percent(fcfMargin)} FCF margin` : ""}
-            </small>
-            <span className="edge-link-label">Read the operating case →</span>
+            <ArrowUpRight size={16} />
           </button>
+          <p>{b.business.reason}</p>
+          {curve.some((v) => v.value != null) ? (
+            <div className="edge-mini-pair">
+              <EvidenceSeries
+                points={curve}
+                label="Annual revenue"
+                currency={b.businessNumbers.currency}
+              />
+              <EvidenceSeries
+                points={cashCurve}
+                label="FCF margin"
+                kind="line"
+                tone="green"
+                format="percent"
+              />
+            </div>
+          ) : (
+            <div className="edge-sector-evidence">
+              <strong>
+                {b.coverage.family === "crypto"
+                  ? "Network and price evidence"
+                  : "Business-specific lenses"}
+              </strong>
+              <span>{b.coverage.drivers.slice(0, 3).join(" · ")}</span>
+            </div>
+          )}
           <button
-            type="button"
-            className="edge-evidence-link"
-            data-tone="neutral"
+            className="text-button edge-detail-link"
+            onClick={() => onTab("Thesis")}
+          >
+            Read the operating case →
+          </button>
+        </section>
+        <section className="edge-evidence-link" data-domain="price">
+          <button
+            className="evidence-card-title"
             onClick={() => onTab("Valuation")}
           >
-            <span>02 · PRICE</span>
-            <strong>
-              {baseChange != null
-                ? `${percent(baseChange, true)} to the model base case`
-                : "Test what today’s price requires"}
-            </strong>
-            <small>
-              {baseChange != null
-                ? "Conditional scenario, not a guaranteed target"
-                : b.conflicting
-                  ? "Listing inputs need reconciliation; price history remains usable."
-                  : "Compare expectations, analyst targets and the downside assumptions."}
-            </small>
-            <span className="edge-link-label">Explore the assumptions →</span>
+            <span className="evidence-number">2</span>
+            <strong>{valueTitle}</strong>
+            <ArrowUpRight size={16} />
           </button>
+          <p>
+            {!b.scenarioEligible && b.priceRisk.available
+              ? "Past price outcomes over comparable windows. Not a business valuation."
+              : edge.value === "unestablished"
+                ? "Use the assumptions and downside evidence before treating model upside as an opportunity."
+                : baseChange != null
+                  ? `Base ${amount(b.scenario?.base ?? null, b.scenario?.currency ?? r.quote.currency)} versus ${amount(price, r.quote.currency)} today. Conditional, not a guaranteed target.`
+                  : "Compare business expectations with what the price requires."}
+          </p>
+          {priceCases.length > 0 &&
+          (edge.value !== "unestablished" || !b.scenarioEligible) ? (
+            <div className="edge-compact-range">
+              <CaseRange
+                cases={priceCases}
+                price={price}
+                currency={
+                  cases.length
+                    ? (b.scenario?.currency ?? r.quote.currency)
+                    : b.priceRisk.available
+                      ? b.priceRisk.currency
+                      : r.quote.currency
+                }
+              />
+            </div>
+          ) : (
+            <div className="edge-price-review">
+              <span>Current price</span>
+              <strong>{amount(price, r.quote.currency)}</strong>
+              <span>
+                {b.scenarioEligible && b.scenario
+                  ? "Model sensitivity needs review"
+                  : b.priceRisk.available
+                    ? "Historical downside context available below"
+                    : "Company evidence and analyst context below"}
+              </span>
+              <small>
+                {b.scenarioEligible && b.scenario
+                  ? "A wide upside range does not establish fair value."
+                  : "Different models answer different questions."}
+              </small>
+            </div>
+          )}
           <button
-            type="button"
-            className="edge-evidence-link"
-            data-tone={edge.timing === "extended" ? "caution" : "neutral"}
+            className="text-button edge-detail-link"
+            onClick={() => onTab("Valuation")}
+          >
+            Explore the assumptions →
+          </button>
+        </section>
+        <section className="edge-evidence-link" data-domain="timing">
+          <button
+            className="evidence-card-title"
             onClick={() => onTab("Technicals")}
           >
-            <span>03 · TIMING</span>
+            <span className="evidence-number">3</span>
             <strong>{timingTitle}</strong>
-            <small>
-              {b.timing.rsi != null
-                ? `RSI ${b.timing.rsi.toFixed(0)} · ${b.timing.trend} trend`
-                : "Use the dated chart and price levels below."}
-            </small>
-            <span className="edge-link-label">
-              See the technical evidence →
-            </span>
+            <ArrowUpRight size={16} />
           </button>
-        </div>
-      </section>
+          <p>
+            {b.timing.trend} trend. Price studies describe entry conditions, not
+            the strength of the business.
+          </p>
+          <RsiGraphic value={b.timing.rsi} />
+          <dl className="edge-ma-list">
+            {[
+              { label: "Price", value: price },
+              { label: "50-day average", value: b.timing.ma50 },
+              { label: "200-day average", value: b.timing.ma200 },
+            ]
+              .filter((x) => x.value != null)
+              .map((x) => (
+                <div key={x.label}>
+                  <dt>{x.label}</dt>
+                  <dd>{amount(x.value, r.quote.currency)}</dd>
+                </div>
+              ))}
+          </dl>
+          <button
+            className="text-button edge-detail-link"
+            onClick={() => onTab("Technicals")}
+          >
+            See the technical evidence →
+          </button>
+        </section>
+      </div>
       <section
         className="edge-conviction"
         aria-label="What limits this assessment"
       >
+        <span className="edge-risk-symbol">
+          <TriangleAlert size={20} />
+        </span>
         <strong>Why not stronger?</strong>
         <p>{risk}</p>
         <button
           className="text-button"
-          onClick={() => onTab(limits.length ? "Valuation" : "Thesis")}
+          onClick={() =>
+            onTab(limits.length || scenarioCaution ? "Valuation" : "Thesis")
+          }
         >
           Inspect the evidence →
         </button>
       </section>
-      <section
-        className="edge-pace"
-        aria-label="Price-based contribution readings"
-      >
-        <div className="edge-pace-identity">
-          <span className="edge-eyebrow">AURYN PACE</span>
-          <h3>Your price-based accumulation reading</h3>
-          <Help label="AURYN Pace" trigger="Learn Pace">
-            <p>
-              1× means your regular contribution; 2×–4× are larger multiples,
-              not leverage or predicted returns. 0× means the price policy
-              pauses additions; it does not mean sell.
-            </p>
-            <p>
-              The completed-month reading is final for that month. This month’s
-              developing reading can change. Business risks and suitable
-              position size must be reviewed separately.
-            </p>
-            <p>{b.accumulation.reason}</p>
-          </Help>
-        </div>
-        <div className="edge-pace-reading">
-          <small>Completed month · {month(b.accumulation.month)}</small>
+      <div className="edge-action-grid">
+        <section
+          className="edge-pace"
+          aria-label="Price-based contribution readings"
+        >
+          <header>
+            <span className="edge-section-icon">
+              <Sprout size={20} />
+            </span>
+            <div>
+              <span className="edge-eyebrow">AURYN PACE</span>
+              <h3>If considering an addition</h3>
+            </div>
+            <Help label="AURYN Pace" trigger="Learn Pace">
+              <p>
+                1× means your regular contribution; 2×–4× are larger multiples,
+                not leverage or predicted returns. 0× means the price policy
+                pauses additions; it does not mean sell.
+              </p>
+              <p>
+                The completed-month reading is final for that month. This
+                month’s developing reading can change. Business risks and
+                suitable position size must be reviewed separately.
+              </p>
+              <p>{b.accumulation.reason}</p>
+            </Help>
+          </header>
+          <div className="edge-pace-track" aria-hidden="true">
+            <i />
+            {[0, 1, 2, 3, 4].map((n) => (
+              <span
+                key={n}
+                data-selected={edge.pace === n}
+                data-forming={edge.formingPace === n}
+              >
+                {n}×
+              </span>
+            ))}
+          </div>
+          <div className="edge-pace-pair">
+            <div className="edge-pace-reading">
+              <strong>
+                {edge.pace != null ? `${edge.pace}×` : "Daily evidence"}
+              </strong>
+              <span>Completed monthly price signal</span>
+              <small>{month(b.accumulation.month)}</small>
+            </div>
+            <div className="edge-pace-reading">
+              <strong>
+                {edge.formingPace != null
+                  ? `${edge.formingPace}×`
+                  : "Next close"}
+              </strong>
+              <span>Developing · not final</span>
+              <small>
+                {b.accumulation.forming?.month
+                  ? month(b.accumulation.forming.month)
+                  : "Current month"}
+              </small>
+            </div>
+          </div>
+          <p className="edge-pace-explanation">
+            {edge.pace === 0 ? "Price policy pauses additions. " : ""}2× means
+            twice your regular contribution—not twice the return. Business risks
+            reviewed separately.
+          </p>
+        </section>
+        <section className="edge-holder">
+          <header>
+            <span className="edge-section-icon">
+              <ChartNoAxesCombined size={20} />
+            </span>
+            <h3>If already holding</h3>
+          </header>
           <strong>
-            {edge.pace != null ? `${edge.pace}×` : "Review daily conditions"}
+            {ownsPosition ? edge.assessment : "Review the ownership case"}
           </strong>
-          <span>
-            {edge.pace === 0
-              ? "Price policy pauses additions"
-              : edge.pace != null
-                ? "Completed monthly price signal"
-                : "A monthly signal needs consecutive month-end observations."}
+          <p>
+            {edge.disconnect?.text ??
+              "Separate the business thesis from the next purchase. Review position size and the assumptions that would change your view."}
+          </p>
+          <ul>
+            <li>Monitor the next operating results.</li>
+            <li>Check valuation before adding.</li>
+            <li>Reassess if the evidence weakens.</li>
+          </ul>
+        </section>
+        <section className="edge-explainer">
+          <header>
+            <span className="edge-section-icon">
+              <BookOpen size={20} />
+            </span>
+            <h3>
+              {metrics.some((m) => m.label === "FCF margin")
+                ? "What does FCF margin mean?"
+                : "Read the evidence in context"}
+            </h3>
+          </header>
+          {metrics.find((m) => m.label === "FCF margin") ? (
+            <>
+              <strong>
+                {amount(p?.fcf ?? null, p?.currency ?? r.quote.currency, true)}{" "}
+                cash flow /{" "}
+                {amount(
+                  p?.revenue ?? null,
+                  p?.currency ?? r.quote.currency,
+                  true,
+                )}{" "}
+                revenue = {percent(fcfMargin)}
+              </strong>
+              <p>
+                Cash left after capital spending for each dollar of revenue.
+                Working capital and investment timing still matter.
+              </p>
+              <Help
+                label="FCF margin calculation"
+                trigger="See calculation and period"
+              >
+                {metrics.find((m) => m.label === "FCF margin")?.help}
+                <p>Financial period ending {dateLabel(p?.end)}.</p>
+              </Help>
+            </>
+          ) : (
+            <>
+              <p>{b.coverage.method}</p>
+              <Help
+                label="Business-specific evidence"
+                trigger="How to interpret this"
+              >
+                {b.business.reason}
+              </Help>
+            </>
+          )}
+        </section>
+      </div>
+      <div className="edge-bottom">
+        <section>
+          <span className="edge-section-icon">
+            <CalendarDays size={19} />
           </span>
-        </div>
-        <div className="edge-pace-reading">
-          <small>This month so far</small>
-          <strong>
-            {edge.formingPace != null
-              ? `${edge.formingPace}×`
-              : "Follow the next close"}
-          </strong>
-          <span>
-            {b.accumulation.forming?.month
-              ? month(b.accumulation.forming.month) + " · "
-              : ""}
-            Developing · not final
-          </span>
-        </div>
-        <p className="edge-pace-explanation">
-          2× means twice your regular contribution—not twice the return.{" "}
-          <strong>Business risks reviewed separately.</strong>
-        </p>
-      </section>
+          <div>
+            <span className="edge-eyebrow">AURYN CHECKPOINTS</span>
+            <h3>
+              {next
+                ? `Next earnings · ${dateLabel(next.date)}`
+                : "What changes the view?"}
+            </h3>
+            <p>{edge.turningPoint}</p>
+          </div>
+          <button
+            className="text-button"
+            onClick={() => onTab(next ? "News" : "Thesis")}
+          >
+            Follow the evidence →
+          </button>
+        </section>
+        <section>
+          <span className="edge-eyebrow">THE SUPPORTING CASE</span>
+          {supporting.slice(0, 2).map((x) => (
+            <p key={x}>{x}</p>
+          ))}
+        </section>
+      </div>
       <div className="edge-market">
         <section className="edge-chart research-canvas">
           <header>
@@ -305,7 +538,7 @@ export default function EdgeOverview({
           <header>
             <h3>
               {cases.length
-                ? "AURYN model scenarios"
+                ? "Model sensitivities"
                 : b.priceRisk.available
                   ? "Historical price outcomes"
                   : "Price and expectations"}
@@ -314,6 +547,9 @@ export default function EdgeOverview({
               Explore →
             </button>
           </header>
+          {scenarioCaution && (
+            <p className="edge-scenario-caution">{scenarioCaution}</p>
+          )}
           {cases.length ? (
             <>
               <CaseRange
@@ -336,59 +572,13 @@ export default function EdgeOverview({
             </>
           ) : (
             <p className="edge-caption">
-              Read the available company evidence and compare the assumptions
-              required by today’s price. A numeric valuation needs a suitable
-              model and reconciled inputs.
+              A numeric valuation needs a suitable model and reconciled inputs.
+              The business and price evidence remain available independently.
             </p>
           )}
           <AnalystTargets research={r} />
         </section>
       </div>
-      {metrics.length > 0 && (
-        <section className="edge-metrics" aria-label="Business evidence">
-          {metrics.map((m) => (
-            <div key={m.label} data-tone={m.tone}>
-              <Help label={m.label} trigger={m.label}>
-                {m.help}
-              </Help>
-              <strong>
-                {percent(m.value, m.label === "Share count change")}
-              </strong>
-              <small>{m.note}</small>
-            </div>
-          ))}
-        </section>
-      )}
-      <div className="edge-bottom">
-        <section>
-          <span className="edge-eyebrow">AURYN CHECKPOINTS</span>
-          <h3>
-            {next
-              ? `Next earnings · ${dateLabel(next.date)}`
-              : "What changes the view?"}
-          </h3>
-          <p>{edge.turningPoint}</p>
-          <button
-            className="text-button"
-            onClick={() => onTab(next ? "News" : "Thesis")}
-          >
-            Follow the evidence →
-          </button>
-        </section>
-        <section>
-          <span className="edge-eyebrow">THE SUPPORTING CASE</span>
-          {supporting.slice(0, 2).map((x) => (
-            <p key={x}>{x}</p>
-          ))}
-        </section>
-      </div>
-      {edge.disconnect && (
-        <section className="edge-disconnect">
-          <span className="edge-eyebrow">BUSINESS AND PRICE</span>
-          <h3>{edge.disconnect.title}</h3>
-          <p>{edge.disconnect.text}</p>
-        </section>
-      )}
       <details className="edge-method" open={pro}>
         <summary>How AURYN reaches this assessment</summary>
         <p>
@@ -401,6 +591,19 @@ export default function EdgeOverview({
           Research thresholds are experimental and not independently validated
           for investment performance.
         </p>
+        <div className="edge-metrics">
+          {metrics.map((m) => (
+            <div key={m.label} data-tone={m.tone}>
+              <Help label={m.label} trigger={m.label}>
+                {m.help}
+              </Help>
+              <strong>
+                {percent(m.value, m.label === "Share count change")}
+              </strong>
+              <small>{m.note}</small>
+            </div>
+          ))}
+        </div>
       </details>
     </section>
   );

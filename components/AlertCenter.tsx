@@ -79,7 +79,7 @@ export default function AlertCenter() {
     );
   }
   return (
-    <section>
+    <section className="alerts-studio">
       <PageHeading
         title="Alerts"
         subtitle="Your levels, monthly zones and new company filings. One focused history."

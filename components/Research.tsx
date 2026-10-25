@@ -44,7 +44,7 @@ import type {
   Company,
   Quote,
 } from "@/lib/types";
-import { perspective } from "@/lib/analysis";
+import { perspective, latestFinancialEvidence } from "@/lib/analysis";
 import { restoreWhenReady, browserScrollEnvironment } from "@/lib/navigation";
 import { KeyFinancialMetrics, CaseHighlights } from "./ResearchOverview";
 import { amount, percent, dateLabel, quoteTime } from "@/lib/format";
@@ -388,6 +388,17 @@ export default function Research({ symbol }: { symbol: string }) {
     </section>
   );
   const headerContext = headerMarketContext(r);
+  const headerFinancial = latestFinancialEvidence(r).latest;
+  const ordinaryCompany = !/bank|insurance|reit/i.test(
+    (r.company.sector ?? "") + " " + (r.evidence?.profile?.industry ?? ""),
+  );
+  const headerMargin =
+    ordinaryCompany &&
+    headerFinancial?.revenue != null &&
+    headerFinancial.revenue > 0 &&
+    headerFinancial.fcf != null
+      ? (headerFinancial.fcf / headerFinancial.revenue) * 100
+      : null;
   return (
     <article className="research-page" data-research-mode={preferences.detail}>
       <header className="page-head security-head">
@@ -400,24 +411,6 @@ export default function Research({ symbol }: { symbol: string }) {
             </p>
             <div className="security-context">
               {headerContext.sector && <span>{headerContext.sector}</span>}
-              {headerContext.marketCap != null && (
-                <span
-                  title={
-                    headerContext.asOf
-                      ? `Reported market capitalization · ${dateLabel(headerContext.asOf)}`
-                      : undefined
-                  }
-                >
-                  Market cap{" "}
-                  <b>
-                    {amount(
-                      headerContext.marketCap,
-                      headerContext.currency,
-                      true,
-                    )}
-                  </b>
-                </span>
-              )}
             </div>
           </div>
         </div>
@@ -455,7 +448,62 @@ export default function Research({ symbol }: { symbol: string }) {
         </div>
       </header>
 
-      <StockFacts research={r} />
+      <div className="research-header-evidence">
+        <dl>
+          {headerFinancial?.revenue != null && (
+            <div>
+              <dt>
+                Revenue{" "}
+                <Help label="Revenue" trigger="How to read">
+                  <p>
+                    Revenue is sales reported for this financial period, before
+                    expenses. It is not profit.
+                  </p>
+                  <p>
+                    {dateLabel(headerFinancial.end)} ·{" "}
+                    {headerFinancial.currency}
+                  </p>
+                </Help>
+              </dt>
+              <dd>
+                {amount(
+                  headerFinancial.revenue,
+                  headerFinancial.currency,
+                  true,
+                )}
+              </dd>
+            </div>
+          )}
+          {headerMargin != null && (
+            <div data-tone={headerMargin < 0 ? "risk" : "positive"}>
+              <dt>
+                FCF margin{" "}
+                <Help label="Free cash flow margin" trigger="How to read">
+                  <p>
+                    Operating cash flow less capital spending, divided by
+                    revenue. Working capital and investment spending can affect
+                    the result.
+                  </p>
+                  <p>{dateLabel(headerFinancial?.end)}</p>
+                </Help>
+              </dt>
+              <dd>{percent(headerMargin)}</dd>
+            </div>
+          )}
+          {headerContext.marketCap != null && (
+            <div>
+              <dt>Market cap</dt>
+              <dd>
+                {amount(headerContext.marketCap, headerContext.currency, true)}
+              </dd>
+            </div>
+          )}
+        </dl>
+        <details className="research-header-more">
+          <summary>More market context</summary>
+          <StockFacts research={r} />
+        </details>
+      </div>
       <div
         ref={tabsAnchor}
         className="research-tab-anchor"

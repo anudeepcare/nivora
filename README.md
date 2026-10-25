@@ -1,3 +1,7 @@
+# Approved whole-app experience
+
+Start with [this release and preprod instructions](docs/APPROVED_EXPERIENCE_RELEASE.md). Full source; production remains unchanged.
+
 # Decision Canvas preprod handoff
 
 Start with [release and deployment instructions](docs/DECISION_CANVAS_RELEASE.md). Full source; no production deployment performed.

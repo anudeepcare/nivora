@@ -23,50 +23,232 @@ export function Settings() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
-  const [account, setAccount] = useState<{email: string; providers: string[]} | null>(null);
+  const [section, setSection] = useState<"appearance" | "research" | "account">(
+    "appearance",
+  );
+  const [account, setAccount] = useState<{
+    email: string;
+    providers: string[];
+  } | null>(null);
   useEffect(() => {
-    if (demo && demo.routePrefix!=="") return;
+    if (demo && demo.routePrefix !== "") return;
     let active = true;
-    authClient().auth.getUser().then(({data,error}) => {
-      if (!active) return;
-      if (error) {setMessage("Account details could not be loaded. Please try again.");return;}
-      if (data.user) setAccount({email:data.user.email || "", providers:[...new Set((data.user.identities || []).map(x=>x.provider))]});
-    }).catch(() => {if (active) setMessage("Account details could not be loaded. Please try again.");});
-    return () => {active = false;};
+    authClient()
+      .auth.getUser()
+      .then(({ data, error }) => {
+        if (!active) return;
+        if (error) {
+          setMessage("Account details could not be loaded. Please try again.");
+          return;
+        }
+        if (data.user)
+          setAccount({
+            email: data.user.email || "",
+            providers: [
+              ...new Set((data.user.identities || []).map((x) => x.provider)),
+            ],
+          });
+      })
+      .catch(() => {
+        if (active)
+          setMessage("Account details could not be loaded. Please try again.");
+      });
+    return () => {
+      active = false;
+    };
   }, [demo]);
   async function update(e: React.FormEvent) {
     e.preventDefault();
-    if (demo && demo.routePrefix!=="") {setMessage("Account changes are disabled in the preview.");return;}
-    setBusy(true);setMessage("");
+    if (demo && demo.routePrefix !== "") {
+      setMessage("Account changes are disabled in the preview.");
+      return;
+    }
+    setBusy(true);
+    setMessage("");
     try {
-      const {error} = await authClient().auth.updateUser({password});
+      const { error } = await authClient().auth.updateUser({ password });
       if (error) throw error;
-      setPassword("");setMessage("Password updated.");
-    } catch (e) {setMessage(e instanceof Error ? e.message : "Password update failed.");}
-    finally {setBusy(false);}
+      setPassword("");
+      setMessage("Password updated.");
+    } catch (e) {
+      setMessage(e instanceof Error ? e.message : "Password update failed.");
+    } finally {
+      setBusy(false);
+    }
   }
-  const email = account?.email || workspace?.email || (demo ? "Design preview" : "Loading account…");
-  return <section className="settings-page">
-    <PageHeading title="Your AURYN" subtitle="A workspace that feels like yours."/>
-    <Link className="settings-plan-entry" href="/plans"><span><strong>Membership</strong><small>Your plan, usage and billing</small></span><ArrowUpRight size={20}/></Link>
-    <section className="panel settings-account" aria-labelledby="account-title">
-      <header className="settings-profile"><span className="settings-profile-avatar" aria-hidden="true">{email[0]?.toUpperCase() || "A"}</span><div><span className="eyebrow">Account</span><h2 id="account-title">Your space. Your perspective.</h2><p>{email}</p></div></header>
-      {!!account?.providers.length && <div className="account-identities" aria-label="Connected sign-in methods">{account.providers.map(provider=><span key={provider}>{provider === "google" ? "Google" : provider === "x" || provider === "twitter" ? "X" : provider === "email" ? "Email" : provider}</span>)}</div>}
-      <div className="settings-security">
-        <h3>Security</h3><p>Keep access to your account in your hands.</p>
-        <details className="settings-password"><summary>Set or change password</summary><form className="password-form" onSubmit={update}><label>New password<input type="password" minLength={8} autoComplete="new-password" required value={password} onChange={e=>setPassword(e.target.value)}/></label><button className="button primary" disabled={busy || (!!demo && demo.routePrefix !== "")}>{busy ? "Saving…" : "Update password"}</button></form></details>
-        <button type="button" className="settings-signout" disabled={(!!demo && demo.routePrefix!=="") || busy} onClick={async()=>{
-          setBusy(true);setMessage("");
-          try {await signOutAndRedirect();}
-          catch(error){setMessage(error instanceof Error ? error.message : "Could not sign out. Please try again.");setBusy(false);}
-        }}>Sign out of AURYN <ArrowUpRight size={16}/></button>
+  const email =
+    account?.email ||
+    workspace?.email ||
+    (demo ? "Design preview" : "Loading account…");
+  const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
+  return (
+    <section className="settings-page account-studio">
+      <PageHeading
+        title="Your AURYN"
+        subtitle="A clear space for the way you research."
+      />
+      <div className="settings-studio-layout">
+        <aside className="settings-studio-nav">
+          <nav aria-label="Settings categories">
+            {(
+              [
+                ["appearance", "Display & reading"],
+                ["research", "Research preferences"],
+                ["account", "Account & security"],
+              ] as const
+            ).map(([id, label]) => (
+              <button
+                type="button"
+                key={id}
+                aria-pressed={section === id}
+                aria-controls={`settings-page-${id}`}
+                onClick={() => setSection(id)}
+              >
+                {label}
+                <ArrowUpRight size={15} />
+              </button>
+            ))}
+            <Link href={`${prefix}/plans`}>
+              Plans & billing
+              <ArrowUpRight size={15} />
+            </Link>
+            <Link href={`${prefix}/alerts`}>
+              Alerts
+              <ArrowUpRight size={15} />
+            </Link>
+            <Link href="/help">
+              Help & support
+              <ArrowUpRight size={15} />
+            </Link>
+          </nav>
+          <div className="settings-studio-note">
+            <ShieldCheck size={19} />
+            <p>
+              Your account stays yours. Appearance preferences are saved on this
+              device.
+            </p>
+          </div>
+        </aside>
+        <div className="settings-studio-content">
+          <section
+            id="settings-page-appearance"
+            className="panel settings-appearance"
+            hidden={section !== "appearance"}
+          >
+            <DisplayPreferences />
+          </section>
+          <section
+            id="settings-page-research"
+            className="panel settings-research-panel"
+            hidden={section !== "research"}
+          >
+            <span className="eyebrow">Your perspective</span>
+            <h2>Research your way.</h2>
+            <p>
+              Choose the context and level of detail that help you read the
+              evidence.
+            </p>
+            <ResearchPreferenceControls />
+          </section>
+          <section
+            id="settings-page-account"
+            className="panel settings-account"
+            aria-labelledby="account-title"
+            hidden={section !== "account"}
+          >
+            <header className="settings-profile">
+              <span className="settings-profile-avatar" aria-hidden="true">
+                {email[0]?.toUpperCase() || "A"}
+              </span>
+              <div>
+                <span className="eyebrow">Your account</span>
+                <h2 id="account-title">Account & security</h2>
+                <p>{email}</p>
+              </div>
+            </header>
+            {!!account?.providers.length && (
+              <div
+                className="account-identities"
+                aria-label="Connected sign-in methods"
+              >
+                {account.providers.map((provider) => (
+                  <span key={provider}>
+                    {provider === "google"
+                      ? "Google"
+                      : provider === "x" || provider === "twitter"
+                        ? "X"
+                        : provider === "email"
+                          ? "Email"
+                          : provider}
+                  </span>
+                ))}
+              </div>
+            )}
+            <div className="settings-security">
+              <h3>Password</h3>
+              <p>Choose a strong password you don’t use elsewhere.</p>
+              <details className="settings-password">
+                <summary>Set or change password</summary>
+                <form className="password-form" onSubmit={update}>
+                  <label>
+                    New password
+                    <input
+                      type="password"
+                      minLength={8}
+                      autoComplete="new-password"
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                  </label>
+                  <button
+                    className="button primary"
+                    disabled={busy || (!!demo && demo.routePrefix !== "")}
+                  >
+                    {busy ? "Saving…" : "Update password"}
+                  </button>
+                </form>
+              </details>
+              <button
+                type="button"
+                className="settings-signout"
+                disabled={(!!demo && demo.routePrefix !== "") || busy}
+                onClick={async () => {
+                  setBusy(true);
+                  setMessage("");
+                  try {
+                    await signOutAndRedirect();
+                  } catch (error) {
+                    setMessage(
+                      error instanceof Error
+                        ? error.message
+                        : "Could not sign out. Please try again.",
+                    );
+                    setBusy(false);
+                  }
+                }}
+              >
+                Sign out of AURYN <ArrowUpRight size={16} />
+              </button>
+            </div>
+          </section>
+          {message && (
+            <div className="settings-feedback" role="status">
+              <Notice>{message}</Notice>
+            </div>
+          )}
+          <nav className="settings-page-links" aria-label="Help and legal">
+            <Link href="/help">
+              Help & support <ArrowUpRight size={14} />
+            </Link>
+            <Link href="/privacy">Privacy</Link>
+            <Link href="/terms">Terms</Link>
+            <Link href="/risk">Investment risks</Link>
+          </nav>
+        </div>
       </div>
     </section>
-
-    <section className="panel settings-appearance"><DisplayPreferences/><details className="settings-research"><summary>Research preferences</summary><ResearchPreferenceControls/></details><small className="settings-device-note">Appearance and reading preferences are saved on this device.</small></section>
-    {message && <div className="settings-feedback" role="status"><Notice>{message}</Notice></div>}
-    <nav className="settings-page-links" aria-label="Help and legal"><Link href="/help">Help & support <ArrowUpRight size={16}/></Link><Link href="/privacy">Privacy <ArrowUpRight size={16}/></Link><Link href="/terms">Terms <ArrowUpRight size={16}/></Link><Link href="/risk">Investment risks <ArrowUpRight size={16}/></Link></nav>
-  </section>;
+  );
 }
 
 export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {

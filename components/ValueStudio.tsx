@@ -31,7 +31,7 @@ export default function ValueStudio({
     ...yields.flatMap((m) => (m.value == null ? [] : [m.value])),
   );
   return (
-    <div className="value-studio">
+    <div className="value-studio depth-value">
       <header className="desk-heading">
         <div>
           <span className="eyebrow">Value · what the price implies</span>

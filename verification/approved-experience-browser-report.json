@@ -1,0 +1,1286 @@
+[
+  {
+    "width": 1440,
+    "theme": "light",
+    "route": "/",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "route": "/sample",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "route": "/login",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "route": "/login?mode=signup",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "route": "/preview/overview",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 10,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "route": "/preview/research/MSFT",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": true,
+    "headerTop": 10,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "interaction": "Metric explanation open and close",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "tab": "Business",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "tab": "Financials",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "tab": "Value",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "tab": "Technicals",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "tab": "Analysts",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "tab": "News",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "tab": "Advanced",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "tab": "Options",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "route": "/preview/portfolio",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 10,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "route": "/preview/watchlist",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 10,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "route": "/reset-password",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "route": "/contact",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "route": "/help",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "route": "/preview/settings",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 10,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "route": "/preview/plans",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 10,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "route": "/",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "route": "/sample",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "route": "/login",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "route": "/login?mode=signup",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "route": "/preview/overview",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 10,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "route": "/preview/research/MSFT",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": true,
+    "headerTop": 10,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "interaction": "Metric explanation open and close",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "tab": "Business",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "tab": "Financials",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "tab": "Value",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "tab": "Technicals",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "tab": "Analysts",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "tab": "News",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "tab": "Advanced",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "tab": "Options",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "route": "/preview/portfolio",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 10,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "route": "/preview/watchlist",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 10,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "route": "/reset-password",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "route": "/contact",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "route": "/help",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "route": "/preview/settings",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 10,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "route": "/preview/plans",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 10,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "light",
+    "route": "/",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "light",
+    "route": "/sample",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "light",
+    "route": "/login",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "light",
+    "route": "/login?mode=signup",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "light",
+    "route": "/preview/overview",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "light",
+    "route": "/preview/research/MSFT",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": true,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "light",
+    "interaction": "Metric explanation open and close",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "light",
+    "tab": "Business",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "light",
+    "tab": "Financials",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "light",
+    "tab": "Value",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "light",
+    "tab": "Technicals",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "light",
+    "tab": "Analysts",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "light",
+    "tab": "News",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "light",
+    "tab": "Advanced",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "light",
+    "tab": "Options",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "light",
+    "route": "/preview/portfolio",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "light",
+    "route": "/preview/watchlist",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "light",
+    "route": "/reset-password",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "light",
+    "route": "/contact",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "light",
+    "route": "/help",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "light",
+    "route": "/preview/settings",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "light",
+    "route": "/preview/plans",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "dark",
+    "route": "/",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "dark",
+    "route": "/sample",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "dark",
+    "route": "/login",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "dark",
+    "route": "/login?mode=signup",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "dark",
+    "route": "/preview/overview",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "dark",
+    "route": "/preview/research/MSFT",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": true,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "dark",
+    "interaction": "Metric explanation open and close",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "dark",
+    "tab": "Business",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "dark",
+    "tab": "Financials",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "dark",
+    "tab": "Value",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "dark",
+    "tab": "Technicals",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "dark",
+    "tab": "Analysts",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "dark",
+    "tab": "News",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "dark",
+    "tab": "Advanced",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "dark",
+    "tab": "Options",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "dark",
+    "route": "/preview/portfolio",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "dark",
+    "route": "/preview/watchlist",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "dark",
+    "route": "/reset-password",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "dark",
+    "route": "/contact",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "dark",
+    "route": "/help",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "dark",
+    "route": "/preview/settings",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 402,
+    "theme": "dark",
+    "route": "/preview/plans",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "route": "/",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "route": "/sample",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "route": "/login",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "route": "/login?mode=signup",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "route": "/preview/overview",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "route": "/preview/research/MSFT",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": true,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "interaction": "Metric explanation open and close",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "tab": "Business",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "tab": "Financials",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "tab": "Value",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "tab": "Technicals",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "tab": "Analysts",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "tab": "News",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "tab": "Advanced",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "tab": "Options",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "route": "/preview/portfolio",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "route": "/preview/watchlist",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "route": "/reset-password",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "route": "/contact",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "route": "/help",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "route": "/preview/settings",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "light",
+    "route": "/preview/plans",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "route": "/",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "route": "/sample",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "route": "/login",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "route": "/login?mode=signup",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "route": "/preview/overview",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "route": "/preview/research/MSFT",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": true,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "interaction": "Metric explanation open and close",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "tab": "Business",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "tab": "Financials",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "tab": "Value",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "tab": "Technicals",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "tab": "Analysts",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "tab": "News",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "tab": "Advanced",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "tab": "Options",
+    "overflow": false,
+    "invalid": false,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "route": "/preview/portfolio",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "route": "/preview/watchlist",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "route": "/reset-password",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "route": "/contact",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "route": "/help",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": null,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "route": "/preview/settings",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "route": "/preview/plans",
+    "status": 200,
+    "overflow": false,
+    "invalid": false,
+    "edge": false,
+    "headerTop": 0,
+    "errors": []
+  }
+]

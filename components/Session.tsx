@@ -18,6 +18,7 @@ import type { Session } from "@supabase/supabase-js";
 import { api, authClient } from "@/lib/client";
 import type { Research, Workspace } from "@/lib/types";
 import { Logo } from "./Ui";
+import { PublicSample } from "./PublicLanding";
 import { readResource, resourceSnapshot } from "@/lib/resource-cache";
 import { accountCache, clearAccountCache } from "@/lib/account-cache";
 export type DemoData = {
@@ -560,42 +561,29 @@ function Login({ initialError }: { initialError: string }) {
     }
   }
   return (
-    <main className="entry-page">
+    <main className="entry-page atlas-entry">
       <section className="entry-art" aria-label="About AURYN">
         <a href="/" className="entry-art-brand">
           <Logo />
         </a>
-        <div
-          className="entry-evidence-story"
-          aria-label="The AURYN research workflow"
-        >
-          <div>
-            <span>01 · AURYN VIEW</span>
-            <h3>Understand the case.</h3>
-            <p>What supports it. What limits conviction.</p>
-          </div>
-          <div>
-            <span>02 · AURYN PACE</span>
-            <h3>Put timing in context.</h3>
-            <p>Price conditions alongside business evidence.</p>
-          </div>
-          <div>
-            <span>03 · CHECKPOINTS</span>
-            <h3>Know what to watch next.</h3>
-            <p>Follow the conditions that change the view.</p>
-          </div>
-        </div>
         <div className="entry-art-copy">
-          <span>Business. Price. Perspective.</span>
-          <h2>Make the evidence useful.</h2>
-          <p>
-            Business, value and timing.
+          <span>BUSINESS. PRICE. PERSPECTIVE.</span>
+          <h2>
+            Your next decision,
             <br />
-            One thoughtful research workspace.
+            <em>in focus.</em>
+          </h2>
+          <p>
+            Understand the case, challenge the assumptions and know what to
+            watch next.
           </p>
         </div>
+        <div className="entry-product-preview">
+          <PublicSample />
+        </div>
         <small>
-          Research to inform your judgment. Investing involves risk.
+          Illustrative product preview. Research to inform your judgment;
+          investing involves risk.
         </small>
       </section>
       <section className="entry-form">
@@ -606,9 +594,9 @@ function Login({ initialError }: { initialError: string }) {
 
         <h1>
           {mode === "login"
-            ? "Welcome to AURYN."
+            ? "Welcome back."
             : mode === "signup"
-              ? "Create your AURYN account."
+              ? "Create your account."
               : "Reset your password."}
         </h1>
         <p>
@@ -704,6 +692,7 @@ function Login({ initialError }: { initialError: string }) {
               autoCorrect="off"
               spellCheck={false}
               required
+              placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />

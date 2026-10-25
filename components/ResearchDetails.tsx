@@ -13,7 +13,14 @@ import OwnershipPicture from "./OwnershipPicture";
 import Analyst from "./Analyst";
 import { Help, DataStamp } from "./Ui";
 
-export function TechnicalPicture({research:r}:{research:Research;dca:React.ReactNode}) {return <TechnicalDashboard research={r}/>;}
+export function TechnicalPicture({
+  research: r,
+}: {
+  research: Research;
+  dca: React.ReactNode;
+}) {
+  return <TechnicalDashboard research={r} />;
+}
 
 export function ThesisPicture({ research: r }: { research: Research }) {
   const e = useMemo(() => latestFinancialEvidence(r), [r]);
@@ -26,7 +33,7 @@ export function ThesisPicture({ research: r }: { research: Research }) {
     { label: "Challenges the case", rows: c.risks, tone: "negative" },
   ];
   return (
-    <>
+    <div className="depth-thesis">
       <header className="section-head">
         <div>
           <h2>The investment case</h2>
@@ -36,7 +43,12 @@ export function ThesisPicture({ research: r }: { research: Research }) {
       <div className="grid2 thesis-evidence">
         {groups.map((g) => (
           <section className="thesis-group" data-tone={g.tone} key={g.label}>
-            <h3 className={g.tone}>{g.label}</h3>
+            <h3 className={g.tone}>
+              <span className="thesis-status" aria-hidden="true">
+                {g.tone === "positive" ? "✓" : "!"}
+              </span>
+              {g.label}
+            </h3>
             {g.rows.slice(0, 3).map((x) => (
               <div className="driver" key={x.key}>
                 <h3>{x.title}</h3>
@@ -54,7 +66,9 @@ export function ThesisPicture({ research: r }: { research: Research }) {
               <p className="context-note">
                 {r.company.assetType === "crypto"
                   ? "Evaluate supply, network usage, liquidity and protocol risks. Corporate financial ratios do not apply."
-                  : g.tone==='negative'?"No measured downside factors were established in this snapshot. This does not establish low risk. Test valuation assumptions, customer concentration, funding needs and the next earnings report.":"No supporting factors were established in this snapshot. Review original disclosures before drawing a conclusion."}
+                  : g.tone === "negative"
+                    ? "No measured downside factors were established in this snapshot. This does not establish low risk. Test valuation assumptions, customer concentration, funding needs and the next earnings report."
+                    : "No supporting factors were established in this snapshot. Review original disclosures before drawing a conclusion."}
               </p>
             )}
           </section>
@@ -89,7 +103,6 @@ export function ThesisPicture({ research: r }: { research: Research }) {
       </div>
       <OwnershipPicture research={r} />
       <Analyst research={r} compact />
-
-    </>
+    </div>
   );
 }

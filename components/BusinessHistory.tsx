@@ -14,7 +14,7 @@ export default function BusinessHistory({
   );
   if (!h || !h.periods) return null;
   return (
-    <section className="business-history panel">
+    <section className="business-history depth-business-history">
       <header className="section-head">
         <div>
           <span className="eyebrow">Business durability</span>

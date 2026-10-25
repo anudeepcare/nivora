@@ -1,10 +1,8 @@
 "use client";
 
-import {FeatureGate} from "./Access";
+import { FeatureGate } from "./Access";
 import PortfolioExposure from "./PortfolioExposure";
-import {
-  pricedInvestmentReturns,
-} from "@/lib/product-attention";
+import { pricedInvestmentReturns } from "@/lib/product-attention";
 import PortfolioRiskSummary, {
   usePortfolioCalendar,
 } from "./PortfolioRiskSummary";
@@ -441,7 +439,26 @@ export function ResearchHome() {
 }
 export function Overview() {
   const quotes = useWorkspaceQuotes();
-  return <FeatureGate feature="home" fallback={<section className="membership-panel"><span className="eyebrow">Your AURYN</span><h1>A clear place to begin.</h1><p>Search a company, save your favorites and review your holdings.</p><Link className="button primary" href="/research">Find a company</Link><Link className="button" href="/portfolio">View holdings</Link></section>}><HomeBriefing quotes={quotes.data || {}} error={quotes.error}/></FeatureGate>;
+  return (
+    <FeatureGate
+      feature="home"
+      fallback={
+        <section className="membership-panel">
+          <span className="eyebrow">Your AURYN</span>
+          <h1>A clear place to begin.</h1>
+          <p>Search a company, save your favorites and review your holdings.</p>
+          <Link className="button primary" href="/research">
+            Find a company
+          </Link>
+          <Link className="button" href="/portfolio">
+            View holdings
+          </Link>
+        </section>
+      }
+    >
+      <HomeBriefing quotes={quotes.data || {}} error={quotes.error} />
+    </FeatureGate>
+  );
 }
 
 function InvestmentRows({
@@ -453,76 +470,99 @@ function InvestmentRows({
   quotes: Quotes;
   remove?: (symbol: string) => void;
 }) {
-  const { demo } = useProduct(),
-    prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
+  const { demo } = useProduct();
+  const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   return symbols.length ? (
-    <div className="investment-list">
-      {symbols.map((symbol) => {
-        const q = quotes[symbol];
-        return (
-          <div className="investment-row" key={symbol}>
-            <Link
-              className="investment-identity"
-              href={`${prefix}/research/${encodeURIComponent(symbol.replace("/", "-"))}`}
-            >
-              <SecurityLogo symbol={symbol} />
-              <span>
-                <b>{symbol}</b>
-                <small className="investment-company" title={q?.company?.name}>
-                  {q?.company?.name ||
-                    (symbol.includes("/") ? "Crypto pair" : "Saved investment")}
-                </small>
-              </span>
-            </Link>
-            <div className="investment-price">
-              <strong>{amount(q?.quote?.price, q?.quote?.currency)}</strong>
-              <small
-                className={
-                  q?.quote?.changePct == null
-                    ? "muted"
-                    : q.quote.changePct < 0
-                      ? "red"
-                      : "green"
-                }
-              >
-                {!q?.quote
-                  ? q?.error
-                    ? "Unavailable"
-                    : "Loading…"
-                  : q.quote.stale
-                    ? "Older quote"
-                    : percent(q.quote.changePct, true)}
-              </small>
-              <span className="investment-asof">
-                {q?.quote ? (
-                  <DataStamp source={q.quote.source} asOf={q.quote.asOf} />
-                ) : (
-                  <small className="quote-stamp" title={q?.error}>
-                    {q?.error ? "Quote unavailable" : "Checking quote"}
-                  </small>
-                )}
-              </span>
-            </div>
-            {remove ? (
-              <button
-                className="icon-button"
-                aria-label={`Remove ${symbol} from watchlist`}
-                onClick={() => remove(symbol)}
-              >
-                <Trash2 size={16} />
-              </button>
-            ) : (
-              <Link
-                className="icon-button"
-                aria-label={`Research ${symbol}`}
-                href={`${prefix}/research/${encodeURIComponent(symbol.replace("/", "-"))}`}
-              >
-                <ArrowUpRight size={17} />
-              </Link>
-            )}
-          </div>
-        );
-      })}
+    <div className="watchlist-table-wrap investment-list">
+      <table className="watchlist-table">
+        <caption className="sr-only">
+          Your followed companies, latest available prices and observation
+          times.
+        </caption>
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>Price</th>
+            <th>Today</th>
+            <th>Price observed</th>
+            <th>
+              <span className="sr-only">Actions</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {symbols.map((symbol) => {
+            const row = quotes[symbol],
+              quote = row?.quote;
+            const href = `${prefix}/research/${encodeURIComponent(symbol.replace("/", "-"))}`;
+            return (
+              <tr key={symbol}>
+                <td className="watch-company">
+                  <Link className="investment-identity" href={href}>
+                    <SecurityLogo symbol={symbol} />
+                    <span>
+                      <b>{symbol}</b>
+                      <small className="investment-company">
+                        {row?.company?.name ||
+                          (symbol.includes("/")
+                            ? "Crypto pair"
+                            : "Saved company")}
+                      </small>
+                    </span>
+                  </Link>
+                </td>
+                <td className="watch-price">
+                  <strong>{amount(quote?.price, quote?.currency)}</strong>
+                  <small>{quote?.currency || ""}</small>
+                </td>
+                <td
+                  className={`watch-change ${quote?.changePct == null ? "muted" : quote.changePct < 0 ? "negative" : "positive"}`}
+                >
+                  {percent(quote?.changePct, true)}
+                </td>
+                <td className="watch-date">
+                  {quote ? (
+                    <>
+                      <time dateTime={quote.asOf ?? undefined}>
+                        {quoteTime(quote.asOf, true)}
+                      </time>
+                      <small>
+                        {quote.stale
+                          ? "Older usable observation"
+                          : quote.session || "Latest available observation"}
+                      </small>
+                    </>
+                  ) : (
+                    <small>
+                      {row?.error
+                        ? "Price update needs another check"
+                        : "Checking the latest observation"}
+                    </small>
+                  )}
+                </td>
+                <td className="watch-actions">
+                  <Link
+                    className="icon-button"
+                    aria-label={`Research ${symbol}`}
+                    href={href}
+                  >
+                    <ArrowUpRight size={17} />
+                  </Link>
+                  {remove && (
+                    <button
+                      className="icon-button watch-remove"
+                      aria-label={`Remove ${symbol} from watchlist`}
+                      onClick={() => remove(symbol)}
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  )}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   ) : (
     <Empty title="Your next idea starts here" icon={Bookmark}>
@@ -560,7 +600,7 @@ export function Watchlist() {
     <section className="watchlist-page">
       <PageHeading
         title="Watchlist"
-        subtitle="Keep your next decisions within reach."
+        subtitle="Follow the companies you want to understand. Open any name for the full picture."
         action={
           <button
             className="button primary"
@@ -574,6 +614,19 @@ export function Watchlist() {
       {(workspaceError || error) && (
         <Notice error>{workspaceError || error}</Notice>
       )}
+      <div className="watchlist-intro-strip">
+        <div>
+          <Bookmark size={18} />
+          <span>
+            <strong>{workspace?.watchlist.length ?? 0} followed</strong>
+            <small>Your personal research universe</small>
+          </span>
+        </div>
+        <p>
+          Price is one part of the case. Open research to review business
+          strength, valuation and AURYN Pace together.
+        </p>
+      </div>
       <div className="watchlist-toolbar">
         <div className="segments" aria-label="Watchlist asset type">
           {(["All", "Stocks", "Crypto"] as const).map((t) => (
@@ -750,7 +803,10 @@ export function Portfolio() {
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
     [query, setQuery] = useWorkspaceFilter("portfolio"),
-    [removing, setRemoving] = useState<string | null>(null);
+    [removing, setRemoving] = useState<string | null>(null),
+    [portfolioTab, setPortfolioTab] = useState<
+      "holdings" | "allocation" | "risk"
+    >("holdings");
   const calendar = usePortfolioCalendar(workspace?.positions ?? []);
   const portfolioDay = new Intl.DateTimeFormat("en-CA", {
     timeZone: "America/Chicago",
@@ -853,7 +909,7 @@ export function Portfolio() {
     <section className="portfolio-page">
       <PageHeading
         title="Portfolio"
-        subtitle="Your holdings, current prices and unrealized returns."
+        subtitle="See what you own, where you are exposed and what deserves a closer look."
         action={
           <button className="button primary" onClick={() => edit(null)}>
             <Plus size={17} />
@@ -997,75 +1053,114 @@ export function Portfolio() {
             </p>
           )}
         </section>
-        <FeatureGate feature="portfolio" fallback={null}><PortfolioCharts positions={positions} quotes={q} /></FeatureGate>
       </div>
-      <FeatureGate feature="portfolio" fallback={null}>
-      <PortfolioRiskSummary
-        positions={positions}
-        quotes={q}
-        calendar={calendar}
-      />
-      <SectorBenchmarks />
-      </FeatureGate>
-      <section className="panel portfolio-holdings support">
-        <header className="section-heading">
-          <h2>
-            Holdings <span className="count">{positions.length}</span>
-          </h2>
-          <input
-            className="filter-input"
-            aria-label="Filter holdings"
-            placeholder="Find a holding"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-        </header>
-        {positions.length && !visiblePositions.length ? (
-          <Empty
-            title="No holdings match your filter"
-            action={
-              <button className="button" onClick={() => setQuery("")}>
-                Clear filter
-              </button>
-            }
+      <nav className="portfolio-view-tabs" aria-label="Portfolio views">
+        {(
+          [
+            ["holdings", "Holdings"],
+            ["allocation", "Allocation"],
+            ["risk", "Risk & events"],
+          ] as const
+        ).map(([id, label]) => (
+          <button
+            key={id}
+            type="button"
+            aria-pressed={portfolioTab === id}
+            aria-controls={`portfolio-${id}-view`}
+            onClick={() => setPortfolioTab(id)}
           >
-            Try another company name or ticker.
-          </Empty>
-        ) : positions.length ? (
-          <PortfolioLedger
-            positions={visiblePositions}
-            allPositions={positions}
-            quotes={q}
-            companies={Object.fromEntries(
-              Object.entries(quotes.data || {}).map(([symbol, row]) => [
-                symbol,
-                row.company,
-              ]),
-            )}
-            total={totals.knownValue}
-            earnings={reportsSoon}
-            prefix={prefix}
-            onEdit={edit}
-          />
-        ) : (
-          <Empty
-            title="Bring your holdings into focus"
-            icon={Wallet}
-            action={
-              <button className="button" onClick={() => edit(null)}>
-                Add your first position
-              </button>
-            }
-          >
-            Record shares and average costs. AURYN does not place a trade when
-            you add a position.
-          </Empty>
+            {label}
+          </button>
+        ))}
+      </nav>
+      <div id="portfolio-holdings-view" hidden={portfolioTab !== "holdings"}>
+        <section className="panel portfolio-holdings support">
+          <header className="section-heading">
+            <h2>
+              Holdings <span className="count">{positions.length}</span>
+            </h2>
+            <input
+              className="filter-input"
+              aria-label="Filter holdings"
+              placeholder="Find a holding"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </header>
+          {positions.length && !visiblePositions.length ? (
+            <Empty
+              title="No holdings match your filter"
+              action={
+                <button className="button" onClick={() => setQuery("")}>
+                  Clear filter
+                </button>
+              }
+            >
+              Try another company name or ticker.
+            </Empty>
+          ) : positions.length ? (
+            <PortfolioLedger
+              positions={visiblePositions}
+              allPositions={positions}
+              quotes={q}
+              companies={Object.fromEntries(
+                Object.entries(quotes.data || {}).map(([symbol, row]) => [
+                  symbol,
+                  row.company,
+                ]),
+              )}
+              total={totals.knownValue}
+              earnings={reportsSoon}
+              prefix={prefix}
+              onEdit={edit}
+            />
+          ) : (
+            <Empty
+              title="Bring your holdings into focus"
+              icon={Wallet}
+              action={
+                <button className="button" onClick={() => edit(null)}>
+                  Add your first position
+                </button>
+              }
+            >
+              Record shares and average costs. AURYN does not place a trade when
+              you add a position.
+            </Empty>
+          )}
+        </section>
+      </div>
+      <section
+        id="portfolio-allocation-view"
+        hidden={portfolioTab !== "allocation"}
+        aria-label="Allocation and contributions"
+      >
+        {portfolioTab === "allocation" && (
+          <FeatureGate feature="portfolio" fallback={null}>
+            <PortfolioCharts positions={positions} quotes={q} />
+            <SectorBenchmarks />
+          </FeatureGate>
         )}
       </section>
-      <details className="portfolio-extra">
-        <summary>Sector exposure & stress check</summary>
-        <FeatureGate feature="portfolio" fallback={null}><PortfolioExposure positions={positions} quotes={quotes.data || {}} /></FeatureGate>
-      </details>
+      <section
+        id="portfolio-risk-view"
+        hidden={portfolioTab !== "risk"}
+        aria-label="Risk and upcoming events"
+      >
+        {portfolioTab === "risk" && (
+          <FeatureGate feature="portfolio" fallback={null}>
+            <PortfolioRiskSummary
+              positions={positions}
+              quotes={q}
+              calendar={calendar}
+            />
+            <PortfolioExposure
+              positions={positions}
+              quotes={quotes.data || {}}
+            />
+          </FeatureGate>
+        )}
+      </section>
       <p className="footnote">
         Unrealized returns exclude realized trades, dividends, fees and taxes.
         Total-return charts require a transaction ledger; deposits are not

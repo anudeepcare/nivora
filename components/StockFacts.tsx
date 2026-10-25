@@ -84,7 +84,6 @@ export default function StockFacts({ research: r }: { research: Research }) {
           <div
             key={x.label}
             data-tone={x.tone}
-            title={`${x.label} · ${x.date ? dateLabel(x.date) : "Date not supplied"}`}
           >
             <dt>{x.label}</dt>
             <dd>{x.value}</dd>

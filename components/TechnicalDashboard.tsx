@@ -254,7 +254,7 @@ export default function TechnicalDashboard({
       return (x < 0 ? 99 : x) - (y < 0 ? 99 : y);
     });
   return (
-    <section className="technical-dashboard">
+    <section className="technical-dashboard depth-technicals">
       <header className="technical-desk-heading">
         <div>
           <span className="eyebrow">TECHNICALS · COMPLETED DAILY EVIDENCE</span>

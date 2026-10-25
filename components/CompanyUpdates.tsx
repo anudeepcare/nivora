@@ -14,7 +14,7 @@ export default function CompanyUpdates({
     ?.filter((x) => x.date >= r.retrievedAt.slice(0, 10))
     .sort((a, b) => a.date.localeCompare(b.date))[0];
   return (
-    <>
+    <div className="depth-news">
       <NewsAndFilings research={r} />
       {r.company?.assetType === "stock" && (
         <CongressDisclosures
@@ -33,8 +33,9 @@ export default function CompanyUpdates({
             </p>
           </div>
         </header>
-        <div className="grid2">
-          <div>
+        <div className="news-event-layout">
+          <div className="news-next-report">
+            <span className="eyebrow">NEXT CHECKPOINT</span>
             <h3>Next scheduled earnings</h3>
             <p className="context-note">
               {next ? dateLabel(next.date) : "No upcoming date supplied"}
@@ -49,7 +50,8 @@ export default function CompanyUpdates({
               </p>
             )}
           </div>
-          <div>
+          <div className="news-transaction-list">
+            <span className="eyebrow">REPORTED ACTIVITY</span>
             <h3>Reported transactions</h3>
             {r.evidence?.insiders?.length ? (
               r.evidence.insiders.slice(0, 4).map((item, i) => (
@@ -86,6 +88,6 @@ export default function CompanyUpdates({
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }

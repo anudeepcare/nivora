@@ -30,26 +30,6 @@ export default function FinancialPicture({
     p?.revenue != null && prior?.revenue != null && prior.revenue > 0
       ? (p.revenue / prior.revenue - 1) * 100
       : null;
-  const metrics = [
-    [
-      "Revenue",
-      amount(p?.revenue, p?.currency, true),
-      growth == null
-        ? "Reported sales"
-        : `${percent(growth, true)} year over year`,
-    ],
-    ["Operating margin", percent(p?.margin), "Operating profitability"],
-    [
-      "Cash after capex",
-      amount(p?.fcf, p?.currency, true),
-      "Operating cash flow − capex",
-    ],
-    [
-      "Net debt",
-      amount(p?.netDebt, p?.currency, true),
-      "Debt less reported cash",
-    ],
-  ];
   const rows =
     statement === "Income"
       ? [
@@ -138,8 +118,69 @@ export default function FinancialPicture({
       ],
     },
   ];
+  const interpretation = (label: string, value: number) => {
+    if (label === "Gross margin")
+      return "Revenue retained after direct costs; compare with similar businesses.";
+    if (label === "Net margin")
+      return value < 0
+        ? "The period ended in an accounting loss."
+        : "Profit remaining after expenses, interest and tax.";
+    if (label === "Cash-flow margin")
+      return value < 0
+        ? "Investment and operating cash needs exceeded operating cash generation."
+        : "Cash remaining after reported capital expenditure, before financing.";
+    if (label === "Current ratio")
+      return value >= 1
+        ? "Current assets exceed current liabilities; timing and asset quality still matter."
+        : "Current liabilities exceed current assets; inspect liquidity and funding.";
+    if (label === "Interest coverage")
+      return value >= 2
+        ? "Operating earnings cover reported interest more than twice."
+        : "A thin earnings buffer for reported interest costs.";
+    if (label === "Stock compensation / revenue")
+      return "Non-cash employee compensation; inspect share-count change separately.";
+    if (label === "Capex / revenue")
+      return "Share of sales reinvested in reported capital assets.";
+    if (label === "Debt / equity")
+      return "Debt relative to book equity; industry and lease treatment affect comparison.";
+    return "Cash generated per diluted weighted share in this reporting period.";
+  };
+  const bridge =
+    p?.operatingCashFlow != null &&
+    p.capex != null &&
+    p.fcf != null &&
+    Math.abs(p.operatingCashFlow - Math.abs(p.capex) - p.fcf) <=
+      Math.max(1, Math.abs(p.operatingCashFlow)) * 0.001
+      ? [
+          {
+            label: "Operating cash",
+            value: p.operatingCashFlow,
+            from: 0,
+            to: p.operatingCashFlow,
+            tone: "blue",
+          },
+          {
+            label: "Capital spending",
+            value: -Math.abs(p.capex),
+            from: p.operatingCashFlow,
+            to: p.fcf,
+            tone: "red",
+          },
+          {
+            label: "Cash after capex",
+            value: p.fcf,
+            from: 0,
+            to: p.fcf,
+            tone: p.fcf! < 0 ? "red" : p.fcf! > 0 ? "green" : "neutral",
+          },
+        ]
+      : [];
+  const bridgeLow = Math.min(0, ...bridge.flatMap((x) => [x.from, x.to])),
+    bridgeHigh = Math.max(0, ...bridge.flatMap((x) => [x.from, x.to]));
+  const bridgeY = (value: number) =>
+    115 - ((value - bridgeLow) / Math.max(1e-9, bridgeHigh - bridgeLow)) * 80;
   return (
-    <section className="financial-picture">
+    <section className="financial-picture depth-financial">
       <header className="section-head">
         <div>
           <h2>Financials</h2>
@@ -160,6 +201,75 @@ export default function FinancialPicture({
       </header>
       {p ? (
         <>
+          <div className="financial-answer">
+            <div>
+              <span className="eyebrow">THE FINANCIAL PICTURE</span>
+              <strong>
+                {p.fcf != null
+                  ? p.fcf >= 0
+                    ? "The business generated cash after reported capital spending."
+                    : "Cash needs exceeded generation after reported capital spending."
+                  : "Read profit, investment needs and funding together."}
+              </strong>
+              <p>
+                {p.margin != null
+                  ? `${percent(p.margin)} operating margin. `
+                  : ""}
+                {growth != null
+                  ? `${percent(growth, true)} comparable revenue growth. `
+                  : ""}
+                Use the chart to see whether the pattern is persistent.
+              </p>
+            </div>
+            {bridge.length > 0 && (
+              <figure className="financial-cash-bridge">
+                <figcaption>
+                  From operating cash to cash after capex · {p.currency}
+                </figcaption>
+                <svg
+                  viewBox="0 0 480 155"
+                  role="img"
+                  aria-label="Operating cash flow less capital spending equals cash after capex"
+                >
+                  <line
+                    x1="15"
+                    x2="465"
+                    y1={bridgeY(0)}
+                    y2={bridgeY(0)}
+                    stroke="var(--line)"
+                  />
+                  {bridge.map((item, i) => (
+                    <g key={item.label} data-tone={item.tone}>
+                      <title>{`${item.label}: ${amount(item.value, p.currency, true)}`}</title>
+                      <rect
+                        x={35 + i * 155}
+                        y={Math.min(bridgeY(item.from), bridgeY(item.to))}
+                        width="90"
+                        height={Math.max(
+                          1,
+                          Math.abs(bridgeY(item.from) - bridgeY(item.to)),
+                        )}
+                        rx="4"
+                      />
+                      <text
+                        x={80 + i * 155}
+                        y={Math.max(
+                          19,
+                          Math.min(bridgeY(item.from), bridgeY(item.to)) - 8,
+                        )}
+                        textAnchor="middle"
+                      >
+                        {amount(item.value, p.currency, true)}
+                      </text>
+                      <text x={80 + i * 155} y="145" textAnchor="middle">
+                        {item.label}
+                      </text>
+                    </g>
+                  ))}
+                </svg>
+              </figure>
+            )}
+          </div>
           <FinancialExplorer research={r} scope={scope} />
           <header className="section-head">
             <div>
@@ -199,7 +309,7 @@ export default function FinancialPicture({
                   typeof value === "number" && Number.isFinite(value),
               );
               return available.length ? (
-                <section key={group.title}>
+                <section key={group.title} data-group={group.title}>
                   <h3>{group.title}</h3>
                   <div className="detail-metric-grid">
                     {available.map(([label, value, unit, help]) => (
@@ -221,6 +331,9 @@ export default function FinancialPicture({
                               ? amount(Number(value), p.currency)
                               : `${Number(value).toFixed(1)}×`}
                         </strong>
+                        <small>
+                          {interpretation(String(label), Number(value))}
+                        </small>
                       </div>
                     ))}
                   </div>

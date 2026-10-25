@@ -540,13 +540,14 @@ test('valuation tool withholds unsupported models rather than fabricating sensit
 });
 
 test('authentication explains AURYN in sign-in, signup and recovery without fabricating investment results',()=>{
+ const PublicSample=loadComponent('components/PublicLanding.tsx','PublicSample',{React,useState:React.useState,ShieldCheck:empty});
  for(const mode of ['login','signup','reset']){
   let i=0;const values=['','','',false,mode,mode==='signup'?'Confirm your email':'',false,0,{google:false,x:false}];
-  const Login=loadComponent('components/Session.tsx','Login',{React,useRouter:()=>({replace:()=>{}}),useEffect:()=>{},useState:()=>[values[i++],()=>{}],Logo:()=>React.createElement('span',null,'AURYN')});
+  const Login=loadComponent('components/Session.tsx','Login',{React,useRouter:()=>({replace:()=>{}}),useEffect:()=>{},useState:()=>[values[i++],()=>{}],Logo:()=>React.createElement('span',null,'AURYN'),PublicSample});
   const html=renderToStaticMarkup(React.createElement(Login,{initialError:''}));
   if(mode!=="reset"){assert.match(html,/Social sign-in is not enabled yet/);assert.match(html,/disabled=""/);}
   if(mode==="signup")assert.match(html,/Resend confirmation email/);
-  assert.match(html,/name="email"/);if(mode!=="reset")assert.match(html,/name="password"/);assert.match(html,/About AURYN/);assert.match(html,/Make the evidence useful/);assert.match(html,/Business, value and timing/);
+  assert.match(html,/name="email"/);if(mode!=="reset")assert.match(html,/name="password"/);assert.match(html,/About AURYN/);assert.match(html,/Your next decision/);assert.match(html,/Illustrative product preview/);assert.match(html,/Understand the whole case/);
   assert.doesNotMatch(html,/desktop-nav|mobile-dock|guaranteed returns/);
  }
 });
@@ -617,7 +618,7 @@ test('account equity displays debt separately without representing it as a losin
 });
 
 test('public sample explains fictional data and offers readable business, value and discipline tabs without account APIs',()=>{
- const PublicSample=loadComponent('components/PublicLanding.tsx','PublicSample',{React,useState:React.useState,Check:empty,Layers3:empty});
+ const PublicSample=loadComponent('components/PublicLanding.tsx','PublicSample',{React,useState:React.useState,Check:empty,Layers3:empty,ShieldCheck:empty});
  const html=renderToStaticMarkup(React.createElement(PublicSample));assert.match(html,/not a real investment/);assert.match(html,/aria-label="Preview perspective"/);assert.match(html,/aria-pressed="true"/);assert.match(html,/Business/);assert.match(html,/Timing/);assert.match(html,/shared linear scale/);assert.doesNotMatch(html,/90%|guaranteed|buy now|api_key/i);
 });
 
@@ -769,7 +770,7 @@ test('approved Home keeps account companies, real quotes and missing history sep
  const workspace={positions:[{id:'a',symbol:'SOFI',assetType:'stock',currency:'USD',quantity:10,cost:20}],watchlist:[]};
  const Home=loadComponent('components/HomeBriefing.tsx','HomeBriefing',{React,useMemo:React.useMemo,useState:React.useState,useProduct:()=>({workspace,displayName:'Anudeep',workspaceError:''}),useResource:()=>({data:null,error:'History unavailable',loading:false}),companyFeedPage,holdingAttention,relevantHoldingHeadlines,...format,Link:({children,...p})=>React.createElement('a',p,children),SecurityLogo:empty,Notice:({children})=>React.createElement('p',null,children),ArrowUpRight:empty,CalendarDays:empty,ArrowRight:empty,Search:empty});
  const html=renderToStaticMarkup(React.createElement(Home,{quotes:{SOFI:{quote,company:{name:'SoFi Technologies'}}}}));
- assert.match(html,/Anudeep/);assert.match(html,/\$14\.77/);assert.match(html,/Needs your attention/);assert.match(html,/Next on your calendar/);assert.match(html,/Latest company news/);assert.match(html,/temporarily unavailable/);assert.match(html,/Last available/);assert.doesNotMatch(html,/S&amp;P|Example Company|NaN|Infinity|portfolio total/i);
+ assert.match(html,/Anudeep/);assert.match(html,/\$14\.77/);assert.match(html,/Exposure to revisit/);assert.match(html,/Next on your calendar/);assert.match(html,/Latest company news/);assert.match(html,/could not be checked/);assert.match(html,/Last available/);assert.doesNotMatch(html,/S&amp;P|Example Company|NaN|Infinity|portfolio total/i);
 });
 
 test('approved Home renders an honest empty account without fabricated companies or event dates',async()=>{
@@ -799,6 +800,7 @@ test('price-risk cases render Bear Base Bull rather than replacing unsupported e
  const html=renderToStaticMarkup(React.createElement(PriceRiskCases,{scenarios:s,compact:true}));
  for(const term of ['Bear','Base','Bull','Historical price-risk cases','not fair value','historical windows'])assert.ok(html.includes(term),term);
  assert.doesNotMatch(html,/Wall Street consensus|Analyst expectations|NaN|Infinity/);
+ const full=renderToStaticMarkup(React.createElement(PriceRiskCases,{scenarios:s,compact:false}));assert.match(full,/Scenario values on a shared price scale/);
  const {researchBrief}=await import('../lib/research-brief.ts');const brief=researchBrief(research);
  brief.scenarioEligible=false;brief.scenario=null;
  const View=loadComponent('components/DecisionOverview.tsx','DecisionOverview',{React,useMemo:React.useMemo,researchBrief:()=>brief,...format,PositionAwareResearch:empty,CaseRange,PriceRiskCases});
@@ -818,8 +820,8 @@ test('adaptive Home keeps missing moves neutral, shares current contributor data
  const workspace={positions:[{id:'one',symbol:'ONE',assetType:'stock',currency:'USD',quantity:10,cost:10}],watchlist:[]};
  const keys=[];const Home=loadComponent('components/HomeBriefing.tsx','HomeBriefing',{React,useMemo:React.useMemo,useState:React.useState,useProduct:()=>({workspace,displayName:'Anudeep'}),useResource:key=>{keys.push(key);return{data:null,error:'',loading:false}},companyFeedPage,holdingAttention,relevantHoldingHeadlines,...format,Link:({children,...p})=>React.createElement('a',p,children),SecurityLogo:empty,Notice:empty,ArrowUpRight:empty,CalendarDays:empty,ArrowRight:empty});
  const quotes={ONE:{company:{name:'One company'},quote:{price:20,currency:'USD',changePct:null,asOf:new Date().toISOString(),stale:false}}};
- let html=renderToStaticMarkup(React.createElement(Home,{quotes}));assert.match(html,/Good (morning|afternoon|evening), Anudeep/);assert.match(html,/Your companies. What matters today/);assert.match(html,/Waiting for comparable session data/);assert.match(html,/data-direction="neutral">Change unavailable/);assert.doesNotMatch(html,/0 up · 0 down|Largest estimated session impact/);assert.equal(keys.filter(k=>k?.includes('chart/')).length,0);
- quotes.ONE.quote.changePct=100;html=renderToStaticMarkup(React.createElement(Home,{quotes}));assert.match(html,/\$100\.00 estimated session move/);assert.match(html,/LARGEST CONTRIBUTORS/);assert.doesNotMatch(html,/Change unavailable/);
+ let html=renderToStaticMarkup(React.createElement(Home,{quotes}));assert.match(html,/Good (morning|afternoon|evening), Anudeep/);assert.match(html,/Your companies. Your exposure/);assert.match(html,/Quotes updating/);assert.match(html,/data-direction="neutral" class="neutral">Change unavailable/);assert.doesNotMatch(html,/0 up · 0 down|Largest estimated session impact/);assert.equal(keys.filter(k=>k?.includes('chart/')).length,0);
+ quotes.ONE.quote.changePct=100;html=renderToStaticMarkup(React.createElement(Home,{quotes}));assert.match(html,/\$100(?:\.00)?/);assert.match(html,/Session contributors/);assert.doesNotMatch(html,/Change unavailable/);
 });
 
 test('Overview renders the actual analyst range beside separately labelled AURYN scenarios',async()=>{
