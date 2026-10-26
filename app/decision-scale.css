@@ -106,3 +106,30 @@
 @media (max-width: 860px) {
   .decision-scale-head, .decision-scale-body { grid-template-columns: 1fr; }
 }
+
+/* Motion: the beam and pans share one easing so the pans stay level while the beam swings. */
+.scale-swing { transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.decision-stone { transition: background-color 0.18s ease, border-color 0.18s ease, opacity 0.18s ease, transform 0.12s ease; }
+.decision-stone:active { transform: scale(0.985); }
+@media (prefers-reduced-motion: no-preference) {
+  .decision-scale, .technical-dashboard { animation: au-settle 0.22s ease-out both; }
+}
+@keyframes au-settle { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .scale-swing, .decision-stone { transition: none; }
+}
+/* Skip rendering work for study groups that are far below the viewport. */
+.technical-desk-groups > section { content-visibility: auto; contain-intrinsic-size: auto 360px; }
+
+.decision-scale-rulebook { border-top: 1px solid var(--line); padding-top: 14px; }
+.decision-scale-rulebook summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+.decision-scale-rulebook p { color: var(--muted); line-height: 1.5; margin: 6px 0 10px; }
+.decision-scale-rulebook h3 { margin: 16px 0 6px; font-size: 0.82rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.decision-scale-rulebook ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.decision-scale-rulebook li { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px dotted var(--line); }
+.decision-scale-rulebook li > span { flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 0.8rem; font-weight: 700; background: var(--blue-soft); color: var(--muted); }
+.decision-scale-rulebook li[data-state="met"] > span { background: var(--green-soft); color: var(--green); }
+.decision-scale-rulebook li[data-state="not-met"] > span { background: var(--red-soft); color: var(--red); }
+.decision-scale-rulebook b { font-weight: 600; }
+.decision-scale-rulebook em { font-style: normal; font-weight: 500; color: var(--muted); }
+.decision-scale-rulebook small { display: block; color: var(--muted); line-height: 1.4; }

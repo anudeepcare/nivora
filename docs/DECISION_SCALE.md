@@ -16,6 +16,9 @@ Adds one interactive panel, **Weigh the evidence yourself**, at the top of the O
 - `components/DecisionOverview.tsx` — two added lines (import and `<DecisionScale key={symbol} research={r} />`).
 - `tests/decision-scale.test.mjs` — four tests against the MSFT fixture and synthetic stones.
 
+## Rulebook
+Under the scale, "Why this label? See every rule" lists each rule behind "Buy candidate" as met, not met or unknown, plus the owner triggers for Trim review and Sell review. `decisionChecklist()` in `lib/decision-guide.ts` adds no rule. `tests/decision-checklist.test.mjs` asserts that a buy candidate holds exactly when every check is met, across fresh, stale, classified, foreign-listing, no-history and crypto cases.
+
 ## Limits
 - Weights are a presentation choice (1 ordinary, 2 eligible conditional case, 3 severe flag), not a validated model. The lean is not evidence of future returns.
 - No new dependency, environment variable, migration or endpoint. Not deployed.

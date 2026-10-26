@@ -1,7 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import type { Research } from "@/lib/types";
-import { decisionGuide } from "@/lib/decision-guide";
+import { decisionChecklist, decisionGuide } from "@/lib/decision-guide";
 import { scaleBalance, scaleLayout, scaleStones, type ScaleStone } from "@/lib/decision-scale";
 import { dateLabel } from "@/lib/format";
 
@@ -14,7 +14,7 @@ const LEAN_LABEL = {
 function Pan({ x, tilt, stones, side }: { x: number; tilt: number; stones: ScaleStone[]; side: "for" | "against" }) {
   const spots = scaleLayout(stones.map((s) => s.weight));
   return (
-    <g transform={`translate(${x} 36) rotate(${-tilt})`}>
+    <g className="scale-swing" style={{ transform: `translate(${x}px, 36px) rotate(${-tilt}deg)` }}>
       <line className="scale-string" x1="0" y1="0" x2="-52" y2="96" />
       <line className="scale-string" x1="0" y1="0" x2="52" y2="96" />
       <g transform="translate(0 94)">
@@ -30,6 +30,7 @@ function Pan({ x, tilt, stones, side }: { x: number; tilt: number; stones: Scale
 export default function DecisionScale({ research: r }: { research: Research }) {
   const stones = useMemo(() => scaleStones(r), [r]);
   const guide = useMemo(() => decisionGuide(r), [r]);
+  const rules = useMemo(() => decisionChecklist(r), [r]);
   const [off, setOff] = useState<string[]>([]);
   if (!stones.length) return null;
   const toggle = (id: string) => setOff((cur) => (cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]));
@@ -71,7 +72,7 @@ export default function DecisionScale({ research: r }: { research: Research }) {
           >
             <line className="scale-post" x1="170" y1="36" x2="170" y2="176" />
             <line className="scale-post" x1="130" y1="176" x2="210" y2="176" />
-            <g transform={`rotate(${bal.tilt} 170 36)`}>
+            <g className="scale-swing" style={{ transform: `rotate(${bal.tilt}deg)`, transformOrigin: "170px 36px" }}>
               <line className="scale-beam" x1="50" y1="36" x2="290" y2="36" />
               <Pan x={50} tilt={bal.tilt} stones={forKept} side="for" />
               <Pan x={290} tilt={bal.tilt} stones={againstKept} side="against" />
@@ -124,6 +125,45 @@ export default function DecisionScale({ research: r }: { research: Research }) {
           ))}
         </div>
       </div>
+      <details className="decision-scale-rulebook">
+        <summary>Why this label? See every rule</summary>
+        <p>
+          “Buy candidate” appears only when every rule below is met. Unknown is never treated as met. This is the same
+          rule set the label uses, not a separate score.
+        </p>
+        <ul>
+          {rules.checks.map((c) => (
+            <li key={c.id} data-state={c.state}>
+              <span aria-hidden="true">{c.state === "met" ? "✓" : c.state === "not-met" ? "✕" : "?"}</span>
+              <div>
+                <b>
+                  {c.label}
+                  <em>
+                    {" "}
+                    · {c.state === "met" ? "met" : c.state === "not-met" ? "not met" : "unknown"}
+                  </em>
+                </b>
+                {c.detail ? <small>{c.detail}</small> : null}
+              </div>
+            </li>
+          ))}
+        </ul>
+        <h3>Review triggers for an owner</h3>
+        <ul>
+          {rules.triggers.map((t) => (
+            <li key={t.id} data-state={t.active == null ? "unknown" : t.active ? "not-met" : "met"}>
+              <span aria-hidden="true">{t.active == null ? "?" : t.active ? "!" : "–"}</span>
+              <div>
+                <b>
+                  {t.label}
+                  <em> · {t.active == null ? "not enough data" : t.active ? "triggered" : "not triggered"}</em>
+                </b>
+                <small>{t.detail}</small>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </details>
       <footer className="decision-scale-foot">
         {needsData && <b>Some evidence is missing or stale. Refresh before relying on this. </b>}
         Financial period {guide.financialPeriod ? dateLabel(guide.financialPeriod) : "not available"} · price as of{" "}
