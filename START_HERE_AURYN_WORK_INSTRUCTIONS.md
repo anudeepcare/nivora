@@ -1,3 +1,9 @@
+# Latest addition — evidence scale on Overview (October 25, 2026)
+
+Read `docs/DECISION_SCALE.md` and `verification/DECISION_SCALE_CHECKS.md`. One additive panel on the Overview tab lets the reader weigh existing AURYN evidence. No content was removed; the PWA shell, rule labels, quote retention and data adapters are unchanged. `npm run verify` has not been run on this change.
+
+---
+
 # Current build — AURYN connected experience
 
 Start with [the current release notes](docs/CONNECTED_EXPERIENCE_RELEASE.md). This complete source continues the approved Home and research design, adds evidence links and hypothetical position sizing, and updates shared desktop/mobile/light/dark surfaces. No new dependencies, environment variables or SQL migrations are required for this update. No deployment was performed.

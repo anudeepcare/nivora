@@ -7,6 +7,7 @@ import PositionAwareResearch from "./PositionAwareResearch";
 import CaseRange from "./CaseRange";
 import AnalystTargets from "./AnalystTargets";
 import PriceRiskCases from "./PriceRiskCases";
+import DecisionScale from "./DecisionScale";
 export default function DecisionOverview({
   research: r,
   onTab,
@@ -90,6 +91,7 @@ export default function DecisionOverview({
       aria-label="Stock overview"
       data-depth={pro ? "pro" : "simple"}
     >
+      <DecisionScale key={r.company.symbol} research={r} />
       <div className="overview-visual-layout">
         <div className="overview-primary">
           <header className="overview-visual-heading">
