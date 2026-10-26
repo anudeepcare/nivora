@@ -1,3 +1,11 @@
+# Current build — AURYN connected experience
+
+Start with [the current release notes](docs/CONNECTED_EXPERIENCE_RELEASE.md). This complete source continues the approved Home and research design, adds evidence links and hypothetical position sizing, and updates shared desktop/mobile/light/dark surfaces. No new dependencies, environment variables or SQL migrations are required for this update. No deployment was performed.
+
+The current checks and their limits are in `verification/CONNECTED_DESIGN_REPORT.json`. Earlier entries below are historical and do not supersede this release.
+
+---
+
 # Latest — AURYN Fluid all-metrics refinement
 
 Full source. Start with `docs/FLUID_REFINEMENT_RELEASE.md` for changes, verification and preprod-only deployment. No new SQL or environment variables are required.

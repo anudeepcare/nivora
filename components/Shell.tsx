@@ -109,7 +109,7 @@ export default function Shell({
     );
   };
   return (
-    <div className="product">
+    <div className="product auryn-experience" data-page={page}>
       <a className="skip" href="#content">
         Skip to content
       </a>
@@ -136,7 +136,7 @@ export default function Shell({
           }}
         >
           <SearchIcon size={19} />
-          <span>Find a company</span>
+          <span>Search companies & crypto</span>
           <kbd>⌘ K</kbd>
         </button>
         <div className="top-actions">
@@ -174,6 +174,9 @@ export default function Shell({
           </button>
         </div>
       </header>
+      <nav className="workspace-rail" aria-label="Workspace tools">
+        {[["discover","Discover"],["research-lab","Research Lab"],["trading","Paper Lab"],["compare","Compare"]].map(([path,label])=><Link key={path} href={`${prefix}/${path}`} aria-current={page===path?"page":undefined}>{label}<span aria-hidden="true">↗</span></Link>)}
+      </nav>
       <main id="content" className="content" tabIndex={-1}>
         <AccessNotice />
         {demo && demo.routePrefix !== "" && (

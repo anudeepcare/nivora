@@ -34,6 +34,7 @@ function view(edgeOverride) {
     },
   ).outputText;
   const bindings = {
+    ResearchBalance: () => null,
     ArrowUpRight: icons.ArrowUpRight,
     ShieldCheck: icons.ShieldCheck,
     TriangleAlert: icons.TriangleAlert,
@@ -128,6 +129,13 @@ test("banks do not inherit an operating-company cash-flow verdict", () => {
   };
   const reading = researchEdge(r);
   assert.equal(reading.verdict, "Sector review");
+  const Component=view();
+  const html=renderToStaticMarkup(React.createElement(Component,{research:r,onTab:()=>{},chart:null}));
+  const fingerprint=html.match(/class="company-fingerprint"[^>]*>([\s\S]*?)<\/div>/)?.[1];
+  assert.ok(fingerprint);
+  assert.match(fingerprint, /Sector evidence/);
+  assert.ok(fingerprint.includes(reading.valueLabel));
+  assert.doesNotMatch(fingerprint, /<strong>Strong<\/strong>/);
 });
 test("positive current cash generation is not mislabeled as an improving cash trend", () => {
   const r = structuredClone(demoData.research.MSFT);
@@ -173,7 +181,8 @@ test("Pace is visible before the chart and never presented as a risk-adjusted co
   assert.ok(html.indexOf("AURYN PACE") < html.indexOf("Price chart"));
   assert.match(html, /Why not stronger/);
   assert.match(html, /AURYN CHECKPOINTS/);
-  assert.doesNotMatch(html, /edge-reading-bar|Not assessed|Not established/);
+  assert.doesNotMatch(html, /edge-reading-bar/);
+  assert.ok(html.includes(researchEdge(demoData.research.MSFT).valueLabel));
 });
 test("Detailed mode exposes the decision explanation while Simple keeps it collapsed", () => {
   const Component = view(),

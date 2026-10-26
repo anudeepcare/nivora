@@ -1,0 +1,2280 @@
+/* Auryn's connected product system. Semantic data colors remain stable across accents. */
+:root {
+  --paper: #f5f7fb;
+  --surface: #fff;
+  --raised: #fff;
+  --ink: #172238;
+  --muted: #64718a;
+  --line: #e3e8f1;
+  --blue: #3567e9;
+  --blue-soft: #edf2ff;
+  --green: #087e68;
+  --green-soft: #e8f7f1;
+  --red: #be4f60;
+  --red-soft: #fff0f3;
+  --amber: #8c601e;
+  --dca: #7950d6;
+  --dca-soft: #f2edff;
+  --radius-panel: 22px;
+  --radius-control: 12px;
+  --experience-shadow: 0 8px 28px #243f6c06, 0 1px 3px #243f6c04;
+  --experience-glass: #ffffffdc;
+  --experience-wash: #eff4ff;
+  --experience-hero: linear-gradient(
+    115deg,
+    #173874 0%,
+    #2758b5 56%,
+    #286f96 100%
+  );
+  --nav: var(--experience-glass);
+  --nav-text: var(--ink);
+}
+:root[data-theme="dark"] {
+  --paper: #101622;
+  --surface: #192233;
+  --raised: #202c40;
+  --ink: #edf3ff;
+  --muted: #a3b1ca;
+  --line: #2c394f;
+  --blue: #8dafff;
+  --blue-soft: #253758;
+  --green: #69d7b8;
+  --green-soft: #193b36;
+  --red: #ff9ca9;
+  --red-soft: #432935;
+  --amber: #e4ba76;
+  --dca: #bba0ff;
+  --dca-soft: #302c47;
+  --experience-shadow: 0 8px 28px #00000012;
+  --experience-glass: #151d2be8;
+  --experience-wash: #202d46;
+  --experience-hero: linear-gradient(115deg, #1c315c, #264d8d 58%, #245d72);
+  color-scheme: dark;
+}
+#auryn-app {
+  background: var(--paper);
+  color: var(--ink);
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--muted) 25%, transparent) transparent;
+}
+.auryn-experience {
+  isolation: isolate;
+  background:
+    radial-gradient(
+      ellipse at 90% 0%,
+      color-mix(in srgb, var(--blue) 6%, transparent),
+      transparent 38%
+    ),
+    var(--paper);
+}
+.auryn-experience .topbar {
+  height: 78px;
+  min-height: 78px;
+  padding: 0 max(28px, calc((100vw - 1400px) / 2));
+  gap: 26px;
+  background: var(--experience-glass);
+  border-bottom: 1px solid var(--line);
+  box-shadow: none;
+  backdrop-filter: blur(22px);
+}
+.auryn-experience .brand {
+  gap: 10px;
+}
+.auryn-experience .brand strong {
+  font-size: 21px;
+  letter-spacing: 0.16em;
+  font-weight: 750;
+  color: var(--ink);
+}
+.auryn-experience .brand small {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.auryn-experience .desktop-nav {
+  gap: 4px;
+  margin-left: 16px;
+}
+.auryn-experience .desktop-nav a {
+  padding: 10px 15px;
+  min-height: 42px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 550;
+  color: var(--muted);
+  background: transparent;
+}
+.auryn-experience .desktop-nav a.active {
+  background: var(--blue-soft);
+  color: var(--blue);
+  box-shadow: none;
+}
+.auryn-experience .desktop-nav a::after {
+  display: none;
+}
+.auryn-experience .top-search {
+  height: 42px;
+  flex: 1;
+  max-width: 270px;
+  min-width: 0;
+  padding: 0 13px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  box-shadow: none;
+  color: var(--muted);
+  gap: 9px;
+}
+.auryn-experience .top-search span {
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.auryn-experience .top-search kbd {
+  font-size: 10px;
+  padding: 2px 5px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  white-space: nowrap;
+}
+.auryn-experience .top-actions {
+  gap: 10px;
+  margin-left: auto;
+}
+.auryn-experience .top-actions .icon-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+.auryn-experience .avatar {
+  background: linear-gradient(135deg, #d6e6ff, #e1d8fc);
+  color: #34517c;
+  border: 2px solid var(--surface);
+  box-shadow: 0 0 0 1px var(--line);
+  width: 34px;
+  height: 34px;
+  font-weight: 650;
+}
+.workspace-rail {
+  display: flex;
+  justify-content: flex-end;
+  gap: 22px;
+  padding: 11px max(32px, calc((100vw - 1340px) / 2));
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.workspace-rail a {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+  color: var(--muted);
+  text-decoration: none;
+  min-height: 24px;
+  white-space: nowrap;
+}
+.workspace-rail a span {
+  color: var(--blue);
+  opacity: 0.65;
+}
+.workspace-rail a[aria-current="page"] {
+  color: var(--blue);
+  font-weight: 650;
+}
+.auryn-experience .content {
+  max-width: 1400px;
+  padding: 32px 38px 30px;
+  gap: 0;
+}
+.auryn-experience .content h1 {
+  font-size: clamp(28px, 2.5vw, 36px);
+  letter-spacing: -0.045em;
+  line-height: 1.18;
+  font-weight: 650;
+}
+.auryn-experience .content h2 {
+  font-weight: 650;
+  letter-spacing: -0.035em;
+}
+.auryn-experience .page-heading {
+  margin: 0 0 25px;
+  align-items: center;
+}
+.auryn-experience .page-heading p {
+  font-size: 14px;
+  line-height: 1.65;
+  max-width: 720px;
+  margin-top: 8px;
+  color: var(--muted);
+}
+.auryn-experience .content .button {
+  font-size: 14px;
+  font-weight: 550;
+  padding: 11px 17px;
+  border-radius: 12px;
+  min-height: 44px;
+  border-color: var(--line);
+  box-shadow: 0 1px 2px #182b4305;
+}
+.auryn-experience .content .button.primary {
+  background: linear-gradient(115deg, #2c61de, #4b78ec);
+  color: #fff;
+  border: 1px solid #3363d3;
+  box-shadow: 0 5px 12px #3567e91d;
+}
+.auryn-experience .content .text-button {
+  font-size: 13px;
+  min-height: 40px;
+}
+.auryn-experience
+  .content
+  input:not([type="range"]):not([type="checkbox"]):not([type="radio"]),
+.auryn-experience .content select,
+.auryn-experience .content textarea {
+  font-size: 15px;
+  min-height: 44px;
+  border-radius: 12px;
+}
+.auryn-experience
+  :is(
+    .panel,
+    .company-card,
+    .membership-panel,
+    .trade-card,
+    .settings-card,
+    .alert-card
+  ) {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  background: var(--surface);
+  box-shadow: var(--experience-shadow);
+}
+.auryn-experience
+  :is(.segments, .options-nav, .portfolio-view-tabs, .settings-tabs) {
+  background: color-mix(in srgb, var(--surface) 65%, var(--paper));
+  padding: 5px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  gap: 4px;
+}
+.auryn-experience
+  :is(.segments, .options-nav, .portfolio-view-tabs, .settings-tabs)
+  button {
+  border-radius: 10px;
+  min-height: 38px;
+  font-size: 13px;
+}
+.auryn-experience
+  :is(.segments, .options-nav, .portfolio-view-tabs, .settings-tabs)
+  button[aria-pressed="true"] {
+  background: var(--surface);
+  color: var(--blue);
+  box-shadow: 0 2px 8px #1b315b0c;
+}
+.auryn-experience a,
+.auryn-experience button {
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+.auryn-experience a:focus-visible,
+.auryn-experience button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--blue) 65%, transparent);
+  outline-offset: 3px;
+}
+.auryn-experience :is(.company-card, .briefing-company-grid > a):hover {
+  border-color: color-mix(in srgb, var(--blue) 38%, var(--line));
+  background: color-mix(in srgb, var(--blue-soft) 30%, var(--surface));
+}
+.experience-kicker,
+.experience-caption {
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+.experience-kicker {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+}
+.experience-caption {
+  display: block;
+}
+.auryn-experience .preview-label {
+  font-size: 11px;
+  border: 1px dashed var(--line);
+  background: transparent;
+  color: var(--muted);
+  border-radius: 9px;
+  padding: 8px 12px;
+  margin-bottom: 20px;
+}
+
+/* Home: numeric summary → one briefing → readable evidence. */
+.briefing-home .briefing-greeting {
+  margin: 0 0 26px;
+  align-items: center;
+}
+.briefing-home .briefing-kicker {
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  font-weight: 650;
+  color: var(--muted);
+}
+.briefing-home .briefing-greeting h1 {
+  margin: 6px 0 8px;
+}
+.briefing-home .briefing-greeting p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.briefing-home .briefing-date {
+  font-size: 13px;
+  color: var(--ink);
+}
+.briefing-home .briefing-date small {
+  font-size: 11px;
+  margin-top: 4px;
+  color: var(--muted);
+}
+.home-wealth-strip {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr auto;
+  align-items: center;
+  gap: 26px;
+  padding: 24px 27px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: var(--experience-shadow);
+  margin-bottom: 18px;
+}
+.home-wealth-strip > div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.home-wealth-strip > div > span {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.home-wealth-strip > div > strong {
+  font-size: 27px;
+  letter-spacing: -0.04em;
+  font-weight: 600;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.home-wealth-strip .home-wealth-main > strong {
+  font-size: 35px;
+}
+.home-wealth-strip small {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--muted);
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+.home-wealth-link {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--blue);
+  text-decoration: none;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--blue-soft);
+}
+.home-daily-brief {
+  position: relative;
+  display: grid;
+  grid-template-columns: 52px 1fr auto;
+  align-items: center;
+  gap: 24px;
+  padding: 25px 28px;
+  border-radius: 22px;
+  background: var(--experience-hero);
+  color: #fff;
+  margin-bottom: 23px;
+  overflow: hidden;
+  box-shadow: 0 12px 25px #234b9b13;
+}
+.home-daily-brief::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  width: 330px;
+  height: 330px;
+  right: 8%;
+  top: -190px;
+  border: 45px solid #ffffff05;
+  border-radius: 50%;
+}
+.home-brief-mark {
+  width: 49px;
+  height: 49px;
+  border: 1px solid #ffffff35;
+  border-radius: 17px;
+  display: grid;
+  place-items: center;
+  background: #ffffff12;
+  font-size: 25px;
+  font-weight: 550;
+  position: relative;
+}
+.home-brief-mark span {
+  position: absolute;
+  right: -5px;
+  top: -9px;
+  font-size: 19px;
+  color: #aee8fb;
+}
+.home-brief-copy > span {
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  color: #cee1ff;
+}
+.home-brief-copy h2 {
+  font-size: 21px;
+  line-height: 1.3;
+  color: #fff;
+  margin: 6px 0;
+}
+.home-brief-copy p {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #e3eeff;
+  max-width: 720px;
+}
+.home-brief-copy small {
+  display: block;
+  font-size: 10px;
+  color: #bfcee7;
+  margin-top: 7px;
+}
+.home-daily-brief > a {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 12px;
+  padding: 12px 15px;
+  border-radius: 12px;
+  background: #ffffff14;
+  border: 1px solid #ffffff36;
+  color: #fff;
+  text-decoration: none;
+  z-index: 1;
+}
+.briefing-home .briefing-evidence-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+.briefing-home .briefing-panel {
+  padding: 23px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: var(--experience-shadow);
+  min-width: 0;
+}
+.briefing-home .briefing-panel > header {
+  border: 0;
+  padding: 0;
+  margin: 0 0 18px;
+  gap: 12px;
+  align-items: center;
+}
+.briefing-home .briefing-panel h2 {
+  font-size: 17px;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+.briefing-home .briefing-panel header > a {
+  font-size: 11px;
+  white-space: nowrap;
+}
+.briefing-home .briefing-moves {
+  background: linear-gradient(
+    140deg,
+    color-mix(in srgb, var(--blue-soft) 40%, var(--surface)),
+    var(--surface) 70%
+  );
+}
+.briefing-home .briefing-attention {
+  background: linear-gradient(
+    140deg,
+    color-mix(in srgb, var(--dca-soft) 55%, var(--surface)),
+    var(--surface) 70%
+  );
+}
+.briefing-home .briefing-calendar {
+  background: linear-gradient(
+    140deg,
+    color-mix(in srgb, var(--green-soft) 50%, var(--surface)),
+    var(--surface) 70%
+  );
+}
+.briefing-home .briefing-impact-row {
+  padding: 12px 0;
+  gap: 15px;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+}
+.briefing-home .briefing-impact-row i {
+  height: 5px;
+  border-radius: 4px;
+  background: var(--paper);
+}
+.briefing-home .briefing-impact-row strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+.briefing-home .briefing-note {
+  font-size: 11px;
+  line-height: 1.65;
+  color: var(--muted);
+  margin-top: 13px;
+}
+.briefing-home .briefing-attention-row {
+  min-height: 57px;
+  padding: 10px 0;
+}
+.briefing-home .briefing-attention-row strong {
+  font-size: 14px;
+}
+.briefing-home .briefing-attention-row small {
+  font-size: 11px;
+}
+.briefing-home .briefing-step {
+  width: 29px;
+  height: 29px;
+  border-radius: 9px;
+  background: var(--dca-soft);
+  color: var(--dca);
+  font-size: 10px;
+}
+.briefing-home .briefing-quiet-state {
+  background: transparent;
+  border: 0;
+  padding: 7px 0;
+  min-height: 130px;
+  align-content: center;
+}
+.briefing-home .briefing-quiet-state strong {
+  font-size: 14px;
+}
+.briefing-home .briefing-quiet-state p {
+  font-size: 12px;
+  line-height: 1.7;
+}
+.briefing-home .briefing-main-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 20px;
+  margin: 0;
+}
+.briefing-home .briefing-changes > header {
+  display: flex;
+  flex-wrap: wrap;
+}
+.briefing-home .briefing-count {
+  font-size: 10px;
+  background: var(--paper);
+  color: var(--muted);
+  padding: 5px 8px;
+  border-radius: 6px;
+}
+.briefing-home .briefing-coverage {
+  font-size: 12px;
+  margin-bottom: 16px;
+  line-height: 1.7;
+}
+.briefing-home .briefing-news-list article {
+  padding: 18px 0;
+  gap: 18px;
+}
+.briefing-home .briefing-news-story > a {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink);
+  font-weight: 550;
+}
+.briefing-home .briefing-news-meta {
+  font-size: 11px;
+  line-height: 1.6;
+  margin-top: 7px;
+}
+.briefing-home .briefing-company-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.briefing-home .briefing-company-grid > a {
+  display: grid;
+  grid-template-columns: 34px minmax(70px, 1fr) 90px minmax(75px, auto);
+  align-items: center;
+  gap: 12px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+  padding: 15px 0;
+}
+.briefing-home .briefing-company-grid > a:last-child {
+  border-bottom: 0;
+}
+.briefing-home .briefing-company-name strong,
+.briefing-home .briefing-company-value strong {
+  font-size: 14px;
+  font-weight: 650;
+}
+.briefing-home .briefing-company-name small {
+  font-size: 11px;
+  max-width: 130px;
+}
+.briefing-home .briefing-company-value small {
+  font-size: 11px;
+}
+.briefing-home .briefing-company-value small:last-child {
+  font-size: 9px;
+}
+.company-spark {
+  display: block;
+  width: 90px;
+  height: 35px;
+  color: var(--blue);
+}
+.company-spark[data-direction="up"] {
+  color: var(--green);
+}
+.company-spark[data-direction="down"] {
+  color: var(--red);
+}
+.company-spark-empty {
+  font-size: 9px;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.4;
+}
+.briefing-home .briefing-welcome {
+  border-radius: 24px;
+  border: 1px solid var(--line);
+  background: linear-gradient(120deg, var(--surface), var(--experience-wash));
+  padding: 38px;
+  box-shadow: var(--experience-shadow);
+}
+.briefing-home .briefing-welcome h2 {
+  font-size: 38px;
+}
+.briefing-home .briefing-start-paths > section {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+  padding: 25px;
+}
+
+/* Research: strong headline, distinct evidence chapters and interactive exposure. */
+.auryn-experience .research-header {
+  padding: 0 0 22px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.auryn-experience .research-header h1 {
+  font-size: 34px;
+}
+.auryn-experience .research-header .price {
+  font-size: 32px;
+}
+.auryn-experience .research-header-financials {
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  padding: 15px 22px;
+  margin: 20px 0 0;
+  background: var(--surface);
+}
+.auryn-experience .research-header-financials dt {
+  font-size: 11px;
+}
+.auryn-experience .research-header-financials dd {
+  font-size: 21px;
+}
+.auryn-experience .research-navigation {
+  margin: 0 0 21px;
+}
+.auryn-experience .local-tabs {
+  padding: 5px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--surface);
+  box-shadow: var(--experience-shadow);
+  gap: 4px;
+}
+.auryn-experience .local-tabs button {
+  min-height: 42px;
+  padding: 10px 12px;
+  font-size: 13px;
+  border-radius: 10px;
+  border: 0;
+  color: var(--muted);
+  white-space: nowrap;
+  background: transparent;
+}
+.auryn-experience .local-tabs button.active {
+  color: var(--blue);
+  background: var(--blue-soft);
+  box-shadow: none;
+  border: 0;
+}
+.auryn-experience .local-tabs button::after {
+  display: none;
+}
+.auryn-experience .edge-verdict {
+  background: var(--experience-hero);
+  color: #fff;
+  border: 0;
+  border-radius: 22px;
+  padding: 26px 29px;
+  box-shadow: 0 10px 26px #1a427b15;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 230px;
+  gap: 14px 32px;
+  margin: 0 0 22px;
+}
+.auryn-experience .edge-verdict .edge-eyebrow {
+  color: #c0d6fa;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+.auryn-experience .overview-answer h2 {
+  font-size: clamp(23px, 2.3vw, 31px);
+  line-height: 1.2;
+  color: #fff;
+  max-width: 730px;
+  margin: 9px 0 11px;
+}
+.auryn-experience .overview-answer p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #dbe7fc;
+  max-width: 720px;
+}
+.auryn-experience .overview-answer small {
+  color: #c3d3ed;
+  font-size: 11px;
+}
+.auryn-experience .overview-pace-summary {
+  border: 1px solid #ffffff25;
+  border-radius: 16px;
+  background: #ffffff0d;
+  padding: 18px;
+  gap: 7px;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+.auryn-experience .overview-pace-summary strong {
+  font-size: 34px;
+  color: #fff;
+}
+.auryn-experience .overview-pace-summary strong small {
+  font-size: 12px;
+  color: #e3eaff;
+}
+.auryn-experience .overview-pace-summary > span {
+  color: #c7d9f5;
+  font-size: 11px;
+}
+.auryn-experience .overview-check {
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 18px;
+  padding: 0;
+  border: 0;
+}
+.auryn-experience .edge-verdict .text-button {
+  color: #eff5ff;
+  font-size: 12px;
+}
+.auryn-experience .edge-verdict .research-mode-switch {
+  background: #ffffff14;
+  border-color: #ffffff28;
+}
+.auryn-experience .overview-research-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 20px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+.auryn-experience .overview-area {
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  padding: 24px;
+  background: var(--surface);
+  box-shadow: var(--experience-shadow);
+  min-width: 0;
+}
+.auryn-experience .overview-area header {
+  margin-bottom: 14px;
+  padding: 0;
+  border: 0;
+}
+.auryn-experience .overview-area h3 {
+  font-size: 18px;
+  font-weight: 650;
+}
+.auryn-experience .overview-area-action {
+  background: var(--blue-soft);
+  color: var(--blue);
+  border-radius: 10px;
+  width: 34px;
+  height: 34px;
+}
+.auryn-experience .overview-interpretation {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--muted);
+  margin: 0 0 18px;
+}
+.auryn-experience .overview-operating-layout {
+  display: block;
+}
+.auryn-experience .overview-mini-charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.auryn-experience .overview-evidence {
+  gap: 14px;
+}
+.auryn-experience .overview-evidence > div {
+  background: transparent;
+  padding: 9px 0;
+  border: 0;
+}
+.auryn-experience .overview-evidence dt {
+  font-size: 12px;
+}
+.auryn-experience .overview-evidence dd {
+  font-size: 22px;
+  font-weight: 600;
+}
+.auryn-experience .overview-pricing {
+  background: linear-gradient(
+    155deg,
+    color-mix(in srgb, var(--blue-soft) 35%, var(--surface)),
+    var(--surface) 55%
+  );
+}
+.auryn-experience .overview-technical {
+  grid-column: 1;
+}
+.auryn-experience .overview-events {
+  grid-column: 2;
+}
+.auryn-experience .overview-technical-layout {
+  display: block;
+}
+.auryn-experience .overview-technical .overview-evidence {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 16px;
+}
+.auryn-experience .overview-technical .overview-evidence dd {
+  font-size: 19px;
+}
+.auryn-experience .overview-checkpoint {
+  background: var(--blue-soft);
+  border: 0;
+  border-radius: 15px;
+  padding: 18px;
+  margin-top: 18px;
+}
+.auryn-experience .overview-checkpoint p {
+  font-size: 13px;
+  line-height: 1.7;
+}
+.auryn-experience .edge-conviction {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px 20px;
+  background: var(--surface);
+  gap: 12px;
+  margin: 20px 0;
+}
+.auryn-experience .edge-conviction p {
+  font-size: 12px;
+  line-height: 1.65;
+}
+.auryn-experience .overview-explore {
+  margin: 23px 0;
+  gap: 8px;
+}
+.auryn-experience .overview-explore button {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 10px 13px;
+  min-height: 42px;
+  font-size: 12px;
+}
+.auryn-experience .edge-method {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  padding: 18px;
+}
+.research-decision-tools {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 20px;
+  margin: 24px 0;
+  align-items: start;
+}
+.research-balance,
+.position-explorer {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  padding: 25px;
+  box-shadow: var(--experience-shadow);
+  min-width: 0;
+}
+.research-decision-tools header h3 {
+  font-size: 20px;
+  margin: 10px 0 7px;
+  letter-spacing: -0.035em;
+}
+.research-decision-tools header p {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.balance-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 24px 0;
+}
+.balance-columns h4 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  margin: 0 0 12px;
+  color: var(--green);
+}
+.balance-columns > div:last-child h4 {
+  color: var(--amber);
+}
+.balance-columns button {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+  line-height: 1.75;
+  text-align: left;
+  width: 100%;
+  color: var(--ink);
+}
+.balance-columns button svg {
+  flex-shrink: 0;
+  margin-top: 4px;
+  color: var(--muted);
+}
+.balance-checkpoint {
+  padding: 17px;
+  background: var(--paper);
+  border-radius: 13px;
+}
+.balance-checkpoint > span {
+  font-size: 9px;
+  letter-spacing: 0.11em;
+  color: var(--muted);
+  font-weight: 650;
+}
+.balance-checkpoint p {
+  font-size: 12px;
+  line-height: 1.7;
+  margin: 7px 0;
+}
+.position-explorer {
+  background: linear-gradient(
+    140deg,
+    var(--surface),
+    color-mix(in srgb, var(--dca-soft) 30%, var(--surface))
+  );
+}
+.position-weight {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 23px 0 12px;
+  gap: 15px;
+}
+.position-weight label {
+  font-size: 12px;
+  color: var(--muted);
+}
+.position-weight output {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.04em;
+}
+.position-weight output small {
+  font-size: 17px;
+  color: var(--muted);
+  margin-left: 3px;
+}
+.position-explorer input[type="range"] {
+  width: 100%;
+  accent-color: var(--blue);
+  cursor: pointer;
+  height: 24px;
+  padding: 0;
+}
+.position-presets {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin: 10px 0 20px;
+}
+.position-presets span {
+  font-size: 11px;
+  color: var(--muted);
+  margin-right: auto;
+}
+.position-presets button {
+  font-size: 12px;
+  padding: 7px 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface);
+  min-height: 34px;
+}
+.position-presets button[aria-pressed="true"] {
+  background: var(--blue-soft);
+  border-color: var(--blue);
+  color: var(--blue);
+}
+.position-outputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 18px 0;
+  margin: 0;
+  border-top: 1px solid var(--line);
+}
+.position-outputs dt {
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.position-outputs dd {
+  margin: 5px 0 0;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+.position-scenario {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 15px;
+  font-size: 12px;
+}
+.position-scenario small {
+  font-size: 11px;
+  font-weight: 400;
+}
+.position-explorer .experience-caption {
+  font-size: 10px;
+  line-height: 1.7;
+}
+.position-empty {
+  padding: 22px 0;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.position-empty .button {
+  margin-top: 15px;
+}
+
+/* Supporting pages reuse the same surfaces without changing their data or actions. */
+.auryn-experience .research-search {
+  max-width: 100%;
+  border-radius: 19px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 12px;
+  margin: 25px 0;
+}
+.auryn-experience .company-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.auryn-experience .company-card {
+  padding: 24px;
+  border-radius: 20px;
+}
+.auryn-experience .company-card h3 {
+  font-size: 19px;
+  margin-top: 22px;
+}
+.auryn-experience .company-card footer strong {
+  font-size: 25px;
+}
+.auryn-experience .company-card .quote-stamp {
+  font-size: 11px;
+}
+.auryn-experience .portfolio-summary-layout {
+  margin: 20px 0;
+}
+.auryn-experience .portfolio-balance {
+  padding: 28px 30px;
+  background: linear-gradient(115deg, var(--surface), var(--experience-wash));
+  border-radius: 24px;
+}
+.auryn-experience .portfolio-balance .money {
+  font-size: 43px;
+  letter-spacing: -0.055em;
+}
+.auryn-experience .money-sub {
+  font-size: 13px;
+  line-height: 1.7;
+  margin-top: 12px;
+}
+.auryn-experience .portfolio-refresh {
+  border-radius: 13px;
+  background: var(--surface);
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+}
+.auryn-experience .portfolio-refresh-controls select {
+  font-size: 12px;
+}
+.auryn-experience .watchlist-intro-strip {
+  padding: 20px 24px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: linear-gradient(110deg, var(--surface), var(--experience-wash));
+  gap: 25px;
+}
+.auryn-experience
+  :is(
+    .watchlist-table-wrap,
+    .positions-table-wrap,
+    .portfolio-table-wrap,
+    .investment-list
+  ) {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: var(--experience-shadow);
+}
+.auryn-experience :is(.watchlist-table, .positions-table) th {
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  background: var(--paper);
+  color: var(--muted);
+  font-weight: 550;
+  padding: 15px 20px;
+}
+.auryn-experience :is(.watchlist-table, .positions-table) td {
+  padding: 20px;
+  font-size: 14px;
+  border-color: var(--line);
+}
+.auryn-experience :is(.watchlist-table, .positions-table) tr:hover td {
+  background: color-mix(in srgb, var(--blue-soft) 35%, transparent);
+}
+.auryn-experience .settings-page > section,
+.auryn-experience .settings-content {
+  border-radius: 22px;
+}
+.auryn-experience
+  :is(
+    .settings-card,
+    .settings-panel,
+    .plan-card,
+    .owner-section,
+    .paper-panel
+  ) {
+  border-radius: 22px;
+  border-color: var(--line);
+  box-shadow: var(--experience-shadow);
+}
+.auryn-experience .plan-card {
+  background: var(--surface);
+  padding: 30px;
+}
+.auryn-experience .plan-card.pro {
+  background: linear-gradient(145deg, var(--blue-soft), var(--surface));
+}
+.auryn-experience
+  :is(
+    .depth-business,
+    .depth-financial,
+    .depth-value,
+    .depth-technicals,
+    .depth-analysts,
+    .depth-news,
+    .depth-advanced,
+    .depth-options
+  ) {
+  font-size: 14px;
+}
+.auryn-experience
+  :is(
+    .depth-heading,
+    .business-context-layout,
+    .depth-financial .financial-summary,
+    .technical-price-structure,
+    .historical-conditions,
+    .options-chain-panel
+  ) {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: var(--experience-shadow);
+}
+.auryn-experience .depth-heading h2 {
+  font-size: 27px;
+}
+.auryn-experience .depth-heading p {
+  font-size: 13px;
+  line-height: 1.7;
+}
+.auryn-experience .business-driver-map article {
+  font-size: 13px;
+}
+.auryn-experience .financial-explorer {
+  border-radius: 20px;
+}
+.auryn-experience .product-footer {
+  margin: 35px 0 0;
+  padding: 20px 0;
+  border-top: 1px solid var(--line);
+  font-size: 11px;
+}
+.auryn-experience .empty {
+  border: 1px dashed var(--line);
+  border-radius: 22px;
+  background: var(--surface);
+  padding: 36px;
+}
+.auryn-experience .empty h2 {
+  font-size: 22px;
+}
+.auryn-experience .empty p {
+  font-size: 14px;
+  line-height: 1.8;
+}
+dialog {
+  border-radius: 24px;
+  border: 1px solid var(--line);
+  box-shadow: 0 35px 130px #091a4445;
+  background: var(--surface);
+  color: var(--ink);
+}
+dialog::backdrop {
+  background: #0c17294f;
+  backdrop-filter: blur(5px);
+}
+dialog .dialog-head {
+  padding: 22px 24px;
+  border-bottom: 1px solid var(--line);
+}
+dialog .dialog-head h2 {
+  font-size: 22px;
+  font-weight: 650;
+}
+
+/* Public and account entry share the same visual language. No promoted ticker. */
+.public-site.atlas-public {
+  --public-ink: var(--ink);
+  --public-muted: var(--muted);
+  --public-blue: var(--blue);
+  --public-line: var(--line);
+  background:
+    radial-gradient(ellipse at 82% 12%, #b8dff535, transparent 40%),
+    radial-gradient(ellipse at 7% 45%, #c6c6fa30, transparent 38%), var(--paper);
+  color: var(--ink);
+}
+.atlas-public .public-nav {
+  max-width: 1380px;
+  margin: auto;
+  padding: 25px 34px;
+  border-bottom: 1px solid var(--line);
+}
+.atlas-public .public-brand {
+  font-size: 22px;
+  letter-spacing: 0.16em;
+  font-weight: 750;
+  color: var(--ink);
+}
+.atlas-public .public-hero {
+  max-width: 1380px;
+  margin: auto;
+  grid-template-columns: 0.9fr 1.1fr;
+  align-items: center;
+  padding: 74px 40px 80px;
+  gap: 48px;
+}
+.atlas-public .public-hero h1 {
+  font-size: clamp(42px, 5vw, 70px);
+  font-weight: 650;
+  line-height: 1.05;
+  letter-spacing: -0.06em;
+}
+.atlas-public .public-hero h1 em {
+  font-style: normal;
+  color: #326ad6;
+}
+.atlas-public .public-hero-copy > p {
+  font-size: 17px;
+  line-height: 1.8;
+  max-width: 470px;
+  color: var(--muted);
+  margin-top: 25px;
+}
+.atlas-public .public-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--blue);
+  font-weight: 650;
+}
+.atlas-public .public-actions {
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}
+.atlas-public .public-button {
+  min-height: 48px;
+  padding: 13px 20px;
+  border-radius: 13px;
+  background: linear-gradient(120deg, #2a5ed7, #4d7dee);
+  color: #fff;
+  font-size: 14px;
+  border: 1px solid #3467de;
+  box-shadow: 0 6px 16px #3567e91b;
+}
+.atlas-public .public-button.secondary {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--line);
+  box-shadow: none;
+}
+.atlas-public .public-button.compact {
+  min-height: 42px;
+  padding: 10px 16px;
+  font-size: 13px;
+}
+.atlas-public .public-hero-preview {
+  min-width: 0;
+  transform: perspective(1500px) rotateY(-4deg);
+}
+.research-panorama {
+  border-radius: 23px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: 0 24px 70px #274b7e15;
+  overflow: hidden;
+}
+.research-panorama .panorama-toolbar {
+  padding: 22px;
+  background: var(--surface);
+}
+.research-panorama .panorama-verdict {
+  padding: 24px;
+  background: var(--experience-hero);
+  color: #fff;
+}
+.research-panorama .panorama-verdict h2 {
+  color: #fff;
+  font-size: 24px;
+}
+.research-panorama .panorama-verdict p {
+  color: #d4e1fa;
+  font-size: 12px;
+}
+.research-panorama .panorama-verdict > span {
+  color: #b6d3fa;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+}
+.research-panorama .panorama-navigation {
+  padding: 13px 18px;
+  background: var(--surface);
+}
+.research-panorama .panorama-navigation button {
+  border-radius: 9px;
+  font-size: 12px;
+}
+.research-panorama .panorama-chapters {
+  gap: 0;
+  padding: 5px 18px 15px;
+}
+.research-panorama .panorama-chapters > section {
+  border-radius: 14px;
+  margin: 5px;
+  background: var(--paper);
+  padding: 16px;
+}
+.research-panorama .panorama-chapters h3 {
+  font-size: 13px;
+}
+.research-panorama .panorama-chapters p {
+  font-size: 11px;
+}
+.research-panorama .panorama-disclosure {
+  font-size: 10px;
+  padding: 15px 22px;
+  color: var(--muted);
+}
+.atlas-public .public-benefits {
+  max-width: 1300px;
+  margin: auto;
+  padding: 40px 35px 80px;
+}
+.atlas-public .public-benefits article {
+  padding: 30px;
+  border-radius: 22px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--experience-shadow);
+}
+.atlas-public .public-closing {
+  background: var(--experience-hero);
+  color: #fff;
+  border: 0;
+  border-radius: 26px;
+  margin: 0 auto 55px;
+  max-width: 1220px;
+  padding: 44px;
+}
+.atlas-public .public-closing h2,
+.atlas-public .public-closing p {
+  color: #fff;
+}
+.atlas-public .public-closing .public-eyebrow {
+  color: #c7d9fa;
+}
+.atlas-public .public-footer {
+  border-top: 1px solid var(--line);
+  background: transparent;
+}
+.entry-page.atlas-entry {
+  --entry-ink: var(--ink);
+  --entry-muted: var(--muted);
+  --entry-line: var(--line);
+  --entry-blue: var(--blue);
+  background: var(--paper);
+  color: var(--ink);
+}
+.atlas-entry .entry-art {
+  background: var(--experience-hero);
+  padding: 52px;
+}
+.atlas-entry .entry-art h1 {
+  font-size: 47px;
+  line-height: 1.13;
+  letter-spacing: -0.05em;
+}
+.atlas-entry .entry-art-copy p {
+  font-size: 16px;
+  color: #ccdcf4;
+  line-height: 1.8;
+}
+.atlas-entry .entry-art-brand {
+  letter-spacing: 0.17em;
+  font-weight: 700;
+}
+.atlas-entry .entry-form {
+  background: var(--surface);
+  padding: 50px clamp(30px, 6vw, 90px);
+}
+.atlas-entry .entry-form h1,
+.atlas-entry .entry-form h2 {
+  font-size: 32px;
+  font-weight: 650;
+  letter-spacing: -0.04em;
+}
+.atlas-entry .entry-form input {
+  min-height: 48px;
+  border-radius: 12px;
+  background: var(--paper);
+  border-color: var(--line);
+  font-size: 16px;
+}
+.atlas-entry .entry-form .button.primary {
+  background: linear-gradient(110deg, #2e63dd, #4f7eea);
+  border-radius: 12px;
+  min-height: 48px;
+  font-size: 15px;
+}
+.atlas-entry .entry-mode {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  padding: 5px;
+  border-radius: 12px;
+}
+.atlas-entry .auth-social button {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  min-height: 46px;
+  background: var(--surface);
+}
+:root[data-theme="dark"] .atlas-public .public-hero h1 em {
+  color: #94b7ff;
+}
+:root[data-theme="dark"] .research-panorama .panorama-chapters > section {
+  color: var(--ink);
+}
+
+@media (min-width: 1400px) {
+  .auryn-experience .content {
+    padding-top: 38px;
+  }
+}
+@media (max-width: 1150px) {
+  .auryn-experience .topbar {
+    gap: 14px;
+    padding-inline: 24px;
+  }
+  .auryn-experience .brand small {
+    display: none;
+  }
+  .auryn-experience .desktop-nav {
+    margin: 0;
+    gap: 0;
+  }
+  .auryn-experience .desktop-nav a {
+    padding: 9px 11px;
+    font-size: 13px;
+  }
+  .auryn-experience .top-search {
+    max-width: 220px;
+  }
+  .auryn-experience .top-search kbd {
+    display: none;
+  }
+  .auryn-experience .content {
+    padding-inline: 25px;
+  }
+  .home-wealth-strip {
+    grid-template-columns: 1.3fr 1fr 1fr;
+    gap: 22px;
+  }
+  .home-wealth-link {
+    grid-column: 1 / -1;
+    justify-content: center;
+    padding: 8px;
+  }
+  .home-daily-brief {
+    gap: 16px;
+    grid-template-columns: 45px 1fr;
+  }
+  .home-daily-brief > a {
+    grid-column: 2;
+    justify-self: start;
+  }
+  .briefing-home .briefing-evidence-grid {
+    gap: 14px;
+  }
+  .briefing-home .briefing-panel {
+    padding: 19px;
+  }
+  .briefing-home .briefing-main-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .briefing-home .briefing-company-grid > a {
+    grid-template-columns: 31px minmax(60px, 1fr) auto;
+    gap: 9px;
+  }
+  .briefing-company-grid .company-spark,
+  .briefing-company-grid .company-spark-empty {
+    display: none;
+  }
+  .atlas-public .public-hero {
+    gap: 30px;
+    padding: 50px 30px;
+  }
+}
+@media (max-width: 900px) {
+  .auryn-experience .topbar .desktop-nav {
+    display: none;
+  }
+  .auryn-experience .topbar .top-search {
+    max-width: 350px;
+    margin-left: auto;
+  }
+  .auryn-experience .mobile-dock {
+    display: flex;
+  }
+  .auryn-experience .content {
+    padding-bottom: 110px;
+  }
+  .briefing-home .briefing-evidence-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .briefing-home .briefing-calendar {
+    grid-column: 1 / -1;
+  }
+  .briefing-home .briefing-calendar .briefing-quiet-state {
+    min-height: 90px;
+  }
+  .research-decision-tools {
+    grid-template-columns: 1fr;
+  }
+  .auryn-experience .overview-research-grid {
+    grid-template-columns: 1fr;
+  }
+  .auryn-experience .overview-area {
+    grid-column: 1;
+  }
+  .auryn-experience .overview-mini-charts {
+    grid-template-columns: 1fr 1fr;
+  }
+  .auryn-experience .company-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .atlas-public .public-hero {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+  .atlas-public .public-hero-copy > p {
+    margin-inline: auto;
+  }
+  .atlas-public .public-hero h1 {
+    font-size: 57px;
+  }
+  .atlas-public .public-actions,
+  .atlas-public .public-trust {
+    justify-content: center;
+  }
+  .atlas-public .public-hero-preview {
+    transform: none;
+    max-width: 740px;
+    width: 100%;
+    margin: auto;
+  }
+  .atlas-public .public-closing {
+    margin-inline: 24px;
+  }
+}
+@media (max-width: 700px) {
+  .auryn-experience .topbar {
+    height: 66px;
+    min-height: 66px;
+    gap: 9px;
+    padding: 10px 17px;
+    background: var(--experience-glass);
+  }
+  .auryn-experience .brand img {
+    width: 27px;
+    height: 29px;
+  }
+  .auryn-experience .brand strong {
+    font-size: 18px;
+    letter-spacing: 0.12em;
+  }
+  .auryn-experience .topbar > .top-search {
+    flex: 0 0 37px;
+    width: 37px;
+    min-width: 37px;
+    height: 37px;
+    padding: 8px;
+    background: var(--surface);
+    border-color: var(--line);
+    margin-left: auto;
+  }
+  .auryn-experience .top-search span,
+  .auryn-experience .top-search kbd {
+    display: none;
+  }
+  .auryn-experience .top-actions {
+    gap: 5px;
+    margin: 0;
+  }
+  .auryn-experience .top-actions .icon-button {
+    width: 34px;
+    height: 36px;
+  }
+  .auryn-experience .top-plans-link {
+    font-size: 11px;
+    min-height: 32px;
+    padding: 7px;
+  }
+  .workspace-rail {
+    gap: 0;
+    padding: 7px 10px;
+    justify-content: space-around;
+  }
+  .workspace-rail a {
+    font-size: 10px;
+    gap: 4px;
+    min-height: 28px;
+  }
+  .workspace-rail a span {
+    display: none;
+  }
+  .auryn-experience .content {
+    padding: 22px 16px calc(100px + env(safe-area-inset-bottom));
+  }
+  .auryn-experience .content h1 {
+    font-size: 29px;
+  }
+  .auryn-experience .mobile-dock {
+    position: fixed;
+    left: 14px;
+    right: 14px;
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    width: auto;
+    border: 1px solid var(--line);
+    border-radius: 21px;
+    background: var(--experience-glass);
+    backdrop-filter: blur(22px);
+    box-shadow: 0 5px 30px #13213a22;
+    min-height: 65px;
+    gap: 5px;
+    padding: 7px;
+  }
+  .auryn-experience .mobile-dock a {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    border-radius: 14px;
+    min-height: 49px;
+    color: var(--muted);
+  }
+  .auryn-experience .mobile-dock a span {
+    font-size: 10px;
+  }
+  .auryn-experience .mobile-dock a.active {
+    background: var(--blue-soft);
+    color: var(--blue);
+  }
+  .auryn-experience .page-heading {
+    align-items: flex-start;
+    gap: 13px;
+  }
+  .auryn-experience .page-heading p {
+    font-size: 12px;
+  }
+  .auryn-experience .page-heading > .button {
+    font-size: 12px;
+    padding: 10px 13px;
+    min-height: 40px;
+    white-space: nowrap;
+  }
+  .briefing-home .briefing-greeting {
+    display: block;
+    margin-bottom: 22px;
+  }
+  .briefing-home .briefing-greeting h1 {
+    font-size: 29px;
+  }
+  .briefing-home .briefing-greeting p {
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  .briefing-home .briefing-date {
+    display: none;
+  }
+  .home-wealth-strip {
+    padding: 20px;
+    gap: 20px 14px;
+    grid-template-columns: 1fr 1fr;
+    border-radius: 19px;
+  }
+  .home-wealth-strip .home-wealth-main {
+    grid-column: 1 / -1;
+    padding-bottom: 17px;
+    border-bottom: 1px solid var(--line);
+  }
+  .home-wealth-strip .home-wealth-main > strong {
+    font-size: 36px;
+  }
+  .home-wealth-strip > div > strong {
+    font-size: 24px;
+  }
+  .home-wealth-strip > div > span {
+    font-size: 9px;
+    letter-spacing: 0.05em;
+  }
+  .home-wealth-strip small {
+    font-size: 10px;
+  }
+  .home-wealth-link {
+    grid-column: 1 / -1;
+    font-size: 11px;
+  }
+  .home-daily-brief {
+    padding: 22px 20px;
+    gap: 15px;
+    border-radius: 19px;
+    grid-template-columns: 1fr;
+  }
+  .home-brief-mark {
+    display: none;
+  }
+  .home-brief-copy h2 {
+    font-size: 22px;
+    margin-top: 9px;
+  }
+  .home-brief-copy p {
+    font-size: 12px;
+  }
+  .home-brief-copy small {
+    font-size: 10px;
+  }
+  .home-daily-brief > a {
+    grid-column: 1;
+    min-height: 40px;
+    font-size: 12px;
+  }
+  .briefing-home .briefing-evidence-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  .briefing-home .briefing-main-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  .briefing-home .briefing-panel {
+    padding: 21px 20px;
+    border-radius: 19px;
+  }
+  .briefing-home .briefing-panel h2 {
+    font-size: 18px;
+  }
+  .briefing-home .briefing-company-grid > a {
+    grid-template-columns: 31px minmax(65px, 1fr) 65px minmax(70px, auto);
+    gap: 8px;
+  }
+  .briefing-company-grid .company-spark {
+    display: block;
+    width: 65px;
+  }
+  .briefing-company-grid .company-spark-empty {
+    display: block;
+    font-size: 8px;
+  }
+  .briefing-home .briefing-company-name strong,
+  .briefing-home .briefing-company-value strong {
+    font-size: 13px;
+  }
+  .briefing-home .briefing-company-name small {
+    font-size: 10px;
+    max-width: 90px;
+  }
+  .briefing-home .briefing-news-list article {
+    display: block;
+  }
+  .briefing-home .briefing-news-company {
+    margin-bottom: 10px;
+  }
+  .briefing-home .briefing-news-story > a {
+    font-size: 14px;
+  }
+  .briefing-home .briefing-welcome {
+    padding: 25px 22px;
+  }
+  .briefing-home .briefing-welcome h2 {
+    font-size: 30px;
+  }
+  .auryn-experience .research-header h1 {
+    font-size: 27px;
+  }
+  .auryn-experience .research-header-financials {
+    padding: 12px 15px;
+    gap: 14px;
+  }
+  .auryn-experience .research-header-financials dd {
+    font-size: 19px;
+  }
+  .auryn-experience .research-header-financials dt {
+    font-size: 10px;
+  }
+  .auryn-experience .local-tabs {
+    display: flex;
+    padding: 5px;
+    border-radius: 12px;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+  .auryn-experience .local-tabs button {
+    flex: none;
+    font-size: 12px;
+    padding: 10px 13px;
+    min-height: 40px;
+  }
+  .auryn-experience .edge-verdict {
+    grid-template-columns: 1fr;
+    padding: 23px 20px;
+    border-radius: 19px;
+    gap: 20px;
+  }
+  .auryn-experience .overview-answer h2 {
+    font-size: 26px;
+  }
+  .auryn-experience .overview-answer p {
+    font-size: 13px;
+  }
+  .auryn-experience .overview-pace-summary {
+    grid-column: 1;
+    grid-row: auto;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    padding: 16px;
+    gap: 6px 12px;
+  }
+  .auryn-experience .overview-pace-summary > strong {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    font-size: 32px;
+    align-self: center;
+    text-align: right;
+  }
+  .auryn-experience .overview-pace-summary strong small {
+    font-size: 10px;
+  }
+  .auryn-experience .overview-check {
+    grid-column: 1;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .auryn-experience .overview-area {
+    padding: 21px 19px;
+    border-radius: 19px;
+  }
+  .auryn-experience .overview-area h3 {
+    font-size: 18px;
+  }
+  .auryn-experience .overview-evidence dd {
+    font-size: 21px;
+  }
+  .auryn-experience .overview-mini-charts {
+    gap: 10px;
+  }
+  .auryn-experience .overview-technical .overview-evidence {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .auryn-experience .edge-conviction {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 17px;
+  }
+  .research-balance,
+  .position-explorer {
+    padding: 22px 20px;
+    border-radius: 19px;
+  }
+  .balance-columns {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .balance-columns button {
+    font-size: 13px;
+  }
+  .position-presets button {
+    min-height: 40px;
+  }
+  .auryn-experience .company-grid {
+    grid-template-columns: 1fr;
+    gap: 13px;
+  }
+  .auryn-experience .company-card {
+    padding: 22px;
+  }
+  .auryn-experience .portfolio-balance {
+    padding: 24px 20px;
+    border-radius: 19px;
+  }
+  .auryn-experience .portfolio-balance .money {
+    font-size: 36px;
+  }
+  .auryn-experience .portfolio-refresh {
+    padding: 13px;
+    font-size: 11px;
+  }
+  .auryn-experience .watchlist-intro-strip {
+    padding: 17px 19px;
+    border-radius: 17px;
+  }
+  .auryn-experience :is(.watchlist-table, .positions-table) td {
+    padding: 13px 10px;
+    font-size: 12px;
+  }
+  .auryn-experience
+    :is(
+      .depth-heading,
+      .business-context-layout,
+      .technical-price-structure,
+      .historical-conditions
+    ) {
+    padding: 19px;
+    border-radius: 18px;
+  }
+  .auryn-experience .depth-heading h2 {
+    font-size: 24px;
+  }
+  .auryn-experience .empty {
+    padding: 26px 21px;
+  }
+  .atlas-public .public-nav {
+    padding: 18px 20px;
+  }
+  .atlas-public .public-hero {
+    padding: 44px 20px;
+    gap: 35px;
+  }
+  .atlas-public .public-hero h1 {
+    font-size: 45px;
+  }
+  .atlas-public .public-hero-copy > p {
+    font-size: 15px;
+  }
+  .atlas-public .public-button {
+    font-size: 13px;
+    padding: 12px 16px;
+  }
+  .atlas-public .public-benefits {
+    padding: 30px 20px 45px;
+  }
+  .atlas-public .public-closing {
+    margin: 0 17px 30px;
+    padding: 30px 23px;
+    border-radius: 22px;
+  }
+  .research-panorama .panorama-toolbar {
+    padding: 17px;
+  }
+  .research-panorama .panorama-verdict {
+    padding: 20px;
+  }
+  .research-panorama .panorama-chapters {
+    padding: 4px 10px 12px;
+  }
+  .atlas-entry .entry-form {
+    padding: 32px 24px;
+  }
+  .atlas-entry .entry-form h1,
+  .atlas-entry .entry-form h2 {
+    font-size: 30px;
+  }
+}
+@media (max-width: 380px) {
+  .auryn-experience .topbar {
+    padding-inline: 12px;
+  }
+  .auryn-experience .brand strong {
+    font-size: 16px;
+  }
+  .auryn-experience .content {
+    padding-inline: 12px;
+  }
+  .auryn-experience .top-plans-link {
+    display: none;
+  }
+  .briefing-home .briefing-company-grid > a {
+    grid-template-columns: 30px minmax(62px, 1fr) minmax(75px, auto);
+  }
+  .briefing-company-grid .company-spark,
+  .briefing-company-grid .company-spark-empty {
+    display: none;
+  }
+}
+:root[data-density="compact"] .auryn-experience .content {
+  padding-top: 22px;
+}
+:root[data-density="compact"]
+  .auryn-experience
+  :is(
+    .overview-area,
+    .briefing-panel,
+    .company-card,
+    .research-balance,
+    .position-explorer
+  ) {
+  padding: 19px;
+}
+:root[data-text-size="large"] .auryn-experience :is(p, button, label, dt) {
+  font-size: max(15px, 1em);
+}
+:root[data-text-size="large"] .auryn-experience small {
+  font-size: 12px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .auryn-experience *,
+  .atlas-public * {
+    animation: none;
+    transition: none;
+    scroll-behavior: auto;
+  }
+}
+:root[data-motion="reduce"] .auryn-experience * {
+  animation: none;
+  transition: none;
+  scroll-behavior: auto;
+}
+
+.company-fingerprint {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+.company-fingerprint button {
+  padding: 9px 13px;
+  display: grid;
+  gap: 4px;
+  text-align: left;
+  border: 1px solid #ffffff26;
+  border-radius: 11px;
+  background: #ffffff0b;
+  min-width: 110px;
+}
+.company-fingerprint button span {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #bfd3f4;
+}
+.company-fingerprint button strong {
+  font-size: 11px;
+  font-weight: 550;
+  color: #fff;
+}
+@media (max-width: 700px) {
+  .company-fingerprint {
+    gap: 7px;
+  }
+  .company-fingerprint button {
+    flex: 1;
+    min-width: 0;
+    padding: 9px;
+  }
+  .company-fingerprint button strong {
+    font-size: 10px;
+  }
+}
+
+.auryn-experience .overview-check {
+  position: static;
+  inset: auto;
+  transform: none;
+  max-width: 100%;
+}
+.auryn-experience .overview-check > .help-trigger {
+  max-width: 100%;
+  white-space: normal;
+}
+.auryn-experience .edge-verdict {
+  min-height: 0;
+}
+.auryn-experience .overview-pace-summary {
+  min-height: 0;
+}
+@media (min-width: 701px) {
+  .auryn-experience .edge-verdict {
+    padding: 24px 28px;
+  }
+  .auryn-experience .overview-check {
+    margin-top: 0;
+  }
+}
+
+/* Public/account compatibility colors follow the saved theme. The sample is a labeled light canvas. */
+.atlas-public .public-button.secondary {
+  color: var(--ink) !important;
+}
+.atlas-public .public-trust,
+.atlas-public .public-plan-note {
+  color: var(--muted) !important;
+}
+.atlas-public .public-footer .public-brand {
+  color: var(--ink);
+}
+.atlas-public .public-mobile-menu {
+  background: var(--surface);
+}
+.research-panorama {
+  --paper: #f4f7fc;
+  color-scheme: light;
+}
+.atlas-entry .entry-art {
+  --entry-ink: #fff;
+  --entry-muted: #ccdcf4;
+}
+.atlas-entry .entry-art-copy > span,
+.atlas-entry .entry-art-copy em {
+  color: #b6d2ff;
+}
+.atlas-entry .entry-art > small {
+  color: #ccdcf4;
+}
+.atlas-entry a {
+  color: var(--blue);
+}
+.atlas-entry .entry-art-brand {
+  color: #fff;
+}
+.atlas-entry form label,
+.atlas-entry .auth-back {
+  color: var(--muted);
+}
+.atlas-entry .entry-mode button[aria-pressed="true"] {
+  color: var(--blue);
+  border-color: var(--blue);
+}
+.atlas-entry .auth-social > button:hover {
+  background: var(--blue-soft);
+  border-color: var(--blue);
+}
+
+.research-balance .balance-unavailable {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}

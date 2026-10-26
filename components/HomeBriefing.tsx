@@ -18,6 +18,7 @@ import { homeBrief, dailyPerspective } from "@/lib/home-brief";
 import { companyFeedPage, holdingAttention } from "@/lib/product-attention";
 import { relevantHoldingHeadlines, type HomeFeed } from "@/lib/home-feed";
 import type { Company, Quote } from "@/lib/types";
+import CompanySparkline from "./CompanySparkline";
 type Rows = Record<
   string,
   { company?: Company; quote?: Quote; error?: string }
@@ -228,9 +229,9 @@ export default function HomeBriefing({
   const attention = [...exposure].sort((a, b) => b[1] - a[1]).slice(0, 3);
   return (
     <section className="briefing-home" data-composition={composition}>
-      <header className="briefing-greeting">
+      <header className="briefing-greeting experience-greeting">
         <div>
-          <span className="briefing-kicker">YOUR DAILY PERSPECTIVE</span>
+          <span className="briefing-kicker">YOUR INVESTMENT WORKSPACE</span>
           <h1>
             {greeting}
             {displayName ? `, ${displayName}` : ""}.
@@ -322,121 +323,20 @@ export default function HomeBriefing({
         </>
       ) : (
         <>
-          <div className="briefing-top-grid">
-            <section className="briefing-perspective">
-              <span className="briefing-kicker">
-                {composition === "holdings"
-                  ? "YOUR INVESTED PERSPECTIVE"
-                  : "YOUR RESEARCH UNIVERSE"}
-              </span>
-              <h2>
-                {composition === "holdings"
-                  ? "See the whole picture."
-                  : "Find great businesses."}
-              </h2>
-              <p>
-                {composition === "holdings"
-                  ? "Keep operating progress, price and portfolio risk in view."
-                  : "Research, evaluate and build your watchlist."}
-              </p>
-              <dl className="briefing-stat-line">
-                {composition === "holdings" ? (
-                  <>
-                    <div>
-                      <dt>Priced investments · USD</dt>
-                      <dd>
-                        {pricedTotal > 0
-                          ? amount(pricedTotal, "USD", true)
-                          : "Review holdings"}
-                      </dd>
-                      <small>Excludes cash, margin and managed balances</small>
-                    </div>
-                    <div>
-                      <dt>
-                        {day.session
-                          ? `Session · ${dateLabel(day.session)}`
-                          : "Session change"}
-                      </dt>
-                      <dd
-                        className={
-                          day.net == null
-                            ? "neutral"
-                            : day.net < 0
-                              ? "negative"
-                              : "positive"
-                        }
-                      >
-                        {day.net != null
-                          ? amount(day.net, "USD", true)
-                          : "Quotes updating"}
-                      </dd>
-                      <small>
-                        {day.covered} of {day.total} USD equities · current
-                        units
-                      </small>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div>
-                      <dt>Followed companies</dt>
-                      <dd>{ordered.length}</dd>
-                      <small>Your saved research ideas</small>
-                    </div>
-                    <div>
-                      <dt>Upcoming events</dt>
-                      <dd>{eventRows.length}</dd>
-                      <small>Next 30 days · checked company group</small>
-                    </div>
-                  </>
-                )}
-              </dl>
-              <Link
-                className="briefing-main-link"
-                href={
-                  composition === "holdings"
-                    ? `${prefix}/portfolio`
-                    : `${prefix}/research`
-                }
-              >
-                {composition === "holdings"
-                  ? "Open your portfolio"
-                  : "Find a company"}{" "}
-                <ArrowRight size={16} />
-              </Link>
-            </section>
-            <section className="briefing-focus">
-              <span className="briefing-kicker">
-                IN FOCUS ·{" "}
-                {brief.kind === "earnings"
-                  ? "NEXT REPORT"
-                  : brief.kind === "news"
-                    ? "LATEST EVIDENCE"
-                    : "RESEARCH CHECK-IN"}
-              </span>
-              {focusSymbol && (
-                <Link
-                  href={companyHref(focusSymbol)}
-                  className="briefing-focus-company"
-                >
-                  <SecurityLogo symbol={focusSymbol} size={38} />
-                  <div>
-                    <strong>{names[focusSymbol] ?? focusSymbol}</strong>
-                    <small>{focusSymbol}</small>
-                  </div>
-                  <ArrowUpRight size={17} />
-                </Link>
-              )}
-              <p>{brief.detail}</p>
-              <Link href={heroHref}>
-                {brief.action} <ArrowRight size={15} />
-              </Link>
-              <small>
-                Selected from your companies by dated event, recent news or
-                exposure.
-              </small>
-            </section>
-          </div>
+          <section className="home-wealth-strip" aria-label="Portfolio at a glance">
+            <div className="home-wealth-main"><span>{composition === "holdings" ? "PRICED INVESTMENTS · USD" : "YOUR RESEARCH UNIVERSE"}</span>
+              <strong>{composition === "holdings" ? (pricedTotal > 0 ? amount(pricedTotal) : "Awaiting prices") : ordered.length}</strong>
+              <small>{composition === "holdings" ? "Excludes cash, margin and managed balances" : "Companies you follow"}</small>
+            </div>
+            {composition === "holdings" ? <div><span>{day.session ? `SESSION · ${dateLabel(day.session)}` : "SESSION CHANGE"}</span><strong className={day.net==null?'neutral':day.net<0?'negative':'positive'}>{day.net!=null?amount(day.net):"Quotes updating"}</strong><small>{day.covered} of {day.total} USD equities · current units</small></div> : <div><span>PORTFOLIO CONTEXT</span><strong>No holdings yet</strong><small>Add positions when you're ready</small></div>}
+            <div><span>YOUR FOCUS</span><strong>{ordered.length}<small> companies</small></strong><small>{positions.length} holdings · {workspace?.watchlist.length ?? 0} watchlist ideas</small></div>
+            <Link className="home-wealth-link" href={`${prefix}/${composition==='holdings'?'portfolio':'watchlist'}`}>{composition==='holdings'?'View portfolio':'Open watchlist'}<ArrowUpRight size={17}/></Link>
+          </section>
+          <section className="home-daily-brief" aria-label="Your daily briefing">
+            <div className="home-brief-mark" aria-hidden="true">A<span>✦</span></div>
+            <div className="home-brief-copy"><span>THE AURYN BRIEF · {brief.kind === 'earnings'?'UPCOMING EARNINGS':brief.kind==='news'?'COMPANY UPDATE':'YOUR NEXT CHECK-IN'}</span><h2>{brief.title}</h2><p>{brief.detail}</p><small>{brief.status}</small></div>
+            <Link href={heroHref}>{brief.action}<ArrowRight size={18}/></Link>
+          </section>
           <div className="briefing-evidence-grid">
             <section className="briefing-panel briefing-moves">
               <header>
@@ -747,6 +647,7 @@ export default function HomeBriefing({
                         <strong>{s}</strong>
                         <small>{names[s] ?? s}</small>
                       </span>
+                      <CompanySparkline symbol={s} />
                       <span className="briefing-company-value">
                         <strong>
                           {quote?.price != null &&

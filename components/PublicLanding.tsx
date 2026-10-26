@@ -27,9 +27,9 @@ export function PublicSample() {
           <span>A</span>
           <div>
             <strong>
-              Atlas Software <small>ATLS</small>
+              Your next investment
             </strong>
-            <small>Illustrative company · not a real investment</small>
+            <small>Illustrative research · sample values</small>
           </div>
         </div>
         <div className="panorama-reference">
@@ -309,9 +309,9 @@ export default function PublicLanding({
               </>
             ) : (
               <>
-                Understand the business.
+                More clarity.
                 <br />
-                <em>Put price in perspective.</em>
+                <em>Better conviction.</em>
               </>
             )}
           </h1>

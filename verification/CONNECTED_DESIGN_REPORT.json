@@ -1,0 +1,135 @@
+{
+  "release": "AURYN connected experience",
+  "verifiedAt": "2026-10-26T01:16:17.548535+00:00",
+  "baseline": {
+    "filename": "AURYN-approved-design-build.zip",
+    "version": 92,
+    "tests": 571
+  },
+  "checks": {
+    "unitDomainDatabaseUI": {
+      "command": "npm test",
+      "passed": 580,
+      "failed": 0
+    },
+    "typescript": {
+      "command": "npm run typecheck",
+      "status": "passed"
+    },
+    "productionBuild": {
+      "command": "npm run build",
+      "status": "passed"
+    },
+    "compiledAPIs": {
+      "command": "npm run test:api",
+      "passed": 122,
+      "groups": {
+        "base": 48,
+        "researchRegressions": 16,
+        "eodhd": 22,
+        "sharedMarket": 5,
+        "access": 11,
+        "billing": 6,
+        "optionsIncludingAlpaca": 7,
+        "ownerExpiry": 3,
+        "congress": 4
+      },
+      "transport": "synthetic"
+    }
+  },
+  "browser": {
+    "status": "reviewed",
+    "environment": "Actual React components and CSS in a separate read-only fixture harness; standalone routing instead of Next runtime",
+    "viewportWidths": [
+      360,
+      390,
+      "desktop 1363"
+    ],
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "largerText": true,
+    "screens": [
+      "Home",
+      "Research Overview",
+      "Business",
+      "Financials",
+      "Value",
+      "Technicals",
+      "Analysts",
+      "News",
+      "Advanced",
+      "Options",
+      "Portfolio",
+      "Watchlist",
+      "Research search",
+      "Settings",
+      "Plans",
+      "Alerts",
+      "Discover",
+      "Research Lab",
+      "Paper Lab",
+      "Compare",
+      "Public home",
+      "Sign in",
+      "Create account",
+      "Reset password"
+    ],
+    "interactions": {
+      "allocation5Percent": {
+        "positionValue": 1943.15,
+        "difference": -8771.85
+      },
+      "allocation0Percent": {
+        "positionValue": 0,
+        "difference": -10715
+      },
+      "reset": {
+        "positionValue": 10715,
+        "difference": 0
+      },
+      "supportingEvidence": "Financials tab selected",
+      "themes": "saved dark, light and larger text verified"
+    },
+    "mobileOverflow": "No body horizontal overflow on reviewed screens at 360/390; tables and tabs retain internal scrolling",
+    "console": "Observed review-time console noise was from the browser extension; not a certification of all production console states"
+  },
+  "review": {
+    "critical": 0,
+    "important": 0,
+    "focusedTestsIndependentlyPassed": 20,
+    "resolved": [
+      "Sector-aware fingerprint labels",
+      "No positive support fallback for absent fundamentals",
+      "Exact sizing reset",
+      "Meaningful zero allocation",
+      "Public/auth dark-theme contrast",
+      "Mobile evidence-button positioning",
+      "Watchlist-only no-holdings state",
+      "Financial evidence opens Financials"
+    ]
+  },
+  "notVerified": [
+    "Exact Claude-reference pixel parity (origin access rejected by automatic approval review)",
+    "Live market-data entitlements and account integrations",
+    "Live OAuth, email delivery and payment flows",
+    "Physical installed iPhone/PWA behavior",
+    "Investment performance or universal model parity"
+  ],
+  "deployment": {
+    "performed": false,
+    "githubPush": false,
+    "liveAccountMutation": false
+  },
+  "sourceIntegrity": {
+    "providersAuthBillingAndFinancialAlgorithms": "Unchanged from the supplied complete baseline",
+    "newProductionDependencies": false,
+    "newMigrations": false,
+    "newEnvironmentVariables": false
+  },
+  "logs": {
+    "verifySHA256": "b05b036e30bdfc715ca528d6120707f7a0d94088434b3f88b132637bd8b3fc78",
+    "apiSHA256": "6371105140551a07fb0ee4c524a92d31b855fccbe7f269f336a8c5c05401f341"
+  }
+}

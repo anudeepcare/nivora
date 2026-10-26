@@ -11,6 +11,7 @@ import OverviewEvidence from "./OverviewEvidence";
 import { EvidenceSeries } from "./EvidenceGraphics";
 import { ShieldCheck, TriangleAlert, Sprout, ArrowUpRight } from "lucide-react";
 import { useProduct } from "./Session";
+import ResearchBalance from "./ResearchBalance";
 
 type Tab =
   | "Thesis"
@@ -102,6 +103,11 @@ export default function EdgeOverview({
           <span className="edge-eyebrow">AURYN VIEW</span>
           <h2>{edge.assessment}</h2>
           <p>{edge.reason}</p>
+          <div className="company-fingerprint" aria-label="Company fingerprint">
+            <button onClick={()=>onTab("Thesis")}><span>Business</span><strong>{edge.businessLabel}</strong></button>
+            <button onClick={()=>onTab("Valuation")}><span>Price</span><strong>{edge.valueLabel}</strong></button>
+            <button onClick={()=>onTab("Technicals")}><span>Timing</span><strong>{edge.timingLabel}</strong></button>
+          </div>
           {edge.referenceBasis === "settled-close" && (
             <small>
               Uses the dated settled close, not a live execution price.
@@ -408,6 +414,7 @@ export default function EdgeOverview({
           Inspect the evidence →
         </button>
       </section>
+      <ResearchBalance research={r} onTab={onTab} reading={edge} />
       <nav className="overview-explore" aria-label="Explore full research">
         <strong>Explore every metric</strong>
         {(

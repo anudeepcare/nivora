@@ -2,27 +2,7 @@ import {AppearanceSync} from "@/components/AppearanceControls";
 import Pwa from "@/components/Pwa";
 import AppSession from "@/components/AppSession";
 import type { Metadata, Viewport } from "next";
-import "./studio-foundation.css";
-import "./globals.css";
-import "./decision-workspace.css";
-import "./appearance.css";
-import "./connected-product.css";
-import "./portfolio.css";
-import "./interaction.css";
-import "./evidence-product.css";
-import "./public-site.css";
-import "./overview-visual.css";
-import "./funded-scenarios.css";
-import "./product-surfaces.css";
-import "./research-desks.css";
-import "./approved-entry.css";
-import "./approved-home.css";
-import "./membership.css";
-import "./options.css";
-import "./edge.css";
-import "./canvas.css";
-import "./research-studio.css";
-import "./account-studio.css";
+import "./product.css";
 import "./pwa-shell.css";
 export const metadata: Metadata = {
   title: "AURYN · Investment Intelligence",
