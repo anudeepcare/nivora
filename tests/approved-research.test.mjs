@@ -18,10 +18,24 @@ test("adjusting the scale cannot manufacture a buy verdict or alter Pace", () =>
     m.factors,
     m.factors.map((x) => x.id),
   );
-  assert.deepEqual(b, { buy: 0, wait: 0, angle: 0 });
+  assert.deepEqual(b, { buy: 0, wait: 0, buyCount: 0, waitCount: 0, angle: 0 });
   assert.equal(JSON.stringify(m), before);
   const only = m.factors.filter((x) => x.side === "wait").map((x) => x.id);
   assert.ok(balanceView(m.factors, only).angle <= 0);
+});
+test("reason counts are distinct from importance totals and follow excluded factors", () => {
+  const factors = [
+    { id: "cash", side: "buy", weight: 3 },
+    { id: "growth", side: "buy", weight: 2 },
+    { id: "margin", side: "buy", weight: 2 },
+    { id: "value", side: "buy", weight: 3 },
+    { id: "risk", side: "wait", weight: 2 },
+  ];
+  assert.equal(balanceView(factors).buyCount, 4);
+  assert.equal(balanceView(factors).waitCount, 1);
+  assert.equal(balanceView(factors).buy, 10);
+  assert.equal(balanceView(factors, ["cash", "risk"]).buyCount, 3);
+  assert.equal(balanceView(factors, ["cash", "risk"]).waitCount, 0);
 });
 test("partial and crypto evidence retain actual prices without invented business metrics", () => {
   const r = structuredClone(demoData.research.MSFT);

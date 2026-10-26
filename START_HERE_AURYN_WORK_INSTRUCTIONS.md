@@ -1,3 +1,13 @@
+# Current handoff — screenshot UX refinements, October 26, 2026
+
+This complete source ZIP includes the approved implementation plus the latest screenshot-driven fixes. Start with `docs/approved-build/UX_REFINEMENT.md` and `verification/REPORT.json`.
+
+Settings now has one surface, a contextual Back link, and immediately visible Sign out. Explore is an explicit tools menu. Reason counts are actual counts; importance is separately labeled and the 0–4× Pace calculation is unchanged. Scenario overlap, missing evidence colors, Pace drawer styling, switch duplication and SVG hydration differences are corrected.
+
+No new migration or environment setting is required. Keep your existing configured services. This source has not been pushed or deployed. The preview flag and temporary review page are excluded. The report distinguishes local synthetic verification from live service verification.
+
+---
+
 # Current handoff — approved mockup implementation,2026-10-26
 
 This complete source ZIP supersedes the earlier design-only handoff. The user approved mockup632e79dd06d0b8844f2c65f08812ad07fbb79bbf and explicitly authorized this implementation. Do not ask to reapprove the design.

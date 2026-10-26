@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-10-26T03:00:57.188975+00:00",
-  "release": "AURYN approved mockup implementation",
+  "generatedAt": "2026-10-26T12:45:58.037552+00:00",
+  "release": "AURYN screenshot UX refinement",
   "referenceCommit": "632e79dd06d0b8844f2c65f08812ad07fbb79bbf",
   "sourceBranch": "feat/approved-mockup",
   "completeSourceIncluded": true,
-  "unitDatabaseComponentTests": 630,
+  "unitDatabaseComponentTests": 640,
   "unitFailures": 0,
   "apiChecks": 138,
   "apiTransports": "Synthetic provider, authentication, database and billing transports; no actual payments or broker orders",
   "browserViewports": [
     {
-      "width": 1365,
-      "height": 768
+      "width": 1363,
+      "height": 937
     },
     {
       "width": 390,
@@ -23,20 +23,21 @@
     }
   ],
   "browserThemes": [
-    "light",
-    "dark"
+    "light"
   ],
   "browserEngine": "Managed Chromium, actual Next.js pages; narrow viewports measured in same-origin local review frames, not physical devices",
-  "browserReport": "docs/approved-build/BROWSER_QA.md",
-  "buildId": "RCaVxIBRcLKU23u7gsNL8",
+  "browserReport": "docs/approved-build/UX_REFINEMENT.md",
+  "buildId": "M1eya_c0cUu-Mm9s29m2b",
   "commands": {
-    "npm run verify": "passed: approved-final-verify.log (630 tests, next typegen, TypeScript, production build)",
-    "npm run test:api": "passed: approved-final-api.log (122 synthetic API checks)",
-    "node scripts/test-auth-provider-api.mjs": "passed: approved-final-auth-api.log (3 checks)",
-    "node scripts/test-ticker-resilience.mjs": "passed: ticker-resilience-built-api.log (13 checks)",
+    "npm test": "passed: ux-refinement-tests.log (640 tests)",
+    "npm run typecheck": "passed: ux-refinement-typecheck.log",
+    "npm run build": "passed: ux-refinement-build.log",
+    "npm run test:api": "passed: ux-refinement-api.log (122 synthetic checks)",
+    "node scripts/test-auth-provider-api.mjs": "passed: 3 checks, confirmed standalone command output",
+    "node scripts/test-ticker-resilience.mjs": "passed: ux-refinement-ticker-api.log (13 checks)",
     "git diff --check": "passed"
   },
-  "review": "Independent source review plus browser QA. Fixed historical scenario horizon/reference labels, mixed provider outage/not-found classification, mobile tools visibility and saved-theme hydration. Regression tests added.",
+  "review": "Independent read-only review found no material issues. Browser reproduced and verified scenario overlap, evidence colors, Pace styling, Settings return, first-level logout and mobile menu fixes. Rounded SVG coordinates fixed cross-engine hydration warnings. No numerical engine changes.",
   "productionReady": false,
   "deployed": false,
   "pushed": false,

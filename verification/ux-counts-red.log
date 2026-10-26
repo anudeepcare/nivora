@@ -1,0 +1,65 @@
+✔ approved presentation preserves the evidence policy and confirmed Pace (100.930044ms)
+✖ adjusting the scale cannot manufacture a buy verdict or alter Pace (12.321683ms)
+✖ reason counts are distinct from importance totals and follow excluded factors (0.549699ms)
+✔ partial and crypto evidence retain actual prices without invented business metrics (4.899034ms)
+✔ scenario values use matching quote currency and positive current prices (57.231721ms)
+✔ historical scenarios preserve their exact horizon and settled-close reference (37.959212ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 4
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 526.759572
+
+✖ failing tests:
+
+test at tests/approved-research.test.mjs:14:1
+✖ adjusting the scale cannot manufacture a buy verdict or alter Pace (12.321683ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      angle: 0,
+      buy: 0,
+  -   buyCount: 0,
+      wait: 0,
+  -   waitCount: 0
+    }
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/9f0036d454ae/auryn-approved/AURYN/tests/approved-research.test.mjs:21:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { buy: 0, wait: 0, angle: 0 },
+    expected: { buy: 0, wait: 0, buyCount: 0, waitCount: 0, angle: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/approved-research.test.mjs:26:1
+✖ reason counts are distinct from importance totals and follow excluded factors (0.549699ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  undefined !== 4
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/9f0036d454ae/auryn-approved/AURYN/tests/approved-research.test.mjs:34:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 4,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -28,7 +28,13 @@ export function balanceView(factors: BalanceFactor[], excluded: string[] = []) {
   const wait = active
     .filter((x) => x.side === "wait")
     .reduce((n, x) => n + x.weight, 0);
-  return { buy, wait, angle: Math.max(-9, Math.min(9, (wait - buy) * 1.4)) };
+  return {
+    buy,
+    wait,
+    buyCount: active.filter((x) => x.side === "buy").length,
+    waitCount: active.filter((x) => x.side === "wait").length,
+    angle: Math.max(-9, Math.min(9, (wait - buy) * 1.4)),
+  };
 }
 export function approvedResearch(r: Research, ownsPosition = false) {
   const edge = researchEdge(r, ownsPosition),
@@ -82,7 +88,7 @@ export function approvedResearch(r: Research, ownsPosition = false) {
       "value",
       "buy",
       3,
-      "The model has a conditional price cushion",
+      "The base scenario is above today’s price; growth assumptions matter",
       "Valuation",
     );
   if (edge.value === "demanding")

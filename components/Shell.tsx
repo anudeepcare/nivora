@@ -1,7 +1,7 @@
 "use client";
 import { AccessNotice } from "./Access";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import {
   Home,
@@ -15,10 +15,15 @@ import {
   Settings,
   Sun,
   Moon,
+  Compass,
+  FlaskConical,
+  Scale,
+  HelpCircle,
+  ArrowUpRight,
 } from "lucide-react";
 import { Logo, ProductFooter } from "./Ui";
 import Search from "./Search";
-import SettingsSheet from "./SettingsSheet";
+import { settingsHref } from "@/lib/settings-navigation";
 import { useProduct } from "./Session";
 import {
   NavigationMemory,
@@ -40,12 +45,23 @@ export default function Shell({
 }) {
   const { demo, workspace, theme, setTheme } = useProduct();
   const pathname = usePathname();
+  const router = useRouter();
   const memory = useRef(new NavigationMemory());
   const pending = useRef<{ path: string; top: number } | null>(null);
   const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   const search = useRef<HTMLDialogElement>(null);
-  const settings = useRef<HTMLDialogElement>(null);
   const tools = useRef<HTMLDialogElement>(null);
+  const openSettings = (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+    tools.current?.close();
+    if (page === "settings") return;
+    router.push(
+      settingsHref(
+        `${window.location.pathname}${window.location.search}${window.location.hash}`,
+        prefix,
+      ),
+    );
+  };
   useLayoutEffect(() => {
     const env = browserScrollEnvironment();
     const top =
@@ -69,7 +85,6 @@ export default function Shell({
   }, [pathname]);
   useEffect(() => {
     search.current?.close();
-    settings.current?.close();
     tools.current?.close();
   }, [pathname]);
   useEffect(() => {
@@ -131,14 +146,17 @@ export default function Shell({
         <div className="rail-bottom">
           <button
             onClick={() => tools.current?.showModal()}
-            aria-label="More tools"
+            aria-label="Explore tools"
+            aria-haspopup="dialog"
           >
             <LayoutGrid size={21} />
             <span>Explore</span>
           </button>
           <Link
             href={`${prefix}/settings`}
+            onNavigate={openSettings}
             className={page === "settings" ? "active" : ""}
+            aria-current={page === "settings" ? "page" : undefined}
           >
             <Settings size={21} />
             <span>Settings</span>
@@ -152,7 +170,9 @@ export default function Shell({
             <span>
               /{" "}
               {primary.find((r) => r.path === page)?.label ||
-                page.replaceAll("-", " ")}
+                page
+                  .replaceAll("-", " ")
+                  .replace(/\b\w/g, (letter) => letter.toUpperCase())}
             </span>
           </Link>
           <button
@@ -174,11 +194,18 @@ export default function Shell({
             <button
               className="icon-button mobile-explore"
               aria-label="Explore tools"
+              aria-haspopup="dialog"
               onClick={() => tools.current?.showModal()}
             >
               <LayoutGrid size={20} />
             </button>
-            <Link href={`${prefix}/plans`}>Plans</Link>
+            <Link
+              href={`${prefix}/plans`}
+              className="header-plans"
+              aria-current={page === "plans" ? "page" : undefined}
+            >
+              Plans
+            </Link>
             <button
               className="icon-button"
               aria-label="Switch color theme"
@@ -193,13 +220,15 @@ export default function Shell({
             >
               <Bell size={20} />
             </Link>
-            <button
+            <Link
+              href={`${prefix}/settings`}
               className="avatar"
               aria-label="Account settings"
-              onClick={() => settings.current?.showModal()}
+              onNavigate={openSettings}
+              aria-current={page === "settings" ? "page" : undefined}
             >
               {(workspace?.email?.[0] || "A").toUpperCase()}
-            </button>
+            </Link>
           </div>
         </header>
         <main id="content" className="page-content" tabIndex={-1}>
@@ -219,10 +248,13 @@ export default function Shell({
       <dialog
         ref={tools}
         className="search-dialog approved-tools-dialog"
-        aria-label="Explore your workspace"
+        aria-label="Explore tools"
       >
         <header className="dialog-head">
-          <h2>Explore your workspace</h2>
+          <div>
+            <span className="eyebrow">Your workspace</span>
+            <h2>Explore tools</h2>
+          </div>
           <button
             className="icon-button"
             aria-label="Close tools"
@@ -231,20 +263,69 @@ export default function Shell({
             <X size={21} />
           </button>
         </header>
+        <p className="tools-intro">
+          Discover ideas, compare companies, and test your thinking.
+        </p>
         <div className="dialog-tools">
           {[
-            ["discover", "Discover", "Find your next research idea"],
-            ["research-lab", "Research Lab", "Investigate the evidence"],
-            ["trading", "Paper Lab", "Test a strategy"],
-            ["compare", "Compare", "See companies side by side"],
-            ["help", "Help", "Understand the tools"],
-            ["settings", "Settings", "Make AURYN yours"],
-          ].map(([path, label, detail]) => (
-            <Link key={path} href={`${prefix}/${path}`}>
-              <strong>{label}</strong>
-              <small>{detail}</small>
-            </Link>
-          ))}
+            {
+              path: "discover",
+              label: "Discover",
+              detail: "Find your next research idea",
+              icon: Compass,
+            },
+            {
+              path: "compare",
+              label: "Compare",
+              detail: "See companies side by side",
+              icon: Scale,
+            },
+            {
+              path: "research-lab",
+              label: "Research Lab",
+              detail: "Investigate the evidence",
+              icon: FlaskConical,
+            },
+            {
+              path: "trading",
+              label: "Paper Lab",
+              detail: "Practice with a paper portfolio",
+              icon: ChartNoAxesCombined,
+            },
+            {
+              path: "help",
+              label: "Help & support",
+              detail: "Understand the tools",
+              icon: HelpCircle,
+            },
+            {
+              path: "settings",
+              label: "Settings",
+              detail: "Account and preferences",
+              icon: Settings,
+            },
+          ]
+            .filter((tool) => tool.path !== page)
+            .map(({ path, label, detail, icon: Icon }) => (
+              <Link
+                key={path}
+                href={`${prefix}/${path}`}
+                onNavigate={
+                  path === "settings"
+                    ? openSettings
+                    : () => tools.current?.close()
+                }
+              >
+                <span className="tool-icon">
+                  <Icon size={21} />
+                </span>
+                <span>
+                  <strong>{label}</strong>
+                  <small>{detail}</small>
+                </span>
+                <ArrowUpRight size={17} className="tool-arrow" />
+              </Link>
+            ))}
         </div>
       </dialog>
       <dialog
@@ -264,7 +345,6 @@ export default function Shell({
         </header>
         <Search autoFocus onNavigate={() => search.current?.close()} />
       </dialog>
-      <SettingsSheet dialog={settings} />
     </div>
   );
 }

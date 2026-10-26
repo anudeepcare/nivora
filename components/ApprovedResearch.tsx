@@ -19,6 +19,16 @@ type Props = {
   chart?: ReactNode;
   pro?: boolean;
 };
+// Normalize trigonometric SVG coordinates across server and browser math engines.
+const svgCoordinate = (value: number) => Number(value.toFixed(3));
+const impactLabel = (weight: number) =>
+  weight >= 4
+    ? "Very high impact"
+    : weight >= 3
+      ? "High impact"
+      : weight >= 2
+        ? "Moderate impact"
+        : "Low impact";
 function metricValue(m: OverviewMetric) {
   return m.unit === "money"
     ? amount(m.value, m.currency, true)
@@ -58,7 +68,7 @@ function Scale({
       className="evidence-scale"
       viewBox="0 0 600 340"
       role="img"
-      aria-label={`Evidence balance: supporting weight ${s.buy}, caution weight ${s.wait}. Qualitative weights, not probabilities.`}
+      aria-label={`Evidence balance: ${s.buyCount} ${s.buyCount === 1 ? "reason" : "reasons"} to buy, ${s.waitCount} ${s.waitCount === 1 ? "reason" : "reasons"} to wait. Circle size represents qualitative importance, not probability or Pace.`}
     >
       <path
         d="M300 80V310M246 310H354"
@@ -77,8 +87,8 @@ function Scale({
       />
       {(["buy", "wait"] as const).map((side) => {
         const sign = side === "buy" ? -1 : 1,
-          cx = 300 + sign * 155 * Math.cos(angle),
-          anchor = 80 + sign * 155 * Math.sin(angle),
+          cx = svgCoordinate(300 + sign * 155 * Math.cos(angle)),
+          anchor = svgCoordinate(80 + sign * 155 * Math.sin(angle)),
           pan = anchor + 163,
           color = side === "buy" ? "var(--green)" : "var(--amber)";
         return (
@@ -91,23 +101,25 @@ function Scale({
             />
             {factors
               .filter((x) => x.side === side && !excluded.includes(x.id))
-              .slice(0, 6)
-              .map((x, i) => {
-                const radius = 16 + x.weight * 7,
-                  X = cx + [-65, 0, 65, -65, 0, 65][i],
-                  Y = i < 3 ? pan - radius - 3 : pan - 112;
+              .map((x, i, active) => {
+                const row = Math.floor(i / 3),
+                  columns = Math.min(3, active.length - row * 3),
+                  radius = 14 + x.weight * 5,
+                  X = cx + ((i % 3) - (columns - 1) / 2) * 65,
+                  Y = pan - radius - 3 - row * 68;
                 return (
                   <g key={x.id}>
+                    <title>{`${x.text} · ${impactLabel(x.weight)}`}</title>
                     <circle cx={X} cy={Y} r={radius} fill={color} />
                     <text
                       x={X}
                       y={Y + 5}
                       textAnchor="middle"
-                      fill="var(--card)"
+                      fill="#fff"
                       fontSize="14"
                       fontWeight="650"
                     >
-                      {x.weight}
+                      {side === "buy" ? "✓" : "!"}
                     </text>
                   </g>
                 );
@@ -382,11 +394,11 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
             <div className="score-line">
               <span>
                 <i className="dot green-bg" />
-                Buy reasons <b>{balance.buy}</b>
+                Buy reasons <b>{balance.buyCount}</b>
               </span>
               <span>
                 <i className="dot amber-bg" />
-                Wait reasons <b>{balance.wait}</b>
+                Wait reasons <b>{balance.waitCount}</b>
               </span>
             </div>
             <div className={`pace-chip ${edge.pace === 4 ? "strong" : ""}`}>
@@ -472,7 +484,7 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
                         {excluded.includes(f.id) ? "+" : "✓"}
                       </span>
                       <span>{f.text}</span>
-                      <small>{f.weight}</small>
+                      <small>{impactLabel(f.weight)}</small>
                     </button>
                     <button
                       className="factor-source"
@@ -495,9 +507,9 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
         </div>
         <div className="factor-foot">
           <span>
-            Tap a factor to test your balance. Weights are qualitative
-            importance (1–4), not probability. The evidence-based AURYN view
-            stays unchanged.
+            Each circle is one reason; its size shows importance. Tap a reason
+            to test your balance. This changes your view of the scale, not the
+            research verdict or calculated Pace.
           </span>
           {excluded.length > 0 && (
             <button className="text-link" onClick={() => setExcluded([])}>
@@ -536,15 +548,19 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
             onChange={(e) => setInvestment(Number(e.target.value))}
           />
           <div className="outcome-grid">
-            {[m.cases[2], m.cases[0]].map((c, i) => (
+            {[m.cases[2], m.cases[0]].map((c) => (
               <article
                 key={c.name}
-                className={`outcome ${i ? "negative" : "positive"}`}
+                className={`outcome ${c.change < 0 ? "negative" : "positive"}`}
               >
                 <span>IF THE {c.name.toUpperCase()} CASE HAPPENS</span>
                 <strong>
                   {amount((investment * c.change) / 100, r.quote.currency)}
                 </strong>
+                <small>
+                  Potential {c.change < 0 ? "loss" : "gain"} · Investment value{" "}
+                  {amount(investment * (1 + c.change / 100), r.quote.currency)}
+                </small>
                 <p>
                   Scenario price {amount(c.target, r.quote.currency)} ·{" "}
                   {percent(c.change, true)} from{" "}
@@ -592,19 +608,50 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
         <div>
           <span className="eyebrow">THE CASE, CONNECTED</span>
           <h2>
-            {r.company.name} has{" "}
-            <button onClick={() => setFocus("business")}>
-              {edge.businessLabel.toLowerCase()}
-            </button>{" "}
-            business evidence, a price case that is{" "}
-            <button onClick={() => setFocus("valuation")}>
-              {edge.valueLabel.toLowerCase()}
+            {r.company.name}:{" "}
+            <button
+              className={`word ${edge.business === "strong" ? "green-word" : edge.business === "weak" ? "red-word" : "blue-word"} ${focus === "business" ? "selected" : ""}`}
+              aria-pressed={focus === "business"}
+              aria-controls="connected-evidence"
+              onClick={() => setFocus("business")}
+            >
+              {edge.businessLabel === "Sector evidence"
+                ? "sector-specific evidence"
+                : edge.business === "strong"
+                  ? "strong business performance"
+                  : edge.business === "weak"
+                    ? "business performance under pressure"
+                    : edge.business === "missing"
+                      ? "business evidence is limited"
+                      : "mixed business performance"}
             </button>
-            , and{" "}
-            <button onClick={() => setFocus("technical")}>
-              {edge.timingLabel.toLowerCase()}
-            </button>{" "}
-            price conditions.
+            {"; "}
+            <button
+              className={`word amber-word ${focus === "valuation" ? "selected" : ""}`}
+              aria-pressed={focus === "valuation"}
+              aria-controls="connected-evidence"
+              onClick={() => setFocus("valuation")}
+            >
+              {edge.value === "supported"
+                ? "valuation depends on growth assumptions"
+                : edge.value === "demanding"
+                  ? "the price needs sustained growth"
+                  : "valuation needs more evidence"}
+            </button>
+            {"; "}
+            <button
+              className={`word ${edge.timing === "favorable" ? "green-word" : "blue-word"} ${focus === "technical" ? "selected" : ""}`}
+              aria-pressed={focus === "technical"}
+              aria-controls="connected-evidence"
+              onClick={() => setFocus("technical")}
+            >
+              {edge.timing === "favorable"
+                ? "the price trend is constructive"
+                : edge.timing === "extended"
+                  ? "momentum is stretched"
+                  : "price signals are mixed"}
+            </button>
+            .
           </h2>
           <p className="sentence-hint">
             Tap the highlighted words to follow the evidence.
@@ -628,14 +675,14 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
                   points={Array.from(
                     { length: 6 },
                     (_, i) =>
-                      `${110 + radius * Math.sin((i * Math.PI) / 3)},${100 - radius * Math.cos((i * Math.PI) / 3)}`,
+                      `${svgCoordinate(110 + radius * Math.sin((i * Math.PI) / 3))},${svgCoordinate(100 - radius * Math.cos((i * Math.PI) / 3))}`,
                   ).join(" ")}
                 />
               ))}
               {m.fingerprint.map((f, i) => (
                 <path
                   key={f.id}
-                  d={`M110 100L${110 + 90 * Math.sin((i * Math.PI) / 3)} ${100 - 90 * Math.cos((i * Math.PI) / 3)}`}
+                  d={`M110 100L${svgCoordinate(110 + 90 * Math.sin((i * Math.PI) / 3))} ${svgCoordinate(100 - 90 * Math.cos((i * Math.PI) / 3))}`}
                 />
               ))}
             </g>
@@ -644,7 +691,7 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
                 points={m.fingerprint
                   .map(
                     (f, i) =>
-                      `${110 + 9 * f.score! * Math.sin((i * Math.PI) / 3)},${100 - 9 * f.score! * Math.cos((i * Math.PI) / 3)}`,
+                      `${svgCoordinate(110 + 9 * f.score! * Math.sin((i * Math.PI) / 3))},${svgCoordinate(100 - 9 * f.score! * Math.cos((i * Math.PI) / 3))}`,
                   )
                   .join(" ")}
                 fill="#315ff422"
@@ -656,16 +703,18 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
               f.score != null ? (
                 <circle
                   key={f.id}
-                  cx={110 + 9 * f.score * Math.sin((i * Math.PI) / 3)}
-                  cy={100 - 9 * f.score * Math.cos((i * Math.PI) / 3)}
+                  cx={svgCoordinate(
+                    110 + 9 * f.score * Math.sin((i * Math.PI) / 3),
+                  )}
+                  cy={svgCoordinate(
+                    100 - 9 * f.score * Math.cos((i * Math.PI) / 3),
+                  )}
                   r="5"
                   fill="var(--blue)"
                   stroke="var(--card)"
                   strokeWidth="2"
                 >
-                  <title>
-                    {f.name}: {f.score.toFixed(1)} / 10
-                  </title>
+                  <title>{`${f.name}: ${f.score.toFixed(1)} / 10`}</title>
                 </circle>
               ) : null,
             )}
@@ -676,7 +725,7 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
           </svg>
         </button>
       </section>
-      <section className="card sentence-evidence">
+      <section id="connected-evidence" className="card sentence-evidence">
         <div className="section-head">
           <div>
             <h2>
@@ -790,7 +839,11 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
         <section className="card compact-card">
           <span className="eyebrow">BUSINESS & PRICE</span>
           <h3>
-            {edge.businessLabel}. {edge.valueLabel}.
+            {edge.value === "supported"
+              ? "Growth assumptions drive the price case."
+              : edge.value === "demanding"
+                ? "The price asks for sustained growth."
+                : "Read the assumptions behind the price."}
           </h3>
           <p>{edge.disconnect?.text || edge.reason}</p>
           <button className="text-link" onClick={() => onTab("Thesis")}>

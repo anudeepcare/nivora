@@ -552,11 +552,11 @@ test('authentication explains AURYN in sign-in, signup and recovery without fabr
   assert.doesNotMatch(html,/desktop-nav|mobile-dock|guaranteed returns/);
  }
 });
-test('settings hides experimental navigation while preserving account and help',()=>{
- const SettingsSheet=loadComponent('components/SettingsSheet.tsx','SettingsSheet',{React,useState:React.useState,useProduct:()=>({demo:false,themePreference:'light',textSize:'standard',reduceMotion:false}),Link:({children,...props})=>React.createElement('a',props,children),ArrowRight:empty,X:empty,LogOut:empty,ResearchPreferenceControls:empty,DisplayPreferences:empty});
- const html=renderToStaticMarkup(React.createElement(SettingsSheet,{dialog:{current:null}}));
+test('the single settings page preserves account, membership and help',()=>{
+ const Settings=loadComponent('components/SupportingViews.tsx','Settings',{React,useState:React.useState,useEffect:()=>{},useProduct:()=>({demo:false,workspace:{email:'reader@example.com'}}),Link:({children,scroll,...props})=>React.createElement('a',props,children),ArrowUpRight:empty,ArrowLeft:empty,ChevronRight:empty,ShieldCheck:empty,LogOut:empty,PageHeading:empty,ResearchPreferenceControls:empty,DisplayPreferences:empty});
+ const html=renderToStaticMarkup(React.createElement(Settings));
  assert.doesNotMatch(html,/href="\/(discover|research-lab|trading)"/);
- assert.match(html,/Account &amp; security/);assert.match(html,/href="\/help"/);assert.match(html,/Settings sections/);assert.match(html,/id="settings-account" hidden/);assert.doesNotMatch(html,/<details/);
+ assert.match(html,/Account &amp; security/);assert.match(html,/href="\/help"/);assert.match(html,/Settings categories/);assert.match(html,/href="\/plans"/);assert.doesNotMatch(html,/<dialog/);
 });
 
 test('scenario presentation uses one shared scale and keeps current price outside the range when appropriate',async()=>{
@@ -582,7 +582,7 @@ test('technical desk separates four evidence groups and formats missing data saf
 test('shared settings exposes theme and accessibility without repeating accent headings',()=>{
  const DisplayPreferences=loadComponent('components/DisplayPreferences.tsx','DisplayPreferences',{React,useProduct:()=>({themePreference:'dark',textSize:'large',reduceMotion:true}),AppearanceControls:empty,ResearchModeSwitch:empty});
  const html=renderToStaticMarkup(React.createElement(DisplayPreferences));
- assert.match(html,/Make it yours/);assert.match(html,/aria-label="Appearance"/);assert.match(html,/aria-label="Text size"/);assert.match(html,/aria-label="Reduce motion" aria-pressed="true"/);assert.match(html,/aria-pressed="true" class="active">Dark/);
+ assert.match(html,/Make it yours/);assert.match(html,/aria-label="Appearance"/);assert.match(html,/aria-label="Text size"/);assert.match(html,/role="switch" aria-label="Reduce motion" aria-checked="true"/);assert.match(html,/aria-pressed="true" class="active">Dark/);
 });
 
 test('portfolio ledger renders identity, value, return and edit as separate named cells',async()=>{

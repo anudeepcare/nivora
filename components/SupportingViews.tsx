@@ -2,6 +2,8 @@
 import DisplayPreferences from "./DisplayPreferences";
 import ResearchPreferenceControls from "./ResearchPreferences";
 import PwaDiagnostics from "./PwaDiagnostics";
+import { useAccess } from "./Access";
+import { settingsReturnHref } from "@/lib/settings-navigation";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
@@ -10,6 +12,9 @@ import {
   FlaskConical,
   ShieldCheck,
   RefreshCw,
+  ArrowLeft,
+  ChevronRight,
+  LogOut,
 } from "lucide-react";
 import { useProduct, useResource } from "./Session";
 import { PageHeading, Notice, Empty, SecurityLogo, Help } from "./Ui";
@@ -20,9 +25,13 @@ import { perspective } from "@/lib/analysis";
 import type { Research } from "@/lib/types";
 export function Settings() {
   const { workspace, demo } = useProduct();
+  const { access } = useAccess();
+  const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
+  const [backHref, setBackHref] = useState(`${prefix}/overview`);
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
   const [section, setSection] = useState<"appearance" | "research" | "account">(
     "appearance",
   );
@@ -30,6 +39,14 @@ export function Settings() {
     email: string;
     providers: string[];
   } | null>(null);
+  useEffect(() => {
+    setBackHref(
+      settingsReturnHref(
+        new URLSearchParams(window.location.search).get("from"),
+        prefix,
+      ),
+    );
+  }, [prefix]);
   useEffect(() => {
     if (demo && demo.routePrefix !== "") return;
     let active = true;
@@ -80,15 +97,60 @@ export function Settings() {
     account?.email ||
     workspace?.email ||
     (demo ? "Design preview" : "Loading account…");
-  const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   return (
     <section className="settings-page account-studio">
+      <div className="settings-page-toolbar">
+        <Link
+          href={backHref}
+          scroll={false}
+          className="settings-back"
+          aria-label="Back to previous screen"
+        >
+          <ArrowLeft size={18} /> Back
+        </Link>
+        <button
+          type="button"
+          className="settings-signout"
+          disabled={(!!demo && demo.routePrefix !== "") || busy || signingOut}
+          onClick={async () => {
+            if (demo && demo.routePrefix !== "") return;
+            setSigningOut(true);
+            setMessage("");
+            try {
+              await signOutAndRedirect();
+            } catch (error) {
+              setMessage(
+                error instanceof Error
+                  ? error.message
+                  : "Could not sign out. Please try again.",
+              );
+              setSigningOut(false);
+            }
+          }}
+        >
+          <LogOut size={17} /> {signingOut ? "Signing out…" : "Sign out"}
+        </button>
+      </div>
       <PageHeading
-        title="Your AURYN"
-        subtitle="A clear space for the way you research."
+        title="Settings"
+        subtitle="Your account, your preferences, your AURYN."
       />
+      {message && (
+        <div className="settings-feedback" role="status">
+          <Notice>{message}</Notice>
+        </div>
+      )}
       <div className="settings-studio-layout">
         <aside className="settings-studio-nav">
+          <div className="settings-account-summary">
+            <span className="settings-profile-avatar" aria-hidden="true">
+              {email[0]?.toUpperCase() || "A"}
+            </span>
+            <div>
+              <strong>Your account</strong>
+              <p>{email}</p>
+            </div>
+          </div>
           <nav aria-label="Settings categories">
             {(
               [
@@ -105,20 +167,37 @@ export function Settings() {
                 onClick={() => setSection(id)}
               >
                 {label}
-                <ArrowUpRight size={15} />
+                <ChevronRight size={16} />
               </button>
             ))}
+          </nav>
+          <nav className="settings-shortcuts" aria-label="Account and support">
             <Link href={`${prefix}/plans`}>
-              Plans & billing
-              <ArrowUpRight size={15} />
+              <span>
+                Plans & billing
+                <small>
+                  {access.owner
+                    ? "Owner access"
+                    : access.plan === "pro"
+                      ? "Pro membership"
+                      : "Free membership"}
+                </small>
+              </span>
+              <ChevronRight size={16} />
             </Link>
+            {access.owner && !prefix && (
+              <Link href="/owner">
+                Admin controls
+                <ChevronRight size={16} />
+              </Link>
+            )}
             <Link href={`${prefix}/alerts`}>
               Alerts
-              <ArrowUpRight size={15} />
+              <ChevronRight size={16} />
             </Link>
             <Link href="/help">
               Help & support
-              <ArrowUpRight size={15} />
+              <ChevronRight size={16} />
             </Link>
           </nav>
           <div className="settings-studio-note">
@@ -209,40 +288,15 @@ export function Settings() {
                   </button>
                 </form>
               </details>
-              <button
-                type="button"
-                className="settings-signout"
-                disabled={(!!demo && demo.routePrefix !== "") || busy}
-                onClick={async () => {
-                  setBusy(true);
-                  setMessage("");
-                  try {
-                    await signOutAndRedirect();
-                  } catch (error) {
-                    setMessage(
-                      error instanceof Error
-                        ? error.message
-                        : "Could not sign out. Please try again.",
-                    );
-                    setBusy(false);
-                  }
-                }}
-              >
-                Sign out of AURYN <ArrowUpRight size={16} />
-              </button>
             </div>
           </section>
-          {message && (
-            <div className="settings-feedback" role="status">
-              <Notice>{message}</Notice>
-            </div>
-          )}
           <nav className="settings-page-links" aria-label="Help and legal">
             <Link href="/help">
               Help & support <ArrowUpRight size={14} />
             </Link>
             <Link href="/privacy">Privacy</Link>
             <Link href="/terms">Terms</Link>
+            <Link href="/methodology">Methodology</Link>
             <Link href="/risk">Investment risks</Link>
           </nav>
         </div>
