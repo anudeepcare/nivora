@@ -1,0 +1,11 @@
+AURYN movement context and algorithm audit — 2026-10-26
+npm test: 645 passed, 0 failed (fresh full suite).
+npm run typecheck: passed.
+npm run build: passed, production build completed.
+Financial audit: 34 focused tests; 3 defect reproductions verified.
+Pace audit: 21 focused tests; current source hashes match stored evaluations.
+Movement tests: 5 passed; tests observed failing before implementation/fix.
+Browser: desktop sample research renders dated movement/volume; coverage disclosure expands/collapses.
+No live news provider, real account, mobile-device or prospective investment-performance verification.
+No underlying investment-model changes. No deployment, migrations or new dependencies.
+Known investment/data defects and correction priorities: docs/approved-build/ALGORITHM_AUDIT_20261026.md.

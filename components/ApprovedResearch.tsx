@@ -13,6 +13,7 @@ import type { OverviewMetric } from "@/lib/overview-evidence";
 import { amount, percent, dateLabel } from "@/lib/format";
 import { useProduct } from "./Session";
 import { Help } from "./Ui";
+import MovementContext from "./MovementContext";
 type Props = {
   research: Research;
   onTab: (tab: EvidenceSection) => void;
@@ -339,6 +340,7 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
   }
   return (
     <div className="approved-research">
+      <MovementContext research={r} onNews={() => onTab("News")} />
       <section className="card decision-card">
         <div className="decision-top">
           <div>

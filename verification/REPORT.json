@@ -51,5 +51,17 @@
     "Production OAuth/email, billing and account persistence require existing configured services and a deployment smoke test.",
     "Universal ticker/data completeness cannot be guaranteed; partial/cached evidence is retained and missing values are never fabricated."
   ],
-  "databaseChanges": false
+  "databaseChanges": false,
+  "movementAudit20261026": {
+    "tests": 645,
+    "failures": 0,
+    "typecheck": "passed",
+    "productionBuild": "passed",
+    "desktopPreview": "passed",
+    "liveDataReconciliation": false,
+    "mobileDeviceVerified": false,
+    "algorithmChanged": false,
+    "deployed": false,
+    "report": "docs/approved-build/ALGORITHM_AUDIT_20261026.md"
+  }
 }
