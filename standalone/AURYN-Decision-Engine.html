@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AURYN · Decision engine</title>
+<style>
+:root{--paper:#f4f6fb;--surface:#fff;--ink:#172238;--muted:#5b6785;--line:#e3e8f1;--blue:#2f5fe3;--blue-soft:#edf2ff;--green:#087e68;--green-soft:#e8f7f1;--red:#be4f60;--red-soft:#fff0f3;--amber:#8c601e;--amber-soft:#fbf1dc;--violet:#7950d6;--shadow:0 8px 28px #243f6c0d,0 1px 3px #243f6c0a}
+@media(prefers-color-scheme:dark){:root{--paper:#101622;--surface:#192233;--ink:#edf3ff;--muted:#a3b1ca;--line:#2c394f;--blue:#8dafff;--blue-soft:#253758;--green:#69d7b8;--green-soft:#193b36;--red:#ff9ca9;--red-soft:#432935;--amber:#e4ba76;--amber-soft:#3a3322;--violet:#bba0ff;--shadow:0 8px 28px #00000020}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px 60px}
+header.top{display:flex;align-items:center;gap:14px;padding:18px 0;flex-wrap:wrap}header.top b{letter-spacing:.3em;font-size:18px}header.top small{color:var(--muted)}
+.sp{flex:1}
+button,input,select{font:inherit;color:inherit}
+.btn{min-height:44px;padding:0 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-weight:600;cursor:pointer;transition:background .15s,transform .1s}.btn:hover{background:var(--blue-soft)}.btn:active{transform:scale(.98)}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}[data-th=dark] .btn.primary{color:#101622}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--blue) 65%,transparent);outline-offset:2px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:clamp(18px,3vw,28px);box-shadow:var(--shadow);margin-top:18px}
+.eyebrow{font-size:12px;letter-spacing:.12em;font-weight:700;color:var(--blue);text-transform:uppercase}
+h2{margin:4px 0 6px;font-size:clamp(22px,3vw,30px);letter-spacing:-.02em}h3{margin:0 0 10px;font-size:13px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+p{margin:0}.mu{color:var(--muted)}.num{font-variant-numeric:tabular-nums}
+.bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:6px}
+.field{display:grid;gap:4px;font-size:12px;color:var(--muted);font-weight:600}.field input{min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:var(--paper);font-size:16px}
+.chk{display:flex;align-items:center;gap:10px;min-height:44px;font-weight:600;cursor:pointer}.chk input{width:22px;height:22px;accent-color:var(--blue)}
+.hero{display:grid;grid-template-columns:1.5fr 1fr;gap:28px;align-items:center}
+.label{font-size:clamp(34px,6vw,64px);font-weight:750;letter-spacing:-.035em;line-height:1.02}.label[data-tone=positive]{color:var(--green)}.label[data-tone=caution]{color:var(--amber)}.label[data-tone=negative]{color:var(--red)}
+.gauge{display:grid;justify-items:center;gap:6px}.gauge svg{width:100%;max-width:260px}
+.chip{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700;background:var(--blue-soft);color:var(--blue)}.chip.g{background:var(--green-soft);color:var(--green)}.chip.a{background:var(--amber-soft);color:var(--amber)}.chip.r{background:var(--red-soft);color:var(--red)}
+.stones{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:14px}
+.stone{display:grid;gap:8px;text-align:left;padding:14px 16px;border-radius:16px;border:2px solid var(--line);background:var(--surface);cursor:pointer;transition:border-color .18s,background .18s,opacity .18s}
+.stone[data-side=for][aria-pressed=true]{border-color:var(--green);background:var(--green-soft)}.stone[data-side=against][aria-pressed=true]{border-color:var(--amber);background:var(--amber-soft)}.stone[aria-pressed=false]{opacity:.5;border-style:dashed}.stone[aria-pressed=false] b{text-decoration:line-through}
+.meter{height:8px;border-radius:99px;background:var(--line);position:relative;overflow:hidden}.meter i{position:absolute;top:0;bottom:0;border-radius:99px}.meter .mid{position:absolute;left:50%;width:2px;top:0;bottom:0;background:var(--muted);opacity:.5}
+.chart{border-radius:14px;background:color-mix(in srgb,var(--blue-soft) 45%,var(--surface));overflow:hidden}.chart svg{display:block;width:100%}
+.ctl{display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center;margin-top:12px}.ctl input[type=range]{width:100%;height:44px;accent-color:var(--blue)}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:14px}.grid3>div{padding:16px;border-radius:14px;background:color-mix(in srgb,var(--blue-soft) 35%,var(--surface))}
+.row{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dotted var(--line)}.row:last-child{border:0}.up{color:var(--green)}.dn{color:var(--red)}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:10px 8px;text-align:right;border-bottom:1px solid var(--line)}th:first-child,td:first-child{text-align:left}th{color:var(--muted);font-size:12px}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:10px}.metrics section{padding:16px;border-radius:14px;background:color-mix(in srgb,var(--blue-soft) 35%,var(--surface))}
+dialog{border:0;border-radius:22px;padding:24px;width:min(640px,94vw);background:var(--surface);color:var(--ink);box-shadow:0 20px 60px #0004}dialog::backdrop{background:#0a122288}
+textarea{width:100%;min-height:150px;border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--paper);font:13px/1.4 ui-monospace,Menlo,monospace;color:var(--ink)}
+.err{color:var(--red);font-weight:600;margin-top:8px}.note{font-size:13px;color:var(--muted);line-height:1.5}
+@media(max-width:860px){.hero,.grid3{grid-template-columns:1fr}.ctl{grid-template-columns:1fr 1fr}.ctl input[type=range]{grid-column:1/-1;grid-row:1}}
+@media(prefers-reduced-motion:no-preference){.card{animation:settle .3s ease-out both}@keyframes settle{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+<svg width="40" height="40" viewBox="0 0 72 72" role="img" aria-label="AURYN"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8FA6FF"/><stop offset="1" stop-color="#2F4FE0"/></linearGradient></defs><rect width="72" height="72" rx="18" fill="#0B0D14"/><path d="M36 15 L55 56 H44.5 L36 37 Z" fill="#3A5BFF"/><path d="M36 15 L17 56 H27.5 L36 37 Z" fill="url(#lg)"/><path d="M36 37 L40.5 47 H31.5 Z" fill="#0B0D14" opacity=".35"/></svg>
+<b>AURYN</b><small>Decision engine</small><span class="sp"></span>
+<button class="btn" id="openData">Load your prices</button>
+</header>
+<div id="app"></div>
+<p class="note" style="margin-top:28px">Research triage computed from the price history you load. It is not investment advice, it does not know about earnings, news or your taxes, and past behaviour of one stock does not predict its future. Nothing here places an order.</p>
+</div>
+<dialog id="dlg"><form method="dialog" id="dform">
+<h2 style="margin-top:0">Load your own prices</h2>
+<p class="mu">Paste daily bars from any source (Date, Open, High, Low, Close, Volume). At least 300 rows. Volume is optional. Everything stays in your browser.</p>
+<textarea id="csv" aria-label="Daily price data" placeholder="Date,Open,High,Low,Close,Volume&#10;2024-01-02,100,101,99,100.5,1200000"></textarea>
+<div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap"><input type="file" id="file" accept=".csv,.txt,text/csv" aria-label="Choose a CSV file"><span class="sp"></span><button class="btn" value="cancel">Cancel</button><button class="btn primary" id="useCsv" value="default">Analyze</button></div>
+<p class="err" id="csvErr" role="alert"></p></form></dialog>
+<script>
+(function (root) {
+  "use strict";
+  const E = {};
+  const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+  const sgn = (x) => (x > 0 ? 1 : x < 0 ? -1 : 0);
+  const sum = (a, i, n) => { let s = 0; for (let k = i - n + 1; k <= i; k++) s += a[k]; return s; };
+  const med = (a) => { if (!a.length) return null; const s = [...a].sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
+  E.clamp = clamp;
+  E.sma = (a, n) => a.map((_, i) => (i < n - 1 ? null : sum(a, i, n) / n));
+  E.ema = (a, n) => { const o = a.map(() => null); if (a.length < n) return o; let e = sum(a, n - 1, n) / n; o[n - 1] = e; const k = 2 / (n + 1); for (let i = n; i < a.length; i++) { e = a[i] * k + e * (1 - k); o[i] = e; } return o; };
+  E.rsi = (c, n = 14) => {
+    const o = c.map(() => null); if (c.length <= n) return o;
+    let g = 0, l = 0; for (let i = 1; i <= n; i++) { const d = c[i] - c[i - 1]; if (d >= 0) g += d; else l -= d; }
+    g /= n; l /= n; const f = () => (l === 0 ? (g === 0 ? 50 : 100) : 100 - 100 / (1 + g / l)); o[n] = f();
+    for (let i = n + 1; i < c.length; i++) { const d = c[i] - c[i - 1]; g = (g * (n - 1) + Math.max(d, 0)) / n; l = (l * (n - 1) + Math.max(-d, 0)) / n; o[i] = f(); }
+    return o;
+  };
+  E.tr = (h, l, c) => h.map((x, i) => (i === 0 ? x - l[i] : Math.max(x - l[i], Math.abs(x - c[i - 1]), Math.abs(l[i] - c[i - 1]))));
+  E.atr = (h, l, c, n = 14) => { const tr = E.tr(h, l, c), o = h.map(() => null); if (h.length <= n) return o; let a = 0; for (let i = 1; i <= n; i++) a += tr[i]; a /= n; o[n] = a; for (let i = n + 1; i < h.length; i++) { a = (a * (n - 1) + tr[i]) / n; o[i] = a; } return o; };
+  E.macd = (c) => {
+    const e12 = E.ema(c, 12), e26 = E.ema(c, 26), line = c.map((_, i) => (e12[i] == null || e26[i] == null ? null : e12[i] - e26[i]));
+    const idx = line.findIndex((x) => x != null), sig = line.map(() => null);
+    if (idx >= 0) E.ema(line.slice(idx), 9).forEach((v, j) => { sig[idx + j] = v; });
+    return { line, signal: sig, hist: line.map((v, i) => (v == null || sig[i] == null ? null : v - sig[i])) };
+  };
+  E.boll = (c, n = 20, k = 2) => {
+    const mid = E.sma(c, n), upper = [], lower = [], pctB = [];
+    for (let i = 0; i < c.length; i++) {
+      if (mid[i] == null) { upper.push(null); lower.push(null); pctB.push(null); continue; }
+      let s = 0; for (let j = i - n + 1; j <= i; j++) s += (c[j] - mid[i]) ** 2;
+      const sd = Math.sqrt(s / n); upper.push(mid[i] + k * sd); lower.push(mid[i] - k * sd); pctB.push(sd > 0 ? (c[i] - (mid[i] - k * sd)) / (2 * k * sd) : 0.5);
+    }
+    return { mid, upper, lower, pctB };
+  };
+  E.stoch = (h, l, c, n = 14) => c.map((x, i) => { if (i < n - 1) return null; let hi = -Infinity, lo = Infinity; for (let j = i - n + 1; j <= i; j++) { hi = Math.max(hi, h[j]); lo = Math.min(lo, l[j]); } return hi > lo ? (100 * (x - lo)) / (hi - lo) : 50; });
+  E.adx = (h, l, c, n = 14) => {
+    const L = h.length, p = Array(L).fill(null), m = Array(L).fill(null), a = Array(L).fill(null);
+    if (L < 2 * n + 1) return { plus: p, minus: m, adx: a };
+    const tr = E.tr(h, l, c), pd = [0], md = [0];
+    for (let i = 1; i < L; i++) { const u = h[i] - h[i - 1], d = l[i - 1] - l[i]; pd.push(u > d && u > 0 ? u : 0); md.push(d > u && d > 0 ? d : 0); }
+    let st = 0, sp = 0, sm = 0; for (let i = 1; i <= n; i++) { st += tr[i]; sp += pd[i]; sm += md[i]; }
+    const dx = [], di = (i) => { p[i] = st > 0 ? (100 * sp) / st : 0; m[i] = st > 0 ? (100 * sm) / st : 0; const s = p[i] + m[i]; return s > 0 ? (100 * Math.abs(p[i] - m[i])) / s : 0; };
+    dx[n] = di(n); for (let i = n + 1; i < L; i++) { st = st - st / n + tr[i]; sp = sp - sp / n + pd[i]; sm = sm - sm / n + md[i]; dx[i] = di(i); }
+    let ax = 0; for (let i = n; i < 2 * n; i++) ax += dx[i]; ax /= n; a[2 * n - 1] = ax; for (let i = 2 * n; i < L; i++) { ax = (ax * (n - 1) + dx[i]) / n; a[i] = ax; }
+    return { plus: p, minus: m, adx: a };
+  };
+  E.obv = (c, v) => { let o = 0; return c.map((x, i) => { if (i > 0) o += x > c[i - 1] ? v[i] : x < c[i - 1] ? -v[i] : 0; return o; }); };
+  E.cmf = (h, l, c, v, n = 20) => c.map((x, i) => { if (i < n - 1) return null; let mf = 0, vs = 0; for (let j = i - n + 1; j <= i; j++) { const r = h[j] - l[j]; mf += r > 0 ? (((c[j] - l[j]) - (h[j] - c[j])) / r) * v[j] : 0; vs += v[j]; } return vs > 0 ? mf / vs : null; });
+  E.supertrend = (h, l, c, n = 10, m = 3) => {
+    const atr = E.atr(h, l, c, n), L = c.length, dir = Array(L).fill(null), line = Array(L).fill(null); let fu = null, fl = null, d = 0;
+    for (let i = n; i < L; i++) {
+      const hl = (h[i] + l[i]) / 2, bu = hl + m * atr[i], bl = hl - m * atr[i], pc = c[i - 1];
+      fu = fu == null || bu < fu || pc > fu ? bu : fu; fl = fl == null || bl > fl || pc < fl ? bl : fl;
+      if (d === 0) d = c[i] >= hl ? 1 : -1; else if (d === -1 && c[i] > fu) d = 1; else if (d === 1 && c[i] < fl) d = -1;
+      dir[i] = d; line[i] = d === 1 ? fl : fu;
+    }
+    return { dir, line };
+  };
+  E.roc = (c, n) => c.map((x, i) => (i < n ? null : x / c[i - n] - 1));
+  E.dvol = (c, n) => c.map((x, i) => { if (i < n) return null; const r = []; for (let j = i - n + 1; j <= i; j++) r.push(c[j] / c[j - 1] - 1); const m = r.reduce((s, y) => s + y, 0) / n; return Math.sqrt(r.reduce((s, y) => s + (y - m) ** 2, 0) / (n - 1)); });
+  E.build = (d) => {
+    const { h, l, c, v } = d, hasVol = v.some((x) => x > 0);
+    const S = { sma20: E.sma(c, 20), sma50: E.sma(c, 50), sma200: E.sma(c, 200), rsi: E.rsi(c), atr: E.atr(h, l, c), macd: E.macd(c), boll: E.boll(c), stoch: E.stoch(h, l, c), adx: E.adx(h, l, c), st: E.supertrend(h, l, c), roc21: E.roc(c, 21), roc63: E.roc(c, 63), roc126: E.roc(c, 126), vol63: E.dvol(c, 63), hasVol };
+    if (hasVol) { S.obv = E.obv(c, v); S.cmf = E.cmf(h, l, c, v); }
+    return S;
+  };
+  /** Four factor scores in [-1, 1]. Every input is causal, so the score on day i never uses later data. */
+  E.factors = (d, S, i) => {
+    const c = d.c;
+    if (i < 200 || [S.adx.adx[i], S.st.dir[i], S.vol63[i], S.macd.hist[i], S.sma200[i], S.rsi[i], S.boll.pctB[i], S.atr[i]].some((x) => x == null)) return null;
+    const a = S.atr[i], strength = 0.6 + 0.4 * Math.min(S.adx.adx[i] / 30, 1);
+    const trend = clamp((0.3 * sgn(c[i] - S.sma50[i]) + 0.3 * sgn(c[i] - S.sma200[i]) + 0.2 * sgn(S.sma50[i] - S.sma200[i]) + 0.2 * S.st.dir[i]) * strength, -1, 1);
+    const z = S.roc63[i] / Math.max(S.vol63[i] * Math.sqrt(63), 1e-9), rs = S.rsi[i], rsiS = rs > 75 ? -0.5 : ((rs - 50) / 50) * 0.6;
+    const momentum = clamp(0.5 * Math.tanh(z / 1.5) + 0.25 * Math.tanh(S.macd.hist[i] / Math.max(0.3 * a, 1e-9)) + 0.25 * rsiS, -1, 1);
+    let hi = -Infinity; for (let j = Math.max(0, i - 251); j <= i; j++) hi = Math.max(hi, c[j]);
+    const dd = c[i] / hi - 1, ddS = dd < -0.2 ? -0.8 : dd < -0.1 ? -0.3 : 0.2, pb = S.boll.pctB[i], bbS = pb > 1 ? -0.4 : pb < 0 ? -0.2 : 0.1, ext = (c[i] - S.sma50[i]) / Math.max(a, 1e-9), extS = ext > 3 ? -0.6 : 0;
+    const risk = clamp(0.5 * ddS + 0.3 * bbS + 0.2 * extS, -1, 1);
+    let volume = null; if (S.hasVol && S.cmf[i] != null) volume = clamp(0.6 * clamp(S.cmf[i] / 0.25, -1, 1) + 0.4 * sgn(S.obv[i] - S.obv[i - 20]), -1, 1);
+    return { trend, momentum, risk, volume };
+  };
+  E.WEIGHTS = { trend: 0.35, momentum: 0.3, risk: 0.2, volume: 0.15 };
+  E.composite = (f, off = {}) => { let w = 0, s = 0; for (const k of Object.keys(E.WEIGHTS)) { if (f[k] == null || off[k]) continue; w += E.WEIGHTS[k]; s += E.WEIGHTS[k] * f[k]; } return w > 0 ? 50 + (50 * s) / w : 50; };
+  E.scoreSeries = (d, S) => { const f = d.c.map((_, i) => E.factors(d, S, i)); return { factors: f, scores: f.map((x) => (x ? E.composite(x) : null)) }; };
+  E.bucketOf = (s) => (s < 35 ? 0 : s < 50 ? 1 : s < 65 ? 2 : 3);
+  E.forward = (c, i, h) => (i + h < c.length ? c[i + h] / c[i] - 1 : null);
+  const summ = (a, h) => ({ n: a.length, windows: Math.floor(a.length / h), median: med(a), hit: a.length ? (100 * a.filter((x) => x > 0).length) / a.length : null });
+  /** Out-of-sample check: the first 60% of scored days versus the last 40%, never mixed. */
+  E.calibrate = (d, scores, h = 63) => {
+    const idx = []; for (let i = 0; i < scores.length; i++) if (scores[i] != null && i + h < d.c.length) idx.push(i);
+    if (idx.length < 150) return null;
+    const cut = idx[Math.floor(idx.length * 0.6)], periods = { train: idx.filter((i) => i < cut), test: idx.filter((i) => i >= cut), all: idx }, out = { h, cut: d.t[cut] };
+    for (const [name, list] of Object.entries(periods)) {
+      const b = [[], [], [], []], base = []; for (const i of list) { const r = E.forward(d.c, i, h); b[E.bucketOf(scores[i])].push(r); base.push(r); }
+      out[name] = { base: summ(base, h), buckets: b.map((x) => summ(x, h)), top: summ(b[3], h), weak: summ(b[0].concat(b[1]), h) };
+    }
+    const ok = (p) => p.top.windows >= 3 && p.weak.windows >= 3 && p.top.median != null && p.weak.median != null;
+    const spread = (p) => (ok(p) ? p.top.median - p.weak.median : null), good = (p) => ok(p) && spread(p) >= 0.02 && p.top.median > p.base.median;
+    const tr = out.train, te = out.test; let status = "insufficient";
+    if (ok(tr) && ok(te)) status = good(tr) && good(te) ? "consistent" : good(tr) || good(te) ? "unstable" : "none";
+    out.edge = { status, trainSpread: spread(tr), testSpread: spread(te) };
+    return out;
+  };
+  /** Rule-based action from the score and context. Descriptive research triage, not advice. */
+  E.decide = ({ score, factors, rsi, extATR, owned, weight = 0, edge = "insufficient" }) => {
+    const extended = rsi >= 75 || extATR > 3, up = factors && factors.trend > 0.3, big = owned && weight >= 25;
+    let label, tone, reason;
+    if (!owned) {
+      if (extended && score >= 50) { label = "Wait. Do not chase."; tone = "caution"; reason = "The trend is strong but price is stretched. A pullback gives a better entry and a closer stop."; }
+      else if (score >= 65 && up) { label = "Buy in stages"; tone = "positive"; reason = "Trend, momentum and risk all line up. Enter in parts so one bad day does not set the whole cost."; }
+      else if (score >= 55) { label = "Buy a starter"; tone = "positive"; reason = "More is supportive than not, but not decisively. A small start with room to add if it confirms."; }
+      else if (score >= 45) { label = "Wait for confirmation"; tone = "neutral"; reason = "Mixed evidence. Wait for the trend and momentum to agree."; }
+      else { label = "Avoid for now"; tone = "negative"; reason = "Most of the evidence is against it right now."; }
+    } else if (extended && score >= 50) { label = big ? "Trim review. Take some off." : "Hold. Do not add."; tone = "caution"; reason = "Price is stretched. Protect gains with a stop rather than adding."; }
+    else if (score >= 65) { label = big ? "Hold. Too large to add." : "Hold or add on pullbacks"; tone = "positive"; reason = big ? "The evidence is good, but this holding is already a large share of your money." : "Evidence is supportive. Add on dips toward the 50-day average, not on spikes."; }
+    else if (score >= 45) { label = "Hold"; tone = "neutral"; reason = "Evidence is mixed. Keep the stop in place and review at the next report."; }
+    else if (score >= 30) { label = "Trim review"; tone = "caution"; reason = "Evidence is weakening. Decide whether the original reason for owning it still holds."; }
+    else { label = "Sell review"; tone = "negative"; reason = "Trend, momentum and risk have turned against it."; }
+    const caveat = edge === "consistent" ? "" : edge === "unstable" ? " On this stock's history the score has helped only part of the time." : edge === "none" ? " On this stock's own history the score has not separated good days from bad ones, so lean on the risk plan." : " There is not enough history to test how well the score has worked here.";
+    return { label, tone, reason: reason + caveat };
+  };
+  E.plan = ({ close, atr, stopLine, dir, account, riskPct, maxPct }) => {
+    let stop = close - 2.5 * atr; if (dir === 1 && stopLine != null && stopLine < close && stopLine > stop) stop = stopLine;
+    const R = close - stop, riskAmt = (account * riskPct) / 100, byRisk = Math.floor(riskAmt / R), cap = Math.floor((account * maxPct) / 100 / close), shares = Math.max(0, Math.min(byRisk, cap));
+    return { stop, R, t1: close + 2 * R, t2: close + 3 * R, shares, value: shares * close, riskAmt, capped: cap < byRisk };
+  };
+  const splitLine = (line, delim) => { const out = []; let cur = "", q = false; for (const ch of line) { if (ch === '"') q = !q; else if (ch === delim && !q) { out.push(cur); cur = ""; } else cur += ch; } out.push(cur); return out; };
+  E.parseCsv = (text) => {
+    const lines = String(text).trim().split(/\r?\n/).filter((x) => x.trim()); if (lines.length < 2) throw new Error("Paste a header row and at least one data row.");
+    const delim = [",", "\t", ";"].map((d) => [d, splitLine(lines[0], d).length]).sort((a, b) => b[1] - a[1])[0][0];
+    const head = splitLine(lines[0], delim).map((x) => x.trim().toLowerCase().replace(/"/g, "")), col = (...names) => head.findIndex((x) => names.some((n) => x === n || x.startsWith(n)));
+    const ci = { t: col("date", "time", "timestamp"), o: col("open"), h: col("high"), l: col("low"), c: col("close", "adj close", "price"), v: col("volume", "vol") };
+    if (ci.t < 0 || ci.c < 0) throw new Error("Needs at least Date and Close columns.");
+    const rows = [];
+    for (const line of lines.slice(1)) {
+      const p = splitLine(line, delim).map((x) => x.trim()), c = parseFloat(p[ci.c].replace(/,/g, "")), t = new Date(p[ci.t]);
+      if (!(c > 0) || isNaN(t)) continue;
+      const num = (k) => (ci[k] >= 0 && p[ci[k]] !== undefined && isFinite(parseFloat(p[ci[k]].replace(/,/g, ""))) ? parseFloat(p[ci[k]].replace(/,/g, "")) : c);
+      const o = num("o"), hh = Math.max(num("h"), o, c), ll = Math.min(num("l"), o, c), v = ci.v >= 0 ? Math.max(0, parseFloat(p[ci.v].replace(/,/g, "")) || 0) : 0;
+      rows.push({ t: t.toISOString().slice(0, 10), o, h: hh, l: ll, c, v });
+    }
+    rows.sort((a, b) => a.t.localeCompare(b.t)); const seen = new Set(), uniq = rows.filter((r) => (seen.has(r.t) ? false : seen.add(r.t)));
+    if (uniq.length < 300) throw new Error("Need at least 300 daily rows (about 14 months). Found " + uniq.length + ".");
+    return { t: uniq.map((r) => r.t), o: uniq.map((r) => r.o), h: uniq.map((r) => r.h), l: uniq.map((r) => r.l), c: uniq.map((r) => r.c), v: uniq.map((r) => r.v) };
+  };
+  E.demo = (n = 1600, seed = 7) => {
+    let s = seed >>> 0; const rnd = () => { s |= 0; s = (s + 0x6d2b79f5) | 0; let t = Math.imul(s ^ (s >>> 15), 1 | s); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+    const g = () => Math.sqrt(-2 * Math.log(rnd() + 1e-12)) * Math.cos(2 * Math.PI * rnd());
+    const T = [], O = [], H = [], Lw = [], C = [], V = []; let p = 100, drift = 0.0005, vol = 0.012, left = 0; const day = new Date("2020-01-02T00:00:00Z");
+    while (C.length < n) {
+      if (left <= 0) { drift = [0.0011, -0.0007, 0.0003, 0.0, 0.0009][Math.floor(rnd() * 5)]; vol = [0.009, 0.013, 0.018][Math.floor(rnd() * 3)]; left = 80 + Math.floor(rnd() * 200); } left--;
+      while (day.getUTCDay() === 0 || day.getUTCDay() === 6) day.setUTCDate(day.getUTCDate() + 1);
+      const r = drift + vol * g(), o = p * (1 + 0.002 * g()), c = p * (1 + r); p = c;
+      T.push(day.toISOString().slice(0, 10)); O.push(o); C.push(c); H.push(Math.max(o, c) * (1 + Math.abs(g()) * 0.004)); Lw.push(Math.min(o, c) * (1 - Math.abs(g()) * 0.004)); V.push(Math.round(2e7 * Math.exp(0.3 * g()) * (1 + 18 * Math.abs(r))));
+      day.setUTCDate(day.getUTCDate() + 1);
+    }
+    return { t: T, o: O, h: H, l: Lw, c: C, v: V };
+  };
+  if (typeof module !== "undefined" && module.exports) module.exports = E; else root.AurynEngine = E;
+})(typeof window !== "undefined" ? window : globalThis);
+
+</script>
+<script>
+(function(){
+const E=window.AurynEngine,$=(s)=>document.querySelector(s);
+const st={data:null,S:null,sc:null,cal:null,name:"DEMO",demo:true,idx:0,cur:0,off:{},owned:false,weight:10,account:50000,risk:1,maxPos:20};
+const pct=(x,d=1)=>x==null?"—":(x>0?"+":"")+(x*100).toFixed(d)+"%",usd=(x)=>"$"+x.toFixed(2),n1=(x,d=1)=>x==null?"—":x.toFixed(d);
+const NAMES={trend:"Trend",momentum:"Momentum",risk:"Risk and stretch",volume:"Volume"};
+const WHY={trend:["Price is above its long averages and the trend system points up.","Price is below its long averages or the trend system points down."],momentum:["Recent gains are strong for how volatile this stock is.","Recent gains are weak, or momentum is fading."],risk:["Not stretched and not deep in a drawdown.","Stretched above its average, or deep in a drawdown."],volume:["Money flow supports the move.","Money flow does not support the move."]};
+function load(d,name,demo){st.data=d;st.S=E.build(d);const r=E.scoreSeries(d,st.S);st.sc=r;st.cal=E.calibrate(d,r.scores,63);st.name=name;st.demo=demo;st.off={};const L=d.c.length;st.first=Math.max(r.scores.findIndex((x)=>x!=null),L-1260);st.idx=L-1;render();}
+const lastI=()=>st.data.c.length-1;
+const scoreAt=(i)=>{const f=st.sc.factors[i];return f?E.composite(f,st.off):null};
+function decision(){const i=lastI(),f=st.sc.factors[i],S=st.S;return E.decide({score:scoreAt(i),factors:f,rsi:S.rsi[i],extATR:(st.data.c[i]-S.sma50[i])/S.atr[i],owned:st.owned,weight:st.weight,edge:st.cal?st.cal.edge.status:"insufficient"});}
+function gauge(score){const a=Math.PI*(1-score/100),x=130+100*Math.cos(a),y=130-100*Math.sin(a),col=score>=65?"var(--green)":score>=45?"var(--amber)":"var(--red)";return `<svg viewBox="0 0 260 150" role="img" aria-label="Score ${score.toFixed(0)} out of 100"><path d="M30 130 A100 100 0 0 1 230 130" fill="none" stroke="var(--line)" stroke-width="16" stroke-linecap="round"/><path d="M30 130 A100 100 0 0 1 ${x.toFixed(1)} ${y.toFixed(1)}" fill="none" stroke="${col}" stroke-width="16" stroke-linecap="round"/><text x="130" y="118" text-anchor="middle" font-size="56" font-weight="750" fill="currentColor">${score.toFixed(0)}</text><text x="130" y="142" text-anchor="middle" font-size="13" fill="var(--muted)">AURYN score, 0 to 100</text></svg>`;}
+function meter(v){const w=Math.abs(v)*50,left=v>=0?50:50-w,col=v>=0?"var(--green)":"var(--red)";return `<div class="meter" aria-hidden="true"><span class="mid"></span><i style="left:${left}%;width:${w}%;background:${col}"></i></div>`;}
+const edgeText={consistent:["Edge check: consistent","g","On this stock's own history, high scores beat low scores in both the earlier and the later part of the data."],unstable:["Edge check: unstable","a","The score separated good from bad days in only part of this stock's history."],none:["Edge check: none shown","r","On this stock's own history the score has not separated good days from bad ones. Treat it as a description, not a signal."],insufficient:["Edge check: not enough history","a","Not enough scored history to test the score here."]};
+function heroHtml(){const i=lastI(),f=st.sc.factors[i],s=scoreAt(i),d=decision(),e=edgeText[st.cal?st.cal.edge.status:"insufficient"];
+return `<section class="card"><div class="hero"><div><span class="eyebrow">${st.name} · ${st.data.t[i]}${st.demo?" · demo data":""}</span><div class="label" data-tone="${d.tone}" style="margin-top:8px">${d.label}</div><p style="margin-top:12px;font-size:18px;max-width:56ch">${d.reason}</p><p style="margin-top:14px"><span class="chip ${e[1]}">${e[0]}</span> <span class="note">${e[2]}</span></p></div><div class="gauge">${gauge(s)}${Object.keys(st.off).some((k)=>st.off[k])?`<span class="chip a">Score without the factors you removed</span>`:""}</div></div>
+<div style="margin-top:22px;border-top:1px solid var(--line);padding-top:16px"><div style="display:flex;gap:14px;flex-wrap:wrap;align-items:end"><label class="chk"><input type="checkbox" id="owned" ${st.owned?"checked":""}> I already own it</label><label class="field" style="max-width:150px">Share of my money, %<input id="weight" type="number" min="0" max="100" step="1" value="${st.weight}" ${st.owned?"":"disabled"}></label><label class="field" style="max-width:200px">Ticker or name<input id="nm" value="${st.name}" maxlength="12"></label></div></div></section>`;}
+function stonesHtml(){const i=lastI(),f=st.sc.factors[i];return `<section class="card"><span class="eyebrow">Weigh it yourself</span><h2>Four factors, one score. Remove any you don't trust.</h2><p class="mu">Tap a factor to take it off. The score and the decision above recompute instantly.</p><div class="stones">${Object.keys(E.WEIGHTS).map((k)=>{if(f[k]==null)return `<div class="stone" aria-disabled="true" style="opacity:.5"><b>${NAMES[k]}</b><span class="note">No volume column in your data, so this factor is skipped.</span></div>`;const v=f[k],on=!st.off[k];return `<button class="stone" data-k="${k}" data-side="${v>=0?"for":"against"}" aria-pressed="${on}"><span style="display:flex;justify-content:space-between"><b>${NAMES[k]}</b><span class="num">${v>=0?"+":""}${v.toFixed(2)} · weight ${(E.WEIGHTS[k]*100).toFixed(0)}%</span></span>${meter(v)}<span class="note">${WHY[k][v>=0?0:1]}</span></button>`}).join("")}</div></section>`;}
+function rewindHtml(){const L=st.data.c.length,a=st.first,N=L-a;return `<section class="card"><span class="eyebrow">Rewind</span><h2>What did the score say then, and what happened next?</h2><p class="mu">Drag back through time. The chart shows only what was known that day. The veiled part is what followed.</p><div class="chart" id="chart"></div><div id="ribbon" style="margin-top:8px"></div><div class="ctl"><button class="btn" id="back">← 1 month</button><input type="range" id="slider" min="${a}" max="${L-1}" value="${st.idx}" aria-label="Rewind to a past session"><button class="btn" id="fwd">1 month →</button><button class="btn primary" id="latest">Latest</button></div><div class="grid3" id="rw"></div></section>`;}
+function drawRewind(){const d=st.data,a=st.first,L=d.c.length,i=st.idx,W=900,H=220,n=L-a,S=st.S;
+const xs=(k)=>12+((k-a)/(L-1-a))*(W-24);let lo=Infinity,hi=-Infinity;for(let k=a;k<L;k++){lo=Math.min(lo,d.c[k]);hi=Math.max(hi,d.c[k]);}const ys=(v)=>H-10-((v-lo)/(hi-lo||1))*(H-24);
+const path=(arr)=>{let s="",on=false;for(let k=a;k<L;k++){if(arr[k]==null)continue;s+=(on?"L":"M")+xs(k).toFixed(1)+" "+ys(arr[k]).toFixed(1);on=true;}return s;};
+const marks=[21,63,126].map((h)=>i+h<L?`<circle cx="${xs(i+h)}" cy="${ys(d.c[i+h])}" r="6" fill="${d.c[i+h]>=d.c[i]?"var(--green)":"var(--red)"}" stroke="var(--surface)" stroke-width="2"/>`:"").join("");
+$("#chart").innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Price history with a cursor on ${d.t[i]}" style="height:clamp(150px,24vw,240px)"><path d="${path(S.sma200)}" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-dasharray="2 5" vector-effect="non-scaling-stroke"/><path d="${path(S.sma50)}" fill="none" stroke="var(--amber)" stroke-width="1.8" stroke-dasharray="6 5" vector-effect="non-scaling-stroke"/><path d="${path(d.c)}" fill="none" stroke="var(--blue)" stroke-width="3" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>${i<L-1?`<rect x="${xs(i)}" y="0" width="${W-xs(i)}" height="${H}" fill="var(--surface)" opacity=".62"/>`:""}${marks}<line x1="${xs(i)}" x2="${xs(i)}" y1="0" y2="${H}" stroke="var(--ink)" stroke-width="2" vector-effect="non-scaling-stroke"/><circle cx="${xs(i)}" cy="${ys(d.c[i])}" r="7" fill="var(--ink)" stroke="var(--surface)" stroke-width="3"/></svg>`;
+const seg=140,rects=[];for(let s=0;s<seg;s++){const k0=a+Math.floor((s/seg)*n),k1=a+Math.floor(((s+1)/seg)*n);let t=0,c=0;for(let k=k0;k<Math.max(k1,k0+1);k++){const v=scoreAt(k);if(v!=null){t+=v;c++;}}const v=c?t/c:50,col=v>=65?"var(--green)":v>=50?"#8fc7b2":v>=35?"#d9b36a":"var(--red)";rects.push(`<rect x="${(s/seg)*W}" y="0" width="${W/seg+0.6}" height="14" fill="${col}"/>`);}
+$("#ribbon").innerHTML=`<svg viewBox="0 0 ${W} 14" preserveAspectRatio="none" role="img" aria-label="Score history ribbon" style="width:100%;height:14px;border-radius:7px;display:block">${rects.join("")}<rect x="${xs(i)-1.5}" y="0" width="3" height="14" fill="var(--ink)"/></svg><div class="note" style="display:flex;justify-content:space-between"><span>Score history: red low, amber middling, green high</span><span>${d.t[a]} → ${d.t[L-1]}</span></div>`;
+const f=st.sc.factors[i],sc=scoreAt(i),fw=(h)=>E.forward(d.c,i,h),b=sc==null?null:E.bucketOf(sc),cb=st.cal&&b!=null?st.cal.all.buckets[b]:null;
+const f1=[21,63,126].map((h)=>{const r=fw(h);return `<div class="row"><span>${h===21?"1 month":h===63?"3 months":"6 months"} later</span><b class="num ${r==null?"":r>=0?"up":"dn"}">${r==null?"Not yet observed":pct(r)}</b></div>`}).join("");
+const lab=["under 35","35 to 50","50 to 65","65 and over"];
+$("#rw").innerHTML=`<div><h3>${i===L-1?"Latest session":d.t[i]} · ${usd(d.c[i])}</h3>${f?`<div class="row"><span>AURYN score</span><b class="num">${sc.toFixed(0)}</b></div>${Object.keys(E.WEIGHTS).map((k)=>f[k]==null?"":`<div class="row"><span>${NAMES[k]}</span><b class="num ${f[k]>=0?"up":"dn"}">${f[k]>=0?"+":""}${f[k].toFixed(2)}</b></div>`).join("")}`:`<p class="note">Not enough history before this date to score it.</p>`}</div><div><h3>What followed</h3>${i===L-1?`<p class="note">Latest session. Nothing has followed yet. Drag back to see outcomes.</p>`:f1}</div><div><h3>Days with a score like this</h3>${cb&&cb.windows>=3?`<p>${cb.n} past days scored ${lab[b]}. Price was higher 3 months later <b>${n1(cb.hit,0)}%</b> of the time, median <b>${pct(cb.median)}</b>.</p><p class="mu" style="margin-top:6px">All days: higher <b>${n1(st.cal.all.base.hit,0)}%</b>, median <b>${pct(st.cal.all.base.median)}</b>.</p><p class="note" style="margin-top:6px">These days overlap, so they stand for about ${cb.windows} separate 3-month windows.</p>`:`<p class="note">Too few matching windows in this history to say anything useful.</p>`}</div>`;}
+function calHtml(){const c=st.cal;if(!c)return `<section class="card"><span class="eyebrow">Does the score work here?</span><h2>Not enough history to test it.</h2><p class="mu">Load at least about three years of daily prices.</p></section>`;
+const lab=["Under 35","35 to 50","50 to 65","65 and over"],cell=(p)=>p.n?`${pct(p.median)} · ${n1(p.hit,0)}% up<br><span class="note">${p.windows} windows</span>`:"—";
+const e=edgeText[c.edge.status];
+return `<section class="card"><span class="eyebrow">Truth check</span><h2>Does the score actually work on this stock?</h2><p class="mu" style="max-width:70ch">For every past day the score used only data up to that day. Outcomes are the price change 3 months later. The earlier 60% of history (before ${c.cut}) is kept apart from the later 40%, so you can see whether any pattern held up.</p><div style="overflow-x:auto;margin-top:12px"><table style="min-width:560px"><thead><tr><th>Score that day</th><th>Earlier history</th><th>Later history</th><th>All days</th></tr></thead><tbody>${[0,1,2,3].map((k)=>`<tr><td>${lab[k]}</td><td class="num">${cell(c.train.buckets[k])}</td><td class="num">${cell(c.test.buckets[k])}</td><td class="num">${cell(c.all.buckets[k])}</td></tr>`).join("")}<tr><td><b>Every day</b></td><td class="num">${cell(c.train.base)}</td><td class="num">${cell(c.test.base)}</td><td class="num">${cell(c.all.base)}</td></tr></tbody></table></div><p style="margin-top:14px"><span class="chip ${e[1]}">${e[0]}</span> <span class="note">${e[2]}</span></p><p class="note" style="margin-top:8px">Spread between high and low scores: earlier ${c.edge.trainSpread==null?"n/a":pct(c.edge.trainSpread)}, later ${c.edge.testSpread==null?"n/a":pct(c.edge.testSpread)}. "Consistent" needs at least +2.0 points in both parts and at least 3 separate windows in each group. Days overlap, so these are not independent trials. One stock is a small sample.</p></section>`;}
+function planHtml(){const i=lastI(),S=st.S,p=E.plan({close:st.data.c[i],atr:S.atr[i],stopLine:S.st.line[i],dir:S.st.dir[i],account:st.account,riskPct:st.risk,maxPct:st.maxPos});
+return `<section class="card"><span class="eyebrow">Risk plan</span><h2>Decide the exit before the entry.</h2><div class="bar" style="margin-bottom:14px"><label class="field">Account size, $<input id="acct" type="number" min="0" step="1000" value="${st.account}"></label><label class="field">Risk per trade, %<input id="risk" type="number" min="0.1" max="5" step="0.25" value="${st.risk}"></label><label class="field">Largest position, %<input id="maxp" type="number" min="1" max="100" step="1" value="${st.maxPos}"></label></div><div class="grid3" style="margin-top:0"><div><h3>Levels</h3><div class="row"><span>Entry (last close)</span><b class="num">${usd(st.data.c[i])}</b></div><div class="row"><span>Stop (2.5×ATR or trend line)</span><b class="num dn">${usd(p.stop)}</b></div><div class="row"><span>First target (2R)</span><b class="num up">${usd(p.t1)}</b></div><div class="row"><span>Second target (3R)</span><b class="num up">${usd(p.t2)}</b></div></div><div><h3>Size</h3><div class="row"><span>Risk per share (1R)</span><b class="num">${usd(p.R)}</b></div><div class="row"><span>Most you lose if stopped</span><b class="num">${usd(p.shares*p.R)}</b></div><div class="row"><span>Shares</span><b class="num">${p.shares}</b></div><div class="row"><span>Position value</span><b class="num">${usd(p.value)}${p.capped?" · capped":""}</b></div></div><div><h3>What this means</h3><p class="note">Stops can be gapped through on overnight moves, so the real loss can be larger. Targets are planning levels, not forecasts. Size is set so a stop-out costs about ${st.risk}% of the account.</p></div></div></section>`;}
+function metricsHtml(){const i=lastI(),S=st.S,c=st.data.c,tone=(g)=>g?"up":"dn";let hi=-Infinity;for(let j=Math.max(0,i-251);j<=i;j++)hi=Math.max(hi,c[j]);const dd=c[i]/hi-1;
+const g=(t,rows)=>`<section><h3>${t}</h3>${rows.filter(Boolean).map((r)=>`<div class="row"><span>${r[0]}</span><b class="num ${r[2]===undefined||r[2]===null?"":tone(r[2])}">${r[1]}</b></div>`).join("")}</section>`;
+return `<section class="card"><span class="eyebrow">All the numbers</span><h2>Every study behind the score</h2><div class="metrics">${g("Trend",[["Price vs 50-day",pct(c[i]/S.sma50[i]-1),c[i]>S.sma50[i]],["Price vs 200-day",pct(c[i]/S.sma200[i]-1),c[i]>S.sma200[i]],["50-day vs 200-day",S.sma50[i]>S.sma200[i]?"Above (golden)":"Below (death)",S.sma50[i]>S.sma200[i]],["Supertrend (10, 3)",S.st.dir[i]===1?"Up · line "+usd(S.st.line[i]):"Down · line "+usd(S.st.line[i]),S.st.dir[i]===1],["ADX (14)",n1(S.adx.adx[i]),null],["+DI / −DI",n1(S.adx.plus[i])+" / "+n1(S.adx.minus[i])].slice(0,2)])}${g("Momentum",[["1 month",pct(S.roc21[i]),S.roc21[i]>0],["3 months",pct(S.roc63[i]),S.roc63[i]>0],["6 months",pct(S.roc126[i]),S.roc126[i]>0],["RSI (14)",n1(S.rsi[i]),null],["MACD histogram",n1(S.macd.hist[i],2),S.macd.hist[i]>0],["Stochastic %K (14)",n1(S.stoch[i])]])}${g("Risk and stretch",[["ATR (14)",usd(S.atr[i])+" · "+(S.atr[i]/c[i]*100).toFixed(1)+"% of price"],["Volatility, 3 months",(S.vol63[i]*Math.sqrt(252)*100).toFixed(0)+"% a year"],["From 1-year high",pct(dd),dd>-0.1],["Bollinger %B",n1(S.boll.pctB[i],2)],["Distance from 50-day",n1((c[i]-S.sma50[i])/S.atr[i])+" ATR"],["Rising from 20-day",pct(c[i]/S.sma20[i]-1)]])}${g("Volume",S.hasVol?[["Chaikin money flow (20)",n1(S.cmf[i],2),S.cmf[i]>0],["On-balance volume, 1 month",S.obv[i]>S.obv[i-20]?"Rising":"Falling",S.obv[i]>S.obv[i-20]],["Last volume vs 20-day avg",n1(st.data.v[i]/(st.data.v.slice(i-19,i+1).reduce((a,b)=>a+b,0)/20),2)+"×"]]:[["Volume","Not in your data"]])}</div></section>`;}
+function render(){$("#app").innerHTML=heroHtml()+stonesHtml()+rewindHtml()+calHtml()+planHtml()+metricsHtml();drawRewind();}
+let raf=0;const soft=()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(drawRewind);};
+document.addEventListener("input",(e)=>{const t=e.target;if(t.id==="slider"){st.idx=+t.value;soft();}else if(t.id==="weight"){st.weight=Math.max(0,Math.min(100,+t.value||0));hero();}else if(t.id==="nm"){st.name=t.value.toUpperCase();}else if(["acct","risk","maxp"].includes(t.id)){if(t.id==="acct")st.account=Math.max(0,+t.value||0);if(t.id==="risk")st.risk=Math.max(0.1,Math.min(5,+t.value||1));if(t.id==="maxp")st.maxPos=Math.max(1,Math.min(100,+t.value||20));const act=document.activeElement.id,pos=document.activeElement.selectionStart;const h=document.querySelectorAll("#app > section.card")[4];h.outerHTML=planHtml();const el=document.getElementById(act);if(el){el.focus();}}});
+function hero(){const el=document.querySelectorAll("#app > section.card")[0];const act=document.activeElement&&document.activeElement.id;el.outerHTML=heroHtml();if(act){const n=document.getElementById(act);if(n){n.focus();try{n.setSelectionRange(n.value.length,n.value.length)}catch(_){}}}}
+document.addEventListener("change",(e)=>{if(e.target.id==="owned"){st.owned=e.target.checked;hero();}if(e.target.id==="nm"){hero();}});
+document.addEventListener("click",(e)=>{const s=e.target.closest(".stone[data-k]");if(s){st.off[s.dataset.k]=!st.off[s.dataset.k];render();return;}
+const id=e.target.id;if(id==="back"||id==="fwd"){st.idx=Math.max(st.first,Math.min(lastI(),st.idx+(id==="back"?-21:21)));$("#slider").value=st.idx;drawRewind();}if(id==="latest"){st.idx=lastI();$("#slider").value=st.idx;drawRewind();}});
+const dlg=$("#dlg");$("#openData").onclick=()=>{$("#csvErr").textContent="";dlg.showModal();};
+$("#file").onchange=(e)=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{$("#csv").value=String(r.result);};r.readAsText(f);};
+$("#dform").addEventListener("submit",(e)=>{const ok=e.submitter&&e.submitter.id==="useCsv";if(!ok)return;try{const d=E.parseCsv($("#csv").value);load(d,"YOURS",false);}catch(err){e.preventDefault();$("#csvErr").textContent=err.message;}});
+load(E.demo(2600,7),"DEMO",true);
+})();
+</script>
+</body>
+</html>
