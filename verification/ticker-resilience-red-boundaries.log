@@ -1,0 +1,80 @@
+✔ class-share fallback accepts equivalent Twelve quote and history identities (284.552038ms)
+✔ a primary profile without financial statements uses SEC facts and preserves reporting currency (117.489814ms)
+✔ ETF missing corporate facts retains identity, price and limited history with explicit coverage (85.034448ms)
+✔ malformed and unsupported symbols are rejected before any provider traffic (82.121837ms)
+✔ foreign-currency Twelve history cannot contaminate USD research (66.996987ms)
+✔ invalid empty SEC responses remain retryable and disclose missing coverage (72.00079ms)
+✔ expired last-good prices and history survive total outage with original dates and cached provenance (87.081339ms)
+✔ primary timeout response falls back without losing useful research (62.741076ms)
+✔ primary 429 response falls back without losing useful research (57.609996ms)
+✔ primary empty response falls back without losing useful research (73.099386ms)
+✔ primary invalid-json response falls back without losing useful research (80.466912ms)
+✔ crypto aliases keep the requested asset identity and never request corporate financials (59.514046ms)
+✔ search falls through invalid primary payload and deduplicates class-share aliases (68.417318ms)
+✔ documented unknown symbols differ from temporary provider outages (57.604879ms)
+✔ invalid primary payloads do not poison the cache after provider recovery (67.167564ms)
+✔ cached fallback expires at its original bounded horizon despite repeated refreshes (60.163065ms)
+✔ crypto quote currency is validated even when pair identity matches (67.743292ms)
+✔ future-dated quote is not retained as the only price when backup is unavailable (59.479995ms)
+✔ class-share fallback profile preserves verified issuer identity when quote is offline (68.581931ms)
+✖ a cached fallback cannot outlive its retention deadline inside a refresh TTL (53.809266ms)
+✖ valid SEC identity with zero supported financial observations discloses coverage (50.931139ms)
+✖ invalid primary price rows are retried after recovery instead of cached as a successful dataset (64.396546ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 19
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2067.695747
+
+✖ failing tests:
+
+test at tests/ticker-resilience.test.mjs:135:1
+✖ a cached fallback cannot outlive its retention deadline inside a refresh TTL (53.809266ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/scratch/9f0036d454ae/auryn-approved/AURYN/tests/ticker-resilience.test.mjs:140:14)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests/ticker-resilience.test.mjs:144:1
+✖ valid SEC identity with zero supported financial observations discloses coverage (50.931139ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /financial.*coverage|coverage.*financial/i. Input:
+  
+  ''
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/9f0036d454ae/auryn-approved/AURYN/tests/ticker-resilience.test.mjs:151:75)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '',
+    expected: /financial.*coverage|coverage.*financial/i,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at tests/ticker-resilience.test.mjs:154:1
+✖ invalid primary price rows are retried after recovery instead of cached as a successful dataset (64.396546ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/9f0036d454ae/auryn-approved/AURYN/tests/ticker-resilience.test.mjs:158:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -8,7 +8,6 @@ import { priceStudies } from "@/lib/price-studies";
 import { expandedStudies } from "@/lib/technical-expanded";
 import { advancedStudies } from "@/lib/advanced-research";
 import { professionalStudies } from "@/lib/professional-studies";
-import { moreStudies } from "@/lib/technical-more";
 import { amount, percent, dateLabel } from "@/lib/format";
 import TechnicalLevels from "./TechnicalLevels";
 export default function TechnicalDashboard({
@@ -34,16 +33,6 @@ export default function TechnicalDashboard({
         professionalStudies(
           r.history,
           r.retrievedAt,
-          r.company.assetType === "crypto" ? 365 : 252,
-        ),
-      [r.history, r.retrievedAt, r.company.assetType],
-    ),
-    more = useMemo(
-      () =>
-        moreStudies(
-          r.history,
-          r.retrievedAt,
-          r.company.assetType === "crypto" ? "crypto" : "us-equity",
           r.company.assetType === "crypto" ? 365 : 252,
         ),
       [r.history, r.retrievedAt, r.company.assetType],
@@ -243,100 +232,6 @@ export default function TechnicalDashboard({
             ? "Not established"
             : amount(a.averageDollarVolume, currency, true),
           "Previous 20 observations, close × reported volume; not order-book depth.",
-        ],
-      ],
-    },
-    {
-      title: "Trend systems",
-      tone: "blue",
-      note: "Rule-based trend followers computed from completed daily bars. They lag turning points and describe past price behaviour; they do not establish value.",
-      rows: [
-        [
-          "Supertrend · 10, 3",
-          more.supertrend
-            ? `${more.supertrend.direction === "up" ? "Up" : "Down"} · line ${m(more.supertrend.level)}`
-            : "Not established",
-          "Wilder ATR(10) × 3 bands around the high-low midpoint. The line is the support or resistance the rule currently follows; a close through it flips direction.",
-        ],
-        [
-          "Parabolic SAR · 0.02 / 0.2",
-          more.parabolicSar
-            ? `${more.parabolicSar.direction === "up" ? "Up" : "Down"} · stop ${m(more.parabolicSar.level)}`
-            : "Not established",
-          "Wilder's accelerating stop-and-reverse level. It accelerates toward price during a trend and flips when price touches it; it whipsaws in sideways markets.",
-        ],
-        [
-          "Ichimoku cloud · 9, 26, 52",
-          more.ichimoku
-            ? `Price ${more.ichimoku.position} the cloud · ${m(more.ichimoku.cloudBottom)} to ${m(more.ichimoku.cloudTop)}`
-            : "History needed",
-          "The cloud is the span between two midpoint averages projected 26 sessions ahead; the values shown are the cloud as it stands today. Needs 78 completed sessions.",
-        ],
-        [
-          "Ichimoku Tenkan / Kijun",
-          more.ichimoku ? `${m(more.ichimoku.tenkan)} / ${m(more.ichimoku.kijun)}` : "History needed",
-          "Midpoints of the 9- and 26-session high-low ranges. Tenkan above Kijun indicates short-term strength relative to the medium term.",
-        ],
-        [
-          "Aroon up / down · 25",
-          more.aroon ? `${more.aroon.up.toFixed(0)} / ${more.aroon.down.toFixed(0)}` : "History needed",
-          "How recently the 25-session high and low occurred, from 0 to 100. Up near 100 means a new high is recent; it measures timing, not size.",
-        ],
-        [
-          "Keltner channel · 20, 10 × 2",
-          more.keltner
-            ? `Price ${more.keltner.position} the channel · ${m(more.keltner.lower)} to ${m(more.keltner.upper)}`
-            : "History needed",
-          "20-session exponential average ± 2 × ATR(10). Price outside the channel shows an unusually large move for recent volatility, not a reversal signal.",
-        ],
-      ],
-    },
-    {
-      title: "Momentum and risk-adjusted",
-      tone: "green",
-      note: "Momentum oscillators and one-year risk statistics. No risk-free rate is subtracted, so the ratios are return per unit of risk, not Sharpe or Sortino ratios.",
-      rows: [
-        [
-          "Awesome oscillator · 5, 34",
-          n(more.awesome),
-          "Difference between 5- and 34-session averages of the high-low midpoint, in quote-price units. Above zero means short-term momentum is above the longer base.",
-        ],
-        [
-          "TRIX · 15",
-          n(more.trix, "%"),
-          "One-session percentage change of a triple-smoothed exponential average. It filters short noise; sign shows the direction of the smoothed trend.",
-        ],
-        [
-          "Ultimate oscillator · 7, 14, 28",
-          n(more.ultimate),
-          "Buying pressure over true range blended across three windows, 0–100. Designed to reduce false signals from a single window; extremes can persist.",
-        ],
-        [
-          "20-day volatility percentile",
-          more.volatility
-            ? `${n(more.volatility.current, "%")} · ${more.volatility.percentile.toFixed(0)}th percentile of the past year`
-            : "History needed",
-          "Annualized 20-session realized volatility, ranked against its own rolling values over the past year. High percentiles mean unusually active price movement for this company.",
-        ],
-        [
-          "Past-year return / volatility",
-          more.risk ? `${pct(more.risk.annualReturn)} / ${pct(more.risk.volatility)}` : "History needed",
-          `Average daily return annualized, and the standard deviation of daily returns annualized, over ${more.risk?.observations ?? "the available"} sessions. Past behaviour only.`,
-        ],
-        [
-          "Return per unit of volatility",
-          n(more.risk?.returnPerVolatility),
-          "Annualized return divided by annualized volatility, with no risk-free rate subtracted. Higher is better only within the same period and asset type.",
-        ],
-        [
-          "Return per unit of downside",
-          n(more.risk?.returnPerDownside),
-          "Annualized return divided by downside deviation (only losing sessions count as risk, target 0). Not shown when there were no losing sessions.",
-        ],
-        [
-          "Ulcer index · 1 year",
-          n(more.risk?.ulcerIndex),
-          "Root-mean-square of percentage drawdowns from the running peak. It rises with both the depth and the length of declines, so it penalizes slow recoveries.",
         ],
       ],
     },

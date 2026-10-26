@@ -1,8 +1,15 @@
-# Latest addition — evidence scale, Rewind, more technical studies, sign-in polish (October 25, 2026)
+# Current handoff — approved mockup implementation,2026-10-26
 
-Read `docs/DECISION_SCALE.md`, `docs/REWIND.md`, `docs/TECHNICAL_STUDIES_AND_MOTION.md` and `verification/DECISION_SCALE_CHECKS.md`. One additive panel on the Overview tab lets the reader weigh existing AURYN evidence. No content was removed; the PWA shell, rule labels, quote retention and data adapters are unchanged. `npm run verify` has not been run on this change.
+This complete source ZIP supersedes the earlier design-only handoff. The user approved mockup632e79dd06d0b8844f2c65f08812ad07fbb79bbf and explicitly authorized this implementation. Do not ask to reapprove the design.
+
+Start with docs/approved-build/SPEC.md,docs/approved-build/PROGRESS.md andverification/REPORT.json. Main public/account screens fit the first view; the interior follows the approved shell,connected research,evidence drawers,Home,Portfolio andWatchlist. The original research engines andmonthly0×–4× Pace policy remain intact.
+
+Data fixes cover share-class aliases,partial financials,SEC fallback,currency boundaries,bounded dated cache fallback,and provider outage classification. Tests simulate provider transport; they do not establish universal live coverage. Use the existing production environment settings; secrets are excluded from this archive. No database migration is introduced by this change. Deploy with npm ci,npm run verify andthe existing deployment instructions. No production deployment was performed in this session.
+
+The local preview route stays disabled unless AURYN_ENABLE_PREVIEW=true andthehost islocalhost/127.0.0.1/terminal.local. Do not set that flag on production.
 
 ---
+## Historical work notes (superseded where current instructions differ)
 
 # Current build — AURYN connected experience
 

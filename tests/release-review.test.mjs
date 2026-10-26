@@ -209,6 +209,7 @@ function researchMarkup() {
     "DcaResearch",
     "Bookmark",
     "RefreshCw",
+    "X",
     "ArrowUpRight",
   ])
     bindings[name] = empty;

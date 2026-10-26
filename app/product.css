@@ -21,6 +21,7 @@
 @import "./research-studio.css";
 @import "./account-studio.css";
 @import "./auryn-experience.css";
-@import "./decision-scale.css";
-@import "./entry-polish.css";
-@import "./rewind.css";
+
+@import "./approved-mockup.css";
+@import "./approved-workspace.css";
+@import "./approved-public.css";

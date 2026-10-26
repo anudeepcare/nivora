@@ -118,6 +118,7 @@ test("switching workspace tabs restores their own position; tapping the active t
     Moon: icon,
     X: icon,
     Bell: icon,
+    LayoutGrid: icon,
     SettingsSheet: icon,
   });
   function links(node, href) {

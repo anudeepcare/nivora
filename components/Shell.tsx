@@ -11,6 +11,10 @@ import {
   Search as SearchIcon,
   Bell,
   X,
+  LayoutGrid,
+  Settings,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { Logo, ProductFooter } from "./Ui";
 import Search from "./Search";
@@ -34,13 +38,14 @@ export default function Shell({
   page: string;
   children: React.ReactNode;
 }) {
-  const { demo, workspace } = useProduct();
+  const { demo, workspace, theme, setTheme } = useProduct();
   const pathname = usePathname();
   const memory = useRef(new NavigationMemory());
   const pending = useRef<{ path: string; top: number } | null>(null);
   const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   const search = useRef<HTMLDialogElement>(null);
   const settings = useRef<HTMLDialogElement>(null);
+  const tools = useRef<HTMLDialogElement>(null);
   useLayoutEffect(() => {
     const env = browserScrollEnvironment();
     const top =
@@ -65,6 +70,7 @@ export default function Shell({
   useEffect(() => {
     search.current?.close();
     settings.current?.close();
+    tools.current?.close();
   }, [pathname]);
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
@@ -103,93 +109,144 @@ export default function Shell({
         aria-label={r.label}
         aria-current={page === r.path ? "page" : undefined}
       >
-        {mobile && <Icon size={22} />}
+        <Icon size={22} />
         <span>{r.label}</span>
       </Link>
     );
   };
   return (
-    <div className="product auryn-experience" data-page={page}>
+    <div className="product approved-product app-layout" data-page={page}>
       <a className="skip" href="#content">
         Skip to content
       </a>
-      <header className="topbar">
+      <aside className="side-rail">
         <Link
           href={`${prefix}/overview`}
-          className="brand-link"
+          className="rail-brand"
           aria-label="AURYN home"
         >
-          <Logo />
+          <img src="/icon.svg" width="36" height="36" alt="" />
         </Link>
-        <nav className="desktop-nav" aria-label="Main navigation">
-          {primary.map((r) => nav(r))}
-        </nav>
-        <button
-          className="top-search"
-          aria-label="Search companies and crypto"
-          aria-haspopup="dialog"
-          onClick={() => {
-            search.current?.showModal();
-            search.current
-              ?.querySelector("input")
-              ?.focus({ preventScroll: true });
-          }}
-        >
-          <SearchIcon size={19} />
-          <span>Search companies & crypto</span>
-          <kbd>⌘ K</kbd>
-        </button>
-        <div className="top-actions">
-          <Link
-            className="top-plans-link"
-            href={`${prefix}/plans`}
-            aria-current={page === "plans" ? "page" : undefined}
+        <nav aria-label="Main navigation">{primary.map((r) => nav(r))}</nav>
+        <div className="rail-bottom">
+          <button
+            onClick={() => tools.current?.showModal()}
+            aria-label="More tools"
           >
-            Plans
+            <LayoutGrid size={21} />
+            <span>Explore</span>
+          </button>
+          <Link
+            href={`${prefix}/settings`}
+            className={page === "settings" ? "active" : ""}
+          >
+            <Settings size={21} />
+            <span>Settings</span>
           </Link>
-          <Link
-            className="icon-button"
-            href={`${prefix}/alerts`}
-            aria-label="Price alerts"
-          >
-            <Bell size={21} />
+        </div>
+      </aside>
+      <div className="app-workspace">
+        <header className="app-top topbar">
+          <Link className="wordmark" href={`${prefix}/overview`}>
+            AURYN{" "}
+            <span>
+              /{" "}
+              {primary.find((r) => r.path === page)?.label ||
+                page.replaceAll("-", " ")}
+            </span>
           </Link>
           <button
-            className="icon-button"
-            aria-label="Settings"
+            className="search-box"
+            aria-label="Search companies and crypto"
             aria-haspopup="dialog"
             onClick={() => {
-              settings.current?.showModal();
-              const body =
-                settings.current?.querySelector<HTMLElement>(".dialog-body");
-              if (body) body.scrollTop = 0;
-              settings.current
-                ?.querySelector<HTMLHeadingElement>("h2")
+              search.current?.showModal();
+              search.current
+                ?.querySelector("input")
                 ?.focus({ preventScroll: true });
             }}
           >
-            <span className="avatar">
-              {(workspace?.email?.[0] || "A").toUpperCase()}
-            </span>
+            <SearchIcon size={18} />
+            <span>Find a company</span>
+            <kbd>⌘ K</kbd>
           </button>
-        </div>
-      </header>
-      <nav className="workspace-rail" aria-label="Workspace tools">
-        {[["discover","Discover"],["research-lab","Research Lab"],["trading","Paper Lab"],["compare","Compare"]].map(([path,label])=><Link key={path} href={`${prefix}/${path}`} aria-current={page===path?"page":undefined}>{label}<span aria-hidden="true">↗</span></Link>)}
-      </nav>
-      <main id="content" className="content" tabIndex={-1}>
-        <AccessNotice />
-        {demo && demo.routePrefix !== "" && (
-          <div className="preview-label">
-            Design preview · Illustrative data · Account actions disabled
+          <div className="top-links">
+            <button
+              className="icon-button mobile-explore"
+              aria-label="Explore tools"
+              onClick={() => tools.current?.showModal()}
+            >
+              <LayoutGrid size={20} />
+            </button>
+            <Link href={`${prefix}/plans`}>Plans</Link>
+            <button
+              className="icon-button"
+              aria-label="Switch color theme"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            >
+              {theme === "dark" ? <Moon size={20} /> : <Sun size={20} />}
+            </button>
+            <Link
+              href={`${prefix}/alerts`}
+              className="icon-button"
+              aria-label="Price alerts"
+            >
+              <Bell size={20} />
+            </Link>
+            <button
+              className="avatar"
+              aria-label="Account settings"
+              onClick={() => settings.current?.showModal()}
+            >
+              {(workspace?.email?.[0] || "A").toUpperCase()}
+            </button>
           </div>
-        )}
-        {children}
-        <ProductFooter />
-      </main>
-      <nav className="mobile-dock" aria-label="Mobile navigation">
+        </header>
+        <main id="content" className="page-content" tabIndex={-1}>
+          <AccessNotice />
+          {demo && demo.routePrefix !== "" && (
+            <div className="preview-label">
+              Design preview · Illustrative data · Account actions disabled
+            </div>
+          )}
+          {children}
+          <ProductFooter />
+        </main>
+      </div>
+      <nav className="phone-dock" aria-label="Mobile navigation">
         {primary.map((r) => nav(r, true))}
       </nav>
+      <dialog
+        ref={tools}
+        className="search-dialog approved-tools-dialog"
+        aria-label="Explore your workspace"
+      >
+        <header className="dialog-head">
+          <h2>Explore your workspace</h2>
+          <button
+            className="icon-button"
+            aria-label="Close tools"
+            onClick={() => tools.current?.close()}
+          >
+            <X size={21} />
+          </button>
+        </header>
+        <div className="dialog-tools">
+          {[
+            ["discover", "Discover", "Find your next research idea"],
+            ["research-lab", "Research Lab", "Investigate the evidence"],
+            ["trading", "Paper Lab", "Test a strategy"],
+            ["compare", "Compare", "See companies side by side"],
+            ["help", "Help", "Understand the tools"],
+            ["settings", "Settings", "Make AURYN yours"],
+          ].map(([path, label, detail]) => (
+            <Link key={path} href={`${prefix}/${path}`}>
+              <strong>{label}</strong>
+              <small>{detail}</small>
+            </Link>
+          ))}
+        </div>
+      </dialog>
       <dialog
         className="search-dialog"
         ref={search}

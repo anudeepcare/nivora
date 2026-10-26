@@ -1,0 +1,34 @@
+# Ticker and provider resilience implementation
+
+Implemented in the approved production source without changing the financial decision engine, Research/Company/Quote contracts, account guards, shared provider budget logic or database configuration.
+
+## Reproduced failures and fixes
+
+- **US class shares:** `BRK.B` and `BRK-B` retain the requested company symbol while using the provider's expected spelling. Twelve requests use `BRK.B`; identity checks accept only the equivalent dot/hyphen spelling, and still reject a different share class or asset. Quote, history and company profile fallback now agree. Equivalent Twelve search results are deduplicated with the exact requested spelling preferred.
+- **Partial fundamental coverage:** A valid EODHD identity with no usable statements no longer prevents SEC fallback. The implementation uses the complete SEC fact set rather than merging periods from different providers. Primary identity and independently sourced supplementary evidence remain available. EUR SEC/IFRS financials remain EUR while a supported ADR's quote remains USD. Missing corporate statements are explicitly reported; ETF and new-listing price/history can still render.
+- **Provider outages and cache fallback:** EODHD remains the primary market provider, with Twelve as the existing fallback. Timeout, 429, invalid JSON and empty/malformed response fixtures all preserve useful sections where another source succeeds. The selected last-good quote can be retained for at most 24 hours beyond its normal 60-second cache period, and history for at most seven days beyond its normal cache period. Retained quotes are explicitly stale; source labels and issues state cached fallback, original observation times remain intact, and repeated refresh failures cannot extend the retention deadline. This is a bounded, process-local fallback, not a new durable cache guarantee.
+- **Invalid response recovery:** Invalid EODHD quote/history/search/profile shapes and unusable price rows are rejected before they become successful long-lived provider cache entries. Empty or invalid SEC source responses disclose missing coverage and remain retryable.
+- **Identity, currency and dates:** Twelve history with a conflicting exchange/currency is rejected. USD crypto pairs cannot accept a EUR quote. Future-dated quotes are rejected. Short listing history is preserved as short history; the implementation does not manufacture earlier candles or missing financial metrics.
+- **Error classification:** Malformed research and chart symbols return 400 before market-provider requests. Unsupported non-USD crypto pairs return 422. A syntactically valid unknown instrument returns 404 only when all attempted sources for both quote and history finish with explicit not-found responses and no independent company/fact/filing evidence survived. Ambiguous provider failures retain the existing partial research response and section issues. A reviewer-identified EODHD 503 plus Twelve 404 case was reproduced and fixed in both routing helpers: a later not-found response can no longer overwrite an earlier outage.
+
+## Verification
+
+The new tests execute the real provider modules with an isolated module cache. Only external HTTP responses are replaced; no paid requests are made. Tests were written and run red before the corresponding fixes. Red logs are in `verification/ticker-resilience-red*.log`.
+
+- `node --experimental-strip-types --test tests/ticker-resilience.test.mjs`: 24 focused tests cover class shares, ETFs, ADR reporting currencies, IPO-length history, crypto aliases, malformed/unsupported/unknown symbols, timeout, 429, invalid JSON/empty responses, retryability, source identity, cache deadlines and partial source coverage. See `verification/ticker-resilience.log`.
+- `node scripts/test-ticker-resilience.mjs --source`: 13 authenticated source-route checks pass, including auth denial without upstream traffic, private/no-store response policy, fallback rendering, missing metrics, currency provenance and 400/422/404 classification. See `verification/ticker-resilience-source-api.log`.
+- Existing provider-routing and Grow-data tests also pass alongside the focused tests.
+- Final integrated `npm run verify`: **630 tests passed, zero failures**, TypeScript validation passed, and the production build completed successfully. See `verification/approved-final-verify.log`. The earlier concurrent integration run had four UI-harness failures (Snapshot backup disclosure, EPS currency, Simple overview delegation, and Shell `LayoutGrid` binding); the root integration fixes resolved all four, and the final complete run supersedes those failures.
+- The focused direct TypeScript check also completed with exit 0 before final integration. See `verification/ticker-resilience-typecheck.log`.
+- Against the root's first completed production build, the original 12 ticker API checks, EODHD API suite (22 checks), research regression suite (16 checks), and shared-market API suite (5 checks) all passed. Provider-suite logs: `verification/ticker-eodhd-built-api.log`, `verification/ticker-research-built-api.log`, and `verification/ticker-shared-market-built-api.log`.
+- Final production build `RCaVxIBRcLKU23u7gsNL8`: **13/13 built-route ticker resilience API checks passed**, including the final mixed-error routing regression. Command: `node scripts/test-ticker-resilience.mjs`; log: `verification/ticker-resilience-built-api.log`. No pending ticker verification remains. No independent build was launched by this task.
+
+## Live coverage and limitations
+
+No paid provider credentials were available for this local verification. No live paid market/account calls, subscription purchases, production deployment or database modifications were performed. The fixtures prove control flow, isolation, identity/currency checks, honest missing-data behavior and recovery logic; they do **not** certify actual account entitlements, all live ticker coverage, provider latency, live prices, uninterrupted SEC availability, or production shared-cache persistence.
+
+Class-share spellings were cross-checked against primary provider material: [Twelve Data BRK.B listing](https://twelvedata.com/markets/430792/stock/nyse/brk.b/historical-data), [Twelve's generated API SDK documentation](https://github.com/twelvedata/twelvedata-node/blob/master/docs/FundamentalsApi.md), and [EODHD BRK-B.US listing](https://eodhd.com/financial-summary/BRK-B.US). The tests use synthetic observations, not data scraped from these pages.
+
+## Changed files
+
+`lib/providers.ts`, `lib/provider-routing.ts`, `lib/eodhd.ts`, `lib/grow-data.ts`, new `lib/provider-symbol.ts`, research and chart API routes, `tests/ticker-resilience.test.mjs`, `tests/helpers/provider-fixture.mjs`, and `scripts/test-ticker-resilience.mjs`. No UI, CSS, session, shared type or decision-model files were changed by this task.

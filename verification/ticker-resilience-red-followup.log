@@ -1,0 +1,112 @@
+✔ class-share fallback accepts equivalent Twelve quote and history identities (301.019017ms)
+✔ a primary profile without financial statements uses SEC facts and preserves reporting currency (181.287004ms)
+✔ ETF missing corporate facts retains identity, price and limited history with explicit coverage (102.847553ms)
+✔ malformed and unsupported symbols are rejected before any provider traffic (116.929732ms)
+✔ foreign-currency Twelve history cannot contaminate USD research (72.553818ms)
+✔ invalid empty SEC responses remain retryable and disclose missing coverage (74.044535ms)
+✔ expired last-good prices and history survive total outage with original dates and cached provenance (93.364499ms)
+✔ primary timeout response falls back without losing useful research (75.989548ms)
+✔ primary 429 response falls back without losing useful research (72.701331ms)
+✔ primary empty response falls back without losing useful research (80.545425ms)
+✔ primary invalid-json response falls back without losing useful research (83.502528ms)
+✔ crypto aliases keep the requested asset identity and never request corporate financials (61.619796ms)
+✔ search falls through invalid primary payload and deduplicates class-share aliases (64.486097ms)
+✖ documented unknown symbols differ from temporary provider outages (78.649582ms)
+✖ invalid primary payloads do not poison the cache after provider recovery (59.376345ms)
+✔ cached fallback expires at its original bounded horizon despite repeated refreshes (66.025512ms)
+✖ crypto quote currency is validated even when pair identity matches (55.084925ms)
+✖ future-dated quote is not retained as the only price when backup is unavailable (70.2394ms)
+✖ class-share fallback profile preserves verified issuer identity when quote is offline (51.655467ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 14
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2098.868431
+
+✖ failing tests:
+
+test at tests/ticker-resilience.test.mjs:96:1
+✖ documented unknown symbols differ from temporary provider outages (78.649582ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/scratch/9f0036d454ae/auryn-approved/AURYN/tests/ticker-resilience.test.mjs:98:2)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests/ticker-resilience.test.mjs:101:1
+✖ invalid primary payloads do not poison the cache after provider recovery (59.376345ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  null !== 102
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/9f0036d454ae/auryn-approved/AURYN/tests/ticker-resilience.test.mjs:104:62)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: 102,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/ticker-resilience.test.mjs:116:1
+✖ crypto quote currency is validated even when pair identity matches (55.084925ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  200 !== null
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/9f0036d454ae/auryn-approved/AURYN/tests/ticker-resilience.test.mjs:118:45)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 200,
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/ticker-resilience.test.mjs:121:1
+✖ future-dated quote is not retained as the only price when backup is unavailable (70.2394ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  102 !== null
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/9f0036d454ae/auryn-approved/AURYN/tests/ticker-resilience.test.mjs:123:44)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 102,
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/ticker-resilience.test.mjs:126:1
+✖ class-share fallback profile preserves verified issuer identity when quote is offline (51.655467ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'BRK-B'
+  - 'Berkshire Hathaway Class B'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/9f0036d454ae/auryn-approved/AURYN/tests/ticker-resilience.test.mjs:132:43)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'BRK-B',
+    expected: 'Berkshire Hathaway Class B',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

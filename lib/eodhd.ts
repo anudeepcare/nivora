@@ -52,6 +52,8 @@ export async function eodRequest(
         "EODHD did not authorize this dataset. Check the key and plan entitlement.",
         503,
       );
+    if (response.status === 404)
+      throw new HttpError("This instrument or dataset was not found by EODHD.", 404);
     if (!response.ok)
       throw new HttpError(
         response.status === 401 || response.status === 403
@@ -69,6 +71,16 @@ export async function eodRequest(
         "EODHD returned a dataset error. Check instrument coverage and entitlement.",
         503,
       );
+    // HTTP success with an empty/error-shaped payload must not poison a
+    // long-lived provider cache. Empty search/split arrays are legitimate.
+    const arrayDataset = /^(?:eod|intraday|splits|search)\//.test(path);
+    const fundamental = /(?:^|\/)fundamentals\//.test(path);
+    const general = data?.General ?? data;
+    if ((arrayDataset && !Array.isArray(data)) ||
+        (/^(?:eod|intraday)\//.test(path) && Array.isArray(data) && !normalizeEodBars(data, path.startsWith("intraday/")).length) ||
+        (path.startsWith("real-time/") && (!data || typeof data.code !== "string" || data.code.toUpperCase() !== path.split("/").at(-1) || !Number.isFinite(Number(data.close)) || Number(data.close) <= 0)) ||
+        (fundamental && (!general || typeof general.Code !== "string" || general.Code.toUpperCase() !== path.split("/").at(-1)?.replace(/\.(?:US|CC)$/, ""))))
+      throw new HttpError("EODHD returned an invalid or empty dataset. Retry shortly.", 503);
     return data;
   }).catch((e) => {
     if (e instanceof EodAccessError || e instanceof EodBackoffError) {

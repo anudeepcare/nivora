@@ -5,18 +5,88 @@ import { useRouter } from "next/navigation";
 import {
   ArrowRight,
   Search,
-  FileText,
   ChartNoAxesCombined,
   Menu,
   X,
   Check,
   ShieldCheck,
+  Layers3,
+  Scale,
+  PieChart,
 } from "lucide-react";
 import { authClient } from "@/lib/client";
 
 /** An explicitly illustrative product surface; never mixed with account research. */
-export function PublicSample() {
+export function PublicSample({ compact = false }: { compact?: boolean } = {}) {
   const [active, setActive] = useState("business");
+  if (compact)
+    return (
+      <section
+        className="mp-auth-preview"
+        aria-label="Illustrative product preview — Understand the whole case."
+      >
+        <div className="mp-mini-head">
+          <span className="mp-auth-preview-title">
+            Your research, connected
+          </span>
+          <span className="mp-small-pill">Overview</span>
+        </div>
+        <div className="mp-auth-case">
+          <span>THE INVESTMENT CASE</span>
+          <h3>
+            Understand the opportunity.
+            <br />
+            <em>Keep the risks in view.</em>
+          </h3>
+        </div>
+        <div className="mp-evidence mp-evidence-compact">
+          <div className="mp-mini-head">
+            <strong>Evidence balance</strong>
+            <span>Illustrative signals</span>
+          </div>
+          <div
+            className="mp-balance"
+            role="img"
+            aria-label="Illustrative evidence: 7 supportive, 3 mixed and 2 cautionary signals"
+          >
+            <i />
+            <i />
+            <i />
+          </div>
+          <div className="mp-evidence-key">
+            <span>
+              <b className="mp-dot mp-dot-green" />
+              Supportive <strong>7</strong>
+            </span>
+            <span>
+              <b className="mp-dot mp-dot-amber" />
+              Mixed <strong>3</strong>
+            </span>
+            <span>
+              <b className="mp-dot mp-dot-red" />
+              Caution <strong>2</strong>
+            </span>
+          </div>
+        </div>
+        <div className="mp-auth-preview-metrics">
+          <div>
+            <span>Business</span>
+            <strong>Resilient</strong>
+            <i />
+          </div>
+          <div>
+            <span>Valuation</span>
+            <strong>In context</strong>
+            <i />
+          </div>
+          <div>
+            <span>Portfolio</span>
+            <strong>Connected</strong>
+            <i />
+          </div>
+        </div>
+      </section>
+    );
   return (
     <section
       className="research-panorama"
@@ -26,9 +96,7 @@ export function PublicSample() {
         <div className="panorama-company">
           <span>A</span>
           <div>
-            <strong>
-              Your next investment
-            </strong>
+            <strong>Your next investment</strong>
             <small>Illustrative research · sample values</small>
           </div>
         </div>
@@ -233,13 +301,154 @@ export function PublicSample() {
     </section>
   );
 }
+function PublicBrand() {
+  return (
+    <Link className="mp-brand" href="/" aria-label="Auryn home">
+      <span className="mp-brand-mark" aria-hidden="true">
+        <img src="/icon.svg" alt="" width="34" height="36" />
+      </span>
+      <span>AURYN</span>
+    </Link>
+  );
+}
+function IllustrativeChart() {
+  return (
+    <svg
+      className="mp-chart"
+      viewBox="0 0 460 150"
+      fill="none"
+      role="img"
+      aria-label="Illustrative price path, not a real investment"
+    >
+      <path
+        d="M0 34h460M0 79h460M0 124h460"
+        stroke="var(--line)"
+        strokeDasharray="3 5"
+      />
+      <path
+        d="M0 128 28 120 50 127 75 105 98 111 120 96 145 101 167 76 191 82 215 67 238 76 260 53 286 64 308 42 331 48 354 31 380 39 409 18 434 24 460 10v140H0Z"
+        fill="var(--blue)"
+        fillOpacity=".065"
+      />
+      <path
+        d="m0 128 28-8 22 7 25-22 23 6 22-15 25 5 22-25 24 6 24-15 23 9 22-23 26 11 22-22 23 6 23-17 26 8 29-21 25 6 26-14"
+        stroke="var(--blue)"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+function IllustrativeEvidence({ compact = false }: { compact?: boolean }) {
+  return (
+    <div className={`mp-evidence ${compact ? "mp-evidence-compact" : ""}`}>
+      <div className="mp-mini-head">
+        <strong>Evidence balance</strong>
+        <span>12 illustrative signals</span>
+      </div>
+      <div
+        className="mp-balance"
+        role="img"
+        aria-label="Illustrative evidence: 7 supportive, 3 mixed and 2 cautionary signals"
+      >
+        <i />
+        <i />
+        <i />
+      </div>
+      <div className="mp-evidence-key">
+        <span>
+          <b className="mp-dot mp-dot-green" />
+          Supportive <strong>7</strong>
+        </span>
+        <span>
+          <b className="mp-dot mp-dot-amber" />
+          Mixed <strong>3</strong>
+        </span>
+        <span>
+          <b className="mp-dot mp-dot-red" />
+          Caution <strong>2</strong>
+        </span>
+      </div>
+    </div>
+  );
+}
+function PublicPreview() {
+  return (
+    <section
+      className="mp-product-preview"
+      aria-label="Illustrative research preview — not a real investment"
+    >
+      <div className="mp-preview-top">
+        <span className="mp-preview-icon">
+          <Layers3 className="mp-icon" />
+        </span>
+        <span>
+          <strong>Your research, connected</strong>
+          <small>Decision overview</small>
+        </span>
+        <span className="mp-live-label">Illustrative</span>
+      </div>
+      <div className="mp-preview-body">
+        <div className="mp-company">
+          <span className="mp-company-monogram">N</span>
+          <div>
+            <strong>Northstar Labs</strong>
+            <span>Illustrative company · Technology</span>
+          </div>
+          <span className="mp-watch-icon" aria-hidden="true">
+            ☆
+          </span>
+        </div>
+        <div className="mp-preview-price">
+          <strong>$124.80</strong>
+          <span>
+            +2.4% <small>example day</small>
+          </span>
+        </div>
+        <IllustrativeChart />
+        <div className="mp-chart-labels">
+          <span>JAN</span>
+          <span>MAR</span>
+          <span>MAY</span>
+          <span>JUL</span>
+          <span>SEP</span>
+        </div>
+        <div className="mp-preview-case">
+          <span className="mp-case-label">THE CASE IN ONE SENTENCE</span>
+          <p>Improving fundamentals, with expectations worth watching.</p>
+          <Link href="/sample">
+            Explore the evidence <ArrowRight />
+          </Link>
+        </div>
+        <IllustrativeEvidence compact />
+      </div>
+      <div className="mp-preview-bottom">
+        <span className="mp-mini-check">
+          <Check />
+        </span>
+        <span>Business. Valuation. Risk. One clear view.</span>
+      </div>
+      <div className="mp-accumulation">
+        <span className="mp-accumulation-icon">
+          <ChartNoAxesCombined className="mp-icon" />
+        </span>
+        <div>
+          <span>Selected example</span>
+          <strong>4× accumulation</strong>
+          <small>Illustrative contribution · not a predicted return</small>
+        </div>
+      </div>
+    </section>
+  );
+}
 export default function PublicLanding({
   sampleOnly = false,
 }: {
   sampleOnly?: boolean;
 }) {
-  const router = useRouter(),
-    [menu, setMenu] = useState(false);
+  const router = useRouter();
+  const [menu, setMenu] = useState(false);
   useEffect(() => {
     if (sampleOnly) return;
     let alive = true;
@@ -256,181 +465,329 @@ export default function PublicLanding({
     };
   }, [router, sampleOnly]);
   return (
-    <main
-      className={`public-site atlas-public ${sampleOnly ? "public-sample-page" : ""}`}
-    >
-      <nav className="public-nav" aria-label="Public navigation">
-        <Link href="/" className="public-brand">
-          <img src="/icon.svg" width="32" height="32" alt="" />
-          <span>AURYN</span>
-        </Link>
-        <div className="public-desktop-links">
-          <a href="/#why-auryn">Why AURYN</a>
-          <Link href="/sample">The experience</Link>
+    <main className={`mp-public ${sampleOnly ? "mp-sample-page" : ""}`}>
+      <header className="mp-header">
+        <div className="mp-header-inner">
+          <PublicBrand />
+          <nav className="mp-nav" aria-label="Main navigation">
+            <Link href="/sample">Explore the product</Link>
+            <Link href="/pricing">Plans</Link>
+            <Link href="/help">Help</Link>
+          </nav>
+          <div className="mp-header-actions">
+            <Link className="mp-login-link" href="/login">
+              Sign in
+            </Link>
+            <Link
+              className="mp-button mp-button-primary mp-button-small"
+              href="/login?mode=signup"
+            >
+              Get started <ArrowRight />
+            </Link>
+            <button
+              type="button"
+              className="mp-menu-button"
+              aria-label={menu ? "Close navigation" : "Open navigation"}
+              aria-expanded={menu}
+              aria-controls="mp-mobile-navigation"
+              onClick={() => setMenu(!menu)}
+            >
+              {menu ? <X size={18} /> : <Menu size={18} />}
+            </button>
+          </div>
         </div>
-        <div className="public-nav-actions">
-          <Link href="/pricing" className="public-pricing-link">
-            Pricing
-          </Link>
-          <Link href="/login">Sign in</Link>
-          <Link href="/login?mode=signup" className="public-button compact">
-            Get started <ArrowRight size={15} />
-          </Link>
-          <button
-            type="button"
-            className="public-menu-button"
-            aria-label={menu ? "Close navigation" : "Open navigation"}
-            aria-expanded={menu}
-            onClick={() => setMenu(!menu)}
+        {menu && (
+          <nav
+            id="mp-mobile-navigation"
+            className="mp-mobile-navigation"
+            aria-label="More public navigation"
           >
-            {menu ? <X size={20} /> : <Menu size={20} />}
-          </button>
-        </div>
-      </nav>
-      {menu && (
-        <nav className="public-mobile-menu" aria-label="More public navigation">
-          <a href="/#why-auryn" onClick={() => setMenu(false)}>
-            Why AURYN
-          </a>
-          <Link href="/sample">The experience</Link>
-          <Link href="/pricing">Pricing</Link>
-          <Link href="/login?mode=signup">Create an account</Link>
-        </nav>
-      )}
-      <section className="public-hero">
-        <div className="public-hero-copy">
-          <span className="public-eyebrow">YOUR INVESTMENT PERSPECTIVE</span>
+            <Link href="/sample">Explore the product</Link>
+            <Link href="/pricing">Plans</Link>
+            <Link href="/help">Help</Link>
+          </nav>
+        )}
+      </header>
+      <section className="mp-hero mp-wrap">
+        <div className="mp-hero-copy">
+          <div className="mp-overline">
+            <span />
+            RESEARCH WITH PERSPECTIVE
+          </div>
           <h1>
             {sampleOnly ? (
               <>
                 One company.
                 <br />
-                <em>The whole picture.</em>
+                The whole <em>picture.</em>
               </>
             ) : (
               <>
-                More clarity.
+                A clearer view.
+                <br />A more considered
                 <br />
-                <em>Better conviction.</em>
+                <em>decision.</em>
               </>
             )}
           </h1>
           <p>
-            See what supports the case, what could go wrong and what would
-            change the view. Clear research for a decision you understand.
+            See the business, weigh the evidence, and understand the risk. Auryn
+            connects your investment research in one thoughtful workspace.
           </p>
-          <div className="public-actions">
-            <Link href="/login?mode=signup" className="public-button">
-              Create an account <ArrowRight size={17} />
+          <div className="mp-hero-actions">
+            <Link
+              className="mp-button mp-button-primary"
+              href="/login?mode=signup"
+            >
+              Start with clarity <ArrowRight />
             </Link>
-            <Link href="/sample" className="public-button secondary">
-              Explore sample
+            <Link
+              className="mp-button mp-button-secondary"
+              href={sampleOnly ? "#sample-research" : "/sample"}
+            >
+              Explore the preview
             </Link>
           </div>
-          <div className="public-trust">
-            <span>
-              <Check size={14} />
-              Start free
-            </span>
-            <span>
-              <Check size={14} />
-              No card required
-            </span>
-            <span>
-              <Check size={14} />
-              Your research, your decision
-            </span>
+          <div className="mp-hero-note">
+            <Check className="mp-icon" />
+            <span>From the first question to the full picture.</span>
           </div>
-          <Link className="public-plan-note" href="/pricing">
-            Free research for 100 companies / month. Explore Pro →
-          </Link>
         </div>
-        <div className="public-hero-preview">
-          <div className="public-preview-label">
-            <span />
-            <span />
-            <span />
-            <strong>AURYN · Research workspace</strong>
-          </div>
-          <PublicSample />
+        <div className="mp-hero-visual">
+          <PublicPreview />
         </div>
       </section>
-      <section className="public-benefits" id="why-auryn">
-        <div className="public-section-heading">
-          <span className="public-eyebrow">ONE CONNECTED PERSPECTIVE</span>
+      <div className="mp-preview-disclaimer mp-wrap">
+        <span className="mp-preview-disclaimer-dot" />
+        Illustrative product preview · fictional company and data
+      </div>
+      {sampleOnly && (
+        <section
+          className="mp-wrap mp-sample-detail"
+          id="sample-research"
+          aria-label="Explore illustrative research"
+        >
+          <PublicSample />
+        </section>
+      )}
+      <section
+        className="mp-principles mp-wrap"
+        id="why-auryn"
+        aria-label="Our approach"
+      >
+        <div>
+          <Layers3 className="mp-icon" />
+          <span>Connected research</span>
+        </div>
+        <div>
+          <Scale className="mp-icon" />
+          <span>Evidence you can weigh</span>
+        </div>
+        <div>
+          <PieChart className="mp-icon" />
+          <span>Risk in context</span>
+        </div>
+      </section>
+      <section className="mp-feature mp-wrap">
+        <div className="mp-feature-copy">
+          <span className="mp-overline">01 / UNDERSTAND THE CASE</span>
           <h2>
-            Less noise.
+            Less searching.
             <br />
             More understanding.
           </h2>
           <p>
-            Move from the business to its price, then follow the evidence that
-            matters.
+            Start with the story that matters. A connected research page brings
+            the company, its financial health, and its valuation into focus.
           </p>
+          <Link className="mp-text-link" href="/sample">
+            Explore a research page <ArrowRight />
+          </Link>
         </div>
-        <div>
-          {[
-            [
-              Search,
-              "Understand the business",
-              "Cash generation, growth, funding and competitive evidence. Know what supports the case.",
-            ],
-            [
-              FileText,
-              "Challenge the price",
-              "Bear, base and bull assumptions alongside analyst expectations. See where the conclusions differ.",
-            ],
-            [
-              ChartNoAxesCombined,
-              "Know what to watch",
-              "Price conditions, company news and upcoming events. Keep your next checkpoint in view.",
-            ],
-          ].map(([Icon, title, description], i) => {
-            const I = Icon as typeof Search;
-            return (
-              <article key={String(title)}>
-                <i>
-                  <I size={22} />
-                </i>
-                <span className="public-step">0{i + 1}</span>
-                <h3>{String(title)}</h3>
-                <p>{String(description)}</p>
-              </article>
-            );
-          })}
+        <div className="mp-feature-card mp-research-visual">
+          <div className="mp-mini-head">
+            <span className="mp-soft-icon">
+              <Search className="mp-icon" />
+            </span>
+            <span className="mp-small-pill">Research overview</span>
+          </div>
+          <p className="mp-case-text">
+            A durable business.
+            <br />
+            <span>A price that deserves context.</span>
+          </p>
+          <div className="mp-research-rows">
+            {[
+              [
+                Layers3,
+                "Understand the business",
+                "Revenue, customers, and competitive position",
+              ],
+              [
+                ChartNoAxesCombined,
+                "Look beneath the numbers",
+                "Growth, margins, and financial resilience",
+              ],
+              [
+                Scale,
+                "Put the valuation in context",
+                "Scenarios, assumptions, and expectations",
+              ],
+            ].map(([Icon, title, description]) => {
+              const I = Icon as typeof Search;
+              return (
+                <Link
+                  href="/sample"
+                  className="mp-research-row"
+                  key={String(title)}
+                >
+                  <span className="mp-row-icon">
+                    <I className="mp-icon" />
+                  </span>
+                  <span>
+                    <strong>{String(title)}</strong>
+                    <small>{String(description)}</small>
+                  </span>
+                  <ArrowRight />
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </section>
-      <section className="public-closing">
-        <div>
-          <span className="public-eyebrow">BUILT FOR YOUR OWN THINKING</span>
-          <h2>A clearer view starts here.</h2>
+      <section className="mp-feature mp-feature-reverse mp-wrap">
+        <div className="mp-feature-copy">
+          <span className="mp-overline">02 / WEIGH THE EVIDENCE</span>
+          <h2>
+            Every conviction
+            <br />
+            needs a counterpoint.
+          </h2>
           <p>
-            Research the company. Understand the assumptions. Make your own
-            call.
+            See what supports a case and what could challenge it. Explore the
+            evidence behind each signal, then decide what matters to you.
           </p>
+          <Link className="mp-text-link" href="/sample">
+            See both sides <ArrowRight />
+          </Link>
         </div>
-        <Link href="/login?mode=signup" className="public-button">
-          Start your research <ArrowRight size={17} />
+        <div className="mp-feature-card mp-evidence-visual">
+          <IllustrativeEvidence />
+          <div className="mp-evidence-row">
+            <span className="mp-evidence-tag mp-positive">
+              Supports the case
+            </span>
+            <strong>Cash generation is improving</strong>
+            <p>More of the business’s earnings are turning into cash.</p>
+          </div>
+          <div className="mp-evidence-row">
+            <span className="mp-evidence-tag mp-caution">Worth watching</span>
+            <strong>Expectations leave less room for error</strong>
+            <p>A higher valuation makes future execution matter more.</p>
+          </div>
+          <div className="mp-evidence-footer">
+            Illustrative research signals{" "}
+            <Link href="/sample">
+              View the full context <ArrowRight />
+            </Link>
+          </div>
+        </div>
+      </section>
+      <section className="mp-feature mp-wrap">
+        <div className="mp-feature-copy">
+          <span className="mp-overline">03 / SEE THE BIGGER PICTURE</span>
+          <h2>
+            Your holdings.
+            <br />A connected picture.
+          </h2>
+          <p>
+            Understand how your ideas fit together. See performance,
+            concentration, and shared exposures across your portfolio.
+          </p>
+          <Link className="mp-text-link" href="/portfolio">
+            Explore the portfolio <ArrowRight />
+          </Link>
+        </div>
+        <div className="mp-feature-card mp-portfolio-visual">
+          <div className="mp-mini-head">
+            <strong>Portfolio perspective</strong>
+            <span>Illustrative portfolio</span>
+          </div>
+          <div className="mp-portfolio-summary">
+            <div>
+              <span>Portfolio value</span>
+              <strong>
+                $48,620<span>.00</span>
+              </strong>
+            </div>
+            <span className="mp-positive mp-portfolio-change">
+              +8.6% <small>example period</small>
+            </span>
+          </div>
+          <IllustrativeChart />
+          <div className="mp-risk">
+            <span className="mp-risk-title">Shared exposure</span>
+            {[
+              ["Technology", 62],
+              ["Consumer", 24],
+              ["Other", 14],
+            ].map(([label, value]) => (
+              <div key={String(label)}>
+                <span>{label}</span>
+                <div>
+                  <i style={{ width: `${value}%` }} />
+                </div>
+                <strong>{value}%</strong>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="mp-bottom-cta mp-wrap">
+        <div className="mp-cta-symbol">
+          <Layers3 />
+        </div>
+        <span className="mp-overline">YOUR NEXT QUESTION STARTS HERE</span>
+        <h2>Make room for a clearer view.</h2>
+        <p>Bring your research, watchlist, and portfolio together.</p>
+        <Link className="mp-button mp-button-primary" href="/login?mode=signup">
+          Get started with Auryn <ArrowRight />
+        </Link>
+        <Link className="mp-cta-plans" href="/pricing">
+          Find the plan that fits you
         </Link>
       </section>
-      <footer className="public-footer">
-        <Link href="/" className="public-brand">
-          <img src="/icon.svg" width="25" height="25" alt="" />
-          <span>AURYN</span>
-        </Link>
-        <p>Business. Price. Perspective.</p>
-        <nav aria-label="Legal and support">
-          <Link href="/contact">Contact</Link>
-          <Link href="/methodology">Methodology</Link>
-          <Link href="/privacy">Privacy</Link>
-          <Link href="/terms">Terms</Link>
-          <Link href="/help">Help</Link>
-        </nav>
-        <small>
-          © {new Date().getFullYear()} AURYN. All rights reserved. Research and
-          decision support; investing involves risk. Preview figures are
-          illustrative, not investment recommendations.
-        </small>
+      <footer className="mp-footer">
+        <div className="mp-footer-top">
+          <div>
+            <PublicBrand />
+            <p>
+              More perspective.
+              <br />
+              More considered decisions.
+            </p>
+          </div>
+          <nav aria-label="Footer navigation">
+            <Link href="/sample">Explore Auryn</Link>
+            <Link href="/pricing">Plans</Link>
+            <Link href="/contact">Contact</Link>
+            <Link href="/help">Help</Link>
+            <Link href="/login">Sign in</Link>
+          </nav>
+        </div>
+        <div className="mp-footer-bottom">
+          <span>© {new Date().getFullYear()} Auryn</span>
+          <nav aria-label="Legal and methodology">
+            <Link href="/methodology">Methodology</Link>
+            <Link href="/terms">Terms</Link>
+            <Link href="/privacy">Privacy</Link>
+            <Link href="/risk">Risks</Link>
+          </nav>
+          <p>
+            Examples are fictional. Research supports your judgment; investing
+            involves risk.
+          </p>
+        </div>
       </footer>
     </main>
   );
