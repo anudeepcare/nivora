@@ -19,6 +19,7 @@ import { api, authClient } from "@/lib/client";
 import type { Research, Workspace } from "@/lib/types";
 import { Logo } from "./Ui";
 import { PublicSample } from "./PublicLanding";
+import { friendlyAuthMessage } from "@/lib/auth-messages";
 import { readResource, resourceSnapshot } from "@/lib/resource-cache";
 import { accountCache, clearAccountCache } from "@/lib/account-cache";
 export type DemoData = {
@@ -555,7 +556,7 @@ function Login({ initialError }: { initialError: string }) {
             : "Check your email for the password reset link.",
         );
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Unable to sign in.");
+      setError(friendlyAuthMessage(e instanceof Error ? e.message : "", mode));
     } finally {
       setBusy(false);
     }
@@ -698,21 +699,65 @@ function Login({ initialError }: { initialError: string }) {
             />
           </label>
           {mode !== "reset" && (
-            <label>
-              Password
-              <input
-                type="password"
-                name="password"
-                id="auryn-signin-password"
-                autoComplete={
-                  mode === "login" ? "current-password" : "new-password"
-                }
-                minLength={8}
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </label>
+            <div className="auth-password-row">
+              <label>
+                Password
+                <input
+                  type="password"
+                  name="password"
+                  id="auryn-signin-password"
+                  autoComplete={
+                    mode === "login" ? "current-password" : "new-password"
+                  }
+                  minLength={8}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onKeyUp={(e) => {
+                    const hint = document.getElementById("auryn-caps-hint");
+                    if (hint) hint.hidden = !e.getModifierState("CapsLock");
+                  }}
+                  onBlur={() => {
+                    const hint = document.getElementById("auryn-caps-hint");
+                    if (hint) hint.hidden = true;
+                  }}
+                />
+              </label>
+              <button
+                type="button"
+                className="auth-password-toggle"
+                aria-controls="auryn-signin-password"
+                aria-pressed="false"
+                aria-label="Show password"
+                onClick={(e) => {
+                  const input = document.getElementById(
+                    "auryn-signin-password",
+                  ) as HTMLInputElement | null;
+                  if (!input) return;
+                  const show = input.type === "password";
+                  input.type = show ? "text" : "password";
+                  e.currentTarget.setAttribute("aria-pressed", String(show));
+                  e.currentTarget.setAttribute(
+                    "aria-label",
+                    show ? "Hide password" : "Show password",
+                  );
+                  e.currentTarget.textContent = show ? "Hide" : "Show";
+                }}
+              >
+                Show
+              </button>
+              <p
+                id="auryn-caps-hint"
+                className="auth-hint auth-caps"
+                role="status"
+                hidden
+              >
+                Caps Lock is on.
+              </p>
+              {mode === "signup" && (
+                <p className="auth-hint">Use at least 8 characters.</p>
+              )}
+            </div>
           )}
           {error && (
             <p role="alert" className="error">

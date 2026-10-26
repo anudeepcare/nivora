@@ -13,7 +13,7 @@ import { demoData } from "./fixtures/demo.ts";
 
 function loadComponent(file, name, bindings) {
   bindings = {CompanySparkline:()=>null, ...bindings};
-  bindings = {useAccess:()=>({access:{features:Object.fromEntries(["overview","business","financials","value","technicals","analysts","news","advanced","portfolio","home","ai","longHistory"].map(k=>[k,true]))}}),FeatureGate:({children})=>children,FreeSnapshot:()=>null,CongressDisclosures:()=>null,PlanPanel:()=>null,AccessNotice:()=>null,AnalystTargets: () => null, PriceRiskCases: () => null, homeComposition, homeDay, homeBrief, dailyPerspective, PieChart:()=>null, FileText:()=>null, Clock3:()=>null, useEffect:()=>{}, ...bindings};
+  bindings = {useAccess:()=>({access:{features:Object.fromEntries(["overview","business","financials","value","technicals","analysts","news","advanced","portfolio","home","ai","longHistory"].map(k=>[k,true]))}}),FeatureGate:({children})=>children,FreeSnapshot:()=>null,CongressDisclosures:()=>null,PlanPanel:()=>null,AccessNotice:()=>null,AnalystTargets: () => null, PriceRiskCases: () => null, DecisionScale: () => null, Rewind: () => null, homeComposition, homeDay, homeBrief, dailyPerspective, PieChart:()=>null, FileText:()=>null, Clock3:()=>null, useEffect:()=>{}, ...bindings};
   const ast = ts.createSourceFile(
     file,
     fs.readFileSync(file, "utf8"),
@@ -573,10 +573,10 @@ test('change tracking stays invisible until there are actual observed changes',(
 });
 
 test('technical desk separates four evidence groups and formats missing data safely',async()=>{
- const {advancedStudies}=await import('../lib/advanced-research.ts'),{professionalStudies}=await import('../lib/professional-studies.ts'),{expandedStudies}=await import('../lib/technical-expanded.ts'),{priceStudies}=await import('../lib/price-studies.ts'),{perspective}=await import('../lib/analysis.ts');
+ const {advancedStudies}=await import('../lib/advanced-research.ts'),{professionalStudies}=await import('../lib/professional-studies.ts'),{moreStudies}=await import('../lib/technical-more.ts'),{expandedStudies}=await import('../lib/technical-expanded.ts'),{priceStudies}=await import('../lib/price-studies.ts'),{perspective}=await import('../lib/analysis.ts');
  const {technicalContext}=await import('../lib/technical-context.ts');
- const TechnicalDashboard=loadComponent('components/TechnicalDashboard.tsx','TechnicalDashboard',{React,useMemo:React.useMemo,useRef:React.useRef,technicalContext,advancedStudies,professionalStudies,expandedStudies,priceStudies,perspective,...format,TechnicalLevels:()=>null,X:()=>null});
- const html=renderToStaticMarkup(React.createElement(TechnicalDashboard,{research:demoData.research.MSFT}));for(const title of ['Trend','Momentum','Volatility &amp; range','Participation','Price reference map','Custom anchors'])assert.ok(html.includes(title),title);assert.doesNotMatch(html,/NaN|Infinity|undefined/);
+ const TechnicalDashboard=loadComponent('components/TechnicalDashboard.tsx','TechnicalDashboard',{React,useMemo:React.useMemo,useRef:React.useRef,technicalContext,advancedStudies,professionalStudies,moreStudies,expandedStudies,priceStudies,perspective,...format,TechnicalLevels:()=>null,X:()=>null});
+ const html=renderToStaticMarkup(React.createElement(TechnicalDashboard,{research:demoData.research.MSFT}));for(const title of ['Trend','Momentum','Trend systems','Momentum and risk-adjusted','Volatility &amp; range','Participation','Price reference map','Custom anchors'])assert.ok(html.includes(title),title);assert.doesNotMatch(html,/NaN|Infinity|undefined/);
 });
 
 test('shared settings exposes theme and accessibility without repeating accent headings',()=>{

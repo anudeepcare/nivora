@@ -9,6 +9,7 @@ import * as format from "../lib/format.ts";
 import { technicalContext } from "../lib/technical-context.ts";
 import { advancedStudies } from "../lib/advanced-research.ts";
 import { professionalStudies } from "../lib/professional-studies.ts";
+import { moreStudies } from "../lib/technical-more.ts";
 import { expandedStudies } from "../lib/technical-expanded.ts";
 import { priceStudies } from "../lib/price-studies.ts";
 import { perspective } from "../lib/analysis.ts";
@@ -44,6 +45,7 @@ test("technical relative volume shows the calculated observation with its own fo
     technicalContext,
     advancedStudies,
     professionalStudies,
+    moreStudies,
     expandedStudies,
     priceStudies,
     perspective,

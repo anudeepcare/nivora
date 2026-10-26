@@ -1,6 +1,6 @@
-# Latest addition — evidence scale, more technical studies and motion (October 25, 2026)
+# Latest addition — evidence scale, Rewind, more technical studies, sign-in polish (October 25, 2026)
 
-Read `docs/DECISION_SCALE.md`, `docs/TECHNICAL_STUDIES_AND_MOTION.md` and `verification/DECISION_SCALE_CHECKS.md`. One additive panel on the Overview tab lets the reader weigh existing AURYN evidence. No content was removed; the PWA shell, rule labels, quote retention and data adapters are unchanged. `npm run verify` has not been run on this change.
+Read `docs/DECISION_SCALE.md`, `docs/REWIND.md`, `docs/TECHNICAL_STUDIES_AND_MOTION.md` and `verification/DECISION_SCALE_CHECKS.md`. One additive panel on the Overview tab lets the reader weigh existing AURYN evidence. No content was removed; the PWA shell, rule labels, quote retention and data adapters are unchanged. `npm run verify` has not been run on this change.
 
 ---
 
