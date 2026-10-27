@@ -1,4 +1,11 @@
 "use client";
+import { sameProviderSymbol } from "@/lib/provider-symbol";
+import PaceReadings from "./PaceReadings";
+import Search from "./Search";
+import PaceHelp from "./PaceHelp";
+import { loadComparison, comparisonCompatibility } from "@/lib/comparison";
+import { researchEdge } from "@/lib/edge-research";
+
 import DisplayPreferences from "./DisplayPreferences";
 import ResearchPreferenceControls from "./ResearchPreferences";
 import PwaDiagnostics from "./PwaDiagnostics";
@@ -260,11 +267,12 @@ export function Settings() {
 }
 
 export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
-  const { demo } = useProduct(),
+  const { demo, workspace } = useProduct(),
     prefix = demo && demo.routePrefix !== "" ? "/preview" : "",
     [draft, setDraft] = useState(initialSymbols),
     [symbols, setSymbols] = useState(initialSymbols),
     [rows, setRows] = useState<Research[]>([]),
+    [success, setSuccess] = useState(""),
     [error, setError] = useState(""),
     [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -277,21 +285,20 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
     setRows([]);
     setLoading(true);
     setError("");
-    Promise.all(
-      symbols
-        .split(",")
-        .map((s) =>
-          demo
-            ? Promise.resolve(demo.research[s])
-            : api<Research>(
-                `research/${encodeURIComponent(s.replace("/", "-"))}`,
-                undefined,
-                abort.signal,
-              ),
-        ),
+    loadComparison(symbols.split(","), (s) =>
+      demo
+        ? Promise.resolve(demo.research[s])
+        : api<Research>(
+            `research/${encodeURIComponent(s.replace("/", "-"))}`,
+            undefined,
+            abort.signal,
+          ),
     )
-      .then((values) => {
-        if (active) setRows(values.filter(Boolean));
+      .then(({ rows, issues }) => {
+        if (active) {
+          setRows(rows);
+          setError(issues.join(" "));
+        }
       })
       .catch((e) => {
         if (active) setError(e.message);
@@ -328,7 +335,7 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
         },
       });
       saved.refresh();
-      setError("Comparison saved.");
+      setSuccess("Comparison saved.");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Save failed.");
     }
@@ -341,13 +348,31 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
       ];
       if (list.length < 2 || list.length > 4)
         throw Error("Choose two to four companies.");
+      setSuccess("");
       setSymbols(list.join(","));
       setError("");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Check the symbols");
     }
   }
-  const values = rows.map((r) => ({ r, p: perspective(r) }));
+  const values = rows.map((r) => ({
+    r,
+    p: perspective(r),
+    edge: researchEdge(
+      r,
+      !!workspace?.positions.some(
+        (p) => sameProviderSymbol(p.symbol, r.company.symbol) && p.quantity > 0,
+      ),
+      demo ? Date.parse(r.retrievedAt) : Date.now(),
+    ),
+  }));
+  const compatibility = comparisonCompatibility(
+    values.map(({ p }) => ({
+      currency: p.last?.currency,
+      end: p.last?.end,
+      basis: p.periodBasis,
+    })),
+  );
   return (
     <section>
       <PageHeading
@@ -373,6 +398,17 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
           </button>
         )}
       </div>
+      <div className="compare-picker">
+        <Search
+          onSelect={(symbol) =>
+            setDraft((current) =>
+              [...new Set([...current.split(/[ ,]+/).filter(Boolean), symbol])]
+                .slice(0, 4)
+                .join(", "),
+            )
+          }
+        />
+      </div>
       <form className="compare-search" onSubmit={submit}>
         <input
           aria-label="Companies to compare"
@@ -385,6 +421,11 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
         </button>
       </form>
       {error && <Notice error>{error}</Notice>}
+      {success && <Notice>{success}</Notice>}
+      {compatibility.length > 0 && (
+        <p className="context-note">{compatibility.join(" ")}</p>
+      )}
+      <PaceHelp trigger="Understand AURYN Pace" />
       {values.length ? (
         <div className="table-scroll">
           <table className="compare-table">
@@ -414,10 +455,12 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
                 "Free cash flow",
                 "Operating margin",
                 "Price trend",
+                "AURYN View",
+                "AURYN Pace",
               ].map((label, i) => (
                 <tr key={label}>
                   <th>{label}</th>
-                  {values.map(({ r, p }) => (
+                  {values.map(({ r, p, edge }) => (
                     <td key={r.company.symbol}>
                       {
                         [
@@ -430,6 +473,11 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
                           amount(p.last?.fcf, p.last?.currency, true),
                           percent(p.last?.margin),
                           p.tech.trend,
+                          `${edge.assessment} · ${edge.reason}`,
+                          <div key="pace">
+                            <PaceReadings readings={edge.pacePeriods} compact />
+                            <small>{edge.pacePresentation.label}</small>
+                          </div>,
                         ][i]
                       }
                     </td>

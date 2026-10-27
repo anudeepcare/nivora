@@ -30,12 +30,12 @@
   font-size: 14px;
   letter-spacing: 0;
 }
-.workspace-experience .search-box {
+.workspace-experience button.search-box {
   min-height: 42px;
   font-size: 14px;
   border-radius: 12px;
 }
-.workspace-experience .search-box kbd {
+.workspace-experience button.search-box kbd {
   font-size: 12px;
 }
 .workspace-experience .top-links {
@@ -640,7 +640,7 @@
 :root[data-theme="dark"] .workspace-experience .phone-dock > a {
   color: var(--muted);
 }
-:root[data-theme="dark"] .approved-product.workspace-experience .search-box,
+:root[data-theme="dark"] .approved-product.workspace-experience button.search-box,
 :root[data-theme="dark"]
   .approved-product.workspace-experience
   .top-links
@@ -653,7 +653,7 @@
   border-color: var(--line);
   color: var(--ink);
 }
-:root[data-theme="dark"] .workspace-experience .search-box svg,
+:root[data-theme="dark"] .workspace-experience button.search-box svg,
 :root[data-theme="dark"] .workspace-experience .top-links .icon-button svg {
   color: inherit;
 }
@@ -748,7 +748,7 @@
   .workspace-experience .wordmark > span {
     display: none;
   }
-  .workspace-experience .search-box {
+  .workspace-experience button.search-box {
     flex: 0 0 44px;
     width: 44px;
     height: 44px;
@@ -761,8 +761,8 @@
     border-radius: 12px;
     background: var(--card);
   }
-  .workspace-experience .search-box span,
-  .workspace-experience .search-box kbd {
+  .workspace-experience button.search-box span,
+  .workspace-experience button.search-box kbd {
     display: none;
   }
   .workspace-experience .top-links {

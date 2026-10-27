@@ -1,4 +1,5 @@
 "use client";
+import { customerText } from "@/lib/customer-language";
 import { useMemo, useRef, useState } from "react";
 import { Maximize2, Search, X } from "lucide-react";
 import type { Research, FinancialPeriod } from "@/lib/types";
@@ -213,8 +214,10 @@ export default function Financials({
       </header>
       {!last ? (
         <Empty title="Financial history is unavailable">
-          {research.issues.find((i) => /compan|financial|filing/i.test(i)) ||
-            "No comparable reported periods were returned."}
+          {customerText(
+            research.issues.find((i) => /compan|financial|filing/i.test(i)) ||
+              "No comparable reported periods were returned.",
+          )}
         </Empty>
       ) : (
         <>

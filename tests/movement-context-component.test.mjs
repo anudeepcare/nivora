@@ -1,3 +1,4 @@
+import { customerText } from "../lib/customer-language.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -54,7 +55,7 @@ function renderMovement(demo, research = fixture()) {
     },
   ).outputText;
   const empty = () => null;
-  const bindings = {
+  const bindings = { customerText,
     React,
     ...format,
     movementContext,
@@ -86,6 +87,14 @@ test("an explicitly labelled demo uses its frozen retrieval clock for movement",
 });
 test("production movement still expires against the wall clock", () => {
   assert.match(renderMovement(false), /Older quote/);
+});
+test("a price without a valid change is labelled latest price, never today's move", () => {
+  const r = fixture();
+  r.quote.changePct = null;
+  r.quote.previousClose = null;
+  const html = renderMovement(true, r);
+  assert.match(html, /Latest price/);
+  assert.doesNotMatch(html, /Today’s move/);
 });
 test("the compact strip omits absent metrics and keeps precise source status in details", () => {
   const html = renderMovement(true),

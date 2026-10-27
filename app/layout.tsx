@@ -1,4 +1,4 @@
-import {AppearanceSync} from "@/components/AppearanceControls";
+import { AppearanceSync } from "@/components/AppearanceControls";
 import Pwa from "@/components/Pwa";
 import AppSession from "@/components/AppSession";
 import type { Metadata, Viewport } from "next";
@@ -27,7 +27,12 @@ export const viewport: Viewport = {
 const boot = `try{const x=JSON.parse(localStorage.getItem('auryn-appearance-v1')||'{}');document.documentElement.dataset.accent=['blue','teal','violet','rose'].includes(x.accent)?x.accent:'blue';document.documentElement.dataset.density=x.density==='compact'?'compact':'comfortable'}catch(e){};try{document.documentElement.dataset.pwa=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true?'true':'false'}catch(e){};try{const r=document.documentElement,s=localStorage.getItem('auryn-product-theme');r.dataset.theme=s==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):s==='dark'?'dark':'light';r.dataset.textSize=localStorage.getItem('auryn-product-text')==='large'?'large':'standard';r.dataset.motion=localStorage.getItem('auryn-product-motion')==='reduce'?'reduce':'system'}catch(e){}`;
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="light" suppressHydrationWarning>
+    <html
+      lang="en"
+      data-theme="light"
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: boot }} />
       </head>

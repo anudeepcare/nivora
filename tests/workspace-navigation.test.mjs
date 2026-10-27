@@ -7,6 +7,7 @@ import { NavigationMemory, restoreWhenReady } from "../lib/navigation.ts";
 import { settingsHref } from "../lib/settings-navigation.ts";
 
 function component(file, name, bindings) {
+  bindings = { useAccess: () => ({access:{capabilities:{paperTrading:false}}}), ...bindings };
   bindings={AccessBoundary:"AccessBoundary",AccessNotice:()=>null,...bindings};
   const ast = ts.createSourceFile(
     file,

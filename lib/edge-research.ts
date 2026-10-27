@@ -1,14 +1,14 @@
 import type { Research } from "./types";
-import { researchBrief } from "./research-brief.ts";
 import { aurynDecision } from "./auryn-decision.ts";
+import { pacePresentation, pacePeriods } from "./pace-presentation.ts";
 /** Compatibility view over the shared decision record; no second investment policy. */
 export function researchEdge(
   r: Research,
   ownsPosition = false,
   now = Date.parse(r.priceObservedAt ?? r.retrievedAt),
 ) {
-  const brief = researchBrief(r),
-    d = aurynDecision(r, { ownsPosition, now });
+  const d = aurynDecision(r, { ownsPosition, now }),
+    brief = d.brief;
   const business = d.business === "developing" ? "mixed" : d.business;
   const value =
     d.value === "attractive"
@@ -82,6 +82,8 @@ export function researchEdge(
       brief.counterCase[0] ??
       "Review how the position fits your total portfolio.",
     pace: brief.accumulation.multiplier,
+    pacePresentation: pacePresentation(d.action, brief.accumulation.multiplier),
+    pacePeriods: pacePeriods(brief.accumulation),
     pricePace: brief.accumulation.multiplier,
     formingPace: brief.accumulation.forming?.multiplier ?? null,
     referenceBasis: d.reference?.basis ?? "unavailable",

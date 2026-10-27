@@ -30,6 +30,39 @@ export type DecisionInput = {
   deterioration: boolean;
   insolvency: boolean;
 };
+/** Funding pressure requires operating liquidity evidence, not expansion capex alone. */
+export function fundingRisk(x: {
+  applicable: boolean;
+  operatingCashFlow: number | null | undefined;
+  freeCashFlow: number | null | undefined;
+  interestCoverage: number | null | undefined;
+  netDebt: number | null | undefined;
+  operatingRunway: number | null | undefined;
+  cash: number | null | undefined;
+}) {
+  const finite = (n: number | null | undefined): n is number =>
+    n != null && Number.isFinite(n);
+  const operatingBurn =
+    x.applicable && finite(x.operatingCashFlow) && x.operatingCashFlow < 0;
+  const shortRunway =
+    operatingBurn &&
+    finite(x.operatingRunway) &&
+    x.operatingRunway >= 0 &&
+    x.operatingRunway < 12;
+  const interestPressure =
+    x.applicable &&
+    finite(x.interestCoverage) &&
+    x.interestCoverage < 1 &&
+    finite(x.netDebt) &&
+    x.netDebt > 0 &&
+    finite(x.freeCashFlow) &&
+    x.freeCashFlow < 0;
+  // Interest coverage is an accrual-profit warning. It is not proof that debt payments cannot be funded.
+  const distress =
+    shortRunway ||
+    (operatingBurn && interestPressure && finite(x.cash) && x.cash <= 0);
+  return { operatingBurn, shortRunway, interestPressure, distress };
+}
 /** Published screening policy. Thresholds are transparent heuristics, not fitted probabilities. */
 export function evaluateDecision(x: DecisionInput): DecisionAction {
   if (!x.financialsUsable) return "Wait";
@@ -209,20 +242,16 @@ export function aurynDecision(
         ? "weak"
         : "developing";
   // Negative investment cash flow alone is not a solvency diagnosis.
-  const operatingBurn =
-    !specialist && p?.operatingCashFlow != null && p.operatingCashFlow < 0;
-  const shortRunway =
-    operatingBurn &&
-    funding.operatingRunway != null &&
-    funding.operatingRunway < 12;
-  const interestPressure =
-    !specialist &&
-    p?.interestCoverage != null &&
-    p.interestCoverage < 1 &&
-    p.netDebt != null &&
-    p.netDebt > 0 &&
-    p.fcf != null &&
-    p.fcf < 0;
+  const fundingAssessment = fundingRisk({
+    applicable: !specialist,
+    operatingCashFlow: p?.operatingCashFlow,
+    freeCashFlow: p?.fcf,
+    interestCoverage: p?.interestCoverage,
+    netDebt: p?.netDebt,
+    operatingRunway: funding.operatingRunway,
+    cash: p?.cash,
+  });
+  const { operatingBurn, shortRunway, interestPressure } = fundingAssessment;
   const insolvency =
     financialsUsable &&
     operatingBurn &&
@@ -232,7 +261,7 @@ export function aurynDecision(
     p.equity < 0 &&
     p.debt != null &&
     p.debt > 0;
-  const distress = financialsUsable && (shortRunway || interestPressure);
+  const distress = financialsUsable && fundingAssessment.distress;
   const deterioration =
     financialsUsable && weak && growth! < -10 && q?.fcf != null && q.fcf < 0;
   const reasons: string[] = [],
@@ -259,7 +288,9 @@ export function aurynDecision(
       );
     if (interestPressure)
       risks.push(
-        `Operating profit covers interest ${p.interestCoverage!.toFixed(1)}× while cash after capex is negative and net debt is positive.`,
+        p.interestCoverage! < 0
+          ? "Operations reported a loss, so operating profit did not cover interest. Review debt maturities and disclosed financing alongside cash and expansion spending."
+          : `Operating profit covers ${p.interestCoverage!.toFixed(1)}× interest expense. Review debt maturities and financing; this ratio alone does not establish a cash shortfall.`,
       );
     if (insolvency)
       risks.unshift(
@@ -400,7 +431,7 @@ export function aurynDecision(
       : valuation.upside < 0
         ? "expensive"
         : "fair";
-    reasons.push(
+    reasons.unshift(
       valuation.basis === "earnings"
         ? `Base sensitivity implies ${percent(valuation.annualReturn, true)} a year over ${valuation.years!.toFixed(1)} years.`
         : `Base cash-flow value is ${percent(Math.abs(valuation.upside))} ${valuation.upside >= 0 ? "above" : "below"} the dated price.`,
@@ -482,8 +513,15 @@ export function aurynDecision(
     changeConditions.push(
       "Reassess after momentum cools or earnings support the higher price.",
     );
-  if (!valuation && financialsUsable)
-    changeConditions.push(
+  if (
+    !valuation &&
+    financialsUsable &&
+    reference &&
+    !distress &&
+    !insolvency &&
+    !deterioration
+  )
+    changeConditions.unshift(
       specialist
         ? `Use ${brief.coverage.drivers.slice(0, 2).join(" and ")} to establish an applicable valuation.`
         : "Complete the dated earnings or funded cash-flow assumptions in Value.",
@@ -505,7 +543,7 @@ export function aurynDecision(
           ? "neutral"
           : "caution";
   return {
-    version: "auryn-decision-v1",
+    version: "auryn-decision-v2",
     action,
     tone,
     headline,
@@ -521,6 +559,8 @@ export function aurynDecision(
     value,
     reference,
     valuation,
+    fundingAssessment,
+    brief,
     horizon: valuation?.years
       ? `${valuation.years.toFixed(1)} years · to ${valuation.end}`
       : valuation?.basis === "cash-flow"

@@ -6,7 +6,6 @@ import { api } from "@/lib/client";
 import { readResource } from "@/lib/resource-cache";
 import type { Company } from "@/lib/types";
 import {
-  cryptoSearchSymbol,
   searchSelection,
   searchRequestKey,
   searchListScrollTop,
@@ -17,10 +16,12 @@ export default function Search({
   large = false,
   autoFocus = false,
   onNavigate,
+  onSelect,
 }: {
   large?: boolean;
   autoFocus?: boolean;
   onNavigate?: () => void;
+  onSelect?: (symbol: string) => void;
 }) {
   const listId = useId();
   const { demo, workspace, cache } = useProduct(),
@@ -77,23 +78,29 @@ export default function Search({
       return;
     }
     let active = true;
-    const base = cryptoSearchSymbol(query)?.split("/")[0] ?? null;
-    const cryptoMatch: Company | null = base
-      ? {
-          symbol: `${base}/USD`,
-          name: base === "BTC" ? "Bitcoin" : "Ethereum",
-          exchange: "Crypto · USD pair",
-          currency: "USD",
-          assetType: "crypto",
-        }
-      : null;
-    if (cryptoMatch && !demo) {
-      setResults([cryptoMatch]);
-      setLoading(false);
-      return;
-    }
     const requestKey = searchRequestKey(query);
     const cached = !demo ? cache.get(requestKey) : null;
+    const local = !demo
+      ? [...cache.entries()]
+          .flatMap(([key, entry]) => {
+            if (!key.startsWith("research/") && !key.startsWith("research:"))
+              return [];
+            const company = (entry.value as { company?: Company })?.company;
+            return company &&
+              (company.symbol + " " + company.name)
+                .toLowerCase()
+                .includes(query.trim().toLowerCase())
+              ? [company]
+              : [];
+          })
+          .filter(
+            (company, index, all) =>
+              all.findIndex((other) => other.symbol === company.symbol) ===
+              index,
+          )
+          .slice(0, 8)
+      : [];
+    if (local.length) setResults(local);
     setLoading(!cached || Date.now() - cached.at >= 300000);
     const load = async () => {
       try {
@@ -114,19 +121,12 @@ export default function Search({
               )
             ).results;
         if (active) {
-          setResults(
-            cryptoMatch
-              ? [
-                  cryptoMatch,
-                  ...rows.filter((r) => r.symbol !== cryptoMatch.symbol),
-                ]
-              : rows,
-          );
+          setResults(rows);
           setError("");
         }
       } catch (e) {
         if (active) {
-          setResults(cryptoMatch ? [cryptoMatch] : []);
+          setResults(local);
           setError(e instanceof Error ? e.message : "Search unavailable");
         }
       } finally {
@@ -145,6 +145,10 @@ export default function Search({
     setOpen(false);
     setQuery("");
     onNavigate?.();
+    if (onSelect) {
+      onSelect(symbol);
+      return;
+    }
     router.push(
       `${prefix}/research/${encodeURIComponent(symbol.replace("/", "-"))}`,
     );
@@ -170,6 +174,7 @@ export default function Search({
         <SearchIcon size={19} />
         <input
           ref={input}
+          autoFocus={autoFocus}
           type="search"
           aria-label="Search companies or tickers"
           role="combobox"

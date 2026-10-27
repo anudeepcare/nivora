@@ -1,3 +1,4 @@
+import { customerText } from "../lib/customer-language.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -65,7 +66,7 @@ test("financial selected-control styles outrank global button resets", () => {
     });
   }
 });
-function researchMarkup() {
+function researchMarkup(issues = []) {
   const source = fs.readFileSync("components/Research.tsx", "utf8");
   const ast = ts.createSourceFile(
     "Research.tsx",
@@ -104,7 +105,7 @@ function researchMarkup() {
       changePct: 1,
       stale: false,
     },
-    issues: [],
+    issues,
     history: [],
     facts: [],
     filings: [],
@@ -115,6 +116,7 @@ function researchMarkup() {
   };
   const empty = () => null;
   const bindings = {
+    customerText,
     useAccess: () => ({
       access: {
         features: Object.fromEntries(
@@ -197,9 +199,14 @@ function researchMarkup() {
     "dateLabel",
     "quoteTime",
     "Help",
+    "customerText",
     stampCode + ";return DataStamp;",
-  )(React, format.dateLabel, format.quoteTime, ({ children }) =>
-    React.createElement("dialog", {}, children),
+  )(
+    React,
+    format.dateLabel,
+    format.quoteTime,
+    ({ children }) => React.createElement("dialog", {}, children),
+    customerText,
   );
   for (const name of [
     "StockFacts",
@@ -238,6 +245,7 @@ function researchMarkup() {
     "EarningsWorkspace",
     "ResearchChanges",
     "ResearchCoverage",
+    "CompanyMetrics",
     "DcaResearch",
     "Bookmark",
     "RefreshCw",
@@ -245,6 +253,7 @@ function researchMarkup() {
     "ArrowUpRight",
   ])
     bindings[name] = empty;
+  bindings.Help = ({ children }) => React.createElement("div", null, children);
   bindings.DecisionOverview = () =>
     React.createElement("section", { "data-overview-evidence": "edge" });
   bindings.KeyFinancialMetrics = () =>
@@ -279,4 +288,13 @@ test("Simple overview delegates to Edge without repeating the full evidence pane
   assert.match(html, /data-overview-evidence="edge"/);
   for (const section of ["financials", "lenses", "thresholds"])
     assert.ok(!html.includes(`data-overview-evidence="${section}"`));
+});
+
+test("coverage details preserve the failure without exposing vendor names", () => {
+  const html = researchMarkup([
+    "EODHD did not authorize this dataset",
+    "Twelve Data financial data is temporarily unavailable",
+  ]);
+  assert.doesNotMatch(html, /EODHD|Twelve Data/i);
+  assert.match(html, /did not authorize this dataset/);
 });

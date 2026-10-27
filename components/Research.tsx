@@ -1,4 +1,7 @@
 "use client";
+import { customerText } from "@/lib/customer-language";
+import { pacePeriods } from "@/lib/pace-presentation";
+import PaceReadings from "./PaceReadings";
 import { startQuotePolling } from "@/lib/quote-refresh";
 import { FeatureGate, useAccess } from "./Access";
 import FreeSnapshot from "./FreeSnapshot";
@@ -59,6 +62,9 @@ import DcaResearch from "./DcaResearch";
 import DecisionOverview from "./ApprovedResearch";
 import { selectPriceReference } from "@/lib/price-reference";
 import { movementContext } from "@/lib/movement-context";
+import PaceHelp from "./PaceHelp";
+import CompanyMetrics from "./CompanyMetrics";
+import { paceCode } from "@/lib/pace-presentation";
 import EarningsWorkspace from "./EarningsWorkspace";
 import DecisionBrief from "./DecisionBrief";
 import AnalystRatings from "./AnalystRatings";
@@ -420,6 +426,7 @@ export default function Research({ symbol }: { symbol: string }) {
         </div>
       </header>
 
+      <CompanyMetrics research={r} />
       {notice && <Notice error>{notice}</Notice>}
       {resource.error && <Notice error>{resource.error}</Notice>}
       {r.issues.length > 0 && (
@@ -428,7 +435,7 @@ export default function Research({ symbol }: { symbol: string }) {
             Source coverage{" "}
             <Help label="Research data status" trigger="Details">
               {r.issues.map((issue) => (
-                <p key={issue}>{issue}</p>
+                <p key={issue}>{customerText(issue)}</p>
               ))}
             </Help>
           </span>
@@ -587,42 +594,14 @@ export default function Research({ symbol }: { symbol: string }) {
                       <div>
                         <span className="eyebrow">AURYN PACE</span>
                         <strong>Your price-based accumulation reading</strong>
-                        <Help
-                          label="AURYN Pace technical reading"
-                          trigger="Learn Pace"
-                        >
-                          <p>
-                            A completed month uses its settled month-end close.
-                            The current month can change. 2× means twice a
-                            regular contribution, not twice the return. The
-                            price policy does not assess company value or
-                            suitable position size.
-                          </p>
-                        </Help>
+                        <PaceHelp trigger="What does P mean?" />
                       </div>
-                      <div>
-                        <span>Completed month</span>
-                        <strong>
-                          {p.dca.confirmed
-                            ? `${p.dca.confirmed.multiplier}×`
-                            : "Use daily evidence"}
-                        </strong>
-                        <small>
-                          {p.dca.confirmed?.month ??
-                            "Consecutive month-end history required"}
-                        </small>
-                      </div>
-                      <div>
-                        <span>This month so far</span>
-                        <strong>
-                          {p.dca.forming
-                            ? `${p.dca.forming.multiplier}×`
-                            : "Follow the next close"}
-                        </strong>
-                        <small>
-                          {p.dca.forming?.month} · developing, not final
-                        </small>
-                      </div>
+                      <PaceReadings
+                        readings={pacePeriods({
+                          ...p.dca.confirmed,
+                          forming: p.dca.forming,
+                        })}
+                      />
                     </section>
                   )}
                   <div className="technical-canvas-layout">
@@ -715,7 +694,7 @@ export function DcaCard({
             </p>
           </div>
           <div className="pace-value num">
-            {signal ? `${signal.multiplier}×` : "—"}
+            {signal ? paceCode(signal.multiplier) : "—"}
           </div>
         </div>
         <p className="small muted pace-summary">
@@ -723,19 +702,19 @@ export function DcaCard({
             ? `Last completed month: ${signal.multiplier === 0 ? "pause new contributions under this price policy; this is not a sell signal" : `${signal.multiplier}× your usual contribution under this price policy`}.`
             : "A confirmed contribution zone needs more completed monthly history."}{" "}
           {p.dca.forming
-            ? `Current month: ${p.dca.forming.multiplier}×, provisional until month-end.`
+            ? `Current month: P${p.dca.forming.multiplier}, provisional until month-end.`
             : ""}{" "}
           This measures price conditions, not buying activity or business
           quality.
         </p>
-        <div className="pace-line" aria-label="Contribution multiplier scale">
+        <div className="pace-line" aria-label="AURYN Pace level scale">
           {[0, 1, 2, 3, 4].map((n) => (
             <div
               key={n}
               className={`pace-zone ${signal?.multiplier === n ? "selected" : ""}`}
               aria-current={signal?.multiplier === n ? "step" : undefined}
             >
-              {n}×
+              P{n}
             </div>
           ))}
         </div>
@@ -746,15 +725,18 @@ export function DcaCard({
                 month: "short",
                 timeZone: "UTC",
               })}
-              <b>{x.multiplier}×</b>
+              <b>{paceCode(x.multiplier)}</b>
             </div>
           ))}
           <div>
             Now · forming
-            <b>{p.dca.forming ? `${p.dca.forming.multiplier}×` : "—"}</b>
+            <b>{p.dca.forming ? paceCode(p.dca.forming.multiplier) : "—"}</b>
           </div>
         </div>
-        <Help label="Monthly accumulation" trigger="How to read the multiplier">
+        <Help
+          label="Monthly accumulation"
+          trigger="What P means and how Pace works"
+        >
           <p>
             A multiple of your usual contribution, not leverage or a return
             forecast. The confirmed zone uses completed monthly observations.
@@ -768,7 +750,7 @@ export function DcaCard({
         </Help>
         <span className="forming-label">
           {p.dca.forming
-            ? `${p.dca.forming.multiplier}× forming this month`
+            ? `P${p.dca.forming.multiplier} forming this month`
             : "Current month awaits settled closes"}
         </span>
       </section>
@@ -812,14 +794,14 @@ export function DcaCard({
           </small>
         </div>
       </div>
-      <div className="au-dca-scale" aria-label="Contribution multiplier scale">
+      <div className="au-dca-scale" aria-label="AURYN Pace level scale">
         {[0, 1, 2, 3, 4].map((n) => (
           <span
             key={n}
             aria-current={signal?.multiplier === n ? "step" : undefined}
             className={signal?.multiplier === n ? "active" : ""}
           >
-            {n}×
+            P{n}
           </span>
         ))}
       </div>
@@ -832,9 +814,9 @@ export function DcaCard({
             <span
               style={{ height: `${12 + x.multiplier * 7}px` }}
               data-zone={x.multiplier}
-              title={`${month(x.month)} · ${x.multiplier}×`}
+              title={`${month(x.month)} · ${paceCode(x.multiplier)}`}
             />
-            <b>{x.multiplier}×</b>
+            <b>{paceCode(x.multiplier)}</b>
             <small>
               {new Date(x.month + "-01T12:00:00Z").toLocaleDateString("en-US", {
                 month: "short",
@@ -849,7 +831,7 @@ export function DcaCard({
         <span>Current month</span>
         <b>
           {p.dca.forming
-            ? `${p.dca.forming.multiplier}× forming`
+            ? `P${p.dca.forming.multiplier} forming`
             : "Awaiting closes"}
         </b>
       </div>

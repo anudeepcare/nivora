@@ -1,4 +1,5 @@
 "use client";
+import { customerText } from "@/lib/customer-language";
 
 import { useEffect, useId, useMemo, useState } from "react";
 import type { Candle, Position, Research } from "@/lib/types";
@@ -184,7 +185,7 @@ export default function ApprovedPortfolioChart({
       )}
       <p className="chart-note">
         {chart.included.length
-          ? `${chart.included.length} of ${symbols.length} USD instruments · ${chart.sources.join("; ")}. `
+          ? `${chart.included.length} of ${symbols.length} USD instruments · ${[...new Set(chart.sources.map(customerText))].join("; ")}. `
           : ""}
         Current quantities at past prices, not your account’s historical value
         or return. Cash, managed balances, margin, dividends and trades are

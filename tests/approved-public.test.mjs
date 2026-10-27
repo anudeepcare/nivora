@@ -12,6 +12,7 @@ import {
 } from "../lib/theme-preference.ts";
 
 function load(file, name, bindings) {
+  bindings = { PaceHelp: () => null, ...bindings };
   const source = ts.createSourceFile(
     file,
     fs.readFileSync(file, "utf8"),
@@ -166,8 +167,8 @@ test("public and account previews explain Pace without fictional company results
     assert.match(html, /Illustrative product guide/);
     assert.match(html, /AURYN Pace/);
     assert.match(html, /not predicted returns/);
-    assert.match(html, /Confirmed month/);
-    assert.match(html, /Forming month/);
+    assert.match(html, /Completed month · confirmed/);
+    assert.match(html, /Current month · forming/);
     assert.doesNotMatch(
       html,
       /Northstar|sample values|Revenue growth|FCF margin|Supportive <strong>7|\$\d|\+\d+(?:\.\d+)?%/,

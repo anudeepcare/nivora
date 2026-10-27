@@ -1,6 +1,5 @@
 export const legalConfiguration = {
-  operator:
-    process.env.NEXT_PUBLIC_AURYN_OPERATOR || "AURYN",
+  operator: process.env.NEXT_PUBLIC_AURYN_OPERATOR || "AURYN",
   contact: process.env.NEXT_PUBLIC_AURYN_SUPPORT_EMAIL || "",
   updated: "October 25, 2026",
   version: "edge-preview-20261025",
@@ -203,7 +202,7 @@ export const documents: Record<
       },
       {
         title: "Cycle-relative monthly policy",
-        text: "Monthly-v4 uses the mean of the previous 12 completed monthly closes and their sample standard deviation, with a spread floor of 10% of the mean. Eligibility retains 24 consecutive prior months. The 2×/3×/4× pullback gates require 10%/25%/40% below that mean and 0.5/1.35/1.5 spread units. Upper extension reviews retain the v3 robust-trend pause guard; a price at least three times the cycle mean and two spreads above it also triggers a review. A severe cycle review requires three spreads and a 50% period rise. Monthly parameters were calibrated against a small observed reference sample, not learned from a disclosed private formula. Weekly v1 is separate. US daily bars settle after 5 PM New York; crypto uses completed UTC days. Prior versions remain in source for reproducibility. Matching selected signals is not evidence of better returns.",
+        text: "Monthly-v5 uses the previous 12 completed monthly closes for the cycle average and sample spread, with a 10% spread floor. Twelve to 23 prior months are marked limited history; 24 prior months enable the robust-trend guard. P2/P3/P4 require 10%/25%/35% below the cycle average and 0.5/0.95/1.3 spread units. Positive-extension review retains the robust-trend upper guard and severe cycle checks. Weekly v1 is a separate policy using 52 completed weeks. US daily bars settle after 5 PM New York; crypto uses completed UTC days. Completed readings remain fixed for unchanged input history. Price policies have not established consistent outperformance; simulation results include costs and should be read alongside drawdowns and idle cash.",
       },
       {
         title: "Historical policy comparisons",
@@ -246,7 +245,7 @@ export const documents: Record<
       },
       {
         title: "AURYN Pace explained with an example",
-        text: "If your regular contribution is $100, 2× represents $200 and 4× represents $400, provided that cash is available. These are not returns, leverage or suitable position sizes. Completed month: the settled month-end price reading. This month so far: a developing reading that may change. A 0× price reading pauses additions under the policy; a missing reading is not 0×. Business warnings are shown separately.",
+        text: "P means Pace, AURYN’s contribution scale. P0 Paused, P1 Steady, P2 Increased, P3 Elevated, P4 Accelerated. If a usual scheduled contribution is $100, a P2 price reading corresponds to $200 and P4 to $400, subject to the AURYN View and available funds. These levels are not returns, leverage or suitable position sizes. Completed month readings are confirmed; the current month is forming and can change. A missing reading is not P0, and a business-risk pause does not overwrite the raw price reading.",
       },
       {
         title: "Why is something unavailable?",
@@ -268,7 +267,16 @@ export const documents: Record<
   },
 };
 
-// Edge uses the same evidence policy across its presentation surfaces.
-documents.methodology.sections.unshift({title:"AURYN Edge and Pace",text:"Edge is an experimental evidence policy, not a probability of profit. A Build reading requires positive cash generation, positive operating margin, non-negative comparable revenue growth, constructive trend, confirmed Pace of at least 2×, no severe flagged risk, a usable quote, and an eligible earnings sensitivity with at least 15% base upside and no more than 40% bear downside. Cases with base upside over 100% or all cases above the quote do not establish a cushion. These are disclosed policy gates, not independently calibrated optimal thresholds. Hold & monitor is ownership context, not a guarantee of suitability. Pace shows completed monthly price conditions separately from the current developing month. Business and data warnings never overwrite its multiplier; missing price history produces no monthly reading. Models and analyst consensus remain separate."});
-documents.privacy.sections.push({title:"Support requests",text:"The contact form stores your email, chosen topic and message so we can respond. Requests receive a reference number. A hashed network identifier is used to limit abuse; passwords, portfolio contents and payment card details are not automatically attached. If support email delivery is enabled, our email service processes the contact email and message. Use Contact for access or deletion requests. Never send secrets or payment card details."});
-documents.help.sections.unshift({title:"Contact AURYN",text:"Open Contact from the footer for general enquiries, technical issues, billing, feedback or privacy concerns. After a successful save you receive a reference. A receipt is shown as sent only if the email provider accepted it; otherwise the saved request remains available to the owner."});
+// Public methodology follows the production decision and Pace policies.
+documents.methodology.sections.unshift({
+  title: "AURYN View and AURYN Pace",
+  text: "The AURYN View combines business evidence, valuation, funding and price freshness. Buy/Add requires a supported business and an attractive applicable valuation, with RSI below 75 when available. Earnings sensitivity uses at least 12% annualized base return and no worse than 35% bear downside; cash-flow valuation uses a 20% entry discount and the same downside guard. These are disclosed heuristics, not optimized probabilities. Add/Hold/Reduce/Sell refer to an existing holding; Buy/Wait/Avoid describe entry context. Operating cash burn with less than 12 months of reported cash runway is a funding warning; negative cash after expansion capex or negative interest coverage alone does not establish distress. P means Pace: P0 Paused, P1 Steady, P2 Increased, P3 Elevated, P4 Accelerated. Raw price readings remain visible, but Wait/Hold/Reduce/Sell/Avoid do not independently authorise an increase. A business-risk pause is distinct from a P0 price reading. Completed month readings are confirmed; the current month is forming and can change. No level predicts a return.",
+});
+documents.privacy.sections.push({
+  title: "Support requests",
+  text: "The contact form stores your email, chosen topic and message so we can respond. Requests receive a reference number. A hashed network identifier is used to limit abuse; passwords, portfolio contents and payment card details are not automatically attached. If support email delivery is enabled, our email service processes the contact email and message. Use Contact for access or deletion requests. Never send secrets or payment card details.",
+});
+documents.help.sections.unshift({
+  title: "Contact AURYN",
+  text: "Open Contact from the footer for general enquiries, technical issues, billing, feedback or privacy concerns. After a successful save you receive a reference. A receipt is shown as sent only if the email provider accepted it; otherwise the saved request remains available to the owner.",
+});

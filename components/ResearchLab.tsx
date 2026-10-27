@@ -1,4 +1,7 @@
 "use client";
+import { providerSymbol } from "@/lib/provider-symbol";
+import { verifiedResearch } from "@/lib/comparison";
+import PaceHelp from "./PaceHelp";
 import { useMemo, useState } from "react";
 import { Download, FlaskConical } from "lucide-react";
 import { useProduct } from "./Session";
@@ -34,14 +37,16 @@ export default function ResearchLab() {
     setBusy(true);
     setMessage("");
     try {
-      const s = symbolInput(symbol);
+      const s = providerSymbol(symbol);
       const r = demo
         ? demo.research[s]
         : await api<Research>(
             `research/${encodeURIComponent(s.replace("/", "-"))}`,
           );
-      if (!r)
-        throw Error("No history available for that company in this preview.");
+      if (!verifiedResearch(r, s))
+        throw Error(
+          "The selected company could not be verified. Check the ticker and retry.",
+        );
       setData(r);
     } catch (e) {
       setMessage(e instanceof Error ? e.message : "History unavailable.");
@@ -66,6 +71,7 @@ export default function ResearchLab() {
   }
   return (
     <section>
+      <PaceHelp trigger="Understand AURYN Pace" />
       <PageHeading
         title="Strategy lab"
         subtitle="Compare monthly policies using the same budget and completed history."

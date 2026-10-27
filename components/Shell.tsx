@@ -1,5 +1,5 @@
 "use client";
-import { AccessNotice } from "./Access";
+import { AccessNotice, useAccess } from "./Access";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef } from "react";
@@ -44,6 +44,7 @@ export default function Shell({
   children: React.ReactNode;
 }) {
   const { demo, workspace, theme, setTheme } = useProduct();
+  const { access } = useAccess();
   const pathname = usePathname();
   const router = useRouter();
   const memory = useRef(new NavigationMemory());
@@ -285,13 +286,13 @@ export default function Shell({
             },
             {
               path: "research-lab",
-              label: "Research Lab",
-              detail: "Investigate the evidence",
+              label: "Strategy lab",
+              detail: "Test a contribution strategy",
               icon: FlaskConical,
             },
             {
               path: "trading",
-              label: "Paper Lab",
+              label: "Paper trading",
               detail: "Practice with a paper portfolio",
               icon: ChartNoAxesCombined,
             },
@@ -308,7 +309,13 @@ export default function Shell({
               icon: Settings,
             },
           ]
-            .filter((tool) => tool.path !== page)
+            .filter(
+              (tool) =>
+                tool.path !== page &&
+                (tool.path !== "trading" ||
+                  !!demo ||
+                  access.capabilities?.paperTrading),
+            )
             .map(({ path, label, detail, icon: Icon }) => (
               <Link
                 key={path}

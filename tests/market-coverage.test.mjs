@@ -8,6 +8,24 @@ import {
 import { providerSymbol, providerIdentity } from "../lib/provider-symbol.ts";
 import { eodTicker } from "../lib/eodhd-normalize.ts";
 const originalFetch = globalThis.fetch;
+test("a complete cached directory cannot turn a failed targeted search into a false empty result", async () => {
+  const p = fixtureProviders((u) => {
+    if (u.pathname.includes('/exchange-symbol-list/')) return Response.json([{Code:'KNOWN',Name:'Known Company',Exchange:'US',Currency:'USD',Type:'Common Stock'}]);
+    if (u.pathname.includes('/search/')) throw Error('Search transport unavailable');
+    return marketResponse(u);
+  }, {twelve:false});
+  assert.equal((await p.marketDirectory()).complete, true);
+  await assert.rejects(p.search('MISSING'), /Search transport unavailable/);
+});
+test("cold exact search returns provider matches without downloading entire market directories", async () => {
+  const p = fixtureProviders((u) => {
+    if (u.pathname.includes('/search/')) return Response.json([{ Code: 'FAST', Name: 'Fast Company', Exchange: 'US', Currency: 'USD', Type: 'Common Stock' }]);
+    return marketResponse(u);
+  });
+  const rows = await p.search('FAST');
+  assert.equal(rows[0]?.symbol, 'FAST');
+  assert.equal(p.calls.some(u => /exchange-symbol-list|\/stocks$|\/cryptocurrencies$/.test(u.pathname)), false);
+});
 test.after(() => {
   globalThis.fetch = originalFetch;
 });

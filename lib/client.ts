@@ -1,4 +1,5 @@
 "use client";
+import { customerText } from "./customer-language";
 import { createBrowserClient } from "@supabase/ssr";
 import { completeSignOut } from "./auth-actions";
 import { clearAccountCache } from "./account-cache";
@@ -41,7 +42,7 @@ export async function api<T>(
   });
   const value = await response.json();
   if (!response.ok)
-    throw Error(value.error || "This request could not be completed.");
+    throw Error(customerText(value.error || "This request could not be completed."));
   return value;
 }
 

@@ -1,4 +1,5 @@
 "use client";
+import { customerText } from "@/lib/customer-language";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowUpRight, ChevronDown } from "lucide-react";
 import type { Research } from "@/lib/types";
@@ -80,13 +81,15 @@ export default function MovementContext({
         ? "After market close"
         : "Time not confirmed");
   const priceLabel =
-    m.priceBasis === "settled-close"
-      ? "Latest close"
-      : m.today
-        ? "Today’s move"
-        : m.priceBasis === "older-quote"
-          ? "Older quote"
-          : "Price move";
+    m.change == null && m.priceBasis !== "older-quote"
+      ? "Latest price"
+      : m.priceBasis === "settled-close"
+        ? "Latest close"
+        : m.today
+          ? "Today’s move"
+          : m.priceBasis === "older-quote"
+            ? "Older quote"
+            : "Price move";
   return (
     <section
       className="card movement-context"
@@ -150,7 +153,10 @@ export default function MovementContext({
         </summary>
         <div className="movement-details">
           <p>
-            {m.priceSource} · {m.session} ·{" "}
+            {m.priceBasis === "settled-close"
+              ? "Latest completed close"
+              : "Price as of"}{" "}
+            · {customerText(m.session)} ·{" "}
             {m.priceBasis === "settled-close"
               ? dateLabel(m.asOf)
               : quoteTime(m.asOf)}
@@ -171,7 +177,7 @@ export default function MovementContext({
           </p>
           <p>
             {m.earnings
-              ? `Next earnings: ${dateLabel(m.earnings.date)} · ${earningsTime}. ${r.evidence?.source ?? "Company earnings calendar"}.`
+              ? `Next earnings: ${dateLabel(m.earnings.date)} · ${earningsTime}. Company earnings calendar.`
               : `${m.earningsStatus}.`}
           </p>
           {m.headlines.map((n) => (

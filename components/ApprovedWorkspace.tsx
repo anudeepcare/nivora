@@ -1,4 +1,6 @@
 "use client";
+import { sameProviderSymbol } from "@/lib/provider-symbol";
+import { customerText } from "@/lib/customer-language";
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
@@ -28,7 +30,10 @@ import {
 import { api } from "@/lib/client";
 import { readResource, resourceSnapshot } from "@/lib/resource-cache";
 import { homeBrief } from "@/lib/home-brief";
-import { researchAccumulation } from "@/lib/accumulation-policy-v5";
+import PaceHelp from "./PaceHelp";
+import PaceReadings from "./PaceReadings";
+import { paceCode } from "@/lib/pace-presentation";
+import { researchEdge } from "@/lib/edge-research";
 import { amount, percent, quoteTime, dateLabel } from "@/lib/format";
 import { ledgerRows } from "@/lib/portfolio-ledger";
 import { researchLink, workspaceOverview } from "@/lib/approved-workspace";
@@ -166,11 +171,22 @@ function useWorkspaceData(scope: "all" | "portfolio" | "watchlist" = "all") {
   const pace = (symbol: string) => {
     const r = research(symbol);
     if (!r) return null;
-    return researchAccumulation(
-      r.history,
-      product.demo ? r.retrievedAt : new Date().toISOString(),
-      r.company.assetType === "crypto" ? "crypto" : "us-equity",
-    ).confirmed;
+    const edge = researchEdge(
+      r,
+      !!product.workspace?.positions.some(
+        (p) => sameProviderSymbol(p.symbol, r.company.symbol) && p.quantity > 0,
+      ),
+      product.demo ? Date.parse(r.retrievedAt) : Date.now(),
+    );
+    const confirmed = edge.brief.accumulation;
+    if (confirmed.multiplier == null) return null;
+    return {
+      ...confirmed,
+      multiplier: confirmed.multiplier,
+      view: edge.pacePresentation,
+      action: edge.assessment,
+      periods: edge.pacePeriods,
+    };
   };
   return { ...product, quotes, balances, prefix, model, q, pace };
 }
@@ -495,7 +511,7 @@ function HomeOverview() {
       <div className="home-evidence-layout">
         <section
           className="home-evidence-panel home-news-panel"
-          aria-labelledby="home-news-title"
+          aria-label="What changed"
         >
           <SectionHead
             title="What changed"
@@ -506,9 +522,6 @@ function HomeOverview() {
               </span>
             }
           />
-          <h2 id="home-news-title" className="sr-only">
-            What changed
-          </h2>
           {headlines.length ? (
             <div className="home-news-list">
               {headlines.slice(0, 5).map((news) => (
@@ -743,22 +756,27 @@ function HomeOverview() {
             }
           >
             <span className="home-review-mark">
-              {best ? `${best.signal!.multiplier}×` : <Bookmark size={20} />}
+              {best ? (
+                paceCode(best.signal!.multiplier)
+              ) : (
+                <Bookmark size={20} />
+              )}
             </span>
             <span>
               <strong>
                 {best
-                  ? `${best.symbol} · confirmed AURYN Pace`
+                  ? `${best.symbol} · AURYN Pace`
                   : "Read the business. Check your Pace."}
               </strong>
               <small>
                 {best
-                  ? `${best.signal!.month} · A scheduled-contribution reference. Check business and funding risks before acting.`
+                  ? `${best.signal!.action} · ${best.signal!.view.label}. Current ${best.signal!.periods[0].code} forming · completed ${best.signal!.periods[1].code} (${best.signal!.month}).`
                   : "Open research for the business evidence and available monthly price context."}
               </small>
             </span>
             <ArrowUpRight size={17} />
           </Link>
+          <PaceHelp trigger="Understand AURYN Pace" />
         </section>
       </div>
     </section>
@@ -1284,7 +1302,8 @@ function HoldingsTable({
           {rows.map((row) => {
             const p = row.position,
               cash = p.assetType === "cash",
-              quote = quotes.data[p.symbol]?.quote;
+              quote = quotes.data[p.symbol]?.quote,
+              decision = cash ? null : state.pace(p.symbol);
             return (
               <tr key={p.id}>
                 <td>
@@ -1319,6 +1338,17 @@ function HoldingsTable({
                             : "Unknown currency"}{" "}
                           cost
                         </small>
+                        {decision && (
+                          <small
+                            className={
+                              decision.view.status === "paused"
+                                ? "red"
+                                : "muted"
+                            }
+                          >
+                            AURYN View · {decision.action}
+                          </small>
+                        )}
                       </span>
                     </Link>
                   )}
@@ -1332,7 +1362,7 @@ function HoldingsTable({
                     <small
                       title={
                         quote
-                          ? `${quote.source} · ${quoteTime(quote.asOf)}`
+                          ? `Price as of ${quoteTime(quote.asOf)}`
                           : undefined
                       }
                     >
@@ -1354,7 +1384,7 @@ function HoldingsTable({
                     }
                   >
                     {row.returnPct != null
-                      ? percent(row.returnPct, true)
+                      ? `${amount(row.pnl)} · ${percent(row.returnPct, true)}`
                       : !cash
                         ? "Return unavailable"
                         : "Cash balance"}
@@ -1506,7 +1536,9 @@ export function Watchlist() {
                   <th>Company</th>
                   <th>Price</th>
                   <th>Trend</th>
-                  <th>Pace</th>
+                  <th>
+                    AURYN Pace <PaceHelp />
+                  </th>
                   <th>
                     <span className="sr-only">Remove company</span>
                   </th>
@@ -1547,7 +1579,7 @@ export function Watchlist() {
                         >
                           {percent(row?.quote?.changePct, true)}
                         </small>
-                        <small title={row?.quote?.source}>
+                        <small title={customerText(row?.quote?.source)}>
                           {row?.quote?.asOf
                             ? `${row.quote.stale ? "Older · " : ""}${quoteTime(row.quote.asOf, true)}`
                             : quotes.loading
@@ -1561,20 +1593,25 @@ export function Watchlist() {
                       <td>
                         <Link
                           href={researchLink(symbol, prefix)}
-                          className={
-                            signal
-                              ? `pace-badge${signal.multiplier === 4 ? " approved-pace-four" : ""}`
-                              : "text-link"
-                          }
+                          className={"text-link"}
                           title={
                             signal
                               ? `${signal.month}: ${signal.reason}`
                               : "Open research to load and check the monthly policy"
                           }
                         >
-                          {signal ? `${signal.multiplier}×` : "Open case"}
+                          {signal ? "Open price history" : "Open case"}
                         </Link>
-                        {signal && <small>{signal.month} · confirmed</small>}
+                        {signal && (
+                          <PaceReadings readings={signal.periods} compact />
+                        )}
+                        {signal && (
+                          <small>
+                            {signal.action} · {signal.view.label}
+                            <br />
+                            {signal.month} · price reading
+                          </small>
+                        )}
                       </td>
                       <td>
                         <button
@@ -1626,7 +1663,7 @@ export function Watchlist() {
             title="Price is one part of the story."
             subtitle={
               signal
-                ? `${signal.symbol} has a confirmed ${signal.pace!.multiplier}× monthly reading. Open the explanation alongside business and funding risks.`
+                ? `${signal.symbol} has a confirmed P${signal.pace!.multiplier} monthly reading. Open the explanation alongside business and funding risks.`
                 : "A strong Pace reading deserves a clear explanation, alongside business and funding risks."
             }
           />
@@ -1639,10 +1676,11 @@ export function Watchlist() {
             }
           >
             {signal
-              ? `Explore ${signal.symbol}’s ${signal.pace!.multiplier}× reading`
+              ? `Explore ${signal.symbol}’s P${signal.pace!.multiplier} reading`
               : "Explore a company’s full case"}{" "}
             ↗
           </Link>
+          <PaceHelp trigger="What does P mean?" />
           <p className="chart-note">
             Pace scales a scheduled contribution; it is not leverage or a return
             forecast.

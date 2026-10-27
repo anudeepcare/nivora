@@ -15,6 +15,7 @@ const empty = () => null;
 const Link = ({ children, ...props }) =>
   React.createElement("a", props, children);
 function load(name, bindings) {
+  bindings = { PaceHelp: () => null, ...bindings };
   const file = "components/ApprovedWorkspace.tsx";
   const ast = ts.createSourceFile(
     file,

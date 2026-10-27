@@ -1,4 +1,6 @@
 "use client";
+import PriceRiskCases from "./PriceRiskCases";
+import PaceReadings from "./PaceReadings";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
 import {
@@ -22,6 +24,8 @@ import { useProduct } from "./Session";
 import { Help } from "./Ui";
 import MovementContext from "./MovementContext";
 import ResearchChanges from "./ResearchChanges";
+import PaceHelp from "./PaceHelp";
+import { paceCode } from "@/lib/pace-presentation";
 
 type Props = {
   research: Research;
@@ -94,14 +98,7 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
     ["Price & trend", evidence.technical],
     ["Ownership", evidence.ownership],
   ] as const;
-  const paceLabel =
-    edge.pace === 0
-      ? "Pause contributions"
-      : edge.pace === 1
-        ? "Regular accumulation"
-        : edge.pace != null
-          ? "Increase accumulation"
-          : "Building history";
+  const pace = edge.pacePresentation;
   return (
     <div className="approved-research decision-experience">
       <section
@@ -148,52 +145,120 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
             </button>
           </div>
         </div>
-        <button
-          className={`pace-feature ${edge.pace === 4 ? "pace-deep" : ""}`}
-          onClick={() => onTab("Technicals")}
-          aria-label={`AURYN Pace ${edge.pace != null ? `${edge.pace} times` : "building history"}. Open calculation and history.`}
+        <section
+          className={`pace-feature pace-state-${pace.status}`}
+          aria-label="AURYN Pace"
         >
-          <span className="pace-brand">
-            <Activity size={17} /> AURYN PACE <ArrowUpRight size={16} />
-          </span>
-          <span className="pace-number">
-            {edge.pace != null ? (
-              <>
-                {edge.pace}
-                <small>×</small>
-              </>
-            ) : (
-              <span className="pace-building">
-                Building
-                <br />
-                history
-              </span>
-            )}
-          </span>
-          <span className="pace-description">{paceLabel}</span>
-          <span className="pace-ladder" aria-hidden="true">
-            {[0, 1, 2, 3, 4].map((n) => (
-              <i key={n} className={edge.pace === n ? "active" : ""}>
-                {n}×
-              </i>
-            ))}
-          </span>
-          <span className="pace-date">
-            {b.accumulation.month
-              ? `Confirmed · ${b.accumulation.month}`
-              : "12 completed months to begin"}
-          </span>
-          {edge.formingPace != null && (
-            <span className="pace-forming">
-              This month · {edge.formingPace}× forming
-            </span>
-          )}
-          <span className="pace-footnote">
-            Contribution pace · not a return forecast
-          </span>
-        </button>
+          <div className="pace-brand">
+            <Activity size={17} /> AURYN PACE <PaceHelp />
+          </div>
+          <span className="pace-description">{pace.label}</span>
+          <PaceReadings readings={edge.pacePeriods} />
+          <p className="pace-context">{pace.detail}</p>
+          <button
+            className="text-link pace-open"
+            onClick={() => onTab("Technicals")}
+          >
+            Calculation & history <ArrowUpRight size={15} />
+          </button>
+        </section>
       </section>
       <MovementContext research={r} onNews={() => onTab("News")} />
+      <div className="research-market-grid">
+        <section className="decision-chart card">
+          <div className="section-head">
+            <div>
+              <span className="eyebrow">THE MARKET PICTURE</span>
+              <h2>Price, with context.</h2>
+            </div>
+            <button className="text-link" onClick={() => onTab("Technicals")}>
+              Open Price & Pace <ArrowUpRight size={16} />
+            </button>
+          </div>
+          {chart ?? (
+            <button className="btn" onClick={() => onTab("Technicals")}>
+              Explore price history <ArrowRight size={16} />
+            </button>
+          )}
+        </section>
+        {v && (
+          <section className="card decision-value">
+            <div className="section-head">
+              <div>
+                <span className="eyebrow">PRICE IN PERSPECTIVE</span>
+                <h2>
+                  {v.basis === "cash-flow"
+                    ? "What the cash-flow assumptions imply."
+                    : "A range of earnings outcomes."}
+                </h2>
+                <p>
+                  {v.basis === "cash-flow"
+                    ? "Present-value sensitivities, not future price targets."
+                    : `${v.years!.toFixed(1)}-year sensitivity · to ${dateLabel(v.end)}`}
+                </p>
+              </div>
+              <button className="text-link" onClick={() => onTab("Valuation")}>
+                Explore assumptions <ArrowUpRight size={16} />
+              </button>
+            </div>
+            <div className="decision-value-grid">
+              {(["Bear", "Base", "Bull"] as const).map((label, i) => {
+                const target = [v.bear, v.base, v.bull][i],
+                  change = d.reference
+                    ? (target / d.reference.price - 1) * 100
+                    : null;
+                return (
+                  <div
+                    key={label}
+                    className={`decision-value-case case-${label.toLowerCase()}`}
+                  >
+                    <span>
+                      {label} {v.basis === "cash-flow" ? "value" : "case"}
+                    </span>
+                    <strong>{amount(target, r.quote.currency)}</strong>
+                    <small>
+                      {percent(change, true)} vs{" "}
+                      {amount(d.reference?.price, r.quote.currency)}
+                    </small>
+                  </div>
+                );
+              })}
+            </div>
+            <details className="decision-method">
+              <summary>
+                How this is calculated <ChevronDown size={15} />
+              </summary>
+              <p>{v.assumptions}</p>
+              <p>
+                Reference: {amount(d.reference?.price, r.quote.currency)} ·{" "}
+                {dateLabel(d.reference?.asOf)} ·{" "}
+                {d.reference?.basis === "settled-close"
+                  ? "completed daily close"
+                  : "dated quote"}
+                . Scenario outcomes are not probabilities.
+              </p>
+            </details>
+          </section>
+        )}
+        {!v && b.priceRisk.available && (
+          <section className="card decision-price-risk">
+            <div className="section-head">
+              <div>
+                <span className="eyebrow">PRICE SCENARIOS</span>
+                <h2>A range of price outcomes.</h2>
+                <p>
+                  Based on historical volatility. Separate from AURYN valuation
+                  and analyst targets.
+                </p>
+              </div>
+            </div>
+            <PriceRiskCases scenarios={b.priceRisk} compact />
+            <button className="text-link" onClick={() => onTab("Valuation")}>
+              Build a valuation case <ArrowUpRight size={15} />
+            </button>
+          </section>
+        )}
+      </div>
       <nav
         className="research-shortcuts"
         aria-label="Company research sections"
@@ -282,81 +347,6 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
           )}
         </section>
       </div>
-      {v && (
-        <section className="card decision-value">
-          <div className="section-head">
-            <div>
-              <span className="eyebrow">PRICE IN PERSPECTIVE</span>
-              <h2>
-                {v.basis === "cash-flow"
-                  ? "What the cash-flow assumptions imply."
-                  : "A range of earnings outcomes."}
-              </h2>
-              <p>
-                {v.basis === "cash-flow"
-                  ? "Present-value sensitivities, not future price targets."
-                  : `${v.years!.toFixed(1)}-year sensitivity · to ${dateLabel(v.end)}`}
-              </p>
-            </div>
-            <button className="text-link" onClick={() => onTab("Valuation")}>
-              Explore assumptions <ArrowUpRight size={16} />
-            </button>
-          </div>
-          <div className="decision-value-grid">
-            {(["Bear", "Base", "Bull"] as const).map((label, i) => {
-              const target = [v.bear, v.base, v.bull][i],
-                change = d.reference
-                  ? (target / d.reference.price - 1) * 100
-                  : null;
-              return (
-                <div
-                  key={label}
-                  className={`decision-value-case case-${label.toLowerCase()}`}
-                >
-                  <span>
-                    {label} {v.basis === "cash-flow" ? "value" : "case"}
-                  </span>
-                  <strong>{amount(target, r.quote.currency)}</strong>
-                  <small>
-                    {percent(change, true)} vs{" "}
-                    {amount(d.reference?.price, r.quote.currency)}
-                  </small>
-                </div>
-              );
-            })}
-          </div>
-          <details className="decision-method">
-            <summary>
-              How this is calculated <ChevronDown size={15} />
-            </summary>
-            <p>{v.assumptions}</p>
-            <p>
-              Reference: {amount(d.reference?.price, r.quote.currency)} ·{" "}
-              {dateLabel(d.reference?.asOf)} ·{" "}
-              {d.reference?.basis === "settled-close"
-                ? "completed daily close"
-                : "dated quote"}
-              . Scenario outcomes are not probabilities.
-            </p>
-          </details>
-        </section>
-      )}
-      <section className="decision-chart card">
-        <div className="section-head">
-          <div>
-            <span className="eyebrow">THE MARKET PICTURE</span>
-            <h2>Price, with context.</h2>
-          </div>
-          <button className="text-link" onClick={() => onTab("Technicals")}>
-            Open Price & Pace <ArrowUpRight size={16} />
-          </button>
-        </div>
-        {chart ?? (
-          <button className="btn" onClick={() => onTab("Technicals")}>
-            Explore price history <ArrowRight size={16} />
-          </button>
-        )}
-      </section>
       <section className="card decision-metrics">
         <div className="section-head">
           <div>

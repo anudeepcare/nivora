@@ -11,7 +11,7 @@ globalThis.fetch=async(input,init)=>{
  if(u.pathname.endsWith('/auryn_market_acquire'))return Response.json(mode==='cached'?{status:'cached',value:[]}:{status:mode,lease:'00000000-0000-4000-8000-000000000011'});
  if(u.pathname.endsWith('/auryn_market_publish')){publishes++;return Response.json(true);}
  if(u.hostname==='eodhd.com'&&u.pathname==='/api/user')return Response.json({dailyRateLimit:'10000',apiRequests:'2880',apiRequestsDate:new Date().toISOString().slice(0,10)});
- if(u.hostname==='eodhd.com'&&u.pathname.startsWith('/api/search/')){requests++;return Response.json([]);}
+ if(u.hostname==='eodhd.com'&&u.pathname.startsWith('/api/search/')){requests++;return Response.json([{Code:'GUARDRESERVE',Name:'Guard reserve fixture',Exchange:'US',Currency:'USD',Type:'Common Stock'}]);}
  throw Error('Unexpected fixture request: '+u.pathname);
 };
 const search=load('search'),get=q=>search.GET(new Request(`http://localhost/api/search?q=${q}`,{headers:{Authorization:'Bearer fixture'}}));

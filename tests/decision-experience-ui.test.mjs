@@ -5,6 +5,7 @@ import ts from "typescript";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import * as icons from "lucide-react";
+import { paceCode } from "../lib/pace-presentation.ts";
 import * as format from "../lib/format.ts";
 import { approvedResearch } from "../lib/approved-research.ts";
 import { sameProviderSymbol } from "../lib/provider-symbol.ts";
@@ -43,6 +44,10 @@ function render(r, positions = []) {
     ),
     ...format,
     approvedResearch,
+    paceCode,
+    PaceHelp: () => null,
+    PaceReadings: () => null,
+    PriceRiskCases: () => null,
     sameProviderSymbol,
     useMemo: React.useMemo,
     useState: React.useState,

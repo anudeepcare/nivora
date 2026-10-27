@@ -11,6 +11,7 @@ import {
   ChartNoAxesCombined,
   ArrowRight,
 } from "lucide-react";
+import { paceCode, pacePeriods } from "../lib/pace-presentation.ts";
 import * as format from "../lib/format.ts";
 import { homeComposition } from "../lib/home-presentation.ts";
 import { homeDay } from "../lib/home-day.ts";
@@ -19,7 +20,7 @@ import { researchPeriods } from "../lib/financial-catalog.ts";
 import { demoData } from "./fixtures/demo.ts";
 
 function loadComponent(file, name, bindings) {
-  bindings = { CompanySparkline: () => null, ...bindings };
+  bindings = { paceCode, pacePeriods, PaceReadings: ({readings}) => React.createElement("div", null, readings.map(r=>React.createElement("div", {key:r.key}, r.label, " ", r.code, " ", format.dateLabel(r.date)))), PaceHelp: () => null, CompanySparkline: () => null, ...bindings };
   bindings = {
     useAccess: () => ({
       access: {
@@ -1045,9 +1046,9 @@ test("public sample explains actual contribution levels without fictional observ
     assert.match(html, /Business/);
     assert.match(html, /Value/);
     assert.match(html, /Risk/);
-    assert.match(html, /Confirmed month/);
-    assert.match(html, /Forming month/);
-    for (const level of ["0×", "1×", "2×", "3×", "4×"])
+    assert.match(html, /Completed month · confirmed/);
+    assert.match(html, /Current month · forming/);
+    for (const level of ["P0", "P1", "P2", "P3", "P4"])
       assert.ok(html.includes(level));
     assert.match(html, /not predicted returns/);
     assert.doesNotMatch(
@@ -1353,7 +1354,7 @@ test("weekly accumulation has its own history, date labels and no misleading mon
   );
   assert.match(html, /Weekly conditions/);
   assert.match(html, /Accumulation time horizon/);
-  assert.match(html, /Last confirmed week/);
+  assert.match(html, /Completed week · confirmed/);
   assert.match(html, /52 completed weeks/);
   assert.match(html, /historical simulation remains monthly only/);
   assert.doesNotMatch(
@@ -1470,7 +1471,7 @@ test("overview leads with the forming DCA period and keeps the confirmed result 
   assert.match(closed, /Confirmed baseline reason/);
 });
 
-test("technical accumulation leads with confirmed conditions and separates the forming update", () => {
+test("technical accumulation shows both periods and anchors calculations to completed observations", () => {
   const confirmed = {
     multiplier: 1,
     month: "2026-09",
@@ -1522,12 +1523,12 @@ test("technical accumulation leads with confirmed conditions and separates the f
   const html = renderToStaticMarkup(
     React.createElement(View, { research: demoData.research.MSFT }),
   );
-  assert.match(html, /class="accumulation-badge"[^>]*>1×/);
-  assert.match(html, /Forming month/);
-  assert.match(html, /2× · provisional/);
+  assert.match(html, /Completed month · confirmed P1 Sep 30, 2026/);
+  assert.match(html, /Current month · forming/);
+  assert.match(html, /forming P2 Oct 22, 2026/);
   assert.match(html, /Confirmed baseline/);
-  assert.match(html, /Last confirmed month/);
-  assert.match(html, /1× · confirmed · Sep 30, 2026/);
+
+
   assert.match(html, /1 of 1 eligible months/);
   assert.match(html, /data-first-level="30"/);
 });

@@ -124,6 +124,7 @@ export default function DecisionWorkspace({
       )}
       {part !== "summary" && (
         <>
+          <p className="small muted">Scores summarize the selected research style. Zero is a measured low score; an unassessed metric has no score. Style changes do not change the AURYN View or Pace policy.</p>
           <div className="decision-lens-layout">
             <div className="lens-visual">
               <svg

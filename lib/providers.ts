@@ -913,6 +913,7 @@ async function remoteSearch(query: string) {
 
 /** Enumerate every row of each enabled provider directory; no search-result cap.
  * Successful directory reads are cached for a day; failed reads stay retryable. */
+let readyDirectory: { key: string; value: MarketDirectory; at: number } | null = null;
 export async function marketDirectory(): Promise<MarketDirectory> {
   const sources = configuredSources();
   const tasks: {
@@ -958,7 +959,7 @@ export async function marketDirectory(): Promise<MarketDirectory> {
         normalize: (rows) =>
           normalizeTwelveDirectory(rows, market === "cryptocurrencies"),
       });
-  return cached(
+  const result = await cached(
     `market-directory:${JSON.stringify(sources)}`,
     60000,
     async () => {
@@ -1001,22 +1002,23 @@ export async function marketDirectory(): Promise<MarketDirectory> {
       };
     },
   );
+  readyDirectory = { key: JSON.stringify(sources), value: result, at: Date.now() };
+  return result;
 }
 export async function search(query: string) {
   query = query.trim().toUpperCase();
   if (!query) return [];
   if (/^[A-Z0-9]+\.[A-Z]+$|^[A-Z ]+:/.test(query)) researchSymbol(query);
-  const directory = await marketDirectory();
-  const rows = searchDirectory(query, directory.listings);
-  if (directory.complete && rows.length) return rows;
+  const snapshot = readyDirectory && readyDirectory.key === JSON.stringify(configuredSources()) && Date.now() - readyDirectory.at < 86400000 ? readyDirectory.value : null;
+  const cachedRows = snapshot ? searchDirectory(query, snapshot.listings) : [];
+  if (cachedRows.length) return cachedRows;
+  let remoteError: unknown;
   try {
     const remote = await remoteSearch(query);
-    return uniqueListings([
-      ...searchDirectory(query, [...rows, ...remote]),
-      ...remote,
-    ]).slice(0, 12);
-  } catch (error) {
-    if (rows.length || directory.complete) return rows;
-    throw error;
-  }
+    if (remote.length) return remote;
+  } catch (error) { remoteError = error; }
+  const directory = await marketDirectory();
+  const rows = searchDirectory(query, directory.listings);
+  if (rows.length || !remoteError) return rows;
+  throw remoteError;
 }

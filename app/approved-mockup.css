@@ -499,7 +499,7 @@ body {
   color: var(--muted);
   margin-left: 8px;
 }
-.approved-product .search-box {
+.approved-product button.search-box {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -514,7 +514,7 @@ body {
   font-size: 11px;
   text-align: left;
 }
-.approved-product .search-box kbd {
+.approved-product button.search-box kbd {
   margin-left: auto;
   font-family: inherit;
   font-size: 10px;
@@ -2369,7 +2369,7 @@ body {
     font-size: 16px;
     letter-spacing: 2px;
   }
-  .approved-product .search-box {
+  .approved-product button.search-box {
     width: 36px;
     height: 36px;
     padding: 8px;
@@ -2377,8 +2377,8 @@ body {
     border: 0;
     margin-left: auto;
   }
-  .approved-product .search-box span,
-  .approved-product .search-box kbd {
+  .approved-product button.search-box span,
+  .approved-product button.search-box kbd {
     display: none;
   }
   .approved-product .top-links {

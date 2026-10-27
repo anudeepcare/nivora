@@ -1,4 +1,9 @@
 "use client";
+import { researchEdge } from "@/lib/edge-research";
+import { verifiedResearch } from "@/lib/comparison";
+import { sameProviderSymbol, providerSymbol } from "@/lib/provider-symbol";
+import PaceReadings from "./PaceReadings";
+import PaceHelp from "./PaceHelp";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowUpRight, Search as SearchIcon, Save } from "lucide-react";
@@ -6,10 +11,10 @@ import { useProduct, useResource } from "./Session";
 import { readResource } from "@/lib/resource-cache";
 import { api } from "@/lib/client";
 import { perspective } from "@/lib/analysis";
-import { symbolInput, amount, percent } from "@/lib/format";
+import { amount, percent } from "@/lib/format";
 import type { Research } from "@/lib/types";
 import { Empty, PageHeading, SecurityLogo, Notice, Help } from "./Ui";
-export default function Discover({embedded=false}:{embedded?:boolean}) {
+export default function Discover({ embedded = false }: { embedded?: boolean }) {
   const { workspace, demo, cache } = useProduct(),
     prefix = demo && demo.routePrefix !== "" ? "/preview" : "",
     [draft, setDraft] = useState(""),
@@ -17,7 +22,7 @@ export default function Discover({embedded=false}:{embedded?:boolean}) {
     [filter, setFilter] = useState("all"),
     [busy, setBusy] = useState(false),
     [message, setMessage] = useState(""),
-    [coverage,setCoverage]=useState({requested:0,returned:0});
+    [coverage, setCoverage] = useState({ requested: 0, returned: 0 });
   const preview = useMemo(() => (demo ? { documents: [] } : undefined), [demo]),
     saved = useResource<{
       documents: {
@@ -39,7 +44,7 @@ export default function Discover({embedded=false}:{embedded?:boolean}) {
     setMessage("");
     try {
       const symbols = draft.trim()
-        ? [...new Set(draft.split(/[ ,]+/).filter(Boolean).map(symbolInput))]
+        ? [...new Set(draft.split(/[ ,]+/).filter(Boolean).map(providerSymbol))]
         : universe;
       if (!symbols.length || symbols.length > 12)
         throw Error("Choose between one and twelve companies.");
@@ -64,13 +69,20 @@ export default function Discover({embedded=false}:{embedded?:boolean}) {
             ),
         );
         batch.forEach((v, j) => {
-          if (v.status === "fulfilled" && v.value) result.push(v.value);
+          if (
+            v.status === "fulfilled" &&
+            verifiedResearch(v.value, symbols[i + j])
+          )
+            result.push(v.value);
           else failed.push(symbols[i + j]);
         });
       }
       setRows(result);
-      setCoverage({requested:symbols.length,returned:result.length});
-      if (failed.length) setMessage(`No response for ${failed.join(", ")}.`);
+      setCoverage({ requested: symbols.length, returned: result.length });
+      if (failed.length)
+        setMessage(
+          `Could not verify ${failed.join(", ")}. Other results are ready; check the ticker or try again.`,
+        );
     } catch (e) {
       setMessage(e instanceof Error ? e.message : "Scan failed.");
     } finally {
@@ -80,7 +92,19 @@ export default function Discover({embedded=false}:{embedded?:boolean}) {
   const values = useMemo(
     () =>
       rows
-        .map((r) => ({ r, p: perspective(r) }))
+        .map((r) => ({
+          r,
+          p: perspective(r),
+          edge: researchEdge(
+            r,
+            !!workspace?.positions.some(
+              (p) =>
+                sameProviderSymbol(p.symbol, r.company.symbol) &&
+                p.quantity > 0,
+            ),
+            demo ? Date.parse(r.retrievedAt) : Date.now(),
+          ),
+        }))
         .filter(
           ({ p }) =>
             filter === "all" ||
@@ -90,7 +114,7 @@ export default function Discover({embedded=false}:{embedded?:boolean}) {
               p.dca.confirmed &&
               p.dca.confirmed.multiplier >= 2),
         ),
-    [rows, filter],
+    [rows, filter, workspace?.positions, demo],
   );
   async function save() {
     try {
@@ -112,11 +136,16 @@ export default function Discover({embedded=false}:{embedded?:boolean}) {
   }
   return (
     <section>
-      {!embedded && <PageHeading
-        title="Discover with a purpose."
-        subtitle="Screen a focused universe using the same research shown on each company."
-      />}
-      <p className="small muted">Your selected universe only · up to 12 instruments per requested scan. No market-wide ranking or automatic background scan.</p>
+      {!embedded && (
+        <PageHeading
+          title="Discover with a purpose."
+          subtitle="Screen a focused universe using the same research shown on each company."
+        />
+      )}
+      <p className="small muted">
+        Your selected universe only · up to 12 instruments per requested scan.
+        No market-wide ranking or automatic background scan.
+      </p>
       {saved.data?.documents.length ? (
         <div className="source-line">
           Saved screens:{" "}
@@ -154,7 +183,7 @@ export default function Discover({embedded=false}:{embedded?:boolean}) {
           {busy ? "Reviewing sources…" : "Screen companies"}
         </button>
       </form>
-      <div className="analyst-controls">
+      <div className="analyst-controls discover-controls">
         <div className="segment">
           {[
             ["all", "All"],
@@ -176,7 +205,13 @@ export default function Discover({embedded=false}:{embedded?:boolean}) {
           Save screen
         </button>
       </div>
-      {!!coverage.requested&&<p className="context-note">Evidence returned for {coverage.returned} of {coverage.requested} requested instruments · {values.length} match the selected filter. Missing values do not count as matches.</p>}
+      {!!coverage.requested && (
+        <p className="context-note">
+          Evidence returned for {coverage.returned} of {coverage.requested}{" "}
+          requested instruments · {values.length} match the selected filter.
+          Missing values do not count as matches.
+        </p>
+      )}
       {message && <Notice>{message}</Notice>}
       {values.length ? (
         <div className="table-scroll">
@@ -184,15 +219,17 @@ export default function Discover({embedded=false}:{embedded?:boolean}) {
             <thead>
               <tr>
                 <th>Company</th>
-                <th>Business</th>
+                <th>AURYN View</th>
                 <th>Cash after capex</th>
                 <th>Revenue growth</th>
                 <th>Trend</th>
-                <th>DCA · price only</th>
+                <th>
+                  AURYN Pace <PaceHelp />
+                </th>
               </tr>
             </thead>
             <tbody>
-              {values.map(({ r, p }) => (
+              {values.map(({ r, p, edge }) => (
                 <tr key={r.company.symbol}>
                   <td>
                     <Link
@@ -206,7 +243,20 @@ export default function Discover({embedded=false}:{embedded?:boolean}) {
                       </span>
                     </Link>
                   </td>
-                  <td>{p.business}</td>
+                  <td>
+                    <strong
+                      className={
+                        edge.tone === "risk"
+                          ? "red"
+                          : edge.tone === "positive"
+                            ? "green"
+                            : ""
+                      }
+                    >
+                      {edge.assessment}
+                    </strong>
+                    <small className="block">{edge.reason}</small>
+                  </td>
                   <td>
                     {amount(p.last?.fcf, p.last?.currency, true)}
                     <small className="block">
@@ -216,7 +266,8 @@ export default function Discover({embedded=false}:{embedded?:boolean}) {
                   <td>{percent(p.growth)}</td>
                   <td>{p.tech.trend}</td>
                   <td>
-                    {p.dca.confirmed ? `${p.dca.confirmed.multiplier}×` : "—"}
+                    <PaceReadings readings={edge.pacePeriods} compact />
+                    <small>{edge.pacePresentation.label}</small>
                   </td>
                 </tr>
               ))}
@@ -231,8 +282,8 @@ export default function Discover({embedded=false}:{embedded?:boolean}) {
               : "Start with companies you want to understand"
           }
         >
-          Screening uses a deliberately bounded universe to protect your data
-          allowance. A filter match is a research lead, not a recommendation.
+          Scan up to twelve companies from your watchlist, holdings or tickers.
+          A filter match is a research lead, not a recommendation.
         </Empty>
       )}
     </section>

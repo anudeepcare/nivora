@@ -1,4 +1,5 @@
 "use client";
+import PaceHelp from "./PaceHelp";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -75,37 +76,41 @@ export function PublicSample({ compact = false }: { compact?: boolean } = {}) {
           </span>
           <div>
             <span>YOUR CONTRIBUTION RHYTHM</span>
-            <h3>AURYN Pace</h3>
+            <h3>
+              AURYN Pace <PaceHelp />
+            </h3>
           </div>
         </div>
         <p>Put price conditions into a contribution plan.</p>
         <div
           className="ap-pace-scale"
-          aria-label="Possible contribution levels: pause, baseline, twice, three times or four times baseline"
+          aria-label="P means Pace: P0 Paused, P1 Steady, P2 Increased, P3 Elevated, P4 Accelerated"
         >
           {[0, 1, 2, 3, 4].map((level) => (
             <div key={level} className={`ap-pace-level ap-pace-level-${level}`}>
               <span aria-hidden="true">
                 <i />
               </span>
-              <strong>{level}×</strong>
+              <strong>P{level}</strong>
             </div>
           ))}
         </div>
         <div className="ap-pace-scale-labels">
           <span>Pause</span>
-          <span>Baseline</span>
-          <span>Higher contribution</span>
+          <span>Steady</span>
+          <span>Accelerated</span>
         </div>
         <div className="ap-pace-periods">
           <span>
-            <i /> Confirmed month
+            <i /> Current month · forming
           </span>
           <span>
-            <i /> Forming month
+            <i /> Completed month · confirmed
           </span>
         </div>
-        <small>Contribution levels, not predicted returns.</small>
+        <small>
+          P means Pace · contribution levels, not predicted returns.
+        </small>
       </section>
       {!compact && (
         <footer className="ap-product-footer">
@@ -178,11 +183,11 @@ function ProductWalkthrough() {
           <div>
             <p>
               Pace uses monthly price conditions to express contribution levels
-              relative to your baseline. A confirmed reading uses completed
+              from P0 to P4. P means Pace. A confirmed reading uses completed
               months; the current month is shown separately while it is forming.
             </p>
             <p>
-              0× pauses new contributions, 1× is the baseline, and higher levels
+              P0 pauses new contributions, P1 is steady, and higher levels
               increase the contribution. Pace does not establish business
               quality, value or a future return.
             </p>

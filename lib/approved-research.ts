@@ -1,8 +1,6 @@
 import type { Research } from "./types";
-import { aurynDecision } from "./auryn-decision.ts";
 import { researchEdge } from "./edge-research.ts";
 import { overviewEvidence } from "./overview-evidence.ts";
-import { researchDecision } from "./decision-research.ts";
 import { amount, percent } from "./format.ts";
 export type EvidenceSection =
   | "Thesis"
@@ -42,8 +40,8 @@ export function approvedResearch(
   ownsPosition = false,
   now = Date.parse(r.priceObservedAt ?? r.retrievedAt),
 ) {
-  const decision = aurynDecision(r, { ownsPosition, now });
   const edge = researchEdge(r, ownsPosition, now),
+    decision = edge.decision,
     evidence = overviewEvidence(r),
     b = edge.brief,
     n = b.businessNumbers;
@@ -86,7 +84,7 @@ export function approvedResearch(
       "pace",
       edge.pace >= 2 ? "buy" : "wait",
       Math.max(1, edge.pace),
-      `${edge.pace}× confirmed accumulation pace`,
+      `P${edge.pace} confirmed price reading`,
       "Technicals",
     );
   if (edge.value === "supported")
@@ -168,7 +166,6 @@ export function approvedResearch(
     decision,
     evidence,
     factors,
-    fingerprint: researchDecision(r).lenses.slice(0, 6),
     cases: safeCases,
     scenarioBasis: scenario
       ? "Earnings sensitivity"
