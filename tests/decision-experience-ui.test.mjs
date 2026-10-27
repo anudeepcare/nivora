@@ -46,6 +46,7 @@ function render(r, positions = []) {
     approvedResearch,
     paceCode,
     PaceHelp: () => null,
+    PaceGuidance: ({view}) => React.createElement("div", null, view.actionLabel, view.effectiveCode),
     PaceReadings: () => null,
     PriceRiskCases: () => null,
     sameProviderSymbol,

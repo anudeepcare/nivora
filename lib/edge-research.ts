@@ -113,3 +113,20 @@ export function researchEdge(
           : "Mixed",
   };
 }
+
+/** Loaded research remains useful when monthly contribution history is incomplete. */
+export function workspaceGuidance(
+  r: Research,
+  ownsPosition = false,
+  now = Date.parse(r.retrievedAt),
+) {
+  const edge = researchEdge(r, ownsPosition, now);
+  return {
+    ...edge.brief.accumulation,
+    view: edge.pacePresentation,
+    action: edge.assessment,
+    actions: edge.decision.actions,
+    contextLabel: edge.decision.contextLabel,
+    periods: edge.pacePeriods,
+  };
+}

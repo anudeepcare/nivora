@@ -15,7 +15,7 @@ export type OverviewMetric = {
   period?: string;
   start?: string;
   basis?: string;
-  periodBasis?: "Annual" | "TTM";
+  periodBasis?: "Annual" | "TTM" | "As of" | "Updated";
   sourceUrl?: string | null;
   sourceUrls?: string[];
 };
@@ -85,6 +85,7 @@ export function overviewEvidence(r: Research) {
           ].filter((url) => /^https:\/\//.test(url)),
         ),
       ].sort();
+      const balance = ["cash", "debt", "netDebt"].includes(key);
       business.push({
         key,
         label,
@@ -92,11 +93,13 @@ export function overviewEvidence(r: Research) {
         unit,
         currency: p.currency,
         tone,
-        help: `${help} ${financial.periodBasis}: ${p.start}–${p.end} · ${p.basis}; filing reference ${p.filed}.${comparative && prior ? ` Comparison period ends ${prior.end} on the same currency and accounting basis.` : ""}`,
+        help: `${help} ${balance ? "As of" : financial.periodBasis}: ${balance ? p.end : `${p.start}–${p.end}`} · ${p.basis}; filing reference ${p.filed}.${comparative && prior ? ` Comparison period ends ${prior.end} on the same currency and accounting basis.` : ""}`,
         period: p.end,
         start: p.start,
         basis: p.basis,
-        periodBasis: financial.periodBasis as "Annual" | "TTM",
+        periodBasis: balance
+          ? "As of"
+          : (financial.periodBasis as "Annual" | "TTM"),
         sourceUrl: sources[0] ?? sourceUrls[0] ?? null,
         sourceUrls,
       });
@@ -353,6 +356,20 @@ export function overviewEvidence(r: Research) {
           "ratio",
           "Reported market multiple; observation dates and accounting definitions can differ. A lower multiple alone does not establish value.",
         );
+    }
+    const updated = r.evidence?.updatedAt;
+    const updateDay = updated?.slice(0, 10);
+    const dated =
+      !!updateDay &&
+      /^\d{4}-\d{2}-\d{2}$/.test(updateDay) &&
+      Number.isFinite(Date.parse(updateDay)) &&
+      updateDay <= r.retrievedAt.slice(0, 10);
+    for (const m of valuation) {
+      m.period = dated ? updateDay : undefined;
+      m.periodBasis = "Updated";
+      m.help += dated
+        ? ` Market dataset updated ${updateDay}; individual constituent reporting dates can differ.`
+        : " An update date was not supplied.";
     }
     add(
       ownership,

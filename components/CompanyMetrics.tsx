@@ -1,5 +1,5 @@
 "use client";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { Research } from "@/lib/types";
 import { overviewEvidence } from "@/lib/overview-evidence";
 import { headerMarketContext } from "@/lib/business-history";
@@ -7,21 +7,33 @@ import { amount, percent, dateLabel } from "@/lib/format";
 import { Help } from "./Ui";
 
 export default function CompanyMetrics({ research }: { research: Research }) {
+  const [expanded, setExpanded] = useState(false);
   const evidence = useMemo(() => overviewEvidence(research), [research]);
   const market = headerMarketContext(research);
   const keys = evidence.specialist
-    ? ["revenueGrowth", "roe", "netIncome", "cash"]
-    : ["revenueGrowth", "operatingMargin", "fcf", "cash"];
+    ? ["revenueGrowth", "roe", "netIncome", "cash", "debt", "roa"]
+    : [
+        "revenueGrowth",
+        "operatingMargin",
+        "fcf",
+        "cash",
+        "netDebt",
+        "operatingRunway",
+        "operatingCashFlow",
+      ];
   const metrics = keys
     .flatMap((key) => evidence.business.filter((m) => m.key === key))
-    .slice(0, 3);
+    .slice(0, market.marketCap == null ? 7 : 6);
   const multiple = evidence.valuation.find(
     (m) => m.unit === "ratio" && m.value > 0,
   );
   if (multiple) metrics.push(multiple);
   if (!metrics.length && market.marketCap == null) return null;
   return (
-    <section className="company-metrics" aria-label="Company key metrics">
+    <section
+      className={`company-metrics${expanded ? " company-metrics-expanded" : ""}`}
+      aria-label="Company key metrics"
+    >
       {market.marketCap != null && (
         <div>
           <span>
@@ -58,10 +70,19 @@ export default function CompanyMetrics({ research }: { research: Research }) {
           <small>
             {m.period
               ? `${m.periodBasis ?? "Reported"} · ${dateLabel(m.period)}`
-              : "Dated snapshot"}
+              : "Update date unavailable"}
           </small>
         </div>
       ))}
+      {metrics.length + (market.marketCap != null ? 1 : 0) > 4 && (
+        <button
+          className="company-metrics-toggle text-link"
+          aria-expanded={expanded}
+          onClick={() => setExpanded((value) => !value)}
+        >
+          {expanded ? "Fewer metrics" : "More company metrics"}
+        </button>
+      )}
     </section>
   );
 }

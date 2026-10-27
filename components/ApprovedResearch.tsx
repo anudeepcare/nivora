@@ -1,6 +1,6 @@
 "use client";
 import PriceRiskCases from "./PriceRiskCases";
-import PaceReadings from "./PaceReadings";
+import PaceGuidance from "./PaceGuidance";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
 import {
@@ -113,13 +113,25 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
             <span>{d.horizon}</span>
           </div>
           <div className="decision-action-line">
-            <h2 id="auryn-decision-title">{d.action}</h2>
+            <div>
+              <span className="decision-context">{d.contextLabel}</span>
+              <h2 id="auryn-decision-title">{d.action}</h2>
+            </div>
             <span className="decision-confidence">
               <ShieldCheck size={14} />
               {d.confidence}
             </span>
           </div>
           <p className="decision-headline">{d.headline}</p>
+          <div className="decision-context-pair">
+            <span>
+              New purchase <strong>{d.actions.entry}</strong>
+            </span>
+            <span>
+              {owns ? "Your holding" : "Already holding?"}{" "}
+              <strong>{d.actions.holding}</strong>
+            </span>
+          </div>
           <ul className="decision-reasons">
             {d.reasons.slice(0, 3).map((reason) => (
               <li key={reason}>
@@ -152,9 +164,7 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
           <div className="pace-brand">
             <Activity size={17} /> AURYN PACE <PaceHelp />
           </div>
-          <span className="pace-description">{pace.label}</span>
-          <PaceReadings readings={edge.pacePeriods} />
-          <p className="pace-context">{pace.detail}</p>
+          <PaceGuidance view={pace} readings={edge.pacePeriods} />
           <button
             className="text-link pace-open"
             onClick={() => onTab("Technicals")}
@@ -397,6 +407,23 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
             Decision rules & source context <ChevronDown size={15} />
           </summary>
           <p>{d.method}</p>
+          {d.growthCandidate && (
+            <div className="growth-screen-details">
+              <h3>Funded-growth requirements</h3>
+              <ul>
+                {d.growthAssessment.requirements.map((rule) => (
+                  <li key={rule.key}>
+                    <strong>{rule.met ? "Met" : "To establish"}</strong> ·{" "}
+                    {rule.label}
+                  </li>
+                ))}
+              </ul>
+              <p>
+                These are screening thresholds, not a forecast of performance.
+                Missing inputs do not pass.
+              </p>
+            </div>
+          )}
           <p>
             Buy/Add requires supported operating strength and an attractive
             model price, without the listed funding risks or RSI of 75 or

@@ -1,4 +1,5 @@
 "use client";
+import { newRequestId } from "@/lib/client-id";
 import { useRef, useState } from "react";
 import { parseHoldingsCsv } from "@/lib/planning";
 import { api } from "@/lib/client";
@@ -33,7 +34,7 @@ export default function HoldingsImport() {
               if (file.size > 1000000)
                 throw Error("Use a CSV smaller than 1 MB.");
               setRows(parseHoldingsCsv(await file.text()));
-              request.current = crypto.randomUUID();
+              request.current = newRequestId();
               setMessage("Review all rows before confirming.");
             } catch (err) {
               setRows([]);

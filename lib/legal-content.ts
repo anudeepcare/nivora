@@ -1,8 +1,9 @@
+import { SUPPORT_EMAIL } from "./site-metadata.ts";
 export const legalConfiguration = {
   operator: process.env.NEXT_PUBLIC_AURYN_OPERATOR || "AURYN",
-  contact: process.env.NEXT_PUBLIC_AURYN_SUPPORT_EMAIL || "",
-  updated: "October 25, 2026",
-  version: "edge-preview-20261025",
+  contact: process.env.NEXT_PUBLIC_AURYN_SUPPORT_EMAIL || SUPPORT_EMAIL,
+  updated: "October 27, 2026",
+  version: "action-web-20261027",
 };
 export type DocumentId =
   | "terms"
@@ -279,4 +280,13 @@ documents.privacy.sections.push({
 documents.help.sections.unshift({
   title: "Contact AURYN",
   text: "Open Contact from the footer for general enquiries, technical issues, billing, feedback or privacy concerns. After a successful save you receive a reference. A receipt is shown as sent only if the email provider accepted it; otherwise the saved request remains available to the owner.",
+});
+
+documents.privacy.sections.push({
+  title: "Optional analytics and your choices",
+  text: "Optional Google Analytics runs only after you allow analytics. It measures coarse page categories, signup intent, search outcomes and performance buckets. We do not send search text, ticker symbols, email addresses, portfolio records, balances or support messages as analytics fields. Google receives network and device information when its service loads. Advertising storage and personalization are disabled. Decline keeps the product usable. Open Analytics preferences to withdraw consent; future app events stop and accessible analytics cookies are cleared. Withdrawal does not erase already collected aggregate information. Contact support@auryninvest.com for privacy requests.",
+});
+documents.methodology.sections.push({
+  title: "Funded growth and contribution eligibility",
+  text: "An ordinary operating company may qualify through funded growth: at least 20% comparable revenue growth, at least five percentage points of operating-margin improvement, positive cash with nonpositive net debt, and reported diluted weighted-share growth no greater than 10%. It needs nonnegative operating cash flow or at least 24 months of historical operating runway, plus nonnegative cash after capex or at least 18 months of investment runway. All required observations must be available and comparable. Valuation, freshness, conflicts, funding deterioration and momentum checks still apply. These conservative thresholds are transparent screening heuristics, not an optimized or backtested claim. Confirmed P0 pauses purchases/additions. A missing contribution level does not erase a separately supported business and valuation assessment. Watchlisting never implies ownership.",
 });

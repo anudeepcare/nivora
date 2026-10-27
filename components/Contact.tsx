@@ -1,4 +1,6 @@
 "use client";
+import { newRequestId } from "@/lib/client-id";
+import { SUPPORT_EMAIL } from "@/lib/site-metadata";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { CheckCircle2, ShieldCheck, ArrowRight } from "lucide-react";
@@ -14,7 +16,7 @@ export default function Contact() {
     [reference, setReference] = useState(""),
     [id, setId] = useState("");
   useEffect(() => {
-    setId(crypto.randomUUID());
+    setId(newRequestId());
   }, []);
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -60,6 +62,9 @@ export default function Contact() {
             <br />
             we help?
           </h1>
+          <p>
+            <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+          </p>
           <p>A question, a concern, or an idea for AURYN. Send it here.</p>
           <div className="support-promise">
             <ShieldCheck size={20} />

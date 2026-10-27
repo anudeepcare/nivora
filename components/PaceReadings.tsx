@@ -10,15 +10,17 @@ export default function PaceReadings({
 }) {
   return (
     <div className={`pace-readings${compact ? " pace-readings-compact" : ""}`}>
-      {readings.map((row) => (
-        <div key={row.key} className={`pace-period pace-period-${row.key}`}>
-          <span>{row.label}</span>
-          <strong>{row.code}</strong>
-          <small>
-            {row.date ? dateLabel(row.date) : "Building price history"}
-          </small>
-        </div>
-      ))}
+      {readings
+        .filter((row) => row.level != null)
+        .map((row) => (
+          <div key={row.key} className={`pace-period pace-period-${row.key}`}>
+            <span>{row.label}</span>
+            <strong>{row.code}</strong>
+            <small>
+              {row.date ? dateLabel(row.date) : "Building price history"}
+            </small>
+          </div>
+        ))}
     </div>
   );
 }

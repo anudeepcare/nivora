@@ -147,7 +147,7 @@ test("a new comparison clears the preceding company set before loading", async (
     sameProviderSymbol,
     Search: empty,
     PaceHelp: empty,
-    PaceReadings: empty,
+    PaceGuidance: () => null, PaceReadings: empty,
     PageHeading: empty,
     Notice: empty,
     Empty: empty,

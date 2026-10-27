@@ -2,7 +2,7 @@
 import { researchEdge } from "@/lib/edge-research";
 import { verifiedResearch } from "@/lib/comparison";
 import { sameProviderSymbol, providerSymbol } from "@/lib/provider-symbol";
-import PaceReadings from "./PaceReadings";
+import PaceGuidance from "./PaceGuidance";
 import PaceHelp from "./PaceHelp";
 import { useMemo, useState } from "react";
 import Link from "next/link";
@@ -255,7 +255,13 @@ export default function Discover({ embedded = false }: { embedded?: boolean }) {
                     >
                       {edge.assessment}
                     </strong>
-                    <small className="block">{edge.reason}</small>
+                    <small className="block">
+                      {edge.decision.contextLabel} · {edge.reason}
+                    </small>
+                    <small className="block">
+                      New purchase: {edge.decision.actions.entry} · Holding:{" "}
+                      {edge.decision.actions.holding}
+                    </small>
                   </td>
                   <td>
                     {amount(p.last?.fcf, p.last?.currency, true)}
@@ -266,8 +272,11 @@ export default function Discover({ embedded = false }: { embedded?: boolean }) {
                   <td>{percent(p.growth)}</td>
                   <td>{p.tech.trend}</td>
                   <td>
-                    <PaceReadings readings={edge.pacePeriods} compact />
-                    <small>{edge.pacePresentation.label}</small>
+                    <PaceGuidance
+                      view={edge.pacePresentation}
+                      readings={edge.pacePeriods}
+                      compact
+                    />
                   </td>
                 </tr>
               ))}

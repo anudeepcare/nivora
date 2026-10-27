@@ -1,4 +1,5 @@
 "use client";
+import { trackAnalytics } from "@/lib/analytics-policy";
 import { useId, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search as SearchIcon, ArrowUpRight, X } from "lucide-react";
@@ -103,6 +104,7 @@ export default function Search({
     if (local.length) setResults(local);
     setLoading(!cached || Date.now() - cached.at >= 300000);
     const load = async () => {
+      const started = performance.now();
       try {
         const rows = demo
           ? Object.values(demo.research)
@@ -121,11 +123,21 @@ export default function Search({
               )
             ).results;
         if (active) {
+          if (!demo)
+            trackAnalytics("search_result", {
+              outcome: rows.length ? "success" : "empty",
+              duration: performance.now() - started,
+            });
           setResults(rows);
           setError("");
         }
       } catch (e) {
         if (active) {
+          if (!demo)
+            trackAnalytics("search_result", {
+              outcome: "error",
+              duration: performance.now() - started,
+            });
           setResults(local);
           setError(e instanceof Error ? e.message : "Search unavailable");
         }
@@ -142,6 +154,7 @@ export default function Search({
     };
   }, [query, demo, cache]);
   const go = (symbol: string) => {
+    if (!demo) trackAnalytics("search_select");
     setOpen(false);
     setQuery("");
     onNavigate?.();

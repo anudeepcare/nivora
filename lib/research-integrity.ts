@@ -14,9 +14,10 @@ export function metricEvidence(
   r: Research,
   metrics: Metric[],
   calculated = false,
+  selection: "latest" | "prior" = "latest",
 ) {
   const evidence = latestFinancialEvidence(r),
-    p = evidence.latest,
+    p = selection === "prior" ? evidence.prior : evidence.latest,
     day = r.retrievedAt.slice(0, 10);
   const quarterly =
     evidence.periodBasis === "TTM" ? quarterFacts(r.facts, r.retrievedAt) : [];

@@ -1,3 +1,9 @@
+import { isProductPage } from "@/lib/page-routing";
+import {
+  routeMetadata,
+  organizationSchema,
+  websiteSchema,
+} from "@/lib/site-metadata";
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import Product from "@/components/Product";
@@ -5,31 +11,14 @@ import Contact from "@/components/Contact";
 import Plans from "@/components/Plans";
 import PublicLanding from "@/components/PublicLanding";
 export const dynamic = "force-dynamic";
-const allowed = new Set([
-  "overview",
-  "research",
-  "portfolio",
-  "watchlist",
-  "settings",
-  "owner",
-  "plans",
-  "pricing",
-  "compare",
-  "alerts",
-  "research-lab",
-  "trading",
-  "discover",
-  "help",
-  "contact",
-  "terms",
-  "privacy",
-  "risk",
-  "methodology",
-  "reliability",
-  "login",
-  "reset-password",
-  "sample",
-]);
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ route?: string[] }>;
+}) {
+  return routeMetadata("/" + ((await params).route || []).join("/"));
+}
 export default async function Page({
   params,
   searchParams,
@@ -40,11 +29,24 @@ export default async function Page({
   const path = (await params).route || [],
     preview = path[0] === "preview",
     route = preview ? path.slice(1) : path;
-  if (route[0] && !allowed.has(route[0])) notFound();
-  if (route.length > 1 && route[0] !== "research") notFound();
-  if (!preview && (!route.length || (route.length === 1 && route[0] === "sample"))) return <PublicLanding sampleOnly={route[0] === "sample"}/>;
-  if (!preview && route[0] === "pricing") return <Plans publicPage/>;
-  if (!preview && route[0] === "contact") return <Contact/>;
+  if (!isProductPage("/" + path.join("/"))) notFound();
+  if (
+    !preview &&
+    (!route.length || (route.length === 1 && route[0] === "sample"))
+  )
+    return (
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify([organizationSchema, websiteSchema]),
+          }}
+        />
+        <PublicLanding sampleOnly={route[0] === "sample"} />
+      </>
+    );
+  if (!preview && route[0] === "pricing") return <Plans publicPage />;
+  if (!preview && route[0] === "contact") return <Contact />;
   let demo;
   if (preview) {
     const host = (await headers()).get("host") || "";

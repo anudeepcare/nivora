@@ -84,7 +84,20 @@ export function pacePresentation(
           : rawLevel === 0
             ? "The price policy pauses scheduled contributions. P0 is not a sell signal."
             : `P${rawLevel} applies ${rawLevel}× a usual scheduled contribution under the price policy. Position size and funding risk still matter.`;
+  const effectiveCode =
+    permitted && rawLevel != null && rawLevel > 0 ? paceCode(rawLevel) : null;
+  const actionLabel = permitted
+    ? rawLevel === 0
+      ? "Pause new contributions"
+      : `${action} gradually`
+    : action === "Hold"
+      ? "Hold · pause additions"
+      : action === "Wait"
+        ? "Wait before buying"
+        : action;
   return {
+    actionLabel,
+    effectiveCode,
     rawLevel,
     code: paceCode(rawLevel),
     label,

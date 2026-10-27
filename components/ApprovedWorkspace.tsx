@@ -5,6 +5,7 @@ import { customerText } from "@/lib/customer-language";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
+  Activity,
   ArrowUpRight,
   Bookmark,
   CalendarDays,
@@ -31,9 +32,8 @@ import { api } from "@/lib/client";
 import { readResource, resourceSnapshot } from "@/lib/resource-cache";
 import { homeBrief } from "@/lib/home-brief";
 import PaceHelp from "./PaceHelp";
-import PaceReadings from "./PaceReadings";
-import { paceCode } from "@/lib/pace-presentation";
-import { researchEdge } from "@/lib/edge-research";
+import PaceGuidance from "./PaceGuidance";
+import { workspaceGuidance } from "@/lib/edge-research";
 import { amount, percent, quoteTime, dateLabel } from "@/lib/format";
 import { ledgerRows } from "@/lib/portfolio-ledger";
 import { researchLink, workspaceOverview } from "@/lib/approved-workspace";
@@ -171,22 +171,13 @@ function useWorkspaceData(scope: "all" | "portfolio" | "watchlist" = "all") {
   const pace = (symbol: string) => {
     const r = research(symbol);
     if (!r) return null;
-    const edge = researchEdge(
+    return workspaceGuidance(
       r,
       !!product.workspace?.positions.some(
         (p) => sameProviderSymbol(p.symbol, r.company.symbol) && p.quantity > 0,
       ),
       product.demo ? Date.parse(r.retrievedAt) : Date.now(),
     );
-    const confirmed = edge.brief.accumulation;
-    if (confirmed.multiplier == null) return null;
-    return {
-      ...confirmed,
-      multiplier: confirmed.multiplier,
-      view: edge.pacePresentation,
-      action: edge.assessment,
-      periods: edge.pacePeriods,
-    };
   };
   return { ...product, quotes, balances, prefix, model, q, pace };
 }
@@ -450,7 +441,9 @@ function HomeOverview() {
   const signals = symbols
     .map((symbol) => ({ symbol, signal: pace(symbol) }))
     .filter((x) => x.signal != null)
-    .sort((a, b) => b.signal!.multiplier - a.signal!.multiplier);
+    .sort(
+      (a, b) => (b.signal!.multiplier ?? -1) - (a.signal!.multiplier ?? -1),
+    );
   const best = signals[0];
   const eventGroups = groupMarketEvents(brief.checkpoints);
   const hour = today.getHours(),
@@ -757,7 +750,7 @@ function HomeOverview() {
           >
             <span className="home-review-mark">
               {best ? (
-                paceCode(best.signal!.multiplier)
+                best.signal!.view.effectiveCode || <Activity size={20} />
               ) : (
                 <Bookmark size={20} />
               )}
@@ -770,7 +763,7 @@ function HomeOverview() {
               </strong>
               <small>
                 {best
-                  ? `${best.signal!.action} · ${best.signal!.view.label}. Current ${best.signal!.periods[0].code} forming · completed ${best.signal!.periods[1].code} (${best.signal!.month}).`
+                  ? `${best.signal!.contextLabel}: ${best.signal!.view.actionLabel}${best.signal!.view.effectiveCode ? ` · ${best.signal!.view.effectiveCode}` : ""}. New purchase: ${best.signal!.actions.entry}; holding: ${best.signal!.actions.holding}.`
                   : "Open research for the business evidence and available monthly price context."}
               </small>
             </span>
@@ -1346,7 +1339,10 @@ function HoldingsTable({
                                 : "muted"
                             }
                           >
-                            AURYN View · {decision.action}
+                            Your holding · {decision.action}
+                            {decision.view.effectiveCode
+                              ? ` · ${decision.view.effectiveCode}`
+                              : ""}
                           </small>
                         )}
                       </span>
@@ -1442,7 +1438,7 @@ export function Watchlist() {
   const signal = all
     .map((symbol) => ({ symbol, pace: pace(symbol) }))
     .filter((r) => r.pace != null)
-    .sort((a, b) => b.pace!.multiplier - a.pace!.multiplier)[0];
+    .sort((a, b) => (b.pace!.multiplier ?? -1) - (a.pace!.multiplier ?? -1))[0];
   return (
     <section className="approved-workspace approved-watchlist">
       <Heading
@@ -1603,13 +1599,18 @@ export function Watchlist() {
                           {signal ? "Open price history" : "Open case"}
                         </Link>
                         {signal && (
-                          <PaceReadings readings={signal.periods} compact />
+                          <PaceGuidance
+                            view={signal.view}
+                            readings={signal.periods}
+                            compact
+                          />
                         )}
                         {signal && (
                           <small>
-                            {signal.action} · {signal.view.label}
+                            {signal.contextLabel}
                             <br />
-                            {signal.month} · price reading
+                            New purchase: {signal.actions.entry} · Holding:{" "}
+                            {signal.actions.holding}
                           </small>
                         )}
                       </td>
@@ -1663,7 +1664,7 @@ export function Watchlist() {
             title="Price is one part of the story."
             subtitle={
               signal
-                ? `${signal.symbol} has a confirmed P${signal.pace!.multiplier} monthly reading. Open the explanation alongside business and funding risks.`
+                ? `${signal.symbol} · ${signal.pace!.view.actionLabel}${signal.pace!.view.effectiveCode ? ` · ${signal.pace!.view.effectiveCode}` : ""}. Review the reasons and the price assumptions together.`
                 : "A strong Pace reading deserves a clear explanation, alongside business and funding risks."
             }
           />
@@ -1676,7 +1677,7 @@ export function Watchlist() {
             }
           >
             {signal
-              ? `Explore ${signal.symbol}’s P${signal.pace!.multiplier} reading`
+              ? `Explore ${signal.symbol}’s full case`
               : "Explore a company’s full case"}{" "}
             ↗
           </Link>

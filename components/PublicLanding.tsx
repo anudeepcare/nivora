@@ -1,4 +1,6 @@
 "use client";
+import { PrivacyChoices } from "./AnalyticsConsent";
+import { SUPPORT_EMAIL } from "@/lib/site-metadata";
 import PaceHelp from "./PaceHelp";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -466,7 +468,9 @@ export default function PublicLanding({
             <Link href="/sample">How it works</Link>
             <Link href="/pricing">Pricing</Link>
             <Link href="/help">Help</Link>
-            <Link href="/contact">Contact</Link>
+            <Link href="/about">About</Link>
+            <Link href="/pace">AURYN Pace</Link>
+            <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
           </nav>
         </div>
         <div className="ap-footer-bottom">
@@ -475,6 +479,7 @@ export default function PublicLanding({
             <Link href="/methodology">Methodology</Link>
             <Link href="/terms">Terms</Link>
             <Link href="/privacy">Privacy</Link>
+            <PrivacyChoices />
             <Link href="/risk">Risks</Link>
           </nav>
         </div>

@@ -10,7 +10,7 @@ const navigation = fs.existsSync("lib/settings-navigation.ts")
   : {};
 const empty = () => null;
 function load(file, name, bindings) {
-  bindings = { useAccess: () => ({access:{capabilities:{paperTrading:false}}}), ...bindings };
+  bindings = { SUPPORT_EMAIL: "support@auryninvest.com", PrivacyChoices: () => null, useAccess: () => ({access:{capabilities:{paperTrading:false}}}), ...bindings };
   const ast = ts.createSourceFile(
     file,
     fs.readFileSync(file, "utf8"),

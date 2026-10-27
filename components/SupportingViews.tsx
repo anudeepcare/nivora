@@ -1,6 +1,8 @@
 "use client";
 import { sameProviderSymbol } from "@/lib/provider-symbol";
-import PaceReadings from "./PaceReadings";
+import { SUPPORT_EMAIL } from "@/lib/site-metadata";
+import { PrivacyChoices } from "./AnalyticsConsent";
+import PaceGuidance from "./PaceGuidance";
 import Search from "./Search";
 import PaceHelp from "./PaceHelp";
 import { loadComparison, comparisonCompatibility } from "@/lib/comparison";
@@ -254,6 +256,12 @@ export function Settings() {
           <span>Help & support</span>
           <ChevronRight size={17} />
         </Link>
+        <a href={`mailto:${SUPPORT_EMAIL}`}>
+          <ShieldCheck size={18} />
+          <span>{SUPPORT_EMAIL}</span>
+          <ChevronRight size={17} />
+        </a>
+        <PrivacyChoices />
         {access.owner && !prefix && (
           <Link href="/owner">
             <ShieldCheck size={18} />
@@ -473,10 +481,13 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
                           amount(p.last?.fcf, p.last?.currency, true),
                           percent(p.last?.margin),
                           p.tech.trend,
-                          `${edge.assessment} · ${edge.reason}`,
+                          `${edge.decision.contextLabel}: ${edge.assessment} · ${edge.reason} New purchase: ${edge.decision.actions.entry}. Holding: ${edge.decision.actions.holding}.`,
                           <div key="pace">
-                            <PaceReadings readings={edge.pacePeriods} compact />
-                            <small>{edge.pacePresentation.label}</small>
+                            <PaceGuidance
+                              view={edge.pacePresentation}
+                              readings={edge.pacePeriods}
+                              compact
+                            />
                           </div>,
                         ][i]
                       }

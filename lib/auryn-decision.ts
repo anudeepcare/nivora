@@ -21,6 +21,8 @@ export type DecisionAction =
   | "Avoid";
 export type DecisionInput = {
   ownsPosition: boolean;
+  growthEligible?: boolean;
+  confirmedPace?: number | null;
   priceUsable: boolean;
   financialsUsable: boolean;
   business: "strong" | "developing" | "weak" | "missing";
@@ -63,15 +65,75 @@ export function fundingRisk(x: {
     (operatingBurn && interestPressure && finite(x.cash) && x.cash <= 0);
   return { operatingBurn, shortRunway, interestPressure, distress };
 }
+/** Conservative funded-growth screen. These disclosed thresholds are heuristics, not backtested probabilities. */
+export function fundedGrowthCase(x: {
+  applicable: boolean;
+  financialsUsable: boolean;
+  growth: number | null | undefined;
+  margin: number | null | undefined;
+  priorMargin: number | null | undefined;
+  cash: number | null | undefined;
+  netDebt: number | null | undefined;
+  operatingCashFlow: number | null | undefined;
+  freeCashFlow: number | null | undefined;
+  operatingRunway: number | null | undefined;
+  investmentRunway: number | null | undefined;
+  dilution: number | null | undefined;
+}) {
+  const finite = (v: number | null | undefined): v is number =>
+    v != null && Number.isFinite(v);
+  const checks = {
+    comparableReports: x.applicable && x.financialsUsable,
+    growth: finite(x.growth) && x.growth >= 20,
+    marginProgress:
+      finite(x.margin) &&
+      finite(x.priorMargin) &&
+      x.margin - x.priorMargin >= 5,
+    netCash:
+      finite(x.cash) && x.cash > 0 && finite(x.netDebt) && x.netDebt <= 0,
+    dilution: finite(x.dilution) && x.dilution <= 10,
+    operationsFunded:
+      finite(x.operatingCashFlow) &&
+      (x.operatingCashFlow >= 0 ||
+        (finite(x.operatingRunway) && x.operatingRunway >= 24)),
+    investmentFunded:
+      finite(x.freeCashFlow) &&
+      (x.freeCashFlow >= 0 ||
+        (finite(x.investmentRunway) && x.investmentRunway >= 18)),
+  };
+  const descriptions: Record<keyof typeof checks, string> = {
+    comparableReports: "Current, comparable reports without conflicting inputs",
+    growth: "Revenue growth of at least 20%",
+    marginProgress:
+      "Operating margin improvement of at least 5 percentage points",
+    netCash: "Positive cash and no net debt",
+    dilution: "Reported diluted share growth of 10% or less",
+    operationsFunded:
+      "Nonnegative operating cash flow or at least 24 months of operating runway",
+    investmentFunded:
+      "Nonnegative cash after capex or at least 18 months of investment runway",
+  };
+  const requirements = (Object.keys(checks) as (keyof typeof checks)[]).map(
+    (key) => ({ key, label: descriptions[key], met: checks[key] }),
+  );
+  return {
+    eligible: Object.values(checks).every(Boolean),
+    checks,
+    requirements,
+  };
+}
 /** Published screening policy. Thresholds are transparent heuristics, not fitted probabilities. */
 export function evaluateDecision(x: DecisionInput): DecisionAction {
   if (!x.financialsUsable) return "Wait";
   if (x.insolvency) return x.ownsPosition ? "Sell" : "Avoid";
   if (x.distress || x.deterioration) return x.ownsPosition ? "Reduce" : "Avoid";
   if (!x.priceUsable || x.value === "unassessed") return "Wait";
-  if (x.business === "strong" && x.value === "attractive" && !x.extended)
+  const supported = x.business === "strong" || x.growthEligible === true;
+  if (x.confirmedPace === 0 && supported)
+    return x.ownsPosition ? "Hold" : "Wait";
+  if (supported && x.value === "attractive" && !x.extended)
     return x.ownsPosition ? "Add" : "Buy";
-  if (x.ownsPosition && x.business === "strong") return "Hold";
+  if (x.ownsPosition && supported) return "Hold";
   return "Wait";
 }
 export function annualizedReturn(
@@ -179,6 +241,7 @@ export function aurynDecision(
           "cash",
           "debt",
           "equity",
+          "weightedShares",
         ]
   ) as (
     | "revenue"
@@ -189,12 +252,33 @@ export function aurynDecision(
     | "capex"
     | "cash"
     | "debt"
+    | "weightedShares"
   )[];
-  const conflicts = p
-    ? conflictMetrics.filter(
-        (metric) => metricEvidence(r, [metric]).status === "Conflicting",
-      )
-    : [];
+  const priorMetrics = bank
+    ? (["revenue", "equity"] as const)
+    : ([
+        "revenue",
+        "operatingIncome",
+        "weightedShares",
+        "operatingCashFlow",
+        "capex",
+      ] as const);
+  const conflicts = [
+    ...(p
+      ? conflictMetrics.filter(
+          (metric) => metricEvidence(r, [metric]).status === "Conflicting",
+        )
+      : []),
+    ...(q
+      ? priorMetrics
+          .filter(
+            (metric) =>
+              metricEvidence(r, [metric], false, "prior").status ===
+              "Conflicting",
+          )
+          .map((metric) => `prior ${metric}`)
+      : []),
+  ];
   const financialsUsable =
     !conflicts.length &&
     r.company.assetType === "stock" &&
@@ -241,6 +325,20 @@ export function aurynDecision(
       : weak
         ? "weak"
         : "developing";
+  const growthAssessment = fundedGrowthCase({
+    applicable: !specialist && funding.annualBasis && growth != null,
+    financialsUsable,
+    growth,
+    margin: p?.margin,
+    priorMargin: q?.margin,
+    cash: p?.cash,
+    netDebt: p?.netDebt,
+    operatingCashFlow: p?.operatingCashFlow,
+    freeCashFlow: p?.fcf,
+    operatingRunway: funding.operatingRunway,
+    investmentRunway: funding.investmentRunway,
+    dilution: funding.dilution,
+  });
   // Negative investment cash flow alone is not a solvency diagnosis.
   const fundingAssessment = fundingRisk({
     applicable: !specialist,
@@ -433,7 +531,7 @@ export function aurynDecision(
         : "fair";
     reasons.unshift(
       valuation.basis === "earnings"
-        ? `Base sensitivity implies ${percent(valuation.annualReturn, true)} a year over ${valuation.years!.toFixed(1)} years.`
+        ? `Modelled annual return: ${percent(valuation.annualReturn, true)} over ${valuation.years!.toFixed(1)} years.`
         : `Base cash-flow value is ${percent(Math.abs(valuation.upside))} ${valuation.upside >= 0 ? "above" : "below"} the dated price.`,
     );
     changeConditions.push(
@@ -442,8 +540,10 @@ export function aurynDecision(
   }
   const tech = perspective(r).tech;
   const extended = tech.rsi != null && tech.rsi >= 75;
-  const action = evaluateDecision({
+  const decisionInputs = {
     ownsPosition,
+    growthEligible: growthAssessment.eligible,
+    confirmedPace: brief.accumulation.multiplier,
     priceUsable: !!reference,
     financialsUsable,
     business,
@@ -452,11 +552,19 @@ export function aurynDecision(
     distress,
     deterioration,
     insolvency,
-  });
+  };
+  const actions = {
+    entry: evaluateDecision({ ...decisionInputs, ownsPosition: false }),
+    holding: evaluateDecision({ ...decisionInputs, ownsPosition: true }),
+  };
+  const action = ownsPosition ? actions.holding : actions.entry;
   const paused = !reference || !financialsUsable;
   let headline = "The price needs a stronger margin of safety.";
   if (action === "Buy" || action === "Add")
-    headline = "Business strength and the price case align.";
+    headline =
+      growthAssessment.eligible && !strong
+        ? "Funded growth and the price case support a gradual entry."
+        : "Business strength and the price case align.";
   else if (action === "Hold")
     headline = extended
       ? "The business holds up. Momentum is stretched."
@@ -487,9 +595,33 @@ export function aurynDecision(
   else if (extended) headline = "The price has run ahead of the entry setup.";
   else if (business === "developing")
     headline = "The business needs stronger operating confirmation.";
+  if (
+    (action === "Hold" || action === "Wait") &&
+    brief.accumulation.multiplier === 0 &&
+    financialsUsable &&
+    reference &&
+    value !== "unassessed" &&
+    (strong || growthAssessment.eligible)
+  ) {
+    headline =
+      "The business case holds; confirmed Pace pauses new contributions.";
+    changeConditions.unshift(
+      "Reassess additions when a completed monthly Pace reading moves above P0 and the price case still qualifies.",
+    );
+  }
+  if (growthAssessment.eligible && !strong) {
+    reasons.splice(
+      1,
+      0,
+      "Growth and improving margins meet the funded-growth screen, with net cash and measured dilution.",
+    );
+    risks.push(
+      "The growth path uses disclosed screening thresholds; future profitability and investment returns remain uncertain.",
+    );
+  }
   if (conflicts.length)
     changeConditions.unshift(
-      `Reconcile conflicting ${conflicts.map((x) => x.replace(/([A-Z])/g, " $1").toLowerCase()).join(", ")} observations for ${p?.end}. Other company facts remain available.`,
+      `Reconcile conflicting ${conflicts.map((x) => x.replace(/([A-Z])/g, " $1").toLowerCase()).join(", ")} observations in the current or comparable reporting period. Other company facts remain available.`,
     );
   if (!reference)
     changeConditions.unshift(
@@ -503,6 +635,22 @@ export function aurynDecision(
     changeConditions.unshift(
       "Look for renewed revenue growth and positive operating cash generation in the next comparable report.",
     );
+  if (
+    !specialist &&
+    !strong &&
+    growth != null &&
+    growth >= 20 &&
+    !growthAssessment.eligible &&
+    financialsUsable &&
+    !distress
+  ) {
+    const outstanding = growthAssessment.requirements.filter(
+      (rule) => !rule.met,
+    );
+    changeConditions.unshift(
+      `For the funded-growth path, establish: ${outstanding.map((rule) => rule.label.toLowerCase()).join("; ")}.`,
+    );
+  }
   if (business === "developing" && !distress)
     changeConditions.push(
       bank
@@ -543,7 +691,11 @@ export function aurynDecision(
           ? "neutral"
           : "caution";
   return {
-    version: "auryn-decision-v2",
+    version: "auryn-decision-v3",
+    actions,
+    contextLabel: ownsPosition ? "For your holding" : "For new purchases",
+    growthAssessment,
+    growthCandidate: !specialist && !strong && growth != null && growth >= 20,
     action,
     tone,
     headline,
@@ -573,7 +725,7 @@ export function aurynDecision(
     ownsPosition,
     confidence: paused
       ? "Assessment paused"
-      : valuation && strong
+      : valuation && (strong || growthAssessment.eligible)
         ? "Supported by current inputs"
         : "Developing case",
     method:

@@ -1,4 +1,5 @@
 "use client";
+import { newRequestId } from "@/lib/client-id";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -69,7 +70,7 @@ export default function AlertCenter() {
     await action(() =>
       api("documents", {
         kind: "alert",
-        key: crypto.randomUUID(),
+        key: newRequestId(),
         body: {
           symbol: symbol.trim().toUpperCase(),
           type,

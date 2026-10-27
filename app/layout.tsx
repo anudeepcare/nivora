@@ -1,3 +1,5 @@
+import AnalyticsConsent from "@/components/AnalyticsConsent";
+import { SITE_URL } from "@/lib/site-metadata";
 import { AppearanceSync } from "@/components/AppearanceControls";
 import Pwa from "@/components/Pwa";
 import AppSession from "@/components/AppSession";
@@ -5,6 +7,11 @@ import type { Metadata, Viewport } from "next";
 import "./product.css";
 import "./pwa-shell.css";
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+  },
+  robots: { index: false, follow: false },
   title: "AURYN · Investment Intelligence",
   description: "Understand the business. Put the price in perspective.",
   manifest: "/manifest.webmanifest",
@@ -41,6 +48,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <Pwa />
         <AppearanceSync />
         <AppSession>{children}</AppSession>
+        <AnalyticsConsent />
       </body>
     </html>
   );

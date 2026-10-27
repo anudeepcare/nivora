@@ -20,7 +20,7 @@ import { researchPeriods } from "../lib/financial-catalog.ts";
 import { demoData } from "./fixtures/demo.ts";
 
 function loadComponent(file, name, bindings) {
-  bindings = { paceCode, pacePeriods, PaceReadings: ({readings}) => React.createElement("div", null, readings.map(r=>React.createElement("div", {key:r.key}, r.label, " ", r.code, " ", format.dateLabel(r.date)))), PaceHelp: () => null, CompanySparkline: () => null, ...bindings };
+  bindings = { SUPPORT_EMAIL: "support@auryninvest.com", PrivacyChoices: () => null, paceCode, pacePeriods, PaceGuidance: ({view}) => React.createElement("div", null, view.actionLabel, view.effectiveCode), PaceReadings: ({readings}) => React.createElement("div", null, readings.map(r=>React.createElement("div", {key:r.key}, r.label, " ", r.code, " ", format.dateLabel(r.date)))), PaceHelp: () => null, CompanySparkline: () => null, ...bindings };
   bindings = {
     useAccess: () => ({
       access: {
@@ -57,6 +57,7 @@ function loadComponent(file, name, bindings) {
     FileText: () => null,
     Clock3: () => null,
     useEffect: () => {},
+    useState: React.useState,
     ...bindings,
   };
   const ast = ts.createSourceFile(
@@ -695,6 +696,7 @@ test("authentication explains AURYN in sign-in, signup and recovery without fabr
       React,
       useRouter: () => ({ replace: () => {} }),
       useEffect: () => {},
+    useState: React.useState,
       useState: () => [values[i++], () => {}],
       Logo: () => React.createElement("span", null, "AURYN"),
       PublicSample,
@@ -722,6 +724,7 @@ test("the single settings page preserves account, membership and help", () => {
     React,
     useState: React.useState,
     useEffect: () => {},
+    useState: React.useState,
     useProduct: () => ({
       demo: false,
       workspace: { email: "reader@example.com" },
@@ -782,6 +785,7 @@ test("change tracking stays invisible until there are actual observed changes", 
       useState: React.useState,
       useRef: React.useRef,
       useEffect: () => {},
+    useState: React.useState,
       useProduct: () => ({ cache: new Map(), owner: "test", demo: undefined }),
     },
   );
