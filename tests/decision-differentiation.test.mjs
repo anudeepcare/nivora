@@ -25,7 +25,7 @@ test("the entry threshold includes the bear limit and qualifies at its exact bou
   assert.equal(assess(company(initial.valuation.entryPrice)).action, "Buy");
   assert.equal(
     assess(company(initial.valuation.entryPrice + 0.01)).action,
-    "Wait",
+    "Review",
   );
 });
 test("every decision reason follows the same gate as its action", () => {
@@ -42,13 +42,13 @@ test("every decision reason follows the same gate as its action", () => {
   };
   const cases = [
     [{}, "entry", "Buy", "Add"],
-    [{ financialsUsable: false }, "financials", "Wait", "Wait"],
-    [{ priceUsable: false }, "price", "Wait", "Wait"],
-    [{ value: "unassessed" }, "valuation", "Wait", "Wait"],
-    [{ value: "expensive" }, "value", "Wait", "Hold"],
-    [{ business: "weak" }, "business", "Wait", "Wait"],
+    [{ financialsUsable: false }, "financials", "Review", "Review"],
+    [{ priceUsable: false }, "price", "Review", "Review"],
+    [{ value: "unassessed" }, "history", "Review", "Review"],
+    [{ value: "expensive" }, "history", "Review", "Review"],
+    [{ business: "weak" }, "business", "Review", "Review"],
     [{ confirmedPace: 0 }, "pace", "Wait", "Hold"],
-    [{ extended: true }, "momentum", "Wait", "Hold"],
+    [{ extended: true }, "history", "Review", "Review"],
     [{ distress: true }, "funding", "Avoid", "Reduce"],
     [{ deterioration: true }, "deterioration", "Avoid", "Reduce"],
     [{ insolvency: true }, "insolvency", "Avoid", "Sell"],
@@ -113,28 +113,28 @@ test("conflicting outstanding shares preserve the EPS fallback without an order-
     const d = assess({ ...r, facts });
     assert.equal(d.valuation.basis, "earnings");
     assert.equal(d.valuation.base, 150);
-    assert.equal(d.action, "Wait");
+    assert.equal(d.action, "Review");
     const noEps = assess({ ...r, facts, evidence: undefined });
     assert.equal(noEps.valuation, null);
-    assert.equal(noEps.action, "Wait");
+    assert.equal(noEps.action, "Review");
   }
 });
-test("price changes differentiate Buy/Add from Wait/Hold without changing the business", () => {
+test("without confirmed Pace the independent valuation screen can support entry or require Review", () => {
   const low = assess(company(50)),
     high = assess(company(500));
   assert.deepEqual(low.actions, { entry: "Buy", holding: "Add" });
-  assert.deepEqual(high.actions, { entry: "Wait", holding: "Hold" });
+  assert.deepEqual(high.actions, { entry: "Review", holding: "Review" });
   assert.equal(low.explanation.code, "entry");
-  assert.equal(high.explanation.code, "value");
-  assert.match(high.explanation.detail, /500|99\.23/);
+  assert.equal(high.explanation.code, "history");
+  assert.match(high.explanation.detail, /confirmed Pace.*not available/);
   assert.equal(low.valuation.base, high.valuation.base);
 });
 test("an unassessed value is explicitly different from a failed price condition", () => {
   const r = company();
   r.company.symbol = "IREN";
   const d = assess(r);
-  assert.equal(d.action, "Wait");
-  assert.equal(d.explanation.code, "valuation");
+  assert.equal(d.action, "Review");
+  assert.equal(d.explanation.code, "history");
   assert.match(d.explanation.label, /incomplete/i);
   assert.doesNotMatch(d.explanation.detail, /expensive|overvalued/i);
 });

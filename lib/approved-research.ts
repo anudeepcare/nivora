@@ -142,25 +142,6 @@ export function approvedResearch(
     )
       ? cases
       : [];
-  const labels: Record<string, string> = {
-    Build: ownsPosition
-      ? "Add. Accumulate in stages."
-      : "Buy. Accumulate in stages.",
-    "Begin small": "Start small. Build with evidence.",
-    "Hold & monitor": "Hold. Be selective adding.",
-    "Review exposure": "Risk first. Recheck your exposure.",
-    "Evidence needed": b.conflicting
-      ? "Reconcile the financial evidence."
-      : "Explore the price and available evidence.",
-    "Sector review": "Read the business on its own terms.",
-    "Price review": "Price, momentum and instrument risk.",
-    Wait:
-      edge.value === "demanding"
-        ? "A strong case needs the right price."
-        : edge.referenceBasis === "unavailable"
-          ? "Start with the latest dated close."
-          : "Test the price assumptions.",
-  };
   return {
     edge,
     decision,

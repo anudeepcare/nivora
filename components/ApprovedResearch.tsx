@@ -432,19 +432,28 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
             </div>
           )}
           <p>
-            Buy/Add requires supported operating strength and an attractive
-            model price, without the listed funding risks or RSI of 75 or
-            higher. A cash-flow entry uses a 20% cushion to the base value. An
-            earnings entry uses at least 12% annualized base upside and a bear
-            decline no worse than 35%. These screening thresholds are not a
-            validated forecast of investment performance.
+            Business first: Buy/Add supports gradual accumulation when the
+            business screen passes, the listed funding and deterioration
+            triggers are absent, and confirmed Pace is P1–P4. Price movement
+            does not establish business quality. Valuation and short-term
+            momentum remain separate cautions; keep purchases within your cash
+            budget and position limit.
           </p>
           <p>
-            Hold requires an existing position, supported operations and an
-            available price model. Reduce/Avoid flags operating funding pressure
-            or sustained deterioration. Sell requires negative equity, debt and
-            less than six months of operating runway together. Reported cash
-            runway excludes unreported financing and future changes in spending.
+            Hold means the business qualifies but confirmed P0 pauses additions.
+            Wait applies to that same pause for new purchases. Review identifies
+            missing inputs or business checks that need attention. Reduce/Avoid
+            flags operating funding pressure or sustained deterioration. Sell
+            requires negative equity, debt and less than six months of operating
+            runway together. Reported cash runway excludes unreported financing
+            and future changes in spending.
+          </p>
+          <p>
+            Without confirmed Pace, a separate valuation-entry screen can
+            support Buy/Add: a cash-flow model uses a 20% base-value cushion; an
+            earnings model uses at least 12% annualized base return. Both limit
+            modelled bear downside to 35% and require RSI below 75 when
+            available. These are disclosed heuristics, not validated forecasts.
           </p>
           {d.risks.map((risk) => (
             <p key={risk}>{risk}</p>

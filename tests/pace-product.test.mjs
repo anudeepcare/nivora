@@ -18,7 +18,7 @@ test('Pace uses branded levels and distinguishes missing history from P0', () =>
   for (const n of [null, undefined, NaN, Infinity, -1, 5, 1.5]) assert.equal(paceCode(n), 'Pending');
 });
 test('all decisions gate every Pace level without overwriting the raw price reading', () => {
-  for (const action of ['Buy', 'Add', 'Hold', 'Wait', 'Reduce', 'Sell', 'Avoid']) {
+  for (const action of ['Buy', 'Add', 'Hold', 'Wait', 'Review', 'Reduce', 'Sell', 'Avoid']) {
     for (const level of [0, 1, 2, 3, 4, null]) {
       const view = pacePresentation(action, level);
       assert.equal(view.rawLevel, level);
@@ -61,9 +61,11 @@ test('bank and insurance cash flows are never put through operating-company runw
   assert.equal(risk.distress, false);
 });
 
-test('an unassessed valuation leads with the missing price assumptions as its next checkpoint', () => {
+test('an eligible business can accumulate with a separate unassessed valuation caution', () => {
  const r = structuredClone(demoData.research.IREN);
  const decision = policy.aurynDecision(r, {now:Date.parse(r.retrievedAt)});
  assert.equal(decision.value, 'unassessed');
- assert.match(decision.changeConditions[0], /valuation|assumptions/i);
+ assert.equal(decision.action, 'Buy');
+ assert.match(decision.changeConditions[0], /business.*completed monthly/i);
+ assert.ok(decision.risks.some(r => /valuation model is not established/i.test(r)));
 });

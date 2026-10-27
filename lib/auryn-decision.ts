@@ -18,6 +18,7 @@ export type DecisionAction =
   | "Reduce"
   | "Sell"
   | "Wait"
+  | "Review"
   | "Avoid";
 export type DecisionInput = {
   ownsPosition: boolean;
@@ -131,14 +132,13 @@ export function assessDecision(x: DecisionInput): {
     | "funding"
     | "deterioration"
     | "price"
-    | "valuation"
+    | "accumulation"
+    | "history"
     | "pace"
     | "entry"
-    | "business"
-    | "momentum"
-    | "value";
+    | "business";
 } {
-  if (!x.financialsUsable) return { action: "Wait", code: "financials" };
+  if (!x.financialsUsable) return { action: "Review", code: "financials" };
   if (x.insolvency)
     return { action: x.ownsPosition ? "Sell" : "Avoid", code: "insolvency" };
   if (x.distress || x.deterioration)
@@ -146,20 +146,24 @@ export function assessDecision(x: DecisionInput): {
       action: x.ownsPosition ? "Reduce" : "Avoid",
       code: x.distress ? "funding" : "deterioration",
     };
-  if (!x.priceUsable) return { action: "Wait", code: "price" };
-  if (x.value === "unassessed") return { action: "Wait", code: "valuation" };
+  if (!x.priceUsable) return { action: "Review", code: "price" };
   const supported = x.business === "strong" || x.growthEligible === true;
-  if (x.confirmedPace === 0 && supported)
+  if (!supported) return { action: "Review", code: "business" };
+  if (x.confirmedPace === 0)
     return { action: x.ownsPosition ? "Hold" : "Wait", code: "pace" };
-  if (supported && x.value === "attractive" && !x.extended)
+  // A completed contribution policy is distinct from a lump-sum valuation entry.
+  // Do not let forming readings, RSI or a conservative model rewrite this plan.
+  if (
+    Number.isInteger(x.confirmedPace) &&
+    x.confirmedPace! >= 1 &&
+    x.confirmedPace! <= 4
+  )
+    return { action: x.ownsPosition ? "Add" : "Buy", code: "accumulation" };
+  if (x.value === "attractive" && !x.extended)
     return { action: x.ownsPosition ? "Add" : "Buy", code: "entry" };
   return {
-    action: x.ownsPosition && supported ? "Hold" : "Wait",
-    code: !supported
-      ? "business"
-      : x.value !== "attractive"
-        ? "value"
-        : "momentum",
+    action: "Review",
+    code: "history",
   };
 }
 export function evaluateDecision(x: DecisionInput): DecisionAction {
@@ -347,6 +351,47 @@ export function aurynDecision(
     p.operatingIncome < 0 &&
     growth != null &&
     growth < 0;
+  const businessChecks = bank
+    ? [
+        {
+          label: "positive net income",
+          value: p?.netIncome,
+          met: hasPositive(p?.netIncome),
+        },
+        {
+          label: "return on average equity of at least 8%",
+          value: roe,
+          met: roe != null && roe >= 8,
+        },
+        {
+          label: "comparable revenue growth of zero or more",
+          value: growth,
+          met: growth != null && growth >= 0,
+        },
+      ]
+    : [
+        {
+          label: "positive cash generation after capex",
+          value: p?.fcf,
+          met: hasPositive(p?.fcf),
+        },
+        {
+          label: "positive operating profit",
+          value: p?.operatingIncome,
+          met: hasPositive(p?.operatingIncome),
+        },
+        {
+          label: "comparable revenue growth of zero or more",
+          value: growth,
+          met: growth != null && growth >= 0,
+        },
+      ];
+  const businessGaps = businessChecks
+    .filter((check) => !check.met)
+    .map(
+      (check) =>
+        `${check.value == null || !Number.isFinite(check.value) ? "Missing evidence for" : "Not met:"} ${check.label}`,
+    );
   const business: DecisionInput["business"] = !p
     ? "missing"
     : strong
@@ -555,14 +600,15 @@ export function aurynDecision(
       : valuation.upside < 0
         ? "expensive"
         : "fair";
-    reasons.unshift(
+    reasons.push(
       valuation.basis === "earnings"
         ? `Modelled annual return: ${percent(valuation.annualReturn, true)} over ${valuation.years!.toFixed(1)} years.`
         : `Base cash-flow value is ${percent(Math.abs(valuation.upside))} ${valuation.upside >= 0 ? "above" : "below"} the dated price.`,
     );
-    changeConditions.push(
-      `Reassess entry at ${amount(valuation.entryPrice, reference!.currency)} or below if the underlying assumptions hold.`,
-    );
+    if (!favorable)
+      risks.push(
+        `Price is above the conservative ${valuation.basis === "cash-flow" ? "cash-flow" : "earnings"} model screen of ${amount(valuation.entryPrice, reference!.currency)}. Review growth, cash conversion and downside assumptions before committing more capital; this sensitivity is not a complete valuation verdict.`,
+      );
   }
   const tech = perspective(r).tech;
   const extended = tech.rsi != null && tech.rsi >= 75;
@@ -585,17 +631,27 @@ export function aurynDecision(
   };
   const action = ownsPosition ? actions.holding : actions.entry;
   const assessment = assessDecision(decisionInputs);
+  if (assessment.code === "accumulation") {
+    changeConditions.push(
+      "Review the business after earnings and adjust the contribution pace when the next completed monthly reading changes. Stay within your planned cash budget and position limit.",
+    );
+    if (!valuation)
+      risks.push(
+        "A suitable valuation model is not established. Gradual accumulation is supported by the business screen and confirmed Pace, not a claim that this stock is cheap.",
+      );
+  }
   const paused = !reference || !financialsUsable;
   let headline = "The price needs a stronger margin of safety.";
   if (action === "Buy" || action === "Add")
     headline =
-      growthAssessment.eligible && !strong
-        ? "Funded growth and the price case support a gradual entry."
-        : "Business strength and the price case align.";
+      assessment.code === "accumulation"
+        ? growthAssessment.eligible && !strong
+          ? "Funded growth supports gradual accumulation at confirmed Pace."
+          : "Business strength supports gradual accumulation at confirmed Pace."
+        : "The business and valuation screens support a gradual entry.";
   else if (action === "Hold")
-    headline = extended
-      ? "The business holds up. Momentum is stretched."
-      : "The operating case holds. Adding needs a better price.";
+    headline =
+      "The business case holds; confirmed Pace pauses new contributions.";
   else if (action === "Sell")
     headline =
       "Cash runway and balance-sheet weakness threaten the holding case.";
@@ -614,26 +670,22 @@ export function aurynDecision(
     headline = p
       ? "Refresh the financial report before sizing an entry."
       : "Price and Pace are ready; company analysis is still developing.";
-  else if (value === "unassessed")
+  else if (assessment.code === "history")
+    headline = "The business screen passes. Confirmed Pace needs more history.";
+  else if (assessment.code === "business")
     headline =
-      business === "strong"
-        ? "Cash generation is healthy. An entry price is not yet established."
-        : "Follow operating progress and funding before starting.";
-  else if (extended) headline = "The price has run ahead of the entry setup.";
-  else if (business === "developing")
-    headline = "The business needs stronger operating confirmation.";
+      "Review operating progress and funding before committing more capital.";
   if (
     (action === "Hold" || action === "Wait") &&
     brief.accumulation.multiplier === 0 &&
     financialsUsable &&
     reference &&
-    value !== "unassessed" &&
     (strong || growthAssessment.eligible)
   ) {
     headline =
       "The business case holds; confirmed Pace pauses new contributions.";
     changeConditions.unshift(
-      "Reassess additions when a completed monthly Pace reading moves above P0 and the price case still qualifies.",
+      "Reassess additions when a completed monthly Pace reading moves above P0 and the business still qualifies.",
     );
   }
   if (growthAssessment.eligible && !strong) {
@@ -685,8 +737,8 @@ export function aurynDecision(
         : "Track operating profitability and cash generation in the next report.",
     );
   if (extended)
-    changeConditions.push(
-      "Reassess after momentum cools or earnings support the higher price.",
+    risks.push(
+      "Short-term momentum is stretched (RSI at least 75). Use staged purchases and respect your position limit; this does not change the confirmed monthly Pace.",
     );
   if (
     !valuation &&
@@ -696,7 +748,7 @@ export function aurynDecision(
     !insolvency &&
     !deterioration
   )
-    changeConditions.unshift(
+    changeConditions.push(
       specialist
         ? `Use ${brief.coverage.drivers.slice(0, 2).join(" and ")} to establish an applicable valuation.`
         : "Complete the dated earnings or funded cash-flow assumptions in Value.",
@@ -705,6 +757,11 @@ export function aurynDecision(
     changeConditions.push(
       "Reassess after the next earnings report or a material change in the price.",
     );
+  const businessReview =
+    specialist && !bank
+      ? `This sector needs its own business assessment using ${brief.coverage.drivers.slice(0, 2).join(" and ")}; the ordinary-company cash-generation screen does not apply.`
+      : `${businessGaps.join("; ")}. ${growth != null && growth >= 20 ? "The alternative funded-growth requirements must also be reviewed below." : "Price weakness alone does not establish a supported business case."}`;
+  if (assessment.code === "business") changeConditions.unshift(businessReview);
   if (!reasons.length && reference)
     reasons.push(
       `${amount(reference.price, reference.currency)} · ${reference.basis === "settled-close" ? "completed session" : "dated quote"} · ${reference.asOf.slice(0, 10)}.`,
@@ -745,37 +802,29 @@ export function aurynDecision(
       detail:
         "A current quote or recent completed close is needed to compare price with the business case.",
     },
-    valuation: {
-      label: "Valuation incomplete",
-      detail:
-        "The price assessment needs an eligible cash-flow model or dated earnings range. Pace and the reported company metrics remain available.",
-    },
     pace: {
       label: "P0 pauses additions",
       detail:
-        "The confirmed monthly reading is P0. Reassess contributions after a completed month moves above P0, provided business and price conditions still qualify.",
+        "The confirmed monthly reading is P0. Pause new contributions, not the business assessment. Reassess after a completed month moves above P0 if the business still qualifies. P0 is not a sell signal.",
+    },
+    accumulation: {
+      label: `Accumulate gradually · P${brief.accumulation.multiplier}`,
+      detail:
+        "Growth, profitability and funding checks support scheduled purchases. Follow confirmed Pace within your cash budget and position limit. Review valuation risks separately; this is not a claim that the stock is cheap.",
+    },
+    history: {
+      label: "Contribution history incomplete",
+      detail:
+        "The business screen passes, but a confirmed Pace level is not available and the separate valuation-entry screen does not qualify. Review the available business and price evidence; missing history is not a negative business verdict.",
     },
     entry: {
       label: "Entry conditions met",
       detail:
-        "The business screen and modelled price conditions qualify, with no stretched-momentum or confirmed P0 block. Size purchases to your risk budget.",
+        "The business screen and independent valuation-entry conditions qualify. A confirmed contribution level is not available; size purchases to your risk budget without assuming a Pace level.",
     },
     business: {
-      label: "Business criteria not met",
-      detail: bank
-        ? "Positive earnings, at least 8% return on average equity and nonnegative revenue growth must align."
-        : "The company has not met either the profitable cash-generation screen or all funded-growth requirements. Price alone does not establish a supported entry.",
-    },
-    momentum: {
-      label: "Momentum stretched",
-      detail: `The 14-session RSI is ${tech.rsi?.toFixed(1) ?? "75 or higher"}. The entry screen pauses additions at 75 or higher; the business assessment remains separate.`,
-    },
-    value: {
-      label: "Entry price not met",
-      detail:
-        valuation && reference
-          ? `${amount(reference.price, reference.currency)} reference price; entry screen at ${amount(valuation.entryPrice, reference.currency)} or below under these assumptions. This includes both the return/cushion requirement and the 35% bear-case downside limit.`
-          : "The price conditions do not yet qualify under the stated assumptions.",
+      label: "Business checks to review",
+      detail: businessReview,
     },
   };
   const explanation = {
@@ -791,7 +840,7 @@ export function aurynDecision(
           ? "neutral"
           : "caution";
   return {
-    version: "auryn-decision-v4",
+    version: "auryn-decision-v5",
     explanation,
     actions,
     contextLabel: ownsPosition ? "For your holding" : "For new purchases",
@@ -826,8 +875,8 @@ export function aurynDecision(
     ownsPosition,
     confidence: paused
       ? "Assessment paused"
-      : valuation && (strong || growthAssessment.eligible)
-        ? "Supported by current inputs"
+      : strong || growthAssessment.eligible
+        ? "Business case supported"
         : "Developing case",
     method:
       "Rules-based research assessment, not a probability of profit. Review the stated model assumptions and portfolio concentration.",

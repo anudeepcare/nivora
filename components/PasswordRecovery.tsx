@@ -43,7 +43,7 @@ export default function PasswordRecovery() {
             <br />
             <em>Know your next move.</em>
           </h2>
-          <p>The decision. The reasons. Your AURYN Pace.</p>
+          <p>Business first. A clear decision. Your pace for gradual buying.</p>
         </div>
         <PublicSample compact />
         <div className="mp-auth-story-footer">

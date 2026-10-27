@@ -8,7 +8,7 @@ export const publicPages: Record<
   "/": {
     title: "AURYN · Clearer stock research. A better next move.",
     description:
-      "Understand the business, test the price and plan your next contribution with AURYN Pace. Stock research, watchlists and portfolio context in one place.",
+      "Business first. Understand buy, hold and sell guidance, inspect valuation assumptions, and plan gradual purchases with AURYN Pace.",
   },
   "/sample": {
     title: "See AURYN in action · Product tour",
@@ -28,7 +28,7 @@ export const publicPages: Record<
   "/pace": {
     title: "AURYN Pace explained · P0 to P4",
     description:
-      "Understand AURYN’s contribution scale, confirmed and forming readings, and how Pace works with Buy, Add, Hold and Wait.",
+      "Understand P0–P4: business checks first, confirmed Pace for gradual buying, valuation as a separate check, and funding risks that can change the decision.",
   },
   "/help": {
     title: "AURYN help · Research, accounts and Pace",

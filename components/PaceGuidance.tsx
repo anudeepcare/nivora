@@ -29,7 +29,7 @@ export default function PaceGuidance({
         </p>
       )}
       <div className="pace-action">
-        <span className="pace-assessment-label">Overall view</span>
+        <span className="pace-assessment-label">Contribution plan</span>
         <strong>{view.actionLabel}</strong>
         {view.effectiveCode && (
           <span className="pace-effective">{view.effectiveCode}</span>

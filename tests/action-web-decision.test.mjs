@@ -22,14 +22,14 @@ test('growth does not override funding, dilution, deterioration or missing evide
  assert.equal(typeof policy.fundedGrowthCase,'function');
  for(const patch of [{growth:19},{priorMargin:null},{cash:0},{netDebt:1},{dilution:11},{dilution:null},{investmentRunway:17},{operatingRunway:23},{financialsUsable:false},{applicable:false},{cash:NaN}]) assert.equal(policy.fundedGrowthCase({...funded,...patch}).eligible,false,JSON.stringify(patch));
  assert.equal(policy.evaluateDecision({...base,business:'developing',growthEligible:true,distress:true}),'Avoid');
- assert.equal(policy.evaluateDecision({...base,business:'developing',growthEligible:true,value:'unassessed'}),'Wait');
+ assert.equal(policy.evaluateDecision({...base,business:'developing',growthEligible:true,value:'unassessed'}),'Review');
 });
 test('one decision exposes entry and holder guidance without counting watchlisting as ownership',()=>{
  const r=demoData.research.MSFT;
  const d=policy.aurynDecision(r,{now:Date.parse(r.retrievedAt)});
  assert.ok(d.actions);
- assert.equal(d.actions.entry,'Wait');
- assert.equal(d.actions.holding,'Hold');
+ assert.equal(d.actions.entry,'Buy');
+ assert.equal(d.actions.holding,'Add');
  assert.equal(d.contextLabel,'For new purchases');
  const held=policy.aurynDecision(r,{ownsPosition:true,now:Date.parse(r.retrievedAt)});
  assert.equal(held.contextLabel,'For your holding');
@@ -65,7 +65,7 @@ test('workspace guidance preserves financial analysis with too little monthly pr
  const {workspaceGuidance}=await import('../lib/edge-research.ts');
  const r=structuredClone(demoData.research.MSFT);r.history=r.history.slice(-20);
  const d=workspaceGuidance(r,false,Date.parse(r.retrievedAt));
- assert.equal(d.multiplier,null);assert.ok(d.actions);assert.equal(d.actions.entry,'Wait');assert.equal(d.actions.holding,'Hold');assert.equal(d.view.effectiveCode,null);
+ assert.equal(d.multiplier,null);assert.ok(d.actions);assert.equal(d.actions.entry,'Review');assert.equal(d.actions.holding,'Review');assert.equal(d.view.effectiveCode,null);
 });
 
 test('comparable prior margin conflicts cannot qualify a growth path',()=>{

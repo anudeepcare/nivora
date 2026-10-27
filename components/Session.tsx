@@ -578,7 +578,7 @@ function Login({ initialError }: { initialError: string }) {
             <br />
             <em>Know your next move.</em>
           </h2>
-          <p>The decision. The reasons. Your AURYN Pace.</p>
+          <p>Business first. A clear decision. Your pace for gradual buying.</p>
         </div>
         <PublicSample compact />
         <div className="mp-auth-story-footer">
@@ -618,10 +618,10 @@ function Login({ initialError }: { initialError: string }) {
             </h1>
             <p>
               {mode === "signup"
-                ? "Create your free account. Get to know your next investment."
+                ? "Understand the business. Plan gradual buying with AURYN Pace."
                 : mode === "reset"
                   ? "We’ll email a secure link to restore access to your workspace."
-                  : "Sign in to your research, watchlist and portfolio."}
+                  : "Your business research, buy and sell guidance, and AURYN Pace."}
             </p>
           </div>
           {mode !== "reset" && (

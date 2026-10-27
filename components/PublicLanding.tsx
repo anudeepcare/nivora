@@ -66,7 +66,7 @@ export function PublicSample({ compact = false }: { compact?: boolean } = {}) {
             <ShieldCheck size={15} aria-hidden="true" /> Risk
           </span>
         </div>
-        <p>The case, the cautions, and what would change the view.</p>
+        <p>Business first. A clear action, with reasons and cautions.</p>
       </div>
       <section
         className="ap-pace-preview"
@@ -83,7 +83,7 @@ export function PublicSample({ compact = false }: { compact?: boolean } = {}) {
             </h3>
           </div>
         </div>
-        <p>Put price conditions into a contribution plan.</p>
+        <p>Build gradually when the business qualifies.</p>
         <div
           className="ap-pace-scale"
           aria-label="P means Pace: P0 Paused, P1 Steady, P2 Increased, P3 Elevated, P4 Accelerated"
@@ -111,7 +111,8 @@ export function PublicSample({ compact = false }: { compact?: boolean } = {}) {
           </span>
         </div>
         <small>
-          P means Pace · contribution levels, not predicted returns.
+          P4 means accelerated pace, not a company-quality rating. Contribution
+          levels, not predicted returns.
         </small>
       </section>
       {!compact && (
@@ -153,8 +154,8 @@ function ProductWalkthrough() {
               would change the assessment.
             </p>
             <p>
-              When critical evidence is missing, the affected assessment waits
-              for enough information.
+              Incomplete assessments show Review and explain the missing check.
+              A falling price alone does not make a company good or bad.
             </p>
           </div>
         </details>
@@ -189,9 +190,10 @@ function ProductWalkthrough() {
               months; the current month is shown separately while it is forming.
             </p>
             <p>
-              P0 pauses new contributions, P1 is steady, and higher levels
-              increase the contribution. Pace does not establish business
-              quality, value or a future return.
+              After business and funding checks, P1 supports steady buying and
+              P2–P4 increase the planned pace within your budget. P0 pauses
+              additions; it does not mean Sell. Valuation stays a separate
+              check.
             </p>
             <Link href="/methodology">
               Read the methodology <ArrowRight size={16} aria-hidden="true" />
@@ -304,8 +306,8 @@ export default function PublicLanding({
               <em>Know your next move.</em>
             </h1>
             <p>
-              Understand the business. See the decision and its reasons. Find
-              your rhythm with AURYN Pace.
+              Business first. Clear guidance to buy, hold or sell. Build
+              gradually with AURYN Pace, with the reasons and risks in view.
             </p>
             <div className="ap-hero-actions">
               <Link
@@ -382,7 +384,7 @@ export default function PublicLanding({
             <span className="ap-step">02 / WEIGH IT UP</span>
             <h3>See the case. See the risks.</h3>
             <p>
-              Bring the decision, valuation assumptions and reasons to wait into
+              Bring the decision, valuation assumptions and business risks into
               one research view.
             </p>
           </article>

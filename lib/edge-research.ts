@@ -39,7 +39,7 @@ export function researchEdge(
             ? "Price review"
             : specialist && d.value === "unassessed"
               ? "Sector review"
-              : "Wait";
+              : d.action;
   const trajectory = brief.trajectory.filter(
       (t) => t.fcf != null && t.shares != null && t.shares > 0,
     ),
@@ -53,13 +53,12 @@ export function researchEdge(
     business === "strong" && brief.timing.trend === "Weak"
       ? {
           title: "Cash generation positive. Price trend weak.",
-          text: "Operating cash generation is positive while the price trend is weak. The decision also checks valuation and funding risk.",
+          text: "Share-price weakness does not by itself mean the business is weakening. Check growth, cash generation and funding; confirmed Pace then guides eligible accumulation.",
         }
       : business === "strong" && value === "demanding"
         ? {
-            title:
-              "Cash generation supports the business. Price limits the entry.",
-            text: d.headline,
+            title: "Business strength and valuation are different questions.",
+            text: "Cash generation supports the business screen. Price is above the conservative model screen, so inspect the assumptions and keep purchases within your budget.",
           }
         : null;
   return {
@@ -99,7 +98,7 @@ export function researchEdge(
             : "Developing",
     valueLabel:
       d.value === "attractive"
-        ? "Entry supported"
+        ? "Below model screen"
         : d.value === "fair"
           ? "Near model value"
           : d.value === "expensive"

@@ -4,7 +4,11 @@ import fs from "node:fs";
 import ts from "typescript";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { pacePresentation, pacePeriods } from "../lib/pace-presentation.ts";
+import {
+  pacePresentation,
+  pacePeriods,
+  PACE_LEVELS,
+} from "../lib/pace-presentation.ts";
 function component(file, name, bindings = {}) {
   const ast = ts.createSourceFile(
     file,
@@ -64,7 +68,7 @@ test("Pace exposes both periods without a click and applies only the confirmed l
   assert.match(visible, /2026-10-26/);
 });
 test("hold and risk actions keep the price Pace visible without authorising additions", () => {
-  for (const action of ["Hold", "Wait", "Reduce", "Sell", "Avoid"]) {
+  for (const action of ["Hold", "Wait", "Review", "Reduce", "Sell", "Avoid"]) {
     const html = show(action, 4, 2);
     assert.doesNotMatch(html, /pace-effective/);
     const visible = html.replace(/<details[\s\S]*?<\/details>/g, "");
@@ -72,6 +76,29 @@ test("hold and risk actions keep the price Pace visible without authorising addi
     assert.match(visible, /P2/);
     assert.match(html, new RegExp(action));
   }
+});
+test("public Pace education separates business quality, price history and incomplete assessments", () => {
+  const Education = component(
+    "components/PublicEducation.tsx",
+    "PublicEducation",
+    {
+      Link: ({ href, children }) =>
+        React.createElement("a", { href }, children),
+      ArrowRight: () => null,
+      ArrowUpRight: () => null,
+      PrivacyChoices: () => null,
+      SUPPORT_EMAIL: "support@auryninvest.com",
+      PACE_LEVELS,
+    },
+  );
+  const html = renderToStaticMarkup(
+    React.createElement(Education, { pace: true }),
+  );
+  assert.match(html, /business first/i);
+  assert.match(html, /shows Review/);
+  assert.match(html, /not a company-quality rating/);
+  assert.match(html, /budget/);
+  assert.doesNotMatch(html, /incomplete, it shows Wait/);
 });
 test("missing monthly history shows one explanation with no duplicate Pending tiles", () => {
   const html = show("Buy", null, null);

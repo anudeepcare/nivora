@@ -40,8 +40,8 @@ export default function PublicEducation({ pace = false }: { pace?: boolean }) {
         </h1>
         <p>
           {pace
-            ? "Pace turns completed price history into a contribution level. The AURYN View checks the business, price and funding before that level becomes actionable."
-            : "AURYN brings business results, price assumptions and portfolio context into one understandable view. So you can spend less time assembling facts and more time evaluating what matters."}
+            ? "Business first. Growth, profitability and funding determine whether accumulation is supported. Confirmed Pace guides gradual purchases; valuation explains the price assumptions and risks."
+            : "Business first. Understand growth, profits and funding, then see a clear Buy, Add, Hold, Reduce or Sell assessment. AURYN Pace helps plan gradual purchases while valuation stays a separate check."}
         </p>
         <Link className="button primary" href="/sample">
           Explore the product <ArrowRight size={17} />
@@ -57,7 +57,7 @@ export default function PublicEducation({ pace = false }: { pace?: boolean }) {
                 <p>
                   {i === 0
                     ? "Pause scheduled contributions."
-                    : `${i}× your usual scheduled contribution when the final assessment supports additions.`}
+                    : `${i}× your baseline contribution when the business qualifies, within your cash budget and position limit.`}
                 </p>
               </article>
             ))}
@@ -69,8 +69,9 @@ export default function PublicEducation({ pace = false }: { pace?: boolean }) {
               <p>
                 For a new purchase, AURYN shows Buy, Wait or Avoid. For an
                 existing holding, it can show Add, Hold, Reduce or Sell. If an
-                assessment is incomplete, it shows Wait. A saved watchlist item
-                does not mean you own it.
+                assessment is incomplete or the business needs further review,
+                it shows Review. A saved watchlist item does not mean you own
+                it.
               </p>
             </article>
             <article>
@@ -87,10 +88,11 @@ export default function PublicEducation({ pace = false }: { pace?: boolean }) {
               <span>03 / RISK BEFORE SPEED</span>
               <h2>P4 is never a shortcut.</h2>
               <p>
-                A raw P4 is the highest price-based contribution factor. It does
-                not override Wait, Hold, Reduce, Sell or Avoid. P0 pauses
-                additions. Neither level is a return forecast or leverage
-                instruction.
+                P4 is not a company-quality rating. It describes accelerated
+                buying conditions relative to price history. A lower share price
+                alone cannot make a weak business a Buy. Business risks can
+                still require Reduce, Sell or Avoid. P0 pauses additions; it is
+                not a sell signal or a return forecast.
               </p>
             </article>
             <article>
@@ -111,18 +113,19 @@ export default function PublicEducation({ pace = false }: { pace?: boolean }) {
             <span>THE BUSINESS</span>
             <h2>Evidence you can inspect.</h2>
             <p>
-              Reported growth, margins, cash generation and balance sheets stay
-              connected to their periods and sources. Sector context determines
-              which measures are useful.
+              Growth, margins, cash generation and funding explain operating
+              progress. A company can keep improving while its share price
+              falls. Price movement alone does not establish business quality.
             </p>
           </article>
           <article>
             <span>THE PRICE</span>
             <h2>Assumptions in the open.</h2>
             <p>
-              Scenario values explain their inputs, dates and horizons. A
-              modelled return is a conditional calculation, not a promised
-              outcome.
+              A good business is not automatically cheap. Inspect the growth,
+              cash-flow and downside assumptions separately. Conservative model
+              estimates inform caution without blocking every scheduled
+              purchase.
             </p>
           </article>
           <article>
@@ -138,8 +141,9 @@ export default function PublicEducation({ pace = false }: { pace?: boolean }) {
             <span>AURYN PACE</span>
             <h2>A contribution scale of our own.</h2>
             <p>
-              P0 through P4 connect price context to the pace of planned buying,
-              when the wider assessment supports it.
+              After the business checks, P1 supports steady buying and P2–P4
+              increase the planned pace within your budget. P0 pauses additions.
+              Confirmed readings guide the plan; forming readings can change.
             </p>
             <Link href="/pace">Understand Pace →</Link>
           </article>

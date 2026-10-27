@@ -1,3 +1,11 @@
+# Current build — business-led AURYN Pace
+
+Start with [the current release notes](docs/approved-build/BUSINESS_LED_PACE_20261027.md). This full-source release makes a qualifying business plus confirmed P1–P4 support gradual Buy/Add, keeps valuation as a separate caution, preserves funding/deterioration overrides, and gives Review an exact reason when business checks or essential inputs are missing. Public, account and research screens explain the same approach. The approved design and raw monthly-v5 calculation are preserved.
+
+Validation: 819 automated tests, TypeScript, the optimized production build and all nine API test scripts passed. Release validation logs and browser screenshots are included. Research was checked at 360/390/430/768/1280 widths; public/account/Pace pages were also reviewed. No new dependency, migration or environment variable is required. Production has not been deployed. Policy consistency is tested; investment outperformance is not established. Earlier entries below are historical and do not supersede this release.
+
+---
+
 # Current build — visible Pace, differentiated decisions and working research drawers
 
 Start with [the current release notes](docs/approved-build/DECISION_AND_DRAWER_FIXES_20261027.md), [Pace and earnings corrections](docs/approved-build/PACE_EARNINGS_RELEASE_20261027.md), and [Pace verification and launch decisions](docs/approved-build/PACE_TRUST_AND_LAUNCH_20261027.md). This complete source preserves the approved AURYN design, keeps forming/confirmed Pace visible, aligns Strategy Lab with the current Pace policy, corrects earnings lifecycle/freshness, and fixes valuation selection, explicit decision reasons, conflicting share denominators and research drawer interactions.

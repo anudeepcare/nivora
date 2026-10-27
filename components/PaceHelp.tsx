@@ -22,12 +22,17 @@ export default function PaceHelp({ trigger }: { trigger?: string }) {
       <p>
         <strong>Confirmed</strong> uses the latest completed period.{" "}
         <strong>Forming</strong> can change until that period ends. P4 is the
-        highest pace level, not a fourfold return forecast.
+        highest pace level, not a company-quality rating or fourfold return
+        forecast. A business can improve while its share price falls. Keep every
+        contribution within your cash budget and position limit.
       </p>
       <p>
-        A business-risk pause is separate from P0. When the AURYN View is Wait,
-        Hold, Reduce, Sell or Avoid, the price reading cannot independently
-        authorise increased contributions.
+        Business first: a qualifying business with confirmed P1–P4 supports
+        gradual Buy/Add guidance. P0 pauses additions, not the business case.
+        Review explains an incomplete assessment or unmet business checks.
+        Reduce, Sell or Avoid take priority when business risks are triggered.
+        Valuation remains a separate check; Pace does not prove a stock is
+        cheap.
       </p>
     </Help>
   );

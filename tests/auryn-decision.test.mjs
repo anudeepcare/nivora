@@ -26,20 +26,20 @@ test("a supported entry is Buy, or Add only when already owned", () => {
 test("owning a stock with missing critical evidence does not manufacture Hold", () => {
   assert.equal(
     evaluateDecision({ ...good, ownsPosition: true, financialsUsable: false }),
-    "Wait",
+    "Review",
   );
   assert.equal(
     evaluateDecision({ ...good, ownsPosition: true, value: "unassessed" }),
-    "Wait",
+    "Review",
   );
 });
-test("Hold requires supported operations and a price assessment", () => {
+test("Hold requires a supported business and confirmed P0", () => {
   assert.equal(
-    evaluateDecision({ ...good, ownsPosition: true, value: "fair" }),
+    evaluateDecision({ ...good, ownsPosition: true, value: "fair", confirmedPace: 0 }),
     "Hold",
   );
   assert.equal(
-    evaluateDecision({ ...good, ownsPosition: false, value: "fair" }),
+    evaluateDecision({ ...good, ownsPosition: false, value: "fair", confirmedPace: 0 }),
     "Wait",
   );
 });
@@ -110,7 +110,7 @@ test("an expired price cannot stay actionable when a PWA reopens", () => {
     now: Date.parse("2026-11-30T18:00:00Z"),
     ownsPosition: true,
   });
-  assert.equal(d.action, "Wait");
+  assert.equal(d.action, "Review");
   assert.equal(d.status, "paused");
   assert.match(d.headline, /price/i);
   assert.ok(d.reasons.length > 0);
@@ -130,7 +130,7 @@ test("price-only instruments keep price research without fabricated corporate ve
   r.facts = [];
   r.evidence = undefined;
   const d = aurynDecision(r, { now: Date.parse(r.retrievedAt) });
-  assert.equal(d.action, "Wait");
+  assert.equal(d.action, "Review");
   assert.equal(d.valuation, null);
   assert.ok(d.reference);
   assert.match(d.headline, /price/i);
@@ -151,7 +151,7 @@ test("conflicting financial observations pause the decision while preserving oth
     .at(-1);
   r.facts.push({ ...source, id: "zzz-conflict", value: -source.value });
   const d = aurynDecision(r, { now: Date.parse(r.retrievedAt) });
-  assert.equal(d.action, "Wait");
+  assert.equal(d.action, "Review");
   assert.equal(d.status, "paused");
   assert.match(d.headline, /conflict|disagree/i);
   assert.ok(d.reasons.some((x) => /Revenue/.test(x)));

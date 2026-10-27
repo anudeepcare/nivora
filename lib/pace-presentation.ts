@@ -8,7 +8,7 @@ export const PACE_LEVELS = [
   "Accelerated",
 ] as const;
 export const PACE_EXPLANATION =
-  "P means Pace — AURYN’s contribution pace scale, from P0 (Paused) to P4 (Accelerated). It describes a price-based contribution factor, not expected returns, leverage or business quality. The AURYN View checks business, valuation and funding before additions are supported.";
+  "P means Pace — AURYN’s contribution pace scale, from P0 (Paused) to P4 (Accelerated). Business first: growth, profitability and funding determine whether accumulation is supported. Confirmed Pace then guides scheduled purchases within your budget. P4 describes price conditions relative to history, not business quality, fair value, expected returns or leverage.";
 export function paceLevel(value: number | null | undefined): number | null {
   return value != null && Number.isInteger(value) && value >= 0 && value <= 4
     ? value
@@ -82,14 +82,16 @@ export function pacePresentation(
   const detail = blocked
     ? `The AURYN View is ${action}. Review the business risk before adding; the price-only reading does not override it.`
     : action === "Hold"
-      ? "The holding case is supported. An increase needs the entry conditions to improve."
-      : !permitted
-        ? "Entry conditions are not yet met. This reading explains the price setup; it is not an instruction to add."
-        : rawLevel == null
-          ? "The business and price case align; a contribution level needs enough completed price history."
-          : rawLevel === 0
-            ? "The price policy pauses scheduled contributions. P0 is not a sell signal."
-            : `P${rawLevel} applies ${rawLevel}× a usual scheduled contribution under the price policy. Position size and funding risk still matter.`;
+      ? "The business case is supported. Confirmed P0 pauses new contributions until a completed reading changes. P0 is not a sell signal."
+      : action === "Review"
+        ? "Review the stated business or data checks before adding. A price reading alone cannot complete the assessment or establish business quality."
+        : !permitted
+          ? "Entry conditions are not yet met. This reading explains the price setup; it is not an instruction to add."
+          : rawLevel == null
+            ? "The business and price case align; a contribution level needs enough completed price history."
+            : rawLevel === 0
+              ? "The price policy pauses scheduled contributions. P0 is not a sell signal."
+              : `P${rawLevel} means ${rawLevel}× your baseline scheduled contribution, capped by your available cash budget and position limit. It supports gradual accumulation after the business checks, not an all-at-once purchase or a return forecast.`;
   const effectiveCode =
     permitted && rawLevel != null && rawLevel > 0 ? paceCode(rawLevel) : null;
   const actionLabel = permitted

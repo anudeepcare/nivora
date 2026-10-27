@@ -82,8 +82,8 @@ test("Research places an actual decision and Pace before expandable supporting m
   );
   assert.doesNotMatch(html, /Weigh it yourself|evidence-scale|NaN|Infinity/);
   assert.match(html, /Decision rules &amp; source context/);
-  assert.match(html, /class="decision-explanation" data-reason="value"/);
-  assert.match(html, /Entry price not met/);
+  assert.match(html, /class="decision-explanation" data-reason="accumulation"/);
+  assert.match(html, /Accumulate gradually/);
 });
 test("share-class ownership aliases produce Add on the same supported research case", () => {
   const r = structuredClone(demoData.research.MSFT);

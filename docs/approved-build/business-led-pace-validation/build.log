@@ -1,0 +1,73 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> auryn-product@0.1.0 build
+> next build
+
+   ▲ Next.js 15.5.28
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 14.0s
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/34) ...
+   Generating static pages (8/34) 
+   Generating static pages (16/34) 
+   Generating static pages (25/34) 
+ ✓ Generating static pages (34/34)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /_not-found                            229 B         104 kB
+├ ƒ /[[...route]]                         149 kB         350 kB
+├ ○ /about                                3.5 kB         110 kB
+├ ƒ /api/access                            229 B         104 kB
+├ ƒ /api/access/visit                      229 B         104 kB
+├ ƒ /api/account-balances                  229 B         104 kB
+├ ƒ /api/alerts                            229 B         104 kB
+├ ƒ /api/analyst/[symbol]                  229 B         104 kB
+├ ƒ /api/auth/providers                    229 B         104 kB
+├ ƒ /api/billing                           229 B         104 kB
+├ ƒ /api/billing/webhook                   229 B         104 kB
+├ ƒ /api/chart/[symbol]                    229 B         104 kB
+├ ƒ /api/company-data                      229 B         104 kB
+├ ƒ /api/congress                          229 B         104 kB
+├ ƒ /api/documents                         229 B         104 kB
+├ ƒ /api/enrichment/[symbol]               229 B         104 kB
+├ ƒ /api/filings                           229 B         104 kB
+├ ƒ /api/home-feed                         229 B         104 kB
+├ ƒ /api/jobs                              229 B         104 kB
+├ ƒ /api/logos                             229 B         104 kB
+├ ƒ /api/news                              229 B         104 kB
+├ ƒ /api/observations                      229 B         104 kB
+├ ƒ /api/options/[symbol]                  229 B         104 kB
+├ ƒ /api/owner/access                      229 B         104 kB
+├ ƒ /api/paper-plans                       229 B         104 kB
+├ ƒ /api/paper-status                      229 B         104 kB
+├ ƒ /api/portfolio-import                  229 B         104 kB
+├ ƒ /api/price-stream                      229 B         104 kB
+├ ƒ /api/provider-status                   229 B         104 kB
+├ ƒ /api/quotes                            229 B         104 kB
+├ ƒ /api/research-context/[symbol]         229 B         104 kB
+├ ƒ /api/research/[symbol]                 229 B         104 kB
+├ ƒ /api/search                            229 B         104 kB
+├ ƒ /api/sector-performance                229 B         104 kB
+├ ƒ /api/support                           229 B         104 kB
+├ ƒ /api/workspace                         229 B         104 kB
+├ ƒ /auth/callback                         229 B         104 kB
+├ ƒ /auth/confirm                          229 B         104 kB
+├ ○ /opengraph-image                       229 B         104 kB
+├ ○ /pace                                 3.5 kB         110 kB
+├ ○ /robots.txt                            229 B         104 kB
+└ ○ /sitemap.xml                           229 B         104 kB
++ First Load JS shared by all             103 kB
+  ├ chunks/1255-dc3ddf72a1dc71a7.js      46.6 kB
+  ├ chunks/4bd1b696-f785427dddbba9fb.js  54.2 kB
+  └ other shared chunks (total)           2.6 kB
+
+
+ƒ Middleware                             34.9 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
