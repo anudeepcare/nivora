@@ -1,12 +1,19 @@
 "use client";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { ArrowUpRight, Bookmark, Bell, RotateCcw } from "lucide-react";
+import {
+  ArrowUpRight,
+  Bell,
+  ChevronDown,
+  Sparkles,
+  ShieldCheck,
+  ArrowRight,
+  Activity,
+} from "lucide-react";
+import { sameProviderSymbol } from "@/lib/provider-symbol";
 import type { Research } from "@/lib/types";
 import {
   approvedResearch,
-  balanceView,
-  type BalanceFactor,
   type EvidenceSection,
 } from "@/lib/approved-research";
 import type { OverviewMetric } from "@/lib/overview-evidence";
@@ -14,22 +21,14 @@ import { amount, percent, dateLabel } from "@/lib/format";
 import { useProduct } from "./Session";
 import { Help } from "./Ui";
 import MovementContext from "./MovementContext";
+import ResearchChanges from "./ResearchChanges";
+
 type Props = {
   research: Research;
   onTab: (tab: EvidenceSection) => void;
   chart?: ReactNode;
   pro?: boolean;
 };
-// Normalize trigonometric SVG coordinates across server and browser math engines.
-const svgCoordinate = (value: number) => Number(value.toFixed(3));
-const impactLabel = (weight: number) =>
-  weight >= 4
-    ? "Very high impact"
-    : weight >= 3
-      ? "High impact"
-      : weight >= 2
-        ? "Moderate impact"
-        : "Low impact";
 function metricValue(m: OverviewMetric) {
   return m.unit === "money"
     ? amount(m.value, m.currency, true)
@@ -39,860 +38,415 @@ function metricValue(m: OverviewMetric) {
         ? `${m.value.toFixed(2)}×`
         : m.value.toFixed(1);
 }
-function Metrics({ items }: { items: OverviewMetric[] }) {
-  return (
-    <>
-      {items.map((m) => (
-        <div className="metric" key={m.key}>
-          <span>
-            {m.label} <Help label={m.label}>{m.help}</Help>
-          </span>
-          <strong className={m.tone === "risk" ? "red" : ""}>
-            {metricValue(m)}
-          </strong>
-        </div>
-      ))}
-    </>
-  );
-}
-function Scale({
-  factors,
-  excluded,
-}: {
-  factors: BalanceFactor[];
-  excluded: string[];
-}) {
-  const s = balanceView(factors, excluded),
-    angle = (s.angle * Math.PI) / 180;
-  return (
-    <svg
-      className="evidence-scale"
-      viewBox="0 0 600 340"
-      role="img"
-      aria-label={`Evidence balance: ${s.buyCount} ${s.buyCount === 1 ? "reason" : "reasons"} to buy, ${s.waitCount} ${s.waitCount === 1 ? "reason" : "reasons"} to wait. Circle size represents qualitative importance, not probability or Pace.`}
-    >
-      <path
-        d="M300 80V310M246 310H354"
-        stroke="var(--scale-post)"
-        strokeWidth="10"
-        fill="none"
-        strokeLinecap="round"
-      />
-      <path
-        d="M145 80H455"
-        transform={`rotate(${s.angle} 300 80)`}
-        className="scale-beam"
-        stroke="var(--ink)"
-        strokeWidth="9"
-        strokeLinecap="round"
-      />
-      {(["buy", "wait"] as const).map((side) => {
-        const sign = side === "buy" ? -1 : 1,
-          cx = svgCoordinate(300 + sign * 155 * Math.cos(angle)),
-          anchor = svgCoordinate(80 + sign * 155 * Math.sin(angle)),
-          pan = anchor + 163,
-          color = side === "buy" ? "var(--green)" : "var(--amber)";
-        return (
-          <g key={side}>
-            <path
-              d={`M${cx} ${anchor}L${cx - 112} ${pan}M${cx} ${anchor}L${cx + 112} ${pan}`}
-              stroke="#91a7ff"
-              strokeWidth="1.8"
-              fill="none"
-            />
-            {factors
-              .filter((x) => x.side === side && !excluded.includes(x.id))
-              .map((x, i, active) => {
-                const row = Math.floor(i / 3),
-                  columns = Math.min(3, active.length - row * 3),
-                  radius = 14 + x.weight * 5,
-                  X = cx + ((i % 3) - (columns - 1) / 2) * 65,
-                  Y = pan - radius - 3 - row * 68;
-                return (
-                  <g key={x.id}>
-                    <title>{`${x.text} · ${impactLabel(x.weight)}`}</title>
-                    <circle cx={X} cy={Y} r={radius} fill={color} />
-                    <text
-                      x={X}
-                      y={Y + 5}
-                      textAnchor="middle"
-                      fill="#fff"
-                      fontSize="14"
-                      fontWeight="650"
-                    >
-                      {side === "buy" ? "✓" : "!"}
-                    </text>
-                  </g>
-                );
-              })}
-            <path
-              d={`M${cx - 112} ${pan}H${cx + 112}`}
-              stroke={color}
-              strokeWidth="7"
-              strokeLinecap="round"
-            />
-            <text
-              x={cx}
-              y={pan + 28}
-              textAnchor="middle"
-              fill={color}
-              fontSize="15"
-              fontWeight="650"
-            >
-              Reasons to {side}
-            </text>
-          </g>
-        );
-      })}
-      <circle
-        cx="300"
-        cy="80"
-        r="12"
-        fill="var(--blue)"
-        stroke="var(--card)"
-        strokeWidth="4"
-      />
-    </svg>
-  );
-}
-function Projection({
-  research: r,
-  cases,
-}: {
-  research: Research;
-  cases: ReturnType<typeof approvedResearch>["cases"];
-}) {
-  const bars = r.history
-    .filter((x) => Number.isFinite(x.close) && x.close > 0)
-    .slice(-252);
-  if (bars.length < 2) return null;
-  const values = [...bars.map((x) => x.close), ...cases.map((x) => x.target)],
-    min = Math.min(...values) * 0.94,
-    max = Math.max(...values) * 1.06,
-    y = (v: number) => 24 + ((max - v) / (max - min || 1)) * 240,
-    last = bars.at(-1)!,
-    end = cases.length ? 680 : 970,
-    path = bars
-      .map(
-        (b, i) =>
-          `${i ? "L" : "M"}${40 + (i / (bars.length - 1)) * (end - 40)} ${y(b.close)}`,
-      )
-      .join(" ");
-  return (
-    <svg
-      className="data-chart"
-      viewBox="0 0 1000 320"
-      role="img"
-      aria-label={`${r.company.symbol} actual historical prices${cases.length ? " joined to hypothetical scenario paths" : ""}`}
-    >
-      <defs>
-        <linearGradient id="approved-price-fill" x2="0" y2="1">
-          <stop stopColor="var(--blue)" stopOpacity=".14" />
-          <stop offset="1" stopColor="var(--blue)" stopOpacity=".02" />
-        </linearGradient>
-      </defs>
-      {[0, 1, 2, 3].map((i) => {
-        const v = min + ((max - min) * i) / 3;
-        return (
-          <g key={i}>
-            <line x1="40" x2="980" y1={y(v)} y2={y(v)} className="chart-grid" />
-            <text x="1" y={y(v) + 5} className="chart-label">
-              {v.toLocaleString("en-US", {
-                maximumFractionDigits: v < 10 ? 2 : 0,
-              })}
-            </text>
-          </g>
-        );
-      })}
-      <path d={`${path}L${end} 274L40 274Z`} fill="url(#approved-price-fill)" />
-      <path d={path} fill="none" stroke="var(--blue)" strokeWidth="3.4" />
-      {cases.map((c, i) => (
-        <g key={c.name}>
-          <path
-            d={`M${end} ${y(last.close)}L975 ${y(c.target)}`}
-            fill="none"
-            stroke={["var(--red)", "var(--blue)", "var(--green)"][i]}
-            strokeWidth="2.5"
-            strokeDasharray="7 6"
-          />
-          <text
-            x="964"
-            y={y(c.target) - 10}
-            textAnchor="end"
-            fill={["var(--red)", "var(--blue)", "var(--green)"][i]}
-            fontSize="17"
-          >
-            {amount(c.target, r.quote.currency)}
-          </text>
-        </g>
-      ))}
-      <circle
-        cx={end}
-        cy={y(last.close)}
-        r="5"
-        fill="var(--blue)"
-        stroke="var(--card)"
-        strokeWidth="3"
-      />
-      <text x="40" y="310" className="chart-label">
-        {dateLabel(bars[0].time)}
-      </text>
-      <text x={cases.length ? 700 : 820} y="310" className="chart-label">
-        {cases.length ? "Hypothetical paths" : dateLabel(last.time)}
-      </text>
-    </svg>
-  );
-}
-const sections: [EvidenceSection, string, string][] = [
-  [
-    "Thesis",
-    "Business & ownership",
-    "Business model, competitive position and holders",
-  ],
-  ["Financials", "Financials", "Statements, margins, cash flow and funding"],
-  ["Valuation", "Value", "Assumptions, sensitivities and price context"],
-  [
-    "Technicals",
-    "Price & Pace",
-    "Price charts, studies and monthly accumulation",
-  ],
-  ["Analysts", "Analysts", "Ratings, estimates and target distribution"],
-  ["News", "News & earnings", "Company updates and the next checkpoint"],
-  [
-    "Options",
-    "Options & LEAPS",
-    "Chains, expiry, liquidity and scenario payoffs",
-  ],
-  [
-    "Advanced",
-    "Advanced research",
-    "Risk, dilution, expectations and research tools",
-  ],
+const deeper: [EvidenceSection, string, string][] = [
+  ["Financials", "Business", "Growth, margins & cash"],
+  ["Valuation", "Value", "Assumptions & scenarios"],
+  ["Technicals", "Price & Pace", "Chart, trend & accumulation"],
+  ["News", "Catalysts", "News & earnings"],
+  ["Analysts", "Analysts", "Forecasts & expectations"],
+  ["Options", "Options", "Expiry, liquidity & risk"],
+  ["Thesis", "Ownership", "Business case & holders"],
+  ["Advanced", "More research", "Funding, peers & studies"],
 ];
 export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
-  const { workspace, demo } = useProduct(),
-    prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
+  const { workspace, demo } = useProduct();
   const owns = !!workspace?.positions.some(
-      (p) => p.symbol === r.company.symbol && p.quantity > 0,
-    ),
-    m = useMemo(() => approvedResearch(r, owns), [r, owns]),
-    { edge, evidence } = m;
-  const [excluded, setExcluded] = useState<string[]>([]),
-    [lens, setLens] = useState<"investor" | "trader">("investor"),
-    [focus, setFocus] = useState<
-      "business" | "valuation" | "technical" | "ownership"
-    >("business"),
-    [investment, setInvestment] = useState(1500),
-    [sleep, setSleep] = useState(""),
-    [saved, setSaved] = useState("");
+    (p) => sameProviderSymbol(p.symbol, r.company.symbol) && p.quantity > 0,
+  );
+  const [clock, setClock] = useState(() => Date.now());
   useEffect(() => {
-    setExcluded([]);
-    setSaved("");
-    setSleep("");
-  }, [r.company.symbol]);
-  const balance = balanceView(m.factors, excluded),
+    const tick = () => {
+      if (document.visibilityState !== "hidden") setClock(Date.now());
+    };
+    tick();
+    const timer = window.setInterval(tick, 30000);
+    window.addEventListener("focus", tick);
+    window.addEventListener("pageshow", tick);
+    document.addEventListener("visibilitychange", tick);
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener("focus", tick);
+      window.removeEventListener("pageshow", tick);
+      document.removeEventListener("visibilitychange", tick);
+    };
+  }, []);
+  const now = demo ? Date.parse(r.retrievedAt) : clock;
+  const m = useMemo(() => approvedResearch(r, owns, now), [r, owns, now]);
+  const { decision: d, edge, evidence } = m,
     b = edge.brief,
-    focusItems = evidence[focus],
-    toggle = (id: string) =>
-      setExcluded((old) =>
-        old.includes(id) ? old.filter((x) => x !== id) : [...old, id],
-      );
-  function saveView() {
-    try {
-      localStorage.setItem(
-        `auryn:research-view:${r.company.symbol}`,
-        JSON.stringify({
-          version: 1,
-          symbol: r.company.symbol,
-          excluded,
-          lens,
-          asOf: r.retrievedAt,
-        }),
-      );
-      setSaved("View saved on this device.");
-    } catch {
-      setSaved("This browser could not save the view.");
-    }
-  }
-  function restoreView() {
-    try {
-      const v = JSON.parse(
-        localStorage.getItem(`auryn:research-view:${r.company.symbol}`) ||
-          "null",
-      );
-      if (
-        v?.version === 1 &&
-        v.symbol === r.company.symbol &&
-        Array.isArray(v.excluded)
-      ) {
-        setExcluded(
-          v.excluded.filter(
-            (id: unknown) =>
-              typeof id === "string" && m.factors.some((f) => f.id === id),
-          ),
-        );
-        setLens(v.lens === "trader" ? "trader" : "investor");
-        setSaved("Saved view restored.");
-      } else setSaved("Save a view first.");
-    } catch {
-      setSaved("The saved view could not be opened.");
-    }
-  }
+    v = d.valuation;
+  const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
+  const leading = m.metrics
+    .filter((x) =>
+      [
+        "revenue",
+        "operatingMargin",
+        "fcf",
+        "cash",
+        "roe",
+        "operatingRunway",
+      ].includes(x.key),
+    )
+    .slice(0, 4);
+  const groups = [
+    ["Business", evidence.business],
+    ["Valuation", evidence.valuation],
+    ["Price & trend", evidence.technical],
+    ["Ownership", evidence.ownership],
+  ] as const;
+  const paceLabel =
+    edge.pace === 0
+      ? "Pause contributions"
+      : edge.pace === 1
+        ? "Regular accumulation"
+        : edge.pace != null
+          ? "Increase accumulation"
+          : "Building history";
   return (
-    <div className="approved-research">
-      <MovementContext research={r} onNews={() => onTab("News")} />
-      <section className="card decision-card">
-        <div className="decision-top">
-          <div>
-            <span className="eyebrow">
-              SHOULD YOU BUY {r.company.name.toUpperCase()} NOW?
+    <div className="approved-research decision-experience">
+      <section
+        className={`decision-focus decision-tone-${d.tone}`}
+        aria-labelledby="auryn-decision-title"
+      >
+        <div className="decision-main">
+          <div className="decision-kicker">
+            <span>
+              <Sparkles size={15} /> THE AURYN VIEW
             </span>
-            <h2>Weigh it yourself.</h2>
-            <p>
-              See what supports buying, what holds it back, and what changes the
-              view.
-            </p>
+            <span>{d.horizon}</span>
           </div>
-          <div className="segment" aria-label="Investment lens">
-            {(["investor", "trader"] as const).map((x) => (
-              <button
-                key={x}
-                aria-pressed={lens === x}
-                onClick={() => {
-                  setLens(x);
-                  setFocus(x === "trader" ? "technical" : "business");
-                }}
-              >
-                {x === "investor" ? "Long-term investor" : "Trader"}
-              </button>
+          <div className="decision-action-line">
+            <h2 id="auryn-decision-title">{d.action}</h2>
+            <span className="decision-confidence">
+              <ShieldCheck size={14} />
+              {d.confidence}
+            </span>
+          </div>
+          <p className="decision-headline">{d.headline}</p>
+          <ul className="decision-reasons">
+            {d.reasons.slice(0, 3).map((reason) => (
+              <li key={reason}>
+                <span aria-hidden="true" /> {reason}
+              </li>
             ))}
-          </div>
-        </div>
-        <div className="decision-middle">
-          <Scale factors={m.factors} excluded={excluded} />
-          <div className="decision-verdict">
-            <span className="eyebrow">
-              THE AURYN VIEW ·{" "}
-              {lens === "trader" ? "PRICE & RISK" : "BUSINESS & PRICE"}
-            </span>
-            <h3
-              className={
-                edge.tone === "positive"
-                  ? "green"
-                  : edge.tone === "risk"
-                    ? "red"
-                    : "amber"
-              }
-            >
-              {lens === "trader"
-                ? `${edge.timingLabel} price conditions.`
-                : m.title}
-            </h3>
-            <p>
-              {lens === "trader"
-                ? `${b.timing.rsi != null ? `RSI is ${b.timing.rsi.toFixed(0)}. ` : ""}${edge.turningPoint}`
-                : edge.reason}
+          </ul>
+          {d.risks.length > 0 && (
+            <p className="decision-main-risk">
+              <ShieldCheck size={16} />
+              <span>{d.risks[0]}</span>
             </p>
-            <div className="score-line">
-              <span>
-                <i className="dot green-bg" />
-                Buy reasons <b>{balance.buyCount}</b>
-              </span>
-              <span>
-                <i className="dot amber-bg" />
-                Wait reasons <b>{balance.waitCount}</b>
-              </span>
-            </div>
-            <div className={`pace-chip ${edge.pace === 4 ? "strong" : ""}`}>
-              <div>
-                <span>AURYN PACE</span>
-                <strong>
-                  {edge.pace != null ? `${edge.pace}×` : "Developing"}
-                </strong>
-              </div>
-              <p>
-                {edge.pace === 4
-                  ? "Strong accumulation signal"
-                  : edge.pace === 0
-                    ? "Pause new contributions"
-                    : edge.pace === 1
-                      ? "Regular accumulation"
-                      : edge.pace != null
-                        ? "Increased accumulation"
-                        : "Follow the daily price evidence"}
-                <small>
-                  {b.accumulation.month
-                    ? `Completed month · ${b.accumulation.month}`
-                    : "24 completed monthly closes establish Pace"}
-                </small>
-                {edge.formingPace != null && (
-                  <small>This month: {edge.formingPace}× · forming</small>
-                )}
-              </p>
-              <button
-                className="icon-button"
-                onClick={() => onTab("Technicals")}
-                aria-label="Understand Pace"
-              >
-                <ArrowUpRight size={18} />
-              </button>
-            </div>
-            <div className="inline-actions">
-              <Link
-                className="btn primary"
-                href={`${prefix}/alerts?symbol=${encodeURIComponent(r.company.symbol)}`}
-              >
-                <Bell size={15} />
-                Set a price alert
-              </Link>
-              <button className="btn" onClick={saveView}>
-                <Bookmark size={15} />
-                Save this view
-              </button>
-              <button
-                className="icon-button"
-                onClick={restoreView}
-                aria-label="Restore saved view"
-              >
-                <RotateCcw size={16} />
-              </button>
-            </div>
-            {saved && (
-              <p role="status" className="saved-view-status">
-                {saved}
-              </p>
-            )}
-          </div>
-        </div>
-        <div className="factor-grid">
-          {(["buy", "wait"] as const).map((side) => (
-            <div className="factor-column" key={side}>
-              <h4 className={side === "buy" ? "green" : "amber"}>
-                REASONS TO {side.toUpperCase()}
-              </h4>
-              {m.factors
-                .filter((f) => f.side === side)
-                .map((f) => (
-                  <div
-                    className={`factor ${side} ${excluded.includes(f.id) ? "excluded" : ""}`}
-                    key={f.id}
-                  >
-                    <button
-                      aria-pressed={!excluded.includes(f.id)}
-                      aria-label={`Include ${f.text}`}
-                      onClick={() => toggle(f.id)}
-                    >
-                      <span className="factor-check">
-                        {excluded.includes(f.id) ? "+" : "✓"}
-                      </span>
-                      <span>{f.text}</span>
-                      <small>{impactLabel(f.weight)}</small>
-                    </button>
-                    <button
-                      className="factor-source"
-                      onClick={() => onTab(f.section)}
-                      aria-label={`Evidence for ${f.text}`}
-                    >
-                      <ArrowUpRight size={15} />
-                    </button>
-                  </div>
-                ))}
-              {!m.factors.some((f) => f.side === side) && (
-                <p className="small">
-                  {side === "buy"
-                    ? "Open the evidence below to develop the case."
-                    : "Review the instrument risks and your position size."}
-                </p>
-              )}
-            </div>
-          ))}
-        </div>
-        <div className="factor-foot">
-          <span>
-            Each circle is one reason; its size shows importance. Tap a reason
-            to test your balance. This changes your view of the scale, not the
-            research verdict or calculated Pace.
-          </span>
-          {excluded.length > 0 && (
-            <button className="text-link" onClick={() => setExcluded([])}>
-              Restore factors
-            </button>
           )}
-        </div>
-      </section>
-      {m.cases.length === 3 && (
-        <section className="card outcome-card">
-          <div className="section-head">
-            <div>
-              <h2>Before you decide: meet your future self.</h2>
-              <p>See both outcomes before you commit.</p>
-            </div>
-            <span className="pill">
-              Hypothetical ·{" "}
-              {m.scenarioHorizon
-                ? `${m.scenarioHorizon} sessions`
-                : m.scenarioEnd
-                  ? dateLabel(m.scenarioEnd)
-                  : m.scenarioBasis}
-            </span>
-          </div>
-          <div className="range-label">
-            <label htmlFor="investment-size">If you invest</label>
-            <output>{amount(investment, r.quote.currency)}</output>
-          </div>
-          <input
-            id="investment-size"
-            type="range"
-            min="0"
-            max="10000"
-            step="100"
-            value={investment}
-            onChange={(e) => setInvestment(Number(e.target.value))}
-          />
-          <div className="outcome-grid">
-            {[m.cases[2], m.cases[0]].map((c) => (
-              <article
-                key={c.name}
-                className={`outcome ${c.change < 0 ? "negative" : "positive"}`}
-              >
-                <span>IF THE {c.name.toUpperCase()} CASE HAPPENS</span>
-                <strong>
-                  {amount((investment * c.change) / 100, r.quote.currency)}
-                </strong>
-                <small>
-                  Potential {c.change < 0 ? "loss" : "gain"} · Investment value{" "}
-                  {amount(investment * (1 + c.change / 100), r.quote.currency)}
-                </small>
-                <p>
-                  Scenario price {amount(c.target, r.quote.currency)} ·{" "}
-                  {percent(c.change, true)} from{" "}
-                  {amount(m.scenarioReference, r.quote.currency)} (
-                  {dateLabel(m.scenarioReferenceDate)}), before fees and tax.
-                </p>
-              </article>
-            ))}
-          </div>
-          <div className="sleep-test">
-            <div>
-              <strong>Could you leave it alone through the bad outcome?</strong>
-              <p role="status">
-                {sleep ||
-                  "Your comfort with the downside belongs in the decision."}
-              </p>
-            </div>
-            <div className="inline-actions">
-              <button
-                className="btn"
-                onClick={() =>
-                  setSleep(
-                    "Keep your position size and time horizon in view as the evidence changes.",
-                  )
-                }
-              >
-                I could sleep fine
-              </button>
-              <button
-                className="btn"
-                onClick={() => {
-                  setInvestment((v) => Math.round(v / 200) * 100);
-                  setSleep(
-                    "Try a smaller amount and see how the downside changes.",
-                  );
-                }}
-              >
-                It would bother me
-              </button>
-            </div>
-          </div>
-        </section>
-      )}
-      <section className="case-sentence">
-        <div>
-          <span className="eyebrow">THE CASE, CONNECTED</span>
-          <h2>
-            {r.company.name}:{" "}
-            <button
-              className={`word ${edge.business === "strong" ? "green-word" : edge.business === "weak" ? "red-word" : "blue-word"} ${focus === "business" ? "selected" : ""}`}
-              aria-pressed={focus === "business"}
-              aria-controls="connected-evidence"
-              onClick={() => setFocus("business")}
+          <div className="decision-actions">
+            <Link
+              className="btn primary"
+              href={`${prefix}/alerts?symbol=${encodeURIComponent(r.company.symbol)}`}
             >
-              {edge.businessLabel === "Sector evidence"
-                ? "sector-specific evidence"
-                : edge.business === "strong"
-                  ? "strong business performance"
-                  : edge.business === "weak"
-                    ? "business performance under pressure"
-                    : edge.business === "missing"
-                      ? "business evidence is limited"
-                      : "mixed business performance"}
+              <Bell size={15} /> Set an alert
+            </Link>
+            <button className="text-link" onClick={() => onTab("Valuation")}>
+              See the price case <ArrowUpRight size={16} />
             </button>
-            {"; "}
-            <button
-              className={`word amber-word ${focus === "valuation" ? "selected" : ""}`}
-              aria-pressed={focus === "valuation"}
-              aria-controls="connected-evidence"
-              onClick={() => setFocus("valuation")}
-            >
-              {edge.value === "supported"
-                ? "valuation depends on growth assumptions"
-                : edge.value === "demanding"
-                  ? "the price needs sustained growth"
-                  : "valuation needs more evidence"}
-            </button>
-            {"; "}
-            <button
-              className={`word ${edge.timing === "favorable" ? "green-word" : "blue-word"} ${focus === "technical" ? "selected" : ""}`}
-              aria-pressed={focus === "technical"}
-              aria-controls="connected-evidence"
-              onClick={() => setFocus("technical")}
-            >
-              {edge.timing === "favorable"
-                ? "the price trend is constructive"
-                : edge.timing === "extended"
-                  ? "momentum is stretched"
-                  : "price signals are mixed"}
-            </button>
-            .
-          </h2>
-          <p className="sentence-hint">
-            Tap the highlighted words to follow the evidence.
-          </p>
+          </div>
         </div>
         <button
-          className="approved-fingerprint-button"
-          onClick={() => onTab("Thesis")}
-          aria-label="Open company fingerprint evidence"
+          className={`pace-feature ${edge.pace === 4 ? "pace-deep" : ""}`}
+          onClick={() => onTab("Technicals")}
+          aria-label={`AURYN Pace ${edge.pace != null ? `${edge.pace} times` : "building history"}. Open calculation and history.`}
         >
-          <svg
-            className="fingerprint"
-            viewBox="0 0 220 210"
-            role="img"
-            aria-label="Six business evidence lenses; missing scores are left unplotted"
-          >
-            <g fill="none" stroke="var(--line)">
-              {[90, 60, 30].map((radius) => (
-                <polygon
-                  key={radius}
-                  points={Array.from(
-                    { length: 6 },
-                    (_, i) =>
-                      `${svgCoordinate(110 + radius * Math.sin((i * Math.PI) / 3))},${svgCoordinate(100 - radius * Math.cos((i * Math.PI) / 3))}`,
-                  ).join(" ")}
-                />
-              ))}
-              {m.fingerprint.map((f, i) => (
-                <path
-                  key={f.id}
-                  d={`M110 100L${svgCoordinate(110 + 90 * Math.sin((i * Math.PI) / 3))} ${svgCoordinate(100 - 90 * Math.cos((i * Math.PI) / 3))}`}
-                />
-              ))}
-            </g>
-            {m.fingerprint.every((f) => f.score != null) && (
-              <polygon
-                points={m.fingerprint
-                  .map(
-                    (f, i) =>
-                      `${svgCoordinate(110 + 9 * f.score! * Math.sin((i * Math.PI) / 3))},${svgCoordinate(100 - 9 * f.score! * Math.cos((i * Math.PI) / 3))}`,
-                  )
-                  .join(" ")}
-                fill="#315ff422"
-                stroke="var(--blue)"
-                strokeWidth="2.5"
-              />
+          <span className="pace-brand">
+            <Activity size={17} /> AURYN PACE <ArrowUpRight size={16} />
+          </span>
+          <span className="pace-number">
+            {edge.pace != null ? (
+              <>
+                {edge.pace}
+                <small>×</small>
+              </>
+            ) : (
+              <span className="pace-building">
+                Building
+                <br />
+                history
+              </span>
             )}
-            {m.fingerprint.map((f, i) =>
-              f.score != null ? (
-                <circle
-                  key={f.id}
-                  cx={svgCoordinate(
-                    110 + 9 * f.score * Math.sin((i * Math.PI) / 3),
-                  )}
-                  cy={svgCoordinate(
-                    100 - 9 * f.score * Math.cos((i * Math.PI) / 3),
-                  )}
-                  r="5"
-                  fill="var(--blue)"
-                  stroke="var(--card)"
-                  strokeWidth="2"
-                >
-                  <title>{`${f.name}: ${f.score.toFixed(1)} / 10`}</title>
-                </circle>
-              ) : null,
-            )}
-            <text x="110" y="202" textAnchor="middle" className="chart-label">
-              {m.fingerprint.filter((f) => f.score != null).length}/6 evidence
-              lenses
-            </text>
-          </svg>
+          </span>
+          <span className="pace-description">{paceLabel}</span>
+          <span className="pace-ladder" aria-hidden="true">
+            {[0, 1, 2, 3, 4].map((n) => (
+              <i key={n} className={edge.pace === n ? "active" : ""}>
+                {n}×
+              </i>
+            ))}
+          </span>
+          <span className="pace-date">
+            {b.accumulation.month
+              ? `Confirmed · ${b.accumulation.month}`
+              : "12 completed months to begin"}
+          </span>
+          {edge.formingPace != null && (
+            <span className="pace-forming">
+              This month · {edge.formingPace}× forming
+            </span>
+          )}
+          <span className="pace-footnote">
+            Contribution pace · not a return forecast
+          </span>
         </button>
       </section>
-      <section id="connected-evidence" className="card sentence-evidence">
-        <div className="section-head">
-          <div>
-            <h2>
-              {focus === "business"
-                ? "Inside the operating case"
-                : focus === "valuation"
-                  ? "What the price asks for"
-                  : focus === "technical"
-                    ? "Read the price conditions"
-                    : "Who owns the business"}
-            </h2>
-            <p>
-              {focus === "business"
-                ? `Financial period ${dateLabel(evidence.period)} · ${evidence.currency}`
-                : "Dated source observations; each metric includes its definition."}
-            </p>
-          </div>
-          <button
-            className="text-link"
-            onClick={() =>
-              onTab(
-                (
-                  {
-                    business: "Financials",
-                    valuation: "Valuation",
-                    technical: "Technicals",
-                    ownership: "Thesis",
-                  } as const
-                )[focus],
-              )
-            }
-          >
-            Open full evidence <ArrowUpRight size={15} />
+      <MovementContext research={r} onNews={() => onTab("News")} />
+      <nav
+        className="research-shortcuts"
+        aria-label="Company research sections"
+      >
+        {deeper.slice(0, 4).map(([key, title]) => (
+          <button key={key} onClick={() => onTab(key)}>
+            {title}
+            <ArrowUpRight size={15} />
           </button>
-        </div>
-        {focusItems.length ? (
-          <div className="metrics-grid four">
-            <Metrics items={focusItems.slice(0, 4)} />
-          </div>
-        ) : (
-          <p>
-            Use the dated price and source reports below while this part of the
-            picture develops.
-          </p>
-        )}
-      </section>
-      <section className="card price-possibilities">
-        <div className="section-head">
-          <div>
-            <h2>The price, and its possibilities.</h2>
-            <p>
-              {m.cases.length
-                ? `${m.scenarioBasis} · ${m.scenarioEnd ? `to ${dateLabel(m.scenarioEnd)}` : `${m.scenarioHorizon} trading sessions`} · assumptions, not forecasts.`
-                : "Actual historical observations, with chart studies in Price & Pace."}
-            </p>
-          </div>
-          <button className="text-link" onClick={() => onTab("Technicals")}>
-            Full chart <ArrowUpRight size={15} />
+        ))}
+      </nav>
+      <ResearchChanges research={r} />
+      <div className="decision-detail-grid">
+        <section className="card decision-checkpoint">
+          <span className="eyebrow">WHAT CHANGES THE VIEW</span>
+          <h3>A clear next checkpoint.</h3>
+          <p>{d.changeConditions[0]}</p>
+          {d.changeConditions.length > 1 && (
+            <details>
+              <summary>
+                Other conditions <ChevronDown size={14} />
+              </summary>
+              <ul>
+                {d.changeConditions.slice(1).map((c) => (
+                  <li key={c}>{c}</li>
+                ))}
+              </ul>
+            </details>
+          )}
+          <button className="text-link" onClick={() => onTab("News")}>
+            Follow company updates <ArrowUpRight size={15} />
           </button>
-        </div>
-        <Projection research={r} cases={m.cases} />
-        {r.history.length < 2 && chart}
-        {m.cases.length > 0 && (
-          <div className="case-grid">
-            {m.cases.map((c, i) => (
-              <button
-                className={`case-tile ${["bear", "base", "bull"][i]}`}
-                key={c.name}
-                onClick={() =>
-                  onTab(
-                    m.scenarioBasis === "Earnings sensitivity"
-                      ? "Valuation"
-                      : "Technicals",
-                  )
-                }
-              >
-                <span>{c.name} case</span>
-                <strong>{amount(c.target, r.quote.currency)}</strong>
-                <small>
-                  {percent(c.change, true)} from{" "}
-                  {m.scenarioReferenceBasis === "settled-close"
-                    ? "settled close"
-                    : "dated quote"}
-                </small>
-              </button>
-            ))}
-          </div>
-        )}
-        <p className="sample-label">
-          History: {r.historySource || "Dated price observations"} ·{" "}
-          {dateLabel(r.history.at(-1)?.time)} · {r.quote.currency}
-        </p>
-      </section>
-      {m.metrics.length > 0 && (
-        <section className="card">
+        </section>
+        <section className="card decision-at-glance">
           <div className="section-head">
             <div>
-              <h2>The numbers that shape the case.</h2>
-              <p>
-                Financial strength, valuation, price and ownership in one view.
-              </p>
+              <span className="eyebrow">THE OPERATING PICTURE</span>
+              <h3>
+                {d.business === "strong"
+                  ? "Healthy operating evidence"
+                  : d.business === "weak"
+                    ? "Operating pressure"
+                    : "The latest reported results"}
+              </h3>
             </div>
-            <span className="pill">{m.metrics.length} available metrics</span>
+            <button
+              className="icon-button"
+              onClick={() => onTab("Financials")}
+              aria-label="Open financial statements"
+            >
+              <ArrowUpRight size={18} />
+            </button>
           </div>
-          <div className="metrics-grid six">
-            <Metrics items={m.metrics} />
+          <div className="decision-key-metrics">
+            {leading.map((metric) => (
+              <div key={metric.key}>
+                <span>
+                  {metric.label}
+                  <Help label={metric.label}>{metric.help}</Help>
+                </span>
+                <strong
+                  className={
+                    metric.tone === "risk"
+                      ? "red"
+                      : metric.tone === "positive"
+                        ? "green"
+                        : ""
+                  }
+                >
+                  {metricValue(metric)}
+                </strong>
+              </div>
+            ))}
           </div>
-        </section>
-      )}
-      <div className="three-grid">
-        <section className="card compact-card">
-          <span className="eyebrow">BUSINESS & PRICE</span>
-          <h3>
-            {edge.value === "supported"
-              ? "Growth assumptions drive the price case."
-              : edge.value === "demanding"
-                ? "The price asks for sustained growth."
-                : "Read the assumptions behind the price."}
-          </h3>
-          <p>{edge.disconnect?.text || edge.reason}</p>
-          <button className="text-link" onClick={() => onTab("Thesis")}>
-            Read the business <ArrowUpRight size={15} />
-          </button>
-        </section>
-        <section className="card compact-card">
-          <span className="eyebrow">WHAT COULD CHANGE THE CASE</span>
-          <h3>Keep the counter-case visible.</h3>
-          <p>{edge.risk}</p>
-          <button className="text-link" onClick={() => onTab("Financials")}>
-            Follow the cash <ArrowUpRight size={15} />
-          </button>
-        </section>
-        <section className="card compact-card">
-          <span className="eyebrow">YOUR NEXT CHECKPOINT</span>
-          <h3>Know what to revisit.</h3>
-          <p>{edge.turningPoint}</p>
-          <button className="text-link" onClick={() => onTab("News")}>
-            News & earnings <ArrowUpRight size={15} />
-          </button>
+          {!leading.length && (
+            <p>
+              {r.company.assetType === "crypto"
+                ? "Corporate financial statements do not apply to this asset. Price history and accumulation remain available."
+                : "Open the company reports and dated price history while the financial sources refresh."}
+            </p>
+          )}
+          {d.period && (
+            <small>
+              Reporting period · {dateLabel(d.period)} · {evidence.currency}
+            </small>
+          )}
         </section>
       </div>
-      <section className="card research-library">
+      {v && (
+        <section className="card decision-value">
+          <div className="section-head">
+            <div>
+              <span className="eyebrow">PRICE IN PERSPECTIVE</span>
+              <h2>
+                {v.basis === "cash-flow"
+                  ? "What the cash-flow assumptions imply."
+                  : "A range of earnings outcomes."}
+              </h2>
+              <p>
+                {v.basis === "cash-flow"
+                  ? "Present-value sensitivities, not future price targets."
+                  : `${v.years!.toFixed(1)}-year sensitivity · to ${dateLabel(v.end)}`}
+              </p>
+            </div>
+            <button className="text-link" onClick={() => onTab("Valuation")}>
+              Explore assumptions <ArrowUpRight size={16} />
+            </button>
+          </div>
+          <div className="decision-value-grid">
+            {(["Bear", "Base", "Bull"] as const).map((label, i) => {
+              const target = [v.bear, v.base, v.bull][i],
+                change = d.reference
+                  ? (target / d.reference.price - 1) * 100
+                  : null;
+              return (
+                <div
+                  key={label}
+                  className={`decision-value-case case-${label.toLowerCase()}`}
+                >
+                  <span>
+                    {label} {v.basis === "cash-flow" ? "value" : "case"}
+                  </span>
+                  <strong>{amount(target, r.quote.currency)}</strong>
+                  <small>
+                    {percent(change, true)} vs{" "}
+                    {amount(d.reference?.price, r.quote.currency)}
+                  </small>
+                </div>
+              );
+            })}
+          </div>
+          <details className="decision-method">
+            <summary>
+              How this is calculated <ChevronDown size={15} />
+            </summary>
+            <p>{v.assumptions}</p>
+            <p>
+              Reference: {amount(d.reference?.price, r.quote.currency)} ·{" "}
+              {dateLabel(d.reference?.asOf)} ·{" "}
+              {d.reference?.basis === "settled-close"
+                ? "completed daily close"
+                : "dated quote"}
+              . Scenario outcomes are not probabilities.
+            </p>
+          </details>
+        </section>
+      )}
+      <section className="decision-chart card">
         <div className="section-head">
           <div>
-            <h2>Go deeper, when you need to.</h2>
-            <p>Every research tool, connected to the same company.</p>
+            <span className="eyebrow">THE MARKET PICTURE</span>
+            <h2>Price, with context.</h2>
+          </div>
+          <button className="text-link" onClick={() => onTab("Technicals")}>
+            Open Price & Pace <ArrowUpRight size={16} />
+          </button>
+        </div>
+        {chart ?? (
+          <button className="btn" onClick={() => onTab("Technicals")}>
+            Explore price history <ArrowRight size={16} />
+          </button>
+        )}
+      </section>
+      <section className="card decision-metrics">
+        <div className="section-head">
+          <div>
+            <span className="eyebrow">EVERY NUMBER HAS A SOURCE</span>
+            <h2>The details behind the decision.</h2>
+            <p>Relevant metrics, with definitions and reporting context.</p>
           </div>
         </div>
-        <div className="tool-grid">
-          {sections
-            .filter(
-              ([key]) =>
-                !evidence.crypto ||
-                ["Technicals", "News", "Advanced"].includes(key),
-            )
-            .map(([key, title, desc]) => (
-              <button key={key} onClick={() => onTab(key)}>
-                <div>
-                  <strong>{title}</strong>
-                  <small>{desc}</small>
-                </div>
-                <ArrowUpRight size={18} />
-              </button>
-            ))}
-        </div>
+        {groups
+          .filter(([, rows]) => rows.length)
+          .map(([title, rows]) => (
+            <details
+              key={title}
+              className="metric-disclosure"
+              open={title === "Business"}
+            >
+              <summary>
+                <span>{title}</span>
+                <span>
+                  {rows.length} metrics <ChevronDown size={16} />
+                </span>
+              </summary>
+              <div className="decision-metric-grid">
+                {rows.map((metric) => (
+                  <div key={metric.key}>
+                    <span>
+                      {metric.label}
+                      <Help label={metric.label}>{metric.help}</Help>
+                    </span>
+                    <strong
+                      className={
+                        metric.tone === "risk"
+                          ? "red"
+                          : metric.tone === "positive"
+                            ? "green"
+                            : ""
+                      }
+                    >
+                      {metricValue(metric)}
+                    </strong>
+                  </div>
+                ))}
+              </div>
+            </details>
+          ))}
+        <details className="decision-method">
+          <summary>
+            Decision rules & source context <ChevronDown size={15} />
+          </summary>
+          <p>{d.method}</p>
+          <p>
+            Buy/Add requires supported operating strength and an attractive
+            model price, without the listed funding risks or RSI of 75 or
+            higher. A cash-flow entry uses a 20% cushion to the base value. An
+            earnings entry uses at least 12% annualized base upside and a bear
+            decline no worse than 35%. These screening thresholds are not a
+            validated forecast of investment performance.
+          </p>
+          <p>
+            Hold requires an existing position, supported operations and an
+            available price model. Reduce/Avoid flags operating funding pressure
+            or sustained deterioration. Sell requires negative equity, debt and
+            less than six months of operating runway together. Reported cash
+            runway excludes unreported financing and future changes in spending.
+          </p>
+          {d.risks.map((risk) => (
+            <p key={risk}>{risk}</p>
+          ))}
+          <p>
+            Financial period: {dateLabel(d.period)}. Price:{" "}
+            {dateLabel(d.reference?.asOf)}.{" "}
+            {demo
+              ? "Illustrative preview observations."
+              : "Source observations may have different update schedules."}
+          </p>
+        </details>
+      </section>
+      <section
+        className="research-tool-links"
+        aria-label="Additional company research"
+      >
+        {deeper.slice(4).map(([key, title, description]) => (
+          <button key={key} onClick={() => onTab(key)}>
+            <span>
+              <strong>{title}</strong>
+              <small>{description}</small>
+            </span>
+            <ArrowUpRight size={18} />
+          </button>
+        ))}
       </section>
     </div>
   );

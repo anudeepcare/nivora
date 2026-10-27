@@ -21,7 +21,7 @@ import {
   HelpCircle,
   ArrowUpRight,
 } from "lucide-react";
-import { Logo, ProductFooter } from "./Ui";
+import { ProductFooter } from "./Ui";
 import Search from "./Search";
 import { settingsHref } from "@/lib/settings-navigation";
 import { useProduct } from "./Session";
@@ -100,7 +100,7 @@ export default function Shell({
     document.addEventListener("keydown", key);
     return () => document.removeEventListener("keydown", key);
   }, []);
-  const nav = (r: (typeof primary)[number], mobile = false) => {
+  const nav = (r: (typeof primary)[number]) => {
     const Icon = r.icon;
     return (
       <Link
@@ -130,7 +130,10 @@ export default function Shell({
     );
   };
   return (
-    <div className="product approved-product app-layout" data-page={page}>
+    <div
+      className="product approved-product app-layout workspace-experience"
+      data-page={page}
+    >
       <a className="skip" href="#content">
         Skip to content
       </a>
@@ -243,7 +246,7 @@ export default function Shell({
         </main>
       </div>
       <nav className="phone-dock" aria-label="Mobile navigation">
-        {primary.map((r) => nav(r, true))}
+        {primary.map((r) => nav(r))}
       </nav>
       <dialog
         ref={tools}

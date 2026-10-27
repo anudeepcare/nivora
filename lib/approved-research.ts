@@ -1,4 +1,5 @@
 import type { Research } from "./types";
+import { aurynDecision } from "./auryn-decision.ts";
 import { researchEdge } from "./edge-research.ts";
 import { overviewEvidence } from "./overview-evidence.ts";
 import { researchDecision } from "./decision-research.ts";
@@ -36,8 +37,13 @@ export function balanceView(factors: BalanceFactor[], excluded: string[] = []) {
     angle: Math.max(-9, Math.min(9, (wait - buy) * 1.4)),
   };
 }
-export function approvedResearch(r: Research, ownsPosition = false) {
-  const edge = researchEdge(r, ownsPosition),
+export function approvedResearch(
+  r: Research,
+  ownsPosition = false,
+  now = Date.parse(r.priceObservedAt ?? r.retrievedAt),
+) {
+  const decision = aurynDecision(r, { ownsPosition, now });
+  const edge = researchEdge(r, ownsPosition, now),
     evidence = overviewEvidence(r),
     b = edge.brief,
     n = b.businessNumbers;
@@ -49,7 +55,7 @@ export function approvedResearch(r: Research, ownsPosition = false) {
     text: string,
     section: EvidenceSection,
   ) => factors.push({ id, side, weight, text, section });
-  if (!evidence.crypto && !evidence.specialist && !b.conflicting) {
+  if (!evidence.crypto && !evidence.specialist) {
     if (n.fcf != null)
       add(
         "cash",
@@ -159,6 +165,7 @@ export function approvedResearch(r: Research, ownsPosition = false) {
   };
   return {
     edge,
+    decision,
     evidence,
     factors,
     fingerprint: researchDecision(r).lenses.slice(0, 6),
@@ -186,7 +193,7 @@ export function approvedResearch(r: Research, ownsPosition = false) {
       : b.priceRisk.available
         ? b.priceRisk.referenceBasis
         : null,
-    title: labels[edge.verdict] ?? edge.assessment,
+    title: `${decision.action}. ${decision.headline}`,
     metrics: [
       ...evidence.business,
       ...evidence.valuation,

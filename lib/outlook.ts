@@ -1,5 +1,7 @@
 import { modelCoverage, ttmPeriods } from "./research-depth.ts";
 import type { Research } from "./types";
+import { listingReconciliation } from "./listing-reconciliation.ts";
+import { compareFinancialFacts } from "./financial-period-selection.ts";
 
 export type OutlookCase = {
   name: "Bear" | "Base" | "Bull";
@@ -99,7 +101,7 @@ export function researchOutlook(r: Research): Outlook {
       "Corporate earnings scenarios do not apply to this asset.",
     );
   const e = r.evidence;
-  const now = Date.parse(r.retrievedAt);
+  const now = Date.parse(r.priceObservedAt ?? r.retrievedAt);
   if (!e || !Number.isFinite(now))
     return unavailable("A dated annual earnings forecast is needed.");
   const coverage = modelCoverage(r.company.symbol, r.company.assetType, {
@@ -114,17 +116,8 @@ export function researchOutlook(r: Research): Outlook {
     return unavailable(
       "This business needs a sector-specific valuation framework.",
     );
-  const outstanding = e.ownership?.outstanding;
-  const marketCap = e.highlights?.MarketCapitalization;
-  const aggregateListingBasis =
-    e.reportingCurrency === r.quote.currency &&
-    outstanding != null &&
-    outstanding > 0 &&
-    marketCap != null &&
-    marketCap > 0 &&
-    r.quote.price != null &&
-    r.quote.price > 0 &&
-    Math.abs(marketCap / (outstanding * r.quote.price) - 1) <= 0.1;
+  const listing = listingReconciliation(r);
+  const aggregateListingBasis = listing.status === "available";
   if (r.company.foreignListing && !aggregateListingBasis)
     return unavailable(
       "The listing needs matching reporting currency and reconciled market-cap/share/price evidence before constructing per-share scenarios.",
@@ -143,7 +136,7 @@ export function researchOutlook(r: Research): Outlook {
     return unavailable(
       "A current price is needed to compare forecast outcomes.",
     );
-  if (r.quote.stale) {
+  {
     const observed = Date.parse(r.quote.asOf ?? "");
     const comparisonTime = Date.parse(r.priceObservedAt ?? r.retrievedAt);
     if (
@@ -203,16 +196,23 @@ export function researchOutlook(r: Research): Outlook {
       .filter(
         (f) =>
           f.metric === "cash" &&
+          f.scope === "instant" &&
+          f.unit === r.quote.currency &&
           f.currency === r.quote.currency &&
           f.end <= r.retrievedAt.slice(0, 10) &&
           f.filed <= r.retrievedAt.slice(0, 10) &&
           now - Date.parse(f.end) <= 400 * 86400000,
       )
-      .sort((a, b) => b.end.localeCompare(a.end));
+      .sort(
+        (a, b) => b.end.localeCompare(a.end) || compareFinancialFacts(a, b),
+      );
     const cash = balances.find((candidate) =>
       r.facts.some(
         (f) =>
           f.metric === "debt" &&
+          f.scope === "instant" &&
+          f.unit === candidate.unit &&
+          f.basis === candidate.basis &&
           f.end === candidate.end &&
           f.accession === candidate.accession &&
           f.currency === candidate.currency &&
@@ -228,6 +228,9 @@ export function researchOutlook(r: Research): Outlook {
       r.facts.find(
         (f) =>
           f.metric === "debt" &&
+          f.scope === "instant" &&
+          f.unit === cash.unit &&
+          f.basis === cash.basis &&
           f.end === cash.end &&
           f.accession === cash.accession &&
           f.currency === cash.currency &&
@@ -312,10 +315,7 @@ export function researchOutlook(r: Research): Outlook {
     const comparableEV = listingEquity + netDebt;
     const listingValid =
       e.reportingCurrency === r.quote.currency &&
-      marketCap != null &&
-      Number.isFinite(marketCap) &&
-      marketCap > 0 &&
-      Math.abs(marketCap / listingEquity - 1) <= 0.1 &&
+      aggregateListingBasis &&
       Number.isFinite(comparableEV) &&
       comparableEV > 0 &&
       ttmRevenue != null &&
@@ -323,7 +323,8 @@ export function researchOutlook(r: Research): Outlook {
       ttmRevenue > 0;
     if (!listingValid)
       return unavailable(
-        "The share count, price, market capitalisation and revenue inputs do not reconcile on one currency basis. Revenue price sensitivities are withheld.",
+        "Revenue price sensitivities need dated, comparable market-cap/share/price observations and trailing revenue on one currency basis. " +
+          listing.detail,
       );
     const reportedMultipleValid =
       reportedEV != null &&
@@ -342,6 +343,7 @@ export function researchOutlook(r: Research): Outlook {
             f.metric === "revenue" &&
             f.scope === "annual" &&
             f.currency === r.quote.currency &&
+            f.unit === r.quote.currency &&
             f.start &&
             f.end <= r.retrievedAt.slice(0, 10) &&
             f.filed <= r.retrievedAt.slice(0, 10) &&

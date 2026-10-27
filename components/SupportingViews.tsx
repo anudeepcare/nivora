@@ -32,9 +32,6 @@ export function Settings() {
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
-  const [section, setSection] = useState<"appearance" | "research" | "account">(
-    "appearance",
-  );
   const [account, setAccount] = useState<{
     email: string;
     providers: string[];
@@ -98,7 +95,7 @@ export function Settings() {
     workspace?.email ||
     (demo ? "Design preview" : "Loading account…");
   return (
-    <section className="settings-page account-studio">
+    <section className="settings-page workspace-settings">
       <div className="settings-page-toolbar">
         <Link
           href={backHref}
@@ -133,118 +130,65 @@ export function Settings() {
       </div>
       <PageHeading
         title="Settings"
-        subtitle="Your account, your preferences, your AURYN."
+        subtitle="A comfortable workspace. An account that stays yours."
       />
       {message && (
         <div className="settings-feedback" role="status">
           <Notice>{message}</Notice>
         </div>
       )}
-      <div className="settings-studio-layout">
-        <aside className="settings-studio-nav">
-          <div className="settings-account-summary">
-            <span className="settings-profile-avatar" aria-hidden="true">
-              {email[0]?.toUpperCase() || "A"}
+      <div className="workspace-account-row">
+        <span className="settings-profile-avatar" aria-hidden="true">
+          {email[0]?.toUpperCase() || "A"}
+        </span>
+        <div>
+          <strong>{email}</strong>
+          <p>
+            {access.owner
+              ? "Owner access"
+              : access.plan === "pro"
+                ? "Pro membership"
+                : "Free membership"}
+          </p>
+        </div>
+        <Link className="text-link" href={`${prefix}/plans`}>
+          Manage plan <ArrowUpRight size={16} />
+        </Link>
+      </div>
+      <div className="workspace-settings-groups">
+        <details className="workspace-setting-group">
+          <summary>
+            <span>
+              <strong>Display & reading</strong>
+              <small>Theme, text and accessibility</small>
             </span>
-            <div>
-              <strong>Your account</strong>
-              <p>{email}</p>
-            </div>
-          </div>
-          <nav aria-label="Settings categories">
-            {(
-              [
-                ["appearance", "Display & reading"],
-                ["research", "Research preferences"],
-                ["account", "Account & security"],
-              ] as const
-            ).map(([id, label]) => (
-              <button
-                type="button"
-                key={id}
-                aria-pressed={section === id}
-                aria-controls={`settings-page-${id}`}
-                onClick={() => setSection(id)}
-              >
-                {label}
-                <ChevronRight size={16} />
-              </button>
-            ))}
-          </nav>
-          <nav className="settings-shortcuts" aria-label="Account and support">
-            <Link href={`${prefix}/plans`}>
-              <span>
-                Plans & billing
-                <small>
-                  {access.owner
-                    ? "Owner access"
-                    : access.plan === "pro"
-                      ? "Pro membership"
-                      : "Free membership"}
-                </small>
-              </span>
-              <ChevronRight size={16} />
-            </Link>
-            {access.owner && !prefix && (
-              <Link href="/owner">
-                Admin controls
-                <ChevronRight size={16} />
-              </Link>
-            )}
-            <Link href={`${prefix}/alerts`}>
-              Alerts
-              <ChevronRight size={16} />
-            </Link>
-            <Link href="/help">
-              Help & support
-              <ChevronRight size={16} />
-            </Link>
-          </nav>
-          <div className="settings-studio-note">
-            <ShieldCheck size={19} />
-            <p>
-              Your account stays yours. Appearance preferences are saved on this
-              device.
-            </p>
-          </div>
-        </aside>
-        <div className="settings-studio-content">
-          <section
-            id="settings-page-appearance"
-            className="panel settings-appearance"
-            hidden={section !== "appearance"}
-          >
+            <ChevronRight size={19} />
+          </summary>
+          <div className="workspace-setting-body">
             <DisplayPreferences />
-          </section>
-          <section
-            id="settings-page-research"
-            className="panel settings-research-panel"
-            hidden={section !== "research"}
-          >
-            <span className="eyebrow">Your perspective</span>
-            <h2>Research your way.</h2>
-            <p>
-              Choose the context and level of detail that help you read the
-              evidence.
-            </p>
+          </div>
+        </details>
+        <details className="workspace-setting-group">
+          <summary>
+            <span>
+              <strong>Research preferences</strong>
+              <small>Your style and investment horizon</small>
+            </span>
+            <ChevronRight size={19} />
+          </summary>
+          <div className="workspace-setting-body">
             <ResearchPreferenceControls />
-          </section>
-          <section
-            id="settings-page-account"
-            className="panel settings-account"
-            aria-labelledby="account-title"
-            hidden={section !== "account"}
-          >
-            <header className="settings-profile">
-              <span className="settings-profile-avatar" aria-hidden="true">
-                {email[0]?.toUpperCase() || "A"}
-              </span>
-              <div>
-                <span className="eyebrow">Your account</span>
-                <h2 id="account-title">Account & security</h2>
-                <p>{email}</p>
-              </div>
-            </header>
+          </div>
+        </details>
+        <details className="workspace-setting-group">
+          <summary>
+            <span>
+              <strong>Account & security</strong>
+              <small>Sign-in methods and password</small>
+            </span>
+            <ChevronRight size={19} />
+          </summary>
+          <div className="workspace-setting-body">
             {!!account?.providers.length && (
               <div
                 className="account-identities"
@@ -263,44 +207,54 @@ export function Settings() {
                 ))}
               </div>
             )}
-            <div className="settings-security">
-              <h3>Password</h3>
-              <p>Choose a strong password you don’t use elsewhere.</p>
-              <details className="settings-password">
-                <summary>Set or change password</summary>
-                <form className="password-form" onSubmit={update}>
-                  <label>
-                    New password
-                    <input
-                      type="password"
-                      minLength={8}
-                      autoComplete="new-password"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </label>
-                  <button
-                    className="button primary"
-                    disabled={busy || (!!demo && demo.routePrefix !== "")}
-                  >
-                    {busy ? "Saving…" : "Update password"}
-                  </button>
-                </form>
-              </details>
-            </div>
-          </section>
-          <nav className="settings-page-links" aria-label="Help and legal">
-            <Link href="/help">
-              Help & support <ArrowUpRight size={14} />
-            </Link>
-            <Link href="/privacy">Privacy</Link>
-            <Link href="/terms">Terms</Link>
-            <Link href="/methodology">Methodology</Link>
-            <Link href="/risk">Investment risks</Link>
-          </nav>
-        </div>
+            <form className="password-form" onSubmit={update}>
+              <label>
+                New password
+                <input
+                  type="password"
+                  minLength={8}
+                  autoComplete="new-password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </label>
+              <p>
+                Use at least 8 characters and a password you don’t use
+                elsewhere.
+              </p>
+              <button
+                className="button primary"
+                disabled={busy || (!!demo && demo.routePrefix !== "")}
+              >
+                {busy ? "Saving…" : "Update password"}
+              </button>
+            </form>
+          </div>
+        </details>
       </div>
+      <nav
+        className="workspace-settings-shortcuts"
+        aria-label="Account and support"
+      >
+        <Link href={`${prefix}/alerts`}>
+          <Bell size={18} />
+          <span>Price alerts</span>
+          <ChevronRight size={17} />
+        </Link>
+        <Link href="/help">
+          <ShieldCheck size={18} />
+          <span>Help & support</span>
+          <ChevronRight size={17} />
+        </Link>
+        {access.owner && !prefix && (
+          <Link href="/owner">
+            <ShieldCheck size={18} />
+            <span>Admin controls</span>
+            <ChevronRight size={17} />
+          </Link>
+        )}
+      </nav>
     </section>
   );
 }

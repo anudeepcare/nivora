@@ -11,8 +11,21 @@ import {
   eodHistory,
   eodFundamentals,
   eodSearch,
+  eodRequest,
 } from "./eodhd";
 import { normalizeGrow } from "./grow-data";
+import { normalizeEodSearch } from "./eodhd-normalize";
+import {
+  fundamentalCoverage,
+  preferReportedFacts,
+} from "./fundamental-coverage";
+import {
+  normalizeTwelveDirectory,
+  uniqueListings,
+  searchDirectory,
+  researchCoverage,
+  type MarketDirectory,
+} from "./market-coverage";
 import { secObservations } from "./sec-observations";
 import { reserveProvider } from "./provider-budget";
 import type {
@@ -506,22 +519,24 @@ export async function fundamentals(
   symbol: string,
 ): Promise<Awaited<ReturnType<typeof secFundamentals>>> {
   symbol = researchSymbol(symbol);
-  if (!eodEnabled()) return secFundamentals(symbol);
   try {
+    if (!eodEnabled()) return await secFundamentals(symbol);
     const primary = await eodFundamentals(symbol);
-    if (primary.facts.length) return primary;
-    // Keep the verified primary identity/evidence. Use one complete SEC facts
-    // set only when the primary has no statements; never splice periods.
+    const coverage = fundamentalCoverage(primary.facts);
+    if (coverage.complete && coverage.fresh) return primary;
+    // Keep verified primary identity/evidence. Completeness and age trigger
+    // independent recovery, selecting one entire set of reported statements.
     try {
       const reported = await secFundamentals(symbol);
+      const useReported = preferReportedFacts(primary.facts, reported.facts);
       return {
         ...primary,
-        facts: reported.facts,
-        filings: reported.filings,
+        facts: useReported ? reported.facts : primary.facts,
+        filings: reported.filings.length ? reported.filings : primary.filings,
         issues: [
-          reported.facts.length
-            ? "Primary financial statements unavailable; SEC fallback financials are shown."
-            : "Reported financial statement coverage is unavailable for this instrument.",
+          useReported
+            ? "Financial statements: primary coverage was incomplete or old; one SEC fallback statement collection is shown."
+            : `Financial statements: ${coverage.reason} The primary collection is retained because SEC did not improve comparable coverage.`,
           ...reported.issues,
         ],
       };
@@ -529,7 +544,7 @@ export async function fundamentals(
       return {
         ...primary,
         issues: [
-          "Reported financial statement coverage is unavailable for this instrument.",
+          `Financial statements: ${coverage.reason} SEC fallback is unavailable; verified primary observations are retained.`,
         ],
       };
     }
@@ -545,7 +560,23 @@ export async function fundamentals(
               raw,
               new Date().toISOString(),
             ).profile;
-            if (!p?.name || !supportedListing(raw))
+            // Twelve profiles omit currency. Confirm the listing against the
+            // full directory rather than inferring quote currency from domicile
+            // (a US-listed foreign issuer may correctly report Australia, etc.).
+            const listing = raw.currency
+              ? raw
+              : (await marketDirectory()).listings.find(
+                  (row) =>
+                    sameProviderSymbol(row.symbol, symbol) &&
+                    row.exchange.toUpperCase() ===
+                      String(raw.exchange ?? "").toUpperCase(),
+                );
+            if (
+              !p?.name ||
+              !sameProviderSymbol(raw.symbol, symbol) ||
+              !listing ||
+              !supportedListing(listing)
+            )
               throw new Error(
                 "Company profile unavailable for this USD listing",
               );
@@ -556,7 +587,7 @@ export async function fundamentals(
               description: p.description,
               assetType: "stock" as const,
               exchange: String(raw.exchange || ""),
-              currency: /^[A-Z]{3}$/.test(raw.currency) ? raw.currency : "USD",
+              currency: listing.currency,
             };
           })
         : Promise.reject(new Error("Profile provider not configured")),
@@ -775,7 +806,7 @@ export async function research(symbol: string): Promise<Research> {
         ]
       : [],
   );
-  return {
+  const output: Research = {
     company: f?.company ??
       (q?.company
         ? {
@@ -822,8 +853,17 @@ export async function research(symbol: string): Promise<Research> {
         : []),
     ],
   };
+  output.coverage = researchCoverage(
+    output,
+    Boolean(
+      f?.company ||
+        (q?.company.name && q.company.name !== symbol) ||
+        (f?.name && f.name !== symbol),
+    ),
+  );
+  return output;
 }
-export async function search(query: string) {
+async function remoteSearch(query: string) {
   query = query.trim().toUpperCase();
   return cached(`search:${query}`, 3600_000, async () => {
     if (eodEnabled()) {
@@ -869,4 +909,114 @@ export async function search(query: string) {
       )
       .slice(0, 12);
   });
+}
+
+/** Enumerate every row of each enabled provider directory; no search-result cap.
+ * Successful directory reads are cached for a day; failed reads stay retryable. */
+export async function marketDirectory(): Promise<MarketDirectory> {
+  const sources = configuredSources();
+  const tasks: {
+    provider: "eodhd" | "twelve";
+    market: string;
+    read: () => Promise<unknown[]>;
+    normalize: (rows: unknown[]) => Company[];
+  }[] = [];
+  if (sources.eodhd)
+    for (const market of ["US", "CC"])
+      tasks.push({
+        provider: "eodhd",
+        market,
+        read: async () => {
+          const raw = await eodRequest(
+            `exchange-symbol-list/${market}`,
+            {},
+            86400000,
+          );
+          if (!Array.isArray(raw))
+            throw new Error("Directory payload is invalid.");
+          return raw;
+        },
+        normalize: normalizeEodSearch,
+      });
+  if (sources.twelve)
+    for (const market of ["stocks", "etf", "cryptocurrencies"])
+      tasks.push({
+        provider: "twelve",
+        market,
+        read: () =>
+          cached(`twelve-directory:${market}`, 86400000, async () => {
+            const raw = await twelve(
+              market,
+              market === "cryptocurrencies"
+                ? { currency_quote: "USD" }
+                : { country: "United States" },
+            );
+            if (!Array.isArray(raw.data) || !raw.data.length)
+              throw new Error("Directory payload is invalid.");
+            return raw.data;
+          }),
+        normalize: (rows) =>
+          normalizeTwelveDirectory(rows, market === "cryptocurrencies"),
+      });
+  return cached(
+    `market-directory:${JSON.stringify(sources)}`,
+    60000,
+    async () => {
+      const results = await Promise.allSettled(
+        tasks.map((task) => task.read()),
+      );
+      const listings: Company[] = [];
+      const directories = results.map((r, i) => {
+        const { provider, market } = tasks[i];
+        if (r.status === "rejected")
+          return {
+            provider,
+            market,
+            status: "unavailable" as const,
+            total: null,
+            eligible: 0,
+            reason:
+              r.reason instanceof HttpError
+                ? r.reason.message
+                : "Directory is temporarily unavailable.",
+          };
+        const eligible = tasks[i].normalize(r.value);
+        listings.push(...eligible);
+        return {
+          provider,
+          market,
+          status: "available" as const,
+          total: r.value.length,
+          eligible: eligible.length,
+        };
+      });
+      return {
+        listings: uniqueListings(listings).sort((a, b) =>
+          a.symbol.localeCompare(b.symbol),
+        ),
+        directories,
+        complete:
+          !!tasks.length && directories.every((d) => d.status === "available"),
+        retrievedAt: new Date().toISOString(),
+      };
+    },
+  );
+}
+export async function search(query: string) {
+  query = query.trim().toUpperCase();
+  if (!query) return [];
+  if (/^[A-Z0-9]+\.[A-Z]+$|^[A-Z ]+:/.test(query)) researchSymbol(query);
+  const directory = await marketDirectory();
+  const rows = searchDirectory(query, directory.listings);
+  if (directory.complete && rows.length) return rows;
+  try {
+    const remote = await remoteSearch(query);
+    return uniqueListings([
+      ...searchDirectory(query, [...rows, ...remote]),
+      ...remote,
+    ]).slice(0, 12);
+  } catch (error) {
+    if (rows.length || directory.complete) return rows;
+    throw error;
+  }
 }

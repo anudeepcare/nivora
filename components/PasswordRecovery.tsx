@@ -28,7 +28,7 @@ export default function PasswordRecovery() {
     }
   }
   return (
-    <main className="mp-auth" data-auth-mode="recovery">
+    <main className="mp-auth ap-auth" data-auth-mode="recovery">
       <aside className="mp-auth-story" aria-label="About AURYN">
         <a className="mp-brand" href="/" aria-label="Auryn home">
           <span className="mp-brand-mark" aria-hidden="true">
@@ -37,18 +37,18 @@ export default function PasswordRecovery() {
           <span>AURYN</span>
         </a>
         <div className="mp-auth-story-copy">
-          <span className="mp-overline">A LITTLE MORE PERSPECTIVE</span>
+          <span className="mp-overline">INVEST WITH UNDERSTANDING</span>
           <h2>
-            Make your next move
+            Know the stock.
             <br />
-            an informed one.
+            <em>Know your next move.</em>
           </h2>
-          <p>Connect the story, the evidence, and the bigger picture.</p>
+          <p>The decision. The reasons. Your AURYN Pace.</p>
         </div>
         <PublicSample compact />
         <div className="mp-auth-story-footer">
-          <span>Your next decision, with perspective.</span>
-          <span>Illustrative product preview. Investing involves risk.</span>
+          <span>A clearer case. A considered pace.</span>
+          <span>Research supports your judgment. Investing involves risk.</span>
         </div>
       </aside>
       <section className="mp-auth-main" aria-label="Account recovery">

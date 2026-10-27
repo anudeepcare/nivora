@@ -174,6 +174,7 @@ function settings(demo, overrides = {}) {
     ChevronRight: empty,
     LogOut: empty,
     ShieldCheck: empty,
+    Bell: empty,
     Notice: empty,
     ...navigation,
     ...overrides,
@@ -312,9 +313,59 @@ test("Reduce motion exposes switch state with a single thumb", () => {
 
 test("company essentials links Pro discovery directly to Plans", () => {
   const View = load("components/FreeSnapshot.tsx", "FreeSnapshot", {
-    Link: "Link", amount: () => "—", dateLabel: () => "—",
+    Link: "Link",
+    amount: () => "—",
+    dateLabel: () => "—",
   });
-  const tree = View({ research: { facts: [], company: { name: "Example" }, quote: {}, issues: [] } });
-  const link = nodes(tree, n => n.type === "Link")[0];
+  const tree = View({
+    research: {
+      facts: [],
+      company: { name: "Example" },
+      quote: {},
+      issues: [],
+    },
+  });
+  const link = nodes(tree, (n) => n.type === "Link")[0];
   assert.equal(link.props.href, "/plans");
+});
+
+test("Settings presents compact groups on one page without duplicate account summaries", () => {
+  const { tree } = settings({ routePrefix: "/preview" });
+  const textNodes = (node) =>
+    typeof node === "string"
+      ? [node]
+      : node && typeof node === "object"
+        ? React.Children.toArray(node.props?.children).flatMap(textNodes)
+        : [];
+  assert.equal(
+    textNodes(tree).filter((text) => text === "person@example.com").length,
+    1,
+  );
+  assert.equal(nodes(tree, (n) => n.props?.hidden === true).length, 0);
+  const groups = nodes(tree, (n) => n.type === "details");
+  assert.equal(groups.length, 3);
+  assert.ok(
+    groups.every((group) => !group.props.open),
+    "Settings starts with compact, expandable groups",
+  );
+  assert.equal(
+    nodes(tree, (n) => n.type === "input" && n.props.type === "password")
+      .length,
+    1,
+    "Account controls remain available inside their disclosure",
+  );
+  assert.equal(
+    nodes(tree, (n) => n.type === "Link" && n.props.href === "/preview/plans")
+      .length,
+    1,
+  );
+  assert.equal(
+    nodes(
+      tree,
+      (n) =>
+        n.type === "nav" && n.props["aria-label"] === "Legal and methodology",
+    ).length,
+    0,
+    "The shared footer already supplies legal links",
+  );
 });

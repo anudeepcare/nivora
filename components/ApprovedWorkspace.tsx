@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   ArrowUpRight,
   Bookmark,
@@ -19,7 +19,14 @@ import type { Position, Research } from "@/lib/types";
 import type { QuoteRows } from "@/lib/portfolio-quotes";
 import type { AccountBalances as Balances } from "@/lib/account-balances";
 import type { HomeFeed } from "@/lib/home-feed";
-import { relevantHoldingHeadlines } from "@/lib/home-feed";
+import {
+  groupMarketEvents,
+  homeFeedReadiness,
+  loadHomeFeed,
+  relevantHoldingHeadlines,
+} from "@/lib/home-feed";
+import { api } from "@/lib/client";
+import { readResource, resourceSnapshot } from "@/lib/resource-cache";
 import { homeBrief } from "@/lib/home-brief";
 import { researchAccumulation } from "@/lib/accumulation-policy-v5";
 import { amount, percent, quoteTime, dateLabel } from "@/lib/format";
@@ -59,6 +66,8 @@ const emptyFeed: HomeFeed = {
   retrievedAt: "",
   followed: 0,
   newsFollowed: 0,
+  eventsReady: true,
+  newsReady: true,
 };
 
 function Heading({
@@ -304,6 +313,71 @@ export function Overview() {
     </FeatureGate>
   );
 }
+function useHomeFeed(symbols: string[]) {
+  const { cache, demo } = useProduct();
+  const key = `home-feed:all:${[...new Set(symbols)].sort().join(",")}`;
+  const [revision, setRevision] = useState(0);
+  const [state, setState] = useState<{
+    key: string;
+    data: HomeFeed | null;
+    loading: boolean;
+    error: string;
+  }>(() => ({
+    key,
+    data: resourceSnapshot<HomeFeed>(cache, key),
+    loading: !!symbols.length && !demo,
+    error: "",
+  }));
+  useEffect(() => {
+    if (demo) return;
+    let active = true;
+    const old = resourceSnapshot<HomeFeed>(cache, key);
+    setState({ key, data: old, loading: true, error: "" });
+    readResource(cache, key, old?.issues.length ? 30000 : 3600000, () =>
+      loadHomeFeed(
+        key.slice("home-feed:all:".length).split(",").filter(Boolean),
+        (batch) =>
+          api<HomeFeed>(
+            `home-feed?symbols=${encodeURIComponent(batch.join(","))}`,
+          ),
+      ),
+    )
+      .then((data) => {
+        if (active) setState({ key, data, loading: false, error: "" });
+      })
+      .catch((error) => {
+        if (active)
+          setState({
+            key,
+            data: old,
+            loading: false,
+            error:
+              error instanceof Error
+                ? error.message
+                : "Updates could not be checked.",
+          });
+      });
+    return () => {
+      active = false;
+    };
+  }, [cache, demo, key, revision]);
+  const refresh = () => {
+    cache.delete(key);
+    setRevision((value) => value + 1);
+  };
+  if (demo) return { data: emptyFeed, loading: false, error: "", refresh };
+  return {
+    ...(state.key === key
+      ? state
+      : {
+          data: resourceSnapshot<HomeFeed>(cache, key),
+          loading: !!symbols.length,
+          error: "",
+        }),
+    refresh,
+  };
+}
+
 function HomeOverview() {
   const state = useWorkspaceData(),
     { workspace, quotes, model, prefix, demo, displayName, pace } = state;
@@ -322,13 +396,13 @@ function HomeOverview() {
       ...(workspace?.watchlist.map((w) => w.symbol) ?? []),
     ]),
   ];
-  const feedSymbols = symbols.filter((s) => !s.includes("/")).slice(0, 10),
-    key = feedSymbols.join(",");
-  const feed = useResource<HomeFeed>(
-    key ? `home-feed?symbols=${encodeURIComponent(key)}` : null,
-    demo ? emptyFeed : undefined,
-    3600000,
+  const feedSymbols = symbols.filter((symbol) =>
+    /^[A-Z][A-Z0-9.-]{0,14}$/.test(symbol),
   );
+  const feed = useHomeFeed(feedSymbols);
+  const readiness = feed.data
+    ? homeFeedReadiness(feed.data)
+    : { eventsReady: false, newsReady: false };
   const exposure = new Map(model.allocations.map((a) => [a.symbol, a.value]));
   const names = Object.fromEntries(
     Object.entries(quotes.data).flatMap(([s, r]) =>
@@ -352,16 +426,17 @@ function HomeOverview() {
     events: feed.data?.events ?? [],
     headlines,
     exposure,
-    eventsReady: !!feed.data && !feed.error && !feed.data.issues.length,
-    newsReady: !!feed.data && !feed.error && !feed.data.issues.length,
+    eventsReady: readiness.eventsReady && !feed.error,
+    newsReady: readiness.newsReady && !feed.error,
+    hasHoldings: !!workspace?.positions.length,
   });
   const largest = model.allocations[0];
   const signals = symbols
     .map((symbol) => ({ symbol, signal: pace(symbol) }))
     .filter((x) => x.signal != null)
     .sort((a, b) => b.signal!.multiplier - a.signal!.multiplier);
-  const best = signals[0],
-    checkpoint = brief.checkpoints[0];
+  const best = signals[0];
+  const eventGroups = groupMarketEvents(brief.checkpoints);
   const hour = today.getHours(),
     greeting =
       hour < 12
@@ -376,142 +451,234 @@ function HomeOverview() {
         ? researchLink(brief.symbol, prefix)
         : `${prefix}/research`;
   return (
-    <section className="approved-workspace approved-home">
+    <section className="approved-workspace approved-home home-decision-view">
       <Heading
         title={`${greeting}${displayName ? `, ${displayName}` : ""}.`}
-        subtitle="A little perspective on what matters to your money today."
+        subtitle="Your companies. The changes worth a closer look."
         actions={
           <span className="date-chip">
             {today.toLocaleDateString(undefined, {
-              weekday: "long",
-              month: "long",
+              weekday: "short",
+              month: "short",
               day: "numeric",
             })}
             <small>
-              {demo ? "Illustrative workspace" : "Your account perspective"}
+              {demo
+                ? "Illustrative workspace"
+                : `${symbols.length} companies followed`}
             </small>
           </span>
         }
       />
       {state.workspaceError && <Notice error>{state.workspaceError}</Notice>}
-      <WealthStrip state={state} />
-      <Coverage state={state} />
-      <section className="home-brief">
-        <div className="brief-symbol" aria-hidden="true">
-          A<span>✦</span>
-        </div>
-        <div>
+      <section className="home-next-step" aria-label="Your next step">
+        <div className="home-next-copy">
           <span className="eyebrow">{brief.kicker}</span>
           <h2>{brief.title}</h2>
           <p>{brief.detail}</p>
-          <small>
-            {!symbols.length
-              ? "Built around the companies and holdings you save."
-              : feed.loading
-                ? "Checking dated company evidence…"
-                : `${brief.status}${feed.data?.retrievedAt ? ` Checked ${quoteTime(feed.data.retrievedAt)}.` : ""}`}
-          </small>
         </div>
-        <Link className="btn" href={briefHref}>
-          {brief.action} <ArrowUpRight size={16} />
+        <Link className="btn primary" href={briefHref}>
+          {brief.action} <ArrowUpRight size={17} />
         </Link>
+        <p className="home-source-note">
+          {!symbols.length
+            ? "Start with a company you know."
+            : demo
+              ? "Illustrative workspace · open a company to explore the research."
+              : feed.loading
+                ? "Checking company news and scheduled events…"
+                : `${brief.status}${feed.data?.retrievedAt ? ` Checked ${quoteTime(feed.data.retrievedAt)}.` : ""}`}
+        </p>
       </section>
-      <div className="three-grid">
-        <Link
-          className="card insight"
-          href={
-            largest
-              ? researchLink(largest.symbol, prefix)
-              : `${prefix}/portfolio`
-          }
+      {!!workspace?.positions.length && <WealthStrip state={state} />}
+      <Coverage state={state} />
+      <div className="home-evidence-layout">
+        <section
+          className="home-evidence-panel home-news-panel"
+          aria-labelledby="home-news-title"
         >
-          <span className="eyebrow">
-            {largest
-              ? "REVISIT YOUR LARGEST POSITION"
-              : "BRING YOUR HOLDINGS INTO FOCUS"}
-          </span>
-          <div className="insight-number">
-            {largest ? largest.weight.toFixed(1) : "—"}
-            <small>{largest ? "%" : ""}</small>
-          </div>
-          <h3>
-            {largest
-              ? `${largest.symbol} shapes your exposure.`
-              : "Know what you own."}
-          </h3>
-          <p>
-            {largest
-              ? `${names[largest.symbol] || largest.symbol} accounts for ${percent(largest.weight)} of priced invested value. Review the business beside its share of your portfolio.`
-              : "Record shares and average costs to see where your money sits."}
-          </p>
-          <span className="text-link">
-            {largest ? "Understand the exposure" : "Open your portfolio"} ↗
-          </span>
-        </Link>
-        <Link
-          className="card insight mint"
-          href={best ? researchLink(best.symbol, prefix) : `${prefix}/research`}
-        >
-          <span className="eyebrow">ACCUMULATION, MADE CLEAR</span>
-          {best ? (
-            <div className="insight-number">
-              {best.signal!.multiplier}
-              <small>×</small>
+          <SectionHead
+            title="What changed"
+            subtitle="Recent company updates, with the source attached."
+            action={
+              <span className="home-section-count">
+                {headlines.length ? `${headlines.length} updates` : "This week"}
+              </span>
+            }
+          />
+          <h2 id="home-news-title" className="sr-only">
+            What changed
+          </h2>
+          {headlines.length ? (
+            <div className="home-news-list">
+              {headlines.slice(0, 5).map((news) => (
+                <article key={`${news.symbol}:${news.url}`}>
+                  <div className="home-news-meta">
+                    <Link href={researchLink(news.symbol, prefix)}>
+                      {news.symbol}
+                    </Link>
+                    <time dateTime={news.date}>{dateLabel(news.date)}</time>
+                  </div>
+                  <a
+                    className="home-news-title"
+                    href={news.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {news.title}
+                    <ArrowUpRight size={17} />
+                  </a>
+                  <Link
+                    className="text-link"
+                    href={researchLink(news.symbol, prefix)}
+                  >
+                    Review the company <ArrowUpRight size={15} />
+                  </Link>
+                </article>
+              ))}
             </div>
           ) : (
-            <div className="insight-icon">
-              <Bookmark size={42} />
+            <div className="home-quiet-state">
+              <FileText size={24} />
+              <h3>
+                {feed.loading
+                  ? "Checking your companies…"
+                  : feed.error || !readiness.newsReady
+                    ? "News could not be fully checked."
+                    : "No recent matched headlines."}
+              </h3>
+              <p>
+                {!symbols.length
+                  ? "Save a company to bring its updates here."
+                  : feed.loading
+                    ? "Looking for recent updates across your followed companies."
+                    : feed.error || !readiness.newsReady
+                      ? "Available research is still ready to read. Retry to check the missing sources."
+                      : "No recent company-matched story was returned by the news source."}
+              </p>
+              <Link className="text-link" href={`${prefix}/research`}>
+                Open research <ArrowUpRight size={15} />
+              </Link>
             </div>
           )}
-          <h3>
-            {best
-              ? `${best.symbol} · a confirmed Pace reading.`
-              : "Connect the price with the business."}
-          </h3>
-          <p>
-            {best
-              ? `${best.signal!.month} · ${best.signal!.multiplier}× the usual scheduled contribution under the price policy. Review business and funding risks alongside the signal.`
-              : "Open a company’s research for its evidence, valuation and available monthly Pace. A price signal needs enough settled history."}
-          </p>
-          <span className="text-link">
-            {best ? "Read the full case" : "Build your perspective"} ↗
-          </span>
-        </Link>
-        <Link
-          className="card insight lavender"
-          href={
-            checkpoint
-              ? researchLink(checkpoint.symbol, prefix)
-              : `${prefix}/alerts`
-          }
+          {headlines.length > 5 && (
+            <details className="home-more-updates">
+              <summary>Show {headlines.length - 5} more updates</summary>
+              {headlines.slice(5).map((news) => (
+                <article key={news.url}>
+                  <span>
+                    {news.symbol} · {dateLabel(news.date)}
+                  </span>
+                  <a href={news.url} target="_blank" rel="noopener noreferrer">
+                    {news.title}
+                    <ArrowUpRight size={15} />
+                  </a>
+                </article>
+              ))}
+            </details>
+          )}
+          {!feed.loading && symbols.length > 0 && (
+            <p className="home-source-note">
+              {demo
+                ? "News is not simulated in this preview."
+                : `${feed.data?.newsFollowed ?? 0} of ${feedSymbols.length} followed stocks checked.${readiness.newsReady ? "" : " Some news coverage is unavailable."}`}
+              {symbols.length > feedSymbols.length
+                ? " Crypto news is available in individual research."
+                : ""}
+            </p>
+          )}
+          {(feed.error || (!feed.loading && !readiness.newsReady)) && (
+            <button className="text-link" onClick={feed.refresh}>
+              Retry updates <RefreshCw size={14} />
+            </button>
+          )}
+        </section>
+        <section
+          className="home-evidence-panel home-events-panel"
+          aria-label="Upcoming company events"
         >
-          <span className="eyebrow">THE NEXT CHECKPOINT</span>
-          <div className="insight-icon">
-            <CalendarDays size={42} />
-          </div>
-          <h3>
-            {checkpoint
-              ? `${checkpoint.symbol}: ${checkpoint.kind}.`
-              : "Decide what would change your mind."}
-          </h3>
-          <p>
-            {checkpoint
-              ? `${dateLabel(checkpoint.date)} · ${checkpoint.detail || "Review growth, margins and cash together before the next reported update."}`
-              : "Set a price checkpoint or write down the business evidence you want to see next."}
-          </p>
-          <span className="text-link">
-            {checkpoint ? "Prepare your research" : "Set your checkpoint"} ↗
-          </span>
-        </Link>
+          <SectionHead
+            title="Next 7 days"
+            subtitle="The dates to prepare for."
+            action={<CalendarDays size={20} />}
+          />
+          {eventGroups.length ? (
+            <div className="home-event-groups">
+              {eventGroups.map((group) => (
+                <div className="home-event-day" key={group.date}>
+                  <time dateTime={group.date}>
+                    {new Intl.DateTimeFormat("en-US", {
+                      weekday: "short",
+                      month: "short",
+                      day: "numeric",
+                      timeZone: "UTC",
+                    }).format(Date.parse(group.date))}
+                  </time>
+                  <div>
+                    {group.events.map((event) => (
+                      <Link
+                        className="home-event-row"
+                        key={`${event.symbol}:${event.kind}`}
+                        href={researchLink(event.symbol, prefix)}
+                      >
+                        <span>
+                          <strong>{event.symbol}</strong>
+                          <span>{event.kind}</span>
+                          <small>{event.detail || "Time not confirmed"}</small>
+                        </span>
+                        <ArrowUpRight size={16} />
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="home-quiet-state">
+              <CalendarDays size={24} />
+              <h3>
+                {feed.loading
+                  ? "Checking the calendar…"
+                  : !symbols.length
+                    ? "Your next checkpoint."
+                    : !readiness.eventsReady
+                      ? "Calendar coverage is incomplete."
+                      : "No dated events returned."}
+              </h3>
+              <p>
+                {!symbols.length
+                  ? "Follow a company to see upcoming earnings and other dated events."
+                  : feed.loading
+                    ? "Looking up dated company events for the week ahead."
+                    : !readiness.eventsReady
+                      ? "Some scheduled events could not be checked. Missing coverage does not mean no events."
+                      : "No scheduled company event was returned for the next 7 days."}
+              </p>
+            </div>
+          )}
+          {!feed.loading &&
+            eventGroups.length > 0 &&
+            !readiness.eventsReady && (
+              <p className="home-source-note">
+                These dates are available. Some company events could not be
+                checked.
+              </p>
+            )}
+          {!feed.loading && !readiness.eventsReady && (
+            <button className="text-link" onClick={feed.refresh}>
+              Retry calendar <RefreshCw size={14} />
+            </button>
+          )}
+        </section>
       </div>
-      <div className="two-grid home-bottom">
-        <section className="card">
+      <div className="home-evidence-layout home-secondary-layout">
+        <section className="home-evidence-panel">
           <SectionHead
             title="Your companies"
-            subtitle="Keep the next decision close."
+            subtitle="Keep your next decision close."
             action={
               <Link className="text-link" href={`${prefix}/watchlist`}>
-                View all ↗
+                View all <ArrowUpRight size={16} />
               </Link>
             }
           />
@@ -528,87 +695,76 @@ function HomeOverview() {
               ))
           ) : (
             <Empty
-              title="Your first company is a search away"
+              title="Begin with one company"
               action={
                 <Link className="btn" href={`${prefix}/research`}>
                   Find a company
                 </Link>
               }
             >
-              Save a company to keep it here.
+              Save an idea or record a holding to make this space yours.
             </Empty>
           )}
         </section>
-        <section className="card">
+        <section className="home-evidence-panel home-review-panel">
           <SectionHead
-            title="What changed"
-            subtitle="Dated company updates, ready to put in context."
+            title="Keep your plan in view"
+            subtitle="Two useful checks before your next decision."
           />
-          <div className="story-list approved-story-list">
-            {headlines.slice(0, 3).map((news, i) => (
-              <article key={`${news.symbol}:${news.url}`}>
-                <span>{String(i + 1).padStart(2, "0")}</span>
-                <div>
-                  <a href={news.url} target="_blank" rel="noopener noreferrer">
-                    <strong>{news.title}</strong>
-                  </a>
-                  <p>
-                    {news.symbol} · {dateLabel(news.date)} · Source article
-                  </p>
-                  <Link
-                    className="text-link"
-                    href={researchLink(news.symbol, prefix)}
-                  >
-                    Open investment case ↗
-                  </Link>
-                </div>
-                <a
-                  href={news.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Read source: ${news.title}`}
-                >
-                  <ArrowUpRight size={16} />
-                </a>
-              </article>
-            ))}
-          </div>
-          {!headlines.length && (
-            <div className="approved-editorial-empty">
-              <FileText size={27} />
-              <h3>
-                {feed.loading
-                  ? "Checking your company updates…"
-                  : feed.error
-                    ? "Company updates are temporarily unavailable."
-                    : "Your next update belongs here."}
-              </h3>
-              <p>
-                {symbols.length
-                  ? "No recent, matched headline is available for the companies checked. Your research and holdings remain available."
-                  : "Follow a company to see dated headlines alongside its investment case."}
-              </p>
-              <Link className="text-link" href={`${prefix}/research`}>
-                Explore your research ↗
-              </Link>
-            </div>
-          )}
-          {symbols.length > feedSymbols.length && (
-            <p className="chart-note">
-              News checks up to 10 selected stocks. Open company research for
-              each company’s full feed.
-            </p>
-          )}
-          {feed.error && (
-            <button className="text-link" onClick={feed.refresh}>
-              Retry updates
-            </button>
-          )}
+          <Link
+            className="home-review-row"
+            href={
+              largest
+                ? researchLink(largest.symbol, prefix)
+                : `${prefix}/portfolio`
+            }
+          >
+            <span className="home-review-mark">
+              <Wallet size={20} />
+            </span>
+            <span>
+              <strong>
+                {largest
+                  ? `${largest.symbol} · ${percent(largest.weight)} of invested value`
+                  : "Bring your holdings into focus"}
+              </strong>
+              <small>
+                {largest
+                  ? "Your largest priced position. Review its business alongside your concentration."
+                  : "Record holdings and costs to understand your exposure."}
+              </small>
+            </span>
+            <ArrowUpRight size={17} />
+          </Link>
+          <Link
+            className="home-review-row"
+            href={
+              best ? researchLink(best.symbol, prefix) : `${prefix}/research`
+            }
+          >
+            <span className="home-review-mark">
+              {best ? `${best.signal!.multiplier}×` : <Bookmark size={20} />}
+            </span>
+            <span>
+              <strong>
+                {best
+                  ? `${best.symbol} · confirmed AURYN Pace`
+                  : "Read the business. Check your Pace."}
+              </strong>
+              <small>
+                {best
+                  ? `${best.signal!.month} · A scheduled-contribution reference. Check business and funding risks before acting.`
+                  : "Open research for the business evidence and available monthly price context."}
+              </small>
+            </span>
+            <ArrowUpRight size={17} />
+          </Link>
         </section>
       </div>
     </section>
   );
 }
+
 function HomeCompany({
   symbol,
   row,
@@ -639,6 +795,11 @@ function HomeCompany({
         >
           {percent(row?.quote?.changePct, true)}
         </small>
+        {row?.quote?.asOf && (
+          <time className="home-quote-asof" dateTime={row.quote.asOf}>
+            {quoteTime(row.quote.asOf, true)}
+          </time>
+        )}
       </span>
     </Link>
   );

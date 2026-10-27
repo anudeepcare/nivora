@@ -57,6 +57,8 @@ import { groupHistory } from "@/lib/chart-period";
 import ResearchChanges from "./ResearchChanges";
 import DcaResearch from "./DcaResearch";
 import DecisionOverview from "./ApprovedResearch";
+import { selectPriceReference } from "@/lib/price-reference";
+import { movementContext } from "@/lib/movement-context";
 import EarningsWorkspace from "./EarningsWorkspace";
 import DecisionBrief from "./DecisionBrief";
 import AnalystRatings from "./AnalystRatings";
@@ -338,6 +340,13 @@ export default function Research({ symbol }: { symbol: string }) {
       </div>
     </section>
   );
+  const headerReference = selectPriceReference(
+    r,
+    demo ? Date.parse(r.retrievedAt) : Date.now(),
+  );
+  const headerMovement = movementContext(r, [], {
+    now: demo ? Date.parse(r.retrievedAt) : Date.now(),
+  });
   const headerContext = headerMarketContext(r);
   const headerFinancial = latestFinancialEvidence(r).latest;
   const ordinaryCompany = !/bank|insurance|reit/i.test(
@@ -371,23 +380,32 @@ export default function Research({ symbol }: { symbol: string }) {
         <div className="company-price">
           <div className="quote">
             <strong className="num">
-              {amount(r.quote.price, r.quote.currency)}
+              {amount(
+                headerReference?.price ?? r.quote.price,
+                r.quote.currency,
+              )}
             </strong>
             <span
               className={
-                r.quote.changePct == null || r.quote.changePct === 0
+                headerMovement.change == null || headerMovement.change === 0
                   ? ""
-                  : r.quote.changePct < 0
+                  : headerMovement.change < 0
                     ? "au-negative"
                     : "au-positive"
               }
             >
-              {percent(r.quote.changePct, true)}
+              {percent(headerMovement.change, true)}
             </span>
             <DataStamp
               source={r.quote.source}
-              asOf={r.quote.asOf}
-              status={r.quote.stale ? "Older quote" : r.quote.session}
+              asOf={headerReference?.asOf ?? r.quote.asOf}
+              status={
+                headerReference?.basis === "settled-close"
+                  ? "Latest close"
+                  : r.quote.stale
+                    ? "Older quote"
+                    : r.quote.session
+              }
             />
           </div>
           <button

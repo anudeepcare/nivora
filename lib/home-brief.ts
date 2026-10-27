@@ -8,6 +8,7 @@ type Input = {
   exposure: Map<string, number>;
   eventsReady: boolean;
   newsReady: boolean;
+  hasHoldings?: boolean;
 };
 /** Source-backed editorial selection, not a materiality classifier or trading signal. */
 export function homeBrief(input: Input) {
@@ -35,9 +36,11 @@ export function homeBrief(input: Input) {
         a.date.localeCompare(b.date) ||
         (exposure.get(b.symbol) ?? 0) - (exposure.get(a.symbol) ?? 0),
     );
-  const status = input.eventsReady
-    ? "No dated events returned for the next 7 days."
-    : "Some company events could not be checked.";
+  const status = checkpoints.length
+    ? `${checkpoints.length} dated checkpoint${checkpoints.length === 1 ? "" : "s"} in the next 7 days.${input.eventsReady ? "" : " Some company events could not be checked."}`
+    : input.eventsReady
+      ? "No dated events returned for the next 7 days."
+      : "Some company events could not be checked.";
   const base = {
     checkpoints,
     status,
@@ -104,18 +107,22 @@ export function homeBrief(input: Input) {
         "Find a company you follow, then save it or add a holding to shape your daily view.",
       action: "Find your first company",
     };
+  const hasHoldings = input.hasHoldings ?? exposure.size > 0;
   return {
     ...base,
     kind: "review" as const,
     kicker: "YOUR WEEKLY CHECK-IN",
-    title: "A clearer view of what you own.",
-    detail:
-      "Review concentration, revisit the business and keep your plan in focus.",
+    title: hasHoldings
+      ? "A clearer view of what you own."
+      : "Revisit the companies you follow.",
+    detail: hasHoldings
+      ? "Review concentration, revisit the business and keep your plan in focus."
+      : "Review your saved ideas and the evidence that would change your next decision.",
     status:
       !input.eventsReady || !input.newsReady
         ? "Some company evidence could not be checked."
         : status,
-    action: "Review my holdings",
+    action: hasHoldings ? "Review my holdings" : "Review my watchlist",
   };
 }
 export function dailyPerspective(today: string) {

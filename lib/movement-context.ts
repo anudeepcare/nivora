@@ -1,12 +1,20 @@
 import type { Research } from "./types";
-import { advancedStudies } from "./advanced-research.ts";
 import { quoteHealth } from "./quote-health.ts";
+import { selectPriceReference, settledPriceBars } from "./price-reference.ts";
 type Headline = { date: string; title: string; url: string };
-export function movementContext(r: Research, headlines: Headline[]) {
-  const clock = r.priceObservedAt ?? r.retrievedAt,
-    now = Date.parse(clock);
-  const q = quoteHealth(r.quote, now)!,
-    at = Date.parse(q.asOf ?? "");
+export function movementContext(
+  r: Research,
+  headlines: Headline[],
+  { now = Date.now() }: { now?: number } = {},
+) {
+  const q = Number.isFinite(now)
+    ? quoteHealth(r.quote, now)!
+    : { ...r.quote, stale: true };
+  const reference = selectPriceReference(r, now),
+    settled = settledPriceBars(r, now);
+  const fallback = reference?.basis === "settled-close";
+  const asOf = reference?.asOf ?? q.asOf,
+    at = Date.parse(asOf ?? "");
   const calendar = new Intl.DateTimeFormat("en-CA", {
     timeZone: r.company.assetType === "crypto" ? "UTC" : "America/New_York",
     year: "numeric",
@@ -15,15 +23,27 @@ export function movementContext(r: Research, headlines: Headline[]) {
   });
   const day = (ms: number) =>
     Number.isFinite(ms) ? calendar.format(new Date(ms)) : "";
-  const validPrice = q.price != null && Number.isFinite(q.price) && q.price > 0;
-  const change =
-    validPrice && Number.isFinite(q.changePct) && q.changePct != null
+  const price = reference?.price ?? q.price;
+  const validPrice =
+    price != null &&
+    Number.isFinite(price) &&
+    price > 0 &&
+    q.currency === r.company.currency &&
+    Number.isFinite(now) &&
+    Number.isFinite(at) &&
+    at <= now + 60000;
+  const previous = fallback ? settled.at(-2) : null;
+  const change = fallback
+    ? previous
+      ? ((price! - previous.close) / previous.close) * 100
+      : null
+    : validPrice && Number.isFinite(q.changePct) && q.changePct != null
       ? q.changePct
       : validPrice &&
           q.previousClose != null &&
           Number.isFinite(q.previousClose) &&
           q.previousClose > 0
-        ? ((q.price! - q.previousClose) / q.previousClose) * 100
+        ? ((price! - q.previousClose) / q.previousClose) * 100
         : null;
   const seen = new Set<string>();
   const coverage = headlines
@@ -73,24 +93,52 @@ export function movementContext(r: Research, headlines: Headline[]) {
           })
           .sort((a, b) => a.date.localeCompare(b.date))[0] ?? null)
       : null;
-  const study = advancedStudies(r.history, clock);
+  const last = settled.at(-1),
+    priorVolumes = settled.slice(-21, -1);
+  const volumeRecent = !!last && now - Date.parse(last.time) <= 10 * 86400000;
+  const volumeReady =
+    priorVolumes.length === 20 &&
+    [...priorVolumes, last!].every(
+      (b) => Number.isFinite(b.volume) && b.volume > 0,
+    );
   const volume =
-    study.asOf &&
-    Number.isFinite(now) &&
-    now - Date.parse(study.asOf) <= 10 * 86400000
-      ? study.relativeVolume
+    volumeRecent && volumeReady
+      ? last!.volume / (priorVolumes.reduce((sum, b) => sum + b.volume, 0) / 20)
       : null;
   return {
-    price: validPrice ? q.price : null,
+    price: validPrice ? price : null,
     change,
-    today: validPrice && !q.stale && day(at) === day(now),
-    asOf: q.asOf,
-    session: q.session,
+    today: !fallback && validPrice && !q.stale && day(at) === day(now),
+    asOf,
+    session: fallback ? "Settled daily close" : q.session,
     stale: q.stale,
+    priceBasis:
+      reference?.basis ?? (validPrice ? "older-quote" : "unavailable"),
+    priceSource: fallback
+      ? (r.historySource ?? "Daily price history")
+      : q.source,
+    changeFrom: previous?.time ?? null,
     headlines: coverage,
     earnings,
+    earningsStatus:
+      r.company.assetType === "crypto"
+        ? "Not applicable to crypto"
+        : earnings
+          ? "Unreported scheduled earnings"
+          : r.evidence
+            ? "No upcoming earnings date supplied"
+            : "Earnings calendar unavailable",
     relativeVolume: volume,
-    volumeDate: study.asOf,
+    volumeDate: last?.time ?? null,
+    volumeStatus: !last
+      ? "Settled daily volume unavailable"
+      : !volumeRecent
+        ? "Daily volume history is older than 10 days"
+        : priorVolumes.length < 20
+          ? "Requires 20 prior daily volumes"
+          : !volumeReady
+            ? "Daily volume observations incomplete"
+            : "Latest settled volume vs 20 prior sessions",
     verifiedCause: null,
   };
 }

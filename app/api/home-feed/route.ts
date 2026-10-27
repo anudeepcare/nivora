@@ -4,15 +4,18 @@ import { eodTicker } from "@/lib/eodhd-normalize";
 import {
   calendarHighlights,
   newsHighlights,
+  settledFeedMap,
   type HomeFeed,
 } from "@/lib/home-feed";
 export async function GET(request: Request) {
   try {
     const { user } = await account(request);
-    limit(`home-feed:${user.id}`, 6);
-    const query=new URL(request.url).searchParams;
-    const kind=query.get("kind")||"all";
-    if(!["all","events","news"].includes(kind))throw new HttpError("Invalid update category.");
+    // Sequential 30-symbol batches can cover a large account without a six-call cutoff.
+    limit(`home-feed:${user.id}`, 30);
+    const query = new URL(request.url).searchParams;
+    const kind = query.get("kind") || "all";
+    if (!["all", "events", "news"].includes(kind))
+      throw new HttpError("Invalid update category.");
     const raw = query.get("symbols") ?? "";
     const symbols = [...new Set(raw.split(",").filter(Boolean))];
     if (
@@ -30,24 +33,45 @@ export async function GET(request: Request) {
       issues: [],
       retrievedAt,
       followed: symbols.length,
-      newsFollowed: kind==="events"?0:symbols.length,
+      newsFollowed: 0,
+      eventsReady: kind !== "news",
+      newsReady: kind !== "events",
     };
     if (!symbols.length) return privateJson(result);
     if (!eodEnabled())
       return privateJson({
         ...result,
         issues: ["Company updates are not connected."],
+        eventsReady: false,
+        newsReady: false,
+        followed: 0,
       });
     const params = {
       symbols: [...symbols].sort().map(eodTicker).join(","),
       from,
       to,
     };
-    const [earnings, splits, ...news] = await Promise.allSettled([
-      kind!=="news"?eodRequest("calendar/earnings", params, 21600000):Promise.resolve(null),
-      kind!=="news"?eodRequest("calendar/splits", params, 21600000):Promise.resolve(null),
-      ...(kind!=="events"?symbols.map((s) => eodNews(s)):[]),
+    const [calendar, news] = await Promise.all([
+      Promise.allSettled([
+        kind !== "news"
+          ? eodRequest("calendar/earnings", params, 21600000)
+          : Promise.resolve(null),
+        kind !== "news"
+          ? eodRequest("calendar/splits", params, 21600000)
+          : Promise.resolve(null),
+      ]),
+      settledFeedMap(kind !== "events" ? symbols : [], (symbol) =>
+        eodNews(symbol),
+      ),
     ]);
+    const [earnings, splits] = calendar;
+    result.eventsReady =
+      kind !== "news" && calendar.every((row) => row.status === "fulfilled");
+    result.newsReady =
+      kind !== "events" && news.every((row) => row.status === "fulfilled");
+    result.newsFollowed = news.filter(
+      (row) => row.status === "fulfilled",
+    ).length;
     result.events = calendarHighlights(
       earnings.status === "fulfilled" ? earnings.value : null,
       splits.status === "fulfilled" ? splits.value : null,

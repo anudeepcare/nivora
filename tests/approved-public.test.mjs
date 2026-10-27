@@ -134,7 +134,7 @@ function accountHarness({
   };
 }
 
-test("public home exposes the primary account action before an explicitly fictional research example", () => {
+test("public home leads with the benefit and an account action without fabricated investment claims", () => {
   const PublicLanding = load(
     "components/PublicLanding.tsx",
     "PublicLanding",
@@ -142,16 +142,76 @@ test("public home exposes the primary account action before an explicitly fictio
   );
   const html = renderToStaticMarkup(React.createElement(PublicLanding));
   assert.match(html, /<main[^>]*class="mp-public/);
-  assert.match(html, /href="\/login\?mode=signup"[^>]*>Start with clarity/);
-  assert.match(html, /Northstar Labs/);
-  assert.match(html, /Illustrative company/);
-  assert(html.indexOf("Start with clarity") < html.indexOf("Northstar Labs"));
+  assert.match(html, /Know the stock\./);
+  assert.match(html, /Know your next move\./);
+  assert.match(html, /href="\/login\?mode=signup"[^>]*>Start free/);
+  assert.match(html, /AURYN Pace/);
+  assert.match(html, /Illustrative product guide/);
+  assert(
+    html.indexOf("Start free") < html.indexOf("Illustrative product guide"),
+  );
   assert.match(html, /href="\/sample"/);
   assert.match(html, /href="\/pricing"/);
   assert.doesNotMatch(
     html,
-    /Microsoft|Apple Inc|Tesla|NVIDIA|NVDA|MSFT|AAPL|data-demo-form|#\/research/,
+    /Northstar|Microsoft|Apple Inc|Tesla|NVIDIA|NVDA|MSFT|AAPL|\+\d+(?:\.\d+)?%|\$124|data-demo-form|#\/research/,
   );
+});
+
+test("public and account previews explain Pace without fictional company results or an implied recommendation", () => {
+  for (const compact of [false, true]) {
+    const html = renderToStaticMarkup(
+      React.createElement(PublicSample, { compact }),
+    );
+    assert.match(html, /Illustrative product guide/);
+    assert.match(html, /AURYN Pace/);
+    assert.match(html, /not predicted returns/);
+    assert.match(html, /Confirmed month/);
+    assert.match(html, /Forming month/);
+    assert.doesNotMatch(
+      html,
+      /Northstar|sample values|Revenue growth|FCF margin|Supportive <strong>7|\$\d|\+\d+(?:\.\d+)?%/,
+    );
+  }
+});
+
+test("public navigation opens accessibly, closes on Escape, and closes after a destination is chosen", () => {
+  let expanded = false;
+  const PublicLanding = load("components/PublicLanding.tsx", "PublicLanding", {
+    ...common,
+    useState: () => [
+      expanded,
+      (next) => {
+        expanded = next;
+      },
+    ],
+  });
+  const render = () => PublicLanding({});
+  const toggle = () =>
+    nodes(
+      render(),
+      (n) =>
+        n.type === "button" &&
+        n.props["aria-controls"] === "ap-mobile-navigation",
+    )[0];
+  assert.equal(toggle().props["aria-expanded"], false);
+  toggle().props.onClick();
+  assert.equal(toggle().props["aria-expanded"], true);
+  const navigation = nodes(
+    render(),
+    (n) => n.type === "nav" && n.props.id === "ap-mobile-navigation",
+  )[0];
+  assert(navigation);
+  nodes(render(), (n) => n.type === "header")[0].props.onKeyDown({
+    key: "Escape",
+  });
+  assert.equal(toggle().props["aria-expanded"], false);
+  toggle().props.onClick();
+  nodes(
+    navigation,
+    (n) => n.type === Link && n.props.href === "/pricing",
+  )[0].props.onClick();
+  assert.equal(toggle().props["aria-expanded"], false);
 });
 
 test("account modes keep labelled native fields, reachable submit and real legal/help routes", () => {
