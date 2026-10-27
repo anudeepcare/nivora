@@ -132,6 +132,13 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
               <strong>{d.actions.holding}</strong>
             </span>
           </div>
+          <div
+            className="decision-explanation"
+            data-reason={d.explanation.code}
+          >
+            <strong>{d.explanation.label}</strong>
+            <p>{d.explanation.detail}</p>
+          </div>
           <ul className="decision-reasons">
             {d.reasons.slice(0, 3).map((reason) => (
               <li key={reason}>

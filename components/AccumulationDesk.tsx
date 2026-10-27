@@ -120,6 +120,7 @@ export default function AccumulationDesk({
               : "Cycle-relative · monthly discipline"}
           </span>
           <h2>AURYN Pace · price history</h2>
+          <small>Model {chosen.version} · settled prices</small>
           <PaceHelp trigger="What does P mean?" />
         </div>
         <div className="segments" aria-label="Accumulation time horizon">

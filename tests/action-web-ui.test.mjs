@@ -1,9 +1,97 @@
-import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import ts from 'typescript';import React from 'react';import {renderToStaticMarkup} from 'react-dom/server';
-import {pacePresentation,pacePeriods} from '../lib/pace-presentation.ts';
-function component(file,name,bindings={}){const ast=ts.createSourceFile(file,fs.readFileSync(file,'utf8'),ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX);const node=ast.statements.find(n=>ts.isFunctionDeclaration(n)&&n.name?.text===name);const js=ts.transpileModule(node.getText(ast).replace('export default ',''),{compilerOptions:{jsx:ts.JsxEmit.React,module:ts.ModuleKind.CommonJS}}).outputText;return new Function('React',...Object.keys(bindings),js+';return '+name)(React,...Object.values(bindings));}
-const Readings=component('components/PaceReadings.tsx','PaceReadings',{dateLabel:x=>x});
-const Guidance=component('components/PaceGuidance.tsx','PaceGuidance',{dateLabel:x=>x,PaceReadings:Readings});
-const show=(action,confirmed,forming)=>renderToStaticMarkup(React.createElement(Guidance,{view:pacePresentation(action,confirmed),readings:pacePeriods({multiplier:confirmed,date:'2026-09-30',forming:{multiplier:forming,date:'2026-10-26'}})}));
-test('actionable Pace uses confirmed level while forming stays inside details',()=>{const html=show('Buy',2,4);assert.match(html,/Buy gradually/);assert.match(html,/pace-effective">P2/);assert.doesNotMatch(html.split('<details')[0],/P4/);assert.match(html,/<details[\s\S]*P4/);});
-test('hold and risk actions never lead with an accelerated raw contribution',()=>{for(const action of ['Hold','Wait','Reduce','Sell','Avoid']){const html=show(action,4,4);assert.doesNotMatch(html,/pace-effective/);assert.doesNotMatch(html.split('<details')[0],/P4/);assert.match(html,new RegExp(action));}});
-test('missing monthly history shows one explanation with no duplicate Pending tiles',()=>{const html=show('Buy',null,null);assert.doesNotMatch(html,/Pending|pace-period|<details/);assert.equal((html.match(/needs more completed price history/g)||[]).length,1);assert.match(html,/Buy gradually/);});
+import test from "node:test";
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import ts from "typescript";
+import React from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { pacePresentation, pacePeriods } from "../lib/pace-presentation.ts";
+function component(file, name, bindings = {}) {
+  const ast = ts.createSourceFile(
+    file,
+    fs.readFileSync(file, "utf8"),
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TSX,
+  );
+  const node = ast.statements.find(
+    (n) => ts.isFunctionDeclaration(n) && n.name?.text === name,
+  );
+  const js = ts.transpileModule(
+    node.getText(ast).replace("export default ", ""),
+    {
+      compilerOptions: {
+        jsx: ts.JsxEmit.React,
+        module: ts.ModuleKind.CommonJS,
+      },
+    },
+  ).outputText;
+  return new Function(
+    "React",
+    ...Object.keys(bindings),
+    js + ";return " + name,
+  )(React, ...Object.values(bindings));
+}
+const Readings = component("components/PaceReadings.tsx", "PaceReadings", {
+  dateLabel: (x) => x,
+});
+const Guidance = component("components/PaceGuidance.tsx", "PaceGuidance", {
+  dateLabel: (x) => x,
+  PaceReadings: Readings,
+});
+const show = (action, confirmed, forming) =>
+  renderToStaticMarkup(
+    React.createElement(Guidance, {
+      view: pacePresentation(action, confirmed),
+      readings: pacePeriods({
+        multiplier: confirmed,
+        date: "2026-09-30",
+        forming: { multiplier: forming, date: "2026-10-26" },
+      }),
+    }),
+  );
+test("Pace exposes both periods without a click and applies only the confirmed level", () => {
+  const html = show("Buy", 2, 4);
+  assert.match(html, /Buy gradually/);
+  assert.match(html, /pace-effective">P2/);
+  const visible = html.replace(/<details[\s\S]*?<\/details>/g, "");
+  assert.match(visible, /P4/);
+  assert.match(visible, /P2/);
+  assert.match(visible, /forming/);
+  assert.match(visible, /confirmed/);
+  assert.match(visible, /Accelerated/);
+  assert.match(visible, /Increased/);
+  assert.match(visible, /2026-09-30/);
+  assert.match(visible, /2026-10-26/);
+});
+test("hold and risk actions keep the price Pace visible without authorising additions", () => {
+  for (const action of ["Hold", "Wait", "Reduce", "Sell", "Avoid"]) {
+    const html = show(action, 4, 2);
+    assert.doesNotMatch(html, /pace-effective/);
+    const visible = html.replace(/<details[\s\S]*?<\/details>/g, "");
+    assert.match(visible, /P4/);
+    assert.match(visible, /P2/);
+    assert.match(html, new RegExp(action));
+  }
+});
+test("missing monthly history shows one explanation with no duplicate Pending tiles", () => {
+  const html = show("Buy", null, null);
+  assert.doesNotMatch(html, /Pending|pace-period|<details/);
+  assert.equal(
+    (html.match(/needs more completed price history/g) || []).length,
+    1,
+  );
+  assert.match(html, /Buy gradually/);
+});
+test("a reading keeps its calculation reason with the visible confirmed Pace", () => {
+  const html = renderToStaticMarkup(
+    React.createElement(Guidance, {
+      view: pacePresentation("Wait", 2),
+      readings: pacePeriods({
+        multiplier: 2,
+        date: "2026-09-30",
+        reason: "12% below the prior average.",
+      }),
+    }),
+  );
+  assert.match(html, /12% below the prior average/);
+});

@@ -8,6 +8,8 @@ import * as format from "../lib/format.ts";
 import { homeBrief } from "../lib/home-brief.ts";
 import {
   groupMarketEvents,
+  marketDay,
+  earningsEventState,
   homeFeedReadiness,
   relevantHoldingHeadlines,
 } from "../lib/home-feed.ts";
@@ -102,6 +104,8 @@ test("Watchlist-only Home avoids an irrelevant zero-value portfolio summary", ()
     homeFeedReadiness,
     homeBrief,
     groupMarketEvents,
+    marketDay,
+    earningsEventState,
     relevantHoldingHeadlines,
     researchLink: (symbol) => `/research/${symbol}`,
     ...format,

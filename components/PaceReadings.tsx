@@ -16,6 +16,7 @@ export default function PaceReadings({
           <div key={row.key} className={`pace-period pace-period-${row.key}`}>
             <span>{row.label}</span>
             <strong>{row.code}</strong>
+            <b className="pace-level-name">{row.name}</b>
             <small>
               {row.date ? dateLabel(row.date) : "Building price history"}
             </small>

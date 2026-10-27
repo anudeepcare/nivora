@@ -1,4 +1,5 @@
 import type { MarketEvent, MarketHeadline } from "./home-feed";
+import { earningsEventState } from "./home-feed.ts";
 type Input = {
   today: string;
   symbols: string[];
@@ -43,6 +44,7 @@ export function homeBrief(input: Input) {
       : "Some company events could not be checked.";
   const base = {
     checkpoints,
+    earnings: [] as MarketEvent[],
     status,
     symbol:
       [...symbols].sort(
@@ -51,16 +53,42 @@ export function homeBrief(input: Input) {
       )[0] ?? null,
   };
   const earnings = checkpoints.find((e) => /earnings/i.test(e.kind));
-  if (earnings)
+  if (earnings) {
+    const reports = checkpoints.filter(
+      (e) => /earnings/i.test(e.kind) && e.date === earnings.date,
+    );
+    const reported = reports.filter(
+      (e) => earningsEventState(e, today).status === "reported",
+    ).length;
+    const isToday = earnings.date === today;
+    const date = new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      timeZone: "UTC",
+    }).format(Date.parse(earnings.date));
     return {
       ...base,
+      earnings: reports,
       kind: "earnings" as const,
-      kicker: "EARNINGS AHEAD",
-      title: "Earnings are your next checkpoint.",
-      detail: `${names[earnings.symbol] ?? earnings.symbol} · ${new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", timeZone: "UTC" }).format(Date.parse(earnings.date))}. Review expectations before results arrive.`,
+      kicker: isToday ? "TODAY’S EARNINGS" : "EARNINGS AHEAD",
+      title: isToday
+        ? reported === reports.length
+          ? "Results are ready to review."
+          : "Your earnings day, in one view."
+        : "Earnings are your next checkpoint.",
+      detail:
+        reports.length > 1
+          ? `${reports.length} companies · ${date}. ${isToday ? `${reported} reported · ${reports.length - reported} awaiting confirmation.` : "Each company’s schedule is listed below."}`
+          : `${names[earnings.symbol] ?? earnings.symbol} · ${date}. ${reported ? "Results reported. Review the release alongside the dated financial statements." : isToday ? "Scheduled today; release confirmation is pending." : "Review expectations before the scheduled report."}`,
       symbol: earnings.symbol,
-      action: "Prepare for earnings",
+      action:
+        reports.length > 1
+          ? "View earnings calendar"
+          : isToday
+            ? "Open company research"
+            : "Prepare for earnings",
     };
+  }
   const update = input.headlines
     .filter((n) => {
       const at = Date.parse(n.date);

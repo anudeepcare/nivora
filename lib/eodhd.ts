@@ -46,7 +46,11 @@ export async function eodRequest(
     const response = await fetch(
       `https://eodhd.com/api/${path}?${new URLSearchParams({ ...params, api_token: token, fmt: "json" })}`,
       {
-        next: { revalidate: Math.max(1, Math.ceil(ttl / 1000)) },
+        // Earnings already use the bounded memory/shared caches. Avoid retaining
+        // a pre-release response in a third cache with an older six-hour TTL.
+        ...(path === "calendar/earnings"
+          ? { cache: "no-store" as const }
+          : { next: { revalidate: Math.max(1, Math.ceil(ttl / 1000)) } }),
         signal: AbortSignal.timeout(15000),
       },
     );

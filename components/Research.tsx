@@ -461,7 +461,9 @@ export default function Research({ symbol }: { symbol: string }) {
         ref={evidenceDialog}
         className="approved-evidence-drawer"
         aria-labelledby="approved-evidence-title"
-        onClose={() => setTab("Snapshot")}
+        onClose={(event) => {
+          if (event.target === event.currentTarget) setTab("Snapshot");
+        }}
         onClick={(e) => {
           if (e.target === e.currentTarget) e.currentTarget.close();
         }}

@@ -1,8 +1,7 @@
 import type { pacePeriods, pacePresentation } from "@/lib/pace-presentation";
-import { dateLabel } from "@/lib/format";
 import PaceReadings from "./PaceReadings";
 
-/** One actionable treatment on every decision surface. Raw price observations stay in details. */
+/** Pace stays visible; the overall assessment explains whether additions are supported. */
 export default function PaceGuidance({
   view,
   readings,
@@ -16,26 +15,28 @@ export default function PaceGuidance({
   const available = readings.some((r) => r.level != null);
   return (
     <div className={`pace-guidance${compact ? " pace-guidance-compact" : ""}`}>
+      {available && <PaceReadings readings={readings} compact={compact} />}
+      {available && !compact && (
+        <small className="pace-reading-note">
+          Accumulation pace · forming can change; confirmed uses the completed
+          period.
+        </small>
+      )}
+      {!compact && confirmed?.level != null && confirmed.reason && (
+        <p className="pace-reading-reason">
+          <b>Why {confirmed.code} confirmed</b>
+          {confirmed.reason}
+        </p>
+      )}
       <div className="pace-action">
+        <span className="pace-assessment-label">Overall view</span>
         <strong>{view.actionLabel}</strong>
         {view.effectiveCode && (
           <span className="pace-effective">{view.effectiveCode}</span>
         )}
       </div>
-      {view.effectiveCode && confirmed?.date && (
-        <small>Confirmed · {dateLabel(confirmed.date)}</small>
-      )}
       {!compact && <p className="pace-context">{view.detail}</p>}
-      {available ? (
-        <details className="pace-source-details">
-          <summary>Price readings & dates</summary>
-          <p>
-            Price-only context. Forming readings can change; the completed
-            period sets the contribution level.
-          </p>
-          <PaceReadings readings={readings} compact />
-        </details>
-      ) : (
+      {!available && (
         <small className="pace-history-note">
           The contribution level needs more completed price history. Business
           and valuation remain available.

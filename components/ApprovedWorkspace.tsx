@@ -24,6 +24,8 @@ import type { AccountBalances as Balances } from "@/lib/account-balances";
 import type { HomeFeed } from "@/lib/home-feed";
 import {
   groupMarketEvents,
+  marketDay,
+  earningsEventState,
   homeFeedReadiness,
   loadHomeFeed,
   relevantHoldingHeadlines,
@@ -340,7 +342,7 @@ function useHomeFeed(symbols: string[]) {
     let active = true;
     const old = resourceSnapshot<HomeFeed>(cache, key);
     setState({ key, data: old, loading: true, error: "" });
-    readResource(cache, key, old?.issues.length ? 30000 : 3600000, () =>
+    readResource(cache, key, old?.issues.length ? 30000 : 300000, () =>
       loadHomeFeed(
         key.slice("home-feed:all:".length).split(",").filter(Boolean),
         (batch) =>
@@ -368,6 +370,27 @@ function useHomeFeed(symbols: string[]) {
       active = false;
     };
   }, [cache, demo, key, revision]);
+  useEffect(() => {
+    if (demo || !symbols.length) return;
+    let lastCheck = Date.now();
+    const check = () => {
+      if (
+        document.visibilityState === "hidden" ||
+        Date.now() - lastCheck < 300000
+      )
+        return;
+      lastCheck = Date.now();
+      setRevision((value) => value + 1);
+    };
+    const timer = window.setInterval(check, 300000);
+    window.addEventListener("focus", check);
+    document.addEventListener("visibilitychange", check);
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener("focus", check);
+      document.removeEventListener("visibilitychange", check);
+    };
+  }, [demo, key, symbols.length]);
   const refresh = () => {
     cache.delete(key);
     setRevision((value) => value + 1);
@@ -393,7 +416,7 @@ function HomeOverview() {
       ? Object.values(demo.research)[0]?.retrievedAt || Date.now()
       : Date.now(),
   );
-  const day = today.toISOString().slice(0, 10);
+  const day = marketDay(today);
   const symbols = [
     ...new Set([
       ...model.allocations.map((a) => a.symbol),
@@ -454,11 +477,13 @@ function HomeOverview() {
           ? "Good afternoon"
           : "Good evening";
   const briefHref =
-    brief.kind === "review"
-      ? `${prefix}/${workspace?.positions.length ? "portfolio" : "watchlist"}`
-      : brief.symbol
-        ? researchLink(brief.symbol, prefix)
-        : `${prefix}/research`;
+    brief.earnings.length > 1
+      ? "#home-earnings"
+      : brief.kind === "review"
+        ? `${prefix}/${workspace?.positions.length ? "portfolio" : "watchlist"}`
+        : brief.symbol
+          ? researchLink(brief.symbol, prefix)
+          : `${prefix}/research`;
   return (
     <section className="approved-workspace approved-home home-decision-view">
       <Heading
@@ -485,6 +510,27 @@ function HomeOverview() {
           <span className="eyebrow">{brief.kicker}</span>
           <h2>{brief.title}</h2>
           <p>{brief.detail}</p>
+          {!!brief.earnings.length && (
+            <div
+              className="home-earnings-overview"
+              aria-label="Featured earnings"
+            >
+              {brief.earnings.map((event) => {
+                const status = earningsEventState(event, day);
+                return (
+                  <Link
+                    href={researchLink(event.symbol, prefix)}
+                    key={event.symbol}
+                    className={`home-earnings-chip earnings-${status.status}`}
+                  >
+                    <strong>{event.symbol}</strong>
+                    <span>{status.label}</span>
+                    <ArrowUpRight size={14} />
+                  </Link>
+                );
+              })}
+            </div>
+          )}
         </div>
         <Link className="btn primary" href={briefHref}>
           {brief.action} <ArrowUpRight size={17} />
@@ -601,12 +647,22 @@ function HomeOverview() {
         </section>
         <section
           className="home-evidence-panel home-events-panel"
-          aria-label="Upcoming company events"
+          id="home-earnings"
+          aria-label="Company earnings and events"
         >
           <SectionHead
             title="Next 7 days"
-            subtitle="The dates to prepare for."
-            action={<CalendarDays size={20} />}
+            subtitle="Reported results and the dates ahead."
+            action={
+              <button
+                className="icon-btn"
+                onClick={feed.refresh}
+                disabled={feed.loading}
+                aria-label="Refresh company events"
+              >
+                <RefreshCw size={18} />
+              </button>
+            }
           />
           {eventGroups.length ? (
             <div className="home-event-groups">
@@ -630,6 +686,13 @@ function HomeOverview() {
                         <span>
                           <strong>{event.symbol}</strong>
                           <span>{event.kind}</span>
+                          {/earnings/i.test(event.kind) && (
+                            <b
+                              className={`earnings-status earnings-${earningsEventState(event, day).status}`}
+                            >
+                              {earningsEventState(event, day).label}
+                            </b>
+                          )}
                           <small>{event.detail || "Time not confirmed"}</small>
                         </span>
                         <ArrowUpRight size={16} />
@@ -750,7 +813,11 @@ function HomeOverview() {
           >
             <span className="home-review-mark">
               {best ? (
-                best.signal!.view.effectiveCode || <Activity size={20} />
+                best.signal!.view.rawLevel != null ? (
+                  best.signal!.view.code
+                ) : (
+                  <Activity size={20} />
+                )
               ) : (
                 <Bookmark size={20} />
               )}
@@ -763,7 +830,7 @@ function HomeOverview() {
               </strong>
               <small>
                 {best
-                  ? `${best.signal!.contextLabel}: ${best.signal!.view.actionLabel}${best.signal!.view.effectiveCode ? ` · ${best.signal!.view.effectiveCode}` : ""}. New purchase: ${best.signal!.actions.entry}; holding: ${best.signal!.actions.holding}.`
+                  ? `${best.signal!.view.rawLevel != null ? `Confirmed ${best.signal!.view.code} · ` : ""}${best.signal!.contextLabel}: ${best.signal!.view.actionLabel}. New purchase: ${best.signal!.actions.entry}; holding: ${best.signal!.actions.holding}.`
                   : "Open research for the business evidence and available monthly price context."}
               </small>
             </span>
@@ -829,12 +896,13 @@ export function Portfolio() {
   const balances = useRef<HTMLDialogElement>(null),
     depth = useRef<HTMLDialogElement>(null);
   const calendar = usePortfolioCalendar(positions);
-  const today = new Date().toISOString().slice(0, 10);
+  const today = marketDay();
   const earnings = new Set(
     (calendar.data?.events ?? [])
       .filter(
         (e) =>
           /earnings/i.test(e.kind) &&
+          earningsEventState(e, today).status !== "reported" &&
           e.date >= today &&
           Date.parse(e.date) <= Date.parse(today) + 7 * 86400000,
       )
@@ -1340,8 +1408,8 @@ function HoldingsTable({
                             }
                           >
                             Your holding · {decision.action}
-                            {decision.view.effectiveCode
-                              ? ` · ${decision.view.effectiveCode}`
+                            {decision.view.rawLevel != null
+                              ? ` · Confirmed Pace ${decision.view.code}`
                               : ""}
                           </small>
                         )}
@@ -1664,7 +1732,7 @@ export function Watchlist() {
             title="Price is one part of the story."
             subtitle={
               signal
-                ? `${signal.symbol} · ${signal.pace!.view.actionLabel}${signal.pace!.view.effectiveCode ? ` · ${signal.pace!.view.effectiveCode}` : ""}. Review the reasons and the price assumptions together.`
+                ? `${signal.symbol} · ${signal.pace!.view.actionLabel}${signal.pace!.view.rawLevel != null ? ` · Confirmed Pace ${signal.pace!.view.code}` : ""}. Review the reasons and the price assumptions together.`
                 : "A strong Pace reading deserves a clear explanation, alongside business and funding risks."
             }
           />

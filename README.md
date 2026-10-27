@@ -1,8 +1,8 @@
-# Current build — AURYN connected experience
+# Current build — visible Pace, differentiated decisions and working research drawers
 
-Start with [the current release notes](docs/CONNECTED_EXPERIENCE_RELEASE.md). This complete source continues the approved Home and research design, adds evidence links and hypothetical position sizing, and updates shared desktop/mobile/light/dark surfaces. No new dependencies, environment variables or SQL migrations are required for this update. No deployment was performed.
+Start with [the current release notes](docs/approved-build/DECISION_AND_DRAWER_FIXES_20261027.md), [Pace and earnings corrections](docs/approved-build/PACE_EARNINGS_RELEASE_20261027.md), and [Pace verification and launch decisions](docs/approved-build/PACE_TRUST_AND_LAUNCH_20261027.md). This complete source preserves the approved AURYN design, keeps forming/confirmed Pace visible, aligns Strategy Lab with the current Pace policy, corrects earnings lifecycle/freshness, and fixes valuation selection, explicit decision reasons, conflicting share denominators and research drawer interactions.
 
-The current checks and their limits are in `verification/CONNECTED_DESIGN_REPORT.json`. Earlier entries below are historical and do not supersede this release.
+Validation: 807 tests, TypeScript, optimized production build and all nine API test scripts passed. Browser checks covered phone, tablet and desktop widths, metrics expansion, nested close/Escape, custom levels and drawer spacing. No new dependency, environment variable or database migration is required. Production has not been deployed. Historical performance reports do not validate the current policy revision. Earlier entries below are historical and do not supersede this release.
 
 ---
 

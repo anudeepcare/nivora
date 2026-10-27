@@ -113,11 +113,14 @@ export default function ResearchLab() {
             <h2>
               {data?.company.symbol} · {result.months} months
             </h2>
+            <small>
+              AURYN Pace model {result.policy} · hypothetical comparison
+            </small>
           </header>
           <div className="two-col">
             {[
               ["Fixed DCA", result.fixed, "blue"],
-              ["Adaptive monthly policy", result.adaptive, "violet"],
+              ["AURYN Pace", result.adaptive, "violet"],
             ].map(([label, state, color]) => {
               const x = state as typeof result.fixed;
               return (

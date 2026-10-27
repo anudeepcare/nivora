@@ -5,7 +5,44 @@ export type MarketEvent = {
   date: string;
   kind: string;
   detail: string;
+  actual?: number | null;
+  estimate?: number | null;
 };
+/** US corporate report dates use the exchange day, including after UTC midnight. */
+export function marketDay(asOf: string | number | Date = Date.now()) {
+  const date = new Date(asOf);
+  if (
+    typeof asOf === "string" &&
+    /^\d{4}-\d{2}-\d{2}$/.test(asOf) &&
+    Number.isFinite(date.getTime()) &&
+    date.toISOString().slice(0, 10) === asOf
+  )
+    return asOf;
+  return Number.isFinite(date.getTime())
+    ? new Intl.DateTimeFormat("en-CA", {
+        timeZone: "America/New_York",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }).format(date)
+    : "";
+}
+export function earningsEventState(
+  event: Pick<MarketEvent, "date" | "actual">,
+  today: string,
+) {
+  if (
+    event.date <= today &&
+    typeof event.actual === "number" &&
+    Number.isFinite(event.actual)
+  )
+    return { status: "reported" as const, label: "Results reported" };
+  if (event.date === today)
+    return { status: "today" as const, label: "Scheduled today" };
+  if (event.date > today)
+    return { status: "upcoming" as const, label: "Upcoming" };
+  return { status: "unconfirmed" as const, label: "Release unconfirmed" };
+}
 export type MarketHeadline = {
   symbol: string;
   date: string;
@@ -268,7 +305,24 @@ export function calendarHighlights(
           : row.before_after_market === "AfterMarket"
             ? "After market close"
             : "Time not confirmed";
-      unique.set(`${symbol}:${date}:${kind}`, { symbol, date, kind, detail });
+      const numeric = (v: unknown) =>
+        (typeof v === "number" || (typeof v === "string" && v.trim() !== "")) &&
+        Number.isFinite(Number(v))
+          ? Number(v)
+          : null;
+      const key = `${symbol}:${date}:${kind}`;
+      const event: MarketEvent = {
+        symbol,
+        date,
+        kind,
+        detail,
+        ...(!split
+          ? { actual: numeric(row.actual), estimate: numeric(row.estimate) }
+          : {}),
+      };
+      // A duplicate schedule row must not erase an actual already supplied in this response.
+      if (event.actual != null || unique.get(key)?.actual == null)
+        unique.set(key, event);
     }
   };
   collect(earnings?.earnings, false);

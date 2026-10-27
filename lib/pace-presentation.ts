@@ -22,6 +22,7 @@ type Reading = {
   multiplier?: number | null;
   date?: string | null;
   month?: string | null;
+  reason?: string | null;
 };
 /** Keep period identity: a forming P4 and a completed P2 are different observations. */
 export function pacePeriods(
@@ -46,8 +47,13 @@ export function pacePeriods(
     label,
     code: paceCode(value?.multiplier),
     level: paceLevel(value?.multiplier),
+    name:
+      paceLevel(value?.multiplier) == null
+        ? null
+        : PACE_LEVELS[value!.multiplier!],
     date: value?.date ?? null,
     month: value?.month ?? null,
+    reason: value?.reason ?? null,
   }));
 }
 export function pacePresentation(

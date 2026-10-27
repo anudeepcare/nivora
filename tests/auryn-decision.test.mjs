@@ -158,6 +158,10 @@ test("conflicting financial observations pause the decision while preserving oth
 });
 test("lower prices preserve a supported earnings entry when business inputs do not change", () => {
   const r = structuredClone(demoData.research.MSFT);
+  // Two annual periods support the business screen, but not the three-year cash-flow model.
+  r.facts = r.facts.filter(
+    (f) => f.scope !== "annual" || f.end >= "2025-01-01",
+  );
   r.history = [];
   r.quote = {
     ...r.quote,

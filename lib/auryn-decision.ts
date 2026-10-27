@@ -123,18 +123,47 @@ export function fundedGrowthCase(x: {
   };
 }
 /** Published screening policy. Thresholds are transparent heuristics, not fitted probabilities. */
-export function evaluateDecision(x: DecisionInput): DecisionAction {
-  if (!x.financialsUsable) return "Wait";
-  if (x.insolvency) return x.ownsPosition ? "Sell" : "Avoid";
-  if (x.distress || x.deterioration) return x.ownsPosition ? "Reduce" : "Avoid";
-  if (!x.priceUsable || x.value === "unassessed") return "Wait";
+export function assessDecision(x: DecisionInput): {
+  action: DecisionAction;
+  code:
+    | "financials"
+    | "insolvency"
+    | "funding"
+    | "deterioration"
+    | "price"
+    | "valuation"
+    | "pace"
+    | "entry"
+    | "business"
+    | "momentum"
+    | "value";
+} {
+  if (!x.financialsUsable) return { action: "Wait", code: "financials" };
+  if (x.insolvency)
+    return { action: x.ownsPosition ? "Sell" : "Avoid", code: "insolvency" };
+  if (x.distress || x.deterioration)
+    return {
+      action: x.ownsPosition ? "Reduce" : "Avoid",
+      code: x.distress ? "funding" : "deterioration",
+    };
+  if (!x.priceUsable) return { action: "Wait", code: "price" };
+  if (x.value === "unassessed") return { action: "Wait", code: "valuation" };
   const supported = x.business === "strong" || x.growthEligible === true;
   if (x.confirmedPace === 0 && supported)
-    return x.ownsPosition ? "Hold" : "Wait";
+    return { action: x.ownsPosition ? "Hold" : "Wait", code: "pace" };
   if (supported && x.value === "attractive" && !x.extended)
-    return x.ownsPosition ? "Add" : "Buy";
-  if (x.ownsPosition && supported) return "Hold";
-  return "Wait";
+    return { action: x.ownsPosition ? "Add" : "Buy", code: "entry" };
+  return {
+    action: x.ownsPosition && supported ? "Hold" : "Wait",
+    code: !supported
+      ? "business"
+      : x.value !== "attractive"
+        ? "value"
+        : "momentum",
+  };
+}
+export function evaluateDecision(x: DecisionInput): DecisionAction {
+  return assessDecision(x).action;
 }
 export function annualizedReturn(
   target: number,
@@ -413,7 +442,8 @@ export function aurynDecision(
   }
   let valuation: DecisionValuation | null = null;
   const price = reference?.price;
-  // Prefer a dated forward earnings sensitivity where applicable; its horizon is never ignored.
+  // Earnings sensitivities are a fallback. A market multiple must not displace
+  // an eligible independent cash-flow model merely because analyst coverage exists.
   if (reference && financialsUsable) {
     const priced = {
       ...r,
@@ -452,15 +482,14 @@ export function aurynDecision(
         annualReturn: annual,
         downside: (s.low / reference.price - 1) * 100,
         upside: (s.base / reference.price - 1) * 100,
-        entryPrice: s.base / 1.12 ** s.years,
+        entryPrice: Math.min(s.base / 1.12 ** s.years, s.low / 0.65),
         end: s.end,
         assumptions:
           "Published annual EPS estimates × 80% / 100% / 120% of the reported forward P/E. This sensitivity keeps the current market multiple as an anchor; it is not intrinsic value.",
       };
     }
-    // Analysts are optional. A mature, cash-generating business can use observed cash flow.
+    // Prefer observed cash flow only when the existing mature-business safeguards pass.
     if (
-      !valuation &&
       family === "operating-company" &&
       !r.company.foreignListing &&
       strong &&
@@ -508,7 +537,7 @@ export function aurynDecision(
             annualReturn: null,
             downside: (v.bear / reference.price - 1) * 100,
             upside: (v.base / reference.price - 1) * 100,
-            entryPrice: v.base * 0.8,
+            entryPrice: Math.min(v.base * 0.8, v.bear / 0.65),
             end: null,
             assumptions: `Starting cash is the lower of latest cash after capex and the median of the latest three consecutive annual observations, all positive. Company cash-flow growth starts at ${v.growth.toFixed(1)}% and fades over ten years. Shares grow ${v.dilution.toFixed(1)}% annually throughout the forecast and terminal period. Bear/base/bull discount rates: 15%/12%/10%; terminal growth: 1%/2%/3%. These are explicit model assumptions, not company guidance.${diluted == null ? " Future dilution is assumed 0% because comparable share counts were not reported." : ""}`,
           };
@@ -518,12 +547,9 @@ export function aurynDecision(
   // A dated quote, not the price's location in a chart, anchors valuation conditions.
   let value: DecisionInput["value"] = "unassessed";
   if (valuation && price) {
-    const favorable =
-      valuation.basis === "cash-flow"
-        ? price <= valuation.entryPrice && valuation.downside >= -35
-        : valuation.annualReturn != null &&
-          valuation.annualReturn >= 12 &&
-          valuation.downside >= -35;
+    // entryPrice includes both constraints. Comparing the price directly avoids
+    // floating-point drift at the displayed return/downside boundary.
+    const favorable = price <= valuation.entryPrice;
     value = favorable
       ? "attractive"
       : valuation.upside < 0
@@ -558,6 +584,7 @@ export function aurynDecision(
     holding: evaluateDecision({ ...decisionInputs, ownsPosition: true }),
   };
   const action = ownsPosition ? actions.holding : actions.entry;
+  const assessment = assessDecision(decisionInputs);
   const paused = !reference || !financialsUsable;
   let headline = "The price needs a stronger margin of safety.";
   if (action === "Buy" || action === "Add")
@@ -682,6 +709,79 @@ export function aurynDecision(
     reasons.push(
       `${amount(reference.price, reference.currency)} · ${reference.basis === "settled-close" ? "completed session" : "dated quote"} · ${reference.asOf.slice(0, 10)}.`,
     );
+  const explanationText: Record<
+    ReturnType<typeof assessDecision>["code"],
+    { label: string; detail: string }
+  > = {
+    financials: {
+      label:
+        r.company.assetType !== "stock"
+          ? "Price research only"
+          : "Report check pending",
+      detail: conflicts.length
+        ? `Reports disagree on ${conflicts.map((x) => x.replace(/([A-Z])/g, " $1").toLowerCase()).join(", ")}. Other figures and Pace remain available.`
+        : r.company.assetType !== "stock"
+          ? "Company buy/sell rules do not apply to this instrument. Use its price history and accumulation reading."
+          : "A current, comparable financial report is needed to assess the business. This is an incomplete assessment, not a negative business verdict.",
+    },
+    insolvency: {
+      label: "Acute funding pressure",
+      detail:
+        "Reported cash covers less than six months of operating burn, with negative equity and outstanding debt.",
+    },
+    funding: {
+      label: "Funding risk",
+      detail:
+        risks.find((x) => x.includes("months")) ??
+        "Operating cash burn, uncovered interest and exhausted cash weaken the funding case.",
+    },
+    deterioration: {
+      label: "Business deterioration",
+      detail:
+        "Revenue fell more than 10%, operations lost money and cash after capex was negative in both comparable periods.",
+    },
+    price: {
+      label: "Price refresh needed",
+      detail:
+        "A current quote or recent completed close is needed to compare price with the business case.",
+    },
+    valuation: {
+      label: "Valuation incomplete",
+      detail:
+        "The price assessment needs an eligible cash-flow model or dated earnings range. Pace and the reported company metrics remain available.",
+    },
+    pace: {
+      label: "P0 pauses additions",
+      detail:
+        "The confirmed monthly reading is P0. Reassess contributions after a completed month moves above P0, provided business and price conditions still qualify.",
+    },
+    entry: {
+      label: "Entry conditions met",
+      detail:
+        "The business screen and modelled price conditions qualify, with no stretched-momentum or confirmed P0 block. Size purchases to your risk budget.",
+    },
+    business: {
+      label: "Business criteria not met",
+      detail: bank
+        ? "Positive earnings, at least 8% return on average equity and nonnegative revenue growth must align."
+        : "The company has not met either the profitable cash-generation screen or all funded-growth requirements. Price alone does not establish a supported entry.",
+    },
+    momentum: {
+      label: "Momentum stretched",
+      detail: `The 14-session RSI is ${tech.rsi?.toFixed(1) ?? "75 or higher"}. The entry screen pauses additions at 75 or higher; the business assessment remains separate.`,
+    },
+    value: {
+      label: "Entry price not met",
+      detail:
+        valuation && reference
+          ? `${amount(reference.price, reference.currency)} reference price; entry screen at ${amount(valuation.entryPrice, reference.currency)} or below under these assumptions. This includes both the return/cushion requirement and the 35% bear-case downside limit.`
+          : "The price conditions do not yet qualify under the stated assumptions.",
+    },
+  };
+  const explanation = {
+    code: assessment.code,
+    ...explanationText[assessment.code],
+  };
   const tone =
     action === "Buy" || action === "Add"
       ? "positive"
@@ -691,7 +791,8 @@ export function aurynDecision(
           ? "neutral"
           : "caution";
   return {
-    version: "auryn-decision-v3",
+    version: "auryn-decision-v4",
+    explanation,
     actions,
     contextLabel: ownsPosition ? "For your holding" : "For new purchases",
     growthAssessment,

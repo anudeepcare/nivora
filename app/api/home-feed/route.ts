@@ -5,6 +5,7 @@ import {
   calendarHighlights,
   newsHighlights,
   settledFeedMap,
+  marketDay,
   type HomeFeed,
 } from "@/lib/home-feed";
 export async function GET(request: Request) {
@@ -25,7 +26,7 @@ export async function GET(request: Request) {
       throw new HttpError("Select up to 30 stock symbols.");
     const now = new Date(),
       retrievedAt = now.toISOString(),
-      from = retrievedAt.slice(0, 10),
+      from = marketDay(retrievedAt),
       to = new Date(now.getTime() + 30 * 86400000).toISOString().slice(0, 10);
     const result: HomeFeed = {
       events: [],
@@ -54,7 +55,7 @@ export async function GET(request: Request) {
     const [calendar, news] = await Promise.all([
       Promise.allSettled([
         kind !== "news"
-          ? eodRequest("calendar/earnings", params, 21600000)
+          ? eodRequest("calendar/earnings", params, 300000)
           : Promise.resolve(null),
         kind !== "news"
           ? eodRequest("calendar/splits", params, 21600000)

@@ -140,7 +140,7 @@ export const documents: Record<
       },
       {
         title: "Signals and multipliers",
-        text: "DCA multipliers scale a hypothetical baseline contribution. They are not leverage, return multiples or personal position-size instructions. A forming monthly signal can change; stronger daily-close readings do not rewrite the confirmed month.",
+        text: "AURYN Pace levels scale a hypothetical baseline contribution. They are not leverage, return multiples or personal position-size instructions. A forming monthly signal can change; stronger daily-close readings do not rewrite the confirmed month.",
       },
       {
         title: "Data and AI",
