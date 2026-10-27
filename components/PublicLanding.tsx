@@ -70,14 +70,14 @@ export function PublicSample({ compact = false }: { compact?: boolean } = {}) {
       </div>
       <section
         className="ap-pace-preview"
-        aria-label="AURYN Pace contribution levels"
+        aria-label="AURYN Pace accumulation zones"
       >
         <div className="ap-pace-heading">
           <span className="ap-pace-icon">
             <ChartNoAxesCombined size={23} aria-hidden="true" />
           </span>
           <div>
-            <span>YOUR CONTRIBUTION RHYTHM</span>
+            <span>YOUR ACCUMULATION ZONE</span>
             <h3>
               AURYN Pace <PaceHelp />
             </h3>
@@ -86,7 +86,7 @@ export function PublicSample({ compact = false }: { compact?: boolean } = {}) {
         <p>Build gradually when the business qualifies.</p>
         <div
           className="ap-pace-scale"
-          aria-label="P means Pace: P0 Paused, P1 Steady, P2 Increased, P3 Elevated, P4 Accelerated"
+          aria-label="P means Pace: P0 Pause, P1 Watch, P2 Initial, P3 Deeper, P4 Deep"
         >
           {[0, 1, 2, 3, 4].map((level) => (
             <div key={level} className={`ap-pace-level ap-pace-level-${level}`}>
@@ -99,8 +99,8 @@ export function PublicSample({ compact = false }: { compact?: boolean } = {}) {
         </div>
         <div className="ap-pace-scale-labels">
           <span>Pause</span>
-          <span>Steady</span>
-          <span>Accelerated</span>
+          <span>Watch</span>
+          <span>Accumulate</span>
         </div>
         <div className="ap-pace-periods">
           <span>
@@ -111,8 +111,9 @@ export function PublicSample({ compact = false }: { compact?: boolean } = {}) {
           </span>
         </div>
         <small>
-          P4 means accelerated pace, not a company-quality rating. Contribution
-          levels, not predicted returns.
+          P4 marks a deep price zone, not a company-quality rating. These are
+          zones, not predicted returns. Accumulate only when the business
+          qualifies.
         </small>
       </section>
       {!compact && (
@@ -185,15 +186,15 @@ function ProductWalkthrough() {
           </summary>
           <div>
             <p>
-              Pace uses monthly price conditions to express contribution levels
+              Pace uses monthly price conditions to identify accumulation zones
               from P0 to P4. P means Pace. A confirmed reading uses completed
               months; the current month is shown separately while it is forming.
             </p>
             <p>
-              After business and funding checks, P1 supports steady buying and
-              P2–P4 increase the planned pace within your budget. P0 pauses
-              additions; it does not mean Sell. Valuation stays a separate
-              check.
+              P1 means Watch or Hold. Once the business qualifies, P2 starts
+              small, P3 builds gradually and P4 supports deeper planned
+              accumulation within your budget. P0 pauses additions; it does not
+              mean Sell. Valuation remains a separate check.
             </p>
             <Link href="/methodology">
               Read the methodology <ArrowRight size={16} aria-hidden="true" />

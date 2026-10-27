@@ -29,7 +29,7 @@ export default function PaceGuidance({
         </p>
       )}
       <div className="pace-action">
-        <span className="pace-assessment-label">Contribution plan</span>
+        <span className="pace-assessment-label">Your next step</span>
         <strong>{view.actionLabel}</strong>
         {view.effectiveCode && (
           <span className="pace-effective">{view.effectiveCode}</span>
@@ -38,8 +38,8 @@ export default function PaceGuidance({
       {!compact && <p className="pace-context">{view.detail}</p>}
       {!available && (
         <small className="pace-history-note">
-          The contribution level needs more completed price history. Business
-          and valuation remain available.
+          The accumulation zone needs more completed price history. Business and
+          valuation remain available.
         </small>
       )}
     </div>

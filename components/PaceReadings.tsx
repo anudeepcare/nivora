@@ -13,7 +13,11 @@ export default function PaceReadings({
       {readings
         .filter((row) => row.level != null)
         .map((row) => (
-          <div key={row.key} className={`pace-period pace-period-${row.key}`}>
+          <div
+            key={row.key}
+            data-pace-level={row.level}
+            className={`pace-period pace-period-${row.key}`}
+          >
             <span>{row.label}</span>
             <strong>{row.code}</strong>
             <b className="pace-level-name">{row.name}</b>

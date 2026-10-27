@@ -1,0 +1,17 @@
+✔ Pace exposes both periods without a click and applies only the confirmed level (10.651577ms)
+✔ hold and risk actions keep the price Pace visible without authorising additions (8.476869ms)
+✔ public Pace education separates business quality, price history and incomplete assessments (28.623254ms)
+✔ missing monthly history shows one explanation with no duplicate Pending tiles (1.101451ms)
+✔ a reading keeps its calculation reason with the visible confirmed Pace (1.109153ms)
+✔ Strategy Lab visibly distinguishes its P1-spending legacy simulation from current Pace decisions (140.109433ms)
+✔ Home company rows always show when their displayed quote was observed (129.534606ms)
+✔ Watchlist-only Home avoids an irrelevant zero-value portfolio summary (111.037387ms)
+✔ Home accumulation panel excludes valuation-only entries without confirmed Pace (85.601114ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 897.825233

@@ -115,7 +115,18 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
           <div className="decision-action-line">
             <div>
               <span className="decision-context">{d.contextLabel}</span>
-              <h2 id="auryn-decision-title">{d.action}</h2>
+              <div className="decision-title-with-pace">
+                <h2 id="auryn-decision-title">{d.actionLabel}</h2>
+                {pace.rawLevel != null && (
+                  <span
+                    className="decision-pace-badge"
+                    aria-label={`Confirmed AURYN Pace ${pace.code}`}
+                  >
+                    {pace.code}
+                    <small>confirmed</small>
+                  </span>
+                )}
+              </div>
             </div>
             <span className="decision-confidence">
               <ShieldCheck size={14} />
@@ -125,11 +136,11 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
           <p className="decision-headline">{d.headline}</p>
           <div className="decision-context-pair">
             <span>
-              New purchase <strong>{d.actions.entry}</strong>
+              New purchase <strong>{d.actionLabels.entry}</strong>
             </span>
             <span>
               {owns ? "Your holding" : "Already holding?"}{" "}
-              <strong>{d.actions.holding}</strong>
+              <strong>{d.actionLabels.holding}</strong>
             </span>
           </div>
           <div
@@ -434,19 +445,20 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
           <p>
             Business first: Buy/Add supports gradual accumulation when the
             business screen passes, the listed funding and deterioration
-            triggers are absent, and confirmed Pace is P1–P4. Price movement
+            triggers are absent, and confirmed Pace is P2–P4. Price movement
             does not establish business quality. Valuation and short-term
             momentum remain separate cautions; keep purchases within your cash
             budget and position limit.
           </p>
           <p>
-            Hold means the business qualifies but confirmed P0 pauses additions.
-            Wait applies to that same pause for new purchases. Review identifies
-            missing inputs or business checks that need attention. Reduce/Avoid
-            flags operating funding pressure or sustained deterioration. Sell
-            requires negative equity, debt and less than six months of operating
-            runway together. Reported cash runway excludes unreported financing
-            and future changes in spending.
+            P1 means Watch for a new purchase or Hold for an existing position.
+            Confirmed P0 pauses additions: Wait for new purchases, Hold for
+            existing positions. Review identifies missing inputs or business
+            checks that need attention. Reduce/Avoid flags operating funding
+            pressure or sustained deterioration. Sell requires negative equity,
+            debt and less than six months of operating runway together. Reported
+            cash runway excludes unreported financing and future changes in
+            spending.
           </p>
           <p>
             Without confirmed Pace, a separate valuation-entry screen can

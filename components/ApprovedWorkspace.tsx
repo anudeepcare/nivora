@@ -255,7 +255,7 @@ function WealthStrip({
         ) : (
           <>
             <Metric
-              label="Companies you follow"
+              label="Watchlist ideas"
               value={workspace?.watchlist.length ?? "—"}
               note="Ideas in your watchlist"
             />
@@ -463,7 +463,12 @@ function HomeOverview() {
   const largest = model.allocations[0];
   const signals = symbols
     .map((symbol) => ({ symbol, signal: pace(symbol) }))
-    .filter((x) => x.signal != null)
+    .filter(
+      (x) =>
+        x.signal?.view.permitted &&
+        x.signal.view.rawLevel != null &&
+        x.signal.view.rawLevel >= 2,
+    )
     .sort(
       (a, b) => (b.signal!.multiplier ?? -1) - (a.signal!.multiplier ?? -1),
     );
@@ -652,7 +657,7 @@ function HomeOverview() {
         >
           <SectionHead
             title="Next 7 days"
-            subtitle="Reported results and the dates ahead."
+            subtitle="Upcoming earnings and company events."
             action={
               <button
                 className="icon-btn"
@@ -725,6 +730,35 @@ function HomeOverview() {
               </p>
             </div>
           )}
+          {brief.reported.length > 0 && (
+            <div
+              className="home-reported-results"
+              aria-label="Recently reported earnings"
+            >
+              <h3>
+                Recently reported <span>{brief.reported.length}</span>
+              </h3>
+              {brief.reported.map((event) => (
+                <Link
+                  className="home-event-row"
+                  key={`${event.symbol}:${event.date}`}
+                  href={researchLink(event.symbol, prefix)}
+                >
+                  <span>
+                    <strong>{event.symbol}</strong>
+                    <b className="earnings-status earnings-reported">
+                      Results reported
+                    </b>
+                    <small>
+                      {dateLabel(event.date)} · Open results and company
+                      research
+                    </small>
+                  </span>
+                  <ArrowUpRight size={16} />
+                </Link>
+              ))}
+            </div>
+          )}
           {!feed.loading &&
             eventGroups.length > 0 &&
             !readiness.eventsReady && (
@@ -777,8 +811,8 @@ function HomeOverview() {
         </section>
         <section className="home-evidence-panel home-review-panel">
           <SectionHead
-            title="Keep your plan in view"
-            subtitle="Two useful checks before your next decision."
+            title="Portfolio & Pace"
+            subtitle="Position size and accumulation opportunities."
           />
           <Link
             className="home-review-row"
@@ -799,7 +833,7 @@ function HomeOverview() {
               </strong>
               <small>
                 {largest
-                  ? "Your largest priced position. Review its business alongside your concentration."
+                  ? "Your largest priced position. Check its share of your portfolio before adding."
                   : "Record holdings and costs to understand your exposure."}
               </small>
             </span>
@@ -826,12 +860,12 @@ function HomeOverview() {
               <strong>
                 {best
                   ? `${best.symbol} · AURYN Pace`
-                  : "Read the business. Check your Pace."}
+                  : "Explore accumulation zones"}
               </strong>
               <small>
                 {best
-                  ? `${best.signal!.view.rawLevel != null ? `Confirmed ${best.signal!.view.code} · ` : ""}${best.signal!.contextLabel}: ${best.signal!.view.actionLabel}. New purchase: ${best.signal!.actions.entry}; holding: ${best.signal!.actions.holding}.`
-                  : "Open research for the business evidence and available monthly price context."}
+                  ? `${best.signal!.view.actionLabel} · confirmed ${best.signal!.view.code}. From companies researched in this session; review the business and your position limit.`
+                  : "Open a company to see whether its business qualifies and an accumulation zone is established."}
               </small>
             </span>
             <ArrowUpRight size={17} />
@@ -1407,7 +1441,7 @@ function HoldingsTable({
                                 : "muted"
                             }
                           >
-                            Your holding · {decision.action}
+                            Your holding · {decision.view.actionLabel}
                             {decision.view.rawLevel != null
                               ? ` · Confirmed Pace ${decision.view.code}`
                               : ""}
@@ -1751,7 +1785,7 @@ export function Watchlist() {
           </Link>
           <PaceHelp trigger="What does P mean?" />
           <p className="chart-note">
-            Pace scales a scheduled contribution; it is not leverage or a return
+            Pace describes an accumulation zone; it is not leverage or a return
             forecast.
           </p>
         </article>

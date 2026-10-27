@@ -74,8 +74,13 @@ export default function ResearchLab() {
       <PaceHelp trigger="Understand AURYN Pace" />
       <PageHeading
         title="Strategy lab"
-        subtitle="Compare monthly policies using the same budget and completed history."
+        subtitle="Compare fixed DCA with a legacy price-only multiplier policy using equal budgets."
       />
+      <p className="footnote">
+        This legacy simulation buys at P1. It does not implement current P1
+        Watch/Hold guidance or historical business checks. Its results do not
+        validate today’s AURYN Pace decisions.
+      </p>
       <form className="alert-builder panel" onSubmit={run}>
         <label>
           Company
@@ -114,13 +119,13 @@ export default function ResearchLab() {
               {data?.company.symbol} · {result.months} months
             </h2>
             <small>
-              AURYN Pace model {result.policy} · hypothetical comparison
+              Legacy price-only model {result.policy} · hypothetical comparison
             </small>
           </header>
           <div className="two-col">
             {[
               ["Fixed DCA", result.fixed, "blue"],
-              ["AURYN Pace", result.adaptive, "violet"],
+              ["Legacy price-only policy", result.adaptive, "violet"],
             ].map(([label, state, color]) => {
               const x = state as typeof result.fixed;
               return (

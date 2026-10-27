@@ -28,15 +28,15 @@ test('one decision exposes entry and holder guidance without counting watchlisti
  const r=demoData.research.MSFT;
  const d=policy.aurynDecision(r,{now:Date.parse(r.retrievedAt)});
  assert.ok(d.actions);
- assert.equal(d.actions.entry,'Buy');
- assert.equal(d.actions.holding,'Add');
+ assert.equal(d.actions.entry,'Watch');
+ assert.equal(d.actions.holding,'Hold');
  assert.equal(d.contextLabel,'For new purchases');
  const held=policy.aurynDecision(r,{ownsPosition:true,now:Date.parse(r.retrievedAt)});
  assert.equal(held.contextLabel,'For your holding');
  assert.deepEqual(held.actions,d.actions);
 });
 test('Pace explicitly presents accumulation only when the final action permits it',()=>{
- assert.equal(pacePresentation('Buy',4).actionLabel,'Buy gradually');
+ assert.equal(pacePresentation('Buy',4).actionLabel,'Accumulate');
  assert.equal(pacePresentation('Add',2).effectiveCode,'P2');
  assert.equal(pacePresentation('Hold',4).effectiveCode,null);
  assert.equal(pacePresentation('Wait',4).effectiveCode,null);

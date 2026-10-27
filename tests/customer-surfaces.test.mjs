@@ -5,7 +5,7 @@ import ts from "typescript";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { customerText } from "../lib/customer-language.ts";
-import { PACE_EXPLANATION, PACE_LEVELS } from "../lib/pace-presentation.ts";
+import { PACE_EXPLANATION, PACE_LEVELS, PACE_DESCRIPTIONS } from "../lib/pace-presentation.ts";
 function load(file, name, bindings) {
   const ast = ts.createSourceFile(
     file,
@@ -57,6 +57,7 @@ test("shared Pace help explains confirmation for both monthly and weekly periods
     React,
     PACE_EXPLANATION,
     PACE_LEVELS,
+    PACE_DESCRIPTIONS,
     Help: ({ children }) => React.createElement("section", null, children),
   });
   const html = renderToStaticMarkup(React.createElement(View));

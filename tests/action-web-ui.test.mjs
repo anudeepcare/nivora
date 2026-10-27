@@ -3,11 +3,15 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import ts from "typescript";
 import React from "react";
+import { compareDca } from "../lib/planning.ts";
+import { demoData } from "./fixtures/demo.ts";
+import * as format from "../lib/format.ts";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
   pacePresentation,
   pacePeriods,
   PACE_LEVELS,
+  PACE_DESCRIPTIONS,
 } from "../lib/pace-presentation.ts";
 function component(file, name, bindings = {}) {
   const ast = ts.createSourceFile(
@@ -55,15 +59,15 @@ const show = (action, confirmed, forming) =>
   );
 test("Pace exposes both periods without a click and applies only the confirmed level", () => {
   const html = show("Buy", 2, 4);
-  assert.match(html, /Buy gradually/);
+  assert.match(html, /Buy small/);
   assert.match(html, /pace-effective">P2/);
   const visible = html.replace(/<details[\s\S]*?<\/details>/g, "");
   assert.match(visible, /P4/);
   assert.match(visible, /P2/);
   assert.match(visible, /forming/);
   assert.match(visible, /confirmed/);
-  assert.match(visible, /Accelerated/);
-  assert.match(visible, /Increased/);
+  assert.match(visible, /Deep zone/);
+  assert.match(visible, /Initial zone/);
   assert.match(visible, /2026-09-30/);
   assert.match(visible, /2026-10-26/);
 });
@@ -89,12 +93,16 @@ test("public Pace education separates business quality, price history and incomp
       PrivacyChoices: () => null,
       SUPPORT_EMAIL: "support@auryninvest.com",
       PACE_LEVELS,
+      PACE_DESCRIPTIONS,
+      PACE_DESCRIPTIONS,
     },
   );
   const html = renderToStaticMarkup(
     React.createElement(Education, { pace: true }),
   );
   assert.match(html, /business first/i);
+  assert.match(html, /Buy small · P2/);
+  assert.doesNotMatch(html, /Buy gradually · P2/);
   assert.match(html, /shows Review/);
   assert.match(html, /not a company-quality rating/);
   assert.match(html, /budget/);
@@ -121,4 +129,43 @@ test("a reading keeps its calculation reason with the visible confirmed Pace", (
     }),
   );
   assert.match(html, /12% below the prior average/);
+});
+
+test("Strategy Lab visibly distinguishes its P1-spending legacy simulation from current Pace decisions", () => {
+  const r = structuredClone(demoData.research.MSFT);
+  r.history = r.history.map((row) => ({
+    ...row,
+    open: 100,
+    high: 100,
+    low: 100,
+    close: 100,
+  }));
+  const result = compareDca(r.history, r.retrievedAt, 10);
+  assert.ok(result.history.length > 0);
+  assert.ok(result.history.every((row) => row.multiplier === 1));
+  assert.ok(result.adaptive.units > 0, "legacy P1 actually spends the deposit");
+  const states = ["MSFT", 10, r, false, ""];
+  let index = 0;
+  const empty = () => null;
+  const Lab = component("components/ResearchLab.tsx", "ResearchLab", {
+    ...format,
+    useState: () => [states[index++], empty],
+    useMemo: (f) => f(),
+    useProduct: () => ({}),
+    compareDca,
+    PaceHelp: empty,
+    PageHeading: ({ title, subtitle }) =>
+      React.createElement("header", null, title, subtitle),
+    Notice: empty,
+    Empty: empty,
+    Help: empty,
+    MiniChart: empty,
+    FlaskConical: empty,
+    Download: empty,
+  });
+  const html = renderToStaticMarkup(React.createElement(Lab));
+  assert.match(html, /Legacy price-only policy/);
+  assert.match(html, /does not implement current P1 Watch\/Hold/);
+  assert.match(html, /historical business checks/);
+  assert.doesNotMatch(html, />AURYN Pace<|AURYN Pace model/);
 });

@@ -101,7 +101,7 @@ export default function EdgeOverview({
       <section className="edge-verdict" data-tone={edge.tone}>
         <div className="overview-answer">
           <span className="edge-eyebrow">AURYN VIEW</span>
-          <h2>{edge.assessment}</h2>
+          <h2>{edge.pacePresentation.actionLabel}</h2>
           <p>{edge.reason}</p>
           <div className="company-fingerprint" aria-label="Company fingerprint">
             <button onClick={()=>onTab("Thesis")}><span>Business</span><strong>{edge.businessLabel}</strong></button>
@@ -138,7 +138,7 @@ export default function EdgeOverview({
           )}
           <Help label="AURYN Pace" trigger="How to read Pace">
             <p>
-              1× is your regular contribution; 2×–4× are multiples of it, not
+              P levels describe accumulation zones, not purchase multiples or
               leverage or predicted returns. 0× pauses additions under the price
               policy; it does not mean sell.
             </p>

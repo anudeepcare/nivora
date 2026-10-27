@@ -2,13 +2,20 @@ import type { DecisionAction } from "./auryn-decision";
 
 export const PACE_LEVELS = [
   "Paused",
-  "Steady",
-  "Increased",
-  "Elevated",
-  "Accelerated",
+  "Watch zone",
+  "Initial zone",
+  "Deeper zone",
+  "Deep zone",
+] as const;
+export const PACE_DESCRIPTIONS = [
+  "Price-extension pause. Pause new buying and reassess; this is not a sell signal.",
+  "No accumulation zone established. Watch for a new entry; hold if already owned and the business remains supported.",
+  "Initial accumulation zone. Start or add small if the business qualifies, within your cash budget and position limit.",
+  "Deeper accumulation zone. Buy or add gradually if the business qualifies, within your cash budget and position limit.",
+  "Deepest qualifying price zone. Consider a larger part of your planned accumulation only if the business qualifies, within your cash budget and position limit.",
 ] as const;
 export const PACE_EXPLANATION =
-  "P means Pace — AURYN’s contribution pace scale, from P0 (Paused) to P4 (Accelerated). Business first: growth, profitability and funding determine whether accumulation is supported. Confirmed Pace then guides scheduled purchases within your budget. P4 describes price conditions relative to history, not business quality, fair value, expected returns or leverage.";
+  "P means Pace — AURYN’s accumulation-zone scale. P0 pauses buying; P1 watches; P2 starts small; P3 builds gradually; P4 supports deeper planned accumulation when the business qualifies. Levels describe price conditions relative to history, not purchase multiples, business quality, fair value or expected returns. Business risks can block buying at any level.";
 export function paceLevel(value: number | null | undefined): number | null {
   return value != null && Number.isInteger(value) && value >= 0 && value <= 4
     ? value
@@ -82,7 +89,9 @@ export function pacePresentation(
   const detail = blocked
     ? `The AURYN View is ${action}. Review the business risk before adding; the price-only reading does not override it.`
     : action === "Hold"
-      ? "The business case is supported. Confirmed P0 pauses new contributions until a completed reading changes. P0 is not a sell signal."
+      ? rawLevel === 0
+        ? PACE_DESCRIPTIONS[0]
+        : PACE_DESCRIPTIONS[1]
       : action === "Review"
         ? "Review the stated business or data checks before adding. A price reading alone cannot complete the assessment or establish business quality."
         : !permitted
@@ -91,15 +100,25 @@ export function pacePresentation(
             ? "The business and price case align; a contribution level needs enough completed price history."
             : rawLevel === 0
               ? "The price policy pauses scheduled contributions. P0 is not a sell signal."
-              : `P${rawLevel} means ${rawLevel}× your baseline scheduled contribution, capped by your available cash budget and position limit. It supports gradual accumulation after the business checks, not an all-at-once purchase or a return forecast.`;
+              : PACE_DESCRIPTIONS[rawLevel];
   const effectiveCode =
     permitted && rawLevel != null && rawLevel > 0 ? paceCode(rawLevel) : null;
   const actionLabel = permitted
     ? rawLevel === 0
       ? "Pause new contributions"
-      : `${action} gradually`
+      : rawLevel === 1
+        ? action === "Add"
+          ? "Hold"
+          : "Watch"
+        : rawLevel === 2
+          ? `${action} small`
+          : rawLevel === 4
+            ? "Accumulate"
+            : `${action} gradually`
     : action === "Hold"
-      ? "Hold · pause additions"
+      ? rawLevel === 0
+        ? "Hold · pause additions"
+        : "Hold"
       : action === "Wait"
         ? "Wait before buying"
         : action;

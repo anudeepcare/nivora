@@ -24,6 +24,26 @@
 .decision-experience .decision-action-line h2 {
   font-size: 44px;
 }
+.decision-title-with-pace {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.decision-pace-badge {
+  display: grid;
+  gap: 1px;
+  border-left: 1px solid var(--line);
+  padding-left: 12px;
+  color: var(--blue);
+  font-size: 22px;
+  font-weight: 700;
+}
+.decision-pace-badge small {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 500;
+}
 .decision-experience .decision-headline {
   font-size: 17px;
   margin: 10px 0;
@@ -71,6 +91,22 @@
 }
 :is(.content, .approved-evidence-body) .technical-pace {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  margin-bottom: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--blue) 3%, var(--card));
+}
+.approved-product .approved-evidence-body,
+.approved-product .approved-evidence-body > .au-stack {
+  align-content: start;
+  gap: 14px;
+}
+.approved-product .approved-evidence-body > .au-stack > .section-head {
+  margin-bottom: 0;
+}
+.approved-product .approved-evidence-body .technical-pace .pace-period {
+  padding: 10px 12px;
 }
 :is(.content, .approved-evidence-body) .technical-pace > .pace-readings {
   gap: 10px;
@@ -115,6 +151,57 @@
 .pace-period > small {
   font-size: 11px;
   color: var(--muted);
+}
+.pace-period[data-pace-level="0"] {
+  --pace-accent: #a76a18;
+}
+.pace-period[data-pace-level="1"] {
+  --pace-accent: #68758b;
+}
+.pace-period[data-pace-level="2"] {
+  --pace-accent: #3679bf;
+}
+.pace-period[data-pace-level="3"] {
+  --pace-accent: #7654ba;
+}
+.pace-period[data-pace-level="4"] {
+  --pace-accent: #218277;
+}
+.pace-period {
+  border-top: 3px solid var(--pace-accent, var(--blue));
+  background: color-mix(
+    in srgb,
+    var(--pace-accent, var(--blue)) 6%,
+    var(--card)
+  );
+}
+.pace-period > strong {
+  color: var(--pace-accent, var(--blue));
+}
+.home-reported-results {
+  border-top: 1px solid var(--line);
+  margin-top: 18px;
+  padding-top: 14px;
+}
+.home-reported-results h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+.home-reported-results h3 > span {
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--green) 10%, var(--card));
+  color: var(--green);
+  font-size: 11px;
+}
+.approved-product .home-company {
+  padding-block: 12px;
+}
+.approved-product .home-company > span:nth-child(2) {
+  min-width: 0;
 }
 .pace-feature .pace-period {
   border-color: #ffffff30;

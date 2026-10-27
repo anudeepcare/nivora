@@ -16,22 +16,36 @@ export function homeBrief(input: Input) {
   const { today, symbols, names, exposure } = input,
     start = Date.parse(`${today}T00:00:00Z`),
     end = start + 7 * 86400000;
-  const seen = new Set<string>();
-  const checkpoints = input.events
-    .filter((e) => {
-      const at = Date.parse(e.date),
-        key = `${e.symbol}:${e.date}:${e.kind}`;
-      if (
-        !symbols.includes(e.symbol) ||
-        !Number.isFinite(at) ||
-        at < start ||
-        at > end ||
-        seen.has(key)
-      )
-        return false;
-      seen.add(key);
-      return true;
-    })
+  const unique = new Map<string, MarketEvent>();
+  for (const event of input.events) {
+    const at = Date.parse(event.date),
+      key = `${event.symbol}:${event.date}:${event.kind}`;
+    if (
+      !symbols.includes(event.symbol) ||
+      !Number.isFinite(at) ||
+      at < start - 7 * 86400000 ||
+      at > end
+    )
+      continue;
+    const previous = unique.get(key);
+    // Calendar duplicates must not replace a known zero or negative actual with a blank.
+    if (!previous || earningsEventState(event, today).status === "reported")
+      unique.set(key, event);
+  }
+  const events = [...unique.values()];
+  const reported = events
+    .filter(
+      (e) =>
+        /earnings/i.test(e.kind) &&
+        earningsEventState(e, today).status === "reported",
+    )
+    .sort(
+      (a, b) =>
+        b.date.localeCompare(a.date) ||
+        (exposure.get(b.symbol) ?? 0) - (exposure.get(a.symbol) ?? 0),
+    );
+  const checkpoints = events
+    .filter((e) => Date.parse(e.date) >= start && !reported.includes(e))
     .sort(
       (a, b) =>
         a.date.localeCompare(b.date) ||
@@ -44,6 +58,7 @@ export function homeBrief(input: Input) {
       : "Some company events could not be checked.";
   const base = {
     checkpoints,
+    reported,
     earnings: [] as MarketEvent[],
     status,
     symbol:
@@ -57,9 +72,6 @@ export function homeBrief(input: Input) {
     const reports = checkpoints.filter(
       (e) => /earnings/i.test(e.kind) && e.date === earnings.date,
     );
-    const reported = reports.filter(
-      (e) => earningsEventState(e, today).status === "reported",
-    ).length;
     const isToday = earnings.date === today;
     const date = new Intl.DateTimeFormat("en-US", {
       month: "short",
@@ -72,14 +84,12 @@ export function homeBrief(input: Input) {
       kind: "earnings" as const,
       kicker: isToday ? "TODAY’S EARNINGS" : "EARNINGS AHEAD",
       title: isToday
-        ? reported === reports.length
-          ? "Results are ready to review."
-          : "Your earnings day, in one view."
+        ? "Your earnings day, in one view."
         : "Earnings are your next checkpoint.",
       detail:
         reports.length > 1
-          ? `${reports.length} companies · ${date}. ${isToday ? `${reported} reported · ${reports.length - reported} awaiting confirmation.` : "Each company’s schedule is listed below."}`
-          : `${names[earnings.symbol] ?? earnings.symbol} · ${date}. ${reported ? "Results reported. Review the release alongside the dated financial statements." : isToday ? "Scheduled today; release confirmation is pending." : "Review expectations before the scheduled report."}`,
+          ? `${reports.length} companies · ${date}. ${isToday ? `${reports.length} awaiting release confirmation.` : "Each company’s schedule is listed below."}`
+          : `${names[earnings.symbol] ?? earnings.symbol} · ${date}. ${isToday ? "Scheduled today; release confirmation is pending." : "Review expectations before the scheduled report."}`,
       symbol: earnings.symbol,
       action:
         reports.length > 1

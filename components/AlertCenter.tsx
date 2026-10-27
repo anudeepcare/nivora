@@ -94,11 +94,13 @@ export default function AlertCenter() {
               action(async () => {
                 const r = await api<{
                   checked: number;
+                  total: number;
+                  remaining: number;
                   created: number;
                   errors: string[];
                 }>("alerts", { op: "check" });
                 setMessage(
-                  `Checked ${r.checked} rules · ${r.created} new alerts${r.errors.length ? ` · ${r.errors.join(" ")}` : ""}`,
+                  `Checked ${r.checked} of ${r.total} enabled rules · ${r.created} new alerts${r.remaining ? " · More rules queued. Check again to continue." : ""}${r.errors.length ? ` · ${r.errors.join(" ")}` : ""}`,
                 );
               })
             }

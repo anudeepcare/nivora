@@ -1,5 +1,9 @@
 "use client";
-import { PACE_EXPLANATION, PACE_LEVELS } from "@/lib/pace-presentation";
+import {
+  PACE_EXPLANATION,
+  PACE_LEVELS,
+  PACE_DESCRIPTIONS,
+} from "@/lib/pace-presentation";
 import { Help } from "./Ui";
 export default function PaceHelp({ trigger }: { trigger?: string }) {
   return (
@@ -11,11 +15,7 @@ export default function PaceHelp({ trigger }: { trigger?: string }) {
             <dt>
               P{level} · {label}
             </dt>
-            <dd>
-              {level === 0
-                ? "Pause scheduled contributions under the price policy."
-                : `${level}× the usual scheduled contribution under the price policy.`}
-            </dd>
+            <dd>{PACE_DESCRIPTIONS[level]}</dd>
           </div>
         ))}
       </dl>
@@ -27,12 +27,12 @@ export default function PaceHelp({ trigger }: { trigger?: string }) {
         contribution within your cash budget and position limit.
       </p>
       <p>
-        Business first: a qualifying business with confirmed P1–P4 supports
-        gradual Buy/Add guidance. P0 pauses additions, not the business case.
-        Review explains an incomplete assessment or unmet business checks.
-        Reduce, Sell or Avoid take priority when business risks are triggered.
-        Valuation remains a separate check; Pace does not prove a stock is
-        cheap.
+        Business first: a qualifying business with confirmed P2–P4 supports
+        accumulation. P1 means Watch for a new purchase or Hold for a holding.
+        P0 pauses additions, not the business case. Review explains an
+        incomplete assessment or unmet business checks. Reduce, Sell or Avoid
+        take priority when business risks are triggered. Valuation remains a
+        separate check; Pace does not prove a stock is cheap.
       </p>
     </Help>
   );

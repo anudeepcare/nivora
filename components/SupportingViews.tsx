@@ -481,7 +481,7 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
                           amount(p.last?.fcf, p.last?.currency, true),
                           percent(p.last?.margin),
                           p.tech.trend,
-                          `${edge.decision.contextLabel}: ${edge.assessment} · ${edge.reason} New purchase: ${edge.decision.actions.entry}. Holding: ${edge.decision.actions.holding}.`,
+                          `${edge.decision.contextLabel}: ${edge.pacePresentation.actionLabel} · ${edge.reason} New purchase: ${edge.decision.actionLabels.entry}. Holding: ${edge.decision.actionLabels.holding}.`,
                           <div key="pace">
                             <PaceGuidance
                               view={edge.pacePresentation}

@@ -253,14 +253,14 @@ export default function Discover({ embedded = false }: { embedded?: boolean }) {
                             : ""
                       }
                     >
-                      {edge.assessment}
+                      {edge.pacePresentation.actionLabel}
                     </strong>
                     <small className="block">
                       {edge.decision.contextLabel} · {edge.reason}
                     </small>
                     <small className="block">
-                      New purchase: {edge.decision.actions.entry} · Holding:{" "}
-                      {edge.decision.actions.holding}
+                      New purchase: {edge.decision.actionLabels.entry} · Holding:{" "}
+                      {edge.decision.actionLabels.holding}
                     </small>
                   </td>
                   <td>

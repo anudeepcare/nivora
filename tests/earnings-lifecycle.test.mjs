@@ -68,10 +68,8 @@ test("Home does not tell a user to prepare before already released results", () 
     `${brief.kicker} ${brief.title} ${brief.detail} ${brief.action}`,
     /ahead|before results|prepare/i,
   );
-  assert.match(
-    `${brief.kicker} ${brief.title} ${brief.detail}`,
-    /reported|released|results/i,
-  );
+  assert.notEqual(brief.kind, "earnings");
+  assert.equal(brief.reported[0].symbol, "SOFI");
 });
 test("same-day Home briefing represents every company with its own release state", () => {
   const brief = homeBrief({
@@ -82,12 +80,12 @@ test("same-day Home briefing represents every company with its own release state
       event("APP", null, "2026-10-29"),
     ],
   });
-  assert.equal(brief.earnings.length, 2);
-  assert.deepEqual(brief.earnings.map((e) => e.symbol).sort(), ["NOW", "SOFI"]);
-  assert.match(brief.detail, /1 reported/);
-  assert.match(brief.detail, /1 awaiting/);
+  assert.equal(brief.earnings.length, 1);
+  assert.deepEqual(brief.earnings.map((e) => e.symbol).sort(), ["NOW"]);
+  assert.deepEqual(brief.reported.map(e=>e.symbol), ["SOFI"]);
+  assert.match(brief.detail, /confirmation is pending/);
   assert.doesNotMatch(brief.detail, /before results arrive/);
-  assert.equal(brief.checkpoints.length, 3);
+  assert.equal(brief.checkpoints.length, 2);
 });
 test("US calendar date stays on the release day after UTC midnight", () => {
   assert.equal(typeof feed.marketDay, "function");

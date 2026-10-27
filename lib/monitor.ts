@@ -11,17 +11,63 @@ import { evaluateAlert } from "./alert-policy";
 export async function checkAlerts(db: SupabaseClient, userId: string) {
   const rules = await db
     .from("auryn_documents")
-    .select("key,body,created_at")
+    .select("key,body,created_at", { count: "exact" })
     .eq("user_id", userId)
     .eq("kind", "alert");
   if (rules.error) throw Error("Alert rules unavailable.");
+  if (rules.count != null && rules.count > (rules.data?.length ?? 0))
+    throw Error(
+      "Alert coverage is incomplete: the account rule list was truncated. No complete-coverage claim can be made.",
+    );
+  const enabled = (rules.data ?? [])
+    .filter((v) => v.body?.enabled)
+    .sort((a, b) => a.key.localeCompare(b.key));
+  const cursorKey = "internal:alert-monitor-cursor";
+  let batch = enabled.slice(0, 12);
+  if (enabled.length > 12) {
+    const cursor = await db
+      .from("auryn_documents")
+      .select("body")
+      .eq("user_id", userId)
+      .eq("kind", "view")
+      .eq("key", cursorKey)
+      .maybeSingle();
+    if (cursor.error) throw Error("Alert continuation could not be read.");
+    const after =
+      typeof cursor.data?.body?.filter === "string"
+        ? cursor.data.body.filter
+        : "";
+    const next = enabled.findIndex(
+      (record) => record.key.localeCompare(after) > 0,
+    );
+    const start = next < 0 ? 0 : next;
+    batch = [...enabled.slice(start), ...enabled.slice(0, start)].slice(0, 12);
+  }
   let checked = 0,
     created = 0;
   const errors: string[] = [];
   const sources = new Map<string, Awaited<ReturnType<typeof research>>>();
-  for (const record of (rules.data ?? [])
-    .filter((v) => v.body?.enabled)
-    .slice(0, 12)) {
+  for (const record of batch) {
+    // Checkpoint only the rule about to be attempted. A terminated request
+    // resumes its unattempted tail on the next invocation.
+    if (enabled.length > 12) {
+      const saved = await db.from("auryn_documents").upsert(
+        {
+          user_id: userId,
+          kind: "view",
+          key: cursorKey,
+          body: {
+            name: "Internal alert continuation",
+            symbols: [],
+            filter: record.key,
+            horizon: "",
+          },
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id,kind,key" },
+      );
+      if (saved.error) throw Error("Alert continuation could not be saved.");
+    }
     const rule = record.body as AlertRule;
     try {
       let r = sources.get(rule.symbol);
@@ -86,7 +132,12 @@ export async function checkAlerts(db: SupabaseClient, userId: string) {
               : rule.type === "current-below"
                 ? p?.currentRatio
                 : p?.margin;
-        if (!p || v == null || !Number.isFinite(v)) continue;
+        if (!p || v == null || !Number.isFinite(v)) {
+          errors.push(
+            `${rule.symbol}: the dated financial input for ${rule.type} is unavailable; the rule was not evaluated.`,
+          );
+          continue;
+        }
         const state = await db
           .from("auryn_documents")
           .select("body")
@@ -170,5 +221,13 @@ export async function checkAlerts(db: SupabaseClient, userId: string) {
       errors.push(`${rule.symbol}: the source or alert store was unavailable.`);
     }
   }
-  return { checked, created, errors, checkedAt: new Date().toISOString() };
+  return {
+    checked,
+    created,
+    errors,
+    total: enabled.length,
+    batchSize: batch.length,
+    remaining: Math.max(0, enabled.length - batch.length),
+    checkedAt: new Date().toISOString(),
+  };
 }

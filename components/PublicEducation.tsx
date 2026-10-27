@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { SUPPORT_EMAIL } from "@/lib/site-metadata";
-import { PACE_LEVELS } from "@/lib/pace-presentation";
+import { PACE_LEVELS, PACE_DESCRIPTIONS } from "@/lib/pace-presentation";
 import { PrivacyChoices } from "./AnalyticsConsent";
 export default function PublicEducation({ pace = false }: { pace?: boolean }) {
   return (
@@ -54,11 +54,7 @@ export default function PublicEducation({ pace = false }: { pace?: boolean }) {
               <article key={label}>
                 <span>P{i}</span>
                 <h2>{label}</h2>
-                <p>
-                  {i === 0
-                    ? "Pause scheduled contributions."
-                    : `${i}× your baseline contribution when the business qualifies, within your cash budget and position limit.`}
-                </p>
+                <p>{PACE_DESCRIPTIONS[i]}</p>
               </article>
             ))}
           </section>
@@ -67,21 +63,21 @@ export default function PublicEducation({ pace = false }: { pace?: boolean }) {
               <span>01 / DECISION FIRST</span>
               <h2>Buy and Add mean different things.</h2>
               <p>
-                For a new purchase, AURYN shows Buy, Wait or Avoid. For an
-                existing holding, it can show Add, Hold, Reduce or Sell. If an
-                assessment is incomplete or the business needs further review,
-                it shows Review. A saved watchlist item does not mean you own
-                it.
+                For a new purchase, AURYN shows Buy, Watch, Wait or Avoid. For
+                an existing holding, it can show Add, Hold, Reduce or Sell. If
+                an assessment is incomplete or the business needs further
+                review, it shows Review. A saved watchlist item does not mean
+                you own it.
               </p>
             </article>
             <article>
               <span>02 / CONFIRMED BEFORE FORMING</span>
               <h2>Use the completed month.</h2>
               <p>
-                The last completed month sets the actionable contribution level.
+                The last completed month sets the confirmed accumulation zone.
                 The current month is forming and may change. If the assessment
                 supports buying and confirmed Pace is P2, the display reads “Buy
-                gradually · P2”.
+                small · P2”.
               </p>
             </article>
             <article>
@@ -99,9 +95,9 @@ export default function PublicEducation({ pace = false }: { pace?: boolean }) {
               <span>04 / MAKE IT YOURS</span>
               <h2>Start with a sensible budget.</h2>
               <p>
-                Contribution factors are relative to your normal planned amount.
-                Keep the total within your cash budget, concentration limits and
-                risk tolerance. Missing price history leaves business research
+                Pace zones do not prescribe an automatic purchase amount. Keep
+                the total within your cash budget, concentration limits and risk
+                tolerance. Missing price history leaves business research
                 available without inventing a Pace level.
               </p>
             </article>
@@ -139,11 +135,12 @@ export default function PublicEducation({ pace = false }: { pace?: boolean }) {
           </article>
           <article>
             <span>AURYN PACE</span>
-            <h2>A contribution scale of our own.</h2>
+            <h2>An accumulation scale of our own.</h2>
             <p>
-              After the business checks, P1 supports steady buying and P2–P4
-              increase the planned pace within your budget. P0 pauses additions.
-              Confirmed readings guide the plan; forming readings can change.
+              P1 means Watch or Hold. After the business checks, P2 starts
+              small, P3 builds gradually and P4 supports deeper planned
+              accumulation within your budget. P0 pauses additions. Confirmed
+              readings guide the plan; forming readings can change.
             </p>
             <Link href="/pace">Understand Pace →</Link>
           </article>

@@ -4,6 +4,8 @@ import fs from "node:fs";
 import ts from "typescript";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
+import { workspaceGuidance } from "../lib/edge-research.ts";
+import { demoData } from "./fixtures/demo.ts";
 import * as format from "../lib/format.ts";
 import { homeBrief } from "../lib/home-brief.ts";
 import {
@@ -132,4 +134,64 @@ test("Watchlist-only Home avoids an irrelevant zero-value portfolio summary", ()
   const html = renderToStaticMarkup(React.createElement(Home));
   assert.deepEqual(requested, symbols);
   assert.doesNotMatch(html, /aria-label="Portfolio summary"/);
+});
+
+test("Home accumulation panel excludes valuation-only entries without confirmed Pace", () => {
+  const r = structuredClone(demoData.research.MSFT);
+  r.evidence = undefined;
+  r.history = [];
+  r.quote = { ...r.quote, price: 50, asOf: r.retrievedAt, stale: false };
+  const signal = workspaceGuidance(r, false, Date.parse(r.retrievedAt));
+  assert.equal(signal.action, "Buy");
+  assert.equal(signal.view.rawLevel, null);
+  const Home = load("HomeOverview", {
+    useWorkspaceData: () => ({
+      workspace: { positions: [], watchlist: [{ symbol: "MSFT" }] },
+      quotes: { data: {} },
+      model: { allocations: [] },
+      prefix: "",
+      pace: () => signal,
+    }),
+    useHomeFeed: () => ({
+      data: {
+        events: [],
+        news: [],
+        issues: [],
+        followed: 1,
+        newsFollowed: 1,
+        retrievedAt: "",
+        eventsReady: true,
+        newsReady: true,
+      },
+      loading: false,
+      error: "",
+      refresh: empty,
+    }),
+    homeFeedReadiness,
+    homeBrief,
+    groupMarketEvents,
+    marketDay,
+    earningsEventState,
+    relevantHoldingHeadlines,
+    researchLink: (symbol) => "/research/" + symbol,
+    ...format,
+    Link,
+    Heading: empty,
+    SectionHead: empty,
+    Coverage: empty,
+    Notice: empty,
+    WealthStrip: empty,
+    HomeCompany: empty,
+    Empty: empty,
+    ArrowUpRight: empty,
+    CalendarDays: empty,
+    FileText: empty,
+    RefreshCw: empty,
+    Wallet: empty,
+    Bookmark: empty,
+    Activity: empty,
+  });
+  const html = renderToStaticMarkup(React.createElement(Home));
+  assert.doesNotMatch(html, /confirmed Pending/);
+  assert.match(html, /Explore accumulation zones/);
 });

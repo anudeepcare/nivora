@@ -765,13 +765,13 @@ export function DcaCard({
     >
       <div className="au-between au-dca-top">
         <span className="au-eyebrow">Monthly DCA · price only</span>
-        <Help label="DCA multiplier">
-          A multiple of your usual contribution, not leverage or a return
-          forecast. AURYN’s trend-adjusted rules use the preceding 24 completed
-          monthly closes. 0× pauses new scheduled contributions; it is not a
-          sell order. Stronger pullbacks can earn larger multipliers even in a
-          deteriorating business. Review financial evidence before adding. The
-          current month can change until it closes.
+        <Help label="AURYN Pace zones">
+          P1 means Watch/Hold; P2 starts small, P3 builds gradually and P4 marks
+          a deep price zone. Business checks must qualify before buying. These
+          are accumulation zones, not purchase multiples or a return forecast.
+          Monthly readings compare price with preceding completed history; the
+          current month can change until it closes. P0 pauses new buying and is
+          not a sell order.
         </Help>
       </div>
       <div className="au-dca-reading">

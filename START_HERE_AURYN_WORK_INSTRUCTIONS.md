@@ -1,3 +1,21 @@
+# Current candidate — monitoring acceptance hardening
+
+Start with [the acceptance report](docs/approved-build/ENTERPRISE_ACCEPTANCE_20261027.md). This source adds durable per-rule continuation, visible alert coverage and financial-input warnings, consistent P0–P4 notifications, and reserved internal-state protection. The approved layout and Pace zones are preserved. Run `npm run test:acceptance` to reproduce the local release checks.
+
+Production enterprise acceptance remains blocked by deployed-host verification and independent live-data reconciliation. Subscriber-wide automatic monitoring is not enabled by this change; the operator-only scheduled boundary remains explicit. No new dependency or migration is required, and no production deployment occurred.
+
+---
+
+# Current build — distinct AURYN Pace accumulation zones
+
+Start with [the release notes and historical findings](docs/approved-build/PACE_ZONE_CONTRACT_20261027.md). P1 now means Watch/Hold, P2 Buy/Add small, P3 Buy/Add gradually and P4 Accumulate when the business qualifies. P0 pauses buying. Business risk overrides and confirmed/forming dates remain intact. Current product surfaces use zone meanings, not automatic purchase multipliers.
+
+Home separates reported earnings from upcoming dates, the Price & Pace drawer is tighter, and confirmed Pace appears beside the main action. The faulty price-series test fixture was corrected. Validation passed: 830 automated tests, TypeScript, optimized production build and all nine API test scripts. Evidence and responsive screenshots are included. No new dependency, migration or environment setting is needed. Production has not been deployed.
+
+The price-only historical study found that both fixed example schedules trailed equal-budget DCA in 6 of 8 selected securities. It does not include historical business checks and does not establish an investment edge. Earlier business-led P1–P4 Buy instructions below are superseded by this release.
+
+---
+
 # Current handoff — screenshot UX refinements, October 26, 2026
 
 This complete source ZIP includes the approved implementation plus the latest screenshot-driven fixes. Start with `docs/approved-build/UX_REFINEMENT.md` and `verification/REPORT.json`.

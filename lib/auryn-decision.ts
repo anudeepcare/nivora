@@ -1,3 +1,4 @@
+import { pacePresentation } from "./pace-presentation.ts";
 import type { Research } from "./types";
 import {
   annualRows,
@@ -18,6 +19,7 @@ export type DecisionAction =
   | "Reduce"
   | "Sell"
   | "Wait"
+  | "Watch"
   | "Review"
   | "Avoid";
 export type DecisionInput = {
@@ -135,6 +137,7 @@ export function assessDecision(x: DecisionInput): {
     | "accumulation"
     | "history"
     | "pace"
+    | "zone"
     | "entry"
     | "business";
 } {
@@ -151,11 +154,13 @@ export function assessDecision(x: DecisionInput): {
   if (!supported) return { action: "Review", code: "business" };
   if (x.confirmedPace === 0)
     return { action: x.ownsPosition ? "Hold" : "Wait", code: "pace" };
-  // A completed contribution policy is distinct from a lump-sum valuation entry.
+  if (x.confirmedPace === 1)
+    return { action: x.ownsPosition ? "Hold" : "Watch", code: "zone" };
+  // Confirmed accumulation zones require a supported business.
   // Do not let forming readings, RSI or a conservative model rewrite this plan.
   if (
     Number.isInteger(x.confirmedPace) &&
-    x.confirmedPace! >= 1 &&
+    x.confirmedPace! >= 2 &&
     x.confirmedPace! <= 4
   )
     return { action: x.ownsPosition ? "Add" : "Buy", code: "accumulation" };
@@ -631,6 +636,16 @@ export function aurynDecision(
   };
   const action = ownsPosition ? actions.holding : actions.entry;
   const assessment = assessDecision(decisionInputs);
+  const actionLabel = pacePresentation(
+    action,
+    brief.accumulation.multiplier,
+  ).actionLabel;
+  const actionLabels = {
+    entry: pacePresentation(actions.entry, brief.accumulation.multiplier)
+      .actionLabel,
+    holding: pacePresentation(actions.holding, brief.accumulation.multiplier)
+      .actionLabel,
+  };
   if (assessment.code === "accumulation") {
     changeConditions.push(
       "Review the business after earnings and adjust the contribution pace when the next completed monthly reading changes. Stay within your planned cash budget and position limit.",
@@ -645,13 +660,13 @@ export function aurynDecision(
   if (action === "Buy" || action === "Add")
     headline =
       assessment.code === "accumulation"
-        ? growthAssessment.eligible && !strong
-          ? "Funded growth supports gradual accumulation at confirmed Pace."
-          : "Business strength supports gradual accumulation at confirmed Pace."
+        ? `Business supported; ${brief.accumulation.multiplier === 2 ? "initial" : brief.accumulation.multiplier === 3 ? "deeper" : "deep"} accumulation conditions met.`
         : "The business and valuation screens support a gradual entry.";
-  else if (action === "Hold")
+  else if (action === "Hold" || action === "Watch")
     headline =
-      "The business case holds; confirmed Pace pauses new contributions.";
+      assessment.code === "zone"
+        ? "Business supported; accumulation conditions not established."
+        : "The business case holds; confirmed Pace pauses new contributions.";
   else if (action === "Sell")
     headline =
       "Cash runway and balance-sheet weakness threaten the holding case.";
@@ -685,9 +700,13 @@ export function aurynDecision(
     headline =
       "The business case holds; confirmed Pace pauses new contributions.";
     changeConditions.unshift(
-      "Reassess additions when a completed monthly Pace reading moves above P0 and the business still qualifies.",
+      "Reassess additions when a completed monthly Pace reading reaches P2 or higher and the business still qualifies.",
     );
   }
+  if (assessment.code === "zone")
+    changeConditions.unshift(
+      "Consider a small entry only after a completed reading reaches P2 or higher and the business still qualifies. A healthy company can remain outside an accumulation zone.",
+    );
   if (growthAssessment.eligible && !strong) {
     reasons.splice(
       1,
@@ -805,12 +824,16 @@ export function aurynDecision(
     pace: {
       label: "P0 pauses additions",
       detail:
-        "The confirmed monthly reading is P0. Pause new contributions, not the business assessment. Reassess after a completed month moves above P0 if the business still qualifies. P0 is not a sell signal.",
+        "The confirmed monthly reading is P0. Pause new contributions, not the business assessment. Reassess after a completed month reaches P2 or higher if the business still qualifies. P0 is not a sell signal.",
+    },
+    zone: {
+      label: "P1 · Outside the accumulation zone",
+      detail:
+        "The business screen passes, but a qualifying accumulation zone is not established. Watch for a new entry; hold an existing position if the business case remains intact. P1 does not prescribe a purchase amount.",
     },
     accumulation: {
-      label: `Accumulate gradually · P${brief.accumulation.multiplier}`,
-      detail:
-        "Growth, profitability and funding checks support scheduled purchases. Follow confirmed Pace within your cash budget and position limit. Review valuation risks separately; this is not a claim that the stock is cheap.",
+      label: `${actionLabel} · P${brief.accumulation.multiplier}`,
+      detail: pacePresentation(action, brief.accumulation.multiplier).detail,
     },
     history: {
       label: "Contribution history incomplete",
@@ -840,13 +863,15 @@ export function aurynDecision(
           ? "neutral"
           : "caution";
   return {
-    version: "auryn-decision-v5",
+    version: "auryn-decision-v6-zones",
     explanation,
     actions,
     contextLabel: ownsPosition ? "For your holding" : "For new purchases",
     growthAssessment,
     growthCandidate: !specialist && !strong && growth != null && growth >= 20,
     action,
+    actionLabel,
+    actionLabels,
     tone,
     headline,
     reasons: reasons.slice(0, 4),

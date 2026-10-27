@@ -124,7 +124,7 @@ export function workspaceGuidance(
     ...edge.brief.accumulation,
     view: edge.pacePresentation,
     action: edge.assessment,
-    actions: edge.decision.actions,
+    actions: edge.decision.actionLabels,
     contextLabel: edge.decision.contextLabel,
     periods: edge.pacePeriods,
   };

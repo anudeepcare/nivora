@@ -171,7 +171,7 @@ export function approvedResearch(
       : b.priceRisk.available
         ? b.priceRisk.referenceBasis
         : null,
-    title: `${decision.action}. ${decision.headline}`,
+    title: `${decision.actionLabel}. ${decision.headline}`,
     metrics: [
       ...evidence.business,
       ...evidence.valuation,

@@ -1,0 +1,888 @@
+{
+  "generatedAt": "2026-10-27T22:08:26.712Z",
+  "asOf": "2026-10-01T22:00:00Z",
+  "policySha256": "e84c1c261b7a04e5a11f96a15f9d5f4e5fb9db5df152160f7e09c237bc8b03e9",
+  "evaluatorSha256": "fd979efcda7c08fd46bfe25e0909e0aa9519ffcdf1d74dd91c20c84592eb24a6",
+  "decisionSha256": "21d5af8966444535b00d9136a7dbd7bb6796eeab7d3bc6dc75a05bfd44661c2d",
+  "scope": "Price-zone cash-schedule research only; not a complete AURYN decision backtest.",
+  "limitations": [
+    "Eight deliberately selected current securities, including one market ETF and one thematic ETF. Not a representative or point-in-time universe; survivorship bias remains.",
+    "Historical business screens, valuation, earnings availability and risk overrides are not included. Current fundamentals are never backfilled into history.",
+    "No dividends, cash interest or taxes. Adjustment conventions were not independently audited against corporate actions.",
+    "Monthly deposit-adjusted drawdown misses intramonth losses. Later chronological windows are descriptive, not an independent holdout.",
+    "Incomplete final months are excluded. No threshold or budget was selected after observing results.",
+    "A zone is not a return forecast. This report cannot establish superiority, predict significant gains or certify every ticker."
+  ],
+  "summary": [
+    {
+      "name": "conservative",
+      "costBps": 10,
+      "securities": 8,
+      "wins": 2,
+      "losses": 6,
+      "meanDifferencePct": -32.21627757696652,
+      "medianDifferencePct": -39.55938328255556
+    },
+    {
+      "name": "conservative",
+      "costBps": 50,
+      "securities": 8,
+      "wins": 2,
+      "losses": 6,
+      "meanDifferencePct": -32.004902335648396,
+      "medianDifferencePct": -39.40985523881341
+    },
+    {
+      "name": "regular",
+      "costBps": 10,
+      "securities": 8,
+      "wins": 2,
+      "losses": 6,
+      "meanDifferencePct": -27.92002699017715,
+      "medianDifferencePct": -27.954470752998084
+    },
+    {
+      "name": "regular",
+      "costBps": 50,
+      "securities": 8,
+      "wins": 2,
+      "losses": 6,
+      "meanDifferencePct": -27.7433568666456,
+      "medianDifferencePct": -27.832430227161215
+    }
+  ],
+  "rows": [
+    {
+      "symbol": "SPY",
+      "rows": 3204,
+      "from": "2014-01-02",
+      "through": "2026-09-29",
+      "inputSha256": "e8b51cf5e74d9a14387c82c1f1033b3a3ba7aa8174e265a4a99eba576ed20138",
+      "zones": {
+        "0": 0,
+        "1": 137,
+        "2": 3,
+        "3": 0,
+        "4": 0
+      },
+      "runs": [
+        {
+          "name": "conservative",
+          "schedule": {
+            "p2": 0.5,
+            "p3": 1,
+            "p4": 2
+          },
+          "costBps": 10,
+          "months": 139,
+          "from": "2015-02",
+          "through": "2026-08",
+          "deposits": 13900,
+          "fixedValue": 32486.792143667648,
+          "zoneValue": 14112.362635596317,
+          "differencePct": -56.55969178739887,
+          "fixedDrawdownPct": -24.80281567243613,
+          "zoneDrawdownPct": -0.2956306709675838,
+          "endingCash": 13750,
+          "laterWindowDifferencePct": -28.57617228501811,
+          "cashOnlySignalMonths": 137,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        },
+        {
+          "name": "conservative",
+          "schedule": {
+            "p2": 0.5,
+            "p3": 1,
+            "p4": 2
+          },
+          "costBps": 50,
+          "months": 139,
+          "from": "2015-02",
+          "through": "2026-08",
+          "deposits": 13900,
+          "fixedValue": 32356.71489784719,
+          "zoneValue": 14110.911734152489,
+          "differencePct": -56.38954146395332,
+          "fixedDrawdownPct": -24.82266101929066,
+          "zoneDrawdownPct": -0.29667276107557816,
+          "endingCash": 13750,
+          "laterWindowDifferencePct": -28.289041319329744,
+          "cashOnlySignalMonths": 137,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        },
+        {
+          "name": "regular",
+          "schedule": {
+            "p2": 1,
+            "p3": 2,
+            "p4": 3
+          },
+          "costBps": 10,
+          "months": 139,
+          "from": "2015-02",
+          "through": "2026-08",
+          "deposits": 13900,
+          "fixedValue": 32486.792143667648,
+          "zoneValue": 14324.725271192636,
+          "differencePct": -55.90600263687524,
+          "fixedDrawdownPct": -24.80281567243613,
+          "zoneDrawdownPct": -0.58821139586408,
+          "endingCash": 13600,
+          "laterWindowDifferencePct": -28.57617228501811,
+          "cashOnlySignalMonths": 137,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        },
+        {
+          "name": "regular",
+          "schedule": {
+            "p2": 1,
+            "p3": 2,
+            "p4": 3
+          },
+          "costBps": 50,
+          "months": 139,
+          "from": "2015-02",
+          "through": "2026-08",
+          "deposits": 13900,
+          "fixedValue": 32356.71489784719,
+          "zoneValue": 14321.823468304978,
+          "differencePct": -55.73770849877637,
+          "fixedDrawdownPct": -24.82266101929066,
+          "zoneDrawdownPct": -0.5903101969792823,
+          "endingCash": 13600,
+          "laterWindowDifferencePct": -28.289041319329744,
+          "cashOnlySignalMonths": 137,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        }
+      ]
+    },
+    {
+      "symbol": "AAPL",
+      "rows": 3204,
+      "from": "2014-01-02",
+      "through": "2026-09-29",
+      "inputSha256": "306be54b7eb744cc0528710f3db3f2e4d3c1dc8fecaf18b3fe2c72fc33cf09f1",
+      "zones": {
+        "0": 4,
+        "1": 124,
+        "2": 12,
+        "3": 0,
+        "4": 0
+      },
+      "runs": [
+        {
+          "name": "conservative",
+          "schedule": {
+            "p2": 0.5,
+            "p3": 1,
+            "p4": 2
+          },
+          "costBps": 10,
+          "months": 139,
+          "from": "2015-02",
+          "through": "2026-08",
+          "deposits": 13900,
+          "fixedValue": 68655.11953787017,
+          "zoneValue": 18416.73079217229,
+          "differencePct": -73.17500731753351,
+          "fixedDrawdownPct": -30.707089596702208,
+          "zoneDrawdownPct": -6.320574427677716,
+          "endingCash": 13300,
+          "laterWindowDifferencePct": -32.36169897962186,
+          "cashOnlySignalMonths": 128,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        },
+        {
+          "name": "conservative",
+          "schedule": {
+            "p2": 0.5,
+            "p3": 1,
+            "p4": 2
+          },
+          "costBps": 50,
+          "months": 139,
+          "from": "2015-02",
+          "through": "2026-08",
+          "deposits": 13900,
+          "fixedValue": 68380.22416434514,
+          "zoneValue": 18396.243381593024,
+          "differencePct": -73.09712916796023,
+          "fixedDrawdownPct": -30.722183462500674,
+          "zoneDrawdownPct": -6.304711755069359,
+          "endingCash": 13300,
+          "laterWindowDifferencePct": -32.094867118443624,
+          "cashOnlySignalMonths": 128,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        },
+        {
+          "name": "regular",
+          "schedule": {
+            "p2": 1,
+            "p3": 2,
+            "p4": 3
+          },
+          "costBps": 10,
+          "months": 139,
+          "from": "2015-02",
+          "through": "2026-08",
+          "deposits": 13900,
+          "fixedValue": 68655.11953787017,
+          "zoneValue": 22933.461584344583,
+          "differencePct": -66.596137711632,
+          "fixedDrawdownPct": -30.707089596702208,
+          "zoneDrawdownPct": -10.540805569328482,
+          "endingCash": 12700,
+          "laterWindowDifferencePct": -31.89751530043624,
+          "cashOnlySignalMonths": 128,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        },
+        {
+          "name": "regular",
+          "schedule": {
+            "p2": 1,
+            "p3": 2,
+            "p4": 3
+          },
+          "costBps": 50,
+          "months": 139,
+          "from": "2015-02",
+          "through": "2026-08",
+          "deposits": 13900,
+          "fixedValue": 68380.22416434514,
+          "zoneValue": 22892.486763186047,
+          "differencePct": -66.52177286203947,
+          "fixedDrawdownPct": -30.722183462500674,
+          "zoneDrawdownPct": -10.52095357538546,
+          "endingCash": 12700,
+          "laterWindowDifferencePct": -31.63389828095896,
+          "cashOnlySignalMonths": 128,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        }
+      ]
+    },
+    {
+      "symbol": "NVDA",
+      "rows": 3204,
+      "from": "2014-01-02",
+      "through": "2026-09-29",
+      "inputSha256": "d4c51dde19c61318bc757d7d74ccb9b36f0c978499bb4c6e44e2dddb1bb428bd",
+      "zones": {
+        "0": 9,
+        "1": 113,
+        "2": 9,
+        "3": 5,
+        "4": 4
+      },
+      "runs": [
+        {
+          "name": "conservative",
+          "schedule": {
+            "p2": 0.5,
+            "p3": 1,
+            "p4": 2
+          },
+          "costBps": 10,
+          "months": 139,
+          "from": "2015-02",
+          "through": "2026-08",
+          "deposits": 13900,
+          "fixedValue": 928055.5785536413,
+          "zoneValue": 77429.97274084942,
+          "differencePct": -91.65675262019084,
+          "fixedDrawdownPct": -62.85084633022963,
+          "zoneDrawdownPct": -31.866784214314194,
+          "endingCash": 12150,
+          "laterWindowDifferencePct": -64.00964883713493,
+          "cashOnlySignalMonths": 122,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        },
+        {
+          "name": "conservative",
+          "schedule": {
+            "p2": 0.5,
+            "p3": 1,
+            "p4": 2
+          },
+          "costBps": 50,
+          "months": 139,
+          "from": "2015-02",
+          "through": "2026-08",
+          "deposits": 13900,
+          "fixedValue": 924339.6403011731,
+          "zoneValue": 77168.5914686138,
+          "differencePct": -91.65148954950473,
+          "fixedDrawdownPct": -62.85260001495945,
+          "zoneDrawdownPct": -31.814007703297342,
+          "endingCash": 12150,
+          "laterWindowDifferencePct": -63.8649640083395,
+          "cashOnlySignalMonths": 122,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        },
+        {
+          "name": "regular",
+          "schedule": {
+            "p2": 1,
+            "p3": 2,
+            "p4": 3
+          },
+          "costBps": 10,
+          "months": 139,
+          "from": "2015-02",
+          "through": "2026-08",
+          "deposits": 13900,
+          "fixedValue": 928055.5785536413,
+          "zoneValue": 125234.60776752155,
+          "differencePct": -86.50569958722758,
+          "fixedDrawdownPct": -62.85084633022963,
+          "zoneDrawdownPct": -42.02102234368388,
+          "endingCash": 10800,
+          "laterWindowDifferencePct": -64.00964883713493,
+          "cashOnlySignalMonths": 122,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        },
+        {
+          "name": "regular",
+          "schedule": {
+            "p2": 1,
+            "p3": 2,
+            "p4": 3
+          },
+          "costBps": 50,
+          "months": 139,
+          "from": "2015-02",
+          "through": "2026-08",
+          "deposits": 13900,
+          "fixedValue": 924339.6403011731,
+          "zoneValue": 124776.41113982376,
+          "differencePct": -86.50102130217326,
+          "fixedDrawdownPct": -62.85260001495945,
+          "zoneDrawdownPct": -41.97814493583939,
+          "endingCash": 10800,
+          "laterWindowDifferencePct": -63.8649640083395,
+          "cashOnlySignalMonths": 122,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        }
+      ]
+    },
+    {
+      "symbol": "INTC",
+      "rows": 3204,
+      "from": "2014-01-02",
+      "through": "2026-09-29",
+      "inputSha256": "860720fd2138ed253830d9d1c1e7bc2c79f9ebad129b61ec5428ac80a2064aaa",
+      "zones": {
+        "0": 11,
+        "1": 92,
+        "2": 23,
+        "3": 9,
+        "4": 5
+      },
+      "runs": [
+        {
+          "name": "conservative",
+          "schedule": {
+            "p2": 0.5,
+            "p3": 1,
+            "p4": 2
+          },
+          "costBps": 10,
+          "months": 139,
+          "from": "2015-02",
+          "through": "2026-08",
+          "deposits": 13900,
+          "fixedValue": 32809.81470611295,
+          "zoneValue": 20896.189232613848,
+          "differencePct": -36.31116353509738,
+          "fixedDrawdownPct": -69.65707510815857,
+          "zoneDrawdownPct": -21.29870705567727,
+          "endingCash": 10850,
+          "laterWindowDifferencePct": -26.391363468252326,
+          "cashOnlySignalMonths": 103,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        },
+        {
+          "name": "conservative",
+          "schedule": {
+            "p2": 0.5,
+            "p3": 1,
+            "p4": 2
+          },
+          "costBps": 50,
+          "months": 139,
+          "from": "2015-02",
+          "through": "2026-08",
+          "deposits": 13900,
+          "fixedValue": 32678.44407665902,
+          "zoneValue": 20855.96425070148,
+          "differencePct": -36.178221332152994,
+          "fixedDrawdownPct": -69.72311426235372,
+          "zoneDrawdownPct": -21.26394792530093,
+          "endingCash": 10850,
+          "laterWindowDifferencePct": -26.301575724774963,
+          "cashOnlySignalMonths": 103,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        },
+        {
+          "name": "regular",
+          "schedule": {
+            "p2": 1,
+            "p3": 2,
+            "p4": 3
+          },
+          "costBps": 10,
+          "months": 139,
+          "from": "2015-02",
+          "through": "2026-08",
+          "deposits": 13900,
+          "fixedValue": 32809.81470611295,
+          "zoneValue": 26425.661610013743,
+          "differencePct": -19.45805897803423,
+          "fixedDrawdownPct": -69.65707510815857,
+          "zoneDrawdownPct": -27.832850128674423,
+          "endingCash": 8300,
+          "laterWindowDifferencePct": -0.6915512320839756,
+          "cashOnlySignalMonths": 103,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        },
+        {
+          "name": "regular",
+          "schedule": {
+            "p2": 1,
+            "p3": 2,
+            "p4": 3
+          },
+          "costBps": 50,
+          "months": 139,
+          "from": "2015-02",
+          "through": "2026-08",
+          "deposits": 13900,
+          "fixedValue": 32678.44407665902,
+          "zoneValue": 26353.08638835202,
+          "differencePct": -19.35636125596617,
+          "fixedDrawdownPct": -69.72311426235372,
+          "zoneDrawdownPct": -27.807742894400032,
+          "endingCash": 8300,
+          "laterWindowDifferencePct": -0.6373397643240297,
+          "cashOnlySignalMonths": 103,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        }
+      ]
+    },
+    {
+      "symbol": "PYPL",
+      "rows": 2826,
+      "from": "2015-07-06",
+      "through": "2026-09-29",
+      "inputSha256": "7cb24094cc7755a7e91745af31f8d7073a9c0dfeb5cc359597f8b90c6686ef00",
+      "zones": {
+        "0": 8,
+        "1": 80,
+        "2": 20,
+        "3": 9,
+        "4": 5
+      },
+      "runs": [
+        {
+          "name": "conservative",
+          "schedule": {
+            "p2": 0.5,
+            "p3": 1,
+            "p4": 2
+          },
+          "costBps": 10,
+          "months": 121,
+          "from": "2016-08",
+          "through": "2026-08",
+          "deposits": 12100,
+          "fixedValue": 8248.388273503544,
+          "zoneValue": 11277.796098767372,
+          "differencePct": 36.727269920055214,
+          "fixedDrawdownPct": -85.19684916511429,
+          "zoneDrawdownPct": -14.145851377789597,
+          "endingCash": 9200,
+          "laterWindowDifferencePct": 18.812884587651467,
+          "cashOnlySignalMonths": 88,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        },
+        {
+          "name": "conservative",
+          "schedule": {
+            "p2": 0.5,
+            "p3": 1,
+            "p4": 2
+          },
+          "costBps": 50,
+          "months": 121,
+          "from": "2016-08",
+          "through": "2026-08",
+          "deposits": 12100,
+          "fixedValue": 8215.361693829858,
+          "zoneValue": 11269.476594868403,
+          "differencePct": 37.1756596344667,
+          "fixedDrawdownPct": -85.24059027358497,
+          "zoneDrawdownPct": -14.22297286862123,
+          "endingCash": 9200,
+          "laterWindowDifferencePct": 19.16005485442629,
+          "cashOnlySignalMonths": 88,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        },
+        {
+          "name": "regular",
+          "schedule": {
+            "p2": 1,
+            "p3": 2,
+            "p4": 3
+          },
+          "costBps": 10,
+          "months": 121,
+          "from": "2016-08",
+          "through": "2026-08",
+          "deposits": 12100,
+          "fixedValue": 8248.388273503544,
+          "zoneValue": 10666.582428370122,
+          "differencePct": 29.31717172716748,
+          "fixedDrawdownPct": -85.19684916511429,
+          "zoneDrawdownPct": -24.854178391507432,
+          "endingCash": 6800,
+          "laterWindowDifferencePct": 19.282497218674187,
+          "cashOnlySignalMonths": 88,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        },
+        {
+          "name": "regular",
+          "schedule": {
+            "p2": 1,
+            "p3": 2,
+            "p4": 3
+          },
+          "costBps": 50,
+          "months": 121,
+          "from": "2016-08",
+          "through": "2026-08",
+          "deposits": 12100,
+          "fixedValue": 8215.361693829858,
+          "zoneValue": 10651.100616845117,
+          "differencePct": 29.648590211732472,
+          "fixedDrawdownPct": -85.24059027358497,
+          "zoneDrawdownPct": -24.987634950991577,
+          "endingCash": 6800,
+          "laterWindowDifferencePct": 19.501085905162043,
+          "cashOnlySignalMonths": 88,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        }
+      ]
+    },
+    {
+      "symbol": "PFE",
+      "rows": 3204,
+      "from": "2014-01-02",
+      "through": "2026-09-29",
+      "inputSha256": "618dad5c89d6aa8442816b12d652122bfc333bcc8aadc0263bf7c6298a4bc6e1",
+      "zones": {
+        "0": 2,
+        "1": 110,
+        "2": 26,
+        "3": 2,
+        "4": 0
+      },
+      "runs": [
+        {
+          "name": "conservative",
+          "schedule": {
+            "p2": 0.5,
+            "p3": 1,
+            "p4": 2
+          },
+          "costBps": 10,
+          "months": 139,
+          "from": "2015-02",
+          "through": "2026-08",
+          "deposits": 13900,
+          "fixedValue": 11872.042143525367,
+          "zoneValue": 13782.314520435475,
+          "differencePct": 16.090512094011643,
+          "fixedDrawdownPct": -60.575574517186716,
+          "zoneDrawdownPct": -6.39196340413436,
+          "endingCash": 12400,
+          "laterWindowDifferencePct": -2.5229278427205126,
+          "cashOnlySignalMonths": 112,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        },
+        {
+          "name": "conservative",
+          "schedule": {
+            "p2": 0.5,
+            "p3": 1,
+            "p4": 2
+          },
+          "costBps": 50,
+          "months": 139,
+          "from": "2015-02",
+          "through": "2026-08",
+          "deposits": 13900,
+          "fixedValue": 11824.506439246981,
+          "zoneValue": 13776.77972756086,
+          "differencePct": 16.510399806913245,
+          "fixedDrawdownPct": -60.64274448749389,
+          "zoneDrawdownPct": -6.4080049147341445,
+          "endingCash": 12400,
+          "laterWindowDifferencePct": -2.225357546437323,
+          "cashOnlySignalMonths": 112,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        },
+        {
+          "name": "regular",
+          "schedule": {
+            "p2": 1,
+            "p3": 2,
+            "p4": 3
+          },
+          "costBps": 10,
+          "months": 139,
+          "from": "2015-02",
+          "through": "2026-08",
+          "deposits": 13900,
+          "fixedValue": 11872.042143525367,
+          "zoneValue": 13664.62904087095,
+          "differencePct": 15.099229565346551,
+          "fixedDrawdownPct": -60.575574517186716,
+          "zoneDrawdownPct": -12.366349638028307,
+          "endingCash": 10900,
+          "laterWindowDifferencePct": -3.6917983401410392,
+          "cashOnlySignalMonths": 112,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        },
+        {
+          "name": "regular",
+          "schedule": {
+            "p2": 1,
+            "p3": 2,
+            "p4": 3
+          },
+          "costBps": 50,
+          "months": 139,
+          "from": "2015-02",
+          "through": "2026-08",
+          "deposits": 13900,
+          "fixedValue": 11824.506439246981,
+          "zoneValue": 13653.559455121718,
+          "differencePct": 15.468324409751988,
+          "fixedDrawdownPct": -60.64274448749389,
+          "zoneDrawdownPct": -12.400312627687137,
+          "endingCash": 10900,
+          "laterWindowDifferencePct": -3.474524790473965,
+          "cashOnlySignalMonths": 112,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        }
+      ]
+    },
+    {
+      "symbol": "F",
+      "rows": 3204,
+      "from": "2014-01-02",
+      "through": "2026-09-29",
+      "inputSha256": "bb1fff990559b000db5ad3e7c302686ac4ac0e7d2ed02e0077bf9bb6db3c594e",
+      "zones": {
+        "0": 4,
+        "1": 101,
+        "2": 28,
+        "3": 5,
+        "4": 2
+      },
+      "runs": [
+        {
+          "name": "conservative",
+          "schedule": {
+            "p2": 0.5,
+            "p3": 1,
+            "p4": 2
+          },
+          "costBps": 10,
+          "months": 139,
+          "from": "2015-02",
+          "through": "2026-08",
+          "deposits": 13900,
+          "fixedValue": 17247.468497155125,
+          "zoneValue": 15516.20480537634,
+          "differencePct": -10.03778433956466,
+          "fixedDrawdownPct": -70.55856278287749,
+          "zoneDrawdownPct": -19.696738971479043,
+          "endingCash": 11600,
+          "laterWindowDifferencePct": -12.18127143777129,
+          "cashOnlySignalMonths": 105,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        },
+        {
+          "name": "conservative",
+          "schedule": {
+            "p2": 0.5,
+            "p3": 1,
+            "p4": 2
+          },
+          "costBps": 50,
+          "months": 139,
+          "from": "2015-02",
+          "through": "2026-08",
+          "deposits": 13900,
+          "fixedValue": 17178.409564233578,
+          "zoneValue": 15500.524305655113,
+          "differencePct": -9.767407467522006,
+          "fixedDrawdownPct": -71.02772577136886,
+          "zoneDrawdownPct": -19.670309215883474,
+          "endingCash": 11600,
+          "laterWindowDifferencePct": -11.872213478617489,
+          "cashOnlySignalMonths": 105,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        },
+        {
+          "name": "regular",
+          "schedule": {
+            "p2": 1,
+            "p3": 2,
+            "p4": 3
+          },
+          "costBps": 10,
+          "months": 139,
+          "from": "2015-02",
+          "through": "2026-08",
+          "deposits": 13900,
+          "fixedValue": 17247.468497155125,
+          "zoneValue": 16754.219223274515,
+          "differencePct": -2.8598357722002476,
+          "fixedDrawdownPct": -70.55856278287749,
+          "zoneDrawdownPct": -30.10053510016594,
+          "endingCash": 9500,
+          "laterWindowDifferencePct": -9.333148882372999,
+          "cashOnlySignalMonths": 105,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        },
+        {
+          "name": "regular",
+          "schedule": {
+            "p2": 1,
+            "p3": 2,
+            "p4": 3
+          },
+          "costBps": 50,
+          "months": 139,
+          "from": "2015-02",
+          "through": "2026-08",
+          "deposits": 13900,
+          "fixedValue": 17178.409564233578,
+          "zoneValue": 16725.1733004586,
+          "differencePct": -2.638406437337737,
+          "fixedDrawdownPct": -71.02772577136886,
+          "zoneDrawdownPct": -30.085946795940487,
+          "endingCash": 9500,
+          "laterWindowDifferencePct": -9.056623339972237,
+          "cashOnlySignalMonths": 105,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        }
+      ]
+    },
+    {
+      "symbol": "ARKK",
+      "rows": 2994,
+      "from": "2014-10-31",
+      "through": "2026-09-29",
+      "inputSha256": "0907ad85c9b18ee60d34a5fb65729b57a55304ae36fdd4699e9e34fe7e20be6b",
+      "zones": {
+        "0": 5,
+        "1": 106,
+        "2": 9,
+        "3": 5,
+        "4": 6
+      },
+      "runs": [
+        {
+          "name": "conservative",
+          "schedule": {
+            "p2": 0.5,
+            "p3": 1,
+            "p4": 2
+          },
+          "costBps": 10,
+          "months": 130,
+          "from": "2015-11",
+          "through": "2026-08",
+          "deposits": 13000,
+          "fixedValue": 26257.943803473965,
+          "zoneValue": 15017.547456238739,
+          "differencePct": -42.80760303001374,
+          "fixedDrawdownPct": -77.27380289549937,
+          "zoneDrawdownPct": -16.650336999237513,
+          "endingCash": 10850,
+          "laterWindowDifferencePct": -34.8992375706851,
+          "cashOnlySignalMonths": 111,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        },
+        {
+          "name": "conservative",
+          "schedule": {
+            "p2": 0.5,
+            "p3": 1,
+            "p4": 2
+          },
+          "costBps": 50,
+          "months": 130,
+          "from": "2015-11",
+          "through": "2026-08",
+          "deposits": 13000,
+          "fixedValue": 26152.80689134794,
+          "zoneValue": 15000.860579537082,
+          "differencePct": -42.64148914547381,
+          "fixedDrawdownPct": -77.28875685000752,
+          "zoneDrawdownPct": -16.670548380985608,
+          "endingCash": 10850,
+          "laterWindowDifferencePct": -34.64551681640917,
+          "cashOnlySignalMonths": 111,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        },
+        {
+          "name": "regular",
+          "schedule": {
+            "p2": 1,
+            "p3": 2,
+            "p4": 3
+          },
+          "costBps": 10,
+          "months": 130,
+          "from": "2015-11",
+          "through": "2026-08",
+          "deposits": 13000,
+          "fixedValue": 26257.943803473965,
+          "zoneValue": 16686.69155341141,
+          "differencePct": -36.45088252796194,
+          "fixedDrawdownPct": -77.27380289549937,
+          "zoneDrawdownPct": -27.646290590487865,
+          "endingCash": 9300,
+          "laterWindowDifferencePct": -33.731162606802876,
+          "cashOnlySignalMonths": 111,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        },
+        {
+          "name": "regular",
+          "schedule": {
+            "p2": 1,
+            "p3": 2,
+            "p4": 3
+          },
+          "costBps": 50,
+          "months": 130,
+          "from": "2015-11",
+          "through": "2026-08",
+          "deposits": 13000,
+          "fixedValue": 26152.80689134794,
+          "zoneValue": 16657.115210855212,
+          "differencePct": -36.30849919835626,
+          "fixedDrawdownPct": -77.28875685000752,
+          "zoneDrawdownPct": -27.677732939335897,
+          "endingCash": 9300,
+          "laterWindowDifferencePct": -33.480736927257816,
+          "cashOnlySignalMonths": 111,
+          "mechanicalChecks": "equal deposits; no borrowing; execution after signal; future-data invariant"
+        }
+      ]
+    }
+  ]
+}

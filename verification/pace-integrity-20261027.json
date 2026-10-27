@@ -1,7 +1,7 @@
 {
   "asOf": "2026-02-02T22:00:00Z",
   "policySha256": "e84c1c261b7a04e5a11f96a15f9d5f4e5fb9db5df152160f7e09c237bc8b03e9",
-  "evaluatorSha256": "fa9c8f47deef1f120efecc9cedb1e48f7792be71107eb40a4bf8725215f0423f",
+  "evaluatorSha256": "fd979efcda7c08fd46bfe25e0909e0aa9519ffcdf1d74dd91c20c84592eb24a6",
   "synthetic": [
     {
       "name": "flat",
@@ -181,7 +181,7 @@
       "policySha256": "ee0bcac791dba4ca9979ddaf8ab43f2b00c1b5822e963cc319201437cef81c7f",
       "evaluatorSha256": "fa9c8f47deef1f120efecc9cedb1e48f7792be71107eb40a4bf8725215f0423f",
       "matchesCurrentPolicy": false,
-      "matchesCurrentEvaluator": true,
+      "matchesCurrentEvaluator": false,
       "rawDataRerun": false,
       "runs": [
         {
@@ -210,7 +210,7 @@
       "policySha256": "ee0bcac791dba4ca9979ddaf8ab43f2b00c1b5822e963cc319201437cef81c7f",
       "evaluatorSha256": "fa9c8f47deef1f120efecc9cedb1e48f7792be71107eb40a4bf8725215f0423f",
       "matchesCurrentPolicy": false,
-      "matchesCurrentEvaluator": true,
+      "matchesCurrentEvaluator": false,
       "rawDataRerun": false,
       "runs": [
         {

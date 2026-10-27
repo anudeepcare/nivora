@@ -61,11 +61,12 @@ test('bank and insurance cash flows are never put through operating-company runw
   assert.equal(risk.distress, false);
 });
 
-test('an eligible business can accumulate with a separate unassessed valuation caution', () => {
+test('an eligible business at P1 remains outside accumulation even without a valuation', () => {
  const r = structuredClone(demoData.research.IREN);
  const decision = policy.aurynDecision(r, {now:Date.parse(r.retrievedAt)});
  assert.equal(decision.value, 'unassessed');
- assert.equal(decision.action, 'Buy');
- assert.match(decision.changeConditions[0], /business.*completed monthly/i);
- assert.ok(decision.risks.some(r => /valuation model is not established/i.test(r)));
+ assert.equal(decision.action, 'Watch');
+ assert.equal(decision.brief.accumulation.multiplier,1);
+ assert.match(decision.changeConditions[0], /completed reading reaches P2/i);
+ assert.equal(decision.explanation.code,'zone');
 });

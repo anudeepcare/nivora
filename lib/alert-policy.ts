@@ -86,8 +86,8 @@ export function evaluateAlert(
       ? {
           ...base,
           event_key: `monthly:${input.month}:${input.monthly}`,
-          title: `${rule.symbol}: ${input.monthly === 0 ? "pause" : `${input.monthly}×`} monthly zone`,
-          detail: `Completed month ${input.month}. Experimental price policy; business evidence is a separate assessment.`,
+          title: `${rule.symbol}: P${input.monthly} monthly zone`,
+          detail: `Completed month ${input.month}. Confirmed price zone. Review business evidence and risks before buying; this zone alone does not authorize a purchase.`,
         }
       : null;
   if (input.stale || input.price == null || rule.threshold == null) return null;

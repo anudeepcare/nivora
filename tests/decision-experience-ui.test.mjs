@@ -76,14 +76,15 @@ test("Research places an actual decision and Pace before expandable supporting m
   const r = demoData.research.MSFT,
     html = render(r);
   assert.match(html, /id="auryn-decision-title"/);
+  assert.match(html, /aria-label="Confirmed AURYN Pace P1"/);
   assert.ok(
     html.indexOf("AURYN PACE") <
       html.indexOf("The details behind the decision"),
   );
   assert.doesNotMatch(html, /Weigh it yourself|evidence-scale|NaN|Infinity/);
   assert.match(html, /Decision rules &amp; source context/);
-  assert.match(html, /class="decision-explanation" data-reason="accumulation"/);
-  assert.match(html, /Accumulate gradually/);
+  assert.match(html, /class="decision-explanation" data-reason="zone"/);
+  assert.match(html, /P1 · Outside the accumulation zone/);
 });
 test("share-class ownership aliases produce Add on the same supported research case", () => {
   const r = structuredClone(demoData.research.MSFT);
@@ -93,6 +94,6 @@ test("share-class ownership aliases produce Add on the same supported research c
   r.quote = { ...r.quote, price: 50, asOf: r.retrievedAt, stale: false };
   const unowned = render(r),
     owned = render(r, [{ symbol: "BRK.B", quantity: 3 }]);
-  assert.match(unowned, /<h2 id="auryn-decision-title">Buy<\/h2>/);
-  assert.match(owned, /<h2 id="auryn-decision-title">Add<\/h2>/);
+  assert.match(unowned, /<h2 id="auryn-decision-title">Buy gradually<\/h2>/);
+  assert.match(owned, /<h2 id="auryn-decision-title">Add gradually<\/h2>/);
 });

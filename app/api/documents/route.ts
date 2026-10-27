@@ -9,7 +9,11 @@ export async function GET(request: Request) {
       .select("kind,key,body,created_at,updated_at")
       .eq("user_id", user.id);
     if (kind) query = query.eq("kind", kind);
-    const r = await query.order("updated_at", { ascending: false }).limit(200);
+    const r = await query
+      .not("key", "like", "internal:%")
+      .not("key", "like", "fin-alert:%")
+      .order("updated_at", { ascending: false })
+      .limit(200);
     if (r.error)
       throw new HttpError(
         "Saved research is unavailable. Apply the research workspace migration.",
@@ -33,6 +37,8 @@ export async function POST(request: Request) {
       key.length > 80
     )
       throw new HttpError("Check the saved research type and key.");
+    if (key.startsWith("internal:") || key.startsWith("fin-alert:"))
+      throw new HttpError("Reserved document key.");
     if (v.op === "delete") {
       const r = await db
         .from("auryn_documents")

@@ -71,9 +71,23 @@ export function evaluateAccumulation(
   costBps = 10,
   market: "us-equity" | "crypto" = "us-equity",
   policy: "monthly-v3" | "monthly-v4" | "monthly-v5" = "monthly-v5",
+  zoneSchedule?: { p2: number; p3: number; p4: number },
 ) {
   if (!Number.isFinite(costBps) || costBps < 0 || costBps > 200)
     throw Error("Use zero to 200 basis points.");
+  if (
+    zoneSchedule &&
+    (policy !== "monthly-v5" ||
+      ![zoneSchedule.p2, zoneSchedule.p3, zoneSchedule.p4].every(
+        Number.isFinite,
+      ) ||
+      zoneSchedule.p2 < 0 ||
+      zoneSchedule.p3 < zoneSchedule.p2 ||
+      zoneSchedule.p4 < zoneSchedule.p3)
+  )
+    throw Error(
+      "Use finite, nonnegative, increasing zone budgets with monthly-v5.",
+    );
   const signals = new Map(
     (policy === "monthly-v3"
       ? priorPolicy
@@ -105,7 +119,11 @@ export function evaluateAccumulation(
       executionDate: prices[0].time,
       open: prices[0].open,
       close: prices.at(-1)!.close,
-      multiple: s.multiplier,
+      multiple: zoneSchedule
+        ? [0, 0, zoneSchedule.p2, zoneSchedule.p3, zoneSchedule.p4][
+            s.multiplier
+          ]
+        : s.multiplier,
     });
   }
   if (rows.length < 18)
@@ -118,7 +136,9 @@ export function evaluateAccumulation(
     later = rows.slice(cut);
   return {
     available: true as const,
-    version: `${policy}-evaluation`,
+    version: zoneSchedule
+      ? `${policy}-zone-research-evaluation`
+      : `${policy}-evaluation`,
     months: rows.length,
     costBps,
     ...simulate(rows, costBps),
@@ -129,6 +149,12 @@ export function evaluateAccumulation(
       ...simulate(later, costBps),
     },
     limitations: [
+      ...(zoneSchedule
+        ? [
+            `Research-only cash schedule: P0/P1 retain cash; P2/P3/P4 spend at most ${zoneSchedule.p2}/${zoneSchedule.p3}/${zoneSchedule.p4} times the model monthly deposit. Actual spending never exceeds available cash. These are explicit scenario assumptions, not product purchase amounts.`,
+            "Historical business checks are not included. This is not a backtest of the complete AURYN decision algorithm or a validated performance claim.",
+          ]
+        : []),
       "100 model units deposited monthly in each account. Increased contributions spend only carried cash; no borrowing or selling.",
       "Prior confirmed signal, next month first observed open, completed month-end mark. Drawdown adjusts for external deposits and is measured monthly.",
       "Fixed rules. The later chronological 30% restarts both accounts at zero; this is not an independent validation dataset.",

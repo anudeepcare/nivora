@@ -17,7 +17,7 @@ const supported = {
   confirmedPace: 2,
 };
 test("confirmed Pace supports gradual buying after business checks across valuation sensitivities", () => {
-  for (const confirmedPace of [1, 2, 3, 4]) {
+  for (const confirmedPace of [2, 3, 4]) {
     for (const value of ["attractive", "fair", "expensive", "unassessed"]) {
       for (const ownsPosition of [false, true]) {
         assert.deepEqual(
@@ -113,7 +113,7 @@ function withPace(price = 60) {
   r.evidence = undefined;
   r.history = r.history.map((row) => {
     const close =
-      row.date >= "2026-10-01" ? 60 : row.date >= "2026-09-01" ? 85 : 100;
+      row.time >= "2026-10-01" ? 60 : row.time >= "2026-09-01" ? 85 : 100;
     return {
       ...row,
       close,
@@ -130,11 +130,12 @@ test("a small daily price change leaves confirmed Pace and the business decision
     const r = withPace(price);
     return aurynDecision(r, { now: Date.parse(r.retrievedAt) });
   });
-  assert.ok(decisions[0].brief.accumulation.multiplier > 0);
+  assert.equal(decisions[0].brief.accumulation.multiplier, 2);
+  assert.equal(decisions[0].brief.accumulation.forming.multiplier, 4);
   for (const d of decisions) {
     assert.equal(d.action, "Buy");
     assert.equal(d.explanation.code, "accumulation");
-    assert.match(d.headline, /gradual/i);
+    assert.match(d.headline, /initial accumulation/i);
     assert.ok(d.risks.some((r) => /model|valuation/i.test(r)));
     assert.doesNotMatch(d.changeConditions[0], /entry at/i);
     assert.equal(

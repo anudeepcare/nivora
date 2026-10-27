@@ -148,10 +148,10 @@ export default function AccumulationDesk({
             {signal
               ? signal.multiplier === 0
                 ? trimTier === "strong"
-                  ? "Strong trim review"
-                  : "Pause / trim review"
+                  ? "Price extension review"
+                  : "Pause new buying"
                 : signal.multiplier === 1
-                  ? "Normal contribution condition"
+                  ? "No accumulation zone established"
                   : "Stronger pullback condition"
               : `More ${cadence} history needed`}
           </h3>
@@ -180,8 +180,8 @@ export default function AccumulationDesk({
         </dl>
       </div>
       <p className="small muted">
-        P means Pace. Levels describe a contribution factor, not leverage or
-        expected returns.{" "}
+        P means Pace. Levels describe accumulation zones, not purchase
+        multiples, leverage or expected returns.{" "}
         {signal &&
           "historyBasis" in signal &&
           signal.historyBasis === "limited" &&
@@ -199,13 +199,13 @@ export default function AccumulationDesk({
         <div className="accumulation-extension" role="note">
           <strong>
             {trimTier === "strong"
-              ? "Strong trim review"
+              ? "Price extension review"
               : "Review price extension"}
           </strong>
           <span>
             Extreme distance above trend. Review exposure and the business case;
-            this is separate from the contribution multiplier and specifies no
-            sale amount.
+            this is separate from the accumulation zone and specifies no sale
+            amount.
           </span>
         </div>
       )}
@@ -308,13 +308,16 @@ export default function AccumulationDesk({
             <>
               <p>
                 100 model units per month · {evaluation.months} completed
-                execution months. Contributions above 1× require previously
-                unspent cash.
+                execution months. This legacy price-only comparison spends 1–4
+                times a model deposit, using carried cash above the regular
+                deposit. It does not implement today’s P1 Watch/Hold rule or
+                historical business checks, and is not validation of AURYN’s
+                decisions.
               </p>
               <div className="policy-results">
                 {[
                   ["Normal DCA", evaluation.fixed],
-                  ["Cycle-relative v5", evaluation.adaptive],
+                  ["Legacy price-only policy", evaluation.adaptive],
                 ].map(([name, result]) => {
                   const x = result as typeof evaluation.fixed;
                   return (
