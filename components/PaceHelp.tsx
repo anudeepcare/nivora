@@ -34,6 +34,13 @@ export default function PaceHelp({ trigger }: { trigger?: string }) {
         take priority when business risks are triggered. Valuation remains a
         separate check; Pace does not prove a stock is cheap.
       </p>
+      <p>
+        <strong>Contribution guide:</strong> 1× means your normal planned
+        contribution; 2× means twice that amount; 3× means three times; and
+        4× is an upper guide only. For example, a $100 plan at 2× means $200.
+        P0 and P1 show 0× for new contributions. Never exceed your cash budget,
+        position limit or concentration limit.
+      </p>
     </Help>
   );
 }

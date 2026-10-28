@@ -127,6 +127,34 @@
 .pace-feature .pace-action {
   border-color: #ffffff30;
 }
+.pace-contribution-guide {
+  display: grid;
+  gap: 3px;
+  margin-top: 4px;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--blue) 5%, transparent);
+}
+.pace-contribution-guide > span,
+.pace-contribution-guide > small {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+.pace-contribution-guide > strong {
+  font-size: 14px;
+  color: var(--ink);
+}
+.pace-feature .pace-contribution-guide {
+  border-color: #ffffff35;
+  background: #ffffff12;
+}
+.pace-feature .pace-contribution-guide > span,
+.pace-feature .pace-contribution-guide > small,
+.pace-feature .pace-contribution-guide > strong {
+  color: #f7f5ff;
+}
 .pace-reading-reason {
   font-size: 12px;
   line-height: 1.5;

@@ -25,6 +25,36 @@ export function paceCode(value: number | null | undefined): string {
   const level = paceLevel(value);
   return level == null ? "Pending" : `P${level}`;
 }
+export function contributionGuide(action: DecisionAction, level: number | null | undefined) {
+  const rawLevel = paceLevel(level);
+  const permitted = action === "Buy" || action === "Add";
+  const multiple = permitted && rawLevel != null && rawLevel >= 2
+    ? rawLevel === 2 ? 1 : rawLevel === 3 ? 2 : 4
+    : 0;
+  if (multiple === 0)
+    return {
+      multiple: 0,
+      label: "0× · no new contribution",
+      meaning: "Wait for entry conditions; holding guidance is separate.",
+    } as const;
+  if (multiple === 1)
+    return {
+      multiple: 1,
+      label: "1× your planned contribution",
+      meaning: "Start with your normal planned amount.",
+    } as const;
+  if (multiple === 2)
+    return {
+      multiple: 2,
+      label: "2× your planned contribution",
+      meaning: "Twice your normal planned amount.",
+    } as const;
+  return {
+    multiple: 4,
+    label: "Up to 4× your planned contribution",
+    meaning: "A maximum guide, only within your budget and position limit.",
+  } as const;
+}
 type Reading = {
   multiplier?: number | null;
   date?: string | null;

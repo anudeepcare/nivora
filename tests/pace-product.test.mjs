@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import * as policy from '../lib/auryn-decision.ts';
 import { researchEdge } from '../lib/edge-research.ts';
 import { demoData } from './fixtures/demo.ts';
-import { paceCode, pacePresentation, pacePeriods } from '../lib/pace-presentation.ts';
+import { contributionGuide, paceCode, pacePresentation, pacePeriods } from '../lib/pace-presentation.ts';
 
 test('the forming and completed readings retain independent dates and levels in a consistent order', () => {
   const rows = pacePeriods({multiplier: 2, date: '2026-09-30', month: '2026-09', forming: {multiplier: 4, date: '2026-10-26', month: '2026-10'}});
@@ -16,6 +16,12 @@ test('the forming and completed readings retain independent dates and levels in 
 test('Pace uses branded levels and distinguishes missing history from P0', () => {
   for (let n = 0; n <= 4; n++) assert.equal(paceCode(n), `P${n}`);
   for (const n of [null, undefined, NaN, Infinity, -1, 5, 1.5]) assert.equal(paceCode(n), 'Pending');
+});
+test('contribution guide explains the multiplier against the planned amount', () => {
+  assert.deepEqual(contributionGuide('Buy', 2), { multiple: 1, label: '1× your planned contribution', meaning: 'Start with your normal planned amount.' });
+  assert.deepEqual(contributionGuide('Add', 3), { multiple: 2, label: '2× your planned contribution', meaning: 'Twice your normal planned amount.' });
+  assert.deepEqual(contributionGuide('Buy', 4), { multiple: 4, label: 'Up to 4× your planned contribution', meaning: 'A maximum guide, only within your budget and position limit.' });
+  assert.deepEqual(contributionGuide('Watch', 4), { multiple: 0, label: '0× · no new contribution', meaning: 'Wait for entry conditions; holding guidance is separate.' });
 });
 test('all decisions gate every Pace level without overwriting the raw price reading', () => {
   for (const action of ['Buy', 'Add', 'Hold', 'Wait', 'Review', 'Reduce', 'Sell', 'Avoid']) {

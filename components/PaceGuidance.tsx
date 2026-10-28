@@ -1,5 +1,6 @@
 import type { pacePeriods, pacePresentation } from "@/lib/pace-presentation";
 import PaceReadings from "./PaceReadings";
+import { contributionGuide } from "@/lib/pace-presentation";
 
 /** Pace stays visible; the overall assessment explains whether additions are supported. */
 export default function PaceGuidance({
@@ -13,6 +14,10 @@ export default function PaceGuidance({
 }) {
   const confirmed = readings.find((r) => r.key === "confirmed");
   const available = readings.some((r) => r.level != null);
+  const guide = contributionGuide(
+    view.permitted ? (view.actionLabel.startsWith("Add") ? "Add" : "Buy") : "Wait",
+    view.rawLevel,
+  );
   return (
     <div className={`pace-guidance${compact ? " pace-guidance-compact" : ""}`}>
       {available && <PaceReadings readings={readings} compact={compact} />}
@@ -35,6 +40,13 @@ export default function PaceGuidance({
           <span className="pace-effective">{view.effectiveCode}</span>
         )}
       </div>
+      {!compact && (
+        <div className="pace-contribution-guide">
+          <span>Contribution guide</span>
+          <strong>{guide.label}</strong>
+          <small>{guide.meaning} Example: a $100 plan means {guide.multiple === 0 ? "$0" : `$${100 * guide.multiple}`}.</small>
+        </div>
+      )}
       {!compact && <p className="pace-context">{view.detail}</p>}
       {!available && (
         <small className="pace-history-note">
