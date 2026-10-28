@@ -605,7 +605,7 @@
   gap: 10px;
   margin: 20px 0 0;
 }
-.workspace-experience .workspace-settings-shortcuts a {
+.workspace-experience .workspace-settings-shortcuts :is(a, .settings-analytics-shortcut) {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -616,12 +616,46 @@
   background: var(--card);
   font-size: 14px;
 }
-.workspace-experience .workspace-settings-shortcuts a > span {
+.workspace-experience .workspace-settings-shortcuts :is(a, .settings-analytics-shortcut) > span {
   flex: 1;
 }
-.workspace-experience .workspace-settings-shortcuts a > svg {
+.workspace-experience .workspace-settings-shortcuts :is(a, .settings-analytics-shortcut) > svg {
   color: var(--muted);
   flex-shrink: 0;
+}
+.workspace-experience .settings-analytics-shortcut {
+  min-width: 0;
+}
+.workspace-experience .settings-analytics-shortcut > button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 50px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.workspace-experience .settings-analytics-shortcut > button > span {
+  flex: 1;
+}
+.workspace-experience .settings-analytics-shortcut > button > svg:first-child {
+  color: var(--blue);
+  flex: 0 0 auto;
+}
+.workspace-experience .settings-analytics-shortcut > button > svg:last-child {
+  color: var(--muted);
+  flex: 0 0 auto;
+}
+.workspace-experience .settings-analytics-shortcut > button:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+  border-radius: 6px;
 }
 :root[data-theme="dark"] .approved-product.workspace-experience {
   --ink: #eef3ff;
@@ -1272,6 +1306,19 @@
   border-radius: 11px;
   background: color-mix(in srgb, var(--card) 78%, transparent);
   text-align: center;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.workspace-experience .home-command-metrics a:hover,
+.workspace-experience .home-command-metrics a:focus-visible {
+  border-color: color-mix(in srgb, var(--blue) 38%, var(--line));
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--blue) 9%, transparent);
+  transform: translateY(-1px);
+}
+.workspace-experience .home-command-metrics a:nth-child(2) strong {
+  color: var(--workspace-violet);
+}
+.workspace-experience .home-command-metrics a:nth-child(3) strong {
+  color: var(--green);
 }
 .workspace-experience .home-command-metrics strong {
   color: var(--blue);

@@ -375,3 +375,25 @@ test("Settings presents compact groups on one page without duplicate account sum
   assert.doesNotMatch(textNodes(tree).join(" "), /AURYN decision system/i);
   assert.doesNotMatch(textNodes(tree).join(" "), /Business.*Value.*Risk.*Pace/);
 });
+test("Analytics preferences stays inside the Settings shortcut grid", () => {
+  const { tree } = settings(
+    { routePrefix: "/preview" },
+    {
+      PrivacyChoices: () =>
+        React.createElement(
+          "button",
+          { className: "text-link settings-analytics-button" },
+          "Analytics preferences",
+        ),
+    },
+  );
+  const slot = nodes(
+    tree,
+    (n) => n.props?.className === "settings-analytics-shortcut",
+  )[0];
+  assert.ok(slot, "Analytics must render as a shortcut card, not a loose link");
+  assert.match(
+    fs.readFileSync("components/SupportingViews.tsx", "utf8"),
+    /settings-analytics-shortcut/,
+  );
+});

@@ -8,6 +8,7 @@ import {
   validMeasurementId,
 } from "@/lib/analytics-policy";
 import { SITE_URL } from "@/lib/site-metadata";
+import { ChartNoAxesCombined, ChevronRight } from "lucide-react";
 const KEY = "auryn-analytics-consent-v1";
 const ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "";
 type AnalyticsWindow = Window & {
@@ -19,10 +20,12 @@ export function PrivacyChoices() {
   return (
     <button
       type="button"
-      className="text-link"
+      className="text-link settings-analytics-button"
       onClick={() => window.dispatchEvent(new Event("auryn:privacy"))}
     >
-      Analytics preferences
+      <ChartNoAxesCombined size={18} aria-hidden="true" />
+      <span>Analytics preferences</span>
+      <ChevronRight size={17} aria-hidden="true" />
     </button>
   );
 }

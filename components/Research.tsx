@@ -1,6 +1,6 @@
 "use client";
 import { customerText } from "@/lib/customer-language";
-import { pacePeriods } from "@/lib/pace-presentation";
+import { pacePeriods, PACE_LEVELS } from "@/lib/pace-presentation";
 import PaceReadings from "./PaceReadings";
 import { startQuotePolling } from "@/lib/quote-refresh";
 import { FeatureGate, useAccess } from "./Access";
@@ -665,7 +665,8 @@ export function DcaCard({
   compact?: boolean;
 }) {
   const p = useMemo(() => perspective(r), [r]),
-    signal = p.dca.confirmed;
+    signal = p.dca.confirmed ?? p.dca.forming,
+    confirmed = p.dca.confirmed != null;
   const tone = !signal
     ? "neutral"
     : signal.multiplier === 0
@@ -691,7 +692,7 @@ export function DcaCard({
             <h3>Monthly accumulation</h3>
             <p className="muted small">
               {signal
-                ? `${month(signal.month)} · confirmed`
+                ? `${month(signal.month)} · ${confirmed ? "confirmed" : "forming"}`
                 : "24 complete months required"}
             </p>
           </div>
@@ -701,11 +702,13 @@ export function DcaCard({
         </div>
         <p className="small muted pace-summary">
           {signal
-            ? `Last completed month: ${signal.multiplier === 0 ? "pause new contributions under this price policy; this is not a sell signal" : `${signal.multiplier}× your usual contribution under this price policy`}.`
+            ? signal.multiplier === 0
+              ? "P0 price-extension pause: pause new contributions; this is not a sell signal."
+              : signal.multiplier === 1
+                ? "P1 watch zone: no contribution amount is assigned until an accumulation zone is established."
+                : `P${signal.multiplier} ${PACE_LEVELS[signal.multiplier].toLowerCase()}: ${signal.multiplier === 2 ? "1×" : signal.multiplier === 3 ? "2×" : "up to 4×"} your planned contribution only when the business qualifies.`
             : "A confirmed contribution zone needs more completed monthly history."}{" "}
-          {p.dca.forming
-            ? `Current month: P${p.dca.forming.multiplier}, provisional until month-end.`
-            : ""}{" "}
+          {!confirmed && signal ? "This current reading is provisional until month-end." : ""}{" "}
           This measures price conditions, not buying activity or business
           quality.
         </p>
@@ -786,12 +789,12 @@ export function DcaCard({
               : signal.multiplier === 0
                 ? "Pause contributions"
                 : signal.multiplier === 1
-                  ? "Baseline pace"
-                  : `${signal.multiplier === 4 ? "Deep" : signal.multiplier === 3 ? "Larger" : "Moderate"} pullback`}
+                  ? "Watch zone"
+                  : PACE_LEVELS[signal.multiplier]}
           </h3>
           <small>
             {signal
-              ? `Confirmed · ${month(signal.month)}`
+              ? `${confirmed ? "Confirmed" : "Forming"} · ${month(signal.month)}`
               : "24 complete months required"}
           </small>
         </div>

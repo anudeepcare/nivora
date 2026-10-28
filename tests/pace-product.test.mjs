@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import * as policy from '../lib/auryn-decision.ts';
 import { researchEdge } from '../lib/edge-research.ts';
 import { demoData } from './fixtures/demo.ts';
-import { contributionGuide, paceCode, pacePresentation, pacePeriods } from '../lib/pace-presentation.ts';
+import { contributionGuide, dcaDisplay, paceCode, pacePresentation, pacePeriods } from '../lib/pace-presentation.ts';
 
 test('the forming and completed readings retain independent dates and levels in a consistent order', () => {
   const rows = pacePeriods({multiplier: 2, date: '2026-09-30', month: '2026-09', forming: {multiplier: 4, date: '2026-10-26', month: '2026-10'}});
@@ -16,6 +16,21 @@ test('the forming and completed readings retain independent dates and levels in 
 test('Pace uses branded levels and distinguishes missing history from P0', () => {
   for (let n = 0; n <= 4; n++) assert.equal(paceCode(n), `P${n}`);
   for (const n of [null, undefined, NaN, Infinity, -1, 5, 1.5]) assert.equal(paceCode(n), 'Pending');
+});
+test('DCA display keeps forming readings visible when completed history is unavailable', () => {
+  const forming = dcaDisplay({
+    confirmed: null,
+    forming: { multiplier: 4, month: '2026-10' },
+  });
+  assert.equal(forming.reading?.multiplier, 4);
+  assert.equal(forming.period, 'Current month · forming');
+  const confirmed = dcaDisplay({
+    confirmed: { multiplier: 1, month: '2026-09' },
+    forming: { multiplier: 4, month: '2026-10' },
+  });
+  assert.equal(confirmed.reading?.multiplier, 1);
+  assert.equal(confirmed.period, '2026-09 · confirmed');
+  assert.equal(dcaDisplay({ confirmed: null, forming: null }).reading, null);
 });
 test('contribution guide explains the multiplier against the planned amount', () => {
   assert.deepEqual(contributionGuide('Buy', 2), { multiple: 1, label: '1× your planned contribution', meaning: 'Start with your normal planned amount.' });

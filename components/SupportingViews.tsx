@@ -261,7 +261,9 @@ export function Settings() {
           <span>{SUPPORT_EMAIL}</span>
           <ChevronRight size={17} />
         </a>
-        <PrivacyChoices />
+        <div className="settings-analytics-shortcut">
+          <PrivacyChoices />
+        </div>
         {access.owner && (
           <Link href={`${prefix}/owner`}>
             <ShieldCheck size={18} />

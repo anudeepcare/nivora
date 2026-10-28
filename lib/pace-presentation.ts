@@ -76,6 +76,21 @@ type Reading = {
   month?: string | null;
   reason?: string | null;
 };
+/** Choose the latest available display reading without masking its state. */
+export function dcaDisplay(input: {
+  confirmed?: Reading | null;
+  forming?: Reading | null;
+}) {
+  const reading = input.confirmed ?? input.forming ?? null;
+  return {
+    reading,
+    period: input.confirmed
+      ? `${input.confirmed.month ?? ""} · confirmed`
+      : input.forming
+        ? "Current month · forming"
+        : "View coverage",
+  } as const;
+}
 /** Keep period identity: a forming P4 and a completed P2 are different observations. */
 export function pacePeriods(
   input: Reading & { forming?: Reading | null },

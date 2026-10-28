@@ -46,27 +46,32 @@
     position: static;
     display: inline-flex;
     align-items: center;
-    gap: 9px;
+    gap: 8px;
     flex: 0 0 auto;
     margin: 0;
+    width: auto;
+    max-width: 112px;
+    height: 40px;
     min-width: 0;
     overflow: hidden;
     color: var(--ink);
-    font-size: 17px;
+    font-size: 16px;
     line-height: 1;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
   .approved-product.workspace-experience .mobile-brand-mark {
     display: block;
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
     flex: 0 0 auto;
   }
   .approved-product.workspace-experience .wordmark-label {
     font-weight: 750;
+    line-height: 1;
+    white-space: nowrap;
   }
   .approved-product.workspace-experience .wordmark-route {
     display: none;

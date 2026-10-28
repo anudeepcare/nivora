@@ -55,11 +55,17 @@
   background: var(--paper);
   color: var(--ink);
   font-family:
-    Inter,
     -apple-system,
     BlinkMacSystemFont,
+    "SF Pro Display",
+    "SF Pro Text",
+    Inter,
     "Segoe UI",
     sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-variant-numeric: tabular-nums;
 }
 * {
   scrollbar-width: thin;
@@ -337,6 +343,8 @@
 }
 .briefing-home .briefing-greeting h1 {
   margin: 6px 0 8px;
+  letter-spacing: -0.045em;
+  font-weight: 720;
 }
 .briefing-home .briefing-greeting p {
   font-size: 14px;
@@ -358,7 +366,9 @@
   align-items: center;
   gap: 26px;
   padding: 24px 27px;
-  background: var(--surface);
+  background:
+    linear-gradient(105deg, color-mix(in srgb, var(--blue-soft) 42%, var(--surface)), var(--surface) 42%),
+    var(--surface);
   border: 1px solid var(--line);
   border-radius: 22px;
   box-shadow: var(--experience-shadow);
