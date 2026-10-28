@@ -1206,3 +1206,88 @@
     font-size: 12px;
   }
 }
+.workspace-experience .briefing-system-strip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 14px;
+  margin: -8px 0 18px;
+  border: 1px solid color-mix(in srgb, var(--blue) 15%, var(--line));
+  border-radius: 14px;
+  background: linear-gradient(100deg, var(--blue-soft), color-mix(in srgb, var(--workspace-violet) 7%, var(--card)));
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+}
+.workspace-experience .briefing-system-label {
+  margin-right: 5px;
+  color: var(--blue);
+  font-size: 10px;
+  letter-spacing: .1em;
+}
+.workspace-experience .briefing-system-strip b {
+  color: var(--workspace-violet);
+  font-size: 14px;
+}
+.workspace-experience .briefing-system-strip small {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 500;
+}
+.workspace-experience .settings-method-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 16px 18px;
+  margin: -4px 0 18px;
+  border: 1px solid color-mix(in srgb, var(--workspace-violet) 18%, var(--line));
+  border-radius: 16px;
+  background: linear-gradient(105deg, color-mix(in srgb, var(--workspace-violet) 10%, var(--card)), var(--card));
+}
+.workspace-experience .settings-method-card > div {
+  min-width: 0;
+}
+.workspace-experience .settings-method-kicker {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--workspace-violet);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .1em;
+}
+.workspace-experience .settings-method-card strong {
+  display: block;
+  font-size: 15px;
+  line-height: 1.4;
+}
+.workspace-experience .settings-method-card p {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.workspace-experience .settings-method-card > .text-link {
+  flex: 0 0 auto;
+}
+@media (max-width: 700px) {
+  .workspace-experience .briefing-system-strip {
+    gap: 6px;
+    padding: 9px 11px;
+    margin-top: -4px;
+  }
+  .workspace-experience .briefing-system-label {
+    flex-basis: 100%;
+  }
+  .workspace-experience .briefing-system-strip small {
+    flex-basis: 100%;
+    margin: 2px 0 0;
+  }
+  .workspace-experience .settings-method-card {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+}

@@ -139,7 +139,7 @@ export function Settings() {
       </div>
       <PageHeading
         title="Settings"
-        subtitle="A comfortable workspace. An account that stays yours."
+        subtitle="Shape how AURYN helps you understand, compare and revisit companies."
       />
       {message && (
         <div className="settings-feedback" role="status">
@@ -164,6 +164,16 @@ export function Settings() {
           Manage plan <ArrowUpRight size={16} />
         </Link>
       </div>
+      <section className="settings-method-card" aria-label="AURYN decision system">
+        <div>
+          <span className="settings-method-kicker">AURYN DECISION SYSTEM</span>
+          <strong>Business → Value → Risk → Pace</strong>
+          <p>Each lens stays distinct so a price move never hides the business case.</p>
+        </div>
+        <Link href="/methodology" className="text-link">
+          See the approach <ArrowUpRight size={16} />
+        </Link>
+      </section>
       <div className="workspace-settings-groups">
         <details className="workspace-setting-group">
           <summary>

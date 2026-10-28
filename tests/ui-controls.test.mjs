@@ -2034,6 +2034,7 @@ test("Home has a compact evidence pulse without a large decorative hero", async 
   assert.match(html, /Find your first company/);
   assert.doesNotMatch(html, /class="briefing-hero"/);
   assert.match(html, /Your next idea starts with understanding/);
+  assert.match(html, /Business.*Value.*Risk.*Pace/);
 });
 test("stock header surfaces reported growth and cash generation before extra price momentum", async () => {
   const { advancedStudies } = await import("../lib/advanced-research.ts");

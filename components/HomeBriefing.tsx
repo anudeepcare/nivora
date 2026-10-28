@@ -256,6 +256,17 @@ export default function HomeBriefing({
           </small>
         </span>
       </header>
+      <div className="briefing-system-strip" aria-label="AURYN decision system">
+        <span className="briefing-system-label">AURYN DECISION SYSTEM</span>
+        <span>Business</span>
+        <b aria-hidden="true">→</b>
+        <span>Value</span>
+        <b aria-hidden="true">→</b>
+        <span>Risk</span>
+        <b aria-hidden="true">→</b>
+        <span>Pace</span>
+        <small>Then decide what deserves your attention.</small>
+      </div>
       {composition === "first-use" && workspace ? (
         <>
           <section className="briefing-welcome">

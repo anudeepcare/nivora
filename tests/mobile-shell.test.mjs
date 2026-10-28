@@ -2,6 +2,15 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 
+test("iOS install metadata presents AURYN as a focused standalone workspace", () => {
+  const manifest = JSON.parse(fs.readFileSync("public/manifest.webmanifest", "utf8"));
+  assert.equal(manifest.display, "standalone");
+  assert.equal(manifest.start_url, "/overview");
+  assert.equal(manifest.scope, "/");
+  assert.match(JSON.stringify(manifest.display_override), /standalone/);
+  assert.ok(Array.isArray(manifest.shortcuts));
+});
+
 test("mobile shell has a distinct modern surface, safe areas and compact dock rules", () => {
   const css = fs.readFileSync("app/mobile-experience.css", "utf8");
   assert.match(css, /safe-area-inset-top/);

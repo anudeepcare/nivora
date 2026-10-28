@@ -65,6 +65,9 @@ export function PublicSample({ compact = false }: { compact?: boolean } = {}) {
           <span>
             <ShieldCheck size={15} aria-hidden="true" /> Risk
           </span>
+          <span>
+            <ChartNoAxesCombined size={15} aria-hidden="true" /> Pace
+          </span>
         </div>
         <p>Business first. A clear action, with reasons and cautions.</p>
       </div>
@@ -307,8 +310,9 @@ export default function PublicLanding({
               <em>Know your next move.</em>
             </h1>
             <p>
-              Business first. Clear guidance to buy, hold or sell. Build
-              gradually with AURYN Pace, with the reasons and risks in view.
+              Understand the business, test value and risk, then choose a
+              measured pace for your next contribution. AURYN keeps the
+              evidence and the decision together.
             </p>
             <div className="ap-hero-actions">
               <Link
@@ -339,15 +343,19 @@ export default function PublicLanding({
           aria-label="What AURYN brings together"
         >
           <span>
-            <Layers3 size={19} aria-hidden="true" /> A clearer investment case
+            <Layers3 size={19} aria-hidden="true" />
+            <strong>Understand the business</strong>
+            <small>Growth, cash generation and risk.</small>
           </span>
           <span>
-            <ChartNoAxesCombined size={19} aria-hidden="true" /> A considered
-            contribution pace
+            <Scale size={19} aria-hidden="true" />
+            <strong>Test value and downside</strong>
+            <small>Scenarios, assumptions and evidence.</small>
           </span>
           <span>
-            <PieChart size={19} aria-hidden="true" /> Your portfolio in
-            perspective
+            <ChartNoAxesCombined size={19} aria-hidden="true" />
+            <strong>Choose your pace</strong>
+            <small>P0–P4 timing, separate from business quality.</small>
           </span>
         </div>
       </div>

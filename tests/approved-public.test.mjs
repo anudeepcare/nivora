@@ -148,6 +148,9 @@ test("public home leads with the benefit and an account action without fabricate
   assert.match(html, /href="\/login\?mode=signup"[^>]*>Start free/);
   assert.match(html, /AURYN Pace/);
   assert.match(html, /Illustrative product guide/);
+  assert.match(html, /Understand the business/);
+  assert.match(html, /Test value and downside/);
+  assert.match(html, /Choose your pace/);
   assert(
     html.indexOf("Start free") < html.indexOf("Illustrative product guide"),
   );
