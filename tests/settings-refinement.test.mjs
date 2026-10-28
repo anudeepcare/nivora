@@ -372,6 +372,6 @@ test("Settings presents compact groups on one page without duplicate account sum
     0,
     "The shared footer already supplies legal links",
   );
-  assert.match(textNodes(tree).join(" "), /AURYN decision system/i);
-  assert.match(textNodes(tree).join(" "), /Business.*Value.*Risk.*Pace/);
+  assert.doesNotMatch(textNodes(tree).join(" "), /AURYN decision system/i);
+  assert.doesNotMatch(textNodes(tree).join(" "), /Business.*Value.*Risk.*Pace/);
 });

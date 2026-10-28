@@ -171,8 +171,9 @@ export default function Shell({
       <div className="app-workspace">
         <header className="app-top topbar mobile-header-row">
           <Link className="wordmark" href={`${prefix}/overview`}>
-            AURYN{" "}
-            <span>
+            <img className="mobile-brand-mark" src="/icon.svg" width="34" height="34" alt="" />
+            <span className="wordmark-label">AURYN</span>
+            <span className="wordmark-route">
               /{" "}
               {primary.find((r) => r.path === page)?.label ||
                 page

@@ -18,10 +18,7 @@ import Link from "next/link";
 import {
   ArrowUpRight,
   Bell,
-  ChartNoAxesCombined,
   FlaskConical,
-  Layers3,
-  Scale,
   ShieldCheck,
   RefreshCw,
   ArrowLeft,
@@ -167,22 +164,6 @@ export function Settings() {
           Manage plan <ArrowUpRight size={16} />
         </Link>
       </div>
-      <section className="settings-method-card" aria-label="AURYN decision system">
-        <div>
-          <span className="settings-method-kicker">AURYN DECISION SYSTEM</span>
-          <strong>Business → Value → Risk → Pace</strong>
-          <p>Each lens stays distinct so a price move never hides the business case.</p>
-        </div>
-        <Link href="/methodology" className="text-link">
-          See the approach <ArrowUpRight size={16} />
-        </Link>
-        <div className="settings-method-lenses" aria-label="AURYN lenses">
-          <span data-tone="business"><Layers3 size={15} /><b>Business</b><small>Durability</small></span>
-          <span data-tone="value"><Scale size={15} /><b>Value</b><small>Assumptions</small></span>
-          <span data-tone="risk"><ShieldCheck size={15} /><b>Risk</b><small>Breaks</small></span>
-          <span data-tone="pace"><ChartNoAxesCombined size={15} /><b>Pace</b><small>Timing</small></span>
-        </div>
-      </section>
       <div className="workspace-settings-groups">
         <details className="workspace-setting-group">
           <summary>
@@ -200,7 +181,7 @@ export function Settings() {
           <summary>
             <span>
               <strong>Research preferences</strong>
-              <small>Your style and investment horizon</small>
+              <small>How you want evidence presented</small>
             </span>
             <ChevronRight size={19} />
           </summary>

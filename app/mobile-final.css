@@ -17,6 +17,7 @@
   .approved-product.workspace-experience .mobile-header-row {
     display: flex;
     position: sticky;
+    top: 0;
     align-items: center;
     gap: 8px;
     height: calc(58px + env(safe-area-inset-top, 0px));
@@ -24,26 +25,43 @@
     padding: env(safe-area-inset-top, 0px)
       max(14px, env(safe-area-inset-right, 0px)) 0
       max(14px, env(safe-area-inset-left, 0px));
-    background: var(--ios-glass);
-    border-bottom: 1px solid var(--ios-glass-line);
-    box-shadow: 0 8px 26px #17345c12, inset 0 -1px #ffffff55;
+    background: color-mix(in srgb, var(--card) 74%, transparent);
+    border-bottom: 0;
+    box-shadow: none;
     -webkit-backdrop-filter: blur(22px) saturate(165%);
     backdrop-filter: blur(22px) saturate(165%);
   }
   .approved-product.workspace-experience .mobile-header-row .wordmark {
-    position: absolute;
-    left: 50%;
+    position: static;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    flex: 0 0 auto;
     margin: 0;
-    transform: translateX(-50%);
     min-width: 0;
     overflow: hidden;
-    font-size: 16px;
-    line-height: 42px;
+    color: var(--ink);
+    font-size: 17px;
+    line-height: 1;
+    letter-spacing: 0.12em;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  .approved-product.workspace-experience .mobile-brand-mark {
+    display: block;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    flex: 0 0 auto;
+  }
+  .approved-product.workspace-experience .wordmark-label {
+    font-weight: 750;
+  }
+  .approved-product.workspace-experience .wordmark-route {
+    display: none;
+  }
   .approved-product.workspace-experience .mobile-header-row > .search-box,
-  .approved-product.workspace-experience .mobile-header-row .top-links > :is(.mobile-explore, a.avatar) {
+  .approved-product.workspace-experience .mobile-header-row .top-links > :is(.mobile-explore, a.avatar, .header-plans, [aria-label="Price alerts"]) {
     width: 40px;
     height: 40px;
     min-height: 40px;
@@ -77,8 +95,31 @@
     -webkit-backdrop-filter: blur(16px) saturate(150%);
     backdrop-filter: blur(16px) saturate(150%);
   }
+  .approved-product.workspace-experience .mobile-header-row .top-links > .mobile-explore,
+  .approved-product.workspace-experience .mobile-header-row .top-links > .icon-button[aria-label="Switch color theme"] {
+    display: none;
+  }
+  .approved-product.workspace-experience .mobile-header-row .top-links > .header-plans {
+    display: inline-flex;
+    width: auto;
+    padding: 0 13px;
+    border-radius: 999px;
+    color: var(--blue);
+    font-size: 14px;
+    font-weight: 650;
+    letter-spacing: 0;
+    text-decoration: none;
+  }
+  .approved-product.workspace-experience .mobile-header-row .top-links > [aria-label="Price alerts"] {
+    display: inline-flex;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    color: var(--blue);
+  }
   .approved-product.workspace-experience .page-content {
-    padding-top: 18px;
+    padding-top: 12px;
     padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px));
   }
   .approved-product.workspace-experience .phone-dock {
@@ -153,12 +194,48 @@
     border-color: color-mix(in srgb, var(--blue) 58%, var(--ios-glass-line));
     background: color-mix(in srgb, var(--blue-soft) 78%, transparent);
   }
-}
-@media (max-width: 380px) {
-  .approved-product.workspace-experience .mobile-header-row .wordmark {
-    position: static;
-    transform: none;
-    margin-right: auto;
+
+  /* The production mobile composition is a quiet canvas with glass controls,
+     not a second opaque navigation bar. */
+  .approved-product.workspace-experience .briefing-home {
+    gap: 14px;
+  }
+  .approved-product.workspace-experience .briefing-home .briefing-greeting {
+    padding: 6px 2px 2px;
+    margin-bottom: 2px;
+  }
+  .approved-product.workspace-experience .briefing-home .briefing-greeting h1 {
+    font-size: clamp(27px, 8vw, 34px);
+    letter-spacing: -0.05em;
+  }
+  .approved-product.workspace-experience .home-command-bar,
+  .approved-product.workspace-experience .home-wealth-strip,
+  .approved-product.workspace-experience .briefing-panel {
+    border-color: color-mix(in srgb, var(--blue) 15%, var(--line));
+    background: color-mix(in srgb, var(--card) 76%, transparent);
+    box-shadow: 0 14px 32px #1d347d0a, inset 0 1px #ffffff45;
+    -webkit-backdrop-filter: blur(18px) saturate(145%);
+    backdrop-filter: blur(18px) saturate(145%);
+  }
+  .approved-product.workspace-experience .home-command-bar {
+    margin: 0;
+    padding: 15px;
+    border-radius: 20px;
+    background:
+      radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--workspace-violet) 14%, transparent), transparent 50%),
+      color-mix(in srgb, var(--card) 78%, transparent);
+  }
+  .approved-product.workspace-experience .home-wealth-strip {
+    margin: 0;
+    border-radius: 20px;
+  }
+  .approved-product.workspace-experience .home-daily-brief {
+    margin: 0;
+    border-radius: 20px;
+    box-shadow: 0 18px 36px #234b9b18;
+  }
+  .approved-product.workspace-experience .briefing-panel {
+    border-radius: 20px;
   }
 }
 @media (max-width: 760px) {
@@ -168,7 +245,7 @@
     box-shadow: 0 16px 42px #00000045, inset 0 1px #ffffff1c;
   }
   :root[data-theme="dark"] .approved-product.workspace-experience .mobile-header-row > .search-box,
-  :root[data-theme="dark"] .approved-product.workspace-experience .mobile-header-row .top-links > :is(.mobile-explore, a.avatar) {
+  :root[data-theme="dark"] .approved-product.workspace-experience .mobile-header-row .top-links > :is(.mobile-explore, a.avatar, .header-plans, [aria-label="Price alerts"]) {
     box-shadow: inset 0 1px #ffffff1c, 0 3px 12px #00000030;
   }
 }
