@@ -103,7 +103,7 @@ test("Edge overview renders decision, concrete evidence and separate confirmed/f
     assert.doesNotMatch(html, /NaN|Infinity|Revenue by business/);
   }
 });
-test("Edge reading never labels unreconciled fundamentals a build opportunity", () => {
+test("Undated aggregate metadata does not erase independently reported business results", () => {
   const r = structuredClone(demoData.research.MSFT);
   r.evidence = {
     ...r.evidence,
@@ -112,7 +112,9 @@ test("Edge reading never labels unreconciled fundamentals a build opportunity", 
     highlights: { MarketCapitalization: 1e15 },
   };
   const reading = researchEdge(r);
-  assert.equal(reading.verdict, "Evidence needed");
+  assert.equal(reading.brief.listing.status, "missing");
+  assert.equal(reading.brief.conflicting, false);
+  assert.ok(reading.brief.businessNumbers.fcf > 0);
   assert.equal(reading.pace, reading.pricePace);
 });
 test("banks do not inherit an operating-company cash-flow verdict", () => {
@@ -129,9 +131,17 @@ test("banks do not inherit an operating-company cash-flow verdict", () => {
   };
   const reading = researchEdge(r);
   assert.equal(reading.verdict, "Sector review");
-  const Component=view();
-  const html=renderToStaticMarkup(React.createElement(Component,{research:r,onTab:()=>{},chart:null}));
-  const fingerprint=html.match(/class="company-fingerprint"[^>]*>([\s\S]*?)<\/div>/)?.[1];
+  const Component = view();
+  const html = renderToStaticMarkup(
+    React.createElement(Component, {
+      research: r,
+      onTab: () => {},
+      chart: null,
+    }),
+  );
+  const fingerprint = html.match(
+    /class="company-fingerprint"[^>]*>([\s\S]*?)<\/div>/,
+  )?.[1];
   assert.ok(fingerprint);
   assert.match(fingerprint, /Sector evidence/);
   assert.ok(fingerprint.includes(reading.valueLabel));

@@ -21,7 +21,10 @@ const personal = resolveAccess({
   licensed: false,
   now: "2026-01-01T00:00:00Z",
 });
-export type AccessView = Access & { researchUsed?: number };
+export type AccessView = Access & {
+  researchUsed?: number;
+  capabilities?: { paperTrading: boolean };
+};
 const Context = createContext<{ access: AccessView; refresh: () => void }>({
   access: personal,
   refresh: () => {},

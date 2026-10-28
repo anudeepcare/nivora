@@ -1,0 +1,186 @@
+✖ class-share fallback accepts equivalent Twelve quote and history identities (285.682211ms)
+✖ a primary profile without financial statements uses SEC facts and preserves reporting currency (106.551639ms)
+✖ ETF missing corporate facts retains identity, price and limited history with explicit coverage (82.874524ms)
+✖ malformed and unsupported symbols are rejected before any provider traffic (88.508747ms)
+✖ foreign-currency Twelve history cannot contaminate USD research (62.871888ms)
+✖ invalid empty SEC responses remain retryable and disclose missing coverage (79.715633ms)
+✖ expired last-good prices and history survive total outage with original dates and cached provenance (79.112598ms)
+✔ primary timeout response falls back without losing useful research (56.357758ms)
+✔ primary 429 response falls back without losing useful research (54.654641ms)
+✔ primary empty response falls back without losing useful research (64.666492ms)
+✔ primary invalid-json response falls back without losing useful research (56.587224ms)
+✖ crypto aliases keep the requested asset identity and never request corporate financials (64.418849ms)
+✖ search falls through invalid primary payload and deduplicates class-share aliases (50.757246ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 4
+ℹ fail 9
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1412.849606
+
+✖ failing tests:
+
+test at tests/ticker-resilience.test.mjs:7:1
+✖ class-share fallback accepts equivalent Twelve quote and history identities (285.682211ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  null !== 400
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/9f0036d454ae/auryn-approved/AURYN/tests/ticker-resilience.test.mjs:15:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: 400,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/ticker-resilience.test.mjs:19:1
+✖ a primary profile without financial statements uses SEC facts and preserves reporting currency (106.551639ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  undefined !== 'EUR'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/9f0036d454ae/auryn-approved/AURYN/tests/ticker-resilience.test.mjs:27:46)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'EUR',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/ticker-resilience.test.mjs:32:1
+✖ ETF missing corporate facts retains identity, price and limited history with explicit coverage (82.874524ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /financial|coverage/i. Input:
+  
+  ''
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/9f0036d454ae/auryn-approved/AURYN/tests/ticker-resilience.test.mjs:35:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '',
+    expected: /financial|coverage/i,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at tests/ticker-resilience.test.mjs:38:1
+✖ malformed and unsupported symbols are rejected before any provider traffic (88.508747ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/scratch/9f0036d454ae/auryn-approved/AURYN/tests/ticker-resilience.test.mjs:40:55)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests/ticker-resilience.test.mjs:45:1
+✖ foreign-currency Twelve history cannot contaminate USD research (62.871888ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   {
+  +     close: 102,
+  +     high: 103,
+  +     low: 99,
+  +     open: 100,
+  +     time: '2026-10-23',
+  +     volume: 1000
+  +   }
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/9f0036d454ae/auryn-approved/AURYN/tests/ticker-resilience.test.mjs:47:73)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { time: '2026-10-23', open: 100, high: 103, low: 99, close: 102, volume: 1000 } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/ticker-resilience.test.mjs:50:1
+✖ invalid empty SEC responses remain retryable and disclose missing coverage (79.715633ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Financial facts|Company disclosures/. Input:
+  
+  ''
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/9f0036d454ae/auryn-approved/AURYN/tests/ticker-resilience.test.mjs:58:82)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '',
+    expected: /Financial facts|Company disclosures/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at tests/ticker-resilience.test.mjs:62:1
+✖ expired last-good prices and history survive total outage with original dates and cached provenance (79.112598ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  null !== 102
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/9f0036d454ae/auryn-approved/AURYN/tests/ticker-resilience.test.mjs:67:44)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: 102,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/ticker-resilience.test.mjs:85:1
+✖ crypto aliases keep the requested asset identity and never request corporate financials (64.418849ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ETH-USD'
+  - 'ETH/USD'
+        ^
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/9f0036d454ae/auryn-approved/AURYN/tests/ticker-resilience.test.mjs:87:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ETH-USD',
+    expected: 'ETH/USD',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/ticker-resilience.test.mjs:91:1
+✖ search falls through invalid primary payload and deduplicates class-share aliases (50.757246ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  2 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/9f0036d454ae/auryn-approved/AURYN/tests/ticker-resilience.test.mjs:93:44)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

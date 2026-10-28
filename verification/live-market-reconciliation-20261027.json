@@ -1,0 +1,1129 @@
+{
+  "schemaVersion": 1,
+  "source": "Authenticated Twelve Data connector",
+  "retrievedAt": "2026-10-27T16:12:26.709Z",
+  "scope": "Representative connector source reconciliation only; not production API end-to-end or a full-universe audit.",
+  "productionApiEnvironmentCredentialsPresent": false,
+  "connectorAuthenticatedReportedByParent": true,
+  "symbols": [
+    "MSFT",
+    "JPM",
+    "O",
+    "IREN",
+    "CIFR",
+    "BE",
+    "ZETA",
+    "APP",
+    "ASTS",
+    "BRK.B",
+    "QQQ"
+  ],
+  "records": [
+    {
+      "requestedSymbol": "MSFT",
+      "quote": {
+        "status": "returned",
+        "source": "Twelve Data connector get_quote",
+        "raw": {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation Common Stock",
+          "exchange": "NASDAQ",
+          "mic_code": "XNGS",
+          "currency": "USD",
+          "datetime": "2026-10-27",
+          "timestamp": "1793107800",
+          "last_quote_at": "1793117220",
+          "open": "532.35",
+          "high": "534.7",
+          "low": "528.385",
+          "close": "534.53",
+          "volume": "247756",
+          "previous_close": "532.59998",
+          "change": "1.93002",
+          "percent_change": "0.36237786",
+          "average_volume": "17183216",
+          "is_market_open": "true",
+          "fifty_two_week_low": "349.20001",
+          "fifty_two_week_high": "553.71997",
+          "fifty_two_week_low_change": "185.32999",
+          "fifty_two_week_high_change": "-19.18997",
+          "fifty_two_week_low_change_percent": "53.072732",
+          "fifty_two_week_high_change_percent": "-3.46565",
+          "fifty_two_week_range": "349.200012 - 553.719971"
+        },
+        "normalized": {
+          "price": 534.53,
+          "changePct": 0.36237786,
+          "previousClose": 532.59998,
+          "currency": "USD",
+          "asOf": "2026-10-27T16:07:00.000Z",
+          "session": "Market open",
+          "source": "Twelve Data",
+          "stale": true
+        },
+        "validation": {
+          "checkedAt": "2026-10-27T16:12:27.229Z",
+          "identityMatches": true,
+          "supportedUsdListing": true,
+          "positiveFinitePrice": true,
+          "providerDateMatchesObservedDate": true,
+          "sourceTimestampPreserved": true,
+          "notFutureDated": true,
+          "ohlcRangeValid": true,
+          "recomputedChangePct": 0.3623770320081432,
+          "reportedChangePct": 0.36237786,
+          "changePctDifference": -8.279918567999367e-7,
+          "changePctMatchesRounding": true
+        }
+      },
+      "profile": {
+        "status": "returned",
+        "source": "Twelve Data connector get_company_info(profile)",
+        "fields": {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation Common Stock",
+          "exchange": "NASDAQ",
+          "mic_code": "XNGS",
+          "sector": "Technology",
+          "industry": "Software - Infrastructure",
+          "type": "Common Stock",
+          "country": "United States",
+          "currency": null
+        },
+        "firstAttemptRateLimited": false,
+        "retried": false,
+        "validation": {
+          "identityMatches": true,
+          "exchangeMatchesQuote": true,
+          "currencyExplicitlySupplied": false,
+          "quoteCurrencyIndependentlyObserved": "USD"
+        }
+      },
+      "financialStatements": {
+        "status": "entitlement-denied",
+        "period": "quarterly",
+        "incomeStatementRequested": true,
+        "cashFlowRequested": true,
+        "reportingCurrency": null,
+        "periodStart": null,
+        "periodEnd": null,
+        "unitScale": null,
+        "operatingMargin": null,
+        "netMargin": null,
+        "freeCashFlow": null,
+        "reason": "Income statement and cash flow endpoints returned explicit plan-entitlement denials."
+      }
+    },
+    {
+      "requestedSymbol": "JPM",
+      "quote": {
+        "status": "returned",
+        "source": "Twelve Data connector get_quote",
+        "raw": {
+          "symbol": "JPM",
+          "name": "JPMorgan Chase & Co.",
+          "exchange": "NYSE",
+          "mic_code": "XNYS",
+          "currency": "USD",
+          "datetime": "2026-10-27",
+          "timestamp": "1793107800",
+          "last_quote_at": "1793117220",
+          "open": "337.26",
+          "high": "337.29",
+          "low": "334.54",
+          "close": "336.055",
+          "volume": "55745",
+          "previous_close": "334.040009",
+          "change": "2.014991",
+          "percent_change": "0.60321860",
+          "average_volume": "6346374",
+          "is_market_open": "true",
+          "fifty_two_week_low": "279.10001",
+          "fifty_two_week_high": "366.5",
+          "fifty_two_week_low_change": "56.95499",
+          "fifty_two_week_high_change": "-30.44500",
+          "fifty_two_week_low_change_percent": "20.40666",
+          "fifty_two_week_high_change_percent": "-8.30696",
+          "fifty_two_week_range": "279.100006 - 366.500000"
+        },
+        "normalized": {
+          "price": 336.055,
+          "changePct": 0.6032186,
+          "previousClose": 334.040009,
+          "currency": "USD",
+          "asOf": "2026-10-27T16:07:00.000Z",
+          "session": "Market open",
+          "source": "Twelve Data",
+          "stale": true
+        },
+        "validation": {
+          "checkedAt": "2026-10-27T16:12:27.229Z",
+          "identityMatches": true,
+          "supportedUsdListing": true,
+          "positiveFinitePrice": true,
+          "providerDateMatchesObservedDate": true,
+          "sourceTimestampPreserved": true,
+          "notFutureDated": true,
+          "ohlcRangeValid": true,
+          "recomputedChangePct": 0.6032184605766711,
+          "reportedChangePct": 0.6032186,
+          "changePctDifference": -1.394233289930824e-7,
+          "changePctMatchesRounding": true
+        }
+      },
+      "profile": {
+        "status": "returned",
+        "source": "Twelve Data connector get_company_info(profile)",
+        "fields": {
+          "symbol": "JPM",
+          "name": "JPMorgan Chase & Co.",
+          "exchange": "NYSE",
+          "mic_code": "XNYS",
+          "sector": "Financial Services",
+          "industry": "Banks - Diversified",
+          "type": "Common Stock",
+          "country": "United States",
+          "currency": null
+        },
+        "firstAttemptRateLimited": false,
+        "retried": false,
+        "validation": {
+          "identityMatches": true,
+          "exchangeMatchesQuote": true,
+          "currencyExplicitlySupplied": false,
+          "quoteCurrencyIndependentlyObserved": "USD"
+        }
+      },
+      "financialStatements": {
+        "status": "not-tested",
+        "period": "quarterly",
+        "incomeStatementRequested": false,
+        "cashFlowRequested": false,
+        "reportingCurrency": null,
+        "periodStart": null,
+        "periodEnd": null,
+        "unitScale": null,
+        "operatingMargin": null,
+        "netMargin": null,
+        "freeCashFlow": null,
+        "reason": "No per-symbol statement call: MSFT capability probes already showed statement-plan denial; no source values were invented."
+      }
+    },
+    {
+      "requestedSymbol": "O",
+      "quote": {
+        "status": "returned",
+        "source": "Twelve Data connector get_quote",
+        "raw": {
+          "symbol": "O",
+          "name": "Realty Income Corp.",
+          "exchange": "NYSE",
+          "mic_code": "XNYS",
+          "currency": "USD",
+          "datetime": "2026-10-27",
+          "timestamp": "1793107800",
+          "last_quote_at": "1793117220",
+          "open": "56.92",
+          "high": "57.19",
+          "low": "56.8",
+          "close": "56.95",
+          "volume": "97546",
+          "previous_close": "57.16000",
+          "change": "-0.20999985",
+          "percent_change": "-0.36738952",
+          "average_volume": "6600115",
+          "is_market_open": "true",
+          "fifty_two_week_low": "53.15000",
+          "fifty_two_week_high": "67.94000",
+          "fifty_two_week_low_change": "3.80000",
+          "fifty_two_week_high_change": "-10.99000",
+          "fifty_two_week_low_change_percent": "7.14957",
+          "fifty_two_week_high_change_percent": "-16.17604",
+          "fifty_two_week_range": "53.150002 - 67.940002"
+        },
+        "normalized": {
+          "price": 56.95,
+          "changePct": -0.36738952,
+          "previousClose": 57.16,
+          "currency": "USD",
+          "asOf": "2026-10-27T16:07:00.000Z",
+          "session": "Market open",
+          "source": "Twelve Data",
+          "stale": true
+        },
+        "validation": {
+          "checkedAt": "2026-10-27T16:12:27.229Z",
+          "identityMatches": true,
+          "supportedUsdListing": true,
+          "positiveFinitePrice": true,
+          "providerDateMatchesObservedDate": true,
+          "sourceTimestampPreserved": true,
+          "notFutureDated": true,
+          "ohlcRangeValid": true,
+          "recomputedChangePct": -0.3673897830650641,
+          "reportedChangePct": -0.36738952,
+          "changePctDifference": -2.6306506406559294e-7,
+          "changePctMatchesRounding": true
+        }
+      },
+      "profile": {
+        "status": "returned",
+        "source": "Twelve Data connector get_company_info(profile)",
+        "fields": {
+          "symbol": "O",
+          "name": "Realty Income Corp.",
+          "exchange": "NYSE",
+          "mic_code": "XNYS",
+          "sector": "Real Estate",
+          "industry": "REIT - Retail",
+          "type": "REIT",
+          "country": "United States",
+          "currency": null
+        },
+        "firstAttemptRateLimited": false,
+        "retried": false,
+        "validation": {
+          "identityMatches": true,
+          "exchangeMatchesQuote": true,
+          "currencyExplicitlySupplied": false,
+          "quoteCurrencyIndependentlyObserved": "USD"
+        }
+      },
+      "financialStatements": {
+        "status": "not-tested",
+        "period": "quarterly",
+        "incomeStatementRequested": false,
+        "cashFlowRequested": false,
+        "reportingCurrency": null,
+        "periodStart": null,
+        "periodEnd": null,
+        "unitScale": null,
+        "operatingMargin": null,
+        "netMargin": null,
+        "freeCashFlow": null,
+        "reason": "No per-symbol statement call: MSFT capability probes already showed statement-plan denial; no source values were invented."
+      }
+    },
+    {
+      "requestedSymbol": "IREN",
+      "quote": {
+        "status": "returned",
+        "source": "Twelve Data connector get_quote",
+        "raw": {
+          "symbol": "IREN",
+          "name": "IREN Ltd.",
+          "exchange": "NASDAQ",
+          "mic_code": "XNGS",
+          "currency": "USD",
+          "datetime": "2026-10-27",
+          "timestamp": "1793107800",
+          "last_quote_at": "1793117280",
+          "open": "25.87",
+          "high": "27.66",
+          "low": "25.56",
+          "close": "27.32",
+          "volume": "1046276",
+          "previous_close": "25.43000",
+          "change": "1.89000",
+          "percent_change": "7.43217",
+          "average_volume": "59432368",
+          "is_market_open": "true",
+          "fifty_two_week_low": "23.72000",
+          "fifty_two_week_high": "76.87000",
+          "fifty_two_week_low_change": "3.60000",
+          "fifty_two_week_high_change": "-49.55000",
+          "fifty_two_week_low_change_percent": "15.17707",
+          "fifty_two_week_high_change_percent": "-64.45948",
+          "fifty_two_week_range": "23.719999 - 76.870003"
+        },
+        "normalized": {
+          "price": 27.32,
+          "changePct": 7.43217,
+          "previousClose": 25.43,
+          "currency": "USD",
+          "asOf": "2026-10-27T16:08:00.000Z",
+          "session": "Market open",
+          "source": "Twelve Data",
+          "stale": true
+        },
+        "validation": {
+          "checkedAt": "2026-10-27T16:12:27.229Z",
+          "identityMatches": true,
+          "supportedUsdListing": true,
+          "positiveFinitePrice": true,
+          "providerDateMatchesObservedDate": true,
+          "sourceTimestampPreserved": true,
+          "notFutureDated": true,
+          "ohlcRangeValid": true,
+          "recomputedChangePct": 7.432166732206058,
+          "reportedChangePct": 7.43217,
+          "changePctDifference": -0.000003267793942107744,
+          "changePctMatchesRounding": true
+        }
+      },
+      "profile": {
+        "status": "returned",
+        "source": "Twelve Data connector get_company_info(profile)",
+        "fields": {
+          "symbol": "IREN",
+          "name": "IREN Ltd.",
+          "exchange": "NASDAQ",
+          "mic_code": "XNGS",
+          "sector": "Financial Services",
+          "industry": "Capital Markets",
+          "type": "Common Stock",
+          "country": "Australia",
+          "currency": null
+        },
+        "firstAttemptRateLimited": false,
+        "retried": false,
+        "validation": {
+          "identityMatches": true,
+          "exchangeMatchesQuote": true,
+          "currencyExplicitlySupplied": false,
+          "quoteCurrencyIndependentlyObserved": "USD"
+        }
+      },
+      "financialStatements": {
+        "status": "not-tested",
+        "period": "quarterly",
+        "incomeStatementRequested": false,
+        "cashFlowRequested": false,
+        "reportingCurrency": null,
+        "periodStart": null,
+        "periodEnd": null,
+        "unitScale": null,
+        "operatingMargin": null,
+        "netMargin": null,
+        "freeCashFlow": null,
+        "reason": "No per-symbol statement call: MSFT capability probes already showed statement-plan denial; no source values were invented."
+      }
+    },
+    {
+      "requestedSymbol": "CIFR",
+      "quote": {
+        "status": "returned",
+        "source": "Twelve Data connector get_quote",
+        "raw": {
+          "symbol": "CIFR",
+          "name": "Cipher Digital Inc.",
+          "exchange": "NASDAQ",
+          "mic_code": "XNGS",
+          "currency": "USD",
+          "datetime": "2026-10-27",
+          "timestamp": "1793107800",
+          "last_quote_at": "1793117220",
+          "open": "7.96",
+          "high": "8.53",
+          "low": "7.78",
+          "close": "8.38",
+          "volume": "1101569",
+          "previous_close": "7.71000",
+          "change": "0.66999996",
+          "percent_change": "8.69001",
+          "average_volume": "49198907",
+          "is_market_open": "true",
+          "fifty_two_week_low": "7.46000",
+          "fifty_two_week_high": "30.14000",
+          "fifty_two_week_low_change": "0.91999996",
+          "fifty_two_week_high_change": "-21.76000",
+          "fifty_two_week_low_change_percent": "12.33244",
+          "fifty_two_week_high_change_percent": "-72.19642",
+          "fifty_two_week_range": "7.460000 - 30.139999"
+        },
+        "normalized": {
+          "price": 8.38,
+          "changePct": 8.69001,
+          "previousClose": 7.71,
+          "currency": "USD",
+          "asOf": "2026-10-27T16:07:00.000Z",
+          "session": "Market open",
+          "source": "Twelve Data",
+          "stale": true
+        },
+        "validation": {
+          "checkedAt": "2026-10-27T16:12:27.229Z",
+          "identityMatches": true,
+          "supportedUsdListing": true,
+          "positiveFinitePrice": true,
+          "providerDateMatchesObservedDate": true,
+          "sourceTimestampPreserved": true,
+          "notFutureDated": true,
+          "ohlcRangeValid": true,
+          "recomputedChangePct": 8.690012970168626,
+          "reportedChangePct": 8.69001,
+          "changePctDifference": 0.0000029701686266037086,
+          "changePctMatchesRounding": true
+        }
+      },
+      "profile": {
+        "status": "returned",
+        "source": "Twelve Data connector get_company_info(profile)",
+        "fields": {
+          "symbol": "CIFR",
+          "name": "Cipher Digital Inc.",
+          "exchange": "NASDAQ",
+          "mic_code": "XNGS",
+          "sector": "Technology",
+          "industry": "Information Technology Services",
+          "type": "Common Stock",
+          "country": "United States",
+          "currency": null
+        },
+        "firstAttemptRateLimited": false,
+        "retried": false,
+        "validation": {
+          "identityMatches": true,
+          "exchangeMatchesQuote": true,
+          "currencyExplicitlySupplied": false,
+          "quoteCurrencyIndependentlyObserved": "USD"
+        }
+      },
+      "financialStatements": {
+        "status": "not-tested",
+        "period": "quarterly",
+        "incomeStatementRequested": false,
+        "cashFlowRequested": false,
+        "reportingCurrency": null,
+        "periodStart": null,
+        "periodEnd": null,
+        "unitScale": null,
+        "operatingMargin": null,
+        "netMargin": null,
+        "freeCashFlow": null,
+        "reason": "No per-symbol statement call: MSFT capability probes already showed statement-plan denial; no source values were invented."
+      }
+    },
+    {
+      "requestedSymbol": "BE",
+      "quote": {
+        "status": "returned",
+        "source": "Twelve Data connector get_quote",
+        "raw": {
+          "symbol": "BE",
+          "name": "Bloom Energy Corp. Class A Common Stock",
+          "exchange": "NYSE",
+          "mic_code": "XNYS",
+          "currency": "USD",
+          "datetime": "2026-10-27",
+          "timestamp": "1793107800",
+          "last_quote_at": "1793117220",
+          "open": "214.005",
+          "high": "224.085",
+          "low": "211.62",
+          "close": "220.03",
+          "volume": "346142",
+          "previous_close": "203.92000",
+          "change": "16.11000",
+          "percent_change": "7.90016",
+          "average_volume": "16472674",
+          "is_market_open": "true",
+          "fifty_two_week_low": "75.70000",
+          "fifty_two_week_high": "351.28000",
+          "fifty_two_week_low_change": "144.33000",
+          "fifty_two_week_high_change": "-131.25000",
+          "fifty_two_week_low_change_percent": "190.66051",
+          "fifty_two_week_high_change_percent": "-37.36336",
+          "fifty_two_week_range": "75.699997 - 351.279999"
+        },
+        "normalized": {
+          "price": 220.03,
+          "changePct": 7.90016,
+          "previousClose": 203.92,
+          "currency": "USD",
+          "asOf": "2026-10-27T16:07:00.000Z",
+          "session": "Market open",
+          "source": "Twelve Data",
+          "stale": true
+        },
+        "validation": {
+          "checkedAt": "2026-10-27T16:12:27.229Z",
+          "identityMatches": true,
+          "supportedUsdListing": true,
+          "positiveFinitePrice": true,
+          "providerDateMatchesObservedDate": true,
+          "sourceTimestampPreserved": true,
+          "notFutureDated": true,
+          "ohlcRangeValid": true,
+          "recomputedChangePct": 7.90015692428403,
+          "reportedChangePct": 7.90016,
+          "changePctDifference": -0.0000030757159699135173,
+          "changePctMatchesRounding": true
+        }
+      },
+      "profile": {
+        "status": "returned",
+        "source": "Twelve Data connector get_company_info(profile)",
+        "fields": {
+          "symbol": "BE",
+          "name": "Bloom Energy Corp. Class A Common Stock",
+          "exchange": "NYSE",
+          "mic_code": "XNYS",
+          "sector": "Industrials",
+          "industry": "Electrical Equipment & Parts",
+          "type": "Common Stock",
+          "country": "United States",
+          "currency": null
+        },
+        "firstAttemptRateLimited": true,
+        "retried": true,
+        "validation": {
+          "identityMatches": true,
+          "exchangeMatchesQuote": true,
+          "currencyExplicitlySupplied": false,
+          "quoteCurrencyIndependentlyObserved": "USD"
+        }
+      },
+      "financialStatements": {
+        "status": "not-tested",
+        "period": "quarterly",
+        "incomeStatementRequested": false,
+        "cashFlowRequested": false,
+        "reportingCurrency": null,
+        "periodStart": null,
+        "periodEnd": null,
+        "unitScale": null,
+        "operatingMargin": null,
+        "netMargin": null,
+        "freeCashFlow": null,
+        "reason": "No per-symbol statement call: MSFT capability probes already showed statement-plan denial; no source values were invented."
+      }
+    },
+    {
+      "requestedSymbol": "ZETA",
+      "quote": {
+        "status": "returned",
+        "source": "Twelve Data connector get_quote",
+        "raw": {
+          "symbol": "ZETA",
+          "name": "Zeta Global Holdings Corp. Class A Common Stock",
+          "exchange": "NYSE",
+          "mic_code": "XNYS",
+          "currency": "USD",
+          "datetime": "2026-10-27",
+          "timestamp": "1793107800",
+          "last_quote_at": "1793117280",
+          "open": "33.55",
+          "high": "33.96",
+          "low": "33.17",
+          "close": "33.89",
+          "volume": "47621",
+          "previous_close": "33.70000",
+          "change": "0.18999924",
+          "percent_change": "0.56379594",
+          "average_volume": "5117222",
+          "is_market_open": "true",
+          "fifty_two_week_low": "14.36500",
+          "fifty_two_week_high": "35.75",
+          "fifty_two_week_low_change": "19.52500",
+          "fifty_two_week_high_change": "-1.86000",
+          "fifty_two_week_low_change_percent": "135.92064",
+          "fifty_two_week_high_change_percent": "-5.20280",
+          "fifty_two_week_range": "14.365000 - 35.750000"
+        },
+        "normalized": {
+          "price": 33.89,
+          "changePct": 0.56379594,
+          "previousClose": 33.7,
+          "currency": "USD",
+          "asOf": "2026-10-27T16:08:00.000Z",
+          "session": "Market open",
+          "source": "Twelve Data",
+          "stale": true
+        },
+        "validation": {
+          "checkedAt": "2026-10-27T16:12:27.229Z",
+          "identityMatches": true,
+          "supportedUsdListing": true,
+          "positiveFinitePrice": true,
+          "providerDateMatchesObservedDate": true,
+          "sourceTimestampPreserved": true,
+          "notFutureDated": true,
+          "ohlcRangeValid": true,
+          "recomputedChangePct": 0.5637982195845659,
+          "reportedChangePct": 0.56379594,
+          "changePctDifference": 0.000002279584565889614,
+          "changePctMatchesRounding": true
+        }
+      },
+      "profile": {
+        "status": "returned",
+        "source": "Twelve Data connector get_company_info(profile)",
+        "fields": {
+          "symbol": "ZETA",
+          "name": "Zeta Global Holdings Corp. Class A Common Stock",
+          "exchange": "NYSE",
+          "mic_code": "XNYS",
+          "sector": "Technology",
+          "industry": "Software - Infrastructure",
+          "type": "Common Stock",
+          "country": "United States",
+          "currency": null
+        },
+        "firstAttemptRateLimited": true,
+        "retried": true,
+        "validation": {
+          "identityMatches": true,
+          "exchangeMatchesQuote": true,
+          "currencyExplicitlySupplied": false,
+          "quoteCurrencyIndependentlyObserved": "USD"
+        }
+      },
+      "financialStatements": {
+        "status": "not-tested",
+        "period": "quarterly",
+        "incomeStatementRequested": false,
+        "cashFlowRequested": false,
+        "reportingCurrency": null,
+        "periodStart": null,
+        "periodEnd": null,
+        "unitScale": null,
+        "operatingMargin": null,
+        "netMargin": null,
+        "freeCashFlow": null,
+        "reason": "No per-symbol statement call: MSFT capability probes already showed statement-plan denial; no source values were invented."
+      }
+    },
+    {
+      "requestedSymbol": "APP",
+      "quote": {
+        "status": "returned",
+        "source": "Twelve Data connector get_quote",
+        "raw": {
+          "symbol": "APP",
+          "name": "AppLovin Corporation Class A Common Stock",
+          "exchange": "NASDAQ",
+          "mic_code": "XNGS",
+          "currency": "USD",
+          "datetime": "2026-10-27",
+          "timestamp": "1793107800",
+          "last_quote_at": "1793117220",
+          "open": "263.15",
+          "high": "263.56",
+          "low": "257.63",
+          "close": "262.18",
+          "volume": "36707",
+          "previous_close": "260.73999",
+          "change": "1.44001",
+          "percent_change": "0.55227806",
+          "average_volume": "2774311",
+          "is_market_open": "true",
+          "fifty_two_week_low": "255.46001",
+          "fifty_two_week_high": "738.010010",
+          "fifty_two_week_low_change": "6.71999",
+          "fifty_two_week_high_change": "-475.83001",
+          "fifty_two_week_low_change_percent": "2.63055",
+          "fifty_two_week_high_change_percent": "-64.47474",
+          "fifty_two_week_range": "255.460007 - 738.010010"
+        },
+        "normalized": {
+          "price": 262.18,
+          "changePct": 0.55227806,
+          "previousClose": 260.73999,
+          "currency": "USD",
+          "asOf": "2026-10-27T16:07:00.000Z",
+          "session": "Market open",
+          "source": "Twelve Data",
+          "stale": true
+        },
+        "validation": {
+          "checkedAt": "2026-10-27T16:12:27.229Z",
+          "identityMatches": true,
+          "supportedUsdListing": true,
+          "positiveFinitePrice": true,
+          "providerDateMatchesObservedDate": true,
+          "sourceTimestampPreserved": true,
+          "notFutureDated": true,
+          "ohlcRangeValid": true,
+          "recomputedChangePct": 0.5522781526531517,
+          "reportedChangePct": 0.55227806,
+          "changePctDifference": 9.265315170647881e-8,
+          "changePctMatchesRounding": true
+        }
+      },
+      "profile": {
+        "status": "returned",
+        "source": "Twelve Data connector get_company_info(profile)",
+        "fields": {
+          "symbol": "APP",
+          "name": "AppLovin Corporation Class A Common Stock",
+          "exchange": "NASDAQ",
+          "mic_code": "XNGS",
+          "sector": "Communication Services",
+          "industry": "Advertising Agencies",
+          "type": "Common Stock",
+          "country": "United States",
+          "currency": null
+        },
+        "firstAttemptRateLimited": true,
+        "retried": true,
+        "validation": {
+          "identityMatches": true,
+          "exchangeMatchesQuote": true,
+          "currencyExplicitlySupplied": false,
+          "quoteCurrencyIndependentlyObserved": "USD"
+        }
+      },
+      "financialStatements": {
+        "status": "not-tested",
+        "period": "quarterly",
+        "incomeStatementRequested": false,
+        "cashFlowRequested": false,
+        "reportingCurrency": null,
+        "periodStart": null,
+        "periodEnd": null,
+        "unitScale": null,
+        "operatingMargin": null,
+        "netMargin": null,
+        "freeCashFlow": null,
+        "reason": "No per-symbol statement call: MSFT capability probes already showed statement-plan denial; no source values were invented."
+      }
+    },
+    {
+      "requestedSymbol": "ASTS",
+      "quote": {
+        "status": "returned",
+        "source": "Twelve Data connector get_quote",
+        "raw": {
+          "symbol": "ASTS",
+          "name": "AST SpaceMobile Inc.",
+          "exchange": "NASDAQ",
+          "mic_code": "XNGS",
+          "currency": "USD",
+          "datetime": "2026-10-27",
+          "timestamp": "1793107800",
+          "last_quote_at": "1793117280",
+          "open": "39.86",
+          "high": "43.08",
+          "low": "39.57",
+          "close": "42.715",
+          "volume": "244213",
+          "previous_close": "39.45000",
+          "change": "3.26500",
+          "percent_change": "8.27630",
+          "average_volume": "14772591",
+          "is_market_open": "true",
+          "fifty_two_week_low": "36.72000",
+          "fifty_two_week_high": "133.86000",
+          "fifty_two_week_low_change": "5.99500",
+          "fifty_two_week_high_change": "-91.14500",
+          "fifty_two_week_low_change_percent": "16.32625",
+          "fifty_two_week_high_change_percent": "-68.089795",
+          "fifty_two_week_range": "36.720001 - 133.860001"
+        },
+        "normalized": {
+          "price": 42.715,
+          "changePct": 8.2763,
+          "previousClose": 39.45,
+          "currency": "USD",
+          "asOf": "2026-10-27T16:08:00.000Z",
+          "session": "Market open",
+          "source": "Twelve Data",
+          "stale": true
+        },
+        "validation": {
+          "checkedAt": "2026-10-27T16:12:27.229Z",
+          "identityMatches": true,
+          "supportedUsdListing": true,
+          "positiveFinitePrice": true,
+          "providerDateMatchesObservedDate": true,
+          "sourceTimestampPreserved": true,
+          "notFutureDated": true,
+          "ohlcRangeValid": true,
+          "recomputedChangePct": 8.276299112801011,
+          "reportedChangePct": 8.2763,
+          "changePctDifference": -8.871989898295851e-7,
+          "changePctMatchesRounding": true
+        }
+      },
+      "profile": {
+        "status": "returned",
+        "source": "Twelve Data connector get_company_info(profile)",
+        "fields": {
+          "symbol": "ASTS",
+          "name": "AST SpaceMobile Inc.",
+          "exchange": "NASDAQ",
+          "mic_code": "XNGS",
+          "sector": "Technology",
+          "industry": "Communication Equipment",
+          "type": "Common Stock",
+          "country": "United States",
+          "currency": null
+        },
+        "firstAttemptRateLimited": true,
+        "retried": true,
+        "validation": {
+          "identityMatches": true,
+          "exchangeMatchesQuote": true,
+          "currencyExplicitlySupplied": false,
+          "quoteCurrencyIndependentlyObserved": "USD"
+        }
+      },
+      "financialStatements": {
+        "status": "not-tested",
+        "period": "quarterly",
+        "incomeStatementRequested": false,
+        "cashFlowRequested": false,
+        "reportingCurrency": null,
+        "periodStart": null,
+        "periodEnd": null,
+        "unitScale": null,
+        "operatingMargin": null,
+        "netMargin": null,
+        "freeCashFlow": null,
+        "reason": "No per-symbol statement call: MSFT capability probes already showed statement-plan denial; no source values were invented."
+      }
+    },
+    {
+      "requestedSymbol": "BRK.B",
+      "quote": {
+        "status": "returned",
+        "source": "Twelve Data connector get_quote",
+        "raw": {
+          "symbol": "BRK.B",
+          "name": "Berkshire Hathaway Inc. Class B",
+          "exchange": "NYSE",
+          "mic_code": "XNYS",
+          "currency": "USD",
+          "datetime": "2026-10-27",
+          "timestamp": "1793107800",
+          "last_quote_at": "1793117220",
+          "open": "548.26",
+          "high": "548.26",
+          "low": "543.4",
+          "close": "544.95",
+          "volume": "41164",
+          "previous_close": "548.56000",
+          "change": "-3.61000",
+          "percent_change": "-0.65808618",
+          "average_volume": "4349716",
+          "is_market_open": "true",
+          "fifty_two_week_low": "464.010010",
+          "fifty_two_week_high": "549.96002",
+          "fifty_two_week_low_change": "80.93999",
+          "fifty_two_week_high_change": "-5.010022",
+          "fifty_two_week_low_change_percent": "17.44359",
+          "fifty_two_week_high_change_percent": "-0.91097930",
+          "fifty_two_week_range": "464.010010 - 549.960022"
+        },
+        "normalized": {
+          "price": 544.95,
+          "changePct": -0.65808618,
+          "previousClose": 548.56,
+          "currency": "USD",
+          "asOf": "2026-10-27T16:07:00.000Z",
+          "session": "Market open",
+          "source": "Twelve Data",
+          "stale": true
+        },
+        "validation": {
+          "checkedAt": "2026-10-27T16:12:27.229Z",
+          "identityMatches": true,
+          "supportedUsdListing": true,
+          "positiveFinitePrice": true,
+          "providerDateMatchesObservedDate": true,
+          "sourceTimestampPreserved": true,
+          "notFutureDated": true,
+          "ohlcRangeValid": true,
+          "recomputedChangePct": -0.6580866268047103,
+          "reportedChangePct": -0.65808618,
+          "changePctDifference": -4.468047103411976e-7,
+          "changePctMatchesRounding": true
+        }
+      },
+      "profile": {
+        "status": "returned",
+        "source": "Twelve Data connector get_company_info(profile)",
+        "fields": {
+          "symbol": "BRK.B",
+          "name": "Berkshire Hathaway Inc. Class B",
+          "exchange": "NYSE",
+          "mic_code": "XNYS",
+          "sector": "Financial Services",
+          "industry": "Insurance - Diversified",
+          "type": "Common Stock",
+          "country": "United States",
+          "currency": null
+        },
+        "firstAttemptRateLimited": true,
+        "retried": true,
+        "validation": {
+          "identityMatches": true,
+          "exchangeMatchesQuote": true,
+          "currencyExplicitlySupplied": false,
+          "quoteCurrencyIndependentlyObserved": "USD"
+        }
+      },
+      "financialStatements": {
+        "status": "not-tested",
+        "period": "quarterly",
+        "incomeStatementRequested": false,
+        "cashFlowRequested": false,
+        "reportingCurrency": null,
+        "periodStart": null,
+        "periodEnd": null,
+        "unitScale": null,
+        "operatingMargin": null,
+        "netMargin": null,
+        "freeCashFlow": null,
+        "reason": "No per-symbol statement call: MSFT capability probes already showed statement-plan denial; no source values were invented."
+      },
+      "shareClassValidation": {
+        "userAlias": "BRK-B",
+        "providerRequestSymbol": "BRK.B",
+        "liveResponseMatchesAlias": true
+      }
+    },
+    {
+      "requestedSymbol": "QQQ",
+      "quote": {
+        "status": "returned",
+        "source": "Twelve Data connector get_quote",
+        "raw": {
+          "symbol": "QQQ",
+          "name": "Invesco QQQ Trust, Series 1",
+          "exchange": "NASDAQ",
+          "mic_code": "XNMS",
+          "currency": "USD",
+          "datetime": "2026-10-27",
+          "timestamp": "1793107800",
+          "last_quote_at": "1793117280",
+          "open": "715.22",
+          "high": "722.7",
+          "low": "713.63",
+          "close": "722.17",
+          "volume": "241042",
+          "previous_close": "712.20001",
+          "change": "9.96999",
+          "percent_change": "1.39989",
+          "average_volume": "39727514",
+          "is_market_open": "true",
+          "fifty_two_week_low": "555.59998",
+          "fifty_two_week_high": "762.85999",
+          "fifty_two_week_low_change": "166.57002",
+          "fifty_two_week_high_change": "-40.68999",
+          "fifty_two_week_low_change_percent": "29.98021",
+          "fifty_two_week_high_change_percent": "-5.33387",
+          "fifty_two_week_range": "555.599976 - 762.859985"
+        },
+        "normalized": {
+          "price": 722.17,
+          "changePct": 1.39989,
+          "previousClose": 712.20001,
+          "currency": "USD",
+          "asOf": "2026-10-27T16:08:00.000Z",
+          "session": "Market open",
+          "source": "Twelve Data",
+          "stale": true
+        },
+        "validation": {
+          "checkedAt": "2026-10-27T16:12:27.229Z",
+          "identityMatches": true,
+          "supportedUsdListing": true,
+          "positiveFinitePrice": true,
+          "providerDateMatchesObservedDate": true,
+          "sourceTimestampPreserved": true,
+          "notFutureDated": true,
+          "ohlcRangeValid": true,
+          "recomputedChangePct": 1.3998862482464736,
+          "reportedChangePct": 1.39989,
+          "changePctDifference": -0.0000037517535265152446,
+          "changePctMatchesRounding": true
+        }
+      },
+      "profile": {
+        "status": "returned",
+        "source": "Twelve Data connector get_company_info(profile)",
+        "fields": {
+          "symbol": "QQQ",
+          "name": "Invesco QQQ Trust, Series 1",
+          "exchange": "NASDAQ",
+          "mic_code": "XNMS",
+          "sector": "",
+          "industry": "",
+          "type": "ETF",
+          "country": "United States",
+          "currency": null
+        },
+        "firstAttemptRateLimited": true,
+        "retried": true,
+        "validation": {
+          "identityMatches": true,
+          "exchangeMatchesQuote": true,
+          "currencyExplicitlySupplied": false,
+          "quoteCurrencyIndependentlyObserved": "USD"
+        }
+      },
+      "financialStatements": {
+        "status": "not-applicable",
+        "period": "quarterly",
+        "incomeStatementRequested": false,
+        "cashFlowRequested": false,
+        "reportingCurrency": null,
+        "periodStart": null,
+        "periodEnd": null,
+        "unitScale": null,
+        "operatingMargin": null,
+        "netMargin": null,
+        "freeCashFlow": null,
+        "reason": "ETF: corporate operating statements are not the relevant fund dataset."
+      }
+    }
+  ],
+  "capabilityProbes": {
+    "income_statement": {
+      "symbol": "MSFT",
+      "status": "entitlement-denied",
+      "providerMessage": "/income_statement is available exclusively with pro or ultra or venture or enterprise plans. Consider upgrading your API Key now at https://twelvedata.com/pricing"
+    },
+    "cash_flow": {
+      "symbol": "MSFT",
+      "status": "entitlement-denied",
+      "providerMessage": "/cash_flow is available exclusively with pro or ultra or venture or enterprise plans. Consider upgrading your API Key now at https://twelvedata.com/pricing"
+    },
+    "statistics": {
+      "symbol": "MSFT",
+      "status": "entitlement-denied",
+      "providerMessage": "/statistics is available exclusively with pro or ultra or venture or enterprise plans. Consider upgrading your API Key now at https://twelvedata.com/pricing"
+    },
+    "usage": {
+      "raw": "timestamp;current_usage;plan_limit\n2026-10-27 16:07:29;1;0\n",
+      "interpretation": "Reported plan_limit=0 did not describe the enforced minute ceiling. Profile responses subsequently reported a 55-credit/minute limit."
+    }
+  },
+  "limitations": [
+    "Statement arithmetic cannot be reconciled without permitted raw income and cash-flow rows, reporting periods and units.",
+    "Profile currency is omitted by this connector response; quote currency is independently USD. Issuer domicile is not listing currency.",
+    "Provider sector labels are classifications, not validation of a valuation model.",
+    "Quote prices are point-in-time observations and are not a performance or investment recommendation."
+  ],
+  "fix": {
+    "file": "lib/providers.ts",
+    "description": "Currency-less Twelve profiles now recover only after a matching same-exchange USD directory listing is verified; issuer domicile is not used to infer trading currency.",
+    "verification": "Observed regression fail before patch; matching-identity/currency recovery and rejection controls pass."
+  },
+  "requestLimits": {
+    "maximumParallelRequests": 2,
+    "observedMinuteLimit": 55,
+    "profileRateLimitedFirstAttempts": [
+      "BE",
+      "ZETA",
+      "APP",
+      "ASTS",
+      "BRK.B",
+      "QQQ"
+    ],
+    "recovery": "All six profiles succeeded after subsequent allowance windows. No subscription or credentials were changed."
+  },
+  "summary": {
+    "representativeSymbols": 11,
+    "returnedQuotes": 11,
+    "returnedProfiles": 11,
+    "quoteIdentityCurrencyArithmeticPassed": 11,
+    "financialStatementsRetrieved": 0,
+    "financialStatementArithmeticVerified": 0,
+    "statementReconciliation": "Blocked by endpoint entitlement; no statement dates, currency, unit scale, operating-margin or FCF values were fabricated.",
+    "productionEndToEndVerified": false,
+    "fullUniverseCoverageVerified": false
+  }
+}

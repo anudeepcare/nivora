@@ -91,7 +91,7 @@ export function cycleReading(
         ? " Stronger upsize is capped at 2×: price remains above the longer-cycle average."
         : "") +
       (limited
-        ? ` Limited listing history: ${previous.length} prior completed months.`
+        ? ` Limited consecutive history: ${previous.length} prior completed months.`
         : ""),
   };
 }
@@ -124,17 +124,23 @@ function compute(bars: Candle[], asOf: string, market: "us-equity" | "crypto") {
   const history: CycleSignal[] = [];
   let forming: CycleSignal | null = null;
   for (let i = 12; i < rows.length; i++) {
-    const prior = rows.slice(Math.max(0, i - 24), i),
-      [m, bar] = rows[i];
-    if (
-      prior.some(
-        ([key, b], j) =>
-          b.time !== monthEndSession(key, market) ||
-          (j > 0 && monthIndex(key) - monthIndex(prior[j - 1][0]) !== 1),
-      ) ||
-      monthIndex(m) - monthIndex(prior.at(-1)![0]) !== 1
-    )
-      continue;
+    const [m, bar] = rows[i];
+    // Only the trailing uninterrupted segment can support a monthly window.
+    // An older gap cannot invalidate 12 complete months, or masquerade as a
+    // 24-month slow guard by pulling an even older observation into its place.
+    let start = i;
+    for (let j = i - 1; j >= Math.max(0, i - 24); j--) {
+      const [key, previous] = rows[j],
+        next = rows[j + 1][0];
+      if (
+        previous.time !== monthEndSession(key, market) ||
+        monthIndex(next) - monthIndex(key) !== 1
+      )
+        break;
+      start = j;
+    }
+    const prior = rows.slice(start, i);
+    if (prior.length < 12) continue;
     const closed = bar.time === monthEndSession(m, market);
     if (m < current && !closed) continue;
     const observations = prior.map(([, b]) => b),

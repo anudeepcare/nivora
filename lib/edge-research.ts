@@ -1,56 +1,20 @@
 import type { Research } from "./types";
-import { researchBrief } from "./research-brief.ts";
-import { researchDecision } from "./decision-research.ts";
-import { edgeReading } from "./auryn-edge.ts";
-
-export function researchEdge(r: Research, ownsPosition = false) {
-  const brief = researchBrief(r),
-    decision = researchDecision(r),
-    n = brief.businessNumbers;
-  const strong =
-    n.fcf != null &&
-    n.fcf > 0 &&
-    n.operatingMargin != null &&
-    n.operatingMargin > 0 &&
-    n.revenueGrowth != null &&
-    n.revenueGrowth >= 0;
-  const business = !brief.period
-    ? "missing"
-    : strong
-      ? "strong"
-      : n.fcf != null &&
-          n.fcf < 0 &&
-          n.operatingMargin != null &&
-          n.operatingMargin < 0 &&
-          n.revenueGrowth != null &&
-          n.revenueGrowth < 0
-        ? "weak"
-        : "mixed";
-  const price = r.quote.price,
-    scenario = brief.scenario;
-  // Scenarios remain assumptions, not intrinsic values. Large upside or narrow
-  // cases are never silently certified as an attractive purchase.
-  const usable =
-    brief.scenarioEligible &&
-    scenario &&
-    price != null &&
-    price > 0 &&
-    [scenario.low, scenario.base, scenario.high].every(
-      (x) => Number.isFinite(x) && x > 0,
-    ) &&
-    scenario.low <= scenario.base &&
-    scenario.base <= scenario.high;
-  const baseChange = usable ? (scenario.base / price! - 1) * 100 : null;
-  const downside = usable ? (scenario.low / price! - 1) * 100 : null;
+import { aurynDecision } from "./auryn-decision.ts";
+import { pacePresentation, pacePeriods } from "./pace-presentation.ts";
+/** Compatibility view over the shared decision record; no second investment policy. */
+export function researchEdge(
+  r: Research,
+  ownsPosition = false,
+  now = Date.parse(r.priceObservedAt ?? r.retrievedAt),
+) {
+  const d = aurynDecision(r, { ownsPosition, now }),
+    brief = d.brief;
+  const business = d.business === "developing" ? "mixed" : d.business;
   const value =
-    !usable ||
-    baseChange == null ||
-    baseChange > 100 ||
-    downside == null ||
-    downside > 0
-      ? "unestablished"
-      : baseChange >= 15 && downside >= -40
-        ? "supported"
+    d.value === "attractive"
+      ? "supported"
+      : d.value === "unassessed"
+        ? "unestablished"
         : "demanding";
   const timing =
     brief.timing.rsi != null && brief.timing.rsi >= 75
@@ -58,125 +22,110 @@ export function researchEdge(r: Research, ownsPosition = false) {
       : brief.timing.trend === "Constructive"
         ? "favorable"
         : "mixed";
-  const quoteAt = Date.parse(r.quote.asOf ?? ""),
-    referenceAt = Date.parse(r.priceObservedAt ?? r.retrievedAt);
-  const matchingClose = r.history.findLast(
-    (bar) =>
-      bar.time.length === 10 && bar.time === (r.quote.asOf ?? "").slice(0, 10),
-  );
-  const settledReference =
-    !!matchingClose &&
-    /close|end.of.day/i.test(r.quote.session) &&
-    r.quote.currency === r.company.currency &&
-    price != null &&
-    Number.isFinite(price) &&
-    price > 0 &&
-    Number.isFinite(quoteAt) &&
-    Number.isFinite(referenceAt) &&
-    quoteAt <= referenceAt + 60000 &&
-    referenceAt - quoteAt <= 4 * 86400000 &&
-    Number.isFinite(matchingClose.close) &&
-    Math.abs(matchingClose.close - price) <= Math.max(0.01, price * 0.0001);
-  const currentReference =
-    brief.checks.find((c) => c.label === "Price observation")?.status ===
-    "available";
-  const referenceBasis = currentReference
-    ? "quote"
-    : settledReference
-      ? "settled-close"
-      : "unavailable";
-  const severe = decision.flags.find((f) => f.severe);
-  const reading = edgeReading({
-    business,
-    value,
-    timing,
-    severeRisk: !!severe,
-    conflicting: brief.conflicting,
-    freshQuote: currentReference || settledReference,
-    confirmedPace: brief.accumulation.multiplier,
-    formingPace: brief.accumulation.forming?.multiplier ?? null,
-    assetType: r.company.assetType,
-    ownsPosition,
-    specialistModel: [
-      "financial",
-      "insurance",
-      "specialized-financial",
-      "real-estate",
-    ].includes(brief.coverage.family),
-  });
+  const specialist = [
+    "financial",
+    "insurance",
+    "specialized-financial",
+    "real-estate",
+  ].includes(brief.coverage.family);
+  const verdict =
+    d.action === "Buy" || d.action === "Add"
+      ? "Build"
+      : d.action === "Hold"
+        ? "Hold & monitor"
+        : ["Reduce", "Sell", "Avoid"].includes(d.action)
+          ? "Review exposure"
+          : r.company.assetType !== "stock"
+            ? "Price review"
+            : specialist && d.value === "unassessed"
+              ? "Sector review"
+              : d.action;
   const trajectory = brief.trajectory.filter(
-    (t) => t.fcf != null && t.shares != null && t.shares > 0,
-  );
-  const first = trajectory[0],
+      (t) => t.fcf != null && t.shares != null && t.shares > 0,
+    ),
+    first = trajectory[0],
     last = trajectory.at(-1);
   const cashPerShareChange =
     first && last && first !== last && first.fcf! > 0
       ? (last.fcf! / last.shares! / (first.fcf! / first.shares!) - 1) * 100
       : null;
   const disconnect =
-    !brief.conflicting && strong && brief.timing.trend === "Weak"
+    business === "strong" && brief.timing.trend === "Weak"
       ? {
           title: "Cash generation positive. Price trend weak.",
-          text: "Positive cash generation and price weakness tell different stories. Review valuation before treating a decline as an opportunity.",
+          text: "Share-price weakness does not by itself mean the business is weakening. Check growth, cash generation and funding; confirmed Pace then guides eligible accumulation.",
         }
-      : !brief.conflicting && strong && value === "demanding"
+      : business === "strong" && value === "demanding"
         ? {
-            title:
-              "Cash generation supports the business. Price limits the entry.",
-            text: "Operating strength does not automatically establish a sufficient valuation cushion.",
+            title: "Business strength and valuation are different questions.",
+            text: "Cash generation supports the business screen. Price is above the conservative model screen, so inspect the assumptions and keep purchases within your budget.",
           }
-        : !brief.conflicting &&
-            business === "weak" &&
-            brief.timing.trend === "Constructive"
-          ? {
-              title: "Price improving. Cash generation still under pressure.",
-              text: "A stronger chart does not resolve operating losses or funding requirements.",
-            }
-          : null;
+        : null;
   return {
-    ...reading,
+    version: d.version,
     brief,
+    decision: d,
     business,
     value,
     timing,
     disconnect,
     cashPerShareChange,
-    referenceBasis,
+    verdict,
+    assessment: d.action,
+    reason: d.headline,
+    tone: d.tone,
+    turningPoint: d.changeConditions[0],
+    riskReview: ["Reduce", "Sell", "Avoid"].includes(d.action),
     risk:
-      severe?.text ??
+      d.risks[0] ??
       brief.counterCase[0] ??
-      "Review scenario assumptions and your total exposure.",
-    confidence:
-      brief.conflicting || business === "missing"
-        ? "Limited"
-        : usable && decision.scoredLenses >= 6
-          ? "Moderate"
-          : "Limited",
-    businessLabel: [
-      "financial",
-      "insurance",
-      "specialized-financial",
-      "real-estate",
-    ].includes(brief.coverage.family)
+      "Review how the position fits your total portfolio.",
+    pace: brief.accumulation.multiplier,
+    pacePresentation: pacePresentation(d.action, brief.accumulation.multiplier),
+    pacePeriods: pacePeriods(brief.accumulation),
+    pricePace: brief.accumulation.multiplier,
+    formingPace: brief.accumulation.forming?.multiplier ?? null,
+    referenceBasis: d.reference?.basis ?? "unavailable",
+    confidence: d.confidence,
+    businessLabel: specialist
       ? "Sector evidence"
       : business === "strong"
         ? "Strong"
         : business === "weak"
           ? "Under pressure"
           : business === "missing"
-            ? "Not assessed"
-            : "Mixed",
+            ? "Developing"
+            : "Developing",
     valueLabel:
-      value === "supported"
-        ? "Conditional cushion"
-        : value === "demanding"
-          ? "Demanding"
-          : "Not established",
+      d.value === "attractive"
+        ? "Below model screen"
+        : d.value === "fair"
+          ? "Near model value"
+          : d.value === "expensive"
+            ? "Above model value"
+            : "Assumptions needed",
     timingLabel:
       timing === "favorable"
         ? "Constructive"
         : timing === "extended"
           ? "Extended"
           : "Mixed",
+  };
+}
+
+/** Loaded research remains useful when monthly contribution history is incomplete. */
+export function workspaceGuidance(
+  r: Research,
+  ownsPosition = false,
+  now = Date.parse(r.retrievedAt),
+) {
+  const edge = researchEdge(r, ownsPosition, now);
+  return {
+    ...edge.brief.accumulation,
+    view: edge.pacePresentation,
+    action: edge.assessment,
+    actions: edge.decision.actionLabels,
+    contextLabel: edge.decision.contextLabel,
+    periods: edge.pacePeriods,
   };
 }

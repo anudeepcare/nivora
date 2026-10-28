@@ -1,0 +1,117 @@
+✖ an explicitly labelled demo uses its frozen retrieval clock for movement (104.334078ms)
+✔ production movement still expires against the wall clock (26.692638ms)
+✖ the compact strip omits absent metrics and keeps precise source status in details (25.21969ms)
+✔ fresh positive quote is selected against the supplied wall clock (2.98408ms)
+✔ an expired quote selects the newest settled daily close, never the forming bar (1.121361ms)
+✔ US history only includes the same-day close after 17:00 New York (0.523659ms)
+✔ settled references expire after four calendar days and invalid clocks produce none (1.134801ms)
+✔ currency conflicts do not produce a quote or historical reference (0.150466ms)
+✔ invalid OHLC, future bars and conflicting duplicate dates cannot win by order (0.584762ms)
+✔ crypto closes settle only after their UTC date ends (0.460585ms)
+✔ unknown international exchange clocks use a conservative daily settlement delay (0.452994ms)
+✔ a newer settled close takes precedence over an older quote still inside its overnight age limit (0.761409ms)
+✔ a foreign issuer on a verified US exchange uses that exchange session clock (0.339322ms)
+✖ a same-date intraday quote cannot outrank the subsequently completed US close (1.451049ms)
+✔ a genuinely later quote after the US close is preserved (0.403929ms)
+✖ same-date close precedence follows New York winter time (0.426944ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 12
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 545.14317
+
+✖ failing tests:
+
+test at tests/movement-context-component.test.mjs:26:1
+✖ an explicitly labelled demo uses its frozen retrieval clock for movement (104.334078ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Today’s move/. Input:
+  
+  '<section class="card movement-context" aria-label="Price movement context"><details class="movement-news"><summary class="movement-summary" aria-label="Price, volume and next event; expand sourced context"><span class="movement-metric"><span>Older quote</span><strong class="green">+20.0%</strong><small>Oct 26</small></span><span class="movement-metric"><span>Relative volume</span><strong>Unavailable</strong><small>Daily history</small></span><span class="movement-metric"><span>Next earnings</span><strong>Unconfirmed</strong><small>Calendar</small></span></summary><div class="movement-details"><p>Sample quote · Live · premarket · Oct 26, 8:23 AM CDT. This quote has expired; a recent settled replacement was not available.</p><p>Settled daily volume unavailable.</p><p>Earnings calendar unavailable.</p><p>Sample mode has no live headlines.</p><p>Related coverage provides context; it does not establish what caused the price move.</p><button class="text-link movement-open-news">News &amp; earnings </button></div></details></section>'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/9f0036d454ae/auryn-approved/AURYN/tests/movement-context-component.test.mjs:28:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '<section class="card movement-context" aria-label="Price movement context"><details class="movement-news"><summary class="movement-summary" aria-label="Price, volume and next event; expand sourced context"><span class="movement-metric"><span>Older quote</span><strong class="green">+20.0%</strong><small>Oct 26</small></span><span class="movement-metric"><span>Relative volume</span><strong>Unavailable</strong><small>Daily history</small></span><span class="movement-metric"><span>Next earnings</span><strong>Unconfirmed</strong><small>Calendar</small></span></summary><div class="movement-details"><p>Sample quote · Live · premarket · Oct 26, 8:23 AM CDT. This quote has expired; a recent settled replacement was not available.</p><p>Settled daily volume unavailable.</p><p>Earnings calendar unavailable.</p><p>Sample mode has no live headlines.</p><p>Related coverage provides context; it does not establish what caused the price move.</p><button class="text-link movement-open-news">News &amp; earnings </button></div></details></section>',
+    expected: /Today’s move/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at tests/movement-context-component.test.mjs:35:1
+✖ the compact strip omits absent metrics and keeps precise source status in details (25.21969ms)
+  AssertionError [ERR_ASSERTION]: The input was expected to not match the regular expression /Unavailable|Relative volume|Unconfirmed|Not applicable/. Input:
+  
+  '<span class="movement-metric"><span>Older quote</span><strong class="green">+20.0%</strong><small>Oct 26</small></span><span class="movement-metric"><span>Relative volume</span><strong>Unavailable</strong><small>Daily history</small></span><span class="movement-metric"><span>Next earnings</span><strong>Unconfirmed</strong><small>Calendar</small></span>'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/9f0036d454ae/auryn-approved/AURYN/tests/movement-context-component.test.mjs:37:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '<span class="movement-metric"><span>Older quote</span><strong class="green">+20.0%</strong><small>Oct 26</small></span><span class="movement-metric"><span>Relative volume</span><strong>Unavailable</strong><small>Daily history</small></span><span class="movement-metric"><span>Next earnings</span><strong>Unconfirmed</strong><small>Calendar</small></span>',
+    expected: /Unavailable|Relative volume|Unconfirmed|Not applicable/,
+    operator: 'doesNotMatch',
+    diff: 'simple'
+  }
+
+test at tests/price-reference.test.mjs:116:1
+✖ a same-date intraday quote cannot outrank the subsequently completed US close (1.451049ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   asOf: '2026-10-26T17:00:00Z',
+  +   basis: 'quote',
+  -   asOf: '2026-10-26',
+  -   basis: 'settled-close',
+      currency: 'USD',
+  +   price: 90
+  -   price: 110
+    }
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/9f0036d454ae/auryn-approved/AURYN/tests/price-reference.test.mjs:119:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { price: 90, asOf: '2026-10-26T17:00:00Z', basis: 'quote', currency: 'USD' },
+    expected: { price: 110, asOf: '2026-10-26', basis: 'settled-close', currency: 'USD' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/price-reference.test.mjs:127:1
+✖ same-date close precedence follows New York winter time (0.426944ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  90 !== 110
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/9f0036d454ae/auryn-approved/AURYN/tests/price-reference.test.mjs:131:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 90,
+    expected: 110,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

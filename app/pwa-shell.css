@@ -9,8 +9,9 @@
   width: 100%;
   height: max(12px, env(safe-area-inset-top, 0px));
   min-height: 12px;
-  /* The status area is part of the same glass surface as the mobile header. */
-  background: color-mix(in srgb, var(--surface) 74%, transparent);
+  /* Match the mobile header so the status area reads as one surface instead
+     of an opaque strip above the app. */
+  background: color-mix(in srgb, var(--card) 74%, transparent);
   -webkit-backdrop-filter: blur(22px) saturate(165%);
   backdrop-filter: blur(22px) saturate(165%);
   pointer-events: none;

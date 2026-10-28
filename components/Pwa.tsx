@@ -64,5 +64,17 @@ export default function Pwa() {
         });
     }
   }, []);
+  useEffect(() => {
+    const syncThemeColor = () => {
+      const dark = document.documentElement?.dataset?.theme === "dark";
+      const color = dark ? "#171b24" : "#f2f4f7";
+      document.querySelectorAll?.('meta[name="theme-color"]').forEach((meta) => meta.setAttribute("content", color));
+    };
+    syncThemeColor();
+    if (typeof MutationObserver === "undefined" || !document.documentElement) return;
+    const observer = new MutationObserver(syncThemeColor);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "data-accent"] });
+    return () => observer.disconnect();
+  }, []);
   return null;
 }

@@ -46,14 +46,17 @@ export function PricingCards({
   const owner = access?.owner;
   return (
     <div className="pricing-cards">
-      {(["free", "pro"] as const).map((plan) => (
+      {(["pro", "free"] as const).map((plan) => (
         <section
           key={plan}
           className={plan === "pro" ? "pricing-pro" : ""}
           aria-label={`${plan === "free" ? "Free" : "Pro"} plan`}
         >
           <div className="pricing-card-title">
-            <h2>{plan === "free" ? "Free" : "Pro"}</h2>
+            <div>
+              <h2>{plan === "free" ? "Free" : "Pro"}</h2>
+              {plan === "pro" && <span className="pricing-recommended">Most complete research</span>}
+            </div>
             {!publicPage && access?.plan === plan && (
               <span className="plan-pill">
                 {owner ? "Included" : "Current plan"}

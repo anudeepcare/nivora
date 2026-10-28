@@ -1,4 +1,5 @@
 "use client";
+import { customerText } from "@/lib/customer-language";
 import Link from "next/link";
 import { useId, useRef, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
@@ -18,9 +19,11 @@ export function DataStamp({
   return (
     <span className="data-stamp">
       <span>
-        {status ? `${status} · ` : ""}
-        {asOf?.includes('T') ? quoteTime(asOf) : dateLabel(asOf)}
-        {source && /fallback/i.test(source) && <small> · Backup data used</small>}
+        {status ? `${customerText(status)} · ` : ""}
+        {asOf?.includes("T") ? quoteTime(asOf) : dateLabel(asOf)}
+        {source && /fallback/i.test(source) && (
+          <small> · Backup data used</small>
+        )}
       </span>
     </span>
   );
@@ -251,7 +254,13 @@ export function Source({
   href?: string | null;
   children: React.ReactNode;
 }) {
-  if (href && /^https:\/\/(?:[^/]*\.)?(?:eodhd\.com|twelvedata\.com)(?:[/:]|$)/i.test(href)) return null;
+  if (
+    href &&
+    /^https:\/\/(?:[^/]*\.)?(?:eodhd\.com|twelvedata\.com)(?:[/:]|$)/i.test(
+      href,
+    )
+  )
+    return null;
   return href && /^https:\/\//.test(href) ? (
     <a className="source" href={href} target="_blank" rel="noreferrer">
       {/eodhd\.com\/financial-apis|twelvedata\.com\/docs/.test(href)
@@ -275,7 +284,7 @@ export function Notice({
       className={`notice ${error ? "error" : ""}`}
       role={error ? "alert" : "status"}
     >
-      {children}
+      {typeof children === "string" ? customerText(children) : children}
     </div>
   );
 }
@@ -284,7 +293,16 @@ export function ProductFooter() {
   return (
     <footer className="product-footer">
       <span>© {new Date().getFullYear()} AURYN. All rights reserved.</span>
-      <nav aria-label="Help and legal"><Link href="/help">Help</Link><Link href="/contact">Contact</Link><Link href="/methodology">Methodology</Link><Link href="/terms">Terms</Link><Link href="/privacy">Privacy</Link><Link href="/risk">Risk disclosure</Link><Link href="/reliability">Data reliability</Link></nav>
+      <span className="mobile-footer-note">Help and legal links are available in Settings.</span>
+      <nav aria-label="Help and legal">
+        <Link href="/help">Help</Link>
+        <Link href="/contact">Contact</Link>
+        <Link href="/methodology">Methodology</Link>
+        <Link href="/terms">Terms</Link>
+        <Link href="/privacy">Privacy</Link>
+        <Link href="/risk">Risk disclosure</Link>
+        <Link href="/reliability">Data reliability</Link>
+      </nav>
       <Help label="Research disclosure" trigger="Research disclosure">
         <p>
           AURYN provides investment research and decision support. It does not

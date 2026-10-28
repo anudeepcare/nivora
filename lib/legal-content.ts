@@ -1,9 +1,9 @@
+import { SUPPORT_EMAIL } from "./site-metadata.ts";
 export const legalConfiguration = {
-  operator:
-    process.env.NEXT_PUBLIC_AURYN_OPERATOR || "AURYN",
-  contact: process.env.NEXT_PUBLIC_AURYN_SUPPORT_EMAIL || "",
-  updated: "October 25, 2026",
-  version: "edge-preview-20261025",
+  operator: process.env.NEXT_PUBLIC_AURYN_OPERATOR || "AURYN",
+  contact: process.env.NEXT_PUBLIC_AURYN_SUPPORT_EMAIL || SUPPORT_EMAIL,
+  updated: "October 27, 2026",
+  version: "action-web-20261027",
 };
 export type DocumentId =
   | "terms"
@@ -140,7 +140,7 @@ export const documents: Record<
       },
       {
         title: "Signals and multipliers",
-        text: "DCA multipliers scale a hypothetical baseline contribution. They are not leverage, return multiples or personal position-size instructions. A forming monthly signal can change; stronger daily-close readings do not rewrite the confirmed month.",
+        text: "AURYN Pace levels describe accumulation zones rather than automatic contribution amounts. They are not leverage, return multiples or personal position-size instructions. A forming monthly signal can change; stronger daily-close readings do not rewrite the confirmed month.",
       },
       {
         title: "Data and AI",
@@ -203,7 +203,7 @@ export const documents: Record<
       },
       {
         title: "Cycle-relative monthly policy",
-        text: "Monthly-v4 uses the mean of the previous 12 completed monthly closes and their sample standard deviation, with a spread floor of 10% of the mean. Eligibility retains 24 consecutive prior months. The 2×/3×/4× pullback gates require 10%/25%/40% below that mean and 0.5/1.35/1.5 spread units. Upper extension reviews retain the v3 robust-trend pause guard; a price at least three times the cycle mean and two spreads above it also triggers a review. A severe cycle review requires three spreads and a 50% period rise. Monthly parameters were calibrated against a small observed reference sample, not learned from a disclosed private formula. Weekly v1 is separate. US daily bars settle after 5 PM New York; crypto uses completed UTC days. Prior versions remain in source for reproducibility. Matching selected signals is not evidence of better returns.",
+        text: "Monthly-v5 uses the previous 12 completed monthly closes for the cycle average and sample spread, with a 10% spread floor. Twelve to 23 prior months are marked limited history; 24 prior months enable the robust-trend guard. P2/P3/P4 require 10%/25%/35% below the cycle average and 0.5/0.95/1.3 spread units. Positive-extension review retains the robust-trend upper guard and severe cycle checks. Weekly v1 is a separate policy using 52 completed weeks. US daily bars settle after 5 PM New York; crypto uses completed UTC days. Completed readings remain fixed for unchanged input history. Price policies have not established consistent outperformance; simulation results include costs and should be read alongside drawdowns and idle cash.",
       },
       {
         title: "Historical policy comparisons",
@@ -246,7 +246,7 @@ export const documents: Record<
       },
       {
         title: "AURYN Pace explained with an example",
-        text: "If your regular contribution is $100, 2× represents $200 and 4× represents $400, provided that cash is available. These are not returns, leverage or suitable position sizes. Completed month: the settled month-end price reading. This month so far: a developing reading that may change. A 0× price reading pauses additions under the policy; a missing reading is not 0×. Business warnings are shown separately.",
+        text: "P means Pace, AURYN’s accumulation-zone scale. P0 pauses buying. P1 means Watch for a new purchase or Hold for an existing position. P2 is an initial zone: start or add small. P3 is a deeper zone: buy or add gradually. P4 is the deepest qualifying price zone: consider a larger part of planned accumulation within cash and position limits. Business checks must qualify before buying. These levels are not returns, leverage or suitable position sizes. Completed month readings are confirmed; the current month is forming and can change. A missing reading is not P0, and a business-risk pause does not overwrite the raw price reading.",
       },
       {
         title: "Why is something unavailable?",
@@ -268,7 +268,25 @@ export const documents: Record<
   },
 };
 
-// Edge uses the same evidence policy across its presentation surfaces.
-documents.methodology.sections.unshift({title:"AURYN Edge and Pace",text:"Edge is an experimental evidence policy, not a probability of profit. A Build reading requires positive cash generation, positive operating margin, non-negative comparable revenue growth, constructive trend, confirmed Pace of at least 2×, no severe flagged risk, a usable quote, and an eligible earnings sensitivity with at least 15% base upside and no more than 40% bear downside. Cases with base upside over 100% or all cases above the quote do not establish a cushion. These are disclosed policy gates, not independently calibrated optimal thresholds. Hold & monitor is ownership context, not a guarantee of suitability. Pace shows completed monthly price conditions separately from the current developing month. Business and data warnings never overwrite its multiplier; missing price history produces no monthly reading. Models and analyst consensus remain separate."});
-documents.privacy.sections.push({title:"Support requests",text:"The contact form stores your email, chosen topic and message so we can respond. Requests receive a reference number. A hashed network identifier is used to limit abuse; passwords, portfolio contents and payment card details are not automatically attached. If support email delivery is enabled, our email service processes the contact email and message. Use Contact for access or deletion requests. Never send secrets or payment card details."});
-documents.help.sections.unshift({title:"Contact AURYN",text:"Open Contact from the footer for general enquiries, technical issues, billing, feedback or privacy concerns. After a successful save you receive a reference. A receipt is shown as sent only if the email provider accepted it; otherwise the saved request remains available to the owner."});
+// Public methodology follows the production decision and Pace policies.
+documents.methodology.sections.unshift({
+  title: "AURYN View and AURYN Pace",
+  text: "Business first: current comparable growth, profitability and funding determine whether accumulation is supported. For a qualifying business without the listed funding or deterioration triggers, confirmed P2–P4 supports tiered accumulation within a cash budget and position limit. P1 means Watch for new purchases or Hold for holdings; business strength alone does not establish an accumulation opportunity. P0 pauses new contributions: Wait for new purchases, Hold for holdings. P4 is a relative price zone, not business quality, fair value, a return forecast or leverage. Valuation sensitivities and short-term momentum remain separate cautions rather than universal vetoes on a confirmed accumulation plan. Without confirmed Pace, the separate valuation-entry screen can support Buy/Add: at least 12% annualized earnings-model base return, or a 20% cash-flow base-value cushion; both require no worse than 35% modelled bear downside and RSI below 75 when available. Incomplete assessments or unmet business checks show Review with a reason. Operating cash burn with less than 12 months of reported runway, or burn with uncovered interest and exhausted cash, triggers Reduce for holdings / Avoid for new purchases. Revenue declining more than 10%, operating losses and negative cash after capex in both comparable periods also trigger Reduce/Avoid. Sell requires operating cash burn, less than six months of runway, negative equity and debt together. Expansion capex alone is not distress. Forming readings never replace confirmed readings. These are transparent research heuristics, not validated forecasts or personal investment instructions.",
+});
+documents.privacy.sections.push({
+  title: "Support requests",
+  text: "The contact form stores your email, chosen topic and message so we can respond. Requests receive a reference number. A hashed network identifier is used to limit abuse; passwords, portfolio contents and payment card details are not automatically attached. If support email delivery is enabled, our email service processes the contact email and message. Use Contact for access or deletion requests. Never send secrets or payment card details.",
+});
+documents.help.sections.unshift({
+  title: "Contact AURYN",
+  text: "Open Contact from the footer for general enquiries, technical issues, billing, feedback or privacy concerns. After a successful save you receive a reference. A receipt is shown as sent only if the email provider accepted it; otherwise the saved request remains available to the owner.",
+});
+
+documents.privacy.sections.push({
+  title: "Optional analytics and your choices",
+  text: "Optional Google Analytics runs only after you allow analytics. It measures coarse page categories, signup intent, search outcomes and performance buckets. We do not send search text, ticker symbols, email addresses, portfolio records, balances or support messages as analytics fields. Google receives network and device information when its service loads. Advertising storage and personalization are disabled. Decline keeps the product usable. Open Analytics preferences to withdraw consent; future app events stop and accessible analytics cookies are cleared. Withdrawal does not erase already collected aggregate information. Contact support@auryninvest.com for privacy requests.",
+});
+documents.methodology.sections.push({
+  title: "Funded growth and contribution eligibility",
+  text: "An ordinary operating company may qualify through funded growth: at least 20% comparable revenue growth, at least five percentage points of operating-margin improvement, positive cash with nonpositive net debt, and reported diluted weighted-share growth no greater than 10%. It needs nonnegative operating cash flow or at least 24 months of historical operating runway, plus nonnegative cash after capex or at least 18 months of investment runway. All required observations must be available and comparable. Freshness, conflicts and funding deterioration checks still apply. Confirmed P2–P4 can support gradual accumulation; P1 remains Watch/Hold; valuation and short-term momentum remain visible cautions. These conservative thresholds are transparent screening heuristics, not an optimized or backtested claim. Confirmed P0 pauses purchases/additions. A missing contribution level does not erase a separately supported business and valuation assessment. Watchlisting never implies ownership.",
+});

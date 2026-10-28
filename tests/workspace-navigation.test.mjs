@@ -4,8 +4,10 @@ import fs from "node:fs";
 import ts from "typescript";
 import React from "react";
 import { NavigationMemory, restoreWhenReady } from "../lib/navigation.ts";
+import { settingsHref } from "../lib/settings-navigation.ts";
 
 function component(file, name, bindings) {
+  bindings = { useAccess: () => ({access:{capabilities:{paperTrading:false}}}), ...bindings };
   bindings={AccessBoundary:"AccessBoundary",AccessNotice:()=>null,...bindings};
   const ast = ts.createSourceFile(
     file,
@@ -87,6 +89,8 @@ test("switching workspace tabs restores their own position; tapping the active t
   const icon = () => null;
   const Shell = component("components/Shell.tsx", "Shell", {
     usePathname: () => path,
+    useRouter: () => ({ push: () => {} }),
+    settingsHref,
     useProduct: () => ({ theme: "dark" }),
     useRef: (value) =>
       refs[cursor++] ?? (refs[cursor - 1] = { current: value }),
@@ -118,7 +122,13 @@ test("switching workspace tabs restores their own position; tapping the active t
     Moon: icon,
     X: icon,
     Bell: icon,
-    SettingsSheet: icon,
+    LayoutGrid: icon,
+    Compass: icon,
+    FlaskConical: icon,
+    Scale: icon,
+    HelpCircle: icon,
+    ArrowUpRight: icon,
+    ChartNoAxesCombined: icon,
   });
   function links(node, href) {
     if (!node || typeof node !== "object") return [];

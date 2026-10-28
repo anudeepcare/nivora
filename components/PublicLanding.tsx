@@ -1,245 +1,221 @@
 "use client";
+import { PrivacyChoices } from "./AnalyticsConsent";
+import { SUPPORT_EMAIL } from "@/lib/site-metadata";
+import PaceHelp from "./PaceHelp";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight,
   Search,
-  FileText,
   ChartNoAxesCombined,
   Menu,
   X,
   Check,
   ShieldCheck,
+  Layers3,
+  Scale,
+  PieChart,
 } from "lucide-react";
 import { authClient } from "@/lib/client";
 
-/** An explicitly illustrative product surface; never mixed with account research. */
-export function PublicSample() {
-  const [active, setActive] = useState("business");
+function PublicBrand() {
+  return (
+    <Link className="ap-brand" href="/" aria-label="AURYN home">
+      <img src="/icon.svg" alt="" width="34" height="34" />
+      <span>AURYN</span>
+    </Link>
+  );
+}
+
+/** A guide to real product concepts, with no fictional company observations. */
+export function PublicSample({ compact = false }: { compact?: boolean } = {}) {
   return (
     <section
-      className="research-panorama"
-      aria-label="Illustrative research preview — not a real investment"
+      className={`ap-product ${compact ? "ap-product-compact" : ""}`}
+      aria-label="Illustrative product guide, not a live investment recommendation"
     >
-      <header className="panorama-toolbar">
-        <div className="panorama-company">
-          <span>A</span>
-          <div>
-            <strong>
-              Your next investment
-            </strong>
-            <small>Illustrative research · sample values</small>
-          </div>
-        </div>
-        <div className="panorama-reference">
-          <strong>$120.00</strong>
-          <span>Illustrative reference price</span>
-        </div>
-      </header>
-      <div className="panorama-verdict">
-        <span>AURYN VIEW</span>
-        <h2>Understand the whole case.</h2>
-        <p>Business evidence, price assumptions and timing—side by side.</p>
-      </div>
-      <div
-        className="panorama-navigation"
-        role="group"
-        aria-label="Preview perspective"
-      >
-        {["business", "value", "timing"].map((key) => (
-          <button
-            type="button"
-            key={key}
-            aria-pressed={active === key}
-            aria-controls={`preview-${key}`}
-            onClick={() => setActive(key)}
-          >
-            {key[0].toUpperCase() + key.slice(1)}
-          </button>
-        ))}
-      </div>
-      <div className="panorama-chapters">
-        <section
-          id="preview-business"
-          className="panorama-business"
-          data-active={active === "business"}
-        >
-          <header>
-            <span>1</span>
-            <h3>Business improving</h3>
-          </header>
-          <p>Growth supported by cash generation.</p>
-          <div className="panorama-metrics">
-            <div>
-              <strong>+18%</strong>
-              <span>Revenue growth</span>
-            </div>
-            <div>
-              <strong>24%</strong>
-              <span>FCF margin</span>
-            </div>
-          </div>
-          <svg
-            viewBox="0 0 260 110"
-            role="img"
-            aria-label="Illustrative annual revenue increases from 2 to 4 billion over four years"
-            className="panorama-business-chart"
-          >
-            <line x1="12" x2="248" y1="88" y2="88" stroke="#d6e5ec" />
-            {[42, 55, 72, 88].map((h, i) => (
-              <g key={i}>
-                <rect
-                  x={24 + i * 58}
-                  y={88 - h}
-                  width="30"
-                  height={h}
-                  rx="4"
-                  fill={i === 3 ? "#0b9b77" : "#96c2ff"}
-                />
-                <text
-                  x={39 + i * 58}
-                  y="106"
-                  textAnchor="middle"
-                  fontSize="10"
-                  fill="#64728c"
-                >
-                  {2021 + i}
-                </text>
-              </g>
-            ))}
-          </svg>
-        </section>
-        <section
-          id="preview-value"
-          className="panorama-value"
-          data-active={active === "value"}
-        >
-          <header>
-            <span>2</span>
-            <h3>Price in perspective</h3>
-          </header>
-          <p>Assumptions, not a single promise.</p>
-          <div className="panorama-cases">
-            {[
-              ["Bear", "$90"],
-              ["Base", "$132"],
-              ["Bull", "$168"],
-            ].map(([name, price]) => (
-              <div key={name} data-case={name}>
-                <span>{name}</span>
-                <strong>{price}</strong>
-              </div>
-            ))}
-          </div>
-          <svg
-            viewBox="0 0 280 110"
-            role="img"
-            aria-label="Illustrative shared linear scale from Bear 90 to Bull 168, with reference 120 and Base 132"
-            className="panorama-value-chart"
-          >
-            <line
-              x1="20"
-              x2="260"
-              y1="34"
-              y2="34"
-              stroke="#b7d8ee"
-              strokeWidth="4"
-            />
-            {[
-              [90, "#ed6878"],
-              [132, "#1763ff"],
-              [168, "#069a75"],
-            ].map(([v, c]) => (
-              <circle
-                key={v}
-                cx={20 + ((Number(v) - 90) / 78) * 240}
-                cy="34"
-                r="6"
-                fill={String(c)}
-              />
-            ))}
-            <line
-              x1={20 + (30 / 78) * 240}
-              x2={20 + (30 / 78) * 240}
-              y1="20"
-              y2="50"
-              stroke="#26304b"
-              strokeWidth="2"
-            />
-            <text
-              x={20 + (30 / 78) * 240}
-              y="70"
-              textAnchor="middle"
-              fontSize="12"
-              fill="#26304b"
-            >
-              $120
-            </text>
-            <text
-              x={20 + (30 / 78) * 240}
-              y="88"
-              textAnchor="middle"
-              fontSize="10"
-              fill="#64728c"
-            >
-              Reference
-            </text>
-          </svg>
-        </section>
-        <section
-          id="preview-timing"
-          className="panorama-timing"
-          data-active={active === "timing"}
-        >
-          <header>
-            <span>3</span>
-            <h3>Timing mixed</h3>
-          </header>
-          <p>Price conditions alongside the business.</p>
-          <div className="panorama-pace">
-            <div>
-              <strong>2×</strong>
-              <span>Completed month</span>
-            </div>
-            <div>
-              <strong>3×</strong>
-              <span>Developing · not final</span>
-            </div>
-          </div>
-          <svg
-            className="panorama-timing-chart"
-            viewBox="0 0 260 90"
-            role="img"
-            aria-label="Illustrative price trend with changing momentum"
-          >
-            <path
-              d="M8 65L25 59L40 65L56 43L72 48L87 30L103 39L119 32L135 40L152 23L168 27L184 15L201 22L218 17L236 25L252 19"
-              fill="none"
-              stroke="#8056d9"
-              strokeWidth="2.5"
-            />
-            <line x1="8" x2="252" y1="76" y2="76" stroke="#e4dff1" />
-          </svg>
-        </section>
-      </div>
-      <footer className="panorama-disclosure">
-        <ShieldCheck size={13} />
-        <span>
-          Illustrative preview. Scenarios are assumptions; Pace multiples are
-          contributions, not predicted returns.
+      <header className="ap-product-header">
+        <span className="ap-product-symbol">
+          <Layers3 size={19} aria-hidden="true" />
         </span>
-      </footer>
+        <strong>Your research, connected</strong>
+        <span className="ap-guide-label">Illustrative product guide</span>
+      </header>
+      <div className="ap-decision-preview">
+        <div className="ap-preview-eyebrow">THE DECISION + THE REASONS</div>
+        <h2>A next move you can explain.</h2>
+        <p
+          className="ap-decision-views"
+          aria-label="Possible decisions, depending on company evidence"
+        >
+          Buy / Add <span>·</span> Hold <span>·</span> Reduce / Sell{" "}
+          <span>·</span> Wait
+        </p>
+        <div
+          className="ap-decision-inputs"
+          aria-label="What informs a decision"
+        >
+          <span>
+            <Layers3 size={15} aria-hidden="true" /> Business
+          </span>
+          <span>
+            <Scale size={15} aria-hidden="true" /> Value
+          </span>
+          <span>
+            <ShieldCheck size={15} aria-hidden="true" /> Risk
+          </span>
+          <span>
+            <ChartNoAxesCombined size={15} aria-hidden="true" /> Pace
+          </span>
+        </div>
+        <p>Business first. A clear action, with reasons and cautions.</p>
+      </div>
+      <section
+        className="ap-pace-preview"
+        aria-label="AURYN Pace accumulation zones"
+      >
+        <div className="ap-pace-heading">
+          <span className="ap-pace-icon">
+            <ChartNoAxesCombined size={23} aria-hidden="true" />
+          </span>
+          <div>
+            <span>YOUR ACCUMULATION ZONE</span>
+            <h3>
+              AURYN Pace <PaceHelp />
+            </h3>
+          </div>
+        </div>
+        <p>Build gradually when the business qualifies.</p>
+        <div
+          className="ap-pace-scale"
+          aria-label="P means Pace: P0 Pause, P1 Watch, P2 Initial, P3 Deeper, P4 Deep"
+        >
+          {[0, 1, 2, 3, 4].map((level) => (
+            <div key={level} className={`ap-pace-level ap-pace-level-${level}`}>
+              <span aria-hidden="true">
+                <i />
+              </span>
+              <strong>P{level}</strong>
+            </div>
+          ))}
+        </div>
+        <div className="ap-pace-scale-labels">
+          <span>Pause</span>
+          <span>Watch</span>
+          <span>Accumulate</span>
+        </div>
+        <div className="ap-pace-periods">
+          <span>
+            <i /> Current month · forming
+          </span>
+          <span>
+            <i /> Completed month · confirmed
+          </span>
+        </div>
+        <small>
+          P4 marks a deep price zone, not a company-quality rating. These are
+          zones, not predicted returns. Accumulate only when the business
+          qualifies.
+        </small>
+      </section>
+      {!compact && (
+        <footer className="ap-product-footer">
+          <ShieldCheck size={16} aria-hidden="true" />
+          <span>Business quality, valuation and Pace stay distinct.</span>
+        </footer>
+      )}
     </section>
   );
 }
+
+function ProductWalkthrough() {
+  return (
+    <section
+      className="ap-walkthrough ap-container"
+      id="product-guide"
+      aria-labelledby="ap-guide-heading"
+    >
+      <div className="ap-section-heading">
+        <span className="ap-eyebrow">A CLOSER LOOK</span>
+        <h2 id="ap-guide-heading">Follow the thinking.</h2>
+        <p>
+          Open each part of the research process. This guide explains the
+          product; it does not recommend a stock.
+        </p>
+      </div>
+      <div className="ap-guide-sections">
+        <details open>
+          <summary>
+            <span>01</span>
+            <strong>The decision and its reasons</strong>
+            <ArrowRight size={18} aria-hidden="true" />
+          </summary>
+          <div>
+            <p>
+              Start with a clear view of the company. See the reasons that
+              support an action, the risks that could challenge it, and what
+              would change the assessment.
+            </p>
+            <p>
+              Incomplete assessments show Review and explain the missing check.
+              A falling price alone does not make a company good or bad.
+            </p>
+          </div>
+        </details>
+        <details>
+          <summary>
+            <span>02</span>
+            <strong>The price and its assumptions</strong>
+            <ArrowRight size={18} aria-hidden="true" />
+          </summary>
+          <div>
+            <p>
+              Look at the business behind the stock: growth, cash generation,
+              financial health and valuation. Where the evidence supports
+              scenarios, inspect the assumptions behind them.
+            </p>
+            <p>
+              Sources and observation dates help you judge the context.
+              Scenarios are possibilities, not promises.
+            </p>
+          </div>
+        </details>
+        <details>
+          <summary>
+            <span>03</span>
+            <strong>Your AURYN Pace</strong>
+            <ArrowRight size={18} aria-hidden="true" />
+          </summary>
+          <div>
+            <p>
+              Pace uses monthly price conditions to identify accumulation zones
+              from P0 to P4. P means Pace. A confirmed reading uses completed
+              months; the current month is shown separately while it is forming.
+            </p>
+            <p>
+              P1 means Watch or Hold. Once the business qualifies, P2 starts
+              small, P3 builds gradually and P4 supports deeper planned
+              accumulation within your budget. P0 pauses additions; it does not
+              mean Sell. Valuation remains a separate check.
+            </p>
+            <Link href="/methodology">
+              Read the methodology <ArrowRight size={16} aria-hidden="true" />
+            </Link>
+          </div>
+        </details>
+      </div>
+    </section>
+  );
+}
+
 export default function PublicLanding({
   sampleOnly = false,
 }: {
   sampleOnly?: boolean;
 }) {
-  const router = useRouter(),
-    [menu, setMenu] = useState(false);
+  const router = useRouter();
+  const [menu, setMenu] = useState(false);
   useEffect(() => {
     if (sampleOnly) return;
     let alive = true;
@@ -255,182 +231,274 @@ export default function PublicLanding({
       alive = false;
     };
   }, [router, sampleOnly]);
+
   return (
     <main
-      className={`public-site atlas-public ${sampleOnly ? "public-sample-page" : ""}`}
+      className={`mp-public ap-public ${sampleOnly ? "ap-sample-page" : ""}`}
     >
-      <nav className="public-nav" aria-label="Public navigation">
-        <Link href="/" className="public-brand">
-          <img src="/icon.svg" width="32" height="32" alt="" />
-          <span>AURYN</span>
-        </Link>
-        <div className="public-desktop-links">
-          <a href="/#why-auryn">Why AURYN</a>
-          <Link href="/sample">The experience</Link>
+      <a className="ap-skip-link" href="#ap-main">
+        Skip to content
+      </a>
+      <div className="ap-opening">
+        <header
+          className="ap-header"
+          onKeyDown={(event) => {
+            if (event.key === "Escape") setMenu(false);
+          }}
+        >
+          <div className="ap-header-inner ap-container">
+            <PublicBrand />
+            <nav className="ap-nav" aria-label="Main navigation">
+              <Link href="/sample">How it works</Link>
+              <Link href="/pricing">Pricing</Link>
+              <Link href="/methodology">Our approach</Link>
+            </nav>
+            <div className="ap-header-actions">
+              <Link className="ap-signin" href="/login">
+                Sign in
+              </Link>
+              <Link
+                className="ap-button ap-button-primary ap-header-cta"
+                href="/login?mode=signup"
+              >
+                Get started <ArrowRight size={16} aria-hidden="true" />
+              </Link>
+              <button
+                className="ap-menu-button"
+                type="button"
+                aria-label={menu ? "Close navigation" : "Open navigation"}
+                aria-expanded={menu}
+                aria-controls="ap-mobile-navigation"
+                onClick={() => setMenu(!menu)}
+              >
+                {menu ? <X size={21} /> : <Menu size={21} />}
+              </button>
+            </div>
+          </div>
+          {menu && (
+            <nav
+              id="ap-mobile-navigation"
+              className="ap-mobile-navigation"
+              aria-label="More public navigation"
+            >
+              <Link href="/sample" onClick={() => setMenu(false)}>
+                How it works
+              </Link>
+              <Link href="/pricing" onClick={() => setMenu(false)}>
+                Pricing
+              </Link>
+              <Link href="/methodology" onClick={() => setMenu(false)}>
+                Our approach
+              </Link>
+              <Link href="/help" onClick={() => setMenu(false)}>
+                Help
+              </Link>
+            </nav>
+          )}
+        </header>
+        <section
+          className="ap-hero ap-container"
+          id="ap-main"
+          aria-labelledby="ap-hero-heading"
+        >
+          <div className="ap-hero-copy">
+            <span className="ap-eyebrow">
+              <span className="ap-eyebrow-mark" /> INVEST WITH UNDERSTANDING
+            </span>
+            <h1 id="ap-hero-heading">
+              <span>Know the stock.</span>
+              <em>Know your next move.</em>
+            </h1>
+            <p>
+              Understand the business, test value and risk, then choose a
+              measured pace for your next contribution. AURYN keeps the
+              evidence and the decision together.
+            </p>
+            <div className="ap-hero-actions">
+              <Link
+                className="ap-button ap-button-primary"
+                href="/login?mode=signup"
+              >
+                Start free <ArrowRight size={18} aria-hidden="true" />
+              </Link>
+              <Link
+                className="ap-button ap-button-secondary"
+                href={sampleOnly ? "#product-guide" : "/sample"}
+              >
+                {sampleOnly ? "Explore the guide" : "See how it works"}{" "}
+                <ArrowRight size={17} aria-hidden="true" />
+              </Link>
+            </div>
+            <span className="ap-hero-note">
+              <Check size={16} aria-hidden="true" /> Free to start. Room to go
+              deeper.
+            </span>
+          </div>
+          <div className="ap-hero-visual">
+            <PublicSample />
+          </div>
+        </section>
+        <div
+          className="ap-benefits ap-container"
+          aria-label="What AURYN brings together"
+        >
+          <span>
+            <Layers3 size={19} aria-hidden="true" />
+            <strong>Understand the business</strong>
+            <small>Growth, cash generation and risk.</small>
+          </span>
+          <span>
+            <Scale size={19} aria-hidden="true" />
+            <strong>Test value and downside</strong>
+            <small>Scenarios, assumptions and evidence.</small>
+          </span>
+          <span>
+            <ChartNoAxesCombined size={19} aria-hidden="true" />
+            <strong>Choose your pace</strong>
+            <small>P0–P4 timing, separate from business quality.</small>
+          </span>
         </div>
-        <div className="public-nav-actions">
-          <Link href="/pricing" className="public-pricing-link">
-            Pricing
+      </div>
+
+      {sampleOnly && <ProductWalkthrough />}
+
+      <section
+        className="ap-workflow ap-container"
+        aria-labelledby="ap-workflow-heading"
+      >
+        <div className="ap-section-heading">
+          <span className="ap-eyebrow">FROM QUESTION TO DECISION</span>
+          <h2 id="ap-workflow-heading">Research that leads somewhere.</h2>
+          <p>
+            A connected view of what you own, what you’re watching, and what
+            deserves a closer look.
+          </p>
+        </div>
+        <div className="ap-workflow-grid">
+          <article>
+            <span className="ap-feature-icon">
+              <Search size={24} aria-hidden="true" />
+            </span>
+            <span className="ap-step">01 / UNDERSTAND</span>
+            <h3>Get to know the business.</h3>
+            <p>
+              Explore financial performance, cash generation and the evidence
+              behind the company’s story.
+            </p>
+          </article>
+          <article>
+            <span className="ap-feature-icon">
+              <Scale size={24} aria-hidden="true" />
+            </span>
+            <span className="ap-step">02 / WEIGH IT UP</span>
+            <h3>See the case. See the risks.</h3>
+            <p>
+              Bring the decision, valuation assumptions and business risks into
+              one research view.
+            </p>
+          </article>
+          <article>
+            <span className="ap-feature-icon">
+              <ChartNoAxesCombined size={24} aria-hidden="true" />
+            </span>
+            <span className="ap-step">03 / FIND YOUR PACE</span>
+            <h3>Give each contribution context.</h3>
+            <p>
+              Use monthly price conditions alongside the business case, with
+              confirmed and forming readings kept separate.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section
+        className="ap-connected ap-container"
+        aria-labelledby="ap-connected-heading"
+      >
+        <div className="ap-connected-copy">
+          <span className="ap-eyebrow">ONE CONNECTED WORKSPACE</span>
+          <h2 id="ap-connected-heading">Keep the whole picture in view.</h2>
+          <p>
+            Your research, watchlist and holdings belong together. Follow your
+            companies and understand how each position fits into your portfolio.
+          </p>
+          <Link className="ap-text-link" href="/login?mode=signup">
+            Build your workspace <ArrowRight size={18} aria-hidden="true" />
           </Link>
-          <Link href="/login">Sign in</Link>
-          <Link href="/login?mode=signup" className="public-button compact">
-            Get started <ArrowRight size={15} />
-          </Link>
-          <button
-            type="button"
-            className="public-menu-button"
-            aria-label={menu ? "Close navigation" : "Open navigation"}
-            aria-expanded={menu}
-            onClick={() => setMenu(!menu)}
+        </div>
+        <div className="ap-connected-list">
+          <div>
+            <Layers3 size={22} aria-hidden="true" />
+            <span>
+              <strong>Research</strong>
+              <p>The decision, the reasons, the deeper detail.</p>
+            </span>
+          </div>
+          <div>
+            <Search size={22} aria-hidden="true" />
+            <span>
+              <strong>Watchlist</strong>
+              <p>A place for the companies on your radar.</p>
+            </span>
+          </div>
+          <div>
+            <PieChart size={22} aria-hidden="true" />
+            <span>
+              <strong>Portfolio</strong>
+              <p>Holdings, performance and concentration.</p>
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <section
+        className="ap-closing ap-container"
+        aria-labelledby="ap-closing-heading"
+      >
+        <div>
+          <span className="ap-eyebrow">YOUR NEXT MOVE STARTS HERE</span>
+          <h2 id="ap-closing-heading">Make it an informed one.</h2>
+          <p>Start with Free. Go deeper with Pro.</p>
+        </div>
+        <div className="ap-closing-actions">
+          <Link
+            className="ap-button ap-button-primary"
+            href="/login?mode=signup"
           >
-            {menu ? <X size={20} /> : <Menu size={20} />}
-          </button>
-        </div>
-      </nav>
-      {menu && (
-        <nav className="public-mobile-menu" aria-label="More public navigation">
-          <a href="/#why-auryn" onClick={() => setMenu(false)}>
-            Why AURYN
-          </a>
-          <Link href="/sample">The experience</Link>
-          <Link href="/pricing">Pricing</Link>
-          <Link href="/login?mode=signup">Create an account</Link>
-        </nav>
-      )}
-      <section className="public-hero">
-        <div className="public-hero-copy">
-          <span className="public-eyebrow">YOUR INVESTMENT PERSPECTIVE</span>
-          <h1>
-            {sampleOnly ? (
-              <>
-                One company.
-                <br />
-                <em>The whole picture.</em>
-              </>
-            ) : (
-              <>
-                More clarity.
-                <br />
-                <em>Better conviction.</em>
-              </>
-            )}
-          </h1>
-          <p>
-            See what supports the case, what could go wrong and what would
-            change the view. Clear research for a decision you understand.
-          </p>
-          <div className="public-actions">
-            <Link href="/login?mode=signup" className="public-button">
-              Create an account <ArrowRight size={17} />
-            </Link>
-            <Link href="/sample" className="public-button secondary">
-              Explore sample
-            </Link>
-          </div>
-          <div className="public-trust">
-            <span>
-              <Check size={14} />
-              Start free
-            </span>
-            <span>
-              <Check size={14} />
-              No card required
-            </span>
-            <span>
-              <Check size={14} />
-              Your research, your decision
-            </span>
-          </div>
-          <Link className="public-plan-note" href="/pricing">
-            Free research for 100 companies / month. Explore Pro →
+            Create your account <ArrowRight size={18} aria-hidden="true" />
+          </Link>
+          <Link className="ap-text-link" href="/pricing">
+            Compare plans <ArrowRight size={16} aria-hidden="true" />
           </Link>
         </div>
-        <div className="public-hero-preview">
-          <div className="public-preview-label">
-            <span />
-            <span />
-            <span />
-            <strong>AURYN · Research workspace</strong>
-          </div>
-          <PublicSample />
-        </div>
       </section>
-      <section className="public-benefits" id="why-auryn">
-        <div className="public-section-heading">
-          <span className="public-eyebrow">ONE CONNECTED PERSPECTIVE</span>
-          <h2>
-            Less noise.
-            <br />
-            More understanding.
-          </h2>
-          <p>
-            Move from the business to its price, then follow the evidence that
-            matters.
-          </p>
+      <footer className="ap-footer ap-container">
+        <div className="ap-footer-main">
+          <PublicBrand />
+          <nav aria-label="Footer navigation">
+            <Link href="/sample">How it works</Link>
+            <Link href="/pricing">Pricing</Link>
+            <Link href="/help">Help</Link>
+            <Link href="/about">About</Link>
+            <Link href="/pace">AURYN Pace</Link>
+            <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+          </nav>
         </div>
-        <div>
-          {[
-            [
-              Search,
-              "Understand the business",
-              "Cash generation, growth, funding and competitive evidence. Know what supports the case.",
-            ],
-            [
-              FileText,
-              "Challenge the price",
-              "Bear, base and bull assumptions alongside analyst expectations. See where the conclusions differ.",
-            ],
-            [
-              ChartNoAxesCombined,
-              "Know what to watch",
-              "Price conditions, company news and upcoming events. Keep your next checkpoint in view.",
-            ],
-          ].map(([Icon, title, description], i) => {
-            const I = Icon as typeof Search;
-            return (
-              <article key={String(title)}>
-                <i>
-                  <I size={22} />
-                </i>
-                <span className="public-step">0{i + 1}</span>
-                <h3>{String(title)}</h3>
-                <p>{String(description)}</p>
-              </article>
-            );
-          })}
+        <div className="ap-footer-bottom">
+          <span>© {new Date().getFullYear()} AURYN</span>
+          <nav aria-label="Legal and methodology">
+            <Link href="/methodology">Methodology</Link>
+            <Link href="/terms">Terms</Link>
+            <Link href="/privacy">Privacy</Link>
+            <PrivacyChoices />
+            <Link href="/risk">Risks</Link>
+          </nav>
         </div>
-      </section>
-      <section className="public-closing">
-        <div>
-          <span className="public-eyebrow">BUILT FOR YOUR OWN THINKING</span>
-          <h2>A clearer view starts here.</h2>
-          <p>
-            Research the company. Understand the assumptions. Make your own
-            call.
-          </p>
-        </div>
-        <Link href="/login?mode=signup" className="public-button">
-          Start your research <ArrowRight size={17} />
-        </Link>
-      </section>
-      <footer className="public-footer">
-        <Link href="/" className="public-brand">
-          <img src="/icon.svg" width="25" height="25" alt="" />
-          <span>AURYN</span>
-        </Link>
-        <p>Business. Price. Perspective.</p>
-        <nav aria-label="Legal and support">
-          <Link href="/contact">Contact</Link>
-          <Link href="/methodology">Methodology</Link>
-          <Link href="/privacy">Privacy</Link>
-          <Link href="/terms">Terms</Link>
-          <Link href="/help">Help</Link>
-        </nav>
-        <small>
-          © {new Date().getFullYear()} AURYN. All rights reserved. Research and
-          decision support; investing involves risk. Preview figures are
-          illustrative, not investment recommendations.
-        </small>
+        <p>
+          Research supports your judgment. Investing involves risk. Product
+          illustrations explain how AURYN works; they are not live
+          recommendations.
+        </p>
       </footer>
     </main>
   );

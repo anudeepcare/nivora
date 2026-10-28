@@ -1,7 +1,18 @@
 "use client";
+import { sameProviderSymbol } from "@/lib/provider-symbol";
+import { SUPPORT_EMAIL } from "@/lib/site-metadata";
+import { PrivacyChoices } from "./AnalyticsConsent";
+import PaceGuidance from "./PaceGuidance";
+import Search from "./Search";
+import PaceHelp from "./PaceHelp";
+import { loadComparison, comparisonCompatibility } from "@/lib/comparison";
+import { researchEdge } from "@/lib/edge-research";
+
 import DisplayPreferences from "./DisplayPreferences";
 import ResearchPreferenceControls from "./ResearchPreferences";
 import PwaDiagnostics from "./PwaDiagnostics";
+import { useAccess } from "./Access";
+import { settingsReturnHref } from "@/lib/settings-navigation";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
@@ -10,6 +21,9 @@ import {
   FlaskConical,
   ShieldCheck,
   RefreshCw,
+  ArrowLeft,
+  ChevronRight,
+  LogOut,
 } from "lucide-react";
 import { useProduct, useResource } from "./Session";
 import { PageHeading, Notice, Empty, SecurityLogo, Help } from "./Ui";
@@ -20,16 +34,25 @@ import { perspective } from "@/lib/analysis";
 import type { Research } from "@/lib/types";
 export function Settings() {
   const { workspace, demo } = useProduct();
+  const { access } = useAccess();
+  const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
+  const [backHref, setBackHref] = useState(`${prefix}/overview`);
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
-  const [section, setSection] = useState<"appearance" | "research" | "account">(
-    "appearance",
-  );
+  const [signingOut, setSigningOut] = useState(false);
   const [account, setAccount] = useState<{
     email: string;
     providers: string[];
   } | null>(null);
+  useEffect(() => {
+    setBackHref(
+      settingsReturnHref(
+        new URLSearchParams(window.location.search).get("from"),
+        prefix,
+      ),
+    );
+  }, [prefix]);
   useEffect(() => {
     if (demo && demo.routePrefix !== "") return;
     let active = true;
@@ -80,92 +103,101 @@ export function Settings() {
     account?.email ||
     workspace?.email ||
     (demo ? "Design preview" : "Loading account…");
-  const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   return (
-    <section className="settings-page account-studio">
+    <section className="settings-page workspace-settings">
+      <div className="settings-page-toolbar">
+        <Link
+          href={backHref}
+          scroll={false}
+          className="settings-back"
+          aria-label="Back to previous screen"
+        >
+          <ArrowLeft size={18} /> Back
+        </Link>
+        <button
+          type="button"
+          className="settings-signout"
+          disabled={(!!demo && demo.routePrefix !== "") || busy || signingOut}
+          onClick={async () => {
+            if (demo && demo.routePrefix !== "") return;
+            setSigningOut(true);
+            setMessage("");
+            try {
+              await signOutAndRedirect();
+            } catch (error) {
+              setMessage(
+                error instanceof Error
+                  ? error.message
+                  : "Could not sign out. Please try again.",
+              );
+              setSigningOut(false);
+            }
+          }}
+        >
+          <LogOut size={17} /> {signingOut ? "Signing out…" : "Sign out"}
+        </button>
+      </div>
       <PageHeading
-        title="Your AURYN"
-        subtitle="A clear space for the way you research."
+        title="Settings"
+        subtitle="Shape how AURYN helps you understand, compare and revisit companies."
       />
-      <div className="settings-studio-layout">
-        <aside className="settings-studio-nav">
-          <nav aria-label="Settings categories">
-            {(
-              [
-                ["appearance", "Display & reading"],
-                ["research", "Research preferences"],
-                ["account", "Account & security"],
-              ] as const
-            ).map(([id, label]) => (
-              <button
-                type="button"
-                key={id}
-                aria-pressed={section === id}
-                aria-controls={`settings-page-${id}`}
-                onClick={() => setSection(id)}
-              >
-                {label}
-                <ArrowUpRight size={15} />
-              </button>
-            ))}
-            <Link href={`${prefix}/plans`}>
-              Plans & billing
-              <ArrowUpRight size={15} />
-            </Link>
-            <Link href={`${prefix}/alerts`}>
-              Alerts
-              <ArrowUpRight size={15} />
-            </Link>
-            <Link href="/help">
-              Help & support
-              <ArrowUpRight size={15} />
-            </Link>
-          </nav>
-          <div className="settings-studio-note">
-            <ShieldCheck size={19} />
-            <p>
-              Your account stays yours. Appearance preferences are saved on this
-              device.
-            </p>
-          </div>
-        </aside>
-        <div className="settings-studio-content">
-          <section
-            id="settings-page-appearance"
-            className="panel settings-appearance"
-            hidden={section !== "appearance"}
-          >
+      {message && (
+        <div className="settings-feedback" role="status">
+          <Notice>{message}</Notice>
+        </div>
+      )}
+      <div className="workspace-account-row">
+        <span className="settings-profile-avatar" aria-hidden="true">
+          {email[0]?.toUpperCase() || "A"}
+        </span>
+        <div>
+          <strong>{email}</strong>
+          <p>
+            {access.owner
+              ? "Owner access"
+              : access.plan === "pro"
+                ? "Pro membership"
+                : "Free membership"}
+          </p>
+        </div>
+        <Link className="text-link" href={`${prefix}/plans`}>
+          Manage plan <ArrowUpRight size={16} />
+        </Link>
+      </div>
+      <div className="workspace-settings-groups">
+        <details className="workspace-setting-group">
+          <summary>
+            <span>
+              <strong>Display & reading</strong>
+              <small>Theme, text and accessibility</small>
+            </span>
+            <ChevronRight size={19} />
+          </summary>
+          <div className="workspace-setting-body">
             <DisplayPreferences />
-          </section>
-          <section
-            id="settings-page-research"
-            className="panel settings-research-panel"
-            hidden={section !== "research"}
-          >
-            <span className="eyebrow">Your perspective</span>
-            <h2>Research your way.</h2>
-            <p>
-              Choose the context and level of detail that help you read the
-              evidence.
-            </p>
+          </div>
+        </details>
+        <details className="workspace-setting-group">
+          <summary>
+            <span>
+              <strong>Research preferences</strong>
+              <small>How you want evidence presented</small>
+            </span>
+            <ChevronRight size={19} />
+          </summary>
+          <div className="workspace-setting-body">
             <ResearchPreferenceControls />
-          </section>
-          <section
-            id="settings-page-account"
-            className="panel settings-account"
-            aria-labelledby="account-title"
-            hidden={section !== "account"}
-          >
-            <header className="settings-profile">
-              <span className="settings-profile-avatar" aria-hidden="true">
-                {email[0]?.toUpperCase() || "A"}
-              </span>
-              <div>
-                <span className="eyebrow">Your account</span>
-                <h2 id="account-title">Account & security</h2>
-                <p>{email}</p>
-              </div>
-            </header>
+          </div>
+        </details>
+        <details className="workspace-setting-group">
+          <summary>
+            <span>
+              <strong>Account & security</strong>
+              <small>Sign-in methods and password</small>
+            </span>
+            <ChevronRight size={19} />
+          </summary>
+          <div className="workspace-setting-body">
             {!!account?.providers.length && (
               <div
                 className="account-identities"
@@ -184,79 +216,71 @@ export function Settings() {
                 ))}
               </div>
             )}
-            <div className="settings-security">
-              <h3>Password</h3>
-              <p>Choose a strong password you don’t use elsewhere.</p>
-              <details className="settings-password">
-                <summary>Set or change password</summary>
-                <form className="password-form" onSubmit={update}>
-                  <label>
-                    New password
-                    <input
-                      type="password"
-                      minLength={8}
-                      autoComplete="new-password"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </label>
-                  <button
-                    className="button primary"
-                    disabled={busy || (!!demo && demo.routePrefix !== "")}
-                  >
-                    {busy ? "Saving…" : "Update password"}
-                  </button>
-                </form>
-              </details>
+            <form className="password-form" onSubmit={update}>
+              <label>
+                New password
+                <input
+                  type="password"
+                  minLength={8}
+                  autoComplete="new-password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </label>
+              <p>
+                Use at least 8 characters and a password you don’t use
+                elsewhere.
+              </p>
               <button
-                type="button"
-                className="settings-signout"
-                disabled={(!!demo && demo.routePrefix !== "") || busy}
-                onClick={async () => {
-                  setBusy(true);
-                  setMessage("");
-                  try {
-                    await signOutAndRedirect();
-                  } catch (error) {
-                    setMessage(
-                      error instanceof Error
-                        ? error.message
-                        : "Could not sign out. Please try again.",
-                    );
-                    setBusy(false);
-                  }
-                }}
+                className="button primary"
+                disabled={busy || (!!demo && demo.routePrefix !== "")}
               >
-                Sign out of AURYN <ArrowUpRight size={16} />
+                {busy ? "Saving…" : "Update password"}
               </button>
-            </div>
-          </section>
-          {message && (
-            <div className="settings-feedback" role="status">
-              <Notice>{message}</Notice>
-            </div>
-          )}
-          <nav className="settings-page-links" aria-label="Help and legal">
-            <Link href="/help">
-              Help & support <ArrowUpRight size={14} />
-            </Link>
-            <Link href="/privacy">Privacy</Link>
-            <Link href="/terms">Terms</Link>
-            <Link href="/risk">Investment risks</Link>
-          </nav>
-        </div>
+            </form>
+          </div>
+        </details>
       </div>
+      <nav
+        className="workspace-settings-shortcuts"
+        aria-label="Account and support"
+      >
+        <Link href={`${prefix}/alerts`}>
+          <Bell size={18} />
+          <span>Price alerts</span>
+          <ChevronRight size={17} />
+        </Link>
+        <Link href="/help">
+          <ShieldCheck size={18} />
+          <span>Help & support</span>
+          <ChevronRight size={17} />
+        </Link>
+        <a href={`mailto:${SUPPORT_EMAIL}`}>
+          <ShieldCheck size={18} />
+          <span>{SUPPORT_EMAIL}</span>
+          <ChevronRight size={17} />
+        </a>
+        <PrivacyChoices />
+        {access.owner && (
+          <Link href={`${prefix}/owner`}>
+            <ShieldCheck size={18} />
+            <span>Admin controls</span>
+            <ChevronRight size={17} />
+          </Link>
+        )}
+      </nav>
     </section>
   );
 }
 
 export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
-  const { demo } = useProduct(),
+  const { demo, workspace } = useProduct(),
     prefix = demo && demo.routePrefix !== "" ? "/preview" : "",
     [draft, setDraft] = useState(initialSymbols),
     [symbols, setSymbols] = useState(initialSymbols),
     [rows, setRows] = useState<Research[]>([]),
+    [success, setSuccess] = useState(""),
     [error, setError] = useState(""),
     [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -269,21 +293,20 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
     setRows([]);
     setLoading(true);
     setError("");
-    Promise.all(
-      symbols
-        .split(",")
-        .map((s) =>
-          demo
-            ? Promise.resolve(demo.research[s])
-            : api<Research>(
-                `research/${encodeURIComponent(s.replace("/", "-"))}`,
-                undefined,
-                abort.signal,
-              ),
-        ),
+    loadComparison(symbols.split(","), (s) =>
+      demo
+        ? Promise.resolve(demo.research[s])
+        : api<Research>(
+            `research/${encodeURIComponent(s.replace("/", "-"))}`,
+            undefined,
+            abort.signal,
+          ),
     )
-      .then((values) => {
-        if (active) setRows(values.filter(Boolean));
+      .then(({ rows, issues }) => {
+        if (active) {
+          setRows(rows);
+          setError(issues.join(" "));
+        }
       })
       .catch((e) => {
         if (active) setError(e.message);
@@ -320,7 +343,7 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
         },
       });
       saved.refresh();
-      setError("Comparison saved.");
+      setSuccess("Comparison saved.");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Save failed.");
     }
@@ -333,13 +356,31 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
       ];
       if (list.length < 2 || list.length > 4)
         throw Error("Choose two to four companies.");
+      setSuccess("");
       setSymbols(list.join(","));
       setError("");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Check the symbols");
     }
   }
-  const values = rows.map((r) => ({ r, p: perspective(r) }));
+  const values = rows.map((r) => ({
+    r,
+    p: perspective(r),
+    edge: researchEdge(
+      r,
+      !!workspace?.positions.some(
+        (p) => sameProviderSymbol(p.symbol, r.company.symbol) && p.quantity > 0,
+      ),
+      demo ? Date.parse(r.retrievedAt) : Date.now(),
+    ),
+  }));
+  const compatibility = comparisonCompatibility(
+    values.map(({ p }) => ({
+      currency: p.last?.currency,
+      end: p.last?.end,
+      basis: p.periodBasis,
+    })),
+  );
   return (
     <section>
       <PageHeading
@@ -365,6 +406,17 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
           </button>
         )}
       </div>
+      <div className="compare-picker">
+        <Search
+          onSelect={(symbol) =>
+            setDraft((current) =>
+              [...new Set([...current.split(/[ ,]+/).filter(Boolean), symbol])]
+                .slice(0, 4)
+                .join(", "),
+            )
+          }
+        />
+      </div>
       <form className="compare-search" onSubmit={submit}>
         <input
           aria-label="Companies to compare"
@@ -377,6 +429,11 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
         </button>
       </form>
       {error && <Notice error>{error}</Notice>}
+      {success && <Notice>{success}</Notice>}
+      {compatibility.length > 0 && (
+        <p className="context-note">{compatibility.join(" ")}</p>
+      )}
+      <PaceHelp trigger="Understand AURYN Pace" />
       {values.length ? (
         <div className="table-scroll">
           <table className="compare-table">
@@ -406,10 +463,12 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
                 "Free cash flow",
                 "Operating margin",
                 "Price trend",
+                "AURYN View",
+                "AURYN Pace",
               ].map((label, i) => (
                 <tr key={label}>
                   <th>{label}</th>
-                  {values.map(({ r, p }) => (
+                  {values.map(({ r, p, edge }) => (
                     <td key={r.company.symbol}>
                       {
                         [
@@ -422,6 +481,14 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
                           amount(p.last?.fcf, p.last?.currency, true),
                           percent(p.last?.margin),
                           p.tech.trend,
+                          `${edge.decision.contextLabel}: ${edge.pacePresentation.actionLabel} · ${edge.reason} New purchase: ${edge.decision.actionLabels.entry}. Holding: ${edge.decision.actionLabels.holding}.`,
+                          <div key="pace">
+                            <PaceGuidance
+                              view={edge.pacePresentation}
+                              readings={edge.pacePeriods}
+                              compact
+                            />
+                          </div>,
                         ][i]
                       }
                     </td>

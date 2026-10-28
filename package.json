@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node scripts/dev-server.mjs",
     "build": "next build",
     "start": "next start",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "typecheck": "next typegen && tsc --noEmit",
     "verify": "npm test && npm run typecheck && npm run build",
-    "test:api": "node scripts/test-api.mjs && node scripts/test-research-regressions.mjs && node scripts/test-eodhd-api.mjs && node scripts/test-shared-market-api.mjs && node scripts/test-access-api.mjs && node scripts/test-billing-api.mjs && node scripts/test-options-api.mjs && node scripts/test-owner-expiry-api.mjs && node scripts/test-congress-api.mjs"
+    "test:api": "node scripts/test-api.mjs && node scripts/test-research-regressions.mjs && node scripts/test-eodhd-api.mjs && node scripts/test-shared-market-api.mjs && node scripts/test-access-api.mjs && node scripts/test-billing-api.mjs && node scripts/test-options-api.mjs && node scripts/test-owner-expiry-api.mjs && node scripts/test-congress-api.mjs",
+    "test:acceptance": "npm run verify && npm run test:api"
   },
   "dependencies": {
     "@supabase/ssr": "0.6.1",

@@ -1,5 +1,6 @@
 import type { Position, Quote } from "./types";
 import type { MarketEvent } from "./home-feed";
+import { earningsEventState } from "./home-feed.ts";
 /** Quote-reference impact on current units, not brokerage/account performance. */
 export function homePriceMoves(
   positions: Position[],
@@ -183,6 +184,7 @@ export function portfolioRiskSummary(
         .filter(
           (e) =>
             /earnings/i.test(e.kind) &&
+            earningsEventState(e, today).status !== "reported" &&
             e.date >= today &&
             Date.parse(e.date) <= deadline,
         )

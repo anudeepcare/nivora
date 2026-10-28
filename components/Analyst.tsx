@@ -1,4 +1,5 @@
 "use client";
+import { customerText } from "@/lib/customer-language";
 import { useMemo, useState } from "react";
 import { Sparkles, Download } from "lucide-react";
 import { perspective } from "@/lib/analysis";
@@ -83,11 +84,11 @@ export default function Analyst({
     const lines = [
       `${research.company.name} · ${mode}`,
       `Generated ${report.generatedAt}`,
-      `${report.summary.text} [${report.summary.evidenceIds.join(", ")}]`,
+      `${customerText(report.summary.text)} [${report.summary.evidenceIds.join(", ")}]`,
       ...["strengths", "risks", "watch"].flatMap((k) => [
         k.toUpperCase(),
         ...report[k as "strengths"].map(
-          (c) => `${c.text} [${c.evidenceIds.join(", ")}]`,
+          (c) => `${customerText(c.text)} [${c.evidenceIds.join(", ")}]`,
         ),
       ]),
       "SOURCES",
@@ -95,7 +96,7 @@ export default function Analyst({
       "AI-generated research. Verify claims against their sources.",
     ];
     const url = URL.createObjectURL(
-      new Blob([lines.join("\n\n")], { type: "text/plain;charset=utf-8" }),
+      new Blob([customerText(lines.join("\n\n"))], { type: "text/plain;charset=utf-8" }),
     );
     const a = document.createElement("a");
     a.href = url;
@@ -165,7 +166,7 @@ export default function Analyst({
         {(prepared || report) && (
           <div className="answer" aria-live="polite">
             <strong>{question}</strong>
-            <p>{report?.summary.text || prepared}</p>
+            <p>{customerText(report?.summary.text || prepared)}</p>
             <p className="small muted">
               {report
                 ? `AI-generated research · ${report.sources.some(s=>s.passage)?"includes selected filing excerpts":"financial observations only; no filing excerpts"} · verify each claim`
@@ -253,7 +254,7 @@ export default function Analyst({
         <div className="ai-report">
           <header>
             <div>
-              <h3>{report.summary.text}</h3>
+              <h3>{customerText(report.summary.text)}</h3>
               <div className="source-line">
                 {report.summary.evidenceIds.map((id) => {
                   const s = report.sources.find((s) => s.id === id);
@@ -274,7 +275,7 @@ export default function Analyst({
                 </h3>
                 {report[k].map((c, j) => (
                   <div className="ai-claim" key={j}>
-                    <p>{c.text}</p>
+                    <p>{customerText(c.text)}</p>
                     <div>
                       {c.evidenceIds.map((id) => {
                         const s = report.sources.find((s) => s.id === id);

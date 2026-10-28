@@ -1,4 +1,5 @@
 "use client";
+import { customerText } from "./customer-language";
 import { createBrowserClient } from "@supabase/ssr";
 import { completeSignOut } from "./auth-actions";
 import { clearAccountCache } from "./account-cache";
@@ -9,7 +10,7 @@ export function authClient() {
     key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   if (!url || !key)
     throw Error(
-      "Account connection is not configured. Add the Supabase public settings to this application.",
+      "Sign-in is temporarily unavailable. Please try again or contact support.",
     );
   return (client ??= createBrowserClient(url, key));
 }
@@ -24,7 +25,16 @@ export async function api<T>(
     method: body ? "POST" : "GET",
     headers: {
       Authorization: `Bearer ${data.session.access_token}`,
-      ...((():Record<string,string>=>{try{const p=sessionStorage.getItem("auryn-owner-preview");return p==="free"||p==="pro"?{"x-auryn-preview-plan":p}:{};}catch{return {};}})()),
+      ...((): Record<string, string> => {
+        try {
+          const p = sessionStorage.getItem("auryn-owner-preview");
+          return p === "free" || p === "pro"
+            ? { "x-auryn-preview-plan": p }
+            : {};
+        } catch {
+          return {};
+        }
+      })(),
       ...(body ? { "Content-Type": "application/json" } : {}),
     },
     ...(body ? { body: JSON.stringify(body) } : {}),
@@ -32,7 +42,7 @@ export async function api<T>(
   });
   const value = await response.json();
   if (!response.ok)
-    throw Error(value.error || "This request could not be completed.");
+    throw Error(customerText(value.error || "This request could not be completed."));
   return value;
 }
 
@@ -41,6 +51,6 @@ export async function signOutAndRedirect() {
   await completeSignOut(
     () => authClient().auth.signOut(),
     clearAccountCache,
-    path => window.location.replace(path),
+    (path) => window.location.replace(path),
   );
 }

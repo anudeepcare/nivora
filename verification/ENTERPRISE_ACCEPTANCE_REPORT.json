@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-27",
+  "localEngineeringGate": "passed",
+  "productionEnterpriseAcceptance": "blocked",
+  "tests": {
+    "passed": 838,
+    "failed": 0
+  },
+  "typecheck": "passed",
+  "productionBuild": "passed",
+  "apiScripts": {
+    "passed": 9,
+    "failed": 0
+  },
+  "review": {
+    "critical": 0,
+    "importantFixed": 2,
+    "deferred": 0
+  },
+  "changes": [
+    "per-rule durable alert continuation",
+    "batch coverage metadata",
+    "P0\u2013P4 notification terminology",
+    "missing financial input warnings",
+    "internal state excluded before document limit",
+    "reserved document mutations rejected"
+  ],
+  "metricEvidence": "normalization regressions plus dated Microsoft FY2025 calculation reference; no blanket live reconciliation claim",
+  "hostingEvidence": "connected account projects and team list returned no matching project/team",
+  "remainingGates": [
+    "deployed authenticated flow and runtime performance",
+    "independent current financial-feed reconciliation",
+    "subscriber-wide scheduled monitoring design and verification",
+    "physical-device acceptance"
+  ],
+  "newMigration": false,
+  "deployed": false,
+  "notes": "docs/approved-build/ENTERPRISE_ACCEPTANCE_20261027.md"
+}

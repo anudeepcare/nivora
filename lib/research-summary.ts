@@ -1,5 +1,42 @@
 import type { Research, FinancialPeriod } from "./types";
 import { ratio } from "./financial-formulas.ts";
+/** Resolve the actual denominator date, which can differ from the financial period. */
+function reportedOutstandingShares(r: Research, p?: FinancialPeriod | null) {
+  const day = r.retrievedAt.slice(0, 10);
+  const candidates = r.facts
+    .filter(
+      (f) =>
+        f.metric === "shares" &&
+        f.scope === "instant" &&
+        f.unit === "shares" &&
+        Number.isFinite(f.value) &&
+        Number.isFinite(Date.parse(f.end)) &&
+        Number.isFinite(Date.parse(f.filed)) &&
+        f.end <= day &&
+        f.filed <= day &&
+        (!p ||
+          ((!f.basis || f.basis === p.basis) &&
+            (f.currency == null || f.currency === p.currency))),
+    )
+    .sort(
+      (a, b) =>
+        b.end.localeCompare(a.end) ||
+        b.filed.localeCompare(a.filed) ||
+        b.value - a.value,
+    );
+  const selected = candidates[0];
+  if (!selected || selected.value <= 0) return null;
+  // A later filing supersedes an earlier one. Same-date disagreements cannot
+  // be resolved by array order; rounding-equivalent observations use the larger count.
+  const conflict = candidates.some(
+    (f) =>
+      f.end === selected.end &&
+      f.filed === selected.filed &&
+      Math.abs(f.value - selected.value) >
+        Math.max(1, Math.min(Math.abs(f.value), selected.value) * 0.01),
+  );
+  return conflict ? null : selected;
+}
 export function marketMultiples(r: Research, p?: FinancialPeriod | null) {
   const empty = {
     marketCap: null,
@@ -9,20 +46,7 @@ export function marketMultiples(r: Research, p?: FinancialPeriod | null) {
     fcfYield: null,
   };
   const today = r.retrievedAt.slice(0, 10);
-  const share = r.facts
-    .filter(
-      (f) =>
-        f.metric === "shares" &&
-        f.scope === "instant" &&
-        f.unit === "shares" &&
-        Number.isFinite(f.value) &&
-        f.value > 0 &&
-        f.end <= today &&
-        f.filed <= today,
-    )
-    .sort(
-      (a, b) => b.end.localeCompare(a.end) || b.filed.localeCompare(a.filed),
-    )[0];
+  const share = reportedOutstandingShares(r, p);
   if (
     !p ||
     r.company.assetType !== "stock" ||
@@ -247,10 +271,38 @@ export function valuationScale(values: number[], quote: number) {
 }
 
 /** Reported per-share inputs do not depend on a live market quote. */
-export function reportedCashPerShare(r:Research,p?:FinancialPeriod|null){
- const empty={cash:null as number|null,sbc:null as number|null};
- if(!p||r.company.assetType!=='stock'||r.company.foreignListing||p.currency!==r.company.currency||p.currency!==r.quote.currency||Date.parse(r.retrievedAt)-Date.parse(p.end)>550*86400000)return empty;
- const day=r.retrievedAt.slice(0,10),share=r.facts.filter(f=>f.metric==='shares'&&f.scope==='instant'&&f.unit==='shares'&&Number.isFinite(f.value)&&f.value>0&&f.end<=day&&f.filed<=day&&!/^(20-F|40-F)/.test(f.form)&&Date.parse(day)-Date.parse(f.end)<=180*86400000).sort((a,b)=>b.end.localeCompare(a.end)||b.filed.localeCompare(a.filed))[0];
- if(!share)return empty;
- return {cash:p.fcf!=null&&Number.isFinite(p.fcf)&&p.fcf>0?p.fcf/share.value:null,sbc:p.stockCompensation!=null&&Number.isFinite(p.stockCompensation)&&p.stockCompensation>=0?p.stockCompensation/share.value:null};
+export function reportedCashPerShare(
+  r: Research,
+  p?: FinancialPeriod | null,
+  now = Date.parse(r.priceObservedAt ?? r.retrievedAt),
+) {
+  const empty = { cash: null as number | null, sbc: null as number | null };
+  if (
+    !p ||
+    r.company.assetType !== "stock" ||
+    r.company.foreignListing ||
+    p.currency !== r.company.currency ||
+    p.currency !== r.quote.currency ||
+    now - Date.parse(p.end) > 550 * 86400000
+  )
+    return empty;
+  const share = reportedOutstandingShares(r, p);
+  if (
+    !share ||
+    /^(20-F|40-F)/.test(share.form) ||
+    now - Date.parse(share.end) > 180 * 86400000
+  )
+    return empty;
+  return {
+    cash:
+      p.fcf != null && Number.isFinite(p.fcf) && p.fcf > 0
+        ? p.fcf / share.value
+        : null,
+    sbc:
+      p.stockCompensation != null &&
+      Number.isFinite(p.stockCompensation) &&
+      p.stockCompensation >= 0
+        ? p.stockCompensation / share.value
+        : null,
+  };
 }

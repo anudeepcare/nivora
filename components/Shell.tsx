@@ -1,7 +1,7 @@
 "use client";
-import { AccessNotice } from "./Access";
+import { AccessNotice, useAccess } from "./Access";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import {
   Home,
@@ -11,10 +11,19 @@ import {
   Search as SearchIcon,
   Bell,
   X,
+  LayoutGrid,
+  Settings,
+  Sun,
+  Moon,
+  Compass,
+  FlaskConical,
+  Scale,
+  HelpCircle,
+  ArrowUpRight,
 } from "lucide-react";
-import { Logo, ProductFooter } from "./Ui";
+import { ProductFooter } from "./Ui";
 import Search from "./Search";
-import SettingsSheet from "./SettingsSheet";
+import { settingsHref } from "@/lib/settings-navigation";
 import { useProduct } from "./Session";
 import {
   NavigationMemory,
@@ -34,13 +43,26 @@ export default function Shell({
   page: string;
   children: React.ReactNode;
 }) {
-  const { demo, workspace } = useProduct();
+  const { demo, workspace, theme, setTheme } = useProduct();
+  const { access } = useAccess();
   const pathname = usePathname();
+  const router = useRouter();
   const memory = useRef(new NavigationMemory());
   const pending = useRef<{ path: string; top: number } | null>(null);
   const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   const search = useRef<HTMLDialogElement>(null);
-  const settings = useRef<HTMLDialogElement>(null);
+  const tools = useRef<HTMLDialogElement>(null);
+  const openSettings = (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+    tools.current?.close();
+    if (page === "settings") return;
+    router.push(
+      settingsHref(
+        `${window.location.pathname}${window.location.search}${window.location.hash}`,
+        prefix,
+      ),
+    );
+  };
   useLayoutEffect(() => {
     const env = browserScrollEnvironment();
     const top =
@@ -64,7 +86,7 @@ export default function Shell({
   }, [pathname]);
   useEffect(() => {
     search.current?.close();
-    settings.current?.close();
+    tools.current?.close();
   }, [pathname]);
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
@@ -79,7 +101,7 @@ export default function Shell({
     document.addEventListener("keydown", key);
     return () => document.removeEventListener("keydown", key);
   }, []);
-  const nav = (r: (typeof primary)[number], mobile = false) => {
+  const nav = (r: (typeof primary)[number]) => {
     const Icon = r.icon;
     return (
       <Link
@@ -103,93 +125,221 @@ export default function Shell({
         aria-label={r.label}
         aria-current={page === r.path ? "page" : undefined}
       >
-        {mobile && <Icon size={22} />}
+        <Icon size={22} />
         <span>{r.label}</span>
       </Link>
     );
   };
   return (
-    <div className="product auryn-experience" data-page={page}>
+    <div
+      className="product approved-product app-layout workspace-experience"
+      data-page={page}
+      data-shell="mobile-first"
+    >
       <a className="skip" href="#content">
         Skip to content
       </a>
-      <header className="topbar">
+      <aside className="side-rail">
         <Link
           href={`${prefix}/overview`}
-          className="brand-link"
+          className="rail-brand"
           aria-label="AURYN home"
         >
-          <Logo />
+          <img src="/icon.svg" width="36" height="36" alt="" />
         </Link>
-        <nav className="desktop-nav" aria-label="Main navigation">
-          {primary.map((r) => nav(r))}
-        </nav>
-        <button
-          className="top-search"
-          aria-label="Search companies and crypto"
-          aria-haspopup="dialog"
-          onClick={() => {
-            search.current?.showModal();
-            search.current
-              ?.querySelector("input")
-              ?.focus({ preventScroll: true });
-          }}
-        >
-          <SearchIcon size={19} />
-          <span>Search companies & crypto</span>
-          <kbd>⌘ K</kbd>
-        </button>
-        <div className="top-actions">
-          <Link
-            className="top-plans-link"
-            href={`${prefix}/plans`}
-            aria-current={page === "plans" ? "page" : undefined}
+        <nav aria-label="Main navigation">{primary.map((r) => nav(r))}</nav>
+        <div className="rail-bottom">
+          <button
+            onClick={() => tools.current?.showModal()}
+            aria-label="Explore tools"
+            aria-haspopup="dialog"
           >
-            Plans
+            <LayoutGrid size={21} />
+            <span>Explore</span>
+          </button>
+          <Link
+            href={`${prefix}/settings`}
+            onNavigate={openSettings}
+            className={page === "settings" ? "active" : ""}
+            aria-current={page === "settings" ? "page" : undefined}
+          >
+            <Settings size={21} />
+            <span>Settings</span>
           </Link>
-          <Link
-            className="icon-button"
-            href={`${prefix}/alerts`}
-            aria-label="Price alerts"
-          >
-            <Bell size={21} />
+        </div>
+      </aside>
+      <div className="app-workspace">
+        <header className="app-top topbar mobile-header-row">
+          <Link className="wordmark" href={`${prefix}/overview`}>
+            <img className="mobile-brand-mark" src="/icon.svg" width="34" height="34" alt="" />
+            <span className="wordmark-label">AURYN</span>
+            <span className="wordmark-route">
+              /{" "}
+              {primary.find((r) => r.path === page)?.label ||
+                page
+                  .replaceAll("-", " ")
+                  .replace(/\b\w/g, (letter) => letter.toUpperCase())}
+            </span>
           </Link>
           <button
-            className="icon-button"
-            aria-label="Settings"
+            className="search-box"
+            aria-label="Search companies and crypto"
             aria-haspopup="dialog"
             onClick={() => {
-              settings.current?.showModal();
-              const body =
-                settings.current?.querySelector<HTMLElement>(".dialog-body");
-              if (body) body.scrollTop = 0;
-              settings.current
-                ?.querySelector<HTMLHeadingElement>("h2")
+              search.current?.showModal();
+              search.current
+                ?.querySelector("input")
                 ?.focus({ preventScroll: true });
             }}
           >
-            <span className="avatar">
-              {(workspace?.email?.[0] || "A").toUpperCase()}
-            </span>
+            <SearchIcon size={18} />
+            <span>Find a company</span>
+            <kbd>⌘ K</kbd>
           </button>
-        </div>
-      </header>
-      <nav className="workspace-rail" aria-label="Workspace tools">
-        {[["discover","Discover"],["research-lab","Research Lab"],["trading","Paper Lab"],["compare","Compare"]].map(([path,label])=><Link key={path} href={`${prefix}/${path}`} aria-current={page===path?"page":undefined}>{label}<span aria-hidden="true">↗</span></Link>)}
-      </nav>
-      <main id="content" className="content" tabIndex={-1}>
-        <AccessNotice />
-        {demo && demo.routePrefix !== "" && (
-          <div className="preview-label">
-            Design preview · Illustrative data · Account actions disabled
+          <div className="top-links">
+            <button
+              className="icon-button mobile-explore"
+              aria-label="Explore tools"
+              aria-haspopup="dialog"
+              onClick={() => tools.current?.showModal()}
+            >
+              <LayoutGrid size={20} />
+            </button>
+            <Link
+              href={`${prefix}/plans`}
+              className="header-plans"
+              aria-current={page === "plans" ? "page" : undefined}
+            >
+              Plans
+            </Link>
+            <button
+              className="icon-button"
+              aria-label="Switch color theme"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            >
+              {theme === "dark" ? <Moon size={20} /> : <Sun size={20} />}
+            </button>
+            <Link
+              href={`${prefix}/alerts`}
+              className="icon-button"
+              aria-label="Price alerts"
+            >
+              <Bell size={20} />
+            </Link>
+            <Link
+              href={`${prefix}/settings`}
+              className="avatar"
+              aria-label="Account settings"
+              onNavigate={openSettings}
+              aria-current={page === "settings" ? "page" : undefined}
+            >
+              {(workspace?.email?.[0] || "A").toUpperCase()}
+            </Link>
           </div>
-        )}
-        {children}
-        <ProductFooter />
-      </main>
-      <nav className="mobile-dock" aria-label="Mobile navigation">
-        {primary.map((r) => nav(r, true))}
+        </header>
+        <main id="content" className="page-content" tabIndex={-1}>
+          <AccessNotice />
+          {demo && demo.routePrefix !== "" && (
+            <div className="preview-label">
+              Design preview · Illustrative data · Account actions disabled
+            </div>
+          )}
+          {children}
+          <ProductFooter />
+        </main>
+      </div>
+      <nav className="phone-dock" aria-label="Mobile navigation">
+        {primary.map((r) => nav(r))}
       </nav>
+      <dialog
+        ref={tools}
+        className="search-dialog approved-tools-dialog"
+        aria-label="Explore tools"
+      >
+        <header className="dialog-head">
+          <div>
+            <span className="eyebrow">Your workspace</span>
+            <h2>Explore tools</h2>
+          </div>
+          <button
+            className="icon-button"
+            aria-label="Close tools"
+            onClick={() => tools.current?.close()}
+          >
+            <X size={21} />
+          </button>
+        </header>
+        <p className="tools-intro">
+          Discover ideas, compare companies, and test your thinking.
+        </p>
+        <div className="dialog-tools">
+          {[
+            {
+              path: "discover",
+              label: "Discover",
+              detail: "Find your next research idea",
+              icon: Compass,
+            },
+            {
+              path: "compare",
+              label: "Compare",
+              detail: "See companies side by side",
+              icon: Scale,
+            },
+            {
+              path: "research-lab",
+              label: "Strategy lab",
+              detail: "Test a contribution strategy",
+              icon: FlaskConical,
+            },
+            {
+              path: "trading",
+              label: "Paper trading",
+              detail: "Practice with a paper portfolio",
+              icon: ChartNoAxesCombined,
+            },
+            {
+              path: "help",
+              label: "Help & support",
+              detail: "Understand the tools",
+              icon: HelpCircle,
+            },
+            {
+              path: "settings",
+              label: "Settings",
+              detail: "Account and preferences",
+              icon: Settings,
+            },
+          ]
+            .filter(
+              (tool) =>
+                tool.path !== page &&
+                (tool.path !== "trading" ||
+                  !!demo ||
+                  access.capabilities?.paperTrading),
+            )
+            .map(({ path, label, detail, icon: Icon }) => (
+              <Link
+                key={path}
+                href={`${prefix}/${path}`}
+                onNavigate={
+                  path === "settings"
+                    ? openSettings
+                    : () => tools.current?.close()
+                }
+              >
+                <span className="tool-icon">
+                  <Icon size={21} />
+                </span>
+                <span>
+                  <strong>{label}</strong>
+                  <small>{detail}</small>
+                </span>
+                <ArrowUpRight size={17} className="tool-arrow" />
+              </Link>
+            ))}
+        </div>
+      </dialog>
       <dialog
         className="search-dialog"
         ref={search}
@@ -207,7 +357,6 @@ export default function Shell({
         </header>
         <Search autoFocus onNavigate={() => search.current?.close()} />
       </dialog>
-      <SettingsSheet dialog={settings} />
     </div>
   );
 }

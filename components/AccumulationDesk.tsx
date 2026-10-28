@@ -1,4 +1,6 @@
 "use client";
+import PaceReadings from "./PaceReadings";
+import { pacePeriods } from "@/lib/pace-presentation";
 import { useMemo, useState } from "react";
 import type { Research, Candle } from "@/lib/types";
 import {
@@ -8,6 +10,8 @@ import {
 import { weeklyAccumulation } from "@/lib/accumulation-weekly";
 import { evaluateAccumulation } from "@/lib/accumulation-evaluation";
 import { amount, percent, dateLabel } from "@/lib/format";
+import PaceHelp from "./PaceHelp";
+import { paceCode } from "@/lib/pace-presentation";
 import { PriceChart } from "./Charts";
 const colours: Record<number, string> = {
   0: "#d89a20",
@@ -92,9 +96,9 @@ export default function AccumulationDesk({
     () =>
       signal
         ? [
-            { label: "2× pullback", price: signal.buy2 },
-            { label: "3× pullback", price: signal.buy3 },
-            { label: "4× pullback", price: signal.buy4 },
+            { label: "P2 zone", price: signal.buy2 },
+            { label: "P3 zone", price: signal.buy3 },
+            { label: "P4 zone", price: signal.buy4 },
           ].filter((level) => level.price > 0)
         : [],
     [signal],
@@ -115,7 +119,9 @@ export default function AccumulationDesk({
               ? "Weekly conditions · separate time horizon"
               : "Cycle-relative · monthly discipline"}
           </span>
-          <h2>AURYN Pace · price evidence.</h2>
+          <h2>AURYN Pace · price history</h2>
+          <small>Model {chosen.version} · settled prices</small>
+          <PaceHelp trigger="What does P mean?" />
         </div>
         <div className="segments" aria-label="Accumulation time horizon">
           {(["monthly", "weekly"] as const).map((v) => (
@@ -132,31 +138,20 @@ export default function AccumulationDesk({
       </header>
       <div className="accumulation-summary">
         <div>
-          <span
-            className="accumulation-badge"
-            style={{
-              background:
-                trimTier === "strong"
-                  ? "var(--red)"
-                  : signal
-                    ? colours[signal.multiplier]
-                    : undefined,
-              color:
-                signal && [0, 1, 3].includes(signal.multiplier)
-                  ? "#15313d"
-                  : "#fff",
-            }}
-          >
-            {signal ? `${signal.multiplier}×` : "—"}
-          </span>
+          <PaceReadings
+            readings={pacePeriods(
+              { ...confirmed, forming: chosen.forming },
+              weekly,
+            )}
+          />
           <h3>
             {signal
               ? signal.multiplier === 0
                 ? trimTier === "strong"
-                  ? "Strong trim review"
-                  : "Pause / trim review"
+                  ? "Price extension review"
+                  : "Pause new buying"
                 : signal.multiplier === 1
-                  ? "Normal contribution condition"
+                  ? "No accumulation zone established"
                   : "Stronger pullback condition"
               : `More ${cadence} history needed`}
           </h3>
@@ -170,23 +165,6 @@ export default function AccumulationDesk({
           </small>
         </div>
         <dl>
-          {chosen.forming && (
-            <div>
-              <dt>{weekly ? "Forming week" : "Forming month"}</dt>
-              <dd>
-                {chosen.forming.multiplier}× · provisional ·{" "}
-                {dateLabel(chosen.forming.date)}
-              </dd>
-            </div>
-          )}
-          <div>
-            <dt>{weekly ? "Last confirmed week" : "Last confirmed month"}</dt>
-            <dd>
-              {confirmed
-                ? `${confirmed.multiplier}× · confirmed · ${dateLabel(confirmed.date)}`
-                : "No confirmed reading"}
-            </dd>
-          </div>
           <div>
             <dt>Same confirmed zone</dt>
             <dd>
@@ -202,7 +180,8 @@ export default function AccumulationDesk({
         </dl>
       </div>
       <p className="small muted">
-        Multiples of your usual contribution—not leverage or expected returns.
+        P means Pace. Levels describe accumulation zones, not purchase
+        multiples, leverage or expected returns.{" "}
         {signal &&
           "historyBasis" in signal &&
           signal.historyBasis === "limited" &&
@@ -220,13 +199,13 @@ export default function AccumulationDesk({
         <div className="accumulation-extension" role="note">
           <strong>
             {trimTier === "strong"
-              ? "Strong trim review"
+              ? "Price extension review"
               : "Review price extension"}
           </strong>
           <span>
             Extreme distance above trend. Review exposure and the business case;
-            this is separate from the contribution multiplier and specifies no
-            sale amount.
+            this is separate from the accumulation zone and specifies no sale
+            amount.
           </span>
         </div>
       )}
@@ -253,7 +232,7 @@ export default function AccumulationDesk({
         {[0, 1, 2, 3, 4].map((n) => (
           <span key={n}>
             <i style={{ background: colours[n] }} />
-            {n === 0 ? "Pause" : `${n}×`}
+            {n === 0 ? "Pause" : paceCode(n)}
           </span>
         ))}
         <span>
@@ -263,9 +242,8 @@ export default function AccumulationDesk({
       </div>
       {weekly && (
         <p className="small muted">
-          Weekly v1 is a shorter-horizon research policy, not a replica of
-          another service. The available historical simulation remains monthly
-          only.
+          Weekly v1 is a separate, shorter-horizon price policy. The available
+          historical simulation remains monthly only.
         </p>
       )}
       <details className="policy-rules">
@@ -274,9 +252,8 @@ export default function AccumulationDesk({
           {weekly
             ? "Weekly v1 uses 52 completed weeks and a robust fitted log-price trend. Its 2×/3×/4× gates use 12%/25%/40% drawdown and 0.7/1.35/2 robust spread units."
             : "Monthly v5 uses the preceding 12 completed monthly closes for its cycle average and sample spread (minimum 10% of that average). Readings with 12–23 prior completed months are labelled limited history; 24 prior months use the standard robust-trend guard. The 2×/3×/4× gates require 10%/25%/35% below the cycle average and 0.5/0.95/1.3 spread units below it. Positive extension reviews also retain the robust-trend upper guard and a severe cycle-extension check."}
-          Weekly and monthly calculations differ. Matching selected reference
-          readings does not establish an investment edge or the private
-          reference formula.
+          Weekly and monthly calculations differ. Historical readings do not
+          establish future outperformance.
         </p>
         <p>
           US observations settle after 5 PM New York; crypto uses completed UTC
@@ -331,13 +308,16 @@ export default function AccumulationDesk({
             <>
               <p>
                 100 model units per month · {evaluation.months} completed
-                execution months. Contributions above 1× require previously
-                unspent cash.
+                execution months. This legacy price-only comparison spends 1–4
+                times a model deposit, using carried cash above the regular
+                deposit. It does not implement today’s P1 Watch/Hold rule or
+                historical business checks, and is not validation of AURYN’s
+                decisions.
               </p>
               <div className="policy-results">
                 {[
                   ["Normal DCA", evaluation.fixed],
-                  ["Cycle-relative v5", evaluation.adaptive],
+                  ["Legacy price-only policy", evaluation.adaptive],
                 ].map(([name, result]) => {
                   const x = result as typeof evaluation.fixed;
                   return (

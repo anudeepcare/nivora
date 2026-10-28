@@ -56,12 +56,13 @@ export default function DisplayPreferences() {
         <span>Reduce motion</span>
         <button
           type="button"
-          className="toggle"
+          className="motion-switch"
+          role="switch"
           aria-label="Reduce motion"
-          aria-pressed={reduceMotion}
+          aria-checked={reduceMotion}
           onClick={() => setReduceMotion(!reduceMotion)}
         >
-          <i />
+          <span aria-hidden="true" />
         </button>
       </div>
       <div className="setting-row">

@@ -1,9 +1,10 @@
+import { SUPPORT_EMAIL } from "./site-metadata";
 import { accessDb } from "./access-server";
 /** Saved request is the source of truth. Delivery failures never remove it. */
 export async function deliverSupport(id: string) {
   const key = process.env.RESEND_API_KEY,
     from = process.env.AURYN_SUPPORT_FROM,
-    to = process.env.AURYN_SUPPORT_NOTIFY_EMAIL;
+    to = process.env.AURYN_SUPPORT_NOTIFY_EMAIL || SUPPORT_EMAIL;
   if (
     process.env.AURYN_SUPPORT_EMAIL_ENABLED !== "true" ||
     process.env.VERCEL_ENV === "preview" ||

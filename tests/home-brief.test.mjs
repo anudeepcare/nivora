@@ -79,3 +79,40 @@ test("quiet Home distinguishes unavailable evidence from no returned checkpoints
     m.dailyPerspective(input.today),
   );
 });
+
+test("Home never reports no events when dated checkpoints exist", () => {
+  const events = [
+    {
+      symbol: "SOFI",
+      date: "2026-10-27",
+      kind: "Earnings",
+      detail: "Before market open",
+    },
+    {
+      symbol: "NOW",
+      date: "2026-10-27",
+      kind: "Earnings",
+      detail: "After market close",
+    },
+  ];
+  const ready = m.homeBrief({ ...input, events });
+  assert.doesNotMatch(ready.status, /No dated events/);
+  assert.match(ready.status, /2.*checkpoint/);
+  assert.equal(ready.checkpoints.length, 2);
+  const partial = m.homeBrief({ ...input, events, eventsReady: false });
+  assert.match(partial.status, /2.*checkpoint/);
+  assert.match(partial.status, /could not be checked/);
+});
+
+test("A quiet watchlist-only briefing does not imply the user owns positions", () => {
+  const brief = m.homeBrief({
+    ...input,
+    exposure: new Map(),
+    hasHoldings: false,
+  });
+  assert.doesNotMatch(
+    `${brief.title} ${brief.detail} ${brief.action}`,
+    /what you own|concentration|my holdings/i,
+  );
+  assert.match(brief.action, /watchlist/i);
+});
