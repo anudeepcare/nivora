@@ -44,16 +44,18 @@
   }
   .approved-product.workspace-experience .mobile-header-row .wordmark {
     position: static;
+    inset: auto;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    flex: 0 0 auto;
-    margin: 0;
+    flex: 0 0 auto !important;
+    margin: 0 !important;
     width: auto;
     max-width: 112px;
     height: 40px;
     min-width: 0;
-    overflow: hidden;
+    overflow: visible !important;
+    transform: none !important;
     color: var(--ink);
     font-size: 16px;
     line-height: 1;
@@ -62,11 +64,15 @@
     white-space: nowrap;
   }
   .approved-product.workspace-experience .mobile-brand-mark {
-    display: block;
-    width: 30px;
-    height: 30px;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 30px !important;
+    height: 30px !important;
     border-radius: 9px;
     flex: 0 0 auto;
+    object-fit: contain;
+    object-position: center;
   }
   .approved-product.workspace-experience .wordmark-label {
     display: inline !important;
