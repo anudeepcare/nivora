@@ -1,5 +1,4 @@
 "use client";
-import { newRequestId } from "@/lib/client-id";
 import { useMemo, useRef, useState } from "react";
 import { Upload, Download } from "lucide-react";
 import { api } from "@/lib/client";
@@ -55,7 +54,7 @@ export default function PortfolioTools({
     if (!input) return;
     try {
       setFile(parseHoldingsCsv(await input.text()));
-      requestId.current = newRequestId();
+      requestId.current = crypto.randomUUID();
       setMessage(
         "Review the import below. Existing holdings will remain unchanged.",
       );

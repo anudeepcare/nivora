@@ -8,8 +8,6 @@ import {
 } from "../lib/planning.ts";
 import { evaluateAlert } from "../lib/alert-policy.ts";
 import { cleanDocument } from "../lib/documents.ts";
-import { researchAccumulation } from "../lib/accumulation-policy-v5.ts";
-import { evaluateAccumulation } from "../lib/accumulation-evaluation.ts";
 const bars = Array.from({ length: 850 }, (_, i) => {
   const t = new Date(Date.UTC(2022, 0, 1 + i));
   return {
@@ -28,36 +26,6 @@ test("DCA comparison uses equal contributions and never spends unavailable cash"
   assert.ok(r.adaptive.cash >= 0);
   assert.ok(r.adaptive.value <= r.adaptive.contributed);
   assert.equal(r.costBps, 10);
-});
-test("Strategy Lab uses the displayed Pace policy and the same completed-period accounting", () => {
-  const input = Array.from({ length: 1460 }, (_, i) => {
-    const price = i < 500 ? 100 : i < 620 ? 350 : 60;
-    return {
-      time: new Date(Date.UTC(2020, 0, 1 + i)).toISOString().slice(0, 10),
-      open: price,
-      high: price,
-      low: price,
-      close: price,
-      volume: 100,
-    };
-  });
-  const result = compareDca(input, "2024-05-01", 50, "crypto");
-  const live = researchAccumulation(input, "2024-05-01", "crypto");
-  assert.equal(result.policy, live.version);
-  const evaluation = evaluateAccumulation(input, "2024-05-01", 50, "crypto");
-  assert.equal(evaluation.available, true);
-  assert.equal(result.months, evaluation.months);
-  assert.equal(result.adaptive.value, evaluation.adaptive.value);
-  assert.equal(result.fixed.value, evaluation.fixed.value);
-  for (const row of result.history) {
-    const prior = new Date(`${row.month}-01T00:00:00Z`);
-    prior.setUTCDate(0);
-    const month = prior.toISOString().slice(0, 7);
-    assert.equal(
-      row.multiplier,
-      live.history.find((s) => s.month === month).multiplier,
-    );
-  }
 });
 test("CSV import validates all rows and supports quoted commas without replacing holdings", () => {
   const r = parseHoldingsCsv(

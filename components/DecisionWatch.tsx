@@ -54,7 +54,7 @@ export default function DecisionWatch({ research: r }: { research: Research }) {
           <p>
             Current reported evidence
             {d.period ? ` · period ending ${d.period}` : ""}. Save a threshold
-            alert; checks run when you request them or when scheduled checks are enabled.
+            alert; checks run on request or an administrator schedule.
           </p>
         </div>
         <Link href={`${demo && demo.routePrefix !== "" ? "/preview" : ""}/alerts`}>Manage alerts →</Link>

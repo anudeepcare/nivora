@@ -1,14 +1,3 @@
-# Approved mockup release — 2026-10-26
-
-This release changes the UI and provider resilience. It introduces no database migration and requires no new subscription. Keep the existing production secrets and service configuration. Do not rerun historical migrations solely for this release.
-
-Validation: `npm run verify`, `npm run test:api`, `node scripts/test-auth-provider-api.mjs`, and `node scripts/test-ticker-resilience.mjs`. The source includes the full lockfile and tests. See `verification/REPORT.json` for the verified results and live-service limits.
-
-The user approved the design; the complete source is ready for deployment review. No production deployment was performed. Test a branch preview against your configured services before promoting. Keep `AURYN_ENABLE_PREVIEW` unset in production; the fixture preview is restricted to local hosts.
-
----
-## Existing deployment and service setup references
-
 # Stripe update
 
 After deploying, follow `STRIPE_SETUP.md` for the new migration and Stripe price, webhook and portal setup. Existing API/auth/provider configuration is preserved.

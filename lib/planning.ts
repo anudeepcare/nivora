@@ -1,9 +1,6 @@
 import type { Candle } from "./types";
 import { monthEndSession } from "./calendar.ts";
-import {
-  researchAccumulation,
-  adaptiveSettledBars,
-} from "./accumulation-policy-v5.ts";
+import { accumulation } from "./engine.ts";
 import { symbolInput } from "./format.ts";
 export function compareDca(
   bars: Candle[],
@@ -13,10 +10,17 @@ export function compareDca(
 ) {
   if (!Number.isFinite(costBps) || costBps < 0 || costBps > 200)
     throw Error("Costs must be between zero and two hundred basis points.");
-  const signals = researchAccumulation(bars, asOf, market),
+  const signals = accumulation(bars, asOf, false, market),
     lookup = new Map(signals.history.map((s) => [s.month, s])),
     months = new Map<string, Candle[]>();
-  for (const b of adaptiveSettledBars(bars, asOf, market)) {
+  for (const b of [...bars].sort((a, b) => a.time.localeCompare(b.time))) {
+    if (
+      b.time >= asOf.slice(0, 10) ||
+      b.time.length !== 10 ||
+      !Number.isFinite(b.close) ||
+      b.close <= 0
+    )
+      continue;
     const m = b.time.slice(0, 7);
     months.set(m, [...(months.get(m) || []), b]);
   }
@@ -41,6 +45,7 @@ export function compareDca(
       cash: number;
     }[] = [];
   for (const [month, rows] of months) {
+    if (month >= asOf.slice(0, 7)) continue;
     if (rows.at(-1)?.time !== monthEndSession(month, market)) continue;
     const prev = new Date(
         Date.UTC(Number(month.slice(0, 4)), Number(month.slice(5)) - 1, 0),
@@ -84,7 +89,7 @@ export function compareDca(
     });
   }
   return {
-    policy: signals.version,
+    policy: "monthly-v1",
     months: history.length,
     costBps,
     fixed,

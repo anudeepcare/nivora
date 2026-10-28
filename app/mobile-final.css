@@ -1,128 +1,248 @@
-/* Loaded after every legacy mobile rule. Keep this file last: it is the
-   canonical iPhone/PWA chrome and cannot be shadowed by earlier breakpoints. */
-@media (max-width: 760px) {
-  .approved-product.workspace-experience {
-    --ios-glass: color-mix(in srgb, var(--card) 74%, transparent);
-    --ios-glass-strong: color-mix(in srgb, var(--card) 88%, transparent);
-    --ios-glass-line: color-mix(in srgb, var(--line) 64%, transparent);
+/* Loaded after every product stylesheet. This is the browser/PWA mobile
+   chrome owner for the auryn-experience shell. */
+.auryn-experience .home-command-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  padding: 15px 18px;
+  margin: -6px 0 18px;
+  border: 1px solid color-mix(in srgb, var(--blue) 18%, var(--line));
+  border-radius: 17px;
+  background: linear-gradient(105deg, color-mix(in srgb, var(--blue-soft) 90%, var(--surface)), color-mix(in srgb, var(--dca) 8%, var(--surface)));
+  box-shadow: 0 8px 22px #273e8b0b;
+}
+.auryn-experience .home-command-copy {
+  min-width: 0;
+}
+.auryn-experience .home-command-copy .briefing-system-label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--blue);
+  font-size: 10px;
+  letter-spacing: .1em;
+}
+.auryn-experience .home-command-copy strong {
+  display: block;
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.35;
+}
+.auryn-experience .home-command-copy small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.auryn-experience .home-command-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(74px, 1fr));
+  gap: 8px;
+}
+.auryn-experience .home-command-metrics a {
+  display: grid;
+  min-width: 82px;
+  padding: 8px 10px;
+  border: 1px solid color-mix(in srgb, var(--blue) 12%, var(--line));
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--surface) 78%, transparent);
+  text-align: center;
+  text-decoration: none;
+}
+.auryn-experience .home-command-metrics strong {
+  color: var(--blue);
+  font-size: 18px;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.auryn-experience .home-command-metrics span {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 10px;
+}
+@media (max-width: 700px) {
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .auryn-experience {
+    --mobile-glass: color-mix(in srgb, var(--surface) 74%, transparent);
+    --mobile-glass-strong: color-mix(in srgb, var(--surface) 88%, transparent);
+    --mobile-glass-line: color-mix(in srgb, var(--line) 68%, transparent);
     background:
-      radial-gradient(circle at 92% 4%, color-mix(in srgb, var(--workspace-violet) 12%, transparent), transparent 34%),
-      radial-gradient(circle at 0% 36%, color-mix(in srgb, var(--blue) 8%, transparent), transparent 38%),
-      var(--bg);
+      radial-gradient(circle at 92% 8%, color-mix(in srgb, var(--dca) 10%, transparent), transparent 36%),
+      radial-gradient(circle at 0% 42%, color-mix(in srgb, var(--blue) 7%, transparent), transparent 40%),
+      var(--paper);
   }
-  .approved-product.workspace-experience .app-workspace {
-    min-width: 0;
-    background: transparent;
-  }
-  .approved-product.workspace-experience .mobile-header-row {
-    display: flex;
+
+  .auryn-experience .topbar {
     position: sticky;
     top: 0;
+    z-index: 30;
+    display: flex;
     align-items: center;
     gap: 8px;
     height: calc(58px + env(safe-area-inset-top, 0px));
     min-height: calc(58px + env(safe-area-inset-top, 0px));
+    margin: 0;
     padding: env(safe-area-inset-top, 0px)
       max(14px, env(safe-area-inset-right, 0px)) 0
       max(14px, env(safe-area-inset-left, 0px));
-    background: color-mix(in srgb, var(--card) 74%, transparent);
+    border: 0;
     border-bottom: 0;
+    border-radius: 0;
+    background: var(--mobile-glass);
     box-shadow: none;
     -webkit-backdrop-filter: blur(22px) saturate(165%);
     backdrop-filter: blur(22px) saturate(165%);
   }
-  .approved-product.workspace-experience .mobile-header-row .wordmark {
-    position: static;
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
+
+  .auryn-experience .brand-link {
     flex: 0 0 auto;
-    margin: 0;
     min-width: 0;
-    overflow: hidden;
-    color: var(--ink);
-    font-size: 17px;
-    line-height: 1;
-    letter-spacing: 0.12em;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
-  .approved-product.workspace-experience .mobile-brand-mark {
-    display: block;
+  .auryn-experience .brand {
+    gap: 9px;
+    min-height: 40px;
+  }
+  .auryn-experience .brand img {
     width: 34px;
     height: 34px;
     border-radius: 10px;
-    flex: 0 0 auto;
   }
-  .approved-product.workspace-experience .wordmark-label {
-    font-weight: 750;
+  .auryn-experience .brand strong {
+    font-size: 17px;
+    letter-spacing: .12em;
   }
-  .approved-product.workspace-experience .wordmark-route {
+  .auryn-experience .brand small,
+  .auryn-experience .desktop-nav,
+  .auryn-experience .workspace-rail {
     display: none;
   }
-  .approved-product.workspace-experience .mobile-header-row > .search-box,
-  .approved-product.workspace-experience .mobile-header-row .top-links > :is(.mobile-explore, a.avatar, .header-plans, [aria-label="Price alerts"]) {
-    width: 40px;
-    height: 40px;
-    min-height: 40px;
-    border-radius: 12px;
-  }
-  .approved-product.workspace-experience .mobile-header-row > .search-box {
+
+  .auryn-experience .topbar > .top-search {
     display: inline-grid;
     place-items: center;
-    margin: 0 0 0 auto;
+    flex: 0 0 40px;
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    min-height: 40px;
+    margin-left: auto;
     padding: 0;
-    border: 1px solid var(--ios-glass-line);
-    background: var(--ios-glass-strong);
+    border: 1px solid var(--mobile-glass-line);
+    border-radius: 13px;
+    background: var(--mobile-glass-strong);
     box-shadow: inset 0 1px #ffffff66, 0 3px 10px #17345c0d;
     -webkit-backdrop-filter: blur(16px) saturate(150%);
     backdrop-filter: blur(16px) saturate(150%);
   }
-  .approved-product.workspace-experience .mobile-header-row .top-links {
+  .auryn-experience .top-search span,
+  .auryn-experience .top-search kbd {
+    display: none;
+  }
+
+  .auryn-experience .top-actions {
     display: flex;
     align-items: center;
     gap: 6px;
     min-width: 0;
+    margin: 0;
   }
-  .approved-product.workspace-experience .mobile-header-row .top-links > :is(.mobile-explore, a.avatar) {
+  .auryn-experience .top-actions .icon-button,
+  .auryn-experience .top-plans-link {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    min-width: 40px;
+    width: 40px;
+    height: 40px;
+    min-height: 40px;
     padding: 0;
-    border: 1px solid var(--ios-glass-line);
-    background: var(--ios-glass-strong);
+    border: 1px solid var(--mobile-glass-line);
+    border-radius: 13px;
+    background: var(--mobile-glass-strong);
     box-shadow: inset 0 1px #ffffff66, 0 3px 10px #17345c0d;
     -webkit-backdrop-filter: blur(16px) saturate(150%);
     backdrop-filter: blur(16px) saturate(150%);
   }
-  .approved-product.workspace-experience .mobile-header-row .top-links > .mobile-explore,
-  .approved-product.workspace-experience .mobile-header-row .top-links > .icon-button[aria-label="Switch color theme"] {
-    display: none;
-  }
-  .approved-product.workspace-experience .mobile-header-row .top-links > .header-plans {
-    display: inline-flex;
+  .auryn-experience .top-plans-link {
     width: auto;
     padding: 0 13px;
     border-radius: 999px;
     color: var(--blue);
     font-size: 14px;
     font-weight: 650;
-    letter-spacing: 0;
     text-decoration: none;
   }
-  .approved-product.workspace-experience .mobile-header-row .top-links > [aria-label="Price alerts"] {
-    display: inline-flex;
-    padding: 0;
+  .auryn-experience .top-actions .icon-button[aria-label="Settings"] {
+    border-radius: 13px;
+  }
+  .auryn-experience .top-actions .avatar {
+    width: 34px;
+    height: 34px;
     border: 0;
-    background: transparent;
     box-shadow: none;
-    color: var(--blue);
   }
-  .approved-product.workspace-experience .page-content {
-    padding-top: 12px;
-    padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+
+  .auryn-experience .content {
+    width: 100%;
+    padding: 12px max(14px, env(safe-area-inset-right, 0px))
+      calc(96px + env(safe-area-inset-bottom, 0px))
+      max(14px, env(safe-area-inset-left, 0px));
   }
-  .approved-product.workspace-experience .phone-dock {
+  .auryn-experience .briefing-home {
+    gap: 14px;
+  }
+  .auryn-experience .home-command-bar {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin: 0;
+    padding: 15px;
+    border-radius: 20px;
+    background: color-mix(in srgb, var(--surface) 76%, transparent);
+    -webkit-backdrop-filter: blur(18px) saturate(145%);
+    backdrop-filter: blur(18px) saturate(145%);
+  }
+  .auryn-experience .home-command-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .auryn-experience .home-command-metrics a {
+    min-width: 0;
+  }
+  .auryn-experience .briefing-home .briefing-greeting {
+    padding: 6px 2px 2px;
+    margin-bottom: 2px;
+  }
+  .auryn-experience .briefing-home .briefing-greeting h1 {
+    font-size: clamp(27px, 8vw, 34px);
+    letter-spacing: -.05em;
+  }
+  .auryn-experience .home-wealth-strip,
+  .auryn-experience .briefing-panel {
+    border-color: color-mix(in srgb, var(--blue) 15%, var(--line));
+    background: color-mix(in srgb, var(--surface) 76%, transparent);
+    box-shadow: 0 14px 32px #1d347d0a, inset 0 1px #ffffff45;
+    -webkit-backdrop-filter: blur(18px) saturate(145%);
+    backdrop-filter: blur(18px) saturate(145%);
+  }
+  .auryn-experience .home-wealth-strip {
+    margin: 0;
+    border-radius: 20px;
+  }
+  .auryn-experience .home-daily-brief {
+    margin: 0;
+    border-radius: 20px;
+    box-shadow: 0 18px 36px #234b9b18;
+  }
+  .auryn-experience .briefing-panel {
+    border-radius: 20px;
+  }
+
+  .auryn-experience .mobile-dock {
     left: max(12px, env(safe-area-inset-left, 0px));
     right: max(12px, env(safe-area-inset-right, 0px));
     bottom: max(8px, env(safe-area-inset-bottom, 0px));
@@ -130,14 +250,14 @@
     min-height: 66px;
     padding: 5px;
     gap: 4px;
-    border: 1px solid var(--ios-glass-line);
+    border: 1px solid var(--mobile-glass-line);
     border-radius: 21px;
-    background: var(--ios-glass);
+    background: var(--mobile-glass);
     box-shadow: 0 16px 38px #13284b25, inset 0 1px #ffffff66;
     -webkit-backdrop-filter: blur(24px) saturate(170%);
     backdrop-filter: blur(24px) saturate(170%);
   }
-  .approved-product.workspace-experience .phone-dock > a {
+  .auryn-experience .mobile-dock a {
     min-height: 54px;
     padding: 4px 2px;
     border-radius: 15px;
@@ -145,107 +265,34 @@
     font-size: 10px;
     line-height: 1.1;
   }
-  .approved-product.workspace-experience .phone-dock svg {
+  .auryn-experience .mobile-dock svg {
     width: 20px;
     height: 20px;
   }
-  .approved-product.workspace-experience .product-footer {
-    display: flex;
-    align-items: center;
+
+  .auryn-experience .product-footer {
     justify-content: center;
-    gap: 6px;
     margin-top: 14px;
     padding: 14px 0 4px;
     font-size: 10px;
     text-align: center;
   }
-  .approved-product.workspace-experience .product-footer nav,
-  .approved-product.workspace-experience .product-footer > .help-trigger,
-  .approved-product.workspace-experience .product-footer .mobile-footer-note {
+  .auryn-experience .product-footer nav,
+  .auryn-experience .product-footer > .help-trigger,
+  .auryn-experience .product-footer .mobile-footer-note {
     display: none;
   }
-  .approved-product.workspace-experience .search-dialog {
-    width: 100%;
-    max-height: min(86dvh, 720px);
-    border-radius: 24px 24px 0 0;
-    border-color: var(--ios-glass-line);
-    background: var(--ios-glass-strong);
-    box-shadow: 0 -16px 50px #13284b2a, inset 0 1px #ffffff66;
-    -webkit-backdrop-filter: blur(28px) saturate(170%);
-    backdrop-filter: blur(28px) saturate(170%);
-  }
-  .approved-product.workspace-experience .search-dialog::backdrop {
-    background: #12203d52;
-    -webkit-backdrop-filter: blur(8px) saturate(120%);
-    backdrop-filter: blur(8px) saturate(120%);
-  }
-  .approved-product.workspace-experience .approved-tools-dialog {
-    border-radius: 26px;
-  }
-  .approved-product.workspace-experience .approved-tools-dialog .dialog-tools a {
-    border-color: var(--ios-glass-line);
-    background: color-mix(in srgb, var(--card) 62%, transparent);
-    box-shadow: inset 0 1px #ffffff45;
-    -webkit-backdrop-filter: blur(14px) saturate(150%);
-    backdrop-filter: blur(14px) saturate(150%);
-  }
-  .approved-product.workspace-experience .approved-tools-dialog .dialog-tools a:hover,
-  .approved-product.workspace-experience .approved-tools-dialog .dialog-tools a:focus-visible {
-    border-color: color-mix(in srgb, var(--blue) 58%, var(--ios-glass-line));
-    background: color-mix(in srgb, var(--blue-soft) 78%, transparent);
-  }
+}
 
-  /* The production mobile composition is a quiet canvas with glass controls,
-     not a second opaque navigation bar. */
-  .approved-product.workspace-experience .briefing-home {
-    gap: 14px;
-  }
-  .approved-product.workspace-experience .briefing-home .briefing-greeting {
-    padding: 6px 2px 2px;
-    margin-bottom: 2px;
-  }
-  .approved-product.workspace-experience .briefing-home .briefing-greeting h1 {
-    font-size: clamp(27px, 8vw, 34px);
-    letter-spacing: -0.05em;
-  }
-  .approved-product.workspace-experience .home-command-bar,
-  .approved-product.workspace-experience .home-wealth-strip,
-  .approved-product.workspace-experience .briefing-panel {
-    border-color: color-mix(in srgb, var(--blue) 15%, var(--line));
-    background: color-mix(in srgb, var(--card) 76%, transparent);
-    box-shadow: 0 14px 32px #1d347d0a, inset 0 1px #ffffff45;
-    -webkit-backdrop-filter: blur(18px) saturate(145%);
-    backdrop-filter: blur(18px) saturate(145%);
-  }
-  .approved-product.workspace-experience .home-command-bar {
-    margin: 0;
-    padding: 15px;
-    border-radius: 20px;
-    background:
-      radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--workspace-violet) 14%, transparent), transparent 50%),
-      color-mix(in srgb, var(--card) 78%, transparent);
-  }
-  .approved-product.workspace-experience .home-wealth-strip {
-    margin: 0;
-    border-radius: 20px;
-  }
-  .approved-product.workspace-experience .home-daily-brief {
-    margin: 0;
-    border-radius: 20px;
-    box-shadow: 0 18px 36px #234b9b18;
-  }
-  .approved-product.workspace-experience .briefing-panel {
-    border-radius: 20px;
+@media (max-width: 360px) {
+  .auryn-experience .top-plans-link {
+    display: none;
   }
 }
-@media (max-width: 760px) {
-  :root[data-theme="dark"] .approved-product.workspace-experience .mobile-header-row,
-  :root[data-theme="dark"] .approved-product.workspace-experience .phone-dock,
-  :root[data-theme="dark"] .approved-product.workspace-experience .search-dialog {
+
+@media (max-width: 700px) {
+  :root[data-theme="dark"] .auryn-experience .topbar,
+  :root[data-theme="dark"] .auryn-experience .mobile-dock {
     box-shadow: 0 16px 42px #00000045, inset 0 1px #ffffff1c;
-  }
-  :root[data-theme="dark"] .approved-product.workspace-experience .mobile-header-row > .search-box,
-  :root[data-theme="dark"] .approved-product.workspace-experience .mobile-header-row .top-links > :is(.mobile-explore, a.avatar, .header-plans, [aria-label="Price alerts"]) {
-    box-shadow: inset 0 1px #ffffff1c, 0 3px 12px #00000030;
   }
 }

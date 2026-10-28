@@ -1,4 +1,3 @@
-import { customerText } from "../lib/customer-language.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -7,11 +6,9 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import postcss from "postcss";
 import * as format from "../lib/format.ts";
-import { latestFinancialEvidence } from "../lib/analysis.ts";
-import { selectPriceReference } from "../lib/price-reference.ts";
-import { movementContext } from "../lib/movement-context.ts";
-import { headerMarketContext } from "../lib/business-history.ts";
-import { retainResearchQuote } from "../lib/research-quote.ts";
+import {latestFinancialEvidence} from '../lib/analysis.ts';
+import {headerMarketContext} from "../lib/business-history.ts";
+import {retainResearchQuote} from "../lib/research-quote.ts";
 import { normalizeBars } from "../lib/market.ts";
 import { normalizeEodBars } from "../lib/eodhd-normalize.ts";
 const asOf = "2026-10-17T12:00:00Z";
@@ -66,7 +63,7 @@ test("financial selected-control styles outrank global button resets", () => {
     });
   }
 });
-function researchMarkup(issues = []) {
+function researchMarkup() {
   const source = fs.readFileSync("components/Research.tsx", "utf8");
   const ast = ts.createSourceFile(
     "Research.tsx",
@@ -105,7 +102,7 @@ function researchMarkup(issues = []) {
       changePct: 1,
       stale: false,
     },
-    issues,
+    issues: [],
     history: [],
     facts: [],
     filings: [],
@@ -115,30 +112,7 @@ function researchMarkup(issues = []) {
     },
   };
   const empty = () => null;
-  const bindings = {
-    customerText,
-    useAccess: () => ({
-      access: {
-        features: Object.fromEntries(
-          [
-            "overview",
-            "business",
-            "financials",
-            "value",
-            "technicals",
-            "analysts",
-            "news",
-            "advanced",
-            "portfolio",
-            "home",
-            "ai",
-            "longHistory",
-          ].map((k) => [k, true]),
-        ),
-      },
-    }),
-    FeatureGate: ({ children }) => children,
-    FreeSnapshot: () => null,
+  const bindings = {useAccess:()=>({access:{features:Object.fromEntries(["overview","business","financials","value","technicals","analysts","news","advanced","portfolio","home","ai","longHistory"].map(k=>[k,true]))}}),FeatureGate:({children})=>children,FreeSnapshot:()=>null,
     React,
     ...format,
     tabs: ["Snapshot", "Financials", "Valuation", "Technicals", "Thesis"],
@@ -149,9 +123,9 @@ function researchMarkup(issues = []) {
     useRef: (value) => ({ current: value }),
     useLayoutEffect: () => {},
     useEffect: () => {},
-    useLivePrices: () => ({ ticks: {}, connected: false }),
-    useResearchPreferences: () => ({ preferences: { detail: "essential" } }),
-    ResearchModeSwitch: () => null,
+    useLivePrices: () => ({ticks:{},connected:false}),
+    useResearchPreferences:()=>({preferences:{detail:"essential"}}),
+    ResearchModeSwitch:()=>null,
     mergePriceTick: (base) => base,
     quoteHealth: (base) => base,
     useProduct: () => ({ workspace: { watchlist: [] }, mutate: empty }),
@@ -168,10 +142,7 @@ function researchMarkup(issues = []) {
     }),
     rangeBars: () => [],
     retainResearchQuote,
-    headerMarketContext,
-    latestFinancialEvidence,
-    selectPriceReference,
-    movementContext,
+    headerMarketContext,latestFinancialEvidence,
   };
   // Render the actual shared provenance component too; details remain available
   // in its disclosure rather than cluttering the quote headline.
@@ -199,14 +170,9 @@ function researchMarkup(issues = []) {
     "dateLabel",
     "quoteTime",
     "Help",
-    "customerText",
     stampCode + ";return DataStamp;",
-  )(
-    React,
-    format.dateLabel,
-    format.quoteTime,
-    ({ children }) => React.createElement("dialog", {}, children),
-    customerText,
+  )(React, format.dateLabel, format.quoteTime, ({ children }) =>
+    React.createElement("dialog", {}, children),
   );
   for (const name of [
     "StockFacts",
@@ -230,12 +196,7 @@ function researchMarkup(issues = []) {
     "DecisionWatch",
     "PositionAwareResearch",
     "ValuationLab",
-    "TimingContext",
-    "FinancingContext",
-    "EarningsPrep",
-    "ResearchNotes",
-    "ResearchCompare",
-    "CompanyBrief",
+    "TimingContext", "FinancingContext", "EarningsPrep", "ResearchNotes", "ResearchCompare", "CompanyBrief",
     "ResearchOutlook",
     "OverviewContext",
     "CompanyUpdates",
@@ -245,23 +206,16 @@ function researchMarkup(issues = []) {
     "EarningsWorkspace",
     "ResearchChanges",
     "ResearchCoverage",
-    "CompanyMetrics",
     "DcaResearch",
     "Bookmark",
     "RefreshCw",
-    "X",
     "ArrowUpRight",
   ])
     bindings[name] = empty;
-  bindings.Help = ({ children }) => React.createElement("div", null, children);
-  bindings.DecisionOverview = () =>
-    React.createElement("section", { "data-overview-evidence": "edge" });
-  bindings.KeyFinancialMetrics = () =>
-    React.createElement("section", { "data-overview-evidence": "financials" });
-  bindings.DecisionWorkspace = () =>
-    React.createElement("section", { "data-overview-evidence": "lenses" });
-  bindings.DecisionWatch = () =>
-    React.createElement("section", { "data-overview-evidence": "thresholds" });
+  bindings.DecisionOverview = () => React.createElement('section', {'data-overview-evidence':'edge'});
+  bindings.KeyFinancialMetrics = () => React.createElement('section', {'data-overview-evidence':'financials'});
+  bindings.DecisionWorkspace = () => React.createElement('section', {'data-overview-evidence':'lenses'});
+  bindings.DecisionWatch = () => React.createElement('section', {'data-overview-evidence':'thresholds'});
   const component = new Function(
     ...Object.keys(bindings),
     code + ";return Research;",
@@ -283,18 +237,8 @@ test("unverified upcoming EPS is never formatted in the listing currency", () =>
   assert.doesNotMatch(html, /Estimated EPS/);
 });
 
-test("Simple overview delegates to Edge without repeating the full evidence panels", () => {
-  const html = researchMarkup();
-  assert.match(html, /data-overview-evidence="edge"/);
-  for (const section of ["financials", "lenses", "thresholds"])
-    assert.ok(!html.includes(`data-overview-evidence="${section}"`));
-});
-
-test("coverage details preserve the failure without exposing vendor names", () => {
-  const html = researchMarkup([
-    "EODHD did not authorize this dataset",
-    "Twelve Data financial data is temporarily unavailable",
-  ]);
-  assert.doesNotMatch(html, /EODHD|Twelve Data/i);
-  assert.match(html, /did not authorize this dataset/);
+test('Simple overview delegates to Edge without repeating the full evidence panels',()=>{
+ const html=researchMarkup();
+ assert.match(html,/data-overview-evidence="edge"/);
+ for(const section of ['financials','lenses','thresholds'])assert.ok(!html.includes(`data-overview-evidence="${section}"`));
 });

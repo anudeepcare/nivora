@@ -9,7 +9,6 @@ import { researchOutlook, consensusOutlook } from "./outlook.ts";
 import { financingContext } from "./research-integrity.ts";
 import { priceRiskScenarios } from "./price-risk-scenarios.ts";
 import { modelCoverage } from "./research-depth.ts";
-import { listingReconciliation } from "./listing-reconciliation.ts";
 export function researchBrief(r: Research) {
   const p = perspective(r),
     d = researchDecision(r),
@@ -47,12 +46,26 @@ export function researchBrief(r: Research) {
       ? r.quote.asOf!
       : "A current dated quote is needed for an entry assessment.",
   });
-  const listing = listingReconciliation(r),
-    mismatch = listing.status === "conflicting";
+  const shares = r.evidence?.ownership?.outstanding,
+    cap = r.evidence?.highlights?.MarketCapitalization;
+  const canReconcile =
+    r.evidence?.reportingCurrency === r.quote.currency &&
+    typeof shares === "number" &&
+    shares > 0 &&
+    typeof cap === "number" &&
+    cap > 0 &&
+    typeof r.quote.price === "number" &&
+    r.quote.price > 0;
+  const mismatch =
+    canReconcile && Math.abs(cap! / (shares! * r.quote.price!) - 1) > 0.1;
   checks.push({
     label: "Listing reconciliation",
-    status: listing.status,
-    detail: listing.detail,
+    status: canReconcile ? (mismatch ? "conflicting" : "available") : "missing",
+    detail: canReconcile
+      ? mismatch
+        ? "Market cap, outstanding shares and quote differ by more than 10%. Check dates, listing units or ADR ratios."
+        : "Market cap, shares and quote reconcile within the 10% check. This is a consistency check, not an audit."
+      : "Comparable market cap, share basis and currencies are required.",
   });
   checks.push({
     label: "Model suitability",
@@ -108,32 +121,27 @@ export function researchBrief(r: Research) {
           ? (latest.operatingIncome / latest.revenue) * 100
           : null,
     },
-    scenarioEligible: outlook.available && outlook.basis === "earnings", // EPS × P/E does not use aggregate capitalization or outstanding shares.
-    scenario: outlook.available
-      ? {
-          currency: outlook.currency,
-          low: outlook.cases[0].target,
-          base: outlook.cases[1].target,
-          high: outlook.cases[2].target,
-          asOf: outlook.asOf,
-          end: outlook.end,
-          years: outlook.years,
-          annual: {
-            low: outlook.cases[0].annual,
-            base: outlook.cases[1].annual,
-            high: outlook.cases[2].annual,
-          },
-          calculatedMultiple: !!outlook.caveat?.startsWith(
-            "Calculated EV/revenue",
-          ),
-        }
-      : null,
+    scenarioEligible:
+      !mismatch && outlook.available && outlook.basis === "earnings", // Only supported earnings cases precede analyst fallback; not intrinsic value.
+    scenario:
+      !mismatch && outlook.available
+        ? {
+            currency: outlook.currency,
+            low: outlook.cases[0].target,
+            base: outlook.cases[1].target,
+            high: outlook.cases[2].target,
+            asOf: outlook.asOf,
+            end: outlook.end,
+            calculatedMultiple: !!outlook.caveat?.startsWith(
+              "Calculated EV/revenue",
+            ),
+          }
+        : null,
     version: "research-brief-v2",
     decisionVersion: d.version,
     checks,
     coverage,
     conflicting: mismatch,
-    listing,
     metrics: d.metricsAvailable,
     period: latest?.end ?? null,
     business: {
@@ -156,18 +164,16 @@ export function researchBrief(r: Research) {
           "Review reported profitability, cash generation and funding together."),
     },
     value: {
-      title:
-        mismatch && !outlook.available
-          ? "AURYN valuation is unavailable"
-          : outlook.available
-            ? "Fair value not established"
-            : "Value not established",
-      reason:
-        mismatch && !outlook.available
-          ? listing.detail
-          : outlook.available
-            ? "Forecast-multiple sensitivities omit a complete operating and financing plan. Build funded cases in Value; analyst targets remain separate."
-            : outlook.reason,
+      title: mismatch
+        ? "AURYN valuation is unavailable"
+        : outlook.available
+          ? "Fair value not established"
+          : "Value not established",
+      reason: mismatch
+        ? `Reported market cap (${cap?.toLocaleString()} ${r.quote.currency}) differs from shares × the reference price (${((shares ?? 0) * (r.quote.price ?? 0)).toLocaleString()} ${r.quote.currency}). These inputs may use different dates or share units. AURYN withholds affected price scenarios; reported company results and published analyst targets remain usable.`
+        : outlook.available
+          ? "Forecast-multiple sensitivities omit a complete operating and financing plan. Build funded cases in Value; analyst targets remain separate."
+          : outlook.reason,
     },
     accumulation: {
       version: p.dca.version,

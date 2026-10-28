@@ -1,48 +1,9 @@
-import { providerIdentity } from "./provider-symbol.ts";
-
 export type MarketEvent = {
   symbol: string;
   date: string;
   kind: string;
   detail: string;
-  actual?: number | null;
-  estimate?: number | null;
 };
-/** US corporate report dates use the exchange day, including after UTC midnight. */
-export function marketDay(asOf: string | number | Date = Date.now()) {
-  const date = new Date(asOf);
-  if (
-    typeof asOf === "string" &&
-    /^\d{4}-\d{2}-\d{2}$/.test(asOf) &&
-    Number.isFinite(date.getTime()) &&
-    date.toISOString().slice(0, 10) === asOf
-  )
-    return asOf;
-  return Number.isFinite(date.getTime())
-    ? new Intl.DateTimeFormat("en-CA", {
-        timeZone: "America/New_York",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      }).format(date)
-    : "";
-}
-export function earningsEventState(
-  event: Pick<MarketEvent, "date" | "actual">,
-  today: string,
-) {
-  if (
-    event.date <= today &&
-    typeof event.actual === "number" &&
-    Number.isFinite(event.actual)
-  )
-    return { status: "reported" as const, label: "Results reported" };
-  if (event.date === today)
-    return { status: "today" as const, label: "Scheduled today" };
-  if (event.date > today)
-    return { status: "upcoming" as const, label: "Upcoming" };
-  return { status: "unconfirmed" as const, label: "Release unconfirmed" };
-}
 export type MarketHeadline = {
   symbol: string;
   date: string;
@@ -56,132 +17,7 @@ export type HomeFeed = {
   retrievedAt: string;
   followed: number;
   newsFollowed: number;
-  eventsReady?: boolean;
-  newsReady?: boolean;
 };
-
-/** Separate source health, including cached responses from before explicit flags. */
-export function homeFeedReadiness(
-  feed: Pick<HomeFeed, "issues" | "eventsReady" | "newsReady">,
-) {
-  const unknown = feed.issues.some(
-    (issue) => !/news|scheduled events|company events/i.test(issue),
-  );
-  return {
-    eventsReady:
-      feed.eventsReady ??
-      (!unknown && !feed.issues.some((issue) => /events/i.test(issue))),
-    newsReady:
-      feed.newsReady ??
-      (!unknown && !feed.issues.some((issue) => /news/i.test(issue))),
-  };
-}
-
-/** One API batch at a time: a large watchlist must not launch a burst of requests. */
-export async function loadHomeFeed(
-  symbols: string[],
-  read: (batch: string[]) => Promise<HomeFeed>,
-): Promise<HomeFeed> {
-  const stocks = [
-    ...new Set(
-      symbols.filter((symbol) => /^[A-Z][A-Z0-9.-]{0,14}$/.test(symbol)),
-    ),
-  ];
-  const result: HomeFeed = {
-    events: [],
-    news: [],
-    issues: [],
-    retrievedAt: "",
-    followed: 0,
-    newsFollowed: 0,
-    eventsReady: true,
-    newsReady: true,
-  };
-  for (let offset = 0; offset < stocks.length; offset += 30) {
-    const batch = stocks.slice(offset, offset + 30);
-    try {
-      const data = await read(batch),
-        ready = homeFeedReadiness(data);
-      result.events.push(...data.events);
-      result.news.push(...data.news);
-      result.issues.push(...data.issues);
-      result.followed += data.followed;
-      result.newsFollowed += data.newsFollowed;
-      result.eventsReady &&= ready.eventsReady;
-      result.newsReady &&= ready.newsReady;
-      if (
-        data.retrievedAt &&
-        (!result.retrievedAt || data.retrievedAt < result.retrievedAt)
-      )
-        result.retrievedAt = data.retrievedAt;
-    } catch (error) {
-      if (error instanceof Error && error.name === "AbortError") throw error;
-      result.eventsReady = false;
-      result.newsReady = false;
-      result.issues.push(
-        `Updates for ${batch.length} followed compan${batch.length === 1 ? "y" : "ies"} could not be checked.`,
-      );
-    }
-  }
-  result.issues = [...new Set(result.issues)];
-  result.events = [
-    ...new Map(
-      result.events.map((event) => [
-        `${event.symbol}:${event.date}:${event.kind}`,
-        event,
-      ]),
-    ).values(),
-  ];
-  result.news = [
-    ...new Map(result.news.map((news) => [news.url, news])).values(),
-  ];
-  return result;
-}
-
-/** Bound provider fan-out while preserving order and independent failures. */
-export async function settledFeedMap<T, R>(
-  values: T[],
-  read: (value: T) => Promise<R>,
-  concurrency = 4,
-): Promise<PromiseSettledResult<R>[]> {
-  const results: PromiseSettledResult<R>[] = new Array(values.length);
-  let cursor = 0;
-  const worker = async () => {
-    while (cursor < values.length) {
-      const index = cursor++;
-      try {
-        results[index] = {
-          status: "fulfilled",
-          value: await read(values[index]),
-        };
-      } catch (reason) {
-        results[index] = { status: "rejected", reason };
-      }
-    }
-  };
-  await Promise.all(
-    Array.from(
-      {
-        length: Math.min(
-          values.length,
-          Math.max(1, Math.floor(concurrency) || 1),
-        ),
-      },
-      worker,
-    ),
-  );
-  return results;
-}
-
-/** A date owns all of its events; never collapse same-day earnings to one ticker. */
-export function groupMarketEvents(events: MarketEvent[]) {
-  const groups = new Map<string, MarketEvent[]>();
-  for (const event of events)
-    groups.set(event.date, [...(groups.get(event.date) ?? []), event]);
-  return [...groups]
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([date, rows]) => ({ date, events: rows }));
-}
 /** Headline identity filter, not a claim that a publisher's story is material. */
 export function relevantHoldingHeadlines(
   rows: MarketHeadline[],
@@ -272,19 +108,14 @@ export function calendarHighlights(
   from: string,
   to: string,
 ): MarketEvent[] {
-  const allowed = new Map(
-      symbols.map((symbol) => [providerIdentity(symbol), symbol]),
-    ),
+  const allowed = new Set(symbols),
     unique = new Map<string, MarketEvent>();
   const collect = (raw: any, split: boolean) => {
     for (const row of Array.isArray(raw) ? raw : []) {
-      const code = String(row.code ?? "")
-          .trim()
-          .toUpperCase()
-          .replace(/\.US$/, ""),
-        symbol = allowed.get(providerIdentity(code)),
+      const symbol = String(row.code ?? "").replace(/\.US$/, ""),
         date = split ? row.split_date : row.report_date;
-      if (!symbol || !day(date) || date < from || date > to) continue;
+      if (!allowed.has(symbol) || !day(date) || date < from || date > to)
+        continue;
       if (
         split &&
         (![row.old_shares, row.new_shares].every(
@@ -305,24 +136,7 @@ export function calendarHighlights(
           : row.before_after_market === "AfterMarket"
             ? "After market close"
             : "Time not confirmed";
-      const numeric = (v: unknown) =>
-        (typeof v === "number" || (typeof v === "string" && v.trim() !== "")) &&
-        Number.isFinite(Number(v))
-          ? Number(v)
-          : null;
-      const key = `${symbol}:${date}:${kind}`;
-      const event: MarketEvent = {
-        symbol,
-        date,
-        kind,
-        detail,
-        ...(!split
-          ? { actual: numeric(row.actual), estimate: numeric(row.estimate) }
-          : {}),
-      };
-      // A duplicate schedule row must not erase an actual already supplied in this response.
-      if (event.actual != null || unique.get(key)?.actual == null)
-        unique.set(key, event);
+      unique.set(`${symbol}:${date}:${kind}`, { symbol, date, kind, detail });
     }
   };
   collect(earnings?.earnings, false);

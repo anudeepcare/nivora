@@ -123,17 +123,7 @@ export type Company = {
   logoUrl?: string;
 };
 export type Filing = { form: string; date: string; url: string; title: string };
-export type DatasetCoverage = Record<
-  "quote" | "history" | "profile" | "fundamentals" | "filings",
-  {
-    status: "available" | "partial" | "unavailable" | "not-applicable";
-    reason?: string;
-    source?: string;
-    asOf?: string;
-  }
->;
 export type Research = {
-  coverage?: DatasetCoverage;
   company: Company;
   quote: Quote;
   history: Candle[];

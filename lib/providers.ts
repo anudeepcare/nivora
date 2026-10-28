@@ -11,21 +11,8 @@ import {
   eodHistory,
   eodFundamentals,
   eodSearch,
-  eodRequest,
 } from "./eodhd";
 import { normalizeGrow } from "./grow-data";
-import { normalizeEodSearch } from "./eodhd-normalize";
-import {
-  fundamentalCoverage,
-  preferReportedFacts,
-} from "./fundamental-coverage";
-import {
-  normalizeTwelveDirectory,
-  uniqueListings,
-  searchDirectory,
-  researchCoverage,
-  type MarketDirectory,
-} from "./market-coverage";
 import { secObservations } from "./sec-observations";
 import { reserveProvider } from "./provider-budget";
 import type {
@@ -38,64 +25,27 @@ import type {
   Research,
 } from "./types";
 import { HttpError } from "./server";
-import {
-  providerSymbol,
-  providerIdentity,
-  sameProviderSymbol,
-  twelveSymbol,
-} from "./provider-symbol";
 import { readExtendedQuote } from "./extended-quote";
-const extendedCapability = { deniedUntil: 0 };
+const extendedCapability = {deniedUntil: 0};
 import {
   normalizeQuote,
   normalizeBars,
   numeric,
   supportedListing,
 } from "./market";
-const cache = new Map<
-  string,
-  { expires: number; retainUntil: number; value: Promise<any> }
->();
-export function researchSymbol(value: unknown) {
-  try {
-    return providerSymbol(value);
-  } catch (error) {
-    throw new HttpError(
-      error instanceof Error ? error.message : "Invalid instrument.",
-      (error as { status?: number }).status ?? 400,
-    );
-  }
-}
+const cache = new Map<string, { expires: number; value: Promise<any> }>();
 async function cached<T>(
   key: string,
   ttl: number,
   read: () => Promise<T>,
-  retained?: { milliseconds: number; restore: (value: T) => T },
 ): Promise<T> {
   const old = cache.get(key);
   if (old && old.expires > Date.now()) return old.value;
-  const entry = {
-    expires: Date.now() + ttl,
-    retainUntil: Date.now() + ttl + (retained?.milliseconds ?? 0),
-    value: Promise.resolve() as Promise<any>,
-  };
-  const value = read().catch(async (error) => {
-    if (retained && old && old.retainUntil > Date.now()) {
-      try {
-        const previous = await old.value;
-        // Retrying must never extend the original observation's retention horizon.
-        entry.retainUntil = old.retainUntil;
-        entry.expires = Math.min(entry.expires, old.retainUntil);
-        return retained.restore(previous);
-      } catch {
-        /* A rejected response is never a last-good observation. */
-      }
-    }
+  const value = read().catch((e) => {
     cache.delete(key);
-    throw error;
+    throw e;
   });
-  entry.value = value;
-  cache.set(key, entry);
+  cache.set(key, { expires: Date.now() + ttl, value });
   if (cache.size > 250) cache.delete(cache.keys().next().value!);
   return value;
 }
@@ -115,10 +65,8 @@ async function json(
     throw new HttpError(
       r.status === 429
         ? "The data provider is at its request limit. Try again shortly."
-        : r.status === 404
-          ? "The requested instrument or dataset was not found."
-          : "The requested source is temporarily unavailable.",
-      r.status === 404 ? 404 : 503,
+        : "The requested source is temporarily unavailable.",
+      503,
     );
   return r.json();
 }
@@ -130,41 +78,25 @@ export async function twelve(
   const key = process.env.TWELVE_DATA_API_KEY;
   if (!key) throw new HttpError("Market data is not configured.", 503);
   await reserveProvider(cost);
-  const requestParams =
-    params.symbol && endpoint !== "symbol_search"
-      ? { ...params, symbol: twelveSymbol(params.symbol) }
-      : params;
   const data = await json(
-    `https://api.twelvedata.com/${endpoint}?${new URLSearchParams({ ...requestParams, apikey: key })}`,
+    `https://api.twelvedata.com/${endpoint}?${new URLSearchParams({ ...params, apikey: key })}`,
     {},
     providerCacheSeconds(endpoint, params),
   );
-  if (!data || typeof data !== "object" || Array.isArray(data))
-    throw new HttpError(
-      "The provider returned an invalid dataset. Try again shortly.",
-      503,
-    );
   if (data.status === "error") {
     const error = new HttpError(
       data.code === 429
         ? "Market-data allowance reached. Try again later."
-        : data.code === 404
-          ? "This instrument was not found by the data provider."
-          : "The provider did not return this instrument.",
-      data.code === 404 ? 404 : 503,
+        : "The provider did not return this instrument.",
+      503,
     );
     // Preserve only a machine-readable capability classification, never provider
     // credentials or raw messages in client errors. Invalid symbols and outages
     // must not disable extended data for other instruments.
-    if (
-      params.prepost === "true" &&
-      data.code !== 429 &&
-      /(?:pre.?post|extended.?hours)/i.test(String(data.message)) &&
-      /(?:plan|subscription|upgrade|permission|not available|not supported|access)/i.test(
-        String(data.message),
-      )
-    )
-      Object.assign(error, { entitlementDenied: true });
+    if (params.prepost === "true" && data.code !== 429 &&
+        /(?:pre.?post|extended.?hours)/i.test(String(data.message)) &&
+        /(?:plan|subscription|upgrade|permission|not available|not supported|access)/i.test(String(data.message)))
+      Object.assign(error, {entitlementDenied: true});
     throw error;
   }
   return data;
@@ -177,32 +109,19 @@ const configuredSources = () => ({
 export async function quote(
   symbol: string,
 ): Promise<{ company: Company; quote: Quote }> {
-  symbol = researchSymbol(symbol);
   const sources = preferredMarketSources("quote", configuredSources());
   return cached(
     `selected-quote:${sources.join(",")}:${symbol}`,
     60000,
     async () => {
-      const result = await readFreshQuote(
-        sources,
-        async (source) => {
-          const value = await (source === "twelve"
-            ? twelveQuote(symbol)
-            : eodQuote(symbol));
-          if (value.quote.price == null)
-            throw new HttpError("The quote source returned no price.", 503);
-          if (
-            value.quote.asOf &&
-            Date.parse(value.quote.asOf) > Date.now() + 60000
-          )
-            throw new HttpError(
-              "The quote source returned a future observation; it was not used.",
-              503,
-            );
-          return value;
-        },
-        { now: Date.now(), maxAgeMs: quoteRefreshMaxAge(symbol) },
-      );
+      const result = await readFreshQuote(sources, async (source) => {
+        const value = await (source === "twelve"
+          ? twelveQuote(symbol)
+          : eodQuote(symbol));
+        if (value.quote.price == null)
+          throw new HttpError("The quote source returned no price.", 503);
+        return value;
+      }, {now: Date.now(), maxAgeMs: quoteRefreshMaxAge(symbol)});
       return result.fallback
         ? {
             ...result.value,
@@ -213,19 +132,6 @@ export async function quote(
           }
         : result.value;
     },
-    {
-      milliseconds: 86400000,
-      restore: (value) => ({
-        ...value,
-        quote: {
-          ...value.quote,
-          stale: true,
-          source:
-            value.quote.source.replace(/ · cached observation$/, "") +
-            " · cached observation",
-        },
-      }),
-    },
   );
 }
 async function twelveQuote(
@@ -233,7 +139,7 @@ async function twelveQuote(
 ): Promise<{ company: Company; quote: Quote }> {
   return cached(`quote:${symbol}`, 60_000, async () => {
     const q = await readExtendedQuote(twelve, symbol, extendedCapability);
-    if (!sameProviderSymbol(q.symbol, symbol))
+    if (String(q.symbol ?? "").toUpperCase() !== symbol)
       throw new HttpError(
         "The provider returned a different instrument. The quote was not used.",
         502,
@@ -244,16 +150,7 @@ async function twelveQuote(
         422,
       );
     let normalized = normalizeQuote(q, symbol);
-    if (normalized.currency !== "USD")
-      throw new HttpError(
-        "The quote source returned an unsupported currency.",
-        422,
-      );
-    if (
-      symbol.endsWith("/USD") ||
-      normalized.stale ||
-      (normalized.asOf && Date.now() - Date.parse(normalized.asOf) > 90000)
-    ) {
+    if (symbol.endsWith("/USD") || normalized.stale || (normalized.asOf && Date.now()-Date.parse(normalized.asOf)>90000)) {
       // The crypto quote timestamp is often the daily candle's midnight, not a
       // quote observation time. Use a completed minute bar, never fetch time.
       try {
@@ -263,16 +160,9 @@ async function twelveQuote(
           outputsize: "2",
           timezone: "UTC",
           order: "DESC",
-          ...(!symbol.includes("/") &&
-          extendedCapability.deniedUntil <= Date.now()
-            ? { prepost: "true" }
-            : {}),
+          ...(!symbol.includes("/") && extendedCapability.deniedUntil <= Date.now() ? {prepost: "true"} : {}),
         });
-        if (
-          sameProviderSymbol(series.meta?.symbol, symbol) &&
-          (!series.meta?.currency ||
-            series.meta.currency === normalized.currency)
-        ) {
+        if (series.meta?.symbol === symbol) {
           const bar = normalizeBars(series.values, true)
             .filter((b) => Date.parse(b.time) + 60000 <= Date.now())
             .at(-1);
@@ -286,20 +176,11 @@ async function twelveQuote(
               {
                 ...q,
                 close: bar.close,
-                is_extended_hours:
-                  !symbol.includes("/") &&
-                  (() => {
-                    const p = new Intl.DateTimeFormat("en-US", {
-                      timeZone: "America/New_York",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hourCycle: "h23",
-                    }).formatToParts(Date.parse(bar.time));
-                    const m =
-                      Number(p.find((x) => x.type === "hour")?.value) * 60 +
-                      Number(p.find((x) => x.type === "minute")?.value);
-                    return m < 570 || m >= 960;
-                  })(),
+                is_extended_hours: !symbol.includes("/") && (() => {
+                  const p = new Intl.DateTimeFormat("en-US", {timeZone:"America/New_York",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(Date.parse(bar.time));
+                  const m = Number(p.find(x=>x.type==="hour")?.value)*60+Number(p.find(x=>x.type==="minute")?.value);
+                  return m < 570 || m >= 960;
+                })(),
                 timestamp: Date.parse(bar.time) / 1000,
                 last_quote_at: Date.parse(bar.time) / 1000,
                 extended_price: undefined,
@@ -312,10 +193,7 @@ async function twelveQuote(
               symbol,
             );
             normalized.source = "Twelve Data · 1-minute close";
-            if (!/Premarket|After-hours/.test(normalized.session))
-              normalized.session = symbol.includes("/")
-                ? "Continuous market · 1-minute close"
-                : "1-minute close";
+            if (!/Premarket|After-hours/.test(normalized.session)) normalized.session = symbol.includes("/") ? "Continuous market · 1-minute close" : "1-minute close";
           }
         }
       } catch {
@@ -336,7 +214,6 @@ async function twelveQuote(
 }
 export type ChartRange = "1D" | "1W" | "1M" | "6M" | "1Y" | "5Y";
 export async function marketHistory(symbol: string, range: ChartRange = "5Y") {
-  symbol = researchSymbol(symbol);
   const sources = preferredMarketSources(
     range === "1D" || range === "1W" ? "intraday" : "daily",
     configuredSources(),
@@ -362,15 +239,6 @@ export async function marketHistory(symbol: string, range: ChartRange = "5Y") {
           (result.provider === "eodhd" ? "EODHD" : "Twelve Data") +
           (result.fallback ? " · fallback" : ""),
       };
-    },
-    {
-      milliseconds: 7 * 86400000,
-      restore: (value) => ({
-        ...value,
-        source:
-          value.source.replace(/ · cached observations$/, "") +
-          " · cached observations",
-      }),
     },
   );
 }
@@ -406,23 +274,10 @@ async function twelveHistory(
         order: "ASC",
         adjust: "splits",
       });
-      if (!sameProviderSymbol(data.meta?.symbol, symbol))
+      if (String(data.meta?.symbol ?? "").toUpperCase() !== symbol)
         throw new HttpError(
           "Price history belongs to a different instrument and was not used.",
           502,
-        );
-      if (
-        (data.meta?.currency && data.meta.currency !== "USD") ||
-        (!symbol.includes("/") &&
-          data.meta?.exchange &&
-          !supportedListing({
-            ...data.meta,
-            currency: data.meta.currency || "USD",
-          }))
-      )
-        throw new HttpError(
-          "Price history uses an unsupported listing or quote currency.",
-          422,
         );
       const bars = normalizeBars(data.values, intraday);
       if (range === "1D" && bars.length) {
@@ -443,10 +298,7 @@ async function twelveHistory(
   );
 }
 const tags: Record<Metric, string[]> = {
-  depreciation: [
-    "DepreciationDepletionAndAmortization",
-    "DepreciationDepletionAndAmortizationPropertyPlantAndEquipment",
-  ],
+  depreciation: ["DepreciationDepletionAndAmortization", "DepreciationDepletionAndAmortizationPropertyPlantAndEquipment"],
   receivables: ["AccountsReceivableNetCurrent", "ReceivablesNetCurrent"],
   inventory: ["InventoryNet"],
   payables: ["AccountsPayableCurrent"],
@@ -518,36 +370,9 @@ async function sec(path: string) {
 export async function fundamentals(
   symbol: string,
 ): Promise<Awaited<ReturnType<typeof secFundamentals>>> {
-  symbol = researchSymbol(symbol);
+  if (!eodEnabled()) return secFundamentals(symbol);
   try {
-    if (!eodEnabled()) return await secFundamentals(symbol);
-    const primary = await eodFundamentals(symbol);
-    const coverage = fundamentalCoverage(primary.facts);
-    if (coverage.complete && coverage.fresh) return primary;
-    // Keep verified primary identity/evidence. Completeness and age trigger
-    // independent recovery, selecting one entire set of reported statements.
-    try {
-      const reported = await secFundamentals(symbol);
-      const useReported = preferReportedFacts(primary.facts, reported.facts);
-      return {
-        ...primary,
-        facts: useReported ? reported.facts : primary.facts,
-        filings: reported.filings.length ? reported.filings : primary.filings,
-        issues: [
-          useReported
-            ? "Financial statements: primary coverage was incomplete or old; one SEC fallback statement collection is shown."
-            : `Financial statements: ${coverage.reason} The primary collection is retained because SEC did not improve comparable coverage.`,
-          ...reported.issues,
-        ],
-      };
-    } catch {
-      return {
-        ...primary,
-        issues: [
-          `Financial statements: ${coverage.reason} SEC fallback is unavailable; verified primary observations are retained.`,
-        ],
-      };
-    }
+    return await eodFundamentals(symbol);
   } catch {
     const [reported, profile] = await Promise.allSettled([
       secFundamentals(symbol),
@@ -560,26 +385,7 @@ export async function fundamentals(
               raw,
               new Date().toISOString(),
             ).profile;
-            // Twelve profiles omit currency. Confirm the listing against the
-            // full directory rather than inferring quote currency from domicile
-            // (a US-listed foreign issuer may correctly report Australia, etc.).
-            const listing = raw.currency
-              ? raw
-              : (await marketDirectory()).listings.find(
-                  (row) =>
-                    sameProviderSymbol(row.symbol, symbol) &&
-                    row.exchange.toUpperCase() ===
-                      String(raw.exchange ?? "").toUpperCase(),
-                );
-            if (
-              !p?.name ||
-              !sameProviderSymbol(raw.symbol, symbol) ||
-              !listing ||
-              !supportedListing(listing)
-            )
-              throw new Error(
-                "Company profile unavailable for this USD listing",
-              );
+            if (!p) throw new Error("Company profile unavailable");
             return {
               symbol,
               name: p.name,
@@ -587,7 +393,7 @@ export async function fundamentals(
               description: p.description,
               assetType: "stock" as const,
               exchange: String(raw.exchange || ""),
-              currency: listing.currency,
+              currency: /^[A-Z]{3}$/.test(raw.currency) ? raw.currency : "USD",
             };
           })
         : Promise.reject(new Error("Profile provider not configured")),
@@ -646,10 +452,7 @@ async function secFundamentals(symbol: string): Promise<{
     const submissions =
       sources[1].status === "fulfilled" ? sources[1].value : null;
     const issues = sources.flatMap((source, i) =>
-      source.status === "rejected" ||
-      !(i === 0
-        ? source.value?.facts && typeof source.value.facts === "object"
-        : Array.isArray(source.value?.filings?.recent?.form))
+      source.status === "rejected"
         ? [
             `${i === 0 ? "Financial facts" : "Company disclosures"}: Source temporarily unavailable. Retry to refresh this source.`,
           ]
@@ -743,13 +546,6 @@ async function secFundamentals(symbol: string): Promise<{
         url: `https://www.sec.gov/Archives/edgar/data/${Number(cik)}/${recent.accessionNumber[i].replaceAll("-", "")}/${recent.primaryDocument[i]}`,
       });
     }
-    if (
-      !facts.length &&
-      !issues.some((issue) => issue.startsWith("Financial facts:"))
-    )
-      issues.push(
-        "Financial statement coverage is unavailable for this instrument from SEC facts.",
-      );
     return { facts, filings, name: company?.entityName || match.title, issues };
   });
   // A partial provider failure must be retryable, not cached for six hours.
@@ -757,7 +553,6 @@ async function secFundamentals(symbol: string): Promise<{
   return result;
 }
 export async function research(symbol: string): Promise<Research> {
-  symbol = researchSymbol(symbol);
   const results = await Promise.allSettled([
     quote(symbol),
     marketHistory(symbol),
@@ -778,27 +573,6 @@ export async function research(symbol: string): Promise<Research> {
         ? results[1].value
         : { candles: [], source: "Unavailable" },
     f = results[2].status === "fulfilled" ? results[2].value : null;
-  // Conclude "not found" only when every market source says so and no
-  // independently verified company evidence survived. Outages stay partial.
-  if (
-    !q &&
-    !h.candles.length &&
-    !f?.company &&
-    !f?.facts.length &&
-    !f?.filings.length &&
-    results
-      .slice(0, 2)
-      .every(
-        (result) =>
-          result.status === "rejected" &&
-          result.reason instanceof HttpError &&
-          result.reason.status === 404,
-      )
-  )
-    throw new HttpError(
-      "This instrument was not found in the supported market coverage.",
-      404,
-    );
   const issues = results.flatMap((r, i) =>
     r.status === "rejected"
       ? [
@@ -806,15 +580,9 @@ export async function research(symbol: string): Promise<Research> {
         ]
       : [],
   );
-  const output: Research = {
+  return {
     company: f?.company ??
-      (q?.company
-        ? {
-            ...q.company,
-            name:
-              q.company.name === symbol && f?.name ? f.name : q.company.name,
-          }
-        : null) ?? {
+      q?.company ?? {
         symbol,
         name: f?.name || symbol,
         currency: "USD",
@@ -840,30 +608,10 @@ export async function research(symbol: string): Promise<Research> {
     evidence: f?.evidence,
     filings: f?.filings ?? [],
     retrievedAt: new Date().toISOString(),
-    issues: [
-      ...issues,
-      ...(f?.issues ?? []),
-      ...(q?.quote.source.includes("cached observation")
-        ? ["Quote refresh unavailable; the dated cached observation is shown."]
-        : []),
-      ...(h.source.includes("cached observations")
-        ? [
-            "Price history refresh unavailable; dated cached observations are shown.",
-          ]
-        : []),
-    ],
+    issues: [...issues, ...(f?.issues ?? [])],
   };
-  output.coverage = researchCoverage(
-    output,
-    Boolean(
-      f?.company ||
-        (q?.company.name && q.company.name !== symbol) ||
-        (f?.name && f.name !== symbol),
-    ),
-  );
-  return output;
 }
-async function remoteSearch(query: string) {
+export async function search(query: string) {
   query = query.trim().toUpperCase();
   return cached(`search:${query}`, 3600_000, async () => {
     if (eodEnabled()) {
@@ -878,9 +626,7 @@ async function remoteSearch(query: string) {
       symbol: query,
       outputsize: "50",
     });
-    if (!Array.isArray(result.data))
-      throw new HttpError("Instrument search is temporarily unavailable.", 503);
-    const rows = result.data
+    return (result.data ?? [])
       .filter(
         (v: any) =>
           supportedListing(v) ||
@@ -891,6 +637,7 @@ async function remoteSearch(query: string) {
         (a: any, b: any) =>
           Number(b.symbol === query) - Number(a.symbol === query),
       )
+      .slice(0, 12)
       .map((v: any) => ({
         symbol: v.symbol,
         name: v.instrument_name,
@@ -899,126 +646,5 @@ async function remoteSearch(query: string) {
         assetType:
           v.instrument_type === "Digital Currency" ? "crypto" : "stock",
       }));
-    return rows
-      .filter(
-        (row: Company, index: number) =>
-          rows.findIndex(
-            (other: Company) =>
-              providerIdentity(other.symbol) === providerIdentity(row.symbol),
-          ) === index,
-      )
-      .slice(0, 12);
   });
-}
-
-/** Enumerate every row of each enabled provider directory; no search-result cap.
- * Successful directory reads are cached for a day; failed reads stay retryable. */
-let readyDirectory: { key: string; value: MarketDirectory; at: number } | null = null;
-export async function marketDirectory(): Promise<MarketDirectory> {
-  const sources = configuredSources();
-  const tasks: {
-    provider: "eodhd" | "twelve";
-    market: string;
-    read: () => Promise<unknown[]>;
-    normalize: (rows: unknown[]) => Company[];
-  }[] = [];
-  if (sources.eodhd)
-    for (const market of ["US", "CC"])
-      tasks.push({
-        provider: "eodhd",
-        market,
-        read: async () => {
-          const raw = await eodRequest(
-            `exchange-symbol-list/${market}`,
-            {},
-            86400000,
-          );
-          if (!Array.isArray(raw))
-            throw new Error("Directory payload is invalid.");
-          return raw;
-        },
-        normalize: normalizeEodSearch,
-      });
-  if (sources.twelve)
-    for (const market of ["stocks", "etf", "cryptocurrencies"])
-      tasks.push({
-        provider: "twelve",
-        market,
-        read: () =>
-          cached(`twelve-directory:${market}`, 86400000, async () => {
-            const raw = await twelve(
-              market,
-              market === "cryptocurrencies"
-                ? { currency_quote: "USD" }
-                : { country: "United States" },
-            );
-            if (!Array.isArray(raw.data) || !raw.data.length)
-              throw new Error("Directory payload is invalid.");
-            return raw.data;
-          }),
-        normalize: (rows) =>
-          normalizeTwelveDirectory(rows, market === "cryptocurrencies"),
-      });
-  const result = await cached(
-    `market-directory:${JSON.stringify(sources)}`,
-    60000,
-    async () => {
-      const results = await Promise.allSettled(
-        tasks.map((task) => task.read()),
-      );
-      const listings: Company[] = [];
-      const directories = results.map((r, i) => {
-        const { provider, market } = tasks[i];
-        if (r.status === "rejected")
-          return {
-            provider,
-            market,
-            status: "unavailable" as const,
-            total: null,
-            eligible: 0,
-            reason:
-              r.reason instanceof HttpError
-                ? r.reason.message
-                : "Directory is temporarily unavailable.",
-          };
-        const eligible = tasks[i].normalize(r.value);
-        listings.push(...eligible);
-        return {
-          provider,
-          market,
-          status: "available" as const,
-          total: r.value.length,
-          eligible: eligible.length,
-        };
-      });
-      return {
-        listings: uniqueListings(listings).sort((a, b) =>
-          a.symbol.localeCompare(b.symbol),
-        ),
-        directories,
-        complete:
-          !!tasks.length && directories.every((d) => d.status === "available"),
-        retrievedAt: new Date().toISOString(),
-      };
-    },
-  );
-  readyDirectory = { key: JSON.stringify(sources), value: result, at: Date.now() };
-  return result;
-}
-export async function search(query: string) {
-  query = query.trim().toUpperCase();
-  if (!query) return [];
-  if (/^[A-Z0-9]+\.[A-Z]+$|^[A-Z ]+:/.test(query)) researchSymbol(query);
-  const snapshot = readyDirectory && readyDirectory.key === JSON.stringify(configuredSources()) && Date.now() - readyDirectory.at < 86400000 ? readyDirectory.value : null;
-  const cachedRows = snapshot ? searchDirectory(query, snapshot.listings) : [];
-  if (cachedRows.length) return cachedRows;
-  let remoteError: unknown;
-  try {
-    const remote = await remoteSearch(query);
-    if (remote.length) return remote;
-  } catch (error) { remoteError = error; }
-  const directory = await marketDirectory();
-  const rows = searchDirectory(query, directory.listings);
-  if (rows.length || !remoteError) return rows;
-  throw remoteError;
 }

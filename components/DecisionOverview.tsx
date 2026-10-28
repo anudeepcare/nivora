@@ -247,7 +247,7 @@ export default function DecisionOverview({
                 </small>
               </div>
             </div>
-            <p className="desk-footnote">P1 means Watch/Hold; P2 starts small, P3 builds gradually and P4 supports deeper planned accumulation only when business checks qualify. The forming signal uses the latest eligible settled close.</p>
+            <p className="desk-footnote">1× means your normal scheduled contribution; 2×–4× are multiples of that baseline, not expected returns. The forming signal uses the latest eligible settled close.</p>
             <div
               className="overview-zone-scale"
               aria-label={

@@ -6,25 +6,12 @@ export function preferredMarketSources(
   const order: MarketSource[] = ["eodhd", "twelve"];
   return order.filter((p) => configured[p]);
 }
-/** Missing coverage is definitive only if every attempted source said 404.
- * Keep an outage/entitlement/budget failure when another source simply has no
- * listing, so downstream research cannot mistake uncertainty for invalid input. */
-function providerFailure(failures: unknown[]) {
-  return (
-    failures.find(
-      (error) => (error as { status?: number } | null)?.status !== 404,
-    ) ??
-    failures.at(-1) ??
-    new Error("No market-data provider is configured.")
-  );
-}
-
 /** Select one complete result. Never splice providers' bars or financial periods. */
 export async function readPreferred<T>(
   sources: MarketSource[],
   read: (source: MarketSource) => Promise<T>,
 ): Promise<{ value: T; provider: MarketSource; fallback: boolean }> {
-  const failures: unknown[] = [];
+  let failure: unknown = new Error("No market-data provider is configured.");
   for (let i = 0; i < sources.length; i++) {
     try {
       return {
@@ -33,10 +20,10 @@ export async function readPreferred<T>(
         fallback: i > 0,
       };
     } catch (e) {
-      failures.push(e);
+      failure = e;
     }
   }
-  throw providerFailure(failures);
+  throw failure;
 }
 
 /** Server data cache durations, separate from rendered-page/account caching. */
@@ -63,7 +50,7 @@ export async function readFreshQuote<
 ) {
   let retained: { value: T; provider: MarketSource; fallback: boolean } | null =
     null;
-  const failures: unknown[] = [];
+  let failure: unknown = new Error("No market-data provider is configured.");
   for (let i = 0; i < sources.length; i++) {
     try {
       const value = await read(sources[i]);
@@ -95,11 +82,11 @@ export async function readFreshQuote<
       )
         retained = result;
     } catch (e) {
-      failures.push(e);
+      failure = e;
     }
   }
   if (retained) return retained;
-  throw providerFailure(failures);
+  throw failure;
 }
 
 /** Try a newer backup during scheduled pre/regular/post hours and for crypto.

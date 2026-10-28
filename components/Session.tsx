@@ -193,13 +193,21 @@ function StoreProvider({
     ),
     [workspaceError, setWorkspaceError] = useState(""),
     [theme, setThemeState] = useState<"light" | "dark">("light"),
-    // Match the server render; the boot script already applies saved appearance.
     [themePreference, setThemePreference] = useState<
       "light" | "dark" | "system"
-    >("light"),
+    >(() => {
+      try {
+        const v =
+          typeof window === "undefined"
+            ? null
+            : localStorage.getItem("auryn-product-theme");
+        return parseThemePreference(v);
+      } catch {
+        return "light";
+      }
+    }),
     [textSize, setTextSizeState] = useState<"standard" | "large">("standard"),
-    [reduceMotion, setReduceMotionState] = useState(false),
-    [preferencesReady, setPreferencesReady] = useState(false);
+    [reduceMotion, setReduceMotionState] = useState(false);
   const alive = useRef(true);
   const reloadWorkspace = useCallback(async () => {
     if (demo) return;
@@ -237,10 +245,8 @@ function StoreProvider({
         localStorage.getItem("auryn-product-motion") === "reduce",
       );
     } catch {}
-    setPreferencesReady(true);
   }, []);
   useEffect(() => {
-    if (!preferencesReady) return;
     const media = window.matchMedia("(prefers-color-scheme: dark)");
     const apply = () => {
       const value = resolvedTheme(themePreference, media.matches);
@@ -256,17 +262,15 @@ function StoreProvider({
     apply();
     media.addEventListener("change", apply);
     return () => media.removeEventListener("change", apply);
-  }, [preferencesReady, themePreference]);
+  }, [themePreference]);
   useEffect(() => {
-    if (!preferencesReady) return;
     document.documentElement.dataset.textSize = textSize;
-  }, [preferencesReady, textSize]);
+  }, [textSize]);
   useEffect(() => {
-    if (!preferencesReady) return;
     document.documentElement.dataset.motion = reduceMotion
       ? "reduce"
       : "system";
-  }, [preferencesReady, reduceMotion]);
+  }, [reduceMotion]);
   const setTheme = useCallback((value: "light" | "dark" | "system") => {
     setThemePreference(value);
     try {
@@ -438,9 +442,7 @@ function Login({ initialError }: { initialError: string }) {
     [resendUntil, setResendUntil] = useState(0);
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const requestedMode = params.get("mode");
-    if (requestedMode === "signup" || requestedMode === "reset")
-      setMode(requestedMode);
+    if (params.get("mode") === "signup") setMode("signup");
     const message = authErrorMessage(params.get("auth_error"));
     if (message) setError(message);
   }, []);
@@ -448,8 +450,6 @@ function Login({ initialError }: { initialError: string }) {
     google: boolean | null;
     x: boolean | null;
   }>({ google: null, x: null });
-  const [name, setName] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   useEffect(() => {
     const controller = new AbortController();
     fetch("/api/auth/providers", { signal: controller.signal })
@@ -523,7 +523,6 @@ function Login({ initialError }: { initialError: string }) {
   }
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (busy) return;
     setBusy(true);
     setError("");
     setNotice("");
@@ -538,7 +537,6 @@ function Login({ initialError }: { initialError: string }) {
                 password,
                 options: {
                   emailRedirectTo: `${window.location.origin}/auth/callback`,
-                  data: { full_name: name.trim() },
                 },
               })
             : await auth.resetPasswordForEmail(email.trim(), {
@@ -563,303 +561,228 @@ function Login({ initialError }: { initialError: string }) {
     }
   }
   return (
-    <main className="mp-auth ap-auth" data-auth-mode={mode}>
-      <aside className="mp-auth-story" aria-label="About AURYN">
-        <a className="mp-brand" href="/" aria-label="Auryn home">
-          <span className="mp-brand-mark" aria-hidden="true">
-            <img src="/icon.svg" alt="" width="34" height="36" />
-          </span>
-          <span>AURYN</span>
+    <main className="entry-page atlas-entry">
+      <section className="entry-art" aria-label="About AURYN">
+        <a href="/" className="entry-art-brand">
+          <Logo />
         </a>
-        <div className="mp-auth-story-copy">
-          <span className="mp-overline">INVEST WITH UNDERSTANDING</span>
+        <div className="entry-art-copy">
+          <span>BUSINESS. PRICE. PERSPECTIVE.</span>
           <h2>
-            Know the stock.
+            Your next decision,
             <br />
-            <em>Know your next move.</em>
+            <em>in focus.</em>
           </h2>
-          <p>Business first. A clear decision. Your pace for gradual buying.</p>
+          <p>
+            Understand the case, challenge the assumptions and know what to
+            watch next.
+          </p>
         </div>
-        <PublicSample compact />
-        <div className="mp-auth-story-footer">
-          <span>A clearer case. A considered pace.</span>
-          <span>Research supports your judgment. Investing involves risk.</span>
+        <div className="entry-product-preview">
+          <PublicSample />
         </div>
-      </aside>
-      <section className="mp-auth-main" aria-label="Account access">
-        <div className="mp-auth-mobile-brand">
-          <a className="mp-brand" href="/" aria-label="Auryn home">
-            <span className="mp-brand-mark" aria-hidden="true">
-              <img src="/icon.svg" alt="" width="29" height="31" />
-            </span>
-            <span>AURYN</span>
-          </a>
-        </div>
-        <a className="mp-auth-home" href="/">
-          ← Back to Auryn
+        <small>
+          Illustrative product preview. Research to inform your judgment;
+          investing involves risk.
+        </small>
+      </section>
+      <section className="entry-form">
+        <a className="auth-back" href="/">
+          ← Explore AURYN
         </a>
-        <div
-          className={`mp-auth-panel ${mode === "reset" ? "mp-reset-panel" : ""}`}
-        >
-          <div className="mp-auth-heading">
-            <span className="mp-overline">
-              {mode === "reset"
-                ? "RESET PASSWORD"
-                : mode === "signup"
-                  ? "WELCOME TO AURYN"
-                  : "YOUR WORKSPACE AWAITS"}
-            </span>
-            <h1>
-              {mode === "login"
-                ? "Welcome back."
-                : mode === "signup"
-                  ? "Start with clarity."
-                  : "A fresh start."}
-            </h1>
-            <p>
-              {mode === "signup"
-                ? "Understand the business. Plan gradual buying with AURYN Pace."
-                : mode === "reset"
-                  ? "We’ll email a secure link to restore access to your workspace."
-                  : "Your business research, buy and sell guidance, and AURYN Pace."}
-            </p>
-          </div>
-          {mode !== "reset" && (
-            <>
-              <div
-                className="mp-social-options"
-                aria-label="Continue with a social account"
-              >
-                <button
-                  type="button"
-                  className="mp-social-button"
-                  aria-label="Continue with Google"
-                  disabled={busy || socialProviders.google === false}
-                  onClick={() => social("google")}
-                >
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path
-                      fill="currentColor"
-                      d="M21.6 12.2c0-.7-.1-1.4-.2-2.1H12v4h5.4a4.6 4.6 0 0 1-2 3v2.6h3.3c1.9-1.8 2.9-4.4 2.9-7.5ZM12 22c2.7 0 5-1 6.7-2.4l-3.3-2.6c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.2H3v2.7A10 10 0 0 0 12 22ZM6.4 13.8a6 6 0 0 1 0-3.6V7.5H3a10 10 0 0 0 0 9l3.4-2.7ZM12 6c1.5 0 2.8.5 3.8 1.5l2.9-2.9A9.6 9.6 0 0 0 12 2a10 10 0 0 0-9 5.5l3.4 2.7C7.2 7.8 9.4 6 12 6Z"
-                    />
-                  </svg>
-                  <span>Continue with Google</span>
-                </button>
-                <button
-                  type="button"
-                  className="mp-social-button mp-social-x"
-                  aria-label="Continue with X"
-                  disabled={busy || socialProviders.x === false}
-                  onClick={() => social("x")}
-                >
-                  <span aria-hidden="true">𝕏</span>
-                  <span className="mp-social-x-label">Continue with X</span>
-                </button>
-              </div>
-              {(socialProviders.google === false ||
-                socialProviders.x === false) && (
-                <p className="mp-provider-note" role="status">
-                  {socialProviders.google === false &&
-                  socialProviders.x === false
-                    ? "Social sign-in is not enabled yet. Continue securely with email below."
-                    : `${socialProviders.google === false ? "Google" : "X"} sign-in is not enabled yet. Use an available option below.`}
-                </p>
-              )}
-              <div className="mp-form-divider">
-                <span>or continue with email</span>
-              </div>
-            </>
-          )}
-          <form className="mp-auth-form" onSubmit={submit} aria-busy={busy}>
-            {mode === "signup" && (
-              <div className="mp-form-field">
-                <label htmlFor="auryn-signup-name">
-                  Full name{" "}
-                  <span className="mp-field-optional">(optional)</span>
-                </label>
-                <input
-                  id="auryn-signup-name"
-                  name="name"
-                  type="text"
-                  autoComplete="name"
-                  placeholder="Your name"
-                  maxLength={100}
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-            )}
-            <div className="mp-form-field">
-              <label htmlFor="auryn-signin-email">Email address</label>
-              <input
-                type="email"
-                name="email"
-                id="auryn-signin-email"
-                autoComplete="username"
-                autoCapitalize="none"
-                autoCorrect="off"
-                spellCheck={false}
-                required
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            {mode !== "reset" && (
-              <div className="mp-form-field">
-                <div className="mp-field-label">
-                  <label htmlFor="auryn-signin-password">Password</label>
-                  {mode === "login" && (
-                    <button
-                      className="mp-inline-link"
-                      type="button"
-                      disabled={busy}
-                      onClick={() => {
-                        setMode("reset");
-                        setError("");
-                        setNotice("");
-                        setShowPassword(false);
-                      }}
-                    >
-                      Forgot password?
-                    </button>
-                  )}
-                </div>
-                <div className="mp-password-field">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    id="auryn-signin-password"
-                    autoComplete={
-                      mode === "login" ? "current-password" : "new-password"
-                    }
-                    minLength={8}
-                    required
-                    placeholder={
-                      mode === "signup"
-                        ? "Create a password"
-                        : "Enter your password"
-                    }
-                    aria-describedby={
-                      mode === "signup" ? "auryn-password-hint" : undefined
-                    }
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                  <button
-                    type="button"
-                    aria-label={
-                      showPassword ? "Hide password" : "Show password"
-                    }
-                    aria-pressed={!!showPassword}
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    <svg
-                      className="mp-icon"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      aria-hidden="true"
-                    >
-                      <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z" />
-                      <circle cx="12" cy="12" r="3" />
-                      {showPassword && <path d="m3 3 18 18" />}
-                    </svg>
-                  </button>
-                </div>
-                {mode === "signup" && (
-                  <small id="auryn-password-hint">At least 8 characters.</small>
-                )}
-              </div>
-            )}
-            {error && (
-              <p role="alert" className="mp-form-message error">
-                {error}
-              </p>
-            )}
-            {notice && (
-              <p role="status" className="mp-form-message success">
-                {notice}
-              </p>
-            )}
-            {mode === "signup" && notice && (
+        <Logo />
+
+        <h1>
+          {mode === "login"
+            ? "Welcome back."
+            : mode === "signup"
+              ? "Create your account."
+              : "Reset your password."}
+        </h1>
+        <p>
+          {mode === "signup"
+            ? "Create one place for your research, watchlist and portfolio."
+            : mode === "reset"
+              ? "We’ll email a secure link to restore access to your workspace."
+              : "Your next decision starts with clarity."}
+        </p>
+        {mode !== "reset" && (
+          <div className="entry-mode" aria-label="Account access">
+            {(["login", "signup"] as const).map((value) => (
               <button
+                key={value}
                 type="button"
-                className="mp-button mp-button-secondary mp-resend-button"
-                disabled={resendPending || !!resendUntil}
-                onClick={() => void resendConfirmation()}
+                disabled={busy}
+                aria-pressed={mode === value}
+                onClick={() => {
+                  setMode(value);
+                  setError("");
+                  setNotice("");
+                }}
               >
-                {resendPending
-                  ? "Requesting…"
-                  : resendUntil
-                    ? "Resend available in one minute"
-                    : "Resend confirmation email"}
+                {value === "login" ? "Sign in" : "Create account"}
               </button>
-            )}
-            <button
-              type="submit"
-              className="mp-button mp-button-primary mp-form-submit"
-              disabled={busy}
-            >
-              {busy
-                ? "Please wait…"
-                : mode === "login"
-                  ? "Sign in"
-                  : mode === "signup"
-                    ? "Create account"
-                    : "Send reset link"}
-              <span aria-hidden="true">→</span>
-            </button>
-          </form>
-          <p className="mp-switch-auth">
-            {mode === "reset"
-              ? "Remember your password?"
-              : mode === "signup"
-                ? "Already have an account?"
-                : "New to Auryn?"}
+            ))}
+          </div>
+        )}
+        {mode !== "reset" &&
+          (socialProviders.google === false || socialProviders.x === false) && (
+            <p className="auth-provider-note" role="status">
+              {socialProviders.google === false && socialProviders.x === false
+                ? "Social sign-in is not enabled yet. Continue securely with email below."
+                : `${socialProviders.google === false ? "Google" : "X"} sign-in is not enabled yet. Use an available option below.`}
+            </p>
+          )}
+        {mode !== "reset" && (
+          <div
+            className="auth-social"
+            aria-label="Continue with a social account"
+          >
             <button
               type="button"
-              className="mp-inline-link"
-              disabled={busy}
-              onClick={() => {
-                setMode(mode === "login" ? "signup" : "login");
-                setError("");
-                setNotice("");
-                setShowPassword(false);
-              }}
+              disabled={busy || socialProviders.google === false}
+              onClick={() => social("google")}
             >
-              {mode === "login" ? "Create an account" : "Back to sign in"}
+              <svg
+                width="19"
+                height="19"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  fill="#4285F4"
+                  d="M21.6 12.23c0-.71-.06-1.39-.18-2.05H12v3.88h5.38a4.6 4.6 0 0 1-2 3.02v2.51h3.24c1.89-1.74 2.98-4.31 2.98-7.36Z"
+                />
+                <path
+                  fill="#34A853"
+                  d="M12 22c2.7 0 4.96-.9 6.62-2.42l-3.24-2.51c-.9.6-2.05.96-3.38.96-2.6 0-4.81-1.76-5.6-4.12H3.06v2.59A10 10 0 0 0 12 22Z"
+                />
+                <path
+                  fill="#FBBC05"
+                  d="M6.4 13.91a6 6 0 0 1 0-3.82V7.5H3.06a10 10 0 0 0 0 9l3.34-2.59Z"
+                />
+                <path
+                  fill="#EA4335"
+                  d="M12 5.97c1.47 0 2.79.51 3.82 1.51l2.87-2.87A9.6 9.6 0 0 0 12 2a10 10 0 0 0-8.94 5.5l3.34 2.59A5.97 5.97 0 0 1 12 5.97Z"
+                />
+              </svg>
+              Continue with Google
             </button>
-          </p>
-          <div className="mp-auth-disclaimer">
-            <svg
-              className="mp-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              aria-hidden="true"
+            <button
+              type="button"
+              disabled={busy || socialProviders.x === false}
+              onClick={() => social("x")}
             >
-              <rect x="5" y="10" width="14" height="11" rx="3" />
-              <path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2" />
-            </svg>
-            <span>
-              By continuing, you agree to our <a href="/terms">Terms</a> and
-              acknowledge our <a href="/privacy">Privacy Policy</a>.<br />
-              <small>
-                Research supports your judgment.{" "}
-                <a href="/risk">Investing involves risk.</a>
-              </small>
-            </span>
+              <span aria-hidden="true">𝕏</span>Continue with X
+            </button>
+            <div className="auth-divider">
+              <span>or use email</span>
+            </div>
           </div>
+        )}
+        <form onSubmit={submit} aria-busy={busy}>
+          <label>
+            Email address
+            <input
+              type="email"
+              name="email"
+              id="auryn-signin-email"
+              autoComplete="username"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              required
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </label>
+          {mode !== "reset" && (
+            <label>
+              Password
+              <input
+                type="password"
+                name="password"
+                id="auryn-signin-password"
+                autoComplete={
+                  mode === "login" ? "current-password" : "new-password"
+                }
+                minLength={8}
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </label>
+          )}
+          {error && (
+            <p role="alert" className="error">
+              {error}
+            </p>
+          )}
+          {notice && (
+            <p role="status" className="success">
+              {notice}
+            </p>
+          )}
+          {mode === "signup" && notice && (
+            <button
+              type="button"
+              className="button"
+              disabled={resendPending || !!resendUntil}
+              onClick={() => void resendConfirmation()}
+            >
+              {resendPending
+                ? "Requesting…"
+                : resendUntil
+                  ? "Resend available in one minute"
+                  : "Resend confirmation email"}
+            </button>
+          )}
+          <button className="button primary" disabled={busy}>
+            {busy
+              ? "Please wait…"
+              : mode === "login"
+                ? "Sign in"
+                : mode === "signup"
+                  ? "Create account"
+                  : "Send reset link"}
+          </button>
+        </form>
+        <div className="login-links">
+          <button
+            disabled={busy}
+            onClick={() => {
+              setMode(mode === "signup" ? "login" : "signup");
+              setError("");
+              setNotice("");
+            }}
+          >
+            {mode === "signup"
+              ? "Already have an account?"
+              : "Create an account"}
+          </button>
+          <button
+            disabled={busy}
+            onClick={() => {
+              setMode(mode === "reset" ? "login" : "reset");
+              setError("");
+              setNotice("");
+            }}
+          >
+            {mode === "reset" ? "Back to sign in" : "Forgot password?"}
+          </button>
         </div>
-        <div className="mp-auth-help">
-          Need a hand?{" "}
-          <a href="/help">
-            Visit the help center <span aria-hidden="true">→</span>
-          </a>
-        </div>
+        <small>
+          By continuing, you agree to our <a href="/terms">Terms</a> and
+          acknowledge our <a href="/privacy">Privacy Policy</a>. Investing
+          involves risk.
+        </small>
+        <nav className="login-legal" aria-label="Help and legal">
+          <a href="/help">Help</a>
+          <a href="/terms">Terms</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/risk">Risks</a>
+        </nav>
       </section>
     </main>
   );

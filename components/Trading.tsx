@@ -4,7 +4,6 @@ import { useProduct, useResource } from "./Session";
 import { api } from "@/lib/client";
 import { amount, dateLabel } from "@/lib/format";
 import { Notice, Empty, SecurityLogo } from "./Ui";
-import { useAccess } from "./Access";
 type Plan = {
   id: string;
   enabled: boolean;
@@ -27,18 +26,6 @@ type Run = {
   created_at: string;
 };
 export default function Trading() {
-  const { demo } = useProduct();
-  const { access } = useAccess();
-  if (!demo && !access.capabilities?.paperTrading)
-    return (
-      <Empty title="Paper trading is not enabled for this account">
-        Use Strategy lab to explore contribution strategies. Paper execution is
-        available to the configured paper-account owner.
-      </Empty>
-    );
-  return <PaperTradingWorkspace />;
-}
-function PaperTradingWorkspace() {
   const { demo } = useProduct(),
     preview = useMemo(
       () =>

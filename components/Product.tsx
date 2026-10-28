@@ -3,7 +3,7 @@ import Plans from "./Plans";
 import OwnerAccess from "./OwnerAccess";
 import Trading from "./Trading";
 import LegalDocument from "./LegalDocument";
-import type { DocumentId } from "@/lib/legal-content";
+import type {DocumentId} from "@/lib/legal-content";
 import ResearchLab from "./ResearchLab";
 import Alerts from "./AlertCenter";
 import Discover from "./Discover";
@@ -19,12 +19,7 @@ const Research = dynamic(() => import("./Research"), {
     </p>
   ),
 });
-import {
-  Overview,
-  ResearchHome,
-  Portfolio,
-  Watchlist,
-} from "./ApprovedWorkspace";
+import { Overview, ResearchHome, Portfolio, Watchlist } from "./Workspace";
 import { Settings, Compare, HelpPage } from "./SupportingViews";
 function WorkspaceGate({ children }: { children: React.ReactNode }) {
   const { workspace, workspaceError, reloadWorkspace } = useProduct();
@@ -63,13 +58,8 @@ export default function Product({
   compareSymbols?: string;
 }) {
   const page = route[0] || "overview";
-  if (page === "reset-password") return <PasswordRecovery />;
-  if (
-    ["terms", "privacy", "risk", "methodology", "help", "reliability"].includes(
-      page,
-    )
-  )
-    return <LegalDocument id={page as DocumentId} />;
+  if (page === "reset-password") return <PasswordRecovery/>;
+  if (["terms","privacy","risk","methodology","help","reliability"].includes(page)) return <LegalDocument id={page as DocumentId}/>;
   // Only the localhost-only design preview owns a page-level session.
   // Real account sessions are retained by AppSession in the root layout.
   const frame = (content: React.ReactNode) =>
@@ -113,9 +103,9 @@ export default function Product({
         <Watchlist />
       </WorkspaceGate>
     ) : page === "plans" ? (
-      <Plans />
+      <Plans/>
     ) : page === "owner" ? (
-      <OwnerAccess />
+      <OwnerAccess/>
     ) : page === "settings" ? (
       <Settings />
     ) : page === "compare" ? (

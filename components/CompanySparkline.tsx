@@ -19,7 +19,7 @@ export default function CompanySparkline({ symbol }: { symbol: string }) {
     [];
   const line = pricePath(history);
   if (!line)
-    return null;
+    return <span className="company-spark-empty">History not loaded</span>;
   return (
     <svg
       className="company-spark"

@@ -1,5 +1,4 @@
 "use client";
-import { customerText } from "@/lib/customer-language";
 import { useMemo, useState } from "react";
 import { CalendarDays } from "lucide-react";
 import { useProduct, useResource } from "./Session";
@@ -152,7 +151,7 @@ export default function CompanyEvents({ symbol }: { symbol: string }) {
             </section>
           </div>
           <p className="source-line">
-            {customerText(r.data.source)} · {dateLabel(r.data.retrievedAt)}
+            {r.data.source} · {dateLabel(r.data.retrievedAt)}
             {r.data.profile?.website && (
               <Source href={r.data.profile.website}>Company website</Source>
             )}

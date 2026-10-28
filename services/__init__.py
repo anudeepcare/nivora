@@ -1,2 +1,0 @@
-"""AURYN service packages."""
-

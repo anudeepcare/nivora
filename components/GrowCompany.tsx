@@ -1,5 +1,4 @@
 "use client";
-import { customerText } from "@/lib/customer-language";
 import { useMemo, useState } from "react";
 import type { GrowData, GrowDataset } from "@/lib/grow-data";
 import { useProduct, useResource } from "./Session";
@@ -63,7 +62,7 @@ export function CompanyProfile({ symbol }: { symbol: string }) {
       </div>
       <div className={s.source}>
         <span>
-          {customerText(resource.data?.source)} profile · retrieved{" "}
+          {resource.data?.source} profile · retrieved{" "}
           {dateLabel(resource.data?.retrievedAt)}
         </span>
         {p.website && <Source href={p.website}>Company website</Source>}
@@ -233,7 +232,7 @@ export default function GrowCompanyEvents({ symbol }: { symbol: string }) {
             </>
           )}
           <p className={s.caption}>
-            {customerText(d.source)} · retrieved {dateLabel(d.retrievedAt)}
+            {d.source} · retrieved {dateLabel(d.retrievedAt)}
           </p>
         </>
       )}

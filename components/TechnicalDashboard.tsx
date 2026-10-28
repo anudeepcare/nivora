@@ -416,9 +416,7 @@ export default function TechnicalDashboard({
             <X size={20} />
           </button>
         </header>
-        <div className="anchors-dialog-body">
-          <TechnicalLevels research={r} />
-        </div>
+        <TechnicalLevels research={r} />
       </dialog>
     </section>
   );

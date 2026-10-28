@@ -69,19 +69,12 @@ export function useWorkspaceQuotes(
     key = JSON.stringify(groups),
     [revision, setRevision] = useState(0),
     [data, setData] = useState<Quotes>(() =>
-      demo
-        ? Object.fromEntries(
-            Object.entries(demo.research).map(([symbol, research]) => [
-              symbol,
-              { company: research.company, quote: research.quote },
-            ]),
-          )
-        : Object.fromEntries(
-            groups.flat().flatMap((s) => {
-              const row = cache.get("quote:" + s);
-              return row ? [[s, row.value as Quotes[string]]] : [];
-            }),
-          ),
+      Object.fromEntries(
+        groups.flat().flatMap((s) => {
+          const row = cache.get("quote:" + s);
+          return row ? [[s, row.value as Quotes[string]]] : [];
+        }),
+      ),
     ),
     [loading, setLoading] = useState(!demo && groups.length > 0),
     [ready, setReady] = useState(

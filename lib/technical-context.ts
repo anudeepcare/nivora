@@ -62,13 +62,10 @@ function compute(
       travel > 0 ? Math.abs(b.at(-1)!.close - b[0].close) / travel : 0;
   }
   const weeks = new Map<string, Candle>();
-  for (const b of rows) {
-    const key = weekKey(b.time, market);
-    // Select the expected completed close itself. A spurious Friday holiday
-    // observation must not overwrite a valid Thursday close and erase a week.
-    if (b.time === weekEndSession(key, market)) weeks.set(key, b);
-  }
-  const weekly = [...weeks.entries()];
+  for (const b of rows) weeks.set(weekKey(b.time, market), b);
+  const weekly = [...weeks.entries()].filter(
+    ([key, b]) => b.time === weekEndSession(key, market),
+  );
   const wma = (n: number) => {
     if (weekly.length < n) return null;
     const selected = weekly.slice(-n);

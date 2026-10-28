@@ -11,7 +11,7 @@ import {
 } from "lightweight-charts";
 import type { Candle } from "@/lib/types";
 import { useProduct } from "./Session";
-const EMPTY_COLORS: Record<string, string> = {};
+const EMPTY_COLORS: Record<string,string> = {};
 const EMPTY_LEVELS: { label: string; price: number }[] = [];
 export function PriceChart({
   bars,
@@ -26,7 +26,7 @@ export function PriceChart({
   style?: "line" | "candles";
   levels?: { label: string; price: number }[];
   contrast?: boolean;
-  candleColors?: Record<string, string>;
+  candleColors?: Record<string,string>;
 }) {
   const element = useRef<HTMLDivElement>(null),
     chart = useRef<IChartApi | null>(null),
@@ -61,16 +61,8 @@ export function PriceChart({
         vertLines: { visible: false },
         horzLines: { color: grid },
       },
-      rightPriceScale: {
-        borderVisible: false,
-        visible: !contrast,
-        autoScale: true,
-      },
-      leftPriceScale: {
-        borderVisible: false,
-        visible: contrast,
-        autoScale: true,
-      },
+      rightPriceScale: { borderVisible: false, visible: !contrast, autoScale: true },
+      leftPriceScale: { borderVisible: false, visible: contrast, autoScale: true },
       timeScale: {
         borderVisible: false,
         timeVisible: range === "1D" || range === "1W",
@@ -108,19 +100,7 @@ export function PriceChart({
             priceLineVisible: false,
           });
     lastRange.current = "";
-    // A retained dialog starts at width zero. Fit again when it gains layout width.
-    let previousWidth = 0;
-    const observer = new ResizeObserver(([entry]) => {
-      const width = entry?.contentRect.width ?? 0;
-      if (width > 0 && width !== previousWidth) {
-        api.applyOptions({ width });
-        api.timeScale().fitContent();
-      }
-      previousWidth = width;
-    });
-    observer.observe(element.current);
     return () => {
-      observer.disconnect();
       api.remove();
       chart.current = null;
       series.current = null;
@@ -138,20 +118,7 @@ export function PriceChart({
       unique.set(
         String(time),
         style === "candles"
-          ? {
-              time,
-              open: b.open,
-              high: b.high,
-              low: b.low,
-              close: b.close,
-              ...(candleColors[b.time]
-                ? {
-                    color: candleColors[b.time],
-                    wickColor: candleColors[b.time],
-                    borderColor: candleColors[b.time],
-                  }
-                : {}),
-            }
+          ? { time, open: b.open, high: b.high, low: b.low, close: b.close, ...(candleColors[b.time]?{color:candleColors[b.time],wickColor:candleColors[b.time],borderColor:candleColors[b.time]}:{}) }
           : { time, value: b.close },
       );
     }

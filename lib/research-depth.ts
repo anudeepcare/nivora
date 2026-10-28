@@ -1,10 +1,6 @@
 import type { Fact, Candle, FinancialPeriod } from "./types";
 import { financialPeriods, cashFlowValue } from "./engine.ts";
 import { flowFields, withFinancialRatios } from "./financial-formulas.ts";
-import {
-  compareFinancialFacts,
-  compareFinancialPeriods,
-} from "./financial-period-selection.ts";
 const DAY = 86400000;
 export function quarterFacts(facts: Fact[], asOf: string): Fact[] {
   const day = asOf.slice(0, 10),
@@ -14,12 +10,9 @@ export function quarterFacts(facts: Fact[], asOf: string): Fact[] {
       (f) =>
         f.start && f.end <= day && f.filed <= day && Number.isFinite(f.value),
     )
-    .sort((a, b) => compareFinancialFacts(b, a));
+    .sort((a, b) => a.filed.localeCompare(b.filed));
   for (const f of rows)
-    latest.set(
-      [f.metric, f.start, f.end, f.unit, f.currency, f.basis].join("|"),
-      f,
-    );
+    latest.set([f.metric, f.start, f.end, f.unit, f.basis].join("|"), f);
   const known = [...latest.values()],
     result = known.filter((f) => f.scope === "quarterly");
   for (const f of known) {
@@ -56,7 +49,6 @@ export function quarterFacts(facts: Fact[], asOf: string): Fact[] {
           p.start === start &&
           p.end === f.end &&
           p.unit === f.unit &&
-          p.currency === f.currency &&
           p.basis === f.basis,
       )
     )
@@ -86,83 +78,74 @@ export function ttmPeriods(facts: Fact[], asOf: string): FinancialPeriod[] {
       asOf,
     ),
     result: FinancialPeriod[] = [];
-  const series = new Map<string, Map<string, FinancialPeriod>>();
-  for (const row of rows) {
-    const key = `${row.currency}|${row.basis}`;
-    if (!series.has(key)) series.set(key, new Map());
-    // financialPeriods puts the more complete tied-end observation last.
-    series.get(key)!.set(row.end, row);
-  }
-  for (const periods of series.values()) {
-    const comparable = [...periods.values()].sort(compareFinancialPeriods);
-    for (let i = 3; i < comparable.length; i++) {
-      const four = comparable.slice(i - 3, i + 1),
-        last = four[3];
-      if (
-        four.some(
-          (r, j) =>
-            r.currency !== last.currency ||
-            r.basis !== last.basis ||
-            (j > 0 &&
-              Date.parse(r.start) !== Date.parse(four[j - 1].end) + DAY),
-        )
+  for (let i = 3; i < rows.length; i++) {
+    const four = rows.slice(i - 3, i + 1),
+      last = four[3];
+    if (
+      four.some(
+        (r, j) =>
+          r.currency !== last.currency ||
+          r.basis !== last.basis ||
+          (j > 0 &&
+            Math.abs(Date.parse(r.start) - Date.parse(four[j - 1].end) - DAY) >
+              DAY),
       )
-        continue;
-      const span = (Date.parse(last.end) - Date.parse(four[0].start)) / DAY;
-      if (span < 330 || span > 400) continue;
-      const sum = (
-        key:
-          | "revenue"
-          | "netIncome"
-          | "operatingIncome"
-          | "operatingCashFlow"
-          | "capex"
-          | "fcf",
-      ) =>
-        four.every((r) => r[key] != null)
-          ? four.reduce((s, r) => s + r[key]!, 0)
-          : null;
-      const revenue = sum("revenue"),
-        op = sum("operatingIncome");
-      const extended = Object.fromEntries(
-        flowFields.map((k) => [
-          k,
-          four.every((r) => r[k] != null)
-            ? four.reduce((s, r) => s + r[k]!, 0)
-            : null,
-        ]),
-      );
-      const days = four.map(
-        (r) => (Date.parse(r.end) - Date.parse(r.start)) / DAY + 1,
-      );
-      const weights = four.every(
-        (r) => r.weightedShares != null && r.weightedShares > 0,
-      )
-        ? four.reduce((s, r, j) => s + r.weightedShares! * days[j], 0) /
-          days.reduce((s, n) => s + n, 0)
+    )
+      continue;
+    const span = (Date.parse(last.end) - Date.parse(four[0].start)) / DAY;
+    if (span < 330 || span > 400) continue;
+    const sum = (
+      key:
+        | "revenue"
+        | "netIncome"
+        | "operatingIncome"
+        | "operatingCashFlow"
+        | "capex"
+        | "fcf",
+    ) =>
+      four.every((r) => r[key] != null)
+        ? four.reduce((s, r) => s + r[key]!, 0)
         : null;
-      result.push(
-        withFinancialRatios({
-          ...last,
-          start: four[0].start,
-          revenue,
-          netIncome: sum("netIncome"),
-          operatingIncome: op,
-          operatingCashFlow: sum("operatingCashFlow"),
-          capex: sum("capex"),
-          fcf: sum("fcf"),
-          margin: revenue && op != null ? (op / revenue) * 100 : null,
-          ...extended,
-          weightedShares: weights,
-          eps: null,
-          sourceUrls: [
-            ...new Set(four.flatMap((r) => r.sourceUrls ?? [r.sourceUrl])),
-          ],
-        }),
-      );
-    }
+    const revenue = sum("revenue"),
+      op = sum("operatingIncome");
+    const extended = Object.fromEntries(
+      flowFields.map((k) => [
+        k,
+        four.every((r) => r[k] != null)
+          ? four.reduce((s, r) => s + r[k]!, 0)
+          : null,
+      ]),
+    );
+    const days = four.map(
+      (r) => (Date.parse(r.end) - Date.parse(r.start)) / DAY + 1,
+    );
+    const weights = four.every(
+      (r) => r.weightedShares != null && r.weightedShares > 0,
+    )
+      ? four.reduce((s, r, j) => s + r.weightedShares! * days[j], 0) /
+        days.reduce((s, n) => s + n, 0)
+      : null;
+    result.push(
+      withFinancialRatios({
+        ...last,
+        start: four[0].start,
+        revenue,
+        netIncome: sum("netIncome"),
+        operatingIncome: op,
+        operatingCashFlow: sum("operatingCashFlow"),
+        capex: sum("capex"),
+        fcf: sum("fcf"),
+        margin: revenue && op != null ? (op / revenue) * 100 : null,
+        ...extended,
+        weightedShares: weights,
+        eps: null,
+        sourceUrls: [
+          ...new Set(four.flatMap((r) => r.sourceUrls ?? [r.sourceUrl])),
+        ],
+      }),
+    );
   }
-  return result.sort(compareFinancialPeriods);
+  return result;
 }
 export function reverseGrowth(
   cash: number,

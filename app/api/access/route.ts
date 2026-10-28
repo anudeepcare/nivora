@@ -1,6 +1,5 @@
 import { account, failure, privateJson } from "@/lib/server";
 import { getAccess, accessDb } from "@/lib/access-server";
-import { canManagePaper } from "@/lib/paper-policy";
 export async function GET(request: Request) {
   try {
     const { user } = await account(request);
@@ -19,16 +18,7 @@ export async function GET(request: Request) {
         .eq("bucket", "research");
       used = r.error ? -1 : (r.count ?? 0);
     }
-    return privateJson({
-      ...access,
-      researchUsed: used,
-      capabilities: {
-        paperTrading: canManagePaper(user, {
-          ownerId: process.env.AURYN_PAPER_OWNER_ID,
-          adminIds: process.env.AURYN_ADMIN_USER_IDS,
-        }),
-      },
-    });
+    return privateJson({ ...access, researchUsed: used });
   } catch (e) {
     return failure(e);
   }

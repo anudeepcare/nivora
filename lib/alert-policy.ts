@@ -1,11 +1,10 @@
 import type { AlertRule } from "./documents";
-import { earningsEventState, marketDay } from "./home-feed.ts";
 export function evaluateAlert(
   rule: AlertRule,
   input: {
     asOf?: string;
-    earnings?: { date: string; actual?: number | null }[];
-    financial?: { value: number; period: string; previous: number | null };
+    earnings?: { date: string }[];
+    financial?: {value:number;period:string;previous:number|null};
     snapshotId: string;
     price: number | null;
     stale: boolean;
@@ -17,32 +16,16 @@ export function evaluateAlert(
 ) {
   if (!rule.enabled) return null;
   const base = { symbol: rule.symbol, snapshot_id: input.snapshotId };
-  if (
-    ["interest-below", "sbc-above", "current-below", "margin-below"].includes(
-      rule.type,
-    )
-  ) {
-    const f = input.financial,
-      t = rule.threshold;
-    if (
-      !f ||
-      t == null ||
-      f.previous == null ||
-      ![f.value, f.previous, t].every(Number.isFinite)
-    )
-      return null;
-    const breached = (v: number) => (rule.type === "sbc-above" ? v > t : v < t);
-    if (!breached(f.value) || breached(f.previous)) return null;
-    return {
-      ...base,
-      event_key: `financial:${rule.type}:${t}:${f.period}`,
-      title: `${rule.symbol}: financial threshold crossed`,
-      detail: `${rule.type}: ${f.previous.toFixed(2)} → ${f.value.toFixed(2)}; threshold ${t}, reporting period ${f.period}. Observed between checks, not an intraday or trade signal.`,
-    };
+  if (["interest-below","sbc-above","current-below","margin-below"].includes(rule.type)) {
+    const f=input.financial,t=rule.threshold;
+    if(!f||t==null||f.previous==null||![f.value,f.previous,t].every(Number.isFinite))return null;
+    const breached=(v:number)=>rule.type==='sbc-above'?v>t:v<t;
+    if(!breached(f.value)||breached(f.previous))return null;
+    return {...base,event_key:`financial:${rule.type}:${t}:${f.period}`,title:`${rule.symbol}: financial threshold crossed`,detail:`${rule.type}: ${f.previous.toFixed(2)} → ${f.value.toFixed(2)}; threshold ${t}, reporting period ${f.period}. Observed between checks, not an intraday or trade signal.`};
   }
   if (rule.type === "earnings-soon") {
     const now = Date.parse(input.asOf ?? ""),
-      today = marketDay(input.asOf ?? "");
+      today = (input.asOf ?? "").slice(0, 10);
     if (
       !Number.isFinite(now) ||
       rule.threshold == null ||
@@ -53,7 +36,6 @@ export function evaluateAlert(
     const next = input.earnings
       ?.filter(
         (e) =>
-          earningsEventState(e, today).status !== "reported" &&
           e.date >= today &&
           Number.isFinite(Date.parse(e.date)) &&
           Date.parse(e.date) - Date.parse(today) <= rule.threshold! * 86400000,
@@ -86,8 +68,8 @@ export function evaluateAlert(
       ? {
           ...base,
           event_key: `monthly:${input.month}:${input.monthly}`,
-          title: `${rule.symbol}: P${input.monthly} monthly zone`,
-          detail: `Completed month ${input.month}. Confirmed price zone. Review business evidence and risks before buying; this zone alone does not authorize a purchase.`,
+          title: `${rule.symbol}: ${input.monthly === 0 ? "pause" : `${input.monthly}×`} monthly zone`,
+          detail: `Completed month ${input.month}. Experimental price policy; business evidence is a separate assessment.`,
         }
       : null;
   if (input.stale || input.price == null || rule.threshold == null) return null;

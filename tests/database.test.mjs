@@ -75,12 +75,6 @@ test("Postgres migrations enforce account-scoped watches, idempotency, and AI re
         .n,
       1,
     );
-    await db.query("insert into auryn_documents(user_id,kind,key,body) values($1,'view','internal:alert-monitor-cursor',$2::jsonb)", [a,JSON.stringify({name:'Internal alert continuation',symbols:[],filter:'rule-012',horizon:''})]);
-    assert.equal((await db.query("select body->>'filter' as cursor from auryn_documents where key='internal:alert-monitor-cursor'")).rows[0].cursor,'rule-012');
-    await db.exec(`set request.uid='${b}'`);
-    assert.equal((await db.query("select * from auryn_documents where key='internal:alert-monitor-cursor'")).rows.length,0);
-    await assert.rejects(db.query("insert into auryn_documents(user_id,kind,key,body) values($1,'view','internal:alert-monitor-cursor','{}')",[a]));
-    await db.exec(`set request.uid='${a}'`);
     for (let i = 0; i < 3; i++)
       assert.equal(
         (await db.query("select auryn_reserve_ai_request() as ok")).rows[0].ok,

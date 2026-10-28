@@ -49,7 +49,7 @@ export default function FreeSnapshot({ research: r }: { research: Research }) {
           health.
         </p>
       )}
-      <Link href="/plans">Explore Pro features →</Link>
+      <Link href="/settings">Explore Pro features →</Link>
     </section>
   );
 }

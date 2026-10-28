@@ -1,22 +1,3 @@
-export function canManagePaper(
-  user: {
-    id: string;
-    app_metadata?: Record<string, unknown>;
-    user_metadata?: unknown;
-  },
-  config: { ownerId?: string; adminIds?: string },
-) {
-  const admin =
-    user.app_metadata?.role === "admin" ||
-    (Array.isArray(user.app_metadata?.roles) &&
-      user.app_metadata.roles.includes("admin")) ||
-    (config.adminIds ?? "")
-      .split(",")
-      .map((x) => x.trim())
-      .filter(Boolean)
-      .includes(user.id);
-  return !!config.ownerId && config.ownerId === user.id && admin;
-}
 export type PaperPlan = {
   symbol: string;
   side: "buy" | "sell";

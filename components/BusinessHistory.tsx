@@ -31,17 +31,7 @@ export default function BusinessHistory({
           <strong>{percent(h.revenueCagr)}</strong>
           <small>Annualized over the dated, consecutive reporting period</small>
         </article>
-        <article
-          data-tone={
-            !h.profitObservations
-              ? "neutral"
-              : h.profitYears === h.profitObservations
-                ? "green"
-                : h.profitYears === 0
-                  ? "red"
-                  : "amber"
-          }
-        >
+        <article data-tone="green">
           <span>Profitable years</span>
           <strong>
             {h.profitObservations
@@ -50,17 +40,7 @@ export default function BusinessHistory({
           </strong>
           <small>Positive reported net income; observed years only</small>
         </article>
-        <article
-          data-tone={
-            !h.cashObservations
-              ? "neutral"
-              : h.cashYears === h.cashObservations
-                ? "green"
-                : h.cashYears === 0
-                  ? "red"
-                  : "amber"
-          }
-        >
+        <article data-tone="violet">
           <span>Cash-generating years</span>
           <strong>
             {h.cashObservations

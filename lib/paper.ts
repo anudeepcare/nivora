@@ -5,7 +5,6 @@ import {
   cleanPaperPlan,
   paperChecks,
   terminalPaperStatus,
-  canManagePaper,
 } from "./paper-policy";
 import { quote } from "./providers";
 export function isAdmin(user: User) {
@@ -17,12 +16,7 @@ export function isAdmin(user: User) {
   );
 }
 export function paperOwner(user: User) {
-  if (
-    !canManagePaper(user, {
-      ownerId: process.env.AURYN_PAPER_OWNER_ID,
-      adminIds: process.env.AURYN_ADMIN_USER_IDS,
-    })
-  )
+  if (!isAdmin(user) || process.env.AURYN_PAPER_OWNER_ID !== user.id)
     throw new HttpError(
       "Only the configured paper-account owner can manage execution.",
       403,

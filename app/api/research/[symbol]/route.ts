@@ -2,7 +2,8 @@ import {requestAccess,reserveAccess} from "@/lib/access-server";
 import {projectResearch} from "@/lib/access-policy";
 import { canonical } from "@/lib/canonical";
 import { account, failure, limit, privateJson } from "@/lib/server";
-import { research, researchSymbol } from "@/lib/providers";
+import { research } from "@/lib/providers";
+import { symbolInput } from "@/lib/format";
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ symbol: string }> },
@@ -10,7 +11,7 @@ export async function GET(
   try {
     const { user } = await account(request);
     limit(`research:${user.id}`, 12);
-    const symbol = researchSymbol((await params).symbol);
+    const symbol = symbolInput((await params).symbol);
     const access=await requestAccess(request,user.id);
     await reserveAccess(user.id,access,"research",symbol);
     const data = await research(symbol);

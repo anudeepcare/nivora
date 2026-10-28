@@ -33,37 +33,6 @@ const research = {
     },
   ],
 };
-test("per-share calculations reject conflicting counts at the selected share date in either order", () => {
-  const r = { ...research, company: { ...research.company, currency: "USD" } };
-  const original = r.facts[0],
-    conflict = { ...original, value: 1 };
-  for (const facts of [
-    [original, conflict],
-    [conflict, original],
-  ]) {
-    assert.equal(m.reportedCashPerShare({ ...r, facts }, period).cash, null);
-    assert.equal(m.marketMultiples({ ...r, facts }, period).marketCap, null);
-  }
-  const amended = { ...conflict, filed: "2026-02-16" };
-  assert.equal(
-    m.reportedCashPerShare({ ...r, facts: [original, amended] }, period).cash,
-    20,
-  );
-  assert.equal(
-    m.reportedCashPerShare(
-      { ...r, facts: [original, { ...conflict, currency: "EUR" }] },
-      period,
-    ).cash,
-    2,
-  );
-  assert.equal(
-    m.reportedCashPerShare(
-      { ...r, facts: [original, { ...conflict, basis: "IFRS" }] },
-      period,
-    ).cash,
-    2,
-  );
-});
 test("market ratios use dated same-currency evidence and withhold ADR, negative earnings and stale quote", () => {
   assert.deepEqual(m.marketMultiples(research, period), {
     marketCap: 100,

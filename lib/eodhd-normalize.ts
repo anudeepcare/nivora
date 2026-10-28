@@ -1,10 +1,5 @@
 import type { Candle, Company, Fact, Metric, Quote } from "./types";
 import { numeric, normalizeBars } from "./market.ts";
-import {
-  providerSymbol,
-  providerIdentity,
-  US_EXCHANGES,
-} from "./provider-symbol.ts";
 const text = (v: unknown) => (typeof v === "string" ? v.slice(0, 10000) : "");
 const date = (v: unknown) =>
   typeof v === "string" &&
@@ -16,20 +11,18 @@ const entries = (v: any): any[] =>
   v && typeof v === "object" ? Object.values(v) : [];
 export const eodSource =
   "https://eodhd.com/financial-apis/stock-etfs-fundamental-data-feeds";
-export function eodTicker(input: string) {
-  const symbol = providerSymbol(input);
-  return symbol.includes("/")
-    ? symbol.replace("/", "-") + ".CC"
-    : symbol.replaceAll(".", "-") + ".US";
+export function eodTicker(symbol: string) {
+  if (/^[A-Z0-9]{2,12}\/USD$/.test(symbol))
+    return symbol.replace("/", "-") + ".CC";
+  if (!/^[A-Z][A-Z0-9.-]{0,14}$/.test(symbol))
+    throw Error("Invalid instrument");
+  return symbol.replaceAll(".", "-") + ".US";
 }
-/** Directory payloads use actual US venues while search uses composite US. */
 export function normalizeEodSearch(raw: unknown): Company[] {
   if (!Array.isArray(raw)) return [];
   const rows: Company[] = [];
   for (const x of raw) {
-    if (!x || typeof x !== "object") continue;
-    const exchange = String(x.Exchange ?? "").toUpperCase();
-    if (exchange === "CC" && /^[A-Z0-9]{2,12}-USD$/.test(x.Code))
+    if (x.Exchange === "CC" && /^[A-Z0-9]{2,12}-USD$/.test(x.Code))
       rows.push({
         symbol: x.Code.replace("-", "/"),
         name: text(x.Name) || x.Code,
@@ -38,34 +31,20 @@ export function normalizeEodSearch(raw: unknown): Company[] {
         assetType: "crypto",
       });
     else if (
-      (US_EXCHANGES as readonly string[]).includes(exchange) &&
+      x.Exchange === "US" &&
       x.Currency === "USD" &&
-      [
-        "Common Stock",
-        "Preferred Stock",
-        "ETF",
-        "American Depositary Receipt",
-        "Depositary Receipt",
-        "REIT",
-      ].includes(x.Type)
-    ) {
-      try {
-        const symbol = providerSymbol(`US:${x.Code}`);
-        rows.push({
-          symbol,
-          name: text(x.Name) || symbol,
-          exchange,
-          currency: "USD",
-          assetType: "stock",
-        });
-      } catch {
-        /* Unrouteable identities are not advertised. */
-      }
-    }
+      /^[A-Z][A-Z0-9.-]{0,14}$/.test(x.Code) &&
+      ["Common Stock", "Preferred Stock", "ETF"].includes(x.Type)
+    )
+      rows.push({
+        symbol: x.Code,
+        name: text(x.Name) || x.Code,
+        exchange: "US",
+        currency: "USD",
+        assetType: "stock",
+      });
   }
-  return [
-    ...new Map(rows.map((x) => [providerIdentity(x.symbol), x])).values(),
-  ];
+  return [...new Map(rows.map((x) => [x.symbol, x])).values()];
 }
 export function normalizeEodQuote(
   symbol: string,
@@ -159,18 +138,6 @@ export function normalizeEodBars(
 }
 export type EodEvidence = {
   updatedAt: string | null;
-  /** Optional field observations supplied explicitly by a source. A dataset
-   * update timestamp alone does not establish these economic observation dates. */
-  listingObservations?: {
-    marketCap: { asOf: string; currency: string; shareBasis: string };
-    shares: { asOf: string; unit: "shares"; shareBasis: string };
-    price?: {
-      value: number;
-      asOf: string;
-      currency: string;
-      shareBasis: string;
-    };
-  };
   source: string;
   reportingCurrency: string | null;
   highlights: Record<string, number | null>;

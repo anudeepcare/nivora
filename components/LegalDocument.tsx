@@ -1,5 +1,4 @@
 "use client";
-import { PrivacyChoices } from "./AnalyticsConsent";
 import { useState } from "react";
 import Link from "next/link";
 import {
@@ -16,10 +15,10 @@ export default function LegalDocument({ id }: { id: DocumentId }) {
   return (
     <main className="legal-document atlas-document">
       <header>
-        <Link href="/" className="legal-brand">
+        <Link href="/overview" className="legal-brand">
           <img src="/icon.svg" width="28" height="28" alt="" /> AURYN
         </Link>
-        <Link href="/">Back to home →</Link>
+        <Link href="/research">Back to research →</Link>
       </header>
       <div className="document-layout">
         <nav aria-label="Help and legal documents">
@@ -71,10 +70,7 @@ export default function LegalDocument({ id }: { id: DocumentId }) {
       </div>
       <footer>
         <p>{legalConfiguration.operator}</p>
-        <a href={`mailto:${legalConfiguration.contact}`}>
-          {legalConfiguration.contact}
-        </a>
-        <PrivacyChoices />
+        <Link href="/contact">Contact support</Link>
         <span>© {new Date().getFullYear()} AURYN. All rights reserved.</span>
       </footer>
     </main>

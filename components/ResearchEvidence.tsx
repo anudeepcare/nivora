@@ -1,5 +1,4 @@
 "use client";
-import { customerText } from "@/lib/customer-language";
 import { useMemo, useState } from "react";
 import {
   ArrowUpRight,
@@ -514,7 +513,7 @@ function CorporateActions({ symbol }: { symbol: string }) {
           </p>
         )}
         <p className="au-caption">
-          {customerText(dividends.data?.source)}
+          {dividends.data?.source}
           {!dividends.data?.currency
             ? " · Currency not supplied by this endpoint."
             : ""}
