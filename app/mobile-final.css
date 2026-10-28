@@ -69,6 +69,7 @@
     flex: 0 0 auto;
   }
   .approved-product.workspace-experience .wordmark-label {
+    display: inline;
     font-weight: 750;
     line-height: 1;
     white-space: nowrap;
@@ -256,6 +257,37 @@
   }
   .approved-product.workspace-experience .briefing-panel {
     border-radius: 20px;
+  }
+}
+@media (max-width: 380px) {
+  .approved-product.workspace-experience .mobile-header-row {
+    gap: 5px;
+    padding-left: max(10px, env(safe-area-inset-left, 0px));
+    padding-right: max(10px, env(safe-area-inset-right, 0px));
+  }
+  .approved-product.workspace-experience .mobile-header-row .wordmark {
+    max-width: 88px;
+    gap: 6px;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+  }
+  .approved-product.workspace-experience .mobile-brand-mark {
+    width: 28px;
+    height: 28px;
+  }
+  .approved-product.workspace-experience .mobile-header-row > .search-box,
+  .approved-product.workspace-experience .mobile-header-row .top-links > :is(a.avatar, [aria-label="Price alerts"]) {
+    width: 36px;
+    height: 36px;
+    min-height: 36px;
+    border-radius: 11px;
+  }
+  .approved-product.workspace-experience .mobile-header-row .top-links {
+    gap: 4px;
+  }
+  .approved-product.workspace-experience .mobile-header-row .top-links > .header-plans {
+    padding-inline: 8px;
+    font-size: 13px;
   }
 }
 @media (max-width: 760px) {

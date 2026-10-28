@@ -536,6 +536,33 @@ function HomeOverview() {
               })}
             </div>
           )}
+          {!!brief.checkpoints.length && (
+            <div
+              className="home-milestones"
+              aria-label="Upcoming milestones"
+            >
+              <span className="home-milestones-label">
+                UPCOMING MILESTONES · NEXT 7 DAYS
+              </span>
+              {brief.checkpoints.slice(0, 3).map((event, index) => (
+                <Link
+                  href={researchLink(event.symbol, prefix)}
+                  key={`${event.symbol}:${event.date}:${event.kind}`}
+                  className={`home-milestone home-milestone-${index % 3}`}
+                >
+                  <span className="home-milestone-icon" aria-hidden="true">
+                    <CalendarDays size={18} />
+                  </span>
+                  <span className="home-milestone-copy">
+                    <small>{dateLabel(event.date)}</small>
+                    <strong>{names[event.symbol] ?? event.symbol}</strong>
+                    <em>{event.kind}</em>
+                  </span>
+                  <ArrowUpRight size={16} aria-hidden="true" />
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
         <Link className="btn primary" href={briefHref}>
           {brief.action} <ArrowUpRight size={17} />

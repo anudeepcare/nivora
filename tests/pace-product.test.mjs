@@ -94,7 +94,8 @@ test('an eligible business at P1 remains outside accumulation even without a val
 test('non-entry states do not collapse every stock into a zero multiplier', () => {
   assert.equal(contributionGuide('Watch', 1).multiple, 0);
   assert.equal(contributionGuide('Watch', 1).label, 'Entry not established');
-  assert.equal(contributionGuide('Review', 2).label, 'Business review required');
+  assert.equal(contributionGuide('Review', 2).label, 'P2 zone · business gate');
+  assert.match(contributionGuide('Review', 2).meaning, /confirmed P2 price zone/i);
   assert.match(contributionGuide('Wait', 4).meaning, /price zone is visible/i);
   assert.equal(contributionGuide('Wait', 0).label, '0× · price pause');
 });

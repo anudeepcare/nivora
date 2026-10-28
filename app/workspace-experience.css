@@ -135,30 +135,33 @@
   margin-bottom: 18px;
   border: 1px solid color-mix(in srgb, var(--blue) 17%, var(--line));
   border-radius: 20px;
-  background: linear-gradient(
-    115deg,
-    color-mix(in srgb, var(--blue) 7%, var(--card)),
-    color-mix(in srgb, var(--workspace-violet) 8%, var(--card))
-  );
-  box-shadow: var(--workspace-shadow);
+  background: linear-gradient(135deg, #082447 0%, #103a63 58%, #15566a 100%);
+  border-color: #2b6085;
+  box-shadow: 0 16px 36px #0a2b4b26;
+  color: #f8fbff;
 }
 .workspace-experience .home-next-copy {
   min-width: 0;
 }
 .workspace-experience .home-next-copy .eyebrow {
   font-size: 11px;
-  color: var(--blue);
+  color: #b9d3ef;
   letter-spacing: 0.12em;
 }
 .workspace-experience .home-next-copy h2 {
   margin: 7px 0 8px;
   font-size: clamp(23px, 2.25vw, 29px);
   line-height: 1.2;
+  color: #fff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 600;
+  letter-spacing: -0.035em;
 }
 .workspace-experience .home-next-copy p {
   font-size: 15px;
   line-height: 1.55;
   max-width: 760px;
+  color: #d7e7f7;
 }
 .workspace-experience .home-next-step > .btn {
   justify-self: end;
@@ -171,7 +174,73 @@
   margin: 16px 0 0;
   font-size: 12px;
   line-height: 1.65;
-  color: var(--muted);
+  color: #b9cfe3;
+}
+.workspace-experience .home-next-step .home-earnings-chip {
+  border-color: #ffffff2b;
+  background: #ffffff12;
+  color: #fff;
+}
+.workspace-experience .home-next-step .home-earnings-chip > span {
+  color: #d7e7f7;
+}
+.workspace-experience .home-milestones {
+  display: grid;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #ffffff24;
+}
+.workspace-experience .home-milestones-label {
+  color: #b9d3ef;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.16em;
+}
+.workspace-experience .home-milestone {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) 18px;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  text-decoration: none;
+}
+.workspace-experience .home-milestone-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #2876f2;
+  color: #fff;
+  box-shadow: inset 0 1px #ffffff45;
+}
+.workspace-experience .home-milestone-1 .home-milestone-icon {
+  background: #c58a18;
+}
+.workspace-experience .home-milestone-2 .home-milestone-icon {
+  background: #159a83;
+}
+.workspace-experience .home-milestone-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.workspace-experience .home-milestone-copy small,
+.workspace-experience .home-milestone-copy em {
+  color: #b9cfe3;
+  font-size: 12px;
+  font-style: normal;
+}
+.workspace-experience .home-milestone-copy strong {
+  overflow: hidden;
+  color: #fff;
+  font-size: 15px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.workspace-experience .home-milestone > svg {
+  color: #d9e9f8;
 }
 .workspace-experience .home-decision-view .wealth-strip {
   display: grid;

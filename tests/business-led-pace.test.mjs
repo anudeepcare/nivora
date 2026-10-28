@@ -147,6 +147,7 @@ test("a small daily price change leaves confirmed Pace and the business decision
 test("Pace explains the budget boundary and Review without calling the business bad", () => {
   assert.match(pacePresentation("Buy", 4).detail, /budget|limit/i);
   assert.match(pacePresentation("Review", 4).detail, /review|assessment/i);
+  assert.equal(pacePresentation("Review", 4).actionLabel, "Review business · P4");
   assert.equal(pacePresentation("Review", 4).effectiveCode, null);
 });
 test("Review names missing business evidence instead of sending users to an unrelated valuation check", () => {

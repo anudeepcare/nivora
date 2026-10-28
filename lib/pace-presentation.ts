@@ -32,11 +32,14 @@ export function contributionGuide(action: DecisionAction, level: number | null |
     ? rawLevel === 2 ? 1 : rawLevel === 3 ? 2 : 4
     : 0;
   if (multiple === 0) {
+    const gatedZone = action === "Review" && rawLevel != null && rawLevel >= 2;
     const label =
       rawLevel === 0
         ? "0× · price pause"
         : ["Reduce", "Sell", "Avoid"].includes(action)
           ? "Additions blocked"
+          : gatedZone
+            ? `${paceCode(rawLevel)} zone · business gate`
           : action === "Review"
             ? "Business review required"
             : "Entry not established";
@@ -45,6 +48,8 @@ export function contributionGuide(action: DecisionAction, level: number | null |
         ? "P0 is a price-extension pause. New buyer: pause; existing holder: this is not a sell signal."
         : ["Reduce", "Sell", "Avoid"].includes(action)
           ? "A risk action takes priority over the price zone. Do not add until the holding case is reviewed."
+          : gatedZone
+            ? `A confirmed ${paceCode(rawLevel)} price zone is visible. Complete the stated business and data checks before assigning a contribution; the zone does not override them.`
           : action === "Review"
             ? "A price zone may be visible, but the business or data checks have not qualified a contribution."
             : rawLevel === 1
@@ -130,6 +135,7 @@ export function pacePresentation(
   const rawLevel = paceLevel(multiplier);
   const blocked = ["Reduce", "Sell", "Avoid"].includes(action);
   const permitted = action === "Buy" || action === "Add";
+  const gatedReview = action === "Review" && rawLevel != null && rawLevel >= 2;
   const status = blocked
     ? "paused"
     : action === "Hold"
@@ -142,7 +148,9 @@ export function pacePresentation(
     : action === "Hold"
       ? "Maintain position"
       : !permitted
-        ? "Price context"
+        ? gatedReview
+          ? `${paceCode(rawLevel)} business gate`
+          : "Price context"
         : rawLevel == null
           ? "Building history"
           : PACE_LEVELS[rawLevel];
@@ -153,7 +161,9 @@ export function pacePresentation(
         ? PACE_DESCRIPTIONS[0]
         : PACE_DESCRIPTIONS[1]
       : action === "Review"
-        ? "Review the stated business or data checks before adding. A price reading alone cannot complete the assessment or establish business quality."
+        ? gatedReview
+          ? `A confirmed ${paceCode(rawLevel)} price zone is visible. Review the stated business or data checks before adding; the zone does not establish business quality on its own.`
+          : "Review the stated business or data checks before adding. A price reading alone cannot complete the assessment or establish business quality."
         : !permitted
           ? "Entry conditions are not yet met. This reading explains the price setup; it is not an instruction to add."
           : rawLevel == null
@@ -181,7 +191,9 @@ export function pacePresentation(
         : "Hold"
       : action === "Wait"
         ? "Wait before buying"
-        : action;
+        : gatedReview
+          ? `Review business · ${paceCode(rawLevel)}`
+          : action;
   return {
     actionLabel,
     effectiveCode,

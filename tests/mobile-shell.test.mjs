@@ -31,6 +31,8 @@ test("mobile chrome keeps a brand-led glass header and reserves a tidy footer", 
   assert.match(css, /mobile-header-row\s*\{[\s\S]*display:\s*flex/);
   assert.match(finalCss, /mobile-brand-mark/);
   assert.match(finalCss, /mobile-header-row \.wordmark[\s\S]*position:\s*static/);
+  assert.match(finalCss, /wordmark-label[\s\S]*display:\s*inline/);
+  assert.match(finalCss, /Price alerts/);
   assert.match(css, /padding-bottom:\s*calc\(\s*92px/);
   assert.match(layout, /import "\.\/mobile-final\.css"/);
   assert.match(finalCss, /backdrop-filter:\s*blur/);
