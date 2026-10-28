@@ -97,3 +97,12 @@ test("share-class ownership aliases produce Add on the same supported research c
   assert.match(unowned, /<h2 id="auryn-decision-title">Buy gradually<\/h2>/);
   assert.match(owned, /<h2 id="auryn-decision-title">Add gradually<\/h2>/);
 });
+
+test("visible price card uses the same scenario cases as the Value assumptions view", () => {
+  const r = structuredClone(demoData.research.MSFT);
+  const model = approvedResearch(r);
+  assert.equal(model.cases.length, 3);
+  const html = render(r);
+  for (const scenario of model.cases)
+    assert.match(html, new RegExp(format.amount(scenario.target, r.quote.currency).replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+});

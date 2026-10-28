@@ -154,6 +154,7 @@ export function approvedResearch(
         ? "Historical volatility sensitivity"
         : "",
     scenarioEnd: scenario?.end ?? null,
+    scenarioYears: scenario?.years ?? null,
     scenarioHorizon:
       !scenario && b.priceRisk.available ? b.priceRisk.horizon : null,
     scenarioReference: scenario

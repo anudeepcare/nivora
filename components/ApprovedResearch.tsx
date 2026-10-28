@@ -78,7 +78,34 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
   const m = useMemo(() => approvedResearch(r, owns, now), [r, owns, now]);
   const { decision: d, edge, evidence } = m,
     b = edge.brief,
-    v = d.valuation;
+    v =
+      m.cases.length === 3
+        ? {
+            basis:
+              m.scenarioBasis === "Earnings sensitivity"
+                ? ("earnings-sensitivity" as const)
+                : ("historical" as const),
+            bear: m.cases[0].target,
+            base: m.cases[1].target,
+            bull: m.cases[2].target,
+            years: m.scenarioYears,
+            end: m.scenarioEnd,
+            assumptions:
+              m.scenarioBasis === "Earnings sensitivity"
+                ? "Matches Value: dated provider EPS estimates multiplied by 80% / 100% / 120% of the reported forward P/E. Conditional estimates, not intrinsic fair value."
+                : "Matches Value: historical price sensitivity from completed observations. This is not intrinsic fair value or a forecast.",
+            reference: m.scenarioReference,
+            referenceAsOf: m.scenarioReferenceDate,
+            referenceBasis: m.scenarioReferenceBasis,
+          }
+        : d.valuation
+          ? {
+              ...d.valuation,
+              reference: d.reference?.price ?? null,
+              referenceAsOf: d.reference?.asOf ?? null,
+              referenceBasis: d.reference?.basis ?? null,
+            }
+          : null;
   const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   const leading = m.metrics
     .filter((x) =>
@@ -217,12 +244,16 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
                 <h2>
                   {v.basis === "cash-flow"
                     ? "What the cash-flow assumptions imply."
-                    : "A range of earnings outcomes."}
+                    : v.basis === "historical"
+                      ? "Historical price sensitivity."
+                      : "A range of earnings outcomes."}
                 </h2>
                 <p>
                   {v.basis === "cash-flow"
                     ? "Present-value sensitivities, not future price targets."
-                    : `${v.years!.toFixed(1)}-year sensitivity · to ${dateLabel(v.end)}`}
+                    : v.basis === "historical"
+                      ? "Completed-price sensitivity, not intrinsic value."
+                      : `${v.years?.toFixed(1) ?? "Dated"}-year sensitivity · to ${dateLabel(v.end)}`}
                 </p>
               </div>
               <button className="text-link" onClick={() => onTab("Valuation")}>
@@ -232,8 +263,8 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
             <div className="decision-value-grid">
               {(["Bear", "Base", "Bull"] as const).map((label, i) => {
                 const target = [v.bear, v.base, v.bull][i],
-                  change = d.reference
-                    ? (target / d.reference.price - 1) * 100
+                  change = v.reference
+                    ? (target / v.reference - 1) * 100
                     : null;
                 return (
                   <div
@@ -245,8 +276,7 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
                     </span>
                     <strong>{amount(target, r.quote.currency)}</strong>
                     <small>
-                      {percent(change, true)} vs{" "}
-                      {amount(d.reference?.price, r.quote.currency)}
+                      {percent(change, true)} vs {amount(v.reference, r.quote.currency)}
                     </small>
                   </div>
                 );
@@ -258,9 +288,8 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
               </summary>
               <p>{v.assumptions}</p>
               <p>
-                Reference: {amount(d.reference?.price, r.quote.currency)} ·{" "}
-                {dateLabel(d.reference?.asOf)} ·{" "}
-                {d.reference?.basis === "settled-close"
+                Reference: {amount(v.reference, r.quote.currency)} · {dateLabel(v.referenceAsOf)} ·{" "}
+                {v.referenceBasis === "settled-close"
                   ? "completed daily close"
                   : "dated quote"}
                 . Scenario outcomes are not probabilities.
