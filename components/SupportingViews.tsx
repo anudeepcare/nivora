@@ -262,8 +262,8 @@ export function Settings() {
           <ChevronRight size={17} />
         </a>
         <PrivacyChoices />
-        {access.owner && !prefix && (
-          <Link href="/owner">
+        {access.owner && (
+          <Link href={`${prefix}/owner`}>
             <ShieldCheck size={18} />
             <span>Admin controls</span>
             <ChevronRight size={17} />

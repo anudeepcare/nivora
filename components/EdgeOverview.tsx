@@ -119,7 +119,7 @@ export default function EdgeOverview({
             <Sprout size={15} /> AURYN PACE
           </span>
           <strong>
-            {edge.pace != null ? `${edge.pace}×` : "History needed"}
+            {edge.pace != null ? "P" + edge.pace : "History needed"}
             <small>
               {edge.pace === 0
                 ? "Pause additions"

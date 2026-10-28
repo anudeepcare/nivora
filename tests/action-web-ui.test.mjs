@@ -73,7 +73,7 @@ test("Pace exposes both periods without a click and applies only the confirmed l
   assert.match(visible, /2026-09-30/);
   assert.match(visible, /2026-10-26/);
   assert.match(html, /1× your planned contribution/);
-  assert.match(html, /Example: a \$100 plan means \$100/);
+  assert.match(html, /If your plan is \$100, this means \$100/);
 });
 test("hold and risk actions keep the price Pace visible without authorising additions", () => {
   for (const action of ["Hold", "Wait", "Review", "Reduce", "Sell", "Avoid"]) {

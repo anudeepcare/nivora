@@ -14,8 +14,25 @@ export default function PaceGuidance({
 }) {
   const confirmed = readings.find((r) => r.key === "confirmed");
   const available = readings.some((r) => r.level != null);
+  const contributionAction = view.permitted
+    ? view.actionLabel.startsWith("Add")
+      ? "Add"
+      : "Buy"
+    : view.actionLabel === "Review"
+      ? "Review"
+      : view.actionLabel === "Reduce"
+        ? "Reduce"
+        : view.actionLabel === "Sell"
+          ? "Sell"
+          : view.actionLabel === "Avoid"
+            ? "Avoid"
+            : view.actionLabel === "Watch"
+              ? "Watch"
+            : view.actionLabel.startsWith("Hold")
+              ? "Hold"
+              : "Wait";
   const guide = contributionGuide(
-    view.permitted ? (view.actionLabel.startsWith("Add") ? "Add" : "Buy") : "Wait",
+    contributionAction,
     view.rawLevel,
   );
   return (
@@ -44,7 +61,12 @@ export default function PaceGuidance({
         <div className="pace-contribution-guide">
           <span>Contribution guide</span>
           <strong>{guide.label}</strong>
-          <small>{guide.meaning} Example: a $100 plan means {guide.multiple === 0 ? "$0" : `$${100 * guide.multiple}`}.</small>
+          <small>
+            {guide.meaning}{" "}
+            {guide.multiple === 0
+              ? "No scheduled amount is assigned until the entry conditions qualify."
+              : `If your plan is $100, this means $${100 * guide.multiple}.`}
+          </small>
         </div>
       )}
       {!compact && <p className="pace-context">{view.detail}</p>}

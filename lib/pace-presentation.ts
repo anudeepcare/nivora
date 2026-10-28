@@ -31,12 +31,27 @@ export function contributionGuide(action: DecisionAction, level: number | null |
   const multiple = permitted && rawLevel != null && rawLevel >= 2
     ? rawLevel === 2 ? 1 : rawLevel === 3 ? 2 : 4
     : 0;
-  if (multiple === 0)
-    return {
-      multiple: 0,
-      label: "0× · no new contribution",
-      meaning: "Wait for entry conditions; holding guidance is separate.",
-    } as const;
+  if (multiple === 0) {
+    const label =
+      rawLevel === 0
+        ? "0× · price pause"
+        : ["Reduce", "Sell", "Avoid"].includes(action)
+          ? "Additions blocked"
+          : action === "Review"
+            ? "Business review required"
+            : "Entry not established";
+    const meaning =
+      rawLevel === 0
+        ? "P0 is a price-extension pause. New buyer: pause; existing holder: this is not a sell signal."
+        : ["Reduce", "Sell", "Avoid"].includes(action)
+          ? "A risk action takes priority over the price zone. Do not add until the holding case is reviewed."
+          : action === "Review"
+            ? "A price zone may be visible, but the business or data checks have not qualified a contribution."
+            : rawLevel === 1
+              ? "P1 is a watch zone. No contribution multiple is assigned yet; existing holders can hold only while the business case remains supported."
+              : "The price zone is visible, but this assessment does not qualify a contribution. Existing holders should follow the separate holding guidance.";
+    return { multiple: 0, label, meaning } as const;
+  }
   if (multiple === 1)
     return {
       multiple: 1,

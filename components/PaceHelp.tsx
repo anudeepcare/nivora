@@ -35,11 +35,11 @@ export default function PaceHelp({ trigger }: { trigger?: string }) {
         separate check; Pace does not prove a stock is cheap.
       </p>
       <p>
-        <strong>Contribution guide:</strong> 1× means your normal planned
-        contribution; 2× means twice that amount; 3× means three times; and
-        4× is an upper guide only. For example, a $100 plan at 2× means $200.
-        P0 and P1 show 0× for new contributions. Never exceed your cash budget,
-        position limit or concentration limit.
+        <strong>Contribution guide:</strong> P0 and P1 mean no new contribution
+        while entry conditions are absent. P2 is 1× your normal planned
+        contribution, P3 is 2× and P4 is an upper 4× guide only. For example,
+        a $100 plan at P3 means $200. Never exceed your cash budget, position
+        limit or concentration limit.
       </p>
     </Help>
   );
