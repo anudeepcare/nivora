@@ -36,7 +36,7 @@ test('contribution guide explains the multiplier against the planned amount', ()
   assert.deepEqual(contributionGuide('Buy', 2), { multiple: 1, label: '1× your planned contribution', meaning: 'Start with your normal planned amount.' });
   assert.deepEqual(contributionGuide('Add', 3), { multiple: 2, label: '2× your planned contribution', meaning: 'Twice your normal planned amount.' });
   assert.deepEqual(contributionGuide('Buy', 4), { multiple: 4, label: 'Up to 4× your planned contribution', meaning: 'A maximum guide, only within your budget and position limit.' });
-  assert.deepEqual(contributionGuide('Watch', 4), { multiple: 0, label: 'Entry not established', meaning: 'The price zone is visible, but this assessment does not qualify a contribution. Existing holders should follow the separate holding guidance.' });
+  assert.deepEqual(contributionGuide('Watch', 4), { multiple: 0, label: 'P4 zone · entry pending', meaning: 'The price zone is visible, but this assessment does not qualify a contribution. Existing holders should follow the separate holding guidance.' });
 });
 test('all decisions gate every Pace level without overwriting the raw price reading', () => {
   for (const action of ['Buy', 'Add', 'Hold', 'Wait', 'Review', 'Reduce', 'Sell', 'Avoid']) {
@@ -93,7 +93,7 @@ test('an eligible business at P1 remains outside accumulation even without a val
 });
 test('non-entry states do not collapse every stock into a zero multiplier', () => {
   assert.equal(contributionGuide('Watch', 1).multiple, 0);
-  assert.equal(contributionGuide('Watch', 1).label, 'Entry not established');
+  assert.equal(contributionGuide('Watch', 1).label, 'P1 watch zone');
   assert.equal(contributionGuide('Review', 2).label, 'P2 zone · business gate');
   assert.match(contributionGuide('Review', 2).meaning, /confirmed P2 price zone/i);
   assert.match(contributionGuide('Wait', 4).meaning, /price zone is visible/i);

@@ -69,7 +69,7 @@
     flex: 0 0 auto;
   }
   .approved-product.workspace-experience .wordmark-label {
-    display: inline;
+    display: inline !important;
     font-weight: 750;
     line-height: 1;
     white-space: nowrap;
@@ -114,7 +114,7 @@
   }
   .approved-product.workspace-experience .mobile-header-row .top-links > .mobile-explore,
   .approved-product.workspace-experience .mobile-header-row .top-links > .icon-button[aria-label="Switch color theme"] {
-    display: none;
+    display: none !important;
   }
   .approved-product.workspace-experience .mobile-header-row .top-links > .header-plans {
     display: inline-flex;
@@ -128,7 +128,7 @@
     text-decoration: none;
   }
   .approved-product.workspace-experience .mobile-header-row .top-links > [aria-label="Price alerts"] {
-    display: inline-flex;
+    display: inline-flex !important;
     padding: 0;
     border: 0;
     background: transparent;

@@ -32,7 +32,7 @@ export function contributionGuide(action: DecisionAction, level: number | null |
     ? rawLevel === 2 ? 1 : rawLevel === 3 ? 2 : 4
     : 0;
   if (multiple === 0) {
-    const gatedZone = action === "Review" && rawLevel != null && rawLevel >= 2;
+    const gatedZone = action === "Review" && rawLevel != null;
     const label =
       rawLevel === 0
         ? "0× · price pause"
@@ -41,8 +41,14 @@ export function contributionGuide(action: DecisionAction, level: number | null |
           : gatedZone
             ? `${paceCode(rawLevel)} zone · business gate`
           : action === "Review"
-            ? "Business review required"
-            : "Entry not established";
+            ? rawLevel == null
+              ? "Business evidence pending"
+              : `${paceCode(rawLevel)} zone · business gate`
+            : action === "Watch" && rawLevel === 1
+              ? "P1 watch zone"
+              : rawLevel != null
+                ? `${paceCode(rawLevel)} zone · entry pending`
+                : "Entry conditions pending";
     const meaning =
       rawLevel === 0
         ? "P0 is a price-extension pause. New buyer: pause; existing holder: this is not a sell signal."
@@ -135,7 +141,7 @@ export function pacePresentation(
   const rawLevel = paceLevel(multiplier);
   const blocked = ["Reduce", "Sell", "Avoid"].includes(action);
   const permitted = action === "Buy" || action === "Add";
-  const gatedReview = action === "Review" && rawLevel != null && rawLevel >= 2;
+  const gatedReview = action === "Review" && rawLevel != null;
   const status = blocked
     ? "paused"
     : action === "Hold"
