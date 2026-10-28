@@ -39,8 +39,10 @@ test("mobile chrome keeps a brand-led glass header and reserves a tidy footer", 
   assert.match(finalCss, /search-dialog/);
   assert.match(finalCss, /mobile-header-row[\s\S]*border-bottom:\s*0/);
   assert.match(finalCss, /mobile-header-row[\s\S]*box-shadow:\s*none/);
-  assert.match(pwaCss, /pwa-status-surface[\s\S]*color-mix/);
+  assert.match(pwaCss, /pwa-status-surface[\s\S]*var\(--auryn-mobile-glass/);
   assert.doesNotMatch(pwaCss, /pwa-status-surface[\s\S]*background:\s*var\(--paper\)/);
+  assert.match(finalCss, /workspace-rail[\s\S]*display:\s*none/);
+  assert.match(finalCss, /--auryn-mobile-glass/);
 });
 
 test("shell markup exposes mobile-first semantics without removing desktop navigation", () => {

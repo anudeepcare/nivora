@@ -1,8 +1,12 @@
 /* Loaded after every legacy mobile rule. Keep this file last: it is the
    canonical iPhone/PWA chrome and cannot be shadowed by earlier breakpoints. */
 @media (max-width: 760px) {
+  #auryn-app {
+    /* Inherited by both the fixed status surface and the sticky header. */
+    --auryn-mobile-glass: color-mix(in srgb, var(--card) 82%, var(--bg));
+  }
   .approved-product.workspace-experience {
-    --ios-glass: color-mix(in srgb, var(--card) 74%, transparent);
+    --ios-glass: var(--auryn-mobile-glass);
     --ios-glass-strong: color-mix(in srgb, var(--card) 88%, transparent);
     --ios-glass-line: color-mix(in srgb, var(--line) 64%, transparent);
     background:
@@ -25,7 +29,7 @@
     padding: env(safe-area-inset-top, 0px)
       max(14px, env(safe-area-inset-right, 0px)) 0
       max(14px, env(safe-area-inset-left, 0px));
-    background: color-mix(in srgb, var(--card) 74%, transparent);
+    background: var(--auryn-mobile-glass);
     border-bottom: 0;
     box-shadow: none;
     -webkit-backdrop-filter: blur(22px) saturate(165%);
@@ -121,6 +125,10 @@
   .approved-product.workspace-experience .page-content {
     padding-top: 12px;
     padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+  }
+  /* The phone dock is the sole mobile workspace navigation. */
+  .approved-product.workspace-experience .workspace-rail {
+    display: none;
   }
   .approved-product.workspace-experience .phone-dock {
     left: max(12px, env(safe-area-inset-left, 0px));

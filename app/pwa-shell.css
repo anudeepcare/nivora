@@ -1,6 +1,5 @@
-/* Root-owned, opaque viewport sampling surface for installed mobile WebKit.
-   Keep outside transformed/sticky route containers and never let it collapse
-   when an installed app reports safe-area-inset-top: 0. */
+/* Root-owned surface for installed mobile WebKit. It shares one token with
+   the route header so iOS never renders a detached strip above the app. */
 .pwa-status-surface {
   display: none;
   position: fixed;
@@ -9,9 +8,7 @@
   width: 100%;
   height: max(12px, env(safe-area-inset-top, 0px));
   min-height: 12px;
-  /* Match the mobile header so the status area reads as one surface instead
-     of an opaque strip above the app. */
-  background: color-mix(in srgb, var(--card) 74%, transparent);
+  background: var(--auryn-mobile-glass, var(--card));
   -webkit-backdrop-filter: blur(22px) saturate(165%);
   backdrop-filter: blur(22px) saturate(165%);
   pointer-events: none;

@@ -15,7 +15,7 @@ test('installed status surface exists before account shell and cannot collapse a
  const d=Object.fromEntries(rule.nodes.filter(n=>n.type==='decl').map(n=>[n.prop,n.value]));
  assert.equal(d.position,'fixed');assert.equal(d.top,'0');assert.equal(d.width,'100%');
  assert.ok(parseFloat(d['min-height'])>10,'WebKit thinBorderWidth rejects boxes 10px high or smaller, including the previous 8px strip');
- assert.equal(d['pointer-events'],'none');assert.match(d.background,/color-mix\(in srgb, var\(--card\) 74%/);
+ assert.equal(d['pointer-events'],'none');assert.match(d.background,/var\(--auryn-mobile-glass, var\(--card\)\)/);
  assert.match(d['-webkit-backdrop-filter'],/blur\(22px\)/);
  assert.equal(d['background-clip'],undefined,'The status area is part of the glass surface, not an empty painted stripe');
  assert.equal(d.transform,undefined,'No transformed containing block for the fixed surface');
