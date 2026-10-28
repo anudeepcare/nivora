@@ -7,6 +7,7 @@ import type { Metadata, Viewport } from "next";
 import "./product.css";
 import "./pwa-shell.css";
 import "./mobile-experience.css";
+import "./mobile-final.css";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   verification: {

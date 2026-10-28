@@ -21,12 +21,20 @@ test("mobile shell has a distinct modern surface, safe areas and compact dock ru
   assert.match(css, /overflow-x:\s*hidden/);
 });
 
-test("mobile chrome keeps header controls in one grid and reserves a tidy footer", () => {
+test("mobile chrome keeps a centered header row and reserves a tidy footer", () => {
   const css = fs.readFileSync("app/mobile-experience.css", "utf8");
+  const finalCss = fs.readFileSync("app/mobile-final.css", "utf8");
+  const layout = fs.readFileSync("app/layout.tsx", "utf8");
   assert.match(css, /mobile-header-row/);
   assert.match(css, /mobile-footer-note/);
-  assert.match(css, /grid-template-columns:\s*minmax\(0, 1fr\) auto auto/);
+  assert.match(css, /mobile-header-row\s*\{[\s\S]*display:\s*flex/);
+  assert.match(css, /wordmark\s*\{[\s\S]*left:\s*50%/);
   assert.match(css, /padding-bottom:\s*calc\(\s*92px/);
+  assert.match(layout, /import "\.\/mobile-final\.css"/);
+  assert.match(finalCss, /backdrop-filter:\s*blur/);
+  assert.match(finalCss, /saturate\(/);
+  assert.match(finalCss, /approved-tools-dialog/);
+  assert.match(finalCss, /search-dialog/);
 });
 
 test("shell markup exposes mobile-first semantics without removing desktop navigation", () => {
@@ -42,4 +50,5 @@ test("PWA syncs theme-color and preserves keyboard viewport behavior", () => {
   assert.match(source, /theme-color/);
   assert.match(source, /MutationObserver/);
   assert.match(source, /keyboard-open/);
+  assert.match(source, /registration\.update\(\)/);
 });
