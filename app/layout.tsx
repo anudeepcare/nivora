@@ -6,6 +6,7 @@ import AppSession from "@/components/AppSession";
 import type { Metadata, Viewport } from "next";
 import "./product.css";
 import "./pwa-shell.css";
+import "./mobile-experience.css";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   verification: {

@@ -1,0 +1,159 @@
+/* Mobile-first surface for the authenticated workspace. Legacy styles remain the fallback. */
+.approved-product.workspace-experience {
+  --mobile-header: 64px;
+  --mobile-dock: 72px;
+  overflow-x: hidden;
+}
+.approved-product.workspace-experience .app-top.topbar,
+.approved-product.workspace-experience .phone-dock,
+.approved-product.workspace-experience .search-dialog {
+  -webkit-tap-highlight-color: transparent;
+}
+.approved-product.workspace-experience button,
+.approved-product.workspace-experience a {
+  touch-action: manipulation;
+}
+.approved-product.workspace-experience .phone-dock > a,
+.approved-product.workspace-experience .top-links > *,
+.approved-product.workspace-experience .search-box {
+  min-height: 44px;
+}
+@media (max-width: 760px) {
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  .approved-product.workspace-experience .app-top.topbar {
+    z-index: 30;
+    height: calc(var(--mobile-header) + env(safe-area-inset-top, 0px));
+    min-height: calc(var(--mobile-header) + env(safe-area-inset-top, 0px));
+    padding: env(safe-area-inset-top, 0px) 14px 0;
+    gap: 10px;
+    align-items: center;
+  }
+  .approved-product.workspace-experience .wordmark {
+    flex: 0 0 auto;
+    font-size: 16px;
+    letter-spacing: 0.1em;
+  }
+  .approved-product.workspace-experience button.search-box {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 44px;
+    padding-inline: 11px;
+    border-radius: 14px;
+  }
+  .approved-product.workspace-experience button.search-box span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .approved-product.workspace-experience button.search-box kbd,
+  .approved-product.workspace-experience .header-plans,
+  .approved-product.workspace-experience .top-links > .icon-button:not(.mobile-explore):not([aria-label="Switch color theme"]) {
+    display: none;
+  }
+  .approved-product.workspace-experience .top-links {
+    flex: 0 0 auto;
+    gap: 4px;
+  }
+  .approved-product.workspace-experience .top-links > .icon-button,
+  .approved-product.workspace-experience .top-links > a.avatar {
+    width: 44px;
+    height: 44px;
+  }
+  .approved-product.workspace-experience .side-rail {
+    display: none;
+  }
+  .approved-product.workspace-experience .page-content {
+    width: 100%;
+    padding: 20px 14px calc(var(--mobile-dock) + env(safe-area-inset-bottom, 0px) + 24px);
+  }
+  .approved-product.workspace-experience .phone-dock {
+    position: fixed;
+    z-index: 40;
+    right: 10px;
+    bottom: env(safe-area-inset-bottom, 0px);
+    left: 10px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    min-height: var(--mobile-dock);
+    padding: 7px 6px;
+    border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+    border-radius: 22px;
+    background: color-mix(in srgb, var(--card) 94%, transparent);
+    box-shadow: 0 12px 40px #13284b24;
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+  }
+  .approved-product.workspace-experience .phone-dock > a {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 5px 2px;
+    border-radius: 15px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 650;
+    text-decoration: none;
+  }
+  .approved-product.workspace-experience .phone-dock > a.active {
+    color: var(--blue);
+    background: var(--blue-soft);
+  }
+  .approved-product.workspace-experience .phone-dock svg {
+    width: 20px;
+    height: 20px;
+  }
+  .approved-product.workspace-experience .search-dialog {
+    width: 100%;
+    max-width: none;
+    max-height: min(88dvh, 720px);
+    margin: auto 0 0;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 24px 24px 0 0;
+    overflow: hidden;
+  }
+  .approved-product.workspace-experience .search-dialog::backdrop {
+    background: #101a2e66;
+    backdrop-filter: blur(4px);
+  }
+  .approved-product.workspace-experience .search-dialog .dialog-head {
+    padding: 18px 16px 12px;
+  }
+  .approved-product.workspace-experience .search-dialog > .search {
+    padding: 0 14px calc(14px + env(safe-area-inset-bottom, 0px));
+  }
+  .approved-product.workspace-experience.keyboard-open .phone-dock,
+  html.keyboard-open .approved-product.workspace-experience .phone-dock {
+    transform: translateY(calc(100% + env(safe-area-inset-bottom, 0px) + 12px));
+    pointer-events: none;
+  }
+  .approved-product.workspace-experience .approved-tools-dialog .dialog-tools {
+    grid-template-columns: 1fr;
+    max-height: 64dvh;
+    overflow: auto;
+  }
+}
+@media (min-width: 761px) and (max-width: 1100px) {
+  .approved-product.workspace-experience .app-top.topbar {
+    padding-inline: 20px;
+    gap: 14px;
+  }
+  .approved-product.workspace-experience .page-content {
+    padding-inline: 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .approved-product.workspace-experience .phone-dock {
+    transition: none !important;
+  }
+}
+:root[data-motion="reduce"] .approved-product.workspace-experience .phone-dock {
+  transition: none !important;
+}

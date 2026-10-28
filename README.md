@@ -1,3 +1,11 @@
+# Latest — enterprise valuation foundation, 28 October 2026
+
+The approved enterprise build is now implemented behind a shadow boundary. It adds point-in-time observations and reconciliation, ordered valuation routing, duration-aware rates, treasury-stock dilution, routed methods, deterministic scenarios, reverse DCF, fail-closed quality gates, validation/backtest metrics, portfolio risk, immutable governance records, a bounded valuation API, glass-box explanation surfaces, and a mobile/PWA shell refinement. Existing visible Pace and production decisions are not replaced by the shadow engine.
+
+Local evidence: 857 JavaScript tests, 38 Python valuation tests, TypeScript/Next route typecheck, optimized production build, 45 controlled API checks plus the existing API suites. The Playwright package is available, but its Chromium executable is not installed in this workspace; physical-device, live-provider entitlement, deployment, and investment-outperformance gates remain external. This build does not claim 99.9999% forecast accuracy; that target applies only to deterministic integrity, lineage and reproducibility checks.
+
+See [the model card](docs/model-cards/valuation-v1.md), [valuation API contract](docs/API_VALUATION.md), and [enterprise acceptance report](docs/approved-build/ENTERPRISE_ACCEPTANCE_20261027.md).
+
 # Current candidate — monitoring acceptance hardening
 
 Start with [the acceptance report](docs/approved-build/ENTERPRISE_ACCEPTANCE_20261027.md). This source adds durable per-rule continuation, visible alert coverage and financial-input warnings, consistent P0–P4 notifications, and reserved internal-state protection. The approved layout and Pace zones are preserved. Run `npm run test:acceptance` to reproduce the local release checks.

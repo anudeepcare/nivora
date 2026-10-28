@@ -134,6 +134,7 @@ export default function Shell({
     <div
       className="product approved-product app-layout workspace-experience"
       data-page={page}
+      data-shell="mobile-first"
     >
       <a className="skip" href="#content">
         Skip to content

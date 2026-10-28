@@ -46,3 +46,26 @@ One fresh read-only review found two Important issues and no Critical issues. Bo
 The scheduled account boundary remains deliberately restricted to the configured operator. Independent live financial-feed access and the production hosting team remain external acceptance gates. Local database tests verify the private continuation state, but do not substitute for deployed RLS inspection.
 
 Final local validation: 838/838 tests, TypeScript, optimized production build and all nine controlled API scripts passed. Logs are in `enterprise-validation/`. The connected hosting account also returned an empty team list. No production change was performed.
+# Enterprise valuation foundation — 28 October 2026
+
+The approved build now includes a budget-first, shadow-only valuation engine. It stores append-only point-in-time observations, reconciles shares/price/market cap and corporate actions, routes instruments and business shapes to guarded methods, applies duration-aware rates and precise dilution waterfalls where terms are supplied, and refuses unsupported valuation rather than fabricating a target. Bear/base/bull cases are deterministic sensitivities; Monte Carlo, options IV, alternative data and transcript extraction remain feature-gated until their data and performance are measured.
+
+P0–P4 Pace remains a separate confirmed price-zone signal. The valuation engine cannot turn P1 into Buy, cannot overwrite Pace, and cannot alter the visible production decision because it is connected through `compareShadow` only. Every candidate output includes a trace ID, model version, config hash, source lineage, assumptions, flags and refusal reason. Governance tables are append-only; overrides require a separate proposal/approval record.
+
+## Current local evidence
+
+| Gate | Status | Evidence |
+|---|---|---|
+| JavaScript regression | Passed locally | 857 tests passed |
+| Python valuation engine | Passed locally | 38 tests passed |
+| Database governance | Passed locally | PGlite append-only/RLS migration checks passed |
+| TypeScript/route typecheck | Passed locally | `npm run typecheck` |
+| Optimized production build | Passed locally | `npm run build` |
+| Controlled API suites | Passed locally | `npm run test:api` completed; synthetic transport where labelled |
+| Browser interaction runner | Blocked in this workspace | Playwright package is available, but its Chromium executable is not installed; no new browser binary was downloaded |
+| Live-provider reconciliation | External gate | Entitled current financial feeds and issuer reconciliation require production credentials |
+| Deployed authenticated/device acceptance | External gate | No deployment, physical device, or live account mutation was performed |
+| Forecast/investment performance | Unestablished | Integrity tests do not prove market outperformance |
+
+This is an enterprise-grade local engineering foundation, not a production certification or a claim of 99.9999% forecast accuracy. Before promotion, run the browser/device, live-data, security, model-risk and compliance gates in the target environment.
+
