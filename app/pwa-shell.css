@@ -15,9 +15,11 @@
   z-index: 2147483647;
 }
 @media (max-width: 700px) and (display-mode: standalone) {
-  .pwa-status-surface { display: block; }
+  /* iOS paints the safe-area from the document root. A fixed overlay creates
+     the detached white band seen above the sticky header. */
+  .pwa-status-surface { display: none; }
 }
 /* Legacy iOS standalone detection, populated by the pre-paint root script. */
 @media (max-width: 700px) {
-  :root[data-pwa="true"] .pwa-status-surface { display: block; }
+  :root[data-pwa="true"] .pwa-status-surface { display: none; }
 }

@@ -5,6 +5,13 @@
     /* Inherited by both the fixed status surface and the sticky header. */
     --auryn-mobile-glass: color-mix(in srgb, var(--card) 82%, var(--bg));
   }
+  html,
+  body,
+  #auryn-app {
+    /* iOS samples the root behind the status icons. Keep it identical to the
+       header instead of allowing the base paper color to show through. */
+    background: var(--auryn-mobile-glass);
+  }
   .approved-product.workspace-experience {
     --ios-glass: var(--auryn-mobile-glass);
     --ios-glass-strong: color-mix(in srgb, var(--card) 88%, transparent);

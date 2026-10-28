@@ -19,4 +19,5 @@ test('installed status surface exists before account shell and cannot collapse a
  assert.match(d['-webkit-backdrop-filter'],/blur\(22px\)/);
  assert.equal(d['background-clip'],undefined,'The status area is part of the glass surface, not an empty painted stripe');
  assert.equal(d.transform,undefined,'No transformed containing block for the fixed surface');
+ assert.match(fs.readFileSync(new URL('app/pwa-shell.css',root),'utf8'),/display:\s*none/,'The overlay must not paint a detached iOS strip');
 });
