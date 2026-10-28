@@ -157,6 +157,127 @@
 :root[data-motion="reduce"] .approved-product.workspace-experience .phone-dock {
   transition: none !important;
 }
+
+/* Final iPhone/PWA chrome: one predictable header row, an island dock, and a
+   quiet footer that never competes with the decision surface. */
+@media (max-width: 760px) {
+  .approved-product.workspace-experience .mobile-header-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 8px;
+    height: calc(58px + env(safe-area-inset-top, 0px));
+    min-height: calc(58px + env(safe-area-inset-top, 0px));
+    padding: env(safe-area-inset-top, 0px)
+      max(14px, env(safe-area-inset-right, 0px)) 0
+      max(14px, env(safe-area-inset-left, 0px));
+    background: color-mix(in srgb, var(--card) 92%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--line) 82%, transparent);
+    box-shadow: 0 4px 18px #17345c08;
+  }
+  .approved-product.workspace-experience .mobile-header-row .wordmark {
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    font-size: 16px;
+    line-height: 42px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .approved-product.workspace-experience .mobile-header-row > .search-box,
+  .approved-product.workspace-experience .mobile-header-row .top-links > :is(.mobile-explore, a.avatar) {
+    width: 40px;
+    height: 40px;
+    min-height: 40px;
+    border-radius: 12px;
+  }
+  .approved-product.workspace-experience .mobile-header-row > .search-box {
+    margin: 0;
+    padding: 0;
+    display: inline-grid;
+    place-items: center;
+    border: 1px solid var(--line);
+    background: var(--card);
+  }
+  .approved-product.workspace-experience .mobile-header-row .top-links {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+  }
+  .approved-product.workspace-experience .mobile-header-row .top-links > .mobile-explore,
+  .approved-product.workspace-experience .mobile-header-row .top-links > a.avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid var(--line);
+    background: var(--card);
+  }
+  .approved-product.workspace-experience .mobile-header-row .top-links > a.avatar {
+    border-radius: 12px;
+  }
+  .approved-product.workspace-experience .page-content {
+    padding-top: 18px;
+    padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+  }
+  .approved-product.workspace-experience .phone-dock {
+    left: max(12px, env(safe-area-inset-left, 0px));
+    right: max(12px, env(safe-area-inset-right, 0px));
+    bottom: max(8px, env(safe-area-inset-bottom, 0px));
+    height: 66px;
+    min-height: 66px;
+    padding: 5px;
+    gap: 4px;
+    border: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+    border-radius: 21px;
+    background: color-mix(in srgb, var(--card) 95%, transparent);
+    box-shadow: 0 12px 32px #13284b20;
+  }
+  .approved-product.workspace-experience .phone-dock > a {
+    min-height: 54px;
+    padding: 4px 2px;
+    border-radius: 15px;
+    gap: 2px;
+    font-size: 10px;
+    line-height: 1.1;
+  }
+  .approved-product.workspace-experience .phone-dock svg {
+    width: 20px;
+    height: 20px;
+  }
+  .approved-product.workspace-experience .product-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 14px;
+    padding: 14px 0 4px;
+    font-size: 10px;
+    text-align: center;
+  }
+  .approved-product.workspace-experience .product-footer nav,
+  .approved-product.workspace-experience .product-footer > .help-trigger,
+  .approved-product.workspace-experience .product-footer .mobile-footer-note {
+    display: none;
+  }
+  .approved-product.workspace-experience .search-dialog {
+    width: 100%;
+    max-height: min(86dvh, 720px);
+    border-radius: 24px 24px 0 0;
+  }
+  .approved-product.workspace-experience .search-dialog .dialog-head {
+    min-height: 58px;
+    padding: 15px 16px 10px;
+  }
+  .approved-product.workspace-experience .search-dialog > .search {
+    padding-inline: 14px;
+  }
+  .approved-product.workspace-experience .search-dialog .search-box {
+    min-height: 48px;
+    border-radius: 14px;
+  }
+}
 /* Compact PWA chrome */
 .approved-product.workspace-experience .app-top.topbar { box-sizing: border-box; }
 @media (max-width: 1100px) {

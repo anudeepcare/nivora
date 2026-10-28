@@ -21,11 +21,19 @@ test("mobile shell has a distinct modern surface, safe areas and compact dock ru
   assert.match(css, /overflow-x:\s*hidden/);
 });
 
+test("mobile chrome keeps header controls in one grid and reserves a tidy footer", () => {
+  const css = fs.readFileSync("app/mobile-experience.css", "utf8");
+  assert.match(css, /mobile-header-row/);
+  assert.match(css, /mobile-footer-note/);
+  assert.match(css, /grid-template-columns:\s*minmax\(0, 1fr\) auto auto/);
+  assert.match(css, /padding-bottom:\s*calc\(\s*92px/);
+});
+
 test("shell markup exposes mobile-first semantics without removing desktop navigation", () => {
   const source = fs.readFileSync("components/Shell.tsx", "utf8");
   assert.match(source, /data-shell="mobile-first"/);
   assert.match(source, /aria-label="Mobile navigation"/);
-  assert.match(source, /className="app-top topbar"/);
+  assert.match(source, /className="app-top topbar mobile-header-row"/);
   assert.match(source, /className="side-rail"/);
 });
 

@@ -256,17 +256,27 @@ export default function HomeBriefing({
           </small>
         </span>
       </header>
-      <div className="briefing-system-strip" aria-label="AURYN decision system">
-        <span className="briefing-system-label">AURYN DECISION SYSTEM</span>
-        <span>Business</span>
-        <b aria-hidden="true">→</b>
-        <span>Value</span>
-        <b aria-hidden="true">→</b>
-        <span>Risk</span>
-        <b aria-hidden="true">→</b>
-        <span>Pace</span>
-        <small>Then decide what deserves your attention.</small>
-      </div>
+      <section className="home-command-bar" aria-label="AURYN daily command center">
+        <div className="home-command-copy">
+          <span className="briefing-system-label">YOUR AURYN BRIEF</span>
+          <strong>Business → Value → Risk → Pace</strong>
+          <small>One connected view for what deserves your attention next.</small>
+        </div>
+        <div className="home-command-metrics" aria-label="Workspace summary">
+          <Link href={`${prefix}/watchlist`}>
+            <strong>{ordered.length}</strong>
+            <span>companies</span>
+          </Link>
+          <Link href="#home-upcoming">
+            <strong>{eventRows.length || "—"}</strong>
+            <span>next events</span>
+          </Link>
+          <Link href="#home-company-headlines">
+            <strong>{allHeadlines.length || "—"}</strong>
+            <span>updates</span>
+          </Link>
+        </div>
+      </section>
       {composition === "first-use" && workspace ? (
         <>
           <section className="briefing-welcome">

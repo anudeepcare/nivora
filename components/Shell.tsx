@@ -169,7 +169,7 @@ export default function Shell({
         </div>
       </aside>
       <div className="app-workspace">
-        <header className="app-top topbar">
+        <header className="app-top topbar mobile-header-row">
           <Link className="wordmark" href={`${prefix}/overview`}>
             AURYN{" "}
             <span>

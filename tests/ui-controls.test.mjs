@@ -734,7 +734,10 @@ test("the single settings page preserves account, membership and help", () => {
     ArrowUpRight: empty,
     ArrowLeft: empty,
     ChevronRight: empty,
+    Layers3: empty,
+    Scale: empty,
     ShieldCheck: empty,
+    ChartNoAxesCombined: empty,
     Bell: empty,
     LogOut: empty,
     PageHeading: empty,
@@ -2035,6 +2038,7 @@ test("Home has a compact evidence pulse without a large decorative hero", async 
   assert.doesNotMatch(html, /class="briefing-hero"/);
   assert.match(html, /Your next idea starts with understanding/);
   assert.match(html, /Business.*Value.*Risk.*Pace/);
+  assert.match(html, /YOUR AURYN BRIEF/);
 });
 test("stock header surfaces reported growth and cash generation before extra price momentum", async () => {
   const { advancedStudies } = await import("../lib/advanced-research.ts");

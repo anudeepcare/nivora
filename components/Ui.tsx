@@ -293,6 +293,7 @@ export function ProductFooter() {
   return (
     <footer className="product-footer">
       <span>© {new Date().getFullYear()} AURYN. All rights reserved.</span>
+      <span className="mobile-footer-note">Help and legal links are available in Settings.</span>
       <nav aria-label="Help and legal">
         <Link href="/help">Help</Link>
         <Link href="/contact">Contact</Link>

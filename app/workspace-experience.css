@@ -1220,6 +1220,63 @@
   font-size: 12px;
   font-weight: 700;
 }
+.workspace-experience .home-command-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 22px;
+  padding: 15px 18px;
+  margin: -8px 0 18px;
+  border: 1px solid color-mix(in srgb, var(--blue) 18%, var(--line));
+  border-radius: 17px;
+  background: linear-gradient(105deg, color-mix(in srgb, var(--blue-soft) 90%, var(--card)), color-mix(in srgb, var(--workspace-violet) 8%, var(--card)));
+  box-shadow: 0 8px 22px #273e8b0b;
+}
+.workspace-experience .home-command-copy {
+  min-width: 0;
+}
+.workspace-experience .home-command-copy .briefing-system-label {
+  display: block;
+  margin-bottom: 4px;
+}
+.workspace-experience .home-command-copy strong {
+  display: block;
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.35;
+}
+.workspace-experience .home-command-copy small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.workspace-experience .home-command-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(74px, 1fr));
+  gap: 8px;
+}
+.workspace-experience .home-command-metrics a {
+  display: grid;
+  min-width: 82px;
+  padding: 8px 10px;
+  border: 1px solid color-mix(in srgb, var(--blue) 12%, var(--line));
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--card) 78%, transparent);
+  text-align: center;
+}
+.workspace-experience .home-command-metrics strong {
+  color: var(--blue);
+  font-size: 18px;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.workspace-experience .home-command-metrics span {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 10px;
+}
 .workspace-experience .briefing-system-label {
   margin-right: 5px;
   color: var(--blue);
@@ -1237,9 +1294,9 @@
   font-weight: 500;
 }
 .workspace-experience .settings-method-card {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
   gap: 18px;
   padding: 16px 18px;
   margin: -4px 0 18px;
@@ -1272,6 +1329,43 @@
 .workspace-experience .settings-method-card > .text-link {
   flex: 0 0 auto;
 }
+.workspace-experience .settings-method-lenses {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-column: 1 / -1;
+  gap: 8px;
+  margin-top: 13px;
+}
+.workspace-experience .settings-method-lenses > span {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 6px;
+  padding: 8px 9px;
+  border-radius: 10px;
+  background: var(--blue-soft);
+  color: var(--blue);
+}
+.workspace-experience .settings-method-lenses > span:nth-child(2) {
+  background: color-mix(in srgb, var(--workspace-violet) 10%, var(--card));
+  color: var(--workspace-violet);
+}
+.workspace-experience .settings-method-lenses > span:nth-child(3) {
+  background: color-mix(in srgb, var(--amber, #b7791f) 10%, var(--card));
+  color: var(--amber, #9a650e);
+}
+.workspace-experience .settings-method-lenses > span:nth-child(4) {
+  background: color-mix(in srgb, var(--dca) 10%, var(--card));
+  color: var(--dca);
+}
+.workspace-experience .settings-method-lenses b {
+  font-size: 12px;
+}
+.workspace-experience .settings-method-lenses small {
+  grid-column: 2;
+  color: var(--muted);
+  font-size: 10px;
+}
 @media (max-width: 700px) {
   .workspace-experience .briefing-system-strip {
     gap: 6px;
@@ -1287,7 +1381,21 @@
   }
   .workspace-experience .settings-method-card {
     align-items: flex-start;
-    flex-direction: column;
+    grid-template-columns: 1fr;
     gap: 12px;
+  }
+  .workspace-experience .home-command-bar {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .workspace-experience .home-command-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .workspace-experience .home-command-metrics a {
+    min-width: 0;
+  }
+  .workspace-experience .settings-method-lenses {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
   }
 }

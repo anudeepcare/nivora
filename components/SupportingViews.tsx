@@ -18,7 +18,10 @@ import Link from "next/link";
 import {
   ArrowUpRight,
   Bell,
+  ChartNoAxesCombined,
   FlaskConical,
+  Layers3,
+  Scale,
   ShieldCheck,
   RefreshCw,
   ArrowLeft,
@@ -173,6 +176,12 @@ export function Settings() {
         <Link href="/methodology" className="text-link">
           See the approach <ArrowUpRight size={16} />
         </Link>
+        <div className="settings-method-lenses" aria-label="AURYN lenses">
+          <span data-tone="business"><Layers3 size={15} /><b>Business</b><small>Durability</small></span>
+          <span data-tone="value"><Scale size={15} /><b>Value</b><small>Assumptions</small></span>
+          <span data-tone="risk"><ShieldCheck size={15} /><b>Risk</b><small>Breaks</small></span>
+          <span data-tone="pace"><ChartNoAxesCombined size={15} /><b>Pace</b><small>Timing</small></span>
+        </div>
       </section>
       <div className="workspace-settings-groups">
         <details className="workspace-setting-group">

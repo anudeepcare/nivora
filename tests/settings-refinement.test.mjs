@@ -176,6 +176,9 @@ function settings(demo, overrides = {}) {
     LogOut: empty,
     ShieldCheck: empty,
     Bell: empty,
+    Layers3: empty,
+    Scale: empty,
+    ChartNoAxesCombined: empty,
     Notice: empty,
     ...navigation,
     ...overrides,
@@ -370,4 +373,5 @@ test("Settings presents compact groups on one page without duplicate account sum
     "The shared footer already supplies legal links",
   );
   assert.match(textNodes(tree).join(" "), /AURYN decision system/i);
+  assert.match(textNodes(tree).join(" "), /Business.*Value.*Risk.*Pace/);
 });
