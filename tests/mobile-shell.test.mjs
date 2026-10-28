@@ -33,6 +33,8 @@ test("mobile chrome keeps a brand-led glass header and reserves a tidy footer", 
   assert.match(finalCss, /mobile-header-row \.wordmark[\s\S]*position:\s*static/);
   assert.match(finalCss, /wordmark-label[\s\S]*display:\s*inline/);
   assert.match(finalCss, /Price alerts/);
+  assert.match(finalCss, /top-links > \.mobile-explore[\s\S]*display:\s*inline-flex/);
+  assert.match(finalCss, /top-links > \.header-plans[\s\S]*display:\s*none/);
   assert.match(css, /padding-bottom:\s*calc\(\s*92px/);
   assert.match(layout, /import "\.\/mobile-final\.css"/);
   assert.match(finalCss, /backdrop-filter:\s*blur/);
@@ -61,4 +63,9 @@ test("PWA syncs theme-color and preserves keyboard viewport behavior", () => {
   assert.match(source, /MutationObserver/);
   assert.match(source, /keyboard-open/);
   assert.match(source, /registration\.update\(\)/);
+});
+
+test("Pace guidance keeps gated Review labels mapped to the business gate", () => {
+  const source = fs.readFileSync("components/PaceGuidance.tsx", "utf8");
+  assert.match(source, /view\.actionLabel\.startsWith\("Review"\)/);
 });

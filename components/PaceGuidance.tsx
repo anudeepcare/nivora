@@ -18,7 +18,7 @@ export default function PaceGuidance({
     ? view.actionLabel.startsWith("Add")
       ? "Add"
       : "Buy"
-    : view.actionLabel === "Review"
+    : view.actionLabel.startsWith("Review")
       ? "Review"
       : view.actionLabel === "Reduce"
         ? "Reduce"

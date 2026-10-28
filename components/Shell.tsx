@@ -199,11 +199,11 @@ export default function Shell({
           <div className="top-links">
             <button
               className="icon-button mobile-explore"
-              aria-label="Explore tools"
+              aria-label="More workspace actions"
               aria-haspopup="dialog"
               onClick={() => tools.current?.showModal()}
             >
-              <LayoutGrid size={20} />
+              <span className="mobile-more-glyph" aria-hidden="true">•••</span>
             </button>
             <Link
               href={`${prefix}/plans`}
@@ -309,6 +309,18 @@ export default function Shell({
               label: "Settings",
               detail: "Account and preferences",
               icon: Settings,
+            },
+            {
+              path: "plans",
+              label: "Plans",
+              detail: "Membership and access",
+              icon: Scale,
+            },
+            {
+              path: "alerts",
+              label: "Price alerts",
+              detail: "Review your saved alerts",
+              icon: Bell,
             },
           ]
             .filter(

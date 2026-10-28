@@ -120,6 +120,21 @@
   }
   .approved-product.workspace-experience .mobile-header-row .top-links > .mobile-explore,
   .approved-product.workspace-experience .mobile-header-row .top-links > .icon-button[aria-label="Switch color theme"] {
+    display: inline-flex !important;
+  }
+  .approved-product.workspace-experience .mobile-header-row .top-links > .mobile-explore {
+    color: var(--muted);
+  }
+  .approved-product.workspace-experience .mobile-more-glyph {
+    display: inline-block;
+    transform: translateY(-3px);
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+  .approved-product.workspace-experience .mobile-header-row .top-links > .header-plans,
+  .approved-product.workspace-experience .mobile-header-row .top-links > [aria-label="Price alerts"] {
     display: none !important;
   }
   .approved-product.workspace-experience .mobile-header-row .top-links > .header-plans {
@@ -282,7 +297,7 @@
     height: 28px;
   }
   .approved-product.workspace-experience .mobile-header-row > .search-box,
-  .approved-product.workspace-experience .mobile-header-row .top-links > :is(a.avatar, [aria-label="Price alerts"]) {
+  .approved-product.workspace-experience .mobile-header-row .top-links > :is(.mobile-explore, a.avatar) {
     width: 36px;
     height: 36px;
     min-height: 36px;
@@ -294,6 +309,37 @@
   .approved-product.workspace-experience .mobile-header-row .top-links > .header-plans {
     padding-inline: 8px;
     font-size: 13px;
+  }
+}
+@media (max-width: 760px) and (prefers-reduced-motion: no-preference) {
+  .approved-product.workspace-experience :is(a, button, .card, .pace-feature, .home-next-step) {
+    transition:
+      transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      box-shadow 180ms ease,
+      background-color 180ms ease,
+      border-color 180ms ease,
+      opacity 180ms ease;
+  }
+  .approved-product.workspace-experience :is(a, button) {
+    touch-action: manipulation;
+  }
+  .approved-product.workspace-experience .mobile-header-row :is(a, button):active,
+  .approved-product.workspace-experience .phone-dock a:active {
+    transform: scale(0.965);
+  }
+  .approved-product.workspace-experience .search-dialog[open],
+  .approved-product.workspace-experience .approved-tools-dialog[open] {
+    animation: auryn-mobile-sheet-in 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+}
+@keyframes auryn-mobile-sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 @media (max-width: 760px) {
