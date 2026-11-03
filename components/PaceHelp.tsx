@@ -7,7 +7,12 @@ import {
 import { Help } from "./Ui";
 export default function PaceHelp({ trigger }: { trigger?: string }) {
   return (
-    <Help label="AURYN Pace · what P means" trigger={trigger}>
+    <Help label="How AURYN Pace works" trigger={trigger}>
+      <p>Pace combines a monthly price zone with business and data checks to guide gradual contributions.</p>
+      <p><strong>Read the action first.</strong> A contribution guide appears when those checks support adding. 2× means twice your usual contribution, within your cash and position limits.</p>
+      <p><strong>When it changes:</strong> confirmed price readings use completed periods. The developing reading can move during the current period. New financial evidence can change the business assessment.</p>
+      <details>
+      <summary>Technical levels and contribution rules</summary>
       <p>{PACE_EXPLANATION}</p>
       <dl className="pace-help-levels">
         {PACE_LEVELS.map((label, level) => (
@@ -41,6 +46,7 @@ export default function PaceHelp({ trigger }: { trigger?: string }) {
         a $100 plan at P3 means $200. Never exceed your cash budget, position
         limit or concentration limit.
       </p>
+      </details>
     </Help>
   );
 }

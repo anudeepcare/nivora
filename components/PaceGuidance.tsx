@@ -37,39 +37,33 @@ export default function PaceGuidance({
   );
   return (
     <div className={`pace-guidance${compact ? " pace-guidance-compact" : ""}`}>
-      {available && <PaceReadings readings={readings} compact={compact} />}
-      {available && !compact && (
-        <small className="pace-reading-note">
-          Accumulation pace · forming can change; confirmed uses the completed
-          period.
-        </small>
-      )}
-      {!compact && confirmed?.level != null && confirmed.reason && (
-        <p className="pace-reading-reason">
-          <b>Why {confirmed.code} confirmed</b>
-          {confirmed.reason}
-        </p>
-      )}
       <div className="pace-action">
         <span className="pace-assessment-label">Your next step</span>
-        <strong>{view.actionLabel}</strong>
-        {view.effectiveCode && (
-          <span className="pace-effective">{view.effectiveCode}</span>
-        )}
+        <strong>{view.actionLabel.replace(/ · P[0-4]$/, "")}</strong>
       </div>
       {!compact && (
         <div className="pace-contribution-guide">
           <span>Contribution guide</span>
-          <strong>{guide.label}</strong>
+          <strong>{guide.multiple > 0 ? guide.label : contributionAction === "Review" ? "Check business evidence" : ["Reduce", "Sell", "Avoid"].includes(contributionAction) ? "New contributions paused" : "Wait before adding"}</strong>
           <small>
-            {guide.meaning}{" "}
             {guide.multiple === 0
-              ? "No scheduled amount is assigned until the entry conditions qualify."
-              : `If your plan is $100, this means $${100 * guide.multiple}.`}
+              ? "See the assessment for the reason."
+              : `${guide.multiple === 4 ? "Up to " : ""}$${100 * guide.multiple} for a usual $100 contribution, within your available cash and position limit.`}
           </small>
         </div>
       )}
-      {!compact && <p className="pace-context">{view.detail}</p>}
+      {confirmed?.level != null && (
+        <small className="pace-reading-note">Confirmed{confirmed.date ? ` · ${confirmed.date}` : ""} · completed period</small>
+      )}
+      {!compact && available && (
+        <details className="pace-explanation">
+          <summary>Why this Pace?</summary>
+          <p className="pace-context">{view.detail}</p>
+          {confirmed?.reason && <p className="pace-reading-reason">{confirmed.reason}</p>}
+          <PaceReadings readings={readings} compact={compact} />
+          <small className="pace-reading-note">The developing reading can change. The completed-period reading guides the assessment.</small>
+        </details>
+      )}
       {!available && (
         <small className="pace-history-note">
           The accumulation zone needs more completed price history. Business and

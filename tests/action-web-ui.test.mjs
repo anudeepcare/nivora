@@ -59,29 +59,27 @@ const show = (action, confirmed, forming) =>
       }),
     }),
   );
-test("Pace exposes both periods without a click and applies only the confirmed level", () => {
+test("Pace leads with confirmed action and keeps both technical periods in details", () => {
   const html = show("Buy", 2, 4);
   assert.match(html, /Buy small/);
-  assert.match(html, /pace-effective">P2/);
   const visible = html.replace(/<details[\s\S]*?<\/details>/g, "");
-  assert.match(visible, /P4/);
-  assert.match(visible, /P2/);
-  assert.match(visible, /forming/);
-  assert.match(visible, /confirmed/);
-  assert.match(visible, /Deep zone/);
-  assert.match(visible, /Initial zone/);
+  assert.doesNotMatch(visible, /P4|P2/);
+  assert.match(visible, /Confirmed/);
+  assert.match(html, /Deep zone/);
+  assert.match(html, /Initial zone/);
   assert.match(visible, /2026-09-30/);
-  assert.match(visible, /2026-10-26/);
+  assert.match(html, /2026-10-26/);
   assert.match(html, /1× your planned contribution/);
-  assert.match(html, /If your plan is \$100, this means \$100/);
+  assert.match(html, /\$100 for a usual \$100 contribution/);
 });
 test("hold and risk actions keep the price Pace visible without authorising additions", () => {
   for (const action of ["Hold", "Wait", "Review", "Reduce", "Sell", "Avoid"]) {
     const html = show(action, 4, 2);
     assert.doesNotMatch(html, /pace-effective/);
     const visible = html.replace(/<details[\s\S]*?<\/details>/g, "");
-    assert.match(visible, /P4/);
-    assert.match(visible, /P2/);
+    assert.doesNotMatch(visible, /[124]× your planned contribution/);
+    assert.match(html, /P4/);
+    assert.match(html, /P2/);
     assert.match(html, new RegExp(action));
   }
 });
