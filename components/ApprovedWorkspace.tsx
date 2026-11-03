@@ -510,6 +510,7 @@ function HomeOverview() {
         }
       />
       {state.workspaceError && <Notice error>{state.workspaceError}</Notice>}
+      {!!workspace?.positions.length && <WealthStrip state={state} />}
       <section className="home-next-step" aria-label="Your next step">
         <div className="home-next-copy">
           <span className="eyebrow">{brief.kicker}</span>
@@ -537,13 +538,13 @@ function HomeOverview() {
             </div>
           )}
           {!!brief.checkpoints.length && (
-            <div
+            <details
               className="home-milestones"
               aria-label="Upcoming milestones"
             >
-              <span className="home-milestones-label">
-                UPCOMING MILESTONES · NEXT 7 DAYS
-              </span>
+              <summary className="home-milestones-label">
+                Upcoming milestones · {brief.checkpoints.length} checkpoints
+              </summary>
               {brief.checkpoints.slice(0, 3).map((event, index) => (
                 <Link
                   href={researchLink(event.symbol, prefix)}
@@ -561,7 +562,7 @@ function HomeOverview() {
                   <ArrowUpRight size={16} aria-hidden="true" />
                 </Link>
               ))}
-            </div>
+            </details>
           )}
         </div>
         <Link className="btn primary" href={briefHref}>
@@ -577,7 +578,6 @@ function HomeOverview() {
                 : `${brief.status}${feed.data?.retrievedAt ? ` Checked ${quoteTime(feed.data.retrievedAt)}.` : ""}`}
         </p>
       </section>
-      {!!workspace?.positions.length && <WealthStrip state={state} />}
       <Coverage state={state} />
       <div className="home-evidence-layout">
         <section

@@ -25,7 +25,6 @@ import { Help } from "./Ui";
 import MovementContext from "./MovementContext";
 import ResearchChanges from "./ResearchChanges";
 import PaceHelp from "./PaceHelp";
-import { paceCode } from "@/lib/pace-presentation";
 
 type Props = {
   research: Research;
@@ -126,6 +125,7 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
     ["Ownership", evidence.ownership],
   ] as const;
   const pace = edge.pacePresentation;
+  const plainAction = (label: string) => label.replace(/\s*·\s*P[0-4]$/, "");
   return (
     <div className="approved-research decision-experience">
       <section
@@ -143,16 +143,7 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
             <div>
               <span className="decision-context">{d.contextLabel}</span>
               <div className="decision-title-with-pace">
-                <h2 id="auryn-decision-title">{d.actionLabel}</h2>
-                {pace.rawLevel != null && (
-                  <span
-                    className="decision-pace-badge"
-                    aria-label={`Confirmed AURYN Pace ${pace.code}`}
-                  >
-                    {pace.code}
-                    <small>confirmed</small>
-                  </span>
-                )}
+                <h2 id="auryn-decision-title">{plainAction(d.actionLabel)}</h2>
               </div>
             </div>
             <span className="decision-confidence">
@@ -163,20 +154,20 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
           <p className="decision-headline">{d.headline}</p>
           <div className="decision-context-pair">
             <span>
-              New purchase <strong>{d.actionLabels.entry}</strong>
+              New purchase <strong>{plainAction(d.actionLabels.entry)}</strong>
             </span>
             <span>
               {owns ? "Your holding" : "Already holding?"}{" "}
-              <strong>{d.actionLabels.holding}</strong>
+              <strong>{plainAction(d.actionLabels.holding)}</strong>
             </span>
           </div>
-          <div
+          <details
             className="decision-explanation"
             data-reason={d.explanation.code}
           >
-            <strong>{d.explanation.label}</strong>
+            <summary>{d.explanation.label} · View evidence</summary>
             <p>{d.explanation.detail}</p>
-          </div>
+          </details>
           <ul className="decision-reasons">
             {d.reasons.slice(0, 3).map((reason) => (
               <li key={reason}>

@@ -358,11 +358,12 @@ export default function TechnicalDashboard({
                 ? "Pullbacks measured down from high."
                 : "Rebounds measured up from low."}
             </p>
-            <div className="technical-level-grid">
+            <div className="technical-level-grid fib-reference-grid">
               {a.fib.levels.map((l) => (
-                <div key={l.ratio}>
-                  <span>Fib {l.ratio.toFixed(3)}</span>
+                <div key={l.ratio} data-position={last && l.price < last ? "below" : "above"}>
+                  <span>{(l.ratio * 100).toFixed(1)}% retracement</span>
                   <strong>{m(l.price)}</strong>
+                  <small>{last ? `${percent((l.price / last - 1) * 100)} from last completed close` : "Price distance unavailable"}</small>
                 </div>
               ))}
             </div>

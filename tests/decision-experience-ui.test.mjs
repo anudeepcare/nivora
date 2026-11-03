@@ -76,7 +76,8 @@ test("Research places an actual decision and Pace before expandable supporting m
   const r = demoData.research.MSFT,
     html = render(r);
   assert.match(html, /id="auryn-decision-title"/);
-  assert.match(html, /aria-label="Confirmed AURYN Pace P1"/);
+  assert.doesNotMatch(html, /<h2 id="auryn-decision-title">[^<]*P[0-4]/);
+  assert.match(html, /<details class="decision-explanation"/);
   assert.ok(
     html.indexOf("AURYN PACE") <
       html.indexOf("The details behind the decision"),

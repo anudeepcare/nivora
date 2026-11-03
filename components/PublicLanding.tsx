@@ -39,12 +39,12 @@ export function PublicSample({ compact = false }: { compact?: boolean } = {}) {
         <span className="ap-product-symbol">
           <Layers3 size={19} aria-hidden="true" />
         </span>
-        <strong>Your research, connected</strong>
+        <strong>One company. Three questions.</strong>
         <span className="ap-guide-label">Illustrative product guide</span>
       </header>
       <div className="ap-decision-preview">
         <div className="ap-preview-eyebrow">THE DECISION + THE REASONS</div>
-        <h2>A next move you can explain.</h2>
+        <h2>Business. Price. Your pace.</h2>
         <p
           className="ap-decision-views"
           aria-label="Possible decisions, depending on company evidence"
@@ -69,7 +69,7 @@ export function PublicSample({ compact = false }: { compact?: boolean } = {}) {
             <ChartNoAxesCombined size={15} aria-hidden="true" /> Pace
           </span>
         </div>
-        <p>Business first. A clear action, with reasons and cautions.</p>
+        <p>Understand what supports the business—and what could change the case.</p>
       </div>
       <section
         className="ap-pace-preview"
@@ -96,7 +96,7 @@ export function PublicSample({ compact = false }: { compact?: boolean } = {}) {
               <span aria-hidden="true">
                 <i />
               </span>
-              <strong>P{level}</strong>
+              <strong>{["Pause", "Watch", "Initial", "Deeper", "Deep"][level]}</strong>
             </div>
           ))}
         </div>
@@ -114,9 +114,9 @@ export function PublicSample({ compact = false }: { compact?: boolean } = {}) {
           </span>
         </div>
         <small>
-          P4 marks a deep price zone, not a company-quality rating. These are
-          zones, not predicted returns. Accumulate only when the business
-          qualifies.
+          A deeper price zone is only one part of the picture. Business risks
+          and data gaps can still pause a contribution.
+          These are price zones, not predicted returns.
         </small>
       </section>
       {!compact && (
@@ -306,13 +306,13 @@ export default function PublicLanding({
               <span className="ap-eyebrow-mark" /> INVEST WITH UNDERSTANDING
             </span>
             <h1 id="ap-hero-heading">
-              <span>Know the stock.</span>
-              <em>Know your next move.</em>
+              <span>See the business.</span>
+              <em>Find your pace.</em>
             </h1>
             <p>
-              Understand the business, test value and risk, then choose a
-              measured pace for your next contribution. AURYN keeps the
-              evidence and the decision together.
+              Company fundamentals, valuation scenarios and a clear monthly
+              contribution guide. Understand the opportunity, the risks and
+              what to watch next—all in one place.
             </p>
             <div className="ap-hero-actions">
               <Link
