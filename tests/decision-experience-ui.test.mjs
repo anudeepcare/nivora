@@ -46,6 +46,7 @@ function render(r, positions = []) {
     approvedResearch,
     paceCode,
     PaceHelp: () => null,
+    AnalystTargets: () => React.createElement("section", { "aria-label": "Analyst price targets" }, "Analyst coverage"),
     PaceGuidance: ({ view }) =>
       React.createElement("div", null, view.actionLabel, view.effectiveCode),
     PaceReadings: () => null,

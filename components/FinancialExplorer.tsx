@@ -110,6 +110,7 @@ export default function FinancialExplorer({
   return (
     <section
       className="financial-explorer depth-explorer"
+      data-metric-group={catalog.find((m) => m.key === chosen)?.group}
       aria-label="Financial chart explorer"
     >
       <header className="section-head">
@@ -156,7 +157,7 @@ export default function FinancialExplorer({
         </div>
       </header>
       <label className="explorer-mobile-picker">
-        Metric
+        Explore all financial metrics
         <select
           aria-label="Financial chart metric"
           value={chosen}

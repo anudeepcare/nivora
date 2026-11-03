@@ -40,7 +40,7 @@ import DecisionWorkspace from "./DecisionWorkspace";
 import DecisionWatch from "./DecisionWatch";
 import { useMemo, useState, useRef, useLayoutEffect, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { Bookmark, RefreshCw, X } from "lucide-react";
+import { Bookmark, RefreshCw, LayoutDashboard, Building2, Scale, ChartCandlestick, Users, Newspaper, SlidersHorizontal, Layers, BriefcaseBusiness, LineChart } from "lucide-react";
 import type {
   Research as ResearchData,
   Candle,
@@ -53,7 +53,7 @@ import { KeyFinancialMetrics, CaseHighlights } from "./ResearchOverview";
 import { amount, percent, dateLabel, quoteTime } from "@/lib/format";
 import { useProduct, useResource } from "./Session";
 import { SecurityLogo, Help, Notice, Empty, DataStamp } from "./Ui";
-import { PriceChart } from "./Charts";
+import PriceStudyChart from "./PriceStudyChart";
 import Financials from "./FinancialPicture";
 import { TechnicalPicture, ThesisPicture } from "./ResearchDetails";
 import { groupHistory } from "@/lib/chart-period";
@@ -81,7 +81,18 @@ const tabs = [
   "Advanced",
   "Options",
 ] as const;
-const ranges = ["1D", "1W", "1M", "6M", "1Y", "5Y"] as const;
+const ranges = ["1D", "1W", "1M", "3M", "6M", "YTD", "1Y", "5Y", "ALL"] as const;
+const tabPresentation = {
+  Snapshot: { label: "Overview", icon: LayoutDashboard },
+  Financials: { label: "Business", icon: Building2 },
+  Valuation: { label: "Valuation", icon: Scale },
+  Technicals: { label: "Technicals", icon: ChartCandlestick },
+  Analysts: { label: "Analysts", icon: Users },
+  Options: { label: "Options", icon: Layers },
+  Thesis: { label: "Case & ownership", icon: BriefcaseBusiness },
+  News: { label: "News & earnings", icon: Newspaper },
+  Advanced: { label: "Advanced", icon: SlidersHorizontal },
+};
 export default function Research({ symbol }: { symbol: string }) {
   const { access } = useAccess();
   const { preferences } = useResearchPreferences();
@@ -178,16 +189,16 @@ export default function Research({ symbol }: { symbol: string }) {
       : [],
   );
   const [workbenchTarget, setWorkbenchTarget] = useState("risk");
-  const evidenceDialog = useRef<HTMLDialogElement>(null);
+  const researchNavigation = useRef<HTMLElement>(null);
   const switchTab = (next: (typeof tabs)[number]) => {
     if (next === "Technicals")
       setRetainedCharts((old) => (old.includes(next) ? old : [...old, next]));
     setTab(next);
+    const url = new URL(window.location.href);
+    url.searchParams.set("tab", next);
+    window.history.replaceState(null, "", url);
+    requestAnimationFrame(() => researchNavigation.current?.scrollIntoView({ block: "start", behavior: "instant" }));
   };
-  useEffect(() => {
-    if (tab !== "Snapshot") evidenceDialog.current?.showModal();
-    else evidenceDialog.current?.close();
-  }, [tab, !!r]);
   const intraday = range === "1D" || range === "1W";
   const demoShort = useMemo(
     () => (demo && r ? { candles: rangeBars(r.history, range) } : undefined),
@@ -289,7 +300,7 @@ export default function Research({ symbol }: { symbol: string }) {
   const chart = (
     <section className="plot-section">
       <header className="row between chart-head">
-        <h3>Price</h3>
+        <h3><LineChart size={18} aria-hidden="true" /> Price history</h3>
         <div className="ranges" aria-label="Chart period">
           {ranges.map((x) => (
             <button
@@ -306,7 +317,9 @@ export default function Research({ symbol }: { symbol: string }) {
         </div>
       </header>
       {bars.length ? (
-        <PriceChart
+        <PriceStudyChart
+          research={r}
+          onOptions={crypto ? undefined : () => switchTab("Options")}
           bars={chartBars}
           range={frequency === "Daily" ? range : `${range} ${frequency}`}
           style={style}
@@ -334,13 +347,13 @@ export default function Research({ symbol }: { symbol: string }) {
             aria-pressed={style === "line"}
             onClick={() => setStyle("line")}
           >
-            Line
+            <LineChart size={15} aria-hidden="true" /> Line
           </button>
           <button
             aria-pressed={style === "candles"}
             onClick={() => setStyle("candles")}
           >
-            Candles
+            <ChartCandlestick size={15} aria-hidden="true" /> Candles
           </button>
         </div>
       </div>
@@ -449,54 +462,18 @@ export default function Research({ symbol }: { symbol: string }) {
           </button>
         </div>
       )}
-      <FeatureGate feature="overview" fallback={<FreeSnapshot research={r} />}>
-        <DecisionOverview
-          key={r.company.symbol}
-          research={r}
-          onTab={switchTab}
-          chart={chart}
-        />
-      </FeatureGate>
-      <dialog
-        ref={evidenceDialog}
-        className="approved-evidence-drawer"
-        aria-labelledby="approved-evidence-title"
-        onClose={(event) => {
-          if (event.target === event.currentTarget) setTab("Snapshot");
-        }}
-        onClick={(e) => {
-          if (e.target === e.currentTarget) e.currentTarget.close();
-        }}
-      >
-        <header className="dialog-head">
-          <div>
-            <span className="eyebrow">
-              {r.company.symbol} · RESEARCH EVIDENCE
-            </span>
-            <h2 id="approved-evidence-title">
-              {
-                {
-                  Thesis: "Business & ownership",
-                  Financials: "Financials",
-                  Valuation: "Value",
-                  Technicals: "Price & Pace",
-                  Analysts: "Analysts",
-                  News: "News & earnings",
-                  Advanced: "Advanced research",
-                  Options: "Options & LEAPS",
-                  Snapshot: "Research",
-                }[tab]
-              }
-            </h2>
-          </div>
-          <button
-            className="icon-button"
-            aria-label="Close research evidence"
-            onClick={() => evidenceDialog.current?.close()}
-          >
-            <X size={22} />
-          </button>
-        </header>
+      <nav className="signal-research-nav" aria-label="Research sections" ref={researchNavigation}>
+        {(["Snapshot", "Financials", "Valuation", "Technicals", "Analysts", "Options", "Thesis", "News", "Advanced"] as const).filter((key) => visible.includes(key)).map((key) => {
+          const { label, icon: Icon } = tabPresentation[key];
+          return <button key={key} aria-current={tab === key ? "page" : undefined} aria-controls={key === "Snapshot" ? "research-overview" : "research-content"} onClick={() => switchTab(key)}><Icon size={18} strokeWidth={1.75} aria-hidden="true" /><span>{label}</span></button>;
+        })}
+      </nav>
+      <div id="research-overview" hidden={tab !== "Snapshot"}>
+        <FeatureGate feature="overview" fallback={<FreeSnapshot research={r} />}>
+          <DecisionOverview key={r.company.symbol} research={r} onTab={switchTab} chart={chart} />
+        </FeatureGate>
+      </div>
+      <section className="signal-research-panel" hidden={tab === "Snapshot"} aria-label={tabPresentation[tab].label}>
         <div id="research-content" className="approved-evidence-body au-stack">
           <FeatureGate
             feature={
@@ -544,7 +521,9 @@ export default function Research({ symbol }: { symbol: string }) {
             {tab === "Analysts" && <AnalystRatings research={r} />}
             {tab === "Financials" && (
               <>
+                <div className="signal-business-intro"><span className="eyebrow">BUSINESS AT A GLANCE</span><h2>How the business is performing</h2><p>Follow growth, profitability and cash generation. Compare reporting periods, then inspect the statements behind the numbers.</p></div>
                 <Financials research={r} />
+                <BusinessHistory research={r} />
                 <FinancingContext research={r} />
               </>
             )}
@@ -626,7 +605,7 @@ export default function Research({ symbol }: { symbol: string }) {
                 <BusinessHistory research={r} />
                 <ThesisPicture research={r} />
                 <BusinessMap key={r.company.symbol} research={r} />
-                <details className="edge-method">
+                <details className="edge-method" open>
                   <summary>Detailed evidence lenses and thresholds</summary>
                   <DecisionWorkspace
                     research={r}
@@ -639,7 +618,7 @@ export default function Research({ symbol }: { symbol: string }) {
             )}
           </FeatureGate>
         </div>
-      </dialog>
+      </section>
     </article>
   );
 }
@@ -648,14 +627,16 @@ function rangeBars(history: Candle[], range: string) {
       "1D": 1,
       "1W": 7,
       "1M": 31,
+      "3M": 92,
       "6M": 183,
       "1Y": 366,
       "5Y": 1830,
     },
     end = Date.parse(history.at(-1)?.time ?? "");
-  return history.filter(
-    (b) => Date.parse(b.time) >= end - (days[range] ?? 366) * 86400000,
-  );
+  const start = range === "ALL" ? -Infinity : range === "YTD"
+    ? Date.UTC(new Date(end).getUTCFullYear(), 0, 1)
+    : end - (days[range] ?? 366) * 86400000;
+  return history.filter((b) => Date.parse(b.time) >= start);
 }
 export function DcaCard({
   research: r,

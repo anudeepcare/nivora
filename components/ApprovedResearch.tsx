@@ -25,6 +25,7 @@ import { Help } from "./Ui";
 import MovementContext from "./MovementContext";
 import ResearchChanges from "./ResearchChanges";
 import PaceHelp from "./PaceHelp";
+import AnalystTargets from "./AnalystTargets";
 
 type Props = {
   research: Research;
@@ -193,24 +194,10 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
             </button>
           </div>
         </div>
-        <section
-          className={`pace-feature pace-state-${pace.status}`}
-          aria-label="AURYN Pace"
-        >
-          <div className="pace-brand">
-            <Activity size={17} /> AURYN PACE <PaceHelp />
-          </div>
-          <PaceGuidance view={pace} readings={edge.pacePeriods} />
-          <button
-            className="text-link pace-open"
-            onClick={() => onTab("Technicals")}
-          >
-            Calculation & history <ArrowUpRight size={15} />
-          </button>
-        </section>
       </section>
       <MovementContext research={r} onNews={() => onTab("News")} />
       <div className="research-market-grid">
+        <div className="signal-price-layout">
         <section className="decision-chart card">
           <div className="section-head">
             <div>
@@ -227,6 +214,29 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
             </button>
           )}
         </section>
+        <aside className="signal-research-rail">
+        <section
+          className={`pace-feature pace-state-${pace.status}`}
+          aria-label="AURYN Pace"
+        >
+          <div className="pace-brand">
+            <Activity size={17} /> AURYN PACE <PaceHelp />
+          </div>
+          <PaceGuidance view={pace} readings={edge.pacePeriods} />
+          <button
+            className="text-link pace-open"
+            onClick={() => onTab("Technicals")}
+          >
+            Calculation & history <ArrowUpRight size={15} />
+          </button>
+        </section>
+
+          <div className="signal-analyst-summary">
+            <AnalystTargets research={r} showUnavailable />
+            <button className="btn" onClick={() => onTab("Analysts")}>Explore analyst coverage <ArrowRight size={16} /></button>
+          </div>
+        </aside>
+        </div>
         {v && (
           <section className="card decision-value">
             <div className="section-head">
