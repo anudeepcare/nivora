@@ -1,7 +1,6 @@
 "use client";
 import { PrivacyChoices } from "./AnalyticsConsent";
 import { SUPPORT_EMAIL } from "@/lib/site-metadata";
-import PaceHelp from "./PaceHelp";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -30,101 +29,126 @@ function PublicBrand() {
 
 /** A guide to real product concepts, with no fictional company observations. */
 export function PublicSample({ compact = false }: { compact?: boolean } = {}) {
+  const [lens, setLens] = useState(0);
+  const lenses = [
+    {
+      name: "Business",
+      icon: Layers3,
+      title: "Follow the money.",
+      text: "Read revenue, margins and cash generation together. See the dated evidence behind the business case.",
+      points: [
+        "Growth over time",
+        "Cash after capital spending",
+        "Debt & funding needs",
+      ],
+    },
+    {
+      name: "Value",
+      icon: Scale,
+      title: "See what the price assumes.",
+      text: "Compare bear, base and bull scenarios. Open the assumptions and keep analyst expectations separate.",
+      points: [
+        "Bear · slower growth",
+        "Base · current assumptions",
+        "Bull · stronger growth",
+      ],
+    },
+    {
+      name: "Pace",
+      icon: ChartNoAxesCombined,
+      title: "Give your next addition context.",
+      text: "P means Pace. Monthly price zones guide gradual contributions only when the business qualifies.",
+      points: [
+        "P0 · Pause additions",
+        "P1 · Watch or hold",
+        "P2–P4 · Build within your limits",
+      ],
+    },
+  ];
   return (
     <section
-      className={`ap-product ${compact ? "ap-product-compact" : ""}`}
+      className={`ap-product signal-public-demo ${compact ? "ap-product-compact" : ""}`}
       aria-label="Illustrative product guide, not a live investment recommendation"
     >
-      <header className="ap-product-header">
-        <span className="ap-product-symbol">
-          <Layers3 size={19} aria-hidden="true" />
+      <header className="signal-demo-header">
+        <span>
+          <Layers3 size={18} /> Research, connected
         </span>
-        <strong>One company. Three questions.</strong>
-        <span className="ap-guide-label">Illustrative product guide</span>
+        <small>Illustrative product guide</small>
       </header>
-      <div className="ap-decision-preview">
-        <div className="ap-preview-eyebrow">THE DECISION + THE REASONS</div>
-        <h2>Business. Price. Your pace.</h2>
-        <p
-          className="ap-decision-views"
-          aria-label="Possible decisions, depending on company evidence"
-        >
-          Buy / Add <span>·</span> Hold <span>·</span> Reduce / Sell{" "}
-          <span>·</span> Wait
-        </p>
-        <div
-          className="ap-decision-inputs"
-          aria-label="What informs a decision"
-        >
-          <span>
-            <Layers3 size={15} aria-hidden="true" /> Business
-          </span>
-          <span>
-            <Scale size={15} aria-hidden="true" /> Value
-          </span>
-          <span>
-            <ShieldCheck size={15} aria-hidden="true" /> Risk
-          </span>
-          <span>
-            <ChartNoAxesCombined size={15} aria-hidden="true" /> Pace
-          </span>
-        </div>
-        <p>Understand what supports the business—and what could change the case.</p>
-      </div>
-      <section
-        className="ap-pace-preview"
-        aria-label="AURYN Pace accumulation zones"
+      <div
+        className="signal-demo-tabs"
+        role="tablist"
+        aria-label="Explore AURYN"
       >
-        <div className="ap-pace-heading">
-          <span className="ap-pace-icon">
-            <ChartNoAxesCombined size={23} aria-hidden="true" />
-          </span>
-          <div>
-            <span>YOUR ACCUMULATION ZONE</span>
-            <h3>
-              AURYN Pace <PaceHelp />
-            </h3>
-          </div>
-        </div>
-        <p>Build gradually when the business qualifies.</p>
+        {lenses.map((item, index) => (
+          <button
+            key={item.name}
+            role="tab"
+            id={`guide-tab-${compact ? "compact" : "full"}-${index}`}
+            aria-controls={`guide-panel-${compact ? "compact" : "full"}-${index}`}
+            tabIndex={lens === index ? 0 : -1}
+            onKeyDown={(event) => {
+              const keys = ["ArrowRight", "ArrowLeft", "Home", "End"];
+              if (!keys.includes(event.key)) return;
+              event.preventDefault();
+              const next =
+                event.key === "Home"
+                  ? 0
+                  : event.key === "End"
+                    ? 2
+                    : (index + (event.key === "ArrowRight" ? 1 : 2)) % 3;
+              setLens(next);
+              const tabs =
+                event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>(
+                  '[role="tab"]',
+                );
+              tabs?.[next]?.focus();
+            }}
+            aria-selected={lens === index}
+            onClick={() => setLens(index)}
+          >
+            <item.icon size={17} />
+            {item.name}
+          </button>
+        ))}
+      </div>
+      {lenses.map((selected, index) => (
         <div
-          className="ap-pace-scale"
-          aria-label="P means Pace: P0 Pause, P1 Watch, P2 Initial, P3 Deeper, P4 Deep"
+          key={selected.name}
+          hidden={lens !== index}
+          className={`signal-demo-content lens-${index}`}
+          role="tabpanel"
+          id={`guide-panel-${compact ? "compact" : "full"}-${index}`}
+          aria-labelledby={`guide-tab-${compact ? "compact" : "full"}-${index}`}
         >
-          {[0, 1, 2, 3, 4].map((level) => (
-            <div key={level} className={`ap-pace-level ap-pace-level-${level}`}>
-              <span aria-hidden="true">
-                <i />
-              </span>
-              <strong>{["Pause", "Watch", "Initial", "Deeper", "Deep"][level]}</strong>
-            </div>
-          ))}
-        </div>
-        <div className="ap-pace-scale-labels">
-          <span>Pause</span>
-          <span>Watch</span>
-          <span>Accumulate</span>
-        </div>
-        <div className="ap-pace-periods">
-          <span>
-            <i /> Current month · forming
+          <span className="signal-demo-number">
+            0{index + 1} / THE RESEARCH LENS
           </span>
-          <span>
-            <i /> Completed month · confirmed
-          </span>
+          <h2>{selected.title}</h2>
+          <p>{selected.text}</p>
+          <div className="signal-demo-evidence">
+            {selected.points.map((point, index) => (
+              <div key={point}>
+                <span>0{index + 1}</span>
+                <strong>{point}</strong>
+                <Check size={17} />
+              </div>
+            ))}
+          </div>
+          {index === 2 && (
+            <p className="signal-demo-note">
+              AURYN Pace: P0 Pause · P1 Watch · P2 Initial · P3 Deeper · P4
+              Deep. Completed month · confirmed. Current month · forming. Price
+              zones, not predicted returns. Risk and business checks still
+              apply.
+            </p>
+          )}
         </div>
-        <small>
-          A deeper price zone is only one part of the picture. Business risks
-          and data gaps can still pause a contribution.
-          These are price zones, not predicted returns.
-        </small>
-      </section>
-      {!compact && (
-        <footer className="ap-product-footer">
-          <ShieldCheck size={16} aria-hidden="true" />
-          <span>Business quality, valuation and Pace stay distinct.</span>
-        </footer>
-      )}
+      ))}
+      <footer className="signal-demo-footer">
+        <ShieldCheck size={16} /> Evidence first. Your judgment always.
+      </footer>
     </section>
   );
 }
@@ -303,16 +327,19 @@ export default function PublicLanding({
         >
           <div className="ap-hero-copy">
             <span className="ap-eyebrow">
-              <span className="ap-eyebrow-mark" /> INVEST WITH UNDERSTANDING
+              <span className="ap-eyebrow-mark" />{" "}
+              {sampleOnly ? "HOW AURYN WORKS" : "INVEST WITH UNDERSTANDING"}
             </span>
             <h1 id="ap-hero-heading">
-              <span>See the business.</span>
-              <em>Find your pace.</em>
+              <span>{sampleOnly ? "One company." : "Less noise."}</span>
+              <em>
+                {sampleOnly ? "Three useful questions." : "More understanding."}
+              </em>
             </h1>
             <p>
-              Company fundamentals, valuation scenarios and a clear monthly
-              contribution guide. Understand the opportunity, the risks and
-              what to watch next—all in one place.
+              {sampleOnly
+                ? "Is the business improving? What does the price assume? What would justify your next addition? Explore each lens in the guide."
+                : "Bring the business, the price and your portfolio into focus. A clear research workspace for decisions you can explain."}
             </p>
             <div className="ap-hero-actions">
               <Link
@@ -368,13 +395,15 @@ export default function PublicLanding({
       >
         <div className="ap-section-heading">
           <span className="ap-eyebrow">FROM QUESTION TO DECISION</span>
-          <h2 id="ap-workflow-heading">Research that leads somewhere.</h2>
+          <h2 id="ap-workflow-heading">
+            One question at a time. A fuller picture.
+          </h2>
           <p>
             A connected view of what you own, what you’re watching, and what
             deserves a closer look.
           </p>
         </div>
-        <div className="ap-workflow-grid">
+        <div className="ap-workflow-grid signal-workflow-rows">
           <article>
             <span className="ap-feature-icon">
               <Search size={24} aria-hidden="true" />

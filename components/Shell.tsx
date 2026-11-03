@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import {
   Home,
+  Ellipsis,
   ChartNoAxesCombined,
   Bookmark,
   PieChart,
@@ -145,7 +146,8 @@ export default function Shell({
           className="rail-brand"
           aria-label="AURYN home"
         >
-          <img src="/icon.svg" width="36" height="36" alt="" />
+          <img src="/icon.svg" width="30" height="30" alt="" />
+          <span>AURYN</span>
         </Link>
         <nav aria-label="Main navigation">{primary.map((r) => nav(r))}</nav>
         <div className="rail-bottom">
@@ -171,7 +173,13 @@ export default function Shell({
       <div className="app-workspace">
         <header className="app-top topbar mobile-header-row">
           <Link className="wordmark" href={`${prefix}/overview`}>
-            <img className="mobile-brand-mark" src="/icon.svg" width="34" height="34" alt="" />
+            <img
+              className="mobile-brand-mark"
+              src="/icon.svg"
+              width="34"
+              height="34"
+              alt=""
+            />
             <span className="wordmark-label">AURYN</span>
             <span className="wordmark-route">
               /{" "}
@@ -203,7 +211,7 @@ export default function Shell({
               aria-haspopup="dialog"
               onClick={() => tools.current?.showModal()}
             >
-              <span className="mobile-more-glyph" aria-hidden="true">•••</span>
+              <Ellipsis size={21} aria-hidden="true" />
             </button>
             <Link
               href={`${prefix}/plans`}

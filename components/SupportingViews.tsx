@@ -165,7 +165,7 @@ export function Settings() {
         </Link>
       </div>
       <div className="workspace-settings-groups">
-        <details className="workspace-setting-group">
+        <details className="workspace-setting-group" open>
           <summary>
             <span>
               <strong>Display & reading</strong>

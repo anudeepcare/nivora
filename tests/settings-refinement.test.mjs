@@ -76,6 +76,7 @@ function shell(
     Settings: empty,
     Search: empty,
     SearchIcon: empty,
+    Ellipsis: empty,
     Sun: empty,
     Moon: empty,
     X: empty,
@@ -349,8 +350,8 @@ test("Settings presents compact groups on one page without duplicate account sum
   const groups = nodes(tree, (n) => n.type === "details");
   assert.equal(groups.length, 3);
   assert.ok(
-    groups.every((group) => !group.props.open),
-    "Settings starts with compact, expandable groups",
+    groups[0].props.open && groups.slice(1).every((group) => !group.props.open),
+    "Display settings are visible; account and research controls remain expandable",
   );
   assert.equal(
     nodes(tree, (n) => n.type === "input" && n.props.type === "password")

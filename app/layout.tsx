@@ -9,6 +9,7 @@ import "./pwa-shell.css";
 import "./mobile-experience.css";
 import "./mobile-final.css";
 import "./signal-research.css";
+import "./signal-system.css";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   verification: {

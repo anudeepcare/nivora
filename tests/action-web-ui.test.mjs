@@ -63,7 +63,8 @@ test("Pace leads with confirmed action and keeps both technical periods in detai
   const html = show("Buy", 2, 4);
   assert.match(html, /Buy small/);
   const visible = html.replace(/<details[\s\S]*?<\/details>/g, "");
-  assert.doesNotMatch(visible, /P4|P2/);
+  assert.match(visible, /Confirmed Pace P2; P means Pace/);
+  assert.match(visible, /data-active="true"[^>]*>P2/);
   assert.match(visible, /Confirmed/);
   assert.match(html, /Deep zone/);
   assert.match(html, /Initial zone/);

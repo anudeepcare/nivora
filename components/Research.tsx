@@ -40,7 +40,20 @@ import DecisionWorkspace from "./DecisionWorkspace";
 import DecisionWatch from "./DecisionWatch";
 import { useMemo, useState, useRef, useLayoutEffect, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { Bookmark, RefreshCw, LayoutDashboard, Building2, Scale, ChartCandlestick, Users, Newspaper, SlidersHorizontal, Layers, BriefcaseBusiness, LineChart } from "lucide-react";
+import {
+  Bookmark,
+  RefreshCw,
+  LayoutDashboard,
+  Building2,
+  Scale,
+  ChartCandlestick,
+  Users,
+  Newspaper,
+  SlidersHorizontal,
+  Layers,
+  BriefcaseBusiness,
+  LineChart,
+} from "lucide-react";
 import type {
   Research as ResearchData,
   Candle,
@@ -63,7 +76,6 @@ import DecisionOverview from "./ApprovedResearch";
 import { selectPriceReference } from "@/lib/price-reference";
 import { movementContext } from "@/lib/movement-context";
 import PaceHelp from "./PaceHelp";
-import CompanyMetrics from "./CompanyMetrics";
 import { paceCode } from "@/lib/pace-presentation";
 import EarningsWorkspace from "./EarningsWorkspace";
 import DecisionBrief from "./DecisionBrief";
@@ -81,7 +93,17 @@ const tabs = [
   "Advanced",
   "Options",
 ] as const;
-const ranges = ["1D", "1W", "1M", "3M", "6M", "YTD", "1Y", "5Y", "ALL"] as const;
+const ranges = [
+  "1D",
+  "1W",
+  "1M",
+  "3M",
+  "6M",
+  "YTD",
+  "1Y",
+  "5Y",
+  "ALL",
+] as const;
 const tabPresentation = {
   Snapshot: { label: "Overview", icon: LayoutDashboard },
   Financials: { label: "Business", icon: Building2 },
@@ -197,7 +219,16 @@ export default function Research({ symbol }: { symbol: string }) {
     const url = new URL(window.location.href);
     url.searchParams.set("tab", next);
     window.history.replaceState(null, "", url);
-    requestAnimationFrame(() => researchNavigation.current?.scrollIntoView({ block: "start", behavior: "instant" }));
+    requestAnimationFrame(() => {
+      const navigation = researchNavigation.current;
+      const top = navigation?.getBoundingClientRect().top;
+      if (
+        navigation &&
+        top != null &&
+        (top < 72 || top > window.innerHeight - 100)
+      )
+        navigation.scrollIntoView({ block: "start", behavior: "instant" });
+    });
   };
   const intraday = range === "1D" || range === "1W";
   const demoShort = useMemo(
@@ -300,7 +331,9 @@ export default function Research({ symbol }: { symbol: string }) {
   const chart = (
     <section className="plot-section">
       <header className="row between chart-head">
-        <h3><LineChart size={18} aria-hidden="true" /> Price history</h3>
+        <h3>
+          <LineChart size={18} aria-hidden="true" /> Price history
+        </h3>
         <div className="ranges" aria-label="Chart period">
           {ranges.map((x) => (
             <button
@@ -439,7 +472,6 @@ export default function Research({ symbol }: { symbol: string }) {
         </div>
       </header>
 
-      <CompanyMetrics research={r} />
       {notice && <Notice error>{notice}</Notice>}
       {resource.error && <Notice error>{resource.error}</Notice>}
       {r.issues.length > 0 && (
@@ -462,18 +494,81 @@ export default function Research({ symbol }: { symbol: string }) {
           </button>
         </div>
       )}
-      <nav className="signal-research-nav" aria-label="Research sections" ref={researchNavigation}>
-        {(["Snapshot", "Financials", "Valuation", "Technicals", "Analysts", "Options", "Thesis", "News", "Advanced"] as const).filter((key) => visible.includes(key)).map((key) => {
-          const { label, icon: Icon } = tabPresentation[key];
-          return <button key={key} aria-current={tab === key ? "page" : undefined} aria-controls={key === "Snapshot" ? "research-overview" : "research-content"} onClick={() => switchTab(key)}><Icon size={18} strokeWidth={1.75} aria-hidden="true" /><span>{label}</span></button>;
-        })}
+      <nav
+        className="signal-research-nav"
+        aria-label="Research sections"
+        ref={researchNavigation}
+      >
+        {(
+          [
+            "Snapshot",
+            "Financials",
+            "Technicals",
+            "Analysts",
+            "Options",
+          ] as const
+        )
+          .filter((key) => visible.includes(key))
+          .map((key) => {
+            const { label } = tabPresentation[key];
+            return (
+              <button
+                key={key}
+                aria-current={tab === key ? "page" : undefined}
+                aria-controls={
+                  key === "Snapshot" ? "research-overview" : "research-content"
+                }
+                onClick={() => switchTab(key)}
+              >
+                {label}
+              </button>
+            );
+          })}
+        <label className="research-more-label">
+          <span className="sr-only">More research sections</span>
+          <select
+            aria-label="More research sections"
+            value={
+              ["Valuation", "Thesis", "News", "Advanced"].includes(tab)
+                ? tab
+                : ""
+            }
+            onChange={(event) => {
+              if (event.target.value)
+                switchTab(event.target.value as (typeof tabs)[number]);
+            }}
+          >
+            <option value="" disabled>
+              More research
+            </option>
+            {(["Valuation", "Thesis", "News", "Advanced"] as const)
+              .filter((key) => visible.includes(key))
+              .map((key) => (
+                <option key={key} value={key}>
+                  {tabPresentation[key].label}
+                </option>
+              ))}
+          </select>
+        </label>
       </nav>
       <div id="research-overview" hidden={tab !== "Snapshot"}>
-        <FeatureGate feature="overview" fallback={<FreeSnapshot research={r} />}>
-          <DecisionOverview key={r.company.symbol} research={r} onTab={switchTab} chart={chart} />
+        <FeatureGate
+          feature="overview"
+          fallback={<FreeSnapshot research={r} />}
+        >
+          <DecisionOverview
+            key={r.company.symbol}
+            research={r}
+            onTab={switchTab}
+            chart={chart}
+          />
         </FeatureGate>
       </div>
-      <section className="signal-research-panel" hidden={tab === "Snapshot"} aria-label={tabPresentation[tab].label}>
+      <section
+        className="signal-research-panel"
+        hidden={tab === "Snapshot"}
+        aria-label={tabPresentation[tab].label}
+      >
         <div id="research-content" className="approved-evidence-body au-stack">
           <FeatureGate
             feature={
@@ -521,7 +616,15 @@ export default function Research({ symbol }: { symbol: string }) {
             {tab === "Analysts" && <AnalystRatings research={r} />}
             {tab === "Financials" && (
               <>
-                <div className="signal-business-intro"><span className="eyebrow">BUSINESS AT A GLANCE</span><h2>How the business is performing</h2><p>Follow growth, profitability and cash generation. Compare reporting periods, then inspect the statements behind the numbers.</p></div>
+                <div className="signal-business-intro">
+                  <span className="eyebrow">BUSINESS AT A GLANCE</span>
+                  <h2>How the business is performing</h2>
+                  <p>
+                    Follow growth, profitability and cash generation. Compare
+                    reporting periods, then inspect the statements behind the
+                    numbers.
+                  </p>
+                </div>
                 <Financials research={r} />
                 <BusinessHistory research={r} />
                 <FinancingContext research={r} />
@@ -633,9 +736,12 @@ function rangeBars(history: Candle[], range: string) {
       "5Y": 1830,
     },
     end = Date.parse(history.at(-1)?.time ?? "");
-  const start = range === "ALL" ? -Infinity : range === "YTD"
-    ? Date.UTC(new Date(end).getUTCFullYear(), 0, 1)
-    : end - (days[range] ?? 366) * 86400000;
+  const start =
+    range === "ALL"
+      ? -Infinity
+      : range === "YTD"
+        ? Date.UTC(new Date(end).getUTCFullYear(), 0, 1)
+        : end - (days[range] ?? 366) * 86400000;
   return history.filter((b) => Date.parse(b.time) >= start);
 }
 export function DcaCard({
@@ -689,7 +795,9 @@ export function DcaCard({
                 ? "P1 watch zone: no contribution amount is assigned until an accumulation zone is established."
                 : `P${signal.multiplier} ${PACE_LEVELS[signal.multiplier].toLowerCase()}: ${signal.multiplier === 2 ? "1×" : signal.multiplier === 3 ? "2×" : "up to 4×"} your planned contribution only when the business qualifies.`
             : "A confirmed contribution zone needs more completed monthly history."}{" "}
-          {!confirmed && signal ? "This current reading is provisional until month-end." : ""}{" "}
+          {!confirmed && signal
+            ? "This current reading is provisional until month-end."
+            : ""}{" "}
           This measures price conditions, not buying activity or business
           quality.
         </p>

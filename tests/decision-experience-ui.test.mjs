@@ -64,6 +64,7 @@ function render(r, positions = []) {
     Help: () => null,
     MovementContext: () => null,
     ResearchChanges: () => null,
+    CompanyMetrics: () => null,
   };
   const View = new Function(
     ...Object.keys(bindings),
@@ -78,14 +79,14 @@ test("Research places an actual decision and Pace before expandable supporting m
     html = render(r);
   assert.match(html, /id="auryn-decision-title"/);
   assert.doesNotMatch(html, /<h2 id="auryn-decision-title">[^<]*P[0-4]/);
-  assert.match(html, /<details class="decision-explanation"/);
+  assert.match(html, /<details class="signal-decision-evidence"/);
   assert.ok(
     html.indexOf("AURYN PACE") <
       html.indexOf("The details behind the decision"),
   );
   assert.doesNotMatch(html, /Weigh it yourself|evidence-scale|NaN|Infinity/);
   assert.match(html, /Decision rules &amp; source context/);
-  assert.match(html, /class="decision-explanation" data-reason="zone"/);
+  assert.match(html, /class="signal-decision-evidence" data-reason="zone"/);
   assert.match(html, /P1 · Outside the accumulation zone/);
 });
 test("share-class ownership aliases produce Add on the same supported research case", () => {

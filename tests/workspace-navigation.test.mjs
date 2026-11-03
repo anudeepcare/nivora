@@ -118,6 +118,7 @@ test("switching workspace tabs restores their own position; tapping the active t
     Settings: icon,
     Search: icon,
     SearchIcon: icon,
+    Ellipsis: icon,
     Sun: icon,
     Moon: icon,
     X: icon,
