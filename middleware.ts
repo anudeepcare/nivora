@@ -1,8 +1,17 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { isProductPage } from "./lib/page-routing";
+import { allowedPreview } from "./lib/presentation/preview";
 /** Emit an actual 404 before App Router streaming can commit a 200 response. */
 export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
+  if (
+    path === "/preview/redesign" &&
+    allowedPreview(
+      request.headers.get("host") || "",
+      process.env.AURYN_ENABLE_PREVIEW,
+    )
+  )
+    return NextResponse.next();
   if (
     path.startsWith("/api/") ||
     path === "/api" ||

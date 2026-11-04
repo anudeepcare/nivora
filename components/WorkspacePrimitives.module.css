@@ -1,0 +1,102 @@
+.heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 20px;
+}
+.heading h1 {
+  font-family: Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(27px, 3vw, 36px);
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+  margin: 0 0 6px;
+}
+.heading p {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}
+.sectionHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.sectionHead h2 {
+  font-size: 19px;
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+.sectionHead p {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+}
+.metric {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 12px 0;
+}
+.metric > span {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--muted);
+}
+.metric svg {
+  color: var(--blue);
+  width: 18px;
+  height: 18px;
+}
+.metric > strong {
+  font-size: clamp(23px, 2.4vw, 31px);
+  line-height: 1.25;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.metric small {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.metric[data-kind="return"] svg {
+  color: var(--green);
+}
+.metric[data-kind="ideas"] svg {
+  color: var(--amber);
+}
+.metric :global(.negative) {
+  color: var(--red);
+}
+.metric :global(.positive) {
+  color: var(--green);
+}
+@media (max-width: 767px) {
+  .heading {
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .heading h1 {
+    font-size: 27px;
+  }
+  .heading p {
+    font-size: 12px;
+  }
+  .metric {
+    padding: 8px 0;
+  }
+  .metric > strong {
+    font-size: 24px;
+  }
+  .sectionHead h2 {
+    font-size: 18px;
+  }
+}

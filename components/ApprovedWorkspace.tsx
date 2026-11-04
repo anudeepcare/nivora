@@ -3,6 +3,7 @@ import { sameProviderSymbol } from "@/lib/provider-symbol";
 import { customerText } from "@/lib/customer-language";
 
 import Link from "next/link";
+import visual from "./WorkspacePrimitives.module.css";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   Activity,
@@ -87,7 +88,7 @@ function Heading({
   actions?: ReactNode;
 }) {
   return (
-    <div className="page-heading">
+    <div className={visual.heading}>
       <div>
         <h1>{title}</h1>
         <p>{subtitle}</p>
@@ -106,7 +107,7 @@ function SectionHead({
   action?: ReactNode;
 }) {
   return (
-    <div className="section-head">
+    <div className={visual.sectionHead}>
       <div>
         <h2>{title}</h2>
         {subtitle && <p>{subtitle}</p>}
@@ -126,9 +127,19 @@ function Metric({
   note: ReactNode;
   tone?: string;
 }) {
+  const kind = /return|gain|performance/i.test(label)
+    ? "return"
+    : /watch|idea/i.test(label)
+      ? "ideas"
+      : "value";
+  const Icon =
+    kind === "return" ? Activity : kind === "ideas" ? Bookmark : Wallet;
   return (
-    <div className="metric">
-      <span>{label}</span>
+    <div className={visual.metric} data-kind={kind}>
+      <span>
+        <Icon aria-hidden="true" />
+        {label}
+      </span>
       <strong className={tone}>{value}</strong>
       <small>{note}</small>
     </div>

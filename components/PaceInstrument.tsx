@@ -70,46 +70,22 @@ export default function PaceInstrument({
           <span>.</span>
         </h2>
       </div>
-      <div className={s.terraces}>
-        <svg viewBox="0 0 520 285" aria-hidden="true">
-          {[0, 1, 2, 3, 4].map((z) => {
-            const x = 20 + z * 50,
-              y = 252 - z * 45,
-              w = 230;
-            return (
-              <g key={z} data-active={selected === z}>
-                <path
-                  className={s.shadow}
-                  d={`M${x + 9},${y + 12}h${w}l38,-24h-${w}z`}
-                />
-                <path className={s.edge} d={`M${x},${y}h${w}v9h-${w}z`} />
-                <path
-                  className={s.side}
-                  d={`M${x + w},${y}l38,-25v9l-38,25z`}
-                />
-                <path className={s.slab} d={`M${x},${y}h${w}l38,-25h-${w}z`} />
-              </g>
-            );
-          })}
-        </svg>
+      <div className={s.terraces} aria-label="Five Pace stages">
         {short.map((name, z) => (
           <button
             key={name}
             type="button"
             className={s.stage}
-            style={{
-              left: `${((20 + z * 50 + 72) / 520) * 100}%`,
-              top: `${((252 - z * 45 - 27) / 285) * 100}%`,
-            }}
             aria-pressed={selected === z}
             aria-label={`Explore P${z}: ${names[z]}`}
             onClick={() => setInspect(z)}
           >
-            <span>
-              {selected === z && <Diamond size={11} fill="currentColor" />}
-              {name}
-            </span>
-            <small>P{z}</small>
+            <strong>P{z}</strong>
+            <span>{name}</span>
+            <Diamond
+              size={10}
+              fill={selected === z ? "currentColor" : "none"}
+            />
           </button>
         ))}
       </div>

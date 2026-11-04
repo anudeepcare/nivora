@@ -1,5 +1,5 @@
 "use client";
-import experience from "./IntegratedExperience.module.css";
+import experience from "./WorkspaceShell.module.css";
 import { AccessNotice, useAccess } from "./Access";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -124,6 +124,7 @@ export default function Shell({
           pending.current = { path: destination, top };
         }}
         className={page === r.path ? "active" : ""}
+        data-destination={r.path}
         aria-label={r.label}
         aria-current={page === r.path ? "page" : undefined}
       >
@@ -133,27 +134,151 @@ export default function Shell({
     );
   };
   return (
-    <div className={`product approved-product ${experience.shell}`} data-page={page} data-shell="mobile-first">
-      <a className={experience.skip} href="#content">Skip to content</a>
+    <div
+      className={`product approved-product ${experience.shell}`}
+      data-page={page}
+      data-shell="mobile-first"
+    >
+      <a className={experience.skip} href="#content">
+        Skip to content
+      </a>
+      <aside className={experience.sidebar} aria-label="Workspace navigation">
+        <Link
+          href={`${prefix}/overview`}
+          className={experience.brand}
+          aria-label="AURYN home"
+        >
+          <span className={experience.brandMark} aria-hidden="true">
+            <i />
+            <i />
+            <i />
+          </span>
+          <span>AURYN</span>
+        </Link>
+        <div>
+          <span className={experience.groupLabel}>Your workspace</span>
+          <nav className={experience.nav} aria-label="Main navigation">
+            {primary.map(nav)}
+            <Link
+              href={`${prefix}/discover`}
+              data-destination="discover"
+              aria-current={page === "discover" ? "page" : undefined}
+              aria-label="Discover"
+            >
+              <Compass />
+              <span>Discover</span>
+            </Link>
+          </nav>
+        </div>
+        <div>
+          <span className={experience.groupLabel}>Research tools</span>
+          <nav className={experience.secondary} aria-label="Research tools">
+            {[
+              { path: "compare", label: "Compare", icon: Scale },
+              { path: "alerts", label: "Alerts", icon: Bell },
+              {
+                path: "research-lab",
+                label: "Strategy lab",
+                icon: FlaskConical,
+              },
+              { path: "help", label: "Learn & support", icon: HelpCircle },
+            ].map(({ path, label, icon: Icon }) => (
+              <Link
+                key={path}
+                href={`${prefix}/${path}`}
+                data-destination={path}
+                aria-label={label}
+                aria-current={page === path ? "page" : undefined}
+              >
+                <Icon />
+                <span>{label}</span>
+              </Link>
+            ))}
+            <Link
+              href={`${prefix}/settings`}
+              onNavigate={openSettings}
+              aria-current={page === "settings" ? "page" : undefined}
+              aria-label="Settings"
+            >
+              <Settings />
+              <span>Settings</span>
+            </Link>
+          </nav>
+        </div>
+        <div className={experience.sidebarFooter}>
+          <strong>AURYN PACE</strong>Evidence behind every step.
+        </div>
+      </aside>
       <header className={experience.header}>
-        <Link href={`${prefix}/overview`} className={experience.brand} aria-label="AURYN home"><img src="/icon.svg" width="28" height="28" alt=""/> AURYN</Link>
-        <nav className={experience.nav} aria-label="Main navigation">{primary.map(r=>nav(r))}<Link href={`${prefix}/discover`} aria-current={page==='discover'?'page':undefined}><Compass size={17}/><span>Discover</span></Link><Link href={`${prefix}/settings`} onNavigate={openSettings} aria-current={page==='settings'?'page':undefined}><Settings size={17}/><span>Settings</span></Link></nav>
+        <Link
+          href={`${prefix}/overview`}
+          className={`${experience.brand} ${experience.mobileBrand}`}
+          aria-label="AURYN home"
+        >
+          <span className={experience.brandMark} aria-hidden="true">
+            <i />
+            <i />
+            <i />
+          </span>
+          AURYN
+        </Link>
+        <button
+          className={experience.searchTrigger}
+          aria-label="Search companies and crypto"
+          aria-haspopup="dialog"
+          onClick={() => {
+            search.current?.showModal();
+            search.current
+              ?.querySelector("input")
+              ?.focus({ preventScroll: true });
+          }}
+        >
+          <SearchIcon size={19} />
+          <span>Find a company or ticker</span>
+          <kbd>⌘ K</kbd>
+        </button>
         <div className={experience.actions}>
-          <button aria-label="Search companies and crypto" aria-haspopup="dialog" onClick={()=>{search.current?.showModal();search.current?.querySelector('input')?.focus({preventScroll:true})}}><SearchIcon size={20}/></button>
-          <button aria-label="Switch color theme" onClick={()=>setTheme(theme==='dark'?'light':'dark')}>{theme==='dark'?<Moon size={19}/>:<Sun size={19}/>}</button>
-          <Link href={`${prefix}/alerts`} aria-label="Price alerts"><Bell size={19}/></Link>
-          <Link href={`${prefix}/settings`} aria-label="Account settings" onNavigate={openSettings}>{(workspace?.email?.[0]||'A').toUpperCase()}</Link>
+          <button
+            aria-label="Switch color theme"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          >
+            {theme === "dark" ? <Moon size={19} /> : <Sun size={19} />}
+          </button>
+          <Link href={`${prefix}/alerts`} aria-label="Price alerts">
+            <Bell size={19} />
+          </Link>
+          <Link
+            href={`${prefix}/settings`}
+            aria-label="Account settings"
+            onNavigate={openSettings}
+          >
+            {(workspace?.email?.[0] || "A").toUpperCase()}
+          </Link>
         </div>
       </header>
       <div className={experience.workspace}>
-        {page !== "settings" && <div className={experience.searchbar}><span>Workspace / {primary.find(r=>r.path===page)?.label||page}</span><button onClick={()=>{search.current?.showModal();search.current?.querySelector('input')?.focus({preventScroll:true})}}><SearchIcon size={15}/> Find a company or ticker <kbd>⌘ K</kbd></button></div>}
         <main id="content" className={experience.content} tabIndex={-1}>
           <AccessNotice />
-          {demo && demo.routePrefix !== "" && <div className="preview-label">Design preview · Illustrative data · Account actions disabled</div>}
-          {children}<ProductFooter />
+          {demo && demo.routePrefix !== "" && (
+            <div className="preview-label">
+              Design preview · Illustrative data · Account actions disabled
+            </div>
+          )}
+          {children}
+          <ProductFooter />
         </main>
       </div>
-      <nav className={experience.dock} aria-label="Mobile navigation">{primary.map(r=>nav(r))}<button onClick={()=>tools.current?.showModal()} aria-label="More workspace actions" aria-haspopup="dialog"><Ellipsis size={20}/><span>More</span></button></nav>
+      <nav className={experience.dock} aria-label="Mobile navigation">
+        {primary.map((r) => nav(r))}
+        <button
+          onClick={() => tools.current?.showModal()}
+          aria-label="More workspace actions"
+          aria-haspopup="dialog"
+        >
+          <Ellipsis size={20} />
+          <span>More</span>
+        </button>
+      </nav>
       <dialog
         ref={tools}
         className="search-dialog approved-tools-dialog"

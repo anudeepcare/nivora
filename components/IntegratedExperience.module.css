@@ -129,12 +129,15 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  padding: 12px 0 18px;
-  margin-bottom: 22px;
+  padding: 6px 0 10px;
+  margin-bottom: 14px;
   border-bottom: 1px solid var(--line);
   overflow-x: auto;
 }
 .researchNav button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   flex: none;
   border: 0;
   background: transparent;
@@ -142,9 +145,12 @@
   font: inherit;
   font-size: 13px;
   min-height: 42px;
-  padding: 10px 16px;
+  padding: 9px 12px;
   border-radius: 10px;
 }
+.researchNav button[data-section="Financials"] svg { color: var(--green); }
+.researchNav button[data-section="Valuation"] svg, .researchNav button[data-section="News"] svg { color: var(--amber); }
+.researchNav button[data-section="Analysts"] svg, .researchNav button[data-section="Thesis"] svg { color: var(--cyan); }
 .researchNav button[aria-current="page"] {
   background: var(--blue-soft);
   color: var(--blue);
@@ -155,7 +161,7 @@
 .overview {
   display: grid;
   grid-template-columns: minmax(290px, 0.85fr) minmax(0, 1.9fr);
-  gap: 30px;
+  gap: 16px;
   align-items: flex-start;
 }
 .market {
@@ -191,7 +197,7 @@
 .bottom {
   display: grid;
   grid-template-columns: 1.1fr 1fr;
-  gap: 26px;
+  gap: 16px;
   border-top: 1px solid var(--line);
   margin-top: 22px;
   padding-top: 22px;
@@ -250,7 +256,7 @@
   padding: 30px 5% 55px;
   display: flex;
   flex-direction: column;
-  gap: 26px;
+  gap: 16px;
 }
 .heroVisual {
   width: 100%;
@@ -465,17 +471,10 @@
     grid-template-columns: 1fr;
   }
   .researchNav {
-    display: none;
-  }
-  .researchPicker {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin: 15px 0 20px;
-    font-size: 13px;
-    color: var(--muted);
+    gap: 3px;
   }
+  .researchPicker { display: none; }
   .researchPicker select {
     min-height: 44px;
     padding: 10px;
@@ -551,7 +550,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 24px;
-  padding: 16px 0 24px;
+  padding: 6px 0 14px;
 }
 .stockIdentity {
   display: flex;

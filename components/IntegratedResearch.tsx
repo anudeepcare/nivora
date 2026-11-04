@@ -17,6 +17,7 @@ import { sameProviderSymbol } from "@/lib/provider-symbol";
 import { useProduct } from "./Session";
 import PaceInstrument from "./PaceInstrument";
 import AnalystTargets from "./AnalystTargets";
+import ResearchEvidenceGrid from "./ResearchEvidenceGrid";
 import s from "./IntegratedExperience.module.css";
 export default function IntegratedResearch({
   research: r,
@@ -49,69 +50,72 @@ export default function IntegratedResearch({
     d = m.decision;
   const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   return (
-    <div className={s.overview}>
-      <PaceInstrument
-        view={m.edge.pacePresentation}
-        readings={m.edge.pacePeriods}
-        onHistory={() => onTab("Technicals")}
-      />
-      <div className={s.market}>
-        <section className={s.brief}>
-          <ShieldCheck size={20} />
-          <div>
-            <h2>Business & price</h2>
-            <p>{d.headline}</p>
-            {d.risks[0] && <p>{d.risks[0]}</p>}
+    <>
+      <ResearchEvidenceGrid research={r} onTab={onTab} />
+      <div className={s.overview}>
+        <PaceInstrument
+          view={m.edge.pacePresentation}
+          readings={m.edge.pacePeriods}
+          onHistory={() => onTab("Technicals")}
+        />
+        <div className={s.market}>
+          <section className={s.brief}>
+            <ShieldCheck size={20} />
+            <div>
+              <h2>Business & price</h2>
+              <p>{d.headline}</p>
+              {d.risks[0] && <p>{d.risks[0]}</p>}
+            </div>
+          </section>
+          <div className={s.chart}>{chart}</div>
+          <div className={s.bottom}>
+            <section>
+              <AnalystTargets research={r} showUnavailable />
+              <button onClick={() => onTab("Analysts")}>
+                View analyst coverage <ArrowRight size={15} />
+              </button>
+            </section>
+            <section>
+              <h3>
+                <CalendarDays size={17} /> What changes the view
+              </h3>
+              <p>
+                {d.changeConditions[0] ||
+                  "Review the next company update and any changes in the evidence."}
+              </p>
+              <button onClick={() => onTab("News")}>
+                News & earnings <ArrowRight size={15} />
+              </button>
+            </section>
           </div>
-        </section>
-        <div className={s.chart}>{chart}</div>
-        <div className={s.bottom}>
-          <section>
-            <AnalystTargets research={r} showUnavailable />
-            <button onClick={() => onTab("Analysts")}>
-              View analyst coverage <ArrowRight size={15} />
-            </button>
-          </section>
-          <section>
-            <h3>
-              <CalendarDays size={17} /> What changes the view
-            </h3>
-            <p>
-              {d.changeConditions[0] ||
-                "Review the next company update and any changes in the evidence."}
-            </p>
-            <button onClick={() => onTab("News")}>
-              News & earnings <ArrowRight size={15} />
-            </button>
-          </section>
-        </div>
-        <details className={s.evidence}>
-          <summary>
-            Reasons, risks & next steps <ChevronDown size={15} />
-          </summary>
-          <p>{d.explanation.detail}</p>
-          <ul>
-            {d.reasons.map((reason) => (
-              <li key={reason}>{reason}</li>
+          <details className={s.evidence}>
+            <summary>
+              Reasons, risks & next steps <ChevronDown size={15} />
+            </summary>
+            <p>{d.explanation.detail}</p>
+            <ul>
+              {d.reasons.map((reason) => (
+                <li key={reason}>{reason}</li>
+              ))}
+            </ul>
+            {d.risks.slice(1).map((reason) => (
+              <p key={reason}>{reason}</p>
             ))}
-          </ul>
-          {d.risks.slice(1).map((reason) => (
-            <p key={reason}>{reason}</p>
-          ))}
-          <p>
-            New purchase: <strong>{d.actionLabels.entry}</strong> · Existing
-            holding: <strong>{d.actionLabels.holding}</strong>
-          </p>
-          <Link
-            href={`${prefix}/alerts?symbol=${encodeURIComponent(r.company.symbol)}`}
-          >
-            <Bell size={15} /> Set an alert
-          </Link>
-          <button className="text-link" onClick={() => onTab("Valuation")}>
-            See valuation assumptions <ArrowRight size={15} />
-          </button>
-        </details>
+            <p>
+              New purchase: <strong>{d.actionLabels.entry}</strong> · Existing
+              holding: <strong>{d.actionLabels.holding}</strong>
+            </p>
+            <Link
+              href={`${prefix}/alerts?symbol=${encodeURIComponent(r.company.symbol)}`}
+            >
+              <Bell size={15} /> Set an alert
+            </Link>
+            <button className="text-link" onClick={() => onTab("Valuation")}>
+              See valuation assumptions <ArrowRight size={15} />
+            </button>
+          </details>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

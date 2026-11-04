@@ -12,10 +12,11 @@
   --blue: #2163d5;
   --blue-soft: #edf3ff;
 }
-:root, :root[data-theme="light"] {
+:root,
+:root[data-theme="light"] {
   color-scheme: light;
-  --bg: #f7f8fa;
-  --paper: #f7f8fa;
+  --bg: #f6f5f1;
+  --paper: #f6f5f1;
   --card: #ffffff;
   --surface: #f0f3f7;
   --surface-2: #f7f8fa;
@@ -30,6 +31,8 @@
   --red-soft: #fff0ef;
   --amber: #99641a;
   --amber-soft: #fff6e8;
+  --cyan: #087b96;
+  --cyan-soft: #e7f5fa;
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
@@ -51,6 +54,8 @@
   --red-soft: #422b30;
   --amber: #e7bc72;
   --amber-soft: #3e3526;
+  --cyan: #85d5ec;
+  --cyan-soft: #1c3541;
 }
 html {
   min-height: 100%;
@@ -73,17 +78,34 @@ body {
   line-height: 1.55;
   -webkit-text-size-adjust: 100%;
 }
-*, *::before, *::after { box-sizing: border-box; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-button, select, summary { cursor: pointer; }
-button:disabled { cursor: not-allowed; }
+button,
+select,
+summary {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+}
 
-img, svg { max-width: 100%; }
+img,
+svg {
+  max-width: 100%;
+}
 :where(button, a, input, select, textarea, summary):focus-visible {
   outline: 3px solid var(--blue);
   outline-offset: 3px;
 }
-html:has(dialog[open]) { overflow: hidden; }
+html:has(dialog[open]) {
+  overflow: hidden;
+}
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
+  html {
+    scroll-behavior: auto;
+  }
 }

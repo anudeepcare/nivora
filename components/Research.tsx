@@ -495,9 +495,41 @@ export default function Research({ symbol }: { symbol: string }) {
           </button>
         </div>
       )}
-      <label className={experience.researchPicker}>Research section<select value={tab} onChange={e=>switchTab(e.target.value as (typeof tabs)[number])}>{visible.map(key=><option key={key} value={key}>{tabPresentation[key].label}</option>)}</select></label>
-      <nav className={experience.researchNav} aria-label="Research sections" ref={researchNavigation}>
-        {visible.map(key=><button key={key} aria-current={tab===key?'page':undefined} aria-controls={key==='Snapshot'?'research-overview':'research-content'} onClick={()=>switchTab(key)}>{tabPresentation[key].label}</button>)}
+      <label className={experience.researchPicker}>
+        Research section
+        <select
+          value={tab}
+          onChange={(e) => switchTab(e.target.value as (typeof tabs)[number])}
+        >
+          {visible.map((key) => (
+            <option key={key} value={key}>
+              {tabPresentation[key].label}
+            </option>
+          ))}
+        </select>
+      </label>
+      <nav
+        className={experience.researchNav}
+        aria-label="Research sections"
+        ref={researchNavigation}
+      >
+        {visible.map((key) => {
+          const Icon = tabPresentation[key].icon;
+          return (
+            <button
+              key={key}
+              data-section={key}
+              aria-current={tab === key ? "page" : undefined}
+              aria-controls={
+                key === "Snapshot" ? "research-overview" : "research-content"
+              }
+              onClick={() => switchTab(key)}
+            >
+              <Icon size={16} />
+              {tabPresentation[key].label}
+            </button>
+          );
+        })}
       </nav>
       <div id="research-overview" hidden={tab !== "Snapshot"}>
         <FeatureGate
