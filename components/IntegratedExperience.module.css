@@ -163,7 +163,7 @@
 .overview {
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(300px, .85fr);
-  grid-template-areas:"chart pace" "metrics metrics";
+  grid-template-areas:"chart pace" "scenarios scenarios" "metrics metrics";
   margin-bottom:16px;
   gap: 16px;
   align-items: start;
@@ -275,35 +275,7 @@
 .heroVisual {
   width: 100%;
 }
-.heroVisual > section {
-  display: grid;
-  grid-template-columns: 0.8fr 1.2fr;
-  column-gap:24px;
-  grid-template-rows: auto auto auto auto;
-  padding: 30px 42px;
-  border-radius: 28px;
-  min-height: 300px;
-}
-.heroVisual > section > header {
-  grid-column: 1;
-}
-.heroVisual > section > div:nth-child(2) {
-  grid-column: 1;
-}
-.heroVisual > section > div:nth-child(3) {
-  grid-column: 2;
-  grid-row: 1/6;
-  width: 100%;
-  align-self: center;
-}
-.heroVisual > section > div:nth-child(4),
-.heroVisual > section > p,
-.heroVisual > section > details {
-  grid-column: 1;
-}
-.heroVisual > section > footer {
-  grid-column: 1/3;
-}
+.heroVisual > section {width:100%;}
 .heroCopy {
   display: flex;
   justify-content: space-between;
@@ -485,7 +457,7 @@
   }
   .overview {
     grid-template-columns: 1fr;
-    grid-template-areas:"pace" "metrics" "chart";
+    grid-template-areas:"pace" "chart" "scenarios" "metrics";
   }
   .researchNav {
     display: flex;
@@ -624,3 +596,34 @@
     font-size: 27px;
   }
 }
+
+.bottom {padding-top:0;border:0;align-items:start;}
+.bottom>section,.bottom>div {min-width:0;padding:20px;border:1px solid var(--line);border-radius:16px;background:var(--card);}
+.bottom>div:first-child {background:linear-gradient(135deg,var(--card) 50%,var(--financial-fill));}
+.bottom :global(.analyst-target-kicker) {font-size:16px;color:var(--ink);font-weight:650;}
+.bottom :global(.analyst-target-fallback) {padding:0;margin:0;border:0;background:transparent;}
+
+/* Public composition uses the same brand instrument without nested positioning. */
+.hero {display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.9fr);align-items:center;gap:48px;padding-top:64px;padding-bottom:64px;}
+.heroCopy {grid-column:1;grid-row:1;display:block;}
+.heroVisual {grid-column:2;grid-row:1;}
+.heroCopy h1 {font-weight:600;font-size:clamp(36px,4.4vw,62px);}
+.heroActions {flex-direction:row;margin-top:26px;min-width:0;flex-wrap:wrap;}
+.heroActions a {background:#24272b;color:#f7f8f5;border-radius:8px;}
+.heroVisual>section {display:block;min-height:0;padding:24px;border-radius:12px;}
+.stockIdentity {border-left:4px solid #d6f35a;padding-left:16px;}
+@media(max-width:800px){.hero {display:flex;flex-direction:column;gap:28px;padding:32px 18px}.heroCopy{order:0}.heroVisual{order:1}.heroCopy h1{font-size:38px}.heroActions a{font-size:14px}.heroVisual>section{padding:18px}.overview{grid-template-areas:"pace" "chart" "scenarios" "metrics"}}
+
+.scenarios {grid-area:scenarios;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;}
+.scenario {display:grid;grid-template-columns:44px minmax(0,1fr) minmax(70px,.7fr);align-items:center;gap:12px;padding:18px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);text-align:left;font:inherit;color:var(--ink);}
+.scenario i {font-style:normal;display:grid;place-items:center;width:44px;height:44px;font-size:34px;border-radius:7px;background:#fbe1dc;color:#a83e33;}
+.scenario strong {display:block;font-size:17px;line-height:1.3;margin-bottom:8px;}
+.scenario small {display:block;color:var(--muted);font-size:12px;line-height:1.45;}
+.scenario svg {width:100%;color:#d17c70;border-left:1px solid var(--line);}
+.scenario[data-case="Base"] i {background:#eee7f7;color:#634585;}
+.scenario[data-case="Base"] svg {color:#b99ae8;}
+.scenario[data-case="Bull"] i {background:#d8f2e8;color:#176b53;}
+.scenario[data-case="Bull"] svg {color:#71c9a9;}
+.scenario:hover {border-color:var(--ink);}
+@media(max-width:1000px){.scenario{grid-template-columns:36px 1fr;padding:14px}.scenario svg{grid-column:1/3;height:44px;border:0}.scenario i{width:36px;height:36px}.scenario strong{font-size:15px}}
+@media(max-width:600px){.scenarios{grid-template-columns:1fr;gap:8px}.scenario{grid-template-columns:40px 1fr 86px;gap:10px}.scenario svg{grid-column:auto;height:auto}.scenario strong{margin-bottom:4px}.scenario small{font-size:12px}}

@@ -330,17 +330,14 @@ test("Settings presents compact groups on one page without duplicate account sum
     1,
   );
   assert.equal(nodes(tree, (n) => n.props?.hidden === true).length, 0);
-  const groups = nodes(tree, (n) => n.type === "details");
-  assert.equal(groups.length, 3);
-  assert.ok(
-    groups[0].props.open && groups.slice(1).every((group) => !group.props.open),
-    "Display settings are visible; account and research controls remain expandable",
-  );
+  assert.equal(nodes(tree, (n) => n.type === "details").length, 0,
+    "Settings sections are directly visible without extra disclosure steps");
+  assert.equal(nodes(tree, (n) => n.type === "header").length, 3);
   assert.equal(
     nodes(tree, (n) => n.type === "input" && n.props.type === "password")
       .length,
     1,
-    "Account controls remain available inside their disclosure",
+    "Account controls remain directly available",
   );
   assert.equal(
     nodes(tree, (n) => n.type === "Link" && n.props.href === "/preview/plans")

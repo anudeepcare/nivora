@@ -69,7 +69,7 @@ export default function ScenarioCompass({
                 aria-pressed={selected === i}
                 onClick={() => setSelected(i)}
               >
-                <span>{c.name}</span>
+                <span><i className="scenario-symbol" aria-hidden="true">{i === 0 ? "↘" : i === 1 ? "↔" : "↗"}</i>{c.name}</span>
                 <strong>{amount(c.target, forecast.currency)}</strong>
                 <small>
                   {current != null

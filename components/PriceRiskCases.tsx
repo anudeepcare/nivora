@@ -53,7 +53,7 @@ export default function PriceRiskCases({
                 aria-pressed={selected === i}
                 onClick={() => setSelected(i)}
               >
-                <span>{c.name}</span>
+                <span><i className="scenario-symbol" aria-hidden="true">{i === 0 ? "↘" : i === 1 ? "↔" : "↗"}</i>{c.name}</span>
                 <strong>{amount(c.target, s.currency)}</strong>
                 <small className={c.change < 0 ? "negative" : "positive"}>
                   {percent(c.change, true)}

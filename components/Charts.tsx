@@ -42,7 +42,7 @@ export function PriceChart({
     const ink =
       palette.getPropertyValue("--muted").trim() ||
       (theme === "dark" ? "#a8b9c5" : "#5e6e79");
-    const accent = palette.getPropertyValue("--blue").trim() || "#2267d8";
+    const accent = palette.getPropertyValue("--ink").trim() || "#24272b";
     const grid =
       palette.getPropertyValue("--line").trim() ||
       (theme === "dark" ? "#2a3b47" : "#e2e7ec");
@@ -186,7 +186,7 @@ export function PriceChart({
         series.current!.createPriceLine({
           price: l.price,
           title: l.label,
-          color: ["#0d9488", "#6366f1", "#a475d5", "#c17c27"][index % 4],
+          color: ["#68ae94", "#916bb8", "#809a39", "#b46f5a"][index % 4],
           lineWidth: 1,
           lineStyle: 2,
           axisLabelVisible: true,

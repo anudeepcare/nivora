@@ -1,6 +1,6 @@
 /* White navigation shared across all workspace routes. */
 .shell { display:block; width:100%; padding:0; min-height:100dvh; background:var(--app-background); color:var(--ink); }
-.header { position:sticky; top:0; z-index:40; display:flex; align-items:center; gap:24px; min-height:72px; padding:10px max(24px,calc((100vw - 1440px)/2)); border-bottom:1px solid var(--line); background:var(--glass); backdrop-filter:blur(20px); }
+.header { position:sticky; top:0; z-index:40; display:flex; align-items:center; gap:16px; min-height:72px; padding:10px max(24px,calc((100vw - 1440px)/2)); border-bottom:1px solid var(--line); background:var(--glass); backdrop-filter:blur(20px); }
 .brand { display:inline-flex; align-items:center; gap:9px; color:var(--ink); font-size:21px; font-weight:500; letter-spacing:.03em; text-decoration:none; white-space:nowrap; }
 .brand img { flex:none; }
 .nav { display:flex; align-items:center; gap:4px; min-width:0; }
@@ -9,7 +9,7 @@
 .nav a[aria-current="page"] { color:var(--blue); }
 .nav a[aria-current="page"]::after { content:""; position:absolute; bottom:0; left:12px; right:12px; height:3px; border-radius:3px; background:var(--blue); }
 .nav a:hover,.nav button:hover { color:var(--blue); background:var(--blue-soft); border-radius:8px; }
-.searchTrigger { margin-left:auto; display:flex; align-items:center; gap:8px; width:min(300px,25vw); min-width:44px; min-height:44px; padding:10px 12px; border:1px solid var(--line); border-radius:10px; background:var(--card); color:var(--muted); font:inherit; font-size:14px; text-align:left; }
+.searchTrigger { margin-left:auto; display:flex; align-items:center; gap:8px; width:min(270px,21vw); min-width:44px; min-height:44px; padding:10px 12px; border:1px solid var(--line); border-radius:10px; background:var(--card); color:var(--muted); font:inherit; font-size:14px; text-align:left; }
 .searchTrigger svg { flex:none; }
 .searchTrigger kbd { margin-left:auto; font-size:11px; white-space:nowrap; }
 .actions { display:flex; align-items:center; gap:6px; }
@@ -41,8 +41,21 @@
 }
 :global([data-keyboard-open="true"]) .dock { display:none; }
 
-.shell .header .nav a[aria-current="page"] {background:#edf1ff;color:#2444b7;border-radius:9px;font-weight:600;box-shadow:inset 0 -3px #3155d9;}
-.shell .header .nav a[aria-current="page"]::after {display:none;}
-:global([data-theme="dark"]) .shell .header .nav a[aria-current="page"] {background:#253455;color:#c4d2ff;}
+.shell .header .nav a {gap:7px;border-radius:0;background:transparent;box-shadow:none;color:var(--muted);}
+.shell .header .nav a>svg {display:block;width:17px;height:17px;}
+.shell .header .nav a[aria-current="page"] {color:var(--ink);font-weight:600;background:transparent;box-shadow:none;border-radius:0;}
+.shell .header .nav a[aria-current="page"]::after {display:block;height:2px;background:var(--ink);bottom:0;}
+.shell .header .nav a:hover {background:transparent;color:var(--ink);}
 .shell .brand {font-weight:650;letter-spacing:.06em;}
-.shell .dock a[aria-current="page"] {background:#edf1ff;color:#2444b7;box-shadow:inset 0 3px #3155d9;font-weight:600;}
+.shell .dock a[aria-current="page"] {background:transparent;color:var(--ink);box-shadow:none;font-weight:600;}
+.shell .dock a[aria-current="page"] svg {color:var(--blue);}
+.shell .actions a[aria-label="Settings"] {display:grid;}
+.shell .actions a[aria-current="page"] {outline:1px solid var(--line);background:var(--surface);}
+
+/* Flat reference navigation; direct settings is available at every breakpoint. */
+.shell .brand {letter-spacing:.14em;font-weight:550;}
+.shell .brand img {width:40px;height:42px;object-fit:contain;}
+.shell .actions a[aria-label="Settings"] {display:flex;align-items:center;gap:8px;width:auto;padding:0 8px;}
+.shell .header .nav a[aria-current="page"]::after {box-shadow:0 2px 0 #d6f35a;}
+.shell .actions button:last-child {background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:50%;}
+@media(max-width:767px){.shell .actions a[aria-label="Settings"]{display:flex;width:44px;padding:0;justify-content:center}.shell .actions a[aria-label="Settings"] span{display:none}.shell .brand img{width:32px;height:34px}.shell .brand{font-size:18px}.shell .actions{gap:2px}}

@@ -58,6 +58,24 @@ export default function IntegratedResearch({
           onHistory={() => onTab("Technicals")}
         />
         <div className={s.chart}>{chart}</div>
+        <div className={s.scenarios} aria-label="Explore valuation scenarios">
+          {[
+            ["Bear", "More challenging conditions and lower earnings power.", "↘"],
+            ["Base", "A balanced path with steady execution.", "↔"],
+            ["Bull", "A more favorable backdrop with stronger momentum.", "↗"],
+          ].map(([name, description, icon], i) => (
+            <button key={name} className={s.scenario} data-case={name} onClick={() => onTab("Valuation")} aria-label={`Explore ${name.toLowerCase()} scenario assumptions`}>
+              <i aria-hidden="true">{icon}</i>
+              <span><strong>{name} scenario</strong><small>{description}</small></span>
+              <svg viewBox="0 0 120 70" aria-hidden="true">
+                <path d={`M40 36 L118 ${i === 0 ? 24 : i === 1 ? 12 : 2} L118 ${i === 0 ? 68 : i === 1 ? 60 : 44} Z`} fill="currentColor" opacity=".12"/>
+                <path d={`M40 36 L118 ${i === 0 ? 38 : i === 1 ? 26 : 12} L118 ${i === 0 ? 57 : i === 1 ? 48 : 34} Z`} fill="currentColor" opacity=".12"/>
+                <path d="M0 42 7 39 13 41 22 35 29 37 35 34 40 36" fill="none" stroke="var(--ink)" strokeWidth="1.5"/>
+                <path d={`M40 36 Q80 34 118 ${i === 0 ? 48 : i === 1 ? 36 : 23}`} fill="none" stroke="currentColor" strokeDasharray="3 3"/>
+              </svg>
+            </button>
+          ))}
+        </div>
         <div className={s.overviewMetrics}><ResearchEvidenceGrid research={r} onTab={onTab} /></div>
       </div>
       <div className={s.analysis}>

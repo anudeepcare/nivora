@@ -126,3 +126,28 @@ body :is(.num,.pricing-amount) {font-variant-numeric:tabular-nums;letter-spacing
 .product.approved-product .wealth-strip .help-trigger {font-size:inherit;color:var(--muted);font-weight:400;}
 .product.approved-product .approved-workspace-dialog .dialog-head {padding-bottom:16px;margin-bottom:16px;}
 .product.approved-product .approved-workspace-dialog form {gap:16px;}
+
+/* Shared concept details: quiet neutral controls, semantic scenario cards. */
+.compass-cases button .scenario-symbol {display:inline-grid;place-items:center;width:44px;height:44px;border-radius:8px;font-style:normal;font-size:30px;line-height:1;margin-right:12px;background:#eee7f7;color:#634585;}
+.compass-cases button:first-child .scenario-symbol {background:#fbe1dc;color:#a83e33;}
+.compass-cases button:last-child .scenario-symbol {background:#d8f2e8;color:#176b53;}
+.compass-cases button>span {display:flex;align-items:center;}
+.compass-cases button {border-radius:12px;}
+:root .segments button.active,:root .segments button[aria-pressed="true"],:root .chart-periods button.active {background:#e6f6ac;color:#24272b;border-color:#d6f35a;box-shadow:none;}
+:root .button.primary {background:#24272b;border-color:#24272b;color:#f7f8f5;box-shadow:none;}
+:root[data-theme="dark"] .button.primary {background:#d6f35a;border-color:#d6f35a;color:#24272b;}
+:root[data-theme="dark"] .compass-cases button .scenario-symbol {color:#e3cff8;background:#483554;}
+:root[data-theme="dark"] .compass-cases button:first-child .scenario-symbol {color:#ffc0b0;background:#53352e;}
+:root[data-theme="dark"] .compass-cases button:last-child .scenario-symbol {color:#afe6cf;background:#254b3c;}
+@media(max-width:600px){.compass-cases{gap:8px}.compass-cases button .scenario-symbol{width:32px;height:32px;font-size:24px;margin-right:6px}.compass-cases button>span{flex-wrap:wrap;gap:6px}}
+:root[data-theme="dark"] body :is(.button.primary,.btn.primary) {background:#d6f35a;border-color:#d6f35a;color:#24272b;}
+:root .signal-chart :is(button[aria-pressed="true"]),:root [aria-label="Chart period"] button[aria-pressed="true"] {background:#e6f6ac;color:#24272b;border-color:#d6f35a;box-shadow:none;}
+/* Compact Pace evidence uses the same diamond identity on lists and technicals. */
+.pace-action strong::before,.pace-period>strong::before {content:"";display:inline-block;width:20px;height:22px;margin-right:8px;vertical-align:middle;background:url('/pace-diamond.svg') center/contain no-repeat;}
+.approved-watch-table .pace-guidance-compact {padding:6px 0;margin:0;border:0;background:transparent;}
+.approved-watch-table .pace-action {display:flex;align-items:center;justify-content:flex-end;gap:8px;}
+.approved-watch-table .pace-action strong {font-size:15px;}
+.approved-watch-table .pace-assessment-label {font-size:10px;}
+.approved-watch-table .pace-reading-note {margin:3px 0;}
+.approved-watch-table td {padding-top:12px;padding-bottom:12px;}
+:root body .segment button[aria-pressed="true"],:root body .segment button.active {background:#e6f6ac;color:#24272b;border-color:#d6f35a;box-shadow:none;}

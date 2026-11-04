@@ -6,11 +6,11 @@
 }
 .panel {
   --category: var(--financial-icon);
-  --category-bg: var(--blue-soft);
+  --category-bg: #eee7f7;
   min-width: 0;
   border: 1px solid var(--line);
 
-  border-radius: 18px;
+  border-radius: 12px;
   padding: 20px;
   background:var(--card);
   box-shadow:var(--panel-shadow);
@@ -18,17 +18,17 @@
 .panel[data-category="business"] {
   --category: var(--business-icon);
   background:var(--card);
-  --category-bg: var(--blue-soft);
+  --category-bg: #d8f2e8;
 }
 .panel[data-category="valuation"] {
   --category: var(--valuation-icon);
   background:var(--card);
-  --category-bg: var(--blue-soft);
+  --category-bg: #edf5c9;
 }
 .panel[data-category="ownership"] {
   --category: var(--ownership-icon);
   background:var(--card);
-  --category-bg: var(--blue-soft);
+  --category-bg: #eee7f7;
 }
 .panel header {
   display: flex;

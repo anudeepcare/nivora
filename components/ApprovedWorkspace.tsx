@@ -61,12 +61,12 @@ import ApprovedPortfolioChart from "./ApprovedPortfolioChart";
 import { PositionEditor, WatchlistNote } from "./ApprovedWorkspaceForms";
 
 const colors = [
-  "#315ff4",
-  "#7792eb",
-  "#329b8e",
-  "#a18bd1",
-  "#c69a42",
-  "#78939e",
+  "#b99ae8",
+  "#b6ce58",
+  "#68ae94",
+  "#8b6eae",
+  "#d28b78",
+  "#7b8a85",
 ];
 const previewBalances = { balances: null };
 const emptyFeed: HomeFeed = {
@@ -489,8 +489,7 @@ function HomeOverview() {
       (a, b) => (b.signal!.multiplier ?? -1) - (a.signal!.multiplier ?? -1),
     );
   const best = signals[0];
-  const featuredSymbol = largest?.symbol ?? symbols[0];
-  const featuredPace = featuredSymbol ? pace(featuredSymbol) : null;
+
   const eventGroups = groupMarketEvents(brief.checkpoints);
   const hour = today.getHours(),
     greeting =
@@ -536,10 +535,20 @@ function HomeOverview() {
             <ApprovedPortfolioChart positions={workspace.positions} quotes={quotes.data} />
           </div>
         </section>
-        <div className={homeStyles.pace}>
-          <Link className={homeStyles.featured} href={featuredSymbol ? researchLink(featuredSymbol, prefix) : `${prefix}/research`}>{featuredSymbol && <SecurityLogo symbol={featuredSymbol}/>}<span>{names[featuredSymbol] ?? featuredSymbol ?? "Your research"}<small>{largest ? "Your largest priced position" : "Build your research context"}</small></span><ArrowUpRight size={16}/></Link>
-          {featuredPace ? <PaceInstrument view={featuredPace.view} readings={featuredPace.periods}/> : <section className={homeStyles.paceEmpty}><span className="eyebrow">AURYN PACE</span><h2>Put the price in context.</h2><p>Open the company’s research to check business quality and its latest accumulation reading.</p><Link className="button" href={featuredSymbol ? researchLink(featuredSymbol, prefix) : `${prefix}/research`}>Explore {featuredSymbol} <ArrowUpRight size={16}/></Link></section>}
-        </div>
+        <section className={homeStyles.watchboard} aria-label="Your company watchboard">
+          <SectionHead title="On your radar" subtitle="Your companies, together." action={<Link href={`${prefix}/research`}>View all <ArrowUpRight size={15}/></Link>}/>
+          {symbols.slice(0, 6).map(symbol => {
+            const quote = quotes.data[symbol]?.quote;
+            const reading = pace(symbol);
+            return <Link className={homeStyles.radarRow} href={researchLink(symbol, prefix)} key={symbol}>
+              <SecurityLogo symbol={symbol}/>
+              <span><strong>{symbol}</strong><small>{names[symbol] ?? "Open company research"}</small></span>
+              <span><strong>{quote?.price != null ? amount(quote.price, quote.currency) : "—"}</strong><small className={quote?.changePct == null ? "muted" : quote.changePct < 0 ? "negative" : quote.changePct > 0 ? "positive" : "muted"}>{quote?.changePct == null ? "Change unavailable" : percent(quote.changePct, true)}</small></span>
+              <small className={homeStyles.radarPace}>{reading ? `${reading.view.code} · ${reading.view.actionLabel}` : "Research"}</small>
+            </Link>;
+          })}
+          <p className={homeStyles.radarNote}>Pace appears when research is loaded. Open a company for its dated evidence.</p>
+        </section>
       </div>}
       <section className="home-next-step" aria-label="Your next step">
         <div className="home-next-copy">
@@ -927,7 +936,7 @@ function HomeOverview() {
             </span>
             <ArrowUpRight size={17} />
           </Link>
-          <PaceHelp trigger="Understand AURYN Pace" />
+
         </section>
       </div>
     </section>

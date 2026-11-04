@@ -276,21 +276,14 @@ function SignedInPlans() {
           </button>
         ) : null}
       </section>
-      {a.plan === "pro" ? <details className="membership-comparison"><summary>Compare membership options</summary>      <PricingCards
+      <PricingCards
         config={billing?.config}
         access={a}
         ready={!!billing?.ready}
         busy={busy}
         publicPage={false}
         onUpgrade={() => void open("checkout")}
-      /></details> : (      <PricingCards
-        config={billing?.config}
-        access={a}
-        ready={!!billing?.ready}
-        busy={busy}
-        publicPage={false}
-        onUpgrade={() => void open("checkout")}
-      />)}
+      />
 
       {billing?.mode === "test" && billing.ready && (
         <p className="plans-footnote">Test checkout · no real charges.</p>

@@ -57,6 +57,9 @@ export default function PaceInstrument({
           <Info size={19} />
         </button>
       </header>
+      <div className={s.readout}>
+        <img className={s.crystal} src="/pace-diamond.svg" alt="" width="120" height="128" />
+        <div className={s.readoutText}>
       <div className={s.title}>
         <small>
           {exploring ? "Explore the framework" : "Your contribution context"}
@@ -88,6 +91,8 @@ export default function PaceInstrument({
             />
           </button>
         ))}
+      </div>
+        </div>
       </div>
       <div className={s.status}>
         <span>

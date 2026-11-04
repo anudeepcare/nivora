@@ -166,38 +166,35 @@ export function Settings() {
         </Link>
       </div>
       <div className="workspace-settings-groups">
-        <details className="workspace-setting-group" open>
-          <summary>
+        <section className="workspace-setting-group">
+          <header>
             <span>
               <strong>Display & reading</strong>
               <small>Theme, text and accessibility</small>
             </span>
-            <ChevronRight size={19} />
-          </summary>
+          </header>
           <div className="workspace-setting-body">
             <DisplayPreferences />
           </div>
-        </details>
-        <details className="workspace-setting-group">
-          <summary>
+        </section>
+        <section className="workspace-setting-group">
+          <header>
             <span>
               <strong>Research preferences</strong>
               <small>How you want evidence presented</small>
             </span>
-            <ChevronRight size={19} />
-          </summary>
+          </header>
           <div className="workspace-setting-body">
             <ResearchPreferenceControls />
           </div>
-        </details>
-        <details className="workspace-setting-group">
-          <summary>
+        </section>
+        <section className="workspace-setting-group">
+          <header>
             <span>
               <strong>Account & security</strong>
               <small>Sign-in methods and password</small>
             </span>
-            <ChevronRight size={19} />
-          </summary>
+          </header>
           <div className="workspace-setting-body">
             {!!account?.providers.length && (
               <div
@@ -241,7 +238,7 @@ export function Settings() {
               </button>
             </form>
           </div>
-        </details>
+        </section>
       </div>
       <nav
         className="workspace-settings-shortcuts"
