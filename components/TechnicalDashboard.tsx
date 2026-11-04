@@ -1,4 +1,5 @@
 "use client";
+import layout from "./ResearchMetrics.module.css";
 import { useMemo, useRef } from "react";
 import { X } from "lucide-react";
 import type { Research } from "@/lib/types";
@@ -254,7 +255,7 @@ export default function TechnicalDashboard({
       return (x < 0 ? 99 : x) - (y < 0 ? 99 : y);
     });
   return (
-    <section className="technical-dashboard depth-technicals">
+    <section className={`technical-dashboard depth-technicals ${layout.panel}`}>
       <header className="technical-desk-heading">
         <div>
           <span className="eyebrow">TECHNICALS · COMPLETED DAILY EVIDENCE</span>

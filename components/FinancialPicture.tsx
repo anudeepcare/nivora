@@ -1,4 +1,5 @@
 "use client";
+import layout from "./ResearchMetrics.module.css";
 import { useMemo, useState } from "react";
 import type { Research } from "@/lib/types";
 import { researchPeriods, type FinancialScope } from "@/lib/financial-catalog";
@@ -180,7 +181,7 @@ export default function FinancialPicture({
   const bridgeY = (value: number) =>
     115 - ((value - bridgeLow) / Math.max(1e-9, bridgeHigh - bridgeLow)) * 80;
   return (
-    <section className="financial-picture depth-financial">
+    <section className={`financial-picture depth-financial ${layout.panel}`}>
       <header className="section-head">
         <div>
           <h2>Financials</h2>

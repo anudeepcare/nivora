@@ -15,13 +15,13 @@
 :root,
 :root[data-theme="light"] {
   color-scheme: light;
-  --bg: #f6f5f1;
-  --paper: #f6f5f1;
+  --bg: #f5f7fa;
+  --paper: #f5f7fa;
   --card: #ffffff;
   --surface: #f0f3f7;
   --surface-2: #f7f8fa;
-  --ink: #202b3b;
-  --text: #202b3b;
+  --ink: #162638;
+  --text: #162638;
   --muted: #59677b;
   --line: #dce2ea;
   --border: #dce2ea;

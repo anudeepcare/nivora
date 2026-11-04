@@ -45,6 +45,7 @@
   color: #b9c9da;
 }
 .title h2 {
+  color: #f4f7fc;
   font-family: Georgia, serif;
   font-size: clamp(27px, 2.7vw, 37px);
   font-weight: 400;
@@ -195,6 +196,7 @@
     margin-top: 8px;
   }
   .title h2 {
+  color: #f4f7fc;
     font-size: 28px;
   }
   .terraces {

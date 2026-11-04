@@ -22,6 +22,7 @@ import {
 import type { Position, Research } from "@/lib/types";
 import type { QuoteRows } from "@/lib/portfolio-quotes";
 import type { AccountBalances as Balances } from "@/lib/account-balances";
+import homeStyles from "./HomeWorkspace.module.css";
 import type { HomeFeed } from "@/lib/home-feed";
 import {
   groupMarketEvents,
@@ -501,7 +502,7 @@ function HomeOverview() {
           ? researchLink(brief.symbol, prefix)
           : `${prefix}/research`;
   return (
-    <section className="approved-workspace approved-home home-decision-view">
+    <section className={`approved-workspace approved-home home-decision-view ${homeStyles.home}`}>
       <Heading
         title={`${greeting}${displayName ? `, ${displayName}` : ""}.`}
         subtitle="Your companies. The changes worth a closer look."
@@ -1879,7 +1880,7 @@ export function ResearchHome() {
     ]),
   ];
   return (
-    <section className="approved-workspace approved-research-home">
+    <section className={`approved-workspace approved-research-home ${homeStyles.research}`}>
       <Heading
         title="Your next decision, in focus."
         subtitle="Explore the business, understand the price and build your perspective."

@@ -1,4 +1,5 @@
 "use client";
+import layout from "./Plans.module.css";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/client";
@@ -45,7 +46,7 @@ export function PricingCards({
     });
   const owner = access?.owner;
   return (
-    <div className="pricing-cards">
+    <div className={`pricing-cards ${layout.cards}`}>
       {(["pro", "free"] as const).map((plan) => (
         <section
           key={plan}
@@ -300,11 +301,11 @@ export default function Plans({
   publicPage?: boolean;
 }) {
   return (
-    <div className={`plans-page ${publicPage ? "plans-public" : ""}`}>
+    <div className={`plans-page ${layout.page} ${publicPage ? "plans-public" : ""}`}>
       {publicPage && (
         <nav aria-label="Plans navigation">
           <Link href="/" className="brand-link">
-            AURYN
+            <img src="/icon.svg" width="32" height="32" alt="" /> AURYN
           </Link>
           <Link href="/login">Sign in →</Link>
         </nav>

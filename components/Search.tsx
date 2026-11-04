@@ -1,4 +1,5 @@
 "use client";
+import searchStyles from "./Search.module.css";
 import { trackAnalytics } from "@/lib/analytics-policy";
 import { useId, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -178,7 +179,7 @@ export default function Search({
   return (
     <div
       ref={box}
-      className={`search ${large ? "large" : ""}`}
+      className={`search ${searchStyles.search} ${large ? "large" : ""}`}
       onBlur={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget)) setOpen(false);
       }}

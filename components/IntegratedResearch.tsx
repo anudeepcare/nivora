@@ -51,7 +51,6 @@ export default function IntegratedResearch({
   const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   return (
     <>
-      <ResearchEvidenceGrid research={r} onTab={onTab} />
       <div className={s.overview}>
         <PaceInstrument
           view={m.edge.pacePresentation}
@@ -116,6 +115,7 @@ export default function IntegratedResearch({
           </details>
         </div>
       </div>
+      <ResearchEvidenceGrid research={r} onTab={onTab} />
     </>
   );
 }

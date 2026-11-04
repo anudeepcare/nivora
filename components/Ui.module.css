@@ -3,3 +3,8 @@
 .empty>h2 { margin:0; max-width:40ch; color:var(--ink); font-size:22px; line-height:1.3; font-weight:550; }
 .empty>p { width:100%; max-width:58ch; margin:0 auto; color:var(--muted); font-size:14px; line-height:1.65; }
 @media(max-width:600px) { .empty { padding:28px 16px; } .empty>h2 { font-size:20px; } }
+
+.helpTrigger { display:inline-flex; align-items:center; gap:4px; min-height:28px; padding:2px 0; border:0; border-radius:3px; background:transparent; color:var(--muted); font:inherit; text-align:left; line-height:1.4; cursor:pointer; }
+.helpTrigger::after { content:"ⓘ"; font-size:11px; opacity:.7; }
+.helpTrigger:hover { color:var(--blue); }
+.helpTrigger:focus-visible { outline:2px solid var(--blue); outline-offset:3px; }

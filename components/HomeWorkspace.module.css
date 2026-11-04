@@ -1,0 +1,227 @@
+.home :global(.home-evidence-layout) {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  align-items: flex-start;
+  gap: 16px;
+  margin: 22px 0;
+}
+.home :global(.home-evidence-panel) {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--card);
+  box-shadow: none;
+}
+.home :global(.home-evidence-panel) :global(.section-head) {
+  margin-bottom: 16px;
+  gap: 16px;
+}
+.home :global(.home-section-count) {
+  flex-shrink: 0;
+  color: var(--muted);
+  font-size: 12px;
+  padding-top: 4px;
+}
+.home :global(.home-news-list) article {
+  padding: 17px 0;
+  border-top: 1px solid var(--line);
+}
+.home :global(.home-news-meta) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 12px;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.home :global(.home-news-meta) a {
+  color: var(--blue);
+  font-weight: 700;
+}
+.home :global(.home-news-title) {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.home :global(.home-news-title) > svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: var(--muted);
+}
+.home :global(.home-news-list) article > .text-link {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--blue);
+}
+.home :global(.home-more-updates) {
+  border-top: 1px solid var(--line);
+}
+.home :global(.home-more-updates) summary {
+  cursor: pointer;
+  padding: 14px 0;
+  font-size: 14px;
+  color: var(--blue);
+}
+.home :global(.home-more-updates) article {
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+.home :global(.home-more-updates) article > span {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.home :global(.home-more-updates) article > a {
+  display: flex;
+  gap: 8px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.home :global(.home-more-updates) svg {
+  flex-shrink: 0;
+}
+.home :global(.home-event-day) {
+  padding: 15px 0 4px;
+  border-top: 1px solid var(--line);
+}
+.home :global(.home-event-day) > time {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--muted);
+}
+.home :global(.home-event-row) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px 0;
+}
+.home :global(.home-event-row) > span {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3px 10px;
+}
+.home :global(.home-event-row) strong {
+  color: var(--ink);
+  font-size: 15px;
+}
+.home :global(.home-event-row) span > span {
+  font-size: 14px;
+  color: var(--muted);
+}
+.home :global(.home-event-row) small {
+  grid-column: 1/-1;
+  font-size: 12px;
+  color: var(--muted);
+}
+.home :global(.home-event-row) > svg {
+  flex-shrink: 0;
+  color: var(--blue);
+}
+.home :global(.home-quiet-state) {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+  padding: 17px 0 10px;
+}
+.home :global(.home-quiet-state) > svg {
+  color: var(--workspace-violet);
+}
+.home :global(.home-quiet-state) h3 {
+  font-size: 17px;
+  letter-spacing: -0.02em;
+}
+.home :global(.home-quiet-state) p {
+  font-size: 14px;
+  line-height: 1.65;
+}
+.home :global(.home-review-row) {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) 18px;
+  align-items: center;
+  gap: 13px;
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+}
+.home :global(.home-review-mark) {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 17px;
+  font-weight: 650;
+}
+.home :global(.home-review-row) strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.5;
+}
+.home :global(.home-review-row) small {
+  display: block;
+  margin-top: 4px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.home :global(.home-review-row) > svg {
+  color: var(--blue);
+}
+.home :global(.home-company) {
+  grid-template-columns: 36px minmax(0, 1fr) 70px auto;
+  gap: 12px;
+  min-height: 76px;
+}
+.home :global(.home-company) strong {
+  font-size: 14px;
+  line-height: 1.4;
+}
+.home :global(.home-company) small {
+  font-size: 12px;
+}
+.home :global(.home-company) :global(.row-quote) strong {
+  font-size: 15px;
+}
+.home :global(.home-company) :global(.row-quote) small {
+  font-size: 12px;
+}
+.home :global(.home-company) :global(.home-quote-asof) {
+  color: var(--muted);
+  font-size: 10px;
+}
+.home :global(.home-decision-view) :global(.approved-data-note) {
+  margin: 12px 0 18px;
+  font-size: 12px;
+}
+
+
+.home :global(.home-next-step) { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px 20px; align-items:center; padding:20px; margin:16px 0; border:1px solid var(--line); border-left:4px solid var(--blue); border-radius:12px; background:var(--card); }
+.home :global(.home-next-step) h2 { font-size:22px; margin:5px 0; }
+.home :global(.home-source-note) { grid-column:1/-1; font-size:11px; color:var(--muted); margin:0; }
+.home :global(.home-milestones) { margin-top:12px; font-size:12px; }
+.home :global(.home-milestone) { display:flex; align-items:center; gap:10px; padding:8px 0; }
+.home :global(.home-milestone-copy) { display:grid; gap:3px; }
+.home :global(.home-earnings-overview) { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+.home :global(.home-earnings-chip) { display:flex; align-items:center; gap:8px; padding:8px 10px; background:var(--blue-soft); border-radius:7px; font-size:12px; }
+.home :global(.wealth-strip) { display:grid; grid-template-columns:1.2fr 1.2fr .7fr auto; align-items:center; padding:18px; margin-bottom:16px; gap:16px; }
+.home :global(.approved-data-note) { margin:10px 0 16px; }
+@media(max-width:1000px) { .home :global(.home-evidence-layout) { grid-template-columns:1fr; } }
+@media(max-width:600px) { .home :global(.home-next-step) { grid-template-columns:1fr; padding:14px; } .home :global(.home-evidence-panel) { padding:14px; } }
+
+.research :global(.approved-research-search) { padding:18px; margin:0 0 20px; display:grid; gap:8px; border:1px solid var(--line); border-left:4px solid var(--blue); }
+.research :global(.approved-research-search)>h2 { font-size:18px; margin:0; }
+.research :global(.approved-research-search)>p { margin:0; font-size:12px; }
+.research :global(.approved-research-search)>:global(.eyebrow) { display:none; }
+.research :global(.approved-research-tile) { padding:12px 0; min-height:72px; }
+
+@media(max-width:800px) { .home :global(.wealth-strip) { grid-template-columns:repeat(2,minmax(0,1fr)); } }

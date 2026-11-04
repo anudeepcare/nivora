@@ -148,11 +148,7 @@ export default function Shell({
           className={experience.brand}
           aria-label="AURYN home"
         >
-          <span className={experience.brandMark} aria-hidden="true">
-            <i />
-            <i />
-            <i />
-          </span>
+          <img src="/icon.svg" width="32" height="32" alt="" />
           <span>AURYN</span>
         </Link>
         <div>
@@ -215,11 +211,7 @@ export default function Shell({
           className={`${experience.brand} ${experience.mobileBrand}`}
           aria-label="AURYN home"
         >
-          <span className={experience.brandMark} aria-hidden="true">
-            <i />
-            <i />
-            <i />
-          </span>
+          <img src="/icon.svg" width="32" height="32" alt="" />
           AURYN
         </Link>
         <button
