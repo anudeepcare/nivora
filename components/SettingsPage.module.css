@@ -106,7 +106,7 @@
   border: 0;
   border-bottom: 1px solid var(--line);
   border-radius: 14px;
-  background: var(--card);
+  background: var(--glass);
   overflow: visible;
   margin: 0 0 12px;
   padding: 18px;
@@ -179,7 +179,7 @@
   gap: 3px;
   border: 1px solid var(--line);
   border-radius: 9px;
-  background: var(--card);
+  background: var(--glass);
   padding: 3px;
   box-shadow: none;
 }
@@ -234,7 +234,7 @@
   min-height: 40px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: var(--card);
+  background: var(--glass);
   color: var(--ink);
   font-size: 12px;
 }
@@ -245,7 +245,7 @@
 .page :global(.density-options) button {
   border-radius: 8px;
   min-height: 40px;
-  background: var(--card);
+  background: var(--glass);
 }
 .page :global(.density-options) button[aria-pressed="true"] {
   background: var(--blue-soft);
@@ -335,3 +335,6 @@
     transition: none;
   }
 }
+
+.page :global(.workspace-account-row),.page :global(.workspace-settings-shortcuts) {padding:20px;background:var(--glass);border:1px solid var(--line);border-radius:18px;box-shadow:var(--panel-shadow);}
+.page :global(.workspace-setting-group) {padding:24px;background:var(--glass);border:1px solid var(--line);border-radius:18px;box-shadow:var(--panel-shadow);margin-bottom:16px;}

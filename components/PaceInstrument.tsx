@@ -16,7 +16,7 @@ const names = [
   "Add gradually",
   "Within your limits",
 ];
-const short = ["Pause", "Watch", "Initial", "Gradual", "Deep"];
+const short = ["Pause", "Watch", "Start", "Gradual", "Deep"];
 type Props = {
   view?: ReturnType<typeof pacePresentation>;
   readings?: ReturnType<typeof pacePeriods>;
@@ -58,6 +58,7 @@ export default function PaceInstrument({
         </button>
       </header>
       <div className={s.title}>
+        <svg className={s.crystal} viewBox="0 0 80 80" aria-hidden="true"><path fill="#d4ac5b" d="M40 5 72 36 40 74 8 36Z"/><path fill="#f5dfaa" d="m40 5 0 38-32-7Z"/><path fill="#f9edcc" d="m40 5 32 31-32 7Z"/><path fill="#bc8b37" d="m40 43 32-7-32 38Z"/><path fill="#e4c57e" d="m8 36 32 7v31Z"/><path fill="none" stroke="#fff8df" strokeWidth="1.5" d="m40 5 0 69M8 36l32 7 32-7"/></svg>
         <small>
           {exploring ? "Explore the framework" : "Your contribution context"}
         </small>

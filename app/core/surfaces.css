@@ -83,3 +83,25 @@ body .technical-desk-groups dd { overflow-wrap:normal; word-break:normal; font-v
 body .wealth-strip.four { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
 @media(max-width:900px) { body .wealth-strip.four { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media(max-width:420px) { body .wealth-strip.four { grid-template-columns:1fr; } }
+
+/* Shared Luminous surfaces, including legacy route content. */
+.product.approved-product .help-trigger::after {content:none;}
+.product.approved-product :is(.card,.panel,.detail-card,.home-evidence-panel,.research-universe-card,.settings-group,.plans-status) {background:var(--glass);border:1px solid var(--line);border-radius:18px;box-shadow:var(--panel-shadow);}
+.product.approved-product :is(.stat-grid,.metric-band,.statement-snapshot,.technical-level-grid,.advanced-metrics) {gap:12px;align-items:stretch;}
+.product.approved-product :is(.stat-grid,.metric-band,.statement-snapshot,.technical-level-grid,.advanced-metrics)>* {min-width:0;padding:18px;background:var(--glass);border:1px solid var(--line);border-radius:14px;}
+.product.approved-product :is(.stat-grid,.metric-band,.statement-snapshot,.technical-level-grid,.advanced-metrics) :is(strong,b) {font-variant-numeric:tabular-nums;overflow-wrap:normal;word-break:normal;}
+.product.approved-product :is(.mp-public,.mp-auth,.plans-page,.legal-page) {background:transparent;}
+.product.approved-product :is(.btn.primary,.button.primary) {box-shadow:0 3px 8px #17213114;}
+
+.membership-comparison {padding:22px;background:var(--glass);border:1px solid var(--line);border-radius:18px;margin:24px 0;}
+.membership-comparison>summary {font-size:16px;min-height:44px;}
+
+body :is(.mp-public,.mp-auth,.plans-public,.legal-page) {background:var(--app-background);background-attachment:fixed;}
+/* Pace readings share the instrument's gold marker without colored edge strips. */
+.product.approved-product .pace-period {border:1px solid var(--line);background:var(--glass);border-radius:14px;padding:18px;box-shadow:var(--panel-shadow);}
+.product.approved-product .pace-period>strong {color:var(--ink);font-weight:500;}
+.product.approved-product .pace-period>strong::before {content:"◆";color:var(--amber);font-size:14px;vertical-align:middle;margin-right:8px;}
+.product.approved-product .pace-period-forming {border-style:dashed;}
+.product.approved-product :is(.signal-analyst-summary,.technical-desk-groups>section) {border:1px solid var(--line);background:var(--glass);box-shadow:var(--panel-shadow);border-radius:18px;}
+:root[data-theme="dark"] body :is(.ranges,.segments,.segment) :is(button.active,button[aria-pressed="true"]) {color:#18212d;}
+:root[data-theme="dark"] body :is(.button.primary,.btn.primary) {color:#18212d;}

@@ -1,5 +1,5 @@
-:root[data-accent="blue"]{--blue:#96345f;--accent-solid:#96345f;--blue-soft:#f9edf2;}
-:root[data-theme="dark"][data-accent="blue"]{--blue:#f0a9c4;--blue-soft:#382735;}
+:root[data-accent="blue"]{--blue:#343b48;--accent-solid:#343b48;--blue-soft:#eef0f4;}
+:root[data-theme="dark"][data-accent="blue"]{--blue:#d7dfed;--blue-soft:#30394a;}
 /* Appearance tokens: scoped to accents and spacing, never financial meaning or PWA geometry. */
 :root[data-accent="teal"] {--blue:#00777d;--accent-solid:#006d73;--blue-soft:color-mix(in srgb,#00777d 10%,var(--surface));}
 :root[data-accent="violet"] {--blue:#7046cf;--accent-solid:#7046cf;--blue-soft:color-mix(in srgb,#7046cf 10%,var(--surface));}

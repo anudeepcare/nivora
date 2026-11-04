@@ -10,23 +10,24 @@
   min-width: 0;
   border: 1px solid var(--line);
 
-  border-radius: 10px;
-  padding: 14px;
-  background: var(--financial-fill);
+  border-radius: 18px;
+  padding: 20px;
+  background:linear-gradient(140deg,var(--glass) 65%,var(--surface));
+  box-shadow:var(--panel-shadow);
 }
 .panel[data-category="business"] {
   --category: var(--business-icon);
-  background:var(--business-fill);
+  background:linear-gradient(140deg,var(--glass) 65%,var(--amber-soft));
   --category-bg: var(--green-soft);
 }
 .panel[data-category="valuation"] {
   --category: var(--valuation-icon);
-  background:var(--valuation-fill);
+  background:linear-gradient(140deg,var(--glass) 65%,var(--amber-soft));
   --category-bg: var(--amber-soft);
 }
 .panel[data-category="ownership"] {
   --category: var(--ownership-icon);
-  background:var(--ownership-fill);
+  background:linear-gradient(140deg,var(--glass) 65%,var(--cyan-soft));
   --category-bg: var(--cyan-soft);
 }
 .panel header {

@@ -4,7 +4,7 @@
 .page :global(.plans-heading) { margin-bottom:24px; }
 .page :global(.plans-heading) h1 { font-size:clamp(28px,4vw,42px); }
 .cards { gap:18px; }
-.cards>section { padding:24px; background:var(--card); border:1px solid var(--line); border-radius:14px; }
+.cards>section { padding:24px; background:var(--glass); border:1px solid var(--line); border-radius:14px; }
 .cards>section:global(.pricing-pro) { background:var(--financial-fill); border:1px solid var(--line); }
 .cards>section::before,.cards>section::after { display:none; }
 .cards :global(.pricing-recommended) { background:var(--accent-solid); color:white; }

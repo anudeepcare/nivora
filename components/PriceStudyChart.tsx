@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
-import { Layers, ArrowRight, CircleHelp } from "lucide-react";
+import { Layers, ArrowRight, Info } from "lucide-react";
 import { advancedStudies } from "@/lib/advanced-research";
 import type { Research, Candle } from "@/lib/types";
 import { amount, dateLabel } from "@/lib/format";
@@ -53,7 +53,7 @@ export default function PriceStudyChart({
           label="Price reference levels"
           trigger={
             <>
-              <CircleHelp size={15} /> Explain
+              <Info size={15} /> Explain
             </>
           }
         >

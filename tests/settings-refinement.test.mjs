@@ -93,29 +93,14 @@ function shell(
   });
   return { tree: Shell({ page, children: "content" }), pushes };
 }
-test("avatar enters the same settings route and preserves the full company context for Back", () => {
+test("account menu retains Settings return context", () => {
   const { tree, pushes } = shell("research");
-  const avatar = nodes(
-    tree,
-    (node) => node.props?.["aria-label"] === "Account settings",
-  )[0];
-  assert.equal(
-    avatar.type,
-    "Link",
-    "Account settings must navigate, not open a second surface",
-  );
-  assert.equal(avatar.props.href, "/settings");
-  let prevented = false;
-  avatar.props.onNavigate({
-    preventDefault: () => {
-      prevented = true;
-    },
-  });
-  assert.equal(prevented, true);
-  assert.deepEqual(pushes, [
-    "/settings?from=%2Fresearch%2FMSFT%3Ftab%3Dfinancials%26q%3Dcloud%23income",
-  ]);
-  assert.equal(nodes(tree, (n) => n.type === "SettingsSheet").length, 0);
+  const avatar = nodes(tree, n => n.props?.["aria-label"] === "Account and workspace tools")[0];
+  assert.equal(avatar.type, "button");
+  assert.equal(avatar.props["aria-haspopup"], "dialog");
+  const settings = nodes(tree, n => n.type === "Link" && n.props.href === "/settings")[0];
+  settings.props.onNavigate({preventDefault: empty});
+  assert.deepEqual(pushes, ["/settings?from=%2Fresearch%2FMSFT%3Ftab%3Dfinancials%26q%3Dcloud%23income"]);
 });
 test("Explore has a distinct tools dialog and omits the destination already open", () => {
   for (const page of [
@@ -133,7 +118,7 @@ test("Explore has a distinct tools dialog and omits the destination already open
     });
     const dialog = nodes(
       tree,
-      (n) => n.type === "dialog" && n.props["aria-label"] === "Explore tools",
+      (n) => n.type === "dialog" && n.props["aria-label"] === "Account & workspace",
     )[0];
     assert.ok(dialog, "Explore must clearly identify its tools surface");
     assert.equal(
@@ -147,18 +132,11 @@ test("Explore has a distinct tools dialog and omits the destination already open
     );
   }
 });
-test("opening Settings again keeps the existing return context without stacking navigation", () => {
-  const { tree, pushes } = shell("settings", {
-    pathname: "/settings",
-    search: "?from=%2Fwatchlist%3Fq%3Dchip",
-    hash: "",
-  });
-  const avatar = nodes(
-    tree,
-    (node) => node.props?.["aria-label"] === "Account settings",
-  )[0];
-  avatar.props.onNavigate({ preventDefault: empty });
-  assert.deepEqual(pushes, []);
+test("Settings menu omits the current destination without changing return context", () => {
+ const {tree,pushes}=shell("settings",{pathname:"/settings",search:"?from=%2Fwatchlist%3Fq%3Dchip",hash:""});
+ const dialog=nodes(tree,n=>n.type === "dialog" && n.props["aria-label"] === "Account & workspace")[0];
+ assert.equal(nodes(dialog,n=>n.type === "Link" && n.props.href === "/settings").length,0);
+ assert.deepEqual(pushes,[]);
 });
 function settings(demo, overrides = {}) {
   const effects = [];

@@ -133,7 +133,7 @@ test("metric explanations do not inject dialog blocks into server-rendered parag
     useId: React.useId,
     useState: React.useState,
     useEffect: React.useEffect,
-    CircleHelp: empty,
+    Info: empty,
     X: empty,
   });
   const html = renderToStaticMarkup(

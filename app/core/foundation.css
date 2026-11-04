@@ -8,23 +8,26 @@
   --radius-panel: 16px;
   --radius: 16px;
   --space-page: 28px;
-  --accent-solid: #96345f;
-  --blue: #96345f;
-  --blue-soft: #f9edf2;
-  --business-fill: linear-gradient(120deg, #fff5f0, #fce6df);
-  --financial-fill: linear-gradient(120deg, #f9f6ff, #eee7fa);
-  --valuation-fill: linear-gradient(120deg, #fffaf0, #fbefd6);
-  --ownership-fill: linear-gradient(120deg, #fff5f8, #f8e2ec);
+  --accent-solid: #343b48;
+  --blue: #343b48;
+  --blue-soft: #eef0f4;
+  --business-fill: linear-gradient(120deg, #ffffffed 60%, #fff2e6db);
+  --financial-fill: linear-gradient(120deg, #ffffffed 60%, #eeedf7db);
+  --valuation-fill: linear-gradient(120deg, #ffffffed 60%, #fbf3dfdb);
+  --ownership-fill: linear-gradient(120deg, #ffffffed 60%, #e9f2efdb);
   --business-icon: #b84c32;
   --financial-icon: #7750b2;
   --valuation-icon: #966316;
   --ownership-icon: #a13065;
-  --pace-fill: linear-gradient(115deg, #722044 0%, #96345f 64%, #b85364 100%);
+  --pace-fill: var(--glass);
 }
 :root,
 :root[data-theme="light"] {
   color-scheme: light;
-  --bg: #fbfbfc;
+  --bg: #f5f6f7;
+  --app-background: radial-gradient(ellipse at 8% 10%, #f2e5d780, transparent 46%), radial-gradient(ellipse at 88% 20%, #deeee680, transparent 45%), radial-gradient(ellipse at 55% 75%, #e5e5f280, transparent 55%), #f5f6f7;
+  --glass: #ffffffd9;
+  --panel-shadow: 0 8px 32px #25334208, 0 1px 3px #25334205;
   --paper: #ffffff;
   --card: #ffffff;
   --surface: #f0f3f7;
@@ -46,6 +49,9 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
   --bg: #141a23;
+  --app-background: radial-gradient(ellipse at 80% 0%, #303b48, transparent 65%), #141a23;
+  --glass: #1d2531ed;
+  --panel-shadow: 0 8px 30px #00000020;
   --paper: #141a23;
   --card: #1d2531;
   --surface: #263140;
@@ -55,8 +61,8 @@
   --muted: #abb8ca;
   --line: #364355;
   --border: #364355;
-  --blue: #f0a9c4;
-  --blue-soft: #382735;
+  --blue: #d7dfed;
+  --blue-soft: #30394a;
   --business-fill: linear-gradient(120deg, #30282a, #3c2b2b);
   --financial-fill: linear-gradient(120deg, #2a2939, #342c45);
   --valuation-fill: linear-gradient(120deg, #302d28, #3c3429);
@@ -89,7 +95,8 @@ body {
   height: auto;
   overflow: visible;
   color: var(--ink);
-  background: var(--bg);
+  background: var(--app-background);
+  background-attachment: fixed;
   font-family: var(--font-ui);
   font-size: 16px;
   line-height: 1.55;

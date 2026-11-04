@@ -36,6 +36,7 @@ import { api } from "@/lib/client";
 import { readResource, resourceSnapshot } from "@/lib/resource-cache";
 import { homeBrief } from "@/lib/home-brief";
 import PaceHelp from "./PaceHelp";
+import PaceInstrument from "./PaceInstrument";
 import PaceGuidance from "./PaceGuidance";
 import { workspaceGuidance } from "@/lib/edge-research";
 import { amount, percent, quoteTime, dateLabel } from "@/lib/format";
@@ -485,6 +486,8 @@ function HomeOverview() {
       (a, b) => (b.signal!.multiplier ?? -1) - (a.signal!.multiplier ?? -1),
     );
   const best = signals[0];
+  const featuredSymbol = largest?.symbol ?? symbols[0];
+  const featuredPace = featuredSymbol ? pace(featuredSymbol) : null;
   const eventGroups = groupMarketEvents(brief.checkpoints);
   const hour = today.getHours(),
     greeting =
@@ -522,7 +525,19 @@ function HomeOverview() {
         }
       />
       {state.workspaceError && <Notice error>{state.workspaceError}</Notice>}
-      {!!workspace?.positions.length && <WealthStrip state={state} />}
+      {!!workspace?.positions.length && <div className={homeStyles.hero}>
+        <section className={homeStyles.holdings} aria-label="Portfolio at a glance">
+          <WealthStrip state={state} />
+          <div className={homeStyles.history}>
+            <SectionHead title="Holdings price history" subtitle="Current holdings at historical prices" />
+            <ApprovedPortfolioChart positions={workspace.positions} quotes={quotes.data} />
+          </div>
+        </section>
+        <div className={homeStyles.pace}>
+          <Link className={homeStyles.featured} href={featuredSymbol ? researchLink(featuredSymbol, prefix) : `${prefix}/research`}>{featuredSymbol && <SecurityLogo symbol={featuredSymbol}/>}<span>{names[featuredSymbol] ?? featuredSymbol ?? "Your research"}<small>{largest ? "Your largest priced position" : "Build your research context"}</small></span><ArrowUpRight size={16}/></Link>
+          {featuredPace ? <PaceInstrument view={featuredPace.view} readings={featuredPace.periods}/> : <section className={homeStyles.paceEmpty}><span className="eyebrow">AURYN PACE</span><h2>Put the price in context.</h2><p>Open the company’s research to check business quality and its latest accumulation reading.</p><Link className="button" href={featuredSymbol ? researchLink(featuredSymbol, prefix) : `${prefix}/research`}>Explore {featuredSymbol} <ArrowUpRight size={16}/></Link></section>}
+        </div>
+      </div>}
       <section className="home-next-step" aria-label="Your next step">
         <div className="home-next-copy">
           <span className="eyebrow">{brief.kicker}</span>
@@ -592,101 +607,38 @@ function HomeOverview() {
       </section>
       <Coverage state={state} />
       <div className="home-evidence-layout">
-        <section
-          className="home-evidence-panel home-news-panel"
-          aria-label="What changed"
-        >
+        <section className="home-evidence-panel">
           <SectionHead
-            title="What changed"
-            subtitle="Recent company updates, with the source attached."
+            title="Your companies"
+            subtitle="Keep your next decision close."
             action={
-              <span className="home-section-count">
-                {headlines.length ? `${headlines.length} updates` : "This week"}
-              </span>
+              <Link className="text-link" href={`${prefix}/watchlist`}>
+                View all <ArrowUpRight size={16} />
+              </Link>
             }
           />
-          {headlines.length ? (
-            <div className="home-news-list">
-              {headlines.slice(0, 5).map((news) => (
-                <article key={`${news.symbol}:${news.url}`}>
-                  <div className="home-news-meta">
-                    <Link href={researchLink(news.symbol, prefix)}>
-                      {news.symbol}
-                    </Link>
-                    <time dateTime={news.date}>{dateLabel(news.date)}</time>
-                  </div>
-                  <a
-                    className="home-news-title"
-                    href={news.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {news.title}
-                    <ArrowUpRight size={17} />
-                  </a>
-                  <Link
-                    className="text-link"
-                    href={researchLink(news.symbol, prefix)}
-                  >
-                    Review the company <ArrowUpRight size={15} />
-                  </Link>
-                </article>
-              ))}
-            </div>
+          {symbols.length ? (
+            symbols
+              .slice(0, 5)
+              .map((symbol) => (
+                <HomeCompany
+                  key={symbol}
+                  symbol={symbol}
+                  row={quotes.data[symbol]}
+                  prefix={prefix}
+                />
+              ))
           ) : (
-            <div className="home-quiet-state">
-              <FileText size={24} />
-              <h3>
-                {feed.loading
-                  ? "Checking your companies…"
-                  : feed.error || !readiness.newsReady
-                    ? "News could not be fully checked."
-                    : "No recent matched headlines."}
-              </h3>
-              <p>
-                {!symbols.length
-                  ? "Save a company to bring its updates here."
-                  : feed.loading
-                    ? "Looking for recent updates across your followed companies."
-                    : feed.error || !readiness.newsReady
-                      ? "Available research is still ready to read. Retry to check the missing sources."
-                      : "No recent company-matched story was returned by the news source."}
-              </p>
-              <Link className="text-link" href={`${prefix}/research`}>
-                Open research <ArrowUpRight size={15} />
-              </Link>
-            </div>
-          )}
-          {headlines.length > 5 && (
-            <details className="home-more-updates">
-              <summary>Show {headlines.length - 5} more updates</summary>
-              {headlines.slice(5).map((news) => (
-                <article key={news.url}>
-                  <span>
-                    {news.symbol} · {dateLabel(news.date)}
-                  </span>
-                  <a href={news.url} target="_blank" rel="noopener noreferrer">
-                    {news.title}
-                    <ArrowUpRight size={15} />
-                  </a>
-                </article>
-              ))}
-            </details>
-          )}
-          {!feed.loading && symbols.length > 0 && (
-            <p className="home-source-note">
-              {demo
-                ? "News is not simulated in this preview."
-                : `${feed.data?.newsFollowed ?? 0} of ${feedSymbols.length} followed stocks checked.${readiness.newsReady ? "" : " Some news coverage is unavailable."}`}
-              {symbols.length > feedSymbols.length
-                ? " Crypto news is available in individual research."
-                : ""}
-            </p>
-          )}
-          {(feed.error || (!feed.loading && !readiness.newsReady)) && (
-            <button className="text-link" onClick={feed.refresh}>
-              Retry updates <RefreshCw size={14} />
-            </button>
+            <Empty
+              title="Begin with one company"
+              action={
+                <Link className="btn" href={`${prefix}/research`}>
+                  Find a company
+                </Link>
+              }
+            >
+              Save an idea or record a holding to make this space yours.
+            </Empty>
           )}
         </section>
         <section
@@ -814,38 +766,101 @@ function HomeOverview() {
         </section>
       </div>
       <div className="home-evidence-layout home-secondary-layout">
-        <section className="home-evidence-panel">
+        <section
+          className="home-evidence-panel home-news-panel"
+          aria-label="What changed"
+        >
           <SectionHead
-            title="Your companies"
-            subtitle="Keep your next decision close."
+            title="What changed"
+            subtitle="Recent company updates, with the source attached."
             action={
-              <Link className="text-link" href={`${prefix}/watchlist`}>
-                View all <ArrowUpRight size={16} />
-              </Link>
+              <span className="home-section-count">
+                {headlines.length ? `${headlines.length} updates` : "This week"}
+              </span>
             }
           />
-          {symbols.length ? (
-            symbols
-              .slice(0, 5)
-              .map((symbol) => (
-                <HomeCompany
-                  key={symbol}
-                  symbol={symbol}
-                  row={quotes.data[symbol]}
-                  prefix={prefix}
-                />
-              ))
+          {headlines.length ? (
+            <div className="home-news-list">
+              {headlines.slice(0, 5).map((news) => (
+                <article key={`${news.symbol}:${news.url}`}>
+                  <div className="home-news-meta"><SecurityLogo symbol={news.symbol}/>
+                    <Link href={researchLink(news.symbol, prefix)}>
+                      {news.symbol}
+                    </Link>
+                    <time dateTime={news.date}>{dateLabel(news.date)}</time>
+                  </div>
+                  <a
+                    className="home-news-title"
+                    href={news.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {news.title}
+                    <ArrowUpRight size={17} />
+                  </a>
+                  <Link
+                    className="text-link"
+                    href={researchLink(news.symbol, prefix)}
+                  >
+                    Review the company <ArrowUpRight size={15} />
+                  </Link>
+                </article>
+              ))}
+            </div>
           ) : (
-            <Empty
-              title="Begin with one company"
-              action={
-                <Link className="btn" href={`${prefix}/research`}>
-                  Find a company
-                </Link>
-              }
-            >
-              Save an idea or record a holding to make this space yours.
-            </Empty>
+            <div className="home-quiet-state">
+              <FileText size={24} />
+              <h3>
+                {feed.loading
+                  ? "Checking your companies…"
+                  : feed.error || !readiness.newsReady
+                    ? "News could not be fully checked."
+                    : "No recent matched headlines."}
+              </h3>
+              <p>
+                {!symbols.length
+                  ? "Save a company to bring its updates here."
+                  : feed.loading
+                    ? "Looking for recent updates across your followed companies."
+                    : feed.error || !readiness.newsReady
+                      ? "Available research is still ready to read. Retry to check the missing sources."
+                      : "No recent company-matched story was returned by the news source."}
+              </p>
+              <Link className="text-link" href={`${prefix}/research`}>
+                Open research <ArrowUpRight size={15} />
+              </Link>
+            </div>
+          )}
+          {headlines.length > 5 && (
+            <details className="home-more-updates">
+              <summary>Show {headlines.length - 5} more updates</summary>
+              {headlines.slice(5).map((news) => (
+                <article key={news.url}>
+                  <span>
+                    {news.symbol} · {dateLabel(news.date)}
+                  </span>
+                  <a href={news.url} target="_blank" rel="noopener noreferrer">
+                    {news.title}
+                    <ArrowUpRight size={15} />
+                  </a>
+                </article>
+              ))}
+            </details>
+          )}
+          {!feed.loading && symbols.length > 0 && (
+            <p className="home-source-note">
+              {demo
+                ? "News is not simulated in this preview."
+                : `${feed.data?.newsFollowed ?? 0} of ${feedSymbols.length} followed stocks checked.${readiness.newsReady ? "" : " Some news coverage is unavailable."}`}
+              {symbols.length > feedSymbols.length
+                ? " Crypto news is available in individual research."
+                : ""}
+            </p>
+          )}
+          {(feed.error || (!feed.loading && !readiness.newsReady)) && (
+            <button className="text-link" onClick={feed.refresh}>
+              Retry updates <RefreshCw size={14} />
+            </button>
           )}
         </section>
         <section className="home-evidence-panel home-review-panel">

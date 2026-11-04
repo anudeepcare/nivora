@@ -4,7 +4,7 @@ import { customerText } from "@/lib/customer-language";
 import Link from "next/link";
 import { useId, useRef, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { CircleHelp, X, ArrowUpRight, Search } from "lucide-react";
+import { Info, X, ArrowUpRight, Search } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { requestLogo } from "@/lib/logo-client";
 import { dateLabel, quoteTime } from "@/lib/format";
@@ -164,7 +164,7 @@ export function Help({
         aria-haspopup="dialog"
         onClick={() => setOpen(true)}
       >
-        {trigger ?? <CircleHelp size={14} />}
+        {typeof trigger === "string" ? <><span>{trigger}</span><Info size={14} aria-hidden="true" /></> : trigger ?? <Info size={14} />}
       </button>
       {open &&
         createPortal(

@@ -276,14 +276,22 @@ function SignedInPlans() {
           </button>
         ) : null}
       </section>
-      <PricingCards
+      {a.plan === "pro" ? <details className="membership-comparison"><summary>Compare membership options</summary>      <PricingCards
         config={billing?.config}
         access={a}
         ready={!!billing?.ready}
         busy={busy}
         publicPage={false}
         onUpgrade={() => void open("checkout")}
-      />
+      /></details> : (      <PricingCards
+        config={billing?.config}
+        access={a}
+        ready={!!billing?.ready}
+        busy={busy}
+        publicPage={false}
+        onUpgrade={() => void open("checkout")}
+      />)}
+
       {billing?.mode === "test" && billing.ready && (
         <p className="plans-footnote">Test checkout · no real charges.</p>
       )}
@@ -312,8 +320,8 @@ export default function Plans({
       )}
       <header className="plans-heading">
         <span className="eyebrow">AURYN membership</span>
-        <h1>More clarity. Your choice.</h1>
-        <p>Start free. Go deeper with Pro.</p>
+        <h1>{publicPage ? "More clarity. Your choice." : "Your membership."}</h1>
+        <p>{publicPage ? "Start free. Go deeper with Pro." : "Your plan, billing and research access."}</p>
       </header>
       {publicPage ? <PricingCards /> : <SignedInPlans />}
       <p className="plans-footnote">

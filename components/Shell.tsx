@@ -6,14 +6,12 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import {
   Home,
-  Ellipsis,
   ChartNoAxesCombined,
   Bookmark,
   PieChart,
   Search as SearchIcon,
   Bell,
   X,
-  LayoutGrid,
   Settings,
   Sun,
   Moon,
@@ -149,7 +147,7 @@ export default function Shell({
         <nav className={experience.nav} aria-label="Main navigation">
           {primary.map(nav)}
           <Link href={`${prefix}/discover`} aria-current={page === "discover" ? "page" : undefined}>Discover</Link>
-          <button onClick={() => tools.current?.showModal()} aria-haspopup="dialog" aria-label="More workspace actions"><Ellipsis size={20} /><span>More</span></button>
+
         </nav>
         <button
           className={experience.searchTrigger}
@@ -176,13 +174,9 @@ export default function Shell({
           <Link href={`${prefix}/alerts`} aria-label="Price alerts">
             <Bell size={19} />
           </Link>
-          <Link
-            href={`${prefix}/settings`}
-            aria-label="Account settings"
-            onNavigate={openSettings}
-          >
+          <button aria-label="Account and workspace tools" aria-haspopup="dialog" onClick={() => tools.current?.showModal()}>
             {(workspace?.email?.[0] || "A").toUpperCase()}
-          </Link>
+          </button>
         </div>
       </header>
       <div className={experience.workspace}>
@@ -199,24 +193,17 @@ export default function Shell({
       </div>
       <nav className={experience.dock} aria-label="Mobile navigation">
         {primary.map((r) => nav(r))}
-        <button
-          onClick={() => tools.current?.showModal()}
-          aria-label="More workspace actions"
-          aria-haspopup="dialog"
-        >
-          <Ellipsis size={20} />
-          <span>More</span>
-        </button>
+        <Link href={`${prefix}/discover`} aria-current={page === "discover" ? "page" : undefined}><Compass size={20}/><span>Discover</span></Link>
       </nav>
       <dialog
         ref={tools}
         className="search-dialog approved-tools-dialog"
-        aria-label="Explore tools"
+        aria-label="Account & workspace"
       >
         <header className="dialog-head">
           <div>
             <span className="eyebrow">Your workspace</span>
-            <h2>Explore tools</h2>
+            <h2>Account & workspace</h2>
           </div>
           <button
             className="icon-button"
