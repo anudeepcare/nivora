@@ -142,78 +142,15 @@ export default function Shell({
       <a className={experience.skip} href="#content">
         Skip to content
       </a>
-      <aside className={experience.sidebar} aria-label="Workspace navigation">
-        <Link
-          href={`${prefix}/overview`}
-          className={experience.brand}
-          aria-label="AURYN home"
-        >
-          <img src="/icon.svg" width="32" height="32" alt="" />
-          <span>AURYN</span>
-        </Link>
-        <div>
-          <span className={experience.groupLabel}>Your workspace</span>
-          <nav className={experience.nav} aria-label="Main navigation">
-            {primary.map(nav)}
-            <Link
-              href={`${prefix}/discover`}
-              data-destination="discover"
-              aria-current={page === "discover" ? "page" : undefined}
-              aria-label="Discover"
-            >
-              <Compass />
-              <span>Discover</span>
-            </Link>
-          </nav>
-        </div>
-        <div>
-          <span className={experience.groupLabel}>Research tools</span>
-          <nav className={experience.secondary} aria-label="Research tools">
-            {[
-              { path: "compare", label: "Compare", icon: Scale },
-              { path: "alerts", label: "Alerts", icon: Bell },
-              {
-                path: "research-lab",
-                label: "Strategy lab",
-                icon: FlaskConical,
-              },
-              { path: "help", label: "Learn & support", icon: HelpCircle },
-            ].map(({ path, label, icon: Icon }) => (
-              <Link
-                key={path}
-                href={`${prefix}/${path}`}
-                data-destination={path}
-                aria-label={label}
-                aria-current={page === path ? "page" : undefined}
-              >
-                <Icon />
-                <span>{label}</span>
-              </Link>
-            ))}
-            <Link
-              href={`${prefix}/settings`}
-              onNavigate={openSettings}
-              aria-current={page === "settings" ? "page" : undefined}
-              aria-label="Settings"
-            >
-              <Settings />
-              <span>Settings</span>
-            </Link>
-          </nav>
-        </div>
-        <div className={experience.sidebarFooter}>
-          <strong>AURYN PACE</strong>Evidence behind every step.
-        </div>
-      </aside>
       <header className={experience.header}>
-        <Link
-          href={`${prefix}/overview`}
-          className={`${experience.brand} ${experience.mobileBrand}`}
-          aria-label="AURYN home"
-        >
-          <img src="/icon.svg" width="32" height="32" alt="" />
-          AURYN
+        <Link href={`${prefix}/overview`} className={experience.brand} aria-label="AURYN home">
+          <img src="/icon.svg" width="32" height="32" alt="" /><span>AURYN</span>
         </Link>
+        <nav className={experience.nav} aria-label="Main navigation">
+          {primary.map(nav)}
+          <Link href={`${prefix}/discover`} aria-current={page === "discover" ? "page" : undefined}>Discover</Link>
+          <button onClick={() => tools.current?.showModal()} aria-haspopup="dialog" aria-label="More workspace actions"><Ellipsis size={20} /><span>More</span></button>
+        </nav>
         <button
           className={experience.searchTrigger}
           aria-label="Search companies and crypto"

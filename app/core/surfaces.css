@@ -1,0 +1,85 @@
+/* Professional color system: shared typography, controls, and metric surfaces.
+   Layout stays with the component; values retain their financial semantics. */
+body :is(h1,h2,h3,h4,h5,h6) { font-family:var(--font-ui); font-weight:500; letter-spacing:-.025em; line-height:1.25; }
+body :is(strong,b) { font-weight:500; }
+body :is(button,input,select,textarea) { font-family:var(--font-ui); }
+body :is(button,a) { -webkit-tap-highlight-color:transparent; }
+body :is(.page-heading h1,.desk-heading h2,.technical-desk-heading h2,.signal-business-intro h2) { font-size:clamp(24px,2.5vw,32px); font-weight:500; }
+body :is(.eyebrow,.section-kicker) { letter-spacing:.09em; font-weight:500; font-size:11px; }
+body :is(.btn,.button) { font-weight:500; border-radius:10px; min-height:44px; box-shadow:none; }
+body :is(.btn.primary,.button.primary) { background:var(--accent-solid); border-color:var(--accent-solid); color:#fff; }
+body :is(.card,.panel,.detail-card) { background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:none; }
+body :is(.segments,.segment) { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:3px; }
+body :is(.segments,.segment) button { font-weight:400; border-radius:7px; min-height:40px; }
+body :is(.segments,.segment) :is(button.active,button[aria-pressed="true"]) { background:var(--accent-solid); color:#fff; }
+body :is(th,td) { vertical-align:middle; }
+body th { font-weight:500; color:var(--muted); font-size:13px; }
+body td { font-size:14px; }
+body :is(.num,.pricing-amount) { font-variant-numeric:tabular-nums; font-weight:500; }
+body :is(.product-footer,.mp-footer) { border-top:1px solid var(--line); font-size:12px; padding-top:20px; margin-top:28px; }
+body :is(.product-footer,.mp-footer) a { min-height:32px; display:inline-flex; align-items:center; }
+body .preview-label { padding:5px 10px; margin-bottom:12px; border-radius:6px; background:var(--surface); color:var(--muted); font-size:12px; }
+body .security-logo { border-radius:11px; background:var(--card); border:1px solid var(--line); }
+body .search-dialog { border:1px solid var(--line); border-radius:18px; background:var(--card); color:var(--ink); max-width:calc(100vw - 24px); max-height:calc(100dvh - 32px); overflow:auto; }
+body .dialog-head { padding:18px 20px; }
+body .dialog-head h2 { font-size:22px; }
+body .dialog-tools { display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:16px; }
+body .dialog-tools>a { display:flex; align-items:center; gap:12px; padding:14px; background:var(--surface-2); border:1px solid var(--line); border-radius:12px; }
+body .dialog-tools small { display:block; color:var(--muted); font-size:12px; }
+body .tool-icon { color:var(--blue); }
+body .tool-arrow { margin-left:auto; flex:none; }
+/* Semantic panel palettes, also inherited by all detailed metrics inside a tab. */
+.signal-research-panel { --metric-fill:var(--financial-fill); --metric-icon:var(--financial-icon); }
+[data-research-section="Financials"] { --metric-fill:var(--business-fill); --metric-icon:var(--business-icon); }
+[data-research-section="Valuation"] { --metric-fill:var(--valuation-fill); --metric-icon:var(--valuation-icon); }
+[data-research-section="Thesis"],[data-research-section="Analysts"] { --metric-fill:var(--ownership-fill); --metric-icon:var(--ownership-icon); }
+body :is(.statement-snapshot>div,.metric-band>div,.stat-grid>div,.stock-context-strip>div,.analyst-metrics>div,.valuation-board-grid>div,.desk-key-metrics>article,.desk-secondary-metrics>div,.advanced-metrics>article,.advanced-fib>div,.advanced-plan-result>div,.benchmark-metrics>div,.technical-summary-strip>div,.technical-level-grid>div,.pro-ma-strip>div,.portfolio-review-strip>div,.risk-metrics>div) { min-width:0; background:var(--metric-fill,var(--financial-fill)); border:1px solid var(--line); border-radius:12px; padding:16px; }
+body :is(.statement-snapshot,.metric-band,.stock-context-strip,.technical-summary-strip,.portfolio-review-strip) { gap:12px; border:0; background:transparent; overflow:visible; }
+body :is(.statement-snapshot,.metric-band,.stat-grid,.stock-context-strip,.analyst-metrics,.valuation-board-grid,.desk-key-metrics,.desk-secondary-metrics,.advanced-metrics,.advanced-fib,.advanced-plan-result,.benchmark-metrics,.technical-summary-strip,.technical-level-grid,.pro-ma-strip,.portfolio-review-strip,.risk-metrics) :is(strong,dd) { color:var(--ink); font-weight:500; font-variant-numeric:tabular-nums; word-break:normal; overflow-wrap:normal; }
+body :is(.technical-desk-groups>section,.disconnect-columns>article,.advanced-business>article,.financial-detail-groups>section,.pro-groups>section) { border:1px solid var(--line); border-radius:14px; padding:18px; background:var(--card); }
+body :is(.financial-answer,.earnings-prep,.valuation-methods,.technical-price-structure,.historical-conditions,.market-context) { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:20px; }
+body .financial-answer { background:var(--business-fill); }
+body .watch-summary { background:var(--valuation-fill); border:1px solid var(--line); border-radius:16px; padding:20px; margin:16px 0; }
+body .watch-summary>div>strong { color:var(--ink); font-weight:500; }
+body .approved-table-toolbar { gap:12px; flex-wrap:wrap; }
+body .approved-research-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+body .approved-research-grid>.card { padding:16px; }
+body :is(.signal-business-intro,.technical-desk-heading,.advanced-intro) { padding:8px 0 16px; }
+body :is(.signal-business-intro,.technical-desk-heading,.advanced-intro)>p { max-width:85ch; margin:8px 0; font-size:14px; }
+body .approved-research-page .price-chart { height:220px; min-height:220px; }
+body .signal-chart-tools { gap:8px; margin:4px 0; padding:0; flex-wrap:wrap; }
+body .chart-readout { font-size:12px; min-height:30px; }
+body .chart-head { flex-wrap:wrap; gap:10px; }
+body .financial-detail-groups h3 { color:var(--metric-icon,var(--business-icon)); }
+body .technical-desk-groups h3 { color:var(--financial-icon); }
+/* Marketing and account surfaces share the same brand, weight, and palette. */
+body :is(.mp-public,.mp-auth,.plans-page,.legal-page) { color:var(--ink); background:var(--bg); }
+body :is(.mp-nav,.mp-footer,.mp-auth-panel) { color:var(--ink); }
+body :is(.mp-workspace,.mp-how,.mp-method,.mp-feature-grid)>article { background:var(--card); border:1px solid var(--line); border-radius:16px; }
+body :is(.mp-workspace,.mp-cta) { background:var(--financial-fill); border-radius:18px; }
+body :is(.mp-auth-heading h1,.plans-heading h1) { font-weight:500; }
+body :is(.mp-auth-panel input,.password-form input,.compare-search input) { background:var(--card); color:var(--ink); border:1px solid var(--line); border-radius:10px; min-height:44px; font-size:16px; }
+body .earnings-prep>div>section { border:1px solid var(--line); background:var(--valuation-fill); border-radius:12px; }
+:root[data-text-size="large"] body { font-size:18px; }
+:root[data-text-size="large"] :is(p,td,dt,dd,label,button) { font-size:max(1em,16px); }
+@media(max-width:767px) {
+ body .approved-research-grid { grid-template-columns:1fr; }
+ body :is(.table-scroll,.table-wrap) { overflow-x:auto; max-width:100%; }
+ body :is(.financial-answer,.earnings-prep,.valuation-methods,.technical-price-structure,.historical-conditions,.market-context) { padding:16px; }
+ body .approved-research-page .price-chart { height:220px; min-height:220px; }
+ body :is(.segments,.segment) { max-width:100%; flex-wrap:wrap; }
+ body :is(.segments,.segment) button { min-height:44px; }
+ body .dialog-tools { grid-template-columns:1fr; }
+ body .product-footer { flex-wrap:wrap; gap:8px 16px; }
+}
+
+body .plot-section>.chart-note { margin-top:6px; }
+body .plot-section .chart-head h3 {font-size:17px;}
+body .ranges button { font-weight:400; }
+
+body .technical-desk-groups dd { overflow-wrap:normal; word-break:normal; font-variant-numeric:tabular-nums; }
+@media(max-width:480px) { body .technical-desk-groups dl>div { display:flex; flex-wrap:wrap; gap:4px 12px; } body .technical-desk-groups dd { flex:1 0 auto; max-width:100%; text-align:right; } }
+
+body .wealth-strip.four { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+@media(max-width:900px) { body .wealth-strip.four { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:420px) { body .wealth-strip.four { grid-template-columns:1fr; } }

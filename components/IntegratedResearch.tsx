@@ -57,7 +57,10 @@ export default function IntegratedResearch({
           readings={m.edge.pacePeriods}
           onHistory={() => onTab("Technicals")}
         />
-        <div className={s.market}>
+        <div className={s.chart}>{chart}</div>
+        <div className={s.overviewMetrics}><ResearchEvidenceGrid research={r} onTab={onTab} /></div>
+      </div>
+      <div className={s.analysis}>
           <section className={s.brief}>
             <ShieldCheck size={20} />
             <div>
@@ -66,7 +69,12 @@ export default function IntegratedResearch({
               {d.risks[0] && <p>{d.risks[0]}</p>}
             </div>
           </section>
-          <div className={s.chart}>{chart}</div>
+        <section className={s.reasons}>
+          <h2>What supports the view</h2>
+          <ul>{d.reasons.map((reason) => <li key={reason}>{reason}</li>)}</ul>
+        </section>
+      </div>
+      <div className={s.market}>
           <div className={s.bottom}>
             <section>
               <AnalystTargets research={r} showUnavailable />
@@ -113,9 +121,7 @@ export default function IntegratedResearch({
               See valuation assumptions <ArrowRight size={15} />
             </button>
           </details>
-        </div>
       </div>
-      <ResearchEvidenceGrid research={r} onTab={onTab} />
     </>
   );
 }

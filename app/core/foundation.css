@@ -8,20 +8,29 @@
   --radius-panel: 16px;
   --radius: 16px;
   --space-page: 28px;
-  --accent-solid: #2163d5;
-  --blue: #2163d5;
-  --blue-soft: #edf3ff;
+  --accent-solid: #96345f;
+  --blue: #96345f;
+  --blue-soft: #f9edf2;
+  --business-fill: linear-gradient(120deg, #fff5f0, #fce6df);
+  --financial-fill: linear-gradient(120deg, #f9f6ff, #eee7fa);
+  --valuation-fill: linear-gradient(120deg, #fffaf0, #fbefd6);
+  --ownership-fill: linear-gradient(120deg, #fff5f8, #f8e2ec);
+  --business-icon: #b84c32;
+  --financial-icon: #7750b2;
+  --valuation-icon: #966316;
+  --ownership-icon: #a13065;
+  --pace-fill: linear-gradient(115deg, #722044 0%, #96345f 64%, #b85364 100%);
 }
 :root,
 :root[data-theme="light"] {
   color-scheme: light;
-  --bg: #f5f7fa;
-  --paper: #f5f7fa;
+  --bg: #fbfbfc;
+  --paper: #ffffff;
   --card: #ffffff;
   --surface: #f0f3f7;
   --surface-2: #f7f8fa;
-  --ink: #162638;
-  --text: #162638;
+  --ink: #25252c;
+  --text: #25252c;
   --muted: #59677b;
   --line: #dce2ea;
   --border: #dce2ea;
@@ -46,8 +55,16 @@
   --muted: #abb8ca;
   --line: #364355;
   --border: #364355;
-  --blue: #8bb5ff;
-  --blue-soft: #22334d;
+  --blue: #f0a9c4;
+  --blue-soft: #382735;
+  --business-fill: linear-gradient(120deg, #30282a, #3c2b2b);
+  --financial-fill: linear-gradient(120deg, #2a2939, #342c45);
+  --valuation-fill: linear-gradient(120deg, #302d28, #3c3429);
+  --ownership-fill: linear-gradient(120deg, #302735, #402c3a);
+  --business-icon: #f3b6a2;
+  --financial-icon: #c5b0f2;
+  --valuation-icon: #e7c78e;
+  --ownership-icon: #f0adc9;
   --green: #6dd5b6;
   --green-soft: #193b33;
   --red: #ffaca5;

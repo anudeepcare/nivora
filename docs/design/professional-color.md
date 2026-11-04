@@ -1,0 +1,3 @@
+# Approved professional color design
+User approved the November 4 Professional color study mockup and requested implementation across real pages and tabs.
+White neutral navigation and canvas; charcoal regular body and medium headings/numbers. Wine/coral Pace, soft peach business, lavender financial/technical, cream valuation, rose ownership. No colored edge strips. Consistent gradient A logo everywhere. Compact responsive composition with Pace first, chart and overview metrics readily accessible. Existing production calculation, authorization and subscription behavior must remain intact. Mockup sample companies/data must not replace live data. Light/dark, text enlargement, keyboard and mobile touch interactions remain supported.

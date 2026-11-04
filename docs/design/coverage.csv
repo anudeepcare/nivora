@@ -1,0 +1,110 @@
+id,source,destination,control_data,gate,persisted_state,fixture,verification,status
+route:/,app/[[...route]]/page.tsx,/,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/overview,lib/page-routing.ts,/overview,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/research,lib/page-routing.ts,/research,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/portfolio,lib/page-routing.ts,/portfolio,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/watchlist,lib/page-routing.ts,/watchlist,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/settings,lib/page-routing.ts,/settings,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/owner,lib/page-routing.ts,/owner,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/plans,lib/page-routing.ts,/plans,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/pricing,lib/page-routing.ts,/pricing,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/compare,lib/page-routing.ts,/compare,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/alerts,lib/page-routing.ts,/alerts,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/research-lab,lib/page-routing.ts,/research-lab,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/trading,lib/page-routing.ts,/trading,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/discover,lib/page-routing.ts,/discover,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/help,lib/page-routing.ts,/help,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/contact,lib/page-routing.ts,/contact,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/terms,lib/page-routing.ts,/terms,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/privacy,lib/page-routing.ts,/privacy,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/risk,lib/page-routing.ts,/risk,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/methodology,lib/page-routing.ts,/methodology,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/reliability,lib/page-routing.ts,/reliability,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/login,lib/page-routing.ts,/login,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/reset-password,lib/page-routing.ts,/reset-password,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/sample,lib/page-routing.ts,/sample,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/about,lib/page-routing.ts,/about,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+route:/pace,lib/page-routing.ts,/pace,route,preserve existing policy,inventory required,not yet assigned,not yet executed,source-found
+metric:revenue,lib/types.ts,Business / statements,revenue,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:netIncome,lib/types.ts,Business / statements,netIncome,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:operatingIncome,lib/types.ts,Business / statements,operatingIncome,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:operatingCashFlow,lib/types.ts,Business / statements,operatingCashFlow,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:capex,lib/types.ts,Business / statements,capex,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:cash,lib/types.ts,Business / statements,cash,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:debt,lib/types.ts,Business / statements,debt,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:assets,lib/types.ts,Business / statements,assets,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:liabilities,lib/types.ts,Business / statements,liabilities,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:shares,lib/types.ts,Business / statements,shares,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:eps,lib/types.ts,Business / statements,eps,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:grossProfit,lib/types.ts,Business / statements,grossProfit,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:costOfRevenue,lib/types.ts,Business / statements,costOfRevenue,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:researchExpense,lib/types.ts,Business / statements,researchExpense,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:stockCompensation,lib/types.ts,Business / statements,stockCompensation,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:buybacks,lib/types.ts,Business / statements,buybacks,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:dividends,lib/types.ts,Business / statements,dividends,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:weightedShares,lib/types.ts,Business / statements,weightedShares,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:equity,lib/types.ts,Business / statements,equity,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:currentAssets,lib/types.ts,Business / statements,currentAssets,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:currentLiabilities,lib/types.ts,Business / statements,currentLiabilities,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:interestExpense,lib/types.ts,Business / statements,interestExpense,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:depreciation,lib/types.ts,Business / statements,depreciation,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:receivables,lib/types.ts,Business / statements,receivables,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:inventory,lib/types.ts,Business / statements,inventory,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:payables,lib/types.ts,Business / statements,payables,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+metric:retainedEarnings,lib/types.ts,Business / statements,retainedEarnings,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:end,lib/types.ts,Business / financial explorer,end,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:start,lib/types.ts,Business / financial explorer,start,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:currency,lib/types.ts,Business / financial explorer,currency,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:basis,lib/types.ts,Business / financial explorer,basis,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:filed,lib/types.ts,Business / financial explorer,filed,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:sourceUrl,lib/types.ts,Business / financial explorer,sourceUrl,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:revenue,lib/types.ts,Business / financial explorer,revenue,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:netIncome,lib/types.ts,Business / financial explorer,netIncome,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:operatingIncome,lib/types.ts,Business / financial explorer,operatingIncome,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:operatingCashFlow,lib/types.ts,Business / financial explorer,operatingCashFlow,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:capex,lib/types.ts,Business / financial explorer,capex,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:fcf,lib/types.ts,Business / financial explorer,fcf,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:margin,lib/types.ts,Business / financial explorer,margin,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:grossProfit,lib/types.ts,Business / financial explorer,grossProfit,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:costOfRevenue,lib/types.ts,Business / financial explorer,costOfRevenue,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:researchExpense,lib/types.ts,Business / financial explorer,researchExpense,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:stockCompensation,lib/types.ts,Business / financial explorer,stockCompensation,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:buybacks,lib/types.ts,Business / financial explorer,buybacks,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:dividends,lib/types.ts,Business / financial explorer,dividends,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:weightedShares,lib/types.ts,Business / financial explorer,weightedShares,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:eps,lib/types.ts,Business / financial explorer,eps,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:cash,lib/types.ts,Business / financial explorer,cash,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:debt,lib/types.ts,Business / financial explorer,debt,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:equity,lib/types.ts,Business / financial explorer,equity,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:assets,lib/types.ts,Business / financial explorer,assets,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:liabilities,lib/types.ts,Business / financial explorer,liabilities,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:currentAssets,lib/types.ts,Business / financial explorer,currentAssets,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:currentLiabilities,lib/types.ts,Business / financial explorer,currentLiabilities,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:interestExpense,lib/types.ts,Business / financial explorer,interestExpense,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:depreciation,lib/types.ts,Business / financial explorer,depreciation,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:receivables,lib/types.ts,Business / financial explorer,receivables,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:inventory,lib/types.ts,Business / financial explorer,inventory,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:payables,lib/types.ts,Business / financial explorer,payables,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:retainedEarnings,lib/types.ts,Business / financial explorer,retainedEarnings,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:grossMargin,lib/types.ts,Business / financial explorer,grossMargin,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:netMargin,lib/types.ts,Business / financial explorer,netMargin,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:fcfMargin,lib/types.ts,Business / financial explorer,fcfMargin,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:sbcRevenue,lib/types.ts,Business / financial explorer,sbcRevenue,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:capexRevenue,lib/types.ts,Business / financial explorer,capexRevenue,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:fcfPerShare,lib/types.ts,Business / financial explorer,fcfPerShare,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:sbcAdjustedFcfPerShare,lib/types.ts,Business / financial explorer,sbcAdjustedFcfPerShare,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:currentRatio,lib/types.ts,Business / financial explorer,currentRatio,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:debtEquity,lib/types.ts,Business / financial explorer,debtEquity,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:netDebt,lib/types.ts,Business / financial explorer,netDebt,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:interestCoverage,lib/types.ts,Business / financial explorer,interestCoverage,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:cashConversion,lib/types.ts,Business / financial explorer,cashConversion,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+financial-period:sourceUrls,lib/types.ts,Business / financial explorer,sourceUrls,existing financials gate,period selection,not yet assigned,not yet executed,source-found
+research-tab:Snapshot,components/Research.tsx,Overview,tab and existing subviews,existing FeatureGate,tab query,not yet assigned,not yet executed,source-found
+research-tab:Thesis,components/Research.tsx,Ownership,tab and existing subviews,existing FeatureGate,tab query,not yet assigned,not yet executed,source-found
+research-tab:Financials,components/Research.tsx,Business,tab and existing subviews,existing FeatureGate,tab query,not yet assigned,not yet executed,source-found
+research-tab:Valuation,components/Research.tsx,Valuation,tab and existing subviews,existing FeatureGate,tab query,not yet assigned,not yet executed,source-found
+research-tab:Technicals,components/Research.tsx,Technicals,tab and existing subviews,existing FeatureGate,tab query,not yet assigned,not yet executed,source-found
+research-tab:Analysts,components/Research.tsx,Analysts,tab and existing subviews,existing FeatureGate,tab query,not yet assigned,not yet executed,source-found
+research-tab:News,components/Research.tsx,News & earnings,tab and existing subviews,existing FeatureGate,tab query,not yet assigned,not yet executed,source-found
+research-tab:Advanced,components/Research.tsx,Advanced,tab and existing subviews,existing FeatureGate,tab query,not yet assigned,not yet executed,source-found
+research-tab:Options,components/Research.tsx,Options,tab and existing subviews,existing FeatureGate,tab query,not yet assigned,not yet executed,source-found

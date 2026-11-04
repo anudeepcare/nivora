@@ -109,6 +109,8 @@ export default function PaceInstrument({
           <small>{publicGuide ? "Tap a step to explore" : reading.date}</small>
         )}
       </div>
+      <details className={s.readingDetail}>
+        <summary>Reading details</summary>
       <p className={s.description}>
         {exploring && selected !== null
           ? PACE_DESCRIPTIONS[selected]
@@ -117,6 +119,7 @@ export default function PaceInstrument({
             : view?.detail ||
               "A completed price reading is needed. Review business evidence in the meantime."}
       </p>
+      </details>
       {!publicGuide && (
         <div className={s.periods} aria-label="Pace reading period">
           {["confirmed", "forming"].map((p) => (

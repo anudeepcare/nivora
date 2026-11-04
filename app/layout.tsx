@@ -7,6 +7,7 @@ import type { Metadata, Viewport } from "next";
 import "./core/compatibility.css";
 import "./core/foundation.css";
 import "./appearance.css";
+import "./core/surfaces.css";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   verification: {

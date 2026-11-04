@@ -1,0 +1,125 @@
+{
+  "report": "verification/pace-integrity-20261027.json",
+  "synthetic": [
+    {
+      "name": "flat",
+      "costBps": 10,
+      "months": 71,
+      "contributions": 7100,
+      "fixedValue": 7092.900000000003,
+      "adaptiveValue": 7092.900000000003,
+      "differencePct": 0,
+      "adaptiveCash": 0,
+      "fixedDrawdownPct": -0.48392094453182377,
+      "adaptiveDrawdownPct": -0.48392094453182377
+    },
+    {
+      "name": "steady_growth",
+      "costBps": 10,
+      "months": 71,
+      "contributions": 7100,
+      "fixedValue": 19072.530084497772,
+      "adaptiveValue": 19072.530084497772,
+      "differencePct": 0,
+      "adaptiveCash": 0,
+      "fixedDrawdownPct": -0.09999999999998899,
+      "adaptiveDrawdownPct": -0.09999999999998899
+    },
+    {
+      "name": "persistent_decline",
+      "costBps": 10,
+      "months": 71,
+      "contributions": 7100,
+      "fixedValue": 1245.3971722465426,
+      "adaptiveValue": 1245.3971722465426,
+      "differencePct": 0,
+      "adaptiveCash": 0,
+      "fixedDrawdownPct": -99.71066927219357,
+      "adaptiveDrawdownPct": -99.71066927219357
+    },
+    {
+      "name": "crash_recovery",
+      "costBps": 10,
+      "months": 71,
+      "contributions": 7100,
+      "fixedValue": 15571.233030319408,
+      "adaptiveValue": 13967.220201502416,
+      "differencePct": -10.301129176435486,
+      "adaptiveCash": 700,
+      "fixedDrawdownPct": -71.51437510688018,
+      "adaptiveDrawdownPct": -71.51437510688018
+    },
+    {
+      "name": "extension_reversal",
+      "costBps": 10,
+      "months": 71,
+      "contributions": 7100,
+      "fixedValue": 7037.986409886911,
+      "adaptiveValue": 7440.930975450457,
+      "differencePct": 5.725281949926653,
+      "adaptiveCash": 0,
+      "fixedDrawdownPct": -93.15445248913227,
+      "adaptiveDrawdownPct": -91.60567998596296
+    }
+  ],
+  "stored": [
+    {
+      "file": "verification/dca-backtest-30.json",
+      "fileSha256": "b945e762bb30ff6433d9dbd032bb5247133bdcb4ff6de5c5055e7f4887933879",
+      "policySha256": "ee0bcac791dba4ca9979ddaf8ab43f2b00c1b5822e963cc319201437cef81c7f",
+      "evaluatorSha256": "fa9c8f47deef1f120efecc9cedb1e48f7792be71107eb40a4bf8725215f0423f",
+      "matchesCurrentPolicy": false,
+      "matchesCurrentEvaluator": false,
+      "rawDataRerun": false,
+      "runs": [
+        {
+          "costBps": 10,
+          "eligible": 28,
+          "wins": 3,
+          "losses": 15,
+          "ties": 10,
+          "meanDifferencePct": -2.303805695866351,
+          "lowerMonthlyDrawdown": 9
+        },
+        {
+          "costBps": 50,
+          "eligible": 28,
+          "wins": 3,
+          "losses": 15,
+          "ties": 10,
+          "meanDifferencePct": -2.3010136199744116,
+          "lowerMonthlyDrawdown": 9
+        }
+      ]
+    },
+    {
+      "file": "verification/dca-frozen-validation.json",
+      "fileSha256": "0c38ca0dd98eef35fdfb536d70c1cb0fcbf6b972ac5ec79886131bd747923af8",
+      "policySha256": "ee0bcac791dba4ca9979ddaf8ab43f2b00c1b5822e963cc319201437cef81c7f",
+      "evaluatorSha256": "fa9c8f47deef1f120efecc9cedb1e48f7792be71107eb40a4bf8725215f0423f",
+      "matchesCurrentPolicy": false,
+      "matchesCurrentEvaluator": false,
+      "rawDataRerun": false,
+      "runs": [
+        {
+          "costBps": 10,
+          "eligible": 8,
+          "wins": 1,
+          "losses": 2,
+          "ties": 5,
+          "meanDifferencePct": 0.04383026186908362,
+          "lowerMonthlyDrawdown": 2
+        },
+        {
+          "costBps": 50,
+          "eligible": 8,
+          "wins": 1,
+          "losses": 2,
+          "ties": 5,
+          "meanDifferencePct": 0.046082817923696895,
+          "lowerMonthlyDrawdown": 2
+        }
+      ]
+    }
+  ]
+}

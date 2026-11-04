@@ -546,6 +546,7 @@ export default function Research({ symbol }: { symbol: string }) {
       </div>
       <section
         className="signal-research-panel"
+        data-research-section={tab}
         hidden={tab === "Snapshot"}
         aria-label={tabPresentation[tab].label}
       >

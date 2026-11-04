@@ -25,7 +25,7 @@
   align-items: center;
   gap: 10px;
   font-size: 19px;
-  font-weight: 650;
+  font-weight: 500;
   letter-spacing: 0.12em;
   white-space: nowrap;
 }
@@ -129,8 +129,8 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  padding: 6px 0 10px;
-  margin-bottom: 14px;
+  padding: 2px 0 6px;
+  margin-bottom: 12px;
   border-bottom: 1px solid var(--line);
   overflow-x: auto;
 }
@@ -148,22 +148,30 @@
   padding: 9px 12px;
   border-radius: 10px;
 }
-.researchNav button[data-section="Financials"] svg { color: var(--green); }
-.researchNav button[data-section="Valuation"] svg, .researchNav button[data-section="News"] svg { color: var(--amber); }
-.researchNav button[data-section="Analysts"] svg, .researchNav button[data-section="Thesis"] svg { color: var(--cyan); }
+.researchNav button[data-section="Financials"] svg { color: var(--business-icon); }
+.researchNav button[data-section="Valuation"] svg, .researchNav button[data-section="News"] svg { color: var(--valuation-icon); }
+.researchNav button[data-section="Analysts"] svg, .researchNav button[data-section="Thesis"] svg { color: var(--ownership-icon); }
 .researchNav button[aria-current="page"] {
-  background: var(--blue-soft);
+  background: transparent;
   color: var(--blue);
+  box-shadow: inset 0 -3px var(--blue);
+  border-radius:0;
 }
 .researchPicker {
   display: none;
 }
 .overview {
   display: grid;
-  grid-template-columns: minmax(290px, 0.85fr) minmax(0, 1.9fr);
+  grid-template-columns: minmax(300px, 0.85fr) minmax(0, 1.25fr);
+  grid-template-areas:"pace chart" "metrics metrics";
+  margin-bottom:16px;
   gap: 16px;
   align-items: flex-start;
 }
+.overview>section {grid-area:pace;}
+.overview>.chart {grid-area:chart;}
+.overviewMetrics {grid-area:metrics; min-width:0;}
+.overviewMetrics>section {margin:0;}
 .market {
   min-width: 0;
 }
@@ -171,13 +179,14 @@
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  padding: 0 0 18px;
-  border-bottom: 1px solid var(--line);
-  margin-bottom: 20px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background:var(--card);
 }
 .brief h2 {
   font-size: 21px;
-  font-weight: 550;
+  font-weight: 500;
   margin: 0 0 6px;
 }
 .brief p {
@@ -191,9 +200,14 @@
   margin-top: 3px;
   color: var(--blue);
 }
-.chart {
-  min-width: 0;
-}
+.chart { min-width:0; padding:16px; background:var(--card); border:1px solid var(--line); border-radius:14px; }
+.analysis { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.reasons { padding:18px; border:1px solid var(--line); border-radius:14px; background:var(--card); }
+.reasons h2 { font-size:20px; font-weight:500; margin:0 0 8px; }
+.reasons ul { padding-left:20px; margin:0; font-size:14px; line-height:1.65; color:var(--muted); }
+.reasons li+li { margin-top:8px; }
+@media(max-width:800px) { .analysis {grid-template-columns:1fr;} .chart {padding:12px;} }
+
 .bottom {
   display: grid;
   grid-template-columns: 1.1fr 1fr;
@@ -264,10 +278,11 @@
 .heroVisual > section {
   display: grid;
   grid-template-columns: 0.8fr 1.2fr;
+  column-gap:24px;
   grid-template-rows: auto auto auto auto;
   padding: 30px 42px;
   border-radius: 28px;
-  min-height: 390px;
+  min-height: 300px;
 }
 .heroVisual > section > header {
   grid-column: 1;
@@ -282,7 +297,8 @@
   align-self: center;
 }
 .heroVisual > section > div:nth-child(4),
-.heroVisual > section > p {
+.heroVisual > section > p,
+.heroVisual > section > details {
   grid-column: 1;
 }
 .heroVisual > section > footer {
@@ -323,7 +339,7 @@
   min-height: 48px;
   padding: 12px 20px;
   border-radius: 12px;
-  background: var(--blue);
+  background: var(--accent-solid);
   color: #fff;
   font-size: 14px;
 }
@@ -349,7 +365,7 @@
   align-items: center;
   gap: 10px;
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.12em;
 }
 .authStory > section {
@@ -403,7 +419,7 @@
     gap: 10px;
   }
   .overview {
-    grid-template-columns: minmax(270px, 0.9fr) minmax(0, 1.4fr);
+    grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.2fr);
     gap: 20px;
   }
   .bottom {
@@ -469,6 +485,7 @@
   }
   .overview {
     grid-template-columns: 1fr;
+    grid-template-areas:"pace" "metrics" "chart";
   }
   .researchNav {
     display: flex;
@@ -550,7 +567,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 24px;
-  padding: 6px 0 14px;
+  padding: 2px 0 10px;
 }
 .stockIdentity {
   display: flex;
@@ -559,7 +576,7 @@
 }
 .stockIdentity h1 {
   font-size: 30px;
-  font-weight: 550;
+  font-weight: 500;
   margin: 0 0 5px;
 }
 .stockIdentity p {
@@ -581,7 +598,7 @@
 }
 .stockPrice strong {
   font-size: 32px;
-  font-weight: 550;
+  font-weight: 500;
 }
 .stockPrice small {
   flex-basis: 100%;

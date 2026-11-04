@@ -1,0 +1,19 @@
+# Activate real payments
+
+The source supports Stripe live payments, but this ZIP does not change Vercel secrets or activate your Stripe account. Keep Sandbox configured until the steps below are complete. Never paste secret keys into chat or commit them to Git.
+
+1. Deploy this source to GitHub main and wait for the new Vercel Production commit to become Ready. Friends with complimentary Pro can now choose Subscribe for $2.99/month without giving up their grant. Successful paid access takes precedence; the unexpired grant remains a fallback.
+2. In Stripe, leave Sandbox and finish activation of the real business account, including payout and identity details.
+3. In that live account create AURYN Pro, recurring USD $2.99 every month. Copy its live `price_…` ID. A sandbox price cannot be reused.
+4. Create a live webhook destination: `https://www.auryninvest.com/api/billing/webhook`. Select `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.paid`, `invoice.payment_failed`. Copy this destination's signing secret. Use the matching Stripe API version documented in STRIPE_SETUP.md.
+5. Configure the live customer portal: payment-method updates, invoice access and cancellation at the end of the billing period. Keep plan switching off while there is one plan. Enable appropriate live receipts/payment-failure emails in Stripe.
+6. In Vercel project Settings → Environment Variables, set the Production values together: `STRIPE_SECRET_KEY` = live secret key; `STRIPE_PRO_PRICE_ID` = live price ID; `STRIPE_WEBHOOK_SECRET` = live destination secret; `AURYN_BILLING_MODE=live`; `AURYN_BILLING_LIVE_ENABLED=true`; `AURYN_APP_URL=https://www.auryninvest.com`. Keep server secrets server-only. Keep `AURYN_ACCESS_ENABLED=true` and the existing owner/Supabase settings. Before enabling live checkout, complete commercial market-data permissions; only then set `AURYN_EXTERNAL_DATA_LICENSED=true`. This app intentionally refuses real checkout while this flag is false.
+7. In Supabase SQL Editor run `update public.auryn_access_config set billing_mode='live' where id=true;`. This switches billing interpretation, not accounts or saved holdings. Sandbox purchases do not become paid live subscriptions; existing complimentary grants are retained.
+8. Redeploy Vercel Production to apply the environment changes. From your owner account use Check Stripe connection. It must confirm live mode and the $2.99 monthly price without creating a charge.
+9. Test with a nonowner account: Free → Plans → Subscribe → real Stripe Checkout → return → Pro and Manage subscription. Use a real payment method only with the payer's consent; test card numbers do not work live. Confirm the live invoice and webhook deliveries. Also test period-end cancellation through Manage subscription. Do not charge customers until this check succeeds.
+
+Existing friends: grant complimentary Pro from owner controls, using the existing account. They keep access through checkout or cancellation of checkout. They can voluntarily pay through Plans. New users: signup → Free Home → optional Pro; no invitation needed. Free allows 100 distinct companies per UTC month; Pro has unlimited company research, subject to provider request budgets and separate AI/watchlist limits.
+
+No new database migration is needed for this friends-to-paid change. If you have not applied the earlier open Free migration, do that after deploying the compatible source. No complimentary grants are created automatically by this ZIP; select the friends you intend to include in owner controls.
+
+Verification: local automated checks do not prove real-money checkout, SMTP delivery, account activation or production cancellation. Real production activation still requires the above account settings and a user-run transaction.

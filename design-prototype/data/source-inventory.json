@@ -1,0 +1,756 @@
+[
+  {
+    "file": "components/Access.tsx",
+    "headings": [
+      "Access could not be checked"
+    ]
+  },
+  {
+    "file": "components/AccountBalances.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/Accumulation.tsx",
+    "headings": [
+      "Last confirmed month",
+      "Keep the business in view",
+      "Price & monthly context",
+      "Confirmed monthly history"
+    ]
+  },
+  {
+    "file": "components/AccumulationDesk.tsx",
+    "headings": [
+      "AURYN Pace \u00b7 price history",
+      "Same deposits. Same execution dates."
+    ]
+  },
+  {
+    "file": "components/AdvancedDashboard.tsx",
+    "headings": [
+      "More completed price history is needed.",
+      "The distance back.",
+      "How the days actually traded.",
+      "Know the conditions around the trade.",
+      "Recent noise versus the longer view."
+    ]
+  },
+  {
+    "file": "components/AdvancedResearch.tsx",
+    "headings": [
+      "Pressure-test the decision."
+    ]
+  },
+  {
+    "file": "components/AdvancedRiskBrief.tsx",
+    "headings": [
+      "Price history is needed for this risk view",
+      "What can go wrong before you are right?"
+    ]
+  },
+  {
+    "file": "components/AlertCenter.tsx",
+    "headings": [
+      "Your rules",
+      "Alert history"
+    ]
+  },
+  {
+    "file": "components/Analyst.tsx",
+    "headings": [
+      "Ask AURYN",
+      "Ask AURYN"
+    ]
+  },
+  {
+    "file": "components/AnalystRatings.tsx",
+    "headings": [
+      "Recommendation distribution"
+    ]
+  },
+  {
+    "file": "components/AnalystTargets.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/AnalyticsConsent.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/AppSession.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/AppearanceControls.tsx",
+    "headings": [
+      "Accent color",
+      "Spacing"
+    ]
+  },
+  {
+    "file": "components/ApprovedPortfolioChart.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/ApprovedResearch.tsx",
+    "headings": [
+      "Price, with context.",
+      "A range of price outcomes.",
+      "A clear next checkpoint.",
+      "The details behind the decision.",
+      "Funded-growth requirements"
+    ]
+  },
+  {
+    "file": "components/ApprovedWorkspace.tsx",
+    "headings": [
+      "Cash & balances",
+      "The full picture",
+      "Find a company to follow",
+      "What would you like to understand?"
+    ]
+  },
+  {
+    "file": "components/ApprovedWorkspaceForms.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/BusinessHistory.tsx",
+    "headings": [
+      "What the record actually shows"
+    ]
+  },
+  {
+    "file": "components/BusinessMap.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/CaseRange.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/Charts.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/CompanyBrief.tsx",
+    "headings": [
+      "Risks to review"
+    ]
+  },
+  {
+    "file": "components/CompanyEvents.tsx",
+    "headings": [
+      "Events & catalysts",
+      "Insider activity"
+    ]
+  },
+  {
+    "file": "components/CompanyMetrics.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/CompanySparkline.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/CompanyUpdates.tsx",
+    "headings": [
+      "Events & reported transactions",
+      "Next scheduled earnings",
+      "Reported transactions"
+    ]
+  },
+  {
+    "file": "components/CongressDisclosures.tsx",
+    "headings": [
+      "Congressional transactions"
+    ]
+  },
+  {
+    "file": "components/Contact.tsx",
+    "headings": [
+      "Your message is saved."
+    ]
+  },
+  {
+    "file": "components/DcaResearch.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/DecisionBrief.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/DecisionOverview.tsx",
+    "headings": [
+      "Price in context",
+      "Monthly Accumulation",
+      "Business in motion",
+      "What changes the case",
+      "Completed-price studies"
+    ]
+  },
+  {
+    "file": "components/DecisionWatch.tsx",
+    "headings": [
+      "What would change the view?"
+    ]
+  },
+  {
+    "file": "components/DecisionWorkspace.tsx",
+    "headings": [
+      "Supports the case",
+      "Challenge the case"
+    ]
+  },
+  {
+    "file": "components/Discover.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/DisplayPreferences.tsx",
+    "headings": [
+      "Make it yours"
+    ]
+  },
+  {
+    "file": "components/EarningsPrep.tsx",
+    "headings": [
+      "Earnings preparation",
+      "What would strengthen the case?",
+      "What needs a direct answer?"
+    ]
+  },
+  {
+    "file": "components/EarningsWorkspace.tsx",
+    "headings": [
+      "Earnings checkpoints"
+    ]
+  },
+  {
+    "file": "components/EdgeOverview.tsx",
+    "headings": [
+      "Price & expectations",
+      "Technical conditions",
+      "Ownership & upcoming events"
+    ]
+  },
+  {
+    "file": "components/EvidenceGraphics.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/ExpectationMap.tsx",
+    "headings": [
+      "This business needs its own capital model.",
+      "What must the business deliver?",
+      "How much does the conclusion depend on the margin?",
+      "Follow the operating cash."
+    ]
+  },
+  {
+    "file": "components/FinancialDetailTable.tsx",
+    "headings": [
+      "Reported metrics & formulas"
+    ]
+  },
+  {
+    "file": "components/FinancialExplorer.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/FinancialPicture.tsx",
+    "headings": [
+      "Financials",
+      "Statements"
+    ]
+  },
+  {
+    "file": "components/Financials.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/FinancingContext.tsx",
+    "headings": [
+      "Cash needs and dilution"
+    ]
+  },
+  {
+    "file": "components/FreeSnapshot.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/FundedScenarios.tsx",
+    "headings": [
+      "Growth needs funding."
+    ]
+  },
+  {
+    "file": "components/GrowCompany.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/HistoricalConditions.tsx",
+    "headings": [
+      "What followed this price condition?"
+    ]
+  },
+  {
+    "file": "components/HoldingsImport.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/HomeBriefing.tsx",
+    "headings": [
+      "Keep your ideas close.",
+      "Connect the view to your money.",
+      "Next on your calendar",
+      "Latest company news",
+      "Your companies"
+    ]
+  },
+  {
+    "file": "components/HomeUpdates.tsx",
+    "headings": [
+      "Needs your attention"
+    ]
+  },
+  {
+    "file": "components/LegalDocument.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/MarketContext.tsx",
+    "headings": [
+      "Market & peer context",
+      "Find relevant peers"
+    ]
+  },
+  {
+    "file": "components/MetricProvenance.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/ModelAssessment.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/MovementContext.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/OptionsDesk.tsx",
+    "headings": [
+      "See the setup. Understand your risk.",
+      "Prices are available. Positioning is not yet measurable.",
+      "Where exposure clusters",
+      "Call & put concentrations",
+      "Gamma heatmap",
+      "Gamma across possible stock prices",
+      "How put volatility varies by strike",
+      "No long-dated expirations in the returned dataset",
+      "Build a payoff you understand",
+      "No contract meets the strategy checks",
+      "Start with cost, then risk, then sensitivity."
+    ]
+  },
+  {
+    "file": "components/OverviewContext.tsx",
+    "headings": [
+      "Price context"
+    ]
+  },
+  {
+    "file": "components/OverviewEvidence.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/OwnerAccess.tsx",
+    "headings": [
+      "Owner controls",
+      "Admin controls",
+      "Feature access",
+      "Who can use each feature",
+      "Give Pro access",
+      "Complimentary members",
+      "Payments"
+    ]
+  },
+  {
+    "file": "components/OwnershipPicture.tsx",
+    "headings": [
+      "Who holds the shares?"
+    ]
+  },
+  {
+    "file": "components/PaceGuidance.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/PaceHelp.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/PaceReadings.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/PasswordRecovery.tsx",
+    "headings": [
+      "A fresh start."
+    ]
+  },
+  {
+    "file": "components/PlanPanel.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/Plans.tsx",
+    "headings": [
+      "More clarity. Your choice."
+    ]
+  },
+  {
+    "file": "components/PortfolioCharts.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/PortfolioContext.tsx",
+    "headings": [
+      "Evidence coverage across your holdings"
+    ]
+  },
+  {
+    "file": "components/PortfolioExposure.tsx",
+    "headings": [
+      "Different tickers. Similar risks."
+    ]
+  },
+  {
+    "file": "components/PortfolioLedger.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/PortfolioRisk.tsx",
+    "headings": [
+      "Risk concentration"
+    ]
+  },
+  {
+    "file": "components/PortfolioRiskSummary.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/PortfolioTools.tsx",
+    "headings": [
+      "Before your next investment",
+      "Purchase impact",
+      "Portfolio stress",
+      "Import positions"
+    ]
+  },
+  {
+    "file": "components/PositionAwareResearch.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/PositionExplorer.tsx",
+    "headings": [
+      "What would this position mean?"
+    ]
+  },
+  {
+    "file": "components/PriceProjection.tsx",
+    "headings": [
+      "How the business could translate into price"
+    ]
+  },
+  {
+    "file": "components/PriceRiskCases.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/Product.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/ProfessionalContext.tsx",
+    "headings": [
+      "Test the counterargument",
+      "Context behind the headline numbers"
+    ]
+  },
+  {
+    "file": "components/ProfessionalWorkbench.tsx",
+    "headings": [
+      "Begin with what you could lose.",
+      "A plan starts with boundaries.",
+      "What is the stock doing on its own?",
+      "Comparable candidates",
+      "What followed similar pullbacks?"
+    ]
+  },
+  {
+    "file": "components/PublicEducation.tsx",
+    "headings": [
+      "Buy and Add mean different things.",
+      "Use the completed month.",
+      "P4 is never a shortcut.",
+      "Start with a sensible budget.",
+      "Evidence you can inspect.",
+      "Assumptions in the open.",
+      "Context beyond a ticker.",
+      "An accumulation scale of our own.",
+      "Clear rules. Visible limits."
+    ]
+  },
+  {
+    "file": "components/PublicLanding.tsx",
+    "headings": [
+      "A next move you can explain.",
+      "Follow the thinking.",
+      "Research that leads somewhere.",
+      "Get to know the business.",
+      "See the case. See the risks.",
+      "Give each contribution context.",
+      "Keep the whole picture in view.",
+      "Make it an informed one."
+    ]
+  },
+  {
+    "file": "components/Pwa.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/PwaDiagnostics.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/Research.tsx",
+    "headings": [
+      "Price",
+      "Understand the entry conditions.",
+      "Monthly accumulation"
+    ]
+  },
+  {
+    "file": "components/ResearchBalance.tsx",
+    "headings": [
+      "The decision behind the numbers."
+    ]
+  },
+  {
+    "file": "components/ResearchChanges.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/ResearchCompare.tsx",
+    "headings": [
+      "Compare the evidence",
+      "Selected peer context"
+    ]
+  },
+  {
+    "file": "components/ResearchCoverage.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/ResearchDetails.tsx",
+    "headings": [
+      "The investment case",
+      "Watch next"
+    ]
+  },
+  {
+    "file": "components/ResearchEvidence.tsx",
+    "headings": [
+      "Analyst expectations",
+      "What analysts expect next",
+      "Earnings & catalysts",
+      "Who owns the company?",
+      "Reported insider transactions",
+      "Recent coverage",
+      "Source filings",
+      "Dividends",
+      "Stock splits",
+      "The business behind the ticker"
+    ]
+  },
+  {
+    "file": "components/ResearchLab.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/ResearchNotes.tsx",
+    "headings": [
+      "Keep your reasoning",
+      "Review against current evidence"
+    ]
+  },
+  {
+    "file": "components/ResearchOverview.tsx",
+    "headings": [
+      "Market multiples",
+      "Valuation snapshot",
+      "Supports the case",
+      "Risks to track"
+    ]
+  },
+  {
+    "file": "components/ResearchPreferences.tsx",
+    "headings": [
+      "Make research yours"
+    ]
+  },
+  {
+    "file": "components/ResearchSummary.tsx",
+    "headings": [
+      "Financial strengths & risks",
+      "Price in context",
+      "Your earnings assumptions"
+    ]
+  },
+  {
+    "file": "components/ResearchWorkbench.tsx",
+    "headings": [
+      "The business in motion"
+    ]
+  },
+  {
+    "file": "components/ScenarioCompass.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/Search.tsx",
+    "headings": [
+      "Your saved instruments"
+    ]
+  },
+  {
+    "file": "components/SectorBenchmarks.tsx",
+    "headings": [
+      "Which sectors are leading?"
+    ]
+  },
+  {
+    "file": "components/Session.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/SessionBrief.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/Shell.tsx",
+    "headings": [
+      "Explore tools",
+      "Find a company"
+    ]
+  },
+  {
+    "file": "components/SpecializedScenario.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/StockFacts.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/SupportInbox.tsx",
+    "headings": [
+      "Support inbox"
+    ]
+  },
+  {
+    "file": "components/SupportingViews.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/TechnicalDashboard.tsx",
+    "headings": [
+      "Price reference map",
+      "Custom Fibonacci anchors"
+    ]
+  },
+  {
+    "file": "components/TechnicalLevels.tsx",
+    "headings": [
+      "Reference levels",
+      "Recent trend signals"
+    ]
+  },
+  {
+    "file": "components/TimingContext.tsx",
+    "headings": [
+      "Risk behind the price action"
+    ]
+  },
+  {
+    "file": "components/TradeReference.tsx",
+    "headings": [
+      "Take your plan to your broker"
+    ]
+  },
+  {
+    "file": "components/Trading.tsx",
+    "headings": [
+      "Paper trading",
+      "Monthly plans",
+      "Order audit"
+    ]
+  },
+  {
+    "file": "components/Ui.tsx",
+    "headings": []
+  },
+  {
+    "file": "components/Valuation.tsx",
+    "headings": [
+      "What assumptions does the price require?",
+      "Cash-flow examples",
+      "Explore your assumptions",
+      "A suitable model needs more evidence."
+    ]
+  },
+  {
+    "file": "components/ValuationExplain.tsx",
+    "headings": [
+      "Model assumptions",
+      "Source lineage"
+    ]
+  },
+  {
+    "file": "components/ValuationLab.tsx",
+    "headings": [
+      "Use the right model for this business",
+      "What must go right at this price?",
+      "What today\u2019s price requires",
+      "Return built into this model",
+      "Challenge the assumptions"
+    ]
+  },
+  {
+    "file": "components/ValuationMethods.tsx",
+    "headings": [
+      "Different questions, different values"
+    ]
+  },
+  {
+    "file": "components/ValueStudio.tsx",
+    "headings": [
+      "Price in context.",
+      "What you are paying for",
+      "For every 100 you pay.",
+      "The right lens for this business."
+    ]
+  },
+  {
+    "file": "components/Workspace.tsx",
+    "headings": [
+      "Your research universe",
+      "A clear place to begin.",
+      "Find a company to follow"
+    ]
+  }
+]
