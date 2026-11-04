@@ -93,6 +93,8 @@ test("switching workspace tabs restores their own position; tapping the active t
     useRouter: () => ({ push: () => {} }),
     settingsHref,
     useProduct: () => ({ theme: "dark" }),
+    useState: (value) => [value, () => {}],
+    LogOut: () => null,
     useRef: (value) =>
       refs[cursor++] ?? (refs[cursor - 1] = { current: value }),
     useLayoutEffect: (fn) => {

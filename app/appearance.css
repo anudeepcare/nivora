@@ -1,4 +1,4 @@
-:root[data-accent="blue"]{--blue:#343b48;--accent-solid:#343b48;--blue-soft:#eef0f4;}
+:root[data-accent="blue"]{--blue:#3155d9;--accent-solid:#3155d9;--blue-soft:#edf1ff;}
 :root[data-theme="dark"][data-accent="blue"]{--blue:#d7dfed;--blue-soft:#30394a;}
 /* Appearance tokens: scoped to accents and spacing, never financial meaning or PWA geometry. */
 :root[data-accent="teal"] {--blue:#00777d;--accent-solid:#006d73;--blue-soft:color-mix(in srgb,#00777d 10%,var(--surface));}

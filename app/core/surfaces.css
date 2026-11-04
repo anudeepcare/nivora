@@ -105,3 +105,24 @@ body :is(.mp-public,.mp-auth,.plans-public,.legal-page) {background:var(--app-ba
 .product.approved-product :is(.signal-analyst-summary,.technical-desk-groups>section) {border:1px solid var(--line);background:var(--glass);box-shadow:var(--panel-shadow);border-radius:18px;}
 :root[data-theme="dark"] body :is(.ranges,.segments,.segment) :is(button.active,button[aria-pressed="true"]) {color:#18212d;}
 :root[data-theme="dark"] body :is(.button.primary,.btn.primary) {color:#18212d;}
+
+/* Sapphire refresh: clear structure, neutral reading surfaces, restrained color. */
+@font-face {font-family:"AURYN Sans";src:url('/fonts/auryn-sans.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap;}
+body :is(h1,h2,h3,h4) {font-weight:600;letter-spacing:-.035em;}
+body :is(.num,.pricing-amount) {font-variant-numeric:tabular-nums;letter-spacing:-.025em;}
+.product.approved-product .local-tabs a[aria-current="page"],.product.approved-product .local-tabs button[aria-selected="true"] {background:var(--blue-soft);font-weight:600;}
+.product.approved-product .depth-news .source-row {border-left:0;padding-left:0;}
+.product.approved-product .financial-detail-groups h3 {color:var(--ink);}
+.account-menu-footer {display:flex;align-items:center;gap:16px;border-top:1px solid var(--line);margin-top:20px;padding-top:16px;}
+.account-menu-footer .button {display:inline-flex;gap:8px;align-items:center;color:var(--red);background:var(--card);border:1px solid var(--line);}
+.account-menu-footer p {color:var(--red);font-size:13px;}
+.product.approved-product .approved-tools-dialog {max-width:640px;padding:24px;}
+.product.approved-product .approved-tools-dialog .dialog-tools {gap:8px;}
+.product.approved-product .approved-tools-dialog .dialog-tools>a {padding:12px;min-height:68px;border-radius:10px;}
+.product.approved-product .membership-comparison .pricing-card {padding:24px;}
+.product.approved-product .membership-comparison .pricing-amount {font-size:36px;margin:20px 0;}
+.product.approved-product .statement-snapshot>div {border-radius:10px;}
+.product.approved-product .statement-snapshot .help-trigger {color:var(--muted);}
+.product.approved-product .wealth-strip .help-trigger {font-size:inherit;color:var(--muted);font-weight:400;}
+.product.approved-product .approved-workspace-dialog .dialog-head {padding-bottom:16px;margin-bottom:16px;}
+.product.approved-product .approved-workspace-dialog form {gap:16px;}

@@ -129,7 +129,7 @@ test("financial cash bridge does not draw unreconciled line items as a valid wat
     /aria-label="Operating cash flow less capital spending equals cash after capex"/,
   );
   assert.match(html, /aria-label="Income statement snapshot"/);
-  assert.match(html, /<dt>Revenue<\/dt>/);
+  assert.match(html, /<dt><button>Revenue<\/button><\/dt>/);
 });
 test("a reconciled cash-burning business uses risk color for negative cash after capex", () => {
   const period = {

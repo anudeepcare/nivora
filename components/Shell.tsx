@@ -3,8 +3,9 @@ import experience from "./WorkspaceShell.module.css";
 import { AccessNotice, useAccess } from "./Access";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
+  LogOut,
   Home,
   ChartNoAxesCombined,
   Bookmark,
@@ -23,6 +24,7 @@ import {
 } from "lucide-react";
 import { ProductFooter } from "./Ui";
 import Search from "./Search";
+import { signOutAndRedirect } from "@/lib/client";
 import { settingsHref } from "@/lib/settings-navigation";
 import { useProduct } from "./Session";
 import {
@@ -52,6 +54,18 @@ export default function Shell({
   const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   const search = useRef<HTMLDialogElement>(null);
   const tools = useRef<HTMLDialogElement>(null);
+  const [signingOut, setSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState("");
+  const signOut = async () => {
+    if ((demo && demo.routePrefix !== "") || signingOut) return;
+    setSigningOut(true);
+    setSignOutError("");
+    try { await signOutAndRedirect(); }
+    catch (error) {
+      setSignOutError(error instanceof Error ? error.message : "Could not sign out. Please try again.");
+      setSigningOut(false);
+    }
+  };
   const openSettings = (event: { preventDefault: () => void }) => {
     event.preventDefault();
     tools.current?.close();
@@ -295,6 +309,12 @@ export default function Shell({
               </Link>
             ))}
         </div>
+        <footer className="account-menu-footer">
+          <button type="button" className="button" disabled={(!!demo && demo.routePrefix !== "") || signingOut} onClick={signOut}>
+            <LogOut size={17} /> {signingOut ? "Signing out…" : "Sign out"}
+          </button>
+          {signOutError && <p role="alert">{signOutError}</p>}
+        </footer>
       </dialog>
       <dialog
         className="search-dialog"

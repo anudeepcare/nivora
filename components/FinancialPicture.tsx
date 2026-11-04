@@ -8,11 +8,14 @@ import FinancialDetailTable from "./FinancialDetailTable";
 import FinancialExplorer from "./FinancialExplorer";
 import { Help, DataStamp, Empty } from "./Ui";
 
+
+
 export default function FinancialPicture({
   research: r,
 }: {
   research: Research;
 }) {
+  const snapshotHelp: Record<string, string> = {"Revenue": "Sales earned during the selected reporting period, before expenses. Compare the same period and currency.", "Operating margin": "Operating profit as a percentage of revenue, before interest and tax. Compare with similar businesses.", "Net income": "Profit after reported expenses, interest and tax. One-off items can affect comparability.", "SBC / revenue": "Stock-based employee compensation as a percentage of revenue. It is non-cash but may dilute shareholders.", "Cash after capex": "Operating cash flow less reported capital expenditure. This is not cash available to shareholders after all financing needs.", "Cash after capex / revenue": "Cash after reported capital expenditure divided by revenue for the same period.", "Operating cash flow": "Cash generated or used by operating activities, including working-capital changes.", "Capital expenditure": "Reported spending on capital assets. Accounting treatment can vary by company.", "Net debt": "Reported debt less cash. A negative value indicates more cash than debt under this definition.", "Current ratio": "Current assets divided by current liabilities. Asset quality and payment timing still matter.", "Cash balance": "Reported cash and cash equivalents at the period end. It may include restricted balances depending on the source.", "Total debt": "Reported debt at the period end. Inspect the filing for maturity, interest and lease treatment."};
   const [scope, setScope] = useState<FinancialScope>(() =>
     researchPeriods(r, "ttm").length ? "ttm" : "annual",
   );
@@ -298,7 +301,7 @@ export default function FinancialPicture({
           >
             {rows.map(([label, value]) => (
               <div key={label}>
-                <dt>{label}</dt>
+                <dt><Help label={label} trigger={label}><p>{snapshotHelp[label]}</p><p>Reporting period: {dateLabel(p?.end)} · {p?.currency ?? "Currency unavailable"}. Missing values are not zero.</p></Help></dt>
                 <dd className="num">{value}</dd>
               </div>
             ))}

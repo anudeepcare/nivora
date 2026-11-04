@@ -45,7 +45,7 @@ import { researchLink, workspaceOverview } from "@/lib/approved-workspace";
 import { useProduct, useResource, useWorkspaceFilter } from "./Session";
 import { useWorkspaceQuotes } from "./Workspace";
 import { FeatureGate } from "./Access";
-import { Empty, Notice, SecurityLogo } from "./Ui";
+import { Empty, Notice, SecurityLogo, Help } from "./Ui";
 import Search from "./Search";
 import CompanySparkline from "./CompanySparkline";
 import AccountBalances from "./AccountBalances";
@@ -140,7 +140,10 @@ function Metric({
     <div className={visual.metric} data-kind={kind}>
       <span>
         <Icon aria-hidden="true" />
-        {label}
+        <Help label={label} trigger={label}>
+          <p>{note}</p>
+          <p>{kind === "return" ? "Unrealized change compares available position prices with recorded cost. It excludes realized trades, dividends, fees and taxes." : kind === "ideas" ? "Companies saved to your watchlist for further research. Saving a company does not create a holding." : label === "Margin used" ? "Recorded borrowing is subtracted from portfolio net value. This is not available buying power." : label === "Cash & managed" ? "Recorded cash and separately managed balances. These are entered balances, not live bank balances." : "Available investment values plus recorded cash and managed balances, less recorded margin. Missing prices and currency mismatches can make this total incomplete."}</p>
+        </Help>
       </span>
       <strong className={tone}>{value}</strong>
       <small>{note}</small>

@@ -7,7 +7,7 @@ npm warn Unknown env config "http-proxy". This will stop working in the next maj
    - Environments: .env.local
 
    Creating an optimized production build ...
- ✓ Compiled successfully in 4.3s
+ ✓ Compiled successfully in 8.3s
    Linting and checking validity of types ...
    Collecting page data ...
    Generating static pages (0/34) ...
@@ -20,7 +20,7 @@ npm warn Unknown env config "http-proxy". This will stop working in the next maj
 
 Route (app)                                 Size  First Load JS
 ┌ ○ /_not-found                            232 B         104 kB
-├ ƒ /[[...route]]                         156 kB         355 kB
+├ ƒ /[[...route]]                         156 kB         356 kB
 ├ ○ /about                                 128 B         111 kB
 ├ ƒ /api/access                            232 B         104 kB
 ├ ƒ /api/access/visit                      232 B         104 kB

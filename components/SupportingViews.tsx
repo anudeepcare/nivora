@@ -259,7 +259,7 @@ export function Settings() {
         </Link>
         <a href={`mailto:${SUPPORT_EMAIL}`}>
           <ShieldCheck size={18} />
-          <span>{SUPPORT_EMAIL}</span>
+          <span>Email support</span>
           <ChevronRight size={17} />
         </a>
         <div className="settings-analytics-shortcut">

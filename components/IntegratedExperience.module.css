@@ -166,7 +166,7 @@
   grid-template-areas:"chart pace" "metrics metrics";
   margin-bottom:16px;
   gap: 16px;
-  align-items: stretch;
+  align-items: start;
 }
 .overview>section {grid-area:pace;}
 .overview>.chart {grid-area:chart;}

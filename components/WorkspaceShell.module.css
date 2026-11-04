@@ -41,5 +41,8 @@
 }
 :global([data-keyboard-open="true"]) .dock { display:none; }
 
-.nav a[aria-current="page"] {background:var(--surface);color:var(--ink);border-radius:10px;}
-.nav a[aria-current="page"]::after {display:none;}
+.shell .header .nav a[aria-current="page"] {background:#edf1ff;color:#2444b7;border-radius:9px;font-weight:600;box-shadow:inset 0 -3px #3155d9;}
+.shell .header .nav a[aria-current="page"]::after {display:none;}
+:global([data-theme="dark"]) .shell .header .nav a[aria-current="page"] {background:#253455;color:#c4d2ff;}
+.shell .brand {font-weight:650;letter-spacing:.06em;}
+.shell .dock a[aria-current="page"] {background:#edf1ff;color:#2444b7;box-shadow:inset 0 3px #3155d9;font-weight:600;}

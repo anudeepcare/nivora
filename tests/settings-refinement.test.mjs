@@ -57,6 +57,7 @@ function shell(
   },
 ) {
   const pushes = [];
+  let signOutCalls = 0;
   const Shell = load("components/Shell.tsx", "Shell", {
     usePathname: () => location.pathname,
     useRouter: () => ({ push: (url) => pushes.push(url) }),
@@ -64,6 +65,9 @@ function shell(
       theme: "light",
       workspace: { email: "person@example.com" },
     }),
+    useState: (value) => [value, () => {}],
+    signOutAndRedirect: async () => { signOutCalls++; },
+    LogOut: () => null,
     useRef: (value) => ({ current: value }),
     useLayoutEffect: empty,
     useEffect: empty,
@@ -91,7 +95,7 @@ function shell(
     ChartNoAxesCombined: empty,
     SettingsSheet: "SettingsSheet",
   });
-  return { tree: Shell({ page, children: "content" }), pushes };
+  return { tree: Shell({ page, children: "content" }), pushes, signOutCalls: () => signOutCalls };
 }
 test("account menu retains Settings return context", () => {
   const { tree, pushes } = shell("research");
@@ -376,4 +380,15 @@ test("Analytics preferences stays inside the Settings shortcut grid", () => {
     fs.readFileSync("components/SupportingViews.tsx", "utf8"),
     /settings-analytics-shortcut/,
   );
+});
+
+
+test("account menu signs out directly without navigating to Settings", async () => {
+  const result = shell("research");
+  const footer = nodes(result.tree, n => n.props?.className === "account-menu-footer")[0];
+  const button = nodes(footer, n => n.type === "button")[0];
+  assert.equal(button.props.disabled, false);
+  await button.props.onClick();
+  assert.equal(result.signOutCalls(), 1);
+  assert.deepEqual(result.pushes, []);
 });

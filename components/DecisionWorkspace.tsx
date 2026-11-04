@@ -304,7 +304,6 @@ export default function DecisionWorkspace({
 
           <div className="decision-bottomline">
             <span>
-              {d.version} ·{" "}
               {d.period
                 ? `Financial period ${d.period}`
                 : "No comparable financial period"}
