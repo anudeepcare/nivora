@@ -223,7 +223,7 @@ test("account modes keep labelled native fields, reachable submit and real legal
   for (const mode of ["login", "signup", "reset"]) {
     const harness = accountHarness({ mode });
     const html = renderToStaticMarkup(harness.render());
-    assert.match(html, /<main[^>]*class="integrated-auth/);
+    assert.match(html, /<main[^>]*class="mp-auth integrated-auth/);
     assert.match(html, /<form[^>]*class="mp-auth-form"/);
     assert.match(html, /<label[^>]*for="auryn-signin-email"/);
     assert.equal(

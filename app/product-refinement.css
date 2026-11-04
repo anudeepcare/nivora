@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* Shared, moderate density; preserve readable text and usable touch targets. */
 .discover-controls .segment {
   max-width: 100%;
@@ -690,4 +692,5 @@
   .approved-product .search-box kbd {
     display: none;
   }
+}
 }

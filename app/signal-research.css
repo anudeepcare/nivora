@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* Signal research: shared controls and clear, directly accessible evidence. */
 .signal-research-nav { display:flex; gap:4px; overflow-x:auto; padding:8px 0 12px; margin:0 0 20px; border-bottom:1px solid var(--line); scroll-margin-top:100px; scrollbar-width:thin; }
 .signal-research-nav button { display:inline-flex; align-items:center; justify-content:center; gap:8px; flex-shrink:0; padding:11px 13px; min-height:44px; border:1px solid transparent; border-radius:10px; background:transparent; color:var(--muted); font-size:14px; font-weight:500; cursor:pointer; }
@@ -135,3 +137,4 @@
 .approved-product .approved-research-page .signal-research-rail .pace-guidance { gap:12px; }
 .approved-product .approved-research-page .signal-research-rail .pace-explanation { margin-top:12px; padding-top:0; border-color:var(--line); }
 .approved-product .approved-research-page .signal-research-rail .pace-open { margin-top:10px; }
+}

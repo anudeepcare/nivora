@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* Portfolio owns its ledger and editor. No legacy holdings-table selectors apply. */
 .portfolio-page .portfolio-summary-layout {
   display: grid;
@@ -801,3 +803,4 @@
 .sector-performance-axis i { position:absolute; height:100%; border-radius:3px; }
 .sector-performance-axis .gain { background:var(--green); }.sector-performance-axis .loss { background:var(--red); }
 @media(max-width:700px){.portfolio-refresh-controls{width:100%;justify-content:space-between}.sector-performance-row{grid-template-columns:minmax(100px,1fr) minmax(60px,.8fr) 65px;gap:8px}.sector-performance-row>small{grid-column:2/4;margin-top:-8px}.sector-benchmarks .section-heading{align-items:flex-start}.sector-benchmarks h2{font-size:1.1rem}}
+}

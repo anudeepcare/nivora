@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* Shared Decision Canvas controls. Content only: viewport/PWA geometry lives in pwa-shell.css. */
 :root {
   --radius-panel: 16px;
@@ -967,4 +969,5 @@
 }
 .evidence-series[data-direction="negative"] {
   color: var(--red);
+}
 }

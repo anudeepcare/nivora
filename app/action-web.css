@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* Shared action hierarchy and mobile-first refinements. */
 .home-earnings-overview {
   display: flex;
@@ -852,4 +854,5 @@
     background: var(--paper);
     border-radius: 10px;
   }
+}
 }

@@ -133,7 +133,7 @@ export default function Shell({
     );
   };
   return (
-    <div className={`product ${experience.shell}`} data-page={page} data-shell="mobile-first">
+    <div className={`product approved-product ${experience.shell}`} data-page={page} data-shell="mobile-first">
       <a className={experience.skip} href="#content">Skip to content</a>
       <header className={experience.header}>
         <Link href={`${prefix}/overview`} className={experience.brand} aria-label="AURYN home"><img src="/icon.svg" width="28" height="28" alt=""/> AURYN</Link>
@@ -146,7 +146,7 @@ export default function Shell({
         </div>
       </header>
       <div className={experience.workspace}>
-        <div className={experience.searchbar}><span>Workspace / {primary.find(r=>r.path===page)?.label||page}</span><button onClick={()=>{search.current?.showModal();search.current?.querySelector('input')?.focus({preventScroll:true})}}><SearchIcon size={15}/> Find a company or ticker <kbd>⌘ K</kbd></button></div>
+        {page !== "settings" && <div className={experience.searchbar}><span>Workspace / {primary.find(r=>r.path===page)?.label||page}</span><button onClick={()=>{search.current?.showModal();search.current?.querySelector('input')?.focus({preventScroll:true})}}><SearchIcon size={15}/> Find a company or ticker <kbd>⌘ K</kbd></button></div>}
         <main id="content" className={experience.content} tabIndex={-1}>
           <AccessNotice />
           {demo && demo.routePrefix !== "" && <div className="preview-label">Design preview · Illustrative data · Account actions disabled</div>}

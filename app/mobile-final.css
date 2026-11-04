@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* Loaded after every legacy mobile rule. Keep this file last: it is the
    canonical iPhone/PWA chrome and cannot be shadowed by earlier breakpoints. */
 @media (max-width: 760px) {
@@ -352,4 +354,5 @@
   :root[data-theme="dark"] .approved-product.workspace-experience .mobile-header-row .top-links > :is(.mobile-explore, a.avatar, .header-plans, [aria-label="Price alerts"]) {
     box-shadow: inset 0 1px #ffffff1c, 0 3px 12px #00000030;
   }
+}
 }

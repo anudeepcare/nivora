@@ -1,3 +1,5 @@
+
+@layer compatibility {
 .options-desk {
   display: grid;
   gap: 18px;
@@ -740,4 +742,5 @@
   color: var(--muted);
   padding: 0 6%;
   font-variant-numeric: tabular-nums;
+}
 }

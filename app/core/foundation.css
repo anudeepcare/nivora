@@ -1,0 +1,89 @@
+/* Core owns document geometry and neutral tokens. Component CSS owns layout.
+   Brand accents live in appearance.css; financial colors never follow accents. */
+:root {
+  --app-width: 1440px;
+  --app-gutter: clamp(16px, 3vw, 40px);
+  --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --radius-control: 10px;
+  --radius-panel: 16px;
+  --radius: 16px;
+  --space-page: 28px;
+  --accent-solid: #2163d5;
+  --blue: #2163d5;
+  --blue-soft: #edf3ff;
+}
+:root, :root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f7f8fa;
+  --paper: #f7f8fa;
+  --card: #ffffff;
+  --surface: #f0f3f7;
+  --surface-2: #f7f8fa;
+  --ink: #202b3b;
+  --text: #202b3b;
+  --muted: #59677b;
+  --line: #dce2ea;
+  --border: #dce2ea;
+  --green: #087e66;
+  --green-soft: #e8f5ef;
+  --red: #b94446;
+  --red-soft: #fff0ef;
+  --amber: #99641a;
+  --amber-soft: #fff6e8;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #141a23;
+  --paper: #141a23;
+  --card: #1d2531;
+  --surface: #263140;
+  --surface-2: #1d2531;
+  --ink: #eef2f8;
+  --text: #eef2f8;
+  --muted: #abb8ca;
+  --line: #364355;
+  --border: #364355;
+  --blue: #8bb5ff;
+  --blue-soft: #22334d;
+  --green: #6dd5b6;
+  --green-soft: #193b33;
+  --red: #ffaca5;
+  --red-soft: #422b30;
+  --amber: #e7bc72;
+  --amber-soft: #3e3526;
+}
+html {
+  min-height: 100%;
+  height: auto;
+  overflow-y: auto;
+  overflow-x: clip;
+  scrollbar-gutter: stable;
+  scroll-padding-top: 88px;
+  font-size: 16px;
+}
+body {
+  margin: 0;
+  min-height: 100svh;
+  height: auto;
+  overflow: visible;
+  color: var(--ink);
+  background: var(--bg);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-text-size-adjust: 100%;
+}
+*, *::before, *::after { box-sizing: border-box; }
+
+button, select, summary { cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+
+img, svg { max-width: 100%; }
+:where(button, a, input, select, textarea, summary):focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+}
+html:has(dialog[open]) { overflow: hidden; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}

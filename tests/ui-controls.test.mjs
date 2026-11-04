@@ -21,7 +21,7 @@ import { researchPeriods } from "../lib/financial-catalog.ts";
 import { demoData } from "./fixtures/demo.ts";
 
 function loadComponent(file, name, bindings) {
-  bindings = { experience, PaceInstrument, Check: () => null, SUPPORT_EMAIL: "support@auryninvest.com", PrivacyChoices: () => null, paceCode, pacePeriods, PaceGuidance: ({view}) => React.createElement("div", null, view.actionLabel, view.effectiveCode), PaceReadings: ({readings}) => React.createElement("div", null, readings.map(r=>React.createElement("div", {key:r.key}, r.label, " ", r.code, " ", format.dateLabel(r.date)))), PaceHelp: () => null, CompanySparkline: () => null, ...bindings };
+  bindings = { settingsStyles: {page: "settings-page-module"}, experience, PaceInstrument, Check: () => null, SUPPORT_EMAIL: "support@auryninvest.com", PrivacyChoices: () => null, paceCode, pacePeriods, PaceGuidance: ({view}) => React.createElement("div", null, view.actionLabel, view.effectiveCode), PaceReadings: ({readings}) => React.createElement("div", null, readings.map(r=>React.createElement("div", {key:r.key}, r.label, " ", r.code, " ", format.dateLabel(r.date)))), PaceHelp: () => null, CompanySparkline: () => null, ...bindings };
   bindings = {
     useAccess: () => ({
       access: {

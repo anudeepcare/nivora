@@ -1,3 +1,5 @@
+
+@layer compatibility {
 .approved-research .movement-context {
   padding: 0;
   overflow: hidden;
@@ -108,4 +110,5 @@
   .movement-chevron {
     transition: none;
   }
+}
 }

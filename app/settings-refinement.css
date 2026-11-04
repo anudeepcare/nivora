@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* One route-based Settings surface and the shared workspace tools menu. */
 .approved-product .top-links > .header-plans {
   display: inline-flex;
@@ -396,4 +398,5 @@
 }
 :root[data-motion="reduce"] .approved-product .motion-switch > span {
   transition: none;
+}
 }

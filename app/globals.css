@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* React integration for the approved studio foundation. The old sidebar,
    overrides and earlier generated design sheets are not imported. */
 :root {
@@ -4277,3 +4279,4 @@ select {
 .valuation-summary strong.positive { color: var(--green); }
 .valuation-summary strong.negative { color: var(--red); }
 .content > .research-page { margin-bottom: 24px; }
+}

@@ -10,7 +10,7 @@ test('installed status surface exists before account shell and cannot collapse a
  assert.ok(layout.indexOf('className="pwa-status-surface"')>layout.indexOf('<body'));
  assert.ok(layout.indexOf('className="pwa-status-surface"')<layout.indexOf('<AppSession>'));
  const css=postcss.parse(fs.readFileSync(new URL('app/pwa-shell.css',root),'utf8'));
- const rule=css.nodes.find(n=>n.type==='rule'&&n.selector==='.pwa-status-surface');
+ let rule; css.walkRules('.pwa-status-surface',n=>{ rule ??= n; });
  assert.ok(rule,'The surface must not depend on a changing route container');
  const d=Object.fromEntries(rule.nodes.filter(n=>n.type==='decl').map(n=>[n.prop,n.value]));
  assert.equal(d.position,'fixed');assert.equal(d.top,'0');assert.equal(d.width,'100%');

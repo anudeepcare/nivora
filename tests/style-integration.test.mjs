@@ -18,3 +18,14 @@ test('the imported integration sheet styles the current React shell and home fee
   const foundation=fs.readFileSync(new URL('../app/studio-foundation.css',import.meta.url),'utf8');
   assert.notEqual(source.slice(0,400),foundation.slice(0,400),'The integration sheet must not be overwritten by another foundation copy');
 });
+
+test('integrated workspace retains the style scope required by existing feature screens',()=>{
+  const shell=fs.readFileSync('components/Shell.tsx','utf8');
+  assert.match(shell,/className=\{`product approved-product \$\{experience\.shell\}`\}/,
+    'Home, research, settings and feature buttons require the approved-product ancestor');
+});
+test('integrated authentication retains the scope required by form controls',()=>{
+  const session=fs.readFileSync('components/Session.tsx','utf8');
+  assert.match(session,/className=\{`mp-auth \$\{experience\.auth\}`\}/,
+    'OAuth and submit controls require the mp-auth ancestor');
+});

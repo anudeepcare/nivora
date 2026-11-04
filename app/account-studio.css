@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* Account Studio: one compact, responsive system for saved ideas, ownership and controls. */
 .watchlist-page,
 .portfolio-page,
@@ -1114,3 +1116,4 @@
 .plans-page .pricing-cards > .pricing-pro > * { position: relative; z-index: 1; }
 .plans-page.plans-public { background: radial-gradient(circle at 85% 12%, rgb(132 87 216 / 12%), transparent 30%), linear-gradient(180deg, var(--bg), var(--surface)); }
 .plans-page.plans-public .plans-heading { max-width: 700px; }
+}

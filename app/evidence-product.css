@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* Decision depth is layered; these rules do not change PWA viewport geometry. */
 .decision-readout {
   border-top: 1px solid var(--line);
@@ -564,4 +566,5 @@
  .decision-readout > header > small { text-align: left; max-width: none; margin-top: 4px; }
  .overview-mobile-depth { display: block; position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
  .overview-mobile-depth .research-mode button { min-height: 32px; min-width: 48px; padding: 5px 9px; font-size: .68rem; }
+}
 }

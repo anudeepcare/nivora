@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* Approved reference 632e79d. Scoped to the production workspace. */
 :root {
   color-scheme: light;
@@ -3795,4 +3797,5 @@ html:has(.approved-evidence-drawer[open]) {
   .approved-product .approved-fingerprint-button {
     display: none;
   }
+}
 }

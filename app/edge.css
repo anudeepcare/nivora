@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* Fluid Overview: source-owned layout. No illustrative data or viewport hacks. */
 .edge-overview {
   display: grid;
@@ -639,4 +641,5 @@
   font-size: 11px;
   line-height: 1.6;
   margin: 8px 0;
+}
 }

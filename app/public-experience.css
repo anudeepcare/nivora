@@ -1,23 +1,19 @@
+
+@layer compatibility {
 /* Public and account surfaces. Scoped separately from the investment workspace. */
 .mp-public.ap-public,
 .mp-auth.ap-auth {
-  --ap-ink: #192443;
-  --ap-muted: #586780;
-  --ap-soft: #f5f7fd;
-  --ap-surface: #ffffff;
-  --ap-line: #dce3f0;
-  --ap-blue: #2858e8;
+  --ap-ink: var(--ink);
+  --ap-muted: var(--muted);
+  --ap-soft: var(--bg);
+  --ap-surface: var(--card);
+  --ap-line: var(--line);
+  --ap-blue: var(--blue);
   --ap-violet: #7853ce;
   --ap-blue-wash: #e7efff;
   --ap-violet-wash: #ede7fc;
   --ap-glow-blue: rgb(149 185 255 / 23%);
   --ap-glow-violet: rgb(177 151 238 / 21%);
-  --ink: var(--ap-ink);
-  --muted: var(--ap-muted);
-  --blue: var(--ap-blue);
-  --line: var(--ap-line);
-  --card: var(--ap-surface);
-  --bg: var(--ap-soft);
   color: var(--ap-ink);
   background: var(--ap-surface);
   font-family:
@@ -1686,4 +1682,5 @@
   .ap-public .ap-benefits > span {
     padding: 9px 12px;
   }
+}
 }

@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* Research depth: the approved evidence canvas. Components own this namespace. */
 .depth-business,
 .depth-business-history,
@@ -1799,4 +1801,5 @@
   cursor: pointer;
   min-height: 32px;
   color: var(--muted);
+}
 }

@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* Runtime workspace additions. The approved mockup supplies the shared composition and tokens. */
 .approved-product .approved-workspace {
   min-width: 0;
@@ -559,4 +561,5 @@
   .approved-product .approved-workspace .insight {
     transition: none;
   }
+}
 }

@@ -25,7 +25,7 @@ test("mobile chrome keeps a brand-led glass header and reserves a tidy footer", 
   const css = fs.readFileSync("app/mobile-experience.css", "utf8");
   const finalCss = fs.readFileSync("app/mobile-final.css", "utf8");
   const pwaCss = fs.readFileSync("app/pwa-shell.css", "utf8");
-  const layout = fs.readFileSync("app/layout.tsx", "utf8");
+  const layout = fs.readFileSync("app/core/compatibility.css", "utf8");
   assert.match(css, /mobile-header-row/);
   assert.match(css, /mobile-footer-note/);
   assert.match(css, /mobile-header-row\s*\{[\s\S]*display:\s*flex/);
@@ -36,7 +36,7 @@ test("mobile chrome keeps a brand-led glass header and reserves a tidy footer", 
   assert.match(finalCss, /top-links > \.mobile-explore[\s\S]*display:\s*inline-flex/);
   assert.match(finalCss, /top-links > \.header-plans[\s\S]*display:\s*none/);
   assert.match(css, /padding-bottom:\s*calc\(\s*92px/);
-  assert.match(layout, /import "\.\/mobile-final\.css"/);
+  assert.match(layout, /@import "\.\.\/mobile-final\.css"/);
   assert.match(finalCss, /backdrop-filter:\s*blur/);
   assert.match(finalCss, /saturate\(/);
   assert.match(finalCss, /approved-tools-dialog/);

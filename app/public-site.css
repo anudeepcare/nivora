@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* AURYN public product canvas — one owned surface, mobile first. */
 .atlas-public {
   --public-ink: #101d42;
@@ -868,4 +870,5 @@
   .public-button {
     transition: none;
   }
+}
 }

@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* Signal shared design: document scrolling; drawers and wide tables own only their content. */
 :root,
 :root[data-theme="light"] {
@@ -1990,4 +1992,5 @@ html:has(dialog[open]) {
 }
 :root[data-density="compact"] .product.approved-product .holdings-table td {
   padding-block: 10px;
+}
 }

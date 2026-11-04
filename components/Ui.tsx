@@ -1,4 +1,5 @@
 "use client";
+import styles from "./Ui.module.css";
 import { customerText } from "@/lib/customer-language";
 import Link from "next/link";
 import { useId, useRef, useState, useEffect } from "react";
@@ -218,7 +219,7 @@ export function Empty({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="empty">
+    <div className={`empty ${styles.empty}`}>
       <span className="empty-icon">
         <Icon size={26} />
       </span>

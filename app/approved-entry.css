@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* AURYN account and support surfaces. Own the complete layout rather than patching legacy cards. */
 .entry-page.atlas-entry {
   --entry-ink: #122344;
@@ -896,4 +898,5 @@ html[data-theme="dark"] .atlas-support .contact-confirmation {
     scroll-behavior: auto;
     transition: none;
   }
+}
 }

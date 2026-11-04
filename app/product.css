@@ -1,8 +1,6 @@
-/* Ordered product styles: specialized compatibility surfaces, then the shared experience. */
 @import "./studio-foundation.css";
 @import "./globals.css";
 @import "./decision-workspace.css";
-
 @import "./connected-product.css";
 @import "./portfolio.css";
 @import "./interaction.css";
@@ -21,7 +19,6 @@
 @import "./research-studio.css";
 @import "./account-studio.css";
 @import "./auryn-experience.css";
-
 @import "./approved-mockup.css";
 @import "./approved-workspace.css";
 @import "./approved-public.css";
@@ -30,9 +27,10 @@
 @import "./workspace-experience.css";
 @import "./decision-experience.css";
 @import "./public-experience.css";
-
 @import "./product-refinement.css";
-
 @import "./action-web.css";
 @import "./pace-clarity.css";
 @import "./clarity-layout.css";
+@layer compatibility {
+/* Ordered product styles: specialized compatibility surfaces, then the shared experience. */
+}

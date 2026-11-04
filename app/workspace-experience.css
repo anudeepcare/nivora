@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* Authenticated workspace: one shell, a concise Home briefing and one Settings page. */
 .approved-product.workspace-experience {
   --workspace-glass: color-mix(in srgb, var(--card) 91%, transparent);
@@ -1439,4 +1441,5 @@
   .workspace-experience .home-command-metrics a {
     min-width: 0;
   }
+}
 }

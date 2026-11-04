@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* Approved daily workspace: compact editorial overview, real evidence, no repeated hero panels. */
 .briefing-home {
   max-width: 1440px;
@@ -724,4 +726,5 @@
   .briefing-stat-line dt {
     font-size: 11px;
   }
+}
 }

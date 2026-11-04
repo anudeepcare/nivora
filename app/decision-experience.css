@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* Decision-led Research: a single hierarchy on every screen. */
 .approved-product .approved-research.decision-experience {
   display: grid;
@@ -820,4 +822,5 @@
     height: 34px !important;
     min-width: 34px !important;
   }
+}
 }

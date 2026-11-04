@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* Shared reading hierarchy: compact context, visible evidence, calm surfaces. */
 .gamma-strike-map { display: grid; gap: 6px; margin: 18px 0; }
 .gamma-strike-row { border-radius: 10px; background: var(--bg); padding: 8px 10px; }
@@ -92,4 +94,5 @@
   .mp-public.ap-public .ap-pace-preview { padding: 16px; }
   .mp-public.ap-public .ap-pace-periods { flex-wrap: wrap; }
   .public-education .education-hero { padding-block: 24px; }
+}
 }

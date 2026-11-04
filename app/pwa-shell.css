@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* Root-owned surface for installed mobile WebKit. It shares one token with
    the route header so iOS never renders a detached strip above the app. */
 .pwa-status-surface {
@@ -22,4 +24,5 @@
 /* Legacy iOS standalone detection, populated by the pre-paint root script. */
 @media (max-width: 700px) {
   :root[data-pwa="true"] .pwa-status-surface { display: none; }
+}
 }

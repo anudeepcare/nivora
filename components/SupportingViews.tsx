@@ -1,4 +1,5 @@
 "use client";
+import settingsStyles from "./SettingsPage.module.css";
 import { sameProviderSymbol } from "@/lib/provider-symbol";
 import { SUPPORT_EMAIL } from "@/lib/site-metadata";
 import { PrivacyChoices } from "./AnalyticsConsent";
@@ -104,7 +105,7 @@ export function Settings() {
     workspace?.email ||
     (demo ? "Design preview" : "Loading account…");
   return (
-    <section className="settings-page workspace-settings">
+    <section className={`settings-page workspace-settings ${settingsStyles.page}`}>
       <div className="settings-page-toolbar">
         <Link
           href={backHref}
@@ -139,7 +140,7 @@ export function Settings() {
       </div>
       <PageHeading
         title="Settings"
-        subtitle="Shape how AURYN helps you understand, compare and revisit companies."
+        subtitle="Your workspace, your preferences."
       />
       {message && (
         <div className="settings-feedback" role="status">

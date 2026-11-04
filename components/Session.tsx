@@ -564,7 +564,7 @@ function Login({ initialError }: { initialError: string }) {
     }
   }
   return (
-    <main className={experience.auth} data-auth-mode={mode}>
+    <main className={`mp-auth ${experience.auth}`} data-auth-mode={mode}>
       <aside className={experience.authStory} aria-label="About AURYN">
         <a href="/" aria-label="AURYN home"><img src="/icon.svg" alt="" width="30" height="30"/> AURYN</a>
         <PaceInstrument publicGuide compact />
