@@ -1,4 +1,5 @@
 "use client";
+import experience from "./IntegratedExperience.module.css";
 import { AccessNotice, useAccess } from "./Access";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -132,133 +133,27 @@ export default function Shell({
     );
   };
   return (
-    <div
-      className="product approved-product app-layout workspace-experience"
-      data-page={page}
-      data-shell="mobile-first"
-    >
-      <a className="skip" href="#content">
-        Skip to content
-      </a>
-      <aside className="side-rail">
-        <Link
-          href={`${prefix}/overview`}
-          className="rail-brand"
-          aria-label="AURYN home"
-        >
-          <img src="/icon.svg" width="30" height="30" alt="" />
-          <span>AURYN</span>
-        </Link>
-        <nav aria-label="Main navigation">{primary.map((r) => nav(r))}</nav>
-        <div className="rail-bottom">
-          <button
-            onClick={() => tools.current?.showModal()}
-            aria-label="Explore tools"
-            aria-haspopup="dialog"
-          >
-            <LayoutGrid size={21} />
-            <span>Explore</span>
-          </button>
-          <Link
-            href={`${prefix}/settings`}
-            onNavigate={openSettings}
-            className={page === "settings" ? "active" : ""}
-            aria-current={page === "settings" ? "page" : undefined}
-          >
-            <Settings size={21} />
-            <span>Settings</span>
-          </Link>
+    <div className={`product ${experience.shell}`} data-page={page} data-shell="mobile-first">
+      <a className={experience.skip} href="#content">Skip to content</a>
+      <header className={experience.header}>
+        <Link href={`${prefix}/overview`} className={experience.brand} aria-label="AURYN home"><img src="/icon.svg" width="28" height="28" alt=""/> AURYN</Link>
+        <nav className={experience.nav} aria-label="Main navigation">{primary.map(r=>nav(r))}<Link href={`${prefix}/discover`} aria-current={page==='discover'?'page':undefined}><Compass size={17}/><span>Discover</span></Link><Link href={`${prefix}/settings`} onNavigate={openSettings} aria-current={page==='settings'?'page':undefined}><Settings size={17}/><span>Settings</span></Link></nav>
+        <div className={experience.actions}>
+          <button aria-label="Search companies and crypto" aria-haspopup="dialog" onClick={()=>{search.current?.showModal();search.current?.querySelector('input')?.focus({preventScroll:true})}}><SearchIcon size={20}/></button>
+          <button aria-label="Switch color theme" onClick={()=>setTheme(theme==='dark'?'light':'dark')}>{theme==='dark'?<Moon size={19}/>:<Sun size={19}/>}</button>
+          <Link href={`${prefix}/alerts`} aria-label="Price alerts"><Bell size={19}/></Link>
+          <Link href={`${prefix}/settings`} aria-label="Account settings" onNavigate={openSettings}>{(workspace?.email?.[0]||'A').toUpperCase()}</Link>
         </div>
-      </aside>
-      <div className="app-workspace">
-        <header className="app-top topbar mobile-header-row">
-          <Link className="wordmark" href={`${prefix}/overview`}>
-            <img
-              className="mobile-brand-mark"
-              src="/icon.svg"
-              width="34"
-              height="34"
-              alt=""
-            />
-            <span className="wordmark-label">AURYN</span>
-            <span className="wordmark-route">
-              /{" "}
-              {primary.find((r) => r.path === page)?.label ||
-                page
-                  .replaceAll("-", " ")
-                  .replace(/\b\w/g, (letter) => letter.toUpperCase())}
-            </span>
-          </Link>
-          <button
-            className="search-box"
-            aria-label="Search companies and crypto"
-            aria-haspopup="dialog"
-            onClick={() => {
-              search.current?.showModal();
-              search.current
-                ?.querySelector("input")
-                ?.focus({ preventScroll: true });
-            }}
-          >
-            <SearchIcon size={18} />
-            <span>Find a company</span>
-            <kbd>⌘ K</kbd>
-          </button>
-          <div className="top-links">
-            <button
-              className="icon-button mobile-explore"
-              aria-label="More workspace actions"
-              aria-haspopup="dialog"
-              onClick={() => tools.current?.showModal()}
-            >
-              <Ellipsis size={21} aria-hidden="true" />
-            </button>
-            <Link
-              href={`${prefix}/plans`}
-              className="header-plans"
-              aria-current={page === "plans" ? "page" : undefined}
-            >
-              Plans
-            </Link>
-            <button
-              className="icon-button"
-              aria-label="Switch color theme"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            >
-              {theme === "dark" ? <Moon size={20} /> : <Sun size={20} />}
-            </button>
-            <Link
-              href={`${prefix}/alerts`}
-              className="icon-button"
-              aria-label="Price alerts"
-            >
-              <Bell size={20} />
-            </Link>
-            <Link
-              href={`${prefix}/settings`}
-              className="avatar"
-              aria-label="Account settings"
-              onNavigate={openSettings}
-              aria-current={page === "settings" ? "page" : undefined}
-            >
-              {(workspace?.email?.[0] || "A").toUpperCase()}
-            </Link>
-          </div>
-        </header>
-        <main id="content" className="page-content" tabIndex={-1}>
+      </header>
+      <div className={experience.workspace}>
+        <div className={experience.searchbar}><span>Workspace / {primary.find(r=>r.path===page)?.label||page}</span><button onClick={()=>{search.current?.showModal();search.current?.querySelector('input')?.focus({preventScroll:true})}}><SearchIcon size={15}/> Find a company or ticker <kbd>⌘ K</kbd></button></div>
+        <main id="content" className={experience.content} tabIndex={-1}>
           <AccessNotice />
-          {demo && demo.routePrefix !== "" && (
-            <div className="preview-label">
-              Design preview · Illustrative data · Account actions disabled
-            </div>
-          )}
-          {children}
-          <ProductFooter />
+          {demo && demo.routePrefix !== "" && <div className="preview-label">Design preview · Illustrative data · Account actions disabled</div>}
+          {children}<ProductFooter />
         </main>
       </div>
-      <nav className="phone-dock" aria-label="Mobile navigation">
-        {primary.map((r) => nav(r))}
-      </nav>
+      <nav className={experience.dock} aria-label="Mobile navigation">{primary.map(r=>nav(r))}<button onClick={()=>tools.current?.showModal()} aria-label="More workspace actions" aria-haspopup="dialog"><Ellipsis size={20}/><span>More</span></button></nav>
       <dialog
         ref={tools}
         className="search-dialog approved-tools-dialog"

@@ -72,7 +72,8 @@ import { TechnicalPicture, ThesisPicture } from "./ResearchDetails";
 import { groupHistory } from "@/lib/chart-period";
 import ResearchChanges from "./ResearchChanges";
 import DcaResearch from "./DcaResearch";
-import DecisionOverview from "./ApprovedResearch";
+import DecisionOverview from "./IntegratedResearch";
+import experience from "./IntegratedExperience.module.css";
 import { selectPriceReference } from "@/lib/price-reference";
 import { movementContext } from "@/lib/movement-context";
 import PaceHelp from "./PaceHelp";
@@ -292,7 +293,7 @@ export default function Research({ symbol }: { symbol: string }) {
     const q = quick.data?.[symbol];
     return resource.loading ? (
       <section aria-busy="true" className="research-loading">
-        <header className="company-header">
+        <header className={experience.stockHeader}>
           <div className="au-flex">
             <SecurityLogo symbol={symbol} />
             <div>
@@ -416,8 +417,8 @@ export default function Research({ symbol }: { symbol: string }) {
       className="research-page approved-research-page"
       data-research-mode={preferences.detail}
     >
-      <header className="company-header">
-        <div className="company-identity">
+      <header className={experience.stockHeader}>
+        <div className={experience.stockIdentity}>
           <SecurityLogo symbol={symbol} size={52} />
           <div>
             <h1>{r.company.name}</h1>
@@ -429,7 +430,7 @@ export default function Research({ symbol }: { symbol: string }) {
             </div>
           </div>
         </div>
-        <div className="company-price">
+        <div className={experience.stockPrice}>
           <div className="quote">
             <strong className="num">
               {amount(
@@ -494,62 +495,9 @@ export default function Research({ symbol }: { symbol: string }) {
           </button>
         </div>
       )}
-      <nav
-        className="signal-research-nav"
-        aria-label="Research sections"
-        ref={researchNavigation}
-      >
-        {(
-          [
-            "Snapshot",
-            "Financials",
-            "Technicals",
-            "Analysts",
-            "Options",
-          ] as const
-        )
-          .filter((key) => visible.includes(key))
-          .map((key) => {
-            const { label } = tabPresentation[key];
-            return (
-              <button
-                key={key}
-                aria-current={tab === key ? "page" : undefined}
-                aria-controls={
-                  key === "Snapshot" ? "research-overview" : "research-content"
-                }
-                onClick={() => switchTab(key)}
-              >
-                {label}
-              </button>
-            );
-          })}
-        <label className="research-more-label">
-          <span className="sr-only">More research sections</span>
-          <select
-            aria-label="More research sections"
-            value={
-              ["Valuation", "Thesis", "News", "Advanced"].includes(tab)
-                ? tab
-                : ""
-            }
-            onChange={(event) => {
-              if (event.target.value)
-                switchTab(event.target.value as (typeof tabs)[number]);
-            }}
-          >
-            <option value="" disabled>
-              More research
-            </option>
-            {(["Valuation", "Thesis", "News", "Advanced"] as const)
-              .filter((key) => visible.includes(key))
-              .map((key) => (
-                <option key={key} value={key}>
-                  {tabPresentation[key].label}
-                </option>
-              ))}
-          </select>
-        </label>
+      <label className={experience.researchPicker}>Research section<select value={tab} onChange={e=>switchTab(e.target.value as (typeof tabs)[number])}>{visible.map(key=><option key={key} value={key}>{tabPresentation[key].label}</option>)}</select></label>
+      <nav className={experience.researchNav} aria-label="Research sections" ref={researchNavigation}>
+        {visible.map(key=><button key={key} aria-current={tab===key?'page':undefined} aria-controls={key==='Snapshot'?'research-overview':'research-content'} onClick={()=>switchTab(key)}>{tabPresentation[key].label}</button>)}
       </nav>
       <div id="research-overview" hidden={tab !== "Snapshot"}>
         <FeatureGate

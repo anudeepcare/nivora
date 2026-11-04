@@ -1,3 +1,4 @@
+import {experience,PaceInstrument} from './helpers/integrated-ui.mjs';
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -20,7 +21,7 @@ import { researchPeriods } from "../lib/financial-catalog.ts";
 import { demoData } from "./fixtures/demo.ts";
 
 function loadComponent(file, name, bindings) {
-  bindings = { Check: () => null, SUPPORT_EMAIL: "support@auryninvest.com", PrivacyChoices: () => null, paceCode, pacePeriods, PaceGuidance: ({view}) => React.createElement("div", null, view.actionLabel, view.effectiveCode), PaceReadings: ({readings}) => React.createElement("div", null, readings.map(r=>React.createElement("div", {key:r.key}, r.label, " ", r.code, " ", format.dateLabel(r.date)))), PaceHelp: () => null, CompanySparkline: () => null, ...bindings };
+  bindings = { experience, PaceInstrument, Check: () => null, SUPPORT_EMAIL: "support@auryninvest.com", PrivacyChoices: () => null, paceCode, pacePeriods, PaceGuidance: ({view}) => React.createElement("div", null, view.actionLabel, view.effectiveCode), PaceReadings: ({readings}) => React.createElement("div", null, readings.map(r=>React.createElement("div", {key:r.key}, r.label, " ", r.code, " ", format.dateLabel(r.date)))), PaceHelp: () => null, CompanySparkline: () => null, ...bindings };
   bindings = {
     useAccess: () => ({
       access: {
@@ -712,8 +713,8 @@ test("authentication explains AURYN in sign-in, signup and recovery without fabr
     assert.match(html, /name="email"/);
     if (mode !== "reset") assert.match(html, /name="password"/);
     assert.match(html, /About AURYN/);
-    assert.match(html, /Illustrative product guide/);
-    assert.match(html, /not a live investment recommendation/);
+    assert.match(html, /Explore the AURYN Pace framework/);
+    assert.match(html, /Price context. Business checks first/);
     assert.match(html, /AURYN Pace/);
     assert.match(html, /not predicted returns/);
     assert.doesNotMatch(html, /desktop-nav|mobile-dock|guaranteed returns/);

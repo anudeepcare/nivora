@@ -1,4 +1,6 @@
 "use client";
+import PaceInstrument from "./PaceInstrument";
+import experience from "./IntegratedExperience.module.css";
 import { PrivacyChoices } from "./AnalyticsConsent";
 import { SUPPORT_EMAIL } from "@/lib/site-metadata";
 import { useEffect, useState } from "react";
@@ -320,50 +322,15 @@ export default function PublicLanding({
             </nav>
           )}
         </header>
-        <section
-          className="ap-hero ap-container"
-          id="ap-main"
-          aria-labelledby="ap-hero-heading"
-        >
-          <div className="ap-hero-copy">
-            <span className="ap-eyebrow">
-              <span className="ap-eyebrow-mark" />{" "}
-              {sampleOnly ? "HOW AURYN WORKS" : "INVEST WITH UNDERSTANDING"}
-            </span>
-            <h1 id="ap-hero-heading">
-              <span>{sampleOnly ? "One company." : "Less noise."}</span>
-              <em>
-                {sampleOnly ? "Three useful questions." : "More understanding."}
-              </em>
-            </h1>
-            <p>
-              {sampleOnly
-                ? "Is the business improving? What does the price assume? What would justify your next addition? Explore each lens in the guide."
-                : "Bring the business, the price and your portfolio into focus. A clear research workspace for decisions you can explain."}
-            </p>
-            <div className="ap-hero-actions">
-              <Link
-                className="ap-button ap-button-primary"
-                href="/login?mode=signup"
-              >
-                Start free <ArrowRight size={18} aria-hidden="true" />
-              </Link>
-              <Link
-                className="ap-button ap-button-secondary"
-                href={sampleOnly ? "#product-guide" : "/sample"}
-              >
-                {sampleOnly ? "Explore the guide" : "See how it works"}{" "}
-                <ArrowRight size={17} aria-hidden="true" />
-              </Link>
-            </div>
-            <span className="ap-hero-note">
-              <Check size={16} aria-hidden="true" /> Free to start. Room to go
-              deeper.
-            </span>
-          </div>
-          <div className="ap-hero-visual">
-            <PublicSample />
-          </div>
+        <section className={experience.hero} id="ap-main" aria-labelledby="ap-hero-heading">
+          <div className={experience.heroVisual}><PaceInstrument publicGuide /></div>
+          <div className={experience.heroCopy}><div>
+            <h1 id="ap-hero-heading">{sampleOnly ? "Understand your next step." : "Invest with a sense of pace."}</h1>
+            <p>{sampleOnly ? "Explore the five price zones, then connect them to business quality, valuation and your position limits." : "Know the business. Put the price in context. Give each contribution a considered place in your plan."}</p>
+          </div><div className={experience.heroActions}>
+            <Link href="/login?mode=signup">Start free <ArrowRight size={18}/></Link>
+            <Link href={sampleOnly ? "#product-guide" : "/sample"}>{sampleOnly ? "Explore the guide" : "See how it works"} <ArrowRight size={17}/></Link>
+          </div></div>
         </section>
         <div
           className="ap-benefits ap-container"

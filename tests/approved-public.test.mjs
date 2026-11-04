@@ -1,3 +1,4 @@
+import {experience,PaceInstrument} from './helpers/integrated-ui.mjs';
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -12,7 +13,7 @@ import {
 } from "../lib/theme-preference.ts";
 
 function load(file, name, bindings) {
-  bindings = { SUPPORT_EMAIL: "support@auryninvest.com", PrivacyChoices: () => null, PaceHelp: () => null, ...bindings };
+  bindings = { experience, PaceInstrument, SUPPORT_EMAIL: "support@auryninvest.com", PrivacyChoices: () => null, PaceHelp: () => null, ...bindings };
   const source = ts.createSourceFile(
     file,
     fs.readFileSync(file, "utf8"),
@@ -143,16 +144,16 @@ test("public home leads with the benefit and an account action without fabricate
   );
   const html = renderToStaticMarkup(React.createElement(PublicLanding));
   assert.match(html, /<main[^>]*class="mp-public/);
-  assert.match(html, /Less noise\./);
-  assert.match(html, /More understanding\./);
+  assert.match(html, /Invest with a sense of pace\./);
+
   assert.match(html, /href="\/login\?mode=signup"[^>]*>Start free/);
   assert.match(html, /AURYN Pace/);
-  assert.match(html, /Illustrative product guide/);
+  assert.match(html, /Explore the AURYN Pace framework/);
   assert.match(html, /Understand the business/);
   assert.match(html, /Test value and downside/);
   assert.match(html, /Choose your pace/);
   assert(
-    html.indexOf("Start free") < html.indexOf("Illustrative product guide"),
+    html.indexOf("Explore the AURYN Pace framework") < html.indexOf("Invest with a sense of pace"),
   );
   assert.match(html, /href="\/sample"/);
   assert.match(html, /href="\/pricing"/);
@@ -222,7 +223,7 @@ test("account modes keep labelled native fields, reachable submit and real legal
   for (const mode of ["login", "signup", "reset"]) {
     const harness = accountHarness({ mode });
     const html = renderToStaticMarkup(harness.render());
-    assert.match(html, /<main[^>]*class="mp-auth/);
+    assert.match(html, /<main[^>]*class="integrated-auth/);
     assert.match(html, /<form[^>]*class="mp-auth-form"/);
     assert.match(html, /<label[^>]*for="auryn-signin-email"/);
     assert.equal(

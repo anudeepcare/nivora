@@ -53,8 +53,8 @@ test("shell markup exposes mobile-first semantics without removing desktop navig
   const source = fs.readFileSync("components/Shell.tsx", "utf8");
   assert.match(source, /data-shell="mobile-first"/);
   assert.match(source, /aria-label="Mobile navigation"/);
-  assert.match(source, /className="app-top topbar mobile-header-row"/);
-  assert.match(source, /className="side-rail"/);
+  assert.match(source, /className={experience.header}/);
+  assert.match(source, /aria-label="Main navigation"/);
 });
 
 test("PWA syncs theme-color and preserves keyboard viewport behavior", () => {

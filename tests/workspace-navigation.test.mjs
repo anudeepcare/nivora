@@ -1,3 +1,4 @@
+import {experience,PaceInstrument} from './helpers/integrated-ui.mjs';
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -7,7 +8,7 @@ import { NavigationMemory, restoreWhenReady } from "../lib/navigation.ts";
 import { settingsHref } from "../lib/settings-navigation.ts";
 
 function component(file, name, bindings) {
-  bindings = { useAccess: () => ({access:{capabilities:{paperTrading:false}}}), ...bindings };
+  bindings = { experience, PaceInstrument, useAccess: () => ({access:{capabilities:{paperTrading:false}}}), ...bindings };
   bindings={AccessBoundary:"AccessBoundary",AccessNotice:()=>null,...bindings};
   const ast = ts.createSourceFile(
     file,

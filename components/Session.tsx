@@ -18,7 +18,8 @@ import type { Session } from "@supabase/supabase-js";
 import { api, authClient } from "@/lib/client";
 import type { Research, Workspace } from "@/lib/types";
 import { Logo } from "./Ui";
-import { PublicSample } from "./PublicLanding";
+import PaceInstrument from "./PaceInstrument";
+import experience from "./IntegratedExperience.module.css";
 import { readResource, resourceSnapshot } from "@/lib/resource-cache";
 import { accountCache, clearAccountCache } from "@/lib/account-cache";
 export type DemoData = {
@@ -563,30 +564,13 @@ function Login({ initialError }: { initialError: string }) {
     }
   }
   return (
-    <main className="mp-auth ap-auth" data-auth-mode={mode}>
-      <aside className="mp-auth-story" aria-label="About AURYN">
-        <a className="mp-brand" href="/" aria-label="Auryn home">
-          <span className="mp-brand-mark" aria-hidden="true">
-            <img src="/icon.svg" alt="" width="34" height="36" />
-          </span>
-          <span>AURYN</span>
-        </a>
-        <div className="mp-auth-story-copy">
-          <span className="mp-overline">INVEST WITH UNDERSTANDING</span>
-          <h2>
-            Know the stock.
-            <br />
-            <em>Know your next move.</em>
-          </h2>
-          <p>Business first. A clear decision. Your pace for gradual buying.</p>
-        </div>
-        <PublicSample compact />
-        <div className="mp-auth-story-footer">
-          <span>A clearer case. A considered pace.</span>
-          <span>Research supports your judgment. Investing involves risk.</span>
-        </div>
+    <main className={experience.auth} data-auth-mode={mode}>
+      <aside className={experience.authStory} aria-label="About AURYN">
+        <a href="/" aria-label="AURYN home"><img src="/icon.svg" alt="" width="30" height="30"/> AURYN</a>
+        <PaceInstrument publicGuide compact />
+        <p>Your research, your perspective, your pace. Business evidence and position limits come first.</p>
       </aside>
-      <section className="mp-auth-main" aria-label="Account access">
+      <section className={experience.authMain} aria-label="Account access">
         <div className="mp-auth-mobile-brand">
           <a className="mp-brand" href="/" aria-label="Auryn home">
             <span className="mp-brand-mark" aria-hidden="true">

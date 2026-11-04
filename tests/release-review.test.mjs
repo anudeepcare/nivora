@@ -1,3 +1,4 @@
+import {experience} from './helpers/integrated-ui.mjs';
 import { customerText } from "../lib/customer-language.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -115,7 +116,7 @@ function researchMarkup(issues = []) {
     },
   };
   const empty = () => null;
-  const bindings = {
+  const bindings = { experience,
     customerText,
     useAccess: () => ({
       access: {

@@ -1,3 +1,4 @@
+import {experience,PaceInstrument} from './helpers/integrated-ui.mjs';
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -10,7 +11,7 @@ const navigation = fs.existsSync("lib/settings-navigation.ts")
   : {};
 const empty = () => null;
 function load(file, name, bindings) {
-  bindings = { SUPPORT_EMAIL: "support@auryninvest.com", PrivacyChoices: () => null, useAccess: () => ({access:{capabilities:{paperTrading:false}}}), ...bindings };
+  bindings = { experience, PaceInstrument, SUPPORT_EMAIL: "support@auryninvest.com", PrivacyChoices: () => null, useAccess: () => ({access:{capabilities:{paperTrading:false}}}), ...bindings };
   const ast = ts.createSourceFile(
     file,
     fs.readFileSync(file, "utf8"),
