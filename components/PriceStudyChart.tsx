@@ -66,7 +66,7 @@ export default function PriceStudyChart({
         </Help>
         {onOptions && (
           <button className="text-link" onClick={onOptions}>
-            Options <ArrowRight size={15} />
+            Gamma & options <ArrowRight size={15} />
           </button>
         )}
       </div>

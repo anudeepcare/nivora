@@ -1,4 +1,0 @@
-# Approved AURYN correction and decision-feature scope
-User approved the screenshot correction plan and six decision workflows on Nov 5, 2026. Preserve version 1.0.0 and existing services; no paid integrations or deployment.
-Fix PWA icon padding/background, navigation selection outlines, mobile tab scrollbar, redundant borders, Pace prominence (55/45), Pace help, estimate table alignment/periods and scenario ambiguity. Add company facts, meaningful contribution comparison, price-implied expectations, business vs price evidence, earnings-to-case conditions, wait conditions and relevant home updates. Public homepage explains these actual capabilities.
-All financial outputs must use dated comparable inputs and explain missing evidence; never fabricate competitor equality or unsupported alerts. Compare DCA on like-for-like inputs when accessible; document access limitations. Verify touch/mobile and dark/light, distinguish emulation from physical iPhone acceptance.

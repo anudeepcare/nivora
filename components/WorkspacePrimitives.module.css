@@ -3,7 +3,10 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
-  margin: 0 0 20px;
+  margin: 0 0 18px;
+  padding: 22px 24px;
+  border-radius: 16px;
+  background: linear-gradient(115deg, color-mix(in srgb, #b99ae8 14%, var(--card)), color-mix(in srgb, #d6f35a 10%, var(--card)));
 }
 .heading h1 {
   font-family: var(--font-ui);
@@ -107,3 +110,5 @@
     font-size: 18px;
   }
 }
+
+@media(max-width:600px){.heading{padding:18px;flex-wrap:wrap}.heading h1{font-size:27px}}

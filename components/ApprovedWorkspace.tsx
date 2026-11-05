@@ -439,67 +439,6 @@ function useHomeFeed(symbols: string[]) {
   };
 }
 
-function ResearchLens() {
-  const [lens, setLens] = useState(0);
-  const lenses = [
-    {
-      title: "Growth",
-      question: "Is growth turning into cash?",
-      text: "Compare revenue growth with operating cash flow. Rising sales alone don’t tell you what the business keeps.",
-      icon: Activity,
-      steps: ["Revenue", "Operating cash", "Capital spending"],
-    },
-    {
-      title: "Expectations",
-      question: "What needs to go right?",
-      text: "Read the assumptions behind a valuation. Test slower growth and lower margins before trusting a single target.",
-      icon: SearchIcon,
-      steps: ["Growth", "Margins", "Required return"],
-    },
-    {
-      title: "Resilience",
-      question: "Can it fund the next chapter?",
-      text: "Read cash, debt and cash generation together. Check debt maturities and dilution before treating cash as a cushion.",
-      icon: Wallet,
-      steps: ["Cash", "Debt", "Share count"],
-    },
-  ];
-  const active = lenses[lens];
-  const Icon = active.icon;
-  return (
-    <aside className={homeStyles.lens} aria-label="Research lens">
-      <span className={homeStyles.eyebrow}>THE RESEARCH LENS</span>
-      <div
-        className={homeStyles.lensTabs}
-        role="group"
-        aria-label="Choose a research question"
-      >
-        {lenses.map((item, index) => (
-          <button
-            key={item.title}
-            aria-pressed={lens === index}
-            onClick={() => setLens(index)}
-          >
-            {item.title}
-          </button>
-        ))}
-      </div>
-      <Icon size={30} aria-hidden="true" />
-      <h3>{active.question}</h3>
-      <p>{active.text}</p>
-      <div className={homeStyles.lensSteps}>
-        {active.steps.map((step, index) => (
-          <span key={step}>
-            <b>0{index + 1}</b>
-            {step}
-          </span>
-        ))}
-      </div>
-      <small>A framework for questions, not a company rating.</small>
-    </aside>
-  );
-}
-
 function HomeOverview() {
   const state = useWorkspaceData(),
     { workspace, quotes, model, prefix, demo, displayName, pace } = state;

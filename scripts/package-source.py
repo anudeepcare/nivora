@@ -3,13 +3,14 @@
 import hashlib,json,os,pathlib,sys,zipfile
 root=pathlib.Path(__file__).resolve().parents[1]
 output=pathlib.Path(sys.argv[1]).resolve() if len(sys.argv)>1 else root.parent/'AURYN-full-source-handoff.zip'
-skip={'node_modules','.next','.git','.superpowers','test-results','playwright-report','__pycache__'}
+skip={'node_modules','.next','.git','.superpowers','test-results','playwright-report','__pycache__','design-prototype'}
 files=[]
 for path in sorted(root.rglob('*')):
  if not path.is_file() or path.is_symlink():continue
  rel=path.relative_to(root)
  if any(p in skip for p in rel.parts) or path.suffix in {'.zip','.tsbuildinfo','.pyc'}:continue
- if rel.parts[0]=='verification' and 'raw' in rel.parts:continue
+ if rel.parts[0]=='verification' and (('raw' in rel.parts) or path.suffix.lower() not in {'.json','.md','.csv'}):continue
+ if rel.parts[0]=='docs' and (path.suffix.lower() not in {'.md','.sql','.json'} or 'superpowers' in rel.parts):continue
  if path.name.startswith('.env') and path.name!='.env.example':continue
  if path.name in {'MANIFEST.sha256','test-current.log'}:continue
  files.append(path)

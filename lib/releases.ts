@@ -27,6 +27,8 @@ export const releases: Release[] = [
         "Earnings-to-thesis financial comparisons and opt-in support diagnostics without portfolio details.",
       ],
       Improved: [
+        "Compact stock context and decision panels; a stronger Home comparison hero and clearer Pace action hierarchy.",
+        "Lean Git handoff excludes archived screenshots and prototypes, and removes unused Home lens code.",
         "Compact public footer, aligned research cards and separated research actions.",
         "Contextual return links from Help, support and legal documents.",
       ],

@@ -4,12 +4,12 @@
 .hero {
   max-width: 1440px;
   margin: auto;
-  padding: 76px 5% 64px;
+  padding: 56px 5% 48px;
   display: grid;
   grid-template-columns: 1.03fr 1fr;
   gap: 56px;
   align-items: center;
-  background: radial-gradient(ellipse at 8% 18%, #d6f35a16, transparent 55%);
+  background: radial-gradient(ellipse at 8% 18%, #d6f35a30, transparent 55%), radial-gradient(ellipse at 90% 80%, #b99ae818, transparent 60%);
 }
 .heroCopy {
   min-width: 0;

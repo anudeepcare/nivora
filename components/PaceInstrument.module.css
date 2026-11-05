@@ -3,10 +3,11 @@
   position: relative;
   isolation: isolate;
   min-width: 0;
-  padding: 22px;
+  padding: 26px;
   border: 1px solid #454b4c;
-  border-radius: 12px;
-  background: linear-gradient(125deg, #292f31, #24272b 60%, #202527);
+  border-radius: 18px;
+  background:
+    radial-gradient(ellipse at 100% 0, #d6f35a15, transparent 65%), #222829;
   color: #f7f8f5;
   font-family: var(--font-ui);
   overflow: hidden;
@@ -62,13 +63,6 @@
   gap: 20px;
   margin: 20px 0 24px;
 }
-.crystal {
-  width: 100%;
-  max-width: 132px;
-  height: auto;
-  justify-self: center;
-  filter: drop-shadow(0 0 20px #d6f31b16);
-}
 .readoutText {
   min-width: 0;
 }
@@ -84,9 +78,9 @@
 }
 .title h2 {
   font-family: var(--font-ui);
-  font-size: clamp(32px, 3.2vw, 46px);
-  font-weight: 550;
-  line-height: 1.15;
+  font-size: clamp(34px, 4vw, 54px);
+  font-weight: 650;
+  line-height: 1.08;
   letter-spacing: -0.035em;
   margin: 0;
   color: #d6f35a;
@@ -262,10 +256,7 @@
     padding-left: 0;
   }
   .title h2 {
-    font-size: 27px;
-  }
-  .crystal {
-    max-width: 100px;
+    font-size: 34px;
   }
   .stage {
     min-height: 48px;
@@ -344,7 +335,7 @@
 }
 @media (max-width: 600px) {
   .title h2 {
-    font-size: 26px;
+    font-size: 34px;
   }
   .title h2 > .level {
     font-size: 13px;
@@ -369,7 +360,98 @@
 }
 
 /* Keep the portal help trigger readable against the instrument. */
-.instrument .header > button { color:#c7ceca; width:44px; height:44px; flex:none; }
-.instrument .header > button:hover { background:#ffffff0b; color:#d6f35a; }
-.instrument .header > button:focus-visible { outline:2px solid #d6f35a; outline-offset:2px; }
-@media (min-width:801px) { .terraces { margin-top:24px; } .stage span { display:block; font-size:11px; order:3; color:#b9c1bf; } .readout { margin-block:24px; } }
+.instrument .header > button {
+  color: #c7ceca;
+  width: 44px;
+  height: 44px;
+  flex: none;
+}
+.instrument .header > button:hover {
+  background: #ffffff0b;
+  color: #d6f35a;
+}
+.instrument .header > button:focus-visible {
+  outline: 2px solid #d6f35a;
+  outline-offset: 2px;
+}
+@media (min-width: 801px) {
+  .terraces {
+    margin-top: 24px;
+  }
+  .stage span {
+    display: block;
+    font-size: 11px;
+    order: 3;
+    color: #b9c1bf;
+  }
+  .readout {
+    margin-block: 24px;
+  }
+}
+
+.readout {
+  position: relative;
+}
+.readout::before {
+  content: "";
+  position: absolute;
+  right: 4px;
+  top: -10px;
+  width: 100px;
+  height: 110px;
+  background: url("/pace-diamond.svg") center/contain no-repeat;
+  opacity: 0.09;
+  pointer-events: none;
+}
+.terraces {
+  position: relative;
+  padding-top: 10px;
+}
+.terraces::before {
+  content: "";
+  position: absolute;
+  top: 30px;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: #ffffff20;
+  z-index: -1;
+}
+.stage[aria-pressed="true"] {
+  color: #d6f35a;
+}
+.stage[aria-pressed="true"] strong {
+  font-weight: 700;
+}
+.stage[aria-pressed="true"] > svg {
+  width: 25px;
+  height: 25px;
+  filter: drop-shadow(0 0 10px #d6f35a66);
+}
+.insight {
+  padding: 12px 0;
+  border-top: 1px solid #ffffff20;
+  border-radius: 0;
+}
+.boundary {
+  font-size: 17px;
+  font-weight: 550;
+}
+.readoutText {
+  position: relative;
+}
+@media (max-width: 600px) {
+  .instrument {
+    padding: 20px;
+  }
+  .readout::before {
+    width: 80px;
+    height: 90px;
+  }
+  .title h2 {
+    font-size: clamp(30px, 8vw, 38px);
+  }
+  .terraces::before {
+    top: 28px;
+  }
+}
