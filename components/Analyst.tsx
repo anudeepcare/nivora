@@ -142,7 +142,7 @@ export default function Analyst({
         <header className="section-head">
           <div>
             <h2>Ask AURYN</h2>
-            <p>Explain, find gaps or challenge the case using supplied evidence. Filing excerpts are included only when available and enabled.</p>
+            <p>Choose a question to review the available company evidence.</p>
           </div>
         </header>
         <div className="prompt-row">

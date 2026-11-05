@@ -4,9 +4,7 @@ import Link from "next/link";
 import {
   ArrowRight,
   Bell,
-  ShieldCheck,
   ChevronDown,
-  CalendarDays,
 } from "lucide-react";
 import type { Research } from "@/lib/types";
 import {
@@ -18,7 +16,6 @@ import { useProduct } from "./Session";
 import PaceInstrument from "./PaceInstrument";
 import PositionFit from "./PositionFit";
 import DecisionInsights from "./DecisionInsights";
-import AnalystTargets from "./AnalystTargets";
 import ResearchEvidenceGrid from "./ResearchEvidenceGrid";
 import s from "./IntegratedExperience.module.css";
 import { amount, percent, dateLabel } from "@/lib/format";
@@ -185,9 +182,8 @@ export default function IntegratedResearch({
       <div className={s.market}>
         <details className={s.evidence}>
           <summary>
-            Reasons, risks & next steps <ChevronDown size={15} />
+            Supporting facts & risks <ChevronDown size={15} />
           </summary>
-          <p>{d.explanation.detail}</p>
           <ul>
             {d.reasons.map((reason) => (
               <li key={reason}>{reason}</li>
@@ -196,10 +192,6 @@ export default function IntegratedResearch({
           {d.risks.slice(1).map((reason) => (
             <p key={reason}>{reason}</p>
           ))}
-          <p>
-            New purchase: <strong>{d.actionLabels.entry}</strong> · Existing
-            holding: <strong>{d.actionLabels.holding}</strong>
-          </p>
           <div className={s.evidenceActions}>
             <Link
               href={`${prefix}/alerts?symbol=${encodeURIComponent(r.company.symbol)}`}

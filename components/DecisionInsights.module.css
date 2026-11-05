@@ -198,3 +198,81 @@
     font-size: 36px;
   }
 }
+
+.evidence > div {
+  padding: 16px;
+  border-radius: 12px;
+  background: color-mix(in srgb, #b99ae8 10%, var(--card));
+}
+.evidence > div:nth-child(2) {
+  background: color-mix(in srgb, #a8ddc0 18%, var(--card));
+}
+.evidence > div:nth-child(3) {
+  background: color-mix(in srgb, #e7b866 13%, var(--card));
+}
+.root .panel p {
+  max-width: 95ch;
+  color: var(--ink);
+  font-size: 14px;
+}
+.checklist {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px;
+  list-style: none;
+  padding: 0 !important;
+  margin: 16px 0;
+}
+.root .checklist li {
+  margin: 0;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--surface);
+  font-size: 14px;
+  color: var(--ink);
+}
+.root .comparison {
+  padding: 16px;
+  border-radius: 12px;
+  background: color-mix(in srgb, #b99ae8 10%, var(--card));
+  margin: 12px 0;
+}
+.answer {
+  background: color-mix(in srgb, #d6f35a 20%, var(--card));
+}
+.links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  border-bottom: 1px solid var(--line);
+}
+@media (max-width: 680px) {
+  .checklist {
+    grid-template-columns: 1fr;
+  }
+  .evidence > div {
+    padding: 14px;
+  }
+}
+
+.estimatePair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 14px 0;
+}
+.estimatePair > div {
+  padding: 14px;
+  background: var(--surface);
+  border-radius: 10px;
+}
+.estimatePair span {
+  font-size: 12px;
+  color: var(--muted);
+}
+.estimatePair strong {
+  display: block;
+  font-size: 26px;
+  margin-top: 5px;
+  color: var(--ink);
+}

@@ -1,4 +1,5 @@
 "use client";
+import deskStyles from "./OptionsDesk.module.css";
 import { useEffect, useMemo, useState } from "react";
 import type { Research } from "@/lib/types";
 import { api } from "@/lib/client";
@@ -337,7 +338,7 @@ export default function OptionsDesk({
     (c) => c.delta !== null && c.type === "call",
   );
   return (
-    <div className="options-desk options-v2 depth-options">
+    <div className={`${deskStyles.desk} options-desk options-v2 depth-options`}>
       <header className="options-heading">
         <div>
           <span className="eyebrow">Options workspace</span>
@@ -415,6 +416,9 @@ export default function OptionsDesk({
               <span>
                 <Activity size={15} /> {research.company.symbol} ·{" "}
                 {expiryLabel(active)} · {days} days
+              </span>
+              <span className={deskStyles.rangeLabel}>
+                Option-priced move at expiration
               </span>
               <h3>
                 {summary.straddle !== null && spot > 0
@@ -494,7 +498,9 @@ export default function OptionsDesk({
                       <Activity size={17} /> Estimated net gamma
                     </span>
                     <strong>
-                      {hasGamma ? amount(summary.netGex) : "Not measured"}
+                      {hasGamma
+                        ? amount(summary.netGex, "USD", true)
+                        : "Not measured"}
                     </strong>
                     <p>
                       {hasGamma
@@ -531,18 +537,58 @@ export default function OptionsDesk({
                     <section className="options-card">
                       <span className="eyebrow">Gamma map</span>
                       <h3>Where exposure clusters</h3>
-                      <p>The ten largest exposures in this strike window. Tap a row for context. Longer bars mean larger modeled exposure, not a stronger buy signal.</p>
-                      <div className="gamma-strike-map" aria-label="Gamma exposure by strike">
-                        {[...nearby].sort((a, b) => Math.abs(b.net) - Math.abs(a.net)).slice(0, 10).sort((a, b) => a.strike - b.strike).map((b) => (
-                          <details key={b.strike} className="gamma-strike-row">
-                            <summary>
-                              <strong>{amount(b.strike)}</strong>
-                              <span className="gamma-strike-track" aria-hidden="true"><i data-sign={b.net < 0 ? "negative" : "positive"} style={{ width: `${Math.abs(b.net) / Math.max(1, ...nearby.map((x) => Math.abs(x.net))) * 100}%` }} /></span>
-                              <span>{b.net > 0 ? "+" : ""}{amount(b.net)}</span>
-                            </summary>
-                            <p>Strike {amount(b.strike)} · {b.net === 0 ? "Zero net exposure" : b.net < 0 ? "Put-negative" : "Call-positive"} net estimate per 1% stock move. {fmt(b.callOi, 0)} call contracts and {fmt(b.putOi, 0)} put contracts. This sign convention does not identify dealer holdings.</p>
-                          </details>
-                        ))}
+                      <p>
+                        The ten largest exposures in this strike window. Tap a
+                        row for context. Longer bars mean larger modeled
+                        exposure, not a stronger buy signal.
+                      </p>
+                      <div
+                        className="gamma-strike-map"
+                        aria-label="Gamma exposure by strike"
+                      >
+                        {[...nearby]
+                          .sort((a, b) => Math.abs(b.net) - Math.abs(a.net))
+                          .slice(0, 10)
+                          .sort((a, b) => a.strike - b.strike)
+                          .map((b) => (
+                            <details
+                              key={b.strike}
+                              className="gamma-strike-row"
+                            >
+                              <summary>
+                                <strong>{amount(b.strike)}</strong>
+                                <span
+                                  className="gamma-strike-track"
+                                  aria-hidden="true"
+                                >
+                                  <i
+                                    data-sign={
+                                      b.net < 0 ? "negative" : "positive"
+                                    }
+                                    style={{
+                                      width: `${(Math.abs(b.net) / Math.max(1, ...nearby.map((x) => Math.abs(x.net)))) * 100}%`,
+                                    }}
+                                  />
+                                </span>
+                                <span>
+                                  {b.net > 0 ? "+" : ""}
+                                  {amount(b.net)}
+                                </span>
+                              </summary>
+                              <p>
+                                Strike {amount(b.strike)} ·{" "}
+                                {b.net === 0
+                                  ? "Zero net exposure"
+                                  : b.net < 0
+                                    ? "Put-negative"
+                                    : "Call-positive"}{" "}
+                                net estimate per 1% stock move.{" "}
+                                {fmt(b.callOi, 0)} call contracts and{" "}
+                                {fmt(b.putOi, 0)} put contracts. This sign
+                                convention does not identify dealer holdings.
+                              </p>
+                            </details>
+                          ))}
                       </div>
                       <Plot
                         points={nearby.map((b) => ({ x: b.strike, y: b.net }))}
@@ -601,9 +647,15 @@ export default function OptionsDesk({
                   <span className="eyebrow">Strike × expiration</span>
                   <h3>Gamma heatmap</h3>
                   <div className="gamma-map-legend" aria-label="Heatmap legend">
-                    <span><i className="gamma-negative" /> Put-negative</span>
-                    <span><i className="gamma-neutral" /> Near zero</span>
-                    <span><i className="gamma-positive" /> Call-positive</span>
+                    <span>
+                      <i className="gamma-negative" /> Put-negative
+                    </span>
+                    <span>
+                      <i className="gamma-neutral" /> Near zero
+                    </span>
+                    <span>
+                      <i className="gamma-positive" /> Call-positive
+                    </span>
                   </div>
                   <p>
                     Blue: call-positive estimate. Rose: put-negative estimate.

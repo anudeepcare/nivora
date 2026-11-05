@@ -6,19 +6,31 @@ import {
   operatingEfficiency,
 } from "@/lib/research-integrity";
 import { amount, percent, dateLabel } from "@/lib/format";
-const definitions: Record<string,string> = {
-"Reported cash":"Cash and cash equivalents reported at the period end. This is not necessarily all available for distribution.",
-"Operating-burn runway":"Reported cash divided by average monthly operating cash use. Historical estimate; excludes new financing and future spending changes.",
-"After-investment runway":"Reported cash divided by average monthly cash use after capital spending. Historical estimate, not a forecast.",
-"Diluted share change":"Percentage change in reported diluted shares versus the comparable period. It is not an exact options or RSU dilution schedule.",
-"Stock pay / revenue":"Stock-based compensation divided by revenue for the same period. Non-cash compensation can dilute existing shareholders.",
-"Capex / revenue":"Reported capital expenditure divided by revenue for the same period.",
-"Working capital":"Current assets minus current liabilities at the reporting date.",
-"Cash / debt":"Reported cash divided by reported debt. This does not account for debt maturity or cash restrictions.",
-"Receivable days":"Average comparable receivables divided by annual or TTM revenue, multiplied by 365.",
-"Inventory days":"Average comparable inventory divided by annual or TTM cost of revenue, multiplied by 365.",
-"Payable days":"Average comparable payables divided by annual or TTM cost of revenue, multiplied by 365.",
-"Cash conversion cycle":"Receivable days plus inventory days minus payable days. Sector and accounting differences affect comparisons."
+const definitions: Record<string, string> = {
+  "Reported cash":
+    "Cash and cash equivalents reported at the period end. This is not necessarily all available for distribution.",
+  "Operating-burn runway":
+    "Reported cash divided by average monthly operating cash use. Historical estimate; excludes new financing and future spending changes.",
+  "After-investment runway":
+    "Reported cash divided by average monthly cash use after capital spending. Historical estimate, not a forecast.",
+  "Diluted share change":
+    "Percentage change in reported diluted shares versus the comparable period. It is not an exact options or RSU dilution schedule.",
+  "Stock pay / revenue":
+    "Stock-based compensation divided by revenue for the same period. Non-cash compensation can dilute existing shareholders.",
+  "Capex / revenue":
+    "Reported capital expenditure divided by revenue for the same period.",
+  "Working capital":
+    "Current assets minus current liabilities at the reporting date.",
+  "Cash / debt":
+    "Reported cash divided by reported debt. This does not account for debt maturity or cash restrictions.",
+  "Receivable days":
+    "Average comparable receivables divided by annual or TTM revenue, multiplied by 365.",
+  "Inventory days":
+    "Average comparable inventory divided by annual or TTM cost of revenue, multiplied by 365.",
+  "Payable days":
+    "Average comparable payables divided by annual or TTM cost of revenue, multiplied by 365.",
+  "Cash conversion cycle":
+    "Receivable days plus inventory days minus payable days. Sector and accounting differences affect comparisons.",
 };
 export default function FinancingContext({
   research: r,
@@ -103,23 +115,36 @@ export default function FinancingContext({
                   : "ratio"
               }
             >
-              <span><Help label={label} trigger={label}>{definitions[label]}</Help></span>
+              <span>
+                <Help label={label} trigger={label}>
+                  {definitions[label]}
+                </Help>
+              </span>
               <strong>{value}</strong>
             </section>
           ))}
       </div>
-      <details className="funding-basis">
-        <summary>Calculation details</summary>
-        <p className="small muted">
-          Unavailable measurements are omitted. Runway = reported cash ÷ average
-          monthly historical cash use, using an annual or TTM period. No new
-          financing, restricted-cash adjustment or future spending forecast is
-          assumed. Working-capital days use average comparable balance-sheet
-          values and the annual/TTM flow period. They may not fit financial
-          businesses. Debt maturities and convertible conversion terms require
-          the original filings; no missing schedule is invented.
-        </p>
-      </details>
+      <div className="funding-basis">
+        <Help
+          label="How cash runway is estimated"
+          trigger="About these measurements"
+        >
+          <p>
+            Cash runway estimates how long reported cash could cover recent cash
+            use. It uses an annual or TTM period and excludes future financing,
+            restricted-cash adjustments and spending changes.
+          </p>
+          <p>
+            Working-capital days use average comparable balances and annual/TTM
+            flows. Debt maturities and conversion terms require the original
+            filings. Missing measurements are omitted.
+          </p>
+        </Help>
+        <small>
+          Historical measurements · future funding and spending can change the
+          picture.
+        </small>
+      </div>
     </section>
   );
 }

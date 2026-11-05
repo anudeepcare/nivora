@@ -455,3 +455,6 @@
     top: 28px;
   }
 }
+/* Contextual disclosure stays integrated with the carbon instrument. */
+.instrument .readingDetail summary{background:transparent;color:#d4ddd7;padding:10px 0;border-radius:0;margin:0}
+.instrument .readingDetail[open] summary{background:transparent;color:#e0f78a}

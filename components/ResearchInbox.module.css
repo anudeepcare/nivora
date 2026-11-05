@@ -94,3 +94,34 @@
     margin-bottom: 10px;
   }
 }
+
+.highlight[data-kind="earnings"] {
+  background: linear-gradient(
+    130deg,
+    color-mix(in srgb, #b99ae8 12%, var(--card)),
+    var(--card)
+  );
+  border-top: 3px solid #ad96ce;
+}
+.highlight[data-kind="alert"] {
+  background: color-mix(in srgb, #e7b866 12%, var(--card));
+  border-top: 3px solid #b68a3d;
+}
+.highlight[data-kind="review"] {
+  background: color-mix(in srgb, #a8ddc0 14%, var(--card));
+  border-top: 3px solid #6aa68e;
+}
+.earnings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0 0 14px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.earnings strong {
+  display: block;
+  font-size: 19px;
+  color: var(--ink);
+  margin-top: 4px;
+}

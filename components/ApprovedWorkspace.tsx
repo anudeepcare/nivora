@@ -54,7 +54,6 @@ import { Empty, Notice, SecurityLogo, Help } from "./Ui";
 import Search from "./Search";
 import CompanySparkline from "./CompanySparkline";
 import AccountBalances from "./AccountBalances";
-import HoldingsImport from "./HoldingsImport";
 import PortfolioLedger from "./PortfolioLedger";
 import PortfolioCharts from "./PortfolioCharts";
 import PortfolioExposure from "./PortfolioExposure";
@@ -1181,7 +1180,6 @@ export function Portfolio() {
               </Empty>
             )}
             <div className="approved-holding-tools">
-              <HoldingsImport />
               {positions.length > 0 && (
                 <button
                   className="text-link"

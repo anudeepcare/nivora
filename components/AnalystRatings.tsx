@@ -4,8 +4,10 @@ import { amount, dateLabel } from "@/lib/format";
 import { consensusOutlook } from "@/lib/outlook";
 export default function AnalystRatings({
   research: r,
+  hideConsensus = false,
 }: {
   research: Research;
+  hideConsensus?: boolean;
 }) {
   const c = r.evidence?.consensus,
     outlook = consensusOutlook(r);
@@ -21,13 +23,15 @@ export default function AnalystRatings({
   return (
     <section className="analyst-workspace depth-analysts">
       <div className="analyst-summary">
-        <div>
-          <span>Analyst consensus</span>
-          <strong>
-            {outlook ? amount(outlook.target, r.quote.currency) : "—"}
-          </strong>
-          <small>Opinion, separate from model valuation</small>
-        </div>
+        {!hideConsensus && (
+          <div>
+            <span>Analyst consensus</span>
+            <strong>
+              {outlook ? amount(outlook.target, r.quote.currency) : "—"}
+            </strong>
+            <small>Opinion, separate from model valuation</small>
+          </div>
+        )}
         <div>
           <span>Published rating score</span>
           <strong>{c?.rating == null ? "—" : c.rating.toFixed(2)}</strong>

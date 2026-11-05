@@ -1,0 +1,230 @@
+.desk {
+  min-width: 0;
+  --option-border: var(--line);
+}
+.desk:global(.options-v2) :global(.options-heading) {
+  padding: 20px 24px;
+  margin: 0 0 14px;
+  border: 0;
+  border-radius: 16px;
+  background: linear-gradient(
+    110deg,
+    color-mix(in srgb, #b99ae8 16%, var(--card)),
+    var(--card)
+  );
+  gap: 20px;
+}
+.desk:global(.options-v2) :global(.options-heading) h2 {
+  font-size: clamp(24px, 2.5vw, 32px);
+  margin: 5px 0;
+  line-height: 1.2;
+  color: var(--ink);
+}
+.desk:global(.options-v2) :global(.options-nav) {
+  gap: 24px;
+  margin: 0 0 16px;
+  padding: 0 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.desk:global(.options-v2) :global(.options-nav) button {
+  min-height: 44px;
+  padding: 10px 0;
+  white-space: nowrap;
+  border-radius: 0;
+  color: var(--muted);
+}
+.desk:global(.options-v2) :global(.options-nav) button[aria-pressed="true"] {
+  color: var(--ink);
+  border-color: var(--business-icon);
+  font-weight: 650;
+}
+.desk:global(.options-v2) :global(.options-hero) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 20px;
+  padding: 24px;
+  border: 1px solid #424b47;
+  border-radius: 16px;
+  background:
+    radial-gradient(ellipse at 0 0, #d6f35a22, transparent 65%), #242a2a;
+  color: #f7f8f5;
+}
+.desk:global(.options-v2) :global(.options-hero) h3 {
+  font-size: clamp(28px, 3vw, 40px);
+  color: #e0f78a;
+  margin: 6px 0 10px;
+  line-height: 1.1;
+}
+.desk:global(.options-v2) :global(.options-hero-intro) > span {
+  color: #c7d4cc;
+}
+.desk:global(.options-v2) :global(.options-hero) p {
+  color: #d2dad5;
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 70ch;
+  margin: 0;
+}
+.desk:global(.options-v2) :global(.options-hero-meta) {
+  align-self: center;
+  max-width: 28ch;
+  text-align: right;
+  border: 0;
+  padding: 0;
+}
+.desk:global(.options-v2) :global(.options-hero-meta) :is(span, small) {
+  display: block;
+  color: #c7d4cc;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.desk:global(.options-v2) :global(.options-hero-meta) strong {
+  color: #f7f8f5;
+  font-size: 30px;
+}
+.rangeLabel {
+  display: block !important;
+  margin-top: 16px;
+  font-size: 11px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #c7d4cc !important;
+}
+.desk:global(.options-v2) :global(.options-statusline) {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+.desk:global(.options-v2) :global(.options-insight-grid) {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 10px 0 18px;
+}
+.desk:global(.options-v2) :global(.options-insight-grid) > article {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: color-mix(in srgb, #b99ae8 9%, var(--card));
+}
+.desk:global(.options-v2)
+  :global(.options-insight-grid)
+  > article:nth-child(2) {
+  background: color-mix(in srgb, #e7b866 11%, var(--card));
+}
+.desk:global(.options-v2)
+  :global(.options-insight-grid)
+  > article:nth-child(3) {
+  background: color-mix(in srgb, #a8ddc0 15%, var(--card));
+}
+.desk:global(.options-v2) :global(.options-insight-grid) strong {
+  display: block;
+  font-size: clamp(24px, 2.5vw, 32px);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  margin: 10px 0;
+}
+.desk:global(.options-v2) :global(.options-insight-grid) p {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0;
+}
+.desk:global(.options-v2) :global(.options-chart-grid) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.desk:global(.options-v2) :global(.options-card) {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--card);
+  box-shadow: none;
+}
+.desk:global(.options-v2) :global(.options-card) h3 {
+  font-size: 20px;
+  color: var(--ink);
+  margin: 6px 0 10px;
+}
+.desk:global(.options-v2) :global(.options-card) p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 85ch;
+}
+.desk:global(.options-v2) :is(input, select) {
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--card);
+  color: var(--ink);
+  font-size: 16px;
+}
+.desk:global(.options-v2) table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+.desk:global(.options-v2) th {
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 12px;
+  padding: 12px;
+  text-align: right;
+}
+.desk:global(.options-v2) td {
+  padding: 12px;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--ink);
+}
+.desk:global(.options-v2) tbody tr:hover {
+  background: var(--surface);
+}
+.desk :is(button, select, input, summary, a):focus-visible {
+  outline: 2px solid var(--business-icon);
+  outline-offset: 3px;
+}
+.desk :global(.table-scroll) {
+  overflow-x: auto;
+  max-width: 100%;
+}
+@media (max-width: 700px) {
+  .desk:global(.options-v2) :global(.options-heading) {
+    padding: 18px;
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .desk:global(.options-v2) :global(.options-hero) {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+  .desk:global(.options-v2) :global(.options-hero-meta) {
+    text-align: left;
+    max-width: none;
+    padding-top: 12px;
+    border-top: 1px solid #ffffff25;
+  }
+  .desk:global(.options-v2) :global(.options-insight-grid) {
+    grid-template-columns: 1fr;
+  }
+  .desk:global(.options-v2) :global(.options-chart-grid) {
+    grid-template-columns: 1fr;
+  }
+  .desk:global(.options-v2) :global(.options-nav) {
+    gap: 20px;
+  }
+  .desk:global(.options-v2) :global(.options-card) {
+    padding: 16px;
+  }
+}

@@ -8,6 +8,7 @@ import "./core/compatibility.css";
 import "./core/foundation.css";
 import "./appearance.css";
 import "./core/surfaces.css";
+import "./core/readability.css";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   verification: {

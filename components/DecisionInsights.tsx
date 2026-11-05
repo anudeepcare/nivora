@@ -258,8 +258,25 @@ function Insights({
                   {multiple}× P/E over {years.toFixed(1)} years.
                 </p>
               </div>
+              {estimate && result.gapPercent != null && (
+                <div
+                  className={s.estimatePair}
+                  aria-label="Same-period EPS comparison"
+                >
+                  <div>
+                    <span>Required EPS</span>
+                    <strong>
+                      {amount(result.requiredEps, r.quote.currency)}
+                    </strong>
+                  </div>
+                  <div>
+                    <span>Supplied estimate</span>
+                    <strong>{amount(estimate.eps, r.quote.currency)}</strong>
+                  </div>
+                </div>
+              )}
               {estimate && (
-                <p>
+                <p className={s.comparison}>
                   {result.gapPercent == null
                     ? "A positive EPS estimate on a reconciled listing basis is unavailable."
                     : `${percent(result.gapPercent, true)} versus the supplied EPS estimate of ${amount(estimate.eps, r.quote.currency)} for the same fiscal end.`}{" "}
@@ -268,7 +285,7 @@ function Insights({
                 </p>
               )}
               <details>
-                <summary>Calculation & limits</summary>
+                <summary>Assumptions & calculation</summary>
                 <p>
                   Required EPS = reference price × (1 + desired annual return) ^
                   years ÷ assumed future P/E. Initial 25× and 8% are editable
@@ -277,7 +294,8 @@ function Insights({
                   horizon has no matched analyst forecast.
                 </p>
                 <p>
-                  {r.quote.stale ? "Older dated reference" : "Reference"} {amount(r.quote.price, r.quote.currency)} ·{" "}
+                  {r.quote.stale ? "Older dated reference" : "Reference"}{" "}
+                  {amount(r.quote.price, r.quote.currency)} ·{" "}
                   {dateLabel(r.quote.asOf)}. A multiple is not a forecast
                   probability.
                 </p>
@@ -310,14 +328,14 @@ function Insights({
             your investment case.
           </p>
           {e.changes.length > 0 && (
-            <ul>
+            <ul className={s.checklist}>
               {e.changes.map((x) => (
                 <li key={x}>{x}</li>
               ))}
             </ul>
           )}
           <h4>What to wait for or revisit</h4>
-          <ul>
+          <ul className={s.checklist}>
             {d.changeConditions.slice(0, 3).map((x) => (
               <li key={x}>{x}</li>
             ))}
@@ -331,7 +349,7 @@ function Insights({
             <Link
               href={`${prefix}/alerts?symbol=${encodeURIComponent(r.company.symbol)}`}
             >
-              Choose a supported alert →
+              Set an alert →
             </Link>
           </div>
           <small>

@@ -14,5 +14,11 @@ Application source, package lock, tests and fixtures, scripts, deployment guidan
 
 Archive size reduction improves download and repository size. It does not by itself demonstrate faster market-data APIs or improved investment results.
 
-## Verification for this cleanup
-Home was visually reviewed in the local browser using illustrative data. The existing suite completed 968/969 checks; the timing-sensitive provider minute-budget database assertion failed once and passed when rerun alone. This cleanup does not change that database rule. Physical iPhone and authenticated external comparisons remain pending.
+## Verification for the current source candidate
+975 tests passed. Production build and all API regression scripts passed with synthetic/mocked transport. The final Pace disclosure style passed a CSS parser check. Physical iPhone and authenticated live-provider acceptance remain pending.
+
+## Approved readability redesign
+Business-focused header facts replace the previous-close strip. Historical price range and volume are inside chart context; the quote Help follows the displayed movement basis. Banks and insurers use the shared business classification. No finance/provider credentials are included.
+Options has its own scoped color/contrast layout, expiry controls, tinted positioning cards, readable tables and preserved payoff calculations. Calculation detail is contextual; repeated consensus and overview guidance are consolidated. Portfolio CSV import controls are removed; saved holdings and manual position management remain. Home cards can show supplied EPS actual/estimate values; future actuals remain withheld.
+
+Verification limits: local browser review uses illustrative research and a synthetic Options snapshot. It is not authenticated live-provider validation or physical installed-iPhone acceptance.

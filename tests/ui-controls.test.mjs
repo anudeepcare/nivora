@@ -1,3 +1,5 @@
+import { latestFinancialEvidence } from "../lib/analysis.ts";
+import { headerBusinessMetrics, headerBusinessFamily } from "../lib/company-header.ts";
 import {experience,PaceInstrument} from './helpers/integrated-ui.mjs';
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -21,7 +23,7 @@ import { researchPeriods } from "../lib/financial-catalog.ts";
 import { demoData } from "./fixtures/demo.ts";
 
 function loadComponent(file, name, bindings) {
-  bindings={APP_VERSION:"0.2.0-rc.2",ReleaseNotice:()=>null,ContextLink:({page,children,className})=>React.createElement('a',{href:'/'+page,className},children),...bindings};
+  bindings={dateLabel:format.dateLabel,latestFinancialEvidence,headerBusinessMetrics,headerBusinessFamily,APP_VERSION:"0.2.0-rc.2",ReleaseNotice:()=>null,ContextLink:({page,children,className})=>React.createElement('a',{href:'/'+page,className},children),...bindings};
   bindings = { layout: {panel:"panel"}, searchStyles: {search:"search-module"}, ...bindings };
   bindings = { settingsStyles: {page: "settings-page-module"}, experience, PaceInstrument, Check: () => null, SUPPORT_EMAIL: "support@auryninvest.com", PrivacyChoices: () => null, paceCode, pacePeriods, PaceGuidance: ({view}) => React.createElement("div", null, view.actionLabel, view.effectiveCode), PaceReadings: ({readings}) => React.createElement("div", null, readings.map(r=>React.createElement("div", {key:r.key}, r.label, " ", r.code, " ", format.dateLabel(r.date)))), PaceHelp: () => null, CompanySparkline: () => null, ...bindings };
   bindings = {
@@ -1623,8 +1625,8 @@ test("stock context uses completed history and omits corporate facts for crypto"
     company: { ...demoData.research.MSFT.company, assetType: "crypto" },
     evidence: { updatedAt: "2026-01-01", highlights: { MarketCapitalization: 1000000 }, multiples: { ForwardPE: 20 } },
   };
-  const html = renderToStaticMarkup(React.createElement(View, { research: r }));
-  assert.match(html, /Latest history close|Prior close/);
+  const html = renderToStaticMarkup(React.createElement(View, { research: r, priceContext:true }));
+  assert.doesNotMatch(html, /Latest history close|Prior close/);
   assert.match(html, /closing range/);
   assert.match(html, /aria-label="About/);
   assert.doesNotMatch(html, /Market cap|Forward P\/E|Next reported earnings date|NaN|Infinity/);
@@ -2093,6 +2095,7 @@ test("stock header dates market facts and withholds mismatched currency or undat
   r.evidence.updatedAt = null;
   assert.doesNotMatch(render(), /Market cap|NaN|Infinity/);
   r.history = [];
+  r.facts = [];
   assert.equal(render(), "");
 });
 

@@ -623,3 +623,5 @@
 .home :global(.home-news-panel) {
   border-top: 3px solid #a8ddc0;
 }
+
+.home :global(.home-next-step){padding:18px;margin:16px 0}.home :global(.home-next-step) h2{font-size:21px}.home :global(.home-source-note){font-size:12px}

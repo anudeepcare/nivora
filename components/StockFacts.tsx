@@ -1,4 +1,9 @@
 "use client";
+import { latestFinancialEvidence } from "@/lib/analysis";
+import {
+  headerBusinessMetrics,
+  headerBusinessFamily,
+} from "@/lib/company-header";
 import type { Research } from "@/lib/types";
 import { amount, dateLabel } from "@/lib/format";
 import { Help } from "./Ui";
@@ -123,8 +128,50 @@ export function stockFactRows(r: Research) {
   return rows;
 }
 
-export default function StockFacts({ research }: { research: Research }) {
-  const rows = stockFactRows(research);
+export default function StockFacts({
+  research,
+  priceContext = false,
+}: {
+  research: Research;
+  priceContext?: boolean;
+}) {
+  const all = stockFactRows(research);
+  const financial = latestFinancialEvidence(research);
+  const family = headerBusinessFamily(research);
+  const financialBusiness = [
+    "financial",
+    "insurance",
+    "real-estate",
+    "specialized-financial",
+  ].includes(family);
+  const metrics =
+    research.company.assetType === "stock"
+      ? headerBusinessMetrics(
+          financial.latest ?? null,
+          financial.prior ?? null,
+          financialBusiness,
+          (research.priceObservedAt ?? research.retrievedAt).slice(0, 10),
+        )
+      : [];
+  const rows = priceContext
+    ? all.filter((x) => /closing range|Relative volume/.test(x.label))
+    : [
+        ...all.filter((x) => x.label === "Market cap"),
+        ...metrics
+          .filter(
+            (x) =>
+              !["real-estate", "specialized-financial"].includes(family) ||
+              x.label === "Revenue growth",
+          )
+          .map((x) => ({
+            ...x,
+            value: `${x.value.toFixed(1)}%`,
+            date: `${financial.periodBasis} · ${dateLabel(x.date)}`,
+          })),
+        ...all
+          .filter((x) => x.label === "Next reported earnings date")
+          .map((x) => ({ ...x, label: "Next earnings" })),
+      ].slice(0, 4);
   if (!rows.length) return null;
   return (
     <section

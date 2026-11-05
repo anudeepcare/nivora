@@ -61,7 +61,7 @@ import type {
   Company,
   Quote,
 } from "@/lib/types";
-import { perspective, latestFinancialEvidence } from "@/lib/analysis";
+import { perspective } from "@/lib/analysis";
 import { restoreWhenReady, browserScrollEnvironment } from "@/lib/navigation";
 import { KeyFinancialMetrics, CaseHighlights } from "./ResearchOverview";
 import { amount, percent, dateLabel, quoteTime } from "@/lib/format";
@@ -426,17 +426,6 @@ export default function Research({ symbol }: { symbol: string }) {
     now: demo ? Date.parse(r.retrievedAt) : Date.now(),
   });
   const headerContext = headerMarketContext(r);
-  const headerFinancial = latestFinancialEvidence(r).latest;
-  const ordinaryCompany = !/bank|insurance|reit/i.test(
-    (r.company.sector ?? "") + " " + (r.evidence?.profile?.industry ?? ""),
-  );
-  const headerMargin =
-    ordinaryCompany &&
-    headerFinancial?.revenue != null &&
-    headerFinancial.revenue > 0 &&
-    headerFinancial.fcf != null
-      ? (headerFinancial.fcf / headerFinancial.revenue) * 100
-      : null;
   return (
     <article
       className="research-page approved-research-page"
@@ -472,7 +461,15 @@ export default function Research({ symbol }: { symbol: string }) {
                     : "au-positive"
               }
             >
+              <span className="sr-only">Session change </span>
               {percent(headerMovement.change, true)}
+              <Help label="How this price change is calculated">
+                <p>
+                  {headerMovement.priceBasis === "settled-close"
+                    ? `This change compares completed daily closes${headerMovement.changeFrom ? ` against ${dateLabel(headerMovement.changeFrom)}` : ""}. It does not describe a live trading-session move.`
+                    : "This change follows the quote source’s session comparison. The quote’s session and timestamp appear below the price; extended-hours and regular-session comparisons can differ."}
+                </p>
+              </Help>
             </span>
             <DataStamp
               source={r.quote.source}
@@ -624,7 +621,7 @@ export default function Research({ symbol }: { symbol: string }) {
             {tab === "Analysts" && (
               <>
                 <TargetsEstimates research={r} />
-                <AnalystRatings research={r} />
+                <AnalystRatings research={r} hideConsensus />
               </>
             )}
             {tab === "Financials" && (
@@ -722,8 +719,8 @@ export default function Research({ symbol }: { symbol: string }) {
                 <BusinessHistory research={r} />
                 <ThesisPicture research={r} />
                 <BusinessMap key={r.company.symbol} research={r} />
-                <details className="edge-method" open>
-                  <summary>Detailed evidence lenses and thresholds</summary>
+                <details className="edge-method">
+                  <summary>How the business is assessed</summary>
                   <DecisionWorkspace
                     research={r}
                     onTab={switchTab}
@@ -732,7 +729,7 @@ export default function Research({ symbol }: { symbol: string }) {
                   <DecisionWatch key={r.company.symbol} research={r} />
                 </details>
                 <details className="research-reference">
-                  <summary>Your notes, snapshots &amp; research brief</summary>
+                  <summary>Notes &amp; saved research</summary>
                   <FeatureGate feature="advanced">
                     <ResearchNotes research={r} />
                   </FeatureGate>

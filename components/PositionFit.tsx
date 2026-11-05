@@ -30,6 +30,17 @@ export default function PositionFit({ research: r }: { research: Research }) {
   );
   if (!workspace?.positions.length || r.quote.currency !== "USD") return null;
   const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
+  if (!x.complete)
+    return (
+      <aside className={s.pending}>
+        <strong>Portfolio fit needs updated quotes</strong>
+        <span>
+          Position weight will appear when your holdings have recent, comparable
+          prices.
+        </span>
+        <Link href={`${prefix}/portfolio`}>Review holdings →</Link>
+      </aside>
+    );
   return (
     <section className={s.fit} aria-label="Position fit">
       <div>

@@ -5,6 +5,7 @@ import { advancedStudies } from "@/lib/advanced-research";
 import type { Research, Candle } from "@/lib/types";
 import { amount, dateLabel } from "@/lib/format";
 import { PriceChart } from "./Charts";
+import StockFacts from "./StockFacts";
 import { Help } from "./Ui";
 
 export default function PriceStudyChart({
@@ -77,6 +78,10 @@ export default function PriceStudyChart({
         contrast={contrast}
         levels={levels}
       />
+      <details className="chart-context">
+        <summary>Price range & completed volume</summary>
+        <StockFacts research={research} priceContext />
+      </details>
       {overlay && (
         <p className="signal-fib-caption">
           {fib

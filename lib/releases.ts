@@ -27,12 +27,15 @@ export const releases: Release[] = [
         "Earnings-to-thesis financial comparisons and opt-in support diagnostics without portfolio details.",
       ],
       Improved: [
+        "Business-focused stock header, clearer price-change help, sector-aware profitability and dated earnings context.",
+        "Readable Options banner and grids, consistent dropdowns, consolidated analyst consensus and simplified calculation help.",
         "Compact stock context and decision panels; a stronger Home comparison hero and clearer Pace action hierarchy.",
         "Lean Git handoff excludes archived screenshots and prototypes, and removes unused Home lens code.",
         "Compact public footer, aligned research cards and separated research actions.",
         "Contextual return links from Help, support and legal documents.",
       ],
       Fixed: [
+        "Removed CSV import controls from Portfolio while preserving manual position management and saved holdings.",
         "Removed the mobile navigation arch and tab scrollbar; enlarged Pace and made its help open in a dialog.",
         "Padded, opaque versioned PWA icons; aligned fiscal-year estimate tables and historical range labels.",
         "Automatic earnings scenarios now check the forward multiple against near-term EPS before use.",
