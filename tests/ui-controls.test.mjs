@@ -61,6 +61,8 @@ function loadComponent(file, name, bindings) {
     Clock3: () => null,
     useEffect: () => {},
     useState: React.useState,
+    PaceHistoryInsights: () => null,
+    ComparisonCharts: () => null,
     ...bindings,
   };
   const ast = ts.createSourceFile(
@@ -129,6 +131,7 @@ test("Financials avoids duplicate overview tiles and retains statement rows with
 
 test("metric explanations do not inject dialog blocks into server-rendered paragraphs", () => {
   const Help = loadComponent("components/Ui.tsx", "Help", {
+    styles: {helpIcon: "helpIcon", helpTrigger: "helpTrigger"},
     React,
     useRef: React.useRef,
     useId: React.useId,

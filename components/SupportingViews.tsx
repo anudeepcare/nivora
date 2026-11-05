@@ -1,4 +1,5 @@
 "use client";
+import ComparisonCharts from "./ComparisonCharts";
 import { APP_VERSION } from "@/lib/releases";
 import settingsStyles from "./SettingsPage.module.css";
 import { sameProviderSymbol } from "@/lib/provider-symbol";
@@ -437,6 +438,7 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
       {compatibility.length > 0 && (
         <p className="context-note">{compatibility.join(" ")}</p>
       )}
+      {values.length > 0 && <ComparisonCharts research={values.map(({ r }) => r)} />}
       <PaceHelp trigger="Understand AURYN Pace" />
       {values.length ? (
         <div className="table-scroll">

@@ -1,5 +1,6 @@
 "use client";
 import {useWorkspacePreferences} from "./WorkspacePreferences";
+import OpportunityMap from "./OpportunityMap";
 import ResearchInbox from "./ResearchInbox";
 import portfolioStyles from "./PortfolioWorkspace.module.css";
 import { sameProviderSymbol } from "@/lib/provider-symbol";
@@ -200,7 +201,7 @@ function useWorkspaceData(scope: "all" | "portfolio" | "watchlist" = "all") {
       product.demo ? Date.parse(r.retrievedAt) : Date.now(),
     );
   };
-  return { ...product, quotes, balances, prefix, model, q, pace };
+  return { ...product, quotes, balances, prefix, model, q, pace, research };
 }
 function WealthStrip({
   state,
@@ -558,6 +559,7 @@ function HomeOverview() {
         <ResearchLens />
       </section>
       <ResearchInbox news={feed.data?.news ?? []} events={feed.data?.events ?? []} today={day} ready={readiness.eventsReady && readiness.newsReady && !feed.error} quotes={quotes.data} quotesReady={!quotes.loading} />
+      <OpportunityMap research={symbols.flatMap(symbol => { const r = state.research(symbol); return r ? [r] : []; })} requested={symbols} prefix={prefix} demo={!!demo} />
       {symbols.length > 0 && <>
       <section className="home-next-step" aria-label="Your next step">
         <div className="home-next-copy">

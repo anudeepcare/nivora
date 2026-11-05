@@ -4,6 +4,9 @@ import React from "react";
 import * as icons from "lucide-react";
 import * as pace from "../../lib/pace-presentation.ts";
 import * as reading from "../../lib/pace-instrument.ts";
+import * as decision from "../../lib/auryn-decision.ts";
+import * as insights from "../../lib/pace-insights.ts";
+import * as format from "../../lib/format.ts";
 export const experience = new Proxy(
   {},
   { get: (_, key) => `integrated-${String(key)}` },
@@ -27,6 +30,9 @@ new Function("require", "module", "exports", code)(
     if (name === "lucide-react") return icons;
     if (name === "@/lib/pace-presentation") return pace;
     if (name === "@/lib/pace-instrument") return reading;
+    if (name === "@/lib/auryn-decision") return decision;
+    if (name === "@/lib/pace-insights") return insights;
+    if (name === "@/lib/format") return format;
     if (name.endsWith(".module.css"))
       return { __esModule: true, default: experience };
     throw Error(name);

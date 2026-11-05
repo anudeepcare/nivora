@@ -8,3 +8,9 @@
 .helpTrigger::after { content:none; }
 .helpTrigger:hover { color:var(--blue); }
 .helpTrigger:focus-visible { outline:2px solid var(--blue); outline-offset:3px; }
+
+.helpIcon.helpIcon { display:inline-flex; align-items:center; justify-content:center; vertical-align:middle; flex:none; width:32px; height:32px; min-width:32px; padding:7px; border:0; border-radius:50%; background:transparent; color:var(--muted); cursor:pointer; }
+.helpIcon.helpIcon:hover { background:var(--surface); color:var(--ink); }
+.helpIcon.helpIcon:focus-visible { outline:2px solid var(--blue); outline-offset:2px; }
+.helpIcon.helpIcon svg,.helpTrigger svg { width:16px; height:16px; flex:none; }
+@media(pointer:coarse) { .helpIcon.helpIcon { width:44px; height:44px; } .helpTrigger { min-height:44px; } }

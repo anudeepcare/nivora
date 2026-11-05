@@ -1,4 +1,4 @@
-import {experience,PaceInstrument} from './helpers/integrated-ui.mjs';
+import { experience, PaceInstrument } from "./helpers/integrated-ui.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -13,7 +13,17 @@ import {
 } from "../lib/theme-preference.ts";
 
 function load(file, name, bindings) {
-  bindings = { ContextLink: ({page,children}) => React.createElement("a",{href:"/"+page},children), experience, PaceInstrument, SUPPORT_EMAIL: "support@auryninvest.com", PrivacyChoices: () => null, PaceHelp: () => null, ...bindings };
+  bindings = {
+    ContextLink: ({ page, children }) =>
+      React.createElement("a", { href: "/" + page }, children),
+    experience,
+    landing: experience,
+    PaceInstrument,
+    SUPPORT_EMAIL: "support@auryninvest.com",
+    PrivacyChoices: () => null,
+    PaceHelp: () => null,
+    ...bindings,
+  };
   const source = ts.createSourceFile(
     file,
     fs.readFileSync(file, "utf8"),
@@ -144,17 +154,20 @@ test("public home leads with the benefit and an account action without fabricate
   );
   const html = renderToStaticMarkup(React.createElement(PublicLanding));
   assert.match(html, /<main[^>]*class="mp-public/);
-  assert.match(html, /Find the business behind the ticker\./);
+  assert.match(html, /Find your next investment\./);
+  assert.match(html, /Know what would make it worth buying\./);
+  assert.match(html, /href="#investment-demo"[^>]*>Explore the demo/);
 
   assert.match(html, /href="\/login\?mode=signup"[^>]*>Start free/);
   assert.match(html, /AURYN Pace/);
-  assert.match(html, /Research, connected/);
+  assert.match(html, /Illustrative sample/);
   assert.match(html, /Understand the business/);
   assert.match(html, /Test value and downside/);
   assert.match(html, /Choose your pace/);
-  assert(
-    html.indexOf("Research, connected") < html.indexOf("Find the business behind the ticker"),
-  );
+  assert.match(html, /Discover/);
+  assert.match(html, /Understand/);
+  assert.match(html, /Plan/);
+  assert.match(html, /no live recommendation/);
   assert.match(html, /href="\/sample"/);
   assert.match(html, /href="\/pricing"/);
   assert.doesNotMatch(
@@ -727,4 +740,57 @@ test("saved appearance preferences hydrate from matching markup without overwrit
       else globalThis[key] = value;
     }
   }
+});
+
+test("investment demo switches by click and keyboard while keeping sample context explicit", () => {
+  let step = 0;
+  const Demo = load("components/PublicLanding.tsx", "InvestmentDemo", {
+    ...common,
+    useState: () => [
+      step,
+      (next) => {
+        step = next;
+      },
+    ],
+  });
+  const render = () => Demo();
+  const tabs = () => nodes(render(), (n) => n.props?.role === "tab");
+  assert.equal(tabs()[0].props["aria-selected"], true);
+  tabs()[1].props.onClick();
+  assert.equal(tabs()[1].props["aria-selected"], true);
+  assert.match(
+    renderToStaticMarkup(render()),
+    /Illustrative scenarios, not price targets/,
+  );
+  let focused = -1;
+  tabs()[1].props.onKeyDown({
+    key: "ArrowRight",
+    preventDefault() {},
+    currentTarget: {
+      parentElement: {
+        querySelectorAll: () =>
+          [0, 1, 2].map((i) => ({
+            focus: () => {
+              focused = i;
+            },
+          })),
+      },
+    },
+  });
+  assert.equal(step, 2);
+  assert.equal(focused, 2);
+  assert.equal(
+    nodes(render(), (n) => n.type === PaceInstrument)[0].props.publicGuide,
+    true,
+  );
+  tabs()[2].props.onKeyDown({
+    key: "Home",
+    preventDefault() {},
+    currentTarget: {},
+  });
+  assert.equal(step, 0);
+  assert.match(
+    renderToStaticMarkup(render()),
+    /Fictional company · no live data/,
+  );
 });

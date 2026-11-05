@@ -95,3 +95,12 @@ export function visibleInbox<T extends { id: string }>(
     return !s?.reviewed && !(s?.until && s.until > today);
   });
 }
+
+/** Home is a short set of timely highlights, never a queue of every news item. */
+export function homeHighlights(items:InboxItem[],today:string){
+ const rank=(x:InboxItem)=>x.id.includes(':earnings:')?(x.date===today?0:2):x.id.startsWith('alert:')?1:3;
+ const seen=new Set<string>();
+ return items.filter(x=>!x.id.includes(':news:')&&!x.id.includes(':changes:')&&Number.isFinite(Date.parse(x.date)))
+ .sort((a,b)=>rank(a)-rank(b)||(rank(a)===2?a.date.localeCompare(b.date):b.date.localeCompare(a.date)))
+ .filter(x=>{if(seen.has(x.symbol))return false;seen.add(x.symbol);return true;}).slice(0,3);
+}

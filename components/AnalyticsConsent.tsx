@@ -16,16 +16,16 @@ type AnalyticsWindow = Window & {
   gtag?: (...args: unknown[]) => void;
   [key: `ga-disable-${string}`]: boolean | undefined;
 };
-export function PrivacyChoices() {
+export function PrivacyChoices({ compact = false }: { compact?: boolean }) {
   return (
     <button
       type="button"
-      className="text-link settings-analytics-button"
+      className={compact ? "footer-analytics-choice" : "text-link settings-analytics-button"}
       onClick={() => window.dispatchEvent(new Event("auryn:privacy"))}
     >
-      <ChartNoAxesCombined size={18} aria-hidden="true" />
+      {!compact && <ChartNoAxesCombined size={18} aria-hidden="true" />}
       <span>Analytics preferences</span>
-      <ChevronRight size={17} aria-hidden="true" />
+      {!compact && <ChevronRight size={17} aria-hidden="true" />}
     </button>
   );
 }

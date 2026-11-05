@@ -159,7 +159,7 @@ export function Help({
   return (
     <>
       <button
-        className={trigger ? `text-button help-trigger ${styles.helpTrigger}` : "help"}
+        className={trigger ? `text-button help-trigger ${styles.helpTrigger}` : `help ${styles.helpIcon}`}
         type="button"
         aria-label={`About ${label}`}
         aria-haspopup="dialog"

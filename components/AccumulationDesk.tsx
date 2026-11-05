@@ -1,5 +1,6 @@
 "use client";
 import PaceReadings from "./PaceReadings";
+import PaceHistoryInsights from "./PaceHistoryInsights";
 import { pacePeriods } from "@/lib/pace-presentation";
 import { useMemo, useState } from "react";
 import type { Research, Candle } from "@/lib/types";
@@ -246,6 +247,7 @@ export default function AccumulationDesk({
           historical simulation remains monthly only.
         </p>
       )}
+      {!weekly && <PaceHistoryInsights research={r} />}
       <details className="policy-rules">
         <summary>See the rules and price assumptions</summary>
         <p>

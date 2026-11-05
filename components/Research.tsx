@@ -1,5 +1,5 @@
 "use client";
-import {useWorkspacePreferences} from "./WorkspacePreferences";
+import { useWorkspacePreferences } from "./WorkspacePreferences";
 import { customerText } from "@/lib/customer-language";
 import { pacePeriods, PACE_LEVELS } from "@/lib/pace-presentation";
 import PaceReadings from "./PaceReadings";
@@ -74,8 +74,6 @@ import { groupHistory } from "@/lib/chart-period";
 import EarningsReview from "./EarningsReview";
 import ResearchNotes from "./ResearchNotes";
 import CompanyBrief from "./CompanyBrief";
-import ResearchCoverage from "./ResearchCoverage";
-import ResearchChanges from "./ResearchChanges";
 import DcaResearch from "./DcaResearch";
 import DecisionOverview from "./IntegratedResearch";
 import experience from "./IntegratedExperience.module.css";
@@ -85,6 +83,7 @@ import PaceHelp from "./PaceHelp";
 import { paceCode } from "@/lib/pace-presentation";
 import EarningsWorkspace from "./EarningsWorkspace";
 import DecisionBrief from "./DecisionBrief";
+import TargetsEstimates from "./TargetsEstimates";
 import AnalystRatings from "./AnalystRatings";
 import CompanyUpdates from "./CompanyUpdates";
 import OverviewContext from "./OverviewContext";
@@ -115,7 +114,7 @@ const tabPresentation = {
   Financials: { label: "Business", icon: Building2 },
   Valuation: { label: "Valuation", icon: Scale },
   Technicals: { label: "Technicals", icon: ChartCandlestick },
-  Analysts: { label: "Analysts", icon: Users },
+  Analysts: { label: "Targets & estimates", icon: Users },
   Options: { label: "Options", icon: Layers },
   Thesis: { label: "Case & ownership", icon: BriefcaseBusiness },
   News: { label: "News & earnings", icon: Newspaper },
@@ -123,8 +122,8 @@ const tabPresentation = {
 };
 export default function Research({ symbol }: { symbol: string }) {
   const { access } = useAccess();
-  const workspacePreferences=useWorkspacePreferences();
-  const rangeTouched=useRef(false);
+  const workspacePreferences = useWorkspacePreferences();
+  const rangeTouched = useRef(false);
   const { preferences } = useResearchPreferences();
   const requestedTab = useSearchParams().get("tab");
   const { demo, workspace, mutate, reduceMotion } = useProduct();
@@ -211,7 +210,18 @@ export default function Research({ symbol }: { symbol: string }) {
     [frequency, setFrequency] = useState<"Daily" | "Weekly" | "Monthly">(
       "Daily",
     );
-  useEffect(()=>{if(workspacePreferences.ready && !rangeTouched.current && ranges.includes(workspacePreferences.preferences.chartRange as typeof ranges[number])) setRange(workspacePreferences.preferences.chartRange as typeof ranges[number]);},[workspacePreferences.ready,workspacePreferences.preferences.chartRange]);
+  useEffect(() => {
+    if (
+      workspacePreferences.ready &&
+      !rangeTouched.current &&
+      ranges.includes(
+        workspacePreferences.preferences.chartRange as (typeof ranges)[number],
+      )
+    )
+      setRange(
+        workspacePreferences.preferences.chartRange as (typeof ranges)[number],
+      );
+  }, [workspacePreferences.ready, workspacePreferences.preferences.chartRange]);
   const [retainedCharts, setRetainedCharts] = useState<string[]>(() =>
     !requestedTab ||
     requestedTab === "Snapshot" ||
@@ -231,13 +241,18 @@ export default function Research({ symbol }: { symbol: string }) {
     requestAnimationFrame(() => {
       const navigation = researchNavigation.current;
       const top = navigation?.getBoundingClientRect().top;
-      const headerHeight = document.querySelector("[data-shell] > header")?.getBoundingClientRect().height ?? 72;
+      const headerHeight =
+        document.querySelector("[data-shell] > header")?.getBoundingClientRect()
+          .height ?? 72;
       if (
         navigation &&
         top != null &&
         (top < headerHeight || top > window.innerHeight - 100)
       )
-        window.scrollTo({top: window.scrollY + top - headerHeight - 8, behavior: "instant"});
+        window.scrollTo({
+          top: window.scrollY + top - headerHeight - 8,
+          behavior: "instant",
+        });
     });
   };
   const intraday = range === "1D" || range === "1W";
@@ -350,7 +365,7 @@ export default function Research({ symbol }: { symbol: string }) {
               key={x}
               aria-pressed={range === x}
               onClick={() => {
-                rangeTouched.current=true;
+                rangeTouched.current = true;
                 setRange(x);
                 if (x === "1D" || x === "1W") setFrequency("Daily");
               }}
@@ -483,8 +498,6 @@ export default function Research({ symbol }: { symbol: string }) {
         </div>
       </header>
 
-      <ResearchChanges research={r} />
-      <ResearchCoverage research={r} />
       {notice && <Notice error>{notice}</Notice>}
       {resource.error && <Notice error>{resource.error}</Notice>}
       {r.issues.length > 0 && (
@@ -607,7 +620,12 @@ export default function Research({ symbol }: { symbol: string }) {
                 preview={!!demo}
               />
             )}
-            {tab === "Analysts" && <AnalystRatings research={r} />}
+            {tab === "Analysts" && (
+              <>
+                <TargetsEstimates research={r} />
+                <AnalystRatings research={r} />
+              </>
+            )}
             {tab === "Financials" && (
               <>
                 <div className="signal-business-intro">
@@ -656,7 +674,8 @@ export default function Research({ symbol }: { symbol: string }) {
                           aria-pressed={frequency === v}
                           onClick={() => {
                             setFrequency(v);
-                            rangeTouched.current=true; setRange(v === "Monthly" ? "5Y" : "1Y");
+                            rangeTouched.current = true;
+                            setRange(v === "Monthly" ? "5Y" : "1Y");
                           }}
                         >
                           {v}
@@ -710,8 +729,13 @@ export default function Research({ symbol }: { symbol: string }) {
                     part="detail"
                   />
                   <DecisionWatch key={r.company.symbol} research={r} />
-                </details><details className="research-reference"><summary>Your notes, snapshots &amp; research brief</summary>
-                  <FeatureGate feature="advanced"><ResearchNotes research={r} /></FeatureGate><CompanyBrief research={r} />
+                </details>
+                <details className="research-reference">
+                  <summary>Your notes, snapshots &amp; research brief</summary>
+                  <FeatureGate feature="advanced">
+                    <ResearchNotes research={r} />
+                  </FeatureGate>
+                  <CompanyBrief research={r} />
                 </details>
               </>
             )}

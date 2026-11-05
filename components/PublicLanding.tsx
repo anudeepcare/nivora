@@ -2,6 +2,7 @@
 import { ContextLink } from "./ContextLink";
 import PaceInstrument from "./PaceInstrument";
 import experience from "./IntegratedExperience.module.css";
+import landing from "./PublicLanding.module.css";
 import { PrivacyChoices } from "./AnalyticsConsent";
 import { SUPPORT_EMAIL } from "@/lib/site-metadata";
 import { useEffect, useState } from "react";
@@ -17,7 +18,6 @@ import {
   ShieldCheck,
   Layers3,
   Scale,
-  PieChart,
 } from "lucide-react";
 import { authClient } from "@/lib/client";
 
@@ -156,6 +156,164 @@ export function PublicSample({ compact = false }: { compact?: boolean } = {}) {
   );
 }
 
+/** A fictional research journey: no company, quote or return is presented as live. */
+export function InvestmentDemo() {
+  const [step, setStep] = useState(0);
+  const steps = ["Discover", "Understand", "Plan"];
+  return (
+    <section
+      className={landing.demo}
+      id="investment-demo"
+      aria-label="Interactive illustrative investment demo"
+    >
+      <header className={landing.demoHeader}>
+        <span>
+          <img src="/icon.svg" width="22" height="22" alt="" /> AURYN{" "}
+          <small>/ RESEARCH WORKSPACE</small>
+        </span>
+        <span className={landing.sampleBadge}>Illustrative sample</span>
+      </header>
+      <div
+        className={landing.demoTabs}
+        role="tablist"
+        aria-label="Investment research journey"
+      >
+        {steps.map((name, index) => (
+          <button
+            key={name}
+            type="button"
+            role="tab"
+            id={`journey-tab-${index}`}
+            aria-controls={`journey-panel-${index}`}
+            aria-selected={step === index}
+            tabIndex={step === index ? 0 : -1}
+            onClick={() => setStep(index)}
+            onKeyDown={(event) => {
+              if (
+                !["ArrowRight", "ArrowLeft", "Home", "End"].includes(event.key)
+              )
+                return;
+              event.preventDefault();
+              const next =
+                event.key === "Home"
+                  ? 0
+                  : event.key === "End"
+                    ? 2
+                    : (index + (event.key === "ArrowRight" ? 1 : 2)) % 3;
+              setStep(next);
+              event.currentTarget.parentElement
+                ?.querySelectorAll<HTMLButtonElement>('[role="tab"]')
+                [next]?.focus();
+            }}
+          >
+            <span>0{index + 1}</span>
+            {name}
+            <ArrowRight size={14} aria-hidden="true" />
+          </button>
+        ))}
+      </div>
+      <div
+        className={landing.demoBody}
+        role="tabpanel"
+        id={`journey-panel-${step}`}
+        aria-labelledby={`journey-tab-${step}`}
+        tabIndex={0}
+      >
+        <div className={landing.demoIntro}>
+          <span className={landing.eyebrow}>
+            {steps[step]} / SAMPLE RESEARCH
+          </span>
+          <h2>
+            {
+              [
+                "A business worth a closer look.",
+                "A good business. At what price?",
+                "A plan before your next purchase.",
+              ][step]
+            }
+          </h2>
+          <p>
+            {
+              [
+                "Start with business strength. Then ask what needs to be true.",
+                "Keep the business case and the price you pay in perspective.",
+                "Explore the five Pace stages. Business and risk checks come first.",
+              ][step]
+            }
+          </p>
+        </div>
+        {step === 0 && (
+          <div className={landing.researchRows}>
+            <div>
+              <span className={landing.companyMark}>A</span>
+              <span>
+                <strong>Example business</strong>
+                <small>Fictional company · no live data</small>
+              </span>
+              <span className={landing.review}>Review</span>
+            </div>
+            <div>
+              <Layers3 size={19} />
+              <span>
+                <strong>Business strength</strong>
+                <small>
+                  Read growth, cash generation and financial health together.
+                </small>
+              </span>
+            </div>
+            <div>
+              <Scale size={19} />
+              <span>
+                <strong>Valuation still matters</strong>
+                <small>
+                  A strong business can still be an expensive investment.
+                </small>
+              </span>
+            </div>
+            <div>
+              <ShieldCheck size={19} />
+              <span>
+                <strong>What could change the case?</strong>
+                <small>Check debt, competition and missing evidence.</small>
+              </span>
+            </div>
+          </div>
+        )}
+        {step === 1 && (
+          <div className={landing.scenarios}>
+            {[
+              ["Bear", "Slower growth", "Pressure on margins"],
+              ["Base", "Current assumptions", "Test against evidence"],
+              ["Bull", "Stronger growth", "Execution must deliver"],
+            ].map(([name, title, note]) => (
+              <article key={name}>
+                <span>{name}</span>
+                <div className={landing.scenarioBar} aria-hidden="true" />
+                <strong>{title}</strong>
+                <small>{note}</small>
+              </article>
+            ))}
+            <p>
+              Illustrative scenarios, not price targets. In research, inspect
+              the available sources, dates and assumptions before relying on an
+              assessment.
+            </p>
+          </div>
+        )}
+        {step === 2 && <PaceInstrument publicGuide compact />}
+      </div>
+      <footer className={landing.demoFooter}>
+        <ShieldCheck size={15} />
+        <span>Sample content · no live recommendation</span>
+        <button type="button" onClick={() => setStep((step + 1) % 3)}>
+          {step === 2 ? "Back to Discover" : `Next: ${steps[step + 1]}`}
+          <ArrowRight size={14} />
+        </button>
+      </footer>
+    </section>
+  );
+}
+
 function ProductWalkthrough() {
   return (
     <section
@@ -261,7 +419,7 @@ export default function PublicLanding({
 
   return (
     <main
-      className={`mp-public ap-public ${experience.public} ${sampleOnly ? "ap-sample-page" : ""}`}
+      className={`mp-public ap-public ${experience.public} ${landing.page} ${sampleOnly ? "ap-sample-page" : ""}`}
     >
       <a className="ap-skip-link" href="#ap-main">
         Skip to content
@@ -323,16 +481,58 @@ export default function PublicLanding({
             </nav>
           )}
         </header>
-        <section className={experience.hero} id="ap-main" aria-labelledby="ap-hero-heading">
-          <div className={experience.heroVisual}><div className={experience.discoveryPreview}><img src="/pace-diamond.svg" alt="" width="58" height="64"/><PublicSample compact /></div><div className={experience.brandSpectrum} aria-label="Connected research"><span><Layers3 size={17}/> Business</span><span><Scale size={17}/> Expectations</span><span><ChartNoAxesCombined size={17}/> Timing</span></div></div>
-          <div className={experience.heroCopy}><div>
-            <span className={experience.brandEyebrow}>A clearer perspective on every investment</span>
-            <h1 id="ap-hero-heading">{sampleOnly ? "Understand your next step." : "Find the business behind the ticker."}</h1>
-            <p>{sampleOnly ? "Explore the five price zones, then connect them to business quality, valuation and your position limits." : "Turn scattered numbers into a clearer view. Explore the business, challenge the price and find a pace that fits your plan."}</p>
-          </div><div className={experience.heroActions}>
-            <Link href="/login?mode=signup">Start free <ArrowRight size={18}/></Link>
-            <Link href={sampleOnly ? "#product-guide" : "/sample"}>{sampleOnly ? "Explore the guide" : "See how it works"} <ArrowRight size={17}/></Link>
-          </div></div>
+        <section
+          className={landing.hero}
+          id="ap-main"
+          aria-labelledby="ap-hero-heading"
+        >
+          <div className={landing.heroCopy}>
+            <span className={landing.eyebrow}>
+              RESEARCH WITH A REASON. INVEST WITH A PLAN.
+            </span>
+            <h1 id="ap-hero-heading">
+              {sampleOnly ? (
+                "See the thinking behind your next investment."
+              ) : (
+                <>
+                  Find your next investment.
+                  <br />
+                  <span>Know what would make it worth buying.</span>
+                </>
+              )}
+            </h1>
+            <p>
+              Connect business strength, valuation and a disciplined
+              accumulation plan. A clearer way to decide what deserves your
+              money—and what needs more research.
+            </p>
+            <div className={landing.actions}>
+              <Link className={landing.primary} href="/login?mode=signup">
+                Start free <ArrowRight size={18} aria-hidden="true" />
+              </Link>
+              <a className={landing.secondary} href="#investment-demo">
+                Explore the demo <ArrowRight size={17} aria-hidden="true" />
+              </a>
+            </div>
+            <p className={landing.heroNote}>
+              Explore the product before you create an account.
+            </p>
+            <div className={landing.heroPrinciples}>
+              <span>
+                <Check size={15} /> Evidence before conviction
+              </span>
+              <span>
+                <Check size={15} /> Your judgment, always
+              </span>
+            </div>
+          </div>
+          <div className={landing.heroVisual}>
+            <InvestmentDemo />
+            <div className={landing.previewCaption}>
+              <span>01 — 03</span> From an interesting business to a considered
+              decision.
+            </div>
+          </div>
         </section>
         <div
           className="ap-benefits ap-container"
@@ -364,9 +564,7 @@ export default function PublicLanding({
       >
         <div className="ap-section-heading">
           <span className="ap-eyebrow">FROM QUESTION TO DECISION</span>
-          <h2 id="ap-workflow-heading">
-            One question at a time. A fuller picture.
-          </h2>
+          <h2 id="ap-workflow-heading">Three questions. One connected view.</h2>
           <p>
             A connected view of what you own, what you’re watching, and what
             deserves a closer look.
@@ -378,7 +576,7 @@ export default function PublicLanding({
               <Search size={24} aria-hidden="true" />
             </span>
             <span className="ap-step">01 / UNDERSTAND</span>
-            <h3>Get to know the business.</h3>
+            <h3>Find quality behind the story.</h3>
             <p>
               Explore financial performance, cash generation and the evidence
               behind the company’s story.
@@ -389,7 +587,7 @@ export default function PublicLanding({
               <Scale size={24} aria-hidden="true" />
             </span>
             <span className="ap-step">02 / WEIGH IT UP</span>
-            <h3>See the case. See the risks.</h3>
+            <h3>Know what the price asks of you.</h3>
             <p>
               Bring the decision, valuation assumptions and business risks into
               one research view.
@@ -400,7 +598,7 @@ export default function PublicLanding({
               <ChartNoAxesCombined size={24} aria-hidden="true" />
             </span>
             <span className="ap-step">03 / FIND YOUR PACE</span>
-            <h3>Give each contribution context.</h3>
+            <h3>Make each addition deliberate.</h3>
             <p>
               Use monthly price conditions alongside the business case, with
               confirmed and forming readings kept separate.
@@ -410,68 +608,122 @@ export default function PublicLanding({
       </section>
 
       <section
-        className="ap-connected ap-container"
-        aria-labelledby="ap-connected-heading"
+        className={`${landing.evidence} ap-container`}
+        aria-labelledby="evidence-heading"
       >
-        <div className="ap-connected-copy">
-          <span className="ap-eyebrow">ONE CONNECTED WORKSPACE</span>
-          <h2 id="ap-connected-heading">Keep the whole picture in view.</h2>
+        <div>
+          <span className={landing.eyebrow}>CONVICTION NEEDS CONTEXT</span>
+          <h2 id="evidence-heading">
+            Know what you’re looking at.
+            <br />
+            And when it was observed.
+          </h2>
           <p>
-            Your research, watchlist and holdings belong together. Follow your
-            companies and understand how each position fits into your portfolio.
+            Research is only useful when you can question it. Look for the
+            sources, dates, assumptions and gaps behind an assessment.
           </p>
-          <Link className="ap-text-link" href="/login?mode=signup">
-            Build your workspace <ArrowRight size={18} aria-hidden="true" />
-          </Link>
+          <ContextLink page="methodology">
+            Explore our methodology <ArrowRight size={17} aria-hidden="true" />
+          </ContextLink>
         </div>
-        <div className="ap-connected-list">
-          <div>
-            <Layers3 size={22} aria-hidden="true" />
-            <span>
-              <strong>Research</strong>
-              <p>The decision, the reasons, the deeper detail.</p>
-            </span>
-          </div>
-          <div>
-            <Search size={22} aria-hidden="true" />
-            <span>
-              <strong>Watchlist</strong>
-              <p>A place for the companies on your radar.</p>
-            </span>
-          </div>
-          <div>
-            <PieChart size={22} aria-hidden="true" />
-            <span>
-              <strong>Portfolio</strong>
-              <p>Holdings, performance and concentration.</p>
-            </span>
-          </div>
+        <div className={landing.evidenceList}>
+          <article>
+            <span>01</span>
+            <div>
+              <h3>Evidence you can inspect</h3>
+              <p>
+                Available sources and observation dates give financial data its
+                context. Missing checks stay visible as Review.
+              </p>
+            </div>
+          </article>
+          <article>
+            <span>02</span>
+            <div>
+              <h3>Scenarios, not promises</h3>
+              <p>
+                Bear, base and bull cases depend on assumptions. Analyst
+                expectations and valuation remain separate checks.
+              </p>
+            </div>
+          </article>
+          <article>
+            <span>03</span>
+            <div>
+              <h3>Completed and forming, kept separate</h3>
+              <p>
+                Pace distinguishes completed-month readings from the current
+                month. Price zones are not predicted returns.
+              </p>
+            </div>
+          </article>
         </div>
       </section>
-
       <section
-        className="ap-closing ap-container"
+        className={`${landing.faq} ap-container`}
+        aria-labelledby="faq-heading"
+      >
+        <div>
+          <span className={landing.eyebrow}>A FEW THINGS TO KNOW</span>
+          <h2 id="faq-heading">Before you begin.</h2>
+        </div>
+        <div>
+          <details>
+            <summary>Can I explore AURYN without an account?</summary>
+            <p>
+              Yes. Use the interactive demo above or{" "}
+              <Link href="/sample">explore the product guide</Link>. The
+              examples explain the research process and contain no live
+              investment recommendation.
+            </p>
+          </details>
+          <details>
+            <summary>Does Pace tell me to buy or sell?</summary>
+            <p>
+              No. Pace adds monthly price context to a business you have already
+              assessed. P0 pauses additions; it does not mean Sell. Business
+              quality, valuation, risk and your position limits still matter.
+            </p>
+          </details>
+          <details>
+            <summary>What happens when the evidence is incomplete?</summary>
+            <p>
+              An incomplete assessment stays in Review with the missing check
+              explained. A price move alone does not establish a business case.
+            </p>
+          </details>
+          <details>
+            <summary>How do I choose a plan?</summary>
+            <p>
+              Start with Free and compare the available features and limits on
+              the <Link href="/pricing">pricing page</Link>. Choose Pro when its
+              additional research tools fit your needs.
+            </p>
+          </details>
+        </div>
+      </section>
+      <section
+        className={`${landing.closing} ap-container`}
         aria-labelledby="ap-closing-heading"
       >
         <div>
-          <span className="ap-eyebrow">YOUR NEXT MOVE STARTS HERE</span>
-          <h2 id="ap-closing-heading">Make it an informed one.</h2>
-          <p>Start with Free. Go deeper with Pro.</p>
+          <span className={landing.eyebrow}>
+            YOUR NEXT INVESTMENT STARTS WITH A BETTER QUESTION
+          </span>
+          <h2 id="ap-closing-heading">Make room for a clearer decision.</h2>
+          <p>Start with Free. Go deeper with Pro when you’re ready.</p>
         </div>
-        <div className="ap-closing-actions">
-          <Link
-            className="ap-button ap-button-primary"
-            href="/login?mode=signup"
-          >
-            Create your account <ArrowRight size={18} aria-hidden="true" />
+        <div className={landing.actions}>
+          <Link className={landing.primary} href="/login?mode=signup">
+            Start free <ArrowRight size={18} aria-hidden="true" />
           </Link>
-          <Link className="ap-text-link" href="/pricing">
+          <Link className={landing.secondary} href="/pricing">
             Compare plans <ArrowRight size={16} aria-hidden="true" />
           </Link>
         </div>
       </section>
-      <footer className="ap-footer ap-container">
-        <div className="ap-footer-main">
+      <footer className={`${experience.publicFooter} ap-container`}>
+        <div className={experience.footerMain}>
           <PublicBrand />
           <nav aria-label="Footer navigation">
             <Link href="/sample">How it works</Link>
@@ -483,13 +735,13 @@ export default function PublicLanding({
             <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
           </nav>
         </div>
-        <div className="ap-footer-bottom">
+        <div className={experience.footerLegal}>
           <span>© {new Date().getFullYear()} AURYN</span>
           <nav aria-label="Legal and methodology">
             <ContextLink page="methodology">Methodology</ContextLink>
             <ContextLink page="terms">Terms</ContextLink>
             <ContextLink page="privacy">Privacy</ContextLink>
-            <PrivacyChoices />
+            <PrivacyChoices compact />
             <ContextLink page="risk">Risks</ContextLink>
           </nav>
         </div>

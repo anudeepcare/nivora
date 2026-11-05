@@ -19,7 +19,7 @@ const empty = () => null;
 const Link = ({ children, ...props }) =>
   React.createElement("a", props, children);
 function load(name, bindings) {
-  bindings={ResearchInbox:()=>null,...bindings};
+  bindings={ResearchInbox:()=>null,OpportunityMap:()=>null,...bindings};
   bindings = { homeStyles: {home:"home"}, Search: () => React.createElement("input", {"aria-label":"Company search"}), ResearchLens: () => React.createElement("aside", null, "Research lens"), ...bindings };
   bindings = { PaceHelp: () => null, ...bindings };
   const file = "components/ApprovedWorkspace.tsx";
@@ -78,6 +78,7 @@ test("Watchlist-only Home avoids an irrelevant zero-value portfolio summary", ()
   let requested;
   const Home = load("HomeOverview", {
     useWorkspaceData: () => ({
+      research: () => undefined,
       workspace: {
         positions: [],
         watchlist: symbols.map((symbol) => ({ symbol })),
@@ -143,6 +144,7 @@ test("New account Home has research tools without empty personal feeds", () => {
   let requested;
   const Home = load("HomeOverview", {
     useWorkspaceData: () => ({
+      research: () => undefined,
       workspace: {
         positions: [],
         watchlist: symbols.map((symbol) => ({ symbol })),
@@ -214,6 +216,7 @@ test("Home accumulation panel excludes valuation-only entries without confirmed 
   assert.equal(signal.view.rawLevel, null);
   const Home = load("HomeOverview", {
     useWorkspaceData: () => ({
+      research: () => undefined,
       workspace: { positions: [], watchlist: [{ symbol: "MSFT" }] },
       quotes: { data: {} },
       model: { allocations: [] },

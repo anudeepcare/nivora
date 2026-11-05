@@ -917,6 +917,8 @@ html:has(dialog[open]) {
   font-weight: 550;
   box-shadow: none;
 }
+.mp-public.ap-public .ap-menu-button { padding: 10px; flex: 0 0 44px; }
+.mp-public.ap-public .ap-menu-button svg { flex-shrink: 0; width: 21px; height: 21px; }
 .mp-public.ap-public .ap-button-primary {
   background: var(--blue);
   color: #fff;

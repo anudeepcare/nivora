@@ -154,7 +154,7 @@ export default function AlertCenter() {
             <option value="margin-below">Operating margin falls below</option>
             <option value="earnings-soon">Earnings approaching</option>
             <option value="new-filing">New company filing</option>
-            <option value="monthly-zone">Monthly accumulation zone</option>
+            <option value="monthly-zone">Confirmed monthly Pace zone</option>
             <option value="price-below">Price below my level</option>
             <option value="price-above">Price above my level</option>
           </select>
@@ -162,7 +162,7 @@ export default function AlertCenter() {
         {type !== "new-filing" && (
           <label>
             {type === "monthly-zone"
-              ? "Zone (0 = pause)"
+              ? "Exact Pace zone (0 = pause)"
               : type === "earnings-soon"
                 ? "Days before earnings"
                 : type === "sbc-above" || type === "margin-below"
@@ -204,6 +204,25 @@ export default function AlertCenter() {
           Create alert
         </button>
       </form>
+      {(type === "monthly-zone" ||
+        type === "price-below" ||
+        type === "price-above") && (
+        <div className="panel" role="status" aria-live="polite">
+          <strong>Alert preview · {symbol.trim() || "your company"}</strong>
+          <p>
+            {type === "monthly-zone"
+              ? `Notify me when an available completed monthly reading is exactly P${threshold || "…"}. Each matching month can create one event per rule, even if the zone has not changed. A first check can match an already confirmed month.`
+              : `Notify me once when an available, non-stale observed price is ${type === "price-above" ? "at or above" : "at or below"} my ${threshold || "…"} USD level. A first check can already meet this condition. Create a new rule to re-arm it.`}
+          </p>
+          <p className="footnote">
+            {type === "monthly-zone"
+              ? "Forming readings, intramonth band touches and weekly readings do not trigger this rule."
+              : "This checks the observed quote; it does not monitor intraday highs or lows or guarantee detection of a temporary touch."}{" "}
+            Events appear in this alert history after a successful manual or
+            configured scheduled check. No email or push delivery.
+          </p>
+        </div>
+      )}
       <p className="footnote">
         Financial alerts establish a baseline on the first check, then report
         later safe-to-breached crossings. They do not alert merely because the

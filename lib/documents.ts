@@ -1,3 +1,4 @@
+import { cleanEstimateSnapshot } from "./estimate-revisions.ts";
 import {workspacePreferences} from "./workspace-preferences.ts";
 export type AlertRule = {
   symbol: string;
@@ -55,6 +56,7 @@ export function cleanDocument(
       throw Error("Check your symbols.");
     return {
       name: text("name", 80),
+      ...(kind === "view" && v.estimateSnapshot !== undefined ? { estimateSnapshot: cleanEstimateSnapshot(v.estimateSnapshot) } : {}),
       ...(kind === "view" && v.preferences ? {preferences:workspacePreferences(v.preferences)} : {}),
       symbols,
       filter: text("filter", 40),
