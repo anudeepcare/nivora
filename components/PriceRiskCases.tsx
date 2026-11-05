@@ -4,6 +4,7 @@ import type { PriceRiskScenarios } from "@/lib/price-risk-scenarios";
 import { amount, percent, dateLabel } from "@/lib/format";
 import { valuationScale } from "@/lib/research-summary";
 import styles from "./PriceRiskCases.module.css";
+import ScenarioSensitivity from "./ScenarioSensitivity";
 export default function PriceRiskCases({
   scenarios: s,
   compact = false,
@@ -47,10 +48,6 @@ export default function PriceRiskCases({
               : side === "upside"
                 ? ArrowUpRight
                 : Minus;
-          const targetX = scale
-            ? 8 + (284 * (c.target - scale.min)) / (scale.max - scale.min)
-            : 0;
-          const referenceX = scale ? 8 + 2.84 * scale.quotePosition : 0;
           return (
             <article key={c.percentile} data-case={side}>
               <div className={styles.caseHeading}>
@@ -71,56 +68,22 @@ export default function PriceRiskCases({
               <strong>{amount(c.target, s.currency)}</strong>
               <small>{percent(c.change, true)} vs reference</small>
               {scale && (
-                <svg
+                <ScenarioSensitivity
                   className={styles.range}
-                  viewBox="0 0 300 32"
-                  role="img"
-                  aria-label={`${c.name}: ${amount(c.target, s.currency)}; reference ${amount(s.reference, s.currency)}. Shared linear price scale.`}
-                >
-                  <line
-                    x1="8"
-                    x2="292"
-                    y1="16"
-                    y2="16"
-                    stroke="var(--line)"
-                    strokeWidth="2"
-                  />
-                  <line
-                    x1={referenceX}
-                    x2={targetX}
-                    y1="16"
-                    y2="16"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                    strokeLinecap="round"
-                  />
-                  <line
-                    x1={referenceX}
-                    x2={referenceX}
-                    y1="5"
-                    y2="27"
-                    stroke="var(--ink)"
-                    strokeWidth="1.5"
-                  />
-                  <circle
-                    cx={targetX}
-                    cy="16"
-                    r="5"
-                    fill="currentColor"
-                    stroke="var(--surface)"
-                    strokeWidth="2"
-                  />
-                </svg>
+                  target={c.target}
+                  reference={s.reference}
+                  scale={scale}
+                  label={`${c.name}: ${amount(c.target, s.currency)}; reference ${amount(s.reference, s.currency)}`}
+                />
               )}
             </article>
           );
         })}
       </div>
       <p className="price-risk-selected">
-        Tick: reference {amount(s.reference, s.currency)} · Dot: percentile
-        price. Each track uses the same price scale. Past {s.horizon}-session
-        returns; not fair values or forecasts. The midpoint is the historical
-        median.
+        Sensitivity diagrams · shared price scale · not a time path. Past{" "}
+        {s.horizon}-session returns applied to the reference; not fair values or
+        forecasts. The midpoint is the historical median.
       </p>
       <details>
         <summary>Basis &amp; limits · {s.samples} historical windows</summary>

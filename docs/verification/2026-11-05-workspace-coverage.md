@@ -6,12 +6,12 @@ This source candidate includes the UI refinement and remaining market-workspace 
 
 | Area | Implemented behavior |
 |---|---|
-| Public Home | Shorter product-led hero, interactive business/value/Pace walkthrough, logo-led neutral/lime presentation with working workflow navigation, connected sales sections and working account/demo/pricing routes. No fictional performance claims. |
+| Public Home | Charcoal/lime hero, graphical interactive business/value/Pace walkthrough, mint/citron gradients and icon benefits, working workflow navigation and account/demo/pricing routes. The operating-evidence graphic is explicitly schematic, not market data. No fictional performance claims. |
 | Sign-in, signup, recovery | Balanced product context, contained padded form, responsive mobile styling; existing OAuth/email/recovery/error handling retained. |
-| Signed-in Home | One earnings calendar with dated actual EPS, estimate and pending status; compact saved reminders; removed repeated earnings/contribution banners. |
+| Signed-in Home | Restored dark comparison hero, four real-history area-chart company cards with rich logo-based gradients, one earnings calendar and compact reminders. A one-company research map stays inside the radar rather than occupying the main page. |
 | Research header | Compact supported market cap, comparable revenue growth, cash-flow margin, operating margin, net margin and next earnings where supplied. Sector guards apply; financial companies use return on average equity instead of generic cash margin. Dates/methods in one About metrics entry. Missing measures are omitted. |
 | Pace | Prominent P0–P4 stage; completed/forming distinction, technical levels and contribution rules remain expanded in the research instrument. Financial policies unchanged. |
-| Historical and valuation cases | Distinct downside/midpoint/upside icons, actual price markers on a shared range scale, percentile/date context and compact spacing. Historical returns remain separate from conditional Bear/Base/Bull valuation; price markers are not time forecasts. |
+| Historical and valuation cases | Distinct downside/midpoint/upside icons, actual reference-to-target sensitivity diagrams on a shared scale, percentile/date context and compact spacing. Historical returns remain separate from conditional Bear/Base/Bull valuation; price markers are not time forecasts. |
 | Technicals | Grouped retracement, channel and pivot references, mobile layout, custom anchors, concise intro and expandable methods. Reference levels are not confirmed support. |
 | Targets and business | More compact targets container, shared consistent controls/headings; financial comparisons and date/currency guards retained. |
 | Portfolio, settings, watchlist, public/help/legal | Existing functionality retained with the prior shared readability/control improvements. No new portfolio CSV importer. |
@@ -29,6 +29,8 @@ This source candidate includes the UI refinement and remaining market-workspace 
 | Breadth & rotation | Home and Discover radar using loaded companies only. Shared dated completed history, daily-density/coverage checks, sector participation, 20/60-session relative return quadrants and historical checkpoint controls. Not market-wide breadth; universe survivorship bias disclosed. No extra provider calls for display controls. |
 | Simulated options ledger | $100,000 starting cash; standard long calls/puts; buys at supplied ask and closes at supplied bid; partial closes, realized/marked P&L, closed-position win rate, notes, explicit device/account saves. Freshness and cash validation; no borrowing or broker orders. Expiration settlement withheld without an expiration close. |
 | Volatility and strategy | Dated nearest-strike IV term structure, daily-density checked realized volatility, skew and existing expiration payoff/defined-risk strategy tools retained. |
+
+Home company cards make at most four sequential one-month chart reads, reusing loaded/cached series. These are authenticated existing chart requests, not full research scans. Quotes and historical windows are labeled separately; unobserved history is never illustrated as a real price trend.
 
 ## Activation and operational limits
 

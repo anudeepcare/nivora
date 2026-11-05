@@ -242,41 +242,104 @@ export function InvestmentDemo() {
           </p>
         </div>
         {step === 0 && (
-          <div className={landing.researchRows}>
-            <div>
-              <span className={landing.companyMark}>
-                <Layers3 size={18} />
-              </span>
+          <div className={landing.businessPreview}>
+            <div className={landing.chartHeading}>
               <span>
-                <strong>Your investment case</strong>
-                <small>Research framework · illustrative guide</small>
+                <span className={landing.companyMark}>
+                  <Layers3 size={17} />
+                </span>
+                <strong>
+                  Your investment case
+                  <small>Research framework · illustrative guide</small>
+                </strong>
               </span>
-              <span className={landing.review}>01 / Business</span>
+              <span className={landing.review}>Business lens</span>
             </div>
-            <div>
-              <Layers3 size={19} />
-              <span>
-                <strong>Business strength</strong>
-                <small>
-                  Read growth, cash generation and financial health together.
-                </small>
-              </span>
+            <div className={landing.operatingChart}>
+              <div className={landing.chartLegend}>
+                <span>Revenue</span>
+                <span>Cash generation</span>
+                <small>SCHEMATIC · NOT MARKET DATA</small>
+              </div>
+              <svg
+                viewBox="0 0 480 155"
+                role="img"
+                aria-label="Schematic interface showing separate revenue and cash generation trends, without actual financial data"
+              >
+                <defs>
+                  <linearGradient
+                    id="public-chart-fill"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
+                    <stop offset="0%" stopColor="#d6f35a" stopOpacity=".23" />
+                    <stop offset="100%" stopColor="#d6f35a" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+                <g
+                  stroke="currentColor"
+                  strokeOpacity=".09"
+                  strokeDasharray="3 5"
+                >
+                  <path d="M12 30H468M12 65H468M12 100H468M12 135H468" />
+                  <path d="M70 12V142M155 12V142M240 12V142M325 12V142M410 12V142" />
+                </g>
+                <path
+                  d="M12 108C40 108 44 88 70 91S126 66 155 77S204 106 240 84S295 48 325 59S378 82 410 48S449 46 468 28V150H12Z"
+                  fill="url(#public-chart-fill)"
+                />
+                <path
+                  d="M12 108C40 108 44 88 70 91S126 66 155 77S204 106 240 84S295 48 325 59S378 82 410 48S449 46 468 28"
+                  fill="none"
+                  stroke="#d6f35a"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M12 129C47 129 46 116 70 119S124 105 155 112S205 87 240 101S289 119 325 97S378 75 410 89S451 75 468 70"
+                  fill="none"
+                  stroke="#6ee7bf"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                />
+                <circle
+                  cx="468"
+                  cy="28"
+                  r="5"
+                  fill="#d6f35a"
+                  stroke="#233631"
+                  strokeWidth="4"
+                />
+                <circle cx="468" cy="70" r="4" fill="#6ee7bf" />
+              </svg>
+              <div className={landing.chartAxis}>
+                <span>Operating evidence over time</span>
+                <span>
+                  Sources & dates in research <ArrowRight size={11} />
+                </span>
+              </div>
             </div>
-            <div>
-              <Scale size={19} />
-              <span>
-                <strong>Valuation still matters</strong>
-                <small>
-                  A strong business can still be an expensive investment.
-                </small>
-              </span>
-            </div>
-            <div>
-              <ShieldCheck size={19} />
-              <span>
-                <strong>What could change the case?</strong>
-                <small>Check debt, competition and missing evidence.</small>
-              </span>
+            <div className={landing.evidenceMetrics}>
+              <div>
+                <Layers3 size={16} />
+                <small>BUSINESS</small>
+                <strong>Growth & quality</strong>
+                <span>Follow the revenue</span>
+              </div>
+              <div>
+                <ChartNoAxesCombined size={16} />
+                <small>CASH</small>
+                <strong>What remains</strong>
+                <span>After capital spending</span>
+              </div>
+              <div>
+                <ShieldCheck size={16} />
+                <small>RESILIENCE</small>
+                <strong>Test the risks</strong>
+                <span>Debt & funding needs</span>
+              </div>
             </div>
           </div>
         )}
@@ -301,7 +364,11 @@ export function InvestmentDemo() {
             </p>
           </div>
         )}
-        {step === 2 && <PaceInstrument publicGuide compact />}
+        {step === 2 && (
+          <div className={landing.pacePreview}>
+            <PaceInstrument publicGuide compact />
+          </div>
+        )}
       </div>
       <footer className={landing.demoFooter}>
         <ShieldCheck size={15} />
@@ -564,7 +631,10 @@ export default function PublicLanding({
         </div>
         <div className={landing.workflowRows}>
           <article>
-            <span>01 / COMPARE</span>
+            <span>
+              <Layers3 size={21} aria-hidden="true" />
+              01 / COMPARE
+            </span>
             <div>
               <h3>Where should the next contribution go?</h3>
               <p>
@@ -576,7 +646,10 @@ export default function PublicLanding({
             </div>
           </article>
           <article>
-            <span>02 / CHALLENGE</span>
+            <span>
+              <Scale size={21} aria-hidden="true" />
+              02 / CHALLENGE
+            </span>
             <div>
               <h3>What does this price need to be true?</h3>
               <p>
@@ -588,7 +661,10 @@ export default function PublicLanding({
             </div>
           </article>
           <article>
-            <span>03 / SEPARATE</span>
+            <span>
+              <ChartNoAxesCombined size={21} aria-hidden="true" />
+              03 / SEPARATE
+            </span>
             <div>
               <h3>Has the business changed—or just the price?</h3>
               <p>

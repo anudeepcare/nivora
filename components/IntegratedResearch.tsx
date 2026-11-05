@@ -18,6 +18,7 @@ import { sameProviderSymbol } from "@/lib/provider-symbol";
 import { valuationScale } from "@/lib/research-summary";
 import { useProduct } from "./Session";
 import PaceInstrument from "./PaceInstrument";
+import ScenarioSensitivity from "./ScenarioSensitivity";
 import PositionFit from "./PositionFit";
 import DecisionInsights from "./DecisionInsights";
 import ResearchEvidenceGrid from "./ResearchEvidenceGrid";
@@ -118,14 +119,6 @@ export default function IntegratedResearch({
                       "Historical upside",
                     ][i];
                 const Icon = [ArrowDownRight, Minus, ArrowUpRight][i];
-                const targetX = scenarioScale
-                  ? 8 +
-                    (284 * (c.target - scenarioScale.min)) /
-                      (scenarioScale.max - scenarioScale.min)
-                  : 0;
-                const referenceX = scenarioScale
-                  ? 8 + 2.84 * scenarioScale.quotePosition
-                  : 0;
                 return (
                   <button
                     key={name}
@@ -162,59 +155,19 @@ export default function IntegratedResearch({
                         : `${[10, 50, 90][i]}th percentile`}
                     </span>
                     {scenarioScale && (
-                      <svg
+                      <ScenarioSensitivity
                         className={s.scenarioRange}
-                        viewBox="0 0 300 32"
-                        role="img"
-                        aria-label={`${title}: ${amount(c.target, r.quote.currency)}; reference ${amount(m.scenarioReference, r.quote.currency)}. Shared linear price scale.`}
-                      >
-                        <line
-                          x1="8"
-                          x2="292"
-                          y1="16"
-                          y2="16"
-                          stroke="var(--line)"
-                          strokeWidth="2"
-                        />
-                        <line
-                          x1={referenceX}
-                          x2={targetX}
-                          y1="16"
-                          y2="16"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                          strokeLinecap="round"
-                        />
-                        <line
-                          x1={referenceX}
-                          x2={referenceX}
-                          y1="5"
-                          y2="27"
-                          stroke="var(--ink)"
-                          strokeWidth="1.5"
-                        />
-                        <circle
-                          cx={targetX}
-                          cy="16"
-                          r="5"
-                          fill="currentColor"
-                          stroke="var(--card)"
-                          strokeWidth="2"
-                        />
-                      </svg>
+                        target={c.target}
+                        reference={m.scenarioReference!}
+                        scale={scenarioScale}
+                        label={`${title}: ${amount(c.target, r.quote.currency)}; reference ${amount(m.scenarioReference, r.quote.currency)}`}
+                      />
                     )}
                   </button>
                 );
               })}
               <p className={s.scenarioLegend}>
-                <span>
-                  <i aria-hidden="true" />
-                  Reference
-                </span>
-                <span>
-                  <b aria-hidden="true" />
-                  Case price · shared scale
-                </span>
+                <span>Sensitivity diagrams · shared price scale · not a time path</span>
                 {m.scenarioEnd
                   ? "Conditional estimates, not probabilities."
                   : "Past return percentiles applied to the reference; not fair values or forecasts."}

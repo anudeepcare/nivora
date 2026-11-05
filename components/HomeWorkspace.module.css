@@ -704,3 +704,30 @@
     padding: 14px;
   }
 }
+
+/* A compact greeting leaves the visual hierarchy to the decision hero and charts. */
+.home.home .greeting > div {
+  padding: 10px 0 12px;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+.home.home .greeting h1 {
+  font-size: clamp(25px, 2.4vw, 34px);
+  margin: 0 0 6px;
+  letter-spacing: -0.04em;
+}
+.home.home .greeting p {
+  font-size: 13px;
+  margin: 0;
+}
+.home.home .greeting :global(.date-chip) {
+  background: transparent;
+  padding: 0;
+  border: 0;
+}
+.home.home .quickLinks {
+  margin: 0 0 12px;
+}

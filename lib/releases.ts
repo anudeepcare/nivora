@@ -34,6 +34,8 @@ export const releases: Release[] = [
         "Earnings-to-thesis financial comparisons and opt-in support diagnostics without portfolio details.",
       ],
       Improved: [
+        "Visual refresh: charcoal/citron public hero, graphical product walkthrough, restored Home comparison and vivid real-history company charts.",
+        "Shaded historical sensitivity diagrams and mint/citron metric surfaces restore visual depth without changing financial models.",
         "Logo-led neutral, mint and lime surfaces; aligned sign-in forms and working public How it works navigation.",
         "Map-first Options workspace: compact inline tools, relevant controls per view, readable heatmap values and optional model diagnostics.",
         "Historical cases regain shared-scale price graphics; internal document version labels stay out of customer copy.",

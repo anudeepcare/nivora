@@ -55,6 +55,36 @@ function Workbench({ choices, prefix }: { choices: string[]; prefix: string }) {
             Compare business strength, AURYN Pace and portfolio fit in one view.
           </p>
         </div>
+        <svg className={s.heroArt} viewBox="0 0 480 200" aria-hidden="true">
+          <defs>
+            <linearGradient id="compare-glow" x1="0" y1="0" x2="1" y2="1">
+              <stop stopColor="#d6f35a" />
+              <stop offset="1" stopColor="#70c7a9" />
+            </linearGradient>
+          </defs>
+          <path
+            d="M15 150 110 70 190 110 280 25 375 80 465 15"
+            fill="none"
+            stroke="url(#compare-glow)"
+            strokeWidth="2"
+            opacity=".35"
+          />
+          <path
+            d="m280 25 95 55 90-65-90 150Z"
+            fill="url(#compare-glow)"
+            opacity=".08"
+          />
+          <path
+            d="m110 70 80 40 90-85-90 150Z"
+            fill="url(#compare-glow)"
+            opacity=".08"
+          />
+          <path
+            d="m280 25 22 22-22 22-22-22Z"
+            fill="url(#compare-glow)"
+            opacity=".7"
+          />
+        </svg>
         <button
           className={s.open}
           onClick={() => setOpen(!open)}

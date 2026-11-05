@@ -6,31 +6,31 @@
   color: var(--ink);
 }
 .root .cases {
+  container: risk-cards / inline-size;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   margin: 0;
 }
 .root .cases article {
-  --case-color: var(--muted);
+  --case-color: #82948b;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 0;
   min-width: 0;
   min-height: 0;
-  padding: 16px;
-  border: 1px solid var(--line);
-  border-top: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--surface);
+  padding: 20px;
+  border: 1px solid color-mix(in srgb, var(--case-color) 25%, var(--line));
+  border-radius: 16px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--case-color) 11%, var(--surface)), var(--surface) 70%);
   box-shadow: none;
 }
 .root .cases article[data-case="downside"] {
-  --case-color: #b46b62;
+  --case-color: #c36f64;
 }
 .root .cases article[data-case="upside"] {
-  --case-color: #6caa94;
+  --case-color: #53b490;
 }
 .caseHeading {
   display: flex;
@@ -45,12 +45,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
-  flex: 0 0 26px;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
   color: var(--case-color);
-  background: color-mix(in srgb, var(--case-color) 9%, transparent);
-  border-radius: 7px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--case-color) 28%, var(--surface)), color-mix(in srgb, var(--case-color) 12%, var(--surface)));
+  border: 1px solid color-mix(in srgb, var(--case-color) 32%, transparent);
+  border-radius: 11px;
 }
 .root .cases .percentile {
   margin: 7px 0 13px;
@@ -75,7 +76,9 @@
 .root .cases .range {
   display: block;
   width: 100%;
-  height: 32px;
+  height: 132px;
+  max-width: 300px;
+  align-self: center;
   margin-top: 14px;
   color: var(--case-color);
 }
@@ -99,6 +102,34 @@
 .root > details summary {
   font-size: 12px;
 }
+@container risk-cards (min-width: 1250px) {
+  .root .cases article {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 45%);
+    grid-template-rows: auto auto auto auto;
+    align-content: center;
+    column-gap: 18px;
+    row-gap: 7px;
+    min-height: 220px;
+    padding: 24px;
+  }
+  .caseHeading, .root .cases .percentile, .root .cases strong, .root .cases small {
+    grid-column: 1;
+  }
+  .caseHeading { grid-row: 1; }
+  .root .cases .percentile { grid-row: 2; margin: 0 0 7px; }
+  .root .cases strong { grid-row: 3; }
+  .root .cases small { grid-row: 4; margin: 0; }
+  .root .cases .range {
+    grid-column: 2;
+    grid-row: 1 / 5;
+    justify-self: end;
+    align-self: center;
+    max-width: 200px;
+    height: 132px;
+    margin: 0;
+  }
+}
 @media (max-width: 650px) {
   .root .cases {
     grid-template-columns: 1fr;
@@ -115,7 +146,8 @@
   .root .cases .range {
     grid-column: 1 / -1;
     grid-row: 3;
-    margin-top: 6px;
+    max-height: 132px;
+    margin-top: 8px;
   }
   .caseHeading {
     grid-column: 1;
@@ -123,7 +155,7 @@
   }
   .root .cases .percentile {
     grid-column: 1;
-    margin: 0 0 0 33px;
+    margin: 0 0 0 43px;
   }
   .root .cases strong {
     grid-column: 2;

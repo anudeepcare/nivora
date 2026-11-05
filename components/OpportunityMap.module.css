@@ -34,14 +34,18 @@
 }
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(190px, 300px));
   gap: 10px;
 }
 .tile {
   padding: 14px;
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: var(--card);
+  background: linear-gradient(
+    140deg,
+    color-mix(in srgb, #a8ddc0 24%, var(--card)),
+    var(--card)
+  );
 }
 .tile h3,
 .tile button {

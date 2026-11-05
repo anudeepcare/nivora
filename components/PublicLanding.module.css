@@ -188,40 +188,6 @@
   margin: 0 0 18px;
   max-width: 400px;
 }
-.researchRows {
-  overflow: hidden;
-}
-.researchRows > div {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 13px;
-  border-bottom: 1px solid var(--line);
-}
-.researchRows > div:last-child {
-  border: 0;
-}
-.researchRows > div:first-child {
-  background: var(--surface);
-}
-.researchRows > div > svg {
-  color: var(--muted);
-  flex-shrink: 0;
-}
-.researchRows strong,
-.researchRows small {
-  display: block;
-}
-.researchRows strong {
-  font-size: 12px;
-  font-weight: 600;
-}
-.researchRows small {
-  font-size: 10px;
-  line-height: 1.5;
-  color: var(--muted);
-  margin-top: 4px;
-}
 .companyMark {
   display: grid;
   place-items: center;
@@ -634,4 +600,502 @@
 }
 .heroCopy h1 span {
   color: var(--ink);
+}
+
+/* A distinct product stage: carbon, citron and mint, drawn from the AURYN mark. */
+.page.page.page :global(.ap-opening) {
+  --ink: #f3f6ef;
+  --muted: #b5c3bb;
+  --line: #ffffff20;
+  --surface: #29342f;
+  --glass: #1e2925;
+  color: #f3f6ef;
+  background:
+    radial-gradient(ellipse at 80% 33%, #a1d4681c, transparent 45%),
+    radial-gradient(ellipse at 15% 0%, #70d5b212, transparent 45%), #141d19;
+}
+.page.page.page :global(.ap-opening .ap-brand),
+.page.page.page :global(.ap-nav a),
+.page.page.page :global(.ap-signin) {
+  color: #eff5ec;
+}
+.page.page.page :global(.ap-header) {
+  border-bottom-color: #ffffff14;
+}
+.page.page.page :global(.ap-menu-button) {
+  color: #f3f6ef;
+  background: #ffffff09;
+  border-color: #ffffff26;
+}
+.page.page.page :global(.ap-mobile-navigation) {
+  background: #1e2925;
+  border-color: #ffffff20;
+}
+.page.page.page :global(.ap-mobile-navigation a) {
+  color: #eff5ec;
+}
+.hero {
+  grid-template-columns: 0.93fr 1.07fr;
+  padding-block: 64px 48px;
+  gap: 48px;
+  background: none;
+}
+.heroCopy .eyebrow {
+  color: #d6f35a;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+.heroCopy .eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #d6f35a;
+  box-shadow: 0 0 18px #d6f35a80;
+}
+.heroCopy h1 {
+  font-size: clamp(42px, 4.4vw, 64px);
+  line-height: 1.06;
+  color: #f3f6ef;
+  margin-block: 24px;
+}
+.heroCopy h1 span {
+  color: #d6f35a;
+  background: linear-gradient(100deg, #e2fb86 5%, #d6f35a 42%, #70e6ba 100%);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.heroCopy > p {
+  color: #b5c3bb;
+  line-height: 1.75;
+}
+.heroCopy .heroNote {
+  color: #96a99d;
+}
+.heroPrinciples {
+  margin-top: 26px;
+  color: #bbc9bf;
+}
+.heroPrinciples svg {
+  color: #bfe783;
+}
+.primary {
+  background: linear-gradient(115deg, #e1fa87, #c6ec58);
+  color: #20301e;
+  border-color: #dbf591;
+  box-shadow: 0 5px 25px #c4ec5818;
+}
+.secondary {
+  background: #ffffff06;
+  color: #edf5e8;
+  border-color: #ffffff30;
+}
+.secondary:hover {
+  background: #ffffff0e;
+}
+.heroVisual {
+  position: relative;
+  padding: 9px;
+  border-radius: 24px;
+  background: linear-gradient(140deg, #b7ec6233, #75d9ba0a 45%, #75d9ba24);
+  border: 1px solid #bdde9829;
+  box-shadow:
+    0 30px 90px #00000035,
+    0 0 70px #bbd87008;
+}
+.demo {
+  border-radius: 16px;
+  border-color: #b7ceac30;
+  background: #202b25;
+  color: #f3f6ef;
+  box-shadow: 0 18px 50px #00000030;
+}
+.demoHeader {
+  background: #26322b;
+  border-color: #ffffff16;
+  padding-inline: 19px;
+}
+.demoHeader small {
+  color: #a6b8aa;
+}
+.sampleBadge {
+  color: #d9edc9;
+  background: #badd9820;
+  border: 1px solid #badd9824;
+  font-size: 8px;
+}
+.demoTabs {
+  background: #17221c;
+  border-color: #ffffff12;
+  padding: 10px;
+}
+.demoTabs button {
+  color: #aebeb2;
+}
+.demoTabs button[aria-selected="true"] {
+  background: linear-gradient(115deg, #ddf780, #c9ec60);
+  box-shadow: 0 2px 10px #bdd95a18;
+}
+.demoBody {
+  min-height: 386px;
+  padding: 22px;
+}
+.demoIntro .eyebrow {
+  color: #a8c68c;
+  font-size: 9px;
+}
+.demoIntro h2 {
+  font-size: 23px;
+  color: #f3f6ef;
+}
+.demoIntro > p {
+  color: #a9bbae;
+  margin-bottom: 18px;
+}
+.businessPreview {
+  border: 1px solid #ffffff13;
+  border-radius: 12px;
+  background: #17221c;
+  overflow: hidden;
+}
+.chartHeading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 13px;
+  border-bottom: 1px solid #ffffff10;
+}
+.chartHeading > span:first-child {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+}
+.chartHeading strong {
+  font-size: 11px;
+  font-weight: 600;
+}
+.chartHeading small {
+  display: block;
+  font-size: 8px;
+  margin-top: 4px;
+  color: #a3b5a8;
+  font-weight: 400;
+}
+.companyMark {
+  background: linear-gradient(140deg, #d6f35a, #83d8ad);
+  color: #23351f;
+}
+.review {
+  color: #b1d798;
+  background: #b1d7980d;
+  border-color: #b1d79822;
+  white-space: nowrap;
+  font-size: 8px;
+}
+.operatingChart {
+  padding: 14px 14px 10px;
+  color: #d8e9d8;
+}
+.chartLegend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 8px;
+}
+.chartLegend > span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.chartLegend > span::before {
+  content: "";
+  height: 5px;
+  width: 5px;
+  border-radius: 50%;
+  background: #d6f35a;
+}
+.chartLegend > span:nth-child(2)::before {
+  background: #6ee7bf;
+}
+.chartLegend small {
+  margin-left: auto;
+  font-size: 8px;
+  letter-spacing: 0.06em;
+  color: #91a798;
+}
+.operatingChart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 7px;
+  overflow: visible;
+}
+.chartAxis {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 9px;
+  color: #92a798;
+}
+.chartAxis > span:last-child {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.chartAxis > span:last-child svg {
+  width: 11px;
+  margin: 0;
+}
+.evidenceMetrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid #ffffff12;
+}
+.evidenceMetrics > div {
+  padding: 12px 10px;
+  position: relative;
+  border-right: 1px solid #ffffff12;
+}
+.evidenceMetrics > div:last-child {
+  border: 0;
+}
+.evidenceMetrics svg {
+  display: block;
+  color: #c6e892;
+  margin-bottom: 9px;
+}
+.evidenceMetrics small {
+  display: block;
+  font-size: 8px;
+  color: #95b19b;
+  letter-spacing: 0.09em;
+}
+.evidenceMetrics strong {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  margin: 4px 0;
+}
+.evidenceMetrics span {
+  display: block;
+  font-size: 9px;
+  color: #9daf9e;
+}
+.demoFooter {
+  border-color: #ffffff16;
+  color: #9eb1a3;
+  background: #1a251e;
+}
+.demoFooter > svg {
+  color: #badb91;
+}
+.demoFooter button {
+  color: #d6f35a;
+}
+.previewCaption {
+  color: #a2b69f;
+  padding: 12px 9px 4px;
+  font-size: 9px;
+}
+.previewCaption > span {
+  color: #d6f35a;
+}
+.scenarios {
+  gap: 10px;
+}
+.scenarios article {
+  border: 1px solid #ffffff1a;
+  border-radius: 10px;
+  padding: 14px 10px;
+  background: linear-gradient(160deg, #cced7510, #cced7500);
+}
+.scenarios article > span {
+  color: #bfd4b3;
+  font-size: 11px;
+}
+.scenarios article:nth-child(2) {
+  border-color: #d6f35a55;
+  background: linear-gradient(150deg, #d6f35a20, #d6f35a04);
+}
+.scenarioBar {
+  height: 100px;
+  margin: 18px 0;
+  border-color: #ffffff25;
+  background: repeating-linear-gradient(
+    to top,
+    transparent 0 24px,
+    #ffffff07 24px 25px
+  );
+}
+.scenarioBar:after {
+  width: 46%;
+  left: 27%;
+  background: linear-gradient(to top, #638e76, #a2c4a6);
+}
+.scenarios article:nth-child(2) .scenarioBar:after {
+  background: linear-gradient(to top, #86ad4f, #d6f35a);
+}
+.scenarios article:nth-child(3) .scenarioBar:after {
+  background: linear-gradient(to top, #3e987e, #79e4bb);
+}
+.scenarios small,
+.scenarios > p {
+  color: #a8bbaa;
+}
+.pacePreview {
+  --muted: #b5c3bb;
+}
+.page.page.page :global(.ap-benefits) {
+  border-top: 1px solid #ffffff15;
+  padding-block: 24px;
+  gap: 18px;
+}
+.page.page.page :global(.ap-benefits > span) {
+  background: #ffffff04;
+  border: 1px solid #ffffff10;
+  border-radius: 12px;
+  padding: 17px 18px;
+}
+.page.page.page :global(.ap-benefits svg) {
+  color: #d6f35a;
+  background: #d6f35a10;
+  border-radius: 9px;
+  padding: 8px;
+  box-sizing: content-box;
+}
+.page.page.page :global(.ap-benefits strong) {
+  color: #e3ecdf;
+}
+.page.page.page :global(.ap-benefits small) {
+  color: #a5b7a6;
+}
+.workflowRows article > span {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+.workflowRows article > span svg {
+  box-sizing: content-box;
+  padding: 11px;
+  border: 1px solid #9fb97738;
+  border-radius: 12px;
+  color: #648842;
+  background: linear-gradient(140deg, #d6f35a38, #76b6aa19);
+}
+.workflow {
+  gap: 60px;
+}
+@media (max-width: 1100px) {
+  .hero {
+    gap: 28px;
+    padding-block: 44px 36px;
+  }
+  .heroCopy h1 {
+    font-size: 46px;
+  }
+  .demoBody {
+    padding: 18px;
+    min-height: 377px;
+  }
+  .demoHeader {
+    padding-inline: 15px;
+  }
+  .evidenceMetrics strong {
+    font-size: 10px;
+  }
+}
+@media (max-width: 800px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 38px 22px 30px;
+    gap: 30px;
+  }
+  .heroCopy h1 {
+    font-size: clamp(40px, 7vw, 58px);
+  }
+  .heroVisual {
+    max-width: 650px;
+  }
+  .demoBody {
+    min-height: 390px;
+  }
+  .page.page.page :global(.ap-benefits) {
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .page.page.page :global(.ap-benefits > span) {
+    flex-basis: 100%;
+  }
+  .workflow {
+    gap: 28px;
+  }
+}
+@media (max-width: 420px) {
+  .hero {
+    padding-inline: 16px;
+  }
+  .heroCopy h1 {
+    font-size: 40px;
+  }
+  .heroVisual {
+    padding: 5px;
+    border-radius: 20px;
+  }
+  .demoHeader {
+    padding: 14px 12px;
+  }
+  .demoBody {
+    padding: 15px 12px;
+    min-height: 371px;
+  }
+  .demoIntro h2 {
+    font-size: 21px;
+  }
+  .sampleBadge {
+    font-size: 9px;
+    padding: 5px;
+  }
+  .chartHeading {
+    padding: 11px 9px;
+  }
+  .chartHeading small {
+    font-size: 9px;
+  }
+  .chartHeading .review {
+    display: none;
+  }
+  .chartLegend {
+    gap: 7px;
+    font-size: 9px;
+  }
+  .chartLegend small {
+    font-size: 8px;
+  }
+  .operatingChart {
+    padding: 12px 10px 10px;
+  }
+  .evidenceMetrics > div {
+    padding: 11px 7px;
+  }
+  .evidenceMetrics strong {
+    font-size: 10px;
+  }
+  .evidenceMetrics span {
+    font-size: 8px;
+  }
+  .chartAxis {
+    font-size: 8px;
+  }
+  .demoFooter {
+    font-size: 9px;
+    padding-inline: 10px;
+  }
+  .demoFooter button {
+    font-size: 8px;
+  }
 }

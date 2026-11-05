@@ -2,7 +2,7 @@
   "date": "2026-11-05",
   "candidate": "1.0.0",
   "unitTests": {
-    "passed": 1048,
+    "passed": 1051,
     "failed": 0,
     "skipped": 0
   },
@@ -11,7 +11,7 @@
     "failed": 0
   },
   "typecheck": "passed",
-  "productionBuild": "passed; final corrective UX source verified before packaging",
+  "productionBuild": "passed; 34 static pages; managed-host temporary export deletion used bounded fs.rm retries",
   "apiRegressionScripts": {
     "passed": 9,
     "transport": "synthetic; no live provider/payment/trade"
@@ -35,5 +35,19 @@
     "shared-scale historical ranges",
     "customer-visible internal version removed",
     "mobile picker flex layout and chart-axis labels corrected"
+  ],
+  "visualRefresh": [
+    "public charcoal/lime graphical hero",
+    "restored Home comparison hero",
+    "four dated real-history company area charts",
+    "rich shared-scale scenario sensitivity cones",
+    "semantic mint/citron metric surfaces"
+  ],
+  "homeChartLoading": "At most four sequential existing chart API reads; cached/supplied history reused; malformed/future/stale/current incomplete bars withheld.",
+  "buildHostOnlyHelper": "External Node preload for temporary export-directory rm retries, excluded from source ZIP; no application/dependency patch.",
+  "reviewFixes": [
+    "controller-owned Home chart fetches do not reuse an aborted shared pending promise",
+    "historical diagrams retain exact reference/target geometry",
+    "current-day unfinished and invalid chart histories are withheld"
   ]
 }

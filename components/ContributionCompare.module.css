@@ -8,7 +8,7 @@
 }
 .root header {
   position: relative;
-  border-radius:18px;
+  border-radius: 18px;
   padding: 22px 26px;
   background:
     radial-gradient(ellipse at 80% 0, #d6f35a18, transparent 60%), #24292a;
@@ -180,6 +180,72 @@
     padding: 18px;
   }
   .open {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+.root header {
+  min-height: 200px;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 85% 0, #83d8ad30, transparent 52%),
+    radial-gradient(ellipse at 25% 100%, #d6f35a12, transparent 65%),
+    linear-gradient(125deg, #21292a, #293b34);
+  border: 1px solid #53604f;
+  overflow: hidden;
+}
+.root header > div {
+  position: relative;
+  z-index: 1;
+  max-width: 640px;
+}
+.root header :global(.eyebrow) {
+  color: #d6f35a;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+}
+.root header h2 {
+  color: #fff;
+  font-size: clamp(29px, 3vw, 42px);
+  margin: 12px 0;
+  line-height: 1.12;
+}
+.root header p {
+  color: #c8d6ce;
+  max-width: 56ch;
+  font-size: 14px;
+}
+.heroArt {
+  position: absolute;
+  width: 480px;
+  height: 200px;
+  right: 15%;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.root .open {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(115deg, #def66b, #aee3b9);
+  box-shadow: 0 6px 25px #0002;
+  min-height: 50px;
+}
+@media (max-width: 700px) {
+  .root header {
+    min-height: 0;
+    padding: 24px 20px;
+    gap: 22px;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .heroArt {
+    right: -90px;
+    width: 400px;
+    opacity: 0.4;
+  }
+  .root .open {
     width: 100%;
     justify-content: space-between;
   }

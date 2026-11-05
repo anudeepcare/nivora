@@ -1,6 +1,10 @@
+import { scenarioGeometry } from "../lib/scenario-geometry.ts";
 import { latestFinancialEvidence } from "../lib/analysis.ts";
-import { headerBusinessMetrics, headerBusinessFamily } from "../lib/company-header.ts";
-import {experience,PaceInstrument} from './helpers/integrated-ui.mjs';
+import {
+  headerBusinessMetrics,
+  headerBusinessFamily,
+} from "../lib/company-header.ts";
+import { experience, PaceInstrument } from "./helpers/integrated-ui.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -26,9 +30,61 @@ import { researchPeriods } from "../lib/financial-catalog.ts";
 import { demoData } from "./fixtures/demo.ts";
 
 function loadComponent(file, name, bindings) {
-  bindings={SectionIcon:()=>null,Help:({label,children})=>React.createElement("details",null,React.createElement("summary",null,label),children),dateLabel:format.dateLabel,latestFinancialEvidence,headerBusinessMetrics,headerBusinessFamily,APP_VERSION:"0.2.0-rc.2",ReleaseNotice:()=>null,ContextLink:({page,children,className})=>React.createElement('a',{href:'/'+page,className},children),...bindings};
-  bindings = { layout: {panel:"panel"}, searchStyles: {search:"search-module"}, ...bindings };
-  bindings = { settingsStyles: {page: "settings-page-module"}, experience, PaceInstrument, Check: () => null, SUPPORT_EMAIL: "support@auryninvest.com", PrivacyChoices: () => null, paceCode, pacePeriods, PaceGuidance: ({view}) => React.createElement("div", null, view.actionLabel, view.effectiveCode), PaceReadings: ({readings}) => React.createElement("div", null, readings.map(r=>React.createElement("div", {key:r.key}, r.label, " ", r.code, " ", format.dateLabel(r.date)))), PaceHelp: () => null, CompanySparkline: () => null, ...bindings };
+  bindings = {
+    SectionIcon: () => null,
+    Help: ({ label, children }) =>
+      React.createElement(
+        "details",
+        null,
+        React.createElement("summary", null, label),
+        children,
+      ),
+    dateLabel: format.dateLabel,
+    latestFinancialEvidence,
+    headerBusinessMetrics,
+    headerBusinessFamily,
+    APP_VERSION: "0.2.0-rc.2",
+    ReleaseNotice: () => null,
+    ContextLink: ({ page, children, className }) =>
+      React.createElement("a", { href: "/" + page, className }, children),
+    ...bindings,
+  };
+  bindings = {
+    layout: { panel: "panel" },
+    searchStyles: { search: "search-module" },
+    ...bindings,
+  };
+  bindings = {
+    settingsStyles: { page: "settings-page-module" },
+    experience,
+    PaceInstrument,
+    Check: () => null,
+    SUPPORT_EMAIL: "support@auryninvest.com",
+    PrivacyChoices: () => null,
+    paceCode,
+    pacePeriods,
+    PaceGuidance: ({ view }) =>
+      React.createElement("div", null, view.actionLabel, view.effectiveCode),
+    PaceReadings: ({ readings }) =>
+      React.createElement(
+        "div",
+        null,
+        readings.map((r) =>
+          React.createElement(
+            "div",
+            { key: r.key },
+            r.label,
+            " ",
+            r.code,
+            " ",
+            format.dateLabel(r.date),
+          ),
+        ),
+      ),
+    PaceHelp: () => null,
+    CompanySparkline: () => null,
+    ...bindings,
+  };
   bindings = {
     useAccess: () => ({
       access: {
@@ -137,7 +193,7 @@ test("Financials avoids duplicate overview tiles and retains statement rows with
 
 test("metric explanations do not inject dialog blocks into server-rendered paragraphs", () => {
   const Help = loadComponent("components/Ui.tsx", "Help", {
-    styles: {helpIcon: "helpIcon", helpTrigger: "helpTrigger"},
+    styles: { helpIcon: "helpIcon", helpTrigger: "helpTrigger" },
     React,
     useRef: React.useRef,
     useId: React.useId,
@@ -593,10 +649,29 @@ test("public legal and help documents render all cross-links and readable sectio
     "LegalDocument",
     {
       React,
-      styles:{document:"document-owned"},
+      styles: { document: "document-owned" },
       useState: React.useState,
-      ContextLink: loadComponent("components/ContextLink.tsx", "ContextLink", {React, useState:React.useState, useEffect:React.useEffect, usePathname:()=>'/help',useRouter:()=>({}),useSearchParams:()=>new URLSearchParams(), Link:({children,...props})=>React.createElement('a',props,children)}),
-      DocumentBack: loadComponent("components/ContextLink.tsx", "DocumentBack", {React, useState:React.useState, useEffect:React.useEffect, Link:({children,...props})=>React.createElement('a',props,children)}),
+      ContextLink: loadComponent("components/ContextLink.tsx", "ContextLink", {
+        React,
+        useState: React.useState,
+        useEffect: React.useEffect,
+        usePathname: () => "/help",
+        useRouter: () => ({}),
+        useSearchParams: () => new URLSearchParams(),
+        Link: ({ children, ...props }) =>
+          React.createElement("a", props, children),
+      }),
+      DocumentBack: loadComponent(
+        "components/ContextLink.tsx",
+        "DocumentBack",
+        {
+          React,
+          useState: React.useState,
+          useEffect: React.useEffect,
+          Link: ({ children, ...props }) =>
+            React.createElement("a", props, children),
+        },
+      ),
       documents,
       legalConfiguration,
       Link: ({ children, ...props }) =>
@@ -728,10 +803,14 @@ test("authentication explains AURYN in sign-in, signup and recovery without fabr
       { google: false, x: false },
     ];
     const Login = loadComponent("components/Session.tsx", "Login", {
-      React, Layers3, Scale, ChartNoAxesCombined, ArrowRight,
+      React,
+      Layers3,
+      Scale,
+      ChartNoAxesCombined,
+      ArrowRight,
       useRouter: () => ({ replace: () => {} }),
       useEffect: () => {},
-    useState: React.useState,
+      useState: React.useState,
       useState: () => [values[i++], () => {}],
       Logo: () => React.createElement("span", null, "AURYN"),
       PublicSample,
@@ -823,7 +902,7 @@ test("change tracking stays invisible until there are actual observed changes", 
       useState: React.useState,
       useRef: React.useRef,
       useEffect: () => {},
-    useState: React.useState,
+      useState: React.useState,
       useProduct: () => ({ cache: new Map(), owner: "test", demo: undefined }),
     },
   );
@@ -1570,7 +1649,6 @@ test("technical accumulation shows both periods and anchors calculations to comp
   assert.match(html, /forming P2 Oct 22, 2026/);
   assert.match(html, /Confirmed baseline/);
 
-
   assert.match(html, /1 of 1 eligible months/);
   assert.match(html, /data-first-level="30"/);
 });
@@ -1619,21 +1697,42 @@ test("new Advanced dashboard exposes actual distributions and risk charts with n
 });
 
 test("stock context uses completed history and omits corporate facts for crypto", () => {
-  const stockFactRows = loadComponent("components/StockFacts.tsx", "stockFactRows", format);
+  const stockFactRows = loadComponent(
+    "components/StockFacts.tsx",
+    "stockFactRows",
+    format,
+  );
   const View = loadComponent("components/StockFacts.tsx", "StockFacts", {
-    React, stockFactRows, styles: { region: "stock-facts", strip: "stock-facts-strip" },
-    Help: ({ label, children }) => React.createElement("details", { "aria-label": `About ${label}` }, React.createElement("summary",null,label), children),
+    React,
+    stockFactRows,
+    styles: { region: "stock-facts", strip: "stock-facts-strip" },
+    Help: ({ label, children }) =>
+      React.createElement(
+        "details",
+        { "aria-label": `About ${label}` },
+        React.createElement("summary", null, label),
+        children,
+      ),
   });
   const r = {
     ...demoData.research.MSFT,
     company: { ...demoData.research.MSFT.company, assetType: "crypto" },
-    evidence: { updatedAt: "2026-01-01", highlights: { MarketCapitalization: 1000000 }, multiples: { ForwardPE: 20 } },
+    evidence: {
+      updatedAt: "2026-01-01",
+      highlights: { MarketCapitalization: 1000000 },
+      multiples: { ForwardPE: 20 },
+    },
   };
-  const html = renderToStaticMarkup(React.createElement(View, { research: r, priceContext:true }));
+  const html = renderToStaticMarkup(
+    React.createElement(View, { research: r, priceContext: true }),
+  );
   assert.doesNotMatch(html, /Latest history close|Prior close/);
   assert.match(html, /closing range/);
   assert.match(html, /aria-label="About/);
-  assert.doesNotMatch(html, /Market cap|Forward P\/E|Next reported earnings date|NaN|Infinity/);
+  assert.doesNotMatch(
+    html,
+    /Market cap|Forward P\/E|Next reported earnings date|NaN|Infinity/,
+  );
 });
 
 test("new operating expectations begins with explicit future inputs and never guesses a valuation", async () => {
@@ -1814,7 +1913,22 @@ test("price-risk cases render historical percentiles separately from earnings an
   const PriceRiskCases = loadComponent(
     "components/PriceRiskCases.tsx",
     "PriceRiskCases",
-    { React, useState: React.useState, ArrowDownRight, ArrowUpRight, Minus, ...format, valuationScale: (await import("../lib/research-summary.ts")).valuationScale, styles: { cases: "historical-cases" } },
+    {
+      ScenarioSensitivity: loadComponent(
+        "components/ScenarioSensitivity.tsx",
+        "ScenarioSensitivity",
+        { React, useId: React.useId, scenarioGeometry },
+      ),
+      React,
+      useState: React.useState,
+      ArrowDownRight,
+      ArrowUpRight,
+      Minus,
+      ...format,
+      valuationScale: (await import("../lib/research-summary.ts"))
+        .valuationScale,
+      styles: { cases: "historical-cases" },
+    },
   );
   const html = renderToStaticMarkup(
     React.createElement(PriceRiskCases, { scenarios: s, compact: true }),
@@ -1837,18 +1951,38 @@ test("price-risk cases render historical percentiles separately from earnings an
   );
   assert.match(full, /Historical price-risk cases/);
   assert.doesNotMatch(full, /Bear|Bull|aria-pressed/);
-  assert.equal((full.match(/Shared linear price scale/g) ?? []).length, 3);
-  for (const targets of [[110, 120, 140], [60, 80, 90], [100, 100, 100]]) {
-    const sample = { ...s, reference: 100, cases: s.cases.map((c, i) => ({ ...c, target: targets[i], change: targets[i] - 100 })) };
-    const output = renderToStaticMarkup(React.createElement(PriceRiskCases, { scenarios: sample }));
-    const dots = [...output.matchAll(/<circle cx="([^"]+)"/g)].map(m => Number(m[1]));
-    const ticks = [...output.matchAll(/<line x1="([^"]+)" x2="[^"]+" y1="5"/g)].map(m => Number(m[1]));
+  assert.equal((full.match(/Shared vertical price scale/g) ?? []).length, 3);
+  for (const targets of [
+    [110, 120, 140],
+    [60, 80, 90],
+    [100, 100, 100],
+  ]) {
+    const sample = {
+      ...s,
+      reference: 100,
+      cases: s.cases.map((c, i) => ({
+        ...c,
+        target: targets[i],
+        change: targets[i] - 100,
+      })),
+    };
+    const output = renderToStaticMarkup(
+      React.createElement(PriceRiskCases, { scenarios: sample }),
+    );
+    const dots = [
+      ...output.matchAll(/<circle cx="282" cy="([^"]+)" r="4"/g),
+    ].map((m) => Number(m[1]));
+    const ticks = [...output.matchAll(/<circle cx="18" cy="([^"]+)"/g)].map(
+      (m) => Number(m[1]),
+    );
     assert.equal(dots.length, 3);
-    assert.equal(new Set(ticks).size, 1, "reference aligns across all tracks");
-    assert.ok([...dots, ...ticks].every(x => x >= 8 && x <= 292), "all actual values fit the shared domain");
-    if (targets[0] > 100) assert.ok(dots.every(x => x > ticks[0]), "all percentiles can be above the reference");
-    if (targets[2] < 100) assert.ok(dots.every(x => x < ticks[0]), "all percentiles can be below the reference");
-    if (targets.every(x => x === 100)) assert.ok(dots.every(x => Math.abs(x - ticks[0]) < 1e-8), "equal prices occupy the same position");
+    assert.equal(new Set(ticks).size, 1);
+    if (targets.every((x) => x > 100))
+      assert.ok(dots.every((y) => y < ticks[0]));
+    if (targets.every((x) => x < 100))
+      assert.ok(dots.every((y) => y > ticks[0]));
+    if (targets.every((x) => x === 100))
+      assert.ok(dots.every((y) => Math.abs(y - ticks[0]) < 1e-8));
     assert.doesNotMatch(output, /NaN|Infinity/);
   }
 
@@ -1879,38 +2013,82 @@ test("price-risk cases render historical percentiles separately from earnings an
 test("integrated scenarios keep historical ranks distinct from conditional valuations on a shared price scale", async () => {
   const { valuationScale } = await import("../lib/research-summary.ts");
   const model = {
-    cases: [80, 105, 140].map((target, i) => ({ name: ["10th percentile", "Historical median", "90th percentile"][i], target, change: target - 100 })),
-    scenarioReference: 100, scenarioReferenceDate: "2026-10-19", scenarioHorizon: 63,
+    cases: [80, 105, 140].map((target, i) => ({
+      name: ["10th percentile", "Historical median", "90th percentile"][i],
+      target,
+      change: target - 100,
+    })),
+    scenarioReference: 100,
+    scenarioReferenceDate: "2026-10-19",
+    scenarioHorizon: 63,
     scenarioEnd: null,
     edge: { pacePresentation: {}, pacePeriods: [] },
     decision: { reasons: [], risks: [] },
   };
-  const View = loadComponent("components/IntegratedResearch.tsx", "IntegratedResearch", {
-    React, useMemo: React.useMemo, useProduct: () => ({ demo: false }),
-    approvedResearch: () => model, sameProviderSymbol: () => false,
-    valuationScale, ...format, ArrowDownRight, ArrowUpRight, Minus, ArrowRight,
-    Bell: empty, ChevronDown: empty, PaceInstrument: empty,
-    PositionFit: empty, ResearchEvidenceGrid: empty, DecisionInsights: empty,
-    s: experience, Link: ({ children }) => React.createElement("a", null, children),
-  });
-  const render = () => renderToStaticMarkup(React.createElement(View, { research: demoData.research.MSFT, onTab: () => {} }));
+  const View = loadComponent(
+    "components/IntegratedResearch.tsx",
+    "IntegratedResearch",
+    {
+      ScenarioSensitivity: loadComponent(
+        "components/ScenarioSensitivity.tsx",
+        "ScenarioSensitivity",
+        { React, useId: React.useId, scenarioGeometry },
+      ),
+      React,
+      useMemo: React.useMemo,
+      useProduct: () => ({ demo: false }),
+      approvedResearch: () => model,
+      sameProviderSymbol: () => false,
+      valuationScale,
+      ...format,
+      ArrowDownRight,
+      ArrowUpRight,
+      Minus,
+      ArrowRight,
+      Bell: empty,
+      ChevronDown: empty,
+      PaceInstrument: empty,
+      PositionFit: empty,
+      ResearchEvidenceGrid: empty,
+      DecisionInsights: empty,
+      s: experience,
+      Link: ({ children }) => React.createElement("a", null, children),
+    },
+  );
+  const render = () =>
+    renderToStaticMarkup(
+      React.createElement(View, {
+        research: demoData.research.MSFT,
+        onTab: () => {},
+      }),
+    );
   const historical = render();
   assert.match(historical, /Historical downside/);
   assert.match(historical, /50th percentile/);
   assert.match(historical, /not fair values or forecasts/);
-  assert.doesNotMatch(historical, /Bear scenario|Bull scenario|Lower earnings power/);
-  const dots = [...historical.matchAll(/<circle cx="([^"]+)"/g)].map(m => Number(m[1]));
-  const ticks = [...historical.matchAll(/<line x1="([^"]+)" x2="[^"]+" y1="5"/g)].map(m => Number(m[1]));
+  assert.doesNotMatch(
+    historical,
+    /Bear scenario|Bull scenario|Lower earnings power/,
+  );
+  const dots = [
+    ...historical.matchAll(/<circle cx="282" cy="([^"]+)" r="4"/g),
+  ].map((m) => Number(m[1]));
+  const ticks = [...historical.matchAll(/<circle cx="18" cy="([^"]+)"/g)].map(
+    (m) => Number(m[1]),
+  );
   assert.equal(dots.length, 3);
   assert.equal(new Set(ticks).size, 1);
-  assert.ok(dots[0] < ticks[0] && dots[1] > ticks[0] && dots[2] > dots[1]);
+  assert.ok(dots[0] > ticks[0] && dots[1] < ticks[0] && dots[2] < dots[1]);
   model.scenarioEnd = "2029-12-31";
   const conditional = render();
   assert.match(conditional, /Bear scenario/);
   assert.match(conditional, /Base scenario/);
   assert.match(conditional, /Bull scenario/);
   assert.match(conditional, /Conditional estimates, not probabilities/);
-  assert.doesNotMatch(conditional, /Historical downside|50th percentile|Past return percentiles/);
+  assert.doesNotMatch(
+    conditional,
+    /Historical downside|50th percentile|Past return percentiles/,
+  );
 });
 
 test("Home exposes complete matching-news count and expands past three companies without additional feed requests", async () => {
@@ -2129,19 +2307,35 @@ test("Home has a compact evidence pulse without a large decorative hero", async 
   assert.match(html, /YOUR AURYN BRIEF/);
 });
 test("stock header dates market facts and withholds mismatched currency or undated values", () => {
-  const stockFactRows = loadComponent("components/StockFacts.tsx", "stockFactRows", format);
+  const stockFactRows = loadComponent(
+    "components/StockFacts.tsx",
+    "stockFactRows",
+    format,
+  );
   const View = loadComponent("components/StockFacts.tsx", "StockFacts", {
-    React, stockFactRows, styles: { region: "stock-facts", strip: "stock-facts-strip" },
-    Help: ({ label, children }) => React.createElement("details", { "aria-label": `About ${label}` }, React.createElement("summary",null,label), children),
+    React,
+    stockFactRows,
+    styles: { region: "stock-facts", strip: "stock-facts-strip" },
+    Help: ({ label, children }) =>
+      React.createElement(
+        "details",
+        { "aria-label": `About ${label}` },
+        React.createElement("summary", null, label),
+        children,
+      ),
   });
   const r = {
     ...demoData.research.MSFT,
     priceObservedAt: "2026-11-05T12:00:00Z",
     company: { ...demoData.research.MSFT.company, currency: "USD" },
     quote: { ...demoData.research.MSFT.quote, currency: "USD" },
-    evidence: { updatedAt: "2026-11-04", highlights: { MarketCapitalization: 1000000 } },
+    evidence: {
+      updatedAt: "2026-11-04",
+      highlights: { MarketCapitalization: 1000000 },
+    },
   };
-  const render = () => renderToStaticMarkup(React.createElement(View, { research: r }));
+  const render = () =>
+    renderToStaticMarkup(React.createElement(View, { research: r }));
   assert.match(render(), /Market cap/);
   assert.match(render(), /Dataset updated/);
   assert.match(render(), new RegExp(format.dateLabel("2026-11-04")));
@@ -2173,21 +2367,47 @@ test("scenario change without a reference quote is neutral rather than a zero pe
   assert.match(html, /Reference price needed/);
 });
 
-
 test("Pace help opens a labelled portal dialog and clears state when native close fires", () => {
-  let open = false, modalCalls = 0, closeCalls = 0;
+  let open = false,
+    modalCalls = 0,
+    closeCalls = 0;
   let effect;
-  const nativeDialog = { showModal: () => modalCalls++, close: () => closeCalls++ };
+  const nativeDialog = {
+    showModal: () => modalCalls++,
+    close: () => closeCalls++,
+  };
   const body = {};
   const Help = loadComponent("components/Ui.tsx", "Help", {
-    React, styles: {}, Info: empty, X: empty,
-    useRef: () => ({ current: nativeDialog }), useId: () => "pace-explanation",
-    useState: () => [open, value => { open = value; }],
-    useEffect: callback => { effect = callback; },
-    createPortal: (child, target) => { assert.equal(target, body); return child; },
+    React,
+    styles: {},
+    Info: empty,
+    X: empty,
+    useRef: () => ({ current: nativeDialog }),
+    useId: () => "pace-explanation",
+    useState: () => [
+      open,
+      (value) => {
+        open = value;
+      },
+    ],
+    useEffect: (callback) => {
+      effect = callback;
+    },
+    createPortal: (child, target) => {
+      assert.equal(target, body);
+      return child;
+    },
     document: { body },
   });
-  const render = () => Help({ label: "How AURYN Pace works", children: React.createElement("p", null, "Completed readings guide the action.") });
+  const render = () =>
+    Help({
+      label: "How AURYN Pace works",
+      children: React.createElement(
+        "p",
+        null,
+        "Completed readings guide the action.",
+      ),
+    });
   let tree = render();
   const trigger = tree.props.children[0];
   assert.equal(trigger.props["aria-haspopup"], "dialog");
@@ -2208,7 +2428,9 @@ test("Pace help opens a labelled portal dialog and clears state when native clos
 });
 
 test("Pace instrument renders the shared dialog trigger without an inline help paragraph", () => {
-  const html = renderToStaticMarkup(React.createElement(PaceInstrument, { publicGuide: true }));
+  const html = renderToStaticMarkup(
+    React.createElement(PaceInstrument, { publicGuide: true }),
+  );
   assert.match(html, /aria-label="About How AURYN Pace works"/);
   assert.match(html, /aria-haspopup="dialog"/);
   assert.doesNotMatch(html, /<dialog/);

@@ -22,6 +22,8 @@ function load(name, bindings) {
   bindings = {
     SectionIcon: () => null,
     ResearchInbox: () => null,
+    ContributionCompare: () => React.createElement("section", {"aria-label":"Compare your next contribution"}, "Compare companies"),
+    HomeMarketCards: () => null,
     OpportunityMap: () => null,
     MarketRadar: () => null,
     SearchIcon: () => null,
@@ -156,12 +158,13 @@ test("Watchlist-only Home avoids an irrelevant zero-value portfolio summary", ()
   });
   const html = renderToStaticMarkup(React.createElement(Home));
   assert.deepEqual(requested, symbols);
+  assert.match(html,/Compare your next contribution/);
   assert.deepEqual(radarProps.research, [loaded]);
   assert.equal(radarProps.asOf, marketDay(new Date()));
   assert.match(radarProps.asOf, /^\d{4}-\d{2}-\d{2}$/);
   assert.doesNotMatch(
     html,
-    /aria-label="Portfolio summary"|home-next-step|Compare your next contribution|Featured earnings/,
+    /aria-label="Portfolio summary"|home-next-step|Featured earnings/,
   );
 });
 

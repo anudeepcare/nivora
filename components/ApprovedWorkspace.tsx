@@ -4,6 +4,8 @@ import { useWorkspacePreferences } from "./WorkspacePreferences";
 import OpportunityMap from "./OpportunityMap";
 import { MarketRadar } from "./MarketRadar";
 import ResearchInbox from "./ResearchInbox";
+import ContributionCompare from "./ContributionCompare";
+import HomeMarketCards from "./HomeMarketCards";
 import portfolioStyles from "./PortfolioWorkspace.module.css";
 import { sameProviderSymbol } from "@/lib/provider-symbol";
 import { customerText } from "@/lib/customer-language";
@@ -577,24 +579,26 @@ function HomeOverview() {
     <section
       className={`approved-workspace approved-home home-decision-view ${homeStyles.home}`}
     >
-      <Heading
-        title={`${greeting}${displayName ? `, ${displayName}` : ""}.`}
-        subtitle="Your companies, upcoming events and research."
-        actions={
-          <span className="date-chip">
-            {today.toLocaleDateString(undefined, {
-              weekday: "short",
-              month: "short",
-              day: "numeric",
-            })}
-            <small>
-              {demo
-                ? "Illustrative workspace"
-                : `${symbols.length} companies followed`}
-            </small>
-          </span>
-        }
-      />
+      <div className={homeStyles.greeting}>
+        <Heading
+          title={`${greeting}${displayName ? `, ${displayName}` : ""}.`}
+          subtitle="Your companies, upcoming events and research."
+          actions={
+            <span className="date-chip">
+              {today.toLocaleDateString(undefined, {
+                weekday: "short",
+                month: "short",
+                day: "numeric",
+              })}
+              <small>
+                {demo
+                  ? "Illustrative workspace"
+                  : `${symbols.length} companies followed`}
+              </small>
+            </span>
+          }
+        />
+      </div>
       {state.workspaceError && <Notice error>{state.workspaceError}</Notice>}
       <div className={homeStyles.quickLinks}>
         <Link href={`${prefix}/discover`}>
@@ -607,13 +611,14 @@ function HomeOverview() {
           Research a company <SearchIcon size={16} />
         </Link>
       </div>
-      <ResearchInbox today={day} />
-      <OpportunityMap
+      <ContributionCompare symbols={symbols} prefix={prefix} />
+      <HomeMarketCards
+        symbols={symbols}
+        quotes={quotes.data}
         research={loadedResearch}
-        requested={symbols}
         prefix={prefix}
-        demo={!!demo}
       />
+      <ResearchInbox today={day} />
       {loadedResearch.length > 0 && (
         <details className={homeStyles.marketRadar}>
           <summary>
@@ -623,6 +628,12 @@ function HomeOverview() {
               rotation
             </span>
           </summary>
+          <OpportunityMap
+            research={loadedResearch}
+            requested={symbols}
+            prefix={prefix}
+            demo={!!demo}
+          />
           <MarketRadar research={loadedResearch} asOf={day} />
         </details>
       )}
