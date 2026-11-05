@@ -6,7 +6,7 @@ import type { OptionContract } from "@/lib/options-analysis";
 import type { BoardPreset, BoardSnapshot } from "@/lib/exposure-board";
 import { useProduct, useResource } from "./Session";
 import ExposureBoard from "./ExposureBoard";
-import s from "./ExposureBoard.module.css";
+import s from "./MarketWorkspace.module.css";
 type Capture = BoardSnapshot & {
   sourceAsOf?: string;
   quoteAsOf?: string;
@@ -81,15 +81,46 @@ function AccountBoard(props: {
   }
   const path = `market-workspace/${encodeURIComponent(props.symbol)}`;
   return (
-    <div>
-      <details className={s.detail} aria-label="Account market history">
+    <div className={s.workspace}>
+      <ExposureBoard
+        {...props}
+        externalSnapshot={selected}
+        onExitReplay={() => {
+          setIndex(-1);
+          setPlaying(false);
+        }}
+        accountPresets={accountPresets}
+        onPresetsChanged={setPresets}
+        onCreateAlert={(cell, type) =>
+          void action(async () => {
+            await api("documents", {
+              kind: "alert",
+              key: crypto.randomUUID(),
+              body: {
+                name: `${props.symbol} ${cell.strike} exposure`,
+                symbol: props.symbol,
+                type,
+                threshold: type === "exposure-change" ? 20 : cell.strike,
+                referenceStrike: cell.strike,
+                expiry: cell.expiry,
+                exposureRole: "fixed",
+                marginPercent: 0.5,
+                enabled: true,
+              },
+            });
+            setMessage(
+              "Exposure rule saved. It is evaluated during supported alert checks, not continuously between checks.",
+            );
+          })
+        }
+      />
+      <details className={s.account} aria-label="Account market history">
         <summary>
-          <Cloud size={18} /> Account history & replay{" "}
+          <Cloud size={18} /> History & saved views{" "}
           <small> · {snapshots.length} checkpoints</small>
         </summary>
         <p>
-          Save source checkpoints and views across devices. Replay steps through
-          recorded checkpoints.
+          Saved checkpoints replay the observations captured in your account.
         </p>
         <div className={s.actions}>
           <button
@@ -199,40 +230,12 @@ function AccountBoard(props: {
             {selected.frequency} · {selected.window}
           </p>
         )}
-        {message && <p role="status">{message}</p>}
       </details>
-      <ExposureBoard
-        {...props}
-        externalSnapshot={selected}
-        onExitReplay={() => {
-          setIndex(-1);
-          setPlaying(false);
-        }}
-        accountPresets={accountPresets}
-        onPresetsChanged={setPresets}
-        onCreateAlert={(cell, type) =>
-          void action(async () => {
-            await api("documents", {
-              kind: "alert",
-              key: crypto.randomUUID(),
-              body: {
-                name: `${props.symbol} ${cell.strike} exposure`,
-                symbol: props.symbol,
-                type,
-                threshold: type === "exposure-change" ? 20 : cell.strike,
-                referenceStrike: cell.strike,
-                expiry: cell.expiry,
-                exposureRole: "fixed",
-                marginPercent: 0.5,
-                enabled: true,
-              },
-            });
-            setMessage(
-              "Exposure rule saved. It is evaluated during supported alert checks, not continuously between checks.",
-            );
-          })
-        }
-      />
+      {message && (
+        <p className={s.feedback} role="status">
+          {message}
+        </p>
+      )}
     </div>
   );
 }

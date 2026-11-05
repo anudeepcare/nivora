@@ -2,16 +2,16 @@
   "date": "2026-11-05",
   "candidate": "1.0.0",
   "unitTests": {
-    "passed": 1046,
+    "passed": 1048,
     "failed": 0,
     "skipped": 0
   },
   "focusedFinalOptionsRender": {
-    "passed": 3,
+    "passed": 7,
     "failed": 0
   },
   "typecheck": "passed",
-  "productionBuild": "passed; 34 static pages and dynamic routes retained",
+  "productionBuild": "passed; final corrective UX source verified before packaging",
   "apiRegressionScripts": {
     "passed": 9,
     "transport": "synthetic; no live provider/payment/trade"
@@ -27,5 +27,13 @@
   "productionDeployment": false,
   "newDependencies": false,
   "newSchema": false,
-  "archiveVerification": "CRC, per-file SHA256 manifest and private configuration exclusions validated by package-source.py"
+  "archiveVerification": "CRC, per-file SHA256 manifest and private configuration exclusions validated by package-source.py",
+  "correctiveUx": [
+    "map-first compact controls",
+    "logo-led public/auth palette",
+    "functional public workflow navigation",
+    "shared-scale historical ranges",
+    "customer-visible internal version removed",
+    "mobile picker flex layout and chart-axis labels corrected"
+  ]
 }

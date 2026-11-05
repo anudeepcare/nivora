@@ -263,14 +263,26 @@ export default function ExposureBoard({
     >
       <header className={s.heading}>
         <div>
-          <span className="eyebrow">STRIKE × EXPIRATION</span>
           <h3>
-            <Layers3 size={21} /> Exposure workspace
+            <Layers3 size={21} /> Gamma & open interest
           </h3>
-          <p>
-            Find concentrations. Inspect the inputs. Keep price direction
-            separate.
-          </p>
+        </div>
+        <div className={s.tabs} aria-label="Exposure workspace views">
+          {[
+            ["map", "Exposure map"],
+            ["changes", "Saved changes"],
+            ["compare", "Compare snapshots"],
+            ["symbols", "Saved symbols"],
+          ].map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              aria-pressed={mode === id}
+              onClick={() => setMode(id)}
+            >
+              {label}
+            </button>
+          ))}
         </div>
         <Help label="How to read the exposure map">
           <p>
@@ -289,7 +301,7 @@ export default function ExposureBoard({
             returned inputs, not the fraction of the entire market. Different
             cells can have different observation dates. Saved snapshots and
             views saved with these device controls stay on this browser. Use
-            Account history & replay above for cross-device storage.
+            History & saved views for cross-device storage.
           </p>
         </Help>
       </header>
@@ -306,147 +318,120 @@ export default function ExposureBoard({
           )}
         </div>
       )}
-      <div className={s.tabs} aria-label="Exposure workspace views">
-        {[
-          ["map", "Exposure map"],
-          ["changes", "Saved changes"],
-          ["compare", "Compare snapshots"],
-          ["symbols", "Saved symbols"],
-        ].map(([id, label]) => (
-          <button
-            key={id}
-            type="button"
-            aria-pressed={mode === id}
-            onClick={() => setMode(id)}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-      <div className={s.toolbar}>
-        <label>
-          Measure
-          <select
-            value={metric}
-            onChange={(e) => setMetric(e.target.value as "gex" | "oi")}
-          >
-            <option value="gex">Estimated GEX</option>
-            <option value="oi">Open interest</option>
-          </select>
-        </label>
-        <label>
-          Nearby strikes
-          <select
-            value={range}
-            onChange={(e) => setRange(Number(e.target.value))}
-          >
-            {[12, 24, 40, 80].map((n) => (
-              <option key={n}>{n}</option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Expirations
-          <select
-            value={expirations}
-            onChange={(e) => setExpirations(Number(e.target.value))}
-          >
-            {[1, 3, 6, 12].map((n) => (
-              <option key={n}>{n}</option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Hide values below
-          <select
-            value={minimum}
-            onChange={(e) => setMinimum(Number(e.target.value))}
-          >
-            {[0, 100, 1000, 10000, 100000].map((n) => (
-              <option key={n} value={n}>
-                {n === 0 ? "Show all" : n.toLocaleString()}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className={s.check}>
-          <input
-            type="checkbox"
-            checked={normalized}
-            onChange={(e) => setNormalized(e.target.checked)}
-          />{" "}
-          % of largest
-        </label>
-      </div>
-      <div className={s.actions}>
-        <button type="button" onClick={() => center(nearest)}>
-          <Focus size={16} /> Center on price
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            if (largest) {
-              setSelected(largest.key);
-              center(largest.strike);
-            }
-          }}
-        >
-          <Star size={16} /> Largest cell
-        </button>
-        <button
-          type="button"
-          onClick={saveSnapshot}
-          disabled={!live.cells.length}
-        >
-          <Camera size={16} /> Save snapshot
-        </button>
-        <button type="button" onClick={exportBoard} disabled={!cells.length}>
-          <Download size={16} /> Export values
-        </button>
-        {onContracts && (
-          <button type="button" onClick={onContracts}>
-            Explore contracts →
-          </button>
-        )}
-      </div>
-      <div className={s.summary}>
-        {[
-          ["Largest visible", largest],
-          ["Below price", below],
-          ["Above price", above],
-        ].map(([label, c]) => {
-          const cell = c as ExposureCell | undefined;
-          return (
-            <article key={String(label)}>
-              <span>{String(label)}</span>
-              <strong>{cell ? amount(cell.strike) : "Not measured"}</strong>
-              <small>
-                {cell
-                  ? `${cell.expiry} · ${metric === "gex" ? amount(cell.gex, "USD", true) : cell.oi?.toLocaleString() + " contracts"}`
-                  : "Required inputs not supplied"}
-              </small>
-            </article>
-          );
-        })}
-      </div>
-      <div className={s.status}>
-        <span>
-          <Activity size={14} />{" "}
-          {externalSnapshot
-            ? "Verified account checkpoint"
-            : chosen
-              ? "Saved device snapshot"
-              : "Latest loaded snapshot"}{" "}
-          ·{" "}
-          {complete && !chosen
-            ? "Returned chain"
-            : "Coverage limited to loaded contracts"}
-        </span>
-        <span>
-          {board.contracts} contracts · {measured.length}/{cells.length} visible
-          cells measured
-        </span>
-      </div>
+      {mode === "map" && (
+        <>
+          <div className={s.toolbar}>
+            <label>
+              Measure
+              <select
+                value={metric}
+                onChange={(e) => setMetric(e.target.value as "gex" | "oi")}
+              >
+                <option value="gex">Estimated GEX</option>
+                <option value="oi">Open interest</option>
+              </select>
+            </label>
+            <label>
+              Nearby strikes
+              <select
+                value={range}
+                onChange={(e) => setRange(Number(e.target.value))}
+              >
+                {[12, 24, 40, 80].map((n) => (
+                  <option key={n}>{n}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Expirations
+              <select
+                value={expirations}
+                onChange={(e) => setExpirations(Number(e.target.value))}
+              >
+                {[1, 3, 6, 12].map((n) => (
+                  <option key={n}>{n}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Hide values below
+              <select
+                value={minimum}
+                onChange={(e) => setMinimum(Number(e.target.value))}
+              >
+                {[0, 100, 1000, 10000, 100000].map((n) => (
+                  <option key={n} value={n}>
+                    {n === 0 ? "Show all" : n.toLocaleString()}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className={s.check}>
+              <input
+                type="checkbox"
+                checked={normalized}
+                onChange={(e) => setNormalized(e.target.checked)}
+              />{" "}
+              % of largest
+            </label>
+            <div className={s.actions}>
+              <button type="button" onClick={() => center(nearest)}>
+                <Focus size={16} /> Center
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (largest) {
+                    setSelected(largest.key);
+                    center(largest.strike);
+                  }
+                }}
+              >
+                <Star size={16} /> Largest
+              </button>
+              <button
+                type="button"
+                onClick={saveSnapshot}
+                disabled={!live.cells.length}
+              >
+                <Camera size={16} /> Save snapshot
+              </button>
+              <button
+                type="button"
+                onClick={exportBoard}
+                disabled={!cells.length}
+              >
+                <Download size={16} /> Export
+              </button>
+              {onContracts && (
+                <button type="button" onClick={onContracts}>
+                  Contracts →
+                </button>
+              )}
+            </div>
+          </div>
+          <div className={s.summary}>
+            {[
+              ["Largest visible", largest],
+              ["Below price", below],
+              ["Above price", above],
+            ].map(([label, c]) => {
+              const cell = c as ExposureCell | undefined;
+              return (
+                <article key={String(label)}>
+                  <span>{String(label)}</span>
+                  <strong>{cell ? amount(cell.strike) : "Not measured"}</strong>
+                  <small>
+                    {cell
+                      ? `${cell.expiry} · ${metric === "gex" ? amount(cell.gex, "USD", true) : cell.oi?.toLocaleString() + " contracts"}`
+                      : "Required inputs not supplied"}
+                  </small>
+                </article>
+              );
+            })}
+          </div>
+        </>
+      )}
       {mode === "map" && (
         <>
           <div className={s.legend}>
@@ -502,10 +487,10 @@ export default function ExposureBoard({
                                     : "zero"
                             }
                             style={{
-                              opacity:
-                                v === null
-                                  ? 1
-                                  : 0.45 + (0.55 * Math.abs(v)) / max,
+                              backgroundColor:
+                                v === null || v === 0
+                                  ? undefined
+                                  : `color-mix(in srgb, ${v > 0 ? "var(--green)" : "var(--red)"} ${12 + (43 * Math.abs(v)) / max}%, var(--card))`,
                             }}
                             aria-pressed={selected === c?.key}
                             aria-label={`${strike} strike, ${d}, ${v === null ? "not measured" : v.toLocaleString()}${c?.key === largest?.key ? ", largest visible exposure" : ""}`}
@@ -533,6 +518,24 @@ export default function ExposureBoard({
                 load another expiration.
               </p>
             )}
+          </div>
+          <div className={s.status}>
+            <span>
+              <Activity size={14} />{" "}
+              {externalSnapshot
+                ? "Verified account checkpoint"
+                : chosen
+                  ? "Saved device snapshot"
+                  : "Latest loaded snapshot"}{" "}
+              ·{" "}
+              {complete && !chosen
+                ? "Returned chain"
+                : "Coverage limited to loaded contracts"}
+            </span>
+            <span>
+              {board.contracts} contracts · {measured.length}/{cells.length}{" "}
+              visible cells measured
+            </span>
           </div>
           {focus && (
             <aside className={s.detail} aria-live="polite">
@@ -615,24 +618,17 @@ export default function ExposureBoard({
             </ul>
           ) : (
             <p>
-              No comparable source updates yet. Comparison requires the same
-              contract universe and underlying price, and a newer source
-              observation. Saving the same snapshot twice does not create market
-              velocity.
+              No comparable updates yet. Save a newer source observation with
+              the same contracts and price to compare.
             </p>
           )}
-          <p>
-            Device snapshots are manual checkpoints. Minute-by-minute movers and
-            session replay require a historical options feed.
-          </p>
         </section>
       )}
       {mode === "symbols" && (
         <section className={s.comparison}>
           <h4>Compare saved symbols · device checkpoints</h4>
-          <p>
-            Up to six symbols from your saved observations. These are
-            independently dated snapshots, not synchronized live markets.
+          <p className={s.comparisonNote}>
+            Up to six independently dated device snapshots.
           </p>
           {latestSymbolSnapshots(saved.snapshots).map((x) => {
             const node = [...x.board.cells]
@@ -655,9 +651,8 @@ export default function ExposureBoard({
             );
           })}
           {!saved.snapshots.length && (
-            <p>
-              Save snapshots on two or more companies to compare their recorded
-              concentrations here.
+            <p className={s.comparisonNote}>
+              Save a snapshot from a company’s map to start a comparison.
             </p>
           )}
         </section>

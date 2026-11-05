@@ -619,25 +619,31 @@
 .stockIdentity {border-left:4px solid #d6f35a;padding-left:16px;}
 @media(max-width:800px){.hero {display:flex;flex-direction:column;gap:28px;padding:32px 18px}.heroCopy{order:0}.heroVisual{order:1}.heroCopy h1{font-size:38px}.heroActions a{font-size:14px}.heroVisual>section{padding:18px}.overview{grid-template-areas:"pace" "chart" "scenarios" "metrics"}}
 
-.scenarios {grid-area:scenarios;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;}
-.scenario {display:grid;grid-template-columns:44px minmax(0,1fr);align-items:center;gap:12px;padding:18px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);text-align:left;font:inherit;color:var(--ink);}
-.scenario i {font-style:normal;display:grid;place-items:center;width:44px;height:44px;font-size:34px;border-radius:7px;background:#fbe1dc;color:#a83e33;}
-.scenario strong {display:block;font-size:17px;line-height:1.3;margin-bottom:8px;}
-.scenario small {display:block;color:var(--muted);font-size:12px;line-height:1.45;}
-.scenario svg {width:100%;color:#d17c70;border-left:1px solid var(--line);}
-.scenario[data-case="Base"] i {background:var(--surface);color:var(--muted);}
-.scenario[data-case="Base"] svg {color:#76b6aa;}
-.scenario[data-case="Bull"] i {background:#d8f2e8;color:#176b53;}
-.scenario[data-case="Bull"] svg {color:#71c9a9;}
-.scenario:hover {border-color:var(--ink);}
-@media(max-width:1000px){.scenario{grid-template-columns:36px 1fr;padding:14px}.scenario svg{grid-column:1/3;height:44px;border:0}.scenario i{width:36px;height:36px}.scenario strong{font-size:15px}}
-@media(max-width:600px){.scenarios{grid-template-columns:1fr;gap:8px}.scenario{grid-template-columns:40px minmax(0,1fr);gap:10px}.scenario svg{grid-column:auto;height:auto}.scenario strong{margin-bottom:4px}.scenario small{font-size:12px}}
-
-.scenarioCaption{grid-column:1/-1;margin:0;font-size:12px;color:var(--muted);}
-.scenarioValue{display:block;font-size:26px;font-weight:650;font-variant-numeric:tabular-nums;margin-bottom:5px;}
+.scenarios {grid-area:scenarios;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
+.scenario {--scenario-tone:var(--muted);display:flex;flex-direction:column;align-items:stretch;gap:8px;min-width:0;padding:18px;border:1px solid var(--line);border-radius:12px;background:var(--card);text-align:left;font:inherit;color:var(--ink);cursor:pointer;}
+.scenarioHeading {display:flex;align-items:center;gap:9px;min-height:32px;}
+.scenario i {font-style:normal;display:grid;place-items:center;width:30px;height:30px;flex:none;border-radius:8px;background:color-mix(in srgb,var(--scenario-tone) 10%,transparent);color:var(--scenario-tone);}
+.scenarioHeading strong {font-size:14px;font-weight:550;line-height:1.35;}
+.scenarioNumbers {display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:4px 10px;margin-top:4px;}
+.scenarioValue {font-size:clamp(23px,2.5vw,30px);font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.035em;line-height:1.2;}
+.scenarioNumbers small {font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;}
+.scenarioBasis {font-size:11px;color:var(--muted);}
+.scenario .scenarioRange {display:block;width:100%;height:32px;max-width:none;margin-top:4px;border:0;color:var(--scenario-tone);}
+.scenario[data-case="Bear"] {--scenario-tone:#b46b62;}
+.scenario[data-case="Bull"] {--scenario-tone:#6caa94;}
+.scenario:hover {border-color:var(--scenario-tone);background:color-mix(in srgb,var(--scenario-tone) 4%,var(--card));}
+.scenario:focus-visible {outline:2px solid var(--ink);outline-offset:3px;}
+.scenarioCaption {grid-column:1/-1;display:flex;justify-content:space-between;gap:8px 20px;flex-wrap:wrap;font-size:12px;line-height:1.5;color:var(--muted);}
+.scenarioCaption>span:first-child {font-weight:550;color:var(--ink);}
+.scenarioLegend {grid-column:1/-1;display:flex;align-items:center;flex-wrap:wrap;gap:6px 16px;margin:0;font-size:11px;line-height:1.6;color:var(--muted);}
+.scenarioLegend>span {display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
+.scenarioLegend i {display:inline-block;width:1px;height:12px;background:var(--ink);}
+.scenarioLegend b {display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--muted);}
+@media(max-width:1000px){.scenario{padding:14px;}.scenarioHeading{gap:7px;}.scenarioHeading strong{font-size:12px;}}
+@media(max-width:600px){.scenarios{grid-template-columns:1fr;gap:8px;}.scenario{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 16px;padding:14px;}.scenarioHeading{grid-column:1;}.scenarioNumbers{grid-column:2;grid-row:1/3;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;margin:0;gap:4px;}.scenarioBasis{grid-column:1;margin-left:37px;}.scenario .scenarioRange{grid-column:1/-1;height:28px;margin-top:6px;}.scenarioHeading strong{font-size:13px;}.scenarioCaption{font-size:11px;}.scenarioLegend{margin-top:2px;}}
 .scenarioUnavailable{grid-column:1/-1;display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:18px;border:1px solid var(--line);border-radius:12px;background:var(--card);}
 .scenarioUnavailable span{flex:1;min-width:200px;font-size:13px;color:var(--muted);}
-.scenarioUnavailable button{display:flex;gap:8px;align-items:center;font:inherit;color:var(--ink);background:var(--blue-soft);border:0;border-radius:8px;padding:10px;}
+.scenarioUnavailable button{display:flex;gap:8px;align-items:center;font:inherit;color:var(--ink);background:var(--surface);border:0;border-radius:8px;padding:10px;}
 .brandEyebrow{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:600;letter-spacing:.06em;margin-bottom:20px;color:var(--ink);}
 .brandEyebrow::before{content:"";width:8px;height:8px;transform:rotate(45deg);background:#accb38;}
 .hero{position:relative;background:radial-gradient(ellipse at 85% 22%,#76b6aa12,transparent 50%),radial-gradient(ellipse at 10% 80%,#d6f35a14,transparent 45%);}
@@ -692,8 +698,3 @@
 /* The plot owns its internals; avoid a second nested card frame. */
 .chart :global(.plot-section) { border:0; border-radius:0; box-shadow:none; padding:0; background:transparent; }
 
-/* Scenarios are direction-coded, with a neutral midpoint. */
-.scenario[data-case="Bear"]{color:var(--red);background:color-mix(in srgb,var(--red) 5%,var(--card))}
-.scenario[data-case="Base"]{color:var(--muted);background:var(--surface-2)}
-.scenario[data-case="Bull"]{color:var(--green);background:color-mix(in srgb,var(--green) 5%,var(--card))}
-.scenario>svg{width:80px;max-width:20%;flex-shrink:0}

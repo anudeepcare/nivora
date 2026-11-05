@@ -578,16 +578,16 @@ function Login({ initialError }: { initialError: string }) {
         <div className={experience.storyContent}>
           <span className={experience.eyebrow}>YOUR INVESTMENT WORKSPACE</span>
           <h2>
-            A clearer view.
+            Your research.
             <br />
-            <span>A considered next move.</span>
+            <span>A clearer perspective.</span>
           </h2>
           <p>
             Bring the business, the price and your plan into one perspective.
           </p>
           <div className={experience.researchCard}>
             <div className={experience.cardHeading}>
-              <span>THE AURYN APPROACH</span>
+              <span>BUSINESS. VALUE. YOUR PACE.</span>
               <ArrowRight size={18} />
             </div>
             {[
@@ -658,10 +658,10 @@ function Login({ initialError }: { initialError: string }) {
             </h1>
             <p>
               {mode === "signup"
-                ? "Understand the business. Plan gradual buying with AURYN Pace."
+                ? "Create your account to start your research."
                 : mode === "reset"
                   ? "We’ll email a secure link to restore access to your workspace."
-                  : "Sign in to continue your research and revisit the companies you follow."}
+                  : "Sign in to continue your research."}
             </p>
           </div>
           {mode !== "reset" && (

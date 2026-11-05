@@ -1,6 +1,10 @@
 .root {
   min-width: 0;
 }
+.root :global(.price-risk-label) b,
+.root > details summary {
+  color: var(--ink);
+}
 .root .cases {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -8,7 +12,7 @@
   margin: 0;
 }
 .root .cases article {
-  --case-color: var(--blue, #5275ab);
+  --case-color: var(--muted);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -17,16 +21,16 @@
   min-height: 0;
   padding: 16px;
   border: 1px solid var(--line);
-  border-top: 3px solid var(--case-color);
+  border-top: 1px solid var(--line);
   border-radius: 10px;
   background: var(--surface);
   box-shadow: none;
 }
 .root .cases article[data-case="downside"] {
-  --case-color: var(--red, #bd655e);
+  --case-color: #b46b62;
 }
 .root .cases article[data-case="upside"] {
-  --case-color: var(--green, #288675);
+  --case-color: #6caa94;
 }
 .caseHeading {
   display: flex;
@@ -68,6 +72,19 @@
   line-height: 1.4;
   font-variant-numeric: tabular-nums;
 }
+.root .cases .range {
+  display: block;
+  width: 100%;
+  height: 32px;
+  margin-top: 14px;
+  color: var(--case-color);
+}
+.root[data-compact="true"] .cases article {
+  padding: 12px;
+}
+.root[data-compact="true"] .cases strong {
+  font-size: 23px;
+}
 .root :global(.price-risk-selected) {
   max-width: 90ch;
   margin: 12px 0 0;
@@ -94,6 +111,11 @@
     padding: 12px;
     border-top: 1px solid var(--line);
     border-left: 3px solid var(--case-color);
+  }
+  .root .cases .range {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    margin-top: 6px;
   }
   .caseHeading {
     grid-column: 1;

@@ -159,7 +159,7 @@ export const documents: Record<
   methodology: {
     title: "How AURYN reaches a view",
     intro:
-      "Deterministic calculations, separate evidence and explicit limitations. Current screening version: evidence-lenses-v1.",
+      "Understand how AURYN brings business evidence, valuation and price context together, with the assumptions and limitations made clear.",
     sections: [
       {
         title: "Three separate questions",
@@ -167,7 +167,7 @@ export const documents: Record<
       },
       {
         title: "Eight evidence lenses",
-        text: "Valuation, profitability, growth, financial health, cash quality, owner returns, moat and ownership/expectations organize the evidence. Numeric scores use published absolute anchor rules in lib/decision-research.ts. They are screening scores, not validated stock-return predictors. Missing metrics do not become zero. A composite requires at least four scored lenses.",
+        text: "Valuation, profitability, growth, financial health, cash quality, owner returns, moat and ownership/expectations organize the evidence. Numeric scores use defined absolute anchor rules. They are screening scores, not validated stock-return predictors. Missing metrics do not become zero. A composite requires at least four scored lenses.",
       },
       {
         title: "Style and coverage",
@@ -187,7 +187,7 @@ export const documents: Record<
       },
       {
         title: "Methodology changelog",
-        text: "October 18, 2026: evidence-lenses-v1 introduced disclosed absolute anchors and five style blends. October 19, 2026: source-status details, observed-view comparison, financial crossing alerts, cash-runway and working-capital context were added. No historical scores are recalculated and presented as observations made at the time.",
+        text: "October 18, 2026: evidence scoring introduced absolute anchors and five style blends. October 19, 2026: source-status details, observed-view comparison, financial crossing alerts, cash-runway and working-capital context were added. No historical scores are recalculated and presented as observations made at the time.",
       },
       {
         title: "Worked examples",

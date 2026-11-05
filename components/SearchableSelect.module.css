@@ -85,3 +85,53 @@
   padding: 10px;
   color: var(--muted);
 }
+/* Keep the compact picker aligned when opened near a viewport edge. */
+.root.root .trigger {
+  min-height: 40px;
+  padding: 8px 11px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.root.root .popup {
+  left: auto;
+  right: 0;
+  width: max(100%, 250px);
+  min-width: 0;
+  max-width: calc(100vw - 32px);
+  padding: 8px;
+  border-radius: 10px;
+}
+.root.root .popup label {
+  display: flex;
+  gap: 7px;
+  padding: 0 4px;
+}
+.root.root .popup input {
+  min-height: 38px;
+  padding: 8px;
+  font-size: 13px;
+  border-radius: 7px;
+}
+.root.root .popup select {
+  font-size: 13px;
+  border-radius: 7px;
+  margin-top: 6px;
+}
+.root.root .popup option {
+  padding: 9px 10px;
+  min-height: 36px;
+  border-radius: 5px;
+}
+.root.root .popup option:checked {
+  background: #e9f3c9 linear-gradient(0deg, #e9f3c9, #e9f3c9);
+  color: #24272b;
+}
+@media (max-width: 600px) {
+  .root.root .trigger,
+  .root.root .popup input {
+    min-height: 44px;
+  }
+  .root.root .popup input {
+    font-size: 16px;
+  }
+}

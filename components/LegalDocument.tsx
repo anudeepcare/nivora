@@ -3,6 +3,7 @@ import { ContextLink, DocumentBack } from "./ContextLink";
 import { PrivacyChoices } from "./AnalyticsConsent";
 import { useState } from "react";
 import Link from "next/link";
+import styles from "./LegalDocument.module.css";
 import {
   documents,
   legalConfiguration,
@@ -15,7 +16,7 @@ export default function LegalDocument({ id }: { id: DocumentId }) {
       (s.title + " " + s.text).toLowerCase().includes(query.toLowerCase()),
     );
   return (
-    <main className="legal-document atlas-document">
+    <main className={`legal-document atlas-document ${styles.document}`}>
       <header>
         <Link href="/" className="legal-brand">
           <img src="/icon.svg" width="28" height="28" alt="" /> AURYN
@@ -25,10 +26,7 @@ export default function LegalDocument({ id }: { id: DocumentId }) {
       <div className="document-layout">
         <nav aria-label="Help and legal documents">
           {(Object.keys(documents) as DocumentId[]).map((k) => (
-            <ContextLink
-              key={k}
-              page={k}
-            >
+            <ContextLink key={k} page={k}>
               {k === "risk"
                 ? "Risk disclosure"
                 : k[0].toUpperCase() + k.slice(1)}
@@ -38,12 +36,15 @@ export default function LegalDocument({ id }: { id: DocumentId }) {
             Contact AURYN →
           </ContextLink>
         </nav>
-        <article className="document-reading">
+        <article
+          className="document-reading"
+          data-document-version={legalConfiguration.version}
+        >
           <span className="document-eyebrow">AURYN · HELP & TRUST</span>
           <h1>{d.title}</h1>
           <p className="legal-intro">{d.intro}</p>
           <p className="document-updated">
-            Updated {legalConfiguration.updated} · {legalConfiguration.version}
+            Updated {legalConfiguration.updated}
           </p>
           {id === "help" && (
             <label className="help-search">

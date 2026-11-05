@@ -6,12 +6,12 @@ This source candidate includes the UI refinement and remaining market-workspace 
 
 | Area | Implemented behavior |
 |---|---|
-| Public Home | Shorter product-led hero, interactive business/value/Pace walkthrough, restrained emerald/citron presentation, connected sales sections and working account/demo/pricing routes. No fictional performance claims. |
+| Public Home | Shorter product-led hero, interactive business/value/Pace walkthrough, logo-led neutral/lime presentation with working workflow navigation, connected sales sections and working account/demo/pricing routes. No fictional performance claims. |
 | Sign-in, signup, recovery | Balanced product context, contained padded form, responsive mobile styling; existing OAuth/email/recovery/error handling retained. |
 | Signed-in Home | One earnings calendar with dated actual EPS, estimate and pending status; compact saved reminders; removed repeated earnings/contribution banners. |
 | Research header | Compact supported market cap, comparable revenue growth, cash-flow margin, operating margin, net margin and next earnings where supplied. Sector guards apply; financial companies use return on average equity instead of generic cash margin. Dates/methods in one About metrics entry. Missing measures are omitted. |
 | Pace | Prominent P0–P4 stage; completed/forming distinction, technical levels and contribution rules remain expanded in the research instrument. Financial policies unchanged. |
-| Historical and valuation cases | Distinct downside/midpoint/upside icons and colors, percentile/date context, compact spacing. Historical returns remain separate from conditional Bear/Base/Bull valuation; decorative forecast lines removed. |
+| Historical and valuation cases | Distinct downside/midpoint/upside icons, actual price markers on a shared range scale, percentile/date context and compact spacing. Historical returns remain separate from conditional Bear/Base/Bull valuation; price markers are not time forecasts. |
 | Technicals | Grouped retracement, channel and pivot references, mobile layout, custom anchors, concise intro and expandable methods. Reference levels are not confirmed support. |
 | Targets and business | More compact targets container, shared consistent controls/headings; financial comparisons and date/currency guards retained. |
 | Portfolio, settings, watchlist, public/help/legal | Existing functionality retained with the prior shared readability/control improvements. No new portfolio CSV importer. |
@@ -20,7 +20,7 @@ This source candidate includes the UI refinement and remaining market-workspace 
 
 | Capability | Implemented behavior and boundaries |
 |---|---|
-| Exposure map | Returned-contract GEX/OI grid, strike/expiry/minimum filters, normalized view, largest and above/below concentrations, inspection, explicit nulls/coverage, TSV export and focused keyboard shortcuts. GEX call-positive/put-negative is a convention, not observed dealer inventory or a direction forecast. |
+| Exposure map | Map-first returned-contract GEX/OI grid, inline filters/actions, largest and above/below references, inspection, full-contrast value labels, explicit nulls/coverage, TSV export and focused keyboard shortcuts. Map controls appear only in the map view; account history and optional diagnostics follow the grid. GEX call-positive/put-negative is a convention, not observed dealer inventory or a direction forecast. |
 | Device views/history | Ten presets, twelve validated local checkpoints, compatible comparison and up to six saved-symbol boards. Device storage is distinct from account storage. |
 | Account views/history | Explicit account save/load with optimistic conflict protection. Server loads market inputs and signs compact checkpoints; browser-supplied prices are never trusted. Latest sixty stored checkpoints per symbol can be selected/replayed discretely. No interpolation or minute backfill. |
 | Exposure alerts | Fixed measured strike approach/crossing and percentage magnitude-change rules; largest-role backend supported. First check establishes baseline. Signed rule-bound baselines, source freshness, spot rebasing for changes, compare-and-swap concurrency, retryable/deduplicated alert events. Events appear in the existing alert center, not email/SMS or continuous push. |

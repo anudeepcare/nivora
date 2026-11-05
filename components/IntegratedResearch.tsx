@@ -1,13 +1,21 @@
 "use client";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { ArrowRight, Bell, ChevronDown } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowDownRight,
+  ArrowUpRight,
+  Minus,
+  Bell,
+  ChevronDown,
+} from "lucide-react";
 import type { Research } from "@/lib/types";
 import {
   approvedResearch,
   type EvidenceSection,
 } from "@/lib/approved-research";
 import { sameProviderSymbol } from "@/lib/provider-symbol";
+import { valuationScale } from "@/lib/research-summary";
 import { useProduct } from "./Session";
 import PaceInstrument from "./PaceInstrument";
 import PositionFit from "./PositionFit";
@@ -45,6 +53,13 @@ export default function IntegratedResearch({
   const m = useMemo(() => approvedResearch(r, owns, now), [r, owns, now]),
     d = m.decision;
   const scenarioCases = m.cases;
+  const scenarioScale =
+    m.scenarioReference != null
+      ? valuationScale(
+          scenarioCases.map((c) => c.target),
+          m.scenarioReference,
+        )
+      : null;
   const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   return (
     <>
@@ -78,70 +93,132 @@ export default function IntegratedResearch({
             </div>
           ) : (
             <>
-              <p className={s.scenarioCaption}>
-                {m.scenarioBasis} ·{" "}
+              <div className={s.scenarioCaption}>
+                <span>
+                  {m.scenarioEnd
+                    ? "Conditional valuation scenarios"
+                    : "Historical price-risk cases"}
+                  {" · "}
+                  {m.scenarioEnd
+                    ? dateLabel(m.scenarioEnd)
+                    : `${m.scenarioHorizon} sessions`}
+                </span>
+                <span>
+                  Reference {amount(m.scenarioReference, r.quote.currency)} ·{" "}
+                  {dateLabel(m.scenarioReferenceDate)}
+                </span>
+              </div>
+              {scenarioCases.map((c, i) => {
+                const name = ["Bear", "Base", "Bull"][i];
+                const title = m.scenarioEnd
+                  ? `${name} scenario`
+                  : [
+                      "Historical downside",
+                      "Historical midpoint",
+                      "Historical upside",
+                    ][i];
+                const Icon = [ArrowDownRight, Minus, ArrowUpRight][i];
+                const targetX = scenarioScale
+                  ? 8 +
+                    (284 * (c.target - scenarioScale.min)) /
+                      (scenarioScale.max - scenarioScale.min)
+                  : 0;
+                const referenceX = scenarioScale
+                  ? 8 + 2.84 * scenarioScale.quotePosition
+                  : 0;
+                return (
+                  <button
+                    key={name}
+                    className={s.scenario}
+                    data-case={name}
+                    onClick={() =>
+                      onTab(m.scenarioEnd ? "Analysts" : "Technicals")
+                    }
+                    aria-label={
+                      m.scenarioEnd
+                        ? `Explore ${name.toLowerCase()} scenario assumptions`
+                        : `Explore historical ${["lower", "median", "upper"][i]} outcome`
+                    }
+                  >
+                    <span className={s.scenarioHeading}>
+                      <i aria-hidden="true">
+                        <Icon size={18} />
+                      </i>
+                      <strong>{title}</strong>
+                    </span>
+                    <span className={s.scenarioNumbers}>
+                      <b className={s.scenarioValue}>
+                        {amount(c.target, r.quote.currency)}
+                      </b>
+                      <small>{percent(c.change, true)}</small>
+                    </span>
+                    <span className={s.scenarioBasis}>
+                      {m.scenarioEnd
+                        ? [
+                            "Lower earnings power",
+                            "Central assumptions",
+                            "Higher earnings power",
+                          ][i]
+                        : `${[10, 50, 90][i]}th percentile`}
+                    </span>
+                    {scenarioScale && (
+                      <svg
+                        className={s.scenarioRange}
+                        viewBox="0 0 300 32"
+                        role="img"
+                        aria-label={`${title}: ${amount(c.target, r.quote.currency)}; reference ${amount(m.scenarioReference, r.quote.currency)}. Shared linear price scale.`}
+                      >
+                        <line
+                          x1="8"
+                          x2="292"
+                          y1="16"
+                          y2="16"
+                          stroke="var(--line)"
+                          strokeWidth="2"
+                        />
+                        <line
+                          x1={referenceX}
+                          x2={targetX}
+                          y1="16"
+                          y2="16"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                          strokeLinecap="round"
+                        />
+                        <line
+                          x1={referenceX}
+                          x2={referenceX}
+                          y1="5"
+                          y2="27"
+                          stroke="var(--ink)"
+                          strokeWidth="1.5"
+                        />
+                        <circle
+                          cx={targetX}
+                          cy="16"
+                          r="5"
+                          fill="currentColor"
+                          stroke="var(--card)"
+                          strokeWidth="2"
+                        />
+                      </svg>
+                    )}
+                  </button>
+                );
+              })}
+              <p className={s.scenarioLegend}>
+                <span>
+                  <i aria-hidden="true" />
+                  Reference
+                </span>
+                <span>
+                  <b aria-hidden="true" />
+                  Case price · shared scale
+                </span>
                 {m.scenarioEnd
-                  ? dateLabel(m.scenarioEnd)
-                  : `${m.scenarioHorizon} sessions`}{" "}
-                ·{" "}
-                {m.scenarioEnd
-                  ? "Conditional estimates"
-                  : "Price risk, not fair value"}{" "}
-                · Reference {amount(m.scenarioReference, r.quote.currency)} (
-                {dateLabel(m.scenarioReferenceDate)})
+                  ? "Conditional estimates, not probabilities."
+                  : "Past return percentiles applied to the reference; not fair values or forecasts."}
               </p>
-              {[
-                [
-                  "Bear",
-                  "More challenging conditions and lower earnings power.",
-                  "↘",
-                ],
-                ["Base", "A balanced path with steady execution.", "↔"],
-                [
-                  "Bull",
-                  "A more favorable backdrop with stronger momentum.",
-                  "↗",
-                ],
-              ].map(([name, description, icon], i) => (
-                <button
-                  key={name}
-                  className={s.scenario}
-                  data-case={name}
-                  onClick={() =>
-                    onTab(m.scenarioEnd ? "Analysts" : "Technicals")
-                  }
-                  aria-label={
-                    m.scenarioEnd
-                      ? `Explore ${name.toLowerCase()} scenario assumptions`
-                      : `Explore historical ${["lower", "median", "upper"][i]} outcome`
-                  }
-                >
-                  <i aria-hidden="true">{icon}</i>
-                  <span>
-                    <strong>
-                      {m.scenarioEnd
-                        ? `${name} scenario`
-                        : [
-                            "Historical downside",
-                            "Historical midpoint",
-                            "Historical upside",
-                          ][i]}
-                    </strong>
-                    <b className={s.scenarioValue}>
-                      {amount(scenarioCases[i]?.target, r.quote.currency)}
-                    </b>
-                    <small>
-                      {percent(scenarioCases[i]?.change, true)} vs reference
-                      price
-                    </small>
-                    <small>
-                      {m.scenarioEnd
-                        ? description
-                        : "Past return percentiles; not a valuation forecast."}
-                    </small>
-                  </span>
-                </button>
-              ))}
             </>
           )}
         </div>

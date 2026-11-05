@@ -593,6 +593,7 @@ test("public legal and help documents render all cross-links and readable sectio
     "LegalDocument",
     {
       React,
+      styles:{document:"document-owned"},
       useState: React.useState,
       ContextLink: loadComponent("components/ContextLink.tsx", "ContextLink", {React, useState:React.useState, useEffect:React.useEffect, usePathname:()=>'/help',useRouter:()=>({}),useSearchParams:()=>new URLSearchParams(), Link:({children,...props})=>React.createElement('a',props,children)}),
       DocumentBack: loadComponent("components/ContextLink.tsx", "DocumentBack", {React, useState:React.useState, useEffect:React.useEffect, Link:({children,...props})=>React.createElement('a',props,children)}),
@@ -1813,7 +1814,7 @@ test("price-risk cases render historical percentiles separately from earnings an
   const PriceRiskCases = loadComponent(
     "components/PriceRiskCases.tsx",
     "PriceRiskCases",
-    { React, useState: React.useState, ArrowDownRight, ArrowUpRight, Minus, ...format, CaseRange, styles: { cases: "historical-cases" } },
+    { React, useState: React.useState, ArrowDownRight, ArrowUpRight, Minus, ...format, valuationScale: (await import("../lib/research-summary.ts")).valuationScale, styles: { cases: "historical-cases" } },
   );
   const html = renderToStaticMarkup(
     React.createElement(PriceRiskCases, { scenarios: s, compact: true }),
@@ -1836,6 +1837,21 @@ test("price-risk cases render historical percentiles separately from earnings an
   );
   assert.match(full, /Historical price-risk cases/);
   assert.doesNotMatch(full, /Bear|Bull|aria-pressed/);
+  assert.equal((full.match(/Shared linear price scale/g) ?? []).length, 3);
+  for (const targets of [[110, 120, 140], [60, 80, 90], [100, 100, 100]]) {
+    const sample = { ...s, reference: 100, cases: s.cases.map((c, i) => ({ ...c, target: targets[i], change: targets[i] - 100 })) };
+    const output = renderToStaticMarkup(React.createElement(PriceRiskCases, { scenarios: sample }));
+    const dots = [...output.matchAll(/<circle cx="([^"]+)"/g)].map(m => Number(m[1]));
+    const ticks = [...output.matchAll(/<line x1="([^"]+)" x2="[^"]+" y1="5"/g)].map(m => Number(m[1]));
+    assert.equal(dots.length, 3);
+    assert.equal(new Set(ticks).size, 1, "reference aligns across all tracks");
+    assert.ok([...dots, ...ticks].every(x => x >= 8 && x <= 292), "all actual values fit the shared domain");
+    if (targets[0] > 100) assert.ok(dots.every(x => x > ticks[0]), "all percentiles can be above the reference");
+    if (targets[2] < 100) assert.ok(dots.every(x => x < ticks[0]), "all percentiles can be below the reference");
+    if (targets.every(x => x === 100)) assert.ok(dots.every(x => Math.abs(x - ticks[0]) < 1e-8), "equal prices occupy the same position");
+    assert.doesNotMatch(output, /NaN|Infinity/);
+  }
+
   const { researchBrief } = await import("../lib/research-brief.ts");
   const brief = researchBrief(research);
   brief.scenarioEligible = false;
@@ -1858,6 +1874,43 @@ test("price-risk cases render historical percentiles separately from earnings an
   );
   assert.match(whole, /Historical price-risk cases/);
   assert.doesNotMatch(whole, /Wall Street consensus|Analyst expectations/);
+});
+
+test("integrated scenarios keep historical ranks distinct from conditional valuations on a shared price scale", async () => {
+  const { valuationScale } = await import("../lib/research-summary.ts");
+  const model = {
+    cases: [80, 105, 140].map((target, i) => ({ name: ["10th percentile", "Historical median", "90th percentile"][i], target, change: target - 100 })),
+    scenarioReference: 100, scenarioReferenceDate: "2026-10-19", scenarioHorizon: 63,
+    scenarioEnd: null,
+    edge: { pacePresentation: {}, pacePeriods: [] },
+    decision: { reasons: [], risks: [] },
+  };
+  const View = loadComponent("components/IntegratedResearch.tsx", "IntegratedResearch", {
+    React, useMemo: React.useMemo, useProduct: () => ({ demo: false }),
+    approvedResearch: () => model, sameProviderSymbol: () => false,
+    valuationScale, ...format, ArrowDownRight, ArrowUpRight, Minus, ArrowRight,
+    Bell: empty, ChevronDown: empty, PaceInstrument: empty,
+    PositionFit: empty, ResearchEvidenceGrid: empty, DecisionInsights: empty,
+    s: experience, Link: ({ children }) => React.createElement("a", null, children),
+  });
+  const render = () => renderToStaticMarkup(React.createElement(View, { research: demoData.research.MSFT, onTab: () => {} }));
+  const historical = render();
+  assert.match(historical, /Historical downside/);
+  assert.match(historical, /50th percentile/);
+  assert.match(historical, /not fair values or forecasts/);
+  assert.doesNotMatch(historical, /Bear scenario|Bull scenario|Lower earnings power/);
+  const dots = [...historical.matchAll(/<circle cx="([^"]+)"/g)].map(m => Number(m[1]));
+  const ticks = [...historical.matchAll(/<line x1="([^"]+)" x2="[^"]+" y1="5"/g)].map(m => Number(m[1]));
+  assert.equal(dots.length, 3);
+  assert.equal(new Set(ticks).size, 1);
+  assert.ok(dots[0] < ticks[0] && dots[1] > ticks[0] && dots[2] > dots[1]);
+  model.scenarioEnd = "2029-12-31";
+  const conditional = render();
+  assert.match(conditional, /Bear scenario/);
+  assert.match(conditional, /Base scenario/);
+  assert.match(conditional, /Bull scenario/);
+  assert.match(conditional, /Conditional estimates, not probabilities/);
+  assert.doesNotMatch(conditional, /Historical downside|50th percentile|Past return percentiles/);
 });
 
 test("Home exposes complete matching-news count and expands past three companies without additional feed requests", async () => {

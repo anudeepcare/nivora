@@ -56,21 +56,57 @@ function Plot({
   if (points.length < 2) return <p>Not enough observations for this chart.</p>;
   const minX = Math.min(...points.map((p) => p.x)),
     maxX = Math.max(...points.map((p) => p.x)),
-    minY = Math.min(0, ...points.map((p) => p.y)),
-    maxY = Math.max(0, ...points.map((p) => p.y));
-  const X = (n: number) => 40 + ((n - minX) / Math.max(1, maxX - minX)) * 620,
-    Y = (n: number) => 170 - ((n - minY) / Math.max(1, maxY - minY)) * 135;
+    low = Math.min(...points.map((p) => p.y)),
+    high = Math.max(...points.map((p) => p.y)),
+    pad = Math.max((high - low) * 0.15, Math.abs(high) * 0.02, 0.01),
+    minY = low - pad,
+    maxY = high + pad;
+  const X = (n: number) =>
+      40 + ((n - minX) / Math.max(1e-9, maxX - minX)) * 620,
+    Y = (n: number) => 170 - ((n - minY) / Math.max(1e-9, maxY - minY)) * 135;
   return (
     <figure className="options-plot">
-      <svg viewBox="0 0 700 210" role="img" aria-label={label}>
-        <line
-          x1="40"
-          x2="660"
-          y1={Y(0)}
-          y2={Y(0)}
-          stroke="currentColor"
-          opacity=".25"
-        />
+      <svg
+        viewBox="0 0 700 210"
+        preserveAspectRatio="none"
+        role="img"
+        aria-label={label}
+      >
+        {[minY, (minY + maxY) / 2, maxY].map((y) => (
+          <g key={y}>
+            <line
+              x1="40"
+              x2="660"
+              y1={Y(y)}
+              y2={Y(y)}
+              stroke="currentColor"
+              opacity=".12"
+            />
+            <text
+              x="36"
+              y={Y(y) + 4}
+              fontSize="10"
+              textAnchor="end"
+              fill="currentColor"
+            >
+              {new Intl.NumberFormat("en-US", {
+                notation: "compact",
+                maximumFractionDigits: 1,
+              }).format(y)}
+            </text>
+          </g>
+        ))}
+
+        {minY <= 0 && maxY >= 0 && (
+          <line
+            x1="40"
+            x2="660"
+            y1={Y(0)}
+            y2={Y(0)}
+            stroke="currentColor"
+            opacity=".3"
+          />
+        )}
         <polyline
           fill="none"
           stroke="var(--blue)"
@@ -325,9 +361,9 @@ export default function OptionsDesk({
     <div className={`${deskStyles.desk} options-desk options-v2 depth-options`}>
       <header className="options-heading">
         <div>
-          <span className="eyebrow">Options workspace</span>
-          <h2>Options & exposure</h2>
-          <p>Explore positioning, prices and risk.</p>
+          <h2>
+            <Layers3 size={21} /> Options
+          </h2>
         </div>
         <div className="options-expiry-picker">
           <SearchableSelect
@@ -346,13 +382,13 @@ export default function OptionsDesk({
       <nav className="options-nav" aria-label="Options sections">
         {[
           ["positioning", "Market map"],
-          ["vanna", "Modelled vanna"],
+          ["vanna", "Vanna"],
           ["flow", "Trade tape"],
-          ["simulation", "Paper ledger"],
+          ["simulation", "Simulation"],
           ["chain", "Contracts"],
           ["leaps", "Long-term"],
-          ["strategy", "Strategy builder"],
-          ["learn", "Understand options"],
+          ["strategy", "Strategy"],
+          ["learn", "Guide"],
         ].map(([id, label]) => (
           <button
             key={id}
@@ -400,110 +436,64 @@ export default function OptionsDesk({
         </section>
       ) : (
         <>
-          <section className="options-hero">
-            <div className="options-hero-intro">
+          {["positioning", "chain", "leaps"].includes(view) && (
+            <section className="options-hero">
+              <div className="options-hero-intro">
+                <span>
+                  <Activity size={15} /> {research.company.symbol} ·{" "}
+                  {expiryLabel(active)} · {days} days
+                </span>
+                <span className={deskStyles.rangeLabel}>
+                  Option-priced move at expiration
+                </span>
+                <h3>
+                  {summary.straddle !== null && spot > 0
+                    ? `${amount(Math.max(0, spot - summary.straddle))} – ${amount(spot + summary.straddle)}`
+                    : `${summary.rows.length} contracts in view`}
+                </h3>
+                <p>
+                  {summary.straddle !== null && spot > 0
+                    ? "ATM straddle-based range at expiration. A pricing reference, not a forecast or guaranteed range."
+                    : summary.rows.length
+                      ? "Explore available bid/ask prices. Positioning appears only when gamma and open interest are supplied."
+                      : "This expiration has no returned observations. Choose another listed expiration."}
+                </p>
+              </div>
+              <div className="options-hero-meta">
+                <span>Underlying</span>
+                <strong>{spot > 0 ? amount(spot) : "Not priced"}</strong>
+                <small>Options · {observed}</small>
+                <small>
+                  {chain?.frequency?.startsWith("Indicative")
+                    ? "Indicative · modified quotes / delayed trades"
+                    : "Snapshot pricing"}
+                </small>
+              </div>
+            </section>
+          )}
+          {["positioning", "chain", "leaps"].includes(view) && (
+            <div className="options-statusline">
               <span>
-                <Activity size={15} /> {research.company.symbol} ·{" "}
-                {expiryLabel(active)} · {days} days
+                <Clock3 size={14} /> Snapshot data · confirm executable prices
+                with your broker
               </span>
-              <span className={deskStyles.rangeLabel}>
-                Option-priced move at expiration
-              </span>
-              <h3>
-                {summary.straddle !== null && spot > 0
-                  ? `${amount(Math.max(0, spot - summary.straddle))} – ${amount(spot + summary.straddle)}`
-                  : `${summary.rows.length} contracts in view`}
-              </h3>
-              <p>
-                {summary.straddle !== null && spot > 0
-                  ? "ATM straddle-based range at expiration. A pricing reference, not a forecast or guaranteed range."
-                  : summary.rows.length
-                    ? "Explore available bid/ask prices. Positioning appears only when gamma and open interest are supplied."
-                    : "This expiration has no returned observations. Choose another listed expiration."}
-              </p>
+              <details>
+                <summary>Data details</summary>
+                <p>
+                  {chain?.frequency}{" "}
+                  {!chain?.complete &&
+                    "Partial chain; totals cover only returned contracts."}{" "}
+                  Underlying observation:{" "}
+                  {research.quote.asOf
+                    ? dateLabel(research.quote.asOf)
+                    : "unavailable"}
+                  . Open interest updates separately from quotes.
+                </p>
+              </details>
             </div>
-            <div className="options-hero-meta">
-              <span>Underlying</span>
-              <strong>{spot > 0 ? amount(spot) : "Not priced"}</strong>
-              <small>Options · {observed}</small>
-              <small>
-                {chain?.frequency?.startsWith("Indicative")
-                  ? "Indicative · modified quotes / delayed trades"
-                  : "Snapshot pricing"}
-              </small>
-            </div>
-          </section>
-          <div className="options-statusline">
-            <span>
-              <Clock3 size={14} /> Snapshot data · confirm executable prices
-              with your broker
-            </span>
-            <details>
-              <summary>Data details</summary>
-              <p>
-                {chain?.frequency}{" "}
-                {!chain?.complete &&
-                  "Partial chain; totals cover only returned contracts."}{" "}
-                Underlying observation:{" "}
-                {research.quote.asOf
-                  ? dateLabel(research.quote.asOf)
-                  : "unavailable"}
-                . Open interest updates separately from quotes.
-              </p>
-            </details>
-          </div>
+          )}
           {view === "positioning" && (
             <>
-              {(hasGamma || hasOi) && (
-                <details>
-                  <summary>
-                    Snapshot statistics · concentrations & gamma
-                  </summary>
-                  <div className="options-insight-grid">
-                    <article>
-                      <span>
-                        <Layers3 size={17} /> Call concentration
-                      </span>
-                      <strong>
-                        {topCall ? amount(topCall.strike) : "Not measured"}
-                      </strong>
-                      <p>
-                        {topCall
-                          ? `${fmt(topCall.callOi, 0)} open calls at this strike`
-                          : "Open interest is not supplied for this selection."}
-                      </p>
-                    </article>
-                    <article>
-                      <span>
-                        <ShieldCheck size={17} /> Put concentration
-                      </span>
-                      <strong>
-                        {topPut ? amount(topPut.strike) : "Not measured"}
-                      </strong>
-                      <p>
-                        {topPut
-                          ? `${fmt(topPut.putOi, 0)} open puts at this strike`
-                          : "A missing value is not zero positioning."}
-                      </p>
-                    </article>
-                    <article>
-                      <span>
-                        <Activity size={17} /> Estimated net gamma
-                      </span>
-                      <strong>
-                        {hasGamma
-                          ? amount(summary.netGex, "USD", true)
-                          : "Not measured"}
-                      </strong>
-                      <p>
-                        {hasGamma
-                          ? `${fmt(summary.gammaCoverage * 100, 0)}% input coverage · per 1% stock move`
-                          : "Complete, same-observation gamma and open interest are required for an aggregate total."}
-                      </p>
-                    </article>
-                  </div>
-                </details>
-              )}
               {!hasGamma && !hasOi && (
                 <section className="options-empty options-empty-inline">
                   <Activity size={28} />
@@ -534,113 +524,165 @@ export default function OptionsDesk({
                 expiry={active}
                 onContracts={() => setView("chain")}
               />
-              <section className="options-card options-volatility">
-                <h3>
-                  <Activity size={19} /> Volatility & movement
-                </h3>
-                <p>
-                  Compare the option market’s implied volatility with recent
-                  historical movement. These describe different periods and are
-                  not directional signals.
-                </p>
-                <div className="options-insight-grid">
-                  <article>
-                    <span>20-session realized volatility</span>
-                    <strong>
-                      {volatility.realized === null
-                        ? "History needed"
-                        : `${(volatility.realized * 100).toFixed(1)}%`}
-                    </strong>
-                    <p>
-                      Annualized with 252 sessions
-                      {volatility.realizedThrough
-                        ? ` · through ${dateLabel(volatility.realizedThrough)}`
-                        : " · twenty returns required"}
-                    </p>
-                  </article>
-                  <article>
-                    <span>Near-the-money implied volatility</span>
-                    <strong>
-                      {volatility.term.find((x) => x.expiry === active)
-                        ? `${(volatility.term.find((x) => x.expiry === active)!.iv * 100).toFixed(1)}%`
-                        : "Not supplied"}
-                    </strong>
-                    <p>
-                      Returned contracts nearest the underlying price · selected
-                      expiration
-                    </p>
-                  </article>
-                </div>
-                {volatility.term.length > 0 && (
+              <details className={deskStyles.analytics}>
+                <summary>Volatility & model diagnostics</summary>
+                {(hasGamma || hasOi) && (
                   <details>
                     <summary>
-                      Term structure · {volatility.term.length} loaded
-                      expirations
+                      Snapshot statistics · concentrations & gamma
                     </summary>
-                    <div className="options-scroll">
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>Expiration</th>
-                            <th>Reference strike</th>
-                            <th>Implied volatility</th>
-                            <th>Observation</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {volatility.term.map((x) => (
-                            <tr key={x.expiry}>
-                              <th>{dateLabel(x.expiry)}</th>
-                              <td>{amount(x.strike)}</td>
-                              <td>{(x.iv * 100).toFixed(1)}%</td>
-                              <td>{dateLabel(x.observed)}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                    <div className="options-insight-grid">
+                      <article>
+                        <span>
+                          <Layers3 size={17} /> Call concentration
+                        </span>
+                        <strong>
+                          {topCall ? amount(topCall.strike) : "Not measured"}
+                        </strong>
+                        <p>
+                          {topCall
+                            ? `${fmt(topCall.callOi, 0)} open calls at this strike`
+                            : "Open interest is not supplied for this selection."}
+                        </p>
+                      </article>
+                      <article>
+                        <span>
+                          <ShieldCheck size={17} /> Put concentration
+                        </span>
+                        <strong>
+                          {topPut ? amount(topPut.strike) : "Not measured"}
+                        </strong>
+                        <p>
+                          {topPut
+                            ? `${fmt(topPut.putOi, 0)} open puts at this strike`
+                            : "A missing value is not zero positioning."}
+                        </p>
+                      </article>
+                      <article>
+                        <span>
+                          <Activity size={17} /> Estimated net gamma
+                        </span>
+                        <strong>
+                          {hasGamma
+                            ? amount(summary.netGex, "USD", true)
+                            : "Not measured"}
+                        </strong>
+                        <p>
+                          {hasGamma
+                            ? `${fmt(summary.gammaCoverage * 100, 0)}% input coverage · per 1% stock move`
+                            : "Complete, same-observation gamma and open interest are required for an aggregate total."}
+                        </p>
+                      </article>
                     </div>
                   </details>
                 )}
-                <p>
-                  Historical IV percentiles, intraday options flow and vanna
-                  require additional comparable observations or inputs. No
-                  rankings or live-flow signals are inferred from this snapshot.
-                </p>
-              </section>
-              {!!summary.profile.length && (
-                <section className="options-card">
-                  <h3>Gamma across possible stock prices</h3>
-                  <strong>
-                    {summary.flips.length
-                      ? `Estimated flip: ${summary.flips.map((x) => amount(x)).join(" / ")}`
-                      : "No crossing in the modeled range"}
-                  </strong>
-                  <Plot
-                    points={summary.profile.map((p) => ({
-                      x: p.spot,
-                      y: p.gex,
-                    }))}
-                    label="Hypothetical stock price → · modeled gamma exposure"
-                  />
+                <section className="options-card options-volatility">
+                  <h3>
+                    <Activity size={19} /> Volatility & movement
+                  </h3>
                   <p>
-                    European Black–Scholes approximation; fixed IV, 4% interest,
-                    no dividends. Actual positions and American exercise are not
-                    modeled.
+                    Compare the option market’s implied volatility with recent
+                    historical movement. These describe different periods and
+                    are not directional signals.
+                  </p>
+                  <div className="options-insight-grid">
+                    <article>
+                      <span>20-session realized volatility</span>
+                      <strong>
+                        {volatility.realized === null
+                          ? "History needed"
+                          : `${(volatility.realized * 100).toFixed(1)}%`}
+                      </strong>
+                      <p>
+                        Annualized with 252 sessions
+                        {volatility.realizedThrough
+                          ? ` · through ${dateLabel(volatility.realizedThrough)}`
+                          : " · twenty returns required"}
+                      </p>
+                    </article>
+                    <article>
+                      <span>Near-the-money implied volatility</span>
+                      <strong>
+                        {volatility.term.find((x) => x.expiry === active)
+                          ? `${(volatility.term.find((x) => x.expiry === active)!.iv * 100).toFixed(1)}%`
+                          : "Not supplied"}
+                      </strong>
+                      <p>
+                        Returned contracts nearest the underlying price ·
+                        selected expiration
+                      </p>
+                    </article>
+                  </div>
+                  {volatility.term.length > 0 && (
+                    <details>
+                      <summary>
+                        Term structure · {volatility.term.length} loaded
+                        expirations
+                      </summary>
+                      <div className="options-scroll">
+                        <table>
+                          <thead>
+                            <tr>
+                              <th>Expiration</th>
+                              <th>Reference strike</th>
+                              <th>Implied volatility</th>
+                              <th>Observation</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {volatility.term.map((x) => (
+                              <tr key={x.expiry}>
+                                <th>{dateLabel(x.expiry)}</th>
+                                <td>{amount(x.strike)}</td>
+                                <td>{(x.iv * 100).toFixed(1)}%</td>
+                                <td>{dateLabel(x.observed)}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </details>
+                  )}
+                  <p>
+                    Implied volatility describes option pricing, not the
+                    direction of the next move.
                   </p>
                 </section>
-              )}
-              {summary.rows.filter((c) => c.type === "put" && c.iv !== null)
-                .length > 1 && (
-                <section className="options-card">
-                  <h3>How put volatility varies by strike</h3>
-                  <Plot
-                    points={summary.rows
-                      .filter((c) => c.type === "put" && c.iv !== null)
-                      .map((c) => ({ x: c.strike, y: c.iv! * 100 }))}
-                    label="Put implied volatility (%) · strike price →"
-                  />
-                </section>
-              )}
+                {!!summary.profile.length && (
+                  <section className="options-card">
+                    <h3>Gamma across possible stock prices</h3>
+                    <strong>
+                      {summary.flips.length
+                        ? `Estimated flip: ${summary.flips.map((x) => amount(x)).join(" / ")}`
+                        : "No crossing in the modeled range"}
+                    </strong>
+                    <Plot
+                      points={summary.profile.map((p) => ({
+                        x: p.spot,
+                        y: p.gex,
+                      }))}
+                      label="Hypothetical stock price → · modeled gamma exposure"
+                    />
+                    <p>
+                      European Black–Scholes approximation; fixed IV, 4%
+                      interest, no dividends. Actual positions and American
+                      exercise are not modeled.
+                    </p>
+                  </section>
+                )}
+                {summary.rows.filter((c) => c.type === "put" && c.iv !== null)
+                  .length > 1 && (
+                  <section className="options-card">
+                    <h3>How put volatility varies by strike</h3>
+                    <Plot
+                      points={summary.rows
+                        .filter((c) => c.type === "put" && c.iv !== null)
+                        .map((c) => ({ x: c.strike, y: c.iv! * 100 }))}
+                      label="Put implied volatility (%) · strike price →"
+                    />
+                  </section>
+                )}
+              </details>
             </>
           )}
           {view === "vanna" && (

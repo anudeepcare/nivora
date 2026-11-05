@@ -435,9 +435,8 @@ export default function PublicLanding({
           <div className="ap-header-inner ap-container">
             <PublicBrand />
             <nav className="ap-nav" aria-label="Main navigation">
-              <Link href="/sample">How it works</Link>
+              <Link href="/#how-it-works">How it works</Link>
               <Link href="/pricing">Pricing</Link>
-              <ContextLink page="methodology">Our approach</ContextLink>
             </nav>
             <div className="ap-header-actions">
               <Link className="ap-signin" href="/login">
@@ -467,14 +466,11 @@ export default function PublicLanding({
               className="ap-mobile-navigation"
               aria-label="More public navigation"
             >
-              <Link href="/sample" onClick={() => setMenu(false)}>
+              <Link href="/#how-it-works" onClick={() => setMenu(false)}>
                 How it works
               </Link>
               <Link href="/pricing" onClick={() => setMenu(false)}>
                 Pricing
-              </Link>
-              <Link href="/methodology" onClick={() => setMenu(false)}>
-                Our approach
               </Link>
               <Link href="/help" onClick={() => setMenu(false)}>
                 Help
@@ -501,15 +497,14 @@ export default function PublicLanding({
               )}
             </h1>
             <p>
-              Understand the business. Question the price. Plan your next
-              contribution. AURYN brings your investment research into one
-              connected workspace.
+              Business strength, valuation and your next contribution. Bring
+              your investment research into one clear workspace.
             </p>
             <div className={landing.actions}>
               <Link className={landing.primary} href="/login?mode=signup">
                 Create your account <ArrowRight size={18} aria-hidden="true" />
               </Link>
-              <a className={landing.secondary} href="#investment-demo">
+              <a className={landing.secondary} href="#how-it-works">
                 See how it works <ArrowRight size={17} aria-hidden="true" />
               </a>
             </div>
@@ -559,6 +554,7 @@ export default function PublicLanding({
 
       <section
         className={`${landing.workflow} ap-container`}
+        id="how-it-works"
         aria-labelledby="ap-workflow-heading"
       >
         <div className={landing.workflowHeading}>
@@ -727,7 +723,7 @@ export default function PublicLanding({
         <div className={experience.footerMain}>
           <PublicBrand />
           <nav aria-label="Footer navigation">
-            <Link href="/sample">How it works</Link>
+            <Link href="/#how-it-works">How it works</Link>
             <Link href="/pricing">Pricing</Link>
             <ContextLink page="help">Help</ContextLink>
             <Link href="/about">About</Link>

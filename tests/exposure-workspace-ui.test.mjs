@@ -74,10 +74,10 @@ test("populated exposure UI explains sign, coverage and accessible inspection", 
     "Open interest",
     "Nearby strikes",
     "Save snapshot",
-    "Export values",
+    "Export",
     "1/1 visible cells measured",
     "not observed dealer positions",
-    "Explore contracts",
+    "Contracts",
   ])
     assert.ok(html.includes(text), text);
   assert.match(html, /100 strike, 2026-12-18, 4,000, largest visible exposure/);

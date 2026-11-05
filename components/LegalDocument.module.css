@@ -1,0 +1,3 @@
+.document :global(.document-reading .document-eyebrow) {
+  color: var(--ink);
+}

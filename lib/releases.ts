@@ -34,6 +34,9 @@ export const releases: Release[] = [
         "Earnings-to-thesis financial comparisons and opt-in support diagnostics without portfolio details.",
       ],
       Improved: [
+        "Logo-led neutral, mint and lime surfaces; aligned sign-in forms and working public How it works navigation.",
+        "Map-first Options workspace: compact inline tools, relevant controls per view, readable heatmap values and optional model diagnostics.",
+        "Historical cases regain shared-scale price graphics; internal document version labels stay out of customer copy.",
         "Rebuilt public product presentation and contained login/signup forms; consolidated Home earnings into one view.",
         "Expanded compact header metrics, grouped technical reference levels and clear historical downside/midpoint/upside cards.",
         "Unified teal/citron workspace surfaces, prominent Pace stage badge, expanded contribution rules, and simpler header facts.",

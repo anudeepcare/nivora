@@ -155,8 +155,11 @@ test("public home leads with the benefit and an account action without fabricate
   const html = renderToStaticMarkup(React.createElement(PublicLanding));
   assert.match(html, /<main[^>]*class="mp-public/);
   assert.match(html, /Invest with/);
+  assert.match(html, /id="how-it-works"/);
+  assert.match(html, /href="\/#how-it-works"/);
+  assert.doesNotMatch(html, /Our approach/);
   assert.match(html, /the full picture\./);
-  assert.match(html, /href="#investment-demo"[^>]*>See how it works/);
+  assert.match(html, /href="#how-it-works"[^>]*>See how it works/);
 
   assert.match(html, /href="\/login\?mode=signup"[^>]*>Create your account/);
   assert.match(html, /AURYN Pace/);
@@ -800,4 +803,29 @@ test("investment demo switches by click and keyboard while keeping sample contex
     renderToStaticMarkup(render()),
     /Research framework · illustrative guide/,
   );
+});
+
+test("help and methodology show their publication date without internal release identifiers", async () => {
+  const { documents, legalConfiguration } = await import(
+    "../lib/legal-content.ts"
+  );
+  const LegalDocument = load("components/LegalDocument.tsx", "LegalDocument", {
+    ...common,
+    documents,
+    legalConfiguration,
+    styles: { document: "legal-document-owned" },
+    DocumentBack: () => null,
+  });
+  for (const id of ["help", "methodology", "terms"]) {
+    const html = renderToStaticMarkup(
+      React.createElement(LegalDocument, { id }),
+    );
+    assert.match(html, /Updated November 4, 2026/);
+    assert.match(html, /data-document-version="continuation-20261104"/);
+    const visible = html.replace(/<[^>]*>/g, " ");
+    assert.doesNotMatch(
+      visible,
+      /continuation-20261104|evidence-lenses-v1|lib\/decision-research/,
+    );
+  }
 });

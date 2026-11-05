@@ -4,11 +4,11 @@ Copy the contents of the AURYN folder into the existing application repository r
 
 ## Included in this revision
 
-- Reworked public product page and aligned, padded sign-in/signup/recovery screens with responsive styling.
+- Logo-led neutral/lime public product page, working How it works section link, simplified navigation and aligned sign-in/signup/recovery screens.
 - One Home earnings view with dated actual EPS/estimates/pending status, compact reminders and loaded-company breadth/rotation.
-- Expanded compact supported stock-header metrics; clearer historical scenarios; grouped technical reference levels and more compact targets/options layouts.
+- Expanded compact supported stock-header metrics; shared-scale historical range graphics; grouped technical reference levels and compact targets/options layouts.
 - Existing Pace policy, sector/currency/date guards, financial statements, portfolio/settings/watchlist and research tools retained.
-- Exposure map, device history, saved-symbol comparisons and exports, plus signed server-captured account checkpoints, discrete replay and cross-device view presets with save-conflict checks.
+- Map-first exposure workspace with inline controls, readable heatmap values, relevant controls per view, optional diagnostics, device history, saved-symbol comparisons and exports; signed account checkpoints, discrete replay and cross-device presets remain available below the map.
 - Exposure approach/cross/change alert backend with fresh signed baselines, spot-rebased change comparisons, concurrency protection and retryable deduplicated events in the existing alert center.
 - Modelled vanna heatmap with editable assumptions, optional bounded historical options trade tape, and a simulated long-options cash ledger with explicit device/account saves.
 - Optional same-provider AI capacity fallback remains server configured; all source/access/budget validation remains enforced.
@@ -35,8 +35,8 @@ Automated results are recorded below. Tests use synthetic transport; they are no
 
 ### Automated results
 
-- Full automated suite: **1,046 passed, 0 failed, 0 skipped**.
-- Final options layout render regression: **3 passed** after collapsing extra statistics.
+- Full automated suite: **1,048 passed, 0 failed, 0 skipped**.
+- Final options/exposure render regressions: **7 passed**, including missing-input handling, replay controls and readable inspection.
 - Strict TypeScript check and final production build passed; 34 static pages generated and dynamic API routes retained.
 - All nine API regression scripts passed with mocked/synthetic transport; no live payment or trade executed.
 - Independent reviews addressed checkpoint identity/freshness, compact rule-bound baseline storage, concurrent saves, event retries, source contract identity, replay selection and focused keyboard controls.
