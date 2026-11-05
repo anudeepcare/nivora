@@ -19,7 +19,7 @@ const empty = () => null;
 const Link = ({ children, ...props }) =>
   React.createElement("a", props, children);
 function load(name, bindings) {
-  bindings={ResearchInbox:()=>null,OpportunityMap:()=>null,...bindings};
+  bindings={ResearchInbox:()=>null,OpportunityMap:()=>null,ContributionCompare:()=>React.createElement("section",{"aria-label":"Compare your next contribution"}),SearchIcon:()=>null,...bindings};
   bindings = { homeStyles: {home:"home"}, Search: () => React.createElement("input", {"aria-label":"Company search"}), ResearchLens: () => React.createElement("aside", null, "Research lens"), ...bindings };
   bindings = { PaceHelp: () => null, ...bindings };
   const file = "components/ApprovedWorkspace.tsx";
@@ -203,7 +203,7 @@ test("New account Home has research tools without empty personal feeds", () => {
   const html = renderToStaticMarkup(React.createElement(Home));
   assert.deepEqual(requested, symbols);
   assert.doesNotMatch(html, /aria-label="Portfolio summary"|Company earnings and events|What changed/);
-  assert.match(html, /Start curious|Company search|Research lens/);
+  assert.match(html, /Research a company/);
 });
 
 test("Home accumulation panel excludes valuation-only entries without confirmed Pace", () => {

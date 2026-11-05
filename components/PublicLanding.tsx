@@ -10,7 +10,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight,
-  Search,
   ChartNoAxesCombined,
   Menu,
   X,
@@ -488,23 +487,23 @@ export default function PublicLanding({
         >
           <div className={landing.heroCopy}>
             <span className={landing.eyebrow}>
-              RESEARCH WITH A REASON. INVEST WITH A PLAN.
+              A CLEARER CASE FOR YOUR NEXT MOVE
             </span>
             <h1 id="ap-hero-heading">
               {sampleOnly ? (
                 "See the thinking behind your next investment."
               ) : (
                 <>
-                  Find your next investment.
+                  Your next investment decision,
                   <br />
-                  <span>Know what would make it worth buying.</span>
+                  <span>with the reasons attached.</span>
                 </>
               )}
             </h1>
             <p>
-              Connect business strength, valuation and a disciplined
-              accumulation plan. A clearer way to decide what deserves your
-              money—and what needs more research.
+              Decide where your next contribution deserves a closer look. See
+              what the price expects, what the business is delivering, and what
+              would make you reconsider.
             </p>
             <div className={landing.actions}>
               <Link className={landing.primary} href="/login?mode=signup">
@@ -540,18 +539,18 @@ export default function PublicLanding({
         >
           <span>
             <Layers3 size={19} aria-hidden="true" />
-            <strong>Understand the business</strong>
-            <small>Growth, cash generation and risk.</small>
+            <strong>Compare your next contribution</strong>
+            <small>Business, value and Pace in context.</small>
           </span>
           <span>
             <Scale size={19} aria-hidden="true" />
-            <strong>Test value and downside</strong>
-            <small>Scenarios, assumptions and evidence.</small>
+            <strong>Question the price</strong>
+            <small>Make the earnings expectations explicit.</small>
           </span>
           <span>
             <ChartNoAxesCombined size={19} aria-hidden="true" />
-            <strong>Choose your pace</strong>
-            <small>P0–P4 timing, separate from business quality.</small>
+            <strong>Know when to revisit</strong>
+            <small>Evidence and conditions worth following.</small>
           </span>
         </div>
       </div>
@@ -559,50 +558,49 @@ export default function PublicLanding({
       {sampleOnly && <ProductWalkthrough />}
 
       <section
-        className="ap-workflow ap-container"
+        className={`${landing.workflow} ap-container`}
         aria-labelledby="ap-workflow-heading"
       >
-        <div className="ap-section-heading">
-          <span className="ap-eyebrow">FROM QUESTION TO DECISION</span>
-          <h2 id="ap-workflow-heading">Three questions. One connected view.</h2>
-          <p>
-            A connected view of what you own, what you’re watching, and what
-            deserves a closer look.
-          </p>
+        <div className={landing.workflowHeading}>
+          <span className={landing.eyebrow}>PUT YOUR RESEARCH TO WORK</span>
+          <h2 id="ap-workflow-heading">Less collecting. More deciding.</h2>
+          <p>Move from an interesting company to a decision you can explain.</p>
         </div>
-        <div className="ap-workflow-grid signal-workflow-rows">
+        <div className={landing.workflowRows}>
           <article>
-            <span className="ap-feature-icon">
-              <Search size={24} aria-hidden="true" />
-            </span>
-            <span className="ap-step">01 / UNDERSTAND</span>
-            <h3>Find quality behind the story.</h3>
-            <p>
-              Explore financial performance, cash generation and the evidence
-              behind the company’s story.
-            </p>
+            <span>01 / COMPARE</span>
+            <div>
+              <h3>Where should the next contribution go?</h3>
+              <p>
+                Compare companies using dated business evidence, valuation and
+                AURYN Pace. Keep each dimension visible, so an attractive price
+                zone cannot stand in for a strong business. Missing inputs stay
+                explicit.
+              </p>
+            </div>
           </article>
           <article>
-            <span className="ap-feature-icon">
-              <Scale size={24} aria-hidden="true" />
-            </span>
-            <span className="ap-step">02 / WEIGH IT UP</span>
-            <h3>Know what the price asks of you.</h3>
-            <p>
-              Bring the decision, valuation assumptions and business risks into
-              one research view.
-            </p>
+            <span>02 / CHALLENGE</span>
+            <div>
+              <h3>What does this price need to be true?</h3>
+              <p>
+                Explore price-implied earnings per share. Adjust the horizon and
+                future earnings multiple to see the earnings those assumptions
+                require. Compare expectations with available evidence, not a
+                promised return.
+              </p>
+            </div>
           </article>
           <article>
-            <span className="ap-feature-icon">
-              <ChartNoAxesCombined size={24} aria-hidden="true" />
-            </span>
-            <span className="ap-step">03 / FIND YOUR PACE</span>
-            <h3>Make each addition deliberate.</h3>
-            <p>
-              Use monthly price conditions alongside the business case, with
-              confirmed and forming readings kept separate.
-            </p>
+            <span>03 / SEPARATE</span>
+            <div>
+              <h3>Has the business changed—or just the price?</h3>
+              <p>
+                Read business performance beside price context. Keep operating
+                evidence, valuation assumptions and monthly Pace readings
+                separate before deciding what a move means for your case.
+              </p>
+            </div>
           </article>
         </div>
       </section>
@@ -612,15 +610,15 @@ export default function PublicLanding({
         aria-labelledby="evidence-heading"
       >
         <div>
-          <span className={landing.eyebrow}>CONVICTION NEEDS CONTEXT</span>
+          <span className={landing.eyebrow}>STAY WITH THE CASE</span>
           <h2 id="evidence-heading">
-            Know what you’re looking at.
+            A decision is a starting point.
             <br />
-            And when it was observed.
+            Keep the reasons in view.
           </h2>
           <p>
-            Research is only useful when you can question it. Look for the
-            sources, dates, assumptions and gaps behind an assessment.
+            Know what to check next, what you are waiting for, and what has
+            changed across the companies you follow.
           </p>
           <ContextLink page="methodology">
             Explore our methodology <ArrowRight size={17} aria-hidden="true" />
@@ -630,30 +628,33 @@ export default function PublicLanding({
           <article>
             <span>01</span>
             <div>
-              <h3>Evidence you can inspect</h3>
+              <h3>Turn earnings into questions</h3>
               <p>
-                Available sources and observation dates give financial data its
-                context. Missing checks stay visible as Review.
+                Review available financial evidence and the conditions that
+                would strengthen or weaken the case. Sources, dates and missing
+                evidence stay visible.
               </p>
             </div>
           </article>
           <article>
             <span>02</span>
             <div>
-              <h3>Scenarios, not promises</h3>
+              <h3>Make waiting deliberate</h3>
               <p>
-                Bear, base and bull cases depend on assumptions. Analyst
-                expectations and valuation remain separate checks.
+                Set out what would make a company worth another look. Use alerts
+                for supported conditions; keep other conditions as research
+                notes to check yourself.
               </p>
             </div>
           </article>
           <article>
             <span>03</span>
             <div>
-              <h3>Completed and forming, kept separate</h3>
+              <h3>Return to what matters to you</h3>
               <p>
-                Pace distinguishes completed-month readings from the current
-                month. Price zones are not predicted returns.
+                See relevant updates for companies you follow, with the
+                available evidence and its date. Pick up the research that needs
+                your attention.
               </p>
             </div>
           </article>

@@ -70,6 +70,16 @@ const research = (facts = annual) => ({
         epsHigh: 7,
         analysts: 10,
       },
+      {
+        date: "2027-03-31",
+        period: "FY2027",
+        frequency: "annual",
+        currency: "USD",
+        epsLow: 5,
+        eps: 6,
+        epsHigh: 7,
+        analysts: 10,
+      },
     ],
   },
 });
@@ -442,11 +452,20 @@ test("same-period conflicts on the selected basis remain conflicts while superse
 // Independent historical reference: Microsoft FY2025 annual report, income statement.
 // https://www.microsoft.com/investor/reports/ar25/ — USD millions normalized to USD.
 test("published Microsoft FY2025 income amounts retain units and the reported operating margin", () => {
- const facts=[fact('revenue',281724e6),fact('operatingIncome',128528e6)].map(f=>({...f,start:'2024-07-01',end:'2025-06-30',filed:'2025-07-30',sourceUrl:'https://www.microsoft.com/investor/reports/ar25/'}));
- const row=financialPeriods(facts,'annual','2026-10-27')[0];
- assert.equal(row.revenue,281724000000);
- assert.equal(row.operatingIncome,128528000000);
- assert.ok(Math.abs(row.margin-45.62)<0.01);
- assert.equal(row.end,'2025-06-30');
- assert.equal(row.currency,'USD');
+  const facts = [
+    fact("revenue", 281724e6),
+    fact("operatingIncome", 128528e6),
+  ].map((f) => ({
+    ...f,
+    start: "2024-07-01",
+    end: "2025-06-30",
+    filed: "2025-07-30",
+    sourceUrl: "https://www.microsoft.com/investor/reports/ar25/",
+  }));
+  const row = financialPeriods(facts, "annual", "2026-10-27")[0];
+  assert.equal(row.revenue, 281724000000);
+  assert.equal(row.operatingIncome, 128528000000);
+  assert.ok(Math.abs(row.margin - 45.62) < 0.01);
+  assert.equal(row.end, "2025-06-30");
+  assert.equal(row.currency, "USD");
 });

@@ -83,6 +83,10 @@ export function targetsEstimates(r: Research) {
           .slice(0, 6)
           .map((x) => ({
             ...x,
+            period: /^FY\d{4}$/i.test(x.period)
+              ? x.period.toUpperCase()
+              : `FY${x.date.slice(0, 4)}`,
+            providerPeriod: x.period,
             eps: finite(x.eps) ? x.eps : null,
             revenue: finite(x.revenue) && x.revenue >= 0 ? x.revenue : null,
             epsRange: orderedEstimateRange(x.epsLow, x.eps, x.epsHigh),

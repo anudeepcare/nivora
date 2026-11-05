@@ -30,6 +30,16 @@ function research() {
           epsHigh: 10,
           analysts: 15,
         },
+        {
+          date: "2027-05-31",
+          period: "FY2027",
+          frequency: "annual",
+          currency: "USD",
+          eps: 5,
+          epsLow: 4,
+          epsHigh: 6,
+          analysts: 12,
+        },
       ],
     },
   };
@@ -147,6 +157,7 @@ test("a malformed nearer fiscal label cannot hide another complete eligible EPS 
   r.evidence.estimates = [
     { ...good, period: "FY2035" },
     { ...good, date: "2028-12-31", period: "FY2028" },
+    r.evidence.estimates[1],
   ];
   const result = load().researchOutlook(r);
   assert.equal(result.available, true);
@@ -228,6 +239,16 @@ test("headline policy prefers eligible earnings cases and uses analyst fallback 
       revenueHigh: 3e9,
     },
   ];
+  r.evidence.estimates.push({
+    date: "2027-03-31",
+    period: "FY2027",
+    frequency: "Annual",
+    currency: "USD",
+    eps: r.quote.price / 20,
+    epsLow: r.quote.price / 22,
+    epsHigh: r.quote.price / 18,
+    analysts: 10,
+  });
   assert.equal(researchBrief(r).scenarioEligible, true);
   r.quote.stale = true;
   assert.equal(researchBrief(r).scenarioEligible, true);
@@ -236,4 +257,35 @@ test("headline policy prefers eligible earnings cases and uses analyst fallback 
   const unsupported = researchBrief(r);
   assert.equal(unsupported.scenarioEligible, false);
   assert.equal(unsupported.consensus.target, 77.8056);
+});
+
+test("unreconciled forward P/E is withheld but explicit assumptions remain conditional", () => {
+  const r = research();
+  r.company.symbol = "APP";
+  r.evidence.multiples.ForwardPE = 12;
+  r.evidence.estimates[0].eps = 19.57;
+  r.evidence.estimates[0].epsLow = 18;
+  r.evidence.estimates[0].epsHigh = 21;
+  const automatic = outlook.researchOutlook(r);
+  assert.equal(automatic.available, false);
+  assert.match(automatic.reason, /cannot be reconciled/);
+  const explicit = outlook.researchOutlook(r, { earningsMultiple: 12 });
+  assert.equal(explicit.available, true);
+  assert.equal(explicit.multipleSource, "user-assumption");
+  assert.equal(explicit.cases[1].target, 19.57 * 12);
+  r.evidence.estimates[0].currency = "EUR";
+  assert.equal(
+    outlook.researchOutlook(r, { earningsMultiple: 12 }).available,
+    false,
+  );
+});
+test("missing near-year EPS and invalid manual multiples cannot silently use provider P/E", () => {
+  const r = research();
+  r.evidence.estimates.pop();
+  assert.equal(outlook.researchOutlook(r).available, false);
+  for (const earningsMultiple of [NaN, Infinity, -1, 0, 501])
+    assert.equal(
+      outlook.researchOutlook(r, { earningsMultiple }).available,
+      false,
+    );
 });

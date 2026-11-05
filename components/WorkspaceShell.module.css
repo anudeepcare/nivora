@@ -79,8 +79,8 @@
 .shell :global(.account-tool-grid)>a:nth-child(3n) :global(.tool-icon){background:#a8ddc033;color:#18765c;}
 @media(max-width:767px){
  .shell .dock{gap:4px;padding-top:6px;}
- .shell .dock a[aria-current="page"]{background:transparent;box-shadow:inset 0 2px var(--ink);color:var(--ink);}
- .shell .dock a[aria-current="page"] svg{color:var(--ink);}
+ .shell .dock a[aria-current="page"]{background:transparent;box-shadow:none;color:var(--nav-selected);}
+ .shell .dock a[aria-current="page"] svg{color:var(--nav-selected);}
  .shell :global(.product-footer){display:flex;flex-direction:column;align-items:flex-start;gap:12px;margin-top:20px;padding:16px 0;font-size:11px;text-align:left;}
  .shell :global(.product-footer) nav{display:flex;flex-wrap:wrap;gap:2px 14px;margin:0;}
  .shell :global(.product-footer) nav a{min-height:32px;font-size:11px;}
@@ -88,3 +88,9 @@
 }
 
 @media(max-width:767px){.shell :global(.product-footer) nav:global(.footer-desktop){display:none!important}.shell :global(.product-footer) details:not([open]) nav{display:none!important}}
+
+/* Selection uses color only. Keyboard focus remains a distinct visible ring. */
+.shell { --nav-selected:#647a13; }
+:global([data-theme="dark"]) .shell { --nav-selected:#d6f35a; }
+.shell .dock a[aria-current="page"] { border:0; background:transparent; box-shadow:none; }
+.shell .dock a:focus-visible,.shell .dock button:focus-visible { outline:2px solid var(--nav-selected); outline-offset:-2px; }

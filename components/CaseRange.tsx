@@ -6,11 +6,15 @@ export default function CaseRange({
   price,
   currency,
   referenceLabel = "Current",
+  rangeLabel = "Scenario price range",
+  explanation = "Each marker uses the same price scale. These are assumption-based scenarios, not probabilities or validated targets.",
 }: {
   cases: { name: string; target: number; change: number | null }[];
   price: number | null;
   currency: string;
   referenceLabel?: string;
+  rangeLabel?: string;
+  explanation?: string;
 }) {
   const scale =
     price != null
@@ -22,12 +26,12 @@ export default function CaseRange({
   return (
     <section
       className="case-range"
-      aria-label="Scenario values on a shared price scale"
+      aria-label={`${rangeLabel} on a shared price scale`}
     >
       {scale && (
         <>
           <div className="case-scale-caption">
-            <span>Scenario price range</span>
+            <span>{rangeLabel}</span>
             <span>
               {referenceLabel} {amount(price, currency)}
             </span>
@@ -98,10 +102,7 @@ export default function CaseRange({
           </section>
         ))}
       </div>
-      <p className="small muted">
-        Each marker uses the same price scale. These are assumption-based
-        scenarios, not probabilities or validated targets.
-      </p>
+      <p className="small muted">{explanation}</p>
     </section>
   );
 }

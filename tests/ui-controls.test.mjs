@@ -63,6 +63,7 @@ function loadComponent(file, name, bindings) {
     useState: React.useState,
     PaceHistoryInsights: () => null,
     ComparisonCharts: () => null,
+    DecisionInsights: () => null,
     ...bindings,
   };
   const ast = ts.createSourceFile(
@@ -297,6 +298,16 @@ test("outlook displays the selected forecast end and horizon beside its cases", 
         epsHigh: 10,
         analysts: 10,
       },
+      {
+        date: "2027-03-31",
+        period: "FY2027",
+        frequency: "annual",
+        currency: "USD",
+        eps: 5,
+        epsLow: 4,
+        epsHigh: 6,
+        analysts: 10,
+      },
     ],
   };
   const html = renderToStaticMarkup(
@@ -361,6 +372,16 @@ test("valuation snapshot separates analyst targets from opt-in exploratory sensi
         epsHigh: 10,
         analysts: 10,
       },
+      {
+        date: "2027-03-31",
+        period: "FY2027",
+        frequency: "annual",
+        currency: "USD",
+        eps: 5,
+        epsLow: 4,
+        epsHigh: 6,
+        analysts: 10,
+      },
     ],
   };
   const html = renderToStaticMarkup(
@@ -368,7 +389,7 @@ test("valuation snapshot separates analyst targets from opt-in exploratory sensi
   );
   assert.match(html, /Analyst consensus/);
   assert.match(html, /Gap to consensus/);
-  assert.match(html, /Not intrinsic fair value/);
+  assert.match(html, /not intrinsic fair value/i);
   assert.match(html, /<details class="forecast-sensitivity" open="">/);
   assert.match(html, /<details class="forecast-sensitivity" open/);
   assert.match(
@@ -1591,22 +1612,22 @@ test("new Advanced dashboard exposes actual distributions and risk charts with n
   assert.doesNotMatch(html, /NaN|Infinity|type="number"|win probability/);
 });
 
-test("stock context uses supplied completed price studies and does not invent a corporate multiple for crypto", async () => {
-  const { advancedStudies } = await import("../lib/advanced-research.ts");
+test("stock context uses completed history and omits corporate facts for crypto", () => {
+  const stockFactRows = loadComponent("components/StockFacts.tsx", "stockFactRows", format);
   const View = loadComponent("components/StockFacts.tsx", "StockFacts", {
-    React,
-    useMemo: React.useMemo,
-    advancedStudies,
-    ...format,
+    React, stockFactRows, styles: { region: "stock-facts", strip: "stock-facts-strip" },
+    Help: ({ label }) => React.createElement("button", { "aria-label": `About ${label}` }, "Help"),
   });
   const r = {
     ...demoData.research.MSFT,
     company: { ...demoData.research.MSFT.company, assetType: "crypto" },
-    evidence: { multiples: { ForwardPE: 20 } },
+    evidence: { updatedAt: "2026-01-01", highlights: { MarketCapitalization: 1000000 }, multiples: { ForwardPE: 20 } },
   };
   const html = renderToStaticMarkup(React.createElement(View, { research: r }));
-  assert.match(html, /20-session move/);
-  assert.doesNotMatch(html, /Forward P\/E|NaN|Infinity/);
+  assert.match(html, /Latest history close|Prior close/);
+  assert.match(html, /closing range/);
+  assert.match(html, /aria-label="About/);
+  assert.doesNotMatch(html, /Market cap|Forward P\/E|Next reported earnings date|NaN|Infinity/);
 });
 
 test("new operating expectations begins with explicit future inputs and never guesses a valuation", async () => {
@@ -1774,7 +1795,7 @@ test("analyst range requires both ordered reported bounds and never manufactures
   assert.equal(consensusOutlook(r).low, undefined);
 });
 
-test("price-risk cases render Bear Base Bull rather than replacing unsupported earnings with consensus", async () => {
+test("price-risk cases render historical percentiles separately from earnings and analyst targets", async () => {
   const { priceRiskScenarios } = await import("../lib/price-risk-scenarios.ts");
   const research = demoData.research.MSFT,
     s = priceRiskScenarios(research);
@@ -1787,15 +1808,15 @@ test("price-risk cases render Bear Base Bull rather than replacing unsupported e
   const PriceRiskCases = loadComponent(
     "components/PriceRiskCases.tsx",
     "PriceRiskCases",
-    { React, useState: React.useState, ...format, CaseRange },
+    { React, useState: React.useState, ...format, CaseRange, styles: { cases: "historical-cases" } },
   );
   const html = renderToStaticMarkup(
     React.createElement(PriceRiskCases, { scenarios: s, compact: true }),
   );
   for (const term of [
-    "Bear",
-    "Base",
-    "Bull",
+    "10th percentile",
+    "Historical median",
+    "90th percentile",
     "Historical price-risk cases",
     "not fair value",
     "historical windows",
@@ -1808,7 +1829,8 @@ test("price-risk cases render Bear Base Bull rather than replacing unsupported e
   const full = renderToStaticMarkup(
     React.createElement(PriceRiskCases, { scenarios: s, compact: false }),
   );
-  assert.match(full, /Scenario values on a shared price scale/);
+  assert.match(full, /Historical price outcomes/);
+  assert.doesNotMatch(full, /Bear|Bull|aria-pressed/);
   const { researchBrief } = await import("../lib/research-brief.ts");
   const brief = researchBrief(research);
   brief.scenarioEligible = false;
@@ -2048,22 +2070,30 @@ test("Home has a compact evidence pulse without a large decorative hero", async 
   assert.match(html, /Business.*Value.*Risk.*Pace/);
   assert.match(html, /YOUR AURYN BRIEF/);
 });
-test("stock header surfaces reported growth and cash generation before extra price momentum", async () => {
-  const { advancedStudies } = await import("../lib/advanced-research.ts");
-  const { latestFinancialEvidence } = await import("../lib/analysis.ts");
+test("stock header dates market facts and withholds mismatched currency or undated values", () => {
+  const stockFactRows = loadComponent("components/StockFacts.tsx", "stockFactRows", format);
   const View = loadComponent("components/StockFacts.tsx", "StockFacts", {
-    React,
-    useMemo: React.useMemo,
-    advancedStudies,
-    latestFinancialEvidence,
-    ...format,
+    React, stockFactRows, styles: { region: "stock-facts", strip: "stock-facts-strip" },
+    Help: ({ label }) => React.createElement("button", { "aria-label": `About ${label}` }, "Help"),
   });
-  const html = renderToStaticMarkup(
-    React.createElement(View, { research: demoData.research.MSFT }),
-  );
-  assert.match(html, /Revenue growth/);
-  assert.match(html, /FCF margin/);
-  assert.doesNotMatch(html, /NaN|Infinity/);
+  const r = {
+    ...demoData.research.MSFT,
+    priceObservedAt: "2026-11-05T12:00:00Z",
+    company: { ...demoData.research.MSFT.company, currency: "USD" },
+    quote: { ...demoData.research.MSFT.quote, currency: "USD" },
+    evidence: { updatedAt: "2026-11-04", highlights: { MarketCapitalization: 1000000 } },
+  };
+  const render = () => renderToStaticMarkup(React.createElement(View, { research: r }));
+  assert.match(render(), /Market cap/);
+  assert.match(render(), /Dataset updated/);
+  assert.match(render(), new RegExp(format.dateLabel("2026-11-04")));
+  r.company.currency = "EUR";
+  assert.doesNotMatch(render(), /Market cap/);
+  r.company.currency = "USD";
+  r.evidence.updatedAt = null;
+  assert.doesNotMatch(render(), /Market cap|NaN|Infinity/);
+  r.history = [];
+  assert.equal(render(), "");
 });
 
 test("scenario change without a reference quote is neutral rather than a zero percent gain", async () => {
@@ -2082,4 +2112,45 @@ test("scenario change without a reference quote is neutral rather than a zero pe
   );
   assert.doesNotMatch(html, /class="[^"]*positive|0\.0%/);
   assert.match(html, /Reference price needed/);
+});
+
+
+test("Pace help opens a labelled portal dialog and clears state when native close fires", () => {
+  let open = false, modalCalls = 0, closeCalls = 0;
+  let effect;
+  const nativeDialog = { showModal: () => modalCalls++, close: () => closeCalls++ };
+  const body = {};
+  const Help = loadComponent("components/Ui.tsx", "Help", {
+    React, styles: {}, Info: empty, X: empty,
+    useRef: () => ({ current: nativeDialog }), useId: () => "pace-explanation",
+    useState: () => [open, value => { open = value; }],
+    useEffect: callback => { effect = callback; },
+    createPortal: (child, target) => { assert.equal(target, body); return child; },
+    document: { body },
+  });
+  const render = () => Help({ label: "How AURYN Pace works", children: React.createElement("p", null, "Completed readings guide the action.") });
+  let tree = render();
+  const trigger = tree.props.children[0];
+  assert.equal(trigger.props["aria-haspopup"], "dialog");
+  assert.equal(trigger.props["aria-label"], "About How AURYN Pace works");
+  assert.equal(tree.props.children[1], false);
+  trigger.props.onClick();
+  tree = render();
+  effect();
+  const dialog = tree.props.children[1];
+  assert.equal(modalCalls, 1);
+  assert.equal(dialog.type, "dialog");
+  assert.equal(dialog.props["aria-labelledby"], "pace-explanation");
+  dialog.props.children[0].props.onClick();
+  assert.equal(closeCalls, 1);
+  // Native Escape also dispatches close; the component must then unmount the portal.
+  dialog.props.onClose();
+  assert.equal(render().props.children[1], false);
+});
+
+test("Pace instrument renders the shared dialog trigger without an inline help paragraph", () => {
+  const html = renderToStaticMarkup(React.createElement(PaceInstrument, { publicGuide: true }));
+  assert.match(html, /aria-label="About How AURYN Pace works"/);
+  assert.match(html, /aria-haspopup="dialog"/);
+  assert.doesNotMatch(html, /<dialog/);
 });

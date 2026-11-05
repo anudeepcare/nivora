@@ -1,9 +1,8 @@
 "use client";
 import { useState } from "react";
-import { ArrowRight, Diamond, Info, ShieldCheck } from "lucide-react";
+import { ArrowRight, Diamond, ShieldCheck } from "lucide-react";
 import {
   PACE_DESCRIPTIONS,
-  PACE_EXPLANATION,
   type pacePeriods,
   type pacePresentation,
 } from "@/lib/pace-presentation";
@@ -13,6 +12,7 @@ import { amount, percent } from "@/lib/format";
 import type { Research } from "@/lib/types";
 import { instrumentReading } from "@/lib/pace-instrument";
 import s from "./PaceInstrument.module.css";
+import PaceHelp from "./PaceHelp";
 const names = [
   "Pause",
   "Watch / hold",
@@ -43,7 +43,6 @@ export default function PaceInstrument({
 }: Props) {
   const [period, setPeriod] = useState<"confirmed" | "forming">("confirmed");
   const [inspect, setInspect] = useState<number | null>(publicGuide ? 2 : null);
-  const [help, setHelp] = useState(false);
   const reading = instrumentReading(readings, period),
     selected = inspect ?? reading.level;
   const exploring = publicGuide || inspect !== null;
@@ -76,14 +75,7 @@ export default function PaceInstrument({
           <img src="/pace-diamond.svg" alt="" width="22" height="24" /> AURYN
           PACE
         </span>
-        <button
-          type="button"
-          aria-label="What does Pace mean?"
-          aria-expanded={help}
-          onClick={() => setHelp(!help)}
-        >
-          <Info size={19} />
-        </button>
+        <PaceHelp />
       </header>
       <div className={s.readout}>
         <div className={s.readoutText}>
@@ -284,7 +276,6 @@ export default function PaceInstrument({
           ))}
         </div>
       )}
-      {help && <p className={s.help}>{PACE_EXPLANATION}</p>}
       <footer className={s.footer}>
         <span>
           <ShieldCheck size={15} />

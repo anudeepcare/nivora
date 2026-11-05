@@ -25,6 +25,8 @@ export type Outlook =
       currency: string;
       analysts: number | null;
       forwardPE: number;
+      multipleSource?: "reported-compatible" | "user-assumption";
+      multipleReferencePeriod?: string;
       basis?: "earnings" | "revenue";
       shares?: number;
       netDebt?: number;
@@ -90,8 +92,11 @@ export function consensusOutlook(r: Research): {
 
 /** A forecast sensitivity, never a company-specific intrinsic valuation.
  * Low/average/high annual EPS are provider observations; 0.8/1/1.2 times the
- * reported forward P/E are explicitly disclosed stress assumptions. */
-export function researchOutlook(r: Research): Outlook {
+ * compatible reported forward P/E (or an explicit user multiple) are stress assumptions. */
+export function researchOutlook(
+  r: Research,
+  assumptions?: { earningsMultiple?: number },
+): Outlook {
   const unavailable = (reason: string): Outlook => ({
     available: false,
     reason,
@@ -172,8 +177,7 @@ export function researchOutlook(r: Research): Outlook {
       x.eps! <= x.epsHigh!
     );
   };
-  const hasEarnings =
-    (e.estimates ?? []).some(usableEps) && (e.multiples?.ForwardPE ?? 0) > 0;
+  const hasEarnings = (e.estimates ?? []).some(usableEps);
   if (
     coverage.family === "financial" &&
     (!hasEarnings || r.company.foreignListing)
@@ -411,7 +415,9 @@ export function researchOutlook(r: Research): Outlook {
       basis: "revenue",
       cases,
       years,
-      period: fiscal ? estimate.period.toUpperCase() : "Annual forecast",
+      period: fiscal
+        ? estimate.period.toUpperCase()
+        : `FY${estimate.date.slice(0, 4)}`,
       end: estimate.date,
       asOf: e.updatedAt!,
       currency: r.quote.currency,
@@ -428,7 +434,13 @@ export function researchOutlook(r: Research): Outlook {
         : {}),
     };
   }
-  const forwardPE = e.multiples?.ForwardPE;
+  const userMultiple = assumptions?.earningsMultiple;
+  if (
+    userMultiple !== undefined &&
+    (!Number.isFinite(userMultiple) || userMultiple <= 0 || userMultiple > 500)
+  )
+    return unavailable("Enter a positive P/E assumption no greater than 500×.");
+  const forwardPE = userMultiple ?? e.multiples?.ForwardPE;
   if (forwardPE == null || !Number.isFinite(forwardPE) || forwardPE <= 0)
     return unavailable(
       "A positive reported forward earnings multiple is needed.",
@@ -470,6 +482,36 @@ export function researchOutlook(r: Research): Outlook {
     return unavailable(
       "The supplied fiscal period and forecast date conflict.",
     );
+  // ForwardPE has no supplied denominator date/accounting basis. A recent dataset
+  // timestamp alone cannot validate it. Compare its implied EPS with the nearest
+  // positive annual range before using it as a *conditional* reference multiple.
+  const referenceEstimate = (e.estimates ?? [])
+    .filter((x) => {
+      const days = (Date.parse(x.date) - now) / 86400000;
+      return (
+        /annual/i.test(x.frequency) &&
+        days >= 0 &&
+        days <= 550 &&
+        validFiscal(x) &&
+        x.currency === r.quote.currency &&
+        [x.epsLow, x.eps, x.epsHigh].every(
+          (v) => v != null && Number.isFinite(v) && v > 0,
+        ) &&
+        x.epsLow! <= x.eps! &&
+        x.eps! <= x.epsHigh!
+      );
+    })
+    .sort((a, b) => a.date.localeCompare(b.date))[0];
+  const impliedEps = price / forwardPE;
+  if (
+    userMultiple === undefined &&
+    (!referenceEstimate ||
+      impliedEps < referenceEstimate.epsLow! * 0.9 ||
+      impliedEps > referenceEstimate.epsHigh! * 1.1)
+  )
+    return unavailable(
+      "The reported forward P/E cannot be reconciled with the nearest annual EPS range at the reference price. Its earnings period and accounting/split basis are not supplied. Set an explicit P/E assumption to explore conditional outcomes; this does not validate the provider multiple.",
+    );
   const { epsLow: low, eps: base, epsHigh: high } = estimate;
   if (
     ![low, base, high].every((v) => v != null && Number.isFinite(v) && v > 0) ||
@@ -507,15 +549,23 @@ export function researchOutlook(r: Research): Outlook {
   return {
     available: true,
     basis: "earnings",
-    ...(coverage.family === "financial"
-      ? {
-          caveat:
-            "Earnings sensitivity only. Capital adequacy, credit losses and tangible book value require a separate bank assessment.",
-        }
-      : {}),
+    multipleSource:
+      userMultiple === undefined ? "reported-compatible" : "user-assumption",
+    multipleReferencePeriod: referenceEstimate
+      ? `FY${referenceEstimate.date.slice(0, 4)}`
+      : undefined,
+    caveat:
+      (userMultiple === undefined
+        ? "Reported forward P/E is numerically compatible with the nearest annual EPS range (10% tolerance). This check does not verify its earnings period, accounting or split basis."
+        : "The exit P/E is your explicit assumption, not a verified provider multiple or an analyst target.") +
+      (coverage.family === "financial"
+        ? " Capital adequacy, credit losses and tangible book value require a separate bank assessment."
+        : ""),
     cases,
     years,
-    period: fiscalLabel ? estimate.period.toUpperCase() : "Annual forecast",
+    period: fiscalLabel
+      ? estimate.period.toUpperCase()
+      : `FY${estimate.date.slice(0, 4)}`,
     end: estimate.date,
     asOf: e.updatedAt!,
     currency: r.quote.currency,

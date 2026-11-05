@@ -154,16 +154,23 @@ test("public home leads with the benefit and an account action without fabricate
   );
   const html = renderToStaticMarkup(React.createElement(PublicLanding));
   assert.match(html, /<main[^>]*class="mp-public/);
-  assert.match(html, /Find your next investment\./);
-  assert.match(html, /Know what would make it worth buying\./);
+  assert.match(html, /Your next investment decision,/);
+  assert.match(html, /with the reasons attached\./);
   assert.match(html, /href="#investment-demo"[^>]*>Explore the demo/);
 
   assert.match(html, /href="\/login\?mode=signup"[^>]*>Start free/);
   assert.match(html, /AURYN Pace/);
   assert.match(html, /Illustrative sample/);
-  assert.match(html, /Understand the business/);
-  assert.match(html, /Test value and downside/);
-  assert.match(html, /Choose your pace/);
+  assert.match(html, /Compare your next contribution/);
+  assert.match(html, /Question the price/);
+  assert.match(html, /Know when to revisit/);
+  assert.match(html, /price-implied earnings per share/);
+  assert.match(html, /horizon and/);
+  assert.match(html, /future earnings multiple/);
+  assert.match(html, /Has the business changed—or just the price/);
+  assert.match(html, /Turn earnings into questions/);
+  assert.match(html, /alerts for supported conditions/);
+  assert.match(html, /updates for companies you follow/);
   assert.match(html, /Discover/);
   assert.match(html, /Understand/);
   assert.match(html, /Plan/);

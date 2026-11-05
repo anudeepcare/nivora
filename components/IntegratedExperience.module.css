@@ -133,7 +133,12 @@
   margin-bottom: 12px;
   border-bottom: 1px solid var(--line);
   overflow-x: auto;
+  max-width: 100%;
+  min-width: 0;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
 }
+.researchNav::-webkit-scrollbar { display: none; }
 .researchNav button {
   display: inline-flex;
   align-items: center;
@@ -162,7 +167,7 @@
 }
 .overview {
   display: grid;
-  grid-template-columns: minmax(320px, .7fr) minmax(0, 1.3fr);
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
   grid-template-areas:"pace chart" "scenarios scenarios" "metrics metrics";
   margin-bottom:16px;
   gap: 16px;
@@ -200,7 +205,7 @@
   margin-top: 3px;
   color: var(--blue);
 }
-.chart { min-width:0; padding:16px; background:var(--glass); border:1px solid var(--line); border-radius:14px; }
+.chart { min-width:0; padding:16px; background:var(--glass); border:0; border-radius:12px; }
 .analysis { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
 .reasons { padding:18px; border:1px solid var(--line); border-radius:14px; background:var(--glass); }
 .reasons h2 { font-size:20px; font-weight:500; margin:0 0 8px; }
@@ -391,7 +396,7 @@
     gap: 10px;
   }
   .overview {
-    grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.2fr);
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
     gap: 20px;
   }
   .bottom {
@@ -683,3 +688,6 @@
 .evidenceActions { display:flex; align-items:center; flex-wrap:wrap; gap:12px 24px; margin-top:20px; }
 .evidenceActions>a,.evidenceActions>button { display:inline-flex; align-items:center; gap:8px; min-height:44px; }
 @media(max-width:760px) { .footerMain { align-items:flex-start; flex-direction:column; gap:16px; } .footerMain nav { justify-content:flex-start; gap:4px 20px; } .footerLegal { align-items:flex-start; flex-direction:column; margin-top:16px; } .footerLegal nav { gap:4px 18px; } .publicFooter { margin-top:20px; } }
+
+/* The plot owns its internals; avoid a second nested card frame. */
+.chart :global(.plot-section) { border:0; border-radius:0; box-shadow:none; padding:0; background:transparent; }

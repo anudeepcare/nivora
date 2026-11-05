@@ -9,7 +9,7 @@ export default function PaceHelp({ trigger }: { trigger?: string }) {
   return (
     <Help label="How AURYN Pace works" trigger={trigger}>
       <p>Pace combines a monthly price zone with business and data checks to guide gradual contributions.</p>
-      <p><strong>Read the action first.</strong> A contribution guide appears when those checks support adding. 2× means twice your usual contribution, within your cash and position limits.</p>
+      <p><strong>Read the action first.</strong> P0 pauses additions; P1 means watch or hold; P2 means start small; P3 means add gradually; P4 means the highest planned accumulation within your limits. These are decision stages, not required purchase multipliers.</p>
       <p><strong>When it changes:</strong> confirmed price readings use completed periods. The developing reading can move during the current period. New financial evidence can change the business assessment.</p>
       <details>
       <summary>Technical levels and contribution rules</summary>
@@ -40,11 +40,7 @@ export default function PaceHelp({ trigger }: { trigger?: string }) {
         separate check; Pace does not prove a stock is cheap.
       </p>
       <p>
-        <strong>Contribution guide:</strong> P0 and P1 mean no new contribution
-        while entry conditions are absent. P2 is 1× your normal planned
-        contribution, P3 is 2× and P4 is an upper 4× guide only. For example,
-        a $100 plan at P3 means $200. Never exceed your cash budget, position
-        limit or concentration limit.
+        <strong>Your plan stays in control:</strong> Pace does not choose a dollar amount or place a trade. Review your cash budget, existing exposure and the business evidence before changing a contribution.
       </p>
       </details>
     </Help>

@@ -84,12 +84,13 @@
 }
 .title h2 {
   font-family: var(--font-ui);
-  font-size: clamp(24px, 2.4vw, 34px);
+  font-size: clamp(32px, 3.2vw, 46px);
   font-weight: 550;
   line-height: 1.15;
   letter-spacing: -0.035em;
   margin: 0;
-  color: #f7f8f5;
+  color: #d6f35a;
+  overflow-wrap: anywhere;
 }
 .title h2 > .level {
   display: inline-flex;
@@ -98,10 +99,10 @@
   letter-spacing: 0;
   margin-left: 12px;
   padding: 6px 9px;
-  border: 1px solid #d6f35a55;
+  border: 0;
   border-radius: 6px;
   color: #e0f88c;
-  background: #d6f35a0d;
+  background: transparent;
   white-space: nowrap;
 }
 .terraces {
@@ -182,8 +183,7 @@
   background: none;
   font-size: 12px;
 }
-.description,
-.help {
+.description {
   font-size: 13px;
   line-height: 1.65;
   color: #c7ceca;
@@ -209,10 +209,6 @@
   color: #e3f4a0;
   border-color: #d6f35a;
   font-weight: 550;
-}
-.help {
-  border-top: 1px solid #ffffff20;
-  padding-top: 12px;
 }
 .footer {
   display: flex;
@@ -290,9 +286,9 @@
 
 .insight {
   margin-top: 14px;
-  padding: 12px 14px;
-  border-left: 2px solid #d6f35a;
-  background: #ffffff05;
+  padding: 8px 0;
+  border: 0;
+  background: transparent;
   border-radius: 0 6px 6px 0;
 }
 .eyebrow {
@@ -361,7 +357,7 @@
     margin-top: 12px;
   }
   .insight {
-    padding: 10px 12px;
+    padding: 6px 0;
   }
   .comparison > span {
     margin-left: 0;
@@ -371,3 +367,9 @@
     letter-spacing: 0.17em;
   }
 }
+
+/* Keep the portal help trigger readable against the instrument. */
+.instrument .header > button { color:#c7ceca; width:44px; height:44px; flex:none; }
+.instrument .header > button:hover { background:#ffffff0b; color:#d6f35a; }
+.instrument .header > button:focus-visible { outline:2px solid #d6f35a; outline-offset:2px; }
+@media (min-width:801px) { .terraces { margin-top:24px; } .stage span { display:block; font-size:11px; order:3; color:#b9c1bf; } .readout { margin-block:24px; } }

@@ -185,6 +185,16 @@ test("lower prices preserve a supported earnings entry when business inputs do n
         epsHigh: 14,
         analysts: 15,
       },
+      {
+        date: "2027-03-31",
+        period: "FY2027",
+        frequency: "annual",
+        currency: "USD",
+        eps: 6.5,
+        epsLow: 5,
+        epsHigh: 8,
+        analysts: 15,
+      },
     ],
   };
   for (const price of [160, 150, 100]) {
@@ -195,4 +205,12 @@ test("lower prices preserve a supported earnings entry when business inputs do n
     assert.equal(d.valuation.basis, "earnings");
     assert.equal(d.action, "Buy", `price ${price}`);
   }
+  // A user sensitivity must never supply the objective decision gate's multiple.
+  delete r.evidence.multiples.ForwardPE;
+  const missingMultiple = aurynDecision(
+    { ...r, quote: { ...r.quote, price: 100 } },
+    { now: Date.parse(r.retrievedAt) },
+  );
+  assert.notEqual(missingMultiple.valuation?.basis, "earnings");
+  assert.notEqual(missingMultiple.action, "Buy");
 });

@@ -1,6 +1,7 @@
 "use client";
-import {useWorkspacePreferences} from "./WorkspacePreferences";
+import { useWorkspacePreferences } from "./WorkspacePreferences";
 import OpportunityMap from "./OpportunityMap";
+import ContributionCompare from "./ContributionCompare";
 import ResearchInbox from "./ResearchInbox";
 import portfolioStyles from "./PortfolioWorkspace.module.css";
 import { sameProviderSymbol } from "@/lib/provider-symbol";
@@ -146,7 +147,17 @@ function Metric({
         <Icon aria-hidden="true" />
         <Help label={label} trigger={label}>
           <p>{note}</p>
-          <p>{kind === "return" ? "Unrealized change compares available position prices with recorded cost. It excludes realized trades, dividends, fees and taxes." : kind === "ideas" ? "Companies saved to your watchlist for further research. Saving a company does not create a holding." : label === "Margin used" ? "Recorded borrowing is subtracted from portfolio net value. This is not available buying power." : label === "Cash & managed" ? "Recorded cash and separately managed balances. These are entered balances, not live bank balances." : "Available investment values plus recorded cash and managed balances, less recorded margin. Missing prices and currency mismatches can make this total incomplete."}</p>
+          <p>
+            {kind === "return"
+              ? "Unrealized change compares available position prices with recorded cost. It excludes realized trades, dividends, fees and taxes."
+              : kind === "ideas"
+                ? "Companies saved to your watchlist for further research. Saving a company does not create a holding."
+                : label === "Margin used"
+                  ? "Recorded borrowing is subtracted from portfolio net value. This is not available buying power."
+                  : label === "Cash & managed"
+                    ? "Recorded cash and separately managed balances. These are entered balances, not live bank balances."
+                    : "Available investment values plus recorded cash and managed balances, less recorded margin. Missing prices and currency mismatches can make this total incomplete."}
+          </p>
         </Help>
       </span>
       <strong className={tone}>{value}</strong>
@@ -431,18 +442,62 @@ function useHomeFeed(symbols: string[]) {
 function ResearchLens() {
   const [lens, setLens] = useState(0);
   const lenses = [
-    { title: "Growth", question: "Is growth turning into cash?", text: "Compare revenue growth with operating cash flow. Rising sales alone don’t tell you what the business keeps.", icon: Activity, steps: ["Revenue", "Operating cash", "Capital spending"] },
-    { title: "Expectations", question: "What needs to go right?", text: "Read the assumptions behind a valuation. Test slower growth and lower margins before trusting a single target.", icon: SearchIcon, steps: ["Growth", "Margins", "Required return"] },
-    { title: "Resilience", question: "Can it fund the next chapter?", text: "Read cash, debt and cash generation together. Check debt maturities and dilution before treating cash as a cushion.", icon: Wallet, steps: ["Cash", "Debt", "Share count"] },
+    {
+      title: "Growth",
+      question: "Is growth turning into cash?",
+      text: "Compare revenue growth with operating cash flow. Rising sales alone don’t tell you what the business keeps.",
+      icon: Activity,
+      steps: ["Revenue", "Operating cash", "Capital spending"],
+    },
+    {
+      title: "Expectations",
+      question: "What needs to go right?",
+      text: "Read the assumptions behind a valuation. Test slower growth and lower margins before trusting a single target.",
+      icon: SearchIcon,
+      steps: ["Growth", "Margins", "Required return"],
+    },
+    {
+      title: "Resilience",
+      question: "Can it fund the next chapter?",
+      text: "Read cash, debt and cash generation together. Check debt maturities and dilution before treating cash as a cushion.",
+      icon: Wallet,
+      steps: ["Cash", "Debt", "Share count"],
+    },
   ];
-  const active = lenses[lens]; const Icon = active.icon;
-  return <aside className={homeStyles.lens} aria-label="Research lens">
-    <span className={homeStyles.eyebrow}>THE RESEARCH LENS</span>
-    <div className={homeStyles.lensTabs} role="group" aria-label="Choose a research question">{lenses.map((item,index)=><button key={item.title} aria-pressed={lens===index} onClick={()=>setLens(index)}>{item.title}</button>)}</div>
-    <Icon size={30} aria-hidden="true"/><h3>{active.question}</h3><p>{active.text}</p>
-    <div className={homeStyles.lensSteps}>{active.steps.map((step,index)=><span key={step}><b>0{index+1}</b>{step}</span>)}</div>
-    <small>A framework for questions, not a company rating.</small>
-  </aside>;
+  const active = lenses[lens];
+  const Icon = active.icon;
+  return (
+    <aside className={homeStyles.lens} aria-label="Research lens">
+      <span className={homeStyles.eyebrow}>THE RESEARCH LENS</span>
+      <div
+        className={homeStyles.lensTabs}
+        role="group"
+        aria-label="Choose a research question"
+      >
+        {lenses.map((item, index) => (
+          <button
+            key={item.title}
+            aria-pressed={lens === index}
+            onClick={() => setLens(index)}
+          >
+            {item.title}
+          </button>
+        ))}
+      </div>
+      <Icon size={30} aria-hidden="true" />
+      <h3>{active.question}</h3>
+      <p>{active.text}</p>
+      <div className={homeStyles.lensSteps}>
+        {active.steps.map((step, index) => (
+          <span key={step}>
+            <b>0{index + 1}</b>
+            {step}
+          </span>
+        ))}
+      </div>
+      <small>A framework for questions, not a company rating.</small>
+    </aside>
+  );
 }
 
 function HomeOverview() {
@@ -528,10 +583,12 @@ function HomeOverview() {
           ? researchLink(brief.symbol, prefix)
           : `${prefix}/research`;
   return (
-    <section className={`approved-workspace approved-home home-decision-view ${homeStyles.home}`}>
+    <section
+      className={`approved-workspace approved-home home-decision-view ${homeStyles.home}`}
+    >
       <Heading
         title={`${greeting}${displayName ? `, ${displayName}` : ""}.`}
-        subtitle="A fresh perspective on the companies that interest you."
+        subtitle="Your next investment decision, with the reasons attached."
         actions={
           <span className="date-chip">
             {today.toLocaleDateString(undefined, {
@@ -548,384 +605,425 @@ function HomeOverview() {
         }
       />
       {state.workspaceError && <Notice error>{state.workspaceError}</Notice>}
-      <section className={homeStyles.researchHero} aria-label="Your research starting point">
-        <div className={homeStyles.researchIntro}>
-          <span className={homeStyles.eyebrow}>YOUR NEXT GOOD QUESTION</span>
-          <h2>{symbols.length ? "See beyond the share price." : "Start curious. Build conviction."}</h2>
-          <p>{symbols.length ? "Connect the business, the expectations and what changed. Your research starts here." : "You don’t need a portfolio to begin. Find a company, explore its business and save the ideas you want to follow."}</p>
-          <Search />
-          <div className={homeStyles.quickLinks}><Link href={`${prefix}/discover`}>Discover ideas <ArrowUpRight size={16}/></Link><Link href={`${prefix}/watchlist`}>Your watchlist <Bookmark size={16}/></Link></div>
-        </div>
-        <ResearchLens />
-      </section>
-      <ResearchInbox news={feed.data?.news ?? []} events={feed.data?.events ?? []} today={day} ready={readiness.eventsReady && readiness.newsReady && !feed.error} quotes={quotes.data} quotesReady={!quotes.loading} />
-      <OpportunityMap research={symbols.flatMap(symbol => { const r = state.research(symbol); return r ? [r] : []; })} requested={symbols} prefix={prefix} demo={!!demo} />
-      {symbols.length > 0 && <>
-      <section className="home-next-step" aria-label="Your next step">
-        <div className="home-next-copy">
-          <span className="eyebrow">{brief.kicker}</span>
-          <h2>{brief.kind === "review" ? "Revisit the story. Challenge the assumptions." : brief.title}</h2>
-          <p>{brief.kind === "review" ? "Pick a company you follow. Check what changed in its growth, cash generation and valuation since your last look." : brief.detail}</p>
-          {!!brief.earnings.length && (
-            <div
-              className="home-earnings-overview"
-              aria-label="Featured earnings"
-            >
-              {brief.earnings.map((event) => {
-                const status = earningsEventState(event, day);
-                return (
-                  <Link
-                    href={researchLink(event.symbol, prefix)}
-                    key={event.symbol}
-                    className={`home-earnings-chip earnings-${status.status}`}
-                  >
-                    <strong>{event.symbol}</strong>
-                    <span>{status.label}</span>
-                    <ArrowUpRight size={14} />
-                  </Link>
-                );
-              })}
-            </div>
-          )}
-          {!!brief.checkpoints.length && (
-            <details
-              className="home-milestones"
-              aria-label="Upcoming milestones"
-            >
-              <summary className="home-milestones-label">
-                Upcoming milestones · {brief.checkpoints.length} checkpoints
-              </summary>
-              {brief.checkpoints.slice(0, 3).map((event, index) => (
-                <Link
-                  href={researchLink(event.symbol, prefix)}
-                  key={`${event.symbol}:${event.date}:${event.kind}`}
-                  className={`home-milestone home-milestone-${index % 3}`}
-                >
-                  <span className="home-milestone-icon" aria-hidden="true">
-                    <CalendarDays size={18} />
-                  </span>
-                  <span className="home-milestone-copy">
-                    <small>{dateLabel(event.date)}</small>
-                    <strong>{names[event.symbol] ?? event.symbol}</strong>
-                    <em>{event.kind}</em>
-                  </span>
-                  <ArrowUpRight size={16} aria-hidden="true" />
-                </Link>
-              ))}
-            </details>
-          )}
-        </div>
-        <Link className="btn primary" href={brief.kind === "review" ? `${prefix}/research` : briefHref}>
-          {brief.kind === "review" ? "Open research" : brief.action} <ArrowUpRight size={17} />
+      <div className={homeStyles.quickLinks}>
+        <Link href={`${prefix}/discover`}>
+          Discover ideas <ArrowUpRight size={16} />
         </Link>
-        <p className="home-source-note">
-          {!symbols.length
-            ? "Start with a company you know."
-            : demo
-              ? "Illustrative workspace · open a company to explore the research."
-              : feed.loading
-                ? "Checking company news and scheduled events…"
-                : `${brief.status}${feed.data?.retrievedAt ? ` Checked ${quoteTime(feed.data.retrievedAt)}.` : ""}`}
-        </p>
-      </section>
-      <Coverage state={state} />
-      <div className="home-evidence-layout">
-        <section className="home-evidence-panel">
-          <SectionHead
-            title="Your companies"
-            subtitle="Keep your next decision close."
-            action={
-              <Link className="text-link" href={`${prefix}/watchlist`}>
-                View all <ArrowUpRight size={16} />
-              </Link>
-            }
-          />
-          {symbols.length ? (
-            symbols
-              .slice(0, 5)
-              .map((symbol) => (
-                <HomeCompany
-                  key={symbol}
-                  symbol={symbol}
-                  row={quotes.data[symbol]}
-                  prefix={prefix}
-                />
-              ))
-          ) : (
-            <Empty
-              title="Begin with one company"
-              action={
-                <Link className="btn" href={`${prefix}/research`}>
-                  Find a company
-                </Link>
-              }
-            >
-              Save an idea or record a holding to make this space yours.
-            </Empty>
-          )}
-        </section>
-        <section
-          className="home-evidence-panel home-events-panel"
-          id="home-earnings"
-          aria-label="Company earnings and events"
-        >
-          <SectionHead
-            title="Next 7 days"
-            subtitle="Upcoming earnings and company events."
-            action={
-              <button
-                className="icon-btn"
-                onClick={feed.refresh}
-                disabled={feed.loading}
-                aria-label="Refresh company events"
-              >
-                <RefreshCw size={18} />
-              </button>
-            }
-          />
-          {eventGroups.length ? (
-            <div className="home-event-groups">
-              {eventGroups.map((group) => (
-                <div className="home-event-day" key={group.date}>
-                  <time dateTime={group.date}>
-                    {new Intl.DateTimeFormat("en-US", {
-                      weekday: "short",
-                      month: "short",
-                      day: "numeric",
-                      timeZone: "UTC",
-                    }).format(Date.parse(group.date))}
-                  </time>
-                  <div>
-                    {group.events.map((event) => (
-                      <Link
-                        className="home-event-row"
-                        key={`${event.symbol}:${event.kind}`}
-                        href={researchLink(event.symbol, prefix)}
-                      >
-                        <span>
-                          <strong>{event.symbol}</strong>
-                          <span>{event.kind}</span>
-                          {/earnings/i.test(event.kind) && (
-                            <b
-                              className={`earnings-status earnings-${earningsEventState(event, day).status}`}
-                            >
-                              {earningsEventState(event, day).label}
-                            </b>
-                          )}
-                          <small>{event.detail || "Time not confirmed"}</small>
-                        </span>
-                        <ArrowUpRight size={16} />
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="home-quiet-state">
-              <CalendarDays size={24} />
-              <h3>
-                {feed.loading
-                  ? "Checking the calendar…"
-                  : !symbols.length
-                    ? "Your next checkpoint."
-                    : !readiness.eventsReady
-                      ? "Calendar coverage is incomplete."
-                      : "No dated events returned."}
-              </h3>
+        <Link href={`${prefix}/watchlist`}>
+          Your watchlist <Bookmark size={16} />
+        </Link>
+        <Link href={`${prefix}/research`}>
+          Research a company <SearchIcon size={16} />
+        </Link>
+      </div>
+      <ContributionCompare symbols={symbols} prefix={prefix} />
+      <ResearchInbox
+        news={feed.data?.news ?? []}
+        events={feed.data?.events ?? []}
+        today={day}
+        ready={readiness.eventsReady && readiness.newsReady && !feed.error}
+        quotes={quotes.data}
+        quotesReady={!quotes.loading}
+      />
+      <OpportunityMap
+        research={symbols.flatMap((symbol) => {
+          const r = state.research(symbol);
+          return r ? [r] : [];
+        })}
+        requested={symbols}
+        prefix={prefix}
+        demo={!!demo}
+      />
+      {symbols.length > 0 && (
+        <>
+          <section className="home-next-step" aria-label="Your next step">
+            <div className="home-next-copy">
+              <span className="eyebrow">{brief.kicker}</span>
+              <h2>
+                {brief.kind === "review"
+                  ? "Revisit the story. Challenge the assumptions."
+                  : brief.title}
+              </h2>
               <p>
-                {!symbols.length
-                  ? "Follow a company to see upcoming earnings and other dated events."
-                  : feed.loading
-                    ? "Looking up dated company events for the week ahead."
-                    : !readiness.eventsReady
-                      ? "Some scheduled events could not be checked. Missing coverage does not mean no events."
-                      : "No scheduled company event was returned for the next 7 days."}
+                {brief.kind === "review"
+                  ? "Pick a company you follow. Check what changed in its growth, cash generation and valuation since your last look."
+                  : brief.detail}
               </p>
-            </div>
-          )}
-          {brief.reported.length > 0 && (
-            <div
-              className="home-reported-results"
-              aria-label="Recently reported earnings"
-            >
-              <h3>
-                Recently reported <span>{brief.reported.length}</span>
-              </h3>
-              {brief.reported.map((event) => (
-                <Link
-                  className="home-event-row"
-                  key={`${event.symbol}:${event.date}`}
-                  href={researchLink(event.symbol, prefix)}
+              {!!brief.earnings.length && (
+                <div
+                  className="home-earnings-overview"
+                  aria-label="Featured earnings"
                 >
-                  <span>
-                    <strong>{event.symbol}</strong>
-                    <b className="earnings-status earnings-reported">
-                      Results reported
-                    </b>
-                    <small>
-                      {dateLabel(event.date)} · Open results and company
-                      research
-                    </small>
-                  </span>
-                  <ArrowUpRight size={16} />
-                </Link>
-              ))}
-            </div>
-          )}
-          {!feed.loading &&
-            eventGroups.length > 0 &&
-            !readiness.eventsReady && (
-              <p className="home-source-note">
-                These dates are available. Some company events could not be
-                checked.
-              </p>
-            )}
-          {!feed.loading && !readiness.eventsReady && (
-            <button className="text-link" onClick={feed.refresh}>
-              Retry calendar <RefreshCw size={14} />
-            </button>
-          )}
-        </section>
-      </div>
-      <div className="home-evidence-layout home-secondary-layout">
-        <section
-          className="home-evidence-panel home-news-panel"
-          aria-label="What changed"
-        >
-          <SectionHead
-            title="What changed"
-            subtitle="Recent company updates, with the source attached."
-            action={
-              <span className="home-section-count">
-                {headlines.length ? `${headlines.length} updates` : "This week"}
-              </span>
-            }
-          />
-          {headlines.length ? (
-            <div className="home-news-list">
-              {headlines.slice(0, 5).map((news) => (
-                <article key={`${news.symbol}:${news.url}`}>
-                  <div className="home-news-meta"><SecurityLogo symbol={news.symbol}/>
-                    <Link href={researchLink(news.symbol, prefix)}>
-                      {news.symbol}
-                    </Link>
-                    <time dateTime={news.date}>{dateLabel(news.date)}</time>
-                  </div>
-                  <a
-                    className="home-news-title"
-                    href={news.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {news.title}
-                    <ArrowUpRight size={17} />
-                  </a>
-                  <Link
-                    className="text-link"
-                    href={researchLink(news.symbol, prefix)}
-                  >
-                    Review the company <ArrowUpRight size={15} />
-                  </Link>
-                </article>
-              ))}
-            </div>
-          ) : (
-            <div className="home-quiet-state">
-              <FileText size={24} />
-              <h3>
-                {feed.loading
-                  ? "Checking your companies…"
-                  : feed.error || !readiness.newsReady
-                    ? "News could not be fully checked."
-                    : "No recent matched headlines."}
-              </h3>
-              <p>
-                {!symbols.length
-                  ? "Save a company to bring its updates here."
-                  : feed.loading
-                    ? "Looking for recent updates across your followed companies."
-                    : feed.error || !readiness.newsReady
-                      ? "Available research is still ready to read. Retry to check the missing sources."
-                      : "No recent company-matched story was returned by the news source."}
-              </p>
-              <Link className="text-link" href={`${prefix}/research`}>
-                Open research <ArrowUpRight size={15} />
-              </Link>
-            </div>
-          )}
-          {headlines.length > 5 && (
-            <details className="home-more-updates">
-              <summary>Show {headlines.length - 5} more updates</summary>
-              {headlines.slice(5).map((news) => (
-                <article key={news.url}>
-                  <span>
-                    {news.symbol} · {dateLabel(news.date)}
-                  </span>
-                  <a href={news.url} target="_blank" rel="noopener noreferrer">
-                    {news.title}
-                    <ArrowUpRight size={15} />
-                  </a>
-                </article>
-              ))}
-            </details>
-          )}
-          {!feed.loading && symbols.length > 0 && (
-            <p className="home-source-note">
-              {demo
-                ? "News is not simulated in this preview."
-                : `${feed.data?.newsFollowed ?? 0} of ${feedSymbols.length} followed stocks checked.${readiness.newsReady ? "" : " Some news coverage is unavailable."}`}
-              {symbols.length > feedSymbols.length
-                ? " Crypto news is available in individual research."
-                : ""}
-            </p>
-          )}
-          {(feed.error || (!feed.loading && !readiness.newsReady)) && (
-            <button className="text-link" onClick={feed.refresh}>
-              Retry updates <RefreshCw size={14} />
-            </button>
-          )}
-        </section>
-        <section className="home-evidence-panel home-review-panel">
-          <SectionHead
-            title="Research to revisit"
-            subtitle="Price context with business checks attached."
-          />
-          <Link
-            className="home-review-row"
-            href={
-              best ? researchLink(best.symbol, prefix) : `${prefix}/research`
-            }
-          >
-            <span className="home-review-mark">
-              {best ? (
-                best.signal!.view.rawLevel != null ? (
-                  best.signal!.view.code
-                ) : (
-                  <Activity size={20} />
-                )
-              ) : (
-                <Bookmark size={20} />
+                  {brief.earnings.map((event) => {
+                    const status = earningsEventState(event, day);
+                    return (
+                      <Link
+                        href={researchLink(event.symbol, prefix)}
+                        key={event.symbol}
+                        className={`home-earnings-chip earnings-${status.status}`}
+                      >
+                        <strong>{event.symbol}</strong>
+                        <span>{status.label}</span>
+                        <ArrowUpRight size={14} />
+                      </Link>
+                    );
+                  })}
+                </div>
               )}
-            </span>
-            <span>
-              <strong>
-                {best
-                  ? `${best.symbol} · AURYN Pace`
-                  : "Explore accumulation zones"}
-              </strong>
-              <small>
-                {best
-                  ? `${best.signal!.view.actionLabel} · confirmed ${best.signal!.view.code}. From companies researched in this session; review the business and your position limit.`
-                  : "Open a company to see whether its business qualifies and an accumulation zone is established."}
-              </small>
-            </span>
-            <ArrowUpRight size={17} />
-          </Link>
-
-        </section>
-      </div>
-      </>}
+              {!!brief.checkpoints.length && (
+                <details
+                  className="home-milestones"
+                  aria-label="Upcoming milestones"
+                >
+                  <summary className="home-milestones-label">
+                    Upcoming milestones · {brief.checkpoints.length} checkpoints
+                  </summary>
+                  {brief.checkpoints.slice(0, 3).map((event, index) => (
+                    <Link
+                      href={researchLink(event.symbol, prefix)}
+                      key={`${event.symbol}:${event.date}:${event.kind}`}
+                      className={`home-milestone home-milestone-${index % 3}`}
+                    >
+                      <span className="home-milestone-icon" aria-hidden="true">
+                        <CalendarDays size={18} />
+                      </span>
+                      <span className="home-milestone-copy">
+                        <small>{dateLabel(event.date)}</small>
+                        <strong>{names[event.symbol] ?? event.symbol}</strong>
+                        <em>{event.kind}</em>
+                      </span>
+                      <ArrowUpRight size={16} aria-hidden="true" />
+                    </Link>
+                  ))}
+                </details>
+              )}
+            </div>
+            <Link
+              className="btn primary"
+              href={brief.kind === "review" ? `${prefix}/research` : briefHref}
+            >
+              {brief.kind === "review" ? "Open research" : brief.action}{" "}
+              <ArrowUpRight size={17} />
+            </Link>
+            <p className="home-source-note">
+              {!symbols.length
+                ? "Start with a company you know."
+                : demo
+                  ? "Illustrative workspace · open a company to explore the research."
+                  : feed.loading
+                    ? "Checking company news and scheduled events…"
+                    : `${brief.status}${feed.data?.retrievedAt ? ` Checked ${quoteTime(feed.data.retrievedAt)}.` : ""}`}
+            </p>
+          </section>
+          <Coverage state={state} />
+          <div className="home-evidence-layout">
+            <section className="home-evidence-panel">
+              <SectionHead
+                title="Your companies"
+                subtitle="Keep your next decision close."
+                action={
+                  <Link className="text-link" href={`${prefix}/watchlist`}>
+                    View all <ArrowUpRight size={16} />
+                  </Link>
+                }
+              />
+              {symbols.length ? (
+                symbols
+                  .slice(0, 5)
+                  .map((symbol) => (
+                    <HomeCompany
+                      key={symbol}
+                      symbol={symbol}
+                      row={quotes.data[symbol]}
+                      prefix={prefix}
+                    />
+                  ))
+              ) : (
+                <Empty
+                  title="Begin with one company"
+                  action={
+                    <Link className="btn" href={`${prefix}/research`}>
+                      Find a company
+                    </Link>
+                  }
+                >
+                  Save an idea or record a holding to make this space yours.
+                </Empty>
+              )}
+            </section>
+            <section
+              className="home-evidence-panel home-events-panel"
+              id="home-earnings"
+              aria-label="Company earnings and events"
+            >
+              <SectionHead
+                title="Next 7 days"
+                subtitle="Upcoming earnings and company events."
+                action={
+                  <button
+                    className="icon-btn"
+                    onClick={feed.refresh}
+                    disabled={feed.loading}
+                    aria-label="Refresh company events"
+                  >
+                    <RefreshCw size={18} />
+                  </button>
+                }
+              />
+              {eventGroups.length ? (
+                <div className="home-event-groups">
+                  {eventGroups.map((group) => (
+                    <div className="home-event-day" key={group.date}>
+                      <time dateTime={group.date}>
+                        {new Intl.DateTimeFormat("en-US", {
+                          weekday: "short",
+                          month: "short",
+                          day: "numeric",
+                          timeZone: "UTC",
+                        }).format(Date.parse(group.date))}
+                      </time>
+                      <div>
+                        {group.events.map((event) => (
+                          <Link
+                            className="home-event-row"
+                            key={`${event.symbol}:${event.kind}`}
+                            href={researchLink(event.symbol, prefix)}
+                          >
+                            <span>
+                              <strong>{event.symbol}</strong>
+                              <span>{event.kind}</span>
+                              {/earnings/i.test(event.kind) && (
+                                <b
+                                  className={`earnings-status earnings-${earningsEventState(event, day).status}`}
+                                >
+                                  {earningsEventState(event, day).label}
+                                </b>
+                              )}
+                              <small>
+                                {event.detail || "Time not confirmed"}
+                              </small>
+                            </span>
+                            <ArrowUpRight size={16} />
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="home-quiet-state">
+                  <CalendarDays size={24} />
+                  <h3>
+                    {feed.loading
+                      ? "Checking the calendar…"
+                      : !symbols.length
+                        ? "Your next checkpoint."
+                        : !readiness.eventsReady
+                          ? "Calendar coverage is incomplete."
+                          : "No dated events returned."}
+                  </h3>
+                  <p>
+                    {!symbols.length
+                      ? "Follow a company to see upcoming earnings and other dated events."
+                      : feed.loading
+                        ? "Looking up dated company events for the week ahead."
+                        : !readiness.eventsReady
+                          ? "Some scheduled events could not be checked. Missing coverage does not mean no events."
+                          : "No scheduled company event was returned for the next 7 days."}
+                  </p>
+                </div>
+              )}
+              {brief.reported.length > 0 && (
+                <div
+                  className="home-reported-results"
+                  aria-label="Recently reported earnings"
+                >
+                  <h3>
+                    Recently reported <span>{brief.reported.length}</span>
+                  </h3>
+                  {brief.reported.map((event) => (
+                    <Link
+                      className="home-event-row"
+                      key={`${event.symbol}:${event.date}`}
+                      href={researchLink(event.symbol, prefix)}
+                    >
+                      <span>
+                        <strong>{event.symbol}</strong>
+                        <b className="earnings-status earnings-reported">
+                          Results reported
+                        </b>
+                        <small>
+                          {dateLabel(event.date)} · Open results and company
+                          research
+                        </small>
+                      </span>
+                      <ArrowUpRight size={16} />
+                    </Link>
+                  ))}
+                </div>
+              )}
+              {!feed.loading &&
+                eventGroups.length > 0 &&
+                !readiness.eventsReady && (
+                  <p className="home-source-note">
+                    These dates are available. Some company events could not be
+                    checked.
+                  </p>
+                )}
+              {!feed.loading && !readiness.eventsReady && (
+                <button className="text-link" onClick={feed.refresh}>
+                  Retry calendar <RefreshCw size={14} />
+                </button>
+              )}
+            </section>
+          </div>
+          <div className="home-evidence-layout home-secondary-layout">
+            <section
+              className="home-evidence-panel home-news-panel"
+              aria-label="What changed"
+            >
+              <SectionHead
+                title="What changed"
+                subtitle="Recent company updates, with the source attached."
+                action={
+                  <span className="home-section-count">
+                    {headlines.length
+                      ? `${headlines.length} updates`
+                      : "This week"}
+                  </span>
+                }
+              />
+              {headlines.length ? (
+                <div className="home-news-list">
+                  {headlines.slice(0, 5).map((news) => (
+                    <article key={`${news.symbol}:${news.url}`}>
+                      <div className="home-news-meta">
+                        <SecurityLogo symbol={news.symbol} />
+                        <Link href={researchLink(news.symbol, prefix)}>
+                          {news.symbol}
+                        </Link>
+                        <time dateTime={news.date}>{dateLabel(news.date)}</time>
+                      </div>
+                      <a
+                        className="home-news-title"
+                        href={news.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {news.title}
+                        <ArrowUpRight size={17} />
+                      </a>
+                      <Link
+                        className="text-link"
+                        href={researchLink(news.symbol, prefix)}
+                      >
+                        Review the company <ArrowUpRight size={15} />
+                      </Link>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <div className="home-quiet-state">
+                  <FileText size={24} />
+                  <h3>
+                    {feed.loading
+                      ? "Checking your companies…"
+                      : feed.error || !readiness.newsReady
+                        ? "News could not be fully checked."
+                        : "No recent matched headlines."}
+                  </h3>
+                  <p>
+                    {!symbols.length
+                      ? "Save a company to bring its updates here."
+                      : feed.loading
+                        ? "Looking for recent updates across your followed companies."
+                        : feed.error || !readiness.newsReady
+                          ? "Available research is still ready to read. Retry to check the missing sources."
+                          : "No recent company-matched story was returned by the news source."}
+                  </p>
+                  <Link className="text-link" href={`${prefix}/research`}>
+                    Open research <ArrowUpRight size={15} />
+                  </Link>
+                </div>
+              )}
+              {headlines.length > 5 && (
+                <details className="home-more-updates">
+                  <summary>Show {headlines.length - 5} more updates</summary>
+                  {headlines.slice(5).map((news) => (
+                    <article key={news.url}>
+                      <span>
+                        {news.symbol} · {dateLabel(news.date)}
+                      </span>
+                      <a
+                        href={news.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {news.title}
+                        <ArrowUpRight size={15} />
+                      </a>
+                    </article>
+                  ))}
+                </details>
+              )}
+              {!feed.loading && symbols.length > 0 && (
+                <p className="home-source-note">
+                  {demo
+                    ? "News is not simulated in this preview."
+                    : `${feed.data?.newsFollowed ?? 0} of ${feedSymbols.length} followed stocks checked.${readiness.newsReady ? "" : " Some news coverage is unavailable."}`}
+                  {symbols.length > feedSymbols.length
+                    ? " Crypto news is available in individual research."
+                    : ""}
+                </p>
+              )}
+              {(feed.error || (!feed.loading && !readiness.newsReady)) && (
+                <button className="text-link" onClick={feed.refresh}>
+                  Retry updates <RefreshCw size={14} />
+                </button>
+              )}
+            </section>
+            <section className="home-evidence-panel home-review-panel">
+              <SectionHead
+                title="Research to revisit"
+                subtitle="Price context with business checks attached."
+              />
+              <Link
+                className="home-review-row"
+                href={
+                  best
+                    ? researchLink(best.symbol, prefix)
+                    : `${prefix}/research`
+                }
+              >
+                <span className="home-review-mark">
+                  {best ? (
+                    best.signal!.view.rawLevel != null ? (
+                      best.signal!.view.code
+                    ) : (
+                      <Activity size={20} />
+                    )
+                  ) : (
+                    <Bookmark size={20} />
+                  )}
+                </span>
+                <span>
+                  <strong>
+                    {best
+                      ? `${best.symbol} · AURYN Pace`
+                      : "Explore accumulation zones"}
+                  </strong>
+                  <small>
+                    {best
+                      ? `${best.signal!.view.actionLabel} · confirmed ${best.signal!.view.code}. From companies researched in this session; review the business and your position limit.`
+                      : "Open a company to see whether its business qualifies and an accumulation zone is established."}
+                  </small>
+                </span>
+                <ArrowUpRight size={17} />
+              </Link>
+            </section>
+          </div>
+        </>
+      )}
     </section>
   );
 }
@@ -1024,7 +1122,9 @@ export function Portfolio() {
     }
   }
   return (
-    <section className={`approved-workspace approved-portfolio ${portfolioStyles.portfolio}`}>
+    <section
+      className={`approved-workspace approved-portfolio ${portfolioStyles.portfolio}`}
+    >
       <Heading
         title="Your portfolio."
         subtitle="Know what you own—and where the risk sits."
@@ -1563,10 +1663,18 @@ function HoldingsTable({
 }
 
 export function Watchlist() {
-  const accountPrefs=useWorkspacePreferences();
-  const {demo:watchDemo}=useProduct();
-  const noteDates=useResource<{documents:{key:string;body:{reviewDate?:string;condition?:string;thesis?:string}}[]}>('documents?kind=note',watchDemo?{documents:[]}:undefined);
-  const reviewDates=new Map(noteDates.data?.documents.map(x=>[x.key,x.body.reviewDate??''])??[]);
+  const accountPrefs = useWorkspacePreferences();
+  const { demo: watchDemo } = useProduct();
+  const noteDates = useResource<{
+    documents: {
+      key: string;
+      body: { reviewDate?: string; condition?: string; thesis?: string };
+    }[];
+  }>("documents?kind=note", watchDemo ? { documents: [] } : undefined);
+  const reviewDates = new Map(
+    noteDates.data?.documents.map((x) => [x.key, x.body.reviewDate ?? ""]) ??
+      [],
+  );
   const state = useWorkspaceData("watchlist"),
     { workspace, prefix, quotes, mutate, pace } = state;
   const [query, setQuery] = useWorkspaceFilter("watchlist"),
@@ -1577,16 +1685,40 @@ export function Watchlist() {
     all = workspace?.watchlist.map((w) => w.symbol) ?? [];
   const calendar = useHomeFeed(all);
   const today = marketDay();
-  const nextDates = new Map<string,string>();
-  for(const event of calendar.data?.events ?? []) if(/earn/i.test(event.kind) && event.date >= today && earningsEventState(event,today).status !== 'reported' && (!nextDates.has(event.symbol)||event.date<nextDates.get(event.symbol)!)) nextDates.set(event.symbol,event.date);
-  const symbols = all.filter(
-    (s) =>
-      (type === "All" ||
-        (type === "Crypto" ? s.includes("/") : !s.includes("/"))) &&
-      `${s} ${quotes.data[s]?.company?.name || ""}`
-        .toLowerCase()
-        .includes(query.toLowerCase()),
-  ).sort((a,b)=>accountPrefs.preferences.watchSort==='change' ? (quotes.data[b]?.quote?.changePct??-Infinity)-(quotes.data[a]?.quote?.changePct??-Infinity)||a.localeCompare(b) : accountPrefs.preferences.watchSort==='event' ? (nextDates.get(a)||'9999').localeCompare(nextDates.get(b)||'9999')||a.localeCompare(b) : accountPrefs.preferences.watchSort==='review' ? (reviewDates.get(a)||'9999').localeCompare(reviewDates.get(b)||'9999')||a.localeCompare(b) : a.localeCompare(b));
+  const nextDates = new Map<string, string>();
+  for (const event of calendar.data?.events ?? [])
+    if (
+      /earn/i.test(event.kind) &&
+      event.date >= today &&
+      earningsEventState(event, today).status !== "reported" &&
+      (!nextDates.has(event.symbol) ||
+        event.date < nextDates.get(event.symbol)!)
+    )
+      nextDates.set(event.symbol, event.date);
+  const symbols = all
+    .filter(
+      (s) =>
+        (type === "All" ||
+          (type === "Crypto" ? s.includes("/") : !s.includes("/"))) &&
+        `${s} ${quotes.data[s]?.company?.name || ""}`
+          .toLowerCase()
+          .includes(query.toLowerCase()),
+    )
+    .sort((a, b) =>
+      accountPrefs.preferences.watchSort === "change"
+        ? (quotes.data[b]?.quote?.changePct ?? -Infinity) -
+            (quotes.data[a]?.quote?.changePct ?? -Infinity) ||
+          a.localeCompare(b)
+        : accountPrefs.preferences.watchSort === "event"
+          ? (nextDates.get(a) || "9999").localeCompare(
+              nextDates.get(b) || "9999",
+            ) || a.localeCompare(b)
+          : accountPrefs.preferences.watchSort === "review"
+            ? (reviewDates.get(a) || "9999").localeCompare(
+                reviewDates.get(b) || "9999",
+              ) || a.localeCompare(b)
+            : a.localeCompare(b),
+    );
   async function remove(symbol: string) {
     setRemoving(symbol);
     setError("");
@@ -1722,8 +1854,25 @@ export function Watchlist() {
                             </small>
                           </span>
                         </Link>
-                        <small>{nextDates.has(symbol) ? `Earnings · ${dateLabel(nextDates.get(symbol))}` : calendar.loading ? 'Checking earnings…' : calendar.error ? 'Earnings unavailable' : 'Next earnings unconfirmed'}</small>
-                        {noteDates.data?.documents.find(n=>n.key===symbol)?.body.condition && <small className="watch-checkpoint">{noteDates.data.documents.find(n=>n.key===symbol)?.body.condition}</small>}
+                        <small>
+                          {nextDates.has(symbol)
+                            ? `Earnings · ${dateLabel(nextDates.get(symbol))}`
+                            : calendar.loading
+                              ? "Checking earnings…"
+                              : calendar.error
+                                ? "Earnings unavailable"
+                                : "Next earnings unconfirmed"}
+                        </small>
+                        {noteDates.data?.documents.find((n) => n.key === symbol)
+                          ?.body.condition && (
+                          <small className="watch-checkpoint">
+                            {
+                              noteDates.data.documents.find(
+                                (n) => n.key === symbol,
+                              )?.body.condition
+                            }
+                          </small>
+                        )}
                       </td>
                       <td>
                         <strong>
@@ -1904,7 +2053,9 @@ export function ResearchHome() {
     ]),
   ];
   return (
-    <section className={`approved-workspace approved-research-home ${homeStyles.research}`}>
+    <section
+      className={`approved-workspace approved-research-home ${homeStyles.research}`}
+    >
       <Heading
         title="Your next decision, in focus."
         subtitle="Explore the business, understand the price and build your perspective."

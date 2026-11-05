@@ -14,6 +14,9 @@ export const releases: Release[] = [
     title: "Pace first. A clearer investment workspace.",
     groups: {
       New: [
+        "Compare up to three followed companies before a contribution, with optional position-weight previews.",
+        "Explore the earnings implied by your chosen horizon, exit multiple and return assumption.",
+        "Business, price, valuation and earnings evidence brought together in a focused research view.",
         "Pace-first research with conditional boundaries, completed versus forming context and historical outcomes.",
         "Targets & estimates separates analyst targets, annual estimates, modeled scenarios and historical price risk.",
         "Optional saved estimate baselines, opportunity maps, comparison charts and a position-size preview.",
@@ -28,6 +31,9 @@ export const releases: Release[] = [
         "Contextual return links from Help, support and legal documents.",
       ],
       Fixed: [
+        "Removed the mobile navigation arch and tab scrollbar; enlarged Pace and made its help open in a dialog.",
+        "Padded, opaque versioned PWA icons; aligned fiscal-year estimate tables and historical range labels.",
+        "Automatic earnings scenarios now check the forward multiple against near-term EPS before use.",
         "Removed the saved-view comparison banner and research data-coverage panel; standardized metric help controls.",
         "Short AURYN installation name and accessible page zoom.",
       ],

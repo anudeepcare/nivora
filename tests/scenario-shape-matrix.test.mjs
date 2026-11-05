@@ -26,7 +26,17 @@ for (const shape of ["nested-annual", "flat-fiscal", "flat-relative"])
           revenueEstimateHigh: 3e9,
         };
         if (pattern === "missing-eps") estimate.earningsEstimateLow = null;
-        const rows = { "2028-12-31": estimate };
+        const rows = {
+          "2028-12-31": estimate,
+          "2027-03-31": {
+            date: "2027-03-31",
+            period: shape === "flat-relative" ? "+1y" : "FY2027",
+            currency: "USD",
+            earningsEstimateLow: 2,
+            earningsEstimateAvg: 2.5,
+            earningsEstimateHigh: 3,
+          },
+        };
         if (pattern === "incomplete-nearer")
           rows["2029-10-17"] = {
             ...estimate,

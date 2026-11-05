@@ -16,13 +16,13 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
   title: "AURYN · Investment Intelligence",
   description: "Understand the business. Put the price in perspective.",
-  manifest: "/manifest.webmanifest",
+  manifest: "/manifest.webmanifest?v=20261105-padded",
   appleWebApp: {
     capable: true,
     title: "AURYN",
     statusBarStyle: "default",
   },
-  icons: { icon: "/icon.svg?v=citron-20261104", apple: "/apple-touch-icon.png?v=citron-20261104" },
+  icons: { icon: "/icon.svg?v=citron-20261104", apple: "/apple-touch-icon-v2.png" },
 };
 export const viewport: Viewport = {
   width: "device-width",

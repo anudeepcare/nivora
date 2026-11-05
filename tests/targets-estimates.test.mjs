@@ -79,3 +79,11 @@ test("published annual periods are not presented as upcoming estimates", () => {
   ];
   assert.equal(targetsEstimates(r).estimates.length, 0);
 });
+
+test("provider relative-year labels become fiscal labels without hiding the source period", () => {
+  const r = input();
+  r.evidence.estimates[0].period = "0y";
+  const row = targetsEstimates(r).estimates[0];
+  assert.equal(row.period, "FY2026");
+  assert.equal(row.providerPeriod, "0y");
+});

@@ -1,6 +1,6 @@
 .root {
-  border: 1px solid var(--line, #dce2dc);
-  border-radius: 18px;
+  border: 0;
+  border-radius: 0;
   background: var(--surface, #fff);
   padding: 24px;
   margin: 24px 0;
@@ -42,11 +42,13 @@
   gap: 6px;
   overflow-x: auto;
   border-bottom: 1px solid var(--line, #dce2dc);
-  padding-bottom: 10px;
+  padding-bottom: 0;
+  scrollbar-width: none;
 }
 .tabs button {
-  border: 1px solid transparent;
-  border-radius: 9px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
   padding: 10px 14px;
   background: transparent;
   color: inherit;
@@ -56,9 +58,9 @@
   white-space: nowrap;
 }
 .tabs button[aria-selected="true"] {
-  background: #e7f2ed;
-  color: #08654e;
-  border-color: #c4dfd1;
+  background: transparent;
+  color: var(--ink);
+  border-bottom-color: var(--green, #087b60);
   font-weight: 650;
 }
 .tabs button:focus-visible,
@@ -207,4 +209,62 @@
   .tableWrap td {
     padding: 12px 8px;
   }
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+.tableWrap table {
+  table-layout: fixed;
+  min-width: 660px;
+}
+.tableWrap th:first-child {
+  width: 27%;
+  text-align: left;
+}
+.tableWrap th:not(:first-child),
+.tableWrap td {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.tableWrap tbody tr,
+.tableWrap tbody th,
+.tableWrap tbody td {
+  background: transparent;
+  box-shadow: none;
+}
+.assumptions {
+  margin: 16px 0 20px;
+  padding: 14px 0;
+  border-block: 1px solid var(--line);
+}
+.assumptions summary {
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+.control {
+  display: grid;
+  gap: 8px;
+  max-width: 340px;
+  font-size: 13px;
+}
+.control input {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.assumptions button {
+  min-height: 44px;
+  margin-top: 8px;
+  padding: 8px 0;
+  background: transparent;
+  color: var(--ink);
+  border: 0;
+  text-decoration: underline;
+  cursor: pointer;
 }

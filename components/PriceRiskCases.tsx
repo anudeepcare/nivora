@@ -1,8 +1,8 @@
 "use client";
-import { useState } from "react";
 import type { PriceRiskScenarios } from "@/lib/price-risk-scenarios";
 import { amount, percent, dateLabel } from "@/lib/format";
 import CaseRange from "./CaseRange";
+import styles from "./TargetsEstimates.module.css";
 export default function PriceRiskCases({
   scenarios: s,
   compact = false,
@@ -10,7 +10,13 @@ export default function PriceRiskCases({
   scenarios: Extract<PriceRiskScenarios, { available: true }>;
   compact?: boolean;
 }) {
-  const [selected, setSelected] = useState(1);
+  const cases = s.cases.map((c) => ({
+    ...c,
+    name:
+      c.percentile === 50
+        ? "Historical median"
+        : `${c.percentile}th percentile`,
+  }));
   return (
     <div className="price-risk-cases" data-compact={compact}>
       <div className="price-risk-label">
@@ -19,7 +25,9 @@ export default function PriceRiskCases({
       </div>
       {compact ? (
         <CaseRange
-          cases={s.cases}
+          cases={cases}
+          rangeLabel="Historical price outcomes"
+          explanation="Past return percentiles applied to the reference price. The median is not an expected future price; these are not valuation targets or forecast probabilities."
           price={s.reference}
           currency={s.currency}
           referenceLabel={
@@ -28,46 +36,19 @@ export default function PriceRiskCases({
         />
       ) : (
         <>
-          <div className="price-risk-scale">
-            <CaseRange
-              cases={s.cases}
-              price={s.reference}
-              currency={s.currency}
-              referenceLabel={
-                s.referenceBasis === "settled-close"
-                  ? "Settled close"
-                  : "Reference"
-              }
-            />
-          </div>
-          <div
-            className="compass-cases"
-            role="group"
-            aria-label="Explore historical price-risk cases"
-          >
-            {s.cases.map((c, i) => (
-              <button
-                type="button"
-                key={c.name}
-                data-case={c.name}
-                aria-pressed={selected === i}
-                onClick={() => setSelected(i)}
-              >
-                <span><i className="scenario-symbol" aria-hidden="true">{i === 0 ? "↘" : i === 1 ? "↔" : "↗"}</i>{c.name}</span>
+          <div className={styles.cases} aria-label="Historical price outcomes">
+            {cases.map((c) => (
+              <article key={c.percentile}>
+                <span>{c.name}</span>
                 <strong>{amount(c.target, s.currency)}</strong>
-                <small className={c.change < 0 ? "negative" : "positive"}>
-                  {percent(c.change, true)}
-                </small>
-              </button>
+                <small>{percent(c.change, true)} vs reference</small>
+              </article>
             ))}
           </div>
           <p className="price-risk-selected">
-            {s.cases[selected].name}:{" "}
-            {s.cases[selected].percentile === 50
-              ? "median"
-              : `${s.cases[selected].percentile}th percentile`}{" "}
-            historical {s.horizon}-session price outcome, applied to{" "}
-            {amount(s.reference, s.currency)}.
+            Historical {s.horizon}-session returns applied to{" "}
+            {amount(s.reference, s.currency)}. The median is the middle observed
+            return, not an expected price or a valuation base case.
           </p>
         </>
       )}

@@ -17,6 +17,7 @@ import { sameProviderSymbol } from "@/lib/provider-symbol";
 import { useProduct } from "./Session";
 import PaceInstrument from "./PaceInstrument";
 import PositionFit from "./PositionFit";
+import DecisionInsights from "./DecisionInsights";
 import AnalystTargets from "./AnalystTargets";
 import ResearchEvidenceGrid from "./ResearchEvidenceGrid";
 import s from "./IntegratedExperience.module.css";
@@ -179,46 +180,9 @@ export default function IntegratedResearch({
           <ResearchEvidenceGrid research={r} onTab={onTab} />
         </div>
       </div>
+      <DecisionInsights research={r} owns={owns} now={now} prefix={prefix} />
       <PositionFit research={r} />
-      <div className={s.analysis}>
-        <section className={s.brief}>
-          <ShieldCheck size={20} />
-          <div>
-            <h2>Business & price</h2>
-            <p>{d.headline}</p>
-            {d.risks[0] && <p>{d.risks[0]}</p>}
-          </div>
-        </section>
-        <section className={s.reasons}>
-          <h2>What supports the view</h2>
-          <ul>
-            {d.reasons.map((reason) => (
-              <li key={reason}>{reason}</li>
-            ))}
-          </ul>
-        </section>
-      </div>
       <div className={s.market}>
-        <div className={s.bottom}>
-          <section>
-            <AnalystTargets research={r} showUnavailable />
-            <button onClick={() => onTab("Analysts")}>
-              Targets & estimates <ArrowRight size={15} />
-            </button>
-          </section>
-          <section>
-            <h3>
-              <CalendarDays size={17} /> What changes the view
-            </h3>
-            <p>
-              {d.changeConditions[0] ||
-                "Review the next company update and any changes in the evidence."}
-            </p>
-            <button onClick={() => onTab("News")}>
-              News & earnings <ArrowRight size={15} />
-            </button>
-          </section>
-        </div>
         <details className={s.evidence}>
           <summary>
             Reasons, risks & next steps <ChevronDown size={15} />
