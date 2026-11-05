@@ -1,5 +1,6 @@
 "use client";
 import OpportunityMap from "./OpportunityMap";
+import { MarketRadar } from "./MarketRadar";
 import mapStyles from "./OpportunityMap.module.css";
 import {
   emptyOpportunityFilters,
@@ -9,7 +10,11 @@ import {
 } from "@/lib/opportunity-map";
 import { researchEdge } from "@/lib/edge-research";
 import { verifiedResearch } from "@/lib/comparison";
-import { sameProviderSymbol, providerSymbol, providerIdentity } from "@/lib/provider-symbol";
+import {
+  sameProviderSymbol,
+  providerSymbol,
+  providerIdentity,
+} from "@/lib/provider-symbol";
 import PaceGuidance from "./PaceGuidance";
 import PaceHelp from "./PaceHelp";
 import { useMemo, useState } from "react";
@@ -61,7 +66,17 @@ export default function Discover({ embedded = false }: { embedded?: boolean }) {
     setMessage("");
     try {
       const symbols = draft.trim()
-        ? [...new Map(draft.split(/[ ,]+/).filter(Boolean).map(s => [providerIdentity(providerSymbol(s)),providerSymbol(s)])).values()]
+        ? [
+            ...new Map(
+              draft
+                .split(/[ ,]+/)
+                .filter(Boolean)
+                .map((s) => [
+                  providerIdentity(providerSymbol(s)),
+                  providerSymbol(s),
+                ]),
+            ).values(),
+          ]
         : universe;
       if (!symbols.length || symbols.length > 12)
         throw Error("Choose between one and twelve companies.");
@@ -295,6 +310,12 @@ export default function Discover({ embedded = false }: { embedded?: boolean }) {
             setCriteria({ ...criteria, sector });
           }}
         />
+      )}
+      {rows.length > 0 && (
+        <details className="panel">
+          <summary>Breadth & rotation · loaded companies</summary>
+          <MarketRadar research={rows} />
+        </details>
       )}
       {values.length ? (
         <div className="table-scroll">

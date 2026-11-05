@@ -13,6 +13,9 @@ import {
   ShieldCheck,
   ChartNoAxesCombined,
   ArrowRight,
+  ArrowDownRight,
+  ArrowUpRight,
+  Minus,
 } from "lucide-react";
 import { paceCode, pacePeriods } from "../lib/pace-presentation.ts";
 import * as format from "../lib/format.ts";
@@ -724,7 +727,7 @@ test("authentication explains AURYN in sign-in, signup and recovery without fabr
       { google: false, x: false },
     ];
     const Login = loadComponent("components/Session.tsx", "Login", {
-      React,
+      React, Layers3, Scale, ChartNoAxesCombined, ArrowRight,
       useRouter: () => ({ replace: () => {} }),
       useEffect: () => {},
     useState: React.useState,
@@ -743,10 +746,10 @@ test("authentication explains AURYN in sign-in, signup and recovery without fabr
     assert.match(html, /name="email"/);
     if (mode !== "reset") assert.match(html, /name="password"/);
     assert.match(html, /About AURYN/);
-    assert.match(html, /Explore the AURYN Pace framework/);
-    assert.match(html, /Price context. Business checks first/);
+    assert.match(html, /Find your AURYN Pace/);
+    assert.match(html, /Growth, cash generation and financial health/);
     assert.match(html, /AURYN Pace/);
-    assert.match(html, /not predicted returns/);
+    assert.match(html, /Evidence first. Your judgment always/);
     assert.doesNotMatch(html, /desktop-nav|mobile-dock|guaranteed returns/);
   }
 });
@@ -1088,7 +1091,7 @@ test("public sample explains actual contribution levels without fictional observ
     assert.match(html, /Current month · forming/);
     for (const level of ["P0", "P1", "P2", "P3", "P4"])
       assert.ok(html.includes(level));
-    assert.match(html, /not predicted returns/);
+    assert.match(html, /Evidence first. Your judgment always/);
     assert.doesNotMatch(
       html,
       /Northstar|Revenue growth|FCF margin|\$\d|\+\d+(?:\.\d+)?%|guaranteed|buy now|api_key/i,
@@ -1810,7 +1813,7 @@ test("price-risk cases render historical percentiles separately from earnings an
   const PriceRiskCases = loadComponent(
     "components/PriceRiskCases.tsx",
     "PriceRiskCases",
-    { React, useState: React.useState, ...format, CaseRange, styles: { cases: "historical-cases" } },
+    { React, useState: React.useState, ArrowDownRight, ArrowUpRight, Minus, ...format, CaseRange, styles: { cases: "historical-cases" } },
   );
   const html = renderToStaticMarkup(
     React.createElement(PriceRiskCases, { scenarios: s, compact: true }),
@@ -1831,7 +1834,7 @@ test("price-risk cases render historical percentiles separately from earnings an
   const full = renderToStaticMarkup(
     React.createElement(PriceRiskCases, { scenarios: s, compact: false }),
   );
-  assert.match(full, /Historical price outcomes/);
+  assert.match(full, /Historical price-risk cases/);
   assert.doesNotMatch(full, /Bear|Bull|aria-pressed/);
   const { researchBrief } = await import("../lib/research-brief.ts");
   const brief = researchBrief(research);

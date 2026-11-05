@@ -18,8 +18,14 @@ import type { Session } from "@supabase/supabase-js";
 import { api, authClient } from "@/lib/client";
 import type { Research, Workspace } from "@/lib/types";
 import { Logo } from "./Ui";
-import PaceInstrument from "./PaceInstrument";
-import experience from "./IntegratedExperience.module.css";
+import experience from "./Session.module.css";
+import {
+  ArrowRight,
+  Layers3,
+  Scale,
+  ChartNoAxesCombined,
+  Check,
+} from "lucide-react";
 import { readResource, resourceSnapshot } from "@/lib/resource-cache";
 import { accountCache, clearAccountCache } from "@/lib/account-cache";
 export type DemoData = {
@@ -565,12 +571,62 @@ function Login({ initialError }: { initialError: string }) {
   }
   return (
     <main className={`mp-auth ${experience.auth}`} data-auth-mode={mode}>
-      <aside className={experience.authStory} aria-label="About AURYN">
-        <a href="/" aria-label="AURYN home"><img src="/icon.svg" alt="" width="30" height="30"/> AURYN</a>
-        <PaceInstrument publicGuide compact />
-        <p>Your research, your perspective, your pace. Business evidence and position limits come first.</p>
+      <aside className={experience.story} aria-label="About AURYN">
+        <a href="/" aria-label="AURYN home">
+          <img src="/icon.svg" alt="" width="30" height="30" /> AURYN
+        </a>
+        <div className={experience.storyContent}>
+          <span className={experience.eyebrow}>YOUR INVESTMENT WORKSPACE</span>
+          <h2>
+            A clearer view.
+            <br />
+            <span>A considered next move.</span>
+          </h2>
+          <p>
+            Bring the business, the price and your plan into one perspective.
+          </p>
+          <div className={experience.researchCard}>
+            <div className={experience.cardHeading}>
+              <span>THE AURYN APPROACH</span>
+              <ArrowRight size={18} />
+            </div>
+            {[
+              {
+                Icon: Layers3,
+                title: "Understand the business",
+                detail: "Growth, cash generation and financial health.",
+              },
+              {
+                Icon: Scale,
+                title: "Question the price",
+                detail: "Explore the assumptions behind valuation.",
+              },
+              {
+                Icon: ChartNoAxesCombined,
+                title: "Find your AURYN Pace",
+                detail: "Monthly price context for gradual additions.",
+              },
+            ].map(({ Icon, title, detail }) => (
+              <div className={experience.researchRow} key={title}>
+                <span>
+                  <Icon size={19} />
+                </span>
+                <div>
+                  <strong>{title}</strong>
+                  <small>{detail}</small>
+                </div>
+              </div>
+            ))}
+            <p>
+              <Check size={14} /> Evidence first. Your judgment always.
+            </p>
+          </div>
+        </div>
+        <p className={experience.storyFoot}>
+          Research with perspective. Invest at your own pace.
+        </p>
       </aside>
-      <section className={experience.authMain} aria-label="Account access">
+      <section className={experience.main} aria-label="Account access">
         <div className="mp-auth-mobile-brand">
           <a className="mp-brand" href="/" aria-label="Auryn home">
             <span className="mp-brand-mark" aria-hidden="true">
@@ -605,7 +661,7 @@ function Login({ initialError }: { initialError: string }) {
                 ? "Understand the business. Plan gradual buying with AURYN Pace."
                 : mode === "reset"
                   ? "We’ll email a secure link to restore access to your workspace."
-                  : "Your business research, buy and sell guidance, and AURYN Pace."}
+                  : "Sign in to continue your research and revisit the companies you follow."}
             </p>
           </div>
           {mode !== "reset" && (

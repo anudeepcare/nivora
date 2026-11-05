@@ -171,7 +171,7 @@ export default function StockFacts({
         ...all
           .filter((x) => x.label === "Next reported earnings date")
           .map((x) => ({ ...x, label: "Next earnings" })),
-      ].slice(0, 4);
+      ].slice(0, 6);
   if (!rows.length) return null;
   return (
     <section
@@ -181,15 +181,21 @@ export default function StockFacts({
       <dl className={styles.strip}>
         {rows.map((row) => (
           <div key={row.label}>
-            <dt>
-              {row.label}
-            </dt>
+            <dt>{row.label}</dt>
             <dd>{row.value}</dd>
           </div>
         ))}
       </dl>
       <Help label="About these metrics" trigger="About metrics">
-        {rows.map(row=><section key={row.label}><h3>{row.label} · {row.value}</h3><p>{row.date}</p><p>{row.help}</p></section>)}
+        {rows.map((row) => (
+          <section key={row.label}>
+            <h3>
+              {row.label} · {row.value}
+            </h3>
+            <p>{row.date}</p>
+            <p>{row.help}</p>
+          </section>
+        ))}
       </Help>
     </section>
   );

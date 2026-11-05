@@ -154,13 +154,13 @@ test("public home leads with the benefit and an account action without fabricate
   );
   const html = renderToStaticMarkup(React.createElement(PublicLanding));
   assert.match(html, /<main[^>]*class="mp-public/);
-  assert.match(html, /Your next investment decision,/);
-  assert.match(html, /with the reasons attached\./);
-  assert.match(html, /href="#investment-demo"[^>]*>Explore the demo/);
+  assert.match(html, /Invest with/);
+  assert.match(html, /the full picture\./);
+  assert.match(html, /href="#investment-demo"[^>]*>See how it works/);
 
-  assert.match(html, /href="\/login\?mode=signup"[^>]*>Start free/);
+  assert.match(html, /href="\/login\?mode=signup"[^>]*>Create your account/);
   assert.match(html, /AURYN Pace/);
-  assert.match(html, /Illustrative sample/);
+  assert.match(html, /Product walkthrough/);
   assert.match(html, /Compare your next contribution/);
   assert.match(html, /Question the price/);
   assert.match(html, /Know when to revisit/);
@@ -798,6 +798,6 @@ test("investment demo switches by click and keyboard while keeping sample contex
   assert.equal(step, 0);
   assert.match(
     renderToStaticMarkup(render()),
-    /Fictional company · no live data/,
+    /Research framework · illustrative guide/,
   );
 });

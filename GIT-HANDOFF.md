@@ -1,34 +1,45 @@
-# AURYN 1.0.0 — workspace source candidate
+# AURYN 1.0.0 — complete workspace source candidate
 
-Copy the contents of the AURYN folder into your app's repository root. Keep your existing environment settings. Do not accidentally nest AURYN inside another application folder.
+Copy the contents of the AURYN folder into the existing application repository root. Keep existing environment settings; avoid nesting one AURYN folder inside another. No source push or production deployment was performed.
 
-## What changed
-- Unified owned page surfaces around neutral/teal/jade/citron; improved headings, controls, focus and contrast across app/public/login/settings/portfolio surfaces.
-- Compact stock facts now have one About metrics entry instead of repetitive icon buttons.
-- Larger Pace stage, completed/forming selector above expanded technical and contribution details; original financial rules preserved.
-- Clear historical downside/midpoint/upside labels remain separate from conditional Bear/Base/Bull valuation.
-- Options has a strict exposure workspace with GEX/OI views, filters, normalized values, largest/above/below concentrations, tap inspection, device-local presets/snapshots, compatible change comparison, saved-symbol comparison and TSV export.
-- Searchable expiration/company selectors, contract search/ranking, and dated implied-versus-realized volatility context. Removed duplicate old gamma/OI charts and misleading partial totals.
-- Optional OPENAI_FALLBACK_MODEL performs one same-provider fallback for transient capacity HTTP errors; source validation, auth and budgets remain enforced. Configure only a model your account supports. No fallback model is selected for you.
-- Portfolio CSV import UI remains removed. Saved holdings/manual positions and existing research/alert/notes tools remain.
+## Included in this revision
 
-## Scope and data limits
-Read docs/verification/2026-11-05-workspace-coverage.md. It maps every requested product area and identifies features requiring additional licensed feeds or backend implementation. This candidate is not full Skylit parity. No live options flow, intraday replay, vanna board, exposure-alert backend or private competitor walkthrough is claimed.
+- Reworked public product page and aligned, padded sign-in/signup/recovery screens with responsive styling.
+- One Home earnings view with dated actual EPS/estimates/pending status, compact reminders and loaded-company breadth/rotation.
+- Expanded compact supported stock-header metrics; clearer historical scenarios; grouped technical reference levels and more compact targets/options layouts.
+- Existing Pace policy, sector/currency/date guards, financial statements, portfolio/settings/watchlist and research tools retained.
+- Exposure map, device history, saved-symbol comparisons and exports, plus signed server-captured account checkpoints, discrete replay and cross-device view presets with save-conflict checks.
+- Exposure approach/cross/change alert backend with fresh signed baselines, spot-rebased change comparisons, concurrency protection and retryable deduplicated events in the existing alert center.
+- Modelled vanna heatmap with editable assumptions, optional bounded historical options trade tape, and a simulated long-options cash ledger with explicit device/account saves.
+- Optional same-provider AI capacity fallback remains server configured; all source/access/budget validation remains enforced.
+
+## Setup
+
+The existing documents, observations and alert-event database migrations must already be installed. This revision does not introduce a new schema migration or change account privileges.
+
+Configure `AURYN_MARKET_SNAPSHOT_SIGNING_KEY` as a stable server-only secret of at least 32 characters for account history and exposure-alert baselines. Existing service-role key or a sufficiently long cron secret is a fallback. Key rotation invalidates previous signatures. Never add a `NEXT_PUBLIC_` prefix.
+
+Trade tape is disabled by default. Enable `AURYN_OPTIONS_FLOW_ENABLED=true` only with existing options access, valid Alpaca credentials, appropriate subscription and confirmed display rights. The adapter fetches one bounded historical page with optional 15-second polling; it is not a streaming feed.
+
+Existing alert check endpoints/owner cron perform exposure checks. First check establishes a baseline; this does not create continuous multi-tenant workers or email/SMS delivery. The simulation is not broker execution, and it does not invent expiration settlement prices.
+
+Read [coverage and boundaries](docs/verification/2026-11-05-workspace-coverage.md) for the complete area-by-area mapping. Full market-wide flow, dark-pool tape, licensed minute backfill, proprietary classifications, and other unsupported datasets are not claimed.
 
 ## Source completeness
-Application, lockfile, test fixtures/scripts, database migrations, deployment guidance and a per-file SHA256 manifest are included. Dependencies, generated output, private env files, screenshot archives and prototypes are excluded. Archive size does not establish faster provider APIs.
+
+Application, lockfile, fixtures/tests, scripts, existing SQL migrations, deployment guidance and exact per-file SHA256 manifest are included. Generated output, dependencies, private environment files, screenshots and prototypes are excluded. ZIP size does not imply faster provider response.
 
 ## Verification
-Final results are appended below after checks complete. Synthetic provider regressions are not live-provider acceptance. Physical iPhone/PWA and browser visual acceptance remain pending.
 
-No push or production deployment has been performed. The source stays at release candidate version 1.0.0.
+Automated results are recorded below. Tests use synthetic transport; they are not live-provider acceptance. Browser preview timed out, so new screenshot, installed-iPhone/PWA and real-account cross-device visual/interaction acceptance remain pending. No claim of visual certification is made.
 
-### Automated verification
-- 993 tests passed: `node --experimental-strip-types --test tests/*.test.mjs`.
-- Strict TypeScript check passed with no errors.
-- Production build passed (34 static pages generated, dynamic routes retained).
-- All nine API regression scripts passed using synthetic/mocked transport; no real payment or trade executed.
-- Independent code review completed. Large-chain snapshot persistence, compatible baseline selection and sparse-history volatility issues were fixed and covered by regressions.
-- ZIP CRC and per-file manifest are checked by `scripts/package-source.py`.
+### Automated results
 
-Visual/browser verification: unavailable in this run because the browser service timed out. New controls have server-render checks and responsive styles, but mobile, installed PWA, live-account, accessibility interaction and screenshot acceptance are not certified. Review in preproduction before promoting.
+- Full automated suite: **1,046 passed, 0 failed, 0 skipped**.
+- Final options layout render regression: **3 passed** after collapsing extra statistics.
+- Strict TypeScript check and final production build passed; 34 static pages generated and dynamic API routes retained.
+- All nine API regression scripts passed with mocked/synthetic transport; no live payment or trade executed.
+- Independent reviews addressed checkpoint identity/freshness, compact rule-bound baseline storage, concurrent saves, event retries, source contract identity, replay selection and focused keyboard controls.
+- Source archive CRC and per-file manifest are checked by `scripts/package-source.py`; private environment files/dependencies/generated output are excluded.
+
+Visual acceptance remains pending because the browser preview service timed out. Review desktop/mobile/PWA screenshots and real-account cross-device behavior before production promotion.

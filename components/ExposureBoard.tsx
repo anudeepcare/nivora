@@ -32,12 +32,25 @@ export default function ExposureBoard({
   symbol,
   complete,
   onContracts,
+  externalSnapshot,
+  onExitReplay,
+  accountPresets,
+  onPresetsChanged,
+  onCreateAlert,
 }: {
   contracts: OptionContract[];
   spot: number;
   symbol: string;
   complete: boolean;
   onContracts?: () => void;
+  onCreateAlert?: (
+    cell: ExposureCell,
+    type: "exposure-approach" | "exposure-cross" | "exposure-change",
+  ) => void;
+  externalSnapshot?: BoardSnapshot;
+  onExitReplay?: () => void;
+  accountPresets?: BoardPreset[];
+  onPresetsChanged?: (presets: BoardPreset[]) => void;
 }) {
   const live = useMemo(() => exposureBoard(contracts, spot), [contracts, spot]);
   const [metric, setMetric] = useState<"gex" | "oi">("gex"),
@@ -67,8 +80,15 @@ export default function ExposureBoard({
     setSelected(null);
     setMessage("");
   }, [symbol]);
+  useEffect(() => {
+    if (accountPresets)
+      setSaved((old) => ({ ...old, presets: accountPresets }));
+  }, [accountPresets]);
+  useEffect(() => {
+    onPresetsChanged?.(saved.presets);
+  }, [saved.presets, onPresetsChanged]);
   const snapshots = saved.snapshots.filter((x) => x.symbol === symbol);
-  const chosen = snapshots.find((x) => x.id === snapshot);
+  const chosen = externalSnapshot ?? snapshots.find((x) => x.id === snapshot);
   const board = chosen?.board ?? live;
   const dates = [...new Set(board.cells.map((c) => c.expiry))]
     .sort()
@@ -215,7 +235,32 @@ export default function ExposureBoard({
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
   return (
-    <section className={s.board} aria-label="Options exposure workspace">
+    <section
+      className={s.board}
+      aria-label="Options exposure workspace"
+      tabIndex={0}
+      onKeyDown={(event) => {
+        if (event.altKey || event.ctrlKey || event.metaKey || event.repeat)
+          return;
+        const target = event.target as HTMLElement;
+        if (
+          target.closest(
+            "input, textarea, select, button, a, [contenteditable=true]",
+          )
+        )
+          return;
+        const key = event.key.toLowerCase();
+        if (!["f", "l", "s", "escape"].includes(key)) return;
+        event.preventDefault();
+        if (key === "f") center(nearest);
+        if (key === "l" && largest) {
+          setSelected(largest.key);
+          center(largest.strike);
+        }
+        if (key === "s" && live.cells.length) saveSnapshot();
+        if (key === "escape") setSelected(null);
+      }}
+    >
       <header className={s.heading}>
         <div>
           <span className="eyebrow">STRIKE × EXPIRATION</span>
@@ -243,10 +288,24 @@ export default function ExposureBoard({
             Blank cells are unmeasured, not zero. Coverage describes usable
             returned inputs, not the fraction of the entire market. Different
             cells can have different observation dates. Saved snapshots and
-            views stay on this browser only.
+            views saved with these device controls stay on this browser. Use
+            Account history & replay above for cross-device storage.
           </p>
         </Help>
       </header>
+      {externalSnapshot && (
+        <div className={s.detail} role="status">
+          <p>
+            Account replay is active. Return to the latest loaded view to
+            inspect device snapshots.
+          </p>
+          {onExitReplay && (
+            <button type="button" onClick={onExitReplay}>
+              Exit account replay
+            </button>
+          )}
+        </div>
+      )}
       <div className={s.tabs} aria-label="Exposure workspace views">
         {[
           ["map", "Exposure map"],
@@ -373,7 +432,12 @@ export default function ExposureBoard({
       <div className={s.status}>
         <span>
           <Activity size={14} />{" "}
-          {chosen ? "Saved device snapshot" : "Latest loaded snapshot"} ·{" "}
+          {externalSnapshot
+            ? "Verified account checkpoint"
+            : chosen
+              ? "Saved device snapshot"
+              : "Latest loaded snapshot"}{" "}
+          ·{" "}
           {complete && !chosen
             ? "Returned chain"
             : "Coverage limited to loaded contracts"}
@@ -497,6 +561,28 @@ export default function ExposureBoard({
                   : "Mixed observation dates; no combined value"}
                 .
               </p>
+              {onCreateAlert && (
+                <div className={s.actions}>
+                  <button
+                    type="button"
+                    onClick={() => onCreateAlert(focus, "exposure-approach")}
+                  >
+                    Alert near this strike
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onCreateAlert(focus, "exposure-cross")}
+                  >
+                    Alert on crossing
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onCreateAlert(focus, "exposure-change")}
+                  >
+                    Track exposure change · 20%
+                  </button>
+                </div>
+              )}
               <button type="button" onClick={() => setSelected(null)}>
                 Close details
               </button>
@@ -593,6 +679,7 @@ export default function ExposureBoard({
                 </small>
                 <button
                   type="button"
+                  disabled={!!externalSnapshot}
                   onClick={() => {
                     setSnapshot(x.id);
                     setMode("map");
@@ -657,6 +744,7 @@ export default function ExposureBoard({
             Observation
             <select
               value={snapshot}
+              disabled={!!externalSnapshot}
               onChange={(e) => {
                 setSnapshot(e.target.value);
                 setSelected(null);

@@ -155,7 +155,7 @@ export function PublicSample({ compact = false }: { compact?: boolean } = {}) {
   );
 }
 
-/** A fictional research journey: no company, quote or return is presented as live. */
+/** A product walkthrough: no company, quote or return is presented as live. */
 export function InvestmentDemo() {
   const [step, setStep] = useState(0);
   const steps = ["Discover", "Understand", "Plan"];
@@ -163,14 +163,14 @@ export function InvestmentDemo() {
     <section
       className={landing.demo}
       id="investment-demo"
-      aria-label="Interactive illustrative investment demo"
+      aria-label="Interactive product walkthrough"
     >
       <header className={landing.demoHeader}>
         <span>
           <img src="/icon.svg" width="22" height="22" alt="" /> AURYN{" "}
           <small>/ RESEARCH WORKSPACE</small>
         </span>
-        <span className={landing.sampleBadge}>Illustrative sample</span>
+        <span className={landing.sampleBadge}>Product walkthrough</span>
       </header>
       <div
         className={landing.demoTabs}
@@ -225,7 +225,7 @@ export function InvestmentDemo() {
           <h2>
             {
               [
-                "A business worth a closer look.",
+                "Start with the business.",
                 "A good business. At what price?",
                 "A plan before your next purchase.",
               ][step]
@@ -244,12 +244,14 @@ export function InvestmentDemo() {
         {step === 0 && (
           <div className={landing.researchRows}>
             <div>
-              <span className={landing.companyMark}>A</span>
-              <span>
-                <strong>Example business</strong>
-                <small>Fictional company · no live data</small>
+              <span className={landing.companyMark}>
+                <Layers3 size={18} />
               </span>
-              <span className={landing.review}>Review</span>
+              <span>
+                <strong>Your investment case</strong>
+                <small>Research framework · illustrative guide</small>
+              </span>
+              <span className={landing.review}>01 / Business</span>
             </div>
             <div>
               <Layers3 size={19} />
@@ -303,7 +305,7 @@ export function InvestmentDemo() {
       </div>
       <footer className={landing.demoFooter}>
         <ShieldCheck size={15} />
-        <span>Sample content · no live recommendation</span>
+        <span>Illustrative guide · no live recommendation</span>
         <button type="button" onClick={() => setStep((step + 1) % 3)}>
           {step === 2 ? "Back to Discover" : `Next: ${steps[step + 1]}`}
           <ArrowRight size={14} />
@@ -486,35 +488,33 @@ export default function PublicLanding({
           aria-labelledby="ap-hero-heading"
         >
           <div className={landing.heroCopy}>
-            <span className={landing.eyebrow}>
-              A CLEARER CASE FOR YOUR NEXT MOVE
-            </span>
+            <span className={landing.eyebrow}>BUSINESS. VALUE. YOUR PACE.</span>
             <h1 id="ap-hero-heading">
               {sampleOnly ? (
-                "See the thinking behind your next investment."
+                "Explore a more considered way to invest."
               ) : (
                 <>
-                  Your next investment decision,
+                  Invest with
                   <br />
-                  <span>with the reasons attached.</span>
+                  <span>the full picture.</span>
                 </>
               )}
             </h1>
             <p>
-              Decide where your next contribution deserves a closer look. See
-              what the price expects, what the business is delivering, and what
-              would make you reconsider.
+              Understand the business. Question the price. Plan your next
+              contribution. AURYN brings your investment research into one
+              connected workspace.
             </p>
             <div className={landing.actions}>
               <Link className={landing.primary} href="/login?mode=signup">
-                Start free <ArrowRight size={18} aria-hidden="true" />
+                Create your account <ArrowRight size={18} aria-hidden="true" />
               </Link>
               <a className={landing.secondary} href="#investment-demo">
-                Explore the demo <ArrowRight size={17} aria-hidden="true" />
+                See how it works <ArrowRight size={17} aria-hidden="true" />
               </a>
             </div>
             <p className={landing.heroNote}>
-              Explore the product before you create an account.
+              Explore the product first. Choose your plan after sign-up.
             </p>
             <div className={landing.heroPrinciples}>
               <span>
@@ -716,7 +716,7 @@ export default function PublicLanding({
         </div>
         <div className={landing.actions}>
           <Link className={landing.primary} href="/login?mode=signup">
-            Start free <ArrowRight size={18} aria-hidden="true" />
+            Create your account <ArrowRight size={18} aria-hidden="true" />
           </Link>
           <Link className={landing.secondary} href="/pricing">
             Compare plans <ArrowRight size={16} aria-hidden="true" />

@@ -1,3 +1,4 @@
+import { requestAccess, requireFeature } from "@/lib/access-server";
 import { account, failure, HttpError, privateJson, limit } from "@/lib/server";
 import { cleanDocument } from "@/lib/documents";
 export async function GET(request: Request) {
@@ -48,6 +49,16 @@ export async function POST(request: Request) {
         .eq("key", key);
       if (r.error) throw new HttpError("Could not remove the record.", 503);
     } else {
+      if (
+        kind === "alert" &&
+        typeof v.body?.type === "string" &&
+        v.body.type.startsWith("exposure-")
+      ) {
+        const access = await requestAccess(request, user.id);
+        if (access.sampleOnly)
+          throw new HttpError("Market data is not enabled.", 403);
+        requireFeature(access, "options");
+      }
       let body;
       try {
         body = cleanDocument(kind, v.body);

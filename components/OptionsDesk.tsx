@@ -1,7 +1,10 @@
 "use client";
 import { volatilityContext, rankContracts } from "@/lib/options-context";
 import SearchableSelect from "./SearchableSelect";
-import ExposureBoard from "./ExposureBoard";
+import MarketWorkspace from "./MarketWorkspace";
+import VannaMap from "./VannaMap";
+import OptionsSimulation from "./OptionsSimulation";
+import OptionsTape from "./OptionsTape";
 import deskStyles from "./OptionsDesk.module.css";
 import { useEffect, useMemo, useState } from "react";
 import type { Research } from "@/lib/types";
@@ -323,8 +326,8 @@ export default function OptionsDesk({
       <header className="options-heading">
         <div>
           <span className="eyebrow">Options workspace</span>
-          <h2>See the setup. Understand your risk.</h2>
-          <p>Price the move, explore contracts and test the payoff.</p>
+          <h2>Options & exposure</h2>
+          <p>Explore positioning, prices and risk.</p>
         </div>
         <div className="options-expiry-picker">
           <SearchableSelect
@@ -343,6 +346,9 @@ export default function OptionsDesk({
       <nav className="options-nav" aria-label="Options sections">
         {[
           ["positioning", "Market map"],
+          ["vanna", "Modelled vanna"],
+          ["flow", "Trade tape"],
+          ["simulation", "Paper ledger"],
           ["chain", "Contracts"],
           ["leaps", "Long-term"],
           ["strategy", "Strategy builder"],
@@ -449,49 +455,54 @@ export default function OptionsDesk({
           {view === "positioning" && (
             <>
               {(hasGamma || hasOi) && (
-                <div className="options-insight-grid">
-                  <article>
-                    <span>
-                      <Layers3 size={17} /> Call concentration
-                    </span>
-                    <strong>
-                      {topCall ? amount(topCall.strike) : "Not measured"}
-                    </strong>
-                    <p>
-                      {topCall
-                        ? `${fmt(topCall.callOi, 0)} open calls at this strike`
-                        : "Open interest is not supplied for this selection."}
-                    </p>
-                  </article>
-                  <article>
-                    <span>
-                      <ShieldCheck size={17} /> Put concentration
-                    </span>
-                    <strong>
-                      {topPut ? amount(topPut.strike) : "Not measured"}
-                    </strong>
-                    <p>
-                      {topPut
-                        ? `${fmt(topPut.putOi, 0)} open puts at this strike`
-                        : "A missing value is not zero positioning."}
-                    </p>
-                  </article>
-                  <article>
-                    <span>
-                      <Activity size={17} /> Estimated net gamma
-                    </span>
-                    <strong>
-                      {hasGamma
-                        ? amount(summary.netGex, "USD", true)
-                        : "Not measured"}
-                    </strong>
-                    <p>
-                      {hasGamma
-                        ? `${fmt(summary.gammaCoverage * 100, 0)}% input coverage · per 1% stock move`
-                        : "Complete, same-observation gamma and open interest are required for an aggregate total."}
-                    </p>
-                  </article>
-                </div>
+                <details>
+                  <summary>
+                    Snapshot statistics · concentrations & gamma
+                  </summary>
+                  <div className="options-insight-grid">
+                    <article>
+                      <span>
+                        <Layers3 size={17} /> Call concentration
+                      </span>
+                      <strong>
+                        {topCall ? amount(topCall.strike) : "Not measured"}
+                      </strong>
+                      <p>
+                        {topCall
+                          ? `${fmt(topCall.callOi, 0)} open calls at this strike`
+                          : "Open interest is not supplied for this selection."}
+                      </p>
+                    </article>
+                    <article>
+                      <span>
+                        <ShieldCheck size={17} /> Put concentration
+                      </span>
+                      <strong>
+                        {topPut ? amount(topPut.strike) : "Not measured"}
+                      </strong>
+                      <p>
+                        {topPut
+                          ? `${fmt(topPut.putOi, 0)} open puts at this strike`
+                          : "A missing value is not zero positioning."}
+                      </p>
+                    </article>
+                    <article>
+                      <span>
+                        <Activity size={17} /> Estimated net gamma
+                      </span>
+                      <strong>
+                        {hasGamma
+                          ? amount(summary.netGex, "USD", true)
+                          : "Not measured"}
+                      </strong>
+                      <p>
+                        {hasGamma
+                          ? `${fmt(summary.gammaCoverage * 100, 0)}% input coverage · per 1% stock move`
+                          : "Complete, same-observation gamma and open interest are required for an aggregate total."}
+                      </p>
+                    </article>
+                  </div>
+                </details>
               )}
               {!hasGamma && !hasOi && (
                 <section className="options-empty options-empty-inline">
@@ -515,11 +526,12 @@ export default function OptionsDesk({
                   </div>
                 </section>
               )}
-              <ExposureBoard
+              <MarketWorkspace
                 contracts={contracts}
                 spot={spot}
                 symbol={research.company.symbol}
                 complete={!!chain?.complete}
+                expiry={active}
                 onContracts={() => setView("chain")}
               />
               <section className="options-card options-volatility">
@@ -630,6 +642,28 @@ export default function OptionsDesk({
                 </section>
               )}
             </>
+          )}
+          {view === "vanna" && (
+            <VannaMap
+              contracts={contracts}
+              spot={spot}
+              asOf={summary.asOf || new Date().toISOString().slice(0, 10)}
+            />
+          )}
+          {view === "flow" && (
+            <OptionsTape
+              symbol={research.company.symbol}
+              expiry={active}
+              disabled={preview}
+            />
+          )}
+          {view === "simulation" && (
+            <OptionsSimulation
+              contracts={contracts}
+              spot={spot}
+              symbol={research.company.symbol}
+              disabled={preview}
+            />
           )}
           {(view === "chain" || view === "leaps") && (
             <section className="options-card options-contracts">

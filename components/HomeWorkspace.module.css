@@ -624,4 +624,83 @@
   border-top: 3px solid #a8ddc0;
 }
 
-.home :global(.home-next-step){padding:18px;margin:16px 0}.home :global(.home-next-step) h2{font-size:21px}.home :global(.home-source-note){font-size:12px}
+.home :global(.home-next-step) {
+  padding: 18px;
+  margin: 16px 0;
+}
+.home :global(.home-next-step) h2 {
+  font-size: 21px;
+}
+.home :global(.home-source-note) {
+  font-size: 12px;
+}
+
+/* Keep the daily view compact; detailed sample analysis opens on demand. */
+.marketRadar {
+  margin: 12px 0;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--glass);
+  min-width: 0;
+}
+.marketRadar > summary {
+  padding: 14px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+.marketRadar > summary span {
+  margin-left: 10px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+.marketRadar > section {
+  margin: 0;
+  border: 0;
+  box-shadow: none;
+}
+.earningsNumbers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+.home :global(.home-event-row) .earningsNumbers > span {
+  font-size: 12px;
+  color: var(--muted);
+}
+.home :global(.home-event-row) .earningsNumbers strong {
+  font-size: 12px;
+  color: var(--ink);
+}
+.home :global(.home-evidence-layout) {
+  margin: 14px 0;
+  gap: 14px;
+}
+.home :global(.home-evidence-panel) {
+  padding: 18px;
+}
+.home :global(.home-company) {
+  min-height: 64px;
+  padding: 12px 0;
+}
+.home :global(.home-quiet-state) {
+  gap: 6px;
+  padding: 12px 0;
+}
+.home :global(.home-quiet-state) h3 {
+  font-size: 15px;
+}
+.home :global(.home-quiet-state) p {
+  font-size: 12px;
+  line-height: 1.5;
+}
+@media (max-width: 600px) {
+  .marketRadar > summary span {
+    display: block;
+    margin: 5px 0 0;
+  }
+  .home :global(.home-evidence-panel) {
+    padding: 14px;
+  }
+}

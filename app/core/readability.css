@@ -320,9 +320,7 @@ body :is(button,a,input,select,textarea,summary):focus-visible{outline:2px solid
 body :is(.technical-level-grid,.price-reference-grid)>div{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:16px}
 body .approved-research-page :is(.market-context,.technical-levels){border-radius:16px;padding:22px;background:var(--card);border:1px solid var(--line)}
 body .approved-research-page :is(.value-section-heading,.research-section-heading){padding:20px;border-radius:16px;background:linear-gradient(115deg,color-mix(in srgb,var(--jade) 20%,var(--card)),var(--card))}
-body :is(.mp-auth-panel){border:1px solid var(--line);border-radius:22px;box-shadow:0 18px 60px #18332b12;background:var(--card)}
 body .mp-auth-shell{background:radial-gradient(ellipse at 15% 0,#a8ddc030,transparent 60%),var(--surface-2)}
-body .mp-auth-heading{padding:24px;border-radius:16px;background:linear-gradient(115deg,color-mix(in srgb,var(--jade) 20%,var(--card)),var(--card))}
 body :is(.settings-page,.approved-workspace,.approved-research-page) h3{line-height:1.35}
 body .approved-research-page :is(.technical-group,.options-card) h3{display:flex;align-items:center;gap:8px}
-@media(max-width:600px){body .approved-research-page :is(.market-context,.technical-levels){padding:16px}body :is(.mp-auth-heading){padding:18px}}
+@media(max-width:600px){body .approved-research-page :is(.market-context,.technical-levels){padding:16px}}

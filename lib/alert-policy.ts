@@ -15,7 +15,7 @@ export function evaluateAlert(
   },
   since: string,
 ) {
-  if (!rule.enabled) return null;
+  if (!rule.enabled || rule.type.startsWith("exposure-")) return null;
   const base = { symbol: rule.symbol, snapshot_id: input.snapshotId };
   if (
     ["interest-below", "sbc-above", "current-below", "margin-below"].includes(

@@ -335,20 +335,17 @@ export default function TechnicalDashboard({
           </section>
         ))}
       </div>
-      <section className="technical-price-structure">
-        <header className="section-head">
+      <section className={layout.priceMap} aria-label="Price reference map">
+        <header className={layout.priceMapHeader}>
           <div>
-            <span className="eyebrow">
-              LEVELS · CONTEXT, NOT CONFIRMED SUPPORT
-            </span>
+            <span className="eyebrow">PRICE LEVELS · OBSERVED CONTEXT</span>
             <h3>
               <SectionIcon name="Price reference" />
               Price reference map
             </h3>
             <p>
-              Automatic Fibonacci anchors use extremes in the last 63 valid
-              observations. Open custom anchors to inspect a different
-              selection.
+              Compare retracements, prior extremes and volume references. These
+              levels are not confirmed support.
             </p>
           </div>
           <button
@@ -358,65 +355,112 @@ export default function TechnicalDashboard({
             Custom anchors
           </button>
         </header>
-        {a.fib ? (
-          <>
-            <p className="small muted">
-              Low {m(a.fib.low)} · {dateLabel(a.fib.lowDate)} / High{" "}
-              {m(a.fib.high)} · {dateLabel(a.fib.highDate)}.{" "}
-              {a.fib.direction === "up"
-                ? "Pullbacks measured down from high."
-                : "Rebounds measured up from low."}
-            </p>
-            <div className="technical-level-grid fib-reference-grid">
-              {a.fib.levels.map((l) => (
-                <div
-                  key={l.ratio}
-                  data-position={last && l.price < last ? "below" : "above"}
-                >
-                  <span>{(l.ratio * 100).toFixed(1)}% retracement</span>
-                  <strong>{m(l.price)}</strong>
+        <div className={layout.referenceGroups}>
+          <section className={layout.retracements}>
+            <header className={layout.referenceHeading}>
+              <h4>Fibonacci retracements</h4>
+              <span>63-observation window</span>
+            </header>
+            {a.fib ? (
+              <>
+                <p className={layout.anchorSummary}>
+                  {m(a.fib.low)} low <span>→</span> {m(a.fib.high)} high
                   <small>
-                    {last
-                      ? `${percent((l.price / last - 1) * 100)} from last completed close`
-                      : "Price distance unavailable"}
+                    {a.fib.direction === "up"
+                      ? "Measured down from high"
+                      : "Measured up from low"}{" "}
+                    · distance from last close
                   </small>
+                </p>
+                <dl className={layout.retracementList}>
+                  {a.fib.levels.map((l) => (
+                    <div
+                      key={l.ratio}
+                      data-position={last && l.price < last ? "below" : "above"}
+                    >
+                      <dt>{(l.ratio * 100).toFixed(1)}%</dt>
+                      <dd>{m(l.price)}</dd>
+                      <dd className={layout.levelDistance}>
+                        {last
+                          ? percent((l.price / last - 1) * 100, true)
+                          : "Unavailable"}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </>
+            ) : (
+              <p className={layout.anchorSummary}>
+                More valid history and distinct dated extremes are required.
+              </p>
+            )}
+          </section>
+          <section className={layout.observedLevels}>
+            <header className={layout.referenceHeading}>
+              <h4>Prior price channels</h4>
+              <span>Latest close excluded</span>
+            </header>
+            <dl className={layout.channelGrid}>
+              {[
+                ["20-session high", extra.donchian20?.high],
+                ["20-session low", extra.donchian20?.low],
+                ["55-session high", extra.donchian55?.high],
+                ["55-session low", extra.donchian55?.low],
+              ].map(([label, value]) => (
+                <div key={String(label)}>
+                  <dt>{label}</dt>
+                  <dd>
+                    {typeof value === "number" && value > 0
+                      ? m(value)
+                      : "Not established"}
+                  </dd>
                 </div>
               ))}
-            </div>
-          </>
-        ) : (
-          <p>More valid history and distinct dated extremes are required.</p>
-        )}
-        <div className="technical-level-grid">
-          {[
-            ["Prior 20-session high", extra.donchian20?.high],
-            ["Prior 20-session low", extra.donchian20?.low],
-            ["Prior 55-session high", extra.donchian55?.high],
-            ["Prior 55-session low", extra.donchian55?.low],
-            ["VWAP · window-low anchor", a.vwap],
-            ["Classic S1", pro.pivots?.s1],
-            ["Classic pivot", pro.pivots?.p],
-            ["Classic R1", pro.pivots?.r1],
-          ].map(([label, value]) => (
-            <div key={String(label)}>
-              <span>{label}</span>
-              <strong>
-                {typeof value === "number" && value > 0
-                  ? m(value)
-                  : "Not established"}
-              </strong>
-            </div>
-          ))}
+            </dl>
+            <header className={layout.referenceHeading}>
+              <h4>Volume &amp; pivot references</h4>
+            </header>
+            <dl className={layout.pivotList}>
+              {[
+                ["VWAP · window-low anchor", a.vwap],
+                ["Classic S1", pro.pivots?.s1],
+                ["Classic pivot", pro.pivots?.p],
+                ["Classic R1", pro.pivots?.r1],
+              ].map(([label, value]) => (
+                <div key={String(label)}>
+                  <dt>{label}</dt>
+                  <dd>
+                    {typeof value === "number" && value > 0
+                      ? m(value)
+                      : "Not established"}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </section>
         </div>
-        <p className="small muted">
-          VWAP uses daily typical prices and reported volume, not ticks. Classic
-          pivots use the last completed OHLC bar. The 20/55-session channels
-          exclude the latest close; they are prior observed extremes, not
-          confirmed support. A touch does not confirm a reversal. Adjustments,
-          sparse history and volume inconsistencies can distort studies. DCA
-          contribution context remains in Overview; deeper tail-risk and trade
-          planning are in Advanced.
-        </p>
+        <details className={layout.levelMethod}>
+          <summary>Anchor dates, methods &amp; limits</summary>
+          {a.fib && (
+            <p>
+              Automatic anchors: low {m(a.fib.low)} on{" "}
+              {dateLabel(a.fib.lowDate)}; high {m(a.fib.high)} on{" "}
+              {dateLabel(a.fib.highDate)}. Extremes use the last 63 valid
+              observations. Custom anchors let you inspect another selection.
+            </p>
+          )}
+          <p>
+            VWAP uses daily typical prices and reported volume, not ticks.
+            Classic pivots use the last completed OHLC bar. The 20/55-session
+            channels exclude the latest close and show prior observed extremes.
+            A touch does not confirm a reversal. Adjustments, sparse history and
+            volume inconsistencies can distort studies.
+          </p>
+          <p>
+            DCA contribution context is in Overview; deeper tail-risk and trade
+            planning are in Advanced.
+          </p>
+        </details>
       </section>
       <dialog
         ref={dialog}

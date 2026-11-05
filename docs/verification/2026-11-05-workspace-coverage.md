@@ -1,70 +1,49 @@
-# AURYN workspace candidate — scope and coverage
+# AURYN workspace coverage — November 5, 2026
 
-This is an application source candidate, not a claim of full Skylit feature parity. No repository push, production deployment, subscription purchase, administrator grant, or remote provider configuration was performed. The signed-in Skylit review remains blocked by browser timeouts; inspiration comes from reviewed public modules/guides.
+This source candidate includes the UI refinement and remaining market-workspace software described below. It has not been pushed or deployed. Features needing provider entitlements stay unavailable until configured; no data feed or subscription was purchased. This is not a claim of complete Skylit parity or a completed private competitor walkthrough.
 
-## Product coverage
+## Product and UX coverage
 
-| Requested area | Candidate implementation / retained behavior |
+| Area | Implemented behavior |
 |---|---|
-| All-page visual consistency | Default owned palette unified around neutral surfaces, teal/jade/citron; shared control/focus rules and page-heading bands. Home, Research, Portfolio, Settings, public landing, plans and login surfaces included. User-selected alternate accent preferences retained. |
-| Simple header facts | Per-fact decorative/info icons removed; compact market cap, comparable revenue growth, applicable profitability and earnings; one About metrics entry retains dates/methods. Prior close remains in optional chart context. |
-| Pace stage | Larger P0–P4 badge; stage rail retained; completed/forming selector above expanded technical/evidence detail; technical levels/contribution help open by default. Existing business, valuation, cash and position gates retained. |
-| Scenario clarity | Historical downside/midpoint/upside with explicit percentiles; no relabelling historical statistics as conditional Bear/Base/Bull forecasts. Existing scenario assumptions and analyst separation retained. |
-| Business/financial readability | Shared semantic surfaces, statement/ratio detail, reporting-period controls and existing financial/date guards retained; long methods remain contextual help. |
-| Technicals | Existing studies and custom chart overlays retained; redundant decorative heading dot/alternating rows removed; shared level cards and definitions retained. |
-| Options presentation | Searchable expiration picker, one authoritative exposure map, contract search and rankings, volatility context, preserved strategy payoff/Greeks/LEAPS. Duplicate legacy gamma/OI display removed. |
-| Home/watchlist | Existing source-backed highlights, events, opportunity map, notes/alerts, comparison and saved watchlist preferences retained; unified palette and heading bands. No duplicate financial calculations added. |
-| Portfolio | Existing positions, allocation, exposure, ledger, charts, risk and dated price notices retained; CSV import UI remains removed; manual management retained. |
-| Settings/public/login | Consistent surfaces, clear headings, control contrast and focus. Existing privacy/auth/account/notification flows preserved. |
-| Ask AURYN | Explicit current-company/date context; existing four research intents and source validation retained. Optional server-only OPENAI_FALLBACK_MODEL makes one same-provider retry on transient HTTP capacity errors; permission failures do not retry. This does not change ChatGPT's own model availability. |
-| Lightweight source | No new dependencies. ZIP omits generated output, dependency folders, secrets, screenshots and prototypes; application, tests, lockfile and database migrations remain. |
+| Public Home | Shorter product-led hero, interactive business/value/Pace walkthrough, restrained emerald/citron presentation, connected sales sections and working account/demo/pricing routes. No fictional performance claims. |
+| Sign-in, signup, recovery | Balanced product context, contained padded form, responsive mobile styling; existing OAuth/email/recovery/error handling retained. |
+| Signed-in Home | One earnings calendar with dated actual EPS, estimate and pending status; compact saved reminders; removed repeated earnings/contribution banners. |
+| Research header | Compact supported market cap, comparable revenue growth, cash-flow margin, operating margin, net margin and next earnings where supplied. Sector guards apply; financial companies use return on average equity instead of generic cash margin. Dates/methods in one About metrics entry. Missing measures are omitted. |
+| Pace | Prominent P0–P4 stage; completed/forming distinction, technical levels and contribution rules remain expanded in the research instrument. Financial policies unchanged. |
+| Historical and valuation cases | Distinct downside/midpoint/upside icons and colors, percentile/date context, compact spacing. Historical returns remain separate from conditional Bear/Base/Bull valuation; decorative forecast lines removed. |
+| Technicals | Grouped retracement, channel and pivot references, mobile layout, custom anchors, concise intro and expandable methods. Reference levels are not confirmed support. |
+| Targets and business | More compact targets container, shared consistent controls/headings; financial comparisons and date/currency guards retained. |
+| Portfolio, settings, watchlist, public/help/legal | Existing functionality retained with the prior shared readability/control improvements. No new portfolio CSV importer. |
 
-## Heatseeker-inspired feature map
+## Market features
 
-| Capability | Status and exact boundary |
+| Capability | Implemented behavior and boundaries |
 |---|---|
-| Symbol search, favorites/watchlists, ticker URLs | Existing AURYN search/watchlist/company routes retained. |
-| Searchable lists | New searchable expiration and comparison-company selectors; other short lists use native accessible selectors with consistent styling. |
-| GEX heatmap | Implemented from returned gamma/OI with strict per-cell observation coherence. Calls positive / puts negative is an estimate convention, not actual dealer inventory. |
-| Strongest node; above/below concentrations | Implemented for the visible measured cells with exact strike/expiration. Not guaranteed support/resistance. |
-| Hover/tap values and raw details | Accessible buttons expose exact values; tap opens inputs, coverage and date. |
-| Center on spot/strongest cell | Implemented within the scrollable board. |
-| Strike/expiration window, minimum size | Implemented; no extra provider calls from these view controls. |
-| Dollar and normalized views | Implemented relative to largest absolute visible cell. |
-| Named saved presets | Ten per browser device; validate values before reading. Not cross-device sync. |
-| Snapshot capture/export | Twelve device-local manual checkpoints across symbols, TSV value export, quota/size failure feedback. |
-| Snapshot inspection and changes | Implemented; select saved target, choose latest compatible baseline. Same universe/spot and newer source date required. Not intraday velocity. |
-| Multi-symbol comparison | Up to six latest saved symbol checkpoints with independent dates. Not synchronized live index Trinity. |
-| Keyboard/mobile controls | Board-scoped F/L/S/Escape actions; responsive toolbar, scrollable grid, tap details; native keyboard option-list navigation. Physical-device QA pending. |
-| Contract lookup/rankings | Search ID/strike, call/put/liquidity filters, strike/volume/OI/volume-to-OI ranking using returned snapshot inputs. Volume/OI is not trade intent. |
-| Volatility/term structure | Nearest-strike IV by loaded expiry, each dated; 20-return historical realized volatility with daily-density guard; existing strike skew plot. |
-| Strategy lab | Existing call/put, defined-risk spreads, covered/protective/cash-secured examples and expiration payoff retained. No live orders. |
-| Price alerts and history | Existing AURYN alert center/jobs retained. New map does not claim an unimplemented exposure-alert backend. |
-| AI context | Existing sourced company analysis gains visible ticker/date context. It does not receive a new unsupported freeform flow-chat feature. |
+| Exposure map | Returned-contract GEX/OI grid, strike/expiry/minimum filters, normalized view, largest and above/below concentrations, inspection, explicit nulls/coverage, TSV export and focused keyboard shortcuts. GEX call-positive/put-negative is a convention, not observed dealer inventory or a direction forecast. |
+| Device views/history | Ten presets, twelve validated local checkpoints, compatible comparison and up to six saved-symbol boards. Device storage is distinct from account storage. |
+| Account views/history | Explicit account save/load with optimistic conflict protection. Server loads market inputs and signs compact checkpoints; browser-supplied prices are never trusted. Latest sixty stored checkpoints per symbol can be selected/replayed discretely. No interpolation or minute backfill. |
+| Exposure alerts | Fixed measured strike approach/crossing and percentage magnitude-change rules; largest-role backend supported. First check establishes baseline. Signed rule-bound baselines, source freshness, spot rebasing for changes, compare-and-swap concurrency, retryable/deduplicated alert events. Events appear in the existing alert center, not email/SMS or continuous push. |
+| Modelled vanna | European Black–Scholes vanna grid with editable rate/dividend assumptions, source/expiry validation and finite-difference tests. Per +1 percentage-point IV sensitivity; American/settlement approximation disclosed. This is not proprietary dealer VEX or an observed positioning feed. |
+| Options trade tape | Optional Alpaca adapter: up to thirty standard contracts, trailing twenty-four hours, one page up to 500 prints. Explicit load and opt-in fifteen-second polling with cache/coalescing/hidden-tab cleanup. Raw trade conditions, exact print timestamps, sample premium ranking and source delay disclosed. Symbol-first pagination cannot represent latest overall market flow. No inferred buy/sell/sweeps/multi-leg classifications. |
+| Breadth & rotation | Home and Discover radar using loaded companies only. Shared dated completed history, daily-density/coverage checks, sector participation, 20/60-session relative return quadrants and historical checkpoint controls. Not market-wide breadth; universe survivorship bias disclosed. No extra provider calls for display controls. |
+| Simulated options ledger | $100,000 starting cash; standard long calls/puts; buys at supplied ask and closes at supplied bid; partial closes, realized/marked P&L, closed-position win rate, notes, explicit device/account saves. Freshness and cash validation; no borrowing or broker orders. Expiration settlement withheld without an expiration close. |
+| Volatility and strategy | Dated nearest-strike IV term structure, daily-density checked realized volatility, skew and existing expiration payoff/defined-risk strategy tools retained. |
 
-## Features requiring additional implementation or authorized data
+## Activation and operational limits
 
-These are explicit outstanding scope, not enabled features:
+- Reuse existing research-workspace documents/observations/alert-event tables and account RLS. No new schema migration is required by these additions; existing migrations must already be installed.
+- Configure a stable server-only `AURYN_MARKET_SNAPSHOT_SIGNING_KEY` of at least 32 characters. Existing service-role key or sufficiently long cron secret is a fallback. Rotating the signing key makes older signatures unreadable. Never expose signing keys to the browser.
+- Tape requires existing options access plus `AURYN_OPTIONS_FLOW_ENABLED=true` and valid Alpaca market-data credentials/rights. Default is false. This flag does not buy data or extend a subscription.
+- Existing access guards, per-account market allowance, bounded provider budgets and source caches remain enforced. Manual captures are limited. Saved history/view reads do not need a new provider request.
+- Existing alert check endpoints and bounded owner cron job evaluate exposure rules. This does not introduce all-tenant continuous workers or new delivery channels.
+- Checkpoints contain at most forty nearby strikes and six loaded expirations; they do not archive an entire chain or market. History retrieval is bounded; the application does not automatically backfill or prune database history.
+- Simulation account saves are explicit working-ledger replacements; they are not a transaction-synchronized multi-device broker wallet.
 
-| Capability | What is missing |
-|---|---|
-| Vanna/VEX board, proprietary node classifications | A validated vanna model or licensed compatible values, complete source inputs and display rights. No proprietary King/Pika/Barney formulas reproduced. |
-| Intraday velocity/movers, agreement across timeframes | Repeated comparable time-stamped chains; shared snapshot history and documented exposure-change semantics. |
-| Historical minute replay and session jumps | Durable/licensed historical options snapshots, retention and playback service. Manual saved snapshots are not a substitute. |
-| Live multi-index synchronized panels | Authorized index coverage, synchronized timestamps and a bounded streaming backend. |
-| Role-following/exposure alerts; watchlist smart alerts | Persisted exposure rules, scheduled comparable observations, notification delivery/de-duplication and access controls. Existing price alerts do not establish this capability. |
-| Live prints, sweep/multi-leg/cross classification | Licensed options time-and-sales/trade-condition data; snapshots cannot supply it. |
-| Flow scanner/tide, directional net premium, repetitive prints | Trade-side classification, event stream/history and aggregation infrastructure. OI and call volume do not prove bullish purchases. |
-| Dark-pool tape and overlays | Authorized off-exchange prints and timestamped chart alignment. |
-| Historical IV percentile/rich-cheap radar and similar conditions | Comparable multi-year IV histories, definitions, coverage and validated scoring. No percentile invented from today's IV. |
-| Market-wide breadth/rotation | Consistent market-universe price histories and sector membership; selected-watchlist opportunity map is not market breadth. |
-| Paper wallet/trade coaching/social leaderboard | Full simulated execution/expiration accounting, ledger and scoring design; existing payoff simulator is preserved, not represented as complete Nexus parity. |
-| AI flow commands, context-aware heatmap narratives and chart annotations | Server-grounded structured map/flow context, citations, permissions and validation beyond current company analysis. |
-| Cross-device layouts/presets; image export | Additional account-scoped persistence and chart/image rendering. Current device views and TSV exports are implemented. |
-| Full authenticated competitor QA | Browser session verification and page-by-page UI access remain unavailable. |
+## Still data-dependent or outside this source candidate
 
-No externally licensed data or new paid product was purchased. No environment owner/admin identity was copied or broadened. Options availability still requires the deployment's existing provider settings and account entitlement; this archive intentionally contains no secrets.
+Authorized historical minute-chain archives, synchronized live index streams, full-market flow/tide, reliable aggressor/sweep/multi-leg classification, off-exchange stock tape, multi-year IV percentiles, proprietary node classifiers, broker execution, expiry settlement accounting, social leaderboards and freeform AI flow commands are not represented as implemented. Existing company AI analysis remains sourced and budgeted. These need separate datasets, operational design or further implementation; an options snapshot cannot create them.
 
-## Acceptance evidence
+## Acceptance
 
-Automated tests, strict type check, production build, API regressions and archive integrity are recorded in GIT-HANDOFF.md after their final runs. Provider tests use synthetic transport. No claim of live-provider acceptance or physical iPhone/PWA acceptance is made.
+Final automated results are in `GIT-HANDOFF.md`. Provider/API regression transport is synthetic, not live-provider acceptance. Browser preview timed out; screenshot, installed-iPhone/PWA and real-account cross-device acceptance remain pending. No production deployment or account privilege changes were performed.

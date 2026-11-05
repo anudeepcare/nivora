@@ -1,3 +1,5 @@
+import { checkExposureAlert } from "./exposure-monitor";
+import type { MarketCapture } from "./market-workspace-server";
 import { createHash } from "node:crypto";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AlertRule } from "./documents";
@@ -8,7 +10,11 @@ import { eodTicker } from "./eodhd-normalize";
 import { calendarHighlights, marketDay } from "./home-feed";
 import { latestFinancialEvidence } from "./analysis";
 import { evaluateAlert } from "./alert-policy";
-export async function checkAlerts(db: SupabaseClient, userId: string) {
+export async function checkAlerts(
+  db: SupabaseClient,
+  userId: string,
+  request?: Request,
+) {
   const rules = await db
     .from("auryn_documents")
     .select("key,body,created_at", { count: "exact" })
@@ -46,6 +52,7 @@ export async function checkAlerts(db: SupabaseClient, userId: string) {
   let checked = 0,
     created = 0;
   const errors: string[] = [];
+  const exposureSources = new Map<string, Promise<MarketCapture>>();
   const sources = new Map<string, Awaited<ReturnType<typeof research>>>();
   for (const record of batch) {
     // Checkpoint only the rule about to be attempted. A terminated request
@@ -70,6 +77,19 @@ export async function checkAlerts(db: SupabaseClient, userId: string) {
     }
     const rule = record.body as AlertRule;
     try {
+      if (rule.type.startsWith("exposure-")) {
+        const result = await checkExposureAlert(
+          db,
+          userId,
+          record,
+          exposureSources,
+          request,
+        );
+        checked += result.checked;
+        created += result.created;
+        if (result.error) errors.push(result.error);
+        continue;
+      }
       let r = sources.get(rule.symbol);
       if (!r) {
         r = await research(rule.symbol);

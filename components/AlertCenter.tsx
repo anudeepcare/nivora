@@ -142,10 +142,18 @@ export default function AlertCenter() {
                     ? "1"
                     : e.target.value === "margin-below"
                       ? "0"
-                      : "2",
+                      : e.target.value.startsWith("exposure-")
+                        ? "100"
+                        : "2",
               );
             }}
           >
+            <option value="exposure-approach">
+              Approaching a measured exposure strike
+            </option>
+            <option value="exposure-cross">
+              Crossing a measured exposure strike
+            </option>
             <option value="interest-below">
               Interest coverage falls below
             </option>
@@ -198,6 +206,14 @@ export default function AlertCenter() {
               onChange={(e) => setThreshold(e.target.value)}
             />
           </label>
+        )}
+        {type.startsWith("exposure-") && (
+          <p className="small muted">
+            Checks a fixed measured strike against fresh saved observations. The
+            first check establishes a baseline; later checks can record an
+            approach within 0.5% or a crossing. Use a map cell for an
+            expiration-specific rule.
+          </p>
         )}
         <button className="button primary" disabled={busy}>
           <Plus size={16} />

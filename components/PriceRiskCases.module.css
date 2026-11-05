@@ -1,0 +1,130 @@
+.root {
+  min-width: 0;
+}
+.root .cases {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+}
+.root .cases article {
+  --case-color: var(--blue, #5275ab);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  min-width: 0;
+  min-height: 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--case-color);
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: none;
+}
+.root .cases article[data-case="downside"] {
+  --case-color: var(--red, #bd655e);
+}
+.root .cases article[data-case="upside"] {
+  --case-color: var(--green, #288675);
+}
+.caseHeading {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 550;
+  line-height: 1.4;
+}
+.caseIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 26px;
+  color: var(--case-color);
+  background: color-mix(in srgb, var(--case-color) 9%, transparent);
+  border-radius: 7px;
+}
+.root .cases .percentile {
+  margin: 7px 0 13px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.root .cases strong {
+  font-size: clamp(22px, 2.5vw, 29px);
+  line-height: 1.2;
+  font-weight: 550;
+  letter-spacing: -0.6px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.root .cases small {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+}
+.root :global(.price-risk-selected) {
+  max-width: 90ch;
+  margin: 12px 0 0;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.root > details {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.root > details summary {
+  font-size: 12px;
+}
+@media (max-width: 650px) {
+  .root .cases {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .root .cases article {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 4px 12px;
+    padding: 12px;
+    border-top: 1px solid var(--line);
+    border-left: 3px solid var(--case-color);
+  }
+  .caseHeading {
+    grid-column: 1;
+    font-size: 12px;
+  }
+  .root .cases .percentile {
+    grid-column: 1;
+    margin: 0 0 0 33px;
+  }
+  .root .cases strong {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    font-size: 22px;
+  }
+  .root .cases small {
+    grid-column: 2;
+    grid-row: 2;
+    margin: 0;
+    text-align: right;
+    font-size: 11px;
+  }
+}
+@media (max-width: 370px) {
+  .caseIcon {
+    display: none;
+  }
+  .root .cases .percentile {
+    margin-left: 0;
+  }
+  .root .cases strong {
+    font-size: 20px;
+  }
+}

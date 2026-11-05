@@ -58,3 +58,19 @@ test("header uses the shared business classification for missing profiles and in
     "insurance",
   );
 });
+
+test("expanded header includes operating and net margin only when supported and finite", () => {
+  const rows = headerBusinessMetrics(p, prior, false, "2026-11-05");
+  assert.equal(rows.find((x) => x.label === "Operating margin").value, 12);
+  assert.ok(
+    Math.abs(rows.find((x) => x.label === "Net margin").value - 100 / 12) <
+      1e-9,
+  );
+  const extreme = headerBusinessMetrics(
+    { ...p, revenue: Number.MAX_VALUE },
+    { ...prior, revenue: Number.MIN_VALUE },
+    false,
+    "2026-11-05",
+  );
+  assert.ok(extreme.every((x) => Number.isFinite(x.value)));
+});

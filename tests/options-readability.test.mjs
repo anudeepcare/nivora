@@ -56,7 +56,8 @@ function render(chain) {
   new Function("require", "module", "exports", code)(
     (name) => {
       if (name === "./SearchableSelect") return {__esModule:true,default:({label})=>React.createElement("button",null,label)};
-      if (name === "./ExposureBoard") return {__esModule:true,default:()=>React.createElement("section",null,"Exposure workspace")};
+      if (name === "./MarketWorkspace") return {__esModule:true,default:()=>React.createElement("section",null,"Exposure workspace")};
+      if (["./VannaMap", "./OptionsTape", "./OptionsSimulation"].includes(name)) return {__esModule:true,default:()=>null};
       if (name === "react") return hooks;
       if (name === "react/jsx-runtime") return jsx;
       if (name === "lucide-react") return icons;

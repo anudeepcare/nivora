@@ -1,9 +1,9 @@
 "use client";
-import SectionIcon from "./SectionIcon";
+import { ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
 import type { PriceRiskScenarios } from "@/lib/price-risk-scenarios";
 import { amount, percent, dateLabel } from "@/lib/format";
 import CaseRange from "./CaseRange";
-import styles from "./TargetsEstimates.module.css";
+import styles from "./PriceRiskCases.module.css";
 export default function PriceRiskCases({
   scenarios: s,
   compact = false,
@@ -16,10 +16,12 @@ export default function PriceRiskCases({
     name:
       c.percentile === 50
         ? "Historical midpoint · 50th percentile"
-        : c.percentile < 50 ? `Historical downside · ${c.percentile}th percentile` : `Historical upside · ${c.percentile}th percentile`,
+        : c.percentile < 50
+          ? `Historical downside · ${c.percentile}th percentile`
+          : `Historical upside · ${c.percentile}th percentile`,
   }));
   return (
-    <div className="price-risk-cases" data-compact={compact}>
+    <div className={`price-risk-cases ${styles.root}`} data-compact={compact}>
       <div className="price-risk-label">
         <b>Historical price-risk cases</b>
         <span>{s.horizon} sessions · not fair value</span>
@@ -37,22 +39,51 @@ export default function PriceRiskCases({
         />
       ) : (
         <>
-          <div className={styles.cases} aria-label="Historical price outcomes">
-            {cases.map((c) => (
-              <article key={c.percentile}>
-                <span>
-                  <SectionIcon name={c.name} />
-                  {c.name}
-                </span>
-                <strong>{amount(c.target, s.currency)}</strong>
-                <small>{percent(c.change, true)} vs reference</small>
-              </article>
-            ))}
+          <div
+            className={styles.cases}
+            aria-label="Historical return percentile cases"
+          >
+            {cases.map((c) => {
+              const side =
+                c.percentile < 50
+                  ? "downside"
+                  : c.percentile > 50
+                    ? "upside"
+                    : "midpoint";
+              const Icon =
+                side === "downside"
+                  ? ArrowDownRight
+                  : side === "upside"
+                    ? ArrowUpRight
+                    : Minus;
+              return (
+                <article key={c.percentile} data-case={side}>
+                  <div className={styles.caseHeading}>
+                    <span className={styles.caseIcon}>
+                      <Icon size={17} aria-hidden="true" />
+                    </span>
+                    <span>
+                      {side === "midpoint"
+                        ? "Historical midpoint"
+                        : side === "downside"
+                          ? "Historical downside"
+                          : "Historical upside"}
+                    </span>
+                  </div>
+                  <span className={styles.percentile}>
+                    {c.percentile}th percentile
+                  </span>
+                  <strong>{amount(c.target, s.currency)}</strong>
+                  <small>{percent(c.change, true)} vs reference</small>
+                </article>
+              );
+            })}
           </div>
           <p className="price-risk-selected">
-            Historical {s.horizon}-session returns applied to{" "}
-            {amount(s.reference, s.currency)}. The median is the middle observed
-            return, not an expected price or a valuation base case.
+            Past {s.horizon}-session returns applied to{" "}
+            {amount(s.reference, s.currency)}. These are historical outcomes,
+            not fair values or forecasts. The midpoint is the median observed
+            return.
           </p>
         </>
       )}

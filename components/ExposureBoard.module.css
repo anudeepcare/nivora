@@ -1,6 +1,6 @@
 .board {
-  margin: 20px 0;
-  padding: 24px;
+  margin: 12px 0;
+  padding: 18px;
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 18px;
@@ -16,7 +16,7 @@
   display: flex;
   gap: 10px;
   align-items: center;
-  font-size: 24px;
+  font-size: 21px;
   margin: 6px 0;
 }
 .heading p {
@@ -29,7 +29,7 @@
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  margin: 18px 0;
+  margin: 10px 0;
 }
 .board button {
   font: inherit;
@@ -96,14 +96,14 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
-  margin: 20px 0;
+  margin: 12px 0;
 }
 .summary article {
   background: var(--surface);
   border-radius: 12px;
-  padding: 16px;
+  padding: 12px;
   display: grid;
-  gap: 7px;
+  gap: 4px;
 }
 .summary span,
 .summary small {
@@ -261,7 +261,7 @@
 .comparison article {
   background: var(--surface);
   border-radius: 12px;
-  padding: 16px;
+  padding: 12px;
   display: grid;
   gap: 10px;
 }
@@ -274,7 +274,7 @@
 }
 @media (max-width: 640px) {
   .board {
-    padding: 16px;
+    padding: 12px;
   }
   .heading h3 {
     font-size: 21px;
@@ -308,4 +308,8 @@
   .scroll td button {
     min-width: 95px;
   }
+}
+.board:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
 }

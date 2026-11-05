@@ -1,11 +1,7 @@
 "use client";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
-import {
-  ArrowRight,
-  Bell,
-  ChevronDown,
-} from "lucide-react";
+import { ArrowRight, Bell, ChevronDown } from "lucide-react";
 import type { Research } from "@/lib/types";
 import {
   approvedResearch,
@@ -144,30 +140,6 @@ export default function IntegratedResearch({
                         : "Past return percentiles; not a valuation forecast."}
                     </small>
                   </span>
-                  <svg viewBox="0 0 120 70" aria-hidden="true">
-                    <path
-                      d={`M40 36 L118 ${i === 0 ? 24 : i === 1 ? 12 : 2} L118 ${i === 0 ? 68 : i === 1 ? 60 : 44} Z`}
-                      fill="currentColor"
-                      opacity=".12"
-                    />
-                    <path
-                      d={`M40 36 L118 ${i === 0 ? 38 : i === 1 ? 26 : 12} L118 ${i === 0 ? 57 : i === 1 ? 48 : 34} Z`}
-                      fill="currentColor"
-                      opacity=".12"
-                    />
-                    <path
-                      d="M0 42 7 39 13 41 22 35 29 37 35 34 40 36"
-                      fill="none"
-                      stroke="var(--ink)"
-                      strokeWidth="1.5"
-                    />
-                    <path
-                      d={`M40 36 Q80 34 118 ${i === 0 ? 48 : i === 1 ? 36 : 23}`}
-                      fill="none"
-                      stroke="currentColor"
-                      strokeDasharray="3 3"
-                    />
-                  </svg>
                 </button>
               ))}
             </>

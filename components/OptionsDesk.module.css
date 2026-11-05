@@ -3,7 +3,7 @@
   --option-border: var(--line);
 }
 .desk:global(.options-v2) :global(.options-heading) {
-  padding: 20px 24px;
+  padding: 14px 18px;
   margin: 0 0 14px;
   border: 0;
   border-radius: 16px;
@@ -15,7 +15,7 @@
   gap: 20px;
 }
 .desk:global(.options-v2) :global(.options-heading) h2 {
-  font-size: clamp(24px, 2.5vw, 32px);
+  font-size: clamp(22px, 2vw, 28px);
   margin: 5px 0;
   line-height: 1.2;
   color: var(--ink);
@@ -43,7 +43,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 20px;
-  padding: 24px;
+  padding: 16px 20px;
   border: 1px solid #424b47;
   border-radius: 16px;
   background:
@@ -51,7 +51,7 @@
   color: #f7f8f5;
 }
 .desk:global(.options-v2) :global(.options-hero) h3 {
-  font-size: clamp(28px, 3vw, 40px);
+  font-size: clamp(24px, 2.5vw, 32px);
   color: #e0f78a;
   margin: 6px 0 10px;
   line-height: 1.1;
@@ -125,7 +125,7 @@
 }
 .desk:global(.options-v2) :global(.options-insight-grid) strong {
   display: block;
-  font-size: clamp(24px, 2.5vw, 32px);
+  font-size: clamp(22px, 2vw, 28px);
   color: var(--ink);
   font-variant-numeric: tabular-nums;
   margin: 10px 0;

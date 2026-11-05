@@ -19,9 +19,24 @@ const empty = () => null;
 const Link = ({ children, ...props }) =>
   React.createElement("a", props, children);
 function load(name, bindings) {
-  bindings={SectionIcon:()=>null,ResearchInbox:()=>null,OpportunityMap:()=>null,ContributionCompare:()=>React.createElement("section",{"aria-label":"Compare your next contribution"}),SearchIcon:()=>null,...bindings};
-  bindings = { homeStyles: {home:"home"}, Search: () => React.createElement("input", {"aria-label":"Company search"}), ResearchLens: () => React.createElement("aside", null, "Research lens"), ...bindings };
+  bindings = {
+    SectionIcon: () => null,
+    ResearchInbox: () => null,
+    OpportunityMap: () => null,
+    MarketRadar: () => null,
+    SearchIcon: () => null,
+    ...bindings,
+  };
+  bindings = {
+    homeStyles: { home: "home" },
+    Search: () =>
+      React.createElement("input", { "aria-label": "Company search" }),
+    ResearchLens: () => React.createElement("aside", null, "Research lens"),
+    ...bindings,
+  };
   bindings = { PaceHelp: () => null, ...bindings };
+  if (name === "HomeOverview")
+    bindings.EarningsNumbers = load("EarningsNumbers", {});
   const file = "components/ApprovedWorkspace.tsx";
   const ast = ts.createSourceFile(
     file,
@@ -75,10 +90,15 @@ test("Home company rows always show when their displayed quote was observed", ()
 
 test("Watchlist-only Home avoids an irrelevant zero-value portfolio summary", () => {
   const symbols = Array.from({ length: 34 }, (_, index) => `STK${index}`);
-  let requested;
+  let requested, radarProps;
+  const loaded = { company: { symbol: symbols[0] } };
   const Home = load("HomeOverview", {
+    MarketRadar: (props) => {
+      radarProps = props;
+      return null;
+    },
     useWorkspaceData: () => ({
-      research: () => undefined,
+      research: (symbol) => (symbol === symbols[0] ? loaded : undefined),
       workspace: {
         positions: [],
         watchlist: symbols.map((symbol) => ({ symbol })),
@@ -136,7 +156,13 @@ test("Watchlist-only Home avoids an irrelevant zero-value portfolio summary", ()
   });
   const html = renderToStaticMarkup(React.createElement(Home));
   assert.deepEqual(requested, symbols);
-  assert.doesNotMatch(html, /aria-label="Portfolio summary"/);
+  assert.deepEqual(radarProps.research, [loaded]);
+  assert.equal(radarProps.asOf, marketDay(new Date()));
+  assert.match(radarProps.asOf, /^\d{4}-\d{2}-\d{2}$/);
+  assert.doesNotMatch(
+    html,
+    /aria-label="Portfolio summary"|home-next-step|Compare your next contribution|Featured earnings/,
+  );
 });
 
 test("New account Home has research tools without empty personal feeds", () => {
@@ -202,7 +228,10 @@ test("New account Home has research tools without empty personal feeds", () => {
   });
   const html = renderToStaticMarkup(React.createElement(Home));
   assert.deepEqual(requested, symbols);
-  assert.doesNotMatch(html, /aria-label="Portfolio summary"|Company earnings and events|What changed/);
+  assert.doesNotMatch(
+    html,
+    /aria-label="Portfolio summary"|Company earnings and events|What changed/,
+  );
   assert.match(html, /Research a company/);
 });
 
@@ -265,4 +294,39 @@ test("Home accumulation panel excludes valuation-only entries without confirmed 
   const html = renderToStaticMarkup(React.createElement(Home));
   assert.doesNotMatch(html, /confirmed Pending/);
   assert.match(html, /Explore accumulation zones/);
+});
+
+test("Home earnings preserves zero and negative actuals, estimates and pending releases", () => {
+  const EarningsNumbers = load("EarningsNumbers", {});
+  for (const actual of [0, -0.25, 2.5]) {
+    const html = renderToStaticMarkup(
+      React.createElement(EarningsNumbers, {
+        event: {
+          symbol: "TEST",
+          kind: "Earnings",
+          date: "2026-11-04",
+          actual,
+          estimate: 0.3,
+        },
+        today: "2026-11-05",
+      }),
+    );
+    assert.ok(html.includes(actual.toFixed(2)));
+    assert.match(html, /Estimate.*0\.30/);
+  }
+  const pending = renderToStaticMarkup(
+    React.createElement(EarningsNumbers, {
+      event: {
+        symbol: "TEST",
+        kind: "Earnings",
+        date: "2026-11-06",
+        actual: 12,
+        estimate: 0,
+      },
+      today: "2026-11-05",
+    }),
+  );
+  assert.match(pending, /EPS reported.*Pending/);
+  assert.match(pending, /Estimate.*0\.00/);
+  assert.doesNotMatch(pending, /12\.00/);
 });

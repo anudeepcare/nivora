@@ -2,7 +2,7 @@
 import SectionIcon from "./SectionIcon";
 import { useWorkspacePreferences } from "./WorkspacePreferences";
 import OpportunityMap from "./OpportunityMap";
-import ContributionCompare from "./ContributionCompare";
+import { MarketRadar } from "./MarketRadar";
 import ResearchInbox from "./ResearchInbox";
 import portfolioStyles from "./PortfolioWorkspace.module.css";
 import { sameProviderSymbol } from "@/lib/provider-symbol";
@@ -29,7 +29,7 @@ import type { Position, Research } from "@/lib/types";
 import type { QuoteRows } from "@/lib/portfolio-quotes";
 import type { AccountBalances as Balances } from "@/lib/account-balances";
 import homeStyles from "./HomeWorkspace.module.css";
-import type { HomeFeed } from "@/lib/home-feed";
+import type { HomeFeed, MarketEvent } from "@/lib/home-feed";
 import {
   groupMarketEvents,
   marketDay,
@@ -116,7 +116,10 @@ function SectionHead({
   return (
     <div className={visual.sectionHead}>
       <div>
-        <h2><SectionIcon name={title}/>{title}</h2>
+        <h2>
+          <SectionIcon name={title} />
+          {title}
+        </h2>
         {subtitle && <p>{subtitle}</p>}
       </div>
       {action}
@@ -439,6 +442,39 @@ function useHomeFeed(symbols: string[]) {
   };
 }
 
+function EarningsNumbers({
+  event,
+  today,
+}: {
+  event: MarketEvent;
+  today: string;
+}) {
+  const actual =
+    event.date <= today &&
+    typeof event.actual === "number" &&
+    Number.isFinite(event.actual)
+      ? event.actual
+      : null;
+  const estimate =
+    typeof event.estimate === "number" && Number.isFinite(event.estimate)
+      ? event.estimate
+      : null;
+  return (
+    <small className={homeStyles.earningsNumbers}>
+      <span>
+        EPS reported{" "}
+        <strong>{actual === null ? "Pending" : actual.toFixed(2)}</strong>
+      </span>
+      <span>
+        Estimate{" "}
+        <strong>
+          {estimate === null ? "Not supplied" : estimate.toFixed(2)}
+        </strong>
+      </span>
+    </small>
+  );
+}
+
 function HomeOverview() {
   const state = useWorkspaceData(),
     { workspace, quotes, model, prefix, demo, displayName, pace } = state;
@@ -505,7 +541,31 @@ function HomeOverview() {
     );
   const best = signals[0];
 
-  const eventGroups = groupMarketEvents(brief.checkpoints);
+  const pastPending = (feed.data?.events ?? []).filter(
+    (event) =>
+      symbols.includes(event.symbol) &&
+      /earnings/i.test(event.kind) &&
+      event.date < day &&
+      Date.parse(event.date) >= Date.parse(day) - 3 * 86400000 &&
+      earningsEventState(event, day).status !== "reported" &&
+      !brief.reported.some(
+        (reported) =>
+          reported.symbol === event.symbol && reported.date === event.date,
+      ),
+  );
+  const calendarEvents = [
+    ...new Map(
+      [...pastPending, ...brief.checkpoints].map((event) => [
+        `${event.symbol}:${event.date}:${event.kind}`,
+        event,
+      ]),
+    ).values(),
+  ];
+  const eventGroups = groupMarketEvents(calendarEvents);
+  const loadedResearch = symbols.flatMap((symbol) => {
+    const research = state.research(symbol);
+    return research ? [research] : [];
+  });
   const hour = today.getHours(),
     greeting =
       hour < 12
@@ -513,21 +573,13 @@ function HomeOverview() {
         : hour < 18
           ? "Good afternoon"
           : "Good evening";
-  const briefHref =
-    brief.earnings.length > 1
-      ? "#home-earnings"
-      : brief.kind === "review"
-        ? `${prefix}/${workspace?.positions.length ? "portfolio" : "watchlist"}`
-        : brief.symbol
-          ? researchLink(brief.symbol, prefix)
-          : `${prefix}/research`;
   return (
     <section
       className={`approved-workspace approved-home home-decision-view ${homeStyles.home}`}
     >
       <Heading
         title={`${greeting}${displayName ? `, ${displayName}` : ""}.`}
-        subtitle="Your next investment decision, with the reasons attached."
+        subtitle="Your companies, upcoming events and research."
         actions={
           <span className="date-chip">
             {today.toLocaleDateString(undefined, {
@@ -555,105 +607,27 @@ function HomeOverview() {
           Research a company <SearchIcon size={16} />
         </Link>
       </div>
-      <ContributionCompare symbols={symbols} prefix={prefix} />
-      <ResearchInbox
-        news={feed.data?.news ?? []}
-        events={feed.data?.events ?? []}
-        today={day}
-        ready={readiness.eventsReady && readiness.newsReady && !feed.error}
-        quotes={quotes.data}
-        quotesReady={!quotes.loading}
-      />
+      <ResearchInbox today={day} />
       <OpportunityMap
-        research={symbols.flatMap((symbol) => {
-          const r = state.research(symbol);
-          return r ? [r] : [];
-        })}
+        research={loadedResearch}
         requested={symbols}
         prefix={prefix}
         demo={!!demo}
       />
+      {loadedResearch.length > 0 && (
+        <details className={homeStyles.marketRadar}>
+          <summary>
+            Market radar{" "}
+            <span>
+              {loadedResearch.length} loaded companies · historical breadth &
+              rotation
+            </span>
+          </summary>
+          <MarketRadar research={loadedResearch} asOf={day} />
+        </details>
+      )}
       {symbols.length > 0 && (
         <>
-          <section className="home-next-step" aria-label="Your next step">
-            <div className="home-next-copy">
-              <span className="eyebrow">{brief.kicker}</span>
-              <h2>
-                {brief.kind === "review"
-                  ? "Revisit the story. Challenge the assumptions."
-                  : brief.title}
-              </h2>
-              <p>
-                {brief.kind === "review"
-                  ? "Pick a company you follow. Check what changed in its growth, cash generation and valuation since your last look."
-                  : brief.detail}
-              </p>
-              {!!brief.earnings.length && (
-                <div
-                  className="home-earnings-overview"
-                  aria-label="Featured earnings"
-                >
-                  {brief.earnings.map((event) => {
-                    const status = earningsEventState(event, day);
-                    return (
-                      <Link
-                        href={researchLink(event.symbol, prefix)}
-                        key={event.symbol}
-                        className={`home-earnings-chip earnings-${status.status}`}
-                      >
-                        <strong>{event.symbol}</strong>
-                        <span>{status.label}</span>
-                        <ArrowUpRight size={14} />
-                      </Link>
-                    );
-                  })}
-                </div>
-              )}
-              {!!brief.checkpoints.length && (
-                <details
-                  className="home-milestones"
-                  aria-label="Upcoming milestones"
-                >
-                  <summary className="home-milestones-label">
-                    Upcoming milestones · {brief.checkpoints.length} checkpoints
-                  </summary>
-                  {brief.checkpoints.slice(0, 3).map((event, index) => (
-                    <Link
-                      href={researchLink(event.symbol, prefix)}
-                      key={`${event.symbol}:${event.date}:${event.kind}`}
-                      className={`home-milestone home-milestone-${index % 3}`}
-                    >
-                      <span className="home-milestone-icon" aria-hidden="true">
-                        <CalendarDays size={18} />
-                      </span>
-                      <span className="home-milestone-copy">
-                        <small>{dateLabel(event.date)}</small>
-                        <strong>{names[event.symbol] ?? event.symbol}</strong>
-                        <em>{event.kind}</em>
-                      </span>
-                      <ArrowUpRight size={16} aria-hidden="true" />
-                    </Link>
-                  ))}
-                </details>
-              )}
-            </div>
-            <Link
-              className="btn primary"
-              href={brief.kind === "review" ? `${prefix}/research` : briefHref}
-            >
-              {brief.kind === "review" ? "Open research" : brief.action}{" "}
-              <ArrowUpRight size={17} />
-            </Link>
-            <p className="home-source-note">
-              {!symbols.length
-                ? "Start with a company you know."
-                : demo
-                  ? "Illustrative workspace · open a company to explore the research."
-                  : feed.loading
-                    ? "Checking company news and scheduled events…"
-                    : `${brief.status}${feed.data?.retrievedAt ? ` Checked ${quoteTime(feed.data.retrievedAt)}.` : ""}`}
-            </p>
-          </section>
           <Coverage state={state} />
           <div className="home-evidence-layout">
             <section className="home-evidence-panel">
@@ -696,8 +670,8 @@ function HomeOverview() {
               aria-label="Company earnings and events"
             >
               <SectionHead
-                title="Next 7 days"
-                subtitle="Upcoming earnings and company events."
+                title="Earnings & events"
+                subtitle="Recent results and the next 7 days."
                 action={
                   <button
                     className="icon-btn"
@@ -741,6 +715,9 @@ function HomeOverview() {
                               <small>
                                 {event.detail || "Time not confirmed"}
                               </small>
+                              {/earnings/i.test(event.kind) && (
+                                <EarningsNumbers event={event} today={day} />
+                              )}
                             </span>
                             <ArrowUpRight size={16} />
                           </Link>
@@ -791,10 +768,8 @@ function HomeOverview() {
                         <b className="earnings-status earnings-reported">
                           Results reported
                         </b>
-                        <small>
-                          {dateLabel(event.date)} · Open results and company
-                          research
-                        </small>
+                        <small>{dateLabel(event.date)}</small>
+                        <EarningsNumbers event={event} today={day} />
                       </span>
                       <ArrowUpRight size={16} />
                     </Link>
@@ -809,6 +784,17 @@ function HomeOverview() {
                     checked.
                   </p>
                 )}
+              <p className="home-source-note" role="status">
+                {demo
+                  ? "Illustrative workspace"
+                  : feed.loading
+                    ? "Checking company events…"
+                    : feed.error
+                      ? "Some company events could not be checked."
+                      : feed.data?.retrievedAt
+                        ? `Checked ${quoteTime(feed.data.retrievedAt)}.`
+                        : "Available calendar observations"}
+              </p>
               {!feed.loading && !readiness.eventsReady && (
                 <button className="text-link" onClick={feed.refresh}>
                   Retry calendar <RefreshCw size={14} />

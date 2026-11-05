@@ -65,7 +65,30 @@ export function headerBusinessMetrics(
       date: latest.end,
       help: "Operating profit as a percentage of revenue for the stated reporting period.",
     });
-  return rows;
+  if (
+    !financialBusiness &&
+    finite(latest.margin) &&
+    !rows.some((x) => x.label === "Operating margin")
+  )
+    rows.push({
+      label: "Operating margin",
+      value: latest.margin,
+      date: latest.end,
+      help: "Reported operating profit divided by revenue for this reporting period.",
+    });
+  if (
+    !financialBusiness &&
+    finite(latest.netIncome) &&
+    finite(latest.revenue) &&
+    latest.revenue > 0
+  )
+    rows.push({
+      label: "Net margin",
+      value: (latest.netIncome / latest.revenue) * 100,
+      date: latest.end,
+      help: "Reported net income divided by revenue for this reporting period. One-time items can affect this measure.",
+    });
+  return rows.filter((row) => Number.isFinite(row.value));
 }
 
 export function headerBusinessFamily(r: Research) {
