@@ -14,10 +14,10 @@ export async function POST(request: Request) {
       origin = request.headers.get("origin");
     if (!origin || origin !== url.origin)
       throw new HttpError("Open the contact form on this site.", 403);
-    if (Number(request.headers.get("content-length") ?? 0) > 20000)
+    if (Number(request.headers.get("content-length") ?? 0) > 450000)
       throw new HttpError("Message too large.", 413);
     const raw = await request.text();
-    if (raw.length > 20000) throw new HttpError("Message too large.", 413);
+    if (raw.length > 450000) throw new HttpError("Message too large.", 413);
     let body;
     try {
       body = supportInput(JSON.parse(raw));
@@ -72,6 +72,13 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
   try {
     await owner(request);
+    const attachment=new URL(request.url).searchParams.get('attachment');
+    if(attachment!==null){
+      if(!/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(attachment))throw new HttpError('Invalid support reference.',400);
+      const result=await accessDb().from('auryn_support_requests').select('screenshot').eq('id',attachment).single();
+      if(result.error)throw new HttpError('Attachment is unavailable.',404);
+      return privateJson({screenshot:result.data?.screenshot??null});
+    }
     const r = await accessDb()
       .from("auryn_support_requests")
       .select(

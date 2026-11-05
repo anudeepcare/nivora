@@ -1,3 +1,4 @@
+import {workspacePreferences} from "./workspace-preferences.ts";
 export type AlertRule = {
   symbol: string;
   type:
@@ -21,11 +22,14 @@ export function cleanDocument(
   const text = (key: string, max: number) =>
     typeof v[key] === "string" ? v[key].trim().slice(0, max) : "";
   if (kind === "note") {
+    const reviewDate = text("reviewDate", 10);
+    if (reviewDate && (!/^\d{4}-\d{2}-\d{2}$/.test(reviewDate) || !Number.isFinite(Date.parse(reviewDate)) || new Date(reviewDate).toISOString().slice(0,10) !== reviewDate)) throw Error("Choose a valid review date.");
     const source = text("sourceUrl", 1000);
     if (source && !/^https:\/\//.test(source))
       throw Error("Source links must use HTTPS.");
     return {
       thesis: text("thesis", 3000),
+      reviewDate,
       counterargument: text("counterargument", 2000),
       condition: text("condition", 1500),
       milestone: text("milestone", 1500),
@@ -51,6 +55,7 @@ export function cleanDocument(
       throw Error("Check your symbols.");
     return {
       name: text("name", 80),
+      ...(kind === "view" && v.preferences ? {preferences:workspacePreferences(v.preferences)} : {}),
       symbols,
       filter: text("filter", 40),
       horizon: text("horizon", 20),

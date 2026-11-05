@@ -1,4 +1,5 @@
 "use client";
+import { ContextLink } from "./ContextLink";
 import PaceInstrument from "./PaceInstrument";
 import experience from "./IntegratedExperience.module.css";
 import { PrivacyChoices } from "./AnalyticsConsent";
@@ -260,7 +261,7 @@ export default function PublicLanding({
 
   return (
     <main
-      className={`mp-public ap-public ${sampleOnly ? "ap-sample-page" : ""}`}
+      className={`mp-public ap-public ${experience.public} ${sampleOnly ? "ap-sample-page" : ""}`}
     >
       <a className="ap-skip-link" href="#ap-main">
         Skip to content
@@ -277,7 +278,7 @@ export default function PublicLanding({
             <nav className="ap-nav" aria-label="Main navigation">
               <Link href="/sample">How it works</Link>
               <Link href="/pricing">Pricing</Link>
-              <Link href="/methodology">Our approach</Link>
+              <ContextLink page="methodology">Our approach</ContextLink>
             </nav>
             <div className="ap-header-actions">
               <Link className="ap-signin" href="/login">
@@ -475,8 +476,9 @@ export default function PublicLanding({
           <nav aria-label="Footer navigation">
             <Link href="/sample">How it works</Link>
             <Link href="/pricing">Pricing</Link>
-            <Link href="/help">Help</Link>
+            <ContextLink page="help">Help</ContextLink>
             <Link href="/about">About</Link>
+            <ContextLink page="changelog">What’s new</ContextLink>
             <Link href="/pace">AURYN Pace</Link>
             <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
           </nav>
@@ -484,11 +486,11 @@ export default function PublicLanding({
         <div className="ap-footer-bottom">
           <span>© {new Date().getFullYear()} AURYN</span>
           <nav aria-label="Legal and methodology">
-            <Link href="/methodology">Methodology</Link>
-            <Link href="/terms">Terms</Link>
-            <Link href="/privacy">Privacy</Link>
+            <ContextLink page="methodology">Methodology</ContextLink>
+            <ContextLink page="terms">Terms</ContextLink>
+            <ContextLink page="privacy">Privacy</ContextLink>
             <PrivacyChoices />
-            <Link href="/risk">Risks</Link>
+            <ContextLink page="risk">Risks</ContextLink>
           </nav>
         </div>
         <p>

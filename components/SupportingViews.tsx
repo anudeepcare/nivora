@@ -1,7 +1,9 @@
 "use client";
+import { APP_VERSION } from "@/lib/releases";
 import settingsStyles from "./SettingsPage.module.css";
 import { sameProviderSymbol } from "@/lib/provider-symbol";
 import { SUPPORT_EMAIL } from "@/lib/site-metadata";
+import { ContextLink } from "./ContextLink";
 import { PrivacyChoices } from "./AnalyticsConsent";
 import PaceGuidance from "./PaceGuidance";
 import Search from "./Search";
@@ -250,11 +252,12 @@ export function Settings() {
           <span>Price alerts</span>
           <ChevronRight size={17} />
         </Link>
-        <Link href="/help">
+        <ContextLink page="help">
           <ShieldCheck size={18} />
           <span>Help & support</span>
           <ChevronRight size={17} />
-        </Link>
+        </ContextLink>
+        <ContextLink page="changelog"><Bell size={18} /><span>What’s new · {APP_VERSION}</span><ChevronRight size={17} /></ContextLink>
         <a href={`mailto:${SUPPORT_EMAIL}`}>
           <ShieldCheck size={18} />
           <span>Email support</span>

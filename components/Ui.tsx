@@ -6,6 +6,7 @@ import { useId, useRef, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Info, X, ArrowUpRight, Search } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { ContextLink } from "./ContextLink";
 import { requestLogo } from "@/lib/logo-client";
 import { dateLabel, quoteTime } from "@/lib/format";
 export function DataStamp({
@@ -291,18 +292,12 @@ export function Notice({
 }
 
 export function ProductFooter() {
+  const links = Object.entries({help:'Help',contact:'Contact',changelog:"What’s new",methodology:'Methodology',terms:'Terms',privacy:'Privacy',risk:'Risk disclosure',reliability:'Data reliability'}).map(([page,label])=><ContextLink key={page} page={page}>{label}</ContextLink>);
   return (
     <footer className="product-footer">
       <span>© {new Date().getFullYear()} AURYN. All rights reserved.</span>
-      <nav aria-label="Help and legal">
-        <Link href="/help">Help</Link>
-        <Link href="/contact">Contact</Link>
-        <Link href="/methodology">Methodology</Link>
-        <Link href="/terms">Terms</Link>
-        <Link href="/privacy">Privacy</Link>
-        <Link href="/risk">Risk disclosure</Link>
-        <Link href="/reliability">Data reliability</Link>
-      </nav>
+      <nav className="footer-desktop" aria-label="Help and legal">{links}</nav>
+      <details className="footer-links"><summary>Help & legal</summary><nav aria-label="Help and legal">{links}</nav></details>
       <Help label="Research disclosure" trigger="Research disclosure">
         <p>
           AURYN provides investment research and decision support. It does not

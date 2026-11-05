@@ -14,10 +14,14 @@ type Ticket = {
   attempts: number;
 };
 export default function SupportInbox() {
+  const [attachments,setAttachments] = useState<Record<string,string|null>>({});
   const [rows, setRows] = useState<Ticket[]>([]),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
     [filter, setFilter] = useState("all");
+  async function attachment(id:string){
+    setBusy(true);setError('');try{const r=await api<{screenshot:string|null}>(`support?attachment=${encodeURIComponent(id)}`);setAttachments(old=>({...old,[id]:r.screenshot}));}catch(e){setError(e instanceof Error?e.message:'Attachment unavailable.');}finally{setBusy(false);}
+  }
   async function load() {
     const r = await api<{ requests: Ticket[] }>("support");
     setRows(r.requests);
@@ -93,6 +97,9 @@ export default function SupportInbox() {
             Reply to {r.email}
           </a>
           <p style={{ whiteSpace: "pre-wrap" }}>{r.message}</p>
+          <div><button type="button" disabled={busy} onClick={()=>void attachment(r.id)}>View screenshot</button>
+          {attachments[r.id]===null && <p>No screenshot attached.</p>}
+          {attachments[r.id]?.startsWith('data:image/jpeg;base64,') && <img src={attachments[r.id]!} alt="User supplied support screenshot" style={{maxWidth:'100%',maxHeight:400,objectFit:'contain'}}/>}</div>
           <small>
             #{r.id.slice(0, 8)} · {r.page} ·{" "}
             {r.owner_notified_at ? "Owner notified" : "Owner email pending"} ·{" "}

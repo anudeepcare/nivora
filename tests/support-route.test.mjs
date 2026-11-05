@@ -4,7 +4,7 @@ function handler({saved=true,delivered=false,ownerId='member'}={}){
  const ast=ts.createSourceFile('route.ts',fs.readFileSync('app/api/support/route.ts','utf8'),ts.ScriptTarget.Latest,true,ts.ScriptKind.TS);
  const body=ast.statements.filter(n=>!ts.isImportDeclaration(n)).map(n=>n.getText(ast).replace(/^export /,'')).join('\n');
  const code=ts.transpileModule(body,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
- const binding={createHash,supportInput,HttpError,privateJson:v=>Response.json(v),failure:e=>Response.json({error:e.message},{status:e.status??503}),accessDb:()=>({rpc:async()=>({error:saved?null:{message:'storage failed'}})}),account:async()=>({user:{id:ownerId}}),exactOwner:id=>id==='owner',deliverSupport:async()=>{if(!delivered)throw Error('mail failed');return{receipt:true};},retrySupport:async()=>[]};
+ const binding={createHash,supportInput,HttpError,privateJson:v=>Response.json(v),failure:e=>Response.json({error:e.message},{status:e.status??503}),accessDb:()=>({from:()=>({select:()=>({eq:()=>({single:async()=>({data:{screenshot:'data:image/jpeg;base64,/9j/AAAA'},error:null})})})}),rpc:async()=>({error:saved?null:{message:'storage failed'}})}),account:async()=>({user:{id:ownerId}}),exactOwner:id=>id==='owner',deliverSupport:async()=>{if(!delivered)throw Error('mail failed');return{receipt:true};},retrySupport:async()=>[]};
  return new Function(...Object.keys(binding),code+';return {POST,GET,PATCH};')(...Object.values(binding));
 }
 const body={id:'00000000-0000-4000-8000-000000000001',category:'Feedback',email:'test@example.com',message:'The overview could use clearer labels.',page:'/contact'};
@@ -15,3 +15,9 @@ test('contact success requires durable save; email failure retains the saved ref
 });
 test('contact rejects external origins and invalid messages before save',async()=>{assert.equal((await handler().POST(request(body,'https://evil.test'))).status,403);assert.equal((await handler().POST(request({...body,message:'x'}))).status,400);});
 test('support inbox cannot be opened by a regular account',async()=>assert.equal((await handler().GET(new Request('https://example.test/api/support'))).status,403));
+test('support attachment retrieval rejects regular accounts and invalid owner identifiers',async()=>{
+ assert.equal((await handler().GET(new Request('https://example.test/api/support?attachment=123'))).status,403);
+ assert.equal((await handler({ownerId:'owner'}).GET(new Request('https://example.test/api/support?attachment=invalid'))).status,400);
+});
+
+test('owner can retrieve only the requested private screenshot',async()=>{const r=await handler({ownerId:'owner'}).GET(new Request('https://example.test/api/support?attachment=00000000-0000-4000-8000-000000000001'));assert.equal(r.status,200);assert.deepEqual(await r.json(),{screenshot:'data:image/jpeg;base64,/9j/AAAA'});});

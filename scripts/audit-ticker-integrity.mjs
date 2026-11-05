@@ -5,18 +5,18 @@ import { sourceModule } from "../tests/helpers/provider-fixture.mjs";
 const { indicators } = sourceModule("lib/analysis.ts");
 const { researchAccumulation } = sourceModule("lib/accumulation-policy-v5.ts");
 const root = process.argv[2] || "verification/ticker-audit-20261104";
-const asOf = "2026-11-04T00:00:00Z";
+const asOf = process.argv[3] || "2026-11-04T00:00:00Z";
+assert.ok(Number.isFinite(Date.parse(asOf)));
+const rawRoot = process.argv[4] || `${root}/raw`;
 const symbols = JSON.parse(fs.readFileSync(`${root}/universe.json`));
-assert.equal(symbols.length, 200);
-assert.equal(new Set(symbols).size, 200);
+assert.ok(symbols.length>0);assert.equal(new Set(symbols).size,symbols.length);assert.ok(symbols.every(s=>/^[A-Z0-9][A-Z0-9.-]{0,14}$/.test(s)));
 const closeTo = (a, b) =>
   assert.ok(
     Math.abs(a - b) <= 1e-8 * Math.max(1, Math.abs(b)),
     `${a} differs from ${b}`,
   );
 const rows = symbols.map((symbol) => {
-  const path = `${root}/raw/${symbol}.json`,
-    input = JSON.parse(fs.readFileSync(path));
+  const path=`${rawRoot}/${symbol}.json`;let input;try{input=JSON.parse(fs.readFileSync(path));}catch{input={raw:'History not retrieved or unreadable',source:null,retrievedAt:null}}if(typeof input.raw!=='string')input.raw='History response is missing';
   const row = {
     symbol,
     source: input.source,
@@ -24,6 +24,7 @@ const rows = symbols.map((symbol) => {
     sha256: crypto.createHash("sha256").update(input.raw).digest("hex"),
     status: "unavailable",
     checks: [],
+    external:{quotes:'not-compared',pace:'not-compared',scenarios:'not-compared',analysts:'not-compared',fundamentals:'not-compared',technicals:'not-compared'},
   };
   if (!input.raw.startsWith("datetime;"))
     return { ...row, reason: input.raw.slice(0, 180) };
@@ -37,6 +38,7 @@ const rows = symbols.map((symbol) => {
       return { time, open, high, low, close, volume };
     })
     .sort((a, b) => a.time.localeCompare(b.time));
+  if(!bars.length)return {...row,reason:"No dated observations"};
   const check = (name, fn) => {
     try {
       fn();
@@ -66,6 +68,7 @@ const rows = symbols.map((symbol) => {
   const past = bars.filter((b) => b.time < asOf.slice(0, 10)),
     t = indicators(bars, asOf),
     p = researchAccumulation(bars, asOf);
+  if(!past.length)return {...row,reason:"No observations before cutoff"};
   row.reading = {
     close: t.close,
     ma50: t.ma50,
@@ -164,7 +167,7 @@ const report = {
     "Competitor proprietary zones are not accuracy ground truth.",
   ],
   summary: {
-    requested: 200,
+    requested: symbols.length,
     usable: rows.filter((r) => r.status !== "unavailable").length,
     passed: rows.filter((r) => r.status === "pass").length,
     failed: rows.filter((r) => r.status === "fail").length,
@@ -195,3 +198,6 @@ console.log(
     2,
   ),
 );
+
+const columns=['symbol','status','close','asOf','sma50','sma200','rsi14','confirmedPace','formingPace','quoteComparison','paceComparison','scenarioComparison','analystComparison','fundamentalComparison','technicalComparison','reason'];const csv=x=>'"'+String(x??'').replaceAll('"','""')+'"';
+fs.writeFileSync(`${root}/ticker-results.csv`,[columns.join(','),...rows.map(r=>[r.symbol,r.status,r.reading?.close,r.last,r.reading?.ma50,r.reading?.ma200,r.reading?.rsi,r.reading?.confirmed?.multiplier,r.reading?.forming?.multiplier,r.external.quotes,r.external.pace,r.external.scenarios,r.external.analysts,r.external.fundamentals,r.external.technicals,r.reason??''].map(csv).join(','))].join('\n')+'\n');

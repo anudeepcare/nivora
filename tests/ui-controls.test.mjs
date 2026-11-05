@@ -21,6 +21,7 @@ import { researchPeriods } from "../lib/financial-catalog.ts";
 import { demoData } from "./fixtures/demo.ts";
 
 function loadComponent(file, name, bindings) {
+  bindings={APP_VERSION:"0.2.0-rc.2",ReleaseNotice:()=>null,ContextLink:({page,children,className})=>React.createElement('a',{href:'/'+page,className},children),...bindings};
   bindings = { layout: {panel:"panel"}, searchStyles: {search:"search-module"}, ...bindings };
   bindings = { settingsStyles: {page: "settings-page-module"}, experience, PaceInstrument, Check: () => null, SUPPORT_EMAIL: "support@auryninvest.com", PrivacyChoices: () => null, paceCode, pacePeriods, PaceGuidance: ({view}) => React.createElement("div", null, view.actionLabel, view.effectiveCode), PaceReadings: ({readings}) => React.createElement("div", null, readings.map(r=>React.createElement("div", {key:r.key}, r.label, " ", r.code, " ", format.dateLabel(r.date)))), PaceHelp: () => null, CompanySparkline: () => null, ...bindings };
   bindings = {
@@ -564,6 +565,8 @@ test("public legal and help documents render all cross-links and readable sectio
     {
       React,
       useState: React.useState,
+      ContextLink: loadComponent("components/ContextLink.tsx", "ContextLink", {React, useState:React.useState, useEffect:React.useEffect, usePathname:()=>'/help',useRouter:()=>({}),useSearchParams:()=>new URLSearchParams(), Link:({children,...props})=>React.createElement('a',props,children)}),
+      DocumentBack: loadComponent("components/ContextLink.tsx", "DocumentBack", {React, useState:React.useState, useEffect:React.useEffect, Link:({children,...props})=>React.createElement('a',props,children)}),
       documents,
       legalConfiguration,
       Link: ({ children, ...props }) =>

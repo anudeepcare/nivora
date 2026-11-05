@@ -2,8 +2,8 @@ import { SUPPORT_EMAIL } from "./site-metadata.ts";
 export const legalConfiguration = {
   operator: process.env.NEXT_PUBLIC_AURYN_OPERATOR || "AURYN",
   contact: process.env.NEXT_PUBLIC_AURYN_SUPPORT_EMAIL || SUPPORT_EMAIL,
-  updated: "October 27, 2026",
-  version: "action-web-20261027",
+  updated: "November 4, 2026",
+  version: "continuation-20261104",
 };
 export type DocumentId =
   | "terms"
@@ -54,7 +54,7 @@ export const documents: Record<
       },
       {
         title: "Payments and card details",
-        text: "Stripe hosts checkout and processes subscription payments. AURYN does not collect or store full payment-card numbers or card security codes. AURYN stores account and billing references, subscription status and paid-through dates to provide access. Stripe processes payment information under its own terms and privacy policy. No charge is made simply for creating a Free account.",
+        text: "Stripe hosts checkout and processes subscription payments. AURYN does not collect or store full payment-card numbers or card security codes. AURYN stores account and billing references, subscription status and paid-through dates to provide access. Stripe processes payment information under its own terms and privacy policy. AURYN remains responsible for its subscription service and customer support, including handling billing questions and refund requests. Using Stripe does not transfer all merchant responsibilities to Stripe. No charge is made simply for creating a Free account.",
       },
       {
         title: "Accounts and responsible use",
@@ -93,7 +93,7 @@ export const documents: Record<
       },
       {
         title: "Information you provide",
-        text: "The application processes account identifiers, saved holdings, quantities, costs, watchlists, research requests and any notes or strategy information you submit. Avoid including credentials, government identifiers or information about other people in notes or AI prompts.",
+        text: "The application processes account identifiers, saved holdings, quantities, costs, watchlists, research requests and any notes or strategy information you submit. Support messages may include a screenshot you select and optional app version, page category and screen size. These are stored privately and may be sent to support through the configured email service. Avoid including credentials, government identifiers or information about other people in notes, screenshots or AI prompts.",
       },
       {
         title: "Google and X sign-in",
@@ -105,7 +105,7 @@ export const documents: Record<
       },
       {
         title: "Device storage",
-        text: "This device stores session information and preferences such as appearance, text size, motion and research style. Some caches and research tools retain local state. Clearing site data or removing an installed web app can remove device-only information. Confirm server-saved holdings before doing so.",
+        text: "This device stores session information and preferences such as appearance, text size and motion. Account-saved research settings include style, depth, chart period, sorting and visible overview cards. Some caches and research tools retain local state. Clearing site data or removing an installed web app can remove device-only information. Confirm server-saved holdings before doing so.",
       },
       {
         title: "AI processing",

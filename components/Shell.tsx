@@ -1,4 +1,5 @@
 "use client";
+import { ReleaseNotice } from "./ReleaseNotes";
 import experience from "./WorkspaceShell.module.css";
 import { AccessNotice, useAccess } from "./Access";
 import Link from "next/link";
@@ -25,7 +26,7 @@ import {
 import { ProductFooter } from "./Ui";
 import Search from "./Search";
 import { signOutAndRedirect } from "@/lib/client";
-import { settingsHref } from "@/lib/settings-navigation";
+import { settingsHref, documentHref } from "@/lib/settings-navigation";
 import { useProduct } from "./Session";
 import {
   NavigationMemory,
@@ -79,10 +80,11 @@ export default function Shell({
   };
   useLayoutEffect(() => {
     const env = browserScrollEnvironment();
-    const top =
+    let top =
       pending.current?.path === pathname
         ? pending.current.top
         : memory.current.position(pathname);
+    try { const saved = JSON.parse(sessionStorage.getItem('auryn-document-scroll') || 'null'); if(saved?.href === window.location.pathname+window.location.search+window.location.hash && Number.isFinite(saved.top)){top=saved.top;sessionStorage.removeItem('auryn-document-scroll');}}catch{}
     const cancel = restoreWhenReady(top, env);
     pending.current = null;
     const remember = () =>
@@ -195,6 +197,7 @@ export default function Shell({
       <div className={experience.workspace}>
         <main id="content" className={experience.content} tabIndex={-1}>
           <AccessNotice />
+          <ReleaseNotice />
           {demo && demo.routePrefix !== "" && (
             <div className="preview-label">
               Design preview · Illustrative data · Account actions disabled
@@ -261,6 +264,12 @@ export default function Shell({
               icon: HelpCircle,
             },
             {
+              path: "changelog",
+              label: "What’s new",
+              detail: "Release notes and current version",
+              icon: Bell,
+            },
+            {
               path: "settings",
               label: "Settings",
               detail: "Account and preferences",
@@ -293,7 +302,7 @@ export default function Shell({
                 onNavigate={
                   path === "settings"
                     ? openSettings
-                    : () => tools.current?.close()
+                    : (event) => {tools.current?.close();if(["help","changelog"].includes(path)){event.preventDefault();try{sessionStorage.setItem('auryn-document-scroll',JSON.stringify({href:window.location.pathname+window.location.search+window.location.hash,top:window.scrollY}))}catch{}router.push(documentHref(path,window.location.pathname+window.location.search+window.location.hash));}}
                 }
               >
                 <span className="tool-icon">

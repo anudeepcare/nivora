@@ -13,7 +13,7 @@ import {
 } from "../lib/theme-preference.ts";
 
 function load(file, name, bindings) {
-  bindings = { experience, PaceInstrument, SUPPORT_EMAIL: "support@auryninvest.com", PrivacyChoices: () => null, PaceHelp: () => null, ...bindings };
+  bindings = { ContextLink: ({page,children}) => React.createElement("a",{href:"/"+page},children), experience, PaceInstrument, SUPPORT_EMAIL: "support@auryninvest.com", PrivacyChoices: () => null, PaceHelp: () => null, ...bindings };
   const source = ts.createSourceFile(
     file,
     fs.readFileSync(file, "utf8"),

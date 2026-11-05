@@ -35,5 +35,19 @@ export function supportInput(raw: unknown) {
     source.startsWith("/") && !source.startsWith("//")
       ? source.split(/[?#]/)[0].slice(0, 300)
       : "/contact";
-  return { id, email, category, message, page };
+  const screenshot = typeof b.screenshot==='string' ? b.screenshot : '';
+  if(screenshot.length>410000) throw Error('Screenshot is too large. Choose a smaller image.');
+  if(screenshot && !/^data:image\/jpeg;base64,\/9j\/[A-Za-z0-9+/]*={0,2}$/.test(screenshot)) throw Error('Attach a JPEG screenshot.');
+  let diagnosticText = '';
+  if (b.diagnostics && typeof b.diagnostics === 'object') {
+    const d=b.diagnostics as Record<string,unknown>;
+    const version=typeof d.version==='string'&&/^[0-9A-Za-z.-]{1,30}$/.test(d.version)?d.version:'unknown';
+    const rawPage=typeof d.page==='string'?d.page.split(/[?#]/)[0]:'';
+    const section=rawPage.replace(/^\/preview/, '').split('/')[1];
+    const safePage=['research','overview','portfolio','watchlist','settings','compare','contact'].includes(section)?`/${section}${section==='research'?'/[symbol]':''}`:'/other';
+    const viewport=typeof d.viewport==='string'&&/^\d{2,5}×\d{2,5}$/.test(d.viewport)?d.viewport:'unknown';
+    diagnosticText=`\n\nUser-approved diagnostics: version ${version}; page ${safePage}; viewport ${viewport}.`;
+  }
+  if(message.length+diagnosticText.length>5000) throw Error("Shorten the message to leave room for diagnostics (maximum 4,700 characters with diagnostics).");
+  return { id, email, category, message:message+diagnosticText, page, ...(screenshot ? {screenshot}: {}) };
 }

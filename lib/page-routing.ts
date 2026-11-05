@@ -1,4 +1,5 @@
 export const productPages = new Set([
+  "changelog",
   "overview",
   "research",
   "portfolio",

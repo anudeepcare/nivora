@@ -1,4 +1,5 @@
 "use client";
+import ReleaseNotes from "./ReleaseNotes";
 import Plans from "./Plans";
 import OwnerAccess from "./OwnerAccess";
 import Trading from "./Trading";
@@ -63,6 +64,7 @@ export default function Product({
   compareSymbols?: string;
 }) {
   const page = route[0] || "overview";
+  if (page === "changelog") return <ReleaseNotes />;
   if (page === "reset-password") return <PasswordRecovery />;
   if (
     ["terms", "privacy", "risk", "methodology", "help", "reliability"].includes(

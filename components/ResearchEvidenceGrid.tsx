@@ -1,4 +1,5 @@
 "use client";
+import { useWorkspacePreferences } from "./WorkspacePreferences";
 import { useMemo } from "react";
 import { Building2, Scale, Activity, Users, ArrowUpRight } from "lucide-react";
 import type { Research } from "@/lib/types";
@@ -14,6 +15,7 @@ export default function ResearchEvidenceGrid({
   research: Research;
   onTab: (tab: EvidenceSection) => void;
 }) {
+  const {preferences} = useWorkspacePreferences();
   const evidence = useMemo(() => overviewEvidence(research), [research]);
   const groups = [
     {
@@ -44,7 +46,7 @@ export default function ResearchEvidenceGrid({
       rows: evidence.ownership,
       tab: "Thesis" as const,
     },
-  ].filter(({tab}) => !evidence.crypto || (tab !== "Financials" && tab !== "Valuation"));
+  ].filter(({key})=>preferences.visibleMetrics.includes(key === "technical" ? "price" : key)).filter(({tab}) => !evidence.crypto || (tab !== "Financials" && tab !== "Valuation"));
   return (
     <section className={s.grid} aria-label="Research evidence at a glance">
       {groups.map(({ name, key, icon: Icon, rows, tab }) => (

@@ -30,6 +30,7 @@ export async function deliverSupport(id: string) {
         "Idempotency-Key": `auryn-support-${id}-${kind}`,
       },
       body: JSON.stringify({
+        ...(owner && typeof r.screenshot==='string' && r.screenshot.startsWith('data:image/jpeg;base64,') ? {attachments:[{filename:'screenshot.jpg',content:r.screenshot.split(',')[1]}]} : {}),
         from,
         to: [owner ? to : r.email],
         reply_to: owner ? r.email : to,

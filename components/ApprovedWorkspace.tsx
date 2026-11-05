@@ -1,4 +1,6 @@
 "use client";
+import {useWorkspacePreferences} from "./WorkspacePreferences";
+import ResearchInbox from "./ResearchInbox";
 import portfolioStyles from "./PortfolioWorkspace.module.css";
 import { sameProviderSymbol } from "@/lib/provider-symbol";
 import { customerText } from "@/lib/customer-language";
@@ -555,6 +557,7 @@ function HomeOverview() {
         </div>
         <ResearchLens />
       </section>
+      <ResearchInbox news={feed.data?.news ?? []} events={feed.data?.events ?? []} today={day} ready={readiness.eventsReady && readiness.newsReady && !feed.error} quotes={quotes.data} quotesReady={!quotes.loading} />
       {symbols.length > 0 && <>
       <section className="home-next-step" aria-label="Your next step">
         <div className="home-next-copy">
@@ -1558,6 +1561,10 @@ function HoldingsTable({
 }
 
 export function Watchlist() {
+  const accountPrefs=useWorkspacePreferences();
+  const {demo:watchDemo}=useProduct();
+  const noteDates=useResource<{documents:{key:string;body:{reviewDate?:string;condition?:string;thesis?:string}}[]}>('documents?kind=note',watchDemo?{documents:[]}:undefined);
+  const reviewDates=new Map(noteDates.data?.documents.map(x=>[x.key,x.body.reviewDate??''])??[]);
   const state = useWorkspaceData("watchlist"),
     { workspace, prefix, quotes, mutate, pace } = state;
   const [query, setQuery] = useWorkspaceFilter("watchlist"),
@@ -1566,6 +1573,10 @@ export function Watchlist() {
     [removing, setRemoving] = useState<string | null>(null);
   const dialog = useRef<HTMLDialogElement>(null),
     all = workspace?.watchlist.map((w) => w.symbol) ?? [];
+  const calendar = useHomeFeed(all);
+  const today = marketDay();
+  const nextDates = new Map<string,string>();
+  for(const event of calendar.data?.events ?? []) if(/earn/i.test(event.kind) && event.date >= today && earningsEventState(event,today).status !== 'reported' && (!nextDates.has(event.symbol)||event.date<nextDates.get(event.symbol)!)) nextDates.set(event.symbol,event.date);
   const symbols = all.filter(
     (s) =>
       (type === "All" ||
@@ -1573,7 +1584,7 @@ export function Watchlist() {
       `${s} ${quotes.data[s]?.company?.name || ""}`
         .toLowerCase()
         .includes(query.toLowerCase()),
-  );
+  ).sort((a,b)=>accountPrefs.preferences.watchSort==='change' ? (quotes.data[b]?.quote?.changePct??-Infinity)-(quotes.data[a]?.quote?.changePct??-Infinity)||a.localeCompare(b) : accountPrefs.preferences.watchSort==='event' ? (nextDates.get(a)||'9999').localeCompare(nextDates.get(b)||'9999')||a.localeCompare(b) : accountPrefs.preferences.watchSort==='review' ? (reviewDates.get(a)||'9999').localeCompare(reviewDates.get(b)||'9999')||a.localeCompare(b) : a.localeCompare(b));
   async function remove(symbol: string) {
     setRemoving(symbol);
     setError("");
@@ -1709,6 +1720,8 @@ export function Watchlist() {
                             </small>
                           </span>
                         </Link>
+                        <small>{nextDates.has(symbol) ? `Earnings · ${dateLabel(nextDates.get(symbol))}` : calendar.loading ? 'Checking earnings…' : calendar.error ? 'Earnings unavailable' : 'Next earnings unconfirmed'}</small>
+                        {noteDates.data?.documents.find(n=>n.key===symbol)?.body.condition && <small className="watch-checkpoint">{noteDates.data.documents.find(n=>n.key===symbol)?.body.condition}</small>}
                       </td>
                       <td>
                         <strong>

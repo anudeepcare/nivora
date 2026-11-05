@@ -172,3 +172,22 @@ body :is(.num,.pricing-amount) {font-variant-numeric:tabular-nums;letter-spacing
  input:not([type="checkbox"]):not([type="radio"]),select,textarea{font-size:16px;}
  .signal-research-nav{max-width:100%;overflow-x:auto;}
 }
+
+/* White-on-transparent partner marks need their own contrast surface. */
+body .security-logo.logo-dark {background:#23362e;color:#fff}
+.product-footer .footer-links summary{cursor:pointer;min-height:44px;display:flex;align-items:center}.product-footer .footer-links nav{display:flex;flex-wrap:wrap;gap:6px 18px}
+@media(min-width:768px){.product-footer .footer-links{display:contents}.product-footer .footer-links summary{display:none}.product-footer .footer-links:not([open])>nav{display:flex}}
+@media(max-width:767px){.product-footer .footer-links{width:100%}.product-footer .footer-links nav{display:grid;grid-template-columns:1fr 1fr}.product-footer .footer-links:not([open])>nav{display:none}.product-footer .footer-links nav a{min-height:44px!important;font-size:13px!important}.product-footer>.help-wrap{margin:0}}
+body .approved-watchlist .watch-summary{display:flex;align-items:center;gap:24px;padding:18px 20px;min-height:0;margin-bottom:20px;background:var(--card);border:1px solid var(--line);border-radius:14px}body .approved-watchlist .watch-summary>div:first-child{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}body .approved-watchlist .watch-summary>div:first-child strong{font-size:28px;line-height:1.2}body .approved-watchlist .watch-summary>div:nth-child(2){display:none}body .approved-watchlist .watch-summary>.btn{margin-left:auto}
+body .approved-watch-note label:not(.sr-only){display:grid;gap:8px;font-size:13px;color:var(--muted)}body .approved-watch-note :is(input,select,textarea){width:100%;min-width:0;font-size:16px;min-height:44px;box-sizing:border-box}body .observed-changes{margin:16px 0;padding:16px 20px;background:var(--surface);border:1px solid var(--line);border-radius:12px}body .observed-changes p{font-size:14px;line-height:1.6}body .observed-changes small{color:var(--muted);font-size:12px}
+body .settings-analytics-shortcut{display:flex;align-items:center;min-height:52px;padding:0!important;border:0!important}body .settings-analytics-shortcut button{width:100%;text-align:left;min-height:52px;font-size:14px;color:var(--ink);background:transparent;border:0;cursor:pointer}
+@media(max-width:767px){body .approved-watchlist .watch-summary{flex-wrap:wrap;gap:12px}body .approved-watchlist .watch-summary>.btn{margin-left:0}body .approved-watchlist .watch-summary>div:first-child p{margin:0}}
+
+.product-footer .footer-desktop{display:flex;flex-wrap:wrap;gap:6px 18px}
+@media(min-width:768px){.product-footer .footer-links{display:none}}
+@media(max-width:767px){.product-footer .footer-desktop{display:none}}
+
+:root[data-theme="dark"] body .workspace-settings :is(.segments,.segment) :is(button.active,button[aria-pressed="true"]){background:#d6f35a!important;color:#24272b!important;border-color:#d6f35a!important}
+body .research-preferences fieldset{margin:16px 0;padding:12px;border:1px solid var(--line);border-radius:10px}
+body .research-preferences fieldset label{display:flex!important;align-items:center;gap:10px;min-height:40px}
+body .research-preferences fieldset input[type="checkbox"]{width:18px;min-width:18px;height:18px;min-height:18px;margin:0}

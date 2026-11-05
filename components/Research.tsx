@@ -1,4 +1,5 @@
 "use client";
+import {useWorkspacePreferences} from "./WorkspacePreferences";
 import { customerText } from "@/lib/customer-language";
 import { pacePeriods, PACE_LEVELS } from "@/lib/pace-presentation";
 import PaceReadings from "./PaceReadings";
@@ -70,6 +71,10 @@ import PriceStudyChart from "./PriceStudyChart";
 import Financials from "./FinancialPicture";
 import { TechnicalPicture, ThesisPicture } from "./ResearchDetails";
 import { groupHistory } from "@/lib/chart-period";
+import EarningsReview from "./EarningsReview";
+import ResearchNotes from "./ResearchNotes";
+import CompanyBrief from "./CompanyBrief";
+import ResearchCoverage from "./ResearchCoverage";
 import ResearchChanges from "./ResearchChanges";
 import DcaResearch from "./DcaResearch";
 import DecisionOverview from "./IntegratedResearch";
@@ -118,6 +123,8 @@ const tabPresentation = {
 };
 export default function Research({ symbol }: { symbol: string }) {
   const { access } = useAccess();
+  const workspacePreferences=useWorkspacePreferences();
+  const rangeTouched=useRef(false);
   const { preferences } = useResearchPreferences();
   const requestedTab = useSearchParams().get("tab");
   const { demo, workspace, mutate, reduceMotion } = useProduct();
@@ -204,6 +211,7 @@ export default function Research({ symbol }: { symbol: string }) {
     [frequency, setFrequency] = useState<"Daily" | "Weekly" | "Monthly">(
       "Daily",
     );
+  useEffect(()=>{if(workspacePreferences.ready && !rangeTouched.current && ranges.includes(workspacePreferences.preferences.chartRange as typeof ranges[number])) setRange(workspacePreferences.preferences.chartRange as typeof ranges[number]);},[workspacePreferences.ready,workspacePreferences.preferences.chartRange]);
   const [retainedCharts, setRetainedCharts] = useState<string[]>(() =>
     !requestedTab ||
     requestedTab === "Snapshot" ||
@@ -342,6 +350,7 @@ export default function Research({ symbol }: { symbol: string }) {
               key={x}
               aria-pressed={range === x}
               onClick={() => {
+                rangeTouched.current=true;
                 setRange(x);
                 if (x === "1D" || x === "1W") setFrequency("Daily");
               }}
@@ -474,6 +483,8 @@ export default function Research({ symbol }: { symbol: string }) {
         </div>
       </header>
 
+      <ResearchChanges research={r} />
+      <ResearchCoverage research={r} />
       {notice && <Notice error>{notice}</Notice>}
       {resource.error && <Notice error>{resource.error}</Notice>}
       {r.issues.length > 0 && (
@@ -575,6 +586,7 @@ export default function Research({ symbol }: { symbol: string }) {
             {tab === "News" && (
               <>
                 <CompanyUpdates research={r} preview={!!demo} />
+                <EarningsReview research={r} />
                 <details className="research-reference">
                   <summary>Earnings history &amp; estimates</summary>
                   <EarningsWorkspace research={r} />
@@ -644,7 +656,7 @@ export default function Research({ symbol }: { symbol: string }) {
                           aria-pressed={frequency === v}
                           onClick={() => {
                             setFrequency(v);
-                            setRange(v === "Monthly" ? "5Y" : "1Y");
+                            rangeTouched.current=true; setRange(v === "Monthly" ? "5Y" : "1Y");
                           }}
                         >
                           {v}
@@ -698,6 +710,8 @@ export default function Research({ symbol }: { symbol: string }) {
                     part="detail"
                   />
                   <DecisionWatch key={r.company.symbol} research={r} />
+                </details><details className="research-reference"><summary>Your notes, snapshots &amp; research brief</summary>
+                  <FeatureGate feature="advanced"><ResearchNotes research={r} /></FeatureGate><CompanyBrief research={r} />
                 </details>
               </>
             )}

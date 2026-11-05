@@ -11,6 +11,7 @@ const navigation = fs.existsSync("lib/settings-navigation.ts")
   : {};
 const empty = () => null;
 function load(file, name, bindings) {
+  bindings={APP_VERSION:"0.2.0-rc.2",ReleaseNotice:()=>null,ContextLink:({page,children,className})=>React.createElement('a',{href:'/'+page,className},children),...bindings};
   bindings = { settingsStyles: {page: "settings-page-module"}, experience, PaceInstrument, SUPPORT_EMAIL: "support@auryninvest.com", PrivacyChoices: () => null, useAccess: () => ({access:{capabilities:{paperTrading:false}}}), ...bindings };
   const ast = ts.createSourceFile(
     file,

@@ -114,10 +114,7 @@ export function FinancialPlot({
               onClick={() => setActive(active === i ? null : i)}
               aria-label={`${dateLabel(rows[i].end)}: ${metricText(metric, v, rows[i].currency)}`}
             >
-              <title>
-                {dateLabel(rows[i].end)} ·{" "}
-                {metricText(metric, v, rows[i].currency)}
-              </title>
+              <title>{`${dateLabel(rows[i].end)} · ${metricText(metric, v, rows[i].currency)}`}</title>
             </rect>
           ),
         )}

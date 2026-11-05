@@ -238,9 +238,7 @@ export default function FinancialExplorer({
                 <g key={p.end}>
                   {p.value != null && (
                     <>
-                      <title>
-                        {dateLabel(p.end)}: {format(p.value)}
-                      </title>
+                      <title>{`${dateLabel(p.end)}: ${format(p.value)}`}</title>
                       {style === "bar" ? (
                         <rect
                           x={x(i) - width / 2}

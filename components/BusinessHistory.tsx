@@ -129,12 +129,7 @@ export default function BusinessHistory({
                     );
                   return (
                     <g key={row.end}>
-                      <title>
-                        {dateLabel(row.end)}:{" "}
-                        {key === "margin"
-                          ? percent(value)
-                          : amount(value, h.currency ?? undefined, true)}
-                      </title>
+                      <title>{`${dateLabel(row.end)}: ${key === "margin" ? percent(value) : amount(value, h.currency ?? undefined, true)}`}</title>
                       <rect
                         x={x - 13}
                         width="26"

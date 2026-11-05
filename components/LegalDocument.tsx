@@ -1,4 +1,5 @@
 "use client";
+import { ContextLink, DocumentBack } from "./ContextLink";
 import { PrivacyChoices } from "./AnalyticsConsent";
 import { useState } from "react";
 import Link from "next/link";
@@ -19,24 +20,23 @@ export default function LegalDocument({ id }: { id: DocumentId }) {
         <Link href="/" className="legal-brand">
           <img src="/icon.svg" width="28" height="28" alt="" /> AURYN
         </Link>
-        <Link href="/">Back to home →</Link>
+        <DocumentBack />
       </header>
       <div className="document-layout">
         <nav aria-label="Help and legal documents">
           {(Object.keys(documents) as DocumentId[]).map((k) => (
-            <Link
+            <ContextLink
               key={k}
-              href={`/${k}`}
-              aria-current={id === k ? "page" : undefined}
+              page={k}
             >
               {k === "risk"
                 ? "Risk disclosure"
                 : k[0].toUpperCase() + k.slice(1)}
-            </Link>
+            </ContextLink>
           ))}
-          <Link href="/contact" className="document-contact-link">
+          <ContextLink page="contact" className="document-contact-link">
             Contact AURYN →
-          </Link>
+          </ContextLink>
         </nav>
         <article className="document-reading">
           <span className="document-eyebrow">AURYN · HELP & TRUST</span>

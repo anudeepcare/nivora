@@ -19,6 +19,7 @@ const empty = () => null;
 const Link = ({ children, ...props }) =>
   React.createElement("a", props, children);
 function load(name, bindings) {
+  bindings={ResearchInbox:()=>null,...bindings};
   bindings = { homeStyles: {home:"home"}, Search: () => React.createElement("input", {"aria-label":"Company search"}), ResearchLens: () => React.createElement("aside", null, "Research lens"), ...bindings };
   bindings = { PaceHelp: () => null, ...bindings };
   const file = "components/ApprovedWorkspace.tsx";

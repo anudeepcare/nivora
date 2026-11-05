@@ -1,5 +1,5 @@
 import type { Research, Metric, Fact } from "./types";
-import { latestFinancialEvidence } from "./analysis.ts";
+import { perspective, latestFinancialEvidence } from "./analysis.ts";
 import { marketMultiples } from "./research-summary.ts";
 import { researchDecision } from "./decision-research.ts";
 import { financialPeriods } from "./engine.ts";
@@ -95,6 +95,9 @@ export function metricEvidence(
           ? "Calculated"
           : "Reported") as QualityStatus,
     period: p?.end ?? null,
+    periodStart: p?.start ?? null,
+    periodBasis: evidence.periodBasis,
+    accountingBasis: p?.basis ?? null,
     currency: p?.currency ?? null,
     observedAt: r.retrievedAt,
     urls,
@@ -156,6 +159,12 @@ export function financingContext(r: Research) {
   };
 }
 export type SavedEvidence = {
+  confirmedPace?: {month:string;level:number} | null;
+  analystTarget?: number|null;
+  analystCurrency?: string|null;
+  periodStart?: string | null;
+  periodBasis?: string | null;
+  accountingBasis?: string | null;
   version: string;
   at: string;
   period: string | null;
@@ -167,8 +176,16 @@ export type SavedEvidence = {
 };
 export function evidenceObservation(r: Research): SavedEvidence {
   const d = researchDecision(r),
-    p = latestFinancialEvidence(r).latest;
+    evidence = latestFinancialEvidence(r),
+    p = evidence.latest;
+  const confirmed=perspective(r).dca.confirmed;
   return {
+    confirmedPace: confirmed?.month && confirmed.multiplier != null ? {month:confirmed.month,level:confirmed.multiplier} : null,
+    analystTarget:r.evidence?.consensus.target ?? null,
+    analystCurrency:r.quote.currency,
+    periodStart:p?.start ?? null,
+    periodBasis:evidence.periodBasis,
+    accountingBasis:p?.basis ?? null,
     version: d.version,
     at: r.retrievedAt,
     period: p?.end ?? null,
@@ -182,6 +199,8 @@ export function evidenceObservation(r: Research): SavedEvidence {
 export function evidenceChanges(a: SavedEvidence | null, b: SavedEvidence) {
   if (!a) return [];
   const rows: string[] = [];
+  if(a.confirmedPace && b.confirmedPace && b.confirmedPace.month >= a.confirmedPace.month && a.confirmedPace.level !== b.confirmedPace.level) rows.push(`Confirmed Pace: P${a.confirmedPace.level} → P${b.confirmedPace.level} (${b.confirmedPace.month}). Review the business checks before acting.`);
+  if(a.analystCurrency && a.analystCurrency===b.analystCurrency && Number.isFinite(a.analystTarget)&&Number.isFinite(b.analystTarget) && a.analystTarget!==b.analystTarget) rows.push(`Analyst target observation changed: ${a.analystTarget} → ${b.analystTarget} ${b.analystCurrency}. Coverage may differ; inspect the dated analyst evidence.`);
   if (a.period && b.period && a.period !== b.period)
     rows.push(`New reporting period: ${b.period}`);
   if (
@@ -206,6 +225,9 @@ export function evidenceChanges(a: SavedEvidence | null, b: SavedEvidence) {
     );
   if (
     a.period === b.period &&
+    !!a.periodStart && a.periodStart === b.periodStart &&
+    !!a.periodBasis && a.periodBasis === b.periodBasis &&
+    !!a.accountingBasis && a.accountingBasis === b.accountingBasis &&
     a.currency === b.currency &&
     a.revenue != null &&
     b.revenue != null &&

@@ -1,0 +1,44 @@
+[
+  {
+    "check": "dark selected contrast",
+    "width": 390,
+    "colors": {
+      "bg": "rgb(214, 243, 90)",
+      "fg": "rgb(36, 39, 43)"
+    },
+    "passed": true
+  },
+  {
+    "check": "footer responsive visibility",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "check": "current release label",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "check": "mobile legal disclosure opens",
+    "passed": true
+  },
+  {
+    "check": "dark selected contrast",
+    "width": 1440,
+    "colors": {
+      "bg": "rgb(214, 243, 90)",
+      "fg": "rgb(36, 39, 43)"
+    },
+    "passed": true
+  },
+  {
+    "check": "footer responsive visibility",
+    "width": 1440,
+    "passed": true
+  },
+  {
+    "check": "current release label",
+    "width": 1440,
+    "passed": true
+  }
+]

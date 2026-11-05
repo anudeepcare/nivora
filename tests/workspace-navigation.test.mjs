@@ -8,8 +8,9 @@ import { NavigationMemory, restoreWhenReady } from "../lib/navigation.ts";
 import { settingsHref } from "../lib/settings-navigation.ts";
 
 function component(file, name, bindings) {
+  bindings={ReleaseNotice:()=>null,ContextLink:({page,children,className})=>React.createElement('a',{href:'/'+page,className},children),...bindings};
   bindings = { experience, PaceInstrument, useAccess: () => ({access:{capabilities:{paperTrading:false}}}), ...bindings };
-  bindings={AccessBoundary:"AccessBoundary",AccessNotice:()=>null,...bindings};
+  bindings={DocumentScrollReturn:()=>null,AccessBoundary:"AccessBoundary",AccessNotice:()=>null,...bindings};
   const ast = ts.createSourceFile(
     file,
     fs.readFileSync(file, "utf8"),

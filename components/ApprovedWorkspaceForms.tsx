@@ -216,12 +216,16 @@ export function WatchlistNote({ symbols }: { symbols: string[] }) {
   }>("documents?kind=note", demo ? { documents: [] } : undefined);
   const [symbol, setSymbol] = useState(symbols[0] ?? ""),
     [text, setText] = useState(""),
+    [condition,setCondition] = useState(""),
+    [reviewDate,setReviewDate] = useState(""),
     [busy, setBusy] = useState(false),
     [message, setMessage] = useState("");
   const selected = symbols.includes(symbol) ? symbol : (symbols[0] ?? "");
   const saved = records.data?.documents.find((d) => d.key === selected);
   useEffect(() => {
     setText(saved?.body.thesis ?? "");
+    setCondition(saved?.body.condition ?? "");
+    setReviewDate(saved?.body.reviewDate ?? "");
     setMessage("");
   }, [selected, saved]);
   async function save(e: React.FormEvent) {
@@ -237,7 +241,7 @@ export function WatchlistNote({ symbols }: { symbols: string[] }) {
       await api("documents", {
         kind: "note",
         key: selected,
-        body: { ...saved?.body, thesis: text },
+        body: { ...saved?.body, thesis: text, condition, reviewDate },
       });
       records.refresh();
       setMessage("Your reason is saved with this company’s research.");
@@ -254,6 +258,7 @@ export function WatchlistNote({ symbols }: { symbols: string[] }) {
           <label>
             Company
             <select
+              disabled={busy}
               value={selected}
               onChange={(e) => setSymbol(e.target.value)}
             >
@@ -272,6 +277,10 @@ export function WatchlistNote({ symbols }: { symbols: string[] }) {
             maxLength={3000}
             placeholder="What would you want to see before adding this company?"
           />
+          <label>What would change your view?
+            <textarea value={condition} disabled={busy} onChange={e=>setCondition(e.target.value)} maxLength={1500} placeholder="A business result or risk you want to check" />
+          </label>
+          <label>Review date <input type="date" value={reviewDate} disabled={busy} onChange={e=>setReviewDate(e.target.value)} /></label>
           <button
             className="btn"
             disabled={busy || records.loading || !!records.error || !!demo}
