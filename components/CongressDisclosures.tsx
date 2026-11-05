@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import styles from "./CongressDisclosures.module.css";
 import { api } from "@/lib/client";
 import { dateLabel } from "@/lib/format";
 import type { CongressDisclosure } from "@/lib/congress-disclosures";
@@ -17,22 +18,29 @@ export default function CongressDisclosures({
     } | null>(null),
     [busy, setBusy] = useState(false),
     [error, setError] = useState("");
+  const request = useRef(0);
+  useEffect(() => {
+    setResult(null);
+    if (!preview) void load();
+    return () => { request.current += 1; };
+  }, [symbol, preview]);
   async function load() {
-    if (busy) return;
+    const current = ++request.current;
     setBusy(true);
     setError("");
     try {
-      setResult(await api(`congress?symbol=${encodeURIComponent(symbol)}`));
+      const data = await api<{ rows: CongressDisclosure[]; asOf: string; truncated: boolean }>(`congress?symbol=${encodeURIComponent(symbol)}`);
+      if (current === request.current) setResult(data);
     } catch {
-      setError(
+      if (current === request.current) setError(
         "Disclosures could not be checked. Company news and other evidence remain available.",
       );
     } finally {
-      setBusy(false);
+      if (current === request.current) setBusy(false);
     }
   }
   return (
-    <section className="congress-disclosures">
+    <section className={`congress-disclosures ${styles.panel}`}>
       <header className="section-head">
         <div>
           <span className="eyebrow">
@@ -69,9 +77,9 @@ export default function CongressDisclosures({
               : ""}
           </p>
           {result.rows.length ? (
-            <div className="congress-list">
+            <div className={`congress-list ${styles.list}`}>
               {result.rows.map((r) => (
-                <article key={r.id}>
+                <article key={r.id} className={styles.row} data-action={r.action}>
                   <div>
                     <strong>{r.member}</strong>
                     <small>
@@ -80,7 +88,7 @@ export default function CongressDisclosures({
                     </small>
                   </div>
                   <div>
-                    <strong>
+                    <strong className={styles.action}>
                       {r.action[0].toUpperCase() + r.action.slice(1)}
                     </strong>
                     <small>{r.amountRange}</small><small>{r.assetType}{r.assetDescription ? ` · ${r.assetDescription}` : ''}</small>
@@ -111,8 +119,7 @@ export default function CongressDisclosures({
         </>
       ) : (
         <p className="desk-footnote">
-          Load disclosures when useful. Results are cached to avoid repeated
-          requests.
+          Checking reported disclosures…
         </p>
       )}
       <p className="desk-footnote">

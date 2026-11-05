@@ -144,16 +144,16 @@ test("public home leads with the benefit and an account action without fabricate
   );
   const html = renderToStaticMarkup(React.createElement(PublicLanding));
   assert.match(html, /<main[^>]*class="mp-public/);
-  assert.match(html, /Invest with a sense of pace\./);
+  assert.match(html, /Find the business behind the ticker\./);
 
   assert.match(html, /href="\/login\?mode=signup"[^>]*>Start free/);
   assert.match(html, /AURYN Pace/);
-  assert.match(html, /Explore the AURYN Pace framework/);
+  assert.match(html, /Research, connected/);
   assert.match(html, /Understand the business/);
   assert.match(html, /Test value and downside/);
   assert.match(html, /Choose your pace/);
   assert(
-    html.indexOf("Explore the AURYN Pace framework") < html.indexOf("Invest with a sense of pace"),
+    html.indexOf("Research, connected") < html.indexOf("Find the business behind the ticker"),
   );
   assert.match(html, /href="\/sample"/);
   assert.match(html, /href="\/pricing"/);

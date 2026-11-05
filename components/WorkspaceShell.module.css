@@ -73,3 +73,16 @@
 .searchDialog{width:min(640px,calc(100vw - 24px));max-width:calc(100vw - 24px);max-height:calc(var(--visual-height,100dvh) - 24px);padding:20px;overflow:auto;box-sizing:border-box;}
 .searchDialog>:global(.search){padding:0;}
 @media(max-width:767px){.searchDialog{position:fixed;inset:calc(var(--visual-top,0px) + 12px) 12px auto;margin:0;width:auto;max-width:none;border-radius:16px;padding:16px}.searchDialog>:global(.dialog-head){padding:0 0 14px;margin-bottom:14px}.searchDialog :global(.search-suggestions){margin-top:16px}.searchDialog h2{font-size:22px}.shell:has(dialog[open]) .dock{visibility:hidden}.content{padding-inline:max(14px,env(safe-area-inset-left,0px)) max(14px,env(safe-area-inset-right,0px));}}
+.shell :global(.account-menu-footer){display:flex;justify-content:flex-end;align-items:center;padding-top:16px;margin-top:20px;}
+.shell :global(.account-menu-footer) button{display:inline-flex;align-items:center;gap:8px;min-height:40px;border:0;background:transparent;box-shadow:none;color:var(--muted);font-size:13px;}
+.shell :global(.account-tool-grid)>a:nth-child(3n+2) :global(.tool-icon){background:#b99ae82b;color:#8060a6;}
+.shell :global(.account-tool-grid)>a:nth-child(3n) :global(.tool-icon){background:#a8ddc033;color:#18765c;}
+@media(max-width:767px){
+ .shell .dock{gap:4px;padding-top:6px;}
+ .shell .dock a[aria-current="page"]{background:color-mix(in srgb,#d6f35a 28%,var(--chrome-surface));box-shadow:inset 0 2px #a8bf36;color:var(--ink);}
+ .shell .dock a[aria-current="page"] svg{color:var(--ink);}
+ .shell :global(.product-footer){display:flex;flex-direction:column;align-items:flex-start;gap:12px;margin-top:20px;padding:16px 0;font-size:11px;text-align:left;}
+ .shell :global(.product-footer) nav{display:flex;flex-wrap:wrap;gap:2px 14px;margin:0;}
+ .shell :global(.product-footer) nav a{min-height:32px;font-size:11px;}
+ .shell :global(.product-footer)>.help-trigger{margin:0;min-height:32px;font-size:11px;}
+}

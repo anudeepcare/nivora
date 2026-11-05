@@ -1,0 +1,17 @@
+{
+  "summary": {
+    "requested": 200,
+    "usable": 199,
+    "passed": 199,
+    "failed": 0,
+    "unavailable": 1,
+    "checks": 1791
+  },
+  "failures": [],
+  "unavailable": [
+    {
+      "symbol": "WBD",
+      "reason": "Error: Data not found"
+    }
+  ]
+}

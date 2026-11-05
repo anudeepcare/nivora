@@ -1,0 +1,10 @@
+.chart{width:100%;min-width:0;}
+.chart svg{display:block;width:100%;height:auto;color:#8060a6;}
+.values{margin:12px 0;border:1px solid var(--line);border-radius:12px;padding:12px 14px;}
+.values summary{cursor:pointer;font-size:13px;font-weight:600;min-height:24px;}
+.values p{font-size:12px;color:var(--muted);}
+.values>div{max-height:280px;overflow:auto;}
+.values table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums;}
+.values th,.values td{padding:10px 6px;text-align:left;border-bottom:1px solid var(--line);}
+.values th:last-child,.values td:last-child{text-align:right;}
+@media(max-width:700px){.chart svg{min-height:240px;max-height:320px;}.chart :global(.chart-note){font-size:12px;line-height:1.6;}}

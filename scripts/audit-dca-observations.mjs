@@ -1,0 +1,24 @@
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+import {sourceModule} from '../tests/helpers/provider-fixture.mjs';
+const {indicators}=sourceModule('lib/analysis.ts');
+const {researchAccumulation}=sourceModule('lib/accumulation-policy-v5.ts');
+const root='verification/mobile-and-formulas-20261105';
+const refs=JSON.parse(fs.readFileSync(`${root}/reference-observations.json`));
+const parse=raw=>raw.trim().split('\n').slice(1).map(line=>{const [time,...v]=line.split(';');const [open,high,low,close,volume]=v.map(Number);return {time,open,high,low,close,volume};});
+const asOf='2026-11-05T00:00:00Z';
+const rows=refs.filter(r=>r.symbol!=='OSCR').map(ref=>{
+ const prior=JSON.parse(fs.readFileSync(`verification/ticker-audit-20261104/raw/${ref.symbol}.json`));
+ const fullPath=`${root}/raw/${ref.symbol}-long.json`;
+ const latest=JSON.parse(fs.readFileSync(fs.existsSync(fullPath)?fullPath:`${root}/raw/${ref.symbol}.json`));
+ const map=new Map([...parse(prior.raw),...parse(latest.raw)].map(b=>[b.time,b]));
+ const bars=[...map.values()].sort((a,b)=>a.time.localeCompare(b.time));
+ const t=indicators(bars,asOf),p=researchAccumulation(bars,asOf);
+ const referenceClose=Number(ref.text.match(/\$([\d,.]+)/)[1].replaceAll(',',''));
+ const referenceForming=Number(ref.text.match(/PROVISIONAL\s+(\d)X DCA/)[1]);
+ return {symbol:ref.symbol,asOf,lastBar:bars.at(-1).time,observations:bars.length,sourceHash:crypto.createHash('sha256').update(JSON.stringify(bars)).digest('hex'),close:t.close,referenceClose,quoteDifference:t.close-referenceClose,quoteMatchesCents:Math.round(t.close*100)===Math.round(referenceClose*100),sma50:t.ma50,sma200:t.ma200,rsi14:t.rsi,aurynConfirmed:p.confirmed?.multiplier,confirmedDate:p.confirmed?.date,aurynForming:p.forming?.multiplier,formingDate:p.forming?.date,referenceForming,formingLabelMatch:p.forming?.multiplier===referenceForming,referenceUrl:ref.url};
+});
+const report={asOf,policy:'monthly-v5',policyHash:crypto.createHash('sha256').update(fs.readFileSync('lib/accumulation-policy-v5.ts')).digest('hex'),scope:'Twenty observed monthly provisional labels and close quotes; not proprietary formula parity or all-history parity. Reference October confirmed labels not uniformly exposed.',summary:{tickers:rows.length,formingMatches:rows.filter(r=>r.formingLabelMatch).length,quoteMatchesCents:rows.filter(r=>r.quoteMatchesCents).length},rows};
+fs.writeFileSync(`${root}/dated-comparison.json`,JSON.stringify(report,null,2)+'\n');
+const keys=Object.keys(rows[0]);const csv=v=>JSON.stringify(v??'');fs.writeFileSync(`${root}/twenty-ticker-values.csv`,keys.join(',')+'\n'+rows.map(r=>keys.map(k=>csv(r[k])).join(',')).join('\n')+'\n');
+console.log(JSON.stringify({summary:report.summary,differences:rows.filter(r=>!r.formingLabelMatch||!r.quoteMatchesCents)},null,2));

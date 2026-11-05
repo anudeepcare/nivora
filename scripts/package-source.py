@@ -9,6 +9,7 @@ for path in sorted(root.rglob('*')):
  if not path.is_file() or path.is_symlink():continue
  rel=path.relative_to(root)
  if any(p in skip for p in rel.parts) or path.suffix in {'.zip','.tsbuildinfo','.pyc'}:continue
+ if rel.parts[0]=='verification' and 'raw' in rel.parts:continue
  if path.name.startswith('.env') and path.name!='.env.example':continue
  if path.name in {'MANIFEST.sha256','test-current.log'}:continue
  files.append(path)

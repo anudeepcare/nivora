@@ -115,28 +115,7 @@ export function Settings() {
         >
           <ArrowLeft size={18} /> Back
         </Link>
-        <button
-          type="button"
-          className="settings-signout"
-          disabled={(!!demo && demo.routePrefix !== "") || busy || signingOut}
-          onClick={async () => {
-            if (demo && demo.routePrefix !== "") return;
-            setSigningOut(true);
-            setMessage("");
-            try {
-              await signOutAndRedirect();
-            } catch (error) {
-              setMessage(
-                error instanceof Error
-                  ? error.message
-                  : "Could not sign out. Please try again.",
-              );
-              setSigningOut(false);
-            }
-          }}
-        >
-          <LogOut size={17} /> {signingOut ? "Signing out…" : "Sign out"}
-        </button>
+
       </div>
       <PageHeading
         title="Settings"
@@ -164,6 +143,28 @@ export function Settings() {
         <Link className="text-link" href={`${prefix}/plans`}>
           Manage plan <ArrowUpRight size={16} />
         </Link>
+        <button
+          type="button"
+          className="settings-signout"
+          disabled={(!!demo && demo.routePrefix !== "") || busy || signingOut}
+          onClick={async () => {
+            if (demo && demo.routePrefix !== "") return;
+            setSigningOut(true);
+            setMessage("");
+            try {
+              await signOutAndRedirect();
+            } catch (error) {
+              setMessage(
+                error instanceof Error
+                  ? error.message
+                  : "Could not sign out. Please try again.",
+              );
+              setSigningOut(false);
+            }
+          }}
+        >
+          <LogOut size={17} /> {signingOut ? "Signing out…" : "Sign out"}
+        </button>
       </div>
       <div className="workspace-settings-groups">
         <section className="workspace-setting-group">

@@ -425,6 +425,23 @@ function useHomeFeed(symbols: string[]) {
   };
 }
 
+function ResearchLens() {
+  const [lens, setLens] = useState(0);
+  const lenses = [
+    { title: "Growth", question: "Is growth turning into cash?", text: "Compare revenue growth with operating cash flow. Rising sales alone don’t tell you what the business keeps.", icon: Activity, steps: ["Revenue", "Operating cash", "Capital spending"] },
+    { title: "Expectations", question: "What needs to go right?", text: "Read the assumptions behind a valuation. Test slower growth and lower margins before trusting a single target.", icon: SearchIcon, steps: ["Growth", "Margins", "Required return"] },
+    { title: "Resilience", question: "Can it fund the next chapter?", text: "Read cash, debt and cash generation together. Check debt maturities and dilution before treating cash as a cushion.", icon: Wallet, steps: ["Cash", "Debt", "Share count"] },
+  ];
+  const active = lenses[lens]; const Icon = active.icon;
+  return <aside className={homeStyles.lens} aria-label="Research lens">
+    <span className={homeStyles.eyebrow}>THE RESEARCH LENS</span>
+    <div className={homeStyles.lensTabs} role="group" aria-label="Choose a research question">{lenses.map((item,index)=><button key={item.title} aria-pressed={lens===index} onClick={()=>setLens(index)}>{item.title}</button>)}</div>
+    <Icon size={30} aria-hidden="true"/><h3>{active.question}</h3><p>{active.text}</p>
+    <div className={homeStyles.lensSteps}>{active.steps.map((step,index)=><span key={step}><b>0{index+1}</b>{step}</span>)}</div>
+    <small>A framework for questions, not a company rating.</small>
+  </aside>;
+}
+
 function HomeOverview() {
   const state = useWorkspaceData(),
     { workspace, quotes, model, prefix, demo, displayName, pace } = state;
@@ -511,7 +528,7 @@ function HomeOverview() {
     <section className={`approved-workspace approved-home home-decision-view ${homeStyles.home}`}>
       <Heading
         title={`${greeting}${displayName ? `, ${displayName}` : ""}.`}
-        subtitle="Your companies. The changes worth a closer look."
+        subtitle="A fresh perspective on the companies that interest you."
         actions={
           <span className="date-chip">
             {today.toLocaleDateString(undefined, {
@@ -528,34 +545,22 @@ function HomeOverview() {
         }
       />
       {state.workspaceError && <Notice error>{state.workspaceError}</Notice>}
-      {!!workspace?.positions.length && <div className={homeStyles.hero}>
-        <section className={homeStyles.holdings} aria-label="Portfolio at a glance">
-          <WealthStrip state={state} />
-          <div className={homeStyles.history}>
-            <SectionHead title="Holdings price history" subtitle="Current holdings at historical prices" />
-            <ApprovedPortfolioChart positions={workspace.positions} quotes={quotes.data} />
-          </div>
-        </section>
-        <section className={homeStyles.watchboard} aria-label="Your company watchboard">
-          <SectionHead title="On your radar" subtitle="Your companies, together." action={<Link href={`${prefix}/research`}>View all <ArrowUpRight size={15}/></Link>}/>
-          {symbols.slice(0, 6).map(symbol => {
-            const quote = quotes.data[symbol]?.quote;
-            const reading = pace(symbol);
-            return <Link className={homeStyles.radarRow} href={researchLink(symbol, prefix)} key={symbol}>
-              <SecurityLogo symbol={symbol}/>
-              <span><strong>{symbol}</strong><small>{names[symbol] ?? "Open company research"}</small></span>
-              <span><strong>{quote?.price != null ? amount(quote.price, quote.currency) : "—"}</strong><small className={quote?.changePct == null ? "muted" : quote.changePct < 0 ? "negative" : quote.changePct > 0 ? "positive" : "muted"}>{quote?.changePct == null ? "Change unavailable" : percent(quote.changePct, true)}</small></span>
-              <small className={homeStyles.radarPace}>{reading ? `${reading.view.code} · ${reading.view.actionLabel}` : "Research"}</small>
-            </Link>;
-          })}
-          <p className={homeStyles.radarNote}>Pace appears when research is loaded. Open a company for its dated evidence.</p>
-        </section>
-      </div>}
+      <section className={homeStyles.researchHero} aria-label="Your research starting point">
+        <div className={homeStyles.researchIntro}>
+          <span className={homeStyles.eyebrow}>YOUR NEXT GOOD QUESTION</span>
+          <h2>{symbols.length ? "See beyond the share price." : "Start curious. Build conviction."}</h2>
+          <p>{symbols.length ? "Connect the business, the expectations and what changed. Your research starts here." : "You don’t need a portfolio to begin. Find a company, explore its business and save the ideas you want to follow."}</p>
+          <Search />
+          <div className={homeStyles.quickLinks}><Link href={`${prefix}/discover`}>Discover ideas <ArrowUpRight size={16}/></Link><Link href={`${prefix}/watchlist`}>Your watchlist <Bookmark size={16}/></Link></div>
+        </div>
+        <ResearchLens />
+      </section>
+      {symbols.length > 0 && <>
       <section className="home-next-step" aria-label="Your next step">
         <div className="home-next-copy">
           <span className="eyebrow">{brief.kicker}</span>
-          <h2>{brief.title}</h2>
-          <p>{brief.detail}</p>
+          <h2>{brief.kind === "review" ? "Revisit the story. Challenge the assumptions." : brief.title}</h2>
+          <p>{brief.kind === "review" ? "Pick a company you follow. Check what changed in its growth, cash generation and valuation since your last look." : brief.detail}</p>
           {!!brief.earnings.length && (
             <div
               className="home-earnings-overview"
@@ -605,8 +610,8 @@ function HomeOverview() {
             </details>
           )}
         </div>
-        <Link className="btn primary" href={briefHref}>
-          {brief.action} <ArrowUpRight size={17} />
+        <Link className="btn primary" href={brief.kind === "review" ? `${prefix}/research` : briefHref}>
+          {brief.kind === "review" ? "Open research" : brief.action} <ArrowUpRight size={17} />
         </Link>
         <p className="home-source-note">
           {!symbols.length
@@ -878,34 +883,9 @@ function HomeOverview() {
         </section>
         <section className="home-evidence-panel home-review-panel">
           <SectionHead
-            title="Portfolio & Pace"
-            subtitle="Position size and accumulation opportunities."
+            title="Research to revisit"
+            subtitle="Price context with business checks attached."
           />
-          <Link
-            className="home-review-row"
-            href={
-              largest
-                ? researchLink(largest.symbol, prefix)
-                : `${prefix}/portfolio`
-            }
-          >
-            <span className="home-review-mark">
-              <Wallet size={20} />
-            </span>
-            <span>
-              <strong>
-                {largest
-                  ? `${largest.symbol} · ${percent(largest.weight)} of invested value`
-                  : "Bring your holdings into focus"}
-              </strong>
-              <small>
-                {largest
-                  ? "Your largest priced position. Check its share of your portfolio before adding."
-                  : "Record holdings and costs to understand your exposure."}
-              </small>
-            </span>
-            <ArrowUpRight size={17} />
-          </Link>
           <Link
             className="home-review-row"
             href={
@@ -940,6 +920,7 @@ function HomeOverview() {
 
         </section>
       </div>
+      </>}
     </section>
   );
 }
@@ -1690,7 +1671,7 @@ export function Watchlist() {
           </p>
         )}
         {symbols.length ? (
-          <div className="table-scroll">
+          <div className={`table-scroll ${portfolioStyles.watchLedger}`}>
             <table className="holdings-table approved-watch-table">
               <caption className="sr-only">
                 Saved companies, observed prices, loaded price history and

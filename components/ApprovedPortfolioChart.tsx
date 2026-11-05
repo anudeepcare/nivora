@@ -1,7 +1,8 @@
 "use client";
+import styles from "./PortfolioChart.module.css";
 import { customerText } from "@/lib/customer-language";
 
-import { useEffect, useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState, useRef } from "react";
 import type { Candle, Position, Research } from "@/lib/types";
 import type { QuoteRows } from "@/lib/portfolio-quotes";
 import {
@@ -24,6 +25,15 @@ export default function ApprovedPortfolioChart({
   const [history, setHistory] = useState<WorkspaceHistory>({}),
     [loading, setLoading] = useState(false),
     [revision, setRevision] = useState(0);
+  const container = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(640);
+  useEffect(() => {
+    const element = container.current;
+    if (!element) return;
+    const observer = new ResizeObserver(([entry]) => setWidth(Math.max(280, entry.contentRect.width)));
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
   const gradient = useId().replaceAll(":", "");
   const symbols = [
     ...new Set(
@@ -109,16 +119,17 @@ export default function ApprovedPortfolioChart({
     spread = Math.max(high - low, high * 0.03, 1),
     bottom = low - spread * 0.12,
     top = high + spread * 0.12;
-  const x = (i: number) => 58 + (i / Math.max(1, values.length - 1)) * 892;
+  const right = width - 12;
+  const x = (i: number) => 58 + (i / Math.max(1, values.length - 1)) * (right - 58);
   const y = (v: number) => 260 - ((v - bottom) / (top - bottom)) * 225;
   const path = values
     .map((v, i) => `${i ? "L" : "M"}${x(i).toFixed(2)} ${y(v).toFixed(2)}`)
     .join(" ");
   return (
-    <>
+    <div ref={container} className={styles.chart}>
       {chart.points.length > 1 ? (
         <svg
-          viewBox="0 0 1000 320"
+          viewBox={`0 0 ${width} 320`}
           className="data-chart approved-portfolio-chart"
           role="img"
           aria-label={`Current quantities of ${chart.included.join(", ")} at supplied historical USD prices, ${chart.points[0].time} to ${chart.points.at(-1)!.time}. Not account performance.`}
@@ -135,7 +146,7 @@ export default function ApprovedPortfolioChart({
               <g key={i}>
                 <line
                   x1="58"
-                  x2="950"
+                  x2={right}
                   y1={y(value)}
                   y2={y(value)}
                   className="chart-grid"
@@ -151,7 +162,7 @@ export default function ApprovedPortfolioChart({
               </g>
             );
           })}
-          <path d={`${path} L950 270 L58 270 Z`} fill={`url(#${gradient})`} />
+          <path d={`${path} L${right} 270 L58 270 Z`} fill={`url(#${gradient})`} />
           <path
             d={path}
             fill="none"
@@ -159,11 +170,11 @@ export default function ApprovedPortfolioChart({
             strokeWidth="3"
             strokeLinejoin="round"
           />
-          <circle cx="950" cy={y(values.at(-1)!)} r="4" fill="currentColor" />
+          <circle cx={right} cy={y(values.at(-1)!)} r="4" fill="currentColor" />
           <text x="58" y="301" className="chart-axis">
             {dateLabel(chart.points[0].time)}
           </text>
-          <text x="950" y="301" textAnchor="end" className="chart-axis">
+          <text x={right} y="301" textAnchor="end" className="chart-axis">
             {dateLabel(chart.points.at(-1)!.time)}
           </text>
         </svg>
@@ -183,6 +194,7 @@ export default function ApprovedPortfolioChart({
           </p>
         </div>
       )}
+      {chart.points.length > 1 && <details className={styles.values}><summary>Explore exact historical values</summary><p>Current quantities at historical prices · USD</p><div><table><thead><tr><th scope="col">Date</th><th scope="col">Modeled value</th></tr></thead><tbody>{[...chart.points].reverse().map(point => <tr key={point.time}><td>{dateLabel(point.time)}</td><td>{amount(point.value, "USD")}</td></tr>)}</tbody></table></div></details>}
       <p className="chart-note">
         {chart.included.length
           ? `${chart.included.length} of ${symbols.length} USD instruments · ${[...new Set(chart.sources.map(customerText))].join("; ")}. `
@@ -206,6 +218,6 @@ export default function ApprovedPortfolioChart({
           {loading ? "Loading available history…" : "Check missing history"}
         </button>
       )}
-    </>
+    </div>
   );
 }

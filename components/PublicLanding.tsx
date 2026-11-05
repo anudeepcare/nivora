@@ -323,11 +323,11 @@ export default function PublicLanding({
           )}
         </header>
         <section className={experience.hero} id="ap-main" aria-labelledby="ap-hero-heading">
-          <div className={experience.heroVisual}><PaceInstrument publicGuide /></div>
+          <div className={experience.heroVisual}><div className={experience.discoveryPreview}><img src="/pace-diamond.svg" alt="" width="58" height="64"/><PublicSample compact /></div><div className={experience.brandSpectrum} aria-label="Connected research"><span><Layers3 size={17}/> Business</span><span><Scale size={17}/> Expectations</span><span><ChartNoAxesCombined size={17}/> Timing</span></div></div>
           <div className={experience.heroCopy}><div>
             <span className={experience.brandEyebrow}>A clearer perspective on every investment</span>
-            <h1 id="ap-hero-heading">{sampleOnly ? "Understand your next step." : "Invest with a sense of pace."}</h1>
-            <p>{sampleOnly ? "Explore the five price zones, then connect them to business quality, valuation and your position limits." : "Know the business. Put the price in context. Give each contribution a considered place in your plan."}</p>
+            <h1 id="ap-hero-heading">{sampleOnly ? "Understand your next step." : "Find the business behind the ticker."}</h1>
+            <p>{sampleOnly ? "Explore the five price zones, then connect them to business quality, valuation and your position limits." : "Turn scattered numbers into a clearer view. Explore the business, challenge the price and find a pace that fits your plan."}</p>
           </div><div className={experience.heroActions}>
             <Link href="/login?mode=signup">Start free <ArrowRight size={18}/></Link>
             <Link href={sampleOnly ? "#product-guide" : "/sample"}>{sampleOnly ? "Explore the guide" : "See how it works"} <ArrowRight size={17}/></Link>

@@ -282,3 +282,17 @@
 .home :global(.home-event-row)>span{gap:2px 8px;}
 .home :global(.home-event-row) small{line-height:1.4;}
 @media(max-width:480px){.home :global(.home-event-day){grid-template-columns:64px minmax(0,1fr);gap:0 8px}}
+
+.researchHero {display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:20px;margin:26px 0;}
+.researchIntro {padding:36px;border:1px solid var(--line);border-radius:22px;background:radial-gradient(ellipse at 0 0,#d6f35a42,transparent 65%),var(--glass);min-width:0;}
+.eyebrow {font-size:11px;letter-spacing:.14em;font-weight:650;}
+.researchIntro h2 {font-size:clamp(28px,3.2vw,46px);line-height:1.08;letter-spacing:-.045em;max-width:530px;margin:22px 0 16px;}
+.researchIntro p {font-size:15px;line-height:1.7;max-width:520px;color:var(--muted);margin-bottom:26px;}
+.quickLinks {display:flex;flex-wrap:wrap;gap:22px;margin-top:20px;}.quickLinks a{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;}
+.lens {padding:28px;border-radius:22px;background:linear-gradient(135deg,#303136,#202524);color:#f7f8f5;min-width:0;}
+.lensTabs {display:flex;gap:6px;margin:18px 0 25px;flex-wrap:wrap;}.lensTabs button{background:#ffffff0d;border:1px solid #ffffff25;color:#ddd;padding:8px 12px;border-radius:30px;font-size:12px;min-height:36px;}.lensTabs button[aria-pressed="true"]{background:#d6f35a;color:#24272b;border-color:#d6f35a;}
+.lens>svg{color:#b99ae8;}.lens h3{font-size:25px;letter-spacing:-.025em;margin:13px 0;}.lens p{font-size:14px;line-height:1.65;color:#d0d6d2;}.lens>small{display:block;font-size:11px;color:#adb6b1;margin-top:20px;}
+.lensSteps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:24px;}.lensSteps span{font-size:11px;border-top:2px solid #b99ae8;padding-top:10px;}.lensSteps span:nth-child(2){border-color:#a8ddc0}.lensSteps span:nth-child(3){border-color:#d6f35a}.lensSteps b{display:block;margin-bottom:5px;opacity:.6;font-weight:400;}
+.home :global(.home-next-step){background:linear-gradient(110deg,color-mix(in srgb,#b99ae8 12%,var(--glass)),var(--glass));border:1px solid var(--line);border-radius:18px;}
+.home :global(.home-events-panel){border-top:3px solid #b99ae8;}.home :global(.home-news-panel){border-top:3px solid #a8ddc0;}
+@media(max-width:800px){.researchHero{grid-template-columns:1fr;}.researchIntro,.lens{padding:22px;}.researchIntro h2{font-size:32px;}.lensSteps{gap:12px;}}

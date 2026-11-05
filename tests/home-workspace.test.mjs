@@ -19,7 +19,7 @@ const empty = () => null;
 const Link = ({ children, ...props }) =>
   React.createElement("a", props, children);
 function load(name, bindings) {
-  bindings = { homeStyles: {home:"home"}, ...bindings };
+  bindings = { homeStyles: {home:"home"}, Search: () => React.createElement("input", {"aria-label":"Company search"}), ResearchLens: () => React.createElement("aside", null, "Research lens"), ...bindings };
   bindings = { PaceHelp: () => null, ...bindings };
   const file = "components/ApprovedWorkspace.tsx";
   const ast = ts.createSourceFile(
@@ -135,6 +135,72 @@ test("Watchlist-only Home avoids an irrelevant zero-value portfolio summary", ()
   const html = renderToStaticMarkup(React.createElement(Home));
   assert.deepEqual(requested, symbols);
   assert.doesNotMatch(html, /aria-label="Portfolio summary"/);
+});
+
+test("New account Home has research tools without empty personal feeds", () => {
+  const symbols = [];
+  let requested;
+  const Home = load("HomeOverview", {
+    useWorkspaceData: () => ({
+      workspace: {
+        positions: [],
+        watchlist: symbols.map((symbol) => ({ symbol })),
+      },
+      quotes: { data: {} },
+      model: { allocations: [] },
+      prefix: "",
+      pace: () => null,
+    }),
+    useHomeFeed: (stocks) => {
+      requested = stocks;
+      return {
+        data: {
+          events: [],
+          news: [],
+          issues: [],
+          followed: 34,
+          newsFollowed: 34,
+          retrievedAt: "",
+          eventsReady: true,
+          newsReady: true,
+        },
+        loading: false,
+        error: "",
+        refresh: empty,
+      };
+    },
+    homeFeedReadiness,
+    homeBrief,
+    groupMarketEvents,
+    marketDay,
+    earningsEventState,
+    relevantHoldingHeadlines,
+    researchLink: (symbol) => `/research/${symbol}`,
+    ...format,
+    Link,
+    Heading: empty,
+    SectionHead: empty,
+    Coverage: empty,
+    Notice: empty,
+    WealthStrip: () =>
+      React.createElement(
+        "section",
+        { "aria-label": "Portfolio summary" },
+        "$0",
+      ),
+    HomeCompany: empty,
+    Empty: empty,
+    ArrowUpRight: empty,
+    CalendarDays: empty,
+    FileText: empty,
+    RefreshCw: empty,
+    Wallet: empty,
+    Bookmark: empty,
+  });
+  const html = renderToStaticMarkup(React.createElement(Home));
+  assert.deepEqual(requested, symbols);
+  assert.doesNotMatch(html, /aria-label="Portfolio summary"|Company earnings and events|What changed/);
+  assert.match(html, /Start curious|Company search|Research lens/);
 });
 
 test("Home accumulation panel excludes valuation-only entries without confirmed Pace", () => {
