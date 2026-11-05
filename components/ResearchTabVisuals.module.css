@@ -1,16 +1,25 @@
 /* Research-owned presentation. Repeating the local root intentionally outranks
    the shared product surfaces without changing other routes or Options. */
 .root.root.root[data-research-section]:not([data-research-section="Options"]) {
-  --research-lime: radial-gradient(ellipse at 110% 0%, #e0fa7c 0%, transparent 60%), linear-gradient(145deg, #d7ef8d, #c4e462);
-  --research-mint: radial-gradient(ellipse at 100% 0%, #d6f1d1 0%, transparent 55%), linear-gradient(145deg, #afe4c4, #7bceaa);
-  --research-charcoal: radial-gradient(ellipse at 100% 0%, #405746 0%, transparent 65%), linear-gradient(145deg, #26392e, #17281f);
+  --research-lime:
+    radial-gradient(ellipse at 110% 0%, #e4edcf 0%, transparent 60%),
+    linear-gradient(145deg, #e7efdd, #d7e3cb);
+  --research-mint:
+    radial-gradient(ellipse at 100% 0%, #eef3e9 0%, transparent 55%),
+    linear-gradient(145deg, #e2ede5, #cddfd3);
+  --research-charcoal:
+    radial-gradient(ellipse at 100% 0%, #405746 0%, transparent 65%),
+    linear-gradient(145deg, #26392e, #17281f);
   min-width: 0;
 }
 
 /* Color marks primary evidence; statement tables retain their reading surface. */
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.signal-business-intro),
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.professional-studio-heading),
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.news-next-report) {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.signal-business-intro),
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.professional-studio-heading),
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.news-next-report) {
   --ink: #f2f6e9;
   --muted: #d6e3d5;
   color: #f2f6e9;
@@ -20,20 +29,36 @@
   border-radius: 20px;
   box-shadow: 0 7px 20px #1833220c;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :is(:global(.signal-business-intro), :global(.professional-studio-heading), :global(.news-next-report)) :is(h2, h3, p, small, :global(.eyebrow)) {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :is(
+    :global(.signal-business-intro),
+    :global(.professional-studio-heading),
+    :global(.news-next-report)
+  )
+  :is(h2, h3, p, small, :global(.eyebrow)) {
   color: inherit;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.professional-mode-label) {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.professional-mode-label) {
   background: #ffffff16;
   border: 1px solid #ffffff35;
   color: #e7f3df;
   border-radius: 10px;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.value-studio) > :global(.desk-heading),
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.technical-desk-heading),
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.depth-business) > :global(.depth-heading),
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.depth-thesis) > :global(.section-head):first-child,
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.company-updates) > :global(.section-head) {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.value-studio)
+  > :global(.desk-heading),
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.technical-desk-heading),
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.depth-business)
+  > :global(.depth-heading),
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.depth-thesis)
+  > :global(.section-head):first-child,
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.company-updates)
+  > :global(.section-head) {
   --ink: #19331c;
   --muted: #3f553b;
   color: #19331c;
@@ -43,7 +68,25 @@
   border-radius: 20px;
   margin-bottom: 18px;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :is(:global(.business-history), :global(.financing-context), :global(.valuation-board), :global(.earnings-yield-view), :global(.value-model-fit), :global(.timing-context), :global(.ownership-picture), :global(.earnings-review), :global(.analyst-opinions), :global(.drawdown-chart), :global(.return-distribution), :global(.advanced-measurements), :global(.volatility-comparison), :global(.financial-explorer), :global(.business-driver-map), :global(.business-profile)) {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :is(
+    :global(.business-history),
+    :global(.financing-context),
+    :global(.valuation-board),
+    :global(.earnings-yield-view),
+    :global(.value-model-fit),
+    :global(.timing-context),
+    :global(.ownership-picture),
+    :global(.earnings-review),
+    :global(.analyst-opinions),
+    :global(.drawdown-chart),
+    :global(.return-distribution),
+    :global(.advanced-measurements),
+    :global(.volatility-comparison),
+    :global(.financial-explorer),
+    :global(.business-driver-map),
+    :global(.business-profile)
+  ) {
   min-width: 0;
   padding: 22px;
   background: var(--card);
@@ -51,15 +94,39 @@
   border-radius: 20px;
   box-shadow: 0 7px 20px #18332206;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :is(:global(.durability-grid), :global(.funding-metrics), :global(.valuation-board-grid), :global(.technical-summary-strip), :global(.desk-key-metrics), :global(.desk-secondary-metrics), :global(.timing-metrics), :global(.context-highlights), :global(.analyst-summary)) {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :is(
+    :global(.durability-grid),
+    :global(.funding-metrics),
+    :global(.valuation-board-grid),
+    :global(.technical-summary-strip),
+    :global(.desk-key-metrics),
+    :global(.desk-secondary-metrics),
+    :global(.timing-metrics),
+    :global(.context-highlights),
+    :global(.analyst-summary)
+  ) {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
   gap: 14px;
   border: 0;
   background: transparent;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :is(:global(.durability-grid), :global(.funding-metrics), :global(.valuation-board-grid), :global(.technical-summary-strip), :global(.desk-key-metrics), :global(.desk-secondary-metrics), :global(.timing-metrics), :global(.context-highlights), :global(.analyst-summary)) > *,
-.root.root.root[data-research-section="Financials"] :global(article[data-metric-group]) {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :is(
+    :global(.durability-grid),
+    :global(.funding-metrics),
+    :global(.valuation-board-grid),
+    :global(.technical-summary-strip),
+    :global(.desk-key-metrics),
+    :global(.desk-secondary-metrics),
+    :global(.timing-metrics),
+    :global(.context-highlights),
+    :global(.analyst-summary)
+  )
+  > *,
+.root.root.root[data-research-section="Financials"]
+  :global(article[data-metric-group]) {
   --ink: #143b31;
   --text: #143b31;
   --muted: #355a49;
@@ -75,14 +142,34 @@
   min-width: 0;
   box-shadow: 0 7px 20px #18332208;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :is(:global(.durability-grid), :global(.valuation-board-grid), :global(.desk-key-metrics), :global(.technical-summary-strip)) > :first-child,
-.root.root.root[data-research-section="Financials"] :global(article[data-metric-group="Essentials"]) {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :is(
+    :global(.durability-grid),
+    :global(.valuation-board-grid),
+    :global(.desk-key-metrics),
+    :global(.technical-summary-strip)
+  )
+  > :first-child,
+.root.root.root[data-research-section="Financials"]
+  :global(article[data-metric-group="Essentials"]) {
   background: var(--research-lime);
   --ink: #19331c;
   --muted: #3f553b;
   color: #19331c;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :is(:global(.durability-grid), :global(.funding-metrics), :global(.valuation-board-grid), :global(.desk-key-metrics), :global(.desk-secondary-metrics), :global(.timing-metrics), :global(.context-highlights), :global(.analyst-summary)) > * > strong {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :is(
+    :global(.durability-grid),
+    :global(.funding-metrics),
+    :global(.valuation-board-grid),
+    :global(.desk-key-metrics),
+    :global(.desk-secondary-metrics),
+    :global(.timing-metrics),
+    :global(.context-highlights),
+    :global(.analyst-summary)
+  )
+  > *
+  > strong {
   display: block;
   font-size: clamp(23px, 2.2vw, 31px);
   line-height: 1.15;
@@ -90,26 +177,41 @@
   margin: 12px 0 8px;
   font-variant-numeric: tabular-nums;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.technical-summary-strip) strong {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.technical-summary-strip)
+  strong {
   font-size: 17px;
   line-height: 1.35;
   display: block;
   margin-top: 12px;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :is(:global(.durability-grid), :global(.funding-metrics), :global(.valuation-board-grid), :global(.desk-key-metrics), :global(.desk-secondary-metrics)) :is(span, small, p) {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :is(
+    :global(.durability-grid),
+    :global(.funding-metrics),
+    :global(.valuation-board-grid),
+    :global(.desk-key-metrics),
+    :global(.desk-secondary-metrics)
+  )
+  :is(span, small, p) {
   color: var(--muted);
   line-height: 1.5;
 }
-.root.root.root[data-research-section="Financials"] :global(article[data-metric-group]) > svg {
+.root.root.root[data-research-section="Financials"]
+  :global(article[data-metric-group])
+  > svg {
   max-height: 210px;
   margin-top: 12px;
 }
-.root.root.root[data-research-section="Financials"] :global(article[data-metric-group]) button {
+.root.root.root[data-research-section="Financials"]
+  :global(article[data-metric-group])
+  button {
   color: inherit;
 }
 
 /* Existing section icons become the same rounded contrast badges as Home. */
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.section-symbol) {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.section-symbol) {
   box-sizing: content-box;
   flex: none;
   width: 19px;
@@ -120,19 +222,27 @@
   background: #d5ec99;
   border: 1px solid #1a382514;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.technical-desk-groups) {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.technical-desk-groups) {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.technical-desk-groups) > section,
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.financial-detail-groups) > section {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.technical-desk-groups)
+  > section,
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.financial-detail-groups)
+  > section {
   border: 1px solid var(--line);
   border-radius: 20px;
   background: var(--card);
   padding: 20px;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.technical-desk-groups) > section > header {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.technical-desk-groups)
+  > section
+  > header {
   padding: 14px;
   margin: -6px -6px 8px;
   border-radius: 14px;
@@ -140,25 +250,34 @@
   color: #143b31;
   background: var(--research-mint);
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.technical-desk-groups) > section > header :is(h3, p) {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.technical-desk-groups)
+  > section
+  > header
+  :is(h3, p) {
   color: inherit;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.technical-pace) {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.technical-pace) {
   border: 1px solid #19382719;
   border-radius: 20px;
   padding: 20px;
   background: var(--card);
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.thesis-evidence) {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.thesis-evidence) {
   gap: 14px;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.thesis-group) {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.thesis-group) {
   border: 1px solid var(--line);
   background: var(--card);
   border-radius: 20px;
   padding: 20px;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.thesis-checkpoints) :global(.step) {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.thesis-checkpoints)
+  :global(.step) {
   border: 1px solid #19382719;
   border-radius: 18px;
   background: var(--research-mint);
@@ -166,19 +285,23 @@
   --muted: #355a49;
   color: #143b31;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.news-event-layout) {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.news-event-layout) {
   display: grid;
   grid-template-columns: minmax(230px, 0.8fr) minmax(0, 1.2fr);
   gap: 14px;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.news-transaction-list) {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.news-transaction-list) {
   min-width: 0;
   padding: 22px;
   border: 1px solid var(--line);
   border-radius: 20px;
   background: var(--card);
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.earnings-review) > :global(.section-head) {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.earnings-review)
+  > :global(.section-head) {
   background: var(--research-mint);
   --ink: #143b31;
   --muted: #355a49;
@@ -186,7 +309,8 @@
   border-radius: 14px;
   padding: 18px;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.analyst-target-fallback) {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.analyst-target-fallback) {
   background: var(--research-mint);
   color: #143b31;
   --ink: #143b31;
@@ -197,13 +321,16 @@
   border-radius: 18px;
   padding: 22px;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.professional-tabs) {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.professional-tabs) {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
   margin: 18px 0;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.professional-tabs) button {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.professional-tabs)
+  button {
   min-height: 44px;
   padding: 10px 15px;
   border: 1px solid var(--line);
@@ -211,12 +338,15 @@
   color: var(--ink);
   background: var(--card);
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.professional-tabs) button[aria-pressed="true"] {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.professional-tabs)
+  button[aria-pressed="true"] {
   background: var(--research-lime);
   color: #19331c;
   border-color: #95b447;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.position-result) {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.position-result) {
   --ink: #143b31;
   --muted: #355a49;
   --red: #983b31;
@@ -226,13 +356,18 @@
   border-radius: 20px;
   padding: 24px;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.historical-outcome-cards) > article {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.historical-outcome-cards)
+  > article {
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 18px;
   padding: 20px;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.historical-outcome-cards) > article > strong {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.historical-outcome-cards)
+  > article
+  > strong {
   display: block;
   background: var(--research-lime);
   color: #19331c;
@@ -240,52 +375,111 @@
   border-radius: 12px;
   margin-block: 12px;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :is(:global(.business-trend-charts), :global(.advanced-chart-grid)) {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :is(:global(.business-trend-charts), :global(.advanced-chart-grid)) {
   gap: 14px;
   margin-block: 18px;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.business-trend-charts) > article {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.business-trend-charts)
+  > article {
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 18px;
   padding: 18px;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.business-trend-charts) svg,
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.drawdown-chart) svg {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.business-trend-charts)
+  svg,
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.drawdown-chart)
+  svg {
   max-height: 240px;
   width: 100%;
   margin-block: 12px;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :is(:global(.explorer-plot), :global(.technical-chart-column)) {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :is(:global(.explorer-plot), :global(.technical-chart-column)) {
   min-width: 0;
 }
-.root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.explorer-plot) > svg {
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :global(.explorer-plot)
+  > svg {
   max-height: 280px;
 }
 
 @media (max-width: 900px) {
-  .root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.technical-desk-groups),
-  .root.root.root[data-research-section]:not([data-research-section="Options"]) :global(.news-event-layout) {
+  .root.root.root[data-research-section]:not([data-research-section="Options"])
+    :global(.technical-desk-groups),
+  .root.root.root[data-research-section]:not([data-research-section="Options"])
+    :global(.news-event-layout) {
     grid-template-columns: 1fr;
   }
 }
 @media (max-width: 600px) {
-  .root.root.root[data-research-section]:not([data-research-section="Options"]) :is(:global(.durability-grid), :global(.funding-metrics), :global(.valuation-board-grid), :global(.technical-summary-strip), :global(.desk-key-metrics), :global(.desk-secondary-metrics), :global(.timing-metrics), :global(.context-highlights), :global(.analyst-summary)) {
+  .root.root.root[data-research-section]:not([data-research-section="Options"])
+    :is(
+      :global(.durability-grid),
+      :global(.funding-metrics),
+      :global(.valuation-board-grid),
+      :global(.technical-summary-strip),
+      :global(.desk-key-metrics),
+      :global(.desk-secondary-metrics),
+      :global(.timing-metrics),
+      :global(.context-highlights),
+      :global(.analyst-summary)
+    ) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
   }
-  .root.root.root[data-research-section]:not([data-research-section="Options"]) :is(:global(.durability-grid), :global(.funding-metrics), :global(.valuation-board-grid), :global(.technical-summary-strip), :global(.desk-key-metrics), :global(.desk-secondary-metrics), :global(.timing-metrics), :global(.context-highlights), :global(.analyst-summary)) > * {
+  .root.root.root[data-research-section]:not([data-research-section="Options"])
+    :is(
+      :global(.durability-grid),
+      :global(.funding-metrics),
+      :global(.valuation-board-grid),
+      :global(.technical-summary-strip),
+      :global(.desk-key-metrics),
+      :global(.desk-secondary-metrics),
+      :global(.timing-metrics),
+      :global(.context-highlights),
+      :global(.analyst-summary)
+    )
+    > * {
     padding: 15px;
     border-radius: 16px;
     overflow-wrap: anywhere;
   }
-  .root.root.root[data-research-section]:not([data-research-section="Options"]) :is(:global(.signal-business-intro), :global(.professional-studio-heading), :global(.value-studio) > :global(.desk-heading), :global(.technical-desk-heading), :global(.business-history), :global(.financing-context), :global(.valuation-board), :global(.earnings-review), :global(.timing-context), :global(.drawdown-chart), :global(.return-distribution)) {
+  .root.root.root[data-research-section]:not([data-research-section="Options"])
+    :is(
+      :global(.signal-business-intro),
+      :global(.professional-studio-heading),
+      :global(.value-studio) > :global(.desk-heading),
+      :global(.technical-desk-heading),
+      :global(.business-history),
+      :global(.financing-context),
+      :global(.valuation-board),
+      :global(.earnings-review),
+      :global(.timing-context),
+      :global(.drawdown-chart),
+      :global(.return-distribution)
+    ) {
     padding: 18px;
     border-radius: 18px;
   }
 }
 @media (max-width: 380px) {
-  .root.root.root[data-research-section]:not([data-research-section="Options"]) :is(:global(.durability-grid), :global(.funding-metrics), :global(.valuation-board-grid), :global(.technical-summary-strip), :global(.desk-key-metrics), :global(.desk-secondary-metrics), :global(.timing-metrics), :global(.context-highlights), :global(.analyst-summary)) {
+  .root.root.root[data-research-section]:not([data-research-section="Options"])
+    :is(
+      :global(.durability-grid),
+      :global(.funding-metrics),
+      :global(.valuation-board-grid),
+      :global(.technical-summary-strip),
+      :global(.desk-key-metrics),
+      :global(.desk-secondary-metrics),
+      :global(.timing-metrics),
+      :global(.context-highlights),
+      :global(.analyst-summary)
+    ) {
     grid-template-columns: 1fr;
   }
 }

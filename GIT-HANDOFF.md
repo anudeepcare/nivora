@@ -1,3 +1,19 @@
+# Calm app refinement — approved November 5, 2026
+
+This full source replaces alternating bright data-card fills with one subdued sage surface, while retaining real graphs, icon badges, semantic price changes and primary actions. Approved public landing/login files remain byte-identical to the prior mobile-adjusted package. The mobile company-metric correction is retained.
+
+Research now reuses Home company chart cards with four visible companies per page and accessible Previous/Next controls. Every saved company remains reachable. Returning pages reuse cached history; only visible missing series request chart data, sequentially. Missing or stale history remains explicit.
+
+Searchable controls now own a theme-specific foreground/background pair independent of hero text. This corrects the unreadable expiration picker without changing option selection. Decision/evidence captions, portfolio values and supporting grids use paired ink/muted/semantic tokens on matching surfaces.
+
+Validation for this revision: 1,052 tests passed, 0 failed; final TypeScript and all CSS Modules compilation passed. Production/API results follow the final verification report. Color-token contrast calculations: card body 9.55:1, caption 5.09:1, picker light 15.00:1, picker dark 13.35:1. These are checked token pairs, not a whole-app accessibility certification. Browser screenshots/PWA visual acceptance remain pending because the browser service is unavailable.
+
+No new dependencies, schema migrations, paid feeds, trades or production deployment.
+
+## Mobile metric header correction
+
+The company header uses three compact metric columns at 360–600px and two below 360px. About metrics retains a 44px tap target with a smaller label. Desktop layout, all supplied metric values and help content are retained. Price-range facts below charts use their own full-width mobile layout to avoid crowding long currency ranges. Browser screenshot acceptance remains pending.
+
 # Unified Home design extension — November 5, 2026
 
 This full-source revision keeps the approved signed-in Home company cards and extends their lime, mint, sage and charcoal gradients into Research, Options, Portfolio, Watchlist, Settings, comparison charts, history and pricing. Real-chart data and financial calculations are unchanged.

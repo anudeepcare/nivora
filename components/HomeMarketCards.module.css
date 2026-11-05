@@ -346,3 +346,34 @@
 .tone2 .history[data-direction="down"] {
   color: #f5b8a5;
 }
+
+.card:is(.tone0, .tone1, .tone2, .tone3) {
+  color: #243c2d;
+  border-color: #cddbcf;
+  background:
+    radial-gradient(ellipse at 100% 0%, #e5efd9, transparent 70%),
+    linear-gradient(145deg, #f1f5ed, #dde9df);
+  box-shadow: 0 4px 14px #18332206;
+}
+.card .asOf {
+  color: #4c6254;
+  opacity: 1;
+}
+.card.tone2 .changeValue {
+  background: #fff9;
+}
+.card.tone2 .changeValue[data-direction="down"] {
+  color: #8b302d;
+  background: #fff9;
+}
+.card.tone2 .history[data-direction="down"] {
+  color: #9a493c;
+}
+.research .company h3 {
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  min-height: 29px;
+  line-height: 1.35;
+}

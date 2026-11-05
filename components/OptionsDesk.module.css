@@ -2,11 +2,11 @@
   min-width: 0;
   --option-border: var(--line);
   --option-lime:
-    radial-gradient(ellipse at 110% 0%, #e0fa7c 0%, transparent 60%),
-    linear-gradient(145deg, #d7ef8d, #c4e462);
+    radial-gradient(ellipse at 110% 0%, #e4edcf 0%, transparent 60%),
+    linear-gradient(145deg, #e7efdd, #d7e3cb);
   --option-mint:
-    radial-gradient(ellipse at 100% 0%, #d6f1d1 0%, transparent 55%),
-    linear-gradient(145deg, #afe4c4, #7bceaa);
+    radial-gradient(ellipse at 100% 0%, #eef3e9 0%, transparent 55%),
+    linear-gradient(145deg, #e2ede5, #cddfd3);
   --option-charcoal:
     radial-gradient(ellipse at 100% 0%, #405746 0%, transparent 65%),
     linear-gradient(145deg, #26392e, #17281f);
@@ -330,12 +330,7 @@
   border-radius: 11px;
   background: #ffffff12;
 }
-.desk.desk :global(.options-heading) select {
-  --ink: #19331c;
-  background: #f3f8e8;
-  color: var(--ink);
-  border-color: #ffffff60;
-}
+
 .desk.desk :global(.options-heading) p {
   color: var(--muted);
   font-size: 11px;
@@ -444,4 +439,15 @@
     width: 100%;
     flex-basis: 100%;
   }
+}
+
+.desk.desk :global(.options-insight-grid) > article:nth-child(n),
+.desk.desk :global(.options-learn-grid) article:nth-child(n) {
+  --ink: #243c2d;
+  --muted: #506456;
+  --green: #145d3d;
+  --red: #92382e;
+  color: #243c2d;
+  border-color: #cedbcf;
+  background: linear-gradient(135deg, #f1f5ed, #dde9df);
 }

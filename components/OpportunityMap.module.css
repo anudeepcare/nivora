@@ -156,14 +156,14 @@
   border-color: #29432c1c;
   padding: 18px;
   background:
-    radial-gradient(ellipse at 110% 0%, #e0fa7c, transparent 60%),
-    linear-gradient(145deg, #d7ef8d, #c4e462);
+    radial-gradient(ellipse at 110% 0%, #e4edcf, transparent 60%),
+    linear-gradient(145deg, #e7efdd, #d7e3cb);
   color: #19331c;
 }
 .tile:nth-child(4n + 2) {
   background:
-    radial-gradient(ellipse at 100% 0%, #d6f1d1, transparent 55%),
-    linear-gradient(145deg, #afe4c4, #7bceaa);
+    radial-gradient(ellipse at 100% 0%, #eef3e9, transparent 55%),
+    linear-gradient(145deg, #e2ede5, #cddfd3);
   color: #143b31;
 }
 .tile:nth-child(4n + 3) {
@@ -175,8 +175,8 @@
 }
 .tile:nth-child(4n) {
   background:
-    radial-gradient(ellipse at 100% 0%, #eaf8a7, transparent 60%),
-    linear-gradient(145deg, #d4e8ad, #b2d88c);
+    radial-gradient(ellipse at 100% 0%, #edf2df, transparent 60%),
+    linear-gradient(145deg, #e4ecda, #d2dfc4);
   color: #203b29;
 }
 .tile button,
@@ -219,4 +219,15 @@
   .grid {
     grid-template-columns: 1fr;
   }
+}
+
+.tile:nth-child(n) {
+  --ink: #243c2d;
+  --muted: #506456;
+  --line: #cedbcf;
+  --green: #145d3d;
+  --red: #92382e;
+  color: #243c2d;
+  border-color: #cedbcf;
+  background: linear-gradient(135deg, #f1f5ed, #dde9df);
 }

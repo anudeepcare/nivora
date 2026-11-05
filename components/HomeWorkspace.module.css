@@ -731,3 +731,31 @@
 .home.home .quickLinks {
   margin: 0 0 12px;
 }
+
+.researchPaging {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  margin: 0 0 24px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.researchPaging button {
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+.researchPaging button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.researchPaging button:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}

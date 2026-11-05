@@ -176,6 +176,7 @@ export default function StockFacts({
   return (
     <section
       className={styles.region}
+      data-price-context={priceContext || undefined}
       aria-label="Dated stock and market facts"
     >
       <dl className={styles.strip}>

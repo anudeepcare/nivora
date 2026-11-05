@@ -57,3 +57,9 @@ The supplied third screenshot is the retained visual baseline. Scoped CSS module
 Public navigation now explicitly pairs dark background with white text at desktop/mobile widths, correcting the white-on-light header defect. Portfolio dark-card icons and positive/negative tokens were reviewed and corrected. Test render harness bindings were updated for the new Research CSS module; assertions remain unchanged.
 
 Browser service remains unavailable; these changes are source-reviewed and automated-build verified, without a new screenshot or installed-PWA visual acceptance claim.
+
+## Approved calm app refinement
+
+Public landing and authentication source remain byte-identical to the mobile-adjusted candidate. Home/Research company cards and metric grids now use one quiet sage surface instead of category-index color cycling. Logo accents, real charts, gain/loss semantics and primary actions remain distinct. Research reuses HomeMarketCards with four visible companies per page and Previous/Next controls; all saved symbols remain reachable with bounded sequential chart reads, cache reuse and cancellation.
+
+Searchable picker controls isolate their light/dark text and background from surrounding dark hero tokens; the expiration picker no longer inherits white text onto a white button. Decision evidence captions and portfolio/support grids have paired tokens. Mobile metrics remain compact. All 1,052 tests pass, including Research page bounds and clamping; the final verification report records build/API results. Programmatically checked text-token pairs are above 4.5:1; this is not browser or full accessibility certification.

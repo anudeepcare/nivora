@@ -333,3 +333,31 @@ test("Home earnings preserves zero and negative actuals, estimates and pending r
   assert.match(pending, /Estimate.*0\.00/);
   assert.doesNotMatch(pending, /12\.00/);
 });
+
+
+test("Research chart pages keep every saved company reachable with four bounded charts and clamp after deletions", () => {
+  const symbols = Array.from({length: 9}, (_, i) => `STK${i}`);
+  for (const [page, expected, previousDisabled, nextDisabled] of [
+    [0, symbols.slice(0,4), true, false],
+    [1, symbols.slice(4,8), false, false],
+    [99, symbols.slice(8), false, true],
+  ]) {
+    let cards;
+    const View = load("ResearchHome", {
+      exports: {},
+      useProduct: () => ({workspace:{watchlist:symbols.map(symbol=>({symbol})),positions:[]}}),
+      useWorkspaceQuotes: () => ({data:{},error:""}),
+      useState: () => [page,()=>{}],
+      HomeMarketCards: props => { cards=props; return React.createElement("section",null,props.symbols.join(",")); },
+      Heading: empty, Notice: empty, Empty:empty,
+      homeStyles:{research:"research",researchPaging:"paging"},
+    });
+    const html=renderToStaticMarkup(React.createElement(View));
+    assert.deepEqual(cards.symbols,expected);
+    assert.equal(cards.total,9);
+    assert.equal(cards.context,"research");
+    assert.equal(cards.prefix,"");
+    assert.equal(/<button[^>]*disabled=""[^>]*>Previous/.test(html),previousDisabled);
+    assert.equal(/<button[^>]*disabled=""[^>]*>Next/.test(html),nextDisabled);
+  }
+});

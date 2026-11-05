@@ -1981,6 +1981,7 @@ function SearchDialog({
 export function ResearchHome() {
   const { workspace, workspaceError, demo } = useProduct(),
     quotes = useWorkspaceQuotes();
+  const [page, setPage] = useState(0);
   const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   const symbols = [
     ...new Set([
@@ -1990,6 +1991,9 @@ export function ResearchHome() {
         .map((p) => p.symbol) ?? []),
     ]),
   ];
+  const pageCount = Math.max(1, Math.ceil(symbols.length / 4));
+  const currentPage = Math.min(page, pageCount - 1);
+  const visibleSymbols = symbols.slice(currentPage * 4, currentPage * 4 + 4);
   return (
     <section
       className={`approved-workspace approved-research-home ${homeStyles.research}`}
@@ -2006,56 +2010,43 @@ export function ResearchHome() {
       </section>
       {workspaceError && <Notice error>{workspaceError}</Notice>}
       {quotes.error && <p className="approved-data-note">{quotes.error}</p>}
-      <SectionHead
-        title="Your research universe"
-        subtitle={`${symbols.length} saved companies · every case, connected`}
-      />
       {symbols.length ? (
-        <div className="approved-research-grid">
-          {symbols.map((symbol) => {
-            const row = quotes.data[symbol];
-            return (
-              <Link
-                className="card approved-research-tile"
-                href={researchLink(symbol, prefix)}
-                key={symbol}
+        <>
+          <HomeMarketCards
+            symbols={visibleSymbols}
+            quotes={quotes.data}
+            research={[]}
+            prefix={prefix}
+            context="research"
+            total={symbols.length}
+          />
+          {pageCount > 1 && (
+            <nav
+              className={homeStyles.researchPaging}
+              aria-label="Saved company pages"
+            >
+              <button
+                type="button"
+                onClick={() => setPage(currentPage - 1)}
+                disabled={currentPage === 0}
               >
-                <div>
-                  <SecurityLogo symbol={symbol} />
-                  <ArrowUpRight size={18} />
-                </div>
-                <h3>{row?.company?.name || symbol}</h3>
-                <p>
-                  {symbol}
-                  {row?.company?.exchange ? ` · ${row.company.exchange}` : ""}
-                </p>
-                <footer>
-                  <strong>
-                    {amount(row?.quote?.price, row?.quote?.currency)}
-                  </strong>
-                  <span
-                    className={
-                      row?.quote?.changePct == null
-                        ? "muted"
-                        : row.quote.changePct < 0
-                          ? "negative"
-                          : "green"
-                    }
-                  >
-                    {percent(row?.quote?.changePct, true)}
-                  </span>
-                </footer>
-                <small>
-                  {row?.quote?.asOf
-                    ? `${row.quote.stale ? "Older quote · " : ""}${quoteTime(row.quote.asOf)}`
-                    : quotes.loading
-                      ? "Checking the latest price…"
-                      : "Research available · price pending"}
-                </small>
-              </Link>
-            );
-          })}
-        </div>
+                Previous
+              </button>
+              <span aria-live="polite">
+                {currentPage * 4 + 1}–
+                {Math.min((currentPage + 1) * 4, symbols.length)} of{" "}
+                {symbols.length}
+              </span>
+              <button
+                type="button"
+                onClick={() => setPage(currentPage + 1)}
+                disabled={currentPage + 1 >= pageCount}
+              >
+                Next
+              </button>
+            </nav>
+          )}
+        </>
       ) : (
         <section className="card">
           <Empty title="Start with a company you care about">

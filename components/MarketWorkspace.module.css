@@ -22,8 +22,8 @@
   --muted: #405632;
   color: var(--ink);
   background:
-    radial-gradient(ellipse at 100% 0%, #eaf8a7, transparent 60%),
-    linear-gradient(145deg, #d4e8ad, #b2d88c);
+    radial-gradient(ellipse at 100% 0%, #edf2df, transparent 60%),
+    linear-gradient(145deg, #e4ecda, #d2dfc4);
   border-radius: 10px;
   cursor: pointer;
   list-style: none;
@@ -72,7 +72,7 @@
   cursor: pointer;
 }
 .workspace.workspace .actions button:first-child {
-  background: linear-gradient(145deg, #afe4c4, #7bceaa);
+  background: linear-gradient(145deg, #e2ede5, #cddfd3);
   border-color: #508c6e55;
   color: #143b31;
 }

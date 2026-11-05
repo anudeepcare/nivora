@@ -35,6 +35,11 @@
   --panel-shadow: 0 8px 32px #25334208, 0 1px 3px #25334205;
   --paper: #ffffff;
   --card: #ffffff;
+  --control-ink:#24272b;
+  --control-muted:#62686a;
+  --control-card:#ffffff;
+  --control-surface:#f0f2ee;
+  --control-line:#c3cec5;
   --surface: #f0f2ee;
   --surface-2: #f7f8f5;
   --ink: #24272b;
@@ -60,6 +65,11 @@
   --panel-shadow: 0 8px 30px #00000020;
   --paper: #191c1e;
   --card: #24272b;
+  --control-ink:#eef2f8;
+  --control-muted:#b9c1bf;
+  --control-card:#24272b;
+  --control-surface:#303536;
+  --control-line:#65716a;
   --surface: #303536;
   --surface-2: #24272b;
   --ink: #eef2f8;

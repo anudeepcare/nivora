@@ -2,7 +2,7 @@
   "date": "2026-11-05",
   "candidate": "1.0.0",
   "unitTests": {
-    "passed": 1051,
+    "passed": 1052,
     "failed": 0,
     "skipped": 0
   },
@@ -61,5 +61,29 @@
     "Settings/discovery/radar/inbox",
     "shared decision evidence/history/comparison/position fit/pricing",
     "gain/loss and dark-card icon contrast reviewed"
-  ]
+  ],
+  "mobileHeaderCorrection": {
+    "layout": "three columns at 360\u2013600px; two below 360px; full-width chart price facts",
+    "focusedTests": {
+      "passed": 62,
+      "failed": 0
+    },
+    "visualAcceptance": "pending: browser service unavailable"
+  },
+  "calmAppRefinement": {
+    "approvedPublicAuth": "four source files byte-identical to mobile-adjusted package",
+    "navigation": "unchanged",
+    "cardTreatment": "uniform restrained sage grids; semantic changes independent of card color",
+    "researchCards": "four visible companies/page; sequential missing-history reads and shared cache reuse; all saved symbols reachable",
+    "controlContrast": "theme-owned searchable-picker foreground/background pairs, including disabled state",
+    "tokenContrastRatios": {
+      "cardBody": 9.55,
+      "cardCaption": 5.09,
+      "lightPicker": 15.0,
+      "darkPicker": 13.35
+    },
+    "cssModules": "all component modules compile in pure/scoped mode",
+    "review": "no concrete important correctness or readability findings",
+    "visualAcceptance": "pending: browser service unavailable"
+  }
 }

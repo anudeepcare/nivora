@@ -469,8 +469,8 @@
 /* Account and preference headers share the market-card material palette. */
 .page.page :global(.page-heading) {
   background:
-    radial-gradient(ellipse at 100% 0%, #e0fa7c, transparent 60%),
-    linear-gradient(120deg, #d7ef8d, #b7d983);
+    radial-gradient(ellipse at 100% 0%, #e4edcf, transparent 60%),
+    linear-gradient(120deg, #e7efdd, #b7d983);
   color: #203b29;
   border: 1px solid #b3cc80;
   border-radius: 20px;
@@ -504,21 +504,21 @@
 .page.page :global(.workspace-setting-group) > header {
   padding: 19px 22px;
   background:
-    radial-gradient(ellipse at 100% 0%, #d6f1d1, transparent 55%),
-    linear-gradient(145deg, #afe4c4, #8fd2b2);
+    radial-gradient(ellipse at 100% 0%, #eef3e9, transparent 55%),
+    linear-gradient(145deg, #e2ede5, #8fd2b2);
   color: #143b31;
   border-bottom: 1px solid #53866d33;
 }
 .page.page :global(.workspace-setting-group):nth-child(2) > header {
   background:
-    radial-gradient(ellipse at 100% 0%, #e0fa7c, transparent 60%),
-    linear-gradient(145deg, #d7ef8d, #c4e462);
+    radial-gradient(ellipse at 100% 0%, #e4edcf, transparent 60%),
+    linear-gradient(145deg, #e7efdd, #d7e3cb);
   color: #203b29;
 }
 .page.page :global(.workspace-setting-group):nth-child(3) > header {
   background:
-    radial-gradient(ellipse at 100% 0%, #eaf8a7, transparent 60%),
-    linear-gradient(145deg, #d4e8ad, #b2d88c);
+    radial-gradient(ellipse at 100% 0%, #edf2df, transparent 60%),
+    linear-gradient(145deg, #e4ecda, #d2dfc4);
   color: #203b29;
 }
 .page.page :global(.workspace-setting-group) > header small {

@@ -135,11 +135,15 @@ export default function HomeMarketCards({
   quotes,
   research,
   prefix,
+  context = "home",
+  total,
 }: {
   symbols: string[];
   quotes: QuoteRows;
   research: Research[];
   prefix: string;
+  context?: "home" | "research";
+  total?: number;
 }) {
   const { cache, demo, owner } = useProduct();
   const allSymbols = [...new Set(symbols)];
@@ -239,16 +243,24 @@ export default function HomeMarketCards({
     );
   }).length;
   return (
-    <section className={styles.section} aria-labelledby="home-market-pulse">
+    <section
+      className={`${styles.section} ${context === "research" ? styles.research : ""}`}
+      aria-labelledby="home-market-pulse"
+    >
       <div className={styles.heading}>
         <div>
           <span className={styles.eyebrow}>
-            <ChartNoAxesCombined size={15} aria-hidden="true" /> THE BIG PICTURE
+            <ChartNoAxesCombined size={15} aria-hidden="true" />{" "}
+            {context === "research" ? "SAVED COMPANIES" : "THE BIG PICTURE"}
           </span>
-          <h2 id="home-market-pulse">Your market pulse</h2>
+          <h2 id="home-market-pulse">
+            {context === "research"
+              ? "Your research universe"
+              : "Your market pulse"}
+          </h2>
           <p>
             {selected.length
-              ? `${selected.length} of ${allSymbols.length} followed companies · ${ready} quotes available`
+              ? `${selected.length} of ${total ?? allSymbols.length} ${context === "research" ? "saved" : "followed"} companies · ${ready} quotes available`
               : "A little curiosity. A clearer view of the market."}
           </p>
         </div>
@@ -295,7 +307,7 @@ export default function HomeMarketCards({
             return (
               <article
                 key={symbol}
-                className={`${styles.card} ${styles[`tone${index}`]}`}
+                className={`${styles.card} ${styles[`tone${index % 4}`]}`}
               >
                 <div className={styles.company}>
                   <SecurityLogo symbol={symbol} size={44} />

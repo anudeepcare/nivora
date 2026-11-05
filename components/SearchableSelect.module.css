@@ -135,3 +135,19 @@
     font-size: 16px;
   }
 }
+
+/* Controls own their foreground/background pair even inside a dark hero. */
+.trigger,
+.popup {
+  --ink: var(--control-ink);
+  --muted: var(--control-muted);
+  --card: var(--control-card);
+  --surface: var(--control-surface);
+  --line: var(--control-line);
+  color: var(--ink);
+}
+.trigger:disabled {
+  opacity: 1;
+  color: var(--control-muted);
+  cursor: not-allowed;
+}

@@ -282,7 +282,9 @@
   padding: 24px;
   border-radius: 18px;
   border: 1px solid #19382719;
-  background: radial-gradient(ellipse at 110% 0%, #e0fa7c 0%, transparent 60%), linear-gradient(145deg, #d7ef8d, #c4e462);
+  background:
+    radial-gradient(ellipse at 110% 0%, #e4edcf 0%, transparent 60%),
+    linear-gradient(145deg, #e7efdd, #d7e3cb);
 }
 .root.root.root .header h2,
 .root.root.root .header :global(.eyebrow) {
@@ -320,7 +322,9 @@
   padding: 16px;
   border: 1px solid #19382719;
   border-radius: 14px;
-  background: radial-gradient(ellipse at 100% 0%, #d6f1d1 0%, transparent 55%), linear-gradient(145deg, #afe4c4, #7bceaa);
+  background:
+    radial-gradient(ellipse at 100% 0%, #eef3e9 0%, transparent 55%),
+    linear-gradient(145deg, #e2ede5, #cddfd3);
 }
 .root.root.root .cases article {
   border-radius: 18px;
@@ -329,7 +333,9 @@
 .root.root.root .cases article:nth-child(2) {
   --muted: #3f553b;
   color: #19331c;
-  background: radial-gradient(ellipse at 110% 0%, #e0fa7c 0%, transparent 60%), linear-gradient(145deg, #d7ef8d, #c4e462);
+  background:
+    radial-gradient(ellipse at 110% 0%, #e4edcf 0%, transparent 60%),
+    linear-gradient(145deg, #e7efdd, #d7e3cb);
   border-color: #19382719;
 }
 @media (max-width: 680px) {
@@ -342,4 +348,18 @@
   .root.root.root .quote {
     padding: 12px;
   }
+}
+
+/* One quiet surface throughout each data-card grid. */
+.root.root.root .cases article:nth-child(n) {
+  --ink: #243c2d;
+  --text: #243c2d;
+  --muted: #506456;
+  --line: #cedbcf;
+  --green: #145d3d;
+  --red: #92382e;
+  --blue: #315c45;
+  color: #243c2d;
+  border-color: #cedbcf;
+  background: linear-gradient(135deg, #f1f5ed, #dde9df);
 }

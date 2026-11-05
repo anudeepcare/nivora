@@ -126,8 +126,8 @@
   --muted: #405632;
   color: var(--ink);
   background:
-    radial-gradient(ellipse at 110% 0%, #e0fa7c, transparent 60%),
-    linear-gradient(145deg, #d7ef8d, #c4e462);
+    radial-gradient(ellipse at 110% 0%, #e4edcf, transparent 60%),
+    linear-gradient(145deg, #e7efdd, #d7e3cb);
   border-radius: 13px;
   border: 1px solid #19382720;
   padding: 11px 12px;
@@ -149,8 +149,8 @@
   --ink: #143b31;
   --muted: #315a48;
   background:
-    radial-gradient(ellipse at 100% 0%, #d6f1d1, transparent 55%),
-    linear-gradient(145deg, #afe4c4, #7bceaa);
+    radial-gradient(ellipse at 100% 0%, #eef3e9, transparent 55%),
+    linear-gradient(145deg, #e2ede5, #cddfd3);
 }
 .board.board .summary article:nth-child(3) {
   --ink: #f2f6e9;
@@ -165,14 +165,14 @@
 }
 .board.board .heading h3 > svg {
   color: #264b35;
-  background: linear-gradient(145deg, #d7ef8d, #b3dc64);
+  background: linear-gradient(145deg, #e7efdd, #b3dc64);
   padding: 7px;
   border-radius: 10px;
   box-sizing: content-box;
 }
 .board.board .tabs button[aria-pressed="true"] {
   border-radius: 8px 8px 0 0;
-  background: linear-gradient(145deg, #d7ef8d, #c4e462);
+  background: linear-gradient(145deg, #e7efdd, #d7e3cb);
   color: #19331c;
   padding-inline: 10px;
 }
@@ -182,7 +182,7 @@
 .board.board .comparison article {
   background: linear-gradient(
     135deg,
-    color-mix(in srgb, #7bceaa 20%, var(--card)),
+    color-mix(in srgb, #cddfd3 20%, var(--card)),
     var(--card)
   );
   border: 1px solid var(--line);
@@ -451,4 +451,18 @@
     margin: 0;
     justify-content: flex-start;
   }
+}
+
+/* One quiet surface throughout each data-card grid. */
+.board.board .summary article:nth-child(n) {
+  --ink: #243c2d;
+  --text: #243c2d;
+  --muted: #506456;
+  --line: #cedbcf;
+  --green: #145d3d;
+  --red: #92382e;
+  --blue: #315c45;
+  color: #243c2d;
+  border-color: #cedbcf;
+  background: linear-gradient(135deg, #f1f5ed, #dde9df);
 }
