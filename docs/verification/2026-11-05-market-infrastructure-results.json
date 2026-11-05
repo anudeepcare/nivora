@@ -88,7 +88,7 @@
   },
   "neutralWorkspace": {
     "surfaces": "theme-neutral reading panels and chart canvases",
-    "identity": "thin logo-asset accents; neutral fallback for unknown/monochrome logos; stable allocation colors",
+    "identity": "visible 30%-to-18% logo-accent gradient fill on rounded company cards; rejected top strips removed; stable allocation identity retained",
     "performance": "displayed history endpoints control chart direction; daily and unrealized changes keep independent signed semantics",
     "removedWatchlistPanels": [
       "Price is one part of the story",
@@ -100,5 +100,10 @@
     },
     "reviewFix": "neutralized empty company-card state for new users",
     "visualAcceptance": "pending: browser unavailable"
+  },
+  "cardCorrection": {
+    "scope": "CSS only: remove company/summary top strips, remove company outline, add restrained company fill and shadow",
+    "validation": "three Next CSS Modules compile; no new full-suite/build/browser claim",
+    "functionalBaseline": "1054 tests, types, build and nine API scripts passed before this CSS-only correction"
   }
 }

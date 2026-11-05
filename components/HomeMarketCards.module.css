@@ -321,17 +321,15 @@
 }
 
 .card {
-  background: var(--card);
+  background: linear-gradient(
+    140deg,
+    color-mix(in srgb, var(--company-accent, #66717b) 30%, var(--card)),
+    color-mix(in srgb, var(--company-accent, #66717b) 18%, var(--card))
+  );
+  --muted: color-mix(in srgb, var(--ink) 80%, var(--card));
   color: var(--ink);
-  border: 1px solid var(--line);
-  box-shadow: none;
-}
-.card::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto;
-  height: 3px;
-  background: var(--company-accent, #66717b);
+  border: 0;
+  box-shadow: 0 5px 22px #18251b0b;
 }
 .open {
   background: var(--surface);

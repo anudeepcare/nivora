@@ -1,3 +1,9 @@
+# Company card correction — November 5, 2026
+
+Removed the rejected colored top strips from Home/Research company cards and summary metrics. Company cards use a visible logo-accent gradient (30% to 18%) across the rounded surface with a soft shadow and no outline or top stripe. Gain/loss colors remain on data and charts. Public/auth, layout, calculations and the removed Watchlist panels are unchanged.
+
+Validation for this scoped CSS-only correction: Next CSS Modules compilation and archive manifest/CRC checks. Earlier 1,054 tests/build/API results apply to the unchanged functional source; this correction does not claim a new full-suite or browser screenshot run.
+
 # Neutral workspace with meaningful color — November 5, 2026
 
 This revision removes the broad tinted panels that made Portfolio and Research overwhelming. Reading surfaces, metric grids, chart canvases, allocation and controls use theme-neutral surfaces. Compact layouts, real charts, primary actions and icon hierarchy remain. Earlier color-material additions were replaced with the compact component styles instead of repeatedly recoloring the whole app.

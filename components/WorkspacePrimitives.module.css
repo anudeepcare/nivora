@@ -134,12 +134,6 @@
 .metric[data-kind] svg {
   color: var(--muted);
 }
-.metric[data-tone="negative"] {
-  border-top: 3px solid var(--red);
-}
-.metric[data-tone="green"] {
-  border-top: 3px solid var(--green);
-}
 @media (max-width: 600px) {
   .heading {
     padding: 4px 0 12px;

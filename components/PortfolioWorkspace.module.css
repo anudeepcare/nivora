@@ -329,12 +329,6 @@
   color: var(--ink);
   border-color: var(--line);
 }
-.portfolio.portfolio :global(.wealth-strip.four) > div[data-tone="negative"] {
-  border-top: 3px solid var(--red);
-}
-.portfolio.portfolio :global(.wealth-strip.four) > div[data-tone="green"] {
-  border-top: 3px solid var(--green);
-}
 .portfolio.portfolio :global(.approved-portfolio-chart) {
   color: var(--muted);
 }
