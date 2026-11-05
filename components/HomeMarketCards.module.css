@@ -323,8 +323,8 @@
 .card {
   background: linear-gradient(
     140deg,
-    color-mix(in srgb, var(--company-accent, #66717b) 30%, var(--card)),
-    color-mix(in srgb, var(--company-accent, #66717b) 18%, var(--card))
+    color-mix(in srgb, var(--company-accent, #527cb8) 38%, var(--card)),
+    color-mix(in srgb, var(--company-accent, #527cb8) 14%, var(--card))
   );
   --muted: color-mix(in srgb, var(--ink) 80%, var(--card));
   color: var(--ink);
@@ -379,4 +379,9 @@
 .empty a {
   background: var(--ink);
   color: var(--card);
+}
+
+.company h3 {opacity:1;}
+:global(html[data-theme="dark"]) .card {
+  background:linear-gradient(140deg,color-mix(in srgb,var(--company-accent,#527cb8) 22%,var(--card)),color-mix(in srgb,var(--company-accent,#527cb8) 10%,var(--card)));
 }

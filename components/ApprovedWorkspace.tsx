@@ -1841,28 +1841,18 @@ export function Watchlist() {
                       </td>
                       <td>
                         <Link
+                          className={portfolioStyles.paceStatus}
                           href={researchLink(symbol, prefix)}
-                          className={"text-link"}
-                          title={
-                            signal
-                              ? `${signal.month}: ${signal.reason}`
-                              : "Open research to load and check the monthly policy"
-                          }
+                          title={signal?.reason}
                         >
-                          {signal ? "Open price history" : "Open case"}
+                          {signal ? signal.view.actionLabel.replace(/ · P[0-4]$/, "") : "Open case"}
+                          {signal?.view.rawLevel != null && (
+                            <span> · {signal.view.code}</span>
+                          )}
                         </Link>
                         {signal && (
-                          <PaceGuidance
-                            view={signal.view}
-                            readings={signal.periods}
-                            compact
-                          />
-                        )}
-                        {signal && (
                           <small>
-                            {signal.contextLabel}
-                            <br />
-                            New purchase: {signal.actions.entry} · Holding:{" "}
+                            New: {signal.actions.entry} · Held:{" "}
                             {signal.actions.holding}
                           </small>
                         )}

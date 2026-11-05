@@ -67,3 +67,11 @@ Searchable picker controls isolate their light/dark text and background from sur
 ## Neutral workspace and meaningful color
 
 Replaced the green-tinted materials with neutral theme surfaces in Portfolio, Research and supporting app panels, retaining compact layouts, real chart data and control behavior. Company identity uses thin local-logo accents with a neutral fallback; returns are not inferred from the logo color. Company and Portfolio histories use actual endpoint direction (green/up, red/down, neutral/flat-or-unknown), distinct from daily/unrealized return. Allocation color is stable by symbol rather than list position. The two requested Watchlist guidance/note panels are removed without deleting existing notes. Public/auth/pricing source is unchanged. The full suite has 1,054 passing tests; the final focused suite has 8 passing checks. Screenshot acceptance remains pending.
+
+## Company identity and selective gradients
+
+The latest screenshot correction replaces all-gray fallback cards with curated featured-logo colors, distinct stable design fallbacks and optional color sampling from already loaded images. Sampling is bounded to 24×24 pixels, never fetches another image, and catches tainted/invalid canvas results. Company gradients remain full rounded fills without top strips. Dark-theme fills are reduced for text contrast.
+
+Portfolio now has selective summary gradients (charcoal net value, signed soft return, category cash/margin), while the chart and holdings canvases remain readable. Watchlist's tall inline Pace instrument is replaced by a compact action/code link and entry/holding line, retaining access to full evidence in Research. Hover uses a neutral surface. All previously removed guidance/note panels remain absent. Public/auth/pricing files remain unchanged.
+
+Validation: 1,055 tests, nine final focused checks, final TypeScript, production build and nine synthetic API scripts passed. Browser screenshot acceptance is still pending.

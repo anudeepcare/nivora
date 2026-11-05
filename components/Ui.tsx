@@ -7,6 +7,7 @@ import { createPortal } from "react-dom";
 import { Info, X, ArrowUpRight, Search } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { ContextLink } from "./ContextLink";
+import { dominantLogoColor } from "@/lib/visual-signals";
 import { requestLogo } from "@/lib/logo-client";
 import { dateLabel, quoteTime } from "@/lib/format";
 export function DataStamp({
@@ -75,9 +76,11 @@ const logos: Record<string, string> = {
 export function SecurityLogo({
   symbol,
   size = 42,
+  onAccent,
 }: {
   symbol: string;
   size?: number;
+  onAccent?: (color: string) => void;
 }) {
   const [failed, setFailed] = useState(false);
   const [remote, setRemote] = useState<{
@@ -131,6 +134,24 @@ export function SecurityLogo({
           loading="lazy"
           decoding="async"
           referrerPolicy="no-referrer"
+          onLoad={(event) => {
+            if (!onAccent) return;
+            try {
+              const canvas = document.createElement("canvas");
+              canvas.width = canvas.height = 24;
+              const context = canvas.getContext("2d", {
+                willReadFrequently: true,
+              });
+              if (!context) return;
+              context.drawImage(event.currentTarget, 0, 0, 24, 24);
+              const accent = dominantLogoColor(
+                context.getImageData(0, 0, 24, 24).data,
+              );
+              if (accent) onAccent(accent);
+            } catch {
+              /* Cross-origin or undecodable logos retain the stable fallback. */
+            }
+          }}
           onError={() => setFailed(true)}
         />
       ) : (
@@ -159,13 +180,24 @@ export function Help({
   return (
     <>
       <button
-        className={trigger ? `text-button help-trigger ${styles.helpTrigger}` : `help ${styles.helpIcon}`}
+        className={
+          trigger
+            ? `text-button help-trigger ${styles.helpTrigger}`
+            : `help ${styles.helpIcon}`
+        }
         type="button"
         aria-label={`About ${label}`}
         aria-haspopup="dialog"
         onClick={() => setOpen(true)}
       >
-        {typeof trigger === "string" ? <><span>{trigger}</span><Info size={14} aria-hidden="true" /></> : trigger ?? <Info size={14} />}
+        {typeof trigger === "string" ? (
+          <>
+            <span>{trigger}</span>
+            <Info size={14} aria-hidden="true" />
+          </>
+        ) : (
+          (trigger ?? <Info size={14} />)
+        )}
       </button>
       {open &&
         createPortal(
@@ -292,12 +324,30 @@ export function Notice({
 }
 
 export function ProductFooter() {
-  const links = Object.entries({help:'Help',contact:'Contact',changelog:"What’s new",methodology:'Methodology',terms:'Terms',privacy:'Privacy',risk:'Risk disclosure',reliability:'Data reliability'}).map(([page,label])=><ContextLink key={page} page={page}>{label}</ContextLink>);
+  const links = Object.entries({
+    help: "Help",
+    contact: "Contact",
+    changelog: "What’s new",
+    methodology: "Methodology",
+    terms: "Terms",
+    privacy: "Privacy",
+    risk: "Risk disclosure",
+    reliability: "Data reliability",
+  }).map(([page, label]) => (
+    <ContextLink key={page} page={page}>
+      {label}
+    </ContextLink>
+  ));
   return (
     <footer className="product-footer">
       <span>© {new Date().getFullYear()} AURYN. All rights reserved.</span>
-      <nav className="footer-desktop" aria-label="Help and legal">{links}</nav>
-      <details className="footer-links"><summary>Help & legal</summary><nav aria-label="Help and legal">{links}</nav></details>
+      <nav className="footer-desktop" aria-label="Help and legal">
+        {links}
+      </nav>
+      <details className="footer-links">
+        <summary>Help & legal</summary>
+        <nav aria-label="Help and legal">{links}</nav>
+      </details>
       <Help label="Research disclosure" trigger="Research disclosure">
         <p>
           AURYN provides investment research and decision support. It does not

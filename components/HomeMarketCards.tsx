@@ -148,6 +148,7 @@ export default function HomeMarketCards({
   total?: number;
 }) {
   const { cache, demo, owner } = useProduct();
+  const [logoAccents, setLogoAccents] = useState<Record<string, string>>({});
   const allSymbols = [...new Set(symbols)];
   const selected = allSymbols.slice(0, 4);
   const selectedKey = selected.join(",");
@@ -311,11 +312,24 @@ export default function HomeMarketCards({
                 key={symbol}
                 className={styles.card}
                 style={
-                  { "--company-accent": companyAccent(symbol) } as CSSProperties
+                  {
+                    "--company-accent":
+                      logoAccents[symbol] ?? companyAccent(symbol),
+                  } as CSSProperties
                 }
               >
                 <div className={styles.company}>
-                  <SecurityLogo symbol={symbol} size={44} />
+                  <SecurityLogo
+                    symbol={symbol}
+                    size={44}
+                    onAccent={(color) =>
+                      setLogoAccents((prior) =>
+                        prior[symbol] === color
+                          ? prior
+                          : { ...prior, [symbol]: color },
+                      )
+                    }
+                  />
                   <div>
                     <span className={styles.symbol}>{symbol}</span>
                     <h3>{company?.name || symbol}</h3>

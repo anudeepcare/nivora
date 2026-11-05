@@ -338,3 +338,83 @@
 .portfolio.portfolio :global(.approved-portfolio-chart[data-direction="up"]) {
   color: var(--green);
 }
+
+/* Summary roles carry restrained gradients; the analytical canvas stays clear. */
+.portfolio.portfolio :global(.wealth-strip.four) > div:first-child {
+  background:
+    radial-gradient(ellipse at 100% 0%, #46614e, transparent 70%),
+    linear-gradient(135deg, #243b30, #17271f);
+  color: #f3f7ee;
+  --ink: #f3f7ee;
+  --muted: #cbd8cd;
+  --line: #526b5a;
+  --green: #83d8b3;
+  --red: #ffb6af;
+}
+.portfolio.portfolio :global(.wealth-strip.four) > div:first-child svg {
+  color: #d8edab;
+}
+.portfolio.portfolio :global(.wealth-strip.four) > div:nth-child(2) {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--surface) 65%, var(--card)),
+    var(--card)
+  );
+}
+.portfolio.portfolio :global(.wealth-strip.four) > div[data-tone="negative"] {
+  background: linear-gradient(135deg, var(--card), var(--red-soft));
+}
+.portfolio.portfolio :global(.wealth-strip.four) > div[data-tone="green"] {
+  background: linear-gradient(135deg, var(--card), var(--green-soft));
+}
+.portfolio.portfolio :global(.wealth-strip.four) > div:nth-child(3) {
+  background: linear-gradient(
+    135deg,
+    var(--card),
+    color-mix(in srgb, #79a9cc 18%, var(--card))
+  );
+}
+.portfolio.portfolio :global(.wealth-strip.four) > div:nth-child(4) {
+  background: linear-gradient(
+    135deg,
+    var(--card),
+    color-mix(in srgb, #d3ac61 20%, var(--card))
+  );
+}
+.portfolio.portfolio :global(.wealth-strip.four) > div {
+  border-radius: 18px;
+  box-shadow: 0 5px 20px #17251a08;
+}
+.watchLedger.watchLedger :global(.holdings-table) tbody tr {
+  background: var(--card);
+}
+.watchLedger.watchLedger :global(.holdings-table) tbody tr:hover,
+.watchLedger.watchLedger :global(.holdings-table) tbody tr:focus-within {
+  background: var(--surface-2);
+}
+.watchLedger.watchLedger :global(.holdings-table) td {
+  vertical-align: middle;
+  padding-block: 14px;
+}
+.watchLedger.watchLedger :global(.holdings-table) td:nth-child(4) {
+  text-align: left;
+}
+.paceStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--ink);
+  text-decoration: none;
+}
+.paceStatus:hover {
+  text-decoration: underline;
+}
+.paceStatus + small {
+  display: block;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--muted);
+}

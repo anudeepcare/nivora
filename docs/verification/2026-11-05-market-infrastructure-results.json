@@ -2,7 +2,7 @@
   "date": "2026-11-05",
   "candidate": "1.0.0",
   "unitTests": {
-    "passed": 1054,
+    "passed": 1055,
     "failed": 0,
     "skipped": 0
   },
@@ -105,5 +105,18 @@
     "scope": "CSS only: remove company/summary top strips, remove company outline, add restrained company fill and shadow",
     "validation": "three Next CSS Modules compile; no new full-suite/build/browser claim",
     "functionalBaseline": "1054 tests, types, build and nine API scripts passed before this CSS-only correction"
+  },
+  "identityUx": {
+    "companyCards": "visible logo-based filled gradients, no top strips, distinct deterministic design fallback",
+    "logoSampling": "24x24 loaded image only; white/transparent exclusion; tainted canvas catches; no extra network requests",
+    "portfolio": "role-specific summary gradients, signed return, neutral analytical canvas",
+    "watchlist": "compact action/Pace link + entry/holding context; neutral hover",
+    "darkTheme": "reduced tint, opaque company names",
+    "focusedChecks": {
+      "passed": 9,
+      "failed": 0
+    },
+    "publicAuthPricing": "unchanged source",
+    "visualAcceptance": "pending: browser unavailable"
   }
 }
