@@ -1,6 +1,15 @@
 .desk {
   min-width: 0;
   --option-border: var(--line);
+  --option-lime:
+    radial-gradient(ellipse at 110% 0%, #e0fa7c 0%, transparent 60%),
+    linear-gradient(145deg, #d7ef8d, #c4e462);
+  --option-mint:
+    radial-gradient(ellipse at 100% 0%, #d6f1d1 0%, transparent 55%),
+    linear-gradient(145deg, #afe4c4, #7bceaa);
+  --option-charcoal:
+    radial-gradient(ellipse at 100% 0%, #405746 0%, transparent 65%),
+    linear-gradient(145deg, #26392e, #17281f);
 }
 .desk.desk :global(.options-heading) {
   display: flex;
@@ -8,11 +17,13 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 4px 0 12px;
+  padding: 12px 16px;
   margin: 0;
   border: 0;
-  border-radius: 0;
-  background: transparent;
+  border-radius: 16px;
+  background: var(--option-charcoal);
+  --ink: #f2f6e9;
+  --muted: #c6d6c7;
 }
 .desk.desk :global(.options-heading) h2 {
   display: flex;
@@ -48,8 +59,11 @@
   color: var(--muted);
 }
 .desk.desk :global(.options-nav) button[aria-pressed="true"] {
-  color: var(--ink);
-  border-color: #afcc35;
+  color: #19331c;
+  border-color: #91b832;
+  background: var(--option-lime);
+  border-radius: 9px 9px 0 0;
+  padding-inline: 12px;
   font-weight: 600;
 }
 .desk.desk :global(.options-hero) {
@@ -59,9 +73,11 @@
   gap: 20px;
   padding: 12px 16px;
   margin: 0;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--card);
+  border: 1px solid #19382720;
+  border-radius: 16px;
+  background: var(--option-lime);
+  --ink: #19331c;
+  --muted: #405632;
   color: var(--ink);
 }
 .desk.desk :global(.options-hero-intro) {
@@ -101,8 +117,10 @@
   display: grid;
   gap: 3px;
   text-align: right;
-  padding: 0;
-  border: 0;
+  padding: 8px 12px;
+  border: 1px solid #fff6;
+  border-radius: 11px;
+  background: #ffffff40;
   min-width: 0;
 }
 .desk.desk :global(.options-hero-meta) strong {
@@ -209,10 +227,12 @@
 .desk.desk :global(.options-insight-grid) > article {
   min-width: 0;
   padding: 10px 14px;
-  border: 0;
-  border-left: 2px solid var(--line);
-  border-radius: 0;
-  background: transparent;
+  border: 1px solid #19382720;
+  border-radius: 14px;
+  background: var(--option-lime);
+  --ink: #19331c;
+  --muted: #405632;
+  color: var(--ink);
 }
 .desk.desk :global(.options-insight-grid) strong {
   display: block;
@@ -268,11 +288,15 @@
   margin: 12px 0 0;
 }
 .desk.desk :global(.options-learn-grid) article {
+  min-width: 0;
   min-height: 0;
   padding: 14px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: transparent;
+  border: 1px solid #19382720;
+  border-radius: 16px;
+  background: var(--option-lime);
+  --ink: #19331c;
+  --muted: #405632;
+  color: var(--ink);
 }
 .desk.desk :global(.options-learn-grid) article > span {
   width: 28px;
@@ -281,8 +305,8 @@
   place-items: center;
   margin: 0 0 10px;
   border-radius: 7px;
-  background: #e9f3c9;
-  color: #343a23;
+  background: #ffffff65;
+  color: inherit;
   font-size: 11px;
 }
 .desk.desk :global(.options-learn-grid) h4 {
@@ -298,6 +322,86 @@
 .desk :is(button, select, summary, input, a):focus-visible {
   outline: 2px solid var(--green);
   outline-offset: 3px;
+}
+.desk.desk :global(.options-heading) h2 > svg {
+  color: #d9ef91;
+  padding: 7px;
+  box-sizing: content-box;
+  border-radius: 11px;
+  background: #ffffff12;
+}
+.desk.desk :global(.options-heading) select {
+  --ink: #19331c;
+  background: #f3f8e8;
+  color: var(--ink);
+  border-color: #ffffff60;
+}
+.desk.desk :global(.options-heading) p {
+  color: var(--muted);
+  font-size: 11px;
+  margin: 5px 0 0;
+}
+.desk.desk :global(.options-insight-grid) > article:nth-child(3n + 2),
+.desk.desk :global(.options-learn-grid) article:nth-child(3n + 2) {
+  background: var(--option-mint);
+  --ink: #143b31;
+  --muted: #315a48;
+}
+.desk.desk :global(.options-insight-grid) > article:nth-child(3n),
+.desk.desk :global(.options-learn-grid) article:nth-child(3n) {
+  background: var(--option-charcoal);
+  --ink: #f2f6e9;
+  --muted: #c6d6c7;
+  border-color: #304f3b;
+}
+.desk.desk :global(.options-insight-grid) strong,
+.desk.desk :global(.options-learn-grid) h4 {
+  color: var(--ink);
+}
+.desk.desk :global(.options-insight-grid) article[data-tone="risk"] strong {
+  color: #8b302d;
+}
+.desk.desk
+  :global(.options-insight-grid)
+  article:nth-child(3n)[data-tone="risk"]
+  strong {
+  color: #ffb8a9;
+}
+.desk.desk :global(.options-insight-grid) article[data-tone="gain"] strong {
+  color: #136444;
+}
+.desk.desk
+  :global(.options-insight-grid)
+  article:nth-child(3n)[data-tone="gain"]
+  strong {
+  color: #b6e7b2;
+}
+.desk.desk :global(.options-insight-grid) article > span svg {
+  padding: 5px;
+  box-sizing: content-box;
+  border-radius: 8px;
+  background: #ffffff35;
+  color: var(--ink);
+}
+.desk.desk :global(.options-count) {
+  color: #19331c;
+  background: var(--option-lime);
+}
+@media (max-width: 500px) {
+  .desk.desk :global(.options-heading) {
+    flex-wrap: wrap;
+  }
+  .desk.desk :global(.options-expiry-picker) {
+    width: 100%;
+    flex-basis: 100%;
+  }
+  .desk.desk :global(.options-hero) {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .desk.desk :global(.options-hero-meta) {
+    text-align: left;
+  }
 }
 @media (max-width: 700px) {
   .desk.desk :global(.options-heading) {

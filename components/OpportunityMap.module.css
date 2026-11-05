@@ -142,3 +142,81 @@
     font-size: 20px;
   }
 }
+
+.map {
+  background: var(--card);
+  border-radius: 20px;
+}
+.grid {
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+}
+.tile {
+  border-radius: 17px;
+  border-color: #29432c1c;
+  padding: 18px;
+  background:
+    radial-gradient(ellipse at 110% 0%, #e0fa7c, transparent 60%),
+    linear-gradient(145deg, #d7ef8d, #c4e462);
+  color: #19331c;
+}
+.tile:nth-child(4n + 2) {
+  background:
+    radial-gradient(ellipse at 100% 0%, #d6f1d1, transparent 55%),
+    linear-gradient(145deg, #afe4c4, #7bceaa);
+  color: #143b31;
+}
+.tile:nth-child(4n + 3) {
+  background:
+    radial-gradient(ellipse at 100% 0%, #405746, transparent 65%),
+    linear-gradient(145deg, #26392e, #17281f);
+  color: #f2f6e9;
+  border-color: #304f3b;
+}
+.tile:nth-child(4n) {
+  background:
+    radial-gradient(ellipse at 100% 0%, #eaf8a7, transparent 60%),
+    linear-gradient(145deg, #d4e8ad, #b2d88c);
+  color: #203b29;
+}
+.tile button,
+.tile p,
+.tile small {
+  color: inherit;
+}
+.tile p,
+.tile small {
+  opacity: 0.8;
+}
+.tile strong {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.7px;
+}
+.bar {
+  background: #163b2826;
+}
+.bar span {
+  background: #3a6637;
+}
+.tile:nth-child(4n + 3) .bar {
+  background: #d9ebbc26;
+}
+.tile:nth-child(4n + 3) .bar span {
+  background: #d1e989;
+}
+@media (max-width: 560px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .tile {
+    padding: 14px 12px;
+  }
+  .tile strong {
+    font-size: 24px;
+  }
+}
+@media (max-width: 360px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

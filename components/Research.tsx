@@ -77,6 +77,7 @@ import CompanyBrief from "./CompanyBrief";
 import DcaResearch from "./DcaResearch";
 import DecisionOverview from "./IntegratedResearch";
 import experience from "./IntegratedExperience.module.css";
+import tabVisuals from "./ResearchTabVisuals.module.css";
 import { selectPriceReference } from "@/lib/price-reference";
 import { movementContext } from "@/lib/movement-context";
 import PaceHelp from "./PaceHelp";
@@ -568,7 +569,7 @@ export default function Research({ symbol }: { symbol: string }) {
         </FeatureGate>
       </div>
       <section
-        className="signal-research-panel"
+        className={`signal-research-panel ${tabVisuals.root}`}
         data-research-section={tab}
         hidden={tab === "Snapshot"}
         aria-label={tabPresentation[tab].label}

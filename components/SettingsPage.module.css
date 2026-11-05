@@ -34,7 +34,11 @@
   margin: 0 0 20px;
   padding: 24px;
   border-radius: 18px;
-  background: linear-gradient(115deg,color-mix(in srgb,var(--jade) 24%,var(--card)),var(--card));
+  background: linear-gradient(
+    115deg,
+    color-mix(in srgb, var(--jade) 24%, var(--card)),
+    var(--card)
+  );
   border-bottom: 0;
 }
 .page :global(.page-heading) h1 {
@@ -338,32 +342,220 @@
   }
 }
 
-.page :global(.workspace-account-row),.page :global(.workspace-settings-shortcuts) {padding:20px;background:var(--glass);border:1px solid var(--line);border-radius:18px;box-shadow:var(--panel-shadow);}
-.page :global(.workspace-setting-group) {padding:18px 22px;background:var(--glass);border:1px solid var(--line);border-radius:18px;box-shadow:var(--panel-shadow);margin-bottom:16px;}
+.page :global(.workspace-account-row),
+.page :global(.workspace-settings-shortcuts) {
+  padding: 20px;
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--panel-shadow);
+}
+.page :global(.workspace-setting-group) {
+  padding: 18px 22px;
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--panel-shadow);
+  margin-bottom: 16px;
+}
 
-.page :global(.workspace-setting-group):not([open]) {min-height:0;}
-.page :global(.workspace-setting-group)>summary {min-height:48px;margin:0;}
-.page :global(.workspace-setting-group)[open]>.workspace-setting-body {padding-bottom:0;}
-.page :global(.setting-row) {min-height:56px;padding:10px 0;}
-.page :global(.workspace-setting-body) {padding:12px 0 0;}
-.page :global(.appearance-controls) {padding-top:16px;}
+.page :global(.workspace-setting-group):not([open]) {
+  min-height: 0;
+}
+.page :global(.workspace-setting-group) > summary {
+  min-height: 48px;
+  margin: 0;
+}
+.page :global(.workspace-setting-group)[open] > .workspace-setting-body {
+  padding-bottom: 0;
+}
+.page :global(.setting-row) {
+  min-height: 56px;
+  padding: 10px 0;
+}
+.page :global(.workspace-setting-body) {
+  padding: 12px 0 0;
+}
+.page :global(.appearance-controls) {
+  padding-top: 16px;
+}
 
-.page :global(.workspace-settings-groups) {display:grid;grid-template-columns:1fr;gap:16px;}
-.page :global(.workspace-setting-group) {margin:0;box-shadow:none;}
-.page :global(.workspace-setting-group)>header {padding:0 0 12px;border-bottom:1px solid var(--line);}
-.page :global(.workspace-setting-group)>header strong {font-size:17px;}
-.page :global(.workspace-setting-group)>header small {font-size:12px;}
+.page :global(.workspace-settings-groups) {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+.page :global(.workspace-setting-group) {
+  margin: 0;
+  box-shadow: none;
+}
+.page :global(.workspace-setting-group) > header {
+  padding: 0 0 12px;
+  border-bottom: 1px solid var(--line);
+}
+.page :global(.workspace-setting-group) > header strong {
+  font-size: 17px;
+}
+.page :global(.workspace-setting-group) > header small {
+  font-size: 12px;
+}
 
 /* Own the track and thumb geometry; legacy switches assumed a taller control. */
-.page :global(.workspace-settings-groups) {border:0;}
-.page :global(.motion-switch) {position:relative;display:block;flex:0 0 46px;width:46px;height:28px;min-height:28px;padding:0;border:0;background:var(--line);box-shadow:none;}
-.page :global(.motion-switch)::before {display:none;}
-.page :global(.motion-switch)>span {position:absolute;top:4px;left:4px;width:20px;height:20px;margin:0;border-radius:50%;background:#fff;transform:none;}
-.page :global(.motion-switch)[aria-checked="true"]>span {transform:translateX(18px);}
-.page :global(.workspace-account-row) :global(.settings-signout) {display:flex;align-items:center;gap:8px;border-top:1px solid var(--line);border-radius:0;width:100%;margin-top:4px;padding-top:16px;color:var(--muted);font-size:13px;}
-@media(max-width:800px){
- .page :global(.workspace-account-row){display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;}
- .page :global(.settings-profile-avatar){width:44px;height:44px;font-size:20px;}
- .page :global(.workspace-account-row)>a,.page :global(.workspace-account-row) :global(.settings-signout){grid-column:1/-1;margin-left:0;}
- .page :global(.workspace-account-row) strong{font-size:13px;}
+.page :global(.workspace-settings-groups) {
+  border: 0;
+}
+.page :global(.motion-switch) {
+  position: relative;
+  display: block;
+  flex: 0 0 46px;
+  width: 46px;
+  height: 28px;
+  min-height: 28px;
+  padding: 0;
+  border: 0;
+  background: var(--line);
+  box-shadow: none;
+}
+.page :global(.motion-switch)::before {
+  display: none;
+}
+.page :global(.motion-switch) > span {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  border-radius: 50%;
+  background: #fff;
+  transform: none;
+}
+.page :global(.motion-switch)[aria-checked="true"] > span {
+  transform: translateX(18px);
+}
+.page :global(.workspace-account-row) :global(.settings-signout) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  width: 100%;
+  margin-top: 4px;
+  padding-top: 16px;
+  color: var(--muted);
+  font-size: 13px;
+}
+@media (max-width: 800px) {
+  .page :global(.workspace-account-row) {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 12px;
+  }
+  .page :global(.settings-profile-avatar) {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+  }
+  .page :global(.workspace-account-row) > a,
+  .page :global(.workspace-account-row) :global(.settings-signout) {
+    grid-column: 1/-1;
+    margin-left: 0;
+  }
+  .page :global(.workspace-account-row) strong {
+    font-size: 13px;
+  }
+}
+
+/* Account and preference headers share the market-card material palette. */
+.page.page :global(.page-heading) {
+  background:
+    radial-gradient(ellipse at 100% 0%, #e0fa7c, transparent 60%),
+    linear-gradient(120deg, #d7ef8d, #b7d983);
+  color: #203b29;
+  border: 1px solid #b3cc80;
+  border-radius: 20px;
+}
+.page.page :global(.page-heading) p {
+  color: #48603e;
+}
+.page.page :global(.workspace-account-row) {
+  background:
+    radial-gradient(ellipse at 100% 0%, #405746, transparent 65%),
+    linear-gradient(145deg, #26392e, #17281f);
+  color: #f2f6e9;
+  border-color: #304f3b;
+  --ink: #f2f6e9;
+  --muted: #c4d1c4;
+  --blue: #d8ee93;
+  --line: #6b876b55;
+}
+.page.page :global(.settings-profile-avatar) {
+  background: #d9ed9c;
+  color: #253d2b;
+  border: 1px solid #e4f7bd;
+  font-size: 20px;
+}
+.page.page :global(.workspace-setting-group) {
+  padding: 0;
+  overflow: hidden;
+  border-radius: 20px;
+  background: var(--card);
+}
+.page.page :global(.workspace-setting-group) > header {
+  padding: 19px 22px;
+  background:
+    radial-gradient(ellipse at 100% 0%, #d6f1d1, transparent 55%),
+    linear-gradient(145deg, #afe4c4, #8fd2b2);
+  color: #143b31;
+  border-bottom: 1px solid #53866d33;
+}
+.page.page :global(.workspace-setting-group):nth-child(2) > header {
+  background:
+    radial-gradient(ellipse at 100% 0%, #e0fa7c, transparent 60%),
+    linear-gradient(145deg, #d7ef8d, #c4e462);
+  color: #203b29;
+}
+.page.page :global(.workspace-setting-group):nth-child(3) > header {
+  background:
+    radial-gradient(ellipse at 100% 0%, #eaf8a7, transparent 60%),
+    linear-gradient(145deg, #d4e8ad, #b2d88c);
+  color: #203b29;
+}
+.page.page :global(.workspace-setting-group) > header small {
+  color: #3e604f;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.page.page :global(.workspace-setting-group) > header svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+.page.page :global(.workspace-setting-body) {
+  padding: 8px 22px 18px;
+}
+.page.page :global(.workspace-settings-shortcuts) {
+  background: linear-gradient(
+    140deg,
+    color-mix(in srgb, var(--card) 86%, #b6d58e),
+    var(--card)
+  );
+  box-shadow: none;
+}
+.page.page :global(.setting-row):last-child {
+  border-bottom: 0;
+}
+.page.page :global(.segments) {
+  background: var(--surface);
+}
+@media (max-width: 600px) {
+  .page.page :global(.workspace-setting-group) > header {
+    padding: 17px 18px;
+  }
+  .page.page :global(.workspace-setting-body) {
+    padding: 6px 18px 16px;
+  }
+  .page.page :global(.page-heading) {
+    padding: 22px;
+  }
 }

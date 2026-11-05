@@ -268,3 +268,78 @@
   text-decoration: underline;
   cursor: pointer;
 }
+
+/* Targets use the same lime introduction and mint evidence as the Home cards. */
+.root.root.root {
+  padding: 22px;
+  border-radius: 22px;
+  box-shadow: 0 7px 20px #18332206;
+}
+.root.root.root .header {
+  --ink: #19331c;
+  --muted: #3f553b;
+  color: #19331c;
+  padding: 24px;
+  border-radius: 18px;
+  border: 1px solid #19382719;
+  background: radial-gradient(ellipse at 110% 0%, #e0fa7c 0%, transparent 60%), linear-gradient(145deg, #d7ef8d, #c4e462);
+}
+.root.root.root .header h2,
+.root.root.root .header :global(.eyebrow) {
+  color: inherit;
+}
+.root.root.root .quote {
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: #ffffff45;
+  border: 1px solid #ffffff55;
+  align-self: start;
+}
+.root.root.root .tabs {
+  gap: 8px;
+  border: 0;
+  padding-bottom: 4px;
+}
+.root.root.root .tabs button {
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+}
+.root.root.root .tabs button[aria-selected="true"] {
+  color: #f2f6e9;
+  background: linear-gradient(145deg, #26392e, #17281f);
+  border-color: #304f3b;
+}
+.root.root.root .metadata {
+  gap: 12px;
+}
+.root.root.root .metadata > div {
+  --muted: #355a49;
+  color: #143b31;
+  padding: 16px;
+  border: 1px solid #19382719;
+  border-radius: 14px;
+  background: radial-gradient(ellipse at 100% 0%, #d6f1d1 0%, transparent 55%), linear-gradient(145deg, #afe4c4, #7bceaa);
+}
+.root.root.root .cases article {
+  border-radius: 18px;
+  background: var(--card);
+}
+.root.root.root .cases article:nth-child(2) {
+  --muted: #3f553b;
+  color: #19331c;
+  background: radial-gradient(ellipse at 110% 0%, #e0fa7c 0%, transparent 60%), linear-gradient(145deg, #d7ef8d, #c4e462);
+  border-color: #19382719;
+}
+@media (max-width: 680px) {
+  .root.root.root {
+    padding: 14px;
+  }
+  .root.root.root .header {
+    padding: 18px;
+  }
+  .root.root.root .quote {
+    padding: 12px;
+  }
+}

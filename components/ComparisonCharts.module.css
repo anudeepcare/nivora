@@ -140,3 +140,21 @@
     min-height: 160px;
   }
 }
+
+.chart > header {
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: linear-gradient(115deg, #afe4c4, #d7ef8d);
+  color: #183b2d;
+  --muted: #416252;
+  --line: #789779;
+}
+.ranges button {
+  background: #f4f9ed;
+  color: #294d38;
+}
+.ranges button[aria-pressed="true"] {
+  background: #26392e;
+  color: #e0fa7c;
+  border-color: #26392e;
+}

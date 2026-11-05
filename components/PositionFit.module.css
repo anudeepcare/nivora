@@ -72,3 +72,15 @@
   display: flex;
   align-items: center;
 }
+
+.fit {
+  background: linear-gradient(120deg, #c9e8b4, #a9ddc3);
+  color: #183b2d;
+  --ink: #183b2d;
+  --muted: #3c5e4c;
+  --line: #789779;
+}
+.fit input {
+  background: #f7faf4;
+  color: #203b2d;
+}

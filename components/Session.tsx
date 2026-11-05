@@ -585,6 +585,14 @@ function Login({ initialError }: { initialError: string }) {
           <p>
             Bring the business, the price and your plan into one perspective.
           </p>
+          <div className={experience.brandVisual} aria-hidden="true">
+            <span className={experience.visualOrbit} />
+            <span className={experience.visualOrbit} />
+            <img src="/icon.svg" alt="" width="82" height="88" />
+            <span className={experience.visualCaption}>
+              A CONNECTED PERSPECTIVE
+            </span>
+          </div>
           <div className={experience.researchCard}>
             <div className={experience.cardHeading}>
               <span>BUSINESS. VALUE. YOUR PACE.</span>

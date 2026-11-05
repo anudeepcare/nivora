@@ -49,3 +49,11 @@ Authorized historical minute-chain archives, synchronized live index streams, fu
 ## Acceptance
 
 Final automated results are in `GIT-HANDOFF.md`. Provider/API regression transport is synthetic, not live-provider acceptance. Browser preview timed out; screenshot, installed-iPhone/PWA and real-account cross-device acceptance remain pending. No production deployment or account privilege changes were performed.
+
+## Unified Home design extension
+
+The supplied third screenshot is the retained visual baseline. Scoped CSS modules now extend its lime/mint/sage/charcoal cards, rounded icon badges and clear metric hierarchy across Research, Options, Portfolio, Watchlist, Settings, pricing, login and public navigation. Shared decision evidence, history, comparison and position-fit panels also receive the treatment. Existing real chart series, semantic positive/negative values, dated snapshots, tables, missing states and functional controls remain intact.
+
+Public navigation now explicitly pairs dark background with white text at desktop/mobile widths, correcting the white-on-light header defect. Portfolio dark-card icons and positive/negative tokens were reviewed and corrected. Test render harness bindings were updated for the new Research CSS module; assertions remain unchanged.
+
+Browser service remains unavailable; these changes are source-reviewed and automated-build verified, without a new screenshot or installed-PWA visual acceptance claim.

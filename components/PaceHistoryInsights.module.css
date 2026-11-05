@@ -103,3 +103,28 @@
     font-size: 20px;
   }
 }
+
+.history > header {
+  padding: 18px;
+  border-radius: 14px;
+  background: linear-gradient(115deg, #afe4c4, #d7ef8d);
+  color: #183b2d;
+  --muted: #416252;
+}
+.stats > div {
+  padding: 18px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #e0fa7c, #c4e462);
+  color: #19331c;
+  --muted: #465f31;
+}
+.stats > div:nth-child(2) {
+  background: linear-gradient(135deg, #afe4c4, #7bceaa);
+  color: #143b31;
+  --muted: #325f4d;
+}
+.stats > div:nth-child(3) {
+  background: linear-gradient(145deg, #304737, #17281f);
+  color: #f2f6e9;
+  --muted: #c4d1c4;
+}

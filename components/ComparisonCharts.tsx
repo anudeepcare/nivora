@@ -4,7 +4,7 @@ import type { Research } from "@/lib/types";
 import { comparisonChart, type ComparisonRange } from "@/lib/comparison-charts";
 import { amount, percent } from "@/lib/format";
 import styles from "./ComparisonCharts.module.css";
-const colors = ["#639b7b", "#9d7ace", "#b28a31", "#5688b5"];
+const colors = ["#247653", "#74872b", "#966c21", "#293e34"];
 export default function ComparisonCharts({
   research,
 }: {

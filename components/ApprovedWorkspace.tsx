@@ -7,6 +7,7 @@ import ResearchInbox from "./ResearchInbox";
 import ContributionCompare from "./ContributionCompare";
 import HomeMarketCards from "./HomeMarketCards";
 import portfolioStyles from "./PortfolioWorkspace.module.css";
+import workspaceVisuals from "./WorkspaceVisuals.module.css";
 import { sameProviderSymbol } from "@/lib/provider-symbol";
 import { customerText } from "@/lib/customer-language";
 
@@ -1059,7 +1060,7 @@ export function Portfolio() {
   }
   return (
     <section
-      className={`approved-workspace approved-portfolio ${portfolioStyles.portfolio}`}
+      className={`approved-workspace approved-portfolio ${portfolioStyles.portfolio} ${workspaceVisuals.workspaceVisuals}`}
     >
       <Heading
         title="Your portfolio."
@@ -1670,7 +1671,9 @@ export function Watchlist() {
     .filter((r) => r.pace != null)
     .sort((a, b) => (b.pace!.multiplier ?? -1) - (a.pace!.multiplier ?? -1))[0];
   return (
-    <section className="approved-workspace approved-watchlist">
+    <section
+      className={`approved-workspace approved-watchlist ${workspaceVisuals.workspaceVisuals}`}
+    >
       <Heading
         title="Ideas worth following."
         subtitle="A watchlist that remembers why you were interested."

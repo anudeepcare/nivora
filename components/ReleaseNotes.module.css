@@ -74,3 +74,18 @@
     margin-bottom: 36px;
   }
 }
+
+.page > h1 {
+  background: linear-gradient(105deg, #244b34, #5b7f2c);
+  background-clip: text;
+  color: transparent;
+}
+.page article {
+  border-top: 4px solid #b5d564;
+}
+.meta {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: linear-gradient(115deg, #d7ef8d, #afe4c4);
+  color: #294d38;
+}

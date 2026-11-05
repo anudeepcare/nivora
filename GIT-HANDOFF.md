@@ -1,3 +1,16 @@
+# Unified Home design extension — November 5, 2026
+
+This full-source revision keeps the approved signed-in Home company cards and extends their lime, mint, sage and charcoal gradients into Research, Options, Portfolio, Watchlist, Settings, comparison charts, history and pricing. Real-chart data and financial calculations are unchanged.
+
+- Public header now owns both its dark background and light foreground, including mobile navigation. This fixes the washed-out header shown in the supplied screenshot.
+- Login uses the same charcoal story, lime/mint research cards and a contained readable form; existing authentication routes and validation remain intact.
+- Research receives scoped presentation across Financials, case/ownership, Valuation, Technicals, Targets, News/earnings and Advanced. Evidence cards retain dates, missing-value handling and financial signs.
+- Options retains the compact map-first controls and semantic heatmap cells, with coordinated headings, metric cards, Vanna, tape, learning and simulation panels.
+- Portfolio and Watchlist attach their new scoped visual module; Settings and discovery/radar/inbox share the palette. Tables and form controls remain readable.
+- Shared metric cards, decision evidence, position fit, comparison/history and pricing now use the same palette. Gain/loss colors are explicitly paired with bright and charcoal backgrounds.
+
+No new dependencies, schema, provider requests, trading actions or production deployment are introduced by this presentation pass. The source package includes the previously implemented features documented below.
+
 # AURYN 1.0.0 — complete workspace source candidate
 
 Copy the contents of the AURYN folder into the existing application repository root. Keep existing environment settings; avoid nesting one AURYN folder inside another. No source push or production deployment was performed.

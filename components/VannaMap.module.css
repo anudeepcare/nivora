@@ -1,6 +1,6 @@
 .panel {
   min-width: 0;
-  padding: 24px;
+  padding: 16px;
   border: 1px solid var(--line);
   border-radius: 18px;
   background: var(--card);
@@ -10,7 +10,15 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 24px;
+  gap: 16px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background:
+    radial-gradient(ellipse at 100% 0%, #d6f1d1, transparent 55%),
+    linear-gradient(145deg, #afe4c4, #7bceaa);
+  --ink: #143b31;
+  --muted: #315a48;
+  color: var(--ink);
 }
 .eyebrow {
   color: var(--muted);
@@ -19,8 +27,9 @@
   text-transform: uppercase;
 }
 .heading h3 {
-  margin: 7px 0 10px;
-  font-size: clamp(22px, 2.6vw, 30px);
+  margin: 5px 0 6px;
+  font-size: clamp(20px, 2.3vw, 25px);
+  color: var(--ink);
   line-height: 1.2;
 }
 .heading p,
@@ -40,6 +49,10 @@
   display: grid;
   text-align: right;
   gap: 3px;
+  padding: 9px 12px;
+  border-radius: 11px;
+  background: #ffffff40;
+  border: 1px solid #ffffff65;
 }
 .coverage strong {
   font-size: 30px;
@@ -54,8 +67,8 @@
   display: flex;
   align-items: flex-end;
   flex-wrap: wrap;
-  gap: 18px;
-  padding: 20px 0;
+  gap: 12px;
+  padding: 12px 0;
   border-bottom: 1px solid var(--line);
 }
 .controls label {
@@ -118,6 +131,7 @@
   overflow: auto;
   border: 1px solid var(--line);
   border-radius: 10px;
+  background: var(--card);
 }
 .table {
   width: 100%;
@@ -203,7 +217,12 @@
   min-height: 78px;
   margin: 16px 0;
   padding: 14px 16px;
-  background: color-mix(in srgb, #76b6aa 8%, var(--card));
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, #d7ef8d 25%, var(--card)),
+    var(--card)
+  );
+  border: 1px solid var(--line);
   border-radius: 10px;
 }
 .inspector strong {
@@ -249,6 +268,7 @@
   }
   .heading {
     display: block;
+    padding: 12px;
   }
   .coverage {
     display: flex;
@@ -276,4 +296,11 @@
   .controls input {
     width: 100%;
   }
+}
+.panel.panel .table th {
+  color: var(--ink);
+  background: var(--card);
+}
+.panel.panel .coverage strong {
+  color: var(--ink);
 }

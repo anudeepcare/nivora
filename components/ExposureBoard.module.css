@@ -1,4 +1,5 @@
 .board {
+  min-width: 0;
   margin: 0;
   padding: 16px;
   background: var(--card);
@@ -119,11 +120,17 @@
   gap: 12px;
   margin: 10px 0;
 }
-.summary article {
-  background: transparent;
-  border-radius: 0;
-  border-left: 2px solid var(--line);
-  padding: 4px 12px;
+.board.board .summary article {
+  min-width: 0;
+  --ink: #19331c;
+  --muted: #405632;
+  color: var(--ink);
+  background:
+    radial-gradient(ellipse at 110% 0%, #e0fa7c, transparent 60%),
+    linear-gradient(145deg, #d7ef8d, #c4e462);
+  border-radius: 13px;
+  border: 1px solid #19382720;
+  padding: 11px 12px;
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: baseline;
@@ -137,6 +144,49 @@
 .summary strong {
   font-size: 19px;
   letter-spacing: -0.03em;
+}
+.board.board .summary article:nth-child(2) {
+  --ink: #143b31;
+  --muted: #315a48;
+  background:
+    radial-gradient(ellipse at 100% 0%, #d6f1d1, transparent 55%),
+    linear-gradient(145deg, #afe4c4, #7bceaa);
+}
+.board.board .summary article:nth-child(3) {
+  --ink: #f2f6e9;
+  --muted: #c6d6c7;
+  background:
+    radial-gradient(ellipse at 100% 0%, #405746, transparent 65%),
+    linear-gradient(145deg, #26392e, #17281f);
+  border-color: #304f3b;
+}
+.board.board .summary strong {
+  color: var(--ink);
+}
+.board.board .heading h3 > svg {
+  color: #264b35;
+  background: linear-gradient(145deg, #d7ef8d, #b3dc64);
+  padding: 7px;
+  border-radius: 10px;
+  box-sizing: content-box;
+}
+.board.board .tabs button[aria-pressed="true"] {
+  border-radius: 8px 8px 0 0;
+  background: linear-gradient(145deg, #d7ef8d, #c4e462);
+  color: #19331c;
+  padding-inline: 10px;
+}
+.board.board .scroll {
+  background: var(--card);
+}
+.board.board .comparison article {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, #7bceaa 20%, var(--card)),
+    var(--card)
+  );
+  border: 1px solid var(--line);
+  min-width: 0;
 }
 .status {
   display: flex;
@@ -306,7 +356,7 @@
   .summary {
     grid-template-columns: 1fr;
   }
-  .summary article {
+  .board.board .summary article {
     grid-template-columns: 1fr auto;
     align-items: center;
   }
@@ -360,8 +410,8 @@
   .summary {
     gap: 6px;
   }
-  .summary article {
-    padding: 6px 10px;
+  .board.board .summary article {
+    padding: 9px 10px;
   }
   .summary article small {
     margin: 0;

@@ -107,6 +107,54 @@
   color: var(--muted);
   min-height: 88px;
 }
+.panel.panel[data-category] {
+  --ink: #143b31;
+  --muted: #355a49;
+  --line: #244d3829;
+  --green: #126044;
+  --red: #983b31;
+  --category: #244a32;
+  --category-bg: #ffffff60;
+  color: #143b31;
+  padding: 21px 19px 17px;
+  border: 1px solid #19382719;
+  border-radius: 20px;
+  background: radial-gradient(ellipse at 100% 0%, #d6f1d1 0%, transparent 55%), linear-gradient(145deg, #afe4c4, #7bceaa);
+  box-shadow: 0 7px 20px #18332208;
+}
+.panel.panel[data-category="valuation"] {
+  color: #19331c;
+  --muted: #3f553b;
+  background: radial-gradient(ellipse at 110% 0%, #e0fa7c 0%, transparent 60%), linear-gradient(145deg, #d7ef8d, #c4e462);
+}
+.panel.panel[data-category="technical"] {
+  --ink: #f2f6e9;
+  --muted: #d6e3d5;
+  --line: #ffffff25;
+  --green: #b9f3cc;
+  --red: #ffb8a9;
+  --category: #e0fa7c;
+  --category-bg: #ffffff18;
+  color: #f2f6e9;
+  border-color: #304f3b;
+  background: radial-gradient(ellipse at 100% 0%, #405746 0%, transparent 65%), linear-gradient(145deg, #26392e, #17281f);
+}
+.panel.panel[data-category="ownership"] {
+  background: radial-gradient(ellipse at 100% 0%, #eaf8a7 0%, transparent 60%), linear-gradient(145deg, #d4e8ad, #b2d88c);
+}
+.panel.panel[data-category] .icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+}
+.panel.panel[data-category] h3 {
+  color: inherit;
+  font-weight: 650;
+}
+.panel.panel[data-category] dd {
+  font-size: 20px;
+  font-weight: 650;
+}
 @media (max-width: 1199px) {
   .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -118,6 +166,10 @@
   }
   .panel {
     padding: 10px;
+  }
+  .panel.panel[data-category] {
+    padding: 14px 12px;
+    border-radius: 16px;
   }
   .panel h3 {
     font-size: 12px;

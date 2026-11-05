@@ -619,8 +619,36 @@
 .page.page.page :global(.ap-signin) {
   color: #eff5ec;
 }
-.page.page.page :global(.ap-header) {
-  border-bottom-color: #ffffff14;
+/* Own the background and foreground as a pair: shared chrome may be light. */
+.page.page .header.header {
+  --chrome-surface: #141d19;
+  background: #141d19;
+  color: #f3f6ef;
+  border-bottom: 1px solid #ffffff14;
+}
+.page.page .header :global(.ap-brand),
+.page.page .header :global(.ap-nav a),
+.page.page .header :global(.ap-signin) {
+  color: #f3f6ef;
+}
+.page.page .header :global(.ap-button-primary) {
+  color: #20301e;
+  background: linear-gradient(115deg, #e1fa87, #c6ec58);
+  border-color: #dbf591;
+}
+.page.page .header :global(.ap-nav a:hover),
+.page.page .header :global(.ap-signin:hover) {
+  color: #d6f35a;
+}
+.page.page .header :global(.ap-mobile-navigation) {
+  color: #f3f6ef;
+  background: #1e2925;
+  border: 1px solid #ffffff26;
+  box-shadow: 0 18px 40px #00000035;
+}
+.page.page .header :global(.ap-mobile-navigation a:hover) {
+  background: #ffffff0c;
+  color: #d6f35a;
 }
 .page.page.page :global(.ap-menu-button) {
   color: #f3f6ef;

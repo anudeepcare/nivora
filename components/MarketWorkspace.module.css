@@ -14,12 +14,17 @@
   align-items: center;
   gap: 8px;
   min-height: 44px;
-  padding: 8px 0;
+  padding: 8px 12px;
   margin: 0;
   font-size: 13px;
   font-weight: 550;
-  background: transparent;
-  border-radius: 0;
+  --ink: #19331c;
+  --muted: #405632;
+  color: var(--ink);
+  background:
+    radial-gradient(ellipse at 100% 0%, #eaf8a7, transparent 60%),
+    linear-gradient(145deg, #d4e8ad, #b2d88c);
+  border-radius: 10px;
   cursor: pointer;
   list-style: none;
 }
@@ -65,6 +70,11 @@
   font: inherit;
   font-size: 12px;
   cursor: pointer;
+}
+.workspace.workspace .actions button:first-child {
+  background: linear-gradient(145deg, #afe4c4, #7bceaa);
+  border-color: #508c6e55;
+  color: #143b31;
 }
 .actions button:disabled {
   opacity: 0.5;

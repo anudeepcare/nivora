@@ -494,7 +494,7 @@ export default function PublicLanding({
       </a>
       <div className="ap-opening">
         <header
-          className="ap-header"
+          className={`ap-header ${landing.header}`}
           onKeyDown={(event) => {
             if (event.key === "Escape") setMenu(false);
           }}

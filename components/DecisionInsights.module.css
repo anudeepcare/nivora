@@ -279,3 +279,32 @@
   margin-top: 5px;
   color: var(--ink);
 }
+
+/* Shared research card palette; evidence remains tied to supplied data. */
+.root > header {
+  padding: 18px 20px;
+  border-radius: 14px;
+  background: linear-gradient(115deg, #afe4c4, #d8ed9c);
+  color: #183b2d;
+  --muted: #3c5e4c;
+}
+.evidence > div:nth-child(3n + 1) {
+  background: linear-gradient(135deg, #e0fa7c, #c4e462);
+  color: #19331c;
+  --muted: #465f31;
+}
+.evidence > div:nth-child(3n + 2) {
+  background: linear-gradient(135deg, #afe4c4, #7bceaa);
+  color: #143b31;
+  --muted: #325f4d;
+}
+.evidence > div:nth-child(3n) {
+  background: linear-gradient(145deg, #304737, #17281f);
+  color: #f2f6e9;
+  --muted: #c4d1c4;
+}
+.answer {
+  background: linear-gradient(120deg, #d7ef8d, #afe4c4);
+  color: #183b2d;
+  --muted: #3c5e4c;
+}

@@ -21,7 +21,8 @@
     "home earnings",
     "technical/historical cases",
     "market infrastructure",
-    "integrated options UI"
+    "integrated options UI",
+    "unified presentation contrast/inheritance"
   ],
   "visualAcceptance": "not verified: browser service timeout",
   "productionDeployment": false,
@@ -49,5 +50,16 @@
     "controller-owned Home chart fetches do not reuse an aborted shared pending promise",
     "historical diagrams retain exact reference/target geometry",
     "current-day unfinished and invalid chart histories are withheld"
+  ],
+  "unifiedDesignExtension": [
+    "approved Home cards retained",
+    "public header explicit contrast pair including mobile menu",
+    "charcoal/login research cards",
+    "all Research section presentation",
+    "compact Options/Vanna/tape/simulation cards",
+    "Portfolio/Watchlist scope attachment",
+    "Settings/discovery/radar/inbox",
+    "shared decision evidence/history/comparison/position fit/pricing",
+    "gain/loss and dark-card icon contrast reviewed"
   ]
 }

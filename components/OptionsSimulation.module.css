@@ -12,10 +12,19 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 20px;
+  padding: 15px 16px;
+  border-radius: 14px;
+  background:
+    radial-gradient(ellipse at 100% 0%, #d6f1d1, transparent 55%),
+    linear-gradient(145deg, #afe4c4, #7bceaa);
+  --ink: #143b31;
+  --muted: #315a48;
+  color: var(--ink);
 }
 .heading h3 {
   font-size: 26px;
   margin: 7px 0;
+  color: var(--ink);
 }
 .heading p,
 .help,
@@ -28,7 +37,7 @@
   font-size: 11px;
   letter-spacing: 0.14em;
   font-weight: 700;
-  color: var(--business-icon);
+  color: #315a48;
 }
 .badge {
   background: #d6f35a;
@@ -45,9 +54,17 @@
   gap: 12px;
   margin: 22px 0 12px;
 }
-.metrics > div {
-  border-top: 1px solid var(--line);
-  padding: 15px 0;
+.wallet.wallet .metrics > div {
+  min-width: 0;
+  --ink: #19331c;
+  --muted: #405632;
+  color: var(--ink);
+  border: 1px solid #19382720;
+  border-radius: 13px;
+  padding: 14px 12px;
+  background:
+    radial-gradient(ellipse at 110% 0%, #e0fa7c, transparent 60%),
+    linear-gradient(145deg, #d7ef8d, #c4e462);
 }
 .metrics span {
   display: block;
@@ -59,6 +76,8 @@
 .metrics strong {
   font-size: 19px;
   font-weight: 650;
+  color: var(--ink);
+  overflow-wrap: anywhere;
 }
 .form {
   display: grid;
@@ -116,10 +135,25 @@
   font-weight: 600;
   cursor: pointer;
 }
-.order button {
-  background: #76b6aa;
-  color: #152c25;
+.wallet.wallet .order button {
+  background: linear-gradient(145deg, #26392e, #17281f);
+  color: #f2f6e9;
   white-space: nowrap;
+}
+.wallet.wallet .metrics > div:nth-child(3n + 2) {
+  --ink: #143b31;
+  --muted: #315a48;
+  background:
+    radial-gradient(ellipse at 100% 0%, #d6f1d1, transparent 55%),
+    linear-gradient(145deg, #afe4c4, #7bceaa);
+}
+.wallet.wallet .metrics > div:nth-child(3n) {
+  --ink: #f2f6e9;
+  --muted: #c6d6c7;
+  background:
+    radial-gradient(ellipse at 100% 0%, #405746, transparent 65%),
+    linear-gradient(145deg, #26392e, #17281f);
+  border-color: #304f3b;
 }
 .wallet button:disabled {
   opacity: 0.45;
@@ -197,6 +231,8 @@
   }
   .heading {
     gap: 10px;
+    flex-wrap: wrap;
+    padding: 12px;
   }
   .heading h3 {
     font-size: 22px;
