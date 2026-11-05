@@ -6,6 +6,7 @@ import {
 } from "@/lib/company-header";
 import type { Research } from "@/lib/types";
 import { amount, dateLabel } from "@/lib/format";
+import SectionIcon from "./SectionIcon";
 import { Help } from "./Ui";
 import styles from "./StockFacts.module.css";
 
@@ -182,15 +183,13 @@ export default function StockFacts({
         {rows.map((row) => (
           <div key={row.label}>
             <dt>
-              {row.label}
+              <SectionIcon name={row.label} size={15} /> {row.label}
               <Help label={row.label}>
                 <p>{row.help}</p>
+                <p>{row.date}</p>
               </Help>
             </dt>
-            <dd>
-              {row.value}
-              <small>{row.date}</small>
-            </dd>
+            <dd>{row.value}</dd>
           </div>
         ))}
       </dl>

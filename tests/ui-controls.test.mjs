@@ -23,7 +23,7 @@ import { researchPeriods } from "../lib/financial-catalog.ts";
 import { demoData } from "./fixtures/demo.ts";
 
 function loadComponent(file, name, bindings) {
-  bindings={dateLabel:format.dateLabel,latestFinancialEvidence,headerBusinessMetrics,headerBusinessFamily,APP_VERSION:"0.2.0-rc.2",ReleaseNotice:()=>null,ContextLink:({page,children,className})=>React.createElement('a',{href:'/'+page,className},children),...bindings};
+  bindings={SectionIcon:()=>null,Help:({label,children})=>React.createElement("details",null,React.createElement("summary",null,label),children),dateLabel:format.dateLabel,latestFinancialEvidence,headerBusinessMetrics,headerBusinessFamily,APP_VERSION:"0.2.0-rc.2",ReleaseNotice:()=>null,ContextLink:({page,children,className})=>React.createElement('a',{href:'/'+page,className},children),...bindings};
   bindings = { layout: {panel:"panel"}, searchStyles: {search:"search-module"}, ...bindings };
   bindings = { settingsStyles: {page: "settings-page-module"}, experience, PaceInstrument, Check: () => null, SUPPORT_EMAIL: "support@auryninvest.com", PrivacyChoices: () => null, paceCode, pacePeriods, PaceGuidance: ({view}) => React.createElement("div", null, view.actionLabel, view.effectiveCode), PaceReadings: ({readings}) => React.createElement("div", null, readings.map(r=>React.createElement("div", {key:r.key}, r.label, " ", r.code, " ", format.dateLabel(r.date)))), PaceHelp: () => null, CompanySparkline: () => null, ...bindings };
   bindings = {
@@ -1618,7 +1618,7 @@ test("stock context uses completed history and omits corporate facts for crypto"
   const stockFactRows = loadComponent("components/StockFacts.tsx", "stockFactRows", format);
   const View = loadComponent("components/StockFacts.tsx", "StockFacts", {
     React, stockFactRows, styles: { region: "stock-facts", strip: "stock-facts-strip" },
-    Help: ({ label }) => React.createElement("button", { "aria-label": `About ${label}` }, "Help"),
+    Help: ({ label, children }) => React.createElement("details", { "aria-label": `About ${label}` }, React.createElement("summary",null,label), children),
   });
   const r = {
     ...demoData.research.MSFT,
@@ -2076,7 +2076,7 @@ test("stock header dates market facts and withholds mismatched currency or undat
   const stockFactRows = loadComponent("components/StockFacts.tsx", "stockFactRows", format);
   const View = loadComponent("components/StockFacts.tsx", "StockFacts", {
     React, stockFactRows, styles: { region: "stock-facts", strip: "stock-facts-strip" },
-    Help: ({ label }) => React.createElement("button", { "aria-label": `About ${label}` }, "Help"),
+    Help: ({ label, children }) => React.createElement("details", { "aria-label": `About ${label}` }, React.createElement("summary",null,label), children),
   });
   const r = {
     ...demoData.research.MSFT,

@@ -27,6 +27,7 @@ export const releases: Release[] = [
         "Earnings-to-thesis financial comparisons and opt-in support diagnostics without portfolio details.",
       ],
       Improved: [
+        "Slim inline header facts with dates in contextual help; cleaner technical rows and price-level grids, plus consistent section icons.",
         "Business-focused stock header, clearer price-change help, sector-aware profitability and dated earnings context.",
         "Readable Options banner and grids, consistent dropdowns, consolidated analyst consensus and simplified calculation help.",
         "Compact stock context and decision panels; a stronger Home comparison hero and clearer Pace action hierarchy.",

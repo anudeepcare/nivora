@@ -1,4 +1,5 @@
 "use client";
+import SectionIcon from "./SectionIcon";
 import { useMemo, useState } from "react";
 import type { Research } from "@/lib/types";
 import PriceRiskCases from "./PriceRiskCases";
@@ -34,12 +35,13 @@ export default function ScenarioCompass({
         <div>
           <span className="eyebrow">Separate the price from the story</span>
           <h3>
+            <SectionIcon name="Scenario" />
             {supported
               ? forecast.basis === "revenue"
                 ? "Revenue sensitivity"
                 : "Earnings scenarios"
               : checks.priceRisk.available
-                ? "Bear, base & bull · price risk"
+                ? "Historical price outcomes"
                 : "Evidence before a price target"}
           </h3>
         </div>
@@ -69,7 +71,12 @@ export default function ScenarioCompass({
                 aria-pressed={selected === i}
                 onClick={() => setSelected(i)}
               >
-                <span><i className="scenario-symbol" aria-hidden="true">{i === 0 ? "↘" : i === 1 ? "↔" : "↗"}</i>{c.name}</span>
+                <span>
+                  <i className="scenario-symbol" aria-hidden="true">
+                    {i === 0 ? "↘" : i === 1 ? "↔" : "↗"}
+                  </i>
+                  {c.name}
+                </span>
                 <strong>{amount(c.target, forecast.currency)}</strong>
                 <small>
                   {current != null

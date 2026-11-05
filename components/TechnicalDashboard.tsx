@@ -1,4 +1,6 @@
 "use client";
+import SectionIcon from "./SectionIcon";
+import { Help } from "./Ui";
 import layout from "./ResearchMetrics.module.css";
 import { useMemo, useRef } from "react";
 import { X } from "lucide-react";
@@ -311,17 +313,20 @@ export default function TechnicalDashboard({
         {groups.map((g) => (
           <section key={g.title} data-tone={g.tone}>
             <header>
-              <h3>{g.title}</h3>
+              <h3>
+                <SectionIcon name={g.title} />
+                {g.title}
+              </h3>
               <p>{g.note}</p>
             </header>
             <dl>
               {g.rows.map(([label, value, definition]) => (
                 <div key={label}>
                   <dt>
-                    <details>
-                      <summary>{label}</summary>
+                    <span>{label}</span>
+                    <Help label={label}>
                       <p>{definition}</p>
-                    </details>
+                    </Help>
                   </dt>
                   <dd>{value}</dd>
                 </div>
@@ -336,7 +341,10 @@ export default function TechnicalDashboard({
             <span className="eyebrow">
               LEVELS · CONTEXT, NOT CONFIRMED SUPPORT
             </span>
-            <h3>Price reference map</h3>
+            <h3>
+              <SectionIcon name="Price reference" />
+              Price reference map
+            </h3>
             <p>
               Automatic Fibonacci anchors use extremes in the last 63 valid
               observations. Open custom anchors to inspect a different
@@ -361,10 +369,17 @@ export default function TechnicalDashboard({
             </p>
             <div className="technical-level-grid fib-reference-grid">
               {a.fib.levels.map((l) => (
-                <div key={l.ratio} data-position={last && l.price < last ? "below" : "above"}>
+                <div
+                  key={l.ratio}
+                  data-position={last && l.price < last ? "below" : "above"}
+                >
                   <span>{(l.ratio * 100).toFixed(1)}% retracement</span>
                   <strong>{m(l.price)}</strong>
-                  <small>{last ? `${percent((l.price / last - 1) * 100)} from last completed close` : "Price distance unavailable"}</small>
+                  <small>
+                    {last
+                      ? `${percent((l.price / last - 1) * 100)} from last completed close`
+                      : "Price distance unavailable"}
+                  </small>
                 </div>
               ))}
             </div>

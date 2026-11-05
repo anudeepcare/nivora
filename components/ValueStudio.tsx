@@ -1,4 +1,5 @@
 "use client";
+import SectionIcon from "./SectionIcon";
 import { useMemo } from "react";
 import type { Research } from "@/lib/types";
 import { valueDesk, type DeskMetric } from "@/lib/research-desks";
@@ -35,7 +36,10 @@ export default function ValueStudio({
       <header className="desk-heading">
         <div>
           <span className="eyebrow">Value · what the price implies</span>
-          <h2>Price in context.</h2>
+          <h2>
+            <SectionIcon name="Valuation" size={25} />
+            Price in context.
+          </h2>
           <p>Read the scenario, the multiple and the assumptions together.</p>
         </div>
         <button type="button" className="button" onClick={onWorkbench}>
@@ -59,7 +63,10 @@ export default function ValueStudio({
           <header className="section-head">
             <div>
               <span className="eyebrow">Reported market pricing</span>
-              <h3 id="market-pricing-title">What you are paying for</h3>
+              <h3 id="market-pricing-title">
+                <SectionIcon name="Valuation" />
+                What you are paying for
+              </h3>
             </div>
             <small>
               {d.asOf
@@ -102,7 +109,10 @@ export default function ValueStudio({
         >
           <div>
             <span className="eyebrow">A different lens</span>
-            <h3>For every 100 you pay.</h3>
+            <h3>
+              <SectionIcon name="Value" />
+              For every 100 you pay.
+            </h3>
             <p>
               Reported or estimated annual earnings represented by the multiple.
               These amounts are neither cash distributions nor expected
@@ -130,7 +140,10 @@ export default function ValueStudio({
       )}
       <section className="value-model-fit">
         <header className="section-head">
-          <h3>The right lens for this business.</h3>
+          <h3>
+            <SectionIcon name="Business" />
+            The right lens for this business.
+          </h3>
           <span className="eyebrow">Model fit</span>
         </header>
         {methods.methods.map((method) => (

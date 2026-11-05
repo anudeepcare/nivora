@@ -13,7 +13,7 @@ import { expandedStudies } from "../lib/technical-expanded.ts";
 import { priceStudies } from "../lib/price-studies.ts";
 import { perspective } from "../lib/analysis.ts";
 function component(file, name, bindings) {
-  bindings = { layout: {panel:"panel"}, ...bindings };
+  bindings = { SectionIcon:()=>null, Help:({label,children})=>React.createElement("details",null,React.createElement("summary",null,label),children), layout: {panel:"panel"}, ...bindings };
   const ast = ts.createSourceFile(
       file,
       fs.readFileSync(file, "utf8"),

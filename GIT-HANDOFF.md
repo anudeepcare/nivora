@@ -22,3 +22,6 @@ Business-focused header facts replace the previous-close strip. Historical price
 Options has its own scoped color/contrast layout, expiry controls, tinted positioning cards, readable tables and preserved payoff calculations. Calculation detail is contextual; repeated consensus and overview guidance are consolidated. Portfolio CSV import controls are removed; saved holdings and manual position management remain. Home cards can show supplied EPS actual/estimate values; future actuals remain withheld.
 
 Verification limits: local browser review uses illustrative research and a synthetic Options snapshot. It is not authenticated live-provider validation or physical installed-iPhone acceptance.
+
+## Compact metrics and section icons
+Header facts are now inline; source/reporting dates remain in each fact’s Help. Technical rows use metric Help instead of nested accordion boxes. Fibonacci/reference grids have one surface per item without an outer frame. Shared decorative section icons cover technical groups, valuation, historical outcomes, stock facts and workspace section headings. No calculations or provider configuration were changed in this refinement.

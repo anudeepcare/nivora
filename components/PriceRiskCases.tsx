@@ -1,4 +1,5 @@
 "use client";
+import SectionIcon from "./SectionIcon";
 import type { PriceRiskScenarios } from "@/lib/price-risk-scenarios";
 import { amount, percent, dateLabel } from "@/lib/format";
 import CaseRange from "./CaseRange";
@@ -39,7 +40,10 @@ export default function PriceRiskCases({
           <div className={styles.cases} aria-label="Historical price outcomes">
             {cases.map((c) => (
               <article key={c.percentile}>
-                <span>{c.name}</span>
+                <span>
+                  <SectionIcon name={c.name} />
+                  {c.name}
+                </span>
                 <strong>{amount(c.target, s.currency)}</strong>
                 <small>{percent(c.change, true)} vs reference</small>
               </article>

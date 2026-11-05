@@ -1,4 +1,5 @@
 "use client";
+import SectionIcon from "./SectionIcon";
 import { useWorkspacePreferences } from "./WorkspacePreferences";
 import OpportunityMap from "./OpportunityMap";
 import ContributionCompare from "./ContributionCompare";
@@ -115,7 +116,7 @@ function SectionHead({
   return (
     <div className={visual.sectionHead}>
       <div>
-        <h2>{title}</h2>
+        <h2><SectionIcon name={title}/>{title}</h2>
         {subtitle && <p>{subtitle}</p>}
       </div>
       {action}
