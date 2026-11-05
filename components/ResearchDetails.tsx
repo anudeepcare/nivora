@@ -80,21 +80,24 @@ export function ThesisPicture({ research: r }: { research: Research }) {
           <p>Evidence to revisit, not predictions.</p>
         </div>
       </header>
-      <div className="timeline">
+      <div className="timeline thesis-checkpoints">
         <div className="step">
-          <b>Earnings</b>
+          <b>Next earnings</b>
+          <strong>{next ? dateLabel(next.date) : "Date not confirmed"}</strong>
           <p>
-            {next ? `${dateLabel(next.date)} · ` : ""}Revenue, cash conversion
+            Revenue, cash conversion
             and guidance.
           </p>
         </div>
         <div className="step">
-          <b>Growth drivers</b>
-          <p>Customer demand, competition and investment returns.</p>
+          <b>Revenue to revisit</b>
+          <strong>{amount(e.latest?.revenue, e.latest?.currency, true)}</strong>
+          <p>Latest reported period · {dateLabel(e.latest?.end)}. Compare demand in the next report.</p>
         </div>
         <div className="step">
-          <b>Margins</b>
-          <p>Investment needs, pricing and dilution.</p>
+          <b>Operating margin</b>
+          <strong>{percent(e.latest?.margin)}</strong>
+          <p>Latest reported period · monitor pricing, costs and reinvestment.</p>
         </div>
       </div>
       <div className="notice">

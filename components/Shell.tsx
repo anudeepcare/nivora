@@ -160,7 +160,6 @@ export default function Shell({
         </Link>
         <nav className={experience.nav} aria-label="Main navigation">
           {primary.map(nav)}
-          <Link href={`${prefix}/discover`} aria-current={page === "discover" ? "page" : undefined}><Compass size={17}/><span>Discover</span></Link>
 
         </nav>
         <button
@@ -179,7 +178,6 @@ export default function Shell({
           <kbd>⌘ K</kbd>
         </button>
         <div className={experience.actions}>
-          <Link href={settingsHref(pathname, prefix)} onNavigate={openSettings} aria-label="Settings" aria-current={page === "settings" ? "page" : undefined}><Settings size={19}/><span>Settings</span></Link>
           <button
             aria-label="Switch color theme"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
@@ -208,7 +206,6 @@ export default function Shell({
       </div>
       <nav className={experience.dock} aria-label="Mobile navigation">
         {primary.map((r) => nav(r))}
-        <Link href={`${prefix}/discover`} aria-current={page === "discover" ? "page" : undefined}><Compass size={20}/><span>Discover</span></Link>
       </nav>
       <dialog
         ref={tools}
@@ -318,7 +315,7 @@ export default function Shell({
         </footer>
       </dialog>
       <dialog
-        className="search-dialog"
+        className={`search-dialog ${experience.searchDialog}`}
         ref={search}
         aria-label="Search companies and crypto"
       >

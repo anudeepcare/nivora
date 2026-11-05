@@ -53,7 +53,7 @@ export default function PriceStudyChart({
           label="Price reference levels"
           trigger={
             <>
-              <Info size={15} /> Explain
+              <Info size={15} />
             </>
           }
         >
@@ -66,7 +66,7 @@ export default function PriceStudyChart({
         </Help>
         {onOptions && (
           <button className="text-link" onClick={onOptions}>
-            Gamma & options <ArrowRight size={15} />
+            Options <ArrowRight size={15} />
           </button>
         )}
       </div>

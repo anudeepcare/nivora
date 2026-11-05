@@ -40,3 +40,5 @@
 .readingDetail[open] summary::after {content:"−";}
 .compact {padding:20px;}
 @media(max-width:600px){.instrument{padding:16px}.readout{gap:16px;margin:16px 0}.readoutText{padding-left:16px}.title h2{font-size:27px}.crystal{max-width:100px}.stage{min-height:48px}.header>span{font-size:13px}.footer{line-height:1.6}}
+
+.instrument .readingDetail summary:hover,.instrument .readingDetail summary:focus-visible {background:rgba(255,255,255,.07);color:#f7f8f5;}

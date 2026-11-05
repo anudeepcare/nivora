@@ -21,3 +21,22 @@ test('installed status surface exists before account shell and cannot collapse a
  assert.equal(d.transform,undefined,'No transformed containing block for the fixed surface');
  assert.match(fs.readFileSync(new URL('app/pwa-shell.css',root),'utf8'),/display:\s*none/,'The overlay must not paint a detached iOS strip');
 });
+
+test('current shell reserves notch space and shares browser chrome colors in both themes', () => {
+ const read = name => fs.readFileSync(new URL(name,root),'utf8');
+ const foundation = postcss.parse(read('app/core/foundation.css'));
+ const colors=[];
+ foundation.walkDecls('--chrome-surface', d=>colors.push(d.value));
+ assert.deepEqual(colors,['#ffffff','#24272b']);
+ for(const file of ['app/layout.tsx','components/Pwa.tsx','components/Session.tsx']) {
+  assert.ok(read(file).includes(colors[0]),`${file} must match light header`);
+  assert.ok(read(file).includes(colors[1]),`${file} must match dark header`);
+  assert.doesNotMatch(read(file),/#171b24|#f2f4f7/);
+ }
+ assert.equal(JSON.parse(read('public/manifest.webmanifest')).theme_color,colors[0]);
+ const shell=read('components/WorkspaceShell.module.css');
+ assert.match(shell,/padding-top:calc\(10px \+ env\(safe-area-inset-top/);
+ assert.match(shell,/:global\(\.keyboard-open\) \.dock\s*\{display:none/);
+ assert.match(shell,/padding-left:max\(16px,env\(safe-area-inset-left/);
+ assert.match(read('app/layout.tsx'),/viewportFit: "cover"/);
+});

@@ -1,0 +1,16 @@
+✔ iOS install metadata presents AURYN as a focused standalone workspace (1.252495ms)
+✔ mobile shell has a distinct modern surface, safe areas and compact dock rules (0.395157ms)
+✔ mobile chrome keeps a brand-led glass header and reserves a tidy footer (0.823533ms)
+✔ shell markup exposes mobile-first semantics without removing desktop navigation (0.299481ms)
+✔ PWA syncs theme-color and preserves keyboard viewport behavior (0.195315ms)
+✔ Pace guidance keeps gated Review labels mapped to the business gate (0.158258ms)
+✔ installed status surface exists before account shell and cannot collapse at a zero safe-area inset (3.3933ms)
+✔ current shell reserves notch space and shares browser chrome colors in both themes (3.622456ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 120.152423

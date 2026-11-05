@@ -335,6 +335,7 @@ export default function FinancialPicture({
                               ? amount(Number(value), p.currency)
                               : `${Number(value).toFixed(1)}×`}
                         </strong>
+                        {unit === "percent" && Number(value) >= 0 && Number(value) <= 100 && <span className={layout.ratioTrack} aria-hidden="true"><span style={{width: `${Number(value)}%`}} /></span>}
                         <small>
                           {interpretation(String(label), Number(value))}
                         </small>

@@ -223,12 +223,13 @@ export default function Research({ symbol }: { symbol: string }) {
     requestAnimationFrame(() => {
       const navigation = researchNavigation.current;
       const top = navigation?.getBoundingClientRect().top;
+      const headerHeight = document.querySelector("[data-shell] > header")?.getBoundingClientRect().height ?? 72;
       if (
         navigation &&
         top != null &&
-        (top < 72 || top > window.innerHeight - 100)
+        (top < headerHeight || top > window.innerHeight - 100)
       )
-        navigation.scrollIntoView({ block: "start", behavior: "instant" });
+        window.scrollTo({top: window.scrollY + top - headerHeight - 8, behavior: "instant"});
     });
   };
   const intraday = range === "1D" || range === "1W";

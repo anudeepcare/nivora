@@ -59,3 +59,17 @@
 .shell .header .nav a[aria-current="page"]::after {box-shadow:0 2px 0 #d6f35a;}
 .shell .actions button:last-child {background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:50%;}
 @media(max-width:767px){.shell .actions a[aria-label="Settings"]{display:flex;width:44px;padding:0;justify-content:center}.shell .actions a[aria-label="Settings"] span{display:none}.shell .brand img{width:32px;height:34px}.shell .brand{font-size:18px}.shell .actions{gap:2px}}
+
+/* Keep OS status icons, notch and landscape cutouts clear of app controls. */
+.shell .header {background:var(--chrome-surface);padding-top:calc(10px + env(safe-area-inset-top, 0px));padding-left:max(24px,env(safe-area-inset-left,0px),calc((100vw - 1440px)/2));padding-right:max(24px,env(safe-area-inset-right,0px),calc((100vw - 1440px)/2));}
+:global(.keyboard-open) .dock {display:none;}
+@media(max-width:767px){
+ .shell .header{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));}
+ .shell .dock{background:var(--chrome-surface);padding-left:max(6px,env(safe-area-inset-left,0px));padding-right:max(6px,env(safe-area-inset-right,0px));}
+}
+.shell .actions button:last-child{width:44px;height:44px;min-width:44px;min-height:44px;max-height:44px;flex:0 0 44px;aspect-ratio:1;padding:0;border-radius:50%;}
+.shell .dock{grid-template-columns:repeat(4,minmax(0,1fr));}
+.shell,.workspace,.content{min-width:0;max-width:100%;}
+.searchDialog{width:min(640px,calc(100vw - 24px));max-width:calc(100vw - 24px);max-height:calc(var(--visual-height,100dvh) - 24px);padding:20px;overflow:auto;box-sizing:border-box;}
+.searchDialog>:global(.search){padding:0;}
+@media(max-width:767px){.searchDialog{position:fixed;inset:calc(var(--visual-top,0px) + 12px) 12px auto;margin:0;width:auto;max-width:none;border-radius:16px;padding:16px}.searchDialog>:global(.dialog-head){padding:0 0 14px;margin-bottom:14px}.searchDialog :global(.search-suggestions){margin-top:16px}.searchDialog h2{font-size:22px}.shell:has(dialog[open]) .dock{visibility:hidden}.content{padding-inline:max(14px,env(safe-area-inset-left,0px)) max(14px,env(safe-area-inset-right,0px));}}

@@ -73,16 +73,6 @@ export function PricingCards({
               ? "Get to know a company."
               : "Go deeper before your next decision."}
           </p>
-          <ul>
-            <li>
-              {plan === "pro"
-                ? "Unlimited company research"
-                : "100 companies / month"}
-            </li>
-            {included(plan).map((k) => (
-              <li key={k}>{featureNames[k]}</li>
-            ))}
-          </ul>
           {publicPage ? (
             <Link
               className={`button ${plan === "pro" ? "primary" : ""}`}
@@ -128,6 +118,16 @@ export function PricingCards({
                         : "Coming soon"}
             </button>
           )}
+          <ul>
+            <li>
+              {plan === "pro"
+                ? "Unlimited company research"
+                : "100 companies / month"}
+            </li>
+            {included(plan).map((k) => (
+              <li key={k}>{featureNames[k]}</li>
+            ))}
+          </ul>
         </section>
       ))}
     </div>

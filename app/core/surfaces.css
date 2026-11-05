@@ -151,3 +151,24 @@ body :is(.num,.pricing-amount) {font-variant-numeric:tabular-nums;letter-spacing
 .approved-watch-table .pace-reading-note {margin:3px 0;}
 .approved-watch-table td {padding-top:12px;padding-bottom:12px;}
 :root body .segment button[aria-pressed="true"],:root body .segment button.active {background:#e6f6ac;color:#24272b;border-color:#d6f35a;box-shadow:none;}
+
+.depth-thesis .thesis-checkpoints{gap:14px;}
+.depth-thesis .thesis-checkpoints .step{padding:18px;border:1px solid var(--line);border-top:3px solid var(--orchid);background:linear-gradient(140deg,var(--card) 65%,color-mix(in srgb,var(--orchid) 12%,var(--card)));border-radius:12px;}
+.depth-thesis .thesis-checkpoints .step:nth-child(2){border-top-color:var(--jade);background:linear-gradient(140deg,var(--card) 65%,color-mix(in srgb,var(--jade) 14%,var(--card)));}
+.depth-thesis .thesis-checkpoints .step:nth-child(3){border-top-color:var(--citron);}
+.depth-thesis .thesis-checkpoints strong{display:block;font-size:26px;letter-spacing:-.03em;margin:12px 0;font-variant-numeric:tabular-nums;}
+.depth-thesis .thesis-checkpoints b{font-size:13px;color:var(--muted);}
+.depth-thesis .thesis-checkpoints p{font-size:12px;line-height:1.5;}
+
+/* Public routes use the same status-area paint as the signed-in shell. */
+.ap-header {background:var(--chrome-surface);padding-top:env(safe-area-inset-top,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px);}
+/* Prevent intrinsic grid/table widths from resizing the mobile document. */
+@media(max-width:767px){
+ html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
+ body{min-width:0;}
+ .approved-research-page,.research-page,.signal-research-panel{min-width:0;max-width:100%;}
+ .signal-research-panel{overflow-x:clip;}
+ .table-scroll{max-width:100%;min-width:0;overflow-x:auto;}
+ input:not([type="checkbox"]):not([type="radio"]),select,textarea{font-size:16px;}
+ .signal-research-nav{max-width:100%;overflow-x:auto;}
+}

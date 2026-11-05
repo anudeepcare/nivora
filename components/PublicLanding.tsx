@@ -325,6 +325,7 @@ export default function PublicLanding({
         <section className={experience.hero} id="ap-main" aria-labelledby="ap-hero-heading">
           <div className={experience.heroVisual}><PaceInstrument publicGuide /></div>
           <div className={experience.heroCopy}><div>
+            <span className={experience.brandEyebrow}>A clearer perspective on every investment</span>
             <h1 id="ap-hero-heading">{sampleOnly ? "Understand your next step." : "Invest with a sense of pace."}</h1>
             <p>{sampleOnly ? "Explore the five price zones, then connect them to business quality, valuation and your position limits." : "Know the business. Put the price in context. Give each contribution a considered place in your plan."}</p>
           </div><div className={experience.heroActions}>

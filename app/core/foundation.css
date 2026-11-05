@@ -2,6 +2,7 @@
    Brand accents live in appearance.css; financial colors never follow accents. */
 :root {
   --app-width: 1440px;
+  --chrome-surface: #ffffff;
   --app-gutter: clamp(16px, 3vw, 40px);
   --font-ui: "AURYN Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --radius-control: 10px;
@@ -52,6 +53,7 @@
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
+  --chrome-surface: #24272b;
   --bg: #191c1e;
   --app-background: #191c1e;
   --glass: #24272bed;
@@ -137,3 +139,6 @@ html:has(dialog[open]) {
     scroll-behavior: auto;
   }
 }
+
+/* The document safe area and app header share one opaque surface. */
+html {background-color:var(--chrome-surface);}

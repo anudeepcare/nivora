@@ -1,4 +1,5 @@
 "use client";
+import portfolioStyles from "./PortfolioWorkspace.module.css";
 import { sameProviderSymbol } from "@/lib/provider-symbol";
 import { customerText } from "@/lib/customer-language";
 
@@ -1037,7 +1038,7 @@ export function Portfolio() {
     }
   }
   return (
-    <section className="approved-workspace approved-portfolio">
+    <section className={`approved-workspace approved-portfolio ${portfolioStyles.portfolio}`}>
       <Heading
         title="Your portfolio."
         subtitle="Know what you own—and where the risk sits."
@@ -1442,7 +1443,7 @@ function HoldingsTable({
     .filter((r) => selected.has(r.position.id))
     .sort((a, b) => (b.value ?? -1) - (a.value ?? -1));
   return (
-    <div className="table-scroll">
+    <div className={`table-scroll ${portfolioStyles.ledger}`}>
       <table className="holdings-table approved-holdings-table">
         <caption className="sr-only">
           Your recorded investments. Weights use priced invested value; cash is
