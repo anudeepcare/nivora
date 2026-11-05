@@ -4,13 +4,9 @@
   justify-content: space-between;
   gap: 16px;
   margin: 0 0 18px;
-  padding: 22px 24px;
-  border-radius: 18px;
-  background:
-    radial-gradient(ellipse at 100% 0%, #e4edcf80, transparent 65%),
-    linear-gradient(115deg, #e2ede5, #e7efdd);
-  color: #183b2d;
-  --muted: #416252;
+  padding: 4px 0 16px;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
 }
 .heading h1 {
   font-family: var(--font-ui);
@@ -49,11 +45,7 @@
   gap: 5px;
   padding: 16px;
   border-radius: 14px;
-  background: linear-gradient(135deg, #e4edcf, #d7e3cb);
-  color: #19331c;
-  --muted: #465f31;
-  --green: #145d3d;
-  --red: #92382e;
+  background: var(--financial-fill);
 }
 .metric > span {
   display: flex;
@@ -63,7 +55,7 @@
   color: var(--muted);
 }
 .metric svg {
-  color: #31582d;
+  color: var(--blue);
   width: 18px;
   height: 18px;
 }
@@ -82,26 +74,16 @@
   line-height: 1.5;
 }
 .metric[data-kind="return"] {
-  background: linear-gradient(135deg, #e2ede5, #cddfd3);
-  color: #143b31;
-  --muted: #325f4d;
-  --green: #145d3d;
-  --red: #92382e;
+  background: var(--business-fill);
 }
 .metric[data-kind="ideas"] {
-  background:
-    radial-gradient(ellipse at 100% 0%, #405746, transparent 70%),
-    linear-gradient(145deg, #26392e, #17281f);
-  color: #f2f6e9;
-  --muted: #c4d1c4;
-  --green: #86e4b8;
-  --red: #ffc0b5;
+  background: var(--valuation-fill);
 }
 .metric[data-kind="return"] svg {
   color: var(--green);
 }
 .metric[data-kind="ideas"] svg {
-  color: #d9f17b;
+  color: var(--amber);
 }
 .metric :global(.negative) {
   color: var(--red);
@@ -143,19 +125,23 @@
   }
 }
 
-/* One quiet surface throughout each data-card grid. */
 .metric[data-kind] {
-  --ink: #243c2d;
-  --text: #243c2d;
-  --muted: #506456;
-  --line: #cedbcf;
-  --green: #145d3d;
-  --red: #92382e;
-  --blue: #315c45;
-  color: #243c2d;
-  border-color: #cedbcf;
-  background: linear-gradient(135deg, #f1f5ed, #dde9df);
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 14px;
 }
 .metric[data-kind] svg {
-  color: #315c45;
+  color: var(--muted);
+}
+.metric[data-tone="negative"] {
+  border-top: 3px solid var(--red);
+}
+.metric[data-tone="green"] {
+  border-top: 3px solid var(--green);
+}
+@media (max-width: 600px) {
+  .heading {
+    padding: 4px 0 12px;
+  }
 }

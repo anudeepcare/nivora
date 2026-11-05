@@ -2,7 +2,7 @@
   "date": "2026-11-05",
   "candidate": "1.0.0",
   "unitTests": {
-    "passed": 1052,
+    "passed": 1054,
     "failed": 0,
     "skipped": 0
   },
@@ -85,5 +85,20 @@
     "cssModules": "all component modules compile in pure/scoped mode",
     "review": "no concrete important correctness or readability findings",
     "visualAcceptance": "pending: browser service unavailable"
+  },
+  "neutralWorkspace": {
+    "surfaces": "theme-neutral reading panels and chart canvases",
+    "identity": "thin logo-asset accents; neutral fallback for unknown/monochrome logos; stable allocation colors",
+    "performance": "displayed history endpoints control chart direction; daily and unrealized changes keep independent signed semantics",
+    "removedWatchlistPanels": [
+      "Price is one part of the story",
+      "Keep your reason close"
+    ],
+    "focusedChecks": {
+      "passed": 8,
+      "failed": 0
+    },
+    "reviewFix": "neutralized empty company-card state for new users",
+    "visualAcceptance": "pending: browser unavailable"
   }
 }

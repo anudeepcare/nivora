@@ -12,19 +12,10 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 20px;
-  padding: 15px 16px;
-  border-radius: 14px;
-  background:
-    radial-gradient(ellipse at 100% 0%, #eef3e9, transparent 55%),
-    linear-gradient(145deg, #e2ede5, #cddfd3);
-  --ink: #143b31;
-  --muted: #315a48;
-  color: var(--ink);
 }
 .heading h3 {
   font-size: 26px;
   margin: 7px 0;
-  color: var(--ink);
 }
 .heading p,
 .help,
@@ -37,7 +28,7 @@
   font-size: 11px;
   letter-spacing: 0.14em;
   font-weight: 700;
-  color: #315a48;
+  color: var(--business-icon);
 }
 .badge {
   background: #d6f35a;
@@ -54,17 +45,9 @@
   gap: 12px;
   margin: 22px 0 12px;
 }
-.wallet.wallet .metrics > div {
-  min-width: 0;
-  --ink: #19331c;
-  --muted: #405632;
-  color: var(--ink);
-  border: 1px solid #19382720;
-  border-radius: 13px;
-  padding: 14px 12px;
-  background:
-    radial-gradient(ellipse at 110% 0%, #e4edcf, transparent 60%),
-    linear-gradient(145deg, #e7efdd, #d7e3cb);
+.metrics > div {
+  border-top: 1px solid var(--line);
+  padding: 15px 0;
 }
 .metrics span {
   display: block;
@@ -76,8 +59,6 @@
 .metrics strong {
   font-size: 19px;
   font-weight: 650;
-  color: var(--ink);
-  overflow-wrap: anywhere;
 }
 .form {
   display: grid;
@@ -135,25 +116,10 @@
   font-weight: 600;
   cursor: pointer;
 }
-.wallet.wallet .order button {
-  background: linear-gradient(145deg, #26392e, #17281f);
-  color: #f2f6e9;
+.order button {
+  background: #76b6aa;
+  color: #152c25;
   white-space: nowrap;
-}
-.wallet.wallet .metrics > div:nth-child(3n + 2) {
-  --ink: #143b31;
-  --muted: #315a48;
-  background:
-    radial-gradient(ellipse at 100% 0%, #eef3e9, transparent 55%),
-    linear-gradient(145deg, #e2ede5, #cddfd3);
-}
-.wallet.wallet .metrics > div:nth-child(3n) {
-  --ink: #f2f6e9;
-  --muted: #c6d6c7;
-  background:
-    radial-gradient(ellipse at 100% 0%, #405746, transparent 65%),
-    linear-gradient(145deg, #26392e, #17281f);
-  border-color: #304f3b;
 }
 .wallet button:disabled {
   opacity: 0.45;
@@ -231,8 +197,6 @@
   }
   .heading {
     gap: 10px;
-    flex-wrap: wrap;
-    padding: 12px;
   }
   .heading h3 {
     font-size: 22px;
@@ -266,18 +230,4 @@
   .metrics strong {
     font-size: 17px;
   }
-}
-
-/* One quiet surface throughout each data-card grid. */
-.wallet.wallet .metrics > div:nth-child(n) {
-  --ink: #243c2d;
-  --text: #243c2d;
-  --muted: #506456;
-  --line: #cedbcf;
-  --green: #145d3d;
-  --red: #92382e;
-  --blue: #315c45;
-  color: #243c2d;
-  border-color: #cedbcf;
-  background: linear-gradient(135deg, #f1f5ed, #dde9df);
 }

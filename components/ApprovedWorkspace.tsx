@@ -8,6 +8,7 @@ import ContributionCompare from "./ContributionCompare";
 import HomeMarketCards from "./HomeMarketCards";
 import portfolioStyles from "./PortfolioWorkspace.module.css";
 import workspaceVisuals from "./WorkspaceVisuals.module.css";
+import { companyAccent } from "@/lib/visual-signals";
 import { sameProviderSymbol } from "@/lib/provider-symbol";
 import { customerText } from "@/lib/customer-language";
 
@@ -66,7 +67,7 @@ import PortfolioRiskSummary, {
 } from "./PortfolioRiskSummary";
 import SectorBenchmarks from "./SectorBenchmarks";
 import ApprovedPortfolioChart from "./ApprovedPortfolioChart";
-import { PositionEditor, WatchlistNote } from "./ApprovedWorkspaceForms";
+import { PositionEditor } from "./ApprovedWorkspaceForms";
 
 const colors = [
   "#76b6aa",
@@ -148,7 +149,11 @@ function Metric({
   const Icon =
     kind === "return" ? Activity : kind === "ideas" ? Bookmark : Wallet;
   return (
-    <div className={visual.metric} data-kind={kind}>
+    <div
+      className={visual.metric}
+      data-kind={kind}
+      data-tone={tone || undefined}
+    >
       <span>
         <Icon aria-hidden="true" />
         <Help label={label} trigger={label}>
@@ -1208,17 +1213,17 @@ export function Portfolio() {
                     .map((a) => `${a.symbol} ${percent(a.weight)}`)
                     .join("; ")}
                 >
-                  {model.allocations.map((a, i) => (
+                  {model.allocations.map((a) => (
                     <i
                       key={a.symbol}
                       style={{
                         width: `${a.weight}%`,
-                        background: colors[i % colors.length],
+                        background: companyAccent(a.symbol),
                       }}
                     />
                   ))}
                 </div>
-                {model.allocations.map((a, i) => (
+                {model.allocations.map((a) => (
                   <Link
                     key={a.symbol}
                     href={researchLink(a.symbol, prefix)}
@@ -1227,7 +1232,7 @@ export function Portfolio() {
                     <span>
                       <i
                         className="dot"
-                        style={{ background: colors[i % colors.length] }}
+                        style={{ background: companyAccent(a.symbol) }}
                       />
                       {a.symbol}
                     </span>
@@ -1666,17 +1671,13 @@ export function Watchlist() {
       setRemoving(null);
     }
   }
-  const signal = all
-    .map((symbol) => ({ symbol, pace: pace(symbol) }))
-    .filter((r) => r.pace != null)
-    .sort((a, b) => (b.pace!.multiplier ?? -1) - (a.pace!.multiplier ?? -1))[0];
   return (
     <section
       className={`approved-workspace approved-watchlist ${workspaceVisuals.workspaceVisuals}`}
     >
       <Heading
         title="Ideas worth following."
-        subtitle="A watchlist that remembers why you were interested."
+        subtitle="Your saved companies, prices and upcoming events."
         actions={
           <button
             className="btn primary"
@@ -1910,43 +1911,6 @@ export function Watchlist() {
           </Empty>
         )}
       </section>
-      <div className="two-grid">
-        <article className="card compact-card">
-          <SectionHead
-            title="Price is one part of the story."
-            subtitle={
-              signal
-                ? `${signal.symbol} · ${signal.pace!.view.actionLabel}${signal.pace!.view.rawLevel != null ? ` · Confirmed Pace ${signal.pace!.view.code}` : ""}. Review the reasons and the price assumptions together.`
-                : "A strong Pace reading deserves a clear explanation, alongside business and funding risks."
-            }
-          />
-          <Link
-            className="text-link"
-            href={
-              signal
-                ? researchLink(signal.symbol, prefix)
-                : `${prefix}/research`
-            }
-          >
-            {signal
-              ? `Explore ${signal.symbol}’s full case`
-              : "Explore a company’s full case"}{" "}
-            ↗
-          </Link>
-          <PaceHelp trigger="What does P mean?" />
-          <p className="chart-note">
-            Pace describes an accumulation zone; it is not leverage or a return
-            forecast.
-          </p>
-        </article>
-        <article className="card compact-card">
-          <SectionHead
-            title="Keep your reason close."
-            subtitle="Write what you want to see before adding a company."
-          />
-          <WatchlistNote symbols={all} />
-        </article>
-      </div>
       <SearchDialog dialog={dialog} />
     </section>
   );

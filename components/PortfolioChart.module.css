@@ -56,25 +56,11 @@
 }
 
 .chart.chart svg {
-  color: #286d45;
+  color: var(--muted);
 }
-.chart.chart :global(.chart-grid) {
-  stroke: #426b4a30;
+.chart.chart svg[data-direction="down"] {
+  color: var(--red);
 }
-.chart.chart :global(.chart-axis) {
-  fill: #425f47;
-  color: #425f47;
-}
-.chart.chart :global(.chart-note) {
-  color: #425f47;
-}
-.chart.chart :global(.approved-chart-empty) {
-  background: linear-gradient(140deg, #ecf6d3aa, #b7dec499);
-  border: 1px solid #63836b30;
-  border-radius: 16px;
-  color: #21452f;
-}
-.values {
-  background: color-mix(in srgb, var(--card) 90%, #c6dfb6);
-  color: var(--ink);
+.chart.chart svg[data-direction="up"] {
+  color: var(--green);
 }

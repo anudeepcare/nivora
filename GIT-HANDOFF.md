@@ -1,3 +1,17 @@
+# Neutral workspace with meaningful color — November 5, 2026
+
+This revision removes the broad tinted panels that made Portfolio and Research overwhelming. Reading surfaces, metric grids, chart canvases, allocation and controls use theme-neutral surfaces. Compact layouts, real charts, primary actions and icon hierarchy remain. Earlier color-material additions were replaced with the compact component styles instead of repeatedly recoloring the whole app.
+
+Company cards now have a thin identity accent from representative colors sampled from bundled logo assets. Monochrome, unknown and remotely supplied logos use a neutral fallback. These accents do not indicate returns or business quality. Allocation dots/bars also use stable company identity instead of array position.
+
+Company history and Portfolio chart colors follow the displayed first/last historical values: green rising, red falling, neutral flat/missing/invalid. Daily change badges remain independent from historical-window direction. Unrealized return uses its own signed financial value. The Portfolio chart still describes current quantities at historical prices, not actual account performance.
+
+The two Watchlist panels requested for removal are removed: “Price is one part of the story” and “Keep your reason close.” Existing saved note data is not deleted. The watchlist description was adjusted to the remaining prices/events view.
+
+Public landing, pricing and authentication files remain unchanged. The mobile header correction, Research chart-card paging and searchable-picker contrast isolation remain.
+
+Validation: 1,054 full-suite tests passed; 8 final focused checks passed; TypeScript and component CSS Modules checks passed. New direction/logo identity tests were observed failing before the helper existed, then passed. Build/API results are recorded in the final verification report. No new dependencies, schema, paid feeds, trades or deployment. Browser/PWA visual acceptance remains pending.
+
 # Calm app refinement — approved November 5, 2026
 
 This full source replaces alternating bright data-card fills with one subdued sage surface, while retaining real graphs, icon badges, semantic price changes and primary actions. Approved public landing/login files remain byte-identical to the prior mobile-adjusted package. The mobile company-metric correction is retained.

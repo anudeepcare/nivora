@@ -12,19 +12,10 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 18px;
-  padding: 15px 16px;
-  border-radius: 14px;
-  background:
-    radial-gradient(ellipse at 100% 0%, #405746, transparent 65%),
-    linear-gradient(145deg, #26392e, #17281f);
-  --ink: #f2f6e9;
-  --muted: #c6d6c7;
-  color: var(--ink);
 }
 .header h3 {
   margin: 6px 0;
   font-size: 22px;
-  color: var(--ink);
 }
 .tape p {
   color: var(--muted);
@@ -33,19 +24,18 @@
   margin: 7px 0;
 }
 .eyebrow {
-  color: #d9ef91;
+  color: var(--business-icon, #76b6aa);
   font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 .status {
   font-size: 11px;
-  border: 1px solid #ffffff30;
+  border: 1px solid var(--line);
   border-radius: 20px;
   padding: 7px 11px;
   white-space: nowrap;
-  background: #ffffff15;
-  color: var(--ink);
+  background: color-mix(in srgb, #76b6aa 9%, var(--card));
 }
 .controls {
   display: flex;
@@ -54,13 +44,11 @@
   gap: 18px;
   margin: 16px 0;
 }
-.tape.tape .controls button {
+.controls button {
   border: 1px solid #76b6aa;
   border-radius: 9px;
-  background:
-    radial-gradient(ellipse at 100% 0%, #e4edcf, transparent 60%),
-    linear-gradient(145deg, #e7efdd, #d7e3cb);
-  color: #19331c;
+  background: color-mix(in srgb, #76b6aa 14%, var(--card));
+  color: var(--ink);
   padding: 10px 16px;
   cursor: pointer;
 }
@@ -79,37 +67,6 @@
   border-left: 3px solid #76b6aa;
   padding-left: 12px;
   margin: 14px 0;
-}
-.tape.tape .notes > p:nth-child(3) {
-  color: #143b31;
-  background:
-    radial-gradient(ellipse at 100% 0%, #eef3e9, transparent 55%),
-    linear-gradient(145deg, #e2ede5, #cddfd3);
-  padding: 12px 14px;
-  border: 1px solid #19382720;
-  border-radius: 12px;
-  font-weight: 550;
-}
-.tape.tape .scroll {
-  background: var(--card);
-}
-.tape.tape .ranking li {
-  padding: 12px;
-  margin-bottom: 6px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, #e7efdd 20%, var(--card)),
-    var(--card)
-  );
-}
-.tape.tape .ranking li:nth-child(even) {
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, #cddfd3 20%, var(--card)),
-    var(--card)
-  );
 }
 .scope {
   font-size: 12px;

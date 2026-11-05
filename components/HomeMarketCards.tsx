@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { companyAccent, seriesDirection } from "@/lib/visual-signals";
+import type { CSSProperties } from "react";
 import { useEffect, useId, useState } from "react";
 import {
   ArrowDownRight,
@@ -80,7 +82,7 @@ function PriceArea({
   return (
     <div
       className={styles.history}
-      data-direction={points.at(-1)!.close < points[0].close ? "down" : "up"}
+      data-direction={seriesDirection(points.map((p) => p.close))}
     >
       <svg
         viewBox="0 0 300 106"
@@ -286,7 +288,7 @@ export default function HomeMarketCards({
         </div>
       ) : (
         <div className={styles.grid}>
-          {selected.map((symbol, index) => {
+          {selected.map((symbol) => {
             const supplied =
               research.find((r) => r.company.symbol === symbol) ??
               demo?.research[symbol];
@@ -307,7 +309,10 @@ export default function HomeMarketCards({
             return (
               <article
                 key={symbol}
-                className={`${styles.card} ${styles[`tone${index % 4}`]}`}
+                className={styles.card}
+                style={
+                  { "--company-accent": companyAccent(symbol) } as CSSProperties
+                }
               >
                 <div className={styles.company}>
                   <SecurityLogo symbol={symbol} size={44} />

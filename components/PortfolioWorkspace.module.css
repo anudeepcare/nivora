@@ -323,131 +323,24 @@
   }
 }
 
-/* The same four material tones as the market cards anchor portfolio totals. */
-.portfolio.portfolio :global(.wealth-strip.four) > div {
-  border: 1px solid #29432c1c;
-  border-radius: 20px;
-  padding: 20px 18px;
-  background:
-    radial-gradient(ellipse at 110% 0%, #e4edcf, transparent 60%),
-    linear-gradient(145deg, #e7efdd, #d7e3cb);
-  color: #19331c;
-  box-shadow: 0 7px 20px #18332208;
+.portfolio.portfolio :global(.wealth-strip.four) > div:nth-child(n),
+.portfolio.portfolio :global(.portfolio-grid) > div > :global(.card) {
+  background: var(--card);
+  color: var(--ink);
+  border-color: var(--line);
 }
-.portfolio.portfolio :global(.wealth-strip.four) > div:nth-child(2) {
-  background:
-    radial-gradient(ellipse at 100% 0%, #eef3e9, transparent 55%),
-    linear-gradient(145deg, #e2ede5, #cddfd3);
-  color: #143b31;
+.portfolio.portfolio :global(.wealth-strip.four) > div[data-tone="negative"] {
+  border-top: 3px solid var(--red);
 }
-.portfolio.portfolio :global(.wealth-strip.four) > div:nth-child(3) {
-  background:
-    radial-gradient(ellipse at 100% 0%, #405746, transparent 65%),
-    linear-gradient(145deg, #26392e, #17281f);
-  color: #f2f6e9;
-  border-color: #304f3b;
+.portfolio.portfolio :global(.wealth-strip.four) > div[data-tone="green"] {
+  border-top: 3px solid var(--green);
 }
-.portfolio.portfolio :global(.wealth-strip.four) > div:nth-child(4) {
-  background:
-    radial-gradient(ellipse at 100% 0%, #edf2df, transparent 60%),
-    linear-gradient(145deg, #e4ecda, #d2dfc4);
-  color: #203b29;
+.portfolio.portfolio :global(.approved-portfolio-chart) {
+  color: var(--muted);
 }
-.portfolio.portfolio :global(.wealth-strip.four) > div > span,
-.portfolio.portfolio :global(.wealth-strip.four) > div > small {
-  color: inherit;
-  opacity: 0.8;
+.portfolio.portfolio :global(.approved-portfolio-chart[data-direction="down"]) {
+  color: var(--red);
 }
-.portfolio.portfolio
-  :global(.wealth-strip.four)
-  > div
-  > strong:not(:global(.green)):not(:global(.negative)) {
-  color: inherit;
-}
-.portfolio.portfolio :global(.wealth-strip.four) :global(.help-trigger) {
-  color: inherit;
-}
-.portfolio.portfolio
-  :global(.portfolio-grid)
-  > div:first-child
-  > :global(.card):first-child {
-  background:
-    radial-gradient(ellipse at 100% 0%, #eef3e9, transparent 65%),
-    linear-gradient(145deg, #d2ead7, #aedbbd);
-  color: #183d2d;
-  border-color: #89b49b;
-  border-radius: 20px;
-  --muted: #486454;
-  --ink: #183d2d;
-  --line: #527e6033;
-}
-.portfolio.portfolio
-  :global(.portfolio-grid)
-  > div:nth-child(2)
-  > :global(.card):first-child {
-  background:
-    radial-gradient(ellipse at 100% 0%, #e4edcf, transparent 65%),
-    linear-gradient(145deg, #dfedb7, #c8df88);
-  color: #203b29;
-  border-color: #b4cd80;
-  border-radius: 20px;
-  --muted: #4d6343;
-  --ink: #203b29;
-  --line: #56713133;
-}
-.portfolio.portfolio :global(.compact-card.lavender) {
-  background:
-    radial-gradient(ellipse at 100% 0%, #405746, transparent 65%),
-    linear-gradient(145deg, #26392e, #17281f);
-  color: #f2f6e9;
-  border-color: #304f3b;
-  --ink: #f2f6e9;
-  --muted: #c4d1c4;
-  --blue: #d8ee93;
-}
-.portfolio.portfolio :global(.allocation-row) {
-  border-color: #56713133;
-}
-.portfolio.portfolio :global(.approved-risk-bubble) {
-  background: color-mix(in srgb, var(--card) 84%, #b8dc8c);
-  box-shadow: inset 0 0 24px #b5d68c20;
-}
-@media (max-width: 700px) {
-  .portfolio.portfolio :global(.wealth-strip.four) > div {
-    padding: 16px 13px;
-    border-radius: 16px;
-  }
-  .portfolio.portfolio :global(.wealth-strip.four) > div > span {
-    min-height: 34px;
-  }
-}
-
-.portfolio.portfolio :global(.wealth-strip.four) > div {
-  --green: #145d3d;
-  --red: #92382e;
-}
-.portfolio.portfolio :global(.wealth-strip.four) > div:nth-child(3) {
-  --green: #86e4b8;
-  --red: #ffc0b5;
-}
-
-.portfolio.portfolio :global(.wealth-strip.four) > div:nth-child(3) svg {
-  color: #d9f17b;
-}
-
-/* One quiet surface throughout each data-card grid. */
-.portfolio.portfolio :global(.wealth-strip.four) > div:nth-child(n) {
-  --ink: #243c2d;
-  --text: #243c2d;
-  --muted: #506456;
-  --line: #cedbcf;
-  --green: #145d3d;
-  --red: #92382e;
-  --blue: #315c45;
-  color: #243c2d;
-  border-color: #cedbcf;
-  background: linear-gradient(135deg, #f1f5ed, #dde9df);
-}
-.portfolio.portfolio :global(.wealth-strip.four) > div:nth-child(3) svg {
-  color: #315c45;
+.portfolio.portfolio :global(.approved-portfolio-chart[data-direction="up"]) {
+  color: var(--green);
 }

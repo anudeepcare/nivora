@@ -57,31 +57,6 @@
   overflow: hidden;
   box-shadow: 0 7px 20px #18332208;
 }
-.tone0 {
-  color: #19331c;
-  background:
-    radial-gradient(ellipse at 110% 0%, #e0fa7c 0%, transparent 60%),
-    linear-gradient(145deg, #d7ef8d, #c4e462);
-}
-.tone1 {
-  color: #143b31;
-  background:
-    radial-gradient(ellipse at 100% 0%, #d6f1d1 0%, transparent 55%),
-    linear-gradient(145deg, #afe4c4, #7bceaa);
-}
-.tone2 {
-  color: #f2f6e9;
-  background:
-    radial-gradient(ellipse at 100% 0%, #405746 0%, transparent 65%),
-    linear-gradient(145deg, #26392e, #17281f);
-  border-color: #304f3b;
-}
-.tone3 {
-  color: #203b29;
-  background:
-    radial-gradient(ellipse at 100% 0%, #eaf8a7 0%, transparent 60%),
-    linear-gradient(145deg, #d4e8ad, #b2d88c);
-}
 .company {
   display: flex;
   align-items: center;
@@ -161,9 +136,6 @@
   background: #ffffff65;
   font-size: 11px;
   font-weight: 750;
-}
-.tone2 .changeValue {
-  background: #ffffff18;
 }
 .asOf {
   font-size: 10px;
@@ -336,37 +308,7 @@
   color: #8b302d;
   background: #fff9;
 }
-.tone2 .changeValue[data-direction="down"] {
-  color: #ffb8a9;
-  background: #ffffff12;
-}
 .history[data-direction="down"] {
-  color: #9a493c;
-}
-.tone2 .history[data-direction="down"] {
-  color: #f5b8a5;
-}
-
-.card:is(.tone0, .tone1, .tone2, .tone3) {
-  color: #243c2d;
-  border-color: #cddbcf;
-  background:
-    radial-gradient(ellipse at 100% 0%, #e5efd9, transparent 70%),
-    linear-gradient(145deg, #f1f5ed, #dde9df);
-  box-shadow: 0 4px 14px #18332206;
-}
-.card .asOf {
-  color: #4c6254;
-  opacity: 1;
-}
-.card.tone2 .changeValue {
-  background: #fff9;
-}
-.card.tone2 .changeValue[data-direction="down"] {
-  color: #8b302d;
-  background: #fff9;
-}
-.card.tone2 .history[data-direction="down"] {
   color: #9a493c;
 }
 .research .company h3 {
@@ -376,4 +318,67 @@
   -webkit-box-orient: vertical;
   min-height: 29px;
   line-height: 1.35;
+}
+
+.card {
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  box-shadow: none;
+}
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: var(--company-accent, #66717b);
+}
+.open {
+  background: var(--surface);
+  color: var(--muted);
+}
+.open:hover {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+.history {
+  color: var(--muted);
+}
+.history[data-direction="up"] {
+  color: var(--green);
+}
+.history[data-direction="down"] {
+  color: var(--red);
+}
+.changeValue[data-direction="up"] {
+  color: var(--green);
+  background: var(--green-soft);
+}
+.changeValue[data-direction="down"] {
+  color: var(--red);
+  background: var(--red-soft);
+}
+.asOf,
+.window,
+.historyLabel {
+  color: var(--muted);
+  opacity: 1;
+}
+.card .window,
+.card .historyLabel {
+  font-size: 10px;
+}
+
+.empty {
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+.emptyIcon {
+  background: var(--surface);
+  border-color: var(--line);
+}
+.empty a {
+  background: var(--ink);
+  color: var(--card);
 }

@@ -1,4 +1,5 @@
 "use client";
+import { seriesDirection } from "@/lib/visual-signals";
 import styles from "./PortfolioChart.module.css";
 import { customerText } from "@/lib/customer-language";
 
@@ -30,7 +31,9 @@ export default function ApprovedPortfolioChart({
   useEffect(() => {
     const element = container.current;
     if (!element) return;
-    const observer = new ResizeObserver(([entry]) => setWidth(Math.max(280, entry.contentRect.width)));
+    const observer = new ResizeObserver(([entry]) =>
+      setWidth(Math.max(280, entry.contentRect.width)),
+    );
     observer.observe(element);
     return () => observer.disconnect();
   }, []);
@@ -120,7 +123,8 @@ export default function ApprovedPortfolioChart({
     bottom = low - spread * 0.12,
     top = high + spread * 0.12;
   const right = width - 12;
-  const x = (i: number) => 58 + (i / Math.max(1, values.length - 1)) * (right - 58);
+  const x = (i: number) =>
+    58 + (i / Math.max(1, values.length - 1)) * (right - 58);
   const y = (v: number) => 260 - ((v - bottom) / (top - bottom)) * 225;
   const path = values
     .map((v, i) => `${i ? "L" : "M"}${x(i).toFixed(2)} ${y(v).toFixed(2)}`)
@@ -131,6 +135,7 @@ export default function ApprovedPortfolioChart({
         <svg
           viewBox={`0 0 ${width} 320`}
           className="data-chart approved-portfolio-chart"
+          data-direction={seriesDirection(values)}
           role="img"
           aria-label={`Current quantities of ${chart.included.join(", ")} at supplied historical USD prices, ${chart.points[0].time} to ${chart.points.at(-1)!.time}. Not account performance.`}
         >
@@ -162,7 +167,10 @@ export default function ApprovedPortfolioChart({
               </g>
             );
           })}
-          <path d={`${path} L${right} 270 L58 270 Z`} fill={`url(#${gradient})`} />
+          <path
+            d={`${path} L${right} 270 L58 270 Z`}
+            fill={`url(#${gradient})`}
+          />
           <path
             d={path}
             fill="none"
@@ -194,7 +202,30 @@ export default function ApprovedPortfolioChart({
           </p>
         </div>
       )}
-      {chart.points.length > 1 && <details className={styles.values}><summary>Explore exact historical values</summary><p>Current quantities at historical prices · USD</p><div><table><thead><tr><th scope="col">Date</th><th scope="col">Modeled value</th></tr></thead><tbody>{[...chart.points].reverse().map(point => <tr key={point.time}><td>{dateLabel(point.time)}</td><td>{amount(point.value, "USD")}</td></tr>)}</tbody></table></div></details>}
+      {chart.points.length > 1 && (
+        <details className={styles.values}>
+          <summary>Explore exact historical values</summary>
+          <p>Current quantities at historical prices · USD</p>
+          <div>
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Modeled value</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[...chart.points].reverse().map((point) => (
+                  <tr key={point.time}>
+                    <td>{dateLabel(point.time)}</td>
+                    <td>{amount(point.value, "USD")}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </details>
+      )}
       <p className="chart-note">
         {chart.included.length
           ? `${chart.included.length} of ${symbols.length} USD instruments · ${[...new Set(chart.sources.map(customerText))].join("; ")}. `
