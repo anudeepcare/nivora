@@ -1,6 +1,11 @@
-import {requestAccess,reserveAccess,requireFeature} from "@/lib/access-server";
-import {filingPassages} from "@/lib/filing-passages";
-import {analysisIntent} from "@/lib/connected-product";
+import { aiProviderRequest } from "@/lib/ai-provider-request";
+import {
+  requestAccess,
+  reserveAccess,
+  requireFeature,
+} from "@/lib/access-server";
+import { filingPassages } from "@/lib/filing-passages";
+import { analysisIntent } from "@/lib/connected-product";
 import { createHash } from "node:crypto";
 import { account, failure, HttpError, limit, privateJson } from "@/lib/server";
 import { research } from "@/lib/providers";
@@ -57,8 +62,14 @@ export async function POST(
     const body = await request.json();
     if (!["snapshot", "deep-dive", "swot"].includes(body?.mode))
       throw new HttpError("Choose a supported analysis format.");
-    let intent:string|undefined;
-    if(body.intent!==undefined){try{intent=analysisIntent(body.intent);}catch{throw new HttpError("Choose a supported research question.",400);}}
+    let intent: string | undefined;
+    if (body.intent !== undefined) {
+      try {
+        intent = analysisIntent(body.intent);
+      } catch {
+        throw new HttpError("Choose a supported research question.", 400);
+      }
+    }
     const { symbol: raw } = await context.params;
     const symbol = symbolInput(raw),
       data = await research(symbol),
@@ -68,8 +79,13 @@ export async function POST(
         "There is not enough sourced evidence to produce a useful analysis.",
         422,
       );
-    const passages=process.env.AURYN_AI_FILINGS_ENABLED==='true'
-      ?await filingPassages(data,typeof body.intent==='string'?body.intent:'challenge'):[];
+    const passages =
+      process.env.AURYN_AI_FILINGS_ENABLED === "true"
+        ? await filingPassages(
+            data,
+            typeof body.intent === "string" ? body.intent : "challenge",
+          )
+        : [];
     evidence.push(...passages);
     // Only server-loaded public facts enter the model, never a client-supplied prompt, portfolio or account identity.
     const hash = createHash("sha256")
@@ -78,16 +94,18 @@ export async function POST(
           symbol,
           evidence,
           model,
+          fallback: process.env.OPENAI_FALLBACK_MODEL ?? null,
           mode: body.mode,
-          intent: body.intent??null,
+          intent: body.intent ?? null,
           policy: "evidence-v3-passages",
         }),
       )
       .digest("hex");
     const old = reports.get(hash);
     if (old && old.until > Date.now()) return privateJson(await old.value);
-    const access=await requestAccess(request,user.id);requireFeature(access,"ai");
-    await reserveAccess(user.id,access,"ai",crypto.randomUUID());
+    const access = await requestAccess(request, user.id);
+    requireFeature(access, "ai");
+    await reserveAccess(user.id, access, "ai", crypto.randomUUID());
     const value = (async (): Promise<Report> => {
       const quota = await db.rpc("auryn_reserve_ai_request");
       if (quota.error)
@@ -100,16 +118,11 @@ export async function POST(
           "The daily AI allowance has been reached. Saved research remains available.",
           429,
         );
-      const response = await fetch("https://api.openai.com/v1/responses", {
-        method: "POST",
-        signal: AbortSignal.timeout(45_000),
-        cache: "no-store",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${key}`,
-        },
-        body: JSON.stringify({
-          model,
+      const provider = await aiProviderRequest(
+        fetch,
+        key,
+        model,
+        {
           store: false,
           max_output_tokens: 2200,
           instructions:
@@ -117,7 +130,9 @@ export async function POST(
           input: JSON.stringify({
             company: symbol,
             format: body.mode,
-            researchQuestion: intent??"Summarize the supplied evidence in the requested format.",
+            researchQuestion:
+              intent ??
+              "Summarize the supplied evidence in the requested format.",
             observations: evidence.map(({ url, ...fact }) => fact),
           }),
           text: {
@@ -128,11 +143,15 @@ export async function POST(
               schema: reportSchema,
             },
           },
-        }),
-      });
+        },
+        process.env.OPENAI_FALLBACK_MODEL,
+      );
+      const response = provider.response;
       if (!response.ok)
         throw new HttpError(
-          "The analysis provider could not complete the request. The request is counted against the daily budget.",
+          [429, 502, 503, 504].includes(response.status)
+            ? "The analysis service is busy. Please retry shortly; previously saved research is still available. This request counts toward the daily allowance."
+            : "The analysis provider could not complete the request. The request is counted against the daily budget.",
           503,
         );
       const result = await response.json();
@@ -161,7 +180,7 @@ export async function POST(
         ...report,
         sources: evidence,
         generatedAt: new Date().toISOString(),
-        model,
+        model: provider.model,
         mode: body.mode,
       };
     })();

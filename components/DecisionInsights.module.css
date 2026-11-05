@@ -66,10 +66,13 @@
 .evidence {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
+  gap: 12px;
   margin: 16px 0;
 }
 .evidence > div {
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--surface-2);
   min-width: 0;
 }
 .evidence strong {
@@ -202,7 +205,7 @@
 .evidence > div {
   padding: 16px;
   border-radius: 12px;
-  background: color-mix(in srgb, #b99ae8 10%, var(--card));
+  background: color-mix(in srgb, #76b6aa 10%, var(--card));
 }
 .evidence > div:nth-child(2) {
   background: color-mix(in srgb, #a8ddc0 18%, var(--card));
@@ -234,7 +237,7 @@
 .root .comparison {
   padding: 16px;
   border-radius: 12px;
-  background: color-mix(in srgb, #b99ae8 10%, var(--card));
+  background: color-mix(in srgb, #76b6aa 10%, var(--card));
   margin: 12px 0;
 }
 .answer {

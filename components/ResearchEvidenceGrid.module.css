@@ -6,7 +6,7 @@
 }
 .panel {
   --category: var(--financial-icon);
-  --category-bg: #eee7f7;
+  --category-bg: #edf3f0;
   min-width: 0;
   border: 1px solid var(--line);
 
@@ -28,7 +28,7 @@
 .panel[data-category="ownership"] {
   --category: var(--ownership-icon);
   background:var(--card);
-  --category-bg: #eee7f7;
+  --category-bg: #edf3f0;
 }
 .panel header {
   display: flex;

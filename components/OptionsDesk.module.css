@@ -9,7 +9,7 @@
   border-radius: 16px;
   background: linear-gradient(
     110deg,
-    color-mix(in srgb, #b99ae8 16%, var(--card)),
+    color-mix(in srgb, #76b6aa 16%, var(--card)),
     var(--card)
   );
   gap: 20px;
@@ -111,7 +111,7 @@
   padding: 18px;
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: color-mix(in srgb, #b99ae8 9%, var(--card));
+  background: color-mix(in srgb, #76b6aa 9%, var(--card));
 }
 .desk:global(.options-v2)
   :global(.options-insight-grid)

@@ -20,7 +20,7 @@ const names = [
   "Add gradually",
   "Highest planned accumulation",
 ];
-const short = ["Pause", "Watch", "Start", "Gradual", "Deep"];
+const short = ["Pause", "Watch", "Start", "Gradual", "Planned max"];
 type Props = {
   view?: ReturnType<typeof pacePresentation>;
   readings?: ReturnType<typeof pacePeriods>;
@@ -139,6 +139,22 @@ export default function PaceInstrument({
           <small>{publicGuide ? "Tap a step to explore" : reading.date}</small>
         )}
       </div>
+      {!publicGuide && (
+        <div className={s.periods} aria-label="Pace reading period">
+          {(["confirmed", "forming"] as const).map((p) => (
+            <button
+              key={p}
+              aria-pressed={period === p && inspect === null}
+              onClick={() => {
+                setPeriod(p);
+                setInspect(null);
+              }}
+            >
+              {p === "confirmed" ? "Completed period" : "Current · forming"}
+            </button>
+          ))}
+        </div>
+      )}
       {!exploring && evidence && (
         <div className={s.insight}>
           {boundary && evidence.reading ? (
@@ -178,11 +194,11 @@ export default function PaceInstrument({
           )}
         </div>
       )}
-      <details className={s.readingDetail}>
+      <details className={s.readingDetail} open>
         <summary>
           {exploring
             ? "About this stage"
-            : "Why this reading · what would change it"}
+            : "Technical levels & contribution rules"}
         </summary>
         <p className={s.description}>
           {exploring && selected !== null
@@ -260,22 +276,6 @@ export default function PaceInstrument({
           </div>
         )}
       </details>
-      {!publicGuide && (
-        <div className={s.periods} aria-label="Pace reading period">
-          {(["confirmed", "forming"] as const).map((p) => (
-            <button
-              key={p}
-              aria-pressed={period === p && inspect === null}
-              onClick={() => {
-                setPeriod(p);
-                setInspect(null);
-              }}
-            >
-              {p === "confirmed" ? "Completed period" : "Current · forming"}
-            </button>
-          ))}
-        </div>
-      )}
       <footer className={s.footer}>
         <span>
           <ShieldCheck size={15} />

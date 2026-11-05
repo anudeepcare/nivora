@@ -139,6 +139,7 @@ export default function Analyst({
     };
     return (
       <section className="ask-auryn">
+        <p className="analyst-context"><strong>{research.company.symbol}</strong> · Evidence through {dateLabel(research.retrievedAt)} · Answers use this company’s supplied evidence.</p>
         <header className="section-head">
           <div>
             <h2>Ask AURYN</h2>

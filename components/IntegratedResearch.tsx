@@ -126,9 +126,9 @@ export default function IntegratedResearch({
                       {m.scenarioEnd
                         ? `${name} scenario`
                         : [
-                            "Historical lower range",
-                            "Historical median",
-                            "Historical upper range",
+                            "Historical downside",
+                            "Historical midpoint",
+                            "Historical upside",
                           ][i]}
                     </strong>
                     <b className={s.scenarioValue}>
@@ -141,7 +141,7 @@ export default function IntegratedResearch({
                     <small>
                       {m.scenarioEnd
                         ? description
-                        : "Historical range sensitivity; not a forecast."}
+                        : "Past return percentiles; not a valuation forecast."}
                     </small>
                   </span>
                   <svg viewBox="0 0 120 70" aria-hidden="true">

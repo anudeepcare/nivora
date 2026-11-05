@@ -15,8 +15,8 @@ export default function PriceRiskCases({
     ...c,
     name:
       c.percentile === 50
-        ? "Historical median"
-        : `${c.percentile}th percentile`,
+        ? "Historical midpoint · 50th percentile"
+        : c.percentile < 50 ? `Historical downside · ${c.percentile}th percentile` : `Historical upside · ${c.percentile}th percentile`,
   }));
   return (
     <div className="price-risk-cases" data-compact={compact}>

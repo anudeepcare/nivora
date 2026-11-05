@@ -6,7 +6,7 @@
 .portfolio :global(.wealth-strip.four)>div:nth-child(2){background:linear-gradient(140deg,var(--card) 60%,color-mix(in srgb,var(--jade) 18%,var(--card)));}
 .portfolio :global(.wealth-strip.four)>div:nth-child(3){background:linear-gradient(140deg,var(--card) 60%,color-mix(in srgb,var(--citron) 20%,var(--card)));}
 .portfolio :global(.wealth-strip.four)>div>strong{font-size:clamp(20px,2vw,30px);overflow-wrap:anywhere;}
-.portfolio :global(.approved-portfolio-chart){width:100%;max-width:100%;height:auto;color:#8060a6;}
+.portfolio :global(.approved-portfolio-chart){width:100%;max-width:100%;height:auto;color:#227f73;}
 .portfolio :global(.approved-table-toolbar){display:flex;gap:12px;flex-wrap:wrap;}
 .portfolio :global(.approved-table-toolbar)>label{min-width:0;}
 .ledger {width:100%;max-width:100%;min-width:0;overflow-x:auto;}

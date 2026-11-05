@@ -14,6 +14,8 @@ export const releases: Release[] = [
     title: "Pace first. A clearer investment workspace.",
     groups: {
       New: [
+        "Options exposure workspace: configurable GEX/OI map, largest concentrations, saved device views and snapshots, snapshot comparison, and value exports.",
+        "Searchable expiration and company selectors, contract search/rankings, and sourced implied-versus-realized volatility context.",
         "Compare up to three followed companies before a contribution, with optional position-weight previews.",
         "Explore the earnings implied by your chosen horizon, exit multiple and return assumption.",
         "Business, price, valuation and earnings evidence brought together in a focused research view.",
@@ -27,6 +29,8 @@ export const releases: Release[] = [
         "Earnings-to-thesis financial comparisons and opt-in support diagnostics without portfolio details.",
       ],
       Improved: [
+        "Unified teal/citron workspace surfaces, prominent Pace stage badge, expanded contribution rules, and simpler header facts.",
+        "Historical downside/midpoint/upside labels remain separate from conditional Bear/Base/Bull valuation.",
         "Slim inline header facts with dates in contextual help; cleaner technical rows and price-level grids, plus consistent section icons.",
         "Business-focused stock header, clearer price-change help, sector-aware profitability and dated earnings context.",
         "Readable Options banner and grids, consistent dropdowns, consolidated analyst consensus and simplified calculation help.",
@@ -36,6 +40,8 @@ export const releases: Release[] = [
         "Contextual return links from Help, support and legal documents.",
       ],
       Fixed: [
+        "Incomplete gamma inputs no longer appear as an aggregate zero; large saved snapshots round-trip, sparse weekly data cannot become daily volatility.",
+        "Optional server-configured AI capacity fallback preserves source validation and access controls.",
         "Removed CSV import controls from Portfolio while preserving manual position management and saved holdings.",
         "Removed the mobile navigation arch and tab scrollbar; enlarged Pace and made its help open in a dialog.",
         "Padded, opaque versioned PWA icons; aligned fiscal-year estimate tables and historical range labels.",

@@ -1,4 +1,7 @@
 "use client";
+import { volatilityContext, rankContracts } from "@/lib/options-context";
+import SearchableSelect from "./SearchableSelect";
+import ExposureBoard from "./ExposureBoard";
 import deskStyles from "./OptionsDesk.module.css";
 import { useEffect, useMemo, useState } from "react";
 import type { Research } from "@/lib/types";
@@ -101,7 +104,10 @@ export default function OptionsDesk({
     [strategy, setStrategy] = useState("call"),
     [selected, setSelected] = useState(""),
     [second, setSecond] = useState(""),
-    [visibleCount, setVisibleCount] = useState(100);
+    [visibleCount, setVisibleCount] = useState(100),
+    [contractSort, setContractSort] = useState("strike"),
+    [contractSearch, setContractSearch] = useState(""),
+    [requestVersion, setRequestVersion] = useState(0);
   useEffect(() => {
     setChain(null);
     setKnownExpiries([]);
@@ -150,7 +156,7 @@ export default function OptionsDesk({
         if (!abort.signal.aborted) setBusy(false);
       });
     return () => abort.abort();
-  }, [research.company.symbol, expiry, preview]);
+  }, [research.company.symbol, expiry, preview, requestVersion]);
   const contracts =
     chain?.symbol === research.company.symbol ? chain.contracts : [];
   const expiries = knownExpiries;
@@ -167,51 +173,27 @@ export default function OptionsDesk({
       ),
     [contracts, spot, active, chain?.complete, chain?.loadedExpiry],
   );
-  const heatExpiries = [...new Set(contracts.map((c) => c.expiry))]
-    .sort()
-    .slice(0, 6);
-  const heatStrikes = [
-    ...new Set(contracts.filter((c) => c.standard).map((c) => c.strike)),
-  ]
-    .sort((a, b) => Math.abs(a - spot) - Math.abs(b - spot))
-    .slice(0, 12)
-    .sort((a, b) => b - a);
-  const heatCells = heatStrikes.map((strike) =>
-    heatExpiries.map((date) => {
-      const rows = contracts.filter(
-        (c) => c.standard && c.strike === strike && c.expiry === date,
-      );
-      if (
-        !spot ||
-        !rows.length ||
-        rows.some((c) => c.oi === null || c.gamma === null)
-      )
-        return null;
-      if (new Set(rows.map((c) => c.observed)).size !== 1) return null;
-      return rows.reduce(
-        (sum, c) =>
-          sum +
-          (c.type === "call" ? 1 : -1) *
-            c.gamma! *
-            c.oi! *
-            c.multiplier *
-            spot *
-            spot *
-            0.01,
-        0,
-      );
-    }),
-  );
-  const heatMax = Math.max(1, ...heatCells.flat().map((v) => Math.abs(v ?? 0)));
-  const nearby = [...summary.buckets]
-    .sort((a, b) => Math.abs(a.strike - spot) - Math.abs(b.strike - spot))
-    .slice(0, 40)
-    .sort((a, b) => a.strike - b.strike);
-  const rows = displayedContracts(
+  const filteredRows = displayedContracts(
     summary.rows,
     kind,
     onlyLiquid,
     (c) => liquidity(c).eligible,
+  );
+  const rows = rankContracts(
+    filteredRows.filter(
+      (c) =>
+        !contractSearch ||
+        `${c.id} ${c.strike}`
+          .toLowerCase()
+          .includes(contractSearch.toLowerCase()),
+    ),
+    contractSort,
+  );
+  const volatility = volatilityContext(
+    contracts,
+    research.history ?? [],
+    spot,
+    research.priceObservedAt ?? research.retrievedAt,
   );
   const calls = summary.rows.filter(
       (c) => c.type === "call" && liquidity(c).eligible,
@@ -295,7 +277,7 @@ export default function OptionsDesk({
       })
     : [];
   const longExpiry = leapsExpiry(expiries);
-  const hasGamma = summary.netGex !== null;
+  const hasGamma = summary.netGex !== null && summary.allInputs;
   const hasOi = summary.rows.some((c) => c.oi !== null);
   const topCall = hasOi
     ? [...summary.buckets]
@@ -307,7 +289,6 @@ export default function OptionsDesk({
         .sort((a, b) => b.putOi - a.putOi)
         .find((b) => b.putOi > 0)
     : null;
-  const heatAvailable = heatCells.some((row) => row.some((v) => v !== null));
   const observed = summary.asOf
     ? dateLabel(summary.asOf)
     : "No observation for this expiry";
@@ -345,24 +326,19 @@ export default function OptionsDesk({
           <h2>See the setup. Understand your risk.</h2>
           <p>Price the move, explore contracts and test the payoff.</p>
         </div>
-        <label className="options-expiry-picker">
-          Expiration
-          <select
-            aria-label="Options expiration"
+        <div className="options-expiry-picker">
+          <SearchableSelect
+            label="Options expiration"
             value={active}
             disabled={!expiries.length || busy}
-            onChange={(e) => chooseExpiry(e.target.value)}
-          >
-            {!expiries.length && (
-              <option value="">Waiting for contracts</option>
-            )}
-            {expiries.map((date) => (
-              <option key={date} value={date}>
-                {expiryLabel(date)}
-              </option>
-            ))}
-          </select>
-        </label>
+            onChange={chooseExpiry}
+            options={expiries.map((date) => ({
+              value: date,
+              label: expiryLabel(date),
+            }))}
+            placeholder="Waiting for contracts"
+          />
+        </div>
       </header>
       <nav className="options-nav" aria-label="Options sections">
         {[
@@ -384,7 +360,14 @@ export default function OptionsDesk({
       </nav>
       {error && (
         <p role="alert" className="options-notice">
-          {error} Previously loaded observations remain dated as shown.
+          {error} Previously loaded observations remain dated as shown.{" "}
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => setRequestVersion((v) => v + 1)}
+          >
+            Retry options
+          </button>
         </p>
       )}
       {busy && (
@@ -505,12 +488,12 @@ export default function OptionsDesk({
                     <p>
                       {hasGamma
                         ? `${fmt(summary.gammaCoverage * 100, 0)}% input coverage · per 1% stock move`
-                        : "Gamma and dated open interest are required."}
+                        : "Complete, same-observation gamma and open interest are required for an aggregate total."}
                     </p>
                   </article>
                 </div>
               )}
-              {!hasGamma && !hasOi ? (
+              {!hasGamma && !hasOi && (
                 <section className="options-empty options-empty-inline">
                   <Activity size={28} />
                   <div>
@@ -531,176 +514,87 @@ export default function OptionsDesk({
                     </button>
                   </div>
                 </section>
-              ) : (
-                <div className="options-chart-grid">
-                  {hasGamma && (
-                    <section className="options-card">
-                      <span className="eyebrow">Gamma map</span>
-                      <h3>Where exposure clusters</h3>
-                      <p>
-                        The ten largest exposures in this strike window. Tap a
-                        row for context. Longer bars mean larger modeled
-                        exposure, not a stronger buy signal.
-                      </p>
-                      <div
-                        className="gamma-strike-map"
-                        aria-label="Gamma exposure by strike"
-                      >
-                        {[...nearby]
-                          .sort((a, b) => Math.abs(b.net) - Math.abs(a.net))
-                          .slice(0, 10)
-                          .sort((a, b) => a.strike - b.strike)
-                          .map((b) => (
-                            <details
-                              key={b.strike}
-                              className="gamma-strike-row"
-                            >
-                              <summary>
-                                <strong>{amount(b.strike)}</strong>
-                                <span
-                                  className="gamma-strike-track"
-                                  aria-hidden="true"
-                                >
-                                  <i
-                                    data-sign={
-                                      b.net < 0 ? "negative" : "positive"
-                                    }
-                                    style={{
-                                      width: `${(Math.abs(b.net) / Math.max(1, ...nearby.map((x) => Math.abs(x.net)))) * 100}%`,
-                                    }}
-                                  />
-                                </span>
-                                <span>
-                                  {b.net > 0 ? "+" : ""}
-                                  {amount(b.net)}
-                                </span>
-                              </summary>
-                              <p>
-                                Strike {amount(b.strike)} ·{" "}
-                                {b.net === 0
-                                  ? "Zero net exposure"
-                                  : b.net < 0
-                                    ? "Put-negative"
-                                    : "Call-positive"}{" "}
-                                net estimate per 1% stock move.{" "}
-                                {fmt(b.callOi, 0)} call contracts and{" "}
-                                {fmt(b.putOi, 0)} put contracts. This sign
-                                convention does not identify dealer holdings.
-                              </p>
-                            </details>
-                          ))}
-                      </div>
-                      <Plot
-                        points={nearby.map((b) => ({ x: b.strike, y: b.net }))}
-                        label="Strike price → · estimated net GEX ($ per 1% move)"
-                      />
-                      <p>
-                        Calls positive, puts negative. This convention does not
-                        establish actual dealer positions.
-                      </p>
-                    </section>
-                  )}
-                  {hasOi && (
-                    <section className="options-card">
-                      <span className="eyebrow">Open contracts</span>
-                      <h3>Call & put concentrations</h3>
-                      <div className="options-oi">
-                        {[...nearby]
-                          .sort(
-                            (a, b) => b.callOi + b.putOi - (a.callOi + a.putOi),
-                          )
-                          .slice(0, 8)
-                          .sort((a, b) => a.strike - b.strike)
-                          .map((b) => (
-                            <div key={b.strike}>
-                              <strong>{amount(b.strike)}</strong>
-                              <div className="options-oi-bars">
-                                <span
-                                  style={{
-                                    width: `${(100 * b.callOi) / Math.max(1, ...nearby.map((x) => x.callOi + x.putOi))}%`,
-                                  }}
-                                />
-                                <i
-                                  style={{
-                                    width: `${(100 * b.putOi) / Math.max(1, ...nearby.map((x) => x.callOi + x.putOi))}%`,
-                                  }}
-                                />
-                              </div>
-                              <small>
-                                {fmt(b.callOi, 0)} calls · {fmt(b.putOi, 0)}{" "}
-                                puts
-                              </small>
-                            </div>
-                          ))}
-                      </div>
-                      <p>
-                        <span className="options-dot" /> Calls{" "}
-                        <span className="options-dot put" /> Puts ·
-                        concentration is not confirmed support or resistance.
-                      </p>
-                    </section>
-                  )}
+              )}
+              <ExposureBoard
+                contracts={contracts}
+                spot={spot}
+                symbol={research.company.symbol}
+                complete={!!chain?.complete}
+                onContracts={() => setView("chain")}
+              />
+              <section className="options-card options-volatility">
+                <h3>
+                  <Activity size={19} /> Volatility & movement
+                </h3>
+                <p>
+                  Compare the option market’s implied volatility with recent
+                  historical movement. These describe different periods and are
+                  not directional signals.
+                </p>
+                <div className="options-insight-grid">
+                  <article>
+                    <span>20-session realized volatility</span>
+                    <strong>
+                      {volatility.realized === null
+                        ? "History needed"
+                        : `${(volatility.realized * 100).toFixed(1)}%`}
+                    </strong>
+                    <p>
+                      Annualized with 252 sessions
+                      {volatility.realizedThrough
+                        ? ` · through ${dateLabel(volatility.realizedThrough)}`
+                        : " · twenty returns required"}
+                    </p>
+                  </article>
+                  <article>
+                    <span>Near-the-money implied volatility</span>
+                    <strong>
+                      {volatility.term.find((x) => x.expiry === active)
+                        ? `${(volatility.term.find((x) => x.expiry === active)!.iv * 100).toFixed(1)}%`
+                        : "Not supplied"}
+                    </strong>
+                    <p>
+                      Returned contracts nearest the underlying price · selected
+                      expiration
+                    </p>
+                  </article>
                 </div>
-              )}
-              {heatAvailable && (
-                <section className="options-card options-heatmap">
-                  <span className="eyebrow">Strike × expiration</span>
-                  <h3>Gamma heatmap</h3>
-                  <div className="gamma-map-legend" aria-label="Heatmap legend">
-                    <span>
-                      <i className="gamma-negative" /> Put-negative
-                    </span>
-                    <span>
-                      <i className="gamma-neutral" /> Near zero
-                    </span>
-                    <span>
-                      <i className="gamma-positive" /> Call-positive
-                    </span>
-                  </div>
-                  <p>
-                    Blue: call-positive estimate. Rose: put-negative estimate.
-                    Blank cells lack required inputs.
-                  </p>
-                  <div className="options-scroll">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Strike</th>
-                          {heatExpiries.map((date) => (
-                            <th key={date}>{expiryLabel(date)}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {heatStrikes.map((strike, i) => (
-                          <tr key={strike}>
-                            <th>{amount(strike)}</th>
-                            {heatCells[i].map((v, j) => (
-                              <td
-                                key={j}
-                                title={`${amount(strike)} strike · ${expiryLabel(heatExpiries[j])} · ${v === null ? "Required inputs unavailable" : `${amount(v)} estimated exposure per 1% move`}`}
-                                style={
-                                  v === null
-                                    ? undefined
-                                    : {
-                                        background: `color-mix(in srgb, ${v === 0 ? "transparent" : v > 0 ? "var(--blue)" : "#bf4058"} ${Math.round(12 + (Math.abs(v) / heatMax) * 45)}%, transparent)`,
-                                      }
-                                }
-                              >
-                                {v === null ? "—" : fmt(v, 0)}
-                              </td>
-                            ))}
+                {volatility.term.length > 0 && (
+                  <details>
+                    <summary>
+                      Term structure · {volatility.term.length} loaded
+                      expirations
+                    </summary>
+                    <div className="options-scroll">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Expiration</th>
+                            <th>Reference strike</th>
+                            <th>Implied volatility</th>
+                            <th>Observation</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <p>
-                    Dollar exposure per 1% stock move. Dates can differ across
-                    cells; not synchronized dealer inventory.
-                  </p>
-                </section>
-              )}
+                        </thead>
+                        <tbody>
+                          {volatility.term.map((x) => (
+                            <tr key={x.expiry}>
+                              <th>{dateLabel(x.expiry)}</th>
+                              <td>{amount(x.strike)}</td>
+                              <td>{(x.iv * 100).toFixed(1)}%</td>
+                              <td>{dateLabel(x.observed)}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </details>
+                )}
+                <p>
+                  Historical IV percentiles, intraday options flow and vanna
+                  require additional comparable observations or inputs. No
+                  rankings or live-flow signals are inferred from this snapshot.
+                </p>
+              </section>
               {!!summary.profile.length && (
                 <section className="options-card">
                   <h3>Gamma across possible stock prices</h3>
@@ -767,6 +661,33 @@ export default function OptionsDesk({
                 shares. Indicative prices are not executable quotes.
               </p>
               <div className="options-toolbar">
+                <label>
+                  Find contract
+                  <input
+                    type="search"
+                    value={contractSearch}
+                    onChange={(e) => {
+                      setContractSearch(e.target.value);
+                      setVisibleCount(100);
+                    }}
+                    placeholder="Strike or contract symbol"
+                  />
+                </label>
+                <label>
+                  Rank by
+                  <select
+                    value={contractSort}
+                    onChange={(e) => {
+                      setContractSort(e.target.value);
+                      setVisibleCount(100);
+                    }}
+                  >
+                    <option value="strike">Strike</option>
+                    <option value="volume">Reported volume</option>
+                    <option value="oi">Open interest</option>
+                    <option value="ratio">Volume / open interest</option>
+                  </select>
+                </label>
                 <div className="options-segment" aria-label="Contract type">
                   {[
                     ["all", "All"],

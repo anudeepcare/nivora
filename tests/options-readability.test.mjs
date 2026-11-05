@@ -7,16 +7,18 @@ import * as jsx from "react/jsx-runtime";
 import * as icons from "lucide-react";
 import { renderToStaticMarkup } from "react-dom/server";
 import * as analysis from "../lib/options-analysis.ts";
+import * as context from "../lib/options-context.ts";
 import * as presentation from "../lib/options-presentation.ts";
 import * as format from "../lib/format.ts";
 const expiry = "2027-02-19";
+const observed=new Date().toISOString();
 const contracts = ["call", "put"].flatMap((type) =>
   [95, 100, 105].map((strike) => ({
     id: `${type}-${strike}`,
     type,
     strike,
     expiry,
-    observed: new Date().toISOString(),
+    observed,
     bid: 4,
     ask: 5,
     oi: 100,
@@ -53,9 +55,12 @@ function render(chain) {
   ).outputText;
   new Function("require", "module", "exports", code)(
     (name) => {
+      if (name === "./SearchableSelect") return {__esModule:true,default:({label})=>React.createElement("button",null,label)};
+      if (name === "./ExposureBoard") return {__esModule:true,default:()=>React.createElement("section",null,"Exposure workspace")};
       if (name === "react") return hooks;
       if (name === "react/jsx-runtime") return jsx;
       if (name === "lucide-react") return icons;
+      if (name === "@/lib/options-context") return context;
       if (name === "@/lib/options-analysis") return analysis;
       if (name === "@/lib/options-presentation") return presentation;
       if (name === "@/lib/format") return format;
@@ -106,4 +111,9 @@ test("Options no-input state explains absence and does not invent a range", () =
     html,
     /Estimated net gamma|Option-priced move at expiration/,
   );
+});
+test("partial gamma inputs never render an aggregate net gamma total",()=>{
+ const html=render({symbol:'TEST',contracts:contracts.map((c,i)=>i===0?{...c,gamma:null}:c),complete:false});
+ const text=html.replace(/<[^>]+>/g,'').replace(/<!--.*?-->/g,'');
+ assert.match(text,/Estimated net gammaNot measured/);
 });

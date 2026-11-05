@@ -1,4 +1,7 @@
 .heading {
+  padding: 24px;
+  border-radius: 18px;
+  background: linear-gradient(115deg,color-mix(in srgb,var(--jade) 24%,var(--card)),color-mix(in srgb,var(--citron) 10%,var(--card)));
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -6,7 +9,7 @@
   margin: 0 0 18px;
   padding: 22px 24px;
   border-radius: 16px;
-  background: linear-gradient(115deg, color-mix(in srgb, #b99ae8 14%, var(--card)), color-mix(in srgb, #d6f35a 10%, var(--card)));
+  background: linear-gradient(115deg, color-mix(in srgb, #76b6aa 14%, var(--card)), color-mix(in srgb, #d6f35a 10%, var(--card)));
 }
 .heading h1 {
   font-family: var(--font-ui);

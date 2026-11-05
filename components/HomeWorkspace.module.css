@@ -539,7 +539,7 @@
   background: linear-gradient(
     145deg,
     var(--card) 75%,
-    color-mix(in srgb, #b99ae8 10%, var(--card))
+    color-mix(in srgb, #76b6aa 10%, var(--card))
   );
 }
 .home .radarRow {
@@ -611,14 +611,14 @@
 .home :global(.home-next-step) {
   background: linear-gradient(
     110deg,
-    color-mix(in srgb, #b99ae8 12%, var(--glass)),
+    color-mix(in srgb, #76b6aa 12%, var(--glass)),
     var(--glass)
   );
   border: 1px solid var(--line);
   border-radius: 18px;
 }
 .home :global(.home-events-panel) {
-  border-top: 3px solid #b99ae8;
+  border-top: 3px solid #76b6aa;
 }
 .home :global(.home-news-panel) {
   border-top: 3px solid #a8ddc0;

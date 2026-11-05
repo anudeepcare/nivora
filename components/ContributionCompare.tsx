@@ -1,4 +1,5 @@
 "use client";
+import SearchableSelect from "./SearchableSelect";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import type { Research, Quote } from "@/lib/types";
@@ -69,26 +70,20 @@ function Workbench({ choices, prefix }: { choices: string[]; prefix: string }) {
             <>
               <div className={s.controls}>
                 {[0, 1, 2].map((i) => (
-                  <label key={i}>
-                    Company {i + 1}
-                    <select
-                      value={selected[i] ?? ""}
-                      onChange={(e) => {
-                        const next = [...selected];
-                        next[i] = e.target.value;
-                        setSelection(next);
-                      }}
-                    >
-                      <option value="">Choose a company</option>
-                      {choices
-                        .filter(
-                          (x) => x === selected[i] || !selected.includes(x),
-                        )
-                        .map((x) => (
-                          <option key={x}>{x}</option>
-                        ))}
-                    </select>
-                  </label>
+                  <SearchableSelect
+                    key={i}
+                    label={`Company ${i + 1}`}
+                    value={selected[i] ?? ""}
+                    placeholder="Choose a company"
+                    options={choices
+                      .filter((x) => x === selected[i] || !selected.includes(x))
+                      .map((x) => ({ value: x, label: x }))}
+                    onChange={(value) => {
+                      const next = [...selected];
+                      next[i] = value;
+                      setSelection(next);
+                    }}
+                  />
                 ))}
                 <label>
                   Possible addition (USD)

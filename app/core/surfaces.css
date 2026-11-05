@@ -128,7 +128,7 @@ body :is(.num,.pricing-amount) {font-variant-numeric:tabular-nums;letter-spacing
 .product.approved-product .approved-workspace-dialog form {gap:16px;}
 
 /* Shared concept details: quiet neutral controls, semantic scenario cards. */
-.compass-cases button .scenario-symbol {display:inline-grid;place-items:center;width:44px;height:44px;border-radius:8px;font-style:normal;font-size:30px;line-height:1;margin-right:12px;background:#eee7f7;color:#634585;}
+.compass-cases button .scenario-symbol {display:inline-grid;place-items:center;width:44px;height:44px;border-radius:8px;font-style:normal;font-size:30px;line-height:1;margin-right:12px;background:var(--surface);color:var(--muted);}
 .compass-cases button:first-child .scenario-symbol {background:#fbe1dc;color:#a83e33;}
 .compass-cases button:last-child .scenario-symbol {background:#d8f2e8;color:#176b53;}
 .compass-cases button>span {display:flex;align-items:center;}

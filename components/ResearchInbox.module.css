@@ -98,18 +98,18 @@
 .highlight[data-kind="earnings"] {
   background: linear-gradient(
     130deg,
-    color-mix(in srgb, #b99ae8 12%, var(--card)),
+    color-mix(in srgb, #76b6aa 12%, var(--card)),
     var(--card)
   );
   border-top: 3px solid #ad96ce;
 }
 .highlight[data-kind="alert"] {
   background: color-mix(in srgb, #e7b866 12%, var(--card));
-  border-top: 3px solid #b68a3d;
+  border-top: 3px solid var(--amber);
 }
 .highlight[data-kind="review"] {
   background: color-mix(in srgb, #a8ddc0 14%, var(--card));
-  border-top: 3px solid #6aa68e;
+  border-top: 3px solid var(--green);
 }
 .earnings {
   display: flex;

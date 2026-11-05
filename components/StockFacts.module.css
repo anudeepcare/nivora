@@ -1,4 +1,8 @@
 .region {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 20px;
   margin: 2px 0 10px;
   padding: 0;
   min-width: 0;
@@ -29,7 +33,7 @@
 .strip dd {
   margin: 0;
   color: var(--ink);
-  font-size: 16px;
+  font-size: 19px;
   font-weight: 600;
   line-height: 1.4;
   font-variant-numeric: tabular-nums;

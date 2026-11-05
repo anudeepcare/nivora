@@ -625,8 +625,8 @@
 .scenario strong {display:block;font-size:17px;line-height:1.3;margin-bottom:8px;}
 .scenario small {display:block;color:var(--muted);font-size:12px;line-height:1.45;}
 .scenario svg {width:100%;color:#d17c70;border-left:1px solid var(--line);}
-.scenario[data-case="Base"] i {background:#eee7f7;color:#634585;}
-.scenario[data-case="Base"] svg {color:#b99ae8;}
+.scenario[data-case="Base"] i {background:var(--surface);color:var(--muted);}
+.scenario[data-case="Base"] svg {color:#76b6aa;}
 .scenario[data-case="Bull"] i {background:#d8f2e8;color:#176b53;}
 .scenario[data-case="Bull"] svg {color:#71c9a9;}
 .scenario:hover {border-color:var(--ink);}
@@ -640,25 +640,25 @@
 .scenarioUnavailable button{display:flex;gap:8px;align-items:center;font:inherit;color:var(--ink);background:var(--blue-soft);border:0;border-radius:8px;padding:10px;}
 .brandEyebrow{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:600;letter-spacing:.06em;margin-bottom:20px;color:var(--ink);}
 .brandEyebrow::before{content:"";width:8px;height:8px;transform:rotate(45deg);background:#accb38;}
-.hero{position:relative;background:radial-gradient(ellipse at 85% 22%,#b99ae812,transparent 50%),radial-gradient(ellipse at 10% 80%,#d6f35a14,transparent 45%);}
+.hero{position:relative;background:radial-gradient(ellipse at 85% 22%,#76b6aa12,transparent 50%),radial-gradient(ellipse at 10% 80%,#d6f35a14,transparent 45%);}
 .heroVisual{position:relative;}
 .heroVisual>section{box-shadow:0 24px 60px -35px #24272b80;}
 .heroCopy h1{letter-spacing:-.055em;line-height:1.06;max-width:650px;}
 
-.hero {position:relative;isolation:isolate;background:radial-gradient(ellipse at 2% 10%,#d6f35a30,transparent 48%),radial-gradient(ellipse at 95% 90%,#b99ae83a,transparent 48%);border-radius:28px;overflow:visible;}
+.hero {position:relative;isolation:isolate;background:radial-gradient(ellipse at 2% 10%,#d6f35a30,transparent 48%),radial-gradient(ellipse at 95% 90%,#76b6aa3a,transparent 48%);border-radius:28px;overflow:visible;}
 .heroCopy h1{max-width:680px;letter-spacing:-.055em;}
 .heroCopy>div:first-child:after{content:"BUSINESS → VALUE → PACE";display:block;font-size:11px;letter-spacing:.17em;font-weight:650;color:var(--muted);margin-top:24px;}
 .heroActions>a:first-child{background:#d6f35a;color:#24272b;border:1px solid #c2db55;box-shadow:0 6px 20px #71832418;}
 .brandSpectrum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px;}
 .brandSpectrum span{display:flex;align-items:center;justify-content:center;gap:9px;font-size:12px;font-weight:600;padding:15px 10px;border-radius:12px;background:#d6f35a45;color:#353b20;}
-.brandSpectrum span:nth-child(2){background:#b99ae83d;color:#604280;}.brandSpectrum span:nth-child(3){background:#a8ddc04a;color:#27674c;}
+.brandSpectrum span:nth-child(2){background:#76b6aa3d;color:#604280;}.brandSpectrum span:nth-child(3){background:#a8ddc04a;color:#27674c;}
 @media(max-width:600px){.hero{border-radius:0;}.brandSpectrum{gap:5px;}.brandSpectrum span{font-size:10px;gap:5px;padding:12px 5px;}.heroCopy h1{font-size:42px;}}
 .discoveryPreview{position:relative;padding:20px;background:linear-gradient(140deg,#303136,#202524);border-radius:24px;color:#f7f8f5;box-shadow:0 24px 70px #24272b16;}
 .discoveryPreview>img{position:absolute;right:28px;top:24px;width:44px;height:48px;}
 .discoveryPreview :global(.ap-product){background:transparent;border:0;box-shadow:none;padding:0;color:inherit;min-width:0;}
 .discoveryPreview :global(.signal-demo-header){padding:12px 58px 20px 4px;display:grid;gap:6px;border:0;color:#f7f8f5;}.discoveryPreview :global(.signal-demo-header)>span{display:flex;align-items:center;gap:8px;font-size:16px;}.discoveryPreview :global(.signal-demo-header) small{color:#bbc4bd;font-size:10px;}
 .discoveryPreview :global(.signal-demo-tabs){display:flex;gap:8px;padding:0;margin:0 0 20px;border:0;}.discoveryPreview :global(.signal-demo-tabs) button{display:flex;align-items:center;gap:6px;background:#ffffff0a;color:#dce3df;border:1px solid #ffffff25;border-radius:10px;padding:10px 13px;font-size:12px;}.discoveryPreview :global(.signal-demo-tabs) button[aria-selected="true"]{background:#d6f35a;color:#24272b;border-color:#d6f35a;}
-.discoveryPreview :global(.signal-demo-content){padding:5px;}.discoveryPreview :global(.signal-demo-content)[hidden]{display:none;}.discoveryPreview h2{font-size:30px;letter-spacing:-.04em;color:#fff;margin:18px 0;}.discoveryPreview p{color:#c9d1cc;font-size:13px;line-height:1.7;}.discoveryPreview :global(.signal-demo-number){font-size:10px;letter-spacing:.12em;color:#b99ae8;}
+.discoveryPreview :global(.signal-demo-content){padding:5px;}.discoveryPreview :global(.signal-demo-content)[hidden]{display:none;}.discoveryPreview h2{font-size:30px;letter-spacing:-.04em;color:#fff;margin:18px 0;}.discoveryPreview p{color:#c9d1cc;font-size:13px;line-height:1.7;}.discoveryPreview :global(.signal-demo-number){font-size:10px;letter-spacing:.12em;color:#76b6aa;}
 .discoveryPreview :global(.signal-demo-evidence){display:grid;gap:8px;margin:20px 0;}.discoveryPreview :global(.signal-demo-evidence)>div{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid #ffffff18;border-radius:9px;background:#ffffff06;}.discoveryPreview :global(.signal-demo-evidence) strong{flex:1;font-size:12px;font-weight:500;}.discoveryPreview :global(.signal-demo-evidence) span{color:#a8ddc0;font-size:11px;}.discoveryPreview :global(.signal-demo-evidence) svg{color:#d6f35a;}.discoveryPreview :global(.signal-demo-footer){display:flex;align-items:center;gap:8px;border-top:1px solid #ffffff20;padding:16px 4px 0;color:#b8c1bc;font-size:11px;}
 .hero .discoveryPreview :global(.signal-public-demo .signal-demo-content){background:transparent;color:#f7f8f5;}
 .hero .discoveryPreview :global(.signal-public-demo .signal-demo-evidence)>div{background:#ffffff06;color:#f7f8f5;}
@@ -691,3 +691,9 @@
 
 /* The plot owns its internals; avoid a second nested card frame. */
 .chart :global(.plot-section) { border:0; border-radius:0; box-shadow:none; padding:0; background:transparent; }
+
+/* Scenarios are direction-coded, with a neutral midpoint. */
+.scenario[data-case="Bear"]{color:var(--red);background:color-mix(in srgb,var(--red) 5%,var(--card))}
+.scenario[data-case="Base"]{color:var(--muted);background:var(--surface-2)}
+.scenario[data-case="Bull"]{color:var(--green);background:color-mix(in srgb,var(--green) 5%,var(--card))}
+.scenario>svg{width:80px;max-width:20%;flex-shrink:0}

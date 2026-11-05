@@ -12,9 +12,9 @@
 .cards ul { margin:16px 0; display:grid; gap:8px; align-content:start; }
 .cards li { margin:0; padding:0; font-size:14px; line-height:1.5; }
 .page .cards>section {border-radius:12px;}
-.page .cards>section:global(.pricing-pro) {background:linear-gradient(150deg,var(--card) 65%,color-mix(in srgb,#b99ae8 14%,var(--card)));}
+.page .cards>section:global(.pricing-pro) {background:linear-gradient(150deg,var(--card) 65%,color-mix(in srgb,#76b6aa 14%,var(--card)));}
 .page .cards :global(.pricing-card-title) {min-height:78px;align-items:flex-start;}
-.page .cards :global(.plan-pill) {background:#eee7f7;color:#634585;}
+.page .cards :global(.plan-pill) {background:#edf3f0;color:#356c64;}
 .page .cards ul {padding-left:18px;gap:6px;}
 .page .cards li {font-size:13px;}
 @media(min-width:850px){.page .cards>section:first-child ul{grid-template-columns:1fr 1fr;column-gap:24px}.page .cards{grid-template-columns:1.3fr 1fr}}

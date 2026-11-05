@@ -17,12 +17,12 @@
   --valuation-fill: var(--card);
   --ownership-fill: var(--card);
   --business-icon: #167b57;
-  --financial-icon: #7554b5;
+  --financial-icon: #237f75;
   --valuation-icon: #956b0f;
-  --ownership-icon: #7654af;
+  --ownership-icon: #347d76;
   --pace-fill: #24272b;
   --citron: #d6f35a;
-  --orchid: #b99ae8;
+  --orchid: #76b6aa;
   --jade: #a8ddc0;
   --brand-gradient: linear-gradient(125deg,#d6f35a,#a8ddc0);
 }
@@ -74,9 +74,9 @@
   --valuation-fill: var(--card);
   --ownership-fill: var(--card);
   --business-icon: #167b57;
-  --financial-icon: #7554b5;
+  --financial-icon: #237f75;
   --valuation-icon: #956b0f;
-  --ownership-icon: #7654af;
+  --ownership-icon: #347d76;
   --green: #6dd5b6;
   --green-soft: #193b33;
   --red: #ffaca5;

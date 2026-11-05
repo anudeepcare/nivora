@@ -88,15 +88,20 @@
 }
 .title h2 > .level {
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
   vertical-align: middle;
-  font-size: 15px;
-  letter-spacing: 0;
+  font-size: clamp(25px,3vw,40px);
+  font-weight: 700;
+  letter-spacing: -.04em;
   margin-left: 12px;
-  padding: 6px 9px;
-  border: 0;
-  border-radius: 6px;
+  min-width: 74px;
+  min-height: 64px;
+  padding: 10px;
+  border: 1px solid #d6f35a60;
+  border-radius: 15px;
   color: #e0f88c;
-  background: transparent;
+  background: linear-gradient(140deg,#d6f35a20,#1c3935);
   white-space: nowrap;
 }
 .terraces {
@@ -458,3 +463,8 @@
 /* Contextual disclosure stays integrated with the carbon instrument. */
 .instrument .readingDetail summary{background:transparent;color:#d4ddd7;padding:10px 0;border-radius:0;margin:0}
 .instrument .readingDetail[open] summary{background:transparent;color:#e0f78a}
+
+.evidenceDetails {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 18px}
+.evidenceDetails p {margin:0;padding:12px;background:#ffffff06;border-radius:10px;font-size:12px}
+.evidenceDetails p strong {display:block;margin-bottom:6px;color:#e9eee7}
+@media(max-width:600px){.evidenceDetails{grid-template-columns:1fr}.title h2>.level{min-width:60px;min-height:54px;font-size:30px;margin-top:8px}}

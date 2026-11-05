@@ -66,10 +66,10 @@ import ApprovedPortfolioChart from "./ApprovedPortfolioChart";
 import { PositionEditor, WatchlistNote } from "./ApprovedWorkspaceForms";
 
 const colors = [
-  "#b99ae8",
+  "#76b6aa",
   "#b6ce58",
   "#68ae94",
-  "#8b6eae",
+  "#638a99",
   "#d28b78",
   "#7b8a85",
 ];

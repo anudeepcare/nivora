@@ -32,8 +32,10 @@
 .page :global(.page-heading) {
   grid-area: heading;
   margin: 0 0 20px;
-  padding: 4px 0 18px;
-  border-bottom: 1px solid var(--line);
+  padding: 24px;
+  border-radius: 18px;
+  background: linear-gradient(115deg,color-mix(in srgb,var(--jade) 24%,var(--card)),var(--card));
+  border-bottom: 0;
 }
 .page :global(.page-heading) h1 {
   font-size: 30px;

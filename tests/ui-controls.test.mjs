@@ -1817,7 +1817,7 @@ test("price-risk cases render historical percentiles separately from earnings an
   );
   for (const term of [
     "10th percentile",
-    "Historical median",
+    "Historical midpoint",
     "90th percentile",
     "Historical price-risk cases",
     "not fair value",

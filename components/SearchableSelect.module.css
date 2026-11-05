@@ -1,0 +1,87 @@
+.root {
+  position: relative;
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+  color: var(--ink);
+}
+.label {
+  font-size: 12px;
+  color: var(--muted);
+}
+.trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 46px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.trigger span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.trigger:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
+.popup {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  padding: 10px;
+  margin-top: 5px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 14px 35px #122f2920;
+  min-width: min(250px, 80vw);
+}
+.popup label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.popup input {
+  width: 100%;
+  min-width: 0;
+  font-size: 16px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--ink);
+}
+.popup select {
+  width: 100%;
+  padding: 4px !important;
+  min-height: 100px;
+  max-height: 240px;
+  background-image: none !important;
+  background: var(--card);
+  border: 0;
+  color: var(--ink);
+  font: inherit;
+  overflow-y: auto;
+}
+.popup option {
+  padding: 10px;
+  border-radius: 6px;
+  min-height: 40px;
+}
+.popup p {
+  font-size: 13px;
+  padding: 10px;
+  color: var(--muted);
+}

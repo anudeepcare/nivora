@@ -9,7 +9,7 @@
   grid-template-columns: 1.03fr 1fr;
   gap: 56px;
   align-items: center;
-  background: radial-gradient(ellipse at 8% 18%, #d6f35a30, transparent 55%), radial-gradient(ellipse at 90% 80%, #b99ae818, transparent 60%);
+  background: radial-gradient(ellipse at 8% 18%, #d6f35a30, transparent 55%), radial-gradient(ellipse at 90% 80%, #76b6aa18, transparent 60%);
 }
 .heroCopy {
   min-width: 0;
@@ -303,7 +303,7 @@
   height: 40%;
   bottom: 0;
   left: 31%;
-  background: #b99ae8;
+  background: #76b6aa;
   border-radius: 4px 4px 0 0;
 }
 .scenarios article:nth-child(2) .scenarioBar:after {
@@ -366,7 +366,7 @@
 }
 .evidenceList article {
   display: flex;
-  align-items: start;
+  align-items: flex-start;
   gap: 20px;
   padding: 20px 0;
   border-bottom: 1px solid var(--line);
@@ -483,7 +483,7 @@
     padding-block: 36px;
   }
   .closing {
-    align-items: start;
+    align-items: flex-start;
     flex-direction: column;
     gap: 10px;
   }
