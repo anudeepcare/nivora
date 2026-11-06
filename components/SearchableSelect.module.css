@@ -151,3 +151,9 @@
   color: var(--control-muted);
   cursor: not-allowed;
 }
+
+.native{display:none}
+@media(max-width:700px),(pointer:coarse){
+.root.root .native{display:block;width:100%;min-width:0;min-height:44px;padding:10px 12px;border:1px solid var(--control-line);border-radius:8px;background:var(--control-card);color:var(--control-ink);font:inherit;font-size:16px}
+.root.root .trigger,.root.root .popup{display:none}
+}

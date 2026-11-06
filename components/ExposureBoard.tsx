@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   Activity,
   ArrowDown,
@@ -31,17 +31,21 @@ export default function ExposureBoard({
   spot,
   symbol,
   complete,
+  expiry,
   onContracts,
   externalSnapshot,
   onExitReplay,
   accountPresets,
   onPresetsChanged,
   onCreateAlert,
+  accountTools,
 }: {
+  accountTools?: ReactNode;
   contracts: OptionContract[];
   spot: number;
   symbol: string;
   complete: boolean;
+  expiry?: string;
   onContracts?: () => void;
   onCreateAlert?: (
     cell: ExposureCell,
@@ -54,8 +58,8 @@ export default function ExposureBoard({
 }) {
   const live = useMemo(() => exposureBoard(contracts, spot), [contracts, spot]);
   const [metric, setMetric] = useState<"gex" | "oi">("gex"),
-    [range, setRange] = useState(24),
-    [expirations, setExpirations] = useState(6),
+    [range, setRange] = useState(12),
+    [expirations, setExpirations] = useState(1),
     [minimum, setMinimum] = useState(0),
     [normalized, setNormalized] = useState(false),
     [selected, setSelected] = useState<string | null>(null),
@@ -90,8 +94,9 @@ export default function ExposureBoard({
   const snapshots = saved.snapshots.filter((x) => x.symbol === symbol);
   const chosen = externalSnapshot ?? snapshots.find((x) => x.id === snapshot);
   const board = chosen?.board ?? live;
-  const dates = [...new Set(board.cells.map((c) => c.expiry))]
+  const dates = [...new Set([...board.cells.map((c) => c.expiry), ...(!chosen && expiry ? [expiry] : [])])]
     .sort()
+    .filter((date) => chosen || !expiry || date >= expiry)
     .slice(0, expirations);
   const strikes = [
     ...new Set(
@@ -106,7 +111,8 @@ export default function ExposureBoard({
   );
   const value = (c: ExposureCell) => (metric === "gex" ? c.gex : c.oi);
   const measured = cells.filter((c) => value(c) !== null);
-  const largest = [...measured].sort(
+  const concentrations = measured.filter((c) => Math.abs(value(c)!) > 0);
+  const largest = [...concentrations].sort(
     (a, b) => Math.abs(value(b)!) - Math.abs(value(a)!),
   )[0];
   const max = Math.max(1, ...measured.map((c) => Math.abs(value(c)!)));
@@ -127,10 +133,10 @@ export default function ExposureBoard({
           Math.abs(value(c)!) >= minimum,
       ),
   );
-  const above = [...measured]
+  const above = [...concentrations]
     .filter((c) => c.strike > board.spot)
     .sort((a, b) => Math.abs(value(b)!) - Math.abs(value(a)!))[0];
-  const below = [...measured]
+  const below = [...concentrations]
     .filter((c) => c.strike < board.spot)
     .sort((a, b) => Math.abs(value(b)!) - Math.abs(value(a)!))[0];
   const comparison = latestExposureChanges(snapshots, symbol, board);
@@ -264,7 +270,7 @@ export default function ExposureBoard({
       <header className={s.heading}>
         <div>
           <h3>
-            <Layers3 size={21} /> Gamma & open interest
+            <Layers3 size={21} /> Gamma heatmap
           </h3>
         </div>
         <div className={s.tabs} aria-label="Exposure workspace views">
@@ -309,6 +315,7 @@ export default function ExposureBoard({
       )}
       {mode === "map" && (
         <>
+          <p className={s.reading}>Each column is an expiration date—not a day-by-day forecast. Darker cells mean more {metric === "gex" ? "estimated gamma exposure" : "open contracts"}. Tap a cell for its observation date. These levels do not predict where the stock will touch or reverse.</p>
           <div className={s.toolbar}>
             <label>
               Measure
@@ -316,8 +323,8 @@ export default function ExposureBoard({
                 value={metric}
                 onChange={(e) => setMetric(e.target.value as "gex" | "oi")}
               >
-                <option value="gex">Estimated GEX</option>
-                <option value="oi">Open interest</option>
+                <option value="gex">Gamma estimate</option>
+                <option value="oi">Open contracts (OI)</option>
               </select>
             </label>
             <label>
@@ -332,13 +339,13 @@ export default function ExposureBoard({
               </select>
             </label>
             <label>
-              Expirations
+              Expiration columns
               <select
                 value={expirations}
                 onChange={(e) => setExpirations(Number(e.target.value))}
               >
                 {[1, 3, 6, 12].map((n) => (
-                  <option key={n}>{n}</option>
+                  <option key={n} value={n}>{n === 1 ? "Selected date" : `${n} dates from selection`}</option>
                 ))}
               </select>
             </label>
@@ -401,9 +408,9 @@ export default function ExposureBoard({
           </div>
           <div className={s.summary}>
             {[
-              ["Largest visible", largest],
-              ["Below price", below],
-              ["Above price", above],
+              ["Strongest concentration", largest],
+              ["Largest below stock price", below],
+              ["Largest above stock price", above],
             ].map(([label, c]) => {
               const cell = c as ExposureCell | undefined;
               return (
@@ -413,7 +420,7 @@ export default function ExposureBoard({
                   <small>
                     {cell
                       ? `${cell.expiry} · ${metric === "gex" ? amount(cell.gex, "USD", true) : cell.oi?.toLocaleString() + " contracts"}`
-                      : "Required inputs not supplied"}
+                      : "No non-zero concentration in view"}
                   </small>
                 </article>
               );
@@ -424,9 +431,9 @@ export default function ExposureBoard({
       {mode === "map" && (
         <>
           <div className={s.legend}>
-            <span>− Put-negative estimate</span>
+            <span>{metric === "gex" ? "− Put-side estimate" : "Open contract count"}</span>
             <i />
-            <span>+ Call-positive estimate</span>
+            <span>{metric === "gex" ? "+ Call-side estimate · not bullish/bearish" : "Darker = more open contracts"}</span>
             <span>
               ★ Largest · outlined row nearest price {amount(board.spot)}
             </span>
@@ -697,7 +704,7 @@ export default function ExposureBoard({
       )}
       <details className={s.saved}>
         <summary>
-          <SlidersHorizontal size={16} /> Saved views & observations
+          <SlidersHorizontal size={16} /> Saved views & history
         </summary>
         <div className={s.toolbar}>
           <label>
@@ -749,6 +756,7 @@ export default function ExposureBoard({
           views and twelve snapshots per device across all symbols. Export
           important observations before clearing browser storage.
         </p>
+        {accountTools}
       </details>
       {message && <p role="status">{message}</p>}
     </section>

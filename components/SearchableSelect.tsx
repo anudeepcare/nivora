@@ -57,6 +57,11 @@ export default function SearchableSelect({
       <span className={s.label} id={id}>
         {label}
       </span>
+      <select className={s.native} aria-labelledby={id} value={value} disabled={disabled}
+        onChange={(e) => { onChange(e.target.value); setOpen(false); }}>
+        {!current && <option value="" disabled>{placeholder}</option>}
+        {options.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+      </select>
       <button
         type="button"
         className={s.trigger}

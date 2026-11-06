@@ -175,3 +175,12 @@ test("focused board shortcuts act locally and leave controls and modified keys a
   tree.props.onKeyDown(event("s", false, { repeat: true }));
   assert.equal(prevented, 2);
 });
+
+ test("selected expiration controls map columns without silently using an earlier loaded date",()=>{
+ const html=renderToStaticMarkup(React.createElement(mod.exports.default,{contracts:[c,{...c,id:'later',expiry:'2027-01-15'}],spot:100,symbol:'TEST',complete:false,expiry:'2027-01-15'}));
+ assert.match(html,/100 strike, 2027-01-15/);assert.doesNotMatch(html,/100 strike, 2026-12-18/);
+ });
+ test("an empty selected expiry is not replaced by a populated later expiry",()=>{
+ const html=renderToStaticMarkup(React.createElement(mod.exports.default,{contracts:[c],spot:100,symbol:'TEST',complete:false,expiry:'2026-11-13'}));
+ assert.match(html,/No measured rows match/);assert.doesNotMatch(html,/100 strike, 2026-12-18/);
+ });

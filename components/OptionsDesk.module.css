@@ -312,6 +312,8 @@
   .desk.desk :global(.options-hero) {
     gap: 12px;
     padding: 12px;
+    flex-direction: column;
+    align-items: stretch;
   }
   .desk.desk :global(.options-hero-intro) {
     grid-template-columns: 1fr;
@@ -353,3 +355,18 @@
 .desk .contractTable tbody tr:hover>:is(th,td),.desk .contractTable tbody tr:focus-within>:is(th,td){background:var(--blue-soft)}
 @media(max-width:1000px){.desk .contractFilters{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
 @media(max-width:480px){.desk .contractFilters{grid-template-columns:minmax(0,1fr)}.desk .contractFilters :global(.options-segment){justify-self:stretch}}
+
+.desk.desk :global(.options-hero-intro){min-width:0;flex:1}
+.desk.desk :global(.options-hero-meta){flex:0 0 170px}
+@media(max-width:700px){
+.desk.desk :global(.options-hero-meta){flex:auto;text-align:left;border-top:1px solid var(--line);padding-top:10px;grid-template-columns:1fr auto;align-items:baseline}
+.desk.desk :global(.options-hero-meta) small{grid-column:1/-1}
+.desk.desk :global(.options-hero-intro){width:100%}
+.desk.desk :global(.options-empty-inline){padding:14px;gap:10px}
+.desk.desk :global(.options-empty-inline) h3{font-size:18px}
+.desk.desk :global(.options-empty-inline) p{font-size:13px}
+}
+
+.desk.desk .analytics{min-height:0;height:auto}
+
+.desk.desk{row-gap:12px}
