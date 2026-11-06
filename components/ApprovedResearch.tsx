@@ -295,10 +295,10 @@ export default function ApprovedResearch({ research: r, onTab, chart }: Props) {
           <aside className="signal-research-rail">
             <section
               className={`pace-feature pace-state-${pace.status}`}
-              aria-label="AURYN Pace"
+              aria-label="AURYN Accumulation Pace"
             >
               <div className="pace-brand">
-                <Activity size={17} /> AURYN PACE <PaceHelp />
+                <Activity size={17} /> AURYN ACCUMULATION PACE <PaceHelp />
               </div>
               <PaceGuidance view={pace} readings={edge.pacePeriods} />
               <button

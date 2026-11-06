@@ -4,6 +4,10 @@ import { allowedPreview } from "./lib/presentation/preview";
 /** Emit an actual 404 before App Router streaming can commit a 200 response. */
 export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
+  // Keep a verified recovery session in its password flow until completion.
+  if(request.cookies.has("auryn-password-recovery") && !["/reset-password","/login","/"].includes(path) && isProductPage(path) && !path.startsWith("/auth/")) {
+    return NextResponse.redirect(new URL("/reset-password",request.url));
+  }
   if (
     path === "/preview/redesign" &&
     allowedPreview(

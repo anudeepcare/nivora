@@ -1517,6 +1517,7 @@ test("financial explorer presents selectable metrics and honest chart dates with
       React,
       useMemo: React.useMemo,
       useState: React.useState,
+      useRef: React.useRef,
       financialMetricSeries,
       applicableMetrics,
       ...format,

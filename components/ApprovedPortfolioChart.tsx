@@ -11,7 +11,7 @@ import {
   portfolioHistory,
   type WorkspaceHistory,
 } from "@/lib/approved-workspace";
-import { api } from "@/lib/client";
+import { api, ApiError } from "@/lib/client";
 import { readResource } from "@/lib/resource-cache";
 import { amount, dateLabel } from "@/lib/format";
 import { useProduct } from "./Session";
@@ -76,7 +76,7 @@ export default function ApprovedPortfolioChart({
     setHistory(saved);
     const scope = `${owner}:${key}`;
     if(attempted.current.scope !== scope) attempted.current={scope,symbols:new Set()};
-    const missing = historyBatch(selected,new Set(Object.keys(saved)),attempted.current.symbols);
+    const missing = historyBatch(selected,new Set(Object.keys(saved)),attempted.current.symbols,selected.length);
     if (demo || !missing.length) {
       setLoading(false);
       return () => {
@@ -99,7 +99,8 @@ export default function ApprovedPortfolioChart({
             ),
           );
           if (active) setHistory((prior) => ({ ...prior, [symbol]: result }));
-        } catch {
+        } catch (error) {
+          if(error instanceof ApiError && [401,403,429].includes(error.status))break;
           /* Keep the valid partial series; coverage below names exclusions. */
         }
       }
@@ -139,6 +140,8 @@ export default function ApprovedPortfolioChart({
     .join(" ");
   return (
     <div ref={container} className={styles.chart}>
+      <p className="chart-note" role="status"><strong>{loading ? 'Loading holdings history…' : chart.excluded.length ? 'Partial holdings history' : 'Holdings price history'}</strong> · {chart.included.length} holdings included. Cash, managed balances and margin are excluded.</p>
+      {chart.points.length > 1 && <p className="chart-note">Historical subtotal on {dateLabel(chart.points.at(-1)!.time)}: <strong>{amount(chart.points.at(-1)!.value, 'USD')}</strong>. These same holdings at latest available quotes: <strong>{amount(positions.reduce((total,p)=>total+(p.assetType !== 'cash' && chart.included.includes(p.symbol) ? Number(p.quantity || 0)*(quotes[p.symbol]?.quote?.price || 0) : 0),0),'USD')}</strong>. This chart is not your full account balance.</p>}
       {chart.points.length > 1 && <div className={styles.inspection} aria-live="polite" aria-atomic="true">
         {selectedPoint ? <><span>{dateLabel(selectedPoint.time)} · Value of included holdings</span><strong>{amount(selectedPoint.value, "USD")}</strong></> : <span>Hover or touch the chart to inspect a date. Use arrow keys when focused.</span>}
       </div>}

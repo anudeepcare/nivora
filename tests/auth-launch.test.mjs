@@ -61,3 +61,5 @@ test('failed recovery stays on recovery while normal sign-in errors stay on logi
  assert.equal(await completeAuthCallback('https://auryninvest.com/auth/callback?next=/reset-password&code=expired',async()=>({error:'expired'})),'/reset-password?auth_error=callback');
  assert.equal(await completeEmailConfirmation('https://auryninvest.com/auth/confirm?type=recovery&token_hash=expired',async()=>({error:'expired'})),'/reset-password?auth_error=callback');
 });
+
+test('recovery PKCE metadata overrides a missing next parameter',async()=>{const {completeAuthCallback}=await import('../lib/auth-callback.ts');assert.equal(await completeAuthCallback('https://auryninvest.com/auth/callback?code=valid',async()=>({error:null,data:{redirectType:'recovery'}})),'/reset-password');});

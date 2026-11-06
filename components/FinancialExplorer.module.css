@@ -5,10 +5,12 @@
 .explorer.explorer.explorer :global(.explorer-metrics) button{width:auto;min-height:36px;padding:8px 12px;flex:0 0 auto}
 .explorer.explorer.explorer :global(.explorer-mobile-picker){display:none}
 .explorer.explorer.explorer :global(.explorer-plot){min-width:0;width:100%}
-.explorer.explorer.explorer :global(.explorer-plot) > svg{display:block;width:100%;height:auto;max-height:none;aspect-ratio:760/240}
+.explorer.explorer.explorer :global(.explorer-plot) > svg{display:block;width:100%;height:300px;max-height:340px}
 .explorer.explorer.explorer :global(.explorer-definition){border:0;border-radius:10px;padding:12px 14px;background:color-mix(in srgb,#438f86 8%,var(--card));margin:10px 0}
 .explorer.explorer.explorer :global(.explorer-latest){margin:0 0 6px}
-@media(min-width:1200px){.explorer.explorer.explorer :global(.explorer-body){display:grid;grid-template-columns:180px minmax(0,1fr);gap:20px}.explorer.explorer.explorer :global(.explorer-metrics){flex-direction:column;align-self:start}.explorer.explorer.explorer :global(.explorer-metrics) button{text-align:left;white-space:normal}}
 @media(max-width:600px){.explorer.explorer.explorer{padding:14px}.explorer.explorer.explorer :global(.explorer-metrics){display:none}.explorer.explorer.explorer :global(.explorer-mobile-picker){display:grid;margin-bottom:12px}.explorer.explorer.explorer > header{flex-wrap:wrap}.explorer.explorer.explorer :global(.explorer-tools){flex-wrap:wrap;gap:6px}}
 
 .explorer :global(.explorer-inspection){min-height:24px;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}.explorer svg:focus-visible{outline:2px solid var(--accent-solid);outline-offset:3px}.explorer :global(.explorer-explanation){margin:10px 0;font-size:13px}.explorer :global(.explorer-explanation summary){cursor:pointer;min-height:44px;display:flex;align-items:center}.explorer :global(.explorer-explanation p){line-height:1.6;color:var(--muted)}
+
+@media(max-width:600px){.explorer.explorer.explorer :global(.explorer-plot)>svg{height:220px}.explorer.explorer.explorer :global(.explorer-tools){width:100%;justify-content:flex-start}}
+@media(max-width:600px){.explorer.explorer.explorer :global(.explorer-mobile-picker){grid-template-columns:minmax(0,1fr);gap:6px;min-width:0}.explorer.explorer.explorer :global(.explorer-mobile-picker select){width:100%;min-width:0;max-width:100%}}

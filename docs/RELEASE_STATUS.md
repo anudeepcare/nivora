@@ -1,3 +1,7 @@
+# November 6, 2026 — Recovery, mobile navigation and Business charts
+
+See `verification/RECOVERY-AND-MOBILE-20261106.md` for this cumulative update, validation and live acceptance requirements. Recovery uses account/session-bound verification, mobile navigation contrast and links are repaired, Business charts are bounded and responsive, and portfolio history loads all eligible missing holdings with visible partial-total reconciliation. Hosted access policy fails closed if its flag is missing. Preview access/owner configuration was updated; no code was deployed. Supabase email-template configuration and actual password reset still need live acceptance after deployment.
+
 # November 6, 2026 — Password-reset hotfix
 
 See `verification/PASSWORD-RESET-HOTFIX-20261106.md`. Auth callback and confirmation routes now pass middleware; reset errors stay on a recovery screen. This cumulative package retains the consistency release. Live email roundtrip and auth dashboard configuration remain to be checked.

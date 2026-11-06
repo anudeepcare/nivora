@@ -540,6 +540,9 @@ export default function PublicLanding({
               <Link href="/pricing" onClick={() => setMenu(false)}>
                 Pricing
               </Link>
+              <Link href="/sample" onClick={() => setMenu(false)}>Product guide</Link>
+              <Link href="/login" onClick={() => setMenu(false)}>Sign in</Link>
+              <Link href="/login?mode=signup" onClick={() => setMenu(false)}>Get started</Link>
               <Link href="/help" onClick={() => setMenu(false)}>
                 Help
               </Link>
