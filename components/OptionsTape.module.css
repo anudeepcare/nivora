@@ -64,7 +64,7 @@
   font-size: 12px;
 }
 .notes {
-  border-left: 3px solid #76b6aa;
+  border-left: 1px solid var(--line);
   padding-left: 12px;
   margin: 14px 0;
 }
@@ -157,7 +157,7 @@
   color: var(--muted);
 }
 .tape .error {
-  border-left: 3px solid #d6d88c;
+  border-left: 1px solid var(--line);
   padding: 10px 12px;
   background: color-mix(in srgb, #d6d88c 9%, var(--card));
   color: var(--ink);

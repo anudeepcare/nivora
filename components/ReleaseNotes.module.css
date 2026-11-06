@@ -81,7 +81,7 @@
   color: transparent;
 }
 .page article {
-  border-top: 4px solid #b5d564;
+  border-top: 1px solid var(--line);
 }
 .meta {
   padding: 10px 14px;

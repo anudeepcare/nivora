@@ -111,11 +111,19 @@ export function ProductSession({
   }, [demo, router]);
   useEffect(() => {
     if (demo) return;
+    let active = true;
     const restored = (event: PageTransitionEvent) => {
-      if (event.persisted) window.location.reload();
+      if (!event.persisted) return;
+      // Resume without discarding the mounted shell or replaying launch screens.
+      void authClient().auth.getSession().then(({data, error}) => {
+        if (active && !error) {
+          if (!data.session) clearAccountCache();
+          setSession(data.session);
+        }
+      }).catch(() => { /* A transient outage must not force a sign-out. */ });
     };
     window.addEventListener("pageshow", restored);
-    return () => window.removeEventListener("pageshow", restored);
+    return () => { active = false; window.removeEventListener("pageshow", restored); };
   }, [demo]);
   const destination =
     !demo && !loading ? authDestination(pathname, !!session, recovering) : null;

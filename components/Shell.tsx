@@ -2,7 +2,7 @@
 import { ReleaseNotice } from "./ReleaseNotes";
 import experience from "./WorkspaceShell.module.css";
 import { AccessNotice, useAccess } from "./Access";
-import Link from "next/link";
+import Link, { useLinkStatus } from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
@@ -33,6 +33,10 @@ import {
   restoreWhenReady,
   browserScrollEnvironment,
 } from "@/lib/navigation";
+function LinkProgress() {
+  const { pending } = useLinkStatus();
+  return pending ? <span className={experience.routePending} role="status" aria-label="Opening page" /> : null;
+}
 const primary = [
   { path: "overview", label: "Home", icon: Home },
   { path: "research", label: "Research", icon: ChartNoAxesCombined },
@@ -144,6 +148,7 @@ export default function Shell({
       >
         <Icon size={22} />
         <span>{r.label}</span>
+        <LinkProgress />
       </Link>
     );
   };

@@ -1,3 +1,4 @@
+import { workspaceFailure } from "@/lib/workspace-errors";
 import { account, failure, HttpError, limit, privateJson } from "@/lib/server";
 import { symbolInput } from "@/lib/format";
 import { normalizePositions, normalizeWatchlist } from "@/lib/workspace";
@@ -14,11 +15,12 @@ export async function GET(request: Request) {
         .select("symbol,created_at")
         .eq("user_id", user.id),
     ]);
-    if (p.error || w.error)
-      throw new HttpError(
-        "Saved investments could not be loaded. Check the account table permissions.",
-        503,
-      );
+    if (p.error || w.error) {
+      const problem = workspaceFailure([p, w]);
+      // Codes and status only: never log investment rows, tokens or account IDs.
+      console.warn("workspace_read_failed", {positions: p.error?.code, watchlist: w.error?.code, status: problem.status});
+      throw new HttpError(problem.message, problem.status);
+    }
     return privateJson({
       email: user.email,
       positions: normalizePositions(p.data ?? []),

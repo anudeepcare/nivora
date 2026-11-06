@@ -1,3 +1,7 @@
+# November 6, 2026 — UI and reliability pass
+
+Current verification: `verification/COMPLETE-UX-PASS-20261106.md`. All 1,064 automated tests and the production build passed. Mobile/tablet/desktop browser interaction checks used preview fixtures. Installed iPhone PWA and deployed affected-account session recovery remain required release checks. This source has not been deployed by this pass. Older entries below are historical.
+
 # AURYN Edge — October 25 preprod build
 
 Latest release: see `docs/AURYN_EDGE_RELEASE.md`, `docs/SUPPORT_SETUP.md` and `docs/PREPROD_EDGE_DEPLOYMENT.md`. The complete source is included. No production deployment or live email/database mutation was performed. Historical notes below describe earlier releases and are not a claim of current verification.

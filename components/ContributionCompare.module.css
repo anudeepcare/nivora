@@ -77,7 +77,7 @@
 }
 .grid article {
   min-width: 0;
-  border-top: 3px solid #b6ce58;
+  border-top: 1px solid var(--line);
   padding-top: 12px;
 }
 .grid h3 {

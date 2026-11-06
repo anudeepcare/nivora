@@ -1,4 +1,5 @@
 "use client";
+import { fetchWithDeadline } from "./request-deadline";
 import { customerText } from "./customer-language";
 import { createBrowserClient } from "@supabase/ssr";
 import { completeSignOut } from "./auth-actions";
@@ -25,7 +26,7 @@ export async function api<T>(
 ): Promise<T> {
   const { data, error } = await authClient().auth.getSession();
   if (error || !data.session) throw new ApiError("Your session ended. Sign in again.", 401);
-  const send = (token: string) => fetch(`/api/${path}`, {
+  const send = (token: string) => fetchWithDeadline(`/api/${path}`, {
     method: body ? "POST" : "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -43,7 +44,7 @@ export async function api<T>(
     },
     ...(body ? { body: JSON.stringify(body) } : {}),
     signal,
-  });
+  }, /^(workspace|access|preferences)(?:\?|$)/.test(path) ? 20000 : 90000);
   let response = await send(data.session.access_token);
   // A rejected token has not authorized a mutation. Refresh once, sharing the
   // refresh across concurrent requests, then retry with the replacement token.

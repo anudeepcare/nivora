@@ -8,7 +8,8 @@ function setup(statuses){
  const exports={};
  const auth={getSession:async()=>({data:{session:{access_token:'old'}}}),refreshSession:async()=>{refreshes++;await new Promise(r=>setTimeout(r,5));return {data:{session:{access_token:'new'}}}}};
  const code=ts.transpileModule(fs.readFileSync('lib/client.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText;
- vm.runInNewContext(code,{exports,process:{env:{NEXT_PUBLIC_SUPABASE_URL:'https://example.test',NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:'test'}},require:(name)=>name==='@supabase/ssr'?{createBrowserClient:()=>({auth})}:name.includes('customer-language')?{customerText:x=>x}:{},fetch:async(url,options)=>{requests++;const status=statuses(options.headers.Authorization);return {status,ok:status===200,json:async()=>status===200?{ok:true}:{error:'Unavailable'}}}});
+ const context={exports,process:{env:{NEXT_PUBLIC_SUPABASE_URL:'https://example.test',NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:'test'}},require:(name)=>name.includes('request-deadline')?{fetchWithDeadline:(url,options)=>context.fetch(url,options)}:name==='@supabase/ssr'?{createBrowserClient:()=>({auth})}:name.includes('customer-language')?{customerText:x=>x}:{},fetch:async(url,options)=>{requests++;const status=statuses(options.headers.Authorization);return {status,ok:status===200,json:async()=>status===200?{ok:true}:{error:'Unavailable'}}}};
+ vm.runInNewContext(code,context);
  return {api:exports.api,counts:()=>({requests,refreshes})};
 }
 test('concurrent expired-token requests share one refresh and retry with the new token',async()=>{

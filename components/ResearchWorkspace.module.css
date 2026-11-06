@@ -219,7 +219,7 @@
   margin: 24px 0;
 }
 .case {
-  border-top: 3px solid var(--teal);
+  border-top: 1px solid var(--line);
   padding-top: 14px;
   min-width: 0;
 }
