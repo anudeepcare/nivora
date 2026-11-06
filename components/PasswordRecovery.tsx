@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { authClient } from "@/lib/client";
+
 import { PublicSample } from "./PublicLanding";
 export default function PasswordRecovery() {
   const [password, setPassword] = useState("");
@@ -9,22 +9,14 @@ export default function PasswordRecovery() {
   const [error, setError] = useState("");
   const [ready, setReady] = useState(false);
   const [checking, setChecking] = useState(true);
+  const [email, setEmail] = useState("");
+  const [complete, setComplete] = useState(false);
   useEffect(() => {
-    let active = true;
-    let eventSeen = false;
-    if (new URLSearchParams(window.location.search).has("auth_error")) {
-      setChecking(false);
-      return;
-    }
-    const auth = authClient().auth;
-    const { data } = auth.onAuthStateChange((_event, session) => {
-      eventSeen = true;
-      if (active) { setReady(!!session); setChecking(false); }
-    });
-    void auth.getSession().then(({data, error}) => {
-      if (active && !eventSeen) { setReady(!error && !!data.session); setChecking(false); }
-    }).catch(() => { if (active) setChecking(false); });
-    return () => { active = false; data.subscription.unsubscribe(); };
+    const controller = new AbortController();
+    fetch("/api/auth/recovery", {cache:"no-store",signal:controller.signal})
+      .then(async response => { const value=await response.json(); if (!controller.signal.aborted) {setReady(response.ok && !!value.email);setEmail(response.ok ? value.email : "");} })
+      .catch(()=>{}).finally(()=>{if(!controller.signal.aborted)setChecking(false);});
+    return ()=>controller.abort();
   }, []);
   async function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -36,11 +28,12 @@ export default function PasswordRecovery() {
     }
     setBusy(true);
     try {
-      const { error } = await authClient().auth.updateUser({ password });
-      if (error) throw error;
-      window.location.replace("/overview");
-    } catch {
-      setError(
+      const response = await fetch("/api/auth/recovery", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password})});
+      const value=await response.json();
+      if (!response.ok) throw new Error(value.error);
+      setPassword("");setConfirm("");setComplete(true);setReady(false);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message :
         "Your password could not be updated. Try a new recovery link if this one has expired.",
       );
       setBusy(false);
@@ -88,7 +81,9 @@ export default function PasswordRecovery() {
             <h1>Reset your password</h1>
             <p>Choose a new password to return to your investment workspace.</p>
           </div>
-          {checking ? <p role="status">Checking your reset link…</p> : !ready ? <p role="alert">This reset link has expired or could not be verified in this browser. <a href="/login?mode=reset">Request a new reset link</a> and open it in the same browser where you requested it.</p> : null}
+          {complete && <p role="status">Your password was updated. <a href="/overview">Continue to your workspace</a></p>}
+          {ready && <p>Reset password for <strong>{email}</strong></p>}
+          {checking ? <p role="status">Checking your reset link…</p> : !ready && !complete ? <p role="alert">This reset link has expired or could not be verified in this browser. <a href="/login?mode=reset">Request a new reset link</a> and open it in the same browser where you requested it.</p> : null}
           {ready && <form className="mp-auth-form" onSubmit={submit} aria-busy={busy}>
             <div className="mp-form-field">
               <label htmlFor="auryn-new-password">New password</label>

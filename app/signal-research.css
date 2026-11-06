@@ -138,3 +138,5 @@
 .approved-product .approved-research-page .signal-research-rail .pace-explanation { margin-top:12px; padding-top:0; border-color:var(--line); }
 .approved-product .approved-research-page .signal-research-rail .pace-open { margin-top:10px; }
 }
+
+.research-saved-changes{padding:0;margin:8px 0 12px;border:0;background:transparent;font-size:13px;color:var(--muted)}.research-saved-changes>summary{display:list-item;cursor:pointer;min-height:44px;align-content:center;list-style:disclosure-closed inside}.research-saved-changes[open]>summary{list-style-type:disclosure-open}.research-saved-changes .observed-changes{padding:12px 0}

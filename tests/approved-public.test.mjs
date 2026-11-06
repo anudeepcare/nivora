@@ -162,7 +162,7 @@ test("public home leads with the benefit and an account action without fabricate
   assert.match(html, /href="#how-it-works"[^>]*>Explore the product/);
 
   assert.match(html, /href="\/login\?mode=signup"[^>]*>Get started/);
-  assert.match(html, /AURYN Pace/);
+  assert.match(html, /AURYN Accumulation Pace/);
   assert.match(html, /Product walkthrough/);
   assert.match(html, /Compare your next contribution/);
   assert.match(html, /Question the price/);
@@ -192,7 +192,7 @@ test("public and account previews explain Pace without fictional company results
       React.createElement(PublicSample, { compact }),
     );
     assert.match(html, /Illustrative product guide/);
-    assert.match(html, /AURYN Pace/);
+    assert.match(html, /AURYN Accumulation Pace/);
     assert.match(html, /not predicted returns/);
     assert.match(html, /Completed month · confirmed/);
     assert.match(html, /Current month · forming/);
@@ -429,7 +429,7 @@ test("available OAuth choices call their provider and disabled choices do not se
 
 test("recovery keeps both password fields and blocks mismatched passwords before contacting auth", async () => {
   let index = 0;
-  const values = [],
+  const values = ["","",false,"",true,false,"person@example.com",false],
     calls = [];
   const useState = (initial) => {
     const i = index++;
@@ -535,80 +535,24 @@ test("confirmation resend preserves the callback and suppresses a second request
   }
 });
 
-test("successful password recovery updates real auth before redirect and an expired link stays on the form", async () => {
-  for (const expired of [false, true]) {
-    let index = 0;
-    const values = [],
-      calls = [];
-    const previous = globalThis.window;
-    globalThis.window = {
-      location: { replace: (path) => calls.push(["redirect", path]) },
-    };
-    const useState = (initial) => {
-      const i = index++;
-      if (!(i in values)) values[i] = initial;
-      return [
-        values[i],
-        (next) => {
-          values[i] = next;
-        },
-      ];
-    };
-    const Recovery = load(
-      "components/PasswordRecovery.tsx",
-      "PasswordRecovery",
-      {
-        ...common,
-        PublicSample,
-        useState,
-        authClient: () => ({
-          auth: {
-            updateUser: async (data) => {
-              calls.push(["update", data]);
-              return {
-                data: { user: expired ? null : { id: "account" } },
-                error: expired ? new Error("expired") : null,
-              };
-            },
-          },
-        }),
-      },
-    );
-    const render = () => {
-      index = 0;
-      return Recovery();
-    };
-    try {
-      const inputs = nodes(render(), (node) => node.type === "input");
-      inputs.forEach((input) =>
-        input.props.onChange({ target: { value: "new passphrase" } }),
-      );
-      await nodes(render(), (node) => node.type === "form")[0].props.onSubmit({
-        preventDefault() {},
-      });
-      assert.deepEqual(
-        calls,
-        expired
-          ? [["update", { password: "new passphrase" }]]
-          : [
-              ["update", { password: "new passphrase" }],
-              ["redirect", "/overview"],
-            ],
-      );
-      if (expired) {
-        assert.match(renderToStaticMarkup(render()), /role="alert"/);
-        assert.equal(
-          nodes(
-            render(),
-            (node) => node.type === "button" && node.props.type === "submit",
-          )[0].props.disabled,
-          false,
-        );
-      }
-    } finally {
-      globalThis.window = previous;
-    }
-  }
+test("password recovery verifies its account, saves through the recovery endpoint and never auto-redirects", async () => {
+ for(const expired of [false,true]){
+  let index=0;const states=[],effects=[],calls=[];
+  const Recovery=load("components/PasswordRecovery.tsx","PasswordRecovery",{...common,PublicSample,
+   useState:initial=>{const i=index++;if(!(i in states))states[i]=initial;return [states[i],next=>{states[i]=next}]},
+   useEffect:fn=>{if(!effects.length)effects.push(fn)},
+   fetch:async(path,options)=>{calls.push([path,options.method||'GET']);return {ok:!expired,json:async()=>expired?{error:'Expired'}:options.method==='POST'?{ok:true}:{email:'verified@example.com'}}}
+  });
+  const render=()=>{index=0;return Recovery()};
+  render();effects[0]();await new Promise(resolve=>setTimeout(resolve,0));
+  if(expired){assert.equal(nodes(render(),n=>n.type==='form').length,0);assert.match(renderToStaticMarkup(render()),/Request a new reset link/);assert.equal(calls.length,1);continue;}
+  assert.match(renderToStaticMarkup(render()),/verified@example.com/);
+  nodes(render(),n=>n.type==='input').forEach(n=>n.props.onChange({target:{value:'new passphrase'}}));
+  await nodes(render(),n=>n.type==='form')[0].props.onSubmit({preventDefault(){}});
+  assert.deepEqual(calls,[['/api/auth/recovery','GET'],['/api/auth/recovery','POST']]);
+  assert.match(renderToStaticMarkup(render()),/Your password was updated/);
+  assert.equal(nodes(render(),n=>n.type==='form').length,0);
+ }
 });
 
 function preferencesHarness() {

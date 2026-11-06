@@ -1,7 +1,7 @@
 /** Exchanges a one-time PKCE code. No arbitrary return URL or raw provider errors. */
 export async function completeAuthCallback(
   input: string,
-  exchange: (code: string) => Promise<{ error: unknown }>,
+  exchange: (code: string) => Promise<{ error: unknown; data?: {redirectType?: string | null} }>,
 ): Promise<string> {
   const url = new URL(input);
   const failure = url.searchParams.get("next") === "/reset-password" ? "/reset-password?auth_error=callback" : "/login?auth_error=callback";
@@ -9,9 +9,9 @@ export async function completeAuthCallback(
   const code = url.searchParams.get("code");
   if (!code || code.length > 4096) return failure;
   try {
-    const { error } = await exchange(code);
+    const { error, data } = await exchange(code);
     if (error) return failure;
-    return url.searchParams.get("next") === "/reset-password" ? "/reset-password" : "/overview";
+    return data?.redirectType === "recovery" || url.searchParams.get("next") === "/reset-password" ? "/reset-password" : "/overview";
   } catch { return failure; }
 }
 

@@ -505,7 +505,7 @@ export default function Research({ symbol }: { symbol: string }) {
         </div>
       </header>
       <StockFacts research={r} />
-      <details className="research-saved-changes"><summary>Changes since your last saved observation</summary><ResearchChanges research={r} /></details>
+      <details className="research-saved-changes"><summary>Changes since your last visit</summary><ResearchChanges research={r} /></details>
 
       {notice && <Notice error>{notice}</Notice>}
       {resource.error && <Notice error>{resource.error}</Notice>}

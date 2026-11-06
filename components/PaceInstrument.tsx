@@ -67,13 +67,12 @@ export default function PaceInstrument({
     <section
       className={`${s.instrument} ${compact ? s.compact : ""}`}
       aria-label={
-        publicGuide ? "Explore the AURYN Pace framework" : "AURYN Pace"
+        publicGuide ? "Explore the AURYN Accumulation Pace framework" : "AURYN Accumulation Pace"
       }
     >
       <header className={s.header}>
         <span>
-          <img src="/pace-diamond.svg" alt="" width="22" height="24" /> AURYN
-          PACE
+          <img src="/pace-diamond.svg" alt="" width="22" height="24" /> <span>AURYN<br />ACCUMULATION PACE</span>
         </span>
         <PaceHelp />
       </header>

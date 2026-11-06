@@ -468,3 +468,5 @@
 .evidenceDetails p {margin:0;padding:12px;background:#ffffff06;border-radius:10px;font-size:12px}
 .evidenceDetails p strong {display:block;margin-bottom:6px;color:#e9eee7}
 @media(max-width:600px){.evidenceDetails{grid-template-columns:1fr}.title h2>.level{min-width:60px;min-height:54px;font-size:30px;margin-top:8px}}
+
+.header>span{min-width:0;letter-spacing:.1em;line-height:1.5;font-size:12px}.header>span img{flex-shrink:0}.header>button{flex-shrink:0}

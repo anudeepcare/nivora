@@ -7,7 +7,7 @@ import {
   type Access,
   type Feature,
 } from "./access-policy";
-export const accessEnabled = () => process.env.AURYN_ACCESS_ENABLED === "true";
+export const accessEnabled = () => process.env.VERCEL === "1" || process.env.AURYN_ACCESS_ENABLED === "true";
 export const exactOwner = (id: string) =>
   !!process.env.AURYN_OWNER_USER_ID && id === process.env.AURYN_OWNER_USER_ID;
 export function accessDb() {

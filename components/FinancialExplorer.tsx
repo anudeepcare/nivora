@@ -1,6 +1,6 @@
 "use client";
 import layout from "./FinancialExplorer.module.css";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import type { Research } from "@/lib/types";
 import {
   applicableMetrics,
@@ -20,6 +20,9 @@ export default function FinancialExplorer({
     [inspected, setInspected] = useState<number | null>(null),
     [years, setYears] = useState(5),
     [style, setStyle] = useState<"bar" | "line" | "area">("bar");
+  const plot = useRef<SVGSVGElement>(null);
+  const [plotWidth,setPlotWidth]=useState(760);
+  useEffect(()=>{if(!plot.current)return;const observer=new ResizeObserver(([entry])=>setPlotWidth(Math.max(280,entry.contentRect.width)));observer.observe(plot.current);return ()=>observer.disconnect();},[]);
   const catalog = useMemo(
       () =>
         applicableMetrics(r).toSorted(
@@ -69,10 +72,10 @@ export default function FinancialExplorer({
     span = high - low || 1;
   useEffect(()=>setInspected(null),[chosen,years,scope,r.company.symbol]);
   const observed = inspected == null ? null : points[Math.min(inspected,points.length-1)];
-  const x = (i: number) => 38 + ((i + 0.5) * 684) / Math.max(1, points.length),
+  const x = (i: number) => 62 + ((i + 0.5) * (plotWidth-85)) / Math.max(1, points.length),
     y = (v: number) => 195 - ((v - low) / span) * 155,
     zero = y(0),
-    width = Math.min(42, 450 / Math.max(1, points.length));
+    width = Math.min(42, (plotWidth-85)*0.65 / Math.max(1, points.length));
   const format = (v: number | null) =>
     v == null
       ? "—"
@@ -222,7 +225,9 @@ export default function FinancialExplorer({
           {values.length > 0 && <p className="explorer-inspection" aria-live="polite">{observed ? `${dateLabel(observed.end)} · ${observed.value == null ? "No comparable reported value" : format(observed.value)}` : "Hover or touch to inspect. Arrow keys move between periods."}</p>}
           {values.length ? (
             <svg
-              viewBox="0 0 760 240"
+              ref={plot}
+              viewBox={`0 0 ${plotWidth} 240`}
+              preserveAspectRatio="none"
               role="slider"
               tabIndex={0}
               aria-valuemin={0}
@@ -230,8 +235,10 @@ export default function FinancialExplorer({
               aria-valuenow={inspected ?? points.length-1}
               aria-valuetext={`${dateLabel((observed ?? points.at(-1)!).end)}: ${format((observed ?? points.at(-1)!).value)}`}
               onPointerMove={event=>{
-                const rect=event.currentTarget.getBoundingClientRect();
-                setInspected(Math.max(0,Math.min(points.length-1,Math.floor(((event.clientX-rect.left)/rect.width*760-38)/684*points.length))));
+                const matrix=event.currentTarget.getScreenCTM();
+                if(!matrix)return;
+                const point=new DOMPoint(event.clientX,event.clientY).matrixTransform(matrix.inverse());
+                setInspected(Math.max(0,Math.min(points.length-1,Math.floor((point.x-62)/(plotWidth-85)*points.length))));
               }}
               onFocus={()=>setInspected(points.length-1)}
               onKeyDown={event=>{
@@ -242,7 +249,8 @@ export default function FinancialExplorer({
               aria-label={`${series.definition?.label} by reported period`}
             >
               {inspected != null && <line x1={x(inspected)} x2={x(inspected)} y1="30" y2="200" stroke="var(--ink)" strokeDasharray="3 3" opacity=".5"/>}
-              <line x1="32" x2="735" y1={zero} y2={zero} stroke="var(--line)" />
+              {[0,1,2,3].map(index=>{const value=low+span*index/3;return <g key={index}><line x1="60" x2={plotWidth-15} y1={y(value)} y2={y(value)} stroke="var(--line)" strokeDasharray="3 4"/><text x="54" y={y(value)+3} textAnchor="end" fontSize="11" fill="var(--muted)">{format(value)}</text></g>;})}
+              <line x1="60" x2={plotWidth-15} y1={zero} y2={zero} stroke="var(--line)" />
               {style === "area" &&
                 areas.map((d, i) => (
                   <path key={i} d={d} fill="var(--blue)" opacity=".12" />
@@ -279,10 +287,10 @@ export default function FinancialExplorer({
                       )}
                     </>
                   )}
-                  {(points.length <= 8 ||
+                  {(points.length <= (plotWidth<500?3:8) ||
                     i === 0 ||
                     i === points.length - 1 ||
-                    i % Math.ceil(points.length / 6) === 0) && (
+                    i % Math.ceil(points.length / (plotWidth<500?2:6)) === 0) && (
                     <text
                       x={x(i)}
                       y="224"
