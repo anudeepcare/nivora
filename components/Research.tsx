@@ -88,7 +88,6 @@ import DecisionBrief from "./DecisionBrief";
 import TargetsEstimates from "./TargetsEstimates";
 import AnalystRatings from "./AnalystRatings";
 import CompanyUpdates from "./CompanyUpdates";
-import ResearchChanges from "./ResearchChanges";
 import OverviewContext from "./OverviewContext";
 const tabs = [
   "Snapshot",
@@ -505,7 +504,6 @@ export default function Research({ symbol }: { symbol: string }) {
         </div>
       </header>
       <StockFacts research={r} />
-      <details className="research-saved-changes"><summary>Changes since your last visit</summary><ResearchChanges research={r} /></details>
 
       {notice && <Notice error>{notice}</Notice>}
       {resource.error && <Notice error>{resource.error}</Notice>}
