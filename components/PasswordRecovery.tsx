@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { authClient } from "@/lib/client";
 import { PublicSample } from "./PublicLanding";
 export default function PasswordRecovery() {
@@ -7,9 +7,28 @@ export default function PasswordRecovery() {
   const [confirm, setConfirm] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [ready, setReady] = useState(false);
+  const [checking, setChecking] = useState(true);
+  useEffect(() => {
+    let active = true;
+    let eventSeen = false;
+    if (new URLSearchParams(window.location.search).has("auth_error")) {
+      setChecking(false);
+      return;
+    }
+    const auth = authClient().auth;
+    const { data } = auth.onAuthStateChange((_event, session) => {
+      eventSeen = true;
+      if (active) { setReady(!!session); setChecking(false); }
+    });
+    void auth.getSession().then(({data, error}) => {
+      if (active && !eventSeen) { setReady(!error && !!data.session); setChecking(false); }
+    }).catch(() => { if (active) setChecking(false); });
+    return () => { active = false; data.subscription.unsubscribe(); };
+  }, []);
   async function submit(event: React.FormEvent) {
     event.preventDefault();
-    if (busy) return;
+    if (busy || !ready) return;
     setError("");
     if (password !== confirm) {
       setError("The passwords do not match.");
@@ -66,10 +85,11 @@ export default function PasswordRecovery() {
         <div className="mp-auth-panel mp-reset-panel">
           <div className="mp-auth-heading">
             <span className="mp-overline">ACCOUNT RECOVERY</span>
-            <h1>A fresh start.</h1>
+            <h1>Reset your password</h1>
             <p>Choose a new password to return to your investment workspace.</p>
           </div>
-          <form className="mp-auth-form" onSubmit={submit} aria-busy={busy}>
+          {checking ? <p role="status">Checking your reset link…</p> : !ready ? <p role="alert">This reset link has expired or could not be verified in this browser. <a href="/login?mode=reset">Request a new reset link</a> and open it in the same browser where you requested it.</p> : null}
+          {ready && <form className="mp-auth-form" onSubmit={submit} aria-busy={busy}>
             <div className="mp-form-field">
               <label htmlFor="auryn-new-password">New password</label>
               <input
@@ -110,7 +130,7 @@ export default function PasswordRecovery() {
             >
               {busy ? "Updating…" : "Update password & continue"}
             </button>
-          </form>
+          </form>}
           <a href="/login" className="mp-back-link">
             ← Return to sign in
           </a>

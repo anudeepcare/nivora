@@ -4,14 +4,15 @@ export async function completeAuthCallback(
   exchange: (code: string) => Promise<{ error: unknown }>,
 ): Promise<string> {
   const url = new URL(input);
-  if (url.searchParams.has("error")) return "/login?auth_error=cancelled";
+  const failure = url.searchParams.get("next") === "/reset-password" ? "/reset-password?auth_error=callback" : "/login?auth_error=callback";
+  if (url.searchParams.has("error")) return failure.startsWith("/reset-password") ? failure : "/login?auth_error=cancelled";
   const code = url.searchParams.get("code");
-  if (!code || code.length > 4096) return "/login?auth_error=callback";
+  if (!code || code.length > 4096) return failure;
   try {
     const { error } = await exchange(code);
-    if (error) return "/login?auth_error=callback";
+    if (error) return failure;
     return url.searchParams.get("next") === "/reset-password" ? "/reset-password" : "/overview";
-  } catch { return "/login?auth_error=callback"; }
+  } catch { return failure; }
 }
 
 /** Used with Supabase email templates; works without a same-browser PKCE verifier. */
@@ -21,9 +22,10 @@ export async function completeEmailConfirmation(
 ): Promise<string> {
   const params = new URL(input).searchParams;
   const type = params.get("type"), token_hash = params.get("token_hash");
-  if (!token_hash || token_hash.length > 4096 || (type !== "email" && type !== "recovery")) return "/login?auth_error=callback";
+  const failure = type === "recovery" ? "/reset-password?auth_error=callback" : "/login?auth_error=callback";
+  if (!token_hash || token_hash.length > 4096 || (type !== "email" && type !== "recovery")) return failure;
   try {
     const {error} = await verify({token_hash,type});
-    return error ? "/login?auth_error=callback" : type === "recovery" ? "/reset-password" : "/overview";
-  } catch {return "/login?auth_error=callback";}
+    return error ? failure : type === "recovery" ? "/reset-password" : "/overview";
+  } catch {return failure;}
 }

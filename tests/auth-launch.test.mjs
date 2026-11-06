@@ -56,3 +56,8 @@ test('real session boundary ignores an initial session response arriving after s
  const previous=globalThis.window;globalThis.window={addEventListener(){},removeEventListener(){}};
  try{render();while(effects.length)effects.shift()();listener('SIGNED_OUT',null);settle({data:{session:{user:{id:'old'}}},error:null});await Promise.resolve();await Promise.resolve();const tree=render();while(effects.length)effects.shift()();assert.deepEqual(routes,['/login']);assert.equal(tree.type,'main');assert.equal(states[1],null);}finally{globalThis.window=previous;}
 });
+test('failed recovery stays on recovery while normal sign-in errors stay on login',async()=>{
+ const {completeAuthCallback,completeEmailConfirmation}=await import('../lib/auth-callback.ts');
+ assert.equal(await completeAuthCallback('https://auryninvest.com/auth/callback?next=/reset-password&code=expired',async()=>({error:'expired'})),'/reset-password?auth_error=callback');
+ assert.equal(await completeEmailConfirmation('https://auryninvest.com/auth/confirm?type=recovery&token_hash=expired',async()=>({error:'expired'})),'/reset-password?auth_error=callback');
+});
