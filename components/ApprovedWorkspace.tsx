@@ -1,5 +1,6 @@
 "use client";
 import SectionIcon from "./SectionIcon";
+import { useWorkspacePace, PaceBadge, PaceBoard } from "./WorkspacePace";
 import { useWorkspacePreferences } from "./WorkspacePreferences";
 import OpportunityMap from "./OpportunityMap";
 import { MarketRadar } from "./MarketRadar";
@@ -185,6 +186,7 @@ function useWorkspaceData(scope: "all" | "portfolio" | "watchlist" = "all") {
   );
   const prefix =
     product.demo && product.demo.routePrefix !== "" ? "/preview" : "";
+  const paceScan = useWorkspacePace([...(scope === "watchlist" ? [] : (product.workspace?.positions ?? []).filter(p => p.assetType === "stock").map(p => p.symbol)), ...(scope === "portfolio" ? [] : (product.workspace?.watchlist ?? []).map(p => p.symbol))]);
   const research = (symbol: string) =>
     product.demo?.research[symbol] ??
     (product.cache.get(
@@ -213,8 +215,9 @@ function useWorkspaceData(scope: "all" | "portfolio" | "watchlist" = "all") {
     [quotes.data],
   );
   const pace = (symbol: string) => {
+    if (paceScan.rows[symbol]?.signal) return paceScan.rows[symbol].signal!;
     const r = research(symbol);
-    if (!r) return null;
+    if (!r) return paceScan.rows[symbol]?.signal ?? null;
     return workspaceGuidance(
       r,
       !!product.workspace?.positions.some(
@@ -223,7 +226,7 @@ function useWorkspaceData(scope: "all" | "portfolio" | "watchlist" = "all") {
       product.demo ? Date.parse(r.retrievedAt) : Date.now(),
     );
   };
-  return { ...product, quotes, balances, prefix, model, q, pace, research };
+  return { ...product, quotes, balances, prefix, model, q, pace, research, paceScan };
 }
 function WealthStrip({
   state,
@@ -924,45 +927,7 @@ function HomeOverview() {
                 </button>
               )}
             </section>
-            <section className="home-evidence-panel home-review-panel">
-              <SectionHead
-                title="Research to revisit"
-                subtitle="Price context with business checks attached."
-              />
-              <Link
-                className="home-review-row"
-                href={
-                  best
-                    ? researchLink(best.symbol, prefix)
-                    : `${prefix}/research`
-                }
-              >
-                <span className="home-review-mark">
-                  {best ? (
-                    best.signal!.view.rawLevel != null ? (
-                      best.signal!.view.code
-                    ) : (
-                      <Activity size={20} />
-                    )
-                  ) : (
-                    <Bookmark size={20} />
-                  )}
-                </span>
-                <span>
-                  <strong>
-                    {best
-                      ? `${best.symbol} · AURYN Pace`
-                      : "Explore accumulation zones"}
-                  </strong>
-                  <small>
-                    {best
-                      ? `${best.signal!.view.actionLabel} · confirmed ${best.signal!.view.code}. From companies researched in this session; review the business and your position limit.`
-                      : "Open a company to see whether its business qualifies and an accumulation zone is established."}
-                  </small>
-                </span>
-                <ArrowUpRight size={17} />
-              </Link>
-            </section>
+            <PaceBoard {...state.paceScan} prefix={prefix} />
           </div>
         </>
       )}
@@ -1020,6 +985,7 @@ export function Portfolio() {
     [depthOpen, setDepthOpen] = useState(false),
     [currencySaving, setCurrencySaving] = useState(false),
     [currencyError, setCurrencyError] = useState("");
+  const [paceFilter, setPaceFilter] = useState("all");
   const balances = useRef<HTMLDialogElement>(null),
     depth = useRef<HTMLDialogElement>(null);
   const calendar = usePortfolioCalendar(positions);
@@ -1038,7 +1004,7 @@ export function Portfolio() {
   const visible = positions.filter((p) =>
     `${p.symbol} ${quotes.data[p.symbol]?.company?.name || ""} ${p.assetType === "cash" ? "cash" : ""}`
       .toLowerCase()
-      .includes(query.trim().toLowerCase()),
+      .includes(query.trim().toLowerCase()) && (paceFilter === "all" || String(state.pace(p.symbol)?.view.rawLevel) === paceFilter),
   );
   const companies = Object.fromEntries(
     Object.entries(quotes.data).map(([symbol, row]) => [symbol, row.company]),
@@ -1113,6 +1079,7 @@ export function Portfolio() {
                 <SearchIcon size={18} aria-hidden="true" />
                 <input aria-label="Filter holdings" placeholder="Find a holding" value={query} onChange={(e) => setQuery(e.target.value)} />
               </label>}
+              <select aria-label="Filter holdings by accumulation pace" value={paceFilter} onChange={e => setPaceFilter(e.target.value)}><option value="all">All pace levels</option>{[4,3,2,1,0].map(n => <option key={n} value={n}>P{n}</option>)}</select>
               <div className={portfolioStyles.refreshControls}>
                 {positions.length > 0 && <select aria-label="Portfolio price refresh interval" value={quotes.mode} onChange={(e) => quotes.changeMode(e.target.value as typeof quotes.mode)}>
                   <option value="balanced">Every 5 min</option>
@@ -1145,7 +1112,7 @@ export function Portfolio() {
                   <button
                     className="btn"
                     onClick={() =>
-                      positions.length ? setQuery("") : setEditing("new")
+                      positions.length ? (setQuery(""), setPaceFilter("all")) : setEditing("new")
                     }
                   >
                     {positions.length
@@ -1472,7 +1439,7 @@ function HoldingsTable({
         </caption>
         <thead>
           <tr>
-            <th>Company</th>
+            <th>Company / accumulation pace</th>
             <th>Weight</th>
             <th>Price</th>
             <th>Value / return</th>
@@ -1521,20 +1488,7 @@ function HoldingsTable({
                             : "Unknown currency"}{" "}
                           cost
                         </small>
-                        {decision && (
-                          <small
-                            className={
-                              decision.view.status === "paused"
-                                ? "red"
-                                : "muted"
-                            }
-                          >
-                            Your holding · {decision.view.actionLabel}
-                            {decision.view.rawLevel != null
-                              ? ` · Confirmed Pace ${decision.view.code}`
-                              : ""}
-                          </small>
-                        )}
+                        <PaceBadge signal={decision} loading={state.paceScan.loading} />
                       </span>
                     </Link>
                   )}

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import styles from "./OwnerAccess.module.css";
 import SupportInbox from "./SupportInbox";
 import { api } from "@/lib/client";
 import { useAccess } from "./Access";
@@ -88,12 +89,17 @@ export default function OwnerAccess() {
       </section>
     );
   return (
-    <section className="owner-access">
+    <section className={`owner-access ${styles.root}`}>
       <header className="owner-heading">
         <span className="eyebrow">Your workspace</span>
         <h1>Admin controls</h1>
-        <p>People, product access and payments. Just for you.</p>
+        <p>Manage members, access and billing.</p>
       </header>
+      {data && <div className={styles.stats}>
+        <div><span>Active complimentary members</span><strong>{data.grants.filter(g => !g.revoked_at && Date.parse(g.expires_at) > Date.now()).length}</strong></div>
+        <div><span>Expiring within 7 days</span><strong>{data.grants.filter(g => !g.revoked_at && Date.parse(g.expires_at) > Date.now() && Date.parse(g.expires_at) <= Date.now() + 7 * 86400000).length}</strong></div>
+        <div><span>Research / AI entries this month</span><strong>{data.usage}</strong></div>
+      </div>}
       <section className="admin-preview-row" aria-label="Plan preview">
         <div>
           <strong>Preview access</strong>
@@ -371,7 +377,7 @@ export default function OwnerAccess() {
                       ? "expired"
                       : "active") === memberFilter),
             ) && <p>No members match this filter.</p>}
-            <div className="owner-grants">
+            <div className={styles.tableWrap}><table className={styles.members}><caption className="sr-only">Complimentary member access</caption><thead><tr><th>Member</th><th>Group</th><th>Access</th><th>Actions</th></tr></thead><tbody>
               {data.grants.length ? (
                 data.grants
                   .filter(
@@ -387,19 +393,18 @@ export default function OwnerAccess() {
                             : "active") === memberFilter),
                   )
                   .map((g) => (
-                    <article key={g.user_id}>
-                      <div>
-                        <strong>{g.email}</strong>
-                        <small>
-                          {g.cohort} ·{" "}
+                    <tr key={g.user_id}>
+                      <td data-label="Member"><strong>{g.email}</strong></td>
+                      <td data-label="Group">{g.cohort}</td>
+                      <td data-label="Access"><small>
                           {g.revoked_at
                             ? "Revoked"
                             : Date.parse(g.expires_at) < Date.now()
                               ? "Expired"
                               : `Until ${new Date(g.expires_at).toLocaleString()} · ${Math.max(0, Math.ceil((Date.parse(g.expires_at) - Date.now()) / 86400000))} days left`}
                         </small>
-                      </div>
-                      <div className="admin-member-actions">
+                      </td>
+                      <td data-label="Actions" className="admin-member-actions">
                         <button
                           type="button"
                           className="button"
@@ -438,14 +443,14 @@ export default function OwnerAccess() {
                         >
                           Revoke
                         </button>
-                      </div>
-                    </article>
+                      </td>
+                    </tr>
                   ))
               ) : (
-                <p>No complimentary grants yet.</p>
+                <tr><td colSpan={4}>No complimentary grants yet.</td></tr>
               )}
-            </div>
-            <details>
+            </tbody></table></div>
+            <details className={styles.danger}>
               <summary>End group access</summary>
               <p>
                 Only complimentary grants are revoked. Paid subscriptions are
@@ -508,7 +513,7 @@ export default function OwnerAccess() {
               <p>Pro · $2.99/month · Unlimited company research</p>
             </div>
           </section>
-          <details className="membership-panel admin-activity">
+          <details hidden={panel !== "people"} className="membership-panel admin-activity">
             <summary>Recent activity</summary>
             <p>
               {data.usage} recorded research/AI usage entries this UTC month.

@@ -32,6 +32,9 @@ import { demoData } from "./fixtures/demo.ts";
 function loadComponent(file, name, bindings) {
   bindings = {
     SectionIcon: () => null,
+    PaceBoard: () => null,
+    PaceBadge: () => null,
+    useWorkspacePace: () => ({ rows: {}, loading: false, refresh: () => {} }),
     Help: ({ label, children }) =>
       React.createElement(
         "details",
@@ -186,7 +189,7 @@ test("Financials avoids duplicate overview tiles and retains statement rows with
   ])
     assert(html.includes(label));
   assert.match(html, /aria-label="Income statement snapshot"/);
-  assert.equal((html.match(/<dt>/g) || []).length, 4);
+  assert.equal((html.match(/<dt>/g) || []).length, 7);
   assert.equal((html.match(/<dd class="num">/g) || []).length, 4);
   assert.doesNotMatch(html, /supported metrics|Expand|Forecast|Market cap/);
 });

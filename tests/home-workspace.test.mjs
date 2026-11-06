@@ -21,6 +21,7 @@ const Link = ({ children, ...props }) =>
 function load(name, bindings) {
   bindings = {
     SectionIcon: () => null,
+    PaceBoard: () => React.createElement("section", {"aria-label":"Accumulation opportunities"}),
     ResearchInbox: () => null,
     ContributionCompare: () => React.createElement("section", {"aria-label":"Compare your next contribution"}, "Compare companies"),
     HomeMarketCards: () => null,
@@ -296,7 +297,7 @@ test("Home accumulation panel excludes valuation-only entries without confirmed 
   });
   const html = renderToStaticMarkup(React.createElement(Home));
   assert.doesNotMatch(html, /confirmed Pending/);
-  assert.match(html, /Explore accumulation zones/);
+  assert.match(html, /Accumulation opportunities/);
 });
 
 test("Home earnings preserves zero and negative actuals, estimates and pending releases", () => {

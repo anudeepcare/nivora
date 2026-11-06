@@ -479,3 +479,5 @@
  .portfolio .refreshControls{grid-column:2;grid-row:1;gap:4px}
  .portfolio .refreshControls select{font-size:12px;max-width:125px}
 }
+
+.portfolio .holdingsToolbar{flex-wrap:wrap}.portfolio .holdingsToolbar>select{min-height:44px;max-width:100%;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);padding:8px 10px;font:inherit;font-size:12px}

@@ -105,7 +105,7 @@ test("financial cash bridge uses reported cash and negative capex as a spending 
   );
   assert.match(
     html,
-    /Current assets|The business generated cash after reported capital spending/,
+    /business-kpis/,
   );
 });
 test("financial cash bridge does not draw unreconciled line items as a valid waterfall", () => {

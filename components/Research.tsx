@@ -643,15 +643,6 @@ export default function Research({ symbol }: { symbol: string }) {
             )}
             {tab === "Financials" && (
               <>
-                <div className="signal-business-intro">
-                  <span className="eyebrow">BUSINESS AT A GLANCE</span>
-                  <h2>Business performance</h2>
-                  <p>
-                    Follow growth, profitability and cash generation. Compare
-                    reporting periods, then inspect the statements behind the
-                    numbers.
-                  </p>
-                </div>
                 <Financials research={r} />
                 <BusinessHistory research={r} />
                 <FinancingContext research={r} />
