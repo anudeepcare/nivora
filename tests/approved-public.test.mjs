@@ -159,9 +159,9 @@ test("public home leads with the benefit and an account action without fabricate
   assert.match(html, /href="\/#how-it-works"/);
   assert.doesNotMatch(html, /Our approach/);
   assert.match(html, /the full picture\./);
-  assert.match(html, /href="#how-it-works"[^>]*>See how it works/);
+  assert.match(html, /href="#how-it-works"[^>]*>Explore the product/);
 
-  assert.match(html, /href="\/login\?mode=signup"[^>]*>Create your account/);
+  assert.match(html, /href="\/login\?mode=signup"[^>]*>Get started/);
   assert.match(html, /AURYN Pace/);
   assert.match(html, /Product walkthrough/);
   assert.match(html, /Compare your next contribution/);
@@ -173,7 +173,7 @@ test("public home leads with the benefit and an account action without fabricate
   assert.match(html, /Has the business changed—or just the price/);
   assert.match(html, /Turn earnings into questions/);
   assert.match(html, /alerts for supported conditions/);
-  assert.match(html, /updates for companies you follow/);
+  assert.match(html, /updates from the companies you follow/);
   assert.match(html, /Discover/);
   assert.match(html, /Understand/);
   assert.match(html, /Plan/);

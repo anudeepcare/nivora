@@ -258,8 +258,8 @@ export default function HomeMarketCards({
           </span>
           <h2 id="home-market-pulse">
             {context === "research"
-              ? "Your research universe"
-              : "Your market pulse"}
+              ? "Saved companies"
+              : "Market pulse"}
           </h2>
           <p>
             {selected.length

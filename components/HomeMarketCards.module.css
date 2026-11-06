@@ -1,5 +1,5 @@
 .section {
-  margin: 30px 0 32px;
+  margin: 22px 0 24px;
 }
 .heading {
   display: flex;
@@ -20,7 +20,7 @@
 }
 .heading h2 {
   margin: 0;
-  font-size: 25px;
+  font-size: 21px;
   letter-spacing: -0.8px;
   line-height: 1.2;
 }
@@ -52,8 +52,8 @@
   position: relative;
   min-width: 0;
   border: 1px solid rgba(25, 56, 39, 0.1);
-  border-radius: 20px;
-  padding: 21px 19px 17px;
+  border-radius: 14px;
+  padding: 17px 16px 14px;
   overflow: hidden;
   box-shadow: 0 7px 20px #18332208;
 }
@@ -105,10 +105,10 @@
   align-items: baseline;
   flex-wrap: wrap;
   gap: 7px;
-  margin-top: 25px;
+  margin-top: 18px;
 }
 .quote strong {
-  font-size: clamp(23px, 2.25vw, 33px);
+  font-size: clamp(23px, 2vw, 29px);
   line-height: 1.1;
   font-weight: 650;
   letter-spacing: -1.3px;
@@ -131,7 +131,7 @@
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  border-radius: 20px;
+  border-radius: 14px;
   padding: 3px 7px;
   background: #ffffff65;
   font-size: 11px;
@@ -282,7 +282,7 @@
     height: 25px;
   }
   .quote strong {
-    font-size: 25px;
+    font-size: 21px;
   }
   .window {
     font-size: 8px;
@@ -323,8 +323,8 @@
 .card {
   background: linear-gradient(
     140deg,
-    color-mix(in srgb, var(--company-accent, #527cb8) 38%, var(--card)),
-    color-mix(in srgb, var(--company-accent, #527cb8) 14%, var(--card))
+    color-mix(in srgb, var(--company-accent, #527cb8) 12%, var(--card)),
+    color-mix(in srgb, var(--company-accent, #527cb8) 3%, var(--card))
   );
   --muted: color-mix(in srgb, var(--ink) 80%, var(--card));
   color: var(--ink);
@@ -383,5 +383,5 @@
 
 .company h3 {opacity:1;}
 :global(html[data-theme="dark"]) .card {
-  background:linear-gradient(140deg,color-mix(in srgb,var(--company-accent,#527cb8) 22%,var(--card)),color-mix(in srgb,var(--company-accent,#527cb8) 10%,var(--card)));
+  background:linear-gradient(140deg,color-mix(in srgb,var(--company-accent,#527cb8) 16%,var(--card)),color-mix(in srgb,var(--company-accent,#527cb8) 5%,var(--card)));
 }

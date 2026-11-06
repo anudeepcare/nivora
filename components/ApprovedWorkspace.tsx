@@ -257,7 +257,7 @@ function WealthStrip({
               : exactBalance
                 ? balances.data?.balances?.managed_value == null
                   ? "Managed balance not entered"
-                  : "Investments + cash + managed − margin"
+                  : "After cash and borrowing"
                 : "Recorded USD holdings and cash"
           }
         />
@@ -269,7 +269,7 @@ function WealthStrip({
           }
           note={
             model.returnPct != null
-              ? `${percent(model.returnPct, true)} · ${model.returnCovered}/${model.investmentCount} cost-covered holdings`
+              ? `${percent(model.returnPct, true)} · ${model.returnCovered}/${model.investmentCount} holdings with cost`
               : "Needs available price and recorded USD cost"
           }
         />
@@ -325,15 +325,15 @@ function Coverage({ state }: { state: ReturnType<typeof useWorkspaceData> }) {
         ? `Not included in USD totals: ${model.unpriced.join(", ")}. `
         : ""}
       {model.older
-        ? `${model.older} older usable quote${model.older === 1 ? " remains" : "s remain"} included. `
+        ? `${model.older} older quote${model.older === 1 ? "" : "s"} included. `
         : ""}
-      {quotes.error || "Observation dates appear with each holding."}{" "}
+      {quotes.error || ""}{" "}
       <button
         className="text-link"
         onClick={quotes.refresh}
         disabled={quotes.loading}
       >
-        Retry prices
+        Refresh prices
       </button>
     </p>
   );
@@ -1068,8 +1068,8 @@ export function Portfolio() {
       className={`approved-workspace approved-portfolio ${portfolioStyles.portfolio} ${workspaceVisuals.workspaceVisuals}`}
     >
       <Heading
-        title="Your portfolio."
-        subtitle="Know what you own—and where the risk sits."
+        title="Portfolio"
+        subtitle="Holdings, performance and allocation."
         actions={
           <>
             <button
@@ -1098,8 +1098,8 @@ export function Portfolio() {
         <div>
           <section className="card">
             <SectionHead
-              title="Value over time"
-              subtitle="Current holdings at historical prices · up to 60 shared sessions"
+              title="Portfolio trend"
+              subtitle="Current holdings · historical prices"
             />
             <ApprovedPortfolioChart
               positions={positions}
@@ -1108,8 +1108,8 @@ export function Portfolio() {
           </section>
           <section className="card">
             <SectionHead
-              title="Your investments"
-              subtitle="All holdings, with the context that matters."
+              title="Holdings"
+              subtitle=""
               action={
                 <button
                   className="icon-button"
@@ -1201,8 +1201,8 @@ export function Portfolio() {
         <div>
           <section className="card">
             <SectionHead
-              title="Where your money sits"
-              subtitle="Share of priced invested value"
+              title="Allocation"
+              subtitle="Priced investments"
             />
             {model.allocations.length ? (
               <>
@@ -1223,7 +1223,7 @@ export function Portfolio() {
                     />
                   ))}
                 </div>
-                {model.allocations.map((a) => (
+                {model.allocations.slice(0, 6).map((a) => (
                   <Link
                     key={a.symbol}
                     href={researchLink(a.symbol, prefix)}
@@ -1239,6 +1239,24 @@ export function Portfolio() {
                     <strong>{percent(a.weight)}</strong>
                   </Link>
                 ))}
+                {model.allocations.length > 6 && <details className="allocation-more"><summary>All {model.allocations.length} holdings</summary>
+                {model.allocations.slice(6).map((a) => (
+                  <Link
+                    key={a.symbol}
+                    href={researchLink(a.symbol, prefix)}
+                    className="allocation-row"
+                  >
+                    <span>
+                      <i
+                        className="dot"
+                        style={{ background: companyAccent(a.symbol) }}
+                      />
+                      {a.symbol}
+                    </span>
+                    <strong>{percent(a.weight)}</strong>
+                  </Link>
+                ))}
+                </details>}
                 <p className="chart-note">
                   Cash and managed balances excluded. Duplicate ticker positions
                   combined.
@@ -1255,8 +1273,8 @@ export function Portfolio() {
           </section>
           <section className="card">
             <SectionHead
-              title="Where risks overlap"
-              subtitle="Different companies can depend on the same thing."
+              title="Exposure"
+              subtitle="Shared sectors and themes"
             />
             {model.groups.length ? (
               <>
@@ -1953,14 +1971,13 @@ export function ResearchHome() {
       className={`approved-workspace approved-research-home ${homeStyles.research}`}
     >
       <Heading
-        title="Your next decision, in focus."
-        subtitle="Explore the business, understand the price and build your perspective."
+        title="Research"
+        subtitle="Explore companies. Compare the evidence."
       />
       <section className="card approved-research-search">
-        <span className="eyebrow">START WITH A COMPANY</span>
-        <h2>What would you like to understand?</h2>
+        <h2>Find a company</h2>
         <Search large />
-        <p>Search a company name, ticker or supported crypto pair.</p>
+        
       </section>
       {workspaceError && <Notice error>{workspaceError}</Notice>}
       {quotes.error && <p className="approved-data-note">{quotes.error}</p>}

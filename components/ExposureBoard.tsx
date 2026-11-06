@@ -626,7 +626,7 @@ export default function ExposureBoard({
       )}
       {mode === "symbols" && (
         <section className={s.comparison}>
-          <h4>Compare saved symbols · device checkpoints</h4>
+          <h4>Saved symbols</h4>
           <p className={s.comparisonNote}>
             Up to six independently dated device snapshots.
           </p>

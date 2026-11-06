@@ -49,18 +49,14 @@ body :is(.approved-workspace, .approved-research-page) details[open] > summary {
   background: color-mix(in srgb, #76b6aa 12%, var(--card));
 }
 body .approved-research-page .signal-business-intro {
-  padding: 20px 24px;
+  padding: 12px 0;
   margin: 16px 0;
-  background: linear-gradient(
-    110deg,
-    color-mix(in srgb, #a8ddc0 20%, var(--card)),
-    var(--card)
-  );
+  background: transparent;
   border-radius: 16px;
   border: 0;
 }
 body .approved-research-page .signal-business-intro h2 {
-  font-size: clamp(24px, 2.5vw, 32px);
+  font-size: clamp(20px, 2vw, 25px);
   margin: 6px 0;
 }
 body .approved-research-page .signal-business-intro p {

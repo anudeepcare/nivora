@@ -93,7 +93,7 @@ function Insights({
       <header>
         <div>
           <span className="eyebrow">THE REASONS BEHIND YOUR NEXT MOVE</span>
-          <h2>Make the decision clearer.</h2>
+          <h2>Investment context</h2>
         </div>
         <Help label="How to use decision insights">
           <p>

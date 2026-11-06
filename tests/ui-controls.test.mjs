@@ -826,10 +826,10 @@ test("authentication explains AURYN in sign-in, signup and recovery without fabr
     assert.match(html, /name="email"/);
     if (mode !== "reset") assert.match(html, /name="password"/);
     assert.match(html, /About AURYN/);
-    assert.match(html, /Find your AURYN Pace/);
-    assert.match(html, /Growth, cash generation and financial health/);
-    assert.match(html, /AURYN Pace/);
-    assert.match(html, /Evidence first. Your judgment always/);
+    assert.match(html, /Business/);
+    assert.match(html, /Value/);
+    assert.match(html, /Your pace/);
+    assert.match(html, /One place for your investment research/);
     assert.doesNotMatch(html, /desktop-nav|mobile-dock|guaranteed returns/);
   }
 });

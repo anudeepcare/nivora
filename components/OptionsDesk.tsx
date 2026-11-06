@@ -529,7 +529,7 @@ export default function OptionsDesk({
                 {(hasGamma || hasOi) && (
                   <details>
                     <summary>
-                      Snapshot statistics · concentrations & gamma
+                      Concentrations & gamma
                     </summary>
                     <div className="options-insight-grid">
                       <article>
@@ -650,7 +650,7 @@ export default function OptionsDesk({
                 </section>
                 {!!summary.profile.length && (
                   <section className="options-card">
-                    <h3>Gamma across possible stock prices</h3>
+                    <h3>Gamma sensitivity</h3>
                     <strong>
                       {summary.flips.length
                         ? `Estimated flip: ${summary.flips.map((x) => amount(x)).join(" / ")}`
@@ -673,7 +673,7 @@ export default function OptionsDesk({
                 {summary.rows.filter((c) => c.type === "put" && c.iv !== null)
                   .length > 1 && (
                   <section className="options-card">
-                    <h3>How put volatility varies by strike</h3>
+                    <h3>Volatility by strike</h3>
                     <Plot
                       points={summary.rows
                         .filter((c) => c.type === "put" && c.iv !== null)
@@ -1142,7 +1142,7 @@ export default function OptionsDesk({
           <span className="eyebrow">
             <BookOpen size={15} /> Read an option in a minute
           </span>
-          <h3>Start with cost, then risk, then sensitivity.</h3>
+          <h3>Options essentials</h3>
           <div className="options-learn-grid">
             {[
               [

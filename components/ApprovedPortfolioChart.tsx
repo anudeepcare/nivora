@@ -204,8 +204,8 @@ export default function ApprovedPortfolioChart({
       )}
       {chart.points.length > 1 && (
         <details className={styles.values}>
-          <summary>Explore exact historical values</summary>
-          <p>Current quantities at historical prices · USD</p>
+          <summary>Data & calculation</summary>
+          <p>Current quantities at historical prices · USD. Cash, managed balances, margin, dividends and trades are excluded.</p>
           <div>
             <table>
               <thead>
@@ -230,9 +230,7 @@ export default function ApprovedPortfolioChart({
         {chart.included.length
           ? `${chart.included.length} of ${symbols.length} USD instruments · ${[...new Set(chart.sources.map(customerText))].join("; ")}. `
           : ""}
-        Current quantities at past prices, not your account’s historical value
-        or return. Cash, managed balances, margin, dividends and trades are
-        excluded.
+        Current holdings at past prices—not account performance.
       </p>
       {!!chart.excluded.length && (
         <p className="chart-note">

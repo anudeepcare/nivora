@@ -1,3 +1,7 @@
+# Current release: reference-led redesign — 2026-11-06
+
+Read `docs/REFERENCE_REDESIGN_20261106.md` for this release and its verification limits. Full existing application source; not deployed.
+
 # Current candidate — monitoring acceptance hardening
 
 Start with [the acceptance report](docs/approved-build/ENTERPRISE_ACCEPTANCE_20261027.md). This source adds durable per-rule continuation, visible alert coverage and financial-input warnings, consistent P0–P4 notifications, and reserved internal-state protection. The approved layout and Pace zones are preserved. Run `npm run test:acceptance` to reproduce the local release checks.

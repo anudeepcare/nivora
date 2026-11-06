@@ -580,10 +580,10 @@ function Login({ initialError }: { initialError: string }) {
           <h2>
             Your research.
             <br />
-            <span>A clearer perspective.</span>
+            <span>A clearer view.</span>
           </h2>
           <p>
-            Bring the business, the price and your plan into one perspective.
+            One place for your investment research.
           </p>
           <div className={experience.brandVisual} aria-hidden="true">
             <span className={experience.visualOrbit} />
@@ -594,40 +594,9 @@ function Login({ initialError }: { initialError: string }) {
             </span>
           </div>
           <div className={experience.researchCard}>
-            <div className={experience.cardHeading}>
-              <span>BUSINESS. VALUE. YOUR PACE.</span>
-              <ArrowRight size={18} />
-            </div>
-            {[
-              {
-                Icon: Layers3,
-                title: "Understand the business",
-                detail: "Growth, cash generation and financial health.",
-              },
-              {
-                Icon: Scale,
-                title: "Question the price",
-                detail: "Explore the assumptions behind valuation.",
-              },
-              {
-                Icon: ChartNoAxesCombined,
-                title: "Find your AURYN Pace",
-                detail: "Monthly price context for gradual additions.",
-              },
-            ].map(({ Icon, title, detail }) => (
-              <div className={experience.researchRow} key={title}>
-                <span>
-                  <Icon size={19} />
-                </span>
-                <div>
-                  <strong>{title}</strong>
-                  <small>{detail}</small>
-                </div>
-              </div>
-            ))}
-            <p>
-              <Check size={14} /> Evidence first. Your judgment always.
-            </p>
+            <span><Layers3 size={18} /> Business</span>
+            <span><Scale size={18} /> Value</span>
+            <span><ChartNoAxesCombined size={18} /> Your pace</span>
           </div>
         </div>
         <p className={experience.storyFoot}>

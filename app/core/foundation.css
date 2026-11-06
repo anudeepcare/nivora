@@ -1,7 +1,7 @@
 /* Core owns document geometry and neutral tokens. Component CSS owns layout.
    Brand accents live in appearance.css; financial colors never follow accents. */
 :root {
-  --app-width: 1440px;
+  --app-width: 1480px;
   --chrome-surface: #f7f8f5;
   --app-gutter: clamp(16px, 3vw, 40px);
   --font-ui: "AURYN Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -12,10 +12,10 @@
   --accent-solid: #24272b;
   --blue: #24272b;
   --blue-soft: #edf5c9;
-  --business-fill: color-mix(in srgb,#70c7a9 19%,var(--card));
-  --financial-fill: color-mix(in srgb,#8fc7c1 17%,var(--card));
-  --valuation-fill: color-mix(in srgb,#d6f35a 22%,var(--card));
-  --ownership-fill: color-mix(in srgb,#a8ddc0 21%,var(--card));
+  --business-fill: color-mix(in srgb,#70c7a9 7%,var(--card));
+  --financial-fill: color-mix(in srgb,#8fc7c1 6%,var(--card));
+  --valuation-fill: color-mix(in srgb,#d6f35a 8%,var(--card));
+  --ownership-fill: color-mix(in srgb,#a8ddc0 7%,var(--card));
   --business-icon: #167b57;
   --financial-icon: #237f75;
   --valuation-icon: #956b0f;
@@ -29,8 +29,8 @@
 :root,
 :root[data-theme="light"] {
   color-scheme: light;
-  --bg: #f7f8f5;
-  --app-background: #f7f8f5;
+  --bg: #f7f8fa;
+  --app-background: #f7f8fa;
   --glass: #ffffff;
   --panel-shadow: 0 8px 32px #25334208, 0 1px 3px #25334205;
   --paper: #ffffff;
@@ -40,13 +40,13 @@
   --control-card:#ffffff;
   --control-surface:#f0f2ee;
   --control-line:#c3cec5;
-  --surface: #f0f2ee;
-  --surface-2: #f7f8f5;
+  --surface: #f1f3f5;
+  --surface-2: #f7f8fa;
   --ink: #24272b;
   --text: #24272b;
   --muted: #62686a;
-  --line: #e0e4e0;
-  --border: #e0e4e0;
+  --line: #e5e8eb;
+  --border: #e5e8eb;
   --green: #087e66;
   --green-soft: #e8f5ef;
   --red: #b94446;
@@ -79,10 +79,10 @@
   --border: #42484a;
   --blue: #d6f35a;
   --blue-soft: #353d28;
-  --business-fill: color-mix(in srgb,#70c7a9 19%,var(--card));
-  --financial-fill: color-mix(in srgb,#8fc7c1 17%,var(--card));
-  --valuation-fill: color-mix(in srgb,#d6f35a 22%,var(--card));
-  --ownership-fill: color-mix(in srgb,#a8ddc0 21%,var(--card));
+  --business-fill: color-mix(in srgb,#70c7a9 7%,var(--card));
+  --financial-fill: color-mix(in srgb,#8fc7c1 6%,var(--card));
+  --valuation-fill: color-mix(in srgb,#d6f35a 8%,var(--card));
+  --ownership-fill: color-mix(in srgb,#a8ddc0 7%,var(--card));
   --business-icon: #167b57;
   --financial-icon: #237f75;
   --valuation-icon: #956b0f;
@@ -114,8 +114,8 @@ body {
   background: var(--app-background);
   background-attachment: fixed;
   font-family: var(--font-ui);
-  font-size: 16px;
-  line-height: 1.55;
+  font-size: 14px;
+  line-height: 1.5;
   -webkit-text-size-adjust: 100%;
 }
 *,

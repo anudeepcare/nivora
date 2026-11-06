@@ -629,7 +629,7 @@ export default function Research({ symbol }: { symbol: string }) {
               <>
                 <div className="signal-business-intro">
                   <span className="eyebrow">BUSINESS AT A GLANCE</span>
-                  <h2>How the business is performing</h2>
+                  <h2>Business performance</h2>
                   <p>
                     Follow growth, profitability and cash generation. Compare
                     reporting periods, then inspect the statements behind the
@@ -659,7 +659,7 @@ export default function Research({ symbol }: { symbol: string }) {
                 >
                   <header className="section-head">
                     <div>
-                      <h2>Understand the entry conditions.</h2>
+                      <h2>Technicals</h2>
                       <p>
                         Trend, momentum, participation and risk. Studies use
                         completed daily prices.

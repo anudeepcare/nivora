@@ -502,7 +502,7 @@ export default function PublicLanding({
           <div className="ap-header-inner ap-container">
             <PublicBrand />
             <nav className="ap-nav" aria-label="Main navigation">
-              <Link href="/#how-it-works">How it works</Link>
+              <Link href="/#how-it-works">Product</Link>
               <Link href="/pricing">Pricing</Link>
             </nav>
             <div className="ap-header-actions">
@@ -564,19 +564,18 @@ export default function PublicLanding({
               )}
             </h1>
             <p>
-              Business strength, valuation and your next contribution. Bring
-              your investment research into one clear workspace.
+              Research companies. Understand the price. Build at your pace.
             </p>
             <div className={landing.actions}>
               <Link className={landing.primary} href="/login?mode=signup">
-                Create your account <ArrowRight size={18} aria-hidden="true" />
+                Get started <ArrowRight size={18} aria-hidden="true" />
               </Link>
               <a className={landing.secondary} href="#how-it-works">
-                See how it works <ArrowRight size={17} aria-hidden="true" />
+                Explore the product <ArrowRight size={17} aria-hidden="true" />
               </a>
             </div>
             <p className={landing.heroNote}>
-              Explore the product first. Choose your plan after sign-up.
+              Explore first. Choose a plan when you’re ready.
             </p>
             <div className={landing.heroPrinciples}>
               <span>
@@ -590,8 +589,7 @@ export default function PublicLanding({
           <div className={landing.heroVisual}>
             <InvestmentDemo />
             <div className={landing.previewCaption}>
-              <span>01 — 03</span> From an interesting business to a considered
-              decision.
+              <span>Product preview</span> Illustrative research
             </div>
           </div>
         </section>
@@ -638,10 +636,7 @@ export default function PublicLanding({
             <div>
               <h3>Where should the next contribution go?</h3>
               <p>
-                Compare companies using dated business evidence, valuation and
-                AURYN Pace. Keep each dimension visible, so an attractive price
-                zone cannot stand in for a strong business. Missing inputs stay
-                explicit.
+                Compare business evidence, valuation and AURYN Pace. See the dates and missing inputs.
               </p>
             </div>
           </article>
@@ -653,10 +648,7 @@ export default function PublicLanding({
             <div>
               <h3>What does this price need to be true?</h3>
               <p>
-                Explore price-implied earnings per share. Adjust the horizon and
-                future earnings multiple to see the earnings those assumptions
-                require. Compare expectations with available evidence, not a
-                promised return.
+                Explore price-implied earnings per share. Change the horizon and future earnings multiple to test expectations—not promised returns.
               </p>
             </div>
           </article>
@@ -668,9 +660,7 @@ export default function PublicLanding({
             <div>
               <h3>Has the business changed—or just the price?</h3>
               <p>
-                Read business performance beside price context. Keep operating
-                evidence, valuation assumptions and monthly Pace readings
-                separate before deciding what a move means for your case.
+                See business performance beside price, valuation assumptions and monthly Pace.
               </p>
             </div>
           </article>
@@ -689,8 +679,7 @@ export default function PublicLanding({
             Keep the reasons in view.
           </h2>
           <p>
-            Know what to check next, what you are waiting for, and what has
-            changed across the companies you follow.
+            Follow the companies and changes that matter to you.
           </p>
           <ContextLink page="methodology">
             Explore our methodology <ArrowRight size={17} aria-hidden="true" />
@@ -702,9 +691,7 @@ export default function PublicLanding({
             <div>
               <h3>Turn earnings into questions</h3>
               <p>
-                Review available financial evidence and the conditions that
-                would strengthen or weaken the case. Sources, dates and missing
-                evidence stay visible.
+                Review the results, their dates and what could change your case.
               </p>
             </div>
           </article>
@@ -713,9 +700,7 @@ export default function PublicLanding({
             <div>
               <h3>Make waiting deliberate</h3>
               <p>
-                Set out what would make a company worth another look. Use alerts
-                for supported conditions; keep other conditions as research
-                notes to check yourself.
+                Use alerts for supported conditions. Keep other checks in your research notes.
               </p>
             </div>
           </article>
@@ -724,9 +709,7 @@ export default function PublicLanding({
             <div>
               <h3>Return to what matters to you</h3>
               <p>
-                See relevant updates for companies you follow, with the
-                available evidence and its date. Pick up the research that needs
-                your attention.
+                Return to dated updates from the companies you follow.
               </p>
             </div>
           </article>
@@ -788,7 +771,7 @@ export default function PublicLanding({
         </div>
         <div className={landing.actions}>
           <Link className={landing.primary} href="/login?mode=signup">
-            Create your account <ArrowRight size={18} aria-hidden="true" />
+            Get started <ArrowRight size={18} aria-hidden="true" />
           </Link>
           <Link className={landing.secondary} href="/pricing">
             Compare plans <ArrowRight size={16} aria-hidden="true" />
@@ -799,7 +782,7 @@ export default function PublicLanding({
         <div className={experience.footerMain}>
           <PublicBrand />
           <nav aria-label="Footer navigation">
-            <Link href="/#how-it-works">How it works</Link>
+            <Link href="/#how-it-works">Product</Link>
             <Link href="/pricing">Pricing</Link>
             <ContextLink page="help">Help</ContextLink>
             <Link href="/about">About</Link>

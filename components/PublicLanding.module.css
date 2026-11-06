@@ -1127,3 +1127,21 @@
     font-size: 8px;
   }
 }
+
+/* Product-led opening, following the supplied public-site reference. */
+.page.page.page :global(.ap-opening){--ink:#242a2e;--muted:#60696e;--line:#e1e7e4;--surface:#f0f4f1;--glass:#fff;color:var(--ink);background:radial-gradient(ellipse at 78% 48%,#deeadc 0%,transparent 55%),#fafbf9}
+.page.page .header.header{background:#fafbf9;--chrome-surface:#fafbf9;color:#242a2e;border-bottom:1px solid #e1e7e4}
+.page.page.page .header :global(.ap-brand),.page.page.page .header :global(.ap-nav a),.page.page.page .header :global(.ap-signin){color:#242a2e}
+.page.page .hero{padding-block:64px;gap:40px;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr)}
+.page .heroCopy h1{color:#242a2e;font-size:clamp(38px,4.2vw,60px);line-height:1.06;max-width:520px}
+.page .heroCopy h1 span{background:none;-webkit-text-fill-color:currentColor;color:#3f5b4a}
+.page .heroCopy>.eyebrow{color:#596f46}.page .heroCopy .eyebrow::before{background:#94b745;box-shadow:none}
+.page .heroCopy>p,.page .heroCopy .heroNote{color:#60696e}
+.page .heroPrinciples{color:#526259;margin-top:20px}.page .heroPrinciples svg{color:#54744c}
+.page .secondary{background:#fff;color:#273c31;border:1px solid #cfd9d2}
+.page .previewCaption{color:#617067}
+.page .workflow{padding-block:48px}.page .workflowHeading h2,.page .evidence h2,.page .faq h2{font-size:32px}
+.page .workflowRows{gap:18px}.page .workflowRows p,.page .evidenceList p{font-size:14px;line-height:1.65;max-width:50ch}
+@media(max-width:850px){.page.page .hero{grid-template-columns:1fr;padding:36px 24px;gap:30px}.page .heroCopy h1{font-size:40px}.page .heroVisual{max-width:640px;width:100%;margin:auto}}
+
+.page .previewCaption > span{color:#53645b}

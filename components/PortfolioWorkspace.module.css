@@ -4,8 +4,8 @@
 }
 .portfolio :global(.portfolio-grid) {
   display: grid;
-  grid-template-columns: minmax(0, 1.8fr) minmax(260px, 1fr);
-  gap: 18px;
+  grid-template-columns: minmax(0, 2.15fr) minmax(260px, 1fr);
+  gap: 16px;
 }
 .portfolio :global(.portfolio-grid) > div,
 .portfolio :global(.card) {
@@ -342,8 +342,8 @@
 /* Summary roles carry restrained gradients; the analytical canvas stays clear. */
 .portfolio.portfolio :global(.wealth-strip.four) > div:first-child {
   background:
-    radial-gradient(ellipse at 100% 0%, #46614e, transparent 70%),
-    linear-gradient(135deg, #243b30, #17271f);
+    radial-gradient(ellipse at 100% 0%, #414c51, transparent 70%),
+    linear-gradient(135deg, #293338, #192126);
   color: #f3f7ee;
   --ink: #f3f7ee;
   --muted: #cbd8cd;
@@ -371,18 +371,18 @@
   background: linear-gradient(
     135deg,
     var(--card),
-    color-mix(in srgb, #79a9cc 18%, var(--card))
+    color-mix(in srgb, #79a9cc 7%, var(--card))
   );
 }
 .portfolio.portfolio :global(.wealth-strip.four) > div:nth-child(4) {
   background: linear-gradient(
     135deg,
     var(--card),
-    color-mix(in srgb, #d3ac61 20%, var(--card))
+    color-mix(in srgb, #d3ac61 7%, var(--card))
   );
 }
 .portfolio.portfolio :global(.wealth-strip.four) > div {
-  border-radius: 18px;
+  border-radius: 14px;
   box-shadow: 0 5px 20px #17251a08;
 }
 .watchLedger.watchLedger :global(.holdings-table) tbody tr {
