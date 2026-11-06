@@ -14,6 +14,8 @@ type Ticket = {
   attempts: number;
 };
 export default function SupportInbox() {
+  const [delivery,setDelivery] = useState<{recipient:string;sender:string;issue:string|null}|null>(null);
+  const [notice,setNotice] = useState("");
   const [attachments,setAttachments] = useState<Record<string,string|null>>({});
   const [rows, setRows] = useState<Ticket[]>([]),
     [error, setError] = useState(""),
@@ -23,8 +25,9 @@ export default function SupportInbox() {
     setBusy(true);setError('');try{const r=await api<{screenshot:string|null}>(`support?attachment=${encodeURIComponent(id)}`);setAttachments(old=>({...old,[id]:r.screenshot}));}catch(e){setError(e instanceof Error?e.message:'Attachment unavailable.');}finally{setBusy(false);}
   }
   async function load() {
-    const r = await api<{ requests: Ticket[] }>("support");
+    const r = await api<{ requests: Ticket[]; delivery?: {recipient:string;sender:string;issue:string|null} }>("support");
     setRows(r.requests);
+    setDelivery(r.delivery ?? null);
   }
   useEffect(() => {
     void load().catch((e) => setError(e.message));
@@ -32,6 +35,7 @@ export default function SupportInbox() {
   async function change(body: unknown) {
     setBusy(true);
     setError("");
+    setNotice("");
     try {
       const { authClient } = await import("@/lib/client");
       const { data } = await authClient().auth.getSession();
@@ -46,6 +50,11 @@ export default function SupportInbox() {
       const v = await r.json();
       if (!r.ok) throw Error(v.error);
       await load();
+      if (Array.isArray(v.results)) {
+        const failures = v.results.filter((item: {error?:string}) => item.error);
+        if (failures.length) setError(failures[0].error);
+        else setNotice(v.results.length ? "Retry completed. Accepted emails can still be delayed or rejected by the receiving inbox; check Resend delivery events." : "No pending emails.");
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Update failed.");
     } finally {
@@ -67,6 +76,8 @@ export default function SupportInbox() {
           Retry pending emails
         </button>
       </header>
+      {delivery && <div className="support-delivery-status"><strong>Contact email delivery</strong><p>Inbox: {delivery.recipient}</p><p>Sender: {delivery.sender || "Not configured"}</p><p>{delivery.issue || "Configured. Provider acceptance does not confirm inbox delivery."}</p><a href="https://resend.com/emails" target="_blank" rel="noopener noreferrer">Open delivery events ↗</a></div>}
+      {notice && <p role="status">{notice}</p>}
       <div className="support-inbox-tools">
         <span>{rows.length} saved requests</span>
         <label>

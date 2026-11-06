@@ -4280,3 +4280,8 @@ select {
 .valuation-summary strong.negative { color: var(--red); }
 .content > .research-page { margin-bottom: 24px; }
 }
+
+@layer compatibility {
+.earnings-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}.earnings-kpis>div{padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2)}.earnings-kpis dt{font-size:12px;color:var(--muted)}.earnings-kpis dd{font-size:24px;font-weight:700;margin:6px 0 0;font-variant-numeric:tabular-nums}.earnings-kpis>div:last-child{border-top:3px solid #7ca79e}.earnings-review h3{font-size:16px}.earnings-review ul{padding-left:20px;font-size:14px;line-height:1.6}@media(max-width:500px){.earnings-kpis{gap:8px}.earnings-kpis>div{padding:10px}.earnings-kpis dd{font-size:18px}}
+
+}

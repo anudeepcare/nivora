@@ -1,4 +1,5 @@
 "use client";
+import { TrendingDown, TrendingUp, Scale } from "lucide-react";
 import SectionIcon from "./SectionIcon";
 import { useMemo, useState } from "react";
 import type { Research } from "@/lib/types";
@@ -73,7 +74,7 @@ export default function ScenarioCompass({
               >
                 <span>
                   <i className="scenario-symbol" aria-hidden="true">
-                    {i === 0 ? "↘" : i === 1 ? "↔" : "↗"}
+                    {i === 0 ? <TrendingDown size={20}/> : i === 1 ? <Scale size={20}/> : <TrendingUp size={20}/>}
                   </i>
                   {c.name}
                 </span>

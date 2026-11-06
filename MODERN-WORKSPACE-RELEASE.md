@@ -20,3 +20,15 @@ Apply source to preprod, deploy and check, then merge preprod into main. Do not 
 Production AURYN_SUPPORT_NOTIFY_EMAIL was updated to support@auryninvest.com. This takes effect on the next production deployment. Zoho mailbox delivery has not been verified; send a contact-form message after deployment and check the support inbox. Owner login and notification recipient remain separate.
 
 Production navigation performance, real password-recovery email flow and native iOS PWA behavior require live verification after deployment. Preview checks do not certify those flows. No database migration is introduced by this update.
+
+## Follow-up refinement
+
+- Mobile dock uses a 96% opaque surface, readable labels and a clearly bounded selected item.
+- Holdings Pace selector uses a full-width mobile row; desktop holdings are denser.
+- Watchlist and Holdings use consistent Pace chips; confirmed dates remain in chip tooltips. Crypto does not show an unsupported stock Pace warning.
+- Admin has icon tabs, restrained category accents, compact summary counts, aligned grant inputs and shorter member rows.
+- Earnings snapshot uses actual/estimate/surprise metrics. Scenario controls use directional and balance icons.
+- Public home requests a light browser theme color; iOS web-app status style changes to default. Native iOS behavior still needs a device check.
+- Admin Support now shows configured notification inbox/sender, disabled/test configuration and actionable provider errors after a manual retry. Provider acceptance is not claimed as inbox delivery. No migration required.
+
+Email delivery remains an open production issue. Vercel settings are present but secret values were not readable; the cause of the latest missing email was not established. No real messages were sent during verification. Use Admin > Support after deployment to inspect configuration and retry, then check Resend delivery events for rejection, delay, bounce or suppression. If a test sender is configured, verify the sender domain before changing it to a domain address. Keep Zoho receiving records intact.

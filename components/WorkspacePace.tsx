@@ -23,7 +23,7 @@ export function useWorkspacePace(symbols: string[]) {
     if (demo) {
       setRows(Object.fromEntries(names.map(symbol => {
         const r = demo.research[symbol];
-        return [symbol, r ? { signal: workspaceGuidance(r, true, Date.parse(r.retrievedAt)) } : { error: "Reading unavailable" }];
+        return [symbol, r ? { signal: workspaceGuidance(r, true, Date.parse(r.retrievedAt)), entrySignal: workspaceGuidance(r, false, Date.parse(r.retrievedAt)) } : { error: "Reading unavailable" }];
       })));
       setLoading(false);
       return;
@@ -49,10 +49,10 @@ export function useWorkspacePace(symbols: string[]) {
 }
 export function PaceBadge({ signal, loading = false }: { signal?: PaceSignal | null; loading?: boolean }) {
   const reading = signal?.periods.find(p => p.key === "confirmed");
-  return <span className={s.badge} data-level={signal?.view.permitted ? reading?.level : undefined}>
+  return <span className={s.badge} title={reading?.date ? `Confirmed ${dateLabel(reading.date)}` : undefined} data-level={signal?.view.permitted ? reading?.level : undefined}>
     <b>{signal?.view.code ?? (loading ? "Checking…" : "Unavailable")}</b>
     <span>{signal?.view.actionLabel.replace(/ · P[0-4]$/, "") ?? ""}</span>
-    {reading?.date && <small>{dateLabel(reading.date)}</small>}
+    
   </span>;
 }
 export function PaceBoard({ rows, loading, prefix, refresh }: ReturnType<typeof useWorkspacePace> & { prefix: string }) {

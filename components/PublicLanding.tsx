@@ -470,6 +470,12 @@ export default function PublicLanding({
   const router = useRouter();
   const [menu, setMenu] = useState(false);
   useEffect(() => {
+    const tags = Array.from(document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]'));
+    const previous = tags.map(tag => tag.content);
+    tags.forEach(tag => { tag.content = "#fafbf9"; });
+    return () => tags.forEach((tag,index) => { tag.content = previous[index]; });
+  }, []);
+  useEffect(() => {
     if (sampleOnly) return;
     let alive = true;
     try {
