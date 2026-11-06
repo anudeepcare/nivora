@@ -59,7 +59,7 @@ export function PaceBoard({ rows, loading, prefix, refresh }: ReturnType<typeof 
   const qualifying = Object.entries(rows).filter(([,r]) => r.signal?.view.permitted && (r.signal.view.rawLevel ?? 0) >= 2);
   return <section className={s.board} aria-label="Accumulation opportunities">
     <header><div><h2>Auryn accumulation pace</h2><p>Your holdings and watchlist · confirmed readings</p></div><button type="button" disabled={loading} onClick={refresh}>{loading ? "Checking…" : "Refresh pace"}</button></header>
-    <div className={s.groups}>{[4,3,2].map(level => <section key={level}><h3>P{level} <span>{level === 4 ? "Planned maximum" : level === 3 ? "Build gradually" : "Start small"}</span></h3>{qualifying.filter(([,r]) => r.signal!.view.rawLevel === level).map(([symbol,r]) => <Link key={symbol} href={researchLink(symbol,prefix)}><strong>{symbol}</strong><PaceBadge signal={r.signal} /></Link>)}{!qualifying.some(([,r]) => r.signal!.view.rawLevel === level) && <p>{loading ? "Checking your companies…" : "No qualifying readings"}</p>}</section>)}</div>
+    <div className={s.list}>{qualifying.sort((a,b)=>(b[1].signal!.view.rawLevel??0)-(a[1].signal!.view.rawLevel??0)).map(([symbol,r])=><Link key={symbol} href={researchLink(symbol,prefix)}><strong>{symbol}</strong><PaceBadge signal={r.signal}/></Link>)}{!qualifying.length&&<p>{loading?"Checking your companies…":"No qualifying readings"}</p>}</div>
     <small>{Object.keys(rows).length} checked · {Object.values(rows).filter(r=>r.error).length} unavailable. Pace is a price zone; follow business checks and position limits.</small>
   </section>;
 }

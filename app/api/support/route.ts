@@ -80,19 +80,32 @@ export async function GET(request: Request) {
       if(result.error)throw new HttpError('Attachment is unavailable.',404);
       return privateJson({screenshot:result.data?.screenshot??null});
     }
-    const r = await accessDb()
+    const params = new URL(request.url).searchParams;
+    const status = params.get("status") ?? "all";
+    if (!["all", "new", "in_progress", "resolved"].includes(status)) throw new HttpError("Invalid status.",400);
+    let query = accessDb()
       .from("auryn_support_requests")
       .select(
         "id,email,category,message,page,status,created_at,owner_notified_at,receipt_sent_at,attempts",
       )
       .order("created_at", { ascending: false })
-      .limit(100);
+      .order("id", { ascending: false });
+    if(status !== "all") query = query.eq("status",status);
+    const cursor = params.get("cursor");
+    if(cursor) {
+      const parts = cursor.split("|");
+      if(parts.length !== 2 || !/^\d{4}-\d{2}-\d{2}T[\d:.]+(?:Z|\+00:00)$/.test(parts[0]) || !Number.isFinite(Date.parse(parts[0])) || !/^[a-f0-9-]{36}$/i.test(parts[1])) throw new HttpError("Invalid page.",400);
+      query = query.or(`created_at.lt.${parts[0]},and(created_at.eq.${parts[0]},id.lt.${parts[1]})`);
+    }
+    const r = await query.limit(51);
     if (r.error)
       throw new HttpError(
         "Support inbox unavailable. Apply the support migration.",
         503,
       );
-    return privateJson({ requests: r.data, delivery: supportDeliveryStatus() });
+    const rows = r.data ?? [];
+    const last = rows[49];
+    return privateJson({ requests: rows.slice(0,50), nextCursor: rows.length > 50 ? `${last.created_at}|${last.id}` : null, delivery: supportDeliveryStatus() });
   } catch (e) {
     return failure(e);
   }
