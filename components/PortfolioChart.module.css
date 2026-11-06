@@ -64,3 +64,8 @@
 .chart.chart svg[data-direction="up"] {
   color: var(--green);
 }
+
+.inspection { min-height: 48px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; color:var(--muted); font-size:13px; }
+.inspection strong { color:var(--ink); font-size:20px; font-variant-numeric:tabular-nums; }
+.chart svg { touch-action:pan-y; }
+.chart svg:focus-visible { outline:2px solid var(--accent-solid); outline-offset:3px; border-radius:8px; }

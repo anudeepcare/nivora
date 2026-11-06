@@ -9,6 +9,7 @@ export function mergePortfolioQuotes(prior:QuoteRows,incoming:QuoteRows,symbols:
   const oldGood=usablePortfolioQuote(old?.quote),nextGood=usablePortfolioQuote(next?.quote);
   const oldTime=Date.parse(old?.quote?.asOf||''),nextTime=Date.parse(next?.quote?.asOf||'');
   if(oldGood&&(!nextGood||(Number.isFinite(oldTime)&&(!Number.isFinite(nextTime)||nextTime<oldTime))))result[symbol]={...old,...(next?.company?{company:next.company}:{}),...(next?.error?{error:next.error}:{})};
+  else if(oldGood && nextGood && Number.isFinite(oldTime) && oldTime===nextTime && old!.quote!.price===next!.quote!.price && old!.quote!.source===next!.quote!.source) result[symbol]={...old,...next,quote:{...next!.quote!,previousClose:next!.quote!.previousClose??old!.quote!.previousClose,changePct:next!.quote!.changePct??old!.quote!.changePct}};
   else if(next)result[symbol]=next;else if(old)result[symbol]=old;
  }
  return result;

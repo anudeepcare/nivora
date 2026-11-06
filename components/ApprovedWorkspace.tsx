@@ -1599,7 +1599,7 @@ function HoldingsTable({
 
 export function Watchlist() {
   const accountPrefs = useWorkspacePreferences();
-  const { demo: watchDemo } = useProduct();
+  const { demo: watchDemo, cache: watchCache } = useProduct();
   const noteDates = useResource<{
     documents: {
       key: string;
@@ -1613,9 +1613,11 @@ export function Watchlist() {
   const state = useWorkspaceData("watchlist"),
     { workspace, prefix, quotes, mutate, pace } = state;
   const [query, setQuery] = useWorkspaceFilter("watchlist"),
-    [type, setType] = useState("All"),
+    [type, updateType] = useState(() => String(watchCache?.get("view:watchlist:type")?.value ?? "All")),
     [error, setError] = useState(""),
-    [removing, setRemoving] = useState<string | null>(null);
+    [removing, setRemoving] = useState<string | null>(null),
+    [removed, setRemoved] = useState<string | null>(null);
+  const setType = (value:string) => { updateType(value);watchCache.set("view:watchlist:type",{at:Date.now(),value}); };
   const dialog = useRef<HTMLDialogElement>(null),
     all = workspace?.watchlist.map((w) => w.symbol) ?? [];
   const calendar = useHomeFeed(all);
@@ -1659,6 +1661,7 @@ export function Watchlist() {
     setError("");
     try {
       await mutate({ op: "unwatch", symbol });
+      setRemoved(symbol);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Unable to update watchlist.");
     } finally {
@@ -1685,6 +1688,15 @@ export function Watchlist() {
       {(state.workspaceError || error) && (
         <Notice error>{state.workspaceError || error}</Notice>
       )}
+      {removed && <div className="notice" role="status">
+        {removed} removed from your watchlist.
+        <button type="button" className="text-link" disabled={!!removing} onClick={async()=>{
+          const symbol=removed;setRemoving(symbol);
+          try { await mutate({op:"watch",symbol});setRemoved(null); }
+          catch(e){setError(e instanceof Error ? e.message : "Unable to restore company.");}
+          finally{setRemoving(null);}
+        }}>Undo removal</button>
+      </div>}
       <div className="watch-summary">
         <div>
           <span className="eyebrow">FOLLOWING</span>

@@ -1,3 +1,5 @@
+import {cachedQuotes,publishQuotes,subscribeQuotes} from "../lib/shared-quotes.ts";
+import {readResource} from "../lib/resource-cache.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { valuationInputs, perspective } from "../lib/analysis.ts";
@@ -186,7 +188,7 @@ test("forecast table renders available estimates, including an unreported comple
   assert.match(html, /Sep 30, 2026/);
   assert.doesNotMatch(html, /2024/);
 });
-test("workspace quote refresh commits all batches together and settles loading", async () => {
+test("workspace quote refresh publishes progressive batches and settles loading", async () => {
   const symbols = Array.from(
     { length: 12 },
     (_, i) => `STOCK${String.fromCharCode(65 + i)}`,
@@ -206,6 +208,7 @@ test("workspace quote refresh commits all batches together and settles loading",
       marketProvider: "eodhd",
     }),
     workspaceSymbolBatches,
+    cachedQuotes,publishQuotes,subscribeQuotes,readResource,
     mergePortfolioQuotes,refreshIntervals,usablePortfolioQuote,
     useState: (initial) => {
       const i = index++;
@@ -238,7 +241,7 @@ test("workspace quote refresh commits all batches together and settles loading",
     },
   });
   hook("portfolio");
-  const cleanup = effects[1]();
+  const cleanup = effects[2]();
   await new Promise((resolve) => setImmediate(resolve));
   assert.equal(requests.length, 2);
   assert.equal(Object.keys(state[1]).length, 12);

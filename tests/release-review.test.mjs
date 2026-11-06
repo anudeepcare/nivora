@@ -116,7 +116,7 @@ function researchMarkup(issues = []) {
     },
   };
   const empty = () => null;
-  const bindings = { experience,
+  const bindings = { cachedQuotes:()=>({}),publishQuotes:()=>{},subscribeQuotes:()=>()=>{}, experience,
     customerText,
     useAccess: () => ({
       access: {

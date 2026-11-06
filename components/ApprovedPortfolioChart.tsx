@@ -1,4 +1,5 @@
 "use client";
+import { historyBatch } from "@/lib/history-batch";
 import { seriesDirection } from "@/lib/visual-signals";
 import styles from "./PortfolioChart.module.css";
 import { customerText } from "@/lib/customer-language";
@@ -27,7 +28,9 @@ export default function ApprovedPortfolioChart({
     [loading, setLoading] = useState(false),
     [revision, setRevision] = useState(0);
   const container = useRef<HTMLDivElement>(null);
+  const attempted = useRef<{scope:string;symbols:Set<string>}>({scope:"",symbols:new Set()});
   const [width, setWidth] = useState(640);
+  const [inspection, setInspection] = useState<number | null>(null);
   useEffect(() => {
     const element = container.current;
     if (!element) return;
@@ -71,7 +74,9 @@ export default function ApprovedPortfolioChart({
         };
     }
     setHistory(saved);
-    const missing = selected.filter((s) => !saved[s]).slice(0, 10);
+    const scope = `${owner}:${key}`;
+    if(attempted.current.scope !== scope) attempted.current={scope,symbols:new Set()};
+    const missing = historyBatch(selected,new Set(Object.keys(saved)),attempted.current.symbols);
     if (demo || !missing.length) {
       setLoading(false);
       return () => {
@@ -83,6 +88,7 @@ export default function ApprovedPortfolioChart({
       // Bounded, sequential reads avoid consuming a whole account's market-data budget.
       for (const symbol of missing) {
         if (!active) break;
+        attempted.current.symbols.add(symbol);
         const path = `chart/${encodeURIComponent(symbol.replace("/", "-"))}?range=6M`;
         try {
           const result = await readResource(cache, path, 900000, () =>
@@ -116,6 +122,8 @@ export default function ApprovedPortfolioChart({
       ),
     [positions, quotes, history, demo],
   );
+  useEffect(() => setInspection(null), [chart]);
+  const selectedPoint = inspection == null ? null : chart.points[Math.min(inspection, chart.points.length - 1)];
   const values = chart.points.map((p) => p.value),
     low = Math.min(...values),
     high = Math.max(...values),
@@ -131,12 +139,36 @@ export default function ApprovedPortfolioChart({
     .join(" ");
   return (
     <div ref={container} className={styles.chart}>
+      {chart.points.length > 1 && <div className={styles.inspection} aria-live="polite" aria-atomic="true">
+        {selectedPoint ? <><span>{dateLabel(selectedPoint.time)} · Value of included holdings</span><strong>{amount(selectedPoint.value, "USD")}</strong></> : <span>Hover or touch the chart to inspect a date. Use arrow keys when focused.</span>}
+      </div>}
       {chart.points.length > 1 ? (
         <svg
           viewBox={`0 0 ${width} 320`}
           className="data-chart approved-portfolio-chart"
           data-direction={seriesDirection(values)}
-          role="img"
+          role="slider"
+          tabIndex={0}
+          aria-valuemin={0}
+          aria-valuemax={chart.points.length - 1}
+          aria-valuenow={inspection ?? chart.points.length - 1}
+          aria-valuetext={`${dateLabel((selectedPoint ?? chart.points.at(-1)!).time)}: ${amount((selectedPoint ?? chart.points.at(-1)!).value, "USD")}, value of included holdings`}
+          onPointerMove={event => {
+            const rect = event.currentTarget.getBoundingClientRect();
+            const px = (event.clientX - rect.left) / rect.width * width;
+            setInspection(Math.max(0, Math.min(values.length-1, Math.round((px-58)/(right-58)*(values.length-1)))));
+          }}
+          onPointerDown={event => {
+            const rect = event.currentTarget.getBoundingClientRect();
+            setInspection(Math.max(0, Math.min(values.length-1, Math.round(((event.clientX-rect.left)/rect.width*width-58)/(right-58)*(values.length-1)))));
+          }}
+          onPointerLeave={event => { if(event.pointerType === "mouse") setInspection(null); }}
+          onFocus={() => setInspection(i => i ?? chart.points.length-1)}
+          onKeyDown={event => {
+            if (!["ArrowLeft", "ArrowRight", "Home", "End", "Escape"].includes(event.key)) return;
+            event.preventDefault();
+            setInspection(i => event.key === "Escape" ? null : event.key === "Home" ? 0 : event.key === "End" ? values.length-1 : Math.max(0,Math.min(values.length-1,(i ?? values.length-1)+(event.key === "ArrowLeft" ? -1 : 1))));
+          }}
           aria-label={`Current quantities of ${chart.included.join(", ")} at supplied historical USD prices, ${chart.points[0].time} to ${chart.points.at(-1)!.time}. Not account performance.`}
         >
           <defs>
@@ -179,6 +211,10 @@ export default function ApprovedPortfolioChart({
             strokeLinejoin="round"
           />
           <circle cx={right} cy={y(values.at(-1)!)} r="4" fill="currentColor" />
+          {selectedPoint && inspection != null && <g pointerEvents="none">
+            <line x1={x(inspection)} x2={x(inspection)} y1="30" y2="270" stroke="currentColor" strokeDasharray="4 4" opacity=".5" />
+            <circle cx={x(inspection)} cy={y(selectedPoint.value)} r="5" fill="currentColor" stroke="var(--card)" strokeWidth="2" />
+          </g>}
           <text x="58" y="301" className="chart-axis">
             {dateLabel(chart.points[0].time)}
           </text>
@@ -238,13 +274,13 @@ export default function ApprovedPortfolioChart({
           observations; missing prices are not filled.
         </p>
       )}
-      {!!symbols.length && !demo && (
+      {!!symbols.length && !!chart.excluded.length && !demo && (
         <button
           className="text-link approved-chart-retry"
           disabled={loading}
           onClick={() => setRevision((r) => r + 1)}
         >
-          {loading ? "Loading available history…" : "Check missing history"}
+          {loading ? "Loading available history…" : `Load missing histories (${chart.excluded.length})`}
         </button>
       )}
     </div>

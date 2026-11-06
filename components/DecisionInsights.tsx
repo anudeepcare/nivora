@@ -92,7 +92,7 @@ function Insights({
     <section className={s.root} aria-label="Decision insights">
       <header>
         <div>
-          <span className="eyebrow">THE REASONS BEHIND COMPANY COMPARISON</span>
+          <span className="eyebrow">BUSINESS, PRICE & VALUATION</span>
           <h2>Investment context</h2>
         </div>
         <Help label="How to use decision insights">
@@ -186,6 +186,12 @@ function Insights({
             </div>
           </div>
           <p>{d.explanation.detail}</p>
+          {d.business === "strong" && d.value === "expensive" && <p className={s.caution}>The business meets the evidence checks, but the price requires stronger assumptions than the cash-flow model. Pace describes a relative price zone; it does not establish fair value.</p>}
+          <details>
+            <summary>How to read this assessment</summary>
+            <p>Business evidence uses comparable financial reports. Valuation depends on model assumptions. Confirmed Pace uses completed price periods. These answer different questions and can point in different directions.</p>
+            <p>Review new financial reports, funding changes and the next completed Pace period before treating the assessment as unchanged. Missing evidence remains unassessed.</p>
+          </details>
           {d.risks.length > 0 && (
             <p className={s.caution}>
               <b>Keep in view:</b> {d.risks[0]}

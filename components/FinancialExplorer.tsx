@@ -1,6 +1,6 @@
 "use client";
 import layout from "./FinancialExplorer.module.css";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Research } from "@/lib/types";
 import {
   applicableMetrics,
@@ -17,6 +17,7 @@ export default function FinancialExplorer({
   scope?: FinancialScope;
 }) {
   const [key, setKey] = useState<FinancialKey>("revenue"),
+    [inspected, setInspected] = useState<number | null>(null),
     [years, setYears] = useState(5),
     [style, setStyle] = useState<"bar" | "line" | "area">("bar");
   const catalog = useMemo(
@@ -66,6 +67,8 @@ export default function FinancialExplorer({
     low = Math.min(0, ...values),
     high = Math.max(0, ...values),
     span = high - low || 1;
+  useEffect(()=>setInspected(null),[chosen,years,scope,r.company.symbol]);
+  const observed = inspected == null ? null : points[Math.min(inspected,points.length-1)];
   const x = (i: number) => 38 + ((i + 0.5) * 684) / Math.max(1, points.length),
     y = (v: number) => 195 - ((v - low) / span) * 155,
     zero = y(0),
@@ -216,12 +219,29 @@ export default function FinancialExplorer({
                   : `${series.change > 0 ? "+" : ""}${series.change.toFixed(1)}${series.changeUnit === "pp" ? " pp" : "%"} over shown period`}
             </span>
           </div>
+          {values.length > 0 && <p className="explorer-inspection" aria-live="polite">{observed ? `${dateLabel(observed.end)} · ${observed.value == null ? "No comparable reported value" : format(observed.value)}` : "Hover or touch to inspect. Arrow keys move between periods."}</p>}
           {values.length ? (
             <svg
               viewBox="0 0 760 240"
-              role="img"
+              role="slider"
+              tabIndex={0}
+              aria-valuemin={0}
+              aria-valuemax={points.length-1}
+              aria-valuenow={inspected ?? points.length-1}
+              aria-valuetext={`${dateLabel((observed ?? points.at(-1)!).end)}: ${format((observed ?? points.at(-1)!).value)}`}
+              onPointerMove={event=>{
+                const rect=event.currentTarget.getBoundingClientRect();
+                setInspected(Math.max(0,Math.min(points.length-1,Math.floor(((event.clientX-rect.left)/rect.width*760-38)/684*points.length))));
+              }}
+              onFocus={()=>setInspected(points.length-1)}
+              onKeyDown={event=>{
+                if(!["ArrowLeft","ArrowRight","Home","End","Escape"].includes(event.key))return;
+                event.preventDefault();setInspected(i=>event.key==="Escape"?null:event.key==="Home"?0:event.key==="End"?points.length-1:Math.max(0,Math.min(points.length-1,(i??points.length-1)+(event.key==="ArrowLeft"?-1:1))));
+              }}
+              style={{touchAction:"pan-y"}}
               aria-label={`${series.definition?.label} by reported period`}
             >
+              {inspected != null && <line x1={x(inspected)} x2={x(inspected)} y1="30" y2="200" stroke="var(--ink)" strokeDasharray="3 3" opacity=".5"/>}
               <line x1="32" x2="735" y1={zero} y2={zero} stroke="var(--line)" />
               {style === "area" &&
                 areas.map((d, i) => (
@@ -283,6 +303,10 @@ export default function FinancialExplorer({
             </div>
           )}
           <p className="explorer-definition">{series.definition?.help}</p>
+          <details className="explorer-explanation"><summary>How to read this metric</summary>
+            <p>{series.unit === "percent" ? "Percentages describe a ratio. For example, 20 of operating profit on 100 of revenue is a 20% operating margin. A move from 20% to 25% is 5 percentage points, not 5% growth." : series.unit === "ratio" ? "Ratios compare two quantities. For example, 200 of current assets divided by 100 of current liabilities is a current ratio of 2×. Compare businesses with similar accounting and operations." : series.unit === "perShare" ? "Per-share values divide the relevant amount by the applicable share count. For example, 100 of earnings over 50 diluted shares gives earnings per share of 2. Share splits and dilution affect comparisons." : series.unit === "shares" ? "Share counts measure ownership units, not money. Check whether the metric uses outstanding shares or the weighted average for the reporting period." : "Amounts use the displayed reporting currency. K means thousand, M million and B billion. Flow metrics cover a reporting period; balance-sheet amounts describe a reporting date."}</p>
+            <p>Examples illustrate arithmetic, not this company. Gaps mean comparable observations are missing. Annualised change requires positive endpoints and a valid time interval; it is not a forecast.</p>
+          </details>
           <div className="explorer-statistics">
             <div>
               <span>Start · {series.startDate?.slice(0, 7) ?? "—"}</span>

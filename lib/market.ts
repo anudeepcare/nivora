@@ -43,7 +43,7 @@ export function normalizeQuote(
   const observedHour = Number(observedParts.find(p=>p.type==="hour")?.value);
   return {
     price: price != null && price > 0 ? price : null,
-    changePct: useExtended ? (numeric(raw.previous_close) != null && Number(raw.previous_close) > 0 ? (price! / Number(raw.previous_close) - 1) * 100 : null) : numeric(raw.percent_change),
+    changePct: useExtended ? (numeric(raw.previous_close) != null && Number(raw.previous_close) > 0 ? (price! / Number(raw.previous_close) - 1) * 100 : null) : (numeric(raw.percent_change) ?? (price != null && price > 0 && numeric(raw.previous_close) != null && Number(raw.previous_close) > 0 ? (price / Number(raw.previous_close) - 1) * 100 : null)),
     previousClose: numeric(raw.previous_close),
     currency,
     asOf,

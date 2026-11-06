@@ -1,7 +1,8 @@
 "use client";
+import { experienceSnapshot } from "@/lib/experience-metrics";
 import { useState } from "react";
 
-/** Opt-in geometry only: no account, position, token or page-content collection. */
+/** Opt-in geometry and aggregate timings only: no account, position, token or page-content collection. */
 export default function PwaDiagnostics() {
   const [report, setReport] = useState("");
   function inspect() {
@@ -33,7 +34,8 @@ export default function PwaDiagnostics() {
     setReport(
       JSON.stringify(
         {
-          version: "viewport-audit-20261018-keyboard",
+          version: "experience-audit-20261106",
+          performance: experienceSnapshot(),
           screen: {
             width: screen.width,
             height: screen.height,
@@ -71,7 +73,7 @@ export default function PwaDiagnostics() {
       <summary>Device layout diagnostics</summary>
       <p>
         Run inside the installed app while the layout issue is present. This
-        records viewport and control geometry only.
+        records viewport geometry and aggregate interaction timings. It does not include account data or page content.
       </p>
       <button className="button" onClick={inspect}>
         Check app layout
