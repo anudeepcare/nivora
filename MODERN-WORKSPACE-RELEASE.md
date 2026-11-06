@@ -32,3 +32,9 @@ Production navigation performance, real password-recovery email flow and native 
 - Admin Support now shows configured notification inbox/sender, disabled/test configuration and actionable provider errors after a manual retry. Provider acceptance is not claimed as inbox delivery. No migration required.
 
 Email delivery remains an open production issue. Vercel settings are present but secret values were not readable; the cause of the latest missing email was not established. No real messages were sent during verification. Use Admin > Support after deployment to inspect configuration and retry, then check Resend delivery events for rejection, delay, bounce or suppression. If a test sender is configured, verify the sender domain before changing it to a domain address. Keep Zoho receiving records intact.
+
+## Compact Admin structural rewrite
+
+Admin now uses one scoped stylesheet replacing the previous stacked overrides. Removed summary cards and the wide preview band. Inline member counts and a small preview selector share the header; slim tabs lead directly to the member toolbar and table. Grant and Extend use one native modal with focus containment, Escape handling and close-on-success. Features use aligned setting rows; Payments and Support use the same compact section system. Existing authorization, API payloads and billing behavior are preserved.
+
+Focused owner authorization and grant/extend interaction tests passed. Real grants and payments were not executed. Contact email delivery remains unresolved as documented above.
