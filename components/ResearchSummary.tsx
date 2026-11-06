@@ -12,6 +12,7 @@ import {
 import { amount, percent, dateLabel } from "@/lib/format";
 import { Help, Source } from "./Ui";
 import s from "./ResearchWorkspace.module.css";
+import { dcaDisplay, PACE_LEVELS, paceLevel } from "@/lib/pace-presentation";
 export function ResearchSnapshot({
   research: r,
   onDca,
@@ -23,6 +24,10 @@ export function ResearchSnapshot({
   const rows = useMemo(() => researchPeriods(r, "annual"), [r]);
   const last = rows.at(-1),
     multiples = useMemo(() => marketMultiples(r, last), [r, last]);
+  // A forming reading is still useful context when a completed month is not
+  // available. Never turn that case into P0 or hide a valid current reading.
+  const { reading: dcaReading, period: dcaPeriod } = dcaDisplay(p.dca);
+  const displayedLevel = paceLevel(dcaReading?.multiplier);
   const metrics = [
     [
       "Revenue growth",
@@ -78,15 +83,11 @@ export function ResearchSnapshot({
           </p>
         </div>
         <button className={s.dca} onClick={onDca}>
-          <span>Monthly DCA</span>
+          <span>AURYN Pace · price zone</span>
           <strong>
-            {p.dca.confirmed ? `${p.dca.confirmed.multiplier}×` : "—"}
+            {displayedLevel != null ? PACE_LEVELS[displayedLevel] : "Building history"}
           </strong>
-          <span>
-            {p.dca.confirmed
-              ? `${p.dca.confirmed.month} · View rules`
-              : "View coverage"}
-          </span>
+          <span>{dcaReading ? `${dcaPeriod} · View rules` : dcaPeriod}</span>
         </button>
       </div>
       <div className={s.stats}>

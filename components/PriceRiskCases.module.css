@@ -1,0 +1,184 @@
+.root {
+  min-width: 0;
+}
+.root :global(.price-risk-label) b,
+.root > details summary {
+  color: var(--ink);
+}
+.root .cases {
+  container: risk-cards / inline-size;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+}
+.root .cases article {
+  --case-color: #82948b;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  min-width: 0;
+  min-height: 0;
+  padding: 20px;
+  border: 1px solid color-mix(in srgb, var(--case-color) 25%, var(--line));
+  border-radius: 16px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--case-color) 11%, var(--surface)), var(--surface) 70%);
+  box-shadow: none;
+}
+.root .cases article[data-case="downside"] {
+  --case-color: #c36f64;
+}
+.root .cases article[data-case="upside"] {
+  --case-color: #53b490;
+}
+.caseHeading {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 550;
+  line-height: 1.4;
+}
+.caseIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  color: var(--case-color);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--case-color) 28%, var(--surface)), color-mix(in srgb, var(--case-color) 12%, var(--surface)));
+  border: 1px solid color-mix(in srgb, var(--case-color) 32%, transparent);
+  border-radius: 11px;
+}
+.root .cases .percentile {
+  margin: 7px 0 13px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.root .cases strong {
+  font-size: clamp(22px, 2.5vw, 29px);
+  line-height: 1.2;
+  font-weight: 550;
+  letter-spacing: -0.6px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.root .cases small {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+}
+.root .cases .range {
+  display: block;
+  width: 100%;
+  height: 132px;
+  max-width: 300px;
+  align-self: center;
+  margin-top: 14px;
+  color: var(--case-color);
+}
+.root[data-compact="true"] .cases article {
+  padding: 12px;
+}
+.root[data-compact="true"] .cases strong {
+  font-size: 23px;
+}
+.root :global(.price-risk-selected) {
+  max-width: 90ch;
+  margin: 12px 0 0;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.root > details {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.root > details summary {
+  font-size: 12px;
+}
+@container risk-cards (min-width: 1250px) {
+  .root .cases article {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 45%);
+    grid-template-rows: auto auto auto auto;
+    align-content: center;
+    column-gap: 18px;
+    row-gap: 7px;
+    min-height: 220px;
+    padding: 24px;
+  }
+  .caseHeading, .root .cases .percentile, .root .cases strong, .root .cases small {
+    grid-column: 1;
+  }
+  .caseHeading { grid-row: 1; }
+  .root .cases .percentile { grid-row: 2; margin: 0 0 7px; }
+  .root .cases strong { grid-row: 3; }
+  .root .cases small { grid-row: 4; margin: 0; }
+  .root .cases .range {
+    grid-column: 2;
+    grid-row: 1 / 5;
+    justify-self: end;
+    align-self: center;
+    max-width: 200px;
+    height: 132px;
+    margin: 0;
+  }
+}
+@media (max-width: 650px) {
+  .root .cases {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .root .cases article {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 4px 12px;
+    padding: 12px;
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+  .root .cases .range {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    max-height: 132px;
+    margin-top: 8px;
+  }
+  .caseHeading {
+    grid-column: 1;
+    font-size: 12px;
+  }
+  .root .cases .percentile {
+    grid-column: 1;
+    margin: 0 0 0 43px;
+  }
+  .root .cases strong {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    font-size: 22px;
+  }
+  .root .cases small {
+    grid-column: 2;
+    grid-row: 2;
+    margin: 0;
+    text-align: right;
+    font-size: 11px;
+  }
+}
+@media (max-width: 370px) {
+  .caseIcon {
+    display: none;
+  }
+  .root .cases .percentile {
+    margin-left: 0;
+  }
+  .root .cases strong {
+    font-size: 20px;
+  }
+}

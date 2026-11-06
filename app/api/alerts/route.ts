@@ -24,7 +24,8 @@ export async function POST(request: Request) {
     const { user, db } = await account(request);
     limit(`alerts:${user.id}`, 2, 60000);
     const body = await request.json();
-    if (body.op === "check") return privateJson(await checkAlerts(db, user.id));
+    if (body.op === "check")
+      return privateJson(await checkAlerts(db, user.id, request));
     if (body.op === "read") {
       const r = await db
         .from("auryn_alert_events")

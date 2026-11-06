@@ -1,3 +1,5 @@
+
+@layer compatibility {
 :root {
   color-scheme: light;
   --paper: #f2f4f7;
@@ -2709,4 +2711,5 @@ dialog::backdrop {
   .watch-row .identity-text .company-name {
     max-width: 90px;
   }
+}
 }

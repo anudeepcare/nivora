@@ -1,7 +1,7 @@
 import type { Research } from "./types";
 import { adaptiveSettledBars } from "./accumulation-policy-v3.ts";
 type PriceRiskCase = {
-  name: "Bear" | "Base" | "Bull";
+  name: "10th percentile" | "Historical median" | "90th percentile";
   target: number;
   change: number;
   percentile: number;
@@ -87,9 +87,9 @@ export function priceRiskScenarios(r: Research): PriceRiskScenarios {
   };
   const cases = (
     [
-      ["Bear", 0.1],
-      ["Base", 0.5],
-      ["Bull", 0.9],
+      ["10th percentile", 0.1],
+      ["Historical median", 0.5],
+      ["90th percentile", 0.9],
     ] as const
   ).map(([name, p]) => {
     const target = reference * Math.exp(quantile(p));

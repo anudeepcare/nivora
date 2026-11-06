@@ -50,6 +50,12 @@ function input(symbol = "NBIS") {
     },
     "2026-10-17T00:00:00Z",
   );
+  // Explicit economic observation dates are synthetic fixture data; General's
+  // dataset update date alone must never populate these in normalization.
+  normalized.evidence.listingObservations = {
+    marketCap: { asOf: "2026-10-16", currency: "USD", shareBasis: symbol },
+    shares: { asOf: "2026-10-16", unit: "shares", shareBasis: symbol },
+  };
   return {
     ...normalized,
     quote: { price: 50, currency: "USD", stale: false, asOf: "2026-10-16" },
@@ -159,7 +165,7 @@ test("infrastructure suitability is selected from provider industry for arbitrar
   );
 });
 
-test("uploaded IREN response uses a reconciled calculated multiple when reported EV fields disagree", async () => {
+test("uploaded IREN has no field-date bridge; a synthetic dated extension can exercise calculated EV arithmetic", async () => {
   const { readFile } = await import("node:fs/promises");
   const r = JSON.parse(
     await readFile(
@@ -167,10 +173,25 @@ test("uploaded IREN response uses a reconciled calculated multiple when reported
       "utf8",
     ),
   );
+  assert.equal(researchOutlook(r).available, false);
+  r.evidence.listingObservations = {
+    marketCap: {
+      asOf: r.quote.asOf,
+      currency: "USD",
+      shareBasis: r.company.symbol,
+    },
+    shares: {
+      asOf: r.quote.asOf,
+      unit: "shares",
+      shareBasis: r.company.symbol,
+    },
+  };
   const result = researchOutlook(r);
   assert.equal(result.available, true);
   const shares = 394058648,
-    netDebt = 7839600000 - 5895591000;
+    // The deterministic accession tie break selects the quarterly observation
+    // (5,895,600,000 cash), whose date equals the annual observation's date.
+    netDebt = 7839600000 - 5895600000;
   const calculated = (shares * 28.19 + netDebt) / 707006976;
   assert(Math.abs(result.cases[1].multiple - calculated) < 1e-9);
   assert(
@@ -185,6 +206,8 @@ test("uploaded IREN response uses a reconciled calculated multiple when reported
   for (const symbol of ["QATEST", "NBIS", "TE"]) {
     const shared = structuredClone(r);
     shared.company.symbol = symbol;
+    shared.evidence.listingObservations.marketCap.shareBasis = symbol;
+    shared.evidence.listingObservations.shares.shareBasis = symbol;
     shared.evidence.profile.industry = "Data Centers";
     assert.equal(researchOutlook(shared).available, true);
   }

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import SupportInbox from "./SupportInbox";
 import { api } from "@/lib/client";
 import { useAccess } from "./Access";
 import {
@@ -129,6 +130,7 @@ export default function OwnerAccess() {
           ["people", "People"],
           ["features", "Features"],
           ["payments", "Payments"],
+          ["support", "Support"],
         ].map(([id, label]) => (
           <button
             type="button"
@@ -531,6 +533,11 @@ export default function OwnerAccess() {
             ))}
           </details>
         </>
+      )}
+      {panel === "support" && (
+        <section id="admin-support">
+          <SupportInbox />
+        </section>
       )}
     </section>
   );

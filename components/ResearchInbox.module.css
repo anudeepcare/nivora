@@ -1,0 +1,99 @@
+.inbox {
+  margin: 12px 0;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--glass);
+  min-width: 0;
+}
+.inbox header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.inbox h2 {
+  font-size: 16px;
+  margin: 0;
+}
+.inbox header > a,
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--ink);
+}
+.cards {
+  display: grid;
+}
+.highlight {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 16px;
+  min-width: 0;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+}
+.highlight:hover h3 {
+  color: var(--blue);
+}
+.category {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.highlight h3 {
+  grid-column: 1;
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 0;
+}
+.highlight p {
+  grid-column: 1;
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0;
+  color: var(--muted);
+}
+.action {
+  grid-column: 2;
+  grid-row: 2;
+  align-self: center;
+  font-weight: 600;
+}
+.highlight time {
+  grid-column: 2;
+  grid-row: 1;
+  text-align: right;
+}
+.highlight time,
+.inbox > small {
+  font-size: 11px;
+  color: var(--muted);
+}
+.inbox > small {
+  display: block;
+  margin-top: 8px;
+}
+@media (max-width: 600px) {
+  .highlight {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+  .highlight time {
+    grid-column: 1;
+    grid-row: auto;
+    text-align: left;
+  }
+  .action {
+    grid-column: 1;
+    grid-row: auto;
+    min-height: 30px;
+  }
+}

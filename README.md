@@ -1,3 +1,61 @@
+# Latest — enterprise valuation foundation, 28 October 2026
+
+The approved enterprise build is now implemented behind a shadow boundary. It adds point-in-time observations and reconciliation, ordered valuation routing, duration-aware rates, treasury-stock dilution, routed methods, deterministic scenarios, reverse DCF, fail-closed quality gates, validation/backtest metrics, portfolio risk, immutable governance records, a bounded valuation API, glass-box explanation surfaces, and a mobile/PWA shell refinement. Existing visible Pace and production decisions are not replaced by the shadow engine.
+
+Local evidence: 857 JavaScript tests, 38 Python valuation tests, TypeScript/Next route typecheck, optimized production build, 45 controlled API checks plus the existing API suites. The Playwright package is available, but its Chromium executable is not installed in this workspace; physical-device, live-provider entitlement, deployment, and investment-outperformance gates remain external. This build does not claim 99.9999% forecast accuracy; that target applies only to deterministic integrity, lineage and reproducibility checks.
+
+See [the model card](docs/model-cards/valuation-v1.md), [valuation API contract](docs/API_VALUATION.md), and [enterprise acceptance report](docs/approved-build/ENTERPRISE_ACCEPTANCE_20261027.md).
+
+# Current candidate — monitoring acceptance hardening
+
+Start with [the acceptance report](docs/approved-build/ENTERPRISE_ACCEPTANCE_20261027.md). This source adds durable per-rule continuation, visible alert coverage and financial-input warnings, consistent P0–P4 notifications, and reserved internal-state protection. The approved layout and Pace zones are preserved. Run `npm run test:acceptance` to reproduce the local release checks.
+
+Production enterprise acceptance remains blocked by deployed-host verification and independent live-data reconciliation. Subscriber-wide automatic monitoring is not enabled by this change; the operator-only scheduled boundary remains explicit. No new dependency or migration is required, and no production deployment occurred.
+
+---
+
+# Current build — distinct AURYN Pace accumulation zones
+
+Start with [the release notes and historical findings](docs/approved-build/PACE_ZONE_CONTRACT_20261027.md). P1 now means Watch/Hold, P2 Buy/Add small, P3 Buy/Add gradually and P4 Accumulate when the business qualifies. P0 pauses buying. Business risk overrides and confirmed/forming dates remain intact. Current product surfaces use zone meanings, not automatic purchase multipliers.
+
+Home separates reported earnings from upcoming dates, the Price & Pace drawer is tighter, and confirmed Pace appears beside the main action. The faulty price-series test fixture was corrected. Validation passed: 830 automated tests, TypeScript, optimized production build and all nine API test scripts. Evidence and responsive screenshots are included. No new dependency, migration or environment setting is needed. Production has not been deployed.
+
+The price-only historical study found that both fixed example schedules trailed equal-budget DCA in 6 of 8 selected securities. It does not include historical business checks and does not establish an investment edge. Earlier business-led P1–P4 Buy instructions below are superseded by this release.
+
+---
+
+# Current build — business-led AURYN Pace
+
+Start with [the current release notes](docs/approved-build/BUSINESS_LED_PACE_20261027.md). This full-source release makes a qualifying business plus confirmed P1–P4 support gradual Buy/Add, keeps valuation as a separate caution, preserves funding/deterioration overrides, and gives Review an exact reason when business checks or essential inputs are missing. Public, account and research screens explain the same approach. The approved design and raw monthly-v5 calculation are preserved.
+
+Validation: 819 automated tests, TypeScript, the optimized production build and all nine API test scripts passed. Release validation logs and browser screenshots are included. Research was checked at 360/390/430/768/1280 widths; public/account/Pace pages were also reviewed. No new dependency, migration or environment variable is required. Production has not been deployed. Policy consistency is tested; investment outperformance is not established. Earlier entries below are historical and do not supersede this release.
+
+---
+
+# Current build — visible Pace, differentiated decisions and working research drawers
+
+Start with [the current release notes](docs/approved-build/DECISION_AND_DRAWER_FIXES_20261027.md), [Pace and earnings corrections](docs/approved-build/PACE_EARNINGS_RELEASE_20261027.md), and [Pace verification and launch decisions](docs/approved-build/PACE_TRUST_AND_LAUNCH_20261027.md). This complete source preserves the approved AURYN design, keeps forming/confirmed Pace visible, aligns Strategy Lab with the current Pace policy, corrects earnings lifecycle/freshness, and fixes valuation selection, explicit decision reasons, conflicting share denominators and research drawer interactions.
+
+Validation: 807 tests, TypeScript, optimized production build and all nine API test scripts passed. Browser checks covered phone, tablet and desktop widths, metrics expansion, nested close/Escape, custom levels and drawer spacing. No new dependency, environment variable or database migration is required. Production has not been deployed. Historical performance reports do not validate the current policy revision. Earlier entries below are historical and do not supersede this release.
+
+---
+
+# Latest — AURYN Fluid all-metrics refinement
+
+Full source. Start with `docs/FLUID_REFINEMENT_RELEASE.md` for changes, verification and preprod-only deployment. No new SQL or environment variables are required.
+
+# Approved whole-app experience
+
+Start with [this release and preprod instructions](docs/APPROVED_EXPERIENCE_RELEASE.md). Full source; production remains unchanged.
+
+# Decision Canvas preprod handoff
+
+Start with [release and deployment instructions](docs/DECISION_CANVAS_RELEASE.md). Full source; no production deployment performed.
+
+# AURYN Edge — October 25 preprod build
+
+Latest release: see `docs/AURYN_EDGE_RELEASE.md`, `docs/SUPPORT_SETUP.md` and `docs/PREPROD_EDGE_DEPLOYMENT.md`. The complete source is included. No production deployment or live email/database mutation was performed. Historical notes below describe earlier releases and are not a claim of current verification.
+
 # Options workspace refinement — October 23, 2026
 
 Replaces the options presentation with one expiry selector, compact market summary, conditional positioning charts, clearer contract costs, automatic listed long-term selection, strategy cards and practical explanations. Preserves the Alpaca/EODHD data adapters and existing research tabs. See `docs/OPTIONS_UX_REFINEMENT.md`. Missing feed inputs are not unlocked by this redesign.

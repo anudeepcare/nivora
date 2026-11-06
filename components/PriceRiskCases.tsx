@@ -1,8 +1,10 @@
 "use client";
-import { useState } from "react";
+import { ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
 import type { PriceRiskScenarios } from "@/lib/price-risk-scenarios";
 import { amount, percent, dateLabel } from "@/lib/format";
-import CaseRange from "./CaseRange";
+import { valuationScale } from "@/lib/research-summary";
+import styles from "./PriceRiskCases.module.css";
+import ScenarioSensitivity from "./ScenarioSensitivity";
 export default function PriceRiskCases({
   scenarios: s,
   compact = false,
@@ -10,55 +12,79 @@ export default function PriceRiskCases({
   scenarios: Extract<PriceRiskScenarios, { available: true }>;
   compact?: boolean;
 }) {
-  const [selected, setSelected] = useState(1);
+  const cases = s.cases.map((c) => ({
+    ...c,
+    name:
+      c.percentile === 50
+        ? "Historical midpoint · 50th percentile"
+        : c.percentile < 50
+          ? `Historical downside · ${c.percentile}th percentile`
+          : `Historical upside · ${c.percentile}th percentile`,
+  }));
+  const scale = valuationScale(
+    cases.map((c) => c.target),
+    s.reference,
+  );
   return (
-    <div className="price-risk-cases" data-compact={compact}>
+    <div className={`price-risk-cases ${styles.root}`} data-compact={compact}>
       <div className="price-risk-label">
         <b>Historical price-risk cases</b>
         <span>{s.horizon} sessions · not fair value</span>
       </div>
-      {compact ? (
-        <CaseRange
-          cases={s.cases}
-          price={s.reference}
-          currency={s.currency}
-          referenceLabel={
-            s.referenceBasis === "settled-close" ? "Settled close" : "Reference"
-          }
-        />
-      ) : (
-        <>
-          <div
-            className="compass-cases"
-            role="group"
-            aria-label="Explore historical price-risk cases"
-          >
-            {s.cases.map((c, i) => (
-              <button
-                type="button"
-                key={c.name}
-                data-case={c.name}
-                aria-pressed={selected === i}
-                onClick={() => setSelected(i)}
-              >
-                <span>{c.name}</span>
-                <strong>{amount(c.target, s.currency)}</strong>
-                <small className={c.change < 0 ? "negative" : "positive"}>
-                  {percent(c.change, true)}
-                </small>
-              </button>
-            ))}
-          </div>
-          <p className="price-risk-selected">
-            {s.cases[selected].name}:{" "}
-            {s.cases[selected].percentile === 50
-              ? "median"
-              : `${s.cases[selected].percentile}th percentile`}{" "}
-            historical {s.horizon}-session price outcome, applied to{" "}
-            {amount(s.reference, s.currency)}.
-          </p>
-        </>
-      )}
+      <div
+        className={styles.cases}
+        aria-label="Historical return percentile cases"
+      >
+        {cases.map((c) => {
+          const side =
+            c.percentile < 50
+              ? "downside"
+              : c.percentile > 50
+                ? "upside"
+                : "midpoint";
+          const Icon =
+            side === "downside"
+              ? ArrowDownRight
+              : side === "upside"
+                ? ArrowUpRight
+                : Minus;
+          return (
+            <article key={c.percentile} data-case={side}>
+              <div className={styles.caseHeading}>
+                <span className={styles.caseIcon}>
+                  <Icon size={17} aria-hidden="true" />
+                </span>
+                <span>
+                  {side === "midpoint"
+                    ? "Historical midpoint"
+                    : side === "downside"
+                      ? "Historical downside"
+                      : "Historical upside"}
+                </span>
+              </div>
+              <span className={styles.percentile}>
+                {c.percentile}th percentile
+              </span>
+              <strong>{amount(c.target, s.currency)}</strong>
+              <small>{percent(c.change, true)} vs reference</small>
+              {scale && (
+                <ScenarioSensitivity
+                  className={styles.range}
+                  target={c.target}
+                  reference={s.reference}
+                  scale={scale}
+                  label={`${c.name}: ${amount(c.target, s.currency)}; reference ${amount(s.reference, s.currency)}`}
+                />
+              )}
+            </article>
+          );
+        })}
+      </div>
+      <p className="price-risk-selected">
+        Sensitivity diagrams · shared price scale · not a time path. Past{" "}
+        {s.horizon}-session returns applied to the reference; not fair values or
+        forecasts. The midpoint is the historical median.
+      </p>
       <details>
         <summary>Basis &amp; limits · {s.samples} historical windows</summary>
         <p>{s.caveat}</p>

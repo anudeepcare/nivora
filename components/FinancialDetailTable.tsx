@@ -26,7 +26,7 @@ export default function FinancialDetailTable({
   );
   return (
     <details className="financial-detail-table">
-      <summary>Professional financial detail</summary>
+      <summary>Financial statements & ratios</summary>
       <header className="section-head">
         <div>
           <h3>Reported metrics & formulas</h3>

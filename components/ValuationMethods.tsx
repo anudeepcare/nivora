@@ -94,9 +94,7 @@ export default function ValuationMethods({
                 r="7"
                 fill={`var(--${j === 0 && row.points.length > 1 ? "red" : j === 2 ? "green" : "blue"})`}
               >
-                <title>
-                  {p.label} {amount(p.value, r.quote.currency)}
-                </title>
+                <title>{`${p.label} ${amount(p.value, r.quote.currency)}`}</title>
               </circle>
             ))}
           </g>

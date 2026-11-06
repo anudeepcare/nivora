@@ -1,0 +1,322 @@
+/* Shared reading and control contract. Detailed financial layouts remain component-owned. */
+body :is(.approved-workspace, .approved-research-page) {
+  --muted: #525d5c;
+}
+:root[data-theme="dark"]
+  body
+  :is(.approved-workspace, .approved-research-page) {
+  --muted: #bbc6c2;
+}
+body :is(.approved-workspace, .approved-research-page) :is(p, li) {
+  line-height: 1.6;
+}
+body
+  :is(.approved-workspace, .approved-research-page)
+  :is(select, input:not([type="checkbox"]):not([type="radio"]), textarea) {
+  max-width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  font: inherit;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+body :is(.approved-workspace, .approved-research-page) select {
+  padding-right: 32px;
+  cursor: pointer;
+}
+body
+  :is(.approved-workspace, .approved-research-page)
+  :is(select, input, textarea, button, a, summary):focus-visible {
+  outline: 2px solid var(--business-icon);
+  outline-offset: 3px;
+}
+body :is(.approved-workspace, .approved-research-page) summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding: 10px 12px;
+  color: var(--ink);
+  font-weight: 600;
+  border-radius: 8px;
+  background: var(--surface);
+  list-style-position: inside;
+}
+body :is(.approved-workspace, .approved-research-page) details[open] > summary {
+  margin-bottom: 12px;
+  background: color-mix(in srgb, #76b6aa 12%, var(--card));
+}
+body .approved-research-page .signal-business-intro {
+  padding: 12px 0;
+  margin: 16px 0;
+  background: transparent;
+  border-radius: 16px;
+  border: 0;
+}
+body .approved-research-page .signal-business-intro h2 {
+  font-size: clamp(20px, 2vw, 25px);
+  margin: 6px 0;
+}
+body .approved-research-page .signal-business-intro p {
+  max-width: 80ch;
+  font-size: 14px;
+  margin: 8px 0 0;
+}
+body .approved-research-page :is(.funding-metrics, .business-history-summary) {
+  gap: 12px;
+}
+body .approved-research-page .funding-metrics > section {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: color-mix(in srgb, #a8ddc0 12%, var(--card));
+}
+body .approved-research-page .funding-basis {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 14px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+body .approved-research-page .funding-basis small {
+  color: var(--muted);
+  font-size: 12px;
+}
+body .approved-research-page .financial-detail-table {
+  margin: 18px 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--card);
+}
+body .approved-research-page .analyst-summary {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+body .approved-research-page .analyst-summary > div {
+  padding: 18px;
+  border: 0;
+  border-radius: 12px;
+  background: color-mix(in srgb, #76b6aa 10%, var(--card));
+}
+body .approved-research-page .chart-context {
+  margin: 10px 0 0;
+  font-size: 12px;
+}
+body .approved-research-page .chart-context > summary {
+  font-size: 12px;
+  background: transparent;
+  padding: 8px 0;
+  color: var(--muted);
+}
+body .approved-research-page .chart-context section {
+  border: 0;
+  margin: 0;
+  padding: 8px 0;
+}
+body .approved-research-page .au-positive {
+  color: var(--green);
+}
+body .approved-research-page .au-negative {
+  color: var(--red);
+}
+@media (max-width: 600px) {
+  body .approved-research-page .signal-business-intro {
+    padding: 18px;
+  }
+  .approved-research-page .funding-basis {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+body .approved-research-page .ask-auryn {
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: color-mix(in srgb, #76b6aa 8%, var(--card));
+  margin: 18px 0;
+}
+body .approved-research-page .ask-auryn .prompt-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 12px 0;
+}
+body .approved-research-page .ask-auryn .prompt-row button {
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--card);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+body .approved-research-page .ask-auryn .prompt-row button:hover {
+  border-color: var(--ownership-icon);
+  background: var(--surface);
+}
+body .approved-research-page .financing-context > header p {
+  max-width: 80ch;
+}
+/* Compact metrics: a single surface per section, without nested disclosure boxes. */
+.section-symbol {
+  display: inline-block;
+  vertical-align: middle;
+  flex: none;
+  color: var(--financial-icon);
+}
+body .approved-workspace :is(h2, h3):has(> .section-symbol),
+body .approved-research-page :is(h2, h3):has(> .section-symbol) {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+body .approved-research-page .value-studio .section-symbol,
+body .approved-research-page .scenario-compass .section-symbol {
+  color: var(--valuation-icon);
+}
+body
+  .approved-research-page
+  .technical-dashboard
+  .technical-desk-groups
+  h3::before {
+  display: none;
+}
+body
+  .approved-research-page
+  .technical-dashboard
+  .technical-desk-groups
+  > section
+  > header {
+  border: 0;
+  padding-bottom: 10px;
+}
+body
+  .approved-research-page
+  .technical-dashboard
+  .technical-desk-groups
+  dl
+  > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+}
+body .approved-research-page .technical-dashboard .technical-desk-groups dt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--ink);
+}
+body .approved-research-page .technical-dashboard .technical-desk-groups dd {
+  font-size: 14px;
+  margin: 0;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+body
+  .approved-research-page
+  .technical-dashboard
+  .technical-desk-groups
+  dl
+  > div:hover {
+  background: var(--surface);
+}
+body .approved-research-page .technical-dashboard .technical-level-grid {
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  padding: 0;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+  margin: 14px 0;
+}
+body .approved-research-page .technical-dashboard .technical-level-grid > div {
+  padding: 14px;
+  border: 0;
+  border-radius: 10px;
+  box-shadow: none;
+  background: var(--surface);
+  min-width: 0;
+  gap: 7px;
+}
+body .approved-research-page .technical-dashboard .technical-level-grid strong {
+  font-size: 20px;
+  margin: 0;
+  line-height: 1.3;
+}
+body .approved-research-page .technical-dashboard .technical-level-grid small {
+  font-size: 11px;
+  line-height: 1.5;
+}
+body
+  .approved-research-page
+  .price-risk-cases
+  [aria-label="Historical price outcomes"] {
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  padding: 0;
+  gap: 12px;
+}
+body
+  .approved-research-page
+  .price-risk-cases
+  [aria-label="Historical price outcomes"]
+  > article {
+  border: 0;
+  box-shadow: none;
+  border-radius: 12px;
+  background: var(--surface);
+  padding: 18px;
+}
+body
+  .approved-research-page
+  .price-risk-cases
+  [aria-label="Historical price outcomes"]
+  > article
+  > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+}
+@media (max-width: 600px) {
+  body .approved-research-page .technical-dashboard .technical-level-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  body
+    .approved-research-page
+    .technical-dashboard
+    .technical-level-grid
+    > div {
+    padding: 12px;
+  }
+  .section-symbol {
+    max-width: 22px;
+  }
+}
+
+/* Consistent control and page rhythm across authenticated and public surfaces. */
+body select {appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b807b' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:38px!important;cursor:pointer}
+body select:disabled{cursor:default}
+body :is(button,a,input,select,textarea,summary):focus-visible{outline:2px solid var(--green);outline-offset:3px}
+body :is(.technical-level-grid,.price-reference-grid)>div{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:16px}
+body .approved-research-page :is(.market-context,.technical-levels){border-radius:16px;padding:22px;background:var(--card);border:1px solid var(--line)}
+body .approved-research-page :is(.value-section-heading,.research-section-heading){padding:20px;border-radius:16px;background:linear-gradient(115deg,color-mix(in srgb,var(--jade) 20%,var(--card)),var(--card))}
+body .mp-auth-shell{background:radial-gradient(ellipse at 15% 0,#a8ddc030,transparent 60%),var(--surface-2)}
+body :is(.settings-page,.approved-workspace,.approved-research-page) h3{line-height:1.35}
+body .approved-research-page :is(.technical-group,.options-card) h3{display:flex;align-items:center;gap:8px}
+@media(max-width:600px){body .approved-research-page :is(.market-context,.technical-levels){padding:16px}}

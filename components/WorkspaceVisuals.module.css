@@ -1,0 +1,9 @@
+.workspaceVisuals {
+  min-width: 0;
+}
+.workspaceVisuals.workspaceVisuals :global(.watch-summary) {
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}

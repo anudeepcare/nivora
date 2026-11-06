@@ -7,7 +7,7 @@ import {
   useCallback,
 } from "react";
 import Link from "next/link";
-import { api, signOutAndRedirect } from "@/lib/client";
+import { api, ApiError, signOutAndRedirect } from "@/lib/client";
 import { clearAccountCache } from "@/lib/account-cache";
 import {
   resolveAccess,
@@ -21,7 +21,10 @@ const personal = resolveAccess({
   licensed: false,
   now: "2026-01-01T00:00:00Z",
 });
-export type AccessView = Access & { researchUsed?: number };
+export type AccessView = Access & {
+  researchUsed?: number;
+  capabilities?: { paperTrading: boolean };
+};
 const Context = createContext<{ access: AccessView; refresh: () => void }>({
   access: personal,
   refresh: () => {},
@@ -38,7 +41,10 @@ export function AccessBoundary({ children }: { children: React.ReactNode }) {
   }, []);
   useEffect(() => {
     let alive = true;
+    let pending = false;
     const load = async () => {
+      if (pending) return;
+      pending = true;
       try {
         const a = await api<AccessView>("access");
         if (!alive) return;
@@ -50,11 +56,16 @@ export function AccessBoundary({ children }: { children: React.ReactNode }) {
         });
       } catch (e) {
         if (alive) {
-          setAccess(null);
-          clearAccountCache();
+          // Preserve the mounted workspace on transient polling failures.
+          // Explicit authorization failures still remove access immediately;
+          // server authorization remains authoritative for every request.
+          if (e instanceof ApiError && (e.status === 401 || e.status === 403)) {
+            setAccess(null);
+            clearAccountCache();
+          }
           setError(e instanceof Error ? e.message : "Access unavailable.");
         }
-      }
+      } finally { pending = false; }
     };
     void load();
     const timer = setInterval(() => {
@@ -89,7 +100,7 @@ export function AccessBoundary({ children }: { children: React.ReactNode }) {
     return (
       <main className="membership-state" role="status">
         <span className="spinner" />
-        <p>Opening your plan…</p>
+        <p>Opening your workspace…</p>
       </main>
     );
   const context = { access, refresh };

@@ -1,4 +1,5 @@
 "use client";
+import layout from "./FinancialExplorer.module.css";
 import { useMemo, useState } from "react";
 import type { Research } from "@/lib/types";
 import {
@@ -109,12 +110,13 @@ export default function FinancialExplorer({
   flush();
   return (
     <section
-      className="financial-explorer"
+      className={`financial-explorer depth-explorer ${layout.explorer}`}
+      data-metric-group={catalog.find((m) => m.key === chosen)?.group}
       aria-label="Financial chart explorer"
     >
       <header className="section-head">
         <div>
-          <span className="eyebrow">Explore the reported record</span>
+          <span className="eyebrow">Financial history</span>
           <h3>{series.definition?.label ?? "Financial history"}</h3>
           <p>
             {scope === "ttm"
@@ -156,7 +158,7 @@ export default function FinancialExplorer({
         </div>
       </header>
       <label className="explorer-mobile-picker">
-        Metric
+        Explore all financial metrics
         <select
           aria-label="Financial chart metric"
           value={chosen}
@@ -206,10 +208,12 @@ export default function FinancialExplorer({
               }
             >
               {series.crossedZero
-                ? series.latest != null && series.latest < 0 ? "Moved from positive to negative" : "Moved from negative to positive"
+                ? series.latest != null && series.latest < 0
+                  ? "Moved from positive to negative"
+                  : "Moved from negative to positive"
                 : series.change == null
-                ? "Change not established"
-                : `${series.change > 0 ? "+" : ""}${series.change.toFixed(1)}${series.changeUnit === "pp" ? " pp" : "%"} over shown period`}
+                  ? "Change not established"
+                  : `${series.change > 0 ? "+" : ""}${series.change.toFixed(1)}${series.changeUnit === "pp" ? " pp" : "%"} over shown period`}
             </span>
           </div>
           {values.length ? (
@@ -235,9 +239,7 @@ export default function FinancialExplorer({
                 <g key={p.end}>
                   {p.value != null && (
                     <>
-                      <title>
-                        {dateLabel(p.end)}: {format(p.value)}
-                      </title>
+                      <title>{`${dateLabel(p.end)}: ${format(p.value)}`}</title>
                       {style === "bar" ? (
                         <rect
                           x={x(i) - width / 2}

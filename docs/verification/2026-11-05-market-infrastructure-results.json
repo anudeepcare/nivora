@@ -1,0 +1,122 @@
+{
+  "date": "2026-11-05",
+  "candidate": "1.0.0",
+  "unitTests": {
+    "passed": 1055,
+    "failed": 0,
+    "skipped": 0
+  },
+  "focusedFinalOptionsRender": {
+    "passed": 7,
+    "failed": 0
+  },
+  "typecheck": "passed",
+  "productionBuild": "passed; 34 static pages; managed-host temporary export deletion used bounded fs.rm retries",
+  "apiRegressionScripts": {
+    "passed": 9,
+    "transport": "synthetic; no live provider/payment/trade"
+  },
+  "independentReviews": [
+    "public/auth",
+    "home earnings",
+    "technical/historical cases",
+    "market infrastructure",
+    "integrated options UI",
+    "unified presentation contrast/inheritance"
+  ],
+  "visualAcceptance": "not verified: browser service timeout",
+  "productionDeployment": false,
+  "newDependencies": false,
+  "newSchema": false,
+  "archiveVerification": "CRC, per-file SHA256 manifest and private configuration exclusions validated by package-source.py",
+  "correctiveUx": [
+    "map-first compact controls",
+    "logo-led public/auth palette",
+    "functional public workflow navigation",
+    "shared-scale historical ranges",
+    "customer-visible internal version removed",
+    "mobile picker flex layout and chart-axis labels corrected"
+  ],
+  "visualRefresh": [
+    "public charcoal/lime graphical hero",
+    "restored Home comparison hero",
+    "four dated real-history company area charts",
+    "rich shared-scale scenario sensitivity cones",
+    "semantic mint/citron metric surfaces"
+  ],
+  "homeChartLoading": "At most four sequential existing chart API reads; cached/supplied history reused; malformed/future/stale/current incomplete bars withheld.",
+  "buildHostOnlyHelper": "External Node preload for temporary export-directory rm retries, excluded from source ZIP; no application/dependency patch.",
+  "reviewFixes": [
+    "controller-owned Home chart fetches do not reuse an aborted shared pending promise",
+    "historical diagrams retain exact reference/target geometry",
+    "current-day unfinished and invalid chart histories are withheld"
+  ],
+  "unifiedDesignExtension": [
+    "approved Home cards retained",
+    "public header explicit contrast pair including mobile menu",
+    "charcoal/login research cards",
+    "all Research section presentation",
+    "compact Options/Vanna/tape/simulation cards",
+    "Portfolio/Watchlist scope attachment",
+    "Settings/discovery/radar/inbox",
+    "shared decision evidence/history/comparison/position fit/pricing",
+    "gain/loss and dark-card icon contrast reviewed"
+  ],
+  "mobileHeaderCorrection": {
+    "layout": "three columns at 360\u2013600px; two below 360px; full-width chart price facts",
+    "focusedTests": {
+      "passed": 62,
+      "failed": 0
+    },
+    "visualAcceptance": "pending: browser service unavailable"
+  },
+  "calmAppRefinement": {
+    "approvedPublicAuth": "four source files byte-identical to mobile-adjusted package",
+    "navigation": "unchanged",
+    "cardTreatment": "uniform restrained sage grids; semantic changes independent of card color",
+    "researchCards": "four visible companies/page; sequential missing-history reads and shared cache reuse; all saved symbols reachable",
+    "controlContrast": "theme-owned searchable-picker foreground/background pairs, including disabled state",
+    "tokenContrastRatios": {
+      "cardBody": 9.55,
+      "cardCaption": 5.09,
+      "lightPicker": 15.0,
+      "darkPicker": 13.35
+    },
+    "cssModules": "all component modules compile in pure/scoped mode",
+    "review": "no concrete important correctness or readability findings",
+    "visualAcceptance": "pending: browser service unavailable"
+  },
+  "neutralWorkspace": {
+    "surfaces": "theme-neutral reading panels and chart canvases",
+    "identity": "visible 30%-to-18% logo-accent gradient fill on rounded company cards; rejected top strips removed; stable allocation identity retained",
+    "performance": "displayed history endpoints control chart direction; daily and unrealized changes keep independent signed semantics",
+    "removedWatchlistPanels": [
+      "Price is one part of the story",
+      "Keep your reason close"
+    ],
+    "focusedChecks": {
+      "passed": 8,
+      "failed": 0
+    },
+    "reviewFix": "neutralized empty company-card state for new users",
+    "visualAcceptance": "pending: browser unavailable"
+  },
+  "cardCorrection": {
+    "scope": "CSS only: remove company/summary top strips, remove company outline, add restrained company fill and shadow",
+    "validation": "three Next CSS Modules compile; no new full-suite/build/browser claim",
+    "functionalBaseline": "1054 tests, types, build and nine API scripts passed before this CSS-only correction"
+  },
+  "identityUx": {
+    "companyCards": "visible logo-based filled gradients, no top strips, distinct deterministic design fallback",
+    "logoSampling": "24x24 loaded image only; white/transparent exclusion; tainted canvas catches; no extra network requests",
+    "portfolio": "role-specific summary gradients, signed return, neutral analytical canvas",
+    "watchlist": "compact action/Pace link + entry/holding context; neutral hover",
+    "darkTheme": "reduced tint, opaque company names",
+    "focusedChecks": {
+      "passed": 9,
+      "failed": 0
+    },
+    "publicAuthPricing": "unchanged source",
+    "visualAcceptance": "pending: browser unavailable"
+  }
+}

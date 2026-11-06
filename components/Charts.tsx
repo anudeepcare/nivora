@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   createChart,
   AreaSeries,
@@ -11,7 +11,7 @@ import {
 } from "lightweight-charts";
 import type { Candle } from "@/lib/types";
 import { useProduct } from "./Session";
-const EMPTY_COLORS: Record<string,string> = {};
+const EMPTY_COLORS: Record<string, string> = {};
 const EMPTY_LEVELS: { label: string; price: number }[] = [];
 export function PriceChart({
   bars,
@@ -26,8 +26,9 @@ export function PriceChart({
   style?: "line" | "candles";
   levels?: { label: string; price: number }[];
   contrast?: boolean;
-  candleColors?: Record<string,string>;
+  candleColors?: Record<string, string>;
 }) {
+  const [hover, setHover] = useState<{ time: string; values: string } | null>(null);
   const element = useRef<HTMLDivElement>(null),
     chart = useRef<IChartApi | null>(null),
     series = useRef<ISeriesApi<"Area"> | ISeriesApi<"Candlestick"> | null>(
@@ -41,7 +42,7 @@ export function PriceChart({
     const ink =
       palette.getPropertyValue("--muted").trim() ||
       (theme === "dark" ? "#a8b9c5" : "#5e6e79");
-    const accent = palette.getPropertyValue("--blue").trim() || "#2267d8";
+    const accent = palette.getPropertyValue("--ink").trim() || "#24272b";
     const grid =
       palette.getPropertyValue("--line").trim() ||
       (theme === "dark" ? "#2a3b47" : "#e2e7ec");
@@ -51,6 +52,7 @@ export function PriceChart({
         : "rgba(34,103,216,0.1)";
     const api = createChart(element.current, {
       autoSize: true,
+      localization: { locale: "en-US" },
       layout: {
         background: { type: ColorType.Solid, color: "transparent" },
         textColor: ink,
@@ -60,8 +62,16 @@ export function PriceChart({
         vertLines: { visible: false },
         horzLines: { color: grid },
       },
-      rightPriceScale: { borderVisible: false, visible: !contrast },
-      leftPriceScale: { borderVisible: false, visible: contrast },
+      rightPriceScale: {
+        borderVisible: false,
+        visible: !contrast,
+        autoScale: true,
+      },
+      leftPriceScale: {
+        borderVisible: false,
+        visible: contrast,
+        autoScale: true,
+      },
       timeScale: {
         borderVisible: false,
         timeVisible: range === "1D" || range === "1W",
@@ -98,8 +108,36 @@ export function PriceChart({
             lineWidth: 2,
             priceLineVisible: false,
           });
+    const readCrosshair = (event: import("lightweight-charts").MouseEventParams<Time>) => {
+      const current = series.current;
+      const point = current ? event.seriesData.get(current) : undefined;
+      if (!event.time || !point || !event.point) { setHover(null); return; }
+      const time = typeof event.time === "number"
+        ? new Date(event.time * 1000).toLocaleString("en-US", { timeZone: "UTC", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }) + " UTC"
+        : typeof event.time === "string" ? event.time : `${event.time.year}-${event.time.month}-${event.time.day}`;
+      const number = (value: number) => value.toLocaleString("en-US", { maximumFractionDigits: 4 });
+      const datum = point as Partial<{ open: number; high: number; low: number; close: number; value: number }>;
+      const values = typeof datum.close === "number" && typeof datum.open === "number" && typeof datum.high === "number" && typeof datum.low === "number"
+        ? `O ${number(datum.open)}  H ${number(datum.high)}  L ${number(datum.low)}  C ${number(datum.close)}`
+        : typeof datum.value === "number" ? `Close ${number(datum.value)}` : "";
+      setHover({ time, values });
+    };
+    api.subscribeCrosshairMove(readCrosshair);
     lastRange.current = "";
+    // A retained dialog starts at width zero. Fit again when it gains layout width.
+    let previousWidth = 0;
+    const observer = new ResizeObserver(([entry]) => {
+      const width = entry?.contentRect.width ?? 0;
+      if (width > 0 && width !== previousWidth) {
+        api.applyOptions({ width });
+        api.timeScale().fitContent();
+      }
+      previousWidth = width;
+    });
+    observer.observe(element.current);
     return () => {
+      api.unsubscribeCrosshairMove(readCrosshair);
+      observer.disconnect();
       api.remove();
       chart.current = null;
       series.current = null;
@@ -117,7 +155,20 @@ export function PriceChart({
       unique.set(
         String(time),
         style === "candles"
-          ? { time, open: b.open, high: b.high, low: b.low, close: b.close, ...(candleColors[b.time]?{color:candleColors[b.time],wickColor:candleColors[b.time],borderColor:candleColors[b.time]}:{}) }
+          ? {
+              time,
+              open: b.open,
+              high: b.high,
+              low: b.low,
+              close: b.close,
+              ...(candleColors[b.time]
+                ? {
+                    color: candleColors[b.time],
+                    wickColor: candleColors[b.time],
+                    borderColor: candleColors[b.time],
+                  }
+                : {}),
+            }
           : { time, value: b.close },
       );
     }
@@ -131,11 +182,11 @@ export function PriceChart({
     }
     const lines = levels
       .filter((l) => Number.isFinite(l.price) && l.price > 0)
-      .map((l) =>
+      .map((l, index) =>
         series.current!.createPriceLine({
           price: l.price,
           title: l.label,
-          color: "#a38cdd",
+          color: ["#68ae94", "#916bb8", "#809a39", "#b46f5a"][index % 4],
           lineWidth: 1,
           lineStyle: 2,
           axisLabelVisible: true,
@@ -150,6 +201,10 @@ export function PriceChart({
   }, [bars, range, theme, style, levels, contrast, candleColors]);
   return (
     <div className="chart-wrap">
+      <div className="chart-readout" aria-label="Chart inspection">
+        <span>{hover?.time ?? "Explore the chart"}</span>
+        <strong>{hover?.values ?? "Hover or touch to inspect a price"}</strong>
+      </div>
       <div
         className="price-chart"
         role="img"

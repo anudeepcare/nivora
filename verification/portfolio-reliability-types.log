@@ -1,9 +1,0 @@
-npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
-
-> auryn-product@0.1.0 typecheck
-> next typegen && tsc --noEmit
-
-Generating route types...
-✓ Route types generated successfully
-components/Workspace.tsx(35,10): error TS2300: Duplicate identifier 'quoteTime'.
-components/Workspace.tsx(35,49): error TS2300: Duplicate identifier 'quoteTime'.

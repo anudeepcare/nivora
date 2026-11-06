@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* Content design owner. Shell geometry and installed-PWA safe areas belong to pwa-shell.css. */
 .panel,
 .au-panel {
@@ -1422,3 +1424,4 @@
 @media(max-width:900px){.refined-auth .login-card{grid-row:1}.refined-auth .login-introduction{grid-row:2}}
 
 @media(max-width:650px){.business-map-compact{grid-template-columns:minmax(0,1fr);padding:18px}.business-map-compact .company-profile{border-right:0;border-bottom:1px solid var(--line);padding:0 0 15px;margin:0 0 15px}.business-map-compact .segment-breakdown{padding:0}.product-footer{padding-bottom:24px;gap:12px}.product-footer nav{gap:10px 16px}}
+}

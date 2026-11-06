@@ -1,4 +1,22 @@
 "use client";
+import OpportunityMap from "./OpportunityMap";
+import { MarketRadar } from "./MarketRadar";
+import mapStyles from "./OpportunityMap.module.css";
+import {
+  emptyOpportunityFilters,
+  matchesOpportunity,
+  opportunityRow,
+  type OpportunityFilters,
+} from "@/lib/opportunity-map";
+import { researchEdge } from "@/lib/edge-research";
+import { verifiedResearch } from "@/lib/comparison";
+import {
+  sameProviderSymbol,
+  providerSymbol,
+  providerIdentity,
+} from "@/lib/provider-symbol";
+import PaceGuidance from "./PaceGuidance";
+import PaceHelp from "./PaceHelp";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowUpRight, Search as SearchIcon, Save } from "lucide-react";
@@ -6,23 +24,32 @@ import { useProduct, useResource } from "./Session";
 import { readResource } from "@/lib/resource-cache";
 import { api } from "@/lib/client";
 import { perspective } from "@/lib/analysis";
-import { symbolInput, amount, percent } from "@/lib/format";
+import { amount, percent } from "@/lib/format";
 import type { Research } from "@/lib/types";
 import { Empty, PageHeading, SecurityLogo, Notice, Help } from "./Ui";
-export default function Discover({embedded=false}:{embedded?:boolean}) {
+export default function Discover({ embedded = false }: { embedded?: boolean }) {
   const { workspace, demo, cache } = useProduct(),
     prefix = demo && demo.routePrefix !== "" ? "/preview" : "",
     [draft, setDraft] = useState(""),
     [rows, setRows] = useState<Research[]>([]),
     [filter, setFilter] = useState("all"),
+    [criteria, setCriteria] = useState<OpportunityFilters>(
+      emptyOpportunityFilters,
+    ),
+    [requested, setRequested] = useState<string[]>([]),
     [busy, setBusy] = useState(false),
     [message, setMessage] = useState(""),
-    [coverage,setCoverage]=useState({requested:0,returned:0});
+    [coverage, setCoverage] = useState({ requested: 0, returned: 0 });
   const preview = useMemo(() => (demo ? { documents: [] } : undefined), [demo]),
     saved = useResource<{
       documents: {
         key: string;
-        body: { name: string; symbols: string[]; filter: string };
+        body: {
+          name: string;
+          symbols: string[];
+          filter: string;
+          criteria?: OpportunityFilters;
+        };
       }[];
     }>("documents?kind=view", preview);
   const universe = [
@@ -39,7 +66,17 @@ export default function Discover({embedded=false}:{embedded?:boolean}) {
     setMessage("");
     try {
       const symbols = draft.trim()
-        ? [...new Set(draft.split(/[ ,]+/).filter(Boolean).map(symbolInput))]
+        ? [
+            ...new Map(
+              draft
+                .split(/[ ,]+/)
+                .filter(Boolean)
+                .map((s) => [
+                  providerIdentity(providerSymbol(s)),
+                  providerSymbol(s),
+                ]),
+            ).values(),
+          ]
         : universe;
       if (!symbols.length || symbols.length > 12)
         throw Error("Choose between one and twelve companies.");
@@ -64,13 +101,21 @@ export default function Discover({embedded=false}:{embedded?:boolean}) {
             ),
         );
         batch.forEach((v, j) => {
-          if (v.status === "fulfilled" && v.value) result.push(v.value);
+          if (
+            v.status === "fulfilled" &&
+            verifiedResearch(v.value, symbols[i + j])
+          )
+            result.push(v.value);
           else failed.push(symbols[i + j]);
         });
       }
       setRows(result);
-      setCoverage({requested:symbols.length,returned:result.length});
-      if (failed.length) setMessage(`No response for ${failed.join(", ")}.`);
+      setRequested(symbols);
+      setCoverage({ requested: symbols.length, returned: result.length });
+      if (failed.length)
+        setMessage(
+          `Could not verify ${failed.join(", ")}. Other results are ready; check the ticker or try again.`,
+        );
     } catch (e) {
       setMessage(e instanceof Error ? e.message : "Scan failed.");
     } finally {
@@ -80,17 +125,34 @@ export default function Discover({embedded=false}:{embedded?:boolean}) {
   const values = useMemo(
     () =>
       rows
-        .map((r) => ({ r, p: perspective(r) }))
+        .map((r) => ({
+          r,
+          opportunity: opportunityRow(
+            r,
+            demo ? Date.parse(r.retrievedAt) : Date.now(),
+          ),
+          p: perspective(r),
+          edge: researchEdge(
+            r,
+            !!workspace?.positions.some(
+              (p) =>
+                sameProviderSymbol(p.symbol, r.company.symbol) &&
+                p.quantity > 0,
+            ),
+            demo ? Date.parse(r.retrievedAt) : Date.now(),
+          ),
+        }))
         .filter(
-          ({ p }) =>
-            filter === "all" ||
-            (filter === "cash" && p.last?.fcf != null && p.last.fcf > 0) ||
-            (filter === "trend" && p.tech.trend === "Constructive") ||
-            (filter === "zone" &&
-              p.dca.confirmed &&
-              p.dca.confirmed.multiplier >= 2),
+          ({ p, opportunity }) =>
+            matchesOpportunity(opportunity, criteria) &&
+            (filter === "all" ||
+              (filter === "cash" && p.last?.fcf != null && p.last.fcf > 0) ||
+              (filter === "trend" && p.tech.trend === "Constructive") ||
+              (filter === "zone" &&
+                p.dca.confirmed &&
+                p.dca.confirmed.multiplier >= 2)),
         ),
-    [rows, filter],
+    [rows, filter, criteria, workspace?.positions, demo],
   );
   async function save() {
     try {
@@ -102,6 +164,7 @@ export default function Discover({embedded=false}:{embedded?:boolean}) {
           name: "My research screen",
           symbols: rows.map((r) => r.company.symbol),
           filter,
+          criteria,
         },
       });
       saved.refresh();
@@ -111,12 +174,17 @@ export default function Discover({embedded=false}:{embedded?:boolean}) {
     }
   }
   return (
-    <section>
-      {!embedded && <PageHeading
-        title="Discover with a purpose."
-        subtitle="Screen a focused universe using the same research shown on each company."
-      />}
-      <p className="small muted">Your selected universe only · up to 12 instruments per requested scan. No market-wide ranking or automatic background scan.</p>
+    <section className="discover-workspace">
+      {!embedded && (
+        <PageHeading
+          title="Find companies"
+          subtitle="Filter companies by sector, business results and confirmed Pace."
+        />
+      )}
+      <p className="small muted">
+        Your selected universe only · up to 12 instruments per requested scan.
+        No market-wide ranking or automatic background scan.
+      </p>
       {saved.data?.documents.length ? (
         <div className="source-line">
           Saved screens:{" "}
@@ -128,6 +196,9 @@ export default function Discover({embedded=false}:{embedded?:boolean}) {
                 setDraft(v.body.symbols.join(", "));
                 setFilter(v.body.filter || "all");
                 setRows([]);
+                setRequested([]);
+                setCoverage({ requested: 0, returned: 0 });
+                setCriteria(v.body.criteria ?? emptyOpportunityFilters);
                 setMessage(
                   "Saved criteria loaded. Screen companies to refresh the evidence.",
                 );
@@ -154,45 +225,115 @@ export default function Discover({embedded=false}:{embedded?:boolean}) {
           {busy ? "Reviewing sources…" : "Screen companies"}
         </button>
       </form>
-      <div className="analyst-controls">
-        <div className="segment">
-          {[
-            ["all", "All"],
-            ["cash", "Positive cash flow"],
-            ["trend", "Constructive trend"],
-            ["zone", "Accumulation zones"],
-          ].map(([key, label]) => (
-            <button
-              key={key}
-              aria-pressed={filter === key}
-              onClick={() => setFilter(key)}
+      <div className="analyst-controls discover-controls">
+        <div className={mapStyles.filters}>
+          <label>
+            Sector
+            <select
+              value={criteria.sector}
+              onChange={(e) => {
+                setFilter("all");
+                setCriteria({ ...criteria, sector: e.target.value });
+              }}
             >
-              {label}
-            </button>
-          ))}
-        </div>
+              <option value="all">All sectors</option>
+              {[...new Set(rows.map((r) => opportunityRow(r).sector))]
+                .sort()
+                .map((sector) => (
+                  <option key={sector}>{sector}</option>
+                ))}
+            </select>
+          </label>
+          <label>
+            Confirmed Pace
+            <select
+              value={criteria.pace}
+              onChange={(e) => {
+                setFilter("all");
+                setCriteria({ ...criteria, pace: e.target.value });
+              }}
+            >
+              <option value="all">All Pace readings</option>
+              {["P0", "P1", "P2", "P3", "P4"].map((p) => (
+                <option key={p}>{p}</option>
+              ))}
+              <option value="unavailable">Reading unavailable</option>
+            </select>
+          </label>
+          <label>
+            Business evidence
+            <select
+              value={criteria.quality}
+              onChange={(e) => {
+                setFilter("all");
+                setCriteria({ ...criteria, quality: e.target.value });
+              }}
+            >
+              <option value="all">All business evidence</option>
+              <option value="cash">Positive free cash flow</option>
+              <option value="growth">Positive revenue growth</option>
+              <option value="profit">Positive operating income</option>
+            </select>
+          </label>
+          <button
+            className="button"
+            type="button"
+            onClick={() => {
+              setCriteria(emptyOpportunityFilters);
+              setFilter("all");
+            }}
+          >
+            Reset filters
+          </button>
         <button className="button" disabled={!rows.length} onClick={save}>
           <Save size={16} />
           Save screen
         </button>
+        </div>
       </div>
-      {!!coverage.requested&&<p className="context-note">Evidence returned for {coverage.returned} of {coverage.requested} requested instruments · {values.length} match the selected filter. Missing values do not count as matches.</p>}
+      {!!coverage.requested && (
+        <p className="context-note">
+          Evidence returned for {coverage.returned} of {coverage.requested}{" "}
+          requested instruments · {values.length} match the selected filter.
+          Missing values do not count as matches.
+        </p>
+      )}
       {message && <Notice>{message}</Notice>}
+      {!!requested.length && (
+        <OpportunityMap
+          research={rows}
+          requested={requested}
+          prefix={prefix}
+          demo={!!demo}
+          onSector={(sector) => {
+            setFilter("all");
+            setCriteria({ ...criteria, sector });
+          }}
+        />
+      )}
+      {rows.length > 0 && (
+        <details className="panel">
+          <summary>Breadth & rotation · loaded companies</summary>
+          <MarketRadar research={rows} />
+        </details>
+      )}
       {values.length ? (
         <div className="table-scroll">
           <table>
             <thead>
               <tr>
                 <th>Company</th>
-                <th>Business</th>
+                <th>AURYN View</th>
                 <th>Cash after capex</th>
                 <th>Revenue growth</th>
                 <th>Trend</th>
-                <th>DCA · price only</th>
+                <th>
+                  AURYN Pace <PaceHelp />
+                </th>
               </tr>
             </thead>
             <tbody>
-              {values.map(({ r, p }) => (
+              {values.map(({ r, p, edge }) => (
                 <tr key={r.company.symbol}>
                   <td>
                     <Link
@@ -206,7 +347,26 @@ export default function Discover({embedded=false}:{embedded?:boolean}) {
                       </span>
                     </Link>
                   </td>
-                  <td>{p.business}</td>
+                  <td>
+                    <strong
+                      className={
+                        edge.tone === "risk"
+                          ? "red"
+                          : edge.tone === "positive"
+                            ? "green"
+                            : ""
+                      }
+                    >
+                      {edge.pacePresentation.actionLabel}
+                    </strong>
+                    <small className="block">
+                      {edge.decision.contextLabel} · {edge.reason}
+                    </small>
+                    <small className="block">
+                      New purchase: {edge.decision.actionLabels.entry} ·
+                      Holding: {edge.decision.actionLabels.holding}
+                    </small>
+                  </td>
                   <td>
                     {amount(p.last?.fcf, p.last?.currency, true)}
                     <small className="block">
@@ -216,7 +376,11 @@ export default function Discover({embedded=false}:{embedded?:boolean}) {
                   <td>{percent(p.growth)}</td>
                   <td>{p.tech.trend}</td>
                   <td>
-                    {p.dca.confirmed ? `${p.dca.confirmed.multiplier}×` : "—"}
+                    <PaceGuidance
+                      view={edge.pacePresentation}
+                      readings={edge.pacePeriods}
+                      compact
+                    />
                   </td>
                 </tr>
               ))}
@@ -228,11 +392,24 @@ export default function Discover({embedded=false}:{embedded?:boolean}) {
           title={
             rows.length
               ? "No companies match this filter"
-              : "Start with companies you want to understand"
+              : "Choose companies to screen"
           }
         >
-          Screening uses a deliberately bounded universe to protect your data
-          allowance. A filter match is a research lead, not a recommendation.
+          {rows.length
+            ? "Try a different sector, Pace zone or business measure. Missing evidence never counts as a match."
+            : "Scan up to twelve companies from your watchlist, holdings or tickers."}
+          {rows.length > 0 && (
+            <button
+              className="text-button"
+              onClick={() => {
+                setCriteria(emptyOpportunityFilters);
+                setFilter("all");
+              }}
+            >
+              Reset filters
+            </button>
+          )}
+          A filter match is a research lead, not a recommendation.
         </Empty>
       )}
     </section>

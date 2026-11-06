@@ -1,0 +1,30 @@
+[
+  {
+    "check": "public support return",
+    "passed": true
+  },
+  {
+    "check": "research tab and scroll return",
+    "passed": true
+  },
+  {
+    "check": "desktop footer links visible",
+    "passed": true
+  },
+  {
+    "check": "dark research no horizontal overflow",
+    "passed": true
+  },
+  {
+    "check": "support diagnostics opt in",
+    "passed": true
+  },
+  {
+    "check": "screenshot converted to JPEG preview",
+    "passed": true
+  },
+  {
+    "check": "screenshot can be removed before sending",
+    "passed": true
+  }
+]

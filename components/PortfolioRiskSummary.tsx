@@ -1,5 +1,5 @@
 "use client";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import type { Position, Quote } from "@/lib/types";
 import type { HomeFeed } from "@/lib/home-feed";
 import { portfolioRiskSummary } from "@/lib/product-attention";
@@ -22,11 +22,37 @@ export function usePortfolioCalendar(positions: Position[]) {
     () => (demo ? { events: [], issues: [], followed: 0 } : undefined),
     [demo],
   );
-  return useResource<Pick<HomeFeed, "events" | "issues" | "followed">>(
+  const calendar = useResource<
+    Pick<HomeFeed, "events" | "issues" | "followed">
+  >(
     key ? `home-feed?kind=events&symbols=${encodeURIComponent(key)}` : null,
     preview,
-    21600000,
+    300000,
   );
+  const refresh = useRef(calendar.refresh);
+  refresh.current = calendar.refresh;
+  useEffect(() => {
+    if (demo || !key) return;
+    let checked = Date.now();
+    const check = () => {
+      if (
+        document.visibilityState === "hidden" ||
+        Date.now() - checked < 300000
+      )
+        return;
+      checked = Date.now();
+      refresh.current();
+    };
+    const timer = window.setInterval(check, 300000);
+    window.addEventListener("focus", check);
+    document.addEventListener("visibilitychange", check);
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener("focus", check);
+      document.removeEventListener("visibilitychange", check);
+    };
+  }, [demo, key]);
+  return calendar;
 }
 export default function PortfolioRiskSummary({
   positions,

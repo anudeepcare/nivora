@@ -14,7 +14,7 @@ export default function BusinessHistory({
   );
   if (!h || !h.periods) return null;
   return (
-    <section className="business-history panel">
+    <section className="business-history depth-business-history">
       <header className="section-head">
         <div>
           <span className="eyebrow">Business durability</span>
@@ -31,7 +31,17 @@ export default function BusinessHistory({
           <strong>{percent(h.revenueCagr)}</strong>
           <small>Annualized over the dated, consecutive reporting period</small>
         </article>
-        <article data-tone="green">
+        <article
+          data-tone={
+            !h.profitObservations
+              ? "neutral"
+              : h.profitYears === h.profitObservations
+                ? "green"
+                : h.profitYears === 0
+                  ? "red"
+                  : "amber"
+          }
+        >
           <span>Profitable years</span>
           <strong>
             {h.profitObservations
@@ -40,7 +50,17 @@ export default function BusinessHistory({
           </strong>
           <small>Positive reported net income; observed years only</small>
         </article>
-        <article data-tone="violet">
+        <article
+          data-tone={
+            !h.cashObservations
+              ? "neutral"
+              : h.cashYears === h.cashObservations
+                ? "green"
+                : h.cashYears === 0
+                  ? "red"
+                  : "amber"
+          }
+        >
           <span>Cash-generating years</span>
           <strong>
             {h.cashObservations
@@ -109,12 +129,7 @@ export default function BusinessHistory({
                     );
                   return (
                     <g key={row.end}>
-                      <title>
-                        {dateLabel(row.end)}:{" "}
-                        {key === "margin"
-                          ? percent(value)
-                          : amount(value, h.currency ?? undefined, true)}
-                      </title>
+                      <title>{`${dateLabel(row.end)}: ${key === "margin" ? percent(value) : amount(value, h.currency ?? undefined, true)}`}</title>
                       <rect
                         x={x - 13}
                         width="26"

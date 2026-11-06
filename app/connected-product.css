@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* Focused product sections. Shell, safe areas and scroll ownership stay in pwa-shell.css. */
 .business-map,
 .portfolio-exposure {
@@ -510,4 +512,5 @@
   .home-updates .update-row {
     transition: none;
   }
+}
 }

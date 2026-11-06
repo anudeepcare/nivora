@@ -66,6 +66,9 @@ export default function PortfolioLedger({
             <th>Average cost</th>
             <th>Price</th>
             <th>Value</th>
+            <th title="Combined ticker value divided by priced USD assets and recorded cash">
+              Ticker weight
+            </th>
             <th>Unrealized</th>
             <th>Review</th>
             <th>
@@ -121,11 +124,30 @@ export default function PortfolioLedger({
                 <td className="ledger-price">
                   <strong>{amount(row.price, "USD")}</strong>
                   {!cash && quotes[p.symbol]?.asOf && (
-                    <small><time dateTime={quotes[p.symbol].asOf ?? undefined} title={quoteTime(quotes[p.symbol].asOf)}>{quoteTime(quotes[p.symbol].asOf, true)}</time></small>
+                    <small>
+                      <time
+                        dateTime={quotes[p.symbol].asOf ?? undefined}
+                        title={quoteTime(quotes[p.symbol].asOf)}
+                      >
+                        {quoteTime(quotes[p.symbol].asOf, true)}
+                      </time>
+                    </small>
                   )}
                 </td>
                 <td className="ledger-value">
                   <strong>{amount(row.value, "USD")}</strong>
+                </td>
+                <td className="ledger-weight">
+                  <strong>{percent(row.weight)}</strong>
+                  {row.weight != null && (
+                    <span className="ledger-weight-track" aria-hidden="true">
+                      <i
+                        style={{
+                          width: `${Math.min(100, Math.max(0, row.weight))}%`,
+                        }}
+                      />
+                    </span>
+                  )}
                 </td>
                 <td
                   className={`ledger-result ${row.pnl == null ? "muted" : row.pnl < 0 ? "negative" : "positive"}`}

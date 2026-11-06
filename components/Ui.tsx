@@ -1,9 +1,13 @@
 "use client";
+import styles from "./Ui.module.css";
+import { customerText } from "@/lib/customer-language";
 import Link from "next/link";
 import { useId, useRef, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { CircleHelp, X, ArrowUpRight, Search } from "lucide-react";
+import { Info, X, ArrowUpRight, Search } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { ContextLink } from "./ContextLink";
+import { dominantLogoColor } from "@/lib/visual-signals";
 import { requestLogo } from "@/lib/logo-client";
 import { dateLabel, quoteTime } from "@/lib/format";
 export function DataStamp({
@@ -18,9 +22,11 @@ export function DataStamp({
   return (
     <span className="data-stamp">
       <span>
-        {status ? `${status} · ` : ""}
-        {asOf?.includes('T') ? quoteTime(asOf) : dateLabel(asOf)}
-        {source && /fallback/i.test(source) && <small> · Backup data used</small>}
+        {status ? `${customerText(status)} · ` : ""}
+        {asOf?.includes("T") ? quoteTime(asOf) : dateLabel(asOf)}
+        {source && /fallback/i.test(source) && (
+          <small> · Backup data used</small>
+        )}
       </span>
     </span>
   );
@@ -70,9 +76,11 @@ const logos: Record<string, string> = {
 export function SecurityLogo({
   symbol,
   size = 42,
+  onAccent,
 }: {
   symbol: string;
   size?: number;
+  onAccent?: (color: string) => void;
 }) {
   const [failed, setFailed] = useState(false);
   const [remote, setRemote] = useState<{
@@ -126,6 +134,24 @@ export function SecurityLogo({
           loading="lazy"
           decoding="async"
           referrerPolicy="no-referrer"
+          onLoad={(event) => {
+            if (!onAccent) return;
+            try {
+              const canvas = document.createElement("canvas");
+              canvas.width = canvas.height = 24;
+              const context = canvas.getContext("2d", {
+                willReadFrequently: true,
+              });
+              if (!context) return;
+              context.drawImage(event.currentTarget, 0, 0, 24, 24);
+              const accent = dominantLogoColor(
+                context.getImageData(0, 0, 24, 24).data,
+              );
+              if (accent) onAccent(accent);
+            } catch {
+              /* Cross-origin or undecodable logos retain the stable fallback. */
+            }
+          }}
           onError={() => setFailed(true)}
         />
       ) : (
@@ -154,13 +180,24 @@ export function Help({
   return (
     <>
       <button
-        className={trigger ? "text-button help-trigger" : "help"}
+        className={
+          trigger
+            ? `text-button help-trigger ${styles.helpTrigger}`
+            : `help ${styles.helpIcon}`
+        }
         type="button"
         aria-label={`About ${label}`}
         aria-haspopup="dialog"
         onClick={() => setOpen(true)}
       >
-        {trigger ?? <CircleHelp size={14} />}
+        {typeof trigger === "string" ? (
+          <>
+            <span>{trigger}</span>
+            <Info size={14} aria-hidden="true" />
+          </>
+        ) : (
+          (trigger ?? <Info size={14} />)
+        )}
       </button>
       {open &&
         createPortal(
@@ -215,7 +252,7 @@ export function Empty({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="empty">
+    <div className={`empty ${styles.empty}`}>
       <span className="empty-icon">
         <Icon size={26} />
       </span>
@@ -251,7 +288,13 @@ export function Source({
   href?: string | null;
   children: React.ReactNode;
 }) {
-  if (href && /^https:\/\/(?:[^/]*\.)?(?:eodhd\.com|twelvedata\.com)(?:[/:]|$)/i.test(href)) return null;
+  if (
+    href &&
+    /^https:\/\/(?:[^/]*\.)?(?:eodhd\.com|twelvedata\.com)(?:[/:]|$)/i.test(
+      href,
+    )
+  )
+    return null;
   return href && /^https:\/\//.test(href) ? (
     <a className="source" href={href} target="_blank" rel="noreferrer">
       {/eodhd\.com\/financial-apis|twelvedata\.com\/docs/.test(href)
@@ -275,16 +318,36 @@ export function Notice({
       className={`notice ${error ? "error" : ""}`}
       role={error ? "alert" : "status"}
     >
-      {children}
+      {typeof children === "string" ? customerText(children) : children}
     </div>
   );
 }
 
 export function ProductFooter() {
+  const links = Object.entries({
+    help: "Help",
+    contact: "Contact",
+    changelog: "What’s new",
+    methodology: "Methodology",
+    terms: "Terms",
+    privacy: "Privacy",
+    risk: "Risk disclosure",
+    reliability: "Data reliability",
+  }).map(([page, label]) => (
+    <ContextLink key={page} page={page}>
+      {label}
+    </ContextLink>
+  ));
   return (
     <footer className="product-footer">
       <span>© {new Date().getFullYear()} AURYN. All rights reserved.</span>
-      <nav aria-label="Help and legal"><Link href="/help">Help</Link><Link href="/methodology">Methodology</Link><Link href="/terms">Terms</Link><Link href="/privacy">Privacy</Link><Link href="/risk">Risk disclosure</Link><Link href="/reliability">Data reliability</Link></nav>
+      <nav className="footer-desktop" aria-label="Help and legal">
+        {links}
+      </nav>
+      <details className="footer-links">
+        <summary>Help & legal</summary>
+        <nav aria-label="Help and legal">{links}</nav>
+      </details>
       <Help label="Research disclosure" trigger="Research disclosure">
         <p>
           AURYN provides investment research and decision support. It does not

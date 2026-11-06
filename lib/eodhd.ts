@@ -1,5 +1,9 @@
-import {sharedEodRead,MarketGuardError,pauseSharedEod} from "./shared-market";
-import {canonicalMarketKey} from "./market-policy";
+import {
+  sharedEodRead,
+  MarketGuardError,
+  pauseSharedEod,
+} from "./shared-market";
+import { canonicalMarketKey } from "./market-policy";
 import { HttpError } from "./server";
 import {
   eodTicker,
@@ -14,7 +18,13 @@ import type { Company, Filing } from "./types";
 import type { ChartRange } from "./providers";
 import type { GrowData, GrowDataset } from "./grow-data";
 class EodAccessError extends HttpError {}
-class EodBackoffError extends HttpError { seconds:number;constructor(message:string,seconds:number){super(message,503);this.seconds=seconds;} }
+class EodBackoffError extends HttpError {
+  seconds: number;
+  constructor(message: string, seconds: number) {
+    super(message, 503);
+    this.seconds = seconds;
+  }
+}
 const cache = new Map<string, { expires: number; value: Promise<any> }>();
 export const eodEnabled = () =>
   Boolean(process.env.EODHD_API_KEY || process.env.EODHD_API_TOKEN);
@@ -29,28 +39,56 @@ export async function eodRequest(
       "Add EODHD_API_KEY to the server environment to connect your subscription.",
       503,
     );
-  const key = canonicalMarketKey(path,params),
+  const key = canonicalMarketKey(path, params),
     old = cache.get(key);
   if (old && old.expires > Date.now()) return old.value;
-  const value = sharedEodRead(token,path,params,ttl,async () => {
+  const value = sharedEodRead(token, path, params, ttl, async () => {
     const response = await fetch(
       `https://eodhd.com/api/${path}?${new URLSearchParams({ ...params, api_token: token, fmt: "json" })}`,
       {
-        next: { revalidate: Math.max(1, Math.ceil(ttl / 1000)) },
+        // Earnings already use the bounded memory/shared caches. Avoid retaining
+        // a pre-release response in a third cache with an older six-hour TTL.
+        ...(path === "calendar/earnings"
+          ? { cache: "no-store" as const }
+          : { next: { revalidate: Math.max(1, Math.ceil(ttl / 1000)) } }),
         signal: AbortSignal.timeout(15000),
       },
     );
-    if(response.status===402 && path.startsWith("mp/unicornbay/options/"))throw new EodAccessError("Options dataset access is not enabled for this account.",503);
-    if(response.status===429||response.status===402){
-      const raw=response.headers.get('Retry-After'),parsed=raw?Number(raw):NaN;
-      const seconds=response.status===402?Math.ceil((Date.parse(new Date(Date.now()+86400000).toISOString().slice(0,10))-Date.now())/1000):Math.max(1,Math.min(3600,Number.isFinite(parsed)?parsed:60));
-      await pauseSharedEod(token,seconds);
-      throw new EodBackoffError(response.status===402?'Updates temporarily limited: the market-data allowance is exhausted.':'Updates temporarily paused by the data source. Please retry later.',seconds);
+    if (response.status === 402 && path.startsWith("mp/unicornbay/options/"))
+      throw new EodAccessError(
+        "Options dataset access is not enabled for this account.",
+        503,
+      );
+    if (response.status === 429 || response.status === 402) {
+      const raw = response.headers.get("Retry-After"),
+        parsed = raw ? Number(raw) : NaN;
+      const seconds =
+        response.status === 402
+          ? Math.ceil(
+              (Date.parse(
+                new Date(Date.now() + 86400000).toISOString().slice(0, 10),
+              ) -
+                Date.now()) /
+                1000,
+            )
+          : Math.max(1, Math.min(3600, Number.isFinite(parsed) ? parsed : 60));
+      await pauseSharedEod(token, seconds);
+      throw new EodBackoffError(
+        response.status === 402
+          ? "Updates temporarily limited: the market-data allowance is exhausted."
+          : "Updates temporarily paused by the data source. Please retry later.",
+        seconds,
+      );
     }
     if (response.status === 401 || response.status === 403)
       throw new EodAccessError(
         "EODHD did not authorize this dataset. Check the key and plan entitlement.",
         503,
+      );
+    if (response.status === 404)
+      throw new HttpError(
+        "This instrument or dataset was not found by EODHD.",
+        404,
       );
     if (!response.ok)
       throw new HttpError(
@@ -59,8 +97,8 @@ export async function eodRequest(
           : response.status === 402
             ? "Updates temporarily limited: the market-data allowance is exhausted."
             : response.status === 429
-            ? "EODHD request allowance reached. Retry shortly."
-            : "EODHD could not return this dataset. Retry shortly.",
+              ? "EODHD request allowance reached. Retry shortly."
+              : "EODHD could not return this dataset. Retry shortly.",
         503,
       );
     const data = await response.json();
@@ -69,13 +107,49 @@ export async function eodRequest(
         "EODHD returned a dataset error. Check instrument coverage and entitlement.",
         503,
       );
+    // HTTP success with an empty/error-shaped payload must not poison a
+    // long-lived provider cache. Empty search/split arrays are legitimate.
+    const arrayDataset =
+      /^(?:eod|intraday|splits|search|exchange-symbol-list)\//.test(path);
+    const fundamental = /(?:^|\/)fundamentals\//.test(path);
+    const general = data?.General ?? data;
+    if (
+      (arrayDataset && !Array.isArray(data)) ||
+      (path.startsWith("exchange-symbol-list/") &&
+        Array.isArray(data) &&
+        !data.length) ||
+      (/^(?:eod|intraday)\//.test(path) &&
+        Array.isArray(data) &&
+        !normalizeEodBars(data, path.startsWith("intraday/")).length) ||
+      (path.startsWith("real-time/") &&
+        (!data ||
+          typeof data.code !== "string" ||
+          data.code.toUpperCase() !== path.split("/").at(-1) ||
+          !Number.isFinite(Number(data.close)) ||
+          Number(data.close) <= 0)) ||
+      (fundamental &&
+        (!general ||
+          typeof general.Code !== "string" ||
+          general.Code.toUpperCase() !==
+            path
+              .split("/")
+              .at(-1)
+              ?.replace(/\.(?:US|CC)$/, "")))
+    )
+      throw new HttpError(
+        "EODHD returned an invalid or empty dataset. Retry shortly.",
+        503,
+      );
     return data;
   }).catch((e) => {
     if (e instanceof EodAccessError || e instanceof EodBackoffError) {
       const entry = cache.get(key);
-      if (entry) entry.expires = Date.now() + (e instanceof EodBackoffError?e.seconds*1000:60000);
+      if (entry)
+        entry.expires =
+          Date.now() +
+          (e instanceof EodBackoffError ? e.seconds * 1000 : 60000);
     } else cache.delete(key);
-    throw e instanceof MarketGuardError?new HttpError(e.message,503):e;
+    throw e instanceof MarketGuardError ? new HttpError(e.message, 503) : e;
   });
   cache.set(key, { expires: Date.now() + ttl, value });
   // Full fundamental objects are large; bound their lifetime and retained count.
@@ -200,8 +274,6 @@ export async function eodSearch(query: string) {
     3600000,
   );
   const rows = normalizeEodSearch(raw);
-  if (crypto && !rows.some((x) => x.symbol === crypto))
-    rows.unshift(await eodProfile(crypto));
   return rows
     .sort(
       (a, b) =>

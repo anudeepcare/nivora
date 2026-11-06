@@ -1,9 +1,12 @@
 "use client";
-import { AccessNotice } from "./Access";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { ReleaseNotice } from "./ReleaseNotes";
+import experience from "./WorkspaceShell.module.css";
+import { AccessNotice, useAccess } from "./Access";
+import Link, { useLinkStatus } from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
+  LogOut,
   Home,
   ChartNoAxesCombined,
   Bookmark,
@@ -11,16 +14,29 @@ import {
   Search as SearchIcon,
   Bell,
   X,
+  Settings,
+  Sun,
+  Moon,
+  Compass,
+  FlaskConical,
+  Scale,
+  HelpCircle,
+  ArrowUpRight,
 } from "lucide-react";
-import { Logo, ProductFooter } from "./Ui";
+import { ProductFooter } from "./Ui";
 import Search from "./Search";
-import SettingsSheet from "./SettingsSheet";
+import { signOutAndRedirect } from "@/lib/client";
+import { settingsHref, documentHref } from "@/lib/settings-navigation";
 import { useProduct } from "./Session";
 import {
   NavigationMemory,
   restoreWhenReady,
   browserScrollEnvironment,
 } from "@/lib/navigation";
+function LinkProgress() {
+  const { pending } = useLinkStatus();
+  return pending ? <span className={experience.routePending} role="status" aria-label="Opening page" /> : null;
+}
 const primary = [
   { path: "overview", label: "Home", icon: Home },
   { path: "research", label: "Research", icon: ChartNoAxesCombined },
@@ -34,19 +50,45 @@ export default function Shell({
   page: string;
   children: React.ReactNode;
 }) {
-  const { demo, workspace } = useProduct();
+  const { demo, workspace, theme, setTheme } = useProduct();
+  const { access } = useAccess();
   const pathname = usePathname();
+  const router = useRouter();
   const memory = useRef(new NavigationMemory());
   const pending = useRef<{ path: string; top: number } | null>(null);
   const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   const search = useRef<HTMLDialogElement>(null);
-  const settings = useRef<HTMLDialogElement>(null);
+  const tools = useRef<HTMLDialogElement>(null);
+  const [signingOut, setSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState("");
+  const signOut = async () => {
+    if ((demo && demo.routePrefix !== "") || signingOut) return;
+    setSigningOut(true);
+    setSignOutError("");
+    try { await signOutAndRedirect(); }
+    catch (error) {
+      setSignOutError(error instanceof Error ? error.message : "Could not sign out. Please try again.");
+      setSigningOut(false);
+    }
+  };
+  const openSettings = (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+    tools.current?.close();
+    if (page === "settings") return;
+    router.push(
+      settingsHref(
+        `${window.location.pathname}${window.location.search}${window.location.hash}`,
+        prefix,
+      ),
+    );
+  };
   useLayoutEffect(() => {
     const env = browserScrollEnvironment();
-    const top =
+    let top =
       pending.current?.path === pathname
         ? pending.current.top
         : memory.current.position(pathname);
+    try { const saved = JSON.parse(sessionStorage.getItem('auryn-document-scroll') || 'null'); if(saved?.href === window.location.pathname+window.location.search+window.location.hash && Number.isFinite(saved.top)){top=saved.top;sessionStorage.removeItem('auryn-document-scroll');}}catch{}
     const cancel = restoreWhenReady(top, env);
     pending.current = null;
     const remember = () =>
@@ -64,7 +106,7 @@ export default function Shell({
   }, [pathname]);
   useEffect(() => {
     search.current?.close();
-    settings.current?.close();
+    tools.current?.close();
   }, [pathname]);
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
@@ -79,7 +121,7 @@ export default function Shell({
     document.addEventListener("keydown", key);
     return () => document.removeEventListener("keydown", key);
   }, []);
-  const nav = (r: (typeof primary)[number], mobile = false) => {
+  const nav = (r: (typeof primary)[number]) => {
     const Icon = r.icon;
     return (
       <Link
@@ -100,32 +142,35 @@ export default function Shell({
           pending.current = { path: destination, top };
         }}
         className={page === r.path ? "active" : ""}
+        data-destination={r.path}
         aria-label={r.label}
         aria-current={page === r.path ? "page" : undefined}
       >
-        {mobile && <Icon size={22} />}
+        <Icon size={22} />
         <span>{r.label}</span>
+        <LinkProgress />
       </Link>
     );
   };
   return (
-    <div className="product">
-      <a className="skip" href="#content">
+    <div
+      className={`product approved-product ${experience.shell}`}
+      data-page={page}
+      data-shell="mobile-first"
+    >
+      <a className={experience.skip} href="#content">
         Skip to content
       </a>
-      <header className="topbar">
-        <Link
-          href={`${prefix}/overview`}
-          className="brand-link"
-          aria-label="AURYN home"
-        >
-          <Logo />
+      <header className={experience.header}>
+        <Link href={`${prefix}/overview`} className={experience.brand} aria-label="AURYN home">
+          <img src="/icon.svg" width="32" height="32" alt="" /><span>AURYN</span>
         </Link>
-        <nav className="desktop-nav" aria-label="Main navigation">
-          {primary.map((r) => nav(r))}
+        <nav className={experience.nav} aria-label="Main navigation">
+          {primary.map(nav)}
+
         </nav>
         <button
-          className="top-search"
+          className={experience.searchTrigger}
           aria-label="Search companies and crypto"
           aria-haspopup="dialog"
           onClick={() => {
@@ -136,59 +181,155 @@ export default function Shell({
           }}
         >
           <SearchIcon size={19} />
-          <span>Find a company</span>
+          <span>Find a company or ticker</span>
           <kbd>⌘ K</kbd>
         </button>
-        <div className="top-actions">
-          <Link
-            className="top-plans-link"
-            href={`${prefix}/plans`}
-            aria-current={page === "plans" ? "page" : undefined}
-          >
-            Plans
-          </Link>
-          <Link
-            className="icon-button"
-            href={`${prefix}/alerts`}
-            aria-label="Price alerts"
-          >
-            <Bell size={21} />
-          </Link>
+        <div className={experience.actions}>
           <button
-            className="icon-button"
-            aria-label="Settings"
-            aria-haspopup="dialog"
-            onClick={() => {
-              settings.current?.showModal();
-              const body =
-                settings.current?.querySelector<HTMLElement>(".dialog-body");
-              if (body) body.scrollTop = 0;
-              settings.current
-                ?.querySelector<HTMLHeadingElement>("h2")
-                ?.focus({ preventScroll: true });
-            }}
+            aria-label="Switch color theme"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           >
-            <span className="avatar">
-              {(workspace?.email?.[0] || "A").toUpperCase()}
-            </span>
+            {theme === "dark" ? <Moon size={19} /> : <Sun size={19} />}
+          </button>
+          <Link href={`${prefix}/alerts`} aria-label="Price alerts">
+            <Bell size={19} />
+          </Link>
+          <button aria-label="Account and workspace tools" aria-haspopup="dialog" onClick={() => tools.current?.showModal()}>
+            {(workspace?.email?.[0] || "A").toUpperCase()}
           </button>
         </div>
       </header>
-      <main id="content" className="content" tabIndex={-1}>
-        <AccessNotice />
-        {demo && demo.routePrefix !== "" && (
-          <div className="preview-label">
-            Design preview · Illustrative data · Account actions disabled
-          </div>
-        )}
-        {children}
-        <ProductFooter />
-      </main>
-      <nav className="mobile-dock" aria-label="Mobile navigation">
-        {primary.map((r) => nav(r, true))}
+      <div className={experience.workspace}>
+        <main id="content" className={experience.content} tabIndex={-1}>
+          <AccessNotice />
+          <ReleaseNotice />
+          {demo && demo.routePrefix !== "" && (
+            <div className="preview-label">
+              Design preview · Illustrative data · Account actions disabled
+            </div>
+          )}
+          {children}
+          <ProductFooter />
+        </main>
+      </div>
+      <nav className={experience.dock} aria-label="Mobile navigation">
+        {primary.map((r) => nav(r))}
       </nav>
       <dialog
-        className="search-dialog"
+        ref={tools}
+        className="search-dialog approved-tools-dialog"
+        aria-label="Account & workspace"
+      >
+        <header className="dialog-head">
+          <div>
+            <span className="eyebrow">Your workspace</span>
+            <h2>Account & workspace</h2>
+          </div>
+          <button
+            className="icon-button"
+            aria-label="Close tools"
+            onClick={() => tools.current?.close()}
+          >
+            <X size={21} />
+          </button>
+        </header>
+        <p className="tools-intro">
+          Discover ideas, compare companies, and test your thinking.
+        </p>
+        <div className="dialog-tools">
+          {[
+            {
+              path: "discover",
+              label: "Discover",
+              detail: "Find your next research idea",
+              icon: Compass,
+            },
+            {
+              path: "compare",
+              label: "Compare",
+              detail: "See companies side by side",
+              icon: Scale,
+            },
+            {
+              path: "research-lab",
+              label: "Strategy lab",
+              detail: "Test a contribution strategy",
+              icon: FlaskConical,
+            },
+            {
+              path: "trading",
+              label: "Paper trading",
+              detail: "Practice with a paper portfolio",
+              icon: ChartNoAxesCombined,
+            },
+            {
+              path: "help",
+              label: "Help & support",
+              detail: "Understand the tools",
+              icon: HelpCircle,
+            },
+            {
+              path: "changelog",
+              label: "What’s new",
+              detail: "Release notes and current version",
+              icon: Bell,
+            },
+            {
+              path: "settings",
+              label: "Settings",
+              detail: "Account and preferences",
+              icon: Settings,
+            },
+            {
+              path: "plans",
+              label: "Plans",
+              detail: "Membership and access",
+              icon: Scale,
+            },
+            {
+              path: "alerts",
+              label: "Price alerts",
+              detail: "Review your saved alerts",
+              icon: Bell,
+            },
+          ]
+            .filter(
+              (tool) =>
+                tool.path !== page &&
+                (tool.path !== "trading" ||
+                  !!demo ||
+                  access.capabilities?.paperTrading),
+            )
+            .map(({ path, label, detail, icon: Icon }) => (
+              <Link
+                key={path}
+                href={`${prefix}/${path}`}
+                onNavigate={
+                  path === "settings"
+                    ? openSettings
+                    : (event) => {tools.current?.close();if(["help","changelog"].includes(path)){event.preventDefault();try{sessionStorage.setItem('auryn-document-scroll',JSON.stringify({href:window.location.pathname+window.location.search+window.location.hash,top:window.scrollY}))}catch{}router.push(documentHref(path,window.location.pathname+window.location.search+window.location.hash));}}
+                }
+              >
+                <span className="tool-icon">
+                  <Icon size={21} />
+                </span>
+                <span>
+                  <strong>{label}</strong>
+                  <small>{detail}</small>
+                </span>
+                <ArrowUpRight size={17} className="tool-arrow" />
+              </Link>
+            ))}
+        </div>
+        <footer className="account-menu-footer">
+          <button type="button" className="button" disabled={(!!demo && demo.routePrefix !== "") || signingOut} onClick={signOut}>
+            <LogOut size={17} /> {signingOut ? "Signing out…" : "Sign out"}
+          </button>
+          {signOutError && <p role="alert">{signOutError}</p>}
+        </footer>
+      </dialog>
+      <dialog
+        className={`search-dialog ${experience.searchDialog}`}
         ref={search}
         aria-label="Search companies and crypto"
       >
@@ -204,7 +345,6 @@ export default function Shell({
         </header>
         <Search autoFocus onNavigate={() => search.current?.close()} />
       </dialog>
-      <SettingsSheet dialog={settings} />
     </div>
   );
 }

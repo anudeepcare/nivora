@@ -1,21 +1,23 @@
-import {researchAccumulation} from "./accumulation-policy-v5.ts";
+import { researchAccumulation } from "./accumulation-policy-v5.ts";
 import { evidenceMemo } from "./evidence-memo.ts";
 import { modelCoverage, ttmPeriods } from "./research-depth.ts";
 import type { Candle, Research, FinancialPeriod } from "./types";
 import { financialPeriods, cashFlowValue } from "./engine.ts";
+import { selectFinancialPeriod } from "./financial-period-selection.ts";
 export const annualRows = (r: Research) =>
   financialPeriods(r.facts, "annual", r.retrievedAt);
 function computeFinancialEvidence(r: Research) {
   const annual = annualRows(r),
     ttm = ttmPeriods(r.facts, r.retrievedAt);
-  const a = annual.at(-1),
-    t = ttm.at(-1);
+  const currency = r.evidence?.reportingCurrency ?? r.quote.currency,
+    a = selectFinancialPeriod(annual, currency),
+    t = selectFinancialPeriod(ttm, currency);
   const useTtm = !!t && (!a || t.end > a.end) && t.revenue != null;
   const rows = useTtm ? ttm : annual,
-    latest = rows.at(-1);
+    latest = useTtm ? t : a;
   const prior = latest
-    ? rows
-        .filter((x) => {
+    ? selectFinancialPeriod(
+        rows.filter((x) => {
           const days = (Date.parse(latest.end) - Date.parse(x.end)) / 86400000;
           return (
             days >= 330 &&
@@ -23,8 +25,9 @@ function computeFinancialEvidence(r: Research) {
             x.currency === latest.currency &&
             x.basis === latest.basis
           );
-        })
-        .at(-1)
+        }),
+        latest.currency,
+      )
     : undefined;
   return { rows, latest, prior, periodBasis: useTtm ? "TTM" : "Annual" };
 }
@@ -281,8 +284,10 @@ export function periodLabel(row: FinancialPeriod) {
 const financialMemo =
   evidenceMemo<ReturnType<typeof computeFinancialEvidence>>();
 export function latestFinancialEvidence(r: Research) {
-  return financialMemo(r.facts, `${r.facts.length}:${r.retrievedAt}`, () =>
-    computeFinancialEvidence(r),
+  return financialMemo(
+    r.facts,
+    `${r.facts.length}:${r.retrievedAt}:${r.evidence?.reportingCurrency ?? r.quote.currency}`,
+    () => computeFinancialEvidence(r),
   );
 }
 const indicatorMemo = evidenceMemo<ReturnType<typeof computeIndicators>>();

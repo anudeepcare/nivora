@@ -1,0 +1,153 @@
+.root {
+  position: relative;
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+  color: var(--ink);
+}
+.label {
+  font-size: 12px;
+  color: var(--muted);
+}
+.trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 46px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.trigger span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.trigger:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
+.popup {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  padding: 10px;
+  margin-top: 5px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 14px 35px #122f2920;
+  min-width: min(250px, 80vw);
+}
+.popup label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.popup input {
+  width: 100%;
+  min-width: 0;
+  font-size: 16px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--ink);
+}
+.popup select {
+  width: 100%;
+  padding: 4px !important;
+  min-height: 100px;
+  max-height: 240px;
+  background-image: none !important;
+  background: var(--card);
+  border: 0;
+  color: var(--ink);
+  font: inherit;
+  overflow-y: auto;
+}
+.popup option {
+  padding: 10px;
+  border-radius: 6px;
+  min-height: 40px;
+}
+.popup p {
+  font-size: 13px;
+  padding: 10px;
+  color: var(--muted);
+}
+/* Keep the compact picker aligned when opened near a viewport edge. */
+.root.root .trigger {
+  min-height: 40px;
+  padding: 8px 11px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.root.root .popup {
+  left: auto;
+  right: 0;
+  width: max(100%, 250px);
+  min-width: 0;
+  max-width: calc(100vw - 32px);
+  padding: 8px;
+  border-radius: 10px;
+}
+.root.root .popup label {
+  display: flex;
+  gap: 7px;
+  padding: 0 4px;
+}
+.root.root .popup input {
+  min-height: 38px;
+  padding: 8px;
+  font-size: 13px;
+  border-radius: 7px;
+}
+.root.root .popup select {
+  font-size: 13px;
+  border-radius: 7px;
+  margin-top: 6px;
+}
+.root.root .popup option {
+  padding: 9px 10px;
+  min-height: 36px;
+  border-radius: 5px;
+}
+.root.root .popup option:checked {
+  background: #e9f3c9 linear-gradient(0deg, #e9f3c9, #e9f3c9);
+  color: #24272b;
+}
+@media (max-width: 600px) {
+  .root.root .trigger,
+  .root.root .popup input {
+    min-height: 44px;
+  }
+  .root.root .popup input {
+    font-size: 16px;
+  }
+}
+
+/* Controls own their foreground/background pair even inside a dark hero. */
+.trigger,
+.popup {
+  --ink: var(--control-ink);
+  --muted: var(--control-muted);
+  --card: var(--control-card);
+  --surface: var(--control-surface);
+  --line: var(--control-line);
+  color: var(--ink);
+}
+.trigger:disabled {
+  opacity: 1;
+  color: var(--control-muted);
+  cursor: not-allowed;
+}

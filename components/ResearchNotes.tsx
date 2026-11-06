@@ -21,6 +21,7 @@ export default function ResearchNotes({ research: r }: { research: Research }) {
     milestone: "",
     sourceUrl: "",
     evidenceDate: "",
+    reviewDate: "",
     status: "researching",
     horizon: "long-term",
   };

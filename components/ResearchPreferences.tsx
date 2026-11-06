@@ -1,4 +1,5 @@
 "use client";
+import WorkspacePreferences, {useWorkspacePreferences} from "./WorkspacePreferences";
 import { useMemo, useSyncExternalStore } from "react";
 import {
   DEFAULT_RESEARCH_PREFERENCES,
@@ -23,6 +24,7 @@ function snapshot() {
   }
 }
 export function useResearchPreferences() {
+  const account = useWorkspacePreferences();
   const raw = useSyncExternalStore(subscribe, snapshot, () => ""),
     preferences = useMemo(() => {
       try {
@@ -32,6 +34,7 @@ export function useResearchPreferences() {
       }
     }, [raw]);
   const setPreferences = (patch: Partial<ResearchPreferences>) => {
+    if(!account.localOnly) { void account.save(patch); return; }
     try {
       const current = sanitizeResearchPreferences(
         JSON.parse(snapshot() || "{}"),
@@ -45,20 +48,21 @@ export function useResearchPreferences() {
       /* Storage may be disabled by the browser. */
     }
   };
-  return { preferences, setPreferences };
+  return { preferences: account.ready && !account.localOnly ? account.preferences : preferences, setPreferences, error:account.error, disabled:!account.localOnly && (!account.ready || account.saving) };
 }
 export default function ResearchPreferenceControls() {
-  const { preferences: p, setPreferences } = useResearchPreferences();
+  const { preferences: p, setPreferences, error, disabled } = useResearchPreferences();
   return (
-    <section className="research-preferences">
+    <><section className="research-preferences">
       <h3>Make research yours</h3>
       <p className="muted small">
-        Saved on this device. These choices change the presentation and
+        Saved to your account when signed in. These choices change the presentation and
         screening blend, not the company evidence.
       </p>
       <label>
         Research style
         <select
+          disabled={disabled}
           value={p.style}
           onChange={(e) =>
             setPreferences({
@@ -74,6 +78,7 @@ export default function ResearchPreferenceControls() {
       <label>
         Primary horizon
         <select
+          disabled={disabled}
           value={p.horizon}
           onChange={(e) =>
             setPreferences({
@@ -85,12 +90,13 @@ export default function ResearchPreferenceControls() {
           <option value="swing">Swing timing</option>
         </select>
       </label>
-    </section>
+      {error && <p role="alert">{error}</p>}
+    </section><WorkspacePreferences /></>
   );
 }
 
 export function ResearchModeSwitch() {
-  const { preferences: p, setPreferences } = useResearchPreferences();
+  const { preferences: p, setPreferences, error, disabled } = useResearchPreferences();
   return (
     <div
       className="segments research-mode"
@@ -100,6 +106,7 @@ export function ResearchModeSwitch() {
       {(["essential", "advanced"] as const).map((mode) => (
         <button
           type="button"
+          disabled={disabled}
           key={mode}
           title={mode === "essential" ? "Full overview with concise explanations" : "Same overview with expanded evidence checks and valuation workings"}
           aria-pressed={p.detail === mode}

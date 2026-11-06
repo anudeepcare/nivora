@@ -1,9 +1,9 @@
+import { SUPPORT_EMAIL } from "./site-metadata.ts";
 export const legalConfiguration = {
-  operator:
-    process.env.NEXT_PUBLIC_AURYN_OPERATOR || "AURYN personal research project",
-  contact: process.env.NEXT_PUBLIC_AURYN_SUPPORT_EMAIL || "",
-  updated: "October 23, 2026",
-  version: "research-release-20261023",
+  operator: process.env.NEXT_PUBLIC_AURYN_OPERATOR || "AURYN",
+  contact: process.env.NEXT_PUBLIC_AURYN_SUPPORT_EMAIL || SUPPORT_EMAIL,
+  updated: "November 4, 2026",
+  version: "continuation-20261104",
 };
 export type DocumentId =
   | "terms"
@@ -46,7 +46,7 @@ export const documents: Record<
   terms: {
     title: "Terms of use",
     intro:
-      "Terms for this personal research release. Read the risk disclosure and privacy notice alongside these terms.",
+      "Terms for the AURYN research service. Read the risk disclosure and privacy notice alongside these terms.",
     sections: [
       {
         title: "Purpose and your decisions",
@@ -54,7 +54,7 @@ export const documents: Record<
       },
       {
         title: "Payments and card details",
-        text: "Stripe hosts checkout and processes subscription payments. AURYN does not collect or store full payment-card numbers or card security codes. AURYN stores account and billing references, subscription status and paid-through dates to provide access. Stripe processes payment information under its own terms and privacy policy. No charge is made simply for creating a Free account.",
+        text: "Stripe hosts checkout and processes subscription payments. AURYN does not collect or store full payment-card numbers or card security codes. AURYN stores account and billing references, subscription status and paid-through dates to provide access. Stripe processes payment information under its own terms and privacy policy. AURYN remains responsible for its subscription service and customer support, including handling billing questions and refund requests. Using Stripe does not transfer all merchant responsibilities to Stripe. No charge is made simply for creating a Free account.",
       },
       {
         title: "Accounts and responsible use",
@@ -93,7 +93,7 @@ export const documents: Record<
       },
       {
         title: "Information you provide",
-        text: "The application processes account identifiers, saved holdings, quantities, costs, watchlists, research requests and any notes or strategy information you submit. Avoid including credentials, government identifiers or information about other people in notes or AI prompts.",
+        text: "The application processes account identifiers, saved holdings, quantities, costs, watchlists, research requests and any notes or strategy information you submit. Support messages may include a screenshot you select and optional app version, page category and screen size. These are stored privately and may be sent to support through the configured email service. Avoid including credentials, government identifiers or information about other people in notes, screenshots or AI prompts.",
       },
       {
         title: "Google and X sign-in",
@@ -105,7 +105,7 @@ export const documents: Record<
       },
       {
         title: "Device storage",
-        text: "This device stores session information and preferences such as appearance, text size, motion and research style. Some caches and research tools retain local state. Clearing site data or removing an installed web app can remove device-only information. Confirm server-saved holdings before doing so.",
+        text: "This device stores session information and preferences such as appearance, text size and motion. Account-saved research settings include style, depth, chart period, sorting and visible overview cards. Some caches and research tools retain local state. Clearing site data or removing an installed web app can remove device-only information. Confirm server-saved holdings before doing so.",
       },
       {
         title: "AI processing",
@@ -140,7 +140,7 @@ export const documents: Record<
       },
       {
         title: "Signals and multipliers",
-        text: "DCA multipliers scale a hypothetical baseline contribution. They are not leverage, return multiples or personal position-size instructions. A forming monthly signal can change; stronger daily-close readings do not rewrite the confirmed month.",
+        text: "AURYN Pace levels describe accumulation zones rather than automatic contribution amounts. They are not leverage, return multiples or personal position-size instructions. A forming monthly signal can change; stronger daily-close readings do not rewrite the confirmed month.",
       },
       {
         title: "Data and AI",
@@ -159,7 +159,7 @@ export const documents: Record<
   methodology: {
     title: "How AURYN reaches a view",
     intro:
-      "Deterministic calculations, separate evidence and explicit limitations. Current screening version: evidence-lenses-v1.",
+      "Understand how AURYN brings business evidence, valuation and price context together, with the assumptions and limitations made clear.",
     sections: [
       {
         title: "Three separate questions",
@@ -167,7 +167,7 @@ export const documents: Record<
       },
       {
         title: "Eight evidence lenses",
-        text: "Valuation, profitability, growth, financial health, cash quality, owner returns, moat and ownership/expectations organize the evidence. Numeric scores use published absolute anchor rules in lib/decision-research.ts. They are screening scores, not validated stock-return predictors. Missing metrics do not become zero. A composite requires at least four scored lenses.",
+        text: "Valuation, profitability, growth, financial health, cash quality, owner returns, moat and ownership/expectations organize the evidence. Numeric scores use defined absolute anchor rules. They are screening scores, not validated stock-return predictors. Missing metrics do not become zero. A composite requires at least four scored lenses.",
       },
       {
         title: "Style and coverage",
@@ -187,7 +187,7 @@ export const documents: Record<
       },
       {
         title: "Methodology changelog",
-        text: "October 18, 2026: evidence-lenses-v1 introduced disclosed absolute anchors and five style blends. October 19, 2026: source-status details, observed-view comparison, financial crossing alerts, cash-runway and working-capital context were added. No historical scores are recalculated and presented as observations made at the time.",
+        text: "October 18, 2026: evidence scoring introduced absolute anchors and five style blends. October 19, 2026: source-status details, observed-view comparison, financial crossing alerts, cash-runway and working-capital context were added. No historical scores are recalculated and presented as observations made at the time.",
       },
       {
         title: "Worked examples",
@@ -203,7 +203,7 @@ export const documents: Record<
       },
       {
         title: "Cycle-relative monthly policy",
-        text: "Monthly-v4 uses the mean of the previous 12 completed monthly closes and their sample standard deviation, with a spread floor of 10% of the mean. Eligibility retains 24 consecutive prior months. The 2×/3×/4× pullback gates require 10%/25%/40% below that mean and 0.5/1.35/1.5 spread units. Upper extension reviews retain the v3 robust-trend pause guard; a price at least three times the cycle mean and two spreads above it also triggers a review. A severe cycle review requires three spreads and a 50% period rise. Monthly parameters were calibrated against a small observed reference sample, not learned from a disclosed private formula. Weekly v1 is separate. US daily bars settle after 5 PM New York; crypto uses completed UTC days. Prior versions remain in source for reproducibility. Matching selected signals is not evidence of better returns.",
+        text: "Monthly-v5 uses the previous 12 completed monthly closes for the cycle average and sample spread, with a 10% spread floor. Twelve to 23 prior months are marked limited history; 24 prior months enable the robust-trend guard. P2/P3/P4 require 10%/25%/35% below the cycle average and 0.5/0.95/1.3 spread units. Positive-extension review retains the robust-trend upper guard and severe cycle checks. Weekly v1 is a separate policy using 52 completed weeks. US daily bars settle after 5 PM New York; crypto uses completed UTC days. Completed readings remain fixed for unchanged input history. Price policies have not established consistent outperformance; simulation results include costs and should be read alongside drawdowns and idle cash.",
       },
       {
         title: "Historical policy comparisons",
@@ -245,8 +245,8 @@ export const documents: Record<
         text: "They illustrate different assumptions. Read the horizon, growth, valuation multiple, dilution and discount assumptions. Do not compare a future scenario price directly with a present value without accounting for the horizon.",
       },
       {
-        title: "What does 2× or 4× DCA mean?",
-        text: "Twice or four times a hypothetical regular contribution, not twice or four times the investment return. This price-only policy does not choose investments or determine a suitable allocation. The current month can change until confirmed.",
+        title: "AURYN Pace explained with an example",
+        text: "P means Pace, AURYN’s accumulation-zone scale. P0 pauses buying. P1 means Watch for a new purchase or Hold for an existing position. P2 is an initial zone: start or add small. P3 is a deeper zone: buy or add gradually. P4 is the deepest qualifying price zone: consider a larger part of planned accumulation within cash and position limits. Business checks must qualify before buying. These levels are not returns, leverage or suitable position sizes. Completed month readings are confirmed; the current month is forming and can change. A missing reading is not P0, and a business-risk pause does not overwrite the raw price reading.",
       },
       {
         title: "Why is something unavailable?",
@@ -258,7 +258,7 @@ export const documents: Record<
       },
       {
         title: "Installed iPhone app",
-        text: "The current working PWA setup includes a root status surface. After the October 18 status-bar change, removing and re-adding the old Home Screen installation resolved the reported blur. Confirm saved holdings in Safari before clearing site data or removing an installation. Ordinary future updates should not be treated as requiring repeated reinstalls.",
+        text: "Add AURYN to your Home Screen from Safari’s Share menu. Search, research and your saved account use the same workspace. If the keyboard is open, close it to see the full navigation. Report clipped controls through Contact; do not clear saved data as a routine troubleshooting step.",
       },
       {
         title: "Paper trading and AI",
@@ -267,3 +267,26 @@ export const documents: Record<
     ],
   },
 };
+
+// Public methodology follows the production decision and Pace policies.
+documents.methodology.sections.unshift({
+  title: "AURYN View and AURYN Pace",
+  text: "Business first: current comparable growth, profitability and funding determine whether accumulation is supported. For a qualifying business without the listed funding or deterioration triggers, confirmed P2–P4 supports tiered accumulation within a cash budget and position limit. P1 means Watch for new purchases or Hold for holdings; business strength alone does not establish an accumulation opportunity. P0 pauses new contributions: Wait for new purchases, Hold for holdings. P4 is a relative price zone, not business quality, fair value, a return forecast or leverage. Valuation sensitivities and short-term momentum remain separate cautions rather than universal vetoes on a confirmed accumulation plan. Without confirmed Pace, the separate valuation-entry screen can support Buy/Add: at least 12% annualized earnings-model base return, or a 20% cash-flow base-value cushion; both require no worse than 35% modelled bear downside and RSI below 75 when available. Incomplete assessments or unmet business checks show Review with a reason. Operating cash burn with less than 12 months of reported runway, or burn with uncovered interest and exhausted cash, triggers Reduce for holdings / Avoid for new purchases. Revenue declining more than 10%, operating losses and negative cash after capex in both comparable periods also trigger Reduce/Avoid. Sell requires operating cash burn, less than six months of runway, negative equity and debt together. Expansion capex alone is not distress. Forming readings never replace confirmed readings. These are transparent research heuristics, not validated forecasts or personal investment instructions.",
+});
+documents.privacy.sections.push({
+  title: "Support requests",
+  text: "The contact form stores your email, chosen topic and message so we can respond. Requests receive a reference number. A hashed network identifier is used to limit abuse; passwords, portfolio contents and payment card details are not automatically attached. If support email delivery is enabled, our email service processes the contact email and message. Use Contact for access or deletion requests. Never send secrets or payment card details.",
+});
+documents.help.sections.unshift({
+  title: "Contact AURYN",
+  text: "Open Contact from the footer for general enquiries, technical issues, billing, feedback or privacy concerns. After a successful save you receive a reference. A receipt is shown as sent only if the email provider accepted it; otherwise the saved request remains available to the owner.",
+});
+
+documents.privacy.sections.push({
+  title: "Optional analytics and your choices",
+  text: "Optional Google Analytics runs only after you allow analytics. It measures coarse page categories, signup intent, search outcomes and performance buckets. We do not send search text, ticker symbols, email addresses, portfolio records, balances or support messages as analytics fields. Google receives network and device information when its service loads. Advertising storage and personalization are disabled. Decline keeps the product usable. Open Analytics preferences to withdraw consent; future app events stop and accessible analytics cookies are cleared. Withdrawal does not erase already collected aggregate information. Contact support@auryninvest.com for privacy requests.",
+});
+documents.methodology.sections.push({
+  title: "Funded growth and contribution eligibility",
+  text: "An ordinary operating company may qualify through funded growth: at least 20% comparable revenue growth, at least five percentage points of operating-margin improvement, positive cash with nonpositive net debt, and reported diluted weighted-share growth no greater than 10%. It needs nonnegative operating cash flow or at least 24 months of historical operating runway, plus nonnegative cash after capex or at least 18 months of investment runway. All required observations must be available and comparable. Freshness, conflicts and funding deterioration checks still apply. Confirmed P2–P4 can support gradual accumulation; P1 remains Watch/Hold; valuation and short-term momentum remain visible cautions. These conservative thresholds are transparent screening heuristics, not an optimized or backtested claim. Confirmed P0 pauses purchases/additions. A missing contribution level does not erase a separately supported business and valuation assessment. Watchlisting never implies ownership.",
+});

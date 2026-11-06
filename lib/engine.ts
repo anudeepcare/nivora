@@ -1,6 +1,10 @@
 import { evidenceMemo } from "./evidence-memo.ts";
 import { monthEndSession } from "./calendar.ts";
 import {
+  compareFinancialFacts,
+  compareFinancialPeriods,
+} from "./financial-period-selection.ts";
+import {
   flowFields,
   balanceFields,
   withFinancialRatios,
@@ -148,28 +152,36 @@ export function financialPeriods(
       !finite(f.value) ||
       !f.currency ||
       !f.start ||
+      !validDate(f.start) ||
       !validDate(f.end) ||
       !validDate(f.filed) ||
       f.end > day ||
       f.filed > day
     )
       continue;
+    const days = (Date.parse(f.end) - Date.parse(f.start)) / 86400000 + 1;
+    if (scope === "annual" ? days < 330 || days > 400 : days < 60 || days > 110)
+      continue;
     const key = [f.start, f.end, f.currency, f.basis].join("|");
     groups.set(key, [...(groups.get(key) || []), f]);
   }
   for (const bucket of byEndAndBasis.values())
-    bucket.sort((a, b) => b.filed.localeCompare(a.filed));
-  return [...groups.values()]
+    bucket.sort(compareFinancialFacts);
+  const periods = [...groups.values()]
     .map((group) => {
-      const ordered = [...group].sort((a, b) => b.filed.localeCompare(a.filed)),
+      const ordered = [...group].sort(compareFinancialFacts),
         anchor = ordered[0];
-      const get = (metric: string) => ordered.find((f) => f.metric === metric),
+      const get = (metric: string) =>
+          ordered.find(
+            (f) => f.metric === metric && f.unit === anchor.currency,
+          ),
         value = (metric: string) => get(metric)?.value ?? null;
       const cfo = get("operatingCashFlow"),
         capex = cfo
           ? ordered.find(
               (f) =>
                 f.metric === "capex" &&
+                f.unit === anchor.currency &&
                 f.accession === cfo.accession &&
                 f.filed === cfo.filed,
             )
@@ -185,7 +197,8 @@ export function financialPeriods(
             (f) =>
               f.metric === k &&
               f.scope === "instant" &&
-              f.currency === anchor.currency,
+              f.currency === anchor.currency &&
+              f.unit === anchor.currency,
           )?.value ?? null,
         ]),
       );
@@ -240,12 +253,16 @@ export function financialPeriods(
                   (f.scope === "instant" && f.currency === anchor.currency) ||
                   f === weight,
               ),
-            ].map((f) => f.sourceUrl),
+            ].flatMap((f) => f.sourceUrls ?? [f.sourceUrl]),
           ),
-        ],
+        ].sort(),
       });
     })
-    .sort((a, b) => a.end.localeCompare(b.end));
+    .sort(compareFinancialPeriods);
+  const preferred = new Map<string, FinancialPeriod>();
+  for (const period of periods)
+    preferred.set(`${period.end}|${period.currency}|${period.basis}`, period);
+  return [...preferred.values()].sort(compareFinancialPeriods);
 }
 export function portfolioTotals(
   positions: Position[],
@@ -276,8 +293,7 @@ export function portfolioTotals(
     if (
       !finite(price) ||
       price <= 0 ||
-      (p.assetType !== "cash" &&
-        quotes[p.symbol]?.currency !== "USD")
+      (p.assetType !== "cash" && quotes[p.symbol]?.currency !== "USD")
     ) {
       missing.push(p.symbol);
       continue;

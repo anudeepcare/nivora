@@ -1,7 +1,22 @@
 "use client";
+import ComparisonCharts from "./ComparisonCharts";
+import { APP_VERSION } from "@/lib/releases";
+import settingsStyles from "./SettingsPage.module.css";
+import { sameProviderSymbol } from "@/lib/provider-symbol";
+import { SUPPORT_EMAIL } from "@/lib/site-metadata";
+import { ContextLink } from "./ContextLink";
+import { PrivacyChoices } from "./AnalyticsConsent";
+import PaceGuidance from "./PaceGuidance";
+import Search from "./Search";
+import PaceHelp from "./PaceHelp";
+import { loadComparison, comparisonCompatibility } from "@/lib/comparison";
+import { researchEdge } from "@/lib/edge-research";
+
 import DisplayPreferences from "./DisplayPreferences";
 import ResearchPreferenceControls from "./ResearchPreferences";
 import PwaDiagnostics from "./PwaDiagnostics";
+import { useAccess } from "./Access";
+import { settingsReturnHref } from "@/lib/settings-navigation";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
@@ -10,6 +25,9 @@ import {
   FlaskConical,
   ShieldCheck,
   RefreshCw,
+  ArrowLeft,
+  ChevronRight,
+  LogOut,
 } from "lucide-react";
 import { useProduct, useResource } from "./Session";
 import { PageHeading, Notice, Empty, SecurityLogo, Help } from "./Ui";
@@ -20,61 +38,254 @@ import { perspective } from "@/lib/analysis";
 import type { Research } from "@/lib/types";
 export function Settings() {
   const { workspace, demo } = useProduct();
+  const { access } = useAccess();
+  const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
+  const [backHref, setBackHref] = useState(`${prefix}/overview`);
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
-  const [account, setAccount] = useState<{email: string; providers: string[]} | null>(null);
+  const [signingOut, setSigningOut] = useState(false);
+  const [account, setAccount] = useState<{
+    email: string;
+    providers: string[];
+  } | null>(null);
   useEffect(() => {
-    if (demo && demo.routePrefix!=="") return;
+    setBackHref(
+      settingsReturnHref(
+        new URLSearchParams(window.location.search).get("from"),
+        prefix,
+      ),
+    );
+  }, [prefix]);
+  useEffect(() => {
+    if (demo && demo.routePrefix !== "") return;
     let active = true;
-    authClient().auth.getUser().then(({data,error}) => {
-      if (!active) return;
-      if (error) {setMessage("Account details could not be loaded. Please try again.");return;}
-      if (data.user) setAccount({email:data.user.email || "", providers:[...new Set((data.user.identities || []).map(x=>x.provider))]});
-    }).catch(() => {if (active) setMessage("Account details could not be loaded. Please try again.");});
-    return () => {active = false;};
+    authClient()
+      .auth.getUser()
+      .then(({ data, error }) => {
+        if (!active) return;
+        if (error) {
+          setMessage("Account details could not be loaded. Please try again.");
+          return;
+        }
+        if (data.user)
+          setAccount({
+            email: data.user.email || "",
+            providers: [
+              ...new Set((data.user.identities || []).map((x) => x.provider)),
+            ],
+          });
+      })
+      .catch(() => {
+        if (active)
+          setMessage("Account details could not be loaded. Please try again.");
+      });
+    return () => {
+      active = false;
+    };
   }, [demo]);
   async function update(e: React.FormEvent) {
     e.preventDefault();
-    if (demo && demo.routePrefix!=="") {setMessage("Account changes are disabled in the preview.");return;}
-    setBusy(true);setMessage("");
+    if (demo && demo.routePrefix !== "") {
+      setMessage("Account changes are disabled in the preview.");
+      return;
+    }
+    setBusy(true);
+    setMessage("");
     try {
-      const {error} = await authClient().auth.updateUser({password});
+      const { error } = await authClient().auth.updateUser({ password });
       if (error) throw error;
-      setPassword("");setMessage("Password updated.");
-    } catch (e) {setMessage(e instanceof Error ? e.message : "Password update failed.");}
-    finally {setBusy(false);}
+      setPassword("");
+      setMessage("Password updated.");
+    } catch (e) {
+      setMessage(e instanceof Error ? e.message : "Password update failed.");
+    } finally {
+      setBusy(false);
+    }
   }
-  const email = account?.email || workspace?.email || (demo ? "Design preview" : "Loading account…");
-  return <section className="settings-page">
-    <PageHeading title="Your AURYN" subtitle="A workspace that feels like yours."/>
-    <Link className="settings-plan-entry" href="/plans"><span><strong>Membership</strong><small>Your plan, usage and billing</small></span><ArrowUpRight size={20}/></Link>
-    <section className="panel settings-account" aria-labelledby="account-title">
-      <header className="settings-profile"><span className="settings-profile-avatar" aria-hidden="true">{email[0]?.toUpperCase() || "A"}</span><div><span className="eyebrow">Account</span><h2 id="account-title">Your space. Your perspective.</h2><p>{email}</p></div></header>
-      {!!account?.providers.length && <div className="account-identities" aria-label="Connected sign-in methods">{account.providers.map(provider=><span key={provider}>{provider === "google" ? "Google" : provider === "x" || provider === "twitter" ? "X" : provider === "email" ? "Email" : provider}</span>)}</div>}
-      <div className="settings-security">
-        <h3>Security</h3><p>Keep access to your account in your hands.</p>
-        <details className="settings-password"><summary>Set or change password</summary><form className="password-form" onSubmit={update}><label>New password<input type="password" minLength={8} autoComplete="new-password" required value={password} onChange={e=>setPassword(e.target.value)}/></label><button className="button primary" disabled={busy || (!!demo && demo.routePrefix !== "")}>{busy ? "Saving…" : "Update password"}</button></form></details>
-        <button type="button" className="settings-signout" disabled={(!!demo && demo.routePrefix!=="") || busy} onClick={async()=>{
-          setBusy(true);setMessage("");
-          try {await signOutAndRedirect();}
-          catch(error){setMessage(error instanceof Error ? error.message : "Could not sign out. Please try again.");setBusy(false);}
-        }}>Sign out of AURYN <ArrowUpRight size={16}/></button>
-      </div>
-    </section>
+  const email =
+    account?.email ||
+    workspace?.email ||
+    (demo ? "Design preview" : "Loading account…");
+  return (
+    <section className={`settings-page workspace-settings ${settingsStyles.page}`}>
+      <div className="settings-page-toolbar">
+        <Link
+          href={backHref}
+          scroll={false}
+          className="settings-back"
+          aria-label="Back to previous screen"
+        >
+          <ArrowLeft size={18} /> Back
+        </Link>
 
-    <section className="panel settings-appearance"><DisplayPreferences/><details className="settings-research"><summary>Research preferences</summary><ResearchPreferenceControls/></details><small className="settings-device-note">Appearance and reading preferences are saved on this device.</small></section>
-    {message && <div className="settings-feedback" role="status"><Notice>{message}</Notice></div>}
-    <nav className="settings-page-links" aria-label="Help and legal"><Link href="/help">Help & support <ArrowUpRight size={16}/></Link><Link href="/privacy">Privacy <ArrowUpRight size={16}/></Link><Link href="/terms">Terms <ArrowUpRight size={16}/></Link><Link href="/risk">Investment risks <ArrowUpRight size={16}/></Link></nav>
-  </section>;
+      </div>
+      <PageHeading
+        title="Settings"
+        subtitle="Manage your account, display and research preferences."
+      />
+      {message && (
+        <div className="settings-feedback" role="status">
+          <Notice>{message}</Notice>
+        </div>
+      )}
+      <div className="workspace-account-row">
+        <span className="settings-profile-avatar" aria-hidden="true">
+          {email[0]?.toUpperCase() || "A"}
+        </span>
+        <div>
+          <strong>{email}</strong>
+          <p>
+            {access.owner
+              ? "Owner access"
+              : access.plan === "pro"
+                ? "Pro membership"
+                : "Free membership"}
+          </p>
+        </div>
+        <Link className="text-link" href={`${prefix}/plans`}>
+          Manage plan <ArrowUpRight size={16} />
+        </Link>
+        <button
+          type="button"
+          className="settings-signout"
+          disabled={(!!demo && demo.routePrefix !== "") || busy || signingOut}
+          onClick={async () => {
+            if (demo && demo.routePrefix !== "") return;
+            setSigningOut(true);
+            setMessage("");
+            try {
+              await signOutAndRedirect();
+            } catch (error) {
+              setMessage(
+                error instanceof Error
+                  ? error.message
+                  : "Could not sign out. Please try again.",
+              );
+              setSigningOut(false);
+            }
+          }}
+        >
+          <LogOut size={17} /> {signingOut ? "Signing out…" : "Sign out"}
+        </button>
+      </div>
+      <div className="workspace-settings-groups">
+        <section className="workspace-setting-group">
+          <header>
+            <span>
+              <strong>Display & reading</strong>
+              <small>Theme, text and accessibility</small>
+            </span>
+          </header>
+          <div className="workspace-setting-body">
+            <DisplayPreferences />
+          </div>
+        </section>
+        <section className="workspace-setting-group">
+          <header>
+            <span>
+              <strong>Research preferences</strong>
+              <small>How you want evidence presented</small>
+            </span>
+          </header>
+          <div className="workspace-setting-body">
+            <ResearchPreferenceControls />
+          </div>
+        </section>
+        <section className="workspace-setting-group">
+          <header>
+            <span>
+              <strong>Account & security</strong>
+              <small>Sign-in methods and password</small>
+            </span>
+          </header>
+          <div className="workspace-setting-body">
+            {!!account?.providers.length && (
+              <div
+                className="account-identities"
+                aria-label="Connected sign-in methods"
+              >
+                {account.providers.map((provider) => (
+                  <span key={provider}>
+                    {provider === "google"
+                      ? "Google"
+                      : provider === "x" || provider === "twitter"
+                        ? "X"
+                        : provider === "email"
+                          ? "Email"
+                          : provider}
+                  </span>
+                ))}
+              </div>
+            )}
+            <form className="password-form" onSubmit={update}>
+              <label>
+                New password
+                <input
+                  type="password"
+                  minLength={8}
+                  autoComplete="new-password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </label>
+              <p>
+                Use at least 8 characters and a password you don’t use
+                elsewhere.
+              </p>
+              <button
+                className="button primary"
+                disabled={busy || (!!demo && demo.routePrefix !== "")}
+              >
+                {busy ? "Saving…" : "Update password"}
+              </button>
+            </form>
+          </div>
+        </section>
+      </div>
+      <nav
+        className="workspace-settings-shortcuts"
+        aria-label="Account and support"
+      >
+        <Link href={`${prefix}/alerts`}>
+          <Bell size={18} />
+          <span>Price alerts</span>
+          <ChevronRight size={17} />
+        </Link>
+        <ContextLink page="help">
+          <ShieldCheck size={18} />
+          <span>Help & support</span>
+          <ChevronRight size={17} />
+        </ContextLink>
+        <ContextLink page="changelog"><Bell size={18} /><span>What’s new · {APP_VERSION}</span><ChevronRight size={17} /></ContextLink>
+        <a href={`mailto:${SUPPORT_EMAIL}`}>
+          <ShieldCheck size={18} />
+          <span>Email support</span>
+          <ChevronRight size={17} />
+        </a>
+        <div className="settings-analytics-shortcut">
+          <PrivacyChoices />
+        </div>
+        {access.owner && (
+          <Link href={`${prefix}/owner`}>
+            <ShieldCheck size={18} />
+            <span>Admin controls</span>
+            <ChevronRight size={17} />
+          </Link>
+        )}
+      </nav>
+    </section>
+  );
 }
 
 export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
-  const { demo } = useProduct(),
+  const { demo, workspace } = useProduct(),
     prefix = demo && demo.routePrefix !== "" ? "/preview" : "",
     [draft, setDraft] = useState(initialSymbols),
     [symbols, setSymbols] = useState(initialSymbols),
     [rows, setRows] = useState<Research[]>([]),
+    [success, setSuccess] = useState(""),
     [error, setError] = useState(""),
     [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -87,21 +298,20 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
     setRows([]);
     setLoading(true);
     setError("");
-    Promise.all(
-      symbols
-        .split(",")
-        .map((s) =>
-          demo
-            ? Promise.resolve(demo.research[s])
-            : api<Research>(
-                `research/${encodeURIComponent(s.replace("/", "-"))}`,
-                undefined,
-                abort.signal,
-              ),
-        ),
+    loadComparison(symbols.split(","), (s) =>
+      demo
+        ? Promise.resolve(demo.research[s])
+        : api<Research>(
+            `research/${encodeURIComponent(s.replace("/", "-"))}`,
+            undefined,
+            abort.signal,
+          ),
     )
-      .then((values) => {
-        if (active) setRows(values.filter(Boolean));
+      .then(({ rows, issues }) => {
+        if (active) {
+          setRows(rows);
+          setError(issues.join(" "));
+        }
       })
       .catch((e) => {
         if (active) setError(e.message);
@@ -138,7 +348,7 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
         },
       });
       saved.refresh();
-      setError("Comparison saved.");
+      setSuccess("Comparison saved.");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Save failed.");
     }
@@ -151,18 +361,36 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
       ];
       if (list.length < 2 || list.length > 4)
         throw Error("Choose two to four companies.");
+      setSuccess("");
       setSymbols(list.join(","));
       setError("");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Check the symbols");
     }
   }
-  const values = rows.map((r) => ({ r, p: perspective(r) }));
+  const values = rows.map((r) => ({
+    r,
+    p: perspective(r),
+    edge: researchEdge(
+      r,
+      !!workspace?.positions.some(
+        (p) => sameProviderSymbol(p.symbol, r.company.symbol) && p.quantity > 0,
+      ),
+      demo ? Date.parse(r.retrievedAt) : Date.now(),
+    ),
+  }));
+  const compatibility = comparisonCompatibility(
+    values.map(({ p }) => ({
+      currency: p.last?.currency,
+      end: p.last?.end,
+      basis: p.periodBasis,
+    })),
+  );
   return (
     <section>
       <PageHeading
-        title="Compare the businesses."
-        subtitle="Put the financial picture side by side. Periods and currencies remain visible."
+        title="Compare companies"
+        subtitle="Compare reported financials with their periods and currencies."
       />
       <div className="source-line">
         {saved.data?.documents.map((d) => (
@@ -183,6 +411,17 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
           </button>
         )}
       </div>
+      <div className="compare-picker">
+        <Search
+          onSelect={(symbol) =>
+            setDraft((current) =>
+              [...new Set([...current.split(/[ ,]+/).filter(Boolean), symbol])]
+                .slice(0, 4)
+                .join(", "),
+            )
+          }
+        />
+      </div>
       <form className="compare-search" onSubmit={submit}>
         <input
           aria-label="Companies to compare"
@@ -195,6 +434,12 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
         </button>
       </form>
       {error && <Notice error>{error}</Notice>}
+      {success && <Notice>{success}</Notice>}
+      {compatibility.length > 0 && (
+        <p className="context-note">{compatibility.join(" ")}</p>
+      )}
+      {values.length > 0 && <ComparisonCharts research={values.map(({ r }) => r)} />}
+      <PaceHelp trigger="Understand AURYN Pace" />
       {values.length ? (
         <div className="table-scroll">
           <table className="compare-table">
@@ -224,10 +469,12 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
                 "Free cash flow",
                 "Operating margin",
                 "Price trend",
+                "AURYN View",
+                "AURYN Pace",
               ].map((label, i) => (
                 <tr key={label}>
                   <th>{label}</th>
-                  {values.map(({ r, p }) => (
+                  {values.map(({ r, p, edge }) => (
                     <td key={r.company.symbol}>
                       {
                         [
@@ -240,6 +487,14 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
                           amount(p.last?.fcf, p.last?.currency, true),
                           percent(p.last?.margin),
                           p.tech.trend,
+                          `${edge.decision.contextLabel}: ${edge.pacePresentation.actionLabel} · ${edge.reason} New purchase: ${edge.decision.actionLabels.entry}. Holding: ${edge.decision.actionLabels.holding}.`,
+                          <div key="pace">
+                            <PaceGuidance
+                              view={edge.pacePresentation}
+                              readings={edge.pacePeriods}
+                              compact
+                            />
+                          </div>,
                         ][i]
                       }
                     </td>
@@ -255,7 +510,7 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
           </p>
         </div>
       ) : (
-        <Empty title="Make the trade-offs visible">
+        <Empty title="Compare growth, margins and valuation">
           Choose two to four companies to compare their reported economics.
         </Empty>
       )}
@@ -266,8 +521,8 @@ export function HelpPage() {
   return (
     <article className="help-article">
       <PageHeading
-        title="Know what you’re looking at."
-        subtitle="Plain-language methodology and data boundaries."
+        title="Methodology & data"
+        subtitle="How calculations work and where data is limited."
       />
       {[
         [

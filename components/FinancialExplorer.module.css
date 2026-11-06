@@ -1,0 +1,12 @@
+.explorer.explorer.explorer{padding:20px;min-width:0;--blue:#438f86}
+.explorer.explorer.explorer > header{margin-bottom:14px;align-items:center}
+.explorer.explorer.explorer :global(.explorer-body){display:block}
+.explorer.explorer.explorer :global(.explorer-metrics){display:flex;flex-wrap:wrap;gap:6px;margin:0 0 16px;padding:0;border:0}
+.explorer.explorer.explorer :global(.explorer-metrics) button{width:auto;min-height:36px;padding:8px 12px;flex:0 0 auto}
+.explorer.explorer.explorer :global(.explorer-mobile-picker){display:none}
+.explorer.explorer.explorer :global(.explorer-plot){min-width:0;width:100%}
+.explorer.explorer.explorer :global(.explorer-plot) > svg{display:block;width:100%;height:auto;max-height:none;aspect-ratio:760/240}
+.explorer.explorer.explorer :global(.explorer-definition){border:0;border-radius:10px;padding:12px 14px;background:color-mix(in srgb,#438f86 8%,var(--card));margin:10px 0}
+.explorer.explorer.explorer :global(.explorer-latest){margin:0 0 6px}
+@media(min-width:1200px){.explorer.explorer.explorer :global(.explorer-body){display:grid;grid-template-columns:180px minmax(0,1fr);gap:20px}.explorer.explorer.explorer :global(.explorer-metrics){flex-direction:column;align-self:start}.explorer.explorer.explorer :global(.explorer-metrics) button{text-align:left;white-space:normal}}
+@media(max-width:600px){.explorer.explorer.explorer{padding:14px}.explorer.explorer.explorer :global(.explorer-metrics){display:none}.explorer.explorer.explorer :global(.explorer-mobile-picker){display:grid;margin-bottom:12px}.explorer.explorer.explorer > header{flex-wrap:wrap}.explorer.explorer.explorer :global(.explorer-tools){flex-wrap:wrap;gap:6px}}

@@ -63,6 +63,10 @@ export async function GET(request: Request) {
         )),
       );
     }
+    if (process.env.AURYN_SUPPORT_EMAIL_ENABLED === "true") {
+      const { retrySupport } = await import("@/lib/support-delivery");
+      results.push({support:await retrySupport().catch(()=>({pending:true}))});
+    }
     return privateJson({ checkedAt: new Date().toISOString(), results });
   } catch (e) {
     return failure(e);

@@ -1,0 +1,101 @@
+.workspace {
+  min-width: 0;
+}
+.workspace.workspace .account {
+  margin: 10px 0;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: transparent;
+  border-radius: 0;
+}
+.workspace.workspace .account > summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 0;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 550;
+  background: transparent;
+  border-radius: 0;
+  cursor: pointer;
+  list-style: none;
+}
+.account > summary::after {
+  content: "+";
+  margin-left: auto;
+  font-size: 18px;
+  color: var(--muted);
+}
+.account[open] > summary::after {
+  content: "−";
+}
+.account > summary::-webkit-details-marker {
+  display: none;
+}
+.account small {
+  color: var(--muted);
+  font-weight: 400;
+}
+.account p,
+.feedback {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 8px 0;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+.workspace.workspace .actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.actions button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.account label {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  max-width: 600px;
+}
+.account select {
+  min-height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 12px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  width: 100%;
+}
+.workspace :is(button, select, summary, input):focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
+@media (max-width: 600px) {
+  .workspace.workspace .actions button {
+    min-height: 44px;
+    flex: 1 1 140px;
+  }
+  .account small {
+    font-size: 11px;
+  }
+}

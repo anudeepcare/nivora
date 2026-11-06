@@ -1,4 +1,5 @@
 "use client";
+import layout from "./Plans.module.css";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/client";
@@ -45,15 +46,18 @@ export function PricingCards({
     });
   const owner = access?.owner;
   return (
-    <div className="pricing-cards">
-      {(["free", "pro"] as const).map((plan) => (
+    <div className={`pricing-cards ${layout.cards}`}>
+      {(["pro", "free"] as const).map((plan) => (
         <section
           key={plan}
           className={plan === "pro" ? "pricing-pro" : ""}
           aria-label={`${plan === "free" ? "Free" : "Pro"} plan`}
         >
           <div className="pricing-card-title">
-            <h2>{plan === "free" ? "Free" : "Pro"}</h2>
+            <div>
+              <h2>{plan === "free" ? "Free" : "Pro"}</h2>
+              {plan === "pro" && <span className="pricing-recommended">Most complete research</span>}
+            </div>
             {!publicPage && access?.plan === plan && (
               <span className="plan-pill">
                 {owner ? "Included" : "Current plan"}
@@ -69,17 +73,6 @@ export function PricingCards({
               ? "Get to know a company."
               : "Go deeper before your next decision."}
           </p>
-          <ul>
-            <li>
-              {plan === "pro"
-                ? "Unlimited company research"
-                : "100 companies / month"}
-            </li>
-            {included(plan).map((k) => (
-              <li key={k}>{featureNames[k]}</li>
-            ))}
-
-          </ul>
           {publicPage ? (
             <Link
               className={`button ${plan === "pro" ? "primary" : ""}`}
@@ -125,6 +118,16 @@ export function PricingCards({
                         : "Coming soon"}
             </button>
           )}
+          <ul>
+            <li>
+              {plan === "pro"
+                ? "Unlimited company research"
+                : "100 companies / month"}
+            </li>
+            {included(plan).map((k) => (
+              <li key={k}>{featureNames[k]}</li>
+            ))}
+          </ul>
         </section>
       ))}
     </div>
@@ -225,14 +228,6 @@ function SignedInPlans() {
           )}
         </section>
       )}
-      <PricingCards
-        config={billing?.config}
-        access={a}
-        ready={!!billing?.ready}
-        busy={busy}
-        publicPage={false}
-        onUpgrade={() => void open("checkout")}
-      />
       <section className="plan-account-row" aria-label="Your membership">
         <div>
           <strong>
@@ -281,6 +276,15 @@ function SignedInPlans() {
           </button>
         ) : null}
       </section>
+      <PricingCards
+        config={billing?.config}
+        access={a}
+        ready={!!billing?.ready}
+        busy={busy}
+        publicPage={false}
+        onUpgrade={() => void open("checkout")}
+      />
+
       {billing?.mode === "test" && billing.ready && (
         <p className="plans-footnote">Test checkout · no real charges.</p>
       )}
@@ -298,19 +302,19 @@ export default function Plans({
   publicPage?: boolean;
 }) {
   return (
-    <div className={`plans-page ${publicPage ? "plans-public" : ""}`}>
+    <div className={`plans-page ${layout.page} ${publicPage ? "plans-public" : ""}`}>
       {publicPage && (
         <nav aria-label="Plans navigation">
           <Link href="/" className="brand-link">
-            AURYN
+            <img src="/icon.svg" width="32" height="32" alt="" /> AURYN
           </Link>
           <Link href="/login">Sign in →</Link>
         </nav>
       )}
       <header className="plans-heading">
         <span className="eyebrow">AURYN membership</span>
-        <h1>More clarity. Your choice.</h1>
-        <p>Start free. Go deeper with Pro.</p>
+        <h1>{publicPage ? "More clarity. Your choice." : "Your membership."}</h1>
+        <p>{publicPage ? "Start free. Go deeper with Pro." : "Your plan, billing and research access."}</p>
       </header>
       {publicPage ? <PricingCards /> : <SignedInPlans />}
       <p className="plans-footnote">

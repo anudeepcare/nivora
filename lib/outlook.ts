@@ -1,5 +1,7 @@
 import { modelCoverage, ttmPeriods } from "./research-depth.ts";
 import type { Research } from "./types";
+import { listingReconciliation } from "./listing-reconciliation.ts";
+import { compareFinancialFacts } from "./financial-period-selection.ts";
 
 export type OutlookCase = {
   name: "Bear" | "Base" | "Bull";
@@ -23,6 +25,8 @@ export type Outlook =
       currency: string;
       analysts: number | null;
       forwardPE: number;
+      multipleSource?: "reported-compatible" | "user-assumption";
+      multipleReferencePeriod?: string;
       basis?: "earnings" | "revenue";
       shares?: number;
       netDebt?: number;
@@ -88,8 +92,11 @@ export function consensusOutlook(r: Research): {
 
 /** A forecast sensitivity, never a company-specific intrinsic valuation.
  * Low/average/high annual EPS are provider observations; 0.8/1/1.2 times the
- * reported forward P/E are explicitly disclosed stress assumptions. */
-export function researchOutlook(r: Research): Outlook {
+ * compatible reported forward P/E (or an explicit user multiple) are stress assumptions. */
+export function researchOutlook(
+  r: Research,
+  assumptions?: { earningsMultiple?: number },
+): Outlook {
   const unavailable = (reason: string): Outlook => ({
     available: false,
     reason,
@@ -99,7 +106,7 @@ export function researchOutlook(r: Research): Outlook {
       "Corporate earnings scenarios do not apply to this asset.",
     );
   const e = r.evidence;
-  const now = Date.parse(r.retrievedAt);
+  const now = Date.parse(r.priceObservedAt ?? r.retrievedAt);
   if (!e || !Number.isFinite(now))
     return unavailable("A dated annual earnings forecast is needed.");
   const coverage = modelCoverage(r.company.symbol, r.company.assetType, {
@@ -114,17 +121,8 @@ export function researchOutlook(r: Research): Outlook {
     return unavailable(
       "This business needs a sector-specific valuation framework.",
     );
-  const outstanding = e.ownership?.outstanding;
-  const marketCap = e.highlights?.MarketCapitalization;
-  const aggregateListingBasis =
-    e.reportingCurrency === r.quote.currency &&
-    outstanding != null &&
-    outstanding > 0 &&
-    marketCap != null &&
-    marketCap > 0 &&
-    r.quote.price != null &&
-    r.quote.price > 0 &&
-    Math.abs(marketCap / (outstanding * r.quote.price) - 1) <= 0.1;
+  const listing = listingReconciliation(r);
+  const aggregateListingBasis = listing.status === "available";
   if (r.company.foreignListing && !aggregateListingBasis)
     return unavailable(
       "The listing needs matching reporting currency and reconciled market-cap/share/price evidence before constructing per-share scenarios.",
@@ -143,7 +141,7 @@ export function researchOutlook(r: Research): Outlook {
     return unavailable(
       "A current price is needed to compare forecast outcomes.",
     );
-  if (r.quote.stale) {
+  {
     const observed = Date.parse(r.quote.asOf ?? "");
     const comparisonTime = Date.parse(r.priceObservedAt ?? r.retrievedAt);
     if (
@@ -179,8 +177,7 @@ export function researchOutlook(r: Research): Outlook {
       x.eps! <= x.epsHigh!
     );
   };
-  const hasEarnings =
-    (e.estimates ?? []).some(usableEps) && (e.multiples?.ForwardPE ?? 0) > 0;
+  const hasEarnings = (e.estimates ?? []).some(usableEps);
   if (
     coverage.family === "financial" &&
     (!hasEarnings || r.company.foreignListing)
@@ -203,16 +200,23 @@ export function researchOutlook(r: Research): Outlook {
       .filter(
         (f) =>
           f.metric === "cash" &&
+          f.scope === "instant" &&
+          f.unit === r.quote.currency &&
           f.currency === r.quote.currency &&
           f.end <= r.retrievedAt.slice(0, 10) &&
           f.filed <= r.retrievedAt.slice(0, 10) &&
           now - Date.parse(f.end) <= 400 * 86400000,
       )
-      .sort((a, b) => b.end.localeCompare(a.end));
+      .sort(
+        (a, b) => b.end.localeCompare(a.end) || compareFinancialFacts(a, b),
+      );
     const cash = balances.find((candidate) =>
       r.facts.some(
         (f) =>
           f.metric === "debt" &&
+          f.scope === "instant" &&
+          f.unit === candidate.unit &&
+          f.basis === candidate.basis &&
           f.end === candidate.end &&
           f.accession === candidate.accession &&
           f.currency === candidate.currency &&
@@ -228,6 +232,9 @@ export function researchOutlook(r: Research): Outlook {
       r.facts.find(
         (f) =>
           f.metric === "debt" &&
+          f.scope === "instant" &&
+          f.unit === cash.unit &&
+          f.basis === cash.basis &&
           f.end === cash.end &&
           f.accession === cash.accession &&
           f.currency === cash.currency &&
@@ -312,10 +319,7 @@ export function researchOutlook(r: Research): Outlook {
     const comparableEV = listingEquity + netDebt;
     const listingValid =
       e.reportingCurrency === r.quote.currency &&
-      marketCap != null &&
-      Number.isFinite(marketCap) &&
-      marketCap > 0 &&
-      Math.abs(marketCap / listingEquity - 1) <= 0.1 &&
+      aggregateListingBasis &&
       Number.isFinite(comparableEV) &&
       comparableEV > 0 &&
       ttmRevenue != null &&
@@ -323,7 +327,8 @@ export function researchOutlook(r: Research): Outlook {
       ttmRevenue > 0;
     if (!listingValid)
       return unavailable(
-        "The share count, price, market capitalisation and revenue inputs do not reconcile on one currency basis. Revenue price sensitivities are withheld.",
+        "Revenue price sensitivities need dated, comparable market-cap/share/price observations and trailing revenue on one currency basis. " +
+          listing.detail,
       );
     const reportedMultipleValid =
       reportedEV != null &&
@@ -342,6 +347,7 @@ export function researchOutlook(r: Research): Outlook {
             f.metric === "revenue" &&
             f.scope === "annual" &&
             f.currency === r.quote.currency &&
+            f.unit === r.quote.currency &&
             f.start &&
             f.end <= r.retrievedAt.slice(0, 10) &&
             f.filed <= r.retrievedAt.slice(0, 10) &&
@@ -409,7 +415,9 @@ export function researchOutlook(r: Research): Outlook {
       basis: "revenue",
       cases,
       years,
-      period: fiscal ? estimate.period.toUpperCase() : "Annual forecast",
+      period: fiscal
+        ? estimate.period.toUpperCase()
+        : `FY${estimate.date.slice(0, 4)}`,
       end: estimate.date,
       asOf: e.updatedAt!,
       currency: r.quote.currency,
@@ -426,7 +434,13 @@ export function researchOutlook(r: Research): Outlook {
         : {}),
     };
   }
-  const forwardPE = e.multiples?.ForwardPE;
+  const userMultiple = assumptions?.earningsMultiple;
+  if (
+    userMultiple !== undefined &&
+    (!Number.isFinite(userMultiple) || userMultiple <= 0 || userMultiple > 500)
+  )
+    return unavailable("Enter a positive P/E assumption no greater than 500×.");
+  const forwardPE = userMultiple ?? e.multiples?.ForwardPE;
   if (forwardPE == null || !Number.isFinite(forwardPE) || forwardPE <= 0)
     return unavailable(
       "A positive reported forward earnings multiple is needed.",
@@ -468,6 +482,36 @@ export function researchOutlook(r: Research): Outlook {
     return unavailable(
       "The supplied fiscal period and forecast date conflict.",
     );
+  // ForwardPE has no supplied denominator date/accounting basis. A recent dataset
+  // timestamp alone cannot validate it. Compare its implied EPS with the nearest
+  // positive annual range before using it as a *conditional* reference multiple.
+  const referenceEstimate = (e.estimates ?? [])
+    .filter((x) => {
+      const days = (Date.parse(x.date) - now) / 86400000;
+      return (
+        /annual/i.test(x.frequency) &&
+        days >= 0 &&
+        days <= 550 &&
+        validFiscal(x) &&
+        x.currency === r.quote.currency &&
+        [x.epsLow, x.eps, x.epsHigh].every(
+          (v) => v != null && Number.isFinite(v) && v > 0,
+        ) &&
+        x.epsLow! <= x.eps! &&
+        x.eps! <= x.epsHigh!
+      );
+    })
+    .sort((a, b) => a.date.localeCompare(b.date))[0];
+  const impliedEps = price / forwardPE;
+  if (
+    userMultiple === undefined &&
+    (!referenceEstimate ||
+      impliedEps < referenceEstimate.epsLow! * 0.9 ||
+      impliedEps > referenceEstimate.epsHigh! * 1.1)
+  )
+    return unavailable(
+      "The reported forward P/E cannot be reconciled with the nearest annual EPS range at the reference price. Its earnings period and accounting/split basis are not supplied. Set an explicit P/E assumption to explore conditional outcomes; this does not validate the provider multiple.",
+    );
   const { epsLow: low, eps: base, epsHigh: high } = estimate;
   if (
     ![low, base, high].every((v) => v != null && Number.isFinite(v) && v > 0) ||
@@ -505,15 +549,23 @@ export function researchOutlook(r: Research): Outlook {
   return {
     available: true,
     basis: "earnings",
-    ...(coverage.family === "financial"
-      ? {
-          caveat:
-            "Earnings sensitivity only. Capital adequacy, credit losses and tangible book value require a separate bank assessment.",
-        }
-      : {}),
+    multipleSource:
+      userMultiple === undefined ? "reported-compatible" : "user-assumption",
+    multipleReferencePeriod: referenceEstimate
+      ? `FY${referenceEstimate.date.slice(0, 4)}`
+      : undefined,
+    caveat:
+      (userMultiple === undefined
+        ? "Reported forward P/E is numerically compatible with the nearest annual EPS range (10% tolerance). This check does not verify its earnings period, accounting or split basis."
+        : "The exit P/E is your explicit assumption, not a verified provider multiple or an analyst target.") +
+      (coverage.family === "financial"
+        ? " Capital adequacy, credit losses and tangible book value require a separate bank assessment."
+        : ""),
     cases,
     years,
-    period: fiscalLabel ? estimate.period.toUpperCase() : "Annual forecast",
+    period: fiscalLabel
+      ? estimate.period.toUpperCase()
+      : `FY${estimate.date.slice(0, 4)}`,
     end: estimate.date,
     asOf: e.updatedAt!,
     currency: r.quote.currency,

@@ -1,0 +1,140 @@
+
+@layer compatibility {
+/* Signal research: shared controls and clear, directly accessible evidence. */
+.signal-research-nav { display:flex; gap:4px; overflow-x:auto; padding:8px 0 12px; margin:0 0 20px; border-bottom:1px solid var(--line); scroll-margin-top:100px; scrollbar-width:thin; }
+.signal-research-nav button { display:inline-flex; align-items:center; justify-content:center; gap:8px; flex-shrink:0; padding:11px 13px; min-height:44px; border:1px solid transparent; border-radius:10px; background:transparent; color:var(--muted); font-size:14px; font-weight:500; cursor:pointer; }
+.signal-research-nav button:hover { background:var(--blue-soft); color:var(--blue); }
+.signal-research-nav button[aria-current] { color:var(--blue); background:var(--blue-soft); border-color:color-mix(in srgb,var(--blue) 24%,transparent); }
+.signal-research-nav svg { flex-shrink:0; }
+.signal-research-panel[hidden], .research-page [hidden] { display:none !important; }
+.signal-research-panel .approved-evidence-body { padding:0; max-width:none; }
+.signal-business-intro { padding:4px 0 18px; border-bottom:1px solid var(--line); }
+.signal-business-intro h2 { font-size:26px; font-weight:550; margin:10px 0; }
+.signal-business-intro p { color:var(--muted); max-width:780px; }
+.approved-research-page .company-header { padding:12px 0 18px; }
+.approved-research-page .company-identity h1 { font-size:clamp(24px,2.5vw,34px); font-weight:600; }
+.approved-research-page .company-metrics { margin-bottom:16px; }
+.approved-research-page .decision-focus { display:block; border-radius:16px; box-shadow:none; }
+.approved-research-page .decision-main { padding:20px 24px; display:grid; grid-template-columns:minmax(0,1fr) minmax(260px,.85fr); column-gap:32px; }
+.approved-research-page .decision-kicker { grid-column:1/-1; }
+.approved-research-page .decision-action-line { grid-column:1; margin-top:12px; gap:12px; }
+.approved-research-page .decision-action-line h2 { font-size:34px; font-weight:550; letter-spacing:-.035em; }
+.approved-research-page .decision-headline { grid-column:1; font-size:16px; margin:10px 0; }
+.approved-research-page .decision-context-pair { grid-column:1; margin:8px 0; gap:16px; font-size:13px; }
+.approved-research-page .decision-explanation { grid-column:2; grid-row:2; margin:12px 0 0; align-self:start; }
+.approved-research-page .decision-reasons { grid-column:2; grid-row:3/5; margin:8px 0; gap:7px; }
+.approved-research-page .decision-main-risk { grid-column:1/-1; font-size:13px; margin:12px 0 0; }
+.approved-research-page .decision-actions { grid-column:1/-1; margin-top:14px; }
+.approved-research-page details > summary { cursor:pointer; min-height:44px; padding:12px; border-radius:8px; }
+.approved-research-page details > summary:hover { background:var(--blue-soft); }
+.approved-research-page details > summary:focus-visible, .signal-research-nav button:focus-visible { outline:3px solid var(--blue); outline-offset:3px; }
+.signal-price-layout { grid-column:1/-1; display:grid; grid-template-columns:minmax(0,1fr) 310px; gap:20px; align-items:start; }
+.approved-research-page .decision-chart { padding:20px; min-width:0; border-radius:16px; box-shadow:none; }
+.approved-research-page .decision-chart .section-head { margin-bottom:10px; }
+.approved-research-page .decision-chart h2 { font-size:22px; font-weight:550; }
+.approved-research-page .plot-section { padding:0; border:0; background:transparent; }
+.approved-research-page .price-chart { height:310px; min-height:310px; }
+.approved-research-page .chart-head { flex-wrap:wrap; gap:12px; }
+.approved-research-page .chart-head h3 { display:flex; align-items:center; gap:8px; font-weight:500; font-size:14px; }
+.approved-research-page .ranges { display:flex; flex-wrap:wrap; gap:3px; background:var(--surface); padding:3px; border-radius:10px; }
+.approved-research-page .ranges button { min-height:36px; min-width:36px; padding:6px 9px; border-radius:7px; font-size:12px; }
+.approved-research-page .ranges button[aria-pressed="true"] { background:var(--blue); color:white; }
+.approved-research-page .segments button { display:inline-flex; align-items:center; gap:6px; min-height:40px; }
+.chart-readout { min-height:40px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:8px 0; font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums; }
+.chart-readout strong { color:var(--ink); font-weight:500; }
+.signal-research-rail { display:grid; gap:16px; min-width:0; }
+.approved-research-page .signal-research-rail .pace-feature { padding:20px; border:1px solid var(--line); border-radius:16px; background:linear-gradient(135deg,color-mix(in srgb,#d9ed9d 25%,var(--card)),var(--card)); color:var(--ink); overflow:hidden; }
+.approved-research-page .signal-research-rail .pace-feature:before, .approved-research-page .signal-research-rail .pace-feature:after { display:none; }
+.approved-research-page .signal-research-rail .pace-feature * { text-shadow:none; }
+.approved-research-page .signal-research-rail .pace-brand { color:var(--ink); border-bottom:1px solid var(--line); padding-bottom:12px; font-size:12px; }
+.approved-research-page .signal-research-rail .pace-assessment-label, .approved-research-page .signal-research-rail .pace-reading-note { color:var(--muted); }
+.approved-research-page .signal-research-rail .pace-action strong { font-size:26px; font-weight:550; color:var(--ink); }
+.approved-research-page .signal-research-rail .pace-contribution-guide { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px; color:var(--ink); }
+.approved-research-page .signal-research-rail .pace-contribution-guide strong { font-size:18px; font-weight:550; }
+.approved-research-page .signal-research-rail .pace-contribution-guide small { color:var(--muted); }
+.approved-research-page .signal-research-rail .pace-open { color:var(--blue); padding:10px 0 0; }
+.signal-analyst-summary { border:1px solid var(--line); border-top:3px solid #9875df; border-radius:14px; padding:18px; background:var(--card); }
+.signal-analyst-summary .analyst-target-fallback { padding:0; border:0; margin:0 0 12px; background:transparent; }
+.signal-analyst-summary .analyst-target-kicker { color:var(--purple); }
+.signal-analyst-summary .btn { width:100%; font-size:13px; min-height:42px; }
+.approved-research-page .research-market-grid { align-items:start; }
+.approved-research-page .decision-value { border-radius:16px; box-shadow:none; }
+.approved-research-page .technical-canvas-layout { grid-template-columns:minmax(0,1fr); }
+.approved-research-page .technical-dashboard { min-width:0; }
+.approved-research-page .gamma-map-legend { display:flex; flex-wrap:wrap; gap:16px; }
+@media(min-width:1500px) { .signal-price-layout { grid-template-columns:minmax(0,1fr) 350px; } .approved-research-page .price-chart { height:350px; } }
+@media(max-width:1050px) { .signal-price-layout { grid-template-columns:minmax(0,1fr); } .signal-research-rail { grid-template-columns:1fr 1fr; } }
+@media(max-width:700px) {
+ .signal-research-nav { margin-bottom:16px; scroll-margin-top:76px; }
+ .signal-research-nav button { font-size:13px; padding:10px; }
+ .approved-research-page .decision-main { display:block; padding:18px; }
+ .approved-research-page .decision-action-line h2 { font-size:30px; }
+ .approved-research-page .decision-reasons { margin-top:12px; }
+ .signal-research-rail { grid-template-columns:1fr; }
+ .approved-research-page .decision-chart { padding:14px; }
+ .approved-research-page .price-chart { height:260px; min-height:260px; }
+ .approved-research-page .chart-head { display:block; }
+ .approved-research-page .ranges { margin-top:10px; }
+ .approved-research-page .ranges button { min-width:32px; min-height:40px; padding:6px; }
+ .chart-readout { font-size:11px; gap:5px; }
+ .approved-research-page .chart-note { flex-wrap:wrap; gap:10px; }
+ .approved-research-page .decision-kicker > span:last-child { display:none; }
+}
+.signal-chart-tools { display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:10px 0 2px; }
+.signal-chart-tools .btn, .signal-chart-tools .help-trigger, .signal-chart-tools .text-link { display:inline-flex; align-items:center; gap:6px; min-height:38px; font-size:12px; padding:7px 10px; border-radius:8px; }
+.signal-chart-tools .btn[aria-pressed="true"] { background:var(--blue-soft); color:var(--blue); border-color:var(--blue); }
+.signal-chart-tools .help-trigger { border:1px solid var(--line); background:var(--card); color:var(--muted); }
+.signal-fib-caption { font-size:12px; color:var(--muted); line-height:1.5; margin:8px 0; }
+.approved-research-page .technical-desk-groups > section { border-radius:14px; border-top:3px solid var(--blue); }
+.approved-research-page .technical-desk-groups > section:nth-child(2) { border-top-color:#8c6bcc; }
+.approved-research-page .technical-desk-groups > section:nth-child(3) { border-top-color:#d08750; }
+.approved-research-page .technical-desk-groups > section:nth-child(4) { border-top-color:#0d9488; }
+.approved-research-page .technical-desk-groups summary { display:list-item; padding:6px 8px; min-height:32px; color:var(--ink); }
+.approved-research-page .fib-reference-grid { display:flex; flex-direction:column; gap:0; border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+.approved-research-page .fib-reference-grid > div { display:grid; grid-template-columns:1fr 1fr 1.6fr; align-items:center; gap:12px; padding:12px 16px; border:0; border-bottom:1px solid var(--line); border-radius:0; background:color-mix(in srgb,#0d9488 5%,var(--card)); }
+.approved-research-page .fib-reference-grid > div[data-position="above"] { background:color-mix(in srgb,#8c6bcc 6%,var(--card)); }
+.approved-research-page .fib-reference-grid > div strong { font-size:18px; font-weight:550; }
+@media(max-width:700px) { .approved-research-page .fib-reference-grid > div { grid-template-columns:1fr 1fr; } .approved-research-page .fib-reference-grid > div small { grid-column:1/-1; } }
+/* Override legacy presentation styles only inside the research experience. */
+.approved-product .page-content:has(.signal-research-nav) { background:var(--card); }
+.approved-product .approved-research-page > .company-header { margin:0 0 12px; padding:4px 0 12px; min-height:0; }
+.approved-product .approved-research-page .company-metrics { padding:12px 0; margin:0 0 8px; gap:0; border-bottom:1px solid var(--line); }
+.approved-product .approved-research-page .company-metrics > div { padding:0 16px; border:0; border-right:1px solid var(--line); border-radius:0; background:transparent; min-height:0; gap:4px; }
+.approved-product .approved-research-page .company-metrics > div:first-child { padding-left:0; }
+.approved-product .approved-research-page .company-metrics strong { margin:0; font-size:22px; font-weight:550; }
+.approved-product .approved-research-page .company-metrics small { margin:0; }
+.approved-product .approved-research-page .decision-main { padding:16px 20px; }
+.approved-product .approved-research-page .decision-explanation { padding:0 10px; margin-top:8px; }
+.approved-product .approved-research-page .decision-reasons { display:grid; gap:4px; margin:6px 0; }
+.approved-product .approved-research-page .decision-reasons li { flex:none; font-size:13px; }
+.approved-product .approved-research-page .pace-feature .pace-action { display:grid; margin:12px 0; }
+.approved-product .approved-research-page .pace-feature .pace-brand { margin-bottom:10px; }
+.approved-product .approved-research-page .decision-main-risk { margin:8px 0; }
+.approved-product .approved-research-page .decision-actions { margin-top:6px; }
+.approved-product .approved-research-page .decision-actions .btn { min-height:38px; padding:8px 12px; }
+.approved-product .approved-research-page .signal-research-nav { margin-bottom:12px; padding-top:4px; }
+@media(max-width:700px) {
+ .approved-product .approved-research-page .company-metrics { gap:12px; }
+ .approved-product .approved-research-page .company-metrics > div { padding:0; }
+ .approved-product .approved-research-page .company-metrics strong { font-size:20px; }
+ .approved-product .approved-research-page .decision-main { padding:16px; }
+}
+.approved-research-page .financial-explorer .explorer-mobile-picker { display:flex; align-items:center; flex-wrap:wrap; gap:10px; font-size:13px; margin:12px 0; }
+.approved-research-page .financial-explorer .explorer-mobile-picker select { max-width:100%; min-width:240px; min-height:42px; padding:8px 12px; border:1px solid var(--line); border-radius:8px; background:var(--card); color:var(--ink); }
+.approved-research-page .financial-explorer .explorer-body { display:block; }
+.approved-research-page .financial-explorer .explorer-metrics { width:auto; max-height:none; border:0; padding:0 0 14px; }
+.approved-research-page .financial-explorer .explorer-metrics > div:not(:first-child) { display:none; }
+.approved-research-page .financial-explorer .explorer-metrics > div:first-child { display:flex; gap:6px; flex-wrap:wrap; }
+.approved-research-page .financial-explorer .explorer-metrics > div > span { display:none; }
+.approved-research-page .financial-explorer .explorer-metrics button { width:auto; padding:8px 12px; min-height:40px; border:1px solid var(--line); border-radius:8px; font-size:12px; }
+.approved-research-page .financial-explorer .explorer-metrics button[aria-pressed="true"] { background:var(--blue-soft); color:var(--blue); border-color:var(--blue); }
+.approved-research-page .financial-explorer[data-metric-group="Cash flow"] .explorer-plot { --blue:#0d9488; }
+.approved-research-page .financial-explorer[data-metric-group="Profitability"] .explorer-plot { --blue:#8c6bcc; }
+.approved-research-page .financial-explorer[data-metric-group="Balance sheet"] .explorer-plot { --blue:#bb7a31; }
+.approved-product .approved-research-page .signal-research-rail .pace-contribution-guide > span,
+.approved-product .approved-research-page .signal-research-rail .pace-contribution-guide > strong { color:var(--ink); }
+.approved-product .approved-research-page .signal-research-rail .pace-brand { padding:0 0 12px; }
+.approved-product .approved-research-page .signal-research-rail .pace-guidance { gap:12px; }
+.approved-product .approved-research-page .signal-research-rail .pace-explanation { margin-top:12px; padding-top:0; border-color:var(--line); }
+.approved-product .approved-research-page .signal-research-rail .pace-open { margin-top:10px; }
+}

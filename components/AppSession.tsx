@@ -1,8 +1,9 @@
 "use client";
+import {DocumentScrollReturn} from "./ContextLink";
 import { usePathname } from "next/navigation";
 import { ProductSession } from "./Session";
 import Shell from "./Shell";
-import {AccessBoundary} from "./Access";
+import { AccessBoundary } from "./Access";
 
 // Lives in the root layout, above the changing catch-all route segment.
 // Account state, navigation and cached quotes survive ordinary page changes.
@@ -12,14 +13,34 @@ export default function AppSession({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  if (pathname === "/" || pathname === "/sample" || pathname === "/pricing") return <>{children}</>;
+  if (
+    pathname === "/" ||
+    pathname === "/changelog" ||
+    pathname === "/sample" ||
+    pathname === "/pricing" ||
+    pathname === "/contact" ||
+    pathname === "/about" ||
+    pathname === "/pace"
+  )
+    return <><DocumentScrollReturn />{children}</>;
   if (pathname === "/preview" || pathname.startsWith("/preview/"))
     return <>{children}</>;
   const page = pathname.split("/")[1] || "overview";
-  if (["terms", "privacy", "risk", "methodology", "help", "reliability"].includes(page)) return <>{children}</>;
+  if (
+    ["terms", "privacy", "risk", "methodology", "help", "reliability"].includes(
+      page,
+    )
+  )
+    return <>{children}</>;
   return (
     <ProductSession>
-      {page === "login" || page === "reset-password" ? children : <AccessBoundary><Shell page={page}>{children}</Shell></AccessBoundary>}
+      {page === "login" || page === "reset-password" ? (
+        children
+      ) : (
+        <AccessBoundary>
+          <Shell page={page}>{children}</Shell>
+        </AccessBoundary>
+      )}
     </ProductSession>
   );
 }

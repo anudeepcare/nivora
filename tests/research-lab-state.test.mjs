@@ -1,3 +1,6 @@
+import { loadComparison, comparisonCompatibility } from "../lib/comparison.ts";
+import { researchEdge } from "../lib/edge-research.ts";
+import { providerSymbol, sameProviderSymbol } from "../lib/provider-symbol.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -50,6 +53,9 @@ test("a failed research-lab request clears the previous instrument result", asyn
   let index = 0;
   const empty = () => null;
   const bindings = {
+    ComparisonCharts: () => null,
+    PaceHelp: () => null,
+    providerSymbol,
     React,
     ...format,
     useState: () => {
@@ -117,6 +123,7 @@ test("a new comparison clears the preceding company set before loading", async (
   let index = 0;
   const empty = () => null;
   const bindings = {
+    ComparisonCharts: () => null,
     React,
     ...format,
     useState: () => {
@@ -136,6 +143,13 @@ test("a new comparison clears the preceding company set before loading", async (
       throw Error("Unavailable");
     },
     perspective,
+    researchEdge,
+    loadComparison,
+    comparisonCompatibility,
+    sameProviderSymbol,
+    Search: empty,
+    PaceHelp: empty,
+    PaceGuidance: () => null, PaceReadings: empty,
     PageHeading: empty,
     Notice: empty,
     Empty: empty,

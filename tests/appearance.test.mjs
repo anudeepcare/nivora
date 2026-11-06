@@ -1,3 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {accents,cleanAppearance} from '../lib/appearance.ts';
 test('appearance preferences accept only supported accents and spacing',()=>{assert.deepEqual(cleanAppearance({accent:'violet',density:'compact'}),{accent:'violet',density:'compact'});for(const x of [null,[],{accent:'__proto__',density:'tiny'},{accent:'red',density:'dense'}])assert.deepEqual(cleanAppearance(x),{accent:'blue',density:'comfortable'});});
 test('accent solid colors retain readable white button text',()=>{const lum=hex=>{const x=hex.slice(1).match(/../g).map(n=>parseInt(n,16)/255).map(n=>n<=.04045?n/12.92:((n+.055)/1.055)**2.4);return x[0]*.2126+x[1]*.7152+x[2]*.0722;};for(const [name,p] of Object.entries(accents))assert.ok(1.05/(lum(p.solid)+.05)>=4.5,name);});
+
+test("first paint and saved preference fallback agree on AURYN blue",async()=>{const fs=await import("node:fs");assert.match(fs.readFileSync("app/layout.tsx","utf8"),/\?x\.accent:\x27blue\x27/);});

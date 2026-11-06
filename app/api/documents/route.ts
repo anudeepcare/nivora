@@ -1,3 +1,4 @@
+import { requestAccess, requireFeature } from "@/lib/access-server";
 import { account, failure, HttpError, privateJson, limit } from "@/lib/server";
 import { cleanDocument } from "@/lib/documents";
 export async function GET(request: Request) {
@@ -9,7 +10,11 @@ export async function GET(request: Request) {
       .select("kind,key,body,created_at,updated_at")
       .eq("user_id", user.id);
     if (kind) query = query.eq("kind", kind);
-    const r = await query.order("updated_at", { ascending: false }).limit(200);
+    const r = await query
+      .not("key", "like", "internal:%")
+      .not("key", "like", "fin-alert:%")
+      .order("updated_at", { ascending: false })
+      .limit(200);
     if (r.error)
       throw new HttpError(
         "Saved research is unavailable. Apply the research workspace migration.",
@@ -33,6 +38,8 @@ export async function POST(request: Request) {
       key.length > 80
     )
       throw new HttpError("Check the saved research type and key.");
+    if (key.startsWith("internal:") || key.startsWith("fin-alert:"))
+      throw new HttpError("Reserved document key.");
     if (v.op === "delete") {
       const r = await db
         .from("auryn_documents")
@@ -42,6 +49,16 @@ export async function POST(request: Request) {
         .eq("key", key);
       if (r.error) throw new HttpError("Could not remove the record.", 503);
     } else {
+      if (
+        kind === "alert" &&
+        typeof v.body?.type === "string" &&
+        v.body.type.startsWith("exposure-")
+      ) {
+        const access = await requestAccess(request, user.id);
+        if (access.sampleOnly)
+          throw new HttpError("Market data is not enabled.", 403);
+        requireFeature(access, "options");
+      }
       let body;
       try {
         body = cleanDocument(kind, v.body);

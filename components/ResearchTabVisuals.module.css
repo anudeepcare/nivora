@@ -1,0 +1,53 @@
+.root {
+  min-width: 0;
+}
+.root.root[data-research-section]:not([data-research-section="Options"])
+  :is(
+    :global(.durability-grid),
+    :global(.funding-metrics),
+    :global(.valuation-board-grid),
+    :global(.technical-summary-strip),
+    :global(.desk-key-metrics),
+    :global(.desk-secondary-metrics),
+    :global(.context-highlights)
+  ) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+  gap: 12px;
+}
+.root.root[data-research-section]:not([data-research-section="Options"])
+  :is(
+    :global(.durability-grid),
+    :global(.funding-metrics),
+    :global(.valuation-board-grid),
+    :global(.technical-summary-strip),
+    :global(.desk-key-metrics),
+    :global(.desk-secondary-metrics),
+    :global(.context-highlights)
+  )
+  > *,
+.root.root[data-research-section="Financials"]
+  :global(article[data-metric-group]) {
+  min-width: 0;
+  padding: 18px;
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+.root.root[data-research-section="Financials"]
+  :global(article[data-metric-group])
+  > svg {
+  max-height: 210px;
+}
+.root :global(.section-symbol) {
+  width: 20px;
+  height: 20px;
+  color: var(--muted);
+}
+@media (max-width: 600px) {
+  .root.root[data-research-section="Financials"]
+    :global(article[data-metric-group]) {
+    padding: 14px;
+  }
+}

@@ -56,10 +56,26 @@ export default function Pwa() {
   }, []);
   useEffect(() => {
     if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(() => {
-        /* The online app remains usable if installation is unavailable. */
-      });
+      navigator.serviceWorker
+        .register("/sw.js", { scope: "/" })
+        .then((registration) => registration.update())
+        .catch(() => {
+          /* The online app remains usable if installation is unavailable. */
+        });
     }
+  }, []);
+  useEffect(() => {
+    const syncThemeColor = () => {
+      const dark = document.documentElement?.dataset?.theme === "dark";
+      document.documentElement.style.colorScheme = dark ? "dark" : "light";
+      const color = dark ? "#24272b" : "#f7f8f5";
+      document.querySelectorAll?.('meta[name="theme-color"]').forEach((meta) => meta.setAttribute("content", color));
+    };
+    syncThemeColor();
+    if (typeof MutationObserver === "undefined" || !document.documentElement) return;
+    const observer = new MutationObserver(syncThemeColor);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "data-accent"] });
+    return () => observer.disconnect();
   }, []);
   return null;
 }

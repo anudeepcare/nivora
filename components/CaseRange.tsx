@@ -6,11 +6,15 @@ export default function CaseRange({
   price,
   currency,
   referenceLabel = "Current",
+  rangeLabel = "Scenario price range",
+  explanation = "Each marker uses the same price scale. These are assumption-based scenarios, not probabilities or validated targets.",
 }: {
-  cases: { name: string; target: number; change: number }[];
+  cases: { name: string; target: number; change: number | null }[];
   price: number | null;
   currency: string;
   referenceLabel?: string;
+  rangeLabel?: string;
+  explanation?: string;
 }) {
   const scale =
     price != null
@@ -22,12 +26,12 @@ export default function CaseRange({
   return (
     <section
       className="case-range"
-      aria-label="Scenario values on a shared price scale"
+      aria-label={`${rangeLabel} on a shared price scale`}
     >
       {scale && (
         <>
           <div className="case-scale-caption">
-            <span>Scenario price range</span>
+            <span>{rangeLabel}</span>
             <span>
               {referenceLabel} {amount(price, currency)}
             </span>
@@ -53,11 +57,9 @@ export default function CaseRange({
                 }
                 cy="40"
                 r="8"
-                fill={`var(--${i === 0 ? "red" : i === 2 ? "green" : "blue"})`}
+                fill={`var(--${c.name === "Bear" ? "red" : c.name === "Bull" ? "green" : "blue"})`}
               >
-                <title>
-                  {c.name}: {amount(c.target, currency)}
-                </title>
+                <title>{`${c.name}: ${amount(c.target, currency)}`}</title>
               </circle>
             ))}
             <line
@@ -76,22 +78,31 @@ export default function CaseRange({
           <section key={c.name}>
             <span
               style={{
-                color: `var(--${i === 0 ? "red" : i === 2 ? "green" : "blue"})`,
+                color: `var(--${c.name === "Bear" ? "red" : c.name === "Bull" ? "green" : "blue"})`,
               }}
             >
               {c.name}
             </span>
             <strong>{amount(c.target, currency)}</strong>
-            <small className={c.change < 0 ? "negative" : "positive"}>
-              {percent(c.change, true)}
+            <small
+              className={
+                c.change == null
+                  ? "muted"
+                  : c.change < 0
+                    ? "negative"
+                    : c.change > 0
+                      ? "positive"
+                      : ""
+              }
+            >
+              {c.change == null
+                ? "Reference price needed"
+                : percent(c.change, true)}
             </small>
           </section>
         ))}
       </div>
-      <p className="small muted">
-        Each marker uses the same price scale. These are assumption-based
-        scenarios, not probabilities or validated targets.
-      </p>
+      <p className="small muted">{explanation}</p>
     </section>
   );
 }

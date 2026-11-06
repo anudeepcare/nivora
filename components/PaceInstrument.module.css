@@ -1,0 +1,470 @@
+/* Approved Carbon / Citron instrument. Financial meaning remains in the reading. */
+.instrument {
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+  padding: 26px;
+  border: 1px solid #454b4c;
+  border-radius: 18px;
+  background:
+    radial-gradient(ellipse at 100% 0, #d6f35a15, transparent 65%), #222829;
+  color: #f7f8f5;
+  font-family: var(--font-ui);
+  overflow: hidden;
+}
+.instrument::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  right: 0;
+  top: 0;
+  width: 160px;
+  height: 100px;
+  clip-path: polygon(45% 0, 100% 0, 0 100%);
+  background: linear-gradient(140deg, #c1d6c52b, transparent);
+}
+.instrument button {
+  font: inherit;
+  cursor: pointer;
+  color: inherit;
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.header > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+}
+.header > span img {
+  display: block;
+  object-fit: contain;
+}
+.header > button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+}
+.readout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: 20px;
+  margin: 20px 0 24px;
+}
+.readoutText {
+  min-width: 0;
+}
+.title {
+  margin: 0;
+  min-width: 0;
+}
+.title > small {
+  display: block;
+  font-size: 11px;
+  color: #b9c1bf;
+  margin-bottom: 6px;
+}
+.title h2 {
+  font-family: var(--font-ui);
+  font-size: clamp(34px, 4vw, 54px);
+  font-weight: 650;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  margin: 0;
+  color: #d6f35a;
+  overflow-wrap: anywhere;
+}
+.title h2 > .level {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  font-size: clamp(25px,3vw,40px);
+  font-weight: 700;
+  letter-spacing: -.04em;
+  margin-left: 12px;
+  min-width: 74px;
+  min-height: 64px;
+  padding: 10px;
+  border: 1px solid #d6f35a60;
+  border-radius: 15px;
+  color: #e0f88c;
+  background: linear-gradient(140deg,#d6f35a20,#1c3935);
+  white-space: nowrap;
+}
+.terraces {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 2px;
+  margin: 16px 0 0;
+}
+.stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 52px;
+  padding: 4px 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+}
+.stage strong {
+  font-size: 12px;
+  font-weight: 450;
+  order: 2;
+}
+.stage span {
+  display: none;
+}
+.stage > svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  order: 1;
+  stroke-width: 1.25;
+}
+.stage[aria-pressed="true"] > svg {
+  color: #d6f35a;
+  filter: drop-shadow(0 0 8px #d6f35a60);
+}
+.stage:hover {
+  background: #ffffff0b;
+}
+.stage:focus-visible,
+.instrument button:focus-visible,
+.instrument summary:focus-visible {
+  outline: 2px solid #d6f35a;
+  outline-offset: 2px;
+}
+.status {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+}
+.status > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.status svg {
+  color: #d6f35a;
+}
+.status small {
+  font-size: 11px;
+  color: #b9c1bf;
+}
+.status button,
+.footer button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 40px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  font-size: 12px;
+}
+.description {
+  font-size: 13px;
+  line-height: 1.65;
+  color: #c7ceca;
+}
+.periods {
+  display: flex;
+  gap: 4px;
+  padding: 0;
+  border-top: 1px solid #ffffff20;
+  margin-top: 8px;
+}
+.periods button {
+  flex: 1;
+  min-height: 44px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  font-size: 11px;
+  color: #b9c1bf;
+}
+.periods button[aria-pressed="true"] {
+  color: #e3f4a0;
+  border-color: #d6f35a;
+  font-weight: 550;
+}
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-top: 1px solid #ffffff20;
+  padding-top: 12px;
+  margin-top: 12px;
+  color: #c0c8c3;
+  font-size: 11px;
+}
+.footer > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.footer svg {
+  flex: none;
+}
+.readingDetail {
+  margin: 6px 0;
+  font-size: 12px;
+}
+.readingDetail summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.readingDetail summary::after {
+  content: "+";
+  margin-left: auto;
+}
+.readingDetail[open] summary::after {
+  content: "−";
+}
+.compact {
+  padding: 20px;
+}
+@media (max-width: 600px) {
+  .instrument {
+    padding: 16px;
+  }
+  .readout {
+    gap: 16px;
+    margin: 16px 0;
+  }
+  .readoutText {
+    padding-left: 0;
+  }
+  .title h2 {
+    font-size: 34px;
+  }
+  .stage {
+    min-height: 48px;
+  }
+  .header > span {
+    font-size: 13px;
+  }
+  .footer {
+    line-height: 1.6;
+  }
+}
+
+.instrument .readingDetail summary:hover,
+.instrument .readingDetail summary:focus-visible {
+  background: rgba(255, 255, 255, 0.07);
+  color: #f7f8f5;
+}
+
+.insight {
+  margin-top: 14px;
+  padding: 8px 0;
+  border: 0;
+  background: transparent;
+  border-radius: 0 6px 6px 0;
+}
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #bec8be;
+}
+.boundary {
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 5px 0;
+  color: #e6ece4;
+}
+.boundary > strong:first-child {
+  color: #e0f88c;
+}
+.distance {
+  font-size: 11px;
+  line-height: 1.5;
+  color: #bbc5bd;
+  margin: 3px 0;
+}
+.comparison {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 10px 0 0;
+  font-size: 11px;
+  color: #c7ceca;
+}
+.comparison > span {
+  margin-left: auto;
+  color: #e0f88c;
+}
+.evidenceDetails {
+  display: grid;
+  gap: 12px;
+  margin: 8px 0 16px;
+}
+.evidenceDetails p {
+  margin: 0;
+  color: #c7ceca;
+  font-size: 12px;
+  line-height: 1.65;
+}
+.evidenceDetails strong {
+  display: block;
+  color: #f0f4eb;
+  font-weight: 550;
+  margin-bottom: 3px;
+}
+@media (max-width: 600px) {
+  .title h2 {
+    font-size: 34px;
+  }
+  .title h2 > .level {
+    font-size: 13px;
+    margin-left: 8px;
+  }
+  .readout {
+    margin: 12px 0 16px;
+  }
+  .terraces {
+    margin-top: 12px;
+  }
+  .insight {
+    padding: 6px 0;
+  }
+  .comparison > span {
+    margin-left: 0;
+    width: 100%;
+  }
+  .header > span {
+    letter-spacing: 0.17em;
+  }
+}
+
+/* Keep the portal help trigger readable against the instrument. */
+.instrument .header > button {
+  color: #c7ceca;
+  width: 44px;
+  height: 44px;
+  flex: none;
+}
+.instrument .header > button:hover {
+  background: #ffffff0b;
+  color: #d6f35a;
+}
+.instrument .header > button:focus-visible {
+  outline: 2px solid #d6f35a;
+  outline-offset: 2px;
+}
+@media (min-width: 801px) {
+  .terraces {
+    margin-top: 24px;
+  }
+  .stage span {
+    display: block;
+    font-size: 11px;
+    order: 3;
+    color: #b9c1bf;
+  }
+  .readout {
+    margin-block: 24px;
+  }
+}
+
+.readout {
+  position: relative;
+}
+.readout::before {
+  content: "";
+  position: absolute;
+  right: 4px;
+  top: -10px;
+  width: 100px;
+  height: 110px;
+  background: url("/pace-diamond.svg") center/contain no-repeat;
+  opacity: 0.09;
+  pointer-events: none;
+}
+.terraces {
+  position: relative;
+  padding-top: 10px;
+}
+.terraces::before {
+  content: "";
+  position: absolute;
+  top: 30px;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: #ffffff20;
+  z-index: -1;
+}
+.stage[aria-pressed="true"] {
+  color: #d6f35a;
+}
+.stage[aria-pressed="true"] strong {
+  font-weight: 700;
+}
+.stage[aria-pressed="true"] > svg {
+  width: 25px;
+  height: 25px;
+  filter: drop-shadow(0 0 10px #d6f35a66);
+}
+.insight {
+  padding: 12px 0;
+  border-top: 1px solid #ffffff20;
+  border-radius: 0;
+}
+.boundary {
+  font-size: 17px;
+  font-weight: 550;
+}
+.readoutText {
+  position: relative;
+}
+@media (max-width: 600px) {
+  .instrument {
+    padding: 20px;
+  }
+  .readout::before {
+    width: 80px;
+    height: 90px;
+  }
+  .title h2 {
+    font-size: clamp(30px, 8vw, 38px);
+  }
+  .terraces::before {
+    top: 28px;
+  }
+}
+/* Contextual disclosure stays integrated with the carbon instrument. */
+.instrument .readingDetail summary{background:transparent;color:#d4ddd7;padding:10px 0;border-radius:0;margin:0}
+.instrument .readingDetail[open] summary{background:transparent;color:#e0f78a}
+
+.evidenceDetails {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 18px}
+.evidenceDetails p {margin:0;padding:12px;background:#ffffff06;border-radius:10px;font-size:12px}
+.evidenceDetails p strong {display:block;margin-bottom:6px;color:#e9eee7}
+@media(max-width:600px){.evidenceDetails{grid-template-columns:1fr}.title h2>.level{min-width:60px;min-height:54px;font-size:30px;margin-top:8px}}

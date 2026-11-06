@@ -1,6 +1,5 @@
 import { account, failure, HttpError, limit, privateJson } from "@/lib/server";
-import { marketHistory, type ChartRange } from "@/lib/providers";
-import { symbolInput } from "@/lib/format";
+import { marketHistory, researchSymbol, type ChartRange } from "@/lib/providers";
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ symbol: string }> },
@@ -13,7 +12,7 @@ export async function GET(
       throw new HttpError("Unsupported chart range.");
     return privateJson({
       ...(await marketHistory(
-        symbolInput((await params).symbol),
+        researchSymbol((await params).symbol),
         range as ChartRange,
       )),
       range,

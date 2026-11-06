@@ -68,10 +68,10 @@ export default function AnalystTargets({
             role="img"
             aria-label="Reported analyst low, consensus and high targets on one price scale"
           >
-            <line x1="10" x2="290" y1="20" y2="20" stroke="#cdd7e4" />
+            <line x1="10" x2="290" y1="20" y2="20" stroke="#e0e4e0" />
             {[
               [c.low, "#bd4a5b"],
-              [c.target, "#2871df"],
+              [c.target, "#916bb8"],
               [c.high, "#098770"],
             ].map(([value, color]) => (
               <circle

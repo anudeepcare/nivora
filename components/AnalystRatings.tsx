@@ -4,8 +4,10 @@ import { amount, dateLabel } from "@/lib/format";
 import { consensusOutlook } from "@/lib/outlook";
 export default function AnalystRatings({
   research: r,
+  hideConsensus = false,
 }: {
   research: Research;
+  hideConsensus?: boolean;
 }) {
   const c = r.evidence?.consensus,
     outlook = consensusOutlook(r);
@@ -19,15 +21,17 @@ export default function AnalystRatings({
   const known = rows.filter(([, n]) => n != null && n >= 0),
     total = known.reduce((sum, [, n]) => sum + (n ?? 0), 0);
   return (
-    <section className="analyst-workspace">
+    <section className="analyst-workspace depth-analysts">
       <div className="analyst-summary">
-        <div>
-          <span>Analyst consensus</span>
-          <strong>
-            {outlook ? amount(outlook.target, r.quote.currency) : "—"}
-          </strong>
-          <small>Opinion, separate from model valuation</small>
-        </div>
+        {!hideConsensus && (
+          <div>
+            <span>Analyst consensus</span>
+            <strong>
+              {outlook ? amount(outlook.target, r.quote.currency) : "—"}
+            </strong>
+            <small>Opinion, separate from model valuation</small>
+          </div>
+        )}
         <div>
           <span>Published rating score</span>
           <strong>{c?.rating == null ? "—" : c.rating.toFixed(2)}</strong>
@@ -39,29 +43,43 @@ export default function AnalystRatings({
           <small>Not necessarily unique analysts</small>
         </div>
       </div>
-      <h3>Recommendation distribution</h3>
-      {known.length ? (
-        <div className="rating-distribution">
-          {rows.map(([label, n, color]) => (
-            <div key={label}>
-              <span>{label}</span>
-              <div className="rating-track">
-                <i
-                  style={{
-                    width: `${n != null && total > 0 ? (n / total) * 100 : 0}%`,
-                    background: color,
-                  }}
-                />
+      <div className="analyst-opinions">
+        <header>
+          <span className="eyebrow">THE SPREAD OF OPINION</span>
+          <h3>Recommendation distribution</h3>
+          <p>
+            See how published views are distributed, rather than treating one
+            target as certainty.
+          </p>
+        </header>
+        {known.length ? (
+          <div className="rating-distribution">
+            {rows.map(([label, n, color]) => (
+              <div key={label}>
+                <span>{label}</span>
+                <div className="rating-track">
+                  <i
+                    style={{
+                      width: `${n != null && total > 0 ? (n / total) * 100 : 0}%`,
+                      background: color,
+                    }}
+                  />
+                </div>
+                <span className="analyst-count">
+                  <b>{n ?? "—"}</b>
+                  {n != null && total > 0 && (
+                    <small>{Math.round((n / total) * 100)}%</small>
+                  )}
+                </span>
               </div>
-              <b>{n ?? "—"}</b>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p className="muted">
-          Recommendation counts are not supplied for this instrument.
-        </p>
-      )}
+            ))}
+          </div>
+        ) : (
+          <p className="muted">
+            Recommendation counts are not supplied for this instrument.
+          </p>
+        )}
+      </div>
       <p className="small muted">
         Dataset retrieved {dateLabel(r.evidence?.updatedAt || r.retrievedAt)}.
         Rating publication dates, revision history and target ranges are not

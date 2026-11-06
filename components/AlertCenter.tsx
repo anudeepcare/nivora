@@ -1,6 +1,8 @@
 "use client";
+import { newRequestId } from "@/lib/client-id";
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Bell, Plus, RefreshCw, Trash2, Check } from "lucide-react";
 import { api } from "@/lib/client";
 import { useProduct, useResource } from "./Session";
@@ -40,7 +42,8 @@ export default function AlertCenter() {
       previewRules,
     ),
     events = useResource<{ events: Event[] }>("alerts", previewEvents);
-  const [symbol, setSymbol] = useState(""),
+  const requestedSymbol = useSearchParams().get("symbol") ?? "";
+  const [symbol, setSymbol] = useState(requestedSymbol),
     [type, setType] = useState("new-filing"),
     [threshold, setThreshold] = useState("2"),
     [message, setMessage] = useState(""),
@@ -67,7 +70,7 @@ export default function AlertCenter() {
     await action(() =>
       api("documents", {
         kind: "alert",
-        key: crypto.randomUUID(),
+        key: newRequestId(),
         body: {
           symbol: symbol.trim().toUpperCase(),
           type,
@@ -79,10 +82,10 @@ export default function AlertCenter() {
     );
   }
   return (
-    <section>
+    <section className="alerts-studio">
       <PageHeading
         title="Alerts"
-        subtitle="Your levels, monthly zones and new company filings. One focused history."
+        subtitle="Track price levels, confirmed Pace changes and company filings."
         action={
           <button
             className="button"
@@ -91,11 +94,13 @@ export default function AlertCenter() {
               action(async () => {
                 const r = await api<{
                   checked: number;
+                  total: number;
+                  remaining: number;
                   created: number;
                   errors: string[];
                 }>("alerts", { op: "check" });
                 setMessage(
-                  `Checked ${r.checked} rules · ${r.created} new alerts${r.errors.length ? ` · ${r.errors.join(" ")}` : ""}`,
+                  `Checked ${r.checked} of ${r.total} enabled rules · ${r.created} new alerts${r.remaining ? " · More rules queued. Check again to continue." : ""}${r.errors.length ? ` · ${r.errors.join(" ")}` : ""}`,
                 );
               })
             }
@@ -126,14 +131,38 @@ export default function AlertCenter() {
         </label>
         <label>
           Notify me about
-          <select value={type} onChange={(e) => {setType(e.target.value);setThreshold(e.target.value==="sbc-above"?"10":e.target.value==="current-below"?"1":e.target.value==="margin-below"?"0":"2");}}>
-            <option value="interest-below">Interest coverage falls below</option>
+          <select
+            value={type}
+            onChange={(e) => {
+              setType(e.target.value);
+              setThreshold(
+                e.target.value === "sbc-above"
+                  ? "10"
+                  : e.target.value === "current-below"
+                    ? "1"
+                    : e.target.value === "margin-below"
+                      ? "0"
+                      : e.target.value.startsWith("exposure-")
+                        ? "100"
+                        : "2",
+              );
+            }}
+          >
+            <option value="exposure-approach">
+              Approaching a measured exposure strike
+            </option>
+            <option value="exposure-cross">
+              Crossing a measured exposure strike
+            </option>
+            <option value="interest-below">
+              Interest coverage falls below
+            </option>
             <option value="sbc-above">Stock pay / revenue rises above</option>
             <option value="current-below">Current ratio falls below</option>
             <option value="margin-below">Operating margin falls below</option>
             <option value="earnings-soon">Earnings approaching</option>
             <option value="new-filing">New company filing</option>
-            <option value="monthly-zone">Monthly accumulation zone</option>
+            <option value="monthly-zone">Confirmed monthly Pace zone</option>
             <option value="price-below">Price below my level</option>
             <option value="price-above">Price above my level</option>
           </select>
@@ -141,10 +170,14 @@ export default function AlertCenter() {
         {type !== "new-filing" && (
           <label>
             {type === "monthly-zone"
-              ? "Zone (0 = pause)"
+              ? "Exact Pace zone (0 = pause)"
               : type === "earnings-soon"
                 ? "Days before earnings"
-                : type==='sbc-above'||type==='margin-below'?'Threshold · %':type==='interest-below'||type==='current-below'?'Threshold · ×':"Price · USD"}
+                : type === "sbc-above" || type === "margin-below"
+                  ? "Threshold · %"
+                  : type === "interest-below" || type === "current-below"
+                    ? "Threshold · ×"
+                    : "Price · USD"}
             <input
               type="number"
               step={
@@ -153,11 +186,13 @@ export default function AlertCenter() {
                   : ".01"
               }
               min={
-                type === "margin-below" ? "-1000" : type === "monthly-zone"
-                  ? "0"
-                  : type === "earnings-soon"
-                    ? "1"
-                    : ".01"
+                type === "margin-below"
+                  ? "-1000"
+                  : type === "monthly-zone"
+                    ? "0"
+                    : type === "earnings-soon"
+                      ? "1"
+                      : ".01"
               }
               max={
                 type === "monthly-zone"
@@ -172,15 +207,45 @@ export default function AlertCenter() {
             />
           </label>
         )}
+        {type.startsWith("exposure-") && (
+          <p className="small muted">
+            Checks a fixed measured strike against fresh saved observations. The
+            first check establishes a baseline; later checks can record an
+            approach within 0.5% or a crossing. Use a map cell for an
+            expiration-specific rule.
+          </p>
+        )}
         <button className="button primary" disabled={busy}>
           <Plus size={16} />
           Create alert
         </button>
       </form>
+      {(type === "monthly-zone" ||
+        type === "price-below" ||
+        type === "price-above") && (
+        <div className="panel" role="status" aria-live="polite">
+          <strong>Alert preview · {symbol.trim() || "your company"}</strong>
+          <p>
+            {type === "monthly-zone"
+              ? `Notify me when an available completed monthly reading is exactly P${threshold || "…"}. Each matching month can create one event per rule, even if the zone has not changed. A first check can match an already confirmed month.`
+              : `Notify me once when an available, non-stale observed price is ${type === "price-above" ? "at or above" : "at or below"} my ${threshold || "…"} USD level. A first check can already meet this condition. Create a new rule to re-arm it.`}
+          </p>
+          <p className="footnote">
+            {type === "monthly-zone"
+              ? "Forming readings, intramonth band touches and weekly readings do not trigger this rule."
+              : "This checks the observed quote; it does not monitor intraday highs or lows or guarantee detection of a temporary touch."}{" "}
+            Events appear in this alert history after a successful manual or
+            configured scheduled check. No email or push delivery.
+          </p>
+        </div>
+      )}
       <p className="footnote">
-        Financial alerts establish a baseline on the first check, then report later safe-to-breached crossings. They do not alert merely because the first observed value is already weak. Missing data does not reset the baseline. Checks use available source timestamps. Scheduled checks require the
-        included monitoring workflow to be configured. No email or push messages
-        are sent.
+        Financial alerts establish a baseline on the first check, then report
+        later safe-to-breached crossings. They do not alert merely because the
+        first observed value is already weak. Missing data does not reset the
+        baseline. Checks use available source timestamps. Scheduled checks
+        require the included monitoring workflow to be configured. No email or
+        push messages are sent.
       </p>
       <div className="two-col support">
         <section>
@@ -214,7 +279,7 @@ export default function AlertCenter() {
               </div>
             ))
           ) : (
-            <Empty title="Follow what matters" icon={Bell}>
+            <Empty title="No alert rules yet" icon={Bell}>
               Choose a company and a specific condition above.
             </Empty>
           )}

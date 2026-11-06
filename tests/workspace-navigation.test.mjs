@@ -1,12 +1,16 @@
+import {experience,PaceInstrument} from './helpers/integrated-ui.mjs';
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import ts from "typescript";
 import React from "react";
 import { NavigationMemory, restoreWhenReady } from "../lib/navigation.ts";
+import { settingsHref } from "../lib/settings-navigation.ts";
 
 function component(file, name, bindings) {
-  bindings={AccessBoundary:"AccessBoundary",AccessNotice:()=>null,...bindings};
+  bindings={LinkProgress:()=>null,ReleaseNotice:()=>null,ContextLink:({page,children,className})=>React.createElement('a',{href:'/'+page,className},children),...bindings};
+  bindings = { experience, PaceInstrument, useAccess: () => ({access:{capabilities:{paperTrading:false}}}), ...bindings };
+  bindings={DocumentScrollReturn:()=>null,AccessBoundary:"AccessBoundary",AccessNotice:()=>null,...bindings};
   const ast = ts.createSourceFile(
     file,
     fs.readFileSync(file, "utf8"),
@@ -87,7 +91,11 @@ test("switching workspace tabs restores their own position; tapping the active t
   const icon = () => null;
   const Shell = component("components/Shell.tsx", "Shell", {
     usePathname: () => path,
+    useRouter: () => ({ push: () => {} }),
+    settingsHref,
     useProduct: () => ({ theme: "dark" }),
+    useState: (value) => [value, () => {}],
+    LogOut: () => null,
     useRef: (value) =>
       refs[cursor++] ?? (refs[cursor - 1] = { current: value }),
     useLayoutEffect: (fn) => {
@@ -114,11 +122,18 @@ test("switching workspace tabs restores their own position; tapping the active t
     Settings: icon,
     Search: icon,
     SearchIcon: icon,
+    Ellipsis: icon,
     Sun: icon,
     Moon: icon,
     X: icon,
     Bell: icon,
-    SettingsSheet: icon,
+    LayoutGrid: icon,
+    Compass: icon,
+    FlaskConical: icon,
+    Scale: icon,
+    HelpCircle: icon,
+    ArrowUpRight: icon,
+    ChartNoAxesCombined: icon,
   });
   function links(node, href) {
     if (!node || typeof node !== "object") return [];

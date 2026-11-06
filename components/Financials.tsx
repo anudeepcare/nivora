@@ -1,4 +1,5 @@
 "use client";
+import { customerText } from "@/lib/customer-language";
 import { useMemo, useRef, useState } from "react";
 import { Maximize2, Search, X } from "lucide-react";
 import type { Research, FinancialPeriod } from "@/lib/types";
@@ -113,10 +114,7 @@ export function FinancialPlot({
               onClick={() => setActive(active === i ? null : i)}
               aria-label={`${dateLabel(rows[i].end)}: ${metricText(metric, v, rows[i].currency)}`}
             >
-              <title>
-                {dateLabel(rows[i].end)} ·{" "}
-                {metricText(metric, v, rows[i].currency)}
-              </title>
+              <title>{`${dateLabel(rows[i].end)} · ${metricText(metric, v, rows[i].currency)}`}</title>
             </rect>
           ),
         )}
@@ -189,7 +187,7 @@ export default function Financials({
             : m.group === group,
       );
   return (
-    <section className={s.workspace}>
+    <section className={`${s.workspace} depth-financial-library`}>
       <header className={s.heading}>
         <div>
           <h2>{compact ? "Financial picture" : "Financials"}</h2>
@@ -213,8 +211,10 @@ export default function Financials({
       </header>
       {!last ? (
         <Empty title="Financial history is unavailable">
-          {research.issues.find((i) => /compan|financial|filing/i.test(i)) ||
-            "No comparable reported periods were returned."}
+          {customerText(
+            research.issues.find((i) => /compan|financial|filing/i.test(i)) ||
+              "No comparable reported periods were returned.",
+          )}
         </Empty>
       ) : (
         <>
@@ -264,7 +264,11 @@ export default function Financials({
           {view === "charts" || compact ? (
             <div className={s.grid}>
               {shown.map((m) => (
-                <article key={m.key} className={s.card}>
+                <article
+                  key={m.key}
+                  className={s.card}
+                  data-metric-group={m.group}
+                >
                   <div className={s.cardTop}>
                     <span>{m.label}</span>
                     <div>

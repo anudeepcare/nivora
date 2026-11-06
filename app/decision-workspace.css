@@ -1,3 +1,5 @@
+
+@layer compatibility {
 /* Decision workspace additions. Deliberately isolated from the working PWA shell. */
 .decision-workspace,.valuation-lab,.decision-watch,.timing-context,.model-notice {
   padding:24px; margin:0 0 24px; border:1px solid var(--line); border-radius:24px;
@@ -154,3 +156,4 @@
 
 /* Mobile labels and scores occupy distinct columns; no hidden-track gap. */
 @media(max-width:700px){.lens-list {grid-template-columns:minmax(0,1fr);gap:4px;}.lens-list>button {grid-template-columns:minmax(0,1fr) auto;gap:16px;min-height:48px;padding:12px 14px;}.lens-list>button>strong {font-size:13px;}.lens-list i {display:none;}.style-options {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}.style-options button {padding:9px 8px;min-height:44px;}.lens-visual>p {font-size:12px;line-height:1.6;}}
+}

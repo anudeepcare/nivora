@@ -1,3 +1,4 @@
+import { sameProviderSymbol } from "./provider-symbol.ts";
 export const growDatasets = {
   profile: { endpoint: "profile", credits: 10, ttl: 86400000 },
   earnings: { endpoint: "earnings", credits: 20, ttl: 21600000 },
@@ -64,7 +65,7 @@ export function normalizeGrow(
 ): GrowData {
   const identity = dataset === "profile" ? data?.symbol : data?.meta?.symbol;
   // Press-release responses have no instrument metadata. The endpoint is always queried for one validated symbol.
-  if (dataset !== "announcements" && identity !== symbol)
+  if (dataset !== "announcements" && !sameProviderSymbol(identity, symbol))
     throw Error("Dataset belongs to a different instrument");
   const result: GrowData = {
     symbol,

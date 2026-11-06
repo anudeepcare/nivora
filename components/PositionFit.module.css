@@ -1,0 +1,74 @@
+.fit {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+  padding: 24px;
+  margin: 20px 0;
+}
+.fit h3 {
+  margin: 8px 0;
+  font-size: 21px;
+}
+.fit p,
+.fit small {
+  color: var(--muted);
+  line-height: 1.6;
+}
+.fit summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+}
+.fit label {
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+}
+.fit input {
+  max-width: 240px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+}
+.fit a {
+  display: block;
+  margin-top: 16px;
+  color: var(--ink);
+}
+@media (max-width: 760px) {
+  .fit {
+    grid-template-columns: 1fr;
+    padding: 18px;
+    gap: 12px;
+  }
+}
+
+.pending {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  padding: 16px 20px;
+  margin: 16px 0;
+  border-radius: 12px;
+  background: var(--surface);
+  font-size: 13px;
+}
+.pending span {
+  color: var(--muted);
+}
+.pending a {
+  color: var(--ink);
+  font-weight: 600;
+  margin-left: auto;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}

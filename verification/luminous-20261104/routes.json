@@ -1,0 +1,274 @@
+{
+  "research": [
+    {
+      "errors": false,
+      "overflow": false,
+      "sections": [
+        "Watch.",
+        "Business & price",
+        "What supports the view",
+        "What the record actually shows",
+        "The investment case",
+        "Watch next",
+        "Ask AURYN",
+        "How AppLovin earns its place.",
+        "Account & workspace",
+        "Find a company"
+      ],
+      "title": "AppLovin",
+      "url": "http://terminal.local:4173/preview/research/APP?tab=Thesis"
+    },
+    {
+      "errors": false,
+      "overflow": false,
+      "sections": [
+        "Watch.",
+        "Business & price",
+        "What supports the view",
+        "Price in context.",
+        "Account & workspace",
+        "Find a company"
+      ],
+      "title": "AppLovin",
+      "url": "http://terminal.local:4173/preview/research/APP?tab=Valuation"
+    },
+    {
+      "errors": false,
+      "overflow": false,
+      "sections": [
+        "Watch.",
+        "Business & price",
+        "What supports the view",
+        "Understand the entry conditions.",
+        "Price signals are mixed. Keep risk in view.",
+        "Custom Fibonacci anchors",
+        "Reference levels",
+        "AURYN Pace · price history",
+        "Account & workspace",
+        "Find a company"
+      ],
+      "title": "AppLovin",
+      "url": "http://terminal.local:4173/preview/research/APP?tab=Technicals"
+    },
+    {
+      "errors": false,
+      "overflow": false,
+      "sections": [
+        "Watch.",
+        "Business & price",
+        "What supports the view",
+        "Account & workspace",
+        "Find a company"
+      ],
+      "title": "AppLovin",
+      "url": "http://terminal.local:4173/preview/research/APP?tab=Analysts"
+    },
+    {
+      "errors": false,
+      "overflow": false,
+      "sections": [
+        "Watch.",
+        "Business & price",
+        "What supports the view",
+        "Recent coverage",
+        "Source filings",
+        "Events & reported transactions",
+        "Account & workspace",
+        "Find a company"
+      ],
+      "title": "AppLovin",
+      "url": "http://terminal.local:4173/preview/research/APP?tab=News"
+    },
+    {
+      "errors": false,
+      "overflow": false,
+      "sections": [
+        "Watch.",
+        "Business & price",
+        "What supports the view",
+        "Pressure-test the decision.",
+        "Account & workspace",
+        "Find a company"
+      ],
+      "title": "AppLovin",
+      "url": "http://terminal.local:4173/preview/research/APP?tab=Advanced"
+    },
+    {
+      "errors": false,
+      "overflow": false,
+      "sections": [
+        "Watch.",
+        "Business & price",
+        "What supports the view",
+        "See the setup. Understand your risk.",
+        "Account & workspace",
+        "Find a company"
+      ],
+      "title": "AppLovin",
+      "url": "http://terminal.local:4173/preview/research/APP?tab=Options"
+    }
+  ],
+  "workspace": [
+    {
+      "error": false,
+      "headings": [
+        "Your next decision, in focus.",
+        "What would you like to understand?",
+        "Your research universe"
+      ],
+      "overflow": false,
+      "url": "http://terminal.local:4173/preview/research"
+    },
+    {
+      "error": false,
+      "headings": [
+        "Ideas worth following.",
+        "What would make thisa better decision?",
+        "Your watchlist",
+        "Price is one part of the story.",
+        "Keep your reason close."
+      ],
+      "overflow": false,
+      "url": "http://terminal.local:4173/preview/watchlist"
+    },
+    {
+      "error": false,
+      "headings": [
+        "Your portfolio.",
+        "Value over time",
+        "Your investments",
+        "Where your money sits",
+        "Where risks overlap"
+      ],
+      "overflow": false,
+      "url": "http://terminal.local:4173/preview/portfolio"
+    },
+    {
+      "error": false,
+      "headings": [
+        "Discover with a purpose.",
+        "Start with companies you want to understand"
+      ],
+      "overflow": false,
+      "url": "http://terminal.local:4173/preview/discover"
+    },
+    {
+      "error": false,
+      "headings": [
+        "Compare the businesses.",
+        "Make the trade-offs visible"
+      ],
+      "overflow": false,
+      "url": "http://terminal.local:4173/preview/compare"
+    },
+    {
+      "error": false,
+      "headings": [
+        "Alerts",
+        "Your rules",
+        "Follow what matters",
+        "Alert history",
+        "Nothing triggered yet"
+      ],
+      "overflow": false,
+      "url": "http://terminal.local:4173/preview/alerts"
+    },
+    {
+      "error": false,
+      "headings": [
+        "Strategy lab",
+        "Compare before adopting a policy"
+      ],
+      "overflow": false,
+      "url": "http://terminal.local:4173/preview/research-lab"
+    },
+    {
+      "error": false,
+      "headings": [
+        "Paper trading",
+        "Monthly plans",
+        "Order audit"
+      ],
+      "overflow": false,
+      "url": "http://terminal.local:4173/preview/trading"
+    },
+    {
+      "error": false,
+      "headings": [
+        "More clarity. Your choice.",
+        "Pro",
+        "Free"
+      ],
+      "overflow": false,
+      "url": "http://terminal.local:4173/preview/plans"
+    }
+  ],
+  "public": [
+    {
+      "error": false,
+      "heading": "Understand your next step.",
+      "overflow": false,
+      "url": "http://terminal.local:4173/sample"
+    },
+    {
+      "error": false,
+      "heading": "See the business.Understand your next move.",
+      "overflow": false,
+      "url": "http://terminal.local:4173/about"
+    },
+    {
+      "error": false,
+      "heading": "A pace for buying.A reason behind it.",
+      "overflow": false,
+      "url": "http://terminal.local:4173/pace"
+    },
+    {
+      "error": false,
+      "heading": "More clarity. Your choice.",
+      "overflow": false,
+      "url": "http://terminal.local:4173/pricing"
+    },
+    {
+      "error": false,
+      "heading": "How canwe help?",
+      "overflow": false,
+      "url": "http://terminal.local:4173/contact"
+    },
+    {
+      "error": false,
+      "heading": "Help & investing essentials",
+      "overflow": false,
+      "url": "http://terminal.local:4173/help"
+    },
+    {
+      "error": false,
+      "heading": "Terms of use",
+      "overflow": false,
+      "url": "http://terminal.local:4173/terms"
+    },
+    {
+      "error": false,
+      "heading": "Privacy notice",
+      "overflow": false,
+      "url": "http://terminal.local:4173/privacy"
+    },
+    {
+      "error": false,
+      "heading": "Investment risk disclosure",
+      "overflow": false,
+      "url": "http://terminal.local:4173/risk"
+    },
+    {
+      "error": false,
+      "heading": "How AURYN reaches a view",
+      "overflow": false,
+      "url": "http://terminal.local:4173/methodology"
+    },
+    {
+      "error": false,
+      "heading": "Data reliability & release notes",
+      "overflow": false,
+      "url": "http://terminal.local:4173/reliability"
+    }
+  ]
+}
