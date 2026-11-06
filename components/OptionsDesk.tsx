@@ -736,7 +736,7 @@ export default function OptionsDesk({
                 Premiums below are per share; a standard contract covers 100
                 shares. Indicative prices are not executable quotes.
               </p>
-              <div className="options-toolbar">
+              <div className={`options-toolbar ${deskStyles.contractFilters}`}>
                 <label>
                   Find contract
                   <input
@@ -800,7 +800,7 @@ export default function OptionsDesk({
                 </div>
               ) : (
                 <>
-                  <div className="options-scroll">
+                  <div className={`options-scroll ${deskStyles.contractTable}`}>
                     <table>
                       <thead>
                         <tr>

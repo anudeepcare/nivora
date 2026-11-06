@@ -285,24 +285,13 @@ export default function ExposureBoard({
           ))}
         </div>
         <Help label="How to read the exposure map">
-          <p>
-            Rows are strikes; columns are expirations. Larger absolute values
-            mean more estimated exposure in the returned contracts. The star
-            marks the largest visible cell.
-          </p>
-          <p>
-            GEX uses gamma × open interest × contract multiplier × stock price
-            squared × 0.01. Calls are positive and puts negative by convention;
-            these are not observed dealer positions. Positive does not mean
-            bullish and negative does not mean bearish.
-          </p>
-          <p>
-            Blank cells are unmeasured, not zero. Coverage describes usable
-            returned inputs, not the fraction of the entire market. Different
-            cells can have different observation dates. Saved snapshots and
-            views saved with these device controls stay on this browser. Use
-            History & saved views for cross-device storage.
-          </p>
+          <p><strong>Start with open interest.</strong> It counts option contracts still open, not today's trading volume. Gamma describes how quickly an option's sensitivity to the stock price changes as the stock moves.</p>
+          <p><strong>Read the grid:</strong> rows are option strike prices, not targets; columns are expiration dates. Choose Open interest under Measure to see contract counts, or Estimated GEX for estimated gamma exposure per 1% stock-price move.</p>
+          <p><strong>Example:</strong> $949.6K in the $360 row and November 20 column means estimated gamma exposure for contracts at that strike and expiry. It is not money invested, expected profit, or a forecast that the stock will reach $360.</p>
+          <p><strong>Colors and markers:</strong> darker shading means a larger absolute value. Green uses a call-positive estimate and red a put-negative estimate. Green does not mean bullish; red does not mean bearish. The star marks the largest displayed cell. A dash means unmeasured, not zero.</p>
+          <p><strong>Summary cards:</strong> Largest visible is the biggest absolute cell in the displayed range. Below price and Above price identify the largest measured cells on each side of the stock price—not guaranteed support or resistance.</p>
+          <p>GEX uses gamma × open interest × contract multiplier × stock price squared × 0.01. Calls are positive and puts negative by convention; actual dealer positions and hedging activity are not known.</p>
+          <p>Coverage describes usable returned inputs, not the entire market. Cells can have different observation dates. Device snapshots stay in this browser; use History &amp; saved views for cross-device storage.</p>
         </Help>
       </header>
       {externalSnapshot && (

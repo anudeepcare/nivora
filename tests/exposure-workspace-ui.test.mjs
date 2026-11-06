@@ -76,7 +76,7 @@ test("populated exposure UI explains sign, coverage and accessible inspection", 
     "Save snapshot",
     "Export",
     "1/1 visible cells measured",
-    "not observed dealer positions",
+    "actual dealer positions and hedging activity are not known",
     "Contracts",
   ])
     assert.ok(html.includes(text), text);

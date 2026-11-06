@@ -340,3 +340,16 @@
     flex-basis: 100%;
   }
 }
+
+/* Keep contract headings aligned with their values and all controls on one baseline. */
+.desk .contractFilters{display:grid;grid-template-columns:minmax(180px,1.4fr) minmax(150px,1fr) auto auto;align-items:end;gap:12px}
+.desk .contractFilters>label:not(:global(.options-check)){display:grid;gap:6px;min-width:0}
+.desk .contractFilters :is(input:not([type=checkbox]),select){width:100%;min-height:44px;margin:0}
+.desk .contractFilters :global(.options-segment){min-height:44px;align-self:end;margin:0}
+.desk .contractFilters :global(.options-check){display:flex;align-items:center;gap:8px;min-height:44px;margin:0;white-space:nowrap}
+.desk .contractFilters input[type=checkbox]{width:18px;height:18px;min-height:0;margin:0;flex:none}
+.desk .contractTable :is(thead th,tbody td){text-align:right;vertical-align:middle;padding:12px}
+.desk .contractTable :is(thead th,tbody th):first-child{text-align:left}
+.desk .contractTable tbody tr:hover>:is(th,td),.desk .contractTable tbody tr:focus-within>:is(th,td){background:var(--blue-soft)}
+@media(max-width:1000px){.desk .contractFilters{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+@media(max-width:480px){.desk .contractFilters{grid-template-columns:minmax(0,1fr)}.desk .contractFilters :global(.options-segment){justify-self:stretch}}
