@@ -1,3 +1,7 @@
+# November 6, 2026 — Password-reset hotfix
+
+See `verification/PASSWORD-RESET-HOTFIX-20261106.md`. Auth callback and confirmation routes now pass middleware; reset errors stay on a recovery screen. This cumulative package retains the consistency release. Live email roundtrip and auth dashboard configuration remain to be checked.
+
 # November 6, 2026 — Consistency and chart interaction release
 
 Current checklist: `verification/CONSISTENCY-RELEASE-20261106.md` covers all 37 approved items and remaining native/live checks. New shared-quote fixes, chart inspection, history recovery, observation comparison, watchlist Undo and explicit PWA updates are included. 1,072 tests passed; 19 focused regressions passed after the final cache correction. 54 responsive browser checks passed. No production deployment performed.

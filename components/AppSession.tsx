@@ -15,6 +15,7 @@ export default function AppSession({
   const pathname = usePathname();
   if (
     pathname === "/" ||
+    pathname === "/reset-password" ||
     pathname === "/changelog" ||
     pathname === "/sample" ||
     pathname === "/pricing" ||
