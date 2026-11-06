@@ -88,7 +88,6 @@ import DecisionBrief from "./DecisionBrief";
 import TargetsEstimates from "./TargetsEstimates";
 import AnalystRatings from "./AnalystRatings";
 import CompanyUpdates from "./CompanyUpdates";
-import ResearchChanges from "./ResearchChanges";
 import OverviewContext from "./OverviewContext";
 const tabs = [
   "Snapshot",
@@ -238,6 +237,14 @@ export default function Research({ symbol }: { symbol: string }) {
       ? [requestedTab ?? "Snapshot"]
       : [],
   );
+  // Same-company links update the route without remounting this component.
+  useEffect(() => {
+    const next = tabs.find((value) => value === requestedTab);
+    if (!next) return;
+    setTab(next);
+    if (next === "Snapshot" || next === "Technicals")
+      setRetainedCharts((old) => old.includes(next) ? old : [...old, next]);
+  }, [requestedTab]);
   const [workbenchTarget, setWorkbenchTarget] = useState("risk");
   const researchNavigation = useRef<HTMLElement>(null);
   const switchTab = (next: (typeof tabs)[number]) => {
@@ -505,7 +512,6 @@ export default function Research({ symbol }: { symbol: string }) {
         </div>
       </header>
       <StockFacts research={r} />
-      <details className="research-saved-changes"><summary>Changes since your last visit</summary><ResearchChanges research={r} /></details>
 
       {notice && <Notice error>{notice}</Notice>}
       {resource.error && <Notice error>{resource.error}</Notice>}

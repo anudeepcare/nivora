@@ -1,0 +1,77 @@
+[
+  {
+    "name": "mobile menu",
+    "links": 6,
+    "color": "rgb(38, 51, 47)"
+  },
+  {
+    "width": 390,
+    "name": "Business evidence action",
+    "working": true
+  },
+  {
+    "width": 390,
+    "route": "/preview/research/MSFT",
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "width": 390,
+    "name": "Business chart",
+    "height": 220,
+    "keyboard": true
+  },
+  {
+    "width": 390,
+    "route": "/preview/research/MSFT?tab=Financials",
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "width": 390,
+    "route": "/preview/portfolio",
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "width": 390,
+    "route": "/reset-password",
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "name": "Business evidence action",
+    "working": true
+  },
+  {
+    "width": 1440,
+    "route": "/preview/research/MSFT",
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "name": "Business chart",
+    "height": 300,
+    "keyboard": true
+  },
+  {
+    "width": 1440,
+    "route": "/preview/research/MSFT?tab=Financials",
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "route": "/preview/portfolio",
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "route": "/reset-password",
+    "overflow": false,
+    "errors": []
+  }
+]

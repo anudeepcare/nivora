@@ -186,12 +186,6 @@ function Insights({
             </div>
           </div>
           <p>{d.explanation.detail}</p>
-          {d.business === "strong" && d.value === "expensive" && <p className={s.caution}>The business meets the evidence checks, but the price requires stronger assumptions than the cash-flow model. Pace describes a relative price zone; it does not establish fair value.</p>}
-          <details>
-            <summary>How to read this assessment</summary>
-            <p>Business evidence uses comparable financial reports. Valuation depends on model assumptions. Confirmed Pace uses completed price periods. These answer different questions and can point in different directions.</p>
-            <p>Review new financial reports, funding changes and the next completed Pace period before treating the assessment as unchanged. Missing evidence remains unassessed.</p>
-          </details>
           {d.risks.length > 0 && (
             <p className={s.caution}>
               <b>Keep in view:</b> {d.risks[0]}
@@ -200,7 +194,7 @@ function Insights({
           <Link
             href={`${prefix}/research/${encodeURIComponent(r.company.symbol)}?tab=Financials`}
           >
-            Explore the business evidence →
+            View business evidence →
           </Link>
         </div>
       )}

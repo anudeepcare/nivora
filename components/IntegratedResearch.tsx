@@ -19,7 +19,6 @@ import { valuationScale } from "@/lib/research-summary";
 import { useProduct } from "./Session";
 import PaceInstrument from "./PaceInstrument";
 import ScenarioSensitivity from "./ScenarioSensitivity";
-import PositionFit from "./PositionFit";
 import DecisionInsights from "./DecisionInsights";
 import ResearchEvidenceGrid from "./ResearchEvidenceGrid";
 import s from "./IntegratedExperience.module.css";
@@ -180,7 +179,6 @@ export default function IntegratedResearch({
         </div>
       </div>
       <DecisionInsights research={r} owns={owns} now={now} prefix={prefix} />
-      <PositionFit research={r} />
       <div className={s.market}>
         <details className={s.evidence}>
           <summary>

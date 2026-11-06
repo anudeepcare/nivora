@@ -16,7 +16,13 @@ export function publishQuotes(cache: ResourceCache, rows: QuoteRows) {
     const key = 'quote:' + symbol;
     const old = cache.get(key)?.value as QuoteRows[string] | undefined;
     const merged = mergePortfolioQuotes(old ? {[symbol]:old} : {}, {[symbol]:row}, [symbol])[symbol];
-    if (JSON.stringify(old) === JSON.stringify(merged)) continue;
+    // Connection status belongs to the subscribing view, not the observation.
+    // Two mounted consumers may have different stream connections. Rebroadcasting
+    // their labels makes each subscriber republish the same quote indefinitely.
+    const observation = (value: typeof old) => value?.quote && /stream/i.test(value.quote.source ?? '')
+      ? {...value, quote: {...value.quote, session: undefined}}
+      : value;
+    if (JSON.stringify(observation(old)) === JSON.stringify(observation(merged))) continue;
     cache.set(key, {at:Date.now(), value:merged});
     changed.push(symbol);
   }
