@@ -237,6 +237,14 @@ export default function Research({ symbol }: { symbol: string }) {
       ? [requestedTab ?? "Snapshot"]
       : [],
   );
+  // Same-company links update the route without remounting this component.
+  useEffect(() => {
+    const next = tabs.find((value) => value === requestedTab);
+    if (!next) return;
+    setTab(next);
+    if (next === "Snapshot" || next === "Technicals")
+      setRetainedCharts((old) => old.includes(next) ? old : [...old, next]);
+  }, [requestedTab]);
   const [workbenchTarget, setWorkbenchTarget] = useState("risk");
   const researchNavigation = useRef<HTMLElement>(null);
   const switchTab = (next: (typeof tabs)[number]) => {
