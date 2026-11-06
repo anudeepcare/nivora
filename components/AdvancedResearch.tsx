@@ -45,11 +45,11 @@ export default function AdvancedResearch({
     <div className="professional-studio depth-advanced">
       <header className="professional-studio-heading">
         <div>
-          <span className="eyebrow">Advanced · the decision workbench</span>
-          <h2>Pressure-test the decision.</h2>
+          <span className="eyebrow">Advanced research</span>
+          <h2>Risk & scenarios</h2>
           <p>
             {s.count.toLocaleString()} completed observations · through{" "}
-            {dateLabel(s.asOf)}. Explore the downside before committing capital.
+            {dateLabel(s.asOf)}. Review historical risk measures and scenario assumptions.
           </p>
         </div>
         <span className="professional-mode-label">

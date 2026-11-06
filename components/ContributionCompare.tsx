@@ -49,8 +49,8 @@ function Workbench({ choices, prefix }: { choices: string[]; prefix: string }) {
     <section className={s.root} aria-label="Compare your next contribution">
       <header>
         <div>
-          <span className="eyebrow">YOUR NEXT MOVE</span>
-          <h2>Make your next move count.</h2>
+          <span className="eyebrow">COMPANY COMPARISON</span>
+          <h2>Compare your companies</h2>
           <p>
             Compare business strength, AURYN Pace and portfolio fit in one view.
           </p>

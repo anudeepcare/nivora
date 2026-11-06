@@ -116,7 +116,7 @@ export default function FinancialExplorer({
     >
       <header className="section-head">
         <div>
-          <span className="eyebrow">Explore the reported record</span>
+          <span className="eyebrow">Financial history</span>
           <h3>{series.definition?.label ?? "Financial history"}</h3>
           <p>
             {scope === "ttm"

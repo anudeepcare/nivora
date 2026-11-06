@@ -59,7 +59,7 @@ export default function AdvancedDashboard({
           <header>
             <div>
               <span className="eyebrow">Downside perspective</span>
-              <h3>The distance back.</h3>
+              <h3>Decline from the closing high</h3>
             </div>
             <strong>{percent(d.currentDrawdown)}</strong>
           </header>
@@ -102,7 +102,7 @@ export default function AdvancedDashboard({
         <section className="return-distribution">
           <header>
             <span className="eyebrow">Return distribution</span>
-            <h3>How the days actually traded.</h3>
+            <h3>Daily return distribution</h3>
             <p>
               {d.returnCount.toLocaleString()} observed close-to-close returns;
               not a forecast.
@@ -127,7 +127,7 @@ export default function AdvancedDashboard({
         <header className="section-head">
           <div>
             <span className="eyebrow">Execution & recovery</span>
-            <h3>Know the conditions around the trade.</h3>
+            <h3>Price gaps and recovery</h3>
           </div>
           <small>Completed prices · {dateLabel(d.asOf)}</small>
         </header>
@@ -144,7 +144,7 @@ export default function AdvancedDashboard({
       <section className="volatility-comparison">
         <div>
           <span className="eyebrow">Volatility regime</span>
-          <h3>Recent noise versus the longer view.</h3>
+          <h3>Short- and long-term volatility</h3>
           <p>
             Annualized sample volatility. These windows overlap and do not
             predict future volatility.

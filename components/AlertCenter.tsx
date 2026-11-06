@@ -85,7 +85,7 @@ export default function AlertCenter() {
     <section className="alerts-studio">
       <PageHeading
         title="Alerts"
-        subtitle="Your levels, monthly zones and new company filings. One focused history."
+        subtitle="Track price levels, confirmed Pace changes and company filings."
         action={
           <button
             className="button"
@@ -279,7 +279,7 @@ export default function AlertCenter() {
               </div>
             ))
           ) : (
-            <Empty title="Follow what matters" icon={Bell}>
+            <Empty title="No alert rules yet" icon={Bell}>
               Choose a company and a specific condition above.
             </Empty>
           )}

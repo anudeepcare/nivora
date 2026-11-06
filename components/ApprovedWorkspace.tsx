@@ -650,7 +650,7 @@ function HomeOverview() {
             <section className="home-evidence-panel">
               <SectionHead
                 title="Your companies"
-                subtitle="Keep your next decision close."
+                subtitle="Prices and updates for companies you follow."
                 action={
                   <Link className="text-link" href={`${prefix}/watchlist`}>
                     View all <ArrowUpRight size={16} />
@@ -1305,7 +1305,7 @@ export function Portfolio() {
           </section>
           <section className="card compact-card lavender">
             <SectionHead
-              title="One change. The whole picture."
+              title="Review a holding"
               subtitle="Explore the business and your exposure before changing a holding."
             />
             <Link
@@ -1316,7 +1316,7 @@ export function Portfolio() {
                   : `${prefix}/research`
               }
             >
-              Explore a position ↗
+              View company research ↗
             </Link>
           </section>
         </div>

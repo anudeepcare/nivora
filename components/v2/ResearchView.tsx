@@ -693,7 +693,7 @@ export default function ResearchView({
       )}
       {tab === "Advanced" && (
         <Section
-          title="Pressure-test the decision"
+          title="Risk & scenarios"
           detail="Research tools · assumptions stay visible"
         >
           <div className={s.subnav}>

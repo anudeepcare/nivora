@@ -92,7 +92,7 @@ function Insights({
     <section className={s.root} aria-label="Decision insights">
       <header>
         <div>
-          <span className="eyebrow">THE REASONS BEHIND YOUR NEXT MOVE</span>
+          <span className="eyebrow">THE REASONS BEHIND COMPANY COMPARISON</span>
           <h2>Investment context</h2>
         </div>
         <Help label="How to use decision insights">

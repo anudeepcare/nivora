@@ -717,7 +717,7 @@ export default function OptionsDesk({
                   <h3>
                     {view === "leaps"
                       ? "More time. Still defined risk."
-                      : "Find a contract you can understand"}
+                      : "Options contracts"}
                   </h3>
                 </div>
                 <span className="options-count">
@@ -982,7 +982,7 @@ export default function OptionsDesk({
           {view === "strategy" && (
             <section className="options-card">
               <span className="eyebrow">Risk before return</span>
-              <h3>Build a payoff you understand</h3>
+              <h3>Compare strategy payoffs</h3>
               <p>
                 One standard contract per leg. Buy at ask, sell at bid; fees
                 excluded. These are indicative illustrations.

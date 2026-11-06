@@ -177,8 +177,8 @@ export default function Discover({ embedded = false }: { embedded?: boolean }) {
     <section className="discover-workspace">
       {!embedded && (
         <PageHeading
-          title="Discover with a purpose."
-          subtitle="Screen a focused universe using the same research shown on each company."
+          title="Find companies"
+          subtitle="Filter companies by sector, business results and confirmed Pace."
         />
       )}
       <p className="small muted">
@@ -392,7 +392,7 @@ export default function Discover({ embedded = false }: { embedded?: boolean }) {
           title={
             rows.length
               ? "No companies match this filter"
-              : "Start with companies you want to understand"
+              : "Choose companies to screen"
           }
         >
           {rows.length

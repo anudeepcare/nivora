@@ -122,7 +122,7 @@ export function Settings() {
       </div>
       <PageHeading
         title="Settings"
-        subtitle="Your workspace, your preferences."
+        subtitle="Manage your account, display and research preferences."
       />
       {message && (
         <div className="settings-feedback" role="status">
@@ -389,8 +389,8 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
   return (
     <section>
       <PageHeading
-        title="Compare the businesses."
-        subtitle="Put the financial picture side by side. Periods and currencies remain visible."
+        title="Compare companies"
+        subtitle="Compare reported financials with their periods and currencies."
       />
       <div className="source-line">
         {saved.data?.documents.map((d) => (
@@ -510,7 +510,7 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
           </p>
         </div>
       ) : (
-        <Empty title="Make the trade-offs visible">
+        <Empty title="Compare growth, margins and valuation">
           Choose two to four companies to compare their reported economics.
         </Empty>
       )}
@@ -521,8 +521,8 @@ export function HelpPage() {
   return (
     <article className="help-article">
       <PageHeading
-        title="Know what you’re looking at."
-        subtitle="Plain-language methodology and data boundaries."
+        title="Methodology & data"
+        subtitle="How calculations work and where data is limited."
       />
       {[
         [

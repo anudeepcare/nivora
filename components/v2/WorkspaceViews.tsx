@@ -789,7 +789,7 @@ export default function WorkspaceViews({
             }
             title={
               page === "Watchlist"
-                ? "Keep your next decision close."
+                ? "Prices and updates for companies you follow."
                 : page === "Discover"
                   ? "Find your next question."
                   : "Good research starts here."
