@@ -1,0 +1,22 @@
+# Modern workspace update — 2026-11-06
+
+Cumulative source release, including prior navigation, recovery-routing and mobile cleanup fixes.
+
+- Business: concise KPI row and cash-generation chart replace repeated introductory prose.
+- Admin: compact statistics, member table, aligned feature settings and responsive mobile rows.
+- Holdings: accumulation Pace badges and P0–P4 filtering.
+- Home: qualifying P4/P3/P2 holdings and watchlist grouped together.
+- Pace scan: authenticated, access-checked two-symbol batches; 15-minute summary reuse; background work stops scheduling when the view unmounts.
+- Removed Changes since your last visit and the redundant research holdings-warning strip in the cumulative release.
+
+## Verification
+
+Production build passed. Full regression suite passed 1,082 tests; subsequently added Pace display/cache cases passed in the focused 10-test run. Browser checks at 390px and 1440px passed for public menu, home, research, financial charts, portfolio filters and locked password-reset entry. No client errors or horizontal overflow on those checked pages. Admin table layout checked with synthetic members; no live grants or billing actions executed.
+
+## Deployment and remaining live checks
+
+Apply source to preprod, deploy and check, then merge preprod into main. Do not copy environment files or dependencies from another environment.
+
+Production AURYN_SUPPORT_NOTIFY_EMAIL was updated to support@auryninvest.com. This takes effect on the next production deployment. Zoho mailbox delivery has not been verified; send a contact-form message after deployment and check the support inbox. Owner login and notification recipient remain separate.
+
+Production navigation performance, real password-recovery email flow and native iOS PWA behavior require live verification after deployment. Preview checks do not certify those flows. No database migration is introduced by this update.

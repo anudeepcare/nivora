@@ -187,8 +187,8 @@ export default function FinancialPicture({
     <section className={`financial-picture depth-financial ${layout.panel}`}>
       <header className="section-head">
         <div>
-          <h2>Financials</h2>
-          <p>Reported performance and financial position.</p>
+          <h2>Business performance</h2>
+          <p>{p ? `${dateLabel(p.end)} · ${p.currency}` : "Select a reporting period"}</p>
         </div>
         <div className="segments" aria-label="Financial period">
           {(["ttm", "annual", "quarterly"] as const).map((v) => (
@@ -207,28 +207,16 @@ export default function FinancialPicture({
         <>
           <div className="financial-answer">
             <div>
-              <span className="eyebrow">THE FINANCIAL PICTURE</span>
-              <strong>
-                {p.fcf != null
-                  ? p.fcf >= 0
-                    ? "The business generated cash after reported capital spending."
-                    : "Cash needs exceeded generation after reported capital spending."
-                  : "Read profit, investment needs and funding together."}
-              </strong>
-              <p>
-                {p.margin != null
-                  ? `${percent(p.margin)} operating margin. `
-                  : ""}
-                {growth != null
-                  ? `${percent(growth, true)} comparable revenue growth. `
-                  : ""}
-                Use the chart to see whether the pattern is persistent.
-              </p>
+              <dl className="business-kpis">
+                <div><dt>Revenue growth</dt><dd>{percent(growth, true)}</dd></div>
+                <div><dt>Operating margin</dt><dd>{percent(p.margin)}</dd></div>
+                <div><dt>Cash after capex</dt><dd>{amount(p.fcf, p.currency, true)}</dd></div>
+              </dl>
             </div>
             {bridge.length > 0 && (
               <figure className="financial-cash-bridge">
                 <figcaption>
-                  From operating cash to cash after capex · {p.currency}
+                  Cash generation · {p.currency}
                 </figcaption>
                 <svg
                   viewBox="0 0 480 155"
