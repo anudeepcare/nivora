@@ -238,3 +238,6 @@ body .wealth-strip.four { display:grid; grid-template-columns:repeat(4,minmax(0,
 .product .alert-builder label{font-size:12px;gap:6px}
 .product .alert-builder :is(input,select,button){min-height:44px;font-weight:400}
 @media(max-width:600px){.product .compare-search{flex-direction:column;align-items:stretch;gap:8px}.product .compare-search>button{width:100%}.product .alert-builder{padding:14px}}
+
+/* White wordmarks need their own contrasting surface in every theme. */
+body .security-logo.logo-dark{background:#18382e;color:#fff;border-color:#345248}

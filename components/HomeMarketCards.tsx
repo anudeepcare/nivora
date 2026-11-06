@@ -123,11 +123,9 @@ function PriceArea({
           fill="currentColor"
         />
       </svg>
-      <div className={styles.window}>
-        <span>{dateLabel(points[0].time)}</span>
-        <span>{dateLabel(points.at(-1)!.time)}</span>
-      </div>
-      <span className={styles.historyLabel}>Closing price history</span>
+      <span className={styles.historyLabel}>
+        Daily closes · {dateLabel(points[0].time)}–{dateLabel(points.at(-1)!.time)}
+      </span>
     </div>
   );
 }

@@ -30,7 +30,7 @@
  .brand { font-size:19px; }
  .nav { display:none; }
  .actions { margin-left:auto; }
- .actions>button:first-child,.actions>a:first-of-type { display:none; }
+ .actions>a:first-of-type { display:none; }
  .searchTrigger { order:3; width:100%; margin:0; font-size:16px; }
  .searchTrigger kbd { display:none; }
  .content { padding:16px 14px calc(88px + env(safe-area-inset-bottom)); }

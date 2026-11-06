@@ -1107,48 +1107,24 @@ export function Portfolio() {
             />
           </section>
           <section className="card">
-            <SectionHead
-              title="Holdings"
-              subtitle=""
-              action={
-                <button
-                  className="icon-button"
-                  disabled={quotes.loading}
-                  onClick={quotes.refresh}
-                  aria-label="Refresh portfolio prices"
-                >
-                  <RefreshCw size={17} />
+            <div className={portfolioStyles.holdingsToolbar}>
+              <h2><Wallet size={20} aria-hidden="true" />Holdings</h2>
+              {positions.length > 0 && <label className={portfolioStyles.holdingsSearch}>
+                <SearchIcon size={18} aria-hidden="true" />
+                <input aria-label="Filter holdings" placeholder="Find a holding" value={query} onChange={(e) => setQuery(e.target.value)} />
+              </label>}
+              <div className={portfolioStyles.refreshControls}>
+                {positions.length > 0 && <select aria-label="Portfolio price refresh interval" value={quotes.mode} onChange={(e) => quotes.changeMode(e.target.value as typeof quotes.mode)}>
+                  <option value="balanced">Every 5 min</option>
+                  <option value="live">Every 2 min</option>
+                  <option value="hourly">Hourly</option>
+                  <option value="manual">Manual</option>
+                </select>}
+                <button type="button" disabled={quotes.loading} onClick={quotes.refresh} aria-label={quotes.loading ? "Refreshing portfolio prices" : "Refresh portfolio prices"} aria-busy={quotes.loading} title="Refresh prices now">
+                  <RefreshCw size={18} aria-hidden="true" />
                 </button>
-              }
-            />
-            {positions.length > 0 && (
-              <div className="approved-table-toolbar">
-                <label>
-                  <SearchIcon size={16} />
-                  <input
-                    aria-label="Filter holdings"
-                    placeholder="Find a holding"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                  />
-                </label>
-                <label>
-                  Refresh
-                  <select
-                    aria-label="Portfolio price refresh"
-                    value={quotes.mode}
-                    onChange={(e) =>
-                      quotes.changeMode(e.target.value as typeof quotes.mode)
-                    }
-                  >
-                    <option value="balanced">Every 5 min</option>
-                    <option value="live">Every 2 min</option>
-                    <option value="hourly">Hourly</option>
-                    <option value="manual">Manual</option>
-                  </select>
-                </label>
               </div>
-            )}
+            </div>
             {visible.length ? (
               <HoldingsTable
                 positions={visible}
