@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { Users, SlidersHorizontal, CreditCard, Mail, Clock3, Activity } from "lucide-react";
 import styles from "./OwnerAccess.module.css";
 import SupportInbox from "./SupportInbox";
 import { api } from "@/lib/client";
@@ -96,9 +97,9 @@ export default function OwnerAccess() {
         <p>Manage members, access and billing.</p>
       </header>
       {data && <div className={styles.stats}>
-        <div><span>Active complimentary members</span><strong>{data.grants.filter(g => !g.revoked_at && Date.parse(g.expires_at) > Date.now()).length}</strong></div>
-        <div><span>Expiring within 7 days</span><strong>{data.grants.filter(g => !g.revoked_at && Date.parse(g.expires_at) > Date.now() && Date.parse(g.expires_at) <= Date.now() + 7 * 86400000).length}</strong></div>
-        <div><span>Research / AI entries this month</span><strong>{data.usage}</strong></div>
+        <div><Users size={20} aria-hidden="true"/><span>Active complimentary members</span><strong>{data.grants.filter(g => !g.revoked_at && Date.parse(g.expires_at) > Date.now()).length}</strong></div>
+        <div><Clock3 size={20} aria-hidden="true"/><span>Expiring within 7 days</span><strong>{data.grants.filter(g => !g.revoked_at && Date.parse(g.expires_at) > Date.now() && Date.parse(g.expires_at) <= Date.now() + 7 * 86400000).length}</strong></div>
+        <div><Activity size={20} aria-hidden="true"/><span>Research / AI entries this month</span><strong>{data.usage}</strong></div>
       </div>}
       <section className="admin-preview-row" aria-label="Plan preview">
         <div>
@@ -148,7 +149,7 @@ export default function OwnerAccess() {
               setMessage("");
             }}
           >
-            {label}
+            {id === "people" ? <Users size={17} aria-hidden="true"/> : id === "features" ? <SlidersHorizontal size={17} aria-hidden="true"/> : id === "payments" ? <CreditCard size={17} aria-hidden="true"/> : <Mail size={17} aria-hidden="true"/>}{label}
           </button>
         ))}
       </nav>

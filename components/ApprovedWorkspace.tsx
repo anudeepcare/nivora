@@ -1488,7 +1488,7 @@ function HoldingsTable({
                             : "Unknown currency"}{" "}
                           cost
                         </small>
-                        <PaceBadge signal={decision} loading={state.paceScan.loading} />
+                        {p.assetType !== "crypto" && <PaceBadge signal={decision} loading={state.paceScan.loading} />}
                       </span>
                     </Link>
                   )}
@@ -1665,7 +1665,7 @@ export function Watchlist() {
       <section className="card">
         <SectionHead
           title="Your watchlist"
-          subtitle="Available prices and confirmed Pace from loaded research."
+          subtitle="Prices and confirmed accumulation readings."
           action={
             <button
               className="icon-button"
@@ -1798,17 +1798,8 @@ export function Watchlist() {
                           href={researchLink(symbol, prefix)}
                           title={signal?.reason}
                         >
-                          {signal ? signal.view.actionLabel.replace(/ · P[0-4]$/, "") : "Open case"}
-                          {signal?.view.rawLevel != null && (
-                            <span> · {signal.view.code}</span>
-                          )}
+                          <PaceBadge signal={signal} />
                         </Link>
-                        {signal && (
-                          <small>
-                            New: {signal.actions.entry} · Held:{" "}
-                            {signal.actions.holding}
-                          </small>
-                        )}
                       </td>
                       <td>
                         <button

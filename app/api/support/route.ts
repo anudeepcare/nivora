@@ -1,3 +1,4 @@
+import { supportDeliveryStatus } from "@/lib/support-status";
 import { createHash } from "node:crypto";
 import { accessDb, exactOwner } from "@/lib/access-server";
 import { account, failure, HttpError, privateJson } from "@/lib/server";
@@ -91,7 +92,7 @@ export async function GET(request: Request) {
         "Support inbox unavailable. Apply the support migration.",
         503,
       );
-    return privateJson({ requests: r.data });
+    return privateJson({ requests: r.data, delivery: supportDeliveryStatus() });
   } catch (e) {
     return failure(e);
   }

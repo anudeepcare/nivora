@@ -158,3 +158,5 @@
 :global([data-motion="reduce"]) .routePending{animation:none}
 
 .shell .dock a{position:relative}
+
+@media(max-width:767px){.shell.shell.shell .dock{background:color-mix(in srgb,var(--chrome-surface) 96%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 4px 16px #00000014}.shell.shell.shell .dock a{color:var(--ink);font-weight:500}.shell.shell.shell .dock a[aria-current=page]{background:var(--card);box-shadow:inset 0 0 0 1px var(--line);font-weight:700}.shell.shell.shell .dock a[aria-current=page] svg{color:var(--ink)}}

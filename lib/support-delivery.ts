@@ -1,3 +1,4 @@
+import { supportDeliveryStatus, supportDeliveryError } from "./support-status";
 import { SUPPORT_EMAIL } from "./site-metadata";
 import { accessDb } from "./access-server";
 /** Saved request is the source of truth. Delivery failures never remove it. */
@@ -12,7 +13,7 @@ export async function deliverSupport(id: string) {
     !from ||
     !to
   )
-    return { notified: false, receipt: false };
+    return { notified: false, receipt: false, error: supportDeliveryStatus().issue || "Support delivery is not configured." };
   const db = accessDb();
   const { data: r, error } = await db
     .from("auryn_support_requests")
@@ -43,7 +44,12 @@ export async function deliverSupport(id: string) {
       }),
       signal: AbortSignal.timeout(4000),
     });
-    if (!response.ok) return false;
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({}));
+      const message = supportDeliveryError(response.status, typeof body.message === "string" ? body.message : "");
+      console.error("support_delivery_rejected", { reference: id, kind, status: response.status });
+      throw Error(message);
+    }
     const saved = await db
       .from("auryn_support_requests")
       .update({
@@ -78,9 +84,10 @@ export async function retrySupport(manual = false) {
   const results = [];
   for (const row of data ?? [])
     results.push(
-      await deliverSupport(row.id).catch(() => ({
+      await deliverSupport(row.id).catch((error) => ({
         notified: false,
         receipt: false,
+        error: error instanceof Error && error.name !== "TimeoutError" ? error.message : "Email request timed out. Retry later.",
       })),
     );
   return results;

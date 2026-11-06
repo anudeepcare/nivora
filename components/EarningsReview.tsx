@@ -28,26 +28,15 @@ export default function EarningsReview({
       <header className="section-head">
         <div>
           <span className="eyebrow">EARNINGS TO THESIS</span>
-          <h2>What deserves another look?</h2>
+          <h2>Earnings snapshot</h2>
         </div>
       </header>
       {review ? (
         <>
           <h3>{review.label}</h3>
-          <p>
-            Report date {dateLabel(review.date)} · EPS{" "}
-            {review.actual?.toFixed(2) ?? "pending"} versus estimate{" "}
-            {review.estimate?.toFixed(2) ?? "unavailable"}
-            {review.surprise !== null
-              ? ` · ${percent(review.surprise, true)} surprise`
-              : ""}
-            .
-          </p>
-          <p className="small muted">
-            Actual and estimate use the supplied series; GAAP/adjusted basis is
-            not independently reconciled. An EPS beat does not establish
-            guidance, revenue performance or a future price move.
-          </p>
+          <p className="small muted">{dateLabel(review.date)} · Reported EPS</p>
+          <dl className="earnings-kpis"><div><dt>Actual</dt><dd>{review.actual?.toFixed(2) ?? "Pending"}</dd></div><div><dt>Estimate</dt><dd>{review.estimate?.toFixed(2) ?? "Unavailable"}</dd></div><div><dt>Surprise</dt><dd className={review.surprise !== null && review.surprise < 0 ? "negative" : ""}>{review.surprise !== null ? percent(review.surprise,true) : "Unavailable"}</dd></div></dl>
+          <p className="small muted">Reported series; GAAP/adjusted basis not reconciled. EPS alone does not confirm the business case.</p>
         </>
       ) : (
         <p>Recent reported results are not available in this snapshot.</p>
@@ -65,10 +54,7 @@ export default function EarningsReview({
           <p>{note.thesis}</p>
         </details>
       )}
-      <p>
-        Check guidance, cash conversion and share dilution against the original
-        release. AURYN does not infer whether your written thesis is confirmed.
-      </p>
+
       {r.filings
         .slice(0, 3)
         .filter((f) => /^https:\/\//.test(f.url))
