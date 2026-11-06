@@ -174,7 +174,7 @@ export default function Discover({ embedded = false }: { embedded?: boolean }) {
     }
   }
   return (
-    <section>
+    <section className="discover-workspace">
       {!embedded && (
         <PageHeading
           title="Discover with a purpose."

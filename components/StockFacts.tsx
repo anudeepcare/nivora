@@ -187,7 +187,7 @@ export default function StockFacts({
           </div>
         ))}
       </dl>
-      <Help label="About these metrics" trigger="About metrics">
+      <Help label="About these metrics">
         {rows.map((row) => (
           <section key={row.label}>
             <h3>

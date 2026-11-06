@@ -107,3 +107,5 @@
 .region[data-price-context] .strip{display:grid;grid-template-columns:1fr}
 }
 
+
+@media(max-width:600px){.region{flex-wrap:nowrap;gap:4px;padding:8px}.strip{flex:1;min-width:0;width:auto;margin:0}.region>button{flex:0 0 44px;width:44px;height:44px;min-height:44px;padding:0;display:grid;place-items:center}.strip>div{padding:0}.region[data-price-context]{flex-wrap:wrap}}

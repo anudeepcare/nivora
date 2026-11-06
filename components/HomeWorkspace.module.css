@@ -759,3 +759,4 @@
   outline: 2px solid var(--green);
   outline-offset: 3px;
 }
+@media(max-width:767px){.home.home .quickLinks{display:flex;flex-wrap:nowrap;gap:8px;overflow-x:auto;padding:0 0 4px;margin:12px 0 16px}.home.home .quickLinks a{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:40px;padding:8px 10px;font-size:12px;border-radius:10px;background:var(--card);border:1px solid var(--line);white-space:nowrap}}

@@ -160,3 +160,81 @@ body .wealth-strip.four { display:grid; grid-template-columns:repeat(4,minmax(0,
 
 @media(max-width:700px){.product.approved-product .watch-summary strong::after{margin-left:5px;font-size:11px;font-weight:450}.product.approved-product .watch-summary>div:first-child{gap:5px}}
 @media(max-width:700px){.product.approved-product .watch-summary strong{display:flex;align-items:baseline;gap:5px;width:auto;min-width:0}.product.approved-product .watch-summary strong::after{position:static;margin:0;line-height:1.2}}
+
+/* Explicit text avoids generated-content collisions in count summaries. */
+.product.approved-product .watch-summary strong::after{content:none}
+.product.approved-product .watch-summary>div:first-child{max-width:none;flex-shrink:1;gap:6px;padding:0}
+.watch-count-label{display:none}
+@media(max-width:700px){.watch-count-label{display:inline;font-size:12px;color:var(--muted)}.product.approved-product .watch-summary{padding:12px;gap:10px}.product.approved-product .watch-summary .btn{font-size:12px;padding:8px 12px}}
+/* Consistent centered segment labels; financial values remain right aligned. */
+.product :is(.segmented,.segmented-control,.tabs-control) button{display:inline-flex;align-items:center;justify-content:center;text-align:center;line-height:1.35}
+.product .tech-read{border-top:1px solid var(--line);box-shadow:none}
+@media(max-width:767px){
+.product .portfolio-editor{position:fixed;inset:auto 0 0;margin:0 auto;width:100%;max-width:600px;max-height:calc(var(--visual-height,100dvh) - env(safe-area-inset-top) - 12px);border-radius:24px 24px 0 0;padding:16px 20px calc(20px + env(safe-area-inset-bottom));overflow:auto;box-sizing:border-box}
+.product .portfolio-editor .dialog-head{margin:0 0 12px;padding:0 0 10px;min-height:44px;align-items:center}
+.product .portfolio-editor h2{font-size:24px;margin:0 0 6px}
+.product .portfolio-editor>p{font-size:13px;margin:0 0 16px}
+.product .portfolio-editor form{display:grid;gap:14px}
+.product .portfolio-editor label{gap:6px;font-size:12px;margin:0}
+.product .portfolio-editor .approved-check{display:flex;align-items:center;gap:10px;min-height:44px;padding:0;margin:0}
+.product .portfolio-editor .two-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.product .portfolio-editor :is(input:not([type=checkbox]),select){min-height:46px;padding:10px 12px;font-size:16px;width:100%;min-width:0}
+.product .portfolio-editor form>.btn{width:100%;min-height:48px;margin:2px 0 0}
+.product .portfolio-editor .approved-remove{margin-top:16px;padding-top:12px}
+}
+.product .pace-period{border:1px solid var(--line);border-top-width:1px;border-top-color:var(--line);box-shadow:none}
+.product :is(.segments,.segment) button{display:inline-flex;align-items:center;justify-content:center;text-align:center;line-height:1.35;flex-shrink:0}
+.product .technical-desk-groups>section{border-top:1px solid var(--line)}
+.product .technical-desk-groups dl>div{padding-block:10px;gap:12px;align-items:center;min-height:44px}
+.product .technical-desk-groups dt{min-width:0;display:flex;align-items:center;gap:6px}
+.product .technical-desk-groups dt>span{min-width:0;overflow-wrap:anywhere}
+.product .technical-desk-groups dd{margin:0;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.product .approved-balances-dialog{width:min(640px,calc(100vw - 24px));padding:22px}
+.product .approved-balances-dialog .account-equity{gap:16px}
+.product .approved-balances-dialog .account-equity-primary{padding:0 0 12px}
+.product .approved-balances-dialog .account-equity-breakdown{display:grid;gap:0;margin:0}
+.product .approved-balances-dialog .account-equity-breakdown>div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 16px;padding:12px 0;border:0;border-bottom:1px solid var(--line);border-radius:0;background:none}
+.product .approved-balances-dialog .account-equity-breakdown dd{margin:0;text-align:right;font-weight:600}
+.product .approved-balances-dialog .account-equity-breakdown small{grid-column:1/-1;font-size:11px;color:var(--muted)}
+.product .approved-balances-dialog>.btn{width:100%;margin-top:16px;min-height:44px}
+.product select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7477' stroke-width='1.8'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding:10px 36px 10px 12px;min-height:44px;border:1px solid var(--line);border-radius:10px;font-size:14px;line-height:1.4;max-width:100%}
+.product .approved-table-toolbar{align-items:center;gap:12px;margin-block:12px 16px}
+.product .approved-table-toolbar :is(input,select){min-height:44px}
+.product .approved-research-search{gap:14px;padding:14px 18px;align-items:center}
+.product .approved-research-search h2{font-size:14px;margin:0;white-space:nowrap}
+@media(max-width:767px){
+.product .approved-balances-dialog{position:fixed;inset:auto 0 0;margin:0 auto;width:100%;max-width:600px;max-height:calc(var(--visual-height,100dvh) - 12px);padding:18px 20px calc(20px + env(safe-area-inset-bottom));border-radius:24px 24px 0 0;overflow:auto}
+.product .approved-table-toolbar{gap:8px;align-items:center}
+.product .approved-table-toolbar .search{flex:1;min-width:0;width:100%}
+.product .approved-table-toolbar select{font-size:16px}
+.product .approved-research-search{display:block;padding:12px}
+.product .approved-research-search h2{display:none}
+.product .technical-desk-groups>section{padding:16px}
+.product .technical-desk-groups header{margin-bottom:10px}
+.product .technical-desk-groups header p{font-size:12px;line-height:1.5;margin:6px 0}
+.product .pace-period>span{min-height:34px;font-size:11px;line-height:1.4}
+}
+.product .depth-thesis .step{border:1px solid var(--line);padding:14px;background:var(--card)}
+.product .depth-thesis .step b,.product .depth-thesis .step strong{display:block;margin:0 0 5px;line-height:1.45}
+.product .depth-thesis .step p{margin:6px 0 0}
+[data-theme="dark"] .product .security-logo{background:#f5f7fa;color:#24354a;border-color:#dce2e8}
+[data-theme="dark"] .product .security-logo.logo-dark{background:#18382e;color:#fff}
+.product .discover-workspace .compare-search{display:flex;align-items:center;gap:12px;margin:12px 0 20px}
+.product .discover-workspace .compare-search input{flex:1;min-width:0;min-height:46px}
+.product .discover-workspace .compare-search button{flex:0 0 auto;width:auto;min-height:46px;margin:0;padding:10px 18px;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.product .discover-workspace .discover-controls{align-items:flex-end;gap:12px;margin:0 0 20px}
+@media(max-width:600px){.product .discover-workspace .compare-search{flex-direction:column;align-items:stretch;gap:8px}.product .discover-workspace .compare-search button{width:100%}}
+.product .content .depth-technicals .technical-desk-groups dl>div{padding-block:10px;min-height:44px;gap:12px;align-items:center}
+.product .content .depth-technicals .technical-desk-groups>section{border-top:1px solid var(--line)}
+.product .content .depth-thesis .step{border-left:1px solid var(--line)}
+@media(min-width:701px){.product .approved-watch-table{table-layout:fixed;width:100%}.product .approved-watch-table th:first-child{width:36%}.product .approved-watch-table th:nth-child(2){width:18%;text-align:right}.product .approved-watch-table th:nth-child(3){width:16%}.product .approved-watch-table th:nth-child(4){width:25%;text-align:left}.product .approved-watch-table th:last-child{width:5%}.product .approved-watch-table td:nth-child(2){text-align:right}.product .approved-watch-table td:nth-child(4){text-align:left}}
+.product .workspace-settings-shortcuts :is(a,.settings-analytics-button){display:grid;grid-template-columns:20px minmax(0,1fr) 18px;align-items:center;gap:12px;min-height:44px;padding:10px 12px;font-size:14px;font-weight:400;line-height:1.4;text-align:left;width:100%;box-sizing:border-box;color:var(--muted);border:0;background:transparent}
+.product .workspace-settings-shortcuts .settings-analytics-shortcut{padding:0;margin:0;min-width:0}
+.product .workspace-settings-shortcuts :is(a,.settings-analytics-button)>svg:last-child{justify-self:end}
+.product .compare-search{display:flex;align-items:center;gap:12px;margin:14px 0 18px}
+.product .compare-search>input{flex:1;min-width:0}
+.product .compare-search>button{flex:0 0 auto;width:auto;min-height:44px;padding:10px 18px;margin:0;display:inline-flex;justify-content:center;align-items:center}
+.product .alert-builder{padding:18px;gap:14px;align-items:end}
+.product .alert-builder label{font-size:12px;gap:6px}
+.product .alert-builder :is(input,select,button){min-height:44px;font-weight:400}
+@media(max-width:600px){.product .compare-search{flex-direction:column;align-items:stretch;gap:8px}.product .compare-search>button{width:100%}.product .alert-builder{padding:14px}}

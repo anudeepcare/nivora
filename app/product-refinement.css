@@ -170,7 +170,7 @@
   --pace-accent: #218277;
 }
 .pace-period {
-  border-top: 3px solid var(--pace-accent, var(--blue));
+  border-top: 1px solid var(--line);
   background: color-mix(
     in srgb,
     var(--pace-accent, var(--blue)) 6%,

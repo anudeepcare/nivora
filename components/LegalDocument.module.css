@@ -12,3 +12,11 @@
 .document :global(.document-reading){max-width:760px;margin:0 auto}
 @media(max-width:600px){.document>footer{gap:8px 16px}.document :global(.document-layout)>nav{gap:4px 14px;margin-bottom:18px}}
 
+/* Reset the legacy sticky sidebar in every help/legal route. */
+.document.document.document :global(.document-layout){display:block;padding:16px 0 28px;max-width:1000px;margin:0 auto}
+.document.document.document :global(.document-layout)>nav{position:static;top:auto;display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;gap:4px 8px;width:100%;margin:0 0 24px;padding:8px 0 14px}
+.document.document.document :global(.document-layout)>nav a{flex:0 0 auto;min-height:40px;padding:8px 12px;font-size:13px;margin:0;border:0;border-radius:10px}
+.document.document.document :global(.document-reading){width:100%;max-width:760px;margin:0 auto;padding:0;min-width:0}
+.document.document.document :global(.document-reading) h1{font-size:32px;line-height:1.2;margin:12px 0 16px}
+.document.document.document :global(.help-search) input{font-weight:400;font-size:16px}
+@media(max-width:600px){.document.document.document :global(.document-reading) h1{font-size:26px}.document.document.document :global(.document-layout)>nav{gap:4px}.document.document.document :global(.document-layout)>nav a{font-size:12px;padding:8px}}

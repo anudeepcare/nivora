@@ -1713,6 +1713,7 @@ export function Watchlist() {
         <div>
           <span className="eyebrow">FOLLOWING</span>
           <strong>{all.length}</strong>
+          <span className="watch-count-label">followed</span>
           <p>Companies in your watchlist</p>
         </div>
         <Link className="btn" href={`${prefix}/alerts`}>
