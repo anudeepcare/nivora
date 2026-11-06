@@ -34,3 +34,15 @@
 .document.document.document > footer{display:flex;align-items:center;flex-wrap:wrap;gap:12px 20px;padding:20px 0;margin-top:20px;font-size:12px}
 .document.document.document > footer p{margin:0}
 @media(max-width:600px){.document.document.document :global(.document-reading)>h1{font-size:27px}.document.document.document :global(.document-sections)>section{padding:16px}}
+@media(max-width:767px){
+.document.document.document{padding:14px;margin:0 auto}
+.document.document.document > header{padding:10px 0 14px;margin-bottom:0;gap:12px}
+.document.document.document > header a{font-size:12px}
+.document.document.document :global(.document-layout){padding-top:14px}
+.document.document.document :global(.document-layout)>nav{flex-wrap:nowrap;overflow-x:auto;gap:4px;padding:5px;margin-bottom:20px;background:color-mix(in srgb,var(--card) 65%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.document.document.document :global(.document-layout)>nav a{flex-shrink:0;white-space:nowrap;font-size:12px;min-height:40px;padding:8px 10px}
+.document.document.document :global(.document-sections)>section{background:color-mix(in srgb,var(--card) 75%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.document.document.document :global(.legal-intro){font-size:14px;line-height:1.6}
+.document.document.document :global(.document-updated){margin-bottom:16px}
+.document.document.document :global(.help-search){margin:12px 0 18px}
+}

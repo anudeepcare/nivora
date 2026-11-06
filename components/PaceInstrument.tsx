@@ -92,7 +92,7 @@ export default function PaceInstrument({
             <h2>
               {exploring && selected !== null
                 ? names[selected]
-                : view?.actionLabel || "Awaiting evidence"}
+                : view?.actionLabel?.replace(/\s*·\s*P[0-4]\s*$/, "") || "Awaiting evidence"}
               <span className={s.level}>
                 {selected == null ? "Pending" : `P${selected}`}
               </span>
