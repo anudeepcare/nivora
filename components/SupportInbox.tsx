@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import s from "./SupportInbox.module.css";
 import { api } from "@/lib/client";
 type Ticket = {
   id: string;
@@ -15,6 +16,13 @@ type Ticket = {
 };
 export default function SupportInbox() {
   const [delivery,setDelivery] = useState<{recipient:string;sender:string;issue:string|null}|null>(null);
+  const [cursor,setCursor] = useState<string|null>(null);
+  const [pages,setPages] = useState<(string|null)[]>([]);
+  const [next,setNext] = useState<string|null>(null);
+  const [loading,setLoading] = useState(true);
+  const generation = useRef(0);
+  const [revision,setRevision] = useState(0);
+  const controller = useRef<AbortController|null>(null);
   const [notice,setNotice] = useState("");
   const [attachments,setAttachments] = useState<Record<string,string|null>>({});
   const [rows, setRows] = useState<Ticket[]>([]),
@@ -25,13 +33,20 @@ export default function SupportInbox() {
     setBusy(true);setError('');try{const r=await api<{screenshot:string|null}>(`support?attachment=${encodeURIComponent(id)}`);setAttachments(old=>({...old,[id]:r.screenshot}));}catch(e){setError(e instanceof Error?e.message:'Attachment unavailable.');}finally{setBusy(false);}
   }
   async function load() {
-    const r = await api<{ requests: Ticket[]; delivery?: {recipient:string;sender:string;issue:string|null} }>("support");
-    setRows(r.requests);
-    setDelivery(r.delivery ?? null);
+    const token = ++generation.current;
+    controller.current?.abort();
+    const active = new AbortController(); controller.current = active;
+    setLoading(true); setError("");
+    try {
+      const query = new URLSearchParams({status:filter});
+      if(cursor) query.set("cursor",cursor);
+      const r = await api<{requests:Ticket[];nextCursor:string|null;delivery?:{recipient:string;sender:string;issue:string|null}}>(`support?${query}`,undefined,active.signal);
+      if(token !== generation.current) return;
+      setRows(r.requests); setNext(r.nextCursor); setDelivery(r.delivery ?? null); setAttachments({});
+    } catch(e) { if(token === generation.current) setError(e instanceof Error ? e.message : "Inbox unavailable."); }
+    finally { if(token === generation.current) setLoading(false); }
   }
-  useEffect(() => {
-    void load().catch((e) => setError(e.message));
-  }, []);
+  useEffect(() => { void load(); return () => { generation.current++; controller.current?.abort(); }; }, [filter,cursor,revision]);
   async function change(body: unknown) {
     setBusy(true);
     setError("");
@@ -49,7 +64,7 @@ export default function SupportInbox() {
       });
       const v = await r.json();
       if (!r.ok) throw Error(v.error);
-      await load();
+      setRevision(value=>value+1);
       if (Array.isArray(v.results)) {
         const failures = v.results.filter((item: {error?:string}) => item.error);
         if (failures.length) setError(failures[0].error);
@@ -61,11 +76,9 @@ export default function SupportInbox() {
       setBusy(false);
     }
   }
-  const visible = rows.filter(
-    (row) => filter === "all" || row.status === filter,
-  );
+  const visible = loading ? [] : rows;
   return (
-    <section className="support-inbox">
+    <section className={s.inbox}>
       <header>
         <h2>Support inbox</h2>
         <button
@@ -76,16 +89,16 @@ export default function SupportInbox() {
           Retry pending emails
         </button>
       </header>
-      {delivery && <div className="support-delivery-status"><strong>Contact email delivery</strong><p>Inbox: {delivery.recipient}</p><p>Sender: {delivery.sender || "Not configured"}</p><p>{delivery.issue || "Configured. Provider acceptance does not confirm inbox delivery."}</p><a href="https://resend.com/emails" target="_blank" rel="noopener noreferrer">Open delivery events ↗</a></div>}
+      {delivery && <details className={s.delivery}><summary>Email delivery · {delivery.issue ? "Needs attention" : "Configuration"}</summary><p>Inbox: {delivery.recipient}</p><p>Sender: {delivery.sender || "Not configured"}</p><p>{delivery.issue || "Configured. Provider acceptance does not confirm inbox delivery."}</p><a href="https://resend.com/emails" target="_blank" rel="noopener noreferrer">Open delivery events ↗</a></details>}
       {notice && <p role="status">{notice}</p>}
-      <div className="support-inbox-tools">
-        <span>{rows.length} saved requests</span>
+      <div className={s.tools}>
+        <span>{loading ? "Loading…" : `${rows.length} requests on this page`}</span>
         <label>
           Show
           <select
             aria-label="Filter support requests"
             value={filter}
-            onChange={(event) => setFilter(event.target.value)}
+            onChange={(event) => {setFilter(event.target.value);setCursor(null);setPages([]);}}
           >
             <option value="all">All requests</option>
             <option value="new">New</option>
@@ -95,9 +108,11 @@ export default function SupportInbox() {
         </label>
       </div>
       {error && <p role="alert">{error}</p>}
-      {!visible.length && !error && <p>No requests to show.</p>}
+      {!loading && !visible.length && !error && <p>No requests to show.</p>}
       {visible.map((r) => (
-        <article key={r.id}>
+        <details className={s.ticket} key={r.id}>
+          <summary><span className={s.badge} data-status={r.status}>{r.status.replace("_"," ")}</span><span className={s.identity}><strong>{r.category}</strong><span>{r.email}</span></span><time>{new Date(r.created_at).toLocaleDateString()}</time></summary>
+          <div className={s.body}>
           <header>
             <strong>{r.category}</strong>
             <span>{new Date(r.created_at).toLocaleString()}</span>
@@ -132,8 +147,10 @@ export default function SupportInbox() {
               <option value="resolved">Resolved</option>
             </select>
           </label>
-        </article>
+          </div>
+        </details>
       ))}
+      <footer className={s.tools}><button className="button" disabled={loading || !pages.length} onClick={()=>{setCursor(pages[pages.length-1]);setPages(pages.slice(0,-1));}}>Previous</button><span>Page {pages.length+1}</span><button className="button" disabled={loading || !next} onClick={()=>{setPages([...pages,cursor]);setCursor(next);}}>Next</button></footer>
     </section>
   );
 }

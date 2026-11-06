@@ -21,6 +21,7 @@ export type BoardPreset = {
   metric: "gex" | "oi";
   range: number;
   expirations: number;
+  months?: number;
   minimum: number;
   normalized: boolean;
 };
@@ -159,6 +160,7 @@ export function parseBoardState(raw: string | null): {
               ["gex", "oi"].includes(p.metric) &&
               [12, 24, 40, 80].includes(p.range) &&
               [1, 3, 6, 12].includes(p.expirations) &&
+              (p.months === undefined || [-1,0,1,2,6].includes(p.months)) &&
               nonnegative(p.minimum) &&
               typeof p.normalized === "boolean",
           )

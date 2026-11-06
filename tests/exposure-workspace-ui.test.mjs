@@ -8,6 +8,7 @@ import * as icons from "lucide-react";
 import { renderToStaticMarkup } from "react-dom/server";
 import * as exposure from "../lib/exposure-board.ts";
 import * as format from "../lib/format.ts";
+import * as windowDates from "../lib/exposure-window.ts";
 const mod = { exports: {} };
 const code = ts.transpileModule(
   fs.readFileSync("components/ExposureBoard.tsx", "utf8"),
@@ -25,6 +26,7 @@ new Function("require", "module", "exports", code)(
     if (name === "react") return React;
     if (name === "react/jsx-runtime") return jsx;
     if (name === "lucide-react") return icons;
+    if (name === "@/lib/exposure-window") return windowDates;
     if (name === "@/lib/exposure-board") return exposure;
     if (name === "@/lib/format") return format;
     if (name === "./Ui")
@@ -142,7 +144,8 @@ test("focused board shortcuts act locally and leave controls and modified keys a
       if (name === "react") return mockReact;
       if (name === "react/jsx-runtime") return jsx;
       if (name === "lucide-react") return icons;
-      if (name === "@/lib/exposure-board") return exposure;
+      if (name === "@/lib/exposure-window") return windowDates;
+    if (name === "@/lib/exposure-board") return exposure;
       if (name === "@/lib/format") return format;
       if (name === "./Ui") return { Help: () => null };
       if (name.endsWith(".css")) return { __esModule: true, default: {} };
@@ -176,11 +179,15 @@ test("focused board shortcuts act locally and leave controls and modified keys a
   assert.equal(prevented, 2);
 });
 
- test("selected expiration controls map columns without silently using an earlier loaded date",()=>{
+test("map defaults to all loaded future expirations independently of contract selection",()=>{
  const html=renderToStaticMarkup(React.createElement(mod.exports.default,{contracts:[c,{...c,id:'later',expiry:'2027-01-15'}],spot:100,symbol:'TEST',complete:false,expiry:'2027-01-15'}));
- assert.match(html,/100 strike, 2027-01-15/);assert.doesNotMatch(html,/100 strike, 2026-12-18/);
- });
- test("an empty selected expiry is not replaced by a populated later expiry",()=>{
- const html=renderToStaticMarkup(React.createElement(mod.exports.default,{contracts:[c],spot:100,symbol:'TEST',complete:false,expiry:'2026-11-13'}));
- assert.match(html,/No measured rows match/);assert.doesNotMatch(html,/100 strike, 2026-12-18/);
- });
+ assert.match(html,/100 strike, 2027-01-15/);assert.match(html,/100 strike, 2026-12-18/);
+});
+test("calendar windows clamp month ends and preserve all dates without a column cap",()=>{
+ const dates=['2026-01-30','2026-02-28','2026-03-01','2026-03-31','2026-07-31','2026-08-01'];const now=Date.parse('2026-01-31T12:00:00Z');
+ assert.deepEqual(windowDates.exposureDates(dates,1,undefined,now),['2026-02-28']);
+ assert.deepEqual(windowDates.exposureDates(dates,2,undefined,now),['2026-02-28','2026-03-01','2026-03-31']);
+ assert.equal(windowDates.exposureDates(dates,6,undefined,now).length,4);
+ assert.equal(windowDates.exposureDates(dates,0,undefined,now).length,5);
+ assert.deepEqual(windowDates.exposureDates(dates,-1,'2026-02-15',now),['2026-02-15']);
+});

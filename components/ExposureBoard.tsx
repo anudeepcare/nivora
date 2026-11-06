@@ -1,4 +1,5 @@
 "use client";
+import { exposureDates } from "@/lib/exposure-window";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   Activity,
@@ -59,7 +60,8 @@ export default function ExposureBoard({
   const live = useMemo(() => exposureBoard(contracts, spot), [contracts, spot]);
   const [metric, setMetric] = useState<"gex" | "oi">("gex"),
     [range, setRange] = useState(12),
-    [expirations, setExpirations] = useState(1),
+    [expirations, setExpirations] = useState(12),
+    [months, setMonths] = useState(0),
     [minimum, setMinimum] = useState(0),
     [normalized, setNormalized] = useState(false),
     [selected, setSelected] = useState<string | null>(null),
@@ -94,10 +96,7 @@ export default function ExposureBoard({
   const snapshots = saved.snapshots.filter((x) => x.symbol === symbol);
   const chosen = externalSnapshot ?? snapshots.find((x) => x.id === snapshot);
   const board = chosen?.board ?? live;
-  const dates = [...new Set([...board.cells.map((c) => c.expiry), ...(!chosen && expiry ? [expiry] : [])])]
-    .sort()
-    .filter((date) => chosen || !expiry || date >= expiry)
-    .slice(0, expirations);
+  const dates = exposureDates(board.cells.map(c=>c.expiry), months, expiry, chosen ? Date.parse(chosen.savedAt) : Date.now());
   const strikes = [
     ...new Set(
       board.cells.filter((c) => dates.includes(c.expiry)).map((c) => c.strike),
@@ -184,6 +183,7 @@ export default function ExposureBoard({
       metric,
       range,
       expirations,
+      months,
       minimum,
       normalized,
     };
@@ -205,6 +205,7 @@ export default function ExposureBoard({
       setMetric(p.metric);
       setRange(p.range);
       setExpirations(p.expirations);
+      setMonths(p.months ?? 0);
       setMinimum(p.minimum);
       setNormalized(p.normalized);
     }
@@ -315,7 +316,7 @@ export default function ExposureBoard({
       )}
       {mode === "map" && (
         <>
-          <p className={s.reading}>Each column is an expiration date—not a day-by-day forecast. Darker cells mean more {metric === "gex" ? "estimated gamma exposure" : "open contracts"}. Tap a cell for its observation date. These levels do not predict where the stock will touch or reverse.</p>
+          <p className={s.reading}>Each column is an expiration date. Ranges show loaded contracts, not historical daily data. Darker cells mean more {metric === "gex" ? "estimated gamma exposure" : "open contracts"}. Tap a cell for its observation date. These levels do not predict where the stock will touch or reverse.</p>
           <div className={s.toolbar}>
             <label>
               Measure
@@ -339,14 +340,9 @@ export default function ExposureBoard({
               </select>
             </label>
             <label>
-              Expiration columns
-              <select
-                value={expirations}
-                onChange={(e) => setExpirations(Number(e.target.value))}
-              >
-                {[1, 3, 6, 12].map((n) => (
-                  <option key={n} value={n}>{n === 1 ? "Selected date" : `${n} dates from selection`}</option>
-                ))}
+              Expiration range
+              <select value={months} onChange={e=>setMonths(Number(e.target.value))}>
+                <option value={0}>All expirations</option><option value={1}>Next 1 month</option><option value={2}>Next 2 months</option><option value={6}>Next 6 months</option><option value={-1}>Selected date only</option>
               </select>
             </label>
             <label>
