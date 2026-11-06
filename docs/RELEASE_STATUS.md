@@ -1,3 +1,7 @@
+# November 6, 2026 — Consistency and chart interaction release
+
+Current checklist: `verification/CONSISTENCY-RELEASE-20261106.md` covers all 37 approved items and remaining native/live checks. New shared-quote fixes, chart inspection, history recovery, observation comparison, watchlist Undo and explicit PWA updates are included. 1,072 tests passed; 19 focused regressions passed after the final cache correction. 54 responsive browser checks passed. No production deployment performed.
+
 # November 6, 2026 — UI and reliability pass
 
 Current verification: `verification/COMPLETE-UX-PASS-20261106.md`. All 1,064 automated tests and the production build passed. Mobile/tablet/desktop browser interaction checks used preview fixtures. Installed iPhone PWA and deployed affected-account session recovery remain required release checks. This source has not been deployed by this pass. Older entries below are historical.

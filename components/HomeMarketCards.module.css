@@ -385,3 +385,5 @@
 :global(html[data-theme="dark"]) .card {
   background:linear-gradient(140deg,color-mix(in srgb,var(--company-accent,#527cb8) 16%,var(--card)),color-mix(in srgb,var(--company-accent,#527cb8) 5%,var(--card)));
 }
+.historyLabel { min-height: 38px; font-variant-numeric:tabular-nums; }
+.history svg:focus-visible { outline:2px solid var(--accent-solid); outline-offset:3px; border-radius:6px; }

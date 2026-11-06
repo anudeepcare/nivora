@@ -1,12 +1,15 @@
 /* AURYN: network-first navigation, no account/API/market-response caching. */
-const OFFLINE_CACHE = "auryn-offline-v4";
+const OFFLINE_CACHE = "auryn-offline-v5";
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
       .open(OFFLINE_CACHE)
       .then((cache) => cache.addAll(["/offline.html", "/icon.svg"]))
-      .then(() => self.skipWaiting()),
+,
   );
+});
+self.addEventListener("message", event => {
+  if(event.data?.type === "ACTIVATE_UPDATE") self.skipWaiting();
 });
 self.addEventListener("activate", (event) => {
   event.waitUntil(self.clients.claim());

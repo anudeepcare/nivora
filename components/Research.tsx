@@ -17,6 +17,7 @@ import dynamic from "next/dynamic";
 import useLivePrices from "./useLivePrices";
 import { quoteHealth } from "@/lib/quote-health";
 import { mergePriceTick } from "@/lib/live-price";
+import { cachedQuotes, publishQuotes, subscribeQuotes } from "@/lib/shared-quotes";
 import { retainResearchQuote } from "@/lib/research-quote";
 const ValueStudio = dynamic(() => import("./ValueStudio"), {
   loading: () => <p role="status">Opening valuation…</p>,
@@ -87,6 +88,7 @@ import DecisionBrief from "./DecisionBrief";
 import TargetsEstimates from "./TargetsEstimates";
 import AnalystRatings from "./AnalystRatings";
 import CompanyUpdates from "./CompanyUpdates";
+import ResearchChanges from "./ResearchChanges";
 import OverviewContext from "./OverviewContext";
 const tabs = [
   "Snapshot",
@@ -127,7 +129,9 @@ export default function Research({ symbol }: { symbol: string }) {
   const rangeTouched = useRef(false);
   const { preferences } = useResearchPreferences();
   const requestedTab = useSearchParams().get("tab");
-  const { demo, workspace, mutate, reduceMotion } = useProduct();
+  const { demo, workspace, mutate, reduceMotion, cache } = useProduct();
+  const [, sharedRevision] = useState(0);
+  useEffect(() => subscribeQuotes(cache, symbols => {if(symbols.includes(symbol))sharedRevision(n => n + 1);}), [cache,symbol]);
   const resource = useResource<ResearchData>(
       `research/${encodeURIComponent(symbol.replace("/", "-"))}`,
       demo?.research[symbol],
@@ -165,7 +169,7 @@ export default function Research({ symbol }: { symbol: string }) {
       : undefined;
   const observedRest = retainResearchQuote(
     retainResearchQuote(priorQuote, baseResearch?.quote),
-    latestQuote.data?.[symbol]?.quote,
+    retainResearchQuote(latestQuote.data?.[symbol]?.quote, cachedQuotes(cache, [symbol])[symbol]?.quote),
   );
   const restQuote = quoteHealth(
     latestQuote.error && observedRest
@@ -184,6 +188,10 @@ export default function Research({ symbol }: { symbol: string }) {
     retainResearchQuote(observedRest, streamedQuote),
   );
   retainedQuote.current = { symbol, quote: currentQuote };
+  useEffect(() => {
+    if (!demo && currentQuote && baseResearch?.company)
+      publishQuotes(cache, {[symbol]: {company:baseResearch.company, quote:currentQuote}});
+  }, [cache, demo, symbol, currentQuote, baseResearch?.company]);
   const r = useMemo(
     () =>
       baseResearch &&
@@ -202,7 +210,7 @@ export default function Research({ symbol }: { symbol: string }) {
     [baseResearch, currentQuote],
   );
   const [tab, setTab] = useState<(typeof tabs)[number]>(
-      () => tabs.find((t) => t === requestedTab) ?? "Snapshot",
+      () => tabs.find((t) => t === (requestedTab ?? cache?.get(`view:research:${symbol}:tab`)?.value)) ?? "Snapshot",
     ),
     [range, setRange] = useState<(typeof ranges)[number]>("1Y"),
     [style, setStyle] = useState<"line" | "candles">("line"),
@@ -236,6 +244,7 @@ export default function Research({ symbol }: { symbol: string }) {
     if (next === "Technicals")
       setRetainedCharts((old) => (old.includes(next) ? old : [...old, next]));
     setTab(next);
+    cache.set(`view:research:${symbol}:tab`,{at:Date.now(),value:next});
     const url = new URL(window.location.href);
     url.searchParams.set("tab", next);
     window.history.replaceState(null, "", url);
@@ -496,6 +505,7 @@ export default function Research({ symbol }: { symbol: string }) {
         </div>
       </header>
       <StockFacts research={r} />
+      <details className="research-saved-changes"><summary>Changes since your last saved observation</summary><ResearchChanges research={r} /></details>
 
       {notice && <Notice error>{notice}</Notice>}
       {resource.error && <Notice error>{resource.error}</Notice>}

@@ -49,6 +49,7 @@ test("PWA mounted with an already-open keyboard hides navigation and restores it
     {
       compilerOptions: {
         module: ts.ModuleKind.CommonJS,
+        jsx:ts.JsxEmit.ReactJSX,
         target: ts.ScriptTarget.ES2022,
       },
     },
@@ -65,7 +66,7 @@ test("PWA mounted with an already-open keyboard hides navigation and restores it
   )(
     exports,
     (name) =>
-      name === "react" ? { useEffect: (fn) => effects.push(fn) } : mobile,
+      name === "react" ? { useEffect: (fn) => effects.push(fn), useState: v=>[v,()=>{}] } : mobile,
     window,
     document,
     Element,
@@ -76,7 +77,7 @@ test("PWA mounted with an already-open keyboard hides navigation and restores it
     (id) => frames.delete(id),
   );
   exports.default();
-  const dispose = effects[0]();
+  const dispose = effects[1]();
   const flush = () => {
     for (const [id, fn] of frames) {
       frames.delete(id);
