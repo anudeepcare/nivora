@@ -1154,3 +1154,11 @@
 .page.page.page :global(.ap-benefits small){color:#52655b}
 .page.page.page :global(.ap-benefits svg){color:#446942;background:#e7eedc}
 
+.page.page.page .closing{margin-block:32px;padding:32px;border:1px solid color-mix(in srgb,#438f86 20%,var(--line));border-radius:22px;background:linear-gradient(120deg,color-mix(in srgb,#c8e975 22%,var(--card)),color-mix(in srgb,#438f86 12%,var(--card)));gap:24px}
+.page.page.page .closing h2{font-size:clamp(26px,3vw,38px);margin:8px 0}
+.page.page.page .closing p{margin:0;font-size:15px}
+.page.page.page .footer{padding-block:24px;margin-top:0}
+.page.page.page .footer > div{padding-block:12px;gap:16px;flex-wrap:wrap}
+.page.page.page .footer nav{gap:12px 20px;flex-wrap:wrap}
+.page.page.page .footer p{font-size:12px;line-height:1.5;margin:12px 0 0}
+@media(max-width:700px){.page.page.page .closing{padding:24px;flex-direction:column;align-items:start}.page.page.page .closing .actions{flex-wrap:wrap;gap:10px}.page.page.page .footer nav{font-size:13px}}

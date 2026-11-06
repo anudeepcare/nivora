@@ -86,7 +86,8 @@
 }
 .caution {
   padding: 12px 16px;
-  border-left: 3px solid #b6ce58;
+  border: 1px solid var(--line);
+  border-radius: 10px;
   background: var(--wash);
 }
 .inputs {

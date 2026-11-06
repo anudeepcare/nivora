@@ -1,4 +1,5 @@
 "use client";
+import layout from "./FinancialExplorer.module.css";
 import { useMemo, useState } from "react";
 import type { Research } from "@/lib/types";
 import {
@@ -109,7 +110,7 @@ export default function FinancialExplorer({
   flush();
   return (
     <section
-      className="financial-explorer depth-explorer"
+      className={`financial-explorer depth-explorer ${layout.explorer}`}
       data-metric-group={catalog.find((m) => m.key === chosen)?.group}
       aria-label="Financial chart explorer"
     >

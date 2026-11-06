@@ -1,4 +1,5 @@
 "use client";
+import styles from "./Contact.module.css";
 import { APP_VERSION } from "@/lib/releases";
 import { DocumentBack } from "./ContextLink";
 import { newRequestId } from "@/lib/client-id";
@@ -66,7 +67,7 @@ export default function Contact() {
     }
   }
   return (
-    <main className="contact-page atlas-support">
+    <main className={`contact-page atlas-support ${styles.page}`}>
       <header>
         <Link href="/" className="legal-brand">
           <img src="/icon.svg" width="28" height="28" alt="" /> AURYN
@@ -156,7 +157,7 @@ export default function Contact() {
             {imageBusy && <p role="status">Preparing screenshot…</p>}
             {screenshot && <div><img src={screenshot} alt="Screenshot selected for support" style={{maxWidth:'100%',maxHeight:240,objectFit:'contain'}}/><button type="button" onClick={()=>setScreenshot('')}>Remove screenshot</button></div>}
             <p className="small muted">Review the image and remove private details before sending. Image metadata is removed when preparing it.</p>
-            <label><input type="checkbox" checked={includeDiagnostics} onChange={e=>setIncludeDiagnostics(e.target.checked)} disabled={busy}/> Include app version, page category and screen size</label>
+            <label className={styles.diagnostics}><input type="checkbox" checked={includeDiagnostics} onChange={e=>setIncludeDiagnostics(e.target.checked)} disabled={busy}/> Include app version, page category and screen size</label>
             <p className="small muted">No ticker, holdings, notes, URL parameters or account details are added.</p>
             <label className="contact-honeypot" aria-hidden="true">
               Website

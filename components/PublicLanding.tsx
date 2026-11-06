@@ -503,6 +503,7 @@ export default function PublicLanding({
             <PublicBrand />
             <nav className="ap-nav" aria-label="Main navigation">
               <Link href="/#how-it-works">Product</Link>
+            <Link href="/sample">Product guide</Link>
               <Link href="/pricing">Pricing</Link>
             </nav>
             <div className="ap-header-actions">
@@ -716,57 +717,14 @@ export default function PublicLanding({
         </div>
       </section>
       <section
-        className={`${landing.faq} ap-container`}
-        aria-labelledby="faq-heading"
-      >
-        <div>
-          <span className={landing.eyebrow}>A FEW THINGS TO KNOW</span>
-          <h2 id="faq-heading">Before you begin.</h2>
-        </div>
-        <div>
-          <details>
-            <summary>Can I explore AURYN without an account?</summary>
-            <p>
-              Yes. Use the interactive demo above or{" "}
-              <Link href="/sample">explore the product guide</Link>. The
-              examples explain the research process and contain no live
-              investment recommendation.
-            </p>
-          </details>
-          <details>
-            <summary>Does Pace tell me to buy or sell?</summary>
-            <p>
-              No. Pace adds monthly price context to a business you have already
-              assessed. P0 pauses additions; it does not mean Sell. Business
-              quality, valuation, risk and your position limits still matter.
-            </p>
-          </details>
-          <details>
-            <summary>What happens when the evidence is incomplete?</summary>
-            <p>
-              An incomplete assessment stays in Review with the missing check
-              explained. A price move alone does not establish a business case.
-            </p>
-          </details>
-          <details>
-            <summary>How do I choose a plan?</summary>
-            <p>
-              Start with Free and compare the available features and limits on
-              the <Link href="/pricing">pricing page</Link>. Choose Pro when its
-              additional research tools fit your needs.
-            </p>
-          </details>
-        </div>
-      </section>
-      <section
         className={`${landing.closing} ap-container`}
         aria-labelledby="ap-closing-heading"
       >
         <div>
           <span className={landing.eyebrow}>
-            YOUR NEXT INVESTMENT STARTS WITH A BETTER QUESTION
+            YOUR RESEARCH. YOUR PACE.
           </span>
-          <h2 id="ap-closing-heading">Make room for a clearer decision.</h2>
+          <h2 id="ap-closing-heading">A clearer view starts here.</h2>
           <p>Start with Free. Go deeper with Pro when you’re ready.</p>
         </div>
         <div className={landing.actions}>
@@ -778,11 +736,12 @@ export default function PublicLanding({
           </Link>
         </div>
       </section>
-      <footer className={`${experience.publicFooter} ap-container`}>
+      <footer className={`${experience.publicFooter} ${landing.footer} ap-container`}>
         <div className={experience.footerMain}>
           <PublicBrand />
           <nav aria-label="Footer navigation">
             <Link href="/#how-it-works">Product</Link>
+            <Link href="/sample">Product guide</Link>
             <Link href="/pricing">Pricing</Link>
             <ContextLink page="help">Help</ContextLink>
             <Link href="/about">About</Link>

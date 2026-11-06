@@ -20,3 +20,17 @@
 .document.document.document :global(.document-reading) h1{font-size:32px;line-height:1.2;margin:12px 0 16px}
 .document.document.document :global(.help-search) input{font-weight:400;font-size:16px}
 @media(max-width:600px){.document.document.document :global(.document-reading) h1{font-size:26px}.document.document.document :global(.document-layout)>nav{gap:4px}.document.document.document :global(.document-layout)>nav a{font-size:12px;padding:8px}}
+.document.document.document :global(.document-reading){max-width:820px}
+.document.document.document :global(.document-layout)>nav{padding:8px;margin-bottom:24px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+.document.document.document :global(.document-layout)>nav a[aria-current=page]{background:color-mix(in srgb,#438f86 12%,var(--card));color:var(--ink);font-weight:550}
+.document.document.document :global(.document-reading)>h1{margin:10px 0 12px;font-size:32px;line-height:1.2}
+.document.document.document :global(.legal-intro){font-size:16px;line-height:1.6;margin:0 0 12px}
+.document.document.document :global(.document-updated){margin:0 0 24px;font-size:12px}
+.document.document.document :global(.document-sections){display:grid;gap:12px}
+.document.document.document :global(.document-sections)>section{padding:20px;border:1px solid var(--line);border-radius:14px;background:var(--card);margin:0}
+.document.document.document :global(.document-sections)>section:nth-child(3n+1){background:color-mix(in srgb,#438f86 4%,var(--card))}
+.document.document.document :global(.document-sections) h2{font-size:18px;line-height:1.4;margin:0 0 10px}
+.document.document.document :global(.document-sections) p{font-size:14px;line-height:1.75;margin:0;max-width:75ch}
+.document.document.document > footer{display:flex;align-items:center;flex-wrap:wrap;gap:12px 20px;padding:20px 0;margin-top:20px;font-size:12px}
+.document.document.document > footer p{margin:0}
+@media(max-width:600px){.document.document.document :global(.document-reading)>h1{font-size:27px}.document.document.document :global(.document-sections)>section{padding:16px}}

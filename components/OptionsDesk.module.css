@@ -209,10 +209,9 @@
 .desk.desk :global(.options-insight-grid) > article {
   min-width: 0;
   padding: 10px 14px;
-  border: 0;
-  border-left: 2px solid var(--line);
-  border-radius: 0;
-  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: color-mix(in srgb, #438d84 7%, var(--card));
 }
 .desk.desk :global(.options-insight-grid) strong {
   display: block;
@@ -245,7 +244,7 @@
 }
 .desk.desk :global(.options-plot) {
   width: 100%;
-  max-width: 1000px;
+  max-width: none;
   margin: 12px 0 6px;
 }
 .desk.desk :global(.options-plot) svg {

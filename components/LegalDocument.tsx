@@ -26,7 +26,7 @@ export default function LegalDocument({ id }: { id: DocumentId }) {
       <div className="document-layout">
         <nav aria-label="Help and legal documents">
           {(Object.keys(documents) as DocumentId[]).map((k) => (
-            <ContextLink key={k} page={k}>
+            <ContextLink key={k} page={k} aria-current={k === id ? "page" : undefined}>
               {k === "risk"
                 ? "Risk disclosure"
                 : k[0].toUpperCase() + k.slice(1)}

@@ -95,7 +95,7 @@
   font-size: 13px;
 }
 .panel :global(.financial-detail-groups) > section {
-  align-self: start;
+  align-self: stretch;
   background: linear-gradient(
     130deg,
     var(--card) 75%,
@@ -322,3 +322,29 @@
     min-height: 40px;
   }
 }
+
+/* Shared research rhythm: a compact ledger, with color on surfaces not edges. */
+.panel.panel.panel.panel :global(.technical-desk-groups){gap:16px;align-items:start}
+.panel.panel.panel.panel :global(.technical-desk-groups) > section{padding:18px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(135deg,color-mix(in srgb,#438f86 7%,var(--card)),var(--card) 65%)}
+.panel.panel.panel.panel :global(.technical-desk-groups) > section[data-tone=violet]{background:linear-gradient(135deg,color-mix(in srgb,#8c6bcc 8%,var(--card)),var(--card) 65%)}
+.panel.panel.panel.panel :global(.technical-desk-groups) > section[data-tone=amber]{background:linear-gradient(135deg,color-mix(in srgb,#bb7a31 8%,var(--card)),var(--card) 65%)}
+.panel.panel.panel.panel :global(.technical-desk-groups) header{margin:0 0 8px;padding:0 0 8px}
+.panel.panel.panel.panel :global(.technical-desk-groups) h3{font-size:18px}
+.panel.panel.panel.panel :global(.technical-desk-groups) header p{font-size:12px;line-height:1.5;margin:6px 0 0}
+.panel.panel.panel.panel :global(.technical-desk-groups) dl{display:block;margin:0}
+.panel.panel.panel.panel :global(.technical-desk-groups) dl > div{min-height:42px;padding:9px 0;margin:0;gap:12px;align-items:center;border-top:0;border-bottom:1px solid var(--line)}
+.panel.panel.panel.panel :global(.technical-desk-groups) dt{font-size:13px}
+.panel.panel.panel.panel :global(.technical-desk-groups) dd{font-size:16px;line-height:1.4;max-width:none}
+.panel.panel.panel.panel :global(.statement-snapshot){margin:12px 0 18px;gap:10px}
+.panel.panel.panel.panel :global(.statement-snapshot) > div{padding:12px 14px;min-height:52px}
+.panel.panel.panel.panel :global(.financial-detail-groups){grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:stretch}
+.panel.panel.panel.panel :global(.financial-detail-groups) > section{padding:16px;margin:0;border:1px solid var(--line);border-radius:14px}
+.panel.panel.panel.panel :global(.financial-detail-groups) > section:first-child{grid-row:span 2}
+.panel.panel.panel.panel :global(.financial-detail-groups) h3{margin:0 0 8px;font-size:16px}
+.panel.panel.panel.panel :global(.detail-metric){padding:10px 0;gap:5px 12px}
+.panel.panel.panel.panel :global(.detail-metric) strong{font-size:20px}
+@media(max-width:700px){.panel.panel.panel.panel :global(.financial-detail-groups){grid-template-columns:1fr}.panel.panel.panel.panel :global(.financial-detail-groups)>section:first-child{grid-row:auto}.panel.panel.panel.panel :global(.technical-desk-groups) dd{font-size:15px}}
+.panel.panel.panel.panel:global(.financial-picture){gap:12px}
+.panel.panel.panel.panel :global(.statement-snapshot){margin:0}
+.panel.panel.panel.panel :global(.financial-detail-groups){margin:4px 0 0}
+.panel.panel.panel.panel :global(.financial-detail-groups)>section:first-child:has(+section:last-child){grid-row:auto}

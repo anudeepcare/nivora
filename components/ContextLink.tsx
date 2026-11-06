@@ -9,10 +9,12 @@ export function ContextLink({
   page,
   children,
   className,
+  "aria-current": ariaCurrent,
 }: {
   page: string;
   children: ReactNode;
   className?: string;
+  "aria-current"?: "page";
 }) {
   const pathname = usePathname();
   const query = useSearchParams().toString();
@@ -32,6 +34,7 @@ export function ContextLink({
     <Link
       href={href}
       className={className}
+      aria-current={ariaCurrent}
       onNavigate={(event) => {
         event.preventDefault();
         router.push(
