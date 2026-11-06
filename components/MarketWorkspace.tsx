@@ -80,45 +80,12 @@ function AccountBoard(props: {
     }
   }
   const path = `market-workspace/${encodeURIComponent(props.symbol)}`;
-  return (
-    <div className={s.workspace}>
-      <ExposureBoard
-        {...props}
-        externalSnapshot={selected}
-        onExitReplay={() => {
-          setIndex(-1);
-          setPlaying(false);
-        }}
-        accountPresets={accountPresets}
-        onPresetsChanged={setPresets}
-        onCreateAlert={(cell, type) =>
-          void action(async () => {
-            await api("documents", {
-              kind: "alert",
-              key: crypto.randomUUID(),
-              body: {
-                name: `${props.symbol} ${cell.strike} exposure`,
-                symbol: props.symbol,
-                type,
-                threshold: type === "exposure-change" ? 20 : cell.strike,
-                referenceStrike: cell.strike,
-                expiry: cell.expiry,
-                exposureRole: "fixed",
-                marginPercent: 0.5,
-                enabled: true,
-              },
-            });
-            setMessage(
-              "Exposure rule saved. It is evaluated during supported alert checks, not continuously between checks.",
-            );
-          })
-        }
-      />
-      <details className={s.account} aria-label="Account market history">
-        <summary>
-          <Cloud size={18} /> History & saved views{" "}
+  const accountTools = (
+      <section className={s.account} aria-label="Account market history">
+        <h4>
+          <Cloud size={18} /> Account checkpoints{" "}
           <small> · {snapshots.length} checkpoints</small>
-        </summary>
+        </h4>
         <p>
           Saved checkpoints replay the observations captured in your account.
         </p>
@@ -230,7 +197,44 @@ function AccountBoard(props: {
             {selected.frequency} · {selected.window}
           </p>
         )}
-      </details>
+      </section>
+  );
+  return (
+    <div className={s.workspace}>
+      <ExposureBoard
+        {...props}
+        accountTools={accountTools}
+        externalSnapshot={selected}
+        onExitReplay={() => {
+          setIndex(-1);
+          setPlaying(false);
+        }}
+        accountPresets={accountPresets}
+        onPresetsChanged={setPresets}
+        onCreateAlert={(cell, type) =>
+          void action(async () => {
+            await api("documents", {
+              kind: "alert",
+              key: crypto.randomUUID(),
+              body: {
+                name: `${props.symbol} ${cell.strike} exposure`,
+                symbol: props.symbol,
+                type,
+                threshold: type === "exposure-change" ? 20 : cell.strike,
+                referenceStrike: cell.strike,
+                expiry: cell.expiry,
+                exposureRole: "fixed",
+                marginPercent: 0.5,
+                enabled: true,
+              },
+            });
+            setMessage(
+              "Exposure rule saved. It is evaluated during supported alert checks, not continuously between checks.",
+            );
+          })
+        }
+      />
+
       {message && (
         <p className={s.feedback} role="status">
           {message}

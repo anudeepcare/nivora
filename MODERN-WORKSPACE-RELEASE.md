@@ -38,3 +38,11 @@ Email delivery remains an open production issue. Vercel settings are present but
 Admin now uses one scoped stylesheet replacing the previous stacked overrides. Removed summary cards and the wide preview band. Inline member counts and a small preview selector share the header; slim tabs lead directly to the member toolbar and table. Grant and Extend use one native modal with focus containment, Escape handling and close-on-success. Features use aligned setting rows; Payments and Support use the same compact section system. Existing authorization, API payloads and billing behavior are preserved.
 
 Focused owner authorization and grant/extend interaction tests passed. Real grants and payments were not executed. Contact email delivery remains unresolved as documented above.
+
+## Options clarity and mobile controls — November 6, 2026
+- Phone and touch date selectors use one native picker; the search popup no longer opens ahead of the operating-system picker.
+- Price levels and Calls & puts lead the Options navigation. A compact summary identifies the most-traded call and put strikes for the selected expiration, with source dates, session volume and distance from the stock price. Mixed observation dates and duplicate contract IDs are not combined.
+- Gamma map starts with the selected expiration and 12 nearby strikes. Column labels distinguish expiration dates from observation dates; zero net exposure is not promoted as a concentration. Weekly contracts are not relabeled as daily data.
+- Mobile range/price summary stacks without collisions. Simulation labels wrap safely. Saved device views and account checkpoints share one compact expandable area with full-width mobile fields.
+- Home Pace groups size to their own content rather than stretching empty columns.
+- Validation: 61 focused options/exposure tests passed; production build and populated browser fixture checks recorded separately. Fixture data is synthetic and is not shipped. Live provider coverage, actual iOS picker behavior and production latency require deployed-device verification.

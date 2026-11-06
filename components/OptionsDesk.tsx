@@ -1,5 +1,6 @@
 "use client";
 import { volatilityContext, rankContracts } from "@/lib/options-context";
+import OptionsSnapshot from "./OptionsSnapshot";
 import SearchableSelect from "./SearchableSelect";
 import MarketWorkspace from "./MarketWorkspace";
 import VannaMap from "./VannaMap";
@@ -199,7 +200,7 @@ export default function OptionsDesk({
   const contracts =
     chain?.symbol === research.company.symbol ? chain.contracts : [];
   const expiries = knownExpiries;
-  const active = expiry || expiries[0] || "";
+  const active = expiry || expiries.find((date) => contracts.some((c) => c.expiry === date)) || expiries[0] || "";
   const summary = useMemo(
     () =>
       optionsSummary(
@@ -367,9 +368,9 @@ export default function OptionsDesk({
         </div>
         <div className="options-expiry-picker">
           <SearchableSelect
-            label="Options expiration"
+            label="Expiration date"
             value={active}
-            disabled={!expiries.length || busy}
+            disabled={!expiries.length}
             onChange={chooseExpiry}
             options={expiries.map((date) => ({
               value: date,
@@ -381,14 +382,14 @@ export default function OptionsDesk({
       </header>
       <nav className="options-nav" aria-label="Options sections">
         {[
-          ["positioning", "Market map"],
+          ["positioning", "Price levels"],
+          ["chain", "Calls & puts"],
+          ["learn", "Guide"],
           ["vanna", "Vanna"],
           ["flow", "Trade tape"],
           ["simulation", "Simulation"],
-          ["chain", "Contracts"],
           ["leaps", "Long-term"],
           ["strategy", "Strategy"],
-          ["learn", "Guide"],
         ].map(([id, label]) => (
           <button
             key={id}
@@ -444,7 +445,7 @@ export default function OptionsDesk({
                   {expiryLabel(active)} · {days} days
                 </span>
                 <span className={deskStyles.rangeLabel}>
-                  Option-priced move at expiration
+                  Option-priced range
                 </span>
                 <h3>
                   {summary.straddle !== null && spot > 0
@@ -460,7 +461,7 @@ export default function OptionsDesk({
                 </p>
               </div>
               <div className="options-hero-meta">
-                <span>Underlying</span>
+                <span>Stock price</span>
                 <strong>{spot > 0 ? amount(spot) : "Not priced"}</strong>
                 <small>Options · {observed}</small>
                 <small>
@@ -494,17 +495,16 @@ export default function OptionsDesk({
           )}
           {view === "positioning" && (
             <>
+              <OptionsSnapshot contracts={summary.rows} spot={spot} expiry={active} />
               {!hasGamma && !hasOi && (
                 <section className="options-empty options-empty-inline">
                   <Activity size={28} />
                   <div>
                     <h3>
-                      Prices are available. Positioning is not yet measurable.
+                      Gamma inputs unavailable
                     </h3>
                     <p>
-                      This snapshot lacks usable gamma or open interest. There
-                      is no supported GEX, gamma flip or positioning heatmap to
-                      show.
+                      This expiration has no usable gamma or open-interest inputs. Call and put prices may still be available.
                     </p>
                     <button
                       type="button"

@@ -57,7 +57,7 @@ function render(chain) {
     (name) => {
       if (name === "./SearchableSelect") return {__esModule:true,default:({label})=>React.createElement("button",null,label)};
       if (name === "./MarketWorkspace") return {__esModule:true,default:()=>React.createElement("section",null,"Exposure workspace")};
-      if (["./VannaMap", "./OptionsTape", "./OptionsSimulation"].includes(name)) return {__esModule:true,default:()=>null};
+      if (["./VannaMap", "./OptionsTape", "./OptionsSimulation", "./OptionsSnapshot"].includes(name)) return {__esModule:true,default:()=>null};
       if (name === "react") return hooks;
       if (name === "react/jsx-runtime") return jsx;
       if (name === "lucide-react") return icons;
@@ -99,10 +99,10 @@ test("Options populated snapshot renders range, gamma coverage and expiration co
     frequency: "Indicative feed: synthetic QA",
     fetchedAt: new Date().toISOString(),
   });
-  assert.match(html, /Option-priced move at expiration/);
+  assert.match(html, /Option-priced range/);
   assert.match(html, /Estimated net gamma/);
   assert.match(html, /100% input coverage/);
-  assert.match(html, /Options expiration/);
+  assert.match(html, /Expiration date/);
   assert.doesNotMatch(html, /NaN|Infinity/);
 });
 test("Options no-input state explains absence and does not invent a range", () => {
@@ -110,7 +110,7 @@ test("Options no-input state explains absence and does not invent a range", () =
   assert.match(html, /No options snapshot available/);
   assert.doesNotMatch(
     html,
-    /Estimated net gamma|Option-priced move at expiration/,
+    /Estimated net gamma|Option-priced range/,
   );
 });
 test("partial gamma inputs never render an aggregate net gamma total",()=>{
