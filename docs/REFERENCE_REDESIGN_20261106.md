@@ -27,3 +27,7 @@ Live authentication was unavailable in the local preview and was not end-to-end 
 ## Run
 
 Use the existing environment setup and installation instructions. Run `npm ci`, `npm test`, and `npm run build`. Environment secrets and generated output are excluded from this archive.
+
+
+## Mobile alignment follow-up
+See verification/mobile-polish-validation.md for compact mobile ledgers, glass top navigation, Commissioner typography, contrast and footer/settings corrections. This source update is not deployed.

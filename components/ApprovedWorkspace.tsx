@@ -1715,14 +1715,6 @@ export function Watchlist() {
           <strong>{all.length}</strong>
           <p>Companies in your watchlist</p>
         </div>
-        <div>
-          <span className="eyebrow">YOUR NEXT QUESTION</span>
-          <h2>
-            What would make this
-            <br />a better decision?
-          </h2>
-          <p>Connect the price with the business, then set your checkpoint.</p>
-        </div>
         <Link className="btn" href={`${prefix}/alerts`}>
           Create a price alert <ArrowUpRight size={16} />
         </Link>

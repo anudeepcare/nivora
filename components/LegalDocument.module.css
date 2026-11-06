@@ -1,3 +1,14 @@
 .document :global(.document-reading .document-eyebrow) {
   color: var(--ink);
 }
+
+
+.document>footer{display:flex;align-items:center;flex-wrap:wrap;gap:12px 24px;padding:20px 0;font-size:12px}
+.document>footer p{margin:0}
+.document>footer button{display:inline-flex;align-items:center;gap:6px;border:0;background:transparent;color:var(--muted);font:inherit;padding:0;min-height:36px}
+.document :global(.document-layout){display:block;max-width:1000px;margin:auto}
+.document :global(.document-layout)>nav{display:flex;flex-wrap:wrap;gap:6px 18px;padding:16px 0;margin-bottom:24px;border-bottom:1px solid var(--line)}
+.document :global(.document-layout)>nav a{padding:5px 0;font-size:12px}
+.document :global(.document-reading){max-width:760px;margin:0 auto}
+@media(max-width:600px){.document>footer{gap:8px 16px}.document :global(.document-layout)>nav{gap:4px 14px;margin-bottom:18px}}
+

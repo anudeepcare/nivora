@@ -75,7 +75,7 @@ export default function LegalDocument({ id }: { id: DocumentId }) {
         <a href={`mailto:${legalConfiguration.contact}`}>
           {legalConfiguration.contact}
         </a>
-        <PrivacyChoices />
+        <PrivacyChoices compact />
         <span>© {new Date().getFullYear()} AURYN. All rights reserved.</span>
       </footer>
     </main>

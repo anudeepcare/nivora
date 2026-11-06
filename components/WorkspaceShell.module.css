@@ -111,3 +111,21 @@
 .shell .content{padding:18px 14px calc(24px + env(safe-area-inset-bottom))}
 .shell .searchTrigger{order:3;min-height:42px}
 }
+
+
+/* Compact glass chrome: two rows on phones, search opens the existing dialog. */
+@media(max-width:767px){
+.shell .header{display:flex;align-items:center;gap:4px 8px;padding-bottom:6px;background:color-mix(in srgb,var(--chrome-surface) 88%,transparent);backdrop-filter:blur(24px) saturate(125%);-webkit-backdrop-filter:blur(24px) saturate(125%);box-shadow:0 4px 18px #18272406}
+.shell .brand{order:0;flex:1;font-size:16px;letter-spacing:.12em}
+.shell .brand img{width:26px;height:30px}
+.shell .searchTrigger{order:1;flex:0 0 44px;width:44px;min-width:44px;height:44px;min-height:44px;margin:0;padding:0;display:grid;place-items:center;border:0;background:transparent;border-radius:50%}
+.shell .searchTrigger span,.shell .searchTrigger kbd{display:none}
+.shell .actions{order:2;margin:0}
+.shell .header .nav{order:3;flex:1 0 100%;padding:3px;border:1px solid color-mix(in srgb,var(--line) 75%,transparent);background:color-mix(in srgb,var(--card) 65%,transparent);border-radius:14px;gap:2px}
+.shell .header .nav a{flex:1;justify-content:center;border-radius:10px;font-size:11px;padding:6px 3px;gap:4px;min-height:40px}
+.shell .header .nav a[aria-current="page"]{background:var(--card);box-shadow:0 1px 5px #12251b10;border-radius:10px}
+.shell .header .nav a[aria-current="page"]::after{display:none}
+.shell .content{padding-top:14px}
+}
+@media(prefers-reduced-transparency:reduce){.shell .header{background:var(--chrome-surface);backdrop-filter:none}}
+

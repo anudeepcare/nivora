@@ -704,3 +704,19 @@
 /* The plot owns its internals; avoid a second nested card frame. */
 .chart :global(.plot-section) { border:0; border-radius:0; box-shadow:none; padding:0; background:transparent; }
 
+
+
+.stockHeader{gap:16px;padding:0 0 8px;align-items:start}
+.stockIdentity{border:0;padding:0;gap:12px}
+.stockIdentity h1{font-size:26px;line-height:1.2;font-weight:600;margin-bottom:4px}
+.stockIdentity :global(.security-context){font-size:11px;margin-top:3px}
+.stockPrice strong{font-size:28px}
+@media(max-width:650px){
+.stockHeader{gap:8px}
+.stockIdentity h1{font-size:21px}
+.stockIdentity> :first-child{width:40px;height:40px;flex:0 0 40px}
+.stockIdentity :global(.security-context){display:none}
+.stockPrice{gap:8px}.stockPrice strong{font-size:25px}.stockPrice>div{gap:3px 10px;max-width:none}
+.stockPrice :global(.data-stamp){font-size:10px}
+}
+

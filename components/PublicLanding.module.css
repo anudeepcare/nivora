@@ -1145,3 +1145,12 @@
 @media(max-width:850px){.page.page .hero{grid-template-columns:1fr;padding:36px 24px;gap:30px}.page .heroCopy h1{font-size:40px}.page .heroVisual{max-width:640px;width:100%;margin:auto}}
 
 .page .previewCaption > span{color:#53645b}
+
+
+/* Light benefits row must not inherit the dark product-demo palette. */
+.page.page.page :global(.ap-benefits){padding-block:18px;border-color:#dce4de}
+.page.page.page :global(.ap-benefits > span){background:transparent;border:0;padding:10px 0}
+.page.page.page :global(.ap-benefits strong){color:#263c31}
+.page.page.page :global(.ap-benefits small){color:#52655b}
+.page.page.page :global(.ap-benefits svg){color:#446942;background:#e7eedc}
+
