@@ -141,7 +141,7 @@ export default function ApprovedPortfolioChart({
   return (
     <div ref={container} className={styles.chart}>
       <p className="chart-note" role="status"><strong>{loading ? 'Loading holdings history…' : chart.excluded.length ? 'Partial holdings history' : 'Holdings price history'}</strong> · {chart.included.length} holdings included. Cash, managed balances and margin are excluded.</p>
-      {chart.points.length > 1 && <p className="chart-note">Historical subtotal on {dateLabel(chart.points.at(-1)!.time)}: <strong>{amount(chart.points.at(-1)!.value, 'USD')}</strong>. These same holdings at latest available quotes: <strong>{amount(positions.reduce((total,p)=>total+(p.assetType !== 'cash' && chart.included.includes(p.symbol) ? Number(p.quantity || 0)*(quotes[p.symbol]?.quote?.price || 0) : 0),0),'USD')}</strong>. This chart is not your full account balance.</p>}
+      {chart.points.length > 1 && <><dl className={styles.totals}><div><dt>Historical value · {dateLabel(chart.points.at(-1)!.time)}</dt><dd>{amount(chart.points.at(-1)!.value,'USD')}</dd></div><div><dt>Same holdings · latest quotes</dt><dd>{amount(positions.reduce((total,p)=>total+(p.assetType!=='cash'&&chart.included.includes(p.symbol)?Number(p.quantity||0)*(quotes[p.symbol]?.quote?.price||0):0),0),'USD')}</dd></div></dl><p className="chart-note">Values cover the included holdings, not your full account balance.</p></>}
       {chart.points.length > 1 && <div className={styles.inspection} aria-live="polite" aria-atomic="true">
         {selectedPoint ? <><span>{dateLabel(selectedPoint.time)} · Value of included holdings</span><strong>{amount(selectedPoint.value, "USD")}</strong></> : <span>Hover or touch the chart to inspect a date. Use arrow keys when focused.</span>}
       </div>}

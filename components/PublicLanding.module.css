@@ -1168,3 +1168,10 @@
 .page.page.page :global(.ap-menu-button:focus-visible){outline:2px solid #367b70;outline-offset:3px}
 .page.page.page :global(.ap-mobile-navigation){background:#fafbf9;color:#26332f;border:1px solid #dce3dd;box-shadow:0 12px 28px #172b2014;z-index:30}
 .page.page.page :global(.ap-mobile-navigation a){color:#26332f;min-height:44px;display:flex;align-items:center;padding:10px 14px}
+
+@media(max-width:760px){
+.page.page.page :global(.ap-mobile-navigation){position:static;margin:0 20px 16px;box-shadow:none;border-radius:12px;grid-template-columns:1fr 1fr}
+.page.page.page :global(.ap-header-inner){min-height:68px;gap:12px}
+.page.page.page :global(.ap-brand){font-size:20px;letter-spacing:2px}
+.page.page.page :global(.ap-menu-button){box-shadow:none}
+}

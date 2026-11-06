@@ -2402,7 +2402,7 @@ test("Pace help opens a labelled portal dialog and clears state when native clos
   });
   const render = () =>
     Help({
-      label: "How AURYN Pace works",
+      label: "How AURYN Accumulation Pace works",
       children: React.createElement(
         "p",
         null,
@@ -2412,7 +2412,7 @@ test("Pace help opens a labelled portal dialog and clears state when native clos
   let tree = render();
   const trigger = tree.props.children[0];
   assert.equal(trigger.props["aria-haspopup"], "dialog");
-  assert.equal(trigger.props["aria-label"], "About How AURYN Pace works");
+  assert.equal(trigger.props["aria-label"], "About How AURYN Accumulation Pace works");
   assert.equal(tree.props.children[1], false);
   trigger.props.onClick();
   tree = render();
@@ -2432,7 +2432,7 @@ test("Pace instrument renders the shared dialog trigger without an inline help p
   const html = renderToStaticMarkup(
     React.createElement(PaceInstrument, { publicGuide: true }),
   );
-  assert.match(html, /aria-label="About How AURYN Pace works"/);
+  assert.match(html, /aria-label="About How AURYN Accumulation Pace works"/);
   assert.match(html, /aria-haspopup="dialog"/);
   assert.doesNotMatch(html, /<dialog/);
 });

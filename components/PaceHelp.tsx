@@ -7,8 +7,8 @@ import {
 import { Help } from "./Ui";
 export default function PaceHelp({ trigger }: { trigger?: string }) {
   return (
-    <Help label="How AURYN Pace works" trigger={trigger}>
-      <p>Pace combines a monthly price zone with business and data checks to guide gradual contributions.</p>
+    <Help label="How AURYN Accumulation Pace works" trigger={trigger}>
+      <p>Accumulation Pace describes how gradually to build a position. It combines a monthly price zone with business and data checks to guide gradual contributions.</p>
       <p><strong>Read the action first.</strong> P0 pauses additions; P1 means watch or hold; P2 means start small; P3 means add gradually; P4 means the highest planned accumulation within your limits. These are decision stages, not required purchase multipliers.</p>
       <p><strong>When it changes:</strong> confirmed price readings use completed periods. The developing reading can move during the current period. New financial evidence can change the business assessment.</p>
       <details open>

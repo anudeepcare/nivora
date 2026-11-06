@@ -162,7 +162,7 @@ test("public home leads with the benefit and an account action without fabricate
   assert.match(html, /href="#how-it-works"[^>]*>Explore the product/);
 
   assert.match(html, /href="\/login\?mode=signup"[^>]*>Get started/);
-  assert.match(html, /AURYN Pace/);
+  assert.match(html, /AURYN Accumulation Pace/);
   assert.match(html, /Product walkthrough/);
   assert.match(html, /Compare your next contribution/);
   assert.match(html, /Question the price/);
@@ -192,7 +192,7 @@ test("public and account previews explain Pace without fictional company results
       React.createElement(PublicSample, { compact }),
     );
     assert.match(html, /Illustrative product guide/);
-    assert.match(html, /AURYN Pace/);
+    assert.match(html, /AURYN Accumulation Pace/);
     assert.match(html, /not predicted returns/);
     assert.match(html, /Completed month · confirmed/);
     assert.match(html, /Current month · forming/);

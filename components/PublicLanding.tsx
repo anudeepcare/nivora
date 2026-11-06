@@ -140,7 +140,7 @@ export function PublicSample({ compact = false }: { compact?: boolean } = {}) {
           </div>
           {index === 2 && (
             <p className="signal-demo-note">
-              AURYN Pace: P0 Pause · P1 Watch · P2 Initial · P3 Deeper · P4
+              AURYN Accumulation Pace: P0 Pause · P1 Watch · P2 Initial · P3 Deeper · P4
               Deep. Completed month · confirmed. Current month · forming. Price
               zones, not predicted returns. Risk and business checks still
               apply.
@@ -437,7 +437,7 @@ function ProductWalkthrough() {
         <details>
           <summary>
             <span>03</span>
-            <strong>Your AURYN Pace</strong>
+            <strong>Your AURYN Accumulation Pace</strong>
             <ArrowRight size={18} aria-hidden="true" />
           </summary>
           <div>
@@ -640,7 +640,7 @@ export default function PublicLanding({
             <div>
               <h3>Where should the next contribution go?</h3>
               <p>
-                Compare business evidence, valuation and AURYN Pace. See the dates and missing inputs.
+                Compare business evidence, valuation and AURYN Accumulation Pace. See the dates and missing inputs.
               </p>
             </div>
           </article>
@@ -749,7 +749,7 @@ export default function PublicLanding({
             <ContextLink page="help">Help</ContextLink>
             <Link href="/about">About</Link>
             <ContextLink page="changelog">What’s new</ContextLink>
-            <Link href="/pace">AURYN Pace</Link>
+            <Link href="/pace">AURYN Accumulation Pace</Link>
             <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
           </nav>
         </div>
