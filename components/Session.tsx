@@ -1,4 +1,5 @@
 "use client";
+import { invalidateResource } from "@/lib/resource-cache";
 import { usePathname, useRouter } from "next/navigation";
 import { authDestination, authErrorMessage } from "@/lib/auth-navigation";
 import {
@@ -410,7 +411,7 @@ export function useResource<T>(key: string | null, preview?: T, ttl = 60_000) {
     };
   }, [key, cache, demo, revision, ttl]);
   const refresh = () => {
-    if (key) cache.delete(key);
+    if (key) invalidateResource(cache, key);
     setRevision((r) => r + 1);
   };
   if (demo)

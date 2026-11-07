@@ -1,0 +1,221 @@
+✖ global consent owns its styles without loading the private workspace stylesheet (6.829867ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 541.755632
+
+✖ failing tests:
+
+test at tests/public-consent-style.test.mjs:4:1
+✖ global consent owns its styles without loading the private workspace stylesheet (6.829867ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /import s from "\.\/AnalyticsConsent.module.css"/. Input:
+  
+  '"use client";\n' +
+    'import { useEffect, useRef, useState } from "react";\n' +
+    'import { usePathname } from "next/navigation";\n' +
+    'import Link from "next/link";\n' +
+    'import {\n' +
+    '  analyticsPath,\n' +
+    '  safeAnalyticsEvent,\n' +
+    '  validMeasurementId,\n' +
+    '} from "@/lib/analytics-policy";\n' +
+    'import { SITE_URL } from "@/lib/site-metadata";\n' +
+    'import { ChartNoAxesCombined, ChevronRight } from "lucide-react";\n' +
+    'const KEY = "auryn-analytics-consent-v1";\n' +
+    'const ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "";\n' +
+    'type AnalyticsWindow = Window & {\n' +
+    '  dataLayer?: unknown[];\n' +
+    '  gtag?: (...args: unknown[]) => void;\n' +
+    '  [key: `ga-disable-${string}`]: boolean | undefined;\n' +
+    '};\n' +
+    'export function PrivacyChoices({ compact = false }: { compact?: boolean }) {\n' +
+    '  return (\n' +
+    '    <button\n' +
+    '      type="button"\n' +
+    '      className={\n' +
+    '        compact\n' +
+    '          ? "footer-analytics-choice"\n' +
+    '          : "text-link settings-analytics-button"\n' +
+    '      }\n' +
+    '      onClick={() => window.dispatchEvent(new Event("auryn:privacy"))}\n' +
+    '    >\n' +
+    '      {!compact && <ChartNoAxesCombined size={18} aria-hidden="true" />}\n' +
+    '      <span>Analytics preferences</span>\n' +
+    '      {!compact && <ChevronRight size={17} aria-hidden="true" />}\n' +
+    '    </button>\n' +
+    '  );\n' +
+    '}\n' +
+    'export default function AnalyticsConsent() {\n' +
+    '  const pathname = usePathname(),\n' +
+    '    path = analyticsPath(pathname);\n' +
+    '  const [choice, setChoice] = useState<string | null>(null),\n' +
+    '    [open, setOpen] = useState(false),\n' +
+    '    [loaded, setLoaded] = useState(false);\n' +
+    '  const measuredLcp = useRef(false);\n' +
+    '  const last = useRef<string | null>(null),\n' +
+    '    pathRef = useRef(path);\n' +
+    '  pathRef.current = path;\n' +
+    '  const enabled = validMeasurementId(ID);\n' +
+    '  useEffect(() => {\n' +
+    '    let value = null;\n' +
+    '    try {\n' +
+    '      value = localStorage.getItem(KEY);\n' +
+    '    } catch {}\n' +
+    '    setChoice(value);\n' +
+    '    setOpen(enabled && value !== "accepted" && value !== "declined");\n' +
+    '    const show = () => setOpen(true);\n' +
+    '    window.addEventListener("auryn:privacy", show);\n' +
+    '    return () => window.removeEventListener("auryn:privacy", show);\n' +
+    '  }, [enabled]);\n' +
+    '  function choose(value: "accepted" | "declined") {\n' +
+    '    try {\n' +
+    '      localStorage.setItem(KEY, value);\n' +
+    '    } catch {}\n' +
+    '    const w = window as unknown as AnalyticsWindow;\n' +
+    '    w[`ga-disable-${ID}`] = value !== "accepted";\n' +
+    '    if (value === "declined") {\n' +
+    '      w.gtag?.("consent", "update", { analytics_storage: "denied" });\n' +
+    '      for (const item of document.cookie.split(";")) {\n' +
+    '        const name = item.split("=")[0].trim();\n' +
+    '        if (/^_ga(?:_|$)/.test(name)) {\n' +
+    '          for (const domain of ["", location.hostname, ".auryninvest.com"])\n' +
+    '            document.cookie = `${name}=; Max-Age=0; Path=/;${domain ? ` Domain=${domain};` : ""} SameSite=Lax`;\n' +
+    '        }\n' +
+    '      }\n' +
+    '      last.current = null;\n' +
+    '    }\n' +
+    '    setChoice(value);\n' +
+    '    setOpen(false);\n' +
+    '  }\n' +
+    '  useEffect(() => {\n' +
+    '    if (!enabled || choice !== "accepted" || path === null) return;\n' +
+    '    const w = window as unknown as AnalyticsWindow;\n' +
+    '    w[`ga-disable-${ID}`] = false;\n' +
+    '    if (w.gtag) {\n' +
+    '      w.gtag("consent", "update", { analytics_storage: "granted" });\n' +
+    '      setLoaded(true);\n' +
+    '      return;\n' +
+    '    }\n' +
+    '    w.dataLayer = w.dataLayer || [];\n' +
+    '    w.gtag = function () {\n' +
+    '      w.dataLayer!.push(arguments);\n' +
+    '    };\n' +
+    '    w.gtag("consent", "default", {\n' +
+    '      analytics_storage: "granted",\n' +
+    '      ad_storage: "denied",\n' +
+    '      ad_user_data: "denied",\n' +
+    '      ad_personalization: "denied",\n' +
+    '    });\n' +
+    '    w.gtag("js", new Date());\n' +
+    '    w.gtag("config", ID, {\n' +
+    '      send_page_view: false,\n' +
+    '      allow_google_signals: false,\n' +
+    '      allow_ad_personalization_signals: false,\n' +
+    '      page_location: SITE_URL + path,\n' +
+    '      page_referrer: "",\n' +
+    '      page_title: "AURYN",\n' +
+    '    });\n' +
+    '    const script = document.createElement("script");\n' +
+    '    script.id = "auryn-ga";\n' +
+    '    script.async = true;\n' +
+    '    script.src = `https://www.googletagmanager.com/gtag/js?id=${ID}`;\n' +
+    '    script.onload = () => setLoaded(true);\n' +
+    '    document.head.appendChild(script);\n' +
+    '  }, [choice, enabled, path]);\n' +
+    '  useEffect(() => {\n' +
+    '    if (choice !== "accepted" || !loaded || path === null) return;\n' +
+    '    const w = window as unknown as AnalyticsWindow;\n' +
+    '    const send = (name: string, params: Record<string, unknown> = {}) =>\n' +
+    '      w.gtag?.("event", name, {\n' +
+    '        ...params,\n' +
+    '        page_location: SITE_URL + pathRef.current,\n' +
+    '        page_referrer: "",\n' +
+    '        page_title: "AURYN",\n' +
+    '        send_to: ID,\n' +
+    '      });\n' +
+    '    if (last.current !== path) {\n' +
+    '      send("page_view");\n' +
+    '      last.current = path;\n' +
+    '      if (path === "/pricing" || path === "/plans") send("plans_view");\n' +
+    '      if (path === "/research") send("research_open");\n' +
+    '    }\n' +
+    '    const event = (e: Event) => {\n' +
+    '      const d = (e as CustomEvent).detail;\n' +
+    '      const safe = safeAnalyticsEvent(d?.name, d?.params);\n' +
+    '      if (safe && pathRef.current) send(safe.name, safe.params);\n' +
+    '    };\n' +
+    '    // Bucketed timings only; no element text, target URLs, account IDs or raw navigation URLs.\n' +
+    '    const observer =\n' +
+    '      typeof PerformanceObserver === "undefined" || measuredLcp.current\n' +
+    '        ? null\n' +
+    '        : new PerformanceObserver((list) => {\n' +
+    '            const e = list.getEntries().at(-1);\n' +
+    '            if (e && !measuredLcp.current) {\n' +
+    '              measuredLcp.current = true;\n' +
+    '              send("page_performance", {\n' +
+    '                metric: "LCP",\n' +
+    '                rating:\n' +
+    '                  e.startTime <= 2500\n' +
+    '                    ? "good"\n' +
+    '                    : e.startTime <= 4000\n' +
+    '                      ? "needs-improvement"\n' +
+    '                      : "poor",\n' +
+    '              });\n' +
+    '            }\n' +
+    '          });\n' +
+    '    try {\n' +
+    '      observer?.observe({ type: "largest-contentful-paint", buffered: true });\n' +
+    '    } catch {}\n' +
+    '    window.addEventListener("auryn:analytics", event);\n' +
+    '    const click = (e: MouseEvent) => {\n' +
+    '      const a = (e.target as Element)?.closest?.("a");\n' +
+    '      if (a?.getAttribute("href") === "/login?mode=signup")\n' +
+    '        send("signup_start");\n' +
+    '    };\n' +
+    '    document.addEventListener("click", click);\n' +
+    '    return () => {\n' +
+    '      observer?.disconnect();\n' +
+    '      window.removeEventListener("auryn:analytics", event);\n' +
+    '      document.removeEventListener("click", click);\n' +
+    '    };\n' +
+    '  }, [choice, loaded, path]);\n' +
+    '  if (!open || pathname.startsWith("/preview")) return null;\n' +
+    '  return (\n' +
+    '    <aside className="analytics-consent" aria-label="Analytics preferences">\n' +
+    '      <div>\n' +
+    '        <strong>Your analytics choice</strong>\n' +
+    '        <p>\n' +
+    '          {enabled\n' +
+    '            ? "Allow optional usage measurement to help improve AURYN. Research queries, tickers, holdings and contact messages are excluded."\n' +
+    '            : "Optional analytics are not configured. Your preference can still be saved."}{" "}\n' +
+    '          <Link href="/privacy">Privacy details</Link>\n' +
+    '        </p>\n' +
+    '      </div>\n' +
+    '      <div className="consent-actions">\n' +
+    '        <button className="button secondary" onClick={() => choose("declined")}>\n' +
+    '          Decline\n' +
+    '        </button>\n' +
+    '        <button className="button" onClick={() => choose("accepted")}>\n' +
+    '          Allow analytics\n' +
+    '        </button>\n' +
+    '      </div>\n' +
+    '    </aside>\n' +
+    '  );\n' +
+    '}\n'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/2514d296b662/work/AURYN/tests/public-consent-style.test.mjs:6:8)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '"use client";\nimport { useEffect, useRef, useState } from "react";\nimport { usePathname } from "next/navigation";\nimport Link from "next/link";\nimport {\n  analyticsPath,\n  safeAnalyticsEvent,\n  validMeasurementId,\n} from "@/lib/analytics-policy";\nimport { SITE_URL } from "@/lib/site-metadata";\nimport { ChartNoAxesCombined, ChevronRight } from "lucide-react";\nconst KEY = "auryn-analytics-consent-v1";\nconst ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "";\ntype AnalyticsWindow = Window & {\n  dataLayer?: unknown[];\n  gtag?: (...args: unknown[]) => void;\n  [key: `ga-disable-${string}`]: boolean | undefined;\n};\nexport function PrivacyChoices({ compact = false }: { compact?: boolean }) {\n  return (\n    <button\n      type="button"\n      className={\n        compact\n          ? "footer-analytics-choice"\n          : "text-link settings-analytics-button"\n      }\n      onClick={() => window.dispatchEvent(new Event("auryn:privacy"))}\n    >\n      {!compact && <ChartNoAxesCombined size={18} aria-hidden="true" />}\n      <span>Analytics preferences</span>\n      {!compact && <ChevronRight size={17} aria-hidden="true" />}\n    </button>\n  );\n}\nexport default function AnalyticsConsent() {\n  const pathname = usePathname(),\n    path = analyticsPath(pathname);\n  const [choice, setChoice] = useState<string | null>(null),\n    [open, setOpen] = useState(false),\n    [loaded, setLoaded] = useState(false);\n  const measuredLcp = useRef(false);\n  const last = useRef<string | null>(null),\n    pathRef = useRef(path);\n  pathRef.current = path;\n  const enabled = validMeasurementId(ID);\n  useEffect(() => {\n    let value = null;\n    try {\n      value = localStorage.getItem(KEY);\n    } catch {}\n    setChoice(value);\n    setOpen(enabled && value !== "accepted" && value !== "declined");\n    const show = () => setOpen(true);\n    window.addEventListener("auryn:privacy", show);\n    return () => window.removeEventListener("auryn:privacy", show);\n  }, [enabled]);\n  function choose(value: "accepted" | "declined") {\n    try {\n      localStorage.setItem(KEY, value);\n    } catch {}\n    const w = window as unknown as AnalyticsWindow;\n    w[`ga-disable-${ID}`] = value !== "accepted";\n    if (value === "declined") {\n      w.gtag?.("consent", "update", { analytics_storage: "denied" });\n      for (const item of document.cookie.split(";")) {\n        const name = item.split("=")[0].trim();\n        if (/^_ga(?:_|$)/.test(name)) {\n          for (const domain of ["", location.hostname, ".auryninvest.com"])\n            document.cookie = `${name}=; Max-Age=0; Path=/;${domain ? ` Domain=${domain};` : ""} SameSite=Lax`;\n        }\n      }\n      last.current = null;\n    }\n    setChoice(value);\n    setOpen(false);\n  }\n  useEffect(() => {\n    if (!enabled || choice !== "accepted" || path === null) return;\n    const w = window as unknown as AnalyticsWindow;\n    w[`ga-disable-${ID}`] = false;\n    if (w.gtag) {\n      w.gtag("consent", "update", { analytics_storage: "granted" });\n      setLoaded(true);\n      return;\n    }\n    w.dataLayer = w.dataLayer || [];\n    w.gtag = function () {\n      w.dataLayer!.push(arguments);\n    };\n    w.gtag("consent", "default", {\n      analytics_storage: "granted",\n      ad_storage: "denied",\n      ad_user_data: "denied",\n      ad_personalization: "denied",\n    });\n    w.gtag("js", new Date());\n    w.gtag("config", ID, {\n      send_page_view: false,\n      allow_google_signals: false,\n      allow_ad_personalization_signals: false,\n      page_location: SITE_URL + path,\n      page_referrer: "",\n      page_title: "AURYN",\n    });\n    const script = document.createElement("script");\n    script.id = "auryn-ga";\n    script.async = true;\n    script.src = `https://www.googletagmanager.com/gtag/js?id=${ID}`;\n    script.onload = () => setLoaded(true);\n    document.head.appendChild(script);\n  }, [choice, enabled, path]);\n  useEffect(() => {\n    if (choice !== "accepted" || !loaded || path === null) return;\n    const w = window as unknown as AnalyticsWindow;\n    const send = (name: string, params: Record<string, unknown> = {}) =>\n      w.gtag?.("event", name, {\n        ...params,\n        page_location: SITE_URL + pathRef.current,\n        page_referrer: "",\n        page_title: "AURYN",\n        send_to: ID,\n      });\n    if (last.current !== path) {\n      send("page_view");\n      last.current = path;\n      if (path === "/pricing" || path === "/plans") send("plans_view");\n      if (path === "/research") send("research_open");\n    }\n    const event = (e: Event) => {\n      const d = (e as CustomEvent).detail;\n      const safe = safeAnalyticsEvent(d?.name, d?.params);\n      if (safe && pathRef.current) send(safe.name, safe.params);\n    };\n    // Bucketed timings only; no element text, target URLs, account IDs or raw navigation URLs.\n    const observer =\n      typeof PerformanceObserver === "undefined" || measuredLcp.current\n        ? null\n        : new PerformanceObserver((list) => {\n            const e = list.getEntries().at(-1);\n            if (e && !measuredLcp.current) {\n              measuredLcp.current = true;\n              send("page_performance", {\n                metric: "LCP",\n                rating:\n                  e.startTime <= 2500\n                    ? "good"\n                    : e.startTime <= 4000\n                      ? "needs-improvement"\n                      : "poor",\n              });\n            }\n          });\n    try {\n      observer?.observe({ type: "largest-contentful-paint", buffered: true });\n    } catch {}\n    window.addEventListener("auryn:analytics", event);\n    const click = (e: MouseEvent) => {\n      const a = (e.target as Element)?.closest?.("a");\n      if (a?.getAttribute("href") === "/login?mode=signup")\n        send("signup_start");\n    };\n    document.addEventListener("click", click);\n    return () => {\n      observer?.disconnect();\n      window.removeEventListener("auryn:analytics", event);\n      document.removeEventListener("click", click);\n    };\n  }, [choice, loaded, path]);\n  if (!open || pathname.startsWith("/preview")) return null;\n  return (\n    <aside className="analytics-consent" aria-label="Analytics preferences">\n      <div>\n        <strong>Your analytics choice</strong>\n        <p>\n          {enabled\n            ? "Allow optional usage measurement to help improve AURYN. Research queries, tickers, holdings and contact messages are excluded."\n            : "Optional analytics are not configured. Your preference can still be saved."}{" "}\n          <Link href="/privacy">Privacy details</Link>\n        </p>\n      </div>\n      <div className="consent-actions">\n        <button className="button secondary" onClick={() => choose("declined")}>\n          Decline\n        </button>\n        <button className="button" onClick={() => choose("accepted")}>\n          Allow analytics\n        </button>\n      </div>\n    </aside>\n  );\n}\n',
+    expected: /import s from "\.\/AnalyticsConsent.module.css"/,
+    operator: 'match',
+    diff: 'simple'
+  }

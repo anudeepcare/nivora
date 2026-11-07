@@ -3,7 +3,7 @@ import { useState, useId } from "react";
 import { SlidersHorizontal, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { useProduct } from "./Session";
-import { useWorkspaceQuotes } from "./Workspace";
+import { useWorkspaceQuotes } from "./useWorkspaceQuotes";
 import { portfolioTotals } from "@/lib/engine";
 import { explorePosition } from "@/lib/position-explorer";
 import { researchEdge } from "@/lib/edge-research";

@@ -1,0 +1,48 @@
+.consent {
+  position: fixed;
+  z-index: 1000;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  left: 16px;
+  right: 16px;
+  max-width: 680px;
+  margin: auto;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 0 8px 32px #0002;
+  max-height: 80dvh;
+  overflow: auto;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.consent p {
+  margin: 8px 0 14px;
+  color: var(--muted);
+}
+.consent a {
+  color: inherit;
+  text-decoration: underline;
+}
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.actions button {
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: inherit;
+  cursor: pointer;
+}
+.decline {
+  background: var(--card);
+  color: var(--ink);
+}
+.allow {
+  background: var(--ink);
+  color: var(--card);
+}

@@ -279,7 +279,7 @@ export default function ExposureBoard({
       <header className={s.heading}>
         <div>
           <h3>
-            <Layers3 size={21} /> Gamma heatmap
+            <Layers3 size={18} /> Exposure levels
           </h3>
         </div>
         <div className={s.tabs} aria-label="Exposure workspace views">

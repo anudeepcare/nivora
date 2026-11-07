@@ -8,9 +8,9 @@ import { pacePolicyFingerprint } from "@/lib/pace-policy-fingerprint";
 export async function GET() {
   try {
     if (process.env.AURYN_EXTERNAL_DATA_LICENSED !== "true")
-      throw new HttpError(
-        "Public market-data publication is not enabled.",
-        503,
+      return Response.json(
+        { records: [], status: "publication-disabled" },
+        { headers: { "Cache-Control": "public, max-age=60" } },
       );
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL,
       key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;

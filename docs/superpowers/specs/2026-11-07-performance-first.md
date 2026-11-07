@@ -1,0 +1,6 @@
+# Performance-first completion
+User authorizes execution of remaining work, source ZIP only, no deployment or production writes. Preserve compact unified layouts, one-tap selectors, touch targets, normal-flow search, safe-area chrome, accurate Options data coverage, Pace rules and account isolation. Do not ask the user to repeat four interrupted chats.
+
+Approach: improve the existing Next 15/React 19 product with measured bundle/CSS reductions and cache correctness, then add evidence workflows using already supplied research. A rewrite would discard verified behavior; speculative provider integrations cannot be activated without provider/consent inputs. Keep provider-dependent features explicitly unavailable until genuine inputs exist.
+
+Goals: reduce first-load code, preserve instant cached revisits, prevent stale refresh races, simplify the actual CSS cascade without altering computed styles, integrate cited research receipts/earnings comparisons/bear-case/share export, and make remaining data/integration requirements explicit in an acceptance inventory. Existing tests plus browser measurements validate changes. No invented backtest, live options observations, participant results or broker connections.

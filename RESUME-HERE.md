@@ -1,9 +1,7 @@
-# AURYN release checkpoint — 7 November 2026
+# AURYN source handoff — 7 November 2026
 
-Recovered work and Options/Pace/mobile refinements are implemented. The source-body database guard was applied to production and verified. Daily 14:00 UTC thesis cron configuration is in vercel.json; activation awaits this deployment. Existing production enable flag and CRON_SECRET are configured.
+Start with RELEASE-HANDOFF-20261107.md, REQUIREMENTS-STATUS-20261107.md and CONFIGURATION-20261107.md. The user wants the complete source ZIP, not deployment. Latest pass rebuilds Options/Labs/public/handbook surfaces, splits primary workspaces, fixes cache races and adds on-demand research receipts. Preserve these changes; do not restart from an older ZIP.
 
-Prior combined checks: 1181 tests plus Options/Pace focused checks, lint/typecheck/build/API passed. Final mobile+lazy-loading verify is running; do not claim final success until its log completes. Logs: /tmp/auryn-mobile-release-verify.log and /tmp/auryn-release-api.log.
+Current evidence is verification/performance-first/. Earlier verification counts and deployment instructions are historical. Real datasets, prospective records, participant sessions and physical-device/live-provider performance remain real-world checks. Advanced integrations explicitly marked unfinished in the inventory have not magically been completed. Never invent their completion.
 
-GitHub create-tree write returned 403 Resource not accessible by integration. Use Vercel source deployment into existing nivora project. No deployment of this new release has yet been confirmed. Browser preview failed to open due to infrastructure; visual QA unverified.
-
-Real current-policy forward results and observed participant sessions remain absent; do not invent them. Daily schedule processes at most four conditions per run.
+No new schema migration is needed for the latest UI/cache/receipt changes. Reconcile installed recovered migrations by schema/content, not filename alone. Do not apply migrations, activate jobs or deploy unless the user requests that separately.

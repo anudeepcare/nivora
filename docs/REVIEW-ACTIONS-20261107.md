@@ -1,3 +1,5 @@
+> Historical review snapshot: completion status below is superseded by ../../RELEASE-HANDOFF-20261107.md and the later implementation/recovery notes. Retained as review history, not current release instructions.
+
 # External review: verified actions, 7 November 2026
 
 The attachment reviews an older snapshot. Its counts and missing-dependency failures are not current acceptance results. Each recommendation is treated as a hypothesis and checked against the current source.

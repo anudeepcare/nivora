@@ -1,12 +1,15 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useDeferredValue } from "react";
 import { api } from "@/lib/client";
+import { handbookChapters, findHandbookChapters } from "@/lib/handbook-reader";
 import styles from "./OwnerHandbook.module.css";
 export default function OwnerHandbook() {
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState(0);
+  const [references, setReferences] = useState(false);
+  const deferredQuery = useDeferredValue(query);
   const [retry, setRetry] = useState(0);
   useEffect(() => {
     const c = new AbortController();
@@ -18,12 +21,10 @@ export default function OwnerHandbook() {
       });
     return () => c.abort();
   }, [retry]);
-  const chapters = content.split(/\n## /).map((p, id) => {
-    const [title, ...body] = p.split("\n");
-    return { id, title: title.replace(/^# /, ""), body: body.join("\n") };
-  });
-  const matches = chapters.filter((x) =>
-    (x.title + x.body).toLowerCase().includes(query.trim().toLowerCase()),
+  const chapters = useMemo(() => handbookChapters(content), [content]);
+  const matches = useMemo(
+    () => findHandbookChapters(chapters, deferredQuery, references),
+    [chapters, deferredQuery, references],
   );
   const active = matches.find((x) => x.id === selected) ?? matches[0];
   function download() {
@@ -62,6 +63,14 @@ export default function OwnerHandbook() {
               placeholder="Pace, gamma, RSI, cash flow…"
             />
           </label>
+          <label className={styles.referenceToggle}>
+            <input
+              type="checkbox"
+              checked={references}
+              onChange={(e) => setReferences(e.target.checked)}
+            />{" "}
+            Include implementation reference
+          </label>
           <label>
             Chapter
             <select
@@ -76,18 +85,45 @@ export default function OwnerHandbook() {
             </select>
           </label>
           {active ? (
-            <article>
+            <article aria-live="polite">
               <h3>{active.title}</h3>
               <div className={styles.body}>
                 {active.title.startsWith("Reference:") ? (
                   <pre>{active.body}</pre>
                 ) : (
                   active.body
-                    .split("\n")
+                    .split(/\n\s*\n/)
                     .filter(Boolean)
-                    .map((line, i) => <p key={i}>{line}</p>)
+                    .map((block, i) =>
+                      /^### /.test(block) ? (
+                        <h4 key={i}>{block.replace(/^### /, "")}</h4>
+                      ) : (
+                        <p key={i}>{block}</p>
+                      ),
+                    )
                 )}
               </div>
+              <nav className={styles.chapterNav} aria-label="Handbook chapters">
+                <button
+                  disabled={matches.indexOf(active) === 0}
+                  onClick={() =>
+                    setSelected(matches[matches.indexOf(active) - 1].id)
+                  }
+                >
+                  Previous chapter
+                </button>
+                <span>
+                  {matches.indexOf(active) + 1} of {matches.length}
+                </span>
+                <button
+                  disabled={matches.indexOf(active) === matches.length - 1}
+                  onClick={() =>
+                    setSelected(matches[matches.indexOf(active) + 1].id)
+                  }
+                >
+                  Next chapter
+                </button>
+              </nav>
             </article>
           ) : (
             <p>No matching chapters.</p>

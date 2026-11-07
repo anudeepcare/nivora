@@ -23,6 +23,7 @@ import {
   subscribeQuotes,
 } from "@/lib/shared-quotes";
 import { retainResearchQuote } from "@/lib/research-quote";
+const ResearchReceipt = dynamic(() => import("./ResearchReceipt"));
 const ValueStudio = dynamic(() => import("./ValueStudio"), {
   loading: () => <p role="status">Opening valuation…</p>,
 });
@@ -129,6 +130,7 @@ const tabPresentation = {
 };
 export default function Research({ symbol }: { symbol: string }) {
   const { access } = useAccess();
+  const [receiptOpen, setReceiptOpen] = useState(false);
   const workspacePreferences = useWorkspacePreferences();
   const rangeTouched = useRef(false);
   const { preferences } = useResearchPreferences();
@@ -252,11 +254,7 @@ export default function Research({ symbol }: { symbol: string }) {
       );
   }, [workspacePreferences.ready, workspacePreferences.preferences.chartRange]);
   const [retainedCharts, setRetainedCharts] = useState<string[]>(() =>
-    !requestedTab ||
-    requestedTab === "Snapshot" ||
-    requestedTab === "Technicals"
-      ? [requestedTab ?? "Snapshot"]
-      : [],
+    tab === "Snapshot" || tab === "Technicals" ? [tab] : [],
   );
   // Same-company links update the route without remounting this component.
   useEffect(() => {
@@ -269,7 +267,7 @@ export default function Research({ symbol }: { symbol: string }) {
   const [workbenchTarget, setWorkbenchTarget] = useState("risk");
   const researchNavigation = useRef<HTMLElement>(null);
   const switchTab = (next: (typeof tabs)[number]) => {
-    if (next === "Technicals")
+    if (next === "Technicals" || next === "Snapshot")
       setRetainedCharts((old) => (old.includes(next) ? old : [...old, next]));
     setTab(next);
     cache.set(`view:research:${symbol}:tab`, { at: Date.now(), value: next });
@@ -541,6 +539,12 @@ export default function Research({ symbol }: { symbol: string }) {
         </div>
       </header>
       <StockFacts research={r} />
+      <button className="text-link" onClick={() => setReceiptOpen(true)}>
+        Inspect evidence &amp; sources
+      </button>
+      {receiptOpen && (
+        <ResearchReceipt research={r} onClose={() => setReceiptOpen(false)} />
+      )}
 
       {notice && <Notice error>{notice}</Notice>}
       {resource.error && <Notice error>{resource.error}</Notice>}
@@ -575,13 +579,19 @@ export default function Research({ symbol }: { symbol: string }) {
               {tabPresentation[key].label}
             </option>
           ))}
-          <optgroup label="Labs">
-            {labSections.map((key) => (
-              <option key={key} value={key}>
-                {tabPresentation[key].label}
-              </option>
-            ))}
-          </optgroup>
+          {labSections.length > 0 && (
+            <option
+              value={
+                labSections.includes(tab)
+                  ? tab
+                  : labSections.includes("Options")
+                    ? "Options"
+                    : labSections[0]
+              }
+            >
+              Labs
+            </option>
+          )}
         </select>
       </label>
       <nav
@@ -606,37 +616,39 @@ export default function Research({ symbol }: { symbol: string }) {
             </button>
           );
         })}
-        <label className={experience.labsPicker}>
-          <span className={experience.labsLabel}>Labs</span>
-          <select
-            aria-label="Labs tools"
-            value={labSections.includes(tab) ? tab : ""}
-            onChange={(e) => {
-              if (e.target.value)
-                switchTab(e.target.value as (typeof tabs)[number]);
-            }}
+        {labSections.length > 0 && (
+          <button
+            data-section="Labs"
+            aria-current={labSections.includes(tab) ? "page" : undefined}
+            aria-controls="research-content"
+            onClick={() =>
+              switchTab(
+                labSections.includes(tab)
+                  ? tab
+                  : labSections.includes("Options")
+                    ? "Options"
+                    : labSections[0],
+              )
+            }
           >
-            <option value="">Labs</option>
-            {labSections.map((key) => (
-              <option key={key} value={key}>
-                {tabPresentation[key].label}
-              </option>
-            ))}
-          </select>
-        </label>
+            <Layers size={16} /> Labs
+          </button>
+        )}
       </nav>
       <div id="research-overview" hidden={tab !== "Snapshot"}>
-        <FeatureGate
-          feature="overview"
-          fallback={<FreeSnapshot research={r} />}
-        >
-          <DecisionOverview
-            key={r.company.symbol}
-            research={r}
-            onTab={switchTab}
-            chart={chart}
-          />
-        </FeatureGate>
+        {retainedCharts.includes("Snapshot") && (
+          <FeatureGate
+            feature="overview"
+            fallback={<FreeSnapshot research={r} />}
+          >
+            <DecisionOverview
+              key={r.company.symbol}
+              research={r}
+              onTab={switchTab}
+              chart={chart}
+            />
+          </FeatureGate>
+        )}
       </div>
       <section
         className={`signal-research-panel ${tabVisuals.root}`}
@@ -645,6 +657,19 @@ export default function Research({ symbol }: { symbol: string }) {
         aria-label={tabPresentation[tab].label}
       >
         <div id="research-content" className="approved-evidence-body au-stack">
+          {labSections.includes(tab) && (
+            <nav className={experience.labViews} aria-label="Labs views">
+              {labSections.map((key) => (
+                <button
+                  key={key}
+                  aria-current={tab === key ? "page" : undefined}
+                  onClick={() => switchTab(key)}
+                >
+                  {key === "Advanced" ? "Research tools" : "Options"}
+                </button>
+              ))}
+            </nav>
+          )}
           <FeatureGate
             feature={
               (

@@ -1,0 +1,94 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> auryn-product@1.0.0 prebuild
+> node scripts/generate-policy-fingerprint.mjs
+
+Policy fingerprint generated from 5 source files.
+
+> auryn-product@1.0.0 build
+> next build
+
+   ▲ Next.js 15.5.28
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 32.6s
+   Linting and checking validity of types ...
+
+ ⚠ The Next.js plugin was not detected in your ESLint configuration. See https://nextjs.org/docs/app/api-reference/config/eslint#migrating-existing-config
+   Collecting page data ...
+   Generating static pages (0/43) ...
+   Generating static pages (10/43) 
+   Generating static pages (21/43) 
+   Generating static pages (32/43) 
+ ✓ Generating static pages (43/43)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /_not-found                            259 B         105 kB
+├ ƒ /[[...route]]                          51 kB         254 kB
+├ ○ /about                                 427 B         108 kB
+├ ƒ /api/access                            259 B         105 kB
+├ ƒ /api/access/visit                      259 B         105 kB
+├ ƒ /api/account-balances                  259 B         105 kB
+├ ƒ /api/alerts                            259 B         105 kB
+├ ƒ /api/analyst/[symbol]                  259 B         105 kB
+├ ƒ /api/auth/providers                    259 B         105 kB
+├ ƒ /api/auth/recovery                     259 B         105 kB
+├ ƒ /api/billing                           259 B         105 kB
+├ ƒ /api/billing/webhook                   259 B         105 kB
+├ ƒ /api/chart/[symbol]                    259 B         105 kB
+├ ƒ /api/company-data                      259 B         105 kB
+├ ƒ /api/congress                          259 B         105 kB
+├ ƒ /api/documents                         259 B         105 kB
+├ ƒ /api/enrichment/[symbol]               259 B         105 kB
+├ ƒ /api/filings                           259 B         105 kB
+├ ƒ /api/home-feed                         259 B         105 kB
+├ ƒ /api/jobs                              259 B         105 kB
+├ ƒ /api/jobs/theses                       259 B         105 kB
+├ ƒ /api/logos                             259 B         105 kB
+├ ƒ /api/market-workspace/[symbol]         259 B         105 kB
+├ ƒ /api/news                              259 B         105 kB
+├ ƒ /api/observations                      259 B         105 kB
+├ ƒ /api/options/[symbol]                  259 B         105 kB
+├ ƒ /api/options/[symbol]/flow             259 B         105 kB
+├ ƒ /api/owner/access                      259 B         105 kB
+├ ƒ /api/owner/handbook                    259 B         105 kB
+├ ƒ /api/owner/validation                  259 B         105 kB
+├ ƒ /api/pace-record                       259 B         105 kB
+├ ƒ /api/pace-scan                         259 B         105 kB
+├ ƒ /api/paper-plans                       259 B         105 kB
+├ ƒ /api/paper-status                      259 B         105 kB
+├ ƒ /api/portfolio-import                  259 B         105 kB
+├ ƒ /api/price-stream                      259 B         105 kB
+├ ƒ /api/provider-status                   259 B         105 kB
+├ ƒ /api/quotes                            259 B         105 kB
+├ ƒ /api/research-context/[symbol]         259 B         105 kB
+├ ƒ /api/research/[symbol]                 259 B         105 kB
+├ ƒ /api/search                            259 B         105 kB
+├ ƒ /api/sector-performance                259 B         105 kB
+├ ƒ /api/support                           259 B         105 kB
+├ ƒ /api/thesis-monitor                    259 B         105 kB
+├ ƒ /api/transactions                      259 B         105 kB
+├ ƒ /api/valuation/[symbol]                259 B         105 kB
+├ ƒ /api/workspace                         259 B         105 kB
+├ ƒ /auth/callback                         259 B         105 kB
+├ ƒ /auth/confirm                          259 B         105 kB
+├ ○ /opengraph-image                       259 B         105 kB
+├ ○ /pace                                  427 B         108 kB
+├ ○ /portfolio-check                     1.93 kB         110 kB
+├ ƒ /preview/redesign                      259 B         105 kB
+├ ○ /robots.txt                            259 B         105 kB
+├ ○ /sitemap.xml                           259 B         105 kB
+└ ○ /track-record                        1.51 kB         110 kB
++ First Load JS shared by all             105 kB
+  ├ chunks/6335-53ff6c89b936f053.js      47.1 kB
+  ├ chunks/7b1c820f-47c392e5a78983dc.js  54.2 kB
+  └ other shared chunks (total)          3.29 kB
+
+
+ƒ Middleware                               35 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

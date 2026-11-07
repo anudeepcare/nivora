@@ -1,162 +1,170 @@
 .wallet {
-  margin: 24px 0;
-  padding: 24px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: var(--card);
-  color: var(--ink);
   min-width: 0;
+  color: var(--ink);
+  padding: 12px 0;
 }
 .heading {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  gap: 12px;
   justify-content: space-between;
-  gap: 20px;
 }
 .heading h3 {
-  font-size: 26px;
-  margin: 7px 0;
+  font-size: 17px;
+  margin: 4px 0;
 }
 .heading p,
 .help,
 .saving p {
+  font-size: 12px;
   color: var(--muted);
-  font-size: 13px;
   line-height: 1.6;
+  margin: 4px 0;
 }
 .eyebrow {
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  font-weight: 700;
-  color: var(--business-icon);
+  display: none;
 }
 .badge {
-  background: #d6f35a;
-  color: #242a2a;
-  padding: 6px 10px;
-  border-radius: 6px;
   font-size: 10px;
-  letter-spacing: 0.08em;
-  font-weight: 700;
+  padding: 5px 8px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 4px;
 }
 .metrics {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 12px;
-  margin: 22px 0 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 12px 0;
+  padding: 10px 0;
+  border-block: 1px solid var(--line);
 }
 .metrics > div {
-  border-top: 1px solid var(--line);
-  padding: 15px 0;
+  flex: 1 1 120px;
+  min-width: 0;
 }
 .metrics span {
   display: block;
-  font-size: 11px;
-  line-height: 1.4;
+  font-size: 10px;
   color: var(--muted);
-  margin-bottom: 8px;
+  margin-bottom: 3px;
 }
 .metrics strong {
-  font-size: 19px;
-  font-weight: 650;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+.wallet summary {
+  cursor: pointer;
+  font-size: 12px;
+  min-height: 44px;
+  padding: 12px 0;
+}
+.tradingDesk {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 24px;
+  align-items: start;
+  margin: 10px 0;
 }
 .form {
   display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(90px, 1fr);
-  gap: 14px;
-  padding: 20px;
-  background: color-mix(in srgb, #76b6aa 7%, var(--card));
-  border-radius: 12px;
+  grid-template-columns: minmax(0, 1fr) 90px;
+  gap: 10px;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
 }
 .wallet label {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  gap: 5px;
   font-size: 12px;
-  font-weight: 600;
 }
-.wallet select,
-.wallet input,
-.wallet textarea {
+.wallet :is(select, input, textarea) {
+  box-sizing: border-box;
   width: 100%;
   min-width: 0;
-  box-sizing: border-box;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 8px;
   background: var(--card);
   color: var(--ink);
-  border: 1px solid var(--line);
-  border-radius: 7px;
-  padding: 10px;
   font: inherit;
-  font-weight: 400;
+  font-size: 12px;
 }
 .notes,
 .order {
   grid-column: 1/-1;
 }
 .order {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  display: grid;
+  gap: 10px;
 }
-.order p {
-  font-size: 12px;
-  line-height: 1.6;
+.review {
+  display: grid;
+  gap: 4px;
+}
+.review span,
+.review small {
+  font-size: 11px;
   color: var(--muted);
   overflow-wrap: anywhere;
 }
+.review strong {
+  font-size: 17px;
+}
 .wallet button {
-  min-height: 40px;
+  min-height: 44px;
   border: 1px solid var(--line);
-  border-radius: 7px;
+  border-radius: 5px;
   background: var(--card);
   color: var(--ink);
-  padding: 9px 13px;
+  padding: 8px 10px;
+  font: inherit;
   font-size: 12px;
-  font-weight: 600;
   cursor: pointer;
 }
 .order button {
-  background: #76b6aa;
-  color: #152c25;
-  white-space: nowrap;
+  background: var(--ink);
+  color: var(--card);
 }
 .wallet button:disabled {
   opacity: 0.45;
-  cursor: not-allowed;
+  cursor: default;
 }
-.wallet button:focus-visible,
-.wallet input:focus-visible,
-.wallet select:focus-visible,
-.wallet textarea:focus-visible {
-  outline: 2px solid #76b6aa;
-  outline-offset: 2px;
-}
-.positions {
-  margin-top: 24px;
+.wallet :is(button, select, input, textarea, summary):focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
 }
 .positions h4 {
-  font-size: 15px;
+  font-size: 14px;
+  margin: 0 0 10px;
+}
+.positions > p {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+  margin: 0;
 }
 .position {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(180px, 260px);
-  gap: 24px;
   border-top: 1px solid var(--line);
-  padding: 20px 0;
+  padding: 10px 0;
+  display: grid;
+  gap: 10px;
 }
 .position strong {
-  font-size: 14px;
+  font-size: 13px;
 }
 .position p {
-  font-size: 13px;
-  margin: 8px 0;
+  font-size: 12px;
+  margin: 6px 0;
 }
 .position small {
   font-size: 11px;
-  line-height: 1.6;
   color: var(--muted);
   overflow-wrap: anywhere;
+  line-height: 1.6;
 }
 .tradeNote {
   white-space: pre-wrap;
@@ -164,194 +172,46 @@
 }
 .close {
   display: grid;
+  grid-template-columns: 90px 1fr;
   gap: 8px;
+  align-items: end;
 }
-.close input {
-  max-width: 100px;
+.close small {
+  grid-column: 1/-1;
 }
 .exit {
   display: block;
-  margin-top: 5px;
+  margin-top: 4px;
 }
 .saving {
   border-top: 1px solid var(--line);
-  padding-top: 20px;
-  margin-top: 10px;
-}
-.saving > div {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.saving p {
-  margin-bottom: 0;
-}
-@media (max-width: 900px) {
-  .metrics {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-@media (max-width: 600px) {
-  .wallet {
-    padding: 16px;
-  }
-  .heading {
-    gap: 10px;
-  }
-  .heading h3 {
-    font-size: 22px;
-  }
-  .metrics {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .form {
-    padding: 14px;
-    grid-template-columns: 1fr;
-  }
-  .notes,
-  .order {
-    grid-column: auto;
-  }
-  .order {
-    align-items: stretch;
-    flex-direction: column;
-  }
-  .position {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-  .close {
-    grid-template-columns: 100px minmax(0, 1fr);
-    align-items: end;
-  }
-  .close small {
-    grid-column: 1/-1;
-  }
-  .metrics strong {
-    font-size: 17px;
-  }
-}
-
-@media (max-width: 700px) {
-  .wallet {
-    padding: 16px;
-    margin: 12px 0;
-    border-radius: 12px;
-  }
-  .heading {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .heading > div {
-    min-width: 0;
-    flex: 1 1 220px;
-  }
-  .heading h3 {
-    font-size: 22px;
-  }
-  .badge {
-    flex: none;
-    white-space: nowrap;
-  }
-  .metrics {
-    gap: 10px;
-    margin: 12px 0;
-  }
-  .metrics > div {
-    padding: 10px 0;
-    min-width: 0;
-  }
-  .metrics strong {
-    font-size: 17px;
-    overflow-wrap: anywhere;
-  }
-}
-
-.wallet {
-  padding: 18px;
-  margin: 12px 0;
-}
-.heading h3 {
-  font-size: 20px;
-}
-.heading p {
-  margin: 6px 0;
-}
-.metrics {
-  margin: 14px 0 6px;
-  gap: 14px;
-}
-.metrics > div {
-  padding: 10px 0;
-  min-width: 0;
-}
-.metrics strong {
-  font-size: 16px;
-  font-variant-numeric: tabular-nums;
-}
-.metrics span {
-  margin-bottom: 4px;
-}
-.wallet summary {
-  cursor: pointer;
-  font-size: 12px;
-  color: var(--muted);
-  padding: 8px 0;
-}
-.wallet summary:focus-visible {
-  outline: 2px solid #76b6aa;
-  outline-offset: 2px;
-}
-.help {
-  margin-bottom: 10px;
-}
-.help p {
-  margin: 4px 0;
-  max-width: 90ch;
-}
-.form {
-  padding: 14px;
-  gap: 10px;
-}
-.notes label {
-  margin-top: 6px;
-}
-.review {
-  display: grid;
-  gap: 5px;
-  min-width: 0;
-}
-.review > span,
-.review small {
-  font-size: 12px;
-  color: var(--muted);
-}
-.review strong {
-  font-size: 18px;
-  font-variant-numeric: tabular-nums;
-}
-.review small {
-  overflow-wrap: anywhere;
-}
-.positions {
-  margin-top: 16px;
-}
-.positions h4 {
-  margin: 8px 0;
-}
-.positions > p {
-  font-size: 12px;
-  color: var(--muted);
-}
-.saving {
-  padding-top: 6px;
+  margin-top: 12px;
 }
 .saveActions {
   display: flex;
+  gap: 6px;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 8px;
 }
 .saving > p:empty {
   display: none;
+}
+@media (max-width: 800px) {
+  .tradingDesk {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+@media (max-width: 500px) {
+  .heading {
+    align-items: start;
+  }
+  .metrics {
+    gap: 8px 12px;
+  }
+  .metrics > div {
+    flex-basis: calc(50% - 12px);
+  }
+  .wallet :is(select, input, textarea) {
+    font-size: 16px;
+  }
 }

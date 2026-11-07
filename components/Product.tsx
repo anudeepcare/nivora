@@ -1,4 +1,5 @@
 "use client";
+import "@/app/core/compatibility.css";
 import type { DocumentId } from "@/lib/legal-content";
 import { ProductSession, useProduct, type DemoData } from "./Session";
 import Shell from "./Shell";
@@ -39,12 +40,22 @@ const Research = dynamic(() => import("./Research"), {
     </p>
   ),
 });
-import {
-  Overview,
-  ResearchHome,
-  Portfolio,
-  Watchlist,
-} from "./ApprovedWorkspace";
+const Overview = dynamic(
+  () => import("./HomeWorkspace").then((m) => m.Overview),
+  { loading: opening },
+);
+const Portfolio = dynamic(
+  () => import("./PortfolioPage").then((m) => m.Portfolio),
+  { loading: opening },
+);
+const Watchlist = dynamic(
+  () => import("./WatchlistPage").then((m) => m.Watchlist),
+  { loading: opening },
+);
+const ResearchHome = dynamic(
+  () => import("./ResearchHomePage").then((m) => m.ResearchHome),
+  { loading: opening },
+);
 const Settings = dynamic(
   () => import("./SupportingViews").then((m) => m.Settings),
   { loading: opening },

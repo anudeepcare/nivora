@@ -198,7 +198,7 @@ test("workspace quote refresh publishes progressive batches and settles loading"
     requests = [];
   let index = 0;
   const cache = new Map();
-  const hook = component("components/Workspace.tsx", "useWorkspaceQuotes", {
+  const hook = component("components/useWorkspaceQuotes.ts", "useWorkspaceQuotes", {
     useProduct: () => ({
       workspace: {
         positions: symbols.map((symbol) => ({ symbol, assetType: "stock" })),

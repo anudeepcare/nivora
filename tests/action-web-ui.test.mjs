@@ -95,6 +95,8 @@ test("public Pace education separates business quality, price history and incomp
       ArrowUpRight: () => null,
       PrivacyChoices: () => null,
       SUPPORT_EMAIL: "support@auryninvest.com",
+      PublicFrame: ({children, title, intro}) => React.createElement('main', null, title, intro, children),
+      s: {},
       PACE_LEVELS,
       PACE_DESCRIPTIONS,
       PACE_DESCRIPTIONS,

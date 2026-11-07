@@ -1,23 +1,26 @@
 import PaceRecordFeed from "@/components/PaceRecordFeed";
 import Link from "next/link";
-import s from "@/components/FocusTools.module.css";
+import s from "@/components/PublicFrame.module.css";
+import PublicFrame from "@/components/PublicFrame";
+import { PACE_LEVELS } from "@/lib/pace-presentation";
 export const metadata = {
   title: "Evidence & track record | AURYN",
   robots: { index: true, follow: true },
 };
 export default function Record() {
   return (
-    <main className={s.page}>
-      <Link href="/">AURYN · Home</Link>
-      <p>Evidence before conviction</p>
-      <h1>Understand the logic behind Pace.</h1>
-      <div className={s.result}>
-        <strong>A consistent framework for accumulation.</strong>
-        <p>
-          Pace describes the current price zone using completed market periods.
-          Combine that context with business evidence and your portfolio limits.
-        </p>
-      </div>
+    <PublicFrame
+      title="Understand the logic behind Pace."
+      intro="A consistent framework for accumulation: completed price periods, business evidence and your portfolio limits."
+    >
+      <section className={s.levels} aria-label="Pace scale">
+        {PACE_LEVELS.map((label, i) => (
+          <div key={label}>
+            <strong>P{i}</strong>
+            <p>{label}</p>
+          </div>
+        ))}
+      </section>
       <PaceRecordFeed />
       <details>
         <summary>Methodology and comparison with monthly DCA</summary>
@@ -51,10 +54,10 @@ export default function Record() {
           establish an investing advantage.
         </p>
       </details>
-      <nav className={s.nav}>
+      <nav className={s.actions}>
         <Link href="/portfolio-check">Check portfolio concentration</Link>
         <Link href="/about">How AURYN works</Link>
       </nav>
-    </main>
+    </PublicFrame>
   );
 }

@@ -1,0 +1,41 @@
+[
+  { route: '/about', width: 320, passed: true, cssBytes: 177324 },
+  {
+    route: '/track-record',
+    width: 320,
+    passed: true,
+    cssBytes: 177324
+  },
+  {
+    route: '/portfolio-check',
+    width: 320,
+    passed: true,
+    cssBytes: 177324
+  },
+  { route: '/about', width: 390, passed: true, cssBytes: 177324 },
+  {
+    route: '/track-record',
+    width: 390,
+    passed: true,
+    cssBytes: 177324
+  },
+  {
+    route: '/portfolio-check',
+    width: 390,
+    passed: true,
+    cssBytes: 177324
+  },
+  { route: '/about', width: 1440, passed: true, cssBytes: 177324 },
+  {
+    route: '/track-record',
+    width: 1440,
+    passed: true,
+    cssBytes: 177324
+  },
+  {
+    route: '/portfolio-check',
+    width: 1440,
+    passed: true,
+    cssBytes: 177324
+  }
+]

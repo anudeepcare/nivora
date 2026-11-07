@@ -1,519 +1,407 @@
 .desk {
   min-width: 0;
-  --option-border: var(--line);
-}
-.desk.desk :global(.options-heading) {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 4px 0 12px;
-  margin: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-}
-.desk.desk :global(.options-heading) h2 {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  font-size: 23px;
-  line-height: 1.2;
   color: var(--ink);
-}
-.desk.desk :global(.options-expiry-picker) {
-  width: 220px;
-  flex: 0 0 220px;
-}
-.desk.desk.desk :global(.options-nav) {
-  display: flex;
-  gap: 18px;
-  margin: 0 0 10px;
-  padding: 0;
-  border-bottom: 1px solid var(--line);
-  overflow: visible;
-  scrollbar-width: none;
-}
-.desk.desk :global(.options-nav) button {
-  min-height: 44px;
-  padding: 9px 0;
   font-size: 13px;
-  white-space: nowrap;
-  border: 0;
-  border-bottom: 2px solid transparent;
-  border-radius: 0;
-  background: transparent;
-  color: var(--muted);
 }
-.desk.desk :global(.options-nav) button[aria-pressed="true"] {
-  color: var(--ink);
-  border-color: #afcc35;
-  font-weight: 600;
+.desk * {
+  box-sizing: border-box;
 }
-.desk.desk :global(.options-hero) {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 12px 16px;
-  margin: 0;
+.desk button,
+.desk select,
+.desk input {
+  font: inherit;
+  color: inherit;
+}
+.desk button,
+.desk select,
+.desk input:not([type="checkbox"]) {
+  min-height: 44px;
   border: 1px solid var(--line);
-  border-radius: 10px;
   background: var(--card);
-  color: var(--ink);
+  border-radius: 6px;
+  padding: 8px 10px;
 }
-.desk.desk :global(.options-hero-intro) {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: baseline;
-  gap: 4px 12px;
-}
-.desk.desk :global(.options-hero-intro) > span:first-child {
-  grid-column: 1/-1;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  color: var(--muted);
-}
-.rangeLabel {
-  font-size: 12px;
-  color: var(--muted);
-}
-.desk.desk :global(.options-hero) h3 {
-  font-size: 23px;
-  font-weight: 600;
-  color: var(--ink);
-  margin: 0;
-  line-height: 1.25;
-}
-.desk.desk :global(.options-hero) p {
-  grid-column: 1/-1;
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1.5;
-  margin: 0;
-  max-width: 85ch;
-}
-.desk.desk :global(.options-hero-meta) {
-  display: grid;
-  gap: 3px;
-  text-align: right;
-  padding: 0;
-  border: 0;
-  min-width: 0;
-}
-.desk.desk :global(.options-hero-meta) strong {
-  font-size: 20px;
-  color: var(--ink);
-}
-.desk.desk :global(.options-hero-meta) :is(span, small) {
-  font-size: 10px;
-  color: var(--muted);
-}
-.desk.desk :global(.options-statusline) {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 4px 12px;
-  margin: 0;
-  padding: 4px 0 8px;
-  font-size: 11px;
-  color: var(--muted);
-}
-.desk.desk :global(.options-statusline) > span {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.desk.desk :global(.options-statusline) details {
-  padding: 0;
-  margin: 0;
-  background: transparent;
-  border: 0;
-}
-.desk.desk :global(.options-statusline) summary {
-  display: inline-flex;
-  align-items: center;
-  min-height: 32px;
-  font-size: 11px;
-  padding: 4px;
-  margin: 0;
-  border: 0;
-  background: transparent;
-  color: var(--muted);
-}
-.desk.desk :global(.options-statusline) details[open] {
-  flex-basis: 100%;
-}
-.desk.desk :global(.options-statusline) details[open] p {
-  max-width: 95ch;
-  font-size: 12px;
-}
-.desk.desk .analytics {
-  border: 0;
-  border-top: 1px solid var(--line);
-  border-radius: 0;
-  padding: 0;
-  margin: 12px 0;
-  background: transparent;
-}
-.desk.desk .analytics > summary {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  padding: 8px 0;
-  margin: 0;
-  font-size: 13px;
-  font-weight: 550;
-  background: transparent;
-  border-radius: 0;
+.desk button,
+.desk summary {
+  line-height: 20px;
   cursor: pointer;
 }
-.desk.desk .analytics > summary::after {
-  content: "+";
-  margin-left: auto;
-  color: var(--muted);
-  font-size: 18px;
+.desk button:disabled {
+  opacity: 0.5;
+  cursor: default;
 }
-.desk.desk .analytics[open] > summary::after {
-  content: "−";
-}
-.desk.desk .analytics :global(.options-card) {
-  margin: 10px 0;
-  padding: 16px;
-  box-shadow: none;
-  border-radius: 10px;
-  background: var(--card);
-}
-.desk.desk .analytics :global(.options-card) h3 {
-  font-size: 17px;
-  margin: 0 0 8px;
-}
-.desk.desk .analytics :global(.options-card) > p {
-  font-size: 12px;
-  max-width: 95ch;
-  margin: 6px 0;
-  line-height: 1.6;
-}
-.desk.desk :global(.options-insight-grid) {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin: 8px 0;
-}
-.desk.desk :global(.options-insight-grid) > article {
-  min-width: 0;
-  padding: 10px 14px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: color-mix(in srgb, #438d84 7%, var(--card));
-}
-.desk.desk :global(.options-insight-grid) strong {
-  display: block;
-  font-size: 23px;
-  margin: 6px 0;
-}
-.desk.desk :global(.options-insight-grid) article > span {
-  display: flex;
-  gap: 7px;
-  align-items: center;
-  font-size: 12px;
-  color: var(--muted);
-}
-.desk.desk :global(.options-insight-grid) p {
-  font-size: 11px;
-  line-height: 1.5;
-  color: var(--muted);
-  margin: 0;
-}
-.desk.desk :global(.options-card) {
-  margin: 10px 0;
-  padding: 18px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--card);
-}
-.desk.desk :global(.options-card) > h3 {
-  margin: 0 0 12px;
-  font-size: 19px;
-}
-.desk.desk :global(.options-plot) {
-  width: 100%;
-  max-width: none;
-  margin: 12px 0 6px;
-}
-.desk.desk :global(.options-plot) svg {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 700 / 210;
-  max-height: none;
-}
-.desk.desk :global(.options-plot-axis) {
-  font-size: 11px;
-  padding: 0 6%;
-}
-.desk.desk :global(.options-plot) figcaption {
-  font-size: 11px;
-}
-.desk.desk :global(.options-learn-grid) {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin: 12px 0 0;
-}
-.desk.desk :global(.options-learn-grid) article {
-  min-height: 0;
-  padding: 14px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: transparent;
-}
-.desk.desk :global(.options-learn-grid) article > span {
-  width: 28px;
-  height: 28px;
-  display: grid;
-  place-items: center;
-  margin: 0 0 10px;
-  border-radius: 7px;
-  background: #e9f3c9;
-  color: #343a23;
-  font-size: 11px;
-}
-.desk.desk :global(.options-learn-grid) h4 {
-  font-size: 14px;
-  margin: 0 0 7px;
-}
-.desk.desk :global(.options-learn-grid) p {
-  font-size: 12px;
-  line-height: 1.6;
-  margin: 0;
-  color: var(--muted);
-}
-.desk :is(button, select, summary, input, a):focus-visible {
+.desk :is(button, select, input, summary, a):focus-visible {
   outline: 2px solid var(--green);
   outline-offset: 3px;
 }
-@media (max-width: 700px) {
-  .desk.desk :global(.options-heading) {
-    gap: 12px;
-  }
-  .desk.desk :global(.options-heading) h2 {
-    font-size: 21px;
-  }
-  .desk.desk :global(.options-expiry-picker) {
-    width: 180px;
-    flex-basis: 180px;
-  }
-  .desk.desk :global(.options-hero) {
-    gap: 12px;
-    padding: 12px;
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .desk.desk :global(.options-hero-intro) {
-    grid-template-columns: 1fr;
-  }
-  .desk.desk :global(.options-hero) h3 {
-    font-size: 20px;
-  }
-  .desk.desk :global(.options-hero-meta) small:last-child {
-    display: none;
-  }
-  .desk.desk :global(.options-insight-grid),
-  .desk.desk :global(.options-learn-grid) {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-  .desk.desk :global(.options-card) {
-    padding: 14px;
-  }
+.desk summary {
+  line-height: 20px;
+  min-height: 44px;
+  padding: 12px 0;
+  font-size: 12px;
 }
-@media (max-width: 380px) {
-  .desk.desk :global(.options-heading) {
-    flex-wrap: wrap;
-  }
-  .desk.desk :global(.options-expiry-picker) {
-    width: 100%;
-    flex-basis: 100%;
-  }
+.desk h3 {
+  font-size: 17px;
+  margin: 0 0 10px;
 }
-
-/* Keep contract headings aligned with their values and all controls on one baseline. */
-.desk .contractFilters {
-  display: grid;
-  grid-template-columns: minmax(180px, 1.4fr) minmax(150px, 1fr) auto auto;
-  align-items: end;
+.desk h4 {
+  font-size: 14px;
+  margin: 10px 0;
+}
+.desk p {
+  line-height: 1.6;
+}
+.commandBar {
+  display: flex;
+  align-items: flex-end;
   gap: 12px;
-}
-.desk .contractFilters > label:not(:global(.options-check)) {
-  display: grid;
-  gap: 6px;
-  min-width: 0;
-}
-.desk .contractFilters :is(input:not([type="checkbox"]), select) {
-  width: 100%;
-  min-height: 44px;
-  margin: 0;
-}
-.desk .contractFilters :global(.options-segment) {
-  min-height: 44px;
-  align-self: end;
-  margin: 0;
-}
-.desk .contractFilters :global(.options-check) {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  margin: 0;
-  white-space: nowrap;
-}
-.desk .contractFilters input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  min-height: 0;
-  margin: 0;
-  flex: none;
-}
-.desk .contractTable :is(thead th, tbody td) {
-  text-align: right;
-  vertical-align: middle;
-  padding: 12px;
-}
-.desk .contractTable :is(thead th, tbody th):first-child {
-  text-align: left;
-}
-.desk .contractTable tbody tr:hover > :is(th, td),
-.desk .contractTable tbody tr:focus-within > :is(th, td) {
-  background: var(--blue-soft);
-}
-@media (max-width: 1000px) {
-  .desk .contractFilters {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  }
-}
-@media (max-width: 480px) {
-  .desk .contractFilters {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .desk .contractFilters :global(.options-segment) {
-    justify-self: stretch;
-  }
-}
-
-.desk.desk :global(.options-hero-intro) {
-  min-width: 0;
-  flex: 1;
-}
-.desk.desk :global(.options-hero-meta) {
-  flex: 0 0 170px;
-}
-@media (max-width: 700px) {
-  .desk.desk :global(.options-hero-meta) {
-    flex: auto;
-    text-align: left;
-    border-top: 1px solid var(--line);
-    padding-top: 10px;
-    grid-template-columns: 1fr auto;
-    align-items: baseline;
-  }
-  .desk.desk :global(.options-hero-meta) small {
-    grid-column: 1/-1;
-  }
-  .desk.desk :global(.options-hero-intro) {
-    width: 100%;
-  }
-  .desk.desk :global(.options-empty-inline) {
-    padding: 14px;
-    gap: 10px;
-  }
-  .desk.desk :global(.options-empty-inline) h3 {
-    font-size: 18px;
-  }
-  .desk.desk :global(.options-empty-inline) p {
-    font-size: 13px;
-  }
-}
-
-.desk.desk .analytics {
-  min-height: 0;
-  height: auto;
-}
-
-.desk.desk {
-  row-gap: 12px;
-}
-.desk.desk :global(.options-nav) {
   flex-wrap: wrap;
-  overflow: visible;
-  gap: 6px;
-  align-items: center;
+  border-bottom: 1px solid var(--line);
+  padding: 0 0 10px;
 }
-.desk.desk :global(.options-advanced-picker) {
+.expiryControl,
+.advancedControl {
+  display: grid;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.expiryControl select {
+  width: 175px;
+}
+.advancedControl {
   margin-left: auto;
+}
+.views {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.views button[aria-pressed="true"],
+.options_segment button[aria-pressed="true"],
+.options_strategies button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--card);
+  border-color: var(--ink);
+}
+.marketLine {
   display: flex;
   align-items: center;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+.marketLine strong {
+  font-size: 14px;
+}
+.marketLine strong span {
+  margin-left: 8px;
+}
+.marketLine > small {
+  color: var(--muted);
+  font-size: 11px;
+}
+.marketLine b {
+  font-weight: 600;
+  margin-left: 5px;
+}
+.dataHelp {
+  margin-left: auto;
+  position: relative;
+}
+.dataHelp > summary {
+  padding: 8px 0;
+}
+.dataHelp[open] {
+  flex-basis: 100%;
+}
+.dataHelp > div {
+  padding: 8px 12px;
+  border-left: 2px solid var(--green);
+  background: var(--surface);
+}
+.dataHelp p {
+  margin: 4px 0;
+  max-width: 110ch;
+  color: var(--muted);
+}
+.secondaryTools {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 8px;
+  border-top: 1px solid var(--line);
+}
+.activity {
+  min-width: 0;
+}
+.analytics {
+  padding: 12px 0;
+}
+.options_notice,
+.options_loading {
+  font-size: 12px;
+  margin: 8px 0;
+}
+.options_empty {
+  padding: 22px 0;
+  max-width: 75ch;
+}
+.options_empty h3 {
+  margin: 8px 0;
+}
+.options_empty p {
+  color: var(--muted);
+}
+.options_empty_inline {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+}
+.options_insight_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin: 12px 0;
+}
+.options_insight_grid article {
+  border-left: 2px solid var(--line);
+  padding: 4px 12px;
+}
+.options_insight_grid span {
+  display: flex;
+  gap: 6px;
+  align-items: center;
   font-size: 12px;
   color: var(--muted);
 }
-.desk.desk :global(.options-advanced-picker) select {
-  min-height: 44px;
-  font-size: 16px;
-  max-width: 210px;
-  background: var(--card);
-  color: var(--ink);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 8px;
+.options_insight_grid strong {
+  display: block;
+  margin: 4px 0;
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
 }
-@media (max-width: 600px) {
-  .desk.desk :global(.options-nav) > button {
-    flex: 1 1 auto;
-    padding: 10px 8px;
-  }
-  .desk.desk.desk :global(.options-advanced-picker) {
-    width: 100%;
-    margin: 0;
-    justify-content: space-between;
-  }
+.options_insight_grid p {
+  margin: 0;
+  font-size: 11px;
+  color: var(--muted);
 }
-
-/* Advanced tools participate in the navigation flow; never float over tabs. */
-.desk.desk :global(.options-advanced-picker) {
-  position: static;
-  flex: 0 0 auto;
+.options_card,
+.options_contracts {
+  padding: 12px 0;
+}
+.options_card > p {
+  max-width: 100ch;
+  color: var(--muted);
+  margin: 6px 0 12px;
+  font-size: 12px;
+}
+.options_section_heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.options_section_heading h3 {
+  margin: 0;
+}
+.eyebrow,
+.options_count {
+  font-size: 11px;
+  color: var(--muted);
+}
+.options_section_heading > div {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+.contractFilters,
+.options_toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+  margin: 10px 0;
+}
+.contractFilters > label:not(.options_check),
+.options_toolbar > label {
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+  flex: 1 1 170px;
+}
+.contractFilters input,
+.contractFilters select,
+.options_toolbar select {
+  width: 100%;
   min-width: 0;
+}
+.options_segment {
+  display: flex;
+  gap: 4px;
+}
+.options_check {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 44px;
+  font-size: 12px;
+}
+.options_check input {
+  width: 18px;
+  height: 18px;
+}
+.options_scroll {
+  overflow: auto;
+  max-width: 100%;
+}
+.options_scroll table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-.desk.desk :global(.options-advanced-picker) > span {
-  position: static;
-  flex: none;
+.options_scroll th,
+.options_scroll td {
+  padding: 8px 10px;
+  text-align: right;
+  border-bottom: 1px solid var(--line);
 }
-.desk.desk :global(.options-advanced-picker) select {
-  width: auto;
-  margin: 0;
-  font-size: 13px;
+.options_scroll th:first-child {
+  text-align: left;
 }
-.desk.desk :global(.options-nav) {
-  column-gap: 18px;
+.options_scroll thead th {
+  color: var(--muted);
+  font-weight: 500;
 }
-.desk.desk :global(.options-empty-inline) {
-  min-height: 0;
-  padding: 12px;
-  margin: 8px 0;
+.options_scroll small {
+  display: block;
+  font-weight: 400;
+  color: var(--muted);
 }
-.desk.desk :global(.options-empty-inline) h3 {
-  font-size: 15px;
-  margin: 0;
+.options_scroll tbody tr:hover {
+  background: var(--surface);
 }
-.desk.desk :global(.options-empty-inline) p {
+.options_type {
+  text-transform: capitalize;
+  font-weight: 600;
+}
+.options_link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.options_method {
+  border-top: 1px solid var(--line);
+  margin-top: 8px;
+}
+.options_method p {
   font-size: 12px;
-  margin: 5px 0;
+  color: var(--muted);
+  max-width: 100ch;
+}
+.options_strategies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0;
+}
+.options_strategies button {
+  text-align: left;
+  flex: 1 1 155px;
+}
+.options_strategies small {
+  display: block;
+  font-size: 10px;
+  margin-top: 3px;
+}
+.options_plot {
+  margin: 12px 0;
+}
+.options_plot svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+}
+.options_plot_axis {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 6%;
+}
+.options_plot_axis,
+.options_plot figcaption {
+  font-size: 11px;
+  color: var(--muted);
+}
+.options_learn_grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin: 16px 0;
+}
+.options_learn_grid article {
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+.options_learn_grid article > span {
+  font-size: 11px;
+  color: var(--muted);
+}
+.options_learn_grid p {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+}
+.options_disclosure {
+  font-size: 11px;
+  color: var(--muted);
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+  margin-top: 12px;
+  line-height: 1.6;
+}
+@media (max-width: 700px) {
+  .commandBar {
+    gap: 8px;
+  }
+  .views {
+    order: 3;
+    width: 100%;
+  }
+  .views button {
+    flex: 1;
+    padding: 8px;
+  }
+  .advancedControl {
+    flex: 1;
+    min-width: 0;
+  }
+  .advancedControl select {
+    width: 100%;
+    min-width: 0;
+  }
+  .marketLine {
+    gap: 6px 12px;
+  }
+  .marketLine > small {
+    flex-basis: 100%;
+  }
+  .dataHelp {
+    margin-left: 0;
+  }
+  .secondaryTools,
+  .options_learn_grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .options_learn_grid {
+    gap: 12px;
+  }
 }

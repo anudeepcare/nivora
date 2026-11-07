@@ -156,6 +156,7 @@ export default function OwnerAccess() {
           ["payments", "Payments"],
           ["support", "Support"],
           ["handbook", "Owner handbook"],
+          ["evidence", "Validation & records"],
         ].map(([id, label]) => (
           <button
             type="button"
@@ -182,11 +183,11 @@ export default function OwnerAccess() {
           </button>
         ))}
       </nav>
-      {panel === "handbook" && (
-        <>
+      {panel === "handbook" && <OwnerHandbook />}
+      {panel === "evidence" && (
+        <section id="admin-evidence">
           <OwnerEvidenceTools />
-          <OwnerHandbook />
-        </>
+        </section>
       )}
       {message && (
         <p className="membership-feedback" role="status">

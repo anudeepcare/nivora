@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { Research, Quote } from "@/lib/types";
 import { positionFit } from "@/lib/position-fit";
 import { useProduct } from "./Session";
-import { useWorkspaceQuotes } from "./Workspace";
+import { useWorkspaceQuotes } from "./useWorkspaceQuotes";
 import { useWorkspacePreferences } from "./WorkspacePreferences";
 import { percent, amount } from "@/lib/format";
 import s from "./PositionFit.module.css";

@@ -250,7 +250,7 @@ export default function Shell({
       </nav>
       <dialog
         ref={tools}
-        className="search-dialog approved-tools-dialog"
+        className={`search-dialog approved-tools-dialog ${experience.toolsDialog}`}
         aria-label="Account & workspace"
       >
         <header className="dialog-head">

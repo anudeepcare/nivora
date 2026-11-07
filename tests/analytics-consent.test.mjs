@@ -7,7 +7,7 @@ function harness(id='G-TEST123'){
  const ast=ts.createSourceFile('AnalyticsConsent.tsx',fs.readFileSync('components/AnalyticsConsent.tsx','utf8'),ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX);
  const source=ast.statements.filter(n=>!ts.isImportDeclaration(n)).map(n=>n.getText(ast).replace(/^export default /,'').replace(/^export /,'')).join('\n');
  const code=ts.transpileModule(source,{compilerOptions:{jsx:ts.JsxEmit.React,module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
- const bindings={React,analyticsPath,safeAnalyticsEvent,validMeasurementId,SITE_URL:'https://www.auryninvest.com',process:{env:{NEXT_PUBLIC_GA_MEASUREMENT_ID:id}},window:w,document:doc,location:{hostname:'www.auryninvest.com'},localStorage:{getItem:k=>stored.get(k)||null,setItem:(k,v)=>stored.set(k,v)},Link:()=>null,PerformanceObserver:undefined,
+ const bindings={React,s:{consent:"consent",actions:"actions",decline:"decline",allow:"allow"},analyticsPath,safeAnalyticsEvent,validMeasurementId,SITE_URL:'https://www.auryninvest.com',process:{env:{NEXT_PUBLIC_GA_MEASUREMENT_ID:id}},window:w,document:doc,location:{hostname:'www.auryninvest.com'},localStorage:{getItem:k=>stored.get(k)||null,setItem:(k,v)=>stored.set(k,v)},Link:()=>null,PerformanceObserver:undefined,
  usePathname:()=>path,useRef:v=>{const i=cursor++;return slots[i]??=( {current:v});},
  useState:v=>{const i=cursor++;if(!(i in slots))slots[i]=v;return[slots[i],n=>{const value=typeof n==='function'?n(slots[i]):n;if(value!==slots[i]){slots[i]=value;dirty=true;}}];},
  useEffect:(fn,deps)=>{const i=cursor++;const old=effects[i];if(!old||deps.some((d,j)=>!Object.is(d,old.deps[j]))){pending.push(()=>{old?.cleanup?.();effects[i]={deps,cleanup:fn()};});}}

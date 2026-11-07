@@ -5,7 +5,7 @@ import { monthlyAllocation, usdCents } from "@/lib/monthly-allocation";
 import { providerIdentity } from "@/lib/provider-symbol";
 import type { Quote } from "@/lib/types";
 import { useProduct } from "./Session";
-import { useWorkspaceQuotes } from "./Workspace";
+import { useWorkspaceQuotes } from "./useWorkspaceQuotes";
 import s from "./MonthlyPlan.module.css";
 const money = (cents: number) =>
   (cents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });

@@ -178,175 +178,178 @@ function Wallet({
             : ""}
         </p>
       </details>
-      <form
-        className={styles.form}
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (!chosen) return;
-          transact(() =>
-            openSimulation(ledger, {
-              contract: chosen,
-              symbol,
-              quantity: Number(quantity),
-              notes,
-            }),
-          );
-        }}
-      >
-        <label>
-          1. Choose a {symbol} contract
-          <select
-            value={chosen?.id ?? ""}
-            disabled={disabled || busy || !chosen}
-            onChange={(e) => setSelected(e.target.value)}
-          >
-            {!available.length && (
-              <option value="">No eligible fresh quotes</option>
-            )}
-            {available.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.expiry} · {c.strike} {c.type} · ask {usd(c.ask)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Contracts
-          <input
-            type="number"
-            min="1"
-            max="100"
-            step="1"
-            value={quantity}
-            disabled={disabled || busy}
-            onChange={(e) => setQuantity(e.target.value)}
-          />
-        </label>
-        <details className={styles.notes}>
-          <summary>Add practice notes</summary>
+      <div className={styles.tradingDesk}>
+        <form
+          className={styles.form}
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!chosen) return;
+            transact(() =>
+              openSimulation(ledger, {
+                contract: chosen,
+                symbol,
+                quantity: Number(quantity),
+                notes,
+              }),
+            );
+          }}
+        >
           <label>
-            Trade notes
-            <textarea
-              value={notes}
-              maxLength={500}
-              rows={2}
+            1. Choose a {symbol} contract
+            <select
+              value={chosen?.id ?? ""}
+              disabled={disabled || busy || !chosen}
+              onChange={(e) => setSelected(e.target.value)}
+            >
+              {!available.length && (
+                <option value="">No eligible fresh quotes</option>
+              )}
+              {available.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.expiry} · {c.strike} {c.type} · ask {usd(c.ask)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Contracts
+            <input
+              type="number"
+              min="1"
+              max="100"
+              step="1"
+              value={quantity}
               disabled={disabled || busy}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Thesis, risk, and what you want to learn"
+              onChange={(e) => setQuantity(e.target.value)}
             />
           </label>
-        </details>
-        <div className={styles.order}>
-          <div className={styles.review}>
-            <span>2. Review cost</span>
-            <strong>Total premium {usd(totalPremium)}</strong>
-            <span>
-              Maximum loss {usd(totalPremium)} · premiums paid in full
-            </span>
-            <small>
-              {chosen
-                ? `Ask ${usd(chosen.ask)} × 100 shares × ${quantity} contract(s) · quote ${chosen.observed}`
-                : "Load a fresh standard-contract chain to practice."}
-            </small>
-            {Number.isFinite(spot) && spot > 0 && (
+          <details className={styles.notes}>
+            <summary>Add practice notes</summary>
+            <label>
+              Trade notes
+              <textarea
+                value={notes}
+                maxLength={500}
+                rows={2}
+                disabled={disabled || busy}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Thesis, risk, and what you want to learn"
+              />
+            </label>
+          </details>
+          <div className={styles.order}>
+            <div className={styles.review}>
+              <span>2. Review cost</span>
+              <strong>Total premium {usd(totalPremium)}</strong>
+              <span>
+                Maximum loss {usd(totalPremium)} · premiums paid in full
+              </span>
               <small>
-                Underlying reference {usd(spot)} · not a verified expiry close
+                {chosen
+                  ? `Ask ${usd(chosen.ask)} × 100 shares × ${quantity} contract(s) · quote ${chosen.observed}`
+                  : "Load a fresh standard-contract chain to practice."}
               </small>
-            )}
-          </div>
-          <button type="submit" disabled={disabled || busy || !chosen}>
-            3. Simulate buy at ask
-          </button>
-        </div>
-      </form>
-      <div className={styles.positions}>
-        <h4>Simulation ledger</h4>
-        {!ledger.positions.length && (
-          <p>
-            No simulated positions yet. Buying reduces available simulated cash.
-          </p>
-        )}
-        {ledger.positions.map((p) => {
-          const quote = contracts.find((c) => c.id === p.contract.id);
-          const issue = quote
-            ? simulationQuoteIssue(quote)
-            : "Load a current quote for this exact contract to close.";
-          const expired =
-            Date.now() >= Date.parse(p.contract.expiry + "T21:00:00Z");
-          const realized = p.exits.reduce(
-            (n, e) => n + (e.premium - p.entryPremium) * 100 * e.quantity,
-            0,
-          );
-          return (
-            <article key={p.id} className={styles.position}>
-              <div>
-                <strong>
-                  {p.symbol} · {p.contract.strike} {p.contract.type} ·{" "}
-                  {p.contract.expiry}
-                </strong>
-                <p>
-                  {p.remaining} of {p.quantity} open · entry{" "}
-                  {usd(p.entryPremium)} · realized {usd(realized)}
-                </p>
+              {Number.isFinite(spot) && spot > 0 && (
                 <small>
-                  {p.contract.id} · opened {p.openedAt.slice(0, 10)} · entry
-                  source {p.contract.observed}
+                  Underlying reference {usd(spot)} · not a verified expiry close
                 </small>
-                {p.notes && <p className={styles.tradeNote}>{p.notes}</p>}
-                {p.exits.map((exit, i) => (
-                  <small className={styles.exit} key={i}>
-                    Closed {exit.quantity} at bid {usd(exit.premium)} · quote{" "}
-                    {exit.observed} · recorded {exit.at.slice(0, 10)}
-                  </small>
-                ))}
-              </div>
-              {p.remaining > 0 && (
-                <div className={styles.close}>
-                  <label>
-                    Contracts to close
-                    <input
-                      aria-label={`Contracts to close ${p.contract.id}`}
-                      type="number"
-                      min="1"
-                      max={p.remaining}
-                      step="1"
-                      value={closeQuantities[p.id] ?? "1"}
-                      disabled={disabled || busy}
-                      onChange={(e) =>
-                        setCloseQuantities({
-                          ...closeQuantities,
-                          [p.id]: e.target.value,
-                        })
-                      }
-                    />
-                  </label>
-                  <button
-                    disabled={disabled || busy || !!issue}
-                    onClick={() =>
-                      quote &&
-                      transact(() =>
-                        closeSimulation(
-                          ledger,
-                          p.id,
-                          Number(closeQuantities[p.id] ?? "1"),
-                          quote,
-                        ),
-                      )
-                    }
-                  >
-                    Simulate close at bid
-                  </button>
-                  <small>
-                    {expired
-                      ? "Settlement pending. A verified underlying closing price dated at expiry is required; this wallet does not infer settlement from current spot."
-                      : (issue ??
-                        `Bid ${usd(quote!.bid)} · source ${quote!.observed}`)}
-                  </small>
-                </div>
               )}
-            </article>
-          );
-        })}
+            </div>
+            <button type="submit" disabled={disabled || busy || !chosen}>
+              3. Simulate buy at ask
+            </button>
+          </div>
+        </form>
+        <div className={styles.positions}>
+          <h4>Simulation ledger</h4>
+          {!ledger.positions.length && (
+            <p>
+              No simulated positions yet. Buying reduces available simulated
+              cash.
+            </p>
+          )}
+          {ledger.positions.map((p) => {
+            const quote = contracts.find((c) => c.id === p.contract.id);
+            const issue = quote
+              ? simulationQuoteIssue(quote)
+              : "Load a current quote for this exact contract to close.";
+            const expired =
+              Date.now() >= Date.parse(p.contract.expiry + "T21:00:00Z");
+            const realized = p.exits.reduce(
+              (n, e) => n + (e.premium - p.entryPremium) * 100 * e.quantity,
+              0,
+            );
+            return (
+              <article key={p.id} className={styles.position}>
+                <div>
+                  <strong>
+                    {p.symbol} · {p.contract.strike} {p.contract.type} ·{" "}
+                    {p.contract.expiry}
+                  </strong>
+                  <p>
+                    {p.remaining} of {p.quantity} open · entry{" "}
+                    {usd(p.entryPremium)} · realized {usd(realized)}
+                  </p>
+                  <small>
+                    {p.contract.id} · opened {p.openedAt.slice(0, 10)} · entry
+                    source {p.contract.observed}
+                  </small>
+                  {p.notes && <p className={styles.tradeNote}>{p.notes}</p>}
+                  {p.exits.map((exit, i) => (
+                    <small className={styles.exit} key={i}>
+                      Closed {exit.quantity} at bid {usd(exit.premium)} · quote{" "}
+                      {exit.observed} · recorded {exit.at.slice(0, 10)}
+                    </small>
+                  ))}
+                </div>
+                {p.remaining > 0 && (
+                  <div className={styles.close}>
+                    <label>
+                      Contracts to close
+                      <input
+                        aria-label={`Contracts to close ${p.contract.id}`}
+                        type="number"
+                        min="1"
+                        max={p.remaining}
+                        step="1"
+                        value={closeQuantities[p.id] ?? "1"}
+                        disabled={disabled || busy}
+                        onChange={(e) =>
+                          setCloseQuantities({
+                            ...closeQuantities,
+                            [p.id]: e.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <button
+                      disabled={disabled || busy || !!issue}
+                      onClick={() =>
+                        quote &&
+                        transact(() =>
+                          closeSimulation(
+                            ledger,
+                            p.id,
+                            Number(closeQuantities[p.id] ?? "1"),
+                            quote,
+                          ),
+                        )
+                      }
+                    >
+                      Simulate close at bid
+                    </button>
+                    <small>
+                      {expired
+                        ? "Settlement pending. A verified underlying closing price dated at expiry is required; this wallet does not infer settlement from current spot."
+                        : (issue ??
+                          `Bid ${usd(quote!.bid)} · source ${quote!.observed}`)}
+                    </small>
+                  </div>
+                )}
+              </article>
+            );
+          })}
+        </div>
       </div>
       <footer className={styles.saving}>
         <details>

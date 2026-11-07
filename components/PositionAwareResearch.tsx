@@ -6,7 +6,7 @@ import { positionContext } from "@/lib/position-context";
 import { advancedStudies } from "@/lib/advanced-research";
 import { amount, percent, dateLabel } from "@/lib/format";
 import { useProduct } from "./Session";
-import { useWorkspaceQuotes } from "./Workspace";
+import { useWorkspaceQuotes } from "./useWorkspaceQuotes";
 export default function PositionAwareResearch({
   research: r,
   compact = false,
