@@ -97,16 +97,18 @@ export default function ExposureBoard({
   const chosen = externalSnapshot ?? snapshots.find((x) => x.id === snapshot);
   const board = chosen?.board ?? live;
   const dates = exposureDates(board.cells.map(c=>c.expiry), months, expiry, chosen ? Date.parse(chosen.savedAt) : Date.now());
+  const dateSet = new Set(dates);
   const strikes = [
     ...new Set(
-      board.cells.filter((c) => dates.includes(c.expiry)).map((c) => c.strike),
+      board.cells.filter((c) => dateSet.has(c.expiry)).map((c) => c.strike),
     ),
   ]
     .sort((a, b) => Math.abs(a - board.spot) - Math.abs(b - board.spot))
     .slice(0, range)
     .sort((a, b) => b - a);
+  const strikeSet = new Set(strikes);
   const cells = board.cells.filter(
-    (c) => dates.includes(c.expiry) && strikes.includes(c.strike),
+    (c) => dateSet.has(c.expiry) && strikeSet.has(c.strike),
   );
   const value = (c: ExposureCell) => (metric === "gex" ? c.gex : c.oi);
   const measured = cells.filter((c) => value(c) !== null);
@@ -316,7 +318,7 @@ export default function ExposureBoard({
       )}
       {mode === "map" && (
         <>
-          <p className={s.reading}>Each column is an expiration date. Ranges show loaded contracts, not historical daily data. Darker cells mean more {metric === "gex" ? "estimated gamma exposure" : "open contracts"}. Tap a cell for its observation date. These levels do not predict where the stock will touch or reverse.</p>
+          <p className={s.reading}>Loaded expirations · darker cells show more {metric === "gex" ? "estimated gamma exposure" : "open contracts"}. Select a level to inspect its data.</p>
           <div className={s.toolbar}>
             <label>
               Measure
@@ -410,9 +412,10 @@ export default function ExposureBoard({
             ].map(([label, c]) => {
               const cell = c as ExposureCell | undefined;
               return (
-                <article key={String(label)}>
+                <article key={String(label)} data-location={String(label).includes("below")?"below":String(label).includes("above")?"above":"largest"}>
                   <span>{String(label)}</span>
                   <strong>{cell ? amount(cell.strike) : "Not measured"}</strong>
+                  {cell && board.spot > 0 && <small>{Math.abs((cell.strike / board.spot - 1)*100).toFixed(1)}% {cell.strike >= board.spot ? "above" : "below"} current price</small>}
                   <small>
                     {cell
                       ? `${cell.expiry} · ${metric === "gex" ? amount(cell.gex, "USD", true) : cell.oi?.toLocaleString() + " contracts"}`
@@ -460,7 +463,7 @@ export default function ExposureBoard({
                     data-strike={strike}
                     data-nearest={strike === nearest}
                   >
-                    <th>{amount(strike)}</th>
+                    <th>{amount(strike)}{strike === nearest && <span className={s.priceMarker}>← Price</span>}</th>
                     {dates.map((d) => {
                       const c = byKey.get(`${strike}|${d}`),
                         v = c ? value(c) : null;
@@ -482,7 +485,7 @@ export default function ExposureBoard({
                               backgroundColor:
                                 v === null || v === 0
                                   ? undefined
-                                  : `color-mix(in srgb, ${v > 0 ? "var(--green)" : "var(--red)"} ${12 + (43 * Math.abs(v)) / max}%, var(--card))`,
+                                  : `color-mix(in srgb, ${v > 0 ? "var(--green)" : "var(--red)"} ${18 + (62 * Math.abs(v)) / max}%, var(--card))`,
                             }}
                             aria-pressed={selected === c?.key}
                             aria-label={`${strike} strike, ${d}, ${v === null ? "not measured" : v.toLocaleString()}${c?.key === largest?.key ? ", largest visible exposure" : ""}`}

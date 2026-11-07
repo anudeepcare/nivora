@@ -1,0 +1,4 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {optionsLiquidity} from '../lib/options-liquidity.ts';
+const c={id:'a',expiry:'2026-12-18',observed:'2026-11-06',bid:9,ask:11};
+test('quote quality deduplicates latest contracts and respects expiration',()=>{const r=optionsLiquidity([c,{...c,observed:'2026-11-05',bid:1,ask:100},{...c,id:'b',bid:19,ask:21},{...c,id:'c',expiry:'2027-01-15'}],c.expiry);assert.equal(r.contracts,2);assert.equal(r.twoSided,2);assert.equal(r.medianSpread,15);});
+test('missing zero crossed and nonfinite bids do not create artificial liquidity',()=>{for(const bid of [null,0,12,NaN,Infinity]){const r=optionsLiquidity([{...c,bid}],c.expiry);assert.equal(r.twoSided,0);assert.equal(r.medianSpread,null);}assert.equal(optionsLiquidity([],c.expiry).oldest,null);});

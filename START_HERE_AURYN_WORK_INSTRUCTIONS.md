@@ -1,3 +1,7 @@
+# Latest update — unified UX foundation
+
+Read `docs/UNIFIED_UX_RELEASE.md` for changes and `docs/ONE_APP_ROADMAP.md` for the full approved scope and remaining work. This source is not deployed.
+
 # Current release: reference-led redesign — 2026-11-06
 
 Read `docs/REFERENCE_REDESIGN_20261106.md` for this release and its verification limits. Full existing application source; not deployed.

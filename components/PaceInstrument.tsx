@@ -193,11 +193,11 @@ export default function PaceInstrument({
           )}
         </div>
       )}
-      <details className={s.readingDetail} open>
+      <details className={s.readingDetail}>
         <summary>
           {exploring
             ? "About this stage"
-            : "Technical levels & contribution rules"}
+            : "Price levels & accumulation plan"}
         </summary>
         <p className={s.description}>
           {exploring && selected !== null

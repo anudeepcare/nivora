@@ -470,3 +470,5 @@
 @media(max-width:600px){.evidenceDetails{grid-template-columns:1fr}.title h2>.level{min-width:60px;min-height:54px;font-size:30px;margin-top:8px}}
 
 .header>span{min-width:0;letter-spacing:.1em;line-height:1.5;font-size:12px}.header>span img{flex-shrink:0}.header>button{flex-shrink:0}
+
+.instrument .readingDetail>summary{padding:12px 14px;margin:8px 0;border:1px solid #809d8c;border-radius:10px;background:#ffffff0c;color:#eef5ef;gap:14px;font-weight:600;list-style:none}.instrument .readingDetail>summary::-webkit-details-marker{display:none}.instrument .readingDetail>summary::after{content:'Show levels ⌄';white-space:nowrap;font-size:12px;color:#e0f78a}.instrument .readingDetail[open]>summary::after{content:'Hide levels ⌃'}.instrument .readingDetail>summary:focus-visible{outline:2px solid #e0f78a;outline-offset:3px}@media(max-width:480px){.instrument .readingDetail>summary{align-items:flex-start;flex-direction:column;gap:5px}.instrument .readingDetail>summary::after{margin-left:0}}

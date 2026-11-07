@@ -320,3 +320,5 @@ body .mp-auth-shell{background:radial-gradient(ellipse at 15% 0,#a8ddc030,transp
 body :is(.settings-page,.approved-workspace,.approved-research-page) h3{line-height:1.35}
 body .approved-research-page :is(.technical-group,.options-card) h3{display:flex;align-items:center;gap:8px}
 @media(max-width:600px){body .approved-research-page :is(.market-context,.technical-levels){padding:16px}}
+
+.approved-watch-table th:nth-child(2),.approved-watch-table td:nth-child(2){text-align:right;font-variant-numeric:tabular-nums}.approved-watch-table :is(th,td):nth-child(3){width:130px;text-align:center}.spark-unavailable{display:inline-block;max-width:100px;font-size:11px;line-height:1.4;color:var(--muted)}.approved-watch-table td{padding-top:14px;padding-bottom:14px}.approved-watch-table .company-row small{max-width:360px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}@media(max-width:700px){.approved-watch-table .company-row small{max-width:230px}.approved-watch-table td:nth-child(2){text-align:inherit}}
