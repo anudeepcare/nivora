@@ -55,7 +55,9 @@ export default async function Page({
       !/^((127\.0\.0\.1|localhost|terminal\.local)(:\d+)?$)/.test(host)
     )
       notFound();
-    demo = (await import("@/tests/fixtures/demo")).demoData;
+    if (process.env.NODE_ENV !== "production")
+      demo = (await import("@/tests/fixtures/demo")).demoData;
+    else notFound();
   }
   return (
     <Product

@@ -1,6 +1,8 @@
+import { supportSearch } from "../lib/support-workflow.ts";
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import ts from 'typescript';
 const source=ts.transpileModule(fs.readFileSync('app/api/support/route.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
 function route(rows,owner=true){const calls=[];const query={select(){return this},order(...a){calls.push(['order',...a]);return this},eq(...a){calls.push(['eq',...a]);return this},or(...a){calls.push(['or',...a]);return this},async limit(n){calls.push(['limit',n]);return{data:rows.slice(0,n)}}};const mod={exports:{}};new Function('require','module','exports',source)(name=>{
+ if(name==='@/lib/support-workflow')return{supportSearch};
  if(name==='@/lib/access-server')return{exactOwner:()=>owner,accessDb:()=>({from:()=>query})};
  if(name==='@/lib/server')return{account:async()=>({user:{id:'test'}}),HttpError:class extends Error{constructor(m,status){super(m);this.status=status}},privateJson:v=>Response.json(v),failure:e=>Response.json({error:e.message},{status:e.status||500})};
  if(name==='@/lib/support-status')return{supportDeliveryStatus:()=>({})};return{};

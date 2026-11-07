@@ -12,22 +12,22 @@
 
   border-radius: 12px;
   padding: 20px;
-  background:var(--card);
-  box-shadow:var(--panel-shadow);
+  background: var(--card);
+  box-shadow: var(--panel-shadow);
 }
 .panel[data-category="business"] {
   --category: var(--business-icon);
-  background:var(--card);
+  background: var(--card);
   --category-bg: #d8f2e8;
 }
 .panel[data-category="valuation"] {
   --category: var(--valuation-icon);
-  background:var(--card);
+  background: var(--card);
   --category-bg: #edf5c9;
 }
 .panel[data-category="ownership"] {
   --category: var(--ownership-icon);
-  background:var(--card);
+  background: var(--card);
   --category-bg: #edf3f0;
 }
 .panel header {

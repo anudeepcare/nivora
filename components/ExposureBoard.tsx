@@ -73,6 +73,7 @@ export default function ExposureBoard({
     [name, setName] = useState(""),
     [message, setMessage] = useState(""),
     [mode, setMode] = useState("map");
+  const [presentation, setPresentation] = useState("heatmap");
   const table = useRef<HTMLDivElement>(null);
   useEffect(() => {
     try {
@@ -96,17 +97,24 @@ export default function ExposureBoard({
   const snapshots = saved.snapshots.filter((x) => x.symbol === symbol);
   const chosen = externalSnapshot ?? snapshots.find((x) => x.id === snapshot);
   const board = chosen?.board ?? live;
-  const dates = exposureDates(board.cells.map(c=>c.expiry), months, expiry, chosen ? Date.parse(chosen.savedAt) : Date.now());
+  const dates = exposureDates(
+    board.cells.map((c) => c.expiry),
+    months,
+    expiry,
+    chosen ? Date.parse(chosen.savedAt) : Date.now(),
+  );
+  const dateSet = new Set(dates);
   const strikes = [
     ...new Set(
-      board.cells.filter((c) => dates.includes(c.expiry)).map((c) => c.strike),
+      board.cells.filter((c) => dateSet.has(c.expiry)).map((c) => c.strike),
     ),
   ]
     .sort((a, b) => Math.abs(a - board.spot) - Math.abs(b - board.spot))
     .slice(0, range)
     .sort((a, b) => b - a);
+  const strikeSet = new Set(strikes);
   const cells = board.cells.filter(
-    (c) => dates.includes(c.expiry) && strikes.includes(c.strike),
+    (c) => dateSet.has(c.expiry) && strikeSet.has(c.strike),
   );
   const value = (c: ExposureCell) => (metric === "gex" ? c.gex : c.oi);
   const measured = cells.filter((c) => value(c) !== null);
@@ -271,7 +279,7 @@ export default function ExposureBoard({
       <header className={s.heading}>
         <div>
           <h3>
-            <Layers3 size={21} /> Gamma heatmap
+            <Layers3 size={18} /> Exposure levels
           </h3>
         </div>
         <div className={s.tabs} aria-label="Exposure workspace views">
@@ -292,13 +300,48 @@ export default function ExposureBoard({
           ))}
         </div>
         <Help label="How to read the exposure map">
-          <p><strong>Start with open interest.</strong> It counts option contracts still open, not today's trading volume. Gamma describes how quickly an option's sensitivity to the stock price changes as the stock moves.</p>
-          <p><strong>Read the grid:</strong> rows are option strike prices, not targets; columns are expiration dates. Choose Open interest under Measure to see contract counts, or Estimated GEX for estimated gamma exposure per 1% stock-price move.</p>
-          <p><strong>Example:</strong> $949.6K in the $360 row and November 20 column means estimated gamma exposure for contracts at that strike and expiry. It is not money invested, expected profit, or a forecast that the stock will reach $360.</p>
-          <p><strong>Colors and markers:</strong> darker shading means a larger absolute value. Green uses a call-positive estimate and red a put-negative estimate. Green does not mean bullish; red does not mean bearish. The star marks the largest displayed cell. A dash means unmeasured, not zero.</p>
-          <p><strong>Summary cards:</strong> Largest visible is the biggest absolute cell in the displayed range. Below price and Above price identify the largest measured cells on each side of the stock price—not guaranteed support or resistance.</p>
-          <p>GEX uses gamma × open interest × contract multiplier × stock price squared × 0.01. Calls are positive and puts negative by convention; actual dealer positions and hedging activity are not known.</p>
-          <p>Coverage describes usable returned inputs, not the entire market. Cells can have different observation dates. Device snapshots stay in this browser; use History &amp; saved views for cross-device storage.</p>
+          <p>
+            <strong>Start with open interest.</strong> It counts option
+            contracts still open, not today's trading volume. Gamma describes
+            how quickly an option's sensitivity to the stock price changes as
+            the stock moves.
+          </p>
+          <p>
+            <strong>Read the grid:</strong> rows are option strike prices, not
+            targets; columns are expiration dates. Choose Open interest under
+            Measure to see contract counts, or Estimated GEX for estimated gamma
+            exposure per 1% stock-price move.
+          </p>
+          <p>
+            <strong>Example:</strong> $949.6K in the $360 row and November 20
+            column means estimated gamma exposure for contracts at that strike
+            and expiry. It is not money invested, expected profit, or a forecast
+            that the stock will reach $360.
+          </p>
+          <p>
+            <strong>Colors and markers:</strong> darker shading means a larger
+            absolute value. Green uses a call-positive estimate and red a
+            put-negative estimate. Green does not mean bullish; red does not
+            mean bearish. The star marks the largest displayed cell. A dash
+            means unmeasured, not zero.
+          </p>
+          <p>
+            <strong>Summary cards:</strong> Largest visible is the biggest
+            absolute cell in the displayed range. Below price and Above price
+            identify the largest measured cells on each side of the stock
+            price—not guaranteed support or resistance.
+          </p>
+          <p>
+            GEX uses gamma × open interest × contract multiplier × stock price
+            squared × 0.01. Calls are positive and puts negative by convention;
+            actual dealer positions and hedging activity are not known.
+          </p>
+          <p>
+            Coverage describes usable returned inputs, not the entire market.
+            Cells can have different observation dates. Device snapshots stay in
+            this browser; use History &amp; saved views for cross-device
+            storage.
+          </p>
         </Help>
       </header>
       {externalSnapshot && (
@@ -316,7 +359,40 @@ export default function ExposureBoard({
       )}
       {mode === "map" && (
         <>
-          <p className={s.reading}>Each column is an expiration date. Ranges show loaded contracts, not historical daily data. Darker cells mean more {metric === "gex" ? "estimated gamma exposure" : "open contracts"}. Tap a cell for its observation date. These levels do not predict where the stock will touch or reverse.</p>
+          <p className={s.reading}>
+            Loaded expirations · darker cells show more{" "}
+            {metric === "gex" ? "estimated gamma exposure" : "open contracts"}.
+            Select a level to inspect its data.
+          </p>
+          <div className={s.readingGuide}>
+            <strong>How to read this map</strong>
+            <p>
+              Rows are strike prices; columns are expiration dates. Darker cells
+              mark larger concentrations in the loaded data. Teal is the
+              call-side estimate and coral is the put-side estimate—not a buy or
+              sell signal.
+            </p>
+            <p>
+              Start near the outlined stock-price row. Select a cell to see its
+              value, input coverage and observation date. Use Open contracts
+              (OI) to compare contract counts instead of gamma estimates.
+            </p>
+            <details>
+              <summary>What do the controls change?</summary>
+              <p>
+                Nearby strikes changes how many price levels you see. Expiration
+                range limits the dates. Hide values below filters smaller cells;
+                % of largest switches the threshold to a relative size. Center
+                returns to the stock-price area; Largest locates the strongest
+                measured concentration.
+              </p>
+              <p>
+                Blank or unmeasured cells mean missing inputs, not zero. These
+                estimates describe the returned contracts; they do not establish
+                support, resistance or how dealers are positioned.
+              </p>
+            </details>
+          </div>
           <div className={s.toolbar}>
             <label>
               Measure
@@ -341,8 +417,15 @@ export default function ExposureBoard({
             </label>
             <label>
               Expiration range
-              <select value={months} onChange={e=>setMonths(Number(e.target.value))}>
-                <option value={0}>All expirations</option><option value={1}>Next 1 month</option><option value={2}>Next 2 months</option><option value={6}>Next 6 months</option><option value={-1}>Selected date only</option>
+              <select
+                value={months}
+                onChange={(e) => setMonths(Number(e.target.value))}
+              >
+                <option value={0}>All expirations</option>
+                <option value={1}>Next 1 month</option>
+                <option value={2}>Next 2 months</option>
+                <option value={6}>Next 6 months</option>
+                <option value={-1}>Selected date only</option>
               </select>
             </label>
             <label>
@@ -410,9 +493,27 @@ export default function ExposureBoard({
             ].map(([label, c]) => {
               const cell = c as ExposureCell | undefined;
               return (
-                <article key={String(label)}>
+                <article
+                  key={String(label)}
+                  data-location={
+                    String(label).includes("below")
+                      ? "below"
+                      : String(label).includes("above")
+                        ? "above"
+                        : "largest"
+                  }
+                >
                   <span>{String(label)}</span>
                   <strong>{cell ? amount(cell.strike) : "Not measured"}</strong>
+                  {cell && board.spot > 0 && (
+                    <small>
+                      {Math.abs((cell.strike / board.spot - 1) * 100).toFixed(
+                        1,
+                      )}
+                      % {cell.strike >= board.spot ? "above" : "below"} current
+                      price
+                    </small>
+                  )}
                   <small>
                     {cell
                       ? `${cell.expiry} · ${metric === "gex" ? amount(cell.gex, "USD", true) : cell.oi?.toLocaleString() + " contracts"}`
@@ -426,15 +527,87 @@ export default function ExposureBoard({
       )}
       {mode === "map" && (
         <>
+          <div
+            className={s.presentation}
+            role="group"
+            aria-label="Exposure presentation"
+          >
+            <button
+              type="button"
+              aria-pressed={presentation === "heatmap"}
+              onClick={() => setPresentation("heatmap")}
+            >
+              Heatmap
+            </button>
+            <button
+              type="button"
+              aria-pressed={presentation === "levels"}
+              onClick={() => setPresentation("levels")}
+            >
+              Key levels
+            </button>
+            <small>Tap any level for details</small>
+          </div>
+          {presentation === "levels" && (
+            <div className={s.ladder}>
+              {[...concentrations]
+                .sort((a, b) => Math.abs(value(b)!) - Math.abs(value(a)!))
+                .slice(0, 12)
+                .map((c) => (
+                  <button
+                    type="button"
+                    key={c.key}
+                    aria-pressed={selected === c.key}
+                    onClick={() => setSelected(c.key)}
+                  >
+                    <span>
+                      <strong>{amount(c.strike)}</strong>
+                      <small>
+                        {dateLabel(c.expiry)} ·{" "}
+                        {Math.abs((c.strike / board.spot - 1) * 100).toFixed(1)}
+                        % {c.strike >= board.spot ? "above" : "below"} price
+                      </small>
+                    </span>
+                    <span>
+                      <b>
+                        {metric === "gex"
+                          ? amount(c.gex, "USD", true)
+                          : c.oi?.toLocaleString()}
+                      </b>
+                      <i
+                        aria-hidden="true"
+                        style={{
+                          width: `${Math.max(4, (100 * Math.abs(value(c)!)) / max)}%`,
+                          background: value(c)! < 0 ? "#9368ba" : "#168e83",
+                        }}
+                      />
+                    </span>
+                  </button>
+                ))}
+              {!concentrations.length && (
+                <p>No measured concentrations in this range.</p>
+              )}
+            </div>
+          )}
           <div className={s.legend}>
-            <span>{metric === "gex" ? "− Put-side estimate" : "Open contract count"}</span>
+            <span>
+              {metric === "gex" ? "− Put-side estimate" : "Open contract count"}
+            </span>
             <i />
-            <span>{metric === "gex" ? "+ Call-side estimate · not bullish/bearish" : "Darker = more open contracts"}</span>
+            <span>
+              {metric === "gex"
+                ? "+ Call-side estimate · not bullish/bearish"
+                : "Darker = more open contracts"}
+            </span>
             <span>
               ★ Largest · outlined row nearest price {amount(board.spot)}
             </span>
           </div>
-          <div className={s.scroll} ref={table}>
+          <div
+            className={s.scroll}
+            ref={table}
+            hidden={presentation !== "heatmap"}
+          >
             <table>
               <caption>
                 {symbol} ·{" "}
@@ -460,7 +633,12 @@ export default function ExposureBoard({
                     data-strike={strike}
                     data-nearest={strike === nearest}
                   >
-                    <th>{amount(strike)}</th>
+                    <th>
+                      {amount(strike)}
+                      {strike === nearest && (
+                        <span className={s.priceMarker}>← Price</span>
+                      )}
+                    </th>
                     {dates.map((d) => {
                       const c = byKey.get(`${strike}|${d}`),
                         v = c ? value(c) : null;
@@ -482,7 +660,7 @@ export default function ExposureBoard({
                               backgroundColor:
                                 v === null || v === 0
                                   ? undefined
-                                  : `color-mix(in srgb, ${v > 0 ? "var(--green)" : "var(--red)"} ${12 + (43 * Math.abs(v)) / max}%, var(--card))`,
+                                  : `color-mix(in srgb, ${v > 0 ? "var(--green)" : "var(--red)"} ${18 + (62 * Math.abs(v)) / max}%, var(--card))`,
                             }}
                             aria-pressed={selected === c?.key}
                             aria-label={`${strike} strike, ${d}, ${v === null ? "not measured" : v.toLocaleString()}${c?.key === largest?.key ? ", largest visible exposure" : ""}`}
@@ -556,6 +734,19 @@ export default function ExposureBoard({
                   : "Mixed observation dates; no combined value"}
                 .
               </p>
+              <p>
+                GEX estimates how this group’s delta exposure changes for a 1%
+                stock move under the model’s call/put sign convention. Open
+                interest counts outstanding contracts. Coverage describes usable
+                inputs in this group, not confidence in a price forecast.
+              </p>
+              {onCreateAlert && (
+                <p>
+                  Near and crossing alerts monitor the stock price relative to
+                  this strike. Exposure-change alerts compare the estimate with
+                  its saved baseline.
+                </p>
+              )}
               {onCreateAlert && (
                 <div className={s.actions}>
                   <button

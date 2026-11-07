@@ -90,7 +90,9 @@ export function ResearchOutlook({
       {outlook.available ? (
         <details className="forecast-sensitivity" open={supported}>
           <summary>
-            {supported ? "Bear, base & bull · earnings scenarios" : "Exploratory forecast-multiple sensitivity · not fair value"}
+            {supported
+              ? "Bear, base & bull · earnings scenarios"
+              : "Exploratory forecast-multiple sensitivity · not fair value"}
           </summary>
           <p className="sensitivity-warning">
             Not intrinsic fair value. These mechanical cases use assumed

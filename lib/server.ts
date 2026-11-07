@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import {allowMarketUser,MarketGuardError} from "./shared-market";
+import { allowMarketUser, MarketGuardError } from "./shared-market";
 import { NextResponse } from "next/server";
 export class HttpError extends Error {
   constructor(
@@ -9,7 +9,7 @@ export class HttpError extends Error {
     super(message);
   }
 }
-export async function account(request: Request) {
+export async function account(request: Request, options: { market: boolean }) {
   const token = request.headers
     .get("authorization")
     ?.match(/^Bearer (.+)$/)?.[1];
@@ -25,9 +25,29 @@ export async function account(request: Request) {
   const { data, error } = await db.auth.getUser(token);
   if (error || !data.user)
     throw new HttpError("Session could not be verified. Sign in again.", 401);
-  if(process.env.VERCEL==='1'||process.env.AURYN_ACCESS_ENABLED==='true'){const {guardAccess}=await import('./access-server');await guardAccess(request,data.user.id);}
-  if(/^\/api\/(congress|options|sector-performance|quotes|research(?:-context)?|chart|search|home-feed|company-data|enrichment|logos|price-stream)(?:\/|$)/.test(new URL(request.url).pathname)){
-    try{if(!await allowMarketUser(data.user.id))throw new HttpError("Your daily research allowance is reached. Saved observations remain available.",429);}catch(e){if(e instanceof HttpError)throw e;throw new HttpError(e instanceof MarketGuardError?e.message:"Market allowance unavailable.",503);}
+  if (
+    process.env.NODE_ENV === "production" ||
+    process.env.AURYN_ACCESS_ENABLED !== "false"
+  ) {
+    const { guardAccess } = await import("./access-server");
+    await guardAccess(request, data.user.id);
+  }
+  if (options.market) {
+    try {
+      if (!(await allowMarketUser(data.user.id)))
+        throw new HttpError(
+          "Your daily research allowance is reached. Saved observations remain available.",
+          429,
+        );
+    } catch (e) {
+      if (e instanceof HttpError) throw e;
+      throw new HttpError(
+        e instanceof MarketGuardError
+          ? e.message
+          : "Market allowance unavailable.",
+        503,
+      );
+    }
   }
   return { user: data.user, db };
 }
@@ -50,7 +70,27 @@ export const privateJson = (value: unknown) =>
     headers: { "Cache-Control": "private, no-store" },
   });
 const limits = new Map<string, { count: number; until: number }>();
-export function limit(key: string, max = 30, windowMs = 60_000) {
+export async function limit(key: string, max = 30, windowMs = 60_000) {
+  if (
+    process.env.NODE_ENV === "production" ||
+    process.env.AURYN_SHARED_RATE_LIMIT === "true"
+  ) {
+    const { createHash } = await import("node:crypto");
+    const { accessDb } = await import("./access-server");
+    const { data, error } = await accessDb().rpc("auryn_request_allow", {
+      p_key: createHash("sha256").update(key).digest("hex"),
+      p_max: max,
+      p_window_ms: windowMs,
+    });
+    if (error)
+      throw new HttpError(
+        "Request protection is unavailable. Please try again later.",
+        503,
+      );
+    if (data !== true)
+      throw new HttpError("Please wait a moment before refreshing again.", 429);
+    return;
+  }
   const now = Date.now(),
     old = limits.get(key);
   if (old && old.until > now) {

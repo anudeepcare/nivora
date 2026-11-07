@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
-import DesignPreview from "@/components/v2/DesignPreview";
+
 import { allowedPreview } from "@/lib/presentation/preview";
 export const dynamic = "force-dynamic";
 export default async function Page() {
@@ -11,5 +11,11 @@ export default async function Page() {
     )
   )
     notFound();
-  return <DesignPreview />;
+  if (process.env.NODE_ENV !== "production") {
+    const { default: DesignPreview } = await import(
+      "@/components/v2/DesignPreview"
+    );
+    return <DesignPreview />;
+  }
+  notFound();
 }

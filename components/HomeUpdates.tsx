@@ -93,8 +93,10 @@ export default function HomeUpdates({
     companyNames,
     exposure,
   );
-  const agenda=[...attention].sort((a,b)=>a.date.localeCompare(b.date)||(b.value??0)-(a.value??0));
-  const next=agenda[0];
+  const agenda = [...attention].sort(
+    (a, b) => a.date.localeCompare(b.date) || (b.value ?? 0) - (a.value ?? 0),
+  );
+  const next = agenda[0];
   if (!key) return null;
   return (
     <section className="home-updates home-desk" aria-label="Company updates">
@@ -135,14 +137,42 @@ export default function HomeUpdates({
         </div>
       </header>
 
-      {next&&<Link className="agenda-lead" href={`${prefix}/research/${encodeURIComponent(next.symbol)}?tab=News`} scroll={false}><div className="agenda-lead-date"><CalendarDays size={21}/><span>Next on your calendar</span><strong>{dateLabel(next.date).replace(/, \d{4}$/, "")}</strong></div><div className="agenda-lead-company"><span>{next.kind} · {next.detail}</span><h3>{next.symbol}</h3><p>{next.value!=null?`${amount(next.value,"USD",true)} of your priced holdings exposed`:"Review the business before its next report"}</p></div><div className="agenda-lead-action"><span>Open company brief</span><ArrowUpRight size={24}/></div></Link>}
+      {next && (
+        <Link
+          className="agenda-lead"
+          href={`${prefix}/research/${encodeURIComponent(next.symbol)}?tab=News`}
+          scroll={false}
+        >
+          <div className="agenda-lead-date">
+            <CalendarDays size={21} />
+            <span>Next on your calendar</span>
+            <strong>{dateLabel(next.date).replace(/, \d{4}$/, "")}</strong>
+          </div>
+          <div className="agenda-lead-company">
+            <span>
+              {next.kind} · {next.detail}
+            </span>
+            <h3>{next.symbol}</h3>
+            <p>
+              {next.value != null
+                ? `${amount(next.value, "USD", true)} of your priced holdings exposed`
+                : "Review the business before its next report"}
+            </p>
+          </div>
+          <div className="agenda-lead-action">
+            <span>Open company brief</span>
+            <ArrowUpRight size={24} />
+          </div>
+        </Link>
+      )}
       <div className="agenda-layout">
         <section className="agenda-calendar">
           <h3>
-            <CalendarDays size={18} /> On the horizon <small>Next 30 days</small>
+            <CalendarDays size={18} /> On the horizon{" "}
+            <small>Next 30 days</small>
           </h3>
-          {agenda.length>(next?1:0) ? (
-            agenda.slice(next?1:0, expanded ? undefined : 4).map((e) => (
+          {agenda.length > (next ? 1 : 0) ? (
+            agenda.slice(next ? 1 : 0, expanded ? undefined : 4).map((e) => (
               <Link
                 className="agenda-item"
                 key={`${e.symbol}:${e.date}:${e.kind}`}
@@ -175,10 +205,11 @@ export default function HomeUpdates({
                       (i) => i.includes("events") || i.includes("connected"),
                     )
                   ? "Scheduled events could not be checked. Your research remains available."
-                  : next ? "No further scheduled events returned for the next 30 days." : "No scheduled events returned for the next 30 days."}
+                  : next
+                    ? "No further scheduled events returned for the next 30 days."
+                    : "No scheduled events returned for the next 30 days."}
             </p>
           )}
-
         </section>
         <section className="agenda-news">
           <h3>
@@ -216,10 +247,19 @@ export default function HomeUpdates({
                   : "No recent headlines matching your company names or explicit tickers were returned."}
             </p>
           )}
-
         </section>
       </div>
-      <details className="agenda-context"><summary>About these updates</summary><p>Calendar ordered by date, then priced holding exposure. Exposure can use older usable USD prices. News is matched to company names or explicit tickers, with one story per company before repeats; it is ranked by holding exposure. Coverage checked for {news.data?.newsFollowed??symbols.length} followed stocks. Dates can change and missing coverage is not an all-clear.</p></details>
+      <details className="agenda-context">
+        <summary>About these updates</summary>
+        <p>
+          Calendar ordered by date, then priced holding exposure. Exposure can
+          use older usable USD prices. News is matched to company names or
+          explicit tickers, with one story per company before repeats; it is
+          ranked by holding exposure. Coverage checked for{" "}
+          {news.data?.newsFollowed ?? symbols.length} followed stocks. Dates can
+          change and missing coverage is not an all-clear.
+        </p>
+      </details>
     </section>
   );
 }

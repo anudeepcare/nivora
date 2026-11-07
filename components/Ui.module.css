@@ -1,16 +1,112 @@
-.empty { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; width:100%; min-width:0; padding:36px 20px; text-align:center; }
-.empty>span { display:grid; place-items:center; flex:none; width:48px; height:48px; margin:0; border-radius:14px; color:var(--blue); background:var(--blue-soft); }
-.empty>h2 { margin:0; max-width:40ch; color:var(--ink); font-size:22px; line-height:1.3; font-weight:550; }
-.empty>p { width:100%; max-width:58ch; margin:0 auto; color:var(--muted); font-size:14px; line-height:1.65; }
-@media(max-width:600px) { .empty { padding:28px 16px; } .empty>h2 { font-size:20px; } }
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  padding: 36px 20px;
+  text-align: center;
+}
+.empty > span {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 48px;
+  height: 48px;
+  margin: 0;
+  border-radius: 14px;
+  color: var(--blue);
+  background: var(--blue-soft);
+}
+.empty > h2 {
+  margin: 0;
+  max-width: 40ch;
+  color: var(--ink);
+  font-size: 22px;
+  line-height: 1.3;
+  font-weight: 550;
+}
+.empty > p {
+  width: 100%;
+  max-width: 58ch;
+  margin: 0 auto;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.65;
+}
+@media (max-width: 600px) {
+  .empty {
+    padding: 28px 16px;
+  }
+  .empty > h2 {
+    font-size: 20px;
+  }
+}
 
-.helpTrigger { display:inline-flex; align-items:center; gap:4px; min-height:28px; padding:2px 0; border:0; border-radius:3px; background:transparent; color:var(--muted); font:inherit; text-align:left; line-height:1.4; cursor:pointer; }
-.helpTrigger::after { content:none; }
-.helpTrigger:hover { color:var(--blue); }
-.helpTrigger:focus-visible { outline:2px solid var(--blue); outline-offset:3px; }
+.helpTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 28px;
+  padding: 2px 0;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  text-align: left;
+  line-height: 1.4;
+  cursor: pointer;
+}
+.helpTrigger::after {
+  content: none;
+}
+.helpTrigger:hover {
+  color: var(--blue);
+}
+.helpTrigger:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
 
-.helpIcon.helpIcon { display:inline-flex; align-items:center; justify-content:center; vertical-align:middle; flex:none; width:32px; height:32px; min-width:32px; padding:7px; border:0; border-radius:50%; background:transparent; color:var(--muted); cursor:pointer; }
-.helpIcon.helpIcon:hover { background:var(--surface); color:var(--ink); }
-.helpIcon.helpIcon:focus-visible { outline:2px solid var(--blue); outline-offset:2px; }
-.helpIcon.helpIcon svg,.helpTrigger svg { width:16px; height:16px; flex:none; }
-@media(pointer:coarse) { .helpIcon.helpIcon { width:44px; height:44px; } .helpTrigger { min-height:44px; } }
+.helpIcon.helpIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  padding: 7px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.helpIcon.helpIcon:hover {
+  background: var(--surface);
+  color: var(--ink);
+}
+.helpIcon.helpIcon:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.helpIcon.helpIcon svg,
+.helpTrigger svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+@media (pointer: coarse) {
+  .helpIcon.helpIcon {
+    width: 44px;
+    height: 44px;
+  }
+  .helpTrigger {
+    min-height: 44px;
+  }
+}

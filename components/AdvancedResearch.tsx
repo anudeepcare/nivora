@@ -49,7 +49,8 @@ export default function AdvancedResearch({
           <h2>Risk & scenarios</h2>
           <p>
             {s.count.toLocaleString()} completed observations · through{" "}
-            {dateLabel(s.asOf)}. Review historical risk measures and scenario assumptions.
+            {dateLabel(s.asOf)}. Review historical risk measures and scenario
+            assumptions.
           </p>
         </div>
         <span className="professional-mode-label">

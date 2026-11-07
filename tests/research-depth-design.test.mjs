@@ -50,6 +50,7 @@ test("technical relative volume shows the calculated observation with its own fo
     perspective,
     ...format,
     TechnicalLevels: () => null,
+    TechnicalLevelMap: () => null,
     X: () => null,
   };
   const C = component(

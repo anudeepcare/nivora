@@ -11,8 +11,15 @@ export function normalizeQuote(
   now = Date.now(),
 ): Quote {
   const regularStamp = numeric(raw.last_quote_at) ?? numeric(raw.timestamp);
-  const extendedStamp = numeric(raw.extended_timestamp), extendedPrice = numeric(raw.extended_price);
-  const useExtended = !symbol.includes("/") && extendedPrice != null && extendedPrice > 0 && extendedStamp != null && extendedStamp * 1000 <= now + 60000 && (regularStamp == null || extendedStamp > regularStamp);
+  const extendedStamp = numeric(raw.extended_timestamp),
+    extendedPrice = numeric(raw.extended_price);
+  const useExtended =
+    !symbol.includes("/") &&
+    extendedPrice != null &&
+    extendedPrice > 0 &&
+    extendedStamp != null &&
+    extendedStamp * 1000 <= now + 60000 &&
+    (regularStamp == null || extendedStamp > regularStamp);
   const price = useExtended ? extendedPrice : numeric(raw.close),
     timestamp = useExtended ? extendedStamp : regularStamp;
   const milliseconds = timestamp == null ? NaN : timestamp * 1000;
@@ -30,30 +37,68 @@ export function normalizeQuote(
       ? reportedCurrency
       : "";
   const continuous = symbol.includes("/");
-  const parts=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',weekday:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(now);
-  const part=(key:string)=>parts.find(p=>p.type===key)?.value||'';
-  const minutes=Number(part('hour'))*60+Number(part('minute'));
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York",
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(now);
+  const part = (key: string) => parts.find((p) => p.type === key)?.value || "";
+  const minutes = Number(part("hour")) * 60 + Number(part("minute"));
   // This tightens freshness during scheduled US hours; it does not assert an
   // exchange is open on holidays or overwrite the provider's session report.
-  const scheduledHours=!['Sat','Sun'].includes(part('weekday'))&&minutes>=570&&minutes<960;
-  const extended = useExtended || raw.is_extended_hours === true || raw.is_extended_hours === "true";
-  const extendedWindow = !["Sat", "Sun"].includes(part("weekday")) && minutes >= 240 && minutes < 1200;
-  const ageLimit = open || continuous || extended || extendedWindow || scheduledHours ? 3 * 60_000 : 4 * 86400_000;
-  const observedParts = asOf ? new Intl.DateTimeFormat("en-US", {timeZone:"America/New_York",hour:"2-digit",hourCycle:"h23"}).formatToParts(milliseconds) : [];
-  const observedHour = Number(observedParts.find(p=>p.type==="hour")?.value);
+  const scheduledHours =
+    !["Sat", "Sun"].includes(part("weekday")) &&
+    minutes >= 570 &&
+    minutes < 960;
+  const extended =
+    useExtended ||
+    raw.is_extended_hours === true ||
+    raw.is_extended_hours === "true";
+  const extendedWindow =
+    !["Sat", "Sun"].includes(part("weekday")) &&
+    minutes >= 240 &&
+    minutes < 1200;
+  const ageLimit =
+    open || continuous || extended || extendedWindow || scheduledHours
+      ? 3 * 60_000
+      : 4 * 86400_000;
+  const observedParts = asOf
+    ? new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/New_York",
+        hour: "2-digit",
+        hourCycle: "h23",
+      }).formatToParts(milliseconds)
+    : [];
+  const observedHour = Number(
+    observedParts.find((p) => p.type === "hour")?.value,
+  );
   return {
     price: price != null && price > 0 ? price : null,
-    changePct: useExtended ? (numeric(raw.previous_close) != null && Number(raw.previous_close) > 0 ? (price! / Number(raw.previous_close) - 1) * 100 : null) : (numeric(raw.percent_change) ?? (price != null && price > 0 && numeric(raw.previous_close) != null && Number(raw.previous_close) > 0 ? (price / Number(raw.previous_close) - 1) * 100 : null)),
+    changePct: useExtended
+      ? numeric(raw.previous_close) != null && Number(raw.previous_close) > 0
+        ? (price! / Number(raw.previous_close) - 1) * 100
+        : null
+      : (numeric(raw.percent_change) ??
+        (price != null &&
+        price > 0 &&
+        numeric(raw.previous_close) != null &&
+        Number(raw.previous_close) > 0
+          ? (price / Number(raw.previous_close) - 1) * 100
+          : null)),
     previousClose: numeric(raw.previous_close),
     currency,
     asOf,
     session: continuous
       ? "Continuous market"
       : extended
-        ? observedHour < 12 ? "Premarket" : "After-hours"
-      : open
-        ? "Market open"
-        : "Last available close",
+        ? observedHour < 12
+          ? "Premarket"
+          : "After-hours"
+        : open
+          ? "Market open"
+          : "Last available close",
     source: "Twelve Data",
     stale:
       !asOf ||

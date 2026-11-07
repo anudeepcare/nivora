@@ -18,7 +18,7 @@ test('every compatibility dependency keeps all declarations inside the named lay
    }else assert.ok(node.type==='atrule'&&node.name==='layer'&&node.params==='compatibility',`${file}: unisolated ${node.type}`);
   }
  }
- inspect('app/core/compatibility.css');assert.ok(visited.size>35);
+ inspect('app/core/compatibility.css');assert.equal(visited.size,2,'Compatibility must load only its entry and consolidated source');
 });
 test('shared workspace dimensions do not depend on the active research tab',()=>{
  const css=postcss.parse(fs.readFileSync('components/IntegratedExperience.module.css','utf8'));

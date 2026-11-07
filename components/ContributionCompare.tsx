@@ -14,7 +14,7 @@ import {
 } from "@/lib/provider-symbol";
 import { amount, percent, dateLabel } from "@/lib/format";
 import { useProduct, useResource } from "./Session";
-import { useWorkspaceQuotes } from "./Workspace";
+import { useWorkspaceQuotes } from "./useWorkspaceQuotes";
 import { useWorkspacePreferences } from "./WorkspacePreferences";
 import { Help } from "./Ui";
 import s from "./ContributionCompare.module.css";

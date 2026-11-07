@@ -16,7 +16,7 @@ type Report = {
   strengths: Claim[];
   risks: Claim[];
   watch: Claim[];
-  sources: { id: string; label: string; url: string; passage?:string }[];
+  sources: { id: string; label: string; url: string; passage?: string }[];
   generatedAt: string;
 };
 export default function Analyst({
@@ -68,7 +68,7 @@ export default function Analyst({
       setReport(
         await api<Report>(
           `analyst/${encodeURIComponent(research.company.symbol.replace("/", "-"))}`,
-          { mode: requestedMode, ...(intent?{intent}:{}) },
+          { mode: requestedMode, ...(intent ? { intent } : {}) },
         ),
       );
     } catch (e) {
@@ -96,7 +96,9 @@ export default function Analyst({
       "AI-generated research. Verify claims against their sources.",
     ];
     const url = URL.createObjectURL(
-      new Blob([customerText(lines.join("\n\n"))], { type: "text/plain;charset=utf-8" }),
+      new Blob([customerText(lines.join("\n\n"))], {
+        type: "text/plain;charset=utf-8",
+      }),
     );
     const a = document.createElement("a");
     a.href = url;
@@ -119,8 +121,12 @@ export default function Analyst({
       if (availability.data?.available && !demo) {
         setPrepared("");
         void generate(
-          index === 1||index === 3 ? "swot" : index === 2 ? "snapshot" : "deep-dive",
-          (["explain","missing","strengthen","challenge"] as const)[index],
+          index === 1 || index === 3
+            ? "swot"
+            : index === 2
+              ? "snapshot"
+              : "deep-dive",
+          (["explain", "missing", "strengthen", "challenge"] as const)[index],
         );
         return;
       }
@@ -132,14 +138,18 @@ export default function Analyst({
             : `${amount(p.fcf, p.currency, true)} remained after operating cash flow less reported capital spending in the ${evidence.periodBasis} period to ${dateLabel(p.end)}. This is not automatically distributable cash; financing, acquisitions and dilution still matter.`
           : index === 3
             ? "Challenge growth with cash conversion, financing requirements and dilution. A favorable price chart does not prove business durability; verify the original disclosures. This is a research prompt, not an AI finding."
-          : index === 1
-            ? "Reported financials do not establish a durable moat or a fair purchase price by themselves. Reconcile assumptions, competitive position, financing and the forecast horizon with company disclosures."
-            : `Sustained revenue growth, cash conversion and disciplined reinvestment would strengthen the business case. Current comparable revenue growth is ${percent(evidence.growth, true)}. That observation does not guarantee future returns.`,
+            : index === 1
+              ? "Reported financials do not establish a durable moat or a fair purchase price by themselves. Reconcile assumptions, competitive position, financing and the forecast horizon with company disclosures."
+              : `Sustained revenue growth, cash conversion and disciplined reinvestment would strengthen the business case. Current comparable revenue growth is ${percent(evidence.growth, true)}. That observation does not guarantee future returns.`,
       );
     };
     return (
       <section className="ask-auryn">
-        <p className="analyst-context"><strong>{research.company.symbol}</strong> · Evidence through {dateLabel(research.retrievedAt)} · Answers use this company’s supplied evidence.</p>
+        <p className="analyst-context">
+          <strong>{research.company.symbol}</strong> · Evidence through{" "}
+          {dateLabel(research.retrievedAt)} · Answers use this company’s
+          supplied evidence.
+        </p>
         <header className="section-head">
           <div>
             <h2>Ask AURYN</h2>
@@ -170,12 +180,27 @@ export default function Analyst({
             <p>{customerText(report?.summary.text || prepared)}</p>
             <p className="small muted">
               {report
-                ? `AI-generated research · ${report.sources.some(s=>s.passage)?"includes selected filing excerpts":"financial observations only; no filing excerpts"} · verify each claim`
+                ? `AI-generated research · ${report.sources.some((s) => s.passage) ? "includes selected filing excerpts" : "financial observations only; no filing excerpts"} · verify each claim`
                 : "Evidence explanation · no AI request made"}
             </p>
-            {report?.sources.filter(s=>report.summary.evidenceIds.includes(s.id)).map((source) => (
-              <div key={source.id}><Source href={source.url}>{source.id} · {source.label}</Source>{source.passage&&<details><summary>Read supplied excerpt</summary><blockquote>{source.passage}</blockquote><p className="small muted">Selected excerpt; read the full filing for context.</p></details>}</div>
-            ))}
+            {report?.sources
+              .filter((s) => report.summary.evidenceIds.includes(s.id))
+              .map((source) => (
+                <div key={source.id}>
+                  <Source href={source.url}>
+                    {source.id} · {source.label}
+                  </Source>
+                  {source.passage && (
+                    <details>
+                      <summary>Read supplied excerpt</summary>
+                      <blockquote>{source.passage}</blockquote>
+                      <p className="small muted">
+                        Selected excerpt; read the full filing for context.
+                      </p>
+                    </details>
+                  )}
+                </div>
+              ))}
           </div>
         )}
       </section>

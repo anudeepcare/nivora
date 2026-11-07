@@ -84,7 +84,8 @@ function checkCase(value: unknown, path: string, errors: string[]) {
     return;
   }
   for (const field of ["value", "vsPrice", "g0", "margin", "rate", "gT"]) {
-    if (!finiteOrNull(value[field])) errors.push(`${path}.${field} must be finite or null`);
+    if (!finiteOrNull(value[field]))
+      errors.push(`${path}.${field} must be finite or null`);
   }
 }
 
@@ -92,28 +93,58 @@ export function validateValuationOutput(value: unknown): string[] {
   const errors: string[] = [];
   if (!record(value)) return ["output must be an object"];
 
-  for (const field of ["symbol", "asOf", "family", "traceId", "modelVersion", "configHash"]) {
+  for (const field of [
+    "symbol",
+    "asOf",
+    "family",
+    "traceId",
+    "modelVersion",
+    "configHash",
+  ]) {
     if (typeof value[field] !== "string" || value[field] === "") {
       errors.push(`${field} must be a non-empty string`);
     }
   }
-  if (!["ok", "low-confidence", "range-only", "refused"].includes(String(value.status))) {
+  if (
+    !["ok", "low-confidence", "range-only", "refused"].includes(
+      String(value.status),
+    )
+  ) {
     errors.push("status is unsupported");
   }
   if (!Number.isInteger(value.routeRule) || Number(value.routeRule) < 0) {
     errors.push("routeRule must be a non-negative integer");
   }
   if (!finiteOrNull(value.price)) errors.push("price must be finite or null");
-  for (const field of ["impliedGrowth", "deliveredGrowth", "confidence", "dataQuality"]) {
-    if (["impliedGrowth", "deliveredGrowth"].includes(field) ? !finiteOrNull(value[field]) : !finite(value[field])) errors.push(`${field} must be finite or null`);
+  for (const field of [
+    "impliedGrowth",
+    "deliveredGrowth",
+    "confidence",
+    "dataQuality",
+  ]) {
+    if (
+      ["impliedGrowth", "deliveredGrowth"].includes(field)
+        ? !finiteOrNull(value[field])
+        : !finite(value[field])
+    )
+      errors.push(`${field} must be finite or null`);
   }
-  if (finite(value.confidence) && (value.confidence < 0 || value.confidence > 100)) {
+  if (
+    finite(value.confidence) &&
+    (value.confidence < 0 || value.confidence > 100)
+  ) {
     errors.push("confidence must be between 0 and 100");
   }
-  if (finite(value.dataQuality) && (value.dataQuality < 0 || value.dataQuality > 100)) {
+  if (
+    finite(value.dataQuality) &&
+    (value.dataQuality < 0 || value.dataQuality > 100)
+  ) {
     errors.push("dataQuality must be between 0 and 100");
   }
-  if (!Array.isArray(value.flags) || value.flags.some((flag) => typeof flag !== "string")) {
+  if (
+    !Array.isArray(value.flags) ||
+    value.flags.some((flag) => typeof flag !== "string")
+  ) {
     errors.push("flags must be an array of strings");
   }
   if (value.refusalReason !== null && typeof value.refusalReason !== "string") {
@@ -133,23 +164,31 @@ export function validateValuationOutput(value: unknown): string[] {
         errors.push(`${path} must be an object`);
         return;
       }
-      if (typeof method.id !== "string" || method.id === "") errors.push(`${path}.id must be a non-empty string`);
+      if (typeof method.id !== "string" || method.id === "")
+        errors.push(`${path}.id must be a non-empty string`);
       for (const field of ["weight", "confidence"]) {
-        if (!finite(method[field])) errors.push(`${path}.${field} must be finite`);
+        if (!finite(method[field]))
+          errors.push(`${path}.${field} must be finite`);
       }
-      if (!finiteOrNull(method.value)) errors.push(`${path}.value must be finite or null`);
+      if (!finiteOrNull(method.value))
+        errors.push(`${path}.value must be finite or null`);
     });
   }
   for (const group of ["facts", "audit"]) {
     if (!record(value[group])) errors.push(`${group} must be an object`);
     else {
-      const required = group === "facts" ? ["netCash", "runwayMonths", "dilution3y", "cashPerShare"] : ["rf", "betaAdj", "erp", "sizePremium", "wacc", "tvShare"];
-      for (const field of required) if (!(field in value[group])) errors.push(`${group}.${field} is required`);
+      const required =
+        group === "facts"
+          ? ["netCash", "runwayMonths", "dilution3y", "cashPerShare"]
+          : ["rf", "betaAdj", "erp", "sizePremium", "wacc", "tvShare"];
+      for (const field of required)
+        if (!(field in value[group]))
+          errors.push(`${group}.${field} is required`);
       Object.entries(value[group]).forEach(([field, nested]) => {
-        if (!finiteOrNull(nested)) errors.push(`${group}.${field} must be finite or null`);
+        if (!finiteOrNull(nested))
+          errors.push(`${group}.${field} must be finite or null`);
       });
     }
   }
   return errors;
 }
-

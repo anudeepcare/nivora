@@ -10,7 +10,11 @@ export const publicPages: Record<
     description:
       "Business first. Understand buy, hold and sell guidance, inspect valuation assumptions, and plan gradual purchases with AURYN Pace.",
   },
-  "/changelog": {title:"What’s new · AURYN",description:"AURYN release notes, improvements, methodology changes and known limitations."},
+  "/changelog": {
+    title: "What’s new · AURYN",
+    description:
+      "AURYN release notes, improvements, methodology changes and known limitations.",
+  },
   "/sample": {
     title: "See AURYN in action · Product tour",
     description:

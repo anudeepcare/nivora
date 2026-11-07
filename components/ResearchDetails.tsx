@@ -84,20 +84,22 @@ export function ThesisPicture({ research: r }: { research: Research }) {
         <div className="step">
           <b>Next earnings</b>
           <strong>{next ? dateLabel(next.date) : "Date not confirmed"}</strong>
-          <p>
-            Revenue, cash conversion
-            and guidance.
-          </p>
+          <p>Revenue, cash conversion and guidance.</p>
         </div>
         <div className="step">
           <b>Revenue to revisit</b>
           <strong>{amount(e.latest?.revenue, e.latest?.currency, true)}</strong>
-          <p>Latest reported period · {dateLabel(e.latest?.end)}. Compare demand in the next report.</p>
+          <p>
+            Latest reported period · {dateLabel(e.latest?.end)}. Compare demand
+            in the next report.
+          </p>
         </div>
         <div className="step">
           <b>Operating margin</b>
           <strong>{percent(e.latest?.margin)}</strong>
-          <p>Latest reported period · monitor pricing, costs and reinvestment.</p>
+          <p>
+            Latest reported period · monitor pricing, costs and reinvestment.
+          </p>
         </div>
       </div>
       <div className="notice">

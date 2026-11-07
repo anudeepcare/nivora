@@ -21,9 +21,7 @@ export type FundedInputs = {
   exitEbitdaMultiple: number;
   discountRate: number;
 };
-export function fundedScenario(
-  x: FundedInputs,
-):
+export function fundedScenario(x: FundedInputs):
   | {
       available: false;
       code: "invalid-input" | "funding-gap";

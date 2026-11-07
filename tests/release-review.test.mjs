@@ -1,3 +1,4 @@
+import { readCompatCss } from './read-compat-css.mjs';
 import {experience} from './helpers/integrated-ui.mjs';
 import { customerText } from "../lib/customer-language.ts";
 import test from "node:test";
@@ -30,8 +31,8 @@ test("both providers reject same-day future intraday candles at the timestamp bo
 });
 test("financial selected-control styles outrank global button resets", () => {
   const base = postcss.parse(
-    fs.readFileSync("app/studio-foundation.css", "utf8") +
-      fs.readFileSync("app/globals.css", "utf8"),
+    readCompatCss('app/studio-foundation.css') +
+      readCompatCss('app/globals.css'),
   );
   const module = postcss.parse(
     fs.readFileSync("components/ResearchWorkspace.module.css", "utf8"),

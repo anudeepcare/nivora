@@ -3,8 +3,8 @@ import { eodRequest } from "@/lib/eodhd";
 import { congressDisclosures } from "@/lib/congress-disclosures";
 export async function GET(request: Request) {
   try {
-    const { user } = await account(request);
-    limit(`congress:${user.id}`, 3);
+    const { user } = await account(request, { market: true });
+    await limit(`congress:${user.id}`, 3);
     const symbol = new URL(request.url).searchParams.get("symbol") ?? "";
     if (!/^[A-Z][A-Z0-9.-]{0,14}$/.test(symbol))
       throw new HttpError("Choose a stock symbol.");

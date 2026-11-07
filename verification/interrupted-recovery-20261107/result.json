@@ -1,0 +1,19 @@
+{
+  "tests": 1181,
+  "failed": 0,
+  "lint": "passed",
+  "format": "passed",
+  "typecheck": "passed",
+  "build": "passed",
+  "api": "passed; mocked transport",
+  "productionTraces": 56,
+  "reviewFindingsFixed": [
+    "original note body guard",
+    "opening mark drawdown",
+    "wall-clock lease expiry after lock"
+  ],
+  "productionDeployment": false,
+  "productionWritesThisRecovery": false,
+  "pendingReleaseMigration": "20261107150947_auryn_thesis_source_guard.sql",
+  "actualCurrentPolicyPublications": 0
+}

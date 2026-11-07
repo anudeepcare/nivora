@@ -1,0 +1,78 @@
+.comparison {
+  margin: 8px 0;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: transparent;
+  min-width: 0;
+}
+.comparison > summary {
+  cursor: pointer;
+  min-height: 44px;
+  line-height: 20px;
+  padding: 12px 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+.comparison > summary span {
+  margin-left: 8px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.comparison p,
+.comparison caption {
+  font-size: 12px;
+  color: var(--muted);
+  text-align: left;
+  margin: 8px 0;
+}
+.scroll {
+  overflow-x: auto;
+  max-height: 400px;
+}
+.comparison table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.comparison :is(th, td) {
+  padding: 8px 12px;
+  text-align: right;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+.comparison th:first-child {
+  text-align: left;
+  padding-left: 0;
+}
+.comparison thead th {
+  font-weight: 500;
+  color: var(--muted);
+}
+.comparison button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+.comparison button[aria-pressed="true"] {
+  background: var(--blue-soft);
+  border-color: var(--line);
+}
+.comparison button span {
+  font-size: 10px;
+  color: var(--muted);
+}
+.comparison button:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}

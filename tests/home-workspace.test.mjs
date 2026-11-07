@@ -40,7 +40,7 @@ function load(name, bindings) {
   bindings = { PaceHelp: () => null, ...bindings };
   if (name === "HomeOverview")
     bindings.EarningsNumbers = load("EarningsNumbers", {});
-  const file = "components/ApprovedWorkspace.tsx";
+  const file = name === "ResearchHome" ? "components/ResearchHomePage.tsx" : "components/HomeWorkspace.tsx";
   const ast = ts.createSourceFile(
     file,
     fs.readFileSync(file, "utf8"),

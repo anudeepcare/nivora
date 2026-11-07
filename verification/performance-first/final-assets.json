@@ -1,0 +1,23 @@
+{
+  "js": {
+    "files": 103,
+    "raw": 2287242,
+    "gzip": 729753
+  },
+  "css": {
+    "files": 19,
+    "raw": 1131661,
+    "gzip": 191484
+  },
+  "comparison": {
+    "js": {
+      "raw": 44889,
+      "gzip": 27521
+    },
+    "css": {
+      "raw": -8053,
+      "gzip": 2874
+    }
+  },
+  "note": "All emitted assets, not first-load or runtime latency. New lazy workflows can increase total JS while reducing initial work."
+}

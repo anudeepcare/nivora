@@ -251,9 +251,38 @@
   }
 }
 
-.root header{padding:18px 22px;min-height:130px;border-radius:14px}
-.root h2{font-size:25px;margin:5px 0;max-width:32ch}
-.root header p{font-size:12px;max-width:58ch}
-.root .open{min-height:42px;padding:10px 16px;font-size:13px}
-.root .heroArt{opacity:.45}
-@media(max-width:600px){.root header{padding:18px;gap:12px;flex-wrap:wrap}.root h2{font-size:22px}.root .open{min-height:44px}}
+.root header {
+  padding: 18px 22px;
+  min-height: 130px;
+  border-radius: 14px;
+}
+.root h2 {
+  font-size: 25px;
+  margin: 5px 0;
+  max-width: 32ch;
+}
+.root header p {
+  font-size: 12px;
+  max-width: 58ch;
+}
+.root .open {
+  min-height: 42px;
+  padding: 10px 16px;
+  font-size: 13px;
+}
+.root .heroArt {
+  opacity: 0.45;
+}
+@media (max-width: 600px) {
+  .root header {
+    padding: 18px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .root h2 {
+    font-size: 22px;
+  }
+  .root .open {
+    min-height: 44px;
+  }
+}

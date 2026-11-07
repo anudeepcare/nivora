@@ -60,7 +60,14 @@ export function opportunityMap(
   requested: string[],
   now = Date.now(),
 ) {
-  const symbols = [...new Map(requested.map(s => [providerIdentity(providerSymbol(s)), providerSymbol(s)])).values()];
+  const symbols = [
+    ...new Map(
+      requested.map((s) => [
+        providerIdentity(providerSymbol(s)),
+        providerSymbol(s),
+      ]),
+    ).values(),
+  ];
   const rows = symbols.flatMap((symbol) => {
     const r = research.find((r) => verifiedResearch(r, symbol));
     return r ? [opportunityRow(r, now)] : [];

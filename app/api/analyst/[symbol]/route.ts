@@ -28,7 +28,7 @@ type Report = ReportBody & {
 const reports = new Map<string, { until: number; value: Promise<Report> }>();
 export async function GET(request: Request) {
   try {
-    const { user } = await account(request);
+    const { user } = await account(request, { market: true });
     return privateJson(
       analystStatus(
         process.env,
@@ -44,13 +44,13 @@ export async function POST(
   context: { params: Promise<{ symbol: string }> },
 ) {
   try {
-    const { user, db } = await account(request);
+    const { user, db } = await account(request, { market: true });
     if (user.is_anonymous || !user.email_confirmed_at)
       throw new HttpError(
         "A confirmed account is required for AI analysis.",
         403,
       );
-    limit(`analyst:${user.id}`, 3);
+    await limit(`analyst:${user.id}`, 3);
     const key = process.env.OPENAI_API_KEY,
       model = process.env.OPENAI_MODEL;
     const status = analystStatus(

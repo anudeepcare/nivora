@@ -1,3 +1,4 @@
+import {setupFixtureAccess,fixtureAccessResponse} from "./fixture-access.mjs";
 // Exercise compiled Next handlers with identity and provider fixtures. No external or paid calls.
 import { createRequire } from "node:module";
 import assert from "node:assert/strict";
@@ -80,7 +81,8 @@ const financial = (symbol) => ({
     },
   },
 });
-globalThis.fetch = async (input) => {
+setupFixtureAccess();
+globalThis.fetch = async (input) => { const accessFixture=fixtureAccessResponse(input);if(accessFixture)return accessFixture;
   const u = new URL(String(input));
   calls.push(u);
   if (u.pathname === "/auth/v1/user")

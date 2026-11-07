@@ -1,5 +1,5 @@
 "use client";
-import {DocumentScrollReturn} from "./ContextLink";
+import { DocumentScrollReturn } from "./ContextLink";
 import { usePathname } from "next/navigation";
 import { ProductSession } from "./Session";
 import Shell from "./Shell";
@@ -21,9 +21,16 @@ export default function AppSession({
     pathname === "/pricing" ||
     pathname === "/contact" ||
     pathname === "/about" ||
-    pathname === "/pace"
+    pathname === "/pace" ||
+    pathname === "/track-record" ||
+    pathname === "/portfolio-check"
   )
-    return <><DocumentScrollReturn />{children}</>;
+    return (
+      <>
+        <DocumentScrollReturn />
+        {children}
+      </>
+    );
   if (pathname === "/preview" || pathname.startsWith("/preview/"))
     return <>{children}</>;
   const page = pathname.split("/")[1] || "overview";

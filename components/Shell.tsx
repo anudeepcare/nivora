@@ -35,7 +35,13 @@ import {
 } from "@/lib/navigation";
 function LinkProgress() {
   const { pending } = useLinkStatus();
-  return pending ? <span className={experience.routePending} role="status" aria-label="Opening page" /> : null;
+  return pending ? (
+    <span
+      className={experience.routePending}
+      role="status"
+      aria-label="Opening page"
+    />
+  ) : null;
 }
 const primary = [
   { path: "overview", label: "Home", icon: Home },
@@ -65,9 +71,14 @@ export default function Shell({
     if ((demo && demo.routePrefix !== "") || signingOut) return;
     setSigningOut(true);
     setSignOutError("");
-    try { await signOutAndRedirect(); }
-    catch (error) {
-      setSignOutError(error instanceof Error ? error.message : "Could not sign out. Please try again.");
+    try {
+      await signOutAndRedirect();
+    } catch (error) {
+      setSignOutError(
+        error instanceof Error
+          ? error.message
+          : "Could not sign out. Please try again.",
+      );
       setSigningOut(false);
     }
   };
@@ -88,7 +99,21 @@ export default function Shell({
       pending.current?.path === pathname
         ? pending.current.top
         : memory.current.position(pathname);
-    try { const saved = JSON.parse(sessionStorage.getItem('auryn-document-scroll') || 'null'); if(saved?.href === window.location.pathname+window.location.search+window.location.hash && Number.isFinite(saved.top)){top=saved.top;sessionStorage.removeItem('auryn-document-scroll');}}catch{}
+    try {
+      const saved = JSON.parse(
+        sessionStorage.getItem("auryn-document-scroll") || "null",
+      );
+      if (
+        saved?.href ===
+          window.location.pathname +
+            window.location.search +
+            window.location.hash &&
+        Number.isFinite(saved.top)
+      ) {
+        top = saved.top;
+        sessionStorage.removeItem("auryn-document-scroll");
+      }
+    } catch {}
     const cancel = restoreWhenReady(top, env);
     pending.current = null;
     const remember = () =>
@@ -162,12 +187,16 @@ export default function Shell({
         Skip to content
       </a>
       <header className={experience.header}>
-        <Link href={`${prefix}/overview`} className={experience.brand} aria-label="AURYN home">
-          <img src="/icon.svg" width="32" height="32" alt="" /><span>AURYN</span>
+        <Link
+          href={`${prefix}/overview`}
+          className={experience.brand}
+          aria-label="AURYN home"
+        >
+          <img src="/icon.svg" width="32" height="32" alt="" />
+          <span>AURYN</span>
         </Link>
         <nav className={experience.nav} aria-label="Main navigation">
           {primary.map(nav)}
-
         </nav>
         <button
           className={experience.searchTrigger}
@@ -194,7 +223,11 @@ export default function Shell({
           <Link href={`${prefix}/alerts`} aria-label="Price alerts">
             <Bell size={19} />
           </Link>
-          <button aria-label="Account and workspace tools" aria-haspopup="dialog" onClick={() => tools.current?.showModal()}>
+          <button
+            aria-label="Account and workspace tools"
+            aria-haspopup="dialog"
+            onClick={() => tools.current?.showModal()}
+          >
             {(workspace?.email?.[0] || "A").toUpperCase()}
           </button>
         </div>
@@ -217,7 +250,7 @@ export default function Shell({
       </nav>
       <dialog
         ref={tools}
-        className="search-dialog approved-tools-dialog"
+        className={`search-dialog approved-tools-dialog ${experience.toolsDialog}`}
         aria-label="Account & workspace"
       >
         <header className="dialog-head">
@@ -307,7 +340,32 @@ export default function Shell({
                 onNavigate={
                   path === "settings"
                     ? openSettings
-                    : (event) => {tools.current?.close();if(["help","changelog"].includes(path)){event.preventDefault();try{sessionStorage.setItem('auryn-document-scroll',JSON.stringify({href:window.location.pathname+window.location.search+window.location.hash,top:window.scrollY}))}catch{}router.push(documentHref(path,window.location.pathname+window.location.search+window.location.hash));}}
+                    : (event) => {
+                        tools.current?.close();
+                        if (["help", "changelog"].includes(path)) {
+                          event.preventDefault();
+                          try {
+                            sessionStorage.setItem(
+                              "auryn-document-scroll",
+                              JSON.stringify({
+                                href:
+                                  window.location.pathname +
+                                  window.location.search +
+                                  window.location.hash,
+                                top: window.scrollY,
+                              }),
+                            );
+                          } catch {}
+                          router.push(
+                            documentHref(
+                              path,
+                              window.location.pathname +
+                                window.location.search +
+                                window.location.hash,
+                            ),
+                          );
+                        }
+                      }
                 }
               >
                 <span className="tool-icon">
@@ -322,7 +380,12 @@ export default function Shell({
             ))}
         </div>
         <footer className="account-menu-footer">
-          <button type="button" className="button" disabled={(!!demo && demo.routePrefix !== "") || signingOut} onClick={signOut}>
+          <button
+            type="button"
+            className="button"
+            disabled={(!!demo && demo.routePrefix !== "") || signingOut}
+            onClick={signOut}
+          >
             <LogOut size={17} /> {signingOut ? "Signing out…" : "Sign out"}
           </button>
           {signOutError && <p role="alert">{signOutError}</p>}

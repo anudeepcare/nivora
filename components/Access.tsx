@@ -65,7 +65,9 @@ export function AccessBoundary({ children }: { children: React.ReactNode }) {
           }
           setError(e instanceof Error ? e.message : "Access unavailable.");
         }
-      } finally { pending = false; }
+      } finally {
+        pending = false;
+      }
     };
     void load();
     const timer = setInterval(() => {

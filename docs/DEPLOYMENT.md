@@ -74,3 +74,13 @@ Uncertain submissions keep the account lock until reconciled. Do not retry with 
 ## Acceptance before promotion
 
 Run the checks, then capture actual desktop and mobile light/dark screens, including 320/375/390/430, tablet and 1280/1440/1920 widths. Review against `docs/design/approved-studio-20261017.html`; earlier references remain historical context. Test all tabs, search, sources, dialogs, error states, alerts, chart ranges/scrolling, theme persistence, browser back/forward and installed iPhone PWA safe areas. Test latency under the existing provider budget. Review the unimplemented scope in `RELEASE_STATUS.md` before selling access.
+
+## 7 November completion build
+
+Run `npm ci` with Node 24, then `npm run verify` and `npm run test:api`. Verification enforces ESLint hooks rules, formatting, unit tests, type checking and production build.
+
+Before enabling this build against production, apply pending migrations in timestamp order, including the shared request limiter migration and `20261107135009_auryn_public_pace_record.sql`. Do not recreate the database or rerun destructive setup. The latter grants public read only to explicit published market observations and column-limited service insert; it contains no account holdings or thesis text. Public publication requires `AURYN_EXTERNAL_DATA_LICENSED=true` and appropriate market-data redistribution rights. No sample records are inserted.
+
+Scheduled owner thesis checks are opt-in via `AURYN_THESIS_JOB_ENABLED=true` with the existing job secret, owner ID and alert-job settings. Default remains off. This does not enroll other accounts in background monitoring.
+
+Owner session observations use the existing private documents table and require no additional schema. Complete a staging smoke test of login, holdings quotes, planner, owner publication, public feed, saved condition and alert history before promoting. An archive delivery alone does not deploy or apply migrations.

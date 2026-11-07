@@ -14,8 +14,8 @@ function billingFailure(e: unknown, stage: string) {
 export const runtime = "nodejs";
 export async function GET(r: Request) {
   try {
-    const { user } = await account(r);
-    limit(`billing-read:${user.id}`, 30);
+    const { user } = await account(r, { market: false });
+    await limit(`billing-read:${user.id}`, 30);
     return privateJson(await billingStatus(user.id));
   } catch (e) {
     return billingFailure(e, "status");
@@ -24,8 +24,8 @@ export async function GET(r: Request) {
 export async function POST(r: Request) {
   let stage = "authentication";
   try {
-    const { user } = await account(r);
-    limit(`billing-write:${user.id}`, 12);
+    const { user } = await account(r, { market: false });
+    await limit(`billing-write:${user.id}`, 12);
     if (Number(r.headers.get("content-length")) > 2048)
       throw new HttpError("Request too large.", 413);
     const body = await r.json();

@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import ts from 'typescript';import{createHash}from'node:crypto';
+function server(env={},allow=true){const state={guards:0,market:0,reservations:[]};const m={exports:{}};const code=ts.transpileModule(fs.readFileSync('lib/server.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;new Function('require','module','exports','process',code)(n=>{
+ if(n==='@supabase/supabase-js')return{createClient:()=>({auth:{getUser:async()=>({data:{user:{id:'owner'}}})}})};
+ if(n==='./access-server')return{guardAccess:async()=>{state.guards++},accessDb:()=>({rpc:async(name,args)=>{state.reservations.push({name,args});return{data:allow}}})};
+ if(n==='./shared-market')return{allowMarketUser:async()=>{state.market++;return true},MarketGuardError:class extends Error{}};
+ if(n==='node:crypto')return{createHash};if(n==='next/server')return{NextResponse:Response};throw Error(n);
+},m,m.exports,{env:{NEXT_PUBLIC_SUPABASE_URL:'https://fixture.invalid',NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:'test',...env}});return{...m.exports,state}}
+const req=new Request('https://example.invalid/api/new-route',{headers:{authorization:'Bearer fixture'}});
+test('access defaults on off-host and cannot be disabled in production',async()=>{for(const env of [{},{NODE_ENV:'production',AURYN_ACCESS_ENABLED:'false'}]){const s=server(env);await s.account(req,{market:false});assert.equal(s.state.guards,1)}const d=server({NODE_ENV:'development',AURYN_ACCESS_ENABLED:'false'});await d.account(req,{market:false});assert.equal(d.state.guards,0)});
+test('market consumption is explicit regardless of route name',async()=>{const s=server();await s.account(req,{market:true});assert.equal(s.state.market,1);await s.account(req,{market:false});assert.equal(s.state.market,1)});
+test('production limiter reserves hashed scopes and rejects exhausted reservations',async()=>{const s=server({NODE_ENV:'production'},false);await assert.rejects(s.limit('owner:private-id',3),e=>e.status===429);assert.equal(s.state.reservations.length,1);assert.match(s.state.reservations[0].args.p_key,/^[a-f0-9]{64}$/);assert.equal(s.state.reservations[0].name,'auryn_request_allow')});

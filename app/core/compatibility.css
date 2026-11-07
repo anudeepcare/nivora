@@ -1,8 +1,2 @@
-/* Existing financial panels remain available during migration.
-   This layer cannot override the core or component-owned styles. */
-@import "../product.css";
-@import "../pwa-shell.css";
-@import "../mobile-experience.css";
-@import "../mobile-final.css";
-@import "../signal-research.css";
-@import "../signal-system.css";
+/* Historical feature panels retain their original cascade inside one named layer. */
+@import "./legacy-panels.css";

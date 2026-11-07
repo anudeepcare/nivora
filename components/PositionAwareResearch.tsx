@@ -6,7 +6,7 @@ import { positionContext } from "@/lib/position-context";
 import { advancedStudies } from "@/lib/advanced-research";
 import { amount, percent, dateLabel } from "@/lib/format";
 import { useProduct } from "./Session";
-import { useWorkspaceQuotes } from "./Workspace";
+import { useWorkspaceQuotes } from "./useWorkspaceQuotes";
 export default function PositionAwareResearch({
   research: r,
   compact = false,
@@ -56,7 +56,9 @@ function PositionEvidence({
             : `${percent(c.weight)} of priced listed assets`}
           {r.quote.stale ? " · older price" : ""}
         </span>
-        <Link href={`${demo && demo.routePrefix !== "" ? "/preview" : ""}/portfolio`}>
+        <Link
+          href={`${demo && demo.routePrefix !== "" ? "/preview" : ""}/portfolio`}
+        >
           Review exposure ↗
         </Link>
       </aside>
@@ -96,7 +98,11 @@ function PositionEvidence({
           Hypothetical, not a loss bound.
         </small>
       </div>
-      <Link href={`${demo && demo.routePrefix !== "" ? "/preview" : ""}/portfolio`}>View holding →</Link>
+      <Link
+        href={`${demo && demo.routePrefix !== "" ? "/preview" : ""}/portfolio`}
+      >
+        View holding →
+      </Link>
     </aside>
   );
 }

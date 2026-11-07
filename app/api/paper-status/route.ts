@@ -1,7 +1,7 @@
 import { account, failure, HttpError, privateJson, limit } from "@/lib/server";
 export async function GET(request: Request) {
   try {
-    const { user } = await account(request);
+    const { user } = await account(request, { market: false });
     const roles = user.app_metadata?.roles;
     const allowed =
       user.app_metadata?.role === "admin" ||
@@ -15,7 +15,7 @@ export async function GET(request: Request) {
         "Administrator access is required for the paper account.",
         403,
       );
-    limit(`paper-status:${user.id}`, 4);
+    await limit(`paper-status:${user.id}`, 4);
     const key = process.env.ALPACA_PAPER_API_KEY,
       secret = process.env.ALPACA_PAPER_API_SECRET;
     if (!key || !secret)

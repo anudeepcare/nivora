@@ -13,7 +13,12 @@ export async function deliverSupport(id: string) {
     !from ||
     !to
   )
-    return { notified: false, receipt: false, error: supportDeliveryStatus().issue || "Support delivery is not configured." };
+    return {
+      notified: false,
+      receipt: false,
+      error:
+        supportDeliveryStatus().issue || "Support delivery is not configured.",
+    };
   const db = accessDb();
   const { data: r, error } = await db
     .from("auryn_support_requests")
@@ -31,7 +36,18 @@ export async function deliverSupport(id: string) {
         "Idempotency-Key": `auryn-support-${id}-${kind}`,
       },
       body: JSON.stringify({
-        ...(owner && typeof r.screenshot==='string' && r.screenshot.startsWith('data:image/jpeg;base64,') ? {attachments:[{filename:'screenshot.jpg',content:r.screenshot.split(',')[1]}]} : {}),
+        ...(owner &&
+        typeof r.screenshot === "string" &&
+        r.screenshot.startsWith("data:image/jpeg;base64,")
+          ? {
+              attachments: [
+                {
+                  filename: "screenshot.jpg",
+                  content: r.screenshot.split(",")[1],
+                },
+              ],
+            }
+          : {}),
         from,
         to: [owner ? to : r.email],
         reply_to: owner ? r.email : to,
@@ -46,8 +62,15 @@ export async function deliverSupport(id: string) {
     });
     if (!response.ok) {
       const body = await response.json().catch(() => ({}));
-      const message = supportDeliveryError(response.status, typeof body.message === "string" ? body.message : "");
-      console.error("support_delivery_rejected", { reference: id, kind, status: response.status });
+      const message = supportDeliveryError(
+        response.status,
+        typeof body.message === "string" ? body.message : "",
+      );
+      console.error("support_delivery_rejected", {
+        reference: id,
+        kind,
+        status: response.status,
+      });
       throw Error(message);
     }
     const saved = await db
@@ -87,7 +110,10 @@ export async function retrySupport(manual = false) {
       await deliverSupport(row.id).catch((error) => ({
         notified: false,
         receipt: false,
-        error: error instanceof Error && error.name !== "TimeoutError" ? error.message : "Email request timed out. Retry later.",
+        error:
+          error instanceof Error && error.name !== "TimeoutError"
+            ? error.message
+            : "Email request timed out. Retry later.",
       })),
     );
   return results;

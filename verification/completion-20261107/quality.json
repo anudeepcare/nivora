@@ -1,0 +1,16 @@
+{
+  "unitTests": {
+    "passed": 1156,
+    "failed": 0
+  },
+  "lint": "passed, zero warnings",
+  "format": "passed",
+  "typecheck": "passed",
+  "build": "passed after clean output rebuild",
+  "apiSuite": "passed; mocked transports",
+  "productionTraces": 55,
+  "liveDeployment": false,
+  "productionDatabaseMutations": false,
+  "representativePerformanceProven": false,
+  "realUserValidationCompleted": false
+}

@@ -1,18 +1,38 @@
 "use client";
-import ReleaseNotes from "./ReleaseNotes";
-import Plans from "./Plans";
-import OwnerAccess from "./OwnerAccess";
-import Trading from "./Trading";
-import LegalDocument from "./LegalDocument";
+import "@/app/core/compatibility.css";
 import type { DocumentId } from "@/lib/legal-content";
-import ResearchLab from "./ResearchLab";
-import Alerts from "./AlertCenter";
-import Discover from "./Discover";
 import { ProductSession, useProduct, type DemoData } from "./Session";
 import Shell from "./Shell";
 import { symbolInput } from "@/lib/format";
 import dynamic from "next/dynamic";
-import PasswordRecovery from "./PasswordRecovery";
+// Load secondary workspaces only when selected; keep account/session state above them.
+const opening = () => (
+  <p role="status" aria-busy="true">
+    Opening workspace…
+  </p>
+);
+const ReleaseNotes = dynamic(() => import("./ReleaseNotes"), {
+  loading: opening,
+});
+const Plans = dynamic(() => import("./Plans"), { loading: opening });
+const MonthlyPlan = dynamic(() => import("./MonthlyPlan"), {
+  loading: opening,
+});
+const OwnerAccess = dynamic(() => import("./OwnerAccess"), {
+  loading: opening,
+});
+const Trading = dynamic(() => import("./Trading"), { loading: opening });
+const LegalDocument = dynamic(() => import("./LegalDocument"), {
+  loading: opening,
+});
+const ResearchLab = dynamic(() => import("./ResearchLab"), {
+  loading: opening,
+});
+const Alerts = dynamic(() => import("./AlertCenter"), { loading: opening });
+const Discover = dynamic(() => import("./Discover"), { loading: opening });
+const PasswordRecovery = dynamic(() => import("./PasswordRecovery"), {
+  loading: opening,
+});
 const Research = dynamic(() => import("./Research"), {
   loading: () => (
     <p role="status" aria-busy="true">
@@ -20,13 +40,34 @@ const Research = dynamic(() => import("./Research"), {
     </p>
   ),
 });
-import {
-  Overview,
-  ResearchHome,
-  Portfolio,
-  Watchlist,
-} from "./ApprovedWorkspace";
-import { Settings, Compare, HelpPage } from "./SupportingViews";
+const Overview = dynamic(
+  () => import("./HomeWorkspace").then((m) => m.Overview),
+  { loading: opening },
+);
+const Portfolio = dynamic(
+  () => import("./PortfolioPage").then((m) => m.Portfolio),
+  { loading: opening },
+);
+const Watchlist = dynamic(
+  () => import("./WatchlistPage").then((m) => m.Watchlist),
+  { loading: opening },
+);
+const ResearchHome = dynamic(
+  () => import("./ResearchHomePage").then((m) => m.ResearchHome),
+  { loading: opening },
+);
+const Settings = dynamic(
+  () => import("./SupportingViews").then((m) => m.Settings),
+  { loading: opening },
+);
+const Compare = dynamic(
+  () => import("./SupportingViews").then((m) => m.Compare),
+  { loading: opening },
+);
+const HelpPage = dynamic(
+  () => import("./SupportingViews").then((m) => m.HelpPage),
+  { loading: opening },
+);
 function WorkspaceGate({ children }: { children: React.ReactNode }) {
   const { workspace, workspaceError, reloadWorkspace } = useProduct();
   if (!workspace)
@@ -98,7 +139,9 @@ export default function Product({
     }
   }
   return frame(
-    page === "research" ? (
+    page === "monthly-plan" ? (
+      <MonthlyPlan />
+    ) : page === "research" ? (
       route[1] ? (
         <Research key={researchSymbol} symbol={researchSymbol} />
       ) : (

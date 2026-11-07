@@ -4,8 +4,8 @@ import { symbolInput } from "@/lib/format";
 export const maxDuration = 60;
 export async function GET(request: Request) {
   try {
-    const { user } = await account(request);
-    limit(`quotes:${user.id}`, 20);
+    const { user } = await account(request, { market: true });
+    await limit(`quotes:${user.id}`, 20);
     const result: Record<string, unknown> = Object.create(null);
     const symbols: string[] = [];
     const requested = [

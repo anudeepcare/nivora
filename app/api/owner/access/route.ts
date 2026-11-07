@@ -1,8 +1,8 @@
 import { account, failure, privateJson, HttpError, limit } from "@/lib/server";
-import { accessDb, exactOwner } from "@/lib/access-server";
+import { accessDb, exactOwner, accessEnabled } from "@/lib/access-server";
 import { cleanAccessConfig } from "@/lib/access-policy";
 async function owner(request: Request) {
-  const { user } = await account(request);
+  const { user } = await account(request, { market: false });
   if (!exactOwner(user.id))
     throw new HttpError("Workspace owner access required.", 403);
   return user;
@@ -39,7 +39,7 @@ export async function GET(request: Request) {
       audit: a.data,
       usage: u.count ?? 0,
       billingReady: false,
-      enabled: process.env.AURYN_ACCESS_ENABLED === "true",
+      enabled: accessEnabled(),
     });
   } catch (e) {
     return failure(e);
@@ -48,7 +48,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const user = await owner(request);
-    limit(`owner-access:${user.id}`, 12);
+    await limit(`owner-access:${user.id}`, 12);
     const db = accessDb(),
       b = await request.json();
     let body: unknown,
@@ -56,7 +56,7 @@ export async function POST(request: Request) {
     if (b.action === "settings")
       body = {
         ...cleanAccessConfig(b.config),
-        __enabled: process.env.AURYN_ACCESS_ENABLED === "true",
+        __enabled: accessEnabled(),
       };
     else if (b.action === "grant") {
       if (

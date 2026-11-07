@@ -6,8 +6,20 @@ export function workspacePreferences(value: unknown) {
       : {};
   return {
     ...sanitizeResearchPreferences(raw),
-    visibleMetrics: Array.isArray(raw.visibleMetrics) ? [...new Set(raw.visibleMetrics.filter((v): v is string => typeof v === "string" && ["business","valuation","price","ownership"].includes(v)))] : ["business","valuation","price","ownership"],
-    watchSort: ["name", "change", "review", "event"].includes(String(raw.watchSort))
+    visibleMetrics: Array.isArray(raw.visibleMetrics)
+      ? [
+          ...new Set(
+            raw.visibleMetrics.filter(
+              (v): v is string =>
+                typeof v === "string" &&
+                ["business", "valuation", "price", "ownership"].includes(v),
+            ),
+          ),
+        ]
+      : ["business", "valuation", "price", "ownership"],
+    watchSort: ["name", "change", "review", "event"].includes(
+      String(raw.watchSort),
+    )
       ? String(raw.watchSort)
       : "name",
     chartRange: ["1D", "1W", "1M", "3M", "6M", "1Y", "5Y"].includes(

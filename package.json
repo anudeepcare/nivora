@@ -8,9 +8,12 @@
     "start": "next start",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "typecheck": "next typegen && tsc --noEmit",
-    "verify": "npm test && npm run typecheck && npm run build",
-    "test:api": "node scripts/test-api.mjs && node scripts/test-research-regressions.mjs && node scripts/test-eodhd-api.mjs && node scripts/test-shared-market-api.mjs && node scripts/test-access-api.mjs && node scripts/test-billing-api.mjs && node scripts/test-options-api.mjs && node scripts/test-owner-expiry-api.mjs && node scripts/test-congress-api.mjs",
-    "test:acceptance": "npm run verify && npm run test:api"
+    "verify": "npm run lint && npm run format:check && npm test && npm run typecheck && npm run build",
+    "test:api": "node scripts/test-api.mjs && node scripts/test-research-regressions.mjs && node scripts/test-eodhd-api.mjs && node scripts/test-shared-market-api.mjs && node scripts/test-access-api.mjs && node scripts/test-billing-api.mjs && node scripts/test-options-api.mjs && node scripts/test-owner-expiry-api.mjs && node scripts/test-congress-api.mjs && node scripts/check-production-isolation.mjs",
+    "test:acceptance": "npm run verify && npm run test:api",
+    "prebuild": "node scripts/generate-policy-fingerprint.mjs",
+    "lint": "eslint app components lib --max-warnings 0",
+    "format:check": "prettier --check \"app/**/*.{ts,tsx,css}\" \"components/**/*.{ts,tsx,css}\" \"lib/**/*.{ts,tsx}\" eslint.config.mjs next.config.ts"
   },
   "dependencies": {
     "@supabase/ssr": "0.6.1",
@@ -27,15 +30,18 @@
     "@types/node": "22.20.1",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.5",
+    "eslint": "10.14.0",
+    "eslint-plugin-react-hooks": "7.1.1",
     "postcss": "8.5.30",
     "prettier": "3.6.2",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.72.1"
   },
   "overrides": {
     "postcss": "8.5.30"
   },
   "type": "module",
   "engines": {
-    "node": ">=22.18.0"
+    "node": "24.x"
   }
 }

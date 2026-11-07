@@ -9,6 +9,7 @@ import {
 } from "@/lib/analytics-policy";
 import { SITE_URL } from "@/lib/site-metadata";
 import { ChartNoAxesCombined, ChevronRight } from "lucide-react";
+import s from "./AnalyticsConsent.module.css";
 const KEY = "auryn-analytics-consent-v1";
 const ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "";
 type AnalyticsWindow = Window & {
@@ -20,7 +21,11 @@ export function PrivacyChoices({ compact = false }: { compact?: boolean }) {
   return (
     <button
       type="button"
-      className={compact ? "footer-analytics-choice" : "text-link settings-analytics-button"}
+      className={
+        compact
+          ? "footer-analytics-choice"
+          : "text-link settings-analytics-button"
+      }
       onClick={() => window.dispatchEvent(new Event("auryn:privacy"))}
     >
       {!compact && <ChartNoAxesCombined size={18} aria-hidden="true" />}
@@ -165,7 +170,7 @@ export default function AnalyticsConsent() {
   }, [choice, loaded, path]);
   if (!open || pathname.startsWith("/preview")) return null;
   return (
-    <aside className="analytics-consent" aria-label="Analytics preferences">
+    <aside className={s.consent} aria-label="Analytics preferences">
       <div>
         <strong>Your analytics choice</strong>
         <p>
@@ -175,11 +180,11 @@ export default function AnalyticsConsent() {
           <Link href="/privacy">Privacy details</Link>
         </p>
       </div>
-      <div className="consent-actions">
-        <button className="button secondary" onClick={() => choose("declined")}>
+      <div className={s.actions}>
+        <button className={s.decline} onClick={() => choose("declined")}>
           Decline
         </button>
-        <button className="button" onClick={() => choose("accepted")}>
+        <button className={s.allow} onClick={() => choose("accepted")}>
           Allow analytics
         </button>
       </div>

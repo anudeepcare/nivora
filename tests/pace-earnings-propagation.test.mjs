@@ -6,7 +6,7 @@ import ts from "typescript";
 import { calendarHighlights, marketDay } from "../lib/home-feed.ts";
 import { evaluateAlert } from "../lib/alert-policy.ts";
 import { portfolioRiskSummary } from "../lib/product-attention.ts";
-import { readResource, resourceSnapshot } from "../lib/resource-cache.ts";
+import { readResource, resourceSnapshot, invalidateResource } from "../lib/resource-cache.ts";
 
 // Compile the production declaration, replacing only its imported boundaries.
 // This avoids initializing provider credentials, Next, or a real account store.
@@ -289,6 +289,7 @@ test("mounted Portfolio calendar refreshes reported results and revalidates on r
     document: clock.document,
     marketDay,
     readResource,
+    invalidateResource,
     resourceSnapshot,
     api: async (key) => {
       assert.equal(key, "home-feed?kind=events&symbols=SOFI");

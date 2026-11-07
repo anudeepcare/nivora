@@ -47,14 +47,45 @@ export function earningsReview(
   };
 }
 
-type ThesisPeriod = {end:string;currency:string;basis:string;revenue?:number|null;margin?:number|null;weightedShares?:number|null};
+type ThesisPeriod = {
+  end: string;
+  currency: string;
+  basis: string;
+  revenue?: number | null;
+  margin?: number | null;
+  weightedShares?: number | null;
+};
 /** Descriptive comparisons only; caller supplies comparable annual/TTM periods. */
-export function earningsThesisChecks(latest:ThesisPeriod|null|undefined,prior:ThesisPeriod|null|undefined){
- if(!latest||!prior||latest.currency!==prior.currency||latest.basis!==prior.basis||latest.end<=prior.end)return [];
- const finite=(v:unknown):v is number=>typeof v==='number'&&Number.isFinite(v);
- const rows:string[]=[];
- if(finite(latest.revenue)&&finite(prior.revenue)&&prior.revenue>0)rows.push(`Revenue changed ${((latest.revenue/prior.revenue-1)*100).toFixed(1)}% versus the comparable period. Revisit your demand assumptions.`);
- if(finite(latest.margin)&&finite(prior.margin))rows.push(`Operating margin changed ${(latest.margin-prior.margin).toFixed(1)} percentage points. Revisit pricing and cost assumptions.`);
- if(finite(latest.weightedShares)&&finite(prior.weightedShares)&&prior.weightedShares>0)rows.push(`Weighted shares changed ${((latest.weightedShares/prior.weightedShares-1)*100).toFixed(1)}%. Revisit per-share growth and dilution assumptions.`);
- return rows;
+export function earningsThesisChecks(
+  latest: ThesisPeriod | null | undefined,
+  prior: ThesisPeriod | null | undefined,
+) {
+  if (
+    !latest ||
+    !prior ||
+    latest.currency !== prior.currency ||
+    latest.basis !== prior.basis ||
+    latest.end <= prior.end
+  )
+    return [];
+  const finite = (v: unknown): v is number =>
+    typeof v === "number" && Number.isFinite(v);
+  const rows: string[] = [];
+  if (finite(latest.revenue) && finite(prior.revenue) && prior.revenue > 0)
+    rows.push(
+      `Revenue changed ${((latest.revenue / prior.revenue - 1) * 100).toFixed(1)}% versus the comparable period. Revisit your demand assumptions.`,
+    );
+  if (finite(latest.margin) && finite(prior.margin))
+    rows.push(
+      `Operating margin changed ${(latest.margin - prior.margin).toFixed(1)} percentage points. Revisit pricing and cost assumptions.`,
+    );
+  if (
+    finite(latest.weightedShares) &&
+    finite(prior.weightedShares) &&
+    prior.weightedShares > 0
+  )
+    rows.push(
+      `Weighted shares changed ${((latest.weightedShares / prior.weightedShares - 1) * 100).toFixed(1)}%. Revisit per-share growth and dilution assumptions.`,
+    );
+  return rows;
 }

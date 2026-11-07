@@ -9,9 +9,9 @@ import Link from "next/link";
 import { CheckCircle2, ShieldCheck, ArrowRight } from "lucide-react";
 import { supportCategories } from "@/lib/support-input";
 export default function Contact() {
-  const [screenshot,setScreenshot] = useState("");
-  const [imageBusy,setImageBusy] = useState(false);
-  const [includeDiagnostics,setIncludeDiagnostics] = useState(false);
+  const [screenshot, setScreenshot] = useState("");
+  const [imageBusy, setImageBusy] = useState(false);
+  const [includeDiagnostics, setIncludeDiagnostics] = useState(false);
   const [email, setEmail] = useState(""),
     [category, setCategory] = useState<string>(supportCategories[0]),
     [message, setMessage] = useState(""),
@@ -24,17 +24,42 @@ export default function Contact() {
   useEffect(() => {
     setId(newRequestId());
   }, []);
-  async function selectScreenshot(file?:File) {
-    setScreenshot('');setError('');if(!file)return;
-    if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>10*1024*1024){setError('Choose a PNG, JPEG or WebP image under 10 MB.');return;}
-    setImageBusy(true);const url=URL.createObjectURL(file);
+  async function selectScreenshot(file?: File) {
+    setScreenshot("");
+    setError("");
+    if (!file) return;
+    if (
+      !["image/png", "image/jpeg", "image/webp"].includes(file.type) ||
+      file.size > 10 * 1024 * 1024
+    ) {
+      setError("Choose a PNG, JPEG or WebP image under 10 MB.");
+      return;
+    }
+    setImageBusy(true);
+    const url = URL.createObjectURL(file);
     try {
-      const img=new Image();img.src=url;await img.decode();
-      const ratio=Math.min(1,1400/Math.max(img.width,img.height));
-      const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.width*ratio));canvas.height=Math.max(1,Math.round(img.height*ratio));
-      const ctx=canvas.getContext('2d');if(!ctx)throw Error('Image processing is unavailable.');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);
-      const data=canvas.toDataURL('image/jpeg',0.65);if(data.length>410000)throw Error('Screenshot is too detailed; crop it and try again.');setScreenshot(data);
-    }catch(e){setError(e instanceof Error?e.message:'Unable to read screenshot.');}finally{URL.revokeObjectURL(url);setImageBusy(false);}
+      const img = new Image();
+      img.src = url;
+      await img.decode();
+      const ratio = Math.min(1, 1400 / Math.max(img.width, img.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.round(img.width * ratio));
+      canvas.height = Math.max(1, Math.round(img.height * ratio));
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw Error("Image processing is unavailable.");
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      const data = canvas.toDataURL("image/jpeg", 0.65);
+      if (data.length > 410000)
+        throw Error("Screenshot is too detailed; crop it and try again.");
+      setScreenshot(data);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Unable to read screenshot.");
+    } finally {
+      URL.revokeObjectURL(url);
+      setImageBusy(false);
+    }
   }
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -50,9 +75,19 @@ export default function Contact() {
           category,
           message,
           website,
-          ...(screenshot ? {screenshot} : {}),
+          ...(screenshot ? { screenshot } : {}),
           page: "/contact",
-          ...(includeDiagnostics ? {diagnostics:{version:APP_VERSION,page:new URLSearchParams(window.location.search).get('from')||'/contact',viewport:`${window.innerWidth}×${window.innerHeight}`}} : {}),
+          ...(includeDiagnostics
+            ? {
+                diagnostics: {
+                  version: APP_VERSION,
+                  page:
+                    new URLSearchParams(window.location.search).get("from") ||
+                    "/contact",
+                  viewport: `${window.innerWidth}×${window.innerHeight}`,
+                },
+              }
+            : {}),
         }),
       });
       const value = await response.json();
@@ -86,7 +121,10 @@ export default function Contact() {
             <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
           </p>
           <p>A question, a concern, or an idea for AURYN. Send it here.</p>
-          <small>App version {APP_VERSION}. Include this version when reporting an issue.</small>
+          <small>
+            App version {APP_VERSION}. Include this version when reporting an
+            issue.
+          </small>
           <div className="support-promise">
             <ShieldCheck size={20} />
             <div>
@@ -153,12 +191,49 @@ export default function Contact() {
                 placeholder="Tell us what happened or what you need."
               />
             </label>
-            <label>Optional screenshot<input type="file" accept="image/png,image/jpeg,image/webp" disabled={busy||imageBusy} onChange={e=>void selectScreenshot(e.target.files?.[0])}/></label>
+            <label>
+              Optional screenshot
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                disabled={busy || imageBusy}
+                onChange={(e) => void selectScreenshot(e.target.files?.[0])}
+              />
+            </label>
             {imageBusy && <p role="status">Preparing screenshot…</p>}
-            {screenshot && <div><img src={screenshot} alt="Screenshot selected for support" style={{maxWidth:'100%',maxHeight:240,objectFit:'contain'}}/><button type="button" onClick={()=>setScreenshot('')}>Remove screenshot</button></div>}
-            <p className="small muted">Review the image and remove private details before sending. Image metadata is removed when preparing it.</p>
-            <label className={styles.diagnostics}><input type="checkbox" checked={includeDiagnostics} onChange={e=>setIncludeDiagnostics(e.target.checked)} disabled={busy}/> Include app version, page category and screen size</label>
-            <p className="small muted">No ticker, holdings, notes, URL parameters or account details are added.</p>
+            {screenshot && (
+              <div>
+                <img
+                  src={screenshot}
+                  alt="Screenshot selected for support"
+                  style={{
+                    maxWidth: "100%",
+                    maxHeight: 240,
+                    objectFit: "contain",
+                  }}
+                />
+                <button type="button" onClick={() => setScreenshot("")}>
+                  Remove screenshot
+                </button>
+              </div>
+            )}
+            <p className="small muted">
+              Review the image and remove private details before sending. Image
+              metadata is removed when preparing it.
+            </p>
+            <label className={styles.diagnostics}>
+              <input
+                type="checkbox"
+                checked={includeDiagnostics}
+                onChange={(e) => setIncludeDiagnostics(e.target.checked)}
+                disabled={busy}
+              />{" "}
+              Include app version, page category and screen size
+            </label>
+            <p className="small muted">
+              No ticker, holdings, notes, URL parameters or account details are
+              added.
+            </p>
             <label className="contact-honeypot" aria-hidden="true">
               Website
               <input
@@ -177,7 +252,10 @@ export default function Contact() {
                 {error}
               </p>
             )}
-            <button className="button primary" disabled={busy || imageBusy || !id}>
+            <button
+              className="button primary"
+              disabled={busy || imageBusy || !id}
+            >
               {busy ? "Saving your message…" : "Send message"}
             </button>
           </form>

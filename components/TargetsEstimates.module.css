@@ -270,20 +270,113 @@
 }
 
 /* Tabs must retain their text width in the horizontal mobile scroller. */
-.root .tabs button{flex:0 0 auto;width:auto;min-width:max-content;text-align:center;justify-content:center;line-height:1.4}
-@media(max-width:600px){.root{padding:14px;min-width:0}.header{gap:12px;margin-bottom:14px}.header h2{font-size:22px}.quote{flex-wrap:wrap;gap:6px 12px}.tabs{max-width:100%;gap:4px;scroll-padding-inline:4px}.root .tabs button{padding:10px 12px}.metadata{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.root .tabs button {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: max-content;
+  text-align: center;
+  justify-content: center;
+  line-height: 1.4;
+}
+@media (max-width: 600px) {
+  .root {
+    padding: 14px;
+    min-width: 0;
+  }
+  .header {
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .header h2 {
+    font-size: 22px;
+  }
+  .quote {
+    flex-wrap: wrap;
+    gap: 6px 12px;
+  }
+  .tabs {
+    max-width: 100%;
+    gap: 4px;
+    scroll-padding-inline: 4px;
+  }
+  .root .tabs button {
+    padding: 10px 12px;
+  }
+  .metadata {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
 
-.root.root.root{padding:20px;margin:0;min-width:0}
-.root.root.root .header{align-items:center;margin-bottom:16px;gap:20px}
-.root.root.root .header h2{font-size:24px;margin:4px 0 6px}
-.root.root.root .header p{font-size:13px;line-height:1.5}
-.root.root.root .quote{padding:12px 16px;border-radius:12px;background:color-mix(in srgb,#438f86 8%,var(--card));font-size:12px}
-.root.root.root .panel{padding-top:16px;min-height:0}
-.root.root.root .metadata{margin:12px 0;padding:14px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,#8c6bcc 5%,var(--card));gap:12px}
-.root.root.root :global(.analyst-target-fallback){padding:16px;margin:0;border:0;border-radius:12px;background:color-mix(in srgb,#438f86 6%,var(--card))}
-.root.root.root :global(.analyst-target-main){margin:12px 0;gap:24px;justify-content:start}
-.root.root.root :global(.analyst-target-main) strong{font-size:30px}
-.root.root.root .cases article{padding:16px;gap:8px;background:color-mix(in srgb,#438f86 6%,var(--card))}
-.root.root.root .cases article:first-child{background:color-mix(in srgb,#bd5a65 6%,var(--card))}
-.root.root.root .cases article:last-child{background:color-mix(in srgb,#8c6bcc 6%,var(--card))}
-@media(max-width:680px){.root.root.root{padding:14px}.root.root.root .quote{margin-top:12px}.root.root.root .header h2{font-size:22px}}
+.root.root.root {
+  padding: 20px;
+  margin: 0;
+  min-width: 0;
+}
+.root.root.root .header {
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 20px;
+}
+.root.root.root .header h2 {
+  font-size: 24px;
+  margin: 4px 0 6px;
+}
+.root.root.root .header p {
+  font-size: 13px;
+  line-height: 1.5;
+}
+.root.root.root .quote {
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: color-mix(in srgb, #438f86 8%, var(--card));
+  font-size: 12px;
+}
+.root.root.root .panel {
+  padding-top: 16px;
+  min-height: 0;
+}
+.root.root.root .metadata {
+  margin: 12px 0;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: color-mix(in srgb, #8c6bcc 5%, var(--card));
+  gap: 12px;
+}
+.root.root.root :global(.analyst-target-fallback) {
+  padding: 16px;
+  margin: 0;
+  border: 0;
+  border-radius: 12px;
+  background: color-mix(in srgb, #438f86 6%, var(--card));
+}
+.root.root.root :global(.analyst-target-main) {
+  margin: 12px 0;
+  gap: 24px;
+  justify-content: start;
+}
+.root.root.root :global(.analyst-target-main) strong {
+  font-size: 30px;
+}
+.root.root.root .cases article {
+  padding: 16px;
+  gap: 8px;
+  background: color-mix(in srgb, #438f86 6%, var(--card));
+}
+.root.root.root .cases article:first-child {
+  background: color-mix(in srgb, #bd5a65 6%, var(--card));
+}
+.root.root.root .cases article:last-child {
+  background: color-mix(in srgb, #8c6bcc 6%, var(--card));
+}
+@media (max-width: 680px) {
+  .root.root.root {
+    padding: 14px;
+  }
+  .root.root.root .quote {
+    margin-top: 12px;
+  }
+  .root.root.root .header h2 {
+    font-size: 22px;
+  }
+}

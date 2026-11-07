@@ -3,6 +3,11 @@ const config: NextConfig = {
   reactStrictMode: true,
   devIndicators: false,
   outputFileTracingRoot: process.cwd(),
+  // These imports are compile-time excluded in production routes. Do not ship
+  // their source through Next's conservative file tracer either.
+  outputFileTracingExcludes: {
+    "/*": ["./tests/fixtures/**/*", "./components/v2/DesignPreview.tsx"],
+  },
   poweredByHeader: false,
   async redirects() {
     return [
@@ -42,8 +47,7 @@ const config: NextConfig = {
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           {
             key: "X-Frame-Options",
-            value:
-              "DENY",
+            value: "DENY",
           },
         ],
       },

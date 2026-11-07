@@ -4,8 +4,8 @@ import { growDatasets, type GrowDataset } from "@/lib/grow-data";
 import { growData } from "@/lib/grow-provider";
 export async function GET(request: Request) {
   try {
-    const { user } = await account(request);
-    limit(`company-data:${user.id}`, 12);
+    const { user } = await account(request, { market: true });
+    await limit(`company-data:${user.id}`, 12);
     const p = new URL(request.url).searchParams,
       symbol = symbolInput(p.get("symbol") || ""),
       dataset = p.get("dataset") || "profile";

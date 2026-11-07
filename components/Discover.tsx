@@ -191,6 +191,7 @@ export default function Discover({ embedded = false }: { embedded?: boolean }) {
           {saved.data.documents.map((v) => (
             <button
               className="text-button"
+              disabled={busy}
               key={v.key}
               onClick={() => {
                 setDraft(v.body.symbols.join(", "));
@@ -285,10 +286,10 @@ export default function Discover({ embedded = false }: { embedded?: boolean }) {
           >
             Reset filters
           </button>
-        <button className="button" disabled={!rows.length} onClick={save}>
-          <Save size={16} />
-          Save screen
-        </button>
+          <button className="button" disabled={!rows.length} onClick={save}>
+            <Save size={16} />
+            Save screen
+          </button>
         </div>
       </div>
       {!!coverage.requested && (

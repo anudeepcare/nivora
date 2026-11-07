@@ -1,3 +1,4 @@
+import { readCompatCss } from './read-compat-css.mjs';
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -12,7 +13,7 @@ test("iOS install metadata presents AURYN as a focused standalone workspace", ()
 });
 
 test("mobile shell has a distinct modern surface, safe areas and compact dock rules", () => {
-  const css = fs.readFileSync("app/mobile-experience.css", "utf8");
+  const css = readCompatCss('app/mobile-experience.css');
   assert.match(css, /safe-area-inset-top/);
   assert.match(css, /safe-area-inset-bottom/);
   assert.match(css, /\.phone-dock/);
@@ -22,9 +23,9 @@ test("mobile shell has a distinct modern surface, safe areas and compact dock ru
 });
 
 test("mobile chrome keeps a brand-led glass header and reserves a tidy footer", () => {
-  const css = fs.readFileSync("app/mobile-experience.css", "utf8");
-  const finalCss = fs.readFileSync("app/mobile-final.css", "utf8");
-  const pwaCss = fs.readFileSync("app/pwa-shell.css", "utf8");
+  const css = readCompatCss('app/mobile-experience.css');
+  const finalCss = readCompatCss('app/mobile-final.css');
+  const pwaCss = readCompatCss('app/pwa-shell.css');
   const layout = fs.readFileSync("app/core/compatibility.css", "utf8");
   assert.match(css, /mobile-header-row/);
   assert.match(css, /mobile-footer-note/);
@@ -33,10 +34,11 @@ test("mobile chrome keeps a brand-led glass header and reserves a tidy footer", 
   assert.match(finalCss, /mobile-header-row \.wordmark[\s\S]*position:\s*static/);
   assert.match(finalCss, /wordmark-label[\s\S]*display:\s*inline/);
   assert.match(finalCss, /Price alerts/);
-  assert.match(finalCss, /top-links > \.mobile-explore[\s\S]*display:\s*inline-flex/);
-  assert.match(finalCss, /top-links > \.header-plans[\s\S]*display:\s*none/);
+  assert.match(finalCss, /top-links\s*>\s*\.mobile-explore[\s\S]*display:\s*inline-flex/);
+  assert.match(finalCss, /top-links\s*>\s*\.header-plans[\s\S]*display:\s*none/);
   assert.match(css, /padding-bottom:\s*calc\(\s*92px/);
-  assert.match(layout, /@import "\.\.\/mobile-final\.css"/);
+  assert.match(layout, /@import "\.\/legacy-panels\.css"/);
+  assert.ok(finalCss.length > 0);
   assert.match(finalCss, /backdrop-filter:\s*blur/);
   assert.match(finalCss, /saturate\(/);
   assert.match(finalCss, /approved-tools-dialog/);

@@ -91,9 +91,9 @@
   align-items: center;
   justify-content: center;
   vertical-align: middle;
-  font-size: clamp(25px,3vw,40px);
+  font-size: clamp(25px, 3vw, 40px);
   font-weight: 700;
-  letter-spacing: -.04em;
+  letter-spacing: -0.04em;
   margin-left: 12px;
   min-width: 74px;
   min-height: 64px;
@@ -101,7 +101,7 @@
   border: 1px solid #d6f35a60;
   border-radius: 15px;
   color: #e0f88c;
-  background: linear-gradient(140deg,#d6f35a20,#1c3935);
+  background: linear-gradient(140deg, #d6f35a20, #1c3935);
   white-space: nowrap;
 }
 .terraces {
@@ -461,12 +461,191 @@
   }
 }
 /* Contextual disclosure stays integrated with the carbon instrument. */
-.instrument .readingDetail summary{background:transparent;color:#d4ddd7;padding:10px 0;border-radius:0;margin:0}
-.instrument .readingDetail[open] summary{background:transparent;color:#e0f78a}
+.instrument .readingDetail summary {
+  background: transparent;
+  color: #d4ddd7;
+  padding: 10px 0;
+  border-radius: 0;
+  margin: 0;
+}
+.instrument .readingDetail[open] summary {
+  background: transparent;
+  color: #e0f78a;
+}
 
-.evidenceDetails {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 18px}
-.evidenceDetails p {margin:0;padding:12px;background:#ffffff06;border-radius:10px;font-size:12px}
-.evidenceDetails p strong {display:block;margin-bottom:6px;color:#e9eee7}
-@media(max-width:600px){.evidenceDetails{grid-template-columns:1fr}.title h2>.level{min-width:60px;min-height:54px;font-size:30px;margin-top:8px}}
+.evidenceDetails {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 18px;
+}
+.evidenceDetails p {
+  margin: 0;
+  padding: 12px;
+  background: #ffffff06;
+  border-radius: 10px;
+  font-size: 12px;
+}
+.evidenceDetails p strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #e9eee7;
+}
+@media (max-width: 600px) {
+  .evidenceDetails {
+    grid-template-columns: 1fr;
+  }
+  .title h2 > .level {
+    min-width: 60px;
+    min-height: 54px;
+    font-size: 30px;
+    margin-top: 8px;
+  }
+}
 
-.header>span{min-width:0;letter-spacing:.1em;line-height:1.5;font-size:12px}.header>span img{flex-shrink:0}.header>button{flex-shrink:0}
+.header > span {
+  min-width: 0;
+  letter-spacing: 0.1em;
+  line-height: 1.5;
+  font-size: 12px;
+}
+.header > span img {
+  flex-shrink: 0;
+}
+.header > button {
+  flex-shrink: 0;
+}
+
+.instrument .readingDetail > summary {
+  padding: 12px 14px;
+  margin: 8px 0;
+  border: 1px solid #809d8c;
+  border-radius: 10px;
+  background: #ffffff0c;
+  color: #eef5ef;
+  gap: 14px;
+  font-weight: 600;
+  list-style: none;
+}
+.instrument .readingDetail > summary::-webkit-details-marker {
+  display: none;
+}
+.instrument .readingDetail > summary::after {
+  content: "Show levels ⌄";
+  white-space: nowrap;
+  font-size: 12px;
+  color: #e0f78a;
+}
+.instrument .readingDetail[open] > summary::after {
+  content: "Hide levels ⌃";
+}
+.instrument .readingDetail > summary:focus-visible {
+  outline: 2px solid #e0f78a;
+  outline-offset: 3px;
+}
+@media (max-width: 480px) {
+  .instrument .readingDetail > summary {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .instrument .readingDetail > summary::after {
+    margin-left: 0;
+  }
+}
+
+/* Compact reading hierarchy: stage, period, then conditional price. */
+.instrument {
+  padding: 18px 20px;
+}
+.readout {
+  gap: 10px;
+  margin: 10px 0;
+}
+.title h2 {
+  font-size: clamp(26px, 2.6vw, 34px);
+  line-height: 1.2;
+}
+.title h2 > .level {
+  min-width: 42px;
+  min-height: 40px;
+  padding: 5px 8px;
+  margin: 0 0 0 10px;
+  font-size: 24px;
+  border-radius: 9px;
+}
+.terraces {
+  max-width: 440px;
+  margin-top: 8px;
+  padding-top: 0;
+}
+.terraces::before {
+  top: 13px;
+}
+.stage {
+  gap: 4px;
+  min-height: 44px;
+  padding: 3px 0;
+}
+.stage > svg,
+.stage[aria-pressed="true"] > svg {
+  width: 16px;
+  height: 16px;
+}
+.stage span {
+  display: none;
+}
+.status {
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+}
+.periods {
+  margin-top: 6px;
+  border-top: 0;
+}
+.insight {
+  margin-top: 8px;
+  padding: 8px 0 4px;
+  border-top: 0;
+}
+.boundary {
+  margin: 3px 0;
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+.readingDetail {
+  margin: 4px 0;
+}
+.instrument .readingDetail > summary {
+  min-height: 44px;
+  padding: 8px 10px;
+  margin: 4px 0;
+  font-size: 12px;
+}
+.evidenceDetails > .comparison {
+  grid-column: 1 / -1;
+  display: flex;
+  margin: 0;
+}
+.evidenceDetails > .comparison strong {
+  display: inline;
+  margin: 0;
+}
+.footer {
+  margin-top: 6px;
+  padding-top: 6px;
+  gap: 4px 8px;
+}
+@media (max-width: 600px) {
+  .instrument {
+    padding: 16px;
+  }
+  .title h2 {
+    font-size: 28px;
+  }
+  .title h2 > .level {
+    min-width: 40px;
+    min-height: 38px;
+    font-size: 23px;
+  }
+}

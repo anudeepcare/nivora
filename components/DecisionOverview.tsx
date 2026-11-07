@@ -156,7 +156,7 @@ export default function DecisionOverview({
           className="overview-visual-rail"
           aria-label="Valuation and accumulation"
         >
-          {!crypto && <AnalystTargets research={r} showUnavailable/>}
+          {!crypto && <AnalystTargets research={r} showUnavailable />}
           <section className="overview-visual-value">
             <header>
               <h3>
@@ -188,7 +188,7 @@ export default function DecisionOverview({
                 </small>
               </>
             ) : b.priceRisk.available ? (
-              <PriceRiskCases scenarios={b.priceRisk} compact/>
+              <PriceRiskCases scenarios={b.priceRisk} compact />
             ) : (
               <div className="overview-value-gap">
                 <span>
@@ -247,7 +247,12 @@ export default function DecisionOverview({
                 </small>
               </div>
             </div>
-            <p className="desk-footnote">P1 means Watch/Hold; P2 starts small, P3 builds gradually and P4 supports deeper planned accumulation only when business checks qualify. The forming signal uses the latest eligible settled close.</p>
+            <p className="desk-footnote">
+              P1 means Watch/Hold; P2 starts small, P3 builds gradually and P4
+              supports deeper planned accumulation only when business checks
+              qualify. The forming signal uses the latest eligible settled
+              close.
+            </p>
             <div
               className="overview-zone-scale"
               aria-label={

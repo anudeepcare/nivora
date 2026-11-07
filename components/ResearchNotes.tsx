@@ -1,30 +1,37 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import {researchDecision} from "@/lib/decision-research";
+import { thesisMetrics } from "@/lib/thesis-rules";
+import { researchDecision } from "@/lib/decision-research";
 import { Save, BookmarkCheck, Pencil, X } from "lucide-react";
 import { useProduct, useResource } from "./Session";
 import { api } from "@/lib/client";
 import type { Research } from "@/lib/types";
 import { Notice, Source } from "./Ui";
 export default function ResearchNotes({ research: r }: { research: Research }) {
-  const decision=useMemo(()=>researchDecision(r),[r]);
+  const decision = useMemo(() => researchDecision(r), [r]);
   const { demo } = useProduct(),
     preview = useMemo(() => (demo ? { documents: [] } : undefined), [demo]),
     records = useResource<{
       documents: { key: string; body: Record<string, string> }[];
     }>("documents?kind=note", preview);
-  const empty = {
-    thesis: "",
-    counterargument: "",
-    condition: "",
-    milestone: "",
-    sourceUrl: "",
-    evidenceDate: "",
-    reviewDate: "",
-    status: "researching",
-    horizon: "long-term",
-  };
+  const empty = useMemo(
+    () => ({
+      thesis: "",
+      counterargument: "",
+      condition: "",
+      milestone: "",
+      sourceUrl: "",
+      evidenceDate: "",
+      reviewDate: "",
+      status: "researching",
+      horizon: "long-term",
+      monitorEnabled: "false",
+      monitorMetric: "margin",
+      monitorThreshold: "",
+    }),
+    [],
+  );
   const [form, setForm] = useState(empty),
     [message, setMessage] = useState(""),
     [busy, setBusy] = useState(false),
@@ -34,7 +41,7 @@ export default function ResearchNotes({ research: r }: { research: Research }) {
       (x) => x.key === r.company.symbol,
     );
     setForm(found ? { ...empty, ...found.body } : empty);
-  }, [records.data, r.company.symbol]);
+  }, [records.data, r.company.symbol, empty]);
   async function save(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
@@ -51,6 +58,24 @@ export default function ResearchNotes({ research: r }: { research: Research }) {
       });
       setEditing(false);
       records.refresh();
+      if (form.monitorEnabled === "true") {
+        try {
+          const result = await api<{ rows: { reason: string }[] }>(
+            "thesis-monitor",
+            { symbol: r.company.symbol },
+          );
+          setMessage(
+            result.rows.map((x) => x.reason).join(" ") ||
+              "Condition saved; no completed check returned.",
+          );
+          return;
+        } catch {
+          setMessage(
+            "Thesis saved. The evidence check could not complete; try Check condition.",
+          );
+          return;
+        }
+      }
       setMessage(
         "Thesis saved. Your interpretation stays separate from reported evidence.",
       );
@@ -76,11 +101,16 @@ export default function ResearchNotes({ research: r }: { research: Research }) {
     }
   }
   return (
-    <section className={`support decision-record ${!form.thesis&&!editing?"record-empty":""}`}>
+    <section
+      className={`support decision-record ${!form.thesis && !editing ? "record-empty" : ""}`}
+    >
       <header className="section-heading">
         <div>
           <h2>Keep your reasoning</h2>
-          <p>Your reasoning, counter-case and review conditions. Private and separate from company evidence.</p>
+          <p>
+            Your reasoning, counter-case and review conditions. Private and
+            separate from company evidence.
+          </p>
         </div>
         <div className="note-actions">
           <button
@@ -112,6 +142,31 @@ export default function ResearchNotes({ research: r }: { research: Research }) {
           </button>
         </div>
       </header>
+      {form.monitorEnabled === "true" && !editing && (
+        <button
+          className="button"
+          disabled={busy || !!demo}
+          onClick={async () => {
+            setBusy(true);
+            try {
+              const result = await api<{ rows: { reason: string }[] }>(
+                "thesis-monitor",
+                { symbol: r.company.symbol },
+              );
+              setMessage(
+                result.rows.map((x) => x.reason).join(" ") ||
+                  "No enabled saved condition was found.",
+              );
+            } catch (e) {
+              setMessage(e instanceof Error ? e.message : "Check unavailable");
+            } finally {
+              setBusy(false);
+            }
+          }}
+        >
+          Check saved condition
+        </button>
+      )}
       {records.error && <Notice error>{records.error}</Notice>}
       {message && <Notice>{message}</Notice>}
       {!editing &&
@@ -138,9 +193,83 @@ export default function ResearchNotes({ research: r }: { research: Research }) {
             )}
           </div>
         )}
-      {(form.thesis||form.condition)&&<div className="record-evidence-check"><h4>Review against current evidence</h4>{decision.tripwires.some(t=>t.breached)?decision.tripwires.filter(t=>t.breached).map(t=><p key={t.id}><strong>{t.label}</strong> · {t.value.toFixed(1)}{t.unit==='percent'?'%':'×'} · review {t.direction} {t.threshold}{t.unit==='percent'?'%':'×'}</p>):<p>No available threshold is currently breached. This does not validate your written thesis.</p>}<Link href={`${demo?'/preview':''}/research/${encodeURIComponent(r.company.symbol.replace('/','-'))}?tab=Snapshot`}>Review evidence & save threshold alerts →</Link><p className="small muted">Written conditions are your interpretation. These checks do not automatically interpret free text or monitor continuously.</p></div>}
+      {(form.thesis || form.condition) && (
+        <div className="record-evidence-check">
+          <h4>Review against current evidence</h4>
+          {decision.tripwires.some((t) => t.breached) ? (
+            decision.tripwires
+              .filter((t) => t.breached)
+              .map((t) => (
+                <p key={t.id}>
+                  <strong>{t.label}</strong> · {t.value.toFixed(1)}
+                  {t.unit === "percent" ? "%" : "×"} · review {t.direction}{" "}
+                  {t.threshold}
+                  {t.unit === "percent" ? "%" : "×"}
+                </p>
+              ))
+          ) : (
+            <p>
+              No available threshold is currently breached. This does not
+              validate your written thesis.
+            </p>
+          )}
+          <Link
+            href={`${demo ? "/preview" : ""}/research/${encodeURIComponent(r.company.symbol.replace("/", "-"))}?tab=Snapshot`}
+          >
+            Review evidence & save threshold alerts →
+          </Link>
+          <p className="small muted">
+            Written conditions are your interpretation. These checks do not
+            automatically interpret free text or monitor continuously.
+          </p>
+        </div>
+      )}
       {editing && (
         <form id="thesis-editor" className="research-note-form" onSubmit={save}>
+          <fieldset>
+            <legend>Measurable thesis check</legend>
+            <label>
+              Metric
+              <select
+                value={form.monitorMetric}
+                onChange={(e) =>
+                  setForm({ ...form, monitorMetric: e.target.value })
+                }
+              >
+                {Object.entries(thesisMetrics).map(([key, m]) => (
+                  <option key={key} value={key}>
+                    {m.label} {m.direction} ({m.unit})
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Threshold
+              <input
+                type="number"
+                step="any"
+                value={form.monitorThreshold}
+                onChange={(e) =>
+                  setForm({ ...form, monitorThreshold: e.target.value })
+                }
+              />
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={form.monitorEnabled === "true"}
+                onChange={(e) =>
+                  setForm({ ...form, monitorEnabled: String(e.target.checked) })
+                }
+              />
+              Check this condition when saving; keep review events in Alerts
+            </label>
+            <p className="small muted">
+              This evaluates one explicit financial condition. Background checks
+              require the owner’s scheduled monitor; other accounts can check on
+              demand. Your written thesis is never automatically marked broken.
+            </p>
+          </fieldset>
           <div className="two-col">
             <label>
               Reason to own

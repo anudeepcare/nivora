@@ -4,7 +4,6 @@ import { AppearanceSync } from "@/components/AppearanceControls";
 import Pwa from "@/components/Pwa";
 import AppSession from "@/components/AppSession";
 import type { Metadata, Viewport } from "next";
-import "./core/compatibility.css";
 import "./core/foundation.css";
 import "./appearance.css";
 import "./core/surfaces.css";
@@ -24,7 +23,10 @@ export const metadata: Metadata = {
     title: "AURYN",
     statusBarStyle: "default",
   },
-  icons: { icon: "/icon.svg?v=citron-20261104", apple: "/apple-touch-icon-v2.png" },
+  icons: {
+    icon: "/icon.svg?v=citron-20261104",
+    apple: "/apple-touch-icon-v2.png",
+  },
 };
 export const viewport: Viewport = {
   width: "device-width",

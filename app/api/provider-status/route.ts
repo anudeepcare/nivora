@@ -2,7 +2,7 @@ import { account, failure, privateJson } from "@/lib/server";
 import { eodEnabled } from "@/lib/eodhd";
 export async function GET(request: Request) {
   try {
-    await account(request);
+    await account(request, { market: false });
     return privateJson({
       marketProvider: eodEnabled()
         ? process.env.TWELVE_DATA_API_KEY

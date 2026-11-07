@@ -256,11 +256,16 @@ export default function HomeBriefing({
           </small>
         </span>
       </header>
-      <section className="home-command-bar" aria-label="AURYN daily command center">
+      <section
+        className="home-command-bar"
+        aria-label="AURYN daily command center"
+      >
         <div className="home-command-copy">
           <span className="briefing-system-label">YOUR AURYN BRIEF</span>
           <strong>Business → Value → Risk → Pace</strong>
-          <small>One connected view for what deserves your attention next.</small>
+          <small>
+            One connected view for what deserves your attention next.
+          </small>
         </div>
         <div className="home-command-metrics" aria-label="Workspace summary">
           <Link href={`${prefix}/watchlist`}>
@@ -344,19 +349,101 @@ export default function HomeBriefing({
         </>
       ) : (
         <>
-          <section className="home-wealth-strip" aria-label="Portfolio at a glance">
-            <div className="home-wealth-main"><span>{composition === "holdings" ? "PRICED INVESTMENTS · USD" : "YOUR RESEARCH UNIVERSE"}</span>
-              <strong>{composition === "holdings" ? (pricedTotal > 0 ? amount(pricedTotal) : "Awaiting prices") : ordered.length}</strong>
-              <small>{composition === "holdings" ? "Excludes cash, margin and managed balances" : "Companies you follow"}</small>
+          <section
+            className="home-wealth-strip"
+            aria-label="Portfolio at a glance"
+          >
+            <div className="home-wealth-main">
+              <span>
+                {composition === "holdings"
+                  ? "PRICED INVESTMENTS · USD"
+                  : "YOUR RESEARCH UNIVERSE"}
+              </span>
+              <strong>
+                {composition === "holdings"
+                  ? pricedTotal > 0
+                    ? amount(pricedTotal)
+                    : "Awaiting prices"
+                  : ordered.length}
+              </strong>
+              <small>
+                {composition === "holdings"
+                  ? "Excludes cash, margin and managed balances"
+                  : "Companies you follow"}
+              </small>
             </div>
-            {composition === "holdings" ? <div><span>{day.session ? `SESSION · ${dateLabel(day.session)}` : "SESSION CHANGE"}</span><strong className={day.net==null?'neutral':day.net<0?'negative':'positive'}>{day.net!=null?amount(day.net):"Quotes updating"}</strong><small>{day.covered} of {day.total} USD equities · current units</small></div> : <div><span>PORTFOLIO CONTEXT</span><strong>No holdings yet</strong><small>Add positions when you're ready</small></div>}
-            <div><span>YOUR FOCUS</span><strong>{ordered.length}<small> companies</small></strong><small>{positions.length} holdings · {workspace?.watchlist.length ?? 0} watchlist ideas</small></div>
-            <Link className="home-wealth-link" href={`${prefix}/${composition==='holdings'?'portfolio':'watchlist'}`}>{composition==='holdings'?'View portfolio':'Open watchlist'}<ArrowUpRight size={17}/></Link>
+            {composition === "holdings" ? (
+              <div>
+                <span>
+                  {day.session
+                    ? `SESSION · ${dateLabel(day.session)}`
+                    : "SESSION CHANGE"}
+                </span>
+                <strong
+                  className={
+                    day.net == null
+                      ? "neutral"
+                      : day.net < 0
+                        ? "negative"
+                        : "positive"
+                  }
+                >
+                  {day.net != null ? amount(day.net) : "Quotes updating"}
+                </strong>
+                <small>
+                  {day.covered} of {day.total} USD equities · current units
+                </small>
+              </div>
+            ) : (
+              <div>
+                <span>PORTFOLIO CONTEXT</span>
+                <strong>No holdings yet</strong>
+                <small>Add positions when you're ready</small>
+              </div>
+            )}
+            <div>
+              <span>YOUR FOCUS</span>
+              <strong>
+                {ordered.length}
+                <small> companies</small>
+              </strong>
+              <small>
+                {positions.length} holdings · {workspace?.watchlist.length ?? 0}{" "}
+                watchlist ideas
+              </small>
+            </div>
+            <Link
+              className="home-wealth-link"
+              href={`${prefix}/${composition === "holdings" ? "portfolio" : "watchlist"}`}
+            >
+              {composition === "holdings" ? "View portfolio" : "Open watchlist"}
+              <ArrowUpRight size={17} />
+            </Link>
           </section>
-          <section className="home-daily-brief" aria-label="Your daily briefing">
-            <div className="home-brief-mark" aria-hidden="true">A<span>✦</span></div>
-            <div className="home-brief-copy"><span>THE AURYN BRIEF · {brief.kind === 'earnings'?'UPCOMING EARNINGS':brief.kind==='news'?'COMPANY UPDATE':'YOUR NEXT CHECK-IN'}</span><h2>{brief.title}</h2><p>{brief.detail}</p><small>{brief.status}</small></div>
-            <Link href={heroHref}>{brief.action}<ArrowRight size={18}/></Link>
+          <section
+            className="home-daily-brief"
+            aria-label="Your daily briefing"
+          >
+            <div className="home-brief-mark" aria-hidden="true">
+              A<span>✦</span>
+            </div>
+            <div className="home-brief-copy">
+              <span>
+                THE AURYN BRIEF ·{" "}
+                {brief.kind === "earnings"
+                  ? "UPCOMING EARNINGS"
+                  : brief.kind === "news"
+                    ? "COMPANY UPDATE"
+                    : "YOUR NEXT CHECK-IN"}
+              </span>
+              <h2>{brief.title}</h2>
+              <p>{brief.detail}</p>
+              <small>{brief.status}</small>
+            </div>
+            <Link href={heroHref}>
+              {brief.action}
+              <ArrowRight size={18} />
+            </Link>
           </section>
           <div className="briefing-evidence-grid">
             <section className="briefing-panel briefing-moves">

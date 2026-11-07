@@ -1,5 +1,10 @@
 import Stripe from "stripe";
-import { accessDb, exactOwner, getAccess } from "./access-server";
+import {
+  accessDb,
+  exactOwner,
+  getAccess,
+  accessEnabled,
+} from "./access-server";
 import { HttpError } from "./server";
 import {
   billingMode,
@@ -18,8 +23,7 @@ export function billingConfig() {
     missing.push("Stripe secret key for " + mode + " mode");
   if (!price.startsWith("price_")) missing.push("monthly Pro price");
   if (!secret.startsWith("whsec_")) missing.push("webhook signing secret");
-  if (process.env.AURYN_ACCESS_ENABLED !== "true")
-    missing.push("access controls");
+  if (!accessEnabled()) missing.push("access controls");
   if (!process.env.AURYN_OWNER_USER_ID) missing.push("workspace owner");
   let origin = "";
   try {

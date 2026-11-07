@@ -1,11 +1,22 @@
 "use client";
 import Link from "next/link";
+import { useState } from "react";
+import type { MarketEvent } from "@/lib/home-feed";
 import { ArrowUpRight, Bell, Bookmark } from "lucide-react";
 import { useProduct, useResource } from "./Session";
 import { researchInbox, homeHighlights } from "@/lib/research-inbox";
 import { dateLabel } from "@/lib/format";
 import styles from "./ResearchInbox.module.css";
-export default function ResearchInbox({ today }: { today: string }) {
+export default function ResearchInbox({
+  today,
+  events = [],
+  coverageIssue = false,
+}: {
+  today: string;
+  events?: MarketEvent[];
+  coverageIssue?: boolean;
+}) {
+  const [expanded, setExpanded] = useState(false);
   const { workspace, demo } = useProduct();
   const notes = useResource<{
     documents: {
@@ -30,8 +41,8 @@ export default function ResearchInbox({ today }: { today: string }) {
   ];
   const items = researchInbox({
     today,
-    events: [],
-    positions: [],
+    events,
+    positions: workspace?.positions ?? [],
     followed,
     alerts: alerts.data?.events ?? [],
   });
@@ -49,16 +60,19 @@ export default function ResearchInbox({ today }: { today: string }) {
         detail:
           note.body.condition ||
           "Revisit the question you saved for this company.",
-        href: "/watchlist",
+        href: `/research/${encodeURIComponent(note.key)}?tab=Case`,
       });
-  const highlights = homeHighlights(items, today);
+  const highlights = expanded
+    ? [...items].sort((a, b) => a.date.localeCompare(b.date))
+    : homeHighlights(items, today);
   const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
-  if (!highlights.length) return null;
+  if (!highlights.length && !notes.error && !alerts.error && !coverageIssue)
+    return null;
   return (
     <section className={styles.inbox} aria-label="Today’s highlights">
       <header>
         <div>
-          <h2>Saved reminders</h2>
+          <h2>Needs your attention</h2>
         </div>
         <Link href={`${prefix}/watchlist`}>
           Your watchlist <ArrowUpRight size={16} />
@@ -67,6 +81,7 @@ export default function ResearchInbox({ today }: { today: string }) {
       <div className={styles.cards}>
         {highlights.map((item) => {
           const alert = item.id.startsWith("alert:");
+          const earnings = item.id.includes(":earnings:");
           const Icon = alert ? Bell : Bookmark;
           return (
             <Link
@@ -77,12 +92,20 @@ export default function ResearchInbox({ today }: { today: string }) {
             >
               <span className={styles.category}>
                 <Icon size={18} />
-                {alert ? "Your saved alert" : "Saved review"}
+                {alert
+                  ? "Your saved alert"
+                  : earnings
+                    ? "Earnings checkpoint"
+                    : "Research review"}
               </span>
               <h3>{item.title}</h3>
               <p>{item.detail}</p>
               <span className={styles.action}>
-                {alert ? "View alert" : "Open saved note"}{" "}
+                {alert
+                  ? "View alert"
+                  : earnings
+                    ? "Review earnings"
+                    : "Open research"}{" "}
                 <ArrowUpRight size={16} />
               </span>
               <time dateTime={item.date}>{dateLabel(item.date)}</time>
@@ -90,7 +113,16 @@ export default function ResearchInbox({ today }: { today: string }) {
           );
         })}
       </div>
-      {(notes.error || alerts.error) && (
+      {items.length > 3 && (
+        <button
+          className={styles.expand}
+          onClick={() => setExpanded((v) => !v)}
+          aria-expanded={expanded}
+        >
+          {expanded ? "Show highlights" : `Show all ${items.length} items`}
+        </button>
+      )}
+      {(notes.error || alerts.error || coverageIssue) && (
         <small>
           Some updates could not be loaded. These highlights may be incomplete.
         </small>

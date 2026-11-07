@@ -11,9 +11,11 @@ import { useProduct } from "./Session";
 import { Notice, SecurityLogo } from "./Ui";
 import { downloadCsv } from "./ResearchWorkbench";
 export default function ResearchCompare({
-  research: r, suggestions = [],
+  research: r,
+  suggestions = [],
 }: {
-  research: Research; suggestions?: PeerCandidate[];
+  research: Research;
+  suggestions?: PeerCandidate[];
 }) {
   const { cache, demo } = useProduct();
   const [symbol, setSymbol] = useState(""),
@@ -28,7 +30,8 @@ export default function ResearchCompare({
       r,
       ...reports.filter((x) => x.company.symbol !== r.company.symbol),
     ].slice(0, 6),
-    rows = comparisonRows(items),peers=peerContext(items);
+    rows = comparisonRows(items),
+    peers = peerContext(items);
   async function addSymbol(input: string) {
     if (busy) return;
     setMessage("");
@@ -62,8 +65,28 @@ export default function ResearchCompare({
           <p>Choose relevant peers. Sector and reporting dates matter.</p>
         </div>
       </header>
-      <div className="peer-candidates">{suggestions.filter(p=>!items.some(x=>x.company.symbol===p.symbol)).map(p=><button className="button" key={p.symbol} disabled={busy||items.length>=6} onClick={()=>addSymbol(p.symbol)}>+ {p.symbol}<small>{p.name}</small></button>)}</div>
-      <form className="compare-form" onSubmit={e=>{e.preventDefault();void addSymbol(symbol);}}>
+      <div className="peer-candidates">
+        {suggestions
+          .filter((p) => !items.some((x) => x.company.symbol === p.symbol))
+          .map((p) => (
+            <button
+              className="button"
+              key={p.symbol}
+              disabled={busy || items.length >= 6}
+              onClick={() => addSymbol(p.symbol)}
+            >
+              + {p.symbol}
+              <small>{p.name}</small>
+            </button>
+          ))}
+      </div>
+      <form
+        className="compare-form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          void addSymbol(symbol);
+        }}
+      >
         <label htmlFor="compare-symbol">
           Company ticker
           <input
@@ -84,7 +107,18 @@ export default function ResearchCompare({
         </button>
       </form>
       {message && <Notice>{message}</Notice>}
-      <section className="selected-lens"><h4>Selected peer context</h4><p>{peers.eligible?`${peers.count} selected ${peers.sector} companies. Median operating margin: ${percent(peers.marginMedian)}; median FCF yield: ${percent(peers.fcfYieldMedian)}.`:'Add at least three companies from one reported sector with aligned currencies and reporting dates to calculate selected-cohort medians.'}</p><small>This is your selected cohort, not an industry-wide median or representative peer ranking.</small></section>
+      <section className="selected-lens">
+        <h4>Selected peer context</h4>
+        <p>
+          {peers.eligible
+            ? `${peers.count} selected ${peers.sector} companies. Median operating margin: ${percent(peers.marginMedian)}; median FCF yield: ${percent(peers.fcfYieldMedian)}.`
+            : "Add at least three companies from one reported sector with aligned currencies and reporting dates to calculate selected-cohort medians."}
+        </p>
+        <small>
+          This is your selected cohort, not an industry-wide median or
+          representative peer ranking.
+        </small>
+      </section>
       <div className="table-scroll">
         <table>
           <caption>

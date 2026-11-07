@@ -4,7 +4,7 @@ import fs from "node:fs";
 
 test("valuation API is an authenticated bounded stored-output read", () => {
   const source = fs.readFileSync("app/api/valuation/[symbol]/route.ts", "utf8");
-  assert.match(source, /account\(request\)/);
+  assert.match(source, /account\(request,\s*\{\s*market:\s*true\s*\}\)/);
   assert.match(source, /symbolInput/);
   assert.match(source, /limit\(`/);
   assert.match(source, /\.limit\(1\)/);

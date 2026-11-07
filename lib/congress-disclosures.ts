@@ -76,9 +76,9 @@ export function congressDisclosures(
       name,
       text(t.amount_range),
       text(t.owner),
-      text(r.asset?.description,500),
+      text(r.asset?.description, 500),
       text(r.asset?.asset_type),
-      text(t.comment,500),
+      text(t.comment, 500),
     ].join(":");
     unique.set(id, {
       id,
@@ -86,9 +86,9 @@ export function congressDisclosures(
       chamber,
       symbol,
       action: t.type,
-      assetDescription: text(r.asset?.description,500),
+      assetDescription: text(r.asset?.description, 500),
       assetType: text(r.asset?.asset_type),
-      comment: text(t.comment,500) || null,
+      comment: text(t.comment, 500) || null,
       traded,
       disclosed,
       lagDays: Math.round(

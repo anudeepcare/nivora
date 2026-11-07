@@ -4,7 +4,7 @@ import { research } from "@/lib/providers";
 import { canonical } from "@/lib/canonical";
 export async function GET(request: Request) {
   try {
-    const { user, db } = await account(request);
+    const { user, db } = await account(request, { market: false });
     let q = db
       .from("auryn_observations")
       .select("symbol,snapshot_id,observed_at,payload")
@@ -24,8 +24,8 @@ export async function GET(request: Request) {
 }
 export async function POST(request: Request) {
   try {
-    const { user, db } = await account(request);
-    limit(`snapshot:${user.id}`, 6);
+    const { user, db } = await account(request, { market: false });
+    await limit(`snapshot:${user.id}`, 6);
     const body = await request.json(),
       r = await research(symbolInput(body.symbol)),
       c = canonical(r);

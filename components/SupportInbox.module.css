@@ -1,1 +1,275 @@
-.inbox{min-width:0}.inbox header,.tools{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.inbox h2{font-size:20px}.tools{padding:16px 0;font-size:13px;color:var(--muted)}.tools label{display:flex;align-items:center;gap:10px}.inbox select{font-size:16px;min-height:44px;border:1px solid var(--line);border-radius:8px;padding:8px 28px 8px 10px;background:var(--card);color:var(--ink);max-width:100%}.delivery{margin:12px 0;padding:12px;background:color-mix(in srgb,#168e83 7%,var(--card));border-radius:10px;font-size:13px}.delivery summary{cursor:pointer;font-weight:600}.delivery p{margin:8px 0}.ticket{margin:4px 0;border-radius:10px;background:var(--card)}.ticket:nth-of-type(even){background:color-mix(in srgb,#64748b 5%,var(--card))}.ticket>summary{display:flex;align-items:center;gap:16px;padding:14px;cursor:pointer;list-style:none}.ticket>summary::-webkit-details-marker{display:none}.ticket>summary::after{content:'+';font-size:20px}.ticket[open]>summary::after{content:'−'}.identity{display:flex;flex:1;min-width:0;flex-direction:column;gap:4px}.identity span{color:var(--muted);font-size:13px;overflow-wrap:anywhere}.ticket time{font-size:12px;color:var(--muted)}.badge{font-size:11px;text-transform:capitalize;background:#e5edff;color:#254daa;padding:5px 8px;border-radius:6px;white-space:nowrap}.badge[data-status=in_progress]{background:#fff1d6;color:#805400}.badge[data-status=resolved]{background:#d8f3e9;color:#14604a}.body{padding:4px 16px 16px;overflow-wrap:anywhere}.body>header{display:none}.body p{font-size:14px}.body small{display:block;color:var(--muted);margin:12px 0}.body label{display:flex;align-items:center;gap:12px}.ticket summary:focus-visible{outline:2px solid #168e83;outline-offset:2px}@media(max-width:600px){.ticket>summary{gap:8px;padding:12px 8px}.ticket time{display:none}.badge{font-size:10px}.inbox header button{font-size:12px}.tools{gap:8px}}
+.inbox {
+  min-width: 0;
+}
+.inbox header,
+.tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.inbox h2 {
+  font-size: 20px;
+}
+.tools {
+  padding: 16px 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.tools label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.inbox select {
+  font-size: 16px;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 28px 8px 10px;
+  background: var(--card);
+  color: var(--ink);
+  max-width: 100%;
+}
+.delivery {
+  margin: 12px 0;
+  padding: 12px;
+  background: color-mix(in srgb, #168e83 7%, var(--card));
+  border-radius: 10px;
+  font-size: 13px;
+}
+.delivery summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.delivery p {
+  margin: 8px 0;
+}
+.ticket {
+  margin: 4px 0;
+  border-radius: 10px;
+  background: var(--card);
+}
+.ticket:nth-of-type(even) {
+  background: color-mix(in srgb, #64748b 5%, var(--card));
+}
+.ticket > summary {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px;
+  cursor: pointer;
+  list-style: none;
+}
+.ticket > summary::-webkit-details-marker {
+  display: none;
+}
+.ticket > summary::after {
+  content: "+";
+  font-size: 20px;
+}
+.ticket[open] > summary::after {
+  content: "−";
+}
+.identity {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
+}
+.identity span {
+  color: var(--muted);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.ticket time {
+  font-size: 12px;
+  color: var(--muted);
+}
+.badge {
+  font-size: 11px;
+  text-transform: capitalize;
+  background: #e5edff;
+  color: #254daa;
+  padding: 5px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.badge[data-status="in_progress"] {
+  background: #fff1d6;
+  color: #805400;
+}
+.badge[data-status="resolved"] {
+  background: #d8f3e9;
+  color: #14604a;
+}
+.body {
+  padding: 4px 16px 16px;
+  overflow-wrap: anywhere;
+}
+.body > header {
+  display: none;
+}
+.body p {
+  font-size: 14px;
+}
+.body small {
+  display: block;
+  color: var(--muted);
+  margin: 12px 0;
+}
+.body label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.ticket summary:focus-visible {
+  outline: 2px solid #168e83;
+  outline-offset: 2px;
+}
+@media (max-width: 600px) {
+  .ticket > summary {
+    gap: 8px;
+    padding: 12px 8px;
+  }
+  .ticket time {
+    display: none;
+  }
+  .badge {
+    font-size: 10px;
+  }
+  .inbox header button {
+    font-size: 12px;
+  }
+  .tools {
+    gap: 8px;
+  }
+}
+.search {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+.search > label:first-child {
+  flex: 1;
+  min-width: 200px;
+}
+.search label {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.search input,
+.assignment input {
+  min-height: 44px;
+  width: 100%;
+  font: inherit;
+  font-size: 16px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--ink);
+}
+.bulk {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: var(--surface-2);
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+.bulk label {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+}
+.bulk input,
+.selection input {
+  width: 18px !important;
+  min-height: 18px !important;
+  height: 18px;
+  accent-color: var(--green);
+}
+.bulk button,
+.assignment button {
+  min-height: 44px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+.ticketRow {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  align-items: start;
+}
+.selection {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  min-height: 64px;
+}
+.priority {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #8b4d00;
+  background: #fff1d6;
+  border-radius: 4px;
+  padding: 3px 6px;
+  margin-left: 8px;
+  font-style: normal;
+}
+.assignment {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin: 12px 0;
+}
+.assignment label {
+  display: grid !important;
+  flex: 1;
+}
+.body > label {
+  margin: 12px 0;
+}
+.body input {
+  min-width: 0;
+}
+.ticket {
+  min-width: 0;
+}
+.bulk button:disabled {
+  opacity: 0.5;
+}
+.assignment button {
+  flex-shrink: 0;
+}
+@media (max-width: 500px) {
+  .search > label {
+    width: 100%;
+  }
+  .assignment {
+    flex-wrap: wrap;
+  }
+  .assignment label {
+    flex-basis: 100%;
+  }
+  .ticket > summary {
+    flex-wrap: wrap;
+  }
+  .ticket > summary > .badge {
+    order: 2;
+  }
+  .ticket > summary > .identity {
+    flex-basis: 75%;
+  }
+}

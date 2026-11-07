@@ -140,10 +140,10 @@ export function PublicSample({ compact = false }: { compact?: boolean } = {}) {
           </div>
           {index === 2 && (
             <p className="signal-demo-note">
-              AURYN Accumulation Pace: P0 Pause · P1 Watch · P2 Initial · P3 Deeper · P4
-              Deep. Completed month · confirmed. Current month · forming. Price
-              zones, not predicted returns. Risk and business checks still
-              apply.
+              AURYN Accumulation Pace: P0 Pause · P1 Watch · P2 Initial · P3
+              Deeper · P4 Deep. Completed month · confirmed. Current month ·
+              forming. Price zones, not predicted returns. Risk and business
+              checks still apply.
             </p>
           )}
         </div>
@@ -470,10 +470,17 @@ export default function PublicLanding({
   const router = useRouter();
   const [menu, setMenu] = useState(false);
   useEffect(() => {
-    const tags = Array.from(document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]'));
-    const previous = tags.map(tag => tag.content);
-    tags.forEach(tag => { tag.content = "#fafbf9"; });
-    return () => tags.forEach((tag,index) => { tag.content = previous[index]; });
+    const tags = Array.from(
+      document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]'),
+    );
+    const previous = tags.map((tag) => tag.content);
+    tags.forEach((tag) => {
+      tag.content = "#fafbf9";
+    });
+    return () =>
+      tags.forEach((tag, index) => {
+        tag.content = previous[index];
+      });
   }, []);
   useEffect(() => {
     if (sampleOnly) return;
@@ -509,7 +516,7 @@ export default function PublicLanding({
             <PublicBrand />
             <nav className="ap-nav" aria-label="Main navigation">
               <Link href="/#how-it-works">Product</Link>
-            <Link href="/sample">Product guide</Link>
+              <Link href="/sample">Product guide</Link>
               <Link href="/pricing">Pricing</Link>
             </nav>
             <div className="ap-header-actions">
@@ -530,7 +537,11 @@ export default function PublicLanding({
                 aria-controls="ap-mobile-navigation"
                 onClick={() => setMenu(!menu)}
               >
-                {menu ? <X size={21} /> : <Menu size={21} />}
+                {menu ? (
+                  <X size={20} aria-hidden="true" />
+                ) : (
+                  <Menu size={20} aria-hidden="true" />
+                )}
               </button>
             </div>
           </div>
@@ -546,9 +557,15 @@ export default function PublicLanding({
               <Link href="/pricing" onClick={() => setMenu(false)}>
                 Pricing
               </Link>
-              <Link href="/sample" onClick={() => setMenu(false)}>Product guide</Link>
-              <Link href="/login" onClick={() => setMenu(false)}>Sign in</Link>
-              <Link href="/login?mode=signup" onClick={() => setMenu(false)}>Get started</Link>
+              <Link href="/sample" onClick={() => setMenu(false)}>
+                Product guide
+              </Link>
+              <Link href="/login" onClick={() => setMenu(false)}>
+                Sign in
+              </Link>
+              <Link href="/login?mode=signup" onClick={() => setMenu(false)}>
+                Get started
+              </Link>
               <Link href="/help" onClick={() => setMenu(false)}>
                 Help
               </Link>
@@ -567,14 +584,15 @@ export default function PublicLanding({
                 "Explore a more considered way to invest."
               ) : (
                 <>
-                  Invest with
+                  Invest every month.
                   <br />
-                  <span>the full picture.</span>
+                  <span>Know your reasons.</span>
                 </>
               )}
             </h1>
             <p>
-              Research companies. Understand the price. Build at your pace.
+              A clear monthly research routine: understand your companies,
+              review what changed, and plan within your limits.
             </p>
             <div className={landing.actions}>
               <Link className={landing.primary} href="/login?mode=signup">
@@ -584,8 +602,9 @@ export default function PublicLanding({
                 Explore the product <ArrowRight size={17} aria-hidden="true" />
               </a>
             </div>
-            <p className={landing.heroNote}>
-              Explore first. Choose a plan when you’re ready.
+            <p>
+              <Link href="/track-record">Evidence & track record →</Link> ·{" "}
+              <Link href="/portfolio-check">Check your portfolio</Link>
             </p>
             <div className={landing.heroPrinciples}>
               <span>
@@ -646,7 +665,8 @@ export default function PublicLanding({
             <div>
               <h3>Where should the next contribution go?</h3>
               <p>
-                Compare business evidence, valuation and AURYN Accumulation Pace. See the dates and missing inputs.
+                Compare business evidence, valuation and AURYN Accumulation
+                Pace. See the dates and missing inputs.
               </p>
             </div>
           </article>
@@ -658,7 +678,9 @@ export default function PublicLanding({
             <div>
               <h3>What does this price need to be true?</h3>
               <p>
-                Explore price-implied earnings per share. Change the horizon and future earnings multiple to test expectations—not promised returns.
+                Explore price-implied earnings per share. Change the horizon and
+                future earnings multiple to test expectations—not promised
+                returns.
               </p>
             </div>
           </article>
@@ -670,7 +692,8 @@ export default function PublicLanding({
             <div>
               <h3>Has the business changed—or just the price?</h3>
               <p>
-                See business performance beside price, valuation assumptions and monthly Pace.
+                See business performance beside price, valuation assumptions and
+                monthly Pace.
               </p>
             </div>
           </article>
@@ -688,9 +711,7 @@ export default function PublicLanding({
             <br />
             Keep the reasons in view.
           </h2>
-          <p>
-            Follow the companies and changes that matter to you.
-          </p>
+          <p>Follow the companies and changes that matter to you.</p>
           <ContextLink page="methodology">
             Explore our methodology <ArrowRight size={17} aria-hidden="true" />
           </ContextLink>
@@ -710,7 +731,8 @@ export default function PublicLanding({
             <div>
               <h3>Make waiting deliberate</h3>
               <p>
-                Use alerts for supported conditions. Keep other checks in your research notes.
+                Use alerts for supported conditions. Keep other checks in your
+                research notes.
               </p>
             </div>
           </article>
@@ -718,9 +740,7 @@ export default function PublicLanding({
             <span>03</span>
             <div>
               <h3>Return to what matters to you</h3>
-              <p>
-                Return to dated updates from the companies you follow.
-              </p>
+              <p>Return to dated updates from the companies you follow.</p>
             </div>
           </article>
         </div>
@@ -730,9 +750,7 @@ export default function PublicLanding({
         aria-labelledby="ap-closing-heading"
       >
         <div>
-          <span className={landing.eyebrow}>
-            YOUR RESEARCH. YOUR PACE.
-          </span>
+          <span className={landing.eyebrow}>YOUR RESEARCH. YOUR PACE.</span>
           <h2 id="ap-closing-heading">A clearer view starts here.</h2>
           <p>Start with Free. Go deeper with Pro when you’re ready.</p>
         </div>
@@ -745,7 +763,9 @@ export default function PublicLanding({
           </Link>
         </div>
       </section>
-      <footer className={`${experience.publicFooter} ${landing.footer} ap-container`}>
+      <footer
+        className={`${experience.publicFooter} ${landing.footer} ap-container`}
+      >
         <div className={experience.footerMain}>
           <PublicBrand />
           <nav aria-label="Footer navigation">

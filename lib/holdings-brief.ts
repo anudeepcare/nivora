@@ -13,7 +13,15 @@ export function holdingsContext(
     changeCovered = 0;
   let largest: { symbol: string; value: number } | null = null;
   for (const p of positions) {
-    if (!Number.isFinite(p.quantity) || p.quantity <= 0 || !Number.isFinite(p.cost) || p.cost < 0) {missing++;continue;}
+    if (
+      !Number.isFinite(p.quantity) ||
+      p.quantity <= 0 ||
+      !Number.isFinite(p.cost) ||
+      p.cost < 0
+    ) {
+      missing++;
+      continue;
+    }
     const cash = p.assetType === "cash";
     const q = quotes[p.symbol];
     if (cash && (p.symbol !== "USD" || p.currency !== "USD")) {

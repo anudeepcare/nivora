@@ -9,11 +9,16 @@ export type Release = {
 export const releases: Release[] = [
   {
     version: APP_VERSION,
-    date: "2026-11-05",
+    date: "2026-11-07",
     status: "candidate",
-    title: "Pace first. A clearer investment workspace.",
+    title: "A faster, clearer research workspace.",
     groups: {
       New: [
+        "Labs sits beside News & earnings; Options has a compact toolbar, exposure view and practice ticket.",
+        "Owner handbook opens directly to explanations, with chapter search and separate validation tools.",
+        "Consistent public methodology and portfolio-check pages, with clear publication status and retry behavior.",
+        "On-demand metric receipts, earnings evidence, filing-passage comparison and public research export.",
+        "Separate loading of core workspaces and stronger cache invalidation across refresh and sign-out.",
         "Account-saved source checkpoints, discrete replay and cross-device exposure presets with conflict checks.",
         "Exposure approach/cross/change alerts use fresh signed baselines and deduplicated check events.",
         "Modelled vanna heatmap with visible assumptions; optional bounded options trade tape with explicit loading and polling.",

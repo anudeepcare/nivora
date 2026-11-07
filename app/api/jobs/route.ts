@@ -1,4 +1,4 @@
-import {accessEnabled,exactOwner} from "@/lib/access-server";
+import { accessEnabled, exactOwner } from "@/lib/access-server";
 import { scheduledCandidates } from "@/lib/paper-policy";
 import { backgroundWork } from "@/lib/provider-budget";
 import { timingSafeEqual } from "node:crypto";
@@ -21,7 +21,7 @@ export async function GET(request: Request) {
     const db = serviceDb(),
       owner = process.env.AURYN_PAPER_OWNER_ID,
       results: unknown[] = [];
-    // A bounded operator-owned job. Never scan or execute on arbitrary tenants.
+    // Alerts and paper jobs remain owner-scoped; theses have a separate endpoint.
     const alertOwner = process.env.AURYN_ALERT_JOB_USER_ID;
     if (alertOwner && (!accessEnabled() || exactOwner(alertOwner)))
       results.push({
@@ -65,7 +65,9 @@ export async function GET(request: Request) {
     }
     if (process.env.AURYN_SUPPORT_EMAIL_ENABLED === "true") {
       const { retrySupport } = await import("@/lib/support-delivery");
-      results.push({support:await retrySupport().catch(()=>({pending:true}))});
+      results.push({
+        support: await retrySupport().catch(() => ({ pending: true })),
+      });
     }
     return privateJson({ checkedAt: new Date().toISOString(), results });
   } catch (e) {

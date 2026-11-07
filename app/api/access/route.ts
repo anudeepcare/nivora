@@ -3,7 +3,7 @@ import { getAccess, accessDb } from "@/lib/access-server";
 import { canManagePaper } from "@/lib/paper-policy";
 export async function GET(request: Request) {
   try {
-    const { user } = await account(request);
+    const { user } = await account(request, { market: false });
     const access = await getAccess(
       user.id,
       request.headers.get("x-auryn-preview-plan"),

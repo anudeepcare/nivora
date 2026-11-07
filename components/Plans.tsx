@@ -56,7 +56,11 @@ export function PricingCards({
           <div className="pricing-card-title">
             <div>
               <h2>{plan === "free" ? "Free" : "Pro"}</h2>
-              {plan === "pro" && <span className="pricing-recommended">Most complete research</span>}
+              {plan === "pro" && (
+                <span className="pricing-recommended">
+                  Most complete research
+                </span>
+              )}
             </div>
             {!publicPage && access?.plan === plan && (
               <span className="plan-pill">
@@ -302,7 +306,9 @@ export default function Plans({
   publicPage?: boolean;
 }) {
   return (
-    <div className={`plans-page ${layout.page} ${publicPage ? "plans-public" : ""}`}>
+    <div
+      className={`plans-page ${layout.page} ${publicPage ? "plans-public" : ""}`}
+    >
       {publicPage && (
         <nav aria-label="Plans navigation">
           <Link href="/" className="brand-link">
@@ -313,8 +319,14 @@ export default function Plans({
       )}
       <header className="plans-heading">
         <span className="eyebrow">AURYN membership</span>
-        <h1>{publicPage ? "More clarity. Your choice." : "Your membership."}</h1>
-        <p>{publicPage ? "Start free. Go deeper with Pro." : "Your plan, billing and research access."}</p>
+        <h1>
+          {publicPage ? "More clarity. Your choice." : "Your membership."}
+        </h1>
+        <p>
+          {publicPage
+            ? "Start free. Go deeper with Pro."
+            : "Your plan, billing and research access."}
+        </p>
       </header>
       {publicPage ? <PricingCards /> : <SignedInPlans />}
       <p className="plans-footnote">

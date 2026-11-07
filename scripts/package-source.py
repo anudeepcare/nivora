@@ -10,7 +10,7 @@ for path in sorted(root.rglob('*')):
  rel=path.relative_to(root)
  if any(p in skip for p in rel.parts) or path.suffix in {'.zip','.tsbuildinfo','.pyc'}:continue
  if rel.parts[0]=='verification' and (('raw' in rel.parts) or path.suffix.lower() not in {'.json','.md','.csv'}):continue
- if rel.parts[0]=='docs' and (path.suffix.lower() not in {'.md','.sql','.json'} or 'superpowers' in rel.parts):continue
+ if rel.parts[0]=='docs' and (path.suffix.lower() not in {'.md','.sql','.json','.css'} or 'superpowers' in rel.parts):continue
  if path.name.startswith('.env') and path.name!='.env.example':continue
  if path.name in {'MANIFEST.sha256','test-current.log'}:continue
  files.append(path)
