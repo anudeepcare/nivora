@@ -58,7 +58,23 @@ function Wallet({
     () => contracts.filter((c) => !simulationQuoteIssue(c)),
     [contracts],
   );
-  const chosen = available.find((c) => c.id === selected) ?? available[0];
+  const nearest = available.reduce<OptionContract | undefined>(
+    (best, contract) =>
+      !best ||
+      (Number.isFinite(spot) &&
+        Math.abs(contract.strike - spot) < Math.abs(best.strike - spot))
+        ? contract
+        : best,
+    undefined,
+  );
+  const chosen = available.find((c) => c.id === selected) ?? nearest;
+  const totalPremium =
+    chosen &&
+    Number.isInteger(Number(quantity)) &&
+    Number(quantity) > 0 &&
+    Number(quantity) <= 100
+      ? chosen.ask! * 100 * Number(quantity)
+      : null;
   const summary = simulationSummary(ledger, contracts);
   const accountSaved = account.data?.documents.find(
     (d) => d.key === "options-simulation",
@@ -124,11 +140,8 @@ function Wallet({
       <header className={styles.heading}>
         <div>
           <span className={styles.eyebrow}>PAPER WALLET</span>
-          <h3>Practice with $100,000</h3>
-          <p>
-            Simulation only · no real orders or broker connection. Fully paid
-            long calls and puts, with premiums paid in full.
-          </p>
+          <h3>Practice an option trade</h3>
+          <p>Simulation only · $100,000 starting cash. No real orders.</p>
         </div>
         <span className={styles.badge}>SIMULATED</span>
       </header>
@@ -153,14 +166,18 @@ function Wallet({
           </div>
         ))}
       </div>
-      <p className={styles.help}>
-        Entries use the supplied ask; exits and open marks use the supplied bid.
-        Quotes must be no more than three calendar days old and cannot be future
-        dated. Fees and slippage are excluded.{" "}
-        {summary.unpriced > 0
-          ? `${summary.unpriced} open position(s) lack a valid quote; total marks and equity are withheld.`
-          : ""}
-      </p>
+      <details className={styles.help}>
+        <summary>Simulation assumptions</summary>
+        <p>
+          Fully paid long calls and puts; no broker connection. You can lose the
+          entire premium. Entries use the supplied ask; exits and open marks use
+          the supplied bid. Quotes must be no more than three calendar days old
+          and cannot be future dated. Fees and slippage are excluded.{" "}
+          {summary.unpriced > 0
+            ? `${summary.unpriced} open position(s) lack a valid quote; total marks and equity are withheld.`
+            : ""}
+        </p>
+      </details>
       <form
         className={styles.form}
         onSubmit={(e) => {
@@ -177,7 +194,7 @@ function Wallet({
         }}
       >
         <label>
-          Buy a simulated {symbol} option
+          1. Choose a {symbol} contract
           <select
             value={chosen?.id ?? ""}
             disabled={disabled || busy || !chosen}
@@ -205,28 +222,40 @@ function Wallet({
             onChange={(e) => setQuantity(e.target.value)}
           />
         </label>
-        <label className={styles.notes}>
-          Trade notes
-          <textarea
-            value={notes}
-            maxLength={500}
-            rows={2}
-            disabled={disabled || busy}
-            onChange={(e) => setNotes(e.target.value)}
-            placeholder="Thesis, risk, and what you want to learn"
-          />
-        </label>
+        <details className={styles.notes}>
+          <summary>Add practice notes</summary>
+          <label>
+            Trade notes
+            <textarea
+              value={notes}
+              maxLength={500}
+              rows={2}
+              disabled={disabled || busy}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Thesis, risk, and what you want to learn"
+            />
+          </label>
+        </details>
         <div className={styles.order}>
-          <p>
-            {chosen
-              ? `${chosen.id} · quote ${chosen.observed} · 100 shares per contract. Estimated debit ${usd(Number.isInteger(Number(quantity)) && Number(quantity) > 0 && Number(quantity) <= 100 ? chosen.ask! * 100 * Number(quantity) : null)}.`
-              : "Load a fresh standard-contract chain to practice."}{" "}
-            {Number.isFinite(spot) && spot > 0
-              ? `Underlying reference ${usd(spot)}; this is not a verified expiry close.`
-              : ""}
-          </p>
+          <div className={styles.review}>
+            <span>2. Review cost</span>
+            <strong>Total premium {usd(totalPremium)}</strong>
+            <span>
+              Maximum loss {usd(totalPremium)} · premiums paid in full
+            </span>
+            <small>
+              {chosen
+                ? `Ask ${usd(chosen.ask)} × 100 shares × ${quantity} contract(s) · quote ${chosen.observed}`
+                : "Load a fresh standard-contract chain to practice."}
+            </small>
+            {Number.isFinite(spot) && spot > 0 && (
+              <small>
+                Underlying reference {usd(spot)} · not a verified expiry close
+              </small>
+            )}
+          </div>
           <button type="submit" disabled={disabled || busy || !chosen}>
-            Simulate buy at ask
+            3. Simulate buy at ask
           </button>
         </div>
       </form>
@@ -320,33 +349,36 @@ function Wallet({
         })}
       </div>
       <footer className={styles.saving}>
-        <div>
-          <button disabled={busy} onClick={saveDevice}>
-            Save on device
-          </button>
-          <button disabled={busy} onClick={loadDevice}>
-            Load device ledger
-          </button>
-          <button
-            disabled={demo || busy || !account.data || !!account.error}
-            onClick={() => void saveAccount()}
-          >
-            {busy ? "Saving…" : "Save to account"}
-          </button>
-          <button
-            disabled={demo || busy || !accountSaved || !!account.error}
-            onClick={loadAccount}
-          >
-            Load account ledger
-          </button>
-        </div>
-        <p>
-          Saving is explicit. Load replaces the working ledger. Device and
-          account ledgers stay separate until you choose to save or load.
-          Limited to 15 positions and 45 exits.
-        </p>
-        {demo && <p>Sign in to save across devices.</p>}
-        {account.error && <p>Account ledger unavailable: {account.error}</p>}
+        <details>
+          <summary>Save &amp; load ledger</summary>
+          <div className={styles.saveActions}>
+            <button disabled={busy} onClick={saveDevice}>
+              Save on device
+            </button>
+            <button disabled={busy} onClick={loadDevice}>
+              Load device ledger
+            </button>
+            <button
+              disabled={demo || busy || !account.data || !!account.error}
+              onClick={() => void saveAccount()}
+            >
+              {busy ? "Saving…" : "Save to account"}
+            </button>
+            <button
+              disabled={demo || busy || !accountSaved || !!account.error}
+              onClick={loadAccount}
+            >
+              Load account ledger
+            </button>
+          </div>
+          <p>
+            Saving is explicit. Load replaces the working ledger. Device and
+            account ledgers stay separate until you choose to save or load.
+            Limited to 15 positions and 45 exits.
+          </p>
+          {demo && <p>Sign in to save across devices.</p>}
+          {account.error && <p>Account ledger unavailable: {account.error}</p>}
+        </details>
         <p role="status" aria-live="polite">
           {status}
         </p>

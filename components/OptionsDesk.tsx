@@ -70,7 +70,7 @@ function Plot({
     <figure className="options-plot">
       <svg
         viewBox="0 0 700 210"
-        preserveAspectRatio="none"
+        preserveAspectRatio="xMidYMid meet"
         role="img"
         aria-label={label}
       >
@@ -475,9 +475,9 @@ export default function OptionsDesk({
                 </h3>
                 <p>
                   {summary.straddle !== null && spot > 0
-                    ? "ATM straddle-based range at expiration. A pricing reference, not a forecast or guaranteed range."
+                    ? "ATM straddle at expiration · pricing reference, not a forecast."
                     : summary.rows.length
-                      ? "Explore available bid/ask prices. Positioning appears only when gamma and open interest are supplied."
+                      ? "Bid/ask prices available. Positioning requires gamma and open interest."
                       : "This expiration has no returned observations. Choose another listed expiration."}
                 </p>
               </div>
@@ -496,8 +496,7 @@ export default function OptionsDesk({
           {["positioning", "chain", "leaps"].includes(view) && (
             <div className="options-statusline">
               <span>
-                <Clock3 size={14} /> Snapshot data · confirm executable prices
-                with your broker
+                <Clock3 size={14} /> Snapshot · confirm prices with your broker
               </span>
               <details>
                 <summary>Data details</summary>

@@ -4,7 +4,6 @@ import { backgroundWork } from "@/lib/provider-budget";
 import { timingSafeEqual } from "node:crypto";
 import { failure, HttpError, privateJson } from "@/lib/server";
 import { serviceDb, executePaper } from "@/lib/paper";
-import { checkSavedTheses } from "@/lib/thesis-monitor";
 import { checkAlerts } from "@/lib/monitor";
 export const maxDuration = 60;
 export async function GET(request: Request) {
@@ -22,16 +21,8 @@ export async function GET(request: Request) {
     const db = serviceDb(),
       owner = process.env.AURYN_PAPER_OWNER_ID,
       results: unknown[] = [];
-    // A bounded operator-owned job. Never scan or execute on arbitrary tenants.
+    // Alerts and paper jobs remain owner-scoped; theses have a separate endpoint.
     const alertOwner = process.env.AURYN_ALERT_JOB_USER_ID;
-    if (
-      alertOwner &&
-      exactOwner(alertOwner) &&
-      process.env.AURYN_THESIS_JOB_ENABLED === "true"
-    )
-      results.push({
-        theses: await backgroundWork(() => checkSavedTheses(db, alertOwner)),
-      });
     if (alertOwner && (!accessEnabled() || exactOwner(alertOwner)))
       results.push({
         alerts: await backgroundWork(() => checkAlerts(db, alertOwner)),

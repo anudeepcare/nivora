@@ -8,6 +8,7 @@ export async function checkSavedTheses(
   db: SupabaseClient,
   userId: string,
   symbol?: string,
+  leaseToken?: string,
 ) {
   let q = db
     .from("auryn_documents")
@@ -72,6 +73,29 @@ export async function checkSavedTheses(
           new Date().toISOString(),
         );
       if (check.status === "review") {
+        // Re-read after provider work; a deleted, disabled or changed rule is stale.
+        const current = await db
+          .from("auryn_documents")
+          .select("body,updated_at")
+          .eq("user_id", userId)
+          .eq("kind", "note")
+          .eq("key", note.key)
+          .maybeSingle();
+        if (current.error) throw Error("Current thesis condition unavailable.");
+        if (
+          !current.data ||
+          current.data.body?.monitorEnabled !== "true" ||
+          thesisConditionIdentity(current.data.body) !==
+            thesisConditionIdentity(note.body) ||
+          current.data.updated_at !== note.updated_at
+        ) {
+          rows.push({
+            symbol: note.key,
+            status: "changed",
+            reason: "The saved condition changed during this check.",
+          });
+          continue;
+        }
         const ruleHash = createHash("sha256")
           .update(thesisConditionIdentity(note.body))
           .digest("hex");
@@ -84,10 +108,27 @@ export async function checkSavedTheses(
           title: `${note.key}: thesis condition needs review`,
           detail: `${check.label} ${check.value.toFixed(2)}${check.unit} is ${check.direction} your ${check.threshold}${check.unit} threshold. ${check.basis}, period ${check.period}, ${check.currency}. Review your reasoning; the thesis is not automatically marked broken.`,
         };
-        const saved = await db.from("auryn_alert_events").upsert(event, {
-          onConflict: "user_id,rule_key,event_key",
-          ignoreDuplicates: true,
-        });
+        const saved = leaseToken
+          ? await db.rpc("auryn_publish_thesis_alert", {
+              p_user: userId,
+              p_symbol: note.key,
+              p_lease: leaseToken,
+              p_revision: note.updated_at,
+              p_event: { ...event, source_body: note.body },
+            })
+          : await db.from("auryn_alert_events").upsert(event, {
+              onConflict: "user_id,rule_key,event_key",
+              ignoreDuplicates: true,
+            });
+        if (leaseToken && !saved.error && saved.data !== true) {
+          rows.push({
+            symbol: note.key,
+            status: "changed",
+            reason:
+              "The condition or scheduled lease changed during this check.",
+          });
+          continue;
+        }
         if (saved.error) throw Error("Thesis alert could not be saved.");
       }
       rows.push({ symbol: note.key, ...check });

@@ -122,3 +122,25 @@
 .liquidity summary {
   font-weight: 600;
 }
+.snapshot .unavailable {
+  margin: 8px 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--surface-2);
+  font-size: 13px;
+  color: var(--muted);
+}
+.snapshot h3 {
+  font-size: 15px;
+}
+.levels article {
+  padding: 12px;
+}
+.levels strong {
+  font-size: 21px;
+  margin: 4px 0;
+}
+.snapshot summary {
+  min-height: 36px;
+  padding: 8px 0;
+}

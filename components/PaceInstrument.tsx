@@ -132,11 +132,7 @@ export default function PaceInstrument({
             size={12}
             fill={period === "forming" ? "none" : "currentColor"}
           />
-          {exploring
-            ? "Framework · P" + selected
-            : reading.level == null
-              ? reading.status
-              : `P${reading.level} · ${reading.status}`}
+          {exploring ? "Framework · P" + selected : reading.status}
         </span>
         {!publicGuide && inspect !== null ? (
           <button onClick={() => setInspect(null)}>
@@ -166,17 +162,15 @@ export default function PaceInstrument({
         <div className={s.insight}>
           {boundary && evidence.reading ? (
             <>
-              <span className={s.eyebrow}>
-                Nearest conditional change · {evidence.reading.month}
-              </span>
+              <span className={s.eyebrow}>Nearest conditional price</span>
               <p className={s.boundary}>
                 <strong>P{boundary.level}</strong> {boundary.operator}{" "}
                 <strong>{amount(boundary.price, currency)}</strong>
               </p>
               <p className={s.distance}>
                 {percent(boundary.distancePercent, true)} from the{" "}
-                {period === "forming" ? "forming" : "completed"} close ·{" "}
-                {evidence.reading.date}
+                {period === "forming" ? "forming" : "completed"} close
+                {period === "forming" && " · not yet confirmed"}
               </p>
             </>
           ) : (
@@ -185,18 +179,6 @@ export default function PaceInstrument({
                 ? "A current-month reading is not available."
                 : "A recent completed monthly reading is not available."}{" "}
               No boundary is assigned.
-            </p>
-          )}
-          {evidence.confirmed && evidence.forming && (
-            <p className={s.comparison}>
-              Completed <strong>P{evidence.confirmed.multiplier}</strong>
-              <ArrowRight size={12} />
-              Forming <strong>P{evidence.forming.multiplier}</strong>
-              <span>
-                {evidence.confirmed.multiplier === evidence.forming.multiplier
-                  ? "Aligned for now"
-                  : "Not yet confirmed"}
-              </span>
             </p>
           )}
         </div>
@@ -215,6 +197,18 @@ export default function PaceInstrument({
         </p>
         {!exploring && evidence && (
           <div className={s.evidenceDetails}>
+            {evidence.confirmed && evidence.forming && (
+              <p className={s.comparison}>
+                Completed <strong>P{evidence.confirmed.multiplier}</strong>
+                <ArrowRight size={12} />
+                Forming <strong>P{evidence.forming.multiplier}</strong>
+                <span>
+                  {evidence.confirmed.multiplier === evidence.forming.multiplier
+                    ? "Aligned for now"
+                    : "Not yet confirmed"}
+                </span>
+              </p>
+            )}
             <p>
               <strong>Why P{evidence.reading?.multiplier ?? "—"}</strong>
               {evidence.reading?.reason.replace(

@@ -606,8 +606,8 @@ export default function Research({ symbol }: { symbol: string }) {
             </button>
           );
         })}
-        <label>
-          Labs
+        <label className={experience.labsPicker}>
+          <span className={experience.labsLabel}>Labs</span>
           <select
             aria-label="Labs tools"
             value={labSections.includes(tab) ? tab : ""}
@@ -616,7 +616,7 @@ export default function Research({ symbol }: { symbol: string }) {
                 switchTab(e.target.value as (typeof tabs)[number]);
             }}
           >
-            <option value="">Open a tool</option>
+            <option value="">Labs</option>
             {labSections.map((key) => (
               <option key={key} value={key}>
                 {tabPresentation[key].label}

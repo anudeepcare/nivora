@@ -552,3 +552,100 @@
     margin-left: 0;
   }
 }
+
+/* Compact reading hierarchy: stage, period, then conditional price. */
+.instrument {
+  padding: 18px 20px;
+}
+.readout {
+  gap: 10px;
+  margin: 10px 0;
+}
+.title h2 {
+  font-size: clamp(26px, 2.6vw, 34px);
+  line-height: 1.2;
+}
+.title h2 > .level {
+  min-width: 42px;
+  min-height: 40px;
+  padding: 5px 8px;
+  margin: 0 0 0 10px;
+  font-size: 24px;
+  border-radius: 9px;
+}
+.terraces {
+  max-width: 440px;
+  margin-top: 8px;
+  padding-top: 0;
+}
+.terraces::before {
+  top: 13px;
+}
+.stage {
+  gap: 4px;
+  min-height: 44px;
+  padding: 3px 0;
+}
+.stage > svg,
+.stage[aria-pressed="true"] > svg {
+  width: 16px;
+  height: 16px;
+}
+.stage span {
+  display: none;
+}
+.status {
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+}
+.periods {
+  margin-top: 6px;
+  border-top: 0;
+}
+.insight {
+  margin-top: 8px;
+  padding: 8px 0 4px;
+  border-top: 0;
+}
+.boundary {
+  margin: 3px 0;
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+.readingDetail {
+  margin: 4px 0;
+}
+.instrument .readingDetail > summary {
+  min-height: 44px;
+  padding: 8px 10px;
+  margin: 4px 0;
+  font-size: 12px;
+}
+.evidenceDetails > .comparison {
+  grid-column: 1 / -1;
+  display: flex;
+  margin: 0;
+}
+.evidenceDetails > .comparison strong {
+  display: inline;
+  margin: 0;
+}
+.footer {
+  margin-top: 6px;
+  padding-top: 6px;
+  gap: 4px 8px;
+}
+@media (max-width: 600px) {
+  .instrument {
+    padding: 16px;
+  }
+  .title h2 {
+    font-size: 28px;
+  }
+  .title h2 > .level {
+    min-width: 40px;
+    min-height: 38px;
+    font-size: 23px;
+  }
+}

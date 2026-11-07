@@ -652,3 +652,28 @@
 .scroll[hidden] {
   display: none !important;
 }
+
+/* Override generic board buttons so both columns use the available row. */
+.board .ladder {
+  max-width: none;
+  gap: 6px;
+  margin: 10px 0;
+}
+.board.board .ladder button {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(100px, 35%);
+  justify-content: stretch;
+  gap: 16px;
+  text-align: left;
+  padding: 9px 12px;
+}
+.ladder strong {
+  font-variant-numeric: tabular-nums;
+}
+.saved.saved > summary::after {
+  content: "+";
+  margin-left: auto;
+}
+.saved.saved[open] > summary::after {
+  content: "−";
+}

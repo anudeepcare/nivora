@@ -138,6 +138,28 @@
   scrollbar-width: none;
   overscroll-behavior-x: contain;
 }
+.labsPicker {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  min-width: 142px;
+}
+.labsPicker select {
+  width: 100%;
+  min-height: 42px;
+  height: 42px;
+  padding: 8px 30px 8px 12px;
+  font-size: 13px;
+  border-radius: 8px;
+}
+.labsLabel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
 .researchNav::-webkit-scrollbar {
   display: none;
 }

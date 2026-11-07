@@ -2,6 +2,7 @@
 import { expiryComparison } from "@/lib/options-expiry-comparison";
 import type { OptionContract } from "@/lib/options-analysis";
 import { dateLabel } from "@/lib/format";
+import s from "./OptionsExpiryComparison.module.css";
 export default function OptionsExpiryComparison({
   contracts,
   active,
@@ -12,53 +13,83 @@ export default function OptionsExpiryComparison({
   onChoose: (date: string) => void;
 }) {
   const rows = expiryComparison(contracts);
-  const number = (n: number | null) =>
-    n === null ? "Not supplied" : n.toLocaleString();
+  const columns = (
+    [
+      ["callVolume", "Call volume"],
+      ["putVolume", "Put volume"],
+      ["oi", "Open interest"],
+    ] as const
+  ).filter(([key]) => rows.some((row) => row[key] !== null));
+  const hasVolume = columns.some(([key]) => key !== "oi");
   return (
-    <details className="expiry-comparison">
+    <details className={s.comparison}>
       <summary>
-        Compare expiration dates{" "}
-        <span>{rows.length} loaded · Show comparison</span>
+        Compare expiration dates <span>{rows.length} loaded</span>
       </summary>
-      <p>
-        Calls and puts count reported contracts traded. Expiration dates are
-        future contract dates; observation dates show when the data was
-        measured.
-      </p>
-      <div className="expiry-comparison-list">
-        {rows.map((r) => (
-          <button
-            type="button"
-            key={r.expiry}
-            aria-pressed={active === r.expiry}
-            onClick={() => onChoose(r.expiry)}
-          >
-            <strong>
-              {dateLabel(r.expiry)}{" "}
-              <span>{active === r.expiry ? "Selected" : "View →"}</span>
-            </strong>
-            <span>
-              Call volume <b>{number(r.callVolume)}</b>
-            </span>
-            <span>
-              Put volume <b>{number(r.putVolume)}</b>
-            </span>
-            <span>
-              Open interest <b>{number(r.oi)}</b>
-            </span>
-            <small>
-              {r.contracts} contracts · volume supplied for {r.volumeCoverage}
-              <br />
-              Observed {dateLabel(r.oldest)}
-              {r.oldest !== r.newest ? ` – ${dateLabel(r.newest)}` : ""}
-            </small>
-          </button>
-        ))}
+      {columns.length === 0 && (
+        <p>Volume and open interest are not supplied.</p>
+      )}
+      <div className={s.scroll}>
+        <table>
+          <caption>
+            Loaded expirations · select a date to inspect contracts
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Expiration</th>
+              <th scope="col">Contracts</th>
+              {columns.map(([key, label]) => (
+                <th scope="col" key={key}>
+                  {label}
+                </th>
+              ))}
+              {hasVolume && <th scope="col">Volume coverage</th>}
+              <th scope="col">Observed</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.expiry} data-selected={active === row.expiry}>
+                <th scope="row">
+                  <button
+                    type="button"
+                    aria-pressed={active === row.expiry}
+                    onClick={() => onChoose(row.expiry)}
+                  >
+                    {dateLabel(row.expiry)}
+                    {active === row.expiry && <span>Selected</span>}
+                  </button>
+                </th>
+                <td>{row.contracts.toLocaleString()}</td>
+                {columns.map(([key]) => (
+                  <td key={key}>
+                    {row[key] === null ? (
+                      <span aria-label="Not supplied">—</span>
+                    ) : (
+                      row[key].toLocaleString()
+                    )}
+                  </td>
+                ))}
+                {hasVolume && (
+                  <td>
+                    {row.volumeCoverage}/{row.contracts}
+                  </td>
+                )}
+                <td>
+                  {dateLabel(row.oldest)}
+                  {row.oldest !== row.newest
+                    ? ` – ${dateLabel(row.newest)}`
+                    : ""}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-      <small>
-        Totals cover loaded contracts only. Trade volume does not identify
-        buyers, sellers or price direction.
-      </small>
+      <p>
+        Totals cover loaded contracts. Volume counts reported trades, not
+        direction. — means not supplied.
+      </p>
     </details>
   );
 }

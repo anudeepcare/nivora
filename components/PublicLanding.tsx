@@ -537,7 +537,11 @@ export default function PublicLanding({
                 aria-controls="ap-mobile-navigation"
                 onClick={() => setMenu(!menu)}
               >
-                {menu ? <X size={21} /> : <Menu size={21} />}
+                {menu ? (
+                  <X size={20} aria-hidden="true" />
+                ) : (
+                  <Menu size={20} aria-hidden="true" />
+                )}
               </button>
             </div>
           </div>
@@ -598,15 +602,9 @@ export default function PublicLanding({
                 Explore the product <ArrowRight size={17} aria-hidden="true" />
               </a>
             </div>
-            <p className={landing.heroNote}>
-              Built for monthly investors. Understand the price, review the
-              business, and plan within your limits.
-            </p>
             <p>
-              <Link href="/track-record">
-                Read the evidence and track-record status →
-              </Link>{" "}
-              · <Link href="/portfolio-check">Check your portfolio</Link>
+              <Link href="/track-record">Evidence & track record →</Link> ·{" "}
+              <Link href="/portfolio-check">Check your portfolio</Link>
             </p>
             <div className={landing.heroPrinciples}>
               <span>

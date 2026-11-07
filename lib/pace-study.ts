@@ -1,4 +1,5 @@
-/** Research accounting only. Supplied signals are not verified production policy output. */
+import { verifyStudyRow, type PriceReplay } from "./pace-study-replay.ts";
+/** Research accounting only; replay does not authenticate dataset provenance. */
 export type StudyRow = {
   month: string;
   signalDate: string;
@@ -28,6 +29,7 @@ export type StudyAsset = {
   delistedAt?: string;
   delistingSource?: string;
   missingReason?: string;
+  priceReplay?: PriceReplay;
   rows: StudyRow[];
 };
 export type PaceStudyInput = {
@@ -68,7 +70,11 @@ const nonempty = (s: unknown) => typeof s === "string" && s.trim().length > 0;
 function requireThat(ok: unknown, message: string): asserts ok {
   if (!ok) throw Error(message);
 }
-export function runPaceStudy(input: PaceStudyInput, currentPolicyHash: string) {
+export function runPaceStudy(
+  input: PaceStudyInput,
+  currentPolicyHash: string,
+  options: { requireReplay?: boolean } = {},
+) {
   requireThat(
     input.schemaVersion === "pace-study-1" &&
       input.policyVersion === "monthly-v5",
@@ -212,6 +218,10 @@ export function runPaceStudy(input: PaceStudyInput, currentPolicyHash: string) {
         Array.isArray(asset.rows) && asset.rows.length === last - first + 1,
         "Missing or extra monthly observations (including terminal delisting month)",
       );
+      requireThat(
+        !options.requireReplay || asset.priceReplay,
+        "Raw-price replay required; supplied signals are unverified",
+      );
       const fixed = account(),
         pace = account();
       let previousEnd = -Infinity;
@@ -277,6 +287,7 @@ export function runPaceStudy(input: PaceStudyInput, currentPolicyHash: string) {
           i !== 0 || row.cashGapReturn === 0,
           "First month cash gap return must be zero",
         );
+        if (asset.priceReplay) verifyStudyRow(asset.priceReplay, row);
         previousEnd = time(row.periodEnd);
         for (const [s, multiple] of [
           [fixed, 1],
@@ -285,6 +296,12 @@ export function runPaceStudy(input: PaceStudyInput, currentPolicyHash: string) {
           s.cash *= 1 + row.cashGapReturn;
           const opening = s.cash + s.units * row.totalReturnOpen;
           if (s.value > 0) s.nav *= opening / s.value;
+          // Opening observations are real marks, before this month's deposit.
+          s.peak = Math.max(s.peak, s.nav);
+          s.maxDrawdownPct = Math.min(
+            s.maxDrawdownPct,
+            100 * (s.nav / s.peak - 1),
+          );
           s.cash += input.monthlyBudget;
           s.contributed += input.monthlyBudget;
           const spend = Math.min(s.cash, input.monthlyBudget * multiple),
@@ -324,7 +341,7 @@ export function runPaceStudy(input: PaceStudyInput, currentPolicyHash: string) {
   const quantile = (q: number) =>
     values.length ? values[Math.floor((values.length - 1) * q)] : null;
   const blockers = [
-    "Independent dataset/provenance audit and raw-input replay linking supplied signals to production monthly-v5 remain required.",
+    "Independent dataset/provenance audit remains required; raw-price replay verifies price-policy consistency only, not data authenticity or production business gates.",
     "Per-name entry-to-delisting horizons differ; this is not a rebalanced investable universe portfolio.",
   ];
   if (included.length !== results.length)
@@ -338,6 +355,13 @@ export function runPaceStudy(input: PaceStudyInput, currentPolicyHash: string) {
   return {
     schemaVersion: "pace-study-result-1",
     policyHash: currentPolicyHash,
+    signalVerification:
+      included.length > 0 &&
+      included.every(
+        (r) => input.assets.find((a) => a.id === r.id)?.priceReplay,
+      )
+        ? "raw-price-replayed"
+        : "unverified-supplied-signals",
     publishable: false,
     blockers,
     provenance: p,

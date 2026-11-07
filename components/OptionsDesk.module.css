@@ -27,13 +27,13 @@
   width: 220px;
   flex: 0 0 220px;
 }
-.desk.desk :global(.options-nav) {
+.desk.desk.desk :global(.options-nav) {
   display: flex;
-  gap: 22px;
+  gap: 18px;
   margin: 0 0 10px;
   padding: 0;
   border-bottom: 1px solid var(--line);
-  overflow-x: auto;
+  overflow: visible;
   scrollbar-width: none;
 }
 .desk.desk :global(.options-nav) button {
@@ -250,8 +250,9 @@
 .desk.desk :global(.options-plot) svg {
   display: block;
   width: 100%;
-  height: 180px;
-  max-height: 180px;
+  height: auto;
+  aspect-ratio: 700 / 210;
+  max-height: none;
 }
 .desk.desk :global(.options-plot-axis) {
   font-size: 11px;
@@ -448,13 +449,13 @@
 .desk.desk {
   row-gap: 12px;
 }
-.desk :global(.options-nav) {
+.desk.desk :global(.options-nav) {
   flex-wrap: wrap;
   overflow: visible;
   gap: 6px;
   align-items: center;
 }
-.desk :global(.options-advanced-picker) {
+.desk.desk :global(.options-advanced-picker) {
   margin-left: auto;
   display: flex;
   align-items: center;
@@ -462,7 +463,7 @@
   font-size: 12px;
   color: var(--muted);
 }
-.desk :global(.options-advanced-picker) select {
+.desk.desk :global(.options-advanced-picker) select {
   min-height: 44px;
   font-size: 16px;
   max-width: 210px;
@@ -472,77 +473,47 @@
   border-radius: 8px;
   padding: 8px;
 }
-.desk :global(.expiry-comparison) {
-  margin: 16px 0;
-  padding: 14px;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-}
-.desk :global(.expiry-comparison) > summary {
-  cursor: pointer;
-  font-weight: 650;
-  min-height: 36px;
-}
-.desk :global(.expiry-comparison) > summary span {
-  font-size: 12px;
-  color: var(--muted);
-  font-weight: 400;
-  margin-left: 12px;
-}
-.desk :global(.expiry-comparison) p,
-.desk :global(.expiry-comparison) small {
-  font-size: 12px;
-  color: var(--muted);
-}
-.desk :global(.expiry-comparison-list) {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 10px;
-  margin: 12px 0;
-}
-.desk :global(.expiry-comparison-list) > button {
-  display: grid;
-  gap: 8px;
-  padding: 14px;
-  text-align: left;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--surface-2);
-  color: var(--ink);
-  font: inherit;
-  font-size: 13px;
-}
-.desk :global(.expiry-comparison-list) > button[aria-pressed="true"] {
-  border-color: var(--green);
-  background: color-mix(in srgb, var(--green) 8%, var(--card));
-}
-.desk :global(.expiry-comparison-list) strong,
-.desk :global(.expiry-comparison-list) > button > span {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-}
-.desk :global(.expiry-comparison-list) strong span {
-  font-size: 11px;
-  color: var(--muted);
-}
 @media (max-width: 600px) {
-  .desk :global(.options-nav) > button {
+  .desk.desk :global(.options-nav) > button {
     flex: 1 1 auto;
     padding: 10px 8px;
-    font-size: 13px;
   }
-  .desk :global(.options-advanced-picker) {
+  .desk.desk.desk :global(.options-advanced-picker) {
     width: 100%;
+    margin: 0;
     justify-content: space-between;
-    margin: 6px 0;
   }
-  .desk :global(.expiry-comparison) > summary span {
-    display: block;
-    margin: 5px 0;
-  }
-  .desk :global(.expiry-comparison-list) {
-    grid-template-columns: 1fr;
-  }
+}
+
+/* Advanced tools participate in the navigation flow; never float over tabs. */
+.desk.desk :global(.options-advanced-picker) {
+  position: static;
+  flex: 0 0 auto;
+  min-width: 0;
+  white-space: nowrap;
+}
+.desk.desk :global(.options-advanced-picker) > span {
+  position: static;
+  flex: none;
+}
+.desk.desk :global(.options-advanced-picker) select {
+  width: auto;
+  margin: 0;
+  font-size: 13px;
+}
+.desk.desk :global(.options-nav) {
+  column-gap: 18px;
+}
+.desk.desk :global(.options-empty-inline) {
+  min-height: 0;
+  padding: 12px;
+  margin: 8px 0;
+}
+.desk.desk :global(.options-empty-inline) h3 {
+  font-size: 15px;
+  margin: 0;
+}
+.desk.desk :global(.options-empty-inline) p {
+  font-size: 12px;
+  margin: 5px 0;
 }

@@ -22,6 +22,7 @@ const routes = [
   "paper-plans",
   "enrichment/[symbol]",
   "jobs",
+  "jobs/theses",
   "search",
   "research/[symbol]",
   "chart/[symbol]",
@@ -48,6 +49,19 @@ for (const path of routes) {
       assert.match(r.headers.get("cache-control"), /no-store/);
       checks++;
     }
+}
+// Disabled scheduled thesis checks must return before touching credentials or data.
+{
+ const secret = process.env.CRON_SECRET;
+ const enabled = process.env.AURYN_THESIS_JOB_ENABLED;
+ process.env.CRON_SECRET = "x".repeat(40);
+ delete process.env.AURYN_THESIS_JOB_ENABLED;
+ const result = await load("jobs/theses").GET(new Request("https://auryn.example/api/jobs/theses", {headers:{authorization:`Bearer ${process.env.CRON_SECRET}`}}));
+ assert.equal(result.status,200);
+ assert.deepEqual(await result.json(),{enabled:false,processed:0});
+ if(secret===undefined) delete process.env.CRON_SECRET; else process.env.CRON_SECRET=secret;
+ if(enabled===undefined) delete process.env.AURYN_THESIS_JOB_ENABLED; else process.env.AURYN_THESIS_JOB_ENABLED=enabled;
+ checks++;
 }
 process.env.NEXT_PUBLIC_SUPABASE_URL = "https://account.example.invalid";
 process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = "test-publishable";
