@@ -389,6 +389,13 @@ export default function OptionsDesk({
   );
   return (
     <div className={deskStyles.desk}>
+      <div className={deskStyles.orientation}>
+        <strong>Options, in context</strong>
+        <p>
+          Choose an expiration, explore price levels, then inspect a contract or
+          try it with simulated cash.
+        </p>
+      </div>
       <header className={deskStyles.commandBar}>
         <label className={deskStyles.expiryControl}>
           <span>Expiration date</span>

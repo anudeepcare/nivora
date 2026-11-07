@@ -22,14 +22,20 @@
   margin: 4px 0;
 }
 .eyebrow {
-  display: none;
+  display: block;
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
 }
 .badge {
   font-size: 10px;
   padding: 5px 8px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 4px;
+  background: var(--citron);
+  color: #24272b;
+  border: 1px solid var(--citron);
+  border-radius: 8px;
+  font-weight: 700;
 }
 .metrics {
   display: flex;
@@ -71,8 +77,9 @@
   grid-template-columns: minmax(0, 1fr) 90px;
   gap: 10px;
   padding: 12px;
-  background: var(--surface);
+  background: color-mix(in srgb, var(--green) 6%, var(--card));
   border: 1px solid var(--line);
+  border-radius: 12px;
 }
 .wallet label {
   display: grid;
@@ -125,8 +132,10 @@
   cursor: pointer;
 }
 .order button {
-  background: var(--ink);
-  color: var(--card);
+  background: var(--citron);
+  color: #24272b;
+  border-color: var(--citron);
+  font-weight: 650;
 }
 .wallet button:disabled {
   opacity: 0.45;

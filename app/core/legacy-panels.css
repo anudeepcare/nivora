@@ -38898,46 +38898,6 @@
     align-items: center;
     font-size: 12px;
   }
-  .analytics-consent {
-    position: fixed;
-    z-index: 220;
-    bottom: max(16px, env(safe-area-inset-bottom));
-    left: 16px;
-    right: 16px;
-    max-width: 900px;
-    margin: auto;
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    background: var(--surface);
-    color: var(--ink);
-    border: 1px solid var(--line);
-    box-shadow: 0 12px 40px #0002;
-    border-radius: 16px;
-    padding: 20px;
-  }
-  .analytics-consent strong {
-    font-size: 15px;
-  }
-  .analytics-consent p {
-    font-size: 12px;
-    line-height: 1.6;
-    margin: 6px 0 0;
-    color: var(--muted);
-  }
-  .analytics-consent a {
-    color: var(--accent);
-    text-decoration: underline;
-  }
-  .consent-actions {
-    display: flex;
-    gap: 8px;
-    flex-shrink: 0;
-  }
-  .consent-actions button {
-    min-height: 44px;
-    white-space: nowrap;
-  }
   @media (max-width: 760px) {
     .approved-product .company-header {
       align-items: flex-start;
@@ -39067,19 +39027,6 @@
     }
     .education-method {
       padding: 22px;
-    }
-    .analytics-consent {
-      left: 10px;
-      right: 10px;
-      bottom: max(10px, env(safe-area-inset-bottom));
-      flex-direction: column;
-      align-items: stretch;
-      gap: 12px;
-      padding: 17px;
-    }
-    .consent-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
     }
   }
 

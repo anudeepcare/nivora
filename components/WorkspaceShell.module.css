@@ -669,6 +669,7 @@
   padding: 12px;
 }
 .shell .toolsDialog :global(.dialog-tools) a {
+  color: var(--ink);
   min-height: 64px;
   padding: 10px;
   gap: 10px;
@@ -684,6 +685,8 @@
   min-width: 0;
 }
 .shell .toolsDialog :global(.dialog-tools) small {
+  color: var(--muted);
+  opacity: 1;
   font-size: 12px;
   line-height: 1.35;
 }
@@ -702,6 +705,10 @@
 }
 @media (max-width: 767px) {
   .shell .toolsDialog {
+    background: color-mix(in srgb, var(--card) 94%, transparent);
+    backdrop-filter: blur(14px) saturate(120%);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+    box-shadow: 0 18px 60px #0003;
     position: fixed;
     inset: calc(
         var(--visual-top, 0px) + max(12px, env(safe-area-inset-top, 0px))
@@ -726,5 +733,35 @@
   .shell .toolsDialog :global(.dialog-tools) a {
     min-height: 58px;
     padding: 8px 12px;
+  }
+}
+
+.shell .toolsDialog::backdrop {
+  background: #10192370;
+}
+.shell .toolsDialog :global(.dialog-tools) a strong {
+  font-size: 14px;
+  line-height: 1.4;
+}
+@media (prefers-reduced-transparency: reduce) {
+  .shell .toolsDialog {
+    background: var(--card);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  :global(html:not([data-motion="reduce"])) .shell .toolsDialog[open] {
+    animation: menuEnter 140ms ease-out;
+  }
+}
+@keyframes menuEnter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

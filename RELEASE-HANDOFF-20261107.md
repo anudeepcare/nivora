@@ -2,6 +2,12 @@
 
 This is the current handoff and supersedes older checkpoints. Source ZIP only: no deployment, production database write, scheduler activation, public observation or external outreach was performed.
 
+## Latest follow-up: mobile menu and header cleanup
+Removed the standalone evidence button above Research tabs; metric formulas/sources remain inside Business. Mobile account menu uses a mostly opaque glass surface, explicit readable text, a short transform/opacity entrance and reduced-motion/transparency alternatives. Removed eight unused legacy consent rules (1,142 raw bytes); this is targeted cleanup, not a claim of complete legacy CSS removal or measurable latency improvement by itself. Ten related regression tests, lint, TypeScript and shell browser checks passed.
+
+## Latest follow-up: AURYN theme and explanations
+Options now shares AURYN citron selected states and primary actions, teal guidance surfaces, and a clearly marked simulated wallet. Inline help explains the map, controls, selected-cell GEX/coverage and practice sequence. No financial formulas or provider behavior changed. This follow-up was checked with the 74 Options/exposure tests, lint, TypeScript and responsive component browser checks; the full build/API/1,202-test evidence below belongs to the immediately preceding source baseline.
+
 ## Changed in this pass
 - Labs is a normal tab immediately after News & earnings. Options and Research tools remain inside it.
 - Options structure and scoped styles rebuilt: compact expiry/view/tool controls, inline price summary, exposure view first, one data/definitions disclosure, advanced tools on demand, compact practice ticket and ledger. Financial calculations, provider coverage semantics and entitlements retained.

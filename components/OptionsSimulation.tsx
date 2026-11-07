@@ -142,6 +142,10 @@ function Wallet({
           <span className={styles.eyebrow}>PAPER WALLET</span>
           <h3>Practice an option trade</h3>
           <p>Simulation only · $100,000 starting cash. No real orders.</p>
+          <p>
+            Choose a contract and quantity, review the premium, then simulate
+            buying at the ask. One standard contract represents 100 shares.
+          </p>
         </div>
         <span className={styles.badge}>SIMULATED</span>
       </header>
@@ -264,8 +268,10 @@ function Wallet({
           <h4>Simulation ledger</h4>
           {!ledger.positions.length && (
             <p>
-              No simulated positions yet. Buying reduces available simulated
-              cash.
+              Your practice trades will appear here. Buying subtracts the
+              premium from simulated cash. Review each position’s marked gain or
+              loss, then simulate closing it at an available bid. Save
+              explicitly to keep your practice ledger.
             </p>
           )}
           {ledger.positions.map((p) => {

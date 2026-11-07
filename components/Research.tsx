@@ -539,9 +539,6 @@ export default function Research({ symbol }: { symbol: string }) {
         </div>
       </header>
       <StockFacts research={r} />
-      <button className="text-link" onClick={() => setReceiptOpen(true)}>
-        Inspect evidence &amp; sources
-      </button>
       {receiptOpen && (
         <ResearchReceipt research={r} onClose={() => setReceiptOpen(false)} />
       )}
@@ -731,6 +728,12 @@ export default function Research({ symbol }: { symbol: string }) {
                 <Financials research={r} />
                 <BusinessHistory research={r} />
                 <FinancingContext research={r} />
+                <button
+                  className="text-link"
+                  onClick={() => setReceiptOpen(true)}
+                >
+                  Metric formulas &amp; sources
+                </button>
               </>
             )}
             {tab === "Valuation" && (

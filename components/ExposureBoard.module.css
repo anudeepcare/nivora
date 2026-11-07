@@ -52,6 +52,8 @@
 }
 .tabs button[aria-pressed="true"] {
   border-bottom-color: var(--green);
+  background: color-mix(in srgb, var(--green) 10%, var(--card));
+  color: var(--green);
   outline: 0;
 }
 .board :is(button, input, select, summary):focus-visible,
@@ -381,4 +383,26 @@
   .toolbar label {
     flex-basis: 100%;
   }
+}
+
+.readingGuide {
+  margin: 10px 0 14px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--green) 6%, var(--card));
+  font-size: 12px;
+  line-height: 1.6;
+}
+.readingGuide strong {
+  color: var(--green);
+}
+.readingGuide p {
+  margin: 5px 0;
+  max-width: 100ch;
+}
+.readingGuide summary {
+  min-height: 44px;
+  padding: 12px 0;
+  cursor: pointer;
+  color: var(--green);
 }
