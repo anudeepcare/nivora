@@ -97,3 +97,4 @@
     min-height: 30px;
   }
 }
+.inbox{background:var(--card);border:0;padding:16px}.cards{gap:8px}.highlight{border:0;padding:14px;border-radius:10px;background:color-mix(in srgb,#398a8a 6%,var(--card))}.highlight[data-kind=alert]{background:color-mix(in srgb,#d5a23b 9%,var(--card))}.category{color:var(--ink)}.category svg{color:var(--green)}.expand{min-height:44px;margin-top:10px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit;font-size:13px}

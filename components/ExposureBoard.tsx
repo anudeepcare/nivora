@@ -73,6 +73,7 @@ export default function ExposureBoard({
     [name, setName] = useState(""),
     [message, setMessage] = useState(""),
     [mode, setMode] = useState("map");
+  const [presentation,setPresentation]=useState("heatmap");
   const table = useRef<HTMLDivElement>(null);
   useEffect(() => {
     try {
@@ -429,6 +430,8 @@ export default function ExposureBoard({
       )}
       {mode === "map" && (
         <>
+          <div className={s.presentation} role="group" aria-label="Exposure presentation"><button type="button" aria-pressed={presentation==='heatmap'} onClick={()=>setPresentation('heatmap')}>Heatmap</button><button type="button" aria-pressed={presentation==='levels'} onClick={()=>setPresentation('levels')}>Key levels</button><small>Tap any level for details</small></div>
+          {presentation==='levels' && <div className={s.ladder}>{[...concentrations].sort((a,b)=>Math.abs(value(b)!)-Math.abs(value(a)!)).slice(0,12).map(c=><button type="button" key={c.key} aria-pressed={selected===c.key} onClick={()=>setSelected(c.key)}><span><strong>{amount(c.strike)}</strong><small>{dateLabel(c.expiry)} · {Math.abs((c.strike/board.spot-1)*100).toFixed(1)}% {c.strike>=board.spot?'above':'below'} price</small></span><span><b>{metric==='gex'?amount(c.gex,'USD',true):c.oi?.toLocaleString()}</b><i aria-hidden="true" style={{width:`${Math.max(4,100*Math.abs(value(c)!)/max)}%`,background:value(c)!<0?'#9368ba':'#168e83'}}/></span></button>)}{!concentrations.length&&<p>No measured concentrations in this range.</p>}</div>}
           <div className={s.legend}>
             <span>{metric === "gex" ? "− Put-side estimate" : "Open contract count"}</span>
             <i />
@@ -437,7 +440,7 @@ export default function ExposureBoard({
               ★ Largest · outlined row nearest price {amount(board.spot)}
             </span>
           </div>
-          <div className={s.scroll} ref={table}>
+          <div className={s.scroll} ref={table} hidden={presentation!=="heatmap"}>
             <table>
               <caption>
                 {symbol} ·{" "}

@@ -1,3 +1,4 @@
+import { supportUpdate, supportSearch } from "@/lib/support-workflow";
 import { supportDeliveryStatus } from "@/lib/support-status";
 import { createHash } from "node:crypto";
 import { accessDb, exactOwner } from "@/lib/access-server";
@@ -83,14 +84,20 @@ export async function GET(request: Request) {
     const params = new URL(request.url).searchParams;
     const status = params.get("status") ?? "all";
     if (!["all", "new", "in_progress", "resolved"].includes(status)) throw new HttpError("Invalid status.",400);
+    let search: string;
+    try { search=supportSearch(params.get("q") ?? ""); } catch(e) { throw new HttpError((e as Error).message,400); }
+    const priority=params.get("priority")??"all";
+    if(!["all","normal","high","urgent"].includes(priority))throw new HttpError("Invalid priority.",400);
     let query = accessDb()
       .from("auryn_support_requests")
       .select(
-        "id,email,category,message,page,status,created_at,owner_notified_at,receipt_sent_at,attempts",
+        "id,email,category,message,page,status,priority,assignee,created_at,owner_notified_at,receipt_sent_at,attempts",
       )
       .order("created_at", { ascending: false })
       .order("id", { ascending: false });
     if(status !== "all") query = query.eq("status",status);
+    if(search) query=query.textSearch("search_document",search,{type:"websearch",config:"simple"});
+    if(priority!=="all")query=query.eq("priority",priority);
     const cursor = params.get("cursor");
     if(cursor) {
       const parts = cursor.split("|");
@@ -116,18 +123,11 @@ export async function PATCH(request: Request) {
     const b = await request.json();
     if (b.action === "retry")
       return privateJson({ results: await retrySupport(true) });
-    if (
-      !["new", "in_progress", "resolved"].includes(b.status) ||
-      typeof b.id !== "string"
-    )
-      throw new HttpError("Choose a valid status.");
-    const r = await accessDb()
-      .from("auryn_support_requests")
-      .update({ status: b.status })
-      .eq("id", b.id)
-      .select("id")
-      .single();
-    if (r.error) throw new HttpError("Status could not be saved.", 503);
+    let update;
+    try { update=supportUpdate(b); } catch(e) { throw new HttpError((e as Error).message,400); }
+    const r=await accessDb().from("auryn_support_requests").update(update.patch).in("id",update.ids).select("id");
+    if(r.error)throw new HttpError("Requests could not be updated.",503);
+    if(r.data?.length!==update.ids.length)throw new HttpError("Some requests were not found. Refresh the inbox.",409);
     return privateJson({ saved: true });
   } catch (e) {
     return failure(e);

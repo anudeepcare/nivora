@@ -61,6 +61,7 @@ import Search from "./Search";
 import CompanySparkline from "./CompanySparkline";
 import AccountBalances from "./AccountBalances";
 import PortfolioLedger from "./PortfolioLedger";
+import TransactionWorkspace from "./TransactionWorkspace";
 import PortfolioCharts from "./PortfolioCharts";
 import PortfolioExposure from "./PortfolioExposure";
 import PortfolioRiskSummary, {
@@ -627,7 +628,7 @@ function HomeOverview() {
         research={loadedResearch}
         prefix={prefix}
       />
-      <ResearchInbox today={day} />
+      <ResearchInbox today={day} events={feed.data?.events??[]} coverageIssue={!!feed.error||!readiness.eventsReady} />
       {loadedResearch.length > 0 && (
         <details className={homeStyles.marketRadar}>
           <summary>
@@ -1038,6 +1039,7 @@ export function Portfolio() {
         subtitle="Holdings, performance and allocation."
         actions={
           <>
+            <button className="btn" onClick={() => { setDepthOpen(true); depth.current?.showModal(); }}>Transactions</button>
             <button
               className="btn"
               onClick={() => balances.current?.showModal()}
@@ -1135,7 +1137,7 @@ export function Portfolio() {
                     depth.current?.showModal();
                   }}
                 >
-                  Full ledger & analysis <ArrowUpRight size={15} />
+                  Transactions & analysis <ArrowUpRight size={15} />
                 </button>
               )}
             </div>
@@ -1382,6 +1384,7 @@ export function Portfolio() {
                   {currencyError && <Notice error>{currencyError}</Notice>}
                 </section>
               )}
+              <TransactionWorkspace quotes={q} positions={positions}/>
               <PortfolioLedger
                 positions={positions}
                 allPositions={positions}

@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
-import { Users, SlidersHorizontal, CreditCard, Mail, Plus, X } from "lucide-react";
+import { Users, SlidersHorizontal, CreditCard, Mail, BookOpen, Plus, X } from "lucide-react";
 import styles from "./OwnerAccess.module.css";
 import SupportInbox from "./SupportInbox";
+import OwnerHandbook from "./OwnerHandbook";
 import { api } from "@/lib/client";
 import { useAccess } from "./Access";
 import {
@@ -108,6 +109,7 @@ export default function OwnerAccess() {
           ["features", "Features"],
           ["payments", "Payments"],
           ["support", "Support"],
+          ["handbook", "Owner handbook"],
         ].map(([id, label]) => (
           <button
             type="button"
@@ -119,10 +121,11 @@ export default function OwnerAccess() {
               setMessage("");
             }}
           >
-            {id === "people" ? <Users size={17} aria-hidden="true"/> : id === "features" ? <SlidersHorizontal size={17} aria-hidden="true"/> : id === "payments" ? <CreditCard size={17} aria-hidden="true"/> : <Mail size={17} aria-hidden="true"/>}{label}
+            {id === "people" ? <Users size={17} aria-hidden="true"/> : id === "features" ? <SlidersHorizontal size={17} aria-hidden="true"/> : id === "payments" ? <CreditCard size={17} aria-hidden="true"/> : id === "handbook" ? <BookOpen size={17} aria-hidden="true"/> : <Mail size={17} aria-hidden="true"/>}{label}
           </button>
         ))}
       </nav>
+      {panel === "handbook" && <OwnerHandbook />}
       {message && (
         <p className="membership-feedback" role="status">
           {message}

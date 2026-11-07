@@ -1,6 +1,7 @@
 "use client";
 import { volatilityContext, rankContracts } from "@/lib/options-context";
 import OptionsSnapshot from "./OptionsSnapshot";
+import OptionsExpiryComparison from "./OptionsExpiryComparison";
 import SearchableSelect from "./SearchableSelect";
 import MarketWorkspace from "./MarketWorkspace";
 import VannaMap from "./VannaMap";
@@ -385,11 +386,7 @@ export default function OptionsDesk({
           ["positioning", "Price levels"],
           ["chain", "Calls & puts"],
           ["learn", "Guide"],
-          ["vanna", "Vanna"],
-          ["flow", "Trade tape"],
-          ["simulation", "Simulation"],
-          ["leaps", "Long-term"],
-          ["strategy", "Strategy"],
+          ["simulation", "Practice"],
         ].map(([id, label]) => (
           <button
             key={id}
@@ -400,6 +397,7 @@ export default function OptionsDesk({
             {label}
           </button>
         ))}
+        <label className="options-advanced-picker"><span>Advanced</span><select aria-label="Advanced options tools" value={['vanna','flow','leaps','strategy'].includes(view)?view:''} onChange={e=>navigate(e.target.value)}><option value="" disabled>Choose a tool</option><option value="vanna">Vanna exposure</option><option value="flow">Trade tape</option><option value="leaps">Long-term contracts</option><option value="strategy">Strategy payoff</option></select></label>
       </nav>
       {error && (
         <p role="alert" className="options-notice">
@@ -496,6 +494,7 @@ export default function OptionsDesk({
           {view === "positioning" && (
             <>
               <OptionsSnapshot contracts={summary.rows} spot={spot} expiry={active} />
+              <OptionsExpiryComparison contracts={contracts} active={active} onChoose={chooseExpiry}/>
               {!hasGamma && !hasOi && (
                 <section className="options-empty options-empty-inline">
                   <Activity size={28} />

@@ -1,0 +1,2 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {cleanDocument} from '../lib/documents.ts';
+test('saved discovery screen retains sanitized sector pace and quality criteria',()=>{const r=cleanDocument('view',{name:'Cash growers',symbols:['APP'],criteria:{sector:'Technology',pace:'P3',quality:'cash'}});assert.deepEqual(r.criteria,{sector:'Technology',pace:'P3',quality:'cash'});assert.deepEqual(cleanDocument('view',{criteria:{sector:' ',pace:'P99',quality:'madeup'}}).criteria,{sector:'all',pace:'all',quality:'all'});});

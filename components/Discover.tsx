@@ -191,6 +191,7 @@ export default function Discover({ embedded = false }: { embedded?: boolean }) {
           {saved.data.documents.map((v) => (
             <button
               className="text-button"
+              disabled={busy}
               key={v.key}
               onClick={() => {
                 setDraft(v.body.symbols.join(", "));

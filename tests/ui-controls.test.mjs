@@ -937,6 +937,7 @@ test("technical desk separates four evidence groups and formats missing data saf
       perspective,
       ...format,
       TechnicalLevels: () => null,
+    TechnicalLevelMap: () => null,
       X: () => null,
     },
   );
