@@ -1,3 +1,4 @@
+import { cleanThesisRule } from "./thesis-rules.ts";
 import { parseBoardState } from "./exposure-board.ts";
 import { cleanSimulationLedger } from "./options-simulation.ts";
 import { cleanEstimateSnapshot } from "./estimate-revisions.ts";
@@ -48,6 +49,7 @@ export function cleanDocument(
       throw Error("Source links must use HTTPS.");
     return {
       thesis: text("thesis", 3000),
+      ...cleanThesisRule(v),
       reviewDate,
       counterargument: text("counterargument", 2000),
       condition: text("condition", 1500),
@@ -93,7 +95,29 @@ export function cleanDocument(
       ...(kind === "view" && v.preferences
         ? { preferences: workspacePreferences(v.preferences) }
         : {}),
-      ...(kind === "view" && v.criteria && typeof v.criteria === "object" ? {criteria:(()=>{const c=v.criteria as Record<string,unknown>;return {sector:typeof c.sector==='string'&&c.sector.trim()?c.sector.trim().slice(0,100):'all',pace:['P0','P1','P2','P3','P4','unavailable'].includes(String(c.pace))?String(c.pace):'all',quality:['cash','growth','profit'].includes(String(c.quality))?String(c.quality):'all'};})()} : {}),
+      ...(kind === "view" && v.criteria && typeof v.criteria === "object"
+        ? {
+            criteria: (() => {
+              const c = v.criteria as Record<string, unknown>;
+              return {
+                sector:
+                  typeof c.sector === "string" && c.sector.trim()
+                    ? c.sector.trim().slice(0, 100)
+                    : "all",
+                pace: ["P0", "P1", "P2", "P3", "P4", "unavailable"].includes(
+                  String(c.pace),
+                )
+                  ? String(c.pace)
+                  : "all",
+                quality: ["cash", "growth", "profit"].includes(
+                  String(c.quality),
+                )
+                  ? String(c.quality)
+                  : "all",
+              };
+            })(),
+          }
+        : {}),
       symbols,
       filter: text("filter", 40),
       horizon: text("horizon", 20),

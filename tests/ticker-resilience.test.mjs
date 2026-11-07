@@ -417,7 +417,10 @@ test("invalid primary price rows are retried after recovery instead of cached as
   assert.equal((await p.research("ROW")).history.length, 1);
 });
 
-test("chart route classifies malformed symbols before provider requests", async () => {
+test("chart route classifies malformed symbols before provider requests", async (t) => {
+  const previousAccess = process.env.AURYN_ACCESS_ENABLED;
+  process.env.AURYN_ACCESS_ENABLED = "false";
+  t.after(() => { if(previousAccess === undefined) delete process.env.AURYN_ACCESS_ENABLED; else process.env.AURYN_ACCESS_ENABLED = previousAccess; });
   const p = fixtureProviders((u) =>
     u.pathname === "/auth/v1/user"
       ? Response.json({

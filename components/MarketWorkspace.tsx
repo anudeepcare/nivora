@@ -81,123 +81,121 @@ function AccountBoard(props: {
   }
   const path = `market-workspace/${encodeURIComponent(props.symbol)}`;
   const accountTools = (
-      <section className={s.account} aria-label="Account market history">
-        <h4>
-          <Cloud size={18} /> Account checkpoints{" "}
-          <small> · {snapshots.length} checkpoints</small>
-        </h4>
-        <p>
-          Saved checkpoints replay the observations captured in your account.
-        </p>
+    <section className={s.account} aria-label="Account market history">
+      <h4>
+        <Cloud size={18} /> Account checkpoints{" "}
+        <small> · {snapshots.length} checkpoints</small>
+      </h4>
+      <p>Saved checkpoints replay the observations captured in your account.</p>
+      <div className={s.actions}>
+        <button
+          type="button"
+          disabled={busy || !!demo}
+          onClick={() =>
+            void action(async () => {
+              await api(path, {
+                op: "capture",
+                expiry: props.expiry || null,
+              });
+              await resource.refresh();
+              setIndex(-1);
+              setMessage(
+                "Account checkpoint saved from server-loaded market data. Identical sources reuse the existing record.",
+              );
+            })
+          }
+        >
+          <Save size={16} /> Capture to account
+        </button>
+        <button
+          type="button"
+          disabled={busy || !!demo}
+          onClick={() => resource.refresh()}
+        >
+          <RefreshCw size={16} /> Reload account history
+        </button>
+        <button
+          type="button"
+          disabled={busy || !resource.data || !!demo}
+          onClick={() =>
+            void action(async () => {
+              await api(path, {
+                op: "views",
+                presets,
+                expectedUpdatedAt: resource.data?.views?.updated_at ?? null,
+              });
+              await resource.refresh();
+              setMessage("Views saved to your account.");
+            })
+          }
+        >
+          Save views to account
+        </button>
+        <button
+          type="button"
+          disabled={!resource.data?.views || busy}
+          onClick={() => {
+            setAccountPresets(resource.data?.views?.body.marketViews ?? []);
+            setMessage("Account views loaded into this device.");
+          }}
+        >
+          Load account views
+        </button>
+      </div>
+      {(resource.error || resource.data?.historyError) && (
+        <p role="status">{resource.error || resource.data?.historyError}</p>
+      )}
+      <label>
+        Replay checkpoint
+        <select
+          value={index}
+          onChange={(e) => {
+            setIndex(Number(e.target.value));
+            setPlaying(false);
+          }}
+        >
+          <option value={-1}>Latest loaded / device view</option>
+          {snapshots.map((x, i) => (
+            <option key={x.id} value={i}>
+              {new Date(x.savedAt).toLocaleString()} · source{" "}
+              {x.sourceAsOf ?? "dated in cells"}
+            </option>
+          ))}
+        </select>
+      </label>
+      {snapshots.length > 1 && (
         <div className={s.actions}>
           <button
             type="button"
-            disabled={busy || !!demo}
-            onClick={() =>
-              void action(async () => {
-                await api(path, {
-                  op: "capture",
-                  expiry: props.expiry || null,
-                });
-                await resource.refresh();
-                setIndex(-1);
-                setMessage(
-                  "Account checkpoint saved from server-loaded market data. Identical sources reuse the existing record.",
-                );
-              })
-            }
-          >
-            <Save size={16} /> Capture to account
-          </button>
-          <button
-            type="button"
-            disabled={busy || !!demo}
-            onClick={() => resource.refresh()}
-          >
-            <RefreshCw size={16} /> Reload account history
-          </button>
-          <button
-            type="button"
-            disabled={busy || !resource.data || !!demo}
-            onClick={() =>
-              void action(async () => {
-                await api(path, {
-                  op: "views",
-                  presets,
-                  expectedUpdatedAt: resource.data?.views?.updated_at ?? null,
-                });
-                await resource.refresh();
-                setMessage("Views saved to your account.");
-              })
-            }
-          >
-            Save views to account
-          </button>
-          <button
-            type="button"
-            disabled={!resource.data?.views || busy}
             onClick={() => {
-              setAccountPresets(resource.data?.views?.body.marketViews ?? []);
-              setMessage("Account views loaded into this device.");
+              if (index < 0 || index === snapshots.length - 1) setIndex(0);
+              setPlaying(!playing);
             }}
           >
-            Load account views
+            {playing ? <Pause size={16} /> : <Play size={16} />}{" "}
+            {playing ? "Pause" : "Play recorded checkpoints"}
           </button>
-        </div>
-        {(resource.error || resource.data?.historyError) && (
-          <p role="status">{resource.error || resource.data?.historyError}</p>
-        )}
-        <label>
-          Replay checkpoint
-          <select
-            value={index}
+          <input
+            type="range"
+            aria-label="Recorded checkpoint timeline"
+            min={0}
+            max={snapshots.length - 1}
+            value={Math.max(0, index)}
             onChange={(e) => {
               setIndex(Number(e.target.value));
               setPlaying(false);
             }}
-          >
-            <option value={-1}>Latest loaded / device view</option>
-            {snapshots.map((x, i) => (
-              <option key={x.id} value={i}>
-                {new Date(x.savedAt).toLocaleString()} · source{" "}
-                {x.sourceAsOf ?? "dated in cells"}
-              </option>
-            ))}
-          </select>
-        </label>
-        {snapshots.length > 1 && (
-          <div className={s.actions}>
-            <button
-              type="button"
-              onClick={() => {
-                if (index < 0 || index === snapshots.length - 1) setIndex(0);
-                setPlaying(!playing);
-              }}
-            >
-              {playing ? <Pause size={16} /> : <Play size={16} />}{" "}
-              {playing ? "Pause" : "Play recorded checkpoints"}
-            </button>
-            <input
-              type="range"
-              aria-label="Recorded checkpoint timeline"
-              min={0}
-              max={snapshots.length - 1}
-              value={Math.max(0, index)}
-              onChange={(e) => {
-                setIndex(Number(e.target.value));
-                setPlaying(false);
-              }}
-            />
-          </div>
-        )}
-        {selected && (
-          <p>
-            <b>Recorded {new Date(selected.savedAt).toLocaleString()}</b> ·
-            underlying source {selected.quoteAsOf ?? "dated in record"} ·{" "}
-            {selected.frequency} · {selected.window}
-          </p>
-        )}
-      </section>
+          />
+        </div>
+      )}
+      {selected && (
+        <p>
+          <b>Recorded {new Date(selected.savedAt).toLocaleString()}</b> ·
+          underlying source {selected.quoteAsOf ?? "dated in record"} ·{" "}
+          {selected.frequency} · {selected.window}
+        </p>
+      )}
+    </section>
   );
   return (
     <div className={s.workspace}>

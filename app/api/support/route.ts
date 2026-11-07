@@ -7,7 +7,7 @@ import { supportInput } from "@/lib/support-input";
 import { deliverSupport, retrySupport } from "@/lib/support-delivery";
 export const maxDuration = 60;
 async function owner(request: Request) {
-  const { user } = await account(request);
+  const { user } = await account(request, { market: false });
   if (!exactOwner(user.id)) throw new HttpError("Owner access required.", 403);
 }
 export async function POST(request: Request) {
@@ -74,20 +74,35 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
   try {
     await owner(request);
-    const attachment=new URL(request.url).searchParams.get('attachment');
-    if(attachment!==null){
-      if(!/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(attachment))throw new HttpError('Invalid support reference.',400);
-      const result=await accessDb().from('auryn_support_requests').select('screenshot').eq('id',attachment).single();
-      if(result.error)throw new HttpError('Attachment is unavailable.',404);
-      return privateJson({screenshot:result.data?.screenshot??null});
+    const attachment = new URL(request.url).searchParams.get("attachment");
+    if (attachment !== null) {
+      if (
+        !/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(
+          attachment,
+        )
+      )
+        throw new HttpError("Invalid support reference.", 400);
+      const result = await accessDb()
+        .from("auryn_support_requests")
+        .select("screenshot")
+        .eq("id", attachment)
+        .single();
+      if (result.error) throw new HttpError("Attachment is unavailable.", 404);
+      return privateJson({ screenshot: result.data?.screenshot ?? null });
     }
     const params = new URL(request.url).searchParams;
     const status = params.get("status") ?? "all";
-    if (!["all", "new", "in_progress", "resolved"].includes(status)) throw new HttpError("Invalid status.",400);
+    if (!["all", "new", "in_progress", "resolved"].includes(status))
+      throw new HttpError("Invalid status.", 400);
     let search: string;
-    try { search=supportSearch(params.get("q") ?? ""); } catch(e) { throw new HttpError((e as Error).message,400); }
-    const priority=params.get("priority")??"all";
-    if(!["all","normal","high","urgent"].includes(priority))throw new HttpError("Invalid priority.",400);
+    try {
+      search = supportSearch(params.get("q") ?? "");
+    } catch (e) {
+      throw new HttpError((e as Error).message, 400);
+    }
+    const priority = params.get("priority") ?? "all";
+    if (!["all", "normal", "high", "urgent"].includes(priority))
+      throw new HttpError("Invalid priority.", 400);
     let query = accessDb()
       .from("auryn_support_requests")
       .select(
@@ -95,14 +110,26 @@ export async function GET(request: Request) {
       )
       .order("created_at", { ascending: false })
       .order("id", { ascending: false });
-    if(status !== "all") query = query.eq("status",status);
-    if(search) query=query.textSearch("search_document",search,{type:"websearch",config:"simple"});
-    if(priority!=="all")query=query.eq("priority",priority);
+    if (status !== "all") query = query.eq("status", status);
+    if (search)
+      query = query.textSearch("search_document", search, {
+        type: "websearch",
+        config: "simple",
+      });
+    if (priority !== "all") query = query.eq("priority", priority);
     const cursor = params.get("cursor");
-    if(cursor) {
+    if (cursor) {
       const parts = cursor.split("|");
-      if(parts.length !== 2 || !/^\d{4}-\d{2}-\d{2}T[\d:.]+(?:Z|\+00:00)$/.test(parts[0]) || !Number.isFinite(Date.parse(parts[0])) || !/^[a-f0-9-]{36}$/i.test(parts[1])) throw new HttpError("Invalid page.",400);
-      query = query.or(`created_at.lt.${parts[0]},and(created_at.eq.${parts[0]},id.lt.${parts[1]})`);
+      if (
+        parts.length !== 2 ||
+        !/^\d{4}-\d{2}-\d{2}T[\d:.]+(?:Z|\+00:00)$/.test(parts[0]) ||
+        !Number.isFinite(Date.parse(parts[0])) ||
+        !/^[a-f0-9-]{36}$/i.test(parts[1])
+      )
+        throw new HttpError("Invalid page.", 400);
+      query = query.or(
+        `created_at.lt.${parts[0]},and(created_at.eq.${parts[0]},id.lt.${parts[1]})`,
+      );
     }
     const r = await query.limit(51);
     if (r.error)
@@ -112,7 +139,11 @@ export async function GET(request: Request) {
       );
     const rows = r.data ?? [];
     const last = rows[49];
-    return privateJson({ requests: rows.slice(0,50), nextCursor: rows.length > 50 ? `${last.created_at}|${last.id}` : null, delivery: supportDeliveryStatus() });
+    return privateJson({
+      requests: rows.slice(0, 50),
+      nextCursor: rows.length > 50 ? `${last.created_at}|${last.id}` : null,
+      delivery: supportDeliveryStatus(),
+    });
   } catch (e) {
     return failure(e);
   }
@@ -124,10 +155,22 @@ export async function PATCH(request: Request) {
     if (b.action === "retry")
       return privateJson({ results: await retrySupport(true) });
     let update;
-    try { update=supportUpdate(b); } catch(e) { throw new HttpError((e as Error).message,400); }
-    const r=await accessDb().from("auryn_support_requests").update(update.patch).in("id",update.ids).select("id");
-    if(r.error)throw new HttpError("Requests could not be updated.",503);
-    if(r.data?.length!==update.ids.length)throw new HttpError("Some requests were not found. Refresh the inbox.",409);
+    try {
+      update = supportUpdate(b);
+    } catch (e) {
+      throw new HttpError((e as Error).message, 400);
+    }
+    const r = await accessDb()
+      .from("auryn_support_requests")
+      .update(update.patch)
+      .in("id", update.ids)
+      .select("id");
+    if (r.error) throw new HttpError("Requests could not be updated.", 503);
+    if (r.data?.length !== update.ids.length)
+      throw new HttpError(
+        "Some requests were not found. Refresh the inbox.",
+        409,
+      );
     return privateJson({ saved: true });
   } catch (e) {
     return failure(e);

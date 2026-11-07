@@ -98,7 +98,14 @@ export function normalizeEodQuote(
   return {
     price: price != null && price > 0 ? price : null,
     previousClose: numeric(raw.previousClose),
-    changePct: numeric(raw.change_p) ?? (price != null && price > 0 && numeric(raw.previousClose) != null && Number(raw.previousClose) > 0 ? (price / Number(raw.previousClose) - 1) * 100 : null),
+    changePct:
+      numeric(raw.change_p) ??
+      (price != null &&
+      price > 0 &&
+      numeric(raw.previousClose) != null &&
+      Number(raw.previousClose) > 0
+        ? (price / Number(raw.previousClose) - 1) * 100
+        : null),
     currency: "USD",
     asOf,
     source: "EODHD · delayed / indicative",

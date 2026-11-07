@@ -166,7 +166,9 @@ export default function IntegratedResearch({
                 );
               })}
               <p className={s.scenarioLegend}>
-                <span>Sensitivity diagrams · shared price scale · not a time path</span>
+                <span>
+                  Sensitivity diagrams · shared price scale · not a time path
+                </span>
                 {m.scenarioEnd
                   ? "Conditional estimates, not probabilities."
                   : "Past return percentiles applied to the reference; not fair values or forecasts."}

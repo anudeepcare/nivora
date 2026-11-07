@@ -286,10 +286,10 @@ export default function Discover({ embedded = false }: { embedded?: boolean }) {
           >
             Reset filters
           </button>
-        <button className="button" disabled={!rows.length} onClick={save}>
-          <Save size={16} />
-          Save screen
-        </button>
+          <button className="button" disabled={!rows.length} onClick={save}>
+            <Save size={16} />
+            Save screen
+          </button>
         </div>
       </div>
       {!!coverage.requested && (

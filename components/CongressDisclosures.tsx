@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import styles from "./CongressDisclosures.module.css";
 import { api } from "@/lib/client";
 import { dateLabel } from "@/lib/format";
@@ -19,26 +19,33 @@ export default function CongressDisclosures({
     [busy, setBusy] = useState(false),
     [error, setError] = useState("");
   const request = useRef(0);
-  useEffect(() => {
-    setResult(null);
-    if (!preview) void load();
-    return () => { request.current += 1; };
-  }, [symbol, preview]);
-  async function load() {
+  const load = useCallback(async () => {
     const current = ++request.current;
     setBusy(true);
     setError("");
     try {
-      const data = await api<{ rows: CongressDisclosure[]; asOf: string; truncated: boolean }>(`congress?symbol=${encodeURIComponent(symbol)}`);
+      const data = await api<{
+        rows: CongressDisclosure[];
+        asOf: string;
+        truncated: boolean;
+      }>(`congress?symbol=${encodeURIComponent(symbol)}`);
       if (current === request.current) setResult(data);
     } catch {
-      if (current === request.current) setError(
-        "Disclosures could not be checked. Company news and other evidence remain available.",
-      );
+      if (current === request.current)
+        setError(
+          "Disclosures could not be checked. Company news and other evidence remain available.",
+        );
     } finally {
       if (current === request.current) setBusy(false);
     }
-  }
+  }, [symbol]);
+  useEffect(() => {
+    setResult(null);
+    if (!preview) void load();
+    return () => {
+      request.current += 1;
+    };
+  }, [load, preview]);
   return (
     <section className={`congress-disclosures ${styles.panel}`}>
       <header className="section-head">
@@ -79,7 +86,11 @@ export default function CongressDisclosures({
           {result.rows.length ? (
             <div className={`congress-list ${styles.list}`}>
               {result.rows.map((r) => (
-                <article key={r.id} className={styles.row} data-action={r.action}>
+                <article
+                  key={r.id}
+                  className={styles.row}
+                  data-action={r.action}
+                >
                   <div>
                     <strong>{r.member}</strong>
                     <small>
@@ -91,7 +102,11 @@ export default function CongressDisclosures({
                     <strong className={styles.action}>
                       {r.action[0].toUpperCase() + r.action.slice(1)}
                     </strong>
-                    <small>{r.amountRange}</small><small>{r.assetType}{r.assetDescription ? ` · ${r.assetDescription}` : ''}</small>
+                    <small>{r.amountRange}</small>
+                    <small>
+                      {r.assetType}
+                      {r.assetDescription ? ` · ${r.assetDescription}` : ""}
+                    </small>
                   </div>
                   <div>
                     <span>Traded {dateLabel(r.traded)}</span>
@@ -118,9 +133,7 @@ export default function CongressDisclosures({
           )}
         </>
       ) : (
-        <p className="desk-footnote">
-          Checking reported disclosures…
-        </p>
+        <p className="desk-footnote">Checking reported disclosures…</p>
       )}
       <p className="desk-footnote">
         Amounts are reported ranges. Filings can be delayed or amended, and

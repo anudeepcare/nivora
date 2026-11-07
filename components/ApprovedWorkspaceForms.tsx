@@ -216,8 +216,8 @@ export function WatchlistNote({ symbols }: { symbols: string[] }) {
   }>("documents?kind=note", demo ? { documents: [] } : undefined);
   const [symbol, setSymbol] = useState(symbols[0] ?? ""),
     [text, setText] = useState(""),
-    [condition,setCondition] = useState(""),
-    [reviewDate,setReviewDate] = useState(""),
+    [condition, setCondition] = useState(""),
+    [reviewDate, setReviewDate] = useState(""),
     [busy, setBusy] = useState(false),
     [message, setMessage] = useState("");
   const selected = symbols.includes(symbol) ? symbol : (symbols[0] ?? "");
@@ -277,10 +277,25 @@ export function WatchlistNote({ symbols }: { symbols: string[] }) {
             maxLength={3000}
             placeholder="What would you want to see before adding this company?"
           />
-          <label>What would change your view?
-            <textarea value={condition} disabled={busy} onChange={e=>setCondition(e.target.value)} maxLength={1500} placeholder="A business result or risk you want to check" />
+          <label>
+            What would change your view?
+            <textarea
+              value={condition}
+              disabled={busy}
+              onChange={(e) => setCondition(e.target.value)}
+              maxLength={1500}
+              placeholder="A business result or risk you want to check"
+            />
           </label>
-          <label>Review date <input type="date" value={reviewDate} disabled={busy} onChange={e=>setReviewDate(e.target.value)} /></label>
+          <label>
+            Review date{" "}
+            <input
+              type="date"
+              value={reviewDate}
+              disabled={busy}
+              onChange={(e) => setReviewDate(e.target.value)}
+            />
+          </label>
           <button
             className="btn"
             disabled={busy || records.loading || !!records.error || !!demo}

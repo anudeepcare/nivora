@@ -1,9 +1,11 @@
+import {setupFixtureAccess,fixtureAccessResponse} from "./fixture-access.mjs";
 // Compiled route checks with mocked account, RPC and provider transport. No network.
 import {createRequire} from 'node:module';import assert from 'node:assert/strict';
 const require=createRequire(import.meta.url),load=p=>require(`../.next/server/app/api/${p}/route.js`).routeModule.userland;
 process.env.NEXT_PUBLIC_SUPABASE_URL='https://guard-account.example.invalid';process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY='fixture-public';process.env.SUPABASE_SERVICE_ROLE_KEY='fixture-service';process.env.EODHD_API_KEY='fixture-eodhd';process.env.AURYN_SHARED_MARKET_GUARD='true';delete process.env.TWELVE_DATA_API_KEY;
+setupFixtureAccess();process.env.AURYN_SHARED_MARKET_GUARD='true';
 let mode='reserved',userAllowed=true,requests=0,publishes=0;
-globalThis.fetch=async(input,init)=>{
+globalThis.fetch=async(input,init)=>{ const accessFixture=fixtureAccessResponse(input);if(accessFixture)return accessFixture;
  const u=new URL(String(input));
  if(u.pathname==='/auth/v1/user')return Response.json({id:'00000000-0000-4000-8000-000000000001',email_confirmed_at:'2026-01-01'});
  if(u.pathname.endsWith('/auryn_market_user_allow'))return Response.json(userAllowed);

@@ -344,31 +344,205 @@
 }
 
 /* Keep contract headings aligned with their values and all controls on one baseline. */
-.desk .contractFilters{display:grid;grid-template-columns:minmax(180px,1.4fr) minmax(150px,1fr) auto auto;align-items:end;gap:12px}
-.desk .contractFilters>label:not(:global(.options-check)){display:grid;gap:6px;min-width:0}
-.desk .contractFilters :is(input:not([type=checkbox]),select){width:100%;min-height:44px;margin:0}
-.desk .contractFilters :global(.options-segment){min-height:44px;align-self:end;margin:0}
-.desk .contractFilters :global(.options-check){display:flex;align-items:center;gap:8px;min-height:44px;margin:0;white-space:nowrap}
-.desk .contractFilters input[type=checkbox]{width:18px;height:18px;min-height:0;margin:0;flex:none}
-.desk .contractTable :is(thead th,tbody td){text-align:right;vertical-align:middle;padding:12px}
-.desk .contractTable :is(thead th,tbody th):first-child{text-align:left}
-.desk .contractTable tbody tr:hover>:is(th,td),.desk .contractTable tbody tr:focus-within>:is(th,td){background:var(--blue-soft)}
-@media(max-width:1000px){.desk .contractFilters{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
-@media(max-width:480px){.desk .contractFilters{grid-template-columns:minmax(0,1fr)}.desk .contractFilters :global(.options-segment){justify-self:stretch}}
-
-.desk.desk :global(.options-hero-intro){min-width:0;flex:1}
-.desk.desk :global(.options-hero-meta){flex:0 0 170px}
-@media(max-width:700px){
-.desk.desk :global(.options-hero-meta){flex:auto;text-align:left;border-top:1px solid var(--line);padding-top:10px;grid-template-columns:1fr auto;align-items:baseline}
-.desk.desk :global(.options-hero-meta) small{grid-column:1/-1}
-.desk.desk :global(.options-hero-intro){width:100%}
-.desk.desk :global(.options-empty-inline){padding:14px;gap:10px}
-.desk.desk :global(.options-empty-inline) h3{font-size:18px}
-.desk.desk :global(.options-empty-inline) p{font-size:13px}
+.desk .contractFilters {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.4fr) minmax(150px, 1fr) auto auto;
+  align-items: end;
+  gap: 12px;
+}
+.desk .contractFilters > label:not(:global(.options-check)) {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.desk .contractFilters :is(input:not([type="checkbox"]), select) {
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+}
+.desk .contractFilters :global(.options-segment) {
+  min-height: 44px;
+  align-self: end;
+  margin: 0;
+}
+.desk .contractFilters :global(.options-check) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  margin: 0;
+  white-space: nowrap;
+}
+.desk .contractFilters input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  min-height: 0;
+  margin: 0;
+  flex: none;
+}
+.desk .contractTable :is(thead th, tbody td) {
+  text-align: right;
+  vertical-align: middle;
+  padding: 12px;
+}
+.desk .contractTable :is(thead th, tbody th):first-child {
+  text-align: left;
+}
+.desk .contractTable tbody tr:hover > :is(th, td),
+.desk .contractTable tbody tr:focus-within > :is(th, td) {
+  background: var(--blue-soft);
+}
+@media (max-width: 1000px) {
+  .desk .contractFilters {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+@media (max-width: 480px) {
+  .desk .contractFilters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .desk .contractFilters :global(.options-segment) {
+    justify-self: stretch;
+  }
 }
 
-.desk.desk .analytics{min-height:0;height:auto}
+.desk.desk :global(.options-hero-intro) {
+  min-width: 0;
+  flex: 1;
+}
+.desk.desk :global(.options-hero-meta) {
+  flex: 0 0 170px;
+}
+@media (max-width: 700px) {
+  .desk.desk :global(.options-hero-meta) {
+    flex: auto;
+    text-align: left;
+    border-top: 1px solid var(--line);
+    padding-top: 10px;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+  }
+  .desk.desk :global(.options-hero-meta) small {
+    grid-column: 1/-1;
+  }
+  .desk.desk :global(.options-hero-intro) {
+    width: 100%;
+  }
+  .desk.desk :global(.options-empty-inline) {
+    padding: 14px;
+    gap: 10px;
+  }
+  .desk.desk :global(.options-empty-inline) h3 {
+    font-size: 18px;
+  }
+  .desk.desk :global(.options-empty-inline) p {
+    font-size: 13px;
+  }
+}
 
-.desk.desk{row-gap:12px}
-.desk :global(.options-nav){flex-wrap:wrap;overflow:visible;gap:6px;align-items:center}.desk :global(.options-advanced-picker){margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}.desk :global(.options-advanced-picker) select{min-height:44px;font-size:16px;max-width:210px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px}.desk :global(.expiry-comparison){margin:16px 0;padding:14px;background:var(--card);border:1px solid var(--line);border-radius:12px}.desk :global(.expiry-comparison)>summary{cursor:pointer;font-weight:650;min-height:36px}.desk :global(.expiry-comparison)>summary span{font-size:12px;color:var(--muted);font-weight:400;margin-left:12px}.desk :global(.expiry-comparison) p,.desk :global(.expiry-comparison) small{font-size:12px;color:var(--muted)}.desk :global(.expiry-comparison-list){display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:12px 0}.desk :global(.expiry-comparison-list)>button{display:grid;gap:8px;padding:14px;text-align:left;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);color:var(--ink);font:inherit;font-size:13px}.desk :global(.expiry-comparison-list)>button[aria-pressed=true]{border-color:var(--green);background:color-mix(in srgb,var(--green) 8%,var(--card))}.desk :global(.expiry-comparison-list) strong,.desk :global(.expiry-comparison-list)>button>span{display:flex;justify-content:space-between;gap:8px}.desk :global(.expiry-comparison-list) strong span{font-size:11px;color:var(--muted)}
-@media(max-width:600px){.desk :global(.options-nav)>button{flex:1 1 auto;padding:10px 8px;font-size:13px}.desk :global(.options-advanced-picker){width:100%;justify-content:space-between;margin:6px 0}.desk :global(.expiry-comparison)>summary span{display:block;margin:5px 0}.desk :global(.expiry-comparison-list){grid-template-columns:1fr}}
+.desk.desk .analytics {
+  min-height: 0;
+  height: auto;
+}
+
+.desk.desk {
+  row-gap: 12px;
+}
+.desk :global(.options-nav) {
+  flex-wrap: wrap;
+  overflow: visible;
+  gap: 6px;
+  align-items: center;
+}
+.desk :global(.options-advanced-picker) {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.desk :global(.options-advanced-picker) select {
+  min-height: 44px;
+  font-size: 16px;
+  max-width: 210px;
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px;
+}
+.desk :global(.expiry-comparison) {
+  margin: 16px 0;
+  padding: 14px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.desk :global(.expiry-comparison) > summary {
+  cursor: pointer;
+  font-weight: 650;
+  min-height: 36px;
+}
+.desk :global(.expiry-comparison) > summary span {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 400;
+  margin-left: 12px;
+}
+.desk :global(.expiry-comparison) p,
+.desk :global(.expiry-comparison) small {
+  font-size: 12px;
+  color: var(--muted);
+}
+.desk :global(.expiry-comparison-list) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 10px;
+  margin: 12px 0;
+}
+.desk :global(.expiry-comparison-list) > button {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+}
+.desk :global(.expiry-comparison-list) > button[aria-pressed="true"] {
+  border-color: var(--green);
+  background: color-mix(in srgb, var(--green) 8%, var(--card));
+}
+.desk :global(.expiry-comparison-list) strong,
+.desk :global(.expiry-comparison-list) > button > span {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.desk :global(.expiry-comparison-list) strong span {
+  font-size: 11px;
+  color: var(--muted);
+}
+@media (max-width: 600px) {
+  .desk :global(.options-nav) > button {
+    flex: 1 1 auto;
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+  .desk :global(.options-advanced-picker) {
+    width: 100%;
+    justify-content: space-between;
+    margin: 6px 0;
+  }
+  .desk :global(.expiry-comparison) > summary span {
+    display: block;
+    margin: 5px 0;
+  }
+  .desk :global(.expiry-comparison-list) {
+    grid-template-columns: 1fr;
+  }
+}

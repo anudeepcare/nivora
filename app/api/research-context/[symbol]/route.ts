@@ -9,8 +9,8 @@ export async function GET(
   { params }: { params: Promise<{ symbol: string }> },
 ) {
   try {
-    const { user } = await account(request);
-    limit(`research-context:${user.id}`, 6);
+    const { user } = await account(request, { market: true });
+    await limit(`research-context:${user.id}`, 6);
     const symbol = symbolInput((await params).symbol),
       kind = new URL(request.url).searchParams.get("kind");
     if (!["peers", "segments"].includes(kind ?? ""))

@@ -187,7 +187,16 @@ function useWorkspaceData(scope: "all" | "portfolio" | "watchlist" = "all") {
   );
   const prefix =
     product.demo && product.demo.routePrefix !== "" ? "/preview" : "";
-  const paceScan = useWorkspacePace([...(scope === "watchlist" ? [] : (product.workspace?.positions ?? []).filter(p => p.assetType === "stock").map(p => p.symbol)), ...(scope === "portfolio" ? [] : (product.workspace?.watchlist ?? []).map(p => p.symbol))]);
+  const paceScan = useWorkspacePace([
+    ...(scope === "watchlist"
+      ? []
+      : (product.workspace?.positions ?? [])
+          .filter((p) => p.assetType === "stock")
+          .map((p) => p.symbol)),
+    ...(scope === "portfolio"
+      ? []
+      : (product.workspace?.watchlist ?? []).map((p) => p.symbol)),
+  ]);
   const research = (symbol: string) =>
     product.demo?.research[symbol] ??
     (product.cache.get(
@@ -227,7 +236,17 @@ function useWorkspaceData(scope: "all" | "portfolio" | "watchlist" = "all") {
       product.demo ? Date.parse(r.retrievedAt) : Date.now(),
     );
   };
-  return { ...product, quotes, balances, prefix, model, q, pace, research, paceScan };
+  return {
+    ...product,
+    quotes,
+    balances,
+    prefix,
+    model,
+    q,
+    pace,
+    research,
+    paceScan,
+  };
 }
 function WealthStrip({
   state,
@@ -628,7 +647,16 @@ function HomeOverview() {
         research={loadedResearch}
         prefix={prefix}
       />
-      <ResearchInbox today={day} events={feed.data?.events??[]} coverageIssue={!!feed.error||!readiness.eventsReady} />
+      <p>
+        <Link className="btn primary" href={`${prefix}/monthly-plan`}>
+          Build this month’s research plan →
+        </Link>
+      </p>
+      <ResearchInbox
+        today={day}
+        events={feed.data?.events ?? []}
+        coverageIssue={!!feed.error || !readiness.eventsReady}
+      />
       {loadedResearch.length > 0 && (
         <details className={homeStyles.marketRadar}>
           <summary>
@@ -1002,10 +1030,13 @@ export function Portfolio() {
       )
       .map((e) => e.symbol),
   );
-  const visible = positions.filter((p) =>
-    `${p.symbol} ${quotes.data[p.symbol]?.company?.name || ""} ${p.assetType === "cash" ? "cash" : ""}`
-      .toLowerCase()
-      .includes(query.trim().toLowerCase()) && (paceFilter === "all" || String(state.pace(p.symbol)?.view.rawLevel) === paceFilter),
+  const visible = positions.filter(
+    (p) =>
+      `${p.symbol} ${quotes.data[p.symbol]?.company?.name || ""} ${p.assetType === "cash" ? "cash" : ""}`
+        .toLowerCase()
+        .includes(query.trim().toLowerCase()) &&
+      (paceFilter === "all" ||
+        String(state.pace(p.symbol)?.view.rawLevel) === paceFilter),
   );
   const companies = Object.fromEntries(
     Object.entries(quotes.data).map(([symbol, row]) => [symbol, row.company]),
@@ -1039,7 +1070,15 @@ export function Portfolio() {
         subtitle="Holdings, performance and allocation."
         actions={
           <>
-            <button className="btn" onClick={() => { setDepthOpen(true); depth.current?.showModal(); }}>Transactions</button>
+            <button
+              className="btn"
+              onClick={() => {
+                setDepthOpen(true);
+                depth.current?.showModal();
+              }}
+            >
+              Transactions
+            </button>
             <button
               className="btn"
               onClick={() => balances.current?.showModal()}
@@ -1076,20 +1115,60 @@ export function Portfolio() {
           </section>
           <section className="card">
             <div className={portfolioStyles.holdingsToolbar}>
-              <h2><Wallet size={20} aria-hidden="true" />Holdings</h2>
-              {positions.length > 0 && <label className={portfolioStyles.holdingsSearch}>
-                <SearchIcon size={18} aria-hidden="true" />
-                <input aria-label="Filter holdings" placeholder="Find a holding" value={query} onChange={(e) => setQuery(e.target.value)} />
-              </label>}
-              <select aria-label="Filter holdings by accumulation pace" value={paceFilter} onChange={e => setPaceFilter(e.target.value)}><option value="all">All pace levels</option>{[4,3,2,1,0].map(n => <option key={n} value={n}>P{n}</option>)}</select>
+              <h2>
+                <Wallet size={20} aria-hidden="true" />
+                Holdings
+              </h2>
+              {positions.length > 0 && (
+                <label className={portfolioStyles.holdingsSearch}>
+                  <SearchIcon size={18} aria-hidden="true" />
+                  <input
+                    aria-label="Filter holdings"
+                    placeholder="Find a holding"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                  />
+                </label>
+              )}
+              <select
+                aria-label="Filter holdings by accumulation pace"
+                value={paceFilter}
+                onChange={(e) => setPaceFilter(e.target.value)}
+              >
+                <option value="all">All pace levels</option>
+                {[4, 3, 2, 1, 0].map((n) => (
+                  <option key={n} value={n}>
+                    P{n}
+                  </option>
+                ))}
+              </select>
               <div className={portfolioStyles.refreshControls}>
-                {positions.length > 0 && <select aria-label="Portfolio price refresh interval" value={quotes.mode} onChange={(e) => quotes.changeMode(e.target.value as typeof quotes.mode)}>
-                  <option value="balanced">Every 5 min</option>
-                  <option value="live">Every 2 min</option>
-                  <option value="hourly">Hourly</option>
-                  <option value="manual">Manual</option>
-                </select>}
-                <button type="button" disabled={quotes.loading} onClick={quotes.refresh} aria-label={quotes.loading ? "Refreshing portfolio prices" : "Refresh portfolio prices"} aria-busy={quotes.loading} title="Refresh prices now">
+                {positions.length > 0 && (
+                  <select
+                    aria-label="Portfolio price refresh interval"
+                    value={quotes.mode}
+                    onChange={(e) =>
+                      quotes.changeMode(e.target.value as typeof quotes.mode)
+                    }
+                  >
+                    <option value="balanced">Every 5 min</option>
+                    <option value="live">Every 2 min</option>
+                    <option value="hourly">Hourly</option>
+                    <option value="manual">Manual</option>
+                  </select>
+                )}
+                <button
+                  type="button"
+                  disabled={quotes.loading}
+                  onClick={quotes.refresh}
+                  aria-label={
+                    quotes.loading
+                      ? "Refreshing portfolio prices"
+                      : "Refresh portfolio prices"
+                  }
+                  aria-busy={quotes.loading}
+                  title="Refresh prices now"
+                >
                   <RefreshCw size={18} aria-hidden="true" />
                 </button>
               </div>
@@ -1114,7 +1193,9 @@ export function Portfolio() {
                   <button
                     className="btn"
                     onClick={() =>
-                      positions.length ? (setQuery(""), setPaceFilter("all")) : setEditing("new")
+                      positions.length
+                        ? (setQuery(""), setPaceFilter("all"))
+                        : setEditing("new")
                     }
                   >
                     {positions.length
@@ -1145,10 +1226,7 @@ export function Portfolio() {
         </div>
         <div>
           <section className="card">
-            <SectionHead
-              title="Allocation"
-              subtitle="Priced investments"
-            />
+            <SectionHead title="Allocation" subtitle="Priced investments" />
             {model.allocations.length ? (
               <>
                 <div
@@ -1184,24 +1262,27 @@ export function Portfolio() {
                     <strong>{percent(a.weight)}</strong>
                   </Link>
                 ))}
-                {model.allocations.length > 6 && <details className="allocation-more"><summary>All {model.allocations.length} holdings</summary>
-                {model.allocations.slice(6).map((a) => (
-                  <Link
-                    key={a.symbol}
-                    href={researchLink(a.symbol, prefix)}
-                    className="allocation-row"
-                  >
-                    <span>
-                      <i
-                        className="dot"
-                        style={{ background: companyAccent(a.symbol) }}
-                      />
-                      {a.symbol}
-                    </span>
-                    <strong>{percent(a.weight)}</strong>
-                  </Link>
-                ))}
-                </details>}
+                {model.allocations.length > 6 && (
+                  <details className="allocation-more">
+                    <summary>All {model.allocations.length} holdings</summary>
+                    {model.allocations.slice(6).map((a) => (
+                      <Link
+                        key={a.symbol}
+                        href={researchLink(a.symbol, prefix)}
+                        className="allocation-row"
+                      >
+                        <span>
+                          <i
+                            className="dot"
+                            style={{ background: companyAccent(a.symbol) }}
+                          />
+                          {a.symbol}
+                        </span>
+                        <strong>{percent(a.weight)}</strong>
+                      </Link>
+                    ))}
+                  </details>
+                )}
                 <p className="chart-note">
                   Cash and managed balances excluded. Duplicate ticker positions
                   combined.
@@ -1384,7 +1465,7 @@ export function Portfolio() {
                   {currencyError && <Notice error>{currencyError}</Notice>}
                 </section>
               )}
-              <TransactionWorkspace quotes={q} positions={positions}/>
+              <TransactionWorkspace quotes={q} positions={positions} />
               <PortfolioLedger
                 positions={positions}
                 allPositions={positions}
@@ -1491,7 +1572,12 @@ function HoldingsTable({
                             : "Unknown currency"}{" "}
                           cost
                         </small>
-                        {p.assetType !== "crypto" && <PaceBadge signal={decision} loading={state.paceScan.loading} />}
+                        {p.assetType !== "crypto" && (
+                          <PaceBadge
+                            signal={decision}
+                            loading={state.paceScan.loading}
+                          />
+                        )}
                       </span>
                     </Link>
                   )}
@@ -1570,11 +1656,16 @@ export function Watchlist() {
   const state = useWorkspaceData("watchlist"),
     { workspace, prefix, quotes, mutate, pace } = state;
   const [query, setQuery] = useWorkspaceFilter("watchlist"),
-    [type, updateType] = useState(() => String(watchCache?.get("view:watchlist:type")?.value ?? "All")),
+    [type, updateType] = useState(() =>
+      String(watchCache?.get("view:watchlist:type")?.value ?? "All"),
+    ),
     [error, setError] = useState(""),
     [removing, setRemoving] = useState<string | null>(null),
     [removed, setRemoved] = useState<string | null>(null);
-  const setType = (value:string) => { updateType(value);watchCache.set("view:watchlist:type",{at:Date.now(),value}); };
+  const setType = (value: string) => {
+    updateType(value);
+    watchCache.set("view:watchlist:type", { at: Date.now(), value });
+  };
   const dialog = useRef<HTMLDialogElement>(null),
     all = workspace?.watchlist.map((w) => w.symbol) ?? [];
   const calendar = useHomeFeed(all);
@@ -1645,15 +1736,32 @@ export function Watchlist() {
       {(state.workspaceError || error) && (
         <Notice error>{state.workspaceError || error}</Notice>
       )}
-      {removed && <div className="notice" role="status">
-        {removed} removed from your watchlist.
-        <button type="button" className="text-link" disabled={!!removing} onClick={async()=>{
-          const symbol=removed;setRemoving(symbol);
-          try { await mutate({op:"watch",symbol});setRemoved(null); }
-          catch(e){setError(e instanceof Error ? e.message : "Unable to restore company.");}
-          finally{setRemoving(null);}
-        }}>Undo removal</button>
-      </div>}
+      {removed && (
+        <div className="notice" role="status">
+          {removed} removed from your watchlist.
+          <button
+            type="button"
+            className="text-link"
+            disabled={!!removing}
+            onClick={async () => {
+              const symbol = removed;
+              setRemoving(symbol);
+              try {
+                await mutate({ op: "watch", symbol });
+                setRemoved(null);
+              } catch (e) {
+                setError(
+                  e instanceof Error ? e.message : "Unable to restore company.",
+                );
+              } finally {
+                setRemoving(null);
+              }
+            }}
+          >
+            Undo removal
+          </button>
+        </div>
+      )}
       <div className="watch-summary">
         <div>
           <span className="eyebrow">FOLLOWING</span>
@@ -1906,7 +2014,6 @@ export function ResearchHome() {
       <section className="card approved-research-search">
         <h2>Find a company</h2>
         <Search large />
-        
       </section>
       {workspaceError && <Notice error>{workspaceError}</Notice>}
       {quotes.error && <p className="approved-data-note">{quotes.error}</p>}

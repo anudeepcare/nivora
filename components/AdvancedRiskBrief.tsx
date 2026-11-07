@@ -8,10 +8,7 @@ export default function AdvancedRiskBrief({
 }: {
   research: Research;
 }) {
-  const b = useMemo(
-    () => riskBrief(r),
-    [r.history, r.retrievedAt, r.company.assetType],
-  );
+  const b = useMemo(() => riskBrief(r), [r]);
   if (!b.observations)
     return (
       <section className="risk-brief-empty">

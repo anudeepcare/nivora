@@ -8,11 +8,18 @@ export async function fetchWithDeadline(
   const controller = new AbortController();
   const abort = () => controller.abort(options.signal?.reason);
   if (options.signal?.aborted) abort();
-  else options.signal?.addEventListener('abort', abort, { once: true });
-  const timer = setTimeout(() => controller.abort(new Error('The connection timed out. Please try again.')), timeoutMs);
-  try { return await fetcher(url, { ...options, signal: controller.signal }); }
-  finally {
+  else options.signal?.addEventListener("abort", abort, { once: true });
+  const timer = setTimeout(
+    () =>
+      controller.abort(
+        new Error("The connection timed out. Please try again."),
+      ),
+    timeoutMs,
+  );
+  try {
+    return await fetcher(url, { ...options, signal: controller.signal });
+  } finally {
     clearTimeout(timer);
-    options.signal?.removeEventListener('abort', abort);
+    options.signal?.removeEventListener("abort", abort);
   }
 }

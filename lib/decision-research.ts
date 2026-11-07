@@ -133,7 +133,7 @@ function computeResearchDecision(
     p = e.latest,
     q = e.prior,
     m = marketMultiples(r, p),
-    reported = reportedCashPerShare(r,p),
+    reported = reportedCashPerShare(r, p),
     special = /bank|insurance|reit|real estate investment trust/i.test(
       [r.company.sector, r.evidence?.profile?.industry].join(" "),
     );
@@ -654,7 +654,8 @@ function computeResearchDecision(
     tripwires,
     forCase: fcase.positive.slice(0, 3),
     against: fcase.risks.slice(0, 3),
-    description: r.company.description || r.evidence?.profile?.description || "",
+    description:
+      r.company.description || r.evidence?.profile?.description || "",
     sector: r.company.sector || r.evidence?.profile?.sector || "",
     nextReport: next?.date ?? null,
     stance: flags.some((x) => x.severe)
@@ -739,6 +740,9 @@ function decisionHistory(r: Research) {
 
 const decisionMemo = evidenceMemo<ReturnType<typeof computeResearchDecision>>();
 /** Research snapshots are immutable; a new quote/evidence object invalidates this cache. */
-export function researchDecision(r: Research, style: ResearchStyle = "Balanced") {
+export function researchDecision(
+  r: Research,
+  style: ResearchStyle = "Balanced",
+) {
   return decisionMemo(r, style, () => computeResearchDecision(r, style));
 }

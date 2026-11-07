@@ -65,14 +65,67 @@
   color: var(--green);
 }
 
-.inspection { min-height: 48px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; color:var(--muted); font-size:13px; }
-.inspection strong { color:var(--ink); font-size:20px; font-variant-numeric:tabular-nums; }
-.chart svg { touch-action:pan-y; }
-.chart svg:focus-visible { outline:2px solid var(--accent-solid); outline-offset:3px; border-radius:8px; }
+.inspection {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 13px;
+}
+.inspection strong {
+  color: var(--ink);
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+.chart svg {
+  touch-action: pan-y;
+}
+.chart svg:focus-visible {
+  outline: 2px solid var(--accent-solid);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
 
-.chart.chart :global(.chart-note){display:block;overflow-wrap:anywhere}
-.totals{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}
-.totals>div{min-width:0;padding:12px;border-radius:10px;background:var(--surface-soft,var(--card))}
-.totals dt{font-size:12px;line-height:1.5;color:var(--muted)}
-.totals dd{margin:4px 0 0;font-size:20px;font-weight:650;color:var(--ink);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
-@media(max-width:420px){.totals{grid-template-columns:1fr}.totals>div{padding:6px 0}.totals dd{font-size:19px}}
+.chart.chart :global(.chart-note) {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.totals {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 12px 0;
+}
+.totals > div {
+  min-width: 0;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--surface-soft, var(--card));
+}
+.totals dt {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.totals dd {
+  margin: 4px 0 0;
+  font-size: 20px;
+  font-weight: 650;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 420px) {
+  .totals {
+    grid-template-columns: 1fr;
+  }
+  .totals > div {
+    padding: 6px 0;
+  }
+  .totals dd {
+    font-size: 19px;
+  }
+}

@@ -25,12 +25,20 @@ export function paceCode(value: number | null | undefined): string {
   const level = paceLevel(value);
   return level == null ? "Pending" : `P${level}`;
 }
-export function contributionGuide(action: DecisionAction, level: number | null | undefined) {
+export function contributionGuide(
+  action: DecisionAction,
+  level: number | null | undefined,
+) {
   const rawLevel = paceLevel(level);
   const permitted = action === "Buy" || action === "Add";
-  const multiple = permitted && rawLevel != null && rawLevel >= 2
-    ? rawLevel === 2 ? 1 : rawLevel === 3 ? 2 : 4
-    : 0;
+  const multiple =
+    permitted && rawLevel != null && rawLevel >= 2
+      ? rawLevel === 2
+        ? 1
+        : rawLevel === 3
+          ? 2
+          : 4
+      : 0;
   if (multiple === 0) {
     const gatedZone = action === "Review" && rawLevel != null;
     const label =
@@ -40,15 +48,15 @@ export function contributionGuide(action: DecisionAction, level: number | null |
           ? "Additions blocked"
           : gatedZone
             ? `${paceCode(rawLevel)} zone · business gate`
-          : action === "Review"
-            ? rawLevel == null
-              ? "Business evidence pending"
-              : `${paceCode(rawLevel)} zone · business gate`
-            : action === "Watch" && rawLevel === 1
-              ? "P1 watch zone"
-              : rawLevel != null
-                ? `${paceCode(rawLevel)} zone · entry pending`
-                : "Entry conditions pending";
+            : action === "Review"
+              ? rawLevel == null
+                ? "Business evidence pending"
+                : `${paceCode(rawLevel)} zone · business gate`
+              : action === "Watch" && rawLevel === 1
+                ? "P1 watch zone"
+                : rawLevel != null
+                  ? `${paceCode(rawLevel)} zone · entry pending`
+                  : "Entry conditions pending";
     const meaning =
       rawLevel === 0
         ? "P0 is a price-extension pause. New buyer: pause; existing holder: this is not a sell signal."
@@ -56,11 +64,11 @@ export function contributionGuide(action: DecisionAction, level: number | null |
           ? "A risk action takes priority over the price zone. Do not add until the holding case is reviewed."
           : gatedZone
             ? `A confirmed ${paceCode(rawLevel)} price zone is visible. Complete the stated business and data checks before assigning a contribution; the zone does not override them.`
-          : action === "Review"
-            ? "A price zone may be visible, but the business or data checks have not qualified a contribution."
-            : rawLevel === 1
-              ? "P1 is a watch zone. No contribution multiple is assigned yet; existing holders can hold only while the business case remains supported."
-              : "The price zone is visible, but this assessment does not qualify a contribution. Existing holders should follow the separate holding guidance.";
+            : action === "Review"
+              ? "A price zone may be visible, but the business or data checks have not qualified a contribution."
+              : rawLevel === 1
+                ? "P1 is a watch zone. No contribution multiple is assigned yet; existing holders can hold only while the business case remains supported."
+                : "The price zone is visible, but this assessment does not qualify a contribution. Existing holders should follow the separate holding guidance.";
     return { multiple: 0, label, meaning } as const;
   }
   if (multiple === 1)

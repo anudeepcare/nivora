@@ -6472,3 +6472,26 @@ export function homeHighlights(items:InboxItem[],today:string){
 }
 
 ```
+
+## Completion update: planning and evidence workflows
+
+The public Pace explanation now describes accumulation context. Comparative results belong in methodology; do not claim outperformance until the representative study can support it.
+
+### Holdings-aware monthly planning
+The planner uses priced USD investment holdings plus the new deployable contribution as its denominator. Existing cash balances are excluded to avoid counting the same deployable money twice. Duplicate lots are combined. It allocates cents toward equal final values among selected companies, subject to the selected maximum position weight. Existing positions above the cap receive no new money. Unallocated budget stays cash; no selling, borrowing or order placement occurs. Missing, stale or incompatible holding quotes block allocation instead of silently treating those holdings as zero. Read `lib/monthly-allocation.ts` for the executable allocation and validation rules.
+
+### Explicit thesis conditions
+A note may include one enabled condition: operating margin below a threshold, interest coverage below a threshold, current ratio below a threshold, or stock compensation/revenue above a threshold. Equality does not breach the condition. Free text is retained but is not interpreted as a rule. Evidence requires a dated, finite metric with currency and a reporting period no more than 550 days old; future or missing evidence yields unknown. A breach creates a review event, never an automatic sell or a declaration that the thesis is broken. Events deduplicate by symbol, normalized condition, financial period and value, so editing prose does not manufacture another alert.
+
+Saving/checking a condition checks that account's saved note. Scheduled checking requires `AURYN_THESIS_JOB_ENABLED=true` and the existing authenticated job configuration; the current scheduled path checks the configured owner only, at most 12 notes per pass with a cursor. It is not an all-customer monitoring service. Other accounts check explicitly. See `lib/thesis-monitor.ts` and `/api/thesis-monitor`.
+
+### Publishing a dated Pace observation
+Owner controls → handbook/evidence tools → enter a USD stock symbol → publish. `/api/pace-record` recomputes the current completed monthly policy on the server. It requires the latest completed month, a non-stale quote no more than four days old, and recorded evidence/policy hashes. The database supplies publication time. A company-period-policy record cannot be overwritten through the application role. Publication today is not evidence that the signal was published when the month ended. Database administrators retain database privileges; this is not independent notarization.
+
+The public feed lists the latest 100 observations. It does not yet calculate realized returns, drawdowns or a DCA comparison. The database migration and market-data publication setting must be enabled before it can operate. Never seed fabricated observations or backdate publication.
+
+### Representative study
+Run `node --experimental-strip-types scripts/run-pace-study.mjs --policy-hash`, then follow `docs/PACE-STUDY-INPUT.md`. The runner validates supplied point-in-time signals, total-return prices, cash returns, costs, coverage and delistings. Its results remain non-publishable pending raw-policy replay and an audited representative dataset. Existing older-model pending outcomes cannot establish current monthly-v5 performance.
+
+### Observed-user sessions
+The owner-only validation form records consenting participants under anonymous codes, task, completion, duration, observation date and notes. It reports recorded sessions rather than claiming independent verification or retention. Do not enter names/emails or create invented participants. Real recruitment and observed sessions must take place before reporting a 20-user validation result.

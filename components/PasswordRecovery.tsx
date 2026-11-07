@@ -13,10 +13,22 @@ export default function PasswordRecovery() {
   const [complete, setComplete] = useState(false);
   useEffect(() => {
     const controller = new AbortController();
-    fetch("/api/auth/recovery", {cache:"no-store",signal:controller.signal})
-      .then(async response => { const value=await response.json(); if (!controller.signal.aborted) {setReady(response.ok && !!value.email);setEmail(response.ok ? value.email : "");} })
-      .catch(()=>{}).finally(()=>{if(!controller.signal.aborted)setChecking(false);});
-    return ()=>controller.abort();
+    fetch("/api/auth/recovery", {
+      cache: "no-store",
+      signal: controller.signal,
+    })
+      .then(async (response) => {
+        const value = await response.json();
+        if (!controller.signal.aborted) {
+          setReady(response.ok && !!value.email);
+          setEmail(response.ok ? value.email : "");
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (!controller.signal.aborted) setChecking(false);
+      });
+    return () => controller.abort();
   }, []);
   async function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -28,13 +40,22 @@ export default function PasswordRecovery() {
     }
     setBusy(true);
     try {
-      const response = await fetch("/api/auth/recovery", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password})});
-      const value=await response.json();
+      const response = await fetch("/api/auth/recovery", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      const value = await response.json();
       if (!response.ok) throw new Error(value.error);
-      setPassword("");setConfirm("");setComplete(true);setReady(false);
+      setPassword("");
+      setConfirm("");
+      setComplete(true);
+      setReady(false);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message :
-        "Your password could not be updated. Try a new recovery link if this one has expired.",
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : "Your password could not be updated. Try a new recovery link if this one has expired.",
       );
       setBusy(false);
     }
@@ -81,51 +102,72 @@ export default function PasswordRecovery() {
             <h1>Reset your password</h1>
             <p>Choose a new password to return to your investment workspace.</p>
           </div>
-          {complete && <p role="status">Your password was updated. <a href="/overview">Continue to your workspace</a></p>}
-          {ready && <p>Reset password for <strong>{email}</strong></p>}
-          {checking ? <p role="status">Checking your reset link…</p> : !ready && !complete ? <p role="alert">This reset link has expired or could not be verified in this browser. <a href="/login?mode=reset">Request a new reset link</a> and open it in the same browser where you requested it.</p> : null}
-          {ready && <form className="mp-auth-form" onSubmit={submit} aria-busy={busy}>
-            <div className="mp-form-field">
-              <label htmlFor="auryn-new-password">New password</label>
-              <input
-                id="auryn-new-password"
-                name="password"
-                type="password"
-                minLength={8}
-                autoComplete="new-password"
-                required
-                aria-describedby="auryn-new-password-hint"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <small id="auryn-new-password-hint">At least 8 characters.</small>
-            </div>
-            <div className="mp-form-field">
-              <label htmlFor="auryn-confirm-password">Confirm password</label>
-              <input
-                id="auryn-confirm-password"
-                name="confirm-password"
-                type="password"
-                minLength={8}
-                autoComplete="new-password"
-                required
-                value={confirm}
-                onChange={(e) => setConfirm(e.target.value)}
-              />
-            </div>
-            {error && (
-              <p role="alert" className="mp-form-message error">
-                {error}
-              </p>
-            )}
-            <button
-              type="submit"
-              className="mp-button mp-button-primary mp-form-submit"
-              disabled={busy}
-            >
-              {busy ? "Updating…" : "Update password & continue"}
-            </button>
-          </form>}
+          {complete && (
+            <p role="status">
+              Your password was updated.{" "}
+              <a href="/overview">Continue to your workspace</a>
+            </p>
+          )}
+          {ready && (
+            <p>
+              Reset password for <strong>{email}</strong>
+            </p>
+          )}
+          {checking ? (
+            <p role="status">Checking your reset link…</p>
+          ) : !ready && !complete ? (
+            <p role="alert">
+              This reset link has expired or could not be verified in this
+              browser. <a href="/login?mode=reset">Request a new reset link</a>{" "}
+              and open it in the same browser where you requested it.
+            </p>
+          ) : null}
+          {ready && (
+            <form className="mp-auth-form" onSubmit={submit} aria-busy={busy}>
+              <div className="mp-form-field">
+                <label htmlFor="auryn-new-password">New password</label>
+                <input
+                  id="auryn-new-password"
+                  name="password"
+                  type="password"
+                  minLength={8}
+                  autoComplete="new-password"
+                  required
+                  aria-describedby="auryn-new-password-hint"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <small id="auryn-new-password-hint">
+                  At least 8 characters.
+                </small>
+              </div>
+              <div className="mp-form-field">
+                <label htmlFor="auryn-confirm-password">Confirm password</label>
+                <input
+                  id="auryn-confirm-password"
+                  name="confirm-password"
+                  type="password"
+                  minLength={8}
+                  autoComplete="new-password"
+                  required
+                  value={confirm}
+                  onChange={(e) => setConfirm(e.target.value)}
+                />
+              </div>
+              {error && (
+                <p role="alert" className="mp-form-message error">
+                  {error}
+                </p>
+              )}
+              <button
+                type="submit"
+                className="mp-button mp-button-primary mp-form-submit"
+                disabled={busy}
+              >
+                {busy ? "Updating…" : "Update password & continue"}
+              </button>
+            </form>
+          )}
           <a href="/login" className="mp-back-link">
             ← Return to sign in
           </a>

@@ -26,9 +26,9 @@ export default function PublicEducation({ pace = false }: { pace?: boolean }) {
         <h1>
           {pace ? (
             <>
-              A pace for buying.
+              Price context.
               <br />
-              <em>A reason behind it.</em>
+              <em>Evidence before action.</em>
             </>
           ) : (
             <>

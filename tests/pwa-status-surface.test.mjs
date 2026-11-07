@@ -1,3 +1,4 @@
+import { readCompatCss } from './read-compat-css.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -9,7 +10,7 @@ test('installed status surface exists before account shell and cannot collapse a
  const layout=fs.readFileSync(new URL('app/layout.tsx',root),'utf8');
  assert.ok(layout.indexOf('className="pwa-status-surface"')>layout.indexOf('<body'));
  assert.ok(layout.indexOf('className="pwa-status-surface"')<layout.indexOf('<AppSession>'));
- const css=postcss.parse(fs.readFileSync(new URL('app/pwa-shell.css',root),'utf8'));
+ const css=postcss.parse(readCompatCss('app/pwa-shell.css'));
  let rule; css.walkRules('.pwa-status-surface',n=>{ rule ??= n; });
  assert.ok(rule,'The surface must not depend on a changing route container');
  const d=Object.fromEntries(rule.nodes.filter(n=>n.type==='decl').map(n=>[n.prop,n.value]));
@@ -19,12 +20,12 @@ test('installed status surface exists before account shell and cannot collapse a
  assert.match(d['-webkit-backdrop-filter'],/blur\(22px\)/);
  assert.equal(d['background-clip'],undefined,'The status area is part of the glass surface, not an empty painted stripe');
  assert.equal(d.transform,undefined,'No transformed containing block for the fixed surface');
- assert.match(fs.readFileSync(new URL('app/pwa-shell.css',root),'utf8'),/display:\s*none/,'The overlay must not paint a detached iOS strip');
+ assert.match(readCompatCss('app/pwa-shell.css'),/display:\s*none/,'The overlay must not paint a detached iOS strip');
 });
 
 test('current shell reserves notch space and shares browser chrome colors in both themes', () => {
  const read = name => fs.readFileSync(new URL(name,root),'utf8');
- const foundation = postcss.parse(read('app/core/foundation.css'));
+ const foundation = postcss.parse(read('app/core/tokens.css'));
  const colors=[];
  foundation.walkDecls('--chrome-surface', d=>colors.push(d.value));
  assert.deepEqual(colors,['#f7f8f5','#24272b']);
@@ -35,8 +36,8 @@ test('current shell reserves notch space and shares browser chrome colors in bot
  }
  assert.equal(JSON.parse(read('public/manifest.webmanifest')).theme_color,colors[0]);
  const shell=read('components/WorkspaceShell.module.css');
- assert.match(shell,/padding-top:calc\(10px \+ env\(safe-area-inset-top/);
- assert.match(shell,/:global\(\.keyboard-open\) \.dock\s*\{display:none/);
- assert.match(shell,/padding-left:max\(16px,env\(safe-area-inset-left/);
+ assert.match(shell,/padding-top:\s*calc\(10px \+ env\(safe-area-inset-top/);
+ assert.match(shell,/:global\(\.keyboard-open\) \.dock\s*\{\s*display:\s*none/);
+ assert.match(shell,/padding-left:\s*max\(16px,\s*env\(safe-area-inset-left/);
  assert.match(read('app/layout.tsx'),/viewportFit: "cover"/);
 });

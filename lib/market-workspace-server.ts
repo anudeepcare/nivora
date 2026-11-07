@@ -23,11 +23,7 @@ export type MarketCapture = BoardSnapshot & {
   ivTerm: ReturnType<typeof volatilityContext>["term"];
 };
 export function marketSigningKey() {
-  const key =
-    process.env.AURYN_MARKET_SNAPSHOT_SIGNING_KEY ||
-    process.env.SUPABASE_SERVICE_ROLE_KEY ||
-    process.env.CRON_SECRET ||
-    "";
+  const key = process.env.AURYN_MARKET_SNAPSHOT_SIGNING_KEY || "";
   if (key.length < 32)
     throw new HttpError(
       "Account snapshot storage needs a server-only signing key. Existing device snapshots remain available.",

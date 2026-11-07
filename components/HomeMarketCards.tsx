@@ -66,7 +66,8 @@ function PriceArea({
 }) {
   const id = useId().replaceAll(":", "");
   const [selected, setSelected] = useState<number | null>(null);
-  const point = selected == null ? null : points[Math.min(selected, points.length-1)];
+  const point =
+    selected == null ? null : points[Math.min(selected, points.length - 1)];
   const low = Math.min(...points.map((p) => p.close));
   const high = Math.max(...points.map((p) => p.close));
   const first = Date.parse(points[0].time),
@@ -91,21 +92,61 @@ function PriceArea({
         role="slider"
         tabIndex={0}
         aria-valuemin={0}
-        aria-valuemax={points.length-1}
-        aria-valuenow={selected ?? points.length-1}
-        aria-valuetext={`${dateLabel((point ?? points.at(-1)!).time)}: ${amount((point ?? points.at(-1)!).close,currency)}`}
-        style={{touchAction:"pan-y"}}
-        onPointerMove={event=>{
-          const rect=event.currentTarget.getBoundingClientRect();
-          const time=first+Math.max(0,Math.min(1,((event.clientX-rect.left)/rect.width*300-6)/288))*(last-first);
-          setSelected(points.reduce((best,p,i)=>Math.abs(Date.parse(p.time)-time)<Math.abs(Date.parse(points[best].time)-time)?i:best,0));
+        aria-valuemax={points.length - 1}
+        aria-valuenow={selected ?? points.length - 1}
+        aria-valuetext={`${dateLabel((point ?? points.at(-1)!).time)}: ${amount((point ?? points.at(-1)!).close, currency)}`}
+        style={{ touchAction: "pan-y" }}
+        onPointerMove={(event) => {
+          const rect = event.currentTarget.getBoundingClientRect();
+          const time =
+            first +
+            Math.max(
+              0,
+              Math.min(
+                1,
+                (((event.clientX - rect.left) / rect.width) * 300 - 6) / 288,
+              ),
+            ) *
+              (last - first);
+          setSelected(
+            points.reduce(
+              (best, p, i) =>
+                Math.abs(Date.parse(p.time) - time) <
+                Math.abs(Date.parse(points[best].time) - time)
+                  ? i
+                  : best,
+              0,
+            ),
+          );
         }}
-        onPointerLeave={event=>{if(event.pointerType==="mouse")setSelected(null);}}
-        onFocus={()=>setSelected(points.length-1)}
-        onKeyDown={event=>{
-          if(!["ArrowLeft","ArrowRight","Home","End","Escape"].includes(event.key))return;
+        onPointerLeave={(event) => {
+          if (event.pointerType === "mouse") setSelected(null);
+        }}
+        onFocus={() => setSelected(points.length - 1)}
+        onKeyDown={(event) => {
+          if (
+            !["ArrowLeft", "ArrowRight", "Home", "End", "Escape"].includes(
+              event.key,
+            )
+          )
+            return;
           event.preventDefault();
-          setSelected(i=>event.key==="Escape"?null:event.key==="Home"?0:event.key==="End"?points.length-1:Math.max(0,Math.min(points.length-1,(i??points.length-1)+(event.key==="ArrowLeft"?-1:1))));
+          setSelected((i) =>
+            event.key === "Escape"
+              ? null
+              : event.key === "Home"
+                ? 0
+                : event.key === "End"
+                  ? points.length - 1
+                  : Math.max(
+                      0,
+                      Math.min(
+                        points.length - 1,
+                        (i ?? points.length - 1) +
+                          (event.key === "ArrowLeft" ? -1 : 1),
+                      ),
+                    ),
+          );
         }}
         aria-label={`${symbol} closing prices, ${dateLabel(points[0].time)} to ${dateLabel(points.at(-1)!.time)}. ${amount(points[0].close, currency)} to ${amount(points.at(-1)!.close, currency)}.`}
       >
@@ -136,7 +177,24 @@ function PriceArea({
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        {point && <g pointerEvents="none"><line x1={x(point.time)} x2={x(point.time)} y1="5" y2="104" stroke="currentColor" strokeDasharray="3 3"/><circle cx={x(point.time)} cy={y(point.close)} r="4" fill="currentColor"/></g>}
+        {point && (
+          <g pointerEvents="none">
+            <line
+              x1={x(point.time)}
+              x2={x(point.time)}
+              y1="5"
+              y2="104"
+              stroke="currentColor"
+              strokeDasharray="3 3"
+            />
+            <circle
+              cx={x(point.time)}
+              cy={y(point.close)}
+              r="4"
+              fill="currentColor"
+            />
+          </g>
+        )}
         <circle
           cx="294"
           cy={y(points.at(-1)!.close)}
@@ -145,7 +203,9 @@ function PriceArea({
         />
       </svg>
       <span className={styles.historyLabel} aria-live="polite">
-        {point ? `${dateLabel(point.time)} · Close ${amount(point.close,currency)}` : `Daily closes · ${dateLabel(points[0].time)}–${dateLabel(points.at(-1)!.time)}`}
+        {point
+          ? `${dateLabel(point.time)} · Close ${amount(point.close, currency)}`
+          : `Daily closes · ${dateLabel(points[0].time)}–${dateLabel(points.at(-1)!.time)}`}
       </span>
     </div>
   );
@@ -276,9 +336,7 @@ export default function HomeMarketCards({
             {context === "research" ? "SAVED COMPANIES" : "THE BIG PICTURE"}
           </span>
           <h2 id="home-market-pulse">
-            {context === "research"
-              ? "Saved companies"
-              : "Market pulse"}
+            {context === "research" ? "Saved companies" : "Market pulse"}
           </h2>
           <p>
             {selected.length

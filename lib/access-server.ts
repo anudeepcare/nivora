@@ -7,7 +7,9 @@ import {
   type Access,
   type Feature,
 } from "./access-policy";
-export const accessEnabled = () => process.env.VERCEL === "1" || process.env.AURYN_ACCESS_ENABLED === "true";
+export const accessEnabled = () =>
+  process.env.NODE_ENV === "production" ||
+  process.env.AURYN_ACCESS_ENABLED !== "false";
 export const exactOwner = (id: string) =>
   !!process.env.AURYN_OWNER_USER_ID && id === process.env.AURYN_OWNER_USER_ID;
 export function accessDb() {
@@ -160,18 +162,18 @@ export async function guardAccess(request: Request, id: string) {
   const feature: Feature | null = /\/options\//.test(path)
     ? "options"
     : /\/analyst\//.test(path)
-    ? "ai"
-    : /\/research-context\//.test(path)
-      ? "advanced"
-      : /\/(company-data|filings)(?:\/|$)/.test(path)
-        ? "financials"
-        : /\/(congress|enrichment|news)(?:\/|$)/.test(path)
-          ? "news"
-          : /\/(sector-performance)(?:\/|$)/.test(path)
-            ? "portfolio"
-            : /\/(observations|alerts|paper-plans)(?:\/|$)/.test(path)
-              ? "advanced"
-              : null;
+      ? "ai"
+      : /\/research-context\//.test(path)
+        ? "advanced"
+        : /\/(company-data|filings)(?:\/|$)/.test(path)
+          ? "financials"
+          : /\/(congress|enrichment|news)(?:\/|$)/.test(path)
+            ? "news"
+            : /\/(sector-performance)(?:\/|$)/.test(path)
+              ? "portfolio"
+              : /\/(observations|alerts|paper-plans)(?:\/|$)/.test(path)
+                ? "advanced"
+                : null;
   if (feature) requireFeature(a, feature);
   if (/^\/api\/chart\//.test(path) && url.searchParams.get("range") === "5Y")
     requireFeature(a, "longHistory");

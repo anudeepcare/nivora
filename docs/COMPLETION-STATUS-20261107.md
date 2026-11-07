@@ -1,6 +1,6 @@
 # AURYN — completed changes and remaining external gates
 
-This package continues version 45. It is source, not a deployed release. The full one-stop roadmap is not represented as complete.
+This package continues the workflow/owner-handbook handoff. It is source, not a deployed release. The full one-stop roadmap is not represented as complete.
 
 ## Implemented
 - Private owner handbook: searchable chapters, download, worked examples and exact calculation references; server-authorized owner endpoint, excluded from client bundles.
@@ -19,6 +19,9 @@ This package continues version 45. It is source, not a deployed release. The ful
 Apply these SQL migrations in order before deploying the new source:
 1. `supabase/migrations/20261107124746_auryn_support_workflow.sql`
 2. `supabase/migrations/20261107124819_auryn_transaction_ledger.sql`
+3. `supabase/migrations/20261107140000_auryn_shared_request_limits.sql`
+
+The dedicated `AURYN_MARKET_SNAPSHOT_SIGNING_KEY` is now required for account snapshots. See `REVIEW-ACTIONS-20261107.md` for authoritative current deployment requirements.
 
 No migration has been run against production. The support list and transaction storage require these migrations. Account assignment is a label for owner triage; this does not grant access to staff accounts or send assignment emails.
 

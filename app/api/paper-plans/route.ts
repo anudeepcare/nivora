@@ -8,7 +8,7 @@ import {
 import { cleanPaperPlan } from "@/lib/paper-policy";
 export async function GET(request: Request) {
   try {
-    const { user, db } = await account(request);
+    const { user, db } = await account(request, { market: false });
     paperOwner(user);
     const [plans, runs] = await Promise.all([
       db
@@ -40,9 +40,9 @@ export async function GET(request: Request) {
 }
 export async function POST(request: Request) {
   try {
-    const { user } = await account(request);
+    const { user } = await account(request, { market: false });
     paperOwner(user);
-    limit(`paper-write:${user.id}`, 10);
+    await limit(`paper-write:${user.id}`, 10);
     const b = await request.json(),
       db = serviceDb();
     if (b.op === "save") {

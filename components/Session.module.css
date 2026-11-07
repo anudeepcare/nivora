@@ -387,25 +387,123 @@
   background: #f0f5e9;
 }
 
-.auth.auth{min-height:100svh;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)}
-.auth .story{padding:36px 10%;background:radial-gradient(ellipse at 90% 15%,#cbd6c5 0%,transparent 60%),linear-gradient(145deg,#e8eeea,#f4f6f2);color:#23332b}
-.auth .storyContent{max-width:420px;margin:auto 0;padding:48px 0}
-.auth .storyContent h2{font-size:clamp(32px,3.5vw,48px);line-height:1.1;letter-spacing:-.05em;margin:16px 0}
-.auth .storyContent>p{font-size:14px;line-height:1.6;max-width:30ch;color:#53645b}
-.auth .brandVisual{height:140px;margin:28px 0;box-shadow:none;background:transparent;border:0}
-.auth .researchCard{display:flex;flex-wrap:wrap;gap:20px;padding:0;background:transparent;border:0;box-shadow:none}
-.auth .researchCard>span{display:flex;align-items:center;gap:7px;font-size:12px;color:#344d3d}
-.auth .main{padding:48px 8%;background:var(--card)}
-.auth .main :global(.mp-auth-panel){max-width:400px;padding:0;border:0;box-shadow:none;background:transparent}
-.auth .main :global(.mp-auth-heading h1){font-size:28px;font-weight:600}
-.auth .main :global(.mp-auth-heading p){font-size:13px}
-.auth .main :global(.mp-overline){display:none}
-.auth .main :global(.mp-auth-disclaimer){font-size:11px;line-height:1.6}
-:global([data-theme="dark"]) .auth .story{background:linear-gradient(140deg,#263b33,#1c2924);color:#edf2eb}
-:global([data-theme="dark"]) .auth .storyContent>p,:global([data-theme="dark"]) .auth .researchCard>span{color:#c5d3c8}
-@media(max-width:760px){.auth.auth{display:block}.auth .story{display:none}.auth .main{min-height:100svh;padding:28px 24px}.auth .main :global(.mp-auth-panel){width:100%;margin:48px auto 24px}}
+.auth.auth {
+  min-height: 100svh;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+}
+.auth .story {
+  padding: 36px 10%;
+  background:
+    radial-gradient(ellipse at 90% 15%, #cbd6c5 0%, transparent 60%),
+    linear-gradient(145deg, #e8eeea, #f4f6f2);
+  color: #23332b;
+}
+.auth .storyContent {
+  max-width: 420px;
+  margin: auto 0;
+  padding: 48px 0;
+}
+.auth .storyContent h2 {
+  font-size: clamp(32px, 3.5vw, 48px);
+  line-height: 1.1;
+  letter-spacing: -0.05em;
+  margin: 16px 0;
+}
+.auth .storyContent > p {
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 30ch;
+  color: #53645b;
+}
+.auth .brandVisual {
+  height: 140px;
+  margin: 28px 0;
+  box-shadow: none;
+  background: transparent;
+  border: 0;
+}
+.auth .researchCard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.auth .researchCard > span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: #344d3d;
+}
+.auth .main {
+  padding: 48px 8%;
+  background: var(--card);
+}
+.auth .main :global(.mp-auth-panel) {
+  max-width: 400px;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+}
+.auth .main :global(.mp-auth-heading h1) {
+  font-size: 28px;
+  font-weight: 600;
+}
+.auth .main :global(.mp-auth-heading p) {
+  font-size: 13px;
+}
+.auth .main :global(.mp-overline) {
+  display: none;
+}
+.auth .main :global(.mp-auth-disclaimer) {
+  font-size: 11px;
+  line-height: 1.6;
+}
+:global([data-theme="dark"]) .auth .story {
+  background: linear-gradient(140deg, #263b33, #1c2924);
+  color: #edf2eb;
+}
+:global([data-theme="dark"]) .auth .storyContent > p,
+:global([data-theme="dark"]) .auth .researchCard > span {
+  color: #c5d3c8;
+}
+@media (max-width: 760px) {
+  .auth.auth {
+    display: block;
+  }
+  .auth .story {
+    display: none;
+  }
+  .auth .main {
+    min-height: 100svh;
+    padding: 28px 24px;
+  }
+  .auth .main :global(.mp-auth-panel) {
+    width: 100%;
+    margin: 48px auto 24px;
+  }
+}
 
-.auth .story{--ink:#23332b;--muted:#53645b;--line:#d5dfd6;border-color:var(--line)}
-.auth .storyContent h2 span{background:none;-webkit-text-fill-color:currentColor;color:#446a52}
-:global([data-theme="dark"]) .auth .story{--ink:#edf2eb;--muted:#c5d3c8;--line:#41574b}
-:global([data-theme="dark"]) .auth .storyContent h2 span{color:#b7d7a8}
+.auth .story {
+  --ink: #23332b;
+  --muted: #53645b;
+  --line: #d5dfd6;
+  border-color: var(--line);
+}
+.auth .storyContent h2 span {
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  color: #446a52;
+}
+:global([data-theme="dark"]) .auth .story {
+  --ink: #edf2eb;
+  --muted: #c5d3c8;
+  --line: #41574b;
+}
+:global([data-theme="dark"]) .auth .storyContent h2 span {
+  color: #b7d7a8;
+}

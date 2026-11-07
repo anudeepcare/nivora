@@ -2,7 +2,7 @@ import { account, failure, HttpError, privateJson, limit } from "@/lib/server";
 import { checkAlerts } from "@/lib/monitor";
 export async function GET(request: Request) {
   try {
-    const { user, db } = await account(request);
+    const { user, db } = await account(request, { market: false });
     const r = await db
       .from("auryn_alert_events")
       .select("*")
@@ -21,8 +21,8 @@ export async function GET(request: Request) {
 }
 export async function POST(request: Request) {
   try {
-    const { user, db } = await account(request);
-    limit(`alerts:${user.id}`, 2, 60000);
+    const { user, db } = await account(request, { market: false });
+    await limit(`alerts:${user.id}`, 2, 60000);
     const body = await request.json();
     if (body.op === "check")
       return privateJson(await checkAlerts(db, user.id, request));

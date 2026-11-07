@@ -3,7 +3,7 @@ import { account, failure, HttpError, privateJson, limit } from "@/lib/server";
 import { cleanDocument } from "@/lib/documents";
 export async function GET(request: Request) {
   try {
-    const { user, db } = await account(request);
+    const { user, db } = await account(request, { market: false });
     const kind = new URL(request.url).searchParams.get("kind");
     let query = db
       .from("auryn_documents")
@@ -27,8 +27,8 @@ export async function GET(request: Request) {
 }
 export async function POST(request: Request) {
   try {
-    const { user, db } = await account(request);
-    limit(`documents:${user.id}`, 20);
+    const { user, db } = await account(request, { market: false });
+    await limit(`documents:${user.id}`, 20);
     const v = await request.json(),
       kind = String(v?.kind),
       key = String(v?.key ?? "");

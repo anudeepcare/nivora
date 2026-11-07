@@ -6,6 +6,7 @@ process.env.NEXT_PUBLIC_SUPABASE_URL='https://access.example.invalid';process.en
 let actor=friend,config={mode:'beta',freeResearch:0},grant=null,calls=[],checks=0;
 globalThis.fetch=async(input,options)=>{
  const url=new URL(String(input));calls.push(url.pathname);
+ if(url.pathname.endsWith('/rpc/auryn_request_allow'))return Response.json(true);
  if(url.pathname==='/auth/v1/user')return Response.json({id:actor,email:'fixture@example.invalid',email_confirmed_at:'2026-01-01',app_metadata:{},user_metadata:{role:'admin'}});
  if(url.pathname.endsWith('/auryn_access_config'))return Response.json({body:config,enforced:true,owner_id:owner});
  if(url.pathname.endsWith('/auryn_beta_grants'))return Response.json(grant);
@@ -17,6 +18,10 @@ globalThis.fetch=async(input,options)=>{
 const req=(path,method='GET')=>new Request('https://auryn.example/api/'+path,{method,headers:{Authorization:'Bearer test-only','x-auryn-preview-plan':'pro'}});
 let r=await load('access').GET(req('access'));assert.equal(r.status,200);let a=await r.json();assert.equal(a.owner,false);assert.equal(a.plan,'free');assert.equal(a.preview,null);assert.equal(a.sampleOnly,true);checks++;
 r=await load('owner/access').GET(req('owner/access'));assert.equal(r.status,403);checks++;
+r=await load('owner/validation').GET(req('owner/validation'));assert.equal(r.status,403);checks++;
+r=await load('owner/validation').POST(req('owner/validation','POST'));assert.equal(r.status,403);checks++;
+r=await load('pace-record').POST(req('pace-record','POST'));assert.equal(r.status,403);checks++;
+r=await load('thesis-monitor').POST(req('thesis-monitor','POST'));assert.equal(r.status,403);checks++;
 r=await load('search').GET(req('search?q=MSFT'));assert.equal(r.status,403);checks++;
 process.env.AURYN_EXTERNAL_DATA_LICENSED='true';
 r=await load('options/[symbol]').GET(req('options/APP'),{params:Promise.resolve({symbol:'APP'})});assert.equal(r.status,403);checks++;

@@ -95,17 +95,93 @@
   }
 }
 
-
-.region{padding:8px 12px;margin:0 0 10px;background:linear-gradient(110deg,color-mix(in srgb,var(--jade) 12%,var(--card)),var(--card));border-radius:12px;gap:6px 16px}
-.strip{gap:6px 24px}.strip>div{min-height:34px;gap:8px}.strip dd{font-size:17px}
-@media(max-width:600px){
-.region{padding:8px 10px;display:flex;align-items:center;gap:4px;overflow:hidden}
-.strip{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:18px;width:100%;padding-bottom:4px;scrollbar-width:thin}
-.strip>div{flex:0 0 auto;min-width:86px;gap:3px}
-.strip dt{font-size:10px;white-space:nowrap}.strip dd{font-size:15px}
-.region>button{min-height:44px;font-size:10px;padding:2px 0; margin-left:auto}
-.region[data-price-context] .strip{display:grid;grid-template-columns:1fr}
+.region {
+  padding: 8px 12px;
+  margin: 0 0 10px;
+  background: linear-gradient(
+    110deg,
+    color-mix(in srgb, var(--jade) 12%, var(--card)),
+    var(--card)
+  );
+  border-radius: 12px;
+  gap: 6px 16px;
+}
+.strip {
+  gap: 6px 24px;
+}
+.strip > div {
+  min-height: 34px;
+  gap: 8px;
+}
+.strip dd {
+  font-size: 17px;
+}
+@media (max-width: 600px) {
+  .region {
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    overflow: hidden;
+  }
+  .strip {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 18px;
+    width: 100%;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+  }
+  .strip > div {
+    flex: 0 0 auto;
+    min-width: 86px;
+    gap: 3px;
+  }
+  .strip dt {
+    font-size: 10px;
+    white-space: nowrap;
+  }
+  .strip dd {
+    font-size: 15px;
+  }
+  .region > button {
+    min-height: 44px;
+    font-size: 10px;
+    padding: 2px 0;
+    margin-left: auto;
+  }
+  .region[data-price-context] .strip {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
 }
 
-
-@media(max-width:600px){.region{flex-wrap:nowrap;gap:4px;padding:8px}.strip{flex:1;min-width:0;width:auto;margin:0}.region>button{flex:0 0 44px;width:44px;height:44px;min-height:44px;padding:0;display:grid;place-items:center}.strip>div{padding:0}.region[data-price-context]{flex-wrap:wrap}}
+@media (max-width: 600px) {
+  .region {
+    flex-wrap: nowrap;
+    gap: 4px;
+    padding: 8px;
+  }
+  .strip {
+    flex: 1;
+    min-width: 0;
+    width: auto;
+    margin: 0;
+  }
+  .region > button {
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+  }
+  .strip > div {
+    padding: 0;
+  }
+  .region[data-price-context] {
+    flex-wrap: wrap;
+  }
+}

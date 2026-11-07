@@ -52,10 +52,8 @@ import {
   numeric,
   supportedListing,
 } from "./market";
-const cache = new Map<
-  string,
-  { expires: number; retainUntil: number; value: Promise<any> }
->();
+import { createProviderCache } from "./provider-cache";
+const cached = createProviderCache();
 export function researchSymbol(value: unknown) {
   try {
     return providerSymbol(value);
@@ -65,39 +63,6 @@ export function researchSymbol(value: unknown) {
       (error as { status?: number }).status ?? 400,
     );
   }
-}
-async function cached<T>(
-  key: string,
-  ttl: number,
-  read: () => Promise<T>,
-  retained?: { milliseconds: number; restore: (value: T) => T },
-): Promise<T> {
-  const old = cache.get(key);
-  if (old && old.expires > Date.now()) return old.value;
-  const entry = {
-    expires: Date.now() + ttl,
-    retainUntil: Date.now() + ttl + (retained?.milliseconds ?? 0),
-    value: Promise.resolve() as Promise<any>,
-  };
-  const value = read().catch(async (error) => {
-    if (retained && old && old.retainUntil > Date.now()) {
-      try {
-        const previous = await old.value;
-        // Retrying must never extend the original observation's retention horizon.
-        entry.retainUntil = old.retainUntil;
-        entry.expires = Math.min(entry.expires, old.retainUntil);
-        return retained.restore(previous);
-      } catch {
-        /* A rejected response is never a last-good observation. */
-      }
-    }
-    cache.delete(key);
-    throw error;
-  });
-  entry.value = value;
-  cache.set(key, entry);
-  if (cache.size > 250) cache.delete(cache.keys().next().value!);
-  return value;
 }
 async function json(
   url: string,
@@ -753,7 +718,7 @@ async function secFundamentals(symbol: string): Promise<{
     return { facts, filings, name: company?.entityName || match.title, issues };
   });
   // A partial provider failure must be retryable, not cached for six hours.
-  if (result.issues.length) cache.delete(`sec:${symbol}`);
+  if (result.issues.length) await cached.invalidate(`sec:${symbol}`, result);
   return result;
 }
 export async function research(symbol: string): Promise<Research> {
@@ -913,7 +878,8 @@ async function remoteSearch(query: string) {
 
 /** Enumerate every row of each enabled provider directory; no search-result cap.
  * Successful directory reads are cached for a day; failed reads stay retryable. */
-let readyDirectory: { key: string; value: MarketDirectory; at: number } | null = null;
+let readyDirectory: { key: string; value: MarketDirectory; at: number } | null =
+  null;
 export async function marketDirectory(): Promise<MarketDirectory> {
   const sources = configuredSources();
   const tasks: {
@@ -1002,21 +968,32 @@ export async function marketDirectory(): Promise<MarketDirectory> {
       };
     },
   );
-  readyDirectory = { key: JSON.stringify(sources), value: result, at: Date.now() };
+  readyDirectory = {
+    key: JSON.stringify(sources),
+    value: result,
+    at: Date.now(),
+  };
   return result;
 }
 export async function search(query: string) {
   query = query.trim().toUpperCase();
   if (!query) return [];
   if (/^[A-Z0-9]+\.[A-Z]+$|^[A-Z ]+:/.test(query)) researchSymbol(query);
-  const snapshot = readyDirectory && readyDirectory.key === JSON.stringify(configuredSources()) && Date.now() - readyDirectory.at < 86400000 ? readyDirectory.value : null;
+  const snapshot =
+    readyDirectory &&
+    readyDirectory.key === JSON.stringify(configuredSources()) &&
+    Date.now() - readyDirectory.at < 86400000
+      ? readyDirectory.value
+      : null;
   const cachedRows = snapshot ? searchDirectory(query, snapshot.listings) : [];
   if (cachedRows.length) return cachedRows;
   let remoteError: unknown;
   try {
     const remote = await remoteSearch(query);
     if (remote.length) return remote;
-  } catch (error) { remoteError = error; }
+  } catch (error) {
+    remoteError = error;
+  }
   const directory = await marketDirectory();
   const rows = searchDirectory(query, directory.listings);
   if (rows.length || !remoteError) return rows;

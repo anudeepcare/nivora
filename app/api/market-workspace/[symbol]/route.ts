@@ -15,7 +15,7 @@ export async function GET(
   { params }: { params: Promise<{ symbol: string }> },
 ) {
   try {
-    const { user, db } = await account(request);
+    const { user, db } = await account(request, { market: false });
     const symbol = ticker((await params).symbol);
     const views = await db
       .from("auryn_documents")
@@ -52,7 +52,7 @@ export async function POST(
   { params }: { params: Promise<{ symbol: string }> },
 ) {
   try {
-    const { user, db } = await account(request);
+    const { user, db } = await account(request, { market: false });
     const symbol = ticker((await params).symbol);
     const raw = await request.text();
     if (Buffer.byteLength(raw) > 20000)
@@ -66,7 +66,7 @@ export async function POST(
     if (!input || typeof input !== "object" || Array.isArray(input))
       throw new HttpError("A valid market workspace request is required.");
     if (input.op === "views") {
-      limit("market-views:" + user.id, 10);
+      await limit("market-views:" + user.id, 10);
       let presets;
       try {
         presets = cleanMarketViews(input.presets);
@@ -120,7 +120,7 @@ export async function POST(
     }
     if (input.op !== "capture")
       throw new HttpError("Choose capture or saved views.");
-    limit("market-capture:" + user.id, 3);
+    await limit("market-capture:" + user.id, 3);
     const access = await requestAccess(request, user.id);
     if (access.sampleOnly)
       throw new HttpError(

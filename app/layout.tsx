@@ -24,7 +24,10 @@ export const metadata: Metadata = {
     title: "AURYN",
     statusBarStyle: "default",
   },
-  icons: { icon: "/icon.svg?v=citron-20261104", apple: "/apple-touch-icon-v2.png" },
+  icons: {
+    icon: "/icon.svg?v=citron-20261104",
+    apple: "/apple-touch-icon-v2.png",
+  },
 };
 export const viewport: Viewport = {
   width: "device-width",

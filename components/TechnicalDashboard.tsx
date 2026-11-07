@@ -310,12 +310,36 @@ export default function TechnicalDashboard({
           </div>
         ))}
       </div>
-      <TechnicalLevelMap spot={r.quote.price} currency={currency} levels={[
-        {name:'50-session average',price:pro.ma50,period:'Completed daily closes',asOf:a.asOf},
-        {name:'200-session average',price:pro.ma200,period:'Completed daily closes',asOf:a.asOf},
-        {name:'50-week WMA',price:extra.wma50Week,period:'Weighted completed weeks',asOf:extra.weeklyAsOf},
-        {name:'200-week WMA',price:extra.wma200Week,period:'Weighted completed weeks',asOf:extra.weeklyAsOf},
-      ]}/>
+      <TechnicalLevelMap
+        spot={r.quote.price}
+        currency={currency}
+        levels={[
+          {
+            name: "50-session average",
+            price: pro.ma50,
+            period: "Completed daily closes",
+            asOf: a.asOf,
+          },
+          {
+            name: "200-session average",
+            price: pro.ma200,
+            period: "Completed daily closes",
+            asOf: a.asOf,
+          },
+          {
+            name: "50-week WMA",
+            price: extra.wma50Week,
+            period: "Weighted completed weeks",
+            asOf: extra.weeklyAsOf,
+          },
+          {
+            name: "200-week WMA",
+            price: extra.wma200Week,
+            period: "Weighted completed weeks",
+            asOf: extra.weeklyAsOf,
+          },
+        ]}
+      />
       <div className="technical-desk-groups">
         {groups.map((g) => (
           <section key={g.title} data-tone={g.tone}>

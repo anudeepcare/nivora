@@ -8,10 +8,7 @@ export default function BusinessHistory({
 }: {
   research: Research;
 }) {
-  const h = useMemo(
-    () => businessHistory(r),
-    [r.facts, r.retrievedAt, r.company.assetType],
-  );
+  const h = useMemo(() => businessHistory(r), [r]);
   if (!h || !h.periods) return null;
   return (
     <section className="business-history depth-business-history">

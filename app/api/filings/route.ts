@@ -4,8 +4,8 @@ import { eodEnabled, eodFilings } from "@/lib/eodhd";
 import { fundamentals } from "@/lib/providers";
 export async function GET(request: Request) {
   try {
-    const { user } = await account(request);
-    limit(`filings:${user.id}`, 10);
+    const { user } = await account(request, { market: true });
+    await limit(`filings:${user.id}`, 10);
     const symbol = symbolInput(
       new URL(request.url).searchParams.get("symbol") ?? "",
     );

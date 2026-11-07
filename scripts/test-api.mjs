@@ -1,3 +1,4 @@
+import {setupFixtureAccess,fixtureAccessResponse} from "./fixture-access.mjs";
 // Executes the built route handlers with a mocked identity/data transport; no server, credentials or paid calls.
 import { createRequire } from "node:module";
 import assert from "node:assert/strict";
@@ -58,7 +59,7 @@ const headers = {
   Authorization: "Bearer test-only",
   "Content-Type": "application/json",
 };
-globalThis.fetch = async (input, options) => {
+globalThis.fetch = async (input, options) => { const accessFixture=fixtureAccessResponse(input);if(accessFixture)return accessFixture;
   const url = String(input);
   calls.push(url);
   if (url.includes("/auth/v1/user"))
@@ -110,7 +111,7 @@ process.env.AURYN_ACCESS_ENABLED="true";
 const blockedBeforeSetup=await load("quotes").GET(new Request("https://auryn.example/api/quotes?symbols=MSFT",{headers}));
 assert.equal(blockedBeforeSetup.status,503);checks++;
 process.env.AURYN_ACCESS_ENABLED="false";
-delete process.env.AURYN_OWNER_USER_ID;
+setupFixtureAccess();
 const denied = await load("paper-status").GET(
   new Request("https://auryn.example/api/paper-status", { headers }),
 );
@@ -180,7 +181,7 @@ console.log(
 );
 // Account balances always scope reads/writes to the verified identity.
 const balancesRoute=load('account-balances');let balanceWrite=null,balanceRead='';
-globalThis.fetch=async(input,options)=>{
+globalThis.fetch=async(input,options)=>{ const accessFixture=fixtureAccessResponse(input);if(accessFixture)return accessFixture;
  const url=String(input);
  if(url.includes('/auth/v1/user'))return Response.json({id:'00000000-0000-4000-8000-000000000001',email:'test@example.invalid'});
  if(url.includes('/rest/v1/auryn_account_balances')){

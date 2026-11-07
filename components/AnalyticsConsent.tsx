@@ -20,7 +20,11 @@ export function PrivacyChoices({ compact = false }: { compact?: boolean }) {
   return (
     <button
       type="button"
-      className={compact ? "footer-analytics-choice" : "text-link settings-analytics-button"}
+      className={
+        compact
+          ? "footer-analytics-choice"
+          : "text-link settings-analytics-button"
+      }
       onClick={() => window.dispatchEvent(new Event("auryn:privacy"))}
     >
       {!compact && <ChartNoAxesCombined size={18} aria-hidden="true" />}

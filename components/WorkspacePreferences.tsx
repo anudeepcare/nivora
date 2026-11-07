@@ -5,21 +5,46 @@ import { useProduct, useResource } from "./Session";
 import { api } from "@/lib/client";
 import { workspacePreferences } from "@/lib/workspace-preferences";
 export function useWorkspacePreferences() {
-  const {demo,owner,cache}=useProduct();
-  const resource=useResource<{documents:{key:string;body:{preferences?:unknown}}[]}>("documents?kind=view",demo?{documents:[]}:undefined);
-  const store=preferenceStore(cache,owner);
-  const state=useSyncExternalStore(store.subscribe,store.snapshot,store.snapshot);
-  const saved=resource.data?.documents.find(d=>d.key==='workspace-preferences')?.body.preferences;
-  const preferences=state.value??workspacePreferences(saved);
-  async function save(patch:Partial<ReturnType<typeof workspacePreferences>>){
-    try {await store.save(patch,saved,async next=>{
-      if(demo)throw Error('Sign in to save preferences across devices.');
-      if(!resource.data||resource.error)throw Error('Load saved preferences before making changes.');
-      await api('documents',{kind:'view',key:'workspace-preferences',body:{name:'Workspace preferences',preferences:next}});
-      resource.refresh();
-    });}catch{/* Store exposes the error to every mounted control. */}
+  const { demo, owner, cache } = useProduct();
+  const resource = useResource<{
+    documents: { key: string; body: { preferences?: unknown } }[];
+  }>("documents?kind=view", demo ? { documents: [] } : undefined);
+  const store = preferenceStore(cache, owner);
+  const state = useSyncExternalStore(
+    store.subscribe,
+    store.snapshot,
+    store.snapshot,
+  );
+  const saved = resource.data?.documents.find(
+    (d) => d.key === "workspace-preferences",
+  )?.body.preferences;
+  const preferences = state.value ?? workspacePreferences(saved);
+  async function save(patch: Partial<ReturnType<typeof workspacePreferences>>) {
+    try {
+      await store.save(patch, saved, async (next) => {
+        if (demo) throw Error("Sign in to save preferences across devices.");
+        if (!resource.data || resource.error)
+          throw Error("Load saved preferences before making changes.");
+        await api("documents", {
+          kind: "view",
+          key: "workspace-preferences",
+          body: { name: "Workspace preferences", preferences: next },
+        });
+        resource.refresh();
+      });
+    } catch {
+      /* Store exposes the error to every mounted control. */
+    }
   }
-  return {preferences,save,saving:state.busy,error:state.error||resource.error,ready:!!resource.data&&!resource.error,owner,localOnly:!!demo};
+  return {
+    preferences,
+    save,
+    saving: state.busy,
+    error: state.error || resource.error,
+    ready: !!resource.data && !resource.error,
+    owner,
+    localOnly: !!demo,
+  };
 }
 export default function WorkspacePreferences() {
   const {
@@ -61,8 +86,30 @@ export default function WorkspacePreferences() {
           <option value="event">Upcoming earnings</option>
         </select>
       </label>
-      <fieldset><legend>Overview evidence cards</legend>
-        {[['business','Business'],['valuation','Valuation'],['price','Technical conditions'],['ownership','Ownership']].map(([value,label])=><label key={value}><input type="checkbox" disabled={disabled} checked={p.visibleMetrics.includes(value)} onChange={e=>void save({visibleMetrics:e.target.checked?[...p.visibleMetrics,value]:p.visibleMetrics.filter(v=>v!==value)})}/>{label}</label>)}
+      <fieldset>
+        <legend>Overview evidence cards</legend>
+        {[
+          ["business", "Business"],
+          ["valuation", "Valuation"],
+          ["price", "Technical conditions"],
+          ["ownership", "Ownership"],
+        ].map(([value, label]) => (
+          <label key={value}>
+            <input
+              type="checkbox"
+              disabled={disabled}
+              checked={p.visibleMetrics.includes(value)}
+              onChange={(e) =>
+                void save({
+                  visibleMetrics: e.target.checked
+                    ? [...p.visibleMetrics, value]
+                    : p.visibleMetrics.filter((v) => v !== value),
+                })
+              }
+            />
+            {label}
+          </label>
+        ))}
       </fieldset>
       <label>
         Single-position attention threshold

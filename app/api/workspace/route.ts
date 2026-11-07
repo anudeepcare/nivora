@@ -4,7 +4,7 @@ import { symbolInput } from "@/lib/format";
 import { normalizePositions, normalizeWatchlist } from "@/lib/workspace";
 export async function GET(request: Request) {
   try {
-    const { user, db } = await account(request);
+    const { user, db } = await account(request, { market: false });
     const [p, w] = await Promise.all([
       db
         .from("portfolio_positions")
@@ -18,7 +18,11 @@ export async function GET(request: Request) {
     if (p.error || w.error) {
       const problem = workspaceFailure([p, w]);
       // Codes and status only: never log investment rows, tokens or account IDs.
-      console.warn("workspace_read_failed", {positions: p.error?.code, watchlist: w.error?.code, status: problem.status});
+      console.warn("workspace_read_failed", {
+        positions: p.error?.code,
+        watchlist: w.error?.code,
+        status: problem.status,
+      });
       throw new HttpError(problem.message, problem.status);
     }
     return privateJson({
@@ -32,8 +36,8 @@ export async function GET(request: Request) {
 }
 export async function POST(request: Request) {
   try {
-    const { user, db } = await account(request);
-    limit(`workspace:${user.id}`);
+    const { user, db } = await account(request, { market: false });
+    await limit(`workspace:${user.id}`);
     const body = await request.json();
     if (body.op === "watch" || body.op === "unwatch") {
       const symbol = symbolInput(body.symbol);
@@ -49,8 +53,13 @@ export async function POST(request: Request) {
           }),
         ),
       );
-      if (results.some((r) => r.error?.message?.includes("Watchlist allowance")))
-        throw new HttpError("Watchlist allowance reached. Remove a saved company before adding another.", 429);
+      if (
+        results.some((r) => r.error?.message?.includes("Watchlist allowance"))
+      )
+        throw new HttpError(
+          "Watchlist allowance reached. Remove a saved company before adding another.",
+          429,
+        );
       if (results.some((r) => r.error))
         throw new HttpError("Watchlist update failed. Please try again.", 503);
     } else if (body.op === "confirm-cost-currency") {

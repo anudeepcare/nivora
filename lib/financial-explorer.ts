@@ -79,7 +79,8 @@ export function financialMetricSeries(
             : null
         : null,
     changeUnit: percentage ? "pp" : "%",
-    crossedZero: !percentage && start != null && latest != null && start * latest < 0,
+    crossedZero:
+      !percentage && start != null && latest != null && start * latest < 0,
     startDate: first?.end ?? null,
     endDate: last?.end ?? null,
   };

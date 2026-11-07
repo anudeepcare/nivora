@@ -10,9 +10,9 @@ import {
 } from "@/lib/home-feed";
 export async function GET(request: Request) {
   try {
-    const { user } = await account(request);
+    const { user } = await account(request, { market: true });
     // Sequential 30-symbol batches can cover a large account without a six-call cutoff.
-    limit(`home-feed:${user.id}`, 30);
+    await limit(`home-feed:${user.id}`, 30);
     const query = new URL(request.url).searchParams;
     const kind = query.get("kind") || "all";
     if (!["all", "events", "news"].includes(kind))

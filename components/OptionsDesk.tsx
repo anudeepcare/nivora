@@ -198,10 +198,16 @@ export default function OptionsDesk({
       });
     return () => abort.abort();
   }, [research.company.symbol, expiry, preview, requestVersion]);
-  const contracts =
-    chain?.symbol === research.company.symbol ? chain.contracts : [];
+  const contracts = useMemo(
+    () => (chain?.symbol === research.company.symbol ? chain.contracts : []),
+    [chain, research.company.symbol],
+  );
   const expiries = knownExpiries;
-  const active = expiry || expiries.find((date) => contracts.some((c) => c.expiry === date)) || expiries[0] || "";
+  const active =
+    expiry ||
+    expiries.find((date) => contracts.some((c) => c.expiry === date)) ||
+    expiries[0] ||
+    "";
   const summary = useMemo(
     () =>
       optionsSummary(
@@ -397,7 +403,24 @@ export default function OptionsDesk({
             {label}
           </button>
         ))}
-        <label className="options-advanced-picker"><span>Advanced</span><select aria-label="Advanced options tools" value={['vanna','flow','leaps','strategy'].includes(view)?view:''} onChange={e=>navigate(e.target.value)}><option value="" disabled>Choose a tool</option><option value="vanna">Vanna exposure</option><option value="flow">Trade tape</option><option value="leaps">Long-term contracts</option><option value="strategy">Strategy payoff</option></select></label>
+        <label className="options-advanced-picker">
+          <span>Advanced</span>
+          <select
+            aria-label="Advanced options tools"
+            value={
+              ["vanna", "flow", "leaps", "strategy"].includes(view) ? view : ""
+            }
+            onChange={(e) => navigate(e.target.value)}
+          >
+            <option value="" disabled>
+              Choose a tool
+            </option>
+            <option value="vanna">Vanna exposure</option>
+            <option value="flow">Trade tape</option>
+            <option value="leaps">Long-term contracts</option>
+            <option value="strategy">Strategy payoff</option>
+          </select>
+        </label>
       </nav>
       {error && (
         <p role="alert" className="options-notice">
@@ -493,17 +516,24 @@ export default function OptionsDesk({
           )}
           {view === "positioning" && (
             <>
-              <OptionsSnapshot contracts={summary.rows} spot={spot} expiry={active} />
-              <OptionsExpiryComparison contracts={contracts} active={active} onChoose={chooseExpiry}/>
+              <OptionsSnapshot
+                contracts={summary.rows}
+                spot={spot}
+                expiry={active}
+              />
+              <OptionsExpiryComparison
+                contracts={contracts}
+                active={active}
+                onChoose={chooseExpiry}
+              />
               {!hasGamma && !hasOi && (
                 <section className="options-empty options-empty-inline">
                   <Activity size={28} />
                   <div>
-                    <h3>
-                      Gamma inputs unavailable
-                    </h3>
+                    <h3>Gamma inputs unavailable</h3>
                     <p>
-                      This expiration has no usable gamma or open-interest inputs. Call and put prices may still be available.
+                      This expiration has no usable gamma or open-interest
+                      inputs. Call and put prices may still be available.
                     </p>
                     <button
                       type="button"
@@ -527,9 +557,7 @@ export default function OptionsDesk({
                 <summary>Volatility & model diagnostics</summary>
                 {(hasGamma || hasOi) && (
                   <details>
-                    <summary>
-                      Concentrations & gamma
-                    </summary>
+                    <summary>Concentrations & gamma</summary>
                     <div className="options-insight-grid">
                       <article>
                         <span>

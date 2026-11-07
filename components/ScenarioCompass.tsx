@@ -74,7 +74,13 @@ export default function ScenarioCompass({
               >
                 <span>
                   <i className="scenario-symbol" aria-hidden="true">
-                    {i === 0 ? <TrendingDown size={20}/> : i === 1 ? <Scale size={20}/> : <TrendingUp size={20}/>}
+                    {i === 0 ? (
+                      <TrendingDown size={20} />
+                    ) : i === 1 ? (
+                      <Scale size={20} />
+                    ) : (
+                      <TrendingUp size={20} />
+                    )}
                   </i>
                   {c.name}
                 </span>

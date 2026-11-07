@@ -56,7 +56,9 @@ function PositionEvidence({
             : `${percent(c.weight)} of priced listed assets`}
           {r.quote.stale ? " · older price" : ""}
         </span>
-        <Link href={`${demo && demo.routePrefix !== "" ? "/preview" : ""}/portfolio`}>
+        <Link
+          href={`${demo && demo.routePrefix !== "" ? "/preview" : ""}/portfolio`}
+        >
           Review exposure ↗
         </Link>
       </aside>
@@ -96,7 +98,11 @@ function PositionEvidence({
           Hypothetical, not a loss bound.
         </small>
       </div>
-      <Link href={`${demo && demo.routePrefix !== "" ? "/preview" : ""}/portfolio`}>View holding →</Link>
+      <Link
+        href={`${demo && demo.routePrefix !== "" ? "/preview" : ""}/portfolio`}
+      >
+        View holding →
+      </Link>
     </aside>
   );
 }

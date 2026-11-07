@@ -1,0 +1,159 @@
+@font-face{font-family:"Commissioner";src:url("/fonts/commissioner.ttf") format("truetype");font-weight:100 900;font-style:normal;font-display:swap}
+/* Core owns document geometry and neutral tokens. Component CSS owns layout.
+   Brand accents live in appearance.css; financial colors never follow accents. */
+:root {
+  --app-width: 1480px;
+  --chrome-surface: #f7f8f5;
+  --app-gutter: clamp(16px, 3vw, 40px);
+  --font-ui: "Commissioner", "AURYN Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --radius-control: 10px;
+  --radius-panel: 16px;
+  --radius: 16px;
+  --space-page: 28px;
+  --accent-solid: #24272b;
+  --blue: #24272b;
+  --blue-soft: #edf5c9;
+  --business-fill: color-mix(in srgb,#70c7a9 7%,var(--card));
+  --financial-fill: color-mix(in srgb,#8fc7c1 6%,var(--card));
+  --valuation-fill: color-mix(in srgb,#d6f35a 8%,var(--card));
+  --ownership-fill: color-mix(in srgb,#a8ddc0 7%,var(--card));
+  --business-icon: #167b57;
+  --financial-icon: #237f75;
+  --valuation-icon: #956b0f;
+  --ownership-icon: #347d76;
+  --pace-fill: #24272b;
+  --citron: #d6f35a;
+  --orchid: #76b6aa;
+  --jade: #a8ddc0;
+  --brand-gradient: linear-gradient(125deg,#d6f35a,#a8ddc0);
+}
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f7f8fa;
+  --app-background: #f7f8fa;
+  --glass: #ffffff;
+  --panel-shadow: 0 8px 32px #25334208, 0 1px 3px #25334205;
+  --paper: #ffffff;
+  --card: #ffffff;
+  --control-ink:#24272b;
+  --control-muted:#62686a;
+  --control-card:#ffffff;
+  --control-surface:#f0f2ee;
+  --control-line:#c3cec5;
+  --surface: #f1f3f5;
+  --surface-2: #f7f8fa;
+  --ink: #24272b;
+  --text: #24272b;
+  --muted: #62686a;
+  --line: #e5e8eb;
+  --border: #e5e8eb;
+  --green: #087e66;
+  --green-soft: #e8f5ef;
+  --red: #b94446;
+  --red-soft: #fff0ef;
+  --amber: #99641a;
+  --amber-soft: #fff6e8;
+  --cyan: #087b96;
+  --cyan-soft: #e7f5fa;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --chrome-surface: #24272b;
+  --bg: #191c1e;
+  --app-background: #191c1e;
+  --glass: #24272bed;
+  --panel-shadow: 0 8px 30px #00000020;
+  --paper: #191c1e;
+  --card: #24272b;
+  --control-ink:#eef2f8;
+  --control-muted:#b9c1bf;
+  --control-card:#24272b;
+  --control-surface:#303536;
+  --control-line:#65716a;
+  --surface: #303536;
+  --surface-2: #24272b;
+  --ink: #eef2f8;
+  --text: #eef2f8;
+  --muted: #b9c1bf;
+  --line: #42484a;
+  --border: #42484a;
+  --blue: #d6f35a;
+  --blue-soft: #353d28;
+  --business-fill: color-mix(in srgb,#70c7a9 7%,var(--card));
+  --financial-fill: color-mix(in srgb,#8fc7c1 6%,var(--card));
+  --valuation-fill: color-mix(in srgb,#d6f35a 8%,var(--card));
+  --ownership-fill: color-mix(in srgb,#a8ddc0 7%,var(--card));
+  --business-icon: #167b57;
+  --financial-icon: #237f75;
+  --valuation-icon: #956b0f;
+  --ownership-icon: #347d76;
+  --green: #6dd5b6;
+  --green-soft: #193b33;
+  --red: #ffaca5;
+  --red-soft: #422b30;
+  --amber: #e7bc72;
+  --amber-soft: #3e3526;
+  --cyan: #85d5ec;
+  --cyan-soft: #1c3541;
+}
+html {
+  min-height: 100%;
+  height: auto;
+  overflow-y: auto;
+  overflow-x: clip;
+  scrollbar-gutter: stable;
+  scroll-padding-top: 88px;
+  font-size: 16px;
+}
+body {
+  margin: 0;
+  min-height: 100svh;
+  height: auto;
+  overflow: visible;
+  color: var(--ink);
+  background: var(--app-background);
+  background-attachment: fixed;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+button,
+select,
+summary {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+:where(button, a, input, select, textarea, summary):focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+}
+html:has(dialog[open]) {
+  overflow: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* The document safe area and app header share one opaque surface. */
+html {background-color:var(--chrome-surface);}
+
+h1,h2{font-variation-settings:"FLAR" 0,"VOLM" 0;letter-spacing:-.025em} .num,td,dd{font-variant-numeric:tabular-nums lining-nums;font-variation-settings:"FLAR" 0,"VOLM" 0}
+
+@media(max-width:767px){:root{--font-ui:-apple-system,BlinkMacSystemFont,"Segoe UI","Commissioner",sans-serif}body{font-family:var(--font-ui)}h1,h2{font-weight:600;letter-spacing:-.025em}}

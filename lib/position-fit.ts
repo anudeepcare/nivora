@@ -1,4 +1,4 @@
-import {sameProviderSymbol} from "./provider-symbol.ts";
+import { sameProviderSymbol } from "./provider-symbol.ts";
 import type { Position, Quote } from "./types";
 export function positionFit(
   positions: Pick<Position, "symbol" | "quantity" | "assetType">[],
@@ -17,7 +17,11 @@ export function positionFit(
       : null;
   for (const p of positions) {
     if (p.assetType === "cash") continue;
-    const q = quotes[p.symbol] ?? Object.entries(quotes).find(([key])=>sameProviderSymbol(key,p.symbol))?.[1],
+    const q =
+        quotes[p.symbol] ??
+        Object.entries(quotes).find(([key]) =>
+          sameProviderSymbol(key, p.symbol),
+        )?.[1],
       at = Date.parse(q?.asOf ?? "");
     if (
       !Number.isFinite(p.quantity) ||

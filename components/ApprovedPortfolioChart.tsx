@@ -28,7 +28,10 @@ export default function ApprovedPortfolioChart({
     [loading, setLoading] = useState(false),
     [revision, setRevision] = useState(0);
   const container = useRef<HTMLDivElement>(null);
-  const attempted = useRef<{scope:string;symbols:Set<string>}>({scope:"",symbols:new Set()});
+  const attempted = useRef<{ scope: string; symbols: Set<string> }>({
+    scope: "",
+    symbols: new Set(),
+  });
   const [width, setWidth] = useState(640);
   const [inspection, setInspection] = useState<number | null>(null);
   useEffect(() => {
@@ -75,8 +78,14 @@ export default function ApprovedPortfolioChart({
     }
     setHistory(saved);
     const scope = `${owner}:${key}`;
-    if(attempted.current.scope !== scope) attempted.current={scope,symbols:new Set()};
-    const missing = historyBatch(selected,new Set(Object.keys(saved)),attempted.current.symbols,selected.length);
+    if (attempted.current.scope !== scope)
+      attempted.current = { scope, symbols: new Set() };
+    const missing = historyBatch(
+      selected,
+      new Set(Object.keys(saved)),
+      attempted.current.symbols,
+      selected.length,
+    );
     if (demo || !missing.length) {
       setLoading(false);
       return () => {
@@ -100,7 +109,11 @@ export default function ApprovedPortfolioChart({
           );
           if (active) setHistory((prior) => ({ ...prior, [symbol]: result }));
         } catch (error) {
-          if(error instanceof ApiError && [401,403,429].includes(error.status))break;
+          if (
+            error instanceof ApiError &&
+            [401, 403, 429].includes(error.status)
+          )
+            break;
           /* Keep the valid partial series; coverage below names exclusions. */
         }
       }
@@ -124,7 +137,10 @@ export default function ApprovedPortfolioChart({
     [positions, quotes, history, demo],
   );
   useEffect(() => setInspection(null), [chart]);
-  const selectedPoint = inspection == null ? null : chart.points[Math.min(inspection, chart.points.length - 1)];
+  const selectedPoint =
+    inspection == null
+      ? null
+      : chart.points[Math.min(inspection, chart.points.length - 1)];
   const values = chart.points.map((p) => p.value),
     low = Math.min(...values),
     high = Math.max(...values),
@@ -140,11 +156,69 @@ export default function ApprovedPortfolioChart({
     .join(" ");
   return (
     <div ref={container} className={styles.chart}>
-      <p className="chart-note" role="status"><strong>{loading ? 'Loading holdings history…' : chart.excluded.length ? 'Partial holdings history' : 'Holdings price history'}</strong> · {chart.included.length} holdings included. Cash, managed balances and margin are excluded.</p>
-      {chart.points.length > 1 && <><dl className={styles.totals}><div><dt>Historical value · {dateLabel(chart.points.at(-1)!.time)}</dt><dd>{amount(chart.points.at(-1)!.value,'USD')}</dd></div><div><dt>Same holdings · latest quotes</dt><dd>{amount(positions.reduce((total,p)=>total+(p.assetType!=='cash'&&chart.included.includes(p.symbol)?Number(p.quantity||0)*(quotes[p.symbol]?.quote?.price||0):0),0),'USD')}</dd></div></dl><p className="chart-note">Values cover the included holdings, not your full account balance.</p></>}
-      {chart.points.length > 1 && <div className={styles.inspection} aria-live="polite" aria-atomic="true">
-        {selectedPoint ? <><span>{dateLabel(selectedPoint.time)} · Value of included holdings</span><strong>{amount(selectedPoint.value, "USD")}</strong></> : <span>Hover or touch the chart to inspect a date. Use arrow keys when focused.</span>}
-      </div>}
+      <p className="chart-note" role="status">
+        <strong>
+          {loading
+            ? "Loading holdings history…"
+            : chart.excluded.length
+              ? "Partial holdings history"
+              : "Holdings price history"}
+        </strong>{" "}
+        · {chart.included.length} holdings included. Cash, managed balances and
+        margin are excluded.
+      </p>
+      {chart.points.length > 1 && (
+        <>
+          <dl className={styles.totals}>
+            <div>
+              <dt>Historical value · {dateLabel(chart.points.at(-1)!.time)}</dt>
+              <dd>{amount(chart.points.at(-1)!.value, "USD")}</dd>
+            </div>
+            <div>
+              <dt>Same holdings · latest quotes</dt>
+              <dd>
+                {amount(
+                  positions.reduce(
+                    (total, p) =>
+                      total +
+                      (p.assetType !== "cash" &&
+                      chart.included.includes(p.symbol)
+                        ? Number(p.quantity || 0) *
+                          (quotes[p.symbol]?.quote?.price || 0)
+                        : 0),
+                    0,
+                  ),
+                  "USD",
+                )}
+              </dd>
+            </div>
+          </dl>
+          <p className="chart-note">
+            Values cover the included holdings, not your full account balance.
+          </p>
+        </>
+      )}
+      {chart.points.length > 1 && (
+        <div
+          className={styles.inspection}
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {selectedPoint ? (
+            <>
+              <span>
+                {dateLabel(selectedPoint.time)} · Value of included holdings
+              </span>
+              <strong>{amount(selectedPoint.value, "USD")}</strong>
+            </>
+          ) : (
+            <span>
+              Hover or touch the chart to inspect a date. Use arrow keys when
+              focused.
+            </span>
+          )}
+        </div>
+      )}
       {chart.points.length > 1 ? (
         <svg
           viewBox={`0 0 ${width} 320`}
@@ -156,21 +230,63 @@ export default function ApprovedPortfolioChart({
           aria-valuemax={chart.points.length - 1}
           aria-valuenow={inspection ?? chart.points.length - 1}
           aria-valuetext={`${dateLabel((selectedPoint ?? chart.points.at(-1)!).time)}: ${amount((selectedPoint ?? chart.points.at(-1)!).value, "USD")}, value of included holdings`}
-          onPointerMove={event => {
+          onPointerMove={(event) => {
             const rect = event.currentTarget.getBoundingClientRect();
-            const px = (event.clientX - rect.left) / rect.width * width;
-            setInspection(Math.max(0, Math.min(values.length-1, Math.round((px-58)/(right-58)*(values.length-1)))));
+            const px = ((event.clientX - rect.left) / rect.width) * width;
+            setInspection(
+              Math.max(
+                0,
+                Math.min(
+                  values.length - 1,
+                  Math.round(((px - 58) / (right - 58)) * (values.length - 1)),
+                ),
+              ),
+            );
           }}
-          onPointerDown={event => {
+          onPointerDown={(event) => {
             const rect = event.currentTarget.getBoundingClientRect();
-            setInspection(Math.max(0, Math.min(values.length-1, Math.round(((event.clientX-rect.left)/rect.width*width-58)/(right-58)*(values.length-1)))));
+            setInspection(
+              Math.max(
+                0,
+                Math.min(
+                  values.length - 1,
+                  Math.round(
+                    ((((event.clientX - rect.left) / rect.width) * width - 58) /
+                      (right - 58)) *
+                      (values.length - 1),
+                  ),
+                ),
+              ),
+            );
           }}
-          onPointerLeave={event => { if(event.pointerType === "mouse") setInspection(null); }}
-          onFocus={() => setInspection(i => i ?? chart.points.length-1)}
-          onKeyDown={event => {
-            if (!["ArrowLeft", "ArrowRight", "Home", "End", "Escape"].includes(event.key)) return;
+          onPointerLeave={(event) => {
+            if (event.pointerType === "mouse") setInspection(null);
+          }}
+          onFocus={() => setInspection((i) => i ?? chart.points.length - 1)}
+          onKeyDown={(event) => {
+            if (
+              !["ArrowLeft", "ArrowRight", "Home", "End", "Escape"].includes(
+                event.key,
+              )
+            )
+              return;
             event.preventDefault();
-            setInspection(i => event.key === "Escape" ? null : event.key === "Home" ? 0 : event.key === "End" ? values.length-1 : Math.max(0,Math.min(values.length-1,(i ?? values.length-1)+(event.key === "ArrowLeft" ? -1 : 1))));
+            setInspection((i) =>
+              event.key === "Escape"
+                ? null
+                : event.key === "Home"
+                  ? 0
+                  : event.key === "End"
+                    ? values.length - 1
+                    : Math.max(
+                        0,
+                        Math.min(
+                          values.length - 1,
+                          (i ?? values.length - 1) +
+                            (event.key === "ArrowLeft" ? -1 : 1),
+                        ),
+                      ),
+            );
           }}
           aria-label={`Current quantities of ${chart.included.join(", ")} at supplied historical USD prices, ${chart.points[0].time} to ${chart.points.at(-1)!.time}. Not account performance.`}
         >
@@ -214,10 +330,27 @@ export default function ApprovedPortfolioChart({
             strokeLinejoin="round"
           />
           <circle cx={right} cy={y(values.at(-1)!)} r="4" fill="currentColor" />
-          {selectedPoint && inspection != null && <g pointerEvents="none">
-            <line x1={x(inspection)} x2={x(inspection)} y1="30" y2="270" stroke="currentColor" strokeDasharray="4 4" opacity=".5" />
-            <circle cx={x(inspection)} cy={y(selectedPoint.value)} r="5" fill="currentColor" stroke="var(--card)" strokeWidth="2" />
-          </g>}
+          {selectedPoint && inspection != null && (
+            <g pointerEvents="none">
+              <line
+                x1={x(inspection)}
+                x2={x(inspection)}
+                y1="30"
+                y2="270"
+                stroke="currentColor"
+                strokeDasharray="4 4"
+                opacity=".5"
+              />
+              <circle
+                cx={x(inspection)}
+                cy={y(selectedPoint.value)}
+                r="5"
+                fill="currentColor"
+                stroke="var(--card)"
+                strokeWidth="2"
+              />
+            </g>
+          )}
           <text x="58" y="301" className="chart-axis">
             {dateLabel(chart.points[0].time)}
           </text>
@@ -244,7 +377,10 @@ export default function ApprovedPortfolioChart({
       {chart.points.length > 1 && (
         <details className={styles.values}>
           <summary>Data & calculation</summary>
-          <p>Current quantities at historical prices · USD. Cash, managed balances, margin, dividends and trades are excluded.</p>
+          <p>
+            Current quantities at historical prices · USD. Cash, managed
+            balances, margin, dividends and trades are excluded.
+          </p>
           <div>
             <table>
               <thead>
@@ -283,7 +419,9 @@ export default function ApprovedPortfolioChart({
           disabled={loading}
           onClick={() => setRevision((r) => r + 1)}
         >
-          {loading ? "Loading available history…" : `Load missing histories (${chart.excluded.length})`}
+          {loading
+            ? "Loading available history…"
+            : `Load missing histories (${chart.excluded.length})`}
         </button>
       )}
     </div>

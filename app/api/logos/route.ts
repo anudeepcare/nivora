@@ -3,8 +3,8 @@ import { symbolInput } from "@/lib/format";
 import { companyLogo } from "@/lib/company-profiles";
 export async function GET(request: Request) {
   try {
-    const { user } = await account(request);
-    limit(`logos:${user.id}`, 12);
+    const { user } = await account(request, { market: true });
+    await limit(`logos:${user.id}`, 12);
     const symbols = [
       ...new Set(
         (new URL(request.url).searchParams.get("symbols") || "")

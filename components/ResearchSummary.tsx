@@ -85,7 +85,9 @@ export function ResearchSnapshot({
         <button className={s.dca} onClick={onDca}>
           <span>AURYN Pace · price zone</span>
           <strong>
-            {displayedLevel != null ? PACE_LEVELS[displayedLevel] : "Building history"}
+            {displayedLevel != null
+              ? PACE_LEVELS[displayedLevel]
+              : "Building history"}
           </strong>
           <span>{dcaReading ? `${dcaPeriod} · View rules` : dcaPeriod}</span>
         </button>

@@ -5,8 +5,8 @@ export async function GET(
   { params }: { params: Promise<{ symbol: string }> },
 ) {
   try {
-    const { user } = await account(request);
-    limit(`enrich:${user.id}`, 15);
+    const { user } = await account(request, { market: true });
+    await limit(`enrich:${user.id}`, 15);
     const { symbol } = await params;
     if (!/^[A-Z][A-Z0-9.-]{0,9}$/.test(symbol))
       throw new HttpError(

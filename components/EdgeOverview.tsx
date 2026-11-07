@@ -104,9 +104,18 @@ export default function EdgeOverview({
           <h2>{edge.pacePresentation.actionLabel}</h2>
           <p>{edge.reason}</p>
           <div className="company-fingerprint" aria-label="Company fingerprint">
-            <button onClick={()=>onTab("Thesis")}><span>Business</span><strong>{edge.businessLabel}</strong></button>
-            <button onClick={()=>onTab("Valuation")}><span>Price</span><strong>{edge.valueLabel}</strong></button>
-            <button onClick={()=>onTab("Technicals")}><span>Timing</span><strong>{edge.timingLabel}</strong></button>
+            <button onClick={() => onTab("Thesis")}>
+              <span>Business</span>
+              <strong>{edge.businessLabel}</strong>
+            </button>
+            <button onClick={() => onTab("Valuation")}>
+              <span>Price</span>
+              <strong>{edge.valueLabel}</strong>
+            </button>
+            <button onClick={() => onTab("Technicals")}>
+              <span>Timing</span>
+              <strong>{edge.timingLabel}</strong>
+            </button>
           </div>
           {edge.referenceBasis === "settled-close" && (
             <small>

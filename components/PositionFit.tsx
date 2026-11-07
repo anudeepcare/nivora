@@ -33,11 +33,23 @@ export default function PositionFit({ research: r }: { research: Research }) {
   if (!x.complete)
     return (
       <aside className={s.pending}>
-        <strong>{q.loading ? "Updating portfolio prices…" : "Portfolio weight is incomplete"}</strong>
+        <strong>
+          {q.loading
+            ? "Updating portfolio prices…"
+            : "Portfolio weight is incomplete"}
+        </strong>
         <span>
-          {x.missing} holding{x.missing === 1 ? " needs" : "s need"} a recent USD price. Weight is withheld until coverage is complete.
+          {x.missing} holding{x.missing === 1 ? " needs" : "s need"} a recent
+          USD price. Weight is withheld until coverage is complete.
         </span>
-        <button type="button" className="btn" disabled={q.loading} onClick={q.refresh}>{q.loading ? "Refreshing…" : "Refresh prices"}</button>
+        <button
+          type="button"
+          className="btn"
+          disabled={q.loading}
+          onClick={q.refresh}
+        >
+          {q.loading ? "Refreshing…" : "Refresh prices"}
+        </button>
         <Link href={`${prefix}/portfolio`}>Review holdings →</Link>
       </aside>
     );

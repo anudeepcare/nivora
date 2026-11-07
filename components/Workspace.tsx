@@ -11,7 +11,11 @@ import PortfolioCharts from "./PortfolioCharts";
 import SectorBenchmarks from "./SectorBenchmarks";
 import AccountBalances from "./AccountBalances";
 import useLivePrices from "./useLivePrices";
-import { cachedQuotes, publishQuotes, subscribeQuotes } from "@/lib/shared-quotes";
+import {
+  cachedQuotes,
+  publishQuotes,
+  subscribeQuotes,
+} from "@/lib/shared-quotes";
 import { readResource } from "@/lib/resource-cache";
 import { quoteHealth } from "@/lib/quote-health";
 import { mergePriceTick } from "@/lib/live-price";
@@ -112,15 +116,21 @@ export function useWorkspaceQuotes(
   const refresh = useCallback(() => {
     for (const symbol of JSON.parse(key).flat()) {
       const row = cache.get("quote:" + symbol);
-      if (row) cache.set("quote:" + symbol, {...row, at:0});
+      if (row) cache.set("quote:" + symbol, { ...row, at: 0 });
     }
     setRevision((x) => x + 1);
   }, [cache, key]);
-  useEffect(() => subscribeQuotes(cache, changed => {
-    const symbols = (JSON.parse(key) as string[][]).flat();
-    if (!changed.some(symbol=>symbols.includes(symbol))) return;
-    setData(prior => mergePortfolioQuotes(prior, cachedQuotes(cache, symbols), symbols));
-  }), [cache, key, owner]);
+  useEffect(
+    () =>
+      subscribeQuotes(cache, (changed) => {
+        const symbols = (JSON.parse(key) as string[][]).flat();
+        if (!changed.some((symbol) => symbols.includes(symbol))) return;
+        setData((prior) =>
+          mergePortfolioQuotes(prior, cachedQuotes(cache, symbols), symbols),
+        );
+      }),
+    [cache, key, owner],
+  );
   // Discovering a hybrid/Twelve connection must not abort and restart a quote
   // batch that already began while provider metadata was loading.
   const rateLimited = marketProvider !== "eodhd";
@@ -216,22 +226,34 @@ export function useWorkspaceQuotes(
         }
         if (!active) break;
         try {
-          const path = "quotes?symbols=" + encodeURIComponent([...missing].sort().join(","));
-          const result = await readResource(cache, path, revision ? 0 : 60000, () => api<Quotes>(path));
+          const path =
+            "quotes?symbols=" +
+            encodeURIComponent([...missing].sort().join(","));
+          const result = await readResource(
+            cache,
+            path,
+            revision ? 0 : 60000,
+            () => api<Quotes>(path),
+          );
           if (!active) break;
           next = mergePortfolioQuotes(next, result, selected.flat());
           publishQuotes(cache, next);
           for (const [symbol, row] of Object.entries(result)) {
-            if (usablePortfolioQuote(row.quote))
-              { const saved = cache.get("quote:" + symbol);
-                if (saved) cache.set("quote:" + symbol, { ...saved, at: Date.now() });
-              }
+            if (usablePortfolioQuote(row.quote)) {
+              const saved = cache.get("quote:" + symbol);
+              if (saved)
+                cache.set("quote:" + symbol, { ...saved, at: Date.now() });
+            }
             if (row.error)
               setError(
                 "Some prices could not be updated. Available older prices remain included.",
               );
           }
-          next = mergePortfolioQuotes(next, cachedQuotes(cache, selected.flat()), selected.flat());
+          next = mergePortfolioQuotes(
+            next,
+            cachedQuotes(cache, selected.flat()),
+            selected.flat(),
+          );
           setData(next);
           requested += weight;
         } catch (e) {
@@ -857,7 +879,10 @@ export function Portfolio() {
         ),
       [quotes.data],
     ),
-    positions = workspace?.positions || [],
+    positions = useMemo(
+      () => workspace?.positions || [],
+      [workspace?.positions],
+    ),
     totals = useMemo(() => portfolioTotals(positions, q), [positions, q]),
     returns = useMemo(
       () => pricedInvestmentReturns(positions, q),

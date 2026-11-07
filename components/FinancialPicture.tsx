@@ -8,14 +8,37 @@ import FinancialDetailTable from "./FinancialDetailTable";
 import FinancialExplorer from "./FinancialExplorer";
 import { Help, DataStamp, Empty } from "./Ui";
 
-
-
 export default function FinancialPicture({
   research: r,
 }: {
   research: Research;
 }) {
-  const snapshotHelp: Record<string, string> = {"Revenue": "Sales earned during the selected reporting period, before expenses. Compare the same period and currency.", "Operating margin": "Operating profit as a percentage of revenue, before interest and tax. Compare with similar businesses.", "Net income": "Profit after reported expenses, interest and tax. One-off items can affect comparability.", "SBC / revenue": "Stock-based employee compensation as a percentage of revenue. It is non-cash but may dilute shareholders.", "Cash after capex": "Operating cash flow less reported capital expenditure. This is not cash available to shareholders after all financing needs.", "Cash after capex / revenue": "Cash after reported capital expenditure divided by revenue for the same period.", "Operating cash flow": "Cash generated or used by operating activities, including working-capital changes.", "Capital expenditure": "Reported spending on capital assets. Accounting treatment can vary by company.", "Net debt": "Reported debt less cash. A negative value indicates more cash than debt under this definition.", "Current ratio": "Current assets divided by current liabilities. Asset quality and payment timing still matter.", "Cash balance": "Reported cash and cash equivalents at the period end. It may include restricted balances depending on the source.", "Total debt": "Reported debt at the period end. Inspect the filing for maturity, interest and lease treatment."};
+  const snapshotHelp: Record<string, string> = {
+    Revenue:
+      "Sales earned during the selected reporting period, before expenses. Compare the same period and currency.",
+    "Operating margin":
+      "Operating profit as a percentage of revenue, before interest and tax. Compare with similar businesses.",
+    "Net income":
+      "Profit after reported expenses, interest and tax. One-off items can affect comparability.",
+    "SBC / revenue":
+      "Stock-based employee compensation as a percentage of revenue. It is non-cash but may dilute shareholders.",
+    "Cash after capex":
+      "Operating cash flow less reported capital expenditure. This is not cash available to shareholders after all financing needs.",
+    "Cash after capex / revenue":
+      "Cash after reported capital expenditure divided by revenue for the same period.",
+    "Operating cash flow":
+      "Cash generated or used by operating activities, including working-capital changes.",
+    "Capital expenditure":
+      "Reported spending on capital assets. Accounting treatment can vary by company.",
+    "Net debt":
+      "Reported debt less cash. A negative value indicates more cash than debt under this definition.",
+    "Current ratio":
+      "Current assets divided by current liabilities. Asset quality and payment timing still matter.",
+    "Cash balance":
+      "Reported cash and cash equivalents at the period end. It may include restricted balances depending on the source.",
+    "Total debt":
+      "Reported debt at the period end. Inspect the filing for maturity, interest and lease treatment.",
+  };
   const [scope, setScope] = useState<FinancialScope>(() =>
     researchPeriods(r, "ttm").length ? "ttm" : "annual",
   );
@@ -188,7 +211,11 @@ export default function FinancialPicture({
       <header className="section-head">
         <div>
           <h2>Business performance</h2>
-          <p>{p ? `${dateLabel(p.end)} · ${p.currency}` : "Select a reporting period"}</p>
+          <p>
+            {p
+              ? `${dateLabel(p.end)} · ${p.currency}`
+              : "Select a reporting period"}
+          </p>
         </div>
         <div className="segments" aria-label="Financial period">
           {(["ttm", "annual", "quarterly"] as const).map((v) => (
@@ -208,16 +235,23 @@ export default function FinancialPicture({
           <div className="financial-answer">
             <div>
               <dl className="business-kpis">
-                <div><dt>Revenue growth</dt><dd>{percent(growth, true)}</dd></div>
-                <div><dt>Operating margin</dt><dd>{percent(p.margin)}</dd></div>
-                <div><dt>Cash after capex</dt><dd>{amount(p.fcf, p.currency, true)}</dd></div>
+                <div>
+                  <dt>Revenue growth</dt>
+                  <dd>{percent(growth, true)}</dd>
+                </div>
+                <div>
+                  <dt>Operating margin</dt>
+                  <dd>{percent(p.margin)}</dd>
+                </div>
+                <div>
+                  <dt>Cash after capex</dt>
+                  <dd>{amount(p.fcf, p.currency, true)}</dd>
+                </div>
               </dl>
             </div>
             {bridge.length > 0 && (
               <figure className="financial-cash-bridge">
-                <figcaption>
-                  Cash generation · {p.currency}
-                </figcaption>
+                <figcaption>Cash generation · {p.currency}</figcaption>
                 <svg
                   viewBox="0 0 480 155"
                   role="img"
@@ -289,7 +323,16 @@ export default function FinancialPicture({
           >
             {rows.map(([label, value]) => (
               <div key={label}>
-                <dt><Help label={label} trigger={label}><p>{snapshotHelp[label]}</p><p>Reporting period: {dateLabel(p?.end)} · {p?.currency ?? "Currency unavailable"}. Missing values are not zero.</p></Help></dt>
+                <dt>
+                  <Help label={label} trigger={label}>
+                    <p>{snapshotHelp[label]}</p>
+                    <p>
+                      Reporting period: {dateLabel(p?.end)} ·{" "}
+                      {p?.currency ?? "Currency unavailable"}. Missing values
+                      are not zero.
+                    </p>
+                  </Help>
+                </dt>
                 <dd className="num">{value}</dd>
               </div>
             ))}
@@ -323,7 +366,16 @@ export default function FinancialPicture({
                               ? amount(Number(value), p.currency)
                               : `${Number(value).toFixed(1)}×`}
                         </strong>
-                        {unit === "percent" && Number(value) >= 0 && Number(value) <= 100 && <span className={layout.ratioTrack} aria-hidden="true"><span style={{width: `${Number(value)}%`}} /></span>}
+                        {unit === "percent" &&
+                          Number(value) >= 0 &&
+                          Number(value) <= 100 && (
+                            <span
+                              className={layout.ratioTrack}
+                              aria-hidden="true"
+                            >
+                              <span style={{ width: `${Number(value)}%` }} />
+                            </span>
+                          )}
                         <small>
                           {interpretation(String(label), Number(value))}
                         </small>

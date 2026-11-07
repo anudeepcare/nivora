@@ -1,6 +1,7 @@
 "use client";
 import ReleaseNotes from "./ReleaseNotes";
 import Plans from "./Plans";
+import MonthlyPlan from "./MonthlyPlan";
 import OwnerAccess from "./OwnerAccess";
 import Trading from "./Trading";
 import LegalDocument from "./LegalDocument";
@@ -98,7 +99,9 @@ export default function Product({
     }
   }
   return frame(
-    page === "research" ? (
+    page === "monthly-plan" ? (
+      <MonthlyPlan />
+    ) : page === "research" ? (
       route[1] ? (
         <Research key={researchSymbol} symbol={researchSymbol} />
       ) : (

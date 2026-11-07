@@ -1,3 +1,43 @@
-.root{padding:20px;background:var(--card);border-radius:18px;margin-block:20px;min-width:0}.root label{display:block;margin-block:16px;font-weight:600}.root input,.root select{display:block;width:100%;min-height:48px;margin-top:8px;padding:12px;color:var(--text);background:var(--card);border:1px solid var(--border);border-radius:12px;font:inherit}.body{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.75;max-width:90ch}.root article{margin-top:24px}
+.root {
+  padding: 20px;
+  background: var(--card);
+  border-radius: 18px;
+  margin-block: 20px;
+  min-width: 0;
+}
+.root label {
+  display: block;
+  margin-block: 16px;
+  font-weight: 600;
+}
+.root input,
+.root select {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 8px;
+  padding: 12px;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font: inherit;
+}
+.body {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.75;
+  max-width: 90ch;
+}
+.root article {
+  margin-top: 24px;
+}
 
-.body pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.85rem}.body p{margin:0 0 16px}
+.body pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 0.85rem;
+}
+.body p {
+  margin: 0 0 16px;
+}

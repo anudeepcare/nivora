@@ -2,8 +2,8 @@ import { account, failure, HttpError, limit, privateJson } from "@/lib/server";
 import { parseHoldingsCsv } from "@/lib/planning";
 export async function POST(request: Request) {
   try {
-    const { user, db } = await account(request);
-    limit(`import:${user.id}`, 2);
+    const { user, db } = await account(request, { market: false });
+    await limit(`import:${user.id}`, 2);
     const body = await request.json();
     if (
       !Array.isArray(body.rows) ||

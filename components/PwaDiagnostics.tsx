@@ -73,7 +73,8 @@ export default function PwaDiagnostics() {
       <summary>Device layout diagnostics</summary>
       <p>
         Run inside the installed app while the layout issue is present. This
-        records viewport geometry and aggregate interaction timings. It does not include account data or page content.
+        records viewport geometry and aggregate interaction timings. It does not
+        include account data or page content.
       </p>
       <button className="button" onClick={inspect}>
         Check app layout

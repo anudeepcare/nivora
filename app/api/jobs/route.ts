@@ -1,9 +1,10 @@
-import {accessEnabled,exactOwner} from "@/lib/access-server";
+import { accessEnabled, exactOwner } from "@/lib/access-server";
 import { scheduledCandidates } from "@/lib/paper-policy";
 import { backgroundWork } from "@/lib/provider-budget";
 import { timingSafeEqual } from "node:crypto";
 import { failure, HttpError, privateJson } from "@/lib/server";
 import { serviceDb, executePaper } from "@/lib/paper";
+import { checkSavedTheses } from "@/lib/thesis-monitor";
 import { checkAlerts } from "@/lib/monitor";
 export const maxDuration = 60;
 export async function GET(request: Request) {
@@ -23,6 +24,14 @@ export async function GET(request: Request) {
       results: unknown[] = [];
     // A bounded operator-owned job. Never scan or execute on arbitrary tenants.
     const alertOwner = process.env.AURYN_ALERT_JOB_USER_ID;
+    if (
+      alertOwner &&
+      exactOwner(alertOwner) &&
+      process.env.AURYN_THESIS_JOB_ENABLED === "true"
+    )
+      results.push({
+        theses: await backgroundWork(() => checkSavedTheses(db, alertOwner)),
+      });
     if (alertOwner && (!accessEnabled() || exactOwner(alertOwner)))
       results.push({
         alerts: await backgroundWork(() => checkAlerts(db, alertOwner)),
@@ -65,7 +74,9 @@ export async function GET(request: Request) {
     }
     if (process.env.AURYN_SUPPORT_EMAIL_ENABLED === "true") {
       const { retrySupport } = await import("@/lib/support-delivery");
-      results.push({support:await retrySupport().catch(()=>({pending:true}))});
+      results.push({
+        support: await retrySupport().catch(() => ({ pending: true })),
+      });
     }
     return privateJson({ checkedAt: new Date().toISOString(), results });
   } catch (e) {

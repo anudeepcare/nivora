@@ -100,5 +100,17 @@
   }
 }
 
-.workspace.workspace .account{min-height:0;height:auto;margin:12px 0;padding:12px 0}
-.account h4{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:0;font-size:14px}
+.workspace.workspace .account {
+  min-height: 0;
+  height: auto;
+  margin: 12px 0;
+  padding: 12px 0;
+}
+.account h4 {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  font-size: 14px;
+}

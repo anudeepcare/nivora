@@ -35,13 +35,54 @@ export default function EarningsReview({
         <>
           <h3>{review.label}</h3>
           <p className="small muted">{dateLabel(review.date)} · Reported EPS</p>
-          <dl className="earnings-kpis"><div><dt>Actual</dt><dd>{review.actual?.toFixed(2) ?? "Pending"}</dd></div><div><dt>Estimate</dt><dd>{review.estimate?.toFixed(2) ?? "Unavailable"}</dd></div><div><dt>Surprise</dt><dd className={review.surprise !== null && review.surprise < 0 ? "negative" : ""}>{review.surprise !== null ? percent(review.surprise,true) : "Unavailable"}</dd></div></dl>
-          <p className="small muted">Reported series; GAAP/adjusted basis not reconciled. EPS alone does not confirm the business case.</p>
+          <dl className="earnings-kpis">
+            <div>
+              <dt>Actual</dt>
+              <dd>{review.actual?.toFixed(2) ?? "Pending"}</dd>
+            </div>
+            <div>
+              <dt>Estimate</dt>
+              <dd>{review.estimate?.toFixed(2) ?? "Unavailable"}</dd>
+            </div>
+            <div>
+              <dt>Surprise</dt>
+              <dd
+                className={
+                  review.surprise !== null && review.surprise < 0
+                    ? "negative"
+                    : ""
+                }
+              >
+                {review.surprise !== null
+                  ? percent(review.surprise, true)
+                  : "Unavailable"}
+              </dd>
+            </div>
+          </dl>
+          <p className="small muted">
+            Reported series; GAAP/adjusted basis not reconciled. EPS alone does
+            not confirm the business case.
+          </p>
         </>
       ) : (
         <p>Recent reported results are not available in this snapshot.</p>
       )}
-      {checks.length > 0 && <section><h3>Evidence to revisit</h3><p className="small muted">{financial.periodBasis} periods ending {dateLabel(financial.latest?.end)} and {dateLabel(financial.prior?.end)}. These may predate the earnings announcement above.</p><ul>{checks.map(check=><li key={check}>{check}</li>)}</ul></section>}
+      {checks.length > 0 && (
+        <section>
+          <h3>Evidence to revisit</h3>
+          <p className="small muted">
+            {financial.periodBasis} periods ending{" "}
+            {dateLabel(financial.latest?.end)} and{" "}
+            {dateLabel(financial.prior?.end)}. These may predate the earnings
+            announcement above.
+          </p>
+          <ul>
+            {checks.map((check) => (
+              <li key={check}>{check}</li>
+            ))}
+          </ul>
+        </section>
+      )}
       {note?.condition && (
         <blockquote>
           <strong>Your review trigger</strong>

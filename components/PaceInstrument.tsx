@@ -67,12 +67,19 @@ export default function PaceInstrument({
     <section
       className={`${s.instrument} ${compact ? s.compact : ""}`}
       aria-label={
-        publicGuide ? "Explore the AURYN Accumulation Pace framework" : "AURYN Accumulation Pace"
+        publicGuide
+          ? "Explore the AURYN Accumulation Pace framework"
+          : "AURYN Accumulation Pace"
       }
     >
       <header className={s.header}>
         <span>
-          <img src="/pace-diamond.svg" alt="" width="22" height="24" /> <span>AURYN<br />ACCUMULATION PACE</span>
+          <img src="/pace-diamond.svg" alt="" width="22" height="24" />{" "}
+          <span>
+            AURYN
+            <br />
+            ACCUMULATION PACE
+          </span>
         </span>
         <PaceHelp />
       </header>
@@ -91,7 +98,8 @@ export default function PaceInstrument({
             <h2>
               {exploring && selected !== null
                 ? names[selected]
-                : view?.actionLabel?.replace(/\s*·\s*P[0-4]\s*$/, "") || "Awaiting evidence"}
+                : view?.actionLabel?.replace(/\s*·\s*P[0-4]\s*$/, "") ||
+                  "Awaiting evidence"}
               <span className={s.level}>
                 {selected == null ? "Pending" : `P${selected}`}
               </span>
@@ -195,9 +203,7 @@ export default function PaceInstrument({
       )}
       <details className={s.readingDetail}>
         <summary>
-          {exploring
-            ? "About this stage"
-            : "Price levels & accumulation plan"}
+          {exploring ? "About this stage" : "Price levels & accumulation plan"}
         </summary>
         <p className={s.description}>
           {exploring && selected !== null

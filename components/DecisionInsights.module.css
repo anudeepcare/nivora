@@ -291,4 +291,8 @@
   border-radius: 0;
   background: transparent;
 }
-.panel > a { display: inline-flex; align-items: center; min-height: 44px; }
+.panel > a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}

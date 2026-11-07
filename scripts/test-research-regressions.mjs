@@ -1,3 +1,4 @@
+import {setupFixtureAccess,fixtureAccessResponse} from "./fixture-access.mjs";
 // Built-route regressions. Identity and provider transports are fixtures; no paid requests.
 import { createRequire } from "node:module";
 import assert from "node:assert/strict";
@@ -43,7 +44,8 @@ const observation = {
   form: "20-F",
   accn: "0001000184-26-000031",
 };
-globalThis.fetch = async (input, options) => {
+setupFixtureAccess();
+globalThis.fetch = async (input, options) => { const accessFixture=fixtureAccessResponse(input);if(accessFixture)return accessFixture;
   const u = new URL(String(input));
   calls.push(u);
   if (u.pathname === "/auth/v1/user")

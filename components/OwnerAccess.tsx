@@ -1,9 +1,18 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
-import { Users, SlidersHorizontal, CreditCard, Mail, BookOpen, Plus, X } from "lucide-react";
+import {
+  Users,
+  SlidersHorizontal,
+  CreditCard,
+  Mail,
+  BookOpen,
+  Plus,
+  X,
+} from "lucide-react";
 import styles from "./OwnerAccess.module.css";
 import SupportInbox from "./SupportInbox";
 import OwnerHandbook from "./OwnerHandbook";
+import OwnerEvidenceTools from "./OwnerEvidenceTools";
 import { api } from "@/lib/client";
 import { useAccess } from "./Access";
 import {
@@ -95,12 +104,49 @@ export default function OwnerAccess() {
   return (
     <section className={styles.root}>
       <header className={styles.heading}>
-        <div><h1>Admin controls</h1>{data && <p>{data.grants.filter(g => !g.revoked_at && Date.parse(g.expires_at) > Date.now()).length} active members · {data.grants.filter(g => !g.revoked_at && Date.parse(g.expires_at) > Date.now() && Date.parse(g.expires_at) <= Date.now() + 7 * 86400000).length} expiring this week</p>}</div>
-        <label className={styles.preview}>Preview access
-          <select aria-label="Preview access" value={access.preview ?? "owner"} onChange={e => {
-            try { if(e.target.value === "owner") sessionStorage.removeItem("auryn-owner-preview"); else sessionStorage.setItem("auryn-owner-preview", e.target.value); void refresh(); }
-            catch { setMessage("Preview could not be changed."); }
-          }}><option value="owner">Owner</option><option value="free">Free</option><option value="pro">Pro</option></select>
+        <div>
+          <h1>Admin controls</h1>
+          {data && (
+            <p>
+              {
+                data.grants.filter(
+                  (g) => !g.revoked_at && Date.parse(g.expires_at) > Date.now(),
+                ).length
+              }{" "}
+              active members ·{" "}
+              {
+                data.grants.filter(
+                  (g) =>
+                    !g.revoked_at &&
+                    Date.parse(g.expires_at) > Date.now() &&
+                    Date.parse(g.expires_at) <= Date.now() + 7 * 86400000,
+                ).length
+              }{" "}
+              expiring this week
+            </p>
+          )}
+        </div>
+        <label className={styles.preview}>
+          Preview access
+          <select
+            aria-label="Preview access"
+            value={access.preview ?? "owner"}
+            onChange={(e) => {
+              try {
+                if (e.target.value === "owner")
+                  sessionStorage.removeItem("auryn-owner-preview");
+                else
+                  sessionStorage.setItem("auryn-owner-preview", e.target.value);
+                void refresh();
+              } catch {
+                setMessage("Preview could not be changed.");
+              }
+            }}
+          >
+            <option value="owner">Owner</option>
+            <option value="free">Free</option>
+            <option value="pro">Pro</option>
+          </select>
         </label>
       </header>
       <nav className="admin-section-nav" aria-label="Admin sections">
@@ -121,11 +167,27 @@ export default function OwnerAccess() {
               setMessage("");
             }}
           >
-            {id === "people" ? <Users size={17} aria-hidden="true"/> : id === "features" ? <SlidersHorizontal size={17} aria-hidden="true"/> : id === "payments" ? <CreditCard size={17} aria-hidden="true"/> : id === "handbook" ? <BookOpen size={17} aria-hidden="true"/> : <Mail size={17} aria-hidden="true"/>}{label}
+            {id === "people" ? (
+              <Users size={17} aria-hidden="true" />
+            ) : id === "features" ? (
+              <SlidersHorizontal size={17} aria-hidden="true" />
+            ) : id === "payments" ? (
+              <CreditCard size={17} aria-hidden="true" />
+            ) : id === "handbook" ? (
+              <BookOpen size={17} aria-hidden="true" />
+            ) : (
+              <Mail size={17} aria-hidden="true" />
+            )}
+            {label}
           </button>
         ))}
       </nav>
-      {panel === "handbook" && <OwnerHandbook />}
+      {panel === "handbook" && (
+        <>
+          <OwnerEvidenceTools />
+          <OwnerHandbook />
+        </>
+      )}
       {message && (
         <p className="membership-feedback" role="status">
           {message}
@@ -230,7 +292,26 @@ export default function OwnerAccess() {
             hidden={panel !== "people"}
             className="membership-panel"
           >
-            <header className={styles.sectionHeading}><div><h2>Members</h2><p>Complimentary Pro access</p></div><button type="button" className="button primary" onClick={() => {setEmail("");setExpiry("");setDuration(null);setMessage("");grantDialog.current?.showModal();}}><Plus size={16} aria-hidden="true"/>Grant access</button></header>
+            <header className={styles.sectionHeading}>
+              <div>
+                <h2>Members</h2>
+                <p>Complimentary Pro access</p>
+              </div>
+              <button
+                type="button"
+                className="button primary"
+                onClick={() => {
+                  setEmail("");
+                  setExpiry("");
+                  setDuration(null);
+                  setMessage("");
+                  grantDialog.current?.showModal();
+                }}
+              >
+                <Plus size={16} aria-hidden="true" />
+                Grant access
+              </button>
+            </header>
 
             <div className="admin-member-tools">
               <label>
@@ -265,75 +346,104 @@ export default function OwnerAccess() {
                       ? "expired"
                       : "active") === memberFilter),
             ) && <p>No members match this filter.</p>}
-            <div className={styles.tableWrap}><table className={styles.members}><caption className="sr-only">Complimentary member access</caption><thead><tr><th>Member</th><th>Group</th><th>Access</th><th>Actions</th></tr></thead><tbody>
-              {data.grants.length ? (
-                data.grants
-                  .filter(
-                    (g) =>
-                      g.email
-                        .toLowerCase()
-                        .includes(memberSearch.toLowerCase()) &&
-                      (memberFilter === "all" ||
-                        (g.revoked_at
-                          ? "revoked"
-                          : Date.parse(g.expires_at) <= Date.now()
-                            ? "expired"
-                            : "active") === memberFilter),
-                  )
-                  .map((g) => (
-                    <tr key={g.user_id}>
-                      <td data-label="Member"><strong>{g.email}</strong></td>
-                      <td data-label="Group">{g.cohort}</td>
-                      <td data-label="Access"><small>
-                          {g.revoked_at
-                            ? "Revoked"
-                            : Date.parse(g.expires_at) < Date.now()
-                              ? "Expired"
-                              : `Until ${new Date(g.expires_at).toLocaleString()} · ${Math.max(0, Math.ceil((Date.parse(g.expires_at) - Date.now()) / 86400000))} days left`}
-                        </small>
-                      </td>
-                      <td data-label="Actions" className="admin-member-actions">
-                        <button
-                          type="button"
-                          className="button"
-                          disabled={busy}
-                          onClick={() => {
-                            setEmail(g.email);
-                            setCohort(g.cohort);
-                            setExpiry(
-                              new Date(
-                                Math.max(Date.now(), Date.parse(g.expires_at)) +
-                                  30 * 86400000 -
-                                  new Date().getTimezoneOffset() * 60000,
-                              )
-                                .toISOString()
-                                .slice(0, 16),
-                            );
-                            setDuration(null);
-                            setMessage(
-                              `Review the new date for ${g.email}, then give access to save.`,
-                            );
-                            grantDialog.current?.showModal();
-                          }}
-                        >
-                          Extend 30 days
-                        </button>
-                        <button
-                          className="button"
-                          disabled={busy || !!g.revoked_at}
-                          onClick={() =>
-                            void save({ action: "revoke", userId: g.user_id })
-                          }
-                        >
-                          Revoke
-                        </button>
-                      </td>
+            <div className={styles.tableWrap}>
+              <table className={styles.members}>
+                <caption className="sr-only">
+                  Complimentary member access
+                </caption>
+                <thead>
+                  <tr>
+                    <th>Member</th>
+                    <th>Group</th>
+                    <th>Access</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.grants.length ? (
+                    data.grants
+                      .filter(
+                        (g) =>
+                          g.email
+                            .toLowerCase()
+                            .includes(memberSearch.toLowerCase()) &&
+                          (memberFilter === "all" ||
+                            (g.revoked_at
+                              ? "revoked"
+                              : Date.parse(g.expires_at) <= Date.now()
+                                ? "expired"
+                                : "active") === memberFilter),
+                      )
+                      .map((g) => (
+                        <tr key={g.user_id}>
+                          <td data-label="Member">
+                            <strong>{g.email}</strong>
+                          </td>
+                          <td data-label="Group">{g.cohort}</td>
+                          <td data-label="Access">
+                            <small>
+                              {g.revoked_at
+                                ? "Revoked"
+                                : Date.parse(g.expires_at) < Date.now()
+                                  ? "Expired"
+                                  : `Until ${new Date(g.expires_at).toLocaleString()} · ${Math.max(0, Math.ceil((Date.parse(g.expires_at) - Date.now()) / 86400000))} days left`}
+                            </small>
+                          </td>
+                          <td
+                            data-label="Actions"
+                            className="admin-member-actions"
+                          >
+                            <button
+                              type="button"
+                              className="button"
+                              disabled={busy}
+                              onClick={() => {
+                                setEmail(g.email);
+                                setCohort(g.cohort);
+                                setExpiry(
+                                  new Date(
+                                    Math.max(
+                                      Date.now(),
+                                      Date.parse(g.expires_at),
+                                    ) +
+                                      30 * 86400000 -
+                                      new Date().getTimezoneOffset() * 60000,
+                                  )
+                                    .toISOString()
+                                    .slice(0, 16),
+                                );
+                                setDuration(null);
+                                setMessage(
+                                  `Review the new date for ${g.email}, then give access to save.`,
+                                );
+                                grantDialog.current?.showModal();
+                              }}
+                            >
+                              Extend 30 days
+                            </button>
+                            <button
+                              className="button"
+                              disabled={busy || !!g.revoked_at}
+                              onClick={() =>
+                                void save({
+                                  action: "revoke",
+                                  userId: g.user_id,
+                                })
+                              }
+                            >
+                              Revoke
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                  ) : (
+                    <tr>
+                      <td colSpan={4}>No complimentary grants yet.</td>
                     </tr>
-                  ))
-              ) : (
-                <tr><td colSpan={4}>No complimentary grants yet.</td></tr>
-              )}
-            </tbody></table></div>
+                  )}
+                </tbody>
+              </table>
+            </div>
             <details className={styles.danger}>
               <summary>End group access</summary>
               <p>
@@ -369,10 +479,10 @@ export default function OwnerAccess() {
             hidden={panel !== "payments"}
             className="membership-panel"
           >
-
             <h2>Payments</h2>
             <p>
-              Check your billing connection. Manage invoices and subscriptions in Stripe.
+              Check your billing connection. Manage invoices and subscriptions
+              in Stripe.
             </p>
             <button
               type="button"
@@ -395,7 +505,10 @@ export default function OwnerAccess() {
               <p>Pro · $2.99/month · Unlimited company research</p>
             </div>
           </section>
-          <details hidden={panel !== "people"} className="membership-panel admin-activity">
+          <details
+            hidden={panel !== "people"}
+            className="membership-panel admin-activity"
+          >
             <summary>Recent activity</summary>
             <p>
               {data.usage} recorded research/AI usage entries this UTC month.
@@ -421,92 +534,105 @@ export default function OwnerAccess() {
           </details>
         </>
       )}
-      <dialog ref={grantDialog} className={styles.dialog} aria-labelledby="grant-title" onCancel={e => {if(busy)e.preventDefault();}}>
-        <header className={styles.dialogHeading}><h2 id="grant-title">Grant Pro access</h2><button type="button" aria-label="Close grant access" disabled={busy} onClick={() => grantDialog.current?.close()}><X size={20}/></button></header>
+      <dialog
+        ref={grantDialog}
+        className={styles.dialog}
+        aria-labelledby="grant-title"
+        onCancel={(e) => {
+          if (busy) e.preventDefault();
+        }}
+      >
+        <header className={styles.dialogHeading}>
+          <h2 id="grant-title">Grant Pro access</h2>
+          <button
+            type="button"
+            aria-label="Close grant access"
+            disabled={busy}
+            onClick={() => grantDialog.current?.close()}
+          >
+            <X size={20} />
+          </button>
+        </header>
 
-            <p>
-              Use an existing account email and choose an end date.
-            </p>
-            <div
-              className="admin-duration-row"
-              aria-label="Quick access duration"
-            >
-              <span>Quick duration</span>
-              {[7, 30, 90].map((days) => (
-                <button
-                  type="button"
-                  className="button"
-                  key={days}
-                  aria-pressed={duration === days}
-                  disabled={busy}
-                  onClick={() => {
-                    setDuration(days);
-                    setMessage("");
-                    const d = new Date(Date.now() + days * 86400000);
-                    setExpiry(
-                      new Date(d.getTime() - d.getTimezoneOffset() * 60000)
-                        .toISOString()
-                        .slice(0, 16),
-                    );
-                  }}
-                >
-                  {days} days
-                </button>
-              ))}
-            </div>
-            <form
-              className="owner-grant-form"
-              onSubmit={(e) => {
-                e.preventDefault();
-                void save({
-                  action: "grant",
-                  email,
-                  expiresAt: new Date(expiry).toISOString(),
-                  cohort,
-                });
+        <p>Use an existing account email and choose an end date.</p>
+        <div className="admin-duration-row" aria-label="Quick access duration">
+          <span>Quick duration</span>
+          {[7, 30, 90].map((days) => (
+            <button
+              type="button"
+              className="button"
+              key={days}
+              aria-pressed={duration === days}
+              disabled={busy}
+              onClick={() => {
+                setDuration(days);
+                setMessage("");
+                const d = new Date(Date.now() + days * 86400000);
+                setExpiry(
+                  new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+                    .toISOString()
+                    .slice(0, 16),
+                );
               }}
             >
-              <label>
-                Account email
-                <input
-                  type="email"
-                  required
-                  autoComplete="off"
-                  placeholder="name@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </label>
-              <label>
-                Access ends · your local time
-                <input
-                  type="datetime-local"
-                  required
-                  value={expiry}
-                  onChange={(e) => {
-                    setExpiry(e.target.value);
-                    setDuration(null);
-                  }}
-                />
-              </label>
-              <label>
-                Group
-                <input
-                  maxLength={40}
-                  required
-                  value={cohort}
-                  onChange={(e) => setCohort(e.target.value)}
-                />
-              </label>
-              {expiry && (
-                <p className="admin-expiry-summary">
-                  Access will end {new Date(expiry).toLocaleString()}. Review the date before saving.
-                </p>
-              )}
-              <button className="button primary" disabled={busy}>
-                Grant complimentary Pro
-              </button>
-            </form>
+              {days} days
+            </button>
+          ))}
+        </div>
+        <form
+          className="owner-grant-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            void save({
+              action: "grant",
+              email,
+              expiresAt: new Date(expiry).toISOString(),
+              cohort,
+            });
+          }}
+        >
+          <label>
+            Account email
+            <input
+              type="email"
+              required
+              autoComplete="off"
+              placeholder="name@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </label>
+          <label>
+            Access ends · your local time
+            <input
+              type="datetime-local"
+              required
+              value={expiry}
+              onChange={(e) => {
+                setExpiry(e.target.value);
+                setDuration(null);
+              }}
+            />
+          </label>
+          <label>
+            Group
+            <input
+              maxLength={40}
+              required
+              value={cohort}
+              onChange={(e) => setCohort(e.target.value)}
+            />
+          </label>
+          {expiry && (
+            <p className="admin-expiry-summary">
+              Access will end {new Date(expiry).toLocaleString()}. Review the
+              date before saving.
+            </p>
+          )}
+          <button className="button primary" disabled={busy}>
+            Grant complimentary Pro
+          </button>
+        </form>
 
         {message && <p role="status">{message}</p>}
       </dialog>

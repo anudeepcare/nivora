@@ -17,7 +17,11 @@ import dynamic from "next/dynamic";
 import useLivePrices from "./useLivePrices";
 import { quoteHealth } from "@/lib/quote-health";
 import { mergePriceTick } from "@/lib/live-price";
-import { cachedQuotes, publishQuotes, subscribeQuotes } from "@/lib/shared-quotes";
+import {
+  cachedQuotes,
+  publishQuotes,
+  subscribeQuotes,
+} from "@/lib/shared-quotes";
 import { retainResearchQuote } from "@/lib/research-quote";
 const ValueStudio = dynamic(() => import("./ValueStudio"), {
   loading: () => <p role="status">Opening valuation…</p>,
@@ -88,6 +92,7 @@ import DecisionBrief from "./DecisionBrief";
 import TargetsEstimates from "./TargetsEstimates";
 import AnalystRatings from "./AnalystRatings";
 import CompanyUpdates from "./CompanyUpdates";
+import CongressDisclosures from "./CongressDisclosures";
 import OverviewContext from "./OverviewContext";
 const tabs = [
   "Snapshot",
@@ -130,7 +135,13 @@ export default function Research({ symbol }: { symbol: string }) {
   const requestedTab = useSearchParams().get("tab");
   const { demo, workspace, mutate, reduceMotion, cache } = useProduct();
   const [, sharedRevision] = useState(0);
-  useEffect(() => subscribeQuotes(cache, symbols => {if(symbols.includes(symbol))sharedRevision(n => n + 1);}), [cache,symbol]);
+  useEffect(
+    () =>
+      subscribeQuotes(cache, (symbols) => {
+        if (symbols.includes(symbol)) sharedRevision((n) => n + 1);
+      }),
+    [cache, symbol],
+  );
   const resource = useResource<ResearchData>(
       `research/${encodeURIComponent(symbol.replace("/", "-"))}`,
       demo?.research[symbol],
@@ -168,7 +179,10 @@ export default function Research({ symbol }: { symbol: string }) {
       : undefined;
   const observedRest = retainResearchQuote(
     retainResearchQuote(priorQuote, baseResearch?.quote),
-    retainResearchQuote(latestQuote.data?.[symbol]?.quote, cachedQuotes(cache, [symbol])[symbol]?.quote),
+    retainResearchQuote(
+      latestQuote.data?.[symbol]?.quote,
+      cachedQuotes(cache, [symbol])[symbol]?.quote,
+    ),
   );
   const restQuote = quoteHealth(
     latestQuote.error && observedRest
@@ -189,7 +203,9 @@ export default function Research({ symbol }: { symbol: string }) {
   retainedQuote.current = { symbol, quote: currentQuote };
   useEffect(() => {
     if (!demo && currentQuote && baseResearch?.company)
-      publishQuotes(cache, {[symbol]: {company:baseResearch.company, quote:currentQuote}});
+      publishQuotes(cache, {
+        [symbol]: { company: baseResearch.company, quote: currentQuote },
+      });
   }, [cache, demo, symbol, currentQuote, baseResearch?.company]);
   const r = useMemo(
     () =>
@@ -206,10 +222,15 @@ export default function Research({ symbol }: { symbol: string }) {
               : new Date().toISOString(),
           }
         : baseResearch,
-    [baseResearch, currentQuote],
+    [baseResearch, currentQuote, demo],
   );
   const [tab, setTab] = useState<(typeof tabs)[number]>(
-      () => tabs.find((t) => t === (requestedTab ?? cache?.get(`view:research:${symbol}:tab`)?.value)) ?? "Snapshot",
+      () =>
+        tabs.find(
+          (t) =>
+            t ===
+            (requestedTab ?? cache?.get(`view:research:${symbol}:tab`)?.value),
+        ) ?? "Snapshot",
     ),
     [range, setRange] = useState<(typeof ranges)[number]>("1Y"),
     [style, setStyle] = useState<"line" | "candles">("line"),
@@ -243,7 +264,7 @@ export default function Research({ symbol }: { symbol: string }) {
     if (!next) return;
     setTab(next);
     if (next === "Snapshot" || next === "Technicals")
-      setRetainedCharts((old) => old.includes(next) ? old : [...old, next]);
+      setRetainedCharts((old) => (old.includes(next) ? old : [...old, next]));
   }, [requestedTab]);
   const [workbenchTarget, setWorkbenchTarget] = useState("risk");
   const researchNavigation = useRef<HTMLElement>(null);
@@ -251,7 +272,7 @@ export default function Research({ symbol }: { symbol: string }) {
     if (next === "Technicals")
       setRetainedCharts((old) => (old.includes(next) ? old : [...old, next]));
     setTab(next);
-    cache.set(`view:research:${symbol}:tab`,{at:Date.now(),value:next});
+    cache.set(`view:research:${symbol}:tab`, { at: Date.now(), value: next });
     const url = new URL(window.location.href);
     url.searchParams.set("tab", next);
     window.history.replaceState(null, "", url);
@@ -273,9 +294,11 @@ export default function Research({ symbol }: { symbol: string }) {
     });
   };
   const intraday = range === "1D" || range === "1W";
+  const history = r?.history;
   const demoShort = useMemo(
-    () => (demo && r ? { candles: rangeBars(r.history, range) } : undefined),
-    [demo, r?.history, range],
+    () =>
+      demo && history ? { candles: rangeBars(history, range) } : undefined,
+    [demo, history, range],
   );
   const short = useResource<{ candles: Candle[]; source?: string }>(
     intraday
@@ -288,10 +311,10 @@ export default function Research({ symbol }: { symbol: string }) {
     () =>
       intraday
         ? (short.data?.candles ?? [])
-        : r
-          ? rangeBars(r.history, range)
+        : history
+          ? rangeBars(history, range)
           : [],
-    [intraday, short.data, r?.history, range],
+    [intraday, short.data, history, range],
   );
   const chartBars = useMemo(
     () => (frequency === "Daily" ? bars : groupHistory(bars, frequency)),
@@ -370,6 +393,12 @@ export default function Research({ symbol }: { symbol: string }) {
           ["Snapshot", "Technicals", "Thesis", "News", "Advanced"].includes(x),
         )
       : tabs;
+  const coreSections = visible.filter(
+    (key) => key !== "Options" && key !== "Advanced",
+  );
+  const labSections = visible.filter(
+    (key) => key === "Options" || key === "Advanced",
+  );
   const chart = (
     <section className="plot-section">
       <header className="row between chart-head">
@@ -395,7 +424,7 @@ export default function Research({ symbol }: { symbol: string }) {
       {bars.length ? (
         <PriceStudyChart
           research={r}
-          onOptions={crypto ? undefined : () => switchTab("Options")}
+          onOptions={undefined}
           bars={chartBars}
           range={frequency === "Daily" ? range : `${range} ${frequency}`}
           style={style}
@@ -541,11 +570,18 @@ export default function Research({ symbol }: { symbol: string }) {
           value={tab}
           onChange={(e) => switchTab(e.target.value as (typeof tabs)[number])}
         >
-          {visible.map((key) => (
+          {coreSections.map((key) => (
             <option key={key} value={key}>
               {tabPresentation[key].label}
             </option>
           ))}
+          <optgroup label="Labs">
+            {labSections.map((key) => (
+              <option key={key} value={key}>
+                {tabPresentation[key].label}
+              </option>
+            ))}
+          </optgroup>
         </select>
       </label>
       <nav
@@ -553,7 +589,7 @@ export default function Research({ symbol }: { symbol: string }) {
         aria-label="Research sections"
         ref={researchNavigation}
       >
-        {visible.map((key) => {
+        {coreSections.map((key) => {
           const Icon = tabPresentation[key].icon;
           return (
             <button
@@ -570,6 +606,24 @@ export default function Research({ symbol }: { symbol: string }) {
             </button>
           );
         })}
+        <label>
+          Labs
+          <select
+            aria-label="Labs tools"
+            value={labSections.includes(tab) ? tab : ""}
+            onChange={(e) => {
+              if (e.target.value)
+                switchTab(e.target.value as (typeof tabs)[number]);
+            }}
+          >
+            <option value="">Open a tool</option>
+            {labSections.map((key) => (
+              <option key={key} value={key}>
+                {tabPresentation[key].label}
+              </option>
+            ))}
+          </select>
+        </label>
       </nav>
       <div id="research-overview" hidden={tab !== "Snapshot"}>
         <FeatureGate
@@ -622,11 +676,17 @@ export default function Research({ symbol }: { symbol: string }) {
               </>
             )}
             {tab === "Advanced" && (
-              <AdvancedResearch
-                key={r.company.symbol}
-                research={r}
-                initialSection={workbenchTarget}
-              />
+              <>
+                <CongressDisclosures
+                  symbol={r.company.symbol}
+                  preview={!!demo}
+                />
+                <AdvancedResearch
+                  key={r.company.symbol}
+                  research={r}
+                  initialSection={workbenchTarget}
+                />
+              </>
             )}
             {tab === "Options" && (
               <OptionsDesk

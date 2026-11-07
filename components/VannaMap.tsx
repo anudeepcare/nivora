@@ -30,14 +30,17 @@ export default function VannaMap({
   const [riskFree, setRiskFree] = useState("4");
   const [dividendYield, setDividendYield] = useState("0");
   const [selection, setSelection] = useState<string | null>(null);
-  const assumptions = {
-    riskFree: riskFree.trim() === "" ? NaN : Number(riskFree) / 100,
-    dividendYield:
-      dividendYield.trim() === "" ? NaN : Number(dividendYield) / 100,
-  };
+  const assumptions = useMemo(
+    () => ({
+      riskFree: riskFree.trim() === "" ? NaN : Number(riskFree) / 100,
+      dividendYield:
+        dividendYield.trim() === "" ? NaN : Number(dividendYield) / 100,
+    }),
+    [riskFree, dividendYield],
+  );
   const map = useMemo(
     () => modelVannaMap(contracts, spot, asOf, assumptions),
-    [contracts, spot, asOf, assumptions.riskFree, assumptions.dividendYield],
+    [contracts, spot, asOf, assumptions],
   );
   const key = (expiry: string, strike: number) => `${expiry}|${strike}`;
   const lookup = new Map(map.cells.map((c) => [key(c.expiry, c.strike), c]));

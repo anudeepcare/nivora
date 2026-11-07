@@ -108,7 +108,9 @@ export function Settings() {
     workspace?.email ||
     (demo ? "Design preview" : "Loading account…");
   return (
-    <section className={`settings-page workspace-settings ${settingsStyles.page}`}>
+    <section
+      className={`settings-page workspace-settings ${settingsStyles.page}`}
+    >
       <div className="settings-page-toolbar">
         <Link
           href={backHref}
@@ -118,7 +120,6 @@ export function Settings() {
         >
           <ArrowLeft size={18} /> Back
         </Link>
-
       </div>
       <PageHeading
         title="Settings"
@@ -258,7 +259,11 @@ export function Settings() {
           <span>Help & support</span>
           <ChevronRight size={17} />
         </ContextLink>
-        <ContextLink page="changelog"><Bell size={18} /><span>What’s new · {APP_VERSION}</span><ChevronRight size={17} /></ContextLink>
+        <ContextLink page="changelog">
+          <Bell size={18} />
+          <span>What’s new · {APP_VERSION}</span>
+          <ChevronRight size={17} />
+        </ContextLink>
         <a href={`mailto:${SUPPORT_EMAIL}`}>
           <ShieldCheck size={18} />
           <span>Email support</span>
@@ -438,7 +443,9 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
       {compatibility.length > 0 && (
         <p className="context-note">{compatibility.join(" ")}</p>
       )}
-      {values.length > 0 && <ComparisonCharts research={values.map(({ r }) => r)} />}
+      {values.length > 0 && (
+        <ComparisonCharts research={values.map(({ r }) => r)} />
+      )}
       <PaceHelp trigger="Understand AURYN Pace" />
       {values.length ? (
         <div className="table-scroll">

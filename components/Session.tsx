@@ -115,15 +115,23 @@ export function ProductSession({
     const restored = (event: PageTransitionEvent) => {
       if (!event.persisted) return;
       // Resume without discarding the mounted shell or replaying launch screens.
-      void authClient().auth.getSession().then(({data, error}) => {
-        if (active && !error) {
-          if (!data.session) clearAccountCache();
-          setSession(data.session);
-        }
-      }).catch(() => { /* A transient outage must not force a sign-out. */ });
+      void authClient()
+        .auth.getSession()
+        .then(({ data, error }) => {
+          if (active && !error) {
+            if (!data.session) clearAccountCache();
+            setSession(data.session);
+          }
+        })
+        .catch(() => {
+          /* A transient outage must not force a sign-out. */
+        });
     };
     window.addEventListener("pageshow", restored);
-    return () => { active = false; window.removeEventListener("pageshow", restored); };
+    return () => {
+      active = false;
+      window.removeEventListener("pageshow", restored);
+    };
   }, [demo]);
   const destination =
     !demo && !loading ? authDestination(pathname, !!session, recovering) : null;
@@ -590,9 +598,7 @@ function Login({ initialError }: { initialError: string }) {
             <br />
             <span>A clearer view.</span>
           </h2>
-          <p>
-            One place for your investment research.
-          </p>
+          <p>One place for your investment research.</p>
           <div className={experience.brandVisual} aria-hidden="true">
             <span className={experience.visualOrbit} />
             <span className={experience.visualOrbit} />
@@ -602,9 +608,15 @@ function Login({ initialError }: { initialError: string }) {
             </span>
           </div>
           <div className={experience.researchCard}>
-            <span><Layers3 size={18} /> Business</span>
-            <span><Scale size={18} /> Value</span>
-            <span><ChartNoAxesCombined size={18} /> Your pace</span>
+            <span>
+              <Layers3 size={18} /> Business
+            </span>
+            <span>
+              <Scale size={18} /> Value
+            </span>
+            <span>
+              <ChartNoAxesCombined size={18} /> Your pace
+            </span>
           </div>
         </div>
         <p className={experience.storyFoot}>
