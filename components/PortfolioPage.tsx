@@ -1,4 +1,6 @@
 "use client";
+import DecisionAttention from "./DecisionAttention";
+import { useWorkspacePreferences } from "./WorkspacePreferences";
 import dynamic from "next/dynamic";
 import QuickRead from "./QuickRead";
 import { companyAccent } from "@/lib/visual-signals";
@@ -56,6 +58,7 @@ import {
   WealthStrip,
 } from "./WorkspaceShared";
 export function Portfolio() {
+  const preferences = useWorkspacePreferences();
   const state = useWorkspaceData("portfolio"),
     { workspace, quotes, model, q, prefix } = state;
   const positions = workspace?.positions ?? [];
@@ -195,6 +198,23 @@ export function Portfolio() {
           ]}
         />
       )}
+      <DecisionAttention
+        symbols={[
+          ...new Set(
+            positions
+              .filter((p) => p.assetType !== "cash" && p.quantity > 0)
+              .map((p) => p.symbol),
+          ),
+        ]}
+        held={positions
+          .filter((p) => p.assetType !== "cash" && p.quantity > 0)
+          .map((p) => p.symbol)}
+        rows={state.paceScan.rows}
+        allocations={model.allocations}
+        concentrationLimit={preferences.preferences.concentrationLimit}
+        prefix={prefix}
+        loading={state.paceScan.loading}
+      />
       <div className="portfolio-grid">
         <div>
           <section className="card portfolio-trend-panel">

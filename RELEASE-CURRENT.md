@@ -58,3 +58,7 @@ Source only; no deployment or database changes. Optional public Pace record publ
 Clearer Pace summary with a filled diamond; stronger text contrast; compact mobile financial-period controls; short evidence reads in Business, Case, Technicals, Targets, Options and Portfolio. Ownership adds the largest supplied holder and explanations. Options groups its command/filter surfaces and removes repeated expiry/range metadata. The valuation sentence keeps accessible labels outside the visible text. Portfolio distinguishes missing calendar coverage and defers five optional analysis modules until opened. Research navigation follows the selected tab as layout settles. Calculations, scenarios and tools remain in place.
 
 This is a source release; no production deployment or database changes were performed.
+
+## Decision context and Options alignment
+
+Added Review first to holdings and watchlists using the shared existing decision record. Includes measured reasons, risk and reassessment conditions with reference/report dates. Personal concentration thresholds prompt a separate position-size review without converting a healthy business into Sell. Options controls, tabs, filters and exposure-summary values use coordinated alignment rules. Scenario forecasting accuracy remains unvalidated; the UI does not assign invented probabilities.

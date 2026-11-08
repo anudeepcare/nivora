@@ -1,0 +1,50 @@
+[
+  {
+    "name": "options",
+    "width": 320,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "name": "options",
+    "width": 320,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "name": "options",
+    "width": 390,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "name": "options",
+    "width": 390,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "name": "options",
+    "width": 768,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "name": "options",
+    "width": 768,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "name": "options",
+    "width": 1440,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "name": "options",
+    "width": 1440,
+    "theme": "dark",
+    "passed": true
+  }
+]

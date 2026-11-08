@@ -138,6 +138,17 @@ export function workspaceGuidance(
     action: edge.assessment,
     actions: edge.decision.actionLabels,
     contextLabel: edge.decision.contextLabel,
+    reason: [
+      edge.reason,
+      edge.riskReview ? edge.decision.risks[0] : edge.decision.reasons[0],
+    ]
+      .filter(Boolean)
+      .join(" "),
+    businessPeriod: edge.decision.period,
+    risk: edge.risk,
+    changeCondition: edge.turningPoint,
+    evidenceAsOf: edge.decision.reference?.asOf ?? null,
+    assessmentPaused: edge.decision.status === "paused",
     periods: edge.pacePeriods,
   };
 }

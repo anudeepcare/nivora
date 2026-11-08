@@ -1,4 +1,5 @@
 "use client";
+import DecisionAttention from "./DecisionAttention";
 import { customerText } from "@/lib/customer-language";
 import portfolioStyles from "./PortfolioWorkspace.module.css";
 import { useHomeFeed } from "./useHomeFeed";
@@ -160,6 +161,17 @@ export function Watchlist() {
           Create a price alert <ArrowUpRight size={16} />
         </Link>
       </div>
+      <DecisionAttention
+        symbols={symbols}
+        held={(workspace?.positions ?? [])
+          .filter((p) => p.assetType !== "cash" && p.quantity > 0)
+          .map((p) => p.symbol)}
+        rows={state.paceScan.rows}
+        allocations={state.model.allocations}
+        concentrationLimit={accountPrefs.preferences.concentrationLimit}
+        prefix={prefix}
+        loading={state.paceScan.loading}
+      />
       <section className="card">
         <SectionHead
           title="Your watchlist"

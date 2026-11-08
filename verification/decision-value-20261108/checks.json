@@ -1,0 +1,14 @@
+{
+  "route_checks": 24,
+  "final_review_checks": 8,
+  "options_geometry_checks": 8,
+  "full_tests_passed": 1241,
+  "full_tests_failed": 0,
+  "focused_tests_passed": 13,
+  "lint": "passed",
+  "typecheck": "passed",
+  "forecast_accuracy": "not established; no invented accuracy percentage",
+  "data": "synthetic browser fixtures",
+  "deployment": "not performed",
+  "production_build": "passed"
+}

@@ -565,3 +565,57 @@
     margin-top: 6px;
   }
 }
+/* Fixed columns keep expiry, section navigation and advanced tools on a shared baseline. */
+.desk .commandBar {
+  display: grid;
+  grid-template-columns: minmax(160px, 200px) minmax(0, 1fr) minmax(
+      160px,
+      220px
+    );
+  align-items: end;
+  gap: 16px;
+}
+.desk .expiryControl,
+.desk .advancedControl {
+  min-width: 0;
+  width: 100%;
+  margin: 0;
+}
+.desk .expiryControl select,
+.desk .advancedControl select {
+  width: 100%;
+  min-width: 0;
+}
+.desk .views {
+  justify-self: start;
+  align-self: end;
+  max-width: 100%;
+  width: max-content;
+  flex-wrap: nowrap;
+}
+.desk .views button {
+  white-space: nowrap;
+}
+@media (max-width: 1000px) {
+  .desk .commandBar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .desk .views {
+    grid-column: 1/-1;
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    width: 100%;
+    justify-self: stretch;
+  }
+  .desk .views button {
+    font-size: 13px;
+    padding: 8px 5px;
+  }
+}
+@media (max-width: 360px) {
+  .desk .views {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

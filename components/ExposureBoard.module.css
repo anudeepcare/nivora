@@ -442,3 +442,89 @@
 .toolbar > .actions {
   grid-column: 1/-1;
 }
+/* A deliberate header grid prevents the help trigger from displacing the view tabs. */
+.board .heading {
+  display: grid;
+  grid-template-columns: minmax(160px, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+}
+.board .tabs {
+  margin: 0;
+  align-items: stretch;
+}
+.board .toolbar {
+  align-items: end;
+}
+.board .toolbar label:not(.check) {
+  display: grid;
+  grid-template-rows: auto 44px;
+  gap: 6px;
+}
+.board .toolbar .check {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  margin: 0;
+  padding: 0 0 0 4px;
+  white-space: nowrap;
+}
+.board .summary article {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 5px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--surface);
+  padding: 14px;
+  align-content: start;
+}
+.board .summary span {
+  min-height: 2.8em;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.board .summary strong {
+  font-size: 22px;
+  line-height: 1.3;
+}
+.board .summary small {
+  font-size: 12px;
+  line-height: 1.5;
+}
+@media (max-width: 1000px) {
+  .board .heading {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .board .tabs {
+    grid-column: 1/-1;
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    width: 100%;
+  }
+  .board .tabs button {
+    font-size: 12px;
+    padding: 8px 5px;
+  }
+}
+@media (max-width: 850px) {
+  .board .toolbar .check {
+    grid-column: 1/-1;
+  }
+}
+@media (max-width: 500px) {
+  .board .tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .board .summary article {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    padding: 12px;
+  }
+  .board .summary span {
+    min-height: 0;
+  }
+  .board .summary strong {
+    font-size: 19px;
+  }
+}
