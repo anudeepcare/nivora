@@ -570,14 +570,6 @@ export default function OptionsDesk({
           )}
           {view === "positioning" && (
             <div className={deskStyles.secondaryTools}>
-              <details className={deskStyles.activity}>
-                <summary>Session activity</summary>
-                <OptionsSnapshot
-                  contracts={summary.rows}
-                  spot={spot}
-                  expiry={active}
-                />
-              </details>
               <OptionsExpiryComparison
                 contracts={contracts}
                 active={active}
@@ -588,6 +580,19 @@ export default function OptionsDesk({
           {view === "diagnostics" && (
             <section className={deskStyles.analytics}>
               <h3>Volatility & model diagnostics</h3>
+              {summary.rows.some(
+                (c) =>
+                  c.volume != null && Number.isFinite(c.volume) && c.volume > 0,
+              ) && (
+                <details>
+                  <summary>Most traded strikes</summary>
+                  <OptionsSnapshot
+                    contracts={summary.rows}
+                    spot={spot}
+                    expiry={active}
+                  />
+                </details>
+              )}
               {(hasGamma || hasOi) && (
                 <div>
                   <h4>Concentrations & gamma</h4>

@@ -2,11 +2,21 @@
 Private operating reference • source snapshot 7 November 2026
 
 ## 1. How to explain AURYN
-Start with the business, then valuation, then price conditions, then portfolio limits. A price zone is one input; it is not proof that the business is healthy. Use the displayed observation date, reporting period and model version when answering questions. Quotes, financial statements, analyst expectations and options observations have different clocks.
+AURYN helps people understand a stock, review its accumulation zone and keep the decision within their own plan.
 
-A short explanation: “AURYN brings the evidence together. Pace describes the price zone, business checks determine whether accumulation qualifies, and your portfolio determines how much risk you can take.”
+### The first thirty seconds
+1. **Pace:** read the current zone and its date.
+2. **Business:** check growth, profitability and funding.
+3. **Expectations:** compare analyst targets with the price; open model assumptions when needed.
+4. **Your position:** check the existing holding and limits before adding.
 
-This handbook describes this source build. It does not prove that production runs the same version. The executable reference chapters at the end preserve exact thresholds, fallbacks and formulas; update this handbook whenever those modules change. No proprietary formula from the social-media screenshots has been inferred or copied.
+### Keep the first view simple
+- One clear Pace reading, one short action and the next conditional level.
+- Low / consensus / high analyst targets use the same observations across Overview, Valuation and Targets.
+- More metrics, full histories, assumptions, options studies and Pro tools remain available in their own views.
+
+### Since you last checked
+Returning visits can show up to three meaningful changes in Pace, the same fiscal year's EPS estimate, analyst consensus or price. Comparisons are saved on the device, require a prior visit at least fifteen minutes earlier and comparable provider dates and are hidden when nothing material changed. Price changes need a newer quote; a different currency or policy is not compared as if it were the same evidence.
 
 ## 2. Home and Discover
 Home summarizes holdings, watchlist, confirmed Pace and dated company events. An item in Needs your attention is a review prompt, not an automatically executed trade. Missing event coverage is not evidence that no event exists.
@@ -19,33 +29,35 @@ Read company identity, listing currency, price timestamp and session first. Mark
 Revenue growth = (current comparable revenue / prior comparable revenue − 1) × 100. AURYN selects matching currency and period basis, with comparable prior periods approximately one year apart. Annual and TTM observations must not be blended casually. TTM is assembled from compatible quarterly evidence; balance-sheet amounts are point-in-time values, not four-quarter sums.
 A blank or unassessed value is different from measured zero. A fallback quote must retain its date/status. Never describe an older observation as live.
 
-## 4. Monthly Pace: exact current policy
-The active monthly policy is monthly-v5, called through analysis.ts and the accumulation components. Older candidate/v3/v4 implementations remain in the repository; do not use their accumulation thresholds as the current monthly rules. V5 reuses v3's robust extension guard.
+## 4. Monthly Pace: the current reading
+Pace is AURYN's price-zone scale. It combines technical context with separate business and position checks.
 
-Inputs: at least 12 uninterrupted completed prior monthly closes; up to 24 prior months for the longer-cycle check. Fewer than 24 prior months is explicitly limited history. The evaluated month is excluded from its reference window. Invalid OHLC, conflicting duplicate observations and unsupported completion dates are excluded.
+| Zone | Plain meaning | Typical review |
+| --- | --- | --- |
+| P0 | Pause | Review price extension before new buying |
+| P1 | Watch | An accumulation zone is not established |
+| P2 | Start small | Review an initial planned contribution |
+| P3 | Build gradually | Review a deeper accumulation opportunity |
+| P4 | Deep zone | Review the largest planned contribution within limits |
 
-Let P be evaluated close, M the arithmetic mean of the preceding 12 monthly closes, and S = max(0.10 × M, sample standard deviation of those 12 closes, denominator 11). Deviation D = 100 × (P/M − 1); z = (P − M)/S. L is the mean of up to 24 consecutive prior closes.
+### Which policy is active?
+**Monthly-v6** is the frozen technical classifier enabled for eligible equity observations from the November 6, 2026 snapshot onward, available from November 7. It uses 42 technical features and preserves the extension guard. There are no per-ticker verdict overrides or runtime training.
 
-Evaluate extension first. Otherwise apply deepest qualifying zone first:
-P4: D ≤ −35% AND z ≤ −1.30.
-P3: D ≤ −25% AND z ≤ −0.95.
-P2: D ≤ −10% AND z ≤ −0.50.
-P1: none of those pullback conditions qualifies.
-A raw P3/P4 is capped at P2 when P > L. This longer-cycle check prevents a large recent pullback above the longer average from automatically becoming a deep zone.
+**Monthly-v5** remains the historical and insufficient-history fallback. Crypto uses the earlier policy. Earlier readings are not rewritten with the fitted classifier. Each reading retains its policy version.
 
-P0: either the reused robust trend extension condition qualifies, or P ≥ 3M AND z ≥ 2. Robust guard: fit log closes with median pairwise slope and median intercept; residual center is their median; scale is max(0.07, 1.4826 × residual MAD, 1.4826 × return MAD × √3). Project trend T one period forward. Extension requires log(P/T)/scale ≥ 2 AND P/T ≥ 1.25.
+### What does provisional mean?
+The current incomplete month can change. The last month-end zone is history and stays under Levels & history. A current shallower zone limits accumulation immediately; a deeper provisional reading does not automatically increase an established plan.
 
-Displayed conditional levels:
-P2 = max(0, min(0.90M, M − 0.50S)).
-P3 = min(max(0, min(0.75M, M − 0.95S)), L).
-P4 = min(max(0, min(0.65M, M − 1.30S)), L).
-Pause boundary is the smaller of the robust pause boundary and max(3M, M + 2S).
-These are conditional levels against a fixed reference window. A future month changes the window and therefore can change the levels.
+### What is the next zone?
+For v6, a local price search finds a nearby category transition while holding the historical inputs fixed. The label says **near** because the classifier is not guaranteed to change monotonically with price. Old v5 threshold formulas are not reused for v6 readings. A fresh month or dataset can change the boundary.
 
-Worked example: M=100, S=20, L=85, P=64. D=−36%, z=−1.8, and P≤L: P4, assuming no extension condition. P=80 produces D=−20%, z=−1: P2. The same price alone cannot tell you Pace without its history.
+### What has been measured?
+The saved comparison contains 589 stocks. Agreement on the reserved subset is 159/182 (87.4%); deeper-zone agreement is 53/69 (76.8%). This is an explored snapshot comparison, not a fresh-date validation or demonstrated investment return. Versioned backtests using v5 remain labeled as legacy-policy studies.
+
+Exact feature extraction and evaluation code is in the technical references.
 
 ## 5. Weekly Pace, confirmed versus forming, contribution rules
-Weekly-v1 requires 52 consecutive completed prior weeks and uses the robust trend calculation with a 0.03 scale floor. It is a separate policy from monthly-v5. Weekly P4 requires drawdown ≤−40% and robust z≤−2; P3 ≤−25% and z≤−1.35; P2 ≤−12% and z≤−0.7. P0 uses robust z≥2 and price/trend≥1.25. The prior weekly peak supplies drawdown.
+Weekly-v1 requires 52 consecutive completed prior weeks and uses the robust trend calculation with a 0.03 scale floor. It is separate from the active monthly policy. Weekly P4 requires drawdown ≤−40% and robust z≤−2; P3 ≤−25% and z≤−1.35; P2 ≤−12% and z≤−0.7. P0 uses robust z≥2 and price/trend≥1.25. The prior weekly peak supplies drawdown.
 Confirmed refers to an eligible completed period. Forming uses the available settled observations of the current incomplete period and can change. Do not present forming P4 as confirmed P4, or call a monthly observation a daily signal.
 P0 pauses new contributions; it is not automatically a sell. P1 watches for a new entry; existing owners may hold if the business remains supported. P2 starts small, P3 builds gradually, P4 permits the largest planned accumulation within limits.
 Contribution guide, only when the separate action is Buy/Add: P2=1× planned contribution, P3=2×, P4=up to 4×. Other actions or unavailable levels get no qualifying contribution multiple. P4 is a level, not inherently a 4× purchase instruction. Cash and position limits still apply.
@@ -88,6 +100,12 @@ Quality: 0.7,2.5,1,1.5,2,0.5,2.5,0.3.
 Changing style changes emphasis, not the Pace policy or decision gates. Read coverage, such as 5/8 lenses, beside the score. Exact per-metric anchors are in the Evidence scoring reference below.
 
 ## 10. Valuation
+### Start with the published targets
+Overview, Valuation and Targets share the same validated analyst target component. Low, consensus and high are published opinions. Missing bounds are not invented. The target date, reference quote and percentage changes stay aligned across the three views.
+
+### Open the AURYN model when needed
+Model scenarios remain available separately. The conservative cash-flow model is not promoted as the headline for companies growing revenue above 20%; an eligible earnings sensitivity can be used instead. Changing the display does not verify missing company inputs.
+
 Keep reported market multiples, conditional valuation models and analyst targets separate. Multiples depend on compatible price/share/currency/financial-period inputs. A negative denominator is not a bargain multiple.
 The decision cash-flow model starts with positive eligible cash/share. Each year's company growth fades linearly over 10 years from starting growth to terminal growth; cash/share is additionally divided by (1+dilution). Discount each cash/share by (1+discount)^year. Add discounted terminal cash/share/(discount−per-share terminal growth).
 Decision scenarios: bear starts0%, discount15%, terminal1%; base starts comparable growth clamped0–10%, discount12%, terminal2%; bull starts min(15%,base growth+5%), discount10%, terminal3%. Invalid or unordered results are withheld. These are model assumptions, not promised outcomes or dynamically observed WACC.
@@ -112,14 +130,14 @@ A target's percent change =100×(target/reference−1). Reference date and curre
 
 ## 13. News & earnings
 EPS surprise compares supplied actual and estimate; confirm GAAP/adjusted basis before explaining a beat. Revenue/margin evidence may end before the announcement. Earnings time can be unconfirmed. A revenue increase does not establish guidance, cash collection or a future stock move.
-Use the original release for guidance, cash conversion, share dilution and one-off items. The app's earnings-to-thesis prompt identifies questions, not an automatic thesis verdict.
+Use the original release for guidance, cash conversion, share dilution and one-off items. The earnings screen leads with actual EPS, the estimate, surprise and the next report date. Full earnings history remains available below.
 
 ## 14. Options: reading order and vocabulary
 First check stock reference price, options observation date, expiry, loaded-contract coverage and missing fields. Strike is the contract's exercise price. Expiration is when the option expires; it is not the observation date. Calls and puts grant different rights; their presence alone does not identify the trader's direction or dealer inventory.
 Premiums are per share. A standard contract controls100 shares. Premium2.50 means250 dollars per contract before costs. Nonstandard deliverables are excluded from these models.
 Volume counts reported trades in the session. Open interest counts outstanding contracts at its observation. Neither establishes whether someone bought to open, sold to open or closed a position. Highest volume, highest OI and strongest gamma are three different rankings.
 Nearest-strike straddle proxy = eligible call midpoint+put midpoint at the same nearest strike and expiry. It is an option-priced move proxy, not a guaranteed trading range. A midpoint is indicative, not executable.
-Guide is the starting explanation; Calls & puts shows contracts; Price levels shows concentration; Practice uses simulated money; advanced tools expose additional models without changing the underlying data.
+Calls & puts shows contracts; Price levels shows concentration; Practice uses simulated money. Advanced diagnostics, saved views and account snapshots remain available on demand.
 
 ## 15. Gamma heatmap: formula and every control
 For each eligible standard contract: unsigned gamma dollars per1% stock move = gamma × open interest ×100×stockprice²×0.01. Apply + to calls, − to puts, then sum within strike/expiry. This call-positive/put-negative convention is a model assumption; it does not reveal actual dealer long/short inventory and is not automatically bullish/bearish.
@@ -138,7 +156,7 @@ Snapshot comparison requires compatible stock reference and identical contract u
 ## 17. Practice / option simulation
 Starting simulated cash100,000. Long calls/puts only, premiums paid in full, standard100-share contracts. Entry uses supplied ask; exit and open marks use supplied bid. Quote dates cannot be future dated or more than3 calendar days old. No real broker order is placed.
 Debit=ask×100×contracts. Open marked value=bid×100×remainingcontracts. Open P/L=(bid−entrypremium)×100×remainingcontracts. Realized P/L sums(exitpremium−entrypremium)×100×closedcontracts. Equity=cash+eligible open marked values. Fees and slippage are excluded; unavailable marks must not be presented as reliable equity.
-Your screenshot's ask277.59 means27,759 for one standard contract, not277.59 total. A deep in-the-money strike can have a large premium; that alone is not a quote error. Check the timestamp, bid/ask, underlying and contract identity.
+Example: ask277.59 means27,759 for one standard contract, not277.59 total. A deep in-the-money strike can have a large premium; that alone is not a quote error. Check the timestamp, bid/ask, underlying and contract identity.
 A current stock reference is not a verified expiry closing price. Do not settle an expired option from an unrelated current quote. Save on device and Save to account are separate persistence actions; read their status before assuming synchronization.
 
 ## 18. Watchlist and portfolio
@@ -6473,7 +6491,7 @@ export function homeHighlights(items:InboxItem[],today:string){
 
 ```
 
-## Completion update: planning and evidence workflows
+## Reference: earlier workflow completion notes
 
 The public Pace explanation now describes accumulation context. Comparative results belong in methodology; do not claim outperformance until the representative study can support it.
 
@@ -6495,3 +6513,453 @@ Run `node --experimental-strip-types scripts/run-pace-study.mjs --policy-hash`, 
 
 ### Observed-user sessions
 The owner-only validation form records consenting participants under anonymous codes, task, completion, duration, observation date and notes. It reports recorded sessions rather than claiming independent verification or retention. Do not enter names/emails or create invented participants. Real recruitment and observed sessions must take place before reporting a 20-user validation result.
+
+
+## Reference: accumulation-policy-v6
+Source: lib/accumulation-policy-v6.ts
+SHA-256: ed2c0cc9ff3fa65137e2c4e70970575ebb3fe408c0adb12086d22d915746f24e
+
+```ts
+import type { Candle } from "./types";
+import {
+  researchAccumulation as previousPolicy,
+  adaptiveSettledBars,
+  cycleReading,
+  type CycleSignal,
+} from "./accumulation-policy-v5.ts";
+import { trendAccumulationReading } from "./accumulation-policy-v3.ts";
+import { classifyPace, paceFeatures } from "./pace-classifier.ts";
+import { paceModel } from "./pace-model-v6.ts";
+import { evidenceMemo } from "./evidence-memo.ts";
+export { adaptiveSettledBars, cycleReading } from "./accumulation-policy-v5.ts";
+export const ACCUMULATION_VERSION = "monthly-v6";
+export type CalibratedSignal = CycleSignal & {
+  policyVersion: "monthly-v5" | "monthly-v6";
+  conditionalBoundary?: {
+    price: number;
+    level: number;
+    operator: string;
+    distancePercent: number;
+  } | null;
+};
+export type { CycleSignal } from "./accumulation-policy-v5.ts";
+/** Frozen technical model applies to its snapshot and later observations only.
+ * Earlier historical readings retain v5: never backfill a fitted model as a past live signal.
+ */
+function compute(bars: Candle[], asOf: string, market: "us-equity" | "crypto") {
+  const base = previousPolicy(bars, asOf, market);
+  const settled = adaptiveSettledBars(bars, asOf, market);
+  const convert = (
+    signal: CycleSignal | null,
+    boundary: boolean,
+  ): CalibratedSignal | null => {
+    if (!signal) return null;
+    const old: CalibratedSignal = { ...signal, policyVersion: "monthly-v5" };
+    if (
+      market === "crypto" ||
+      asOf.slice(0, 10) < paceModel.availableFrom ||
+      signal.date < paceModel.trainedThrough
+    )
+      return old;
+    const rows = settled.filter((b) => b.time <= signal.date);
+    const features = paceFeatures(rows, signal.z, signal.deviation / 100);
+    const level = features && classifyPace(features);
+    if (level == null) return old;
+    // Retain existing extension handling, matching the evaluated candidate exactly.
+    const multiplier = signal.multiplier === 0 ? 0 : level;
+    const result: CalibratedSignal = {
+      ...signal,
+      multiplier,
+      policyVersion: "monthly-v6",
+      conditionalBoundary: null,
+      reason:
+        multiplier === 0
+          ? signal.reason
+          : `P${multiplier} from monthly price position, daily trend, volatility and momentum.`,
+      // Legacy simple-rule boundaries must never be presented as classifier thresholds.
+      buy2: 0,
+      buy3: 0,
+      buy4: 0,
+    };
+    if (!boundary) return result;
+    const monthly = new Map<string, Candle>();
+    for (const b of rows) monthly.set(b.time.slice(0, 7), b);
+    const prior = [...monthly.values()].slice(0, -1).slice(-24),
+      last = rows.at(-1)!;
+    const at = (price: number) => {
+      const bar = {
+        ...last,
+        close: price,
+        high: Math.max(last.high, price),
+        low: Math.min(last.low, price),
+      };
+      const rule = cycleReading(
+        prior,
+        bar,
+        trendAccumulationReading(prior, bar),
+      );
+      if (!rule) return null;
+      if (rule.multiplier === 0) return 0;
+      const f = paceFeatures(
+        [...rows.slice(0, -1), bar],
+        rule.z,
+        rule.deviation / 100,
+      );
+      return f ? classifyPace(f) : null;
+    };
+    // Nearest sampled transition, not a claim that all more distant prices share a zone.
+    const candidates = [];
+    for (const direction of [-1, 1]) {
+      let inside = last.close;
+      for (let step = 1; step <= 20; step++) {
+        let outside = last.close * (1 + direction * step * 0.02);
+        const other = at(outside);
+        if (other != null && other !== multiplier) {
+          for (let j = 0; j < 14; j++) {
+            const mid = (inside + outside) / 2;
+            if (at(mid) === multiplier) inside = mid;
+            else outside = mid;
+          }
+          const next = at(outside);
+          if (next != null)
+            candidates.push({
+              price: outside,
+              level: next,
+              operator: "near",
+              distancePercent: (outside / last.close - 1) * 100,
+            });
+          break;
+        }
+        inside = outside;
+      }
+    }
+    result.conditionalBoundary =
+      candidates.sort(
+        (a, b) => Math.abs(a.distancePercent) - Math.abs(b.distancePercent),
+      )[0] ?? null;
+    return result;
+  };
+  const history = base.history.map((s) => convert(s, false)!);
+  const confirmed = convert(base.confirmed, true),
+    forming = convert(base.forming, true);
+  const enabled =
+    confirmed?.policyVersion === ACCUMULATION_VERSION ||
+    forming?.policyVersion === ACCUMULATION_VERSION;
+  return {
+    ...base,
+    version: enabled ? ACCUMULATION_VERSION : base.version,
+    history,
+    confirmed,
+    forming,
+  };
+}
+const memo = evidenceMemo<ReturnType<typeof compute>>();
+export function researchAccumulation(
+  bars: Candle[],
+  asOf: string,
+  market: "us-equity" | "crypto" = "us-equity",
+) {
+  return memo(bars, `${asOf}:${market}:v6`, () => compute(bars, asOf, market));
+}
+
+```
+
+
+## Reference: pace-classifier
+Source: lib/pace-classifier.ts
+SHA-256: f40474d3189db8ad60d71b46a1d44bde44ee01c02428bd51dfe4b6ab34eaeed5
+
+```ts
+import type { Candle } from "./types";
+import { paceModel } from "./pace-model-v6.ts";
+const mean = (x: number[]) => x.reduce((a, b) => a + b, 0) / x.length;
+const deviation = (x: number[], sample = false) => {
+  const m = mean(x);
+  return Math.sqrt(
+    x.reduce((s, v) => s + (v - m) ** 2, 0) / (x.length - (sample ? 1 : 0)),
+  );
+};
+/** Only settled bars through the reading date enter these scale-independent features. */
+export function paceFeatures(
+  bars: Candle[],
+  cycleZ: number,
+  cycleDistance: number,
+) {
+  if (bars.length < 252) return null;
+  const closes = bars.map((b) => b.close);
+  if (!closes.every((x) => Number.isFinite(x) && x > 0)) return null;
+  const months = new Map<string, number>();
+  for (const b of bars) months.set(b.time.slice(0, 7), b.close);
+  const past = [...months.values()].slice(0, -1);
+  if (past.length < 12) return null;
+  const current = closes.at(-1)!;
+  const values: number[] = [];
+  for (const n of [6, 12, 18, 24]) {
+    const x = past.slice(-n),
+      mu = mean(x),
+      sd = Math.max(deviation(x, true), mu * 0.01);
+    values.push(
+      current / mu - 1,
+      (current - mu) / sd,
+      current / Math.max(...x) - 1,
+      (current - Math.min(...x)) /
+        Math.max(Math.max(...x) - Math.min(...x), mu * 0.01),
+      current / x[0] - 1,
+    );
+    const logs = x.map(Math.log),
+      center = (x.length - 1) / 2,
+      avg = mean(logs);
+    const slope =
+      logs.reduce((s, y, i) => s + (i - center) * (y - avg), 0) /
+      logs.reduce((s, _, i) => s + (i - center) ** 2, 0);
+    const intercept = avg - slope * center;
+    const residuals = logs.map((y, i) => y - (intercept + slope * i));
+    values.push(
+      (Math.log(current) - (intercept + slope * x.length)) /
+        Math.max(deviation(residuals), 0.05),
+    );
+  }
+  for (const n of [20, 50, 100, 200, 252]) {
+    const x = closes.slice(-n),
+      logs = x.map(Math.log);
+    values.push(
+      current / mean(x) - 1,
+      current / Math.max(...x) - 1,
+      deviation(logs.slice(1).map((v, i) => v - logs[i])),
+    );
+  }
+  const recent = closes.slice(-15),
+    changes = recent.slice(1).map((v, i) => v - recent[i]);
+  const gain = mean(changes.map((x) => Math.max(x, 0))),
+    loss = mean(changes.map((x) => Math.max(-x, 0)));
+  values.push(
+    loss === 0 ? 100 : 100 - 100 / (1 + gain / loss),
+    cycleZ,
+    cycleDistance,
+  );
+  return values.length === paceModel.features.length &&
+    values.every(Number.isFinite)
+    ? values
+    : null;
+}
+/** Fixed exported trees: no ticker lookup, network requests, or fitting in the app. */
+export function classifyPace(features: number[]): 1 | 2 | 3 | 4 | null {
+  if (
+    features.length !== paceModel.features.length ||
+    !features.every(Number.isFinite)
+  )
+    return null;
+  const scores = [...paceModel.baseline];
+  for (const stage of paceModel.trees) {
+    stage.forEach((tree, cls) => {
+      let node = tree[0];
+      while (!node[5])
+        node = tree[features[node[1]] <= node[2] ? node[3] : node[4]];
+      scores[cls] += node[0];
+    });
+  }
+  return paceModel.classes[scores.indexOf(Math.max(...scores))] as
+    | 1
+    | 2
+    | 3
+    | 4;
+}
+
+```
+
+
+## Reference: research-changes
+Source: lib/research-changes.ts
+SHA-256: 20413294b46ef93b353b42d7bf6e449cf7fbc9940e951e2b2485ece54387b7c4
+
+```ts
+import type { Research } from "./types";
+import { selectPriceReference } from "./price-reference.ts";
+import { consensusOutlook } from "./outlook.ts";
+export type VisitSnapshot = {
+  version: 1;
+  symbol: string;
+  currency: string;
+  seenAt: string;
+  price: { value: number; date: string } | null;
+  pace: {
+    level: number;
+    policy: string;
+    date: string;
+    source: string | null;
+  } | null;
+  estimate: { end: string; eps: number } | null;
+  target: number | null;
+  dataset: { source: string; date: string } | null;
+};
+export type ResearchChange = {
+  label: string;
+  detail: string;
+  destination: "Technicals" | "Analysts";
+};
+const positive = (x: unknown): x is number =>
+  typeof x === "number" && Number.isFinite(x) && x > 0;
+const dated = (x: unknown): x is string =>
+  typeof x === "string" && Number.isFinite(Date.parse(x));
+/** Local, public research observations only. Corrupt or incompatible storage is ignored. */
+export function parseVisitSnapshot(
+  raw: string | null,
+  now: number,
+): VisitSnapshot | null {
+  if (!raw || raw.length > 8192 || !Number.isFinite(now)) return null;
+  try {
+    const x = JSON.parse(raw);
+    if (
+      !x ||
+      x.version !== 1 ||
+      typeof x.symbol !== "string" ||
+      !/^[A-Z0-9./-]{1,30}$/.test(x.symbol) ||
+      typeof x.currency !== "string" ||
+      !/^[A-Z]{3}$/.test(x.currency) ||
+      !dated(x.seenAt) ||
+      Date.parse(x.seenAt) > now ||
+      now - Date.parse(x.seenAt) > 90 * 86400000
+    )
+      return null;
+    if (
+      x.price !== null &&
+      (!x.price ||
+        !positive(x.price.value) ||
+        !dated(x.price.date) ||
+        Date.parse(x.price.date) > now + 60000)
+    )
+      return null;
+    if (
+      x.pace !== null &&
+      (!x.pace ||
+        !Number.isInteger(x.pace.level) ||
+        x.pace.level < 0 ||
+        x.pace.level > 4 ||
+        typeof x.pace.policy !== "string" ||
+        x.pace.policy.length > 40 ||
+        !dated(x.pace.date) ||
+        Date.parse(x.pace.date) > now ||
+        (x.pace.source !== null &&
+          (typeof x.pace.source !== "string" || x.pace.source.length > 120)))
+    )
+      return null;
+    if (
+      x.estimate !== null &&
+      (!x.estimate || !positive(x.estimate.eps) || !dated(x.estimate.end))
+    )
+      return null;
+    if (
+      x.dataset !== null &&
+      (!x.dataset ||
+        typeof x.dataset.source !== "string" ||
+        x.dataset.source.length > 120 ||
+        !dated(x.dataset.date) ||
+        Date.parse(x.dataset.date) > now + 86400000)
+    )
+      return null;
+    if (x.target !== null && !positive(x.target)) return null;
+    return x as VisitSnapshot;
+  } catch {
+    return null;
+  }
+}
+export function researchVisitSnapshot(
+  r: Research,
+  pace: VisitSnapshot["pace"],
+  now: number,
+): VisitSnapshot {
+  const reference = selectPriceReference(r, now);
+  const estimate = (r.evidence?.estimates ?? [])
+    .filter(
+      (x) =>
+        /annual/i.test(x.frequency) &&
+        x.currency === r.quote.currency &&
+        positive(x.eps) &&
+        dated(x.date) &&
+        Date.parse(x.date) > now,
+    )
+    .sort((a, b) => a.date.localeCompare(b.date))[0];
+  return {
+    version: 1,
+    symbol: r.company.symbol,
+    currency: r.quote.currency,
+    seenAt: new Date(now).toISOString(),
+    price: reference ? { value: reference.price, date: reference.asOf } : null,
+    pace,
+    estimate: estimate ? { end: estimate.date, eps: estimate.eps! } : null,
+    target: consensusOutlook(r)?.target ?? null,
+    dataset:
+      r.evidence?.source &&
+      dated(r.evidence.updatedAt) &&
+      Date.parse(r.evidence.updatedAt) <= now + 86400000
+        ? { source: r.evidence.source, date: r.evidence.updatedAt }
+        : null,
+  };
+}
+export function researchChanges(
+  before: VisitSnapshot,
+  next: VisitSnapshot,
+): ResearchChange[] {
+  if (before.symbol !== next.symbol || before.currency !== next.currency)
+    return [];
+  const rows: ResearchChange[] = [];
+  const comparableDataset =
+    before.dataset &&
+    next.dataset &&
+    before.dataset.source === next.dataset.source &&
+    Date.parse(next.dataset.date) >= Date.parse(before.dataset.date);
+  const signed = (x: number) => (x > 0 ? "+" : "") + x.toFixed(1) + "%";
+  if (
+    before.pace &&
+    next.pace &&
+    before.pace.policy === next.pace.policy &&
+    before.pace.source !== null &&
+    before.pace.source === next.pace.source &&
+    Date.parse(next.pace.date) >= Date.parse(before.pace.date) &&
+    before.pace.level !== next.pace.level
+  )
+    rows.push({
+      label: "Pace",
+      detail: `P${before.pace.level} → P${next.pace.level}`,
+      destination: "Technicals",
+    });
+  if (
+    comparableDataset &&
+    before.estimate &&
+    next.estimate &&
+    before.estimate.end === next.estimate.end
+  ) {
+    const gap = (next.estimate.eps / before.estimate.eps - 1) * 100;
+    if (Number.isFinite(gap) && Math.abs(gap) >= 2)
+      rows.push({
+        label: `EPS estimate · FY${next.estimate.end.slice(0, 4)}`,
+        detail: signed(gap),
+        destination: "Analysts",
+      });
+  }
+  if (comparableDataset && before.target && next.target) {
+    const gap = (next.target / before.target - 1) * 100;
+    if (Number.isFinite(gap) && Math.abs(gap) >= 2)
+      rows.push({
+        label: "Analyst consensus",
+        detail: signed(gap),
+        destination: "Analysts",
+      });
+  }
+  if (
+    before.price &&
+    next.price &&
+    Date.parse(next.price.date) > Date.parse(before.price.date)
+  ) {
+    const gap = (next.price.value / before.price.value - 1) * 100;
+    if (Number.isFinite(gap) && Math.abs(gap) >= 3)
+      rows.push({
+        label: "Price",
+        detail: signed(gap),
+        destination: "Technicals",
+      });
+  }
+  return rows.slice(0, 3);
+}
+
+```

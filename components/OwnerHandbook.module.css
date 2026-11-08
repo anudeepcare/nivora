@@ -1,117 +1,304 @@
 .root {
-  margin: 20px 0;
   min-width: 0;
+  margin: 20px 0;
   color: var(--ink);
 }
-.root header {
+.cover {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
+  justify-content: space-between;
   flex-wrap: wrap;
-  gap: 8px 20px;
-  margin-bottom: 20px;
+  gap: 24px;
+  padding: 36px;
+  border-radius: 22px;
+  background: linear-gradient(120deg, #202c27, #29382d);
+  color: #f5f8ef;
 }
-.root h2 {
-  margin: 0;
-  font-size: 22px;
+.kicker {
+  color: #d6f35a;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 650;
 }
-.root header p {
-  flex: 1;
+.cover h2 {
+  margin: 14px 0 12px;
+  font-size: clamp(30px, 4vw, 46px);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  font-weight: 600;
+}
+.cover p {
   margin: 0;
-  font-size: 13px;
-  color: var(--muted);
+  color: #c5d0c5;
+  font-size: 14px;
+  line-height: 1.6;
 }
 .root button {
   min-height: 44px;
-  padding: 8px 12px;
-  color: var(--ink);
-  background: var(--card);
+  padding: 9px 14px;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--ink);
   font: inherit;
+  font-size: 13px;
   cursor: pointer;
 }
+.cover button {
+  background: #ffffff0b;
+  border-color: #ffffff35;
+  color: #e6f4c5;
+}
 .root button:disabled {
-  opacity: 0.45;
+  opacity: 0.4;
   cursor: default;
 }
-.root label {
-  display: block;
-  margin: 12px 0;
-  font-size: 13px;
+.root button:focus-visible,
+.root input:focus-visible,
+.root select:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
+.tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px 28px;
+  padding: 24px 0;
+}
+.tools > label:first-child {
+  flex: 1;
+  min-width: 220px;
+  max-width: 650px;
+  font-size: 12px;
   font-weight: 600;
 }
 .root input:not([type="checkbox"]),
 .root select {
   display: block;
+  margin-top: 8px;
+  min-height: 46px;
   width: 100%;
-  max-width: 720px;
-  min-height: 44px;
-  margin-top: 6px;
-  padding: 10px 12px;
-  color: var(--ink);
-  background: var(--card);
+  padding: 10px 14px;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--ink);
   font: inherit;
   font-size: 16px;
 }
-.root .referenceToggle {
+.referenceToggle {
   display: flex;
   align-items: center;
   gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
   min-height: 44px;
-  font-weight: 400;
 }
 .referenceToggle input {
   width: 18px;
   height: 18px;
+  accent-color: var(--green);
 }
-.root article {
-  margin-top: 24px;
-  max-width: 90ch;
+.layout {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
 }
-.root h3 {
-  font-size: 22px;
-  margin: 0 0 16px;
+.topics {
+  position: sticky;
+  top: 100px;
+  display: grid;
+  gap: 3px;
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-right: 10px;
+  overscroll-behavior: contain;
+}
+.topics > span {
+  padding: 6px 12px 12px;
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.topics button {
+  text-align: left;
+  border: 0;
+  background: transparent;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.topics button:hover {
+  background: var(--card);
+  color: var(--ink);
+}
+.topics button[aria-current="page"] {
+  background: color-mix(in srgb, var(--green) 9%, var(--card));
+  color: var(--green);
+  font-weight: 650;
+}
+.reader {
+  padding: 30px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--card);
+  min-width: 0;
+}
+.reader article {
+  max-width: 82ch;
+  margin: auto;
+}
+.readerMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.readerMeta > span {
+  color: var(--green);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 650;
+}
+.reader h3 {
+  scroll-margin-top: 112px;
+  margin: 0 0 24px;
+  font-size: clamp(23px, 3vw, 32px);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
 }
 .body {
-  white-space: pre-wrap;
+  font-size: 15px;
+  line-height: 1.8;
   overflow-wrap: anywhere;
-  line-height: 1.75;
-  font-size: 16px;
-}
-.body pre {
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  font-size: 13px;
 }
 .body p {
   margin: 0 0 18px;
+  white-space: pre-line;
 }
 .body h4 {
-  margin: 22px 0 10px;
   font-size: 17px;
+  margin: 28px 0 12px;
+}
+.body strong {
+  color: var(--ink);
+  font-weight: 650;
+}
+.body ul,
+.body ol {
+  padding-left: 22px;
+  margin: 0 0 22px;
+}
+.body li {
+  margin: 8px 0;
+  padding-left: 4px;
+}
+.body li::marker {
+  color: var(--green);
+}
+.body pre {
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--bg);
+  font-size: 12px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.body code {
+  padding: 2px 5px;
+  background: var(--bg);
+  border-radius: 4px;
+  font-size: 0.88em;
+}
+.table {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 20px 0;
+}
+.table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.table th,
+.table td {
+  overflow-wrap: normal;
+  word-break: normal;
+  padding: 12px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+.table th {
+  color: var(--muted);
+  font-weight: 600;
 }
 .chapterNav {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 10px;
-  margin: 24px 0;
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+  margin-top: 32px;
 }
 .chapterNav span {
+  color: var(--muted);
   font-size: 12px;
+}
+.mobileTopics {
+  display: none;
+}
+.empty {
+  padding: 24px 0;
+}
+.empty p {
   color: var(--muted);
 }
-@media (max-width: 600px) {
-  .root header {
-    align-items: flex-start;
-    flex-direction: column;
+@media (max-width: 800px) {
+  .layout {
+    grid-template-columns: 1fr;
   }
-  .chapterNav button {
+  .topics {
+    display: none;
+  }
+  .mobileTopics {
+    display: block;
     font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 26px;
+  }
+  .reader {
+    padding: 22px;
+  }
+}
+@media (max-width: 480px) {
+  .cover {
+    padding: 24px;
+    border-radius: 18px;
+  }
+  .tools {
+    gap: 8px;
+  }
+  .referenceToggle {
+    width: 100%;
+  }
+  .reader {
+    padding: 18px;
   }
   .body {
-    font-size: 15px;
+    font-size: 14px;
+  }
+  .chapterNav button {
+    padding: 9px 10px;
+    font-size: 12px;
   }
 }

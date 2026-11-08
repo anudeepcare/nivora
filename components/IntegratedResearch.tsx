@@ -9,6 +9,9 @@ import {
 import { sameProviderSymbol } from "@/lib/provider-symbol";
 import { valuationScale } from "@/lib/research-summary";
 import { useProduct } from "./Session";
+import ResearchChanges from "./ResearchChanges";
+import AnalystTargets from "./AnalystTargets";
+import { consensusOutlook } from "@/lib/outlook";
 import PaceInstrument from "./PaceInstrument";
 import ScenarioSensitivity from "./ScenarioSensitivity";
 import ResearchEvidenceGrid from "./ResearchEvidenceGrid";
@@ -43,6 +46,7 @@ export default function IntegratedResearch({
   const now = demo ? Date.parse(r.retrievedAt) : clock;
   const m = useMemo(() => approvedResearch(r, owns, now), [r, owns, now]),
     d = m.decision;
+  const analyst = consensusOutlook(r);
   const scenarioCases = m.cases;
   const scenarioScale =
     m.scenarioReference != null
@@ -54,21 +58,42 @@ export default function IntegratedResearch({
   return (
     <>
       <div className={s.overview}>
-        <PaceInstrument
-          research={r}
-          decision={d}
-          ownsPosition={owns}
-          now={now}
-          view={m.edge.pacePresentation}
-          readings={m.edge.pacePeriods}
-          onHistory={() => onTab("Technicals")}
-        />
+        <div className={s.paceColumn}>
+          <PaceInstrument
+            research={r}
+            decision={d}
+            ownsPosition={owns}
+            now={now}
+            view={m.edge.pacePresentation}
+            readings={m.edge.pacePeriods}
+            onHistory={() => onTab("Technicals")}
+          />
+          <ResearchChanges
+            research={r}
+            now={now}
+            pace={
+              d.pace?.level == null
+                ? null
+                : {
+                    level: d.pace.level,
+                    policy: d.brief?.accumulation?.version ?? "monthly",
+                    date: d.pace.date ?? "",
+                    source: r.historySource ?? null,
+                  }
+            }
+            onOpen={onTab}
+          />
+        </div>
         <div className={s.chart}>{chart}</div>
         <div
           className={s.scenarios}
           aria-label={"Explore AURYN valuation assumptions"}
         >
-          {scenarioCases.length === 0 ? null : (
+          {analyst ? (
+            <div style={{ gridColumn: "1 / -1" }}>
+              <AnalystTargets research={r} />
+            </div>
+          ) : scenarioCases.length === 0 ? null : (
             <>
               <div className={s.scenarioCaption}>
                 <span>

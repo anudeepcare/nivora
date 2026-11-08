@@ -101,33 +101,6 @@ export default function TargetsEstimates({
         {active === 0 && (
           <>
             <AnalystTargets research={r} showUnavailable />
-            <dl className={styles.metadata}>
-              <div>
-                <dt>Target contributors</dt>
-                <dd>Not supplied</dd>
-              </div>
-              <div>
-                <dt>Target horizon</dt>
-                <dd>Not supplied</dd>
-              </div>
-              <div>
-                <dt>Dataset updated</dt>
-                <dd>{dateLabel(model.consensus?.asOf)}</dd>
-              </div>
-              <div>
-                <dt>Currency</dt>
-                <dd>{r.quote.currency}</dd>
-              </div>
-            </dl>
-            <p className={styles.note}>
-              Rating counts are not target-contributor coverage. Missing
-              low/high targets stay unavailable. Dataset dates are not
-              individual analyst publication dates.
-            </p>
-            <p className={styles.note}>
-              Target share/split basis is not independently supplied; no split
-              adjustment is inferred.
-            </p>
           </>
         )}
         {active === 1 && (
@@ -184,13 +157,16 @@ export default function TargetsEstimates({
             ) : (
               <p className={styles.empty}>{model.estimatesReason}</p>
             )}
-            <p className={styles.note}>
-              Ranges are provider-reported estimates. Analyst counts refer to
-              EPS coverage; revenue contributor counts are not supplied. Fiscal
-              periods may be awaiting results. Relative provider labels use the
-              year of the period end. EPS accounting and split basis are not
-              independently verified.
-            </p>
+            <details className={styles.assumptions}>
+              <summary>Estimate coverage</summary>
+              <p className={styles.note}>
+                Ranges are provider-reported estimates. Analyst counts refer to
+                EPS coverage; revenue contributor counts are not supplied.
+                Fiscal periods may be awaiting results. Relative provider labels
+                use the year of the period end. EPS accounting and split basis
+                are not independently verified.
+              </p>
+            </details>
             <EstimateRevisions research={r} />
           </>
         )}

@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
-import { ArrowRight, Diamond, ShieldCheck } from "lucide-react";
+import { ArrowRight, Diamond } from "lucide-react";
 import {
   PACE_DESCRIPTIONS,
   PACE_LEVELS,
@@ -65,6 +65,14 @@ export default function PaceInstrument({
     [research, now, period],
   );
   const boundary = level !== null ? evidence?.boundary : null;
+  const action =
+    decision?.actionLabel ?? view?.actionLabel ?? "Review evidence";
+  const actionText =
+    action === "Watch"
+      ? "Wait for an entry"
+      : action === "Hold"
+        ? "Hold existing position"
+        : action;
   const currency = research?.quote.currency ?? "USD";
   return (
     <section
@@ -78,11 +86,7 @@ export default function PaceInstrument({
       <header className={s.header}>
         <span>
           <img src="/pace-diamond.svg" alt="" width="22" height="24" />
-          <span>
-            AURYN
-            <br />
-            ACCUMULATION PACE
-          </span>
+          <span>AURYN PACE</span>
         </span>
         <PaceHelp />
       </header>
@@ -90,7 +94,7 @@ export default function PaceInstrument({
         <div className={s.readoutText}>
           <div className={s.title}>
             <small>
-              {exploring ? "Explore the framework" : "Current price zone"}
+              {exploring ? "Explore the framework" : "Accumulation pace"}
             </small>
             <h2>
               {selected === null
@@ -128,10 +132,10 @@ export default function PaceInstrument({
           {exploring
             ? `Framework · P${selected}`
             : current?.provisional
-              ? "Current month · forming"
+              ? "Provisional · this month"
               : level === null
                 ? "Current history unavailable"
-                : "Latest closing observation"}
+                : "Month-end reading"}
         </span>
         {!publicGuide && inspect !== null ? (
           <button onClick={() => setInspect(null)}>
@@ -147,87 +151,51 @@ export default function PaceInstrument({
       </div>
       {!exploring && (
         <div className={s.insight}>
-          <span className={s.eyebrow}>For your position</span>
-          <p className={s.boundary}>
-            {decision?.actionLabel ?? view?.actionLabel ?? "Review evidence"}
-          </p>
-          {current?.changed && (
-            <p className={s.distance}>
-              P{current.historicalLevel} last month → P{current.level} now.
-              {current.level! < current.historicalLevel!
-                ? " Use the current zone."
-                : " Wait for month-end before increasing the plan."}
-            </p>
-          )}
+          <p className={s.action}>{actionText}</p>
           {boundary && (
-            <>
-              <span className={s.eyebrow}>Next price level</span>
-              <p className={s.boundary}>
-                <strong>P{boundary.level}</strong> {boundary.operator}{" "}
-                <strong>{amount(boundary.price, currency)}</strong>
-              </p>
-              <p className={s.distance}>
-                {percent(boundary.distancePercent, true)} from latest close ·
-                conditional
-              </p>
-            </>
+            <p className={s.boundary}>
+              <span>Next zone</span>
+              <strong>
+                P{boundary.level} {boundary.operator}{" "}
+                {amount(boundary.price, currency)}
+              </strong>
+              <small>
+                {percent(boundary.distancePercent, true)} · conditional
+              </small>
+            </p>
           )}
         </div>
       )}
       <details className={s.readingDetail}>
-        <summary>
-          {exploring ? "About this stage" : "Why this zone & what to watch"}
-        </summary>
+        <summary>{exploring ? "About this stage" : "Levels & history"}</summary>
         <p className={s.description}>
           {exploring && selected !== null
             ? PACE_DESCRIPTIONS[selected]
             : (evidence?.reading?.reason ??
-              "Recent settled price history is needed. A previous month’s reading is not current guidance.")}
+              "Refresh price history to calculate the current zone.")}
         </p>
         {!exploring && (
           <div className={s.evidenceDetails}>
-            <p>
-              <strong>How to read it</strong>This is price context, not a
-              business-quality score or a forecast. The current zone uses
-              eligible settled prices and may change before month-end. A new
-              quote can update portfolio values without changing this zone.
-            </p>
+            {current?.historicalLevel != null && (
+              <p>
+                <strong>Previous month · P{current.historicalLevel}</strong>
+                {dateLabel(current.historicalDate)} · historical reading
+              </p>
+            )}
             {decision && (
-              <>
-                <p>
-                  <strong>Business and valuation</strong>
-                  {decision.explanation.detail}
-                </p>
-                <p>
-                  <strong>What would change the assessment</strong>
-                  {decision.changeConditions.slice(0, 2).join(" ")}
-                </p>
-              </>
+              <p>
+                <strong>What to review</strong>
+                {decision.changeConditions[0] ?? decision.explanation.detail}
+              </p>
+            )}
+            {onHistory && (
+              <button type="button" onClick={onHistory}>
+                Open technicals & history <ArrowRight size={15} />
+              </button>
             )}
           </div>
         )}
       </details>
-      {!publicGuide && (
-        <details className={s.readingDetail}>
-          <summary>Previous month · history</summary>
-          <p className={s.description}>
-            {current?.historicalLevel != null
-              ? `P${current.historicalLevel} · ${dateLabel(current.historicalDate)}. Historical evidence, not today’s purchase instruction.`
-              : "No previous monthly closing zone is available."}
-          </p>
-        </details>
-      )}
-      <footer className={s.footer}>
-        <span>
-          <ShieldCheck size={15} />
-          Business checks and portfolio limits come first
-        </span>
-        {onHistory && (
-          <button onClick={onHistory}>
-            Evidence & history <ArrowRight size={15} />
-          </button>
-        )}
-      </footer>
     </section>
   );
 }

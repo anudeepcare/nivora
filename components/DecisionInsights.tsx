@@ -13,11 +13,13 @@ export default function DecisionInsights({
   owns = false,
   now,
   prefix = "",
+  initialTab = 0,
 }: {
   research: Research;
   owns?: boolean;
   now: number;
   prefix?: string;
+  initialTab?: 0 | 1 | 2;
 }) {
   return (
     <Insights
@@ -26,6 +28,7 @@ export default function DecisionInsights({
       owns={owns}
       now={now}
       prefix={prefix}
+      initialTab={initialTab}
     />
   );
 }
@@ -34,13 +37,15 @@ function Insights({
   owns,
   now,
   prefix,
+  initialTab,
 }: {
   research: Research;
   owns: boolean;
   now: number;
   prefix: string;
+  initialTab: 0 | 1 | 2;
 }) {
-  const [tab, setTab] = useState(0),
+  const [tab, setTab] = useState<number>(initialTab),
     [multiple, setMultiple] = useState("25"),
     [desired, setDesired] = useState("8"),
     [horizon, setHorizon] = useState("");

@@ -24,11 +24,8 @@ export default function OptionsExpiryComparison({
   return (
     <details className={s.comparison}>
       <summary>
-        Compare expiration dates <span>{rows.length} loaded</span>
+        Expirations <span>{rows.length} loaded</span>
       </summary>
-      {columns.length === 0 && (
-        <p>Volume and open interest are not supplied.</p>
-      )}
       <div className={s.scroll}>
         <table>
           <caption>
@@ -86,10 +83,7 @@ export default function OptionsExpiryComparison({
           </tbody>
         </table>
       </div>
-      <p>
-        Totals cover loaded contracts. Volume counts reported trades, not
-        direction. — means not supplied.
-      </p>
+      <p>Loaded contracts only · — means missing data.</p>
     </details>
   );
 }

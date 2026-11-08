@@ -1,6 +1,27 @@
-# Current release — enabled Pace v6 and cleaner research
+# Current release — synchronized analyst targets and Pace v6
 
 This release supersedes earlier notes saying the candidate was offline or monthly-v5 remained the current app engine.
+
+## UX priority release
+- Simplified Pace into one reading, one action line, the next conditional zone and one Levels & history disclosure. Stage exploration, historical context and the link to full technicals remain available.
+- Replaced 627 lines of overlapping Pace CSS with a focused module; no classifier or investment-policy change in this pass.
+- Added Since you last checked: device-local prior-visit comparisons of compatible Pace, same-period EPS estimates, analyst consensus and newer price observations. Maximum three changes, no first-visit noise, provider/date/currency validation, refresh updates against the original visit baseline.
+- Preserved advanced/Pro tools and metrics. Restored the expectations calculator under Valuation; estimate coverage and earnings yields open on demand. Empty Overview scaffolding stays hidden while full tabs remain available.
+- Refined owner documentation with a calm cover, topic navigation, search, proper lists/tables, mobile chapter selection, reading time and keyboard-friendly chapter navigation. Technical source remains owner-only and opt-in; full download remains available.
+- Updated the guide to explain active monthly-v6, historical v5 fallback and current validation limits.
+
+## Options cleanup
+- Removed the session-activity panel.
+- Saved views and account controls remain collapsed; empty saved-view and replay selectors are hidden.
+- Shortened control labels and removed repeated keyboard/tutorial paragraphs.
+- Expiration comparison stays collapsed and full width, retaining actual observation dates and missing-data distinctions.
+
+## Target synchronization
+- Overview, Valuation and the Analyst targets tab reuse AnalystTargets and consensusOutlook. Values, reference price, changes and target dates are identical for the same research snapshot.
+- Valid analyst targets take the headline position; calculated AURYN scenarios stay separately labelled. Overview falls back to the selected AURYN model if analyst targets are absent.
+- Low / consensus / high retain distinct coral / gold / teal cards. Missing bounds are never invented.
+- Removed repeated target metadata paragraphs. This does not establish provider parity with DCA Optimizer.
+- APP live payload remains unverified because protected-preview access was blocked; no corrected APP figures are asserted.
 
 ## App changes
 - Enabled the frozen monthly-v6 technical classifier in the shared analysis engine used by Research and portfolio/watchlist assessments. No per-ticker overrides or runtime training.

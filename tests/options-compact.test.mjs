@@ -73,7 +73,7 @@ test("expiration comparison uses rows and omits wholly unavailable columns", () 
     html,
     /<th[^>]*>Call volume|<th[^>]*>Put volume|<th[^>]*>Open interest/,
   );
-  assert.match(html, /Volume and open interest are not supplied/);
+  assert.doesNotMatch(html, /Volume and open interest are not supplied/);
   assert.match(html, /aria-pressed="true"/);
 });
 test("reported zero volume remains a visible numeric column", () => {

@@ -161,9 +161,8 @@ test("price levels opens with one toolbar and immediate analysis, with details b
   const html = render({ symbol: "TEST", contracts, complete: true });
   assert.equal((html.match(/<header/g) || []).length, 1);
   assert.doesNotMatch(html, /<h2|options-desk|depth-options/);
-  assert.ok(
-    html.indexOf("Exposure workspace") < html.indexOf("Session activity"),
-  );
+  assert.match(html, /Exposure workspace/);
+  assert.doesNotMatch(html, /Session activity/);
   assert.match(html, /<select aria-label="Expiration date"/);
   assert.match(html, /Data &amp; definitions/);
   assert.match(html, /Quote quality/);

@@ -1,6 +1,6 @@
 "use client";
 import { useWorkspacePreferences } from "./WorkspacePreferences";
-import { useMemo } from "react";
+import { useMemo, type CSSProperties } from "react";
 import { Building2, Scale, Activity, Users, ArrowUpRight } from "lucide-react";
 import type { Research } from "@/lib/types";
 import type { EvidenceSection } from "@/lib/approved-research";
@@ -50,12 +50,18 @@ export default function ResearchEvidenceGrid({
     .filter(({ key }) =>
       preferences.visibleMetrics.includes(key === "technical" ? "price" : key),
     )
+    .filter(({ rows }) => rows.length > 0)
     .filter(
       ({ tab }) =>
         !evidence.crypto || (tab !== "Financials" && tab !== "Valuation"),
     );
+  if (!groups.length) return null;
   return (
-    <section className={s.grid} aria-label="Research evidence at a glance">
+    <section
+      className={s.grid}
+      aria-label="Research evidence at a glance"
+      style={{ "--evidence-columns": groups.length } as CSSProperties}
+    >
       {groups.map(({ name, key, icon: Icon, rows, tab }) => (
         <article key={key} data-category={key} className={s.panel}>
           <header>

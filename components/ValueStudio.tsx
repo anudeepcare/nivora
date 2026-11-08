@@ -1,7 +1,10 @@
 "use client";
+import DecisionInsights from "./DecisionInsights";
+import AnalystTargets from "./AnalystTargets";
+import { consensusOutlook } from "@/lib/outlook";
 import SelectedValuation from "./SelectedValuation";
 import SectionIcon from "./SectionIcon";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { Research } from "@/lib/types";
 import { valueDesk, type DeskMetric } from "@/lib/research-desks";
 import { percent, dateLabel } from "@/lib/format";
@@ -20,6 +23,7 @@ export default function ValueStudio({
   research: Research;
   onWorkbench: () => void;
 }) {
+  const [calculatorOpen, setCalculatorOpen] = useState(false);
   const d = useMemo(() => valueDesk(r), [r]);
   const methods = useMemo(() => modelAssessment(r), [r]);
   const available = d.metrics.filter((m) => m.value != null);
@@ -38,14 +42,24 @@ export default function ValueStudio({
           <span className="eyebrow">Value · what the price implies</span>
           <h2>
             <SectionIcon name="Valuation" size={25} />
-            Price in context.
+            Targets & valuation.
           </h2>
         </div>
         <button type="button" className="button" onClick={onWorkbench}>
           Test assumptions →
         </button>
       </header>
-      <SelectedValuation research={r} />
+      {consensusOutlook(r) ? (
+        <>
+          <AnalystTargets research={r} />
+          <details>
+            <summary>AURYN model scenarios</summary>
+            <SelectedValuation research={r} />
+          </details>
+        </>
+      ) : (
+        <SelectedValuation research={r} />
+      )}
       <PriceProjection key={r.company.symbol} research={r} />
       {available.length > 0 && (
         <section
@@ -95,41 +109,56 @@ export default function ValueStudio({
         </details>
       )}
       {yields.some((m) => m.value != null) && (
-        <section
-          className="earnings-yield-view"
-          aria-label="Earnings represented per 100 units of equity price"
-        >
-          <div>
-            <span className="eyebrow">A different lens</span>
-            <h3>
-              <SectionIcon name="Value" />
-              For every 100 you pay.
-            </h3>
-            <p>
-              Reported or estimated annual earnings represented by the multiple.
-              These amounts are neither cash distributions nor expected
-              investment returns.
-            </p>
-          </div>
-          <div className="yield-bars">
-            {yields.map((m) => (
-              <div key={m.key}>
-                <span>{m.label}</span>
-                <strong>
-                  {m.value == null ? "Not available" : `${m.value.toFixed(2)}%`}
-                </strong>
-                <i>
-                  <b
-                    style={{
-                      width: `${m.value == null ? 0 : (m.value / maximum) * 100}%`,
-                    }}
-                  />
-                </i>
-              </div>
-            ))}
-          </div>
-        </section>
+        <details>
+          <summary>Earnings yields</summary>
+          <section
+            className="earnings-yield-view"
+            aria-label="Earnings represented per 100 units of equity price"
+          >
+            <div>
+              <span className="eyebrow">A different lens</span>
+              <h3>
+                <SectionIcon name="Value" />
+                For every 100 you pay.
+              </h3>
+              <p>
+                Reported or estimated annual earnings represented by the
+                multiple. These amounts are neither cash distributions nor
+                expected investment returns.
+              </p>
+            </div>
+            <div className="yield-bars">
+              {yields.map((m) => (
+                <div key={m.key}>
+                  <span>{m.label}</span>
+                  <strong>
+                    {m.value == null
+                      ? "Not available"
+                      : `${m.value.toFixed(2)}%`}
+                  </strong>
+                  <i>
+                    <b
+                      style={{
+                        width: `${m.value == null ? 0 : (m.value / maximum) * 100}%`,
+                      }}
+                    />
+                  </i>
+                </div>
+              ))}
+            </div>
+          </section>
+        </details>
       )}
+      <details onToggle={(e) => setCalculatorOpen(e.currentTarget.open)}>
+        <summary>Price expectations calculator</summary>
+        {calculatorOpen && (
+          <DecisionInsights
+            research={r}
+            now={Date.parse(r.priceObservedAt ?? r.retrievedAt)}
+            initialTab={1}
+          />
+        )}
+      </details>
       <section className="value-model-fit">
         <header className="section-head">
           <h3>

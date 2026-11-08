@@ -131,13 +131,10 @@
 }
 .secondaryTools {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 16px;
   margin-top: 8px;
   border-top: 1px solid var(--line);
-}
-.activity {
-  min-width: 0;
 }
 .analytics {
   padding: 12px 0;

@@ -1330,7 +1330,7 @@ test("analyst fallback presents actual consensus without invented low/high targe
   const View = loadComponent(
     "components/AnalystTargets.tsx",
     "AnalystTargets",
-    { React, consensusOutlook, ...format },
+    { React, consensusOutlook, ...format, styles: {root:"targets"} },
   );
   const html = renderToStaticMarkup(React.createElement(View, { research: r }));
   r.quote.stale = true;
@@ -1890,13 +1890,14 @@ test("analyst range requires both ordered reported bounds and never manufactures
   const View = loadComponent(
     "components/AnalystTargets.tsx",
     "AnalystTargets",
-    { React, consensusOutlook, ...format },
+    { React, consensusOutlook, ...format, styles: {root:"targets"} },
   );
   const html = renderToStaticMarkup(React.createElement(View, { research: r }));
   assert.match(html, /\$50\.00/);
   assert.match(html, /\$150\.00/);
-  assert.match(html, /Reported analyst targets/);
-  assert.match(html, /not calculated bear\/base\/bull/);
+  assert.match(html, /Analyst low · consensus · high/);
+  assert.match(html, /Wall Street consensus/);
+  assert.doesNotMatch(html, /Bear scenario|Base scenario|Bull scenario/);
   r.evidence.consensus.low = 110;
   const invalid = consensusOutlook(r);
   assert.equal(invalid.low, undefined);
@@ -2046,6 +2047,9 @@ test("integrated selected cash-flow and earnings models have distinct horizons o
       useMemo: React.useMemo,
       useProduct: () => ({ demo: false }),
       approvedResearch: () => model,
+      consensusOutlook: () => null,
+      AnalystTargets: empty,
+      ResearchChanges: empty,
       sameProviderSymbol: () => false,
       valuationScale,
       ...format,
@@ -2262,7 +2266,7 @@ test("Overview renders the actual analyst range beside separately labelled AURYN
   const AnalystTargets = loadComponent(
     "components/AnalystTargets.tsx",
     "AnalystTargets",
-    { React, consensusOutlook, ...format },
+    { React, consensusOutlook, ...format, styles: {root:"targets"} },
   );
   const View = loadComponent(
     "components/DecisionOverview.tsx",
@@ -2285,7 +2289,7 @@ test("Overview renders the actual analyst range beside separately labelled AURYN
   assert.match(html, /\$100\.00/);
   assert.match(html, /\$120\.00/);
   assert.match(html, /AURYN scenarios/);
-  assert.match(html, /not calculated bear\/base\/bull valuations/);
+  assert.match(html, /Analyst low · consensus · high/);
 });
 
 test("Home has a compact evidence pulse without a large decorative hero", async () => {
@@ -2445,4 +2449,16 @@ test("Pace instrument renders the shared dialog trigger without an inline help p
   assert.match(html, /aria-label="About How AURYN Accumulation Pace works"/);
   assert.match(html, /aria-haspopup="dialog"/);
   assert.doesNotMatch(html, /<dialog/);
+});
+
+test('price expectations can open directly with all three controls for advanced users', async()=>{
+ const tools=await import('../lib/decision-tools.ts');
+ const listing=await import('../lib/listing-reconciliation.ts');
+ const targets=await import('../lib/targets-estimates.ts');
+ const scope={React,useMemo:React.useMemo,useState:React.useState,...tools,...listing,...targets,...format,Help:empty,Link:empty,s:experience};
+ const Insights=loadComponent('components/DecisionInsights.tsx','Insights',scope);
+ const View=loadComponent('components/DecisionInsights.tsx','DecisionInsights',{React,Insights});
+ const r=structuredClone(demoData.research.MSFT);r.quote={...r.quote,price:100,asOf:r.retrievedAt,stale:false};
+ const html=renderToStaticMarkup(React.createElement(View,{research:r,now:Date.parse(r.retrievedAt),initialTab:1}));
+ assert.match(html,/Future P\/E assumption/);assert.match(html,/Desired annual price return/);assert.match(html,/Required EPS at this horizon/);
 });

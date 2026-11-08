@@ -1,0 +1,146 @@
+[
+  {
+    "view": "research",
+    "width": 320,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "owner",
+    "width": 320,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "valuation-pro-calculator",
+    "width": 320,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "research",
+    "width": 320,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "owner",
+    "width": 320,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "valuation-pro-calculator",
+    "width": 320,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "research",
+    "width": 390,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "owner",
+    "width": 390,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "valuation-pro-calculator",
+    "width": 390,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "research",
+    "width": 390,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "owner",
+    "width": 390,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "valuation-pro-calculator",
+    "width": 390,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "research",
+    "width": 768,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "owner",
+    "width": 768,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "valuation-pro-calculator",
+    "width": 768,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "research",
+    "width": 768,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "owner",
+    "width": 768,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "valuation-pro-calculator",
+    "width": 768,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "research",
+    "width": 1440,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "owner",
+    "width": 1440,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "valuation-pro-calculator",
+    "width": 1440,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "research",
+    "width": 1440,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "owner",
+    "width": 1440,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "valuation-pro-calculator",
+    "width": 1440,
+    "theme": "dark",
+    "passed": true
+  }
+]

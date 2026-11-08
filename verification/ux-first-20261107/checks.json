@@ -1,0 +1,42 @@
+{
+  "scope": "UX-first source release; investment-policy calculations unchanged",
+  "tests": {
+    "passed": 1226,
+    "failed": 0
+  },
+  "proToolRetest": {
+    "passed": 9,
+    "failed": 0
+  },
+  "lint": "passed",
+  "typecheck": "passed",
+  "browser": {
+    "researchOwnerAndCalculator": 24,
+    "options": 8,
+    "widths": [
+      320,
+      390,
+      768,
+      1440
+    ],
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "overflow": false,
+    "checks": [
+      "prior-visit refresh baseline",
+      "provider and history dates",
+      "distinct target colors",
+      "single Pace disclosure",
+      "stage exploration",
+      "owner search and topics",
+      "chapter focus and instant scroll",
+      "advanced EPS calculator",
+      "advanced volume rankings"
+    ]
+  },
+  "review": "Independent review; all four actionable findings corrected and covered",
+  "productionData": "No new live APP values verified",
+  "deployment": "not performed"
+}

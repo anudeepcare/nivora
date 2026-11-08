@@ -1,0 +1,19 @@
+.root :global(.analyst-target-range section) {
+  --target-color: #a38232;
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--target-color) 28%, var(--line));
+  border-top: 3px solid var(--target-color);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--target-color) 6%, var(--surface));
+}
+.root :global(.analyst-target-range) [data-target="Low"] {
+  --target-color: #c65050;
+}
+.root :global(.analyst-target-range) [data-target="High"] {
+  --target-color: #00866b;
+}
+@media (max-width: 540px) {
+  .root :global(.analyst-target-range > div) {
+    grid-template-columns: 1fr;
+  }
+}

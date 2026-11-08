@@ -1396,7 +1396,7 @@
   line-height: 1.6;
 }
 .overview {
-  align-items: stretch;
+  align-items: start;
 }
 .bottom {
   align-items: stretch;
@@ -1515,4 +1515,11 @@
   .stockPrice :global(.data-stamp) {
     font-size: 10px;
   }
+}
+
+.paceColumn {
+  grid-area: pace;
+  min-width: 0;
+  display: grid;
+  gap: 14px;
 }

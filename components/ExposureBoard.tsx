@@ -862,21 +862,23 @@ export default function ExposureBoard({
       )}
       <details className={s.saved}>
         <summary>
-          <SlidersHorizontal size={16} /> Saved views & history
+          <SlidersHorizontal size={16} /> Saved views
         </summary>
         <div className={s.toolbar}>
-          <label>
-            Saved view
-            <select
-              defaultValue=""
-              onChange={(e) => applyPreset(e.target.value)}
-            >
-              <option value="">Choose a view</option>
-              {saved.presets.map((p) => (
-                <option key={p.name}>{p.name}</option>
-              ))}
-            </select>
-          </label>
+          {saved.presets.length > 0 && (
+            <label>
+              Saved view
+              <select
+                defaultValue=""
+                onChange={(e) => applyPreset(e.target.value)}
+              >
+                <option value="">Choose a view</option>
+                {saved.presets.map((p) => (
+                  <option key={p.name}>{p.name}</option>
+                ))}
+              </select>
+            </label>
+          )}
           <label>
             View name
             <input
@@ -889,31 +891,27 @@ export default function ExposureBoard({
           <button type="button" onClick={savePreset}>
             Save this view
           </button>
-          <label>
-            Observation
-            <select
-              value={snapshot}
-              disabled={!!externalSnapshot}
-              onChange={(e) => {
-                setSnapshot(e.target.value);
-                setSelected(null);
-              }}
-            >
-              <option value="">Latest loaded snapshot</option>
-              {snapshots.map((x) => (
-                <option key={x.id} value={x.id}>
-                  Saved {new Date(x.savedAt).toLocaleString()}
-                </option>
-              ))}
-            </select>
-          </label>
+          {(snapshots.length > 0 || externalSnapshot) && (
+            <label>
+              Observation
+              <select
+                value={snapshot}
+                disabled={!!externalSnapshot}
+                onChange={(e) => {
+                  setSnapshot(e.target.value);
+                  setSelected(null);
+                }}
+              >
+                <option value="">Latest loaded snapshot</option>
+                {snapshots.map((x) => (
+                  <option key={x.id} value={x.id}>
+                    Saved {new Date(x.savedAt).toLocaleString()}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
         </div>
-        <p>
-          Keyboard while the board is focused: F centers price; L inspects the
-          largest cell; S saves a snapshot; Escape closes details. Up to ten
-          views and twelve snapshots per device across all symbols. Export
-          important observations before clearing browser storage.
-        </p>
         {accountTools}
       </details>
       {message && <p role="status">{message}</p>}

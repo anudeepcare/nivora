@@ -81,12 +81,10 @@ function AccountBoard(props: {
   }
   const path = `market-workspace/${encodeURIComponent(props.symbol)}`;
   const accountTools = (
-    <section className={s.account} aria-label="Account market history">
-      <h4>
-        <Cloud size={18} /> Account checkpoints{" "}
-        <small> · {snapshots.length} checkpoints</small>
-      </h4>
-      <p>Saved checkpoints replay the observations captured in your account.</p>
+    <details className={s.account} aria-label="Account market history">
+      <summary>
+        <Cloud size={18} /> Account saves <small> · {snapshots.length}</small>
+      </summary>
       <div className={s.actions}>
         <button
           type="button"
@@ -105,14 +103,14 @@ function AccountBoard(props: {
             })
           }
         >
-          <Save size={16} /> Capture to account
+          <Save size={16} /> Save snapshot
         </button>
         <button
           type="button"
           disabled={busy || !!demo}
           onClick={() => resource.refresh()}
         >
-          <RefreshCw size={16} /> Reload account history
+          <RefreshCw size={16} /> Refresh
         </button>
         <button
           type="button"
@@ -129,7 +127,7 @@ function AccountBoard(props: {
             })
           }
         >
-          Save views to account
+          Sync views
         </button>
         <button
           type="button"
@@ -139,30 +137,32 @@ function AccountBoard(props: {
             setMessage("Account views loaded into this device.");
           }}
         >
-          Load account views
+          Restore views
         </button>
       </div>
       {(resource.error || resource.data?.historyError) && (
         <p role="status">{resource.error || resource.data?.historyError}</p>
       )}
-      <label>
-        Replay checkpoint
-        <select
-          value={index}
-          onChange={(e) => {
-            setIndex(Number(e.target.value));
-            setPlaying(false);
-          }}
-        >
-          <option value={-1}>Latest loaded / device view</option>
-          {snapshots.map((x, i) => (
-            <option key={x.id} value={i}>
-              {new Date(x.savedAt).toLocaleString()} · source{" "}
-              {x.sourceAsOf ?? "dated in cells"}
-            </option>
-          ))}
-        </select>
-      </label>
+      {snapshots.length > 0 && (
+        <label>
+          Saved snapshot
+          <select
+            value={index}
+            onChange={(e) => {
+              setIndex(Number(e.target.value));
+              setPlaying(false);
+            }}
+          >
+            <option value={-1}>Latest loaded / device view</option>
+            {snapshots.map((x, i) => (
+              <option key={x.id} value={i}>
+                {new Date(x.savedAt).toLocaleString()} · source{" "}
+                {x.sourceAsOf ?? "dated in cells"}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
       {snapshots.length > 1 && (
         <div className={s.actions}>
           <button
@@ -195,7 +195,7 @@ function AccountBoard(props: {
           {selected.frequency} · {selected.window}
         </p>
       )}
-    </section>
+    </details>
   );
   return (
     <div className={s.workspace}>
