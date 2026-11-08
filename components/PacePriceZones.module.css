@@ -146,3 +146,24 @@
   color: #b6c4b9;
   padding: 4px 0;
 }
+
+.zones.zones.zones tbody tr {
+  background: transparent;
+  color: inherit;
+}
+.zones.zones.zones tbody tr > :is(th, td),
+.zones.zones.zones tbody tr:hover > :is(th, td) {
+  background: transparent;
+  color: inherit;
+}
+.zones.zones.zones tbody tr[data-current="true"] > :is(th, td) {
+  background: #d6f35a16;
+  color: #f1f7e9;
+}
+.zones.zones.zones tbody tr[data-current="true"] th strong {
+  color: #d6f35a;
+}
+.pending.pending {
+  color: inherit;
+  opacity: 0.8;
+}

@@ -231,27 +231,6 @@ function HomeOverview() {
           Research a company <SearchIcon size={16} />
         </Link>
       </div>
-      {symbols.length > 0 && (
-        <section
-          className={homeStyles.dailyBanner}
-          aria-label="Your research at a glance"
-        >
-          <div>
-            <span>AURYN · Your daily brief</span>
-            <h2>Know where to focus.</h2>
-            <p>
-              {symbols.length} followed companies. Price zones, fresh results
-              and your next earnings checkpoint.
-            </p>
-          </div>
-          <Link href="#home-earnings">
-            {feed.loading
-              ? "Checking"
-              : eventGroups.reduce((n, g) => n + g.events.length, 0)}{" "}
-            upcoming events <ArrowUpRight size={18} />
-          </Link>
-        </section>
-      )}
       <ContributionCompare symbols={symbols} prefix={prefix} />
       <HomeMarketCards
         symbols={symbols}
@@ -482,7 +461,7 @@ function HomeOverview() {
               />
               {headlines.length ? (
                 <div className="home-news-list">
-                  {headlines.slice(0, 5).map((news) => (
+                  {headlines.slice(0, 6).map((news) => (
                     <article key={`${news.symbol}:${news.url}`}>
                       <div className="home-news-meta">
                         <SecurityLogo symbol={news.symbol} />
@@ -500,12 +479,6 @@ function HomeOverview() {
                         {news.title}
                         <ArrowUpRight size={17} />
                       </a>
-                      <Link
-                        className="text-link"
-                        href={researchLink(news.symbol, prefix)}
-                      >
-                        Review the company <ArrowUpRight size={15} />
-                      </Link>
                     </article>
                   ))}
                 </div>
@@ -533,10 +506,10 @@ function HomeOverview() {
                   </Link>
                 </div>
               )}
-              {headlines.length > 5 && (
+              {headlines.length > 6 && (
                 <details className="home-more-updates">
-                  <summary>Show {headlines.length - 5} more updates</summary>
-                  {headlines.slice(5).map((news) => (
+                  <summary>Show {headlines.length - 6} more updates</summary>
+                  {headlines.slice(6).map((news) => (
                     <article key={news.url}>
                       <span>
                         {news.symbol} · {dateLabel(news.date)}

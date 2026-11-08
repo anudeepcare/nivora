@@ -198,7 +198,7 @@ export const documents: Record<
         text: "Flags apply disclosed deterministic thresholds to available data, including thin interest coverage, cash use, high stock pay, dilution and liquidity. Review levels are on-screen prompts, not automatic trading rules or proof of business failure. They do not certify that untested risks are absent.",
       },
       {
-        title: "Timing and DCA",
+        title: "Timing and contributions",
         text: "Daily technicals use completed dated observations. The monthly accumulation policy requires consecutive month-end closes and distinguishes confirmed from forming readings. Technicals help describe entry conditions; they do not establish business value or a moat.",
       },
       {
@@ -262,7 +262,7 @@ export const documents: Record<
       },
       {
         title: "Paper trading and AI",
-        text: "AI research runs when requested and requires a configured provider. Paper trading is separate from live execution and requires its permissions and safeguards. Research labels and DCA signals do not themselves authorize an order.",
+        text: "AI research runs when requested and requires a configured provider. Paper trading is separate from live execution and requires its permissions and safeguards. Research labels and Pace signals do not themselves authorize an order.",
       },
     ],
   },

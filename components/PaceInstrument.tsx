@@ -86,6 +86,9 @@ export default function PaceInstrument({
           : "Current AURYN price zone"
       }
     >
+      <div className={s.brandArt} aria-hidden="true">
+        <img src="/pace-diamond.svg" alt="" />
+      </div>
       <header className={s.header}>
         <span>
           <img src="/pace-diamond.svg" alt="" width="22" height="24" />
@@ -121,11 +124,11 @@ export default function PaceInstrument({
             {!exploring && decision?.headline && (
               <p className={s.reason}>{decision.headline}</p>
             )}
-            <p className={s.zoneContext}>
-              {selected === null
-                ? "Price history needed"
-                : `P${selected} · ${PACE_LEVELS[selected]}`}
-            </p>
+            {selected !== null && (
+              <p
+                className={s.zoneContext}
+              >{`P${selected} · ${PACE_LEVELS[selected]}`}</p>
+            )}
           </div>
           {!exploring && (
             <div className={s.insight}>
@@ -143,7 +146,7 @@ export default function PaceInstrument({
               )}
             </div>
           )}
-          {research ? (
+          {research && level !== null ? (
             <PacePriceZones
               research={research}
               asOf={new Date(
@@ -186,7 +189,7 @@ export default function PaceInstrument({
             : current?.provisional
               ? "Provisional · this month"
               : level === null
-                ? "Current history unavailable"
+                ? "Monthly framework · no active zone"
                 : "Month-end reading"}
         </span>
         {!publicGuide && inspect !== null ? (
@@ -197,7 +200,9 @@ export default function PaceInstrument({
           <small>
             {publicGuide
               ? "Tap a step to explore"
-              : dateLabel(current?.date ?? fallback?.date)}
+              : (current?.date ?? fallback?.date)
+                ? dateLabel(current?.date ?? fallback?.date)
+                : ""}
           </small>
         )}
       </div>
@@ -206,9 +211,13 @@ export default function PaceInstrument({
         onToggle={(event) => setDetailsOpen(event.currentTarget.open)}
       >
         <summary>
-          {exploring ? "About this stage" : "Price zones & history"}
+          {exploring
+            ? "About this stage"
+            : level === null
+              ? "What to review"
+              : "Price zones & history"}
         </summary>
-        {!exploring && research && (
+        {!exploring && research && level !== null && (
           <PacePriceZones
             research={research}
             asOf={new Date(
@@ -219,12 +228,14 @@ export default function PaceInstrument({
             active={detailsOpen}
           />
         )}
-        <p className={s.description}>
-          {exploring && selected !== null
-            ? PACE_DESCRIPTIONS[selected]
-            : (evidence?.reading?.reason ??
-              "Refresh price history to calculate the current zone.")}
-        </p>
+        {(exploring || evidence?.reading?.reason) && (
+          <p className={s.description}>
+            {exploring && selected !== null
+              ? PACE_DESCRIPTIONS[selected]
+              : (evidence?.reading?.reason ??
+                "Refresh price history to calculate the current zone.")}
+          </p>
+        )}
         {!exploring && (
           <div className={s.evidenceDetails}>
             {current?.historicalLevel != null && (

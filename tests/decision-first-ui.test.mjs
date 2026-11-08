@@ -20,3 +20,12 @@ test('Pace presents every supported decision in its headline rather than substit
   if(['Sell','Reduce','Avoid'].includes(action)) assert.match(html,/data-tone="risk"/);
  }
 });
+
+test('short history retains the diamond framework and decision without repeated missing-data messages',()=>{
+ const short={...research,history:research.history.slice(-80)};
+ const html=renderToStaticMarkup(React.createElement(PaceInstrument,{research:short,now}));
+ assert.match(html,/<h2>Review<\/h2>/);
+ assert.equal((html.match(/Explore P[0-4]:/g)||[]).length,5);
+ assert.doesNotMatch(html,/Date unavailable|Current history unavailable|More settled history|Price history needed/);
+ assert.match(html,/What to review/);
+});

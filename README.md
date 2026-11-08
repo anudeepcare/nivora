@@ -2,7 +2,7 @@
 
 Current source handoff: 8 November 2026. Not deployed by this update.
 
-Start with [the decision-first UX release](RELEASE-DECISION-FIRST-20261108.md), then [the operational handoff](RELEASE-HANDOFF-20261107.md). Earlier review and completion documents are historical snapshots.
+Start with [the faceted UX release](RELEASE-FACETED-UX-20261108.md), then [the operational handoff](RELEASE-HANDOFF-20261107.md). Earlier review and completion documents are historical snapshots.
 
 See [the recovered requirement checklist](REQUIREMENTS-STATUS-20261107.md) and [exact configuration notes](CONFIGURATION-20261107.md). These separate shipped source from live activation and unfinished roadmap items.
 

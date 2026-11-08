@@ -23,7 +23,7 @@ export default function Accumulation({ research }: { research: Research }) {
           </div>
           <div>
             <span className="eyebrow">
-              MONTHLY DCA · {signal?.month || "HISTORY NEEDED"}
+              MONTHLY PACE · {signal?.month || "HISTORY NEEDED"}
             </span>
             <h2>
               {signal
@@ -36,7 +36,7 @@ export default function Accumulation({ research }: { research: Research }) {
             </h2>
             <p className="muted">{signal?.reason || result.reason}</p>
           </div>
-          <Help label="Monthly DCA">
+          <Help label="Monthly Pace">
             AURYN’s monthly-v5 price policy measures settled prices against the
             previous 12 completed monthly closes and their variability. It
             requires at least 12 consecutive prior completed months; 12–23
@@ -97,7 +97,7 @@ export default function Accumulation({ research }: { research: Research }) {
               ) -
                 365 * 86400000,
           )}
-          range="DCA context"
+          range="Pace context"
         />
         {result.history.length ? (
           <div className="timeline">

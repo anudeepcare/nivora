@@ -318,7 +318,7 @@ export default function AccumulationDesk({
               </p>
               <div className="policy-results">
                 {[
-                  ["Normal DCA", evaluation.fixed],
+                  ["Fixed contributions", evaluation.fixed],
                   ["Legacy price-only policy", evaluation.adaptive],
                 ].map(([name, result]) => {
                   const x = result as typeof evaluation.fixed;
@@ -351,7 +351,7 @@ export default function AccumulationDesk({
               </div>
               <p>
                 Later {evaluation.holdout.months}-month slice, restarted at
-                zero: normal DCA{" "}
+                zero: fixed contributions{" "}
                 {amount(evaluation.holdout.fixed.value, "USD", true)} ·
                 trend-adjusted{" "}
                 {amount(evaluation.holdout.adaptive.value, "USD", true)} model

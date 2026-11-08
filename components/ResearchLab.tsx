@@ -74,7 +74,7 @@ export default function ResearchLab() {
       <PaceHelp trigger="Understand AURYN Pace" />
       <PageHeading
         title="Strategy lab"
-        subtitle="Compare fixed DCA with a legacy price-only multiplier policy using equal budgets."
+        subtitle="Compare fixed contributions with a legacy price-only multiplier policy using equal budgets."
       />
       <p className="footnote">
         This legacy simulation buys at P1. It does not implement current P1
@@ -124,7 +124,7 @@ export default function ResearchLab() {
           </header>
           <div className="two-col">
             {[
-              ["Fixed DCA", result.fixed, "blue"],
+              ["Fixed contributions", result.fixed, "blue"],
               ["Legacy price-only policy", result.adaptive, "violet"],
             ].map(([label, state, color]) => {
               const x = state as typeof result.fixed;
@@ -137,7 +137,7 @@ export default function ResearchLab() {
                   <MiniChart
                     color={String(color)}
                     values={result.history.map((r) =>
-                      label === "Fixed DCA" ? r.fixed : r.adaptive,
+                      label === "Fixed contributions" ? r.fixed : r.adaptive,
                     )}
                   />
                   <div className="data-list">

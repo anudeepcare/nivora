@@ -23,7 +23,9 @@ export default function Record() {
       </section>
       <PaceRecordFeed />
       <details>
-        <summary>Methodology and comparison with monthly DCA</summary>
+        <summary>
+          Methodology and comparison with regular monthly investing
+        </summary>
         <p>
           Comparative performance has not yet been established for the current
           policy. These are the standards used to evaluate it.
@@ -35,8 +37,8 @@ export default function Record() {
             and an independently verifiable publication record.
           </li>
           <li>
-            The same monthly contribution budget for Pace and ordinary DCA,
-            including idle cash and its return.
+            The same monthly contribution budget for Pace and fixed
+            contributions, including idle cash and its return.
           </li>
           <li>
             Fees, total returns, corporate actions and delisted companies;

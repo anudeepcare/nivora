@@ -44,15 +44,6 @@ export default function TargetsEstimates({
           <span className="eyebrow">Expectations & assumptions</span>
           <h2>Targets & Estimates</h2>
         </div>
-        <div className={styles.quote}>
-          <small>
-            {r.quote.stale ? "Older reference quote" : "Reference quote"}
-          </small>
-          <strong>{amount(r.quote.price, r.quote.currency)}</strong>
-          <small>
-            {dateLabel(r.quote.asOf)} · {r.quote.currency}
-          </small>
-        </div>
       </header>
       <div
         className={styles.tabs}

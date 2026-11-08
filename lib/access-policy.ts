@@ -4,7 +4,7 @@ export const featureNames = {
   business: "Business analysis",
   financials: "Financial statements",
   value: "Value scenarios",
-  technicals: "Technical desk & DCA history",
+  technicals: "Technical desk & Pace history",
   analysts: "Analyst coverage",
   news: "Company news",
   advanced: "Advanced workbench",

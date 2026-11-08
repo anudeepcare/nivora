@@ -488,7 +488,7 @@ export default function TechnicalDashboard({
             volume inconsistencies can distort studies.
           </p>
           <p>
-            DCA contribution context is in Overview; deeper tail-risk and trade
+            Contribution context is in Overview; deeper tail-risk and trade
             planning are in Advanced.
           </p>
         </details>

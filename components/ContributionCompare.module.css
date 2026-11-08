@@ -286,3 +286,19 @@
     min-height: 44px;
   }
 }
+
+.root.root header {
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 100% 0%, #7bbda14d, transparent 65%),
+    linear-gradient(125deg, #17292e, #27463f 62%, #3a4d35);
+}
+.root.root header :global(.eyebrow) {
+  color: #d6f35a;
+}
+.root.root header p {
+  color: #d0ded4;
+}
+.root.root .heroArt {
+  opacity: 0.72;
+}

@@ -970,7 +970,7 @@ export function DcaCard({
       aria-label="Monthly accumulation signal"
     >
       <div className="au-between au-dca-top">
-        <span className="au-eyebrow">Monthly DCA · price only</span>
+        <span className="au-eyebrow">Monthly Pace · price only</span>
         <Help label="AURYN Pace zones">
           P1 means Watch/Hold; P2 starts small, P3 builds gradually and P4 marks
           a deep price zone. Business checks must qualify before buying. These

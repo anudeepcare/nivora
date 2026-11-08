@@ -57,7 +57,7 @@ export default function LegalDocument({ id }: { id: DocumentId }) {
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Try DCA, valuation or portfolio"
+                placeholder="Try Pace, valuation or portfolio"
               />
             </label>
           )}

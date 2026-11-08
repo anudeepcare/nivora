@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useProduct } from "./Session";
 import { pricePath } from "@/lib/position-explorer";
 import type { Research, Candle } from "@/lib/types";
@@ -20,12 +21,13 @@ export default function CompanySparkline({ symbol }: { symbol: string }) {
   const line = pricePath(history);
   if (!line)
     return (
-      <span
+      <Link
+        href={`${demo?.routePrefix ?? (demo ? "/preview" : "")}/research/${encodeURIComponent(symbol)}`}
         className="spark-unavailable"
         title="Open research to load its price history"
       >
-        History not loaded
-      </span>
+        View chart ↗
+      </Link>
     );
   return (
     <svg

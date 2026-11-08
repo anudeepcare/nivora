@@ -301,3 +301,65 @@
   margin: 18px 0 0;
   padding: 0;
 }
+
+.instrument.instrument {
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 100% 0%, #71c8ad44 0%, transparent 58%),
+    radial-gradient(ellipse at 82% 100%, #71845c30 0%, transparent 55%),
+    linear-gradient(130deg, #15282b 0%, #1c3836 48%, #293b32 100%);
+}
+.instrument.instrument[data-tone="caution"] {
+  background:
+    radial-gradient(ellipse at 100% 0%, #b0a65032, transparent 58%),
+    radial-gradient(ellipse at 100% 100%, #3eaa9d28, transparent 55%),
+    linear-gradient(130deg, #14282d, #223835 55%, #353d2d);
+}
+.instrument.instrument[data-tone="risk"] {
+  background:
+    radial-gradient(ellipse at 100% 0%, #ba716c30, transparent 60%),
+    linear-gradient(130deg, #202b32, #343432);
+}
+.brandArt {
+  position: absolute;
+  z-index: -1;
+  top: 54px;
+  right: -26px;
+  width: clamp(150px, 26%, 250px);
+  pointer-events: none;
+  opacity: 0.3;
+  transform: rotate(-8deg);
+  filter: drop-shadow(0 18px 35px #bbf38318);
+}
+.brandArt img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.instrument.instrument .title {
+  position: relative;
+}
+.instrument.instrument .reason {
+  max-width: 42ch;
+}
+.instrument.instrument .terraces {
+  margin-top: 30px;
+  max-width: none;
+}
+.instrument.instrument .stage {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.instrument.instrument .stage svg {
+  width: 15px;
+  height: 15px;
+}
+@media (max-width: 500px) {
+  .brandArt {
+    top: 72px;
+    right: -34px;
+    width: 160px;
+    opacity: 0.18;
+  }
+}
