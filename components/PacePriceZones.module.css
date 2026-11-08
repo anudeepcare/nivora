@@ -86,7 +86,7 @@
   left: 10%;
   right: 10%;
   height: 2px;
-  background: #ffffff25;
+  background: var(--zone-line, #ffffff25);
 }
 .ladder.ladder button {
   position: relative;
@@ -101,7 +101,7 @@
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-  color: #b9c6bf;
+  color: var(--zone-muted, #b9c6bf);
   text-align: center;
   cursor: pointer;
 }
@@ -111,10 +111,10 @@
   width: 15px;
   height: 15px;
   margin: 1px 0 6px;
-  border: 1.5px solid #c3d0c8;
+  border: 1.5px solid var(--zone-muted, #c3d0c8);
   border-radius: 3px;
   transform: rotate(45deg);
-  background: #222a28;
+  background: var(--zone-node, #222a28);
   z-index: 1;
 }
 .ladder.ladder button strong {
@@ -128,11 +128,11 @@
   white-space: nowrap;
 }
 .ladder.ladder button[data-current="true"] {
-  color: #d6f35a;
+  color: var(--zone-active, #d6f35a);
 }
 .ladder.ladder button[data-current="true"] .diamond {
-  background: #d6f35a;
-  border-color: #d6f35a;
+  background: var(--zone-active, #d6f35a);
+  border-color: var(--zone-active, #d6f35a);
   box-shadow: 0 0 0 6px #d6f35a12;
 }
 .ladder.ladder button:focus-visible {
@@ -143,7 +143,7 @@
 .currentPrice {
   grid-column: 1/-1;
   font-size: 11px;
-  color: #b6c4b9;
+  color: var(--zone-muted, #b6c4b9);
   padding: 4px 0;
 }
 
@@ -158,10 +158,10 @@
 }
 .zones.zones.zones tbody tr[data-current="true"] > :is(th, td) {
   background: #d6f35a16;
-  color: #f1f7e9;
+  color: var(--zone-highlight, #f1f7e9);
 }
 .zones.zones.zones tbody tr[data-current="true"] th strong {
-  color: #d6f35a;
+  color: var(--zone-active, #d6f35a);
 }
 .pending.pending {
   color: inherit;

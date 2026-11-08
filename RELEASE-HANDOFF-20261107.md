@@ -52,3 +52,9 @@ Read `REQUIREMENTS-STATUS-20261107.md` for every recovered requirement group and
 Node 24: `npm ci`, `npm run verify`, then `npm run test:api`. Optional browser scripts `check-rebuilt-ux.mjs`, `check-public-production.mjs` and `check-shell-layout.mjs` accept `AURYN_ESBUILD_PATH`, `AURYN_PLAYWRIGHT_PATH` and `AURYN_CHROMIUM_PATH` as applicable. The public script expects a local production server (default port 3040).
 
 ZIP contains source, lockfile, tests, migrations, private owner reference and verification; excludes dependencies, build output, git metadata and credentials.
+
+## November 8: reference-led Overview refinement
+
+Applied ideas from both supplied Overview HTML references: open decision presentation with holding/new-purchase context, compact diamond price stages, full-width chart placement, and a faceted eight-lens evidence explorer using existing 0–10 research scores. Missing scores are striped and unscored. Bear/base/bull math remains unchanged and visible. Evidence groups and selected Business/Technical/Valuation metric groups use open rows rather than outlined cards; the valuation expectations calculator starts expanded. Pro tools remain available.
+
+Validation: 1,234 regression tests; lint/types/build; eight responsive light/dark fixture layouts with lens selection, decision context and short-history checks. The browser chart slot is a layout fixture, not a live provider check. No deployment or database changes.

@@ -1,33 +1,33 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(var(--evidence-columns, 4), minmax(0, 1fr));
-  gap: 12px;
+  gap: 40px;
   margin: 16px 0;
 }
 .panel {
   --category: var(--financial-icon);
   --category-bg: #edf3f0;
   min-width: 0;
-  border: 1px solid var(--line);
+  border: 0;
 
-  border-radius: 12px;
-  padding: 20px;
-  background: var(--card);
-  box-shadow: var(--panel-shadow);
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
 }
 .panel[data-category="business"] {
   --category: var(--business-icon);
-  background: var(--card);
+  background: transparent;
   --category-bg: #d8f2e8;
 }
 .panel[data-category="valuation"] {
   --category: var(--valuation-icon);
-  background: var(--card);
+  background: transparent;
   --category-bg: #edf5c9;
 }
 .panel[data-category="ownership"] {
   --category: var(--ownership-icon);
-  background: var(--card);
+  background: transparent;
   --category-bg: #edf3f0;
 }
 .panel header {
@@ -145,5 +145,22 @@
   }
   .panel footer {
     font-size: 12px;
+  }
+}
+
+@media (max-width: 500px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .panel {
+    padding: 0;
+  }
+  .panel dl > div {
+    flex-direction: row;
+    align-items: baseline;
+  }
+  .panel h3 {
+    font-size: 16px;
   }
 }

@@ -24,7 +24,7 @@ export default function ValueStudio({
   research: Research;
   onWorkbench: () => void;
 }) {
-  const [calculatorOpen, setCalculatorOpen] = useState(false);
+  const [calculatorOpen, setCalculatorOpen] = useState(true);
   const d = useMemo(() => valueDesk(r), [r]);
   const methods = useMemo(() => modelAssessment(r), [r]);
   const available = d.metrics.filter(
@@ -120,7 +120,10 @@ export default function ValueStudio({
           </p>
         </details>
       )}
-      <details onToggle={(e) => setCalculatorOpen(e.currentTarget.open)}>
+      <details
+        open={calculatorOpen}
+        onToggle={(e) => setCalculatorOpen(e.currentTarget.open)}
+      >
         <summary>Price expectations calculator</summary>
         {calculatorOpen && (
           <DecisionInsights

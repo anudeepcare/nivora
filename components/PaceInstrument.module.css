@@ -363,3 +363,103 @@
     opacity: 0.18;
   }
 }
+
+/* The research Overview uses the open editorial presentation. Public guides keep the branded instrument. */
+.instrument.instrument.editorial {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  overflow: visible;
+  --decision-ink: var(--green);
+  --zone-muted: var(--muted);
+  --zone-line: var(--line);
+  --zone-node: var(--bg);
+  --zone-active: var(--green);
+  --zone-highlight: var(--ink);
+}
+.editorial .brandArt {
+  display: none;
+}
+.editorial .header {
+  color: var(--muted);
+}
+.editorial .header > span {
+  font-size: 11px;
+}
+.editorial .header > button {
+  color: var(--muted);
+}
+.instrument.instrument.editorial .title h2 {
+  font-size: clamp(48px, 5.6vw, 76px);
+  letter-spacing: -0.055em;
+  font-weight: 600;
+}
+.instrument.editorial[data-tone="caution"] {
+  --decision-ink: var(--valuation-icon);
+}
+.instrument.editorial[data-tone="risk"] {
+  --decision-ink: var(--red);
+}
+.editorial .title > small,
+.editorial .zoneContext,
+.editorial .boundary > span,
+.editorial .boundary small,
+.editorial .status {
+  color: var(--muted);
+}
+.instrument.instrument.editorial .reason {
+  color: var(--ink);
+  font-size: 17px;
+  line-height: 1.6;
+  max-width: 42ch;
+}
+.instrument.editorial .boundary > strong {
+  color: var(--ink);
+  font-size: 21px;
+}
+.editorial .readingDetail {
+  border-color: var(--line);
+}
+.instrument.instrument.editorial .readingDetail > summary {
+  color: var(--ink);
+}
+.editorial .description,
+.editorial .evidenceDetails p {
+  color: var(--muted);
+}
+.editorial .evidenceDetails strong {
+  color: var(--ink);
+}
+.editorial .stage,
+.editorial .stage svg {
+  background: transparent;
+  color: var(--muted);
+}
+.editorial .terraces::before {
+  background: var(--line);
+}
+.editorial .stage[aria-pressed="true"],
+.editorial .status svg,
+.editorial .readingDetail summary::after {
+  color: var(--green);
+}
+.editorial button:focus-visible,
+.editorial summary:focus-visible {
+  outline-color: var(--green);
+}
+@media (max-width: 600px) {
+  .instrument.instrument.editorial .title h2 {
+    font-size: 52px;
+  }
+  .instrument.instrument.editorial .reason {
+    font-size: 16px;
+  }
+}
+:global([data-theme="dark"]) .instrument.editorial[data-tone="caution"] {
+  --decision-ink: #efc979;
+}
+:global([data-theme="dark"]) .instrument.editorial[data-tone="risk"] {
+  --decision-ink: #ffb3a7;
+}

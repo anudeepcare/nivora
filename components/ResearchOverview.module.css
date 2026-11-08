@@ -1,0 +1,83 @@
+.overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  grid-template-areas: "pace crystal" "chart chart" "scenarios scenarios" "metrics metrics";
+  gap: 48px 56px;
+  align-items: start;
+  margin: 28px auto 48px;
+  max-width: 1240px;
+}
+.paceColumn {
+  grid-area: pace;
+  min-width: 0;
+}
+.crystal {
+  grid-area: crystal;
+  min-width: 0;
+}
+.context {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.context button {
+  border: 0;
+  border-radius: 999px;
+  padding: 9px 14px;
+  min-height: 40px;
+  background: var(--surface);
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.context button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--bg);
+}
+.chart {
+  grid-area: chart;
+  min-width: 0;
+  padding: 26px 0 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  border-top: 1px solid var(--line);
+}
+.chart :global(.plot-section) {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  background: transparent;
+}
+.scenarios {
+  grid-area: scenarios;
+  min-width: 0;
+  padding-top: 14px;
+}
+.overviewMetrics {
+  grid-area: metrics;
+  min-width: 0;
+}
+@media (max-width: 1000px) {
+  .overview {
+    gap: 36px 28px;
+  }
+}
+@media (max-width: 760px) {
+  .overview {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "pace" "crystal" "chart" "scenarios" "metrics";
+    gap: 28px;
+    margin-top: 20px;
+  }
+  .context {
+    gap: 5px;
+  }
+  .context button {
+    font-size: 11px;
+    padding: 9px 12px;
+  }
+}

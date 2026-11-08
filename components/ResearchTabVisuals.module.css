@@ -5,7 +5,6 @@
   :is(
     :global(.durability-grid),
     :global(.funding-metrics),
-    :global(.valuation-board-grid),
     :global(.technical-summary-strip),
     :global(.desk-key-metrics),
     :global(.desk-secondary-metrics),
@@ -13,13 +12,12 @@
   ) {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
-  gap: 12px;
+  gap: 28px 40px;
 }
 .root.root[data-research-section]:not([data-research-section="Options"])
   :is(
     :global(.durability-grid),
     :global(.funding-metrics),
-    :global(.valuation-board-grid),
     :global(.technical-summary-strip),
     :global(.desk-key-metrics),
     :global(.desk-secondary-metrics),
@@ -29,11 +27,11 @@
 .root.root[data-research-section="Financials"]
   :global(article[data-metric-group]) {
   min-width: 0;
-  padding: 18px;
-  background: var(--card);
+  padding: 18px 0;
+  background: transparent;
   color: var(--ink);
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  border: 0;
+  border-radius: 0;
 }
 .root.root[data-research-section="Financials"]
   :global(article[data-metric-group])
@@ -48,6 +46,31 @@
 @media (max-width: 600px) {
   .root.root[data-research-section="Financials"]
     :global(article[data-metric-group]) {
-    padding: 14px;
+    padding: 14px 0;
+  }
+}
+
+.root.root[data-research-section="Valuation"] :global(.valuation-board-grid) {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px 40px;
+}
+.root.root[data-research-section="Valuation"]
+  :global(.valuation-board-grid)
+  > article {
+  padding: 18px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+@media (max-width: 700px) {
+  .root.root[data-research-section="Valuation"] :global(.valuation-board-grid) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 420px) {
+  .root.root[data-research-section="Valuation"] :global(.valuation-board-grid) {
+    grid-template-columns: 1fr;
   }
 }

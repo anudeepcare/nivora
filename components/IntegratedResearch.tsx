@@ -12,7 +12,8 @@ import ResearchChanges from "./ResearchChanges";
 import SelectedValuation from "./SelectedValuation";
 import PaceInstrument from "./PaceInstrument";
 import ResearchEvidenceGrid from "./ResearchEvidenceGrid";
-import s from "./IntegratedExperience.module.css";
+import s from "./ResearchOverview.module.css";
+import EvidenceCrystal from "./EvidenceCrystal";
 import { amount, percent, dateLabel } from "@/lib/format";
 export default function IntegratedResearch({
   research: r,
@@ -28,6 +29,8 @@ export default function IntegratedResearch({
   const owns = !!workspace?.positions.some(
     (p) => sameProviderSymbol(p.symbol, r.company.symbol) && p.quantity > 0,
   );
+  const [context, setContext] = useState<boolean | null>(null);
+  const decisionOwns = context ?? owns;
   const [clock, setClock] = useState(() => Date.now());
   useEffect(() => {
     const tick = () => {
@@ -41,20 +44,41 @@ export default function IntegratedResearch({
     };
   }, []);
   const now = demo ? Date.parse(r.retrievedAt) : clock;
-  const m = useMemo(() => approvedResearch(r, owns, now), [r, owns, now]),
+  const m = useMemo(
+      () => approvedResearch(r, decisionOwns, now),
+      [r, decisionOwns, now],
+    ),
     d = m.decision;
   return (
     <>
       <div className={s.overview}>
         <div className={s.paceColumn}>
+          <div className={s.context} aria-label="Decision context">
+            <button
+              type="button"
+              aria-pressed={decisionOwns}
+              onClick={() => setContext(true)}
+            >
+              {owns ? "For your holding" : "For an existing holding"}
+            </button>
+            <button
+              type="button"
+              aria-pressed={!decisionOwns}
+              onClick={() => setContext(false)}
+            >
+              For a new purchase
+            </button>
+          </div>
           <PaceInstrument
+            key={`${r.company.symbol}:${decisionOwns}`}
             research={r}
             decision={d}
-            ownsPosition={owns}
+            ownsPosition={decisionOwns}
             now={now}
             view={m.edge.pacePresentation}
             readings={m.edge.pacePeriods}
             onHistory={() => onTab("Technicals")}
+            editorial
           />
           <ResearchChanges
             research={r}
@@ -71,6 +95,9 @@ export default function IntegratedResearch({
             }
             onOpen={onTab}
           />
+        </div>
+        <div className={s.crystal}>
+          <EvidenceCrystal research={r} onOpen={() => onTab("Thesis")} />
         </div>
         <div className={s.chart}>{chart}</div>
         <div
