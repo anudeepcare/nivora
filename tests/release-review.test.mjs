@@ -267,6 +267,7 @@ function researchMarkup(issues = []) {
   ])
     bindings[name] = empty;
   bindings.tabVisuals = { root: "research-tab-visuals" };
+  bindings.deskLayout = { content: "research-desk-layout" };
   bindings.Help = ({ children }) => React.createElement("div", null, children);
   bindings.DecisionOverview = () =>
     React.createElement("section", { "data-overview-evidence": "edge" });

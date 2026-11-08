@@ -533,3 +533,185 @@
   font-size: 11px;
   font-weight: 400;
 }
+
+/* The financial desk is a workbench, not three stacked page-width heroes. */
+.financialWorkbench {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.financialWorkbench > * {
+  min-width: 0;
+}
+.financialCurrent {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+.panel.panel.panel .financialCurrent :global(.financial-answer) {
+  margin: 0;
+  padding: 18px;
+  border: 0;
+  border-radius: 16px;
+  background: linear-gradient(
+    140deg,
+    color-mix(in srgb, var(--green) 8%, var(--card)),
+    var(--card)
+  );
+}
+.panel.panel.panel .financialCurrent :global(.financial-cash-bridge) {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.panel.panel.panel .financialCurrent :global(.financial-cash-bridge svg) {
+  max-height: 165px;
+}
+.panel.panel.panel
+  .financialCurrent
+  :global(.financial-cash-bridge figcaption) {
+  font-size: 14px;
+  color: var(--ink);
+}
+.panel.panel.panel
+  .financialCurrent
+  :global(.financial-cash-bridge figcaption small) {
+  font-size: 11px;
+  line-height: 1.5;
+}
+.statementCard {
+  padding: 18px;
+  border-radius: 16px;
+  background: var(--card);
+}
+.panel.panel.panel .statementCard :global(.section-head) {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 12px;
+}
+.panel.panel.panel .statementCard :global(.section-head h2) {
+  font-size: 17px;
+}
+.panel.panel.panel .statementCard :global(.segments) {
+  display: flex;
+  width: 100%;
+}
+.panel.panel.panel .statementCard :global(.segments button) {
+  flex: 1;
+  min-width: 0;
+  font-size: 11px;
+  padding: 8px 6px;
+}
+.panel.panel.panel .statementCard :global(.statement-snapshot) {
+  display: block;
+}
+.panel.panel.panel .statementCard :global(.statement-snapshot > div) {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  border: 0;
+  border-radius: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  padding: 12px 0;
+}
+.panel.panel.panel .statementCard :global(.statement-snapshot dd) {
+  font-size: 21px;
+  margin: 0;
+}
+.panel.panel.panel .statementCard :global(.statement-snapshot dt) {
+  font-size: 12px;
+}
+.technicalWorkbench {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  margin: 0 0 16px;
+}
+.technicalChart,
+.technicalCurrent {
+  min-width: 0;
+}
+.technicalChart {
+  display: grid;
+  gap: 14px;
+}
+.panel.panel.panel .technicalChart :global(.plot-section) {
+  padding: 20px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--card);
+  margin: 0;
+}
+.panel.panel.panel .technicalCurrent :global(.technical-summary-strip) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 14px;
+}
+.panel.panel.panel .technicalCurrent :global(.technical-summary-strip > *) {
+  padding: 14px;
+}
+.panel.panel.panel .technicalCurrent :global(.technical-level-grid) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.panel.panel.panel .technicalCurrent :global(.technical-level-grid > div) {
+  padding: 12px;
+  border: 0;
+  border-radius: 12px;
+}
+.panel.panel.panel .technicalCurrent :global(.technical-level-grid strong) {
+  font-size: 19px;
+}
+@media (max-width: 1100px) {
+  .financialWorkbench,
+  .technicalWorkbench {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .financialCurrent {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 650px) {
+  .financialCurrent {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .panel.panel.panel .financialCurrent :global(.financial-cash-bridge svg) {
+    max-height: 145px;
+  }
+  .panel.panel.panel .statementCard :global(.statement-snapshot) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .panel.panel.panel .statementCard :global(.statement-snapshot > div) {
+    display: grid;
+    gap: 8px;
+    padding: 10px 0;
+  }
+  .panel.panel.panel .technicalChart :global(.plot-section) {
+    padding: 16px 14px;
+  }
+}
+
+.panel.panel.panel :global(.financial-detail-groups) {
+  align-items: start;
+}
+.panel.panel.panel .statementCard :global(.section-head h3) {
+  font-size: 17px;
+  margin: 0;
+}
+
+.panel.panel.panel:global(.technical-dashboard) {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.panel.panel.panel :global(.technical-desk-heading) {
+  margin: 0 0 14px;
+}

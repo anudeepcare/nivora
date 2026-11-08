@@ -2393,3 +2393,28 @@ test('price expectations can open directly with all three controls for advanced 
  const html=renderToStaticMarkup(React.createElement(View,{research:r,now:Date.parse(r.retrievedAt),initialTab:1}));
  assert.match(html,/Future P\/E assumption/);assert.match(html,/Desired annual price return/);assert.match(html,/Required EPS at this horizon/);
 });
+
+test("missing analyst ratings collapse to one coverage message without empty metric cards", () => {
+  const View = loadComponent("components/AnalystRatings.tsx", "AnalystRatings", {
+    React, ...format, consensusOutlook: () => null,
+  });
+  const html = renderToStaticMarkup(React.createElement(View, {
+    research: { retrievedAt: "2026-11-08T12:00:00Z", evidence: {}, quote: { currency: "USD" } },
+    hideConsensus: true,
+  }));
+  assert.match(html, /Rating coverage/);
+  assert.doesNotMatch(html, /Published rating score|Reported recommendations|Recommendation distribution/);
+});
+
+test("a measured zero analyst rating is retained rather than treated as missing coverage", () => {
+  const View = loadComponent("components/AnalystRatings.tsx", "AnalystRatings", {
+    React, ...format, consensusOutlook: () => null,
+  });
+  const html = renderToStaticMarkup(React.createElement(View, {
+    research: { retrievedAt: "2026-11-08T12:00:00Z", evidence: { consensus: { rating: 0, strongBuy: 0, buy: 0, hold: 0, sell: 0, strongSell: 0 } }, quote: { currency: "USD" } },
+    hideConsensus: true,
+  }));
+  assert.match(html, /Published rating score/);
+  assert.match(html, /0\.00/);
+  assert.doesNotMatch(html, /Rating coverage/);
+});

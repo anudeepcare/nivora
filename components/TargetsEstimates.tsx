@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import type { Research } from "@/lib/types";
 import { researchOutlook } from "@/lib/outlook";
 import { targetsEstimates } from "@/lib/targets-estimates";
@@ -18,8 +18,10 @@ const tabs = [
 ] as const;
 export default function TargetsEstimates({
   research: r,
+  ratings,
 }: {
   research: Research;
+  ratings?: ReactNode;
 }) {
   const model = useMemo(() => targetsEstimates(r), [r]);
   const [active, setActive] = useState(0);
@@ -82,7 +84,7 @@ export default function TargetsEstimates({
         ))}
       </div>
       <div
-        className={styles.panel}
+        className={`${styles.panel} ${active === 0 && ratings ? styles.consensusGrid : ""}`}
         role="tabpanel"
         id={`${id}-panel-${active}`}
         aria-labelledby={`${id}-tab-${active}`}
@@ -91,6 +93,7 @@ export default function TargetsEstimates({
         {active === 0 && (
           <>
             <AnalystTargets research={r} showUnavailable />
+            {ratings}
           </>
         )}
         {active === 1 && (

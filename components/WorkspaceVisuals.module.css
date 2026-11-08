@@ -60,3 +60,29 @@
     padding-block: 0;
   }
 }
+.workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.page-heading) {
+  margin-bottom: 16px;
+}
+.workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.card) {
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.section-head) {
+  margin-bottom: 14px;
+}
+.workspaceVisuals.workspaceVisuals.workspaceVisuals
+  :global(.holdings-table)
+  :is(td, th) {
+  padding-block: 12px;
+}
+.workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.watch-summary) {
+  margin: 0 0 14px;
+  padding: 10px 0;
+}
+@media (max-width: 700px) {
+  .workspaceVisuals.workspaceVisuals.workspaceVisuals
+    :global(.holdings-table)
+    td {
+    padding-block: 0;
+  }
+}

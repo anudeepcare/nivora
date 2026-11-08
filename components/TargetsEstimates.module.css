@@ -380,3 +380,41 @@
     font-size: 22px;
   }
 }
+.consensusGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.consensusGrid > * {
+  min-width: 0;
+}
+@media (max-width: 1000px) {
+  .consensusGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.root.root.root {
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.root.root.root .header {
+  margin-bottom: 14px;
+}
+.root.root.root .panel:not(.consensusGrid) {
+  padding: 20px;
+  margin-top: 16px;
+  border-radius: 18px;
+  background: var(--card);
+}
+.root.root.root .consensusGrid {
+  padding-top: 16px;
+}
+@media (max-width: 650px) {
+  .root.root.root .panel:not(.consensusGrid) {
+    padding: 16px 14px;
+  }
+}

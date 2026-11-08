@@ -1,0 +1,448 @@
+/* One layout owner for each research desk. Related evidence shares a row;
+   short panels are never stretched to imitate a full-width dashboard. */
+.content.content.content {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  align-items: start;
+  gap: 16px;
+  margin-top: 16px;
+}
+.content.content.content > * {
+  grid-column: 1 / -1;
+  min-width: 0;
+  margin: 0;
+}
+.content.content.content > [hidden] {
+  display: none;
+}
+.content.content.content :global(.section-head) {
+  margin: 0 0 14px;
+  gap: 12px;
+}
+.content.content.content :global(.section-head p) {
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 5px 0 0;
+}
+.content.content.content
+  :is(:global(.section-head h2), :global(.depth-heading h2)) {
+  font-size: 22px;
+  line-height: 1.25;
+  margin: 0;
+}
+.content.content.content :global(.section-head h3) {
+  font-size: 18px;
+  margin: 0;
+}
+.content.content.content :global(.eyebrow) {
+  font-size: 10px;
+  letter-spacing: 0.09em;
+}
+.content.content.content
+  :is(
+    :global(.business-history),
+    :global(.financing-context),
+    :global(.depth-business),
+    :global(.earnings-review),
+    :global(.analyst-workspace),
+    :global(.company-updates)
+  ) {
+  padding: 20px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--card);
+  box-shadow: 0 4px 24px #17342c06;
+}
+.content.content.content[data-desk="Financials"] > :global(.business-history) {
+  grid-column: span 8;
+}
+.content.content.content[data-desk="Financials"] > :global(.financing-context) {
+  grid-column: span 4;
+}
+.content.content.content :global(.business-history .durability-grid) {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+.content.content.content :global(.business-history .durability-grid > article) {
+  padding: 13px 10px;
+  border-radius: 12px;
+}
+.content.content.content :global(.business-history .durability-grid strong) {
+  font-size: 24px;
+  margin: 10px 0;
+}
+.content.content.content :global(.business-history .durability-grid small) {
+  font-size: 10px;
+  line-height: 1.5;
+}
+.content.content.content :global(.business-trend-charts) {
+  gap: 12px;
+  margin: 16px 0;
+}
+.content.content.content :global(.business-trend-charts figure) {
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.content.content.content :global(.business-trend-charts svg) {
+  max-height: 150px;
+}
+.content.content.content :global(.funding-metrics) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.content.content.content :global(.funding-metrics > div) {
+  padding: 14px;
+  border-radius: 12px;
+}
+.content.content.content :global(.funding-metrics strong) {
+  font-size: 23px;
+}
+.content.content.content[data-desk="Thesis"] > :global(.depth-thesis) {
+  grid-column: span 8;
+}
+.content.content.content[data-desk="Thesis"] > :global(.depth-business) {
+  grid-column: span 4;
+}
+.content.content.content :global(.thesis-evidence) {
+  gap: 14px;
+  margin: 0 0 18px;
+}
+.content.content.content :global(.thesis-group) {
+  padding: 16px;
+  border: 0;
+  border-radius: 16px;
+  background: linear-gradient(
+    140deg,
+    color-mix(in srgb, var(--green) 6%, var(--card)),
+    var(--card)
+  );
+}
+.content.content.content :global(.thesis-group[data-tone="negative"]) {
+  background: linear-gradient(
+    140deg,
+    color-mix(in srgb, var(--red) 5%, var(--card)),
+    var(--card)
+  );
+}
+.content.content.content :global(.thesis-group > h3) {
+  font-size: 14px;
+  margin: 0 0 10px;
+  padding-bottom: 10px;
+}
+.content.content.content :global(.driver) {
+  padding: 10px 0;
+  gap: 6px 10px;
+}
+.content.content.content :global(.driver h3) {
+  font-size: 13px;
+  margin: 0;
+}
+.content.content.content :global(.driver p) {
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0;
+}
+.content.content.content :global(.driver-value) {
+  font-size: 22px;
+}
+.content.content.content :global(.thesis-checkpoints) {
+  margin: 0 0 14px;
+  gap: 10px;
+}
+.content.content.content :global(.thesis-checkpoints .step) {
+  padding: 14px;
+  border: 0;
+  background: var(--card);
+  border-radius: 12px;
+}
+.content.content.content :global(.depth-business .business-context-layout) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+}
+.content.content.content :global(.depth-business .depth-heading) {
+  margin: 0 0 14px;
+  padding: 0;
+}
+.content.content.content :global(.depth-business .business-driver-map) {
+  border: 0;
+  padding: 0;
+}
+.content.content.content :global(.depth-business .business-driver-map ol) {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+.content.content.content[data-desk="Analysts"]
+  > [aria-label="Targets and estimates"] {
+  grid-column: 1/-1;
+}
+.content.content.content[data-desk="Analysts"] > :global(.analyst-workspace) {
+  grid-column: span 4;
+}
+.content.content.content :global(.analyst-opinions) {
+  display: block;
+  padding: 14px 0;
+}
+.content.content.content :global(.analyst-opinions header) {
+  margin-bottom: 16px;
+}
+.content.content.content :global(.analyst-opinions h3) {
+  font-size: 17px;
+  margin: 6px 0;
+}
+.content.content.content :global(.analyst-opinions p) {
+  font-size: 12px;
+  line-height: 1.5;
+}
+.content.content.content :global(.analyst-summary) {
+  gap: 10px;
+  margin: 0;
+}
+.content.content.content :global(.analyst-summary > div) {
+  padding: 13px;
+}
+.content.content.content :global(.analyst-summary span) {
+  font-size: 11px;
+}
+.content.content.content :global(.analyst-summary small) {
+  font-size: 10px;
+}
+.content.content.content :global(.rating-distribution > div) {
+  padding: 8px 0;
+  grid-template-columns: 76px minmax(0, 1fr) 45px;
+  gap: 8px;
+  font-size: 12px;
+}
+.content.content.content[data-desk="News"] > :global(.depth-news) {
+  grid-column: span 8;
+  display: grid;
+  gap: 16px;
+}
+.content.content.content[data-desk="News"] > :global(.earnings-review) {
+  grid-column: span 4;
+}
+.content.content.content :global(.coverage-grid) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.content.content.content :global(.coverage-grid > .au-panel) {
+  padding: 18px;
+  margin: 0;
+  border: 0;
+  border-radius: 16px;
+  background: var(--card);
+}
+.content.content.content :global(.au-panel-head) {
+  margin-bottom: 12px;
+}
+.content.content.content :global(.au-panel-head h2) {
+  font-size: 18px;
+}
+.content.content.content :global(.source-row) {
+  padding: 13px 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.content.content.content :global(.news-event-layout) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.content.content.content :global(.earnings-kpis) {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.content.content.content :global(.earnings-kpis dd) {
+  font-size: 22px;
+}
+.content.content.content :global(.technical-pace) {
+  padding: 12px 16px;
+  margin: 0;
+  border: 0;
+  border-radius: 14px;
+  background: var(--card);
+}
+.content.content.content :global(.technical-desk-groups) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  align-items: start;
+}
+.content.content.content :global(.technical-desk-groups > section) {
+  grid-row: auto;
+  margin: 0;
+  padding: 18px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--card);
+}
+.content.content.content :global(.technical-desk-groups header p) {
+  font-size: 11px;
+  line-height: 1.5;
+}
+.content.content.content :global(.technical-desk-groups dl > div) {
+  padding: 9px 0;
+}
+.content.content.content :global(.technical-desk-groups dd) {
+  font-size: 16px;
+}
+.content.content.content :global(.technical-desk-heading h2) {
+  font-size: 21px;
+  margin: 5px 0;
+}
+.content.content.content :global(.technical-desk-heading p) {
+  font-size: 12px;
+  margin: 5px 0 12px;
+}
+.content.content.content :global(.advanced-heading) {
+  margin: 0;
+}
+.content.content.content :global(.desk-secondary-metrics) {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 1100px) {
+  .content.content.content.content[data-desk] > * {
+    grid-column: 1 / -1;
+  }
+  .content.content.content :global(.technical-desk-groups) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 650px) {
+  .content.content.content {
+    margin-top: 12px;
+    gap: 14px;
+  }
+  .content.content.content :global(.coverage-grid),
+  .content.content.content :global(.news-event-layout),
+  .content.content.content :global(.technical-desk-groups) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .content.content.content :global(.business-history .durability-grid),
+  .content.content.content :global(.desk-secondary-metrics) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .content.content.content
+    :is(
+      :global(.business-history),
+      :global(.financing-context),
+      :global(.depth-business),
+      :global(.earnings-review),
+      :global(.analyst-workspace),
+      :global(.company-updates)
+    ) {
+    padding: 16px;
+  }
+  .content.content.content :global(.thesis-evidence) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.content.content.content[data-desk="Advanced"]
+  :global(.professional-studio-heading) {
+  margin: 0 0 14px;
+}
+.content.content.content[data-desk="Advanced"]
+  :global(.professional-studio-heading h2) {
+  font-size: 23px;
+}
+.content.content.content[data-desk="Advanced"] :global(.advanced-chart-grid) {
+  gap: 14px;
+  margin: 14px 0;
+}
+.content.content.content[data-desk="Advanced"]
+  :global(.advanced-chart-grid > section) {
+  padding: 18px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--card);
+}
+.content.content.content[data-desk="Advanced"] :global(.advanced-measurements) {
+  padding: 18px;
+  margin: 14px 0;
+  border: 0;
+  border-radius: 16px;
+}
+.content.content.content[data-desk="Advanced"]
+  :global(.desk-secondary-metrics > article) {
+  padding: 14px;
+}
+.content.content.content[data-desk="Advanced"] :global(.volatility-comparison) {
+  padding: 18px;
+  margin: 14px 0;
+  border: 0;
+  border-radius: 16px;
+}
+
+.content.content.content :global(.funding-metrics) {
+  grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
+}
+.content.content.content :global(.business-trend-charts text) {
+  font-size: 14px;
+}
+.content.content.content[data-desk="Analysts"]
+  > [aria-label="Targets and estimates"] {
+  grid-column: 1/-1;
+}
+.content.content.content :global(.rating-distribution) {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+}
+.content.content.content :global(.rating-distribution > div) {
+  min-height: 32px;
+  margin: 0;
+  padding: 6px 0;
+}
+.content.content.content :global(.rating-track) {
+  height: 7px;
+  margin: 0;
+}
+
+.content.content.content :global([data-retained-panel="Technicals"]) {
+  gap: 16px;
+}
+.content.content.content :global(.technical-pace .pace-reading-card) {
+  padding: 12px;
+}
+.content.content.content :global(.analyst-empty) {
+  padding: 18px;
+  border-radius: 16px;
+  background: var(--card);
+}
+.content.content.content :global(.analyst-empty h3) {
+  font-size: 16px;
+  margin: 0 0 8px;
+}
+.content.content.content :global(.analyst-empty p) {
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0 0 10px;
+}
+.content.content.content :global(.analyst-empty small) {
+  font-size: 11px;
+  color: var(--muted);
+}
+.content.content.content.content.content[data-desk="Advanced"]
+  :global(.desk-secondary-metrics) {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.content.content.content.content :global(.business-driver-map > div) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+  padding: 0;
+}
+.content.content.content.content :global(.thesis-checkpoints) {
+  padding: 0;
+  margin: 0 0 14px;
+}
+@media (max-width: 650px) {
+  .content.content.content.content.content[data-desk="Advanced"]
+    :global(.desk-secondary-metrics) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

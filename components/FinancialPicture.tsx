@@ -232,102 +232,113 @@ export default function FinancialPicture({
       </header>
       {p ? (
         <>
-          <div className="financial-answer" hidden={!bridge.length}>
-            {bridge.length > 0 && (
-              <figure className="financial-cash-bridge">
-                <figcaption>
-                  Cash generation · {p.currency}
-                  <small>
-                    Capital spending is deducted from operating cash; bars share
-                    one scale.
-                  </small>
-                </figcaption>
-                <svg
-                  viewBox="0 0 480 155"
-                  preserveAspectRatio="xMidYMid meet"
-                  role="img"
-                  aria-label="Operating cash flow less capital spending equals cash after capex"
-                >
-                  <line
-                    x1="15"
-                    x2="465"
-                    y1={bridgeY(0)}
-                    y2={bridgeY(0)}
-                    stroke="var(--line)"
-                  />
-                  {bridge.map((item, i) => (
-                    <g key={item.label} data-tone={item.tone}>
-                      <title>{`${item.label}: ${amount(item.value, p.currency, true)}`}</title>
-                      <rect
-                        x={35 + i * 155}
-                        y={Math.min(bridgeY(item.from), bridgeY(item.to))}
-                        width="90"
-                        height={Math.max(
-                          3,
-                          Math.abs(bridgeY(item.from) - bridgeY(item.to)),
-                        )}
-                        rx="4"
+          <div className={layout.financialWorkbench}>
+            <FinancialExplorer research={r} scope={scope} />
+            <aside
+              className={layout.financialCurrent}
+              aria-label="Current financial period"
+            >
+              <div className="financial-answer" hidden={!bridge.length}>
+                {bridge.length > 0 && (
+                  <figure className="financial-cash-bridge">
+                    <figcaption>
+                      Cash generation · {p.currency}
+                      <small>
+                        Capital spending is deducted from operating cash; bars
+                        share one scale.
+                      </small>
+                    </figcaption>
+                    <svg
+                      viewBox="0 0 480 155"
+                      preserveAspectRatio="xMidYMid meet"
+                      role="img"
+                      aria-label="Operating cash flow less capital spending equals cash after capex"
+                    >
+                      <line
+                        x1="15"
+                        x2="465"
+                        y1={bridgeY(0)}
+                        y2={bridgeY(0)}
+                        stroke="var(--line)"
                       />
-                      <text
-                        x={80 + i * 155}
-                        y={Math.max(
-                          19,
-                          Math.min(bridgeY(item.from), bridgeY(item.to)) - 8,
-                        )}
-                        textAnchor="middle"
-                      >
-                        {amount(item.value, p.currency, true)}
-                      </text>
-                      <text x={80 + i * 155} y="145" textAnchor="middle">
-                        {item.label}
-                      </text>
-                    </g>
-                  ))}
-                </svg>
-              </figure>
-            )}
-          </div>
-          <FinancialExplorer research={r} scope={scope} />
-          <header className="section-head">
-            <div>
-              <h2>Statements</h2>
-              <p>
-                {scope.toUpperCase()} ended {dateLabel(p.end)} · {p.currency}
-              </p>
-            </div>
-            <div className="segments" aria-label="Statement">
-              {["Income", "Cash flow", "Balance sheet"].map((v) => (
-                <button
-                  key={v}
-                  className={statement === v ? "active" : ""}
-                  aria-pressed={statement === v}
-                  onClick={() => setStatement(v)}
-                >
-                  {v}
-                </button>
-              ))}
-            </div>
-          </header>
-          <dl
-            className="statement-snapshot"
-            aria-label={`${statement} statement snapshot`}
-          >
-            {rows.map(([label, value]) => (
-              <div key={label}>
-                <dt>
-                  <Help label={label} trigger={label}>
-                    <p>{snapshotHelp[label]}</p>
-                    <p>
-                      Reporting period: {dateLabel(p?.end)} ·{" "}
-                      {p?.currency ?? "Currency unavailable"}. Missing values
-                      are not zero.
-                    </p>
-                  </Help>
-                </dt>
-                <dd className="num">{value}</dd>
+                      {bridge.map((item, i) => (
+                        <g key={item.label} data-tone={item.tone}>
+                          <title>{`${item.label}: ${amount(item.value, p.currency, true)}`}</title>
+                          <rect
+                            x={35 + i * 155}
+                            y={Math.min(bridgeY(item.from), bridgeY(item.to))}
+                            width="90"
+                            height={Math.max(
+                              3,
+                              Math.abs(bridgeY(item.from) - bridgeY(item.to)),
+                            )}
+                            rx="4"
+                          />
+                          <text
+                            x={80 + i * 155}
+                            y={Math.max(
+                              19,
+                              Math.min(bridgeY(item.from), bridgeY(item.to)) -
+                                8,
+                            )}
+                            textAnchor="middle"
+                          >
+                            {amount(item.value, p.currency, true)}
+                          </text>
+                          <text x={80 + i * 155} y="145" textAnchor="middle">
+                            {item.label}
+                          </text>
+                        </g>
+                      ))}
+                    </svg>
+                  </figure>
+                )}
               </div>
-            ))}
-          </dl>
+              <section className={layout.statementCard}>
+                <header className="section-head">
+                  <div>
+                    <h3>Statements</h3>
+                    <p>
+                      {scope.toUpperCase()} ended {dateLabel(p.end)} ·{" "}
+                      {p.currency}
+                    </p>
+                  </div>
+                  <div className="segments" aria-label="Statement">
+                    {["Income", "Cash flow", "Balance sheet"].map((v) => (
+                      <button
+                        key={v}
+                        className={statement === v ? "active" : ""}
+                        aria-pressed={statement === v}
+                        onClick={() => setStatement(v)}
+                      >
+                        {v}
+                      </button>
+                    ))}
+                  </div>
+                </header>
+                <dl
+                  className="statement-snapshot"
+                  aria-label={`${statement} statement snapshot`}
+                >
+                  {rows.map(([label, value]) => (
+                    <div key={label}>
+                      <dt>
+                        <Help label={label} trigger={label}>
+                          <p>{snapshotHelp[label]}</p>
+                          <p>
+                            Reporting period: {dateLabel(p?.end)} ·{" "}
+                            {p?.currency ?? "Currency unavailable"}. Missing
+                            values are not zero.
+                          </p>
+                        </Help>
+                      </dt>
+                      <dd className="num">{value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
+            </aside>
+          </div>
           <div className="financial-detail-groups">
             {detailGroups.map((group) => {
               const available = group.rows.filter(

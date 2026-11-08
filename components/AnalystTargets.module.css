@@ -17,3 +17,93 @@
     grid-template-columns: 1fr;
   }
 }
+.root.root.root {
+  min-width: 0;
+  margin: 0;
+  padding: 20px;
+  border: 0;
+  border-radius: 18px;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--green) 7%, var(--card)),
+    var(--card)
+  );
+}
+.root.root.root :global(.analyst-target-kicker) {
+  display: block;
+  font-size: 12px;
+  font-weight: 650;
+  margin-bottom: 14px;
+  color: var(--ink);
+}
+.root.root.root :global(.analyst-target-main) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  padding: 0;
+}
+.root.root.root :global(.analyst-target-main > div) {
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.root.root.root :global(.analyst-target-main strong) {
+  font-size: 30px;
+  display: block;
+  margin-top: 8px;
+}
+.root.root.root :global(.analyst-target-main span) {
+  font-size: 12px;
+}
+.root.root.root :global(.analyst-target-range > div) {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.root.root.root :global(.analyst-target-range section) {
+  padding: 12px;
+  border: 0;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--target-color) 6%, var(--card));
+}
+.root.root.root :global(.analyst-target-range strong) {
+  font-size: 25px;
+}
+@media (min-width: 1101px) {
+  :global(.value-studio) .root.root.root :global(.analyst-target-range > div) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  :global(.value-studio)
+    .root.root.root
+    :global(.analyst-target-range section) {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 10px 12px;
+  }
+  :global(.value-studio)
+    .root.root.root
+    :global(.analyst-target-range section strong) {
+    margin-left: auto;
+  }
+  :global(.value-studio) .root.root.root :global(.analyst-target-main) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 540px) {
+  .root.root.root {
+    padding: 16px;
+  }
+  .root.root.root :global(.analyst-target-range > div) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .root.root.root :global(.analyst-target-range section) {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .root.root.root :global(.analyst-target-range strong) {
+    font-size: 23px;
+    margin-left: auto;
+  }
+}

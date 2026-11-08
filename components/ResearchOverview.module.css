@@ -249,3 +249,47 @@
   grid-area: changes;
   min-width: 0;
 }
+.overview {
+  gap: 16px;
+  margin: 16px 0 24px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+}
+.chart {
+  padding: 20px;
+  border-radius: 18px;
+}
+.chart.chart :global(.chart-readout) {
+  margin: 6px 0;
+  min-height: 20px;
+  font-size: 11px;
+}
+.chart.chart :global(.signal-chart-tools) {
+  margin: 6px 0;
+}
+.chart.chart :global(.signal-chart-tools .btn) {
+  min-height: 34px;
+  padding: 7px 10px;
+  font-size: 12px;
+}
+.chart.chart :global(.chart-context > div) {
+  padding: 8px 12px;
+  border-radius: 10px;
+}
+.chart.chart :global(.chart-context strong) {
+  font-size: 17px;
+}
+.chart.chart :global(.chart-context) {
+  margin: 8px 0;
+}
+.crystal > summary {
+  min-height: 48px;
+}
+@media (max-width: 760px) {
+  .overview {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+  .chart {
+    padding: 16px 14px;
+  }
+}

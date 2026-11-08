@@ -417,3 +417,45 @@
     border-radius: 18px;
   }
 }
+.root.root {
+  padding: 20px;
+  border-radius: 18px;
+}
+.root.root .heading {
+  gap: 12px;
+  align-items: start;
+}
+.root.root .heading h2 {
+  font-size: 23px;
+  margin: 5px 0 7px;
+}
+.root.root .heading p {
+  font-size: 11px;
+  line-height: 1.5;
+}
+.root.root .reasons {
+  margin: 16px 0 12px;
+  gap: 10px;
+}
+.root.root .case {
+  padding: 16px;
+  border-radius: 13px;
+  gap: 7px;
+}
+.root.root .case strong {
+  font-size: clamp(24px, 2.4vw, 33px);
+}
+.root.root .case span {
+  font-size: 11px;
+}
+.root.root .case small {
+  font-size: 11px;
+}
+.root.root .priceMap {
+  padding: 8px 18px 34px;
+}
+@media (max-width: 650px) {
+  .root.root {
+    padding: 16px 14px;
+  }
+}

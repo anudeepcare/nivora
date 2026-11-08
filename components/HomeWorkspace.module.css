@@ -880,3 +880,30 @@
     grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
   }
 }
+.home.home.home.home :global(.home-evidence-layout) {
+  gap: 16px;
+  margin: 18px 0;
+}
+.home.home.home.home :global(.home-evidence-panel) {
+  padding: 18px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--card);
+}
+.home.home.home.home :global(.home-news-list article) {
+  padding: 14px 0;
+}
+.home.home.home.home :global(.home-company) {
+  padding-block: 11px;
+}
+.home.home.home.home :global(.home-secondary-layout) {
+  margin-top: 16px;
+}
+.home.home.home.home :global(.home-section-count) {
+  font-size: 11px;
+}
+@media (max-width: 650px) {
+  .home.home.home.home :global(.home-evidence-panel) {
+    padding: 16px 14px;
+  }
+}

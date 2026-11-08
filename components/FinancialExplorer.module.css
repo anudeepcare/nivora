@@ -139,3 +139,52 @@
 .explorer.explorer.explorer :global(.explorer-metrics > div > span) {
   display: none;
 }
+.explorer.explorer.explorer {
+  padding: 20px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--card);
+}
+.explorer.explorer.explorer > header {
+  margin-bottom: 12px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.explorer.explorer.explorer :global(.explorer-mobile-picker) {
+  max-width: none;
+  margin: 0 0 12px;
+}
+.explorer.explorer.explorer :global(.explorer-mobile-picker select) {
+  font-size: 13px;
+}
+.explorer.explorer.explorer :global(.explorer-metrics) {
+  display: none;
+}
+.explorer.explorer.explorer :global(.explorer-latest) {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 7px 14px;
+  margin: 0;
+}
+.explorer.explorer.explorer :global(.explorer-latest > strong) {
+  font-size: 28px;
+}
+.explorer.explorer.explorer :global(.explorer-latest > span) {
+  font-size: 11px;
+}
+.explorer.explorer.explorer :global(.explorer-inspection) {
+  font-size: 11px;
+  margin: 7px 0;
+  min-height: 18px;
+}
+.explorer.explorer.explorer :global(.explorer-definition) {
+  padding: 9px 12px;
+  margin: 8px 0;
+  font-size: 11px;
+}
+@media (max-width: 650px) {
+  .explorer.explorer.explorer {
+    padding: 16px 14px;
+  }
+}

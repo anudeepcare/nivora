@@ -142,7 +142,7 @@ export function Portfolio() {
       <Coverage state={state} />
       <div className="portfolio-grid">
         <div>
-          <section className="card">
+          <section className="card portfolio-trend-panel">
             <SectionHead
               title="Portfolio trend"
               subtitle="Current holdings · historical prices"
@@ -152,119 +152,9 @@ export function Portfolio() {
               quotes={quotes.data}
             />
           </section>
-          <section className="card">
-            <div className={portfolioStyles.holdingsToolbar}>
-              <h2>
-                <Wallet size={20} aria-hidden="true" />
-                Holdings
-              </h2>
-              {positions.length > 0 && (
-                <label className={portfolioStyles.holdingsSearch}>
-                  <SearchIcon size={18} aria-hidden="true" />
-                  <input
-                    aria-label="Filter holdings"
-                    placeholder="Find a holding"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                  />
-                </label>
-              )}
-              <select
-                aria-label="Filter holdings by accumulation pace"
-                value={paceFilter}
-                onChange={(e) => setPaceFilter(e.target.value)}
-              >
-                <option value="all">All pace levels</option>
-                {[4, 3, 2, 1, 0].map((n) => (
-                  <option key={n} value={n}>
-                    P{n}
-                  </option>
-                ))}
-              </select>
-              <div className={portfolioStyles.refreshControls}>
-                {positions.length > 0 && (
-                  <select
-                    aria-label="Portfolio price refresh interval"
-                    value={quotes.mode}
-                    onChange={(e) =>
-                      quotes.changeMode(e.target.value as typeof quotes.mode)
-                    }
-                  >
-                    <option value="balanced">Every 5 min</option>
-                    <option value="live">Every 2 min</option>
-                    <option value="hourly">Hourly</option>
-                    <option value="manual">Manual</option>
-                  </select>
-                )}
-                <button
-                  type="button"
-                  disabled={quotes.loading}
-                  onClick={quotes.refresh}
-                  aria-label={
-                    quotes.loading
-                      ? "Refreshing portfolio prices"
-                      : "Refresh portfolio prices"
-                  }
-                  aria-busy={quotes.loading}
-                  title="Refresh prices now"
-                >
-                  <RefreshCw size={18} aria-hidden="true" />
-                </button>
-              </div>
-            </div>
-            {visible.length ? (
-              <HoldingsTable
-                positions={visible}
-                allPositions={positions}
-                state={state}
-                earnings={earnings}
-                onEdit={setEditing}
-              />
-            ) : (
-              <Empty
-                title={
-                  positions.length
-                    ? "No holdings match your filter"
-                    : "Bring your holdings into focus"
-                }
-                icon={Wallet}
-                action={
-                  <button
-                    className="btn"
-                    onClick={() =>
-                      positions.length
-                        ? (setQuery(""), setPaceFilter("all"))
-                        : setEditing("new")
-                    }
-                  >
-                    {positions.length
-                      ? "Clear filter"
-                      : "Add your first position"}
-                  </button>
-                }
-              >
-                {positions.length
-                  ? "Try another company name or ticker."
-                  : "Record shares and average costs. Adding a position does not place a trade."}
-              </Empty>
-            )}
-            <div className="approved-holding-tools">
-              {positions.length > 0 && (
-                <button
-                  className="text-link"
-                  onClick={() => {
-                    setDepthOpen(true);
-                    depth.current?.showModal();
-                  }}
-                >
-                  Transactions & analysis <ArrowUpRight size={15} />
-                </button>
-              )}
-            </div>
-          </section>
         </div>
-        <div>
-          <section className="card">
+        <div className="portfolio-sidebar">
+          <section className="card portfolio-allocation-panel">
             <SectionHead title="Allocation" subtitle="Priced investments" />
             {model.allocations.length ? (
               <>
@@ -336,7 +226,7 @@ export function Portfolio() {
               </Empty>
             )}
           </section>
-          <section className="card">
+          <section className="card portfolio-exposure-panel">
             <SectionHead
               title="Exposure"
               subtitle="Shared sectors and themes"
@@ -344,22 +234,23 @@ export function Portfolio() {
             {model.groups.length ? (
               <>
                 <div
-                  className="approved-risk-bubbles"
+                  className="portfolio-exposure-rows"
                   aria-label="Sector and crypto exposure groups"
                 >
                   {model.groups.slice(0, 5).map((group, i) => (
-                    <div
-                      className="approved-risk-bubble"
-                      key={group.name}
-                      style={{
-                        color: colors[i],
-                        borderColor: colors[i],
-                        width: `${80 + Math.sqrt(group.weight) * 4}px`,
-                        height: `${80 + Math.sqrt(group.weight) * 4}px`,
-                      }}
-                    >
-                      <strong>{group.name}</strong>
-                      <span>{percent(group.weight)}</span>
+                    <div key={group.name}>
+                      <div>
+                        <strong>{group.name}</strong>
+                        <b>{percent(group.weight)}</b>
+                      </div>
+                      <span className="portfolio-exposure-track">
+                        <i
+                          style={{
+                            width: `${group.weight}%`,
+                            background: colors[i],
+                          }}
+                        />
+                      </span>
                       <small>
                         {group.symbols.length}{" "}
                         {group.symbols.length === 1 ? "company" : "companies"}
@@ -392,23 +283,117 @@ export function Portfolio() {
               </Empty>
             )}
           </section>
-          <section className="card compact-card lavender">
-            <SectionHead
-              title="Review a holding"
-              subtitle="Explore the business and your exposure before changing a holding."
+        </div>
+        <section className="card portfolio-holdings-panel">
+          <div className={portfolioStyles.holdingsToolbar}>
+            <h2>
+              <Wallet size={20} aria-hidden="true" />
+              Holdings
+            </h2>
+            {positions.length > 0 && (
+              <label className={portfolioStyles.holdingsSearch}>
+                <SearchIcon size={18} aria-hidden="true" />
+                <input
+                  aria-label="Filter holdings"
+                  placeholder="Find a holding"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                />
+              </label>
+            )}
+            <select
+              aria-label="Filter holdings by accumulation pace"
+              value={paceFilter}
+              onChange={(e) => setPaceFilter(e.target.value)}
+            >
+              <option value="all">All pace levels</option>
+              {[4, 3, 2, 1, 0].map((n) => (
+                <option key={n} value={n}>
+                  P{n}
+                </option>
+              ))}
+            </select>
+            <div className={portfolioStyles.refreshControls}>
+              {positions.length > 0 && (
+                <select
+                  aria-label="Portfolio price refresh interval"
+                  value={quotes.mode}
+                  onChange={(e) =>
+                    quotes.changeMode(e.target.value as typeof quotes.mode)
+                  }
+                >
+                  <option value="balanced">Every 5 min</option>
+                  <option value="live">Every 2 min</option>
+                  <option value="hourly">Hourly</option>
+                  <option value="manual">Manual</option>
+                </select>
+              )}
+              <button
+                type="button"
+                disabled={quotes.loading}
+                onClick={quotes.refresh}
+                aria-label={
+                  quotes.loading
+                    ? "Refreshing portfolio prices"
+                    : "Refresh portfolio prices"
+                }
+                aria-busy={quotes.loading}
+                title="Refresh prices now"
+              >
+                <RefreshCw size={18} aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+          {visible.length ? (
+            <HoldingsTable
+              positions={visible}
+              allPositions={positions}
+              state={state}
+              earnings={earnings}
+              onEdit={setEditing}
             />
-            <Link
-              className="text-link"
-              href={
-                model.allocations[0]
-                  ? researchLink(model.allocations[0].symbol, prefix)
-                  : `${prefix}/research`
+          ) : (
+            <Empty
+              title={
+                positions.length
+                  ? "No holdings match your filter"
+                  : "Bring your holdings into focus"
+              }
+              icon={Wallet}
+              action={
+                <button
+                  className="btn"
+                  onClick={() =>
+                    positions.length
+                      ? (setQuery(""), setPaceFilter("all"))
+                      : setEditing("new")
+                  }
+                >
+                  {positions.length
+                    ? "Clear filter"
+                    : "Add your first position"}
+                </button>
               }
             >
-              View company research ↗
-            </Link>
-          </section>
-        </div>
+              {positions.length
+                ? "Try another company name or ticker."
+                : "Record shares and average costs. Adding a position does not place a trade."}
+            </Empty>
+          )}
+          <div className="approved-holding-tools">
+            {positions.length > 0 && (
+              <button
+                className="text-link"
+                onClick={() => {
+                  setDepthOpen(true);
+                  depth.current?.showModal();
+                }}
+              >
+                Transactions & analysis <ArrowUpRight size={15} />
+              </button>
+            )}
+          </div>
+        </section>
       </div>
       <p className="chart-note">
         Unrealized returns exclude realized trades, dividends, fees and taxes.

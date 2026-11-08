@@ -91,6 +91,7 @@ const DcaResearch = dynamic(() => import("./DcaResearch"), {
 import DecisionOverview from "./IntegratedResearch";
 import experience from "./IntegratedExperience.module.css";
 import tabVisuals from "./ResearchTabVisuals.module.css";
+import deskLayout from "./ResearchDeskLayout.module.css";
 import { selectPriceReference } from "@/lib/price-reference";
 import { movementContext } from "@/lib/movement-context";
 import PaceHelp from "./PaceHelp";
@@ -683,7 +684,11 @@ export default function Research({ symbol }: { symbol: string }) {
         hidden={tab === "Snapshot"}
         aria-label={tabPresentation[tab].label}
       >
-        <div id="research-content" className="approved-evidence-body au-stack">
+        <div
+          id="research-content"
+          className={`approved-evidence-body au-stack ${deskLayout.content}`}
+          data-desk={tab}
+        >
           {labSections.includes(tab) && (
             <nav className={experience.labViews} aria-label="Labs views">
               {labSections.map((key) => (
@@ -749,8 +754,10 @@ export default function Research({ symbol }: { symbol: string }) {
             )}
             {tab === "Analysts" && (
               <>
-                <TargetsEstimates research={r} />
-                <AnalystRatings research={r} hideConsensus />
+                <TargetsEstimates
+                  research={r}
+                  ratings={<AnalystRatings research={r} hideConsensus />}
+                />
               </>
             )}
             {tab === "Financials" && (
@@ -819,13 +826,16 @@ export default function Research({ symbol }: { symbol: string }) {
                       />
                     </section>
                   )}
-                  <div className="technical-canvas-layout">
-                    <div className="technical-chart-column">
-                      {chart}
-                      <TimingContext research={r} />
-                    </div>
-                    <TechnicalPicture research={r} dca={null} />
-                  </div>
+                  <TechnicalPicture
+                    research={r}
+                    dca={null}
+                    chart={
+                      <>
+                        {chart}
+                        <TimingContext research={r} />
+                      </>
+                    }
+                  />
                   <details className="value-personal-model">
                     <summary>
                       Monthly price zones and historical policy evidence

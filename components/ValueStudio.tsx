@@ -38,20 +38,28 @@ export default function ValueStudio({
   );
 
   return (
-    <div className={`${layout.root} value-studio depth-value`}>
-      <SelectedValuation
-        research={r}
-        actions={
-          <button type="button" className="button" onClick={onWorkbench}>
-            Test assumptions →
-          </button>
-        }
-      />
-      {consensusOutlook(r) && <AnalystTargets research={r} />}
-      <PriceProjection key={r.company.symbol} research={r} />
+    <div
+      className={`${layout.root} value-studio depth-value`}
+      data-has-consensus={!!consensusOutlook(r)}
+    >
+      <div className={layout.scenarios}>
+        <SelectedValuation
+          research={r}
+          actions={
+            <button type="button" className="button" onClick={onWorkbench}>
+              Test assumptions →
+            </button>
+          }
+        />
+      </div>
+      {consensusOutlook(r) && (
+        <div className={layout.consensus}>
+          <AnalystTargets research={r} />
+        </div>
+      )}
       {available.length > 0 && (
         <section
-          className="valuation-board"
+          className={`valuation-board ${layout.market}`}
           aria-labelledby="market-pricing-title"
         >
           <header className="section-head">
@@ -113,6 +121,7 @@ export default function ValueStudio({
         </details>
       )}
       <details
+        className={layout.calculator}
         open={calculatorOpen}
         onToggle={(e) => setCalculatorOpen(e.currentTarget.open)}
       >
@@ -126,7 +135,7 @@ export default function ValueStudio({
           />
         )}
       </details>
-      <section className="value-model-fit">
+      <section className={`value-model-fit ${layout.methods}`}>
         <header className="section-head">
           <h3>
             <SectionIcon name="Business" />
@@ -151,6 +160,9 @@ export default function ValueStudio({
           </div>
         ))}
       </section>
+      <div className={layout.manual}>
+        <PriceProjection key={r.company.symbol} research={r} />
+      </div>
       <p className="desk-footnote">
         Multiples are reported observations and can use different dates from the
         quote. A low multiple alone does not establish value.{" "}

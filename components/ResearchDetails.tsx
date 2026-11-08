@@ -15,11 +15,13 @@ import { Help, DataStamp } from "./Ui";
 
 export function TechnicalPicture({
   research: r,
+  chart,
 }: {
   research: Research;
   dca: React.ReactNode;
+  chart?: React.ReactNode;
 }) {
-  return <TechnicalDashboard research={r} />;
+  return <TechnicalDashboard research={r} chart={chart} />;
 }
 
 export function ThesisPicture({ research: r }: { research: Research }) {
