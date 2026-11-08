@@ -140,7 +140,7 @@ export default function PaceInstrument({
             {selected !== null && (
               <p
                 className={s.zoneContext}
-              >{`P${selected} · ${PACE_LEVELS[selected]}`}</p>
+              >{`${exploring ? "Explore" : "Price zone"} P${selected} · ${PACE_LEVELS[selected]}`}</p>
             )}
           </div>
           {!exploring && (

@@ -1,11 +1,16 @@
 "use client";
-import { useMemo, useSyncExternalStore, type ReactNode } from "react";
+import { useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import { ShieldAlert, Scale, Sparkles, Info } from "lucide-react";
 import type { Research } from "@/lib/types";
 import { aurynDecision } from "@/lib/auryn-decision";
 import { amount, dateLabel, percent } from "@/lib/format";
 import { researchOutlook } from "@/lib/outlook";
 import s from "./SelectedValuation.module.css";
+import dynamic from "next/dynamic";
+import { FeatureGate, useAccess } from "./Access";
+const FundedScenarios = dynamic(() => import("./FundedScenarios"), {
+  loading: () => <p role="status">Opening funding assumptions…</p>,
+});
 const selectedEnds = new Map<string, string>();
 const listeners = new Set<() => void>();
 const subscribe = (fn: () => void) => {
@@ -37,12 +42,16 @@ export default function SelectedValuation({
               price: d.reference.price,
               asOf: d.reference.asOf,
               currency: d.reference.currency,
+              // This usable reference was selected independently of the discarded quote.
+              stale: false,
             },
           }
         : r,
     [r, d.reference],
   );
+  const { access } = useAccess();
   const key = r.company.symbol;
+  const [fundingOpen, setFundingOpen] = useState(false);
   const selected = useSyncExternalStore(
     subscribe,
     () => selectedEnds.get(key) ?? "",
@@ -87,6 +96,7 @@ export default function SelectedValuation({
           projection.caveat ?? "Conditional market-multiple sensitivity.",
       }
     : d.valuation;
+  const recovery = projection.available ? undefined : projection.recovery;
   if (r.company.assetType !== "stock") return null;
   if (!v)
     return (
@@ -103,25 +113,29 @@ export default function SelectedValuation({
           <span className={s.status}>Inputs needed</span>
           {actions}
         </header>
-        <div className={s.reasons}>
-          {(["bear", "base", "bull"] as const).map((name, index) => {
-            const Icon = [ShieldAlert, Scale, Sparkles][index];
-            return (
-              <div className={s.case} key={name} data-case={name}>
-                <span className={s.caseLabel}>
-                  <Icon size={17} />
-                  {name[0].toUpperCase() + name.slice(1)} scenario
-                </span>
-                <strong aria-label={`${name} target not calculated`}>—</strong>
-                <small>Not calculated</small>
-              </div>
-            );
-          })}
-        </div>
+        {!(fundingOpen && recovery && access.features.advanced) && (
+          <div className={s.reasons}>
+            {(["bear", "base", "bull"] as const).map((name, index) => {
+              const Icon = [ShieldAlert, Scale, Sparkles][index];
+              return (
+                <div className={s.case} key={name} data-case={name}>
+                  <span className={s.caseLabel}>
+                    <Icon size={17} />
+                    {name[0].toUpperCase() + name.slice(1)} scenario
+                  </span>
+                  <strong aria-label={`${name} target not calculated`}>
+                    —
+                  </strong>
+                  <small>Not calculated</small>
+                </div>
+              );
+            })}
+          </div>
+        )}
         <div className={s.missing} role="status">
           <Info size={17} />
           <div>
-            <strong>Scenario inputs need review</strong>
+            <strong>{recovery?.title ?? "Scenario inputs need review"}</strong>
             <p>
               {projection.available
                 ? "No supported valuation model is available."
@@ -133,6 +147,34 @@ export default function SelectedValuation({
             </small>
           </div>
         </div>
+        {recovery && (
+          <div className={s.recovery}>
+            <p>{recovery.detail}</p>
+            <button
+              type="button"
+              className="button"
+              aria-expanded={fundingOpen}
+              onClick={() => setFundingOpen(!fundingOpen)}
+            >
+              {fundingOpen
+                ? "Close funding assumptions"
+                : "Build funding assumptions"}
+            </button>
+            {fundingOpen && (
+              <FeatureGate feature="advanced">
+                <p>
+                  Personal, conditional scenarios — not automatic AURYN targets.
+                  Reconcile company facts and supply your own funding
+                  assumptions before calculating.
+                </p>
+                <FundedScenarios
+                  key={`${r.company.symbol}:${r.quote.currency}`}
+                  research={r}
+                />
+              </FeatureGate>
+            )}
+          </div>
+        )}
       </section>
     );
   const reference = d.reference?.price;

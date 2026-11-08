@@ -15,7 +15,11 @@ export type OutlookCase = {
   annual: number;
 };
 export type Outlook =
-  | { available: false; reason: string }
+  | {
+      available: false;
+      reason: string;
+      recovery?: { kind: "funded-assumptions"; title: string; detail: string };
+    }
   | {
       available: true;
       cases: OutlookCase[];
@@ -36,6 +40,7 @@ export type Outlook =
       netDebt?: number;
       balanceDate?: string;
       caveat?: string;
+      calculatedMultiple?: boolean;
     };
 
 export function consensusOutlook(r: Research): {
@@ -109,9 +114,30 @@ export function researchOutlook(
     priceAnchored?: boolean;
   },
 ): Outlook {
+  const coverage = modelCoverage(r.company.symbol, r.company.assetType, {
+    sector: r.evidence?.profile?.sector || r.company.sector,
+    industry: r.evidence?.profile?.industry,
+  });
+  const recovery =
+    coverage.family === "frontier"
+      ? {
+          kind: "funded-assumptions" as const,
+          title: "Model deployment and financing",
+          detail:
+            "Connect delivered milestones and commercial revenue to capex, cash runway, financing terms and dilution. Enter sourced assumptions for each case; these are personal sensitivities, not validated forecasts.",
+        }
+      : coverage.family === "infrastructure"
+        ? {
+            kind: "funded-assumptions" as const,
+            title: "Reconcile capacity, capex and funding",
+            detail:
+              "Separate contracted capacity from operating revenue. Reconcile reported cash, debt, listed shares and currency, then test capex, utilization economics and financing assumptions. Missing values remain blank.",
+          }
+        : undefined;
   const unavailable = (reason: string): Outlook => ({
     available: false,
     reason,
+    ...(recovery ? { recovery } : {}),
   });
   if (r.company.assetType !== "stock")
     return unavailable(
@@ -121,23 +147,23 @@ export function researchOutlook(
   const now = Date.parse(r.priceObservedAt ?? r.retrievedAt);
   if (!e || !Number.isFinite(now))
     return unavailable("A dated annual earnings forecast is needed.");
-  const coverage = modelCoverage(r.company.symbol, r.company.assetType, {
-    sector: e.profile?.sector || r.company.sector,
-    industry: e.profile?.industry,
-  });
+
   if (
     !["operating-company", "infrastructure", "financial"].includes(
       coverage.family,
     )
   )
     return unavailable(
-      "This business needs a sector-specific valuation framework.",
+      coverage.family === "frontier"
+        ? "Deployment and commercial milestones, cash runway and future financing must be modeled explicitly. Current losses or an earnings multiple cannot establish automatic targets for this business."
+        : "This business needs a sector-specific valuation framework.",
     );
   const listing = listingReconciliation(r);
   const aggregateListingBasis = listing.status === "available";
   if (r.company.foreignListing && !aggregateListingBasis)
     return unavailable(
-      "The listing needs matching reporting currency and reconciled market-cap/share/price evidence before constructing per-share scenarios.",
+      "The listing needs matching reporting currency and reconciled market-cap/share/price evidence before constructing per-share scenarios. " +
+        listing.detail,
     );
   const updated = Date.parse(e.updatedAt ?? "");
   if (
@@ -179,7 +205,7 @@ export function researchOutlook(
     const days = (Date.parse(x.date) - now) / 86400000;
     return (
       /annual/i.test(x.frequency) &&
-      days >= 270 &&
+      days >= 90 &&
       days <= 1461 &&
       x.currency === r.quote.currency &&
       [x.epsLow, x.eps, x.epsHigh].every(
@@ -238,7 +264,9 @@ export function researchOutlook(
       return unavailable(
         "A current quote is needed for a price-anchored revenue sensitivity; analyst targets remain separate.",
       );
-    const shares = e.ownership?.outstanding;
+    if (listing.status !== "available")
+      return unavailable("Revenue sensitivity unavailable: " + listing.detail);
+    const shares = listing.shares;
     let multiple = e.multiples?.EnterpriseValueRevenue;
     const balances = r.facts
       .filter(
@@ -457,12 +485,14 @@ export function researchOutlook(
       shares,
       netDebt,
       balanceDate: cash.end,
-      ...(calculatedMultiple
-        ? {
-            caveat:
-              "Calculated EV/revenue multiple: current quote × reported shares, plus dated net debt, divided by corroborated trailing revenue. Conflicting reported EV fields are excluded. This price-anchored sensitivity is not intrinsic fair value; future funding and capex are not forecast.",
-          }
-        : {}),
+      calculatedMultiple,
+      caveat: [
+        listing.detail,
+        calculatedMultiple
+          ? "Calculated EV/revenue multiple: current quote × the dated share count, plus dated net debt, divided by corroborated trailing revenue. Conflicting reported EV fields are excluded."
+          : "Reported EV/revenue is a conditional reference multiple, not an independently validated valuation.",
+        "This sensitivity is not intrinsic fair value. The share count and balance sheet are dated observations; subsequent issuance, funding and capex are not forecast. Case dilution and multiple changes are stress assumptions, not company forecasts.",
+      ].join(" "),
     };
   }
   const userMultiple = assumptions?.earningsMultiple;
@@ -509,7 +539,7 @@ export function researchOutlook(
       const days = (Date.parse(x.date) - now) / 86400000;
       return (
         x.frequency.toLowerCase().includes("annual") &&
-        days >= 270 &&
+        days >= 90 &&
         days <= 1461 &&
         x.currency === r.quote.currency
       );

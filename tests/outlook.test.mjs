@@ -31,7 +31,7 @@ function research() {
           analysts: 15,
         },
         {
-          date: "2027-05-31",
+          date: "2026-12-31",
           period: "FY2027",
           frequency: "annual",
           currency: "USD",
@@ -77,7 +77,7 @@ test("a missing EPS range cannot become fabricated bear and bull targets", () =>
   input.evidence.estimates[0].epsLow = null;
   const r = researchOutlook(input);
   assert.equal(r.available, false);
-  assert.match(r.reason, /range/i);
+  assert.match(r.reason, /range|share/i);
 });
 test("crypto, unreconciled foreign listings and mismatched currency withhold corporate targets", () => {
   const { researchOutlook } = load();
@@ -240,7 +240,7 @@ test("headline policy prefers eligible earnings cases and uses analyst fallback 
     },
   ];
   r.evidence.estimates.push({
-    date: "2027-03-31",
+    date: "2026-12-31",
     period: "FY2027",
     frequency: "Annual",
     currency: "USD",
@@ -359,4 +359,28 @@ test("an explicit P/E wins over price anchoring in both calculations and provena
   assert.equal(result.cases[1].multiple, 30);
   assert.match(result.caveat, /explicit assumption/);
   assert.doesNotMatch(result.caveat, /Price-anchored sensitivity/);
+});
+
+test('frontier and infrastructure failures offer a sourced funding path without automatic targets',()=>{
+ for(const symbol of ['ASTS','NBIS','IREN']) {
+  const r=research();r.company.symbol=symbol;
+  const result=outlook.researchOutlook(r);
+  assert.equal(result.available,false);
+  assert.equal(result.recovery?.kind,'funded-assumptions');
+  assert.match(result.recovery.detail,/capex|financing/i);
+  assert.equal('cases' in result,false);
+ }
+ const insurer=research();insurer.company.symbol='OSCR';insurer.evidence.profile={sector:'Healthcare',industry:'Healthcare Plans'};
+ assert.equal(outlook.researchOutlook(insurer).recovery,undefined);
+});
+
+test("complete annual EPS ranges 90–269 days away remain eligible without annualizing quarterly EPS", () => {
+  for (const symbol of ["HIMS", "CRM", "MSFT"]) {
+    const r=research();r.company.symbol=symbol;r.evidence.estimates=[{...r.evidence.estimates[1], date:"2027-05-31"}];
+    const result=load().researchOutlook(r);
+    assert.equal(result.available,true,symbol);
+    assert.equal(result.end,"2027-05-31");assert.equal(result.cases[1].target,100);
+    r.evidence.estimates[0].frequency="quarterly";assert.equal(load().researchOutlook(r).available,false);
+    r.evidence.estimates[0].frequency="annual";r.evidence.estimates[0].date="2026-12-31";assert.equal(load().researchOutlook(r).available,false);
+  }
 });

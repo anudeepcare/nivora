@@ -47,3 +47,11 @@ Two additional outlook blockers were corrected: missing vendor EV/revenue can be
 - **Unsupported data stays unavailable.** No ETF look-through overlap, benchmark return attribution or invented event/revision history was added. Recorded cash is not broker buying power; taxes, fees, settlement and other commitments remain outside the hypothetical position review.
 - **Scenarios require user assumptions.** No future growth, financing or dilution is silently supplied. These are sensitivities, not forecasts or probabilities.
 - **UI acceptance remains outstanding.** Populated, missing-data and expanded layouts in real mobile/tablet/desktop browsers, theme review, slow-network interactions and physical iOS PWA verification must be completed on the preview before any later production release.
+
+## Latest screenshot-driven correction
+
+After user deployment of 9152947, screenshots confirmed IREN/NBIS/ASTS still had unavailable automatic scenario inputs. The new local follow-up repairs documented same-row debt recovery, supplies a gated on-demand funded-scenario recovery path and sector-specific guidance, and separates business-action headlines from current price-zone labels. It does not invent observation dates, analyst bounds or future financial assumptions. The source remains ZIP-only and has not been pushed or deployed. See VISIBLE-CHANGES-20261108.md for exact evidence and unresolved live-provider validation.
+
+Latest validation: 1,288 integrated tests passed, plus lint, full formatting and typecheck. After the final denied-access display correction, 104 affected UI/model/provider tests passed and focused ESLint passed. No authenticated browser/mobile test is claimed. Final release-build status is reported with the delivery.
+
+Final optimized release build passed after the final access-state correction.

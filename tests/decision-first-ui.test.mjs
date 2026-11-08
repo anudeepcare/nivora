@@ -29,3 +29,12 @@ test('short history retains the diamond framework and decision without repeated 
  assert.doesNotMatch(html,/Date unavailable|Current history unavailable|More settled history|Price history needed/);
  assert.match(html,/What to review/);
 });
+
+test('business review headline does not conflate eligible and current price zones',()=>{
+ const base=aurynDecision(research,{ownsPosition:false,now});
+ const decision={...base,action:'Review',actionLabel:'Review business',pace:{...base.pace,level:2,eligibleLevel:1}};
+ const html=renderToStaticMarkup(React.createElement(PaceInstrument,{research,decision,now}));
+ assert.match(html,/<h2>Review business<\/h2>/);
+ assert.match(html,/Price zone P2/);
+ assert.doesNotMatch(html,/<h2>[^<]*P1/);
+});

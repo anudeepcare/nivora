@@ -42,3 +42,21 @@ Two confirmed calculation blockers are corrected in this ZIP: missing/nonpositiv
 Focused tests cover IREN, HIMS, CIFR and NBIS using explicitly synthetic complete and incomplete evidence. These tests establish algorithm behavior, not the current availability of live vendor inputs. The authentic archived IREN snapshot lacks field-specific listing/share dates, so its per-share fundamental scenarios correctly remain unavailable. It supplies only one consensus target, not analyst low/high bounds; those bounds have not been fabricated. Current live snapshots for all four tickers remain unverified behind preview authentication.
 
 When source evidence is incomplete, the existing Bear/Base/Bull cards remain visible with “Not calculated” and the missing-evidence reason. Separate consensus remains separate. User-entered sensitivities are available under Research → Labs → Research tools → Expectations → Funding & dilution cases, subject to the existing entitlement and explicit assumptions. This correction cannot promise numeric ranges for every ticker without reliable inputs.
+
+## Screenshot-driven follow-up (local source after deployed 9152947)
+
+The three user screenshots show IREN, NBIS and ASTS, not HIMS or CIFR. Their cards render but have no calculated targets. IREN reports incomplete EPS and matched cash/debt; NBIS reports absent dated listed-share observations; ASTS reports unsupported sector valuation. These are different from the two previously corrected calculation blockers.
+
+The business-review headline now reads “Review business” without attaching an eligible P-code; the separate current reading explicitly says “Price zone P2” (or the applicable zone). This removes the misleading P1 headline versus P2 scale combination while preserving the actual business decision, eligible contribution level and provisional price reading.
+
+Live-provider confirmation still requires the existing authenticated preview browser, or sanitized Research API JSON for IREN, HIMS, CIFR, NBIS and ASTS containing company, quote, history, evidence and facts only. Do not supply credentials, cookies or private holdings. Screenshots establish visible symptoms but cannot establish raw field provenance. No assertion is made that every ticker now produces numeric targets.
+
+The provider mapping now recovers a missing aggregate debt field from complete same-row shortTermDebt + longTermDebtTotal, or the provider-defined netDebt + cash identity. Explicit aggregate debt takes precedence, including zero. Conflicting identities, partial or invalid values remain unavailable; calculated facts retain derivation provenance. This can restore a missing input but does not establish that current IREN has those fields or satisfies the remaining listing/estimate checks.
+
+Provider references: https://eodhd.com/financial-academy/financial-faq/fundamentals-glossary-common-stock and https://eodhd.com/financial-apis/stock-etfs-fundamental-data-feeds . Neither the dataset UpdatedAt nor historical share period-end is promoted to a field-specific market observation date.
+
+For infrastructure and frontier companies, “Build funding assumptions” now opens the existing lazy-loaded workbench directly from the unavailable scenario section, behind the same Advanced feature entitlement. ASTS guidance calls for deployment/commercial milestones, capex, cash runway, financing and dilution. Infrastructure guidance distinguishes contracted capacity from realized revenue. These are explicitly user-entered conditional cases; they do not replace or silently populate automatic AURYN targets. Other unsupported sector gates are retained.
+
+Latest validation: 1,288 integrated tests passed, plus lint, full formatting and typecheck. After the final denied-access display correction, 104 affected UI/model/provider tests passed and focused ESLint passed. No authenticated browser/mobile test is claimed. Final release-build status is reported with the delivery.
+
+Final optimized release build passed after the final access-state correction.

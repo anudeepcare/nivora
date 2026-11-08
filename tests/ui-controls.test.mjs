@@ -2493,3 +2493,40 @@ test("both scenario modes withhold generic valuations for every specialized fina
     }
   }
 });
+
+test('unsupported frontier scenarios offer an entitlement-gated funding workbench rather than invented targets',()=>{
+ let opened=false,allowed=false;
+ const recovery={kind:'funded-assumptions',title:'Model deployment and financing',detail:'Enter sourced capacity, capex and financing assumptions.'};
+ const Selected=loadComponent('components/SelectedValuation.tsx','SelectedValuation',{
+  React,useMemo:React.useMemo,useState:()=>[opened,()=>{}],useSyncExternalStore:React.useSyncExternalStore,
+  subscribe:()=>()=>{},selectedEnds:new Map(),listeners:new Set(),aurynDecision:()=>({valuation:null,reference:null}),
+  researchOutlook:()=>({available:false,reason:'Milestones need explicit assumptions.',recovery}),
+  useAccess:()=>({access:{features:{advanced:allowed}}}),
+  FeatureGate:({feature,children})=>{assert.equal(feature,'advanced');return allowed?children:React.createElement('p',null,'Advanced access required');},
+  FundedScenarios:()=>React.createElement('div',null,'Explicit funding cases'),ShieldAlert,Scale,Sparkles,Info,...format,s:experience,
+ });
+ const r=structuredClone(demoData.research.MSFT);r.company.symbol='ASTS';
+ const render=()=>renderToStaticMarkup(React.createElement(Selected,{research:r}));
+ let html=render();assert.match(html,/Build funding assumptions/);assert.equal((html.match(/target not calculated/g)||[]).length,3);
+ opened=true;html=render();assert.match(html,/Advanced access required/);assert.doesNotMatch(html,/Explicit funding cases/);assert.equal((html.match(/target not calculated/g)||[]).length,3);
+ allowed=true;html=render();assert.match(html,/Explicit funding cases/);assert.match(html,/not automatic AURYN targets/);
+});
+
+test('selected valuation reference does not inherit the discarded quote stale flag',()=>{
+ let reference={price:100,asOf:'2026-10-19T20:00:00Z',currency:'USD'};
+ const seen=[];
+ const Selected=loadComponent('components/SelectedValuation.tsx','SelectedValuation',{
+  React,useMemo:React.useMemo,useSyncExternalStore:React.useSyncExternalStore,
+  subscribe:()=>()=>{},selectedEnds:new Map(),listeners:new Set(),aurynDecision:()=>({valuation:null,reference}),
+  researchOutlook:(r)=>{seen.push(r.quote);return {available:false,reason:'Unavailable'};},
+  ShieldAlert,Scale,Sparkles,Info,...format,s:experience,
+ });
+ const r=structuredClone(demoData.research.MSFT);r.quote.stale=true;
+ renderToStaticMarkup(React.createElement(Selected,{research:r}));
+ assert.ok(seen.length>0);
+ for(const quote of seen){assert.equal(quote.stale,false);assert.equal(quote.price,100);assert.equal(quote.asOf,reference.asOf);}
+ assert.equal(r.quote.stale,true);
+ reference=null;seen.length=0;
+ renderToStaticMarkup(React.createElement(Selected,{research:r}));
+ assert.ok(seen.length>0);for(const quote of seen)assert.equal(quote.stale,true);
+});

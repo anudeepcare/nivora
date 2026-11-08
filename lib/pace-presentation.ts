@@ -209,7 +209,7 @@ export function pacePresentation(
       : action === "Wait"
         ? "Wait before buying"
         : gatedReview
-          ? `Review business · ${paceCode(rawLevel)}`
+          ? "Review business"
           : action;
   return {
     actionLabel,

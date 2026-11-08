@@ -123,9 +123,7 @@ export function researchBrief(r: Research) {
             base: outlook.cases[1].annual,
             high: outlook.cases[2].annual,
           },
-          calculatedMultiple: !!outlook.caveat?.startsWith(
-            "Calculated EV/revenue",
-          ),
+          calculatedMultiple: outlook.calculatedMultiple === true,
         }
       : null,
     version: "research-brief-v2",

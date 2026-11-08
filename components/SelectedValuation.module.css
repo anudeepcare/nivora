@@ -459,3 +459,18 @@
     padding: 16px 14px;
   }
 }
+
+.recovery {
+  margin-top: 16px;
+  min-width: 0;
+}
+.recovery > p {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+.recovery > button {
+  min-height: 44px;
+  margin-bottom: 12px;
+}

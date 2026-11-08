@@ -179,6 +179,16 @@ export type EodEvidence = {
       shareBasis: string;
     };
   };
+  reportedShareObservation?: {
+    value: number;
+    asOf: string;
+    observedAt: string;
+    unit: "shares";
+    shareBasis: string;
+    sourceUrl: string;
+    securityType: "ordinary-common";
+    sourceField: string;
+  };
   source: string;
   reportingCurrency: string | null;
   highlights: Record<string, number | null>;
@@ -246,6 +256,41 @@ export type EodEvidence = {
     logo: string | null;
   };
 };
+/** Documented EOD balance-sheet identities, confined to one row/currency.
+ * https://eodhd.com/financial-academy/financial-faq/fundamentals-glossary-common-stock
+ * Never add shortLongTermDebt separately: its inclusion varies by issuer.
+ * Missing components stay missing, and conflicting complete identities withhold debt. */
+function recoverEodDebt(row: Record<string, unknown>) {
+  const candidates: { value: number; fields: string[] }[] = [];
+  const short = numeric(row.shortTermDebt),
+    long = numeric(row.longTermDebtTotal),
+    net = numeric(row.netDebt),
+    cash = numeric(row.cash);
+  if (short != null && short >= 0 && long != null && long >= 0)
+    candidates.push({
+      value: short + long,
+      fields: ["shortTermDebt", "longTermDebtTotal"],
+    });
+  // The provider defines this identity using its cash field. Do not substitute
+  // investments, restricted cash or another field with an unknown denominator.
+  if (net != null && cash != null && cash >= 0)
+    candidates.push({ value: net + cash, fields: ["netDebt", "cash"] });
+  if (
+    !candidates.length ||
+    candidates.some((x) => !Number.isFinite(x.value) || x.value < 0)
+  )
+    return null;
+  const first = candidates[0];
+  if (
+    candidates.some(
+      (x) =>
+        Math.abs(x.value - first.value) >
+        Math.max(1, Math.abs(first.value) * 1e-8),
+    )
+  )
+    return null;
+  return first;
+}
 export function normalizeEodFundamentals(
   symbol: string,
   raw: any,
@@ -327,8 +372,12 @@ export function normalizeEodFundamentals(
             .slice(0, 10);
         for (const [metric, fields] of Object.entries(mapping)) {
           const key = fields!.find((k) => numeric(row[k]) != null);
-          if (!key) continue;
-          let value = numeric(row[key])!;
+          const recovered =
+            !key && metric === "debt" && statement === "Balance_Sheet"
+              ? recoverEodDebt(row)
+              : null;
+          if (!key && !recovered) continue;
+          let value = key ? numeric(row[key])! : recovered!.value;
           if (["capex", "dividends"].includes(metric)) value = Math.abs(value);
           facts.push({
             id: `eodhd:${symbol}:${statement}:${frequency}:${end}:${metric}`,
@@ -340,7 +389,15 @@ export function normalizeEodFundamentals(
             end,
             filed,
             accession: `eodhd:${symbol}:${frequency}:${end}:${filed}`,
-            form: "EODHD normalized",
+            form: recovered ? "EODHD calculated debt" : "EODHD normalized",
+            ...(recovered
+              ? {
+                  derivedFrom: recovered.fields.map(
+                    (field) =>
+                      `eodhd:${symbol}:${statement}:${frequency}:${end}:${filed}:${field}`,
+                  ),
+                }
+              : {}),
             basis: "Provider",
             scope: statement === "Balance_Sheet" ? "instant" : scope,
             sourceUrl: eodSource,
@@ -497,6 +554,81 @@ export function normalizeEodFundamentals(
           : null,
     },
   };
+  // These are period-dated outstanding counts, not the undated SharesStats
+  // snapshot. General.UpdatedAt is deliberately not used as an economic date.
+  if (
+    g.Type === "Common Stock" &&
+    g.CountryISO === "US" &&
+    (US_EXCHANGES as readonly string[]).includes(
+      text(g.Exchange).toUpperCase(),
+    ) &&
+    (!g.PrimaryTicker ||
+      String(g.PrimaryTicker).toUpperCase() === eodTicker(symbol))
+  ) {
+    const genuineDay = (value: unknown) => {
+      const d = date(value);
+      return d &&
+        Number.isFinite(Date.parse(d)) &&
+        new Date(d).toISOString().slice(0, 10) === d
+        ? d
+        : null;
+    };
+    const candidates: { value: number; asOf: string; sourceField: string }[] =
+      [];
+    for (const frequency of ["annual", "quarterly"])
+      for (const row of entries(raw.outstandingShares?.[frequency])) {
+        const asOf = genuineDay(row.dateFormatted),
+          whole = numeric(row.shares),
+          millions = numeric(row.sharesMln),
+          value = whole ?? (millions == null ? null : millions * 1e6);
+        if (
+          !asOf ||
+          asOf > day ||
+          value == null ||
+          !Number.isFinite(value) ||
+          value <= 0 ||
+          (whole != null &&
+            millions != null &&
+            Math.abs(whole - millions * 1e6) > Math.max(1, whole * 1e-6))
+        )
+          continue;
+        candidates.push({
+          value,
+          asOf,
+          sourceField: `outstandingShares.${frequency}.${whole == null ? "sharesMln × 1000000" : "shares"}`,
+        });
+      }
+    for (const f of facts)
+      if (
+        f.metric === "shares" &&
+        f.scope === "instant" &&
+        f.unit === "shares" &&
+        f.value > 0 &&
+        genuineDay(f.end) &&
+        f.filed <= day
+      )
+        candidates.push({ value: f.value, asOf: f.end, sourceField: f.id });
+    candidates.sort((a, b) => b.asOf.localeCompare(a.asOf));
+    const selected = candidates[0],
+      split = genuineDay(raw.SplitsDividends?.LastSplitDate);
+    if (
+      selected &&
+      (!split || split <= selected.asOf || split > day) &&
+      !candidates.some(
+        (x) =>
+          x.asOf === selected.asOf &&
+          Math.abs(x.value / selected.value - 1) > 1e-6,
+      )
+    )
+      evidence.reportedShareObservation = {
+        ...selected,
+        observedAt: asOf,
+        unit: "shares",
+        shareBasis: symbol,
+        sourceUrl: eodSource,
+        securityType: "ordinary-common",
+      };
+  }
   const company: Company = {
     symbol,
     name: text(g.Name) || symbol,

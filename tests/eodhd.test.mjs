@@ -242,18 +242,165 @@ test("EOD annual forecasts inherit reported statement currency when the trend om
   );
 });
 
-test('additional accounting fields reuse normalized fundamentals with currency and period evidence',()=>{
- const input=structuredClone(raw);
- input.Financials.Cash_Flow.quarterly['2026-06-30'].depreciation='8';
- input.Financials.Balance_Sheet={currency_symbol:'USD',quarterly:{'2026-06-30':{date:'2026-06-30',filing_date:'2026-08-10',netReceivables:'12',inventory:'3',accountsPayable:'5',retainedEarnings:'-2'}}};
- const {facts}=lib().normalizeEodFundamentals('APP',input,stamp);
- for(const [metric,value] of Object.entries({depreciation:8,receivables:12,inventory:3,payables:5,retainedEarnings:-2})){
-  const fact=facts.find(f=>f.metric===metric);assert.ok(fact,metric);assert.equal(fact.value,value);assert.equal(fact.unit,'USD');assert.equal(fact.end,'2026-06-30');
- }
+test("additional accounting fields reuse normalized fundamentals with currency and period evidence", () => {
+  const input = structuredClone(raw);
+  input.Financials.Cash_Flow.quarterly["2026-06-30"].depreciation = "8";
+  input.Financials.Balance_Sheet = {
+    currency_symbol: "USD",
+    quarterly: {
+      "2026-06-30": {
+        date: "2026-06-30",
+        filing_date: "2026-08-10",
+        netReceivables: "12",
+        inventory: "3",
+        accountsPayable: "5",
+        retainedEarnings: "-2",
+      },
+    },
+  };
+  const { facts } = lib().normalizeEodFundamentals("APP", input, stamp);
+  for (const [metric, value] of Object.entries({
+    depreciation: 8,
+    receivables: 12,
+    inventory: 3,
+    payables: 5,
+    retainedEarnings: -2,
+  })) {
+    const fact = facts.find((f) => f.metric === metric);
+    assert.ok(fact, metric);
+    assert.equal(fact.value, value);
+    assert.equal(fact.unit, "USD");
+    assert.equal(fact.end, "2026-06-30");
+  }
 });
 
-test('flat annual fiscal labels are not incorrectly classified as quarterly estimates',()=>{
- const input=structuredClone(raw);input.Earnings.Trend={'2028-12-31':{date:'2028-12-31',period:'FY2028',currency:'USD',earningsEstimateLow:6,earningsEstimateAvg:8,earningsEstimateHigh:10}};
- const result=lib().normalizeEodFundamentals('APP',input,stamp);
- assert.equal(result.evidence.estimates[0].frequency,'Annual');
+test("flat annual fiscal labels are not incorrectly classified as quarterly estimates", () => {
+  const input = structuredClone(raw);
+  input.Earnings.Trend = {
+    "2028-12-31": {
+      date: "2028-12-31",
+      period: "FY2028",
+      currency: "USD",
+      earningsEstimateLow: 6,
+      earningsEstimateAvg: 8,
+      earningsEstimateHigh: 10,
+    },
+  };
+  const result = lib().normalizeEodFundamentals("APP", input, stamp);
+  assert.equal(result.evidence.estimates[0].frequency, "Annual");
+});
+
+// Synthetic provider shapes; these are not captured IREN/NBIS observations.
+test("EOD debt recovers documented complete same-row components with derivation provenance", () => {
+  const r = structuredClone(raw);
+  const row = r.Financials.Balance_Sheet.quarterly["2026-06-30"];
+  delete row.shortLongTermDebtTotal;
+  row.shortTermDebt = "20";
+  row.longTermDebtTotal = "100";
+  const facts = lib().normalizeEodFundamentals("APP", r, stamp).facts;
+  const debt = facts.find((f) => f.metric === "debt");
+  const cash = facts.find((f) => f.metric === "cash");
+  assert.equal(debt?.value, 120);
+  assert.equal(debt.accession, cash.accession);
+  assert.equal(debt.end, cash.end);
+  assert.equal(debt.currency, cash.currency);
+  assert.equal(debt.derivedFrom.length, 2);
+  assert.match(debt.form, /calculated/i);
+  row.shortLongTermDebtTotal = "0";
+  assert.equal(
+    lib()
+      .normalizeEodFundamentals("APP", r, stamp)
+      .facts.find((f) => f.metric === "debt").value,
+    0,
+    "explicit zero wins",
+  );
+});
+
+test("EOD debt may recover from reported net debt plus cash without guessing missing debt as zero", () => {
+  const r = structuredClone(raw);
+  const row = r.Financials.Balance_Sheet.quarterly["2026-06-30"];
+  delete row.shortLongTermDebtTotal;
+  row.netDebt = "-30";
+  assert.equal(
+    lib()
+      .normalizeEodFundamentals("APP", r, stamp)
+      .facts.find((f) => f.metric === "debt")?.value,
+    50,
+  );
+  delete row.cash;
+  assert.equal(
+    lib()
+      .normalizeEodFundamentals("APP", r, stamp)
+      .facts.some((f) => f.metric === "debt"),
+    false,
+  );
+});
+
+test("EOD debt recovery rejects incomplete negative overflowing and conflicting component observations", () => {
+  for (const extra of [
+    { shortTermDebt: 20 },
+    { longTermDebtTotal: 100 },
+    { shortTermDebt: -1, longTermDebtTotal: 100 },
+    { shortTermDebt: 1e308, longTermDebtTotal: 1e308 },
+    { netDebt: -100 },
+    { shortTermDebt: 20, longTermDebtTotal: 100, netDebt: 100 },
+  ]) {
+    const r = structuredClone(raw);
+    const row = r.Financials.Balance_Sheet.quarterly["2026-06-30"];
+    delete row.shortLongTermDebtTotal;
+    Object.assign(row, extra);
+    assert.equal(
+      lib()
+        .normalizeEodFundamentals("APP", r, stamp)
+        .facts.some((f) => f.metric === "debt"),
+      false,
+      JSON.stringify(extra),
+    );
+  }
+});
+
+test("EOD record updates and historical share period ends do not invent listing observation dates", () => {
+  const r = {
+    ...structuredClone(raw),
+    Highlights: { MarketCapitalization: 1000 },
+    SharesStats: { SharesOutstanding: 100 },
+    outstandingShares: {
+      quarterly: {
+        q: { date: "2026-Q2", dateFormatted: "2026-06-30", shares: 100 },
+      },
+    },
+  };
+  assert.equal(
+    lib().normalizeEodFundamentals("APP", r, stamp).evidence
+      .listingObservations,
+    undefined,
+  );
+});
+
+test("EOD recovered debt retains the row currency and never combines different periods", () => {
+  const r = structuredClone(raw);
+  const row = r.Financials.Balance_Sheet.quarterly["2026-06-30"];
+  delete row.shortLongTermDebtTotal;
+  Object.assign(row, {
+    currency_symbol: "EUR",
+    shortTermDebt: 20,
+    longTermDebtTotal: 100,
+  });
+  const facts = lib().normalizeEodFundamentals("APP", r, stamp).facts;
+  const debt = facts.find((f) => f.metric === "debt");
+  assert.equal(debt.currency, "EUR");
+  assert.equal(debt.unit, "EUR");
+  assert.equal(debt.basis, "Provider");
+  delete row.longTermDebtTotal;
+  r.Financials.Balance_Sheet.quarterly["2026-03-31"] = {
+    date: "2026-03-31",
+    currency_symbol: "USD",
+    longTermDebtTotal: 100,
+  };
+  assert.equal(
+    lib()
+      .normalizeEodFundamentals("APP", r, stamp)
+      .facts.some((f) => f.metric === "debt"),
+    false,
+  );
 });
