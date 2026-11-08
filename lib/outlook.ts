@@ -264,6 +264,47 @@ export function researchOutlook(
       return unavailable(
         "A current quote is needed for a price-anchored revenue sensitivity; analyst targets remain separate.",
       );
+    // A valid balance pair in another currency is present evidence, not
+    // missing cash/debt. Explain the conversion gap without relabelling values.
+    const pairedCurrencies = [
+      ...new Set(
+        r.facts
+          .filter(
+            (candidate) =>
+              candidate.metric === "cash" &&
+              candidate.scope === "instant" &&
+              candidate.currency != null &&
+              candidate.unit === candidate.currency &&
+              /^[A-Z]{3}$/.test(candidate.currency) &&
+              Number.isFinite(candidate.value) &&
+              candidate.value >= 0 &&
+              Number.isFinite(Date.parse(candidate.end)) &&
+              Number.isFinite(Date.parse(candidate.filed)) &&
+              candidate.end <= r.retrievedAt.slice(0, 10) &&
+              candidate.filed <= r.retrievedAt.slice(0, 10) &&
+              now - Date.parse(candidate.end) <= 400 * 86400000 &&
+              r.facts.some(
+                (f) =>
+                  f.metric === "debt" &&
+                  f.scope === "instant" &&
+                  f.currency === candidate.currency &&
+                  f.unit === candidate.unit &&
+                  f.basis === candidate.basis &&
+                  f.end === candidate.end &&
+                  f.accession === candidate.accession &&
+                  Number.isFinite(Date.parse(f.filed)) &&
+                  f.filed <= r.retrievedAt.slice(0, 10) &&
+                  Number.isFinite(f.value) &&
+                  f.value >= 0,
+              ),
+          )
+          .map((f) => f.currency!),
+      ),
+    ];
+    if (pairedCurrencies.length && !pairedCurrencies.includes(r.quote.currency))
+      return unavailable(
+        `Matched dated cash/debt evidence is available in ${pairedCurrencies.join(" / ")}, but the listing quote is ${r.quote.currency}. A dated currency conversion and compatible revenue/share evidence are required for per-share scenarios. No currency conversion is inferred.`,
+      );
     if (listing.status !== "available")
       return unavailable("Revenue sensitivity unavailable: " + listing.detail);
     const shares = listing.shares;

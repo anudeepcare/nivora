@@ -20,3 +20,5 @@ Pace is a price-condition policy, not demonstrated investment outperformance. Co
 Older release narratives are in `docs/archive/`; their setup claims and test counts are historical, not current instructions.
 
 Latest automatic-coverage correction: [SYSTEMATIC-SCENARIO-COVERAGE-20261108.md](SYSTEMATIC-SCENARIO-COVERAGE-20261108.md).
+
+Live baseline findings: [LIVE-SCENARIO-VALIDATION-20261108.md](LIVE-SCENARIO-VALIDATION-20261108.md).

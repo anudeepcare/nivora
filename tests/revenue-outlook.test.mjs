@@ -287,3 +287,35 @@ test("a conflicting fiscal EPS label does not suppress a separate valid revenue 
   assert.equal(result.available, true, result.reason);
   assert.equal(result.basis, "revenue");
 });
+
+test("a quoted USD listing with matched AUD balances explains currency mismatch without converting or hiding the balances", () => {
+  const r = input("IREN");
+  r.facts.forEach((f) => {
+    if (f.metric === "cash" || f.metric === "debt") {
+      f.currency = "AUD";
+      f.unit = "AUD";
+    }
+  });
+  delete r.evidence.listingObservations;
+  const original = structuredClone(r.facts);
+  const result = researchOutlook(r);
+  assert.equal(result.available, false);
+  assert.match(result.reason, /AUD/);
+  assert.match(result.reason, /USD/);
+  assert.match(result.reason, /currency conversion/i);
+  assert.deepEqual(r.facts, original);
+});
+test("a complete quote-currency balance pair is not blocked by another reporting currency", () => {
+  const r = input("HIMS");
+  r.facts.push(
+    ...r.facts
+      .filter((f) => f.metric === "cash" || f.metric === "debt")
+      .map((f) => ({
+        ...f,
+        currency: "AUD",
+        unit: "AUD",
+        accession: "other-currency",
+      })),
+  );
+  assert.equal(researchOutlook(r).available, true);
+});
