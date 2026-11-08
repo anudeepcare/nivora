@@ -221,3 +221,69 @@ test("uploaded IREN has no field-date bridge; a synthetic dated extension can ex
   wrongRevenue.evidence.highlights.RevenueTTM /= 1000;
   assert.equal(researchOutlook(wrongRevenue).available, false);
 });
+
+test("Synthetic IREN HIMS CIFR NBIS rebuild missing vendor multiples only from corroborated dated revenue and listing evidence", () => {
+  for (const symbol of ["IREN", "HIMS", "CIFR", "NBIS"]) {
+    const r = input(symbol);
+    r.facts.push({
+      metric: "revenue",
+      scope: "annual",
+      start: "2025-07-01",
+      end: "2026-06-30",
+      filed: "2026-08-01",
+      currency: "USD",
+      unit: "USD",
+      value: 1060000000,
+      basis: "Provider",
+      accession: "synthetic-annual",
+      sourceUrl: "https://example.test/synthetic",
+    });
+    for (const missingMultiple of [undefined, 0, -1, NaN]) {
+      r.evidence.multiples.EnterpriseValueRevenue = missingMultiple;
+      const result = researchOutlook(r);
+      assert.equal(result.available, true, `${symbol}: ${result.reason}`);
+      assert.equal(result.basis, "revenue");
+      assert.match(result.caveat, /Calculated EV\/revenue/);
+      assert.equal(result.cases[1].multiple, 5);
+    }
+    r.facts = r.facts.filter((f) => f.metric !== "revenue");
+    assert.equal(
+      researchOutlook(r).available,
+      false,
+      "missing corroboration must not be synthesized",
+    );
+  }
+});
+
+test("Synthetic HIMS selected revenue period is not blocked by EPS from another fiscal period", () => {
+  const r = input("HIMS");
+  r.company.sector = "Healthcare";
+  r.evidence.profile.industry = "Medical Care Facilities";
+  r.evidence.estimates.push({
+    ...r.evidence.estimates[0],
+    date: "2029-12-31",
+    period: "FY2029",
+    epsLow: 1,
+    eps: 2,
+    epsHigh: 3,
+  });
+  const result = researchOutlook(r, { fiscalEnd: "2028-12-31" });
+  assert.equal(result.available, true, result.reason);
+  assert.equal(result.basis, "revenue");
+  assert.equal(result.end, "2028-12-31");
+});
+
+test("a conflicting fiscal EPS label does not suppress a separate valid revenue sensitivity", () => {
+  const r = input("HIMS");
+  r.evidence.estimates.push({
+    ...r.evidence.estimates[0],
+    date: "2029-12-31",
+    period: "FY2040",
+    epsLow: 1,
+    eps: 2,
+    epsHigh: 3,
+  });
+  const result = researchOutlook(r);
+  assert.equal(result.available, true, result.reason);
+  assert.equal(result.basis, "revenue");
+});

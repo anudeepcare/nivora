@@ -2,7 +2,7 @@
 
 Current enhancement handoff: 8 November 2026. ZIP-only delivery; no remote branch or deployment was changed. Production remains unchanged.
 
-Start with [the preprod enhancement report](PREPROD-ENHANCEMENTS-20261108.md), then [the operational handoff](RELEASE-HANDOFF-20261107.md). Earlier review and completion documents are historical snapshots.
+Start with [visible changes and the integration correction](VISIBLE-CHANGES-20261108.md), then [the preprod enhancement report](PREPROD-ENHANCEMENTS-20261108.md), then [the operational handoff](RELEASE-HANDOFF-20261107.md). Earlier review and completion documents are historical snapshots.
 
 See [the recovered requirement checklist](REQUIREMENTS-STATUS-20261107.md) and [exact configuration notes](CONFIGURATION-20261107.md). These separate shipped source from live activation and unfinished roadmap items.
 

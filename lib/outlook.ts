@@ -189,7 +189,39 @@ export function researchOutlook(
       x.eps! <= x.epsHigh!
     );
   };
-  const hasEarnings = (e.estimates ?? []).some(usableEps);
+  const selectedEstimates = (e.estimates ?? []).filter(
+    (x) => !assumptions?.fiscalEnd || x.date === assumptions.fiscalEnd,
+  );
+  const usableRevenue = (
+    x: NonNullable<Research["evidence"]>["estimates"][number],
+  ) => {
+    const days = (Date.parse(x.date) - now) / 86400000;
+    return (
+      /annual/i.test(x.frequency) &&
+      days >= 90 &&
+      days <= 1461 &&
+      x.currency === r.quote.currency &&
+      validFiscal(x) &&
+      [x.revenueLow, x.revenue, x.revenueHigh].every(
+        (v) => v != null && Number.isFinite(v) && v > 0,
+      ) &&
+      x.revenueLow! <= x.revenue! &&
+      x.revenue! <= x.revenueHigh!
+    );
+  };
+  // Eligibility must describe the requested fiscal period, not an unrelated
+  // profitable year that prevents the selected revenue sensitivity from running.
+  const hasEarnings = selectedEstimates.some(
+    (x) => usableEps(x) && validFiscal(x),
+  );
+  if (
+    !hasEarnings &&
+    selectedEstimates.some((x) => usableEps(x) && !validFiscal(x)) &&
+    !selectedEstimates.some(usableRevenue)
+  )
+    return unavailable(
+      "The supplied fiscal period and forecast date conflict.",
+    );
   if (
     coverage.family === "financial" &&
     (!hasEarnings || r.company.foreignListing)
@@ -252,25 +284,8 @@ export function researchOutlook(
           f.currency === cash.currency &&
           f.filed <= r.retrievedAt.slice(0, 10),
       );
-    const estimate = (e.estimates ?? [])
-      .filter(
-        (x) => !assumptions?.fiscalEnd || x.date === assumptions.fiscalEnd,
-      )
-      .filter((x) => {
-        const days = (Date.parse(x.date) - now) / 86400000;
-        return (
-          /annual/i.test(x.frequency) &&
-          days >= 90 &&
-          days <= 1461 &&
-          x.currency === r.quote.currency &&
-          validFiscal(x) &&
-          [x.revenueLow, x.revenue, x.revenueHigh].every(
-            (v) => v != null && Number.isFinite(v) && v > 0,
-          ) &&
-          x.revenueLow! <= x.revenue! &&
-          x.revenue! <= x.revenueHigh!
-        );
-      })
+    const estimate = selectedEstimates
+      .filter(usableRevenue)
       .sort(
         (a, b) =>
           Math.abs(Date.parse(a.date) - now - 3 * 365.25 * 86400000) -
@@ -280,9 +295,6 @@ export function researchOutlook(
       !shares ||
       !Number.isFinite(shares) ||
       shares <= 0 ||
-      !multiple ||
-      !Number.isFinite(multiple) ||
-      multiple <= 0 ||
       !cash ||
       !debt ||
       ![cash.value, debt.value].every((v) => Number.isFinite(v) && v >= 0)
@@ -292,9 +304,6 @@ export function researchOutlook(
           [
             !shares || !Number.isFinite(shares) || shares <= 0
               ? "positive reported outstanding shares"
-              : null,
-            !multiple || !Number.isFinite(multiple) || multiple <= 0
-              ? "a positive EV/revenue multiple"
               : null,
             !cash ||
             !debt ||
@@ -346,6 +355,9 @@ export function researchOutlook(
           listing.detail,
       );
     const reportedMultipleValid =
+      multiple != null &&
+      Number.isFinite(multiple) &&
+      multiple > 0 &&
       reportedEV != null &&
       Number.isFinite(reportedEV) &&
       reportedEV > 0 &&
@@ -397,6 +409,10 @@ export function researchOutlook(
       multiple = comparableEV / ttmRevenue!;
       calculatedMultiple = true;
     }
+    if (multiple == null || !Number.isFinite(multiple) || multiple <= 0)
+      return unavailable(
+        "A finite positive corroborated EV/revenue multiple is needed.",
+      );
     const years = (Date.parse(estimate.date) - now) / (365.25 * 86400000);
     const cases = (
       [

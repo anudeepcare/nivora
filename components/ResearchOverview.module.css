@@ -336,3 +336,15 @@
   padding-left: 18px;
   line-height: 1.6;
 }
+
+.researchTools {
+  margin-top: 16px;
+  min-width: 0;
+}
+.researchTools > summary {
+  min-height: 44px;
+  padding: 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}

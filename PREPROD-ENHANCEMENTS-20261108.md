@@ -8,6 +8,14 @@ Baseline: remote `anudeepcare/nivora` preprod at `b050ff2f3d458973936f2c0e3f2951
 
 ZIP-only delivery per the user’s final instruction. Local commit: `d0dc2bab6e9e8bdd17e75e1098480a9c36ea14e7`. A preprod push was attempted before the instruction changed, but failed because GitHub credentials were unavailable; no remote write occurred. Remote preprod and main were rechecked and remain at the hashes above. No preview deployment was created. Release automation is stopped. This report and README were then updated for ZIP delivery; product code is the verified local commit.
 
+## Integration correction
+
+The initial ZIP missed the active-screen wiring for CompanyMetrics and PositionExplorer. This corrected source connects both to IntegratedResearch, with on-demand position review and a retained full-metrics disclosure. See VISIBLE-CHANGES-20261108.md for the exact UI locations, deployment URL distinction, and honest scope of visible changes. The corrected product source includes these local changes beyond commit d0dc2ba; it is not yet deployed.
+
+## Scenario follow-up
+
+Two additional outlook blockers were corrected: missing vendor EV/revenue can be rebuilt only from corroborated financial/listing evidence, and fiscal-year-specific EPS eligibility no longer blocks a valid revenue range for the selected year. The archived IREN fixture still lacks dated share/listing evidence; no targets or analyst bounds were fabricated. Synthetic tests cover IREN/HIMS/CIFR/NBIS. Live current-provider validation remains blocked by preview authentication. See the visible-changes guide for details.
+
 ## Implemented
 
 1. **Opening workspace:** one viewport launch composition across authentication, access and workspace, small animated Auryn mark, safe-area padding, light/dark and reduced-motion styles, a shared opening clock and actual slow/error recovery. Successful loading has no artificial delay. Access refresh retains mounted content until its authorization response; secondary Research/Portfolio/Watchlist chunks use local skeletons.
@@ -20,7 +28,7 @@ ZIP-only delivery per the user’s final instruction. Local commit: `d0dc2bab6e9
 ## Verification
 
 - Clean baseline: 1,241 unit tests passed.
-- Final integrated unit suite: 1,275 passed, zero failed.
+- Final corrected integrated unit suite: 1,280 passed, zero failed.
 - Final lint and formatting passed; final typecheck passed.
 - Final optimized build and complete controlled API suite passed. The production-isolation check verified all 56 server traces exclude development fixture source. Build reports 105kB shared first-load JS and 336kB for the catch-all app route; these are bundle outputs, not measured load times.
 - Non-blocking existing diagnostics: test Link fixtures emit a React `scroll` attribute warning; Next notes the absent Next ESLint plugin. The explicit repository lint command passes.
