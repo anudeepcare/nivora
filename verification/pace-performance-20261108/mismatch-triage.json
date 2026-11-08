@@ -1,0 +1,19 @@
+{
+  "scope": "Diagnostic of an already explored sample; no new validation or causal attribution. Matching price does not prove matching timestamps or corporate-action basis.",
+  "n": 23,
+  "triage": {
+    "preserved-extension-rule": 5,
+    "category-boundary-review": 16,
+    "price-alignment-review": 2
+  },
+  "referenceToCandidate": {
+    "1 -> LIGHT_TRIM": 5,
+    "3 -> 2": 8,
+    "1 -> 2": 2,
+    "3 -> 4": 4,
+    "2 -> 1": 2,
+    "2 -> 3": 2
+  },
+  "dateAlignedBaselineResolves": 0,
+  "productionChanged": false
+}

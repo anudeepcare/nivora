@@ -22,15 +22,6 @@ export default function ValuationLab({ research: r }: { research: Research }) {
       <>
         <SelectedValuation research={r} />
         <ValuationMethods research={r} cashCases={[]} />
-        <section className="model-notice">
-          <h3>Use the right model for this business</h3>
-          <p>
-            {!d.modelEligible
-              ? "A generic cash-flow sensitivity is not used for financial businesses, crypto or unreconciled foreign listings."
-              : "Positive cash flow and reconciled share/currency data are required for this model."}{" "}
-            Published analyst evidence and reported results remain separate.
-          </p>
-        </section>
       </>
     );
   const cash =
@@ -53,9 +44,7 @@ export default function ValuationLab({ research: r }: { research: Research }) {
     <>
       <SelectedValuation research={r} />
       <details>
-        <summary>
-          Explore your own assumptions · separate from the assessment
-        </summary>
+        <summary>Adjust cash-flow assumptions</summary>
         <section
           className="valuation-lab"
           aria-label="Interactive cash-flow sensitivity"

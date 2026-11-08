@@ -16,11 +16,12 @@ export default function SelectedValuation({
     [r],
   );
   const v = d.valuation;
+  if (!v) return null;
   return (
     <section className={s.root} aria-label="Selected AURYN valuation model">
       <header className={s.heading}>
         <div>
-          <span className={s.eyebrow}>Model used in the assessment</span>
+          <span className={s.eyebrow}>AURYN valuation</span>
           <h2>{v?.label ?? "Valuation needs more evidence"}</h2>
           <p>
             {v

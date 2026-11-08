@@ -48,17 +48,10 @@ export default function ValueStudio({
       </header>
       <SelectedValuation research={r} />
       <details>
-        <summary>Explore alternative price assumptions</summary>
+        <summary>Compare valuation methods</summary>
         <ScenarioCompass research={r} />
       </details>
-      <details className="value-personal-model">
-        <summary>Your assumptions · optional workbench</summary>
-        <p className="desk-footnote">
-          These are your editable scenarios, separate from AURYN’s model and
-          published analyst targets.
-        </p>
-        <PriceProjection key={r.company.symbol} research={r} />
-      </details>
+      <PriceProjection key={r.company.symbol} research={r} />
       {available.length > 0 && (
         <section
           className="valuation-board"
