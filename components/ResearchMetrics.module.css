@@ -741,3 +741,38 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+/* Period controls stay a single compact, touch-sized row on a phone. */
+.panel.panel.panel > :global(.section-head) > :global(.segments) {
+  display: inline-flex;
+  width: auto;
+  flex: none;
+  gap: 3px;
+  padding: 4px;
+}
+.panel.panel.panel > :global(.section-head) > :global(.segments button) {
+  min-height: 40px;
+  padding: 8px 12px;
+  font-size: 13px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+@media (max-width: 650px) {
+  .panel.panel.panel > :global(.section-head) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+  .panel.panel.panel > :global(.section-head) > :global(.segments) {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    max-width: 360px;
+  }
+  .panel.panel.panel > :global(.section-head) > :global(.segments button) {
+    min-height: 42px;
+    width: auto;
+    margin: 0;
+    padding: 8px 10px;
+  }
+}

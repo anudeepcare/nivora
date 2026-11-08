@@ -1,4 +1,6 @@
 "use client";
+import dynamic from "next/dynamic";
+import QuickRead from "./QuickRead";
 import { companyAccent } from "@/lib/visual-signals";
 import portfolioStyles from "./PortfolioWorkspace.module.css";
 import { PaceBadge } from "./WorkspacePace";
@@ -24,15 +26,25 @@ import { FeatureGate } from "./Access";
 import AccountBalances from "./AccountBalances";
 import ApprovedPortfolioChart from "./ApprovedPortfolioChart";
 import { PositionEditor } from "./ApprovedWorkspaceForms";
-import PortfolioCharts from "./PortfolioCharts";
-import PortfolioExposure from "./PortfolioExposure";
-import PortfolioLedger from "./PortfolioLedger";
+const PortfolioCharts = dynamic(() => import("./PortfolioCharts"), {
+  loading: () => <p role="status">Loading analysis…</p>,
+});
+const PortfolioExposure = dynamic(() => import("./PortfolioExposure"), {
+  loading: () => <p role="status">Loading analysis…</p>,
+});
+const PortfolioLedger = dynamic(() => import("./PortfolioLedger"), {
+  loading: () => <p role="status">Loading analysis…</p>,
+});
 import PortfolioRiskSummary, {
   usePortfolioCalendar,
 } from "./PortfolioRiskSummary";
-import SectorBenchmarks from "./SectorBenchmarks";
+const SectorBenchmarks = dynamic(() => import("./SectorBenchmarks"), {
+  loading: () => <p role="status">Loading analysis…</p>,
+});
 import { useWorkspaceFilter } from "./Session";
-import TransactionWorkspace from "./TransactionWorkspace";
+const TransactionWorkspace = dynamic(() => import("./TransactionWorkspace"), {
+  loading: () => <p role="status">Loading analysis…</p>,
+});
 import { Empty, Notice, SecurityLogo } from "./Ui";
 
 import {
@@ -140,6 +152,49 @@ export function Portfolio() {
       {state.workspaceError && <Notice error>{state.workspaceError}</Notice>}
       <WealthStrip state={state} portfolio />
       <Coverage state={state} />
+      {quotes.ready && positions.length > 0 && (
+        <QuickRead
+          title="Your portfolio in 30 seconds"
+          items={[
+            ...(model.allocations[0]
+              ? [
+                  {
+                    label: "Largest position",
+                    value: `${model.allocations[0].symbol} · ${percent(model.allocations[0].weight)}`,
+                    detail:
+                      "Share of priced investments, excluding cash and unpriced holdings.",
+                    tone:
+                      model.allocations[0].weight > 30
+                        ? ("caution" as const)
+                        : ("neutral" as const),
+                  },
+                ]
+              : []),
+            {
+              label: "Earnings · next 7 days",
+              value:
+                calendar.data && calendar.data.followed > 0
+                  ? `${positions.filter((p) => p.assetType === "stock" && earnings.has(p.symbol)).length} confirmed holdings`
+                  : "Dates not confirmed",
+              detail:
+                "Review supplied dates before changing position sizes; calendar coverage may be incomplete.",
+            },
+            {
+              label: "Price coverage",
+              value: model.unpriced.length
+                ? `${model.unpriced.length} holdings need a price`
+                : "All holdings priced",
+              detail: model.older
+                ? `${model.older} use older available prices. Check timestamps before acting.`
+                : "Prices are snapshots; totals are not a live account balance.",
+              tone:
+                model.unpriced.length || model.older
+                  ? ("caution" as const)
+                  : ("positive" as const),
+            },
+          ]}
+        />
+      )}
       <div className="portfolio-grid">
         <div>
           <section className="card portfolio-trend-panel">

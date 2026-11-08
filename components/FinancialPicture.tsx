@@ -1,4 +1,5 @@
 "use client";
+import QuickRead from "./QuickRead";
 import layout from "./ResearchMetrics.module.css";
 import { useMemo, useState } from "react";
 import type { Research } from "@/lib/types";
@@ -230,6 +231,50 @@ export default function FinancialPicture({
           ))}
         </div>
       </header>
+      {p && (
+        <QuickRead
+          title="The business in 30 seconds"
+          items={[
+            ...(growth != null
+              ? [
+                  {
+                    label: "Revenue · same period a year ago",
+                    value: percent(growth, true),
+                    detail: `${amount(p.revenue, p.currency, true)} in this ${scope === "ttm" ? "rolling twelve-month" : scope} period.`,
+                    tone:
+                      growth >= 0
+                        ? ("positive" as const)
+                        : ("caution" as const),
+                  },
+                ]
+              : []),
+            ...(p.margin != null
+              ? [
+                  {
+                    label: "Operating margin",
+                    value: percent(p.margin),
+                    detail: "Revenue retained before interest and tax.",
+                    tone:
+                      p.margin >= 0
+                        ? ("positive" as const)
+                        : ("caution" as const),
+                  },
+                ]
+              : []),
+            ...(p.fcf != null
+              ? [
+                  {
+                    label: "Cash after capital spending",
+                    value: amount(p.fcf, p.currency, true),
+                    detail: "Operating cash less reported capital expenditure.",
+                    tone:
+                      p.fcf >= 0 ? ("positive" as const) : ("caution" as const),
+                  },
+                ]
+              : []),
+          ]}
+        />
+      )}
       {p ? (
         <>
           <div className={layout.financialWorkbench}>

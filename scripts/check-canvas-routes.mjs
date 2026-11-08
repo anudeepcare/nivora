@@ -116,6 +116,13 @@ try {
           const active = page
             .getByRole("navigation", { name: "Research sections" })
             .locator('[aria-current="page"]');
+          // Server HTML can arrive before the client positions the scrollable tab strip.
+          await page.waitForFunction(() => {
+            const el = document.querySelector('[aria-label="Research sections"] [aria-current="page"]');
+            if (!el) return false;
+            const frame = el.parentElement.getBoundingClientRect(), item = el.getBoundingClientRect();
+            return item.left >= frame.left - 1 && item.right <= frame.right + 1;
+          }, undefined, { timeout: 15000 });
           const visible = await active.evaluate((el) => {
             const frame = el.parentElement.getBoundingClientRect(),
               item = el.getBoundingClientRect();

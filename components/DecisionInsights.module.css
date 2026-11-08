@@ -530,7 +530,7 @@
   min-width: 0;
 }
 .root.root.root .sentence .inlineHorizon select {
-  width: 8.5ch;
+  width: 10.5ch;
   font-size: 0.9em;
 }
 .root.root.root .sentence .inlineNumber > span[aria-hidden] {
@@ -540,4 +540,33 @@
 .root.root.root .sentence .inlineHorizon {
   font: inherit;
   line-height: inherit;
+}
+/* Keep accessible labels outside the visible editable sentence despite global label rules. */
+.root.root.root .sentence .srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  min-width: 0;
+  max-width: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.root.root.root .sentence select {
+  display: inline-block;
+}
+@media (max-width: 650px) {
+  .root.root.root .sentence {
+    font-size: 21px;
+    line-height: 1.9;
+    letter-spacing: -0.025em;
+  }
+  .root.root.root .epsRow {
+    grid-template-columns: 88px minmax(0, 1fr) 62px;
+    gap: 8px;
+  }
 }

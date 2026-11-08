@@ -384,3 +384,61 @@
     flex-basis: 100%;
   }
 }
+.board {
+  padding: 18px;
+  border-radius: 16px;
+  background: var(--card);
+}
+.heading {
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.heading h3 {
+  font-size: 18px;
+}
+.reading {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.toolbar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+  padding: 14px;
+  background: var(--surface);
+  border-radius: 12px;
+  margin: 12px 0;
+}
+.toolbar label {
+  font-size: 12px;
+}
+@media (max-width: 850px) {
+  .toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .tabs {
+    margin-left: 0;
+  }
+}
+@media (max-width: 500px) {
+  .board {
+    padding: 14px;
+  }
+  .tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+  .tabs button {
+    font-size: 12px;
+    padding: 8px 5px;
+  }
+  .toolbar {
+    padding: 10px;
+    gap: 10px;
+  }
+}
+
+.toolbar > .actions {
+  grid-column: 1/-1;
+}

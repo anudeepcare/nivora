@@ -593,3 +593,23 @@
     grid-column: 1 / -1;
   }
 }
+.content.content.content :global(.ownership-leading) {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px 20px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--surface);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.content.content.content :global(.ownership-leading span) {
+  color: var(--muted);
+}
+.content.content.content :global(.context-highlights > div > span) {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

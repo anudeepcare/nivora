@@ -39,7 +39,7 @@ export function OverviewBrief({
       tone: "pace",
       text:
         decision.pace?.level != null
-          ? `${decision.actionLabel} · P${decision.pace.level} price zone. Business checks determine whether adding qualifies.`
+          ? `${decision.actionLabel} · Zone P${decision.pace.level}. ${decision.pace.level < 2 ? "Watch for an entry; review before adding." : "Adding depends on the business checks and your position limits."}`
           : "Price history is still being assessed. Review the business evidence first.",
     });
     if (consensus?.referencePrice != null && consensus.target > 0)
@@ -68,7 +68,11 @@ export function OverviewBrief({
         {model.map(({ key, icon: Icon, tone, text }) => (
           <article key={key} data-tone={tone}>
             <span className={s.icon}>
-              <Icon size={18} />
+              <Icon
+                size={18}
+                fill={key === "pace" ? "currentColor" : "none"}
+                aria-hidden="true"
+              />
             </span>
             <p>{text}</p>
           </article>

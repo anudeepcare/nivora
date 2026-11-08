@@ -16,11 +16,11 @@ function views({target=true,rsi=76}={}) {
 const research={retrievedAt:'2026-11-08T12:00:00Z',history:[],quote:{price:999,currency:'USD'},company:{symbol:'TEST'}};
 test('brief uses the selected reference denominator and the holding decision',()=>{
  const {OverviewBrief}=views();const html=renderToStaticMarkup(React.createElement(OverviewBrief,{research,now:Date.parse(research.retrievedAt),owns:true}));
- assert.match(html,/Hold · P1/);assert.match(html,/\+20\.0% to the \$120\.00 analyst target/);assert.doesNotMatch(html,/16\.7%|999|NaN/);
+ assert.match(html,/Hold · Zone P1/);assert.match(html,/\+20\.0% to the \$120\.00 analyst target/);assert.doesNotMatch(html,/16\.7%|999|NaN/);
 });
 test('brief omits absent targets and momentum instead of fabricating values',()=>{
  const {OverviewBrief}=views({target:false,rsi:null});const html=renderToStaticMarkup(React.createElement(OverviewBrief,{research,now:Date.parse(research.retrievedAt)}));
- assert.match(html,/Watch · P1/);assert.doesNotMatch(html,/analyst target|RSI|NaN|Infinity/);
+ assert.match(html,/Watch · Zone P1/);assert.doesNotMatch(html,/analyst target|RSI|NaN|Infinity/);
 });
 test('freshness distinguishes missing datasets from the report period',()=>{
  const {DataFreshness}=views();const html=renderToStaticMarkup(React.createElement(DataFreshness,{research,now:Date.parse(research.retrievedAt),wide:true}));

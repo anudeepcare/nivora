@@ -65,6 +65,7 @@ function render(chain, view = "positioning") {
   ).outputText;
   new Function("require", "module", "exports", code)(
     (name) => {
+      if (name === "./QuickRead") return {__esModule:true,default:({items})=>React.createElement("section",null,items.map(x=>React.createElement("article",{key:x.label},x.label,x.value,x.detail)))};
       if (name === "./SearchableSelect")
         return {
           __esModule: true,

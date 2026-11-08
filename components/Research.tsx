@@ -296,9 +296,25 @@ export default function Research({ symbol }: { symbol: string }) {
         navigation.scrollLeft +=
           item.left - frame.left - (frame.width - item.width) / 2;
     };
+    let mounted = true;
+    const revealWhenReady = () => {
+      if (mounted) revealSelection();
+    };
     revealSelection();
-    window.addEventListener("resize", revealSelection);
-    return () => window.removeEventListener("resize", revealSelection);
+    // Fonts and deferred route content can settle after the initial layout pass.
+    const observer = new ResizeObserver(revealWhenReady);
+    if (researchNavigation.current) {
+      observer.observe(researchNavigation.current);
+      for (const child of researchNavigation.current.children)
+        observer.observe(child);
+    }
+    void document.fonts.ready.then(revealWhenReady);
+    window.addEventListener("resize", revealWhenReady);
+    return () => {
+      mounted = false;
+      observer.disconnect();
+      window.removeEventListener("resize", revealWhenReady);
+    };
   }, [tab, r?.company.symbol]);
   const switchTab = (next: (typeof tabs)[number]) => {
     if (next === "Technicals" || next === "Snapshot")

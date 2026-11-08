@@ -33,7 +33,7 @@ import { researchPeriods } from "../lib/financial-catalog.ts";
 import { demoData } from "./fixtures/demo.ts";
 
 function loadComponent(file, name, bindings) {
-  bindings = {
+  bindings = { QuickRead: () => null,
     SectionIcon: () => null,
     PaceBoard: () => null,
     PaceBadge: () => null,

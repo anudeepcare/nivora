@@ -1,0 +1,26 @@
+[
+  {
+    "width": 390,
+    "periodControlRow": true,
+    "periodSwitches": true,
+    "hiddenSentenceLabels": true,
+    "portfolioDrawer": true,
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "periodControlRow": true,
+    "periodSwitches": true,
+    "hiddenSentenceLabels": true,
+    "portfolioDrawer": true,
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "periodControlRow": true,
+    "periodSwitches": true,
+    "hiddenSentenceLabels": true,
+    "portfolioDrawer": true,
+    "overflow": false
+  }
+]

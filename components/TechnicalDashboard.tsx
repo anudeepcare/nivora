@@ -1,4 +1,5 @@
 "use client";
+import QuickRead from "./QuickRead";
 import SectionIcon from "./SectionIcon";
 import { Help } from "./Ui";
 import layout from "./ResearchMetrics.module.css";
@@ -277,6 +278,51 @@ export default function TechnicalDashboard({
           </p>
         </div>
       </header>
+      <QuickRead
+        title="The technical read"
+        items={[
+          ...(last != null && pro.ma200 != null
+            ? [
+                {
+                  label: "Longer-term trend",
+                  value: `${percent((last / pro.ma200 - 1) * 100, true)} vs 200-session average`,
+                  detail:
+                    last >= pro.ma200
+                      ? "Price is above its completed daily trend reference."
+                      : "Price remains below its completed daily trend reference.",
+                  tone:
+                    last >= pro.ma200
+                      ? ("positive" as const)
+                      : ("caution" as const),
+                },
+              ]
+            : []),
+          ...(p.tech.rsi != null
+            ? [
+                {
+                  label: "Momentum · RSI 14",
+                  value: `${p.tech.rsi.toFixed(1)} · ${p.tech.rsi > 70 ? "Overbought" : p.tech.rsi < 30 ? "Oversold" : "Neutral range"}`,
+                  detail:
+                    "Extremes can persist; RSI alone is not an entry signal.",
+                  tone:
+                    p.tech.rsi > 70 || p.tech.rsi < 30
+                      ? ("caution" as const)
+                      : ("neutral" as const),
+                },
+              ]
+            : []),
+          ...(a.relativeVolume != null
+            ? [
+                {
+                  label: "Participation",
+                  value: `${a.relativeVolume.toFixed(2)}× usual volume`,
+                  detail:
+                    "Completed-session volume relative to its recent average.",
+                },
+              ]
+            : []),
+        ]}
+      />
       <div className={layout.technicalWorkbench}>
         {chart && <div className={layout.technicalChart}>{chart}</div>}
         <div className={layout.technicalCurrent}>

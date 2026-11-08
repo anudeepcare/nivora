@@ -52,3 +52,9 @@ Source only; no deployment or database changes. Optional public Pace record publ
 - Paired consensus with data freshness; compact freshness strip when target coverage is missing.
 - Aligned Pace/chart boundaries and condensed repeated evidence/risk text.
 - Reworked public product questions into three consistent cards.
+
+## Readability and workspace review — November 8
+
+Clearer Pace summary with a filled diamond; stronger text contrast; compact mobile financial-period controls; short evidence reads in Business, Case, Technicals, Targets, Options and Portfolio. Ownership adds the largest supplied holder and explanations. Options groups its command/filter surfaces and removes repeated expiry/range metadata. The valuation sentence keeps accessible labels outside the visible text. Portfolio distinguishes missing calendar coverage and defers five optional analysis modules until opened. Research navigation follows the selected tab as layout settles. Calculations, scenarios and tools remain in place.
+
+This is a source release; no production deployment or database changes were performed.

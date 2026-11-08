@@ -1,4 +1,5 @@
 "use client";
+import QuickRead from "./QuickRead";
 import { optionsLiquidity } from "@/lib/options-liquidity";
 import { volatilityContext, rankContracts } from "@/lib/options-context";
 import OptionsSnapshot from "./OptionsSnapshot";
@@ -492,6 +493,33 @@ export default function OptionsDesk({
         </section>
       ) : (
         <>
+          <QuickRead
+            title="The options snapshot"
+            items={[
+              {
+                label: "Selected expiration",
+                value: expiryLabel(active),
+                detail: `${days} days · ${summary.rows.length} contracts in this snapshot.`,
+              },
+              ...(summary.straddle !== null && spot > 0
+                ? [
+                    {
+                      label: "Option-priced range",
+                      value: `${amount(Math.max(0, spot - summary.straddle))} – ${amount(spot + summary.straddle)}`,
+                      detail:
+                        "At-the-money straddle estimate, not a guaranteed range.",
+                      tone: "caution" as const,
+                    },
+                  ]
+                : []),
+              {
+                label: "Read before choosing a contract",
+                value: "Check spread and liquidity",
+                detail:
+                  "Exposure estimates describe positioning; they do not establish direction.",
+              },
+            ]}
+          />
           <div
             className={deskStyles.marketLine}
             aria-label="Selected options snapshot"
@@ -500,18 +528,6 @@ export default function OptionsDesk({
               {research.company.symbol}{" "}
               <span>{spot > 0 ? amount(spot) : "Not priced"}</span>
             </strong>
-            <span>
-              {expiryLabel(active)} · {days} days · {summary.rows.length}{" "}
-              contracts
-            </span>
-            <span>
-              Option-priced range{" "}
-              <b>
-                {summary.straddle !== null && spot > 0
-                  ? `${amount(Math.max(0, spot - summary.straddle))} – ${amount(spot + summary.straddle)}`
-                  : "Not measured"}
-              </b>
-            </span>
             <small>Options · {observed}</small>
             <details className={deskStyles.dataHelp}>
               <summary>Data & definitions</summary>

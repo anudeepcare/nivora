@@ -489,3 +489,79 @@
 .commandBar {
   padding: 10px 0;
 }
+/* One toolbar surface groups navigation; data below uses a separate reading rhythm. */
+.desk {
+  font-size: 14px;
+}
+.commandBar {
+  padding: 16px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--card);
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.views {
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--surface);
+}
+.views button {
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+}
+.views button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--card);
+}
+.marketLine {
+  font-size: 13px;
+  padding: 12px 4px;
+  gap: 10px 20px;
+}
+.orientation p {
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.55;
+}
+@media (max-width: 700px) {
+  .commandBar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    padding: 12px;
+  }
+  .expiryControl,
+  .advancedControl {
+    width: 100%;
+    margin: 0;
+    min-width: 0;
+    font-size: 12px;
+  }
+  .expiryControl select,
+  .advancedControl select {
+    width: 100%;
+    min-width: 0;
+  }
+  .views {
+    grid-column: 1/-1;
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 2px;
+  }
+  .views button {
+    padding: 8px 4px;
+    font-size: 12px;
+    min-height: 44px;
+  }
+  .marketLine {
+    gap: 8px 14px;
+  }
+  .orientation {
+    display: block;
+  }
+  .orientation p {
+    margin-top: 6px;
+  }
+}

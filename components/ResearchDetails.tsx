@@ -1,4 +1,5 @@
 "use client";
+import QuickRead from "./QuickRead";
 import TechnicalDashboard from "./TechnicalDashboard";
 import { useMemo, useRef } from "react";
 import { X } from "lucide-react";
@@ -43,6 +44,36 @@ export function ThesisPicture({ research: r }: { research: Research }) {
             <p>Three drivers. Three risks. What would change the view.</p>
           </div>
         </header>
+        <QuickRead
+          title="The case in 30 seconds"
+          items={[
+            ...(c.positive[0]
+              ? [
+                  {
+                    label: "Leading support",
+                    value: c.positive[0].title,
+                    detail: c.positive[0].text,
+                    tone: "positive" as const,
+                  },
+                ]
+              : []),
+            ...(c.risks[0]
+              ? [
+                  {
+                    label: "Leading challenge",
+                    value: c.risks[0].title,
+                    detail: c.risks[0].text,
+                    tone: "caution" as const,
+                  },
+                ]
+              : []),
+            {
+              label: "Next checkpoint",
+              value: next ? dateLabel(next.date) : "Earnings date unconfirmed",
+              detail: "Revisit revenue, cash conversion and guidance.",
+            },
+          ]}
+        />
         <div className="grid2 thesis-evidence">
           {groups.map((g) => (
             <section className="thesis-group" data-tone={g.tone} key={g.label}>

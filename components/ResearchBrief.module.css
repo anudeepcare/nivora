@@ -68,8 +68,10 @@
 }
 .briefGrid p {
   margin: 0;
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink);
+  font-weight: 500;
 }
 .freshness dl {
   display: grid;
@@ -116,7 +118,7 @@
     gap: 8px;
   }
   .briefGrid p {
-    font-size: 12px;
+    font-size: 14px;
   }
   .brief header small {
     max-width: 120px;
@@ -149,4 +151,10 @@
   .freshness[data-wide] dl {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+.brief.brief .briefGrid p {
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
 }

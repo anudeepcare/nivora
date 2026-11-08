@@ -1,4 +1,5 @@
 "use client";
+import { Help } from "./Ui";
 import type { Research } from "@/lib/types";
 import { percent, dateLabel } from "@/lib/format";
 export default function OwnershipPicture({
@@ -14,6 +15,14 @@ export default function OwnershipPicture({
       !e.holders.length)
   )
     return null;
+  const largest = e.holders.reduce<(typeof e.holders)[number] | null>(
+    (best, holder) =>
+      holder.percent != null &&
+      (best?.percent == null || holder.percent > best.percent)
+        ? holder
+        : best,
+    null,
+  );
   return (
     <section className="ownership-picture">
       <header className="section-head">
@@ -24,14 +33,35 @@ export default function OwnershipPicture({
       </header>
       <div className="context-highlights">
         <div>
-          <span>Institutions</span>
+          <span>
+            Institutions{" "}
+            <Help label="Institutional ownership">
+              Reported institutional ownership can exceed 100% because of
+              lending, short interest, reporting dates and different share
+              bases. It is not evidence of current buying.
+            </Help>
+          </span>
           <strong>{percent(e.ownership.institutions)}</strong>
         </div>
         <div>
-          <span>Insiders</span>
+          <span>
+            Insiders{" "}
+            <Help label="Insider ownership">
+              Reported insider holdings are separate from reported transactions.
+              Compare filing dates before drawing a conclusion.
+            </Help>
+          </span>
           <strong>{percent(e.ownership.insiders)}</strong>
         </div>
       </div>
+      {largest && (
+        <p className="ownership-leading">
+          <strong>Largest supplied holder: {largest.name}</strong>
+          <span>
+            {percent(largest.percent)} · reported {dateLabel(largest.date)}
+          </span>
+        </p>
+      )}
       {e.holders.length > 0 && (
         <div className="table-scroll">
           <table>
