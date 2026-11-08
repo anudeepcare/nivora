@@ -203,3 +203,22 @@
     font-size: 20px;
   }
 }
+
+.root.root .cases article {
+  padding: 16px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.root.root .caseIcon {
+  width: 20px;
+  height: 20px;
+  flex-basis: 20px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.root.root > details {
+  border: 0;
+}

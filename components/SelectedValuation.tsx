@@ -85,6 +85,12 @@ export default function SelectedValuation({
       }
     : d.valuation;
   if (!v) return null;
+  const reference = d.reference?.price;
+  const prices = [v.bear, v.base, v.bull, ...(reference ? [reference] : [])];
+  const low = Math.min(...prices),
+    high = Math.max(...prices);
+  const position = (price: number) =>
+    6 + (88 * (price - low)) / (high - low || 1);
   return (
     <section className={s.root} aria-label="Selected AURYN valuation model">
       <header className={s.heading}>
@@ -146,6 +152,31 @@ export default function SelectedValuation({
                 </small>
               </div>
             ))}
+          </div>
+          <div
+            className={s.priceMap}
+            role="img"
+            aria-label={`Bear ${amount(v.bear, r.quote.currency)}, base ${amount(v.base, r.quote.currency)}, bull ${amount(v.bull, r.quote.currency)}${reference ? `; current ${amount(reference, r.quote.currency)}` : ""}`}
+          >
+            <div className={s.rail}>
+              {(["bear", "base", "bull"] as const).map((name) => (
+                <i
+                  key={name}
+                  className={s.point}
+                  data-side={name}
+                  style={{ left: `${position(v[name])}%` }}
+                />
+              ))}
+              {reference && (
+                <span
+                  className={s.now}
+                  style={{ left: `${position(reference)}%` }}
+                >
+                  <i />
+                  <small>Current {amount(reference, r.quote.currency)}</small>
+                </span>
+              )}
+            </div>
           </div>
           <details className={s.assumptions}>
             <summary>See inputs, assumptions & limits</summary>

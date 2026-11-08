@@ -266,3 +266,38 @@
     width: 100%;
   }
 }
+
+.instrument.instrument {
+  border: 0;
+  box-shadow: none;
+  --decision-ink: #d6f35a;
+}
+.zoneContext {
+  color: #a9b9ae;
+  font-size: 11px;
+  margin: 10px 0 0;
+  line-height: 1.4;
+}
+.instrument.instrument .title h2 {
+  color: var(--decision-ink);
+  font-size: clamp(32px, 3.2vw, 46px);
+  font-weight: 600;
+  line-height: 1.12;
+}
+.instrument[data-tone="caution"] {
+  --decision-ink: #f2d08a;
+}
+.instrument[data-tone="risk"] {
+  --decision-ink: #ffb3a7;
+}
+.reason {
+  max-width: 48ch;
+  color: #e1e7e2;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 15px 0 0;
+}
+.instrument.instrument .insight {
+  margin: 18px 0 0;
+  padding: 0;
+}

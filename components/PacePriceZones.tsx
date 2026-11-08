@@ -99,6 +99,7 @@ export default function PacePriceZones({
               data-current={current}
               onClick={() => onInspect?.(level)}
             >
+              <i className={styles.diamond} aria-hidden="true" />
               <strong>
                 P{level}
                 {current ? " · now" : ""}

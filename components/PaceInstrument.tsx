@@ -71,7 +71,7 @@ export default function PaceInstrument({
     decision?.actionLabel ?? view?.actionLabel ?? "Review evidence";
   const actionText =
     action === "Watch"
-      ? "Wait for an entry"
+      ? "Watch for an entry"
       : action === "Hold"
         ? "Hold existing position"
         : action;
@@ -79,6 +79,7 @@ export default function PaceInstrument({
   return (
     <section
       className={`${s.instrument} ${compact ? s.compact : ""}`}
+      data-tone={decision?.tone ?? "neutral"}
       aria-label={
         publicGuide
           ? "Explore the AURYN Accumulation Pace framework"
@@ -108,17 +109,40 @@ export default function PaceInstrument({
         <div className={s.readoutText}>
           <div className={s.title}>
             <small>
-              {exploring ? "Explore the framework" : "Current price zone"}
+              {exploring
+                ? "Explore the framework"
+                : (decision?.contextLabel ?? "Current decision")}
             </small>
             <h2>
-              {selected === null
-                ? "Refresh price history"
-                : `Zone P${selected}`}
-              <span className={s.level}>
-                {selected === null ? "Pending" : "P0–P4"}
-              </span>
+              {exploring && selected !== null
+                ? PACE_LEVELS[selected]
+                : actionText}
             </h2>
+            {!exploring && decision?.headline && (
+              <p className={s.reason}>{decision.headline}</p>
+            )}
+            <p className={s.zoneContext}>
+              {selected === null
+                ? "Price history needed"
+                : `P${selected} · ${PACE_LEVELS[selected]}`}
+            </p>
           </div>
+          {!exploring && (
+            <div className={s.insight}>
+              {boundary && (
+                <p className={s.boundary}>
+                  <span>Next price checkpoint</span>
+                  <strong>
+                    P{boundary.level} {boundary.operator}{" "}
+                    {amount(boundary.price, currency)}
+                  </strong>
+                  <small>
+                    {percent(boundary.distancePercent, true)} · conditional
+                  </small>
+                </p>
+              )}
+            </div>
+          )}
           {research ? (
             <PacePriceZones
               research={research}
@@ -177,22 +201,6 @@ export default function PaceInstrument({
           </small>
         )}
       </div>
-      {!exploring && (
-        <div className={s.insight}>
-          {boundary && (
-            <p className={s.boundary}>
-              <span>Next zone</span>
-              <strong>
-                P{boundary.level} {boundary.operator}{" "}
-                {amount(boundary.price, currency)}
-              </strong>
-              <small>
-                {percent(boundary.distancePercent, true)} · conditional
-              </small>
-            </p>
-          )}
-        </div>
-      )}
       <details
         className={s.readingDetail}
         onToggle={(event) => setDetailsOpen(event.currentTarget.open)}
