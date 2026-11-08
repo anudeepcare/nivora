@@ -10,7 +10,6 @@ import { useProduct } from "./Session";
 import ResearchChanges from "./ResearchChanges";
 import SelectedValuation from "./SelectedValuation";
 import PaceInstrument from "./PaceInstrument";
-import ResearchEvidenceGrid from "./ResearchEvidenceGrid";
 import s from "./ResearchOverview.module.css";
 import CompanyMetrics from "./CompanyMetrics";
 import EvidenceCrystal from "./EvidenceCrystal";
@@ -152,7 +151,6 @@ export default function IntegratedResearch({
         </div>
         <div className={s.overviewMetrics}>
           <CompanyMetrics research={r} />
-          <ResearchEvidenceGrid research={r} onTab={onTab} />
         </div>
       </div>
     </>

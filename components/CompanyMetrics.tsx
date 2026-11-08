@@ -66,8 +66,6 @@ export default function CompanyMetrics({ research }: { research: Research }) {
             {m.period
               ? `${m.periodBasis ?? "Reported"} · ${dateLabel(m.period)}`
               : "Update date unavailable"}
-            {m.periodBasis === "Updated" &&
-              " · Reported multiple; not fair value"}
           </small>
         </div>
       ))}

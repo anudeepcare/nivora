@@ -97,7 +97,7 @@ test("active overview omits the removed position size and cash tool", () => {
     /Review position size|funding and concentration review/,
   );
   assert.match(html, /contextual company metrics/);
-  assert.match(html, /all evidence/);
+  assert.doesNotMatch(html, /all evidence/);
   assert.doesNotMatch(html, /All research metrics/);
 });
 

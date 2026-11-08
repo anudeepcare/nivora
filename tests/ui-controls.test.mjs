@@ -2531,7 +2531,7 @@ test('selected valuation reference does not inherit the discarded quote stale fl
  assert.ok(seen.length>0);for(const quote of seen)assert.equal(quote.stale,true);
 });
 
-test('automatic revenue sensitivity fills unavailable cases without replacing an existing model',()=>{
+test('main valuation never substitutes price-anchored revenue for missing fundamentals',()=>{
  let fallbackCalls=0;let valid=false;
  const automatic={available:true,basis:'earnings',end:'2027-12-31',currency:'USD',cases:[{name:'Bear',target:80,eps:4,multiple:20},{name:'Base',target:100,eps:5,multiple:20},{name:'Bull',target:120,eps:6,multiple:20}]};
  const Selected=loadComponent('components/SelectedValuation.tsx','SelectedValuation',{
@@ -2540,7 +2540,8 @@ test('automatic revenue sensitivity fills unavailable cases without replacing an
  revenueSensitivity:()=>{fallbackCalls++;return {available:true};},RevenueSensitivityCases:()=>React.createElement('p',null,'Price-anchored revenue sensitivity'),ShieldAlert,Scale,Sparkles,Info,...format,s:experience,
  });
  const r=structuredClone(demoData.research.MSFT);r.company.symbol='HIMS';
- assert.match(renderToStaticMarkup(React.createElement(Selected,{research:r})),/Price-anchored revenue sensitivity/);
+ assert.doesNotMatch(renderToStaticMarkup(React.createElement(Selected,{research:r})),/Price-anchored revenue sensitivity/);
+ assert.equal(fallbackCalls,0);
  const called=fallbackCalls;valid=true;
  for(const symbol of ['APP','MSFT']){r.company.symbol=symbol;const html=renderToStaticMarkup(React.createElement(Selected,{research:r}));assert.match(html,/\$100\.00/);assert.doesNotMatch(html,/Price-anchored revenue sensitivity/);}
  assert.equal(fallbackCalls,called,'working models must not invoke the fallback');

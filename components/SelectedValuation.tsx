@@ -5,8 +5,6 @@ import type { Research } from "@/lib/types";
 import { aurynDecision } from "@/lib/auryn-decision";
 import { amount, dateLabel, percent } from "@/lib/format";
 import { researchOutlook } from "@/lib/outlook";
-import { revenueSensitivity } from "@/lib/revenue-sensitivity";
-import RevenueSensitivityCases from "./RevenueSensitivityCases";
 import s from "./SelectedValuation.module.css";
 import dynamic from "next/dynamic";
 import { FeatureGate, useAccess } from "./Access";
@@ -98,18 +96,8 @@ export default function SelectedValuation({
           projection.caveat ?? "Conditional market-multiple sensitivity.",
       }
     : d.valuation;
-  const hasValuation = !!v;
-  const sensitivity = useMemo(
-    () =>
-      hasValuation
-        ? { available: false as const }
-        : revenueSensitivity(input, { fiscalEnd: selected || undefined }),
-    [hasValuation, input, selected],
-  );
   const recovery = projection.available ? undefined : projection.recovery;
   if (r.company.assetType !== "stock") return null;
-  if (!v && sensitivity.available)
-    return <RevenueSensitivityCases scenario={sensitivity} actions={actions} />;
   if (!v)
     return (
       <section

@@ -1,3 +1,5 @@
+Latest correction: [DISPLAY-CORRECTION-20261108.md](DISPLAY-CORRECTION-20261108.md). This supersedes the earlier automatic revenue-fallback rollout.
+
 Latest metrics and targets audit: [IREN-METRICS-TARGETS-AUDIT-20261108.md](IREN-METRICS-TARGETS-AUDIT-20261108.md).
 
 Latest correction and verification: [CORE-SCENARIO-CORRECTION-20261108.md](CORE-SCENARIO-CORRECTION-20261108.md).
