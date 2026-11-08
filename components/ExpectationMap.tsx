@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import type { Research } from "@/lib/types";
 import { latestFinancialEvidence } from "@/lib/analysis";
 import {
@@ -7,6 +7,11 @@ import {
   impliedOperatingMargin,
   type EnterpriseInputs,
 } from "@/lib/expectation-engine";
+import { modelCoverage } from "@/lib/research-depth";
+import {
+  scenarioStartingValues,
+  operatingScenarioSupported,
+} from "@/lib/scenario-inputs";
 import { amount, percent, dateLabel } from "@/lib/format";
 const futureFields: [keyof EnterpriseInputs, string][] = [
   ["growth", "Annual revenue growth · %"],
@@ -22,16 +27,22 @@ export default function ExpectationMap({
 }: {
   research: Research;
 }) {
-  const facts = useMemo(() => latestFinancialEvidence(r).latest, [r]);
-  const sameCurrency = facts?.currency === r.quote.currency;
+  const [financial] = useState(() => latestFinancialEvidence(r));
+  const [shareObservation] = useState(
+    () => r.evidence?.listingObservations?.shares.asOf,
+  );
+  const facts = financial.latest;
+  const starting = scenarioStartingValues(
+    facts,
+    r.quote.currency,
+    r.evidence?.ownership?.outstanding,
+  );
   const [confirmed, setConfirmed] = useState(false);
   const [draft, setDraft] = useState<Record<keyof EnterpriseInputs, string>>({
-    revenue: sameCurrency && facts?.revenue ? String(facts.revenue) : "",
-    shares: r.evidence?.ownership?.outstanding
-      ? String(r.evidence.ownership.outstanding)
-      : "",
-    cash: sameCurrency && facts?.cash != null ? String(facts.cash) : "",
-    debt: sameCurrency && facts?.debt != null ? String(facts.debt) : "",
+    revenue: starting.startRevenue ?? "",
+    shares: starting.shares ?? "",
+    cash: starting.cash ?? "",
+    debt: starting.debt ?? "",
     growth: "",
     margin: "",
     tax: "",
@@ -49,20 +60,20 @@ export default function ExpectationMap({
     result?.available && r.quote.price != null
       ? impliedOperatingMargin(inputs, r.quote.price)
       : null;
-  const specialist =
-    /bank|insurance|financial services|real estate investment trust|REIT/i.test(
-      [r.company.sector, r.evidence?.profile?.industry].join(" "),
-    );
+  const coverage = modelCoverage(r.company.symbol, r.company.assetType, {
+    sector: r.evidence?.profile?.sector || r.company.sector,
+    industry: r.evidence?.profile?.industry,
+  });
   const edit = (key: keyof EnterpriseInputs, value: string) =>
     setDraft((old) => ({ ...old, [key]: value }));
-  if (r.company.assetType !== "stock" || specialist)
+  if (!operatingScenarioSupported(r.company.assetType, coverage.family))
     return (
       <section className="workbench-empty">
         <h3>This business needs its own capital model.</h3>
         <p>
           Operating-company enterprise cash flow does not fit crypto, banks,
-          insurers or REITs. This workbench does not assign them a generic fair
-          value.
+          insurers, specialized financial or real estate companies. This
+          workbench does not assign them a generic fair value.
         </p>
       </section>
     );
@@ -104,10 +115,23 @@ export default function ExpectationMap({
           </div>
           <p className="desk-footnote">
             {facts
-              ? `Reported period ends ${dateLabel(facts.end)}.`
+              ? `Reported ${financial.periodBasis} ends ${dateLabel(facts.end)}; filed ${dateLabel(facts.filed)}.`
               : "Reported starting facts were not supplied."}{" "}
             Monetary inputs must all be in {r.quote.currency || "one currency"}.
-            Cash and debt are required; enter zero explicitly when appropriate.
+            Cash and debt are required; enter zero explicitly when appropriate.{" "}
+            Outstanding shares observation:{" "}
+            {shareObservation
+              ? dateLabel(shareObservation)
+              : "date unavailable; reconcile with a filing"}
+            .
+            {facts?.sourceUrl?.startsWith("https://") && (
+              <>
+                {" "}
+                <a href={facts.sourceUrl} target="_blank" rel="noreferrer">
+                  Review financial source
+                </a>
+              </>
+            )}
           </p>
         </fieldset>
         <fieldset>
@@ -261,8 +285,8 @@ export default function ExpectationMap({
         valuation. Terminal growth changes immediately at the forecast boundary.
         Net debt is subtracted once. No new financing, dilution, debt
         amortization, nonoperating assets or liquidity reserve is assumed. This
-        simplified, unvalidated sensitivity is not a price prediction or an
-        investment recommendation.
+        simplified, unvalidated sensitivity assigns no probability and is not a
+        price prediction or an investment recommendation.
       </p>
     </div>
   );

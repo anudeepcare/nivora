@@ -150,7 +150,7 @@ test("Strategy Lab visibly distinguishes its P1-spending legacy simulation from 
   assert.ok(result.history.length > 0);
   assert.ok(result.history.every((row) => row.multiplier === 1));
   assert.ok(result.adaptive.units > 0, "legacy P1 actually spends the deposit");
-  const states = ["MSFT", 10, r, false, ""];
+  const states = ["MSFT", 10, "legacy", r, false, ""];
   let index = 0;
   const empty = () => null;
   const Lab = component("components/ResearchLab.tsx", "ResearchLab", {
@@ -172,6 +172,29 @@ test("Strategy Lab visibly distinguishes its P1-spending legacy simulation from 
   const html = renderToStaticMarkup(React.createElement(Lab));
   assert.match(html, /Legacy price-only policy/);
   assert.match(html, /does not implement current P1 Watch\/Hold/);
-  assert.match(html, /historical business checks/);
+  assert.match(html, /historical business eligibility/);
   assert.doesNotMatch(html, />AURYN Pace<|AURYN Pace model/);
+});
+
+test("current v6 Lab withholds pre-release performance and explains the unavailable full decision evidence", () => {
+  const r = structuredClone(demoData.research.MSFT);
+  r.retrievedAt = "2026-11-08T12:00:00Z";
+  const states = ["MSFT", 10, "current-v6", r, false, ""];
+  let index = 0;
+  const empty = () => null;
+  const Lab = component("components/ResearchLab.tsx", "ResearchLab", {
+    ...format,
+    useState: () => [states[index++], empty],
+    useMemo: (f) => f(), useProduct: () => ({}), compareDca,
+    PaceHelp: empty, Notice: empty, Help: empty, MiniChart: empty,
+    FlaskConical: empty, Download: empty,
+    PageHeading: ({title, subtitle}) => React.createElement("header", null, title, subtitle),
+    Empty: ({title, children}) => React.createElement("div", null, title, children),
+  });
+  const html = renderToStaticMarkup(React.createElement(Lab));
+  assert.match(html, /Current v6 evidence is still accumulating/);
+  assert.match(html, /P0\/P1 retain cash/);
+  assert.match(html, /No completed execution months/);
+  assert.match(html, /historical business eligibility/);
+  assert.doesNotMatch(html, /Flow-adjusted drawdown|Total contributions|Export dated comparison/);
 });

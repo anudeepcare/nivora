@@ -4,16 +4,22 @@ import {
   researchAccumulation,
   adaptiveSettledBars,
 } from "./accumulation-policy-v5.ts";
+import { researchAccumulation as currentAccumulation } from "./accumulation-policy-v6.ts";
+import { paceModel } from "./pace-model-v6.ts";
 import { symbolInput } from "./format.ts";
 export function compareDca(
   bars: Candle[],
   asOf: string,
   costBps = 10,
   market: "us-equity" | "crypto" = "us-equity",
+  mode: "legacy" | "current-v6" = "legacy",
 ) {
   if (!Number.isFinite(costBps) || costBps < 0 || costBps > 200)
     throw Error("Costs must be between zero and two hundred basis points.");
-  const signals = researchAccumulation(bars, asOf, market),
+  const current = mode === "current-v6";
+  const signals = current
+      ? currentAccumulation(bars, asOf, market)
+      : researchAccumulation(bars, asOf, market),
     lookup = new Map(signals.history.map((s) => [s.month, s])),
     months = new Map<string, Candle[]>();
   for (const b of adaptiveSettledBars(bars, asOf, market)) {
@@ -35,13 +41,20 @@ export function compareDca(
     adaptive = policy(),
     history: {
       month: string;
+      signalDate: string;
+      executionDate: string;
+      policyVersion: string;
       fixed: number;
       adaptive: number;
       multiplier: number;
       cash: number;
     }[] = [];
   for (const [month, rows] of months) {
-    if (rows.at(-1)?.time !== monthEndSession(month, market)) continue;
+    if (
+      month >= asOf.slice(0, 7) ||
+      rows.at(-1)?.time !== monthEndSession(month, market)
+    )
+      continue;
     const prev = new Date(
         Date.UTC(Number(month.slice(0, 4)), Number(month.slice(5)) - 1, 0),
       )
@@ -49,12 +62,23 @@ export function compareDca(
         .slice(0, 7),
       signal = lookup.get(prev);
     if (!signal) continue;
+    // Never treat the legacy fallback or pre-release observations as v6 evidence.
+    if (
+      current &&
+      (!("policyVersion" in signal) ||
+        signal.policyVersion !== "monthly-v6" ||
+        signal.date < paceModel.availableFrom)
+    )
+      continue;
+    const multiple = current
+      ? [0, 0, 1, 2, 4][signal.multiplier]
+      : signal.multiplier;
     const entry = rows[0].open,
       close = rows.at(-1)!.close;
     if (!Number.isFinite(entry) || entry <= 0) continue;
     for (const [state, multiplier] of [
       [fixed, 1],
-      [adaptive, signal.multiplier],
+      [adaptive, multiple],
     ] as const) {
       const before = state.value;
       const openingValue = state.cash + state.units * entry;
@@ -77,21 +101,39 @@ export function compareDca(
     }
     history.push({
       month,
+      signalDate: signal.date,
+      executionDate: rows[0].time,
+      policyVersion: current ? "monthly-v6" : signals.version,
       fixed: fixed.value,
       adaptive: adaptive.value,
-      multiplier: signal.multiplier,
+      multiplier: multiple,
       cash: adaptive.cash,
     });
   }
   return {
-    policy: signals.version,
+    policy: current ? "monthly-v6" : signals.version,
+    mode,
+    availableFrom: current ? paceModel.availableFrom : null,
+    reason: history.length
+      ? null
+      : current
+        ? "No completed execution months with eligible v6 signals since its release. Historical v5 readings are not substituted."
+        : "More completed history is required.",
     months: history.length,
     costBps,
     fixed,
     adaptive,
     history,
     limitations: [
-      "Historical simulation; not live results.",
+      current
+        ? "Replay of the frozen v6 technical rules on post-release signals, not authenticated prospective results or the full investment decision."
+        : "Legacy v5 price-only simulation; it buys at P1 and does not evaluate current v6 or current P1 Hold/Watch guidance.",
+      "Historical business gates, valuation checks and personal portfolio constraints are not modeled; contemporaneous evidence is unavailable.",
+      ...(current
+        ? [
+            "P0 and P1 retain cash; P2 uses 1×, P3 2× and P4 up to 4× the regular contribution, capped by available cash.",
+          ]
+        : []),
       "Equal contributions of 100 units at each eligible month start; unspent cash earns no interest.",
       "Orders modeled at the next month’s first available open. Fees and slippage combined in the stated basis points.",
       "Split-adjusted history can be revised; delisted securities and contemporaneous fundamentals are not included.",

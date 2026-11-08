@@ -74,3 +74,16 @@ test('a later cash recovery does not conceal an unfunded first year',()=>{
  const r=fundedScenario({...base,startRevenue:10,terminalRevenue:100,cash:0,ocfMargin:100,totalCapex:100});
  assert.equal(r.available,false);assert.equal(r.code,'funding-gap');assert.match(r.reason,/year 1/);
 });
+
+test('price-implied terminal multiple recovers the explicit assumption with financing and dilution', async()=>{
+ const { impliedFundedMultiple } = await import('../lib/funded-scenarios.ts');
+ const p={...base,equityRaised:30,newDebt:20,annualDilution:3};
+ const r=fundedScenario(p);
+ assert.equal(r.available,true);
+ assert.equal(typeof impliedFundedMultiple,'function');
+ assert.ok(Math.abs(impliedFundedMultiple(p,r.presentValue)-p.exitEbitdaMultiple)<1e-10);
+ assert.ok(impliedFundedMultiple(p,r.presentValue*1.1)>p.exitEbitdaMultiple);
+ assert.equal(impliedFundedMultiple({...p,totalCapex:1e6},10),null);
+ assert.equal(impliedFundedMultiple(p,-1),null);
+ assert.equal(impliedFundedMultiple(p,1e10),null);
+});

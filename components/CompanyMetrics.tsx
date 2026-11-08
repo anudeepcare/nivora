@@ -1,37 +1,30 @@
 "use client";
 import { useMemo, useState } from "react";
 import type { Research } from "@/lib/types";
-import { overviewEvidence } from "@/lib/overview-evidence";
+import {
+  overviewEvidence,
+  companyMetricSelection,
+} from "@/lib/overview-evidence";
 import { headerMarketContext } from "@/lib/business-history";
 import { amount, percent, dateLabel } from "@/lib/format";
-import { Help } from "./Ui";
+import { Help, Source } from "./Ui";
+import styles from "./CompanyMetrics.module.css";
 
 export default function CompanyMetrics({ research }: { research: Research }) {
   const [expanded, setExpanded] = useState(false);
-  const evidence = useMemo(() => overviewEvidence(research), [research]);
-  const market = headerMarketContext(research);
-  const keys = evidence.specialist
-    ? ["revenueGrowth", "roe", "netIncome", "cash", "debt", "roa"]
-    : [
-        "revenueGrowth",
-        "operatingMargin",
-        "fcf",
-        "cash",
-        "netDebt",
-        "operatingRunway",
-        "operatingCashFlow",
-      ];
-  const metrics = keys
-    .flatMap((key) => evidence.business.filter((m) => m.key === key))
-    .slice(0, market.marketCap == null ? 7 : 6);
-  const multiple = evidence.valuation.find(
-    (m) => m.unit === "ratio" && m.value > 0,
+  const evidence = useMemo(
+    () => overviewEvidence(research, { includeTechnical: false }),
+    [research],
   );
-  if (multiple) metrics.push(multiple);
+  const market = headerMarketContext(research);
+  const metrics = companyMetricSelection(
+    evidence,
+    market.marketCap == null ? 8 : 7,
+  );
   if (!metrics.length && market.marketCap == null) return null;
   return (
     <section
-      className={`company-metrics${expanded ? " company-metrics-expanded" : ""}`}
+      className={`${styles.metrics} company-metrics${expanded ? " company-metrics-expanded" : ""}`}
       aria-label="Company key metrics"
     >
       {market.marketCap != null && (
@@ -56,11 +49,14 @@ export default function CompanyMetrics({ research }: { research: Research }) {
             {m.label}
             <Help label={m.label}>
               <p>{m.help}</p>
+              {m.sourceUrl && (
+                <Source href={m.sourceUrl}>Source evidence</Source>
+              )}
             </Help>
           </span>
           <strong className={`metric-tone-${m.tone}`}>
             {m.unit === "money"
-              ? amount(m.value, m.currency, true)
+              ? amount(m.value, m.currency, m.key !== "fcfPerShare")
               : m.unit === "percent"
                 ? percent(m.value)
                 : m.unit === "ratio"
@@ -71,6 +67,8 @@ export default function CompanyMetrics({ research }: { research: Research }) {
             {m.period
               ? `${m.periodBasis ?? "Reported"} · ${dateLabel(m.period)}`
               : "Update date unavailable"}
+            {m.periodBasis === "Updated" &&
+              " · Reported multiple; not fair value"}
           </small>
         </div>
       ))}

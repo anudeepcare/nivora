@@ -69,7 +69,7 @@ export function validateReport(
       typeof v.text !== "string" ||
       v.text.trim().length < 10 ||
       v.text.length > 1200 ||
-      /[\d$€£%]|guaranteed|risk.free|certain profit/i.test(v.text)
+      /[\p{N}\p{Sc}%٪]|guaranteed|risk.free|certain profit/iu.test(v.text)
     )
       throw Error("Research text did not pass evidence validation.");
     if (

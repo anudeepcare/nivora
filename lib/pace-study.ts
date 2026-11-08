@@ -34,7 +34,7 @@ export type StudyAsset = {
 };
 export type PaceStudyInput = {
   schemaVersion: "pace-study-1";
-  policyVersion: "monthly-v5";
+  policyVersion: "monthly-v5" | "monthly-v6";
   policyHash: string;
   startMonth: string;
   endMonth: string;
@@ -77,7 +77,7 @@ export function runPaceStudy(
 ) {
   requireThat(
     input.schemaVersion === "pace-study-1" &&
-      input.policyVersion === "monthly-v5",
+      ["monthly-v5", "monthly-v6"].includes(input.policyVersion),
     "Unsupported study or policy version",
   );
   requireThat(
@@ -287,7 +287,8 @@ export function runPaceStudy(
           i !== 0 || row.cashGapReturn === 0,
           "First month cash gap return must be zero",
         );
-        if (asset.priceReplay) verifyStudyRow(asset.priceReplay, row);
+        if (asset.priceReplay)
+          verifyStudyRow(asset.priceReplay, row, input.policyVersion);
         previousEnd = time(row.periodEnd);
         for (const [s, multiple] of [
           [fixed, 1],
@@ -355,6 +356,7 @@ export function runPaceStudy(
   return {
     schemaVersion: "pace-study-result-1",
     policyHash: currentPolicyHash,
+    policyVersion: input.policyVersion,
     signalVerification:
       included.length > 0 &&
       included.every(

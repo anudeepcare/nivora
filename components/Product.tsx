@@ -5,12 +5,9 @@ import { ProductSession, useProduct, type DemoData } from "./Session";
 import Shell from "./Shell";
 import { symbolInput } from "@/lib/format";
 import dynamic from "next/dynamic";
+import LaunchScreen, { PageSkeleton } from "./LaunchScreen";
 // Load secondary workspaces only when selected; keep account/session state above them.
-const opening = () => (
-  <p role="status" aria-busy="true">
-    Opening workspace…
-  </p>
-);
+const opening = () => <PageSkeleton />;
 const ReleaseNotes = dynamic(() => import("./ReleaseNotes"), {
   loading: opening,
 });
@@ -34,11 +31,7 @@ const PasswordRecovery = dynamic(() => import("./PasswordRecovery"), {
   loading: opening,
 });
 const Research = dynamic(() => import("./Research"), {
-  loading: () => (
-    <p role="status" aria-busy="true">
-      Opening research…
-    </p>
-  ),
+  loading: () => <PageSkeleton page="research" />,
 });
 const Overview = dynamic(
   () => import("./HomeWorkspace").then((m) => m.Overview),
@@ -46,11 +39,11 @@ const Overview = dynamic(
 );
 const Portfolio = dynamic(
   () => import("./PortfolioPage").then((m) => m.Portfolio),
-  { loading: opening },
+  { loading: () => <PageSkeleton page="portfolio" /> },
 );
 const Watchlist = dynamic(
   () => import("./WatchlistPage").then((m) => m.Watchlist),
-  { loading: opening },
+  { loading: () => <PageSkeleton page="watchlist" /> },
 );
 const ResearchHome = dynamic(
   () => import("./ResearchHomePage").then((m) => m.ResearchHome),
@@ -72,26 +65,10 @@ function WorkspaceGate({ children }: { children: React.ReactNode }) {
   const { workspace, workspaceError, reloadWorkspace } = useProduct();
   if (!workspace)
     return (
-      <section
-        className="workspace-loading"
-        aria-busy={!workspaceError}
-        role="status"
-      >
-        <span className={workspaceError ? "" : "spinner"} />
-        <h2>
-          {workspaceError
-            ? "Your workspace could not be loaded"
-            : "Loading your investments"}
-        </h2>
-        <p>
-          {workspaceError || "Retrieving your saved positions and watchlist…"}
-        </p>
-        {workspaceError && (
-          <button className="button" onClick={reloadWorkspace}>
-            Try again
-          </button>
-        )}
-      </section>
+      <LaunchScreen
+        error={workspaceError || undefined}
+        onRetry={() => void reloadWorkspace()}
+      />
     );
   return children;
 }

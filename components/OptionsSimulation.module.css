@@ -24,12 +24,12 @@
 .eyebrow {
   display: block;
   color: var(--green);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.12em;
 }
 .badge {
-  font-size: 10px;
+  font-size: 12px;
   padding: 5px 8px;
   background: var(--citron);
   color: #24272b;
@@ -51,7 +51,7 @@
 }
 .metrics span {
   display: block;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--muted);
   margin-bottom: 3px;
 }
@@ -113,7 +113,7 @@
 }
 .review span,
 .review small {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
   overflow-wrap: anywhere;
 }
@@ -170,7 +170,7 @@
   margin: 6px 0;
 }
 .position small {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
   overflow-wrap: anywhere;
   line-height: 1.6;

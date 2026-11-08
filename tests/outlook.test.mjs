@@ -293,17 +293,39 @@ test("missing near-year EPS and invalid manual multiples cannot silently use pro
 test("price-anchored scenarios disclose the anchor and select only supplied fiscal ends", () => {
   const r = research();
   r.evidence.multiples.ForwardPE = 3;
-  r.evidence.estimates.push({date:"2028-10-17", period:"FY2028",frequency:"annual",currency:"USD",eps:7,epsLow:5,epsHigh:9,analysts:12});
-  assert.equal(outlook.researchOutlook(r).available,false);
-  const result = outlook.researchOutlook(r,{priceAnchored:true,fiscalEnd:"2028-10-17"});
-  assert.equal(result.available,true);
-  assert.equal(result.multipleSource,"price-implied");
-  assert.equal(result.end,"2028-10-17");
-  assert.deepEqual(result.cases.map(x=>x.target),[80,140,216]);
-  assert.match(result.caveat,/not independent fair value/);
-  assert.equal(outlook.researchOutlook(r,{priceAnchored:true,fiscalEnd:"2030-10-17"}).available,false);
+  r.evidence.estimates.push({
+    date: "2028-10-17",
+    period: "FY2028",
+    frequency: "annual",
+    currency: "USD",
+    eps: 7,
+    epsLow: 5,
+    epsHigh: 9,
+    analysts: 12,
+  });
+  assert.equal(outlook.researchOutlook(r).available, false);
+  const result = outlook.researchOutlook(r, {
+    priceAnchored: true,
+    fiscalEnd: "2028-10-17",
+  });
+  assert.equal(result.available, true);
+  assert.equal(result.multipleSource, "price-implied");
+  assert.equal(result.end, "2028-10-17");
+  assert.deepEqual(
+    result.cases.map((x) => x.target),
+    [80, 140, 216],
+  );
+  assert.match(result.caveat, /not independent fair value/);
+  assert.equal(
+    outlook.researchOutlook(r, { priceAnchored: true, fiscalEnd: "2030-10-17" })
+      .available,
+    false,
+  );
   r.evidence.estimates[1].epsLow = null;
-  assert.equal(outlook.researchOutlook(r,{priceAnchored:true}).available,false);
+  assert.equal(
+    outlook.researchOutlook(r, { priceAnchored: true }).available,
+    false,
+  );
 });
 
 test("analyst comparisons share the settled close used by the research header", () => {
@@ -315,10 +337,26 @@ test("analyst comparisons share the settled close used by the research header", 
   r.quote.price = 120;
   r.quote.asOf = "2026-10-23T20:00:00Z";
   r.history = ["2026-10-23", "2026-10-26"].map((time, i) => ({
-    time, open: 100 + i * 10, high: 100 + i * 10, low: 100 + i * 10,
-    close: 100 + i * 10, volume: 100,
+    time,
+    open: 100 + i * 10,
+    high: 100 + i * 10,
+    low: 100 + i * 10,
+    close: 100 + i * 10,
+    volume: 100,
   }));
   const c = outlook.consensusOutlook(r);
   assert.equal(c.referencePrice, 110);
   assert.equal(c.change, (150 / 110 - 1) * 100);
+});
+
+test("an explicit P/E wins over price anchoring in both calculations and provenance", () => {
+  const result = outlook.researchOutlook(research(), {
+    earningsMultiple: 30,
+    priceAnchored: true,
+  });
+  assert.equal(result.available, true);
+  assert.equal(result.multipleSource, "user-assumption");
+  assert.equal(result.cases[1].multiple, 30);
+  assert.match(result.caveat, /explicit assumption/);
+  assert.doesNotMatch(result.caveat, /Price-anchored sensitivity/);
 });

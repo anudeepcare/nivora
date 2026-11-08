@@ -741,7 +741,10 @@ export default function Research({ symbol }: { symbol: string }) {
             {tab === "News" && (
               <>
                 <CompanyUpdates research={r} preview={!!demo}>
-                  <EarningsReview research={r} />
+                  <EarningsReview
+                    research={r}
+                    now={demo ? Date.parse(r.retrievedAt) : Date.now()}
+                  />
                 </CompanyUpdates>
                 <details className="research-reference">
                   <summary>Earnings history &amp; estimates</summary>

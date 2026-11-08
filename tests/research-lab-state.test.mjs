@@ -41,6 +41,7 @@ test("a failed research-lab request clears the previous instrument result", asyn
   const state = [
     "HIMS",
     10,
+    "current-v6",
     {
       company: { symbol: "APP", assetType: "stock" },
       quote: { currency: "USD" },
@@ -56,6 +57,7 @@ test("a failed research-lab request clears the previous instrument result", asyn
     ComparisonCharts: () => null,
     PaceHelp: () => null,
     providerSymbol,
+    sameProviderSymbol,
     React,
     ...format,
     useState: () => {
@@ -87,9 +89,9 @@ test("a failed research-lab request clears the previous instrument result", asyn
   )(...Object.values(bindings));
   const tree = Component();
   await nodeOf(tree, "form").props.onSubmit({ preventDefault() {} });
-  assert.equal(state[2], null);
-  assert.equal(state[3], false);
-  assert.equal(state[4], "Unavailable");
+  assert.equal(state[3], null);
+  assert.equal(state[4], false);
+  assert.equal(state[5], "Unavailable");
 });
 test("a new comparison clears the preceding company set before loading", async () => {
   const source = ts.createSourceFile(

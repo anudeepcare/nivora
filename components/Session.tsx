@@ -19,6 +19,7 @@ import type { Session } from "@supabase/supabase-js";
 import { api, authClient } from "@/lib/client";
 import type { Research, Workspace } from "@/lib/types";
 import { Logo } from "./Ui";
+import LaunchScreen, { LaunchSequence } from "./LaunchScreen";
 import experience from "./Session.module.css";
 import {
   ArrowRight,
@@ -141,29 +142,29 @@ export function ProductSession({
   }, [destination, router]);
   if (loading || destination)
     return (
-      <main className="session-state">
-        <Logo />
-        <span className="spinner" />
-        <p>Opening your workspace…</p>
-      </main>
+      <LaunchSequence>
+        <LaunchScreen />
+      </LaunchSequence>
     );
   if (!demo && !session) return <Login initialError={error} />;
   return (
-    <StoreProvider
-      key={demo ? "preview" : session!.user.id}
-      owner={session?.user.id || "preview"}
-      demo={demo}
-      displayName={
-        typeof session?.user.user_metadata?.full_name === "string"
-          ? session.user.user_metadata.full_name
-              .trim()
-              .split(/\s+/)[0]
-              .slice(0, 25)
-          : undefined
-      }
-    >
-      {children}
-    </StoreProvider>
+    <LaunchSequence>
+      <StoreProvider
+        key={demo ? "preview" : session!.user.id}
+        owner={session?.user.id || "preview"}
+        demo={demo}
+        displayName={
+          typeof session?.user.user_metadata?.full_name === "string"
+            ? session.user.user_metadata.full_name
+                .trim()
+                .split(/\s+/)[0]
+                .slice(0, 25)
+            : undefined
+        }
+      >
+        {children}
+      </StoreProvider>
+    </LaunchSequence>
   );
 }
 function StoreProvider({
@@ -227,6 +228,7 @@ function StoreProvider({
   const alive = useRef(true);
   const reloadWorkspace = useCallback(async () => {
     if (demo) return;
+    setWorkspaceError("");
     try {
       const value = await api<Workspace>("workspace");
       if (alive.current) {

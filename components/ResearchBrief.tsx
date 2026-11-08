@@ -98,25 +98,54 @@ export function DataFreshness({
     [r, now, decision],
   );
   const financial = useMemo(() => latestFinancialEvidence(r), [r]);
+  const validDate = (value: string | null | undefined) => {
+    if (!value || !Number.isFinite(now)) return undefined;
+    const stamp = Date.parse(value),
+      day = value.slice(0, 10);
+    return /^\d{4}-\d{2}-\d{2}$/.test(day) &&
+      Number.isFinite(stamp) &&
+      stamp <= now &&
+      new Date(stamp).toISOString().slice(0, 10) === day
+      ? value
+      : undefined;
+  };
+  const datasetDate = validDate(r.evidence?.updatedAt);
+  const financialDate = validDate(financial.latest?.end);
+  const analystCurrent =
+    !!datasetDate && now - Date.parse(datasetDate) <= 120 * 86400000;
+  const financialCurrent =
+    !!financialDate && now - Date.parse(financialDate) <= 550 * 86400000;
+  const quoteTime =
+    d.reference?.basis === "quote" &&
+    d.reference.asOf.includes("T") &&
+    validDate(d.reference.asOf)
+      ? ` · ${new Date(d.reference.asOf).toISOString().slice(11, 16)} UTC`
+      : "";
+
   const rows = [
     {
       label: "Price",
-      date: d.reference?.asOf,
+      date: validDate(d.reference?.asOf),
+      current: !!d.reference,
       context:
-        d.reference?.basis === "settled-close" ? "Completed close" : "Quote",
+        d.reference?.basis === "settled-close"
+          ? "Completed close"
+          : `Quote${quoteTime}`,
     },
     {
       label: "Analyst dataset",
       date:
         r.evidence?.consensus || r.evidence?.estimates?.length
-          ? r.evidence.updatedAt
+          ? datasetDate
           : undefined,
-      context: "",
+      current: analystCurrent,
+      context: analystCurrent ? "" : "Older dataset · refresh",
     },
     {
       label: "Financial period",
-      date: financial.latest?.end,
-      context: financial.periodBasis,
+      date: financialDate,
+      current: financialCurrent,
+      context: `${financial.periodBasis}${financialDate && !financialCurrent ? " · Older report · refresh" : ""}`,
     },
     {
       label: "Ownership dataset",
@@ -125,9 +154,10 @@ export function DataFreshness({
         (r.evidence.ownership?.institutions != null ||
           r.evidence.ownership?.insiders != null ||
           r.evidence.holders?.length)
-          ? r.evidence.updatedAt
+          ? datasetDate
           : undefined,
-      context: "",
+      current: false,
+      context: "Dated disclosure · verify source",
     },
   ];
   return (
@@ -144,7 +174,10 @@ export function DataFreshness({
           <div key={row.label}>
             <dt>{row.label}</dt>
             <dd>
-              <i data-available={!!row.date} />
+              <i
+                data-available={!!row.date && row.current}
+                aria-hidden="true"
+              />
               {row.date
                 ? `${dateLabel(row.date)}${row.context ? " · " + row.context : ""}`
                 : "Not supplied"}
@@ -154,7 +187,7 @@ export function DataFreshness({
       </dl>
       <small>
         {d.reference
-          ? `Price reference ${amount(d.reference.price, d.reference.currency)} · ${dateLabel(d.reference.asOf)}. Dataset dates are not individual filing dates.`
+          ? `Price reference ${amount(d.reference.price, d.reference.currency)} · ${dateLabel(d.reference.asOf)}. Dataset dates are not individual filing dates. A dated observation is not proof of current coverage.`
           : "A comparable price reference is not yet available."}
       </small>
     </section>

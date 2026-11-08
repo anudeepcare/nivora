@@ -1,0 +1,19 @@
+.metrics > div > span,
+.metrics small {
+  font-size: 12px;
+  line-height: 1.5;
+}
+.metrics > div {
+  min-width: 0;
+}
+.metrics strong {
+  font-variant-numeric: tabular-nums;
+}
+.metrics small {
+  display: block;
+  margin-top: 4px;
+  text-wrap: pretty;
+}
+.metrics > button {
+  min-height: 44px;
+}

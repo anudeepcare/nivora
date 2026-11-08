@@ -63,7 +63,7 @@
 .advancedControl {
   display: grid;
   gap: 4px;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
 }
 .expiryControl select {
@@ -103,7 +103,7 @@
 }
 .marketLine > small {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 .marketLine b {
   font-weight: 600;
@@ -184,7 +184,7 @@
 }
 .options_insight_grid p {
   margin: 0;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
 }
 .options_card,
@@ -209,7 +209,7 @@
 }
 .eyebrow,
 .options_count {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
 }
 .options_section_heading > div {
@@ -316,7 +316,7 @@
 }
 .options_strategies small {
   display: block;
-  font-size: 10px;
+  font-size: 12px;
   margin-top: 3px;
 }
 .options_plot {
@@ -335,7 +335,7 @@
 }
 .options_plot_axis,
 .options_plot figcaption {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
 }
 .options_learn_grid {
@@ -357,7 +357,7 @@
   border-radius: 50%;
   background: var(--citron);
   color: #24272b;
-  font-size: 11px;
+  font-size: 12px;
 }
 .options_learn_grid p {
   font-size: 12px;
@@ -365,7 +365,7 @@
   margin: 0;
 }
 .options_disclosure {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
   padding: 14px 0;
   border-top: 1px solid var(--line);
@@ -484,7 +484,7 @@
 .orientation p {
   margin: 0;
   max-width: 70ch;
-  font-size: 11px;
+  font-size: 12px;
 }
 .commandBar {
   padding: 10px 0;
@@ -617,5 +617,13 @@
 @media (max-width: 360px) {
   .desk .views {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  /* Native controls keep their text readable without iOS focus zoom. */
+  .desk input:not([type="checkbox"]),
+  .desk select {
+    font-size: 16px;
   }
 }

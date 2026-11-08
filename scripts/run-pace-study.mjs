@@ -19,7 +19,23 @@ function visit(file) {
     if (resolved) visit(resolved);
   }
 }
-visit(path.join(root, "lib/accumulation-policy-v5.ts"));
+const hashOnly = process.argv[2] === "--policy-hash";
+const raw =
+  !hashOnly && process.argv[2] ? fs.readFileSync(process.argv[2]) : null;
+const input = raw ? JSON.parse(raw.toString("utf8")) : null;
+const policyVersion = hashOnly
+  ? (process.argv[3] ?? "monthly-v5")
+  : input?.policyVersion;
+if (!["monthly-v5", "monthly-v6"].includes(policyVersion))
+  throw Error("Choose monthly-v5 or monthly-v6 policy.");
+visit(
+  path.join(
+    root,
+    policyVersion === "monthly-v6"
+      ? "lib/accumulation-policy-v6.ts"
+      : "lib/accumulation-policy-v5.ts",
+  ),
+);
 const hash = createHash("sha256")
   .update(
     JSON.stringify(
@@ -36,8 +52,7 @@ if (process.argv[2] === "--policy-hash") {
     throw Error(
       "Usage: node --experimental-strip-types scripts/run-pace-study.mjs INPUT.json [OUTPUT.json] | --policy-hash",
     );
-  const raw = fs.readFileSync(process.argv[2]);
-  const report = runPaceStudy(JSON.parse(raw.toString("utf8")), hash, {
+  const report = runPaceStudy(input, hash, {
     requireReplay: true,
   });
   visit(path.join(root, "lib/pace-study.ts"));

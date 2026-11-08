@@ -50,11 +50,11 @@ test('real session boundary ignores an initial session response arriving after s
  const useState=initial=>{const i=index++;if(!(i in states))states[i]=initial;return [states[i],v=>{states[i]=typeof v==='function'?v(states[i]):v}]};
  const useEffect=(fn,values)=>{const i=ei++;if(!deps[i]||values.some((v,j)=>v!==deps[i][j])){deps[i]=values;effects.push(fn)}};
  const {authDestination}=await policy();
- const bindings={usePathname:()=>'/portfolio',useRouter:()=>router,useState,useEffect,authClient:()=>({auth:{getSession:()=>new Promise(resolve=>{settle=resolve}),onAuthStateChange:fn=>{listener=fn;return {data:{subscription:{unsubscribe(){}}}}}}}),clearAccountCache:()=>{},authDestination,Logo:'Logo',Login:'Login',StoreProvider:'StoreProvider'};
+ const bindings={usePathname:()=>'/portfolio',useRouter:()=>router,useState,useEffect,authClient:()=>({auth:{getSession:()=>new Promise(resolve=>{settle=resolve}),onAuthStateChange:fn=>{listener=fn;return {data:{subscription:{unsubscribe(){}}}}}}}),clearAccountCache:()=>{},authDestination,LaunchScreen:'LaunchScreen',LaunchSequence:'LaunchSequence',Logo:'Logo',Login:'Login',StoreProvider:'StoreProvider'};
  const Boundary=new Function('React',...Object.keys(bindings),js+';return ProductSession')(React,...Object.values(bindings));
  const render=()=>{index=0;ei=0;return Boundary({children:'private'})};
  const previous=globalThis.window;globalThis.window={addEventListener(){},removeEventListener(){}};
- try{render();while(effects.length)effects.shift()();listener('SIGNED_OUT',null);settle({data:{session:{user:{id:'old'}}},error:null});await Promise.resolve();await Promise.resolve();const tree=render();while(effects.length)effects.shift()();assert.deepEqual(routes,['/login']);assert.equal(tree.type,'main');assert.equal(states[1],null);}finally{globalThis.window=previous;}
+ try{render();while(effects.length)effects.shift()();listener('SIGNED_OUT',null);settle({data:{session:{user:{id:'old'}}},error:null});await Promise.resolve();await Promise.resolve();const tree=render();while(effects.length)effects.shift()();assert.deepEqual(routes,['/login']);assert.equal(tree.type,'LaunchSequence');assert.equal(tree.props.children.type,'LaunchScreen');assert.equal(states[1],null);}finally{globalThis.window=previous;}
 });
 test('failed recovery stays on recovery while normal sign-in errors stay on login',async()=>{
  const {completeAuthCallback,completeEmailConfirmation}=await import('../lib/auth-callback.ts');

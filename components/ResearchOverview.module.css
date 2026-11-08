@@ -163,7 +163,7 @@
     border-radius: 16px;
   }
   .context button {
-    font-size: 11px;
+    font-size: 12px;
     padding: 8px 10px;
   }
   .crystal > summary small {
@@ -210,7 +210,7 @@
   min-height: 28px;
   padding: 3px 0;
   background: transparent;
-  font-size: 11px;
+  font-size: 12px;
 }
 .chart.chart :global(.chart-context) > div {
   padding: 6px 0;
@@ -262,7 +262,7 @@
 .chart.chart :global(.chart-readout) {
   margin: 6px 0;
   min-height: 20px;
-  font-size: 11px;
+  font-size: 12px;
 }
 .chart.chart :global(.signal-chart-tools) {
   margin: 6px 0;

@@ -64,6 +64,21 @@ export default function DecisionAttention({
         <p>{item.reason}</p>
         <details>
           <summary>What to check next</summary>
+          {item.sizeReview && item.businessReason && (
+            <p>
+              <strong>Business assessment · {item.action}:</strong>{" "}
+              {item.businessReason}
+            </p>
+          )}
+          {item.owns && item.weight != null && (
+            <p>
+              <strong>Position:</strong> {item.weight.toFixed(1)}% of priced
+              investments
+              {item.thresholdGap != null &&
+                ` · ${Math.abs(item.thresholdGap).toFixed(1)} percentage points ${item.thresholdGap < 0 ? "above" : "below"} your attention threshold`}
+              .
+            </p>
+          )}
           {item.risk && (
             <p>
               <strong>Risk:</strong> {item.risk}
@@ -97,7 +112,7 @@ export default function DecisionAttention({
           <p>
             {loading
               ? "Assessments are loading; available rows appear first."
-              : "Your existing assessments, ordered by review priority."}
+              : "Compare existing decisions and position constraints; review priority is not an expected-return ranking."}
           </p>
         </div>
         <span>{items.length} companies</span>

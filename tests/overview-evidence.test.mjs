@@ -262,3 +262,78 @@ test("net cash is not painted as debt risk and negative earnings coverage remain
   assert.equal(rows.interestCoverage.value, -6);
   assert.equal(rows.interestCoverage.tone, "risk");
 });
+
+test("business-only overview retains financial evidence without computing technical studies", () => {
+  const r = operatingResearch();
+  const complete = overviewEvidence(r);
+  const businessOnly = overviewEvidence(r, { includeTechnical: false });
+  assert.deepEqual(businessOnly.business, complete.business);
+  assert.deepEqual(businessOnly.valuation, complete.valuation);
+  assert.deepEqual(businessOnly.technical, []);
+  Object.defineProperty(r, "history", {
+    get() {
+      throw Error("Technical history must not be read for company metrics");
+    },
+  });
+  assert.doesNotThrow(() => overviewEvidence(r, { includeTechnical: false }));
+});
+
+test("company metric priorities expose per-share cash and dilution before secondary cash totals", async () => {
+  const { companyMetricSelection } = await import(
+    "../lib/overview-evidence.ts"
+  );
+  assert.equal(
+    typeof companyMetricSelection,
+    "function",
+    "Company metric selection is available",
+  );
+  const evidence = overviewEvidence(operatingResearch(), {
+    includeTechnical: false,
+  });
+  const rows = companyMetricSelection(evidence, 6);
+  assert.deepEqual(
+    rows.slice(0, 3).map((x) => x.key),
+    ["revenueGrowth", "fcfPerShare", "dilutedShareGrowth"],
+  );
+  assert.ok(rows.length <= 6);
+  const burning = operatingResearch();
+  burning.facts = burning.facts.map((f) =>
+    f.metric === "operatingCashFlow" ? { ...f, value: -36 } : f,
+  );
+  const burnRows = companyMetricSelection(
+    overviewEvidence(burning, { includeTechnical: false }),
+    6,
+  );
+  assert.equal(burnRows[0].key, "operatingRunway");
+  assert.equal(burnRows.find((x) => x.key === "fcfPerShare").tone, "risk");
+  const missing = { ...evidence, business: [], valuation: [] };
+  assert.deepEqual(companyMetricSelection(missing, 6), []);
+});
+
+test("specialist company metrics avoid generic cash-flow interpretation and prefer book valuation", async () => {
+  const { companyMetricSelection } = await import(
+    "../lib/overview-evidence.ts"
+  );
+  assert.equal(
+    typeof companyMetricSelection,
+    "function",
+    "Company metric selection is available",
+  );
+  const evidence = overviewEvidence(operatingResearch(), {
+    includeTechnical: false,
+  });
+  const row = evidence.business.find((x) => x.key === "roe");
+  const book = { ...row, key: "PriceBookMRQ", value: 2, unit: "ratio" };
+  const pe = { ...row, key: "ForwardPE", value: 25, unit: "ratio" };
+  const selected = companyMetricSelection(
+    { ...evidence, specialist: true, valuation: [pe, book] },
+    6,
+  );
+  assert.equal(selected[0].key, "roe");
+  assert.ok(selected.some((x) => x.key === "PriceBookMRQ"));
+  assert.ok(
+    !selected.some((x) =>
+      ["fcfPerShare", "operatingRunway", "ForwardPE"].includes(x.key),
+    ),
+  );
+});

@@ -1,0 +1,53 @@
+.workbench {
+  border: 0;
+  padding: 20px 0;
+  background: transparent;
+}
+.workbench :global(.funded-results) article {
+  border: 0;
+  border-top: 0;
+  border-radius: 14px;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--blue) 10%, var(--paper)),
+    var(--paper)
+  );
+}
+.workbench :global(.funded-results) article[data-case="Bear"] {
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--red) 10%, var(--paper)),
+    var(--paper)
+  );
+}
+.workbench :global(.funded-results) article[data-case="Bull"] {
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--teal) 10%, var(--paper)),
+    var(--paper)
+  );
+}
+.workbench :global(.funded-results) article > span {
+  font-weight: 700;
+}
+.workbench small,
+.workbench label,
+.workbench p {
+  font-size: 13px;
+}
+.workbench input,
+.workbench textarea {
+  min-height: 44px;
+  font-size: 16px;
+}
+.workbench .confirm {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin: 16px 0;
+  line-height: 1.5;
+}
+.workbench .confirm input {
+  width: 20px;
+  flex: 0 0 20px;
+}

@@ -1,4 +1,5 @@
 "use client";
+import { earningsCalendar } from "@/lib/earnings-calendar";
 import { latestFinancialEvidence } from "@/lib/analysis";
 import {
   headerBusinessMetrics,
@@ -111,14 +112,7 @@ export function stockFactRows(r: Research) {
       });
     }
   }
-  const next =
-    r.company.assetType === "stock"
-      ? r.evidence?.earnings
-          ?.filter(
-            (e) => validDate(e.date) && e.date >= day && e.actual == null,
-          )
-          .sort((a, b) => a.date.localeCompare(b.date))[0]
-      : null;
+  const next = earningsCalendar(r, Date.parse(observed)).next;
   if (next && validDate(update) && update <= day)
     rows.push({
       label: "Next reported earnings date",

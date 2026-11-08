@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import ts from "typescript";
+import { earningsCalendar } from "../lib/earnings-calendar.ts";
 import { amount, dateLabel } from "../lib/format.ts";
 const source = fs.readFileSync("components/StockFacts.tsx", "utf8");
 const ast = ts.createSourceFile(
@@ -20,8 +21,9 @@ const js = ts.transpileModule(declaration.getText(ast).replace("export ", ""), {
 const rows = new Function(
   "amount",
   "dateLabel",
+  "earningsCalendar",
   js + "; return stockFactRows;",
-)(amount, dateLabel);
+)(amount, dateLabel, earningsCalendar);
 const bar = (time, close = 100, volume = 100) => ({
   time,
   open: close,
@@ -100,4 +102,13 @@ test("52-week closing range requires coverage and missing dates do not become ma
       .date.startsWith("Dataset updated"),
   );
   assert(rows(r).some((x) => x.label === "Next reported earnings date"));
+});
+
+test("stock facts do not promote an old scheduled date to a current earnings event", () => {
+  const r = base();
+  r.evidence = {
+    updatedAt: "2026-01-01",
+    earnings: [{ date: "2026-11-12", actual: null }],
+  };
+  assert(!rows(r).some((x) => x.label === "Next reported earnings date"));
 });

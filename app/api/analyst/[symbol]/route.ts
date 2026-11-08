@@ -50,6 +50,9 @@ export async function POST(
         "A confirmed account is required for AI analysis.",
         403,
       );
+    // Cached public reports still require the current account entitlement.
+    const access = await requestAccess(request, user.id);
+    requireFeature(access, "ai");
     await limit(`analyst:${user.id}`, 3);
     const key = process.env.OPENAI_API_KEY,
       model = process.env.OPENAI_MODEL;
@@ -103,8 +106,6 @@ export async function POST(
       .digest("hex");
     const old = reports.get(hash);
     if (old && old.until > Date.now()) return privateJson(await old.value);
-    const access = await requestAccess(request, user.id);
-    requireFeature(access, "ai");
     await reserveAccess(user.id, access, "ai", crypto.randomUUID());
     const value = (async (): Promise<Report> => {
       const quota = await db.rpc("auryn_reserve_ai_request");

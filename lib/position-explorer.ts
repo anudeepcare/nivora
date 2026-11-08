@@ -89,3 +89,57 @@ export function pricePath(
           : "flat",
   };
 }
+
+/** Fixed-base reallocation review. Recorded cash is not broker buying power. */
+export function positionFundingReview(input: {
+  portfolioValue: number;
+  currentValue: number;
+  targetValue: number;
+  cash: number;
+  complete: boolean;
+  concentrationLimit?: number | null;
+}) {
+  const {
+    portfolioValue,
+    currentValue,
+    targetValue,
+    cash,
+    complete,
+    concentrationLimit,
+  } = input;
+  if (
+    !complete ||
+    ![portfolioValue, currentValue, targetValue, cash].every(Number.isFinite) ||
+    portfolioValue <= 0 ||
+    currentValue < 0 ||
+    targetValue < 0 ||
+    cash < 0 ||
+    targetValue > portfolioValue ||
+    currentValue + cash > portfolioValue + 0.000001
+  )
+    return { available: false as const };
+  const difference = targetValue - currentValue;
+  const cashAfter = cash - difference;
+  const investedAfter = portfolioValue - cashAfter;
+  const afterInvestmentWeight =
+    investedAfter > 0 && cashAfter >= 0
+      ? (targetValue / investedAfter) * 100
+      : null;
+  const limit =
+    concentrationLimit != null &&
+    Number.isFinite(concentrationLimit) &&
+    concentrationLimit > 0 &&
+    concentrationLimit <= 100
+      ? concentrationLimit
+      : null;
+  return {
+    available: true as const,
+    cashAfter,
+    shortfall: Math.max(0, -cashAfter),
+    afterInvestmentWeight,
+    exceedsLimit:
+      limit != null && afterInvestmentWeight != null
+        ? afterInvestmentWeight > limit
+        : null,
+  };
+}

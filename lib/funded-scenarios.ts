@@ -128,3 +128,26 @@ export function fundedScenario(x: FundedInputs):
     fundingGap: 0,
   };
 }
+
+/** Invert only the terminal multiple, holding the user's entire funded path fixed.
+ * The reference price is today's discounted equity per listed unit, not a future price.
+ * No answer is returned for unfunded paths or multiples outside the model's 0–100× range.
+ */
+export function impliedFundedMultiple(
+  x: FundedInputs,
+  referencePrice: number,
+): number | null {
+  if (!Number.isFinite(referencePrice) || referencePrice <= 0) return null;
+  const result = fundedScenario(x);
+  if (!result.available) return null;
+  const requiredEquity =
+    referencePrice *
+    (1 + x.discountRate / 100) ** x.years *
+    result.endingShares;
+  const multiple =
+    (requiredEquity + result.endingDebt - result.endingCash) /
+    ((x.terminalRevenue * x.ebitdaMargin) / 100);
+  return Number.isFinite(multiple) && multiple > 0 && multiple <= 100
+    ? multiple
+    : null;
+}

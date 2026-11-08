@@ -1,5 +1,5 @@
 "use client";
-import { providerSymbol } from "@/lib/provider-symbol";
+import { providerSymbol, sameProviderSymbol } from "@/lib/provider-symbol";
 import { verifiedResearch } from "@/lib/comparison";
 import PaceHelp from "./PaceHelp";
 import { useMemo, useState } from "react";
@@ -15,6 +15,7 @@ export default function ResearchLab() {
   const { demo } = useProduct(),
     [symbol, setSymbol] = useState(""),
     [cost, setCost] = useState(10),
+    [mode, setMode] = useState<"current-v6" | "legacy">("current-v6"),
     [data, setData] = useState<Research | null>(null),
     [busy, setBusy] = useState(false),
     [message, setMessage] = useState("");
@@ -26,18 +27,19 @@ export default function ResearchLab() {
             data.retrievedAt,
             cost,
             data.company.assetType === "crypto" ? "crypto" : "us-equity",
+            mode,
           )
         : null,
-    [data, cost],
+    [data, cost, mode],
   );
   async function run(e: React.FormEvent) {
     e.preventDefault();
     if (busy) return;
-    setData(null);
     setBusy(true);
     setMessage("");
     try {
       const s = providerSymbol(symbol);
+      if (data && !sameProviderSymbol(data.company.symbol, s)) setData(null);
       const r = demo
         ? demo.research[s]
         : await api<Research>(
@@ -57,15 +59,24 @@ export default function ResearchLab() {
   function download() {
     if (!result) return;
     const csv = [
-      "month,fixed_value,adaptive_value,adaptive_cash,prior_month_multiplier",
+      "month,signal_date,execution_date,policy_version,fixed_value,pace_value,pace_cash,contribution_multiple",
       ...result.history.map((r) =>
-        [r.month, r.fixed, r.adaptive, r.cash, r.multiplier].join(","),
+        [
+          r.month,
+          r.signalDate,
+          r.executionDate,
+          r.policyVersion,
+          r.fixed,
+          r.adaptive,
+          r.cash,
+          r.multiplier,
+        ].join(","),
       ),
     ].join("\n");
     const u = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
     const a = document.createElement("a");
     a.href = u;
-    a.download = "auryn-monthly-policy-comparison.csv";
+    a.download = `auryn-${mode}-comparison.csv`;
     a.click();
     URL.revokeObjectURL(u);
   }
@@ -74,14 +85,29 @@ export default function ResearchLab() {
       <PaceHelp trigger="Understand AURYN Pace" />
       <PageHeading
         title="Strategy lab"
-        subtitle="Compare fixed contributions with a legacy price-only multiplier policy using equal budgets."
+        subtitle="Compare contribution rules with the same cash, dates and modeled costs."
       />
       <p className="footnote">
-        This legacy simulation buys at P1. It does not implement current P1
-        Watch/Hold guidance or historical business checks. Its results do not
-        validate today’s AURYN Pace decisions.
+        {mode === "current-v6"
+          ? "Current v6 technical rules: P0/P1 retain cash, P2 starts at 1×, P3 adds at 2× and P4 uses up to 4× the regular contribution, limited by available cash. Only completed months after model release qualify."
+          : "The legacy v5 simulation buys at P1. It does not implement current P1 Watch/Hold guidance or the v6 model."}{" "}
+        Neither replay includes historical business eligibility, valuation or
+        personal position limits. Results cannot validate the full AURYN
+        decision.
       </p>
       <form className="alert-builder panel" onSubmit={run}>
+        <label>
+          Rule set
+          <select
+            value={mode}
+            onChange={(e) => setMode(e.target.value as "current-v6" | "legacy")}
+          >
+            <option value="current-v6">
+              Current v6 · technical rules only
+            </option>
+            <option value="legacy">Legacy v5 · price-only research</option>
+          </select>
+        </label>
         <label>
           Company
           <input
@@ -119,13 +145,22 @@ export default function ResearchLab() {
               {data?.company.symbol} · {result.months} months
             </h2>
             <small>
-              Legacy price-only model {result.policy} · hypothetical comparison
+              {mode === "current-v6"
+                ? "Current technical model"
+                : "Legacy price-only model"}{" "}
+              {result.policy} · hypothetical comparison
             </small>
           </header>
           <div className="two-col">
             {[
               ["Fixed contributions", result.fixed, "blue"],
-              ["Legacy price-only policy", result.adaptive, "violet"],
+              [
+                mode === "current-v6"
+                  ? "Current v6 technical rules"
+                  : "Legacy price-only policy",
+                result.adaptive,
+                "violet",
+              ],
             ].map(([label, state, color]) => {
               const x = state as typeof result.fixed;
               return (
@@ -162,6 +197,9 @@ export default function ResearchLab() {
               );
             })}
           </div>
+          <button className="button" type="button" onClick={download}>
+            <Download size={16} /> Export dated comparison
+          </button>
           <p className="footnote">
             Equal-budget, hypothetical comparison · History through{" "}
             {dateLabel(data?.history.at(-1)?.time)}.{" "}
@@ -172,10 +210,20 @@ export default function ResearchLab() {
         <Empty
           title={
             result
-              ? "More completed history is required"
+              ? mode === "current-v6"
+                ? "Current v6 evidence is still accumulating"
+                : "More completed history is required"
               : "Compare before adopting a policy"
           }
         >
+          {result?.reason && <p>{result.reason}</p>}
+          {mode === "current-v6" && (
+            <p>
+              The frozen model was released November 7, 2026. No older
+              performance is relabeled as v6, and a price replay is not a
+              verified prospective record.
+            </p>
+          )}
           Both policies receive the same cash at the same time. Stronger
           multipliers cannot borrow from future contributions.
         </Empty>

@@ -35,7 +35,7 @@
   margin: 0;
 }
 .content.content.content :global(.eyebrow) {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.09em;
 }
 .content.content.content
@@ -72,7 +72,7 @@
   margin: 10px 0;
 }
 .content.content.content :global(.business-history .durability-grid small) {
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.5;
 }
 .content.content.content :global(.business-trend-charts) {
@@ -204,10 +204,10 @@
   padding: 13px;
 }
 .content.content.content :global(.analyst-summary span) {
-  font-size: 11px;
+  font-size: 12px;
 }
 .content.content.content :global(.analyst-summary small) {
-  font-size: 10px;
+  font-size: 12px;
 }
 .content.content.content :global(.rating-distribution > div) {
   padding: 8px 0;
@@ -285,7 +285,7 @@
   overflow: hidden;
 }
 .content.content.content :global(.source-row small) {
-  font-size: 11px;
+  font-size: 12px;
 }
 .content.content.content :global(.news-event-layout) {
   grid-template-columns: minmax(0, 1fr);
@@ -355,7 +355,7 @@
   background: var(--card);
 }
 .content.content.content :global(.technical-desk-groups header p) {
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.5;
 }
 .content.content.content :global(.technical-desk-groups dl > div) {
@@ -498,7 +498,7 @@
   margin: 0 0 10px;
 }
 .content.content.content :global(.analyst-empty small) {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
 }
 .content.content.content.content.content[data-desk="Advanced"]

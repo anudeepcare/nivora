@@ -41,9 +41,16 @@ export function decisionAttention(input: {
         !owns && signal?.contextLabel === "For your holding";
       const usable = signal && !signal.assessmentPaused && !mismatchedContext;
       const action: DecisionAction = usable ? signal.action : "Review";
-      const weight = input.allocations?.find(
+      const rawWeight = input.allocations?.find(
         (x) => x.symbol === symbol,
       )?.weight;
+      const weight =
+        rawWeight != null &&
+        Number.isFinite(rawWeight) &&
+        rawWeight >= 0 &&
+        rawWeight <= 100
+          ? rawWeight
+          : null;
       const sizeReview =
         owns &&
         validLimit &&
@@ -54,6 +61,9 @@ export function decisionAttention(input: {
         symbol,
         owns,
         action,
+        weight,
+        thresholdGap: validLimit && weight != null ? limit - weight : null,
+        businessReason: usable ? signal.reason || signal.view.detail : null,
         label: sizeReview
           ? "Review position size"
           : action === "Reduce"

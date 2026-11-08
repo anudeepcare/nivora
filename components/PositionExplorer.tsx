@@ -5,9 +5,13 @@ import Link from "next/link";
 import { useProduct } from "./Session";
 import { useWorkspaceQuotes } from "./useWorkspaceQuotes";
 import { portfolioTotals } from "@/lib/engine";
-import { explorePosition } from "@/lib/position-explorer";
+import {
+  explorePosition,
+  positionFundingReview,
+} from "@/lib/position-explorer";
 import { researchEdge } from "@/lib/edge-research";
 import { amount, percent, dateLabel } from "@/lib/format";
+import { useWorkspacePreferences } from "./WorkspacePreferences";
 import type { Research } from "@/lib/types";
 
 export default function PositionExplorer({
@@ -17,7 +21,8 @@ export default function PositionExplorer({
   research: Research;
   reading: ReturnType<typeof researchEdge>;
 }) {
-  const { workspace, demo } = useProduct(),
+  const { preferences } = useWorkspacePreferences();
+  const { workspace, workspaceError, demo } = useProduct(),
     quotes = useWorkspaceQuotes("portfolio");
   const q = Object.fromEntries(
     Object.entries(quotes.data).flatMap(([s, row]) =>
@@ -58,6 +63,35 @@ export default function PositionExplorer({
     weight,
     bearPrice: scenario?.currency === "USD" ? scenario.low : null,
   });
+  const cash = positions
+    .filter(
+      (p) =>
+        p.assetType === "cash" &&
+        p.symbol === "USD" &&
+        p.currency === "USD" &&
+        Number.isFinite(p.quantity) &&
+        p.quantity > 0 &&
+        Number.isFinite(p.cost) &&
+        p.cost >= 0,
+    )
+    .reduce((sum, p) => sum + p.quantity, 0);
+  const complete =
+    !!workspace &&
+    !workspaceError &&
+    !quotes.loading &&
+    !totals.missing.length &&
+    positions.every((p) => p.assetType === "cash" || !q[p.symbol]?.stale) &&
+    !r.quote.stale;
+  const funding = result.available
+    ? positionFundingReview({
+        portfolioValue: totals.knownValue,
+        currentValue: current,
+        targetValue: result.targetValue,
+        cash,
+        complete,
+        concentrationLimit: preferences.concentrationLimit,
+      })
+    : { available: false as const };
   const id = useId(),
     prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   return (
@@ -118,6 +152,44 @@ export default function PositionExplorer({
               <dd>{amount(Math.abs(result.valueDifference))}</dd>
             </div>
           </dl>
+          <p className="experience-caption">
+            Business assessment: <strong>{reading.assessment}</strong>. Changing
+            this weight does not change the business or price assessment.
+          </p>
+          {funding.available ? (
+            <div className="position-scenario">
+              <span>
+                {result.valueDifference < 0
+                  ? "Trim proceeds stay in recorded cash"
+                  : "Funding and concentration review"}
+              </span>
+              <p>
+                {funding.shortfall > 0
+                  ? `${amount(funding.shortfall)} beyond recorded USD cash; another funding source would be needed.`
+                  : `${amount(funding.cashAfter)} recorded USD cash after this hypothetical change.`}
+              </p>
+              {funding.afterInvestmentWeight != null && (
+                <p>
+                  {percent(funding.afterInvestmentWeight)} of priced investments
+                  after the change (cash excluded).
+                  {funding.exceedsLimit === true
+                    ? ` Above your ${preferences.concentrationLimit}% attention threshold; review size before adding.`
+                    : funding.exceedsLimit === false
+                      ? ` Within your ${preferences.concentrationLimit}% attention threshold.`
+                      : " No personal concentration threshold set."}
+                </p>
+              )}
+              <small>
+                Recorded cash is not confirmed buying power. Fees, taxes,
+                settlement and other commitments are not modeled.
+              </small>
+            </div>
+          ) : (
+            <p className="experience-caption">
+              Funding review needs complete, non-stale USD holding prices. Any
+              displayed weight uses the priced portion only.
+            </p>
+          )}
           {result.scenarioChange != null && (
             <div className="position-scenario">
               <span>In the Bear sensitivity</span>
@@ -140,7 +212,8 @@ export default function PositionExplorer({
             Managed balances and margin are excluded. Reference{" "}
             {dateLabel(r.quote.asOf)}
             {r.quote.stale ? " · older quote" : ""}. Reallocation within this
-            fixed base; no new cash assumed.
+            fixed base; no new cash assumed. ETF look-through overlap and
+            benchmark attribution are not included.
           </p>
           <button className="text-button" onClick={() => setSelected(null)}>
             Reset to current exposure

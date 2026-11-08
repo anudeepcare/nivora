@@ -455,25 +455,26 @@ export function researchOutlook(
     (!Number.isFinite(userMultiple) || userMultiple <= 0 || userMultiple > 500)
   )
     return unavailable("Enter a positive P/E assumption no greater than 500×.");
-  const anchor = assumptions?.priceAnchored
-    ? (e.estimates ?? [])
-        .filter((x) => {
-          const days = (Date.parse(x.date) - now) / 86400000;
-          return (
-            /annual/i.test(x.frequency) &&
-            days >= 0 &&
-            days <= 550 &&
-            validFiscal(x) &&
-            x.currency === r.quote.currency &&
-            [x.epsLow, x.eps, x.epsHigh].every(
-              (v) => v != null && Number.isFinite(v) && v > 0,
-            ) &&
-            x.epsLow! <= x.eps! &&
-            x.eps! <= x.epsHigh!
-          );
-        })
-        .sort((a, b) => a.date.localeCompare(b.date))[0]
-    : undefined;
+  const anchor =
+    userMultiple === undefined && assumptions?.priceAnchored
+      ? (e.estimates ?? [])
+          .filter((x) => {
+            const days = (Date.parse(x.date) - now) / 86400000;
+            return (
+              /annual/i.test(x.frequency) &&
+              days >= 0 &&
+              days <= 550 &&
+              validFiscal(x) &&
+              x.currency === r.quote.currency &&
+              [x.epsLow, x.eps, x.epsHigh].every(
+                (v) => v != null && Number.isFinite(v) && v > 0,
+              ) &&
+              x.epsLow! <= x.eps! &&
+              x.eps! <= x.epsHigh!
+            );
+          })
+          .sort((a, b) => a.date.localeCompare(b.date))[0]
+      : undefined;
   const forwardPE =
     userMultiple ??
     (anchor

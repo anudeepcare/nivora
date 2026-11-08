@@ -1,3 +1,4 @@
+import { paceModel } from "./pace-model-v6.ts";
 export function publicationInput(
   input: {
     policy?: "monthly-v5" | "monthly-v6";
@@ -73,6 +74,7 @@ export type PublishedPaceRecord = {
 export function verifyProspectivePublication(
   symbol: string,
   row: {
+    policyVersion?: "monthly-v5" | "monthly-v6";
     signalDate: string;
     signalKnownAt: string;
     executionAt: string;
@@ -81,11 +83,17 @@ export function verifyProspectivePublication(
   },
   records: PublishedPaceRecord[],
 ) {
+  const policyVersion = row.policyVersion ?? "monthly-v5";
+  if (
+    policyVersion === "monthly-v6" &&
+    row.signalDate.slice(0, 10) < paceModel.availableFrom
+  )
+    throw Error("A prospective v6 signal must follow model release.");
   const matches = records.filter(
     (r) =>
       r.symbol === symbol &&
       r.signal_period === row.signalDate.slice(0, 7) &&
-      ["monthly-v5", "monthly-v6"].includes(r.policy) &&
+      r.policy === policyVersion &&
       r.policy_hash === row.policyHash,
   );
   if (matches.length !== 1)
@@ -133,5 +141,10 @@ export function verifyProspectivePublication(
     throw Error(
       "Publication identity, evidence, or contribution rule does not match.",
     );
-  return { publicationId: r.id, publishedAt: r.published_at, symbol };
+  return {
+    publicationId: r.id,
+    publishedAt: r.published_at,
+    symbol,
+    policyVersion,
+  };
 }

@@ -20,3 +20,8 @@ test('paused, absent and holding-only evidence cannot produce a new Buy recommen
 test('available assessments are shown ahead of still-loading rows',()=>{
  const x=decisionAttention({symbols:['MISSING','HOLD'],held:[],rows:{HOLD:{signal:signal('Watch')}}});assert.equal(x[0].symbol,'HOLD');
 });
+test('comparison keeps business action alongside independent size review and excludes bad weights',()=>{
+ const input={symbols:['A'],held:['A'],rows:{A:{signal:signal('Add')}},allocations:[{symbol:'A',weight:30}],concentrationLimit:20};
+ const row=decisionAttention(input)[0]; assert.equal(row.action,'Add'); assert.equal(row.weight,30); assert.equal(row.thresholdGap,-10); assert.equal(row.businessReason,'Business assessment');
+ assert.equal(decisionAttention({...input,allocations:[{symbol:'A',weight:NaN}]} )[0].weight,null);
+});

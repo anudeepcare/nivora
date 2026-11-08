@@ -7,6 +7,7 @@ import {
   useCallback,
 } from "react";
 import Link from "next/link";
+import LaunchScreen from "./LaunchScreen";
 import { api, ApiError, signOutAndRedirect } from "@/lib/client";
 import { clearAccountCache } from "@/lib/account-cache";
 import {
@@ -36,7 +37,7 @@ export function AccessBoundary({ children }: { children: React.ReactNode }) {
     [revision, setRevision] = useState(0);
   const refresh = useCallback(() => {
     clearAccountCache();
-    setAccess(null);
+    setError("");
     setRevision((r) => r + 1);
   }, []);
   useEffect(() => {
@@ -85,25 +86,13 @@ export function AccessBoundary({ children }: { children: React.ReactNode }) {
       document.removeEventListener("visibilitychange", resume);
     };
   }, [revision, refresh]);
-  if (error && !access)
-    return (
-      <main className="membership-state">
-        <h1>Access could not be checked</h1>
-        <p role="alert">{error}</p>
-        <button className="button" onClick={refresh}>
-          Try again
-        </button>
-        <button className="button" onClick={() => void signOutAndRedirect()}>
-          Sign out
-        </button>
-      </main>
-    );
   if (!access)
     return (
-      <main className="membership-state" role="status">
-        <span className="spinner" />
-        <p>Opening your workspace…</p>
-      </main>
+      <LaunchScreen
+        error={error || undefined}
+        onRetry={refresh}
+        onSignOut={error ? () => void signOutAndRedirect() : undefined}
+      />
     );
   const context = { access, refresh };
 

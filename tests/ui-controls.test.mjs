@@ -1,3 +1,6 @@
+import { earningsCalendar } from "../lib/earnings-calendar.ts";
+import { modelCoverage } from "../lib/research-depth.ts";
+import { scenarioStartingValues, operatingScenarioSupported } from "../lib/scenario-inputs.ts";
 import { scenarioGeometry } from "../lib/scenario-geometry.ts";
 import { latestFinancialEvidence } from "../lib/analysis.ts";
 import {
@@ -47,6 +50,8 @@ function loadComponent(file, name, bindings) {
       ),
     dateLabel: format.dateLabel,
     latestFinancialEvidence,
+    modelCoverage,
+    operatingScenarioSupported,
     headerBusinessMetrics,
     headerBusinessFamily,
     APP_VERSION: "0.2.0-rc.2",
@@ -119,6 +124,7 @@ function loadComponent(file, name, bindings) {
     AccessNotice: () => null,
     AnalystTargets: () => null,
     PriceRiskCases: () => null,
+    earningsCalendar,
     homeComposition,
     homeDay,
     homeBrief,
@@ -1759,6 +1765,7 @@ test("new operating expectations begins with explicit future inputs and never gu
       latestFinancialEvidence,
       enterpriseExpectations,
       impliedOperatingMargin,
+      scenarioStartingValues,
       ...format,
       futureFields: [["growth", "Annual growth"]],
     },
@@ -2439,4 +2446,50 @@ test('embedded price question uses native labelled controls and compares only po
   html = render();
   assert.doesNotMatch(html,/Analysts expect/);
   assert.match(html,/Price needs/);
+});
+
+
+test("funded scenario workbench preserves all cases without fabricating incomplete assumptions", async () => {
+  const { modelCoverage } = await import("../lib/research-depth.ts");
+  const { fundedScenario, impliedFundedMultiple } = await import("../lib/funded-scenarios.ts");
+  const View = loadComponent("components/FundedScenarios.tsx", "FundedScenarios", {
+    React, useState: React.useState, scenarioStartingValues, modelCoverage,
+    fundedScenario, impliedFundedMultiple, styles: { workbench: "funded", confirm: "confirm" },
+    sharedFields: [["startRevenue", "Annual revenue"], ["shares", "Current shares"]],
+    caseFields: [["terminalRevenue", "Terminal revenue"]], names: ["Bear", "Base", "Bull"], ...format,
+  });
+  const html = renderToStaticMarkup(React.createElement(View, {research: demoData.research.MSFT}));
+  for (const name of ["Bear", "Base", "Bull"]) assert.match(html, new RegExp(`data-case="${name}"`));
+  assert.match(html, /not probabilities or validated forecasts/);
+  assert.match(html, /Reconcile starting facts/);
+  assert.doesNotMatch(html, /NaN|Infinity|Terminal equity \/ share/);
+});
+
+
+test("both scenario modes withhold generic valuations for every specialized financial family", async () => {
+  const { modelCoverage } = await import("../lib/research-depth.ts");
+  const { fundedScenario, impliedFundedMultiple } = await import("../lib/funded-scenarios.ts");
+  const { enterpriseExpectations, impliedOperatingMargin } = await import("../lib/expectation-engine.ts");
+  const bindings = {React, useState: React.useState, scenarioStartingValues, modelCoverage,
+    fundedScenario, impliedFundedMultiple, enterpriseExpectations, impliedOperatingMargin,
+    styles: { workbench: "funded", confirm: "confirm" }, sharedFields: [], caseFields: [],
+    futureFields: [], names: ["Bear", "Base", "Bull"], ...format};
+  const Funded = loadComponent("components/FundedScenarios.tsx", "FundedScenarios", bindings);
+  const Operating = loadComponent("components/ExpectationMap.tsx", "ExpectationMap", bindings);
+  for (const [sector, industry, family] of [
+    ["Financial Services","Insurance - Property & Casualty","insurance"],
+    ["Financial Services","Asset Management","specialized-financial"],
+    ["Real Estate","Real Estate Services","real-estate"],
+    ["Financial Services","Banks - Regional","financial"],
+  ]) {
+    const r=structuredClone(demoData.research.MSFT);
+    r.company.symbol="EXAMPLE";r.company.sector=sector;
+    r.evidence={...r.evidence,profile:{...r.evidence?.profile,sector,industry}};
+    assert.equal(modelCoverage(r.company.symbol,"stock",{sector,industry}).family,family);
+    for (const View of [Funded,Operating]) {
+      const html=renderToStaticMarkup(React.createElement(View,{research:r}));
+      assert.match(html,/capital model/,family);
+      assert.doesNotMatch(html,/data-case=|Specify the economics|Build and inspect/);
+    }
+  }
 });
