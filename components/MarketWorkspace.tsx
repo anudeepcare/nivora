@@ -46,9 +46,7 @@ function AccountBoard(props: {
   const [index, setIndex] = useState(-1),
     [playing, setPlaying] = useState(false),
     [busy, setBusy] = useState(false),
-    [message, setMessage] = useState(""),
-    [presets, setPresets] = useState<BoardPreset[]>([]),
-    [accountPresets, setAccountPresets] = useState<BoardPreset[] | undefined>();
+    [message, setMessage] = useState("");
   const snapshots = resource.data?.snapshots ?? [];
   useEffect(() => {
     if (!playing || snapshots.length < 2) return;
@@ -111,33 +109,6 @@ function AccountBoard(props: {
           onClick={() => resource.refresh()}
         >
           <RefreshCw size={16} /> Refresh
-        </button>
-        <button
-          type="button"
-          disabled={busy || !resource.data || !!demo}
-          onClick={() =>
-            void action(async () => {
-              await api(path, {
-                op: "views",
-                presets,
-                expectedUpdatedAt: resource.data?.views?.updated_at ?? null,
-              });
-              await resource.refresh();
-              setMessage("Views saved to your account.");
-            })
-          }
-        >
-          Sync views
-        </button>
-        <button
-          type="button"
-          disabled={!resource.data?.views || busy}
-          onClick={() => {
-            setAccountPresets(resource.data?.views?.body.marketViews ?? []);
-            setMessage("Account views loaded into this device.");
-          }}
-        >
-          Restore views
         </button>
       </div>
       {(resource.error || resource.data?.historyError) && (
@@ -207,8 +178,6 @@ function AccountBoard(props: {
           setIndex(-1);
           setPlaying(false);
         }}
-        accountPresets={accountPresets}
-        onPresetsChanged={setPresets}
         onCreateAlert={(cell, type) =>
           void action(async () => {
             await api("documents", {

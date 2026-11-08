@@ -78,7 +78,7 @@ export default function PriceStudyChart({
         contrast={contrast}
         levels={levels}
       />
-      <details className="chart-context">
+      <details className="chart-context" open>
         <summary>Price range & completed volume</summary>
         <StockFacts research={research} priceContext />
       </details>

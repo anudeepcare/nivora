@@ -17,6 +17,7 @@ import {
 import { amount, percent, dateLabel } from "@/lib/format";
 import { openingAssessment } from "@/lib/connected-product";
 import { useResearchPreferences } from "./ResearchPreferences";
+import layout from "./DecisionWorkspace.module.css";
 export function evidenceValue(m: EvidenceMetric, currency: string) {
   if (m.value == null) return "—";
   return m.unit === "money"
@@ -51,7 +52,7 @@ export default function DecisionWorkspace({
     ];
   return (
     <section
-      className={`decision-workspace decision-${part}`}
+      className={`${layout.root} decision-workspace decision-${part}`}
       aria-label="Investment evidence overview"
     >
       {part !== "detail" && (
@@ -133,6 +134,7 @@ export default function DecisionWorkspace({
             <div className="lens-visual">
               <svg
                 viewBox="0 0 340 285"
+                preserveAspectRatio="xMidYMid meet"
                 role="img"
                 aria-label={`Screening composite ${d.overall == null ? "unavailable" : d.overall.toFixed(1) + " out of ten"}; ${d.scoredLenses} scored lenses. Missing scores are not plotted.`}
               >

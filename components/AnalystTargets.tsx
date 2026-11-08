@@ -123,28 +123,6 @@ export default function AnalystTargets({
           </div>
         </div>
       )}
-      <p className="analyst-target-quote">
-        {c.referenceStatus === "older"
-          ? "Older quote"
-          : c.referenceStatus === "unavailable"
-            ? "Last recorded quote"
-            : "Current"}{" "}
-        {amount(r.quote.price, r.quote.currency)} · observed{" "}
-        {dateLabel(r.quote.asOf)}
-      </p>
-      <div className="analyst-target-note">
-        <small>Targets updated {dateLabel(c.asOf)}</small>
-        <details>
-          <summary>Coverage & dates</summary>
-          <p>
-            Target dataset updated {dateLabel(c.asOf)}.{" "}
-            {c.low != null
-              ? "range shown only because both bounds are supplied and ordered."
-              : "low/high range not supplied."}{" "}
-            This is not a guaranteed return.
-          </p>
-        </details>
-      </div>
     </section>
   );
 }

@@ -289,3 +289,19 @@ test("missing near-year EPS and invalid manual multiples cannot silently use pro
       false,
     );
 });
+
+test("price-anchored scenarios disclose the anchor and select only supplied fiscal ends", () => {
+  const r = research();
+  r.evidence.multiples.ForwardPE = 3;
+  r.evidence.estimates.push({date:"2028-10-17", period:"FY2028",frequency:"annual",currency:"USD",eps:7,epsLow:5,epsHigh:9,analysts:12});
+  assert.equal(outlook.researchOutlook(r).available,false);
+  const result = outlook.researchOutlook(r,{priceAnchored:true,fiscalEnd:"2028-10-17"});
+  assert.equal(result.available,true);
+  assert.equal(result.multipleSource,"price-implied");
+  assert.equal(result.end,"2028-10-17");
+  assert.deepEqual(result.cases.map(x=>x.target),[80,140,216]);
+  assert.match(result.caveat,/not independent fair value/);
+  assert.equal(outlook.researchOutlook(r,{priceAnchored:true,fiscalEnd:"2030-10-17"}).available,false);
+  r.evidence.estimates[1].epsLow = null;
+  assert.equal(outlook.researchOutlook(r,{priceAnchored:true}).available,false);
+});

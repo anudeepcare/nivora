@@ -12,6 +12,7 @@ import { paceEvidence } from "@/lib/pace-insights";
 import { amount, percent, dateLabel } from "@/lib/format";
 import type { Research } from "@/lib/types";
 import s from "./PaceInstrument.module.css";
+import PacePriceZones from "./PacePriceZones";
 import PaceHelp from "./PaceHelp";
 const short = ["Pause", "Watch", "Start", "Gradual", "Planned max"];
 type Props = {
@@ -36,6 +37,7 @@ export default function PaceInstrument({
   ownsPosition = false,
   now,
 }: Props) {
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const [inspect, setInspect] = useState<number | null>(publicGuide ? 2 : null);
   const decision = useMemo(
     () =>
@@ -88,42 +90,68 @@ export default function PaceInstrument({
           <img src="/pace-diamond.svg" alt="" width="22" height="24" />
           <span>AURYN PACE</span>
         </span>
-        <PaceHelp />
+        <PaceHelp
+          research={research}
+          asOf={
+            research
+              ? new Date(
+                  now ??
+                    Date.parse(
+                      research.priceObservedAt ?? research.retrievedAt,
+                    ),
+                ).toISOString()
+              : undefined
+          }
+        />
       </header>
       <div className={s.readout}>
         <div className={s.readoutText}>
           <div className={s.title}>
             <small>
-              {exploring ? "Explore the framework" : "Accumulation pace"}
+              {exploring ? "Explore the framework" : "Current price zone"}
             </small>
             <h2>
               {selected === null
                 ? "Refresh price history"
-                : PACE_LEVELS[selected]}
+                : `Zone P${selected}`}
               <span className={s.level}>
-                {selected === null ? "Pending" : `P${selected}`}
+                {selected === null ? "Pending" : "P0–P4"}
               </span>
             </h2>
           </div>
-          <div className={s.terraces} aria-label="Five Pace stages">
-            {short.map((name, z) => (
-              <button
-                key={name}
-                type="button"
-                className={s.stage}
-                aria-pressed={selected === z}
-                aria-label={`Explore P${z}: ${name}`}
-                onClick={() => setInspect(z)}
-              >
-                <strong>P{z}</strong>
-                <span>{name}</span>
-                <Diamond
-                  size={10}
-                  fill={selected === z ? "currentColor" : "none"}
-                />
-              </button>
-            ))}
-          </div>
+          {research ? (
+            <PacePriceZones
+              research={research}
+              asOf={new Date(
+                now ??
+                  Date.parse(research.priceObservedAt ?? research.retrievedAt),
+              ).toISOString()}
+              period={current?.provisional ? "forming" : "confirmed"}
+              compact
+              selected={selected}
+              onInspect={setInspect}
+            />
+          ) : (
+            <div className={s.terraces} aria-label="Five Pace stages">
+              {short.map((name, z) => (
+                <button
+                  key={name}
+                  type="button"
+                  className={s.stage}
+                  aria-pressed={selected === z}
+                  aria-label={`Explore P${z}: ${name}`}
+                  onClick={() => setInspect(z)}
+                >
+                  <strong>P{z}</strong>
+                  <span>{name}</span>
+                  <Diamond
+                    size={10}
+                    fill={selected === z ? "currentColor" : "none"}
+                  />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
       <div className={s.status}>
@@ -151,7 +179,6 @@ export default function PaceInstrument({
       </div>
       {!exploring && (
         <div className={s.insight}>
-          <p className={s.action}>{actionText}</p>
           {boundary && (
             <p className={s.boundary}>
               <span>Next zone</span>
@@ -166,8 +193,24 @@ export default function PaceInstrument({
           )}
         </div>
       )}
-      <details className={s.readingDetail}>
-        <summary>{exploring ? "About this stage" : "Levels & history"}</summary>
+      <details
+        className={s.readingDetail}
+        onToggle={(event) => setDetailsOpen(event.currentTarget.open)}
+      >
+        <summary>
+          {exploring ? "About this stage" : "Price zones & history"}
+        </summary>
+        {!exploring && research && (
+          <PacePriceZones
+            research={research}
+            asOf={new Date(
+              now ??
+                Date.parse(research.priceObservedAt ?? research.retrievedAt),
+            ).toISOString()}
+            period={period}
+            active={detailsOpen}
+          />
+        )}
         <p className={s.description}>
           {exploring && selected !== null
             ? PACE_DESCRIPTIONS[selected]

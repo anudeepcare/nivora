@@ -85,12 +85,6 @@ const Financials = dynamic(() => import("./FinancialPicture"), {
 import { TechnicalPicture, ThesisPicture } from "./ResearchDetails";
 import { groupHistory } from "@/lib/chart-period";
 import EarningsReview from "./EarningsReview";
-const ResearchNotes = dynamic(() => import("./ResearchNotes"), {
-  loading: () => <p role="status">Loading…</p>,
-});
-const CompanyBrief = dynamic(() => import("./CompanyBrief"), {
-  loading: () => <p role="status">Loading…</p>,
-});
 const DcaResearch = dynamic(() => import("./DcaResearch"), {
   loading: () => <p role="status">Loading…</p>,
 });
@@ -836,13 +830,6 @@ export default function Research({ symbol }: { symbol: string }) {
                     part="detail"
                   />
                   <DecisionWatch key={r.company.symbol} research={r} />
-                </details>
-                <details className="research-reference">
-                  <summary>My notes</summary>
-                  <FeatureGate feature="advanced">
-                    <ResearchNotes research={r} />
-                  </FeatureGate>
-                  <CompanyBrief research={r} />
                 </details>
               </>
             )}

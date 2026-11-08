@@ -1,0 +1,31 @@
+{
+  "unitTests": {
+    "passed": 1229,
+    "failed": 0
+  },
+  "browserFixtures": {
+    "simpleResearchOwnerCalculator": 24,
+    "scenarioYearSyncAndChart": 8,
+    "options": 8,
+    "widths": [
+      320,
+      390,
+      768,
+      1440
+    ],
+    "themes": [
+      "light",
+      "dark"
+    ]
+  },
+  "paceSnapshot": {
+    "stocks": 589,
+    "parityMismatches": 0,
+    "reservedMatches": 159,
+    "reservedTotal": 182,
+    "deeperMatches": 53,
+    "deeperTotal": 69
+  },
+  "liveAPPVerified": false,
+  "deployed": false
+}

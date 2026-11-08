@@ -302,3 +302,73 @@
     font-size: 12px;
   }
 }
+
+.root.root .mobileTopics {
+  display: none;
+}
+.root.root .referenceToggle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.root.root .referenceToggle input {
+  flex: none;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+.root.root .reader {
+  min-width: 0;
+}
+.root.root .reader h3 {
+  font-size: clamp(25px, 3vw, 36px);
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+}
+.intro > p {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 58ch;
+}
+.intro ul {
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0;
+  margin: 24px 0 30px;
+}
+.intro li {
+  padding: 16px 0 16px 26px;
+  border-bottom: 1px solid var(--line);
+  position: relative;
+  line-height: 1.6;
+}
+.intro li::before {
+  content: "◆";
+  color: var(--green);
+  font-size: 10px;
+  position: absolute;
+  left: 0;
+  top: 21px;
+}
+.root.root .fullDetail {
+  margin: 20px 0;
+  border-top: 1px solid var(--line);
+}
+.root.root .fullDetail > summary {
+  background: transparent;
+  padding: 16px 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+@media (max-width: 800px) {
+  .root.root .mobileTopics {
+    display: block;
+  }
+  .root.root .topics {
+    display: none;
+  }
+}

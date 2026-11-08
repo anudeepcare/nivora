@@ -1,0 +1,126 @@
+.zones {
+  min-width: 0;
+  margin: 10px 0;
+  color: inherit;
+}
+.zones.zones table {
+  width: 100%;
+  border-collapse: collapse;
+  font: inherit;
+  font-size: 12px;
+  color: inherit;
+  table-layout: fixed;
+}
+.zones.zones :is(th, td) {
+  padding: 12px 8px;
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+.zones.zones thead th {
+  opacity: 0.65;
+  font-size: 11px;
+  font-weight: 500;
+}
+.zones.zones th:first-child {
+  width: 38%;
+}
+.zones.zones tbody th strong {
+  display: inline-block;
+  margin-right: 6px;
+  font-size: 15px;
+  color: inherit;
+}
+.zones.zones tbody th span {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: 400;
+  opacity: 0.8;
+}
+.zones.zones td > span {
+  display: block;
+  margin: 2px 0 6px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.6;
+}
+.zones.zones tr[data-current="true"] {
+  background: color-mix(in srgb, #9bb536 12%, transparent);
+}
+.zones.zones th small {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 10px;
+  font-weight: 600;
+}
+.zones > small {
+  display: block;
+  margin-top: 12px;
+  font-size: 10px;
+  line-height: 1.6;
+  opacity: 0.7;
+}
+.pending {
+  font-size: 12px;
+  line-height: 1.6;
+  opacity: 0.75;
+  padding: 12px 0;
+}
+
+.ladder {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  margin: 18px 0 8px;
+}
+.ladder.ladder button {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  min-width: 0;
+  min-height: 66px;
+  padding: 10px 7px;
+  border: 1px solid #ffffff30;
+  border-radius: 12px;
+  background: #ffffff05;
+  color: #c4cec7;
+  text-align: left;
+  cursor: pointer;
+}
+.ladder.ladder button strong {
+  font-size: 12px;
+}
+.ladder.ladder button span {
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.ladder.ladder button[data-current="true"] {
+  background: #d5f45a;
+  border-color: #d5f45a;
+  color: #1d2c20;
+}
+.currentPrice {
+  grid-column: 1/-1;
+  font-size: 11px;
+  color: #c8d5bd;
+  padding: 6px 0;
+}
+
+.ladder.ladder {
+  grid-template-columns: repeat(5, minmax(56px, 1fr));
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.ladder.ladder button span {
+  white-space: nowrap;
+  overflow-wrap: normal;
+  font-size: 10px;
+}
+.ladder.ladder button {
+  padding: 10px 6px;
+}

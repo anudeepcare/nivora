@@ -1,8 +1,8 @@
 # AURYN
 
-Current source handoff: 7 November 2026. Not deployed by this update.
+Current source handoff: 8 November 2026. Not deployed by this update.
 
-Start with [the current ZIP handoff](RELEASE-HANDOFF-20261107.md). Earlier review and completion documents are historical snapshots; the handoff resolves their conflicting status statements.
+Start with [the current UX release](RELEASE-UX-20261108.md), then [the operational handoff](RELEASE-HANDOFF-20261107.md). Earlier review and completion documents are historical snapshots.
 
 See [the recovered requirement checklist](REQUIREMENTS-STATUS-20261107.md) and [exact configuration notes](CONFIGURATION-20261107.md). These separate shipped source from live activation and unfinished roadmap items.
 

@@ -25,7 +25,10 @@ export type Outlook =
       currency: string;
       analysts: number | null;
       forwardPE: number;
-      multipleSource?: "reported-compatible" | "user-assumption";
+      multipleSource?:
+        | "reported-compatible"
+        | "user-assumption"
+        | "price-implied";
       multipleReferencePeriod?: string;
       basis?: "earnings" | "revenue";
       shares?: number;
@@ -95,7 +98,11 @@ export function consensusOutlook(r: Research): {
  * compatible reported forward P/E (or an explicit user multiple) are stress assumptions. */
 export function researchOutlook(
   r: Research,
-  assumptions?: { earningsMultiple?: number },
+  assumptions?: {
+    earningsMultiple?: number;
+    fiscalEnd?: string;
+    priceAnchored?: boolean;
+  },
 ): Outlook {
   const unavailable = (reason: string): Outlook => ({
     available: false,
@@ -241,6 +248,9 @@ export function researchOutlook(
           f.filed <= r.retrievedAt.slice(0, 10),
       );
     const estimate = (e.estimates ?? [])
+      .filter(
+        (x) => !assumptions?.fiscalEnd || x.date === assumptions.fiscalEnd,
+      )
       .filter((x) => {
         const days = (Date.parse(x.date) - now) / 86400000;
         return (
@@ -440,7 +450,32 @@ export function researchOutlook(
     (!Number.isFinite(userMultiple) || userMultiple <= 0 || userMultiple > 500)
   )
     return unavailable("Enter a positive P/E assumption no greater than 500×.");
-  const forwardPE = userMultiple ?? e.multiples?.ForwardPE;
+  const anchor = assumptions?.priceAnchored
+    ? (e.estimates ?? [])
+        .filter((x) => {
+          const days = (Date.parse(x.date) - now) / 86400000;
+          return (
+            /annual/i.test(x.frequency) &&
+            days >= 0 &&
+            days <= 550 &&
+            validFiscal(x) &&
+            x.currency === r.quote.currency &&
+            [x.epsLow, x.eps, x.epsHigh].every(
+              (v) => v != null && Number.isFinite(v) && v > 0,
+            ) &&
+            x.epsLow! <= x.eps! &&
+            x.eps! <= x.epsHigh!
+          );
+        })
+        .sort((a, b) => a.date.localeCompare(b.date))[0]
+    : undefined;
+  const forwardPE =
+    userMultiple ??
+    (anchor
+      ? price / anchor.eps!
+      : assumptions?.priceAnchored
+        ? undefined
+        : e.multiples?.ForwardPE);
   if (forwardPE == null || !Number.isFinite(forwardPE) || forwardPE <= 0)
     return unavailable(
       "A positive reported forward earnings multiple is needed.",
@@ -462,7 +497,9 @@ export function researchOutlook(
         Math.abs(Date.parse(a.date) - now - 3 * 365.25 * 86400000) -
         Math.abs(Date.parse(b.date) - now - 3 * 365.25 * 86400000),
     );
-  const estimate = annual[0];
+  const estimate = assumptions?.fiscalEnd
+    ? annual.find((x) => x.date === assumptions.fiscalEnd)
+    : annual[0];
   if (
     !estimate &&
     (e.estimates ?? []).some((x) => usableEps(x) && !validFiscal(x))
@@ -505,6 +542,7 @@ export function researchOutlook(
   const impliedEps = price / forwardPE;
   if (
     userMultiple === undefined &&
+    !assumptions?.priceAnchored &&
     (!referenceEstimate ||
       impliedEps < referenceEstimate.epsLow! * 0.9 ||
       impliedEps > referenceEstimate.epsHigh! * 1.1)
@@ -549,15 +587,20 @@ export function researchOutlook(
   return {
     available: true,
     basis: "earnings",
-    multipleSource:
-      userMultiple === undefined ? "reported-compatible" : "user-assumption",
+    multipleSource: anchor
+      ? "price-implied"
+      : userMultiple === undefined
+        ? "reported-compatible"
+        : "user-assumption",
     multipleReferencePeriod: referenceEstimate
       ? `FY${referenceEstimate.date.slice(0, 4)}`
       : undefined,
     caveat:
-      (userMultiple === undefined
-        ? "Reported forward P/E is numerically compatible with the nearest annual EPS range (10% tolerance). This check does not verify its earnings period, accounting or split basis."
-        : "The exit P/E is your explicit assumption, not a verified provider multiple or an analyst target.") +
+      (anchor
+        ? `Price-anchored sensitivity: reference price divided by the nearest annual EPS estimate (${anchor.date}) sets the central P/E. Bear/base/bull use 0.8×/1×/1.2× that multiple with supplied low/average/high EPS. This assumes today’s market pricing persists; it is not independent fair value or an analyst price target.`
+        : userMultiple === undefined
+          ? "Reported forward P/E is numerically compatible with the nearest annual EPS range (10% tolerance). This check does not verify its earnings period, accounting or split basis."
+          : "The exit P/E is your explicit assumption, not a verified provider multiple or an analyst target.") +
       (coverage.family === "financial"
         ? " Capital adequacy, credit losses and tangible book value require a separate bank assessment."
         : ""),

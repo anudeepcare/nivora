@@ -34,8 +34,8 @@
 .explorer.explorer.explorer :global(.explorer-plot) > svg {
   display: block;
   width: 100%;
-  height: 300px;
-  max-height: 340px;
+  height: auto;
+  max-height: none;
 }
 .explorer.explorer.explorer :global(.explorer-definition) {
   border: 0;
@@ -94,7 +94,7 @@
 
 @media (max-width: 600px) {
   .explorer.explorer.explorer :global(.explorer-plot) > svg {
-    height: 220px;
+    height: auto;
   }
   .explorer.explorer.explorer :global(.explorer-tools) {
     width: 100%;
@@ -112,4 +112,30 @@
     min-width: 0;
     max-width: 100%;
   }
+}
+
+.explorer.explorer.explorer :global(.explorer-mobile-picker) {
+  display: grid;
+  gap: 6px;
+  max-width: 320px;
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.explorer.explorer.explorer :global(.explorer-mobile-picker select) {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+}
+.explorer.explorer.explorer :global(.explorer-metrics > div) {
+  display: contents;
+}
+.explorer.explorer.explorer :global(.explorer-metrics > div > span) {
+  display: none;
 }

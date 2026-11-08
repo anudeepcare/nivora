@@ -204,6 +204,7 @@ function researchMarkup(issues = []) {
     "quoteTime",
     "Help",
     "customerText",
+    "styles",
     stampCode + ";return DataStamp;",
   )(
     React,
@@ -211,6 +212,7 @@ function researchMarkup(issues = []) {
     format.quoteTime,
     ({ children }) => React.createElement("dialog", {}, children),
     customerText,
+    {backupBadge:"backupBadge"},
   );
   for (const name of [
     "StockFacts",
@@ -281,7 +283,7 @@ function researchMarkup(issues = []) {
   return renderToStaticMarkup(component({ symbol: "SAP" }));
 }
 test("the actual Snapshot discloses backup data without vendor names", () => {
-  assert.match(researchMarkup(), /Backup data used/);
+  assert.match(researchMarkup(), /Backup feed/);
   assert.doesNotMatch(researchMarkup(), /EODHD|Twelve Data/);
 });
 test("unverified upcoming EPS is never formatted in the listing currency", () => {

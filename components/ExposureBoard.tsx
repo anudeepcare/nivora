@@ -9,7 +9,6 @@ import {
   Download,
   Focus,
   Layers3,
-  SlidersHorizontal,
   Star,
   Trash2,
 } from "lucide-react";
@@ -70,7 +69,6 @@ export default function ExposureBoard({
       snapshots: [],
     }),
     [snapshot, setSnapshot] = useState(""),
-    [name, setName] = useState(""),
     [message, setMessage] = useState(""),
     [mode, setMode] = useState("map");
   const [presentation, setPresentation] = useState("heatmap");
@@ -180,43 +178,6 @@ export default function ExposureBoard({
       setMessage(
         "Snapshot saved on this device. This is not an intraday history feed.",
       );
-  }
-  function savePreset() {
-    if (!name.trim()) {
-      setMessage("Give this view a name first.");
-      return;
-    }
-    const p: BoardPreset = {
-      name: name.trim().slice(0, 60),
-      metric,
-      range,
-      expirations,
-      months,
-      minimum,
-      normalized,
-    };
-    if (
-      persist({
-        ...saved,
-        presets: [...saved.presets.filter((x) => x.name !== p.name), p].slice(
-          -10,
-        ),
-      })
-    ) {
-      setMessage("View saved on this device.");
-      setName("");
-    }
-  }
-  function applyPreset(n: string) {
-    const p = saved.presets.find((x) => x.name === n);
-    if (p) {
-      setMetric(p.metric);
-      setRange(p.range);
-      setExpirations(p.expirations);
-      setMonths(p.months ?? 0);
-      setMinimum(p.minimum);
-      setNormalized(p.normalized);
-    }
   }
   function center(strike: number | null) {
     if (strike !== null)
@@ -339,8 +300,7 @@ export default function ExposureBoard({
           <p>
             Coverage describes usable returned inputs, not the entire market.
             Cells can have different observation dates. Device snapshots stay in
-            this browser; use History &amp; saved views for cross-device
-            storage.
+            this browser; use account history for cross-device storage.
           </p>
         </Help>
       </header>
@@ -860,60 +820,7 @@ export default function ExposureBoard({
           )}
         </section>
       )}
-      <details className={s.saved}>
-        <summary>
-          <SlidersHorizontal size={16} /> Saved views
-        </summary>
-        <div className={s.toolbar}>
-          {saved.presets.length > 0 && (
-            <label>
-              Saved view
-              <select
-                defaultValue=""
-                onChange={(e) => applyPreset(e.target.value)}
-              >
-                <option value="">Choose a view</option>
-                {saved.presets.map((p) => (
-                  <option key={p.name}>{p.name}</option>
-                ))}
-              </select>
-            </label>
-          )}
-          <label>
-            View name
-            <input
-              maxLength={60}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="For example: nearest expirations"
-            />
-          </label>
-          <button type="button" onClick={savePreset}>
-            Save this view
-          </button>
-          {(snapshots.length > 0 || externalSnapshot) && (
-            <label>
-              Observation
-              <select
-                value={snapshot}
-                disabled={!!externalSnapshot}
-                onChange={(e) => {
-                  setSnapshot(e.target.value);
-                  setSelected(null);
-                }}
-              >
-                <option value="">Latest loaded snapshot</option>
-                {snapshots.map((x) => (
-                  <option key={x.id} value={x.id}>
-                    Saved {new Date(x.savedAt).toLocaleString()}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )}
-        </div>
-        {accountTools}
-      </details>
+      {accountTools}
       {message && <p role="status">{message}</p>}
     </section>
   );

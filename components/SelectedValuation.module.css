@@ -99,3 +99,25 @@
   color: var(--case-color);
   font-weight: 650;
 }
+
+.root.root .years {
+  display: flex;
+  gap: 6px;
+  margin: 12px 0;
+  flex-wrap: wrap;
+}
+.root.root .years button {
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+.root.root .years button[aria-pressed="true"] {
+  background: #eaf4c5;
+  color: #243b24;
+  border-color: #91a65b;
+}

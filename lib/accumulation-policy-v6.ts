@@ -2,10 +2,9 @@ import type { Candle } from "./types";
 import {
   researchAccumulation as previousPolicy,
   adaptiveSettledBars,
-  cycleReading,
   type CycleSignal,
 } from "./accumulation-policy-v5.ts";
-import { trendAccumulationReading } from "./accumulation-policy-v3.ts";
+import { makePacePriceEvaluator } from "./pace-price-evaluator.ts";
 import { classifyPace, paceFeatures } from "./pace-classifier.ts";
 import { paceModel } from "./pace-model-v6.ts";
 import { evidenceMemo } from "./evidence-memo.ts";
@@ -60,31 +59,8 @@ function compute(bars: Candle[], asOf: string, market: "us-equity" | "crypto") {
       buy4: 0,
     };
     if (!boundary) return result;
-    const monthly = new Map<string, Candle>();
-    for (const b of rows) monthly.set(b.time.slice(0, 7), b);
-    const prior = [...monthly.values()].slice(0, -1).slice(-24),
-      last = rows.at(-1)!;
-    const at = (price: number) => {
-      const bar = {
-        ...last,
-        close: price,
-        high: Math.max(last.high, price),
-        low: Math.min(last.low, price),
-      };
-      const rule = cycleReading(
-        prior,
-        bar,
-        trendAccumulationReading(prior, bar),
-      );
-      if (!rule) return null;
-      if (rule.multiplier === 0) return 0;
-      const f = paceFeatures(
-        [...rows.slice(0, -1), bar],
-        rule.z,
-        rule.deviation / 100,
-      );
-      return f ? classifyPace(f) : null;
-    };
+    const last = rows.at(-1)!;
+    const at = makePacePriceEvaluator(rows, true);
     // Nearest sampled transition, not a claim that all more distant prices share a zone.
     const candidates = [];
     for (const direction of [-1, 1]) {

@@ -495,3 +495,22 @@
     font-size: 20px;
   }
 }
+
+.panel.panel :global(.financial-answer) {
+  display: block;
+}
+.panel.panel :global(.financial-cash-bridge) {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto 24px;
+}
+.panel.panel :global(.financial-cash-bridge svg) {
+  width: 100%;
+  height: auto;
+  display: block;
+  aspect-ratio: 480/155;
+}
+.panel.panel :global(.financial-cash-bridge svg text) {
+  font-family: inherit;
+  font-size: 12px;
+}

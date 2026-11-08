@@ -84,8 +84,8 @@ function EarningsNumbers({
   return (
     <small className={homeStyles.earningsNumbers}>
       <span>
-        EPS reported{" "}
-        <strong>{actual === null ? "Pending" : actual.toFixed(2)}</strong>
+        {actual === null ? "" : "EPS "}
+        <strong>{actual === null ? "" : actual.toFixed(2)}</strong>
       </span>
       <span>
         Estimate{" "}
@@ -231,6 +231,27 @@ function HomeOverview() {
           Research a company <SearchIcon size={16} />
         </Link>
       </div>
+      {symbols.length > 0 && (
+        <section
+          className={homeStyles.dailyBanner}
+          aria-label="Your research at a glance"
+        >
+          <div>
+            <span>AURYN · Your daily brief</span>
+            <h2>Know where to focus.</h2>
+            <p>
+              {symbols.length} followed companies. Price zones, fresh results
+              and your next earnings checkpoint.
+            </p>
+          </div>
+          <Link href="#home-earnings">
+            {feed.loading
+              ? "Checking"
+              : eventGroups.reduce((n, g) => n + g.events.length, 0)}{" "}
+            upcoming events <ArrowUpRight size={18} />
+          </Link>
+        </section>
+      )}
       <ContributionCompare symbols={symbols} prefix={prefix} />
       <HomeMarketCards
         symbols={symbols}
@@ -318,6 +339,11 @@ function HomeOverview() {
                     onClick={feed.refresh}
                     disabled={feed.loading}
                     aria-label="Refresh company events"
+                    title={
+                      feed.data?.retrievedAt
+                        ? `Updated ${quoteTime(feed.data.retrievedAt)}`
+                        : "Refresh events"
+                    }
                   >
                     <RefreshCw size={18} />
                   </button>
@@ -424,17 +450,13 @@ function HomeOverview() {
                     checked.
                   </p>
                 )}
-              <p className="home-source-note" role="status">
-                {demo
-                  ? "Illustrative workspace"
-                  : feed.loading
-                    ? "Checking company events…"
-                    : feed.error
-                      ? "Some company events could not be checked."
-                      : feed.data?.retrievedAt
-                        ? `Checked ${quoteTime(feed.data.retrievedAt)}.`
-                        : "Available calendar observations"}
-              </p>
+              {(feed.loading || feed.error) && (
+                <p className="home-source-note" role="status">
+                  {feed.loading
+                    ? "Checking events…"
+                    : "Some events could not be checked."}
+                </p>
+              )}
               {!feed.loading && !readiness.eventsReady && (
                 <button className="text-link" onClick={feed.refresh}>
                   Retry calendar <RefreshCw size={14} />

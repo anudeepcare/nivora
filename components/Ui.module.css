@@ -110,3 +110,16 @@
     min-height: 44px;
   }
 }
+
+.backupBadge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 7px;
+  padding: 3px 7px;
+  border-radius: 20px;
+  background: #fff2d7;
+  color: #865508;
+  font-size: 10px;
+  line-height: 1.3;
+  white-space: nowrap;
+}

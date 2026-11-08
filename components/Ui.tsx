@@ -25,7 +25,12 @@ export function DataStamp({
         {status ? `${customerText(status)} · ` : ""}
         {asOf?.includes("T") ? quoteTime(asOf) : dateLabel(asOf)}
         {source && /fallback/i.test(source) && (
-          <small> · Backup data used</small>
+          <small
+            className={styles.backupBadge}
+            title="The primary feed was unavailable; this quote comes from the backup feed."
+          >
+            ● Backup feed
+          </small>
         )}
       </span>
     </span>

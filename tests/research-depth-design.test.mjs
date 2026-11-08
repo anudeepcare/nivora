@@ -104,10 +104,7 @@ test("financial cash bridge uses reported cash and negative capex as a spending 
   assert.ok(
     html.includes("Cash after capex: " + format.amount(4e8, "USD", true)),
   );
-  assert.match(
-    html,
-    /business-kpis/,
-  );
+  assert.doesNotMatch(html, /business-kpis/);
 });
 test("financial cash bridge does not draw unreconciled line items as a valid waterfall", () => {
   const period = {

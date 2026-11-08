@@ -53,7 +53,7 @@ function loadComponent(file, name, bindings) {
     ...bindings,
   };
   bindings = {
-    layout: { panel: "panel" },
+    layout: { panel: "panel",root:"root" },
     searchStyles: { search: "search-module" },
     ...bindings,
   };
@@ -189,7 +189,7 @@ test("Financials avoids duplicate overview tiles and retains statement rows with
   ])
     assert(html.includes(label));
   assert.match(html, /aria-label="Income statement snapshot"/);
-  assert.equal((html.match(/<dt>/g) || []).length, 7);
+  assert.equal((html.match(/<dt>/g) || []).length, 4);
   assert.equal((html.match(/<dd class="num">/g) || []).length, 4);
   assert.doesNotMatch(html, /supported metrics|Expand|Forecast|Market cap/);
 });
@@ -1347,7 +1347,7 @@ test("analyst fallback presents actual consensus without invented low/high targe
   assert.match(missing, /Price comparison unavailable/);
   assert.match(html, /\$77\.81/);
   assert.match(html, /Wall Street consensus/);
-  assert.match(html, /low\/high range not supplied/);
+  assert.doesNotMatch(html, /data-target=/);
   assert.doesNotMatch(html, /\$37\.00|\$139\.00|Bear|Bull/);
 });
 
@@ -2017,93 +2017,19 @@ test("price-risk cases render historical percentiles separately from earnings an
   assert.doesNotMatch(whole, /Wall Street consensus|Analyst expectations/);
 });
 
-test("integrated selected cash-flow and earnings models have distinct horizons on one price scale", async () => {
-  const { valuationScale } = await import("../lib/research-summary.ts");
-  const model = {
-    cases: [80, 105, 140].map((target, i) => ({
-      name: ["10th percentile", "Historical median", "90th percentile"][i],
-      target,
-      change: target - 100,
-    })),
-    scenarioReference: 100,
-    scenarioReferenceDate: "2026-10-19",
-    scenarioHorizon: null,
-    scenarioKind: "cash-flow",
-    scenarioBasis: "Cash-flow valuation",
-    scenarioEnd: null,
-    edge: { pacePresentation: {}, pacePeriods: [] },
-    decision: { reasons: [], risks: [] },
-  };
-  const View = loadComponent(
-    "components/IntegratedResearch.tsx",
-    "IntegratedResearch",
-    {
-      ScenarioSensitivity: loadComponent(
-        "components/ScenarioSensitivity.tsx",
-        "ScenarioSensitivity",
-        { React, useId: React.useId, scenarioGeometry },
-      ),
-      React,
-      useMemo: React.useMemo,
-      useProduct: () => ({ demo: false }),
-      approvedResearch: () => model,
-      consensusOutlook: () => null,
-      AnalystTargets: empty,
-      ResearchChanges: empty,
-      sameProviderSymbol: () => false,
-      valuationScale,
-      ...format,
-      ArrowDownRight,
-      ArrowUpRight,
-      Minus,
-      ArrowRight,
-      Bell: empty,
-      ChevronDown: empty,
-      PaceInstrument: empty,
-      AssessmentSummary: empty,
-      PositionFit: empty,
-      ResearchEvidenceGrid: empty,
-      DecisionInsights: empty,
-      s: experience,
-      Link: ({ children }) => React.createElement("a", null, children),
-    },
-  );
-  const render = () =>
-    renderToStaticMarkup(
-      React.createElement(View, {
-        research: demoData.research.MSFT,
-        onTab: () => {},
-      }),
-    );
-  const historical = render();
-  assert.match(historical, /Cash-flow valuation/);
-  assert.match(historical, /Present model value/);
-  assert.match(historical, /Conditional estimates, not probabilities/);
-  assert.doesNotMatch(
-    historical,
-    /Historical downside|Historical midpoint|Lower earnings power/,
-  );
-  const dots = [
-    ...historical.matchAll(/<circle cx="282" cy="([^"]+)" r="4"/g),
-  ].map((m) => Number(m[1]));
-  const ticks = [...historical.matchAll(/<circle cx="18" cy="([^"]+)"/g)].map(
-    (m) => Number(m[1]),
-  );
-  assert.equal(dots.length, 3);
-  assert.equal(new Set(ticks).size, 1);
-  assert.ok(dots[0] > ticks[0] && dots[1] < ticks[0] && dots[2] < dots[1]);
-  model.scenarioEnd = "2029-12-31";
-  model.scenarioKind = "earnings";
-  model.scenarioBasis = "Earnings sensitivity";
-  const conditional = render();
-  assert.match(conditional, /Bear scenario/);
-  assert.match(conditional, /Base scenario/);
-  assert.match(conditional, /Bull scenario/);
-  assert.match(conditional, /Conditional estimates, not probabilities/);
-  assert.doesNotMatch(
-    conditional,
-    /Historical downside|50th percentile|Past return percentiles/,
-  );
+test("shared scenario surface keeps conditional horizons visible and all views use it", () => {
+  const d = {valuation:{label:"Cash-flow valuation",basis:"cash-flow",bear:80,base:105,bull:140,end:null,assumptions:"Model assumptions"}, reference:{price:100,currency:"USD",asOf:"2026-10-19"},period:"2026-06-30"};
+  const Selected = loadComponent("components/SelectedValuation.tsx","SelectedValuation",{
+    React,useMemo:React.useMemo,useSyncExternalStore:React.useSyncExternalStore,subscribe:()=>()=>{}, selectedEnds:new Map(),listeners:new Set(),
+    aurynDecision:()=>d,researchOutlook:()=>({available:false}),...format,s:experience,
+  });
+  const render = ()=>renderToStaticMarkup(React.createElement(Selected,{research:demoData.research.MSFT}));
+  let html = render();
+  assert.match(html,/Bear model value/);assert.match(html,/Base model value/);assert.match(html,/Bull model value/);
+  assert.match(html,/ten-year cash-flow/);assert.equal((html.match(/data-case=/g)||[]).length,3);
+  d.valuation={...d.valuation,basis:"earnings",end:"2029-12-31"};
+  html=render(); assert.match(html,/Bear scenario/);assert.match(html,/2029/);assert.match(html,/not independent fair value/);
+  for(const file of ["IntegratedResearch","ValueStudio","TargetsEstimates"]) assert.match(fs.readFileSync(`components/${file}.tsx`,"utf8"),/<SelectedValuation research=\{r\}/);
 });
 
 test("Home exposes complete matching-news count and expands past three companies without additional feed requests", async () => {

@@ -49,7 +49,7 @@ Pace is AURYN's price-zone scale. It combines technical context with separate bu
 The current incomplete month can change. The last month-end zone is history and stays under Levels & history. A current shallower zone limits accumulation immediately; a deeper provisional reading does not automatically increase an established plan.
 
 ### What is the next zone?
-For v6, a local price search finds a nearby category transition while holding the historical inputs fixed. The label says **near** because the classifier is not guaranteed to change monotonically with price. Old v5 threshold formulas are not reused for v6 readings. A fresh month or dataset can change the boundary.
+For v6, a local price search finds a nearby category transition while holding the historical inputs fixed. Expanded Price zones & history shows approximate stock-specific P0–P4 price bands and retains disconnected bands where the classifier produces them. The label says **near** because the classifier is not guaranteed to change monotonically with price. Old v5 threshold formulas are not reused for v6 readings. A fresh month or dataset can change the boundary.
 
 ### What has been measured?
 The saved comparison contains 589 stocks. Agreement on the reserved subset is 159/182 (87.4%); deeper-zone agreement is 53/69 (76.8%). This is an explored snapshot comparison, not a fresh-date validation or demonstrated investment return. Versioned backtests using v5 remain labeled as legacy-policy studies.
@@ -137,7 +137,7 @@ First check stock reference price, options observation date, expiry, loaded-cont
 Premiums are per share. A standard contract controls100 shares. Premium2.50 means250 dollars per contract before costs. Nonstandard deliverables are excluded from these models.
 Volume counts reported trades in the session. Open interest counts outstanding contracts at its observation. Neither establishes whether someone bought to open, sold to open or closed a position. Highest volume, highest OI and strongest gamma are three different rankings.
 Nearest-strike straddle proxy = eligible call midpoint+put midpoint at the same nearest strike and expiry. It is an option-priced move proxy, not a guaranteed trading range. A midpoint is indicative, not executable.
-Calls & puts shows contracts; Price levels shows concentration; Practice uses simulated money. Advanced diagnostics, saved views and account snapshots remain available on demand.
+Calls & puts shows contracts; Price levels shows concentration; Practice uses simulated money. Advanced diagnostics and account snapshots remain available on demand. Saved-view controls have been removed.
 
 ## 15. Gamma heatmap: formula and every control
 For each eligible standard contract: unsigned gamma dollars per1% stock move = gamma × open interest ×100×stockprice²×0.01. Apply + to calls, − to puts, then sum within strike/expiry. This call-positive/put-negative convention is a model assumption; it does not reveal actual dealer long/short inventory and is not automatically bullish/bearish.

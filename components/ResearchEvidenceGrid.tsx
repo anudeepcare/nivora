@@ -22,7 +22,15 @@ export default function ResearchEvidenceGrid({
       name: "Business quality",
       key: "business",
       icon: Building2,
-      rows: evidence.business,
+      rows: evidence.business.filter(
+        (x) =>
+          ![
+            "revenueGrowth",
+            "operatingMargin",
+            "fcfMargin",
+            "netMargin",
+          ].includes(x.key),
+      ),
       tab: "Financials" as const,
     },
     {

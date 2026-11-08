@@ -68,15 +68,21 @@ export function PriceChart({
         borderVisible: false,
         visible: !contrast,
         autoScale: true,
+        scaleMargins: { top: 0.1, bottom: 0.15 },
       },
       leftPriceScale: {
         borderVisible: false,
         visible: contrast,
         autoScale: true,
+        scaleMargins: { top: 0.1, bottom: 0.15 },
       },
       timeScale: {
         borderVisible: false,
         timeVisible: false,
+        fixLeftEdge: true,
+        fixRightEdge: true,
+        ticksVisible: true,
+        tickMarkMaxCharacterLength: 10,
       },
       handleScroll: {
         mouseWheel: false,
@@ -232,7 +238,9 @@ export function PriceChart({
     <div className="chart-wrap">
       <div className="chart-readout" aria-label="Chart inspection">
         <span>{hover?.time ?? "Explore the chart"}</span>
-        <strong>{hover?.values ?? "Hover or touch to inspect a price"}</strong>
+        <span style={{ fontWeight: 400, fontSize: 12 }}>
+          {hover?.values ?? "Touch or hover to inspect"}
+        </span>
       </div>
       <div
         className="price-chart"

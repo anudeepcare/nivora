@@ -330,7 +330,7 @@ test("Home earnings preserves zero and negative actuals, estimates and pending r
       today: "2026-11-05",
     }),
   );
-  assert.match(pending, /EPS reported.*Pending/);
+  assert.doesNotMatch(pending, /EPS reported|Pending/);
   assert.match(pending, /Estimate.*0\.00/);
   assert.doesNotMatch(pending, /12\.00/);
 });

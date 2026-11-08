@@ -233,27 +233,12 @@ export default function FinancialPicture({
       {p ? (
         <>
           <div className="financial-answer">
-            <div>
-              <dl className="business-kpis">
-                <div>
-                  <dt>Revenue growth</dt>
-                  <dd>{percent(growth, true)}</dd>
-                </div>
-                <div>
-                  <dt>Operating margin</dt>
-                  <dd>{percent(p.margin)}</dd>
-                </div>
-                <div>
-                  <dt>Cash after capex</dt>
-                  <dd>{amount(p.fcf, p.currency, true)}</dd>
-                </div>
-              </dl>
-            </div>
             {bridge.length > 0 && (
               <figure className="financial-cash-bridge">
                 <figcaption>Cash generation · {p.currency}</figcaption>
                 <svg
                   viewBox="0 0 480 155"
+                  preserveAspectRatio="xMidYMid meet"
                   role="img"
                   aria-label="Operating cash flow less capital spending equals cash after capex"
                 >
@@ -272,7 +257,7 @@ export default function FinancialPicture({
                         y={Math.min(bridgeY(item.from), bridgeY(item.to))}
                         width="90"
                         height={Math.max(
-                          1,
+                          3,
                           Math.abs(bridgeY(item.from) - bridgeY(item.to)),
                         )}
                         rx="4"
