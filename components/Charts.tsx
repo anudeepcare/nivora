@@ -24,7 +24,7 @@ export function PriceChart({
   bars: Candle[];
   range: string;
   style?: "line" | "candles";
-  levels?: { label: string; price: number }[];
+  levels?: { label: string; price: number; color?: string }[];
   contrast?: boolean;
   candleColors?: Record<string, string>;
 }) {
@@ -223,7 +223,8 @@ export function PriceChart({
         series.current!.createPriceLine({
           price: l.price,
           title: l.label,
-          color: ["#68ae94", "#916bb8", "#809a39", "#b46f5a"][index % 4],
+          color:
+            l.color ?? ["#68ae94", "#916bb8", "#809a39", "#b46f5a"][index % 4],
           lineWidth: 1,
           lineStyle: 2,
           axisLabelVisible: true,

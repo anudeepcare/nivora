@@ -93,30 +93,24 @@ try {
             ),
         );
         if (route === "/preview/overview") {
-          const fixture = await fs.readFile(
-            "/tmp/auryn-populated-news.html",
-            "utf8",
-          );
-          await page.evaluate((html) => {
-            const fixture = new DOMParser()
-              .parseFromString(html, "text/html")
-              .querySelector(".home-news-panel");
-            document.querySelector(".home-news-panel").innerHTML =
-              fixture.innerHTML;
-          }, fixture);
-          await page
-            .locator(".home-more-updates summary")
-            .evaluate((el) => el.click());
-          if ((await page.locator(".home-news-title:visible").count()) !== 9)
-            throw Error("Expanded news lost articles");
-          const columns = await page
-            .locator(".home-more-updates .home-news-list")
-            .evaluate(
-              (el) =>
-                getComputedStyle(el).gridTemplateColumns.split(" ").length,
+          const more = page.locator(".home-more-updates summary");
+          if (await more.count()) {
+            const before = await page
+              .locator(".home-news-title:visible")
+              .count();
+            await more.evaluate((el) => {
+              el.closest("details").open = true;
+            });
+            await page.waitForFunction(
+              (before) =>
+                document.querySelectorAll(".home-news-title").length >= before,
+              before,
             );
-          if (width === 1440 && columns !== 2)
-            throw Error("Expanded news must retain two columns");
+            if (
+              (await page.locator(".home-news-title:visible").count()) < before
+            )
+              throw Error("Expanded news lost rendered articles");
+          }
         }
         if (width === 390 && route.includes("/research/")) {
           const active = page

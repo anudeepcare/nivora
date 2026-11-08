@@ -167,10 +167,10 @@ test("public home leads with the benefit and an account action without fabricate
   assert.match(html, /Compare your next contribution/);
   assert.match(html, /Question the price/);
   assert.match(html, /Know when to revisit/);
-  assert.match(html, /price-implied earnings per share/);
+  assert.match(html, /Turn the price into the earnings it would require/);
   assert.match(html, /horizon and/);
-  assert.match(html, /future earnings multiple/);
-  assert.match(html, /Has the business changed—or just the price/);
+  assert.match(html, /future multiple/);
+  assert.match(html, /Is this a sensible time to add/);
   assert.match(html, /Turn earnings into questions/);
   assert.match(html, /alerts for supported conditions/);
   assert.match(html, /updates from the companies you follow/);

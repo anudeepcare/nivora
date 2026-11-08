@@ -13,6 +13,9 @@ import PaceInstrument from "./PaceInstrument";
 import ResearchEvidenceGrid from "./ResearchEvidenceGrid";
 import s from "./ResearchOverview.module.css";
 import EvidenceCrystal from "./EvidenceCrystal";
+import AnalystTargets from "./AnalystTargets";
+import { consensusOutlook } from "@/lib/outlook";
+import { OverviewBrief, DataFreshness } from "./ResearchBrief";
 export default function IntegratedResearch({
   research: r,
   onTab,
@@ -50,6 +53,7 @@ export default function IntegratedResearch({
     d = m.decision;
   return (
     <>
+      <OverviewBrief research={r} now={now} owns={decisionOwns} decision={d} />
       <div className={s.overview}>
         <div className={s.context} aria-label="Decision context">
           <button
@@ -79,27 +83,20 @@ export default function IntegratedResearch({
             onHistory={() => onTab("Technicals")}
             branded
           />
-          <ul className={s.reasonList} aria-label="Decision evidence">
-            {d.reasons.slice(0, 2).map((reason) => (
-              <li key={reason}>{reason}</li>
-            ))}
-            {!!d.risks.length && (
-              <li data-risk="true">
-                <details className={s.risks}>
-                  <summary>
-                    {d.risks.length} {d.risks.length === 1 ? "risk" : "risks"}{" "}
-                    to review
-                  </summary>
-                  <ul>
-                    {d.risks.map((risk) => (
-                      <li key={risk}>{risk}</li>
-                    ))}
-                  </ul>
-                </details>
-              </li>
-            )}
-          </ul>
         </div>
+        {d.risks.length > 0 && (
+          <details className={s.decisionNotes}>
+            <summary>
+              {d.risks.length} {d.risks.length === 1 ? "risk" : "risks"} to
+              review
+            </summary>
+            <ul>
+              {d.risks.map((risk) => (
+                <li key={risk}>{risk}</li>
+              ))}
+            </ul>
+          </details>
+        )}
         <div className={s.changes}>
           <ResearchChanges
             research={r}
@@ -142,6 +139,15 @@ export default function IntegratedResearch({
           <div style={{ gridColumn: "1 / -1" }}>
             <SelectedValuation research={r} />
           </div>
+        </div>
+        <div className={s.consensusRow} data-has-target={!!consensusOutlook(r)}>
+          {consensusOutlook(r) && <AnalystTargets research={r} />}
+          <DataFreshness
+            research={r}
+            now={now}
+            wide={!consensusOutlook(r)}
+            decision={d}
+          />
         </div>
         <div className={s.overviewMetrics}>
           <ResearchEvidenceGrid research={r} onTab={onTab} />

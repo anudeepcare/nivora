@@ -1,6 +1,9 @@
 "use client";
 import { useMemo, useState } from "react";
 import { Layers, ArrowRight, Info } from "lucide-react";
+import { indicators } from "@/lib/analysis";
+import { consensusOutlook } from "@/lib/outlook";
+import s from "./ChartReferences.module.css";
 import { advancedStudies } from "@/lib/advanced-research";
 import type { Research, Candle } from "@/lib/types";
 import { amount, dateLabel } from "@/lib/format";
@@ -24,6 +27,25 @@ export default function PriceStudyChart({
   onOptions?: () => void;
 }) {
   const [overlay, setOverlay] = useState(false);
+  const [showReferences, setShowReferences] = useState(true);
+  const references = useMemo(() => {
+    const tech = indicators(
+      research.history,
+      research.priceObservedAt ?? research.retrievedAt,
+    );
+    const target = consensusOutlook(research);
+    return [
+      ...(target
+        ? [{ label: "Analyst target", price: target.target, color: "#427bd7" }]
+        : []),
+      ...(tech.ma50 != null
+        ? [{ label: "50-session", price: tech.ma50, color: "#879b83" }]
+        : []),
+      ...(tech.ma200 != null
+        ? [{ label: "200-session", price: tech.ma200, color: "#b87b23" }]
+        : []),
+    ];
+  }, [research]);
   const fib = useMemo(
     () =>
       overlay
@@ -71,12 +93,30 @@ export default function PriceStudyChart({
           </button>
         )}
       </div>
+      {!overlay && references.length > 0 && (
+        <div className={s.references} aria-label="Chart references">
+          <button
+            type="button"
+            aria-pressed={showReferences}
+            onClick={() => setShowReferences(!showReferences)}
+          >
+            {showReferences ? "Hide" : "Show"} references
+          </button>
+          {showReferences &&
+            references.map((row) => (
+              <span key={row.label}>
+                <i style={{ background: row.color }} />
+                {row.label} {amount(row.price, research.quote.currency)}
+              </span>
+            ))}
+        </div>
+      )}
       <PriceChart
         bars={bars}
         range={range}
         style={style}
         contrast={contrast}
-        levels={levels}
+        levels={overlay ? levels : showReferences ? references : []}
       />
       <details className="chart-context" open>
         <summary>Price range & completed volume</summary>

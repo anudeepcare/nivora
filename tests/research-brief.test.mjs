@@ -1,123 +1,28 @@
-import test from "node:test";
-import assert from "node:assert/strict";
-import { researchBrief } from "../lib/research-brief.ts";
-import { demoData } from "./fixtures/demo.ts";
-const r = demoData.research.MSFT;
-test("brief keeps consensus separate and flags inconsistent share/listing inputs", () => {
-  const b = researchBrief({
-    ...r,
-    evidence: {
-      ...r.evidence,
-      reportingCurrency: "USD",
-      ownership: { ...r.evidence?.ownership, outstanding: 100 },
-      highlights: { ...r.evidence?.highlights, MarketCapitalization: 1e12 },
-      listingObservations: {
-        marketCap: {
-          asOf: r.quote.asOf,
-          currency: "USD",
-          shareBasis: r.company.symbol,
-        },
-        shares: {
-          asOf: r.quote.asOf,
-          unit: "shares",
-          shareBasis: r.company.symbol,
-        },
-      },
-    },
-  });
-  assert.equal(b.conflicting, true);
-  assert.equal(b.value.title, "AURYN valuation is unavailable");
-  assert.ok(b.checks.some((x) => x.status === "conflicting"));
-  assert.ok(b.business.reason.length > 0);
-  assert.equal(typeof b.business.reason, "string");
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import ts from 'typescript';
+import React from 'react';
+import * as jsx from 'react/jsx-runtime';
+import {renderToStaticMarkup} from 'react-dom/server';
+import * as icons from 'lucide-react';
+import * as format from '../lib/format.ts';
+const code=ts.transpileModule(fs.readFileSync('components/ResearchBrief.tsx','utf8'),{compilerOptions:{jsx:ts.JsxEmit.ReactJSX,module:ts.ModuleKind.CommonJS,esModuleInterop:true}}).outputText;
+function views({target=true,rsi=76}={}) {
+ const mod={exports:{}};
+ const dependencies={react:React,'react/jsx-runtime':jsx,'lucide-react':icons,'@/lib/format':format,'@/lib/analysis':{indicators:()=>({rsi,ma200:110}),latestFinancialEvidence:()=>({latest:{end:'2026-09-30'},periodBasis:'TTM'})},'@/lib/outlook':{consensusOutlook:()=>target?{target:120,referencePrice:100}:null},'@/lib/movement-context':{movementContext:()=>({change:null})},'@/lib/auryn-decision':{aurynDecision:(_,options)=>({actionLabel:options.ownsPosition?'Hold':'Watch',pace:{level:1},reference:{price:100,currency:'USD',asOf:'2026-11-06',basis:'settled-close'}})},'./ResearchBrief.module.css':{__esModule:true,default:{}}};
+ new Function('require','module','exports',code)(name=>{if(!(name in dependencies))throw Error(name);return dependencies[name]},mod,mod.exports);return mod.exports;
+}
+const research={retrievedAt:'2026-11-08T12:00:00Z',history:[],quote:{price:999,currency:'USD'},company:{symbol:'TEST'}};
+test('brief uses the selected reference denominator and the holding decision',()=>{
+ const {OverviewBrief}=views();const html=renderToStaticMarkup(React.createElement(OverviewBrief,{research,now:Date.parse(research.retrievedAt),owns:true}));
+ assert.match(html,/Hold · P1/);assert.match(html,/\+20\.0% to the \$120\.00 analyst target/);assert.doesNotMatch(html,/16\.7%|999|NaN/);
 });
-test("crypto and unsupported specialist businesses do not inherit generic operating-company claims", () => {
-  const crypto = researchBrief({
-    ...r,
-    company: { ...r.company, symbol: "ETH/USD", assetType: "crypto" },
-  });
-  assert.equal(crypto.business.title, "Network & exposure review");
-  assert.equal(crypto.coverage.family, "crypto");
-  assert.match(crypto.value.reason, /Corporate|asset|company|apply/i);
-  const bank = researchBrief({
-    ...r,
-    company: { ...r.company, symbol: "JPM", sector: "Financial Services" },
-    evidence: {
-      ...r.evidence,
-      profile: {
-        ...r.evidence?.profile,
-        industry: "Banks",
-        sector: "Financial Services",
-      },
-    },
-  });
-  assert.equal(bank.business.title, "Review bank returns and credit risk");
-  assert.notEqual(bank.coverage.family, "operating-company");
+test('brief omits absent targets and momentum instead of fabricating values',()=>{
+ const {OverviewBrief}=views({target:false,rsi:null});const html=renderToStaticMarkup(React.createElement(OverviewBrief,{research,now:Date.parse(research.retrievedAt)}));
+ assert.match(html,/Watch · P1/);assert.doesNotMatch(html,/analyst target|RSI|NaN|Infinity/);
 });
-
-test("overview exposes dated confirmed and forming DCA readings without replacing one with the other", async () => {
-  const { perspective } = await import("../lib/analysis.ts");
-  const p = perspective(r),
-    b = researchBrief(r);
-  assert.equal(b.accumulation.version, p.dca.version);
-  assert.deepEqual(b.accumulation.forming, p.dca.forming);
-  assert.equal(b.accumulation.multiplier, p.dca.confirmed?.multiplier ?? null);
-  if (p.dca.confirmed) {
-    assert.equal(b.accumulation.drawdown, p.dca.confirmed.drawdown);
-    assert.equal(b.accumulation.deviation, p.dca.confirmed.deviation);
-  }
-});
-
-test("overview financial chart series use reported annual values and exclude future filings and mixed currencies", () => {
-  const b = researchBrief(r);
-  assert.ok(b.trajectory.length >= 3);
-  assert.ok(b.trajectory.length <= 5);
-  assert.ok(
-    b.trajectory.every(
-      (x) =>
-        x.currency === b.businessNumbers.currency &&
-        x.end <= r.retrievedAt.slice(0, 10),
-    ),
-  );
-  const bad = {
-    ...r,
-    facts: [
-      ...r.facts,
-      ...r.facts
-        .filter((f) => f.scope === "annual")
-        .map((f) => ({
-          ...f,
-          id: "future-" + f.id,
-          end: "2027-06-30",
-          filed: "2027-07-30",
-          value: 1e30,
-        })),
-    ],
-  };
-  assert.deepEqual(researchBrief(bad).trajectory, b.trajectory);
-  const mixed = {
-    ...r,
-    facts: r.facts.map((f) =>
-      f.scope === "annual" && f.end === "2023-06-30"
-        ? { ...f, currency: "EUR", unit: "EUR" }
-        : f,
-    ),
-  };
-  assert.ok(
-    researchBrief(mixed).trajectory.every(
-      (row) => row.currency === "USD" && row.end !== "2023-06-30",
-    ),
-  );
-  const crypto = { ...r, company: { ...r.company, assetType: "crypto" } };
-  assert.deepEqual(researchBrief(crypto).trajectory, []);
-});
-
-test("quote refresh state does not rewrite settled accumulation or reported financial trends", () => {
-  const before = researchBrief(r);
-  const after = researchBrief({
-    ...r,
-    quote: { ...r.quote, price: null, asOf: null, stale: true },
-  });
-  assert.deepEqual(after.accumulation, before.accumulation);
-  assert.deepEqual(after.trajectory, before.trajectory);
+test('freshness distinguishes missing datasets from the report period',()=>{
+ const {DataFreshness}=views();const html=renderToStaticMarkup(React.createElement(DataFreshness,{research,now:Date.parse(research.retrievedAt),wide:true}));
+ assert.equal((html.match(/Not supplied/g)||[]).length,2);assert.match(html,/Sep 30, 2026 · TTM/);assert.match(html,/Nov 6, 2026 · Completed close/);assert.doesNotMatch(html,/Nov 8, 2026 · (TTM|Completed close)/);
 });

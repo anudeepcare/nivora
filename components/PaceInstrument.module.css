@@ -585,3 +585,19 @@
 .branded .readingDetail {
   margin-top: 8px;
 }
+/* Distribute the branded readout within its paired chart height. */
+.instrument.instrument.branded {
+  display: flex;
+  flex-direction: column;
+}
+.instrument.instrument.branded .readout {
+  display: flex;
+  flex: 1;
+}
+.instrument.instrument.branded .readoutText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+}

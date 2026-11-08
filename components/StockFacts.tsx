@@ -4,6 +4,7 @@ import {
   headerBusinessMetrics,
   headerBusinessFamily,
 } from "@/lib/company-header";
+import type { CSSProperties } from "react";
 import type { Research } from "@/lib/types";
 import { amount, dateLabel } from "@/lib/format";
 import { Help } from "./Ui";
@@ -153,6 +154,7 @@ export default function StockFacts({
           (research.priceObservedAt ?? research.retrievedAt).slice(0, 10),
         )
       : [];
+  const trailing = research.evidence?.multiples?.TrailingPE;
   const rows = priceContext
     ? all.filter((x) => /closing range|Relative volume/.test(x.label))
     : [
@@ -171,6 +173,19 @@ export default function StockFacts({
         ...all
           .filter((x) => x.label === "Next reported earnings date")
           .map((x) => ({ ...x, label: "Next earnings" })),
+        ...(trailing != null &&
+        Number.isFinite(trailing) &&
+        trailing > 0 &&
+        !financialBusiness
+          ? [
+              {
+                label: "Trailing P/E",
+                value: `${trailing.toFixed(1)}×`,
+                date: `Dataset updated ${dateLabel(research.evidence?.updatedAt)}`,
+                help: "Reported share price divided by trailing earnings per share. Review accounting, share and period bases before comparing companies.",
+              },
+            ]
+          : []),
       ].slice(0, 6);
   if (!rows.length) return null;
   return (
@@ -179,25 +194,23 @@ export default function StockFacts({
       data-price-context={priceContext || undefined}
       aria-label="Dated stock and market facts"
     >
-      <dl className={styles.strip}>
+      <dl
+        className={styles.strip}
+        style={{ "--fact-columns": rows.length } as CSSProperties}
+      >
         {rows.map((row) => (
           <div key={row.label}>
-            <dt>{row.label}</dt>
+            <dt>
+              <Help label={row.label} trigger={row.label}>
+                <p>{row.date}</p>
+                <p>{row.help}</p>
+              </Help>
+            </dt>
             <dd>{row.value}</dd>
+            <small>{row.date}</small>
           </div>
         ))}
       </dl>
-      <Help label="About these metrics">
-        {rows.map((row) => (
-          <section key={row.label}>
-            <h3>
-              {row.label} · {row.value}
-            </h3>
-            <p>{row.date}</p>
-            <p>{row.help}</p>
-          </section>
-        ))}
-      </Help>
     </section>
   );
 }

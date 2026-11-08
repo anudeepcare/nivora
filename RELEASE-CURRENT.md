@@ -44,3 +44,11 @@ Source only; no deployment or database changes. Optional public Pace record publ
 - Ownership and Ask AURYN share their own row; the investment case and business map retain their desktop alignment.
 - Financial categories, technical panels, Overview evidence, Home, Watchlist and public examples use coordinated gutters and card sizing.
 - Model-fit detail remains accessible without dominating the valuation page. Calculations, scenarios and Pro tools remain available.
+
+## Reference completeness — November 8
+- Added the 30-second read with the selected holding/entry decision, available price movement, target comparison and momentum context.
+- Equalized top fact cells, kept individual help/dates and preserved scheduled earnings priority.
+- Added switchable analyst-target and moving-average chart references, alongside the existing independent Fibonacci overlay.
+- Paired consensus with data freshness; compact freshness strip when target coverage is missing.
+- Aligned Pace/chart boundaries and condensed repeated evidence/risk text.
+- Reworked public product questions into three consistent cards.

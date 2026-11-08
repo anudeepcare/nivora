@@ -1,0 +1,15 @@
+{
+  "date": "2026-11-08",
+  "route_theme_viewport_checks": 96,
+  "route_status_and_overflow": "all 200; no overflow",
+  "preview_console_warning_cases": 1,
+  "limitation": "Preview run logged a hydration attribute warning around expanded details; retained in routes report.",
+  "final_public_checks": 12,
+  "final_public_errors": 0,
+  "overview_geometry_checks": 8,
+  "full_suite_passed": 1237,
+  "final_focused_tests_passed": 21,
+  "lint": "passed",
+  "production_build": "passed",
+  "deployment": "not performed"
+}

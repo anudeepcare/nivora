@@ -653,7 +653,9 @@ export default function PublicLanding({
       >
         <div className={landing.workflowHeading}>
           <span className={landing.eyebrow}>PUT YOUR RESEARCH TO WORK</span>
-          <h2 id="ap-workflow-heading">Less collecting. More deciding.</h2>
+          <h2 id="ap-workflow-heading">
+            Three questions before every contribution.
+          </h2>
           <p>Move from an interesting company to a decision you can explain.</p>
         </div>
         <div className={landing.workflowRows}>
@@ -663,10 +665,10 @@ export default function PublicLanding({
               01 / COMPARE
             </span>
             <div>
-              <h3>Where should the next contribution go?</h3>
+              <h3>Is the business strong?</h3>
               <p>
-                Compare business evidence, valuation and AURYN Accumulation
-                Pace. See the dates and missing inputs.
+                Read revenue, margins and cash generation together. Check
+                funding and risks in the same report.
               </p>
             </div>
           </article>
@@ -676,11 +678,10 @@ export default function PublicLanding({
               02 / CHALLENGE
             </span>
             <div>
-              <h3>What does this price need to be true?</h3>
+              <h3>What does the price assume?</h3>
               <p>
-                Explore price-implied earnings per share. Change the horizon and
-                future earnings multiple to test expectations—not promised
-                returns.
+                Turn the price into the earnings it would require. Adjust the
+                horizon and future multiple to test your assumptions.
               </p>
             </div>
           </article>
@@ -690,10 +691,10 @@ export default function PublicLanding({
               03 / SEPARATE
             </span>
             <div>
-              <h3>Has the business changed—or just the price?</h3>
+              <h3>Is this a sensible time to add?</h3>
               <p>
-                See business performance beside price, valuation assumptions and
-                monthly Pace.
+                Use five price zones after business checks. Plan contributions
+                within your budget and position limits.
               </p>
             </div>
           </article>
