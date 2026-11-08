@@ -2034,7 +2034,7 @@ test("shared scenario surface keeps conditional horizons visible and all views u
   html=render(); assert.match(html,/Bear scenario/);assert.match(html,/2029/);assert.match(html,/not independent fair value/);
   d.valuation=null;
   html=render(); assert.match(html,/Inputs needed/);assert.match(html,/Matching dated cash\/debt evidence is required/);assert.equal((html.match(/data-case=/g)||[]).length,3);assert.equal((html.match(/target not calculated/g)||[]).length,3);assert.doesNotMatch(html,/\$0\.00/);
-  for(const file of ["IntegratedResearch","ValueStudio","TargetsEstimates"]) assert.match(fs.readFileSync(`components/${file}.tsx`,"utf8"),/<SelectedValuation research=\{r\}/);
+  for(const file of ["IntegratedResearch","ValueStudio","TargetsEstimates"]) assert.match(fs.readFileSync(`components/${file}.tsx`,"utf8"),/<SelectedValuation\s+research=\{r\}/);
 });
 
 test("Home exposes complete matching-news count and expands past three companies without additional feed requests", async () => {

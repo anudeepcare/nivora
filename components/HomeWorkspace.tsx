@@ -197,6 +197,24 @@ function HomeOverview() {
         : hour < 18
           ? "Good afternoon"
           : "Good evening";
+  const renderHeadline = (news: (typeof headlines)[number]) => (
+    <article key={`${news.symbol}:${news.url}`}>
+      <div className="home-news-meta">
+        <SecurityLogo symbol={news.symbol} />
+        <Link href={researchLink(news.symbol, prefix)}>{news.symbol}</Link>
+        <time dateTime={news.date}>{dateLabel(news.date)}</time>
+      </div>
+      <a
+        className="home-news-title"
+        href={news.url}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {news.title}
+        <ArrowUpRight size={17} />
+      </a>
+    </article>
+  );
   return (
     <section
       className={`approved-workspace approved-home home-decision-view ${homeStyles.home}`}
@@ -471,26 +489,7 @@ function HomeOverview() {
               />
               {headlines.length ? (
                 <div className="home-news-list">
-                  {headlines.slice(0, 6).map((news) => (
-                    <article key={`${news.symbol}:${news.url}`}>
-                      <div className="home-news-meta">
-                        <SecurityLogo symbol={news.symbol} />
-                        <Link href={researchLink(news.symbol, prefix)}>
-                          {news.symbol}
-                        </Link>
-                        <time dateTime={news.date}>{dateLabel(news.date)}</time>
-                      </div>
-                      <a
-                        className="home-news-title"
-                        href={news.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {news.title}
-                        <ArrowUpRight size={17} />
-                      </a>
-                    </article>
-                  ))}
+                  {headlines.slice(0, 6).map(renderHeadline)}
                 </div>
               ) : (
                 <div className="home-quiet-state">
@@ -519,21 +518,9 @@ function HomeOverview() {
               {headlines.length > 6 && (
                 <details className="home-more-updates">
                   <summary>Show {headlines.length - 6} more updates</summary>
-                  {headlines.slice(6).map((news) => (
-                    <article key={news.url}>
-                      <span>
-                        {news.symbol} · {dateLabel(news.date)}
-                      </span>
-                      <a
-                        href={news.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {news.title}
-                        <ArrowUpRight size={15} />
-                      </a>
-                    </article>
-                  ))}
+                  <div className="home-news-list">
+                    {headlines.slice(6).map(renderHeadline)}
+                  </div>
                 </details>
               )}
               {!feed.loading && symbols.length > 0 && (

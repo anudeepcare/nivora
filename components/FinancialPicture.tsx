@@ -232,10 +232,16 @@ export default function FinancialPicture({
       </header>
       {p ? (
         <>
-          <div className="financial-answer">
+          <div className="financial-answer" hidden={!bridge.length}>
             {bridge.length > 0 && (
               <figure className="financial-cash-bridge">
-                <figcaption>Cash generation · {p.currency}</figcaption>
+                <figcaption>
+                  Cash generation · {p.currency}
+                  <small>
+                    Capital spending is deducted from operating cash; bars share
+                    one scale.
+                  </small>
+                </figcaption>
                 <svg
                   viewBox="0 0 480 155"
                   preserveAspectRatio="xMidYMid meet"

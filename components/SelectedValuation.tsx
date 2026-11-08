@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useSyncExternalStore } from "react";
+import { useMemo, useSyncExternalStore, type ReactNode } from "react";
 import { ShieldAlert, Scale, Sparkles, Info } from "lucide-react";
 import type { Research } from "@/lib/types";
 import { aurynDecision } from "@/lib/auryn-decision";
@@ -17,8 +17,10 @@ const subscribe = (fn: () => void) => {
 /** Shared scenario presentation. Price-anchored cases never alter the decision engine. */
 export default function SelectedValuation({
   research: r,
+  actions,
 }: {
   research: Research;
+  actions?: ReactNode;
 }) {
   const d = useMemo(
     () =>
@@ -99,6 +101,7 @@ export default function SelectedValuation({
             <h2>Bear, base &amp; bull</h2>
           </div>
           <span className={s.status}>Inputs needed</span>
+          {actions}
         </header>
         <div className={s.reasons}>
           {(["bear", "base", "bull"] as const).map((name, index) => {
@@ -172,6 +175,7 @@ export default function SelectedValuation({
               : "No suitable model has qualified. Analyst consensus and historical price risk remain separate."}
           </p>
         </div>
+        {actions}
       </header>
       {v && (
         <>

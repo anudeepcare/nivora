@@ -140,3 +140,48 @@
     font-size: 24px;
   }
 }
+
+/* Shared rhythm for desk headers and secondary evidence, independent of legacy panels. */
+.root.root.root[data-research-section] :global(.section-head) {
+  margin: 0 0 16px;
+  gap: 12px;
+  align-items: center;
+}
+.root.root.root[data-research-section] :global(.section-head h2) {
+  font-size: 23px;
+  line-height: 1.25;
+  margin: 0;
+}
+.root.root.root[data-research-section] :global(.section-head p) {
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 6px 0 0;
+}
+.root.root.root[data-research-section="Analysts"] :global(.analyst-summary) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+  gap: 14px;
+  margin: 0 0 18px;
+}
+.root.root.root[data-research-section="Analysts"]
+  :global(.analyst-summary > div) {
+  padding: 16px 18px;
+  border-radius: 14px;
+}
+.root.root.root[data-research-section="Analysts"]
+  :global(.analyst-summary strong) {
+  font-size: 26px;
+  margin: 8px 0;
+}
+.root.root.root[data-research-section="Analysts"] :global(.analyst-workspace) {
+  padding: 20px;
+}
+@media (max-width: 600px) {
+  .root.root.root[data-research-section] :global(.section-head h2) {
+    font-size: 21px;
+  }
+  .root.root.root[data-research-section="Analysts"]
+    :global(.analyst-workspace) {
+    padding: 16px;
+  }
+}

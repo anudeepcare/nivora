@@ -282,6 +282,23 @@ export default function Research({ symbol }: { symbol: string }) {
   }, [requestedTab]);
   const [workbenchTarget, setWorkbenchTarget] = useState("risk");
   const researchNavigation = useRef<HTMLElement>(null);
+  useLayoutEffect(() => {
+    const revealSelection = () => {
+      const navigation = researchNavigation.current;
+      const selected = navigation?.querySelector<HTMLElement>(
+        '[aria-current="page"]',
+      );
+      if (!navigation || !selected) return;
+      const frame = navigation.getBoundingClientRect();
+      const item = selected.getBoundingClientRect();
+      if (item.left < frame.left || item.right > frame.right)
+        navigation.scrollLeft +=
+          item.left - frame.left - (frame.width - item.width) / 2;
+    };
+    revealSelection();
+    window.addEventListener("resize", revealSelection);
+    return () => window.removeEventListener("resize", revealSelection);
+  }, [tab, r?.company.symbol]);
   const switchTab = (next: (typeof tabs)[number]) => {
     if (next === "Technicals" || next === "Snapshot")
       setRetainedCharts((old) => (old.includes(next) ? old : [...old, next]));
@@ -819,7 +836,6 @@ export default function Research({ symbol }: { symbol: string }) {
               )}
             {tab === "Thesis" && (
               <>
-                <BusinessHistory research={r} />
                 <ThesisPicture research={r} />
                 <BusinessMap key={r.company.symbol} research={r} />
                 <details className="edge-method">

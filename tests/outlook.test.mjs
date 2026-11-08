@@ -305,3 +305,20 @@ test("price-anchored scenarios disclose the anchor and select only supplied fisc
   r.evidence.estimates[1].epsLow = null;
   assert.equal(outlook.researchOutlook(r,{priceAnchored:true}).available,false);
 });
+
+test("analyst comparisons share the settled close used by the research header", () => {
+  const r = research();
+  r.company.exchange = "NASDAQ";
+  r.retrievedAt = "2026-10-27T01:00:00Z";
+  r.evidence.updatedAt = "2026-10-26";
+  r.evidence.consensus = { target: 150 };
+  r.quote.price = 120;
+  r.quote.asOf = "2026-10-23T20:00:00Z";
+  r.history = ["2026-10-23", "2026-10-26"].map((time, i) => ({
+    time, open: 100 + i * 10, high: 100 + i * 10, low: 100 + i * 10,
+    close: 100 + i * 10, volume: 100,
+  }));
+  const c = outlook.consensusOutlook(r);
+  assert.equal(c.referencePrice, 110);
+  assert.equal(c.change, (150 / 110 - 1) * 100);
+});

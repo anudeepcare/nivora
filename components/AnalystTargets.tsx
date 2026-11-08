@@ -27,7 +27,7 @@ export default function AnalystTargets({
         </small>
       </section>
     ) : null;
-  const reference = c.change == null ? null : r.quote.price;
+  const reference = c.referencePrice;
   const minimum = Math.min(c.low ?? c.target, reference ?? c.target) * 0.95;
   const maximum = Math.max(c.high ?? c.target, reference ?? c.target) * 1.05;
   const position = (n: number) =>

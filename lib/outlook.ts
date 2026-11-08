@@ -1,4 +1,5 @@
 import { modelCoverage, ttmPeriods } from "./research-depth.ts";
+import { selectPriceReference } from "./price-reference.ts";
 import type { Research } from "./types";
 import { listingReconciliation } from "./listing-reconciliation.ts";
 import { compareFinancialFacts } from "./financial-period-selection.ts";
@@ -44,6 +45,7 @@ export function consensusOutlook(r: Research): {
   asOf: string;
   change: number | null;
   referenceStatus: "current" | "older" | "unavailable";
+  referencePrice: number | null;
 } | null {
   const e = r.evidence;
   const now = Date.parse(r.priceObservedAt ?? r.retrievedAt);
@@ -61,11 +63,13 @@ export function consensusOutlook(r: Research): {
     target <= 0
   )
     return null;
-  const stamp = Date.parse(r.quote.asOf ?? "");
+  const selected = r.history?.length ? selectPriceReference(r, now) : null;
+  const price = selected?.price ?? r.quote.price;
+  const stamp = Date.parse(selected?.asOf ?? r.quote.asOf ?? "");
   const comparable =
-    r.quote.price != null &&
-    Number.isFinite(r.quote.price) &&
-    r.quote.price > 0 &&
+    price != null &&
+    Number.isFinite(price) &&
+    price > 0 &&
     Number.isFinite(stamp) &&
     stamp <= now + 60000 &&
     now - stamp <= 4 * 86400000;
@@ -84,7 +88,8 @@ export function consensusOutlook(r: Research): {
     target,
     ...(rangeValid ? { low: low!, high: high! } : {}),
     asOf: e!.updatedAt!,
-    change: comparable ? (target / r.quote.price! - 1) * 100 : null,
+    change: comparable ? (target / price! - 1) * 100 : null,
+    referencePrice: comparable ? price! : null,
     referenceStatus: !comparable
       ? "unavailable"
       : r.quote.stale

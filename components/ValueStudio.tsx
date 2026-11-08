@@ -39,19 +39,14 @@ export default function ValueStudio({
 
   return (
     <div className={`${layout.root} value-studio depth-value`}>
-      <header className="desk-heading">
-        <div>
-          <span className="eyebrow">Value · what the price implies</span>
-          <h2>
-            <SectionIcon name="Valuation" size={25} />
-            Targets & valuation.
-          </h2>
-        </div>
-        <button type="button" className="button" onClick={onWorkbench}>
-          Test assumptions →
-        </button>
-      </header>
-      <SelectedValuation research={r} />
+      <SelectedValuation
+        research={r}
+        actions={
+          <button type="button" className="button" onClick={onWorkbench}>
+            Test assumptions →
+          </button>
+        }
+      />
       {consensusOutlook(r) && <AnalystTargets research={r} />}
       <PriceProjection key={r.company.symbol} research={r} />
       {available.length > 0 && (

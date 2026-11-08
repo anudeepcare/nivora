@@ -364,3 +364,34 @@ test("Research chart pages keep every saved company reachable with four bounded 
     assert.equal(/<button[^>]*disabled=""[^>]*>Next/.test(html),nextDisabled);
   }
 });
+
+test("expanded Home headlines retain the same logo, timestamp and article layout", () => {
+  const news = Array.from({ length: 9 }, (_, i) => ({
+    symbol: "MSFT", date: new Date(Date.now() - 3600000).toISOString(),
+    title: `Company update ${i}`, url: `https://example.com/story/${i}`,
+  }));
+  const Home = load("HomeOverview", {
+    useWorkspaceData: () => ({ research: () => undefined,
+      workspace: { positions: [], watchlist: [{ symbol: "MSFT" }] },
+      quotes: { data: {} }, model: { allocations: [] }, prefix: "", pace: () => null }),
+    useHomeFeed: () => ({ data: { news, events: [], issues: [], followed: 1,
+      newsFollowed: 1, retrievedAt: new Date().toISOString(), eventsReady: true, newsReady: true },
+      loading: false, error: "", refresh: empty }),
+    homeFeedReadiness, homeBrief, groupMarketEvents, marketDay, earningsEventState,
+    relevantHoldingHeadlines: (items) => items,
+    researchLink: (symbol) => `/research/${symbol}`, ...format, Link,
+    SecurityLogo: ({ symbol }) => React.createElement("i", { "data-logo": symbol }),
+    Heading: empty, SectionHead: empty, Coverage: empty, Notice: empty,
+    HomeCompany: empty, Empty: empty, ArrowUpRight: empty, CalendarDays: empty,
+    FileText: empty, RefreshCw: empty, Bookmark: empty,
+  });
+  const html = renderToStaticMarkup(React.createElement(Home));
+  if (process.env.AURYN_HOME_NEWS_FIXTURE) fs.writeFileSync(process.env.AURYN_HOME_NEWS_FIXTURE, html);
+  const expanded = html.slice(html.indexOf('class="home-more-updates"'));
+  assert.match(expanded, /class="home-news-list"/);
+  assert.equal((expanded.match(/class="home-news-meta"/g) || []).length, 3);
+  assert.equal((expanded.match(/class="home-news-title"/g) || []).length, 3);
+  assert.equal((expanded.match(/data-logo="MSFT"/g) || []).length, 3);
+  assert.equal((expanded.match(/<time /g) || []).length, 3);
+  assert.equal((html.match(/class="home-news-title"/g) || []).length, 9);
+});

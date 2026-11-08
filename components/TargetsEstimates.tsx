@@ -41,8 +41,7 @@ export default function TargetsEstimates({
     <section className={styles.root} aria-label="Targets and estimates">
       <header className={styles.header}>
         <div>
-          <span className="eyebrow">Expectations & assumptions</span>
-          <h2>Targets & Estimates</h2>
+          <h2>Targets & estimates</h2>
         </div>
       </header>
       <div

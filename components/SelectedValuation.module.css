@@ -400,3 +400,20 @@
 :global([data-theme="dark"]) .missing > svg {
   color: #ecc775;
 }
+
+.heading > :global(.button) {
+  flex: 0 0 auto;
+  min-height: 40px;
+  padding: 9px 13px;
+  font-size: 12px;
+}
+@media (max-width: 600px) {
+  .heading {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .root.root {
+    padding: 18px 14px;
+    border-radius: 18px;
+  }
+}

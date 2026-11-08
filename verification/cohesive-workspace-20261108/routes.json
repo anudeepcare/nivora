@@ -107,6 +107,28 @@
     "errors": []
   },
   {
+    "route": "/preview/research/MSFT?tab=Thesis",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "Thesis",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nCash-flo",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Advanced",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "Advanced",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nCash-flo",
+    "errors": []
+  },
+  {
     "route": "/preview/overview",
     "width": 1440,
     "theme": "dark",
@@ -214,6 +236,28 @@
     "errors": []
   },
   {
+    "route": "/preview/research/MSFT?tab=Thesis",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "Thesis",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nCash-flo",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Advanced",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "Advanced",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nCash-flo",
+    "errors": []
+  },
+  {
     "route": "/preview/overview",
     "width": 390,
     "theme": "light",
@@ -321,6 +365,28 @@
     "errors": []
   },
   {
+    "route": "/preview/research/MSFT?tab=Thesis",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "Thesis",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nCash-flo",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Advanced",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "Advanced",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nCash-flo",
+    "errors": []
+  },
+  {
     "route": "/preview/overview",
     "width": 390,
     "theme": "dark",
@@ -424,6 +490,28 @@
     "overflow": false,
     "heading": "Microsoft",
     "tab": "Options",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nCash-flo",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Thesis",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "Thesis",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nCash-flo",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Advanced",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "Advanced",
     "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nCash-flo",
     "errors": []
   }

@@ -51,23 +51,23 @@ export default function IntegratedResearch({
   return (
     <>
       <div className={s.overview}>
+        <div className={s.context} aria-label="Decision context">
+          <button
+            type="button"
+            aria-pressed={decisionOwns}
+            onClick={() => setContext(true)}
+          >
+            {owns ? "For your holding" : "For an existing holding"}
+          </button>
+          <button
+            type="button"
+            aria-pressed={!decisionOwns}
+            onClick={() => setContext(false)}
+          >
+            For a new purchase
+          </button>
+        </div>
         <div className={s.paceColumn}>
-          <div className={s.context} aria-label="Decision context">
-            <button
-              type="button"
-              aria-pressed={decisionOwns}
-              onClick={() => setContext(true)}
-            >
-              {owns ? "For your holding" : "For an existing holding"}
-            </button>
-            <button
-              type="button"
-              aria-pressed={!decisionOwns}
-              onClick={() => setContext(false)}
-            >
-              For a new purchase
-            </button>
-          </div>
           <PaceInstrument
             key={`${r.company.symbol}:${decisionOwns}`}
             research={r}
@@ -99,6 +99,8 @@ export default function IntegratedResearch({
               </li>
             )}
           </ul>
+        </div>
+        <div className={s.changes}>
           <ResearchChanges
             research={r}
             now={now}
