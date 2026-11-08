@@ -13,10 +13,6 @@ import PaceInstrument from "./PaceInstrument";
 import ResearchEvidenceGrid from "./ResearchEvidenceGrid";
 import s from "./ResearchOverview.module.css";
 import CompanyMetrics from "./CompanyMetrics";
-import dynamic from "next/dynamic";
-const PositionExplorer = dynamic(() => import("./PositionExplorer"), {
-  loading: () => <p role="status">Opening position review…</p>,
-});
 import EvidenceCrystal from "./EvidenceCrystal";
 import AnalystTargets from "./AnalystTargets";
 import { consensusOutlook } from "@/lib/outlook";
@@ -37,7 +33,6 @@ export default function IntegratedResearch({
   );
   const [evidenceOpen, setEvidenceOpen] = useState(false);
   const [metricsOpen, setMetricsOpen] = useState(false);
-  const [positionOpen, setPositionOpen] = useState(false);
   const [context, setContext] = useState<boolean | null>(null);
   const decisionOwns = context ?? owns;
   const [clock, setClock] = useState(() => Date.now());
@@ -158,20 +153,6 @@ export default function IntegratedResearch({
         </div>
         <div className={s.overviewMetrics}>
           <CompanyMetrics research={r} />
-          <details
-            className={s.researchTools}
-            open={positionOpen}
-            onToggle={(event) => setPositionOpen(event.currentTarget.open)}
-          >
-            <summary>Review position size &amp; cash</summary>
-            {positionOpen && (
-              <PositionExplorer
-                key={r.company.symbol}
-                research={r}
-                reading={m.edge}
-              />
-            )}
-          </details>
           <details
             className={s.researchTools}
             open={metricsOpen}

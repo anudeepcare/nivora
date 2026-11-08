@@ -6963,3 +6963,7 @@ export function researchChanges(
 }
 
 ```
+
+## Automatic revenue sensitivity fallback (November 8 correction)
+
+Only after a qualifying existing earnings/cash-flow/revenue valuation is unavailable, use the same eligible fiscal-year revenue mean as the anchor: reference quote × case revenue / mean revenue × relative pricing stress (0.8 / 1 / 1.2). Base reproduces the quote exactly; it is neutral, not most likely. Constant FX, share count and listing/ADR ratio are declared assumptions. No EV multiple, cash/debt conversion, share count, funding proceeds or analyst coverage count is inferred. Revenue low/mean/high must be supplied, positive, ordered, finite and in one valid currency; eligible stock families operating/infrastructure/frontier only. Dates90–1461 days and dataset120day freshness guards apply. This is market-expectations sensitivity, not intrinsic fair value or a price forecast. Missing data and unsupported specialist models remain unavailable.

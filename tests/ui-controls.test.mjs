@@ -36,7 +36,7 @@ import { researchPeriods } from "../lib/financial-catalog.ts";
 import { demoData } from "./fixtures/demo.ts";
 
 function loadComponent(file, name, bindings) {
-  bindings = { QuickRead: () => null,
+  bindings = { revenueSensitivity: () => ({available:false}), RevenueSensitivityCases: () => null, QuickRead: () => null,
     SectionIcon: () => null,
     PaceBoard: () => null,
     PaceBadge: () => null,
@@ -2529,4 +2529,19 @@ test('selected valuation reference does not inherit the discarded quote stale fl
  reference=null;seen.length=0;
  renderToStaticMarkup(React.createElement(Selected,{research:r}));
  assert.ok(seen.length>0);for(const quote of seen)assert.equal(quote.stale,true);
+});
+
+test('automatic revenue sensitivity fills unavailable cases without replacing an existing model',()=>{
+ let fallbackCalls=0;let valid=false;
+ const automatic={available:true,basis:'earnings',end:'2027-12-31',currency:'USD',cases:[{name:'Bear',target:80,eps:4,multiple:20},{name:'Base',target:100,eps:5,multiple:20},{name:'Bull',target:120,eps:6,multiple:20}]};
+ const Selected=loadComponent('components/SelectedValuation.tsx','SelectedValuation',{
+ React,useMemo:React.useMemo,useState:React.useState,useSyncExternalStore:React.useSyncExternalStore,useAccess:()=>({access:{features:{advanced:false}}}),subscribe:()=>()=>{},selectedEnds:new Map(),listeners:new Set(),aurynDecision:()=>({valuation:null,reference:{price:100,currency:'USD',asOf:'2026-11-06'}}),
+ researchOutlook:()=>valid?automatic:{available:false,reason:'Share evidence missing'},
+ revenueSensitivity:()=>{fallbackCalls++;return {available:true};},RevenueSensitivityCases:()=>React.createElement('p',null,'Price-anchored revenue sensitivity'),ShieldAlert,Scale,Sparkles,Info,...format,s:experience,
+ });
+ const r=structuredClone(demoData.research.MSFT);r.company.symbol='HIMS';
+ assert.match(renderToStaticMarkup(React.createElement(Selected,{research:r})),/Price-anchored revenue sensitivity/);
+ const called=fallbackCalls;valid=true;
+ for(const symbol of ['APP','MSFT']){r.company.symbol=symbol;const html=renderToStaticMarkup(React.createElement(Selected,{research:r}));assert.match(html,/\$100\.00/);assert.doesNotMatch(html,/Price-anchored revenue sensitivity/);}
+ assert.equal(fallbackCalls,called,'working models must not invoke the fallback');
 });

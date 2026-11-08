@@ -1,3 +1,5 @@
+Latest correction and verification: [CORE-SCENARIO-CORRECTION-20261108.md](CORE-SCENARIO-CORRECTION-20261108.md).
+
 # AURYN
 
 Current enhancement handoff: 8 November 2026. ZIP-only delivery; no remote branch or deployment was changed. Production remains unchanged.

@@ -38954,20 +38954,7 @@
     }
   }
 
-  .company-metrics .company-metrics-toggle {
-    display: none;
-  }
   @media (max-width: 760px) {
-    .company-metrics:not(.company-metrics-expanded) > div:nth-child(n + 5) {
-      display: none;
-    }
-    .company-metrics .company-metrics-toggle {
-      display: block;
-      grid-column: 1/-1;
-      min-height: 36px;
-      text-align: center;
-      font-size: 12px;
-    }
     .company-metrics > div {
       gap: 4px;
     }

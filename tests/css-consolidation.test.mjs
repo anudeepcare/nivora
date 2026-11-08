@@ -37,6 +37,16 @@ test('consolidated compatibility preserves the ordered cascade after exact dupli
   before.walkRules(rule => {
     if (/^\.(analytics-consent|consent-actions)(?:[ .:]|$)/.test(rule.selector)) rule.remove();
   });
+  // Company metrics are now visible by default at every viewport width.
+  // Remove only the deliberately retired disclosure selectors from the archive;
+  // every other historical selector and declaration remains order-equivalent.
+  const retiredMetricSelectors = new Set([
+    '.company-metrics .company-metrics-toggle',
+    '.company-metrics:not(.company-metrics-expanded) > div:nth-child(n + 5)',
+  ]);
+  before.walkRules(rule => {
+    if (retiredMetricSelectors.has(rule.selector)) rule.remove();
+  });
   deduplicateRules(before);
   assert.deepEqual(semantic(after), semantic(before));
   let rules = 0;

@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import type { Research } from "@/lib/types";
 import {
   overviewEvidence,
@@ -11,7 +11,6 @@ import { Help, Source } from "./Ui";
 import styles from "./CompanyMetrics.module.css";
 
 export default function CompanyMetrics({ research }: { research: Research }) {
-  const [expanded, setExpanded] = useState(false);
   const evidence = useMemo(
     () => overviewEvidence(research, { includeTechnical: false }),
     [research],
@@ -24,7 +23,7 @@ export default function CompanyMetrics({ research }: { research: Research }) {
   if (!metrics.length && market.marketCap == null) return null;
   return (
     <section
-      className={`${styles.metrics} company-metrics${expanded ? " company-metrics-expanded" : ""}`}
+      className={`${styles.metrics} company-metrics`}
       aria-label="Company key metrics"
     >
       {market.marketCap != null && (
@@ -72,15 +71,6 @@ export default function CompanyMetrics({ research }: { research: Research }) {
           </small>
         </div>
       ))}
-      {metrics.length + (market.marketCap != null ? 1 : 0) > 4 && (
-        <button
-          className="company-metrics-toggle text-link"
-          aria-expanded={expanded}
-          onClick={() => setExpanded((value) => !value)}
-        >
-          {expanded ? "Fewer metrics" : "More company metrics"}
-        </button>
-      )}
     </section>
   );
 }

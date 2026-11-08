@@ -1,0 +1,63 @@
+{
+  "source": "Authenticated deployed UI annual-estimate table; displayed figures are rounded, not raw API responses",
+  "deployment": "91529471b3a1a536c808d4c4e606de93477b0c31",
+  "observedAt": "2026-11-08",
+  "quoteAsOf": "2026-11-06T21:29:00Z",
+  "rows": [
+    {
+      "symbol": "IREN",
+      "quote": 21.64,
+      "estimateCurrency": "AUD",
+      "end": "2027-06-30",
+      "revenueLow": 1700000000.0,
+      "revenue": 2500000000.0,
+      "revenueHigh": 2800000000.0
+    },
+    {
+      "symbol": "HIMS",
+      "quote": 26,
+      "estimateCurrency": "USD",
+      "end": "2027-12-31",
+      "revenueLow": 3700000000.0,
+      "revenue": 4000000000.0,
+      "revenueHigh": 4600000000.0
+    },
+    {
+      "symbol": "CIFR",
+      "quote": 6.55,
+      "estimateCurrency": "USD",
+      "end": "2027-12-31",
+      "revenueLow": 683400000.0,
+      "revenue": 839700000.0,
+      "revenueHigh": 1000000000.0
+    },
+    {
+      "symbol": "NBIS",
+      "quote": 129.49,
+      "estimateCurrency": "USD",
+      "end": "2027-12-31",
+      "revenueLow": 8800000000.0,
+      "revenue": 12200000000.0,
+      "revenueHigh": 18000000000.0
+    },
+    {
+      "symbol": "ASTS",
+      "quote": 32.33,
+      "estimateCurrency": "USD",
+      "end": "2027-12-31",
+      "revenueLow": 345100000.0,
+      "revenue": 609100000.0,
+      "revenueHigh": 911000000.0
+    },
+    {
+      "symbol": "NVO",
+      "quote": 40.31,
+      "quoteAsOf": "2026-11-06T21:25:00Z",
+      "estimateCurrency": "DKK",
+      "end": "2027-12-31",
+      "revenueLow": 293400000000.0,
+      "revenue": 311100000000.0,
+      "revenueHigh": 332700000000.0
+    }
+  ]
+}
