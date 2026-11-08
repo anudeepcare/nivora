@@ -540,10 +540,19 @@ export function aurynDecision(
           "Published annual EPS estimates × 80% / 100% / 120% of the reported forward P/E. This sensitivity keeps the current market multiple as an anchor; it is not intrinsic value.",
       };
     }
-    // Prefer observed cash flow only when the existing mature-business safeguards pass.
+    // This conservative model caps starting growth at 10%. Do not promote it
+    // to a headline valuation for companies growing revenue above 20%.
+    // The threshold is an applicability policy, not a fitted price target.
+    if (growth != null && growth > 20)
+      reasons.push(
+        "Rapid growth: the conservative mature-business cash-flow model is not used for valuation guidance.",
+      );
+    // Prefer observed cash flow only when the mature-business safeguards pass.
     if (
       family === "operating-company" &&
       !r.company.foreignListing &&
+      growth != null &&
+      growth <= 20 &&
       strong &&
       p &&
       q &&

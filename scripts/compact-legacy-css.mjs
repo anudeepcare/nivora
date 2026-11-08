@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+import postcss from 'postcss';
+import prettier from 'prettier';
+import {deduplicateRules} from './lib/css-deduplicate.mjs';
+const path='app/core/legacy-panels.css';
+const before=fs.readFileSync(path,'utf8'),root=postcss.parse(before);
+const removedRules=deduplicateRules(root);
+const after=await prettier.format(root.toString(),{parser:'css'});
+if(process.argv.includes('--write'))fs.writeFileSync(path,after);
+console.log(JSON.stringify({removedRules,beforeBytes:Buffer.byteLength(before),afterBytes:Buffer.byteLength(after),savedBytes:Buffer.byteLength(before)-Buffer.byteLength(after)},null,2));

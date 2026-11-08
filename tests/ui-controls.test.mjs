@@ -2016,90 +2016,24 @@ test("price-risk cases render historical percentiles separately from earnings an
   assert.doesNotMatch(whole, /Wall Street consensus|Analyst expectations/);
 });
 
-test("integrated selected cash-flow and earnings models have distinct horizons on one price scale", async () => {
-  const { valuationScale } = await import("../lib/research-summary.ts");
-  const model = {
-    cases: [80, 105, 140].map((target, i) => ({
-      name: ["10th percentile", "Historical median", "90th percentile"][i],
-      target,
-      change: target - 100,
-    })),
-    scenarioReference: 100,
-    scenarioReferenceDate: "2026-10-19",
-    scenarioHorizon: null,
-    scenarioKind: "cash-flow",
-    scenarioBasis: "Cash-flow valuation",
-    scenarioEnd: null,
-    edge: { pacePresentation: {}, pacePeriods: [] },
-    decision: { reasons: [], risks: [] },
-  };
-  const View = loadComponent(
-    "components/IntegratedResearch.tsx",
-    "IntegratedResearch",
-    {
-      ScenarioSensitivity: loadComponent(
-        "components/ScenarioSensitivity.tsx",
-        "ScenarioSensitivity",
-        { React, useId: React.useId, scenarioGeometry },
-      ),
-      React,
-      useMemo: React.useMemo,
-      useProduct: () => ({ demo: false }),
-      approvedResearch: () => model,
-      sameProviderSymbol: () => false,
-      valuationScale,
-      ...format,
-      ArrowDownRight,
-      ArrowUpRight,
-      Minus,
-      ArrowRight,
-      Bell: empty,
-      ChevronDown: empty,
-      PaceInstrument: empty,
-      AssessmentSummary: empty,
-      PositionFit: empty,
-      ResearchEvidenceGrid: empty,
-      DecisionInsights: empty,
-      s: experience,
-      Link: ({ children }) => React.createElement("a", null, children),
-    },
-  );
-  const render = () =>
-    renderToStaticMarkup(
-      React.createElement(View, {
-        research: demoData.research.MSFT,
-        onTab: () => {},
-      }),
-    );
-  const historical = render();
-  assert.match(historical, /Cash-flow valuation/);
-  assert.match(historical, /Present model value/);
-  assert.match(historical, /Conditional estimates, not probabilities/);
-  assert.doesNotMatch(
-    historical,
-    /Historical downside|Historical midpoint|Lower earnings power/,
-  );
-  const dots = [
-    ...historical.matchAll(/<circle cx="282" cy="([^"]+)" r="4"/g),
-  ].map((m) => Number(m[1]));
-  const ticks = [...historical.matchAll(/<circle cx="18" cy="([^"]+)"/g)].map(
-    (m) => Number(m[1]),
-  );
-  assert.equal(dots.length, 3);
-  assert.equal(new Set(ticks).size, 1);
-  assert.ok(dots[0] > ticks[0] && dots[1] < ticks[0] && dots[2] < dots[1]);
-  model.scenarioEnd = "2029-12-31";
-  model.scenarioKind = "earnings";
-  model.scenarioBasis = "Earnings sensitivity";
-  const conditional = render();
-  assert.match(conditional, /Bear scenario/);
-  assert.match(conditional, /Base scenario/);
-  assert.match(conditional, /Bull scenario/);
-  assert.match(conditional, /Conditional estimates, not probabilities/);
-  assert.doesNotMatch(
-    conditional,
-    /Historical downside|50th percentile|Past return percentiles/,
-  );
+test("integrated Overview uses analyst targets and never substitutes model scenarios", async () => {
+  const { consensusOutlook } = await import("../lib/outlook.ts");
+  const r = structuredClone(demoData.research.MSFT);
+  r.evidence = { ...r.evidence, updatedAt: r.retrievedAt, consensus: { target: 100, low: 80, high: 120 } };
+  const View = loadComponent("components/IntegratedResearch.tsx", "IntegratedResearch", {
+    React, useMemo: React.useMemo, useProduct: () => ({ demo: true }),
+    approvedResearch: () => ({ cases: [{ target: 43.52 }], edge: { pacePresentation: {}, pacePeriods: [] }, decision: {} }),
+    sameProviderSymbol: () => false,
+    AnalystTargets: loadComponent("components/AnalystTargets.tsx", "AnalystTargets", { React, consensusOutlook, ...format }),
+    PaceInstrument: empty, ResearchEvidenceGrid: empty, s: experience,
+  });
+  const render = () => renderToStaticMarkup(React.createElement(View, { research: r, onTab: () => {} }));
+  const html = render();
+  assert.match(html, /Wall Street consensus/);
+  for (const n of [80, 100, 120]) assert.ok(html.includes(`$${n}.00`));
+  assert.doesNotMatch(html, /43\.52|Cash-flow valuation|Bear scenario/);
+  r.evidence.consensus = null;
+  assert.doesNotMatch(render(), /43\.52|Wall Street consensus|Bear scenario/);
 });
 
 test("Home exposes complete matching-news count and expands past three companies without additional feed requests", async () => {

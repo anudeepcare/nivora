@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import postcss from 'postcss';
 import prettier from 'prettier';
+import {deduplicateRules} from '../scripts/lib/css-deduplicate.mjs';
 
 // Compare the complete ordered AST, including duplicate declarations, importance,
 // media conditions and layer boundaries. Formatting and source comments are inert.
@@ -28,7 +29,7 @@ function semantic(node) {
   if (node.nodes) value.nodes = node.nodes.map(semantic).filter(Boolean);
   return value;
 }
-test('consolidated compatibility preserves every ordered rule and declaration', async () => {
+test('consolidated compatibility preserves the ordered cascade after exact duplicate removal', async () => {
   const before = await expanded('docs/archive/styles/app/core/compatibility.css');
   const after = await expanded('app/core/compatibility.css');
   // Consent is now owned by its scoped component; the obsolete global rules
@@ -36,6 +37,7 @@ test('consolidated compatibility preserves every ordered rule and declaration', 
   before.walkRules(rule => {
     if (/^\.(analytics-consent|consent-actions)(?:[ .:]|$)/.test(rule.selector)) rule.remove();
   });
+  deduplicateRules(before);
   assert.deepEqual(semantic(after), semantic(before));
   let rules = 0;
   after.walkRules(() => rules++);

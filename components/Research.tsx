@@ -37,10 +37,16 @@ const AdvancedResearch = dynamic(() => import("./AdvancedResearch"), {
   ),
 });
 
-import FinancingContext from "./FinancingContext";
-import BusinessHistory from "./BusinessHistory";
+const FinancingContext = dynamic(() => import("./FinancingContext"), {
+  loading: () => <p role="status">Loading…</p>,
+});
+const BusinessHistory = dynamic(() => import("./BusinessHistory"), {
+  loading: () => <p role="status">Loading…</p>,
+});
 import { headerMarketContext } from "@/lib/business-history";
-import BusinessMap from "./BusinessMap";
+const BusinessMap = dynamic(() => import("./BusinessMap"), {
+  loading: () => <p role="status">Loading…</p>,
+});
 import TimingContext from "./TimingContext";
 import DecisionWorkspace from "./DecisionWorkspace";
 import DecisionWatch from "./DecisionWatch";
@@ -73,13 +79,21 @@ import { amount, percent, dateLabel, quoteTime } from "@/lib/format";
 import { useProduct, useResource } from "./Session";
 import { SecurityLogo, Help, Notice, Empty, DataStamp } from "./Ui";
 import PriceStudyChart from "./PriceStudyChart";
-import Financials from "./FinancialPicture";
+const Financials = dynamic(() => import("./FinancialPicture"), {
+  loading: () => <p role="status">Loading…</p>,
+});
 import { TechnicalPicture, ThesisPicture } from "./ResearchDetails";
 import { groupHistory } from "@/lib/chart-period";
 import EarningsReview from "./EarningsReview";
-import ResearchNotes from "./ResearchNotes";
-import CompanyBrief from "./CompanyBrief";
-import DcaResearch from "./DcaResearch";
+const ResearchNotes = dynamic(() => import("./ResearchNotes"), {
+  loading: () => <p role="status">Loading…</p>,
+});
+const CompanyBrief = dynamic(() => import("./CompanyBrief"), {
+  loading: () => <p role="status">Loading…</p>,
+});
+const DcaResearch = dynamic(() => import("./DcaResearch"), {
+  loading: () => <p role="status">Loading…</p>,
+});
 import DecisionOverview from "./IntegratedResearch";
 import experience from "./IntegratedExperience.module.css";
 import tabVisuals from "./ResearchTabVisuals.module.css";
@@ -87,12 +101,22 @@ import { selectPriceReference } from "@/lib/price-reference";
 import { movementContext } from "@/lib/movement-context";
 import PaceHelp from "./PaceHelp";
 import { paceCode } from "@/lib/pace-presentation";
-import EarningsWorkspace from "./EarningsWorkspace";
+const EarningsWorkspace = dynamic(() => import("./EarningsWorkspace"), {
+  loading: () => <p role="status">Loading…</p>,
+});
 import DecisionBrief from "./DecisionBrief";
-import TargetsEstimates from "./TargetsEstimates";
-import AnalystRatings from "./AnalystRatings";
-import CompanyUpdates from "./CompanyUpdates";
-import CongressDisclosures from "./CongressDisclosures";
+const TargetsEstimates = dynamic(() => import("./TargetsEstimates"), {
+  loading: () => <p role="status">Loading…</p>,
+});
+const AnalystRatings = dynamic(() => import("./AnalystRatings"), {
+  loading: () => <p role="status">Loading…</p>,
+});
+const CompanyUpdates = dynamic(() => import("./CompanyUpdates"), {
+  loading: () => <p role="status">Loading…</p>,
+});
+const CongressDisclosures = dynamic(() => import("./CongressDisclosures"), {
+  loading: () => <p role="status">Loading…</p>,
+});
 import OverviewContext from "./OverviewContext";
 const tabs = [
   "Snapshot",

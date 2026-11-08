@@ -128,7 +128,7 @@ export default function PaceInstrument({
           {exploring
             ? `Framework · P${selected}`
             : current?.provisional
-              ? "Provisional · may change before month-end"
+              ? "Current month · forming"
               : level === null
                 ? "Current history unavailable"
                 : "Latest closing observation"}
@@ -147,31 +147,28 @@ export default function PaceInstrument({
       </div>
       {!exploring && (
         <div className={s.insight}>
-          <span className={s.eyebrow}>Assessment after business checks</span>
+          <span className={s.eyebrow}>For your position</span>
           <p className={s.boundary}>
             {decision?.actionLabel ?? view?.actionLabel ?? "Review evidence"}
           </p>
           {current?.changed && (
             <p className={s.distance}>
-              The previous closing zone was P{current.historicalLevel}; the
-              current zone is P{current.level}.{" "}
+              P{current.historicalLevel} last month → P{current.level} now.
               {current.level! < current.historicalLevel!
-                ? "The previous zone does not authorize additions now."
-                : "A deeper provisional zone does not increase the established contribution guide."}
+                ? " Use the current zone."
+                : " Wait for month-end before increasing the plan."}
             </p>
           )}
           {boundary && (
             <>
-              <span className={s.eyebrow}>
-                What would change the price zone?
-              </span>
+              <span className={s.eyebrow}>Next price level</span>
               <p className={s.boundary}>
                 <strong>P{boundary.level}</strong> {boundary.operator}{" "}
                 <strong>{amount(boundary.price, currency)}</strong>
               </p>
               <p className={s.distance}>
-                {percent(boundary.distancePercent, true)} from the latest
-                eligible close · conditional on this month's inputs
+                {percent(boundary.distancePercent, true)} from latest close ·
+                conditional
               </p>
             </>
           )}
@@ -212,7 +209,7 @@ export default function PaceInstrument({
       </details>
       {!publicGuide && (
         <details className={s.readingDetail}>
-          <summary>Previous month’s closing zone · history</summary>
+          <summary>Previous month · history</summary>
           <p className={s.description}>
             {current?.historicalLevel != null
               ? `P${current.historicalLevel} · ${dateLabel(current.historicalDate)}. Historical evidence, not today’s purchase instruction.`

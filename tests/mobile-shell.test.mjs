@@ -28,7 +28,8 @@ test("mobile chrome keeps a brand-led glass header and reserves a tidy footer", 
   const pwaCss = readCompatCss('app/pwa-shell.css');
   const layout = fs.readFileSync("app/core/compatibility.css", "utf8");
   assert.match(css, /mobile-header-row/);
-  assert.match(css, /mobile-footer-note/);
+  // Identical earlier rules can be removed; the surviving cascade owns this selector.
+  assert.match(fs.readFileSync("app/core/legacy-panels.css", "utf8"), /mobile-footer-note/);
   assert.match(css, /mobile-header-row\s*\{[\s\S]*display:\s*flex/);
   assert.match(finalCss, /mobile-brand-mark/);
   assert.match(finalCss, /mobile-header-row \.wordmark[\s\S]*position:\s*static/);

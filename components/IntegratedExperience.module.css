@@ -866,10 +866,10 @@
   border: 0;
   color: var(--scenario-tone);
 }
-.scenario[data-case="Bear"] {
+.scenario[data-tone="negative"] {
   --scenario-tone: #c36f64;
 }
-.scenario[data-case="Bull"] {
+.scenario[data-tone="positive"] {
   --scenario-tone: #53b490;
 }
 .scenario:hover {

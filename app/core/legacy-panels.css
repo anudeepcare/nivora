@@ -1312,9 +1312,6 @@
     font-size: 25px;
     letter-spacing: -0.7px;
   }
-  .dialog-body {
-    padding: 0 24px 24px;
-  }
   .dialog-body > p {
     font-size: 14px;
     color: var(--muted);
@@ -1801,9 +1798,6 @@
       width: 29px;
       height: 29px;
     }
-    .desktop-nav {
-      display: none;
-    }
     .top-search {
       margin-left: auto;
     }
@@ -2249,9 +2243,6 @@
       bottom: calc(85px + var(--safe-bottom));
       width: max-content;
     }
-    .dialog-head {
-      padding: 20px 20px 14px;
-    }
     .dialog-body {
       padding: 0 20px 23px;
     }
@@ -2271,10 +2262,6 @@
       height: calc(100dvh - 26px - var(--safe-top));
       max-height: none;
       display: none;
-    }
-    .search-dialog[open] {
-      display: flex;
-      flex-direction: column;
     }
     .search-results {
       overflow: auto;
@@ -2373,10 +2360,6 @@
     .local-tabs {
       gap: 0;
     }
-    .local-tabs button {
-      font-size: 11px;
-      padding: 10px 9px;
-    }
     .topbar {
       padding-left: 15px;
       padding-right: 15px;
@@ -2458,9 +2441,6 @@
     scroll-behavior: auto !important;
     transition: none !important;
     animation: none !important;
-  }
-  [hidden] {
-    display: none !important;
   }
   .company-name {
     display: block;
@@ -2616,12 +2596,6 @@
       border-radius: 26px;
       gap: 0;
     }
-    .research-canvas .decision {
-      order: 1;
-    }
-    .research-canvas .pace {
-      order: 2;
-    }
     .research-canvas .plot-section {
       order: 3;
       margin-top: 14px;
@@ -2679,9 +2653,6 @@
     .outcome .target {
       margin-top: 10px;
     }
-    .outlook .why {
-      display: none;
-    }
     .watchlist-page .toolbar {
       margin-bottom: 8px;
     }
@@ -2712,10 +2683,6 @@
     .research-canvas .decision .segments button {
       font-size: 10px;
       padding: 5px 9px;
-    }
-    .mobile-dock {
-      left: 12px;
-      right: 12px;
     }
     .watch-row .identity-text .company-name {
       max-width: 90px;
@@ -4600,9 +4567,6 @@
     .research-canvas .price-chart {
       height: 190px;
     }
-    .research-canvas .plot-section {
-      order: 3;
-    }
     .research-canvas .pace {
       order: 2;
     }
@@ -6113,9 +6077,6 @@
     color: var(--green);
     margin-bottom: 8px;
   }
-  .thesis-group[data-tone="negative"] .driver-value {
-    color: var(--red);
-  }
   .thesis-group .driver p {
     font-size: 14px;
     line-height: 1.65;
@@ -6288,9 +6249,6 @@
     overflow-wrap: anywhere;
   }
   @media (min-width: 701px) {
-    .research-canvas .overview-dca {
-      order: 3;
-    }
     .research-canvas .plot-section {
       order: 2;
     }
@@ -6853,9 +6811,6 @@
     .research-page .local-tabs button {
       flex: 0 0 auto;
       padding: 10px 12px;
-    }
-    .home-workspace .home-details > section {
-      padding: 16px;
     }
     .home-workspace > .page-heading {
       flex-wrap: wrap;
@@ -7944,9 +7899,6 @@
       grid-template-columns: minmax(0, 1fr) 26px;
       gap: 8px;
       min-height: 44px;
-    }
-    .lens-list i {
-      display: none;
     }
     .selected-lens {
       padding: 14px;
@@ -9861,9 +9813,6 @@
     }
     .portfolio-ledger th:nth-child(5) {
       width: 14%;
-    }
-    .portfolio-ledger th:nth-child(6) {
-      width: 12%;
     }
     .portfolio-ledger th:last-child {
       width: 5%;
@@ -21146,15 +21095,6 @@
     --blue: #ad2f62;
     --blue-soft: color-mix(in srgb, #ad2f62 9%, var(--surface));
   }
-  :root[data-theme="dark"][data-accent="teal"] {
-    --blue: #61d3cc;
-  }
-  :root[data-theme="dark"][data-accent="violet"] {
-    --blue: #b9a2ff;
-  }
-  :root[data-theme="dark"][data-accent="rose"] {
-    --blue: #ffa1c4;
-  }
 
   @media (max-width: 760px) {
     .content .technical-chart-column {
@@ -29714,9 +29654,6 @@
     }
   }
   @media (max-width: 380px) {
-    .approved-product .page-content {
-      padding-inline: 14px;
-    }
     .approved-product .card,
     .approved-product .decision-card {
       padding: 18px;
@@ -37865,10 +37802,6 @@
   .approved-product .approved-research.decision-experience {
     gap: 16px;
   }
-  .approved-product .decision-focus {
-    grid-template-columns: minmax(0, 1fr) 300px;
-    border-radius: 20px;
-  }
   .approved-product .decision-main {
     padding: 22px 24px;
   }
@@ -38408,9 +38341,6 @@
     .approved-product.workspace-experience .page-content {
       padding: 18px 16px 28px;
     }
-    .approved-product .decision-focus {
-      grid-template-columns: 1fr;
-    }
     .approved-product .decision-main {
       padding: 20px;
     }
@@ -38435,9 +38365,6 @@
     }
     .company-metrics > div:last-child:nth-child(odd) {
       grid-column: 1/-1;
-    }
-    .company-metrics strong {
-      font-size: 19px;
     }
     .approved-product .research-market-grid > .card {
       padding: 17px;
@@ -38504,9 +38431,6 @@
       overflow-x: auto;
       gap: 10px;
       padding: 12px 0;
-    }
-    .company-metrics > div:last-child:nth-child(odd) {
-      grid-column: auto;
     }
     .company-metrics > div > span {
       font-size: 11px;
@@ -39793,9 +39717,6 @@
     .mp-public.ap-public .ap-hero h1 {
       font-size: clamp(38px, 10vw, 52px);
     }
-    .mp-public.ap-public .ap-hero-copy > p {
-      font-size: 16px;
-    }
     .mp-public.ap-public .ap-hero-actions {
       gap: 10px;
       flex-wrap: wrap;
@@ -39975,10 +39896,6 @@
       color: var(--blue);
       background: var(--blue-soft);
     }
-    .approved-product.workspace-experience .phone-dock svg {
-      width: 20px;
-      height: 20px;
-    }
     .approved-product.workspace-experience .search-dialog {
       width: 100%;
       max-width: none;
@@ -40080,12 +39997,6 @@
       border: 1px solid var(--line);
       background: var(--card);
     }
-    .approved-product.workspace-experience .mobile-header-row .top-links {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      min-width: 0;
-    }
     .approved-product.workspace-experience
       .mobile-header-row
       .top-links
@@ -40123,33 +40034,6 @@
       border-radius: 21px;
       background: color-mix(in srgb, var(--card) 95%, transparent);
       box-shadow: 0 12px 32px #13284b20;
-    }
-    .approved-product.workspace-experience .phone-dock > a {
-      min-height: 54px;
-      padding: 4px 2px;
-      border-radius: 15px;
-      gap: 2px;
-      font-size: 10px;
-      line-height: 1.1;
-    }
-    .approved-product.workspace-experience .phone-dock svg {
-      width: 20px;
-      height: 20px;
-    }
-    .approved-product.workspace-experience .product-footer {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      margin-top: 14px;
-      padding: 14px 0 4px;
-      font-size: 10px;
-      text-align: center;
-    }
-    .approved-product.workspace-experience .product-footer nav,
-    .approved-product.workspace-experience .product-footer > .help-trigger,
-    .approved-product.workspace-experience .product-footer .mobile-footer-note {
-      display: none;
     }
     .approved-product.workspace-experience .search-dialog {
       width: 100%;

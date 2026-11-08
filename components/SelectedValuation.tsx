@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import type { Research } from "@/lib/types";
 import { aurynDecision } from "@/lib/auryn-decision";
 import { amount, dateLabel, percent } from "@/lib/format";
-import s from "./AssessmentSummary.module.css";
+import s from "./SelectedValuation.module.css";
 /** The selected model is shared with the headline assessment, not a second model. */
 export default function SelectedValuation({
   research: r,
@@ -36,7 +36,12 @@ export default function SelectedValuation({
           <div className={s.reasons}>
             {(["bear", "base", "bull"] as const).map((name) => (
               <div className={s.case} key={name}>
-                <span>{name[0].toUpperCase() + name.slice(1)} scenario</span>
+                <span>
+                  {v.basis === "cash-flow"
+                    ? { bear: "Low", base: "Base", bull: "High" }[name] +
+                      " model value"
+                    : name[0].toUpperCase() + name.slice(1) + " scenario"}
+                </span>
                 <strong>
                   {amount(v[name], d.reference?.currency ?? r.quote.currency)}
                 </strong>
