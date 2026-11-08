@@ -15,3 +15,5 @@ Explicit user requirements, recorded November 8, 2026:
 - Remove visible DCA or DCA Optimizer wording from the app; internal compatibility identifiers and historical test inputs may remain. Use AURYN Pace and plain contribution language.
 
 - Treat UX as one coherent product across Home, Research, Watchlist, Portfolio, Options and the owner guide. Avoid oversized standalone evidence crystals in the Overview. Keep the decision beside the real chart on desktop and visible scenarios directly below; meaningful score detail stays accessible.
+
+Latest clarification (November 8): retain clean boxes/cards and metric grids, gradients and icons. Avoid heavy outlined repetition, not useful grouping. Do not flatten all metric panels into sparse ungrouped rows. Pace needs visible branded depth and scenarios must never silently disappear when evidence is insufficient; show the reason without inventing targets.

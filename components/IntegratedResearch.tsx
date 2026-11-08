@@ -77,7 +77,7 @@ export default function IntegratedResearch({
             view={m.edge.pacePresentation}
             readings={m.edge.pacePeriods}
             onHistory={() => onTab("Technicals")}
-            editorial
+            branded
           />
           <ul className={s.reasonList} aria-label="Decision evidence">
             {d.reasons.slice(0, 2).map((reason) => (

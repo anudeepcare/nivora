@@ -20,6 +20,7 @@ const Link = ({ children, ...props }) =>
   React.createElement("a", props, children);
 function load(name, bindings) {
   bindings = {
+    useState: React.useState,
     SectionIcon: () => null,
     PaceBoard: () => React.createElement("section", {"aria-label":"Accumulation opportunities"}),
     ResearchInbox: () => null,
@@ -96,6 +97,7 @@ test("Watchlist-only Home avoids an irrelevant zero-value portfolio summary", ()
   let requested, radarProps;
   const loaded = { company: { symbol: symbols[0] } };
   const Home = load("HomeOverview", {
+    useState: () => [true, () => {}],
     MarketRadar: (props) => {
       radarProps = props;
       return null;

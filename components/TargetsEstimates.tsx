@@ -1,5 +1,5 @@
 "use client";
-import { useId, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { Research } from "@/lib/types";
 import { researchOutlook } from "@/lib/outlook";
 import { targetsEstimates } from "@/lib/targets-estimates";
@@ -23,7 +23,7 @@ export default function TargetsEstimates({
 }) {
   const model = useMemo(() => targetsEstimates(r), [r]);
   const [active, setActive] = useState(0);
-  const id = useId();
+  const id = `auryn-targets-${encodeURIComponent(r.company.symbol)}`;
   const [multipleInput, setMultipleInput] = useState({
     symbol: r.company.symbol,
     value: "",

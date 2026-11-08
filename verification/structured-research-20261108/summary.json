@@ -1,0 +1,29 @@
+{
+  "regressionTests": 1234,
+  "regressionFailures": 0,
+  "actualRouteChecks": 40,
+  "routeWidths": [
+    390,
+    1440
+  ],
+  "routeThemes": [
+    "light",
+    "dark"
+  ],
+  "pageAndConsoleErrors": 0,
+  "horizontalOverflow": 0,
+  "researchFixtureChecks": 8,
+  "fixtureWidths": [
+    320,
+    390,
+    768,
+    1440
+  ],
+  "scenarioStates": [
+    "qualified model",
+    "missing model inputs"
+  ],
+  "financialCalculationsChanged": false,
+  "newForecastTargetsForMissingData": false,
+  "deployed": false
+}

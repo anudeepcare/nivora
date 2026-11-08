@@ -66,3 +66,13 @@ The opening Research view puts the real price chart beside a compact decision, p
 Shared navigation, Home lists, Watchlist/Portfolio surfaces, summary balances, Options controls and the owner guide use consistent hierarchy, spacing and restrained brand depth. Empty chart states are smaller. Existing Pro metrics and tools remain. The automatic chart resize uses its built-in size observer; the separate fit handler no longer supplies an incompatible manual width and cancels pending work at unmount.
 
 Validation: 40 actual local app-route/theme/viewport checks; eight research interactions with the real chart component, including short-history and 320px states; 40 Options/guide/public-tool interaction layouts; regression suite, production build and types/lint. Demo/fixture observations do not certify paid-provider data or forecast accuracy. No deployment or database changes.
+
+## November 8: structured research cards and persistent scenario state
+
+Restored a compact branded gradient Pace instrument, faceted diamond art and five priced stages. Price-edge formatting keeps cents below $1,000. Repeated multi-band captions are compact counted badges. Business overrides are explicitly explained for Reduce/Sell/Avoid. Evidence and research-desks retain softly coloured metric grids; shared provenance replaces repeated panel footer dates. Bear/base/bull use responsive colour-tinted cards with consistent icons and actual model inputs.
+
+Fixed the missing-model UI: SelectedValuation no longer silently returns null for a stock without a qualified model. It retains three clearly uncalculated cases, displays the model's reason, and keeps analyst consensus separate. This does not manufacture targets or relax financial evidence gates. Removed the empty/double manual-projection accordion, and embedded the price-expectations calculator without repeating the full Investment context heading/navigation. All tools remain in their existing workbench.
+
+Closed Home radar content mounts when opened, avoiding unused initial computation and preview hydration mismatches. Targets & estimates uses stock-scoped stable tab IDs, retaining keyboard navigation and accessible tab/panel linkage. No financial calculations or provider data were changed. No deployment.
+
+Validation: supported/missing-input stock scenarios, three-case presence and absent fabricated targets; 1,234 regression tests; eight responsive theme/width research fixtures; 40 actual local app-route checks including console errors and horizontal overflow; production build and types/lint. Local demo/fixtures are not live-provider certification.

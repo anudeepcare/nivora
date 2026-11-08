@@ -296,3 +296,26 @@
   align-items: center;
   min-height: 44px;
 }
+.embedded.embedded {
+  margin: 0;
+  padding: 18px 20px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--card);
+}
+.embedded > header,
+.embedded > .tabs {
+  display: none;
+}
+.embedded h3 {
+  margin-top: 0;
+  font-size: 20px;
+}
+.embedded p {
+  font-size: 13px;
+}
+@media (max-width: 600px) {
+  .embedded.embedded {
+    padding: 16px 14px;
+  }
+}

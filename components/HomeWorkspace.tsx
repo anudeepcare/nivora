@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import ContributionCompare from "./ContributionCompare";
 import HomeMarketCards from "./HomeMarketCards";
 import { MarketRadar } from "./MarketRadar";
@@ -98,6 +99,7 @@ function EarningsNumbers({
 }
 
 function HomeOverview() {
+  const [radarOpen, setRadarOpen] = useState(false);
   const state = useWorkspaceData(),
     { workspace, quotes, model, prefix, demo, displayName, pace } = state;
   const today = new Date(
@@ -249,7 +251,11 @@ function HomeOverview() {
         coverageIssue={!!feed.error || !readiness.eventsReady}
       />
       {loadedResearch.length > 0 && (
-        <details className={homeStyles.marketRadar}>
+        <details
+          className={homeStyles.marketRadar}
+          open={radarOpen}
+          onToggle={(event) => setRadarOpen(event.currentTarget.open)}
+        >
           <summary>
             Market radar{" "}
             <span>
@@ -257,13 +263,17 @@ function HomeOverview() {
               rotation
             </span>
           </summary>
-          <OpportunityMap
-            research={loadedResearch}
-            requested={symbols}
-            prefix={prefix}
-            demo={!!demo}
-          />
-          <MarketRadar research={loadedResearch} asOf={day} />
+          {radarOpen && (
+            <>
+              <OpportunityMap
+                research={loadedResearch}
+                requested={symbols}
+                prefix={prefix}
+                demo={!!demo}
+              />
+              <MarketRadar research={loadedResearch} asOf={day} />
+            </>
+          )}
         </details>
       )}
       {symbols.length > 0 && (

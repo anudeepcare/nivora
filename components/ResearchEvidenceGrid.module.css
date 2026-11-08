@@ -164,3 +164,80 @@
     font-size: 16px;
   }
 }
+/* Preserve the user's metric grids and their category identity. */
+.grid {
+  gap: 16px;
+  margin: 0;
+}
+.panel {
+  padding: 20px;
+  border: 0;
+  border-radius: 18px;
+  box-shadow: 0 8px 28px #17342c08;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--category) 5%, var(--card)),
+    var(--card)
+  );
+}
+.panel[data-category] {
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--category) 5%, var(--card)),
+    var(--card)
+  );
+}
+.panel h3 {
+  font-size: 14px;
+  font-weight: 600;
+}
+.panel header {
+  margin-bottom: 16px;
+}
+.panel dd {
+  font-weight: 600;
+}
+.panel footer {
+  font-size: 10px;
+}
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .panel {
+    padding: 16px 12px;
+  }
+  .panel header {
+    gap: 6px;
+  }
+  .panel h3 {
+    font-size: 12px;
+  }
+  .panel dl > div {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .panel dd {
+    font-size: 18px;
+  }
+  .panel dt {
+    font-size: 11px;
+  }
+  .panel footer {
+    font-size: 10px;
+  }
+}
+.snapshot {
+  grid-column: 1/-1;
+  font-size: 10px;
+  line-height: 1.6;
+  color: var(--muted);
+  padding: 0 4px;
+  margin-top: -4px;
+}
+@media (max-width: 600px) {
+  .panel:last-of-type:nth-child(odd) {
+    grid-column: 1/-1;
+  }
+}

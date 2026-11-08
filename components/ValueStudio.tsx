@@ -53,10 +53,7 @@ export default function ValueStudio({
       </header>
       <SelectedValuation research={r} />
       {consensusOutlook(r) && <AnalystTargets research={r} />}
-      <details>
-        <summary>Build your own scenarios</summary>
-        <PriceProjection key={r.company.symbol} research={r} />
-      </details>
+      <PriceProjection key={r.company.symbol} research={r} />
       {available.length > 0 && (
         <section
           className="valuation-board"
@@ -130,6 +127,7 @@ export default function ValueStudio({
             research={r}
             now={Date.parse(r.priceObservedAt ?? r.retrievedAt)}
             initialTab={1}
+            embedded
           />
         )}
       </details>

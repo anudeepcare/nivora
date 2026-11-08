@@ -114,11 +114,19 @@ export default function PacePriceZones({
                           ? band.low
                           : band.high,
                       research.quote.currency,
-                      true,
+                      (current
+                        ? zones.reference
+                        : level < 2
+                          ? band.low
+                          : band.high) >= 1000,
                     )
                   : "—"}
               </span>
-              {ranges.length > 1 && <small>Multiple bands</small>}
+              {ranges.length > 1 && (
+                <small className={styles.bandCount}>
+                  {ranges.length} bands
+                </small>
+              )}
             </button>
           );
         })}

@@ -74,3 +74,69 @@
     grid-template-columns: 1fr;
   }
 }
+/* Consistent metric tiles across the research desks. */
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :is(
+    :global(.durability-grid),
+    :global(.funding-metrics),
+    :global(.technical-summary-strip),
+    :global(.desk-key-metrics),
+    :global(.desk-secondary-metrics),
+    :global(.context-highlights),
+    :global(.valuation-board-grid)
+  ) {
+  gap: 14px;
+}
+.root.root.root[data-research-section]:not([data-research-section="Options"])
+  :is(
+    :global(.durability-grid),
+    :global(.funding-metrics),
+    :global(.technical-summary-strip),
+    :global(.desk-key-metrics),
+    :global(.desk-secondary-metrics),
+    :global(.context-highlights),
+    :global(.valuation-board-grid)
+  )
+  > * {
+  padding: 18px;
+  border: 0;
+  border-radius: 15px;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--green) 4%, var(--card)),
+    var(--card)
+  );
+  box-shadow: 0 6px 22px #17342c06;
+}
+.root.root.root[data-research-section="Financials"]
+  :global(article[data-metric-group]) {
+  padding: 20px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--card);
+  box-shadow: 0 8px 28px #17342c08;
+}
+.root.root.root :global(.desk-heading) {
+  margin-bottom: 20px;
+}
+.root.root.root :global(.desk-heading) h2 {
+  font-size: 28px;
+}
+@media (max-width: 600px) {
+  .root.root.root[data-research-section]:not([data-research-section="Options"])
+    :is(
+      :global(.durability-grid),
+      :global(.funding-metrics),
+      :global(.technical-summary-strip),
+      :global(.desk-key-metrics),
+      :global(.desk-secondary-metrics),
+      :global(.context-highlights),
+      :global(.valuation-board-grid)
+    )
+    > * {
+    padding: 15px 12px;
+  }
+  .root.root.root :global(.desk-heading) h2 {
+    font-size: 24px;
+  }
+}

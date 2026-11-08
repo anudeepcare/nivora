@@ -110,15 +110,13 @@ export default function ResearchEvidenceGrid({
                 : "No comparable evidence available."}
             </p>
           )}
-          <footer>
-            {key === "business"
-              ? `Reported period · ${dateLabel(evidence.period)}`
-              : key === "technical"
-                ? `Price history · ${dateLabel(research.history.at(-1)?.time)}`
-                : `Snapshot · ${dateLabel(research.evidence?.updatedAt || research.retrievedAt)}`}
-          </footer>
         </article>
       ))}
+      <footer className={s.snapshot}>
+        Financials {dateLabel(evidence.period)} · Price history{" "}
+        {dateLabel(research.history.at(-1)?.time)} · Evidence{" "}
+        {dateLabel(research.evidence?.updatedAt || research.retrievedAt)}
+      </footer>
     </section>
   );
 }

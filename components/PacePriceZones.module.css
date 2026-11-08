@@ -76,7 +76,7 @@
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 6px;
-  margin: 30px 0 8px;
+  margin: var(--pace-ladder-top, 30px) 0 8px;
   padding-top: 4px;
 }
 .ladder::before {
@@ -179,4 +179,12 @@
 .ladder.ladder button {
   gap: 5px;
   min-height: 94px;
+}
+.bandCount {
+  font-size: 9px;
+  line-height: 1.4;
+  padding: 2px 5px;
+  border-radius: 5px;
+  background: color-mix(in srgb, currentColor 8%, transparent);
+  color: inherit;
 }

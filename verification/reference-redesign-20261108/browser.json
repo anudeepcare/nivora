@@ -4,7 +4,8 @@
     "theme": "light",
     "decisionFirst": true,
     "borderlessPriceStages": true,
-    "borderlessScenarios": true,
+    "softScenarioCards": true,
+    "missingScenariosRemainVisible": true,
     "coloredScenarioLabels": true,
     "overflow": false
   },
@@ -13,7 +14,8 @@
     "theme": "dark",
     "decisionFirst": true,
     "borderlessPriceStages": true,
-    "borderlessScenarios": true,
+    "softScenarioCards": true,
+    "missingScenariosRemainVisible": true,
     "coloredScenarioLabels": true,
     "overflow": false
   },
@@ -22,7 +24,8 @@
     "theme": "light",
     "decisionFirst": true,
     "borderlessPriceStages": true,
-    "borderlessScenarios": true,
+    "softScenarioCards": true,
+    "missingScenariosRemainVisible": true,
     "coloredScenarioLabels": true,
     "overflow": false
   },
@@ -31,7 +34,8 @@
     "theme": "dark",
     "decisionFirst": true,
     "borderlessPriceStages": true,
-    "borderlessScenarios": true,
+    "softScenarioCards": true,
+    "missingScenariosRemainVisible": true,
     "coloredScenarioLabels": true,
     "overflow": false
   },
@@ -40,7 +44,8 @@
     "theme": "light",
     "decisionFirst": true,
     "borderlessPriceStages": true,
-    "borderlessScenarios": true,
+    "softScenarioCards": true,
+    "missingScenariosRemainVisible": true,
     "coloredScenarioLabels": true,
     "overflow": false
   },
@@ -49,7 +54,8 @@
     "theme": "dark",
     "decisionFirst": true,
     "borderlessPriceStages": true,
-    "borderlessScenarios": true,
+    "softScenarioCards": true,
+    "missingScenariosRemainVisible": true,
     "coloredScenarioLabels": true,
     "overflow": false
   },
@@ -58,7 +64,8 @@
     "theme": "light",
     "decisionFirst": true,
     "borderlessPriceStages": true,
-    "borderlessScenarios": true,
+    "softScenarioCards": true,
+    "missingScenariosRemainVisible": true,
     "coloredScenarioLabels": true,
     "overflow": false
   },
@@ -67,7 +74,8 @@
     "theme": "dark",
     "decisionFirst": true,
     "borderlessPriceStages": true,
-    "borderlessScenarios": true,
+    "softScenarioCards": true,
+    "missingScenariosRemainVisible": true,
     "coloredScenarioLabels": true,
     "overflow": false
   }

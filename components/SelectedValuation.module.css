@@ -224,3 +224,179 @@
     font-size: 24px;
   }
 }
+/* Three deliberate scenario surfaces, with visible assumptions and shared price context. */
+.root.root {
+  padding: 24px;
+  border-radius: 22px;
+  background: var(--card);
+  box-shadow: 0 10px 36px #17342c09;
+  margin: 0;
+}
+.heading h2 {
+  font-size: 25px;
+}
+.heading {
+  align-items: center;
+}
+.reasons {
+  gap: 14px;
+  margin: 20px 0 18px;
+}
+.root.root .case {
+  padding: 20px;
+  border-radius: 16px;
+  gap: 8px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--case-color) 9%, var(--card)),
+    var(--card)
+  );
+  box-shadow: none;
+}
+.caseLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.caseLabel svg {
+  flex: none;
+}
+.case strong {
+  font-size: clamp(25px, 2.9vw, 38px);
+}
+.caseInput {
+  padding-top: 8px;
+  border-top: 1px solid color-mix(in srgb, var(--case-color) 12%, transparent);
+}
+.status {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  color: var(--valuation-icon);
+  background: color-mix(in srgb, var(--valuation-icon) 9%, var(--card));
+  white-space: nowrap;
+}
+.missing {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--surface);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.missing > svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--valuation-icon);
+}
+.missing strong {
+  font-size: 12px;
+}
+.missing p {
+  margin: 4px 0;
+  color: var(--muted);
+}
+.missing small {
+  color: var(--muted);
+  font-size: 11px;
+}
+.priceMap {
+  max-width: none;
+  padding: 8px 18px 32px;
+}
+@media (max-width: 600px) {
+  .root.root {
+    padding: 18px 14px;
+    border-radius: 18px;
+  }
+  .heading {
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .heading h2 {
+    font-size: 23px;
+  }
+  .root.root .case {
+    padding: 14px 10px;
+    gap: 7px;
+    border-radius: 12px;
+  }
+  .caseLabel {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .case span {
+    font-size: 10px;
+  }
+  .case strong {
+    font-size: 22px;
+  }
+  .case small {
+    font-size: 11px;
+  }
+  .reasons {
+    gap: 8px;
+  }
+  .caseInput {
+    font-size: 10px;
+  }
+  .missing {
+    padding: 12px;
+  }
+}
+@media (max-width: 480px) {
+  .reasons {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+  .root.root .case {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 5px 12px;
+    padding: 15px;
+  }
+  .caseLabel {
+    flex-direction: row;
+    align-items: center;
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .case strong {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 26px;
+  }
+  .case small {
+    grid-column: 2;
+    text-align: right;
+  }
+  .caseInput {
+    grid-column: 1/-1;
+    margin-top: 4px;
+  }
+  .case span {
+    font-size: 12px;
+  }
+}
+:global([data-theme="dark"]) .root.root .case[data-case="bear"] {
+  --case-color: #f28c8c;
+}
+:global([data-theme="dark"]) .root.root .case[data-case="base"] {
+  --case-color: #dfbb65;
+}
+:global([data-theme="dark"]) .root.root .case[data-case="bull"] {
+  --case-color: #65d4b2;
+}
+:global([data-theme="dark"]) .status {
+  color: #ecc775;
+  background: #ecc77514;
+}
+:global([data-theme="dark"]) .missing > svg {
+  color: #ecc775;
+}

@@ -14,12 +14,14 @@ export default function DecisionInsights({
   now,
   prefix = "",
   initialTab = 0,
+  embedded = false,
 }: {
   research: Research;
   owns?: boolean;
   now: number;
   prefix?: string;
   initialTab?: 0 | 1 | 2;
+  embedded?: boolean;
 }) {
   return (
     <Insights
@@ -29,6 +31,7 @@ export default function DecisionInsights({
       now={now}
       prefix={prefix}
       initialTab={initialTab}
+      embedded={embedded}
     />
   );
 }
@@ -38,12 +41,14 @@ function Insights({
   now,
   prefix,
   initialTab,
+  embedded = false,
 }: {
   research: Research;
   owns: boolean;
   now: number;
   prefix: string;
   initialTab: 0 | 1 | 2;
+  embedded?: boolean;
 }) {
   const [tab, setTab] = useState<number>(initialTab),
     [multiple, setMultiple] = useState("25"),
@@ -94,7 +99,10 @@ function Insights({
       : null;
   const d = e.decision;
   return (
-    <section className={s.root} aria-label="Decision insights">
+    <section
+      className={`${s.root} ${embedded ? s.embedded : ""}`}
+      aria-label="Decision insights"
+    >
       <header>
         <div>
           <span className="eyebrow">BUSINESS, PRICE & VALUATION</span>

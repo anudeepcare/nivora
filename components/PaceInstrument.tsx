@@ -22,6 +22,7 @@ type Props = {
   publicGuide?: boolean;
   compact?: boolean;
   editorial?: boolean;
+  branded?: boolean;
   onHistory?: () => void;
   research?: Research;
   ownsPosition?: boolean;
@@ -34,6 +35,7 @@ export default function PaceInstrument({
   publicGuide = false,
   compact = false,
   editorial = false,
+  branded = false,
   onHistory,
   research,
   ownsPosition = false,
@@ -80,7 +82,7 @@ export default function PaceInstrument({
   const currency = research?.quote.currency ?? "USD";
   return (
     <section
-      className={`${s.instrument} ${compact ? s.compact : ""} ${editorial ? s.editorial : ""}`}
+      className={`${s.instrument} ${compact ? s.compact : ""} ${editorial ? s.editorial : ""} ${branded ? s.branded : ""}`}
       data-tone={decision?.tone ?? "neutral"}
       aria-label={
         publicGuide
@@ -121,13 +123,20 @@ export default function PaceInstrument({
             <h2>
               {exploring && selected !== null
                 ? PACE_LEVELS[selected]
-                : editorial
+                : editorial || branded
                   ? action
                   : actionText}
             </h2>
             {!exploring && decision?.headline && (
               <p className={s.reason}>{decision.headline}</p>
             )}
+            {!exploring &&
+              decision &&
+              ["Reduce", "Sell", "Avoid"].includes(decision.actionLabel) && (
+                <p className={s.businessGate}>
+                  Business checks take priority over the price zone.
+                </p>
+              )}
             {selected !== null && (
               <p
                 className={s.zoneContext}

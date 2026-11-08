@@ -15,6 +15,9 @@ import {
   Layers3,
   Scale,
   ShieldCheck,
+  ShieldAlert,
+  Sparkles,
+  Info,
   ChartNoAxesCombined,
   ArrowRight,
   ArrowDownRight,
@@ -2021,7 +2024,7 @@ test("shared scenario surface keeps conditional horizons visible and all views u
   const d = {valuation:{label:"Cash-flow valuation",basis:"cash-flow",bear:80,base:105,bull:140,end:null,assumptions:"Model assumptions"}, reference:{price:100,currency:"USD",asOf:"2026-10-19"},period:"2026-06-30"};
   const Selected = loadComponent("components/SelectedValuation.tsx","SelectedValuation",{
     React,useMemo:React.useMemo,useSyncExternalStore:React.useSyncExternalStore,subscribe:()=>()=>{}, selectedEnds:new Map(),listeners:new Set(),
-    aurynDecision:()=>d,researchOutlook:()=>({available:false}),...format,s:experience,
+    aurynDecision:()=>d,researchOutlook:()=>({available:false,reason:"Matching dated cash/debt evidence is required."}),ShieldAlert,Scale,Sparkles,Info,...format,s:experience,
   });
   const render = ()=>renderToStaticMarkup(React.createElement(Selected,{research:demoData.research.MSFT}));
   let html = render();
@@ -2029,6 +2032,8 @@ test("shared scenario surface keeps conditional horizons visible and all views u
   assert.match(html,/ten-year cash-flow/);assert.equal((html.match(/data-case=/g)||[]).length,3);
   d.valuation={...d.valuation,basis:"earnings",end:"2029-12-31"};
   html=render(); assert.match(html,/Bear scenario/);assert.match(html,/2029/);assert.match(html,/not independent fair value/);
+  d.valuation=null;
+  html=render(); assert.match(html,/Inputs needed/);assert.match(html,/Matching dated cash\/debt evidence is required/);assert.equal((html.match(/data-case=/g)||[]).length,3);assert.equal((html.match(/target not calculated/g)||[]).length,3);assert.doesNotMatch(html,/\$0\.00/);
   for(const file of ["IntegratedResearch","ValueStudio","TargetsEstimates"]) assert.match(fs.readFileSync(`components/${file}.tsx`,"utf8"),/<SelectedValuation research=\{r\}/);
 });
 

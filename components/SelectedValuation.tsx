@@ -1,5 +1,6 @@
 "use client";
 import { useMemo, useSyncExternalStore } from "react";
+import { ShieldAlert, Scale, Sparkles, Info } from "lucide-react";
 import type { Research } from "@/lib/types";
 import { aurynDecision } from "@/lib/auryn-decision";
 import { amount, dateLabel, percent } from "@/lib/format";
@@ -84,7 +85,53 @@ export default function SelectedValuation({
           projection.caveat ?? "Conditional market-multiple sensitivity.",
       }
     : d.valuation;
-  if (!v) return null;
+  if (r.company.assetType !== "stock") return null;
+  if (!v)
+    return (
+      <section
+        className={s.root}
+        aria-label="Selected AURYN valuation model"
+        data-state="needs-inputs"
+      >
+        <header className={s.heading}>
+          <div>
+            <span className={s.eyebrow}>AURYN valuation</span>
+            <h2>Bear, base &amp; bull</h2>
+          </div>
+          <span className={s.status}>Inputs needed</span>
+        </header>
+        <div className={s.reasons}>
+          {(["bear", "base", "bull"] as const).map((name, index) => {
+            const Icon = [ShieldAlert, Scale, Sparkles][index];
+            return (
+              <div className={s.case} key={name} data-case={name}>
+                <span className={s.caseLabel}>
+                  <Icon size={17} />
+                  {name[0].toUpperCase() + name.slice(1)} scenario
+                </span>
+                <strong aria-label={`${name} target not calculated`}>—</strong>
+                <small>Not calculated</small>
+              </div>
+            );
+          })}
+        </div>
+        <div className={s.missing} role="status">
+          <Info size={17} />
+          <div>
+            <strong>Scenario inputs need review</strong>
+            <p>
+              {projection.available
+                ? "No supported valuation model is available."
+                : projection.reason}
+            </p>
+            <small>
+              Wall Street consensus remains separate. Missing inputs are not
+              treated as zero.
+            </small>
+          </div>
+        </div>
+      </section>
+    );
   const reference = d.reference?.price;
   const prices = [v.bear, v.base, v.bull, ...(reference ? [reference] : [])];
   const low = Math.min(...prices),
@@ -131,7 +178,14 @@ export default function SelectedValuation({
           <div className={s.reasons}>
             {(["bear", "base", "bull"] as const).map((name) => (
               <div className={s.case} key={name} data-case={name}>
-                <span>
+                <span className={s.caseLabel}>
+                  {name === "bear" ? (
+                    <ShieldAlert size={17} />
+                  ) : name === "base" ? (
+                    <Scale size={17} />
+                  ) : (
+                    <Sparkles size={17} />
+                  )}
                   {name[0].toUpperCase() +
                     name.slice(1) +
                     (v.basis === "cash-flow" ? " model value" : " scenario")}

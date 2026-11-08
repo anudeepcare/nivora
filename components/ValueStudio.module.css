@@ -13,3 +13,47 @@
     grid-template-columns: 1fr;
   }
 }
+.root.root.root :global(.desk-heading) {
+  margin: 0 0 20px;
+}
+.root.root.root :global(.desk-heading) h2 {
+  font-size: 28px;
+}
+.root.root.root :global(.valuation-board) {
+  padding: 22px;
+  border: 0;
+  border-radius: 20px;
+  background: var(--card);
+  box-shadow: 0 10px 34px #17342c08;
+}
+.root.root.root :global(.valuation-board-grid) > article {
+  padding: 18px;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--green) 5%, var(--card)),
+    var(--card)
+  );
+}
+.root.root.root :global(.valuation-board-grid) {
+  gap: 14px;
+}
+.root.root.root :global(.valuation-board-grid) > article > strong {
+  font-size: 28px;
+}
+.root.root.root :global(.valuation-board-grid) > article > p {
+  font-size: 11px;
+  line-height: 1.6;
+}
+@media (max-width: 600px) {
+  .root.root.root :global(.valuation-board) {
+    padding: 18px 14px;
+  }
+  .root.root.root :global(.desk-heading) h2 {
+    font-size: 24px;
+  }
+  .root.root.root :global(.valuation-board-grid) > article {
+    padding: 15px;
+  }
+}

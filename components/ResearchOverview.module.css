@@ -226,3 +226,20 @@
     min-height: 220px;
   }
 }
+.paceColumn {
+  padding: 0;
+}
+.paceColumn:before {
+  display: none;
+}
+.scenarios {
+  padding: 0;
+  border: 0;
+}
+.reasonList {
+  padding: 12px 4px 0;
+  margin-top: 10px;
+}
+.overview {
+  gap: 20px 24px;
+}

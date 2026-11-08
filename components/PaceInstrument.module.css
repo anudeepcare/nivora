@@ -518,3 +518,70 @@
   transform: rotate(8deg);
   filter: none;
 }
+/* Branded compact instrument: useful grouping without a heavy outline. */
+.instrument.instrument.branded {
+  padding: 24px;
+  border-radius: 22px;
+  box-shadow: 0 16px 42px #17342c18;
+}
+.instrument.instrument.branded .title h2 {
+  font-size: clamp(36px, 3.5vw, 50px);
+}
+.branded .readout {
+  margin: 14px 0 10px;
+}
+.branded .title > small {
+  display: none;
+}
+.instrument.instrument.branded .reason {
+  font-size: 14px;
+  line-height: 1.55;
+  margin-top: 10px;
+  max-width: 38ch;
+}
+.branded .brandArt {
+  width: 150px;
+  top: 48px;
+  right: -22px;
+  opacity: 0.2;
+}
+.branded .insight {
+  margin-top: 14px;
+}
+.branded .readingDetail {
+  margin-top: 12px;
+}
+.businessGate {
+  font-size: 11px;
+  line-height: 1.5;
+  color: #ffd1ae;
+  margin: 10px 0 0;
+}
+.instrument.instrument.branded .businessGate {
+  color: #ffd1ae;
+}
+@media (max-width: 600px) {
+  .instrument.instrument.branded {
+    padding: 20px 16px;
+    border-radius: 18px;
+  }
+  .instrument.instrument.branded .title h2 {
+    font-size: 38px;
+  }
+}
+.instrument.instrument.branded {
+  --pace-ladder-top: 18px;
+}
+.instrument.instrument.branded .insight {
+  margin-top: 12px;
+}
+.branded .zoneContext {
+  margin-top: 6px;
+}
+.branded .readout {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+.branded .readingDetail {
+  margin-top: 8px;
+}
